@@ -1,17 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Still unhappy with removal of DXS controls
-Date: Tue, 06 Jul 2010 12:37:06 +0200
-Message-ID: <4C330752.3090201@ladisch.de>
-References: <4C3234C1.2060901@gmx.de>
+From: melwyn lobo <linux.melwyn@gmail.com>
+Subject: Re: XRUN handling
+Date: Tue, 6 Jul 2010 16:35:21 +0530
+Message-ID: <AANLkTimKA4B8qxbUhlE_3CpCaDOVCS_MpglOiERqS4zS@mail.gmail.com>
+References: <AANLkTim_2xOjhFHcfyMvgceAQZEauWYIbY8QV-0jnBWw@mail.gmail.com>
+	<4C32CD2F.2010100@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id B1BAA243E3
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id A3B8E243FB
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Jul 2010 12:37:35 +0200 (CEST)
-In-Reply-To: <4C3234C1.2060901@gmx.de>
+	Tue,  6 Jul 2010 13:05:24 +0200 (CEST)
+Received: by vws9 with SMTP id 9so3828571vws.38
+	for <alsa-devel@alsa-project.org>; Tue, 06 Jul 2010 04:05:22 -0700 (PDT)
+In-Reply-To: <4C32CD2F.2010100@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,48 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Soeren D. Schulze" <soeren.d.schulze@gmx.de>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Soeren D. Schulze wrote:
-> Please, even if the solution with the DXS controls in alsamixer didn't
-> comply with the ALSA policies, *it did work*!  The current one *does
-> not*.  Maybe make the maximum (or default?) DXS volume available as a
-> mixer control or as a module option or something -- whatever you
-> consider the best solution.
+Adding mailing list to copy:
 
-Please try this patch:
+- Hide quoted text -
+> melwyn lobo wrote:
+>> In case snd_pcm_playback_avail() is less than stop threshold but
+>> greater than 0, then these bytes are missing after Xrun prepare and
+>> start stage.
+>
+> Preparing a stream resets it, i.e., any data currently in the buffer
+> is discarded.
+>
+> If you want to have data in the buffer after preparing, you have to
+> write it again.
+>
 
---- a/sound/pci/via82xx.c
-+++ b/sound/pci/via82xx.c
-@@ -85,6 +85,7 @@ static int joystick;
- static int ac97_clock = 48000;
- static char *ac97_quirk;
- static int dxs_support;
-+static int dxs_init_volume = 31;
- static int nodelay;
- 
- module_param(index, int, 0444);
-@@ -103,6 +104,8 @@ module_param(ac97_quirk, charp, 0444);
- MODULE_PARM_DESC(ac97_quirk, "AC'97 workaround for strange hardware.");
- module_param(dxs_support, int, 0444);
- MODULE_PARM_DESC(dxs_support, "Support for DXS channels (0 = auto, 1 = enable, 2 = disable, 3 = 48k only, 4 = no VRA, 5 = enable any sample rate)");
-+module_param(dxs_init_volume, int, 0644);
-+MODULE_PARM_DESC(dxs_init_volume, "initial DXS volume (0-31)");
- module_param(nodelay, int, 0444);
- MODULE_PARM_DESC(nodelay, "Disable 500ms init delay");
- 
-@@ -1245,8 +1248,10 @@ static int snd_via8233_playback_open(struct snd_pcm_substream *substream)
- 		return err;
- 	stream = viadev->reg_offset / 0x10;
- 	if (chip->dxs_controls[stream]) {
--		chip->playback_volume[stream][0] = 0;
-+		chip->playback_volume[stream][0] =
-+				VIA_DXS_MAX_VOLUME - (dxs_init_volume & 31);
--		chip->playback_volume[stream][1] = 0;
-+		chip->playback_volume[stream][1] =
-+				VIA_DXS_MAX_VOLUME - (dxs_init_volume & 31);
- 		chip->dxs_controls[stream]->vd[0].access &=
- 			~SNDRV_CTL_ELEM_ACCESS_INACTIVE;
- 		snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE |
+
+Thanks for the confirmation. Our client is working on aplay to test
+our driver in which already there is this issue.
+Is there any workaround in kernel/driver space that could be done or
+it can only be fixed in aplay.
+
+Regards
+M.
