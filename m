@@ -1,20 +1,19 @@
-From: Felix Homann <fexpop@web.de>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: [PATCH - Fix Fast Track Ultra series: 44.1/88.1
  kHz 1/Fix playback/capture issues and related chrashes at 44100 Hz and
  88200 Hz for M-Audio Fast Track Ultra series.
-Date: Wed, 07 Jul 2010 15:59:47 +0200
-Message-ID: <4C348853.6010907@web.de>
-References: <4C32E3B2.5080707@web.de>
-	<4C344340.8060804@web.de>	<4C3476BD.4090702@ladisch.de>
-	<4C347EF7.2030401@web.de>
+Date: Wed, 07 Jul 2010 16:23:02 +0200
+Message-ID: <4C348DC6.7070602@ladisch.de>
+References: <4C32E3B2.5080707@web.de> <4C344340.8060804@web.de>
+	<4C3476BD.4090702@ladisch.de> <4C347EF7.2030401@web.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090102060507020204090408"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wp188.webpack.hosteurope.de (wp188.webpack.hosteurope.de
-	[80.237.132.195])
-	by alsa0.perex.cz (Postfix) with ESMTP id D3DD2244F1
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 887AA244CC
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jul 2010 15:59:48 +0200 (CEST)
+	Wed,  7 Jul 2010 16:23:03 +0200 (CEST)
 In-Reply-To: <4C347EF7.2030401@web.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,201 +25,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Felix Homann <fexpop@web.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------090102060507020204090408
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Felix Homann wrote:
+> Am 07.07.2010 14:44, schrieb Clemens Ladisch:
+>> (I have the suspicion that we don't actually need a AUDIO_FIXED_ENDPOINT
+>> quirk for these devices.)
+> 
+> Something must be in this AUDIO_FIXED_ENDPOINT quirk, since the device 
+> now works properly and stable @44.1/88.2 kHz. I don't know the exact 
+> reason, since I really don't understand all this stuff.
 
-Hi,
-
-here's the hopefully corrected version of the patch.
-
-Furthermore, I got notice from dhubsith that he would sign it of if 
-needed. What do you think?
-
-Kind regards,
-
-Felix
-
---------------090102060507020204090408
-Content-Type: text/x-patch;
- name="0001-fix-sample-rates-ftu-UPDATED_AGAIN.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0001-fix-sample-rates-ftu-UPDATED_AGAIN.patch"
-
->From 1573e7e973e6adcfe39fbfdaae0be2d1a5e01501 Mon Sep 17 00:00:00 2001
-From: Felix Homann <fexpop@web.de>
-Date: Wed, 7 Jul 2010 15:51:58 +0200
-Subject: [PATCH - Fix Fast Track Ultra series 1/1] Fix 44.1/88.1 kHz 1/Fix playback/capture issues and related chrashes at 44100 Hz and 88200 Hz for M-Audio Fast Track Ultra series.
+There must be some difference, and I'd really like to know what it is.
+Please load the driver with the patch below, with and without the
+AUDIO_FIXED_ENDPOINT patch, and show what it prints to the system log.
 
 
-Signed-off-by: Felix Homann <fexpop@web.de>
+Regards,
+Clemens
 
-diff --git a/usb/endpoint.c b/usb/endpoint.c
-index 1a701f1..bb9f938 100644
---- a/usb/endpoint.c
-+++ b/usb/endpoint.c
-@@ -404,8 +404,6 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
- 			break;
- 		case USB_ID(0x041e, 0x3020): /* Creative SB Audigy 2 NX */
- 		case USB_ID(0x0763, 0x2003): /* M-Audio Audiophile USB */
--		case USB_ID(0x0763, 0x2080): /* M-Audio Fast Track Ultra 8 */
--		case USB_ID(0x0763, 0x2081): /* M-Audio Fast Track Ultra 8R */
- 			/* doesn't set the sample rate attribute, but supports it */
- 			fp->attributes |= UAC_EP_CS_ATTR_SAMPLE_RATE;
- 			break;
-diff --git a/usb/quirks-table.h b/usb/quirks-table.h
-index f8797f6..4c1dc12 100644
---- a/usb/quirks-table.h
-+++ b/usb/quirks-table.h
-@@ -1827,10 +1827,10 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -196,6 +196,7 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
+ 			hwc_debug("All rates were zero. Skipping format!\n");
+ 			return -1;
+ 		}
++		print_hex_dump_bytes("rates ", DUMP_PREFIX_OFFSET, fp->rates, sizeof(int) * nr_rates);
+ 	} else {
+ 		/* continuous rates */
+ 		fp->rates = SNDRV_PCM_RATE_CONTINUOUS;
+@@ -480,6 +481,7 @@ int snd_usb_parse_audio_format(struct snd_usb_audio *chip, struct audioformat *f
+ 	fp->fmt_type = fmt->bFormatType;
+ 	if (err < 0)
+ 		return err;
++	print_hex_dump_bytes("format ", DUMP_PREFIX_OFFSET, fp, sizeof(*fp));
+ #if 1
+ 	/* FIXME: temporary hack for extigy/audigy 2 nx/zs */
+ 	/* extigy apparently supports sample rates other than 48k
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 9a9da09..6be2bfc 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -142,6 +142,7 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+ 		}
+ 		memcpy(rate_table, fp->rate_table, sizeof(int) * fp->nr_rates);
+ 		fp->rate_table = rate_table;
++		print_hex_dump_bytes("rates ", DUMP_PREFIX_OFFSET, fp->rate_table, sizeof(int) * fp->nr_rates);
  	}
- },
- {
--	USB_DEVICE(0x0763, 0x2080),
--	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-+		USB_DEVICE(0x0763, 0x2080),
-+		.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
- 		/* .vendor_name = "M-Audio", */
--		/* .product_name = "Fast Track Ultra 8", */
-+		/* .product_name = "Fast Track Ultra", */
- 		.ifnum = QUIRK_ANY_INTERFACE,
- 		.type = QUIRK_COMPOSITE,
- 		.data = & (const struct snd_usb_audio_quirk[]) {
-@@ -1840,11 +1840,51 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 			},
- 			{
- 				.ifnum = 1,
--				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = & (const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
-+					.channels = 8,
-+					.iface = 1,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
-+					.endpoint = 0x01,
-+					.ep_attr = 0x09,
-+					.rates = SNDRV_PCM_RATE_44100 |
-+						SNDRV_PCM_RATE_48000 |
-+						SNDRV_PCM_RATE_88200 |
-+						SNDRV_PCM_RATE_96000,
-+					.rate_min = 44100,
-+					.rate_max = 96000,
-+					.nr_rates = 4,
-+					.rate_table = (unsigned int[]) {
-+						44100, 48000, 88200, 96000
-+					}
-+				}
- 			},
- 			{
- 				.ifnum = 2,
--				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = & (const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
-+					.channels = 8,
-+					.iface = 2,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
-+					.endpoint = 0x81,
-+					.ep_attr = 0x05,
-+					.rates = SNDRV_PCM_RATE_44100 |
-+						SNDRV_PCM_RATE_48000 |
-+						SNDRV_PCM_RATE_88200 |
-+						SNDRV_PCM_RATE_96000,
-+					.rate_min = 44100,
-+					.rate_max = 96000,
-+					.nr_rates = 4,
-+					.rate_table = (unsigned int[]) {
-+						44100, 48000, 88200, 96000
-+					}
-+				}
- 			},
- 			/* interface 3 (MIDI) is standard compliant */
- 			{
-@@ -1855,7 +1895,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- },
- {
- 	USB_DEVICE(0x0763, 0x2081),
--	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-+		.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
- 		/* .vendor_name = "M-Audio", */
- 		/* .product_name = "Fast Track Ultra 8R", */
- 		.ifnum = QUIRK_ANY_INTERFACE,
-@@ -1867,11 +1907,51 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 			},
- 			{
- 				.ifnum = 1,
--				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = & (const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
-+					.channels = 8,
-+					.iface = 1,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
-+					.endpoint = 0x01,
-+					.ep_attr = 0x01,
-+					.rates = SNDRV_PCM_RATE_44100 |
-+						SNDRV_PCM_RATE_48000 |
-+						SNDRV_PCM_RATE_88200 |
-+						SNDRV_PCM_RATE_96000,
-+					.rate_min = 44100,
-+					.rate_max = 96000,
-+					.nr_rates = 4,
-+					.rate_table = (unsigned int[]) {
-+							44100, 48000, 88200, 96000
-+					}
-+				}
- 			},
- 			{
- 				.ifnum = 2,
--				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = & (const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
-+					.channels = 8,
-+					.iface = 2,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
-+					.endpoint = 0x81,
-+					.ep_attr = 0x01,
-+					.rates = SNDRV_PCM_RATE_44100 |
-+						SNDRV_PCM_RATE_48000 |
-+						SNDRV_PCM_RATE_88200 |
-+						SNDRV_PCM_RATE_96000,
-+					.rate_min = 44100,
-+					.rate_max = 96000,
-+					.nr_rates = 4,
-+					.rate_table = (unsigned int[]) {
-+						44100, 48000, 88200, 96000
-+					}
-+				}
- 			},
- 			/* interface 3 (MIDI) is standard compliant */
- 			{
--- 
-1.7.1
-
-
---------------090102060507020204090408
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------090102060507020204090408--
+ 
+ 	stream = (fp->endpoint & USB_DIR_IN)
+@@ -161,6 +162,7 @@ static int create_fixed_stream_quirk(struct snd_usb_audio *chip,
+ 	alts = &iface->altsetting[fp->altset_idx];
+ 	fp->datainterval = snd_usb_parse_datainterval(chip, alts);
+ 	fp->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
++	print_hex_dump_bytes("format ", DUMP_PREFIX_OFFSET, fp, sizeof(*fp));
+ 	usb_set_interface(chip->dev, fp->iface, 0);
+ 	snd_usb_init_pitch(chip, fp->iface, alts, fp);
+ 	snd_usb_init_sample_rate(chip, fp->iface, alts, fp, fp->rate_max);
