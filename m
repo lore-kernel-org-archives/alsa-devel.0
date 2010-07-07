@@ -1,34 +1,21 @@
-From: Thierry Reding <thierry.reding@avionic-design.de>
-Subject: [PATCH] alsa-utils: Allow building in subdirectory.
-Date: Wed,  7 Jul 2010 15:54:20 +0200
-Message-ID: <1278510860-14272-1-git-send-email-thierry.reding@avionic-design.de>
+From: Felix Homann <fexpop@web.de>
+Subject: Re: [PATCH - Fix Fast Track Ultra series: 44.1/88.1
+ kHz 1/Fix playback/capture issues and related chrashes at 44100 Hz and
+ 88200 Hz for M-Audio Fast Track Ultra series.
+Date: Wed, 07 Jul 2010 15:59:47 +0200
+Message-ID: <4C348853.6010907@web.de>
+References: <4C32E3B2.5080707@web.de>
+	<4C344340.8060804@web.de>	<4C3476BD.4090702@ladisch.de>
+	<4C347EF7.2030401@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------090102060507020204090408"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.9])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8E646244E4
+Received: from wp188.webpack.hosteurope.de (wp188.webpack.hosteurope.de
+	[80.237.132.195])
+	by alsa0.perex.cz (Postfix) with ESMTP id D3DD2244F1
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jul 2010 15:52:46 +0200 (CEST)
-Received: from mailbox.adnet.avionic-design.de
-	(add-virt-zarafa.adnet.avionic-design.de [172.20.129.9])
-	by benhur.adnet.avionic-design.de (Postfix) with ESMTP id 3FC852C4112
-	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jul 2010 15:52:48 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by mailbox.adnet.avionic-design.de (Postfix) with ESMTP id 48F972A280B8
-	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jul 2010 15:52:45 +0200 (CEST)
-Received: from mailbox.adnet.avionic-design.de ([127.0.0.1])
-	by localhost (mailbox.avionic-design.de [127.0.0.1]) (amavisd-new,
-	port 10024)
-	with ESMTP id XVIgpWar3Cxr for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jul 2010 15:52:45 +0200 (CEST)
-Received: from localhost (avionic-0027.adnet.avionic-design.de [172.20.13.224])
-	(Authenticated sender: thierry.reding)
-	by mailbox.adnet.avionic-design.de (Postfix) with ESMTPA id
-	2326F2A2809C for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jul 2010 15:52:45 +0200 (CEST)
+	Wed,  7 Jul 2010 15:59:48 +0200 (CEST)
+In-Reply-To: <4C347EF7.2030401@web.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -38,46 +25,202 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Felix Homann <fexpop@web.de>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-This patch allows building alsa-utils in a separate subdirectory.
+This is a multi-part message in MIME format.
+--------------090102060507020204090408
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Thierry Reding <thierry.reding@avionic-design.de>
----
- alsactl/Makefile.am   |    2 ++
- alsamixer/Makefile.am |    2 +-
- 2 files changed, 3 insertions(+), 1 deletions(-)
+Hi,
 
-diff --git a/alsactl/Makefile.am b/alsactl/Makefile.am
-index 359f73a..945a54c 100644
---- a/alsactl/Makefile.am
-+++ b/alsactl/Makefile.am
-@@ -1,5 +1,7 @@
- SUBDIRS = init
- 
-+INCLUDES = -I$(top_srcdir)/include
-+
- sbin_PROGRAMS=alsactl
- man_MANS=alsactl.1
- if USE_XMLTO
-diff --git a/alsamixer/Makefile.am b/alsamixer/Makefile.am
-index 1de47c6..d01b1e4 100644
---- a/alsamixer/Makefile.am
-+++ b/alsamixer/Makefile.am
-@@ -1,4 +1,5 @@
- AM_CFLAGS = @CURSES_CFLAGS@ -DCURSESINC="@CURSESINC@"
-+INCLUDES = -I$(top_srcdir)/include
- LDADD = @CURSESLIB@
- 
- bin_PROGRAMS = alsamixer
-@@ -18,7 +19,6 @@ alsamixer_SOURCES = card_select.c card_select.h \
- 		widget.c widget.h
- man_MANS = alsamixer.1
- EXTRA_DIST = alsamixer.1
--alsamixer_INCLUDES = -I$(top_srcdir)/include
- 
- #LDFLAGS = -static
- #CFLAGS += -g -Wall
+here's the hopefully corrected version of the patch.
+
+Furthermore, I got notice from dhubsith that he would sign it of if 
+needed. What do you think?
+
+Kind regards,
+
+Felix
+
+--------------090102060507020204090408
+Content-Type: text/x-patch;
+ name="0001-fix-sample-rates-ftu-UPDATED_AGAIN.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0001-fix-sample-rates-ftu-UPDATED_AGAIN.patch"
+
+>From 1573e7e973e6adcfe39fbfdaae0be2d1a5e01501 Mon Sep 17 00:00:00 2001
+From: Felix Homann <fexpop@web.de>
+Date: Wed, 7 Jul 2010 15:51:58 +0200
+Subject: [PATCH - Fix Fast Track Ultra series 1/1] Fix 44.1/88.1 kHz 1/Fix playback/capture issues and related chrashes at 44100 Hz and 88200 Hz for M-Audio Fast Track Ultra series.
+
+
+Signed-off-by: Felix Homann <fexpop@web.de>
+
+diff --git a/usb/endpoint.c b/usb/endpoint.c
+index 1a701f1..bb9f938 100644
+--- a/usb/endpoint.c
++++ b/usb/endpoint.c
+@@ -404,8 +404,6 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+ 			break;
+ 		case USB_ID(0x041e, 0x3020): /* Creative SB Audigy 2 NX */
+ 		case USB_ID(0x0763, 0x2003): /* M-Audio Audiophile USB */
+-		case USB_ID(0x0763, 0x2080): /* M-Audio Fast Track Ultra 8 */
+-		case USB_ID(0x0763, 0x2081): /* M-Audio Fast Track Ultra 8R */
+ 			/* doesn't set the sample rate attribute, but supports it */
+ 			fp->attributes |= UAC_EP_CS_ATTR_SAMPLE_RATE;
+ 			break;
+diff --git a/usb/quirks-table.h b/usb/quirks-table.h
+index f8797f6..4c1dc12 100644
+--- a/usb/quirks-table.h
++++ b/usb/quirks-table.h
+@@ -1827,10 +1827,10 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 	}
+ },
+ {
+-	USB_DEVICE(0x0763, 0x2080),
+-	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		USB_DEVICE(0x0763, 0x2080),
++		.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+ 		/* .vendor_name = "M-Audio", */
+-		/* .product_name = "Fast Track Ultra 8", */
++		/* .product_name = "Fast Track Ultra", */
+ 		.ifnum = QUIRK_ANY_INTERFACE,
+ 		.type = QUIRK_COMPOSITE,
+ 		.data = & (const struct snd_usb_audio_quirk[]) {
+@@ -1840,11 +1840,51 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 			},
+ 			{
+ 				.ifnum = 1,
+-				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = & (const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8,
++					.iface = 1,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x01,
++					.ep_attr = 0x09,
++					.rates = SNDRV_PCM_RATE_44100 |
++						SNDRV_PCM_RATE_48000 |
++						SNDRV_PCM_RATE_88200 |
++						SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 4,
++					.rate_table = (unsigned int[]) {
++						44100, 48000, 88200, 96000
++					}
++				}
+ 			},
+ 			{
+ 				.ifnum = 2,
+-				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = & (const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8,
++					.iface = 2,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x81,
++					.ep_attr = 0x05,
++					.rates = SNDRV_PCM_RATE_44100 |
++						SNDRV_PCM_RATE_48000 |
++						SNDRV_PCM_RATE_88200 |
++						SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 4,
++					.rate_table = (unsigned int[]) {
++						44100, 48000, 88200, 96000
++					}
++				}
+ 			},
+ 			/* interface 3 (MIDI) is standard compliant */
+ 			{
+@@ -1855,7 +1895,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ },
+ {
+ 	USB_DEVICE(0x0763, 0x2081),
+-	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+ 		/* .vendor_name = "M-Audio", */
+ 		/* .product_name = "Fast Track Ultra 8R", */
+ 		.ifnum = QUIRK_ANY_INTERFACE,
+@@ -1867,11 +1907,51 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 			},
+ 			{
+ 				.ifnum = 1,
+-				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = & (const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8,
++					.iface = 1,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x01,
++					.ep_attr = 0x01,
++					.rates = SNDRV_PCM_RATE_44100 |
++						SNDRV_PCM_RATE_48000 |
++						SNDRV_PCM_RATE_88200 |
++						SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 4,
++					.rate_table = (unsigned int[]) {
++							44100, 48000, 88200, 96000
++					}
++				}
+ 			},
+ 			{
+ 				.ifnum = 2,
+-				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = & (const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8,
++					.iface = 2,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x81,
++					.ep_attr = 0x01,
++					.rates = SNDRV_PCM_RATE_44100 |
++						SNDRV_PCM_RATE_48000 |
++						SNDRV_PCM_RATE_88200 |
++						SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 4,
++					.rate_table = (unsigned int[]) {
++						44100, 48000, 88200, 96000
++					}
++				}
+ 			},
+ 			/* interface 3 (MIDI) is standard compliant */
+ 			{
 -- 
 1.7.1
+
+
+--------------090102060507020204090408
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------090102060507020204090408--
