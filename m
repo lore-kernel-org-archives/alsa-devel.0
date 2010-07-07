@@ -1,21 +1,21 @@
-From: Adish Kuvelker <adkuvi@gmail.com>
-Subject: Re: Problems running "amixer"
-Date: Wed, 7 Jul 2010 18:43:00 +0530
-Message-ID: <AANLkTikvbxebpDbMl_3ui9TOmF4glhhJRT31-fQhXHCW@mail.gmail.com>
-References: <AANLkTinSa0nOGY0OQDdjRaPZFES9QM-5zr_F3ZwIxCEw@mail.gmail.com>
-	<4C347742.3050404@ladisch.de>
-	<AANLkTikQfdPuAGwPyq4j1Syi9iiBgj-MzLmPEiAy2lYc@mail.gmail.com>
+From: Felix Homann <fexpop@web.de>
+Subject: Re: [PATCH - Fix Fast Track Ultra series: 44.1/88.1
+ kHz 1/Fix playback/capture issues and related chrashes at 44100 Hz and
+ 88200 Hz for M-Audio Fast Track Ultra series.
+Date: Wed, 07 Jul 2010 15:19:51 +0200
+Message-ID: <4C347EF7.2030401@web.de>
+References: <4C32E3B2.5080707@web.de> <4C344340.8060804@web.de>
+	<4C3476BD.4090702@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 74772244BF
+Received: from wp188.webpack.hosteurope.de (wp188.webpack.hosteurope.de
+	[80.237.132.195])
+	by alsa0.perex.cz (Postfix) with ESMTP id AB3D5244C3
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jul 2010 15:13:02 +0200 (CEST)
-Received: by vws9 with SMTP id 9so5400514vws.38
-	for <alsa-devel@alsa-project.org>; Wed, 07 Jul 2010 06:13:00 -0700 (PDT)
-In-Reply-To: <AANLkTikQfdPuAGwPyq4j1Syi9iiBgj-MzLmPEiAy2lYc@mail.gmail.com>
+	Wed,  7 Jul 2010 15:19:52 +0200 (CEST)
+In-Reply-To: <4C3476BD.4090702@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,64 +26,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Cc: Felix Homann <fexpop@web.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Am 07.07.2010 14:44, schrieb Clemens Ladisch:
+> The descriptors already list these rates, so in theory, the existing
+> code that sets UAC_EP_CS_ATTR_SAMPLE_RATE should already have enabled
+> this.  Didn't it?  In other words, what is the difference in the
+> explicitly specified audioformat?
 
-I don't have this file ".asoundrc" in my ramdisk. Do I need this?
+I can only tell you the difference to the behaviour of latest git Alsa 
+before this patch:
 
-Regards
-Aadish
+44100 and 88200 Hz had already been enabled. But the device could not 
+properly be used at these sampling rates. Everything would sound 
+distorted. After a while of running the device at these sample rates, my 
+systems had a tendency to crash/freeze.
 
-On Wed, Jul 7, 2010 at 6:38 PM, Adish Kuvelker <adkuvi@gmail.com> wrote:
-> Hello Clemens,
+> (I have the suspicion that we don't actually need a AUDIO_FIXED_ENDPOINT
+> quirk for these devices.)
 >
-> I have the "alsa" folder with the files alsa.conf. My "amixer" utility
-> has been copied under "/bin".
-> I followed a mail thread which said to load "share" folder under
-> "/usr". But even with this the problem persisted.
+>    
+
+Something must be in this AUDIO_FIXED_ENDPOINT quirk, since the device 
+now works properly and stable @44.1/88.2 kHz. I don't know the exact 
+reason, since I really don't understand all this stuff. I just have this 
+device and try to fix it's behaviour.
+
+>> * apparently, fixes some crashes, too
+>>      
+> When do these crashes happen?
+>    
+
+See above: System crashes occured when using the device at 44.1/88.2 kHz.
+
+> If you don't have the exclusive copyright for the code in this patch,
+> there needs to be a Signed-off-by line from him, too.  OTOH, a table
+> like this probably isn't copyrightable at all.
+>    
+
+If the patch is copyrightable then its copyright belongs to you: The 
+patch I send some time ago to enable basic support for these devices was 
+an updated version of *your* patch send some time ago to a mailing list. 
+The patch dhubsith posted was explicitly based on existing code in 
+quirks-table.h and the existing quirk.
+
+Take a look at the entry for the Digidesign Mbox (credited to you): It's 
+essentially the same.
+
+>> -	USB_DEVICE(0x0763, 0x2080),
+>> +		USB_DEVICE(0x0763, 0x2081),
+>> ...
+>>      
+> This replaces the ID of the Ultra 8 ID with that of the Ultra 8R ...
+>    
+
+Ooops. I've messed it up... (I've just got the 8R version so I didn't 
+notice...)
+
+>>   	USB_DEVICE(0x0763, 0x2081),
+>> -	.driver_info = ...
+>> +		.driver_info = ...
+>>      
+> ... and this just changes the other 8R entry.  So now the 8 doesn't
+> have an entry.
 >
-> I'm just pasting here the contents of my /usr/share
-> # ls share/
-> aclocal =A0alsa =A0 =A0 locale
-> # ls -la share/alsa/
-> drwxr-xr-x =A0 =A04 root =A0 =A0 root =A0 =A0 =A0 =A0 1024 May 12 =A02010=
- .
-> drwxr-xr-x =A0 =A05 root =A0 =A0 root =A0 =A0 =A0 =A0 1024 May 12 =A02010=
- ..
-> -rw-r--r-- =A0 =A01 root =A0 =A0 root =A0 =A0 =A0 =A0 7701 May 12 =A02010=
- alsa.conf
-> drwxr-xr-x =A0 =A03 root =A0 =A0 root =A0 =A0 =A0 =A0 2048 May 12 =A02010=
- cards
-> drwxr-xr-x =A0 =A02 root =A0 =A0 root =A0 =A0 =A0 =A0 1024 May 12 =A02010=
- pcm
-> -rw-r--r-- =A0 =A01 root =A0 =A0 root =A0 =A0 =A0 =A0 3205 May 12 =A02010=
- sndo-mixer.alisp
->
->
->
->
-> Just to make sure, do I have to install my entire staging area created
-> through install of alsa-lib and alsa-utils in to the /usr/share?
->
-> Regards;
-> Aadish
->
->
->
->
-> On Wed, Jul 7, 2010 at 6:16 PM, Clemens Ladisch <clemens@ladisch.de> wrot=
-e:
->> Adish Kuvelker wrote:
->>> # ./amixer
->>> ALSA lib control.c:910:(snd_ctl_open_noupdate) Invalid CTL default
->>
->> Apparently, alsa-lib has not been installed correctly, i.e.,
->> /usr/share/alsa/alsa.conf and other files in this directory are missing.
->>
->>
->> Regards,
->> Clemens
->>
->
+>    
+
+Actually both quirk blocks shoud be the same except for the USB_DEVICE 
+lines:
+
+USB_DEVICE(0x0763, 0x2080) <- Fast Track Ultra
+USB_DEVICE(0x0763, 0x2081) <- Fast Track Ultra 8R
+
+(Actually there's no "Fast Track Ultra 8")
+
+
+Sorry for having messed the patch up and sending it too soon. Shall I 
+send a new patch, or would you consider manually editing it yourself 
+before eventually putting it into git?
+
+Kind regards,
+
+Felix
