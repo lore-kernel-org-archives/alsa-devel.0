@@ -1,22 +1,14 @@
-From: melwyn lobo <linux.melwyn@gmail.com>
-Subject: Re: XRUN handling
-Date: Wed, 7 Jul 2010 13:41:53 +0530
-Message-ID: <AANLkTinwkbuyFBxGAABNKaY_CVxK4OedlPHnY2NOf8ck@mail.gmail.com>
-References: <AANLkTim_2xOjhFHcfyMvgceAQZEauWYIbY8QV-0jnBWw@mail.gmail.com>
-	<AANLkTikRHAHhDXEEcejT5BqiJXiIaQX-lhg3zqTljcnq@mail.gmail.com>
-	<AANLkTim93O9PgptYEdBkAf_x7reIf_1DxbHCYjLdfVLB@mail.gmail.com>
-	<alpine.LNX.2.00.1007062034050.15497@eeebox2.perex-int.cz>
+From: Felix Homann <fexpop@web.de>
+Subject: Re: [PATCH - Fix Fast Track Ultra series: 44.1/88.1
+ kHz 1/Fix playback/capture issues and related chrashes at 44100 Hz and
+ 88200 Hz for M-Audio Fast Track Ultra series.
+Date: Wed, 07 Jul 2010 11:05:04 +0200
+Message-ID: <4C344340.8060804@web.de>
+References: <4C32E3B2.5080707@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------040009020804090202030406"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id AEB6C243C1
-	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jul 2010 10:11:55 +0200 (CEST)
-Received: by vws9 with SMTP id 9so5101939vws.38
-	for <alsa-devel@alsa-project.org>; Wed, 07 Jul 2010 01:11:54 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.1007062034050.15497@eeebox2.perex-int.cz>
+In-Reply-To: <4C32E3B2.5080707@web.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,54 +18,211 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
+To: Felix Homann <fexpop@web.de>
+Cc: alsa-devel@alsa-project.org, patch@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 7, 2010 at 12:09 AM, Jaroslav Kysela <perex@perex.cz> wrote:
-> On Tue, 6 Jul 2010, melwyn lobo wrote:
->
->> done away with by using silence_size and silence_threshold. And if the
->> application still does not get processor time for some reason, the
->> hw_ptr will overrun the appl_ptr by more than buffer_size and trigger
->> a bug in snd_pcm_playback_silence().
->
-> Could you fix (send us a patch) or describe exactly this problem?
+This is a multi-part message in MIME format.
+--------------040009020804090202030406
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Yes. It occurs in a loaded system. The hardware runs continously and
-eventually underruns (stop_threshold trigger does not
-occur because of its large value).
-Eventually due to silence_threshold, silence_size setting,
-snd_pcm_playback_silence() attempts to continously append
-silence.
-The function snd_pcm_playback_hw_avail(runtime) returns negative
-values. Now consider the code fragment;
-noise_dist = snd_pcm_playback_hw_avail(runtime) + runtime->silence_filled;
+Hi,
 
-                if (noise_dist >= (snd_pcm_sframes_t)
-runtime->silence_threshold)
-                        return;
-                frames = runtime->silence_threshold - noise_dist;
+Here's a slightly updated version of the patch. It does essentially the 
+same as the former one but sets the capture endpoint attribute to 
+'async' and the playback endpoint to 'adaptive'.
 
-which makes at some point frames > runtime->buffer_size and triggers
+Kind regards,
 
-  if (snd_BUG_ON(frames > runtime->buffer_size))
-                return;
+Felix
 
-This is my analysis as I can see the above statement getting executed.
-For this, the solution implemented in the driver, is to eventually
-stop the infinite DMA when appl_ptr <= hw_ptr.
+Am 06.07.2010 10:05, schrieb Felix Homann:
+> This fixes issues with M-Audio's Fast Track Ultra series:
 >
->                                        Jaroslav
->
-> -----
-> Jaroslav Kysela <perex@perex.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, Red Hat, Inc.
->
+> * devices now work at 44100 and 88200 Hz
+> * apparently, fixes some crashes, too
 >
 
-Regards,
-M.
-Regards,
-M.
+
+
+--------------040009020804090202030406
+Content-Type: text/x-patch;
+ name="0001-fix-sample-rates-ftu-UPDATED.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0001-fix-sample-rates-ftu-UPDATED.patch"
+
+>From 57cd7afd0b0fbccd80acab16e617cf8a844e37d1 Mon Sep 17 00:00:00 2001
+From: Felix <fexpop@web.de>
+Date: Tue, 6 Jul 2010 09:16:17 +0200
+Subject: [PATCH - Fix Fast Track Ultra series: 44.1/88.1 kHz 1/Fix playback/capture issues and related chrashes at 44100 Hz and 88200 Hz for M-Audio Fast Track Ultra series.
+
+
+Signed-off-by: Felix <fexpop@web.de>
+
+diff --git a/usb/endpoint.c b/usb/endpoint.c
+index 1a701f1..bb9f938 100644
+--- a/usb/endpoint.c
++++ b/usb/endpoint.c
+@@ -404,8 +404,6 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+ 			break;
+ 		case USB_ID(0x041e, 0x3020): /* Creative SB Audigy 2 NX */
+ 		case USB_ID(0x0763, 0x2003): /* M-Audio Audiophile USB */
+-		case USB_ID(0x0763, 0x2080): /* M-Audio Fast Track Ultra 8 */
+-		case USB_ID(0x0763, 0x2081): /* M-Audio Fast Track Ultra 8R */
+ 			/* doesn't set the sample rate attribute, but supports it */
+ 			fp->attributes |= UAC_EP_CS_ATTR_SAMPLE_RATE;
+ 			break;
+diff --git a/usb/quirks-table.h b/usb/quirks-table.h
+index f8797f6..af9c2a1 100644
+--- a/usb/quirks-table.h
++++ b/usb/quirks-table.h
+@@ -1827,10 +1827,10 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 	}
+ },
+ {
+-	USB_DEVICE(0x0763, 0x2080),
+-	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		USB_DEVICE(0x0763, 0x2081),
++		.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+ 		/* .vendor_name = "M-Audio", */
+-		/* .product_name = "Fast Track Ultra 8", */
++		/* .product_name = "Fast Track Ultra", */
+ 		.ifnum = QUIRK_ANY_INTERFACE,
+ 		.type = QUIRK_COMPOSITE,
+ 		.data = & (const struct snd_usb_audio_quirk[]) {
+@@ -1840,11 +1840,51 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 			},
+ 			{
+ 				.ifnum = 1,
+-				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = & (const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8,
++					.iface = 1,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x01,
++					.ep_attr = 0x09,
++					.rates = SNDRV_PCM_RATE_44100 |
++						SNDRV_PCM_RATE_48000 |
++						SNDRV_PCM_RATE_88200 |
++						SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 4,
++					.rate_table = (unsigned int[]) {
++						44100, 48000, 88200, 96000
++					}
++				}
+ 			},
+ 			{
+ 				.ifnum = 2,
+-				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = & (const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8,
++					.iface = 2,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x81,
++					.ep_attr = 0x05,
++					.rates = SNDRV_PCM_RATE_44100 |
++						SNDRV_PCM_RATE_48000 |
++						SNDRV_PCM_RATE_88200 |
++						SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 4,
++					.rate_table = (unsigned int[]) {
++						44100, 48000, 88200, 96000
++					}
++				}
+ 			},
+ 			/* interface 3 (MIDI) is standard compliant */
+ 			{
+@@ -1855,7 +1895,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ },
+ {
+ 	USB_DEVICE(0x0763, 0x2081),
+-	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+ 		/* .vendor_name = "M-Audio", */
+ 		/* .product_name = "Fast Track Ultra 8R", */
+ 		.ifnum = QUIRK_ANY_INTERFACE,
+@@ -1867,11 +1907,51 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 			},
+ 			{
+ 				.ifnum = 1,
+-				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = & (const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8,
++					.iface = 1,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x01,
++					.ep_attr = 0x01,
++					.rates = SNDRV_PCM_RATE_44100 |
++						SNDRV_PCM_RATE_48000 |
++						SNDRV_PCM_RATE_88200 |
++						SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 4,
++					.rate_table = (unsigned int[]) {
++							44100, 48000, 88200, 96000
++					}
++				}
+ 			},
+ 			{
+ 				.ifnum = 2,
+-				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = & (const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8,
++					.iface = 2,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x81,
++					.ep_attr = 0x01,
++					.rates = SNDRV_PCM_RATE_44100 |
++						SNDRV_PCM_RATE_48000 |
++						SNDRV_PCM_RATE_88200 |
++						SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 4,
++					.rate_table = (unsigned int[]) {
++						44100, 48000, 88200, 96000
++					}
++				}
+ 			},
+ 			/* interface 3 (MIDI) is standard compliant */
+ 			{
+-- 
+1.7.0.4
+
+
+
+--------------040009020804090202030406
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------040009020804090202030406--
