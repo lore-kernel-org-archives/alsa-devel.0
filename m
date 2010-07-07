@@ -1,18 +1,34 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: SAMSUNG: Add Aquila sound driver
-Date: Wed, 7 Jul 2010 22:36:44 +0900
-Message-ID: <20100707133642.GA11183@opensource.wolfsonmicro.com>
-References: <4C343DBA.1040107@samsung.com>
+From: Thierry Reding <thierry.reding@avionic-design.de>
+Subject: [PATCH] alsa-utils: Allow building in subdirectory.
+Date: Wed,  7 Jul 2010 15:54:20 +0200
+Message-ID: <1278510860-14272-1-git-send-email-thierry.reding@avionic-design.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6CFDB244D8
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.9])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8E646244E4
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Jul 2010 15:36:38 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4C343DBA.1040107@samsung.com>
+	Wed,  7 Jul 2010 15:52:46 +0200 (CEST)
+Received: from mailbox.adnet.avionic-design.de
+	(add-virt-zarafa.adnet.avionic-design.de [172.20.129.9])
+	by benhur.adnet.avionic-design.de (Postfix) with ESMTP id 3FC852C4112
+	for <alsa-devel@alsa-project.org>;
+	Wed,  7 Jul 2010 15:52:48 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by mailbox.adnet.avionic-design.de (Postfix) with ESMTP id 48F972A280B8
+	for <alsa-devel@alsa-project.org>;
+	Wed,  7 Jul 2010 15:52:45 +0200 (CEST)
+Received: from mailbox.adnet.avionic-design.de ([127.0.0.1])
+	by localhost (mailbox.avionic-design.de [127.0.0.1]) (amavisd-new,
+	port 10024)
+	with ESMTP id XVIgpWar3Cxr for <alsa-devel@alsa-project.org>;
+	Wed,  7 Jul 2010 15:52:45 +0200 (CEST)
+Received: from localhost (avionic-0027.adnet.avionic-design.de [172.20.13.224])
+	(Authenticated sender: thierry.reding)
+	by mailbox.adnet.avionic-design.de (Postfix) with ESMTPA id
+	2326F2A2809C for <alsa-devel@alsa-project.org>;
+	Wed,  7 Jul 2010 15:52:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,19 +38,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?utf-8?B?7LWc7LCs7Jqw?= <cw00.choi@samsung.com>
-Cc: alsa-devel@alsa-project.org, =?utf-8?B?67CV6rK966+8?= <kyungmin.park@samsung.com>, =?utf-8?B?7Ius7KSA7JiB?= <jy0922.shim@samsung.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBKdWwgMDcsIDIwMTAgYXQgMDU6NDE6MzBQTSArMDkwMCwg7LWc7LCs7JqwIHdyb3Rl
-OgoKPiArc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IGFxdWlsYV9jb250cm9s
-c1tdID0gewo+ICt9OwoKVGhpcyBzaG91bGQgYmUgcmVtb3ZlZCB1bnRpbCB0aGVyZSBhcmUgY29u
-dHJvbHMgdG8gZ28gaW4gaXQuCgo+ICtzdGF0aWMgaW50IGFxdWlsYV93bTg5OTRfaW5pdChzdHJ1
-Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMpCj4gK3sKPiArCWludCByZXQ7Cj4gKwl1bnNpZ25lZCBp
-bnQgcmVnOwoKSXQnZCBwcm9iYWJseSBiZSB1c2VmdWwgdG8gbGlzdCBhbnkgdW5jb25uZWN0ZWQg
-cGlucyBoZXJlIChpZiB0aGVyZSBhcmUKYW55KSB1c2luZyBzbmRfc29jX25jX3BpbigpLgoKT3Ro
-ZXJ3aXNlIHRoaXMgYWxsIGxvb2tzIHZlcnkgZ29vZCAtIHlvdSBzaG91bGQgcHJvYmFibHkgYWxz
-byBpbmNsdWRlIGEKc2lnbm9mZiBmcm9tIE1yLiBTaGltLCBJIGd1ZXNzLgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+This patch allows building alsa-utils in a separate subdirectory.
+
+Signed-off-by: Thierry Reding <thierry.reding@avionic-design.de>
+---
+ alsactl/Makefile.am   |    2 ++
+ alsamixer/Makefile.am |    2 +-
+ 2 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/alsactl/Makefile.am b/alsactl/Makefile.am
+index 359f73a..945a54c 100644
+--- a/alsactl/Makefile.am
++++ b/alsactl/Makefile.am
+@@ -1,5 +1,7 @@
+ SUBDIRS = init
+ 
++INCLUDES = -I$(top_srcdir)/include
++
+ sbin_PROGRAMS=alsactl
+ man_MANS=alsactl.1
+ if USE_XMLTO
+diff --git a/alsamixer/Makefile.am b/alsamixer/Makefile.am
+index 1de47c6..d01b1e4 100644
+--- a/alsamixer/Makefile.am
++++ b/alsamixer/Makefile.am
+@@ -1,4 +1,5 @@
+ AM_CFLAGS = @CURSES_CFLAGS@ -DCURSESINC="@CURSESINC@"
++INCLUDES = -I$(top_srcdir)/include
+ LDADD = @CURSESLIB@
+ 
+ bin_PROGRAMS = alsamixer
+@@ -18,7 +19,6 @@ alsamixer_SOURCES = card_select.c card_select.h \
+ 		widget.c widget.h
+ man_MANS = alsamixer.1
+ EXTRA_DIST = alsamixer.1
+-alsamixer_INCLUDES = -I$(top_srcdir)/include
+ 
+ #LDFLAGS = -static
+ #CFLAGS += -g -Wall
+-- 
+1.7.1
