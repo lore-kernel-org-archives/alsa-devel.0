@@ -1,27 +1,22 @@
-From: Chanwoo Choi <cw00.choi@samsung.com>
+From: Jassi Brar <jassisinghbrar@gmail.com>
 Subject: Re: [PATCH] ASoC: SAMSUNG: Add Aquila sound driver
-Date: Thu, 08 Jul 2010 17:10:47 +0900
-Message-ID: <4C358807.1000502@samsung.com>
+Date: Thu, 8 Jul 2010 17:19:15 +0900
+Message-ID: <AANLkTinKT2LvSrfcI2-aw2iXnnCe1R_jCfq09rxlNa3x@mail.gmail.com>
 References: <4C355AC2.8090502@samsung.com>
 	<AANLkTikHkQfmD5GPL9D-kbL7SuNksNA9tbhvoDqBeuur@mail.gmail.com>
+	<4C358807.1000502@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8639810386B
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 07DD4103880
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Jul 2010 10:10:50 +0200 (CEST)
-Received: from epmmp1 (mailout2.samsung.com [203.254.224.25])
-	by mailout2.samsung.com
-	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
-	2010)) with ESMTP id <0L58006OVC1ZRE80@mailout2.samsung.com> for
-	alsa-devel@alsa-project.org; Thu, 08 Jul 2010 17:10:47 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0L5800AIXC1Z4G@mmp1.samsung.com> for
-	alsa-devel@alsa-project.org; Thu, 08 Jul 2010 17:10:47 +0900 (KST)
-In-reply-to: <AANLkTikHkQfmD5GPL9D-kbL7SuNksNA9tbhvoDqBeuur@mail.gmail.com>
+	Thu,  8 Jul 2010 10:19:16 +0200 (CEST)
+Received: by vws9 with SMTP id 9so770843vws.38
+	for <alsa-devel@alsa-project.org>; Thu, 08 Jul 2010 01:19:15 -0700 (PDT)
+In-Reply-To: <4C358807.1000502@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,73 +26,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
+To: Chanwoo Choi <cw00.choi@samsung.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Kyungmin Park <kyungmin.park@samsung.com>, Joonyoung Shim <jy0922.shim@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Jassi Brar wrote:
-> On Thu, Jul 8, 2010 at 1:57 PM, Chanwoo Choi <cw00.choi@samsung.com> wrote:
->> This patch add sound support for the Aquila board based on S5PC110.
->>
->> The Aquila board is based on Samsung SoC(S5PC110) and include
->> WM8994 codec over I2Sv5 to support sound. As there is currently
->> no driver for the I2Sv5, the code to use I2Sv5 is deleted
->> on this patch.
->>
->> After I2Sv5 driver is posted in a few weeks, I will post incremental
->> patch which some codes for using I2Sv5. The owner of I2Sv5 said that
->> he will post I2Sv5 driver after a few weeks.
-> 
-> I don't plan to create a copy of an almost copy of s3c64xx-i2s.c
-> Please try to use the existing sound/soc/s3c24xx/s3c64xx-i2s-v4.c
-> I intend to only enhance that code to enable features of 'v4', 'v5' etc.
-> 
-
-As your comment, I did modify some codes to use sound/soc/s3c24xx/
-s3c64xx-i2s-v4.c instead of I2Sv5. When I try to compile kernel 
-with arch/arm/configs/s5pv210_defconfig.
-
-diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
-index 0c5d8a5..c09b402 100644
---- a/sound/soc/s3c24xx/Kconfig
-+++ b/sound/soc/s3c24xx/Kconfig
-@@ -135,6 +135,7 @@ config SND_S3C64XX_SOC_SMARTQ
- config SND_S5PC110_SOC_AQUILA_WM8994
- 	tristate "SoC I2S Audio support for AQUILA - WM8994"
- 	depends on SND_S3C24XX_SOC && MACH_AQUILA
-+	select SND_S3C64XX_SOC_I2S_V4
- 	select SND_SOC_WM8994
- 	help
- 	  Say Y if you want to add support for SoC audio on aquila
-diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/s3c24xx/s3c-i2s-v2.c
-index 13311c8..64376b2 100644
---- a/sound/soc/s3c24xx/s3c-i2s-v2.c
-+++ b/sound/soc/s3c24xx/s3c-i2s-v2.c
-@@ -32,7 +32,8 @@
- 
- #undef S3C_IIS_V2_SUPPORTED
- 
--#if defined(CONFIG_CPU_S3C2412) || defined(CONFIG_CPU_S3C2413)
-+#if defined(CONFIG_CPU_S3C2412) || defined(CONFIG_CPU_S3C2413) \
-+	|| defined(CONFIG_CPU_S5PV210)
- #define S3C_IIS_V2_SUPPORTED
- #endif
- 
-
-When compiling kernel, it is occurred below error because 
-arch/arm/mach-s5pv210/include/mach/gpio-bank-*.h file 
-isn't included to upstream kernel.
-
-sound/soc/s3c34xx/s3c64xx-i2s-v4.c included the header files
-in arch/arm/mach-s3c64xx/include/*.
-
-What is your opinion for this error?
-
-- compile error log :
-CHK     include/generated/compile.h
-CC      sound/soc/s3c24xx/s3c64xx-i2s-v4.o
-sound/soc/s3c24xx/s3c64xx-i2s-v4.c:19: fatal error:mach/gpio-bank-c.h:
- No such file or directory
-
-Thank you,
-Chanwoo Choi
+T24gVGh1LCBKdWwgOCwgMjAxMCBhdCA1OjEwIFBNLCBDaGFud29vIENob2kgPGN3MDAuY2hvaUBz
+YW1zdW5nLmNvbT4gd3JvdGU6Cj4gSmFzc2kgQnJhciB3cm90ZToKPj4gT24gVGh1LCBKdWwgOCwg
+MjAxMCBhdCAxOjU3IFBNLCBDaGFud29vIENob2kgPGN3MDAuY2hvaUBzYW1zdW5nLmNvbT4gd3Jv
+dGU6Cj4+PiBUaGlzIHBhdGNoIGFkZCBzb3VuZCBzdXBwb3J0IGZvciB0aGUgQXF1aWxhIGJvYXJk
+IGJhc2VkIG9uIFM1UEMxMTAuCj4+Pgo+Pj4gVGhlIEFxdWlsYSBib2FyZCBpcyBiYXNlZCBvbiBT
+YW1zdW5nIFNvQyhTNVBDMTEwKSBhbmQgaW5jbHVkZQo+Pj4gV004OTk0IGNvZGVjIG92ZXIgSTJT
+djUgdG8gc3VwcG9ydCBzb3VuZC4gQXMgdGhlcmUgaXMgY3VycmVudGx5Cj4+PiBubyBkcml2ZXIg
+Zm9yIHRoZSBJMlN2NSwgdGhlIGNvZGUgdG8gdXNlIEkyU3Y1IGlzIGRlbGV0ZWQKPj4+IG9uIHRo
+aXMgcGF0Y2guCj4+Pgo+Pj4gQWZ0ZXIgSTJTdjUgZHJpdmVyIGlzIHBvc3RlZCBpbiBhIGZldyB3
+ZWVrcywgSSB3aWxsIHBvc3QgaW5jcmVtZW50YWwKPj4+IHBhdGNoIHdoaWNoIHNvbWUgY29kZXMg
+Zm9yIHVzaW5nIEkyU3Y1LiBUaGUgb3duZXIgb2YgSTJTdjUgc2FpZCB0aGF0Cj4+PiBoZSB3aWxs
+IHBvc3QgSTJTdjUgZHJpdmVyIGFmdGVyIGEgZmV3IHdlZWtzLgo+Pgo+PiBJIGRvbid0IHBsYW4g
+dG8gY3JlYXRlIGEgY29weSBvZiBhbiBhbG1vc3QgY29weSBvZiBzM2M2NHh4LWkycy5jCj4+IFBs
+ZWFzZSB0cnkgdG8gdXNlIHRoZSBleGlzdGluZyBzb3VuZC9zb2MvczNjMjR4eC9zM2M2NHh4LWky
+cy12NC5jCj4+IEkgaW50ZW5kIHRvIG9ubHkgZW5oYW5jZSB0aGF0IGNvZGUgdG8gZW5hYmxlIGZl
+YXR1cmVzIG9mICd2NCcsICd2NScgZXRjLgo+Pgo+Cj4gQXMgeW91ciBjb21tZW50LCBJIGRpZCBt
+b2RpZnkgc29tZSBjb2RlcyB0byB1c2Ugc291bmQvc29jL3MzYzI0eHgvCj4gczNjNjR4eC1pMnMt
+djQuYyBpbnN0ZWFkIG9mIEkyU3Y1LiBXaGVuIEkgdHJ5IHRvIGNvbXBpbGUga2VybmVsCj4gd2l0
+aCBhcmNoL2FybS9jb25maWdzL3M1cHYyMTBfZGVmY29uZmlnLgo+CgouLi4uLgoKPgo+IFdoZW4g
+Y29tcGlsaW5nIGtlcm5lbCwgaXQgaXMgb2NjdXJyZWQgYmVsb3cgZXJyb3IgYmVjYXVzZQo+IGFy
+Y2gvYXJtL21hY2gtczVwdjIxMC9pbmNsdWRlL21hY2gvZ3Bpby1iYW5rLSouaCBmaWxlCj4gaXNu
+J3QgaW5jbHVkZWQgdG8gdXBzdHJlYW0ga2VybmVsLgo+Cj4gc291bmQvc29jL3MzYzM0eHgvczNj
+NjR4eC1pMnMtdjQuYyBpbmNsdWRlZCB0aGUgaGVhZGVyIGZpbGVzCj4gaW4gYXJjaC9hcm0vbWFj
+aC1zM2M2NHh4L2luY2x1ZGUvKi4KPgo+IFdoYXQgaXMgeW91ciBvcGluaW9uIGZvciB0aGlzIGVy
+cm9yPwo+Cj4gLSBjb21waWxlIGVycm9yIGxvZyA6Cj4gQ0hLIMKgIMKgIGluY2x1ZGUvZ2VuZXJh
+dGVkL2NvbXBpbGUuaAo+IENDIMKgIMKgIMKgc291bmQvc29jL3MzYzI0eHgvczNjNjR4eC1pMnMt
+djQubwo+IHNvdW5kL3NvYy9zM2MyNHh4L3MzYzY0eHgtaTJzLXY0LmM6MTk6IGZhdGFsIGVycm9y
+Om1hY2gvZ3Bpby1iYW5rLWMuaDoKPiDCoE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKClRoZSBn
+cGlvIGNvbmZpZyBzdHVmZiBuZWVkcyB0byBiZSByZW1vdmVkIGZyb20gdGhlIENQVSBkcml2ZXIu
+IEl0IHdhcyBwZW5kaW5nCmR1ZSB0byBmZWFyIG9mIGNyb3NzLXRyZWUgbWVyZ2UgaXNzdWVzLiBU
+aGUgcGxhdGZvcm0gc3BlY2lmaWMgY29kZSB0byBkbyB0aGUKc2FtZSBpcyBhbHJlYWR5IHVwc3Ry
+ZWFtIG5vdy4KT25lIGVuZ2luZWVyIGluIG15IHRlYW0gaXMgYWxyZWFkeSBsb29raW5nIGludG8g
+aXQgd2hpbGUgdGVzdGluZwpMaWFtJ3MgbXVsdGktY29kZWMKY2hhbmdlcy4KCj4+IFBsZWFzZSB0
+cnkgdG8gdXNlIHRoZSBleGlzdGluZyBzb3VuZC9zb2MvczNjMjR4eC9zM2M2NHh4LWkycy12NC5j
+Cid0cnkgdG8nIGlzIHRoZSBrZXkgd29yZCBoZXJlLiBUaGUgZHJpdmVyIGlzIG5vdCBleHBlY3Rl
+ZCB0byB3b3JrIHJpZ2h0YXdheS4KT25lIG1pZ2h0IG5lZWQgdG8gbWFrZSBzb21lIGNoYW5nZXMg
+dG8gdGhlIENQVSBkcml2ZXIgdG8ganVzdCBtYWtlIGl0Cndvcmsgb24gcGxhdGZvcm1zIHdpdGgg
+dmVyeSBzaW1pbGFyIElQLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
