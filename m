@@ -1,23 +1,27 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
+From: Chanwoo Choi <cw00.choi@samsung.com>
 Subject: Re: [PATCH] ASoC: SAMSUNG: Add Aquila sound driver
-Date: Fri, 9 Jul 2010 11:17:50 +0900
-Message-ID: <AANLkTikQq1sD6UKJywOTeQ747Dr7hnLxZAY4_fK4gz6n@mail.gmail.com>
+Date: Fri, 09 Jul 2010 11:21:08 +0900
+Message-ID: <4C368794.2040600@samsung.com>
 References: <4C355AC2.8090502@samsung.com>
-	<AANLkTikHkQfmD5GPL9D-kbL7SuNksNA9tbhvoDqBeuur@mail.gmail.com>
-	<4C358807.1000502@samsung.com>
-	<AANLkTinKT2LvSrfcI2-aw2iXnnCe1R_jCfq09rxlNa3x@mail.gmail.com>
-	<4C367630.3090607@samsung.com>
+	<20100708070549.GA29850@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 4F1322443A
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5134B24452
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Jul 2010 04:17:51 +0200 (CEST)
-Received: by vws9 with SMTP id 9so1863377vws.38
-	for <alsa-devel@alsa-project.org>; Thu, 08 Jul 2010 19:17:50 -0700 (PDT)
-In-Reply-To: <4C367630.3090607@samsung.com>
+	Fri,  9 Jul 2010 04:21:11 +0200 (CEST)
+Received: from epmmp2 (mailout2.samsung.com [203.254.224.25])
+	by mailout2.samsung.com
+	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
+	2010)) with ESMTP id <0L5900MNAQJ88IB0@mailout2.samsung.com> for
+	alsa-devel@alsa-project.org; Fri, 09 Jul 2010 11:21:08 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0L59009VIQJ85P@mmp2.samsung.com> for
+	alsa-devel@alsa-project.org; Fri, 09 Jul 2010 11:21:08 +0900 (KST)
+In-reply-to: <20100708070549.GA29850@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,37 +31,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Chanwoo Choi <cw00.choi@samsung.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Kyungmin Park <kyungmin.park@samsung.com>, Joonyoung Shim <jy0922.shim@samsung.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Chanwoo Choi <cw00.choi@samsung.com>, alsa-devel@alsa-project.org, Kyungmin Park <kyungmin.park@samsung.com>, Joonyoung Shim <jy0922.shim@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBKdWwgOSwgMjAxMCBhdCAxMDowNiBBTSwgQ2hhbndvbyBDaG9pIDxjdzAwLmNob2lA
-c2Ftc3VuZy5jb20+IHdyb3RlOgo+IEphc3NpIEJyYXIgd3JvdGU6Cj4gwqA+IFRoZSBncGlvIGNv
-bmZpZyBzdHVmZiBuZWVkcyB0byBiZSByZW1vdmVkIGZyb20gdGhlIENQVSBkcml2ZXIuIEl0IHdh
-cyBwZW5kaW5nCj4+IGR1ZSB0byBmZWFyIG9mIGNyb3NzLXRyZWUgbWVyZ2UgaXNzdWVzLiBUaGUg
-cGxhdGZvcm0gc3BlY2lmaWMgY29kZSB0byBkbyB0aGUKPj4gc2FtZSBpcyBhbHJlYWR5IHVwc3Ry
-ZWFtIG5vdy4KPgo+IFdoYXQgaXMgInBsYXRmb3JtIHNwZWNpZmljIGNvZGUgdG8gdGhlIHNhbWUi
-ID8KSGF2ZSBhIGxvb2sgYXQgYXJjaC9hcm0vbWFjaC1zM2M2NHh4L2Rldi1hdWRpby5jIHdoaWNo
-IGhhcyB2YXJpb3VzCmNmZ19ncGlvIGNhbGxiYWNrIGZ1bmN0aW9ucy4KCgo+PiBPbmUgZW5naW5l
-ZXIgaW4gbXkgdGVhbSBpcyBhbHJlYWR5IGxvb2tpbmcgaW50byBpdCB3aGlsZSB0ZXN0aW5nCj4+
-IExpYW0ncyBtdWx0aS1jb2RlYwo+PiBjaGFuZ2VzLgo+Pgo+Pj4+IFBsZWFzZSB0cnkgdG8gdXNl
-IHRoZSBleGlzdGluZyBzb3VuZC9zb2MvczNjMjR4eC9zM2M2NHh4LWkycy12NC5jCj4+ICd0cnkg
-dG8nIGlzIHRoZSBrZXkgd29yZCBoZXJlLiBUaGUgZHJpdmVyIGlzIG5vdCBleHBlY3RlZCB0byB3
-b3JrIHJpZ2h0YXdheS4KPj4gT25lIG1pZ2h0IG5lZWQgdG8gbWFrZSBzb21lIGNoYW5nZXMgdG8g
-dGhlIENQVSBkcml2ZXIgdG8ganVzdCBtYWtlIGl0Cj4+IHdvcmsgb24gcGxhdGZvcm1zIHdpdGgg
-dmVyeSBzaW1pbGFyIElQLgo+Cj4gRG8geW91IG1lYW4gdGhhdCBJIHNob3VsZCBpbXBsZW1lbnQg
-aTJzdjUgZHJ2aWVyIHJlZmVyIHRvIHRoZQo+IHNvdW5kL3NvYy9zM2MyNHh4L3MzYzY0eHgtaTJz
-LXY0LmMgYWZ0ZXIgY29tcGxldGluZyBjcm9zcy10cmVlIG1lcmdlIGlzc3VlPwoKTm8uICBJIG1l
-YW4geW91IHNob3VsZCBtYWtlIG1pbmltYWwgY2hhbmdlcyB0byB0aGUgZXhpc3RpbmcgaTJzIENQ
-VSBkcml2ZXJzCnRvIG1ha2UgdGhlbSBqdXN0IHdvcmsgZm9yIHlvdXIgbWFjaGluZS4gQXF1aWxh
-IGNhbiBleHBsb2l0IG1vcmUKYWR2YW5jZWQgZmVhdHVyZXMKb2YgdjQvdjUgYXMgdGhleSB3aWxs
-IGJlIGltcGxlbWVudGVkIGluIGZ1dHVyZS4KSWYgeW91IGRvbid0IHdhbm5hIHdhaXQsIHlvdSBt
-YXkgc3RhcnQgdXBncmFkaW5nIHRoZSBleGlzdGluZyBkcml2ZXJzCmluIGxpbmUgd2l0aApleGlz
-dGluZyBmcmFtZSB3b3JrLgpQbGVhc2UgcmVtZW1iZXIsIHRoZSBnb2FsIGlzIHRvd2FyZHMgaGF2
-aW5nIGFzIGxlYXN0IGZpbGVzIGFzIHBvc3NpYmxlCmluIFNhbXN1bmcgQVNvQyB3aGljaCBzdXBw
-b3J0aW5nIGFzIG1hbnkgU29DcyBhcyBwb3NzaWJsZS4KU2VwYXJhdGUgZHJpdmVyIGZvciBWNSBt
-YXliZSB3YXJyYW50ZWQgb25seSB3aGVuIHdlIHdhbnQgdG8gaW1wbGVtZW50CmEgZmVhdHVyZSB0
-aGF0IGlzIG5vdCBzdXBwb3J0ZWQgYnkgdjQuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+Mark Brown wrote:
+> On Thu, Jul 08, 2010 at 01:57:38PM +0900, Chanwoo Choi wrote:
+>> This patch add sound support for the Aquila board based on S5PC110.
+>>
+>> The Aquila board is based on Samsung SoC(S5PC110) and include
+>> WM8994 codec over I2Sv5 to support sound. As there is currently
+>> no driver for the I2Sv5, the code to use I2Sv5 is deleted
+>> on this patch.
+> 
+> This looks good from my point of view, though I'm not sure if you want
+> to do any updates for Jassi's comments and Liam also needs to review
+> still.
+> 
+Ok, I am talking about using I2Sv5 with Jassi.
+Also, Should I specially send this patch to review to Liam?
+or What is another way to review?
+
+> One other thing that you might want to do - I'm not sure if you noticed
+> but there is now an API call snd_soc_dapm_ignore_suspend() which allows 
+> audio paths to be kept up while the system is suspended, intended for
+> use in cases like voice calls on mobile phones where audio is running
+> even though the Linux system is suspended.  To use this you should mark
+> all DAPM endpoints which can be live over suspend as ignoring suspend
+> then ASoC should transparently keep any paths between endpoints marked
+> this way up.
+I see that your mentioned patcth.
+But,
+before I had received the patch to keep audio path on suspend,
+to execute voice-call on suspend implemented that the state of LDO of 
+codec is kept high to run audio in cases voice call while the Linux system
+is suspended.
+
+I will try to find your mentioned patch and check to apply the sound driver
+of Aquila board.
+
+Thank you,
+Chanwoo Choi
