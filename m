@@ -1,29 +1,22 @@
-From: Chanwoo Choi <cw00.choi@samsung.com>
-Subject: Re: [PATCH] ASoC: SAMSUNG: Add Aquila sound driver
-Date: Fri, 09 Jul 2010 10:06:56 +0900
-Message-ID: <4C367630.3090607@samsung.com>
-References: <4C355AC2.8090502@samsung.com>
-	<AANLkTikHkQfmD5GPL9D-kbL7SuNksNA9tbhvoDqBeuur@mail.gmail.com>
-	<4C358807.1000502@samsung.com>
-	<AANLkTinKT2LvSrfcI2-aw2iXnnCe1R_jCfq09rxlNa3x@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Smart 5.1 function not working on VIA VT1708S with
+	*three* jacks on mainboard
+Date: Fri, 9 Jul 2010 09:32:13 +0800
+Message-ID: <AANLkTimikYh8rY5lEoXsAK53yEyVADsBtkJ2BwW7lSAK@mail.gmail.com>
+References: <op.ve4vig0ny9cctd@localhost> <op.vff0au0jy9cctd@localhost>
+	<4C35713E.1090709@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7FC2024404
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 708E2103832
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Jul 2010 03:06:59 +0200 (CEST)
-Received: from epmmp1 (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
-	2010)) with ESMTP id <0L59000TJN3KUH90@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Fri, 09 Jul 2010 10:06:56 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0L5900E5UN3KGI@mmp1.samsung.com> for
-	alsa-devel@alsa-project.org; Fri, 09 Jul 2010 10:06:56 +0900 (KST)
-In-reply-to: <AANLkTinKT2LvSrfcI2-aw2iXnnCe1R_jCfq09rxlNa3x@mail.gmail.com>
+	Fri,  9 Jul 2010 03:32:14 +0200 (CEST)
+Received: by vws9 with SMTP id 9so1817382vws.38
+	for <alsa-devel@alsa-project.org>; Thu, 08 Jul 2010 18:32:13 -0700 (PDT)
+In-Reply-To: <4C35713E.1090709@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,28 +26,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: Chanwoo Choi <cw00.choi@samsung.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Kyungmin Park <kyungmin.park@samsung.com>, Joonyoung Shim <jy0922.shim@samsung.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jassi Brar wrote:
- > The gpio config stuff needs to be removed from the CPU driver. It was pending
-> due to fear of cross-tree merge issues. The platform specific code to do the
-> same is already upstream now.
+2010/7/8 Clemens Ladisch <clemens@ladisch.de>
 
-What is "platform specific code to the same" ?
+> Viliam Kubis wrote:
+> > Hello, for quite some time the "Smart 5.1" function in alsa is not
+> working
+> > properly when motherboard has only 3 audio jacks.
+> >
+> > speaker-test -c 4 -t wav -Dsurround40
+> >
+> > Channels count (4) not available for playbacks: Invalid argument
+>
+> Please try the patch below.
+>
+> (This function uses 0x12 and 0x13 as the NIDs for the center/LFE and
+> side DACs.  Shouldn't these be 0x24 and 0x25, as per the datasheet?)
+>
 
-> One engineer in my team is already looking into it while testing
-> Liam's multi-codec
-> changes.
-> 
->>> Please try to use the existing sound/soc/s3c24xx/s3c64xx-i2s-v4.c
-> 'try to' is the key word here. The driver is not expected to work rightaway.
-> One might need to make some changes to the CPU driver to just make it
-> work on platforms with very similar IP.
+Node 0x12 seem to be for digital out since it connected to node 0x20
 
-Do you mean that I should implement i2sv5 drvier refer to the 
-sound/soc/s3c24xx/s3c64xx-i2s-v4.c after completing cross-tree merge issue? 
+I guess we still lack the info about the retasking of pink and blue jack to
+the surround output
 
-Thank you,
-Chanwoo Choi
+
+Node 0x12 [Audio Output] wcaps 0x611: Stereo Digital
+  Control: name="IEC958 Playback Con Mask", index=0, device=0
+  Control: name="IEC958 Playback Pro Mask", index=0, device=0
+  Control: name="IEC958 Playback Default", index=0, device=0
+  Control: name="IEC958 Playback Switch", index=0, device=0
+  Control: name="IEC958 Default PCM Playback Switch", index=0, device=0
+  Device: name="VT1708S Digital", type="SPDIF", device=1
+  Converter: stream=5, channel=0
+  Digital: Enabled
+  Digital category: 0x0
+  PCM:
+    rates [0x5e0]: 44100 48000 88200 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power states:  D0 D1 D2 D3
+  Power: setting=D0, actual=D0
+
+
+Node 0x20 [Pin Complex] wcaps 0x400701: Stereo Digital
+  Pincap 0x00000010: OUT
+  Pin Default 0x074311f0: [Jack] SPDIF Out at Ext Rear Panel
+    Conn = ATAPI, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Power states:  D0 D1 D2 D3
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x12
