@@ -1,116 +1,598 @@
-From: David Henningsson <launchpad.web@epost.diwic.se>
-Subject: Re: [PATCH] Two patches for Alsa-plugins (pulse)
-Date: Fri, 09 Jul 2010 19:50:58 +0200
-Message-ID: <4C376182.5050807@epost.diwic.se>
-References: <4C22670D.8010104@epost.diwic.se>
-	<s5h6319dj90.wl%tiwai@suse.de>	<4C2487EA.3090605@epost.diwic.se>
-	<s5hzky6bgy2.wl%tiwai@suse.de>	<s5heifcsvom.wl%tiwai@suse.de>	<AANLkTimnfft0c_V9bTK-g8hX2ljc_IJoMliMEwcQTz5g@mail.gmail.com>
-	<s5hiq4or5cz.wl%tiwai@suse.de>
+From: Greg Kroah-Hartman <gregkh@suse.de>
+Subject: [PATCH] driver core: remove CONFIG_SYSFS_DEPRECATED
+Date: Fri, 9 Jul 2010 11:54:50 -0700
+Message-ID: <20100709185450.GA29473@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch-smtp03.sth.basefarm.net (ch-smtp03.sth.basefarm.net
-	[80.76.149.214]) by alsa0.perex.cz (Postfix) with ESMTP id 8204B2412E
-	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Jul 2010 19:51:23 +0200 (CEST)
-Received: from c83-254-134-117.bredband.comhem.se ([83.254.134.117]:48525
-	helo=[192.168.8.103])
-	by ch-smtp03.sth.basefarm.net with esmtp (Exim 4.68)
-	(envelope-from <launchpad.web@epost.diwic.se>) id 1OXHj2-0001TP-BE
-	for alsa-devel@alsa-project.org; Fri, 09 Jul 2010 19:51:02 +0200
-In-Reply-To: <s5hiq4or5cz.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-scsi-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-scsi-owner@vger.kernel.org
+To: Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Jens Axboe <axboe@kernel.dk>, Stephen Hemminger <shemminger@vyatta.com>, "Eric W. Biederman" <ebiederm@xmission.com>, Kay Sievers <kay.sievers@vrfy.org>, Alan Stern <stern@rowland.harvard.edu>, "James E.J. Bottomley" <James.Bottomley@suse.de>, Andrew Morton <akpm@linux-foundation.org>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Randy Dunlap <randy.dunlap@oracle.com>, Tejun Heo <tj@kernel.org>, "David S. Miller" <davem@davemloft.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Ingo Molnar <mingo@elte.hu>, Peter Zijlstra <a.p.zijlstra@chello.nl>, David Howells <dhowells@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-2010-07-09 18:23, Takashi Iwai skrev:
-> At Fri, 9 Jul 2010 21:13:52 +0800,
-> Raymond Yau wrote:
->>>>>>> The second one (Do not report underruns to the ALSA layer) is more a
->>>>>>> change of behavior, which could be questioned. The arguments for
->>>>>>> removing that code are these:
->>>>>>>
->>>>>>>  * If pulseaudio gets an underrun, the normal way to end that
->>> underrun
->>>>>>> is to feed it with more buffers. This is different from the ALSA way
->>> of
->>>>>>> dealing with underruns, which requires hardware buffer pointers to
->>> be reset.
->>>>>>>  * In addition, underrun signals are delivered asynchronously from
->>>>>>> pulseaudio. This means that there might be more buffers on the way
->>> to
->>>>>>> pulseaudio when the underrun is reported, making the underrun
->>> obsolete.
->>>>>>> Unfortunately, there is currently no known way to determine whether
->>> this
->>>>>>> is the case or not.
->>>>>>
->>>>>> I think this helps for normal use-cases, so it'd be good to apply.
->>>>>> But, I prefer having a runtime option for such a behavior change
->>>>>> (although the default value can be the new behavior).
->>>>>>
->>>>>> Care to add it?
->>>>>
->>>>> Sure, I can do that - it sounds like a good idea to have it
->>> configurable.
->>>>> Just so I understand you right, exactly how do you expect the user /
->>>>> application to configure it?
->>>>
->>>> I suppose it can be simply added as an alsa-lib plugin config, i.e.
->>>> in SND_PCM_PLUGIN_DEFINE_FUNC(pulse) of alsa-plugins/pulse/pcm_pulse.c,
->>>> add the code like below:
->>>>
->>>>       int handle_underrun = 0;
->>>>       ...
->>>>
->>>>       snd_config_for_each(i, next, conf) {
->>>>               ...
->>>>               if (strcmp(id, "handle_underrun") == 0) {
->>>>                       handle_underrun = snd_config_get_bool(n);
->>>>                       if (handle_underrun < 0) {
->>>>                               SNDERR("Invalid value for %s", id);
->>>>                               return handle_underrun;
->>>>                       }
->>>>                       continue;
->>>>               }
->>>>       }
->>>
->>> FYI, I modified the patch and applied to git tree right now.
+This is no longer needed by any userspace tools, so it's safe to
+remove.
 
-Thanks! I've been on holiday this week but thought I would do it in the
-following week. Only nice to see it being done :-)
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Stephen Hemminger <shemminger@vyatta.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Kay Sievers <kay.sievers@vrfy.org>
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: "James E.J. Bottomley" <James.Bottomley@suse.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>
+Cc: Randy Dunlap <randy.dunlap@oracle.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Ingo Molnar <mingo@elte.hu>
+Cc: Peter Zijlstra <a.p.zijlstra@chello.nl>
+Cc: David Howells <dhowells@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@suse.de>
 
->> This behaviour is a little bit strange , using the same buffer size 128
->>
->> aplay -Dhw:0,0 --buffer-size=128 test.wav
->>
->> report underrun
->>
->>
->> aplay -D pulse --buffer-size=128 test.wav
->>
->> did not report underrun but the sound is distorted
-> 
-> Other subsystem, other behavior. 
-> The detection of underrun is even unreliable on ALSA native, so user
-> can't expect it'll get underrun.
-> 
-> The biggest drawback by this change is that whether the sound goes
-> well or not isn't reported any more to the application layer.
-> It's an unfortunate design, but it's life with PA.
+---
+ block/genhd.c            |    5 -
+ drivers/base/bus.c       |   22 ------
+ drivers/base/class.c     |   25 -------
+ drivers/base/core.c      |  164 -----------------------------------------------
+ drivers/scsi/hosts.c     |    2 
+ drivers/scsi/scsi_scan.c |    2 
+ fs/partitions/check.c    |    6 -
+ include/sound/core.h     |    6 -
+ init/Kconfig             |   36 ----------
+ sound/core/init.c        |   11 ---
+ 10 files changed, 7 insertions(+), 272 deletions(-)
 
-The question is - is there an application that detects the underrun
-condition and actually acts on that condition? If so, this could be a
-regression for that app. For other apps it's an improvement, for the
-reasons originally stated.
-
-// David
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -22,9 +22,7 @@
+ #include "blk.h"
+ 
+ static DEFINE_MUTEX(block_class_lock);
+-#ifndef CONFIG_SYSFS_DEPRECATED
+ struct kobject *block_depr;
+-#endif
+ 
+ /* for extended dynamic devt allocation, currently only one major is used */
+ #define MAX_EXT_DEVT		(1 << MINORBITS)
+@@ -803,10 +801,9 @@ static int __init genhd_device_init(void
+ 
+ 	register_blkdev(BLOCK_EXT_MAJOR, "blkext");
+ 
+-#ifndef CONFIG_SYSFS_DEPRECATED
+ 	/* create top-level block dir */
+ 	block_depr = kobject_create_and_add("block", NULL);
+-#endif
++
+ 	return 0;
+ }
+ 
+--- a/drivers/base/bus.c
++++ b/drivers/base/bus.c
+@@ -440,22 +440,6 @@ static void device_remove_attrs(struct b
+ 	}
+ }
+ 
+-#ifdef CONFIG_SYSFS_DEPRECATED
+-static int make_deprecated_bus_links(struct device *dev)
+-{
+-	return sysfs_create_link(&dev->kobj,
+-				 &dev->bus->p->subsys.kobj, "bus");
+-}
+-
+-static void remove_deprecated_bus_links(struct device *dev)
+-{
+-	sysfs_remove_link(&dev->kobj, "bus");
+-}
+-#else
+-static inline int make_deprecated_bus_links(struct device *dev) { return 0; }
+-static inline void remove_deprecated_bus_links(struct device *dev) { }
+-#endif
+-
+ /**
+  * bus_add_device - add device to bus
+  * @dev: device being added
+@@ -482,15 +466,10 @@ int bus_add_device(struct device *dev)
+ 				&dev->bus->p->subsys.kobj, "subsystem");
+ 		if (error)
+ 			goto out_subsys;
+-		error = make_deprecated_bus_links(dev);
+-		if (error)
+-			goto out_deprecated;
+ 		klist_add_tail(&dev->p->knode_bus, &bus->p->klist_devices);
+ 	}
+ 	return 0;
+ 
+-out_deprecated:
+-	sysfs_remove_link(&dev->kobj, "subsystem");
+ out_subsys:
+ 	sysfs_remove_link(&bus->p->devices_kset->kobj, dev_name(dev));
+ out_id:
+@@ -530,7 +509,6 @@ void bus_remove_device(struct device *de
+ {
+ 	if (dev->bus) {
+ 		sysfs_remove_link(&dev->kobj, "subsystem");
+-		remove_deprecated_bus_links(dev);
+ 		sysfs_remove_link(&dev->bus->p->devices_kset->kobj,
+ 				  dev_name(dev));
+ 		device_remove_attrs(dev->bus, dev);
+--- a/drivers/base/class.c
++++ b/drivers/base/class.c
+@@ -184,13 +184,7 @@ int __class_register(struct class *cls,
+ 	if (!cls->dev_kobj)
+ 		cls->dev_kobj = sysfs_dev_char_kobj;
+ 
+-#if defined(CONFIG_SYSFS_DEPRECATED) && defined(CONFIG_BLOCK)
+-	/* let the block class directory show up in the root of sysfs */
+-	if (cls != &block_class)
+-		cp->class_subsys.kobj.kset = class_kset;
+-#else
+ 	cp->class_subsys.kobj.kset = class_kset;
+-#endif
+ 	cp->class_subsys.kobj.ktype = &class_ktype;
+ 	cp->class = cls;
+ 	cls->p = cp;
+@@ -276,25 +270,6 @@ void class_destroy(struct class *cls)
+ 	class_unregister(cls);
+ }
+ 
+-#ifdef CONFIG_SYSFS_DEPRECATED
+-char *make_class_name(const char *name, struct kobject *kobj)
+-{
+-	char *class_name;
+-	int size;
+-
+-	size = strlen(name) + strlen(kobject_name(kobj)) + 2;
+-
+-	class_name = kmalloc(size, GFP_KERNEL);
+-	if (!class_name)
+-		return NULL;
+-
+-	strcpy(class_name, name);
+-	strcat(class_name, ":");
+-	strcat(class_name, kobject_name(kobj));
+-	return class_name;
+-}
+-#endif
+-
+ /**
+  * class_dev_iter_init - initialize class device iterator
+  * @iter: class iterator to initialize
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -203,37 +203,6 @@ static int dev_uevent(struct kset *kset,
+ 	if (dev->driver)
+ 		add_uevent_var(env, "DRIVER=%s", dev->driver->name);
+ 
+-#ifdef CONFIG_SYSFS_DEPRECATED
+-	if (dev->class) {
+-		struct device *parent = dev->parent;
+-
+-		/* find first bus device in parent chain */
+-		while (parent && !parent->bus)
+-			parent = parent->parent;
+-		if (parent && parent->bus) {
+-			const char *path;
+-
+-			path = kobject_get_path(&parent->kobj, GFP_KERNEL);
+-			if (path) {
+-				add_uevent_var(env, "PHYSDEVPATH=%s", path);
+-				kfree(path);
+-			}
+-
+-			add_uevent_var(env, "PHYSDEVBUS=%s", parent->bus->name);
+-
+-			if (parent->driver)
+-				add_uevent_var(env, "PHYSDEVDRIVER=%s",
+-					       parent->driver->name);
+-		}
+-	} else if (dev->bus) {
+-		add_uevent_var(env, "PHYSDEVBUS=%s", dev->bus->name);
+-
+-		if (dev->driver)
+-			add_uevent_var(env, "PHYSDEVDRIVER=%s",
+-				       dev->driver->name);
+-	}
+-#endif
+-
+ 	/* have the bus specific function add its stuff */
+ 	if (dev->bus && dev->bus->uevent) {
+ 		retval = dev->bus->uevent(dev, env);
+@@ -578,24 +547,6 @@ void device_initialize(struct device *de
+ 	set_dev_node(dev, -1);
+ }
+ 
+-#ifdef CONFIG_SYSFS_DEPRECATED
+-static struct kobject *get_device_parent(struct device *dev,
+-					 struct device *parent)
+-{
+-	/* class devices without a parent live in /sys/class/<classname>/ */
+-	if (dev->class && (!parent || parent->class != dev->class))
+-		return &dev->class->p->class_subsys.kobj;
+-	/* all other devices keep their parent */
+-	else if (parent)
+-		return &parent->kobj;
+-
+-	return NULL;
+-}
+-
+-static inline void cleanup_device_parent(struct device *dev) {}
+-static inline void cleanup_glue_dir(struct device *dev,
+-				    struct kobject *glue_dir) {}
+-#else
+ static struct kobject *virtual_device_parent(struct device *dev)
+ {
+ 	static struct kobject *virtual_dir = NULL;
+@@ -719,7 +670,6 @@ static void cleanup_device_parent(struct
+ {
+ 	cleanup_glue_dir(dev, dev->kobj.parent);
+ }
+-#endif
+ 
+ static void setup_parent(struct device *dev, struct device *parent)
+ {
+@@ -742,53 +692,6 @@ static int device_add_class_symlinks(str
+ 	if (error)
+ 		goto out;
+ 
+-#ifdef CONFIG_SYSFS_DEPRECATED
+-	/* stacked class devices need a symlink in the class directory */
+-	if (dev->kobj.parent != &dev->class->p->class_subsys.kobj &&
+-	    device_is_not_partition(dev)) {
+-		error = sysfs_create_link(&dev->class->p->class_subsys.kobj,
+-					  &dev->kobj, dev_name(dev));
+-		if (error)
+-			goto out_subsys;
+-	}
+-
+-	if (dev->parent && device_is_not_partition(dev)) {
+-		struct device *parent = dev->parent;
+-		char *class_name;
+-
+-		/*
+-		 * stacked class devices have the 'device' link
+-		 * pointing to the bus device instead of the parent
+-		 */
+-		while (parent->class && !parent->bus && parent->parent)
+-			parent = parent->parent;
+-
+-		error = sysfs_create_link(&dev->kobj,
+-					  &parent->kobj,
+-					  "device");
+-		if (error)
+-			goto out_busid;
+-
+-		class_name = make_class_name(dev->class->name,
+-						&dev->kobj);
+-		if (class_name)
+-			error = sysfs_create_link(&dev->parent->kobj,
+-						&dev->kobj, class_name);
+-		kfree(class_name);
+-		if (error)
+-			goto out_device;
+-	}
+-	return 0;
+-
+-out_device:
+-	if (dev->parent && device_is_not_partition(dev))
+-		sysfs_remove_link(&dev->kobj, "device");
+-out_busid:
+-	if (dev->kobj.parent != &dev->class->p->class_subsys.kobj &&
+-	    device_is_not_partition(dev))
+-		sysfs_delete_link(&dev->class->p->class_subsys.kobj, &dev->kobj,
+-				  dev_name(dev));
+-#else
+ 	/* link in the class directory pointing to the device */
+ 	error = sysfs_create_link(&dev->class->p->class_subsys.kobj,
+ 				  &dev->kobj, dev_name(dev));
+@@ -805,7 +708,6 @@ out_busid:
+ 
+ out_busid:
+ 	sysfs_delete_link(&dev->class->p->class_subsys.kobj, &dev->kobj, dev_name(dev));
+-#endif
+ 
+ out_subsys:
+ 	sysfs_remove_link(&dev->kobj, "subsystem");
+@@ -818,29 +720,10 @@ static void device_remove_class_symlinks
+ 	if (!dev->class)
+ 		return;
+ 
+-#ifdef CONFIG_SYSFS_DEPRECATED
+-	if (dev->parent && device_is_not_partition(dev)) {
+-		char *class_name;
+-
+-		class_name = make_class_name(dev->class->name, &dev->kobj);
+-		if (class_name) {
+-			sysfs_remove_link(&dev->parent->kobj, class_name);
+-			kfree(class_name);
+-		}
+-		sysfs_remove_link(&dev->kobj, "device");
+-	}
+-
+-	if (dev->kobj.parent != &dev->class->p->class_subsys.kobj &&
+-	    device_is_not_partition(dev))
+-		sysfs_delete_link(&dev->class->p->class_subsys.kobj, &dev->kobj,
+-				  dev_name(dev));
+-#else
+ 	if (dev->parent && device_is_not_partition(dev))
+ 		sysfs_remove_link(&dev->kobj, "device");
+ 
+ 	sysfs_delete_link(&dev->class->p->class_subsys.kobj, &dev->kobj, dev_name(dev));
+-#endif
+-
+ 	sysfs_remove_link(&dev->kobj, "subsystem");
+ }
+ 
+@@ -1613,41 +1496,23 @@ int device_rename(struct device *dev, ch
+ 	pr_debug("device: '%s': %s: renaming to '%s'\n", dev_name(dev),
+ 		 __func__, new_name);
+ 
+-#ifdef CONFIG_SYSFS_DEPRECATED
+-	if ((dev->class) && (dev->parent))
+-		old_class_name = make_class_name(dev->class->name, &dev->kobj);
+-#endif
+-
+ 	old_device_name = kstrdup(dev_name(dev), GFP_KERNEL);
+ 	if (!old_device_name) {
+ 		error = -ENOMEM;
+ 		goto out;
+ 	}
+ 
+-#ifndef CONFIG_SYSFS_DEPRECATED
+ 	if (dev->class) {
+ 		error = sysfs_rename_link(&dev->class->p->class_subsys.kobj,
+ 			&dev->kobj, old_device_name, new_name);
+ 		if (error)
+ 			goto out;
+ 	}
+-#endif
++
+ 	error = kobject_rename(&dev->kobj, new_name);
+ 	if (error)
+ 		goto out;
+ 
+-#ifdef CONFIG_SYSFS_DEPRECATED
+-	if (old_class_name) {
+-		new_class_name = make_class_name(dev->class->name, &dev->kobj);
+-		if (new_class_name) {
+-			error = sysfs_rename_link(&dev->parent->kobj,
+-						  &dev->kobj,
+-						  old_class_name,
+-						  new_class_name);
+-		}
+-	}
+-#endif
+-
+ out:
+ 	put_device(dev);
+ 
+@@ -1664,40 +1529,13 @@ static int device_move_class_links(struc
+ 				   struct device *new_parent)
+ {
+ 	int error = 0;
+-#ifdef CONFIG_SYSFS_DEPRECATED
+-	char *class_name;
+ 
+-	class_name = make_class_name(dev->class->name, &dev->kobj);
+-	if (!class_name) {
+-		error = -ENOMEM;
+-		goto out;
+-	}
+-	if (old_parent) {
+-		sysfs_remove_link(&dev->kobj, "device");
+-		sysfs_remove_link(&old_parent->kobj, class_name);
+-	}
+-	if (new_parent) {
+-		error = sysfs_create_link(&dev->kobj, &new_parent->kobj,
+-					  "device");
+-		if (error)
+-			goto out;
+-		error = sysfs_create_link(&new_parent->kobj, &dev->kobj,
+-					  class_name);
+-		if (error)
+-			sysfs_remove_link(&dev->kobj, "device");
+-	} else
+-		error = 0;
+-out:
+-	kfree(class_name);
+-	return error;
+-#else
+ 	if (old_parent)
+ 		sysfs_remove_link(&dev->kobj, "device");
+ 	if (new_parent)
+ 		error = sysfs_create_link(&dev->kobj, &new_parent->kobj,
+ 					  "device");
+ 	return error;
+-#endif
+ }
+ 
+ /**
+--- a/drivers/scsi/hosts.c
++++ b/drivers/scsi/hosts.c
+@@ -406,9 +406,7 @@ struct Scsi_Host *scsi_host_alloc(struct
+ 
+ 	device_initialize(&shost->shost_gendev);
+ 	dev_set_name(&shost->shost_gendev, "host%d", shost->host_no);
+-#ifndef CONFIG_SYSFS_DEPRECATED
+ 	shost->shost_gendev.bus = &scsi_bus_type;
+-#endif
+ 	shost->shost_gendev.type = &scsi_host_type;
+ 
+ 	device_initialize(&shost->shost_dev);
+--- a/drivers/scsi/scsi_scan.c
++++ b/drivers/scsi/scsi_scan.c
+@@ -417,9 +417,7 @@ static struct scsi_target *scsi_alloc_ta
+ 	starget->reap_ref = 1;
+ 	dev->parent = get_device(parent);
+ 	dev_set_name(dev, "target%d:%d:%d", shost->host_no, channel, id);
+-#ifndef CONFIG_SYSFS_DEPRECATED
+ 	dev->bus = &scsi_bus_type;
+-#endif
+ 	dev->type = &scsi_target_type;
+ 	starget->id = id;
+ 	starget->channel = channel;
+--- a/fs/partitions/check.c
++++ b/fs/partitions/check.c
+@@ -500,14 +500,14 @@ void register_disk(struct gendisk *disk)
+ 
+ 	if (device_add(ddev))
+ 		return;
+-#ifndef CONFIG_SYSFS_DEPRECATED
++
+ 	err = sysfs_create_link(block_depr, &ddev->kobj,
+ 				kobject_name(&ddev->kobj));
+ 	if (err) {
+ 		device_del(ddev);
+ 		return;
+ 	}
+-#endif
++
+ 	disk->part0.holder_dir = kobject_create_and_add("holders", &ddev->kobj);
+ 	disk->slave_dir = kobject_create_and_add("slaves", &ddev->kobj);
+ 
+@@ -724,8 +724,6 @@ void del_gendisk(struct gendisk *disk)
+ 	kobject_put(disk->part0.holder_dir);
+ 	kobject_put(disk->slave_dir);
+ 	disk->driverfs_dev = NULL;
+-#ifndef CONFIG_SYSFS_DEPRECATED
+ 	sysfs_remove_link(block_depr, dev_name(disk_to_dev(disk)));
+-#endif
+ 	device_del(disk_to_dev(disk));
+ }
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -133,9 +133,7 @@ struct snd_card {
+ 	int free_on_last_close;		/* free in context of file_release */
+ 	wait_queue_head_t shutdown_sleep;
+ 	struct device *dev;		/* device assigned to this card */
+-#ifndef CONFIG_SYSFS_DEPRECATED
+ 	struct device *card_dev;	/* cardX object for sysfs */
+-#endif
+ 
+ #ifdef CONFIG_PM
+ 	unsigned int power_state;	/* power state */
+@@ -196,11 +194,7 @@ struct snd_minor {
+ /* return a device pointer linked to each sound device as a parent */
+ static inline struct device *snd_card_get_device_link(struct snd_card *card)
+ {
+-#ifdef CONFIG_SYSFS_DEPRECATED
+-	return card ? card->dev : NULL;
+-#else
+ 	return card ? card->card_dev : NULL;
+-#endif
+ }
+ 
+ /* sound.c */
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -651,42 +651,6 @@ endif # CGROUPS
+ config MM_OWNER
+ 	bool
+ 
+-config SYSFS_DEPRECATED
+-	bool
+-
+-config SYSFS_DEPRECATED_V2
+-	bool "enable deprecated sysfs features to support old userspace tools"
+-	depends on SYSFS
+-	default n
+-	select SYSFS_DEPRECATED
+-	help
+-	  This option switches the layout of sysfs to the deprecated
+-	  version. Do not use it on recent distributions.
+-
+-	  The current sysfs layout features a unified device tree at
+-	  /sys/devices/, which is able to express a hierarchy between
+-	  class devices. If the deprecated option is set to Y, the
+-	  unified device tree is split into a bus device tree at
+-	  /sys/devices/ and several individual class device trees at
+-	  /sys/class/. The class and bus devices will be connected by
+-	  "<subsystem>:<name>" and the "device" links. The "block"
+-	  class devices, will not show up in /sys/class/block/. Some
+-	  subsystems will suppress the creation of some devices which
+-	  depend on the unified device tree.
+-
+-	  This option is not a pure compatibility option that can
+-	  be safely enabled on newer distributions. It will change the
+-	  layout of sysfs to the non-extensible deprecated version,
+-	  and disable some features, which can not be exported without
+-	  confusing older userspace tools. Since 2007/2008 all major
+-	  distributions do not enable this option, and ship no tools which
+-	  depend on the deprecated layout or this option.
+-
+-	  If you are using a new kernel on an older distribution, or use
+-	  older userspace tools, you might need to say Y here. Do not say Y,
+-	  if the original kernel, that came with your distribution, has
+-	  this option set to N.
+-
+ config RELAY
+ 	bool "Kernel->user space relay support (formerly relayfs)"
+ 	help
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -395,12 +395,10 @@ int snd_card_disconnect(struct snd_card
+ 		snd_printk(KERN_ERR "not all devices for card %i can be disconnected\n", card->number);
+ 
+ 	snd_info_card_disconnect(card);
+-#ifndef CONFIG_SYSFS_DEPRECATED
+ 	if (card->card_dev) {
+ 		device_unregister(card->card_dev);
+ 		card->card_dev = NULL;
+ 	}
+-#endif
+ #ifdef CONFIG_PM
+ 	wake_up(&card->power_sleep);
+ #endif
+@@ -573,7 +571,6 @@ void snd_card_set_id(struct snd_card *ca
+ }
+ EXPORT_SYMBOL(snd_card_set_id);
+ 
+-#ifndef CONFIG_SYSFS_DEPRECATED
+ static ssize_t
+ card_id_show_attr(struct device *dev,
+ 		  struct device_attribute *attr, char *buf)
+@@ -630,7 +627,6 @@ card_number_show_attr(struct device *dev
+ 
+ static struct device_attribute card_number_attrs =
+ 	__ATTR(number, S_IRUGO, card_number_show_attr, NULL);
+-#endif /* CONFIG_SYSFS_DEPRECATED */
+ 
+ /**
+  *  snd_card_register - register the soundcard
+@@ -649,7 +645,7 @@ int snd_card_register(struct snd_card *c
+ 
+ 	if (snd_BUG_ON(!card))
+ 		return -EINVAL;
+-#ifndef CONFIG_SYSFS_DEPRECATED
++
+ 	if (!card->card_dev) {
+ 		card->card_dev = device_create(sound_class, card->dev,
+ 					       MKDEV(0, 0), card,
+@@ -657,7 +653,7 @@ int snd_card_register(struct snd_card *c
+ 		if (IS_ERR(card->card_dev))
+ 			card->card_dev = NULL;
+ 	}
+-#endif
++
+ 	if ((err = snd_device_register_all(card)) < 0)
+ 		return err;
+ 	mutex_lock(&snd_card_mutex);
+@@ -674,7 +670,6 @@ int snd_card_register(struct snd_card *c
+ 	if (snd_mixer_oss_notify_callback)
+ 		snd_mixer_oss_notify_callback(card, SND_MIXER_OSS_NOTIFY_REGISTER);
+ #endif
+-#ifndef CONFIG_SYSFS_DEPRECATED
+ 	if (card->card_dev) {
+ 		err = device_create_file(card->card_dev, &card_id_attrs);
+ 		if (err < 0)
+@@ -683,7 +678,7 @@ int snd_card_register(struct snd_card *c
+ 		if (err < 0)
+ 			return err;
+ 	}
+-#endif
++
+ 	return 0;
+ }
+ 
