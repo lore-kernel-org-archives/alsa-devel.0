@@ -1,101 +1,570 @@
-From: "Viliam Kubis" <viliam.kubis@gmail.com>
-Subject: Re: Smart 5.1 function not working on VIA VT1708S with
- *three* jacks on mainboard
-Date: Sat, 10 Jul 2010 14:39:11 +0200
-Message-ID: <op.vfmn3k2py9cctd@localhost>
-References: <AANLkTim0B4gB4X1SfURg_NF4-gnJ3GTGjCH1PIVwBtfD@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id E9735245DB
-	for <alsa-devel@alsa-project.org>;
-	Sat, 10 Jul 2010 14:39:14 +0200 (CEST)
-Received: by bwz4 with SMTP id 4so1694069bwz.38
-	for <alsa-devel@alsa-project.org>; Sat, 10 Jul 2010 05:39:12 -0700 (PDT)
-In-Reply-To: <AANLkTim0B4gB4X1SfURg_NF4-gnJ3GTGjCH1PIVwBtfD@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Raymond
-	Yau <superquad.vortex2@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 3/3] sound: push BKL into open functions
+Date: Sat, 10 Jul 2010 23:51:41 +0200
+Message-ID: <1278798701-11171-4-git-send-email-arnd@arndb.de>
+References: <1278798701-11171-1-git-send-email-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1278798701-11171-1-git-send-email-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: John Kacur <jkacur@redhat.com>, Frederic Weisbecker <fweisbec@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-But my speakers only come with two jacks for input. One for the front  
-speakers and one for rear speakers. So I cannot connect the speakers to  
-all three jacks. I have compiled alsa with --with-debug=full configure  
-option to see which pins it has auto-parsed:
+This moves the lock_kernel() call from soundcore_open
+to the individual OSS device drivers, where we can deal
+with it one driver at a time if needed, or just kill
+off the drivers.
 
-HDA Intel 0000:00:14.2: PCI INT A disabled
-HDA Intel 0000:00:14.2: PCI INT A -> GSI 16 (level, low) -> IRQ 16
-ALSA hda_codec.c:4408: autoconfig: line_outs=1 (0x1c/0x0/0x0/0x0/0x0)
-ALSA hda_codec.c:4412:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-ALSA hda_codec.c:4416:    hp_outs=1 (0x1d/0x0/0x0/0x0/0x0)
-ALSA hda_codec.c:4417:    mono: mono_out=0x0
-ALSA hda_codec.c:4420:    dig-out=0x20/0x0
-ALSA hda_codec.c:4428:    inputs: mic=0x1a, fmic=0x1e, line=0x1b,  
-fline=0x0, cd=0x1f, aux=0x0
+All core components in ALSA already provide
+adequate locking in their open()-functions
+and do not require the big kernel lock, so
+there is no need to add the BKL there.
 
-However in function smart51_get, the following condition
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
+---
+ arch/um/drivers/hostaudio_kern.c   |    6 ++++++
+ sound/core/hwdep.c                 |   14 ++++++++++----
+ sound/core/oss/mixer_oss.c         |   19 +++++++++++--------
+ sound/oss/au1550_ac97.c            |   26 +++++++++++++++++---------
+ sound/oss/dmasound/dmasound_core.c |   28 ++++++++++++++++++++++------
+ sound/oss/msnd_pinnacle.c          |   10 +++++++---
+ sound/oss/sh_dac_audio.c           |    9 +++++++--
+ sound/oss/soundcard.c              |   20 +++++++++++---------
+ sound/oss/swarm_cs4297a.c          |   17 ++++++++++++++++-
+ sound/oss/vwsnd.c                  |    8 ++++++++
+ sound/sound_core.c                 |    6 +-----
+ 11 files changed, 116 insertions(+), 47 deletions(-)
 
-if (ctl & AC_PINCTL_IN_EN
-     && !(ctl & AC_PINCTL_OUT_EN))
-{
-	printk(KERN_INFO "*** PATCH on=0 in via_smart51_get()");
-	on = 0;
-}
-
-will never be true, so smart51_get will always set  
-*ucontrol->value.integer.value to 1. (printk line will not execute)
-
-Smart 5.1 control gets created and appears to be "working". However  
-surround output does not work.
-
-On Sat, 10 Jul 2010 11:41:35 +0200, Raymond Yau  
-<superquad.vortex2@gmail.com> wrote:
-
->>> It might be. It is important not to mix VT1708 and VT1708S. For  
->>> VT1708S,
-> the following DACs are used in code:
->
->   /* config dac list */
->   switch (i) {
->   case AUTO_SEQ_FRONT:
->   	spec->multiout.dac_nids[i] = 0x10;
->   	break;
->   case AUTO_SEQ_CENLFE:
->   	spec->multiout.dac_nids[i] = 0x24;
->   	break;
->   case AUTO_SEQ_SURROUND:
->   	spec->multiout.dac_nids[i] = 0x11;
->   	break;
->   case AUTO_SEQ_SIDE:
->   	spec->multiout.dac_nids[i] = 0x25;
->   	break;
->   }
->
->>>  So 0x12 is not used for any of the surround outputs.
->
-> I think your testing config is not compiled with smart 5.1 requirement
->
-> Refer to smart51_get() , this function exepct red jack and blue jack
-> are configued to Output
->
-> But you still plugged in Mic into the pink jack according to your photo.
->
-> Your speakers have to plugged in both pink and blue jacks
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-
+diff --git a/arch/um/drivers/hostaudio_kern.c b/arch/um/drivers/hostaudio_kern.c
+index ae42695..68142df 100644
+--- a/arch/um/drivers/hostaudio_kern.c
++++ b/arch/um/drivers/hostaudio_kern.c
+@@ -8,6 +8,7 @@
+ #include "linux/slab.h"
+ #include "linux/sound.h"
+ #include "linux/soundcard.h"
++#include "linux/smp_lock.h"
+ #include "asm/uaccess.h"
+ #include "init.h"
+ #include "os.h"
+@@ -198,7 +199,10 @@ static int hostaudio_open(struct inode *inode, struct file *file)
+ 	if (file->f_mode & FMODE_WRITE)
+ 		w = 1;
+ 
++	lock_kernel();
+ 	ret = os_open_file(dsp, of_set_rw(OPENFLAGS(), r, w), 0);
++	unlock_kernel();
++
+ 	if (ret < 0) {
+ 		kfree(state);
+ 		return ret;
+@@ -254,7 +258,9 @@ static int hostmixer_open_mixdev(struct inode *inode, struct file *file)
+ 	if (file->f_mode & FMODE_WRITE)
+ 		w = 1;
+ 
++	lock_kernel();
+ 	ret = os_open_file(mixer, of_set_rw(OPENFLAGS(), r, w), 0);
++	unlock_kernel();
+ 
+ 	if (ret < 0) {
+ 		printk(KERN_ERR "hostaudio_open_mixdev failed to open '%s', "
+diff --git a/sound/core/hwdep.c b/sound/core/hwdep.c
+index a70ee7f..3439587 100644
+--- a/sound/core/hwdep.c
++++ b/sound/core/hwdep.c
+@@ -94,13 +94,18 @@ static int snd_hwdep_open(struct inode *inode, struct file * file)
+ 		hw = snd_lookup_oss_minor_data(iminor(inode),
+ 					       SNDRV_OSS_DEVICE_TYPE_DMFM);
+ #endif
+-	} else
+-		return -ENXIO;
++	} else {
++		err = -ENXIO;
++		goto out;
++	}
++
++	err = -ENODEV;
+ 	if (hw == NULL)
+-		return -ENODEV;
++		goto out;
+ 
++	err = -EFAULT;
+ 	if (!try_module_get(hw->card->module))
+-		return -EFAULT;
++		goto out;
+ 
+ 	init_waitqueue_entry(&wait, current);
+ 	add_wait_queue(&hw->open_wait, &wait);
+@@ -147,6 +152,7 @@ static int snd_hwdep_open(struct inode *inode, struct file * file)
+ 	mutex_unlock(&hw->open_mutex);
+ 	if (err < 0)
+ 		module_put(hw->card->module);
++out:
+ 	return err;
+ }
+ 
+diff --git a/sound/core/oss/mixer_oss.c b/sound/core/oss/mixer_oss.c
+index f50ebf2..c30b1f3 100644
+--- a/sound/core/oss/mixer_oss.c
++++ b/sound/core/oss/mixer_oss.c
+@@ -49,17 +49,19 @@ static int snd_mixer_oss_open(struct inode *inode, struct file *file)
+ 
+ 	card = snd_lookup_oss_minor_data(iminor(inode),
+ 					 SNDRV_OSS_DEVICE_TYPE_MIXER);
+-	if (card == NULL)
+-		return -ENODEV;
+-	if (card->mixer_oss == NULL)
+-		return -ENODEV;
++	err = -ENODEV;
++	if (card == NULL || card->mixer_oss == NULL)
++		goto out;
++
+ 	err = snd_card_file_add(card, file);
+ 	if (err < 0)
+-		return err;
++		goto out;
++
+ 	fmixer = kzalloc(sizeof(*fmixer), GFP_KERNEL);
+ 	if (fmixer == NULL) {
+ 		snd_card_file_remove(card, file);
+-		return -ENOMEM;
++		err = -ENOMEM;
++		goto out;
+ 	}
+ 	fmixer->card = card;
+ 	fmixer->mixer = card->mixer_oss;
+@@ -67,9 +69,10 @@ static int snd_mixer_oss_open(struct inode *inode, struct file *file)
+ 	if (!try_module_get(card->module)) {
+ 		kfree(fmixer);
+ 		snd_card_file_remove(card, file);
+-		return -EFAULT;
++		err = -EFAULT;
+ 	}
+-	return 0;
++out:
++	return err;
+ }
+ 
+ static int snd_mixer_oss_release(struct inode *inode, struct file *file)
+diff --git a/sound/oss/au1550_ac97.c b/sound/oss/au1550_ac97.c
+index c1070e3..47143a3 100644
+--- a/sound/oss/au1550_ac97.c
++++ b/sound/oss/au1550_ac97.c
+@@ -43,6 +43,7 @@
+ #include <linux/sound.h>
+ #include <linux/slab.h>
+ #include <linux/soundcard.h>
++#include <linux/smp_lock.h>
+ #include <linux/init.h>
+ #include <linux/interrupt.h>
+ #include <linux/kernel.h>
+@@ -807,7 +808,9 @@ au1550_llseek(struct file *file, loff_t offset, int origin)
+ static int
+ au1550_open_mixdev(struct inode *inode, struct file *file)
+ {
++	lock_kernel();
+ 	file->private_data = &au1550_state;
++	unlock_kernel();
+ 	return 0;
+ }
+ 
+@@ -1797,21 +1800,22 @@ au1550_open(struct inode *inode, struct file *file)
+ #endif
+ 
+ 	file->private_data = s;
++	lock_kernel();
+ 	/* wait for device to become free */
+ 	mutex_lock(&s->open_mutex);
+ 	while (s->open_mode & file->f_mode) {
+-		if (file->f_flags & O_NONBLOCK) {
+-			mutex_unlock(&s->open_mutex);
+-			return -EBUSY;
+-		}
++		ret = -EBUSY;
++		if (file->f_flags & O_NONBLOCK)
++			goto out;		
+ 		add_wait_queue(&s->open_wait, &wait);
+ 		__set_current_state(TASK_INTERRUPTIBLE);
+ 		mutex_unlock(&s->open_mutex);
+ 		schedule();
+ 		remove_wait_queue(&s->open_wait, &wait);
+ 		set_current_state(TASK_RUNNING);
++		ret = -ERESTARTSYS;
+ 		if (signal_pending(current))
+-			return -ERESTARTSYS;
++			goto out2;
+ 		mutex_lock(&s->open_mutex);
+ 	}
+ 
+@@ -1840,17 +1844,21 @@ au1550_open(struct inode *inode, struct file *file)
+ 
+ 	if (file->f_mode & FMODE_READ) {
+ 		if ((ret = prog_dmabuf_adc(s)))
+-			return ret;
++			goto out;
+ 	}
+ 	if (file->f_mode & FMODE_WRITE) {
+ 		if ((ret = prog_dmabuf_dac(s)))
+-			return ret;
++			goto out;
+ 	}
+ 
+ 	s->open_mode |= file->f_mode & (FMODE_READ | FMODE_WRITE);
+-	mutex_unlock(&s->open_mutex);
+ 	mutex_init(&s->sem);
+-	return 0;
++	ret = 0;
++out:
++	mutex_unlock(&s->open_mutex);
++out2:
++	unlock_kernel();
++	return ret;
+ }
+ 
+ static int
+diff --git a/sound/oss/dmasound/dmasound_core.c b/sound/oss/dmasound/dmasound_core.c
+index 3f3c3f7..5a4f38c 100644
+--- a/sound/oss/dmasound/dmasound_core.c
++++ b/sound/oss/dmasound/dmasound_core.c
+@@ -323,9 +323,13 @@ static struct {
+ 
+ static int mixer_open(struct inode *inode, struct file *file)
+ {
+-	if (!try_module_get(dmasound.mach.owner))
++	lock_kernel();
++	if (!try_module_get(dmasound.mach.owner)) {
++		unlock_kernel();
+ 		return -ENODEV;
++	}
+ 	mixer.busy = 1;
++	unlock_kernel();
+ 	return 0;
+ }
+ 
+@@ -737,8 +741,11 @@ static int sq_open(struct inode *inode, struct file *file)
+ {
+ 	int rc;
+ 
+-	if (!try_module_get(dmasound.mach.owner))
++	lock_kernel();
++	if (!try_module_get(dmasound.mach.owner)) {
++		unlock_kernel();
+ 		return -ENODEV;
++	}
+ 
+ 	rc = write_sq_open(file); /* checks the f_mode */
+ 	if (rc)
+@@ -781,10 +788,11 @@ static int sq_open(struct inode *inode, struct file *file)
+ 		sound_set_format(AFMT_MU_LAW);
+ 	}
+ #endif
+-
++	unlock_kernel();
+ 	return 0;
+  out:
+ 	module_put(dmasound.mach.owner);
++	unlock_kernel();
+ 	return rc;
+ }
+ 
+@@ -1226,12 +1234,17 @@ static int state_open(struct inode *inode, struct file *file)
+ {
+ 	char *buffer = state.buf;
+ 	int len = 0;
++	int ret;
+ 
++	lock_kernel();
++	ret = -EBUSY;
+ 	if (state.busy)
+-		return -EBUSY;
++		goto out;
+ 
++	ret = -ENODEV;
+ 	if (!try_module_get(dmasound.mach.owner))
+-		return -ENODEV;
++		goto out;
++
+ 	state.ptr = 0;
+ 	state.busy = 1;
+ 
+@@ -1293,7 +1306,10 @@ printk("dmasound: stat buffer used %d bytes\n", len) ;
+ 		printk(KERN_ERR "dmasound_core: stat buffer overflowed!\n");
+ 
+ 	state.len = len;
+-	return 0;
++	ret = 0;
++out:
++	unlock_kernel();
++	return ret;
+ }
+ 
+ static int state_release(struct inode *inode, struct file *file)
+diff --git a/sound/oss/msnd_pinnacle.c b/sound/oss/msnd_pinnacle.c
+index a1e3f96..153d822 100644
+--- a/sound/oss/msnd_pinnacle.c
++++ b/sound/oss/msnd_pinnacle.c
+@@ -756,12 +756,15 @@ static int dev_open(struct inode *inode, struct file *file)
+ 	int minor = iminor(inode);
+ 	int err = 0;
+ 
++	lock_kernel();
+ 	if (minor == dev.dsp_minor) {
+ 		if ((file->f_mode & FMODE_WRITE &&
+ 		     test_bit(F_AUDIO_WRITE_INUSE, &dev.flags)) ||
+ 		    (file->f_mode & FMODE_READ &&
+-		     test_bit(F_AUDIO_READ_INUSE, &dev.flags)))
+-			return -EBUSY;
++		     test_bit(F_AUDIO_READ_INUSE, &dev.flags))) {
++			err = -EBUSY;
++			goto out;
++		}
+ 
+ 		if ((err = dsp_open(file)) >= 0) {
+ 			dev.nresets = 0;
+@@ -782,7 +785,8 @@ static int dev_open(struct inode *inode, struct file *file)
+ 		/* nothing */
+ 	} else
+ 		err = -EINVAL;
+-
++out:
++	unlock_kernel();
+ 	return err;
+ }
+ 
+diff --git a/sound/oss/sh_dac_audio.c b/sound/oss/sh_dac_audio.c
+index 4153752..8f0be40 100644
+--- a/sound/oss/sh_dac_audio.c
++++ b/sound/oss/sh_dac_audio.c
+@@ -16,6 +16,7 @@
+ #include <linux/slab.h>
+ #include <linux/fs.h>
+ #include <linux/sound.h>
++#include <linux/smp_lock.h>
+ #include <linux/soundcard.h>
+ #include <linux/interrupt.h>
+ #include <linux/hrtimer.h>
+@@ -216,13 +217,17 @@ static int dac_audio_open(struct inode *inode, struct file *file)
+ {
+ 	if (file->f_mode & FMODE_READ)
+ 		return -ENODEV;
+-	if (in_use)
++
++	lock_kernel();
++	if (in_use) {
++		unlock_kernel();
+ 		return -EBUSY;
++	}
+ 
+ 	in_use = 1;
+ 
+ 	dac_audio_start();
+-
++	unlock_kernel();
+ 	return 0;
+ }
+ 
+diff --git a/sound/oss/soundcard.c b/sound/oss/soundcard.c
+index 2d9c513..92aa762 100644
+--- a/sound/oss/soundcard.c
++++ b/sound/oss/soundcard.c
+@@ -210,42 +210,44 @@ static int sound_open(struct inode *inode, struct file *file)
+ 		printk(KERN_ERR "Invalid minor device %d\n", dev);
+ 		return -ENXIO;
+ 	}
++	lock_kernel();
+ 	switch (dev & 0x0f) {
+ 	case SND_DEV_CTL:
+ 		dev >>= 4;
+ 		if (dev >= 0 && dev < MAX_MIXER_DEV && mixer_devs[dev] == NULL) {
+ 			request_module("mixer%d", dev);
+ 		}
++		retval = -ENXIO;
+ 		if (dev && (dev >= num_mixers || mixer_devs[dev] == NULL))
+-			return -ENXIO;
++			break;
+ 	
+ 		if (!try_module_get(mixer_devs[dev]->owner))
+-			return -ENXIO;
++			break;
++
++		retval = 0;
+ 		break;
+ 
+ 	case SND_DEV_SEQ:
+ 	case SND_DEV_SEQ2:
+-		if ((retval = sequencer_open(dev, file)) < 0)
+-			return retval;
++		retval = sequencer_open(dev, file);
+ 		break;
+ 
+ 	case SND_DEV_MIDIN:
+-		if ((retval = MIDIbuf_open(dev, file)) < 0)
+-			return retval;
++		retval = MIDIbuf_open(dev, file);
+ 		break;
+ 
+ 	case SND_DEV_DSP:
+ 	case SND_DEV_DSP16:
+ 	case SND_DEV_AUDIO:
+-		if ((retval = audio_open(dev, file)) < 0)
+-			return retval;
++		retval = audio_open(dev, file);
+ 		break;
+ 
+ 	default:
+ 		printk(KERN_ERR "Invalid minor device %d\n", dev);
+-		return -ENXIO;
++		retval = -ENXIO;
+ 	}
+ 
++	unlock_kernel();
+ 	return 0;
+ }
+ 
+diff --git a/sound/oss/swarm_cs4297a.c b/sound/oss/swarm_cs4297a.c
+index 3136c88..34b0838 100644
+--- a/sound/oss/swarm_cs4297a.c
++++ b/sound/oss/swarm_cs4297a.c
+@@ -68,6 +68,7 @@
+ #include <linux/delay.h>
+ #include <linux/sound.h>
+ #include <linux/slab.h>
++#include <linux/smp_lock.h>
+ #include <linux/soundcard.h>
+ #include <linux/ac97_codec.h>
+ #include <linux/pci.h>
+@@ -1534,6 +1535,7 @@ static int cs4297a_open_mixdev(struct inode *inode, struct file *file)
+ 	CS_DBGOUT(CS_FUNCTION | CS_OPEN, 4,
+ 		  printk(KERN_INFO "cs4297a: cs4297a_open_mixdev()+\n"));
+ 
++	lock_kernel();
+ 	list_for_each(entry, &cs4297a_devs)
+ 	{
+ 		s = list_entry(entry, struct cs4297a_state, list);
+@@ -1544,6 +1546,8 @@ static int cs4297a_open_mixdev(struct inode *inode, struct file *file)
+ 	{
+ 		CS_DBGOUT(CS_FUNCTION | CS_OPEN | CS_ERROR, 2,
+ 			printk(KERN_INFO "cs4297a: cs4297a_open_mixdev()- -ENODEV\n"));
++
++		unlock_kernel();
+ 		return -ENODEV;
+ 	}
+ 	VALIDATE_STATE(s);
+@@ -1551,6 +1555,7 @@ static int cs4297a_open_mixdev(struct inode *inode, struct file *file)
+ 
+ 	CS_DBGOUT(CS_FUNCTION | CS_OPEN, 4,
+ 		  printk(KERN_INFO "cs4297a: cs4297a_open_mixdev()- 0\n"));
++	unlock_kernel();
+ 
+ 	return nonseekable_open(inode, file);
+ }
+@@ -2369,7 +2374,7 @@ static int cs4297a_release(struct inode *inode, struct file *file)
+ 	return 0;
+ }
+ 
+-static int cs4297a_open(struct inode *inode, struct file *file)
++static int cs4297a_locked_open(struct inode *inode, struct file *file)
+ {
+ 	int minor = iminor(inode);
+ 	struct cs4297a_state *s=NULL;
+@@ -2486,6 +2491,16 @@ static int cs4297a_open(struct inode *inode, struct file *file)
+ 	return nonseekable_open(inode, file);
+ }
+ 
++static int cs4297a_open(struct inode *inode, struct file *file)
++{
++	int ret;
++
++	lock_kernel();
++	ret = cs4297a_open(inode, file);
++	unlock_kernel();
++
++	return ret;
++}
+ 
+ // ******************************************************************************************
+ //   Wave (audio) file operations struct.
+diff --git a/sound/oss/vwsnd.c b/sound/oss/vwsnd.c
+index 20b3b32..99c94c4 100644
+--- a/sound/oss/vwsnd.c
++++ b/sound/oss/vwsnd.c
+@@ -2921,6 +2921,7 @@ static int vwsnd_audio_open(struct inode *inode, struct file *file)
+ 
+ 	DBGE("(inode=0x%p, file=0x%p)\n", inode, file);
+ 
++	lock_kernel();
+ 	INC_USE_COUNT;
+ 	for (devc = vwsnd_dev_list; devc; devc = devc->next_dev)
+ 		if ((devc->audio_minor & ~0x0F) == (minor & ~0x0F))
+@@ -2928,6 +2929,7 @@ static int vwsnd_audio_open(struct inode *inode, struct file *file)
+ 
+ 	if (devc == NULL) {
+ 		DEC_USE_COUNT;
++		unlock_kernel();
+ 		return -ENODEV;
+ 	}
+ 
+@@ -2936,11 +2938,13 @@ static int vwsnd_audio_open(struct inode *inode, struct file *file)
+ 		mutex_unlock(&devc->open_mutex);
+ 		if (file->f_flags & O_NONBLOCK) {
+ 			DEC_USE_COUNT;
++			unlock_kernel();
+ 			return -EBUSY;
+ 		}
+ 		interruptible_sleep_on(&devc->open_wait);
+ 		if (signal_pending(current)) {
+ 			DEC_USE_COUNT;
++			unlock_kernel();
+ 			return -ERESTARTSYS;
+ 		}
+ 		mutex_lock(&devc->open_mutex);
+@@ -2993,6 +2997,7 @@ static int vwsnd_audio_open(struct inode *inode, struct file *file)
+ 
+ 	file->private_data = devc;
+ 	DBGRV();
++	unlock_kernel();
+ 	return 0;
+ }
+ 
+@@ -3062,15 +3067,18 @@ static int vwsnd_mixer_open(struct inode *inode, struct file *file)
+ 	DBGEV("(inode=0x%p, file=0x%p)\n", inode, file);
+ 
+ 	INC_USE_COUNT;
++	lock_kernel();
+ 	for (devc = vwsnd_dev_list; devc; devc = devc->next_dev)
+ 		if (devc->mixer_minor == iminor(inode))
+ 			break;
+ 
+ 	if (devc == NULL) {
+ 		DEC_USE_COUNT;
++		unlock_kernel();
+ 		return -ENODEV;
+ 	}
+ 	file->private_data = devc;
++	unlock_kernel();
+ 	return 0;
+ }
+ 
+diff --git a/sound/sound_core.c b/sound/sound_core.c
+index c8627fc..cb61317 100644
+--- a/sound/sound_core.c
++++ b/sound/sound_core.c
+@@ -629,12 +629,8 @@ static int soundcore_open(struct inode *inode, struct file *file)
+ 		file->f_op = new_fops;
+ 		spin_unlock(&sound_loader_lock);
+ 
+-		if (file->f_op->open) {
+-			/* TODO: push down BKL into indivial open functions */
+-			lock_kernel();
++		if (file->f_op->open)
+ 			err = file->f_op->open(inode,file);
+-			unlock_kernel();
+-		}
+ 
+ 		if (err) {
+ 			fops_put(file->f_op);
 -- 
-Using Opera's revolutionary e-mail client: http://www.opera.com/mail/
+1.7.1
