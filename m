@@ -1,21 +1,20 @@
-From: errordeveloper@gmail.com
-Subject: Re: Kirkwood SoC - AVB support questions ..?
-Date: Sat, 10 Jul 2010 12:01:05 +0100
-Message-ID: <20100710110105.GM7638@00110101.home>
-References: <20100709200117.GC7635@00110101.home>
-	<4C382C37.7090904@audioscience.com>
+From: "Viliam Kubis" <viliam.kubis@gmail.com>
+Subject: Re: Smart 5.1 function not working on VIA VT1708S with
+ *three* jacks on mainboard
+Date: Sat, 10 Jul 2010 14:39:11 +0200
+Message-ID: <op.vfmn3k2py9cctd@localhost>
+References: <AANLkTim0B4gB4X1SfURg_NF4-gnJ3GTGjCH1PIVwBtfD@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id C0AFD245B8
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id E9735245DB
 	for <alsa-devel@alsa-project.org>;
-	Sat, 10 Jul 2010 13:01:10 +0200 (CEST)
-Received: by wyf19 with SMTP id 19so2263940wyf.38
-	for <alsa-devel@alsa-project.org>; Sat, 10 Jul 2010 04:01:09 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <4C382C37.7090904@audioscience.com>
+	Sat, 10 Jul 2010 14:39:14 +0200 (CEST)
+Received: by bwz4 with SMTP id 4so1694069bwz.38
+	for <alsa-devel@alsa-project.org>; Sat, 10 Jul 2010 05:39:12 -0700 (PDT)
+In-Reply-To: <AANLkTim0B4gB4X1SfURg_NF4-gnJ3GTGjCH1PIVwBtfD@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,46 +24,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eliot Blennerhassett <linux@audioscience.com>, alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Raymond
+	Yau <superquad.vortex2@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Ok, so it's really no wonder about these,
-those proprietary are hendeled transparently by an ASIC or an FPGA.
+But my speakers only come with two jacks for input. One for the front  
+speakers and one for rear speakers. So I cannot connect the speakers to  
+all three jacks. I have compiled alsa with --with-debug=full configure  
+option to see which pins it has auto-parsed:
 
-so this won't be the case with AVB,
-i suppose at low sampling (48k or 44k1) it will work over a regular
-network, provided the host is doing only AVB streaming and there is
-no other trafic on the network.
-I'm not intery sure how stream reservation would work, but may be
-you can fake it in software somehow.
+HDA Intel 0000:00:14.2: PCI INT A disabled
+HDA Intel 0000:00:14.2: PCI INT A -> GSI 16 (level, low) -> IRQ 16
+ALSA hda_codec.c:4408: autoconfig: line_outs=1 (0x1c/0x0/0x0/0x0/0x0)
+ALSA hda_codec.c:4412:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+ALSA hda_codec.c:4416:    hp_outs=1 (0x1d/0x0/0x0/0x0/0x0)
+ALSA hda_codec.c:4417:    mono: mono_out=0x0
+ALSA hda_codec.c:4420:    dig-out=0x20/0x0
+ALSA hda_codec.c:4428:    inputs: mic=0x1a, fmic=0x1e, line=0x1b,  
+fline=0x0, cd=0x1f, aux=0x0
 
-there is PTP driver patch here:
-http://kerneltrap.org/mailarchive/linux-netdev/2010/4/29/6276033
+However in function smart51_get, the following condition
 
-it seems to be ptpv1 ..hm
-this ptpd list thread is about patents:
-http://lists.infradead.org/pipermail/ptpd/2010-January/000023.html
+if (ctl & AC_PINCTL_IN_EN
+     && !(ctl & AC_PINCTL_OUT_EN))
+{
+	printk(KERN_INFO "*** PATCH on=0 in via_smart51_get()");
+	on = 0;
+}
 
-could these patents be such a problem?
-will AVB support have to be distributed trough patches because of this?
+will never be true, so smart51_get will always set  
+*ucontrol->value.integer.value to 1. (printk line will not execute)
+
+Smart 5.1 control gets created and appears to be "working". However  
+surround output does not work.
+
+On Sat, 10 Jul 2010 11:41:35 +0200, Raymond Yau  
+<superquad.vortex2@gmail.com> wrote:
+
+>>> It might be. It is important not to mix VT1708 and VT1708S. For  
+>>> VT1708S,
+> the following DACs are used in code:
+>
+>   /* config dac list */
+>   switch (i) {
+>   case AUTO_SEQ_FRONT:
+>   	spec->multiout.dac_nids[i] = 0x10;
+>   	break;
+>   case AUTO_SEQ_CENLFE:
+>   	spec->multiout.dac_nids[i] = 0x24;
+>   	break;
+>   case AUTO_SEQ_SURROUND:
+>   	spec->multiout.dac_nids[i] = 0x11;
+>   	break;
+>   case AUTO_SEQ_SIDE:
+>   	spec->multiout.dac_nids[i] = 0x25;
+>   	break;
+>   }
+>
+>>>  So 0x12 is not used for any of the surround outputs.
+>
+> I think your testing config is not compiled with smart 5.1 requirement
+>
+> Refer to smart51_get() , this function exepct red jack and blue jack
+> are configued to Output
+>
+> But you still plugged in Mic into the pink jack according to your photo.
+>
+> Your speakers have to plugged in both pink and blue jacks
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
 
-well ..i haven't used Netjack or anything, so cannot tell.
-
-On Sat, Jul 10, 2010 at 08:15:51PM +1200, Eliot Blennerhassett wrote:
-> On 10/07/10 08:01, errordeveloper@gmail.com wrote:
-> 
-> > How are the CobraNet and EtherSound drivers designed, has anyone used
-> > those cards ?? (one was from DigiGram and another from Audio Science IIRC)
-> 
-> AudioScience ASI6416 and AS6316 cards use cobranet processor from
-> Cirrus, and appear to the host as a standard soundcard.
-> 
-> Similarly, ASI6585 uses hardware implementation of Axia livewire protocol.
-> 
-> So, none of the network audio protocol is handled by the host PC.
-> 
-> 
-> -- 
-> Eliot Blennerhassett
-> AudioScience Inc.
+-- 
+Using Opera's revolutionary e-mail client: http://www.opera.com/mail/
