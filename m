@@ -1,69 +1,114 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 0/3] further BKL removal
-Date: Sat, 10 Jul 2010 23:51:38 +0200
-Message-ID: <1278798701-11171-1-git-send-email-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: John Kacur <jkacur@redhat.com>, Frederic Weisbecker <fweisbec@gmail.com>, Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>, David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org, Ingo Molnar <mingo@redhat.com>, Jaroslav Kysela <perex@perex.cz>, "J. Bruce Fields" <bfields@fieldses.org>, Matthew Wilcox <willy@linux.intel.com>, Miklos Szeredi <mszeredi@suse.cz>, Takashi Iwai <tiwai@suse.de>, Trond Myklebust <trond.myklebust@fys.uio.no>, alsa-devel@alsa-project.org, linux-fsdevel@vger.kernel.org
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH 3/3] sound: push BKL into open functions
+Date: Sun, 11 Jul 2010 09:15:22 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1007110913120.16744@eeebox2.perex-int.cz>
+References: <1278798701-11171-1-git-send-email-arnd@arndb.de>
+	<1278798701-11171-4-git-send-email-arnd@arndb.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id A99AF24476
+	for <alsa-devel@alsa-project.org>;
+	Sun, 11 Jul 2010 09:15:23 +0200 (CEST)
+In-Reply-To: <1278798701-11171-4-git-send-email-arnd@arndb.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: John Kacur <jkacur@redhat.com>, Frederic Weisbecker <fweisbec@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-With the ioctl, block, tty, vfs and llseek series
-on their way into linux-next, these three patches
-are attacking the hardest remaining issues.
+On Sat, 10 Jul 2010, Arnd Bergmann wrote:
 
-If we get these ready for 2.6.36, the kernel should
-be almost usable with the BKL disabled. In all three
-cases, I'm cheating a bit, because the BKL still
-remains lurking in the dark corners of the three
-subsystems (i810/i830 for drm, OSS for sound and
-lockd for fs/locks.c).
+> --- a/sound/core/hwdep.c
+> +++ b/sound/core/hwdep.c
+> @@ -94,13 +94,18 @@ static int snd_hwdep_open(struct inode *inode, struct file * file)
+> 		hw = snd_lookup_oss_minor_data(iminor(inode),
+> 					       SNDRV_OSS_DEVICE_TYPE_DMFM);
+> #endif
+> -	} else
+> -		return -ENXIO;
+> +	} else {
+> +		err = -ENXIO;
+> +		goto out;
+> +	}
+> +
+> +	err = -ENODEV;
+> 	if (hw == NULL)
+> -		return -ENODEV;
+> +		goto out;
+>
+> +	err = -EFAULT;
+> 	if (!try_module_get(hw->card->module))
+> -		return -EFAULT;
+> +		goto out;
+>
+> 	init_waitqueue_entry(&wait, current);
+> 	add_wait_queue(&hw->open_wait, &wait);
+> @@ -147,6 +152,7 @@ static int snd_hwdep_open(struct inode *inode, struct file * file)
+> 	mutex_unlock(&hw->open_mutex);
+> 	if (err < 0)
+> 		module_put(hw->card->module);
+> +out:
+> 	return err;
+> }
+>
+> diff --git a/sound/core/oss/mixer_oss.c b/sound/core/oss/mixer_oss.c
+> index f50ebf2..c30b1f3 100644
+> --- a/sound/core/oss/mixer_oss.c
+> +++ b/sound/core/oss/mixer_oss.c
+> @@ -49,17 +49,19 @@ static int snd_mixer_oss_open(struct inode *inode, struct file *file)
+>
+> 	card = snd_lookup_oss_minor_data(iminor(inode),
+> 					 SNDRV_OSS_DEVICE_TYPE_MIXER);
+> -	if (card == NULL)
+> -		return -ENODEV;
+> -	if (card->mixer_oss == NULL)
+> -		return -ENODEV;
+> +	err = -ENODEV;
+> +	if (card == NULL || card->mixer_oss == NULL)
+> +		goto out;
+> +
+> 	err = snd_card_file_add(card, file);
+> 	if (err < 0)
+> -		return err;
+> +		goto out;
+> +
+> 	fmixer = kzalloc(sizeof(*fmixer), GFP_KERNEL);
+> 	if (fmixer == NULL) {
+> 		snd_card_file_remove(card, file);
+> -		return -ENOMEM;
+> +		err = -ENOMEM;
+> +		goto out;
+> 	}
+> 	fmixer->card = card;
+> 	fmixer->mixer = card->mixer_oss;
+> @@ -67,9 +69,10 @@ static int snd_mixer_oss_open(struct inode *inode, struct file *file)
+> 	if (!try_module_get(card->module)) {
+> 		kfree(fmixer);
+> 		snd_card_file_remove(card, file);
+> -		return -EFAULT;
+> +		err = -EFAULT;
+> 	}
+> -	return 0;
+> +out:
+> +	return err;
+> }
+>
 
-	Arnd
+I don't see any reason (benefit) to add gotos to these two functions.
 
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: David Airlie <airlied@linux.ie>
-Cc: dri-devel@lists.freedesktop.org
-Cc: Frederic Weisbecker <fweisbec@gmail.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: "J. Bruce Fields" <bfields@fieldses.org>
-Cc: John Kacur <jkacur@redhat.com>
-Cc: Matthew Wilcox <willy@linux.intel.com>
-Cc: Miklos Szeredi <mszeredi@suse.cz>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Trond Myklebust <trond.myklebust@fys.uio.no>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+ 						Jaroslav
 
-Arnd Bergmann (2):
-  drm: kill BKL from common code
-  sound: push BKL into open functions
-
-Matthew Wilcox (1):
-  Remove BKL from fs/locks.c
-
- arch/um/drivers/hostaudio_kern.c   |    6 ++
- drivers/gpu/drm/drm_drv.c          |    4 +-
- drivers/gpu/drm/drm_fops.c         |   23 ++++----
- drivers/gpu/drm/i810/i810_dma.c    |   44 +++++++++-----
- drivers/gpu/drm/i810/i810_drv.c    |    2 +-
- drivers/gpu/drm/i810/i810_drv.h    |    1 +
- drivers/gpu/drm/i830/i830_dma.c    |   42 +++++++++----
- drivers/gpu/drm/i830/i830_drv.c    |    2 +-
- drivers/gpu/drm/i830/i830_drv.h    |    1 +
- fs/Kconfig                         |    4 +
- fs/locks.c                         |  116 ++++++++++++++++++++++--------------
- include/drm/drmP.h                 |    2 +-
- sound/core/hwdep.c                 |   14 +++-
- sound/core/oss/mixer_oss.c         |   19 ++++---
- sound/oss/au1550_ac97.c            |   26 +++++---
- sound/oss/dmasound/dmasound_core.c |   28 +++++++--
- sound/oss/msnd_pinnacle.c          |   10 ++-
- sound/oss/sh_dac_audio.c           |    9 ++-
- sound/oss/soundcard.c              |   20 ++++---
- sound/oss/swarm_cs4297a.c          |   17 +++++-
- sound/oss/vwsnd.c                  |    8 +++
- sound/sound_core.c                 |    6 +--
- 22 files changed, 267 insertions(+), 137 deletions(-)
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project; Red Hat, Inc.
