@@ -1,7 +1,7 @@
 From: Joe Perches <joe@perches.com>
-Subject: [PATCH 35/36] sound/soc/davinci: Remove unnecessary casts of private_data
-Date: Mon, 12 Jul 2010 13:50:27 -0700
-Message-ID: <4cdf03e6ab6a80a90be8aff33f8261a3cb367676.1278967121.git.joe@perches.com>
+Subject: [PATCH 34/36] sound/soc/blackfin: Remove unnecessary casts of private_data
+Date: Mon, 12 Jul 2010 13:50:26 -0700
+Message-ID: <1c7c609ba4910da572c7888069707548af187651.1278967121.git.joe@perches.com>
 References: <cover.1278967120.git.joe@perches.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1278967120.git.joe@perches.com>
@@ -12,21 +12,57 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Joe Perches <joe@perches.com>
 ---
- sound/soc/davinci/davinci-pcm.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/soc/blackfin/bf5xx-ac97.c |    6 ++----
+ sound/soc/blackfin/bf5xx-tdm.c  |    6 ++----
+ 2 files changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
-index 2dc406f..def454e 100644
---- a/sound/soc/davinci/davinci-pcm.c
-+++ b/sound/soc/davinci/davinci-pcm.c
-@@ -800,7 +800,7 @@ static void davinci_pcm_free(struct snd_pcm *pcm)
- 		dma_free_writecombine(pcm->card->dev, buf->bytes,
- 				      buf->area, buf->addr);
- 		buf->area = NULL;
--		iram_dma = (struct snd_dma_buffer *)buf->private_data;
-+		iram_dma = buf->private_data;
- 		if (iram_dma) {
- 			sram_free(iram_dma->area, iram_dma->bytes);
- 			kfree(iram_dma);
+diff --git a/sound/soc/blackfin/bf5xx-ac97.c b/sound/soc/blackfin/bf5xx-ac97.c
+index 523b7fc..c0eba51 100644
+--- a/sound/soc/blackfin/bf5xx-ac97.c
++++ b/sound/soc/blackfin/bf5xx-ac97.c
+@@ -255,8 +255,7 @@ EXPORT_SYMBOL_GPL(soc_ac97_ops);
+ #ifdef CONFIG_PM
+ static int bf5xx_ac97_suspend(struct snd_soc_dai *dai)
+ {
+-	struct sport_device *sport =
+-		(struct sport_device *)dai->private_data;
++	struct sport_device *sport = dai->private_data;
+ 
+ 	pr_debug("%s : sport %d\n", __func__, dai->id);
+ 	if (!dai->active)
+@@ -271,8 +270,7 @@ static int bf5xx_ac97_suspend(struct snd_soc_dai *dai)
+ static int bf5xx_ac97_resume(struct snd_soc_dai *dai)
+ {
+ 	int ret;
+-	struct sport_device *sport =
+-		(struct sport_device *)dai->private_data;
++	struct sport_device *sport = dai->private_data;
+ 
+ 	pr_debug("%s : sport %d\n", __func__, dai->id);
+ 	if (!dai->active)
+diff --git a/sound/soc/blackfin/bf5xx-tdm.c b/sound/soc/blackfin/bf5xx-tdm.c
+index 4b36012..24c1426 100644
+--- a/sound/soc/blackfin/bf5xx-tdm.c
++++ b/sound/soc/blackfin/bf5xx-tdm.c
+@@ -210,8 +210,7 @@ static int bf5xx_tdm_set_channel_map(struct snd_soc_dai *dai,
+ #ifdef CONFIG_PM
+ static int bf5xx_tdm_suspend(struct snd_soc_dai *dai)
+ {
+-	struct sport_device *sport =
+-		(struct sport_device *)dai->private_data;
++	struct sport_device *sport = dai->private_data;
+ 
+ 	if (!dai->active)
+ 		return 0;
+@@ -225,8 +224,7 @@ static int bf5xx_tdm_suspend(struct snd_soc_dai *dai)
+ static int bf5xx_tdm_resume(struct snd_soc_dai *dai)
+ {
+ 	int ret;
+-	struct sport_device *sport =
+-		(struct sport_device *)dai->private_data;
++	struct sport_device *sport = dai->private_data;
+ 
+ 	if (!dai->active)
+ 		return 0;
 -- 
 1.7.1.337.g6068.dirty
