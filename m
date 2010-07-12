@@ -1,19 +1,11 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [patch 0/2] Kirkwood audio fixes
-Date: Mon, 12 Jul 2010 12:03:05 +0100
-Message-ID: <1278932585.3072.33.camel@odin>
-References: <20100711212830.815827907@rtp-net.org>
+From: Manuel Lauss <manuel.lauss@googlemail.com>
+Subject: [PATCH] ASoC: au1x: fix section mismatch in psc-i2s.c
+Date: Mon, 12 Jul 2010 15:14:59 +0200
+Message-ID: <1278940499-16824-1-git-send-email-manuel.lauss@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 18F51243BD
-	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jul 2010 13:03:14 +0200 (CEST)
-Received: by wwc33 with SMTP id 33so651003wwc.20
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jul 2010 04:03:07 -0700 (PDT)
-In-Reply-To: <20100711212830.815827907@rtp-net.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,29 +15,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: arnaud.patard@rtp-net.org
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, tbm@cyrius.com
+To: alsa-devel@alsa-project.org
+Cc: Manuel Lauss <manuel.lauss@googlemail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2010-07-11 at 23:28 +0200, arnaud.patard@rtp-net.org wrote:
-> 
-> Hi,
-> 
-> While working on the t5325 audio support, I found two small buglets in the
-> kirkwood ASoC support. 
-> 
-> The first one is aiming at fixing mono audio playback and should fix mono
-> playback for all platforms.
-> The second is adding support for muting/unmuting kirkwood audio. It's 
-> mainly usefull for the t5325 which has a bootloader playing with this
-> (hardware default is not muted).
-> 
-> 
+Annotate platform probe callback with __devinit instead of plain __init.
 
-All
+Signed-off-by: Manuel Lauss <manuel.lauss@googlemail.com>
+---
+ sound/soc/au1x/psc-i2s.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
+index 495be6e..24454c9 100644
+--- a/sound/soc/au1x/psc-i2s.c
++++ b/sound/soc/au1x/psc-i2s.c
+@@ -300,7 +300,7 @@ struct snd_soc_dai au1xpsc_i2s_dai = {
+ };
+ EXPORT_SYMBOL(au1xpsc_i2s_dai);
+ 
+-static int __init au1xpsc_i2s_drvprobe(struct platform_device *pdev)
++static int __devinit au1xpsc_i2s_drvprobe(struct platform_device *pdev)
+ {
+ 	struct resource *r;
+ 	unsigned long sel;
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+1.7.1.1
+
