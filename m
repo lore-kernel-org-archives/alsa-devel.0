@@ -1,20 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 5/8] ASoC: fsi: modify wrong value setting
-	order of TDM
-Date: Mon, 12 Jul 2010 10:00:14 +0100
-Message-ID: <20100712090014.GC21840@rakim.wolfsonmicro.main>
-References: <w3pr5j9dz2s.wl%kuninori.morimoto.gx@renesas.com>
-	<w3pk4p1dz0f.wl%kuninori.morimoto.gx@renesas.com>
+From: Reena Chauhan <reena.nith@gmail.com>
+Subject: Help required regarding Capture & palyback code for
+	ALSA
+Date: Mon, 12 Jul 2010 14:39:03 +0530
+Message-ID: <AANLkTimXv7Regvxbgt3L8NpDHCTvk9IkNTLKJCp7ljrr@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B80402413B
+Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0EB642413F
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jul 2010 11:00:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <w3pk4p1dz0f.wl%kuninori.morimoto.gx@renesas.com>
+	Mon, 12 Jul 2010 11:09:04 +0200 (CEST)
+Received: by pxi2 with SMTP id 2so2070093pxi.38
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jul 2010 02:09:04 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,26 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 12, 2010 at 02:56:17PM +0900, Kuninori Morimoto wrote:
-> channel size should be set before setting register value
+Hii
+I m new to ALSA programming ..
+i have follow the Guide "Introduction to Sound Programming with ALSA" to
+make code for capture & playback.when i have compiled the code for capture i
+dont know from where to give the input. in the Guide it is written that "If
+you have a microphone connected to your sound card, use a mixer program to
+set the recording source and level. Alternatively, you can run a CD player
+program and set the recording source to CD. Try running Listing 4 and
+redirecting the output to a file" i dont know how to use the mixer program
+..
+but I dont know how to do it to capture some input given by me & playback it
+..
 
-So, this looks like a bug fix which should go into 2.6.35 but...
+thanx & Regrads
 
->  	case SH_FSI_FMT_TDM:
-> -		data = CR_TDM | (fsi->chan - 1);
->  		fsi->chan = is_play ?
->  			SH_FSI_GET_CH_O(flags) : SH_FSI_GET_CH_I(flags);
-> +		data = CR_TDM | (fsi->chan - 1);
->  		break;
 
-...it depends on your earlier patch to change the CR_ macros which is
-just a coding style tweak and so should wait for 2.6.36.
-
-When preparing patches it's good to separate out things like cleanups
-and new features from bug fixes - the bug fixes we want to get into the
-next release if possible, but other things are supposed to wait for the
-next kernel development cycle.
+-- 
+Reena Chauhan
+Scientist-C
+Application & Baseband Platform,
+SBSG ,DEAL,Raipur Road
+Dehradun-248001
