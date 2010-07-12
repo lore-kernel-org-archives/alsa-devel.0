@@ -1,160 +1,52 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 36/36] sound/core: Remove unnecessary casts of private_data
-Date: Mon, 12 Jul 2010 13:50:28 -0700
-Message-ID: <2411ee190e0bcb4ba81d1f2e1b5db2e2a53fa1ca.1278967121.git.joe@perches.com>
-References: <cover.1278967120.git.joe@perches.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] sound/oss: convert to unlocked_ioctl
+Date: Mon, 12 Jul 2010 23:13:03 +0200
+Message-ID: <201007122313.03465.arnd@arndb.de>
+References: <1278798701-11171-1-git-send-email-arnd@arndb.de> <201007121953.19531.arnd@arndb.de> <s5hocec5tby.wl%tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1278967120.git.joe@perches.com>
+In-Reply-To: <s5hocec5tby.wl%tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jiri Kosina <trivial@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>, John Kacur <jkacur@redhat.com>, Frederic Weisbecker <fweisbec@gmail.com>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- sound/core/oss/mixer_oss.c |   22 +++++++++++-----------
- sound/core/pcm.c           |    3 +--
- sound/core/timer.c         |    4 ++--
- 3 files changed, 14 insertions(+), 15 deletions(-)
+On Monday 12 July 2010 22:38:25 Takashi Iwai wrote:
+> Now the rest is eliminating each lock_kernel() in sound/oss/*.c :)
 
-diff --git a/sound/core/oss/mixer_oss.c b/sound/core/oss/mixer_oss.c
-index f50ebf2..86afb13 100644
---- a/sound/core/oss/mixer_oss.c
-+++ b/sound/core/oss/mixer_oss.c
-@@ -77,7 +77,7 @@ static int snd_mixer_oss_release(struct inode *inode, struct file *file)
- 	struct snd_mixer_oss_file *fmixer;
- 
- 	if (file->private_data) {
--		fmixer = (struct snd_mixer_oss_file *) file->private_data;
-+		fmixer = file->private_data;
- 		module_put(fmixer->card->module);
- 		snd_card_file_remove(fmixer->card, file);
- 		kfree(fmixer);
-@@ -368,7 +368,7 @@ static int snd_mixer_oss_ioctl1(struct snd_mixer_oss_file *fmixer, unsigned int
- 
- static long snd_mixer_oss_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- {
--	return snd_mixer_oss_ioctl1((struct snd_mixer_oss_file *) file->private_data, cmd, arg);
-+	return snd_mixer_oss_ioctl1(file->private_data, cmd, arg);
- }
- 
- int snd_mixer_oss_ioctl_card(struct snd_card *card, unsigned int cmd, unsigned long arg)
-@@ -582,7 +582,7 @@ static int snd_mixer_oss_get_volume1(struct snd_mixer_oss_file *fmixer,
- 				     struct snd_mixer_oss_slot *pslot,
- 				     int *left, int *right)
- {
--	struct slot *slot = (struct slot *)pslot->private_data;
-+	struct slot *slot = pslot->private_data;
- 	
- 	*left = *right = 100;
- 	if (slot->present & SNDRV_MIXER_OSS_PRESENT_PVOLUME) {
-@@ -691,7 +691,7 @@ static int snd_mixer_oss_put_volume1(struct snd_mixer_oss_file *fmixer,
- 				     struct snd_mixer_oss_slot *pslot,
- 				     int left, int right)
- {
--	struct slot *slot = (struct slot *)pslot->private_data;
-+	struct slot *slot = pslot->private_data;
- 	
- 	if (slot->present & SNDRV_MIXER_OSS_PRESENT_PVOLUME) {
- 		snd_mixer_oss_put_volume1_vol(fmixer, pslot, slot->numid[SNDRV_MIXER_OSS_ITEM_PVOLUME], left, right);
-@@ -740,7 +740,7 @@ static int snd_mixer_oss_get_recsrc1_sw(struct snd_mixer_oss_file *fmixer,
- 					struct snd_mixer_oss_slot *pslot,
- 					int *active)
- {
--	struct slot *slot = (struct slot *)pslot->private_data;
-+	struct slot *slot = pslot->private_data;
- 	int left, right;
- 	
- 	left = right = 1;
-@@ -753,7 +753,7 @@ static int snd_mixer_oss_get_recsrc1_route(struct snd_mixer_oss_file *fmixer,
- 					   struct snd_mixer_oss_slot *pslot,
- 					   int *active)
- {
--	struct slot *slot = (struct slot *)pslot->private_data;
-+	struct slot *slot = pslot->private_data;
- 	int left, right;
- 	
- 	left = right = 1;
-@@ -766,7 +766,7 @@ static int snd_mixer_oss_put_recsrc1_sw(struct snd_mixer_oss_file *fmixer,
- 					struct snd_mixer_oss_slot *pslot,
- 					int active)
- {
--	struct slot *slot = (struct slot *)pslot->private_data;
-+	struct slot *slot = pslot->private_data;
- 	
- 	snd_mixer_oss_put_volume1_sw(fmixer, pslot, slot->numid[SNDRV_MIXER_OSS_ITEM_CSWITCH], active, active, 0);
- 	return 0;
-@@ -776,7 +776,7 @@ static int snd_mixer_oss_put_recsrc1_route(struct snd_mixer_oss_file *fmixer,
- 					   struct snd_mixer_oss_slot *pslot,
- 					   int active)
- {
--	struct slot *slot = (struct slot *)pslot->private_data;
-+	struct slot *slot = pslot->private_data;
- 	
- 	snd_mixer_oss_put_volume1_sw(fmixer, pslot, slot->numid[SNDRV_MIXER_OSS_ITEM_CROUTE], active, active, 1);
- 	return 0;
-@@ -813,7 +813,7 @@ static int snd_mixer_oss_get_recsrc2(struct snd_mixer_oss_file *fmixer, unsigned
- 		if (!(mixer->mask_recsrc & (1 << idx)))
- 			continue;
- 		pslot = &mixer->slots[idx];
--		slot = (struct slot *)pslot->private_data;
-+		slot = pslot->private_data;
- 		if (slot->signature != SNDRV_MIXER_OSS_SIGNATURE)
- 			continue;
- 		if (!(slot->present & SNDRV_MIXER_OSS_PRESENT_CAPTURE))
-@@ -861,7 +861,7 @@ static int snd_mixer_oss_put_recsrc2(struct snd_mixer_oss_file *fmixer, unsigned
- 		if (!(mixer->mask_recsrc & (1 << idx)))
- 			continue;
- 		pslot = &mixer->slots[idx];
--		slot = (struct slot *)pslot->private_data;
-+		slot = pslot->private_data;
- 		if (slot->signature != SNDRV_MIXER_OSS_SIGNATURE)
- 			continue;
- 		if (!(slot->present & SNDRV_MIXER_OSS_PRESENT_CAPTURE))
-@@ -925,7 +925,7 @@ static int snd_mixer_oss_build_test(struct snd_mixer_oss *mixer, struct slot *sl
- 
- static void snd_mixer_oss_slot_free(struct snd_mixer_oss_slot *chn)
- {
--	struct slot *p = (struct slot *)chn->private_data;
-+	struct slot *p = chn->private_data;
- 	if (p) {
- 		if (p->allocated && p->assigned) {
- 			kfree(p->assigned->name);
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index cbe815d..de5a0eb 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -358,8 +358,7 @@ static void snd_pcm_stream_proc_info_read(struct snd_info_entry *entry,
- static void snd_pcm_substream_proc_info_read(struct snd_info_entry *entry,
- 					     struct snd_info_buffer *buffer)
- {
--	snd_pcm_proc_info_read((struct snd_pcm_substream *)entry->private_data,
--			       buffer);
-+	snd_pcm_proc_info_read(entry->private_data, buffer);
- }
- 
- static void snd_pcm_substream_proc_hw_params_read(struct snd_info_entry *entry,
-diff --git a/sound/core/timer.c b/sound/core/timer.c
-index 13afb60..5ab1014 100644
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -962,7 +962,7 @@ static int snd_timer_s_start(struct snd_timer * timer)
- 	struct snd_timer_system_private *priv;
- 	unsigned long njiff;
- 
--	priv = (struct snd_timer_system_private *) timer->private_data;
-+	priv = timer->private_data;
- 	njiff = (priv->last_jiffies = jiffies);
- 	if (priv->correction > timer->sticks - 1) {
- 		priv->correction -= timer->sticks - 1;
-@@ -981,7 +981,7 @@ static int snd_timer_s_stop(struct snd_timer * timer)
- 	struct snd_timer_system_private *priv;
- 	unsigned long jiff;
- 
--	priv = (struct snd_timer_system_private *) timer->private_data;
-+	priv = timer->private_data;
- 	del_timer(&priv->tlist);
- 	jiff = jiffies;
- 	if (time_before(jiff, priv->last_expires))
--- 
-1.7.1.337.g6068.dirty
+For other files, I've used a script (see below) to do this, it probably
+works with the OSS files as well, although I have not tried yet.
+
+Of course, another option for OSS device drivers would be to
+remove the entire driver ;). Either way, my feeling is that the
+OSS drivers are not stopping anyone from building a kernel without
+CONFIG_BKL once we have introduced that symbol and made the drivers
+depend on it.
+
+	Arnd
+
+---
+#!/bin/bash
+file=$1
+name=$2
+if grep -q lock_kernel ${file} ; then
+    if grep -q 'include.*linux.mutex.h' ${file} ; then
+            sed -i '/include.*<linux\/smp_lock.h>/d' ${file}
+    else
+            sed -i 's/include.*<linux\/smp_lock.h>.*$/include <linux\/mutex.h>/g' ${file}
+    fi
+    sed -i ${file} \
+        -e "/^#include.*linux.mutex.h/,$ {
+                1,/^\(static\|int\|long\)/ {
+                     /^\(static\|int\|long\)/istatic DEFINE_MUTEX(${name}_mutex);
+
+} }"  \
+    -e "s/\(un\)*lock_kernel\>[ ]*()/mutex_\1lock(\&${name}_mutex)/g" \
+    -e '/[      ]*cycle_kernel_lock();/d'
+else
+    sed -i -e '/include.*\<smp_lock.h\>/d' ${file}  \
+                -e '/cycle_kernel_lock()/d'
+fi
