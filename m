@@ -1,19 +1,22 @@
-From: Reena Chauhan <reena.nith@gmail.com>
-Subject: Help required regarding Capture & palyback code for
-	ALSA
-Date: Mon, 12 Jul 2010 14:39:03 +0530
-Message-ID: <AANLkTimXv7Regvxbgt3L8NpDHCTvk9IkNTLKJCp7ljrr@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: SAMSUNG: Add Aquila sound driver
+Date: Mon, 12 Jul 2010 10:41:58 +0100
+Message-ID: <20100712094157.GD21840@rakim.wolfsonmicro.main>
+References: <4C355AC2.8090502@samsung.com>
+	<20100708070549.GA29850@opensource.wolfsonmicro.com>
+	<4C368794.2040600@samsung.com>
+	<20100709024215.GA13944@opensource.wolfsonmicro.com>
+	<4C369DA7.6070902@samsung.com> <4C3AC30D.2000107@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0EB642413F
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EF45124362
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jul 2010 11:09:04 +0200 (CEST)
-Received: by pxi2 with SMTP id 2so2070093pxi.38
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jul 2010 02:09:04 -0700 (PDT)
+	Mon, 12 Jul 2010 11:41:58 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4C3AC30D.2000107@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,28 +26,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Chanwoo Choi <cw00.choi@samsung.com>
+Cc: alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Kyungmin Park <kyungmin.park@samsung.com>, Joonyoung Shim <jy0922.shim@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hii
-I m new to ALSA programming ..
-i have follow the Guide "Introduction to Sound Programming with ALSA" to
-make code for capture & playback.when i have compiled the code for capture i
-dont know from where to give the input. in the Guide it is written that "If
-you have a microphone connected to your sound card, use a mixer program to
-set the recording source and level. Alternatively, you can run a CD player
-program and set the recording source to CD. Try running Listing 4 and
-redirecting the output to a file" i dont know how to use the mixer program
-..
-but I dont know how to do it to capture some input given by me & playback it
-..
+On Mon, Jul 12, 2010 at 04:23:57PM +0900, Chanwoo Choi wrote:
 
-thanx & Regrads
+> After upgrading existing i2s CPU drivers to run sound on Aquila board,
+> Should I post this patch to upstream kernel?
+> Or,
+> Now, I post this patch which haven't used i2sv5 CPU driver to upstream kernel.
+> Then, I will implement it and post incremental patch using it to run
+> on Aquila board.
 
+> Could you give me the opinion about this question?
 
--- 
-Reena Chauhan
-Scientist-C
-Application & Baseband Platform,
-SBSG ,DEAL,Raipur Road
-Dehradun-248001
+I think whatever is easiest for you guys is fine - whatever is done in
+the board specific code is only really going to impact people who have
+Aquilla boards so the main thing is it makes sense to those people.
