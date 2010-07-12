@@ -1,18 +1,19 @@
-From: Matthew Hudson <matthewlhudson@gmail.com>
-Subject: ALSA Help?
-Date: Mon, 12 Jul 2010 09:22:20 -0400
-Message-ID: <AANLkTikoCl5PBL52HAIdxz50uNmJkL7r44TGiuAKO72j@mail.gmail.com>
+From: John Simpson <john@swajime.com>
+Subject: Compiler errors in alsa-lib-1.0.22/test/*.c
+Date: Mon, 12 Jul 2010 10:20:13 -0500
+Message-ID: <AANLkTin75qlRIEXwE8_12m3GcGXagKY0lQhQ4hN9h_co@mail.gmail.com>
+Reply-To: john@swajime.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0F48E2444F
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 093D3244AF
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jul 2010 15:22:21 +0200 (CEST)
-Received: by gxk26 with SMTP id 26so2604868gxk.38
-	for <alsa-devel@alsa-project.org>; Mon, 12 Jul 2010 06:22:21 -0700 (PDT)
+	Mon, 12 Jul 2010 17:20:14 +0200 (CEST)
+Received: by iwn39 with SMTP id 39so4791782iwn.38
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jul 2010 08:20:14 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,37 +26,46 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-I posted similar messages to the alsa-user mail list and to ubuntu forums (
-http://ubuntuforums.org/showthread.php?t=1528442 ), but haven't been able to
-get help. Could any of you help with this?
-
-So, I've got a great Acer Aspire 7736. Seems to have a RealTek ALC888 card &
-Intel HDA.
-
-I've upgraded Alsa.
-I've used the Drivers at the RealTek site.
-I've checked alsamixer over and over and over.
-
-Yet, currently I cannot get sound through the headphone jack.
-
-Originally, I had problems w/ headphone/speakers playing simlutaneously.
-Somewhere in my adventures I fixed that, but then only one app would use
-sound during a login (UGH). So, I kept poking...as all good linux users
-do...now I'm afraid I've totally wonked it.
-
-I'll put all pertinent alsa-info up here for anyone who will help!!
-
-http://www.alsa-project.org/db/?f=58850a92a9ea0edbf28a8d014a875cdbd81b621d
-
-I guess I'm bright enough to really mess it up, but dumb enough not to have
-a clue how to fix it.
-It has NEVER been able to recognize a headphone plugged in the jack
-automatically. I hope someone knows...
-
--- 
-Soli Deo Gloria!
-Matt Hudson
-
-"There is a kind of happiness and wonder that makes you serious." C.S. Lewis
+SG93ZHksCgpJJ3ZlIGJlZW4gdHJ5aW5nIHRvIHVzZSB0aGUgYWxzYS1saWIgQVBJLCBidXQgSSBo
+YXZlbid0IGJlZW4gYWJsZSB0bwpnZXQgYW55dGhpbmcgdG8gY29tcGlsZS4KCj09PT09PT09PT09
+PT09PT09Cn4vYWxzYS9hbHNhLWxpYi0xLjAuMjIvdGVzdCQgZm9yIGYgaW4gKi5jOyBkbyBlY2hv
+OyBjYyAkZiAyPiYxIHwgaGVhZCAtbjI7IGRvbmUKCi90bXAvY2NOakxXTEsubzogSW4gZnVuY3Rp
+b24gYGR1bXBfZXZlbnRfZmlsdGVyJzoKY2xpZW50X2V2ZW50X2ZpbHRlci5jOigudGV4dCsweDIz
+KTogdW5kZWZpbmVkIHJlZmVyZW5jZSB0bwpgc25kX3NlcV9jbGllbnRfaW5mb19ldmVudF9maWx0
+ZXJfY2hlY2snCgovdG1wL2NjTkxEcWRVLm86IEluIGZ1bmN0aW9uIGBtYWluJzoKY29udHJvbC5j
+OigudGV4dCsweDFjKTogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgc25kX2N0bF9jYXJkX2luZm9f
+c2l6ZW9mJwoKL3RtcC9jY0JlaGI1MS5vOiBJbiBmdW5jdGlvbiBgc2V0cGFyYW1zX3N0cmVhbSc6
+CmxhdGVuY3kuYzooLnRleHQrMHgyNCk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYHNuZF9wY21f
+aHdfcGFyYW1zX2FueScKCi91c3IvbGliL2djYy94ODZfNjQtbGludXgtZ251LzQuNC4zLy4uLy4u
+Ly4uLy4uL2xpYi9jcnQxLm86IEluCmZ1bmN0aW9uIGBfc3RhcnQnOgooLnRleHQrMHgyMCk6IHVu
+ZGVmaW5lZCByZWZlcmVuY2UgdG8gYG1haW4nCgptaWRpbG9vcC5jOiBJbiBmdW5jdGlvbiDigJht
+YWlu4oCZOgptaWRpbG9vcC5jOjE3Mjogd2FybmluZzogZm9ybWF0IOKAmCVp4oCZIGV4cGVjdHMg
+dHlwZSDigJhpbnTigJksIGJ1dCBhcmd1bWVudAoyIGhhcyB0eXBlIOKAmHNpemVfdOKAmQoKbmFt
+ZWhpbnQuYzogSW4gZnVuY3Rpb24g4oCYbWFpbuKAmToKbmFtZWhpbnQuYzoxMjogd2FybmluZzog
+cGFzc2luZyBhcmd1bWVudCAzIG9mIOKAmHNuZF9kZXZpY2VfbmFtZV9oaW504oCZCmZyb20gaW5j
+b21wYXRpYmxlIHBvaW50ZXIgdHlwZQoKb2xkYXBpLmM6IEluIGZ1bmN0aW9uIOKAmG1haW7igJk6
+Cm9sZGFwaS5jOjQwOiB3YXJuaW5nOiBhc3NpZ25tZW50IGZyb20gaW5jb21wYXRpYmxlIHBvaW50
+ZXIgdHlwZQoKL3RtcC9jY21CNTI4cC5vOiBJbiBmdW5jdGlvbiBgZ2VuZXJhdGVfc2luZSc6CnBj
+bS5jOigudGV4dCsweDExOSk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYHNuZF9wY21fZm9ybWF0
+X3dpZHRoJwoKL3RtcC9jY0NoZ1dZQy5vOiBJbiBmdW5jdGlvbiBgbWFpbic6CnBjbV9taW4uYzoo
+LnRleHQrMHg0ZCk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYHNuZF9wY21fb3BlbicKCi90bXAv
+Y2M5RmlPTkcubzogSW4gZnVuY3Rpb24gYHdyaXRlX2V2JzoKcGxheW1pZGkxLmM6KC50ZXh0KzB4
+MWI2NSk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYHNuZF9zZXFfZXZlbnRfb3V0cHV0JwoKL3Rt
+cC9jY1FrbnRCWC5vOiBJbiBmdW5jdGlvbiBgbWFpbic6CnF1ZXVlX3RpbWVyLmM6KC50ZXh0KzB4
+MWQwKTogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgc25kX3NlcV9vcGVuJwoKL3RtcC9jY21JTUNa
+NC5vOiBJbiBmdW5jdGlvbiBgbWFpbic6CnJhd21pZGkuYzooLnRleHQrMHg0ZTMpOiB1bmRlZmlu
+ZWQgcmVmZXJlbmNlIHRvIGBzbmRfcmF3bWlkaV9vcGVuJwoKL3RtcC9jYzNnOEtHYy5vOiBJbiBm
+dW5jdGlvbiBgZXZlbnRfZGVjb2Rlcl9zdGFydF90aW1lcic6CnNlcS5jOigudGV4dCsweDRlMik6
+IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYHNuZF9zZXFfY29udHJvbF9xdWV1ZScKCnNlcS1kZWNv
+ZGVyLmM6NjogZXJyb3I6IOKAmFNORF9TRVFfRVZFTlRfU1lTVEVN4oCZIHVuZGVjbGFyZWQgaGVy
+ZSAobm90IGluCmEgZnVuY3Rpb24pCnNlcS1kZWNvZGVyLmM6NjogZXJyb3I6IGFycmF5IGluZGV4
+IGluIGluaXRpYWxpemVyIG5vdCBvZiBpbnRlZ2VyIHR5cGUKCnNlcS1zZW5kZXIuYzo2ODogZXJy
+b3I6IGV4cGVjdGVkIOKAmCnigJkgYmVmb3JlIOKAmCrigJkgdG9rZW4Kc2VxLXNlbmRlci5jOjEw
+MDogZXJyb3I6IGV4cGVjdGVkIOKAmCnigJkgYmVmb3JlIOKAmCrigJkgdG9rZW4KCi90bXAvY2N4
+eVpmaGcubzogSW4gZnVuY3Rpb24gYHNob3dfc3RhdHVzJzoKdGltZXIuYzooLnRleHQrMHgxZCk6
+IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYHNuZF90aW1lcl9zdGF0dXNfc2l6ZW9mJwo9PT09PT09
+PT09PT09PT09PQoKRGlkIEkgbWlzcyBzb21ldGhpbmc/CgpUSUEKCgotLSAKSm9obiBXZXNsZXkg
+U2ltcHNvbgpTd2FKaW1lJ3MgQ292ZeKEoAp3d3cuc3dhamltZS5jb20KX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
