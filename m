@@ -1,19 +1,22 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: issue with TWL4030
-Date: Mon, 12 Jul 2010 13:12:48 +0300
-Message-ID: <201007121312.48518.peter.ujfalusi@nokia.com>
-References: <AANLkTilwdeNLChInBSaFIpVTLDONLXIIHVpLk3Aibk0v@mail.gmail.com>
-	<1278366040.3258.238.camel@odin>
-	<AANLkTilazb9awx-ncJF31JBx4O2wf2Fimzl9EWI9W7YT@mail.gmail.com>
+From: "Viliam Kubis" <viliam.kubis@gmail.com>
+Subject: Re: Smart 5.1 function not working on VIA VT1708S with
+ *three* jacks on mainboard
+Date: Mon, 12 Jul 2010 12:58:54 +0200
+Message-ID: <op.vfp8sffky9cctd@localhost>
+References: <op.ve4vig0ny9cctd@localhost> <op.vff0au0jy9cctd@localhost>
+	<4C35713E.1090709@ladisch.de> <op.vfi2hgary9cctd@localhost>
+	<op.vfko2mysy9cctd@localhost> <4C3ABCF7.3050108@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id AFC762433E
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id C369E243BA
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Jul 2010 12:12:56 +0200 (CEST)
-In-Reply-To: <AANLkTilazb9awx-ncJF31JBx4O2wf2Fimzl9EWI9W7YT@mail.gmail.com>
+	Mon, 12 Jul 2010 12:58:57 +0200 (CEST)
+Received: by bwz4 with SMTP id 4so2363410bwz.38
+	for <alsa-devel@alsa-project.org>; Mon, 12 Jul 2010 03:58:57 -0700 (PDT)
+In-Reply-To: <4C3ABCF7.3050108@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,61 +26,130 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Grazvydas Ignotas <notasas@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Oh my god!! It actually works!!! :) At first speaker-test was not working,  
+but with
 
-On Tuesday 06 July 2010 01:51:20 ext Grazvydas Ignotas wrote:
-> On Tue, Jul 6, 2010 at 12:13 AM,  <peter.ujfalusi@nokia.com> wrote:
-> > What I can think of is:
-> > If only one (the master) stream has been opened, and the stream is not
-> > running (the pcm_trigger has not been called yet), than we could allow
-> > reconfiguration of the codec. Might work OK, but it might cause some
-> > problems under different scenario.
-> =
+[kbs1@localhost a]$ speaker-test -c4 -twav -Dsurround40 <--------- THIS
 
-> This sounds good to me, I wonder what that different scenario could
-> be.
+speaker-test 1.0.23
 
-It's hard to say what scenario, but if we start to fix application bugs in =
+Playback device is surround40
+Stream parameters are 48000Hz, S16_LE, 4 channels
+WAV file(s)
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 32 to 8192
+Period size range from 16 to 4096
+Using max buffer size 8192
+Periods = 4
+was set period_size = 2048
+was set buffer_size = 8192
+  0 - Front Left
+  1 - Front Right
+  3 - Rear Right <-------------- THIS PLAYS
+  2 - Rear Left <-------------- AND THIS PLAYS!!
+Time per period = 5.718945
+  0 - Front Left
+^C
+[kbs1@localhost a]$
 
-driver level, than surely it will not going to be an easy task.
+Finally! My audio experience is now at a whole new level. Thank you very  
+much, I will post this patch to alsa-bugtracker and close the bug, I was  
+starting to think that this is a kernel problem, but now it just works  
+GREAT.
 
-> Is it worth trying implementing that (i.e. would such patch be
-> even considered)?
+Maybe you can add this patch to official alsa-driver version on next  
+release.
 
-As of it now, I'm not planning to add workaround to this, since I can not r=
-eally =
+Have a nice day!
+Best Regards
+Viliam Kubis
 
-test if it is working correctly.
-Also I just came back from holiday, and my mailbox is quite full, so do not =
+On Mon, 12 Jul 2010 08:57:59 +0200, Clemens Ladisch <clemens@ladisch.de>  
+wrote:
 
-expect that I can even take a look at this in the near future.
+> Viliam Kubis wrote:
+>> I have tried the patch ..., but the surround does not work.
+>
+> Okay, next try:
+>
+> --- a/sound/pci/hda/patch_via.c
+> +++ b/sound/pci/hda/patch_via.c
+> @@ -552,24 +552,30 @@ static void via_auto_init_hp_out(struct
+>  	}
+>  }
+> +static int is_smart51_pins(struct via_spec *spec, hda_nid_t pin);
+> +
+>  static void via_auto_init_analog_input(struct hda_codec *codec)
+>  {
+>  	struct via_spec *spec = codec->spec;
+> +	unsigned int ctl;
+>  	int i;
+> 	for (i = 0; i < AUTO_PIN_LAST; i++) {
+>  		hda_nid_t nid = spec->autocfg.input_pins[i];
+> +		if (!nid)
+> +			continue;
+> +		if (spec->smart51_enabled && is_smart51_pins(spec, nid))
+> +			ctl = PIN_OUT;
+> +		else if (i <= AUTO_PIN_FRONT_MIC)
+> +			ctl = PIN_VREF50;
+> +		else
+> +			ctl = PIN_IN;
+>  		snd_hda_codec_write(codec, nid, 0,
+> -				    AC_VERB_SET_PIN_WIDGET_CONTROL,
+> -				    (i <= AUTO_PIN_FRONT_MIC ?
+> -				     PIN_VREF50 : PIN_IN));
+> -
+> +				    AC_VERB_SET_PIN_WIDGET_CONTROL, ctl);
+>  	}
+>  }
+> -static int is_smart51_pins(struct via_spec *spec, hda_nid_t pin);
+> -
+>  static void set_pin_power_state(struct hda_codec *codec, hda_nid_t nid,
+>  				unsigned int *affected_parm)
+>  {
+> @@ -658,6 +664,8 @@ static void set_jack_power_state(struct
+>  		/* PW0 (19h), SW1 (18h), AOW1 (11h) */
+>  		parm = AC_PWRST_D3;
+>  		set_pin_power_state(codec, 0x19, &parm);
+> +		if (spec->smart51_enabled)
+> +			parm = AC_PWRST_D0;
+>  		snd_hda_codec_write(codec, 0x18, 0, AC_VERB_SET_POWER_STATE,
+>  				    parm);
+>  		snd_hda_codec_write(codec, 0x11, 0, AC_VERB_SET_POWER_STATE,
+> @@ -667,6 +675,8 @@ static void set_jack_power_state(struct
+>  		if (is_8ch) {
+>  			parm = AC_PWRST_D3;
+>  			set_pin_power_state(codec, 0x22, &parm);
+> +			if (spec->smart51_enabled)
+> +				parm = AC_PWRST_D0;
+>  			snd_hda_codec_write(codec, 0x26, 0,
+>  					    AC_VERB_SET_POWER_STATE, parm);
+>  			snd_hda_codec_write(codec, 0x24, 0,
+> @@ -3915,6 +3925,13 @@ static int vt1708S_auto_fill_dac_nids(st
+>  		}
+>  	}
+> +	/* for Smart 5.1, line/mic inputs double as output pins */
+> +	if (cfg->line_outs == 1) {
+> +		spec->multiout.num_dacs = 3;
+> +		spec->multiout.dac_nids[AUTO_SEQ_SURROUND] = 0x11;
+> +		spec->multiout.dac_nids[AUTO_SEQ_CENLFE] = 0x24;
+> +	}
+> +
+>  	return 0;
+>  }
+> @@ -3932,7 +3949,8 @@ static int vt1708S_auto_create_multi_out
+>  	for (i = 0; i <= AUTO_SEQ_SIDE; i++) {
+>  		nid = cfg->line_out_pins[i];
+> -		if (!nid)
+> +		/* for Smart 5.1, there are always at least six channels */
+> +		if (!nid && i > AUTO_SEQ_CENLFE)
+>  			continue;
+> 		nid_vol = nid_vols[i];
 
-Having said that.. since I do care about the twl4030 codec driver (and it's =
 
-users), I will try to allocate time to fix it for you.
-
-> On Tue, Jul 6, 2010 at 12:40 AM, Liam Girdwood <lrg@slimlogic.co.uk> wrot=
-e:
-> > Please port your app to ALSA, it's really the easiest option (look at
-> > aplay.c for programming sequence).
-> =
-
-> The problem is not new apps, but legacy ones. Pandora is spiritual
-> successor of Gamepark/GPH devices, which only had OSS drivers, so we
-> have many apps/games outputing through OSS, some of them without
-> source available. We will have to provide userspace OSS emulation at
-> least, and in-kernel OSS emulation is attractive because of
-> performance reasons.
-
-I would advice to use the userspace emulation for now. There might be kerne=
-l =
-
-level fix for this, but it will take time.
-
--- =
-
-P=E9ter
+-- 
+Using Opera's revolutionary e-mail client: http://www.opera.com/mail/
