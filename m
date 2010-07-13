@@ -1,17 +1,14 @@
-From: troy.kisky@boundarydevices.com
-Subject: Re: [PATCH 4/4] ASoC: DaVinci: pcm,
-	fix underrun by using sram
-Date: Tue, 13 Jul 2010 14:01:00 -0500
-Message-ID: <51883.1279047660@boundarydevices.com>
-Reply-To: troy.kisky@boundarydevices.com
+From: Chris <cpollock@embarqmail.com>
+Subject: Which project to choose?
+Date: Tue, 13 Jul 2010 18:02:11 -0500
+Message-ID: <1279062131.24837.22.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1951331328226236893=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sitemail.siteprotect.com (fw.mfg.onr.siteprotect.com
-	[64.26.60.152]) by alsa0.perex.cz (Postfix) with ESMTP id 7BDE7243F6
+Received: from mailrelay.embarq.synacor.com (mailrelay.embarq.synacor.com
+	[208.47.184.3]) by alsa0.perex.cz (Postfix) with ESMTP id CABC024142
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Jul 2010 21:01:03 +0200 (CEST)
+	Wed, 14 Jul 2010 01:02:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,49 +18,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Troy Kisky <troy.kisky@boundarydevices.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nori Sekhar <nsekhar@ti.com>
-Cc: "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "broonie@sirena.org.uk" <broonie@sirena.org.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-  BODY { font-family:Arial, Helvetica, sans-serif;font-size:12px; } 
- On Tue 13/07/10 6:00 AM , "Nori, Sekhar" nsekhar@ti.com sent:
-	Hi Troy,
- On Tue, Nov 17, 2009 at 05:22:34, Troy Kisky wrote:
- > Fix underruns by using dma to copy 1st to sram
- > in a ping/pong buffer style and then copying from
- > the sram to the ASP. This also has the advantage
- > of tolerating very long interrupt latency on dma
- > completion.
- >
- > Signed-off-by: Troy Kisky 
- [...]
- > +static int request_ping_pong(struct snd_pcm_substream *substream,
- > + struct davinci_runtime_data *prtd,
- > + struct snd_dma_buffer *iram_dma)
- > +{
- > + dma_addr_t asp_src_ping;
- > + dma_addr_t asp_dst_ping;
- > + int link;
- > + struct davinci_pcm_dma_params *dma_data = prtd->params;
- > +
- > + /* Request ram master channel */
- > + link = prtd->ram_channel = edma_alloc_channel(EDMA_CHANNEL_ANY,
- > + davinci_pcm_dma_irq, substream,
- > + EVENTQ_1);
- What is the reason for choosing EVENTQ_1 for this channel? EVENTQ_0
- is already being used for ASP channel.
- I imagine it will be much easier to tune the queue usage in the
-system
- if all of audio data was using the same queue.
- I am working on a patch which lets platform specify the event queues
- for audio DMA. I am not sure if I really need to make a provision
-for
- two different queues to be specified - that's why I ask.
- Thanks,
- Sekhar
-	The reason is so that the IRAM data can be fetched and used while 
 
-	EVENTQ_1 fetches the next buffer of data from sdram into IRAM. 
-	Troy 
+--===============1951331328226236893==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-IT2zOgN4pdMo2qLkTcdJ"
 
-	 
+
+--=-IT2zOgN4pdMo2qLkTcdJ
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+I want to submit a bug report on the below. This issue was noted in
+Mandriva 2010 and is still present in 2010.1
+
+pulseaudio[24553]: alsa-util.c: snd_pcm_delay() returned a value that is
+exceptionally large: -161920 bytes (-917 ms).
+localhost pulseaudio[24553]: alsa-util.c: Most likely this is a bug in
+the ALSA driver 'snd_ens1371'. Please report this issue to the ALSA
+developers.
+localhost pulseaudio[24553]: alsa-util.c: snd_pcm_dump():
+localhost pulseaudio[24553]: alsa-util.c: Hardware PCM card 0 'Ensoniq
+AudioPCI' device 0 subdevice 0
+localhost pulseaudio[24553]: alsa-util.c: Its setup is:
+localhost pulseaudio[24553]: alsa-util.c:   stream       : PLAYBACK
+localhost pulseaudio[24553]: alsa-util.c:   access       :
+MMAP_INTERLEAVED
+localhost pulseaudio[24553]: alsa-util.c:   format       : S16_LE
+localhost pulseaudio[24553]: alsa-util.c:   subformat    : STD
+localhost pulseaudio[24553]: alsa-util.c:   channels     : 2
+localhost pulseaudio[24553]: alsa-util.c:   rate         : 44100
+localhost pulseaudio[24553]: alsa-util.c:   exact rate   : 44101
+(1445100000/32768)
+localhost pulseaudio[24553]: alsa-util.c:   msbits       : 16
+localhost pulseaudio[24553]: alsa-util.c:   buffer_size  : 4408
+localhost pulseaudio[24553]: alsa-util.c:   period_size  : 1102
+localhost pulseaudio[24553]: alsa-util.c:   period_time  : 24988
+localhost pulseaudio[24553]: alsa-util.c:   tstamp_mode  : ENABLE
+localhost pulseaudio[24553]: alsa-util.c:   period_step  : 1
+localhost pulseaudio[24553]: alsa-util.c:   avail_min    : 1102
+localhost pulseaudio[24553]: alsa-util.c:   period_event : 1
+localhost pulseaudio[24553]: alsa-util.c:   start_threshold  : -1
+localhost pulseaudio[24553]: alsa-util.c:   stop_threshold   :
+1155530752
+localhost pulseaudio[24553]: alsa-util.c:   silence_threshold: 0
+localhost pulseaudio[24553]: alsa-util.c:   silence_size : 0
+localhost pulseaudio[24553]: alsa-util.c:   boundary     : 1155530752
+localhost pulseaudio[24553]: alsa-util.c:   appl_ptr     : 735801008
+localhost pulseaudio[24553]: alsa-util.c:   hw_ptr       : 735846184
+localhost pulseaudio[24553]: ratelimit.c: 280 events suppressed
+localhost pulseaudio[24553]: asyncq.c: q overrun, queuing locally
+
+Because of the constant disk access when this is happening my system
+becomes almost unusable.
+
+--=20
+Chris
+KeyID 0xE372A7DA98E6705C
+
+
+--=-IT2zOgN4pdMo2qLkTcdJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEABECAAYFAkw88HMACgkQ43Kn2pjmcFwf3wCfW2N94eTHZbnz/4004hywVYrJ
+ZhcAniwa1VA+LgvO4+V10DRl+wKMcNbN
+=btMe
+-----END PGP SIGNATURE-----
+
+--=-IT2zOgN4pdMo2qLkTcdJ--
+
+
+--===============1951331328226236893==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1951331328226236893==--
