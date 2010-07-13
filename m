@@ -1,22 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/8] ASoC: fsi: modify format area
-	definition on flags
-Date: Tue, 13 Jul 2010 09:55:57 +0100
-Message-ID: <20100713085556.GB11860@rakim.wolfsonmicro.main>
-References: <w3pr5j9dz2s.wl%kuninori.morimoto.gx@renesas.com>
-	<w3ppqytdz12.wl%kuninori.morimoto.gx@renesas.com>
-	<20100712085419.GB21840@rakim.wolfsonmicro.main>
-	<w3pbpackwf9.wl%kuninori.morimoto.gx@renesas.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH] ASoC: TWL4030: DAC power optimization
+Date: Tue, 13 Jul 2010 12:07:44 +0300
+Message-ID: <1279012064-684-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8291A243AF
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id CF915243BC
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Jul 2010 10:55:59 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <w3pbpackwf9.wl%kuninori.morimoto.gx@renesas.com>
+	Tue, 13 Jul 2010 11:07:57 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,18 +19,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 13, 2010 at 10:22:35AM +0900, Kuninori Morimoto wrote:
+Restructure the DAPM connections in order to enable
+only the needed DAC (out of four in twl4030 series).
+I need to keep the 'AIF Enable' supply connected to
+the L2/R2 digital path, since the digital loopback
+needs AIF and APLL running.
+If no valid route available, than none of the DAC will
+be powered, but the AIF and APLL is going to be enabled.
+Furthermore, if only one audio path have valid route,
+than only the corresponding DAC will be powered.
 
-> > > +#define SH_FSI_FMT_TDM_DELAY	(6 << 0)
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ sound/soc/codecs/twl4030.c |   15 +++++++++------
+ 1 files changed, 9 insertions(+), 6 deletions(-)
 
-> > Wouldn't it be clearer to just define these as straight numbers?
-
-> Sorry. Do you mean (1 << 0) is needed ?
-> (1 << 0) is not changed from old one
-
-I mean the << 0 is not needed - a shift by zero bits is just the
-original number.
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index d7f0048..6fd6d0b 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -1460,8 +1460,11 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	/* Supply for the digital part (APLL) */
+ 	{"Digital Voice Playback Mixer", NULL, "APLL Enable"},
+ 
+-	{"Digital R1 Playback Mixer", NULL, "AIF Enable"},
+-	{"Digital L1 Playback Mixer", NULL, "AIF Enable"},
++	{"DAC Left1", NULL, "AIF Enable"},
++	{"DAC Right1", NULL, "AIF Enable"},
++	{"DAC Left2", NULL, "AIF Enable"},
++	{"DAC Right1", NULL, "AIF Enable"},
++
+ 	{"Digital R2 Playback Mixer", NULL, "AIF Enable"},
+ 	{"Digital L2 Playback Mixer", NULL, "AIF Enable"},
+ 
+@@ -1532,10 +1535,10 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 
+ 	/* outputs */
+ 	/* Must be always connected (for AIF and APLL) */
+-	{"Virtual HiFi OUT", NULL, "Digital L1 Playback Mixer"},
+-	{"Virtual HiFi OUT", NULL, "Digital R1 Playback Mixer"},
+-	{"Virtual HiFi OUT", NULL, "Digital L2 Playback Mixer"},
+-	{"Virtual HiFi OUT", NULL, "Digital R2 Playback Mixer"},
++	{"Virtual HiFi OUT", NULL, "DAC Left1"},
++	{"Virtual HiFi OUT", NULL, "DAC Right1"},
++	{"Virtual HiFi OUT", NULL, "DAC Left2"},
++	{"Virtual HiFi OUT", NULL, "DAC Right2"},
+ 	/* Must be always connected (for APLL) */
+ 	{"Virtual Voice OUT", NULL, "Digital Voice Playback Mixer"},
+ 	/* Physical outputs */
+-- 
+1.7.1.1
