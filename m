@@ -1,27 +1,22 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH] Two patches for Alsa-plugins (pulse)
-Date: Tue, 13 Jul 2010 16:32:39 +0800
-Message-ID: <AANLkTimyRLyraLjCBGQQcggdsBvjg10T_w2hi8zwIfjn@mail.gmail.com>
-References: <4C22670D.8010104@epost.diwic.se> <s5h6319dj90.wl%tiwai@suse.de>
-	<4C2487EA.3090605@epost.diwic.se> <s5hzky6bgy2.wl%tiwai@suse.de>
-	<s5heifcsvom.wl%tiwai@suse.de>
-	<AANLkTimnfft0c_V9bTK-g8hX2ljc_IJoMliMEwcQTz5g@mail.gmail.com>
-	<s5hiq4or5cz.wl%tiwai@suse.de> <4C376182.5050807@epost.diwic.se>
-	<AANLkTinIl5AyMZyJNabLzdfvGRjU8A6wikmoO4edGt9v@mail.gmail.com>
-	<4C381651.6060603@epost.diwic.se>
-	<AANLkTiknkc75yGObTq5DJxsa5Wswpg7tTLDKEsEh76DE@mail.gmail.com>
-	<4C3C0E46.70500@epost.diwic.se>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/8] ASoC: fsi: modify format area
+	definition on flags
+Date: Tue, 13 Jul 2010 09:55:57 +0100
+Message-ID: <20100713085556.GB11860@rakim.wolfsonmicro.main>
+References: <w3pr5j9dz2s.wl%kuninori.morimoto.gx@renesas.com>
+	<w3ppqytdz12.wl%kuninori.morimoto.gx@renesas.com>
+	<20100712085419.GB21840@rakim.wolfsonmicro.main>
+	<w3pbpackwf9.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 9D8B9243A4
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8291A243AF
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Jul 2010 10:32:41 +0200 (CEST)
-Received: by vws9 with SMTP id 9so5491093vws.38
-	for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2010 01:32:39 -0700 (PDT)
-In-Reply-To: <4C3C0E46.70500@epost.diwic.se>
+	Tue, 13 Jul 2010 10:55:59 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <w3pbpackwf9.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,64 +26,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/7/13 David Henningsson <launchpad.web@epost.diwic.se>
+On Tue, Jul 13, 2010 at 10:22:35AM +0900, Kuninori Morimoto wrote:
 
-> 2010-07-13 07:08, Raymond Yau skrev:
-> > 2010/7/10 David Henningsson <launchpad.web@epost.diwic.se>
-> >
-> >>> PA developer often complain the driver did not provide accurate
-> playback
-> >>> position by the pcm_pointer callback
-> >>>
-> >>> Did the pulse_pointer callback also provide accurate position of the
-> >> pulse
-> >>> device ?
-> >>
-> >> Yes, but it provides the pointer to the fake ring buffer (the alsa-lib
-> >> plugin system expects that all pcm plugins are ring buffers, which seems
-> >> to me like a design flaw).
-> >>
-> > This mean that pulse_pointer jump suddenly when PA wake up from sleep and
-> > write audio to sound card until the ring buffer is empty, Those "0 bytes
-> in
-> > queue " message is the result of PA server flush the ring buffer.
->
-> > Did alsa-lib regard this condition as underrun, since the application
-> > pointer and hardware pointer of the pulse device  seem at the same point
-> ?
->
-> No, I don't think so. An underrun message is a special message sent from
-> the PA server and should not be directly related to the fake ring
-> buffer, and it is that message now being ignored (configurable, thanks
-> to Takashi).
->
+> > > +#define SH_FSI_FMT_TDM_DELAY	(6 << 0)
 
-In fedora 13 , the two underrun messages appear almost immediately after
-starting mpg123
-but mpg123 does not report any underrun on Fedora 10
+> > Wouldn't it be clearer to just define these as straight numbers?
 
-So it look like regression in PA server side if you told me that "An
-underrun message is a special message sent from the PA server " instead of
-underrun detected by alsa-lib by checking the pulse_pointer and the
-application ptr of the pulse device
+> Sorry. Do you mean (1 << 0) is needed ?
+> (1 << 0) is not changed from old one
 
-Under what condition did PA server send the underrun message ?
-
-
->
-> My first patch
-> (http://git.alsa-project.org/?p=alsa-plugins.git;a=commit;h=1675414)
-> fixes so that if pa_stream_writeable_size returns a value greater than
-> the ring buffer's size, it only reports size-1 bytes available, which
-> means that the alsa app won't see it as the application pointer and hw
-> pointer being the same.
->
-> > Is this the reason why alsa-time-test.c fail on the pulse device ?
->
-> No idea, haven't looked further into that application.
->
-> // David
->
+I mean the << 0 is not needed - a shift by zero bits is just the
+original number.
