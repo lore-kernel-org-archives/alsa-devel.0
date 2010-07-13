@@ -1,20 +1,21 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: au1x: fix section mismatch in
- psc-i2s.c
-Date: Tue, 13 Jul 2010 11:41:42 +0100
-Message-ID: <1279017702.3125.36.camel@odin>
-References: <1278940499-16824-1-git-send-email-manuel.lauss@googlemail.com>
+Subject: Re: [PATCH 34/36] sound/soc/blackfin: Remove
+ unnecessary casts of private_data
+Date: Tue, 13 Jul 2010 11:45:48 +0100
+Message-ID: <1279017948.3125.40.camel@odin>
+References: <cover.1278967120.git.joe@perches.com>
+	<1c7c609ba4910da572c7888069707548af187651.1278967121.git.joe@perches.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 70F2924413
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id E0FE32441B
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Jul 2010 12:41:52 +0200 (CEST)
-Received: by wwb13 with SMTP id 13so231238wwb.20
-	for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2010 03:41:47 -0700 (PDT)
-In-Reply-To: <1278940499-16824-1-git-send-email-manuel.lauss@googlemail.com>
+	Tue, 13 Jul 2010 12:45:56 +0200 (CEST)
+Received: by wyf19 with SMTP id 19so4015593wyf.38
+	for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2010 03:45:56 -0700 (PDT)
+In-Reply-To: <1c7c609ba4910da572c7888069707548af187651.1278967121.git.joe@perches.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,35 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Manuel Lauss <manuel.lauss@googlemail.com>
-Cc: alsa-devel@alsa-project.org
+To: Joe Perches <joe@perches.com>
+Cc: alsa-devel@alsa-project.org, Jiri Kosina <trivial@kernel.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-07-12 at 15:14 +0200, Manuel Lauss wrote:
-> Annotate platform probe callback with __devinit instead of plain __init.
-> 
-> Signed-off-by: Manuel Lauss <manuel.lauss@googlemail.com>
-> ---
->  sound/soc/au1x/psc-i2s.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
-> index 495be6e..24454c9 100644
-> --- a/sound/soc/au1x/psc-i2s.c
-> +++ b/sound/soc/au1x/psc-i2s.c
-> @@ -300,7 +300,7 @@ struct snd_soc_dai au1xpsc_i2s_dai = {
->  };
->  EXPORT_SYMBOL(au1xpsc_i2s_dai);
->  
-> -static int __init au1xpsc_i2s_drvprobe(struct platform_device *pdev)
-> +static int __devinit au1xpsc_i2s_drvprobe(struct platform_device *pdev)
->  {
->  	struct resource *r;
->  	unsigned long sel;
+On Mon, 2010-07-12 at 13:50 -0700, Joe Perches wrote:
+> Signed-off-by: Joe Perches <joe@perches.com>
 
+Fwiw, we are getting rid of the void * private_data in the ASoC
+multi-component patch series and will use dev_get_drvdata() style
+accessors.
 
-Manuel, thanks for the patch. Could you CC both Mark and I in the future
-on future ASoC patches. I almost missed this one. 
+Both ASoC patches
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
