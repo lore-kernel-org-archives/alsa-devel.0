@@ -1,83 +1,46 @@
-From: "Nori, Sekhar" <nsekhar-l0cyMroinI0@public.gmane.org>
-Subject: RE: RE: [PATCH 4/4] ASoC: DaVinci: pcm, fix underrun by using sram
-Date: Wed, 14 Jul 2010 18:35:28 +0530
-Message-ID: <B85A65D85D7EB246BE421B3FB0FBB59301E7B42662@dbde02.ent.ti.com>
-References: <51883.1279047660@boundarydevices.com>
+From: fons-5YXofNvN5bf4jJi9/k9gcg@public.gmane.org
+Subject: Re: [LAD] FIxed alsa-tools' envy24control missing peak level meters
+ and "Reset Peaks"
+Date: Wed, 14 Jul 2010 15:45:05 +0200
+Message-ID: <20100714134505.GA4065@zita2>
+References: <AANLkTimVnkZjBLxxhx4I8OtFiu9oOH0cPpX4V9wNimIa@mail.gmail.com>
+	<20100712234002.GF4069@zita2>
+	<AANLkTim7LFEk8VzJgJmlLvgJPJcAfT0uhfRE6nRBbLFH@mail.gmail.com>
+	<20100713081908.GA4083@zita2>
+	<AANLkTil3bV075Ef5-e-UGMDj-3Mmee2fJtUjf3h5U88Y@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <51883.1279047660-Q5RJGjKts06CY9SHAMCTRUEOCMrvLtNR@public.gmane.org>
-Content-Language: en-US
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: "troy.kisky-Q5RJGjKts06CY9SHAMCTRUEOCMrvLtNR@public.gmane.org" <troy.kisky-Q5RJGjKts06CY9SHAMCTRUEOCMrvLtNR@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
-Cc: "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "broonie-GFdadSzt00ze9xe1eoZjHA@public.gmane.org" <broonie-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <AANLkTil3bV075Ef5-e-UGMDj-3Mmee2fJtUjf3h5U88Y-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+To: Niels Mayer <nielsmayer-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 14, 2010 at 00:31:00, troy.kisky-Q5RJGjKts06CY9SHAMCTRUEOCMrvLtNR@public.gmane.org wrote:
->
-> On Tue 13/07/10 6:00 AM , "Nori, Sekhar" nsekhar-l0cyMroinI0@public.gmane.org sent:
->
->       [...]
->
->       > +static int request_ping_pong(struct snd_pcm_substream
-> *substream,
->       > + struct davinci_runtime_data *prtd,
->       > + struct snd_dma_buffer *iram_dma)
->       > +{
->       > + dma_addr_t asp_src_ping;
->       > + dma_addr_t asp_dst_ping;
->       > + int link;
->       > + struct davinci_pcm_dma_params *dma_data = prtd->params;
->       > +
->       > + /* Request ram master channel */
->       > + link = prtd->ram_channel =
-> edma_alloc_channel(EDMA_CHANNEL_ANY,
->       > + davinci_pcm_dma_irq, substream,
->       > + EVENTQ_1);
->
->       What is the reason for choosing EVENTQ_1 for this channel?
-> EVENTQ_0
->       is already being used for ASP channel.
->
->       I imagine it will be much easier to tune the queue usage in the
-> system
->       if all of audio data was using the same queue.
->
->       I am working on a patch which lets platform specify the event
-> queues
->       for audio DMA. I am not sure if I really need to make a
-> provision for
->       two different queues to be specified - that's why I ask.
->
->       Thanks,
->       Sekhar
->
->       The reason is so that the IRAM data can be fetched and used
-> while
->
->       EVENTQ_1 fetches the next buffer of data from sdram into IRAM.
-
-Thanks for the explanation. That sounds reasonable.
-
-Just curious as to whether you actually faced an issue
-when using the same event queue for both transfers?
-
-I just tested this on DM365 with both transfers on EDMAQ_0
-with 16K each of capture and playback IRAM at 48KHz
-sampling rate and did not find any issue.
-
-Anyway it makes sense to make provision for platform to choose
-different queues for both transfers so will implement my patch
-that way.
-
-Thanks,
-Sekhar
+T24gVHVlLCBKdWwgMTMsIDIwMTAgYXQgMDk6NTQ6NThQTSAtMDcwMCwgTmllbHMgTWF5ZXIgd3Jv
+dGU6Cgo+ICBXaGF0J3MgZXZlbiBtb3JlIGFic3VyZCwgaXMgdG8gaGF2ZSB0aGUgYmVuZWZpdHMg
+b2YgdGhlCj4gaWNlMTcxMidzIGhhcmR3YXJlIG1ldGVyaW5nIHNxdWFuZGVyZWQgYnkgZHJhd2lu
+ZyB0aG91c2FuZHMgb2YKPiByZWN0YW5nbGVzIHBlciBzZWNvbmQgKGVhY2ggaW5kaXZpZHVhbCAi
+TEVEIiBvbiBlYWNoIG1ldGVyIGlzIGEKPiBzZXBhcmF0ZSB4IGRyYXctcmVjdGFuZ2xlIGNhbGwp
+LgoKSXQgc2hvdWxkIGF0IGxlYXN0IHVzZSB0aGUgWERyYXdSZWN0YW5nbGVzKCksIHdoaWNoIGRy
+YXdzIGEgbGlzdApvZiB0aGVtIGluIGEgc2luZ2xlIGNhbGwuCgo+IEFuZCBzaW5jZSB0aGUgaGFy
+ZHdhcmUgbWV0ZXJpbmcgYWxyZWFkeSBxdWFudGl6ZXMgdG8gMjU2IGxldmVscyAtLQo+IHRoZXJl
+J3Mgbm8gcG9pbnQgaW4gcmUtcXVhbnRpemluZyB0aG9zZSB0byBpbmRpdmlkdWFsICJ2aXJ0dWFs
+IExFRHMiCj4gYXMgaXMgZG9uZSB3LyB0aGUgY3VycmVudCBlbnZ5MjRjb250cm9sLgoKRGVwZW5k
+cy4gQSBsaW5lYXIgbWFwcGluZyBpcyBub3QgcmVhbGx5IHRoZSBiZXN0IHlvdSBjYW4gZG8uCgpD
+aWFvLAoKLS0gCkplIHZldXggcXVlIGxhIG1vcnQgbWUgdHJvdXZlIHBsYW50YW50IG1lcyBjaG91
+eCwgbWFpcwpub25jaGFsYW50IGTigJllbGxlLCBldCBlbmNvcmUgcGx1cyBkZSBtb24gamFyZGlu
+IGltcGFyZmFpdC4KKE1pY2hlbCBkZSBNb250YWlnbmUpCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4LWF1ZGlvLWRldiBtYWlsaW5nIGxpc3QKTGlu
+dXgtYXVkaW8tZGV2QGxpc3RzLmxpbnV4YXVkaW8ub3JnCmh0dHA6Ly9saXN0cy5saW51eGF1ZGlv
+Lm9yZy9saXN0aW5mby9saW51eC1hdWRpby1kZXYK
