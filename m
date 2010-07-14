@@ -1,23 +1,23 @@
-From: Mike Crowe <drmikecrowe@gmail.com>
-Subject: Re: Accessing snd_soc_read/snd_soc_write directly for
-	diagnostics
-Date: Fri, 16 Jul 2010 12:00:32 +0800
-Message-ID: <AANLkTimkvvZdxmJV34FozLg0e-RTPAnBvqyqmEXOu0hP@mail.gmail.com>
-References: <AANLkTimRMrKi-HNOB68jWSiX6TYTuOjRCySAqvRtpWLy@mail.gmail.com>
+From: Michael Witten <mfwitten@gmail.com>
+Subject: [PATCH] Kconfig: SND_AC97_POWER_SAVE description
+	improvement
+Date: Wed, 14 Jul 2010 23:54:21 +0000
+Message-ID: <1279192374-7190-1-git-send-email-mfwitten@gmail.com>
+References: <1279153142-3114-1-git-send-email-mfwitten@gmail.com>
+	<alpine.LNX.2.00.1007150935280.4741@pobox.suse.cz>
+	<s5hk4ox2lp5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4050A103930
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id CE2F7103803
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Jul 2010 06:00:58 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so448074ewy.38
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2010 21:00:57 -0700 (PDT)
-Received: by eye27 with SMTP id 27so334148eye.38
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2010 21:00:52 -0700 (PDT)
-In-Reply-To: <AANLkTimRMrKi-HNOB68jWSiX6TYTuOjRCySAqvRtpWLy@mail.gmail.com>
+	Thu, 15 Jul 2010 13:40:59 +0200 (CEST)
+Received: by bwz4 with SMTP id 4so545431bwz.38
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2010 04:40:59 -0700 (PDT)
+In-Reply-To: <s5hk4ox2lp5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,32 +27,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: iri Kosina <jkosina@suse.cz>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi folks,
+The description has been expanded to explain the time-out
+value provided by the power_save module parameter.
 
-Cancel this.  Turns out our codec only implemented i2c read for the first 4
-bytes (not all registers).  However, it is caching the registers in the
-"/sys/devices/platform/soc-audio/codec_reg" file, which was what we needed
-to get to.
+Signed-off-by: Michael Witten <mfwitten@gmail.com>
+---
+ sound/drivers/Kconfig |   24 +++++++++++++++++++++---
+ 1 files changed, 21 insertions(+), 3 deletions(-)
 
-Thanks
-Mike
-
-On Fri, Jul 16, 2010 at 9:33 AM, Mike Crowe <drmikecrowe@gmail.com> wrote:
-
-> Hi folks,
->
-> I know this is a strange request, however, for diagnostic purposes in our
-> embedded system, we would like to talk directly to the codec registers of
-> our sound chip, bypassing alsa.  I have the driver compiled into the kernel
-> (not loaded as a module).
->
-> Is it possible to create a program which can talk to the snd_soc_read and
-> snd_soc_write functions directly?  I'm not sure if this is an option, but if
-> it is, I'd appreciate a pointer to something similar to use as a guide.
->
-> TIA
-> Mike
->
+diff --git a/sound/drivers/Kconfig b/sound/drivers/Kconfig
+index 84714a6..3264600 100644
+--- a/sound/drivers/Kconfig
++++ b/sound/drivers/Kconfig
+@@ -170,9 +170,25 @@ config SND_AC97_POWER_SAVE
+ 	  AC97 codecs.  In this mode, the power-mode is dynamically
+ 	  controlled at each open/close.
+ 
+-	  The mode is activated by passing power_save=1 option to
+-	  snd-ac97-codec driver.  You can toggle it dynamically over
+-	  sysfs, too.
++	  The mode is activated by passing 'power_save=X' to the
++	  snd-ac97-codec driver module, where 'X' is the time-out
++	  value, a nonnegative integer that specifies how many
++	  seconds of idle time the driver must count before it may
++	  put the AC97 into power-save mode;  a value of 0 (zero)
++	  disables the use of this power-save mode.
++
++	  After the snd-ac97-codec driver module has been loaded,
++	  the 'power_save' parameter can be set via sysfs as follows:
++
++	    echo 10 > /sys/module/snd_ac97_codec/parameters/power_save
++
++	  In this case, the time-out is set to 10 seconds; setting
++	  the time-out to 1 second (the minimum activation value)
++	  isn't recommended because many applications try to reopen
++	  the device frequently.  A value of 10 seconds would be a
++	  good choice for normal operations.
++
++	  See Documentation/sound/alsa/powersave.txt for more details.
+ 
+ config SND_AC97_POWER_SAVE_DEFAULT
+ 	int "Default time-out for AC97 power-save mode"
+@@ -182,4 +198,6 @@ config SND_AC97_POWER_SAVE_DEFAULT
+ 	  The default time-out value in seconds for AC97 automatic
+ 	  power-save mode.  0 means to disable the power-save mode.
+ 
++	  See SND_AC97_POWER_SAVE for more details.
++
+ endif	# SND_DRIVERS
+-- 
+1.7.2.rc1.9.g5b527
