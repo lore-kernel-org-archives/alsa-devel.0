@@ -1,20 +1,19 @@
-From: Jason Butler <jbutler@hcn-inc.com>
-Subject: controlling access to the sound card
-Date: Wed, 14 Jul 2010 14:48:54 -0500
-Message-ID: <4C3E14A6.2040903@hcn-inc.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] wm8727: add a missing return in
+	wm8727_platform_probe
+Date: Wed, 14 Jul 2010 20:26:12 +0100
+Message-ID: <20100714192612.GA7532@rakim.wolfsonmicro.main>
+References: <1279105051.2290.5.camel@phoenix> <1279119597.3080.120.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.hcn-inc.com (mail.hcn-inc.com [74.52.94.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0FE4E2454B
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C5D5910381A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Jul 2010 20:48:45 +0200 (CEST)
-Received: from cpe001c10f65d93-cm00111ae3031a.cpe.net.cable.rogers.com
-	([99.241.128.254] helo=[192.168.1.104])
-	by mail.hcn-inc.com with esmtpa (Exim 4.69)
-	(envelope-from <jbutler@hcn-inc.com>) id 1OZ70a-0001AD-HZ
-	for alsa-devel@alsa-project.org; Wed, 14 Jul 2010 14:48:40 -0400
+	Wed, 14 Jul 2010 21:26:14 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1279119597.3080.120.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,15 +23,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Neil Jones <neil.jones@imgtec.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>, Axel Lin <axel.lin@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-I have three applications that want to use the sound card, two audio 
-stream players, and a voip phone.
-Is it possible to use alsa so that if a call comes in on the phone alsa 
-will disconnect the audio players, give exclusive access to the voip 
-phone, and then when the phone is done reconnect the audio players to 
-the sound card.
+On Wed, Jul 14, 2010 at 03:59:57PM +0100, Liam Girdwood wrote:
+> On Wed, 2010-07-14 at 18:57 +0800, Axel Lin wrote:
+> > otherwise the error path will always be executed.
 
-Can this be done using alsa and if so how? Could it be done using just 
-the alsa command line tools and config files and if so how?
+> Both
+
+> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+
+...and applied, thanks.
