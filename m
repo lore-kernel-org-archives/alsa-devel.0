@@ -1,19 +1,19 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Handle read failures in codec_reg
-Date: Wed, 14 Jul 2010 16:25:34 +0100
-Message-ID: <1279121134.3080.148.camel@odin>
-References: <1279120513-29226-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: Re: [PATCH 4/4] ASoC: DaVinci: pcm,
+	fix underrun by using sram
+Date: Wed, 14 Jul 2010 10:46:59 -0700
+Message-ID: <4C3DF813.4050908@boundarydevices.com>
+References: <51883.1279047660@boundarydevices.com>
+	<B85A65D85D7EB246BE421B3FB0FBB59301E7B42662@dbde02.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id B5925103882
+Received: from cpoproxy2-pub.bluehost.com (cpoproxy2-pub.bluehost.com
+	[67.222.39.38]) by alsa0.perex.cz (Postfix) with SMTP id A20CC1037EC
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Jul 2010 17:25:37 +0200 (CEST)
-Received: by wwb13 with SMTP id 13so1406891wwb.20
-	for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2010 08:25:37 -0700 (PDT)
-In-Reply-To: <1279120513-29226-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Wed, 14 Jul 2010 19:47:23 +0200 (CEST)
+In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB59301E7B42662@dbde02.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: "Nori, Sekhar" <nsekhar@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "broonie@sirena.org.uk" <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-07-14 at 16:15 +0100, Mark Brown wrote:
-> When a device is powered down volatile registers can't be read so
-> attempts to display codec_reg will show error values, and obviously
-> it is also possible for there to be hardware errors too. Check for
-> errors from reads and display them more clearly when formatting
-> codec_reg.
+Nori, Sekhar wrote:
+> On Wed, Jul 14, 2010 at 00:31:00, troy.kisky@boundarydevices.com wrote:
+>> On Tue 13/07/10 6:00 AM , "Nori, Sekhar" nsekhar@ti.com sent:
+>>
+>
+>>       The reason is so that the IRAM data can be fetched and used
+>> while
+>>
+>>       EVENTQ_1 fetches the next buffer of data from sdram into IRAM.
 > 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Thanks for the explanation. That sounds reasonable.
+> 
+> Just curious as to whether you actually faced an issue
+> when using the same event queue for both transfers?
+> 
+> I just tested this on DM365 with both transfers on EDMAQ_0
+> with 16K each of capture and playback IRAM at 48KHz
+> sampling rate and did not find any issue.
+> 
+> Anyway it makes sense to make provision for platform to choose
+> different queues for both transfers so will implement my patch
+> that way.
+> 
+> Thanks,
+> Sekhar
+> 
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+IIRC, the DM365 has a fifo, the 6443/6446 doesn't. So, the 365 doesn't
+need to use IRAM and shouldn't use it. Test using the same controller
+on a board without a fifo.
 
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Troy
