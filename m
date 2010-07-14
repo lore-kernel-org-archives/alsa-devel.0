@@ -1,19 +1,20 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: [PATCH 4/4] ASoC: DaVinci: pcm,
-	fix underrun by using sram
-Date: Wed, 14 Jul 2010 10:46:59 -0700
-Message-ID: <4C3DF813.4050908@boundarydevices.com>
-References: <51883.1279047660@boundarydevices.com>
-	<B85A65D85D7EB246BE421B3FB0FBB59301E7B42662@dbde02.ent.ti.com>
+From: Jason Butler <jbutler@hcn-inc.com>
+Subject: controlling access to the sound card
+Date: Wed, 14 Jul 2010 14:48:54 -0500
+Message-ID: <4C3E14A6.2040903@hcn-inc.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cpoproxy2-pub.bluehost.com (cpoproxy2-pub.bluehost.com
-	[67.222.39.38]) by alsa0.perex.cz (Postfix) with SMTP id A20CC1037EC
+Received: from mail.hcn-inc.com (mail.hcn-inc.com [74.52.94.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0FE4E2454B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Jul 2010 19:47:23 +0200 (CEST)
-In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB59301E7B42662@dbde02.ent.ti.com>
+	Wed, 14 Jul 2010 20:48:45 +0200 (CEST)
+Received: from cpe001c10f65d93-cm00111ae3031a.cpe.net.cable.rogers.com
+	([99.241.128.254] helo=[192.168.1.104])
+	by mail.hcn-inc.com with esmtpa (Exim 4.69)
+	(envelope-from <jbutler@hcn-inc.com>) id 1OZ70a-0001AD-HZ
+	for alsa-devel@alsa-project.org; Wed, 14 Jul 2010 14:48:40 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,39 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Nori, Sekhar" <nsekhar@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "broonie@sirena.org.uk" <broonie@sirena.org.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Nori, Sekhar wrote:
-> On Wed, Jul 14, 2010 at 00:31:00, troy.kisky@boundarydevices.com wrote:
->> On Tue 13/07/10 6:00 AM , "Nori, Sekhar" nsekhar@ti.com sent:
->>
->
->>       The reason is so that the IRAM data can be fetched and used
->> while
->>
->>       EVENTQ_1 fetches the next buffer of data from sdram into IRAM.
-> 
-> Thanks for the explanation. That sounds reasonable.
-> 
-> Just curious as to whether you actually faced an issue
-> when using the same event queue for both transfers?
-> 
-> I just tested this on DM365 with both transfers on EDMAQ_0
-> with 16K each of capture and playback IRAM at 48KHz
-> sampling rate and did not find any issue.
-> 
-> Anyway it makes sense to make provision for platform to choose
-> different queues for both transfers so will implement my patch
-> that way.
-> 
-> Thanks,
-> Sekhar
-> 
+I have three applications that want to use the sound card, two audio 
+stream players, and a voip phone.
+Is it possible to use alsa so that if a call comes in on the phone alsa 
+will disconnect the audio players, give exclusive access to the voip 
+phone, and then when the phone is done reconnect the audio players to 
+the sound card.
 
-IIRC, the DM365 has a fifo, the 6443/6446 doesn't. So, the 365 doesn't
-need to use IRAM and shouldn't use it. Test using the same controller
-on a board without a fifo.
-
-Troy
+Can this be done using alsa and if so how? Could it be done using just 
+the alsa command line tools and config files and if so how?
