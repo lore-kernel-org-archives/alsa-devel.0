@@ -1,19 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Which project to choose?
-Date: Wed, 14 Jul 2010 17:25:33 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1007141723070.16744@eeebox2.perex-int.cz>
-References: <1279062131.24837.22.camel@localhost.localdomain>
-	<AANLkTildhplqQxzk7mBMc5IW_3bwAVDDrRe5UDpJXIS6@mail.gmail.com>
-	<4C3DD271.6040003@epost.diwic.se>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Handle read failures in codec_reg
+Date: Wed, 14 Jul 2010 16:25:34 +0100
+Message-ID: <1279121134.3080.148.camel@odin>
+References: <1279120513-29226-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 00AE024516
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id B5925103882
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Jul 2010 17:25:35 +0200 (CEST)
-In-Reply-To: <4C3DD271.6040003@epost.diwic.se>
+	Wed, 14 Jul 2010 17:25:37 +0200 (CEST)
+Received: by wwb13 with SMTP id 13so1406891wwb.20
+	for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2010 08:25:37 -0700 (PDT)
+In-Reply-To: <1279120513-29226-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,32 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <launchpad.web@epost.diwic.se>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 14 Jul 2010, David Henningsson wrote:
+On Wed, 2010-07-14 at 16:15 +0100, Mark Brown wrote:
+> When a device is powered down volatile registers can't be read so
+> attempts to display codec_reg will show error values, and obviously
+> it is also possible for there to be hardware errors too. Check for
+> errors from reads and display them more clearly when formatting
+> codec_reg.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-> 2010-07-14 13:13, Raymond Yau skrev:
->
->> localhost pulseaudio[24553]: alsa-util.c:   appl_ptr     : 735801008
->> localhost pulseaudio[24553]: alsa-util.c:   hw_ptr       : 735846184
->>
->> This is underrun as you can see appl_ptr is behing hw_ptr
->
-> Ehm, isn't that a ring buffer? I e, there is nothing wrong with appl_ptr
-> being less than hw_ptr.
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-For playback, if appl_ptr is less than hw_ptr, it's underrun situation 
-(application didn't feed samples in time to the driver's ring buffer).
-
-Note that pointers in ALSA are in range 0..boundary not 
-0..ring_buffer_size (boundary is near LONG_MAX value) - it's design to 
-detect such situations (underrun, overrun).
-
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Liam
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
