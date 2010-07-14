@@ -1,20 +1,23 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] wm8727: add a missing return in
-	wm8727_platform_probe
-Date: Wed, 14 Jul 2010 15:59:57 +0100
-Message-ID: <1279119597.3080.120.camel@odin>
-References: <1279105051.2290.5.camel@phoenix>
+From: David Henningsson <launchpad.web@epost.diwic.se>
+Subject: Re: Which project to choose?
+Date: Wed, 14 Jul 2010 17:06:25 +0200
+Message-ID: <4C3DD271.6040003@epost.diwic.se>
+References: <1279062131.24837.22.camel@localhost.localdomain>
+	<AANLkTildhplqQxzk7mBMc5IW_3bwAVDDrRe5UDpJXIS6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0454B1037F8
+Received: from ch-smtp02.sth.basefarm.net (ch-smtp02.sth.basefarm.net
+	[80.76.149.213]) by alsa0.perex.cz (Postfix) with ESMTP id 89C4B2413A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Jul 2010 17:00:03 +0200 (CEST)
-Received: by wwb13 with SMTP id 13so1379499wwb.20
-	for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2010 08:00:03 -0700 (PDT)
-In-Reply-To: <1279105051.2290.5.camel@phoenix>
+	Wed, 14 Jul 2010 17:06:36 +0200 (CEST)
+Received: from c83-254-141-16.bredband.comhem.se ([83.254.141.16]:40230
+	helo=[192.168.8.103])
+	by ch-smtp02.sth.basefarm.net with esmtp (Exim 4.68)
+	(envelope-from <launchpad.web@epost.diwic.se>) id 1OZ3XY-0002HH-8D
+	for alsa-devel@alsa-project.org; Wed, 14 Jul 2010 17:06:30 +0200
+In-Reply-To: <AANLkTildhplqQxzk7mBMc5IW_3bwAVDDrRe5UDpJXIS6@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,36 +27,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: Neil Jones <neil.jones@imgtec.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-07-14 at 18:57 +0800, Axel Lin wrote:
-> otherwise the error path will always be executed.
-> 
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-> ---
->  sound/soc/codecs/wm8727.c |    2 ++
->  1 files changed, 2 insertions(+), 0 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wm8727.c b/sound/soc/codecs/wm8727.c
-> index 1072621..9d1df26 100644
-> --- a/sound/soc/codecs/wm8727.c
-> +++ b/sound/soc/codecs/wm8727.c
-> @@ -127,6 +127,8 @@ static __devinit int wm8727_platform_probe(struct platform_device *pdev)
->  		goto err_codec;
->  	}
->  
-> +	return 0;
-> +
->  err_codec:
->  	snd_soc_unregister_codec(codec);
->  err:
+2010-07-14 13:13, Raymond Yau skrev:
 
-Both
+> localhost pulseaudio[24553]: alsa-util.c:   appl_ptr     : 735801008
+> localhost pulseaudio[24553]: alsa-util.c:   hw_ptr       : 735846184
+> 
+> This is underrun as you can see appl_ptr is behing hw_ptr
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Ehm, isn't that a ring buffer? I e, there is nothing wrong with appl_ptr
+being less than hw_ptr.
+
+> However PA server had disabled the underrun detection.
+
+Please clarify. If you're talking about my patch (disable underruns in
+alsa-plugins) here, it has nothing to do with this situation (PA
+complaining about its back-end).
+
+The situation above probably isn't even an underrun.
+
+// David
