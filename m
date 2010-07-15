@@ -1,17 +1,31 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: [PATCH] asoc: multi-component: mpc8610: fix typo in
-	mpc8610_hpcd_data
-Date: Thu, 15 Jul 2010 16:55:00 -0500
-Message-ID: <1279230900-26193-1-git-send-email-timur@freescale.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Which project to choose?
+Date: Fri, 16 Jul 2010 06:02:13 +0800
+Message-ID: <AANLkTinzaE-HKVk4b79RJeszrwPnAuoX-aRYf8hSlC6m@mail.gmail.com>
+References: <1279062131.24837.22.camel@localhost.localdomain>
+	<AANLkTikEf4gf-oeQf4hNGUEvNi0YVrvutnSMCbxGwtJ8@mail.gmail.com>
+	<1279065709.24837.29.camel@localhost.localdomain>
+	<AANLkTimdM5__SzYFxrQqwsbOrxdit2uWOvkazPvZ4PND@mail.gmail.com>
+	<1279071115.29042.0.camel@localhost.localdomain>
+	<AANLkTimNSRELBq7i1Ypi9K2tmFu9NKLvQAOOqPwuU13x@mail.gmail.com>
+	<1279074303.29042.3.camel@localhost.localdomain>
+	<AANLkTimNYxIm9M6Mglrzh3YtJRiq1C8wdZwx-JUhLk9d@mail.gmail.com>
+	<1279145758.29042.11.camel@localhost.localdomain>
+	<AANLkTinN15BWNC2cn78rc5xCSXNo79SDE2_WkBNEg5I2@mail.gmail.com>
+	<1279157921.2668.1.camel@localhost.localdomain>
+	<i1n0mf$87c$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DB3EHSOBE006.bigfish.com (db3ehsobe006.messaging.microsoft.com
-	[213.199.154.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5387103816
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id D5DA310391C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Jul 2010 23:55:10 +0200 (CEST)
+	Fri, 16 Jul 2010 00:02:15 +0200 (CEST)
+Received: by vws9 with SMTP id 9so1721563vws.38
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2010 15:02:14 -0700 (PDT)
+In-Reply-To: <i1n0mf$87c$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,32 +35,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The dma_id[] variable in struct mpc8610_hpcd_data is a zero-length
-array, when it should be of length 2.
+2010/7/15 Colin Guthrie <gmane@colin.guthr.ie>
 
-Signed-off-by: Timur Tabi <timur@freescale.com>
----
+> 'Twas brillig, and Chris at 15/07/10 02:38 did gyre and gimble:
+> > On Thu, 2010-07-15 at 08:08 +0800, Raymond Yau wrote:
+> >
+> >>> I posted both of those bug reports. Honestly, I just want it to work
+> >>> without all the error output to syslog and thrashing of my HD for
+> >>> minutes at a time. As I said, I've got the output of pulseaudio -vvvvv
+> >>> if anyone would like to look at it and tell me what I need to do to fix
+> >>> the problem.
+> >>>
+> >>> Chris
+> >>>
+> >>>
+> >>>
+> >> Just upload your current pulseaudio.log and output of alsa-info.sh to
+> >> mandriva 's bugzilla
+> >>
+> >> Cannot obtain any conclusion based on the log which you have posted last
+> >> year ( xmms)
+> >>
+> >> as Jaroslav Kysela said , need the real system time between I/O
+> operations
+> >> and you'll see if it's issue in the ALSA driver or a task scheduling
+> >> problem.
+> >
+> > Here is the bug report with the outputs uploaded.
+> >
+> > https://qa.mandriva.com/show_bug.cgi?id=60169
+>
+> Well seeing as my process when getting such a bug is to report it here
+> on behalf of the user, I suspect that this has reached a stalemate....
+>
+> it depend on whether PA developer willing to provide system time between
+I/O operations of PA server
 
-Liam, please squash this into your repository.
+However , he can still use a small buffer size to force the PA server into
+underrun and we can  know how PA server handle this situtation
 
- sound/soc/fsl/mpc8610_hpcd.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
-index 81ab639..8665cc2 100644
---- a/sound/soc/fsl/mpc8610_hpcd.c
-+++ b/sound/soc/fsl/mpc8610_hpcd.c
-@@ -37,7 +37,7 @@ struct mpc8610_hpcd_data {
- 	unsigned int cpu_clk_direction;
- 	unsigned int clk_frequency;
- 	unsigned int ssi_id;		/* 0 = SSI1, 1 = SSI2, etc */
--	unsigned int dma_id[0];		/* 0 = DMA1, 1 = DMA2, etc */
-+	unsigned int dma_id[2];		/* 0 = DMA1, 1 = DMA2, etc */
- 	unsigned int dma_channel_id[2]; /* 0 = ch 0, 1 = ch 1, etc*/
- 	char dai_name[32];
- };
--- 
-1.7.0.1
+aplay -D pulse --buffer-size=128 any.wav
