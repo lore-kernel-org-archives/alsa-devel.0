@@ -1,19 +1,26 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/12] sound/alsa/soc/codec: fix memory leak
- and resource relaim in error path
-Date: Thu, 15 Jul 2010 09:59:32 +0100
-Message-ID: <20100715085932.GA23529@rakim.wolfsonmicro.main>
-References: <1279162147.29294.2.camel@mola>
+From: Seungwhan Youn <sw.youn@samsung.com>
+Subject: [PATCH 1/3] ASoC: multi-component - Fix S3C compile
+	error
+Date: Thu, 15 Jul 2010 17:58:46 +0900
+Message-ID: <1279184328-31746-1-git-send-email-sw.youn@samsung.com>
+References: <git send-email --to alsa-devel@alsa-project.org --cc "Liam
+	Girdwood <lrg@slimlogic.co.uk>" --cc "Mark Brown
+	<broonie@opensource.wolfsonmicro.com>" --cc "Jassi Brar
+	<jassisinghbrar@gmail.com>" --cc "Seungwhan Youn
+	<claude.youn@gmail.com>" 000*>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 99F1C1038E9
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 384AB1037FC
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Jul 2010 10:59:34 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1279162147.29294.2.camel@mola>
+	Thu, 15 Jul 2010 11:09:47 +0200 (CEST)
+In-Reply-To: <git send-email --to alsa-devel@alsa-project.org --cc "Liam
+	Girdwood <lrg@slimlogic.co.uk>" --cc "Mark Brown
+	<broonie@opensource.wolfsonmicro.com>" --cc "Jassi Brar
+	<jassisinghbrar@gmail.com>" --cc "Seungwhan Youn
+	<claude.youn@gmail.com>" 000*>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,26 +30,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: Seungwhan Youn <sw.youn@samsung.com>, Jassi Brar <jassisinghbrar@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Seungwhan Youn <claude.youn@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 15, 2010 at 10:49:07AM +0800, Axel Lin wrote:
+This patch fix compile error on using S3C I2S.
 
-> [PATCH 1/12] ad1836: fix a memory leak if another ad1836 is registered
-> [PATCH 2/12] ak4642: fix a memory leak if failed to initialise AK4642
-> [PATCH 3/12] da7210: fix a memory leak if failed to initialise da7210 audio codec
-> [PATCH 4/12] wm8523: fix resource reclaim in wm8523_register error path
-> [PATCH 5/12] wm8711: fix a memory leak if another WM8711 is registered
-> [PATCH 6/12] wm8904: fix resource reclaim in wm8904_register error path
-> [PATCH 7/12] wm8940: fix resource reclaim in wm8940_register error path
-> [PATCH 8/12] wm8955: fix resource reclaim in wm8955_register error path
-> [PATCH 9/12] wm8961: fix resource reclaim in wm8961_register error path
-> [PATCH 10/12] wm8974: fix a memory leak if another WM8974 is registered
-> [PATCH 11/12] wm8978: fix a memory leak if another WM8978 is registered
-> [PATCH 12/12] wm9081: fix resource reclaim in wm9081_register error path
+Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+---
+ sound/soc/s3c24xx/s3c64xx-i2s.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-If you're going to be submiting large batches of small patches like this
-it would be really helpful if you could make sure you format the subject
-lines for your patches so that they match the standards for the area of
-the kernel you're updating.  This makes them much easier to apply.
+diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.c b/sound/soc/s3c24xx/s3c64xx-i2s.c
+index ad92e10..5017e31 100644
+--- a/sound/soc/s3c24xx/s3c64xx-i2s.c
++++ b/sound/soc/s3c24xx/s3c64xx-i2s.c
+@@ -56,11 +56,11 @@ static int s3c64xx_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
+ 
+ 	switch (clk_id) {
+ 	case S3C64XX_CLKSRC_PCLK:
+-		iismod &= ~S3C64XX_IISMOD_IMS_SYSMUX;
++		iismod &= ~S3C2412_IISMOD_IMS_SYSMUX;
+ 		break;
+ 
+ 	case S3C64XX_CLKSRC_MUX:
+-		iismod |= S3C64XX_IISMOD_IMS_SYSMUX;
++		iismod |= S3C2412_IISMOD_IMS_SYSMUX;
+ 		break;
+ 
+ 	case S3C64XX_CLKSRC_CDCLK:
+@@ -90,7 +90,7 @@ struct clk *s3c64xx_i2s_get_clock(struct snd_soc_dai *dai)
+ 	struct s3c_i2sv2_info *i2s = snd_soc_dai_get_drvdata(dai);
+ 	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
+ 
+-	if (iismod & S3C64XX_IISMOD_IMS_SYSMUX)
++	if (iismod & S3C2412_IISMOD_IMS_SYSMUX)
+ 		return i2s->iis_cclk;
+ 	else
+ 		return i2s->iis_pclk;
+-- 
+1.6.2.5
