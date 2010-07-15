@@ -1,8 +1,8 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 1/12] ad1836: fix a memory leak if another ad1836 is
-	registered
-Date: Thu, 15 Jul 2010 10:50:37 +0800
-Message-ID: <1279162237.29294.4.camel@mola>
+Subject: [PATCH 2/12] ak4642: fix a memory leak if failed to initialise
+	AK4642
+Date: Thu, 15 Jul 2010 10:52:09 +0800
+Message-ID: <1279162329.29294.6.camel@mola>
 References: <1279162147.29294.2.camel@mola>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -11,28 +11,31 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1279162147.29294.2.camel@mola>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel <linux-kernel@vger.kernel.org>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Barry Song <Barry.Song@analog.com>, Tejun Heo <tj@kernel.org>, alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Tejun Heo <tj@kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ad1836 is allocated in ad1836_spi_probe() but is not freed if ad1836_register()
-return -EINVAL (if another ad1836 is registered).
+ak4642 should be kfreed if ak4642_init() return error.
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/ad1836.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ sound/soc/codecs/ak4642.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/codecs/ad1836.c b/sound/soc/codecs/ad1836.c
-index 2175384..a01006c 100644
---- a/sound/soc/codecs/ad1836.c
-+++ b/sound/soc/codecs/ad1836.c
-@@ -272,6 +272,7 @@ static int ad1836_register(struct ad1836_priv *ad1836)
+diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
+index 7528a54..4feefa8 100644
+--- a/sound/soc/codecs/ak4642.c
++++ b/sound/soc/codecs/ak4642.c
+@@ -491,8 +491,10 @@ static int ak4642_i2c_probe(struct i2c_client *i2c,
+ 	codec->control_data = i2c;
  
- 	if (ad1836_codec) {
- 		dev_err(codec->dev, "Another ad1836 is registered\n");
-+		kfree(ad1836);
- 		return -EINVAL;
- 	}
+ 	ret = ak4642_init(ak4642);
+-	if (ret < 0)
++	if (ret < 0) {
+ 		printk(KERN_ERR "failed to initialise AK4642\n");
++		kfree(ak4642);
++	}
  
+ 	return ret;
+ }
 -- 
 1.5.4.3
