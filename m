@@ -1,51 +1,63 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH v2 7/12] wm8940: fix a memory leak if wm8940_register
-	return error
-Date: Thu, 15 Jul 2010 15:48:48 +0800
-Message-ID: <1279180128.8410.5.camel@mola>
-References: <1279162147.29294.2.camel@mola> <1279162893.29294.20.camel@mola>
+From: Greg KH <gregkh@suse.de>
+Subject: Re: [alsa-devel] [PATCH] driver core: remove
+	CONFIG_SYSFS_DEPRECATED
+Date: Thu, 15 Jul 2010 00:56:11 -0700
+Message-ID: <20100715075611.GB8202@suse.de>
+References: <20100709185450.GA29473@kroah.com> <20100714163852.b3c09930.akpm@linux-foundation.org> <AANLkTinIy1z7226W0ylNfDdHXBp16Wt7aYBKQYY1o5t9@mail.gmail.com> <20100715041400.GA2583@suse.de> <AANLkTik1G3E6RP8cEK2JoPcqZp0Q16nK9F-4tAtXWnPk@mail.gmail.com> <20100715053543.GA4416@suse.de> <AANLkTilmDJx9Q9SKvfbzy0xmtIFDi8iqQTfvzwE-embG@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1279162893.29294.20.camel@mola>
+Content-Disposition: inline
+In-Reply-To: <AANLkTilmDJx9Q9SKvfbzy0xmtIFDi8iqQTfvzwE-embG@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel <linux-kernel@vger.kernel.org>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Tejun Heo <tj@kernel.org>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>, alsa-devel@alsa-project.org
+To: Dave Airlie <airlied@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, Randy Dunlap <randy.dunlap@oracle.com>, alsa-devel@alsa-project.org, Peter Zijlstra <a.p.zijlstra@chello.nl>, linux-scsi@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Greg KH <greg@kroah.com>, Kay Sievers <kay.sievers@vrfy.org>, linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>, "James E.J. Bottomley" <James.Bottomley@suse.de>, Alan Stern <stern@rowland.harvard.edu>, "Eric W. Biederman" <ebiederm@xmission.com>, Ingo Molnar <mingo@elte.hu>, Tejun Heo <tj@kernel.org>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Stephen Hemminger <shemminger@vyatta.com>, "David S. Miller" <davem@davemloft.net>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds checking for wm8940_register return value,
-and does kfree(wm8940) if wm8940_register() fail.
+On Thu, Jul 15, 2010 at 04:32:46PM +1000, Dave Airlie wrote:
+> On Thu, Jul 15, 2010 at 3:35 PM, Greg KH <gregkh@suse.de> wrote:
+> > On Thu, Jul 15, 2010 at 03:00:31PM +1000, Dave Airlie wrote:
+> >> On Thu, Jul 15, 2010 at 2:14 PM, Greg KH <gregkh@suse.de> wrote:
+> >> > On Thu, Jul 15, 2010 at 10:24:18AM +1000, Dave Airlie wrote:
+> >> >> On Thu, Jul 15, 2010 at 9:38 AM, Andrew Morton
+> >> >> <akpm@linux-foundation.org> wrote:
+> >> >> > On Fri, 9 Jul 2010 11:54:50 -0700
+> >> >> > Greg Kroah-Hartman <gregkh@suse.de> wrote:
+> >> >> >
+> >> >> >> This is no longer needed by any userspace tools, so it's safe to
+> >> >> >> remove.
+> >> >>
+> >> >> Also still used for booting mainline kernels on RHEL5 userspaces.
+> >> >
+> >> > Really? ?I thought that was fixed a long time ago. ?What kernel was
+> >> > RHEL5 originally based on?
+> >> >
+> >> > And note that no RHEL5 user is going to be using a .36 kernel on their
+> >> > system, that's a completely unsupported and unadvised situation. ?Heck,
+> >> > I'd be amazed if a .34 kernel.org kernel boots on the thing, does it?
+> >> >
+> >>
+> >> I think some people do it internally, last time I did it was to test
+> >> something I was backporting, so you want to make sure the upstream
+> >> version boots and the backported version also boots on the same
+> >> hw/userspace.
+> >>
+> >> original kernel was 2.6.18.
+> >
+> > Yes, that was the number, but does it really look anything like a .18
+> > kernel.org release? ?:)
+> >
+> 
+> Well its more that the userspace is mostly what was released at the
+> same time, we aren't going to update udev/mkinitrd unless some major
+> problem was discovered.
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/wm8940.c |    7 ++++++-
- 1 files changed, 6 insertions(+), 1 deletions(-)
+That's fine, I can provide an updated package for those looney users
+that want to run this type of system :)
 
-diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
-index e3c4bbf..f0c1113 100644
---- a/sound/soc/codecs/wm8940.c
-+++ b/sound/soc/codecs/wm8940.c
-@@ -845,6 +845,7 @@ static void wm8940_unregister(struct wm8940_priv *wm8940)
- static int wm8940_i2c_probe(struct i2c_client *i2c,
- 			    const struct i2c_device_id *id)
- {
-+	int ret;
- 	struct wm8940_priv *wm8940;
- 	struct snd_soc_codec *codec;
- 
-@@ -858,7 +859,11 @@ static int wm8940_i2c_probe(struct i2c_client *i2c,
- 	codec->control_data = i2c;
- 	codec->dev = &i2c->dev;
- 
--	return wm8940_register(wm8940, SND_SOC_I2C);
-+	ret = wm8940_register(wm8940, SND_SOC_I2C);
-+	if (ret < 0)
-+		kfree(wm8940);
-+
-+	return ret;
- }
- 
- static int __devexit wm8940_i2c_remove(struct i2c_client *client)
--- 
-1.5.4.3
+But ideally, I can figure out what is being needed and possibly reduce
+the footprint that is currently covered by this config option.
+
+thanks,
+
+greg k-h
