@@ -1,45 +1,52 @@
-From: Kulikov Vasiliy <segooon@gmail.com>
-Subject: [PATCH 8/8] sound: asihpi: fix sign bug
-Date: Thu, 15 Jul 2010 22:48:19 +0400
-Message-ID: <1279219700-12892-1-git-send-email-segooon@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: kernel-janitors@vger.kernel.org
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Eliot Blennerhassett <eblennerhassett@audioscience.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+From: Timur Tabi <timur@freescale.com>
+Subject: [PATCH] asoc: multi-component: mpc8610: fix typo in
+	mpc8610_hpcd_data
+Date: Thu, 15 Jul 2010 16:55:00 -0500
+Message-ID: <1279230900-26193-1-git-send-email-timur@freescale.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from DB3EHSOBE006.bigfish.com (db3ehsobe006.messaging.microsoft.com
+	[213.199.154.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id D5387103816
+	for <alsa-devel@alsa-project.org>;
+	Thu, 15 Jul 2010 23:55:10 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-bytes_per_sec is unsigned, so if snd_pcm_format_width() return error we
-would not see it.
+The dma_id[] variable in struct mpc8610_hpcd_data is a zero-length
+array, when it should be of length 2.
 
-Signed-off-by: Kulikov Vasiliy <segooon@gmail.com>
+Signed-off-by: Timur Tabi <timur@freescale.com>
 ---
- sound/pci/asihpi/asihpi.c |    6 ++++--
- 1 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
-index 91218f7..c80b0b8 100644
---- a/sound/pci/asihpi/asihpi.c
-+++ b/sound/pci/asihpi/asihpi.c
-@@ -460,6 +460,7 @@ static int snd_card_asihpi_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_card_asihpi *card = snd_pcm_substream_chip(substream);
- 	int err;
- 	u16 format;
-+	int width;
- 	unsigned int bytes_per_sec;
- 
- 	print_hwparams(params);
-@@ -512,9 +513,10 @@ static int snd_card_asihpi_pcm_hw_params(struct snd_pcm_substream *substream,
- 				dpcm->hpi_buffer_attached);
- 	}
- 	bytes_per_sec = params_rate(params) * params_channels(params);
--	bytes_per_sec *= snd_pcm_format_width(params_format(params));
-+	width = snd_pcm_format_width(params_format(params));
-+	bytes_per_sec *= width;
- 	bytes_per_sec /= 8;
--	if (bytes_per_sec <= 0)
-+	if (width < 0 || bytes_per_sec == 0)
- 		return -EINVAL;
- 
- 	dpcm->bytes_per_sec = bytes_per_sec;
+Liam, please squash this into your repository.
+
+ sound/soc/fsl/mpc8610_hpcd.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
+index 81ab639..8665cc2 100644
+--- a/sound/soc/fsl/mpc8610_hpcd.c
++++ b/sound/soc/fsl/mpc8610_hpcd.c
+@@ -37,7 +37,7 @@ struct mpc8610_hpcd_data {
+ 	unsigned int cpu_clk_direction;
+ 	unsigned int clk_frequency;
+ 	unsigned int ssi_id;		/* 0 = SSI1, 1 = SSI2, etc */
+-	unsigned int dma_id[0];		/* 0 = DMA1, 1 = DMA2, etc */
++	unsigned int dma_id[2];		/* 0 = DMA1, 1 = DMA2, etc */
+ 	unsigned int dma_channel_id[2]; /* 0 = ch 0, 1 = ch 1, etc*/
+ 	char dai_name[32];
+ };
 -- 
-1.7.0.4
+1.7.0.1
