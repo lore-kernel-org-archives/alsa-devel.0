@@ -1,8 +1,8 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 3/12] da7210: fix a memory leak if failed to initialise
-	da7210 audio codec
-Date: Thu, 15 Jul 2010 10:53:49 +0800
-Message-ID: <1279162429.29294.9.camel@mola>
+Subject: [PATCH 4/12] wm8523: fix resource reclaim in wm8523_register error
+	path
+Date: Thu, 15 Jul 2010 10:56:30 +0800
+Message-ID: <1279162590.29294.12.camel@mola>
 References: <1279162147.29294.2.camel@mola>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -11,51 +11,56 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1279162147.29294.2.camel@mola>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel <linux-kernel@vger.kernel.org>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Phil Edworthy <Phil.Edworthy@renesas.com>, Tejun Heo <tj@kernel.org>, alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Tejun Heo <tj@kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-da7210 should be kfreed if da7210_init() return error.
-This patch also fixes the error handing in the case of snd_soc_register_dai()
-fail by adding snd_soc_unregister_codec() in error path.
+This patch includes below fixes:
+1. If another WM8523 is registered, need to kfree wm8523 before return -EINVAL.
+2. If snd_soc_register_codec failed, goto error path to properly free resources.
+3. Instead of using mixed in-line and goto style cleanup, use goto style error
+   handling if snd_soc_register_dai failed.
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/codecs/da7210.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8523.c |   10 ++++++----
+ 1 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-index 75af2d6..3b9a6cc 100644
---- a/sound/soc/codecs/da7210.c
-+++ b/sound/soc/codecs/da7210.c
-@@ -488,7 +488,7 @@ static int da7210_init(struct da7210_priv *da7210)
- 	ret = snd_soc_register_dai(&da7210_dai);
- 	if (ret) {
- 		dev_err(codec->dev, "Failed to register DAI: %d\n", ret);
--		goto init_err;
-+		goto codec_err;
+diff --git a/sound/soc/codecs/wm8523.c b/sound/soc/codecs/wm8523.c
+index 37242a7..0ad039b 100644
+--- a/sound/soc/codecs/wm8523.c
++++ b/sound/soc/codecs/wm8523.c
+@@ -482,7 +482,8 @@ static int wm8523_register(struct wm8523_priv *wm8523,
+ 
+ 	if (wm8523_codec) {
+ 		dev_err(codec->dev, "Another WM8523 is registered\n");
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err;
  	}
  
- 	/* FIXME
-@@ -574,6 +574,8 @@ static int da7210_init(struct da7210_priv *da7210)
+ 	mutex_init(&codec->mutex);
+@@ -570,18 +571,19 @@ static int wm8523_register(struct wm8523_priv *wm8523,
+ 	ret = snd_soc_register_codec(codec);
+ 	if (ret != 0) {
+ 		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
+-		return ret;
++		goto err_enable;
+ 	}
  
- 	return ret;
+ 	ret = snd_soc_register_dai(&wm8523_dai);
+ 	if (ret != 0) {
+ 		dev_err(codec->dev, "Failed to register DAI: %d\n", ret);
+-		snd_soc_unregister_codec(codec);
+-		return ret;
++		goto err_codec;
+ 	}
  
-+codec_err:
+ 	return 0;
+ 
++err_codec:
 +	snd_soc_unregister_codec(codec);
- init_err:
- 	kfree(codec->reg_cache);
- 	codec->reg_cache = NULL;
-@@ -601,8 +603,10 @@ static int __devinit da7210_i2c_probe(struct i2c_client *i2c,
- 	codec->control_data = i2c;
- 
- 	ret = da7210_init(da7210);
--	if (ret < 0)
-+	if (ret < 0) {
- 		pr_err("Failed to initialise da7210 audio codec\n");
-+		kfree(da7210);
-+	}
- 
- 	return ret;
- }
+ err_enable:
+ 	regulator_bulk_disable(ARRAY_SIZE(wm8523->supplies), wm8523->supplies);
+ err_get:
 -- 
 1.5.4.3
