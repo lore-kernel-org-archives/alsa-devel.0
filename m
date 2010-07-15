@@ -1,22 +1,25 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
+From: Chris <cpollock@embarqmail.com>
 Subject: Re: Which project to choose?
-Date: Thu, 15 Jul 2010 08:52:24 +0800
-Message-ID: <AANLkTimSn2SFOR3L8stLV1TTVRzrGnFU3BoYIMnNgffD@mail.gmail.com>
+Date: Wed, 14 Jul 2010 20:38:41 -0500
+Message-ID: <1279157921.2668.1.camel@localhost.localdomain>
 References: <1279062131.24837.22.camel@localhost.localdomain>
-	<AANLkTildhplqQxzk7mBMc5IW_3bwAVDDrRe5UDpJXIS6@mail.gmail.com>
-	<4C3DD271.6040003@epost.diwic.se>
+	<AANLkTikEf4gf-oeQf4hNGUEvNi0YVrvutnSMCbxGwtJ8@mail.gmail.com>
+	<1279065709.24837.29.camel@localhost.localdomain>
+	<AANLkTimdM5__SzYFxrQqwsbOrxdit2uWOvkazPvZ4PND@mail.gmail.com>
+	<1279071115.29042.0.camel@localhost.localdomain>
+	<AANLkTimNSRELBq7i1Ypi9K2tmFu9NKLvQAOOqPwuU13x@mail.gmail.com>
+	<1279074303.29042.3.camel@localhost.localdomain>
+	<AANLkTimNYxIm9M6Mglrzh3YtJRiq1C8wdZwx-JUhLk9d@mail.gmail.com>
+	<1279145758.29042.11.camel@localhost.localdomain>
+	<AANLkTinN15BWNC2cn78rc5xCSXNo79SDE2_WkBNEg5I2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3154434475226043982=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 776A91038C5
+Received: from mailrelay.embarq.synacor.com (mailrelay.embarq.synacor.com
+	[208.47.184.3]) by alsa0.perex.cz (Postfix) with ESMTP id 7F39C1038C5
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Jul 2010 02:52:26 +0200 (CEST)
-Received: by vws9 with SMTP id 9so455786vws.38
-	for <alsa-devel@alsa-project.org>; Wed, 14 Jul 2010 17:52:24 -0700 (PDT)
-In-Reply-To: <4C3DD271.6040003@epost.diwic.se>
+	Thu, 15 Jul 2010 03:38:44 +0200 (CEST)
+In-Reply-To: <AANLkTinN15BWNC2cn78rc5xCSXNo79SDE2_WkBNEg5I2@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,58 +29,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/7/14 David Henningsson <launchpad.web@epost.diwic.se>
 
-> 2010-07-14 13:13, Raymond Yau skrev:
->
-> > localhost pulseaudio[24553]: alsa-util.c:   appl_ptr     : 735801008
-> > localhost pulseaudio[24553]: alsa-util.c:   hw_ptr       : 735846184
+--===============3154434475226043982==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-aMF0RIvwi09qD8xS74XO"
+
+
+--=-aMF0RIvwi09qD8xS74XO
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, 2010-07-15 at 08:08 +0800, Raymond Yau wrote:
+
+> > I posted both of those bug reports. Honestly, I just want it to work
+> > without all the error output to syslog and thrashing of my HD for
+> > minutes at a time. As I said, I've got the output of pulseaudio -vvvvv
+> > if anyone would like to look at it and tell me what I need to do to fix
+> > the problem.
 > >
-> > This is underrun as you can see appl_ptr is behing hw_ptr
->
-> Ehm, isn't that a ring buffer? I e, there is nothing wrong with appl_ptr
-> being less than hw_ptr.
->
+> > Chris
+> >
+> >
+> >
+> Just upload your current pulseaudio.log and output of alsa-info.sh to
+> mandriva 's bugzilla
+>=20
+> Cannot obtain any conclusion based on the log which you have posted last
+> year ( xmms)
+>=20
+> as Jaroslav Kysela said , need the real system time between I/O operation=
+s
+> and you'll see if it's issue in the ALSA driver or a task scheduling
+> problem.
 
-I think Jaroslav Kysela had already explained to you that this is an
-underrun
+Here is the bug report with the outputs uploaded.
 
-The ring buffer size is only 4408 , appl_ptr is 45176 frames behind hw_ptr
-and you can deduce the underrun occur for more than 1 second (45176/44100)
-
->> pulseaudio[24553]: alsa-util.c: snd_pcm_delay() returned a value that is
-exceptionally large: -161920 bytes (-917 ms).
-
-
-
-localhost pulseaudio[24553]: alsa-util.c:   buffer_size  : 4408
-localhost pulseaudio[24553]: alsa-util.c:   period_size  : 1102
-localhost pulseaudio[24553]: alsa-util.c:   period_time  : 24988
-
-...
-
-localhost pulseaudio[24553]: alsa-util.c:   start_threshold  : -1
-localhost pulseaudio[24553]: alsa-util.c:   stop_threshold   :
-1155530752
+https://qa.mandriva.com/show_bug.cgi?id=3D60169
+--=20
+Chris
+KeyID 0xE372A7DA98E6705C
 
 
+--=-aMF0RIvwi09qD8xS74XO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 
-> > However PA server had disabled the underrun detection.
->
-> Please clarify. If you're talking about my patch (disable underruns in
-> alsa-plugins) here, it has nothing to do with this situation (PA
-> complaining about its back-end).
->
->
-This seem has no relationship to your patch which only ignore the client
-side underrun
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
 
-The PA server has already disabled underrun detection ( no-XRUN check mode )
+iEYEABECAAYFAkw+ZpgACgkQ43Kn2pjmcFze/gCeN4fHFiDR3AZ17DaGnZJW08fx
+gcEAoIGw5g5bAlBkYVq+XCG2hyKT2AqM
+=7Edm
+-----END PGP SIGNATURE-----
 
-http://thread.gmane.org/gmane.linux.alsa.devel/60371/focus=60531
+--=-aMF0RIvwi09qD8xS74XO--
 
-It is the responsibility of PA server to ensure underrun/overrun would not
-occur on the sound driver if it disabled underrun  detection
+
+--===============3154434475226043982==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3154434475226043982==--
