@@ -1,22 +1,19 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 7/12] wm8940: fix resource reclaim in
- wm8940_register error path
-Date: Thu, 15 Jul 2010 09:54:37 +0100
-Message-ID: <1279184077.3072.21.camel@odin>
-References: <1279162147.29294.2.camel@mola> <1279162893.29294.20.camel@mola>
-	<Pine.LNX.4.64.1007150855200.5310@axis700.grange>
-	<AANLkTil_buBStfVy_L9iTgPrxosmSRFhNU1MbaXWJfMx@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/12] sound/alsa/soc/codec: fix memory leak
+ and resource relaim in error path
+Date: Thu, 15 Jul 2010 09:59:32 +0100
+Message-ID: <20100715085932.GA23529@rakim.wolfsonmicro.main>
+References: <1279162147.29294.2.camel@mola>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 76B961038DC
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 99F1C1038E9
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Jul 2010 10:54:43 +0200 (CEST)
-Received: by wwb13 with SMTP id 13so2018486wwb.20
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2010 01:54:42 -0700 (PDT)
-In-Reply-To: <AANLkTil_buBStfVy_L9iTgPrxosmSRFhNU1MbaXWJfMx@mail.gmail.com>
+	Thu, 15 Jul 2010 10:59:34 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1279162147.29294.2.camel@mola>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,192 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: axel.lin@gmail.com
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-07-15 at 15:42 +0800, Axel Lin wrote:
+On Thu, Jul 15, 2010 at 10:49:07AM +0800, Axel Lin wrote:
 
-> 
-> I agree that it is good to release resources at the same level,
-> where they have been acquired.
-> But I prefer to follow the maintainer/author's coding style.
-> 
-> For the changes in other drivers, I'd like to see Liam and Mark's comments.
-> Or if the driver maintainers request it, I can fix it.
+> [PATCH 1/12] ad1836: fix a memory leak if another ad1836 is registered
+> [PATCH 2/12] ak4642: fix a memory leak if failed to initialise AK4642
+> [PATCH 3/12] da7210: fix a memory leak if failed to initialise da7210 audio codec
+> [PATCH 4/12] wm8523: fix resource reclaim in wm8523_register error path
+> [PATCH 5/12] wm8711: fix a memory leak if another WM8711 is registered
+> [PATCH 6/12] wm8904: fix resource reclaim in wm8904_register error path
+> [PATCH 7/12] wm8940: fix resource reclaim in wm8940_register error path
+> [PATCH 8/12] wm8955: fix resource reclaim in wm8955_register error path
+> [PATCH 9/12] wm8961: fix resource reclaim in wm8961_register error path
+> [PATCH 10/12] wm8974: fix a memory leak if another WM8974 is registered
+> [PATCH 11/12] wm8978: fix a memory leak if another WM8978 is registered
+> [PATCH 12/12] wm9081: fix resource reclaim in wm9081_register error path
 
-Fwiw, the soon to be merged ASoC multi-component branch simplifies the
-codec probe() and remove() as follows (e.g. from I2C and SPI WM8750
-codec) :-
-
-static int wm8750_probe(struct snd_soc_codec *codec)
-{
-	struct wm8750_priv *wm8750 = snd_soc_codec_get_drvdata(codec);
-	int reg, ret;
-
-	codec->control_data = wm8750->control_data;
-	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8750->control_type);
-	if (ret < 0) {
-		printk(KERN_ERR "wm8750: failed to set cache I/O: %d\n", ret);
-		return ret;
-	}
-
-	ret = wm8750_reset(codec);
-	if (ret < 0) {
-		printk(KERN_ERR "wm8750: failed to reset: %d\n", ret);
-		return ret;
-	}
-
-	/* charge output caps */
-	wm8750_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-
-
-
-	snd_soc_add_controls(codec, wm8750_snd_controls,
-				ARRAY_SIZE(wm8750_snd_controls));
-	wm8750_add_widgets(codec);
-	return ret;
-}
-
-static int wm8750_remove(struct snd_soc_codec *codec)
-{
-	wm8750_set_bias_level(codec, SND_SOC_BIAS_OFF);
-	return 0;
-}
-
-
-#if defined(CONFIG_SPI_MASTER)
-static int __devinit wm8750_spi_probe(struct spi_device *spi)
-{
-	struct wm8750_priv *wm8750;
-	int ret;
-
-	wm8750 = kzalloc(sizeof(struct wm8750_priv), GFP_KERNEL);
-	if (wm8750 == NULL)
-		return -ENOMEM;
-
-	wm8750->control_data = spi;
-	wm8750->control_type = SND_SOC_SPI;
-	spi_set_drvdata(spi, wm8750);
-
-	ret = snd_soc_register_codec(&spi->dev, spi->chip_select,
-			&soc_codec_dev_wm8750, &wm8750_dai, 1);
-	if (ret < 0)
-		kfree(wm8750);
-	return ret;
-}
-
-static int __devexit wm8750_spi_remove(struct spi_device *spi)
-{
-	snd_soc_unregister_codec(&spi->dev, spi->chip_select);
-	kfree(spi_get_drvdata(spi));
-	return 0;
-}
-
-static struct spi_driver wm8750_spi_driver = {
-	.driver = {
-		.name	= "wm8750 SPI Codec",
-		.bus	= &spi_bus_type,
-		.owner	= THIS_MODULE,
-	},
-	.probe		= wm8750_spi_probe,
-	.remove		= __devexit_p(wm8750_spi_remove),
-};
-#endif /* CONFIG_SPI_MASTER */
-
-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-static __devinit int wm8750_i2c_probe(struct i2c_client *i2c,
-				      const struct i2c_device_id *id)
-{
-	struct wm8750_priv *wm8750;
-	int ret;
-
-	wm8750 = kzalloc(sizeof(struct wm8750_priv), GFP_KERNEL);
-	if (wm8750 == NULL)
-		return -ENOMEM;
-
-	i2c_set_clientdata(i2c, wm8750);
-	wm8750->control_data = i2c;
-	wm8750->control_type = SND_SOC_I2C;
-
-	ret =  snd_soc_register_codec(&i2c->dev, i2c->addr,
-			&soc_codec_dev_wm8750, &wm8750_dai, 1);
-	if (ret < 0)
-		kfree(wm8750);
-	return ret;
-}
-
-static __devexit int wm8750_i2c_remove(struct i2c_client *client)
-{
-	snd_soc_unregister_codec(&client->dev, client->addr);
-	kfree(i2c_get_clientdata(client));
-	return 0;
-}
-
-static const struct i2c_device_id wm8750_i2c_id[] = {
-	{ "wm8750", 0 },
-	{ "wm8987", 0 },
-	{ }
-};
-MODULE_DEVICE_TABLE(i2c, wm8750_i2c_id);
-
-static struct i2c_driver wm8750_i2c_driver = {
-	.driver = {
-		.name = "wm8750 I2C Codec",
-		.owner = THIS_MODULE,
-	},
-	.probe =    wm8750_i2c_probe,
-	.remove =   __devexit_p(wm8750_i2c_remove),
-	.id_table = wm8750_i2c_id,
-};
-#endif
-
-static int __init wm8750_modinit(void)
-{
-	int ret = 0;
-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-	ret = i2c_add_driver(&wm8750_i2c_driver);
-	if (ret != 0) {
-		printk(KERN_ERR "Failed to register wm8750 I2C driver: %d\n",
-		       ret);
-	}
-#endif
-#if defined(CONFIG_SPI_MASTER)
-	ret = spi_register_driver(&wm8750_spi_driver);
-	if (ret != 0) {
-		printk(KERN_ERR "Failed to register wm8750 SPI driver: %d\n",
-		       ret);
-	}
-#endif
-	return ret;
-}
-module_init(wm8750_modinit);
-
-static void __exit wm8750_exit(void)
-{
-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-	i2c_del_driver(&wm8750_i2c_driver);
-#endif
-#if defined(CONFIG_SPI_MASTER)
-	spi_unregister_driver(&wm8750_spi_driver);
-#endif
-}
-module_exit(wm8750_exit);
-
-
-So while this patch series is useful (from a minor bug fix pov), it will
-be overwritten shortly in the ASoC multi-component merge. Probably
-delaying the multi-component merge too (since the changes are in the
-same place).
-
-Can we hold off this series for a week or two. I have one more update
-for multi-component and if we don't have multi-component upstreamed in
-that time frame we can apply this series.
-
-Thanks
-
-Liam 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+If you're going to be submiting large batches of small patches like this
+it would be really helpful if you could make sure you format the subject
+lines for your patches so that they match the standards for the area of
+the kernel you're updating.  This makes them much easier to apply.
