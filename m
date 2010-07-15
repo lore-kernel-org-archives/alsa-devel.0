@@ -1,94 +1,52 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: Re: [PATCH 2/12] ak4642: fix a memory leak if failed to initialise
-	AK4642
-Date: Thu, 15 Jul 2010 14:19:02 +0800
-Message-ID: <AANLkTilmp28xbK1Kja6YiA7DwlMpIBAyeOjTq2L1mR6o@mail.gmail.com>
-References: <1279162147.29294.2.camel@mola> <1279162329.29294.6.camel@mola>
-	<w3p4og1mgt3.wl%kuninori.morimoto.gx@renesas.com>
-Reply-To: axel.lin@gmail.com
+From: Greg KH <gregkh@suse.de>
+Subject: Re: [alsa-devel] [PATCH] driver core: remove
+	CONFIG_SYSFS_DEPRECATED
+Date: Wed, 14 Jul 2010 22:35:43 -0700
+Message-ID: <20100715053543.GA4416@suse.de>
+References: <20100709185450.GA29473@kroah.com> <20100714163852.b3c09930.akpm@linux-foundation.org> <AANLkTinIy1z7226W0ylNfDdHXBp16Wt7aYBKQYY1o5t9@mail.gmail.com> <20100715041400.GA2583@suse.de> <AANLkTik1G3E6RP8cEK2JoPcqZp0Q16nK9F-4tAtXWnPk@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <w3p4og1mgt3.wl%kuninori.morimoto.gx@renesas.com>
+Content-Disposition: inline
+In-Reply-To: <AANLkTik1G3E6RP8cEK2JoPcqZp0Q16nK9F-4tAtXWnPk@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Tejun Heo <tj@kernel.org>, alsa-devel@alsa-project.org
+To: Dave Airlie <airlied@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, Randy Dunlap <randy.dunlap@oracle.com>, alsa-devel@alsa-project.org, Peter Zijlstra <a.p.zijlstra@chello.nl>, linux-scsi@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Greg KH <greg@kroah.com>, Kay Sievers <kay.sievers@vrfy.org>, linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>, "James E.J. Bottomley" <James.Bottomley@suse.de>, Alan Stern <stern@rowland.harvard.edu>, "Eric W. Biederman" <ebiederm@xmission.com>, Ingo Molnar <mingo@elte.hu>, Tejun Heo <tj@kernel.org>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Stephen Hemminger <shemminger@vyatta.com>, "David S. Miller" <davem@davemloft.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Kuninori,
+On Thu, Jul 15, 2010 at 03:00:31PM +1000, Dave Airlie wrote:
+> On Thu, Jul 15, 2010 at 2:14 PM, Greg KH <gregkh@suse.de> wrote:
+> > On Thu, Jul 15, 2010 at 10:24:18AM +1000, Dave Airlie wrote:
+> >> On Thu, Jul 15, 2010 at 9:38 AM, Andrew Morton
+> >> <akpm@linux-foundation.org> wrote:
+> >> > On Fri, 9 Jul 2010 11:54:50 -0700
+> >> > Greg Kroah-Hartman <gregkh@suse.de> wrote:
+> >> >
+> >> >> This is no longer needed by any userspace tools, so it's safe to
+> >> >> remove.
+> >>
+> >> Also still used for booting mainline kernels on RHEL5 userspaces.
+> >
+> > Really? ?I thought that was fixed a long time ago. ?What kernel was
+> > RHEL5 originally based on?
+> >
+> > And note that no RHEL5 user is going to be using a .36 kernel on their
+> > system, that's a completely unsupported and unadvised situation. ?Heck,
+> > I'd be amazed if a .34 kernel.org kernel boots on the thing, does it?
+> >
+> 
+> I think some people do it internally, last time I did it was to test
+> something I was backporting, so you want to make sure the upstream
+> version boots and the backported version also boots on the same
+> hw/userspace.
+> 
+> original kernel was 2.6.18.
 
-2010/7/15 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>:
->
-> Dear Axel
->
-> Thanks about this patch
->
->> --- a/sound/soc/codecs/ak4642.c
->> +++ b/sound/soc/codecs/ak4642.c
->> @@ -491,8 +491,10 @@ static int ak4642_i2c_probe(struct i2c_client *=
-i2c,
->> =A0 =A0 =A0 codec->control_data =3D i2c;
->>
->> =A0 =A0 =A0 ret =3D ak4642_init(ak4642);
->> - =A0 =A0 if (ret < 0)
->> + =A0 =A0 if (ret < 0) {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_ERR "failed to initialise AK=
-4642\n");
->> + =A0 =A0 =A0 =A0 =A0 =A0 kfree(ak4642);
->> + =A0 =A0 }
->>
->> =A0 =A0 =A0 return ret;
->> =A0}
->
-> Indeed. this operation is needed when error case.
->
-> I think
-> i2c_set_clientdata(i2c, NULL); is needed here too.
-> (da7210 also)
+Yes, that was the number, but does it really look anything like a .18
+kernel.org release?  :)
 
-I think the i2c core will take care of it now.
-see below commit log:
-commit e4a7b9b04de15f6b63da5ccdd373ffa3057a3681
-Author: Wolfram Sang <w.sang@pengutronix.de>
-Date:   Tue May 4 11:09:27 2010 +0200
+I'll test this out next week.
 
-    i2c-core: Erase pointer to clientdata on removal
+thanks,
 
-    After discovering that a lot of i2c-drivers leave the pointer to th=
-eir
-    clientdata dangling, it was decided to let the core handle this iss=
-ue.
-    It is assumed that the core may access the private data after remov=
-e()
-    as there are no guarantees for the lifetime of such pointers anyhow=
- (see
-    thread starting at http://lkml.org/lkml/2010/3/21/68)
-
-    Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-    Signed-off-by: Jean Delvare <khali@linux-fr.org>
-
-
->
-> And why ak4642's patch doesn't have
-> snd_soc_unregister_codec fix like da7210 ?
-> I think ak4642 have same issue
-
-In ak4642_init, current implementation will call
-snd_soc_unregister_codec(codec);  before goto reg_cache_err;
-Therefore, it should be no problem.
-
-Or do you mean just using goto style cleanup instead of mixed
-in-line and goto style cleanup?
-I can fix it if you like this change.
-
-
-Regards,
-Axel
-
->
-> Best regards
-> --
-> Kuninori Morimoto
->
->
+greg k-h
