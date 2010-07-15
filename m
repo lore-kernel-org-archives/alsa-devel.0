@@ -1,57 +1,79 @@
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] driver core: remove CONFIG_SYSFS_DEPRECATED
-Date: Thu, 15 Jul 2010 01:36:19 -0700
-Message-ID: <20100715013619.ba473d39.akpm@linux-foundation.org>
-References: <20100709185450.GA29473@kroah.com>
-	<20100714163852.b3c09930.akpm@linux-foundation.org>
-	<20100715035230.GA2186@suse.de>
-	<AANLkTilFLBpQR1BS8WFDXiLSOl08rI9DMpDhdkMXn1st@mail.gmail.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH v2 11/12] wm8978: fix a memory leak if another WM8978 is
+	registered
+Date: Thu, 15 Jul 2010 16:37:06 +0800
+Message-ID: <1279183026.10733.2.camel@mola>
+References: <1279162147.29294.2.camel@mola> <1279163338.29294.30.camel@mola>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.linux-foundation.org (smtp1.linux-foundation.org
-	[140.211.169.13])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9FABC1038DB
-	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Jul 2010 10:36:11 +0200 (CEST)
-In-Reply-To: <AANLkTilFLBpQR1BS8WFDXiLSOl08rI9DMpDhdkMXn1st@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kay Sievers <kay.sievers@vrfy.org>
-Cc: Jens Axboe <axboe@kernel.dk>, Randy Dunlap <randy.dunlap@oracle.com>, alsa-devel@alsa-project.org, Peter Zijlstra <a.p.zijlstra@chello.nl>, linux-scsi@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Greg KH <greg@kroah.com>, Greg KH <gregkh@suse.de>, linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>, Tejun Heo <tj@kernel.org>, "James E.J. Bottomley" <James.Bottomley@suse.de>, Alan Stern <stern@rowland.harvard.edu>, "Eric W. Biederman" <ebiederm@xmission.com>, Ingo Molnar <mingo@elte.hu>, Stephen@alsa-project.org, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Hemminger <shemminger@vyatta.com>, "David S. Miller" <davem@davemloft.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1279163338.29294.30.camel@mola>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel <linux-kernel@vger.kernel.org>
+Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>, Tejun Heo <tj@kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 15 Jul 2010 10:31:15 +0200 Kay Sievers <kay.sievers@vrfy.org> wrote:
+>From e53ff15ee6843d6591509f9aeeb2fa1a0c1eccee Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@gmail.com>
+Date: Thu, 15 Jul 2010 16:33:20 +0800
+Subject: [PATCH] wm8978: fix a memory leak if a wm8978_register fail
 
-> On Thu, Jul 15, 2010 at 05:52, Greg KH <gregkh@suse.de> wrote:
-> > On Wed, Jul 14, 2010 at 04:38:52PM -0700, Andrew Morton wrote:
-> 
-> >> and the box still won't boot.
-> >
-> > Ick, that sucks.
-> >
-> > What kernel was FC6 based on originally?
-> >
-> > Kay, I thought that Fedora had fixed the "can't find root" issue for
-> > this type of sysfs configuation a long time ago. __Or was that something
-> > else for PPC that I am thinking of?
-> 
-> It was fixed, and it's weird bug in nash.
-> 
-> If Andrew is still doing the same thing as years ago, he does not
-> update the initramfs image, he boots with the old original initramfs
-> along with the new kernel. :)
+There is a memory leak found if wm8978_register() fail.
+This patch moves the buffer allocate and release
+at the same level to prevent the memory leak.
 
-I run
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/codecs/wm8978.c |   10 +++++++---
+ 1 files changed, 7 insertions(+), 3 deletions(-)
 
-	VERS=$(make kernelrelease 2>/dev/null)
-	<copy vmlinux>
-	/sbin/new-kernel-pkg --mkinitrd --install 
+diff --git a/sound/soc/codecs/wm8978.c b/sound/soc/codecs/wm8978.c
+index 51d5f43..8a1ad77 100644
+--- a/sound/soc/codecs/wm8978.c
++++ b/sound/soc/codecs/wm8978.c
+@@ -1076,7 +1076,6 @@ static __devinit int wm8978_register(struct wm8978_priv *wm8978)
+ err_codec:
+ 	snd_soc_unregister_codec(codec);
+ err:
+-	kfree(wm8978);
+ 	return ret;
+ }
+ 
+@@ -1085,13 +1084,13 @@ static __devexit void wm8978_unregister(struct wm8978_priv *wm8978)
+ 	wm8978_set_bias_level(&wm8978->codec, SND_SOC_BIAS_OFF);
+ 	snd_soc_unregister_dai(&wm8978_dai);
+ 	snd_soc_unregister_codec(&wm8978->codec);
+-	kfree(wm8978);
+ 	wm8978_codec = NULL;
+ }
+ 
+ static __devinit int wm8978_i2c_probe(struct i2c_client *i2c,
+ 				      const struct i2c_device_id *id)
+ {
++	int ret;
+ 	struct wm8978_priv *wm8978;
+ 	struct snd_soc_codec *codec;
+ 
+@@ -1107,13 +1106,18 @@ static __devinit int wm8978_i2c_probe(struct i2c_client *i2c,
+ 
+ 	codec->dev = &i2c->dev;
+ 
+-	return wm8978_register(wm8978);
++	ret = wm8978_register(wm8978);
++	if (ret < 0)
++		kfree(wm8978);
++
++	return ret;
+ }
+ 
+ static __devexit int wm8978_i2c_remove(struct i2c_client *client)
+ {
+ 	struct wm8978_priv *wm8978 = i2c_get_clientdata(client);
+ 	wm8978_unregister(wm8978);
++	kfree(wm8978);
+ 	return 0;
+ }
+ 
+-- 
+1.5.4.3
