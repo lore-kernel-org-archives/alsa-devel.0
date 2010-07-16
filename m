@@ -1,233 +1,38 @@
-From: Raffaele Recalcati <lamiaposta71-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH 3/3] ASoC: DaVinci: Voicecodec: Added support based on
-	davinci-pcm-copyfromuser
-Date: Fri, 16 Jul 2010 16:46:59 +0200
-Message-ID: <1279291619-5081-4-git-send-email-lamiaposta71@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] ASoC: soc-core: soc_pcm_ops
+	dynamically allocated
+Date: Fri, 16 Jul 2010 16:09:48 +0100
+Message-ID: <20100716150948.GA23183@rakim.wolfsonmicro.main>
 References: <1279291619-5081-1-git-send-email-lamiaposta71@gmail.com>
+	<1279291619-5081-2-git-send-email-lamiaposta71@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <1279291619-5081-1-git-send-email-lamiaposta71-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Raffaele Recalcati <raffaele.recalcati-nfoefbsQIRSonA0d6jMUrA@public.gmane.org>, Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1CD32103806
+	for <alsa-devel@alsa-project.org>;
+	Fri, 16 Jul 2010 17:09:51 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1279291619-5081-2-git-send-email-lamiaposta71@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Raffaele Recalcati <lamiaposta71@gmail.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, Barry Song <21cnbao@gmail.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, alsa-devel@alsa-project.org, Eero Nurkkala <ext-eero.nurkkala@nokia.com>, Davide Bonfanti <davide.bonfanti@bticino.it>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-From: Davide Bonfanti <davide.bonfanti-nfoefbsQIRSonA0d6jMUrA@public.gmane.org>
+On Fri, Jul 16, 2010 at 04:46:57PM +0200, Raffaele Recalcati wrote:
 
-    The driver uses the pcm implementation without the use of DMA in
-    order to support Voicecodec (cq93vc).
+>     If soc_pcm_ops is statically allocated, more than one call to soc_new_pcm
+>     cause operations overwrite. The problem is overcome usyng dynamic
+>     allocation.
 
-    Signed-off-by: Davide Bonfanti <davide.bonfanti-nfoefbsQIRSonA0d6jMUrA@public.gmane.org>
-    Signed-off-by: Raffaele Recalcati <raffaele.recalcati-nfoefbsQIRSonA0d6jMUrA@public.gmane.org>
----
- sound/soc/davinci/Makefile      |    3 +
- sound/soc/davinci/cq93vc_copy.c |  130 +++++++++++++++++++++++++++++++++++++++
- sound/soc/davinci/cq93vc_copy.h |   26 ++++++++
- 3 files changed, 159 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/davinci/cq93vc_copy.c
- create mode 100644 sound/soc/davinci/cq93vc_copy.h
-
-diff --git a/sound/soc/davinci/Makefile b/sound/soc/davinci/Makefile
-index 7d6a9a1..44c17ad 100644
---- a/sound/soc/davinci/Makefile
-+++ b/sound/soc/davinci/Makefile
-@@ -1,6 +1,7 @@
- # DAVINCI Platform Support
- snd-soc-davinci-objs := davinci-pcm.o
- snd-soc-davinci-objs += davinci-pcm-copyfromuser.o
-+snd-soc-davinci-objs += cq93vc_copy.o
- snd-soc-davinci-i2s-objs := davinci-i2s.o
- snd-soc-davinci-mcasp-objs:= davinci-mcasp.o
- snd-soc-davinci-vcif-objs:= davinci-vcif.o
-@@ -13,9 +14,11 @@ obj-$(CONFIG_SND_DAVINCI_SOC_VCIF) += snd-soc-davinci-vcif.o
- # DAVINCI Machine Support
- snd-soc-evm-objs := davinci-evm.o
- snd-soc-sffsdr-objs := davinci-sffsdr.o
-+snd-soc-bmx-objs := davinci-bmx.o
- 
- obj-$(CONFIG_SND_DAVINCI_SOC_EVM) += snd-soc-evm.o
- obj-$(CONFIG_SND_DM6467_SOC_EVM) += snd-soc-evm.o
- obj-$(CONFIG_SND_DA830_SOC_EVM) += snd-soc-evm.o
- obj-$(CONFIG_SND_DA850_SOC_EVM) += snd-soc-evm.o
- obj-$(CONFIG_SND_DAVINCI_SOC_SFFSDR) += snd-soc-sffsdr.o
-+obj-$(CONFIG_SND_DAVINCI_SOC_BMX) += snd-soc-bmx.o
-diff --git a/sound/soc/davinci/cq93vc_copy.c b/sound/soc/davinci/cq93vc_copy.c
-new file mode 100644
-index 0000000..41747dd
---- /dev/null
-+++ b/sound/soc/davinci/cq93vc_copy.c
-@@ -0,0 +1,130 @@
-+/*
-+ *
-+ * Copyright (C) 2010 Bticino S.p.a
-+ * Author: Davide Bonfanti <davide.bonfanti-nfoefbsQIRSonA0d6jMUrA@public.gmane.org>
-+ *
-+ * Contributors:
-+ *     Raffaele Recalcati <raffaele.recalcati-nfoefbsQIRSonA0d6jMUrA@public.gmane.org>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation version 2.
-+ *
-+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
-+ * kind, whether express or implied; without even the implied warranty
-+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/kernel.h>
-+#include <linux/hrtimer.h>
-+#include <linux/clk.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+
-+#include <mach/gpio.h>
-+
-+#include "davinci-pcm-copy.h"
-+#include "cq93vc_copy.h"
-+
-+#define DAVINCI_VOICECODEC_MODULE_BASE 0x01D0C000
-+#define VC_PID          0x00
-+#define VC_CTRL         0x04
-+#define VC_INTEN        0x08
-+#define VC_INTSTATUS    0x0C
-+#define VC_INTCLR       0x10
-+#define VC_EMUL_CTRL    0x14
-+#define RFIFO           0x20
-+#define WFIFO           0x24
-+#define FIFOSTAT        0x28
-+#define VC_REG00        0x80
-+#define VC_REG01        0x84
-+#define VC_REG02        0x88
-+#define VC_REG03        0x8C
-+#define VC_REG04        0x90
-+#define VC_REG05        0x94
-+#define VC_REG06        0x98
-+#define VC_REG09        0xA4
-+#define VC_REG10        0xA8
-+#define VC_REG12        0xB0
-+
-+/* bit definitions */
-+#define VC_CTRL_WFIFOMD BIT(14)
-+#define VC_CTRL_WFIFOCL BIT(13)
-+#define VC_CTRL_WFIFOEN BIT(12)
-+#define VC_CTRL_RFIFOMD BIT(10)
-+#define VC_CTRL_RFIFOCL BIT(9)
-+#define VC_CTRL_RFIFOEN BIT(8)
-+#define VC_CTRL_WDUNSIGNED      BIT(7)
-+#define VC_CTRL_WDSIZE  BIT(6)
-+#define VC_CTRL_RDUNSIGNED      BIT(5)
-+#define VC_CTRL_RDSIZE  BIT(4)
-+#define VC_CTRL_RSTDAC  BIT(1)
-+#define VC_CTRL_RSTADC  BIT(0)
-+
-+#define VC_INTSTATUS_WDREQ	BIT(3)
-+
-+#define FIFOSTAT_WDATACOUNT_MASK	0x1F00
-+#define FIFOSTAT_WDATACOUNT_OFFSET	8
-+
-+#define HW_FIFO_SIZE 0x10
-+
-+void __iomem *voice_codec_base;
-+
-+void cq93vc_enable(void)
-+{
-+	__raw_writel(0, voice_codec_base + VC_CTRL);
-+	__raw_writel(0, voice_codec_base + VC_INTEN);
-+	__raw_writel(VC_CTRL_RFIFOMD | VC_CTRL_WFIFOEN |
-+		     VC_CTRL_WFIFOMD, voice_codec_base + VC_CTRL);
-+}
-+
-+void cq93vc_write(u16 data)
-+{
-+	__raw_writew(data, voice_codec_base + WFIFO);
-+}
-+
-+void cq93vc_wait_fifo_ready(void)
-+{
-+	u32 diff;
-+	do {
-+		diff = __raw_readl(voice_codec_base + VC_INTSTATUS);
-+	} while (!(diff & VC_INTSTATUS_WDREQ));
-+}
-+
-+int cq93vc_get_fifo_size(void)
-+{
-+	return HW_FIFO_SIZE;
-+}
-+
-+int cq93vc_get_fifo_status(void)
-+{
-+	int fifo;
-+	fifo =	__raw_readl(voice_codec_base + FIFOSTAT);
-+	fifo = (fifo & FIFOSTAT_WDATACOUNT_MASK) >> FIFOSTAT_WDATACOUNT_OFFSET;
-+	return fifo;
-+}
-+
-+void cq93vc_init(void)
-+{
-+	voice_codec_base = ioremap(DAVINCI_VOICECODEC_MODULE_BASE, SZ_4K);
-+
-+}
-+
-+struct davinci_pcm_copy_ops cq93vc_pcm_copy_ops = {
-+	.enable = cq93vc_enable,
-+	.write = cq93vc_write,
-+	.wait_fifo_ready = cq93vc_wait_fifo_ready,
-+	.get_fifo_size = cq93vc_get_fifo_size,
-+	.get_fifo_status = cq93vc_get_fifo_status,
-+	.init = cq93vc_init,
-+};
-+EXPORT_SYMBOL_GPL(cq93vc_pcm_copy_ops);
-diff --git a/sound/soc/davinci/cq93vc_copy.h b/sound/soc/davinci/cq93vc_copy.h
-new file mode 100644
-index 0000000..bcc4458
---- /dev/null
-+++ b/sound/soc/davinci/cq93vc_copy.h
-@@ -0,0 +1,26 @@
-+/*
-+ *
-+ * Copyright (C) 2010 Bticino S.p.a
-+ * Author: Davide Bonfanti <davide.bonfanti-nfoefbsQIRSonA0d6jMUrA@public.gmane.org>
-+ *
-+ * Contributors:
-+ *     Raffaele Recalcati <raffaele.recalcati-nfoefbsQIRSonA0d6jMUrA@public.gmane.org>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation version 2.
-+ *
-+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
-+ * kind, whether express or implied; without even the implied warranty
-+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ */
-+
-+#ifndef _DAVINCI_CQ93VC_COPY_H
-+#define _DAVINCI_CQ93VC_COPY_H
-+#include "davinci-pcm-copy.h"
-+
-+extern struct davinci_pcm_copy_ops cq93vc_pcm_copy_ops;
-+
-+#endif /* _DAVINCI_CQ93VC_COPY_H */
--- 
-1.7.0.4
+As I said previously you're looking for Liam's multi-component work
+here rather than this (or at least should be basing your work off his).
