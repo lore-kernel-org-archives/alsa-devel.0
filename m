@@ -1,39 +1,45 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: Re: [PATCH] twl6040: fix wrong kfree in twl6040_remove and
-	twl6040_codec_remove
-Date: Fri, 16 Jul 2010 17:54:08 +0800
-Message-ID: <AANLkTikMGIj-0WKXFT1Y6c7l1ObtVDx_j5pYOA_esvwG@mail.gmail.com>
-References: <1279272408.2594.1.camel@mola> <20100716093625.GD18376@sirena.org.uk>
-Reply-To: axel.lin@gmail.com
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH 0/3] ASoC: twl4030/tpa6130a2: DB_RANGE mapping
+	fixes
+Date: Fri, 16 Jul 2010 13:17:08 +0300
+Message-ID: <1279275431-26922-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20100716093625.GD18376@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Margarita Olaya Cabrera <magi.olaya@ti.com>, Jorge Eduardo Candelaria <jorge.candelaria@ti.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id A78B02445D
+	for <alsa-devel@alsa-project.org>;
+	Fri, 16 Jul 2010 12:17:26 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-hi Mark,
+Hello,
 
-2010/7/16 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Fri, Jul 16, 2010 at 05:26:48PM +0800, Axel Lin wrote:
->> Memory allocation part:
->> We allocate a memory in twl6040_codec_probe():
->> =A0 =A0 =A0 =A0 priv =3D kzalloc(sizeof(struct twl6040_data), GFP_KE=
-RNEL);
->> =A0 =A0 =A0 =A0 twl6040_codec =3D codec =3D &priv->codec;
->
-> Could you please try to take on board the feedback you were given
-> yesterday about this sort of stuff? =A0Both the feedback about format=
-ting
-> your patch so it's easy to apply and the collisions with other, more
-> substantial, work that's going on?
->
-Ok. I will resend the patch.
-( I just thought it may takes some time for review )
-( Due a vacation this weekend, I'll do it next Monday )
+There were 'holes' in the DB_RANGE and SCALE_ITEM mapping, which results
+failure, when user space requests dB value in these holes, since alsa-lib
+will fail to find a range, and can not round the requested dB to raw value.
 
-Regards,
-Axel
+Fixing the drivers I'm maintaining to correctly fill the tlv struct.
+
+Peter
+
+---
+Peter Ujfalusi (3):
+  ASoC: TWL4030: Fix DB_RANGE tlv mapping for digital loopback
+  ASoC: tpa6130a2: Fix DB_RANGE mapping for tpa6130a2 chip
+  ASoC: tpa6130a2: Fix DB_RANGE mapping for tpa6140a2 chip
+
+ sound/soc/codecs/tpa6130a2.c |   22 ++++++++++++++--------
+ sound/soc/codecs/twl4030.c   |    4 ++--
+ 2 files changed, 16 insertions(+), 10 deletions(-)
