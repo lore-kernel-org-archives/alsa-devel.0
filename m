@@ -1,19 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: TWL6040: Correct widget handling
-	for drivers
-Date: Fri, 16 Jul 2010 09:21:13 +0100
-Message-ID: <20100716082113.GC9082@rakim.wolfsonmicro.main>
-References: <1279211881-31416-1-git-send-email-jorge.candelaria@ti.com>
+From: Felix Homann <fexpop@web.de>
+Subject: Re: [PATCH - Fix Fast Track Ultra series: 44.1/88.1
+ kHz 1/Fix playback/capture issues and related chrashes at 44100 Hz and
+ 88200 Hz for M-Audio Fast Track Ultra series.
+Date: Fri, 16 Jul 2010 10:27:16 +0200
+Message-ID: <4C4017E4.7000303@web.de>
+References: <4C32E3B2.5080707@web.de>
+	<4C344340.8060804@web.de>	<4C3476BD.4090702@ladisch.de>
+	<4C347EF7.2030401@web.de> <4C348DC6.7070602@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0E88524395
+Received: from wp188.webpack.hosteurope.de (wp188.webpack.hosteurope.de
+	[80.237.132.195])
+	by alsa0.perex.cz (Postfix) with ESMTP id 74DFF24399
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Jul 2010 10:21:16 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1279211881-31416-1-git-send-email-jorge.candelaria@ti.com>
+	Fri, 16 Jul 2010 10:27:18 +0200 (CEST)
+In-Reply-To: <4C348DC6.7070602@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,17 +26,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
-Cc: Margarita Olaya Cabrera <magi.olaya@ti.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Felix Homann <fexpop@web.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 15, 2010 at 11:38:01AM -0500, Jorge Eduardo Candelaria wrote:
-> In order to reduce pop-noise at powering up/down of the DACs and Drivers,
-> these components have to be handled in a specific sequence. Headset,
-> Handsfree, and Earphone drivers are now registered as PGA components to
-> ensure DACs are enabled first.
-> 
-> Also, add a delay to leave time for DACs to settle before
-> continuing power up/down sequence.
+Am 07.07.2010 16:23, schrieb Clemens Ladisch:
+> There must be some difference, and I'd really like to know what it is.
+> Please load the driver with the patch below, with and without the
+> AUDIO_FIXED_ENDPOINT patch, and show what it prints to the system log.
+>
+>
+> Regards,
+> Clemens
+>
+>
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Hi Clemens,
+
+Have you found what's making the AUDIO_FIXED_ENDPOINT necessary? What 
+are the chances for the patch to make it into the git repositories 
+otherwise?
+
+Kind regards,
+
+Felix
