@@ -1,46 +1,66 @@
-From: Geoff King <gsking1@gmail.com>
-Subject: Re: [LAD] FIxed alsa-tools' envy24control missing
-	peak level meters and "Reset Peaks"
-Date: Fri, 16 Jul 2010 08:27:34 -0400
-Message-ID: <AANLkTimMF4huRE-QcgRsjWn4-S_Y24xDBev6CFA6ZCCH@mail.gmail.com>
-References: <AANLkTimVnkZjBLxxhx4I8OtFiu9oOH0cPpX4V9wNimIa@mail.gmail.com>
-	<20100712234002.GF4069@zita2>
-	<AANLkTim7LFEk8VzJgJmlLvgJPJcAfT0uhfRE6nRBbLFH@mail.gmail.com>
-	<20100713081908.GA4083@zita2>
-	<AANLkTil3bV075Ef5-e-UGMDj-3Mmee2fJtUjf3h5U88Y@mail.gmail.com>
-	<AANLkTinfy3UmB5LAuXs4lrqBms4KojP3nfLo9wJv1zwh@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/3] ASoC: twl4030/tpa6130a2:?DB_RANGE
+ mapping fixes
+Date: Fri, 16 Jul 2010 13:33:25 +0100
+Message-ID: <20100716123325.GA18152@rakim.wolfsonmicro.main>
+References: <1279275431-26922-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20100716102404.GE18376@sirena.org.uk>
+	<201007161405.40985.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <planetccrma-bounces@ccrma.Stanford.EDU>
-In-Reply-To: <AANLkTinfy3UmB5LAuXs4lrqBms4KojP3nfLo9wJv1zwh@mail.gmail.com>
-List-Unsubscribe: <http://ccrma-mail.stanford.edu/mailman/listinfo/planetccrma>,
-	<mailto:planetccrma-request@ccrma.stanford.edu?subject=unsubscribe>
-List-Archive: <http://ccrma-mail.stanford.edu/pipermail/planetccrma>
-List-Post: <mailto:planetccrma@ccrma.stanford.edu>
-List-Help: <mailto:planetccrma-request@ccrma.stanford.edu?subject=help>
-List-Subscribe: <http://ccrma-mail.stanford.edu/mailman/listinfo/planetccrma>,
-	<mailto:planetccrma-request@ccrma.stanford.edu?subject=subscribe>
-Sender: planetccrma-bounces@ccrma.Stanford.EDU
-Errors-To: planetccrma-bounces@ccrma.Stanford.EDU
-To: Niels Mayer <nielsmayer@gmail.com>
-Cc: alsa-devel@alsa-project.org, PlanetCCRMA mailinglist <planetccrma@ccrma.Stanford.EDU>, linux-audio-dev@lists.linuxaudio.org, fedora-music-list <fedora-music-list@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 98616103806
+	for <alsa-devel@alsa-project.org>;
+	Fri, 16 Jul 2010 14:33:27 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <201007161405.40985.peter.ujfalusi@nokia.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBKdWwgMTUsIDIwMTAgYXQgOToxNCBQTSwgTmllbHMgTWF5ZXIgPG5pZWxzbWF5ZXJA
-Z21haWwuY29tPiB3cm90ZToKPiBPbiBUdWUsIEp1bCAxMywgMjAxMCBhdCA5OjU0IFBNLCBOaWVs
-cyBNYXllciA8bmllbHNtYXllckBnbWFpbC5jb20+IHdyb3RlOgo+PiBBcyBhIHNlY29uZCBwYXRj
-aCAoY29taW5nIHNvb24pLCBJJ3ZlIHJld3JpdHRlbiDCoHRoZSBtZXRlcnMgaW4gYSBtb3JlCj4+
-IHNlbnNpYmxlIGZhc2hpb24sIGRyYXdpbmcgYSBzaW5nbGUgcmVjdGFuZ2xlIHRvIHJlcHJlc2Vu
-dCB0aGUKPj4gaW5zdGFudGFuZW91cyBsZXZlbCAoMi0zIFgtcHJpbWl0aXZlIGRyYXdzIHBlciBt
-ZXRlciB0b3RhbCBhbmQgb25lCj4+IGJsaXQsIHZlcnN1cyBodW5kcmVkcyBvZiBkcmF3cyBhbmQg
-YSBibGl0IHBlciB2YWx1ZSBjaGFuZ2UgcGVyIG1ldGVyCj4+IGluIHRoZSBvcmlnaW5hbCBjb2Rl
-KS4KPgoKTmllbHMsIFRoYW5rIHlvdSBmb3IgdGFraW5nIHRoZSB0aW1lIHRvIHdvcmsgb24gaW1w
-cm92aW5nIEVudnkyNEN0bC4KSSB0cmllZCB5b3VyIHBhdGNoIGZvciB0aGUgcGVha3MgYW5kIGl0
-IHNlZW1lZCB0byB3b3JrIGZpbmUgZm9yIG1lLiAgSQpjYW4ndCBjb21tZW50IG9uIHRoZSBjb2Rl
-IChhcyBJJ20gbXVjaCBtb3JlIG11c2ljaWFuIHRoYW4gcHJvZ3JhbW1lciksCmJ1dCBoYWQgbm8g
-cHJvYmxlbSBwYXRjaGluZyBhbmQgaW5zdGFsbGluZy4gIExvb2tpbmcgZm9yd2FyZCB0byB0cnlp
-bmcKdGhpcyBuZXcgcGF0Y2ggYW5kIHdoYXRldmVyIGVsc2UgeW91IGNvbWUgdXAgd2l0aC4gR2Vv
-ZmYKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClBsYW5l
-dENDUk1BIG1haWxpbmcgbGlzdApQbGFuZXRDQ1JNQUBjY3JtYS5zdGFuZm9yZC5lZHUKaHR0cDov
-L2Njcm1hLW1haWwuc3RhbmZvcmQuZWR1L21haWxtYW4vbGlzdGluZm8vcGxhbmV0Y2NybWEK
+On Fri, Jul 16, 2010 at 02:05:40PM +0300, Peter Ujfalusi wrote:
+> On Friday 16 July 2010 13:24:05 ext Mark Brown wrote:
+
+> > - it doesn't seem right to specify two values for the indexes at the edge of
+> > each range,
+
+> Sort of.
+> The tlv struct is a lookup table for the dB mapping.
+> Query the raw value, and it will return the associated dB.
+> If you ask for dB value, it will go through the table, and try to find the best 
+> matching raw value (with up or down rounding).
+
+Sure, and the forward mapping in particular seems to make it very clear
+what should be happening here.  The way I'd parse this the ability to
+specify ranges is just a way of saving on typing and we should always
+end up with single mapping entries between raw values and dB values.
+The API is inherently getting a list of specific point values, it's just
+using a compact encoding for some of them.
+
+> In both cases, if you query based on raw value, you get the same dB.
+> In both cases, if you ask for -10, -5, 0, 2, or 4 dB, you get the same raw.
+> In both case, if you ask for less than -10dB, than you get 0 as raw
+> In both case, if you ask for bigger than 4dB, than it is not changing the volume 
+> (I think this is really a bug, it should pick 4).
+
+Isn't this going to get messy when the increments don't line up so that
+it's easy to overlap the start of one range with the beginning of the
+next?
+
+> Probably alsa-lib can be fixed somehow to look in between the ranges, when it is 
+> looking for certain dB value, but at first look it is not that straight forward.
+
+Well, I'd expect it to do something like go through all the ranges
+available and look for the closest match which doesn't seem terribly
+complex.  I haven't looked at the code at all, though.
