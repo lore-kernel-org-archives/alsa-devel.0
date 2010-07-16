@@ -1,17 +1,17 @@
 From: Seungwhan Youn <sw.youn@samsung.com>
-Subject: [PATCHv2 3/4] ASoC: multi-component - S3C - Get
-	original functionality
-Date: Fri, 16 Jul 2010 15:29:24 +0900
-Message-ID: <1279261764-18500-1-git-send-email-sw.youn@samsung.com>
+Subject: [PATCHv2 4/4] ASoC: multi-component - S3C - Add WM9713
+	platform device
+Date: Fri, 16 Jul 2010 15:35:20 +0900
+Message-ID: <1279262120-19054-1-git-send-email-sw.youn@samsung.com>
 References: <1279260977-18342-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id C315910394D
+	by alsa0.perex.cz (Postfix) with ESMTP id 347ED10395A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Jul 2010 08:39:57 +0200 (CEST)
+	Fri, 16 Jul 2010 08:44:58 +0200 (CEST)
 In-Reply-To: <1279260977-18342-1-git-send-email-sw.youn@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,169 +26,61 @@ To: alsa-devel@alsa-project.org
 Cc: Seungwhan Youn <sw.youn@samsung.com>, Jassi Brar <jassisinghbrar@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Seungwhan Youn <claude.youn@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-In Samsung SoC's I2S was improved gradually from I2Sv2 to I2Sv4. So,
-S3C I2S platform codes are designed to use privious features hierarchy.
-This patch modify that s3c64xx-i2s use common features of s3c-i2s-v2
-and remove duplicated function on s3c64xx-i2s.
-Basically, restore the original code while keeping multicodec support
-specific parts.
+As a requirement of multicodec changes, we need a platform device
+for each CODEC. Instead of add that in machine init code, do it here
+so a new device is added only if we choose to use it.
 
 Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
 Reviewed-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- sound/soc/s3c24xx/s3c-i2s-v2.h     |    2 +
- sound/soc/s3c24xx/s3c64xx-i2s-v4.c |   14 +++++++--
- sound/soc/s3c24xx/s3c64xx-i2s.c    |   56 +++++++++++-------------------------
- 3 files changed, 30 insertions(+), 42 deletions(-)
+ sound/soc/s3c24xx/smdk_wm9713.c |   22 +++++++++++++++++++---
+ 1 files changed, 19 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.h b/sound/soc/s3c24xx/s3c-i2s-v2.h
-index c2a4bad..d458301 100644
---- a/sound/soc/s3c24xx/s3c-i2s-v2.h
-+++ b/sound/soc/s3c24xx/s3c-i2s-v2.h
-@@ -66,6 +66,8 @@ struct s3c_i2sv2_info {
- 	u32		 suspend_iismod;
- 	u32		 suspend_iiscon;
- 	u32		 suspend_iispsr;
-+
-+	unsigned long	base;
+diff --git a/sound/soc/s3c24xx/smdk_wm9713.c b/sound/soc/s3c24xx/smdk_wm9713.c
+index 001c2dd..f8aed14 100644
+--- a/sound/soc/s3c24xx/smdk_wm9713.c
++++ b/sound/soc/s3c24xx/smdk_wm9713.c
+@@ -60,22 +60,38 @@ static struct snd_soc_card smdk = {
+ 	.num_links = 1,
  };
  
- extern struct clk *s3c_i2sv2_get_clock(struct snd_soc_dai *cpu_dai);
-diff --git a/sound/soc/s3c24xx/s3c64xx-i2s-v4.c b/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
-index 74cf2b2..f09d819 100644
---- a/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
-+++ b/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
-@@ -39,8 +39,14 @@ static struct s3c_i2sv2_info s3c64xx_i2sv4;
++static struct platform_device *smdk_snd_wm9713_device;
+ static struct platform_device *smdk_snd_ac97_device;
  
- static int s3c64xx_i2sv4_probe(struct snd_soc_dai *dai)
+ static int __init smdk_init(void)
  {
--	/* do nothing */
--	return 0;
-+	struct s3c_i2sv2_info *i2s = &s3c64xx_i2sv4;
-+	int ret = 0;
-+
-+	snd_soc_dai_set_drvdata(dai, i2s);
-+
-+	ret = s3c_i2sv2_probe(dai, i2s, i2s->base);
-+
-+	return ret;
- }
+ 	int ret;
  
- static int s3c_i2sv4_hw_params(struct snd_pcm_substream *substream,
-@@ -152,6 +158,8 @@ static __devinit int s3c64xx_i2sv4_dev_probe(struct platform_device *pdev)
- 	i2s->dma_playback->client = &s3c64xx_dma_client_out;
- 	i2s->dma_playback->dma_size = 4;
+-	smdk_snd_ac97_device = platform_device_alloc("soc-audio", -1);
+-	if (!smdk_snd_ac97_device)
++	smdk_snd_wm9713_device = platform_device_alloc("wm9713-codec", -1);
++	if (!smdk_snd_wm9713_device)
+ 		return -ENOMEM;
  
-+	i2s->base = res->start;
-+
- 	i2s_pdata = pdev->dev.platform_data;
- 	if (i2s_pdata && i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
- 		dev_err(&pdev->dev, "Unable to configure gpio\n");
-@@ -167,7 +175,7 @@ static __devinit int s3c64xx_i2sv4_dev_probe(struct platform_device *pdev)
- 
- 	clk_enable(i2s->iis_cclk);
- 
--	ret = snd_soc_register_dai(&pdev->dev, pdev->id, &s3c64xx_i2s_v4_dai);
-+	ret = s3c_i2sv2_register_dai(&pdev->dev, pdev->id, &s3c64xx_i2s_v4_dai);
- 	if (ret != 0)
- 		goto err_i2sv2;
- 
-diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.c b/sound/soc/s3c24xx/s3c64xx-i2s.c
-index c63925e..86bb639 100644
---- a/sound/soc/s3c24xx/s3c64xx-i2s.c
-+++ b/sound/soc/s3c24xx/s3c64xx-i2s.c
-@@ -46,43 +46,6 @@ static struct s3c_dma_params s3c64xx_i2s_pcm_stereo_out[MAX_I2SV3];
- static struct s3c_dma_params s3c64xx_i2s_pcm_stereo_in[MAX_I2SV3];
- static struct s3c_i2sv2_info s3c64xx_i2s[MAX_I2SV3];
- 
--static int s3c64xx_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
--				  int clk_id, unsigned int freq, int dir)
--{
--	struct s3c_i2sv2_info *i2s = snd_soc_dai_get_drvdata(cpu_dai);
--	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
--
--	switch (clk_id) {
--	case S3C64XX_CLKSRC_PCLK:
--		iismod &= ~S3C2412_IISMOD_IMS_SYSMUX;
--		break;
--
--	case S3C64XX_CLKSRC_MUX:
--		iismod |= S3C2412_IISMOD_IMS_SYSMUX;
--		break;
--
--	case S3C64XX_CLKSRC_CDCLK:
--		switch (dir) {
--		case SND_SOC_CLOCK_IN:
--			iismod |= S3C64XX_IISMOD_CDCLKCON;
--			break;
--		case SND_SOC_CLOCK_OUT:
--			iismod &= ~S3C64XX_IISMOD_CDCLKCON;
--			break;
--		default:
--			return -EINVAL;
--		}
--		break;
--
--	default:
--		return -EINVAL;
--	}
--
--	writel(iismod, i2s->regs + S3C2412_IISMOD);
--
--	return 0;
--}
--
- struct clk *s3c64xx_i2s_get_clock(struct snd_soc_dai *dai)
- {
- 	struct s3c_i2sv2_info *i2s = snd_soc_dai_get_drvdata(dai);
-@@ -117,8 +80,15 @@ static int s3c64xx_i2s_probe(struct snd_soc_dai *dai)
- 
- 	clk_enable(i2s->iis_cclk);
- 
-+	ret = s3c_i2sv2_probe(dai, i2s, i2s->base);
++	ret = platform_device_add(smdk_snd_wm9713_device);
 +	if (ret)
-+		goto err_clk;
++		goto err;
 +
- 	return 0;
- 
-+err_clk:
-+	clk_disable(i2s->iis_cclk);
-+	clk_put(i2s->iis_cclk);
- err:
- 	kfree(i2s);
- 	return ret;
-@@ -177,6 +147,7 @@ static __devinit int s3c64xx_iis_dev_probe(struct platform_device *pdev)
- 	struct s3c_audio_pdata *i2s_pdata;
- 	struct s3c_i2sv2_info *i2s;
- 	struct resource *res;
-+	int i, ret;
- 
- 	if (pdev->id >= MAX_I2SV3) {
- 		dev_err(&pdev->dev, "id %d out of range\n", pdev->id);
-@@ -213,6 +184,7 @@ static __devinit int s3c64xx_iis_dev_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev, "Unable to request SFR region\n");
- 		return -EBUSY;
- 	}
-+	i2s->base = res->start;
- 
- 	i2s_pdata = pdev->dev.platform_data;
- 	if (i2s_pdata && i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
-@@ -227,8 +199,14 @@ static __devinit int s3c64xx_iis_dev_probe(struct platform_device *pdev)
- 	i2s->dma_playback->client = &s3c64xx_dma_client_out;
- 	i2s->dma_playback->dma_size = 4;
- 
--	return snd_soc_register_dais(&pdev->dev, s3c64xx_i2s_dai,
--			ARRAY_SIZE(s3c64xx_i2s_dai));
-+	for (i = 0; i < ARRAY_SIZE(s3c64xx_i2s_dai); i++) {
-+		ret = s3c_i2sv2_register_dai(&pdev->dev, i,
-+						&s3c64xx_i2s_dai[i]);
-+		if (ret != 0)
-+			return ret;
++	smdk_snd_ac97_device = platform_device_alloc("soc-audio", -1);
++	if (!smdk_snd_ac97_device) {
++		ret = -ENOMEM;
++		goto err;
 +	}
 +
+ 	platform_set_drvdata(smdk_snd_ac97_device, &smdk);
+ 
+ 	ret = platform_device_add(smdk_snd_ac97_device);
+-	if (ret)
++	if (ret) {
+ 		platform_device_put(smdk_snd_ac97_device);
++		goto err;
++	}
+ 
 +	return 0;
++err:
++	platform_device_put(smdk_snd_wm9713_device);
+ 	return ret;
  }
  
- static __devexit int s3c64xx_iis_dev_remove(struct platform_device *pdev)
 -- 
 1.6.2.5
