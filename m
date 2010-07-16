@@ -1,47 +1,81 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: [PATCH 11/15] pci: echoaudio: check kmalloc() result
-Date: Fri, 16 Jul 2010 21:16:50 +0200
-Message-ID: <20100716211650.4abb6387@Jay>
-References: <1279296943-25187-1-git-send-email-segooon@gmail.com>
+From: Niels Mayer <nielsmayer-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [LAD] [PlanetCCRMA] FIxed alsa-tools' envy24control missing
+	peak level meters and "Reset Peaks"
+Date: Fri, 16 Jul 2010 15:57:20 -0700
+Message-ID: <AANLkTinV5bbmE-xSXmRKq86qGLvAgBSizhSt0EDskCPM@mail.gmail.com>
+References: <AANLkTimVnkZjBLxxhx4I8OtFiu9oOH0cPpX4V9wNimIa@mail.gmail.com>
+	<20100712234002.GF4069@zita2>
+	<AANLkTim7LFEk8VzJgJmlLvgJPJcAfT0uhfRE6nRBbLFH@mail.gmail.com>
+	<20100713081908.GA4083@zita2>
+	<AANLkTil3bV075Ef5-e-UGMDj-3Mmee2fJtUjf3h5U88Y@mail.gmail.com>
+	<AANLkTinfy3UmB5LAuXs4lrqBms4KojP3nfLo9wJv1zwh@mail.gmail.com>
+	<AANLkTimMF4huRE-QcgRsjWn4-S_Y24xDBev6CFA6ZCCH@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1279296943-25187-1-git-send-email-segooon@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kulikov Vasiliy <segooon@gmail.com>
-Cc: kernel-janitors@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Julia Lawall <julia@diku.dk>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+In-Reply-To: <AANLkTimMF4huRE-QcgRsjWn4-S_Y24xDBev6CFA6ZCCH-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+To: Geoff King <gsking1-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, PlanetCCRMA mailinglist <planetccrma-l0SEpsmuUtBegcJQxxnBRDe48wsgrGvP@public.gmane.org>, linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org, fedora-music-list <fedora-music-list-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 16 Jul 2010 20:15:43 +0400
-Kulikov Vasiliy <segooon@gmail.com> wrote:
-
-> If kmalloc() fails exit with -ENOMEM.
-> 
-> Signed-off-by: Kulikov Vasiliy <segooon@gmail.com>
-> ---
->  sound/pci/echoaudio/echoaudio.c |    2 ++
->  1 files changed, 2 insertions(+), 0 deletions(-)
-> 
-> diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
-> index 668a5ec..20763dd 100644
-> --- a/sound/pci/echoaudio/echoaudio.c
-> +++ b/sound/pci/echoaudio/echoaudio.c
-> @@ -2250,6 +2250,8 @@ static int snd_echo_resume(struct pci_dev *pci)
->  	DE_INIT(("resume start\n"));
->  	pci_restore_state(pci);
->  	commpage_bak = kmalloc(sizeof(struct echoaudio), GFP_KERNEL);
-> +	if (commpage_bak == NULL)
-> +		return -ENOMEM;
->  	commpage = chip->comm_page;
->  	memcpy(commpage_bak, commpage, sizeof(struct comm_page));
->  
-
-Yes, of course. Thank you.
-
-
-Ack-by: Giuliano Pochini <pochini@shiny.it>
-
-
--- 
-Giuliano.
+T24gRnJpLCBKdWwgMTYsIDIwMTAgYXQgNToyNyBBTSwgR2VvZmYgS2luZyA8Z3NraW5nMUBnbWFp
+bC5jb20+IHdyb3RlOgo+IE5pZWxzLCBUaGFuayB5b3UgZm9yIHRha2luZyB0aGUgdGltZSB0byB3
+b3JrIG9uIGltcHJvdmluZyBFbnZ5MjRDdGwuCj4gSSB0cmllZCB5b3VyIHBhdGNoIGZvciB0aGUg
+cGVha3MgYW5kIGl0IHNlZW1lZCB0byB3b3JrIGZpbmUgZm9yIG1lLiDCoEkKPiBjYW4ndCBjb21t
+ZW50IG9uIHRoZSBjb2RlIChhcyBJJ20gbXVjaCBtb3JlIG11c2ljaWFuIHRoYW4gcHJvZ3JhbW1l
+ciksCj4gYnV0IGhhZCBubyBwcm9ibGVtIHBhdGNoaW5nIGFuZCBpbnN0YWxsaW5nLiDCoExvb2tp
+bmcgZm9yd2FyZCB0byB0cnlpbmcKPiB0aGlzIG5ldyBwYXRjaCBhbmQgd2hhdGV2ZXIgZWxzZSB5
+b3UgY29tZSB1cCB3aXRoLiBHZW9mZgoKR2VvZmYgLS0gdGhhbmsgeW91IGZvciB0cnlpbmcgb3V0
+IHRoZSBwYXRjaCEgKEFuZCwgT1QsICB0aGFua3MgZm9yCndvcmtpbmcgdy8gUnVpIHRvIGhlbHAg
+Zml4Cmh0dHA6Ly9zb3VyY2Vmb3JnZS5uZXQvdHJhY2tlci8/ZnVuYz1kZXRhaWwmYXRpZD03MzMw
+NzYmYWlkPTMwMjE2NDUmZ3JvdXBfaWQ9MTM1NTAxCjo6ICJoZWxwIGZpeCBxdHJhY3RvciBjcmFz
+aCBvbiBidXMgY2hhbmdpbmcvY29uZmlndXJhdGlvbiAoMzAyMTY0NSkiIC0tCkVudnkyNCBhbmQg
+bXVsdGljaGFubmVsIHF0cmFjdG9yIHVzZXJzLCB5ZXMsIGl0J3MgdGltZSBmb3IgYSAic3ZuIHVw
+IiApLgoKRllJLCB0byB0cnkgb3V0IHRoZSBuZXcgbGV2ZWxtZXRlcnMgImVhc3kiLCBpZiB5b3Un
+cmUgcnVubmluZyBGZWRvcmEKeDg2XzY0LCB1c2UgdGhlICJlbnZ5MjRjb250cm9sIiBiaW5hcnkg
+ZGlyZWN0bHksIG9yIGRyb3AgdGhlCmxldmVsbWV0ZXJzLmMgZmlsZSBpbnRvIHlvdXIgYnVpbGQ6
+Cmh0dHA6Ly9uaWVsc21heWVyLmNvbS9ucG0vRWZmaWNpZW50LU1ldGVycy1FbnZ5MjRDb250cm9s
+LnRnegooIGZvciBkZXRhaWxzIGh0dHA6Ly9uaWVsc21heWVyLmNvbS9ucG0vRWZmaWNpZW50LU1l
+dGVycy1FbnZ5MjRDb250cm9sLlJFQURNRSApCgouLi4uLi4uLgoKT24gYSBjb21wbGV0ZWx5IGRp
+ZmZlcmVudCAibm90ZSIgIHRoZSBlbnZ5IDI0IG1hbnVhbCAoCmh0dHA6Ly9hbHNhLmN5YmVybWly
+cm9yLm9yZy9tYW51YWxzL2ljZW5zZW1ibGUvZW52eTI0LnBkZiApCmhhcyBpbnRlcmVzdGluZyBp
+bmZvIG9uIHRoZSBlbnZ5MjQgZGlnaXRhbCBtaXhlciB0aGF0IEkndmUgc25hcHNob3R0ZWQ6CgpE
+aWFncmFtOiBodHRwOi8vbmllbHNtYXllci5jb20vbnBtL2VudnkyNG1peGVyLWFyY2hpdGVjdHVy
+ZS5wbmcKCk5vdGUgdGhlIHdheSBpdCB0cnVuY2F0ZXMgaW4gdGhlIG1peGVyOiB0aGUgbW9yZSBp
+bnB1dHMgeW91ICJtaXgiIGF0Cm9uY2UsIHRoZSBmZXdlciBiaXRzIGVhY2ggaW5wdXQgc291cmNl
+IGdldHMsIGFuZCBpdCdzIG5vdCBjbGVhciB3aGF0CmtpbmQgb2YgZGl0aGVyLCBvciBpdCdzIGEg
+c3RyYWlnaHQgdHJ1bmNhdGUgb2YgMjQuLi4gdWx0aW1hdGVseSB0aGUKZW52eTI0IHNlZW1zIG9y
+aWVudGVkIHRvd2FyZHMgcHJvZHVjaW5nIGEgMTYgYml0LCBhbmQgbm90IDI0IGJpdAptYXN0ZXIg
+KHdoaWNoIG1ha2VzIHNlbnNlIGdpdmVuIHRoYXQgdGhlIGNoaXAgaXMgd2VsbCBvdmVyIGEgZGVj
+YWRlCm9sZCBhbmQgSEQgYXVkaW8gcHJvZHVjdGlvbiBmb3IgInByb3N1bWVyIiB3YXMgcmFyZSk6
+Ci4uLi4uLi4uLi4KNC41LjUgTXVsdGktVHJhY2sgRGlnaXRhbCBNb25pdG9yaW5nClRoZSBFbnZ5
+MjQgaW50ZWdyYXRlcyBhIDM2LWJpdCByZXNvbHV0aW9uIGRpZ2l0YWwgaGFyZHdhcmUgbWl4ZXIu
+IFRoZQp3aWR0aCBvZiB0aGUgZGF0YSBwYXRoIGlzIHN0cmljdGx5IHRvCmVuc3VyZSB0aGF0IGR1
+cmluZyBwcm9jZXNzaW5nIG9mIGFsbCB0aGUgY2hhbm5lbHMsIHVuZGVyIGFueQpjb25kaXRpb24s
+IG5vIHJlc29sdXRpb24gaXMgbG9zdC4gVGhlIGR5bmFtaWMgcmFuZ2UKb2YgdGhlIGVuZCB1c2Vy
+IHN5c3RlbSB3aWxsIGJlIGxpbWl0ZWQgYnkgdGhlIHJhbmdlIG9mIHRoZSBwaHlzaWNhbApvdXRw
+dXQgZGV2aWNlcyB1c2VkLiBJbiBvcmRlciB0byBtYWludGFpbgppZGVudGljYWwgZ2FpbiB0byB0
+aGUgaW5wdXQgc3RyZWFtIChpLmUuIDBkQiksIHRoZSByZXN1bHRpbmcgMjQtYml0IGlzCm5vdCBt
+c2ItYWxpZ25lZCB0byB0aGUgMzYtYml0LiBUaGUgb3ZlcmZsb3cKYml0cyBjb3JyZXNwb25kIHRv
+IHRoZSBhbmFsb2cgZGlzdG9ydGlvbiBkdWUgdG8gc2F0dXJhdGlvbi4gVGhlIHVzZXIKd291bGQg
+bmVlZCB0byByZWR1Y2UgdGhlIG92ZXJhbGwgYXR0ZW51YXRpb24Kb2YgdGhlIGlucHV0cyB0byBh
+dm9pZCBjbGlwcGluZy4gSW5zZXJ0aW9uIG9mIHRoZSBkaWdpdGFsIG1peGVyIGFkZHMKb25seSBh
+IHNpbmdsZSBzYW1wbGUgY3ljbGUgZGVsYXkgd2l0aCByZXNwZWN0CnRvIHRoZSBvcmlnaW5hbCBk
+YXRhLiBUaGlzIGV4dHJlbWVseSBsb3cgbGF0ZW5jeSBhbGwgZGlnaXRhbCBtaXhlcgpwcm92aWRl
+cyBtb25pdG9yaW5nIGZ1bmN0aW9uYWxpdHkgYW5kIGNhbgpyZXBsYWNlIGEgdHJhZGl0aW9uYWwg
+ZXh0ZXJuYWwgYW5hbG9nIGlucHV0IG1peGVyLiBUaGVyZSBhcmUgMjAKaW5kZXBlbmRlbnQgYXVk
+aW8gZGF0YSBzdHJlYW1zIHRvIG1peCBhbmQKY29udHJvbCB0aGUgdm9sdW1lLiAuLi4KLi4uLi4u
+Li4uLi4uLi4KCi0tTmllbHMKaHR0cDovL25pZWxzbWF5ZXIuY29tCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4LWF1ZGlvLWRldiBtYWlsaW5nIGxp
+c3QKTGludXgtYXVkaW8tZGV2QGxpc3RzLmxpbnV4YXVkaW8ub3JnCmh0dHA6Ly9saXN0cy5saW51
+eGF1ZGlvLm9yZy9saXN0aW5mby9saW51eC1hdWRpby1kZXYK
