@@ -1,14 +1,16 @@
-From: linux@audioscience.com
-Subject: [PATCH 9/9] Avoid useless assignment of returned index
-	values.
-Date: Fri, 16 Jul 2010 17:51:01 +1200
-Message-ID: <1279259461-21543-4-git-send-email-linux@audioscience.com>
-References: <1279259461-21543-1-git-send-email-linux@audioscience.com>
+From: Seungwhan Youn <sw.youn@samsung.com>
+Subject: [PATCHv2 0/4] ASoC: multi-component - Samsung S3C
+	Platform
+Date: Fri, 16 Jul 2010 15:16:17 +0900
+Message-ID: <1279260977-18342-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-reply-to: <1279259461-21543-1-git-send-email-linux@audioscience.com>
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 975AA24471
+	for <alsa-devel@alsa-project.org>;
+	Fri, 16 Jul 2010 08:25:02 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,57 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: tiwai@suse.de, Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Seungwhan Youn <sw.youn@samsung.com>, Jassi Brar <jassisinghbrar@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Seungwhan Youn <claude.youn@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+Hi,
+	
+This is a second version of patch series adding support for multi
+component model on Samsung S3C Platform.
 
-Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
----
- pci/asihpi/hpifunc.c |    9 ++++-----
- 1 files changed, 4 insertions(+), 5 deletions(-)
+This patch series can be apply upon "ASoC: multi-component - Fix S3C
+compile error" in the first patch of V1 that already applied by Liam.
 
-diff --git a/pci/asihpi/hpifunc.c b/pci/asihpi/hpifunc.c
-index 9c6958a..1e92eb6 100644
---- a/pci/asihpi/hpifunc.c
-+++ b/pci/asihpi/hpifunc.c
-@@ -2179,7 +2179,7 @@ u16 hpi_compander_get_attack_time_constant(const struct hpi_hsubsys
- 	*ph_subsys, u32 h_control, unsigned int index, u32 *attack)
- {
- 	return hpi_control_param_get(ph_subsys, h_control,
--		HPI_COMPANDER_ATTACK, 0, index, attack, &index);
-+		HPI_COMPANDER_ATTACK, 0, index, attack, NULL);
- }
- 
- u16 hpi_compander_set_decay_time_constant(const struct hpi_hsubsys *ph_subsys,
-@@ -2193,7 +2193,7 @@ u16 hpi_compander_get_decay_time_constant(const struct hpi_hsubsys *ph_subsys,
- 	u32 h_control, unsigned int index, u32 *decay)
- {
- 	return hpi_control_param_get(ph_subsys, h_control,
--		HPI_COMPANDER_DECAY, 0, index, decay, &index);
-+		HPI_COMPANDER_DECAY, 0, index, decay, NULL);
- 
- }
- 
-@@ -2244,7 +2244,7 @@ u16 hpi_compander_get_ratio(const struct hpi_hsubsys *ph_subsys,
- 	u32 h_control, u32 index, u32 *ratio100)
- {
- 	return hpi_control_param_get(ph_subsys, h_control,
--		HPI_COMPANDER_RATIO, 0, index, ratio100, &index);
-+		HPI_COMPANDER_RATIO, 0, index, ratio100, NULL);
- }
- 
- u16 hpi_level_query_range(const struct hpi_hsubsys *ph_subsys, u32 h_control,
-@@ -3258,8 +3258,7 @@ static inline size_t hpi_entity_item_count(struct hpi_entity *entity_ptr)
- static inline struct hpi_entity *hpi_entity_ptr_to_next(struct hpi_entity
- 	*entity_ptr)
- {
--	return (void *)(((uint8_t *) entity_ptr) +
--		hpi_entity_size(entity_ptr));
-+	return (void *)(((u8 *)entity_ptr) + hpi_entity_size(entity_ptr));
- }
- 
- static inline u16 hpi_entity_check_type(const enum e_entity_type t)
--- 
-1.7.0.4
+Changes since V1:
+- Support for GPIO, DMA and SFR settings pull from platform device
+  resource.
+- Modify description of add WM9713 platform device on smdk board.
+
+The following patch series contains:
+
+[PATCHv2 1/4] ASoC: S3C64XX: Move GPIO settings to platform
+[PATCHv2 2/4] ASoC: S3C64XX: Move DMA settings to platform
+[PATCHv2 3/4] ASoC: multi-component - S3C - Get original functionality
+[PATCHv2 4/4] ASoC: multi-component - S3C - Add WM9713 platform device
+
+
+Thanks,
+
+Claude
