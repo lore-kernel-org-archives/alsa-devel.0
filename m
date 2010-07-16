@@ -1,24 +1,30 @@
-From: Niels Mayer <nielsmayer@gmail.com>
-Subject: Re: [LAD] FIxed alsa-tools' envy24control missing peak
-	level meters and "Reset Peaks"
-Date: Thu, 15 Jul 2010 18:14:54 -0700
-Message-ID: <AANLkTinfy3UmB5LAuXs4lrqBms4KojP3nfLo9wJv1zwh@mail.gmail.com>
-References: <AANLkTimVnkZjBLxxhx4I8OtFiu9oOH0cPpX4V9wNimIa@mail.gmail.com>
-	<20100712234002.GF4069@zita2>
-	<AANLkTim7LFEk8VzJgJmlLvgJPJcAfT0uhfRE6nRBbLFH@mail.gmail.com>
-	<20100713081908.GA4083@zita2>
-	<AANLkTil3bV075Ef5-e-UGMDj-3Mmee2fJtUjf3h5U88Y@mail.gmail.com>
+From: Chris <cpollock@embarqmail.com>
+Subject: Re: Which project to choose?
+Date: Thu, 15 Jul 2010 20:19:09 -0500
+Message-ID: <1279243149.9221.2.camel@localhost.localdomain>
+References: <1279062131.24837.22.camel@localhost.localdomain>
+	<AANLkTikEf4gf-oeQf4hNGUEvNi0YVrvutnSMCbxGwtJ8@mail.gmail.com>
+	<1279065709.24837.29.camel@localhost.localdomain>
+	<AANLkTimdM5__SzYFxrQqwsbOrxdit2uWOvkazPvZ4PND@mail.gmail.com>
+	<1279071115.29042.0.camel@localhost.localdomain>
+	<AANLkTimNSRELBq7i1Ypi9K2tmFu9NKLvQAOOqPwuU13x@mail.gmail.com>
+	<1279074303.29042.3.camel@localhost.localdomain>
+	<AANLkTimNYxIm9M6Mglrzh3YtJRiq1C8wdZwx-JUhLk9d@mail.gmail.com>
+	<1279145758.29042.11.camel@localhost.localdomain>
+	<AANLkTinN15BWNC2cn78rc5xCSXNo79SDE2_WkBNEg5I2@mail.gmail.com>
+	<1279157921.2668.1.camel@localhost.localdomain>
+	<i1n0mf$87c$1@dough.gmane.org>
+	<alpine.LNX.2.00.1007151603320.4208@eeebox2.perex-int.cz>
+	<1279234479.2668.3.camel@localhost.localdomain>
+	<AANLkTilDzdT6X3N2vIBBe-4Br1OJmoefTTutP542DxtJ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============8883959778725986166=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 90BBC243DE
+Received: from mailrelay.embarq.synacor.com (mailrelay.embarq.synacor.com
+	[208.47.184.3]) by alsa0.perex.cz (Postfix) with ESMTP id AAF56243F1
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Jul 2010 03:14:55 +0200 (CEST)
-Received: by vws9 with SMTP id 9so1914957vws.38
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2010 18:14:54 -0700 (PDT)
-In-Reply-To: <AANLkTil3bV075Ef5-e-UGMDj-3Mmee2fJtUjf3h5U88Y@mail.gmail.com>
+	Fri, 16 Jul 2010 03:19:11 +0200 (CEST)
+In-Reply-To: <AANLkTilDzdT6X3N2vIBBe-4Br1OJmoefTTutP542DxtJ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,82 +34,124 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-audio-dev@lists.linuxaudio.org, alsa-devel@alsa-project.org, PlanetCCRMA mailinglist <planetccrma@ccrma.stanford.edu>, fedora-music-list <fedora-music-list@redhat.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBKdWwgMTMsIDIwMTAgYXQgOTo1NCBQTSwgTmllbHMgTWF5ZXIgPG5pZWxzbWF5ZXJA
-Z21haWwuY29tPiB3cm90ZToKPiBBcyBhIHNlY29uZCBwYXRjaCAoY29taW5nIHNvb24pLCBJJ3Zl
-IHJld3JpdHRlbiDCoHRoZSBtZXRlcnMgaW4gYSBtb3JlCj4gc2Vuc2libGUgZmFzaGlvbiwgZHJh
-d2luZyBhIHNpbmdsZSByZWN0YW5nbGUgdG8gcmVwcmVzZW50IHRoZQo+IGluc3RhbnRhbmVvdXMg
-bGV2ZWwgKDItMyBYLXByaW1pdGl2ZSBkcmF3cyBwZXIgbWV0ZXIgdG90YWwgYW5kIG9uZQo+IGJs
-aXQsIHZlcnN1cyBodW5kcmVkcyBvZiBkcmF3cyBhbmQgYSBibGl0IHBlciB2YWx1ZSBjaGFuZ2Ug
-cGVyIG1ldGVyCj4gaW4gdGhlIG9yaWdpbmFsIGNvZGUpLgoKUGF0Y2ggZm9yIGh0dHBzOi8vYnVn
-emlsbGEucmVkaGF0LmNvbS9zaG93X2J1Zy5jZ2k/aWQ9NjAyOTAzCihzZWUgYWxzbyBodHRwOi8v
-b2xkLm5hYmJsZS5jb20vRkl4ZWQtYWxzYS10b29scyctZW52eTI0Y29udHJvbC1taXNzaW5nLXBl
-YWstbGV2ZWwtbWV0ZXJzLWFuZC0iUmVzZXQtUGVha3MiLXRzMjkxNDQ4MzAuaHRtbAopCgooMSkg
-aHR0cDovL25pZWxzbWF5ZXIuY29tL25wbS9TY3JlZW5zaG90LUVmZmljaWVudC1NZXRlcnMtRW52
-eTI0Q29udHJvbC5wbmcKICogVG8gc2VlIHdoYXQgdGhlIG5ldyBtZXRlcnMgbG9vayBsaWtlLgoo
-MikgaHR0cDovL25pZWxzbWF5ZXIuY29tL25wbS9FZmZpY2llbnQtTWV0ZXJzLUVudnkyNENvbnRy
-b2wudGd6CiAqIENvbnRhaW5zIGxldmVsbWV0ZXJzLmMgYW5kIHg4Nl82NCBiaW5hcnkgJ2Vudnky
-NGNvbnRyb2wnIHRoYXQgc2hvdWxkIGF0CiAgIGxlYXN0IHdvcmsgb24gRmVkb3JhIDEyIGFuZCBP
-cGVuU3VzZSBhbmQgb3RoZXIgMi42LjMyLWJhc2VkIGRpc3Ryb3MuCigzKSBodHRwOi8vbmllbHNt
-YXllci5jb20vbnBtL0VmZmljaWVudC1NZXRlcnMtRW52eTI0Q29udHJvbC5wYXRjaAogKiBUbyBh
-cHBseSB0aGUgcGF0Y2gsIGdyYWIgdGhlIG1vc3QgcmVjZW50IHN0YWJsZSByZWxlYXNlICgKICAg
-ZnRwOi8vZnRwLmFsc2EtcHJvamVjdC5vcmcvcHViL3Rvb2xzL2Fsc2EtdG9vbHMtMS4wLjIzLnRh
-ci5iejIgKSBvcgogICBnaXQgcHVsbCBmcm9tIHRydW5rIG9mIHRoZSAiYWxzYS10b29scyIgcHJv
-amVjdC4KICogQWZ0ZXIgdW5wYWNraW5nIGFuZCBhc3N1bWluZyB5b3UndmUgZ290IHRoZSBwYXRj
-aCBpbgogICB+L0VmZmljaWVudC1NZXRlcnMtRW52eTI0Q29udHJvbC5wYXRjaC5wYXRjaCBkbzoK
-ICAgPj4gY2QgYWxzYS10b29scy0xLjAuMjMKICAgPj4gY2F0IH4vRWZmaWNpZW50LU1ldGVycy1F
-bnZ5MjRDb250cm9sLnBhdGNoIHwgcGF0Y2ggLXAxCiAgKiBJdCBzaG91bGQgZ2l2ZSBtZXNzYWdl
-ICJwYXRjaGluZyBmaWxlIGVudnkyNGNvbnRyb2wvbGV2ZWxtZXRlcnMuYyIKICAqIEZvbGxvdyB0
-aGUgZGlyZWN0aW9ucyB0byBjb21waWxlIGFsc2EtdG9vbHMuCgpGWUkgaGVyZSdzIHdoYXQgbXkg
-InRvcCIgcHJvY2Vzc2VzIGxvb2sgbGlrZSB3aGVuIHJ1bm5pbmcgYSB0ZXN0IHRvCm91dHB1dCBp
-bmRpdmlkdWFsIHN0cmVhbXMgdG8gYWxsIDEwIFBDTSBvdXRwdXQgY2hhbm5lbHMgLS0gbm90ZSBY
-CmNvbnN1bWVzIGJldHdlZW4gIjEuNyUiIHRvICIyLjAgJSIgYW5kICJlbnZ5MjRjb250cm9sIiAi
-MC43JSIgdG8KIjEuMCUiOgoKMTUyMTAgbnBtICAgICAgIDIwICAgMCAgNjQzbSAgMTRtIDg5NjQg
-UyAgNi42ICAwLjQgICAwOjA1Ljg1IGdzdDEyMwoxNTE4NCBucG0gICAgICAgMjAgICAwICA2NDNt
-ICAxNG0gODk4NCBTICA2LjMgIDAuNCAgIDA6MTMuMTEgZ3N0MTIzCjE1MTkwIG5wbSAgICAgICAy
-MCAgIDAgIDY0M20gIDE0bSA4OTgwIFMgIDYuMCAgMC40ICAgMDoxMi40OCBnc3QxMjMKMTUxNzIg
-bnBtICAgICAgIDIwICAgMCAgNjQzbSAgMTRtIDg5NjggUyAgNS42ICAwLjQgICAwOjE1LjQyIGdz
-dDEyMwoxNTE3OCBucG0gICAgICAgMjAgICAwICA2NDNtICAxNG0gODk4NCBTICA1LjYgIDAuNCAg
-IDA6MTQuMTcgZ3N0MTIzCjEzNjg0IHJvb3QgICAgICAyMCAgIDAgIDUyN20gMTEybSAgMzFtIFMg
-IDIuMCAgMi44ICAgMzoyNi4xMSBYCjEzOTIzIG5wbSAgICAgICAyMCAgIDAgIDg2M20gIDYwbSAg
-MzdtIFMgIDEuMCAgMS41ICAgMjo0OS4wOCBwbGFzbWEtZGVza3RvcAoxNDE2MyBucG0gICAgICAg
-MjAgICAwICA1OTdtICAyN20gIDE1bSBTICAxLjAgIDAuNyAgIDE6MDguMjkgY2hyb21lCjE0MTU1
-IG5wbSAgICAgICAyMCAgIDAgMTAzOG0gMTcwbSAgMTRtIFMgIDAuNyAgNC4zICAgMTowMC44NyBj
-aHJvbWUKMTUyMjYgbnBtICAgICAgIDIwICAgMCAgMTkybSA5MzE2IDY5MDggUyAgMC43ICAwLjIg
-ICAwOjAwLjUxIGVudnkyNGNvbnRyb2wKCkhlcmUncyB0aGUgZW52eTI0Y29udHJvbCBmcm9tIG15
-IGZpcnN0IHBhdGNoLCB1c2luZyB0aGUgb3JpZ2luYWwKbWV0ZXJzIHRoYXQgY2F1c2UgbWFueSBz
-ZXBhcmF0ZSBYRHJhd1JlY3RhbmdsZXMgZm9yIGVhY2ggTEVELWxvb2tpbmcKc2VnbWVudC4gVGhl
-IHBlcmZvcm1hbmNlIGRpZmZlcmVuY2UgaXMgcXVpdGUgbm90aWNlYWJsZSBhcyB0aGUgZmFucwpz
-dGFydCBydW5uaW5nIGxvdWRlciBhbmQgdGhlIHN5c3RlbSBsb2FkIGNsaW1icyB1cHdhcmRzIGFz
-IHNvb24gYXMgdGhlCm9yaWdpbmFsIGVudnkyNGNvbnRyb2wgc3RhcnRzIHJ1bm5pbmc6IFggY29u
-c3VtZXMgNS43LTEwJSBDUFUsIGFuZAplbnZ5MjRjb250cm9sIGJldHdlZW4gMi4wJSBhbmQgMi43
-JS4KCjE1MTcyIG5wbSAgICAgICAyMCAgIDAgIDY0M20gIDE0bSA4OTY4IFMgIDYuMSAgMC40ICAg
-MDo1My44MyBnc3QxMjMKMTUxNzggbnBtICAgICAgIDIwICAgMCAgNjQzbSAgMTRtIDg5ODQgUyAg
-Ni4xICAwLjQgICAwOjUxLjQ4IGdzdDEyMwoxNTE5MCBucG0gICAgICAgMjAgICAwICA2NDNtICAx
-NG0gODk4MCBTICA2LjEgIDAuNCAgIDA6NDkuNjAgZ3N0MTIzCjE1MjEwIG5wbSAgICAgICAyMCAg
-IDAgIDY0M20gIDE0bSA4OTY0IFMgIDYuMSAgMC40ICAgMDo0NC4wMSBnc3QxMjMKMTM2ODQgcm9v
-dCAgICAgIDIwICAgMCAgNTI3bSAxMTJtICAzMW0gUyAgNS43ICAyLjggICAzOjQyLjc4IFgKMTUx
-ODQgbnBtICAgICAgIDIwICAgMCAgNjQzbSAgMTRtIDg5ODQgUyAgNS43ICAwLjQgICAwOjUxLjA3
-IGdzdDEyMwoxNTM5OCBucG0gICAgICAgMjAgICAwICAxOTJtIDkzMzIgNjkwOCBTICAyLjQgIDAu
-MiAgIDA6MDIuMzIKZW52eTI0Y29udHJvbC5mCjE0MTYzIG5wbSAgICAgICAyMCAgIDAgIDU5N20g
-IDI3bSAgMTVtIFMgIDEuMCAgMC43ICAgMToxNS41NCBjaHJvbWUKMTM5MjMgbnBtICAgICAgIDIw
-ICAgMCAgODYzbSAgNjBtICAzN20gUyAgMC42ICAxLjUgICAyOjU1LjA0CnBsYXNtYS1kZXNrdG9w
-CgpKdXN0IHRvIHNob3cgdGhhdCBpdCdzIHRoZSBzYW1lIHBlcmZvcm1hbmNlIGFzIHRoZSBvcmln
-aW5hbAplbnZ5MjRjb250cm9sIGZyb20gYWxzYS10b29scy0xLjAuMjItMS4xLmZjMTIuY2NybWEu
-eDg2XzY0OgoKMTUxNzggbnBtICAgICAgIDIwICAgMCAgNjQzbSAgMTRtIDg5ODQgUyAgNi4zICAw
-LjQgICAxOjI4LjcyIGdzdDEyMwoxNTE5MCBucG0gICAgICAgMjAgICAwICA2NDNtICAxNG0gODk4
-MCBTICA2LjMgIDAuNCAgIDE6MjYuNjUgZ3N0MTIzCjE1MjEwIG5wbSAgICAgICAyMCAgIDAgIDY0
-M20gIDE0bSA4OTY0IFMgIDYuMyAgMC40ICAgMToyMC41OSBnc3QxMjMKMTUxODQgbnBtICAgICAg
-IDIwICAgMCAgNjQzbSAgMTRtIDg5ODQgUyAgNi4wICAwLjQgICAxOjI4LjIxIGdzdDEyMwoxMzY4
-NCByb290ICAgICAgMjAgICAwICA1MjdtIDExMm0gIDMxbSBSICA1LjYgIDIuOCAgIDQ6MjEuMzAg
-WAoxNTE3MiBucG0gICAgICAgMjAgICAwICA2NDNtICAxNG0gODk2OCBTICA1LjYgIDAuNCAgIDE6
-MzEuNTEgZ3N0MTIzCjE1NDU1IG5wbSAgICAgICAyMCAgIDAgIDE5Mm0gODcwMCA2MzE2IFMgIDIu
-MyAgMC4yICAgMDowMS43NAplbnZ5MjRjb250cm9sCjE0MTYzIG5wbSAgICAgICAyMCAgIDAgIDU5
-N20gIDI3bSAgMTVtIFMgIDEuMyAgMC43ICAgMToyMy4wMiBjaHJvbWUKMTM5MjMgbnBtICAgICAg
-IDIwICAgMCAgODYzbSAgNjBtICAzN20gUyAgMC43ICAxLjUgICAzOjAwLjcyIHBsYXNtYS1kZXNr
-dG9wCgotLSBOaWVscwpodHRwOi8vbmllbHNtYXllci5jb20KX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--===============8883959778725986166==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-NRtc+mqP9sEKWvwfXcnB"
+
+
+--=-NRtc+mqP9sEKWvwfXcnB
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, 2010-07-16 at 07:15 +0800, Raymond Yau wrote:
+> 2010/7/16 Chris <cpollock@embarqmail.com>
+>=20
+> > On Thu, 2010-07-15 at 16:07 +0200, Jaroslav Kysela wrote:
+> > > On Thu, 15 Jul 2010, Colin Guthrie wrote:
+> > >
+> > > > 'Twas brillig, and Chris at 15/07/10 02:38 did gyre and gimble:
+> > > >> On Thu, 2010-07-15 at 08:08 +0800, Raymond Yau wrote:
+> > > >>
+> > > >>>> I posted both of those bug reports. Honestly, I just want it to =
+work
+> > > >>>> without all the error output to syslog and thrashing of my HD fo=
+r
+> > > >>>> minutes at a time. As I said, I've got the output of pulseaudio
+> > -vvvvv
+> > > >>>> if anyone would like to look at it and tell me what I need to do=
+ to
+> > fix
+> > > >>>> the problem.
+> > > >>>>
+> > > >>>> Chris
+> > > >>>>
+> > > >>>>
+> > > >>>>
+> > > >>> Just upload your current pulseaudio.log and output of alsa-info.s=
+h to
+> > > >>> mandriva 's bugzilla
+> > > >>>
+> > > >>> Cannot obtain any conclusion based on the log which you have post=
+ed
+> > last
+> > > >>> year ( xmms)
+> > > >>>
+> > > >>> as Jaroslav Kysela said , need the real system time between I/O
+> > operations
+> > > >>> and you'll see if it's issue in the ALSA driver or a task schedul=
+ing
+> > > >>> problem.
+> > > >>
+> > > >> Here is the bug report with the outputs uploaded.
+> > > >>
+> > > >> https://qa.mandriva.com/show_bug.cgi?id=3D60169
+> > > >
+> > > > Well seeing as my process when getting such a bug is to report it h=
+ere
+> > > > on behalf of the user, I suspect that this has reached a stalemate.=
+...
+> > >
+> > > Please, provide also /var/log/messages output for xrun_debug=3D11 - s=
+ee
+> > > http://www.alsa-project.org/main/index.php/XRUN_Debug for more detail=
+s.
+> > We
+> > > can detect the ALSA ring buffer issues in this way, too.
+> > >
+> > >                                               Jaroslav
+> > >
+> > See pastebin file http://pastebin.com/MdENbSNd
+> > Hopefully I did this correctly.
+> >
+> >
+> You have to provide the  PA server log since we just want to know how PA
+> server handle the underrun condition  when the PA client use small buffer
+> size
+>=20
+> Did "aplay -Dhw:0,0 --buffer-size=3D128 any.wav" get underrun ?
+
+[chris@localhost ~]$ aplay -Dhw:0,0
+--buffer-size=3D128 /home/chris/Documents/gotmail.wav
+aplay: main:654: audio open error: Device or resource busy
+
+Frankly I'm ready to just say the heck with it. I'm totally lost with
+about 99.9% of what every one is talking about on this thread.=20
+
+Chris
+
+
+--=20
+Chris
+KeyID 0xE372A7DA98E6705C
+
+
+--=-NRtc+mqP9sEKWvwfXcnB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEABECAAYFAkw/s4IACgkQ43Kn2pjmcFzxNACfaOKquQnPUY2d2AivrkO4DcAA
+WPwAoIhR3lkwuc7qkONI6oraIXuIhL0c
+=wskR
+-----END PGP SIGNATURE-----
+
+--=-NRtc+mqP9sEKWvwfXcnB--
+
+
+--===============8883959778725986166==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============8883959778725986166==--
