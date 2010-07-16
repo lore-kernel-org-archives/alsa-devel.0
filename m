@@ -1,24 +1,24 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Which project to choose?
-Date: Fri, 16 Jul 2010 08:39:29 +0800
-Message-ID: <AANLkTik16UoQM2zZMgs3An1dv8-i0gWpiTEg3qOLqFTC@mail.gmail.com>
-References: <1279062131.24837.22.camel@localhost.localdomain>
-	<AANLkTildhplqQxzk7mBMc5IW_3bwAVDDrRe5UDpJXIS6@mail.gmail.com>
-	<4C3DD271.6040003@epost.diwic.se>
-	<alpine.LNX.2.00.1007141723070.16744@eeebox2.perex-int.cz>
-	<4C3E13D1.1070908@epost.diwic.se>
-	<alpine.LNX.2.00.1007150007340.16744@eeebox2.perex-int.cz>
+From: Niels Mayer <nielsmayer@gmail.com>
+Subject: Re: [LAD] FIxed alsa-tools' envy24control missing peak
+	level meters and "Reset Peaks"
+Date: Thu, 15 Jul 2010 18:14:54 -0700
+Message-ID: <AANLkTinfy3UmB5LAuXs4lrqBms4KojP3nfLo9wJv1zwh@mail.gmail.com>
+References: <AANLkTimVnkZjBLxxhx4I8OtFiu9oOH0cPpX4V9wNimIa@mail.gmail.com>
+	<20100712234002.GF4069@zita2>
+	<AANLkTim7LFEk8VzJgJmlLvgJPJcAfT0uhfRE6nRBbLFH@mail.gmail.com>
+	<20100713081908.GA4083@zita2>
+	<AANLkTil3bV075Ef5-e-UGMDj-3Mmee2fJtUjf3h5U88Y@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 773A2243AC
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 90BBC243DE
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Jul 2010 02:39:31 +0200 (CEST)
-Received: by vws9 with SMTP id 9so1879676vws.38
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2010 17:39:29 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.1007150007340.16744@eeebox2.perex-int.cz>
+	Fri, 16 Jul 2010 03:14:55 +0200 (CEST)
+Received: by vws9 with SMTP id 9so1914957vws.38
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2010 18:14:54 -0700 (PDT)
+In-Reply-To: <AANLkTil3bV075Ef5-e-UGMDj-3Mmee2fJtUjf3h5U88Y@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,58 +28,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: linux-audio-dev@lists.linuxaudio.org, alsa-devel@alsa-project.org, PlanetCCRMA mailinglist <planetccrma@ccrma.stanford.edu>, fedora-music-list <fedora-music-list@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-2010/7/15 Jaroslav Kysela <perex@perex.cz>
-
-> On Wed, 14 Jul 2010, David Henningsson wrote:
->
-> > 2010-07-14 17:25, Jaroslav Kysela skrev:
-> >> On Wed, 14 Jul 2010, David Henningsson wrote:
-> >>
-> >>> 2010-07-14 13:13, Raymond Yau skrev:
-> >>>
-> >>>> localhost pulseaudio[24553]: alsa-util.c:   appl_ptr     : 735801008
-> >>>> localhost pulseaudio[24553]: alsa-util.c:   hw_ptr       : 735846184
-> >>>>
-> >>>> This is underrun as you can see appl_ptr is behing hw_ptr
-> >>>
-> >>> Ehm, isn't that a ring buffer? I e, there is nothing wrong with
-> appl_ptr
-> >>> being less than hw_ptr.
-> >>
-> >> For playback, if appl_ptr is less than hw_ptr, it's underrun situation
-> >> (application didn't feed samples in time to the driver's ring buffer).
-> >>
-> >> Note that pointers in ALSA are in range 0..boundary not
-> >> 0..ring_buffer_size (boundary is near LONG_MAX value) - it's design to
-> >> detect such situations (underrun, overrun).
-> >
-> > Okay, thanks for the clarification. But LONG_MAX (as in 2^31) would
-> > still wrap around every thirteen hours (at 44100 Hz), so are we having
-> > bugs, such as e g failure to detect underruns, at those occasions?
->
-> >From values above, it looks like a standard underrun (samples didn't
-> arrive in time to the ring buffer). Just check the real system time
-> between I/O operations and you'll see if it's issue in the ALSA driver or
-> a task scheduling problem.
->
->                                        Jaroslav
->
-
-Looking  at the ens1371 specification , it seem to me that alsa-lib cannot
-perform rewind too
-I guess those 44101 rate is not really the best supported rate
-
-
-4.2 Bus Master Cache Control (CCB)
-This block control the transfer of data between the PCI memory and the
-internal memory.
-The Serial block signal when a cache fill/transfer is required in three
-memory buffers
-
-5.5 PCI Data transfer
-
-Only brust read/write transfers are allowed. All data transfer are 8 Long
-Word brust transfers
+T24gVHVlLCBKdWwgMTMsIDIwMTAgYXQgOTo1NCBQTSwgTmllbHMgTWF5ZXIgPG5pZWxzbWF5ZXJA
+Z21haWwuY29tPiB3cm90ZToKPiBBcyBhIHNlY29uZCBwYXRjaCAoY29taW5nIHNvb24pLCBJJ3Zl
+IHJld3JpdHRlbiDCoHRoZSBtZXRlcnMgaW4gYSBtb3JlCj4gc2Vuc2libGUgZmFzaGlvbiwgZHJh
+d2luZyBhIHNpbmdsZSByZWN0YW5nbGUgdG8gcmVwcmVzZW50IHRoZQo+IGluc3RhbnRhbmVvdXMg
+bGV2ZWwgKDItMyBYLXByaW1pdGl2ZSBkcmF3cyBwZXIgbWV0ZXIgdG90YWwgYW5kIG9uZQo+IGJs
+aXQsIHZlcnN1cyBodW5kcmVkcyBvZiBkcmF3cyBhbmQgYSBibGl0IHBlciB2YWx1ZSBjaGFuZ2Ug
+cGVyIG1ldGVyCj4gaW4gdGhlIG9yaWdpbmFsIGNvZGUpLgoKUGF0Y2ggZm9yIGh0dHBzOi8vYnVn
+emlsbGEucmVkaGF0LmNvbS9zaG93X2J1Zy5jZ2k/aWQ9NjAyOTAzCihzZWUgYWxzbyBodHRwOi8v
+b2xkLm5hYmJsZS5jb20vRkl4ZWQtYWxzYS10b29scyctZW52eTI0Y29udHJvbC1taXNzaW5nLXBl
+YWstbGV2ZWwtbWV0ZXJzLWFuZC0iUmVzZXQtUGVha3MiLXRzMjkxNDQ4MzAuaHRtbAopCgooMSkg
+aHR0cDovL25pZWxzbWF5ZXIuY29tL25wbS9TY3JlZW5zaG90LUVmZmljaWVudC1NZXRlcnMtRW52
+eTI0Q29udHJvbC5wbmcKICogVG8gc2VlIHdoYXQgdGhlIG5ldyBtZXRlcnMgbG9vayBsaWtlLgoo
+MikgaHR0cDovL25pZWxzbWF5ZXIuY29tL25wbS9FZmZpY2llbnQtTWV0ZXJzLUVudnkyNENvbnRy
+b2wudGd6CiAqIENvbnRhaW5zIGxldmVsbWV0ZXJzLmMgYW5kIHg4Nl82NCBiaW5hcnkgJ2Vudnky
+NGNvbnRyb2wnIHRoYXQgc2hvdWxkIGF0CiAgIGxlYXN0IHdvcmsgb24gRmVkb3JhIDEyIGFuZCBP
+cGVuU3VzZSBhbmQgb3RoZXIgMi42LjMyLWJhc2VkIGRpc3Ryb3MuCigzKSBodHRwOi8vbmllbHNt
+YXllci5jb20vbnBtL0VmZmljaWVudC1NZXRlcnMtRW52eTI0Q29udHJvbC5wYXRjaAogKiBUbyBh
+cHBseSB0aGUgcGF0Y2gsIGdyYWIgdGhlIG1vc3QgcmVjZW50IHN0YWJsZSByZWxlYXNlICgKICAg
+ZnRwOi8vZnRwLmFsc2EtcHJvamVjdC5vcmcvcHViL3Rvb2xzL2Fsc2EtdG9vbHMtMS4wLjIzLnRh
+ci5iejIgKSBvcgogICBnaXQgcHVsbCBmcm9tIHRydW5rIG9mIHRoZSAiYWxzYS10b29scyIgcHJv
+amVjdC4KICogQWZ0ZXIgdW5wYWNraW5nIGFuZCBhc3N1bWluZyB5b3UndmUgZ290IHRoZSBwYXRj
+aCBpbgogICB+L0VmZmljaWVudC1NZXRlcnMtRW52eTI0Q29udHJvbC5wYXRjaC5wYXRjaCBkbzoK
+ICAgPj4gY2QgYWxzYS10b29scy0xLjAuMjMKICAgPj4gY2F0IH4vRWZmaWNpZW50LU1ldGVycy1F
+bnZ5MjRDb250cm9sLnBhdGNoIHwgcGF0Y2ggLXAxCiAgKiBJdCBzaG91bGQgZ2l2ZSBtZXNzYWdl
+ICJwYXRjaGluZyBmaWxlIGVudnkyNGNvbnRyb2wvbGV2ZWxtZXRlcnMuYyIKICAqIEZvbGxvdyB0
+aGUgZGlyZWN0aW9ucyB0byBjb21waWxlIGFsc2EtdG9vbHMuCgpGWUkgaGVyZSdzIHdoYXQgbXkg
+InRvcCIgcHJvY2Vzc2VzIGxvb2sgbGlrZSB3aGVuIHJ1bm5pbmcgYSB0ZXN0IHRvCm91dHB1dCBp
+bmRpdmlkdWFsIHN0cmVhbXMgdG8gYWxsIDEwIFBDTSBvdXRwdXQgY2hhbm5lbHMgLS0gbm90ZSBY
+CmNvbnN1bWVzIGJldHdlZW4gIjEuNyUiIHRvICIyLjAgJSIgYW5kICJlbnZ5MjRjb250cm9sIiAi
+MC43JSIgdG8KIjEuMCUiOgoKMTUyMTAgbnBtICAgICAgIDIwICAgMCAgNjQzbSAgMTRtIDg5NjQg
+UyAgNi42ICAwLjQgICAwOjA1Ljg1IGdzdDEyMwoxNTE4NCBucG0gICAgICAgMjAgICAwICA2NDNt
+ICAxNG0gODk4NCBTICA2LjMgIDAuNCAgIDA6MTMuMTEgZ3N0MTIzCjE1MTkwIG5wbSAgICAgICAy
+MCAgIDAgIDY0M20gIDE0bSA4OTgwIFMgIDYuMCAgMC40ICAgMDoxMi40OCBnc3QxMjMKMTUxNzIg
+bnBtICAgICAgIDIwICAgMCAgNjQzbSAgMTRtIDg5NjggUyAgNS42ICAwLjQgICAwOjE1LjQyIGdz
+dDEyMwoxNTE3OCBucG0gICAgICAgMjAgICAwICA2NDNtICAxNG0gODk4NCBTICA1LjYgIDAuNCAg
+IDA6MTQuMTcgZ3N0MTIzCjEzNjg0IHJvb3QgICAgICAyMCAgIDAgIDUyN20gMTEybSAgMzFtIFMg
+IDIuMCAgMi44ICAgMzoyNi4xMSBYCjEzOTIzIG5wbSAgICAgICAyMCAgIDAgIDg2M20gIDYwbSAg
+MzdtIFMgIDEuMCAgMS41ICAgMjo0OS4wOCBwbGFzbWEtZGVza3RvcAoxNDE2MyBucG0gICAgICAg
+MjAgICAwICA1OTdtICAyN20gIDE1bSBTICAxLjAgIDAuNyAgIDE6MDguMjkgY2hyb21lCjE0MTU1
+IG5wbSAgICAgICAyMCAgIDAgMTAzOG0gMTcwbSAgMTRtIFMgIDAuNyAgNC4zICAgMTowMC44NyBj
+aHJvbWUKMTUyMjYgbnBtICAgICAgIDIwICAgMCAgMTkybSA5MzE2IDY5MDggUyAgMC43ICAwLjIg
+ICAwOjAwLjUxIGVudnkyNGNvbnRyb2wKCkhlcmUncyB0aGUgZW52eTI0Y29udHJvbCBmcm9tIG15
+IGZpcnN0IHBhdGNoLCB1c2luZyB0aGUgb3JpZ2luYWwKbWV0ZXJzIHRoYXQgY2F1c2UgbWFueSBz
+ZXBhcmF0ZSBYRHJhd1JlY3RhbmdsZXMgZm9yIGVhY2ggTEVELWxvb2tpbmcKc2VnbWVudC4gVGhl
+IHBlcmZvcm1hbmNlIGRpZmZlcmVuY2UgaXMgcXVpdGUgbm90aWNlYWJsZSBhcyB0aGUgZmFucwpz
+dGFydCBydW5uaW5nIGxvdWRlciBhbmQgdGhlIHN5c3RlbSBsb2FkIGNsaW1icyB1cHdhcmRzIGFz
+IHNvb24gYXMgdGhlCm9yaWdpbmFsIGVudnkyNGNvbnRyb2wgc3RhcnRzIHJ1bm5pbmc6IFggY29u
+c3VtZXMgNS43LTEwJSBDUFUsIGFuZAplbnZ5MjRjb250cm9sIGJldHdlZW4gMi4wJSBhbmQgMi43
+JS4KCjE1MTcyIG5wbSAgICAgICAyMCAgIDAgIDY0M20gIDE0bSA4OTY4IFMgIDYuMSAgMC40ICAg
+MDo1My44MyBnc3QxMjMKMTUxNzggbnBtICAgICAgIDIwICAgMCAgNjQzbSAgMTRtIDg5ODQgUyAg
+Ni4xICAwLjQgICAwOjUxLjQ4IGdzdDEyMwoxNTE5MCBucG0gICAgICAgMjAgICAwICA2NDNtICAx
+NG0gODk4MCBTICA2LjEgIDAuNCAgIDA6NDkuNjAgZ3N0MTIzCjE1MjEwIG5wbSAgICAgICAyMCAg
+IDAgIDY0M20gIDE0bSA4OTY0IFMgIDYuMSAgMC40ICAgMDo0NC4wMSBnc3QxMjMKMTM2ODQgcm9v
+dCAgICAgIDIwICAgMCAgNTI3bSAxMTJtICAzMW0gUyAgNS43ICAyLjggICAzOjQyLjc4IFgKMTUx
+ODQgbnBtICAgICAgIDIwICAgMCAgNjQzbSAgMTRtIDg5ODQgUyAgNS43ICAwLjQgICAwOjUxLjA3
+IGdzdDEyMwoxNTM5OCBucG0gICAgICAgMjAgICAwICAxOTJtIDkzMzIgNjkwOCBTICAyLjQgIDAu
+MiAgIDA6MDIuMzIKZW52eTI0Y29udHJvbC5mCjE0MTYzIG5wbSAgICAgICAyMCAgIDAgIDU5N20g
+IDI3bSAgMTVtIFMgIDEuMCAgMC43ICAgMToxNS41NCBjaHJvbWUKMTM5MjMgbnBtICAgICAgIDIw
+ICAgMCAgODYzbSAgNjBtICAzN20gUyAgMC42ICAxLjUgICAyOjU1LjA0CnBsYXNtYS1kZXNrdG9w
+CgpKdXN0IHRvIHNob3cgdGhhdCBpdCdzIHRoZSBzYW1lIHBlcmZvcm1hbmNlIGFzIHRoZSBvcmln
+aW5hbAplbnZ5MjRjb250cm9sIGZyb20gYWxzYS10b29scy0xLjAuMjItMS4xLmZjMTIuY2NybWEu
+eDg2XzY0OgoKMTUxNzggbnBtICAgICAgIDIwICAgMCAgNjQzbSAgMTRtIDg5ODQgUyAgNi4zICAw
+LjQgICAxOjI4LjcyIGdzdDEyMwoxNTE5MCBucG0gICAgICAgMjAgICAwICA2NDNtICAxNG0gODk4
+MCBTICA2LjMgIDAuNCAgIDE6MjYuNjUgZ3N0MTIzCjE1MjEwIG5wbSAgICAgICAyMCAgIDAgIDY0
+M20gIDE0bSA4OTY0IFMgIDYuMyAgMC40ICAgMToyMC41OSBnc3QxMjMKMTUxODQgbnBtICAgICAg
+IDIwICAgMCAgNjQzbSAgMTRtIDg5ODQgUyAgNi4wICAwLjQgICAxOjI4LjIxIGdzdDEyMwoxMzY4
+NCByb290ICAgICAgMjAgICAwICA1MjdtIDExMm0gIDMxbSBSICA1LjYgIDIuOCAgIDQ6MjEuMzAg
+WAoxNTE3MiBucG0gICAgICAgMjAgICAwICA2NDNtICAxNG0gODk2OCBTICA1LjYgIDAuNCAgIDE6
+MzEuNTEgZ3N0MTIzCjE1NDU1IG5wbSAgICAgICAyMCAgIDAgIDE5Mm0gODcwMCA2MzE2IFMgIDIu
+MyAgMC4yICAgMDowMS43NAplbnZ5MjRjb250cm9sCjE0MTYzIG5wbSAgICAgICAyMCAgIDAgIDU5
+N20gIDI3bSAgMTVtIFMgIDEuMyAgMC43ICAgMToyMy4wMiBjaHJvbWUKMTM5MjMgbnBtICAgICAg
+IDIwICAgMCAgODYzbSAgNjBtICAzN20gUyAgMC43ICAxLjUgICAzOjAwLjcyIHBsYXNtYS1kZXNr
+dG9wCgotLSBOaWVscwpodHRwOi8vbmllbHNtYXllci5jb20KX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
