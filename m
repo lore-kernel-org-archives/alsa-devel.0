@@ -1,51 +1,39 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] twl6040: fix wrong kfree in twl6040_remove and
-	twl6040_codec_remove
-Date: Fri, 16 Jul 2010 17:26:48 +0800
-Message-ID: <1279272408.2594.1.camel@mola>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] twl6040: fix wrong kfree in twl6040_remove
+	and	twl6040_codec_remove
+Date: Fri, 16 Jul 2010 10:36:25 +0100
+Message-ID: <20100716093625.GD18376@sirena.org.uk>
+References: <1279272408.2594.1.camel@mola>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel <linux-kernel@vger.kernel.org>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Margarita Olaya Cabrera <magi.olaya@ti.com>, Jorge Eduardo Candelaria <jorge.candelaria@ti.com>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 040B22441B
+	for <alsa-devel@alsa-project.org>;
+	Fri, 16 Jul 2010 11:36:32 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1279272408.2594.1.camel@mola>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: Margarita Olaya Cabrera <magi.olaya@ti.com>, Jorge Eduardo Candelaria <jorge.candelaria@ti.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Memory allocation part:
-We allocate a memory in twl6040_codec_probe():
-        priv = kzalloc(sizeof(struct twl6040_data), GFP_KERNEL);
-        twl6040_codec = codec = &priv->codec;
+On Fri, Jul 16, 2010 at 05:26:48PM +0800, Axel Lin wrote:
+> Memory allocation part:
+> We allocate a memory in twl6040_codec_probe():
+>         priv = kzalloc(sizeof(struct twl6040_data), GFP_KERNEL);
+>         twl6040_codec = codec = &priv->codec;
 
-Memory release part:
-In twl6040_codec_remove() we should kfree(priv) instead of kfree(twl6040_codec).
-In twl6040_remove(), no need and should not kfree(codec).
-
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/twl6040.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index af36346..9d4a85f 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -1068,7 +1068,6 @@ static int twl6040_remove(struct platform_device *pdev)
- 	twl6040_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 	snd_soc_free_pcms(socdev);
- 	snd_soc_dapm_free(socdev);
--	kfree(codec);
- 
- 	return 0;
- }
-@@ -1214,7 +1213,7 @@ static int __devexit twl6040_codec_remove(struct platform_device *pdev)
- 	snd_soc_unregister_dai(&twl6040_dai);
- 	snd_soc_unregister_codec(twl6040_codec);
- 
--	kfree(twl6040_codec);
-+	kfree(priv);
- 	twl6040_codec = NULL;
- 
- 	return 0;
--- 
-1.5.4.3
+Could you please try to take on board the feedback you were given
+yesterday about this sort of stuff?  Both the feedback about formatting
+your patch so it's easy to apply and the collisions with other, more
+substantial, work that's going on?
