@@ -1,33 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Which project to choose?
-Date: Mon, 19 Jul 2010 14:35:18 +0800
-Message-ID: <AANLkTilHj1RR50u0kN7cedIuV72qxqvTX1YDriT6ajqi@mail.gmail.com>
-References: <1279062131.24837.22.camel@localhost.localdomain>
-	<AANLkTikEf4gf-oeQf4hNGUEvNi0YVrvutnSMCbxGwtJ8@mail.gmail.com>
-	<1279065709.24837.29.camel@localhost.localdomain>
-	<AANLkTimdM5__SzYFxrQqwsbOrxdit2uWOvkazPvZ4PND@mail.gmail.com>
-	<1279071115.29042.0.camel@localhost.localdomain>
-	<AANLkTimNSRELBq7i1Ypi9K2tmFu9NKLvQAOOqPwuU13x@mail.gmail.com>
-	<1279074303.29042.3.camel@localhost.localdomain>
-	<AANLkTimNYxIm9M6Mglrzh3YtJRiq1C8wdZwx-JUhLk9d@mail.gmail.com>
-	<1279145758.29042.11.camel@localhost.localdomain>
-	<AANLkTinN15BWNC2cn78rc5xCSXNo79SDE2_WkBNEg5I2@mail.gmail.com>
-	<1279157921.2668.1.camel@localhost.localdomain>
-	<i1n0mf$87c$1@dough.gmane.org>
-	<AANLkTil8Zq_uJrdT2jcVSSDW-LN0OxpnHcGnI9aBR4Zz@mail.gmail.com>
-	<1279508164.22741.27.camel@localhost.localdomain>
+From: Raffaele Recalcati <lamiaposta71@gmail.com>
+Subject: ASoC: Davinci Voice codec compliant to arago kernel
+	for dm365
+Date: Fri, 16 Jul 2010 11:47:17 +0200
+Message-ID: <AANLkTikCvdLdcKP3J_djiTqUUQM3MOEh+3QHVFo6r8Fk@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 29A9A10381B
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id DDEAB24431
 	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Jul 2010 08:35:19 +0200 (CEST)
-Received: by vws9 with SMTP id 9so4321804vws.38
-	for <alsa-devel@alsa-project.org>; Sun, 18 Jul 2010 23:35:18 -0700 (PDT)
-In-Reply-To: <1279508164.22741.27.camel@localhost.localdomain>
+	Fri, 16 Jul 2010 11:47:18 +0200 (CEST)
+Received: by iwn39 with SMTP id 39so2017919iwn.38
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2010 02:47:18 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,55 +23,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+Cc: alsa-devel@alsa-project.org, arago-devel@gforge.ti.com
 List-Id: alsa-devel@alsa-project.org
 
-2010/7/19 Chris <cpollock@embarqmail.com>
+Hi Miguel,
+I've used successfully the patches below on top of 2.6.34 Kevin Hilman
+kernel for davinci
+http://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-davinci.git
 
-> On Mon, 2010-07-19 at 09:44 +0800, Raymond Yau wrote:
->
-> > >
-> > Refer to https://qa.mandriva.com/show_bug.cgi?id=56473#c10
-> >
-> > I have installed mandriva 2010 on virtual box
-> >
-> > when using xmms and libao output plugin to play system sound startup3.wav
-> >
-> > xmms hang at the end of the playback only when enable buffering in libao
-> > output plugin.(configure output plugin in xmms, unfortunately default is
-> > enable buffering buffer size 3000 chunk size 1000)  ,
-> >
-> > xmms does not hang when you disable the buffer or using liboss/libALSA
-> > output plugin
-> >
-> > The last message in the pulseaudio server is
-> > D: protocol-native.c  'underrun on libao[xmms] playback stream' , 0 bytes
-> in
-> > queue.
-> >
-> > The sound card seem running since hw_ptr and appl_ptr are increasing when
-> > cat /proc/asound/card0/pcm0p/sub0/status
-> >
-> > After a while , the following message appear
-> >
-> > E:alsa-sink.c : ALSA woke us up to write new data , but there was
-> actually
-> > nothing to write!
-> The above is exactly what I see periodically Raymond, so, what, if any,
-> is the fix?
->
-> Chris
->
->
-Do you mean that you cannot reproduce the xmms hang bug on your ens1371 or
-via8237 ?
+Now I need to backport your patches to arago kernel
+http://arago-project.org/git/projects/linux-davinci.git
+that means 2.6.32-rc1
+I use able adapt your patches to it, but I guess that there are many changes
+from 2.6.32-rc1 to 2.6.34 ...
+Can you tell me what is the best thing to do?
+I'm afraid you'll tell me that I need to rewrite completely your patches to
+be really compliant to 2.6.32-rc1.
 
-xmms always hang/freeze at 4 second as xmms display the total length of
-startup3.wav is 5 seconds
+Here you are a not working log:
+aplay tone1KHzMono_8000.wav
+Playing WAVE 'tone1KHzMono_8000.wav' : Signed 16 bit Little Endian, Rate
+8000 Hz, Mono
+davinci_pcm_prepare - 203
+davinci_pcm_enqueue_dma - 77: period=2000,dma_offset=0,dma_pos=-2044854272
 
-you have to ask mandriva 's maintainer why enable buffering is the default
-option since xmms did not hang when I disable buffering in libao plugin
+davinci_pcm: audio_set_dma_params_play channel = 79 dma_ptr = 861e0000
+period_size=7d0
+davinci_pcm_enqueue_dma - 84: data_type=0
+davinci_pcm_enqueue_dma - 77:
+period=2000,dma_offset=2000,dma_pos=-2044852272
+davinci_pcm: audio_set_dma_params_play channel = 79 dma_ptr = 861e07d0
+period_size=7d0
+davinci_pcm_enqueue_dma - 84: data_type=0
+aplay: pcm_write:1528: write error: Input/output error
+Thanks,
+Raffaele
 
-For fefora 10 and 13 , they only provide liboss, libALSA and libpulse plugin
-for xmms
-I have no idea about the chunk size in libao plugin
+
+---------------
+
+Author: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+Date:   Thu Mar 11 09:32:21 2010 -0600
+
+    MFD: DaVinci Voice Codec
+
+    This is the MFD driver for the DaVinci Voice codec, it has two clients:
+
+    * Voice codec interface
+    * Voice codec CQ93VC
+
+    Signed-off-by: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+    Acked-by: Samuel Ortiz <sameo@linux.intel.com>
+    Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+    Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+
+commit 94a532f7156582ec7459f21baa4de6665773974a
+Author: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+Date:   Thu Mar 11 09:32:59 2010 -0600
+
+    ASoC: DaVinci: CQ93VC Voice Codec
+
+    Currently the DM365 is the only SoC that includes this Voice Codec.
+
+    Signed-off-by: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+    Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+    Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+
+commit 80a6609eeb0995732318c7ab672767e39a111f3b
+Author: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+Date:   Thu Mar 11 09:32:42 2010 -0600
+
+    ASoC: DaVinci: Voice Codec Interface
+
+    This patch adds the support for the interface needed by the DaVinci
+    Voice Codec CQ93VC.
+
+    Signed-off-by: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+    Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+    Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+
+
+
+
+-- 
+www.opensurf.it
