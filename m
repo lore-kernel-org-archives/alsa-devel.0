@@ -1,18 +1,32 @@
-From: Jiri Kosina <jkosina@suse.cz>
-Subject: Re: [PATCH 1/2] Kconfig: SND_AC97_POWER_SAVE
- description improvement
-Date: Thu, 15 Jul 2010 09:36:23 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1007150935280.4741@pobox.suse.cz>
-References: <1279153142-3114-1-git-send-email-mfwitten@gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Which project to choose?
+Date: Fri, 16 Jul 2010 07:32:53 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1007160732310.4208@eeebox2.perex-int.cz>
+References: <1279062131.24837.22.camel@localhost.localdomain>
+	<AANLkTikEf4gf-oeQf4hNGUEvNi0YVrvutnSMCbxGwtJ8@mail.gmail.com>
+	<1279065709.24837.29.camel@localhost.localdomain>
+	<AANLkTimdM5__SzYFxrQqwsbOrxdit2uWOvkazPvZ4PND@mail.gmail.com>
+	<1279071115.29042.0.camel@localhost.localdomain>
+	<AANLkTimNSRELBq7i1Ypi9K2tmFu9NKLvQAOOqPwuU13x@mail.gmail.com>
+	<1279074303.29042.3.camel@localhost.localdomain>
+	<AANLkTimNYxIm9M6Mglrzh3YtJRiq1C8wdZwx-JUhLk9d@mail.gmail.com>
+	<1279145758.29042.11.camel@localhost.localdomain>
+	<AANLkTinN15BWNC2cn78rc5xCSXNo79SDE2_WkBNEg5I2@mail.gmail.com>
+	<1279157921.2668.1.camel@localhost.localdomain>
+	<i1n0mf$87c$1@dough.gmane.org>
+	<alpine.LNX.2.00.1007151603320.4208@eeebox2.perex-int.cz>
+	<1279234479.2668.3.camel@localhost.localdomain>
+	<AANLkTilDzdT6X3N2vIBBe-4Br1OJmoefTTutP542DxtJ@mail.gmail.com>
+	<1279239851.12171.1.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id 276CA1038D2
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 487B4103AF6
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Jul 2010 09:36:23 +0200 (CEST)
-In-Reply-To: <1279153142-3114-1-git-send-email-mfwitten@gmail.com>
+	Fri, 16 Jul 2010 07:32:56 +0200 (CEST)
+In-Reply-To: <1279239851.12171.1.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,72 +36,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Michael Witten <mfwitten@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: Chris <cpollock@embarqmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 14 Jul 2010, Michael Witten wrote:
+On Thu, 15 Jul 2010, Chris wrote:
 
-> The description has been expanded to explain the time-out
-> value provided by the power_save module parameter.
+> On Fri, 2010-07-16 at 07:15 +0800, Raymond Yau wrote:
+>> 2010/7/16 Chris <cpollock@embarqmail.com>
+>>
+>>> On Thu, 2010-07-15 at 16:07 +0200, Jaroslav Kysela wrote:
+>>>> On Thu, 15 Jul 2010, Colin Guthrie wrote:
+>>>>
+>>>>> 'Twas brillig, and Chris at 15/07/10 02:38 did gyre and gimble:
+>>>>>> On Thu, 2010-07-15 at 08:08 +0800, Raymond Yau wrote:
+>>>>>>
+>>>>>>>> I posted both of those bug reports. Honestly, I just want it to work
+>>>>>>>> without all the error output to syslog and thrashing of my HD for
+>>>>>>>> minutes at a time. As I said, I've got the output of pulseaudio
+>>> -vvvvv
+>>>>>>>> if anyone would like to look at it and tell me what I need to do to
+>>> fix
+>>>>>>>> the problem.
+>>>>>>>>
+>>>>>>>> Chris
+>>>>>>>>
+>>>>>>>>
+>>>>>>>>
+>>>>>>> Just upload your current pulseaudio.log and output of alsa-info.sh to
+>>>>>>> mandriva 's bugzilla
+>>>>>>>
+>>>>>>> Cannot obtain any conclusion based on the log which you have posted
+>>> last
+>>>>>>> year ( xmms)
+>>>>>>>
+>>>>>>> as Jaroslav Kysela said , need the real system time between I/O
+>>> operations
+>>>>>>> and you'll see if it's issue in the ALSA driver or a task scheduling
+>>>>>>> problem.
+>>>>>>
+>>>>>> Here is the bug report with the outputs uploaded.
+>>>>>>
+>>>>>> https://qa.mandriva.com/show_bug.cgi?id=60169
+>>>>>
+>>>>> Well seeing as my process when getting such a bug is to report it here
+>>>>> on behalf of the user, I suspect that this has reached a stalemate....
+>>>>
+>>>> Please, provide also /var/log/messages output for xrun_debug=11 - see
+>>>> http://www.alsa-project.org/main/index.php/XRUN_Debug for more details.
+>>> We
+>>>> can detect the ALSA ring buffer issues in this way, too.
+>>>>
+>>>>                                               Jaroslav
+>>>>
+>>> See pastebin file http://pastebin.com/MdENbSNd
+>>> Hopefully I did this correctly.
+>>>
+>>>
+>> You have to provide the  PA server log since we just want to know how PA
+>> server handle the underrun condition  when the PA client use small buffer
+>> size
+>>
+>> Did "aplay -Dhw:0,0 --buffer-size=128 any.wav" get underrun
+>
+> I'll check, how the heck to I stop xrun_debug from running???
 
-Michael,
+Just use value 0 instead 11.
 
-thanks a lot for the patch. I'd rather let it go through Takashi still 
-anyway (added to CC).
+ 					Jaroslav
 
-Thanks.
-
-> 
-> Signed-off-by: Michael Witten <mfwitten@gmail.com>
-> ---
->  sound/drivers/Kconfig |   24 +++++++++++++++++++++---
->  1 files changed, 21 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/drivers/Kconfig b/sound/drivers/Kconfig
-> index 84714a6..3264600 100644
-> --- a/sound/drivers/Kconfig
-> +++ b/sound/drivers/Kconfig
-> @@ -170,9 +170,25 @@ config SND_AC97_POWER_SAVE
->  	  AC97 codecs.  In this mode, the power-mode is dynamically
->  	  controlled at each open/close.
->  
-> -	  The mode is activated by passing power_save=1 option to
-> -	  snd-ac97-codec driver.  You can toggle it dynamically over
-> -	  sysfs, too.
-> +	  The mode is activated by passing 'power_save=X' to the
-> +	  snd-ac97-codec driver module, where 'X' is the time-out
-> +	  value, a nonnegative integer that specifies how many
-> +	  seconds of idle time the driver must count before it may
-> +	  put the AC97 into power-save mode;  a value of 0 (zero)
-> +	  disables the use of this power-save mode.
-> +
-> +	  After the snd-ac97-codec driver module has been loaded,
-> +	  the 'power_save' parameter can be set via sysfs as follows:
-> +
-> +	    echo 10 > /sys/module/snd_ac97_codec/parameters/power_save
-> +
-> +	  In this case, the time-out is set to 10 seconds; setting
-> +	  the time-out to 1 second (the minimum activation value)
-> +	  isn't recommended because many applications try to reopen
-> +	  the device frequently.  A value of 10 seconds would be a
-> +	  good choice for normal operations.
-> +
-> +	  See Documentation/sound/alsa/powersave.txt for more details.
->  
->  config SND_AC97_POWER_SAVE_DEFAULT
->  	int "Default time-out for AC97 power-save mode"
-> @@ -182,4 +198,6 @@ config SND_AC97_POWER_SAVE_DEFAULT
->  	  The default time-out value in seconds for AC97 automatic
->  	  power-save mode.  0 means to disable the power-save mode.
->  
-> +	  See SND_AC97_POWER_SAVE for more details.
-> +
->  endif	# SND_DRIVERS
-> -- 
-> 1.7.2.rc1.9.g5b527
-> 
-
--- 
-Jiri Kosina
-SUSE Labs, Novell Inc.
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
