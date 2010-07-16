@@ -1,20 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv2 3/4] ASoC: multi-component - S3C - Get
- original functionality
-Date: Fri, 16 Jul 2010 09:52:53 +0100
-Message-ID: <20100716085253.GG9082@rakim.wolfsonmicro.main>
-References: <1279260977-18342-1-git-send-email-sw.youn@samsung.com>
-	<1279261764-18500-1-git-send-email-sw.youn@samsung.com>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Re: HPI version 4.04.01
+Date: Fri, 16 Jul 2010 20:57:51 +1200
+Message-ID: <4C401F0F.6070000@audioscience.com>
+References: <1279259461-21543-1-git-send-email-linux@audioscience.com>
+	<s5hbpa80wao.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7BFDC243B1
+Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id DFC25243BF
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Jul 2010 10:52:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1279261764-18500-1-git-send-email-sw.youn@samsung.com>
+	Fri, 16 Jul 2010 10:57:57 +0200 (CEST)
+Received: from [192.168.36.2]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp3.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0L5N00FC77KGOJ30@smtp3.clear.net.nz> for
+	alsa-devel@alsa-project.org; Fri, 16 Jul 2010 20:57:52 +1200 (NZST)
+In-reply-to: <s5hbpa80wao.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,16 +27,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Seungwhan Youn <sw.youn@samsung.com>
-Cc: alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, Seungwhan Youn <claude.youn@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 16, 2010 at 03:29:24PM +0900, Seungwhan Youn wrote:
+On 16/07/10 18:34, Takashi Iwai wrote:
+> At Fri, 16 Jul 2010 17:50:58 +1200,
+> linux@audioscience.com wrote:
+>>
+>> HPI stable driver 4.04.01 has just been released.
+>> Only very minor patches since the last beta version.
+> 
+> Eliot, I got only your posts from 7/9 to 9/9.
+> Where are the others?
 
-> +
-> +	unsigned long	base;
+Oops, I didn't think about the sequence numbers. 1 to 6 are the ones I
+sent a week or two ago.
 
-You can probably just read this out of the device directly in the core
-code, but I'm not 100% sure that's actually a win since you wind up
-needing to also read the device in the version-specific code so this is
-OK.
+There are only 3 patches in this set.
+
+Can you apply as-is, or should I resend with amended subjects?
+
+regards
+
+-- 
+Eliot Blennerhassett
+AudioScience Inc.
