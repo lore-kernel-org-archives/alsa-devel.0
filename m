@@ -1,20 +1,20 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v2] ASoC: TWL6040: Correct widget handling
- for drivers
-Date: Sat, 17 Jul 2010 19:28:22 +0100
-Message-ID: <1279391302.3070.12.camel@odin>
-References: <1279211881-31416-1-git-send-email-jorge.candelaria@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 13/15] sound/soc: davinci: check kzalloc()
+	result (typo)
+Date: Sat, 17 Jul 2010 19:47:05 +0100
+Message-ID: <20100717184705.GA27456@rakim.wolfsonmicro.main>
+References: <1279296977-25267-1-git-send-email-segooon@gmail.com>
+	<1279388733.3070.5.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 94C08246E1
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 912B5246EA
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jul 2010 20:28:24 +0200 (CEST)
-Received: by wyf19 with SMTP id 19so3068248wyf.38
-	for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2010 11:28:24 -0700 (PDT)
-In-Reply-To: <1279211881-31416-1-git-send-email-jorge.candelaria@ti.com>
+	Sat, 17 Jul 2010 20:47:07 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1279388733.3070.5.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,28 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
-Cc: Margarita Olaya Cabrera <magi.olaya@ti.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Kulikov Vasiliy <segooon@gmail.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Miguel Aguilar <miguel.aguilar@ridgerun.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-07-15 at 11:38 -0500, Jorge Eduardo Candelaria wrote:
-> In order to reduce pop-noise at powering up/down of the DACs and Drivers,
-> these components have to be handled in a specific sequence. Headset,
-> Handsfree, and Earphone drivers are now registered as PGA components to
-> ensure DACs are enabled first.
-> 
-> Also, add a delay to leave time for DACs to settle before
-> continuing power up/down sequence.
-> 
-> Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
-> Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
+On Sat, Jul 17, 2010 at 06:45:33PM +0100, Liam Girdwood wrote:
+> On Fri, 2010-07-16 at 20:16 +0400, Kulikov Vasiliy wrote:
+> > The code checks 'davinci_vc' after kzalloc() and do not checks
+> > 'davinci_vcif_dev' that kzalloc() result is assigned to. It seems that
+> > it is a typo (autocompletion?).
 
-Applied.
+> > Signed-off-by: Kulikov Vasiliy <segooon@gmail.com>
 
-Thanks
+> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Applied, thanks.  Kulikov could you please check the subject lines
+you're using for your patches - try to be consistent with the rest of
+the patches for the same code area.
