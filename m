@@ -1,81 +1,125 @@
-From: Niels Mayer <nielsmayer-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [LAD] [PlanetCCRMA] FIxed alsa-tools' envy24control missing
-	peak level meters and "Reset Peaks"
-Date: Fri, 16 Jul 2010 15:57:20 -0700
-Message-ID: <AANLkTinV5bbmE-xSXmRKq86qGLvAgBSizhSt0EDskCPM@mail.gmail.com>
-References: <AANLkTimVnkZjBLxxhx4I8OtFiu9oOH0cPpX4V9wNimIa@mail.gmail.com>
-	<20100712234002.GF4069@zita2>
-	<AANLkTim7LFEk8VzJgJmlLvgJPJcAfT0uhfRE6nRBbLFH@mail.gmail.com>
-	<20100713081908.GA4083@zita2>
-	<AANLkTil3bV075Ef5-e-UGMDj-3Mmee2fJtUjf3h5U88Y@mail.gmail.com>
-	<AANLkTinfy3UmB5LAuXs4lrqBms4KojP3nfLo9wJv1zwh@mail.gmail.com>
-	<AANLkTimMF4huRE-QcgRsjWn4-S_Y24xDBev6CFA6ZCCH@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Which project to choose?
+Date: Sat, 17 Jul 2010 08:22:03 +0800
+Message-ID: <AANLkTimdUFPBADtoDhiEjZPZSj8TkoAq_tPTJqDbWD2k@mail.gmail.com>
+References: <1279062131.24837.22.camel@localhost.localdomain>
+	<AANLkTikEf4gf-oeQf4hNGUEvNi0YVrvutnSMCbxGwtJ8@mail.gmail.com>
+	<1279065709.24837.29.camel@localhost.localdomain>
+	<AANLkTimdM5__SzYFxrQqwsbOrxdit2uWOvkazPvZ4PND@mail.gmail.com>
+	<1279071115.29042.0.camel@localhost.localdomain>
+	<AANLkTimNSRELBq7i1Ypi9K2tmFu9NKLvQAOOqPwuU13x@mail.gmail.com>
+	<1279074303.29042.3.camel@localhost.localdomain>
+	<AANLkTimNYxIm9M6Mglrzh3YtJRiq1C8wdZwx-JUhLk9d@mail.gmail.com>
+	<1279145758.29042.11.camel@localhost.localdomain>
+	<AANLkTinN15BWNC2cn78rc5xCSXNo79SDE2_WkBNEg5I2@mail.gmail.com>
+	<1279157921.2668.1.camel@localhost.localdomain>
+	<i1n0mf$87c$1@dough.gmane.org>
+	<alpine.LNX.2.00.1007151603320.4208@eeebox2.perex-int.cz>
+	<1279234479.2668.3.camel@localhost.localdomain>
+	<alpine.LNX.2.00.1007160733020.4208@eeebox2.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-In-Reply-To: <AANLkTimMF4huRE-QcgRsjWn4-S_Y24xDBev6CFA6ZCCH-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev>
-List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
-Sender: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-To: Geoff King <gsking1-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, PlanetCCRMA mailinglist <planetccrma-l0SEpsmuUtBegcJQxxnBRDe48wsgrGvP@public.gmane.org>, linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org, fedora-music-list <fedora-music-list-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 822B3103807
+	for <alsa-devel@alsa-project.org>;
+	Sat, 17 Jul 2010 02:22:05 +0200 (CEST)
+Received: by vws9 with SMTP id 9so3201018vws.38
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2010 17:22:03 -0700 (PDT)
+In-Reply-To: <alpine.LNX.2.00.1007160733020.4208@eeebox2.perex-int.cz>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBKdWwgMTYsIDIwMTAgYXQgNToyNyBBTSwgR2VvZmYgS2luZyA8Z3NraW5nMUBnbWFp
-bC5jb20+IHdyb3RlOgo+IE5pZWxzLCBUaGFuayB5b3UgZm9yIHRha2luZyB0aGUgdGltZSB0byB3
-b3JrIG9uIGltcHJvdmluZyBFbnZ5MjRDdGwuCj4gSSB0cmllZCB5b3VyIHBhdGNoIGZvciB0aGUg
-cGVha3MgYW5kIGl0IHNlZW1lZCB0byB3b3JrIGZpbmUgZm9yIG1lLiDCoEkKPiBjYW4ndCBjb21t
-ZW50IG9uIHRoZSBjb2RlIChhcyBJJ20gbXVjaCBtb3JlIG11c2ljaWFuIHRoYW4gcHJvZ3JhbW1l
-ciksCj4gYnV0IGhhZCBubyBwcm9ibGVtIHBhdGNoaW5nIGFuZCBpbnN0YWxsaW5nLiDCoExvb2tp
-bmcgZm9yd2FyZCB0byB0cnlpbmcKPiB0aGlzIG5ldyBwYXRjaCBhbmQgd2hhdGV2ZXIgZWxzZSB5
-b3UgY29tZSB1cCB3aXRoLiBHZW9mZgoKR2VvZmYgLS0gdGhhbmsgeW91IGZvciB0cnlpbmcgb3V0
-IHRoZSBwYXRjaCEgKEFuZCwgT1QsICB0aGFua3MgZm9yCndvcmtpbmcgdy8gUnVpIHRvIGhlbHAg
-Zml4Cmh0dHA6Ly9zb3VyY2Vmb3JnZS5uZXQvdHJhY2tlci8/ZnVuYz1kZXRhaWwmYXRpZD03MzMw
-NzYmYWlkPTMwMjE2NDUmZ3JvdXBfaWQ9MTM1NTAxCjo6ICJoZWxwIGZpeCBxdHJhY3RvciBjcmFz
-aCBvbiBidXMgY2hhbmdpbmcvY29uZmlndXJhdGlvbiAoMzAyMTY0NSkiIC0tCkVudnkyNCBhbmQg
-bXVsdGljaGFubmVsIHF0cmFjdG9yIHVzZXJzLCB5ZXMsIGl0J3MgdGltZSBmb3IgYSAic3ZuIHVw
-IiApLgoKRllJLCB0byB0cnkgb3V0IHRoZSBuZXcgbGV2ZWxtZXRlcnMgImVhc3kiLCBpZiB5b3Un
-cmUgcnVubmluZyBGZWRvcmEKeDg2XzY0LCB1c2UgdGhlICJlbnZ5MjRjb250cm9sIiBiaW5hcnkg
-ZGlyZWN0bHksIG9yIGRyb3AgdGhlCmxldmVsbWV0ZXJzLmMgZmlsZSBpbnRvIHlvdXIgYnVpbGQ6
-Cmh0dHA6Ly9uaWVsc21heWVyLmNvbS9ucG0vRWZmaWNpZW50LU1ldGVycy1FbnZ5MjRDb250cm9s
-LnRnegooIGZvciBkZXRhaWxzIGh0dHA6Ly9uaWVsc21heWVyLmNvbS9ucG0vRWZmaWNpZW50LU1l
-dGVycy1FbnZ5MjRDb250cm9sLlJFQURNRSApCgouLi4uLi4uLgoKT24gYSBjb21wbGV0ZWx5IGRp
-ZmZlcmVudCAibm90ZSIgIHRoZSBlbnZ5IDI0IG1hbnVhbCAoCmh0dHA6Ly9hbHNhLmN5YmVybWly
-cm9yLm9yZy9tYW51YWxzL2ljZW5zZW1ibGUvZW52eTI0LnBkZiApCmhhcyBpbnRlcmVzdGluZyBp
-bmZvIG9uIHRoZSBlbnZ5MjQgZGlnaXRhbCBtaXhlciB0aGF0IEkndmUgc25hcHNob3R0ZWQ6CgpE
-aWFncmFtOiBodHRwOi8vbmllbHNtYXllci5jb20vbnBtL2VudnkyNG1peGVyLWFyY2hpdGVjdHVy
-ZS5wbmcKCk5vdGUgdGhlIHdheSBpdCB0cnVuY2F0ZXMgaW4gdGhlIG1peGVyOiB0aGUgbW9yZSBp
-bnB1dHMgeW91ICJtaXgiIGF0Cm9uY2UsIHRoZSBmZXdlciBiaXRzIGVhY2ggaW5wdXQgc291cmNl
-IGdldHMsIGFuZCBpdCdzIG5vdCBjbGVhciB3aGF0CmtpbmQgb2YgZGl0aGVyLCBvciBpdCdzIGEg
-c3RyYWlnaHQgdHJ1bmNhdGUgb2YgMjQuLi4gdWx0aW1hdGVseSB0aGUKZW52eTI0IHNlZW1zIG9y
-aWVudGVkIHRvd2FyZHMgcHJvZHVjaW5nIGEgMTYgYml0LCBhbmQgbm90IDI0IGJpdAptYXN0ZXIg
-KHdoaWNoIG1ha2VzIHNlbnNlIGdpdmVuIHRoYXQgdGhlIGNoaXAgaXMgd2VsbCBvdmVyIGEgZGVj
-YWRlCm9sZCBhbmQgSEQgYXVkaW8gcHJvZHVjdGlvbiBmb3IgInByb3N1bWVyIiB3YXMgcmFyZSk6
-Ci4uLi4uLi4uLi4KNC41LjUgTXVsdGktVHJhY2sgRGlnaXRhbCBNb25pdG9yaW5nClRoZSBFbnZ5
-MjQgaW50ZWdyYXRlcyBhIDM2LWJpdCByZXNvbHV0aW9uIGRpZ2l0YWwgaGFyZHdhcmUgbWl4ZXIu
-IFRoZQp3aWR0aCBvZiB0aGUgZGF0YSBwYXRoIGlzIHN0cmljdGx5IHRvCmVuc3VyZSB0aGF0IGR1
-cmluZyBwcm9jZXNzaW5nIG9mIGFsbCB0aGUgY2hhbm5lbHMsIHVuZGVyIGFueQpjb25kaXRpb24s
-IG5vIHJlc29sdXRpb24gaXMgbG9zdC4gVGhlIGR5bmFtaWMgcmFuZ2UKb2YgdGhlIGVuZCB1c2Vy
-IHN5c3RlbSB3aWxsIGJlIGxpbWl0ZWQgYnkgdGhlIHJhbmdlIG9mIHRoZSBwaHlzaWNhbApvdXRw
-dXQgZGV2aWNlcyB1c2VkLiBJbiBvcmRlciB0byBtYWludGFpbgppZGVudGljYWwgZ2FpbiB0byB0
-aGUgaW5wdXQgc3RyZWFtIChpLmUuIDBkQiksIHRoZSByZXN1bHRpbmcgMjQtYml0IGlzCm5vdCBt
-c2ItYWxpZ25lZCB0byB0aGUgMzYtYml0LiBUaGUgb3ZlcmZsb3cKYml0cyBjb3JyZXNwb25kIHRv
-IHRoZSBhbmFsb2cgZGlzdG9ydGlvbiBkdWUgdG8gc2F0dXJhdGlvbi4gVGhlIHVzZXIKd291bGQg
-bmVlZCB0byByZWR1Y2UgdGhlIG92ZXJhbGwgYXR0ZW51YXRpb24Kb2YgdGhlIGlucHV0cyB0byBh
-dm9pZCBjbGlwcGluZy4gSW5zZXJ0aW9uIG9mIHRoZSBkaWdpdGFsIG1peGVyIGFkZHMKb25seSBh
-IHNpbmdsZSBzYW1wbGUgY3ljbGUgZGVsYXkgd2l0aCByZXNwZWN0CnRvIHRoZSBvcmlnaW5hbCBk
-YXRhLiBUaGlzIGV4dHJlbWVseSBsb3cgbGF0ZW5jeSBhbGwgZGlnaXRhbCBtaXhlcgpwcm92aWRl
-cyBtb25pdG9yaW5nIGZ1bmN0aW9uYWxpdHkgYW5kIGNhbgpyZXBsYWNlIGEgdHJhZGl0aW9uYWwg
-ZXh0ZXJuYWwgYW5hbG9nIGlucHV0IG1peGVyLiBUaGVyZSBhcmUgMjAKaW5kZXBlbmRlbnQgYXVk
-aW8gZGF0YSBzdHJlYW1zIHRvIG1peCBhbmQKY29udHJvbCB0aGUgdm9sdW1lLiAuLi4KLi4uLi4u
-Li4uLi4uLi4KCi0tTmllbHMKaHR0cDovL25pZWxzbWF5ZXIuY29tCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkxpbnV4LWF1ZGlvLWRldiBtYWlsaW5nIGxp
-c3QKTGludXgtYXVkaW8tZGV2QGxpc3RzLmxpbnV4YXVkaW8ub3JnCmh0dHA6Ly9saXN0cy5saW51
-eGF1ZGlvLm9yZy9saXN0aW5mby9saW51eC1hdWRpby1kZXYK
+2010/7/16 Jaroslav Kysela <perex@perex.cz>
+
+> On Thu, 15 Jul 2010, Chris wrote:
+>
+> > On Thu, 2010-07-15 at 16:07 +0200, Jaroslav Kysela wrote:
+> >> On Thu, 15 Jul 2010, Colin Guthrie wrote:
+> >>
+> >>> 'Twas brillig, and Chris at 15/07/10 02:38 did gyre and gimble:
+> >>>> On Thu, 2010-07-15 at 08:08 +0800, Raymond Yau wrote:
+> >>>>
+> >>>>>> I posted both of those bug reports. Honestly, I just want it to work
+> >>>>>> without all the error output to syslog and thrashing of my HD for
+> >>>>>> minutes at a time. As I said, I've got the output of pulseaudio
+> -vvvvv
+> >>>>>> if anyone would like to look at it and tell me what I need to do to
+> fix
+> >>>>>> the problem.
+> >>>>>>
+> >>>>>> Chris
+> >>>>>>
+> >>>>>>
+> >>>>>>
+> >>>>> Just upload your current pulseaudio.log and output of alsa-info.sh to
+> >>>>> mandriva 's bugzilla
+> >>>>>
+> >>>>> Cannot obtain any conclusion based on the log which you have posted
+> last
+> >>>>> year ( xmms)
+> >>>>>
+> >>>>> as Jaroslav Kysela said , need the real system time between I/O
+> operations
+> >>>>> and you'll see if it's issue in the ALSA driver or a task scheduling
+> >>>>> problem.
+> >>>>
+> >>>> Here is the bug report with the outputs uploaded.
+> >>>>
+> >>>> https://qa.mandriva.com/show_bug.cgi?id=60169
+> >>>
+> >>> Well seeing as my process when getting such a bug is to report it here
+> >>> on behalf of the user, I suspect that this has reached a stalemate....
+> >>
+> >> Please, provide also /var/log/messages output for xrun_debug=11 - see
+> >> http://www.alsa-project.org/main/index.php/XRUN_Debug for more details.
+> We
+> >> can detect the ALSA ring buffer issues in this way, too.
+> >>
+> >>                                              Jaroslav
+> >>
+> > See pastebin file http://pastebin.com/MdENbSNd
+> > Hopefully I did this correctly.
+>
+> Thanks. The hardware ring buffer pointers looks OK so it does not appear
+> like a problem in our ALSA code. I would really consult these problems
+> with PulseAudio developers. Return back, if they say that it's really
+> ALSA issue, not the system scheduler issue.
+>
+> Note that for your configuration, you have the ring buffer containing only
+> 0.1 second (it means that standard underruns can happen more frequently
+> - usuall symptom is for example moving a window in X GUI).
+>
+>                                                Jaroslav
+>
+>
+Refer to the log , the values of pos and hwptr seem multiple of 8
+
+
+5.5 PCI Data transfer
+
+Only brust read/write transfers are allowed. All data transfer are 8 Long
+Word brust transfers
+
+This mean that the driver may need to limit the period bytes to be multiple
+of 8 Long Word since interrupt occur when a cache fill/transfer between the
+PCI memory and the internal memory.
+
+snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 32);
+
+
+and you may also need to set "rewind_safeguard" in PA too.
+
+
+http://git.0pointer.de/?p=pulseaudio.git;a=commit;h=4df443bbe682055a41e7c2248877dcc7682a69b8
