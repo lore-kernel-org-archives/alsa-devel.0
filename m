@@ -1,19 +1,21 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: fsi: Add specified ID for soc-audio
-Date: Sat, 17 Jul 2010 18:42:37 +0100
-Message-ID: <1279388557.3070.3.camel@odin>
-References: <w3phbjzpung.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 13/15] sound/soc: davinci: check kzalloc()
+	result (typo)
+Date: Sat, 17 Jul 2010 18:45:33 +0100
+Message-ID: <1279388733.3070.5.camel@odin>
+References: <1279296977-25267-1-git-send-email-segooon@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 83470246E1
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id BDF74103809
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jul 2010 19:42:43 +0200 (CEST)
-Received: by wyf19 with SMTP id 19so3041997wyf.38
-	for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2010 10:42:42 -0700 (PDT)
-In-Reply-To: <w3phbjzpung.wl%kuninori.morimoto.gx@renesas.com>
+	Sat, 17 Jul 2010 19:45:35 +0200 (CEST)
+Received: by wyf19 with SMTP id 19so3043717wyf.38
+	for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2010 10:45:35 -0700 (PDT)
+In-Reply-To: <1279296977-25267-1-git-send-email-segooon@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,82 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Kulikov Vasiliy <segooon@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, linux-kernel@vger.kernel.org, Miguel Aguilar <miguel.aguilar@ridgerun.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-07-16 at 19:51 +0900, Kuninori Morimoto wrote:
-> Specified ID is necessary, when some codecs are used with FSI.
+On Fri, 2010-07-16 at 20:16 +0400, Kulikov Vasiliy wrote:
+> The code checks 'davinci_vc' after kzalloc() and do not checks
+> 'davinci_vcif_dev' that kzalloc() result is assigned to. It seems that
+> it is a typo (autocompletion?).
 > 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Signed-off-by: Kulikov Vasiliy <segooon@gmail.com>
 > ---
-> Mark. Thank you about your advice.
-> it solved my issue.
-> This patch is v2 of "ASoC: FSI - codecs settings"
+>  sound/soc/davinci/davinci-vcif.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 > 
->  include/sound/sh_fsi.h    |    3 +++
->  sound/soc/sh/fsi-ak4642.c |    4 ++--
->  sound/soc/sh/fsi-da7210.c |    4 ++--
->  3 files changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/sound/sh_fsi.h b/include/sound/sh_fsi.h
-> index c022736..6463fd6 100644
-> --- a/include/sound/sh_fsi.h
-> +++ b/include/sound/sh_fsi.h
-> @@ -12,6 +12,9 @@
->   * published by the Free Software Foundation.
->   */
->  
-> +#define FSI_PORT_A	0
-> +#define FSI_PORT_B	1
-> +
->  /* flags format
->  
->   * 0xABCDEEFF
-> diff --git a/sound/soc/sh/fsi-ak4642.c b/sound/soc/sh/fsi-ak4642.c
-> index be01854..2c61ed2 100644
-> --- a/sound/soc/sh/fsi-ak4642.c
-> +++ b/sound/soc/sh/fsi-ak4642.c
-> @@ -38,7 +38,7 @@ static int fsi_ak4642_dai_init(struct snd_soc_codec *codec)
->  static struct snd_soc_dai_link fsi_dai_link = {
->  	.name		= "AK4642",
->  	.stream_name	= "AK4642",
-> -	.cpu_dai	= &fsi_soc_dai[0], /* fsi */
-> +	.cpu_dai	= &fsi_soc_dai[FSI_PORT_A],
->  	.codec_dai	= &ak4642_dai,
->  	.init		= fsi_ak4642_dai_init,
->  	.ops		= NULL,
-> @@ -62,7 +62,7 @@ static int __init fsi_ak4642_init(void)
->  {
->  	int ret = -ENOMEM;
->  
-> -	fsi_snd_device = platform_device_alloc("soc-audio", -1);
-> +	fsi_snd_device = platform_device_alloc("soc-audio", FSI_PORT_A);
->  	if (!fsi_snd_device)
->  		goto out;
->  
-> diff --git a/sound/soc/sh/fsi-da7210.c b/sound/soc/sh/fsi-da7210.c
-> index 33b4d17..5774449 100644
-> --- a/sound/soc/sh/fsi-da7210.c
-> +++ b/sound/soc/sh/fsi-da7210.c
-> @@ -33,7 +33,7 @@ static int fsi_da7210_init(struct snd_soc_codec *codec)
->  static struct snd_soc_dai_link fsi_da7210_dai = {
->  	.name		= "DA7210",
->  	.stream_name	= "DA7210",
-> -	.cpu_dai	= &fsi_soc_dai[1], /* FSI B */
-> +	.cpu_dai	= &fsi_soc_dai[FSI_PORT_B],
->  	.codec_dai	= &da7210_dai,
->  	.init		= fsi_da7210_init,
->  };
-> @@ -56,7 +56,7 @@ static int __init fsi_da7210_sound_init(void)
->  {
+> diff --git a/sound/soc/davinci/davinci-vcif.c b/sound/soc/davinci/davinci-vcif.c
+> index 9aa980d..4867853 100644
+> --- a/sound/soc/davinci/davinci-vcif.c
+> +++ b/sound/soc/davinci/davinci-vcif.c
+> @@ -203,7 +203,7 @@ static int davinci_vcif_probe(struct platform_device *pdev)
 >  	int ret;
 >  
-> -	fsi_da7210_snd_device = platform_device_alloc("soc-audio", -1);
-> +	fsi_da7210_snd_device = platform_device_alloc("soc-audio", FSI_PORT_B);
->  	if (!fsi_da7210_snd_device)
+>  	davinci_vcif_dev = kzalloc(sizeof(struct davinci_vcif_dev), GFP_KERNEL);
+> -	if (!davinci_vc) {
+> +	if (!davinci_vcif_dev) {
+>  		dev_dbg(&pdev->dev,
+>  			"could not allocate memory for private data\n");
 >  		return -ENOMEM;
->  
+
+13,14 & 15
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
