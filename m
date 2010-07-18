@@ -1,19 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] asoc: davinci: let platform data define
- edma queue numbers
-Date: Sat, 17 Jul 2010 19:50:19 +0100
-Message-ID: <20100717185018.GC27456@rakim.wolfsonmicro.main>
-References: <1279196059-6031-1-git-send-email-nsekhar@ti.com>
+From: John Simpson <john@swajime.com>
+Subject: Re: Compiler errors in alsa-lib-1.0.22/test/*.c
+Date: Sat, 17 Jul 2010 21:43:45 -0500
+Message-ID: <AANLkTinsZlWl0VtR8F1mHHYUNUd6jHvTjGhd_J2sdsoM@mail.gmail.com>
+References: <AANLkTin75qlRIEXwE8_12m3GcGXagKY0lQhQ4hN9h_co@mail.gmail.com>
+	<4C3C0540.6020506@ladisch.de>
+Reply-To: john@swajime.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3D636103818
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 443F72453F
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jul 2010 20:50:21 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1279196059-6031-1-git-send-email-nsekhar@ti.com>
+	Sun, 18 Jul 2010 04:43:47 +0200 (CEST)
+Received: by iwn39 with SMTP id 39so3569543iwn.38
+	for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2010 19:43:45 -0700 (PDT)
+In-Reply-To: <4C3C0540.6020506@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +26,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sekhar Nori <nsekhar@ti.com>
-Cc: Kevin Hilman <khilman@deeprootsystems.com>, alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 15, 2010 at 05:44:19PM +0530, Sekhar Nori wrote:
+Thanks bunches.  That got me at least one step further. :D
+The makefile did not do anything in the test directory for some reason.
+I won't have access to that computer for a couple of days.
 
-> This patch has been tested on DM644x and OMAP-L138 EVMs.
-
-> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
-
-> This patch applies to latest of Linus's tree.
-
-...so it doesn't apply against my for-2.6.36 branch (and obviously
-there's crossover with Kevin's tree as well which makes things possibly
-a bit interesting too).  Could you please regenerate against for-2.6.36?
-You should generally always send patches against the latest version of
-code rather than Linus' tree, using other trees increases the chances
-that your patch will not apply.
+I appreciate the pointer! :D
