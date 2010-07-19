@@ -1,22 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/3] ASoC: twl4030/tpa6130a2:?DB_RANGE
- mapping fixes
-Date: Mon, 19 Jul 2010 09:51:41 +0100
-Message-ID: <20100719085140.GA15693@rakim.wolfsonmicro.main>
-References: <1279275431-26922-1-git-send-email-peter.ujfalusi@nokia.com>
-	<201007161405.40985.peter.ujfalusi@nokia.com>
-	<20100716123325.GA18152@rakim.wolfsonmicro.main>
-	<201007190857.05339.peter.ujfalusi@nokia.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Compiler errors in alsa-lib-1.0.22/test/*.c
+Date: Mon, 19 Jul 2010 10:52:40 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1007191052020.9258@eeebox2.perex-int.cz>
+References: <AANLkTin75qlRIEXwE8_12m3GcGXagKY0lQhQ4hN9h_co@mail.gmail.com>
+	<4C3C0540.6020506@ladisch.de>
+	<AANLkTinsZlWl0VtR8F1mHHYUNUd6jHvTjGhd_J2sdsoM@mail.gmail.com>
+	<AANLkTinuYzw-4iuEyemaL4Jlh0NC0byhPBNJ5nu5tscX@mail.gmail.com>
+	<AANLkTilDAsnNVSs17ochWuMfBlU_PIbL4OzH67CtPcLD@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C4C80243BA
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1768C243BA
 	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Jul 2010 10:51:42 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <201007190857.05339.peter.ujfalusi@nokia.com>
+	Mon, 19 Jul 2010 10:52:41 +0200 (CEST)
+In-Reply-To: <AANLkTilDAsnNVSs17ochWuMfBlU_PIbL4OzH67CtPcLD@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,38 +25,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: John Simpson <john@swajime.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 19, 2010 at 08:57:05AM +0300, Peter Ujfalusi wrote:
-> On Friday 16 July 2010 15:33:25 ext Mark Brown wrote:
+On Sat, 17 Jul 2010, John Simpson wrote:
 
-> > Isn't this going to get messy when the increments don't line up so that
-> > it's easy to overlap the start of one range with the beginning of the
-> > next?
+> On Sat, Jul 17, 2010 at 9:28 PM, John Simpson <john@swajime.com> wrote:
+>> On Wed, Jul 14, 2010 at 1:56 AM, John Simpson <john@swajime.com> wrote:
+>>> The makefile did not do anything in the test directory for some reason.
+>>
+>> Now that I've had another chance to try this, the makefile still does
+>> not produce any executables:
+>>
+>
+> ditto for Ubuntu Lucid:
+>
+> john@system76-pc:~$ wget
+> ftp://ftp.alsa-project.org/pub/lib/alsa-lib-1.0.23.tar.bz2
+> john@system76-pc:~$ bunzip2 alsa-lib-1.0.23.tar.bz2
+> john@system76-pc:~$ tar -xf alsa-lib-1.0.23.tar
+> john@system76-pc:~$ cd alsa-lib-1.0.23/
+> john@system76-pc:~/alsa-lib-1.0.23$ ./configure
+> ...
+> Creating asoundlib.h...
+> john@system76-pc:~/alsa-lib-1.0.23$ make
+> ...
+> Making all in test
+> make[1]: Entering directory `/home/john/alsa-lib-1.0.23/test'
+> Making all in .
+> make[2]: Entering directory `/home/john/alsa-lib-1.0.23/test'
+> make[2]: Nothing to be done for `all-am'.
+> make[2]: Leaving directory `/home/john/alsa-lib-1.0.23/test'
+> Making all in lsb
+> make[2]: Entering directory `/home/john/alsa-lib-1.0.23/test/lsb'
+> make[2]: Nothing to be done for `all'.
+> make[2]: Leaving directory `/home/john/alsa-lib-1.0.23/test/lsb'
+> make[1]: Leaving directory `/home/john/alsa-lib-1.0.23/test'
+> ...
+> john@system76-pc:~/alsa-lib-1.0.23$ sudo make install
+> [sudo] password for john:
+> ...
+> Making install in test
+> make[1]: Entering directory `/home/john/alsa-lib-1.0.23/test'
+> Making install in .
+> make[2]: Entering directory `/home/john/alsa-lib-1.0.23/test'
+> make[3]: Entering directory `/home/john/alsa-lib-1.0.23/test'
+> make[3]: Nothing to be done for `install-exec-am'.
+> make[3]: Nothing to be done for `install-data-am'.
+> make[3]: Leaving directory `/home/john/alsa-lib-1.0.23/test'
+> make[2]: Leaving directory `/home/john/alsa-lib-1.0.23/test'
+> ...
+> john@system76-pc:~/alsa-lib-1.0.23$ ls test
+> client_event_filter.c  latency.c  Makefile     Makefile.in  midifile.c
+> midiloop.c  oldapi.c  pcm_min.c    queue_timer.c  seq.c
+> seq-sender.c
+> control.c              lsb        Makefile.am  midifile.3   midifile.h
+> namehint.c  pcm.c     playmidi1.c  rawmidi.c      seq-decoder.c
+> timer.c
+> john@system76-pc:~/alsa-lib-1.0.23$
+>
+> No executable test files.  :-(
 
-> Well, I assume however writes the driver knows how to build up a lookup table 
-> which is consistent, so I don't really see a problem.
+You must force compilation in test directory, for example:
 
-The problem I see is if the hardware step sizes result in discontinuties
-in the scale so you can't easily join the top end of one set of values
-with the bottom end of another you're pretty stuck - joining the ranges
-up will only work if they can be made to overlap which isn't always
-going to be the case.
+cd alsa-lib/test
+make pcm
 
-For example, something like:
+ 					Jaroslav
 
-1: 0
-2: 2
-3: 4
-4: 5
-5: 7
-6: 9
-
-(a bit artificial but you get the idea) is going to be a bit tricky.
-
-> I'll post patches against alsa-lib to fix the _DB_RANGE handling. It will take 
-> some time to understand, and fix the code + testing it.
-
-Thanks.
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
