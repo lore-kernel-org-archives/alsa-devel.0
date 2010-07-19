@@ -1,20 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 0/3] ASoC: twl4030/tpa6130a2:?DB_RANGE
-	mapping fixes
-Date: Mon, 19 Jul 2010 13:43:48 +0300
-Message-ID: <201007191343.49282.peter.ujfalusi@nokia.com>
-References: <1279275431-26922-1-git-send-email-peter.ujfalusi@nokia.com>
-	<201007191214.50115.peter.ujfalusi@nokia.com>
-	<20100719103038.GA9203@rakim.wolfsonmicro.main>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Playback open error: Inappropriate ioctl for device
+Date: Mon, 19 Jul 2010 13:07:52 +0200
+Message-ID: <4C443208.8070202@ladisch.de>
+References: <AANLkTiksTz_s2bOJCZbQrJFA4XHifG5vA2mT_IGs5rVt@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id B9A7F103819
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 187EF103819
 	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Jul 2010 12:43:53 +0200 (CEST)
-In-Reply-To: <20100719103038.GA9203@rakim.wolfsonmicro.main>
+	Mon, 19 Jul 2010 13:08:04 +0200 (CEST)
+In-Reply-To: <AANLkTiksTz_s2bOJCZbQrJFA4XHifG5vA2mT_IGs5rVt@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,24 +21,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: john@swajime.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 19 July 2010 13:30:38 ext Mark Brown wrote:
-> Meh, that works but I guess my brain can't imagine concepts that ugly :)
+John Simpson wrote:
+> [1|user@Nokia-N810-43-7|~/alsa-lib-1.0.23/test]cc -lasound control.c -o control
 
-Just out of curiosity: you don't like the overlapping method I suppose.
-Having spent now two days with this, I tend to favor that, since it clearly =
+These test programs can be compiled with "make check".
 
-shows how the raw <-> dB ranges are mapped. Granted, it handles some raw va=
-lues =
+> [1|user@Nokia-N810-43-7|~/alsa-lib-1.0.23/test]./control
+>   PCM next device error: Inappropriate ioctl for device
 
-twice.
-But, if the alsa-lib series is accepted, than the issue goes away, and I'm =
-going =
+On embedded devices, this usually happens when the library is not
+compiled with the same machine architecture options as the kernel,
+which makes some structures have a different size due to different
+sizes for 'long' or different alignment.
 
-to be happy with that as well.
 
-Thanks again,
-P=E9ter
+Regards,
+Clemens
