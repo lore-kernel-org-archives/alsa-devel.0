@@ -1,31 +1,27 @@
-From: Chris <cpollock@embarqmail.com>
-Subject: Re: Which project to choose?
-Date: Mon, 19 Jul 2010 17:52:26 -0500
-Message-ID: <1279579946.18063.26.camel@localhost.localdomain>
-References: <1279062131.24837.22.camel@localhost.localdomain>
-	<AANLkTikEf4gf-oeQf4hNGUEvNi0YVrvutnSMCbxGwtJ8@mail.gmail.com>
-	<1279065709.24837.29.camel@localhost.localdomain>
-	<AANLkTimdM5__SzYFxrQqwsbOrxdit2uWOvkazPvZ4PND@mail.gmail.com>
-	<1279071115.29042.0.camel@localhost.localdomain>
-	<AANLkTimNSRELBq7i1Ypi9K2tmFu9NKLvQAOOqPwuU13x@mail.gmail.com>
-	<1279074303.29042.3.camel@localhost.localdomain>
-	<AANLkTimNYxIm9M6Mglrzh3YtJRiq1C8wdZwx-JUhLk9d@mail.gmail.com>
-	<1279145758.29042.11.camel@localhost.localdomain>
-	<AANLkTinN15BWNC2cn78rc5xCSXNo79SDE2_WkBNEg5I2@mail.gmail.com>
-	<1279157921.2668.1.camel@localhost.localdomain>
-	<i1n0mf$87c$1@dough.gmane.org>
-	<AANLkTil8Zq_uJrdT2jcVSSDW-LN0OxpnHcGnI9aBR4Zz@mail.gmail.com>
-	<1279508164.22741.27.camel@localhost.localdomain>
-	<AANLkTilHj1RR50u0kN7cedIuV72qxqvTX1YDriT6ajqi@mail.gmail.com>
-	<i210af$6gi$1@dough.gmane.org>
+From: John Simpson <john@swajime.com>
+Subject: Re: Compiler errors in alsa-lib-1.0.22/test/*.c
+Date: Mon, 19 Jul 2010 17:54:26 -0500
+Message-ID: <AANLkTil-ZQzde-PfVMZhxb-yE0Lkkz6QoEpkqiDmDbTy@mail.gmail.com>
+References: <AANLkTin75qlRIEXwE8_12m3GcGXagKY0lQhQ4hN9h_co@mail.gmail.com>
+	<4C3C0540.6020506@ladisch.de>
+	<AANLkTinsZlWl0VtR8F1mHHYUNUd6jHvTjGhd_J2sdsoM@mail.gmail.com>
+	<AANLkTinuYzw-4iuEyemaL4Jlh0NC0byhPBNJ5nu5tscX@mail.gmail.com>
+	<AANLkTilDAsnNVSs17ochWuMfBlU_PIbL4OzH67CtPcLD@mail.gmail.com>
+	<alpine.LNX.2.00.1007191052020.9258@eeebox2.perex-int.cz>
+	<AANLkTinomEJIjm4DOkZPUcL0d_I6PwzHIGNiT5sUd1FZ@mail.gmail.com>
+Reply-To: john@swajime.com
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8128120767396179249=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailrelay.embarq.synacor.com (mailrelay.embarq.synacor.com
-	[208.47.184.3]) by alsa0.perex.cz (Postfix) with ESMTP id 5E31724433
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 60BA124434
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jul 2010 00:52:31 +0200 (CEST)
-In-Reply-To: <i210af$6gi$1@dough.gmane.org>
+	Tue, 20 Jul 2010 00:54:27 +0200 (CEST)
+Received: by iwn39 with SMTP id 39so5284200iwn.38
+	for <alsa-devel@alsa-project.org>; Mon, 19 Jul 2010 15:54:26 -0700 (PDT)
+In-Reply-To: <AANLkTinomEJIjm4DOkZPUcL0d_I6PwzHIGNiT5sUd1FZ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -38,133 +34,61 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 7/19/10, John Simpson <john@swajime.com> wrote:
+> On 7/19/10, Jaroslav Kysela <perex@perex.cz> wrote:
+>
+>> You must force compilation in test directory, for example:
+>>
+>> cd alsa-lib/test
+>> make pcm
+>>
+>>  					Jaroslav
+>>
+>
+> Ok ... I'm learning :o) (i think)
+>
+> On my n810 that gives me this:
+> [user@nokia ~/src/dsp-alsa/trunk/alsa-lib/test]$ make pcm
+> cc     pcm.c   -o pcm
+> pcm.c: In function `help':
+> pcm.c:719: warning: use of cast expressions as lvalues is deprecated
+> /var/tmp/ccQOAYhr.o: In function `generate_sine':pcm.c:(.text+0x140):
+> undefined reference to `snd_pcm_format_width'
+> :pcm.c:(.text+0x160): undefined reference to `snd_pcm_format_width'
+> :pcm.c:(.text+0x378): undefined reference to `sin'
+> /var/tmp/ccQOAYhr.o: In function `set_hwparams':pcm.c:(.text+0x5ac):
+> undefined reference to `snd_pcm_hw_params_any'
+> :pcm.c:(.text+0x5c4): undefined reference to `snd_strerror'
+>
+> On my ubuntu system:
+> john@system76-pc:~/alsa-lib-1.0.23/test$ make pcm
+> if gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include   -Wall -pipe
+> -g -D_GNU_SOURCE -MT pcm.o -MD -MP -MF ".deps/pcm.Tpo" -c -o pcm.o
+> pcm.c; \
+> 	then mv -f ".deps/pcm.Tpo" ".deps/pcm.Po"; else rm -f
+> ".deps/pcm.Tpo"; exit 1; fi
+> make: *** No rule to make target `../src/libasound.la', needed by `pcm'.
+> Stop.
+>
+> It works on the ubuntu system only if I run 'make check' first, as
+> mentioned by Clemens Ladisch in another post.
+>
+> I copied the file .deps/pcm.Tpo from the ubunutu system to the n810,
+> and pasted the output from the ubuntu command "make pcm" in directly:
+> [user@nokia ~/src/dsp-alsa/trunk/alsa-lib/test]$ if gcc
+> -DHAVE_CONFIG_H -I. -I. -I../include -I../include   -Wall -pipe -g
+> -D_GNU_SOURCE -MT pcm.o -MD -MP -MF ".deps/pcm.Tpo" -c -o pcm.o pcm.c;
+> then mv -f ".deps/pcm.Tpo" ".deps/pcm.Po"; else rm -f ".deps/pcm.Tpo";
+> exit 1; fi
+> pcm.c: In function `help':
+> pcm.c:719: warning: use of cast expressions as lvalues is deprecated
+>
+> Now it looks to me like that generated pcm.o on both machines.  What
+> do I do with pcm.o now?
+>
 
---===============8128120767396179249==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-legczQblEPdTywabateS"
+I'm going to try 1.0.23 on the n810 again, now that I see it works on
+the ubuntu system.
 
-
---=-legczQblEPdTywabateS
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, 2010-07-19 at 08:53 +0100, Colin Guthrie wrote:
-> 'Twas brillig, and Raymond Yau at 19/07/10 07:35 did gyre and gimble:
-> > 2010/7/19 Chris <cpollock@embarqmail.com>
-> >=20
-> >> On Mon, 2010-07-19 at 09:44 +0800, Raymond Yau wrote:
-> >>
-> >>>>
-> >>> Refer to https://qa.mandriva.com/show_bug.cgi?id=3D56473#c10
-> >>>
-> >>> I have installed mandriva 2010 on virtual box
-> >>>
-> >>> when using xmms and libao output plugin to play system sound startup3=
-.wav
-> >>>
-> >>> xmms hang at the end of the playback only when enable buffering in li=
-bao
-> >>> output plugin.(configure output plugin in xmms, unfortunately default=
- is
-> >>> enable buffering buffer size 3000 chunk size 1000)  ,
-> >>>
-> >>> xmms does not hang when you disable the buffer or using liboss/libALS=
-A
-> >>> output plugin
-> >>>
-> >>> The last message in the pulseaudio server is
-> >>> D: protocol-native.c  'underrun on libao[xmms] playback stream' , 0 b=
-ytes
-> >> in
-> >>> queue.
-> >>>
-> >>> The sound card seem running since hw_ptr and appl_ptr are increasing =
-when
-> >>> cat /proc/asound/card0/pcm0p/sub0/status
-> >>>
-> >>> After a while , the following message appear
-> >>>
-> >>> E:alsa-sink.c : ALSA woke us up to write new data , but there was
-> >> actually
-> >>> nothing to write!
-> >> The above is exactly what I see periodically Raymond, so, what, if any=
-,
-> >> is the fix?
-> >>
-> >> Chris
-> >>
-> >>
-> > Do you mean that you cannot reproduce the xmms hang bug on your ens1371=
- or
-> > via8237 ?
-> >=20
-> > xmms always hang/freeze at 4 second as xmms display the total length of
-> > startup3.wav is 5 seconds
-> >
-> > you have to ask mandriva 's maintainer why enable buffering is the defa=
-ult
-> > option since xmms did not hang when I disable buffering in libao plugin
-> >=20
-> > For fefora 10 and 13 , they only provide liboss, libALSA and libpulse p=
-lugin
-> > for xmms
-> > I have no idea about the chunk size in libao plugin
->=20
->=20
-> With a clean user account, I could not reproduce either problem with the
-> default settings.
->=20
-> FWIW, running PA under virtualbox is quite different to running it under
-> a real system. For example PA will enable the non-timer based mode
-> automatically when under a virtual machine.
->=20
-> Col
->=20
->=20
-
-Colin, I've just re-enabled PA using the Ensoniq/Creative AudioPCI
-ES1371+ driver, this is according to the Mandriva Control Center sound
-setup. However, it also shows the VIA VT82xx audio driver when initially
-loaded, when I click on 'ok' it shows the Ensoniq driver. I've again run
-pulseaudio -k ; pulseaudio -vvvvv while playing a cd with mplayer. I've
-uploaded the output here:
-
-http://ez-files.net/953712
-
-Does this have any meaning?
-
-Thanks for any assistance.
-
-Chris
-
---=20
-Chris
-KeyID 0xE372A7DA98E6705C
-
-
---=-legczQblEPdTywabateS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEABECAAYFAkxE1yAACgkQ43Kn2pjmcFzAMgCdEl5zEn1LCyWUv4968ffSuvV7
-H6oAn1tON8Vy8aZ131+H+B5or8YDAaMI
-=hnh8
------END PGP SIGNATURE-----
-
---=-legczQblEPdTywabateS--
-
-
---===============8128120767396179249==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============8128120767396179249==--
+[user@nokia ~/src/dsp-alsa/trunk/alsa-lib]$ cat version
+1.0.10
