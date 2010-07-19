@@ -1,28 +1,25 @@
-From: Chanwoo Choi <cw00.choi@samsung.com>
-Subject: Re: [PATCH 2/2]ASoC: multi-component - Fix S5P	compile
- error
-Date: Mon, 19 Jul 2010 22:17:58 +0900
-Message-ID: <4C445086.3020507@samsung.com>
-References: <4C4448FD.5010600@samsung.com>
-	<20100719130439.GB7002@sirena.org.uk>
+From: Jerone Young <jerone.young@canonical.com>
+Subject: [PATCH] Add conexant quirk for AMD based Lenovo G
+	series machines
+Date: Mon, 19 Jul 2010 08:30:58 -0500
+Message-ID: <1279546258.1719.1636.camel@laptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id 862EC24487
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 99543103889
 	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Jul 2010 15:18:02 +0200 (CEST)
-Received: from epmmp1 (mailout4.samsung.com [203.254.224.34])
-	by mailout4.samsung.com
-	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
-	2010)) with ESMTP id <0L5T007OA3LZV6D0@mailout4.samsung.com> for
-	alsa-devel@alsa-project.org; Mon, 19 Jul 2010 22:17:59 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0L5T00EA73LZCE@mmp1.samsung.com> for
-	alsa-devel@alsa-project.org; Mon, 19 Jul 2010 22:17:59 +0900 (KST)
-In-reply-to: <20100719130439.GB7002@sirena.org.uk>
+	Mon, 19 Jul 2010 15:31:03 +0200 (CEST)
+Received: from hutte.canonical.com ([91.189.90.181])
+	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
+	id 1OaqQu-00051h-Vh
+	for <alsa-devel@alsa-project.org>; Mon, 19 Jul 2010 14:31:01 +0100
+Received: from adsl-71-145-145-48.dsl.austtx.sbcglobal.net ([71.145.145.48]
+	helo=[192.168.1.6]) by hutte.canonical.com with esmtpsa
+	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
+	(envelope-from <jerone.young@canonical.com>) id 1OaqQu-0002al-Kn
+	for alsa-devel@alsa-project.org; Mon, 19 Jul 2010 14:31:00 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,27 +29,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Joonyoung Shim <jy0922.shim@samsung.com>, Jassi Brar <jassisinghbrar@gmail.com>, Chanwoo Choi <cw00.choi@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Mon, Jul 19, 2010 at 09:45:49PM +0900, Chanwoo Choi wrote:
->> This patch fix compile error on using I2S and WM8994 common code.
-> 
-> This looks to be two completely separate issues and should have been
-> sent as two separate patches, especially this one:
-> 
-Ok, I will do.
+This is a follow on patch adds support for AMD based Lenovo G series
+machines, such as the Lenovo G555.
 
->> -#if defined(CONFIG_CPU_S3C2412) || defined(CONFIG_CPU_S3C2413)
->> +#if defined(CONFIG_CPU_S3C2412) || defined(CONFIG_CPU_S3C2413) \
->> +	|| defined(CONFIG_CPU_S5PV210)
->>  #define S3C_IIS_V2_SUPPORTED
-> 
-> This is implmenting support for a new CPU, not fixing compile errors,
-> and so the commit message is very misleading.
-Ok, I will modify the commit message.
+Signed-off-by: Jerone Young <jerone.young@canonical.com>
 
-Thank you,
-Chanwoo Choi
+diff --git a/pci/hda/patch_conexant.c b/pci/hda/patch_conexant.c
+index c49030b..774edb9 100644
+--- a/pci/hda/patch_conexant.c
++++ b/pci/hda/patch_conexant.c
+@@ -3000,6 +3000,7 @@ static struct snd_pci_quirk cxt5066_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "ideapad", CXT5066_IDEAPAD),
+ 	SND_PCI_QUIRK(0x17aa, 0x215e, "Lenovo Thinkpad", CXT5066_THINKPAD),
+ 	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo G series", CXT5066_IDEAPAD),
++	SND_PCI_QUIRK(0x17aa, 0x3938, "Lenovo G series (AMD)", CXT5066_IDEAPAD),
+ 	{}
+ };
