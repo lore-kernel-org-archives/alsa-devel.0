@@ -1,15 +1,15 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH - alsa-lib 1/3] tlv: Check out of range dB with
-	SND_CTL_TLVT_DB_RANGE
-Date: Mon, 19 Jul 2010 10:14:04 +0300
-Message-ID: <1279523646-4987-2-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH - alsa-lib 2/3] tlv: Handle 'holes' in
+	SND_CTL_TLVT_DB_RANGE array
+Date: Mon, 19 Jul 2010 10:14:05 +0300
+Message-ID: <1279523646-4987-3-git-send-email-peter.ujfalusi@nokia.com>
 References: <1279523646-4987-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id BD0B210385B
+	by alsa0.perex.cz (Postfix) with ESMTP id BB24C10384F
 	for <alsa-devel@alsa-project.org>;
 	Mon, 19 Jul 2010 09:14:36 +0200 (CEST)
 In-Reply-To: <1279523646-4987-1-git-send-email-peter.ujfalusi@nokia.com>
@@ -26,42 +26,72 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-When converting from dB value to raw value, the control's
-full range was not checked in case of SND_CTL_TLVT_DB_RANGE.
+When converting from dB to raw value, and DB_RANGE is
+used with non overlapping map, dB value in between the
+sub ranges will be not found.
 
-Check out of range dB values, and return apropriate raw
-value for the caller.
+For example, if the control has the following:
+0: -10dB
+1: -5dB
+2: 0dB
+3: 2dB
+4: 4dB
+
+static const unsigned int nonoverlapping_tlv[] = {
+        TLV_DB_RANGE_HEAD(2),
+        0, 2, TLV_DB_SCALE_ITEM(-1000, 500, 0),
+        3, 4, TLV_DB_SCALE_ITEM(200, 200, 0),
+};
+
+Range 1: -10 .. 0dB
+Range 2: 2 .. 4dB
+
+If user asks for 1dB the snd_tlv_convert_from_dB will not find
+the raw value, since the 1dB is not part of either range.
+
+To fix this, we will store the previous non maching range's
+maximum raw value. If the dB value is not found in the next range,
+we will check, if the requested dB value is in between the current
+and the previous range, and if it is than pick the apropriate raw
+value based on the xdir (up or down rounding).
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- src/control/tlv.c |    9 ++++++++-
- 1 files changed, 8 insertions(+), 1 deletions(-)
+ src/control/tlv.c |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
 
 diff --git a/src/control/tlv.c b/src/control/tlv.c
-index 0ff052e..d09766a 100644
+index d09766a..1767118 100644
 --- a/src/control/tlv.c
 +++ b/src/control/tlv.c
-@@ -285,13 +285,20 @@ int snd_tlv_convert_from_dB(unsigned int *tlv, long rangemin, long rangemax,
+@@ -285,7 +285,7 @@ int snd_tlv_convert_from_dB(unsigned int *tlv, long rangemin, long rangemax,
  {
  	switch (tlv[0]) {
  	case SND_CTL_TLVT_DB_RANGE: {
-+		long dbmin, dbmax;
+-		long dbmin, dbmax;
++		long dbmin, dbmax, prev_rangemax;
  		unsigned int pos, len;
  		len = int_index(tlv[1]);
  		if (len > MAX_TLV_RANGE_SIZE)
- 			return -EINVAL;
-+		if (snd_tlv_get_dB_range(tlv, rangemin, rangemax,
-+					 &dbmin, &dbmax))
-+			return -EINVAL;
-+		if (db_gain <= dbmin || db_gain >= dbmax) {
-+			*value = db_gain <= dbmin ? rangemin : rangemax;
-+			return 0;
-+		}
+@@ -298,6 +298,7 @@ int snd_tlv_convert_from_dB(unsigned int *tlv, long rangemin, long rangemax,
+ 			return 0;
+ 		}
  		pos = 2;
++		prev_rangemax = 0;
  		while (pos + 4 <= len) {
--			long dbmin, dbmax;
  			rangemin = (int)tlv[pos];
  			rangemax = (int)tlv[pos + 1];
- 			if (!snd_tlv_get_dB_range(tlv + pos + 2,
+@@ -308,6 +309,11 @@ int snd_tlv_convert_from_dB(unsigned int *tlv, long rangemin, long rangemax,
+ 				return snd_tlv_convert_from_dB(tlv + pos + 2,
+ 							       rangemin, rangemax,
+ 							       db_gain, value, xdir);
++			else if (db_gain < dbmin) {
++				*value = xdir ? rangemin : prev_rangemax;
++				return 0;
++			}
++			prev_rangemax = rangemax;
+ 			pos += int_index(tlv[pos + 3]) + 4;
+ 		}
+ 		return -EINVAL;
 -- 
 1.7.1.1
