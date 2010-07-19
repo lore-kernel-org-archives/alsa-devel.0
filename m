@@ -1,19 +1,26 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] eukrea-tlv320: add support for cpuimx35sd
-Date: Mon, 19 Jul 2010 19:55:03 +0100
-Message-ID: <1279565703.3063.7.camel@odin>
-References: <1279528832-7916-1-git-send-email-eric@eukrea.com>
+From: John Simpson <john@swajime.com>
+Subject: Re: Compiler errors in alsa-lib-1.0.22/test/*.c
+Date: Mon, 19 Jul 2010 17:27:35 -0500
+Message-ID: <AANLkTinomEJIjm4DOkZPUcL0d_I6PwzHIGNiT5sUd1FZ@mail.gmail.com>
+References: <AANLkTin75qlRIEXwE8_12m3GcGXagKY0lQhQ4hN9h_co@mail.gmail.com>
+	<4C3C0540.6020506@ladisch.de>
+	<AANLkTinsZlWl0VtR8F1mHHYUNUd6jHvTjGhd_J2sdsoM@mail.gmail.com>
+	<AANLkTinuYzw-4iuEyemaL4Jlh0NC0byhPBNJ5nu5tscX@mail.gmail.com>
+	<AANLkTilDAsnNVSs17ochWuMfBlU_PIbL4OzH67CtPcLD@mail.gmail.com>
+	<alpine.LNX.2.00.1007191052020.9258@eeebox2.perex-int.cz>
+Reply-To: john@swajime.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id B3019243E2
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 635552440B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Jul 2010 20:55:10 +0200 (CEST)
-Received: by wwe15 with SMTP id 15so471312wwe.20
-	for <alsa-devel@alsa-project.org>; Mon, 19 Jul 2010 11:55:07 -0700 (PDT)
-In-Reply-To: <1279528832-7916-1-git-send-email-eric@eukrea.com>
+	Tue, 20 Jul 2010 00:27:40 +0200 (CEST)
+Received: by iwn39 with SMTP id 39so5259700iwn.38
+	for <alsa-devel@alsa-project.org>; Mon, 19 Jul 2010 15:27:38 -0700 (PDT)
+In-Reply-To: <alpine.LNX.2.00.1007191052020.9258@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,34 +30,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric =?ISO-8859-1?Q?B=E9nard?= <eric@eukrea.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, s.hauer@pengutronix.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAyMDEwLTA3LTE5IGF0IDEwOjQwICswMjAwLCBFcmljIELDqW5hcmQgd3JvdGU6Cj4g
-U2lnbmVkLW9mZi1ieTogRXJpYyBCw6luYXJkIDxlcmljQGV1a3JlYS5jb20+Cj4gLS0tCj4gIHNv
-dW5kL3NvYy9pbXgvS2NvbmZpZyAgICAgICAgIHwgICAgMiArLQo+ICBzb3VuZC9zb2MvaW14L2V1
-a3JlYS10bHYzMjAuYyB8ICAgIDMgKystCj4gIDIgZmlsZXMgY2hhbmdlZCwgMyBpbnNlcnRpb25z
-KCspLCAyIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW14L0tjb25m
-aWcgYi9zb3VuZC9zb2MvaW14L0tjb25maWcKPiBpbmRleCAyZjBkNmQzLi41MmRhYzVlIDEwMDY0
-NAo+IC0tLSBhL3NvdW5kL3NvYy9pbXgvS2NvbmZpZwo+ICsrKyBiL3NvdW5kL3NvYy9pbXgvS2Nv
-bmZpZwo+IEBAIC0zMiw2ICszMiw2IEBAIGNvbmZpZyBTTkRfU09DX0VVS1JFQV9UTFYzMjAKPiAg
-CXNlbGVjdCBTTkRfU09DX1RMVjMyMEFJQzIzCj4gIAloZWxwCj4gIAkgIEVuYWJsZSBJMlMgYmFz
-ZWQgYWNjZXNzIHRvIHRoZSBUTFYzMjBBSUMyM0IgY29kZWMgYXR0YWNoZWQKPiAtCSAgdG8gdGhl
-IFNTSTQgaW50ZXJmYWNlCj4gKwkgIHRvIHRoZSBTU0kgaW50ZXJmYWNlCj4gIAo+ICBlbmRpZgkj
-IFNORF9JTVhfU09DCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbXgvZXVrcmVhLXRsdjMyMC5j
-IGIvc291bmQvc29jL2lteC9ldWtyZWEtdGx2MzIwLmMKPiBpbmRleCA0NWY1ZTRiLi5mMTVkZmJk
-IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9pbXgvZXVrcmVhLXRsdjMyMC5jCj4gKysrIGIvc291
-bmQvc29jL2lteC9ldWtyZWEtdGx2MzIwLmMKPiBAQCAtMTAxLDcgKzEwMSw4IEBAIHN0YXRpYyBp
-bnQgX19pbml0IGV1a3JlYV90bHYzMjBfaW5pdCh2b2lkKQo+ICB7Cj4gIAlpbnQgcmV0Owo+ICAK
-PiAtCWlmICghbWFjaGluZV9pc19ldWtyZWFfY3B1aW14MjcoKSAmJiAhbWFjaGluZV9pc19ldWty
-ZWFfY3B1aW14MjVzZCgpKQo+ICsJaWYgKCFtYWNoaW5lX2lzX2V1a3JlYV9jcHVpbXgyNygpICYm
-ICFtYWNoaW5lX2lzX2V1a3JlYV9jcHVpbXgyNXNkKCkKPiArCQkmJiAhbWFjaGluZV9pc19ldWty
-ZWFfY3B1aW14MzVzZCgpKQo+ICAJCS8qIHJldHVybiBoYXBweS4gV2UgbWlnaHQgcnVuIG9uIGEg
-dG90YWxseSBkaWZmZXJlbnQgbWFjaGluZSAqLwo+ICAJCXJldHVybiAwOwo+ICAKQWNrZWQtYnk6
-IExpYW0gR2lyZHdvb2QgPGxyZ0BzbGltbG9naWMuY28udWs+Ci0tIApGcmVlbGFuY2UgRGV2ZWxv
-cGVyLCBTbGltTG9naWMgTHRkCkFTb0MgYW5kIFZvbHRhZ2UgUmVndWxhdG9yIE1haW50YWluZXIu
-Cmh0dHA6Ly93d3cuc2xpbWxvZ2ljLmNvLnVrCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+On 7/19/10, Jaroslav Kysela <perex@perex.cz> wrote:
+
+> You must force compilation in test directory, for example:
+>
+> cd alsa-lib/test
+> make pcm
+>
+>  					Jaroslav
+>
+
+Ok ... I'm learning :o) (i think)
+
+On my n810 that gives me this:
+[user@nokia ~/src/dsp-alsa/trunk/alsa-lib/test]$ make pcm
+cc     pcm.c   -o pcm
+pcm.c: In function `help':
+pcm.c:719: warning: use of cast expressions as lvalues is deprecated
+/var/tmp/ccQOAYhr.o: In function `generate_sine':pcm.c:(.text+0x140):
+undefined reference to `snd_pcm_format_width'
+:pcm.c:(.text+0x160): undefined reference to `snd_pcm_format_width'
+:pcm.c:(.text+0x378): undefined reference to `sin'
+/var/tmp/ccQOAYhr.o: In function `set_hwparams':pcm.c:(.text+0x5ac):
+undefined reference to `snd_pcm_hw_params_any'
+:pcm.c:(.text+0x5c4): undefined reference to `snd_strerror'
+
+On my ubuntu system:
+john@system76-pc:~/alsa-lib-1.0.23/test$ make pcm
+if gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include   -Wall -pipe
+-g -D_GNU_SOURCE -MT pcm.o -MD -MP -MF ".deps/pcm.Tpo" -c -o pcm.o
+pcm.c; \
+	then mv -f ".deps/pcm.Tpo" ".deps/pcm.Po"; else rm -f
+".deps/pcm.Tpo"; exit 1; fi
+make: *** No rule to make target `../src/libasound.la', needed by `pcm'.  Stop.
+
+It works on the ubuntu system only if I run 'make check' first, as
+mentioned by Clemens Ladisch in another post.
+
+I copied the file .deps/pcm.Tpo from the ubunutu system to the n810,
+and pasted the output from the ubuntu command "make pcm" in directly:
+[user@nokia ~/src/dsp-alsa/trunk/alsa-lib/test]$ if gcc
+-DHAVE_CONFIG_H -I. -I. -I../include -I../include   -Wall -pipe -g
+-D_GNU_SOURCE -MT pcm.o -MD -MP -MF ".deps/pcm.Tpo" -c -o pcm.o pcm.c;
+then mv -f ".deps/pcm.Tpo" ".deps/pcm.Po"; else rm -f ".deps/pcm.Tpo";
+exit 1; fi
+pcm.c: In function `help':
+pcm.c:719: warning: use of cast expressions as lvalues is deprecated
+
+Now it looks to me like that generated pcm.o on both machines.  What
+do I do with pcm.o now?
