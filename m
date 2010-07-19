@@ -1,44 +1,214 @@
-From: Thomas Hoffmann <tjhoffm@gmail.com>
-Subject: snd-hda-intel acl269 toshiba r700 speakers work,
-	headphones do not
-Date: Sat, 17 Jul 2010 11:40:20 -0700
-Message-ID: <4C41F914.5040508@gmail.com>
+From: Sekhar Nori <nsekhar-l0cyMroinI0@public.gmane.org>
+Subject: [PATCH v2] asoc: davinci: let platform data define edma queue numbers
+Date: Mon, 19 Jul 2010 12:31:16 +0530
+Message-ID: <1279522876-11834-1-git-send-email-nsekhar@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 309CA246E7
-	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Jul 2010 20:40:21 +0200 (CEST)
-Received: by pxi2 with SMTP id 2so1660274pxi.38
-	for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2010 11:40:20 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Alsa developers,
+Currently the EDMA queue to be used by for servicing ASP through
+internal RAM is fixed to EDMAQ_0 and that to service internal RAM
+from external RAM is fixed to EDMAQ_1.
 
-Sound works from the built in laptop speakers. When headphones are 
-plugged in, the speakers properly mute, but there is no sound coming 
-from the headphones. I've tried some of the options to the 
-alsa-base.conf file to no avail; generally they made it so sound came 
-out of the speakers always, even when headphones were plugged in.
+This may not be the desirable configuration on all platforms. For
+example, on DM365, queue 0 has large fifo size and is more suitable
+for video transfers. Having audio and video transfers on the same
+queue may lead to starvation on audio side.
 
-I previously sent an e-mail to this list server:
-     https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5064
-where they suggested I e-mail you. My system info is available from
-     
-http://www.alsa-project.org/db/?f=f9aaf6e43b669cf2c4b2215781a414b12843e2a3
+platform data as defined currently passes a queue number to the driver
+but that remains unused inside the driver.
 
-Best,
-Tom
+Fix this by defining one queue each for ASP and RAM transfers in the
+platform data and using it inside the driver.
+
+Since EDMAQ_0 maps to 0, thats the queue that will be used if
+the asp queue number is not initialized. None of the platforms
+currently utilize ping-pong transfers through internal RAM so that
+functionality remains unchanged too.
+
+This patch has been tested on DM644x and OMAP-L138 EVMs.
+
+Signed-off-by: Sekhar Nori <nsekhar-l0cyMroinI0@public.gmane.org>
+Acked-by: Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
+---
+This patch applies to for-2.6.36 branch of ASoC tree.
+
+v2: same as v1 except rebased to branch/tree noted above.
+
+ arch/arm/mach-davinci/board-da830-evm.c  |    2 +-
+ arch/arm/mach-davinci/board-da850-evm.c  |    2 +-
+ arch/arm/mach-davinci/board-dm646x-evm.c |    4 ++--
+ arch/arm/mach-davinci/include/mach/asp.h |    3 ++-
+ sound/soc/davinci/davinci-i2s.c          |   10 ++++++++++
+ sound/soc/davinci/davinci-mcasp.c        |    6 ++++--
+ sound/soc/davinci/davinci-pcm.c          |    5 +++--
+ sound/soc/davinci/davinci-pcm.h          |    3 ++-
+ 8 files changed, 25 insertions(+), 10 deletions(-)
+
+diff --git a/arch/arm/mach-davinci/board-da830-evm.c b/arch/arm/mach-davinci/board-da830-evm.c
+index 212d970..bc384d3 100644
+--- a/arch/arm/mach-davinci/board-da830-evm.c
++++ b/arch/arm/mach-davinci/board-da830-evm.c
+@@ -208,7 +208,7 @@ static struct snd_platform_data da830_evm_snd_data = {
+ 	.num_serializer = ARRAY_SIZE(da830_iis_serializer_direction),
+ 	.tdm_slots      = 2,
+ 	.serial_dir     = da830_iis_serializer_direction,
+-	.eventq_no      = EVENTQ_0,
++	.asp_chan_q     = EVENTQ_0,
+ 	.version	= MCASP_VERSION_2,
+ 	.txnumevt	= 1,
+ 	.rxnumevt	= 1,
+diff --git a/arch/arm/mach-davinci/board-da850-evm.c b/arch/arm/mach-davinci/board-da850-evm.c
+index 2ec3095..d4ec18d 100644
+--- a/arch/arm/mach-davinci/board-da850-evm.c
++++ b/arch/arm/mach-davinci/board-da850-evm.c
+@@ -342,7 +342,7 @@ static struct snd_platform_data da850_evm_snd_data = {
+ 	.num_serializer	= ARRAY_SIZE(da850_iis_serializer_direction),
+ 	.tdm_slots	= 2,
+ 	.serial_dir	= da850_iis_serializer_direction,
+-	.eventq_no	= EVENTQ_1,
++	.asp_chan_q	= EVENTQ_1,
+ 	.version	= MCASP_VERSION_2,
+ 	.txnumevt	= 1,
+ 	.rxnumevt	= 1,
+diff --git a/arch/arm/mach-davinci/board-dm646x-evm.c b/arch/arm/mach-davinci/board-dm646x-evm.c
+index 6d88893..87521f2 100644
+--- a/arch/arm/mach-davinci/board-dm646x-evm.c
++++ b/arch/arm/mach-davinci/board-dm646x-evm.c
+@@ -323,7 +323,7 @@ static struct snd_platform_data dm646x_evm_snd_data[] = {
+ 		.num_serializer = ARRAY_SIZE(dm646x_iis_serializer_direction),
+ 		.tdm_slots      = 2,
+ 		.serial_dir     = dm646x_iis_serializer_direction,
+-		.eventq_no      = EVENTQ_0,
++		.asp_chan_q     = EVENTQ_0,
+ 	},
+ 	{
+ 		.tx_dma_offset  = 0x400,
+@@ -332,7 +332,7 @@ static struct snd_platform_data dm646x_evm_snd_data[] = {
+ 		.num_serializer = ARRAY_SIZE(dm646x_dit_serializer_direction),
+ 		.tdm_slots      = 32,
+ 		.serial_dir     = dm646x_dit_serializer_direction,
+-		.eventq_no      = EVENTQ_0,
++		.asp_chan_q     = EVENTQ_0,
+ 	},
+ };
+ 
+diff --git a/arch/arm/mach-davinci/include/mach/asp.h b/arch/arm/mach-davinci/include/mach/asp.h
+index b12c69e..9aa2409 100644
+--- a/arch/arm/mach-davinci/include/mach/asp.h
++++ b/arch/arm/mach-davinci/include/mach/asp.h
+@@ -52,7 +52,8 @@
+ struct snd_platform_data {
+ 	u32 tx_dma_offset;
+ 	u32 rx_dma_offset;
+-	enum dma_event_q eventq_no;	/* event queue number */
++	enum dma_event_q asp_chan_q;	/* event queue number for ASP channel */
++	enum dma_event_q ram_chan_q;	/* event queue number for RAM channel */
+ 	unsigned int codec_fmt;
+ 	/*
+ 	 * Allowing this is more efficient and eliminates left and right swaps
+diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
+index b251bc9..9e8932a 100644
+--- a/sound/soc/davinci/davinci-i2s.c
++++ b/sound/soc/davinci/davinci-i2s.c
+@@ -648,6 +648,8 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ 	struct snd_platform_data *pdata = pdev->dev.platform_data;
+ 	struct davinci_mcbsp_dev *dev;
+ 	struct resource *mem, *ioarea, *res;
++	enum dma_event_q asp_chan_q = EVENTQ_0;
++	enum dma_event_q ram_chan_q = EVENTQ_1;
+ 	int ret;
+ 
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+@@ -676,7 +678,15 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ 			pdata->sram_size_capture;
+ 		dev->clk_input_pin = pdata->clk_input_pin;
+ 		dev->i2s_accurate_sck = pdata->i2s_accurate_sck;
++		asp_chan_q = pdata->asp_chan_q;
++		ram_chan_q = pdata->ram_chan_q;
+ 	}
++
++	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK].asp_chan_q	= asp_chan_q;
++	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK].ram_chan_q	= ram_chan_q;
++	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE].asp_chan_q	= asp_chan_q;
++	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE].ram_chan_q	= ram_chan_q;
++
+ 	dev->clk = clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(dev->clk)) {
+ 		ret = -ENODEV;
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index d395509..b247208 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -890,7 +890,8 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	dev->rxnumevt = pdata->rxnumevt;
+ 
+ 	dma_data = &dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK];
+-	dma_data->eventq_no = pdata->eventq_no;
++	dma_data->asp_chan_q = pdata->asp_chan_q;
++	dma_data->ram_chan_q = pdata->ram_chan_q;
+ 	dma_data->dma_addr = (dma_addr_t) (pdata->tx_dma_offset +
+ 							io_v2p(dev->base));
+ 
+@@ -904,7 +905,8 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	dma_data->channel = res->start;
+ 
+ 	dma_data = &dev->dma_params[SNDRV_PCM_STREAM_CAPTURE];
+-	dma_data->eventq_no = pdata->eventq_no;
++	dma_data->asp_chan_q = pdata->asp_chan_q;
++	dma_data->ram_chan_q = pdata->ram_chan_q;
+ 	dma_data->dma_addr = (dma_addr_t)(pdata->rx_dma_offset +
+ 							io_v2p(dev->base));
+ 
+diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
+index def454e..a712411 100644
+--- a/sound/soc/davinci/davinci-pcm.c
++++ b/sound/soc/davinci/davinci-pcm.c
+@@ -381,7 +381,7 @@ static int request_ping_pong(struct snd_pcm_substream *substream,
+ 	/* Request ram master channel */
+ 	link = prtd->ram_channel = edma_alloc_channel(EDMA_CHANNEL_ANY,
+ 				  davinci_pcm_dma_irq, substream,
+-				  EVENTQ_1);
++				  prtd->params->ram_chan_q);
+ 	if (link < 0)
+ 		goto exit1;
+ 
+@@ -477,7 +477,8 @@ static int davinci_pcm_dma_request(struct snd_pcm_substream *substream)
+ 
+ 	/* Request asp master DMA channel */
+ 	link = prtd->asp_channel = edma_alloc_channel(params->channel,
+-			davinci_pcm_dma_irq, substream, EVENTQ_0);
++			davinci_pcm_dma_irq, substream,
++			prtd->params->asp_chan_q);
+ 	if (link < 0)
+ 		goto exit1;
+ 
+diff --git a/sound/soc/davinci/davinci-pcm.h b/sound/soc/davinci/davinci-pcm.h
+index 0764944..b799a02 100644
+--- a/sound/soc/davinci/davinci-pcm.h
++++ b/sound/soc/davinci/davinci-pcm.h
+@@ -21,7 +21,8 @@ struct davinci_pcm_dma_params {
+ 	unsigned short acnt;
+ 	dma_addr_t dma_addr;		/* device physical address for DMA */
+ 	unsigned sram_size;
+-	enum dma_event_q eventq_no;	/* event queue number */
++	enum dma_event_q asp_chan_q;	/* event queue number for ASP channel */
++	enum dma_event_q ram_chan_q;	/* event queue number for RAM channel */
+ 	unsigned char data_type;	/* xfer data type */
+ 	unsigned char convert_mono_stereo;
+ 	unsigned int fifo_level;
+-- 
+1.6.2.4
