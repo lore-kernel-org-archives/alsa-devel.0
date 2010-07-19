@@ -1,72 +1,63 @@
-From: John Simpson <john@swajime.com>
-Subject: Playback open error: Inappropriate ioctl for device
-Date: Sun, 18 Jul 2010 06:13:42 +0000
-Message-ID: <AANLkTiksTz_s2bOJCZbQrJFA4XHifG5vA2mT_IGs5rVt@mail.gmail.com>
-Reply-To: john@swajime.com
+From: Axel Lin <axel.lin@gmail.com>
+Subject: Re: [PATCH 0/12] sound/alsa/soc/codec: fix memory leak and resource
+	relaim in error path
+Date: Mon, 19 Jul 2010 09:41:20 +0800
+Message-ID: <AANLkTikSPYLmrIVkyD_GOVZ76Bkha7DNxED33ZZgQNKJ@mail.gmail.com>
+References: <1279162147.29294.2.camel@mola> <20100715085932.GA23529@rakim.wolfsonmicro.main>
+Reply-To: axel.lin@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 111AF2446F
-	for <alsa-devel@alsa-project.org>;
-	Sun, 18 Jul 2010 08:13:44 +0200 (CEST)
-Received: by iwn39 with SMTP id 39so3654938iwn.38
-	for <alsa-devel@alsa-project.org>; Sat, 17 Jul 2010 23:13:43 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20100715085932.GA23529@rakim.wolfsonmicro.main>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Tejun Heo <tj@kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 7/13/10, Clemens Ladisch <clemens@ladisch.de> wrote:
-> John Simpson wrote:
->  > I've been trying to use the alsa-lib API, but I haven't been able to
->  > get anything to compile.
->  >
->  > ~/alsa/alsa-lib-1.0.22/test$ for f in *.c; do echo; cc $f 2>&1 | head -n2; done
+hi Mark,
+
+2010/7/15 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+> On Thu, Jul 15, 2010 at 10:49:07AM +0800, Axel Lin wrote:
 >
-> > ...
->  > Did I miss something?
+>> [PATCH 1/12] ad1836: fix a memory leak if another ad1836 is register=
+ed
+>> [PATCH 2/12] ak4642: fix a memory leak if failed to initialise AK464=
+2
+>> [PATCH 3/12] da7210: fix a memory leak if failed to initialise da721=
+0 audio codec
+>> [PATCH 4/12] wm8523: fix resource reclaim in wm8523_register error p=
+ath
+>> [PATCH 5/12] wm8711: fix a memory leak if another WM8711 is register=
+ed
+>> [PATCH 6/12] wm8904: fix resource reclaim in wm8904_register error p=
+ath
+>> [PATCH 7/12] wm8940: fix resource reclaim in wm8940_register error p=
+ath
+>> [PATCH 8/12] wm8955: fix resource reclaim in wm8955_register error p=
+ath
+>> [PATCH 9/12] wm8961: fix resource reclaim in wm8961_register error p=
+ath
+>> [PATCH 10/12] wm8974: fix a memory leak if another WM8974 is registe=
+red
+>> [PATCH 11/12] wm8978: fix a memory leak if another WM8978 is registe=
+red
+>> [PATCH 12/12] wm9081: fix resource reclaim in wm9081_register error =
+path
 >
->  The makefile.
->
->  If alsa-lib is installed correctly, the only option you need for your
->  own programs is -lasound.
->
+> If you're going to be submiting large batches of small patches like t=
+his
+> it would be really helpful if you could make sure you format the subj=
+ect
+> lines for your patches so that they match the standards for the area =
+of
+> the kernel you're updating. =A0This makes them much easier to apply.
 >
 
-Ok, now I can compile several of the test programs, but I am still not
-able to generate sound.
+After checking Liam's multi-component branch, I think this serial of
+fix is not necessary.
+If you think it still has value to merge this serial of fix for
+current implementation, just let me know.
 
-[1|user@Nokia-N810-43-7|~/alsa-lib-1.0.23/test]cc -lasound control.c -o control
-[1|user@Nokia-N810-43-7|~/alsa-lib-1.0.23/test]./control
-Soundcard #1:
-  card - 0
-  id - 'EAC'
-  driver - 'EAC'
-  name - 'OMAP24xx EAC'
-  longname - 'OMAP24xx EAC with codec TLV320AIC33'
-  mixername - 'TLV320AIC33'
-  components - ''
-  PCM next device error: Inappropriate ioctl for device
-  RAWMIDI next device error: Inappropriate ioctl for device
-[1|user@Nokia-N810-43-7|~/alsa-lib-1.0.23/test]cc -lasound pcm.c -o pcm
-[1|user@Nokia-N810-43-7|~/alsa-lib-1.0.23/test]./pcm
-Playback device is plughw:0,0
-Stream parameters are 44100Hz, S16_LE, 1 channels
-Sine wave rate is 440.0000Hz
-Using transfer method: write
-Playback open error: Inappropriate ioctl for device
-[1|user@Nokia-N810-43-7|~/alsa-lib-1.0.23/test]cc -lasound pcm_min.c -o pcm_min
-[1|user@Nokia-N810-43-7|~/alsa-lib-1.0.23/test]./pcm_min
-Playback open error: Inappropriate ioctl for device
-
-I sure appreciate the help... I'm feeling a bit dense at the oment :-(
+Regards,
+Axel
