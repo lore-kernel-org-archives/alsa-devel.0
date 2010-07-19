@@ -1,25 +1,22 @@
-From: Jerone Young <jerone.young@canonical.com>
-Subject: [PATCH] Add conexant quirk for AMD based Lenovo G
-	series machines
-Date: Mon, 19 Jul 2010 08:30:58 -0500
-Message-ID: <1279546258.1719.1636.camel@laptop>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: XRUN handling
+Date: Mon, 19 Jul 2010 16:37:31 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1007191612120.9258@eeebox2.perex-int.cz>
+References: <AANLkTim_2xOjhFHcfyMvgceAQZEauWYIbY8QV-0jnBWw@mail.gmail.com>
+	<AANLkTikRHAHhDXEEcejT5BqiJXiIaQX-lhg3zqTljcnq@mail.gmail.com>
+	<AANLkTim93O9PgptYEdBkAf_x7reIf_1DxbHCYjLdfVLB@mail.gmail.com>
+	<alpine.LNX.2.00.1007062034050.15497@eeebox2.perex-int.cz>
+	<AANLkTinwkbuyFBxGAABNKaY_CVxK4OedlPHnY2NOf8ck@mail.gmail.com>
+	<AANLkTintdXC7pwQAi8qc8OyHRZw9jL2C7JphkIAwLXIf@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 99543103889
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id A10FC103834
 	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Jul 2010 15:31:03 +0200 (CEST)
-Received: from hutte.canonical.com ([91.189.90.181])
-	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
-	id 1OaqQu-00051h-Vh
-	for <alsa-devel@alsa-project.org>; Mon, 19 Jul 2010 14:31:01 +0100
-Received: from adsl-71-145-145-48.dsl.austtx.sbcglobal.net ([71.145.145.48]
-	helo=[192.168.1.6]) by hutte.canonical.com with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
-	(envelope-from <jerone.young@canonical.com>) id 1OaqQu-0002al-Kn
-	for alsa-devel@alsa-project.org; Mon, 19 Jul 2010 14:31:00 +0100
+	Mon, 19 Jul 2010 16:37:32 +0200 (CEST)
+In-Reply-To: <AANLkTintdXC7pwQAi8qc8OyHRZw9jL2C7JphkIAwLXIf@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,22 +26,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: melwyn lobo <linux.melwyn@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a follow on patch adds support for AMD based Lenovo G series
-machines, such as the Lenovo G555.
+On Wed, 14 Jul 2010, melwyn lobo wrote:
 
-Signed-off-by: Jerone Young <jerone.young@canonical.com>
+> Another query, if setting runtime parameters like:
+> runtime->silence_threshold = runtime->boundary;
+> runtime->silence_size = runtime->boundary;
+> runtime->stop_threshold = runtime->boundary;
+>
+> Also to avoid the bug in snd_pcm_playback_silence()  i.e.,
+> snd_BUG_ON(frames > runtime->buffer_size),
+> I have added a tweak in the driver IRQ handler:
 
-diff --git a/pci/hda/patch_conexant.c b/pci/hda/patch_conexant.c
-index c49030b..774edb9 100644
---- a/pci/hda/patch_conexant.c
-+++ b/pci/hda/patch_conexant.c
-@@ -3000,6 +3000,7 @@ static struct snd_pci_quirk cxt5066_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "ideapad", CXT5066_IDEAPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x215e, "Lenovo Thinkpad", CXT5066_THINKPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo G series", CXT5066_IDEAPAD),
-+	SND_PCI_QUIRK(0x17aa, 0x3938, "Lenovo G series (AMD)", CXT5066_IDEAPAD),
- 	{}
- };
+This patch might fix this problem:
+
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index bcf95d3..e23e0e7 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -67,6 +67,8 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
+  	} else {
+  		if (new_hw_ptr == ULONG_MAX) {	/* initialization */
+  			snd_pcm_sframes_t avail = snd_pcm_playback_hw_avail(runtime);
++			if (avail > runtime->buffer_size)
++				avail = runtime->buffer_size;
+  			runtime->silence_filled = avail > 0 ? avail : 0;
+  			runtime->silence_start = (runtime->status->hw_ptr +
+  						  runtime->silence_filled) %
+
+But it looks that you do something wrong with hw_ptr or appl_ptr in your 
+driver, because this condition would be true only when an large underrun 
+occurs immediatelly.
+
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
