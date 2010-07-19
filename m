@@ -1,47 +1,53 @@
-From: "Nori, Sekhar" <nsekhar-l0cyMroinI0@public.gmane.org>
-Subject: RE: [PATCH] asoc: davinci: let platform data define edma queue numbers
-Date: Mon, 19 Jul 2010 12:35:54 +0530
-Message-ID: <B85A65D85D7EB246BE421B3FB0FBB59301E7BD3A68@dbde02.ent.ti.com>
-References: <1279196059-6031-1-git-send-email-nsekhar@ti.com>
-	<20100717185018.GC27456@rakim.wolfsonmicro.main>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH - alsa-lib 0/3] Fixes for
+	snd_tlv_convert_from_dB
+Date: Mon, 19 Jul 2010 10:14:03 +0300
+Message-ID: <1279523646-4987-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <20100717185018.GC27456-HF5t3jzXg/6ND3a5+9QAFujbO/Zr0HzV@public.gmane.org>
-Content-Language: en-US
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id A6D8710382B
+	for <alsa-devel@alsa-project.org>;
+	Mon, 19 Jul 2010 09:14:24 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Hello,
 
-On Sun, Jul 18, 2010 at 00:20:19, Mark Brown wrote:
-> On Thu, Jul 15, 2010 at 05:44:19PM +0530, Sekhar Nori wrote:
->
-> > This patch has been tested on DM644x and OMAP-L138 EVMs.
->
-> > Signed-off-by: Sekhar Nori <nsekhar-l0cyMroinI0@public.gmane.org>
->
-> > This patch applies to latest of Linus's tree.
->
-> ...so it doesn't apply against my for-2.6.36 branch (and obviously
-> there's crossover with Kevin's tree as well which makes things possibly
-> a bit interesting too).  Could you please regenerate against for-2.6.36?
-> You should generally always send patches against the latest version of
-> code rather than Linus' tree, using other trees increases the chances
-> that your patch will not apply.
+One cosmetic fix, and two real fixes for alsa-lib's tlv handling.
 
-Thanks for the feedback. I rebased against for-2.6.36 and sent a v2.
+There were two separate issue with the snd_tlv_convert_from_dB function:
+1. When user asked for out of range dB value, and the control had
+   SND_CTL_TLVT_DB_RANGE, the control's full range was not checked against the
+   requested value, which resulted failure.
+2. When there are 'holes' in the SND_CTL_TLVT_DB_RANGE array,
+   snd_tlv_convert_from_dB will fail to find the apropriate raw value.
 
-Regards,
-Sekhar
+For issue #2, I have sent patches for the drivers I maintain, but Mark Brown
+suggested to fix the issue in alsa-lib instead of converting the driver's
+non-overlapping to overlapping mapping:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2010-July/029483.html
+
+So the following series for alsa-lib, will fix the SND_CTL_TLVT_DB_RANGE
+handling.
+
+---
+Peter Ujfalusi (3):
+  tlv: Check out of range dB with SND_CTL_TLVT_DB_RANGE
+  tlv: Handle 'holes' in SND_CTL_TLVT_DB_RANGE array
+  tlv: Remove tailing tab after snd_ctl_get_dB_range function
+
+ src/control/tlv.c |   17 +++++++++++++++--
+ 1 files changed, 15 insertions(+), 2 deletions(-)
