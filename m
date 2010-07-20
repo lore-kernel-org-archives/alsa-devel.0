@@ -1,31 +1,18 @@
-From: Stefan Schoenleitner <dev.c0debabe@gmail.com>
-Subject: underruns and POLLERR when copying audio frames
-Date: Tue, 20 Jul 2010 13:00:41 +0200
-Message-ID: <4C4581D9.8020309@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] wm8960: fix compile error
+Date: Tue, 20 Jul 2010 12:07:22 +0100
+Message-ID: <20100720110722.GN10222@rakim.wolfsonmicro.main>
+References: <1279619362.11179.2.camel@mola>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from keymachine.tbmn.org (mail.tbmn.org [87.118.84.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id 303541038DB
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8B0E01038E8
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jul 2010 13:01:31 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by keymachine.tbmn.org (Postfix) with ESMTP id 5E1558ACC15
-	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jul 2010 13:01:30 +0200 (CEST)
-Received: from keymachine.tbmn.org ([127.0.0.1])
-	by localhost (keymachine.tbmn.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 2rCLt3FIZXM7 for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jul 2010 13:01:29 +0200 (CEST)
-Received: from [192.168.1.132] (85-127-52-80.dynamic.xdsl-line.inode.at
-	[85.127.52.80])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: mne@tbmn.org)
-	by keymachine.tbmn.org (Postfix) with ESMTPSA id 08DA58ACC14
-	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jul 2010 13:01:28 +0200 (CEST)
+	Tue, 20 Jul 2010 13:07:23 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1279619362.11179.2.camel@mola>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,59 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Tue, Jul 20, 2010 at 05:49:22PM +0800, Axel Lin wrote:
 
-I have some code that basically captures audio frames from one device
-and then writes it for playback to another device.
+> This patch is against Liam's multi-component branch.
 
-Ideally mmapped IO could be used for such a task, but in my application
-this is not possible at the moment, as at least one of the audio devices
-does not support it.
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-
-In my application copying audio frames works with a poll() based approach:
-
-If the capture device is ready for reading, a new audio frame is being read.
-And if there is a new captured frame available AND the playback device
-is ready, then it is written to the playback device.
-
-So far so good, the approach works.
-However, it doesn't take long until poll() on the playback device
-returns POLLERR since an underrun has occurred.
-If I just ignore POLLERR, then the next write operation to the playback
-device fails and I need to snd_pcm_recover().
-
-My question is how to avoid these underruns.
-Basically I have two ideas:
-
-1. The avail_min parameter specifies when the playback device should
-start to play buffered frames back.
-Hence if for example avail_min=160, then the playback device would wait
-until at least 160 frames have been written to the playback device (i.e.
-to the internal buffer) and then start with playing back these frames.
-My idea would be to just increment avail_min to something bigger, so
-that more frames are being buffered before playback starts.
-Would this work ?
-
-2. Another idea would be to do some buffering on my own in the application.
-Thus I would first capture a number of frames and write them to a FIFO
-buffer.
-Once the buffer has been filled with enough frames, I would start to
-write them to the playback device.
-Therefore while the FIFO is being drained on the one side (playback), it
-is also refilled on the other side (capture).
-
-
-* So, which of these ideas do you think is better in terms of avoiding
-underruns ?
-
-To me it seems that both solutions would lead to the same results.
-Yet just setting avail_min to something higher seems to be the easier
-solution as it does not require me to implement a buffering solution on
-my own.
-
-cheers,
-stefan
+but please do try to bear in mind the feedback you've previously been
+given about formatting your patches so they can be easily applied.  You
+probably also want to look at the CC list for your patches, I'm not sure
+why you're CCing Tejun here.
