@@ -1,27 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH - alsa-lib 2/3] tlv: Handle 'holes' in
- SND_CTL_TLVT_DB_RANGE array
-Date: Tue, 20 Jul 2010 09:32:25 +0100
-Message-ID: <20100720083225.GA10222@rakim.wolfsonmicro.main>
-References: <1279523646-4987-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1279523646-4987-3-git-send-email-peter.ujfalusi@nokia.com>
-	<s5heiezfp1c.wl%tiwai@suse.de>
-	<20100719160109.GC7002@sirena.org.uk>
-	<s5h630bfo3x.wl%tiwai@suse.de>
-	<20100719162416.GD7002@sirena.org.uk>
-	<s5h39vffmkw.wl%tiwai@suse.de>
-	<20100719170947.GA5950@rakim.wolfsonmicro.main>
-	<s5hbpa3z5lz.wl%tiwai@suse.de> <4C45413C.10909@ladisch.de>
+Subject: Re: [PATCH] ASoC: da7210: Add HeadPhone Playback
+	Volume control
+Date: Tue, 20 Jul 2010 09:37:55 +0100
+Message-ID: <20100720083754.GB10222@rakim.wolfsonmicro.main>
+References: <w3plj96evqs.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 75ADD24575
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E41232455F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jul 2010 10:32:27 +0200 (CEST)
+	Tue, 20 Jul 2010 10:37:55 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4C45413C.10909@ladisch.de>
+In-Reply-To: <w3plj96evqs.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,24 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 20, 2010 at 08:25:00AM +0200, Clemens Ladisch wrote:
-> Takashi Iwai wrote:
+On Tue, Jul 20, 2010 at 11:24:17AM +0900, Kuninori Morimoto wrote:
 
-> > Well, what I don't feel right is that this breaks the simpleness of
-> > DB_RANGE handling.  It's just damn simple, and works as long as the
-> > target point is covered by defined ranges.  If something is wrong,
-> > it's the definition, not the parser.  That's why I wondered first
-> > whether it can't be fixed in the driver side.
+> +	/*
+> +	 * HeadPhone PlayBack Volume 40 is given here
+> +	 * because DA7210 doesn't have default volume.
+> +	 */
+> +	snd_soc_update_bits(codec, DA7210_HP_L_VOL, 0x3F, 40);
+> +	snd_soc_update_bits(codec, DA7210_HP_R_VOL, 0x3F, 40);
+> +
 
-> As a driver writer, I would intuitively assume that the ranges must
-> not be overlapping.  If we require all drivers to get this right,
-> there will likely be new ones that don't.
-
-This is exactly what happened with all the ASoC drivers - it never even
-occurred to me that it might be sensible to overlap the ranges.  It's
-not at all obvious, like I've said the drivers are basically providing a
-data table.
+I find this very surprising - the chip actually comes up with an
+indeterminate value at start?  In any case, if this is required I'd
+suggest picking mute as the default value since then there's no chance
+that the signal will be excessively loud by default on some systems.
