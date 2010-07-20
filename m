@@ -1,20 +1,26 @@
-From: John Lindgren <john.lindgren@tds.net>
-Subject: Re: [PATCH] Memory leak in namehint.c
-Date: Tue, 20 Jul 2010 18:38:37 -0400
-Message-ID: <4C46256D.7070201@tds.net>
-References: <4C45F868.7060807@tds.net>
+From: Adrian Pardini <pardo.bsso@gmail.com>
+Subject: [PATCH - usb: Headphone support for cm6206 1/2] usb:
+	move snd_usb_cm106_write_int_reg to mixer_quirks.c
+Date: Tue, 20 Jul 2010 19:42:28 -0300
+Message-ID: <201007201942.28942.pardo.bsso@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
-	[209.85.216.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2BC362434C
+Received: from homiemail-a25.g.dreamhost.com (caiajhbdcaib.dreamhost.com
+	[208.97.132.81]) by alsa0.perex.cz (Postfix) with ESMTP id 7A6BD24366
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jul 2010 00:38:42 +0200 (CEST)
-Received: by qyk27 with SMTP id 27so2461713qyk.17
-	for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2010 15:38:41 -0700 (PDT)
-In-Reply-To: <4C45F868.7060807@tds.net>
+	Wed, 21 Jul 2010 00:42:34 +0200 (CEST)
+Received: from homiemail-a25.g.dreamhost.com (localhost [127.0.0.1])
+	by homiemail-a25.g.dreamhost.com (Postfix) with ESMTP id F398D678089
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2010 15:42:32 -0700 (PDT)
+Received: from onyx.local (unknown [201.255.107.220])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: adrian@tangopardo.com.ar)
+	by homiemail-a25.g.dreamhost.com (Postfix) with ESMTPSA id AD0BB678075
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2010 15:42:31 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,51 +33,85 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Please disregard the previous patch as it has the potential for a double
-free() if snd_card_get_name() fails.  Here is a corrected patch.
+Hi all, this series of patches adds another control to cm6206 based cards to
+let the user select wich ouput the "Headphone" jack mirrors. Please review.
 
-Signed-off-by: John Lindgren <john.lindgren@tds.net>
----
+Thanks.
 
- src/control/namehint.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+Signed-off-by: Adrian Pardini <adrian.pardini@solar.org.ar>
 
-diff --git a/src/control/namehint.c b/src/control/namehint.c
-index 78572d8..1819292 100644
---- a/src/control/namehint.c
-+++ b/src/control/namehint.c
-@@ -471,6 +471,8 @@ static int get_card_name(struct hint_list *list, int card)
-        char scard[16], *s;
-        int err;
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index e7df1e5..c4cbbc0 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -354,6 +354,22 @@ void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
+ 	}
+ }
  
-+       free(list->cardname);
-+       list->cardname = NULL;
-        err = snd_card_get_name(card, &list->cardname);
-        if (err <= 0)
-                return 0;
++/*
++ * C-Media CM106/CM106+ have four 16-bit internal registers that are nicely
++ * documented in the device's data sheet.
++ */
++int snd_usb_cm106_write_int_reg(struct usb_device *dev, int reg, u16 value)
++{
++	u8 buf[4];
++	buf[0] = 0x20;
++	buf[1] = value & 0xff;
++	buf[2] = (value >> 8) & 0xff;
++	buf[3] = reg;
++	return snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), USB_REQ_SET_CONFIGURATION,
++			       USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_ENDPOINT,
++			       0, 0, &buf, 4, 1000);
++}
++
+ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ {
+ 	int err;
+diff --git a/sound/usb/mixer_quirks.h b/sound/usb/mixer_quirks.h
+index bdbfab0..bc5d577 100644
+--- a/sound/usb/mixer_quirks.h
++++ b/sound/usb/mixer_quirks.h
+@@ -9,5 +9,7 @@ void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
+ void snd_usb_mixer_rc_memory_change(struct usb_mixer_interface *mixer,
+ 				    int unitid);
+ 
++int snd_usb_cm106_write_int_reg(struct usb_device *dev, int reg, u16 value);
++
+ #endif /* SND_USB_MIXER_QUIRKS_H */
+ 
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 9a9da09..b8a5a18 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -353,22 +353,6 @@ static int snd_usb_audigy2nx_boot_quirk(struct usb_device *dev)
+ 	return 0;
+ }
+ 
+-/*
+- * C-Media CM106/CM106+ have four 16-bit internal registers that are nicely
+- * documented in the device's data sheet.
+- */
+-static int snd_usb_cm106_write_int_reg(struct usb_device *dev, int reg, u16 value)
+-{
+-	u8 buf[4];
+-	buf[0] = 0x20;
+-	buf[1] = value & 0xff;
+-	buf[2] = (value >> 8) & 0xff;
+-	buf[3] = reg;
+-	return snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), USB_REQ_SET_CONFIGURATION,
+-			       USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_ENDPOINT,
+-			       0, 0, &buf, 4, 1000);
+-}
+-
+ static int snd_usb_cm106_boot_quirk(struct usb_device *dev)
+ {
+ 	/*
+-- 
+1.5.4.3
 
 
-On 07/20/2010 03:26 PM, John Lindgren wrote:
-> get_card_name() can be called more than once on the same list, so it
-> must free the previous list->cardname before replacing it.
->
-> Signed-off-by: John Lindgren <john.lindgren@tds.net>
-> ---
->
->  src/control/namehint.c |    2 ++
->  1 files changed, 2 insertions(+), 0 deletions(-)
->
-> diff --git a/src/control/namehint.c b/src/control/namehint.c
-> index 78572d8..fc1cb27 100644
-> --- a/src/control/namehint.c
-> +++ b/src/control/namehint.c
-> @@ -471,6 +471,8 @@ static int get_card_name(struct hint_list *list, int card)
->         char scard[16], *s;
->         int err;
->  
-> +       if (list->cardname)
-> +               free(list->cardname);
->         err = snd_card_get_name(card, &list->cardname);
->         if (err <= 0)
->                 return 0;
->   
+
+-- 
+Adrian.
+http://elesquinazotango.com.ar
+http://www.noalcodigodescioli.blogspot.com/
