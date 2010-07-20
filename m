@@ -1,20 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] wm8960: fix compile error
-Date: Tue, 20 Jul 2010 16:18:52 +0100
-Message-ID: <20100720151852.GA20241@rakim.wolfsonmicro.main>
-References: <1279619362.11179.2.camel@mola>
-	<20100720110722.GN10222@rakim.wolfsonmicro.main>
-	<AANLkTinTT3_yy02wGJfKwannKT2rrZN899JKrdlvtLz7@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Merging alsa-firmware into linux-firmware
+Date: Tue, 20 Jul 2010 17:47:45 +0200
+Message-ID: <4C45C521.4020208@canonical.com>
+References: <4C457C89.5040209@canonical.com> <4C45A538.2060704@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 99A85245EC
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D48E103800
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jul 2010 17:18:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <AANLkTinTT3_yy02wGJfKwannKT2rrZN899JKrdlvtLz7@mail.gmail.com>
+	Tue, 20 Jul 2010 17:47:48 +0200 (CEST)
+In-Reply-To: <4C45A538.2060704@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,34 +21,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Chase Douglas <chase.douglas@canonical.com>, alsa-devel@alsa-project.org, David Woodhouse <david.woodhouse@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 20, 2010 at 11:02:37PM +0800, Axel Lin wrote:
-> 2010/7/20 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+On 2010-07-20 15:31, Clemens Ladisch wrote:
+> David Henningsson wrote:
+>> Chase Douglas (@canonical) and I plan to take what's left of
+>> alsa-firmware and try to merge it into linux-firmware, this might happen
+>> now or in the coming weeks. This will make alsa-firmware obsolete as all
+>> firmware will be provided by linux-firmware instead.
+> 
+> Good idea; these packages have exactly the same purpose.
+> 
+>> Any words of ... warnings
+> 
+> I wonder what you're going to do about the multisound firmware files;
+> the /lib/firmware/turtlebeach/*.bin files are just symbolic links to
+> the actual files in /etc/sound that owners of these cards (if any such
+> still exist) are supposed to have.  
 
-> > but please do try to bear in mind the feedback you've previously been
-> > given about formatting your patches so they can be easily applied. =A0Y=
-ou
+Ah, thanks for bringing this up to my attention. From where do these
+.bin-files come originally? Can we include them?
 
-> I'm a little bit confused about the meaning of "formatting your patches"?
-> Do you mean my patches cannot be applied by git am command? or?
-> ( I tried the git am command with the mail I sent and it looks ok )
+> The stuff in emi_26_62 isn't used.  (Er, wasn't there a regression
+> introduced in the emi62 firmware in 2.6.27?)
 
-In this case the main thing is the subject line which is not consistent
-with other subject lines for patches in this area of code.  This sort of
-stuff is particularly important when you're submitting large numbers of
-very small fixes.
+I noticed that linux-firmware had one emi26 and one emi62 directory, as
+opposed to alsa-firmware that puts it in the emagic directory. So given
+your comment, I'll just drop them from the emagic dir.
 
-> > probably also want to look at the CC list for your patches, I'm not sure
-> > why you're CCing Tejun here.
-
-> I get the CC list by get_maintainer.pl. Looks like the script gives me wr=
-ong
-> CC list.
-
-Yes, you need to apply a bit of taste to the output - it's inclined to
-generate false positives.  For matches from MAINTAINERS it's good but
-for things generated from the git logs it can easily miss people or pick
-up people who've been doing kernel wide cleanup work.
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
