@@ -1,17 +1,27 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Merging alsa-firmware into linux-firmware
-Date: Tue, 20 Jul 2010 17:47:45 +0200
-Message-ID: <4C45C521.4020208@canonical.com>
-References: <4C457C89.5040209@canonical.com> <4C45A538.2060704@ladisch.de>
+From: John Simpson <john@swajime.com>
+Subject: Re: Compiler errors in alsa-lib-1.0.22/test/*.c
+Date: Tue, 20 Jul 2010 11:19:43 -0500
+Message-ID: <AANLkTimjK6fzRKxtj0fnQ3xPDOyXHAWikq6MZxqy-sj2@mail.gmail.com>
+References: <AANLkTin75qlRIEXwE8_12m3GcGXagKY0lQhQ4hN9h_co@mail.gmail.com>
+	<4C3C0540.6020506@ladisch.de>
+	<AANLkTinsZlWl0VtR8F1mHHYUNUd6jHvTjGhd_J2sdsoM@mail.gmail.com>
+	<AANLkTinuYzw-4iuEyemaL4Jlh0NC0byhPBNJ5nu5tscX@mail.gmail.com>
+	<AANLkTilDAsnNVSs17ochWuMfBlU_PIbL4OzH67CtPcLD@mail.gmail.com>
+	<alpine.LNX.2.00.1007191052020.9258@eeebox2.perex-int.cz>
+	<AANLkTinomEJIjm4DOkZPUcL0d_I6PwzHIGNiT5sUd1FZ@mail.gmail.com>
+Reply-To: john@swajime.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7D48E103800
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 50EBD103803
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jul 2010 17:47:48 +0200 (CEST)
-In-Reply-To: <4C45A538.2060704@ladisch.de>
+	Tue, 20 Jul 2010 18:19:45 +0200 (CEST)
+Received: by fxm15 with SMTP id 15so2946268fxm.38
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2010 09:19:45 -0700 (PDT)
+In-Reply-To: <AANLkTinomEJIjm4DOkZPUcL0d_I6PwzHIGNiT5sUd1FZ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,36 +31,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Chase Douglas <chase.douglas@canonical.com>, alsa-devel@alsa-project.org, David Woodhouse <david.woodhouse@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2010-07-20 15:31, Clemens Ladisch wrote:
-> David Henningsson wrote:
->> Chase Douglas (@canonical) and I plan to take what's left of
->> alsa-firmware and try to merge it into linux-firmware, this might happen
->> now or in the coming weeks. This will make alsa-firmware obsolete as all
->> firmware will be provided by linux-firmware instead.
-> 
-> Good idea; these packages have exactly the same purpose.
-> 
->> Any words of ... warnings
-> 
-> I wonder what you're going to do about the multisound firmware files;
-> the /lib/firmware/turtlebeach/*.bin files are just symbolic links to
-> the actual files in /etc/sound that owners of these cards (if any such
-> still exist) are supposed to have.  
+On 7/19/10, John Simpson <john@swajime.com> wrote:
+> On 7/19/10, Jaroslav Kysela <perex@perex.cz> wrote:
+>
+>> You must force compilation in test directory, for example:
+>>
+>> cd alsa-lib/test
+>> make pcm
+>>
+>>  					Jaroslav
+>>
+>
+> Ok ... I'm learning :o) (i think)
+>
+> On my n810 that gives me this:
+> [user@nokia ~/src/dsp-alsa/trunk/alsa-lib/test]$ make pcm
+> cc     pcm.c   -o pcm
+> pcm.c: In function `help':
+> pcm.c:719: warning: use of cast expressions as lvalues is deprecated
+> /var/tmp/ccQOAYhr.o: In function `generate_sine':pcm.c:(.text+0x140):
+> undefined reference to `snd_pcm_format_width'
+> :pcm.c:(.text+0x160): undefined reference to `snd_pcm_format_width'
+> :pcm.c:(.text+0x378): undefined reference to `sin'
+> /var/tmp/ccQOAYhr.o: In function `set_hwparams':pcm.c:(.text+0x5ac):
+> undefined reference to `snd_pcm_hw_params_any'
+> :pcm.c:(.text+0x5c4): undefined reference to `snd_strerror'
+>
+> On my ubuntu system:
+> john@system76-pc:~/alsa-lib-1.0.23/test$ make pcm
+> if gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include   -Wall -pipe
+> -g -D_GNU_SOURCE -MT pcm.o -MD -MP -MF ".deps/pcm.Tpo" -c -o pcm.o
+> pcm.c; \
+> 	then mv -f ".deps/pcm.Tpo" ".deps/pcm.Po"; else rm -f
+> ".deps/pcm.Tpo"; exit 1; fi
+> make: *** No rule to make target `../src/libasound.la', needed by `pcm'.
+> Stop.
+>
+> It works on the ubuntu system only if I run 'make check' first, as
+> mentioned by Clemens Ladisch in another post.
+>
+> I copied the file .deps/pcm.Tpo from the ubunutu system to the n810,
+> and pasted the output from the ubuntu command "make pcm" in directly:
+> [user@nokia ~/src/dsp-alsa/trunk/alsa-lib/test]$ if gcc
+> -DHAVE_CONFIG_H -I. -I. -I../include -I../include   -Wall -pipe -g
+> -D_GNU_SOURCE -MT pcm.o -MD -MP -MF ".deps/pcm.Tpo" -c -o pcm.o pcm.c;
+> then mv -f ".deps/pcm.Tpo" ".deps/pcm.Po"; else rm -f ".deps/pcm.Tpo";
+> exit 1; fi
+> pcm.c: In function `help':
+> pcm.c:719: warning: use of cast expressions as lvalues is deprecated
+>
+> Now it looks to me like that generated pcm.o on both machines.  What
+> do I do with pcm.o now?
+>
 
-Ah, thanks for bringing this up to my attention. From where do these
-.bin-files come originally? Can we include them?
+Trying again ...
+This time, checking out https://vcs.maemo.org/svn/dsp-alsa and trying
+to compile pcm.c without 'building' first:
 
-> The stuff in emi_26_62 isn't used.  (Er, wasn't there a regression
-> introduced in the emi62 firmware in 2.6.27?)
+$ cd ~/src
+$ svn checkout https://vcs.maemo.org/svn/dsp-alsa
+$ cd dsp-alsa/trunk/alsa-lib
+#### cvscompile does not succeed
+$ cd ~/src/dsp-alsa/trunk/alsa-lib/test
 
-I noticed that linux-firmware had one emi26 and one emi62 directory, as
-opposed to alsa-firmware that puts it in the emagic directory. So given
-your comment, I'll just drop them from the emagic dir.
+$ gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include   -Wall -pipe
+-g -D_GNU_SOURCE -MT control.o -MD -MP -c -o control.o control.c
+$ gcc -Wall -pipe -g -D_GNU_SOURCE -o .libs/control control.o
+/usr/lib/libasound.so -lm -ldl -lpthread -lrt
+$ .libs/control
+ALSA lib control.c:909:(snd_ctl_open_noupdate) Invalid CTL hw:CARD=0
+Open error: No such file or directory
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+$ gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include   -Wall -pipe
+-g -D_GNU_SOURCE -MT pcm.o -MD -MP -c -o pcm.o pcm.c
+pcm.c: In function `help':
+pcm.c:719: warning: use of cast expressions as lvalues is deprecated
+$ gcc -Wall -pipe -g -D_GNU_SOURCE -o .libs/pcm pcm.o
+/usr/lib/libasound.so -lm -ldl -lpthread -lrt
+$ .libs/pcm -D 'default' -vf 440
+Playback device is default
+Stream parameters are 44100Hz, S16_LE, 1 channels
+Sine wave rate is 440.0000Hz
+Using transfer method: write
+
+====
+
+Still no sound :-(
+
+j
