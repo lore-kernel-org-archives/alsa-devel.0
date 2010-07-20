@@ -1,20 +1,18 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH - alsa-lib 2/3] tlv: Handle 'holes' in
-	SND_CTL_TLVT_DB_RANGE array
-Date: Tue, 20 Jul 2010 09:53:22 +0300
-Message-ID: <201007200953.22169.peter.ujfalusi@nokia.com>
-References: <1279523646-4987-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20100719170947.GA5950@rakim.wolfsonmicro.main>
-	<s5hbpa3z5lz.wl%tiwai@suse.de>
+Subject: [PATCH v2 - alsa-lib 3/3] tlv: Remove tailing tab
+	after snd_ctl_get_dB_range function
+Date: Tue, 20 Jul 2010 10:34:54 +0300
+Message-ID: <1279611294-2014-4-git-send-email-peter.ujfalusi@nokia.com>
+References: <1279611294-2014-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 92A401037EE
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3CA9324529
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Jul 2010 08:53:40 +0200 (CEST)
-In-Reply-To: <s5hbpa3z5lz.wl%tiwai@suse.de>
+	Tue, 20 Jul 2010 09:35:02 +0200 (CEST)
+In-Reply-To: <1279611294-2014-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,86 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Cosmetic fix.
+There was a tab instead of new line after snd_ctl_get_dB_range
+function.
 
-On Monday 19 July 2010 21:30:48 ext Takashi Iwai wrote:
-> > It still seems silly to have to paper over this for every single dB
-> > interval - if we need to link up the ranges it seems like we ought to
-> > be fixing this in one place.
-> =
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ src/control/tlv.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-> Well, what I don't feel right is that this breaks the simpleness of
-> DB_RANGE handling.  It's just damn simple, and works as long as the
-> target point is covered by defined ranges.  If something is wrong,
-> it's the definition, not the parser.  That's why I wondered first
-> whether it can't be fixed in the driver side.  I want the parser stuff
-> as simple as possible.
-
-I think this patch still keeps the parser simple.
-It does not break the existing functionality (overlapped mappings still wor=
-ks), =
-
-but it can in addition handle the non-overlapped mapping of TLV ranges.
- =
-
-> So, practically seen, how many driver are buggy in this regard?
-> And for how many of them should a new TLV entry added?
-> The only worst case is discontinued lines you mentioned.  Is there
-> a real device that behaves so (and implemented in that way)?
-> =
-
-> If fixing in alsa-lib is a better compromise, I'd take it.  But I'd
-> like to hear numbers first.
-
-The following drivers have some sort of TLV_DB_RANGE_HEAD:
-with overlapping ranges:
-pci/as1838.c
-soc/codecs/wm8753.c
-
-with non-overlapping ranges:
-soc/codecs/tpa6130a2.c /* patch sent to convert to overlapping */
-soc/codecs/uda1380.c
-soc/codecs/wm_hubs.c
-soc/codecs/max9877.c
-soc/codecs/wm8350.c
-soc/codecs/wm8400.c /* only single SCALE_ITEM */
-soc/codecs/wm8961.c
-soc/codecs/wm8990.c /* only single SCALE_ITEM */
-soc/codecs/wm8993.c
-soc/codecs/wm9081.c
-soc/codecs/wm9090.c
-soc/codecs/wm9713.c
-soc/codecs/twl4030.c /* patch sent to convert to overlapping */
-
-I don't really know how many of these driver would require new TLV entry, b=
-ut =
-
-the twl4030, and tpa6130a2 (for tpa6140a2 chip) does not needed new entry, =
-just =
-
-modification of the TLV items.
-
-I agree with Mark in regards, that the decision making is strictly =
-
-policy/userspace stuff, but I also think that the drivers should also provi=
-de as =
-
-much, and as accurate information to user space to make this decision (if i=
-t is =
-
-in form of overlapped mapping, than like that).
-
-Having said that, I believe, that the patch for alsa-lib alone would provid=
-e =
-
-correct enough handling of non-overlapping TLV ranges (without breaking the =
-
-handling of overlapped mappings).
-
--- =
-
-P=E9ter
+diff --git a/src/control/tlv.c b/src/control/tlv.c
+index 49f9afe..ba52752 100644
+--- a/src/control/tlv.c
++++ b/src/control/tlv.c
+@@ -442,7 +442,7 @@ int snd_ctl_get_dB_range(snd_ctl_t *ctl, const snd_ctl_elem_id_t *id,
+ 	return snd_tlv_get_dB_range(info.tlv, info.minval, info.maxval,
+ 				    min, max);
+ }
+-	
++
+ /**
+  * \brief Convert the volume value to dB on the given control element
+  * \param ctl the control handler
+-- 
+1.7.1.1
