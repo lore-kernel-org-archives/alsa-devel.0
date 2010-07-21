@@ -1,17 +1,29 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Small memory leak in snd_pcm_ladspa_init()
-Date: Thu, 22 Jul 2010 00:13:58 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1007220013050.9258@eeebox2.perex-int.cz>
-References: <4C4716D5.8080501@tds.net>
+From: Timur Tabi <timur@freescale.com>
+Subject: multi-component: determine which DAI is active?
+Date: Wed, 21 Jul 2010 17:47:01 -0500
+Message-ID: <4C4778E5.6090200@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 554CA24436
+Received: from TX2EHSOBE007.bigfish.com (tx2ehsobe004.messaging.microsoft.com
+	[65.55.88.14]) by alsa0.perex.cz (Postfix) with ESMTP id E99772445D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Jul 2010 00:13:59 +0200 (CEST)
-In-Reply-To: <4C4716D5.8080501@tds.net>
+	Thu, 22 Jul 2010 00:47:06 +0200 (CEST)
+Received: from mail36-tx2 (localhost.localdomain [127.0.0.1])	by
+	mail36-tx2-R.bigfish.com (Postfix) with ESMTP id DEF43D68986	for
+	<alsa-devel@alsa-project.org>; Wed, 21 Jul 2010 22:47:04 +0000 (UTC)
+Received: from TX2EHSMHS041.bigfish.com (unknown [10.9.14.238])	by
+	mail36-tx2.bigfish.com (Postfix) with ESMTP id B634F1B5004E	for
+	<alsa-devel@alsa-project.org>; Wed, 21 Jul 2010 22:47:04 +0000 (UTC)
+Received: from az33smr01.freescale.net (az33smr01.freescale.net
+	[10.64.34.199])	by az33egw02.freescale.net (8.14.3/8.14.3) with ESMTP
+	id o6LMl2qM028025	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Jul 2010 15:47:02 -0700 (MST)
+Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
+	[10.64.32.16])	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP id
+	o6LMvvnT026177	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Jul 2010 17:57:57 -0500 (CDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,34 +33,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Lindgren <john.lindgren@tds.net>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-n Wed, 21 Jul 2010, John Lindgren wrote:
+Liam,
 
-> Hello,
->
-> Valgrind shows up a small memory leak in libasound when using a LADSPA
-> plugin.  Sorry, I don't have a patch this time.
+In order to get fsl_dma.c to work with the WM8776, which has separate DAIs
+for playback and capture, I've had to do this:
 
-Does this patch help?
+if (pcm->streams[0].substream) {
+	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
+		fsl_dma_hardware.buffer_bytes_max,
+		&pcm->streams[0].substream->dma_buffer);
+	if (ret) {
+		dev_err(card->dev, "can't allocate playback dma buffer\n");
+		return ret;
+	}
+}
 
-diff --git a/src/pcm/pcm_ladspa.c b/src/pcm/pcm_ladspa.c
-index 5161820..c413c10 100644
---- a/src/pcm/pcm_ladspa.c
-+++ b/src/pcm/pcm_ladspa.c
-@@ -341,6 +341,8 @@ static void snd_pcm_ladspa_free_instances(snd_pcm_t *pcm, snd_pcm_ladspa_t *lads
-  						free(instance->output.m_data[idx]);
-  					free(instance->output.m_data);
-                                  }
-+                                free(instance->input.data);
-+                                free(instance->output.data);
-  				list_del(&(instance->list));
-  				snd_pcm_ladspa_free_eps(&instance->input);
-  				snd_pcm_ladspa_free_eps(&instance->output);
+if (pcm->streams[1].substream) {
+	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
+		fsl_dma_hardware.buffer_bytes_max,
+		&pcm->streams[1].substream->dma_buffer);
+	if (ret) {
+		snd_dma_free_pages(&pcm->streams[0].substream->dma_buffer);
+		dev_err(card->dev, "can't allocate capture dma buffer\n");
+		return ret;
+	}
+}
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+That is, I need to check if the 'substream' pointer has been initialized.
+
+This looks ugly to me.  In an earlier version of ASoC, I would have done this:
+
+if (dai->playback.channels_min) {
+...
+
+if (dai->capture.channels_min) {
+...
+
+
+But dai->playback and dai->capture no longer exist.  How should I handle this?
