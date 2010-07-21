@@ -1,31 +1,22 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Which project to choose?
-Date: Sat, 24 Jul 2010 11:51:46 +0800
-Message-ID: <AANLkTinXvthWBZ4oQg9D18cfAtkXveWHkB08vsXknGgB@mail.gmail.com>
-References: <1279062131.24837.22.camel@localhost.localdomain>
-	<AANLkTikEf4gf-oeQf4hNGUEvNi0YVrvutnSMCbxGwtJ8@mail.gmail.com>
-	<1279065709.24837.29.camel@localhost.localdomain>
-	<AANLkTimdM5__SzYFxrQqwsbOrxdit2uWOvkazPvZ4PND@mail.gmail.com>
-	<1279071115.29042.0.camel@localhost.localdomain>
-	<AANLkTimNSRELBq7i1Ypi9K2tmFu9NKLvQAOOqPwuU13x@mail.gmail.com>
-	<1279074303.29042.3.camel@localhost.localdomain>
-	<AANLkTimNYxIm9M6Mglrzh3YtJRiq1C8wdZwx-JUhLk9d@mail.gmail.com>
-	<1279145758.29042.11.camel@localhost.localdomain>
-	<AANLkTinN15BWNC2cn78rc5xCSXNo79SDE2_WkBNEg5I2@mail.gmail.com>
-	<1279157921.2668.1.camel@localhost.localdomain>
-	<i1n0mf$87c$1@dough.gmane.org>
+From: ccamacho@linuxmail.org
+Subject: add support for Codec: Conexant ID 5068 (not present
+	in ALSA yet)
+Date: Wed, 21 Jul 2010 15:25:12 -0400
+Message-ID: <8CCF72192D7F60D-C2C-E718@web-mmc-d03.sysops.aol.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 40F181037E3
+Received: from imr-da01.mx.aol.com (imr-da01.mx.aol.com [205.188.105.143])
+	by alsa0.perex.cz (Postfix) with ESMTP id 172DB2414B
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Jul 2010 05:51:47 +0200 (CEST)
-Received: by vws20 with SMTP id 20so1027734vws.38
-	for <alsa-devel@alsa-project.org>; Fri, 23 Jul 2010 20:51:46 -0700 (PDT)
-In-Reply-To: <i1n0mf$87c$1@dough.gmane.org>
+	Wed, 21 Jul 2010 21:25:25 +0200 (CEST)
+Received: from imo-da02.mx.aol.com (imo-da02.mx.aol.com [205.188.169.200])
+	by imr-da01.mx.aol.com (8.14.1/8.14.1) with ESMTP id o6LJPKi7006614
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2010 15:25:20 -0400
+Received: from ccamacho@linuxmail.org
+	by imo-da02.mx.aol.com  (mail_out_v42.9.) id 5.c4e.6e8b5d55 (37131)
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2010 15:25:17 -0400 (EDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,50 +26,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/7/15 Colin Guthrie <gmane@colin.guthr.ie>
 
-> 'Twas brillig, and Chris at 15/07/10 02:38 did gyre and gimble:
-> > On Thu, 2010-07-15 at 08:08 +0800, Raymond Yau wrote:
-> >
-> >>> I posted both of those bug reports. Honestly, I just want it to work
-> >>> without all the error output to syslog and thrashing of my HD for
-> >>> minutes at a time. As I said, I've got the output of pulseaudio -vvvvv
-> >>> if anyone would like to look at it and tell me what I need to do to fix
-> >>> the problem.
-> >>>
-> >>> Chris
-> >>>
-> >>>
-> >>>
-> >> Just upload your current pulseaudio.log and output of alsa-info.sh to
-> >> mandriva 's bugzilla
-> >>
-> >> Cannot obtain any conclusion based on the log which you have posted last
-> >> year ( xmms)
-> >>
-> >> as Jaroslav Kysela said , need the real system time between I/O
-> operations
-> >> and you'll see if it's issue in the ALSA driver or a task scheduling
-> >> problem.
-> >
-> > Here is the bug report with the outputs uploaded.
-> >
-> > https://qa.mandriva.com/show_bug.cgi?id=60169
->
-> Well seeing as my process when getting such a bug is to report it here
-> on behalf of the user, I suspect that this has reached a stalemate....
->
->
->
-Can I remove pulseaudio from mandriva 2000 ?
+ Hi all,
 
-I just want to test libcanberra-alsa alone ( i.e. libcanberra without
-pulseaudio )
+The codec (Conexant ID 5068) required by my sound card (Intel Corporation 5 Series/3400 Series Chipset High Definition Audio (rev 06)) is not present yet in alsa, I would highly appreciate if you guys could add support for it. You guys might find the information collected by the alsa-info.sh script on
 
-when PA server abort, and libcanberra-pulse cannot connect to PA server ,
+http://www.alsa-project.org/db/?f=8f8001d873d5c10c293eac1c94f2ede0b73cd865
 
-Will libcanberra use libcanberra-alsa connect to PA using alsa-pulse plugin
-?
+Thanks a lot in advance for looking into this.
+
+Cheers,
+
+Cristopher
