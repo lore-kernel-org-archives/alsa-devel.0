@@ -1,18 +1,20 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [GIT PULL] ASoC updates for 2.6.36
-Date: Wed, 21 Jul 2010 13:38:44 +0100
-Message-ID: <1279715924.3072.54.camel@odin>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/3] sound/soc/atmel: Remove dead
+ CONFIG_AT32_ENHANCED_PORTMUX
+Date: Wed, 21 Jul 2010 13:50:29 +0100
+Message-ID: <20100721125029.GB15462@rakim.wolfsonmicro.main>
+References: <cover.1279708102.git.qy03fugy@stud.informatik.uni-erlangen.de>
+	<d2382c03db1d5b41a857b67688bf32838993d137.1279708102.git.qy03fugy@stud.informatik.uni-erlangen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id E9CF410392B
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6B3DF10392E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jul 2010 14:38:49 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so2121462ewy.38
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2010 05:38:49 -0700 (PDT)
+	Wed, 21 Jul 2010 14:50:30 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <d2382c03db1d5b41a857b67688bf32838993d137.1279708102.git.qy03fugy@stud.informatik.uni-erlangen.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,27 +24,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Geoffrey Wossum <gwossum@acm.org>, linux-kernel@vger.kernel.org, vamos-dev@i4.informatik.uni-erlangen.de, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 66b47fdb851924956b6e4696fb43a3496ae2c462:
-  Mark Brown (1):
-        ASoC: Implement WM8994 OPCLK support
+On Wed, Jul 21, 2010 at 02:35:41PM +0200, Christian Dietrich wrote:
+> CONFIG_AT32_ENCHANCED_PORTMUX doesn't exist in Kconfig or somewhere
+> else, therefore removing all references for it from the source code.
+> 
+> Signed-off-by: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
 
-are available in the git repository at:
+Please remember to CC maintainers on patches - I've added Geoffrey.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.36
-
-Jorge Eduardo Candelaria (1):
-      ASoC: TWL6040: Correct widget handling for drivers
-
-Peter Ujfalusi (3):
-      ASoC: TWL4030: Fix for digital loopback gain range
-      ASoC: TWL4030: DAC power optimization
-      ASoC: TWL4030: Add configurable delay after digimic enable
-
- sound/soc/codecs/twl4030.c |   47 ++++++++++++++++++++++++++----------
- sound/soc/codecs/twl4030.h |    1 +
- sound/soc/codecs/twl6040.c |   56 ++++++++++++++++++++++----------------------
- 3 files changed, 63 insertions(+), 41 deletions(-)
+> ---
+>  sound/soc/atmel/playpaq_wm8510.c |    9 ---------
+>  1 files changed, 0 insertions(+), 9 deletions(-)
+> 
+> diff --git a/sound/soc/atmel/playpaq_wm8510.c b/sound/soc/atmel/playpaq_wm8510.c
+> index 9df4c68..fbd17e9 100644
+> --- a/sound/soc/atmel/playpaq_wm8510.c
+> +++ b/sound/soc/atmel/playpaq_wm8510.c
+> @@ -425,11 +425,6 @@ static int __init playpaq_asoc_init(void)
+>  	clk_set_rate(CODEC_CLK, 12000000);
+>  	clk_enable(CODEC_CLK);
+>  
+> -#if defined CONFIG_AT32_ENHANCED_PORTMUX
+> -	at32_select_periph(MCLK_PIN, MCLK_PERIPH, 0);
+> -#endif
+> -
+> -
+>  	/*
+>  	 * Create and register platform device
+>  	 */
+> @@ -496,10 +491,6 @@ static void __exit playpaq_asoc_exit(void)
+>  		_pll0 = NULL;
+>  	}
+>  
+> -#if defined CONFIG_AT32_ENHANCED_PORTMUX
+> -	at32_free_pin(MCLK_PIN);
+> -#endif
+> -
+>  	platform_device_unregister(playpaq_snd_device);
+>  	playpaq_snd_device = NULL;
+>  }
+> -- 
+> 1.7.0.4
+> 
