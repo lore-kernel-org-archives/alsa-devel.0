@@ -1,8 +1,7 @@
 From: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
-Subject: [PATCH 2/3] sound/soc/atmel: Remove dead
- CONFIG_AT32_ENHANCED_PORTMUX
-Date: Wed, 21 Jul 2010 14:35:41 +0200
-Message-ID: <d2382c03db1d5b41a857b67688bf32838993d137.1279708102.git.qy03fugy@stud.informatik.uni-erlangen.de>
+Subject: [PATCH 3/3] sound/isa/gus: Remove dead CONFIG_SND_DEBUG_ROM
+Date: Wed, 21 Jul 2010 14:36:02 +0200
+Message-ID: <d96aeb5b8db5602de499b783897b6e8c285ee59b.1279708102.git.qy03fugy@stud.informatik.uni-erlangen.de>
 References: <cover.1279708102.git.qy03fugy@stud.informatik.uni-erlangen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -10,44 +9,42 @@ Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
 In-Reply-To: <cover.1279708102.git.qy03fugy@stud.informatik.uni-erlangen.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, lin
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 Cc: vamos-dev@i4.informatik.uni-erlangen.de
 List-Id: alsa-devel@alsa-project.org
 
-CONFIG_AT32_ENCHANCED_PORTMUX doesn't exist in Kconfig or somewhere
-else, therefore removing all references for it from the source code.
+CONFIG_SND_DEBUG_ROM doesn't exist in Kconfig, therefore it is never
+defined and we can remove all references to it. If it should stay as a
+debug flag, perhaps it shouldn't be named CONFIG_
 
 Signed-off-by: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
 ---
- sound/soc/atmel/playpaq_wm8510.c |    9 ---------
- 1 files changed, 0 insertions(+), 9 deletions(-)
+ sound/isa/gus/interwave.c |    8 --------
+ 1 files changed, 0 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/atmel/playpaq_wm8510.c b/sound/soc/atmel/playpaq_wm8510.c
-index 9df4c68..fbd17e9 100644
---- a/sound/soc/atmel/playpaq_wm8510.c
-+++ b/sound/soc/atmel/playpaq_wm8510.c
-@@ -425,11 +425,6 @@ static int __init playpaq_asoc_init(void)
- 	clk_set_rate(CODEC_CLK, 12000000);
- 	clk_enable(CODEC_CLK);
- 
--#if defined CONFIG_AT32_ENHANCED_PORTMUX
--	at32_select_periph(MCLK_PIN, MCLK_PERIPH, 0);
+diff --git a/sound/isa/gus/interwave.c b/sound/isa/gus/interwave.c
+index c7b80e4..ac60c7d 100644
+--- a/sound/isa/gus/interwave.c
++++ b/sound/isa/gus/interwave.c
+@@ -442,19 +442,11 @@ static void __devinit snd_interwave_detect_memory(struct snd_gus_card * gus)
+ 	for (bank_pos = 0; bank_pos < 16L * 1024L * 1024L; bank_pos += 4L * 1024L * 1024L) {
+ 		for (i = 0; i < 8; ++i)
+ 			iwave[i] = snd_gf1_peek(gus, bank_pos + i);
+-#ifdef CONFIG_SND_DEBUG_ROM
+-		printk(KERN_DEBUG "ROM at 0x%06x = %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x\n", bank_pos,
+-		       iwave[0], iwave[1], iwave[2], iwave[3],
+-		       iwave[4], iwave[5], iwave[6], iwave[7]);
 -#endif
--
--
- 	/*
- 	 * Create and register platform device
- 	 */
-@@ -496,10 +491,6 @@ static void __exit playpaq_asoc_exit(void)
- 		_pll0 = NULL;
- 	}
- 
--#if defined CONFIG_AT32_ENHANCED_PORTMUX
--	at32_free_pin(MCLK_PIN);
+ 		if (strncmp(iwave, "INTRWAVE", 8))
+ 			continue;	/* first check */
+ 		csum = 0;
+ 		for (i = 0; i < sizeof(struct rom_hdr); i++)
+ 			csum += snd_gf1_peek(gus, bank_pos + i);
+-#ifdef CONFIG_SND_DEBUG_ROM
+-		printk(KERN_DEBUG "ROM checksum = 0x%x (computed)\n", csum);
 -#endif
--
- 	platform_device_unregister(playpaq_snd_device);
- 	playpaq_snd_device = NULL;
- }
+ 		if (csum != 0)
+ 			continue;	/* not valid rom */
+ 		gus->gf1.rom_banks++;
 -- 
 1.7.0.4
