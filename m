@@ -1,21 +1,16 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: TWL4030: Add configurable delay
- after digimic enable
-Date: Wed, 21 Jul 2010 11:58:56 +0100
-Message-ID: <1279709936.3072.6.camel@odin>
-References: <1279630149-3337-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20100720125513.GB30148@rakim.wolfsonmicro.main>
+From: Wei Ni <wni@nvidia.com>
+Subject: Support MCP89 hdmi audio
+Date: Wed, 21 Jul 2010 19:45:09 +0800
+Message-ID: <6B4D417B830BC44B8026029FD256F7F1C29D065C70@HKMAIL01.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id B1D932456C
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2EFA52459F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jul 2010 12:58:58 +0200 (CEST)
-Received: by wwb22 with SMTP id 22so625310wwb.20
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2010 03:58:58 -0700 (PDT)
-In-Reply-To: <20100720125513.GB30148@rakim.wolfsonmicro.main>
+	Wed, 21 Jul 2010 13:45:13 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,26 +20,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: 'Takashi Iwai' <tiwai@suse.de>, Wu Fengguang <fengguang.wu@intel.com>
+Cc: 'akpm' <akpm@linux-foundation.org>, 'alsa-devel' <alsa-devel@alsa-project.org>, 'linux-kernel' <linux-kernel@vger.kernel.org>, 'Pavel Hofman' <pavel.hofman@insite.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2010-07-20 at 13:55 +0100, Mark Brown wrote:
-> On Tue, Jul 20, 2010 at 03:49:09PM +0300, Peter Ujfalusi wrote:
-> > When digital microphones are connected to twl, delay is
-> > needed after enabling the digimic interface of the codec.
-> > Add new parameter for the setup data, which can be used
-> > to pass the apropriate delay in ms after the digimic
-> > interface has been enabled.
-> 
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Hi, all
+I'm an Nvidia engineer, I maintain the nvidia linux hdmi audio driver.
 
-Applied.
+An end-user report a problem with his TV attached to an MCP89.
+ALSA won't send audio to it, because
+PD=0:
+HDMI hot plug event: Pin=5 Presence_Detect=1 ELD_Valid=0
+HDMI hot plug event: Pin=5 Presence_Detect=0 ELD_Valid=1
+
+As you know, in linux driver patch_hdmi.c, it use (pind && eldv)
+in unsolicited events. So the driver can't detect the monitor.
+
+>From the HAD specification
+(http://download.intel.com/standards/hdaudio/pdf/HDA036.pdf):
+
+Original text for Unsolicited Response PD bit:
+
+Presence Detect: When this bit is set, sense measurement has
+changed on the pin widget and software can use the pin sense
+control verb to determine the current pin sense data state.
+For analog pin widgets, this UR means that Presence Detect or
+Impedance has changed on the pin widget.
+For digital pin widgets, including HDMI pin widgets, this means
+that presence detect (and optionally ELD valid bit) has
+**changed**. [my emphasis]
+
+Updated text for Unsolicted Response PD bit:
+
+Presence Detect: This bit reflects the **present** [my
+emphasis] state of the Pin Sense Presence Detect bit when the
+unsolicited response is triggered. Software can optionally use
+the pin sense control verb to determine the latest pin sense
+data state. This bit implementation is only required for
+digital display pin widget. Non digital display pin widget is
+optional to implement this bit.
+
+For our MCP89, the values indicates the change of status of PD, not the actual value of PD,
+which follows older description of UR for PD bit.
+
+So could we add a workaround for MCP89? We could use Pin Sense to determine again in
+unsolicited events. If it return 0xc0000000, it means PD=1 and ELVD=1.
+Or do you have any suggestions?
 
 Thanks
+Wei.
 
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+
+-----------------------------------------------------------------------------------
+This email message is for the sole use of the intended recipient(s) and may contain
+confidential information.  Any unauthorized review, use, disclosure or distribution
+is prohibited.  If you are not the intended recipient, please contact the sender by
+reply email and destroy all copies of the original message.
+-----------------------------------------------------------------------------------
