@@ -1,59 +1,45 @@
-From: Stefan Schoenleitner <dev.c0debabe@gmail.com>
-Subject: Re: underruns and POLLERR when copying audio frames
-Date: Wed, 21 Jul 2010 12:20:10 +0200
-Message-ID: <4C46C9DA.6010401@gmail.com>
-References: <4C4581D9.8020309@gmail.com> <4C45A77B.4070802@ladisch.de>
-	<4C462827.10105@gmail.com> <4C469CAC.3030202@ladisch.de>
+From: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
+Subject: Missing config option for SFFSDR_FPGA
+Date: Wed, 21 Jul 2010 12:58:33 +0200
+Message-ID: <86tynthzja.fsf@peer.zerties.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from keymachine.tbmn.org (mail.tbmn.org [87.118.84.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3F2942454A
-	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jul 2010 12:20:16 +0200 (CEST)
-In-Reply-To: <4C469CAC.3030202@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, lin
+Cc: vamos-dev@i4.informatik.uni-erlangen.de
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Stefan Schoenleitner wrote:
->> Clemens Ladisch wrote:
->>> How do you synchronize the clocks of both devices?
->> I don't.  [...]
->> I guess if clock drift gets too high, I will get xruns as well ?
-> 
-> Yes.
+Hi all!
+      =20
+        As part of the VAMOS[0] research project at the University of
+Erlangen we are looking at multiple integrity errors in linux'
+configuration system.
 
-Hmm, ok.
-For now I will just add buffering and hope that the buffer is big enough
- so that there will be no xruns for reasonable long amounts of time.
-In case I get troubles anyway, is there some kind of way to synchronize
-clocks between the ALSA stack running on one system with the stack on
-another system ?
+        I've been running a check on the sound/ sourcetree for
+config Items not defined in Kconfig and found such a case. Sourcecode
+blocks depending on these Items are not reachable from a vanilla
+kernel -- dead code. I've seen such dead blocks made on purpose
+e.g. while integrating new features into the kernel but generally
+they're just useless.
 
+There are two ifdef blocks, which do a check on CONFIG_SFFSDR_FPGA, but
+this flag isn't defined anywhere. There is an select in
+sound/soc/davinci[1], but Kconfig doesn't define the symbol, if there
+isn't a config option for it. So this blocks can never be selected. I
+don't think this is intended, so i didn't wrote a patch. Please just
+notice it.
 
->> But as mmapping just seems to work for files, I no longer think it is
->> possible.
-> 
-> Some optimization is possible even when only one device supports mmap:
-> When you want to copy from the hardware device to the plugin, you could
-> call the plugin's snd_pcm_writei with an address in the sound card's
-> buffer as the source.
+Regards
+        Christian Dietrich
 
-right.
-
-Thanks four your input,
-
-cheers,
-stefan
+[0] http://vamos1.informatik.uni-erlangen.de/
+[1] sound/soc/davinci/Kconfig:      select SFFSDR_FPGA                =20
+    sound/soc/davinci/davinci-sffsdr.c:#ifdef CONFIG_SFFSDR_FPGA
+    sound/soc/davinci/davinci-sffsdr.c:#ifndef CONFIG_SFFSDR_FPGA
+    sound/soc/davinci/davinci-sffsdr.c:#ifndef CONFIG_SFFSDR_FPGA
+--=20
+(=CE=BB x . x x) (=CE=BB x . x x) -- See how beatiful the lambda is
+No documentation is better than bad documentation
+-- Das Ausdrucken dieser Mail wird urheberrechtlich verfolgt.
