@@ -1,24 +1,18 @@
-From: John Simpson <john@swajime.com>
-Subject: Re: Playback open error: Inappropriate ioctl for device
-Date: Wed, 21 Jul 2010 00:17:55 -0500
-Message-ID: <AANLkTikK=dHBPxEv6HgUWHYowungfFDdCf_bVBgVeUas@mail.gmail.com>
-References: <AANLkTiksTz_s2bOJCZbQrJFA4XHifG5vA2mT_IGs5rVt@mail.gmail.com>
-	<4C443208.8070202@ladisch.de>
-	<AANLkTinIsu2uHPw1B2MdCngmuSPYvnBiERO2WYITITTt@mail.gmail.com>
-	<AANLkTikm_66mrXzWzSuBet3ouEfV0Ubh-Pw11k4IGOTR@mail.gmail.com>
-Reply-To: john@swajime.com
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Merging alsa-firmware into linux-firmware
+Date: Wed, 21 Jul 2010 08:53:13 +0200
+Message-ID: <4C469959.7020600@ladisch.de>
+References: <4C457C89.5040209@canonical.com> <4C45A538.2060704@ladisch.de>
+	<4C45C521.4020208@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id E7058243E5
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 0428424465
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jul 2010 07:17:56 +0200 (CEST)
-Received: by iwn39 with SMTP id 39so6714820iwn.38
-	for <alsa-devel@alsa-project.org>; Tue, 20 Jul 2010 22:17:55 -0700 (PDT)
-In-Reply-To: <AANLkTikm_66mrXzWzSuBet3ouEfV0Ubh-Pw11k4IGOTR@mail.gmail.com>
+	Wed, 21 Jul 2010 08:53:18 +0200 (CEST)
+In-Reply-To: <4C45C521.4020208@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,91 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Chase Douglas <chase.douglas@canonical.com>, alsa-devel@alsa-project.org, David Woodhouse <david.woodhouse@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gNy8xOS8xMCwgSm9obiBTaW1wc29uIDxqb2huQHN3YWppbWUuY29tPiB3cm90ZToKPiBPbiA3
-LzE5LzEwLCBKb2huIFNpbXBzb24gPGpvaG5Ac3dhamltZS5jb20+IHdyb3RlOgo+PiBPbiA3LzE5
-LzEwLCBDbGVtZW5zIExhZGlzY2ggPGNsZW1lbnNAbGFkaXNjaC5kZT4gd3JvdGU6Cj4+PiBKb2hu
-IFNpbXBzb24gd3JvdGU6Cj4+Pj4gWzF8dXNlckBOb2tpYS1OODEwLTQzLTd8fi9hbHNhLWxpYi0x
-LjAuMjMvdGVzdF1jYyAtbGFzb3VuZCBjb250cm9sLmMgLW8KPj4+PiBjb250cm9sCj4+Pgo+Pj4g
-VGhlc2UgdGVzdCBwcm9ncmFtcyBjYW4gYmUgY29tcGlsZWQgd2l0aCAibWFrZSBjaGVjayIuCj4+
-Cj4+IFRoYW5rcyEgIEkgbmVlZGVkIHRoYXQgOi1ECj4+IFdvcmtzIGdvb2Qgb24gbXkgdWJ1bnR1
-IHN5c3RlbS4KPj4KPj4+Cj4+Pj4gWzF8dXNlckBOb2tpYS1OODEwLTQzLTd8fi9hbHNhLWxpYi0x
-LjAuMjMvdGVzdF0uL2NvbnRyb2wKPj4+PiAgIFBDTSBuZXh0IGRldmljZSBlcnJvcjogSW5hcHBy
-b3ByaWF0ZSBpb2N0bCBmb3IgZGV2aWNlCj4+Pgo+Pj4gT24gZW1iZWRkZWQgZGV2aWNlcywgdGhp
-cyB1c3VhbGx5IGhhcHBlbnMgd2hlbiB0aGUgbGlicmFyeSBpcyBub3QKPj4+IGNvbXBpbGVkIHdp
-dGggdGhlIHNhbWUgbWFjaGluZSBhcmNoaXRlY3R1cmUgb3B0aW9ucyBhcyB0aGUga2VybmVsLAo+
-Pj4gd2hpY2ggbWFrZXMgc29tZSBzdHJ1Y3R1cmVzIGhhdmUgYSBkaWZmZXJlbnQgc2l6ZSBkdWUg
-dG8gZGlmZmVyZW50Cj4+PiBzaXplcyBmb3IgJ2xvbmcnIG9yIGRpZmZlcmVudCBhbGlnbm1lbnQu
-Cj4+Cj4+IFNvbWV3aGVyZSBpbiB0aGUgbWVzcywgSSBicmlja2VkIG15IG44MTAuCj4+IEknbSB0
-cnlpbmcgdGhpcyB0aW1lIHdpdGgKPj4gaHR0cHM6Ly9nYXJhZ2UubWFlbW8ub3JnL3BsdWdpbnMv
-c2Ntc3ZuL3ZpZXdjdnMucGhwL3RydW5rL2Fsc2EtbGliL3Rlc3QvP3Jvb3Q9ZHNwLWFsc2EKPj4g
-YnV0IEknbSBzdGlsbCBoYXZpbmcgbm8gc3VjY2VzcyAoIHNlZSBpbnF1aXJ5IGF0Cj4+IGh0dHBz
-Oi8vZ2FyYWdlLm1hZW1vLm9yZy9waXBlcm1haWwvZHNwLWFsc2EtdXNlci8yMDEwLUp1bHkvMDAw
-MDAyLmh0bWwKPj4gKQo+Pgo+Cj4KPiBTdGlsbCBubyBsdWNrLgo+IEkgd2VudCB0aHJvdWdoIHRo
-ZSBjb21wbGV0ZSBwcm9jZXNzIGFnYWluIHdpdGggMS4wLjI1LiAgSXQgYnJpY2tzIG15IG44MTAu
-Cj4gOi0oCj4gSSBsb2dnZWQgdGhlIGluc3RhbGwgcHJvY2VzcyBhdCBodHRwOi8vd3d3LnN3YWpp
-bWUuY29tL244MTAvYWxzYS1saWIubG9nCj4KPiBJIGRvbid0IHNlZSBhbnl0aGluZyB0aGF0IEkn
-dmUgZG9uZSB3cm9uZyA/Cj4KCkkgdGhpbmsgSSdtIGdldHRpbmcgY2xvc2VyLgpJIGJlbGlldmUg
-SSd2ZSBmb3VuZCB0aGUgcmlnaHQgdmVyc2lvbiBvZiB0aGUgYWxzYS1saWIgZm9yIHRoZSBuODEw
-ICgKZmluYWxseSA6LXwgKS4KSG93ZXZlciBJIGFtIHN0aWxsIGdldHRpbmcgdGhlIGlvY3RsIGVy
-cm9yIGluc3RlYWQgb2Ygc291bmQuICA6LSgKClRoZSBzaG9ydCB2ZXJzaW9uOgpbMXx1c2VyQE5v
-a2lhLU44MTAtNDMtN3x+L3NyY11hcHQtZ2V0IHNvdXJjZSBsaWJhc291bmQyClsxfHVzZXJATm9r
-aWEtTjgxMC00My03fH4vc3JjL2Fsc2EtbGliLTEuMC4xNHNhXS4vY29uZmlndXJlClsxfHVzZXJA
-Tm9raWEtTjgxMC00My03fH4vc3JjL2Fsc2EtbGliLTEuMC4xNHNhXW1ha2UKWzF8dXNlckBOb2tp
-YS1OODEwLTQzLTd8fi9zcmMvYWxzYS1saWItMS4wLjE0c2Fdc3VkbyBtYWtlIGluc3RhbGwKWzF8
-dXNlckBOb2tpYS1OODEwLTQzLTd8fi9zcmMvYWxzYS1saWItMS4wLjE0c2FdbWFrZSBjaGVjawpb
-MXx1c2VyQE5va2lhLU44MTAtNDMtN3x+L3NyYy9hbHNhLWxpYi0xLjAuMTRzYV1scwphY2luY2x1
-ZGUubTQgIENoYW5nZUxvZyAgICAgIGNvbmZpZy5zdWIgICAgZGViaWFuICAgICBpbmNsdWRlCmx0
-Y29uZmlnICAgICBNYWtlZmlsZS5pbiAgTk9URVMgIHV0aWxzCmFjbG9jYWwubTQgICAgY29uZmln
-Lmd1ZXNzICAgY29uZmlndXJlICAgICBkZXBjb21wICAgIElOU1RBTEwKbHRtYWluLnNoICAgIE1F
-TU9SWS1MRUFLICBzcmMgICAgdmVyc2lvbgphbHNhbGlzcCAgICAgIGNvbmZpZy5sb2cgICAgIGNv
-bmZpZ3VyZS5pbiAgZG9jICAgICAgICBpbnN0YWxsLXNoCk1ha2VmaWxlICAgICBtaXNzaW5nICAg
-ICAgdGVzdAphc2VydmVyICAgICAgIGNvbmZpZy5zdGF0dXMgIENPUFlJTkcgICAgICAgaGdjb21w
-aWxlICBsaWJ0b29sCk1ha2VmaWxlLmFtICBtb2R1bGVzICAgICAgVE9ETwoKWzF8dXNlckBOb2tp
-YS1OODEwLTQzLTd8fi9zcmMvYWxzYS1saWItMS4wLjE0c2FdY2QgdGVzdAoKWzF8dXNlckBOb2tp
-YS1OODEwLTQzLTd8fi9zcmMvYWxzYS1saWItMS4wLjE0c2EvdGVzdF1scwpjb250cm9sICAgIE1h
-a2VmaWxlICAgICBtaWRpbG9vcCAgICBvbGRhcGkgICAgcGNtX21pbi5jICAgIHF1ZXVlX3RpbWVy
-CiAgIHNlcSAgICAgICAgICAgIHRpbWVyLmMKY29udHJvbC5jICBNYWtlZmlsZS5hbSAgbWlkaWxv
-b3AuYyAgb2xkYXBpLmMgIHBjbV9taW4ubwpxdWV1ZV90aW1lci5jICBzZXEuYyAgICAgICAgICB0
-aW1lci5vCmNvbnRyb2wubyAgTWFrZWZpbGUuaW4gIG1pZGlsb29wLm8gIG9sZGFwaS5vICBwY20u
-bwpxdWV1ZV90aW1lci5vICBzZXEtZGVjb2Rlci5jCmxhdGVuY3kgICAgbWlkaWZpbGUuMyAgIG5h
-bWVoaW50ICAgIHBjbSAgICAgICBwbGF5bWlkaTEgICAgcmF3bWlkaSAgICAgICAgc2VxLm8KbGF0
-ZW5jeS5jICBtaWRpZmlsZS5jICAgbmFtZWhpbnQuYyAgcGNtLmMgICAgIHBsYXltaWRpMS5jICBy
-YXdtaWRpLmMKICAgc2VxLXNlbmRlci5jCmxhdGVuY3kubyAgbWlkaWZpbGUuaCAgIG5hbWVoaW50
-Lm8gIHBjbV9taW4gICBwbGF5bWlkaTEubyAgcmF3bWlkaS5vICAgICAgdGltZXIKClsxfHVzZXJA
-Tm9raWEtTjgxMC00My03fH4vc3JjL2Fsc2EtbGliLTEuMC4xNHNhL3Rlc3RdLi9jb250cm9sClNv
-dW5kY2FyZCAjMToKICBjYXJkIC0gMAogIGlkIC0gJ0VBQycKICBkcml2ZXIgLSAnRUFDJwogIG5h
-bWUgLSAnT01BUDI0eHggRUFDJwogIGxvbmduYW1lIC0gJ09NQVAyNHh4IEVBQyB3aXRoIGNvZGVj
-IFRMVjMyMEFJQzMzJwogIG1peGVybmFtZSAtICdUTFYzMjBBSUMzMycKICBjb21wb25lbnRzIC0g
-JycKICBQQ00gbmV4dCBkZXZpY2UgZXJyb3I6IEluYXBwcm9wcmlhdGUgaW9jdGwgZm9yIGRldmlj
-ZQogIFJBV01JREkgbmV4dCBkZXZpY2UgZXJyb3I6IEluYXBwcm9wcmlhdGUgaW9jdGwgZm9yIGRl
-dmljZQoKWzF8dXNlckBOb2tpYS1OODEwLTQzLTd8fi9zcmMvYWxzYS1saWItMS4wLjE0c2EvdGVz
-dF0uL3BjbV9taW4KUGxheWJhY2sgb3BlbiBlcnJvcjogSW5hcHByb3ByaWF0ZSBpb2N0bCBmb3Ig
-ZGV2aWNlCgpbMXx1c2VyQE5va2lhLU44MTAtNDMtN3x+L3NyYy9hbHNhLWxpYi0xLjAuMTRzYS90
-ZXN0XWNhdAouLi8uLi9hbHNhLWxpYl8xLjAuMTRzYS0ybWFlbW8yLmRzYwpGb3JtYXQ6IDEuMApT
-b3VyY2U6IGFsc2EtbGliClZlcnNpb246IDEuMC4xNHNhLTJtYWVtbzIKQmluYXJ5OiBsaWIzMmFz
-b3VuZDItZGV2LCBsaWI2NGFzb3VuZDIsIGxpYjMyYXNvdW5kMiwgbGliYXNvdW5kMi1kZXYsCmxp
-YmFzb3VuZDIsIGxpYmFzb3VuZDItZG9jLCBsaWJhc291bmQyLWRiZywgbGliNjRhc291bmQyLWRl
-dgpNYWludGFpbmVyOiBEZWJpYW4gQUxTQSBNYWludGFpbmVycyA8cGtnLWFsc2EtZGV2ZWxAbGlz
-dHMuYWxpb3RoLmRlYmlhbi5vcmc+CkFyY2hpdGVjdHVyZTogYW55ClN0YW5kYXJkcy1WZXJzaW9u
-OiAzLjcuMgpCdWlsZC1EZXBlbmRzOiBkZWJoZWxwZXIgKD49IDQuMi4zMiksIHF1aWx0ICg+PSAw
-LjQwKSwgYXV0b3Rvb2xzLWRldiwKZG94eWdlbiwgbGliYzYtZGV2LXBvd2VycGMgW3BwYzY0XSwg
-bGliYzYtZGV2LWkzODYgW2FtZDY0XSwKbGliYzYtZGV2LXBwYzY0IFtwb3dlcnBjXSwgbGliYzYt
-ZGV2LXMzOTB4IFtzMzkwXSwgbGliYzYtZGV2LXNwYXJjNjQKW3NwYXJjXSwgbGliMzJnY2MxIFth
-bWQ2NCBwcGM2NF0sIGxpYmM2LWRldiAoPj0gMi41KSBbYXJtZWxdClZjcy1Ccm93c2VyOiBodHRw
-Oi8vc3ZuLmRlYmlhbi5vcmcvd3N2bi9wa2ctYWxzYS90cnVuay9hbHNhLWxpYi8KVXBsb2FkZXJz
-OiBKb3JkaSBNYWxsYWNoIDxqb3JkaUBkZWJpYW4ub3JnPiwgTWlrYWVsIE1hZ251c3Nvbgo8bWlr
-bWFAdXNlcnMuc291cmNlZm9yZ2UubmV0PiwgRWxpbWFyIFJpZXNlYmlldGVyIDxyaWVzZWJpZUBs
-eHRlYy5kZT4sCk1hcmMtQW5kcmUgTHVyZWF1IDxtYXJjLWFuZHJlLmx1cmVhdUBub2tpYS5jb20+
-ClZjcy1Tdm46IHN2bjovL3N2bi5kZWJpYW4ub3JnL3BrZy1hbHNhL3RydW5rL2Fsc2EtbGliCkZp
-bGVzOgogNTU0MmExOGExNDc5ZTRkZTRiOTg5MGUzMGU5NDU4OGUgMTA5OTE2NSBhbHNhLWxpYl8x
-LjAuMTRzYS5vcmlnLnRhci5negogZmMwMmFhM2RiZjJmNjZmYjA5MGUwMmFkYTcwM2NjMWQgNDc0
-NTUgYWxzYS1saWJfMS4wLjE0c2EtMm1hZW1vMi5kaWZmLmd6CgoKSSBsb2dnZWQgdGhlIGNvbXBs
-ZXRlIGluc3RhbGwgcHJvY2VzcyBhdApodHRwOi8vd3d3LnN3YWppbWUuY29tL244MTAvYWxzYS1s
-aWJfMS4wLjE0c2EtMm1hZW1vMi5sb2cKCkFnYWluIC4uLiBhbnkgaGVscCB3aWxsIGJlIGFwcHJl
-Y2lhdGVkLgoKLS0gCkpvaG4gV2VzbGV5IFNpbXBzb24KU3dhSmltZSdzIENvdmXihKAKd3d3LnN3
-YWppbWUuY29tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
-Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+David Henningsson wrote:
+> On 2010-07-20 15:31, Clemens Ladisch wrote:
+> > I wonder what you're going to do about the multisound firmware files;
+> > the /lib/firmware/turtlebeach/*.bin files are just symbolic links to
+> > the actual files in /etc/sound that owners of these cards (if any such
+> > still exist) are supposed to have.  
+> 
+> Ah, thanks for bringing this up to my attention. From where do these
+> .bin-files come originally?
+
+I don't know more than what Documentation/sound/oss/MultiSound says.
+The download links in there are, of course, broken; with Google, I've
+found msndvkit.zip but not pnddk100.zip.
+
+> Can we include them?
+
+| This developer's kit does not provide you with a license to distribute
+| any of the contained software, including, but not limited to
+| DSPCODE.OBJ, MCONTROL.C. Developers wishing to use these in specific
+| applications can do so by requesting and returning the "MultiSound DSP
+| OEM Licensing Agreement".
+| 
+| Turtle Beach's policy on redistribution is simple. For a license fee
+| of $1, we allow developers to distribute the above code modules along
+| with their products, provided that MultiSound hardware is included in
+| the target product. Since DSP_CODE.OBJ only works with MultiSound
+| hardware, this is the only logical use of the code.
+
+Try asking Turtle Beach.
+
+> > (Er, wasn't there a regression introduced in the emi62 firmware in
+> > 2.6.27?)
+
+http://xiphmont.livejournal.com/46858.html
+
+
+Regards,
+Clemens
