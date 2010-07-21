@@ -1,18 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: Merging alsa-firmware into linux-firmware
-Date: Wed, 21 Jul 2010 10:31:28 +0100
-Message-ID: <1279704688.6002.4.camel@localhost>
-References: <4C457C89.5040209@canonical.com>
-	<1279623084.29277.1.camel@localhost> <4C46BE09.5050309@canonical.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH v2] ASoC: da7210: Add HeadPhone Playback
+ Volume control
+Date: Wed, 21 Jul 2010 10:57:16 +0100
+Message-ID: <1279706236.3072.3.camel@odin>
+References: <w3plj954dw0.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from casper.infradead.org (casper.infradead.org [85.118.1.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id A341B24395
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id AD5002452A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jul 2010 11:31:32 +0200 (CEST)
-In-Reply-To: <4C46BE09.5050309@canonical.com>
+	Wed, 21 Jul 2010 11:57:18 +0200 (CEST)
+Received: by wwb22 with SMTP id 22so554001wwb.20
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2010 02:57:18 -0700 (PDT)
+In-Reply-To: <w3plj954dw0.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,40 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: "chase.douglas@canonical.com" <chase.douglas@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-07-21 at 11:29 +0200, David Henningsson wrote:
-> On 2010-07-20 12:51, David Woodhouse wrote:
-> > On Tue, 2010-07-20 at 11:38 +0100, David Henningsson wrote:
-> >> Hi,
-> >>
-> >> Chase Douglas (@canonical) and I plan to take what's left of
-> >> alsa-firmware and try to merge it into linux-firmware, this might happen
-> >> now or in the coming weeks. This will make alsa-firmware obsolete as all
-> >> firmware will be provided by linux-firmware instead.
-> >>
-> >> Any words of disagreement, warnings or encouragement before we do so?
-> > 
-> > Encouragement, certainly...
+On Wed, 2010-07-21 at 14:12 +0900, Kuninori Morimoto wrote:
+> HeadPhone Playback Volume control register of DA7210 has
+> reserved area. This patch considered it as mute.
 > 
-> Great!
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+> v1 -> v2
 > 
-> There are a few firmwares (e g echoaudio and hdsploader) that actually
-> are .c files with a big constant array in it, like this:
+> o remove default HeadPhone Playback Volume
 > 
-> static u_int32_t digiface_firmware[24413] = {
-> 0xffffffff, 0x66aa9955, 0x8001000c, 0xe0000000, 0x8006800c, 0xb0000000,
-> 0x8004800c, 0xb4fc0100, 0x8003000c, 0x00000000, 0x8001000c, 0x90000000,
-> ...etc...
+>  sound/soc/codecs/da7210.c |   31 +++++++++++++++++++++++++++----
+>  1 files changed, 27 insertions(+), 4 deletions(-)
 > 
-> Would you prefer the actual .c files in the linux-firmware git tree
-> source (and the makefile that goes with it), or just the output from
-> them (the binary firmware files)?
-
-If it's just a big constant array, you might as well just give me the
-binary. If there's *real* source, we'd want that too.
-
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
-dwmw2
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
