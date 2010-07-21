@@ -1,18 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Merging alsa-firmware into linux-firmware
-Date: Wed, 21 Jul 2010 08:53:13 +0200
-Message-ID: <4C469959.7020600@ladisch.de>
-References: <4C457C89.5040209@canonical.com> <4C45A538.2060704@ladisch.de>
-	<4C45C521.4020208@canonical.com>
+Subject: Re: Compiler errors in alsa-lib-1.0.22/test/*.c
+Date: Wed, 21 Jul 2010 08:58:08 +0200
+Message-ID: <4C469A80.4050806@ladisch.de>
+References: <AANLkTin75qlRIEXwE8_12m3GcGXagKY0lQhQ4hN9h_co@mail.gmail.com>	<4C3C0540.6020506@ladisch.de>	<AANLkTinsZlWl0VtR8F1mHHYUNUd6jHvTjGhd_J2sdsoM@mail.gmail.com>	<AANLkTinuYzw-4iuEyemaL4Jlh0NC0byhPBNJ5nu5tscX@mail.gmail.com>	<AANLkTilDAsnNVSs17ochWuMfBlU_PIbL4OzH67CtPcLD@mail.gmail.com>	<alpine.LNX.2.00.1007191052020.9258@eeebox2.perex-int.cz>	<AANLkTinomEJIjm4DOkZPUcL0d_I6PwzHIGNiT5sUd1FZ@mail.gmail.com>
+	<AANLkTimjK6fzRKxtj0fnQ3xPDOyXHAWikq6MZxqy-sj2@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 0428424465
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 2F88124468
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jul 2010 08:53:18 +0200 (CEST)
-In-Reply-To: <4C45C521.4020208@canonical.com>
+	Wed, 21 Jul 2010 08:58:13 +0200 (CEST)
+In-Reply-To: <AANLkTimjK6fzRKxtj0fnQ3xPDOyXHAWikq6MZxqy-sj2@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,44 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Chase Douglas <chase.douglas@canonical.com>, alsa-devel@alsa-project.org, David Woodhouse <david.woodhouse@intel.com>
+To: john@swajime.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-David Henningsson wrote:
-> On 2010-07-20 15:31, Clemens Ladisch wrote:
-> > I wonder what you're going to do about the multisound firmware files;
-> > the /lib/firmware/turtlebeach/*.bin files are just symbolic links to
-> > the actual files in /etc/sound that owners of these cards (if any such
-> > still exist) are supposed to have.  
+John Simpson wrote:
+> Playback open error: Inappropriate ioctl for device
+
+Make sure that both your kernel and your alsa-lib use the correct
+compiler and compiler flags (where "correct" usually means "whatever
+the vendor's distribution uses").
+
+> This time, checking out https://vcs.maemo.org/svn/dsp-alsa
+
+It would be nice to know what the changes from the original alsa-lib
+are; in theory, they should go upstream.
+
+> $ cd dsp-alsa/trunk/alsa-lib
+> #### cvscompile does not succeed
+
+Why?
+
+> $ .libs/pcm -D 'default' -vf 440
+> Playback device is default
+> Stream parameters are 44100Hz, S16_LE, 1 channels
+> Sine wave rate is 440.0000Hz
+> Using transfer method: write
 > 
-> Ah, thanks for bringing this up to my attention. From where do these
-> .bin-files come originally?
+> Still no sound :-(
 
-I don't know more than what Documentation/sound/oss/MultiSound says.
-The download links in there are, of course, broken; with Google, I've
-found msndvkit.zip but not pnddk100.zip.
-
-> Can we include them?
-
-| This developer's kit does not provide you with a license to distribute
-| any of the contained software, including, but not limited to
-| DSPCODE.OBJ, MCONTROL.C. Developers wishing to use these in specific
-| applications can do so by requesting and returning the "MultiSound DSP
-| OEM Licensing Agreement".
-| 
-| Turtle Beach's policy on redistribution is simple. For a license fee
-| of $1, we allow developers to distribute the above code modules along
-| with their products, provided that MultiSound hardware is included in
-| the target product. Since DSP_CODE.OBJ only works with MultiSound
-| hardware, this is the only logical use of the code.
-
-Try asking Turtle Beach.
-
-> > (Er, wasn't there a regression introduced in the emi62 firmware in
-> > 2.6.27?)
-
-http://xiphmont.livejournal.com/46858.html
+Mixer controls not set?  (amixer and alsamixer are in alsa-utils)
 
 
 Regards,
