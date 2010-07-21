@@ -1,29 +1,16 @@
-From: John Simpson <john@swajime.com>
-Subject: Re: Compiler errors in alsa-lib-1.0.22/test/*.c
-Date: Wed, 21 Jul 2010 11:17:19 -0500
-Message-ID: <AANLkTik7GHD5tx5wCPjLPsSU04VBmFp=HK1eSFE4hPL5@mail.gmail.com>
-References: <AANLkTin75qlRIEXwE8_12m3GcGXagKY0lQhQ4hN9h_co@mail.gmail.com>
-	<4C3C0540.6020506@ladisch.de>
-	<AANLkTinsZlWl0VtR8F1mHHYUNUd6jHvTjGhd_J2sdsoM@mail.gmail.com>
-	<AANLkTinuYzw-4iuEyemaL4Jlh0NC0byhPBNJ5nu5tscX@mail.gmail.com>
-	<AANLkTilDAsnNVSs17ochWuMfBlU_PIbL4OzH67CtPcLD@mail.gmail.com>
-	<alpine.LNX.2.00.1007191052020.9258@eeebox2.perex-int.cz>
-	<AANLkTinomEJIjm4DOkZPUcL0d_I6PwzHIGNiT5sUd1FZ@mail.gmail.com>
-	<AANLkTimjK6fzRKxtj0fnQ3xPDOyXHAWikq6MZxqy-sj2@mail.gmail.com>
-	<4C469A80.4050806@ladisch.de>
-Reply-To: john@swajime.com
+From: Timur Tabi <timur@freescale.com>
+Subject: [PATCH] powerpc: rename immap_86xx.h to fsl_guts.h,
+	and add 85xx support
+Date: Wed, 21 Jul 2010 17:05:02 -0500
+Message-ID: <1279749902-13459-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 70BB62441A
+Received: from VA3EHSOBE003.bigfish.com (va3ehsobe003.messaging.microsoft.com
+	[216.32.180.13]) by alsa0.perex.cz (Postfix) with ESMTP id 34F122442D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jul 2010 18:17:20 +0200 (CEST)
-Received: by iwn39 with SMTP id 39so7160947iwn.38
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2010 09:17:19 -0700 (PDT)
-In-Reply-To: <4C469A80.4050806@ladisch.de>
+	Thu, 22 Jul 2010 00:05:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,185 +20,259 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, linuxppc-dev@ozlabs.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, kumar.gala@freescale.com
 List-Id: alsa-devel@alsa-project.org
 
-On 7/21/10, Clemens Ladisch <clemens@ladisch.de> wrote:
-> John Simpson wrote:
->> Playback open error: Inappropriate ioctl for device
->
-> Make sure that both your kernel and your alsa-lib use the correct
-> compiler and compiler flags (where "correct" usually means "whatever
-> the vendor's distribution uses").
+The immap_86xx.h header file only defines one data structure: the "global
+utilities" register set found on Freescale PowerPC SOCs.  Rename this file
+to fsl_guts.h to reflect its true purpose, and extend it to cover the "GUTS"
+register set on 85xx chips.
 
-You've gone way over my head ...
-How do I find out what flags were used to compile the kernel?
+Signed-off-by: Timur Tabi <timur@freescale.com>
+---
 
->
->> This time, checking out https://vcs.maemo.org/svn/dsp-alsa
->
-> It would be nice to know what the changes from the original alsa-lib
-> are; in theory, they should go upstream.
+Liam,
 
-I agree ... but it looks like that is an abandoned project; at
-https://garage.maemo.org/plugins/scmsvn/viewcvs.php/?root=dsp-alsa it
-says the last modification was 3 years ago.  The text file "version"
-says 1.0.10
+This patch is a powerpc-patch, but it's much simpler if you apply it to
+multi-component, since only the SSI audio drivers are affected.
 
-I found that "apt-get source libasound2" gives me a newer version:
-[1|user at Nokia-N810-43-7|~/src/alsa-lib-1.0.14sa/test]cat
-../../alsa-lib_1.0.14sa-2maemo2.dsc
-Format: 1.0
-Source: alsa-lib
-Version: 1.0.14sa-2maemo2
-Binary: lib32asound2-dev, lib64asound2, lib32asound2, libasound2-dev,
-libasound2, libasound2-doc, libasound2-dbg, lib64asound2-dev
-Maintainer: Debian ALSA Maintainers <pkg-alsa-devel at lists.alioth.debian.org>
-Architecture: any
-Standards-Version: 3.7.2
-Build-Depends: debhelper (>= 4.2.32), quilt (>= 0.40), autotools-dev,
-doxygen, libc6-dev-powerpc [ppc64], libc6-dev-i386 [amd64],
-libc6-dev-ppc64 [powerpc], libc6-dev-s390x [s390], libc6-dev-sparc64
-[sparc], lib32gcc1 [amd64 ppc64], libc6-dev (>= 2.5) [armel]
-Vcs-Browser: http://svn.debian.org/wsvn/pkg-alsa/trunk/alsa-lib/
-Uploaders: Jordi Mallach <jordi at debian.org>, Mikael Magnusson
-<mikma at users.sourceforge.net>, Elimar Riesebieter <riesebie at lxtec.de>,
-Marc-Andre Lureau <marc-andre.lureau at nokia.com>
-Vcs-Svn: svn://svn.debian.org/pkg-alsa/trunk/alsa-lib
-Files:
- 5542a18a1479e4de4b9890e30e94588e 1099165 alsa-lib_1.0.14sa.orig.tar.gz
- fc02aa3dbf2f66fb090e02ada703cc1d 47455 alsa-lib_1.0.14sa-2maemo2.diff.gz
+Kumar Gala will ack this patch.
 
-This version seems to install correctly, but still gives me no sound.
-The full log of my latest effort is here ->
-http://www.swajime.com/n810/alsa-lib_1.0.14sa-2maemo2.log
->
->> $ cd dsp-alsa/trunk/alsa-lib
->> #### cvscompile does not succeed
->
-> Why?
+ .../include/asm/{immap_86xx.h => fsl_guts.h}       |  106 +++++++++++++-------
+ sound/soc/fsl/fsl_ssi.c                            |    2 -
+ sound/soc/fsl/mpc8610_hpcd.c                       |   10 +-
+ 3 files changed, 76 insertions(+), 42 deletions(-)
+ rename arch/powerpc/include/asm/{immap_86xx.h => fsl_guts.h} (67%)
 
-I honestly don't know.  :-(  It looks like a bug in m4?  Here is the
-log for cvscompile:
-[1|root@Nokia-N810-43-7|/home/user/src/dsp-alsa/trunk/alsa-lib]cat cvscompile
-#!/bin/bash
+diff --git a/arch/powerpc/include/asm/immap_86xx.h b/arch/powerpc/include/asm/fsl_guts.h
+similarity index 67%
+rename from arch/powerpc/include/asm/immap_86xx.h
+rename to arch/powerpc/include/asm/fsl_guts.h
+index 0f165e5..4827900 100644
+--- a/arch/powerpc/include/asm/immap_86xx.h
++++ b/arch/powerpc/include/asm/fsl_guts.h
+@@ -1,5 +1,5 @@
+ /**
+- * MPC86xx Internal Memory Map
++ * Freecale 85xx and 86xx Global Utilties register set
+  *
+  * Authors: Jeff Brown
+  *          Timur Tabi <timur@freescale.com>
+@@ -10,73 +10,107 @@
+  * under  the terms of  the GNU General  Public License as published by the
+  * Free Software Foundation;  either version 2 of the  License, or (at your
+  * option) any later version.
+- *
+- * This header file defines structures for various 86xx SOC devices that are
+- * used by multiple source files.
+  */
 
-touch ltconfig
-libtoolize --force --copy --automake
-aclocal $ACLOCAL_FLAGS
-autoheader
-automake --foreign --copy --add-missing
-touch depcomp		# seems to be missing for old automake
-autoconf
-export CFLAGS='-O2 -Wall -W -pipe -g'
-echo "CFLAGS=$CFLAGS"
-echo "./configure $@"
-./configure $@ || exit 1
-unset CFLAGS
-if [ -z "$CVSCOMPILE_NO_MAKE" ]; then
-  make
-fi
-[1|user@Nokia-N810-43-7|~/src/dsp-alsa/trunk/alsa-lib]bash -v ./cvscompile
-#!/bin/bash
+-#ifndef __ASM_POWERPC_IMMAP_86XX_H__
+-#define __ASM_POWERPC_IMMAP_86XX_H__
++#ifndef __ASM_POWERPC_FSL_GUTS_H__
++#define __ASM_POWERPC_FSL_GUTS_H__
+ #ifdef __KERNEL__
 
-touch ltconfig
-libtoolize --force --copy --automake
-aclocal $ACLOCAL_FLAGS
-aclocal: configure.in: 41: macro `AM_PROG_LIBTOOL' not found in library
-autoheader
-configure.in:41: /usr/local/bin/m4: ERROR: Copying inserted file: No
-space left on device
-autom4te: /usr/local/bin/m4 failed with exit status: 1
-autoheader: /usr/local/bin/autom4te failed with exit status: 1
-automake --foreign --copy --add-missing
-configure.in:41: /usr/local/bin/m4: ERROR: Copying inserted file: No
-space left on device
-autom4te: /usr/local/bin/m4 failed with exit status: 1
-configure.in: no proper invocation of AM_INIT_AUTOMAKE was found.
-configure.in: You should verify that configure.in invokes AM_INIT_AUTOMAKE,
-configure.in: that aclocal.m4 is present in the top-level directory,
-configure.in: and that aclocal.m4 was recently regenerated (using aclocal).
-automake: no `Makefile.am' found or specified
-touch depcomp		# seems to be missing for old automake
-autoconf
-configure.in:41: /usr/local/bin/m4: ERROR: Copying inserted file: No
-space left on device
-autom4te: /usr/local/bin/m4 failed with exit status: 1
-export CFLAGS='-O2 -Wall -W -pipe -g'
-echo "CFLAGS=$CFLAGS"
-CFLAGS=-O2 -Wall -W -pipe -g
-echo "./configure $@"
-./configure
-./configure $@ || exit 1
-./cvscompile: line 13: ./configure: No such file or directory
-[1|user@Nokia-N810-43-7|~/src/dsp-alsa/trunk/alsa-lib]
+-/* Global Utility Registers */
+-struct ccsr_guts {
++#if !defined(CONFIG_PPC_85xx) && !defined(CONFIG_PPC_86xx)
++#error Only 85xx and 86xx SOCs are supported
++#endif
++
++/**
++ * Global Utility Registers.
++ *
++ * Not all registers defined in this structure are available on all chips, so
++ * you are expected to know whether a given register actually exists on your
++ * chip before you access it.
++ *
++ * Also, some registers are similar on different chips but have slightly
++ * different names.  In these cases, one name is chosen to avoid extraneous
++ * #ifdefs.
++ */
++#ifdef CONFIG_PPC_85xx
++struct ccsr_guts_85xx {
++#else
++struct ccsr_guts_86xx {
++#endif
+ 	__be32	porpllsr;	/* 0x.0000 - POR PLL Ratio Status Register */
+ 	__be32	porbmsr;	/* 0x.0004 - POR Boot Mode Status Register */
+ 	__be32	porimpscr;	/* 0x.0008 - POR I/O Impedance Status and Control Register */
+ 	__be32	pordevsr;	/* 0x.000c - POR I/O Device Status Register */
+ 	__be32	pordbgmsr;	/* 0x.0010 - POR Debug Mode Status Register */
+-	u8	res1[0x20 - 0x14];
++	__be32	pordevsr2;	/* 0x.0014 - POR device status register 2 */
++	u8	res018[0x20 - 0x18];
+ 	__be32	porcir;		/* 0x.0020 - POR Configuration Information Register */
+-	u8	res2[0x30 - 0x24];
++	u8	res024[0x30 - 0x24];
+ 	__be32	gpiocr;		/* 0x.0030 - GPIO Control Register */
+-	u8	res3[0x40 - 0x34];
++	u8	res034[0x40 - 0x34];
+ 	__be32	gpoutdr;	/* 0x.0040 - General-Purpose Output Data Register */
+-	u8	res4[0x50 - 0x44];
++	u8	res044[0x50 - 0x44];
+ 	__be32	gpindr;		/* 0x.0050 - General-Purpose Input Data Register */
+-	u8	res5[0x60 - 0x54];
++	u8	res054[0x60 - 0x54];
+ 	__be32	pmuxcr;		/* 0x.0060 - Alternate Function Signal Multiplex Control */
+-	u8	res6[0x70 - 0x64];
++        __be32  pmuxcr2;	/* 0x.0064 - Alternate function signal multiplex control 2 */
++        __be32  dmuxcr;		/* 0x.0068 - DMA Mux Control Register */
++        u8	res06c[0x70 - 0x6c];
+ 	__be32	devdisr;	/* 0x.0070 - Device Disable Control */
+ 	__be32	devdisr2;	/* 0x.0074 - Device Disable Control 2 */
+-	u8	res7[0x80 - 0x78];
++	u8	res078[0x7c - 0x78];
++	__be32  pmjcr;		/* 0x.007c - 4 Power Management Jog Control Register */
+ 	__be32	powmgtcsr;	/* 0x.0080 - Power Management Status and Control Register */
+-	u8	res8[0x90 - 0x84];
++	__be32  pmrccr;		/* 0x.0084 - Power Management Reset Counter Configuration Register */
++	__be32  pmpdccr;	/* 0x.0088 - Power Management Power Down Counter Configuration Register */
++	__be32  pmcdr;		/* 0x.008c - 4Power management clock disable register */
+ 	__be32	mcpsumr;	/* 0x.0090 - Machine Check Summary Register */
+ 	__be32	rstrscr;	/* 0x.0094 - Reset Request Status and Control Register */
+-	u8	res9[0xA0 - 0x98];
++	__be32  ectrstcr;	/* 0x.0098 - Exception reset control register */
++	__be32  autorstsr;	/* 0x.009c - Automatic reset status register */
+ 	__be32	pvr;		/* 0x.00a0 - Processor Version Register */
+ 	__be32	svr;		/* 0x.00a4 - System Version Register */
+-	u8	res10[0xB0 - 0xA8];
++	u8	res0a8[0xb0 - 0xa8];
+ 	__be32	rstcr;		/* 0x.00b0 - Reset Control Register */
+-	u8	res11[0xC0 - 0xB4];
++	u8	res0b4[0xc0 - 0xb4];
++#ifdef CONFIG_PPC_85xx
++	__be32  iovselsr;	/* 0x.00c0 - I/O voltage select status register */
++#else
+ 	__be32	elbcvselcr;	/* 0x.00c0 - eLBC Voltage Select Ctrl Reg */
+-	u8	res12[0x800 - 0xC4];
++#endif
++	u8	res0c4[0x224 - 0xc4];
++	__be32  iodelay1;	/* 0x.0224 - IO delay control register 1 */
++	__be32  iodelay2;	/* 0x.0228 - IO delay control register 2 */
++	u8	res22c[0x800 - 0x22c];
+ 	__be32	clkdvdr;	/* 0x.0800 - Clock Divide Register */
+-	u8	res13[0x900 - 0x804];
++	u8	res804[0x900 - 0x804];
+ 	__be32	ircr;		/* 0x.0900 - Infrared Control Register */
+-	u8	res14[0x908 - 0x904];
++	u8	res904[0x908 - 0x904];
+ 	__be32	dmacr;		/* 0x.0908 - DMA Control Register */
+-	u8	res15[0x914 - 0x90C];
++	u8	res90c[0x914 - 0x90c];
+ 	__be32	elbccr;		/* 0x.0914 - eLBC Control Register */
+-	u8	res16[0xB20 - 0x918];
++	u8	res918[0xb20 - 0x918];
+ 	__be32	ddr1clkdr;	/* 0x.0b20 - DDR1 Clock Disable Register */
+ 	__be32	ddr2clkdr;	/* 0x.0b24 - DDR2 Clock Disable Register */
+ 	__be32	ddrclkdr;	/* 0x.0b28 - DDR Clock Disable Register */
+-	u8	res17[0xE00 - 0xB2C];
++	u8	resb2c[0xe00 - 0xb2c];
+ 	__be32	clkocr;		/* 0x.0e00 - Clock Out Select Register */
+-	u8	res18[0xE10 - 0xE04];
++	u8	rese04[0xe10 - 0xe04];
+ 	__be32	ddrdllcr;	/* 0x.0e10 - DDR DLL Control Register */
+-	u8	res19[0xE20 - 0xE14];
++	u8	rese14[0xe20 - 0xe14];
+ 	__be32	lbcdllcr;	/* 0x.0e20 - LBC DLL Control Register */
+-	u8	res20[0xF04 - 0xE24];
++	__be32  cpfor;		/* 0x.0e24 - L2 charge pump fuse override register */
++	u8	rese28[0xf04 - 0xe28];
+ 	__be32	srds1cr0;	/* 0x.0f04 - SerDes1 Control Register 0 */
+ 	__be32	srds1cr1;	/* 0x.0f08 - SerDes1 Control Register 0 */
+-	u8	res21[0xF40 - 0xF0C];
+-	__be32	srds2cr0;	/* 0x.0f40 - SerDes1 Control Register 0 */
+-	__be32	srds2cr1;	/* 0x.0f44 - SerDes1 Control Register 0 */
++	u8	resf0c[0xf2c - 0xf0c];
++	__be32  itcr;		/* 0x.0f2c - Internal transaction control register */
++	u8	resf30[0xf40 - 0xf30];
++	__be32	srds2cr0;	/* 0x.0f40 - SerDes2 Control Register 0 */
++	__be32	srds2cr1;	/* 0x.0f44 - SerDes2 Control Register 0 */
+ } __attribute__ ((packed));
 
->
->> $ .libs/pcm -D 'default' -vf 440
->> Playback device is default
->> Stream parameters are 44100Hz, S16_LE, 1 channels
->> Sine wave rate is 440.0000Hz
->> Using transfer method: write
->>
->> Still no sound :-(
->
-> Mixer controls not set?  (amixer and alsamixer are in alsa-utils)
++#ifdef CONFIG_PPC_86xx
++
+ #define CCSR_GUTS_DMACR_DEV_SSI	0	/* DMA controller/channel set to SSI */
+ #define CCSR_GUTS_DMACR_DEV_IR	1	/* DMA controller/channel set to IR */
 
-I haven't been able to find alsa-utils in any maemo/diablo repositories.
-[1|root@Nokia-N810-43-7|/home]apt-get install alsa-utils
-Reading package lists... Done
-Building dependency tree
-Reading state information... Done
-Package alsa-utils is not available, but is referred to by another package.
-This may mean that the package is missing, has been obsoleted, or
-is only available from another source
-E: Package alsa-utils has no installation candidate
-[1|root@Nokia-N810-43-7|/home]apt-cache show tablet-sound
-Package: tablet-sound
-Version: 2.4
-Architecture: armel
-Maintainer: Carsten Munk <cvm@cs.au.dk>
-Installed-Size: 68
-Depends: alsa-base, alsa-utils, libasound2-plugins, osso-dsp-loader,
-osso-dsp-modules-rx-44
-Priority: optional
-Section: contrib/utils
-Filename: pool/contrib/t/tablet-sound/tablet-sound_2.4_armel.deb
-Size: 2838
-SHA256: c33a8cecb745ff825e673c95b34ee51b545249c1961c06a5c1469f29c7906ff8
-SHA1: b93846811b8e2145d0491e8b601d5b3d001b2b3b
-MD5sum: e28921079d7a43d11ba5288fbcd654d7
-Description: Provides sound support for Deblet on Nokia Internet Tablets
-   Metapackage that provides sound support on Nokia Internet Tablets
+@@ -93,7 +127,7 @@ struct ccsr_guts {
+  * ch: The channel on the DMA controller (0, 1, 2, or 3)
+  * device: The device to set as the source (CCSR_GUTS_DMACR_DEV_xx)
+  */
+-static inline void guts_set_dmacr(struct ccsr_guts __iomem *guts,
++static inline void guts_set_dmacr(struct ccsr_guts_86xx __iomem *guts,
+ 	unsigned int co, unsigned int ch, unsigned int device)
+ {
+ 	unsigned int shift = 16 + (8 * (1 - co) + 2 * (3 - ch));
+@@ -129,7 +163,7 @@ static inline void guts_set_dmacr(struct ccsr_guts __iomem *guts,
+  * ch: The channel on the DMA controller (0, 1, 2, or 3)
+  * value: the new value for the bit (0 or 1)
+  */
+-static inline void guts_set_pmuxcr_dma(struct ccsr_guts __iomem *guts,
++static inline void guts_set_pmuxcr_dma(struct ccsr_guts_86xx __iomem *guts,
+ 	unsigned int co, unsigned int ch, unsigned int value)
+ {
+ 	if ((ch == 0) || (ch == 3)) {
+@@ -152,5 +186,7 @@ static inline void guts_set_pmuxcr_dma(struct ccsr_guts __iomem *guts,
+ #define CCSR_GUTS_CLKDVDR_SSICLK_MASK	0x000000FF
+ #define CCSR_GUTS_CLKDVDR_SSICLK(x) ((x) & CCSR_GUTS_CLKDVDR_SSICLK_MASK)
 
-[1|root@Nokia-N810-43-7|/home]apt-get install tablet-sound
-Reading package lists... Done
-Building dependency tree
-Reading state information... Done
-Some packages could not be installed. This may mean that you have
-requested an impossible situation or if you are using the unstable
-distribution that some required packages have not yet been created
-or been moved out of Incoming.
+-#endif /* __ASM_POWERPC_IMMAP_86XX_H__ */
+-#endif /* __KERNEL__ */
++#endif
++
++#endif
++#endif
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 31e8e5c..48fc0bd 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -24,8 +24,6 @@
+ #include <sound/initval.h>
+ #include <sound/soc.h>
 
-Since you only requested a single operation it is extremely likely that
-the package is simply not installable and a bug report against
-that package should be filed.
-The following information may help to resolve the situation:
+-#include <asm/immap_86xx.h>
+-
+ #include "fsl_ssi.h"
 
-The following packages have unmet dependencies:
-  tablet-sound: Depends: alsa-base but it is not installable
-                Depends: alsa-utils but it is not installable
-E: Broken packages
-[1|root@Nokia-N810-43-7|/home]
+ /**
+diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
+index 81ab639..69aeaeb 100644
+--- a/sound/soc/fsl/mpc8610_hpcd.c
++++ b/sound/soc/fsl/mpc8610_hpcd.c
+@@ -14,7 +14,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/of_device.h>
+ #include <sound/soc.h>
+-#include <asm/immap_86xx.h>
++#include <asm/fsl_guts.h>
 
-I'm sorry to be so bothersome ...
-I'm just a hapless n810 owner wanting to write a very simple PCM program in C.
-The file pcm.c looks like the best place to start, but the more I try
-to get that working the more I'm thinking that I must be going about
-this wrong.  :-(
+ #include "../codecs/cs4270.h"
+ #include "fsl_dma.h"
+@@ -54,9 +54,9 @@ static int mpc8610_hpcd_machine_probe(struct platform_device *sound_device)
+ 	struct snd_soc_card *card = platform_get_drvdata(sound_device);
+ 	struct mpc8610_hpcd_data *machine_data =
+ 		container_of(card, struct mpc8610_hpcd_data, card);
+-	struct ccsr_guts __iomem *guts;
++	struct ccsr_guts_86xx __iomem *guts;
 
-I am appreciating all the help I've been getting here.
+-	guts = ioremap(guts_phys, sizeof(struct ccsr_guts));
++	guts = ioremap(guts_phys, sizeof(struct ccsr_guts_86xx));
+ 	if (!guts) {
+ 		dev_err(card->dev, "could not map global utilities\n");
+ 		return -ENOMEM;
+@@ -139,9 +139,9 @@ static int mpc8610_hpcd_machine_remove(struct platform_device *sound_device)
+ 	struct snd_soc_card *card = platform_get_drvdata(sound_device);
+ 	struct mpc8610_hpcd_data *machine_data =
+ 		container_of(card, struct mpc8610_hpcd_data, card);
+-	struct ccsr_guts __iomem *guts;
++	struct ccsr_guts_86xx __iomem *guts;
 
-Has anybody else succeeded with compiling this pcm.c on an n810?
-
-j
+-	guts = ioremap(guts_phys, sizeof(struct ccsr_guts));
++	guts = ioremap(guts_phys, sizeof(struct ccsr_guts_86xx));
+ 	if (!guts) {
+ 		dev_err(card->dev, "could not map global utilities\n");
+ 		return -ENOMEM;
+--
+1.7.0.1
