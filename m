@@ -1,19 +1,17 @@
-From: =?GB2312?B?bG9uZ2VyIHpob3UgKNbcwfop?= <longer.zhou@gmail.com>
-Subject: problems about converting sample rate when using ALSA
-	lib
-Date: Thu, 22 Jul 2010 11:38:16 +0800
-Message-ID: <AANLkTincHzTzp9dWM33gDFf19NPTlWjJwvoXhztstDbj@mail.gmail.com>
+From: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
+Subject: [PATCH 0/3] Removing dead code
+Date: Wed, 21 Jul 2010 14:34:24 +0200
+Message-ID: <cover.1279708102.git.qy03fugy__48177.6633220308$1279953018$gmane$org@stud.informatik.uni-erlangen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3C5B024456
+Received: from faui40.informatik.uni-erlangen.de
+	(faui40.informatik.uni-erlangen.de [131.188.34.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id D8B2C10392B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Jul 2010 05:38:21 +0200 (CEST)
-Received: by yxm8 with SMTP id 8so2385473yxm.38
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2010 20:38:17 -0700 (PDT)
+	Wed, 21 Jul 2010 14:34:26 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,34 +21,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Tejun Heo <tj@kernel.org>, Julia Lawall <julia@diku.dk>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opens>
+Cc: vamos-dev@i4.informatik.uni-erlangen.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Hi all!
+       
+        As part of the VAMOS[0] research project at the University of
+Erlangen we are looking at multiple integrity errors in linux'
+configuration system.
 
-I have a problem when using ALSA lib . The problem is :
+        I've been running a check on the sound/ sourcetree for
+config Items not defined in Kconfig and found 3 such cases. Sourcecode
+blocks depending on these Items are not reachable from a vanilla
+kernel -- dead code. I've seen such dead blocks made on purpose
+e.g. while integrating new features into the kernel but generally
+they're just useless.
 
-My ALSA driver only support a special sample rate , so ALSA lib must
+        Each of the patches in this patchset removes on such dead
+config Item, I'd be glad if you consider applying them. I've been
+doing deeper analysis of such issues before and can do so again but
+I'm not so sure they were fastly usefull.
 
-convert sample rates. But My driver don't get any audio data. When tracing
-the
+        I build the patches against a vanilla kernel in order to
+try if the kernel compiles with this patches
 
-code of ALSA lib (alsa-driver-1.0.23), I found that : It mmap a address from
-my
+        Please keep me informed of this patch getting confirmed /
+merged so we can keep track of it.
 
-driver , but writting audio data to another address instead of that mmaped
-address.
+Regards
 
+        Christian Dietrich
 
+[0] http://vamos1.informatik.uni-erlangen.de/
 
-I think this is why my driver don't get any audio data .But I don't know why
-it don't
+Christian Dietrich (3):
+  sound/oss: Remove dead CONFIG_SOFTOSS*
+  sound/soc/atmel: Remove dead CONFIG_AT32_ENHANCED_PORTMUX
+  sound/isa/gus: Remove dead CONFIG_SND_DEBUG_ROM
 
-write audo data to that mmaped address.
-
-
-Can you help me ? Any advices would help me a lot.
-
-Thank you,
-
-longer.zhou
+ sound/isa/gus/interwave.c        |    8 --------
+ sound/oss/vidc.c                 |    3 ---
+ sound/soc/atmel/playpaq_wm8510.c |    9 ---------
+ 3 files changed, 0 insertions(+), 20 deletions(-)
