@@ -1,50 +1,48 @@
-From: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
-Subject: [PATCH 3/3] sound/isa/gus: Remove dead CONFIG_SND_DEBUG_ROM
-Date: Wed, 21 Jul 2010 14:36:02 +0200
-Message-ID: <d96aeb5b8db5602de499b783897b6e8c285ee59b.1279708102.git.qy03fugy@stud.informatik.uni-erlangen.de>
-References: <cover.1279708102.git.qy03fugy@stud.informatik.uni-erlangen.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: [GIT PULL] ASoC updates for 2.6.36
+Date: Wed, 21 Jul 2010 13:38:44 +0100
+Message-ID: <1279715924.3072.54.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <cover.1279708102.git.qy03fugy@stud.informatik.uni-erlangen.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: vamos-dev@i4.informatik.uni-erlangen.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E9CF410392B
+	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Jul 2010 14:38:49 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so2121462ewy.38
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2010 05:38:49 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-CONFIG_SND_DEBUG_ROM doesn't exist in Kconfig, therefore it is never
-defined and we can remove all references to it. If it should stay as a
-debug flag, perhaps it shouldn't be named CONFIG_
+The following changes since commit 66b47fdb851924956b6e4696fb43a3496ae2c462:
+  Mark Brown (1):
+        ASoC: Implement WM8994 OPCLK support
 
-Signed-off-by: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
----
- sound/isa/gus/interwave.c |    8 --------
- 1 files changed, 0 insertions(+), 8 deletions(-)
+are available in the git repository at:
 
-diff --git a/sound/isa/gus/interwave.c b/sound/isa/gus/interwave.c
-index c7b80e4..ac60c7d 100644
---- a/sound/isa/gus/interwave.c
-+++ b/sound/isa/gus/interwave.c
-@@ -442,19 +442,11 @@ static void __devinit snd_interwave_detect_memory(struct snd_gus_card * gus)
- 	for (bank_pos = 0; bank_pos < 16L * 1024L * 1024L; bank_pos += 4L * 1024L * 1024L) {
- 		for (i = 0; i < 8; ++i)
- 			iwave[i] = snd_gf1_peek(gus, bank_pos + i);
--#ifdef CONFIG_SND_DEBUG_ROM
--		printk(KERN_DEBUG "ROM at 0x%06x = %02x:%02x:%02x:%02x:%02x:%02x:%02x:%02x\n", bank_pos,
--		       iwave[0], iwave[1], iwave[2], iwave[3],
--		       iwave[4], iwave[5], iwave[6], iwave[7]);
--#endif
- 		if (strncmp(iwave, "INTRWAVE", 8))
- 			continue;	/* first check */
- 		csum = 0;
- 		for (i = 0; i < sizeof(struct rom_hdr); i++)
- 			csum += snd_gf1_peek(gus, bank_pos + i);
--#ifdef CONFIG_SND_DEBUG_ROM
--		printk(KERN_DEBUG "ROM checksum = 0x%x (computed)\n", csum);
--#endif
- 		if (csum != 0)
- 			continue;	/* not valid rom */
- 		gus->gf1.rom_banks++;
--- 
-1.7.0.4
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.36
+
+Jorge Eduardo Candelaria (1):
+      ASoC: TWL6040: Correct widget handling for drivers
+
+Peter Ujfalusi (3):
+      ASoC: TWL4030: Fix for digital loopback gain range
+      ASoC: TWL4030: DAC power optimization
+      ASoC: TWL4030: Add configurable delay after digimic enable
+
+ sound/soc/codecs/twl4030.c |   47 ++++++++++++++++++++++++++----------
+ sound/soc/codecs/twl4030.h |    1 +
+ sound/soc/codecs/twl6040.c |   56 ++++++++++++++++++++++----------------------
+ 3 files changed, 63 insertions(+), 41 deletions(-)
