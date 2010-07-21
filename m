@@ -1,45 +1,50 @@
-From: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
-Subject: Missing config option for SFFSDR_FPGA
-Date: Wed, 21 Jul 2010 12:58:33 +0200
-Message-ID: <86tynthzja.fsf@peer.zerties.org>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: TWL4030: Add configurable delay
+ after digimic enable
+Date: Wed, 21 Jul 2010 11:58:56 +0100
+Message-ID: <1279709936.3072.6.camel@odin>
+References: <1279630149-3337-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20100720125513.GB30148@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, lin
-Cc: vamos-dev@i4.informatik.uni-erlangen.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id B1D932456C
+	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Jul 2010 12:58:58 +0200 (CEST)
+Received: by wwb22 with SMTP id 22so625310wwb.20
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2010 03:58:58 -0700 (PDT)
+In-Reply-To: <20100720125513.GB30148@rakim.wolfsonmicro.main>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all!
-      =20
-        As part of the VAMOS[0] research project at the University of
-Erlangen we are looking at multiple integrity errors in linux'
-configuration system.
+On Tue, 2010-07-20 at 13:55 +0100, Mark Brown wrote:
+> On Tue, Jul 20, 2010 at 03:49:09PM +0300, Peter Ujfalusi wrote:
+> > When digital microphones are connected to twl, delay is
+> > needed after enabling the digimic interface of the codec.
+> > Add new parameter for the setup data, which can be used
+> > to pass the apropriate delay in ms after the digimic
+> > interface has been enabled.
+> 
+> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-        I've been running a check on the sound/ sourcetree for
-config Items not defined in Kconfig and found such a case. Sourcecode
-blocks depending on these Items are not reachable from a vanilla
-kernel -- dead code. I've seen such dead blocks made on purpose
-e.g. while integrating new features into the kernel but generally
-they're just useless.
+Applied.
 
-There are two ifdef blocks, which do a check on CONFIG_SFFSDR_FPGA, but
-this flag isn't defined anywhere. There is an select in
-sound/soc/davinci[1], but Kconfig doesn't define the symbol, if there
-isn't a config option for it. So this blocks can never be selected. I
-don't think this is intended, so i didn't wrote a patch. Please just
-notice it.
+Thanks
 
-Regards
-        Christian Dietrich
-
-[0] http://vamos1.informatik.uni-erlangen.de/
-[1] sound/soc/davinci/Kconfig:      select SFFSDR_FPGA                =20
-    sound/soc/davinci/davinci-sffsdr.c:#ifdef CONFIG_SFFSDR_FPGA
-    sound/soc/davinci/davinci-sffsdr.c:#ifndef CONFIG_SFFSDR_FPGA
-    sound/soc/davinci/davinci-sffsdr.c:#ifndef CONFIG_SFFSDR_FPGA
---=20
-(=CE=BB x . x x) (=CE=BB x . x x) -- See how beatiful the lambda is
-No documentation is better than bad documentation
--- Das Ausdrucken dieser Mail wird urheberrechtlich verfolgt.
+Liam
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
