@@ -1,47 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Which project to choose?
-Date: Thu, 22 Jul 2010 19:42:27 +0800
-Message-ID: <AANLkTilSb9sdZA5eKK8aw8wqSaCwzQFJnYGPhbtiZsjr@mail.gmail.com>
-References: <1279062131.24837.22.camel@localhost.localdomain>
-	<AANLkTikEf4gf-oeQf4hNGUEvNi0YVrvutnSMCbxGwtJ8@mail.gmail.com>
-	<1279065709.24837.29.camel@localhost.localdomain>
-	<AANLkTimdM5__SzYFxrQqwsbOrxdit2uWOvkazPvZ4PND@mail.gmail.com>
-	<1279071115.29042.0.camel@localhost.localdomain>
-	<AANLkTimNSRELBq7i1Ypi9K2tmFu9NKLvQAOOqPwuU13x@mail.gmail.com>
-	<1279074303.29042.3.camel@localhost.localdomain>
-	<AANLkTimNYxIm9M6Mglrzh3YtJRiq1C8wdZwx-JUhLk9d@mail.gmail.com>
-	<1279145758.29042.11.camel@localhost.localdomain>
-	<AANLkTinN15BWNC2cn78rc5xCSXNo79SDE2_WkBNEg5I2@mail.gmail.com>
-	<1279157921.2668.1.camel@localhost.localdomain>
-	<i1n0mf$87c$1@dough.gmane.org>
-	<AANLkTil8Zq_uJrdT2jcVSSDW-LN0OxpnHcGnI9aBR4Zz@mail.gmail.com>
-	<1279508164.22741.27.camel@localhost.localdomain>
-	<AANLkTilHj1RR50u0kN7cedIuV72qxqvTX1YDriT6ajqi@mail.gmail.com>
-	<i210af$6gi$1@dough.gmane.org>
-	<1279579946.18063.26.camel@localhost.localdomain>
-	<AANLkTinIcGY_OwOftiZwICap7r_4VviWKqE-2zOZrgQM@mail.gmail.com>
-	<1279592026.18063.44.camel@localhost.localdomain>
-	<AANLkTimcx0Z1pkLJmCrpmBfo2xLA_Dtt-RG4L6V-JTGf@mail.gmail.com>
-	<1279664388.18063.51.camel@localhost.localdomain>
-	<AANLkTilnHVzNmIOMxkCVjXGwsXdKyC_vI54kpwAFtIh8@mail.gmail.com>
-	<1279753075.30218.14.camel@localhost.localdomain>
-	<AANLkTiktrlp_FEHO1aF5z9edeugkDyMM4cM0ALBi7Svg@mail.gmail.com>
-	<1279760875.7841.1.camel@localhost.localdomain>
-	<AANLkTim7iY_w96CPkVIlyB7Z9NGWUIvX2wKwvgu4wdjn@mail.gmail.com>
-	<1279766127.7841.11.camel@localhost.localdomain>
-	<AANLkTim_FkOXlYihEQikJ8Vpo5zXreCdqQnDW3acsrAu@mail.gmail.com>
-	<1279797682.7841.15.camel@localhost.localdomain>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 0/1] *** SUBJECT HERE ***
+Date: Thu, 22 Jul 2010 13:02:08 +0100
+Message-ID: <20100722120208.GF4737@rakim.wolfsonmicro.main>
+References: <1279791534-20028-1-git-send-email-matti.j.aaltonen@nokia.com>
+	<20100722094832.GC4737@rakim.wolfsonmicro.main>
+	<A1C7E76B4973664FBB6C554A75234AC62BEEEB72A5@NOK-EUMSG-02.mgdnok.nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id C56D724390
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6D397243E4
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Jul 2010 13:42:32 +0200 (CEST)
-Received: by vws20 with SMTP id 20so22694vws.38
-	for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2010 04:42:31 -0700 (PDT)
-In-Reply-To: <1279797682.7841.15.camel@localhost.localdomain>
+	Thu, 22 Jul 2010 14:02:10 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <A1C7E76B4973664FBB6C554A75234AC62BEEEB72A5@NOK-EUMSG-02.mgdnok.nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -51,86 +24,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: matti.j.aaltonen@nokia.com
+Cc: alsa-devel@alsa-project.org, peter.ujfalusi@nokia.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-2010/7/22 Chris <cpollock@embarqmail.com>
+On Thu, Jul 22, 2010 at 01:18:32PM +0200, matti.j.aaltonen@nokia.com wrote:
+> From: ext Mark Brown [broonie@opensource.wolfsonmicro.com]
 
-> On Thu, 2010-07-22 at 11:03 +0800, Raymond Yau wrote:
-> >
-> >
-> > 2010/7/22 Chris <cpollock@embarqmail.com>
-> >
-> >
-> >         >
-> >         > AFAIK, the most buggy PA client is pavucontrol because
-> >         >
-> >         > 1) it has those vumeters which need to get audio data from
-> >         the
-> >         > playback and capture devices of the sound card ,
-> >         > 2) when you move the slider to left ( over 100%) and this
-> >         force PA to
-> >         > provide software gain
-> >         >
-> >         > You should notice that the new gnome-volume-control is
-> >         actually a
-> >         > simplified version of pavucontrol
-> >
-> >
-> >         Hmm, I just pulled up PulseAudio Volume Control and see no
-> >         vumeters, I
-> >         can't figure out though why the drive thrashing at various
-> >         times whether
-> >         I have a stream playing or not.
-> >
-> >
-> > Did you click the input device tab page of the gnome volume control ?
-> >
-> > The vumeter is "Input level"  above the volume control slider ?
-> >
-> > You should noticed that the following message appear in the pulseaudio
-> > log
-> >
-> > I: source-output.c : Created output 0 "Peak detect" on alsa_input
-> >
-> > I.source-output:c    application.id = "org.gnome.volume.control"
-> > I.source-output:c    media.name = "Peak detect"
-> > I.source-output:c    application.name = "GNOME Volume control dialog"
-> >
-> > when you using mplayer to play music and open pavucontrol to
-> >
-> > pavucontrol sometime abort suddenly  when you aborte mplayer but this
-> > is not 100% reproducible
-> >
-> > pavucontrol
-> > ** ( pavucontrol:3232) : DEBUG: failed to initialize device manager
-> > extension: No such extension
-> > ** (pavucontrol:3056) : DEBUG: Ignoring sink-input due to it being
-> > designated as an event and thuse handled by the event widget
-> >
-> >
-> > The point is after the complete intergration of pulseaudio in to the
-> > system ( libcanberra, mixer-applet , ... )
-> >
-> > I think "pulseaudio -k; pulseaudio -vvvv" is no longer the correct way
-> > to debug since there are lots of PA clients running at the desktop
-> >
-> > You have to ask the mandriva maintainer how to increase the debug
-> > level of PA server and have to perform a logout/login to debug the PA
-> > server
->
-> Thanks Raymond, so I should contact Colin and go from there? I'm not
-> sure what to even tell him though. I thank you for all your help.
->
-> Chris
->
+> >> >> +static int wl1273_set_dai_fmt(struct snd_soc_dai *codec_dai,
+> >> >> +                           unsigned int fmt)
+> >> >> +{
+> >> >> +     return 0;
+> >> >> +}
 
-There are over 15 PA clients running when you are using gnome desktop
+> >> >Remove unused functions.
 
-running  "pulseaudio -k  " to shutdown PA server , this kill all the PA
-clients
-restart PA  server by  "pulseaudio -vvvv" , only one or two PA clients (e.g.
-consolekit, .. ) can connected back to PA server
+> >> I tried leaving this out but then the codec stopped working. I guess I should
+> >> mention that my test environment is 2.6.32. I'm only able to test that
+> >> the codec compiles under 2.6.35. Anyway I left the function in.
 
-This command "pulseaudio -k;pulseaudio -vvvv" cannot  provide a normal
-environment to debug PA server since most of PA clients are killed
+> >Could you please be a little more specific - what do you mean when you
+> >say "the CODEC stopped working?  The set_dai_fmt() function has always
+> >been optional.
+
+> I get this error message:
+
+> aplay  -f dat -Dhw:wl1273 /root/sumppi.wav 
+> [  297.179626] Can't set codec DAI configuration: -22
+> [  297.184539] asoc: BT/FM PCM startup failed
+
+So, obviously if your machine driver tries to configure the DAI format
+on a device that doesn't support configuring the DAI format that's not
+going to work.  You should just remove the attempt to do something
+unsupported from the machine driver rather than adding a null function.
+If there is a function there it needs to at least do validation of the
+parameters.
+
+> >So why do you believe that the soc_card driver needs to know the CODEC
+> >mode?  This was the gist of my original question...
+
+[Reflowed into 80 colummns, please fix your MUA configuration.]
+> OK, sorry... The problem in a sense is that the codec supports three
+> different modes: BT, FM RX and FM TX. All digital audio goes over a
+> single McBSP connection. The BT part handles the audio routing, which
+> is completely external to the radio driver and this codec. And the user
+> of the codec is in principle responsible for keeping the codec mode in
+> sync with the route setting. And the soc_card driver needs to know the
+> setting also to do its thing.
+
+Which is...
+
+You've still not provided any information about what use this will be
+put to.
