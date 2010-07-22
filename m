@@ -1,21 +1,18 @@
-From: <matti.j.aaltonen@nokia.com>
-Subject: Re: [PATCH v2 0/1] *** SUBJECT HERE ***
-Date: Thu, 22 Jul 2010 14:11:27 +0200
-Message-ID: <A1C7E76B4973664FBB6C554A75234AC62BEEEB72A7@NOK-EUMSG-02.mgdnok.nokia.com>
-References: <1279791534-20028-1-git-send-email-matti.j.aaltonen@nokia.com>
-	<20100722094832.GC4737@rakim.wolfsonmicro.main>
-	<A1C7E76B4973664FBB6C554A75234AC62BEEEB72A5@NOK-EUMSG-02.mgdnok.nokia.com>,
-	<20100722120208.GF4737@rakim.wolfsonmicro.main>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Merging alsa-firmware into linux-firmware
+Date: Thu, 22 Jul 2010 14:41:20 +0200
+Message-ID: <4C483C70.9010808@canonical.com>
+References: <4C457C89.5040209@canonical.com> <4C481865.2010907@canonical.com>
+	<s5hsk3bzrsf.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 230552414C
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id DA6E824422
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Jul 2010 14:15:10 +0200 (CEST)
-In-Reply-To: <20100722120208.GF4737@rakim.wolfsonmicro.main>
-Content-Language: en-US
+	Thu, 22 Jul 2010 14:41:25 +0200 (CEST)
+In-Reply-To: <s5hsk3bzrsf.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,66 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: alsa-devel@alsa-project.org, peter.ujfalusi@nokia.com, lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: chase.douglas@canonical.com, alsa-devel@alsa-project.org, david.woodhouse@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+On 2010-07-22 13:20, Takashi Iwai wrote:
+> At Thu, 22 Jul 2010 12:07:33 +0200,
+> David Henningsson wrote:
+>> usx2yloader however seems to put files outside the /lib/firmware path
+>> (/usr/share/alsa/...), and I believe it has a userspace firmware loader
+>> triggered by an udev event.
+> 
+> These are basically for 2.2 / 2.4 kernels.  Don't touch them unless you
+> are 100% sure you do right :)
 
-________________________________________
-From: alsa-devel-bounces@alsa-project.org [alsa-devel-bounces@alsa-project.org] On Behalf Of ext Mark Brown [broonie@opensource.wolfsonmicro.com]
-Sent: Thursday, July 22, 2010 2:02 PM
-To: Aaltonen Matti.J (Nokia-MS/Tampere)
-Cc: alsa-devel@alsa-project.org; Ujfalusi Peter (Nokia-MS/Tampere); lrg@slimlogic.co.uk
-Subject: Re: [alsa-devel] [PATCH v2 0/1] *** SUBJECT HERE ***
+Assuming you mean the tascam usx2yloader, a little digging shows that,
 
->On Thu, Jul 22, 2010 at 01:18:32PM +0200, matti.j.aaltonen@nokia.com wrote:
->> From: ext Mark Brown [broonie@opensource.wolfsonmicro.com]
->
->> OK, sorry... The problem in a sense is that the codec supports three
->> different modes: BT, FM RX and FM TX. All digital audio goes over a
->> single McBSP connection. The BT part handles the audio routing, which
->> is completely external to the radio driver and this codec. And the user
->> of the codec is in principle responsible for keeping the codec mode in
->> sync with the route setting. And the soc_card driver needs to know the
->> setting also to do its thing.
->
->Which is...
->
->You've still not provided any information about what use this will be
->put to.
+1) the usx2y driver never calls request_firmware (unless I really missed
+something)
 
-Yes, sorry I didn't get your point. I guess I tought that it's irrelevant, what
-the soc_card driver actually does. But it actually does this:
+2) there is an Ubuntu specific patch which creates an udev rule for
+calling tascam_fw and tascam_fpga (from alsa-tools) when a tascam device
+is connected.
 
-	switch (wl1273_get_codec_mode(codec)) {
-	case WL1273_MODE_FM_RX:
-	case WL1273_MODE_FM_TX:
-		fmt =	SND_SOC_DAIFMT_I2S |
-			SND_SOC_DAIFMT_NB_NF |
-			SND_SOC_DAIFMT_CBM_CFM;
+Are you saying that the tascam devices (us122, us224, us428) no longer
+need that firmware?
 
-		break;
-	case WL1273_MODE_BT:
-		fmt =	SND_SOC_DAIFMT_DSP_A |
-			SND_SOC_DAIFMT_IB_NF |
-			SND_SOC_DAIFMT_CBM_CFM;
-
-		break;
-	default:
-		return -EINVAL;
-	}
-
-	r = snd_soc_dai_set_fmt(cpu_dai, fmt);
-
-Cheers,
-Matti A.
-
-
-
-
-
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
