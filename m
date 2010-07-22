@@ -1,22 +1,19 @@
-From: Seungwhan Youn <claude.youn@gmail.com>
-Subject: Re: [PATCH] ASoC: multi-component: SAMSUNG: Fix
-	compile error when registering a DAI
-Date: Thu, 22 Jul 2010 16:55:17 +0900
-Message-ID: <AANLkTiksuBsdZ7LslGhRqxoDyLry579OxNMJ7X3bhrAb@mail.gmail.com>
-References: <4C47D3A3.9000102@samsung.com>
-	<AANLkTiluZwni88uY6WtwKkB9Qpm2ECz_37z5_bUY1jII@mail.gmail.com>
-	<4C47F723.4090506@samsung.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: multi-component: determine which DAI is active?
+Date: Thu, 22 Jul 2010 09:09:35 +0100
+Message-ID: <1279786175.3083.14.camel@odin>
+References: <4C4778E5.6090200@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id A8F7C103801
+	by alsa0.perex.cz (Postfix) with ESMTP id 84FA810380C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Jul 2010 09:55:17 +0200 (CEST)
-Received: by wwb22 with SMTP id 22so1560045wwb.20
-	for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2010 00:55:17 -0700 (PDT)
-In-Reply-To: <4C47F723.4090506@samsung.com>
+	Thu, 22 Jul 2010 10:09:39 +0200 (CEST)
+Received: by wwb22 with SMTP id 22so1569042wwb.20
+	for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2010 01:09:39 -0700 (PDT)
+In-Reply-To: <4C4778E5.6090200@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,48 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Chanwoo Choi <cw00.choi@samsung.com>
-Cc: Joonyoung Shim <jy0922.shim@samsung.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Kyungmin Park <kyungmin.park@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Timur Tabi <timur@freescale.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBKdWwgMjIsIDIwMTAgYXQgNDo0NSBQTSwgQ2hhbndvbyBDaG9pIDxjdzAwLmNob2lA
-c2Ftc3VuZy5jb20+IHdyb3RlOgo+IFNldW5nd2hhbiBZb3VuIHdyb3RlOgo+PiBIaSwKPj4KPj4g
-T24gVGh1LCBKdWwgMjIsIDIwMTAgYXQgMjoxNCBQTSwgQ2hhbndvbyBDaG9pIDxjdzAwLmNob2lA
-c2Ftc3VuZy5jb20+IHdyb3RlOgo+Pj4gVGhpcyBwYXRjaCBtb2RpZnkgc29tZSBjb2RlIHdoaWNo
-IHJlZ2lzdGVyIGEgREFJIHdpdGggQVNvQyBjb3JlCj4+PiBhY2NvcmRpbmcgdG8gbW9kaWZpZWQg
-cmVnaXN0cmF0aW9uIEFQSSBvZiBEQUkuCj4+Pgo+Pj4gU2lnbmVkLW9mZi1ieTogQ2hhbndvbyBD
-aG9pIDxjdzAwLmNob2lAc2Ftc3VuZy5jb20+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBLeXVuZ21pbiBQ
-YXJrIDxreXVuZ21pbi5wYXJrQHNhbXN1bmcuY29tPgo+Pj4gLS0tCj4+PiDCoHNvdW5kL3NvYy9z
-M2MyNHh4L2FxdWlsYV93bTg5OTQuYyB8IMKgIMKgMyArLS0KPj4+IMKgc291bmQvc29jL3MzYzI0
-eHgvczNjLWkycy12Mi5jIMKgIMKgfCDCoCDCoDIgKy0KPj4+IMKgMiBmaWxlcyBjaGFuZ2VkLCAy
-IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCj4+Pgo+Pj4gZGlmZiAtLWdpdCBhL3NvdW5k
-L3NvYy9zM2MyNHh4L2FxdWlsYV93bTg5OTQuYyBiL3NvdW5kL3NvYy9zM2MyNHh4L2FxdWlsYV93
-bTg5OTQuYwo+Pj4gaW5kZXggNjljNDFlYi4uMDA3ZWQzYSAxMDA2NDQKPj4+IC0tLSBhL3NvdW5k
-L3NvYy9zM2MyNHh4L2FxdWlsYV93bTg5OTQuYwo+Pj4gKysrIGIvc291bmQvc29jL3MzYzI0eHgv
-YXF1aWxhX3dtODk5NC5jCj4+PiBAQCAtMjY4LDggKzI2OCw3IEBAIHN0YXRpYyBpbnQgX19pbml0
-IGFxdWlsYV9pbml0KHZvaWQpCj4+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHJldHVybiAtRU5P
-TUVNOwo+Pj4KPj4+IMKgIMKgIMKgIMKgLyogcmVnaXN0ZXIgdm9pY2UgREFJIGhlcmUgKi8KPj4+
-IC0gwqAgwqAgwqAgcmV0ID0gc25kX3NvY19yZWdpc3Rlcl9kYWkoJmFxdWlsYV9zbmRfZGV2aWNl
-LT5kZXYsCj4+PiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDAsICZ2b2ljZV9k
-YWkpOwo+Pj4gKyDCoCDCoCDCoCByZXQgPSBzbmRfc29jX3JlZ2lzdGVyX2RhaSgmYXF1aWxhX3Nu
-ZF9kZXZpY2UtPmRldiwgJnZvaWNlX2RhaSk7Cj4+PiDCoCDCoCDCoCDCoGlmIChyZXQpCj4+PiDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoHJldHVybiByZXQ7Cj4+Pgo+Pj4gZGlmZiAtLWdpdCBhL3Nv
-dW5kL3NvYy9zM2MyNHh4L3MzYy1pMnMtdjIuYyBiL3NvdW5kL3NvYy9zM2MyNHh4L3MzYy1pMnMt
-djIuYwo+Pj4gaW5kZXggZjRmYmMwZS4uYjM4NjZkNSAxMDA2NDQKPj4+IC0tLSBhL3NvdW5kL3Nv
-Yy9zM2MyNHh4L3MzYy1pMnMtdjIuYwo+Pj4gKysrIGIvc291bmQvc29jL3MzYzI0eHgvczNjLWky
-cy12Mi5jCj4+PiBAQCAtNzUwLDcgKzc1MCw3IEBAIGludCBzM2NfaTJzdjJfcmVnaXN0ZXJfZGFp
-KHN0cnVjdCBkZXZpY2UgKmRldiwgaW50IGlkLAo+Pj4gwqAgwqAgwqAgwqBkcnYtPnN1c3BlbmQg
-PSBzM2MyNDEyX2kyc19zdXNwZW5kOwo+Pj4gwqAgwqAgwqAgwqBkcnYtPnJlc3VtZSA9IHMzYzI0
-MTJfaTJzX3Jlc3VtZTsKPj4+Cj4+PiAtIMKgIMKgIMKgIHJldHVybiBzbmRfc29jX3JlZ2lzdGVy
-X2RhaShkZXYsIGlkLCBkcnYpOwo+Pj4gKyDCoCDCoCDCoCByZXR1cm4gc25kX3NvY19yZWdpc3Rl
-cl9kYWkoZGV2LCBkcnYpOwo+Pgo+PiBIb3cgYWJvdXQgczNjNjR4eC1pMnM/IEkgdGhpbmssIGlm
-IHRoaXMgcGF0Y2ggZml4ZXMgYWxsIGVycm9ycyBpbgo+IFNvcnJ5LCBJIGNvbmZ1c2VkIHlvdXIg
-Y29tbWVudC4KPiBXaGF0IGRvIHlvdSBtZWFuICJIb3cgYWJvdXQgczNjNjR4eC1pMnMiID8KCkFj
-dHVhbGx5ICdzb3VuZC9zb2MvczNjMjR4eC9zM2M2NHh4LWkycy5jJyBoYXMgc2FtZSBlcnJvci4K
-ClNvLCBJZiB0aGlzIHBhdGNoJ3MgcHVycG9zZSBpcyB0byBmaXggY29tcGlsZSBlcnJvciwgbXkg
-b3BpbmlvbiBpcwp0aGF0IHRoaXMgcGF0Y2ggZml4IGFsbCB0aGUgc2FtZSBlcnJvcnMgaW4gJ3Nv
-dW5kL3NvYy9zM2MyNHh4LycuCgo+Cj4+ICdzb3VuZC9zb2MvczNjMjR4eCcsCj4+IEl0J2xsIGJl
-IG1vcmUgbmljZSB0aGFuIHRoaXMuCj4KPgo+Cj4KX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+On Wed, 2010-07-21 at 17:47 -0500, Timur Tabi wrote:
+> Liam,
+> 
+> In order to get fsl_dma.c to work with the WM8776, which has separate DAIs
+> for playback and capture, I've had to do this:
+> 
+> if (pcm->streams[0].substream) {
+> 	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
+> 		fsl_dma_hardware.buffer_bytes_max,
+> 		&pcm->streams[0].substream->dma_buffer);
+> 	if (ret) {
+> 		dev_err(card->dev, "can't allocate playback dma buffer\n");
+> 		return ret;
+> 	}
+> }
+> 
+> if (pcm->streams[1].substream) {
+> 	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
+> 		fsl_dma_hardware.buffer_bytes_max,
+> 		&pcm->streams[1].substream->dma_buffer);
+> 	if (ret) {
+> 		snd_dma_free_pages(&pcm->streams[0].substream->dma_buffer);
+> 		dev_err(card->dev, "can't allocate capture dma buffer\n");
+> 		return ret;
+> 	}
+> }
+> 
+> That is, I need to check if the 'substream' pointer has been initialized.
+> 
+> This looks ugly to me.  In an earlier version of ASoC, I would have done this:
+> 
+> if (dai->playback.channels_min) {
+> ...
+> 
+> if (dai->capture.channels_min) {
+> ...
+> 
+> 
+> But dai->playback and dai->capture no longer exist.  How should I handle this?
+> 
+
+Since the DAI driver max/min supported number of channels is driver
+specific and static, it's now in the DAI driver :-
+
+if (dai->driver->playback.channels_min) {
+
+Liam
+
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
