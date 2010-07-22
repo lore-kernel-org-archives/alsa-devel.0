@@ -1,17 +1,25 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Merging alsa-firmware into linux-firmware
-Date: Thu, 22 Jul 2010 12:07:33 +0200
-Message-ID: <4C481865.2010907@canonical.com>
-References: <4C457C89.5040209@canonical.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: multi-component: SAMSUNG: Fix
+ compile error when registering a DAI
+Date: Thu, 22 Jul 2010 11:15:52 +0100
+Message-ID: <1279793752.3083.40.camel@odin>
+References: <4C47D3A3.9000102@samsung.com>
+	<AANLkTiluZwni88uY6WtwKkB9Qpm2ECz_37z5_bUY1jII@mail.gmail.com>
+	<4C47F723.4090506@samsung.com>
+	<AANLkTiksuBsdZ7LslGhRqxoDyLry579OxNMJ7X3bhrAb@mail.gmail.com>
+	<4C47FBAE.5040106@samsung.com>
+	<AANLkTin660THXzF3MXTEMbscB84Axd-roKgZnIfcK1O3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 31D4710397A
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 72DAA10381C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Jul 2010 12:07:37 +0200 (CEST)
-In-Reply-To: <4C457C89.5040209@canonical.com>
+	Thu, 22 Jul 2010 12:15:56 +0200 (CEST)
+Received: by wwb22 with SMTP id 22so1658923wwb.20
+	for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2010 03:15:56 -0700 (PDT)
+In-Reply-To: <AANLkTin660THXzF3MXTEMbscB84Axd-roKgZnIfcK1O3@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,47 +29,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: chase.douglas@canonical.com, david.woodhouse@intel.com
+To: Seungwhan Youn <claude.youn@gmail.com>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>, Chanwoo Choi <cw00.choi@samsung.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Joonyoung Shim <jy0922.shim@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Okay, I think I got most of it sorted out:
-
-emi_26_62 / emagic
-korg1212 / korg
-maestro3 / ess
-sb16 / sb16
-wavefront / yamaha
-ymfpci / yamaha
-...are already in linux-firmware so they won't be merged.
-
-multisound / turtlebeach symlinks won't be merged for the time being,
-since the original firmware isn't easily accessible.
-
-usx2yloader however seems to put files outside the /lib/firmware path
-(/usr/share/alsa/...), and I believe it has a userspace firmware loader
-triggered by an udev event. I'll put it into /lib/firmware/tascam or
-something like that, but we need to update the loader as well to use the
-new path.
-
-The rest should merge without trouble.
-
-On 2010-07-20 12:38, David Henningsson wrote:
-> Hi,
+On Thu, 2010-07-22 at 17:26 +0900, Seungwhan Youn wrote:
+> >>>>> +       return snd_soc_register_dai(dev, drv);
+> >>>> How about s3c64xx-i2s? I think, if this patch fixes all errors in
+> >>> Sorry, I confused your comment.
+> >>> What do you mean "How about s3c64xx-i2s" ?
+> >>
+> >> Actually 'sound/soc/s3c24xx/s3c64xx-i2s.c' has same error.
+> >>
+> >> So, If this patch's purpose is to fix compile error, my opinion is
+> >> that this patch fix all the same errors in 'sound/soc/s3c24xx/'.
+> >
+> > The 'sound/soc/s3c24xx/s3c64xx-i2s.c' haven't directly called
+> > 'snd_soc_register_dai()' function.
+> > It is call 's3c_i2sv2_register_dai()' in 'sound/soc/s3c24xx/s3c-i2s-v2.c'
+> > to register a DAI.
+> >
 > 
-> Chase Douglas (@canonical) and I plan to take what's left of
-> alsa-firmware and try to merge it into linux-firmware, this might happen
-> now or in the coming weeks. This will make alsa-firmware obsolete as all
-> firmware will be provided by linux-firmware instead.
-> 
-> Any words of disagreement, warnings or encouragement before we do so?
-> 
-> --
-> David Henningsson, Canonical Ltd. http://launchpad.net/~diwic
+> Oh, I was confused about this even I modify this few days ago.
+> I'm sorry that I make you to be confused.
 > 
 
+I'm confused too ;)
 
+Is this to be applied or not ?
 
+Liam
 -- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
