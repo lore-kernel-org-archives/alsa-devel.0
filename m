@@ -1,41 +1,58 @@
-From: Kumar Gala <kumar.gala@freescale.com>
-Subject: Re: [PATCH][v2] powerpc: rename immap_86xx.h to fsl_guts.h,
-	and add 85xx support
-Date: Thu, 22 Jul 2010 13:43:00 -0500
-Message-ID: <84CE2602-9E81-473B-8E5F-4F4AD0E07484@freescale.com>
-References: <1279816410-19079-1-git-send-email-timur@freescale.com>
-	<20100722164927.GC16119@rakim.wolfsonmicro.main>
-Mime-Version: 1.0 (Apple Message framework v1078)
+From: Simon Schubert <2@0x2c.org>
+Subject: Re: Smart 5.1 function not working on VIA VT1708S with
+	*three* jacks on mainboard
+Date: Thu, 22 Jul 2010 20:36:13 +0000 (UTC)
+Message-ID: <loom.20100722T223343-13@post.gmane.org>
+References: <op.ve4vig0ny9cctd@localhost> <op.vff0au0jy9cctd@localhost>
+	<4C35713E.1090709@ladisch.de> <op.vfi2hgary9cctd@localhost>
+	<op.vfko2mysy9cctd@localhost> <4C3ABCF7.3050108@ladisch.de>
+	<op.vfp8sffky9cctd@localhost>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <20100722164927.GC16119@rakim.wolfsonmicro.main>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>, lrg@slimlogic.co.uk
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2867D103809
+	for <alsa-devel@alsa-project.org>;
+	Thu, 22 Jul 2010 22:50:06 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Oc2iR-0001rS-Ig
+	for alsa-devel@alsa-project.org; Thu, 22 Jul 2010 22:50:03 +0200
+Received: from dyn.144.85.144-019.dsl.vtx.ch ([dyn.144.85.144-019.dsl.vtx.ch])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2010 22:50:03 +0200
+Received: from 2 by dyn.144.85.144-019.dsl.vtx.ch with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2010 22:50:03 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-On Jul 22, 2010, at 11:49 AM, Mark Brown wrote:
-
-> On Thu, Jul 22, 2010 at 11:33:30AM -0500, Timur Tabi wrote:
->> The immap_86xx.h header file only defines one data structure: the "global
->> utilities" register set found on Freescale PowerPC SOCs.  Rename this file
->> to fsl_guts.h to reflect its true purpose, and extend it to cover the "GUTS"
->> register set on 85xx chips.
->> 
->> Signed-off-by: Timur Tabi <timur@freescale.com>
+Viliam Kubis <viliam.kubis <at> gmail.com> writes:
+> Oh my god!! It actually works!!! :) At first speaker-test was not working,  
+> but with
 > 
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+[..]
+> Finally! My audio experience is now at a whole new level. Thank you very  
+> much, I will post this patch to alsa-bugtracker and close the bug, I was  
+> starting to think that this is a kernel problem, but now it just works  
+> GREAT.
+> 
+> Maybe you can add this patch to official alsa-driver version on next  
+> release.
 
-Acked-by: Kumar Gala <galak@kernel.crashing.org>
+This patch makes 5.1 analog surround work for me.  I'm using an ASUS P5Q-VM DO 
+which has a VIA VT1708S.  The mainboard has three analog jacks in the rear and 
+an on-board jumper for two front jacks.
 
-- k
+cheers
+  simon
