@@ -1,22 +1,19 @@
-From: ccamacho@linuxmail.org
-Subject: add support for Codec: Conexant ID 5068 (not present
-	in ALSA yet)
-Date: Wed, 21 Jul 2010 15:25:12 -0400
-Message-ID: <8CCF72192D7F60D-C2C-E718@web-mmc-d03.sysops.aol.com>
+From: =?GB2312?B?bG9uZ2VyIHpob3UgKNbcwfop?= <longer.zhou@gmail.com>
+Subject: problems about converting sample rate when using ALSA
+	lib
+Date: Thu, 22 Jul 2010 11:38:16 +0800
+Message-ID: <AANLkTincHzTzp9dWM33gDFf19NPTlWjJwvoXhztstDbj@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imr-da01.mx.aol.com (imr-da01.mx.aol.com [205.188.105.143])
-	by alsa0.perex.cz (Postfix) with ESMTP id 172DB2414B
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C5B024456
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jul 2010 21:25:25 +0200 (CEST)
-Received: from imo-da02.mx.aol.com (imo-da02.mx.aol.com [205.188.169.200])
-	by imr-da01.mx.aol.com (8.14.1/8.14.1) with ESMTP id o6LJPKi7006614
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2010 15:25:20 -0400
-Received: from ccamacho@linuxmail.org
-	by imo-da02.mx.aol.com  (mail_out_v42.9.) id 5.c4e.6e8b5d55 (37131)
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2010 15:25:17 -0400 (EDT)
+	Thu, 22 Jul 2010 05:38:21 +0200 (CEST)
+Received: by yxm8 with SMTP id 8so2385473yxm.38
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2010 20:38:17 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,15 +26,31 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi all,
 
- Hi all,
+I have a problem when using ALSA lib . The problem is :
 
-The codec (Conexant ID 5068) required by my sound card (Intel Corporation 5 Series/3400 Series Chipset High Definition Audio (rev 06)) is not present yet in alsa, I would highly appreciate if you guys could add support for it. You guys might find the information collected by the alsa-info.sh script on
+My ALSA driver only support a special sample rate , so ALSA lib must
 
-http://www.alsa-project.org/db/?f=8f8001d873d5c10c293eac1c94f2ede0b73cd865
+convert sample rates. But My driver don't get any audio data. When tracing
+the
 
-Thanks a lot in advance for looking into this.
+code of ALSA lib (alsa-driver-1.0.23), I found that : It mmap a address from
+my
 
-Cheers,
+driver , but writting audio data to another address instead of that mmaped
+address.
 
-Cristopher
+
+
+I think this is why my driver don't get any audio data .But I don't know why
+it don't
+
+write audo data to that mmaped address.
+
+
+Can you help me ? Any advices would help me a lot.
+
+Thank you,
+
+longer.zhou
