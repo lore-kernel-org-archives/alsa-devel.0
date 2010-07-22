@@ -1,19 +1,21 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: multi-component: determine which DAI is active?
-Date: Thu, 22 Jul 2010 09:09:35 +0100
-Message-ID: <1279786175.3083.14.camel@odin>
-References: <4C4778E5.6090200@freescale.com>
+Subject: Re: ASoC: multi-component updates from RFC
+Date: Thu, 22 Jul 2010 09:18:24 +0100
+Message-ID: <1279786704.3083.22.camel@odin>
+References: <1279715490.3072.51.camel@odin>
+	<201007220927.16738.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 84FA810380C
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id ABF09103801
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Jul 2010 10:09:39 +0200 (CEST)
-Received: by wwb22 with SMTP id 22so1569042wwb.20
-	for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2010 01:09:39 -0700 (PDT)
-In-Reply-To: <4C4778E5.6090200@freescale.com>
+	Thu, 22 Jul 2010 10:18:28 +0200 (CEST)
+Received: by wyb42 with SMTP id 42so330897wyb.38
+	for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2010 01:18:28 -0700 (PDT)
+In-Reply-To: <201007220927.16738.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,58 +25,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-07-21 at 17:47 -0500, Timur Tabi wrote:
-> Liam,
+On Thu, 2010-07-22 at 09:27 +0300, Peter Ujfalusi wrote:
+> Hello Liam,
 > 
-> In order to get fsl_dma.c to work with the WM8776, which has separate DAIs
-> for playback and capture, I've had to do this:
+> On Wednesday 21 July 2010 15:31:30 ext Liam Girdwood wrote:
 > 
-> if (pcm->streams[0].substream) {
-> 	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
-> 		fsl_dma_hardware.buffer_bytes_max,
-> 		&pcm->streams[0].substream->dma_buffer);
-> 	if (ret) {
-> 		dev_err(card->dev, "can't allocate playback dma buffer\n");
-> 		return ret;
-> 	}
-> }
-> 
-> if (pcm->streams[1].substream) {
-> 	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
-> 		fsl_dma_hardware.buffer_bytes_max,
-> 		&pcm->streams[1].substream->dma_buffer);
-> 	if (ret) {
-> 		snd_dma_free_pages(&pcm->streams[0].substream->dma_buffer);
-> 		dev_err(card->dev, "can't allocate capture dma buffer\n");
-> 		return ret;
-> 	}
-> }
-> 
-> That is, I need to check if the 'substream' pointer has been initialized.
-> 
-> This looks ugly to me.  In an earlier version of ASoC, I would have done this:
-> 
-> if (dai->playback.channels_min) {
 > ...
 > 
-> if (dai->capture.channels_min) {
-> ...
+> > The only other change I've made is fixing the twl4030 and DAC33 codec
+> > probe and remove (as spotted by Peter).
 > 
+> I'm in the process of checking the changes.
+> For the twl4030 I have spotted the following:
+> 1. twl-core registers "twl4030_codec" platform device.
+> 2. The driver for this is the drivers/mfd/twl4030-codec.c
+> 3. this MFD driver registers the following platform devices:
+>    twl4030_codec_audio
+>    twl4030_codec_vibra
+> 4. the sound/soc/codecs/twl4030.c is the twl4030_codec_audio driver
+
+Ah, I didn't see that part. I'll revert the twl-core name change.
+
+> 5. the drivers/input/misc/twl4030-vibra.c is the twl4030_codec_vibra driver
+> Note: the platform data is propagated from board files to mfd/twl4030-codec.c, 
+> than this mfd driver passes the appropriate platform data to the soc codec, and 
+> vibra driver.
 > 
-> But dai->playback and dai->capture no longer exist.  How should I handle this?
+> The codec part of twl40x0, twl50x0 has vibra and audio functionality, and they 
+> have interoperability problems (sharing the same resources).
 > 
 
-Since the DAI driver max/min supported number of channels is driver
-specific and static, it's now in the DAI driver :-
+I'm actually looking into the interop problems later as twl6040 + vibra
+has the same issues.
 
-if (dai->driver->playback.channels_min) {
+> The name for the drivers/mfd/twl4030-codec.c is chosen, because the TRM refers 
+> to this block as codec (audio + vibra).
+> We could go, and rename however this mfd driver to twl4030-audio (since the TRM 
+> randomly refers to audio block instead of codec).
+> Than we can have twl4030-codec as device name for the soc codec, and twl4030-
+> vibra for the vibra.
+> 
+
+Agreed, I'll make that change.
+
+> I'll continue on checking the changes...
+> 
+
+Thanks
 
 Liam
-
 -- 
 Freelance Developer, SlimLogic Ltd
 ASoC and Voltage Regulator Maintainer.
