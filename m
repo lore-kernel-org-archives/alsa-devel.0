@@ -1,21 +1,31 @@
-From: Seungwhan Youn <claude.youn@gmail.com>
-Subject: Re: [PATCH] ASoC: multi-component: SAMSUNG: Fix
-	compile error when registering a DAI
-Date: Thu, 22 Jul 2010 16:35:11 +0900
-Message-ID: <AANLkTiluZwni88uY6WtwKkB9Qpm2ECz_37z5_bUY1jII@mail.gmail.com>
+From: Chanwoo Choi <cw00.choi@samsung.com>
+Subject: Re: [PATCH] ASoC: multi-component: SAMSUNG:
+ Fix	compile error when registering a DAI
+Date: Thu, 22 Jul 2010 16:45:39 +0900
+Message-ID: <4C47F723.4090506@samsung.com>
 References: <4C47D3A3.9000102@samsung.com>
+	<AANLkTiluZwni88uY6WtwKkB9Qpm2ECz_37z5_bUY1jII@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2A95B1037FB
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id 05B71103807
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Jul 2010 09:35:13 +0200 (CEST)
-Received: by wyb42 with SMTP id 42so306854wyb.38
-	for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2010 00:35:12 -0700 (PDT)
-In-Reply-To: <4C47D3A3.9000102@samsung.com>
+	Thu, 22 Jul 2010 09:51:18 +0200 (CEST)
+Received: from epmmp1. (mailout3.samsung.com [203.254.224.33])
+	by mailout3.samsung.com
+	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
+	2010)) with ESMTP id <0L5Y00F698838WC0@mailout3.samsung.com> for
+	alsa-devel@alsa-project.org; Thu, 22 Jul 2010 16:45:39 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net
+	(unknown [165.213.149.150])
+	by mmp1.samsung.com (Sun Java(tm) System Messaging Server 7u3-15.01
+	64bit
+	(built Feb 12 2010)) with ESMTPA id <0L5Y0081V883FA70@mmp1.samsung.com>
+	for
+	alsa-devel@alsa-project.org; Thu, 22 Jul 2010 16:45:39 +0900 (KST)
+In-reply-to: <AANLkTiluZwni88uY6WtwKkB9Qpm2ECz_37z5_bUY1jII@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,44 +35,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Chanwoo Choi <cw00.choi@samsung.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Kyungmin Park <kyungmin.park@samsung.com>, Joonyoung Shim <jy0922.shim@samsung.com>
+To: Seungwhan Youn <claude.youn@gmail.com>
+Cc: alsa-devel@alsa-project.org, Joonyoung Shim <jy0922.shim@samsung.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Chanwoo Choi <cw00.choi@samsung.com>, Kyungmin Park <kyungmin.park@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiBUaHUsIEp1bCAyMiwgMjAxMCBhdCAyOjE0IFBNLCBDaGFud29vIENob2kgPGN3MDAu
-Y2hvaUBzYW1zdW5nLmNvbT4gd3JvdGU6Cj4gVGhpcyBwYXRjaCBtb2RpZnkgc29tZSBjb2RlIHdo
-aWNoIHJlZ2lzdGVyIGEgREFJIHdpdGggQVNvQyBjb3JlCj4gYWNjb3JkaW5nIHRvIG1vZGlmaWVk
-IHJlZ2lzdHJhdGlvbiBBUEkgb2YgREFJLgo+Cj4gU2lnbmVkLW9mZi1ieTogQ2hhbndvbyBDaG9p
-IDxjdzAwLmNob2lAc2Ftc3VuZy5jb20+Cj4gU2lnbmVkLW9mZi1ieTogS3l1bmdtaW4gUGFyayA8
-a3l1bmdtaW4ucGFya0BzYW1zdW5nLmNvbT4KPiAtLS0KPiDCoHNvdW5kL3NvYy9zM2MyNHh4L2Fx
-dWlsYV93bTg5OTQuYyB8IMKgIMKgMyArLS0KPiDCoHNvdW5kL3NvYy9zM2MyNHh4L3MzYy1pMnMt
-djIuYyDCoCDCoHwgwqAgwqAyICstCj4gwqAyIGZpbGVzIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygr
-KSwgMyBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvczNjMjR4eC9hcXVp
-bGFfd204OTk0LmMgYi9zb3VuZC9zb2MvczNjMjR4eC9hcXVpbGFfd204OTk0LmMKPiBpbmRleCA2
-OWM0MWViLi4wMDdlZDNhIDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9zM2MyNHh4L2FxdWlsYV93
-bTg5OTQuYwo+ICsrKyBiL3NvdW5kL3NvYy9zM2MyNHh4L2FxdWlsYV93bTg5OTQuYwo+IEBAIC0y
-NjgsOCArMjY4LDcgQEAgc3RhdGljIGludCBfX2luaXQgYXF1aWxhX2luaXQodm9pZCkKPiDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoHJldHVybiAtRU5PTUVNOwo+Cj4gwqAgwqAgwqAgwqAvKiByZWdp
-c3RlciB2b2ljZSBEQUkgaGVyZSAqLwo+IC0gwqAgwqAgwqAgcmV0ID0gc25kX3NvY19yZWdpc3Rl
-cl9kYWkoJmFxdWlsYV9zbmRfZGV2aWNlLT5kZXYsCj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCAwLCAmdm9pY2VfZGFpKTsKPiArIMKgIMKgIMKgIHJldCA9IHNuZF9zb2NfcmVn
-aXN0ZXJfZGFpKCZhcXVpbGFfc25kX2RldmljZS0+ZGV2LCAmdm9pY2VfZGFpKTsKPiDCoCDCoCDC
-oCDCoGlmIChyZXQpCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqByZXR1cm4gcmV0Owo+Cj4gZGlm
-ZiAtLWdpdCBhL3NvdW5kL3NvYy9zM2MyNHh4L3MzYy1pMnMtdjIuYyBiL3NvdW5kL3NvYy9zM2My
-NHh4L3MzYy1pMnMtdjIuYwo+IGluZGV4IGY0ZmJjMGUuLmIzODY2ZDUgMTAwNjQ0Cj4gLS0tIGEv
-c291bmQvc29jL3MzYzI0eHgvczNjLWkycy12Mi5jCj4gKysrIGIvc291bmQvc29jL3MzYzI0eHgv
-czNjLWkycy12Mi5jCj4gQEAgLTc1MCw3ICs3NTAsNyBAQCBpbnQgczNjX2kyc3YyX3JlZ2lzdGVy
-X2RhaShzdHJ1Y3QgZGV2aWNlICpkZXYsIGludCBpZCwKPiDCoCDCoCDCoCDCoGRydi0+c3VzcGVu
-ZCA9IHMzYzI0MTJfaTJzX3N1c3BlbmQ7Cj4gwqAgwqAgwqAgwqBkcnYtPnJlc3VtZSA9IHMzYzI0
-MTJfaTJzX3Jlc3VtZTsKPgo+IC0gwqAgwqAgwqAgcmV0dXJuIHNuZF9zb2NfcmVnaXN0ZXJfZGFp
-KGRldiwgaWQsIGRydik7Cj4gKyDCoCDCoCDCoCByZXR1cm4gc25kX3NvY19yZWdpc3Rlcl9kYWko
-ZGV2LCBkcnYpOwoKSG93IGFib3V0IHMzYzY0eHgtaTJzPyBJIHRoaW5rLCBpZiB0aGlzIHBhdGNo
-IGZpeGVzIGFsbCBlcnJvcnMgaW4KJ3NvdW5kL3NvYy9zM2MyNHh4JywKSXQnbGwgYmUgbW9yZSBu
-aWNlIHRoYW4gdGhpcy4KCj4gwqB9Cj4gwqBFWFBPUlRfU1lNQk9MX0dQTChzM2NfaTJzdjJfcmVn
-aXN0ZXJfZGFpKTsKPgo+IC0tCj4gMS42LjMuMwo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4KX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+Seungwhan Youn wrote:
+> Hi,
+> 
+> On Thu, Jul 22, 2010 at 2:14 PM, Chanwoo Choi <cw00.choi@samsung.com> wrote:
+>> This patch modify some code which register a DAI with ASoC core
+>> according to modified registration API of DAI.
+>>
+>> Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+>> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+>> ---
+>>  sound/soc/s3c24xx/aquila_wm8994.c |    3 +--
+>>  sound/soc/s3c24xx/s3c-i2s-v2.c    |    2 +-
+>>  2 files changed, 2 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/sound/soc/s3c24xx/aquila_wm8994.c b/sound/soc/s3c24xx/aquila_wm8994.c
+>> index 69c41eb..007ed3a 100644
+>> --- a/sound/soc/s3c24xx/aquila_wm8994.c
+>> +++ b/sound/soc/s3c24xx/aquila_wm8994.c
+>> @@ -268,8 +268,7 @@ static int __init aquila_init(void)
+>>                return -ENOMEM;
+>>
+>>        /* register voice DAI here */
+>> -       ret = snd_soc_register_dai(&aquila_snd_device->dev,
+>> -                       0, &voice_dai);
+>> +       ret = snd_soc_register_dai(&aquila_snd_device->dev, &voice_dai);
+>>        if (ret)
+>>                return ret;
+>>
+>> diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/s3c24xx/s3c-i2s-v2.c
+>> index f4fbc0e..b3866d5 100644
+>> --- a/sound/soc/s3c24xx/s3c-i2s-v2.c
+>> +++ b/sound/soc/s3c24xx/s3c-i2s-v2.c
+>> @@ -750,7 +750,7 @@ int s3c_i2sv2_register_dai(struct device *dev, int id,
+>>        drv->suspend = s3c2412_i2s_suspend;
+>>        drv->resume = s3c2412_i2s_resume;
+>>
+>> -       return snd_soc_register_dai(dev, id, drv);
+>> +       return snd_soc_register_dai(dev, drv);
+> 
+> How about s3c64xx-i2s? I think, if this patch fixes all errors in
+Sorry, I confused your comment.
+What do you mean "How about s3c64xx-i2s" ?
+
+> 'sound/soc/s3c24xx',
+> It'll be more nice than this.
