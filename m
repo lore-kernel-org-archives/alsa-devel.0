@@ -1,22 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH][v2] powerpc: rename immap_86xx.h to
- fsl_guts.h, and add 85xx support
-Date: Fri, 23 Jul 2010 19:10:28 +0100
-Message-ID: <1279908628.3076.1.camel@odin>
-References: <1279816410-19079-1-git-send-email-timur@freescale.com>
-	<20100722164927.GC16119@rakim.wolfsonmicro.main>
-	<84CE2602-9E81-473B-8E5F-4F4AD0E07484@freescale.com>
+Subject: Re: asoc multi-component: CPU DAI name is wrong
+Date: Fri, 23 Jul 2010 19:16:23 +0100
+Message-ID: <1279908983.3076.8.camel@odin>
+References: <4C48BEBA.8080207@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 67C4F1039D4
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7A8D51039D4
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jul 2010 20:10:36 +0200 (CEST)
-Received: by mail-ww0-f51.google.com with SMTP id 22so3204006wwb.20
-	for <alsa-devel@alsa-project.org>; Fri, 23 Jul 2010 11:10:36 -0700 (PDT)
-In-Reply-To: <84CE2602-9E81-473B-8E5F-4F4AD0E07484@freescale.com>
+	Fri, 23 Jul 2010 20:16:30 +0200 (CEST)
+Received: by wyb42 with SMTP id 42so475015wyb.38
+	for <alsa-devel@alsa-project.org>; Fri, 23 Jul 2010 11:16:30 -0700 (PDT)
+In-Reply-To: <4C48BEBA.8080207@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,32 +24,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kumar Gala <kumar.gala@freescale.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>
+To: Timur Tabi <timur@freescale.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-07-22 at 13:43 -0500, Kumar Gala wrote:
-> On Jul 22, 2010, at 11:49 AM, Mark Brown wrote:
+On Thu, 2010-07-22 at 16:57 -0500, Timur Tabi wrote:
+> Liam,
 > 
-> > On Thu, Jul 22, 2010 at 11:33:30AM -0500, Timur Tabi wrote:
-> >> The immap_86xx.h header file only defines one data structure: the "global
-> >> utilities" register set found on Freescale PowerPC SOCs.  Rename this file
-> >> to fsl_guts.h to reflect its true purpose, and extend it to cover the "GUTS"
-> >> register set on 85xx chips.
-> >> 
-> >> Signed-off-by: Timur Tabi <timur@freescale.com>
-> > 
-> > Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> I have this in my machine driver:
 > 
-> Acked-by: Kumar Gala <galak@kernel.crashing.org>
+> machine_data->dai[0].cpu_dai_name = strrchr(np->full_name, '/') + 1;
+> printk(KERN_INFO "%s:%u cpu_dai_name=%s\n", __func__, __LINE__,
+> machine_data->dai[0].cpu_dai_name);
+> ...
+> platform_set_drvdata(sound_device, &machine_data->card);
+> ret = platform_device_add(sound_device);
 > 
-> - k
+> which displays this message:
+> 
+> mpc8610_hpcd_probe:316 cpu_dai_name=ssi@16000
+> 
+> So my machine driver says the CPU DAI name is "ssi@16000", and my CPU driver
+> does the same thing.  However, I put some printks in soc_bind_dai_link, and
+> this is what I see:
+> 
+> soc_bind_dai_link:1136 cpu_dai->name=e0016000.ssi
+> dai_link->cpu_dai_name=ssi@16000
+> soc_bind_dai_link:1136 cpu_dai->name=cs4270-hifi
+> dai_link->cpu_dai_name=ssi@16000
+> soc_bind_dai_link:1159 codec->name=0-004f
+> dai_link->codec_name=cs4270-codec.0-004f
+> soc_bind_dai_link:1193 platform->name=e0021180.dma-channel
+> dai_link->platform_name=/soc@e0000000/dma@21300/dma-channel@0
+> soc_bind_dai_link:1193 platform->name=e0021100.dma-channel
+> dai_link->platform_name=/soc@e0000000/dma@21300/dma-channel@0
+> soc_bind_dai_link:1136 cpu_dai->name=e0016000.ssi
+> dai_link->cpu_dai_name=ssi@16000
+> soc_bind_dai_link:1136 cpu_dai->name=cs4270-hifi
+> dai_link->cpu_dai_name=ssi@16000
+> soc_bind_dai_link:1159 codec->name=0-004f
+> dai_link->codec_name=cs4270-codec.0-004f
+> soc_bind_dai_link:1193 platform->name=e0021180.dma-channel
+> dai_link->platform_name=/soc@e0000000/dma@21300/dma-channel@1
+> soc_bind_dai_link:1193 platform->name=e0021100.dma-channel
+> dai_link->platform_name=/soc@e0000000/dma@21300/dma-channel@1
+> 
+> Where in the world is "e0016000.ssi" coming from?  Why is ASoC ignoring my
+> .cpu_dai_name value?
+> 
 
-Applied.
+My mistake, I'd missed something in the forward port. I've fixed the DAI
+naming problem and you should see your DAI use the correct name.
+
+Give kernel.org about 30 mins to sync before pulling.
 
 Thanks
 
-Liam
+Liam  
 -- 
 Freelance Developer, SlimLogic Ltd
 ASoC and Voltage Regulator Maintainer.
