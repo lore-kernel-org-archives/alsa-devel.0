@@ -1,26 +1,62 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH 6/6] pcmcia: remove cs_types.h
-Date: Fri, 23 Jul 2010 11:48:16 -0700 (PDT)
-Message-ID: <20100723.114816.193692123.davem@davemloft.net>
-References: <20100723083726.GA20947@comet.dominikbrodowski.net>
-	<1279874305-21191-6-git-send-email-linux@dominikbrodowski.net>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: asoc multi-component: CPU DAI name is wrong
+Date: Fri, 23 Jul 2010 13:56:07 -0500
+Message-ID: <4C49E5C7.8020500@freescale.com>
+References: <4C48BEBA.8080207@freescale.com> <1279908983.3076.8.camel@odin>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-ide-owner@vger.kernel.org>
-In-Reply-To: <1279874305-21191-6-git-send-email-linux@dominikbrodowski.net>
-Sender: linux-ide-owner@vger.kernel.org
-To: linux@dominikbrodowski.net
-Cc: linux-pcmcia@lists.infradead.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org, linux-usb@vger.kernel.org, laforge@gnumonks.org, linux-mtd@lists.infradead.org, linux-bluetooth@vger.kernel.org, alsa-devel@alsa-project.org, linux-serial@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from VA3EHSOBE006.bigfish.com (va3ehsobe005.messaging.microsoft.com
+	[216.32.180.31])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6EAD510382A
+	for <alsa-devel@alsa-project.org>;
+	Fri, 23 Jul 2010 20:56:12 +0200 (CEST)
+Received: from mail59-va3 (localhost.localdomain [127.0.0.1])	by
+	mail59-va3-R.bigfish.com (Postfix) with ESMTP id BC2321BE8113	for
+	<alsa-devel@alsa-project.org>; Fri, 23 Jul 2010 18:56:10 +0000 (UTC)
+Received: from VA3EHSMHS009.bigfish.com (unknown [10.7.14.254])	by
+	mail59-va3.bigfish.com (Postfix) with ESMTP id 8B678117004F	for
+	<alsa-devel@alsa-project.org>; Fri, 23 Jul 2010 18:56:10 +0000 (UTC)
+Received: from az33smr02.freescale.net (az33smr02.freescale.net
+	[10.64.34.200])	by az33egw02.freescale.net (8.14.3/8.14.3) with ESMTP
+	id o6NIu768002491	for <alsa-devel@alsa-project.org>;
+	Fri, 23 Jul 2010 11:56:07 -0700 (MST)
+Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
+	[10.64.32.16])	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP id
+	o6NIuDDY020870	for <alsa-devel@alsa-project.org>;
+	Fri, 23 Jul 2010 13:56:13 -0500 (CDT)
+In-Reply-To: <1279908983.3076.8.camel@odin>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Dominik Brodowski <linux@dominikbrodowski.net>
-Date: Fri, 23 Jul 2010 10:38:25 +0200
+Liam Girdwood wrote:
+> My mistake, I'd missed something in the forward port. I've fixed the DAI
+> naming problem and you should see your DAI use the correct name.
 
-> Remove cs_types.h which is no longer needed: Most definitions aren't
-> used at all, a few can be made away with, and two remaining definitions
-> (typedefs, unfortunatley) may be moved to more specific places.
-> 
-> Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
+Looks like you forgot something:
 
-Acked-by: David S. Miller <davem@davemloft.net>
+  CC      sound/soc/soc-core.o
+sound/soc/soc-core.c: In function 'snd_soc_register_dai':
+sound/soc/soc-core.c:2872: error: 'struct snd_soc_dai' has no member named 'id'
+sound/soc/soc-core.c: In function 'snd_soc_register_dais':
+sound/soc/soc-core.c:2949: error: 'struct snd_soc_dai' has no member named 'id'
+sound/soc/soc-core.c: In function 'snd_soc_register_platform':
+sound/soc/soc-core.c:3004: error: 'struct snd_soc_platform' has no member
+named 'id'
+sound/soc/soc-core.c: In function 'snd_soc_register_codec':
+sound/soc/soc-core.c:3102: error: 'struct snd_soc_codec' has no member named
+'id'
+make[2]: *** [sound/soc/soc-core.o] Error 1
+make[1]: *** [sound/soc] Error 2
+make: *** [sound] Error 2
