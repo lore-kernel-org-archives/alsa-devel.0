@@ -1,18 +1,16 @@
-From: Simos Xenitellis <simos.lists@googlemail.com>
-Subject: Issues with ATI IXP SB4x0
-Date: Fri, 23 Jul 2010 02:24:02 +0300
-Message-ID: <AANLkTimlU5yWPMoeP3GS6Nu4tX7pox-RTC-vM8ucJk37@mail.gmail.com>
+From: Seungwhan Youn <sw.youn@samsung.com>
+Subject: [PATCH] ASoC: multi-component - Fix Core AC97 set
+	device name
+Date: Fri, 23 Jul 2010 09:50:31 +0900
+Message-ID: <1279846231-29820-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id DBC3710380D
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id C06AE243B0
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jul 2010 01:24:22 +0200 (CEST)
-Received: by wyb42 with SMTP id 42so1071125wyb.38
-	for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2010 16:24:22 -0700 (PDT)
+	Fri, 23 Jul 2010 03:01:29 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,16 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Seungwhan Youn <sw.youn@samsung.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Seungwhan Youn <claude.youn@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-An Acer laptop with the ATI IXP SB4x0 chipset fails to detect the audio card.
-Here is the alsa-info file with latest Alsa,
-http://www.alsa-project.org/db/?f=b63339af32dd301eba9f5ef6a0787ccfbeb55778
+AC97 driver needs to make kobject with id which from codec.
+But in multi-component, this id was removed, so this patch
+fix this same as 'sound/pci/ac97/ac97_codec.c'.
 
-What should be the next thing to try in order to solve this issue?
-The "Conexant ID 2c06" string in the file appears to refer to the modem (?).
-Googling with the subsystem ID '1025:009f only brings cases where the
-sound does not work.
-Any suggestions on where to look at?
+Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+---
+ sound/soc/soc-core.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Simos
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 23dad36..d074b2b 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -310,7 +310,7 @@ static int soc_ac97_dev_register(struct snd_soc_codec *codec)
+ 	codec->ac97->dev.release = soc_ac97_device_release;
+ 
+ 	dev_set_name(&codec->ac97->dev, "%d-%d:%s",
+-		     codec->id, 0, codec->name);
++		     codec->ac97->bus->card->number, 0, codec->name);
+ 	err = device_register(&codec->ac97->dev);
+ 	if (err < 0) {
+ 		snd_printk(KERN_ERR "Can't register ac97 bus\n");
+-- 
+1.6.2.5
