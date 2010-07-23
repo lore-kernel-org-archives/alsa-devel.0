@@ -1,20 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: asoc multi-component: CPU DAI name is wrong
-Date: Fri, 23 Jul 2010 19:16:23 +0100
-Message-ID: <1279908983.3076.8.camel@odin>
-References: <4C48BEBA.8080207@freescale.com>
+Subject: Re: [PATCH v3 0/1] Codec driver for TI WL1273 FM Radio.
+Date: Fri, 23 Jul 2010 19:24:49 +0100
+Message-ID: <1279909489.3076.17.camel@odin>
+References: <1279888971-14296-1-git-send-email-matti.j.aaltonen@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7A8D51039D4
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id BC777103835
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jul 2010 20:16:30 +0200 (CEST)
-Received: by wyb42 with SMTP id 42so475015wyb.38
-	for <alsa-devel@alsa-project.org>; Fri, 23 Jul 2010 11:16:30 -0700 (PDT)
-In-Reply-To: <4C48BEBA.8080207@freescale.com>
+	Fri, 23 Jul 2010 20:24:55 +0200 (CEST)
+Received: by wwb22 with SMTP id 22so3218507wwb.20
+	for <alsa-devel@alsa-project.org>; Fri, 23 Jul 2010 11:24:55 -0700 (PDT)
+In-Reply-To: <1279888971-14296-1-git-send-email-matti.j.aaltonen@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,64 +23,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-07-22 at 16:57 -0500, Timur Tabi wrote:
-> Liam,
+On Fri, 2010-07-23 at 15:42 +0300, Matti J. Aaltonen wrote:
+> Hello all.
 > 
-> I have this in my machine driver:
+> Thank you for comments and thanks to Peter for advice on constraints
+> and ALSA in general.
 > 
-> machine_data->dai[0].cpu_dai_name = strrchr(np->full_name, '/') + 1;
-> printk(KERN_INFO "%s:%u cpu_dai_name=%s\n", __func__, __LINE__,
-> machine_data->dai[0].cpu_dai_name);
-> ...
-> platform_set_drvdata(sound_device, &machine_data->card);
-> ret = platform_device_add(sound_device);
+> New in this version:
 > 
-> which displays this message:
+> 1. Now constraints are used in the start-up function. It wasn't as big
+> a deal as I thought... Also now the codec is always in full duplex
+> mode.  But it still refuses to do the wrong thing with FM as real full
+> duplex is then impossible.
 > 
-> mpc8610_hpcd_probe:316 cpu_dai_name=ssi@16000
+> 2. Fixed the exported mode support function. The name in now
+> wl1273_get_format and it returns the audio interface format.
 > 
-> So my machine driver says the CPU DAI name is "ssi@16000", and my CPU driver
-> does the same thing.  However, I put some printks in soc_bind_dai_link, and
-> this is what I see:
+> 3. Removed the remaining obsolete functions.
 > 
-> soc_bind_dai_link:1136 cpu_dai->name=e0016000.ssi
-> dai_link->cpu_dai_name=ssi@16000
-> soc_bind_dai_link:1136 cpu_dai->name=cs4270-hifi
-> dai_link->cpu_dai_name=ssi@16000
-> soc_bind_dai_link:1159 codec->name=0-004f
-> dai_link->codec_name=cs4270-codec.0-004f
-> soc_bind_dai_link:1193 platform->name=e0021180.dma-channel
-> dai_link->platform_name=/soc@e0000000/dma@21300/dma-channel@0
-> soc_bind_dai_link:1193 platform->name=e0021100.dma-channel
-> dai_link->platform_name=/soc@e0000000/dma@21300/dma-channel@0
-> soc_bind_dai_link:1136 cpu_dai->name=e0016000.ssi
-> dai_link->cpu_dai_name=ssi@16000
-> soc_bind_dai_link:1136 cpu_dai->name=cs4270-hifi
-> dai_link->cpu_dai_name=ssi@16000
-> soc_bind_dai_link:1159 codec->name=0-004f
-> dai_link->codec_name=cs4270-codec.0-004f
-> soc_bind_dai_link:1193 platform->name=e0021180.dma-channel
-> dai_link->platform_name=/soc@e0000000/dma@21300/dma-channel@1
-> soc_bind_dai_link:1193 platform->name=e0021100.dma-channel
-> dai_link->platform_name=/soc@e0000000/dma@21300/dma-channel@1
+> 4. Not actually new but...
 > 
-> Where in the world is "e0016000.ssi" coming from?  Why is ASoC ignoring my
-> .cpu_dai_name value?
+> >> I didn't do this yet. But could you give me the git URL and then
+> >> I'll resend?
+> > git://git.kernel.org/pub/scm/linux/kernel/git/lrg/sound-2.6.git
+> 
+> I tried the corresponding http URL
+> 
+> http://www.kernel.org/pub/scm/linux/kernel/git/lrg/sound-2.6.git but
+> got
+> 
+> fatal: 
+> http://www.kernel.org/pub/scm/linux/kernel/git/lrg/sound-2.6.git/info/refs
+> not found: did you run git update-server-info on the server?
 > 
 
-My mistake, I'd missed something in the forward port. I've fixed the DAI
-naming problem and you should see your DAI use the correct name.
+Oh, that's the wrong URL. The correct one is :-
 
-Give kernel.org about 30 mins to sync before pulling.
+git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git
+
+Can you re-do against multi-component. The changes all relate to probe()
+and remove(). 
 
 Thanks
 
-Liam  
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Liam
