@@ -1,20 +1,19 @@
-From: Wei Ni <wni@nvidia.com>
-Subject: Re: Support MCP89 hdmi audio
-Date: Fri, 23 Jul 2010 16:43:57 +0800
-Message-ID: <6B4D417B830BC44B8026029FD256F7F1C29D065C7E@HKMAIL01.nvidia.com>
-References: <6B4D417B830BC44B8026029FD256F7F1C29D065C70@HKMAIL01.nvidia.com>
-	<s5hr5ix2dzb.wl%tiwai@suse.de>
-	<6B4D417B830BC44B8026029FD256F7F1C29D065C72@HKMAIL01.nvidia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: multi-component - SAMSUNG -
+	Fix	compile error
+Date: Fri, 23 Jul 2010 10:02:09 +0100
+Message-ID: <20100723090208.GA12006@sirena.org.uk>
+References: <1279846176-29790-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id A82A8103817
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 88F84103818
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jul 2010 10:48:50 +0200 (CEST)
-In-Reply-To: <6B4D417B830BC44B8026029FD256F7F1C29D065C72@HKMAIL01.nvidia.com>
-Content-Language: en-US
+	Fri, 23 Jul 2010 11:02:12 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1279846176-29790-1-git-send-email-sw.youn@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,161 +23,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: 'alsa-devel' <alsa-devel@alsa-project.org>, Stephen Warren <swarren@nvidia.com>, 'linux-kernel' <linux-kernel@vger.kernel.org>, 'akpm' <akpm@linux-foundation.org>, 'Wu Fengguang' <fengguang.wu@intel.com>, 'Pavel Hofman' <pavel.hofman@insite.cz>
+To: Seungwhan Youn <sw.youn@samsung.com>
+Cc: alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Seungwhan Youn <claude.youn@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Takashi
-I tried your patch file, it worked fine on MCP89 board.
-But I still need to check some other problems.
-So please don't add this patch now.
-
-Thanks
-Wei.
-
------Original Message-----
-From: Wei Ni 
-Sent: Thursday, July 22, 2010 11:14 AM
-To: 'Takashi Iwai'
-Cc: Wu Fengguang; 'Pavel Hofman'; 'alsa-devel'; 'linux-kernel'; 'akpm'
-Subject: RE: Support MCP89 hdmi audio
-
-it's great, I will try it.
-
-Thanks
-Wei.
-
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de] 
-Sent: Wednesday, July 21, 2010 8:53 PM
-To: Wei Ni
-Cc: Wu Fengguang; 'Pavel Hofman'; 'alsa-devel'; 'linux-kernel'; 'akpm'
-Subject: Re: Support MCP89 hdmi audio
-
-At Wed, 21 Jul 2010 19:45:09 +0800,
-Wei Ni wrote:
+On Fri, Jul 23, 2010 at 09:49:36AM +0900, Seungwhan Youn wrote:
+> This patch fixes compile error on smdk_wm9713.
 > 
-> Hi, all
-> I'm an Nvidia engineer, I maintain the nvidia linux hdmi audio driver.
-> 
-> An end-user report a problem with his TV attached to an MCP89.
-> ALSA won't send audio to it, because
-> PD=0:
-> HDMI hot plug event: Pin=5 Presence_Detect=1 ELD_Valid=0
-> HDMI hot plug event: Pin=5 Presence_Detect=0 ELD_Valid=1
-> 
-> As you know, in linux driver patch_hdmi.c, it use (pind && eldv)
-> in unsolicited events. So the driver can't detect the monitor.
-> 
-> >From the HAD specification
-> (http://download.intel.com/standards/hdaudio/pdf/HDA036.pdf):
-> 
-> Original text for Unsolicited Response PD bit:
-> 
-> Presence Detect: When this bit is set, sense measurement has
-> changed on the pin widget and software can use the pin sense
-> control verb to determine the current pin sense data state.
-> For analog pin widgets, this UR means that Presence Detect or
-> Impedance has changed on the pin widget.
-> For digital pin widgets, including HDMI pin widgets, this means
-> that presence detect (and optionally ELD valid bit) has
-> **changed**. [my emphasis]
-> 
-> Updated text for Unsolicted Response PD bit:
-> 
-> Presence Detect: This bit reflects the **present** [my
-> emphasis] state of the Pin Sense Presence Detect bit when the
-> unsolicited response is triggered. Software can optionally use
-> the pin sense control verb to determine the latest pin sense
-> data state. This bit implementation is only required for
-> digital display pin widget. Non digital display pin widget is
-> optional to implement this bit.
-> 
-> For our MCP89, the values indicates the change of status of PD, not the actual value of PD,
-> which follows older description of UR for PD bit.
-> 
-> So could we add a workaround for MCP89? We could use Pin Sense to determine again in
-> unsolicited events. If it return 0xc0000000, it means PD=1 and ELVD=1.
-> Or do you have any suggestions?
+> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
 
-Yes.  The patch below does similar thing.
-Could you give it a try?
-
-
-thanks,
-
-Takashi
-
----
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 86067ee..2fc5396 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -52,6 +52,10 @@ struct hdmi_spec {
- 	 */
- 	struct hda_multi_out multiout;
- 	unsigned int codec_type;
-+
-+	/* misc flags */
-+	/* PD bit indicates only the update, not the current state */
-+	unsigned int old_pin_detect:1;
- };
- 
- 
-@@ -616,6 +620,9 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec, hda_nid_t nid,
-  * Unsolicited events
-  */
- 
-+static void hdmi_present_sense(struct hda_codec *codec, hda_nid_t pin_nid,
-+			       struct hdmi_eld *eld);
-+
- static void hdmi_intrinsic_event(struct hda_codec *codec, unsigned int res)
- {
- 	struct hdmi_spec *spec = codec->spec;
-@@ -632,6 +639,12 @@ static void hdmi_intrinsic_event(struct hda_codec *codec, unsigned int res)
- 	if (index < 0)
- 		return;
- 
-+	if (spec->old_pin_detect) {
-+		if (pind)
-+			hdmi_present_sense(codec, tag, &spec->sink_eld[index]);
-+		pind = spec->sink_eld[index].monitor_present;
-+	}
-+
- 	spec->sink_eld[index].monitor_present = pind;
- 	spec->sink_eld[index].eld_valid = eldv;
- 
-diff --git a/sound/pci/hda/patch_nvhdmi.c b/sound/pci/hda/patch_nvhdmi.c
-index 3c10c0b..b0652ac 100644
---- a/sound/pci/hda/patch_nvhdmi.c
-+++ b/sound/pci/hda/patch_nvhdmi.c
-@@ -478,6 +478,7 @@ static int patch_nvhdmi_8ch_89(struct hda_codec *codec)
- 
- 	codec->spec = spec;
- 	spec->codec_type = HDA_CODEC_NVIDIA_MCP89;
-+	spec->old_pin_detect = 1;
- 
- 	if (hdmi_parse_codec(codec) < 0) {
- 		codec->spec = NULL;
-@@ -508,6 +509,7 @@ static int patch_nvhdmi_8ch_7x(struct hda_codec *codec)
- 	spec->multiout.max_channels = 8;
- 	spec->multiout.dig_out_nid = nvhdmi_master_con_nid_7x;
- 	spec->codec_type = HDA_CODEC_NVIDIA_MCP7X;
-+	spec->old_pin_detect = 1;
- 
- 	codec->patch_ops = nvhdmi_patch_ops_8ch_7x;
- 
-@@ -528,6 +530,7 @@ static int patch_nvhdmi_2ch(struct hda_codec *codec)
- 	spec->multiout.max_channels = 2;
- 	spec->multiout.dig_out_nid = nvhdmi_master_con_nid_7x;
- 	spec->codec_type = HDA_CODEC_NVIDIA_MCP7X;
-+	spec->old_pin_detect = 1;
- 
- 	codec->patch_ops = nvhdmi_patch_ops_2ch;
- 
------------------------------------------------------------------------------------
-This email message is for the sole use of the intended recipient(s) and may contain
-confidential information.  Any unauthorized review, use, disclosure or distribution
-is prohibited.  If you are not the intended recipient, please contact the sender by
-reply email and destroy all copies of the original message.
------------------------------------------------------------------------------------
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
