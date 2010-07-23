@@ -1,22 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Which project to choose?
-Date: Fri, 23 Jul 2010 19:51:04 +0800
-Message-ID: <AANLkTikEBSvGFdRPSq+YxRWHfxMWx_5LBxAALAUaMicQ@mail.gmail.com>
-References: <1279062131.24837.22.camel@localhost.localdomain>
-	<AANLkTildhplqQxzk7mBMc5IW_3bwAVDDrRe5UDpJXIS6@mail.gmail.com>
-	<4C3DD271.6040003@epost.diwic.se>
+From: Greg KH <greg@kroah.com>
+Subject: Re: [PATCH] driver core: remove CONFIG_SYSFS_DEPRECATED
+Date: Fri, 23 Jul 2010 05:40:40 -0700
+Message-ID: <20100723124040.GA2281@kroah.com>
+References: <20100709185450.GA29473@kroah.com>
+	<20100714163852.b3c09930.akpm@linux-foundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8286F1039C5
+Received: from coco.kroah.org (kroah.org [198.145.64.141])
+	by alsa0.perex.cz (Postfix) with ESMTP id 300921039CD
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jul 2010 13:51:06 +0200 (CEST)
-Received: by vws20 with SMTP id 20so128223vws.38
-	for <alsa-devel@alsa-project.org>; Fri, 23 Jul 2010 04:51:04 -0700 (PDT)
-In-Reply-To: <4C3DD271.6040003@epost.diwic.se>
+	Fri, 23 Jul 2010 14:39:54 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20100714163852.b3c09930.akpm@linux-foundation.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,37 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Jens Axboe <axboe@kernel.dk>, Randy Dunlap <randy.dunlap@oracle.com>, alsa-devel@alsa-project.org, Kay Sievers <kay.sievers@vrfy.org>, Peter Zijlstra <a.p.zijlstra@chello.nl>, linux-scsi@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@suse.de>, linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>, "James E.J. Bottomley" <James.Bottomley@suse.de>, Alan Stern <stern@rowland.harvard.edu>, "Eric W. Biederman" <ebiederm@xmission.com>, Ingo Molnar <mingo@elte.hu>, Tejun Heo <tj@kernel.org>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Stephen Hemminger <shemminger@vyatta.com>, "David S. Miller" <davem@davemloft.net>
 List-Id: alsa-devel@alsa-project.org
 
-2010/7/14 David Henningsson <launchpad.web@epost.diwic.se>
+On Wed, Jul 14, 2010 at 04:38:52PM -0700, Andrew Morton wrote:
+> On Fri, 9 Jul 2010 11:54:50 -0700
+> Greg Kroah-Hartman <gregkh@suse.de> wrote:
+> 
+> > This is no longer needed by any userspace tools, so it's safe to
+> > remove.
+> 
+> Makes my FC6 test box not boot - can't find /dev/root.  Then when I go
+> back to plain old mainline (2.6.35-rc5) and run `make oldconfig', the
+> .config change sticks:
+> 
+> @@ -106,8 +106,7 @@
+>  CONFIG_LOG_BUF_SHIFT=17
+>  CONFIG_HAVE_UNSTABLE_SCHED_CLOCK=y
+>  # CONFIG_CGROUPS is not set
+> -CONFIG_SYSFS_DEPRECATED=y
+> -CONFIG_SYSFS_DEPRECATED_V2=y
+> +# CONFIG_SYSFS_DEPRECATED_V2 is not set
+>  CONFIG_RELAY=y
+>  CONFIG_NAMESPACES=y
+>  # CONFIG_UTS_NS is not set
+> 
+> and the box still won't boot.
 
-> 2010-07-14 13:13, Raymond Yau skrev:
->
-> > localhost pulseaudio[24553]: alsa-util.c:   appl_ptr     : 735801008
-> > localhost pulseaudio[24553]: alsa-util.c:   hw_ptr       : 735846184
-> >
-> > This is underrun as you can see appl_ptr is behing hw_ptr
->
-> Ehm, isn't that a ring buffer? I e, there is nothing wrong with appl_ptr
-> being less than hw_ptr.
->
-> > However PA server had disabled the underrun detection.
->
-> Please clarify. If you're talking about my patch (disable underruns in
-> alsa-plugins) here, it has nothing to do with this situation (PA
-> complaining about its back-end).
->
-> The situation above probably isn't even an underrun.
->
+Ok, for now, I've removed this patch from my tree, so you should not
+have any problem.
 
+I'll go work on this later next week when I have some more time.
 
-The other possible reason may be PA did not handle clock drifting properly
+thanks,
 
-how did PA calculate the sleeping time using 44100 or 1445100000/32768 ? ,
-
-ens1371 's clock is running faster than the system clock
-
-localhost pulseaudio[24553]: alsa-util.c:   rate         : 44100
-localhost pulseaudio[24553]: alsa-util.c:   exact rate   : 44101
-(1445100000/32768)
+greg k-h
