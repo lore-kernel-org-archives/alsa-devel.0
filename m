@@ -1,19 +1,20 @@
-From: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
-Subject: Re: [PATCH v3 0/1] Codec driver for TI WL1273 FM Radio.
-Date: Sat, 24 Jul 2010 11:05:25 +0300
-Message-ID: <1279958725.12777.38.camel@masi.mnp.nokia.com>
-References: <1279888971-14296-1-git-send-email-matti.j.aaltonen@nokia.com>
-	<1279909489.3076.17.camel@odin>
-Reply-To: matti.j.aaltonen@nokia.com
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: asoc multi-component: CPU DAI name is wrong
+Date: Sat, 24 Jul 2010 10:42:47 +0100
+Message-ID: <1279964567.3097.5.camel@odin>
+References: <4C48BEBA.8080207@freescale.com> <1279908983.3076.8.camel@odin>
+	<4C49E5C7.8020500@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id B34D71037F1
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0A277243A7
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Jul 2010 10:05:53 +0200 (CEST)
-In-Reply-To: <1279909489.3076.17.camel@odin>
+	Sat, 24 Jul 2010 11:42:50 +0200 (CEST)
+Received: by wwb22 with SMTP id 22so3710586wwb.20
+	for <alsa-devel@alsa-project.org>; Sat, 24 Jul 2010 02:42:49 -0700 (PDT)
+In-Reply-To: <4C49E5C7.8020500@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,66 +24,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Ujfalusi Peter <peter.ujfalusi@nokia.com>
+To: Timur Tabi <timur@freescale.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi.
+On Fri, 2010-07-23 at 13:56 -0500, Timur Tabi wrote:
+> Liam Girdwood wrote:
+> > My mistake, I'd missed something in the forward port. I've fixed the DAI
+> > naming problem and you should see your DAI use the correct name.
+> 
+> Looks like you forgot something:
+> 
+>   CC      sound/soc/soc-core.o
+> sound/soc/soc-core.c: In function 'snd_soc_register_dai':
+> sound/soc/soc-core.c:2872: error: 'struct snd_soc_dai' has no member named 'id'
+> sound/soc/soc-core.c: In function 'snd_soc_register_dais':
+> sound/soc/soc-core.c:2949: error: 'struct snd_soc_dai' has no member named 'id'
+> sound/soc/soc-core.c: In function 'snd_soc_register_platform':
+> sound/soc/soc-core.c:3004: error: 'struct snd_soc_platform' has no member
+> named 'id'
+> sound/soc/soc-core.c: In function 'snd_soc_register_codec':
+> sound/soc/soc-core.c:3102: error: 'struct snd_soc_codec' has no member named
+> 'id'
+> make[2]: *** [sound/soc/soc-core.o] Error 1
+> make[1]: *** [sound/soc] Error 2
+> make: *** [sound] Error 2
+> 
 
-On Fri, 2010-07-23 at 20:24 +0200, ext Liam Girdwood wrote:
-> On Fri, 2010-07-23 at 15:42 +0300, Matti J. Aaltonen wrote:
-> > Hello all.
-> > 
-> > Thank you for comments and thanks to Peter for advice on constraints
-> > and ALSA in general.
-> > 
-> > New in this version:
-> > 
-> > 1. Now constraints are used in the start-up function. It wasn't as big
-> > a deal as I thought... Also now the codec is always in full duplex
-> > mode.  But it still refuses to do the wrong thing with FM as real full
-> > duplex is then impossible.
-> > 
-> > 2. Fixed the exported mode support function. The name in now
-> > wl1273_get_format and it returns the audio interface format.
-> > 
-> > 3. Removed the remaining obsolete functions.
-> > 
-> > 4. Not actually new but...
-> > 
-> > >> I didn't do this yet. But could you give me the git URL and then
-> > >> I'll resend?
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/lrg/sound-2.6.git
-> > 
-> > I tried the corresponding http URL
-> > 
-> > http://www.kernel.org/pub/scm/linux/kernel/git/lrg/sound-2.6.git but
-> > got
-> > 
-> > fatal: 
-> > http://www.kernel.org/pub/scm/linux/kernel/git/lrg/sound-2.6.git/info/refs
-> > not found: did you run git update-server-info on the server?
-> > 
-> 
-> Oh, that's the wrong URL. The correct one is :-
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git
-> 
-> Can you re-do against multi-component. The changes all relate to probe()
-> and remove(). 
+Sorry, now fixed. Sound had somehow been disabled in my upstream .config
+and hence would build kernels.
 
-Yes. No problem... I actually woke up last night and realized that the
-format function I wrote didn't have a NULL pointer check for the value
-parameter... So please ignore the v2. patch. I'll send version v2.B
-soon...
-
-Cheers,
-Matti.
-
-> 
-> Thanks
-> 
-> Liam
-> 
-> 
-> 
+Liam 
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
