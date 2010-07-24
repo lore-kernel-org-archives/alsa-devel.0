@@ -1,32 +1,31 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: asoc multi-component: CPU DAI name is wrong
-Date: Fri, 23 Jul 2010 13:56:07 -0500
-Message-ID: <4C49E5C7.8020500@freescale.com>
-References: <4C48BEBA.8080207@freescale.com> <1279908983.3076.8.camel@odin>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Which project to choose?
+Date: Sat, 24 Jul 2010 11:51:46 +0800
+Message-ID: <AANLkTinXvthWBZ4oQg9D18cfAtkXveWHkB08vsXknGgB@mail.gmail.com>
+References: <1279062131.24837.22.camel@localhost.localdomain>
+	<AANLkTikEf4gf-oeQf4hNGUEvNi0YVrvutnSMCbxGwtJ8@mail.gmail.com>
+	<1279065709.24837.29.camel@localhost.localdomain>
+	<AANLkTimdM5__SzYFxrQqwsbOrxdit2uWOvkazPvZ4PND@mail.gmail.com>
+	<1279071115.29042.0.camel@localhost.localdomain>
+	<AANLkTimNSRELBq7i1Ypi9K2tmFu9NKLvQAOOqPwuU13x@mail.gmail.com>
+	<1279074303.29042.3.camel@localhost.localdomain>
+	<AANLkTimNYxIm9M6Mglrzh3YtJRiq1C8wdZwx-JUhLk9d@mail.gmail.com>
+	<1279145758.29042.11.camel@localhost.localdomain>
+	<AANLkTinN15BWNC2cn78rc5xCSXNo79SDE2_WkBNEg5I2@mail.gmail.com>
+	<1279157921.2668.1.camel@localhost.localdomain>
+	<i1n0mf$87c$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from VA3EHSOBE006.bigfish.com (va3ehsobe005.messaging.microsoft.com
-	[216.32.180.31])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6EAD510382A
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 40F181037E3
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jul 2010 20:56:12 +0200 (CEST)
-Received: from mail59-va3 (localhost.localdomain [127.0.0.1])	by
-	mail59-va3-R.bigfish.com (Postfix) with ESMTP id BC2321BE8113	for
-	<alsa-devel@alsa-project.org>; Fri, 23 Jul 2010 18:56:10 +0000 (UTC)
-Received: from VA3EHSMHS009.bigfish.com (unknown [10.7.14.254])	by
-	mail59-va3.bigfish.com (Postfix) with ESMTP id 8B678117004F	for
-	<alsa-devel@alsa-project.org>; Fri, 23 Jul 2010 18:56:10 +0000 (UTC)
-Received: from az33smr02.freescale.net (az33smr02.freescale.net
-	[10.64.34.200])	by az33egw02.freescale.net (8.14.3/8.14.3) with ESMTP
-	id o6NIu768002491	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jul 2010 11:56:07 -0700 (MST)
-Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
-	[10.64.32.16])	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP id
-	o6NIuDDY020870	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Jul 2010 13:56:13 -0500 (CDT)
-In-Reply-To: <1279908983.3076.8.camel@odin>
+	Sat, 24 Jul 2010 05:51:47 +0200 (CEST)
+Received: by vws20 with SMTP id 20so1027734vws.38
+	for <alsa-devel@alsa-project.org>; Fri, 23 Jul 2010 20:51:46 -0700 (PDT)
+In-Reply-To: <i1n0mf$87c$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,27 +35,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Liam Girdwood wrote:
-> My mistake, I'd missed something in the forward port. I've fixed the DAI
-> naming problem and you should see your DAI use the correct name.
+2010/7/15 Colin Guthrie <gmane@colin.guthr.ie>
 
-Looks like you forgot something:
+> 'Twas brillig, and Chris at 15/07/10 02:38 did gyre and gimble:
+> > On Thu, 2010-07-15 at 08:08 +0800, Raymond Yau wrote:
+> >
+> >>> I posted both of those bug reports. Honestly, I just want it to work
+> >>> without all the error output to syslog and thrashing of my HD for
+> >>> minutes at a time. As I said, I've got the output of pulseaudio -vvvvv
+> >>> if anyone would like to look at it and tell me what I need to do to fix
+> >>> the problem.
+> >>>
+> >>> Chris
+> >>>
+> >>>
+> >>>
+> >> Just upload your current pulseaudio.log and output of alsa-info.sh to
+> >> mandriva 's bugzilla
+> >>
+> >> Cannot obtain any conclusion based on the log which you have posted last
+> >> year ( xmms)
+> >>
+> >> as Jaroslav Kysela said , need the real system time between I/O
+> operations
+> >> and you'll see if it's issue in the ALSA driver or a task scheduling
+> >> problem.
+> >
+> > Here is the bug report with the outputs uploaded.
+> >
+> > https://qa.mandriva.com/show_bug.cgi?id=60169
+>
+> Well seeing as my process when getting such a bug is to report it here
+> on behalf of the user, I suspect that this has reached a stalemate....
+>
+>
+>
+Can I remove pulseaudio from mandriva 2000 ?
 
-  CC      sound/soc/soc-core.o
-sound/soc/soc-core.c: In function 'snd_soc_register_dai':
-sound/soc/soc-core.c:2872: error: 'struct snd_soc_dai' has no member named 'id'
-sound/soc/soc-core.c: In function 'snd_soc_register_dais':
-sound/soc/soc-core.c:2949: error: 'struct snd_soc_dai' has no member named 'id'
-sound/soc/soc-core.c: In function 'snd_soc_register_platform':
-sound/soc/soc-core.c:3004: error: 'struct snd_soc_platform' has no member
-named 'id'
-sound/soc/soc-core.c: In function 'snd_soc_register_codec':
-sound/soc/soc-core.c:3102: error: 'struct snd_soc_codec' has no member named
-'id'
-make[2]: *** [sound/soc/soc-core.o] Error 1
-make[1]: *** [sound/soc] Error 2
-make: *** [sound] Error 2
+I just want to test libcanberra-alsa alone ( i.e. libcanberra without
+pulseaudio )
+
+when PA server abort, and libcanberra-pulse cannot connect to PA server ,
+
+Will libcanberra use libcanberra-alsa connect to PA using alsa-pulse plugin
+?
