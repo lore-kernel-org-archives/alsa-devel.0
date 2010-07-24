@@ -1,17 +1,19 @@
-From: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
-Subject: [PATCH 0/3] Removing dead code
-Date: Wed, 21 Jul 2010 14:34:24 +0200
-Message-ID: <cover.1279708102.git.qy03fugy__48177.6633220308$1279953018$gmane$org@stud.informatik.uni-erlangen.de>
+From: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
+Subject: Re: [PATCH v3 0/1] Codec driver for TI WL1273 FM Radio.
+Date: Sat, 24 Jul 2010 11:05:25 +0300
+Message-ID: <1279958725.12777.38.camel@masi.mnp.nokia.com>
+References: <1279888971-14296-1-git-send-email-matti.j.aaltonen@nokia.com>
+	<1279909489.3076.17.camel@odin>
+Reply-To: matti.j.aaltonen@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from faui40.informatik.uni-erlangen.de
-	(faui40.informatik.uni-erlangen.de [131.188.34.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id D8B2C10392B
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id B34D71037F1
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Jul 2010 14:34:26 +0200 (CEST)
-Content-Disposition: inline
+	Sat, 24 Jul 2010 10:05:53 +0200 (CEST)
+In-Reply-To: <1279909489.3076.17.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,46 +23,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Tejun Heo <tj@kernel.org>, Julia Lawall <julia@diku.dk>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opens>
-Cc: vamos-dev@i4.informatik.uni-erlangen.de
+To: ext Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Ujfalusi Peter <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all!
-       
-        As part of the VAMOS[0] research project at the University of
-Erlangen we are looking at multiple integrity errors in linux'
-configuration system.
+Hi.
 
-        I've been running a check on the sound/ sourcetree for
-config Items not defined in Kconfig and found 3 such cases. Sourcecode
-blocks depending on these Items are not reachable from a vanilla
-kernel -- dead code. I've seen such dead blocks made on purpose
-e.g. while integrating new features into the kernel but generally
-they're just useless.
+On Fri, 2010-07-23 at 20:24 +0200, ext Liam Girdwood wrote:
+> On Fri, 2010-07-23 at 15:42 +0300, Matti J. Aaltonen wrote:
+> > Hello all.
+> > 
+> > Thank you for comments and thanks to Peter for advice on constraints
+> > and ALSA in general.
+> > 
+> > New in this version:
+> > 
+> > 1. Now constraints are used in the start-up function. It wasn't as big
+> > a deal as I thought... Also now the codec is always in full duplex
+> > mode.  But it still refuses to do the wrong thing with FM as real full
+> > duplex is then impossible.
+> > 
+> > 2. Fixed the exported mode support function. The name in now
+> > wl1273_get_format and it returns the audio interface format.
+> > 
+> > 3. Removed the remaining obsolete functions.
+> > 
+> > 4. Not actually new but...
+> > 
+> > >> I didn't do this yet. But could you give me the git URL and then
+> > >> I'll resend?
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/lrg/sound-2.6.git
+> > 
+> > I tried the corresponding http URL
+> > 
+> > http://www.kernel.org/pub/scm/linux/kernel/git/lrg/sound-2.6.git but
+> > got
+> > 
+> > fatal: 
+> > http://www.kernel.org/pub/scm/linux/kernel/git/lrg/sound-2.6.git/info/refs
+> > not found: did you run git update-server-info on the server?
+> > 
+> 
+> Oh, that's the wrong URL. The correct one is :-
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git
+> 
+> Can you re-do against multi-component. The changes all relate to probe()
+> and remove(). 
 
-        Each of the patches in this patchset removes on such dead
-config Item, I'd be glad if you consider applying them. I've been
-doing deeper analysis of such issues before and can do so again but
-I'm not so sure they were fastly usefull.
+Yes. No problem... I actually woke up last night and realized that the
+format function I wrote didn't have a NULL pointer check for the value
+parameter... So please ignore the v2. patch. I'll send version v2.B
+soon...
 
-        I build the patches against a vanilla kernel in order to
-try if the kernel compiles with this patches
+Cheers,
+Matti.
 
-        Please keep me informed of this patch getting confirmed /
-merged so we can keep track of it.
-
-Regards
-
-        Christian Dietrich
-
-[0] http://vamos1.informatik.uni-erlangen.de/
-
-Christian Dietrich (3):
-  sound/oss: Remove dead CONFIG_SOFTOSS*
-  sound/soc/atmel: Remove dead CONFIG_AT32_ENHANCED_PORTMUX
-  sound/isa/gus: Remove dead CONFIG_SND_DEBUG_ROM
-
- sound/isa/gus/interwave.c        |    8 --------
- sound/oss/vidc.c                 |    3 ---
- sound/soc/atmel/playpaq_wm8510.c |    9 ---------
- 3 files changed, 0 insertions(+), 20 deletions(-)
+> 
+> Thanks
+> 
+> Liam
+> 
+> 
+> 
