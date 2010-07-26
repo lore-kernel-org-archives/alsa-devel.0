@@ -1,17 +1,29 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: Compiling alsa-utils
-Date: Mon, 26 Jul 2010 11:17:24 +0200
-Message-ID: <4C4D52A4.3000003@ivitera.com>
-References: <4C4D4E21.5030705@ivitera.com> <s5hr5iqwqwt.wl%tiwai@suse.de>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: [Fwd: Re: [pulseaudio-discuss] pulseaudio debug
+	mode]
+Date: Mon, 26 Jul 2010 10:26:58 +0100
+Message-ID: <i2jkcu$c2o$1@dough.gmane.org>
+References: <1280097015.29696.8.camel@localhost.localdomain>	<AANLkTimj3W_tgi-+Qqgz-J31u-daOqJ8a2E74qEUzy8U@mail.gmail.com>	<1280107804.29411.1.camel@localhost.localdomain>	<AANLkTimoBu3baCYdDWoBQkATrXhG2R2ExYvWybKy1WK_@mail.gmail.com>	<1280113577.19933.2.camel@localhost.localdomain>
+	<AANLkTi=aGfUBy-cF_DoOJVz+XbSc+vUrcKjxtVR6NR=_@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (upc-plzen.insite.cz [84.242.100.8])
-	by alsa0.perex.cz (Postfix) with ESMTP id F285C103860
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5A2AE103860
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jul 2010 11:17:24 +0200 (CEST)
-In-Reply-To: <s5hr5iqwqwt.wl%tiwai@suse.de>
+	Mon, 26 Jul 2010 11:27:09 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OdJxh-0005dD-BZ
+	for alsa-devel@alsa-project.org; Mon, 26 Jul 2010 11:27:05 +0200
+Received: from cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
+	([94.173.13.3]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2010 11:27:05 +0200
+Received: from gmane by cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
+	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2010 11:27:05 +0200
+In-Reply-To: <AANLkTi=aGfUBy-cF_DoOJVz+XbSc+vUrcKjxtVR6NR=_@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,56 +33,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai napsal(a):
-> At Mon, 26 Jul 2010 10:58:09 +0200,
-> Pavel Hofman wrote:
->> Hi,
->>
->> after clean git clone of  git://git.alsa-project.org/alsa-utils.git I
->> got the following error:
->>
->> pavel@sara:~/install/alsa/alsa-utils$ autoheader
->> configure.in:268: error: `po/Makefile.in' is already registered with
->> AC_CONFIG_FILES.
->> ../../lib/autoconf/status.m4:311: AC_CONFIG_FILES is expanded from...
->> configure.in:268: the top level
->> autom4te: /usr/bin/m4 failed with exit status: 1
->> autoheader: '/usr/bin/autom4te' failed with exit status: 1
->>
->>
->> After deleting po/Makefile.in from the list of AC_OUTPUT in
->> configure.in:268 the compilation proceeded fine.
->>
->> Ubuntu 9.10.
+'Twas brillig, and Raymond Yau at 26/07/10 04:22 did gyre and gimble:
+> But I have another question ,
 > 
-> It's f*** auto-tools, that tells everything :)
+> did update manager stop pulseaudio server when the update manager want to
+> update pulseaudio package ?
 > 
-> Doesn't the simple gitcompile work after the clean clone?
-> 
-> 
+> Actually I don't notice yum -y update stop the PA server if it updated
+> pulseaudio package (install new pulseaudio and remove old pulseaudio
+> package) and restart PA server on Fedora 10
 
-Thanks, the gitcompile script works fine. I followed the procedure in
-INSTALL:
+PA is *not* restarted when a new version is installed and I suspect this
+does not happen on Fedora either (but I could be wrong).
 
-        aclocal
-        gettextize
-        autoheader
-        automake --foreign --copy --add-missing
-        autoconf
-        ./configure
-        make
+The reason is that PA is a per-user daemon, not a system service. If
+three users were logged in, then each of their PA servers would need to
+be killed and restarted but due to console-kit, only the active user
+would get access to the devices which could cause enumeration issues etc.
 
+It could maybe be handled better, but doing so would be rather complex.
 
+Col
 
-Perhaps we could either update this sequence (but I have no idea how :)
-), or delete the procedure and just mention the gitcompile script (that
-one I can post as a patch).
+-- 
 
-Thanks,
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
 
-
-Pavel.
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mandriva Linux Contributor [http://www.mandriva.com/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
