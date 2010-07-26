@@ -1,19 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: TWL4030: Capture route DAPM event fix
-Date: Mon, 26 Jul 2010 00:06:49 -0700
-Message-ID: <EC4B36FE-65AD-4812-8D5A-B21725A3CD49@opensource.wolfsonmicro.com>
-References: <1280127555-8042-1-git-send-email-peter.ujfalusi@nokia.com>
-	(sfid-20100726_075944_269769_57398D82)
-Mime-Version: 1.0 (iPad Mail 7B405)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Seungwhan Youn <claude.youn@gmail.com>
+Subject: Re: [PATCH] ASoC: multi-component: SAMSUNG: Modify the
+	name of I2S driver
+Date: Mon, 26 Jul 2010 16:08:01 +0900
+Message-ID: <AANLkTikArAyLeLFXOa6pzDsbdT5AXhdZB_0qout76BM1@mail.gmail.com>
+References: <4C4CEDE1.5010605@samsung.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 10FB51037F8
+Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 67060103846
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jul 2010 09:06:33 +0200 (CEST)
-In-Reply-To: <1280127555-8042-1-git-send-email-peter.ujfalusi@nokia.com>
-	(sfid-20100726_075944_269769_57398D82)
+	Mon, 26 Jul 2010 09:08:02 +0200 (CEST)
+Received: by wwd20 with SMTP id 20so2403622wwd.2
+	for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2010 00:08:02 -0700 (PDT)
+In-Reply-To: <4C4CEDE1.5010605@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,42 +24,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@Nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Chanwoo Choi <cw00.choi@samsung.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Joonyoung Shim <jy0922.shim@samsung.com>, Jassi Brar <jassisinghbrar@gmail.com>, Ben Dooks <ben@simtec.co.uk>, Kyungmin Park <kyungmin.park@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 25 Jul 2010, at 23:59, Peter Ujfalusi <peter.ujfalusi@Nokia.com> wrote:
-
-> There is no need to handle POST_PMU, POST_PMD event with
-> the Capture Route widget.
-> It is enough to handle POST_REG event, since that will come
-> when the user changes the routing, and we will switch the needed
-> bits in the registers.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-
-> ---
-> sound/soc/codecs/twl4030.c |    2 --
-> 1 files changed, 0 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-> index bd557c2..d401c59 100644
-> --- a/sound/soc/codecs/twl4030.c
-> +++ b/sound/soc/codecs/twl4030.c
-> @@ -1432,11 +1432,9 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
->  	   TX2 Left/Right: either analog Left/Right or Digimic1 */
->  	SND_SOC_DAPM_MUX_E("TX1 Capture Route", SND_SOC_NOPM, 0, 0,
->  		&twl4030_dapm_micpathtx1_control, micpath_event,
-> -		SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD|
->  		SND_SOC_DAPM_POST_REG),
->  	SND_SOC_DAPM_MUX_E("TX2 Capture Route", SND_SOC_NOPM, 0, 0,
->  		&twl4030_dapm_micpathtx2_control, micpath_event,
-> -		SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD|
->  		SND_SOC_DAPM_POST_REG),
-> 
->  	/* Analog input mixers for the capture amplifiers */
-> -- 
-> 1.7.1.1
-> 
+SGksCgpPbiBNb24sIEp1bCAyNiwgMjAxMCBhdCAxMTowNyBBTSwgQ2hhbndvbyBDaG9pIDxjdzAw
+LmNob2lAc2Ftc3VuZy5jb20+IHdyb3RlOgo+IFRoaXMgcGF0Y2ggbW9kaWZ5IHRoZSBuYW1lIG9m
+IEkyUyBkcml2ZXIoUzNDNjRYWC9TM0MyNHh4Cj4gL1MzQzI0MTIpIGZyb20gIiotaWlzLSoiIHRv
+ICIqLWkycy0qIi4gVGhlIG1pc21hdGNoIG9mIEkyUyBuYW1lCj4gZXhpc3QgaW4gdGhlIGZvbGxv
+d2luZyBzb3VuZCBkcml2ZXIuIFRoZXNlIGZpbGVzIHdyaXRlIHRoZQo+ICJjcHVfZGFpX25hbWUi
+IG9mIEkyUyBhcyAiKi1pMnMtKiIuCj4KCkkgdGhpbmsgdGhhdCB5b3Ugc2hvdWxkIENDIE1yLiBK
+YXNzaSBhbmQgTXIuIEJlbiBEb29rcy4KQmVjYXVzZSB0aGV5IHNob3VsZCBrbm93IGFib3V0IHRo
+aXMgJ25hbWluZyBpc3N1ZScgdGhhdCB0aGV5IGNhbgpjb25zaWRlciB0aGlzIHdpdGggdGhlICdh
+cmNoL2FybS8uLi4nLCBhbmQgYWxzbyB0aGV5IGFyZSB0aGUgb3JpZ2luYWwKYXV0aG9yIG9mIHRo
+ZXNlIGZpbGVzLgoKPiAtIHNvdW5kL3NvYy9zM2MyNHh4L2FxdWlsYV93bTg5OTQuYyA6ICJzM2M2
+NHh4LWkycy12NC1kYWkiCj4gLSBzb3VuZC9zb2MvczNjMjR4eC9nb25pX3dtODk5NC5jIDogInMz
+YzY0eHgtaTJzLXY0LWRhaSIKPiAtIHNvdW5kL3NvYy9zM2MyNHh4L3NtZGs2NHh4X3dtODU4MC5j
+ICJzM2M2NHh4LWkycy12NC1kYWkiCj4gLSBzb3VuZC9zb2MvczNjMjR4eC9qaXZlX3dtODc1MC5j
+IDogInMzYzI0MTItaTJzLWRhaSIKPiAtIHNvdW5kL3NvYy9zM2MyNHh4L25lbzE5NzNfd204NzUz
+LmMgOiAiczNjMjR4eC1pMnMtZGFpIgo+IC0gc291bmQvc29jL3MzYzI0eHgvbmVvMTk3M19ndGEw
+Ml93bTg3NTMuYyA6ICJzM2MyNHh4LWkycy1kYWkiCj4gLSBzb3VuZC9zb2MvczNjMjR4eC9zM2My
+NHh4X3NpbXRlY19oZXJtZXMuYyA6ICJzM2MyNHh4LWkycy1kYWkiCj4gLSBzb3VuZC9zb2MvczNj
+MjR4eC9zM2MyNHh4X3NpbXRlY190bHYzMjBhaWMyMy5jIDogInMzYzI0eHgtaTJzLWRhaSIKPiAt
+IHNvdW5kL3NvYy9zM2MyNHh4L3MzYzI0eHhfdWRhMTM0eC5jIDogInMzYzI0eHgtaTJzLWRhaSIK
+PiAtIHNvdW5kL3NvYy9zM2MyNHh4L3NtYXJ0cV93bTg5ODcuYyA6ICJzM2M2NHh4LWkycy1kYWku
+MCIKPgo+IG9yLCBJdCBpcyBzaG91bGQgbW9kaWZ5ICJjcHVfZGFpX25hbWUiIG9mIHNvdW5kIGRy
+dmllciBmaWxlcwo+IGluc3RlYWQgb2YgbW9kaWZ5aW5nIHRoZSBuYW1lIG9mIEkyUyBkcml2ZXIu
+Cj4KPiBTaWduZWQtb2ZmLWJ5OiBDaGFud29vIENob2kgPGN3MDAuY2hvaUBzYW1zdW5nLmNvbT4K
+PiBTaWduZWQtb2ZmLWJ5OiBLeXVuZ21pbiBQYXJrIDxreXVuZ21pbi5wYXJrQHNhbXN1bmcuY29t
+Pgo+IC0tLQo+IMKgc291bmQvc29jL3MzYzI0eHgvczNjMjQxMi1pMnMuYyDCoCDCoHwgwqAgwqAy
+ICstCj4gwqBzb3VuZC9zb2MvczNjMjR4eC9zM2MyNHh4LWkycy5jIMKgIMKgfCDCoCDCoDIgKy0K
+PiDCoHNvdW5kL3NvYy9zM2MyNHh4L3MzYzY0eHgtaTJzLXY0LmMgfCDCoCDCoDIgKy0KPiDCoHNv
+dW5kL3NvYy9zM2MyNHh4L3MzYzY0eHgtaTJzLmMgwqAgwqB8IMKgIMKgMiArLQo+IMKgNCBmaWxl
+cyBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0
+IGEvc291bmQvc29jL3MzYzI0eHgvczNjMjQxMi1pMnMuYyBiL3NvdW5kL3NvYy9zM2MyNHh4L3Mz
+YzI0MTItaTJzLmMKPiBpbmRleCBhYTExNmY2Li5mN2MyM2FlIDEwMDY0NAo+IC0tLSBhL3NvdW5k
+L3NvYy9zM2MyNHh4L3MzYzI0MTItaTJzLmMKPiArKysgYi9zb3VuZC9zb2MvczNjMjR4eC9zM2My
+NDEyLWkycy5jCj4gQEAgLTE4OCw3ICsxODgsNyBAQCBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2Ry
+aXZlciBzM2MyNDEyX2lpc19kcml2ZXIgPSB7Cj4gwqAgwqAgwqAgwqAucHJvYmUgwqA9IHMzYzI0
+MTJfaWlzX2Rldl9wcm9iZSwKPiDCoCDCoCDCoCDCoC5yZW1vdmUgPSBzM2MyNDEyX2lpc19kZXZf
+cmVtb3ZlLAo+IMKgIMKgIMKgIMKgLmRyaXZlciA9IHsKPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IC5uYW1lID0gInMzYzI0MTItaWlzLWRhaSIsCj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCAubmFt
+ZSA9ICJzM2MyNDEyLWkycy1kYWkiLAo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgLm93bmVyID0g
+VEhJU19NT0RVTEUsCj4gwqAgwqAgwqAgwqB9LAo+IMKgfTsKPiBkaWZmIC0tZ2l0IGEvc291bmQv
+c29jL3MzYzI0eHgvczNjMjR4eC1pMnMuYyBiL3NvdW5kL3NvYy9zM2MyNHh4L3MzYzI0eHgtaTJz
+LmMKPiBpbmRleCBhNmNiZWVmLi4yMDcxMmFkIDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9zM2My
+NHh4L3MzYzI0eHgtaTJzLmMKPiArKysgYi9zb3VuZC9zb2MvczNjMjR4eC9zM2MyNHh4LWkycy5j
+Cj4gQEAgLTQ5NSw3ICs0OTUsNyBAQCBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBzM2My
+NHh4X2lpc19kcml2ZXIgPSB7Cj4gwqAgwqAgwqAgwqAucHJvYmUgwqA9IHMzYzI0eHhfaWlzX2Rl
+dl9wcm9iZSwKPiDCoCDCoCDCoCDCoC5yZW1vdmUgPSBzM2MyNHh4X2lpc19kZXZfcmVtb3ZlLAo+
+IMKgIMKgIMKgIMKgLmRyaXZlciA9IHsKPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIC5uYW1lID0g
+InMzYzI0eHgtaWlzLWRhaSIsCj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCAubmFtZSA9ICJzM2My
+NHh4LWkycy1kYWkiLAo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgLm93bmVyID0gVEhJU19NT0RV
+TEUsCj4gwqAgwqAgwqAgwqB9LAo+IMKgfTsKPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL3MzYzI0
+eHgvczNjNjR4eC1pMnMtdjQuYyBiL3NvdW5kL3NvYy9zM2MyNHh4L3MzYzY0eHgtaTJzLXY0LmMK
+PiBpbmRleCA4ODUwNDBiLi4yODQ2ZWEyIDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9zM2MyNHh4
+L3MzYzY0eHgtaTJzLXY0LmMKPiArKysgYi9zb3VuZC9zb2MvczNjMjR4eC9zM2M2NHh4LWkycy12
+NC5jCj4gQEAgLTE5NSw3ICsxOTUsNyBAQCBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBz
+M2M2NHh4X2kyc3Y0X2RyaXZlciA9IHsKPiDCoCDCoCDCoCDCoC5wcm9iZSDCoD0gczNjNjR4eF9p
+MnN2NF9kZXZfcHJvYmUsCj4gwqAgwqAgwqAgwqAucmVtb3ZlID0gczNjNjR4eF9pMnN2NF9kZXZf
+cmVtb3ZlLAo+IMKgIMKgIMKgIMKgLmRyaXZlciA9IHsKPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IC5uYW1lID0gInMzYzY0eHgtaWlzLXY0LWRhaSIsCj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCAu
+bmFtZSA9ICJzM2M2NHh4LWkycy12NC1kYWkiLAo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgLm93
+bmVyID0gVEhJU19NT0RVTEUsCj4gwqAgwqAgwqAgwqB9LAo+IMKgfTsKPiBkaWZmIC0tZ2l0IGEv
+c291bmQvc29jL3MzYzI0eHgvczNjNjR4eC1pMnMuYyBiL3NvdW5kL3NvYy9zM2MyNHh4L3MzYzY0
+eHgtaTJzLmMKPiBpbmRleCAxNjExODliLi4yMDE3NjM5IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3Nv
+Yy9zM2MyNHh4L3MzYzY0eHgtaTJzLmMKPiArKysgYi9zb3VuZC9zb2MvczNjMjR4eC9zM2M2NHh4
+LWkycy5jCj4gQEAgLTIxOCw3ICsyMTgsNyBAQCBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZl
+ciBzM2M2NHh4X2lpc19kcml2ZXIgPSB7Cj4gwqAgwqAgwqAgwqAucHJvYmUgwqA9IHMzYzY0eHhf
+aWlzX2Rldl9wcm9iZSwKPiDCoCDCoCDCoCDCoC5yZW1vdmUgPSBzM2M2NHh4X2lpc19kZXZfcmVt
+b3ZlLAo+IMKgIMKgIMKgIMKgLmRyaXZlciA9IHsKPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIC5u
+YW1lID0gInMzYzY0eHgtaWlzLWRhaSIsCj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCAubmFtZSA9
+ICJzM2M2NHh4LWkycy1kYWkiLAo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgLm93bmVyID0gVEhJ
+U19NT0RVTEUsCj4gwqAgwqAgwqAgwqB9LAo+IMKgfTsKPiAtLQo+IDEuNi4zLjMKPgo+IF9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBt
+YWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+Cl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
