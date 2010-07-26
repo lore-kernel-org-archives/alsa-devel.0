@@ -1,71 +1,41 @@
-From: loody <miloody@gmail.com>
-Subject: Re: simple program for capturing and playing pcm
-Date: Mon, 26 Jul 2010 16:29:51 +0800
-Message-ID: <AANLkTikyNQDjHa1aVtG87C5chTvzVTPs8-rNO5t+fL+Z@mail.gmail.com>
-References: <AANLkTi=ogK_5CD5R-RbWRKt5iy=a29PVmmcg+t9cs7i8@mail.gmail.com>
-	<4C4D3BFE.6060100@ivitera.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7CFC5246DB
-	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jul 2010 10:29:52 +0200 (CEST)
-Received: by gwj22 with SMTP id 22so1419930gwj.38
-	for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2010 01:29:51 -0700 (PDT)
-In-Reply-To: <4C4D3BFE.6060100@ivitera.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pavel Hofman <pavel.hofman@ivitera.com>
-Cc: alsa-devel@alsa-project.org
+From: Kulikov Vasiliy <segooon@gmail.com>
+Subject: [PATCH] oss: waveartist: simplify waveartist_sleep()
+Date: Mon, 26 Jul 2010 12:29:22 +0400
+Message-ID: <1280132962-8346-1-git-send-email-segooon@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: kernel-janitors@vger.kernel.org
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hi:
+waveartist_sleep() uses loop with schedule_timeout() to unconditionally
+wait for msec. Use schedule_timeout_uninteruptible() instead.
 
-2010/7/26 Pavel Hofman <pavel.hofman@ivitera.com>:
-> loody napsal(a):
->> Dear all:
->> Is there simple program which can help me to play and capture pcm
->> files from usb speaker and mic?
->> appreciate your help,
->> miloody
->
-> aplay, arecord
-I found them in alsa-utility :)
-but when I try to configure them, I get following messages:
+Signed-off-by: Kulikov Vasiliy <segooon@gmail.com>
+---
+ sound/oss/waveartist.c |   10 ++--------
+ 1 files changed, 2 insertions(+), 8 deletions(-)
 
-checking for form.h... yes
-checking for new_panel in -lpanelw... no
-configure: error: panelw library not found
-
-but I list the /usr/lib, I see
-$ ls /usr/lib/libpanel* -lht
-lrwxrwxrwx 1 root root  27 2009-11-11 07:59
-/usr/lib/libpanel-applet-2.so.0 -> libpanel-applet-2.so.0.2.60
-lrwxrwxrwx 1 root root  16 2009-11-11 07:52 /usr/lib/libpanelw.so.5 ->
-libpanelw.so.5.7
-lrwxrwxrwx 1 root root  15 2009-11-11 07:52 /usr/lib/libpanel.so.5 ->
-libpanel.so.5.7
-lrwxrwxrwx 1 root root  13 2009-11-11 00:41 /usr/lib/libpanel.so ->
-libpanel.so.5
--rw-r--r-- 1 root root 51K 2009-10-19 22:00 /usr/lib/libpanel-applet-2.so.0.2.60
--rw-r--r-- 1 root root 19K 2009-10-12 21:12 /usr/lib/libpanel.a
--rw-r--r-- 1 root root 14K 2009-10-12 21:12 /usr/lib/libpanel.so.5.7
--rw-r--r-- 1 root root 14K 2009-10-12 21:12 /usr/lib/libpanelw.so.5.7
-$
-
-did I miss something?
-I try to run the aplay/arecord under console and if I guess correctly,
-I don't need panelw lib. if so, how could I disable it?
-appreciate your help,
-miloody
-
-what is panelw
+diff --git a/sound/oss/waveartist.c b/sound/oss/waveartist.c
+index e688dde..5246874 100644
+--- a/sound/oss/waveartist.c
++++ b/sound/oss/waveartist.c
+@@ -184,14 +184,8 @@ waveartist_iack(wavnc_info *devc)
+ static inline int
+ waveartist_sleep(int timeout_ms)
+ {
+-	unsigned int timeout = timeout_ms * 10 * HZ / 100;
+-
+-	do {
+-		set_current_state(TASK_INTERRUPTIBLE);
+-		timeout = schedule_timeout(timeout);
+-	} while (timeout);
+-
+-	return 0;
++	unsigned int timeout = msecs_to_jiffies(timeout_ms*100);
++	return schedule_timeout_interruptible(timeout);
+ }
+ 
+ static int
+-- 
+1.7.0.4
