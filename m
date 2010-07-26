@@ -1,20 +1,17 @@
-From: Niels Mayer <nielsmayer@gmail.com>
-Subject: Re: announcing envy24control, mudita (*) edition.
-Date: Mon, 26 Jul 2010 10:59:18 -0700
-Message-ID: <AANLkTikE_9e5HvfAF_VZ884aJOh6+oC-L9tej45DJLBc@mail.gmail.com>
-References: <AANLkTikX07nHbBsBSG04r54LEp3R+CRC9dC--aB_h2gQ@mail.gmail.com>
-	<s5hy6cywrwo.wl%tiwai@suse.de>
+From: Valdis.Kletnieks@vt.edu
+Subject: Re: hda_intel: too quiet sound (regression)
+Date: Mon, 26 Jul 2010 14:40:01 -0400
+Message-ID: <7512.1280169601@localhost>
+References: <4C4D9EDA.3060505@gmail.com> <s5htynmuvw4.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============1505265575164379955=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 0CB16247C4
+Received: from lennier.cc.vt.edu (lennier.cc.vt.edu [198.82.162.213])
+	by alsa0.perex.cz (Postfix) with ESMTP id 23B9E103852
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jul 2010 19:59:20 +0200 (CEST)
-Received: by vws20 with SMTP id 20so3082244vws.38
-	for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2010 10:59:20 -0700 (PDT)
-In-Reply-To: <s5hy6cywrwo.wl%tiwai@suse.de>
+	Mon, 26 Jul 2010 20:40:03 +0200 (CEST)
+In-Reply-To: Your message of "Mon, 26 Jul 2010 17:04:43 +0200."
+	<s5htynmuvw4.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,45 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Linux Audio Developers <linux-audio-dev@lists.linuxaudio.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, fengguang.wu@intel.com, Jiri Slaby <jirislaby@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBKdWwgMjYsIDIwMTAgYXQgMTo0NyBBTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNl
-LmRlPiB3cm90ZToKPiBHcmVhdC4gwqBJJ2QgbG92ZSB0byBtZXJnZSBpdCB0byB0aGUgdXBzdHJl
-YW0gdHJlZSBhZnRlciBjb2RlIHJldmlldy4KPgo+IENvdWxkIHlvdSBzaW1wbHkgcG9zdCB5b3Vy
-IHBhdGNoKGVzKSB0byBhbHNhLWRldmVsIE1MIChhbmQgQ2MgdG8KPiBtYWludGFpbmVycyk/IMKg
-VGhlbiB3ZSBjYW4gY2hlY2sgeW91ciBjaGFuZ2VzLgoKVGFrYXNoaSAtLSBJIGFtIGdsYWQgdG8g
-aGVhciBvZiB5b3VyIGludGVyZXN0IGFuZCB0aGFua2Z1bCBmb3IgeW91cgpjb25zaWRlcmF0aW9u
-LiBJdCBhcHBlYXJzIHRoYXQgc29tZSBvZiB0aGUgY29kZS1yZXZpZXcgYW5kIHRlc3RpbmcgaXMK
-YWxyZWFkeSBoYXBwZW5pbmcgaW4gbGludXgtYXVkaW8tZGV2ICgKaHR0cDovL2xpbnV4YXVkaW8u
-b3JnL21haWxhcmNoaXZlL2xhZC8yMDEwLzcvMjUvMTcyMjMxICkgc28gSSB3aWxsCnN1Ym1pdCBh
-IG1vcmUgZmluYWwgcGF0Y2ggdG8gYWxzYS1kZXZlbCwgb25jZSBzb21lIGlzc3VlcyBmb3VuZCBp
-bgp0ZXN0aW5nJnVzYWJpbGl0eSBnZXQgcmVzb2x2ZWQuCgo+IEF0IGJlc3QsIHBsZWFzZSBnaXZl
-IGluY3JlbWVudGFsIHBhdGNoZXMgY29udGFpbmluZyB0aGUgcHJvcGVyCj4gY2hhbmdlbG9nIGFu
-ZCB5b3VyIHNpZ24tb2ZmIGluIHRoZSBwYXRjaCBjb21tZW50cyB0byBiZSBhcHBsaWNhYmxlIHZp
-YQo+IGdpdC1hbS4KCk5vdyB0aGF0IEkgdW5kZXJzdGFuZCB0aGUgY29ycmVjdCB3YXkgdG8gc3Vi
-bWl0IEFMU0EgcGF0Y2hlcywgSSB3aWxsCmZvbGxvdyBpbnN0cnVjdGlvbnMgZnJvbQpodHRwOi8v
-d3d3LmFsc2EtcHJvamVjdC5vcmcvbWFpbi9pbmRleC5waHAvR0lUX1NlcnZlciNPY2Nhc2lvbmFs
-X0RldmVsb3BlcnMKZm9yIG15IGZpbmFsIEFMU0Egc3VibWlzc2lvbi4KCj4gQWxzbywgYXZvaWQg
-dG8gY2hhbmdlIHZlcnNpb24gbnVtYmVycy4gwqBJZiB5b3UgdGFrZSBvdmVyIHRoZSB3aG9sZQo+
-IHByb2plY3QsIHRoZW4geWVzLCBpdCdzIGZpbmUgdG8gY2hhbmdlIHRoZSBtYWpvciB2ZXJzaW9u
-IG51bWJlciBhcyB5b3UKPiBsaWtlLiDCoEJ1dCwgYXMgbG9uZyBhcyB0aGUgdXBzdHJlYW0gaXMg
-YWxpdmUsIHRoaXMgbWF5IGJyaW5nIG11Y2ggbW9yZQo+IGNvbmZ1c2lvbiB0aGFuIG5lZWRlZC4K
-CkluIG15IGRlZmVuc2Ugb2YgYmVpbmcgcHJlc3VtcHR1b3VzIHRvIGNoYW5nZSB0aGUgdmVyc2lv
-biBudW1iZXIsCnBsZWFzZSBub3RlIHRoYXQgdGhlIHN1Ym1pdHRlZCBwYXRjaCBkaWRuJ3QgaW5j
-bHVkZSB0aGUgYXV0b2NvbmYKY2hhbmdlIHRoYXQgc2V0cyB0aGUgbmV3IHZlcnNpb24gbnVtYmVy
-ICgKaHR0cDovL25pZWxzbWF5ZXIuY29tL2VudnkyNGNvbnRyb2wvZW52eTI0Y29udHJvbC0wLjYt
-dG8tMS4wLnBhdGNoICkuClRoZSAiMS4wLjAiIGlzIGluICdjb25maWd1cmUnIGZvciB0aGUgc291
-cmNlIGRpc3RyaWJ1dGlvbiAoCmh0dHA6Ly9uaWVsc21heWVyLmNvbS9lbnZ5MjRjb250cm9sL2Vu
-dnkyNGNvbnRyb2wtMS4wLnRhci5neiApIHRvIGhlbHAKZGlzdGluZ3Vpc2ggaXQgZnJvbSB0aGUg
-c3RhbmRhcmQgdmVyc2lvbi4uLi4KClRvIGF2b2lkIGNvbmZ1c2lvbiBmb3IgdGhlIG5leHQgMS4w
-LjEgcmVsZWFzZSwgSSdsbCBkbyBzb21ldGhpbmcKc2ltaWxhciwgYnV0IEknbGwgY2hhbmdlICdj
-b25maWd1cmUnIGluIHRoZSBzb3VyY2UgZGlzdHJpYnV0aW9uIHRvCmJ1aWxkICJtdWRpdGEyNCAx
-LjAuMSIgcmF0aGVyIHRoYW4gImVudnkyNGNvbnRyb2wgMS4wLjEiLCB1c2luZyB0aGUKc2FtZSBz
-b3VyY2VzLiBBbmQgcmVsZWFzZSBhcyAibXVkaXRhMjQtMS4wLjEiIC4uLiBUaGVuIEknbGwgc3Vi
-bWl0IHRoZQpmaW5hbCBzb3VyY2Vjb2RlIHRvIGFsc2EtZGV2ZWwgYXMgW1BBVENIXSByZXN1bHRz
-LCBtaW51cyB0aGUKY29uZmlnL25hbWluZyBjaGFuZ2VzLiBJIGhvcGUgdGhpcyBpcyBhbiBhY2Nl
-cHRhYmxlIHNvbHV0aW9uLgoKVGhhbmtzLAoKTmllbHMKaHR0cDovL25pZWxzbWF5ZXIuY29tCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+--===============1505265575164379955==
+Content-Type: multipart/signed; boundary="==_Exmh_1280169601_4182P";
+	 micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
+
+--==_Exmh_1280169601_4182P
+Content-Type: text/plain; charset=us-ascii
+
+On Mon, 26 Jul 2010 17:04:43 +0200, Takashi Iwai said:
+> At Mon, 26 Jul 2010 16:42:34 +0200, Jiri Slaby wrote:
+> > after I upgraded from 2.6.34-rc5-mm1 to 2.6.35-rc5-mm1 (there were other
+> > issues in between them), the sound from my soundcard is very very quiet.
+> > 
+> > alsa-info:
+> > http://www.alsa-project.org/db/?f=dcadb29a2d5d047ecf5545792ac3239dc0c8c7f0
+> > 
+> > Any ideas?
+> 
+> Looks like a regression by the amp max value check.
+> The following patch should fix the problem.
+
+> ---
+> From 7ccc3eface57b6e1773fce009dac8a3da081b8b1 Mon Sep 17 00:00:00 2001
+> From: Takashi Iwai <tiwai@suse.de>
+> Date: Mon, 26 Jul 2010 17:00:15 +0200
+> Subject: [PATCH] ALSA: hda - Fix max amp cap calculation for IDT/STAC codecs
+
+Confirming - I saw the same issue but didn't get a chance to track it down. This patch fixes it.
+Feel free to stick a Tested-By: on it on its way upstream...
+
+--==_Exmh_1280169601_4182P
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Exmh version 2.5 07/13/2001
+
+iD8DBQFMTdaBcC3lWbTT17ARAviKAJ9GXkE6huFJqYgdSaIZh+VTYb+t2QCfZ+Ra
+W49Zu5bFkYGqxDMb7lS6CeI=
+=n14r
+-----END PGP SIGNATURE-----
+
+--==_Exmh_1280169601_4182P--
+
+
+--===============1505265575164379955==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1505265575164379955==--
