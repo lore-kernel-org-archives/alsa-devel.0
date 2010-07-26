@@ -1,32 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Which project to choose?
-Date: Mon, 26 Jul 2010 13:53:31 +0800
-Message-ID: <AANLkTimv83-3PHMCUQ=LSyY51vtPCgtLhgyyyFpDW7sP@mail.gmail.com>
-References: <1279062131.24837.22.camel@localhost.localdomain>
-	<AANLkTikEf4gf-oeQf4hNGUEvNi0YVrvutnSMCbxGwtJ8@mail.gmail.com>
-	<1279065709.24837.29.camel@localhost.localdomain>
-	<AANLkTimdM5__SzYFxrQqwsbOrxdit2uWOvkazPvZ4PND@mail.gmail.com>
-	<1279071115.29042.0.camel@localhost.localdomain>
-	<AANLkTimNSRELBq7i1Ypi9K2tmFu9NKLvQAOOqPwuU13x@mail.gmail.com>
-	<1279074303.29042.3.camel@localhost.localdomain>
-	<AANLkTimNYxIm9M6Mglrzh3YtJRiq1C8wdZwx-JUhLk9d@mail.gmail.com>
-	<1279145758.29042.11.camel@localhost.localdomain>
-	<AANLkTinN15BWNC2cn78rc5xCSXNo79SDE2_WkBNEg5I2@mail.gmail.com>
-	<1279157921.2668.1.camel@localhost.localdomain>
-	<i1n0mf$87c$1@dough.gmane.org>
-	<AANLkTinXvthWBZ4oQg9D18cfAtkXveWHkB08vsXknGgB@mail.gmail.com>
-	<i2hgrq$ub3$1@dough.gmane.org>
-Mime-Version: 1.0
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: multi-component: SAMSUNG: Modify the
+	name of I2S driver
+Date: Sun, 25 Jul 2010 23:57:03 -0700
+Message-ID: <B9F57799-417E-4006-80D4-7768EE347BF5@opensource.wolfsonmicro.com>
+References: <4C4CEDE1.5010605@samsung.com>
+	(sfid-20100726_031705_187735_0E73D5AC)
+Mime-Version: 1.0 (iPad Mail 7B405)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 6F91824642
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EC16924677
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jul 2010 07:53:33 +0200 (CEST)
-Received: by vws20 with SMTP id 20so2415528vws.38
-	for <alsa-devel@alsa-project.org>; Sun, 25 Jul 2010 22:53:32 -0700 (PDT)
-In-Reply-To: <i2hgrq$ub3$1@dough.gmane.org>
+	Mon, 26 Jul 2010 08:56:52 +0200 (CEST)
+In-Reply-To: <4C4CEDE1.5010605@samsung.com>
+	(sfid-20100726_031705_187735_0E73D5AC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,92 +24,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Chanwoo Choi <cw00.choi@samsung.com>
+Cc: Joonyoung Shim <jy0922.shim@samsung.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kyungmin Park <kyungmin.park@samsung.com>, "jassi.brar@samsung.com" <jassi.brar@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-2010/7/25 Colin Guthrie <gmane@colin.guthr.ie>
+On 25 Jul 2010, at 19:07, Chanwoo Choi <cw00.choi@samsung.com> wrote:
 
-> 'Twas brillig, and Raymond Yau at 24/07/10 04:51 did gyre and gimble:
-> > 2010/7/15 Colin Guthrie <gmane@colin.guthr.ie>
-> >
-> >> 'Twas brillig, and Chris at 15/07/10 02:38 did gyre and gimble:
-> >>> On Thu, 2010-07-15 at 08:08 +0800, Raymond Yau wrote:
-> >>>
-> >>>>> I posted both of those bug reports. Honestly, I just want it to work
-> >>>>> without all the error output to syslog and thrashing of my HD for
-> >>>>> minutes at a time. As I said, I've got the output of pulseaudio
-> -vvvvv
-> >>>>> if anyone would like to look at it and tell me what I need to do to
-> fix
-> >>>>> the problem.
-> >>>>>
-> >>>>> Chris
-> >>>>>
-> >>>>>
-> >>>>>
-> >>>> Just upload your current pulseaudio.log and output of alsa-info.sh to
-> >>>> mandriva 's bugzilla
-> >>>>
-> >>>> Cannot obtain any conclusion based on the log which you have posted
-> last
-> >>>> year ( xmms)
-> >>>>
-> >>>> as Jaroslav Kysela said , need the real system time between I/O
-> >> operations
-> >>>> and you'll see if it's issue in the ALSA driver or a task scheduling
-> >>>> problem.
-> >>>
-> >>> Here is the bug report with the outputs uploaded.
-> >>>
-> >>> https://qa.mandriva.com/show_bug.cgi?id=60169
-> >>
-> >> Well seeing as my process when getting such a bug is to report it here
-> >> on behalf of the user, I suspect that this has reached a stalemate....
-> >>
-> >>
-> >>
-> > Can I remove pulseaudio from mandriva 2000 ?
-> >
-> > I just want to test libcanberra-alsa alone ( i.e. libcanberra without
-> > pulseaudio )
-> >
-> > when PA server abort, and libcanberra-pulse cannot connect to PA server ,
-> >
-> > Will libcanberra use libcanberra-alsa connect to PA using alsa-pulse
-> plugin
-> > ?
->
-> Use draksound (or via Mandriva Control Center) to disable pulseaudio and
-> the ALSA backend for canberra should be used instead.
->
-> It's based on the alternatives system and the file
-> /etc/sound/profiles/alsa/canberra.conf
->
->
-> Col
->  <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>
->
+> This patch modify the name of I2S driver(S3C64XX/S3C24xx
+> /S3C2412) from "*-iis-*" to "*-i2s-*". The mismatch of I2S name
+> exist in the following sound driver. These files write the
+> "cpu_dai_name" of I2S as "*-i2s-*".
+> 
+> - sound/soc/s3c24xx/aquila_wm8994.c : "s3c64xx-i2s-v4-dai"
+> - sound/soc/s3c24xx/goni_wm8994.c : "s3c64xx-i2s-v4-dai"
+> - sound/soc/s3c24xx/smdk64xx_wm8580.c "s3c64xx-i2s-v4-dai"
+> - sound/soc/s3c24xx/jive_wm8750.c : "s3c2412-i2s-dai"
+> - sound/soc/s3c24xx/neo1973_wm8753.c : "s3c24xx-i2s-dai"
+> - sound/soc/s3c24xx/neo1973_gta02_wm8753.c : "s3c24xx-i2s-dai"
+> - sound/soc/s3c24xx/s3c24xx_simtec_hermes.c : "s3c24xx-i2s-dai"
+> - sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c : "s3c24xx-i2s-dai"
+> - sound/soc/s3c24xx/s3c24xx_uda134x.c : "s3c24xx-i2s-dai"
+> - sound/soc/s3c24xx/smartq_wm8987.c : "s3c64xx-i2s-dai.0"
+> 
+> or, It is should modify "cpu_dai_name" of sound drvier files
+> instead of modifying the name of I2S driver.
 
-I have used Mandriva Control Centerl to disable pulseaudio and select alsa
-driver .
-Perform logout and login by MCC
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-aplay -v test.wav  indicate that it is using dmix
+but Jassi really should also comment here.
 
-there is no driver specified in .mplayer/config but when I run
-
-mplayer -v test.wav
-
-AO : [pulse] 44100 Hz
-
-it seem that mplayer auto spawn PA server .
-
-Did I miss out anything to disable pulseaudio since I assume that MCC had
-performed all the necessary action ?
-
-more /etc/asound/profiles/alsa/canberra.conf
-CANBERRA_DRIVER=alsa
-
-but
-
-ls /etc/asound/profiles/current seem to be empty
+> Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+> ---
+> sound/soc/s3c24xx/s3c2412-i2s.c    |    2 +-
+> sound/soc/s3c24xx/s3c24xx-i2s.c    |    2 +-
+> sound/soc/s3c24xx/s3c64xx-i2s-v4.c |    2 +-
+> sound/soc/s3c24xx/s3c64xx-i2s.c    |    2 +-
+> 4 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/s3c24xx/s3c2412-i2s.c b/sound/soc/s3c24xx/s3c2412-i2s.c
+> index aa116f6..f7c23ae 100644
+> --- a/sound/soc/s3c24xx/s3c2412-i2s.c
+> +++ b/sound/soc/s3c24xx/s3c2412-i2s.c
+> @@ -188,7 +188,7 @@ static struct platform_driver s3c2412_iis_driver = {
+>  	.probe  = s3c2412_iis_dev_probe,
+>  	.remove = s3c2412_iis_dev_remove,
+>  	.driver = {
+> -		.name = "s3c2412-iis-dai",
+> +		.name = "s3c2412-i2s-dai",
+>  		.owner = THIS_MODULE,
+>  	},
+> };
+> diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.c b/sound/soc/s3c24xx/s3c24xx-i2s.c
+> index a6cbeef..20712ad 100644
+> --- a/sound/soc/s3c24xx/s3c24xx-i2s.c
+> +++ b/sound/soc/s3c24xx/s3c24xx-i2s.c
+> @@ -495,7 +495,7 @@ static struct platform_driver s3c24xx_iis_driver = {
+>  	.probe  = s3c24xx_iis_dev_probe,
+>  	.remove = s3c24xx_iis_dev_remove,
+>  	.driver = {
+> -		.name = "s3c24xx-iis-dai",
+> +		.name = "s3c24xx-i2s-dai",
+>  		.owner = THIS_MODULE,
+>  	},
+> };
+> diff --git a/sound/soc/s3c24xx/s3c64xx-i2s-v4.c b/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
+> index 885040b..2846ea2 100644
+> --- a/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
+> +++ b/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
+> @@ -195,7 +195,7 @@ static struct platform_driver s3c64xx_i2sv4_driver = {
+>  	.probe  = s3c64xx_i2sv4_dev_probe,
+>  	.remove = s3c64xx_i2sv4_dev_remove,
+>  	.driver = {
+> -		.name = "s3c64xx-iis-v4-dai",
+> +		.name = "s3c64xx-i2s-v4-dai",
+>  		.owner = THIS_MODULE,
+>  	},
+> };
+> diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.c b/sound/soc/s3c24xx/s3c64xx-i2s.c
+> index 161189b..2017639 100644
+> --- a/sound/soc/s3c24xx/s3c64xx-i2s.c
+> +++ b/sound/soc/s3c24xx/s3c64xx-i2s.c
+> @@ -218,7 +218,7 @@ static struct platform_driver s3c64xx_iis_driver = {
+>  	.probe  = s3c64xx_iis_dev_probe,
+>  	.remove = s3c64xx_iis_dev_remove,
+>  	.driver = {
+> -		.name = "s3c64xx-iis-dai",
+> +		.name = "s3c64xx-i2s-dai",
+>  		.owner = THIS_MODULE,
+>  	},
+> };
+> -- 
+> 1.6.3.3
+> 
