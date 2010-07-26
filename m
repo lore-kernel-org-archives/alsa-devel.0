@@ -1,33 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Which project to choose?
-Date: Mon, 26 Jul 2010 16:09:28 +0800
-Message-ID: <AANLkTinXRTyP75gifHbxuPAc_Uuz61c8MVeQPjNEA3_y@mail.gmail.com>
-References: <1279062131.24837.22.camel@localhost.localdomain>
-	<AANLkTikEf4gf-oeQf4hNGUEvNi0YVrvutnSMCbxGwtJ8@mail.gmail.com>
-	<1279065709.24837.29.camel@localhost.localdomain>
-	<AANLkTimdM5__SzYFxrQqwsbOrxdit2uWOvkazPvZ4PND@mail.gmail.com>
-	<1279071115.29042.0.camel@localhost.localdomain>
-	<AANLkTimNSRELBq7i1Ypi9K2tmFu9NKLvQAOOqPwuU13x@mail.gmail.com>
-	<1279074303.29042.3.camel@localhost.localdomain>
-	<AANLkTimNYxIm9M6Mglrzh3YtJRiq1C8wdZwx-JUhLk9d@mail.gmail.com>
-	<1279145758.29042.11.camel@localhost.localdomain>
-	<AANLkTinN15BWNC2cn78rc5xCSXNo79SDE2_WkBNEg5I2@mail.gmail.com>
-	<1279157921.2668.1.camel@localhost.localdomain>
-	<i1n0mf$87c$1@dough.gmane.org>
-	<AANLkTinXvthWBZ4oQg9D18cfAtkXveWHkB08vsXknGgB@mail.gmail.com>
-	<i2hgrq$ub3$1@dough.gmane.org>
-	<AANLkTimv83-3PHMCUQ=LSyY51vtPCgtLhgyyyFpDW7sP@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Merging alsa-firmware into linux-firmware
+Date: Mon, 26 Jul 2010 10:15:10 +0200
+Message-ID: <4C4D440E.7060505@canonical.com>
+References: <4C457C89.5040209@canonical.com>
+	<1279623084.29277.1.camel@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 3129124494
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 928B5246C7
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jul 2010 10:09:30 +0200 (CEST)
-Received: by vws20 with SMTP id 20so2509556vws.38
-	for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2010 01:09:29 -0700 (PDT)
-In-Reply-To: <AANLkTimv83-3PHMCUQ=LSyY51vtPCgtLhgyyyFpDW7sP@mail.gmail.com>
+	Mon, 26 Jul 2010 10:15:13 +0200 (CEST)
+In-Reply-To: <1279623084.29277.1.camel@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,107 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: "chase.douglas@canonical.com" <chase.douglas@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/7/26 Raymond Yau <superquad.vortex2@gmail.com>
+2010-07-20 12:51, David Woodhouse skrev:
+> On Tue, 2010-07-20 at 11:38 +0100, David Henningsson wrote:
+>> Hi,
+>>
+>> Chase Douglas (@canonical) and I plan to take what's left of
+>> alsa-firmware and try to merge it into linux-firmware, this might happen
+>> now or in the coming weeks. This will make alsa-firmware obsolete as all
+>> firmware will be provided by linux-firmware instead.
+>>
+>> Any words of disagreement, warnings or encouragement before we do so?
+> 
+> Encouragement, certainly...
+> 
 
->
->
-> 2010/7/25 Colin Guthrie <gmane@colin.guthr.ie>
->
-> 'Twas brillig, and Raymond Yau at 24/07/10 04:51 did gyre and gimble:
->> > 2010/7/15 Colin Guthrie <gmane@colin.guthr.ie>
->> >
->> >> 'Twas brillig, and Chris at 15/07/10 02:38 did gyre and gimble:
->> >>> On Thu, 2010-07-15 at 08:08 +0800, Raymond Yau wrote:
->> >>>
->> >>>>> I posted both of those bug reports. Honestly, I just want it to work
->> >>>>> without all the error output to syslog and thrashing of my HD for
->> >>>>> minutes at a time. As I said, I've got the output of pulseaudio
->> -vvvvv
->> >>>>> if anyone would like to look at it and tell me what I need to do to
->> fix
->> >>>>> the problem.
->> >>>>>
->> >>>>> Chris
->> >>>>>
->> >>>>>
->> >>>>>
->> >>>> Just upload your current pulseaudio.log and output of alsa-info.sh to
->> >>>> mandriva 's bugzilla
->> >>>>
->> >>>> Cannot obtain any conclusion based on the log which you have posted
->> last
->> >>>> year ( xmms)
->> >>>>
->> >>>> as Jaroslav Kysela said , need the real system time between I/O
->> >> operations
->> >>>> and you'll see if it's issue in the ALSA driver or a task scheduling
->> >>>> problem.
->> >>>
->> >>> Here is the bug report with the outputs uploaded.
->> >>>
->> >>> https://qa.mandriva.com/show_bug.cgi?id=60169
->> >>
->> >> Well seeing as my process when getting such a bug is to report it here
->> >> on behalf of the user, I suspect that this has reached a stalemate....
->> >>
->> >>
->> >>
->> > Can I remove pulseaudio from mandriva 2000 ?
->> >
->> > I just want to test libcanberra-alsa alone ( i.e. libcanberra without
->> > pulseaudio )
->> >
->> > when PA server abort, and libcanberra-pulse cannot connect to PA server
->> ,
->> >
->> > Will libcanberra use libcanberra-alsa connect to PA using alsa-pulse
->> plugin
->> > ?
->>
->> Use draksound (or via Mandriva Control Center) to disable pulseaudio and
->> the ALSA backend for canberra should be used instead.
->>
->> It's based on the alternatives system and the file
->> /etc/sound/profiles/alsa/canberra.conf
->>
->>
->> Col
->>  <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>
->>
->
-> I have used Mandriva Control Centerl to disable pulseaudio and select alsa
-> driver .
-> Perform logout and login by MCC
->
-> aplay -v test.wav  indicate that it is using dmix
->
-> there is no driver specified in .mplayer/config but when I run
->
-> mplayer -v test.wav
->
-> AO : [pulse] 44100 Hz
->
-> it seem that mplayer auto spawn PA server .
->
-> Did I miss out anything to disable pulseaudio since I assume that MCC had
-> performed all the necessary action ?
->
-> more /etc/asound/profiles/alsa/canberra.conf
-> CANBERRA_DRIVER=alsa
->
-> but
->
-> ls /etc/asound/profiles/current seem to be empty
->
->
->
-After logout/login one more time . the pulseaudio seem to be disabled
+Okay, so now there's a preliminary version up for review here:
+git://kernel.ubuntu.com/diwic/linux-firmware.git, alsa-merge branch.
 
-The only thing is mixer applet disappeared from the system tray
+Feel free to either merge it if you think it's okay, or if it needs
+adjustments, let me know (or fix them yourself, whatever is simplest...).
 
+Note that once this one's through, we should adjust alsa-tools for usx2y
+to point to /lib/firmware/usx2y and nothing else.
 
- is this a bug in MCC or I have to manually configured mixer applet not to
-use pulseaudio
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
