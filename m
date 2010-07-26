@@ -1,8 +1,8 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: [Fwd: Re: [pulseaudio-discuss] pulseaudio debug
 	mode]
-Date: Mon, 26 Jul 2010 11:22:43 +0800
-Message-ID: <AANLkTi=aGfUBy-cF_DoOJVz+XbSc+vUrcKjxtVR6NR=_@mail.gmail.com>
+Date: Mon, 26 Jul 2010 12:00:29 +0800
+Message-ID: <AANLkTinc+yEo-xDpPHC1eoxEmmuSXfrhkK50zD75QwKR@mail.gmail.com>
 References: <1280097015.29696.8.camel@localhost.localdomain>
 	<AANLkTimj3W_tgi-+Qqgz-J31u-daOqJ8a2E74qEUzy8U@mail.gmail.com>
 	<1280107804.29411.1.camel@localhost.localdomain>
@@ -13,11 +13,11 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id A05D6245F1
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id A13BF24602
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jul 2010 05:22:45 +0200 (CEST)
-Received: by vws20 with SMTP id 20so2319907vws.38
-	for <alsa-devel@alsa-project.org>; Sun, 25 Jul 2010 20:22:44 -0700 (PDT)
+	Mon, 26 Jul 2010 06:00:30 +0200 (CEST)
+Received: by vws20 with SMTP id 20so2342299vws.38
+	for <alsa-devel@alsa-project.org>; Sun, 25 Jul 2010 21:00:30 -0700 (PDT)
 In-Reply-To: <1280113577.19933.2.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -214,14 +214,38 @@ List-Id: alsa-devel@alsa-project.org
 > Jul 25 21:49:51 localhost mdkapplet[16332]: Packages are up to date
 >
 >
->
-I have no idea why "asyncq.c: q overrun, queuing locally" appear
+you should ask PA developer to add code to debug since this is a queue used
+by PA and has no relationship with alsa ,
 
-But I have another question ,
+ alsa-sink and alsa-source can only post PA_CORE_MESSAGE_UNLOAD_MODULE
 
-did update manager stop pulseaudio server when the update manager want to
-update pulseaudio package ?
+modules/alsa/alsa-sink.c:    pa_asyncmsgq_post(u->thread_mq.outq,
+PA_MSGOBJECT(u->core), PA_CORE_MESSAGE_UNLOAD_MODULE, u->module, 0, NULL,
+NULL);
+modules/alsa/alsa-source.c:    pa_asyncmsgq_post(u->thread_mq.outq,
+PA_MSGOBJECT(u->core), PA_CORE_MESSAGE_UNLOAD_MODULE, u->module, 0, NULL,
+NULL);
 
-Actually I don't notice yum -y update stop the PA server if it updated
-pulseaudio package (install new pulseaudio and remove old pulseaudio
-package) and restart PA server on Fedora 10
+
+and you have to copy definition of struct asyncmsgq_item from asyncmsgq.c
+
+
+void pa_asyncq_post(pa_asyncq*l, void *p) {
+    struct localq *q;
++   struct asyncmsgq_item *i;
+
+    pa_assert(l);
+    pa_assert(p);
+
++  i=( struct asyncmsgq_item *)p;
+
+    if (flush_postq(l, FALSE))
+        if (pa_asyncq_push(l, p, FALSE) >= 0)
+            return;
+
+    /* OK, we couldn't push anything in the queue. So let's queue it
+     * locally and push it later */
+
+    if (pa_log_ratelimit())
+-        pa_log_warn("q overrun, queuing locally");
++        pa_log_warn("q overrun, queuing locally  code %d",i->code);
