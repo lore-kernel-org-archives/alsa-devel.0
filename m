@@ -1,18 +1,17 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Merging alsa-firmware into linux-firmware
-Date: Mon, 26 Jul 2010 10:15:10 +0200
-Message-ID: <4C4D440E.7060505@canonical.com>
-References: <4C457C89.5040209@canonical.com>
-	<1279623084.29277.1.camel@localhost>
+Subject: [PATCH] Ensure codec patch files are checked for the
+ correct codec ID
+Date: Mon, 26 Jul 2010 10:22:59 +0200
+Message-ID: <4C4D45E3.6000606@canonical.com>
+References: <4C06729B.6050201@epost.diwic.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------020601030309080805090208"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 928B5246C7
+	by alsa0.perex.cz (Postfix) with ESMTP id A1C26246D3
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jul 2010 10:15:13 +0200 (CEST)
-In-Reply-To: <1279623084.29277.1.camel@localhost>
+	Mon, 26 Jul 2010 10:23:00 +0200 (CEST)
+In-Reply-To: <4C06729B.6050201@epost.diwic.se>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,33 +21,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: "chase.douglas@canonical.com" <chase.douglas@canonical.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010-07-20 12:51, David Woodhouse skrev:
-> On Tue, 2010-07-20 at 11:38 +0100, David Henningsson wrote:
->> Hi,
->>
->> Chase Douglas (@canonical) and I plan to take what's left of
->> alsa-firmware and try to merge it into linux-firmware, this might happen
->> now or in the coming weeks. This will make alsa-firmware obsolete as all
->> firmware will be provided by linux-firmware instead.
->>
->> Any words of disagreement, warnings or encouragement before we do so?
-> 
-> Encouragement, certainly...
-> 
+This is a multi-part message in MIME format.
+--------------020601030309080805090208
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Okay, so now there's a preliminary version up for review here:
-git://kernel.ubuntu.com/diwic/linux-firmware.git, alsa-merge branch.
+This one never got merged (and I forgot to cc Takashi...), so I'm just
+reposting it.
 
-Feel free to either merge it if you think it's okay, or if it needs
-adjustments, let me know (or fix them yourself, whatever is simplest...).
-
-Note that once this one's through, we should adjust alsa-tools for usx2y
-to point to /lib/firmware/usx2y and nothing else.
+Link to original post:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2010-June/028302.html
 
 -- 
 David Henningsson, Canonical Ltd.
 http://launchpad.net/~diwic
+
+--------------020601030309080805090208
+Content-Type: text/x-patch;
+ name="0001-Ensure-codec-patch-files-are-checked-for-the-correct.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-Ensure-codec-patch-files-are-checked-for-the-correct.pa";
+ filename*1="tch"
+
+>From ae4e9f41cf404d879b14be56591c4d5c6b403b71 Mon Sep 17 00:00:00 2001
+From: David Henningsson <diwic@ubuntu.com>
+Date: Wed, 2 Jun 2010 16:56:41 +0200
+Subject: [PATCH] Ensure codec patch files are checked for the correct codec ID
+ Signed-off-by: David Henningsson <diwic@ubuntu.com>
+
+---
+ sound/pci/hda/hda_hwdep.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/sound/pci/hda/hda_hwdep.c b/sound/pci/hda/hda_hwdep.c
+index a1fc837..0e2cb27 100644
+--- a/sound/pci/hda/hda_hwdep.c
++++ b/sound/pci/hda/hda_hwdep.c
+@@ -649,7 +649,9 @@ static void parse_codec_mode(char *buf, struct hda_bus *bus,
+ 	*codecp = NULL;
+ 	if (sscanf(buf, "%i %i %i", &vendorid, &subid, &caddr) == 3) {
+ 		list_for_each_entry(codec, &bus->codec_list, list) {
+-			if (codec->addr == caddr) {
++			if (codec->vendor_id == vendorid && 
++					codec->subsystem_id == subid && 
++					codec->addr == caddr) {
+ 				*codecp = codec;
+ 				break;
+ 			}
+-- 
+1.7.0.4
+
+
+--------------020601030309080805090208
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------020601030309080805090208--
