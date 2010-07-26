@@ -1,25 +1,20 @@
-From: Chanwoo Choi <cw00.choi@samsung.com>
-Subject: [PATCH] ASoC: multi-component: SAMSUNG: Modify the
-	name of I2S driver
-Date: Mon, 26 Jul 2010 11:07:29 +0900
-Message-ID: <4C4CEDE1.5010605@samsung.com>
+From: Chris <cpollock@embarqmail.com>
+Subject: Re: [Fwd: Re: [pulseaudio-discuss] pulseaudio debug
+ mode]
+Date: Sun, 25 Jul 2010 22:06:17 -0500
+Message-ID: <1280113577.19933.2.camel@localhost.localdomain>
+References: <1280097015.29696.8.camel@localhost.localdomain>
+	<AANLkTimj3W_tgi-+Qqgz-J31u-daOqJ8a2E74qEUzy8U@mail.gmail.com>
+	<1280107804.29411.1.camel@localhost.localdomain>
+	<AANLkTimoBu3baCYdDWoBQkATrXhG2R2ExYvWybKy1WK_@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3694539328162979779=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id DBADA245CC
+Received: from mailrelay.embarq.synacor.com (mailrelay.embarq.synacor.com
+	[208.47.184.3]) by alsa0.perex.cz (Postfix) with ESMTP id A30CF245E7
 	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jul 2010 04:10:56 +0200 (CEST)
-Received: from epmmp2 (mailout3.samsung.com [203.254.224.33])
-	by mailout3.samsung.com
-	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
-	2010)) with ESMTP id <0L6500I9A78HE950@mailout3.samsung.com> for
-	alsa-devel@alsa-project.org; Mon, 26 Jul 2010 11:07:29 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0L6500MDJ78IHS@mmp2.samsung.com> for
-	alsa-devel@alsa-project.org; Mon, 26 Jul 2010 11:07:30 +0900 (KST)
+	Mon, 26 Jul 2010 05:06:22 +0200 (CEST)
+In-Reply-To: <AANLkTimoBu3baCYdDWoBQkATrXhG2R2ExYvWybKy1WK_@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,88 +25,232 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Kyungmin Park <kyungmin.park@samsung.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Joonyoung Shim <jy0922.shim@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-This patch modify the name of I2S driver(S3C64XX/S3C24xx
-/S3C2412) from "*-iis-*" to "*-i2s-*". The mismatch of I2S name
-exist in the following sound driver. These files write the
-"cpu_dai_name" of I2S as "*-i2s-*".
 
-- sound/soc/s3c24xx/aquila_wm8994.c : "s3c64xx-i2s-v4-dai"
-- sound/soc/s3c24xx/goni_wm8994.c : "s3c64xx-i2s-v4-dai"
-- sound/soc/s3c24xx/smdk64xx_wm8580.c "s3c64xx-i2s-v4-dai"
-- sound/soc/s3c24xx/jive_wm8750.c : "s3c2412-i2s-dai"
-- sound/soc/s3c24xx/neo1973_wm8753.c : "s3c24xx-i2s-dai"
-- sound/soc/s3c24xx/neo1973_gta02_wm8753.c : "s3c24xx-i2s-dai"
-- sound/soc/s3c24xx/s3c24xx_simtec_hermes.c : "s3c24xx-i2s-dai"
-- sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c : "s3c24xx-i2s-dai"
-- sound/soc/s3c24xx/s3c24xx_uda134x.c : "s3c24xx-i2s-dai"
-- sound/soc/s3c24xx/smartq_wm8987.c : "s3c64xx-i2s-dai.0"
+--===============3694539328162979779==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-VAJwYGEUPuQ9qY6oTtun"
 
-or, It is should modify "cpu_dai_name" of sound drvier files
-instead of modifying the name of I2S driver.
 
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
-Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
----
- sound/soc/s3c24xx/s3c2412-i2s.c    |    2 +-
- sound/soc/s3c24xx/s3c24xx-i2s.c    |    2 +-
- sound/soc/s3c24xx/s3c64xx-i2s-v4.c |    2 +-
- sound/soc/s3c24xx/s3c64xx-i2s.c    |    2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+--=-VAJwYGEUPuQ9qY6oTtun
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/s3c24xx/s3c2412-i2s.c b/sound/soc/s3c24xx/s3c2412-i2s.c
-index aa116f6..f7c23ae 100644
---- a/sound/soc/s3c24xx/s3c2412-i2s.c
-+++ b/sound/soc/s3c24xx/s3c2412-i2s.c
-@@ -188,7 +188,7 @@ static struct platform_driver s3c2412_iis_driver = {
- 	.probe  = s3c2412_iis_dev_probe,
- 	.remove = s3c2412_iis_dev_remove,
- 	.driver = {
--		.name = "s3c2412-iis-dai",
-+		.name = "s3c2412-i2s-dai",
- 		.owner = THIS_MODULE,
- 	},
- };
-diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.c b/sound/soc/s3c24xx/s3c24xx-i2s.c
-index a6cbeef..20712ad 100644
---- a/sound/soc/s3c24xx/s3c24xx-i2s.c
-+++ b/sound/soc/s3c24xx/s3c24xx-i2s.c
-@@ -495,7 +495,7 @@ static struct platform_driver s3c24xx_iis_driver = {
- 	.probe  = s3c24xx_iis_dev_probe,
- 	.remove = s3c24xx_iis_dev_remove,
- 	.driver = {
--		.name = "s3c24xx-iis-dai",
-+		.name = "s3c24xx-i2s-dai",
- 		.owner = THIS_MODULE,
- 	},
- };
-diff --git a/sound/soc/s3c24xx/s3c64xx-i2s-v4.c b/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
-index 885040b..2846ea2 100644
---- a/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
-+++ b/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
-@@ -195,7 +195,7 @@ static struct platform_driver s3c64xx_i2sv4_driver = {
- 	.probe  = s3c64xx_i2sv4_dev_probe,
- 	.remove = s3c64xx_i2sv4_dev_remove,
- 	.driver = {
--		.name = "s3c64xx-iis-v4-dai",
-+		.name = "s3c64xx-i2s-v4-dai",
- 		.owner = THIS_MODULE,
- 	},
- };
-diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.c b/sound/soc/s3c24xx/s3c64xx-i2s.c
-index 161189b..2017639 100644
---- a/sound/soc/s3c24xx/s3c64xx-i2s.c
-+++ b/sound/soc/s3c24xx/s3c64xx-i2s.c
-@@ -218,7 +218,7 @@ static struct platform_driver s3c64xx_iis_driver = {
- 	.probe  = s3c64xx_iis_dev_probe,
- 	.remove = s3c64xx_iis_dev_remove,
- 	.driver = {
--		.name = "s3c64xx-iis-dai",
-+		.name = "s3c64xx-i2s-dai",
- 		.owner = THIS_MODULE,
- 	},
- };
--- 
-1.6.3.3
+On Mon, 2010-07-26 at 09:45 +0800, Raymond Yau wrote:=20
+> 2010/7/26 Chris <cpollock@embarqmail.com>
+>=20
+> > On Mon, 2010-07-26 at 07:31 +0800, Raymond Yau wrote:
+> > > 2010/7/26 Chris <cpollock@embarqmail.com>
+> > >
+> > > > Raymond, attached is a post I made today to the pulseaudio list.
+> > > >
+> > > > From: Chris <cpollock@embarqmail.com>
+> > > > To: pulseaudio-discuss@mail.0pointer.de
+> > > > Date: Sun, 25 Jul 2010 12:15:02 -0500
+> > > > Subject: Re: [pulseaudio-discuss] pulseaudio debug mode
+> > > > On Fri, 2010-07-23 at 08:58 +0100, Colin Guthrie wrote:
+> > > > > 'Twas brillig, and Chris at 23/07/10 02:04 did gyre and gimble:
+> > > > > > What is the best way to start PA for debugging and still have a=
+ll
+> > the
+> > > > > > usual clients running?
+> > > > >
+> > > > > If you mean having all the clients connect (e.g. applications wit=
+h
+> > > > > libcanberra support or similar for sound events), then there are
+> > > > > basically two ways.
+> > > > >
+> > > > > The first is as Luke suggests. These clients will automatically
+> > > > > reconnect to PA if they need to (provided you have a vaguely rece=
+nt
+> > > > > libcanberra), after it is restarted and run in debug mode.
+> > > > >
+> > > > > Alternatively you can simply set debug-level to "debug" in
+> > daemon.conf
+> > > > > (in /etc/pulse or ~/.pulse), and then "grep pulseaudio
+> > /var/log/messages"
+> > > > >
+> > > > > Col
+> > > > >
+> > > >
+> > > > Colin, link below is for debug output also some other output. Anyth=
+ing
+> > > > look out of place that would cause the overruns?
+> > > >
+> > > > http://pastebin.com/ZWSWmXZt
+> > > > --
+> > > >
+> > >
+> > > Most likely you will need to set debug-level to "debug" in daemon.con=
+f
+> > > logout and login , and check the /var/log/messages
+> > >
+> > > I suspect it occur after PA server abort and auto spawn , so please d=
+on't
+> > > just post the PA log starting from "asyncq overrun" , you need to pos=
+t
+> > from
+> > > the last two PA startup sequence before the error occur since we need=
+ to
+> > > know why PA auto spawn
+> >
+> > Is this what you mean Raymond:
+> > http://pastebin.com/4RT7YaG6
+> >
+> >
+> No, you don't have "asyncq overrun" error in these log
+>=20
+> if you had change the "debug-level", the log still keep in /var/log/messa=
+ges
+>=20
+> The PA client which can connected to PA server before the PA server start
+> the playing thread is the PA client which autospawn the PA server
+
+The log level has been set to debug all day
+
+### Read from configuration file: /home/chris/.pulse//daemon.conf ###
+daemonize =3D no
+fail =3D yes
+high-priority =3D yes
+nice-level =3D -11
+realtime-scheduling =3D yes
+realtime-priority =3D 5
+allow-module-loading =3D yes
+allow-exit =3D yes
+use-pid-file =3D yes
+system-instance =3D no
+cpu-limit =3D no
+enable-shm =3D yes
+flat-volumes =3D yes
+lock-memory =3D no
+exit-idle-time =3D 20
+scache-idle-time =3D 20
+dl-search-path =3D /usr/lib/pulse-0.9.21/modules
+default-script-file =3D /etc/pulse/default.pa
+load-default-script-file =3D yes
+log-target =3D auto
+log-level =3D debug
+resample-method =3D speex-float-0
+enable-remixing =3D yes
+enable-lfe-remixing =3D no
+default-sample-format =3D s16le
+default-sample-rate =3D 44100
+default-sample-channels =3D 2
+default-channel-map =3D front-left,front-right
+default-fragments =3D 4
+default-fragment-size-msec =3D 25
+shm-size-bytes =3D 0
+log-meta =3D no
+log-time =3D yes
+log-backtrace =3D 0
+rlimit-fsize =3D -1
+rlimit-data =3D -1
+rlimit-stack =3D -1
+rlimit-core =3D -1
+rlimit-rss =3D -1
+rlimit-as =3D -1
+rlimit-nproc =3D -1
+rlimit-nofile =3D 256
+rlimit-memlock =3D -1
+rlimit-locks =3D -1
+rlimit-sigpending =3D -1
+rlimit-msgqueue =3D -1
+rlimit-nice =3D 31
+rlimit-rtprio =3D 9
+rlimit-rttime =3D 1000000
+
+
+The is what happens after a fresh log-in and Mandrive update is running
+and I also start Firefox:
+
+Jul 25 21:48:22 localhost mdkapplet[16332]: Computing new updates...
+Jul 25 21:48:23 localhost mdkapplet[16332]: running: urpmi.update
+--update
+Jul 25 21:48:39 localhost mdkapplet[16332]: updating inactive backport
+media Main Backports (Official2010.1-4), Contrib Backports
+(Official2010.1-12), Non-free Backports (Official2010.1-20), PLF Free
+backports, PLF Non-free backports
+Jul 25 21:48:39 localhost mdkapplet[16332]: running: urpmi.update Main
+Backports (Official2010.1-4)
+Jul 25 21:48:46 localhost mdkapplet[16332]: running: urpmi.update
+Contrib Backports (Official2010.1-12)
+Jul 25 21:48:48 localhost mdkapplet[16332]: running: urpmi.update
+Non-free Backports (Official2010.1-20)
+Jul 25 21:48:51 localhost mdkapplet[16332]: running: urpmi.update PLF
+Free backports
+Jul 25 21:48:55 localhost mdkapplet[16332]: running: urpmi.update PLF
+Non-free backports
+Jul 25 21:48:57 localhost pulseaudio[26721]: (7440.932|  71.318)
+client.c: Created 44 "Native client (UNIX socket client)"
+Jul 25 21:48:57 localhost pulseaudio[26721]: (7440.932|   0.000)
+protocol-native.c: Protocol version: remote 16, local 16
+Jul 25 21:48:57 localhost pulseaudio[26721]: (7440.932|   0.000)
+protocol-native.c: Got credentials: uid=3D500 gid=3D500 success=3D1
+Jul 25 21:48:57 localhost pulseaudio[26721]: (7440.932|   0.000)
+protocol-native.c: SHM possible: yes
+Jul 25 21:48:57 localhost pulseaudio[26721]: (7440.932|   0.000)
+protocol-native.c: Negotiated SHM: yes
+Jul 25 21:48:57 localhost pulseaudio[26721]: (7440.934|   0.001)
+module-augment-properties.c: Looking for .desktop file for firefox
+Jul 25 21:49:19 localhost pulseaudio[26721]: (7462.497|  21.563)
+asyncq.c: q overrun, queuing locally
+Jul 25 21:49:19 localhost pulseaudio[26721]: (7462.577|   0.080)
+asyncq.c: q overrun, queuing locally
+Jul 25 21:49:19 localhost pulseaudio[26721]: (7462.577|   0.000)
+asyncq.c: q overrun, queuing locally
+Jul 25 21:49:19 localhost pulseaudio[26721]: (7462.657|   0.079)
+asyncq.c: q overrun, queuing locally
+Jul 25 21:49:19 localhost pulseaudio[26721]: (7462.737|   0.080)
+asyncq.c: q overrun, queuing locally
+Jul 25 21:49:19 localhost pulseaudio[26721]: (7462.737|   0.000)
+asyncq.c: q overrun, queuing locally
+Jul 25 21:49:19 localhost pulseaudio[26721]: (7462.737|   0.000)
+asyncq.c: q overrun, queuing locally
+Jul 25 21:49:19 localhost pulseaudio[26721]: (7462.737|   0.000)
+asyncq.c: q overrun, queuing locally
+Jul 25 21:49:19 localhost pulseaudio[26721]: (7462.817|   0.079)
+asyncq.c: q overrun, queuing locally
+Jul 25 21:49:19 localhost pulseaudio[26721]: (7462.817|   0.000)
+asyncq.c: q overrun, queuing locally
+Jul 25 21:49:19 localhost pulseaudio[26721]: (7462.897|   0.079)
+asyncq.c: q overrun, queuing locally
+Jul 25 21:49:51 localhost mdkapplet[16332]: Packages are up to date
+
+
+
+--=20
+Chris
+KeyID 0xE372A7DA98E6705C
+
+
+
+
+
+
+--=-VAJwYGEUPuQ9qY6oTtun
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEABECAAYFAkxM+5QACgkQ43Kn2pjmcFxICwCeP/3Asfkx6XimWeh/GVIJ8qjo
+HakAn26Gwkvi4yjfq4k7eMlfHiTUhzCZ
+=TJlT
+-----END PGP SIGNATURE-----
+
+--=-VAJwYGEUPuQ9qY6oTtun--
+
+
+--===============3694539328162979779==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3694539328162979779==--
