@@ -1,52 +1,50 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Realtek alc269 questions
-Date: Mon, 26 Jul 2010 12:01:50 +0200
-Message-ID: <4C4D5D0E.6050900@canonical.com>
+From: Ralf Mardorf <ralf.mardorf-ZCLZIpdjs0kJGwgDXS7ZQA@public.gmane.org>
+Subject: Re: [LAD] announcing envy24control, mudita (*) edition.
+Date: Mon, 26 Jul 2010 12:13:40 +0200
+Message-ID: <1280139220.4930.20.camel@suse11-2>
+References: <AANLkTikX07nHbBsBSG04r54LEp3R+CRC9dC--aB_h2gQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id EA04C24534
-	for <alsa-devel@alsa-project.org>;
-	Mon, 26 Jul 2010 12:01:52 +0200 (CEST)
-Received: from hutte.canonical.com ([91.189.90.181])
-	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
-	id 1OdKVL-00006I-Fp
-	for <alsa-devel@alsa-project.org>; Mon, 26 Jul 2010 11:01:51 +0100
-Received: from c83-254-141-68.bredband.comhem.se ([83.254.141.68]
-	helo=[192.168.8.103]) by hutte.canonical.com with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
-	(envelope-from <david.henningsson@canonical.com>) id 1OdKVL-00030n-Cb
-	for alsa-devel@alsa-project.org; Mon, 26 Jul 2010 11:01:51 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+In-Reply-To: <AANLkTikX07nHbBsBSG04r54LEp3R+CRC9dC--aB_h2gQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+To: Niels Mayer <nielsmayer-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-audio-announce-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Linux Audio Developers <linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>, PlanetCCRMA mailinglist <planetccrma-l0SEpsmuUtBegcJQxxnBRDe48wsgrGvP@public.gmane.org>, fedora-music-list <fedora-music-list-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-I'm trying to fix the sound on some Dell Optiplex machines, which are
-running the ALC269 chip. I can "fix" them with some hda-verb commands,
-but that won't get me auto-mute, so I'll have to make a model (or
-possibly more than one) for them.
+Suse 11.2 amd64
+TERRATEC EWX 24/96
 
-Anyway, I have a pair of questions:
+No issues to build it.
 
-1) In dmesg, there is a "SKU not ready" message at startup. What is SKU,
-and is it a problem that it is not ready?
+The faders with the +4dBu -10dBV switch here are shorter too.
 
-2) There are two DACs, and all models so far seem to use NID 0x03 for
-headphones and NID 0x02 for everything else. But is there a single
-stream going through the controller and then splitted into two on the
-codec side, or is just one of the DACs activated at a time, depending on
-the jack sensing state?
+CPU usage when playing and showing the meters around 5%, max around 22%,
+for 0.6.0 and 1.0.0. 
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+CPU usage when playing and moving the DAC faders for 0.6.0 it's around
+30%, but for 1.0.0 it's > 60%.
+
+I switched several times between /usr/bin/envy24control
+and /usr/local/bin/envy24control and watched both CPUs by htop.
+
+After the 'normal' output for both versions I get:
+
+'(envy24control:9266): Gtk-WARNING **: GtkSpinButton: setting an
+adjustment with non-zero page size is deprecated
+
+(envy24control:9266): Gtk-WARNING **: GtkSpinButton: setting an
+adjustment with non-zero page size is deprecated'
+
+Hth,
+
+Ralf
