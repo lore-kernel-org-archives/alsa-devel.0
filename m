@@ -1,15 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: hda-verb, hda-analyzer, hda-emu and codecgraph
-Date: Tue, 27 Jul 2010 13:31:16 +0200
-Message-ID: <4C4EC384.4040904@canonical.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: asoc multi-component: almost there!
+Date: Tue, 27 Jul 2010 08:07:19 -0500
+Message-ID: <AANLkTikmQgnqByfVB_yJ0rSfeuRb2YmGDeXzOrDV9tHX@mail.gmail.com>
+References: <AANLkTimKhtzu-_Sts3AkVmDhc19tOGg4dqMGzdCro=A7@mail.gmail.com>
+	<1280227335.3085.29.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5D5E2244FD
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 067FA2455C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jul 2010 13:31:20 +0200 (CEST)
+	Tue, 27 Jul 2010 15:07:56 +0200 (CEST)
+Received: by gya1 with SMTP id 1so1360925gya.38
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2010 06:07:55 -0700 (PDT)
+In-Reply-To: <1280227335.3085.29.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,18 +25,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On Tue, Jul 27, 2010 at 5:42 AM, Liam Girdwood <lrg@slimlogic.co.uk> wrote:
 
-Do you plan to make hda-verb, hda-analyzer, hda-emu and/or codecgraph a
-part of alsa-tools/alsa-utils/pyalsa in the future?
+> You don't need to register two CODEC DAIs here. One will do, since we
+> only have the one CODEC.
 
-I'm asking because I would like to know if it makes sense to package
-them separately for Debian.
+I don't see how I can avoid it.  I register one DAI for playback, and
+another for capture.  In the past, multi-component was able to handle
+this.  It's only with the most recent change that it's broken.
 
 -- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+Timur Tabi
+Linux kernel developer at Freescale
