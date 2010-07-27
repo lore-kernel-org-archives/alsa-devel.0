@@ -1,19 +1,15 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: TWL4030: Capture route DAPM event fix
-Date: Tue, 27 Jul 2010 11:44:32 +0100
-Message-ID: <1280227472.3085.30.camel@odin>
-References: <1280127555-8042-1-git-send-email-peter.ujfalusi@nokia.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: hda-verb, hda-analyzer, hda-emu and codecgraph
+Date: Tue, 27 Jul 2010 13:31:16 +0200
+Message-ID: <4C4EC384.4040904@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3C7DF24405
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5D5E2244FD
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jul 2010 12:44:37 +0200 (CEST)
-Received: by wwb18 with SMTP id 18so456985wwb.20
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2010 03:44:36 -0700 (PDT)
-In-Reply-To: <1280127555-8042-1-git-send-email-peter.ujfalusi@nokia.com>
+	Tue, 27 Jul 2010 13:31:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,25 +19,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@Nokia.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-07-26 at 09:59 +0300, Peter Ujfalusi wrote:
-> There is no need to handle POST_PMU, POST_PMD event with
-> the Capture Route widget.
-> It is enough to handle POST_REG event, since that will come
-> when the user changes the routing, and we will switch the needed
-> bits in the registers.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Hi Takashi,
 
-Applied.
+Do you plan to make hda-verb, hda-analyzer, hda-emu and/or codecgraph a
+part of alsa-tools/alsa-utils/pyalsa in the future?
 
-Thanks
+I'm asking because I would like to know if it makes sense to package
+them separately for Debian.
 
-Liam
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
