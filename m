@@ -1,19 +1,18 @@
-From: Wei Ni <wni@nvidia.com>
-Subject: Re: Wrong channel order with multichannel HDMI on MCP7A
-Date: Tue, 27 Jul 2010 15:14:37 +0800
-Message-ID: <6B4D417B830BC44B8026029FD256F7F1C29D065C84@HKMAIL01.nvidia.com>
-References: <201007251951.39362.anssi.hannula@iki.fi>
-	<s5hocduwqom.wl%tiwai@suse.de> <s5hk4oiwpqr.wl%tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ALSA: hda: Fixup commit 79c944ad (caused
+ codec initialization failure)
+Date: Tue, 27 Jul 2010 10:01:12 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1007270953350.4068@eeebox2.perex-int.cz>
+References: <4C4E0A45.3070008@canonical.com> <s5hbp9ta3lo.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3C6AF243F9
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 641D624435
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jul 2010 09:14:43 +0200 (CEST)
-In-Reply-To: <s5hk4oiwpqr.wl%tiwai@suse.de>
-Content-Language: en-US
+	Tue, 27 Jul 2010 10:01:13 +0200 (CEST)
+In-Reply-To: <s5hbp9ta3lo.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,64 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Takashi Iwai' <tiwai@suse.de>, Anssi Hannula <anssi.hannula@iki.fi>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksIFRha2FzaGkNCk1DUDd4IHVzZSBvbGQgSFcgZGVzaWduIGluIEhETUksIHRoZXkgZG9uJ3Qg
-c3VwcG9ydCBjaGFubmVsIG1hcHBpbmcgbGlrZSBNQ1A4OS4NCkl0IHVzZSBudmhkbWlfZGlnX3Bs
-YXliYWNrX3BjbV9wcmVwYXJlXzhjaCgpIHRvIHByZXBhcmUgY2hhbm5lbCBtYXBwaW5nIGFuZCAN
-CnN0ZWFtIGlkLGZvcm1hdC4NCg0KQW5zc2kgSGFubnVsYQ0KUGxlYXNlIHRyeSB0aGUgZm9sbG93
-aW5nIGNoYW5nZXMgaW4gcGF0Y2hfbnZoZG1pLmMNCnN0YXRpYyBoZGFfbmlkX3QgbnZoZG1pX2Nv
-bl9uaWRzXzd4WzRdID0gew0KCS8qZnJvbnQsIHJlYXIsIGNsZmUsIHJlYXJfc3VyciAqLw0KLQkw
-eDYsIDB4OCwgMHhhLCAweGMsDQorCTB4NiwgMHhhLCAweDgsIDB4YywNCn07DQoNClRoYW5rcw0K
-V2VpLg0KDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBUYWthc2hpIEl3YWkg
-W21haWx0bzp0aXdhaUBzdXNlLmRlXSANClNlbnQ6IE1vbmRheSwgSnVseSAyNiwgMjAxMCA1OjM1
-IFBNDQpUbzogQW5zc2kgSGFubnVsYQ0KQ2M6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsg
-V2VpIE5pDQpTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIFdyb25nIGNoYW5uZWwgb3JkZXIgd2l0
-aCBtdWx0aWNoYW5uZWwgSERNSSBvbiBNQ1A3QQ0KDQpBdCBNb24sIDI2IEp1bCAyMDEwIDExOjE0
-OjE3ICswMjAwLA0K56eBIHdyb3RlOg0KPiANCj4gQXQgU3VuLCAyNSBKdWwgMjAxMCAxOTo1MToz
-OSArMDMwMCwNCj4gQW5zc2kgSGFubnVsYSB3cm90ZToNCj4gPiANCj4gPiBIaSBhbGwhDQo+ID4g
-DQo+ID4gSSBoYXZlIGEgbW90aGVyYm9hcmQgd2l0aCBOVklESUEgTUNQN0EgSERNSSBhdWRpby4N
-Cj4gPiBIb3dldmVyLCBtdWx0aWNoYW5uZWwgYXVkaW8gaXMgbm90IG1hcHBlZCBwcm9wZXJseSBp
-bnRvIHRoZSBIRE1JIG9yZGVyLg0KPiA+IA0KPiA+IE9uIDUuMSwgSSBnZXQgUkwgaW4gRkMsIFJS
-IGluIExGRSwgRkMgaW4gUkwsIExGRSBpbiBSUi4NCj4gPiANCj4gPiBJbnRlcmVzdGluZ2x5LCB0
-aGlzIGlzIG5vdCBjb25zaXN0ZW50IHdpdGggdGhlIEFMU0EgY2hhbm5lbCBvcmRlciAoRkwgRlIg
-UkwgUlIgDQo+ID4gRkMgTEZFKSBiZWluZyBwYXNzZWQgZGlyZWN0bHkgdG8gSERNSSAoRkwgRlIg
-TEZFIEZDIFJMIFJSKS4gSW5zdGVhZCBpdCBsb29rcyANCj4gPiBsaWtlIHRoZXJlIGhhcyBiZWVu
-IGEgd2F2ZWZvcm1hdGV4IChGTCBGUiBGQyBMRkUgUkwgUlI7IHdpbmRvd3M/KSA9PiBIRE1JIA0K
-PiA+IGNvbnZlcnNpb24gaW5zdGVhZCBvZiBBTFNBID0+IEhETUkuDQo+ID4gDQo+ID4gU2FtZSBo
-YXBwZW5zIGZvciA3LjEuDQo+ID4gDQo+ID4gSXMgaXQgcG9zc2libGUgdG8gc2V0IHRoZSBoYXJk
-d2FyZSB0byBkbyBhbiBBTFNBID0+IEhETUkgY29udmVyc2lvbiBpbnN0ZWFkPw0KPiA+IElmIG5v
-dCwgd2Ugc2hvdWxkIG1hbnVhbGx5IGNvbXBlbnNhdGUgZm9yIHRoaXMgc29tZXdoZXJlLCByaWdo
-dD8NCj4gDQo+IERvZXMgdGhlIHBhdGNoIGJlbG93IGNoYW5nZSBhbnl0aGluZz8NCg0KQWggY3Jh
-cCwgaXQgc2hvdWxkIGJlIGlycmVsZXZhbnQuDQpXZWksIGRvbid0IE1DUCA3eCBjaGlwcyBzdXBw
-b3J0IHRoZSBjaGFubmVsIG1hcHBpbmcgYXMgTUNQIDg5Pw0KDQoNCnRoYW5rcywNCg0KVGFrYXNo
-aQ0KDQoNCj4gPiBTb21ld2hhdCByZWxhdGVkbHksIHRyeWluZyB0byBvdXRwdXQgNCBjaGFubmVs
-cyByZXN1bHRzIGluIHNpbGVuY2Ugb25seS4gDQo+IA0KPiBBbHRob3VnaCA1LjEvNy4xIHdvcms/
-DQo+IA0KPiA+IFRyeWluZyB0byBvdXRwdXQgMyBvciA1IGNoYW5uZWxzIHRyaWdnZXJzIGEgdGlt
-ZW91dCB3aXRoIEkvTyBlcnJvciwgd2l0aCB0aGUgDQo+ID4gZm9sbG93aW5nIGluIHRoZSBrZXJu
-ZWwgbG9nOiAiQUxTQSBwY21fbGliLmM6MTc1NzogcGxheWJhY2sgd3JpdGUgZXJyb3IgKERNQSAN
-Cj4gPiBvciBJUlEgdHJvdWJsZT8pIg0KPiANCj4gSEQtYXVkaW8gZG9lc24ndCBzdXBwb3J0IHRo
-ZSBvZGQgbnVtYmVyIG9mIGNoYW5uZWxzIGluIGdlbmVyYWwsIHNvDQo+IHRoZXkgc2hvdWxkIGJl
-IHBsYXllZCBhcyA0IG9yIDYgY2hhbm5lbHMuICBCdXQsIGl0IGxvb2tzIGxpa2UNCj4gc29tZXRo
-aW5nIHdyb25nIGluIHRoZSBzZXR1cC4uLg0KPiANCj4gDQo+IHRoYW5rcywNCj4gDQo+IFRha2Fz
-aGkNCj4gDQo+IC0tLQ0KPiBkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9udmhkbWku
-YyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfbnZoZG1pLmMNCj4gaW5kZXggM2MxMGMwYi4uNzM1NWM2
-MCAxMDA2NDQNCj4gLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9udmhkbWkuYw0KPiArKysgYi9z
-b3VuZC9wY2kvaGRhL3BhdGNoX252aGRtaS5jDQo+IEBAIC01MTEsNiArNTExLDggQEAgc3RhdGlj
-IGludCBwYXRjaF9udmhkbWlfOGNoXzd4KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQ0KPiAgDQo+
-ICAJY29kZWMtPnBhdGNoX29wcyA9IG52aGRtaV9wYXRjaF9vcHNfOGNoXzd4Ow0KPiAgDQo+ICsJ
-aW5pdF9jaGFubmVsX2FsbG9jYXRpb25zKCk7DQo+ICsNCj4gIAlyZXR1cm4gMDsNCj4gIH0NCj4g
-IA0KDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KVGhpcyBlbWFpbCBtZXNzYWdlIGlzIGZv
-ciB0aGUgc29sZSB1c2Ugb2YgdGhlIGludGVuZGVkIHJlY2lwaWVudChzKSBhbmQgbWF5IGNvbnRh
-aW4NCmNvbmZpZGVudGlhbCBpbmZvcm1hdGlvbi4gIEFueSB1bmF1dGhvcml6ZWQgcmV2aWV3LCB1
-c2UsIGRpc2Nsb3N1cmUgb3IgZGlzdHJpYnV0aW9uDQppcyBwcm9oaWJpdGVkLiAgSWYgeW91IGFy
-ZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwgcGxlYXNlIGNvbnRhY3QgdGhlIHNlbmRlciBi
-eQ0KcmVwbHkgZW1haWwgYW5kIGRlc3Ryb3kgYWxsIGNvcGllcyBvZiB0aGUgb3JpZ2luYWwgbWVz
-c2FnZS4NCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Tue, 27 Jul 2010, Takashi Iwai wrote:
+
+> At Tue, 27 Jul 2010 00:20:53 +0200,
+> David Henningsson wrote:
+>>
+>> [1  <text/plain; ISO-8859-1 (7bit)>]
+>> A recent commit in current HEAD (79c944ad) caused codecs not to be
+>> detected in some cases, found on several Realtek codecs.
+>>
+>> Please apply the attached fix for that problem.
+>
+> Ah, I forgot about this being committed to topic/misc branch since
+> Jaroslav's branch contains more other stuff than HD-audio.
+>
+> Applied now.  Thanks for tracking down.
+
+I fixed it in this commit on 20 Jul:
+
+http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=cd7643bfb772dc7103ed6fc8dda6b233a8e14178
+
+Could you revert this patch and pull from my devel tree?
+
+ 				Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
