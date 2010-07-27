@@ -1,24 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: hda-compiler, was: hda-verb, hda-analyzer,
- hda-emu and codecgraph
-Date: Tue, 27 Jul 2010 23:22:06 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1007272306270.4068@eeebox2.perex-int.cz>
-References: <4C4EC384.4040904@canonical.com> <s5hzkxdt6cf.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.1007271603010.4068@eeebox2.perex-int.cz>
-	<s5hzkxdc8p6.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.1007271622510.4068@eeebox2.perex-int.cz>
-	<4C4EFC4C.40707@canonical.com>
-	<s5hmxtdvseg.wl%tiwai@suse.de> <4C4F0A6C.6040203@canonical.com>
-	<s5h8w4wbqd1.wl%tiwai@suse.de>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: asoc multi-component: almost there!
+Date: Tue, 27 Jul 2010 16:23:52 -0500
+Message-ID: <AANLkTikeAObgZsyRN-kWLERaOpICfpnjaidtOUfQhQwz@mail.gmail.com>
+References: <AANLkTimKhtzu-_Sts3AkVmDhc19tOGg4dqMGzdCro=A7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4539F243F0
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 30FEF24359
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jul 2010 23:22:08 +0200 (CEST)
-In-Reply-To: <s5h8w4wbqd1.wl%tiwai@suse.de>
+	Tue, 27 Jul 2010 23:24:23 +0200 (CEST)
+Received: by iwn39 with SMTP id 39so4461933iwn.38
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2010 14:24:22 -0700 (PDT)
+In-Reply-To: <AANLkTimKhtzu-_Sts3AkVmDhc19tOGg4dqMGzdCro=A7@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,44 +24,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
+To: alsa-devel mailing list <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 27 Jul 2010, Takashi Iwai wrote:
+Is the machine driver required to run last?  The reason I ask is that
+my DMA driver is currently initialized via arch_initcall().  If I
+change that to module_init(), ASOC fails to register any sound cards.
 
->>> Meanwhile, the deployment of OF can be helpful if we move the whole
->>> parser stuff to the user-space and push the parsed/compiled tree info
->>> into the kernel (i.e. "firmware").  In such a case, OF representation
->>> can be more flexible; and the kernel has already the infrastructure.
->>
->> So move half of the kernel code into userspace? Are you suggesting that
->> user-space gets a NID-tree, like in the codec-proc file, and returns
->> back init verbs, controls, etc?
->
-> Yes.
+Here's the debug output with arch_initcall():
 
-I thought about the user space parsing, but I would see rather a simple 
-limited special purpose bytecode interpreter in the HDA driver in the 
-first state and an one-shot compiler. The bytecode can be eighter static 
-(read from a firmware file using a lookup scheme based on SSIDs, BIOS pin 
-setups etc.) and later, we may eventually create a complicated user space 
-solution (bytecode generator).
+soc_bind_dai_link:1136 cpu_dai->name=e0016000.ssi,
+dai_link->cpu_dai_name=e0016000.ssi
+soc_bind_dai_link:1159 codec->name=cs4270-codec.0-004f,
+dai_link->codec_name=cs4270-codec.0-004f
+soc_bind_dai_link:1169 codec_dai->name=e0016000.ssi,
+dai_link->codec_dai_name=cs4270-hifi
+soc_bind_dai_link:1169 codec_dai->name=cs4270-hifi,
+dai_link->codec_dai_name=cs4270-hifi
+soc_bind_dai_link:1194 platform->name=e0021180.dma-channel,
+dai_link->platform_name=e0021100.dma-channel
+soc_bind_dai_link:1194 platform->name=e0021100.dma-channel,
+dai_link->platform_name=e0021100.dma-channel
+soc_bind_dai_link:1136 cpu_dai->name=e0016000.ssi,
+dai_link->cpu_dai_name=e0016000.ssi
+soc_bind_dai_link:1159 codec->name=cs4270-codec.0-004f,
+dai_link->codec_name=cs4270-codec.0-004f
+soc_bind_dai_link:1169 codec_dai->name=e0016000.ssi,
+dai_link->codec_dai_name=cs4270-hifi
+soc_bind_dai_link:1169 codec_dai->name=cs4270-hifi,
+dai_link->codec_dai_name=cs4270-hifi
+soc_bind_dai_link:1194 platform->name=e0021180.dma-channel,
+dai_link->platform_name=e0021180.dma-channel
+asoc: cs4270-hifi <-> e0016000.ssi mapping ok
+asoc: cs4270-hifi <-> e0016000.ssi mapping ok
+mpc8610_hpcd_probe:516
+ALSA device list:
+  #0: MPC8610 HPCD
 
-Note that for handling unsolicited events, the description of behaviour 
-(may be dynamic - based on actual nid state) should be available. The 
-bytecode interpreter solution is ideal for both  static and dynamic 
-behaviour description. Ideally, everything in patch_* files should be 
-rewritten to use the bytecode interpreter (including auto sections).
+And here it is with module_init():
 
-If we design a special high-level language and a compiler generating the 
-bytecode for the driver, we can describe hw <-> ALSA mapping on fewer 
-lines and also we can drastically reduce the possibility to introduce an 
-error like in C.
+soc_bind_dai_link:1136 cpu_dai->name=e0016000.ssi,
+dai_link->cpu_dai_name=e0016000.ssi
+soc_bind_dai_link:1159 codec->name=cs4270-codec.0-004f,
+dai_link->codec_name=cs4270-codec.0-004f
+soc_bind_dai_link:1169 codec_dai->name=e0016000.ssi,
+dai_link->codec_dai_name=cs4270-hifi
+soc_bind_dai_link:1169 codec_dai->name=cs4270-hifi,
+dai_link->codec_dai_name=cs4270-hifi
+soc_bind_dai_link:1136 cpu_dai->name=e0016000.ssi,
+dai_link->cpu_dai_name=e0016000.ssi
+soc_bind_dai_link:1159 codec->name=cs4270-codec.0-004f,
+dai_link->codec_name=cs4270-codec.0-004f
+soc_bind_dai_link:1169 codec_dai->name=e0016000.ssi,
+dai_link->codec_dai_name=cs4270-hifi
+soc_bind_dai_link:1169 codec_dai->name=cs4270-hifi,
+dai_link->codec_dai_name=cs4270-hifi
+mpc8610_hpcd_probe:516
+Freescale Elo DMA ASoC PCM Driver
+fsl_soc_dma_probe:852
+soc_bind_dai_link:1194 platform->name=e0021100.dma-channel,
+dai_link->platform_name=e0021100.dma-channel
+soc_bind_dai_link:1194 platform->name=e0021100.dma-channel,
+dai_link->platform_name=e0021180.dma-channel
+fsl_soc_dma_probe:852
+soc_bind_dai_link:1194 platform->name=e0021180.dma-channel,
+dai_link->platform_name=e0021180.dma-channel
+ALSA device list:
+  No soundcards found.
 
- 				Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
