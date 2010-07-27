@@ -1,20 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: hda-compiler, was: hda-verb, hda-analyzer,
- hda-emu and codecgraph
-Date: Tue, 27 Jul 2010 18:33:48 +0200
-Message-ID: <4C4F0A6C.6040203@canonical.com>
-References: <4C4EC384.4040904@canonical.com>
-	<s5hzkxdt6cf.wl%tiwai@suse.de>	<alpine.LNX.2.00.1007271603010.4068@eeebox2.perex-int.cz>	<s5hzkxdc8p6.wl%tiwai@suse.de>	<alpine.LNX.2.00.1007271622510.4068@eeebox2.perex-int.cz>	<4C4EFC4C.40707@canonical.com>
-	<s5hmxtdvseg.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: asoc multi-component: almost there!
+Date: Tue, 27 Jul 2010 18:26:30 +0100
+Message-ID: <1280251590.3085.112.camel@odin>
+References: <AANLkTimKhtzu-_Sts3AkVmDhc19tOGg4dqMGzdCro=A7@mail.gmail.com>
+	<1280238546.3085.89.camel@odin>
+	<AANLkTikGhu8EVLozlBWmC6Tuu_gHZX_mkTRImsMo91TE@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1594B103807
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 789D9245CF
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Jul 2010 18:33:51 +0200 (CEST)
-In-Reply-To: <s5hmxtdvseg.wl%tiwai@suse.de>
+	Tue, 27 Jul 2010 19:26:33 +0200 (CEST)
+Received: by wwe15 with SMTP id 15so1630wwe.20
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2010 10:26:33 -0700 (PDT)
+In-Reply-To: <AANLkTikGhu8EVLozlBWmC6Tuu_gHZX_mkTRImsMo91TE@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,63 +25,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Timur Tabi <timur.tabi@gmail.com>
+Cc: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@sirena.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-2010-07-27 17:47, Takashi Iwai skrev:
-> At Tue, 27 Jul 2010 17:33:32 +0200,
-> David Henningsson wrote:
->>
->> 2010-07-27 16:57, Jaroslav Kysela skrev:
->>> A little off topic: hda-compiler . I'm playing with an idea to have the
->>> hda-intel driver behaviour description (patches) in a firmware file.
->>
->> There seem to be more than one thought in that area. Recently there has
->> been some discussion (at least on Ubuntu Developer Summit) whether the
->> device-tree[1] structure could be used in this area as well.
->> Since we would then have separate device-tree files, we could update
->> them independent of the kernel.
+On Tue, 2010-07-27 at 10:20 -0500, Timur Tabi wrote:
+> On Tue, Jul 27, 2010 at 8:49 AM, Liam Girdwood <lrg@slimlogic.co.uk> wrote:
 > 
-> Did it come from Andy?  I've heard the idea to use OF from Grant in
-> the last year, and yes, this is feasible.  But I'm not sure how much
-> gain we'd get in the end.
+> > Each machine DAI link now has a sysfs entry so we can inspect its
+> > configuration/status now.
+> 
+> I have a suspicion that this will totally break my code.
 
-I'm not sure who took the initial initiative, but more than one seem to
-be interested.
-Anyway, the goal is to make maintenance easier, and especially to be
-able to update a small quirk, somewhat independent of the kernel.
+I think you are probably a special case here since you are the only
+person who is dynamically building a DAI link array atm. Everyone else
+has a static table. To further complicate matters, you are having to
+read from a device tree that has not been optimised for creating ASoC
+DAI link tables (hence the meeting at UDS this year to come up with some
+device tree ASoC format).
 
-> For new devices, except for a few ones like AD or Conexant, we usually
-> write the generic tree parser so that BIOS information can be parsed
-> dynamically.  If BIOS information is broken or insufficient, we can
-> add some hints for correction, via sysfs for debugging or statically
-> in the code for production.  
+Fwiw, I've just again tested another multiple DAI mapping to single
+CODEC DAI :-
 
-So you would prefer BIOS overrides (pin configs etc) to writing new models?
-Would you say the entire "model" infrastructure is, or should be,
-deprecated?
+ 	{
+		.name = "DAI test1",
+		.stream_name = "Multimedia",
 
-> And the rest of the problem is very
-> specific to devices, and requires often some quirks in the parser
-> itself.  So, in this scenario, there is little room OF can help.
-> We'd like rather to avoid the static data, no matter in which form.
+		.cpu_dai_name = "omap-mcbsp-dai.1",
+		.platform_name = "omap-pcm-audio",
 
-Whether that is SSID -> Model mappings or quirks for correcting the
-BIOS, it seems unavoidable with static data to me?
+		.codec_dai_name =  "twl6040-dl1",
+		.codec_name = "twl6040-codec",
+	},
+	{
+		.name = "DAI test2",
+		.stream_name = "Multimedia",
 
-> Meanwhile, the deployment of OF can be helpful if we move the whole
-> parser stuff to the user-space and push the parsed/compiled tree info
-> into the kernel (i.e. "firmware").  In such a case, OF representation
-> can be more flexible; and the kernel has already the infrastructure.
+		.cpu_dai_name = "omap-mcbsp-dai.3",
+		.platform_name = "omap-pcm-audio",
 
-So move half of the kernel code into userspace? Are you suggesting that
-user-space gets a NID-tree, like in the codec-proc file, and returns
-back init verbs, controls, etc?
-I'm not experienced enough to foresee all the consequences of such a
-massive rewriting.
+		.codec_dai_name =  "twl6040-dl1",
+		.codec_name = "twl6040-codec",
+	}
 
 
+Works fine for me.
+
+> 
+> > Hence each machine DAI link must be named
+> > differently. You could have a "cs4270 playback" and "cs4270 capture" DAI
+> > links now.
+> 
+> That won't work either.  For one thing, the CS4270 driver registers
+> only one DAI, and it's called "cs4270-hifi".  So I have to call it
+> "cs4270-hifi".  So I can't call it anything else.
+
+I was meaning the DAI _link_ name (above as "DAI test1" and "DAI test
+2") and not the CODEC DAI name ("twl6040-dl1" above).
+
+I think you should be creating two DAI links like this:-
+
+	{
+		.name = "cs4270-playback",
+		.stream_name = "Playback",
+
+		.cpu_dai_name = "fsl-ssi-blah.0",
+		.platform_name = "fsl-blah-pcm-audio",
+
+		.codec_dai_name =  "cs4270-hifi",
+		.codec_name = "cs4270-codec-addr",
+	},
+	{
+		.name = "cs4270-capture",
+		.stream_name = "Capture",
+
+		.cpu_dai_name = "fsl-ssi-blah.1",
+		.platform_name = "fsl-blah-pcm-audio",
+
+		.codec_dai_name =  "cs4270-hifi",
+		.codec_name = "cs4270-codec-addr",
+	},
+
+The only differences between both DAI links is the name, stream_name and
+cpu_dai_name (iirc your DMA has to be different too?)
+
+Thanks
+
+Liam
 -- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
