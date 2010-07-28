@@ -1,18 +1,17 @@
-From: "Mario 'BitKoenig' Holbe" <Mario.Holbe@TU-Ilmenau.DE>
-Subject: Re: Regression 2.6.35-rc6: ALSA Intel HDA/Realtek:
- missing	Beep
-Date: Wed, 28 Jul 2010 23:27:46 +0200
-Message-ID: <20100728212745.GA15394@darkside.kls.lan>
-References: <20100728144903.GA18170@darkside.kls.lan>
-	<s5hzkxbtya9.wl%tiwai@suse.de> <s5htynjtwz2.wl%tiwai@suse.de>
+From: Valdis.Kletnieks@vt.edu
+Subject: mmotm 2010-07-27 - hda-intel audio fails to initialize
+Date: Wed, 28 Jul 2010 18:23:07 -0400
+Message-ID: <22094.1280355787@localhost>
+References: <201007272226.o6RMQRBm008735@imap1.linux-foundation.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0769069900376711226=="
+Content-Type: multipart/mixed; boundary="===============6390954645989908924=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from piggy.rz.tu-ilmenau.de (piggy.rz.tu-ilmenau.de [141.24.4.8])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5134C103917
+Received: from lennier.cc.vt.edu (lennier.cc.vt.edu [198.82.162.213])
+	by alsa0.perex.cz (Postfix) with ESMTP id C29D0103835
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Jul 2010 23:27:53 +0200 (CEST)
-In-Reply-To: <s5htynjtwz2.wl%tiwai@suse.de>
+	Thu, 29 Jul 2010 00:23:09 +0200 (CEST)
+In-Reply-To: Your message of "Tue, 27 Jul 2010 14:56:50 PDT."
+	<201007272226.o6RMQRBm008735@imap1.linux-foundation.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,68 +21,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Andrew Morton <akpm@linux-foundation.org>, Takashi Iwai <tiwai@suse.de>, Wu Fengguang <fengguang.wu@intel.com>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+--===============6390954645989908924==
+Content-Type: multipart/signed; boundary="==_Exmh_1280355787_3839P";
+	 micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
 
---===============0769069900376711226==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="M9NhX3UHpAaciwkO"
-Content-Disposition: inline
-
-
---M9NhX3UHpAaciwkO
+--==_Exmh_1280355787_3839P
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 28, 2010 at 06:03:29PM +0200, Takashi Iwai wrote:
-> I wrote:
-> > Mario 'BitKoenig' Holbe wrote:
-> > > My PC-Speaker Beep control worked in 2.6.34, but is gone in 2.6.35-rc=
-6.
-> > It's because now the driver checks the SSID your board sets up.
-> > So, it's actually BIOS that clears it.
+On Tue, 27 Jul 2010 14:56:50 PDT, akpm@linux-foundation.org said:
+> The mm-of-the-moment snapshot 2010-07-27-14-56 has been uploaded to
+> 
+>    http://userweb.kernel.org/~akpm/mmotm/
 
-But the BIOS itself beeps through the sound-card at boot :/
+Dell Latitude E6500.  Soundcard has gone astray, it appears.
 
-> Or, does the following patch fix?  It's already in sound git tree,
+>From 2.6.35-rc3-mmotm0719 dmesg:
 
-Nope, unfortunately it doesn't. Still no Beep controls, no beep through
-sound-card.
+[    3.372928] usbcore: registered new interface driver usbhid
+[    3.372931] usbhid: USB HID core driver 
+[    3.395281] input: Dell WMI hotkeys as /devices/virtual/input/input5
+[    3.396477] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 21 (level, low) -> IRQ 21
+[    3.433604] input: HDA Intel Mic at Sep Left Jack as /devices/pci0000:00/0000:00:1b.0/sound/card0/input6
+[    3.433922] input: HDA Intel Mic at Ext Right Jack as /devices/pci0000:00/0000:00:1b.0/sound/card0/input7
+[    3.434402] input: HDA Intel Line Out at Sep Left Jack as /devices/pci0000:00/0000:00:1b.0/sound/card0/input8
+[    3.434668] input: HDA Intel HP Out at Ext Right Jack as /devices/pci0000:00/0000:00:1b.0/sound/card0/input9
+[    3.435552] ALSA device list:
+[    3.435554]   #0: HDA Intel at 0xf6fdc000 irq 48
+[    3.435588] Netfilter messages via NETLINK v0.30. 
+[    3.435608] nf_conntrack version 0.5.0 (16384 buckets, 65536 max)
 
-May I somehow provide any further data?
-Or am I somehow able to tweak it? Is there a module parameter to set
-this SSID bit? I mean, it did work before... :)
+>From 2.6.35-rc6-mmotm0727:
+
+[    3.065797] usbcore: registered new interface driver usbhid
+[    3.065800] usbhid: USB HID core driver
+[    3.085379] input: Dell WMI hotkeys as /devices/virtual/input/input5
+[    3.086706] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 21 (level, low) -> IRQ 21
+[    3.086788] HDA Intel 0000:00:1b.0: irq 48 for MSI/MSI-X
+[    3.086841] HDA Intel 0000:00:1b.0: setting latency timer to 64
+[    3.095165] ALSA sound/pci/hda/hda_intel.c:1450: no codecs initialized
+[    3.095492] HDA Intel 0000:00:1b.0: PCI INT A disabled
+[    3.095640] ALSA device list:
+[    3.095642]   No soundcards found.
+[    3.095676] Netfilter messages via NETLINK v0.30.
+
+Am I hitting a known issue?  If not, what other info would help?
 
 
-Thanks for you help & regards
-   Mario
---=20
-Why did the tachyon cross the road?
-Because it was on the other side.
-
---M9NhX3UHpAaciwkO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+--==_Exmh_1280355787_3839P
+Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Exmh version 2.5 07/13/2001
 
-iQEVAwUBTFCg0RS+e2HeSPbpAQLLxAgAgx7fx3F9KtEs57rQnAysRCEVyxZKIvGd
-XsInyUCKdvnUPJ9tlpQJPEPr2z9KW9mnKUNcNuqq1HuGvCD/13WTJ0htk9nHoMLx
-cWTrNPdpaoQmYBj8sUHQoXiqqd/Zwvjfoz+zRGjdje9YVjNJxI8yFkHniSGLW4wF
-SHACViIBMzeRcafpffMkDfjrtxPdFJkxsn6JT1rtvUzo0YZYe/v1BKhQpoxJbYgv
-DJv0ZczLKPu3V8Phnfo3QThu2y8uJmu/v/zG8MgsZl+bZoG0vQG/ytymoO6yyoNV
-VqE26Vc8UvuXAb41beiGP4add/pGbwznMjFauE2sIzYIhwhQuj8hcQ==
-=PFrw
+iD8DBQFMUK3LcC3lWbTT17ARArMZAJ9lOl+isLuSNS5qQM1+QLpgJSWGDwCg+DCr
+hJDA0FNGvaH4R4FwvG1Mau8=
+=vWE9
 -----END PGP SIGNATURE-----
 
---M9NhX3UHpAaciwkO--
+--==_Exmh_1280355787_3839P--
 
---===============0769069900376711226==
+
+--===============6390954645989908924==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -94,4 +98,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============0769069900376711226==--
+--===============6390954645989908924==--
