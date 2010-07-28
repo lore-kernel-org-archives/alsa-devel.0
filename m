@@ -1,20 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: using plug for sample format conversion
-Date: Wed, 28 Jul 2010 09:39:17 +0800
-Message-ID: <AANLkTin_5EKauGfFxj8uF_9abtS9a4PzoxcVNuC4ZhFr@mail.gmail.com>
-References: <AANLkTimd1EShJJ75Y_FZX7fkv1vDg8JDFTMBcLnWHAR8@mail.gmail.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: Wrong channel order with multichannel HDMI on MCP7A
+Date: Wed, 28 Jul 2010 05:42:09 +0300
+Message-ID: <201007280542.09231.anssi.hannula@iki.fi>
+References: <201007251951.39362.anssi.hannula@iki.fi>
+	<s5hk4oiwpqr.wl%tiwai@suse.de>
+	<6B4D417B830BC44B8026029FD256F7F1C29D065C84@HKMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5094710380D
+Received: from sypressi.dnainternet.net (sypressi.dnainternet.net
+	[83.102.40.135])
+	by alsa0.perex.cz (Postfix) with ESMTP id CF630103820
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Jul 2010 03:39:20 +0200 (CEST)
-Received: by vws20 with SMTP id 20so4558532vws.38
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jul 2010 18:39:19 -0700 (PDT)
-In-Reply-To: <AANLkTimd1EShJJ75Y_FZX7fkv1vDg8JDFTMBcLnWHAR8@mail.gmail.com>
+	Wed, 28 Jul 2010 04:42:14 +0200 (CEST)
+In-Reply-To: <6B4D417B830BC44B8026029FD256F7F1C29D065C84@HKMAIL01.nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,21 +24,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: 'Takashi Iwai' <tiwai@suse.de>, Wei Ni <wni@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-2010/7/28 Adam Rosenberg <adam@alcorn.com>
-
-> I am trying to use plug to play audio files that are S16_LE but my
-> hardware only supports S32_LE.  It is not working.  Here is an example
-> of the problem using speaker-test.  First I use S32_LE and it works as
-> expected.  I then try S16_LE but it fails.  Does this mean the plug
-> plugin cannot convert between these sample formats?
->
-> Thanks,
-> Adam
->
-
-Please use latest version of speaker-test and alsa-lib
-
-and post struct  snd_pcm_hardware of you driver
+V2VpIE5pIGtpcmpvaXR0aSB0aWlzdGFpLCAyNy4gaGVpbsOka3V1dGEgMjAxMCAxMDoxNDozNzoK
+PiBIaSwgVGFrYXNoaQo+IE1DUDd4IHVzZSBvbGQgSFcgZGVzaWduIGluIEhETUksIHRoZXkgZG9u
+J3Qgc3VwcG9ydCBjaGFubmVsIG1hcHBpbmcgbGlrZQo+IE1DUDg5LiBJdCB1c2UgbnZoZG1pX2Rp
+Z19wbGF5YmFja19wY21fcHJlcGFyZV84Y2goKSB0byBwcmVwYXJlIGNoYW5uZWwKPiBtYXBwaW5n
+IGFuZCBzdGVhbSBpZCxmb3JtYXQuCj4gCj4gQW5zc2kgSGFubnVsYQo+IFBsZWFzZSB0cnkgdGhl
+IGZvbGxvd2luZyBjaGFuZ2VzIGluIHBhdGNoX252aGRtaS5jCj4gc3RhdGljIGhkYV9uaWRfdCBu
+dmhkbWlfY29uX25pZHNfN3hbNF0gPSB7Cj4gCS8qZnJvbnQsIHJlYXIsIGNsZmUsIHJlYXJfc3Vy
+ciAqLwo+IC0JMHg2LCAweDgsIDB4YSwgMHhjLAo+ICsJMHg2LCAweGEsIDB4OCwgMHhjLAo+IH07
+CgpJIGFjdHVhbGx5IHRyaWVkIHRoYXQgYWxyZWFkeSwgYnV0IGZvciBzb21lIHJlYXNvbiBjaGFu
+Z2luZyB0aGUgb3JkZXIgaW4gCm52aGRtaV9jb25fbmlkc183eCBkb2Vzbid0IGhhdmUgYW55IGVm
+ZmVjdC4KCkFjdHVhbGx5LCBkaXNhYmxpbmcgdGhlIHdob2xlIGZvciBsb29wIHRoYXQgYXNzaWdu
+cyB0aGUgY2hhbm5lbHMgaW4gCm52aGRtaV9kaWdfcGxheWJhY2tfcGNtX3ByZXBhcmVfOGNoKCkg
+aGFzIG5vIGVmZmVjdCwgbGVhZGluZyBtZSB0byBiZWxpZXZlIAp0aGF0IHRoZSBjb21tYW5kcyBh
+cmUgbm90IHJlYWNoaW5nIHRoZSBoYXJkd2FyZSBvciB0aGV5IGFyZSBiZWluZyBvdmVycmlkZGVu
+LgoKSSBhbHNvIGp1c3Qgbm90aWNlZCB0aGF0IHRoZSBIRE1JIG91dHB1dCBpcyB0aGUgb25seSBk
+ZXRlY3RlZCBvdXRwdXQsIGV2ZW4gCnRob3VnaCB0aGlzIGJvYXJkIGhhcyBhbmFsb2cgYXVkaW8g
+YW5kIFMvUERJRiBvdXRwdXRzIGFzIHdlbGwuIEknbSBub3Qgc3VyZSBpZiAKdGhpcyBpcyByZWxh
+dGVkIG9yIG5vdC4KCiAKPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+IEZyb206IFRha2Fz
+aGkgSXdhaSBbbWFpbHRvOnRpd2FpQHN1c2UuZGVdCj4gU2VudDogTW9uZGF5LCBKdWx5IDI2LCAy
+MDEwIDU6MzUgUE0KPiBUbzogQW5zc2kgSGFubnVsYQo+IENjOiBhbHNhLWRldmVsQGFsc2EtcHJv
+amVjdC5vcmc7IFdlaSBOaQo+IFN1YmplY3Q6IFJlOiBbYWxzYS1kZXZlbF0gV3JvbmcgY2hhbm5l
+bCBvcmRlciB3aXRoIG11bHRpY2hhbm5lbCBIRE1JIG9uCj4gTUNQN0EKPiAKPiBBdCBNb24sIDI2
+IEp1bCAyMDEwIDExOjE0OjE3ICswMjAwLAo+IAo+IOengSB3cm90ZToKPiA+IEF0IFN1biwgMjUg
+SnVsIDIwMTAgMTk6NTE6MzkgKzAzMDAsCj4gPiAKPiA+IEFuc3NpIEhhbm51bGEgd3JvdGU6Cj4g
+PiA+IEhpIGFsbCEKPiA+ID4gCj4gPiA+IEkgaGF2ZSBhIG1vdGhlcmJvYXJkIHdpdGggTlZJRElB
+IE1DUDdBIEhETUkgYXVkaW8uCj4gPiA+IEhvd2V2ZXIsIG11bHRpY2hhbm5lbCBhdWRpbyBpcyBu
+b3QgbWFwcGVkIHByb3Blcmx5IGludG8gdGhlIEhETUkgb3JkZXIuCj4gPiA+IAo+ID4gPiBPbiA1
+LjEsIEkgZ2V0IFJMIGluIEZDLCBSUiBpbiBMRkUsIEZDIGluIFJMLCBMRkUgaW4gUlIuCj4gPiA+
+IAo+ID4gPiBJbnRlcmVzdGluZ2x5LCB0aGlzIGlzIG5vdCBjb25zaXN0ZW50IHdpdGggdGhlIEFM
+U0EgY2hhbm5lbCBvcmRlciAoRkwKPiA+ID4gRlIgUkwgUlIgRkMgTEZFKSBiZWluZyBwYXNzZWQg
+ZGlyZWN0bHkgdG8gSERNSSAoRkwgRlIgTEZFIEZDIFJMIFJSKS4KPiA+ID4gSW5zdGVhZCBpdCBs
+b29rcyBsaWtlIHRoZXJlIGhhcyBiZWVuIGEgd2F2ZWZvcm1hdGV4IChGTCBGUiBGQyBMRkUgUkwK
+PiA+ID4gUlI7IHdpbmRvd3M/KSA9PiBIRE1JIGNvbnZlcnNpb24gaW5zdGVhZCBvZiBBTFNBID0+
+IEhETUkuCj4gPiA+IAo+ID4gPiBTYW1lIGhhcHBlbnMgZm9yIDcuMS4KPiA+ID4gCj4gPiA+IElz
+IGl0IHBvc3NpYmxlIHRvIHNldCB0aGUgaGFyZHdhcmUgdG8gZG8gYW4gQUxTQSA9PiBIRE1JIGNv
+bnZlcnNpb24KPiA+ID4gaW5zdGVhZD8gSWYgbm90LCB3ZSBzaG91bGQgbWFudWFsbHkgY29tcGVu
+c2F0ZSBmb3IgdGhpcyBzb21ld2hlcmUsCj4gPiA+IHJpZ2h0Pwo+ID4gCj4gPiBEb2VzIHRoZSBw
+YXRjaCBiZWxvdyBjaGFuZ2UgYW55dGhpbmc/Cj4gCj4gQWggY3JhcCwgaXQgc2hvdWxkIGJlIGly
+cmVsZXZhbnQuCj4gV2VpLCBkb24ndCBNQ1AgN3ggY2hpcHMgc3VwcG9ydCB0aGUgY2hhbm5lbCBt
+YXBwaW5nIGFzIE1DUCA4OT8KPiAKPiAKPiB0aGFua3MsCj4gCj4gVGFrYXNoaQo+IAo+ID4gPiBT
+b21ld2hhdCByZWxhdGVkbHksIHRyeWluZyB0byBvdXRwdXQgNCBjaGFubmVscyByZXN1bHRzIGlu
+IHNpbGVuY2UKPiA+ID4gb25seS4KPiA+IAo+ID4gQWx0aG91Z2ggNS4xLzcuMSB3b3JrPwo+ID4g
+Cj4gPiA+IFRyeWluZyB0byBvdXRwdXQgMyBvciA1IGNoYW5uZWxzIHRyaWdnZXJzIGEgdGltZW91
+dCB3aXRoIEkvTyBlcnJvciwKPiA+ID4gd2l0aCB0aGUgZm9sbG93aW5nIGluIHRoZSBrZXJuZWwg
+bG9nOiAiQUxTQSBwY21fbGliLmM6MTc1NzogcGxheWJhY2sKPiA+ID4gd3JpdGUgZXJyb3IgKERN
+QSBvciBJUlEgdHJvdWJsZT8pIgo+ID4gCj4gPiBIRC1hdWRpbyBkb2Vzbid0IHN1cHBvcnQgdGhl
+IG9kZCBudW1iZXIgb2YgY2hhbm5lbHMgaW4gZ2VuZXJhbCwgc28KPiA+IHRoZXkgc2hvdWxkIGJl
+IHBsYXllZCBhcyA0IG9yIDYgY2hhbm5lbHMuICBCdXQsIGl0IGxvb2tzIGxpa2UKPiA+IHNvbWV0
+aGluZyB3cm9uZyBpbiB0aGUgc2V0dXAuLi4KPiA+IAo+ID4gCj4gPiB0aGFua3MsCj4gPiAKPiA+
+IFRha2FzaGkKPiA+IAo+ID4gLS0tCj4gPiBkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRj
+aF9udmhkbWkuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfbnZoZG1pLmMKPiA+IGluZGV4IDNjMTBj
+MGIuLjczNTVjNjAgMTAwNjQ0Cj4gPiAtLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX252aGRtaS5j
+Cj4gPiArKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX252aGRtaS5jCj4gPiBAQCAtNTExLDYgKzUx
+MSw4IEBAIHN0YXRpYyBpbnQgcGF0Y2hfbnZoZG1pXzhjaF83eChzdHJ1Y3QgaGRhX2NvZGVjCj4g
+PiAqY29kZWMpCj4gPiAKPiA+ICAJY29kZWMtPnBhdGNoX29wcyA9IG52aGRtaV9wYXRjaF9vcHNf
+OGNoXzd4Owo+ID4gCj4gPiArCWluaXRfY2hhbm5lbF9hbGxvY2F0aW9ucygpOwo+ID4gKwo+ID4g
+Cj4gPiAgCXJldHVybiAwOwo+ID4gIAo+ID4gIH0KPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiAt
+LS0tLS0tLSBUaGlzIGVtYWlsIG1lc3NhZ2UgaXMgZm9yIHRoZSBzb2xlIHVzZSBvZiB0aGUgaW50
+ZW5kZWQKPiByZWNpcGllbnQocykgYW5kIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBpbmZvcm1h
+dGlvbi4gIEFueSB1bmF1dGhvcml6ZWQKPiByZXZpZXcsIHVzZSwgZGlzY2xvc3VyZSBvciBkaXN0
+cmlidXRpb24gaXMgcHJvaGliaXRlZC4gIElmIHlvdSBhcmUgbm90IHRoZQo+IGludGVuZGVkIHJl
+Y2lwaWVudCwgcGxlYXNlIGNvbnRhY3QgdGhlIHNlbmRlciBieSByZXBseSBlbWFpbCBhbmQgZGVz
+dHJveQo+IGFsbCBjb3BpZXMgb2YgdGhlIG9yaWdpbmFsIG1lc3NhZ2UuCj4gLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tCj4gLS0tLS0tLS0gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCgotLSAKQW5zc2kgSGFubnVsYQpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
