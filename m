@@ -1,20 +1,22 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 3/3] ASoC: fsi: Add new funtion for SPDIF
-Date: Wed, 28 Jul 2010 11:16:10 +0100
-Message-ID: <1280312170.3085.544.camel@odin>
-References: <w3pd3u8gvpw.wl%kuninori.morimoto.gx@renesas.com>
-	<w3p8w4wgvny.wl%kuninori.morimoto.gx@renesas.com>
+From: Wei Ni <wni@nvidia.com>
+Subject: Re: Support MCP89 hdmi audio
+Date: Wed, 28 Jul 2010 19:30:12 +0800
+Message-ID: <6B4D417B830BC44B8026029FD256F7F1C29D065C86@HKMAIL01.nvidia.com>
+References: <6B4D417B830BC44B8026029FD256F7F1C29D065C70@HKMAIL01.nvidia.com>
+	<s5hr5ix2dzb.wl%tiwai@suse.de>
+	<6B4D417B830BC44B8026029FD256F7F1C29D065C72@HKMAIL01.nvidia.com>
+	<6B4D417B830BC44B8026029FD256F7F1C29D065C7E@HKMAIL01.nvidia.com>
+	<s5h39v4vskw.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id BD87624414
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3E34F103818
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Jul 2010 12:16:13 +0200 (CEST)
-Received: by wyb42 with SMTP id 42so3815917wyb.38
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jul 2010 03:16:13 -0700 (PDT)
-In-Reply-To: <w3p8w4wgvny.wl%kuninori.morimoto.gx@renesas.com>
+	Wed, 28 Jul 2010 13:30:20 +0200 (CEST)
+In-Reply-To: <s5h39v4vskw.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,68 +26,189 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: 'alsa-devel' <alsa-devel@alsa-project.org>, Stephen Warren <swarren@nvidia.com>, 'linux-kernel' <linux-kernel@vger.kernel.org>, 'akpm' <akpm@linux-foundation.org>, 'Wu Fengguang' <fengguang.wu@intel.com>, 'Pavel Hofman' <pavel.hofman@insite.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-07-28 at 11:57 +0900, Kuninori Morimoto wrote:
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  include/sound/sh_fsi.h |    2 +
->  sound/soc/sh/fsi.c     |   60 ++++++++++++++++++++++++++++++++++++++++++++----
->  2 files changed, 57 insertions(+), 5 deletions(-)
+Hi, Takashi
+Sorry, it's later to reply.
+Yes, this patch is fine, I think it could be checked in.
+
+Thanks
+Wei.
+
+-----Original Message-----
+From: Takashi Iwai [mailto:tiwai@suse.de] 
+Sent: Wednesday, July 28, 2010 5:55 PM
+To: Wei Ni
+Cc: 'Wu Fengguang'; 'Pavel Hofman'; 'alsa-devel'; 'linux-kernel'; 'akpm'; Stephen Warren
+Subject: Re: Support MCP89 hdmi audio
+
+Wei,
+
+At Fri, 23 Jul 2010 16:43:57 +0800,
+Wei Ni wrote:
 > 
-> diff --git a/include/sound/sh_fsi.h b/include/sound/sh_fsi.h
-> index 6ac7186..9d51d6f 100644
-> --- a/include/sound/sh_fsi.h
-> +++ b/include/sound/sh_fsi.h
-> @@ -64,6 +64,8 @@
->  #define SH_FSI_FMT_I2S		3
->  #define SH_FSI_FMT_TDM		4
->  #define SH_FSI_FMT_TDM_DELAY	5
-> +#define SH_FSI_FMT_SPDIF	6
+> Hi, Takashi
+> I tried your patch file, it worked fine on MCP89 board.
+> But I still need to check some other problems.
+> So please don't add this patch now.
+
+What is the status now?
+
+
+thanks,
+
+Takashi
+
+> 
+> Thanks
+> Wei.
+> 
+> -----Original Message-----
+> From: Wei Ni 
+> Sent: Thursday, July 22, 2010 11:14 AM
+> To: 'Takashi Iwai'
+> Cc: Wu Fengguang; 'Pavel Hofman'; 'alsa-devel'; 'linux-kernel'; 'akpm'
+> Subject: RE: Support MCP89 hdmi audio
+> 
+> it's great, I will try it.
+> 
+> Thanks
+> Wei.
+> 
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de] 
+> Sent: Wednesday, July 21, 2010 8:53 PM
+> To: Wei Ni
+> Cc: Wu Fengguang; 'Pavel Hofman'; 'alsa-devel'; 'linux-kernel'; 'akpm'
+> Subject: Re: Support MCP89 hdmi audio
+> 
+> At Wed, 21 Jul 2010 19:45:09 +0800,
+> Wei Ni wrote:
+> > 
+> > Hi, all
+> > I'm an Nvidia engineer, I maintain the nvidia linux hdmi audio driver.
+> > 
+> > An end-user report a problem with his TV attached to an MCP89.
+> > ALSA won't send audio to it, because
+> > PD=0:
+> > HDMI hot plug event: Pin=5 Presence_Detect=1 ELD_Valid=0
+> > HDMI hot plug event: Pin=5 Presence_Detect=0 ELD_Valid=1
+> > 
+> > As you know, in linux driver patch_hdmi.c, it use (pind && eldv)
+> > in unsolicited events. So the driver can't detect the monitor.
+> > 
+> > >From the HAD specification
+> > (http://download.intel.com/standards/hdaudio/pdf/HDA036.pdf):
+> > 
+> > Original text for Unsolicited Response PD bit:
+> > 
+> > Presence Detect: When this bit is set, sense measurement has
+> > changed on the pin widget and software can use the pin sense
+> > control verb to determine the current pin sense data state.
+> > For analog pin widgets, this UR means that Presence Detect or
+> > Impedance has changed on the pin widget.
+> > For digital pin widgets, including HDMI pin widgets, this means
+> > that presence detect (and optionally ELD valid bit) has
+> > **changed**. [my emphasis]
+> > 
+> > Updated text for Unsolicted Response PD bit:
+> > 
+> > Presence Detect: This bit reflects the **present** [my
+> > emphasis] state of the Pin Sense Presence Detect bit when the
+> > unsolicited response is triggered. Software can optionally use
+> > the pin sense control verb to determine the latest pin sense
+> > data state. This bit implementation is only required for
+> > digital display pin widget. Non digital display pin widget is
+> > optional to implement this bit.
+> > 
+> > For our MCP89, the values indicates the change of status of PD, not the actual value of PD,
+> > which follows older description of UR for PD bit.
+> > 
+> > So could we add a workaround for MCP89? We could use Pin Sense to determine again in
+> > unsolicited events. If it return 0xc0000000, it means PD=1 and ELVD=1.
+> > Or do you have any suggestions?
+> 
+> Yes.  The patch below does similar thing.
+> Could you give it a try?
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> ---
+> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+> index 86067ee..2fc5396 100644
+> --- a/sound/pci/hda/patch_hdmi.c
+> +++ b/sound/pci/hda/patch_hdmi.c
+> @@ -52,6 +52,10 @@ struct hdmi_spec {
+>  	 */
+>  	struct hda_multi_out multiout;
+>  	unsigned int codec_type;
 > +
+> +	/* misc flags */
+> +	/* PD bit indicates only the update, not the current state */
+> +	unsigned int old_pin_detect:1;
+>  };
 >  
->  #define SH_FSI_IFMT_TDM_CH(x) \
->  	(SH_FSI_IFMT(TDM)	| SH_FSI_SET_CH_I(x))
-> diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-> index 4b09b3d..0bcdfcc 100644
-> --- a/sound/soc/sh/fsi.c
-> +++ b/sound/soc/sh/fsi.c
-> @@ -30,9 +30,11 @@
->  #define DIDT		0x0020
->  #define DODT		0x0024
->  #define MUTE_ST		0x0028
-> -#define REG_END		MUTE_ST
-> -
-> +#define OUT_SEL		0x0030
-> +#define REG_END		OUT_SEL
 >  
-> +#define A_MST_CTLR	0x0180
-> +#define B_MST_CTLR	0x01A0
->  #define CPU_INT_ST	0x01F4
->  #define CPU_IEMSK	0x01F8
->  #define CPU_IMSK	0x01FC
-> @@ -43,7 +45,7 @@
->  #define CLK_RST		0x0210
->  #define SOFT_RST	0x0214
->  #define FIFO_SZ		0x0218
-> -#define MREG_START	CPU_INT_ST
-> +#define MREG_START	A_MST_CTLR
->  #define MREG_END	FIFO_SZ
+> @@ -616,6 +620,9 @@ static void hdmi_setup_audio_infoframe(struct hda_codec *codec, hda_nid_t nid,
+>   * Unsolicited events
+>   */
 >  
->  /* DO_FMT */
-> @@ -54,6 +56,7 @@
->  #define CR_I2S		(0x3 << 4)
->  #define CR_TDM		(0x4 << 4)
->  #define CR_TDM_D	(0x5 << 4)
-> +#define CR_SPDIF	(0x00100120)
-
-Parenthesis not required here.
-
-
-All Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+> +static void hdmi_present_sense(struct hda_codec *codec, hda_nid_t pin_nid,
+> +			       struct hdmi_eld *eld);
+> +
+>  static void hdmi_intrinsic_event(struct hda_codec *codec, unsigned int res)
+>  {
+>  	struct hdmi_spec *spec = codec->spec;
+> @@ -632,6 +639,12 @@ static void hdmi_intrinsic_event(struct hda_codec *codec, unsigned int res)
+>  	if (index < 0)
+>  		return;
+>  
+> +	if (spec->old_pin_detect) {
+> +		if (pind)
+> +			hdmi_present_sense(codec, tag, &spec->sink_eld[index]);
+> +		pind = spec->sink_eld[index].monitor_present;
+> +	}
+> +
+>  	spec->sink_eld[index].monitor_present = pind;
+>  	spec->sink_eld[index].eld_valid = eldv;
+>  
+> diff --git a/sound/pci/hda/patch_nvhdmi.c b/sound/pci/hda/patch_nvhdmi.c
+> index 3c10c0b..b0652ac 100644
+> --- a/sound/pci/hda/patch_nvhdmi.c
+> +++ b/sound/pci/hda/patch_nvhdmi.c
+> @@ -478,6 +478,7 @@ static int patch_nvhdmi_8ch_89(struct hda_codec *codec)
+>  
+>  	codec->spec = spec;
+>  	spec->codec_type = HDA_CODEC_NVIDIA_MCP89;
+> +	spec->old_pin_detect = 1;
+>  
+>  	if (hdmi_parse_codec(codec) < 0) {
+>  		codec->spec = NULL;
+> @@ -508,6 +509,7 @@ static int patch_nvhdmi_8ch_7x(struct hda_codec *codec)
+>  	spec->multiout.max_channels = 8;
+>  	spec->multiout.dig_out_nid = nvhdmi_master_con_nid_7x;
+>  	spec->codec_type = HDA_CODEC_NVIDIA_MCP7X;
+> +	spec->old_pin_detect = 1;
+>  
+>  	codec->patch_ops = nvhdmi_patch_ops_8ch_7x;
+>  
+> @@ -528,6 +530,7 @@ static int patch_nvhdmi_2ch(struct hda_codec *codec)
+>  	spec->multiout.max_channels = 2;
+>  	spec->multiout.dig_out_nid = nvhdmi_master_con_nid_7x;
+>  	spec->codec_type = HDA_CODEC_NVIDIA_MCP7X;
+> +	spec->old_pin_detect = 1;
+>  
+>  	codec->patch_ops = nvhdmi_patch_ops_2ch;
+>  
+> -----------------------------------------------------------------------------------
+> This email message is for the sole use of the intended recipient(s) and may contain
+> confidential information.  Any unauthorized review, use, disclosure or distribution
+> is prohibited.  If you are not the intended recipient, please contact the sender by
+> reply email and destroy all copies of the original message.
+> -----------------------------------------------------------------------------------
+> 
