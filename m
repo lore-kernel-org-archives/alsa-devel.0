@@ -1,39 +1,56 @@
 From: Kulikov Vasiliy <segooon@gmail.com>
-Subject: [PATCH 09/10] oss: msnd: check request_region() return value
-Date: Wed, 28 Jul 2010 20:41:36 +0400
-Message-ID: <1280335296-23475-1-git-send-email-segooon@gmail.com>
+Subject: [PATCH 10/10] ALSA: asihpi: check return value of get_user()
+Date: Wed, 28 Jul 2010 20:41:56 +0400
+Message-ID: <1280335316-23515-1-git-send-email-segooon@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: kernel-janitors@vger.kernel.org
-Cc: Andrew Veliath <andrewtv@usa.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-request_region() may fail, if so return -ENOMEM.
+get_user() may fail, if so return -EFAULT.
 
 Signed-off-by: Kulikov Vasiliy <segooon@gmail.com>
 ---
- sound/oss/msnd_pinnacle.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
+ sound/pci/asihpi/hpioctl.c |   17 +++++++++++++----
+ 1 files changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/sound/oss/msnd_pinnacle.c b/sound/oss/msnd_pinnacle.c
-index bfaac5f..cd70b9a 100644
---- a/sound/oss/msnd_pinnacle.c
-+++ b/sound/oss/msnd_pinnacle.c
-@@ -1400,9 +1400,13 @@ static int __init attach_multisound(void)
- 		printk(KERN_ERR LOGNAME ": Couldn't grab IRQ %d\n", dev.irq);
- 		return err;
- 	}
--	request_region(dev.io, dev.numio, dev.name);
-+	if (request_region(dev.io, dev.numio, dev.name) == NULL) {
-+		free_irq(dev.irq, &dev);
-+		return -ENOMEM;
+diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
+index 3114999..62895a7 100644
+--- a/sound/pci/asihpi/hpioctl.c
++++ b/sound/pci/asihpi/hpioctl.c
+@@ -121,11 +121,17 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	phpi_ioctl_data = (struct hpi_ioctl_linux __user *)arg;
+ 
+ 	/* Read the message and response pointers from user space.  */
+-	get_user(puhm, &phpi_ioctl_data->phm);
+-	get_user(puhr, &phpi_ioctl_data->phr);
++	if (get_user(puhm, &phpi_ioctl_data->phm) ||
++	    get_user(puhr, &phpi_ioctl_data->phr)) {
++		err = -EFAULT;
++		goto out;
 +	}
  
--        if ((err = dsp_full_reset()) < 0) {
-+	err = dsp_full_reset();
-+	if (err < 0) {
- 		release_region(dev.io, dev.numio);
- 		free_irq(dev.irq, &dev);
- 		return err;
+ 	/* Now read the message size and data from user space.  */
+-	get_user(hm->h.size, (u16 __user *)puhm);
++	if (get_user(hm->h.size, (u16 __user *)puhm)) {
++		err = -EFAULT;
++		goto out;
++	}
+ 	if (hm->h.size > sizeof(*hm))
+ 		hm->h.size = sizeof(*hm);
+ 
+@@ -138,7 +144,10 @@ long asihpi_hpi_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 		goto out;
+ 	}
+ 
+-	get_user(res_max_size, (u16 __user *)puhr);
++	if (get_user(res_max_size, (u16 __user *)puhr)) {
++		err = -EFAULT;
++		goto out;
++	}
+ 	/* printk(KERN_INFO "user response size %d\n", res_max_size); */
+ 	if (res_max_size < sizeof(struct hpi_response_header)) {
+ 		HPI_DEBUG_LOG(WARNING, "small res size %d\n", res_max_size);
 -- 
 1.7.0.4
