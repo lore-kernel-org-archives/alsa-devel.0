@@ -1,17 +1,18 @@
-From: John Lindgren <john.lindgren@tds.net>
-Subject: Equalizer plugin
-Date: Thu, 29 Jul 2010 15:46:23 -0400
-Message-ID: <4C51DA8F.9090506@tds.net>
+From: Ilya D <errordeveloper@gmail.com>
+Subject: PROPOSAL: Layer Signal Processing Architecture
+Date: Thu, 29 Jul 2010 21:20:24 +0100
+Message-ID: <20100729202024.GA14426@00110101.home>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------060002040403000001020400"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 155581039C8
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id EBA081039C8
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jul 2010 21:46:27 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so408071ewy.38
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2010 12:46:26 -0700 (PDT)
+	Thu, 29 Jul 2010 22:20:49 +0200 (CEST)
+Received: by wwe15 with SMTP id 15so734869wwe.20
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2010 13:20:46 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,365 +25,70 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------060002040403000001020400
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-Hi,
-
-I know at present it is possible to set up a system-wide equalizer by
-using a LADSPA effect configured in .asoundrc, but (to my knowledge)
-adjusting such a setup requires editing .asoundrc and then restarting
-all applications using ALSA.  I've cooked up an external PCM plugin that
-uses its own config file to store equalizer settings.  Since it watches
-the config file with inotify, it is possible to change the settings
-without restarting any applications.  I plan to eventually write a GUI
-for it.  So ... is this useful?  Any suggestions?
-
--- John
-
---------------060002040403000001020400
-Content-Type: text/x-csrc;
- name="aeq.c"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="aeq.c"
-
-// AEq -- Equalizer plugin for ALSA
-// Copyright 2010 John Lindgren <john.lindgren@tds.net>
-//
-// Implementation of a 10 band time domain graphic equalizer using IIR filters
-// Copyright 2001 Anders Johansson <ajh@atri.curtin.edu.au>
-//
-// This program is free software: you can redistribute it and/or modify it under
-// the terms of the GNU General Public License as published by the Free Software
-// Foundation, version 2.
-//
-// This program is distributed in the hope that it will be useful, but without
-// any warranty; without even the implied warranty of merchantability or fitness
-// for a particular purpose.  See the GNU General Public License for more
-// details.
-//
-// You should have received a copy of the GNU General Public License along with
-// this program.  If not, see <http://www.gnu.org/licenses/>.
-
-#include <errno.h>
-#include <fcntl.h>
-#include <limits.h>
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/inotify.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
-#include <alsa/asoundlib.h>
-#include <alsa/pcm_external.h>
-
-#define ERROR(...) fprintf (stderr, "AEq: " __VA_ARGS__)
-
-#define BANDS 10
-#define MAX_CHANS 10
-
-// Q value for band-pass filters 1.2247 = (3/2)^(1/2)
-// Gives 4 dB suppression at Fc*2 and Fc/2
-#define Q 1.224745
-
-typedef struct {
-   char path[PATH_MAX];
-   int notify;
-   int on;
-   int chans, rate;
-   float a[BANDS][2]; // A weights
-   float b[BANDS][2]; // B weights
-   float wq[MAX_CHANS][BANDS][2]; // Circular buffer for W data
-   float gv[MAX_CHANS][BANDS]; // Gain factor for each channel and band
-   int K; // Number of used eq bands
-} AEQState;
-
-static const float freqs[BANDS] = {31.25, 62.5, 125, 250, 500, 1000, 2000, 4000,
- 8000, 16000};
-static const char * const labels[BANDS] = {"31.25 Hz", "62.5 Hz", "125 Hz",
- "250 Hz", "500 Hz", "1 kHz", "2 kHz", "4 kHz", "8 kHz", "16 kHz"};
-
-// 2nd order band-pass filter design
-static void bp2 (float * a, float * b, float fc, float q) {
-   float th = 2 * M_PI * fc;
-   float C = (1 - tanf (th * q / 2)) / (1 + tanf (th * q / 2));
-   a[0] = (1 + C) * cosf (th);
-   a[1] = -C;
-   b[0] = (1 - C) / 2;
-   b[1] = -1.005;
-}
-
-static void set_format (AEQState * s, int chans, int rate) {
-   s->chans = chans;
-   s->rate = rate;
-   // Calculate number of active filters
-   s->K = BANDS;
-   while (freqs[s->K - 1] > (float) rate / 2.2)
-      s->K --;
-   // Generate filter taps
-   for (int k = 0; k < s->K; k ++)
-      bp2 (s->a[k], s->b[k], freqs[k] / (float) rate, Q);
-   memset (& s->wq, 0, sizeof s->wq);
-}
-
-static void set_bands (AEQState * s, int on, const float bands[BANDS]) {
-   s->on = on;
-   for (int i = 0; i < MAX_CHANS; i ++) {
-      for (int k = 0; k < BANDS; k ++)
-         s->gv[i][k] = powf (10, bands[k] / 20) - 1;
-   }
-}
-
-static void equalize (AEQState * s, int chan, const float * in, int in_step,
- float * out, int out_step, int samps) {
-   // Gain factor
-   const float * g = s->gv[chan];
-   const float * end = in + in_step * samps;
-   while (in < end) {
-      float f = * in;
-      in += in_step;
-      for (int k = 0; k < s->K; k ++) {
-         // Pointer to circular buffer wq
-         float * wq = s->wq[chan][k];
-         // Calculate output from AR part of current filter
-         float w = f * s->b[k][0] + wq[0] * s->a[k][0] + wq[1] * s->a[k][1];
-         // Calculate output from MA part of current filter
-         f += (w + wq[1] * s->b[k][1]) * g[k];
-         // Update circular buffer
-         wq[1] = wq[0];
-         wq[0] = w;
-      }
-      * out = f;
-      out += out_step;
-   }
-}
-
-static void read_config (const char * path, int * on, float bands[BANDS]) {
-   * on = 0;
-   memset (bands, 0, sizeof bands);
-   FILE * file = fopen (path, "r");
-   if (! file) {
-      ERROR ("Failed to open %s for reading: %s\n", path, strerror (errno));
-      return;
-   }
-   char line[256];
-   if (! fgets (line, sizeof line, file) || ! sscanf (line, "%d", on))
-      goto ERR;
-   for (int k = 0; k < BANDS; k ++) {
-      if (! fgets (line, sizeof line, file) || ! sscanf (line, "%f", bands + k))
-         goto ERR;
-   }
-   fclose (file);
-   return;
-ERR:
-   ERROR ("Syntax error in %s.\n", path);
-   fclose (file);
-}
-
-static void write_config (const char * path, int on, const float bands[BANDS]) {
-   FILE * file = fopen (path, "w");
-   if (! file) {
-      ERROR ("Failed to open %s for writing: %s\n", path, strerror (errno));
-      return;
-   }
-   fprintf (file, "%d # On/off\n", on);
-   for (int k = 0; k < BANDS; k ++)
-      fprintf (file, "%.1f # %s\n", bands[k], labels[k]);
-   fclose (file);
-}
-
-static int folder_init (const char * path) {
-   if (! mkdir (path, S_IRUSR | S_IXUSR | S_IWUSR | S_IRGRP | S_IXGRP) || errno
-    == EEXIST)
-      return 1;
-   ERROR ("Failed to create %s: %s.\n", path, strerror (errno));
-   return 0;
-}
-
-static int file_exists (const char * path) {
-   struct stat s;
-   if (! lstat (path, & s))
-      return 1;
-   if (errno == ENOENT)
-      return 0;
-   ERROR ("Failed to stat %s: %s.\n", path, strerror (errno));
-   return 0;
-}
-
-static int config_init (char * path, int psize) {
-   snprintf (path, psize, "%s/.config", getenv ("HOME"));
-   if (! folder_init (path))
-      return 0;
-   snprintf (path + strlen (path), psize - strlen (path), "/aeq");
-   if (! folder_init (path))
-      return 0;
-   snprintf (path + strlen (path), psize - strlen (path), "/config");
-   if (! file_exists (path)) {
-      float bands[BANDS];
-      memset (bands, 0, sizeof bands);
-      write_config (path, 0, bands);
-   }
-   return 1;
-}
-
-static int notify_new (const char * path) {
-   int n = inotify_init1 (IN_CLOEXEC | IN_NONBLOCK);
-   if (n < 0) {
-      ERROR ("Failed to start inotify: %s.\n", strerror (errno));
-      return -1;
-   }
-   if (inotify_add_watch (n, path, IN_CLOSE_WRITE) < 0) {
-      ERROR ("Failed to set inotify watch on %s: %s.\n", path, strerror (errno));
-      close (n);
-      return -1;
-   }
-   return n;
-}
-
-static int notify_changed (int n) {
-   struct inotify_event e;
-   int readed = read (n, & e, sizeof e);
-   if (readed < 0) {
-      if (errno != EAGAIN)
-         ERROR ("Failed to read from inotify watch: %s.\n", strerror (errno));
-      return 0;
-   }
-   return (readed > 0);
-}
-
-static snd_pcm_sframes_t aeq_transfer (snd_pcm_extplug_t * plug,
- const snd_pcm_channel_area_t * out_areas, snd_pcm_uframes_t out_off,
- const snd_pcm_channel_area_t * in_areas, snd_pcm_uframes_t in_off,
- snd_pcm_uframes_t frames) {
-   AEQState * s = plug->private_data;
-   if (notify_changed (s->notify)) {
-      int on;
-      float bands[BANDS];
-      read_config (s->path, & on, bands);
-      set_bands (s, on, bands);
-   }
-   if (s->on) {
-      for (int i = 0; i < s->chans; i ++) {
-         const float * in = (float *) in_areas[i].addr + (in_areas[i].first +
-          in_areas[i].step * in_off) / (8 * sizeof (float));
-         int in_step = in_areas[i].step / (8 * sizeof (float));
-         float * out = (float *) out_areas[i].addr + (out_areas[i].first +
-          out_areas[i].step * out_off) / (8 * sizeof (float));
-         int out_step = out_areas[i].step / (8 * sizeof (float));
-         equalize (s, i, in, in_step, out, out_step, frames);
-      }
-   } else
-      snd_pcm_areas_copy (out_areas, out_off, in_areas, in_off, s->chans,
-       frames, SND_PCM_FORMAT_FLOAT);
-   return frames;
-}
-
-static int aeq_init (snd_pcm_extplug_t * plug) {
-   AEQState * s = plug->private_data;
-   if (plug->channels > MAX_CHANS)
-      return -EINVAL;
-   set_format (s, plug->channels, plug->rate);
-   if (! config_init (s->path, sizeof s->path))
-      return -EIO;
-   if ((s->notify = notify_new (s->path)) < 0)
-      return -EIO;
-   int on;
-   float bands[BANDS];
-   read_config (s->path, & on, bands);
-   set_bands (s, on, bands);
-   return 0;
-}
-
-static int aeq_close (snd_pcm_extplug_t * plug) {
-   AEQState * s = plug->private_data;
-   close (s->notify);
-   free (s);
-   free (plug);
-   return 0;
-}
-
-static const snd_pcm_extplug_callback_t aeq_callback = {
- .transfer = aeq_transfer,
- .init = aeq_init,
- .close = aeq_close};
-
-static snd_config_t * get_slave (snd_config_t * self) {
-   snd_config_iterator_t i, next;
-   snd_config_for_each (i, next, self) {
-      snd_config_t * n = snd_config_iterator_entry (i);
-      const char * id;
-      if (snd_config_get_id (n, & id) < 0)
-         continue;
-      if (! strcmp (id, "slave"))
-         return n;
-   }
-   ERROR ("No slave PCM.\n");
-   return NULL;
-}
-
-static snd_pcm_extplug_t * aeq_new (void) {
-   snd_pcm_extplug_t * plug = calloc (1, sizeof (snd_pcm_extplug_t));
-   if (! plug)
-      return NULL;
-   AEQState * s = calloc (1, sizeof (AEQState));
-   if (! s) {
-      free (plug);
-      return NULL;
-   }
-   plug->version = SND_PCM_EXTPLUG_VERSION;
-   plug->name = "AEq Equalizer";
-   plug->callback = & aeq_callback;
-   plug->private_data = s;
-   return plug;
-}
-
-SND_PCM_PLUGIN_DEFINE_FUNC (aeq) {
-   snd_config_t * slave = get_slave (conf);
-   if (! slave)
-      return -EINVAL;
-   snd_pcm_extplug_t * plug = aeq_new ();
-   if (! plug)
-      return -ENOMEM;
-   int err = snd_pcm_extplug_create (plug, name, root, slave, stream, mode);
-   if (err < 0) {
-      aeq_close (plug);
-      return err;
-   }
-   snd_pcm_extplug_set_param (plug, SND_PCM_EXTPLUG_HW_FORMAT,
-    SND_PCM_FORMAT_FLOAT);
-   snd_pcm_extplug_set_slave_param (plug, SND_PCM_EXTPLUG_HW_FORMAT,
-    SND_PCM_FORMAT_FLOAT);
-   * pcmp = plug->pcm;
-   return 0;
-}
-
-SND_PCM_PLUGIN_SYMBOL (aeq);
-
---------------060002040403000001020400
-Content-Type: text/plain;
- name="build"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="build"
-
-Z2NjIC1jIC1zdGQ9Yzk5IC1EX0dOVV9TT1VSQ0UgLURQSUMgLVdhbGwgLVdleHRyYSAtZyAt
-TzIgLWZwaWMgYHBrZy1jb25maWcgLS1jZmxhZ3MgYWxzYWAgYWVxLmMKZ2NjIC1zaGFyZWQg
-YHBrZy1jb25maWcgLS1saWJzIGFsc2FgIC1XbCwtc29uYW1lIC1XbCxsaWJhc291bmRfbW9k
-dWxlX3BjbV9hZXEuc28gLW8gbGliYXNvdW5kX21vZHVsZV9wY21fYWVxLnNvIGFlcS5vCg==
---------------060002040403000001020400
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------060002040403000001020400--
+SGVsbG8uCgpJIGhhdmUgYSBwcm9wb3NhbCBmb3IgdGhpcyBMYXllcmVkIE1vZGVsLAp3aGljaCB3
+b3VsZCBhbGxvdyBpbXBsZW1lbnRhdGlvbiBvZiBuZXcgYXVkaW8gaW50ZXJmYWNlcyB3aXRoIERT
+UCBjb3JlcywKd2l0aCBjcm9zcy1wbGF0Zm9ybSBjb21wYXRpYmlsaXR5IGFuZCBhdWRpbyBuZXR3
+b3JraW5nIGluIG1pbmQuCgppdCB3b3VsZCBiZSBhIHNvcnQgb2YgT1NJIGZvciBzaWduYWwgcHJv
+Y2Vzc2luZywgYnV0IHdpdGggc29tZSBleHRyYQpzdHVmZiB0byBpdCwgc3VjaCBhcyBhIGNvbW1v
+biBsYW5ndWFnZSAobGlicmFyeSkgZm9yIGhhcmR3YXJlIHByb2dyYW1taW5nLgoKaXQncyBub3Qg
+dG8gcmVwbGFjZSBBTFNBLCBidXQganVzdCB0byBicmluZyBhIGRpZmZlcmVudCBhcHByb2FjaCBm
+b3IKZGVzaWduIGVuZ2luZWVycyBvZiBwcm9mZXNzaW9uYWwgYXVkaW8gYXBwbGljYXRpb25zLgp3
+ZSBhbGwga25vdyB0aGF0IHRoZXNlIGRheXMgYSBsb3QgbWFudWZhY3R1YXJlcyBjaG9zZSBMaW51
+eApmb3IgdGhlaXIgTWl4aW5nIENvbnNvbGVzIChzdWNoIGFzIE1pZGFzLCBMYXdvLCBDYWxyZWMg
+YW5kIG90aGVycyksCmFsc28gb3RoZXIgcHJvZHVjdHMgdXNlIExpbnV4LCBidXQgdGhlcmUgbWln
+aHQgYmUgb25seSBhIGZldyB3aG8gdXNlCkFMU0EgKGFzIGZhciBhcyBpIGNvdWxkIGZpbmQgb3V0
+IHRoZXJlIHJhdGhlciBOT05FIGluIHByby1hdWRpbyBMaW51eCBkZXZpY2VzKS4KCkxpbnV4IHJ1
+bnMgb24gZGV2aWNlcyBzdWNoIGFzIEJsYWNrZmluIGFuZCBPTUFQLCB3aGljaCBoYXZlIERTUCBj
+b3JlcywKYnV0IHRoZSBpbnRlcmZhY2UgaXMgZGV2aWNlLXNwZWNpZmljLCBoZW5jZSBsb3ctbGV2
+ZWwuCgpBTFNBIGhhZCBiZWVuIGRlc2lnbmVkIGZvciBjb252ZW50aW9uYWwgc291bmQtY2FyZHMg
+KGxhcmdlbHkpIGFsc28gdGhlcmUKZHJpdmVycyBmb3IgUk1FLCBEaWdpR3JhbSBhbmQgb3RoZXIg
+cHJvLWludGVyZmFjZXMsCmJ1dCB0aGUgaGFyZHdhcmUgaXMgc3RpbGwgcHJvcHJpZXRhcnkgYW5k
+IGl0IGlzbid0IHF1aXRlIGZsZXhpYmxlLgoKVGhlIGlkZWEgaXMgdG8gYnJpbmcgbmV3IGNvbmNl
+cHRzIHRvIHRoZSB3b3JsZCwgd2VsbCBub3QgMTAwJSBuZXcsCmJ1dCBuZXcgaW4gYSB3YXkuIE9u
+ZSBvZiB0aGVzZSB3b3VsZCBiZSB0byBpbXBsZW1lbnQgYW4gIm9wZW4tc291cmNlIgphdWRpbyBw
+cm9jZXNzb3IgaW50ZXJmYWNlIG9mIGEga2luZC4KSXQgd291bGQgaGF2ZSBjb25maWd1cmFibGUg
+Y2hhbm5lbCBzdHJpcHMgd2l0aCAobXVsdGktYmFuZCBFUSBhbmQgZHluYW1pY3MpLgoKQW5vdGhl
+ciBtb3RpdmF0aW5nIGZhY3RvciBpcyB1cGNvbW1pbmcgY29tcGxldGl0aW9uIG9mIEFWQiBldGhl
+cm5ldApzdGFuZGFyZCBmcm9tIElFVEYvSUVFRSwgdGhlcmUgaGFkIGJlZW4gbm8gcHVibGljYWx5
+IGF2YWxpYWJsZSBjb2RlCmZvciB0aGlzLCBub3IgaSBjb3VsZCBmaW5kIGFueSBkaXNjdXNzaW9u
+cyBvZiBob3cgaXQgY291bGQgYmUKaW1wbGVtZW50ZWQgaW4gTGludXguIEhvd2V2ZXIgaSBoYXZl
+IGNvbnRhY3Qgd2l0aCBhIHByb2Zlc3NvciBSaWNoYXJkCkZvc3MgZnJvbSBSaG9kZXMgVW5pdmVy
+c2l0eSwgYW5kIHRoZXJlIHRoZXkgaGF2ZSBpbXBsZW1lbnRlZCBhIGxpYnJhcnkKYW5kIHBhY2tl
+dCBnZW5lcmF0b3IgZm9yIEFWQiwgdGhvdWdoIHRoZXkgaGF2ZW4ndCB5ZXQgcHVibGlzaGVkIHRo
+aXMgY29kZS4KClRoZXJlIGFsc28gaGFzbid0IGhlcHBlbmQgYW55IHdpZGUgYWRvcHRpb24gb2Yg
+T1NDLCBhbmQgbWF5IGJlIE9TQyBpcwpub3QgdGhhdCBncmVhdD8gSSBhbSBjdXJyZW50bHkgd29y
+a2luZyBvbiAiQ29udHJvbCBhbmQgTW9uaXRvcmluZwpQcm90b2NvbCIgd2hpY2ggY291bGQgdGFr
+ZSBwYXJ0IGluIHRoaXMgYXJjaGl0ZXJjdHVyZSBvbiBpdCdzIFRPUCBMYXllci4KClRoZSBmYWxs
+b3dpbmcgYXJlIHRoZSBBQlNUUkFDVElPTiBsYXllcnMgdGhhdCBpIGhhdmUgdGhvdWdodCBiZWlu
+ZyBtb3N0IGdlbmVyYWw6Cgp+Pj4gQ29udHJvbCwgTW9uaXRvcmluZyBhbmQgSW5mb3JtYXRpb24g
+KENNSSkKCUFDTVAgKGFib3ZlIG1lbnRpb25lZCBhYm92ZSwgaXQncyBraW5kIG9mIE9TQy1iYXNl
+ZCkKCW9yIEFFUy14MTcwIChib3RoIGNhbiBmaXQgdG9nZXRoZXIpCglhbHNvIE9TQyAuLm9yIGV2
+ZW4gTUlESQoJYnV0IEFDTVAgaXMgbW9yZSBnZW5lcmFsLCBpdCBzaG91bGQgYmUgZ29vZCBmb3Ig
+bGlnaHRpbmcgYW5kCglvdGhlciBjb250cm9sbCBhcHBsaWNhdGlvbnMgLi4KCgkJaGVyZSBpcyB0
+aGUgcGxhY2UgZm9yIEdVSSBpbnRlcmZhY2VzLAoJCQkJaGFyZHdhcmUgY29udHJvbGxlcnMsCgkJ
+CQljb250cm9sIHN1cmZhY2VzIC4uLmV0YwoJCQp+Pj4gU2lnbmFsIFByb2Nlc3NpbmcgU3Vic3lz
+dGVtIChTUFMpCgoJfj4+IENvcmUgU2lnbmFsIEJ1cyAoQ1NCKSA6IG91ciBpbnRlci1jb25uZWN0
+CgkJaXQgaGFzIG9uZSBjb21tb24gY2xvY2sKCQlvbmUgb3IgbW9yZSBjb250cm9sIHBvcnRzCgkJ
+YW5kIG9uZSBvciBtb3JlIHNpZ25hbCBwb3J0cwoJCShhIHBvcnQgY2FuIGJlIGlucHV0LCBvdXRw
+dXQsIG9yIGJvdGgpCgoJCQl0aGUgY29udHJvbCBwb3J0cyBhcmUgZXhwb3NlZCB0byBDTUkgbGF5
+ZXIKCgkJCXRoZSBzaWduYWwgcHJvcnRzIGNhbiBiZToKCgkJCQkJYnJpZGdlZCAob3ZlciBFdGhl
+cm5ldCAoaS5lLiAgQVZCKSwgVVNCIG9yIEZpcmVXaXJlKQoKCQkJCQlpbnRlcmZhY2VkICh0byBz
+YXkgSTJTLCBBRVMvRUJVLCBBRVMtNTAgLi5NQURJLCBBREFUKQoKCQkJCQlvciBzdHJlYW1lZCB0
+byBhIGNvZGVjIG9yCgkJCQkJdW5jb21wcmVzc2VkIGZpbGUgZHVtcGluZwoKCQkJCUxldCdzIGNh
+bGwgaXQgYW4gUG9ydCBFeHBvc3VyZSBMYXllcgoKCX4+PiBDb3JlIFNpZ25hbCBFbGVtZW50cyAo
+Q1NFKQoJCXRoZSBtYWluIGFic3RyYWN0aW9uIGZvciB0aGlzIGlzCgkJbGlicmFyeSAob3VyIGNy
+b3NzLXBsYXRmb3JtIEFQSSkKCSAJY29tcGlsZXIgKHRvIHByb2R1Y2UgcGxhdGZvcm0gZGVwZW5k
+ZW50IGNvZGUpCgkJaW50ZXJwcmV0ZXIgKHRvIGNvbmZpZ3VyZSBhbmQgZ2x1ZSB0aGUgYmxvY2tz
+KQoKCn4+PiBHZW5lcmFsIFB1cnBvc2UgT3BlcmF0aW5nIFN5c3RlbQoJT2YgY291cnNlIGl0IGlz
+IHN0aWxsIHRoZXJlIC4uaXQgY291bGQgYmUgb24gYSByZW1vdGUgbWFjaGluZQoJb3IgYW55dGhp
+bmcgLi5hbmQgaXQgY291bGQgYmUgZXZlcnl3aGVyZSBhcm91bmQsCglldmVuIEdlbmVyYWwgUHVy
+cG9zZSBDUFUgY291bGQgYmUgYSBmYWxsLWJhY2sgb3B0aW9uCgkuLndlbGwsIHRoaXMgaXMgYWxs
+IGFib3V0IGFic3RyYWN0aW9uIGFmdGVyIGFsbCA6KQoKClRoaXMgaXMgd2l0aCBwYXJhbGxlbCBh
+dWRpbyBjbHVzdGVyaW5nIGFwcGxpY2F0aW9ucwphbmQgZGlzdHJpYnV0ZWQgY2hhaW4gcHJvY2Vz
+c2luZyBpbiBtaW5kLgoKTG9va2luZyBmb3J3YXJkIHRvIGhlcmUgc29tZSBkaXNjdXNzaW9uLApJ
+IHdvdWxkIGxpa2UgdG8gc2V0IHVwIGEgd2lraSBhbmQgZGlzY3VzaW9uIGxpc3QgZm9yIHRoaXMh
+CgpSZWdhcmRzLAotLSAKSWx5YSBEbWl0cmljaGVua28gCtCY0LvRjNGPINCU0LzQuNGC0YDQuNGH
+0LXQvdC60L4gCgplbWFpbDogZXJyb3JkZXZlbG9wZXJAZ21haWwuY29tCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
