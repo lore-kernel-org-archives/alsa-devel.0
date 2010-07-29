@@ -1,7 +1,7 @@
 From: Kulikov Vasiliy <segooon@gmail.com>
 Subject: [PATCH 09/10 v2] oss: msnd: check request_region() return value
-Date: Thu, 29 Jul 2010 14:45:50 +0400
-Message-ID: <1280400351-11652-1-git-send-email-segooon@gmail.com>
+Date: Thu, 29 Jul 2010 14:48:16 +0400
+Message-ID: <1280400496-21921-1-git-send-email-segooon@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: kernel-janitors@vger.kernel.org
