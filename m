@@ -1,21 +1,18 @@
-From: =?UTF-8?B?TWlyb3NsYXYgxaB1bGM=?= <fordfrog@gmail.com>
-Subject: Re: acer aspire 8943g with alc670
-Date: Thu, 29 Jul 2010 18:35:23 +0200
-Message-ID: <4C51ADCB.4010607@gmail.com>
-References: <4C50E2E1.3030800@gmail.com>
-	<AANLkTindqKL769hKUk9z18RkABL4SwEubWzn_D0DuAb5@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC 0/4] ASoC: OMAP3: Extended threshold mode
+Date: Thu, 29 Jul 2010 10:22:48 -0700
+Message-ID: <20100729172247.GC24781@opensource.wolfsonmicro.com>
+References: <1280386288-22019-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4076E1039B6
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 445DF24491
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jul 2010 18:35:25 +0200 (CEST)
-Received: by bwz4 with SMTP id 4so339555bwz.38
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2010 09:35:25 -0700 (PDT)
-In-Reply-To: <AANLkTindqKL769hKUk9z18RkABL4SwEubWzn_D0DuAb5@mail.gmail.com>
+	Thu, 29 Jul 2010 19:22:35 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1280386288-22019-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,64 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-IERuZSAyOS43LjIwMTAgMTU6MjAsIFJheW1vbmQgWWF1IG5hcHNhbChhKToKPiAyMDEwLzcvMjkg
-TWlyb3NsYXYgxaB1bGMgPGZvcmRmcm9nQGdtYWlsLmNvbT4KPj4gIGhlbGxvLAo+Pgo+PiBpJ2Qg
-bGlrZSB0byBoZWxwIHdpdGggbWFraW5nIHRoZSBhYm92ZSBzb3VuZGNhcmQgdG8gZnVsbHkgd29y
-aywgYnV0IGhhdmUKPj4gbm8gY2x1ZSB3aGF0IHRvIGRvIGV4YWN0bHkuIGN1cnJlbnRseSB0aGUg
-c291bmRjYXJkIHdvcmtzIHByZXR0eSB3ZWlyZCwKPj4gdGhvdWdoIGF0IGxlYXN0IHNvdW5kIGdv
-ZXMgb3V0IDotKQo+Pgo+PiBpIHRyaWVkIGhkYSBhbmFseXplciBidXQgZGlkIG5vdCBmaW5kIGFu
-eSBkb2N1bWVudGF0aW9uIGZvciBpdCBzbyBoYXZlCj4+IG5vIGlkZWEgd2hhdCB0byBkbyBleGFj
-dGx5LiBhbHNvLCB3aGVuIGNsaWNraW5nIEFVRF9JTiBub2RlcywgaSBnZXQgdGhpcwo+PiBlcnJv
-cjoKPj4KPj4gKiogKGhkYV9hbmFseXplci5weToxMDA2Myk6IFdBUk5JTkcgKio6IGNvbHVtbiBu
-dW1iZXIgaXMgYSBib29sZWFuLCBidXQKPj4gd2lsbCBiZSBpbnRlcnByZXRlZCBhcyBhbiBpbnRl
-Z2VyOyB0aGlzIGlzIGxpa2VseSBub3Qgd2hhdCB5b3UgaW50ZW5kZWQKPj4gVHJhY2ViYWNrICht
-b3N0IHJlY2VudCBjYWxsIGxhc3QpOgo+PiAgRmlsZSAiL2Rldi9zaG0vaGRhLWFuYWx5emVyL2hk
-YV9hbmFseXplci5weSIsIGxpbmUgMzA4LCBpbgo+PiBzZWxlY3Rpb25fY2hhbmdlZF9jYgo+PiAg
-ICBzZWxmLl9fcmVmcmVzaCgpCj4+ICBGaWxlICIvZGV2L3NobS9oZGEtYW5hbHl6ZXIvaGRhX2Fu
-YWx5emVyLnB5IiwgbGluZSAyNzYsIGluIF9fcmVmcmVzaAo+PiAgICBzZWxmLmxvYWQoKQo+PiAg
-RmlsZSAiL2Rldi9zaG0vaGRhLWFuYWx5emVyL2hkYV9hbmFseXplci5weSIsIGxpbmUgMzM2LCBp
-biBsb2FkCj4+ICAgIHNlbGYubm9kZV93aW5kb3cuYWRkKE5vZGVHdWkobm9kZT1uKSkKPj4gIEZp
-bGUgIi9kZXYvc2htL2hkYS1hbmFseXplci9oZGFfZ3VpbGliLnB5IiwgbGluZSA4NiwgaW4gX19p
-bml0X18KPj4gICAgc2VsZi5fX2J1aWxkX25vZGUobm9kZSwgZG9mcmFtZSkKPj4gIEZpbGUgIi9k
-ZXYvc2htL2hkYS1hbmFseXplci9oZGFfZ3VpbGliLnB5IiwgbGluZSA2ODIsIGluIF9fYnVpbGRf
-bm9kZQo+PiAgICB2Ym94LnBhY2tfc3RhcnQoc2VsZi5fX2J1aWxkX2FtcHMobm9kZSksIEZhbHNl
-LCBGYWxzZSkKPj4gIEZpbGUgIi9kZXYvc2htL2hkYS1hbmFseXplci9oZGFfZ3VpbGliLnB5Iiwg
-bGluZSAzNjUsIGluIF9fYnVpbGRfYW1wcwo+PiAgICBub2RlLmluX2FtcCBhbmQgbm9kZS5hbXBf
-dmFsc19pbiBvciBOb25lKQo+PiAgRmlsZSAiL2Rldi9zaG0vaGRhLWFuYWx5emVyL2hkYV9ndWls
-aWIucHkiLCBsaW5lIDMyOCwgaW4gYnVpbGRfY2Fwcwo+PiAgICBpZiBjdGwuaGRhY3RsLmFtcF9p
-bmRleF9tYXRjaChpZHgpOgo+PiAgRmlsZSAiL2Rldi9zaG0vaGRhLWFuYWx5emVyL2hkYV9wcm9j
-LnB5IiwgbGluZSAxNzAsIGluIGFtcF9pbmRleF9tYXRjaAo+PiAgICBjb3VudCA9IChzZWxmLmFt
-cF9jaHMgJiAxKSArICgoc2VsZi5hbXBfY2hzID4+IDEpICYgMSkKPj4gVHlwZUVycm9yOiB1bnN1
-cHBvcnRlZCBvcGVyYW5kIHR5cGUocykgZm9yICY6ICdOb25lVHlwZScgYW5kICdpbnQnCj4+Cj4+
-Cj4+IGNhbiBhbnlib2R5IHBscyBkaXJlY3QgbWUgdG8gc29tZSBkb2N1bWVudGF0aW9uIHRoYXQg
-Y291bGQgaGVscCBtZSB0bwo+PiBtYXN0ZXIgaGRhIGFuYWx5emVyIGFuZCBmaW5kIHRoZSB3YXkg
-dG8gbWFrZSB0aGUgY2FyZCB3b3JrIGNvcnJlY3RseT8KPj4KPj4gbWlyb3NsYXYKPiBCeSB1c2lu
-ZyBhbGM2NzAgYWxzYS1pbmZvLnR4dCBpbiB0aGUgYWxzYSBidWd0cmFja2VyCmhlcmUgaXMgdGhl
-IGJ1ZyBhbmQgYWxzYS1pbmZvLnR4dDoKaHR0cHM6Ly9idWd0cmFjay5hbHNhLXByb2plY3Qub3Jn
-L2Fsc2EtYnVnL3ZpZXcucGhwP2lkPTUwODMKPiB0aGUgbGF0ZXN0IHZlcnNpb24KPiBoZGFfYW5h
-bHl6ZXIgZG9uJ3QgaGFzIGFueSBlcnJvciBtZXNzYWdlIHdoZW4gY2xpY2tpbmcgQVVEX0lOIG5v
-ZGUKPgo+IE5vdCBzdXJlIHlvdXIgZXJyb3IgaXMgZHVlIHRvIHVzaW5nICAvcHJvYyBpbnN0ZWFk
-IG9mIHRleHQgZmlsZSBzaW5jZSBJCj4gZG9uJ3QgaGF2ZSB5b3VyIGNvZGVjCj4KPiBUaGVyZSBh
-cmUgZXJyb3IgbWVzc2FnZXMgd2hlbiBjbGljayB0aGUgImdyYXBoIiBidXR0b24gdG8gZ2VuZXJh
-dGUgdGhlCj4gZ3JhcGguCj4KPiBBYm91dCB0aGUgZ3JhcGgKPiB0aGUgYmx1ZSBsaW5lIC0gY29u
-bmVjdGVkIGF1ZGlvIHBhdGgKPiB0aGUgZ3JleSBsaW5lIC0gdW5jb25uY3RlZCBhdWRpbyBwYXRo
-Cj4gdGhlIGxpbmUgdHVybiByZWQgd2hlbiB5b3UgcHV0IHRoZSBtb3VzZSBjdXJzb3IgbmVhciBh
-bnkgbGluZSAsCj4KPgo+IFR5cGVFcnJvcjogJ2ludCcgb2JqZWN0IGlzIG5vdCBpdGVyYWJsZQo+
-IFRyYWNlYmFjayAobW9zdCByZWNlbnQgY2FsbCBsYXN0KToKPiAgIEZpbGUgIi9oZGEtYW5hbHl6
-ZXIvaGRhX2dyYXBoLnB5IiwgbGluZSA1NzksIGluIGV4cG9zZQo+ICAgICByb3V0ZS5leHBvc2Uo
-Y3IsIGV2ZW50KQo+ICAgRmlsZSAiL2hkYS1hbmFseXplci9oZGFfZ3JhcGgucHkiLCBsaW5lIDE5
-MCwgaW4gZXhwb3NlCj4gICAgIGluYWN0aXZlID0gc2VsZi5zcmMubm9kZS5pc19jb25uX2FjdGl2
-ZShzZWxmLmRzdC5ub2RlKQo+ICAgRmlsZSAiL2hkYS1hbmFseXplci9oZGFfY29kZWMucHkiLCBs
-aW5lIDgwOSwgaW4gaXNfY29ubl9hY3RpdmUKPiAgICAgdmFscyA9IGRzdF9ub2RlLmFtcF92YWxz
-X2luLmdldF92YWxfZGIoaWR4KQo+ICAgRmlsZSAiL2hkYS1hbmFseXplci9oZGFfY29kZWMucHki
-LCBsaW5lIDM3NywgaW4gZ2V0X3ZhbF9kYgo+ICAgICBmb3IgdmFsIGluIHZhbHM6Cj4gVHlwZUVy
-cm9yOiAnaW50JyBvYmplY3QgaXMgbm90IGl0ZXJhYmxlCj4gX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Thu, Jul 29, 2010 at 09:51:24AM +0300, Peter Ujfalusi wrote:
+
+> After the series the limitation on the period size can be lifted, so user space
+> can ask for any period size on any of the McBSP ports.
+
+All looks OK from a generic ASoC point of view
+
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
