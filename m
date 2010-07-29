@@ -1,18 +1,17 @@
-From: Ilya D <errordeveloper@gmail.com>
-Subject: PROPOSAL: Layer Signal Processing Architecture
-Date: Thu, 29 Jul 2010 21:20:24 +0100
-Message-ID: <20100729202024.GA14426@00110101.home>
+From: Florian Faber <faber@faberman.de>
+Subject: Re: PROPOSAL: Layer Signal Processing Architecture
+Date: Thu, 29 Jul 2010 22:52:01 +0200
+Message-ID: <4C51E9F1.3090601@faberman.de>
+References: <20100729202024.GA14426@00110101.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id EBA081039C8
+Received: from india820.server4you.de (india820.server4you.de [85.25.152.101])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2FBBE1039DF
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jul 2010 22:20:49 +0200 (CEST)
-Received: by wwe15 with SMTP id 15so734869wwe.20
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2010 13:20:46 -0700 (PDT)
-Content-Disposition: inline
+	Thu, 29 Jul 2010 22:52:09 +0200 (CEST)
+In-Reply-To: <20100729202024.GA14426@00110101.home>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,70 +24,44 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8uCgpJIGhhdmUgYSBwcm9wb3NhbCBmb3IgdGhpcyBMYXllcmVkIE1vZGVsLAp3aGljaCB3
-b3VsZCBhbGxvdyBpbXBsZW1lbnRhdGlvbiBvZiBuZXcgYXVkaW8gaW50ZXJmYWNlcyB3aXRoIERT
-UCBjb3JlcywKd2l0aCBjcm9zcy1wbGF0Zm9ybSBjb21wYXRpYmlsaXR5IGFuZCBhdWRpbyBuZXR3
-b3JraW5nIGluIG1pbmQuCgppdCB3b3VsZCBiZSBhIHNvcnQgb2YgT1NJIGZvciBzaWduYWwgcHJv
-Y2Vzc2luZywgYnV0IHdpdGggc29tZSBleHRyYQpzdHVmZiB0byBpdCwgc3VjaCBhcyBhIGNvbW1v
-biBsYW5ndWFnZSAobGlicmFyeSkgZm9yIGhhcmR3YXJlIHByb2dyYW1taW5nLgoKaXQncyBub3Qg
-dG8gcmVwbGFjZSBBTFNBLCBidXQganVzdCB0byBicmluZyBhIGRpZmZlcmVudCBhcHByb2FjaCBm
-b3IKZGVzaWduIGVuZ2luZWVycyBvZiBwcm9mZXNzaW9uYWwgYXVkaW8gYXBwbGljYXRpb25zLgp3
-ZSBhbGwga25vdyB0aGF0IHRoZXNlIGRheXMgYSBsb3QgbWFudWZhY3R1YXJlcyBjaG9zZSBMaW51
-eApmb3IgdGhlaXIgTWl4aW5nIENvbnNvbGVzIChzdWNoIGFzIE1pZGFzLCBMYXdvLCBDYWxyZWMg
-YW5kIG90aGVycyksCmFsc28gb3RoZXIgcHJvZHVjdHMgdXNlIExpbnV4LCBidXQgdGhlcmUgbWln
-aHQgYmUgb25seSBhIGZldyB3aG8gdXNlCkFMU0EgKGFzIGZhciBhcyBpIGNvdWxkIGZpbmQgb3V0
-IHRoZXJlIHJhdGhlciBOT05FIGluIHByby1hdWRpbyBMaW51eCBkZXZpY2VzKS4KCkxpbnV4IHJ1
-bnMgb24gZGV2aWNlcyBzdWNoIGFzIEJsYWNrZmluIGFuZCBPTUFQLCB3aGljaCBoYXZlIERTUCBj
-b3JlcywKYnV0IHRoZSBpbnRlcmZhY2UgaXMgZGV2aWNlLXNwZWNpZmljLCBoZW5jZSBsb3ctbGV2
-ZWwuCgpBTFNBIGhhZCBiZWVuIGRlc2lnbmVkIGZvciBjb252ZW50aW9uYWwgc291bmQtY2FyZHMg
-KGxhcmdlbHkpIGFsc28gdGhlcmUKZHJpdmVycyBmb3IgUk1FLCBEaWdpR3JhbSBhbmQgb3RoZXIg
-cHJvLWludGVyZmFjZXMsCmJ1dCB0aGUgaGFyZHdhcmUgaXMgc3RpbGwgcHJvcHJpZXRhcnkgYW5k
-IGl0IGlzbid0IHF1aXRlIGZsZXhpYmxlLgoKVGhlIGlkZWEgaXMgdG8gYnJpbmcgbmV3IGNvbmNl
-cHRzIHRvIHRoZSB3b3JsZCwgd2VsbCBub3QgMTAwJSBuZXcsCmJ1dCBuZXcgaW4gYSB3YXkuIE9u
-ZSBvZiB0aGVzZSB3b3VsZCBiZSB0byBpbXBsZW1lbnQgYW4gIm9wZW4tc291cmNlIgphdWRpbyBw
-cm9jZXNzb3IgaW50ZXJmYWNlIG9mIGEga2luZC4KSXQgd291bGQgaGF2ZSBjb25maWd1cmFibGUg
-Y2hhbm5lbCBzdHJpcHMgd2l0aCAobXVsdGktYmFuZCBFUSBhbmQgZHluYW1pY3MpLgoKQW5vdGhl
-ciBtb3RpdmF0aW5nIGZhY3RvciBpcyB1cGNvbW1pbmcgY29tcGxldGl0aW9uIG9mIEFWQiBldGhl
-cm5ldApzdGFuZGFyZCBmcm9tIElFVEYvSUVFRSwgdGhlcmUgaGFkIGJlZW4gbm8gcHVibGljYWx5
-IGF2YWxpYWJsZSBjb2RlCmZvciB0aGlzLCBub3IgaSBjb3VsZCBmaW5kIGFueSBkaXNjdXNzaW9u
-cyBvZiBob3cgaXQgY291bGQgYmUKaW1wbGVtZW50ZWQgaW4gTGludXguIEhvd2V2ZXIgaSBoYXZl
-IGNvbnRhY3Qgd2l0aCBhIHByb2Zlc3NvciBSaWNoYXJkCkZvc3MgZnJvbSBSaG9kZXMgVW5pdmVy
-c2l0eSwgYW5kIHRoZXJlIHRoZXkgaGF2ZSBpbXBsZW1lbnRlZCBhIGxpYnJhcnkKYW5kIHBhY2tl
-dCBnZW5lcmF0b3IgZm9yIEFWQiwgdGhvdWdoIHRoZXkgaGF2ZW4ndCB5ZXQgcHVibGlzaGVkIHRo
-aXMgY29kZS4KClRoZXJlIGFsc28gaGFzbid0IGhlcHBlbmQgYW55IHdpZGUgYWRvcHRpb24gb2Yg
-T1NDLCBhbmQgbWF5IGJlIE9TQyBpcwpub3QgdGhhdCBncmVhdD8gSSBhbSBjdXJyZW50bHkgd29y
-a2luZyBvbiAiQ29udHJvbCBhbmQgTW9uaXRvcmluZwpQcm90b2NvbCIgd2hpY2ggY291bGQgdGFr
-ZSBwYXJ0IGluIHRoaXMgYXJjaGl0ZXJjdHVyZSBvbiBpdCdzIFRPUCBMYXllci4KClRoZSBmYWxs
-b3dpbmcgYXJlIHRoZSBBQlNUUkFDVElPTiBsYXllcnMgdGhhdCBpIGhhdmUgdGhvdWdodCBiZWlu
-ZyBtb3N0IGdlbmVyYWw6Cgp+Pj4gQ29udHJvbCwgTW9uaXRvcmluZyBhbmQgSW5mb3JtYXRpb24g
-KENNSSkKCUFDTVAgKGFib3ZlIG1lbnRpb25lZCBhYm92ZSwgaXQncyBraW5kIG9mIE9TQy1iYXNl
-ZCkKCW9yIEFFUy14MTcwIChib3RoIGNhbiBmaXQgdG9nZXRoZXIpCglhbHNvIE9TQyAuLm9yIGV2
-ZW4gTUlESQoJYnV0IEFDTVAgaXMgbW9yZSBnZW5lcmFsLCBpdCBzaG91bGQgYmUgZ29vZCBmb3Ig
-bGlnaHRpbmcgYW5kCglvdGhlciBjb250cm9sbCBhcHBsaWNhdGlvbnMgLi4KCgkJaGVyZSBpcyB0
-aGUgcGxhY2UgZm9yIEdVSSBpbnRlcmZhY2VzLAoJCQkJaGFyZHdhcmUgY29udHJvbGxlcnMsCgkJ
-CQljb250cm9sIHN1cmZhY2VzIC4uLmV0YwoJCQp+Pj4gU2lnbmFsIFByb2Nlc3NpbmcgU3Vic3lz
-dGVtIChTUFMpCgoJfj4+IENvcmUgU2lnbmFsIEJ1cyAoQ1NCKSA6IG91ciBpbnRlci1jb25uZWN0
-CgkJaXQgaGFzIG9uZSBjb21tb24gY2xvY2sKCQlvbmUgb3IgbW9yZSBjb250cm9sIHBvcnRzCgkJ
-YW5kIG9uZSBvciBtb3JlIHNpZ25hbCBwb3J0cwoJCShhIHBvcnQgY2FuIGJlIGlucHV0LCBvdXRw
-dXQsIG9yIGJvdGgpCgoJCQl0aGUgY29udHJvbCBwb3J0cyBhcmUgZXhwb3NlZCB0byBDTUkgbGF5
-ZXIKCgkJCXRoZSBzaWduYWwgcHJvcnRzIGNhbiBiZToKCgkJCQkJYnJpZGdlZCAob3ZlciBFdGhl
-cm5ldCAoaS5lLiAgQVZCKSwgVVNCIG9yIEZpcmVXaXJlKQoKCQkJCQlpbnRlcmZhY2VkICh0byBz
-YXkgSTJTLCBBRVMvRUJVLCBBRVMtNTAgLi5NQURJLCBBREFUKQoKCQkJCQlvciBzdHJlYW1lZCB0
-byBhIGNvZGVjIG9yCgkJCQkJdW5jb21wcmVzc2VkIGZpbGUgZHVtcGluZwoKCQkJCUxldCdzIGNh
-bGwgaXQgYW4gUG9ydCBFeHBvc3VyZSBMYXllcgoKCX4+PiBDb3JlIFNpZ25hbCBFbGVtZW50cyAo
-Q1NFKQoJCXRoZSBtYWluIGFic3RyYWN0aW9uIGZvciB0aGlzIGlzCgkJbGlicmFyeSAob3VyIGNy
-b3NzLXBsYXRmb3JtIEFQSSkKCSAJY29tcGlsZXIgKHRvIHByb2R1Y2UgcGxhdGZvcm0gZGVwZW5k
-ZW50IGNvZGUpCgkJaW50ZXJwcmV0ZXIgKHRvIGNvbmZpZ3VyZSBhbmQgZ2x1ZSB0aGUgYmxvY2tz
-KQoKCn4+PiBHZW5lcmFsIFB1cnBvc2UgT3BlcmF0aW5nIFN5c3RlbQoJT2YgY291cnNlIGl0IGlz
-IHN0aWxsIHRoZXJlIC4uaXQgY291bGQgYmUgb24gYSByZW1vdGUgbWFjaGluZQoJb3IgYW55dGhp
-bmcgLi5hbmQgaXQgY291bGQgYmUgZXZlcnl3aGVyZSBhcm91bmQsCglldmVuIEdlbmVyYWwgUHVy
-cG9zZSBDUFUgY291bGQgYmUgYSBmYWxsLWJhY2sgb3B0aW9uCgkuLndlbGwsIHRoaXMgaXMgYWxs
-IGFib3V0IGFic3RyYWN0aW9uIGFmdGVyIGFsbCA6KQoKClRoaXMgaXMgd2l0aCBwYXJhbGxlbCBh
-dWRpbyBjbHVzdGVyaW5nIGFwcGxpY2F0aW9ucwphbmQgZGlzdHJpYnV0ZWQgY2hhaW4gcHJvY2Vz
-c2luZyBpbiBtaW5kLgoKTG9va2luZyBmb3J3YXJkIHRvIGhlcmUgc29tZSBkaXNjdXNzaW9uLApJ
-IHdvdWxkIGxpa2UgdG8gc2V0IHVwIGEgd2lraSBhbmQgZGlzY3VzaW9uIGxpc3QgZm9yIHRoaXMh
-CgpSZWdhcmRzLAotLSAKSWx5YSBEbWl0cmljaGVua28gCtCY0LvRjNGPINCU0LzQuNGC0YDQuNGH
-0LXQvdC60L4gCgplbWFpbDogZXJyb3JkZXZlbG9wZXJAZ21haWwuY29tCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 07/29/10 22:20, Ilya D wrote:
+
+> it's not to replace ALSA, but just to bring a different approach for
+> design engineers of professional audio applications.
+> we all know that these days a lot manufactuares chose Linux
+> for their Mixing Consoles (such as Midas, Lawo, Calrec and others),
+> also other products use Linux, but there might be only a few who use
+> ALSA (as far as i could find out there rather NONE in pro-audio Linux devices).
+
+What for would I use ALSA in a mixing console? In a mixing console I
+control the user interface and a bunch of external DSP units.
+
+Besides, audio interfaces become less important in pro audio with
+upcoming transport over ethernet.
+
+> ALSA had been designed for conventional sound-cards (largely) also there
+> drivers for RME, DigiGram and other pro-interfaces,
+> but the hardware is still proprietary and it isn't quite flexible.
+
+What do you want to say with the latter? They are just interfaces, what
+more should they do?
+
+> Another motivating factor is upcomming completition of AVB ethernet
+> standard from IETF/IEEE, there had been no publicaly avaliable code
+> for this, nor i could find any discussions of how it could be
+> implemented in Linux. However i have contact with a professor Richard
+> Foss from Rhodes University, and there they have implemented a library
+> and packet generator for AVB, though they haven't yet published this code.
+
+You cannot do AVB in software.
+
+> There also hasn't heppend any wide adoption of OSC, and may be OSC is
+> not that great?
+
+That depends on the job. For the purpose you stated - no it is not.
+
+
+Flo
+-- 
+Machines can do the work, so people have time to think.
+public key DA43FEF4          x-hkp://wwwkeys.eu.pgp.net
