@@ -1,35 +1,39 @@
 From: Kulikov Vasiliy <segooon@gmail.com>
-Subject: [PATCH 06/10 v2] ALSA: msnd: check request_region() return value
-Date: Thu, 29 Jul 2010 14:45:24 +0400
-Message-ID: <1280400325-9405-1-git-send-email-segooon@gmail.com>
+Subject: [PATCH 09/10 v2] oss: msnd: check request_region() return value
+Date: Thu, 29 Jul 2010 14:45:50 +0400
+Message-ID: <1280400351-11652-1-git-send-email-segooon@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: kernel-janitors@vger.kernel.org
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Andrew Veliath <andrewtv@usa.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 request_region() may fail, if so return -EBUSY.
 
 Signed-off-by: Kulikov Vasiliy <segooon@gmail.com>
 ---
- sound/isa/msnd/msnd_pinnacle.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+ sound/oss/msnd_pinnacle.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/isa/msnd/msnd_pinnacle.c b/sound/isa/msnd/msnd_pinnacle.c
-index 60b6abd..ed42f8e 100644
---- a/sound/isa/msnd/msnd_pinnacle.c
-+++ b/sound/isa/msnd/msnd_pinnacle.c
-@@ -549,7 +549,10 @@ static int __devinit snd_msnd_attach(struct snd_card *card)
- 		printk(KERN_ERR LOGNAME ": Couldn't grab IRQ %d\n", chip->irq);
+diff --git a/sound/oss/msnd_pinnacle.c b/sound/oss/msnd_pinnacle.c
+index bfaac5f..cd70b9a 100644
+--- a/sound/oss/msnd_pinnacle.c
++++ b/sound/oss/msnd_pinnacle.c
+@@ -1400,9 +1400,13 @@ static int __init attach_multisound(void)
+ 		printk(KERN_ERR LOGNAME ": Couldn't grab IRQ %d\n", dev.irq);
  		return err;
  	}
--	request_region(chip->io, DSP_NUMIO, card->shortname);
-+	if (request_region(chip->io, DSP_NUMIO, card->shortname) == NULL) {
-+		free_irq(chip->irq, chip);
+-	request_region(dev.io, dev.numio, dev.name);
++	if (request_region(dev.io, dev.numio, dev.name) == NULL) {
++		free_irq(dev.irq, &dev);
 +		return -EBUSY;
 +	}
  
- 	if (!request_mem_region(chip->base, BUFFSIZE, card->shortname)) {
- 		printk(KERN_ERR LOGNAME
+-        if ((err = dsp_full_reset()) < 0) {
++	err = dsp_full_reset();
++	if (err < 0) {
+ 		release_region(dev.io, dev.numio);
+ 		free_irq(dev.irq, &dev);
+ 		return err;
 -- 
 1.7.0.4
