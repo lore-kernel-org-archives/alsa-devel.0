@@ -1,18 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: acer aspire 8943g with alc670
-Date: Thu, 29 Jul 2010 17:10:12 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1007291704120.4068@eeebox2.perex-int.cz>
-References: <4C50E2E1.3030800@gmail.com>
-	<AANLkTindqKL769hKUk9z18RkABL4SwEubWzn_D0DuAb5@mail.gmail.com>
-	<4C5184B6.4040503@gmail.com>
+From: Valdis.Kletnieks@vt.edu
+Subject: Re: mmotm 2010-07-27 - hda-intel audio fails to
+	initialize
+Date: Thu, 29 Jul 2010 12:05:27 -0400
+Message-ID: <6177.1280419527@localhost>
+References: <201007272226.o6RMQRBm008735@imap1.linux-foundation.org>
+	<22094.1280355787@localhost> <s5hhbjialvv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-343642383-1280416212=:4068"
+Content-Type: multipart/mixed; boundary="===============5219381412329817983=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2305F24427
+Received: from lennier.cc.vt.edu (lennier.cc.vt.edu [198.82.162.213])
+	by alsa0.perex.cz (Postfix) with ESMTP id 583892445B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jul 2010 17:10:13 +0200 (CEST)
-In-Reply-To: <4C5184B6.4040503@gmail.com>
+	Thu, 29 Jul 2010 18:05:31 +0200 (CEST)
+In-Reply-To: Your message of "Thu, 29 Jul 2010 07:37:56 +0200."
+	<s5hhbjialvv.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,101 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Miroslav_=C5=A0ulc?= <fordfrog@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Wu Fengguang <fengguang.wu@intel.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+--===============5219381412329817983==
+Content-Type: multipart/signed; boundary="==_Exmh_1280419527_4412P";
+	 micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
 
---8323584-343642383-1280416212=:4068
-Content-Type: TEXT/PLAIN; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+--==_Exmh_1280419527_4412P
+Content-Type: text/plain; charset=us-ascii
 
-On Thu, 29 Jul 2010, Miroslav =C5=A0ulc wrote:
+On Thu, 29 Jul 2010 07:37:56 +0200, Takashi Iwai said:
 
-> Dne 29.7.2010 15:20, Raymond Yau napsal(a):
->> 2010/7/29 Miroslav =C5=A0ulc <fordfrog@gmail.com>
->>>  hello,
->>>
->>> i'd like to help with making the above soundcard to fully work, but hav=
-e
->>> no clue what to do exactly. currently the soundcard works pretty weird,
->>> though at least sound goes out :-)
->>>
->>> i tried hda analyzer but did not find any documentation for it so have
->>> no idea what to do exactly. also, when clicking AUD_IN nodes, i get thi=
-s
->>> error:
->>>
->>> ** (hda_analyzer.py:10063): WARNING **: column number is a boolean, but
->>> will be interpreted as an integer; this is likely not what you intended
->>> Traceback (most recent call last):
->>>  File "/dev/shm/hda-analyzer/hda_analyzer.py", line 308, in
->>> selection_changed_cb
->>>    self.__refresh()
->>>  File "/dev/shm/hda-analyzer/hda_analyzer.py", line 276, in __refresh
->>>    self.load()
->>>  File "/dev/shm/hda-analyzer/hda_analyzer.py", line 336, in load
->>>    self.node_window.add(NodeGui(node=3Dn))
->>>  File "/dev/shm/hda-analyzer/hda_guilib.py", line 86, in __init__
->>>    self.__build_node(node, doframe)
->>>  File "/dev/shm/hda-analyzer/hda_guilib.py", line 682, in __build_node
->>>    vbox.pack_start(self.__build_amps(node), False, False)
->>>  File "/dev/shm/hda-analyzer/hda_guilib.py", line 365, in __build_amps
->>>    node.in_amp and node.amp_vals_in or None)
->>>  File "/dev/shm/hda-analyzer/hda_guilib.py", line 328, in build_caps
->>>    if ctl.hdactl.amp_index_match(idx):
->>>  File "/dev/shm/hda-analyzer/hda_proc.py", line 170, in amp_index_match
->>>    count =3D (self.amp_chs & 1) + ((self.amp_chs >> 1) & 1)
->>> TypeError: unsupported operand type(s) for &: 'NoneType' and 'int'
+> This was already fixed, but in the same date (July 27) as mmotm was
+> created.  The commit is:
+> 
+>     cd7643bfb772dc7103ed6fc8dda6b233a8e14178
+>     Author:     Jaroslav Kysela <perex@perex.cz>
+>     ALSA: hda-intel - fix function_id rework (add missing bitmask)
 
-I fixed this issue in the alsa.git repo now.
+Thanks, I cherry-picked that commit and my sound now works.
 
->>> can anybody pls direct me to some documentation that could help me to
->>> master hda analyzer and find the way to make the card work correctly?
->>>
->>> miroslav
->>
->> By using alc670 alsa-info.txt in the alsa bugtracker ,
-> ok, i will post one once i restart my pc as i played with the settings
-> of the driver so i guess the output might be affected.
->> the latest version
->> hda_analyzer don't has any error message when clicking AUD_IN node
-> well, in the night i downloaded the app from
-> http://www.alsa-project.org/hda-analyzer.py and have the issue. now also
-> tried alsa git repo and the result is the same, so the bug really is
-> there, at least for me. i can try to debug it in netbeans if i find out
-> how (i do not code in python nor do i use it as coder).
->> Not sure your error is due to using  /proc instead of text file since I
->> don't have your codec
-> i tried both, using proc and passing alsa-info.txt file to
-> hda-analyzer.py, both with the same result.
+--==_Exmh_1280419527_4412P
+Content-Type: application/pgp-signature
 
-Put alsa-info.txt somewhere to download or point me to this file in a=20
-bugreport.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Exmh version 2.5 07/13/2001
 
->> There are error messages when click the "graph" button to generate the
->> graph.
->>
->> About the graph
->> the blue line - connected audio path
->> the grey line - unconncted audio path
->> the line turn red when you put the mouse cursor near any line ,
-> so hovering over gray connection makes the connection in the card
-> driver, and hovering over blue connection disables the connection?
+iD8DBQFMUabHcC3lWbTT17ARAnTiAJ4yHuLTy0BBPEzHBk7srLPlbbvmDACcCgm/
+1D4rivpYNySBY5xGrLC4/+I=
+=aWIq
+-----END PGP SIGNATURE-----
 
-No, you need to edit the node (use open in context menu - right click on=20
-node).
+--==_Exmh_1280419527_4412P--
 
- =09=09=09=09=09=09Jaroslav
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
-
---8323584-343642383-1280416212=:4068
+--===============5219381412329817983==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -127,4 +72,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---8323584-343642383-1280416212=:4068--
+--===============5219381412329817983==--
