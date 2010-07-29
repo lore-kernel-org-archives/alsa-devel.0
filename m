@@ -1,19 +1,18 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: Wrong channel order with multichannel HDMI on MCP7A
-Date: Thu, 29 Jul 2010 17:41:15 +0300
-Message-ID: <201007291741.15187.anssi.hannula@iki.fi>
-References: <201007251951.39362.anssi.hannula@iki.fi>
-	<6B4D417B830BC44B8026029FD256F7F1C29D065C84@HKMAIL01.nvidia.com>
-	<201007280542.09231.anssi.hannula@iki.fi>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: acer aspire 8943g with alc670
+Date: Thu, 29 Jul 2010 17:10:12 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1007291704120.4068@eeebox2.perex-int.cz>
+References: <4C50E2E1.3030800@gmail.com>
+	<AANLkTindqKL769hKUk9z18RkABL4SwEubWzn_D0DuAb5@mail.gmail.com>
+	<4C5184B6.4040503@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-343642383-1280416212=:4068"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from saarni.dnainternet.net (saarni.dnainternet.net [83.102.40.136])
-	by alsa0.perex.cz (Postfix) with ESMTP id A3E5A10399D
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2305F24427
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jul 2010 16:41:19 +0200 (CEST)
-In-Reply-To: <201007280542.09231.anssi.hannula@iki.fi>
+	Thu, 29 Jul 2010 17:10:13 +0200 (CEST)
+In-Reply-To: <4C5184B6.4040503@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,88 +22,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: 'Takashi Iwai' <tiwai@suse.de>, Wei Ni <wni@nvidia.com>
+To: =?UTF-8?Q?Miroslav_=C5=A0ulc?= <fordfrog@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-QW5zc2kgSGFubnVsYSBraXJqb2l0dGkga2Vza2l2aWlra28sIDI4LiBoZWluw6RrdXV0YSAyMDEw
-IDA1OjQyOjA5Ogo+IFdlaSBOaSBraXJqb2l0dGkgdGlpc3RhaSwgMjcuIGhlaW7DpGt1dXRhIDIw
-MTAgMTA6MTQ6Mzc6Cj4gPiBIaSwgVGFrYXNoaQo+ID4gTUNQN3ggdXNlIG9sZCBIVyBkZXNpZ24g
-aW4gSERNSSwgdGhleSBkb24ndCBzdXBwb3J0IGNoYW5uZWwgbWFwcGluZyBsaWtlCj4gPiBNQ1A4
-OS4gSXQgdXNlIG52aGRtaV9kaWdfcGxheWJhY2tfcGNtX3ByZXBhcmVfOGNoKCkgdG8gcHJlcGFy
-ZSBjaGFubmVsCj4gPiBtYXBwaW5nIGFuZCBzdGVhbSBpZCxmb3JtYXQuCj4gPiAKPiA+IEFuc3Np
-IEhhbm51bGEKPiA+IFBsZWFzZSB0cnkgdGhlIGZvbGxvd2luZyBjaGFuZ2VzIGluIHBhdGNoX252
-aGRtaS5jCj4gPiBzdGF0aWMgaGRhX25pZF90IG52aGRtaV9jb25fbmlkc183eFs0XSA9IHsKPiA+
-IAo+ID4gCS8qZnJvbnQsIHJlYXIsIGNsZmUsIHJlYXJfc3VyciAqLwo+ID4gCj4gPiAtCTB4Niwg
-MHg4LCAweGEsIDB4YywKPiA+ICsJMHg2LCAweGEsIDB4OCwgMHhjLAo+ID4gfTsKPiAKPiBJIGFj
-dHVhbGx5IHRyaWVkIHRoYXQgYWxyZWFkeSwgYnV0IGZvciBzb21lIHJlYXNvbiBjaGFuZ2luZyB0
-aGUgb3JkZXIgaW4KPiBudmhkbWlfY29uX25pZHNfN3ggZG9lc24ndCBoYXZlIGFueSBlZmZlY3Qu
-Cj4gCj4gQWN0dWFsbHksIGRpc2FibGluZyB0aGUgd2hvbGUgZm9yIGxvb3AgdGhhdCBhc3NpZ25z
-IHRoZSBjaGFubmVscyBpbgo+IG52aGRtaV9kaWdfcGxheWJhY2tfcGNtX3ByZXBhcmVfOGNoKCkg
-aGFzIG5vIGVmZmVjdCwgbGVhZGluZyBtZSB0byBiZWxpZXZlCj4gdGhhdCB0aGUgY29tbWFuZHMg
-YXJlIG5vdCByZWFjaGluZyB0aGUgaGFyZHdhcmUgb3IgdGhleSBhcmUgYmVpbmcKPiBvdmVycmlk
-ZGVuLgoKV2VsbCwgSSBjb25maXJtZWQgd2l0aCBBQ19WRVJCX0dFVF9DT05WIHRoYXQgdGhleSBh
-cmUgZ2V0dGluZyB0aHJvdWdoLCBhbmQgCnRoZXkgYXJlIHN0aWxsIHRoZSBzYW1lIGluIG52aGRt
-aV9kaWdfcGxheWJhY2tfcGNtX2Nsb3NlXzhjaF83eCgpLgoKQW55IGlkZWEgd2h5IHRoZXkgYXJl
-IGhhdmluZyBubyBlZmZlY3Q/Cgo+IEkgYWxzbyBqdXN0IG5vdGljZWQgdGhhdCB0aGUgSERNSSBv
-dXRwdXQgaXMgdGhlIG9ubHkgZGV0ZWN0ZWQgb3V0cHV0LCBldmVuCj4gdGhvdWdoIHRoaXMgYm9h
-cmQgaGFzIGFuYWxvZyBhdWRpbyBhbmQgUy9QRElGIG91dHB1dHMgYXMgd2VsbC4gSSdtIG5vdCBz
-dXJlCj4gaWYgdGhpcyBpcyByZWxhdGVkIG9yIG5vdC4KClRoaXMgd2FzIG5vdCByZWxhdGVkLCB1
-cGRhdGluZyB0byBsYXRlc3QgZ2l0IGZpeGVkIGl0LgoKPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2Fn
-ZS0tLS0tCj4gPiBGcm9tOiBUYWthc2hpIEl3YWkgW21haWx0bzp0aXdhaUBzdXNlLmRlXQo+ID4g
-U2VudDogTW9uZGF5LCBKdWx5IDI2LCAyMDEwIDU6MzUgUE0KPiA+IFRvOiBBbnNzaSBIYW5udWxh
-Cj4gPiBDYzogYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBXZWkgTmkKPiA+IFN1YmplY3Q6
-IFJlOiBbYWxzYS1kZXZlbF0gV3JvbmcgY2hhbm5lbCBvcmRlciB3aXRoIG11bHRpY2hhbm5lbCBI
-RE1JIG9uCj4gPiBNQ1A3QQo+ID4gCj4gPiBBdCBNb24sIDI2IEp1bCAyMDEwIDExOjE0OjE3ICsw
-MjAwLAo+ID4gCj4gPiDnp4Egd3JvdGU6Cj4gPiA+IEF0IFN1biwgMjUgSnVsIDIwMTAgMTk6NTE6
-MzkgKzAzMDAsCj4gPiA+IAo+ID4gPiBBbnNzaSBIYW5udWxhIHdyb3RlOgo+ID4gPiA+IEhpIGFs
-bCEKPiA+ID4gPiAKPiA+ID4gPiBJIGhhdmUgYSBtb3RoZXJib2FyZCB3aXRoIE5WSURJQSBNQ1A3
-QSBIRE1JIGF1ZGlvLgo+ID4gPiA+IEhvd2V2ZXIsIG11bHRpY2hhbm5lbCBhdWRpbyBpcyBub3Qg
-bWFwcGVkIHByb3Blcmx5IGludG8gdGhlIEhETUkKPiA+ID4gPiBvcmRlci4KPiA+ID4gPiAKPiA+
-ID4gPiBPbiA1LjEsIEkgZ2V0IFJMIGluIEZDLCBSUiBpbiBMRkUsIEZDIGluIFJMLCBMRkUgaW4g
-UlIuCj4gPiA+ID4gCj4gPiA+ID4gSW50ZXJlc3RpbmdseSwgdGhpcyBpcyBub3QgY29uc2lzdGVu
-dCB3aXRoIHRoZSBBTFNBIGNoYW5uZWwgb3JkZXIgKEZMCj4gPiA+ID4gRlIgUkwgUlIgRkMgTEZF
-KSBiZWluZyBwYXNzZWQgZGlyZWN0bHkgdG8gSERNSSAoRkwgRlIgTEZFIEZDIFJMIFJSKS4KPiA+
-ID4gPiBJbnN0ZWFkIGl0IGxvb2tzIGxpa2UgdGhlcmUgaGFzIGJlZW4gYSB3YXZlZm9ybWF0ZXgg
-KEZMIEZSIEZDIExGRSBSTAo+ID4gPiA+IFJSOyB3aW5kb3dzPykgPT4gSERNSSBjb252ZXJzaW9u
-IGluc3RlYWQgb2YgQUxTQSA9PiBIRE1JLgo+ID4gPiA+IAo+ID4gPiA+IFNhbWUgaGFwcGVucyBm
-b3IgNy4xLgo+ID4gPiA+IAo+ID4gPiA+IElzIGl0IHBvc3NpYmxlIHRvIHNldCB0aGUgaGFyZHdh
-cmUgdG8gZG8gYW4gQUxTQSA9PiBIRE1JIGNvbnZlcnNpb24KPiA+ID4gPiBpbnN0ZWFkPyBJZiBu
-b3QsIHdlIHNob3VsZCBtYW51YWxseSBjb21wZW5zYXRlIGZvciB0aGlzIHNvbWV3aGVyZSwKPiA+
-ID4gPiByaWdodD8KPiA+ID4gCj4gPiA+IERvZXMgdGhlIHBhdGNoIGJlbG93IGNoYW5nZSBhbnl0
-aGluZz8KPiA+IAo+ID4gQWggY3JhcCwgaXQgc2hvdWxkIGJlIGlycmVsZXZhbnQuCj4gPiBXZWks
-IGRvbid0IE1DUCA3eCBjaGlwcyBzdXBwb3J0IHRoZSBjaGFubmVsIG1hcHBpbmcgYXMgTUNQIDg5
-Pwo+ID4gCj4gPiAKPiA+IHRoYW5rcywKPiA+IAo+ID4gVGFrYXNoaQo+ID4gCj4gPiA+ID4gU29t
-ZXdoYXQgcmVsYXRlZGx5LCB0cnlpbmcgdG8gb3V0cHV0IDQgY2hhbm5lbHMgcmVzdWx0cyBpbiBz
-aWxlbmNlCj4gPiA+ID4gb25seS4KPiA+ID4gCj4gPiA+IEFsdGhvdWdoIDUuMS83LjEgd29yaz8K
-PiA+ID4gCj4gPiA+ID4gVHJ5aW5nIHRvIG91dHB1dCAzIG9yIDUgY2hhbm5lbHMgdHJpZ2dlcnMg
-YSB0aW1lb3V0IHdpdGggSS9PIGVycm9yLAo+ID4gPiA+IHdpdGggdGhlIGZvbGxvd2luZyBpbiB0
-aGUga2VybmVsIGxvZzogIkFMU0EgcGNtX2xpYi5jOjE3NTc6IHBsYXliYWNrCj4gPiA+ID4gd3Jp
-dGUgZXJyb3IgKERNQSBvciBJUlEgdHJvdWJsZT8pIgo+ID4gPiAKPiA+ID4gSEQtYXVkaW8gZG9l
-c24ndCBzdXBwb3J0IHRoZSBvZGQgbnVtYmVyIG9mIGNoYW5uZWxzIGluIGdlbmVyYWwsIHNvCj4g
-PiA+IHRoZXkgc2hvdWxkIGJlIHBsYXllZCBhcyA0IG9yIDYgY2hhbm5lbHMuICBCdXQsIGl0IGxv
-b2tzIGxpa2UKPiA+ID4gc29tZXRoaW5nIHdyb25nIGluIHRoZSBzZXR1cC4uLgo+ID4gPiAKPiA+
-ID4gCj4gPiA+IHRoYW5rcywKPiA+ID4gCj4gPiA+IFRha2FzaGkKPiA+ID4gCj4gPiA+IC0tLQo+
-ID4gPiBkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9udmhkbWkuYwo+ID4gPiBiL3Nv
-dW5kL3BjaS9oZGEvcGF0Y2hfbnZoZG1pLmMgaW5kZXggM2MxMGMwYi4uNzM1NWM2MCAxMDA2NDQK
-PiA+ID4gLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9udmhkbWkuYwo+ID4gPiArKysgYi9zb3Vu
-ZC9wY2kvaGRhL3BhdGNoX252aGRtaS5jCj4gPiA+IEBAIC01MTEsNiArNTExLDggQEAgc3RhdGlj
-IGludCBwYXRjaF9udmhkbWlfOGNoXzd4KHN0cnVjdCBoZGFfY29kZWMKPiA+ID4gKmNvZGVjKQo+
-ID4gPiAKPiA+ID4gIAljb2RlYy0+cGF0Y2hfb3BzID0gbnZoZG1pX3BhdGNoX29wc184Y2hfN3g7
-Cj4gPiA+IAo+ID4gPiArCWluaXRfY2hhbm5lbF9hbGxvY2F0aW9ucygpOwo+ID4gPiArCj4gPiA+
-IAo+ID4gPiAgCXJldHVybiAwOwo+ID4gPiAgCj4gPiA+ICB9Cj4gPiAKPiA+IC0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0KPiA+IC0tIC0tLS0tLS0tIFRoaXMgZW1haWwgbWVzc2FnZSBpcyBmb3IgdGhlIHNvbGUg
-dXNlIG9mIHRoZSBpbnRlbmRlZAo+ID4gcmVjaXBpZW50KHMpIGFuZCBtYXkgY29udGFpbiBjb25m
-aWRlbnRpYWwgaW5mb3JtYXRpb24uICBBbnkgdW5hdXRob3JpemVkCj4gPiByZXZpZXcsIHVzZSwg
-ZGlzY2xvc3VyZSBvciBkaXN0cmlidXRpb24gaXMgcHJvaGliaXRlZC4gIElmIHlvdSBhcmUgbm90
-Cj4gPiB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCBwbGVhc2UgY29udGFjdCB0aGUgc2VuZGVyIGJ5
-IHJlcGx5IGVtYWlsIGFuZAo+ID4gZGVzdHJveSBhbGwgY29waWVzIG9mIHRoZSBvcmlnaW5hbCBt
-ZXNzYWdlLgo+ID4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ID4gLS0gLS0tLS0tLS0gX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiA+IEFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0Cj4gPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiA+IGh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCgotLSAKQW5zc2kg
-SGFubnVsYQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
-L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323584-343642383-1280416212=:4068
+Content-Type: TEXT/PLAIN; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+On Thu, 29 Jul 2010, Miroslav =C5=A0ulc wrote:
+
+> Dne 29.7.2010 15:20, Raymond Yau napsal(a):
+>> 2010/7/29 Miroslav =C5=A0ulc <fordfrog@gmail.com>
+>>>  hello,
+>>>
+>>> i'd like to help with making the above soundcard to fully work, but hav=
+e
+>>> no clue what to do exactly. currently the soundcard works pretty weird,
+>>> though at least sound goes out :-)
+>>>
+>>> i tried hda analyzer but did not find any documentation for it so have
+>>> no idea what to do exactly. also, when clicking AUD_IN nodes, i get thi=
+s
+>>> error:
+>>>
+>>> ** (hda_analyzer.py:10063): WARNING **: column number is a boolean, but
+>>> will be interpreted as an integer; this is likely not what you intended
+>>> Traceback (most recent call last):
+>>>  File "/dev/shm/hda-analyzer/hda_analyzer.py", line 308, in
+>>> selection_changed_cb
+>>>    self.__refresh()
+>>>  File "/dev/shm/hda-analyzer/hda_analyzer.py", line 276, in __refresh
+>>>    self.load()
+>>>  File "/dev/shm/hda-analyzer/hda_analyzer.py", line 336, in load
+>>>    self.node_window.add(NodeGui(node=3Dn))
+>>>  File "/dev/shm/hda-analyzer/hda_guilib.py", line 86, in __init__
+>>>    self.__build_node(node, doframe)
+>>>  File "/dev/shm/hda-analyzer/hda_guilib.py", line 682, in __build_node
+>>>    vbox.pack_start(self.__build_amps(node), False, False)
+>>>  File "/dev/shm/hda-analyzer/hda_guilib.py", line 365, in __build_amps
+>>>    node.in_amp and node.amp_vals_in or None)
+>>>  File "/dev/shm/hda-analyzer/hda_guilib.py", line 328, in build_caps
+>>>    if ctl.hdactl.amp_index_match(idx):
+>>>  File "/dev/shm/hda-analyzer/hda_proc.py", line 170, in amp_index_match
+>>>    count =3D (self.amp_chs & 1) + ((self.amp_chs >> 1) & 1)
+>>> TypeError: unsupported operand type(s) for &: 'NoneType' and 'int'
+
+I fixed this issue in the alsa.git repo now.
+
+>>> can anybody pls direct me to some documentation that could help me to
+>>> master hda analyzer and find the way to make the card work correctly?
+>>>
+>>> miroslav
+>>
+>> By using alc670 alsa-info.txt in the alsa bugtracker ,
+> ok, i will post one once i restart my pc as i played with the settings
+> of the driver so i guess the output might be affected.
+>> the latest version
+>> hda_analyzer don't has any error message when clicking AUD_IN node
+> well, in the night i downloaded the app from
+> http://www.alsa-project.org/hda-analyzer.py and have the issue. now also
+> tried alsa git repo and the result is the same, so the bug really is
+> there, at least for me. i can try to debug it in netbeans if i find out
+> how (i do not code in python nor do i use it as coder).
+>> Not sure your error is due to using  /proc instead of text file since I
+>> don't have your codec
+> i tried both, using proc and passing alsa-info.txt file to
+> hda-analyzer.py, both with the same result.
+
+Put alsa-info.txt somewhere to download or point me to this file in a=20
+bugreport.
+
+>> There are error messages when click the "graph" button to generate the
+>> graph.
+>>
+>> About the graph
+>> the blue line - connected audio path
+>> the grey line - unconncted audio path
+>> the line turn red when you put the mouse cursor near any line ,
+> so hovering over gray connection makes the connection in the card
+> driver, and hovering over blue connection disables the connection?
+
+No, you need to edit the node (use open in context menu - right click on=20
+node).
+
+ =09=09=09=09=09=09Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
+
+--8323584-343642383-1280416212=:4068
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--8323584-343642383-1280416212=:4068--
