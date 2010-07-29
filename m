@@ -1,19 +1,25 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: acer aspire 8943g with alc670
-Date: Thu, 29 Jul 2010 21:20:06 +0800
-Message-ID: <AANLkTindqKL769hKUk9z18RkABL4SwEubWzn_D0DuAb5@mail.gmail.com>
-References: <4C50E2E1.3030800@gmail.com>
+From: "Mario 'BitKoenig' Holbe" <Mario.Holbe@TU-Ilmenau.DE>
+Subject: Re: Regression 2.6.35-rc6: ALSA Intel HDA/Realtek:
+ missing	Beep
+Date: Thu, 29 Jul 2010 15:25:32 +0200
+Message-ID: <20100729132532.GA18108@darkside.kls.lan>
+References: <s5hzkxbtya9.wl%tiwai@suse.de> <s5htynjtwz2.wl%tiwai@suse.de>
+	<20100728212745.GA15394@darkside.kls.lan>
+	<s5hd3u6alkp.wl%tiwai@suse.de>
+	<20100729080930.GA20619@darkside.kls.lan>
+	<s5h7hkeae35.wl%tiwai@suse.de>
+	<20100729084138.GA15456@darkside.kls.lan>
+	<s5h39v2acvf.wl%tiwai@suse.de>
+	<20100729091517.GA8902@darkside.kls.lan>
+	<s5hlj8utyi3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============6215242856093864647=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id D5EB9243F5
+Received: from piggy.rz.tu-ilmenau.de (piggy.rz.tu-ilmenau.de [141.24.4.8])
+	by alsa0.perex.cz (Postfix) with ESMTP id 06058243F9
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jul 2010 15:20:08 +0200 (CEST)
-Received: by pvh11 with SMTP id 11so102217pvh.38
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2010 06:20:07 -0700 (PDT)
-In-Reply-To: <4C50E2E1.3030800@gmail.com>
+	Thu, 29 Jul 2010 15:25:36 +0200 (CEST)
+In-Reply-To: <s5hlj8utyi3.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,57 +29,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMC83LzI5IE1pcm9zbGF2IMWgdWxjIDxmb3JkZnJvZ0BnbWFpbC5jb20+Cgo+ICBoZWxsbywK
-Pgo+IGknZCBsaWtlIHRvIGhlbHAgd2l0aCBtYWtpbmcgdGhlIGFib3ZlIHNvdW5kY2FyZCB0byBm
-dWxseSB3b3JrLCBidXQgaGF2ZQo+IG5vIGNsdWUgd2hhdCB0byBkbyBleGFjdGx5LiBjdXJyZW50
-bHkgdGhlIHNvdW5kY2FyZCB3b3JrcyBwcmV0dHkgd2VpcmQsCj4gdGhvdWdoIGF0IGxlYXN0IHNv
-dW5kIGdvZXMgb3V0IDotKQo+Cj4gaSB0cmllZCBoZGEgYW5hbHl6ZXIgYnV0IGRpZCBub3QgZmlu
-ZCBhbnkgZG9jdW1lbnRhdGlvbiBmb3IgaXQgc28gaGF2ZQo+IG5vIGlkZWEgd2hhdCB0byBkbyBl
-eGFjdGx5LiBhbHNvLCB3aGVuIGNsaWNraW5nIEFVRF9JTiBub2RlcywgaSBnZXQgdGhpcwo+IGVy
-cm9yOgo+Cj4gKiogKGhkYV9hbmFseXplci5weToxMDA2Myk6IFdBUk5JTkcgKio6IGNvbHVtbiBu
-dW1iZXIgaXMgYSBib29sZWFuLCBidXQKPiB3aWxsIGJlIGludGVycHJldGVkIGFzIGFuIGludGVn
-ZXI7IHRoaXMgaXMgbGlrZWx5IG5vdCB3aGF0IHlvdSBpbnRlbmRlZAo+IFRyYWNlYmFjayAobW9z
-dCByZWNlbnQgY2FsbCBsYXN0KToKPiAgRmlsZSAiL2Rldi9zaG0vaGRhLWFuYWx5emVyL2hkYV9h
-bmFseXplci5weSIsIGxpbmUgMzA4LCBpbgo+IHNlbGVjdGlvbl9jaGFuZ2VkX2NiCj4gICAgc2Vs
-Zi5fX3JlZnJlc2goKQo+ICBGaWxlICIvZGV2L3NobS9oZGEtYW5hbHl6ZXIvaGRhX2FuYWx5emVy
-LnB5IiwgbGluZSAyNzYsIGluIF9fcmVmcmVzaAo+ICAgIHNlbGYubG9hZCgpCj4gIEZpbGUgIi9k
-ZXYvc2htL2hkYS1hbmFseXplci9oZGFfYW5hbHl6ZXIucHkiLCBsaW5lIDMzNiwgaW4gbG9hZAo+
-ICAgIHNlbGYubm9kZV93aW5kb3cuYWRkKE5vZGVHdWkobm9kZT1uKSkKPiAgRmlsZSAiL2Rldi9z
-aG0vaGRhLWFuYWx5emVyL2hkYV9ndWlsaWIucHkiLCBsaW5lIDg2LCBpbiBfX2luaXRfXwo+ICAg
-IHNlbGYuX19idWlsZF9ub2RlKG5vZGUsIGRvZnJhbWUpCj4gIEZpbGUgIi9kZXYvc2htL2hkYS1h
-bmFseXplci9oZGFfZ3VpbGliLnB5IiwgbGluZSA2ODIsIGluIF9fYnVpbGRfbm9kZQo+ICAgIHZi
-b3gucGFja19zdGFydChzZWxmLl9fYnVpbGRfYW1wcyhub2RlKSwgRmFsc2UsIEZhbHNlKQo+ICBG
-aWxlICIvZGV2L3NobS9oZGEtYW5hbHl6ZXIvaGRhX2d1aWxpYi5weSIsIGxpbmUgMzY1LCBpbiBf
-X2J1aWxkX2FtcHMKPiAgICBub2RlLmluX2FtcCBhbmQgbm9kZS5hbXBfdmFsc19pbiBvciBOb25l
-KQo+ICBGaWxlICIvZGV2L3NobS9oZGEtYW5hbHl6ZXIvaGRhX2d1aWxpYi5weSIsIGxpbmUgMzI4
-LCBpbiBidWlsZF9jYXBzCj4gICAgaWYgY3RsLmhkYWN0bC5hbXBfaW5kZXhfbWF0Y2goaWR4KToK
-PiAgRmlsZSAiL2Rldi9zaG0vaGRhLWFuYWx5emVyL2hkYV9wcm9jLnB5IiwgbGluZSAxNzAsIGlu
-IGFtcF9pbmRleF9tYXRjaAo+ICAgIGNvdW50ID0gKHNlbGYuYW1wX2NocyAmIDEpICsgKChzZWxm
-LmFtcF9jaHMgPj4gMSkgJiAxKQo+IFR5cGVFcnJvcjogdW5zdXBwb3J0ZWQgb3BlcmFuZCB0eXBl
-KHMpIGZvciAmOiAnTm9uZVR5cGUnIGFuZCAnaW50Jwo+Cj4KPiBjYW4gYW55Ym9keSBwbHMgZGly
-ZWN0IG1lIHRvIHNvbWUgZG9jdW1lbnRhdGlvbiB0aGF0IGNvdWxkIGhlbHAgbWUgdG8KPiBtYXN0
-ZXIgaGRhIGFuYWx5emVyIGFuZCBmaW5kIHRoZSB3YXkgdG8gbWFrZSB0aGUgY2FyZCB3b3JrIGNv
-cnJlY3RseT8KPgo+IG1pcm9zbGF2Cj4KCgpCeSB1c2luZyBhbGM2NzAgYWxzYS1pbmZvLnR4dCBp
-biB0aGUgYWxzYSBidWd0cmFja2VyICwgdGhlIGxhdGVzdCB2ZXJzaW9uCmhkYV9hbmFseXplciBk
-b24ndCBoYXMgYW55IGVycm9yIG1lc3NhZ2Ugd2hlbiBjbGlja2luZyBBVURfSU4gbm9kZQoKTm90
-IHN1cmUgeW91ciBlcnJvciBpcyBkdWUgdG8gdXNpbmcgIC9wcm9jIGluc3RlYWQgb2YgdGV4dCBm
-aWxlIHNpbmNlIEkKZG9uJ3QgaGF2ZSB5b3VyIGNvZGVjCgpUaGVyZSBhcmUgZXJyb3IgbWVzc2Fn
-ZXMgd2hlbiBjbGljayB0aGUgImdyYXBoIiBidXR0b24gdG8gZ2VuZXJhdGUgdGhlCmdyYXBoLgoK
-QWJvdXQgdGhlIGdyYXBoCnRoZSBibHVlIGxpbmUgLSBjb25uZWN0ZWQgYXVkaW8gcGF0aAp0aGUg
-Z3JleSBsaW5lIC0gdW5jb25uY3RlZCBhdWRpbyBwYXRoCnRoZSBsaW5lIHR1cm4gcmVkIHdoZW4g
-eW91IHB1dCB0aGUgbW91c2UgY3Vyc29yIG5lYXIgYW55IGxpbmUgLAoKClR5cGVFcnJvcjogJ2lu
-dCcgb2JqZWN0IGlzIG5vdCBpdGVyYWJsZQpUcmFjZWJhY2sgKG1vc3QgcmVjZW50IGNhbGwgbGFz
-dCk6CiAgRmlsZSAiL2hkYS1hbmFseXplci9oZGFfZ3JhcGgucHkiLCBsaW5lIDU3OSwgaW4gZXhw
-b3NlCiAgICByb3V0ZS5leHBvc2UoY3IsIGV2ZW50KQogIEZpbGUgIi9oZGEtYW5hbHl6ZXIvaGRh
-X2dyYXBoLnB5IiwgbGluZSAxOTAsIGluIGV4cG9zZQogICAgaW5hY3RpdmUgPSBzZWxmLnNyYy5u
-b2RlLmlzX2Nvbm5fYWN0aXZlKHNlbGYuZHN0Lm5vZGUpCiAgRmlsZSAiL2hkYS1hbmFseXplci9o
-ZGFfY29kZWMucHkiLCBsaW5lIDgwOSwgaW4gaXNfY29ubl9hY3RpdmUKICAgIHZhbHMgPSBkc3Rf
-bm9kZS5hbXBfdmFsc19pbi5nZXRfdmFsX2RiKGlkeCkKICBGaWxlICIvaGRhLWFuYWx5emVyL2hk
-YV9jb2RlYy5weSIsIGxpbmUgMzc3LCBpbiBnZXRfdmFsX2RiCiAgICBmb3IgdmFsIGluIHZhbHM6
-ClR5cGVFcnJvcjogJ2ludCcgb2JqZWN0IGlzIG5vdCBpdGVyYWJsZQpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--===============6215242856093864647==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="nFreZHaLTZJo0R7j"
+Content-Disposition: inline
+
+
+--nFreZHaLTZJo0R7j
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Jul 29, 2010 at 11:42:44AM +0200, Takashi Iwai wrote:
+> OK, then try the patch below (over my previous two patches).  It
+> enables PC-beep for your device forcibly.
+
+Yes, it does and it works. Thank you very much again.
+
+I just checked 2 more boards - the P5E-VM HDMI (P5E-V HDMI's little
+brother) is already covered by the quirk and P5Q-EM (G45) seems to
+specify it correctly (subsystem_id =3D 0x104382fe - seems I got the logic
+wrong before - LSB isn't set here and it works).
+
+
+regards
+   Mario
+--=20
+This project is so important we can't let things that are more important
+interfere with it.
+                 -- Advertising/Marketing manager, United Parcel Service
+
+--nFreZHaLTZJo0R7j
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iQEVAwUBTFGBTBS+e2HeSPbpAQIn1AgAlDzLaBjPNs0UCokOb1MvXiU8S1/R8fja
+W2YLhHpSsm0c41O0M7lwVCGl2b6nsZe/tcfZlvFbReFUHBONg79clkDCxLnLHKR6
+6YW/a4mTl8/U/ynzUIYqef7r/cLh7MWFyf0wKjbQVVwMM2nZmzKL5pfweDsSnzL8
+Fd4qCPnRf6qn5dmcDR+JlZUgdceh5KQdjnJdHNg5pctS4uiZQaQcEm9wR/UVNEDx
+B8M++ChfCO/id9OLd/Wt05aTwNvdz+zRGWQa78MSCejfvFSWvLvmF2H1QWyF0i0O
+ZWHNxzEDh21+t9w0paDosP58S6fxJ0mg0tIiUinfNF+UmW55aMiadg==
+=XC1W
+-----END PGP SIGNATURE-----
+
+--nFreZHaLTZJo0R7j--
+
+--===============6215242856093864647==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============6215242856093864647==--
