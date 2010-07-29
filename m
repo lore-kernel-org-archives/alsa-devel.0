@@ -1,21 +1,20 @@
-From: Cristopher Camacho Leandro <ccamacho@linuxmail.org>
-Subject: codec support request: Conexant ID 5068
-Date: Thu, 29 Jul 2010 04:57:26 -0400
-Message-ID: <8CCFD1333DD6566-1368-9790@web-mmc-d06.sysops.aol.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [RFC 0/4] ASoC: OMAP3: Extended threshold mode
+Date: Thu, 29 Jul 2010 12:03:51 +0300
+Message-ID: <20100729120351.9b05e482.jhnikula@gmail.com>
+References: <1280386288-22019-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imr-ma03.mx.aol.com (imr-2.mx.aol.com [64.12.206.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id A932A1037F1
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 73EA1103967
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jul 2010 10:57:46 +0200 (CEST)
-Received: from imo-ma02.mx.aol.com (imo-ma02.mx.aol.com [64.12.78.137])
-	by imr-ma03.mx.aol.com (8.14.1/8.14.1) with ESMTP id o6T8vZPq006657
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2010 04:57:35 -0400
-Received: from ccamacho@linuxmail.org
-	by imo-ma02.mx.aol.com  (mail_out_v42.9.) id 5.c4e.6ef61f68 (34942)
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2010 04:57:31 -0400 (EDT)
+	Thu, 29 Jul 2010 11:03:55 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so33559ewy.38
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2010 02:03:55 -0700 (PDT)
+In-Reply-To: <1280386288-22019-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,24 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 29 Jul 2010 09:51:24 +0300
+Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
 
+> Hello,
+> 
+> The following series extends the current threshold implementation for OMAP3
+> class of devices.
+> 
+> The original threshold implementation has limitation on the size of the period,
+> which can not be bigger than the McBSP port's FIFO size.
+> This limitation makes it hard to use any power saving on McBSP ports other than
+> McBSP2 (McBSP2 has 1280 word buffer, other ports have only 128 word long
+> buffer), since the maximum period size limit is really small.
+> 
+...
+> What do you think?
+> 
+Well, cleanups are always good as well as making the code more uniform,
+and if the same set also improves power savings, what else I can do :-)
 
+Acked-by: Jarkko Nikula <jhnikula@gmail.com>
 
- 
-Hi all,
-
-The codec (Conexant ID 5068) required by my sound card (Intel Corporation 5 
-Series/3400 Series Chipset High Definition Audio (rev 06)) is not present yet in 
-ALSA, I would highly appreciate if you guys could add support for it. You guys 
-might find the information collected by the alsa-info.sh script on
-
-http://www.alsa-project.org/db/?f=8f8001d873d5c10c293eac1c94f2ede0b73cd865
-
-Thanks a lot in advance for looking into this.
-
-Cheers,
-
-Cristopher
+(this DMA packet transfer is used also with McPDM on OMAP4, trial
+showed that it can work with McBSP on OMAP3 and as we can see, Peter
+now implemented it)
