@@ -1,20 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: using plug for sample format conversion
-Date: Thu, 29 Jul 2010 07:43:14 +0800
-Message-ID: <AANLkTi=VsObweAi2+KbTt4GD2OOeAjUEjL4=Y=89xAY_@mail.gmail.com>
-References: <AANLkTik=MskE7rGhBmuyDtJTe5BAie7AckiANrheJ8Qi@mail.gmail.com>
+From: =?ISO-8859-2?Q?Miroslav_=A9ulc?= <fordfrog@gmail.com>
+Subject: acer aspire 8943g with alc670
+Date: Thu, 29 Jul 2010 04:09:37 +0200
+Message-ID: <4C50E2E1.3030800@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id CC81910391F
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5641310391F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jul 2010 01:43:16 +0200 (CEST)
-Received: by vws20 with SMTP id 20so16602vws.38
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jul 2010 16:43:15 -0700 (PDT)
-In-Reply-To: <AANLkTik=MskE7rGhBmuyDtJTe5BAie7AckiANrheJ8Qi@mail.gmail.com>
+	Thu, 29 Jul 2010 04:09:44 +0200 (CEST)
+Received: by bwz4 with SMTP id 4so51443bwz.38
+	for <alsa-devel@alsa-project.org>; Wed, 28 Jul 2010 19:09:44 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,67 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/7/29 Adam Rosenberg <adam@alcorn.com>
+ hello,
 
-> >> I am trying to use plug to play audio files that are S16_LE but my
-> >> hardware only supports S32_LE.  It is not working.  Here is an example
-> >> of the problem using speaker-test.  First I use S32_LE and it works as
-> >> expected.  I then try S16_LE but it fails.  Does this mean the plug
-> >> plugin cannot convert between these sample formats?
-> >>
-> >> Thanks,
-> >> Adam
-> >>
-> >
-> >Please use latest version of speaker-test and alsa-lib.
-> >
-> >and post struct  snd_pcm_hardware of you driver
-> >
->
-> I am using the latest release of uClinux for Blackfin BF537 and do not
-> know how to configure and install the latest version of alsa-lib and
-> alsa-utils.  I am starting to understand how struct snd_pcm_hardware
-> is used by the ALSA PCM code but you are correct to assume I may have
-> something wrong.  Here is the struct:
->
-> static struct snd_pcm_hardware ourCS42448PcmHw =
-> {
->        .info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER
-> ),
->        .formats = SNDRV_PCM_FMTBIT_S32_LE,
->        .rates = SNDRV_PCM_RATE_48000,
->        .rate_min = 48000,
->        .rate_max = 48000,
->        .buffer_bytes_max = 32768,
->        .channels_min = 1,
->        .channels_max = 2,
->        .period_bytes_max = 32768,
->        .periods_min = 1,
->        .period_bytes_min = 8,
->        .periods_max = 4096,
-> };
->
+i'd like to help with making the above soundcard to fully work, but have
+no clue what to do exactly. currently the soundcard works pretty weird,
+though at least sound goes out :-)
 
-Unable to set hw params for playback: Invalid argument
-Setting of hwparams failed: Invalid argument
+i tried hda analyzer but did not find any documentation for it so have
+no idea what to do exactly. also, when clicking AUD_IN nodes, i get this
+error:
+
+** (hda_analyzer.py:10063): WARNING **: column number is a boolean, but
+will be interpreted as an integer; this is likely not what you intended
+Traceback (most recent call last):
+  File "/dev/shm/hda-analyzer/hda_analyzer.py", line 308, in
+selection_changed_cb
+    self.__refresh()
+  File "/dev/shm/hda-analyzer/hda_analyzer.py", line 276, in __refresh
+    self.load()
+  File "/dev/shm/hda-analyzer/hda_analyzer.py", line 336, in load
+    self.node_window.add(NodeGui(node=n))
+  File "/dev/shm/hda-analyzer/hda_guilib.py", line 86, in __init__
+    self.__build_node(node, doframe)
+  File "/dev/shm/hda-analyzer/hda_guilib.py", line 682, in __build_node
+    vbox.pack_start(self.__build_amps(node), False, False)
+  File "/dev/shm/hda-analyzer/hda_guilib.py", line 365, in __build_amps
+    node.in_amp and node.amp_vals_in or None)
+  File "/dev/shm/hda-analyzer/hda_guilib.py", line 328, in build_caps
+    if ctl.hdactl.amp_index_match(idx):
+  File "/dev/shm/hda-analyzer/hda_proc.py", line 170, in amp_index_match
+    count = (self.amp_chs & 1) + ((self.amp_chs >> 1) & 1)
+TypeError: unsupported operand type(s) for &: 'NoneType' and 'int'
 
 
-This will tell you which argument is invalid
+can anybody pls direct me to some documentation that could help me to
+master hda analyzer and find the way to make the card work correctly?
 
-export LIB_LIBASOUND_DEBUG=1
-speaker-test -l 1 -r 48000 -c 2 -F S16_LE -Dplughw:0,0,0
-
-
-
-If the above still cannot help you find out the problem
-
-you will need to enable RULES_DEBUG in core/pcm_native.c and check the
-system log to find out how those hw parameters are refined
-
-if you cannot use latest version of speaker-test , read the history of
-speaker-test
-
-http://git.alsa-project.org/?p=alsa-utils.git;a=history;f=speaker-test/speaker-test.c
+miroslav
