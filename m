@@ -1,39 +1,32 @@
-From: Kulikov Vasiliy <segooon@gmail.com>
-Subject: [PATCH 09/10 v2] oss: msnd: check request_region() return value
-Date: Thu, 29 Jul 2010 14:48:16 +0400
-Message-ID: <1280400496-21921-1-git-send-email-segooon@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: kernel-janitors@vger.kernel.org
-Cc: Andrew Veliath <andrewtv@usa.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: =?ISO-8859-2?Q?Miroslav_=A9ulc?= <fordfrog@gmail.com>
+Subject: test
+Date: Thu, 29 Jul 2010 12:58:44 +0200
+Message-ID: <4C515EE4.70403@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id BA4C724141
+	for <alsa-devel@alsa-project.org>;
+	Thu, 29 Jul 2010 12:58:46 +0200 (CEST)
+Received: by bwz4 with SMTP id 4so118897bwz.38
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2010 03:58:46 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-request_region() may fail, if so return -EBUSY.
+ hi,
 
-Signed-off-by: Kulikov Vasiliy <segooon@gmail.com>
----
- sound/oss/msnd_pinnacle.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
+sorry for this mail but i already sent two emails here and none of them
+arrived to the mailing list (i did not receive it in my mailbox).
 
-diff --git a/sound/oss/msnd_pinnacle.c b/sound/oss/msnd_pinnacle.c
-index bfaac5f..cd70b9a 100644
---- a/sound/oss/msnd_pinnacle.c
-+++ b/sound/oss/msnd_pinnacle.c
-@@ -1400,9 +1400,13 @@ static int __init attach_multisound(void)
- 		printk(KERN_ERR LOGNAME ": Couldn't grab IRQ %d\n", dev.irq);
- 		return err;
- 	}
--	request_region(dev.io, dev.numio, dev.name);
-+	if (request_region(dev.io, dev.numio, dev.name) == NULL) {
-+		free_irq(dev.irq, &dev);
-+		return -EBUSY;
-+	}
- 
--        if ((err = dsp_full_reset()) < 0) {
-+	err = dsp_full_reset();
-+	if (err < 0) {
- 		release_region(dev.io, dev.numio);
- 		free_irq(dev.irq, &dev);
- 		return err;
--- 
-1.7.0.4
+miroslav
