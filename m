@@ -1,20 +1,20 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [RFC 0/4] ASoC: OMAP3: Extended threshold mode
-Date: Thu, 29 Jul 2010 12:03:51 +0300
-Message-ID: <20100729120351.9b05e482.jhnikula@gmail.com>
-References: <1280386288-22019-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] asoc multi-component: mpc8610 hpcd updates
+Date: Thu, 29 Jul 2010 10:08:05 +0100
+Message-ID: <1280394485.3079.1.camel@odin>
+References: <1280351583-26768-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 73EA1103967
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5A056103831
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Jul 2010 11:03:55 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so33559ewy.38
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2010 02:03:55 -0700 (PDT)
-In-Reply-To: <1280386288-22019-1-git-send-email-peter.ujfalusi@nokia.com>
+	Thu, 29 Jul 2010 11:08:09 +0200 (CEST)
+Received: by wyb42 with SMTP id 42so81410wyb.38
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jul 2010 02:08:09 -0700 (PDT)
+In-Reply-To: <1280351583-26768-1-git-send-email-timur@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,32 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 29 Jul 2010 09:51:24 +0300
-Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
+On Wed, 2010-07-28 at 16:13 -0500, Timur Tabi wrote:
+> Additional updates to the multi-component branch.  Liam, please squash these
+> in.
+> 
+> Signed-off-by: Timur Tabi <timur@freescale.com>
 
-> Hello,
-> 
-> The following series extends the current threshold implementation for OMAP3
-> class of devices.
-> 
-> The original threshold implementation has limitation on the size of the period,
-> which can not be bigger than the McBSP port's FIFO size.
-> This limitation makes it hard to use any power saving on McBSP ports other than
-> McBSP2 (McBSP2 has 1280 word buffer, other ports have only 128 word long
-> buffer), since the maximum period size limit is really small.
-> 
-...
-> What do you think?
-> 
-Well, cleanups are always good as well as making the code more uniform,
-and if the same set also improves power savings, what else I can do :-)
+Applied and rebased.
 
-Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+Thanks !
 
-(this DMA packet transfer is used also with McPDM on OMAP4, trial
-showed that it can work with McBSP on OMAP3 and as we can see, Peter
-now implemented it)
+Liam
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
