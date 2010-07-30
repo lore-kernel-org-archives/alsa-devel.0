@@ -1,20 +1,23 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Initial WM8741 CODEC driver
-Date: Fri, 30 Jul 2010 18:49:12 +0100
-Message-ID: <1280512152.3059.39.camel@odin>
-References: <1280508308.2130.148.camel@Tapajos>
-	<1280510321.3059.36.camel@odin> <20100730172343.GA14384@sirena.org.uk>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Support MCP89 hdmi audio
+Date: Fri, 30 Jul 2010 20:11:40 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1007302009250.4068@eeebox2.perex-int.cz>
+References: <6B4D417B830BC44B8026029FD256F7F1C29D065C70@HKMAIL01.nvidia.com>
+	<s5hr5ix2dzb.wl%tiwai@suse.de>
+	<6B4D417B830BC44B8026029FD256F7F1C29D065C72@HKMAIL01.nvidia.com>
+	<6B4D417B830BC44B8026029FD256F7F1C29D065C7E@HKMAIL01.nvidia.com>
+	<s5h39v4vskw.wl%tiwai@suse.de>
+	<6B4D417B830BC44B8026029FD256F7F1C29D065C86@HKMAIL01.nvidia.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF02FD6DF17B@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 25E9424406
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8447E243EB
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jul 2010 19:49:46 +0200 (CEST)
-Received: by wwe15 with SMTP id 15so584441wwe.20
-	for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2010 10:49:42 -0700 (PDT)
-In-Reply-To: <20100730172343.GA14384@sirena.org.uk>
+	Fri, 30 Jul 2010 20:11:40 +0200 (CEST)
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF02FD6DF17B@HQMAIL01.nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,31 +27,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: IanLartey <ian@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: Takashi Iwai <tiwai@suse.de>, 'alsa-devel' <alsa-devel@alsa-project.org>, Wei Ni <wni@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-07-30 at 18:23 +0100, Mark Brown wrote:
-> On Fri, Jul 30, 2010 at 06:18:41PM +0100, Liam Girdwood wrote:
-> > On Fri, 2010-07-30 at 17:45 +0100, Ian Lartey wrote:
-> 
-> > >  sound/soc/codecs/wm8741.c |  579
-> > > +++++++++++++++++++++++++++++++++++++++++++++
-> > >  sound/soc/codecs/wm8741.h |  214 +++++++++++++++++
-> 
-> > Looks like your mailer has mangled this patch. 
-> 
-> > Could you fix your mailer and resend.
-> 
-> FWIW the mangling here is that it's decided to word wrap the patches so
-> that tools that apply them can't understand them any more.  Not sure
-> what went wrong as the stuff you were sending me the other day worked
-> fine :/
- 
-Ian, this was meant for you.
+On Fri, 30 Jul 2010, Stephen Warren wrote:
 
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+> Takashi,
+>
+> I also work for NVIDIA and am starting to work on some audio-related issues.
+>
+> I'd like to get familiar with the flow of patches; where things get applied
+> first and how they flow to public ALSA and kernel repositories, so:
+>
+> I see the patch below has shown up in the snapshots at:
+>
+> ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/alsa/alsa-driver/
+>
+> What repository is that a snapshot of; a private repository of yours?
+>
+> However, I can't find the patch anywhere at:
+>
+> http://git.alsa-project.org/
+
+It's here now, too. It depends how often I sync my tree with Takashi.
+
+> I'm mainly asking, because I want to work with distro kernel maintainers 
+> to get this patch into distros, rather than waiting for new distro 
+> versions to ship, which even then might not pick up a kernel with this 
+> patch the first time around. However, before I do that, I need to find a 
+> sane public upstream location that shows the patch is acceptable 
+> upstream.
+
+Post your patches here, to the alsa-devel mailing list. We usually send 
+you a reply that we applied your patch to our trees.
+
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
