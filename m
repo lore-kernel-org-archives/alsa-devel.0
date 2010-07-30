@@ -1,38 +1,21 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Enabling HDMI HBR mode on Intel HDA
-Date: Fri, 30 Jul 2010 15:48:41 +0300
-Message-ID: <201007301548.41516.anssi.hannula@iki.fi>
+From: =?ISO-8859-1?Q?Damien_Th=E9bault?= <damien.thebault@gmail.com>
+Subject: Re: HDMI out with Zepto Nox A14, help for a patch
+Date: Fri, 30 Jul 2010 15:18:10 +0200
+Message-ID: <AANLkTimWR85aEaB-9GvZ6_7_pje=gONtEzmPZRSkKBXB@mail.gmail.com>
+References: <AANLkTi=JVQxf+Mm=UqeonejfuJiRX_562PU=38-Lh0L8@mail.gmail.com>
+	<s5hlj8tp2rb.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_posUMd5zNHRNvtO"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sirokuusama.dnainternet.net (sirokuusama.dnainternet.net
-	[83.102.40.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id DC8281039EF
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 304261039FC
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jul 2010 14:48:43 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by sirokuusama.dnainternet.net (Postfix) with ESMTP id 67BE07F24C
-	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jul 2010 15:48:43 +0300 (EEST)
-Received: from sirokuusama.dnainternet.net ([83.102.40.133])
-	by localhost (sirokuusama.dnainternet.net [127.0.0.1]) (amavisd-new,
-	port 10041)
-	with ESMTP id MM3pWagHUc9m for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jul 2010 15:48:43 +0300 (EEST)
-Received: from kirsikkapuu.dnainternet.net (kirsikkapuu.dnainternet.net
-	[83.102.40.214])
-	by sirokuusama.dnainternet.net (Postfix) with ESMTP id 3EDC47F245
-	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jul 2010 15:48:43 +0300 (EEST)
-Received: from mail.onse.fi (unknown [109.204.162.131])
-	by kirsikkapuu.dnainternet.net (Postfix) with ESMTP id 34C6B2BAEA
-	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jul 2010 15:48:42 +0300 (EEST)
-Received: from sigma.onse.fi (sigma [10.0.0.8])
-	by mail.onse.fi (Postfix) with ESMTP id CB94610DE4BF
-	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jul 2010 15:48:41 +0300 (EEST)
+	Fri, 30 Jul 2010 15:18:11 +0200 (CEST)
+Received: by yxm8 with SMTP id 8so663134yxm.38
+	for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2010 06:18:10 -0700 (PDT)
+In-Reply-To: <s5hlj8tp2rb.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -42,118 +25,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_posUMd5zNHRNvtO
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+On Fri, Jul 30, 2010 at 14:34, Takashi Iwai <tiwai@suse.de> wrote:
+> At Thu, 29 Jul 2010 13:27:02 +0200,
+> Damien Th=E9bault wrote:
+>>
+>> Hello,
+>>
+>> My laptop is a Zepto Nox A14, with an ALC 262 audio chip.
+>> HDMI is connected through an NVIDIA GeForce 9600 graphic card.
+>>
+>> After some investigation, it appears that to output HDMI audio, I have
+>> to use the sound card which has a digital out for HDMI connected to
+>> the graphic card (there is no nvhdmi thing).
+>> I noticed with hda_analyser that there are two digital audio out
+>> nodes, the first one is the default ALC 262 one (S/PDIF). With the
+>> default configuration, when I enable what's called "HDMI" it's S/PDIF
+>> that is enabled (and I can see the red light on the mini-TOSLINK jack
+>> when it's enabled).
+>> So I was thinking that the second digital out was for the real HDMI.
+>>
+>> I went into patch_realtek.c and used the id of the second digital out
+>> (0x10) instead of ALC_262_DIGOUT_NID (0x06) in
+>> alc262_parse_auto_config.
+>> That allowed me to have a alsa device hw:0,3 connected to the digital
+>> out 0x10 instead of having it on 0x06.
+>> Then I had to enable the linked pin too, because otherwise I didn't
+>> have any sound. The pin connected to the digital out 0x10 is 0x11 (the
+>> one connected to 0x06 is 0x1e).
+>>
+>> So in the end, I'm able to have HDMI sound! Now here are my questions:
+>>
+>> =A0- how can I add this with SND_PCI_QUIRK?
+>> I think that I have to find the IDs of my setup (PCI ID?) and then
+>> create a preset. How can I find this ID on my system?
+>> There is a dig_out_nid field in the preset so I would use 0x10 instead
+>> of ALC262_DIGOUT_NID (0x06).
+>> I don't know how to change the pin from 0x1e to 0x11, is it automatic?
+>
+> Could you try the latest alsa-driver-snapshot below?
+> =A0 =A0ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-d=
+river-snapshot.tar.gz
+>
+> It'll make both digital outputs available, at least.
+> It's no best solution, but a workable one.
 
-Hi all!
+This snapshot allows me to have hdmi working without any modification.
+(And the S/PDIF output lights up too, but I don't know if it's working or n=
+ot)
 
-We have been trying to get truehd/mlp/mat passthrough to work, with no luck so 
-far. As HDMI standard requires a separate transmission mode (i.e. HBR Audio 
-Stream Packets instead of Audio Sample Packets) for high-bitrate (over 
-6.144Mbps) compressed formats, a driver change is needed, AFAIU.
+So it solves my problem, hdmi audio is now working out of the box on
+this system!
 
-Attached is a hack we have been using with hda_intel driver (the patch is for 
-generic code; we have been using nvidia 8x codec if that matters).
+Thanks!
+-- =
 
-Could anyone familiar with Intel HDA confirm whether the hack looks correct, 
-or if something more is required? (0x05 is the hardcoded pin nid).
-
-It would help to know for sure that the problem is in our iso61937/mat 
-encapsulation and not in the temporary driver hack.
-
-Thanks,
--- 
-Anssi Hannula
-
---Boundary-00=_posUMd5zNHRNvtO
-Content-Type: text/x-patch;
-  charset="us-ascii";
-  name="alsa-hbr.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
-	filename="alsa-hbr.patch"
-
-diff --git a/pci/hda/hda_codec.h b/pci/hda/hda_codec.h
-index a115c0c..43602f7 100644
---- a/pci/hda/hda_codec.h
-+++ b/pci/hda/hda_codec.h
-@@ -364,6 +364,9 @@ enum {
- #define AC_DIG2_CC			(0x7f<<0)
- 
- /* Pin widget control - 8bit */
-+#define AC_PINCTL_EPT			(0x3<<0)
-+#define AC_PINCTL_EPT_NATIVE		0
-+#define AC_PINCTL_EPT_HBR		3
- #define AC_PINCTL_VREFEN		(0x7<<0)
- #define AC_PINCTL_VREF_HIZ		0	/* Hi-Z */
- #define AC_PINCTL_VREF_50		1	/* 50% */
-diff --git a/pci/hda/patch_hdmi.c b/pci/hda/patch_hdmi.c
-index 86067ee..a4dffd3 100644
---- a/pci/hda/patch_hdmi.c
-+++ b/pci/hda/patch_hdmi.c
-@@ -163,7 +163,8 @@ static int hdmi_channel_mapping[0x32][8] = {
- 	/* surround51 */
- 	[0x0b] = { 0x00, 0x11, 0x24, 0x35, 0x43, 0x52, 0xf6, 0xf7 },
- 	/* 7.1 */
--	[0x13] = { 0x00, 0x11, 0x26, 0x37, 0x43, 0x52, 0x64, 0x75 },
-+//	[0x13] = { 0x00, 0x11, 0x26, 0x37, 0x43, 0x52, 0x64, 0x75 },
-+	[0x13] = { 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77 },
- };
- 
- /*
-@@ -688,20 +689,35 @@ static void hdmi_unsol_event(struct hda_codec *codec, unsigned int res)
- static void hdmi_setup_stream(struct hda_codec *codec, hda_nid_t nid,
- 			      u32 stream_tag, int format)
- {
-+	int pinctl = 0;
- 	int tag;
- 	int fmt;
-+	int new_pinctl = 0;
- 
-+	pinctl = snd_hda_codec_read(codec, 0x05, 0, AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
- 	tag = snd_hda_codec_read(codec, nid, 0, AC_VERB_GET_CONV, 0) >> 4;
- 	fmt = snd_hda_codec_read(codec, nid, 0, AC_VERB_GET_STREAM_FORMAT, 0);
- 
--	snd_printdd("hdmi_setup_stream: "
--		    "NID=0x%x, %sstream=0x%x, %sformat=0x%x\n",
-+	if (snd_hda_param_read(codec, 0x05, AC_PAR_PIN_CAP) & AC_PINCAP_HBR)
-+		new_pinctl = (pinctl & ~AC_PINCTL_EPT) | AC_PINCTL_EPT_HBR;
-+	else
-+		new_pinctl = (pinctl & ~AC_PINCTL_EPT) | AC_PINCTL_EPT_NATIVE;
-+
-+	snd_printk("hdmi_setup_stream: "
-+		    "%spinctl=0x%x, NID=0x%x, %sstream=0x%x, %sformat=0x%x\n",
-+		    pinctl == new_pinctl ? "" : "new-",
-+		    new_pinctl,
- 		    nid,
- 		    tag == stream_tag ? "" : "new-",
- 		    stream_tag,
- 		    fmt == format ? "" : "new-",
- 		    format);
- 
-+	if (pinctl != new_pinctl)
-+		snd_hda_codec_write(codec, 0x05, 0,
-+				    AC_VERB_SET_PIN_WIDGET_CONTROL,
-+				    new_pinctl);
-+
- 	if (tag != stream_tag)
- 		snd_hda_codec_write(codec, nid, 0,
- 				    AC_VERB_SET_CHANNEL_STREAMID,
-
---Boundary-00=_posUMd5zNHRNvtO
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---Boundary-00=_posUMd5zNHRNvtO--
+Damien Thebault
