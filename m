@@ -1,21 +1,20 @@
-From: "Justin P. Mattock" <justinmattock@gmail.com>
-Subject: Re: [PATCH]alsa:patch_realtek.c Add support for the
-	MacBookAir1, 1
-Date: Fri, 30 Jul 2010 12:12:08 -0700
-Message-ID: <4C532408.80306@gmail.com>
-References: <1276019140-12376-1-git-send-email-justinmattock@gmail.com>
-	<s5heiek95yb.wl%tiwai@suse.de>
+From: loody <miloody@gmail.com>
+Subject: some questions about sound system
+Date: Sat, 31 Jul 2010 03:56:19 +0800
+Message-ID: <AANLkTi=A27r6QhQGdK8=HhsPbTKphoGB6GNZ3M6MHbns@mail.gmail.com>
+References: <AANLkTinPWzmmaP9OrHLKbZqCgGQuSGrpqUPtdW2Qi8ov@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 837C42447B
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id CE561244A9
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jul 2010 21:11:57 +0200 (CEST)
-Received: by pwi6 with SMTP id 6so772178pwi.38
-	for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2010 12:11:56 -0700 (PDT)
-In-Reply-To: <s5heiek95yb.wl%tiwai@suse.de>
+	Fri, 30 Jul 2010 21:56:20 +0200 (CEST)
+Received: by yxm8 with SMTP id 8so826426yxm.38
+	for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2010 12:56:20 -0700 (PDT)
+In-Reply-To: <AANLkTinPWzmmaP9OrHLKbZqCgGQuSGrpqUPtdW2Qi8ov@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,161 +24,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07/30/2010 11:31 AM, Takashi Iwai wrote:
-> Justin,
->
-> At Tue,  8 Jun 2010 10:45:40 -0700,
-> Justin P. Mattock wrote:
->>
->> This patch adds support for the MacBookAir1,1
->> Note:I do not have this machine on hand only the
->> codec#0 file for the machine.. located at
->> https://bugs.launchpad.net/mactel-support/+bug/268301
->> So please test if you have the appropriate equipment,
->> and report any issues to the alsa devel list
->> (alsa-devel@alsa-project.org).
->>
->>   Signed-off-by: Justin P. Mattock<justinmattock@gmail.com>
->
-> Any positive/negative feedbacks to your patches?
-> I'd like to gather patches for 2.6.36 before too late.
->
->
-> thanks,
->
-> Takashi
->
+Dear all:
+I just install Ubuntu9.10 on my laptop and I try to update my sound
+system and recompile the utility.
+there are some questions I met:
+1. when configure the =A0utility
+=A0 =A0it says
 
-no.. I haven't heard anything on these patches that I put out a few 
-weeks ago..
+checking panel.h presence... no
+checking for panel.h... no
+configure: error: required curses helper header not found
 
->> ---
->>   Documentation/sound/alsa/HD-Audio-Models.txt |    1 +
->>   sound/pci/hda/patch_realtek.c                |   59 +++++++++++++++++++++++++-
->>   2 files changed, 58 insertions(+), 2 deletions(-)
->>
->> diff --git a/Documentation/sound/alsa/HD-Audio-Models.txt b/Documentation/sound/alsa/HD-Audio-Models.txt
->> index 1d38b0d..d3838b5 100644
->> --- a/Documentation/sound/alsa/HD-Audio-Models.txt
->> +++ b/Documentation/sound/alsa/HD-Audio-Models.txt
->> @@ -125,6 +125,7 @@ ALC882/883/885/888/889
->>     macpro	MacPro support
->>     mb5		Macbook 5,1
->>     macmini3	Macmini 3,1
->> +  mba11		MacBook Air 1,1
->>     mba21		Macbook Air 2,1
->>     mbp3		Macbook Pro rev3
->>     imac24	iMac 24'' with jack detection
->> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
->> index fc767b6..1dcf78c 100644
->> --- a/sound/pci/hda/patch_realtek.c
->> +++ b/sound/pci/hda/patch_realtek.c
->> @@ -209,6 +209,7 @@ enum {
->>   	ALC882_ASUS_A7J,
->>   	ALC882_ASUS_A7M,
->>   	ALC885_MACPRO,
->> +	ALC885_MBA11,
->>   	ALC885_MBA21,
->>   	ALC885_MBP3,
->>   	ALC885_MB5,
->> @@ -7444,6 +7445,13 @@ static struct snd_kcontrol_new alc885_mba21_mixer[] = {
->>        { }
->>   };
->>
->> +/* MacBookAir1,1 not sure what/where things are(dont have the machine). */
->> +
->> +static struct snd_kcontrol_new alc885_mba11_mixer[] = {
->> +      HDA_CODEC_VOLUME("Speaker Playback Volume", 0x0c, 0x00, HDA_OUTPUT),
->> +      HDA_BIND_MUTE("Speaker Playback Switch", 0x0c, 0x02, HDA_OUTPUT),
->> +     { }
->> +};
->>
->>   static struct snd_kcontrol_new alc885_mbp3_mixer[] = {
->>   	HDA_CODEC_VOLUME("Speaker Playback Volume", 0x0c, 0x00, HDA_OUTPUT),
->> @@ -7929,6 +7937,40 @@ static struct hda_verb alc885_mba21_init_verbs[] = {
->>   	{ }
->>    };
->>
->> +static struct hda_verb alc885_mba11_init_verbs[] = {
->> +	/*Internal and HP Speaker Mixer*/
->> +	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
->> +	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
->> +	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
->> +	/* Main Speaker */	
->> +	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, (PIN_OUT | AC_PINCTL_VREF_50) },
->> +	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
->> +	{0x14, AC_VERB_SET_CONNECT_SEL, 0x00},
->> +	/* HP jack */
->> +	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, 0xc4},
->> +	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
->> +	{0x15, AC_VERB_SET_CONNECT_SEL, 0x00},
->> +	{0x15, AC_VERB_SET_UNSOLICITED_ENABLE, (ALC880_HP_EVENT | AC_USRSP_EN)},
->> +	/* FIXME: Line in? (as well as  the mic). */
->> +	{0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, AC_PINCTL_VREF_50},
->> +	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
->> +	/* 0x22 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In */
->> +	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
->> +	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)},
->> +	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)},
->> +	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(4)},
->> +	/* 0x23 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In */
->> +	{0x23, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
->> +	{0x23, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)},
->> +	{0x23, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)},
->> +	{0x23, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(4)},
->> +	/* 0x24 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In */
->> +	{0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
->> +	{0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)},
->> +	{0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)},
->> +	{0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(4)},
->> +	{ }
->> +};
->>
->>   /* Macbook Pro rev3 */
->>   static struct hda_verb alc885_mbp3_init_verbs[] = {
->> @@ -9298,6 +9340,7 @@ static const char *alc882_models[ALC882_MODEL_LAST] = {
->>   	[ALC885_MACPRO]		= "macpro",
->>   	[ALC885_MB5]		= "mb5",
->>   	[ALC885_MACMINI3]	= "macmini3",
->> +	[ALC885_MBA11]		= "mba11",
->>   	[ALC885_MBA21]		= "mba21",
->>   	[ALC885_MBP3]		= "mbp3",
->>   	[ALC885_IMAC24]		= "imac24",
->> @@ -9478,7 +9521,7 @@ static struct snd_pci_quirk alc882_ssid_cfg_tbl[] = {
->>   	SND_PCI_QUIRK(0x106b, 0x2c00, "MacbookPro rev3", ALC885_MBP3),
->>   	SND_PCI_QUIRK(0x106b, 0x3000, "iMac", ALC889A_MB31),
->>   	SND_PCI_QUIRK(0x106b, 0x3200, "iMac 7,1 Aluminum", ALC882_ASUS_A7M),
->> -	SND_PCI_QUIRK(0x106b, 0x3400, "MacBookAir 1,1", ALC885_MBP3),
->> +	SND_PCI_QUIRK(0x106b, 0x3400, "MacBookAir 1,1", ALC885_MBA11),
->>   	SND_PCI_QUIRK(0x106b, 0x3500, "MacBookAir 2,1", ALC885_MBA21),
->>   	SND_PCI_QUIRK(0x106b, 0x3600, "Macbook 3,1", ALC889A_MB31),
->>   	SND_PCI_QUIRK(0x106b, 0x3800, "MacbookPro 4,1", ALC885_MBP3),
->> @@ -9542,7 +9585,19 @@ static struct alc_config_preset alc882_presets[] = {
->>   		.input_mux =&alc882_capture_source,
->>   		.dig_out_nid = ALC882_DIGOUT_NID,
->>   	},
->> -	   [ALC885_MBA21] = {
->> +	[ALC885_MBA11] = {
->> +		.mixers = { alc885_mba11_mixer },
->> +		.init_verbs = { alc885_mba11_init_verbs, alc880_gpio1_init_verbs },
->> +		.num_dacs = 2,
->> +		.dac_nids = alc882_dac_nids,
->> +		.channel_mode = alc885_mba21_ch_modes,
->> +		.num_channel_mode = ARRAY_SIZE(alc885_mba21_ch_modes),
->> +		.input_mux =&alc882_capture_source,
->> +		.unsol_event = alc_automute_amp_unsol_event,
->> +		.setup = alc885_mbp3_setup,
->> +		.init_hook = alc_automute_amp,
->> +	},
->> +	[ALC885_MBA21] = {
->>   			.mixers = { alc885_mba21_mixer },
->>   			.init_verbs = { alc885_mba21_init_verbs, alc880_gpio1_init_verbs },
->>   			.num_dacs = 2,
->> --
->> 1.7.1.rc1.21.gf3bd6
->>
->
+and config.log is
+
+"conftest.c:10:42: error: CoreFoundation/CFPreferences.h: No such file
+or directory
+conftest.c: In function 'main':
+conftest.c:14: error: 'NULL' undeclared (first use in this function)
+conftest.c:14: error: (Each undeclared identifier is repor"
+
+the above error seems I miss install some package before.
+I google the name but I have no improvement.
+
+"conftest.c:20:28: error: ac_nonexistent.h: No such file or directory
+configure:7397: $? =3D 1"
+
+the above error seems the header located where the conftest.c doesn't expec=
+t.
+
+how could solve them all?
+
+2. there are some configure file in share when I compile advance linux
+sound architecture.
+like alsa.conf.
+have anyone know where I can find the naming rule?
+appreciate your help,
+miloody
