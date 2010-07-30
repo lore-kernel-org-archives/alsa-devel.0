@@ -1,19 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ASoC: Initial WM8741 CODEC driver
-Date: Fri, 30 Jul 2010 18:18:41 +0100
-Message-ID: <1280510321.3059.36.camel@odin>
-References: <1280508308.2130.148.camel@Tapajos>
+Date: Fri, 30 Jul 2010 18:23:44 +0100
+Message-ID: <20100730172343.GA14384@sirena.org.uk>
+References: <1280508308.2130.148.camel@Tapajos> <1280510321.3059.36.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 7F1E9243E1
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 78DF6243F2
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jul 2010 19:18:50 +0200 (CEST)
-Received: by wyb42 with SMTP id 42so1323801wyb.38
-	for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2010 10:18:50 -0700 (PDT)
-In-Reply-To: <1280508308.2130.148.camel@Tapajos>
+	Fri, 30 Jul 2010 19:23:45 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1280510321.3059.36.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,42 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ian Lartey <ian@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Ian Lartey <ian@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Ian,
+On Fri, Jul 30, 2010 at 06:18:41PM +0100, Liam Girdwood wrote:
+> On Fri, 2010-07-30 at 17:45 +0100, Ian Lartey wrote:
 
-On Fri, 2010-07-30 at 17:45 +0100, Ian Lartey wrote:
-> The WM8741 is a very high performance stereo DAC designed for audio
-> applications such as professional recording systems, A/V receivers and
-> high specification CD, DVD and home theatre systems. The device
-> supports PCM data input word lengths from 16 to 32-bits and sampling
-> rates up to 192kHz. The WM8741 also supports DSD bit-stream data
-> format, in both direct DSD and PCM-converted DSD modes.
-> 
-> TODO: Expand wm8741_set_dai_sysclk and rate_constraint members to
-> allow for all supported sample rate / Master Clock frequency
-> combinations.
-> Fully enable control of supplies.
-> 
-> 
-> Signed-off-by: Ian Lartey <ian@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/Kconfig  |    4 +
->  sound/soc/codecs/Makefile |    2 +
->  sound/soc/codecs/wm8741.c |  579
-> +++++++++++++++++++++++++++++++++++++++++++++
->  sound/soc/codecs/wm8741.h |  214 +++++++++++++++++
+> >  sound/soc/codecs/wm8741.c |  579
+> > +++++++++++++++++++++++++++++++++++++++++++++
+> >  sound/soc/codecs/wm8741.h |  214 +++++++++++++++++
 
-Looks like your mailer has mangled this patch. 
+> Looks like your mailer has mangled this patch. 
 
-Could you fix your mailer and resend.
+> Could you fix your mailer and resend.
 
-Thanks
-
-Liam 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+FWIW the mangling here is that it's decided to word wrap the patches so
+that tools that apply them can't understand them any more.  Not sure
+what went wrong as the stuff you were sending me the other day worked
+fine :/
