@@ -1,21 +1,22 @@
-From: sudarshan bisht <bisht.sudarshan@gmail.com>
-Subject: Re: ALSA Mixer issue
-Date: Fri, 30 Jul 2010 20:06:37 +0530
-Message-ID: <AANLkTinG4CJi5k1DqJFNneDk+7Crk+k7zp+evPuFEPdQ@mail.gmail.com>
-References: <AANLkTi=5Cxxv6bCuFZ9TB7wOKo0m1FrNTvHiOqmhXMAu@mail.gmail.com>
-	<alpine.LNX.2.00.1007301528130.4068@eeebox2.perex-int.cz>
+From: Adrian Pardini <pardo.bsso@gmail.com>
+Subject: Re: [PATCH - usb: Headphone support for cm6206 1/2]
+	usb: move snd_usb_cm106_write_int_reg to mixer_quirks.c
+Date: Fri, 30 Jul 2010 11:39:45 -0300
+Message-ID: <AANLkTi=aaNuyw6xqcX763nBwVGR=SaAhtt6-JSHGcOoX@mail.gmail.com>
+References: <201007201942.28942.pardo.bsso@gmail.com>
+	<s5hocdpp376.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 18A62103A0F
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4B8991037EC
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Jul 2010 16:36:39 +0200 (CEST)
-Received: by pwi6 with SMTP id 6so644911pwi.38
-	for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2010 07:36:38 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.1007301528130.4068@eeebox2.perex-int.cz>
+	Fri, 30 Jul 2010 16:39:46 +0200 (CEST)
+Received: by bwz4 with SMTP id 4so844830bwz.38
+	for <alsa-devel@alsa-project.org>; Fri, 30 Jul 2010 07:39:46 -0700 (PDT)
+In-Reply-To: <s5hocdpp376.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,51 +26,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the reply , I will try the same soon .
+On 30/07/2010, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 20 Jul 2010 19:42:28 -0300,
+> Adrian Pardini wrote:
+>>
+>> Hi all, this series of patches adds another control to cm6206 based cards
+>> to
+>> let the user select wich ouput the "Headphone" jack mirrors. Please
+>> review.
+>
+> You can just remove "static" instead of moving the whole function,
+> right?
 
-On Fri, Jul 30, 2010 at 7:00 PM, Jaroslav Kysela <perex@perex.cz> wrote:
+Aww nuts you are right, sorry about that. Now i'm working with the
+mapping of volume controls values, will resend next week when / if
+everything works fine.
 
->  On Fri, 30 Jul 2010, sudarshan bisht wrote:
->
-> Hi ,
->>
->> I wanted to know that can we use multiple handlers for the same ALSA mixer
->> ?
->>
->> My use case is something like this .
->>
->> I have two modules and having two different handlers for ALSA mixer.
->>  First
->> module does some volume change , and I try to read the latest volume using
->> my second handler ( of first second module) .
->>
->> But I am not getting the most recent value in second handler ( the volume
->> set by the first module )  so I feel there is some inconsistency when I
->> use
->> two handlers from two different modules in order to fetch volume
->> information
->> from the ALSA mixer.
->>
->
-> You must sync the cached information using poll() or select() on file
-> descriptors returned by snd_mixer_poll_descriptors_*() functions and call
-> snd_mixer_handle_events() if any events are waiting.
->
->                                        Jaroslav
->
-> -----
-> Jaroslav Kysela <perex@perex.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, Red Hat, Inc.
->
->
+Thanks.
 
 
 -- 
-Regards,
-
-Sudarshan Bisht
+Adrian.
+http://elesquinazotango.com.ar
+http://www.noalcodigodescioli.blogspot.com/
