@@ -1,23 +1,25 @@
-From: loody <miloody@gmail.com>
-Subject: Re: some questions about sound system
-Date: Sun, 1 Aug 2010 07:25:23 +0800
-Message-ID: <AANLkTi=awmsjspVPZJQ-Q+ok+zHAN-iCJP7ZGbiYySYT@mail.gmail.com>
-References: <AANLkTinPWzmmaP9OrHLKbZqCgGQuSGrpqUPtdW2Qi8ov@mail.gmail.com>
-	<AANLkTi=A27r6QhQGdK8=HhsPbTKphoGB6GNZ3M6MHbns@mail.gmail.com>
-	<AANLkTin_er-Ytg6hpF+jN3p6qoRnmEag==OjJLw_iD_J@mail.gmail.com>
-	<AANLkTim+O7BmWopW1U_G0hQEwChJSy-On+RZiiVj=KhF@mail.gmail.com>
-	<AANLkTikVsWmZkcNb7svt=-19byeBeBg4G+42Y_9yR6X1@mail.gmail.com>
+From: Manuel Lauss <mano@roarinelk.homelinux.net>
+Subject: Re: ALC892 optical SPDIF not working
+Date: Sun, 1 Aug 2010 01:32:23 +0200
+Message-ID: <20100731233223.GA19209@wormhole>
+References: <AANLkTimvFz0wW02WGzTx1iei_jOoaXgO=iGopE_n2-+C@mail.gmail.com>
+	<s5hmxt9qqlv.wl%tiwai@suse.de>
+	<AANLkTi=QxpJSyXgNH+WeUQdTo0kVNuPN73F-iXW5meAa@mail.gmail.com>
+	<AANLkTim=_kdSJJ1NSW2D5X7GVWp=8ffwKqSbdQ9MqjMb@mail.gmail.com>
+	<s5hvd7xp4dh.wl%tiwai@suse.de>
+	<AANLkTin+BUQr0iVq3MT+O-dA6PYyZZF_QVcEdoM-xK9p@mail.gmail.com>
+	<1280596972.4074.1.camel@mattotaupa>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id 1D2DA245EA
+Received: from roarinelk.homelinux.net (fnoeppeil48.netpark.at
+	[217.175.205.176])
+	by alsa0.perex.cz (Postfix) with ESMTP id CACD22466C
 	for <alsa-devel@alsa-project.org>;
-	Sun,  1 Aug 2010 01:25:25 +0200 (CEST)
-Received: by pzk5 with SMTP id 5so1150610pzk.38
-	for <alsa-devel@alsa-project.org>; Sat, 31 Jul 2010 16:25:24 -0700 (PDT)
-In-Reply-To: <AANLkTikVsWmZkcNb7svt=-19byeBeBg4G+42Y_9yR6X1@mail.gmail.com>
+	Sun,  1 Aug 2010 01:32:24 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1280596972.4074.1.camel@mattotaupa>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,28 +29,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Chen <seven.steps@gmail.com>
+To: Paul Menzel <paulepanter@users.sourceforge.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hi:
+> > >> Is there a way to insert an initial playback delay?  Under linux, the
+> > >> first 2-2.5 seconds
+> > >> of anything played are just silence; on windows audible playback
+> > >> starts immediately.
+> > >
+> > > It's the time for synchronization your digital receiver takes, I guess.
+> > > Maybe changing SPDIF status makes it resync, which happens at each
+> > > opening / closing the stream.
+> > 
+> > Yes, seems so. I've found a workaround in meantime.
+> 
+> Could you elaborate on the workaround please, so others having this
+> issue know it.
 
-2010/8/1 Daniel Chen <seven.steps@gmail.com>:
-> On Sat, Jul 31, 2010 at 12:21 PM, loody <miloody@gmail.com> wrote:
->> checking for new_panel in -lpanelw... no
->> configure: error: panelw library not found
->
-> $ sudo aptitude install libncurses5-dev
->
-it seems I have already get it before:
+My receiver allows to mix analog and digital inputs; with analog mix
+enabled it syncs immediately.
 
-$ sudo apt-get install libncurses5-dev
-Reading package lists... Done
-Building dependency tree
-Reading state information... Done
-libncurses5-dev is already the newest version.
-0 upgraded, 0 newly installed, 0 to remove and 291 not upgraded.
-$
-
-thanks for your help,
-miloody
+Manuel
