@@ -1,124 +1,59 @@
-From: Mark Hills <mark@pogo.org.uk>
-Subject: alsa-lib: Rate conversion broken for non-S16?
-Date: Sun, 1 Aug 2010 22:43:31 +0100 (BST)
-Message-ID: <alpine.LNX.2.01.1008012143460.13804@fgnk.ybpnyqbznva>
+From: fons-5YXofNvN5bf4jJi9/k9gcg@public.gmane.org
+Subject: Re: [LAD] announcing envy24control, mudita (*) edition.
+Date: Mon, 2 Aug 2010 00:54:10 +0200
+Message-ID: <20100801225410.GF4060@zita2>
+References: <AANLkTikX07nHbBsBSG04r54LEp3R+CRC9dC--aB_h2gQ@mail.gmail.com>
+	<201007282012.39291.termtech@rogers.com>
+	<201007282110.33065.termtech@rogers.com>
+	<201007311506.56614.termtech@rogers.com>
+	<AANLkTik61RwcMtZQ6VsD7JHtvdC9F=N2kgjiS9JoMiV9@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wes.ijneb.com (mx.ij.cx [212.13.201.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id A490E1037F8
-	for <alsa-devel@alsa-project.org>;
-	Sun,  1 Aug 2010 23:43:37 +0200 (CEST)
-Received: from cpc1-acto2-0-0-cust60.know.cable.virginmedia.com
-	([82.28.218.61] helo=stax.localdomain)
-	by wes.ijneb.com with esmtpa (Exim 4.71)
-	(envelope-from <mark@pogo.org.uk>) id 1OfgJg-0002fR-Ch
-	for alsa-devel@alsa-project.org; Sun, 01 Aug 2010 22:43:32 +0100
-Received: from mark (helo=localhost)
-	by stax.localdomain with local-esmtp (Exim 4.69)
-	(envelope-from <mark@pogo.org.uk>) id 1OfgJg-0000C2-2C
-	for alsa-devel@alsa-project.org; Sun, 01 Aug 2010 22:43:32 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <AANLkTik61RwcMtZQ6VsD7JHtvdC9F=N2kgjiS9JoMiV9-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+To: Niels Mayer <nielsmayer-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, john ffitch <jpff-fisDSsGP9JO9FHfhHBbuYA@public.gmane.org>, Bob Wilkinson <wilkinson.bob-Wuw85uim5zDR7s880joybQ@public.gmane.org>, linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-I have a device (snd-usb-caiaq) whose native sample format is S24_3BE. 
-When sample rate conversion is used, the audio becomes near silent, 
-distorted, and only in the left channel.
+On Sat, Jul 31, 2010 at 11:24:31PM -0700, Niels Mayer wrote:
 
-It is reproducable with aplay (see example below). Recording is not 
-affected. Playback is correct if only format conversion is used.
+> The main thing I haven't been able to resolve is Fons' complaint
+> regarding the DAC Volumes in "Analog Volume" panel not all being the
+> same height, due to a -10/+4 radiobox that only appears in first DAC
+> column for the Terratec EWS88MT; this radiobox causes the associated
+> slider to be shorter than the other channels. Shouldn't this radiobox
+> appear in all DAC columns?.
 
-It looks something is causing the incorrect put function to be used by the 
-rate conversion.
+No, it's one switch for all channels.
 
-I traced it to linear_expand() and others, alsa-lib-src/pcm_rate_linear.c.
+> Is this a regression in "mudita24" or a feature request for standard
+> "envy24control"? I didn't change this  aspect of the code, as far as
+> I can tell.
 
-Forcing the function to put S16 format into the destination buffer allows, 
-suprisingly, the sound to be heard correctly and at full volume from both 
-aplay and xwax:
+The original has the same problem. Don't waste your time with it
+unless someone else thinks it matters. As said I have fixed levels
+on all channels, I don't ever use the mixer (as the card is connected
+to a real mixer anyway), and everything is initialised by an alsactl
+restore on booting. So in practice I never use envy24control. 
 
-  if (rate->put_idx == 10)
-      rate->put_idx = 6
+Apart from that, I just don't understand why I toolkit like GTK
+apparently makes it difficult to  get such a simple thing right.
+Same for the faders. 
 
-I suspected that linear_init() is looking in the wrong place to choose the 
-attributes for the rate conversion. After some time spent I cannot see it.
-
-But is there any reason that the output buffer for the rate conversion 
-would not be in S24_3BE? And for the rate conversion to be misinformed?
-
-$ uname -s -r -v -p -i -m
-Linux 2.6.34.1-mh #83 SMP PREEMPT Wed Jul 21 23:25:33 BST 2010 i686 pentium4 i386
-
-$ alsacap
-Card 0, ID `Audio8DJ', name `Audio 8 DJ'
-  Device 0, ID `Audio 8 DJ', name `Audio 8 DJ', 4 subdevices (4 available)
-    2 channels, sampling rate 44100..96000 Hz
-    Sample formats: S24_3BE
-      Subdevice 0, name `subdevice #0'
-      Subdevice 1, name `subdevice #1'
-      Subdevice 2, name `subdevice #2'
-      Subdevice 3, name `subdevice #3'
-
-$ aplay -v -D plughw:Audio8DJ,0,0 halcyon-24000.wav 
-Playing WAVE 'halcyon-24000.wav' : Signed 16 bit Little Endian, Rate 24000 Hz, Stereo
-Plug PCM: Rate conversion PCM (48000, sformat=S24_3BE)
-Converter: linear-interpolation
-Protocol version: 10002
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 24000
-  exact rate   : 24000 (24000/1)
-  msbits       : 16
-  buffer_size  : 10922
-  period_size  : 2730
-  period_time  : 113770
-  tstamp_mode  : NONE
-  period_step  : 1
-  avail_min    : 2730
-  period_event : 0
-  start_threshold  : 10922
-  stop_threshold   : 10922
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 715784192
-Slave: Hardware PCM card 0 'Audio 8 DJ' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S24_3BE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 24
-  buffer_size  : 21845
-  period_size  : 5461
-  period_time  : 113770
-  tstamp_mode  : NONE
-  period_step  : 1
-  avail_min    : 5461
-  period_event : 0
-  start_threshold  : 21844
-  stop_threshold   : 21845
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1431633920
-  appl_ptr     : 0
-  hw_ptr       : 0
+Ciao,
 
 -- 
-Mark
+FA
+
+There are three of them, and Alleline.
