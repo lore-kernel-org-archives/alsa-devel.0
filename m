@@ -1,130 +1,46 @@
-From: John S Gruber <johnsgruber@gmail.com>
-Subject: [PATCH] Correct audio problem for Hauppage HVR-850 and
-	others rel. to urb data align.
-Date: Sun,  1 Aug 2010 09:53:37 -0400
-Message-ID: <1280670817-2736-1-git-send-email-JohnSGruber@gmail.com>
+From: Marcel Holtmann <marcel@holtmann.org>
+Subject: Re: [PATCH 05/11] pcmcia: do not use io_req_t when calling
+ pcmcia_request_io()
+Date: Sun, 01 Aug 2010 11:04:37 -0700
+Message-ID: <1280685877.12579.7.camel@localhost.localdomain>
+References: <20100801125749.GA2564@comet.dominikbrodowski.net>
+	 <1280667550-3040-5-git-send-email-linux@dominikbrodowski.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
-	[209.85.216.51]) by alsa0.perex.cz (Postfix) with ESMTP id 733622433E
-	for <alsa-devel@alsa-project.org>;
-	Sun,  1 Aug 2010 15:54:23 +0200 (CEST)
-Received: by qwi2 with SMTP id 2so1054129qwi.38
-	for <alsa-devel@alsa-project.org>; Sun, 01 Aug 2010 06:54:22 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: John S Gruber <JohnSGruber@gmail.com>
+Return-path: <linux-serial-owner@vger.kernel.org>
+In-Reply-To: <1280667550-3040-5-git-send-email-linux@dominikbrodowski.net>
+Sender: linux-serial-owner@vger.kernel.org
+To: Dominik Brodowski <linux@dominikbrodowski.net>
+Cc: linux-pcmcia@lists.infradead.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org, linux-usb@vger.kernel.org, laforge@gnumonks.org, linux-mtd@lists.infradead.org, linux-bluetooth@vger.kernel.org, alsa-devel@alsa-project.org, linux-serial@vger.kernel.org, Michael Buesch <mb@bu3sch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Match usb ids in usb/quirks-table.h for some Hauppage HVR-950Q models
-and for the HVR850 model to those ids at the end of au0828-cards.c
+Hi Dominik,
 
-Thanks to nhJm449 for pointing out the problem.
+> Instead of io_req_t, drivers are now requested to fill out
+> struct pcmcia_device *p_dev->resource[0,1] for up to two ioport
+> ranges. After a call to pcmcia_request_io(), the ports found there
+> are reserved, after calling pcmcia_request_configuration(), they may
+> be used.
+> 
+> CC: netdev@vger.kernel.org
+> CC: linux-wireless@vger.kernel.org
+> CC: linux-ide@vger.kernel.org
+> CC: linux-usb@vger.kernel.org
+> CC: laforge@gnumonks.org
+> CC: linux-mtd@lists.infradead.org
+> CC: linux-bluetooth@vger.kernel.org
+> CC: alsa-devel@alsa-project.org
+> CC: linux-serial@vger.kernel.org
+> CC: Michael Buesch <mb@bu3sch.de>
+> Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
 
-Signed-off-by: John S Gruber <JohnSGruber@gmail.com>
----
- sound/usb/quirks-table.h |   30 ++++++++++++++++++++++--------
- 1 files changed, 22 insertions(+), 8 deletions(-)
+for the drivers/bluetooth/ pieces.
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index f8797f6..2e8003f 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -2152,7 +2152,21 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 	}
- },
- {
--	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7201),
-+	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7240),
-+	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
-+		       USB_DEVICE_ID_MATCH_INT_CLASS |
-+		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-+	.bInterfaceClass = USB_CLASS_AUDIO,
-+	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL,
-+	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-+		.vendor_name = "Hauppauge",
-+		.product_name = "HVR-850",
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
-+	}
-+},
-+{
-+	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7210),
- 	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
- 		       USB_DEVICE_ID_MATCH_INT_CLASS |
- 		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-@@ -2166,7 +2180,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 	}
- },
- {
--	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7202),
-+	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7217),
- 	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
- 		       USB_DEVICE_ID_MATCH_INT_CLASS |
- 		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-@@ -2180,7 +2194,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 	}
- },
- {
--	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7203),
-+	USB_DEVICE_VENDOR_SPEC(0x2040, 0x721b),
- 	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
- 		       USB_DEVICE_ID_MATCH_INT_CLASS |
- 		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-@@ -2194,7 +2208,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 	}
- },
- {
--	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7204),
-+	USB_DEVICE_VENDOR_SPEC(0x2040, 0x721e),
- 	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
- 		       USB_DEVICE_ID_MATCH_INT_CLASS |
- 		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-@@ -2208,7 +2222,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 	}
- },
- {
--	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7205),
-+	USB_DEVICE_VENDOR_SPEC(0x2040, 0x721f),
- 	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
- 		       USB_DEVICE_ID_MATCH_INT_CLASS |
- 		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-@@ -2222,7 +2236,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 	}
- },
- {
--	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7250),
-+	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7280),
- 	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
- 		       USB_DEVICE_ID_MATCH_INT_CLASS |
- 		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-@@ -2236,7 +2250,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 	}
- },
- {
--	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7230),
-+	USB_DEVICE_VENDOR_SPEC(0x0fd9, 0x0008),
- 	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
- 		       USB_DEVICE_ID_MATCH_INT_CLASS |
- 		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
-@@ -2244,7 +2258,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 	.bInterfaceSubClass = USB_SUBCLASS_AUDIOCONTROL,
- 	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
- 		.vendor_name = "Hauppauge",
--		.product_name = "HVR-850",
-+		.product_name = "HVR-950Q",
- 		.ifnum = QUIRK_ANY_INTERFACE,
- 		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
- 	}
--- 
-1.7.0.4
+Acked-by: Marcel Holtmann <marcel@holtmann.org>
+
+Regards
+
+Marcel
+
+
