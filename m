@@ -1,20 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC 0/2] soc-dapm or TWL4030: Runtime DAPM
-	ordering problem
-Date: Mon, 2 Aug 2010 11:27:21 +0100
-Message-ID: <2EC9E5A5-E55F-4303-B6EF-2351B9440989@opensource.wolfsonmicro.com>
-References: <1280732895-29010-1-git-send-email-peter.ujfalusi@nokia.com>
-	(sfid-20100802_080839_029697_86A3E38F)
-Mime-Version: 1.0 (Apple Message framework v1081)
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [GIT PULL] ASoC updates for 2.6.36
+Date: Mon, 02 Aug 2010 11:30:56 +0100
+Message-ID: <1280745056.3095.46.camel@odin>
+References: <1280742830.3095.33.camel@odin>  <s5hpqy1nx00.wl%tiwai@suse.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 07BC924480
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id BBF7624480
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 Aug 2010 12:27:25 +0200 (CEST)
-In-Reply-To: <1280732895-29010-1-git-send-email-peter.ujfalusi@nokia.com>
-	(sfid-20100802_080839_029697_86A3E38F)
+	Mon,  2 Aug 2010 12:31:00 +0200 (CEST)
+Received: by wwe15 with SMTP id 15so2341432wwe.20
+	for <alsa-devel@alsa-project.org>; Mon, 02 Aug 2010 03:31:00 -0700 (PDT)
+In-Reply-To: <s5hpqy1nx00.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,38 +23,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2 Aug 2010, at 08:08, Peter Ujfalusi wrote:
-
-> I'm facing the following problem with the TWL4030 codec:
-> The order of DAPM register write order different in case, when I start a capture
-> operation after setting up the routing, and when I change the routing during
-> active capture.
-> This is really visible, when I want to record from the digital microphone
-> interface.
-
-> Because of this ordering problem, when during active capture I switch to the
-> digital mic from analog path, the codec would enable analog bias (2.2 volts) to
-> the digital mic for a moment, and than later it will switch to the correct
-> digital mic bias (1.8 volts).
-
-It'd be really helpful in this section if you could've said what the actual problem you see is...
-
-> Since the twl4030 codec needs several bits in different registers to be changed,
-> when I change between analog and digital input it is not that obvious how to get
-> the correct ordering all the time.
+On Mon, 2010-08-02 at 12:13 +0200, Takashi Iwai wrote:
+> At Mon, 02 Aug 2010 10:53:50 +0100,
+> Liam Girdwood wrote:
 > 
-> I have two different ways to fix this:
-> A: by reordering how DAPM would handle control changes (patch 1)
-> B: by changing TWL4030 internal DAPM widgets (patch 2)
+> > Btw, when are you thinking of doing a pull
+> > request for 2.6.36 ? I'm doing a multi-component patch series later
+> > today and if all goes well it would be nice to get it in for the 2.6.36
+> > merge window.
+> 
+> I thought to send a pull request in the middle of this week, depending
+> on the pending bugs / features.  So I'm still open for new stuff for a
+> few days.  As long as it's local to ASoC, I'm fine to merge it now.
+> 
 
-...you even start proposing solutions before describing what they're fixing :)
+Ok, the multi-component branch does touch arch quite a bit as we are
+adding platform devices for all our components. So it's probably safer
+for merging (after your pull request) in the for 2.6.37 period to reduce
+any merge conflict with arch.
 
-Just summarising briefly since I can't see a clear problem statement I think what you're saying is that DAPM applies control changes for routing before checking for power up changes but for some TWL4030 routes it would be more convenient to only write the changes for route setup after changing the power state?
+Fwiw, the release yesterday did take me a little by surprise as I was at
+least expecting an rc7 and a little extra time for multi-comp ;)
 
-I think this is best handled in TWL4030, or possibly with some sort of optional flag in DAPM which TWL4030 and anything else could then use. 
+Thanks
 
-With most things it's safer to implement the route change first - especially in the analogue domain route changes tend to introduce DC offsets so it's safer to set the route prior to powering up so the offset changes don't get amplified. This is also very important when doing DC offset correction, obviously there it's important to measure the offset of the path you're actually trying to run rather than using whatever path was there before.
+Liam 
