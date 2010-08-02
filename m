@@ -1,19 +1,17 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Initial WM8741 CODEC driver
-Date: Mon, 02 Aug 2010 10:44:44 +0100
-Message-ID: <1280742284.3095.26.camel@odin>
-References: <1280532731.2130.157.camel@Tapajos>
+Subject: [GIT PULL] ASoC updates for 2.6.36
+Date: Mon, 02 Aug 2010 10:53:50 +0100
+Message-ID: <1280742830.3095.33.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id C64D1243BB
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7382C24487
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 Aug 2010 11:44:48 +0200 (CEST)
-Received: by wyb42 with SMTP id 42so2946680wyb.38
-	for <alsa-devel@alsa-project.org>; Mon, 02 Aug 2010 02:44:48 -0700 (PDT)
-In-Reply-To: <1280532731.2130.157.camel@Tapajos>
+	Mon,  2 Aug 2010 11:53:54 +0200 (CEST)
+Received: by wwe15 with SMTP id 15so2313672wwe.20
+	for <alsa-devel@alsa-project.org>; Mon, 02 Aug 2010 02:53:54 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,33 +21,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ian Lartey <ian@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2010-07-31 at 00:32 +0100, Ian Lartey wrote:
-> The WM8741 is a very high performance stereo DAC designed for audio
->  applications such as professional recording systems, A/V receivers and high
->  specification CD, DVD and home theatre systems. The device supports PCM
->  data input word lengths from 16 to 32-bits and sampling rates up to 192kHz.
->  The WM8741 also supports DSD bit-stream data format, in both direct DSD and
->  PCM-converted DSD modes.
-> 
-> TODO: Expand wm8741_set_dai_sysclk and rate_constraint members to
-> allow for all supported sample rate / Master Clock frequency combinations.
-> Fully enable control of supplies.
-> 
-> 
-> Signed-off-by: Ian Lartey <ian@opensource.wolfsonmicro.com>
+Hi Takashi,
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
-
-Btw, Mark will port this to ASoC multi-component.
+More updates for 2.6.36. Btw, when are you thinking of doing a pull
+request for 2.6.36 ? I'm doing a multi-component patch series later
+today and if all goes well it would be nice to get it in for the 2.6.36
+merge window.
 
 Thanks
 
 Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+
+---
+
+The following changes since commit a7e7cd5bd7d1e0134032b8db5e64ceb9dac8b3ca:
+  Kuninori Morimoto (1):
+        ASoC: da7210: Add HeadPhone Playback Volume control
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.36
+
+Peter Ujfalusi (7):
+      ASoC: TWL4030: Capture route DAPM event fix
+      ASoC: tlv320dac33: Revisit the FIFO Mode1 handling
+      ASoC: tlv320dac33: Add support for automatic FIFO configuration
+      ASoC: omap-mcbsp: Restructure the code within omap_mcbsp_dai_hw_params
+      ASoC: omap-mcbsp: Code cleanup in omap_mcbsp_dai_hw_params
+      ASoC: omap-mcbsp: Support for sDMA packet mode
+      ASoC: omap-mcbsp: Remove period size constraint in THRESHOLD mode
+
+ include/sound/tlv320dac33-plat.h |    2 +
+ sound/soc/codecs/tlv320dac33.c   |  125 ++++++++++++++++++++++------------
+ sound/soc/codecs/twl4030.c       |    2 -
+ sound/soc/omap/omap-mcbsp.c      |  137 +++++++++++++++++++++-----------------
+ 4 files changed, 158 insertions(+), 108 deletions(-)
