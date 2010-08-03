@@ -1,21 +1,37 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: Rates/formats available upstream from the plug
-	plugin
-Date: Tue, 03 Aug 2010 17:40:31 +0200
-Message-ID: <4C58386F.3040703@ivitera.com>
-References: <4C5815E6.9010803@ivitera.com>
-	<alpine.LNX.2.00.1008031542320.4068@eeebox2.perex-int.cz>
-	<4C58250B.8000204@ivitera.com>
-	<alpine.LNX.2.00.1008031654370.4068@eeebox2.perex-int.cz>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Device name hints and the value of DEV
+Date: Tue, 3 Aug 2010 18:56:30 +0300
+Message-ID: <201008031856.30100.anssi.hannula@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (upc-plzen.insite.cz [84.242.100.8])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0418410387C
+Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
+	[83.102.40.132]) by alsa0.perex.cz (Postfix) with ESMTP id C50E724431
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Aug 2010 17:40:33 +0200 (CEST)
-In-Reply-To: <alpine.LNX.2.00.1008031654370.4068@eeebox2.perex-int.cz>
+	Tue,  3 Aug 2010 17:56:33 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by tulikuusama.dnainternet.net (Postfix) with ESMTP id 3612A2C946
+	for <alsa-devel@alsa-project.org>;
+	Tue,  3 Aug 2010 18:56:32 +0300 (EEST)
+Received: from tulikuusama.dnainternet.net ([83.102.40.132])
+	by localhost (tulikuusama.dnainternet.net [127.0.0.1]) (amavisd-new,
+	port 10041)
+	with ESMTP id TSGvaRvg6VBw for <alsa-devel@alsa-project.org>;
+	Tue,  3 Aug 2010 18:56:32 +0300 (EEST)
+Received: from omenapuu.dnainternet.net (omenapuu.dnainternet.net
+	[83.102.40.212])
+	by tulikuusama.dnainternet.net (Postfix) with ESMTP id 119AD2C948
+	for <alsa-devel@alsa-project.org>;
+	Tue,  3 Aug 2010 18:56:32 +0300 (EEST)
+Received: from mail.onse.fi (unknown [109.204.162.131])
+	by omenapuu.dnainternet.net (Postfix) with ESMTP id 04DEF2BAE3
+	for <alsa-devel@alsa-project.org>;
+	Tue,  3 Aug 2010 18:56:30 +0300 (EEST)
+Received: from sigma.onse.fi (sigma [10.0.0.8])
+	by mail.onse.fi (Postfix) with ESMTP id 9CE3E10DE4BF
+	for <alsa-devel@alsa-project.org>;
+	Tue,  3 Aug 2010 18:56:30 +0300 (EEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,75 +41,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela napsal(a):
-> On Tue, 3 Aug 2010, Pavel Hofman wrote:
-> 
->> Jaroslav Kysela napsal(a):
->>> On Tue, 3 Aug 2010, Pavel Hofman wrote:
->>>
->>>> Hi,
->>>>
->>>> mplayer checks hw_params for availability of the current format
->>>> http://mplayer-ww.git.sourceforge.net/git/gitweb.cgi?p=mplayer-ww/mplayer-ww;a=blob;f=libao2/ao_alsa.c;h=57f0bd07cb5ec300d327682a0b5209ba9dc10e30;hb=09ab9f6346aaf15d20792ca3df761a45fe46d83d#l514
->>>>
->>>>
->>>> . If the check fails, it uses 16bits as fixed default.
->>>>
->>>> Now if we define the card to be plughw:0, the check still fails for
->>>> formats unsupported directly by the card. Which in fact is incorrect
->>>> since the plug plugin takes care of most formats known. The same holds
->>>> for sample rates.
->>>
->>> It works for me:
->>>
->>> perex@eeebox2:~/alsa/alsa-lib/test> ./pcm
->>> Playback device is plughw:0,0
->>> Stream parameters are 44100Hz, S16_LE, 1 channels
->>> Sine wave rate is 440.0000Hz
->>> Using transfer method: write
->>> test format float_le: 0
->>> test format mpeg: -22
->>>
->>> Using modified alsa-lib/test/pcm.c code:
->>>
->>> diff --git a/test/pcm.c b/test/pcm.c
->>> index abb83e4..0582891 100644
->>> --- a/test/pcm.c
->>> +++ b/test/pcm.c
->>> @@ -106,6 +106,8 @@ static int set_hwparams(snd_pcm_t *handle,
->>>          printf("Broken configuration for playback: no configurations
->>> available: %s\n", snd_strerror(err));
->>>          return err;
->>>      }
->>> +    printf("test format float_le: %i\n",
->>> snd_pcm_hw_params_test_format(handle, params, SND_PCM_FORMAT_FLOAT_LE));
->>> +    printf("test format mpeg: %i\n",
->>> snd_pcm_hw_params_test_format(handle, params, SND_PCM_FORMAT_MPEG));
->>>      /* set hardware resampling */
->>>      err = snd_pcm_hw_params_set_rate_resample(handle, params,
->>> resample);
->>>      if (err < 0) {
->>>
->>>
->>> Could you describe you hw configuration or can you reproduce this issue
->>> with the snd-dummy module?
->>>
->>
->> Thanks for your reply. How do you compile the test directory? Neither
->> gitcompile nor make in the test dir did the trick. Thanks,
-> 
-> cd alsa-lib/test
-> make pcm
-> 
+Hi all!
 
-Thanks a lot. You are right, it works OK now. The problem was older
-mplayer (its internal s24le code was translated to mpeg code of alsa :)
-) , it is fixed in later versions.
+I was confused as to why on one of my boxes "aplay -L" says
+hdmi:CARD=NVidia,DEV=0
+and on another it says
+hdmi:CARD=NVidia
 
-Thanks for help.
+I looked into it, and saw that namehint.c:add_card() loops through the pcm 
+device numbers using snd_ctl_pcm_next_device(), and then proceeds in 
+try_config() to append ',DEV=device_number' to the device name.
 
-Pavel.
+However, in reality DEV does not match the device number, as e.g. DEV=0 may 
+mean the '0' in HDA-Intel.pcm.hdmi.0, and the slave pcm of that is device 3, 
+not device 0.
+
+If there is no device 0 on the NVidia card, the 'hdmi:CARD=NVidia,DEV=0' entry 
+is never added (instead the one without ",DEV=0" is), even though these are 
+not really related..
+
+
+Now, I don't have a good understanding of all the code in namehint.c, but 
+surely the occupied device numbers should not have any side-effects like this?
+
+-- 
+Anssi Hannula
