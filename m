@@ -1,16 +1,15 @@
 From: Jerone Young <jerone.young@canonical.com>
-Subject: [PATCH 1/2] FIX to not expose SPDIF on Thinkpad X301,
- since it does not have the ability to use SPDIF
-Date: Tue, 03 Aug 2010 01:46:42 -0500
-Message-ID: <1280818002.2529.236.camel@laptop>
+Subject: [PATCH 2/2] Fix Thinkpad X300 so SPDIF is not exposed
+Date: Tue, 03 Aug 2010 01:46:44 -0500
+Message-ID: <1280818004.2529.237.camel@laptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 77D002438E
+	by alsa0.perex.cz (Postfix) with ESMTP id 773F0243B0
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Aug 2010 08:46:45 +0200 (CEST)
+	Tue,  3 Aug 2010 08:46:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,46 +23,36 @@ To: alsa-devel <alsa-devel@alsa-project.org>
 Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Sorry about the last two times. Something was really going wrong.
+Just as with the X301. The X300 does not have a way to do SPDIF either.
+It does not have a dock connector, nor does it have the SPDIF through
+the headphone jack.
 
-The Lenovo X301 does not have the ability to connect to a docking
-station to use the SPDIF port. It also does not have the ability to do
-SPDIF though the headphone jack or Display Port jacks.
+This patch fixes it so X300 does not show SPDIF, since it cannot do it.
 
-This patch fixes it so this is not exposed for the X301 and users do
-think it has the ability to do SPDIF.
+To add all Lenovo Thinkpads had different codec subsytem IDs:
 
-I tested both headphone & display port jacks and it is not there. I have
-tested this patch and it works great.
-
-Also to add the other Thinkpads have different subsystem codec IDs. 
-Here are examples:
-
-X301:
-http://launchpadlibrarian.net/31561902/Card0.Codecs.codec.0.txt
-
-X200:
-http://launchpadlibrarian.net/49055036/Card0.Codecs.codec.0.txt
-
-W500:
-http://launchpadlibrarian.net/36276057/Card0.Codecs.codec.0.txt
-
+X300:
+http://launchpadlibrarian.net/34862838/Card0.Codecs.codec.0.txt
 
 Signed-off-by: Jerone Young <jerone.young@canonical.com>
 
-diff --git a/pci/hda/patch_conexant.c b/pci/hda/patch_conexant.c
-index c49030b..efca393 100644
---- a/pci/hda/patch_conexant.c
-+++ b/pci/hda/patch_conexant.c
-@@ -2004,6 +2004,11 @@ static int patch_cxt5051(struct hda_codec *codec)
+diff --git a/pci/hda/patch_analog.c b/pci/hda/patch_analog.c
+index afbe314..1fe6c77 100644
+--- a/pci/hda/patch_analog.c
++++ b/pci/hda/patch_analog.c
+@@ -3662,7 +3662,14 @@ static int patch_ad1984(struct hda_codec *codec)
+ 		codec->patch_ops.build_pcms = ad1984_build_pcms;
  		break;
- 	case CXT5051_LENOVO_X200:
- 		spec->init_verbs[0] = cxt5051_lenovo_x200_init_verbs;
-+		/* Thinkpad X301 does not have S/PDIF wired and no ability
-+		   to use a docking station. */
-+		if (codec->subsystem_id == 0x17aa211f) {
-+			spec->multiout.dig_out_nid = 0; 
+ 	case AD1984_THINKPAD:
+-		spec->multiout.dig_out_nid = AD1884_SPDIF_OUT;
++		if (codec->subsystem_id == 0x17aa20fb) {
++			/* Thinpad X300 does not have the ability to do SPDIF,
++			   or attach to docking station to use SPDIF */
++			spec->multiout.dig_out_nid = 0;
 +		}
- 		break;
- 	case CXT5051_F700:
- 		spec->init_verbs[0] = cxt5051_f700_init_verbs;
++		else {
++			spec->multiout.dig_out_nid = AD1884_SPDIF_OUT;
++		}
+ 		spec->input_mux = &ad1984_thinkpad_capture_source;
+ 		spec->mixers[0] = ad1984_thinkpad_mixers;
+ 		spec->init_verbs[spec->num_init_verbs++] = ad1984_thinkpad_init_verbs;
