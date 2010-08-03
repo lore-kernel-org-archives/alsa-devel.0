@@ -1,20 +1,22 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Rates/formats available upstream from the plug
- plugin
-Date: Tue, 3 Aug 2010 16:54:47 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1008031654370.4068@eeebox2.perex-int.cz>
-References: <4C5815E6.9010803@ivitera.com>
-	<alpine.LNX.2.00.1008031542320.4068@eeebox2.perex-int.cz>
-	<4C58250B.8000204@ivitera.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC 0/2] soc-dapm or TWL4030: Runtime DAPM
+	ordering problem
+Date: Tue, 3 Aug 2010 16:02:54 +0100
+Message-ID: <20100803150254.GF25306@rakim.wolfsonmicro.main>
+References: <1280732895-29010-1-git-send-email-peter.ujfalusi@nokia.com>
+	<201008030915.37405.peter.ujfalusi@nokia.com>
+	<20100803083944.GB25306@rakim.wolfsonmicro.main>
+	<201008031209.25585.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1FC45244D3
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 567A2244D4
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Aug 2010 16:54:48 +0200 (CEST)
-In-Reply-To: <4C58250B.8000204@ivitera.com>
+	Tue,  3 Aug 2010 17:02:55 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <201008031209.25585.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,70 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pavel Hofman <pavel.hofman@ivitera.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 3 Aug 2010, Pavel Hofman wrote:
+On Tue, Aug 03, 2010 at 12:09:10PM +0300, Peter Ujfalusi wrote:
+> On Tuesday 03 August 2010 11:39:44 ext Mark Brown wrote:
 
-> Jaroslav Kysela napsal(a):
->> On Tue, 3 Aug 2010, Pavel Hofman wrote:
->>
->>> Hi,
->>>
->>> mplayer checks hw_params for availability of the current format
->>> http://mplayer-ww.git.sourceforge.net/git/gitweb.cgi?p=mplayer-ww/mplayer-ww;a=blob;f=libao2/ao_alsa.c;h=57f0bd07cb5ec300d327682a0b5209ba9dc10e30;hb=09ab9f6346aaf15d20792ca3df761a45fe46d83d#l514
->>>
->>> . If the check fails, it uses 16bits as fixed default.
->>>
->>> Now if we define the card to be plughw:0, the check still fails for
->>> formats unsupported directly by the card. Which in fact is incorrect
->>> since the plug plugin takes care of most formats known. The same holds
->>> for sample rates.
->>
->> It works for me:
->>
->> perex@eeebox2:~/alsa/alsa-lib/test> ./pcm
->> Playback device is plughw:0,0
->> Stream parameters are 44100Hz, S16_LE, 1 channels
->> Sine wave rate is 440.0000Hz
->> Using transfer method: write
->> test format float_le: 0
->> test format mpeg: -22
->>
->> Using modified alsa-lib/test/pcm.c code:
->>
->> diff --git a/test/pcm.c b/test/pcm.c
->> index abb83e4..0582891 100644
->> --- a/test/pcm.c
->> +++ b/test/pcm.c
->> @@ -106,6 +106,8 @@ static int set_hwparams(snd_pcm_t *handle,
->>          printf("Broken configuration for playback: no configurations
->> available: %s\n", snd_strerror(err));
->>          return err;
->>      }
->> +    printf("test format float_le: %i\n",
->> snd_pcm_hw_params_test_format(handle, params, SND_PCM_FORMAT_FLOAT_LE));
->> +    printf("test format mpeg: %i\n",
->> snd_pcm_hw_params_test_format(handle, params, SND_PCM_FORMAT_MPEG));
->>      /* set hardware resampling */
->>      err = snd_pcm_hw_params_set_rate_resample(handle, params, resample);
->>      if (err < 0) {
->>
->>
->> Could you describe you hw configuration or can you reproduce this issue
->> with the snd-dummy module?
->>
->
-> Thanks for your reply. How do you compile the test directory? Neither
-> gitcompile nor make in the test dir did the trick. Thanks,
+> > I think there's something useful we can do with DAPM here (independantly
+> > of anything in TWL4030), probably involving splitting up the routing
+> > change walk to run power down first and then power up but the current
+> > patch feels like it's going to cause at least as many problems as it
+> > solves.
 
-cd alsa-lib/test
-make pcm
+> I tend to agree. The patch for the core is quite dramatic change, and it can 
+> introduce other types of problems.
+> But... It would make the actual register write sequence consistent in all cases.
 
- 				Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+The power and route configuration settings aren't really part of the
+same sequence, though - other widgets can also trigger power changes,
+and obviously a route change need not imply a power change.
