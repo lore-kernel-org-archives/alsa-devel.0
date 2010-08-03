@@ -1,17 +1,18 @@
 From: Bill Pemberton <wfp5p@virginia.edu>
-Subject: [PATCH 1/5] sound: serial-u16550: fix uninitialized
-	variable warning
-Date: Tue,  3 Aug 2010 15:20:22 -0400
-Message-ID: <1280863226-6824-1-git-send-email-wfp5p@virginia.edu>
+Subject: [PATCH 4/5] sound: fix uninitialized variable warning
+Date: Tue,  3 Aug 2010 15:20:25 -0400
+Message-ID: <1280863226-6824-4-git-send-email-wfp5p@virginia.edu>
+References: <1280863226-6824-1-git-send-email-wfp5p@virginia.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from viridian.itc.virginia.edu (viridian.itc.Virginia.EDU
 	[128.143.12.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 294F9243EC
+	by alsa0.perex.cz (Postfix) with ESMTP id 277F6243EB
 	for <alsa-devel@alsa-project.org>;
 	Tue,  3 Aug 2010 21:20:28 +0200 (CEST)
+In-Reply-To: <1280863226-6824-1-git-send-email-wfp5p@virginia.edu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,26 +26,29 @@ To: trivial@kernel.org
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fix sound/drivers/serial-u16550.c:905: warning: 'uart' may be used
-uninitialized in this function
+quiet the warning:
+sound/pci/via82xx.c:2498: warning: 'chip' may be used uninitialized in
+this function
+
+chip is set by snd_via82xx_create()
 
 Signed-off-by: Bill Pemberton <wfp5p@virginia.edu>
 ---
- sound/drivers/serial-u16550.c |    2 +-
+ sound/pci/via82xx.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/drivers/serial-u16550.c b/sound/drivers/serial-u16550.c
-index a25fb7b..5f8ae28 100644
---- a/sound/drivers/serial-u16550.c
-+++ b/sound/drivers/serial-u16550.c
-@@ -902,7 +902,7 @@ static int __devinit snd_uart16550_rmidi(struct snd_uart16550 *uart, int device,
- static int __devinit snd_serial_probe(struct platform_device *devptr)
+diff --git a/sound/pci/via82xx.c b/sound/pci/via82xx.c
+index 8c5f8b5..f7d02fc 100644
+--- a/sound/pci/via82xx.c
++++ b/sound/pci/via82xx.c
+@@ -2500,7 +2500,7 @@ static int __devinit snd_via82xx_probe(struct pci_dev *pci,
+ 				       const struct pci_device_id *pci_id)
  {
  	struct snd_card *card;
--	struct snd_uart16550 *uart;
-+	struct snd_uart16550 *uninitialized_var(uart);
+-	struct via82xx *chip;
++	struct via82xx *uninitialized_var(chip);
+ 	int chip_type = 0, card_type;
+ 	unsigned int i;
  	int err;
- 	int dev = devptr->id;
- 
 -- 
 1.7.2
