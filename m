@@ -1,20 +1,19 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCH 2/2] ASoC: multi-component - Fix ".-1" removal
-	from device name
-Date: Tue,  3 Aug 2010 09:26:58 +0300
-Message-ID: <1280816818-10154-2-git-send-email-jhnikula@gmail.com>
-References: <1280816818-10154-1-git-send-email-jhnikula@gmail.com>
+From: Jerone Young <jerone.young@canonical.com>
+Subject: Re: [PATCH] [RESEND] FIX to not expose SPDIF on
+ Thinkpad X301, since it does not have the ability to use SPDIF
+Date: Tue, 03 Aug 2010 01:37:36 -0500
+Message-ID: <1280817456.2529.210.camel@laptop>
+References: <1280815520.2529.157.camel@laptop>
+	<4C57B45B.8030709@canonical.com>  <s5hvd7s5i8b.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 46CCA2414E
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id B846F2437B
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Aug 2010 08:26:19 +0200 (CEST)
-Received: by mail-ew0-f51.google.com with SMTP id 21so1460651ewy.38
-	for <alsa-devel@alsa-project.org>; Mon, 02 Aug 2010 23:26:19 -0700 (PDT)
-In-Reply-To: <1280816818-10154-1-git-send-email-jhnikula@gmail.com>
+	Tue,  3 Aug 2010 08:37:40 +0200 (CEST)
+In-Reply-To: <s5hvd7s5i8b.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,33 +23,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Function fmt_single_name returns empty name if device name is
-"driver-name.-1".
+Sorry about that .. not sure why 2 times it screwed up. I'll get it
+right on my next send. The last one was missing parts of the
+diff..again.
 
-Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
----
-Liam. This is a trivial fix. No need for separate patch, just embed to your
-next multi-component update. Do we even have a case where name is "foo-bar.-1"?
----
- sound/soc/soc-core.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+			Jerone
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 300a9b3..db7ea1b 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2807,7 +2807,7 @@ static inline char *fmt_single_name(struct device *dev, int *id)
- 
- 			/* discard ID from name if ID == -1 */
- 			if (*id == -1)
--				*found = '\0';
-+				found[strlen(dev->driver->name)] = '\0';
- 		}
- 
- 	} else {
--- 
-1.7.1
+On Tue, 2010-08-03 at 08:21 +0200, Takashi Iwai wrote:
+> At Tue, 03 Aug 2010 08:16:59 +0200,
+> David Henningsson wrote:
+> > 
+> > I think Takashi wants you to use "git format-patch" to generate the
+> > patch. At least I do so and that has been working well so far.
+> 
+> Right.  The previous generated patches are really broken.  You can't
+> apply it via patch program, even manually.  If you are using GIT,
+> better to let GIT working such a boring job :)
+> 
+> 
+> Takashi
+> 
+> > // David
+> > 
+> > 2010-08-03 08:05, Jerone Young skrev:
+> > > The Lenovo X301 does not have the ability to connect to a docking
+> > > station to use the SPDIF port. It also does not have the ability to do
+> > > SPDIF though the headphone jack or Display Port jacks.
+> > > 
+> > > This patch fixes it so this is not exposed for the X301 and users do
+> > > think it has the ability to do SPDIF.
+> > > 
+> > > I tested both headphone & display port jacks and it is not there. I have
+> > > tested this patch and it works great.
+> > > 
+> > > Also to add the other Thinkpads have different subsystem codec IDs. 
+> > > Here are examples:
+> > > 
+> > > X301:
+> > > http://launchpadlibrarian.net/31561902/Card0.Codecs.codec.0.txt
+> > > 
+> > > X200:
+> > > http://launchpadlibrarian.net/49055036/Card0.Codecs.codec.0.txt
+> > > 
+> > > W500:
+> > > http://launchpadlibrarian.net/36276057/Card0.Codecs.codec.0.txt
+> > > 
+> > > 
+> > > Signed-off-by: Jerone Young <jerone.young@canonical.com>
+> > > 
+> > > diff --git a/pci/hda/patch_conexant.c b/pci/hda/patch_conexant.c
+> > > index c49030b..abc320a 100644
+> > > @@ -2004,6 +2006,11 @@ static int patch_cxt5051(struct hda_codec *codec)
+> > >  		break;
+> > >  	case CXT5051_LENOVO_X200:
+> > >  		spec->init_verbs[0] = cxt5051_lenovo_x200_init_verbs;
+> > > +		/* Thinkpad X301 does not have S/PDIF wired and no ability
+> > > +		   to use a docking station. */
+> > > +		if (codec->subsystem_id == 0x17aa211f) {
+> > > +			spec->multiout.dig_out_nid = 0; 
+> > > +		}
+> > >  		break;
+> > >  	case CXT5051_F700:
+> > >  		spec->init_verbs[0] = cxt5051_f700_init_verbs;
+> > > 
+> > > 
+> > > _______________________________________________
+> > > Alsa-devel mailing list
+> > > Alsa-devel@alsa-project.org
+> > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > > 
+> > 
+> > 
+> > -- 
+> > David Henningsson, Canonical Ltd.
+> > http://launchpad.net/~diwic
+> > 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
