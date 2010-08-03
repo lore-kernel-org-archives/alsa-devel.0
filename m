@@ -1,78 +1,70 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] hda-emu: Include stdlib.h, needed for calloc
-Date: Tue, 03 Aug 2010 10:54:11 +0200
-Message-ID: <4C57D933.5070108@canonical.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ARM: S5PV210: Add audio support to Aquila
+Date: Tue, 3 Aug 2010 09:59:29 +0100
+Message-ID: <20100803085929.GC25306@rakim.wolfsonmicro.main>
+References: <4C4F9E4C.7000001@samsung.com>
+ <20100729173825.GE24781@opensource.wolfsonmicro.com>
+ <4C527C11.5090409@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------060309010103090609080103"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id E19A02414D
-	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Aug 2010 10:54:12 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <4C527C11.5090409@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Chanwoo Choi <cw00.choi@samsung.com>
+Cc: linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Ben Dooks <ben@simtec.co.uk>, Liam Girdwood <lrg@slimlogic.co.uk>, Kyungmin Park <kyungmin.park@samsung.com>, Joonyoung Shim <jy0922.shim@samsung.com>, Myungjoo Ham <myungjoo.ham@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------060309010103090609080103
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+On Fri, Jul 30, 2010 at 04:15:29PM +0900, Chanwoo Choi wrote:
 
+> > All these fixed voltage regulators seem a bit suspicous for a mobile
+> > phone - I'd have expected that the supplies would all be being provided
+> > by your PMIC except for things taken directly from the battery supply
+> > (like the speakers tend to be, for example)?  There's no problem with
+> > the code itself, it just looks a bit odd.
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+> All these consumer supply of WM8994 codec connected the below regulator(VCC_1.8V) on
+> a circuit diagram. "VCC_1.8V" regualtor is always enabled, because it is used to many devices.
+> Then I haven't connected all these consumer supply of WM8994 codec to "VCC_1.8V" regulator.
+> I will modify that the consumer supply would be provided by PMIC.
 
---------------060309010103090609080103
-Content-Type: text/x-patch;
- name="0001-Include-stdlib.h-needed-for-calloc.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0001-Include-stdlib.h-needed-for-calloc.patch"
+OK, good - the fact that the connection wasn't being made with the PMIC
+was my main point here.
 
->From 0062fa9c891f0f48f0a207f06df16e79a67215c3 Mon Sep 17 00:00:00 2001
-From: David Henningsson <david.henningsson@canonical.com>
-Date: Tue, 3 Aug 2010 10:42:13 +0200
-Subject: [PATCH] Include stdlib.h, needed for calloc
+> >> +	/* CODEC_XTAL_EN */
+> >> +	gpio = S5PV210_GPH3(2);		/* XEINT_26 */
+> >> +	gpio_request(gpio, "CODEC_XTAL_EN");
 
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- hda-spec.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+> > Might be as well to provide some or all this stuff in your audio machine
+> > driver?
 
-diff --git a/hda-spec.c b/hda-spec.c
-index 6c4f045..2ff8b21 100644
---- a/hda-spec.c
-+++ b/hda-spec.c
-@@ -23,6 +23,7 @@
- #include <stdio.h>
- #include <errno.h>
- #include <string.h>
-+#include <stdlib.h>
- #include "hda-types.h"
- #include "hda-log.h"
- 
--- 
-1.7.0.4
+> The Aquila board have a oscillator which provide main clock to 
+> WM8994 audio codec. The oscillator provide 24MHz clock to WM8994 audio codec
+> (MCLK1 pin). I set gpio setting of "CODEC_XTAL_EN" to enable a oscillator.
 
+I understand what the code does.  My point is that it looks like it's
+in the wrong place - it'd seem nicer (and to open up more optimisation
+opportunties to manage the clock in the audio driver).
 
---------------060309010103090609080103
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> >> +	/* ADC_EN */
+> >> +	gpio = S5PV210_GPJ3(2);
+> >> +	gpio_request(gpio, "ADC_EN");
+> >> +	s3c_gpio_cfgpin(gpio, S3C_GPIO_OUTPUT);
+> >> +	gpio_direction_output(gpio, 1);
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > I'm not sure what this does?
 
---------------060309010103090609080103--
+> I explained below description about "ADC_EN" :
+> "ADC_EN : This gpio enable the ADC device which is used to detect
+>  the kind of jack. (SND_JACK_HEADPHONE/HEADSET/MECHANICAL/AVOUT)
+>  According to the kind of jack, an electric current is changed.
+>  (Only used on Aquila board) "
+
+> When inserting the jack to Aquila board, I used ADC driver so that, detecting
+> the kind of jack(SND_JACK_HEADPHONE/HEADSET/MECHANICAL/AVOUT).
+
+> I will separately make the another function to initialize ADC driver.
+
+So you're using an external ADC to measure the current draw on micbias
+as part of your jack sense.  Again, this feels like something that ought
+to be managed along with the rest of the audio code.
