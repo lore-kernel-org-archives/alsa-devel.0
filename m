@@ -1,19 +1,17 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: HDMI audio: TV vs. codec supported sample rates
-Date: Tue, 3 Aug 2010 18:35:19 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1008031821090.4068@eeebox2.perex-int.cz>
-References: <74CDBE0F657A3D45AFBB94109FB122FF02FD6DF319@HQMAIL01.nvidia.com>
-	<alpine.LNX.2.00.1008031809520.4068@eeebox2.perex-int.cz>
-	<74CDBE0F657A3D45AFBB94109FB122FF02FD6DF31B@HQMAIL01.nvidia.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: [PATCH] HDA-Intel: present all 4 HDMI outputs instead
+	of just the first one
+Date: Tue,  3 Aug 2010 20:27:49 +0300
+Message-ID: <1280856469-31989-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id B3170103843
+Received: from sypressi.dnainternet.net (sypressi.dnainternet.net
+	[83.102.40.135])
+	by alsa0.perex.cz (Postfix) with ESMTP id 31DF5103865
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Aug 2010 18:35:19 +0200 (CEST)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF02FD6DF31B@HQMAIL01.nvidia.com>
+	Tue,  3 Aug 2010 19:27:57 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,58 +21,176 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: 'alsa-devel' <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Anssi Hannula <anssi.hannula@iki.fi>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 3 Aug 2010, Stephen Warren wrote:
+Commit 92608badc519a8c1f65d93743396517aaa582b53 in linux kernel added
+the possibility of 3 additional HDMI devices on indexes 7-9.
 
-> Jaroslav Kysela wrote:
->> On Tue, 3 Aug 2010, Stephen Warren wrote:
->>
->>> A user has the following setup:
->>>
->>> A GPU which supports audio-over-HDMI. The codec supports sample rates
->>> 32000 44100 48000 88200 96000 176400 192000 (from
->>> /proc/asound/card1/codec#1). However, the user's TV supports only sample
->>> rates 44100 48000 88200 (from /proc/asound/card1/eld*).
->>>
->>> When the user plays sound with sample rate 22050, they hear nothing.
->>> Sound with sample rates supported by the TV works OK.
->>>
->>> My question: Is the HDA codec driver supposed to dynamically adjust its
->>> list of supported sample rates based on the ELD content, or is the ALSA
->>> library somehow supposed to detect the subset of rates supported in HW
->>> and convert the sample rate in SW before sending the audio to the
->>> driver?
->>
->> The driver must return the correct list of supported sample rates.
->> Otherwise alsa-lib thinks that the invalid sample rate is supported in the
->> hardware or driver.
->
-> OK, that makes sense. Is this the responsibility of the codec driver (e.g.
-> patch_nvhdmi.c) or something in the core HDMI code (e.g. patch_hdmi.c, or
-> hda_*.c)
->
-> I don't see anything in patch_intelhdmi.c that relates to sample rate
-> support at all. However, I see that patch_nvhdmi.c contains e.g.:
->
-> static struct hda_pcm_stream nvhdmi_pcm_digital_playback_8ch_89 = {
->        .substreams = 1,
->        .channels_min = 2,
->        .rates = SUPPORTED_RATES,
->
-> Should .rates not be initialized here, so that some automatic ELD-parsing
-> logic gets triggered to fill this in later?
+Present all those additional devices using the "hdmi" alias as well.
 
-Note that nvhdmi_pcm_digital_playback_8ch_89 is just a static template 
-which is copied to the dynamic location in nvhdmi_build_pcms_8ch_89(). 
-Just change rates member in 
-pcm_rec->info->stream[SNDRV_PCM_STREAM_PLAYBACK].rates .
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+---
+Note that the hints for these devices do not appear properly and the
+devices therefore do not appear in the output of "aplay -L" until the
+issue described in "Device name hints and the value of DEV" thread is
+fixed (with the exception of DEV=3 which happens to match the device
+index of the first hdmi device and is therefore shown).
 
- 					Jaroslav
+Also, I don't know what the "hint.device 3" was doing there and
+therefore I couldn't test if it continues to work as intended after
+changing it to "hint.device $DEVICE". Please check that it is correct.
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+ src/conf/cards/HDA-Intel.conf |  108 +++++++++++++++++++++++++++++++++++++++--
+ 1 files changed, 104 insertions(+), 4 deletions(-)
+
+diff --git a/src/conf/cards/HDA-Intel.conf b/src/conf/cards/HDA-Intel.conf
+index d3ac002..726e8c9 100644
+--- a/src/conf/cards/HDA-Intel.conf
++++ b/src/conf/cards/HDA-Intel.conf
+@@ -142,11 +142,17 @@ HDA-Intel.pcm.iec958.0 {
+ 
+ <confdir:pcm/hdmi.conf>
+ 
+-HDA-Intel.pcm.hdmi.0 {
+-	@args [ CARD AES0 AES1 AES2 AES3 ]
++HDA-Intel.pcm.hdmi.common {
++	@args [ CARD DEVICE CTLINDEX AES0 AES1 AES2 AES3 ]
+ 	@args.CARD {
+ 		type string
+ 	}
++	@args.DEVICE {
++		type integer
++	}
++	@args.CTLINDEX {
++		type integer
++	}
+ 	@args.AES0 {
+ 		type integer
+ 	}
+@@ -163,26 +169,120 @@ HDA-Intel.pcm.hdmi.0 {
+ 	slave.pcm {
+ 		type hw
+ 		card $CARD
+-		device 3
++		device $DEVICE
+ 	}
+ 	hooks.0 {
+ 		type ctl_elems
+ 		hook_args [
+ 		{
+ 			name "IEC958 Playback Default"
++			index $CTLINDEX
+ 			lock true
+ 			preserve true
+ 			value [ $AES0 $AES1 $AES2 $AES3 ]
+ 		}
+ 		{
+ 			name "IEC958 Playback Switch"
++			index $CTLINDEX
+ 			lock true
+ 			preserve true
+ 			value true
+ 		}
+ 		]
+ 	}
+-	hint.device 3
++	hint.device $DEVICE
++}
++
++HDA-Intel.pcm.hdmi.0 {
++	@args [ CARD AES0 AES1 AES2 AES3 ]
++	@args.CARD { type string }
++	@args.AES0 { type integer }
++	@args.AES1 { type integer }
++	@args.AES2 { type integer }
++	@args.AES3 { type integer }
++	@func refer
++	name {
++		@func concat
++		strings [
++			"cards.HDA-Intel.pcm.hdmi.common:"
++			"CARD=" $CARD ","
++			"DEVICE=3,"
++			"CTLINDEX=0,"
++			"AES0=" $AES0 ","
++			"AES1=" $AES1 ","
++			"AES2=" $AES2 ","
++			"AES3=" $AES3
++		]
++	}
++}
++
++HDA-Intel.pcm.hdmi.1 {
++	@args [ CARD AES0 AES1 AES2 AES3 ]
++	@args.CARD { type string }
++	@args.AES0 { type integer }
++	@args.AES1 { type integer }
++	@args.AES2 { type integer }
++	@args.AES3 { type integer }
++	@func refer
++	name {
++		@func concat
++		strings [
++			"cards.HDA-Intel.pcm.hdmi.common:"
++			"CARD=" $CARD ","
++			"DEVICE=7,"
++			"CTLINDEX=1,"
++			"AES0=" $AES0 ","
++			"AES1=" $AES1 ","
++			"AES2=" $AES2 ","
++			"AES3=" $AES3
++		]
++	}
++}
++
++HDA-Intel.pcm.hdmi.2 {
++	@args [ CARD AES0 AES1 AES2 AES3 ]
++	@args.CARD { type string }
++	@args.AES0 { type integer }
++	@args.AES1 { type integer }
++	@args.AES2 { type integer }
++	@args.AES3 { type integer }
++	@func refer
++	name {
++		@func concat
++		strings [
++			"cards.HDA-Intel.pcm.hdmi.common:"
++			"CARD=" $CARD ","
++			"DEVICE=8,"
++			"CTLINDEX=2,"
++			"AES0=" $AES0 ","
++			"AES1=" $AES1 ","
++			"AES2=" $AES2 ","
++			"AES3=" $AES3
++		]
++	}
++}
++
++HDA-Intel.pcm.hdmi.3 {
++	@args [ CARD AES0 AES1 AES2 AES3 ]
++	@args.CARD { type string }
++	@args.AES0 { type integer }
++	@args.AES1 { type integer }
++	@args.AES2 { type integer }
++	@args.AES3 { type integer }
++	@func refer
++	name {
++		@func concat
++		strings [
++			"cards.HDA-Intel.pcm.hdmi.common:"
++			"CARD=" $CARD ","
++			"DEVICE=9,"
++			"CTLINDEX=3,"
++			"AES0=" $AES0 ","
++			"AES1=" $AES1 ","
++			"AES2=" $AES2 ","
++			"AES3=" $AES3
++		]
++	}
+ }
+ 
+ <confdir:pcm/modem.conf>
+-- 
+1.7.2
