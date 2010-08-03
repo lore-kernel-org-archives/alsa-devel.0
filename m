@@ -1,18 +1,12 @@
-From: Bill Pemberton <wfp5p@virginia.edu>
-Subject: [PATCH 3/5] sound: fix uninitialized variable warning
-Date: Tue,  3 Aug 2010 15:20:24 -0400
-Message-ID: <1280863226-6824-3-git-send-email-wfp5p@virginia.edu>
-References: <1280863226-6824-1-git-send-email-wfp5p@virginia.edu>
+From: Pierre van Heerden <cassiopea342@gmail.com>
+Subject: Bug 0005086 - no audio on built-in speakers (intel-hda
+	with codec alc272)
+Date: Tue, 3 Aug 2010 15:49:35 +0200
+Message-ID: <AANLkTi=PpoTBcgukoY6u00SGW4=xnkoiNGOun-a9cABs@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from viridian.itc.virginia.edu (viridian.itc.Virginia.EDU
-	[128.143.12.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2736B243EA
-	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Aug 2010 21:20:28 +0200 (CEST)
-In-Reply-To: <1280863226-6824-1-git-send-email-wfp5p@virginia.edu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,33 +16,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: trivial@kernel.org
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@mailman.alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-quiet the warning:
-sound/pci/via82xx_modem.c:1168: warning: 'chip' may be used
-uninitialized in this function
+Hi
 
-chip is set by snd_via82xx_create()
+I was advised to e-mail and inform you of the problem with my audio, even
+though I have submitted a
+tracker<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5086>.
+In short, no speaker_outs are being reported by the driver (intel-hda using
+the realtek alc272 codec), even in the latest release, so on my laptop (LG
+X130) I'm getting audio on the line-out jack but not on the built-in
+speakers. I've tried all the model= module parameters for the alc272 codec,
+none of them solved the problem.
 
-Signed-off-by: Bill Pemberton <wfp5p@virginia.edu>
----
- sound/pci/via82xx_modem.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Please let me know if I can be of any assistance in solving this problem or
+if you need any further information from me.
 
-diff --git a/sound/pci/via82xx_modem.c b/sound/pci/via82xx_modem.c
-index f7e8bbbe..11eebcc 100644
---- a/sound/pci/via82xx_modem.c
-+++ b/sound/pci/via82xx_modem.c
-@@ -1165,7 +1165,7 @@ static int __devinit snd_via82xx_probe(struct pci_dev *pci,
- 				       const struct pci_device_id *pci_id)
- {
- 	struct snd_card *card;
--	struct via82xx_modem *chip;
-+	struct via82xx_modem *uninitialized_var(chip);
- 	int chip_type = 0, card_type;
- 	unsigned int i;
- 	int err;
--- 
-1.7.2
+Kind regards
+Pierre van Heerden
