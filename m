@@ -1,19 +1,20 @@
 From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: HDMI audio: TV vs. codec supported sample rates
-Date: Tue, 3 Aug 2010 20:39:20 +0300
-Message-ID: <201008032039.20715.anssi.hannula@iki.fi>
-References: <74CDBE0F657A3D45AFBB94109FB122FF02FD6DF319@HQMAIL01.nvidia.com>
-	<alpine.LNX.2.00.1008031809520.4068@eeebox2.perex-int.cz>
-	<74CDBE0F657A3D45AFBB94109FB122FF02FD6DF31B@HQMAIL01.nvidia.com>
+Subject: Re: Wrong channel order with multichannel HDMI on
+	NVIDIA MCP7A
+Date: Tue, 3 Aug 2010 22:01:47 +0300
+Message-ID: <201008032201.47487.anssi.hannula@iki.fi>
+References: <201007251951.39362.anssi.hannula@iki.fi>
+	<201007280542.09231.anssi.hannula@iki.fi>
+	<201007291741.15187.anssi.hannula@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from saarni.dnainternet.net (saarni.dnainternet.net [83.102.40.136])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0FCE310382B
+Received: from sypressi.dnainternet.net (sypressi.dnainternet.net
+	[83.102.40.135]) by alsa0.perex.cz (Postfix) with ESMTP id F18DD243BC
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Aug 2010 19:39:25 +0200 (CEST)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF02FD6DF31B@HQMAIL01.nvidia.com>
+	Tue,  3 Aug 2010 21:01:51 +0200 (CEST)
+In-Reply-To: <201007291741.15187.anssi.hannula@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,59 +25,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Stephen Warren <swarren@nvidia.com>
+Cc: 'Takashi Iwai' <tiwai@suse.de>, Wei Ni <wni@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Stephen Warren kirjoitti tiistai, 3. elokuuta 2010 19:20:24:
-> Jaroslav Kysela wrote:
-> > On Tue, 3 Aug 2010, Stephen Warren wrote:
-> > > A user has the following setup:
-> > > 
-> > > A GPU which supports audio-over-HDMI. The codec supports sample rates
-> > > 32000 44100 48000 88200 96000 176400 192000 (from
-> > > /proc/asound/card1/codec#1). However, the user's TV supports only
-> > > sample rates 44100 48000 88200 (from /proc/asound/card1/eld*).
-> > > 
-> > > When the user plays sound with sample rate 22050, they hear nothing.
-> > > Sound with sample rates supported by the TV works OK.
-> > > 
-> > > My question: Is the HDA codec driver supposed to dynamically adjust its
-> > > list of supported sample rates based on the ELD content, or is the ALSA
-> > > library somehow supposed to detect the subset of rates supported in HW
-> > > and convert the sample rate in SW before sending the audio to the
-> > > driver?
-> > 
-> > The driver must return the correct list of supported sample rates.
-> > Otherwise alsa-lib thinks that the invalid sample rate is supported in
-> > the hardware or driver.
-> 
-> OK, that makes sense. Is this the responsibility of the codec driver (e.g.
-> patch_nvhdmi.c) or something in the core HDMI code (e.g. patch_hdmi.c, or
-> hda_*.c)
-> 
-> I don't see anything in patch_intelhdmi.c that relates to sample rate
-> support at all. However, I see that patch_nvhdmi.c contains e.g.:
-> 
-> static struct hda_pcm_stream nvhdmi_pcm_digital_playback_8ch_89 = {
->         .substreams = 1,
->         .channels_min = 2,
->         .rates = SUPPORTED_RATES,
-> 
-> Should .rates not be initialized here,
-
-When .rates is not initialized, they are automatically read from the codec, 
-i.e. exactly the values you referenced above from 
-"/proc/asound/card1/codec#1".
-
-The values seem to differ (32000 vs 22050 is reported as supported), though. 
-If the codec reported values are wrong, the .rates should be kept. Otherwise 
-the rates set in .rates should be fixed or the override just removed.
-
-> so that some automatic ELD-parsing
-> logic gets triggered to fill this in later?
-
-Unfortunately not, that has not been implemented yet. AFAICS it would belong 
-to patch_hdmi.c.
-
--- 
-Anssi Hannula
+QW5zc2kgSGFubnVsYSBraXJqb2l0dGkgdG9yc3RhaSwgMjkuIGhlaW7DpGt1dXRhIDIwMTAgMTc6
+NDE6MTU6Cj4gQW5zc2kgSGFubnVsYSBraXJqb2l0dGkga2Vza2l2aWlra28sIDI4LiBoZWluw6Rr
+dXV0YSAyMDEwIDA1OjQyOjA5Ogo+ID4gV2VpIE5pIGtpcmpvaXR0aSB0aWlzdGFpLCAyNy4gaGVp
+bsOka3V1dGEgMjAxMCAxMDoxNDozNzoKPiA+ID4gSGksIFRha2FzaGkKPiA+ID4gTUNQN3ggdXNl
+IG9sZCBIVyBkZXNpZ24gaW4gSERNSSwgdGhleSBkb24ndCBzdXBwb3J0IGNoYW5uZWwgbWFwcGlu
+Zwo+ID4gPiBsaWtlIE1DUDg5LiBJdCB1c2UgbnZoZG1pX2RpZ19wbGF5YmFja19wY21fcHJlcGFy
+ZV84Y2goKSB0byBwcmVwYXJlCj4gPiA+IGNoYW5uZWwgbWFwcGluZyBhbmQgc3RlYW0gaWQsZm9y
+bWF0Lgo+ID4gPiAKPiA+ID4gQW5zc2kgSGFubnVsYQo+ID4gPiBQbGVhc2UgdHJ5IHRoZSBmb2xs
+b3dpbmcgY2hhbmdlcyBpbiBwYXRjaF9udmhkbWkuYwo+ID4gPiBzdGF0aWMgaGRhX25pZF90IG52
+aGRtaV9jb25fbmlkc183eFs0XSA9IHsKPiA+ID4gCj4gPiA+IAkvKmZyb250LCByZWFyLCBjbGZl
+LCByZWFyX3N1cnIgKi8KPiA+ID4gCj4gPiA+IC0JMHg2LCAweDgsIDB4YSwgMHhjLAo+ID4gPiAr
+CTB4NiwgMHhhLCAweDgsIDB4YywKPiA+ID4gfTsKPiA+IAo+ID4gSSBhY3R1YWxseSB0cmllZCB0
+aGF0IGFscmVhZHksIGJ1dCBmb3Igc29tZSByZWFzb24gY2hhbmdpbmcgdGhlIG9yZGVyIGluCj4g
+PiBudmhkbWlfY29uX25pZHNfN3ggZG9lc24ndCBoYXZlIGFueSBlZmZlY3QuCj4gPiAKPiA+IEFj
+dHVhbGx5LCBkaXNhYmxpbmcgdGhlIHdob2xlIGZvciBsb29wIHRoYXQgYXNzaWducyB0aGUgY2hh
+bm5lbHMgaW4KPiA+IG52aGRtaV9kaWdfcGxheWJhY2tfcGNtX3ByZXBhcmVfOGNoKCkgaGFzIG5v
+IGVmZmVjdCwgbGVhZGluZyBtZSB0bwo+ID4gYmVsaWV2ZSB0aGF0IHRoZSBjb21tYW5kcyBhcmUg
+bm90IHJlYWNoaW5nIHRoZSBoYXJkd2FyZSBvciB0aGV5IGFyZQo+ID4gYmVpbmcgb3ZlcnJpZGRl
+bi4KPiAKPiBXZWxsLCBJIGNvbmZpcm1lZCB3aXRoIEFDX1ZFUkJfR0VUX0NPTlYgdGhhdCB0aGV5
+IGFyZSBnZXR0aW5nIHRocm91Z2gsIGFuZAo+IHRoZXkgYXJlIHN0aWxsIHRoZSBzYW1lIGluIG52
+aGRtaV9kaWdfcGxheWJhY2tfcGNtX2Nsb3NlXzhjaF83eCgpLgo+IAo+IEFueSBpZGVhIHdoeSB0
+aGV5IGFyZSBoYXZpbmcgbm8gZWZmZWN0PwoKSWYgdGhpcyBjYW4ndCBiZSBmaXhlZCAoZWl0aGVy
+IGR1ZSB0byBoYXJkd2FyZSBvciBtaXNzaW5nIGRvY3VtZW50YXRpb24pLCBob3cgCmNhbiB0aGlz
+IGJlIHdvcmthcm91bmRlZCBpbiBhbHNhPwoKT25seSBpZGVhIEkgY2FuIGNvbWUgdXAgd2l0aCBp
+cyByZXNlcnZpbmcgYSBzcGVjaWFsIGRldmljZSBpbmRleCBpbiBoZGEtaW50ZWwgCmZvciB1c2Ug
+d2l0aCAiYnJva2VuIGhkbWkiLCB3aGljaCBjYW4gdGhlbiBiZSBoYW5kbGVkIGluIEhEQS1JbnRl
+bC5jb25mIHdpdGggCmFuIGFwcHJvcHJpYXRlIHR0YWJsZS4uIEJ1dCB0aGF0IHdvdWxkIGJlIHJh
+dGhlciB1Z2x5LgoKQWxzbywgZG8gd2Uga25vdyBpZiB0aGlzIGFmZmVjdHMgYWxsIE1DUDd4IGRl
+dmljZXMgb3IgYSBzdWJzZXQgb2YgdGhlbT8KCi0tIApBbnNzaSBIYW5udWxhCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
