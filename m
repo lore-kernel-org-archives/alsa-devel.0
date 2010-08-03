@@ -1,15 +1,26 @@
-From: Jerone Young <jerone.young@canonical.com>
-Subject: [PATCH 2/2] Fix Thinkpad X300 so SPDIF is not exposed
-Date: Tue, 03 Aug 2010 01:46:44 -0500
-Message-ID: <1280818004.2529.237.camel@laptop>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: ALC269 mixer nodes
+Date: Tue, 03 Aug 2010 08:49:05 +0200
+Message-ID: <4C57BBE1.7040703@canonical.com>
+References: <4C56D6A1.5030805@canonical.com> <s5h7hk9nk6c.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 773F0243B0
+	by alsa0.perex.cz (Postfix) with ESMTP id B89762438E
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Aug 2010 08:46:52 +0200 (CEST)
+	Tue,  3 Aug 2010 08:49:06 +0200 (CEST)
+Received: from hutte.canonical.com ([91.189.90.181])
+	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
+	id 1OgBJC-0005je-Es
+	for <alsa-devel@alsa-project.org>; Tue, 03 Aug 2010 07:49:06 +0100
+Received: from [88.83.60.91] (helo=[192.168.8.103])
+	by hutte.canonical.com with esmtpsa
+	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
+	(envelope-from <david.henningsson@canonical.com>) id 1OgBJC-00035W-B4
+	for alsa-devel@alsa-project.org; Tue, 03 Aug 2010 07:49:06 +0100
+In-Reply-To: <s5h7hk9nk6c.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,40 +30,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Just as with the X301. The X300 does not have a way to do SPDIF either.
-It does not have a dock connector, nor does it have the SPDIF through
-the headphone jack.
+2010-08-02 16:50, Takashi Iwai skrev:
+> At Mon, 02 Aug 2010 16:30:57 +0200,
+> David Henningsson wrote:
+>>
+>> Here's yet another ALC269 which I'm unsure of how to fix the right way.
+>> There is no way to enable the microphone, and I think the trouble has to
+>> do with that the auto parser does not check whether the node is a mixer
+>> or a selector. It might be that the "alc269" vs "alc269vb" detection is
+>> wrong as well (btw, what does vb stand for?).
+>>
+>> I unfortunately do not have the full alsa-info output, but the
+>> codec-proc is here:
+>> http://launchpadlibrarian.net/49076615/Card0.Codecs.codec.2.txt
+>> and PCI IDs:
+>> http://launchpadlibrarian.net/49076618/PciMultimedia.txt
+> 
+> Are you sure that it's the result with the very latest driver?
 
-This patch fixes it so X300 does not show SPDIF, since it cannot do it.
+The codec-proc might not have been generated with the very latest
+driver, but when I run it through hda-emu (with a just-pulled
+sound-2.6.git as hda-dir), I get errors as:
 
-To add all Lenovo Thinkpads had different codec subsytem IDs:
+send: NID=0x23, VERB=0x701(set_connect_sel), PARM=0x1
+invalid connect select for node 0x23
 
-X300:
-http://launchpadlibrarian.net/34862838/Card0.Codecs.codec.0.txt
+...which makes me believe the error is still there. The error above
+comes from patch_realtek.c:14366, btw.
 
-Signed-off-by: Jerone Young <jerone.young@canonical.com>
-
-diff --git a/pci/hda/patch_analog.c b/pci/hda/patch_analog.c
-index afbe314..1fe6c77 100644
---- a/pci/hda/patch_analog.c
-+++ b/pci/hda/patch_analog.c
-@@ -3662,7 +3662,14 @@ static int patch_ad1984(struct hda_codec *codec)
- 		codec->patch_ops.build_pcms = ad1984_build_pcms;
- 		break;
- 	case AD1984_THINKPAD:
--		spec->multiout.dig_out_nid = AD1884_SPDIF_OUT;
-+		if (codec->subsystem_id == 0x17aa20fb) {
-+			/* Thinpad X300 does not have the ability to do SPDIF,
-+			   or attach to docking station to use SPDIF */
-+			spec->multiout.dig_out_nid = 0;
-+		}
-+		else {
-+			spec->multiout.dig_out_nid = AD1884_SPDIF_OUT;
-+		}
- 		spec->input_mux = &ad1984_thinkpad_capture_source;
- 		spec->mixers[0] = ad1984_thinkpad_mixers;
- 		spec->init_verbs[spec->num_init_verbs++] = ad1984_thinkpad_init_verbs;
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
