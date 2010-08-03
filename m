@@ -1,22 +1,22 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC 0/2] soc-dapm or TWL4030: Runtime DAPM
-	ordering problem
-Date: Tue, 3 Aug 2010 16:02:54 +0100
-Message-ID: <20100803150254.GF25306@rakim.wolfsonmicro.main>
-References: <1280732895-29010-1-git-send-email-peter.ujfalusi@nokia.com>
-	<201008030915.37405.peter.ujfalusi@nokia.com>
-	<20100803083944.GB25306@rakim.wolfsonmicro.main>
-	<201008031209.25585.peter.ujfalusi@nokia.com>
+Subject: Re: Driver for AK4555 codec
+Date: Tue, 3 Aug 2010 16:05:19 +0100
+Message-ID: <20100803150519.GG25306@rakim.wolfsonmicro.main>
+References: <AANLkTimnYLEe-sK2_DcYQAGqVYd+JnsJaSpRfdKBbeEi@mail.gmail.com>
+	<20100729184233.GA9469@sirena.org.uk>
+	<AANLkTinWJT36u99_vxOqXOADRNBT9VMy_5mOsBLE1PLO@mail.gmail.com>
+	<33CE47F6-34E9-4E47-A8F6-C1091C1708D2@opensource.wolfsonmicro.com>
+	<AANLkTin+ZNJD4dizxwK3=ocw3d0YUxZhnX8SkFhVjt9a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 567A2244D4
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 49A17244D9
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Aug 2010 17:02:55 +0200 (CEST)
+	Tue,  3 Aug 2010 17:05:20 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <201008031209.25585.peter.ujfalusi@nokia.com>
+In-Reply-To: <AANLkTin+ZNJD4dizxwK3=ocw3d0YUxZhnX8SkFhVjt9a@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,23 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Yoran Brondsema <yoran.brondsema@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 03, 2010 at 12:09:10PM +0300, Peter Ujfalusi wrote:
-> On Tuesday 03 August 2010 11:39:44 ext Mark Brown wrote:
+On Fri, Jul 30, 2010 at 10:00:12AM +0200, Yoran Brondsema wrote:
 
-> > I think there's something useful we can do with DAPM here (independantly
-> > of anything in TWL4030), probably involving splitting up the routing
-> > change walk to run power down first and then power up but the current
-> > patch feels like it's going to cause at least as many problems as it
-> > solves.
+> I checked the speaker-test code, and this happens after a call to
+> snd_pcm_writei(). The error code is -5, which corresponds to -EIO. In the
+> snd_pcm_writei() definition, the following code fails.
 
-> I tend to agree. The patch for the core is quite dramatic change, and it can 
-> introduce other types of problems.
-> But... It would make the actual register write sequence consistent in all cases.
+> However, in the init function of the codec driver
+> (linux/sound/soc/codecs/ak4555.c), I do
 
-The power and route configuration settings aren't really part of the
-same sequence, though - other widgets can also trigger power changes,
-and obviously a route change need not imply a power change.
+Any of the drivers involved in the audio stream can generate an error,
+you need to make sure all of them are happy.
+
+> What could be wrong?
+
+You'll need to debug this.  Check how the core expects the stream to be
+marked as configured and diagnose why that's not happening.
