@@ -1,23 +1,22 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: Re: How to handle HBR pass-through? (new PCM_FORMAT?)
-Date: Mon, 2 Aug 2010 14:33:38 -0500
-Message-ID: <AANLkTi=gj0vwsX0x3Ct9nA=GM2BrH0GVqjxLPr5VG1gy@mail.gmail.com>
-References: <201008011423.33724.anssi.hannula@iki.fi>
-	<AANLkTi=MCNmW5qUT0spwu31UO3qmSFShw1vgkSAvU4ro@mail.gmail.com>
-	<201008021040.17380.anssi.hannula@iki.fi>
-	<s5hocdlm1f0.wl%tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC 0/2] soc-dapm or TWL4030: Runtime DAPM
+	ordering problem
+Date: Tue, 3 Aug 2010 03:56:40 +0100
+Message-ID: <3C7676DA-EAAB-4C56-AD3A-2537EFEDF056@opensource.wolfsonmicro.com>
+References: <1280732895-29010-1-git-send-email-peter.ujfalusi@nokia.com>
+	<2EC9E5A5-E55F-4303-B6EF-2351B9440989@opensource.wolfsonmicro.com>
+	<201008021359.11636.peter.ujfalusi@nokia.com>
+	(sfid-20100802_115931_385588_45805DF2)
+Mime-Version: 1.0 (Apple Message framework v1081)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 586B510381E
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 46B7C10382A
 	for <alsa-devel@alsa-project.org>;
-	Mon,  2 Aug 2010 21:33:41 +0200 (CEST)
-Received: by iwn39 with SMTP id 39so4869131iwn.38
-	for <alsa-devel@alsa-project.org>; Mon, 02 Aug 2010 12:33:40 -0700 (PDT)
-In-Reply-To: <s5hocdlm1f0.wl%tiwai@suse.de>
+	Tue,  3 Aug 2010 04:56:47 +0200 (CEST)
+In-Reply-To: <201008021359.11636.peter.ujfalusi@nokia.com>
+	(sfid-20100802_115931_385588_45805DF2)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,31 +26,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Anssi Hannula <anssi.hannula@iki.fi>, alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
->> Looked at gstreamer, it seems to only have ac3-in-iec61937 support curre=
-ntly.
->> However, I'd guess gstreamer would additionally need some ways to 1) det=
-ect if
->> HBR is supported, and 2) detect if the connected receiver supports the
->> specific codec..
->
-> Reusing the existing IEC958 status bits is OK for practical POV,
-> indeed. =A0This makes also compatible with the existing user-space stuff.
->
-> But I feel a bit uncertain when looking forward for future
-> development. =A0More discussions needed.
+On 2 Aug 2010, at 11:59, Peter Ujfalusi wrote:
 
-The automatic detection is not possible for now no matter if you rely
-on gstreamer or ffmpeg or something else.
-The one thing that is missing for HDMI is to make use of EDID
-information to report to userspace the capabilities of the receiver so
-that apps or the audio policy make educated decisions on whether to
-decode locally or use pass-through modes using iec61937. The HDMI spec
-only mandates stereo/48kHz, and if you have an older receiver (2 years
-old...) you may not have TruHD supported there. To the best of my
-knowledge, there aren't any standard controls to report what the
-receiver supports. I had some discussions with Takashi on this in the
-past, looks like it's time to make this happen?
+> On Monday 02 August 2010 13:27:21 ext Mark Brown wrote:
+
+>> With most things it's safer to implement the route change first -
+>> especially in the analogue domain route changes tend to introduce DC
+>> offsets so it's safer to set the route prior to powering up so the offset
+>> changes don't get amplified. This is also very important when doing DC
+>> offset correction, obviously there it's important to measure the offset of
+>> the path you're actually trying to run rather than using whatever path was
+>> there before.
+
+> Sure, but what I'm telling is that we/I have basically two different scenarios 
+> to fix for pop noise.
+
+> A. When the user configures the capture routing, and starts the capture
+> B. When the user changes the capture routing during active capture (analog to 
+> digital, or back).
+
+It feels like you're focusing in on one specific use case here - there's way more active->active transitions that are possible. For example, you could switch in bypass or start a second (unrelated) capture stream on devices that can support that. I think any change in DAPM needs to be motivated in more general terms than you're using here. For driver-specific changes this is fine but for changes in the generic code we need to think things through more generically.
+
+> This might be not a problem for others, but since the TWL4030 has quite 
+> complicated internal routings, and the controls for some of the routings are 
+> scattered all around the register table with bits here and there, and 
+> dependency to other bits, at least I'm not that happy that I need to handle 
+> things differently...
+
+I don't think the feature set is particularly unusual here, really - the main problem with TWL4030 appears to be the large number of magic "make the chip behave totally differently" bits that it has like with the selection between DSP and I2S modes.
