@@ -1,12 +1,17 @@
-From: Pierre van Heerden <cassiopea342@gmail.com>
-Subject: Bug 0005086 - no audio on built-in speakers (intel-hda
-	with codec alc272)
-Date: Tue, 3 Aug 2010 15:49:35 +0200
-Message-ID: <AANLkTi=PpoTBcgukoY6u00SGW4=xnkoiNGOun-a9cABs@mail.gmail.com>
+From: Bill Pemberton <wfp5p@virginia.edu>
+Subject: [PATCH 1/5] sound: serial-u16550: fix uninitialized
+	variable warning
+Date: Tue,  3 Aug 2010 15:20:22 -0400
+Message-ID: <1280863226-6824-1-git-send-email-wfp5p@virginia.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from viridian.itc.virginia.edu (viridian.itc.Virginia.EDU
+	[128.143.12.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 294F9243EC
+	for <alsa-devel@alsa-project.org>;
+	Tue,  3 Aug 2010 21:20:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -16,22 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@mailman.alsa-project.org
+To: trivial@kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Fix sound/drivers/serial-u16550.c:905: warning: 'uart' may be used
+uninitialized in this function
 
-I was advised to e-mail and inform you of the problem with my audio, even
-though I have submitted a
-tracker<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5086>.
-In short, no speaker_outs are being reported by the driver (intel-hda using
-the realtek alc272 codec), even in the latest release, so on my laptop (LG
-X130) I'm getting audio on the line-out jack but not on the built-in
-speakers. I've tried all the model= module parameters for the alc272 codec,
-none of them solved the problem.
+Signed-off-by: Bill Pemberton <wfp5p@virginia.edu>
+---
+ sound/drivers/serial-u16550.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Please let me know if I can be of any assistance in solving this problem or
-if you need any further information from me.
-
-Kind regards
-Pierre van Heerden
+diff --git a/sound/drivers/serial-u16550.c b/sound/drivers/serial-u16550.c
+index a25fb7b..5f8ae28 100644
+--- a/sound/drivers/serial-u16550.c
++++ b/sound/drivers/serial-u16550.c
+@@ -902,7 +902,7 @@ static int __devinit snd_uart16550_rmidi(struct snd_uart16550 *uart, int device,
+ static int __devinit snd_serial_probe(struct platform_device *devptr)
+ {
+ 	struct snd_card *card;
+-	struct snd_uart16550 *uart;
++	struct snd_uart16550 *uninitialized_var(uart);
+ 	int err;
+ 	int dev = devptr->id;
+ 
+-- 
+1.7.2
