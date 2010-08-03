@@ -1,16 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH] ASoC: TWL4030: Capture route runtime DAPM
-	ordering fix
-Date: Tue,  3 Aug 2010 12:01:01 +0300
-Message-ID: <1280826061-24099-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.36
+Date: Tue, 3 Aug 2010 10:09:22 +0100
+Message-ID: <20100803090922.GD25306@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 872D92414F
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B680F2415D
 	for <alsa-devel@alsa-project.org>;
-	Tue,  3 Aug 2010 11:01:16 +0200 (CEST)
+	Tue,  3 Aug 2010 11:09:23 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,109 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Fix the ordering problem in DAPM domain, when the user
-changes between digital and analog sources during active
-capture (or loopback) scenario.
-Before this patch, when the user changed from analog source
-to digital there were a short time, when the codec enabled
-analog mic bias (2.2 volts) instead of the correct digital
-mic bias (1.8 volts) to the digital microphones.
-This behaviour caused by the former implementation of
-selecting the correct type of bias. This was done at the
-POST_REG event of the DAPM_MUX_E("TXx Capture Route")
-widget.
-By moving the bias type selection as DAPM_SUPPLY and
-connecting it to the corresponding digimic widget the
-problematic situation can be avoided.
+The following changes since commit 988b0dc1547f9f6a7c8cae472cad0a55df31818c:
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
- sound/soc/codecs/twl4030.c |   48 +++++++++++---------------------------------
- 1 files changed, 12 insertions(+), 36 deletions(-)
+  Merge branch 'for-2.6.36' of git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6 into topic/asoc (2010-08-02 12:10:52 +0200)
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index d401c59..7b618bb 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -577,36 +577,6 @@ static const struct snd_kcontrol_new twl4030_dapm_dbypassv_control =
- 			TWL4030_REG_VSTPGA, 0, 0x29, 0,
- 			twl4030_dapm_dbypassv_tlv);
- 
--static int micpath_event(struct snd_soc_dapm_widget *w,
--	struct snd_kcontrol *kcontrol, int event)
--{
--	struct soc_enum *e = (struct soc_enum *)w->kcontrols->private_value;
--	unsigned char adcmicsel, micbias_ctl;
--
--	adcmicsel = twl4030_read_reg_cache(w->codec, TWL4030_REG_ADCMICSEL);
--	micbias_ctl = twl4030_read_reg_cache(w->codec, TWL4030_REG_MICBIAS_CTL);
--	/* Prepare the bits for the given TX path:
--	 * shift_l == 0: TX1 microphone path
--	 * shift_l == 2: TX2 microphone path */
--	if (e->shift_l) {
--		/* TX2 microphone path */
--		if (adcmicsel & TWL4030_TX2IN_SEL)
--			micbias_ctl |= TWL4030_MICBIAS2_CTL; /* digimic */
--		else
--			micbias_ctl &= ~TWL4030_MICBIAS2_CTL;
--	} else {
--		/* TX1 microphone path */
--		if (adcmicsel & TWL4030_TX1IN_SEL)
--			micbias_ctl |= TWL4030_MICBIAS1_CTL; /* digimic */
--		else
--			micbias_ctl &= ~TWL4030_MICBIAS1_CTL;
--	}
--
--	twl4030_write(w->codec, TWL4030_REG_MICBIAS_CTL, micbias_ctl);
--
--	return 0;
--}
--
- /*
-  * Output PGA builder:
-  * Handle the muting and unmuting of the given output (turning off the
-@@ -1430,12 +1400,10 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 	/* Analog/Digital mic path selection.
- 	   TX1 Left/Right: either analog Left/Right or Digimic0
- 	   TX2 Left/Right: either analog Left/Right or Digimic1 */
--	SND_SOC_DAPM_MUX_E("TX1 Capture Route", SND_SOC_NOPM, 0, 0,
--		&twl4030_dapm_micpathtx1_control, micpath_event,
--		SND_SOC_DAPM_POST_REG),
--	SND_SOC_DAPM_MUX_E("TX2 Capture Route", SND_SOC_NOPM, 0, 0,
--		&twl4030_dapm_micpathtx2_control, micpath_event,
--		SND_SOC_DAPM_POST_REG),
-+	SND_SOC_DAPM_MUX("TX1 Capture Route", SND_SOC_NOPM, 0, 0,
-+		&twl4030_dapm_micpathtx1_control),
-+	SND_SOC_DAPM_MUX("TX2 Capture Route", SND_SOC_NOPM, 0, 0,
-+		&twl4030_dapm_micpathtx2_control),
- 
- 	/* Analog input mixers for the capture amplifiers */
- 	SND_SOC_DAPM_MIXER("Analog Left",
-@@ -1459,6 +1427,11 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
- 		TWL4030_REG_ADCMICSEL, 3, 0, NULL, 0,
- 		digimic_event, SND_SOC_DAPM_POST_PMU),
- 
-+	SND_SOC_DAPM_SUPPLY("micbias1 select", TWL4030_REG_MICBIAS_CTL, 5, 0,
-+			    NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("micbias2 select", TWL4030_REG_MICBIAS_CTL, 6, 0,
-+			    NULL, 0),
-+
- 	SND_SOC_DAPM_MICBIAS("Mic Bias 1", TWL4030_REG_MICBIAS_CTL, 0, 0),
- 	SND_SOC_DAPM_MICBIAS("Mic Bias 2", TWL4030_REG_MICBIAS_CTL, 1, 0),
- 	SND_SOC_DAPM_MICBIAS("Headset Mic Bias", TWL4030_REG_MICBIAS_CTL, 2, 0),
-@@ -1590,6 +1563,9 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{"Digimic0 Enable", NULL, "DIGIMIC0"},
- 	{"Digimic1 Enable", NULL, "DIGIMIC1"},
- 
-+	{"DIGIMIC0", NULL, "micbias1 select"},
-+	{"DIGIMIC1", NULL, "micbias2 select"},
-+
- 	/* TX1 Left capture path */
- 	{"TX1 Capture Route", "Analog", "ADC Physical Left"},
- 	{"TX1 Capture Route", "Digimic0", "Digimic0 Enable"},
--- 
-1.7.2
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.36
+
+Axel Lin (12):
+      ASoC: ad1836: fix a memory leak if another ad1836 is registered
+      ASoC: ak4642: fix a memory leak if failed to initialise AK4642
+      ASoC: da7210: fix a memory leak if failed to initialise da7210 audio codec
+      ASoC: wm8523: fix resource reclaim in wm8523_register error path
+      ASoC: wm8711: fix a memory leak if another WM8711 is registered
+      ASoC: wm8904: fix resource reclaim in wm8904_register error path
+      ASoC: wm8940: fix a memory leak if wm8940_register return error
+      ASoC: wm8955: fix resource reclaim in wm8955_register error path
+      ASoC: wm8961: fix resource reclaim in wm8961_register error path
+      ASoC: wm8974: fix a memory leak if another WM8974 is registered
+      ASoC: wm8978: fix a memory leak if a wm8978_register fail
+      ASoC: wm9081: fix resource reclaim in wm9081_register error path
+
+Ian Lartey (1):
+      ASoC: Initial WM8741 CODEC driver
+
+ sound/soc/codecs/Kconfig  |    4 +
+ sound/soc/codecs/Makefile |    2 +
+ sound/soc/codecs/ad1836.c |    1 +
+ sound/soc/codecs/ak4642.c |    4 +-
+ sound/soc/codecs/da7210.c |    8 +-
+ sound/soc/codecs/wm8523.c |   10 +-
+ sound/soc/codecs/wm8711.c |    3 +-
+ sound/soc/codecs/wm8741.c |  579 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/wm8741.h |  214 +++++++++++++++++
+ sound/soc/codecs/wm8904.c |   13 +-
+ sound/soc/codecs/wm8940.c |    7 +-
+ sound/soc/codecs/wm8955.c |   10 +-
+ sound/soc/codecs/wm8961.c |    9 +-
+ sound/soc/codecs/wm8974.c |    3 +-
+ sound/soc/codecs/wm8978.c |   10 +-
+ sound/soc/codecs/wm9081.c |   11 +-
+ 16 files changed, 857 insertions(+), 31 deletions(-)
+ create mode 100644 sound/soc/codecs/wm8741.c
+ create mode 100644 sound/soc/codecs/wm8741.h
