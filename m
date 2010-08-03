@@ -1,70 +1,128 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ARM: S5PV210: Add audio support to Aquila
-Date: Tue, 3 Aug 2010 09:59:29 +0100
-Message-ID: <20100803085929.GC25306@rakim.wolfsonmicro.main>
-References: <4C4F9E4C.7000001@samsung.com>
- <20100729173825.GE24781@opensource.wolfsonmicro.com>
- <4C527C11.5090409@samsung.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH] ASoC: TWL4030: Capture route runtime DAPM
+	ordering fix
+Date: Tue,  3 Aug 2010 12:01:01 +0300
+Message-ID: <1280826061-24099-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4C527C11.5090409@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Chanwoo Choi <cw00.choi@samsung.com>
-Cc: linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, Ben Dooks <ben@simtec.co.uk>, Liam Girdwood <lrg@slimlogic.co.uk>, Kyungmin Park <kyungmin.park@samsung.com>, Joonyoung Shim <jy0922.shim@samsung.com>, Myungjoo Ham <myungjoo.ham@samsung.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 872D92414F
+	for <alsa-devel@alsa-project.org>;
+	Tue,  3 Aug 2010 11:01:16 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 30, 2010 at 04:15:29PM +0900, Chanwoo Choi wrote:
+Fix the ordering problem in DAPM domain, when the user
+changes between digital and analog sources during active
+capture (or loopback) scenario.
+Before this patch, when the user changed from analog source
+to digital there were a short time, when the codec enabled
+analog mic bias (2.2 volts) instead of the correct digital
+mic bias (1.8 volts) to the digital microphones.
+This behaviour caused by the former implementation of
+selecting the correct type of bias. This was done at the
+POST_REG event of the DAPM_MUX_E("TXx Capture Route")
+widget.
+By moving the bias type selection as DAPM_SUPPLY and
+connecting it to the corresponding digimic widget the
+problematic situation can be avoided.
 
-> > All these fixed voltage regulators seem a bit suspicous for a mobile
-> > phone - I'd have expected that the supplies would all be being provided
-> > by your PMIC except for things taken directly from the battery supply
-> > (like the speakers tend to be, for example)?  There's no problem with
-> > the code itself, it just looks a bit odd.
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ sound/soc/codecs/twl4030.c |   48 +++++++++++---------------------------------
+ 1 files changed, 12 insertions(+), 36 deletions(-)
 
-> All these consumer supply of WM8994 codec connected the below regulator(VCC_1.8V) on
-> a circuit diagram. "VCC_1.8V" regualtor is always enabled, because it is used to many devices.
-> Then I haven't connected all these consumer supply of WM8994 codec to "VCC_1.8V" regulator.
-> I will modify that the consumer supply would be provided by PMIC.
-
-OK, good - the fact that the connection wasn't being made with the PMIC
-was my main point here.
-
-> >> +	/* CODEC_XTAL_EN */
-> >> +	gpio = S5PV210_GPH3(2);		/* XEINT_26 */
-> >> +	gpio_request(gpio, "CODEC_XTAL_EN");
-
-> > Might be as well to provide some or all this stuff in your audio machine
-> > driver?
-
-> The Aquila board have a oscillator which provide main clock to 
-> WM8994 audio codec. The oscillator provide 24MHz clock to WM8994 audio codec
-> (MCLK1 pin). I set gpio setting of "CODEC_XTAL_EN" to enable a oscillator.
-
-I understand what the code does.  My point is that it looks like it's
-in the wrong place - it'd seem nicer (and to open up more optimisation
-opportunties to manage the clock in the audio driver).
-
-> >> +	/* ADC_EN */
-> >> +	gpio = S5PV210_GPJ3(2);
-> >> +	gpio_request(gpio, "ADC_EN");
-> >> +	s3c_gpio_cfgpin(gpio, S3C_GPIO_OUTPUT);
-> >> +	gpio_direction_output(gpio, 1);
-
-> > I'm not sure what this does?
-
-> I explained below description about "ADC_EN" :
-> "ADC_EN : This gpio enable the ADC device which is used to detect
->  the kind of jack. (SND_JACK_HEADPHONE/HEADSET/MECHANICAL/AVOUT)
->  According to the kind of jack, an electric current is changed.
->  (Only used on Aquila board) "
-
-> When inserting the jack to Aquila board, I used ADC driver so that, detecting
-> the kind of jack(SND_JACK_HEADPHONE/HEADSET/MECHANICAL/AVOUT).
-
-> I will separately make the another function to initialize ADC driver.
-
-So you're using an external ADC to measure the current draw on micbias
-as part of your jack sense.  Again, this feels like something that ought
-to be managed along with the rest of the audio code.
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index d401c59..7b618bb 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -577,36 +577,6 @@ static const struct snd_kcontrol_new twl4030_dapm_dbypassv_control =
+ 			TWL4030_REG_VSTPGA, 0, 0x29, 0,
+ 			twl4030_dapm_dbypassv_tlv);
+ 
+-static int micpath_event(struct snd_soc_dapm_widget *w,
+-	struct snd_kcontrol *kcontrol, int event)
+-{
+-	struct soc_enum *e = (struct soc_enum *)w->kcontrols->private_value;
+-	unsigned char adcmicsel, micbias_ctl;
+-
+-	adcmicsel = twl4030_read_reg_cache(w->codec, TWL4030_REG_ADCMICSEL);
+-	micbias_ctl = twl4030_read_reg_cache(w->codec, TWL4030_REG_MICBIAS_CTL);
+-	/* Prepare the bits for the given TX path:
+-	 * shift_l == 0: TX1 microphone path
+-	 * shift_l == 2: TX2 microphone path */
+-	if (e->shift_l) {
+-		/* TX2 microphone path */
+-		if (adcmicsel & TWL4030_TX2IN_SEL)
+-			micbias_ctl |= TWL4030_MICBIAS2_CTL; /* digimic */
+-		else
+-			micbias_ctl &= ~TWL4030_MICBIAS2_CTL;
+-	} else {
+-		/* TX1 microphone path */
+-		if (adcmicsel & TWL4030_TX1IN_SEL)
+-			micbias_ctl |= TWL4030_MICBIAS1_CTL; /* digimic */
+-		else
+-			micbias_ctl &= ~TWL4030_MICBIAS1_CTL;
+-	}
+-
+-	twl4030_write(w->codec, TWL4030_REG_MICBIAS_CTL, micbias_ctl);
+-
+-	return 0;
+-}
+-
+ /*
+  * Output PGA builder:
+  * Handle the muting and unmuting of the given output (turning off the
+@@ -1430,12 +1400,10 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 	/* Analog/Digital mic path selection.
+ 	   TX1 Left/Right: either analog Left/Right or Digimic0
+ 	   TX2 Left/Right: either analog Left/Right or Digimic1 */
+-	SND_SOC_DAPM_MUX_E("TX1 Capture Route", SND_SOC_NOPM, 0, 0,
+-		&twl4030_dapm_micpathtx1_control, micpath_event,
+-		SND_SOC_DAPM_POST_REG),
+-	SND_SOC_DAPM_MUX_E("TX2 Capture Route", SND_SOC_NOPM, 0, 0,
+-		&twl4030_dapm_micpathtx2_control, micpath_event,
+-		SND_SOC_DAPM_POST_REG),
++	SND_SOC_DAPM_MUX("TX1 Capture Route", SND_SOC_NOPM, 0, 0,
++		&twl4030_dapm_micpathtx1_control),
++	SND_SOC_DAPM_MUX("TX2 Capture Route", SND_SOC_NOPM, 0, 0,
++		&twl4030_dapm_micpathtx2_control),
+ 
+ 	/* Analog input mixers for the capture amplifiers */
+ 	SND_SOC_DAPM_MIXER("Analog Left",
+@@ -1459,6 +1427,11 @@ static const struct snd_soc_dapm_widget twl4030_dapm_widgets[] = {
+ 		TWL4030_REG_ADCMICSEL, 3, 0, NULL, 0,
+ 		digimic_event, SND_SOC_DAPM_POST_PMU),
+ 
++	SND_SOC_DAPM_SUPPLY("micbias1 select", TWL4030_REG_MICBIAS_CTL, 5, 0,
++			    NULL, 0),
++	SND_SOC_DAPM_SUPPLY("micbias2 select", TWL4030_REG_MICBIAS_CTL, 6, 0,
++			    NULL, 0),
++
+ 	SND_SOC_DAPM_MICBIAS("Mic Bias 1", TWL4030_REG_MICBIAS_CTL, 0, 0),
+ 	SND_SOC_DAPM_MICBIAS("Mic Bias 2", TWL4030_REG_MICBIAS_CTL, 1, 0),
+ 	SND_SOC_DAPM_MICBIAS("Headset Mic Bias", TWL4030_REG_MICBIAS_CTL, 2, 0),
+@@ -1590,6 +1563,9 @@ static const struct snd_soc_dapm_route intercon[] = {
+ 	{"Digimic0 Enable", NULL, "DIGIMIC0"},
+ 	{"Digimic1 Enable", NULL, "DIGIMIC1"},
+ 
++	{"DIGIMIC0", NULL, "micbias1 select"},
++	{"DIGIMIC1", NULL, "micbias2 select"},
++
+ 	/* TX1 Left capture path */
+ 	{"TX1 Capture Route", "Analog", "ADC Physical Left"},
+ 	{"TX1 Capture Route", "Digimic0", "Digimic0 Enable"},
+-- 
+1.7.2
