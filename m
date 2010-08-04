@@ -1,20 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 5/5] ASoC: fix uninitialized
-	variable	warning
-Date: Wed, 4 Aug 2010 10:02:24 +0100
-Message-ID: <20100804090223.GA5864@sirena.org.uk>
-References: <1280863226-6824-1-git-send-email-wfp5p@virginia.edu>
-	<1280863226-6824-5-git-send-email-wfp5p@virginia.edu>
+From: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
+Subject: [PATCH v4 0/1] A codec driver for the TI WL1273 FM
+	Radio.
+Date: Wed,  4 Aug 2010 12:42:58 +0300
+Message-ID: <1280914979-21235-1-git-send-email-matti.j.aaltonen@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3DC024534
+Received: from mgw-sa02.nokia.com (mgw-sa02.nokia.com [147.243.1.48])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5FDAB24588
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Aug 2010 11:02:26 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1280863226-6824-5-git-send-email-wfp5p@virginia.edu>
+	Wed,  4 Aug 2010 11:43:23 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,38 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Bill Pemberton <wfp5p@virginia.edu>
-Cc: alsa-devel@alsa-project.org, trivial@kernel.org
+To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, peter.ujfalusi@nokia.com
+Cc: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 03, 2010 at 03:20:26PM -0400, Bill Pemberton wrote:
-> quiet the warning about use of uninitialized fll_div in
-> wm8900_set_fll.  fll_div is initialized by fll_factors()
+Hello,
 
-> Signed-off-by: Bill Pemberton <wfp5p@virginia.edu>
+and thank you for the comments...
 
-Always remember to CC maintainers on patches as covered in SubmittingPatches.
+Now I've created the patch against the multi component branch.
+I haven't been able to test the codec but I thought that it makes 
+sense to send the code for review anyway.
 
->  sound/soc/codecs/wm8900.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wm8900.c b/sound/soc/codecs/wm8900.c
-> index 5da17a7..f1840c6 100644
-> --- a/sound/soc/codecs/wm8900.c
-> +++ b/sound/soc/codecs/wm8900.c
-> @@ -746,7 +746,7 @@ static int wm8900_set_fll(struct snd_soc_codec *codec,
->  	int fll_id, unsigned int freq_in, unsigned int freq_out)
->  {
->  	struct wm8900_priv *wm8900 = snd_soc_codec_get_drvdata(codec);
-> -	struct _fll_div fll_div;
-> +	struct _fll_div uninitialized_var(fll_div);
->  	unsigned int reg;
+Liam wrote:
+> Btw, now that we have a naming convention for components how about this
+> having a "-radio" or "-fm" device suffix ?
 
-No, just stomping over the variable to shut up the warning doesn't
-improve anything at all.  You need to make sure that the compiler can
-actually follow the control flow to see that the data is always
-initialised rather than disabling the check and missing any actual
-issues.
+Now the name is set to "wl1273-fm".
 
-I rather suspect this is just a bug in your compiler's flow analysis,
-it's not showing up with GCC 4.3.3 on ARM for me.
+Thanks,
+Matti
+
+Matti J. Aaltonen (1):
+  ASoC: TI WL1273 FM Radio Codec.
+
+ sound/soc/codecs/wl1273.c |  542 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/wl1273.h |   40 ++++
+ 2 files changed, 582 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/codecs/wl1273.c
+ create mode 100644 sound/soc/codecs/wl1273.h
