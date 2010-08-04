@@ -1,19 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 5/5] ASoC: fix uninitialized variable
-Date: Wed, 4 Aug 2010 14:15:25 +0100
-Message-ID: <20100804131525.GA32504@rakim.wolfsonmicro.main>
-References: <20100804090223.GA5864@sirena.org.uk>
-	<20100804125949.14F2A2DA0B@viridian.itc.virginia.edu>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Muting of the "Front" mixer control
+Date: Wed, 04 Aug 2010 16:42:50 +0200
+Message-ID: <4C597C6A.3070300@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AFA96245F6
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 82FDE10387D
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Aug 2010 15:15:26 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100804125949.14F2A2DA0B@viridian.itc.virginia.edu>
+	Wed,  4 Aug 2010 16:42:53 +0200 (CEST)
+Received: from hutte.canonical.com ([91.189.90.181])
+	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
+	id 1OgfBE-0002xU-Vu
+	for <alsa-devel@alsa-project.org>; Wed, 04 Aug 2010 15:42:53 +0100
+Received: from [88.83.60.91] (helo=[192.168.8.103])
+	by hutte.canonical.com with esmtpsa
+	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
+	(envelope-from <david.henningsson@canonical.com>) id 1OgfBE-0003Z1-SL
+	for alsa-devel@alsa-project.org; Wed, 04 Aug 2010 15:42:52 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +28,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Bill Pemberton <wfp5p@viridian.itc.virginia.edu>
-Cc: alsa-devel@alsa-project.org, trivial@kernel.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 04, 2010 at 08:59:49AM -0400, Bill Pemberton wrote:
+Here's an interesting problem which I'm not sure whether it should be
+fixed in PulseAudio or the driver, but I'm starting here.
 
-> > No, just stomping over the variable to shut up the warning doesn't
-> > improve anything at all.  You need to make sure that the compiler can
-> > actually follow the control flow to see that the data is always
-> > initialised rather than disabling the check and missing any actual
-> > issues.
+I have a laptop with a HDA VIA VT1708 chip and would like auto-muting.
+VIA advertises auto-muting by changing the "Front Playback Switch" (see
+sound/pci/hda/patch_via.c:2023, via_hp_automute).
 
-> I did, hence the comment in the commit that the variable is
-> initialized by fll_factors().
+Now PulseAudio's default mixer path, "analog-output", treats "Front" as
+part of the volume merge chain, which in this case is incorrect, and so
+when the switch gets muted, PA thinks that the chain is muted and gets
+confused (as in: no sound output, and PA advertises to g-v-c and others
+that it is now muted).
 
-You're completely missing the point here.  What I said was that you need
-to make sure that the *compiler* can actually follow the control flow.
-You've not done that, you've stomped over the warning to shut both this
-and any valid warnings related to the structure up.
+It seems to me like from PA's perspective the name should have been
+"Speaker Playback Switch" instead, but VIA does not seem to use
+"Speaker" at all, and BIOS seems to have set up my caps for Speaker as
+"Line out", so I'm not sure if this is the right way to do it.
+
+For reference, here's my alsa-info:
+http://launchpadlibrarian.net/53047763/alsa-info.txt.JUhgxH8rDZ
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
