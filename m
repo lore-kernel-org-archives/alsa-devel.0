@@ -1,20 +1,19 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: Re: als4000: enable burst mode
-Date: Wed, 4 Aug 2010 21:56:44 +0200
-Message-ID: <201008042156.46344.linux@rainbow-software.org>
-References: <201008032357.06661.linux@rainbow-software.org>
-	<201008042108.15858.linux@rainbow-software.org>
-	<s5hy6cm2mzv.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: arecord: main:552: audio open error:
+	Invalid	argument
+Date: Wed, 4 Aug 2010 21:01:18 +0100
+Message-ID: <20100804200117.GB5864@sirena.org.uk>
+References: <4C59C5C1.50504@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.atlantis.sk (mail1-out1.atlantis.sk [80.94.52.55])
-	by alsa0.perex.cz (Postfix) with ESMTP id E6528246A6
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 17F1C246AB
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Aug 2010 21:56:59 +0200 (CEST)
-In-Reply-To: <s5hy6cm2mzv.wl%tiwai@suse.de>
+	Wed,  4 Aug 2010 22:01:19 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <4C59C5C1.50504@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,60 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 04 August 2010 21:31:32 Takashi Iwai wrote:
-> At Wed, 4 Aug 2010 21:08:14 +0200,
->
-> Ondrej Zary wrote:
-> > On Wednesday 04 August 2010 07:43:44 Takashi Iwai wrote:
-> > > At Tue, 3 Aug 2010 23:57:05 +0200,
-> > >
-> > > Ondrej Zary wrote:
-> > > > Enable burst mode to prevent dropouts during high PCI bus usage.
-> > > > The card is useless in X without this because of dropouts when
-> > > > anything moves on the screen (at least with PCI VGA card). Enabling
-> > > > this is also recommended by the datasheet (page 48).
-> > > >
-> > > > Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
-> > >
-> > > Applied now.  Thanks.
-> >
-> > My previous patch assumed that the DMA mode (represented by 3 lowest bits
-> > of ALS4K_GCR99_DMA_EMULATION_CTRL register) is set to the default value
-> > 0. If that's not the case, it might result in invalid mode to be set.
-> > This v2 patch fixes this potential problem.
-> >
-> > Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
->
-> As the previous patch was already applied, could you give the
-> incremental change?
+On Wed, Aug 04, 2010 at 02:55:45PM -0500, Timur Tabi wrote:
 
-Of course, sorry for that.
+> I created a log with some printks that kinda show what's going on.  In one
+> process I run speaker-test, and then I start arecord in another process.
 
+You might want to provide a little more context on what you're trying to
+do here for the benefit of readers...
 
-My previous patch assumed that the DMA mode (represented by 3 lowest bits of 
-ALS4K_GCR99_DMA_EMULATION_CTRL register) is set to the default value 0. If 
-that's not the case, it might result in invalid mode to be set.
-This patch fixes this potential problem.
+> In summary, the problem appears to be that asoc calls
+> soc_pcm_apply_symmetry() in soc_pcm_open(), but this occurs before
+> soc_pcm_hw_params() can set rtd->rate.  So rtd->rate is always zero when
+> soc_pcm_apply_symmetry() is called.
 
-Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+> For some reason, this isn't a problem when arecord is started before
+> speaker-test.  In that case, rtd->rate is 48000 when speaker-test is started:
 
---- linux-2.6.35-rc3-/sound/pci/als4000.c	2010-08-04 21:53:48.000000000 +0200
-+++ linux-2.6.35-rc3/sound/pci/als4000.c	2010-08-04 20:57:00.000000000 +0200
-@@ -765,7 +765,7 @@ static void snd_als4000_configure(struct
- 		snd_als4k_gcr_write(chip, i, 0);
- 	/* enable burst mode to prevent dropouts during high PCI bus usage */
- 	snd_als4k_gcr_write(chip, ALS4K_GCR99_DMA_EMULATION_CTRL,
--		snd_als4k_gcr_read(chip, ALS4K_GCR99_DMA_EMULATION_CTRL) | 0x04);
-+		(snd_als4k_gcr_read(chip, ALS4K_GCR99_DMA_EMULATION_CTRL) & ~0x07) | 0x04);
- 	spin_unlock_irq(&chip->reg_lock);
- }
- 
-
-
-
--- 
-Ondrej Zary
+The symmetric_rates infrastructure was only ever really intended to work
+over a single DAI so I'd not be at all surprised if it gets a little
+confused (though I'm surprised it's doing anything at all).
