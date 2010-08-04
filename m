@@ -1,29 +1,20 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: arecord: main:552: audio open error: Invalid argument
-Date: Wed, 4 Aug 2010 14:55:45 -0500
-Message-ID: <4C59C5C1.50504@freescale.com>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: Re: als4000: enable burst mode
+Date: Wed, 4 Aug 2010 21:56:44 +0200
+Message-ID: <201008042156.46344.linux@rainbow-software.org>
+References: <201008032357.06661.linux@rainbow-software.org>
+	<201008042108.15858.linux@rainbow-software.org>
+	<s5hy6cm2mzv.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from TX2EHSOBE006.bigfish.com (tx2ehsobe003.messaging.microsoft.com
-	[65.55.88.13]) by alsa0.perex.cz (Postfix) with ESMTP id 52A1B246A5
+Received: from mail.atlantis.sk (mail1-out1.atlantis.sk [80.94.52.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id E6528246A6
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Aug 2010 21:56:07 +0200 (CEST)
-Received: from mail172-tx2 (localhost.localdomain [127.0.0.1])	by
-	mail172-tx2-R.bigfish.com (Postfix) with ESMTP id 90D8D8C8419	for
-	<alsa-devel@alsa-project.org>; Wed,  4 Aug 2010 19:56:02 +0000 (UTC)
-Received: from TX2EHSMHS001.bigfish.com (unknown [10.9.14.235])	by
-	mail172-tx2.bigfish.com (Postfix) with ESMTP id 13D51E90051	for
-	<alsa-devel@alsa-project.org>; Wed,  4 Aug 2010 19:56:01 +0000 (UTC)
-Received: from az33smr02.freescale.net (az33smr02.freescale.net
-	[10.64.34.200])	by az33egw02.freescale.net (8.14.3/8.14.3) with ESMTP
-	id o74JtlZH016107	for <alsa-devel@alsa-project.org>;
-	Wed, 4 Aug 2010 12:55:58 -0700 (MST)
-Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
-	[10.64.32.16])	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP id
-	o74JtqTp028445	for <alsa-devel@alsa-project.org>;
-	Wed, 4 Aug 2010 14:55:53 -0500 (CDT)
+	Wed,  4 Aug 2010 21:56:59 +0200 (CEST)
+In-Reply-To: <s5hy6cm2mzv.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,107 +24,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Liam and Mark,
+On Wednesday 04 August 2010 21:31:32 Takashi Iwai wrote:
+> At Wed, 4 Aug 2010 21:08:14 +0200,
+>
+> Ondrej Zary wrote:
+> > On Wednesday 04 August 2010 07:43:44 Takashi Iwai wrote:
+> > > At Tue, 3 Aug 2010 23:57:05 +0200,
+> > >
+> > > Ondrej Zary wrote:
+> > > > Enable burst mode to prevent dropouts during high PCI bus usage.
+> > > > The card is useless in X without this because of dropouts when
+> > > > anything moves on the screen (at least with PCI VGA card). Enabling
+> > > > this is also recommended by the datasheet (page 48).
+> > > >
+> > > > Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+> > >
+> > > Applied now.  Thanks.
+> >
+> > My previous patch assumed that the DMA mode (represented by 3 lowest bits
+> > of ALS4K_GCR99_DMA_EMULATION_CTRL register) is set to the default value
+> > 0. If that's not the case, it might result in invalid mode to be set.
+> > This v2 patch fixes this potential problem.
+> >
+> > Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+>
+> As the previous patch was already applied, could you give the
+> incremental change?
 
-I created a log with some printks that kinda show what's going on.  In one
-process I run speaker-test, and then I start arecord in another process.
+Of course, sorry for that.
 
-fsl_ssi_startup:286 substream=ef3e5000 playback=0 capture=0
-fsl_ssi_startup:288 rtd=ef3a2c00 rate=0
-fsl_ssi_startup:298
-fsl_ssi_startup:373 first=(null) second=(null)
-fsl_ssi_startup:427
-soc_pcm_open:381
-fsl_dma_open:408 rtd=ef3a2c00 rate=0
-soc_pcm_open:391
-soc_pcm_open:402
-soc_pcm_open:412
-soc_pcm_open:463
-soc_pcm_open:471
-soc_pcm_open:477
-soc_pcm_open:484
-asoc: cs4270-hifi <-> e0016000.ssi info:
-asoc: rate mask 0x40001fff
-asoc: min ch 2 max ch 2
-asoc: min rate 5512 max rate 192000
-fsl_ssi_hw_params:450
-Rate set to 48000Hz (requested 48000Hz)
-fsl_dma_hw_params:579
-soc_pcm_hw_params:748 rtd=ef3a2c00 rate=48000
 
-...
-fsl_ssi_startup:286 substream=ef3e5300 playback=1 capture=0
-fsl_ssi_startup:288 rtd=ef3a2d10 rate=0
-fsl_ssi_startup:373 first=ef3e5000 second=(null)
-fsl_ssi_startup:411 runtime=ef4ba800 sample_bits=16
-fsl_ssi_startup:427
-soc_pcm_open:381
-fsl_dma_open:408 rtd=ef3a2d10 rate=0  <<------
-soc_pcm_open:391
-soc_pcm_open:402
-soc_pcm_open:412
-soc_pcm_open:463
-soc_pcm_open:471
-soc_pcm_open:477
-soc_pcm_open:484
-soc_pcm_apply_symmetry:335 rtd=ef3a2d10 rate=0
- capture: Symmetry forces 0Hz rate
+My previous patch assumed that the DMA mode (represented by 3 lowest bits of 
+ALS4K_GCR99_DMA_EMULATION_CTRL register) is set to the default value 0. If 
+that's not the case, it might result in invalid mode to be set.
+This patch fixes this potential problem.
 
-In summary, the problem appears to be that asoc calls
-soc_pcm_apply_symmetry() in soc_pcm_open(), but this occurs before
-soc_pcm_hw_params() can set rtd->rate.  So rtd->rate is always zero when
-soc_pcm_apply_symmetry() is called.
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
 
-For some reason, this isn't a problem when arecord is started before
-speaker-test.  In that case, rtd->rate is 48000 when speaker-test is started:
+--- linux-2.6.35-rc3-/sound/pci/als4000.c	2010-08-04 21:53:48.000000000 +0200
++++ linux-2.6.35-rc3/sound/pci/als4000.c	2010-08-04 20:57:00.000000000 +0200
+@@ -765,7 +765,7 @@ static void snd_als4000_configure(struct
+ 		snd_als4k_gcr_write(chip, i, 0);
+ 	/* enable burst mode to prevent dropouts during high PCI bus usage */
+ 	snd_als4k_gcr_write(chip, ALS4K_GCR99_DMA_EMULATION_CTRL,
+-		snd_als4k_gcr_read(chip, ALS4K_GCR99_DMA_EMULATION_CTRL) | 0x04);
++		(snd_als4k_gcr_read(chip, ALS4K_GCR99_DMA_EMULATION_CTRL) & ~0x07) | 0x04);
+ 	spin_unlock_irq(&chip->reg_lock);
+ }
+ 
 
-fsl_ssi_startup:286 substream=ef3e5300 playback=0 capture=0
-fsl_ssi_startup:288 rtd=ef3e6d10 rate=0
-fsl_ssi_startup:298
-fsl_ssi_startup:373 first=(null) second=(null)
-fsl_ssi_startup:427
-soc_pcm_open:382
-fsl_dma_open:408 rtd=ef3e6d10 rate=0
-soc_pcm_open:392
-soc_pcm_open:403
-soc_pcm_open:413
-soc_pcm_open:464
-soc_pcm_open:472
-soc_pcm_open:478
-soc_pcm_open:485
-asoc: cs4270-hifi <-> e0016000.ssi info:
-asoc: rate mask 0x40001fff
-asoc: min ch 2 max ch 2
-asoc: min rate 5512 max rate 192000
-fsl_ssi_hw_params:450
-fsl_dma_hw_params:579
-soc_pcm_hw_params:749 rtd=ef3e6d10 rate=48000
-pop wq checking: Playback status: inactive waiting: yes
-...
-fsl_ssi_startup:286 substream=ef3e5000 playback=0 capture=1
-fsl_ssi_startup:288 rtd=ef3e6c00 rate=48000
-fsl_ssi_startup:373 first=ef3e5300 second=(null)
-fsl_ssi_startup:411 runtime=ef4c6c00 sample_bits=16
-fsl_ssi_startup:427
-soc_pcm_open:382
-fsl_dma_open:408 rtd=ef3e6c00 rate=48000   <<------
-soc_pcm_open:392
-soc_pcm_open:403
-soc_pcm_open:413
-soc_pcm_open:464
-soc_pcm_open:472
-soc_pcm_open:478
-soc_pcm_open:485
-soc_pcm_apply_symmetry:333 rtd=ef3e6c00 rate=48000
- playback: Symmetry forces 48000Hz rate
-asoc: cs4270-hifi <-> e0016000.ssi info:
-asoc: rate mask 0x40001fff
-asoc: min ch 2 max ch 2
-asoc: min rate 5512 max rate 192000
-fsl_ssi_hw_params:450
-Rate set to 48000Hz (requested 48000Hz)
-fsl_dma_hw_params:579
-Buffer soc_pcm_hw_params:749 rtd=ef3e6c00 rate=48000
+
+
+-- 
+Ondrej Zary
