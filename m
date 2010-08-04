@@ -1,15 +1,18 @@
-From: Shane W <shane-alsa@csy.ca>
-Subject: Intel HDMI audio stops after 15 minutes
-Date: Wed, 4 Aug 2010 10:35:09 -0700
-Message-ID: <20100804173509.GA12328@csy.ca>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: Re: als4000: enable burst mode
+Date: Wed, 4 Aug 2010 21:08:14 +0200
+Message-ID: <201008042108.15858.linux@rainbow-software.org>
+References: <201008032357.06661.linux@rainbow-software.org>
+	<s5htynb3pbj.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bn01.csy.ca (bn01.csy.ca [64.120.233.234])
-	by alsa0.perex.cz (Postfix) with ESMTP id 55D4024648
+Received: from mail.atlantis.sk (mail1-out1.atlantis.sk [80.94.52.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id AC6CF24679
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Aug 2010 19:35:14 +0200 (CEST)
+	Wed,  4 Aug 2010 21:08:24 +0200 (CEST)
+In-Reply-To: <s5htynb3pbj.wl%tiwai@suse.de>
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,17 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Wu Fengguang <fengguang.wu@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hey all,
+On Wednesday 04 August 2010 07:43:44 Takashi Iwai wrote:
+> At Tue, 3 Aug 2010 23:57:05 +0200,
+>
+> Ondrej Zary wrote:
+> > Enable burst mode to prevent dropouts during high PCI bus usage.
+> > The card is useless in X without this because of dropouts when anything
+> > moves on the screen (at least with PCI VGA card). Enabling this is also
+> > recommended by the datasheet (page 48).
+> >
+> > Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+>
+> Applied now.  Thanks.
 
-On my Intel DG45 mainboard (Yamaha RX-v1800 receiver) I am
-now only getting audio for about 15 minutes before it stops
-and I have to restart the X server. Playing a movie with
-audio works fine but playing an mp3 has the cutout. Is
-there a new power saving mode or the like that has crept
-in?
+My previous patch assumed that the DMA mode (represented by 3 lowest bits of
+ALS4K_GCR99_DMA_EMULATION_CTRL register) is set to the default value 0. If
+that's not the case, it might result in invalid mode to be set. This v2 patch
+fixes this potential problem.
 
-Best,
-Shane
+Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+
+--- linux-2.6.35-rc2/sound/pci/als4000.c	2010-06-06 05:43:24.000000000 +0200
++++ linux-2.6.35-rc3/sound/pci/als4000.c	2010-08-04 20:57:00.000000000 +0200
+@@ -763,9 +763,9 @@ static void snd_als4000_configure(struct
+ 	/* SPECS_PAGE: 39 */
+ 	for (i = ALS4K_GCR91_DMA0_ADDR; i <= ALS4K_GCR96_DMA3_MODE_COUNT; ++i)
+ 		snd_als4k_gcr_write(chip, i, 0);
+-	
++	/* enable burst mode to prevent dropouts during high PCI bus usage */
+ 	snd_als4k_gcr_write(chip, ALS4K_GCR99_DMA_EMULATION_CTRL,
+-		snd_als4k_gcr_read(chip, ALS4K_GCR99_DMA_EMULATION_CTRL));
++		(snd_als4k_gcr_read(chip, ALS4K_GCR99_DMA_EMULATION_CTRL) & ~0x07) | 0x04);
+ 	spin_unlock_irq(&chip->reg_lock);
+ }
+ 
+
+
+-- 
+Ondrej Zary
