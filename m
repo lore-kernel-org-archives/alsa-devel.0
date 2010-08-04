@@ -1,22 +1,29 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: Re: Intel HDMI audio stops after 15 minutes
-Date: Wed, 04 Aug 2010 21:40:02 +0200
-Message-ID: <1280950802.16713.2.camel@mattotaupa>
-References: <20100804173509.GA12328@csy.ca>
+From: Timur Tabi <timur@freescale.com>
+Subject: arecord: main:552: audio open error: Invalid argument
+Date: Wed, 4 Aug 2010 14:55:45 -0500
+Message-ID: <4C59C5C1.50504@freescale.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5341354371911077968=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1D6722468E
+Received: from TX2EHSOBE006.bigfish.com (tx2ehsobe003.messaging.microsoft.com
+	[65.55.88.13]) by alsa0.perex.cz (Postfix) with ESMTP id 52A1B246A5
 	for <alsa-devel@alsa-project.org>;
-	Wed,  4 Aug 2010 21:40:09 +0200 (CEST)
-Received: from g225083098.adsl.alicedsl.de ([92.225.83.98]
-	helo=[192.168.178.21])
-	by mail.gw90.de with esmtpsa (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
-	id 1Ogjop-0006EU-T0
-	for alsa-devel@alsa-project.org; Wed, 04 Aug 2010 19:40:04 +0000
-In-Reply-To: <20100804173509.GA12328@csy.ca>
+	Wed,  4 Aug 2010 21:56:07 +0200 (CEST)
+Received: from mail172-tx2 (localhost.localdomain [127.0.0.1])	by
+	mail172-tx2-R.bigfish.com (Postfix) with ESMTP id 90D8D8C8419	for
+	<alsa-devel@alsa-project.org>; Wed,  4 Aug 2010 19:56:02 +0000 (UTC)
+Received: from TX2EHSMHS001.bigfish.com (unknown [10.9.14.235])	by
+	mail172-tx2.bigfish.com (Postfix) with ESMTP id 13D51E90051	for
+	<alsa-devel@alsa-project.org>; Wed,  4 Aug 2010 19:56:01 +0000 (UTC)
+Received: from az33smr02.freescale.net (az33smr02.freescale.net
+	[10.64.34.200])	by az33egw02.freescale.net (8.14.3/8.14.3) with ESMTP
+	id o74JtlZH016107	for <alsa-devel@alsa-project.org>;
+	Wed, 4 Aug 2010 12:55:58 -0700 (MST)
+Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
+	[10.64.32.16])	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP id
+	o74JtqTp028445	for <alsa-devel@alsa-project.org>;
+	Wed, 4 Aug 2010 14:55:53 -0500 (CDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,63 +33,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+Liam and Mark,
 
---===============5341354371911077968==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-YeT/n7U35m/J6KnY/RDh"
+I created a log with some printks that kinda show what's going on.  In one
+process I run speaker-test, and then I start arecord in another process.
 
+fsl_ssi_startup:286 substream=ef3e5000 playback=0 capture=0
+fsl_ssi_startup:288 rtd=ef3a2c00 rate=0
+fsl_ssi_startup:298
+fsl_ssi_startup:373 first=(null) second=(null)
+fsl_ssi_startup:427
+soc_pcm_open:381
+fsl_dma_open:408 rtd=ef3a2c00 rate=0
+soc_pcm_open:391
+soc_pcm_open:402
+soc_pcm_open:412
+soc_pcm_open:463
+soc_pcm_open:471
+soc_pcm_open:477
+soc_pcm_open:484
+asoc: cs4270-hifi <-> e0016000.ssi info:
+asoc: rate mask 0x40001fff
+asoc: min ch 2 max ch 2
+asoc: min rate 5512 max rate 192000
+fsl_ssi_hw_params:450
+Rate set to 48000Hz (requested 48000Hz)
+fsl_dma_hw_params:579
+soc_pcm_hw_params:748 rtd=ef3a2c00 rate=48000
 
---=-YeT/n7U35m/J6KnY/RDh
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+...
+fsl_ssi_startup:286 substream=ef3e5300 playback=1 capture=0
+fsl_ssi_startup:288 rtd=ef3a2d10 rate=0
+fsl_ssi_startup:373 first=ef3e5000 second=(null)
+fsl_ssi_startup:411 runtime=ef4ba800 sample_bits=16
+fsl_ssi_startup:427
+soc_pcm_open:381
+fsl_dma_open:408 rtd=ef3a2d10 rate=0  <<------
+soc_pcm_open:391
+soc_pcm_open:402
+soc_pcm_open:412
+soc_pcm_open:463
+soc_pcm_open:471
+soc_pcm_open:477
+soc_pcm_open:484
+soc_pcm_apply_symmetry:335 rtd=ef3a2d10 rate=0
+ capture: Symmetry forces 0Hz rate
 
-Dear Shane,
+In summary, the problem appears to be that asoc calls
+soc_pcm_apply_symmetry() in soc_pcm_open(), but this occurs before
+soc_pcm_hw_params() can set rtd->rate.  So rtd->rate is always zero when
+soc_pcm_apply_symmetry() is called.
 
+For some reason, this isn't a problem when arecord is started before
+speaker-test.  In that case, rtd->rate is 48000 when speaker-test is started:
 
-Am Mittwoch, den 04.08.2010, 10:35 -0700 schrieb Shane W:
-
-> On my Intel DG45 mainboard (Yamaha RX-v1800 receiver) I am
-> now only getting audio for about 15 minutes before it stops
-> and I have to restart the X server. Playing a movie with
-> audio works fine but playing an mp3 has the cutout. Is
-> there a new power saving mode or the like that has crept
-> in?
-
-from your message I am guessing that it worked before. If that was true,
-it would the developers if you told them the versions of the relevant
-components (ALSA, Linux, =E2=80=A6).
-
-
-Thanks,
-
-Paul
-
---=-YeT/n7U35m/J6KnY/RDh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEABECAAYFAkxZwgwACgkQPX1aK2wOHVgNNwCcCsDyi+b+a/i14tZfsBNPzlA+
-NgkAnREET0CyeHZzormfzrUAHI4ZEZbL
-=z/za
------END PGP SIGNATURE-----
-
---=-YeT/n7U35m/J6KnY/RDh--
-
-
---===============5341354371911077968==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5341354371911077968==--
+fsl_ssi_startup:286 substream=ef3e5300 playback=0 capture=0
+fsl_ssi_startup:288 rtd=ef3e6d10 rate=0
+fsl_ssi_startup:298
+fsl_ssi_startup:373 first=(null) second=(null)
+fsl_ssi_startup:427
+soc_pcm_open:382
+fsl_dma_open:408 rtd=ef3e6d10 rate=0
+soc_pcm_open:392
+soc_pcm_open:403
+soc_pcm_open:413
+soc_pcm_open:464
+soc_pcm_open:472
+soc_pcm_open:478
+soc_pcm_open:485
+asoc: cs4270-hifi <-> e0016000.ssi info:
+asoc: rate mask 0x40001fff
+asoc: min ch 2 max ch 2
+asoc: min rate 5512 max rate 192000
+fsl_ssi_hw_params:450
+fsl_dma_hw_params:579
+soc_pcm_hw_params:749 rtd=ef3e6d10 rate=48000
+pop wq checking: Playback status: inactive waiting: yes
+...
+fsl_ssi_startup:286 substream=ef3e5000 playback=0 capture=1
+fsl_ssi_startup:288 rtd=ef3e6c00 rate=48000
+fsl_ssi_startup:373 first=ef3e5300 second=(null)
+fsl_ssi_startup:411 runtime=ef4c6c00 sample_bits=16
+fsl_ssi_startup:427
+soc_pcm_open:382
+fsl_dma_open:408 rtd=ef3e6c00 rate=48000   <<------
+soc_pcm_open:392
+soc_pcm_open:403
+soc_pcm_open:413
+soc_pcm_open:464
+soc_pcm_open:472
+soc_pcm_open:478
+soc_pcm_open:485
+soc_pcm_apply_symmetry:333 rtd=ef3e6c00 rate=48000
+ playback: Symmetry forces 48000Hz rate
+asoc: cs4270-hifi <-> e0016000.ssi info:
+asoc: rate mask 0x40001fff
+asoc: min ch 2 max ch 2
+asoc: min rate 5512 max rate 192000
+fsl_ssi_hw_params:450
+Rate set to 48000Hz (requested 48000Hz)
+fsl_dma_hw_params:579
+Buffer soc_pcm_hw_params:749 rtd=ef3e6c00 rate=48000
