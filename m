@@ -1,20 +1,19 @@
-From: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
-Subject: Re: [PATCH v4 1/1] ASoC: TI WL1273 FM Radio Codec.
-Date: Thu, 05 Aug 2010 10:29:24 +0300
-Message-ID: <1280993364.2296.4.camel@masi.mnp.nokia.com>
-References: <1280914979-21235-1-git-send-email-matti.j.aaltonen@nokia.com>
-	<1280914979-21235-2-git-send-email-matti.j.aaltonen@nokia.com>
-	<20100804163111.GC32504@rakim.wolfsonmicro.main>
-Reply-To: matti.j.aaltonen@nokia.com
+From: The Source <thesourcehim@gmail.com>
+Subject: Re: Alsamixer-Qt4 0.4.0 released
+Date: Thu, 05 Aug 2010 12:46:25 +0400
+Message-ID: <4C5A7A61.9060604@gmail.com>
+References: <4C595A52.7030401@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa02.nokia.com (mgw-sa02.nokia.com [147.243.1.48])
-	by alsa0.perex.cz (Postfix) with ESMTP id 09ED024450
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 97DF3244F4
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Aug 2010 09:29:26 +0200 (CEST)
-In-Reply-To: <20100804163111.GC32504@rakim.wolfsonmicro.main>
+	Thu,  5 Aug 2010 10:46:31 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so2192389ewy.38
+	for <alsa-devel@alsa-project.org>; Thu, 05 Aug 2010 01:46:29 -0700 (PDT)
+In-Reply-To: <4C595A52.7030401@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,30 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Ujfalusi Peter <peter.ujfalusi@nokia.com>, lrg@slimlogic.co.uk
+To: "Sebastian H." <vand2@gmx.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
-
-On Wed, 2010-08-04 at 18:31 +0200, ext Mark Brown wrote:
-> On Wed, Aug 04, 2010 at 12:42:59PM +0300, Matti J. Aaltonen wrote:
-> > This is an ALSA codec for the Texas Instruments WL1273 FM Radio.
-> 
-> This basically looks OK but...
-> 
-> > +/* codec private data */
-> > +struct wl1273_priv {
-> > +	struct snd_soc_codec codec;
-> > +	enum wl1273_mode mode;
-> > +	struct wl1273_core *core;
-> > +	unsigned int channels;
-> > +};
-> 
-> ...why would anything outside the driver be peering into this?
-
-Well, I see no reason... So I'll move it from the header to the c -file
-and then it's fine?
-
-Cheers,
-Matti A.
+ICAwNC4wOC4yMDEwIDE2OjE3LCBTZWJhc3RpYW4gSC4g0L/QuNGI0LXRgjoKPiBIZWxsbyBldmVy
+eW9uZQo+Cj4gSSd2ZSBiZWVuIHdvcmtpbmcgb24gQWxzYW1peGVyLVF0NCBsYXRlbHkgYW5kIGNv
+bXBpbGVkCj4gdGhlIGNoYW5nZXMgaW50byBhIG5ldyByZWxlYXNlIHZlcnNpb24gMC40LjAuCj4g
+TW9zdCBpbXBvcnRhbnRseSB0aGUgY2FyZHMgbGlzdCBjYW4gYmUgcmVmcmVzaGVkIG5vdwo+IGFu
+ZCB0aGUgc3R5bGUgZ290IGEgbGl0dGxlIG92ZXJoYXVsLCB0b28uCj4gQSBtb3JlIGRldGFpbGVk
+IGNoYW5nZWxvZyBjYW4gYmUgZm91bmQgYXQgdGhlIHh3bXcub3JnIHBhZ2UuCj4KPiBUaGUgbmV3
+IHZlcnNpb24gMC40LjAgaXMgYXZhaWxhYmxlIGF0IHRoZSBrbm93biBwbGFjZXMuCj4gaHR0cDov
+L3h3bXcub3JnL2Fsc2FtaXhlci1xdDQvCj4gaHR0cDovL3NvdXJjZWZvcmdlLm5ldC9wcm9qZWN0
+cy9hbHNhbWl4ZXItcXQ0L2ZpbGVzLwo+Cj4gQW55IGNvbW1lbnRzIGFyZSB3ZWxjb21lLgo+Cj4g
+Q2hlZXJzLAo+IFNlYmFzdGlhbgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo+Ckkga25vdyB0aGF0IG1peGVyIHByb2JhYmx5IGlzbid0IHRoZSBi
+ZXN0IHBsYWNlIHRvIGltcGxlbWVudCB0aGlzIGJ1dCBpdCAKd291bGQgYmUgbmljZSB0byBzZWUg
+YSBzaW1wbGUgfi8uYXNvdW5kcmMgZWRpdG9yLApzbyB1c2VyIGNhbiBhZGQvbW9kaWZ5L3JlbW92
+ZS9zZXQgZGVmYXVsdCBkZXZpY2VzLiBGb3IgZXhhbXBsZSwgCmNvbmZpZ3VyZSBwbHVncywgZG1p
+eGVzLCBkc25vb3BzLCBhc3ltcyB1c2luZyBhIEdVSSByYXRoZXIgdGhhbiB0ZXh0IGVkaXRvci4K
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
