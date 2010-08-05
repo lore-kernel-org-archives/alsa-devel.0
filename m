@@ -1,21 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: arecord: main:552: audio open error: Invalid
- argument
-Date: Thu, 5 Aug 2010 12:10:31 +0100
-Message-ID: <20100805111031.GB13146@rakim.wolfsonmicro.main>
-References: <4C59C5C1.50504@freescale.com>
-	<20100804200117.GB5864@sirena.org.uk>
-	<AANLkTi=JLB7uqkMjoy7m3yy-aWTeT1opU3QUMXL2VEt8@mail.gmail.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: HDMI audio: TV vs. codec supported sample rates
+Date: Thu, 5 Aug 2010 14:17:10 +0300
+Message-ID: <201008051417.10835.anssi.hannula@iki.fi>
+References: <74CDBE0F657A3D45AFBB94109FB122FF02FD6DF319@HQMAIL01.nvidia.com>
+	<201008051357.18821.anssi.hannula@iki.fi>
+	<s5hmxt1gw58.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D40E81038C6
+Received: from sypressi.dnainternet.net (sypressi.dnainternet.net
+	[83.102.40.135])
+	by alsa0.perex.cz (Postfix) with ESMTP id DB5301038AF
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Aug 2010 13:10:32 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <AANLkTi=JLB7uqkMjoy7m3yy-aWTeT1opU3QUMXL2VEt8@mail.gmail.com>
+	Thu,  5 Aug 2010 13:17:14 +0200 (CEST)
+In-Reply-To: <s5hmxt1gw58.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,18 +24,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 04, 2010 at 04:15:36PM -0500, Timur Tabi wrote:
-> On Wed, Aug 4, 2010 at 3:01 PM, Mark Brown
+Takashi Iwai kirjoitti torstai, 5. elokuuta 2010 14:02:27:
+> At Thu, 5 Aug 2010 13:57:18 +0300,
+> 
+> Anssi Hannula wrote:
+> > Takashi Iwai kirjoitti torstai, 5. elokuuta 2010 13:46:39:
+> > > At Thu, 5 Aug 2010 12:49:07 +0300,
+> > > 
+> > > Anssi Hannula wrote:
+> > > > Anssi Hannula kirjoitti tiistai, 3. elokuuta 2010 20:39:20:
+> > > > > Stephen Warren kirjoitti tiistai, 3. elokuuta 2010 19:20:24:
+> > > > > > I don't see anything in patch_intelhdmi.c that relates to sample
+> > > > > > rate support at all. However, I see that patch_nvhdmi.c contains
+> > > > > > e.g.:
+> > > > > > 
+> > > > > > static struct hda_pcm_stream nvhdmi_pcm_digital_playback_8ch_89 =
+> > > > > > {
+> > > > > > 
+> > > > > >         .substreams = 1,
+> > > > > >         .channels_min = 2,
+> > > > > >         .rates = SUPPORTED_RATES,
+> > > > > > 
+> > > > > > Should .rates not be initialized here,
+> > > > > 
+> > > > > When .rates is not initialized, they are automatically read from
+> > > > > the codec, i.e. exactly the values you referenced above from
+> > > > > "/proc/asound/card1/codec#1".
+> > > > > 
+> > > > > The values seem to differ (32000 vs 22050 is reported as
+> > > > > supported), though. If the codec reported values are wrong, the
+> > > > > .rates should be kept. Otherwise the rates set in .rates should be
+> > > > > fixed or the override just removed.
+> > > > 
+> > > > As AFAICS HDMI specification allows 32000Hz but not 22050Hz, I'd say
+> > > > it is likely that the override is wrong and the codec reported rates
+> > > > are right.
+> > > > 
+> > > > (my receiver doesn't support 32000Hz so I can't confirm).
+> > > 
+> > > So, the codec reports correct values based on EDID?
+> > 
+> > No. The codec reports all the values it supports, regardless if the
+> > attached HDMI sink supports them or not.
+> 
+> OK.  Then setting a static value was still needed.
 
-> > The symmetric_rates infrastructure was only ever really intended to work
-> > over a single DAI so I'd not be at all surprised if it gets a little
-> > confused (though I'm surprised it's doing anything at all).
+How so (for _89 I mean)?
 
-> Makes sense.  Should I forget the symmetric_rates feature and just
-> handle it internally in my driver?
+> > > IIRC, the static values there were needed for old Nvidia codecs that
+> > > don't give the actual values.  Maybe newer chips work correctly.
+> > > If so, rates, maxbps and formats in *_89 (also *_7x, too?) can be
+> > > removed, indeed.
+> > > 
+> > > Can any confirm?
+> > 
+> > I have an older MCP7A codec as well and can confirm that it reports wrong
+> > values (only 48000/88200, while I can confirm in reality 192000 works
+> > with it). Though I guess the nonsensical 22050 should probably be 32000
+> > (but I can't test since my receiver doesn't support 32000).
+> 
+> What actually show in eld#* proc file?
 
-It would seem more sensible to enhance symmetric_rates.
+The values that the connected HDMI sink supports.
+
+> If this shows the correct values, we can add the code to take over
+> rates & formats from ELD at hotplug.
+
+That's exactly what should be done (the intersection of supported formats of 
+the codec and the sink).
+
+-- 
+Anssi Hannula
