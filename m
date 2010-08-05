@@ -1,21 +1,23 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: HDMI audio: TV vs. codec supported sample rates
-Date: Thu, 5 Aug 2010 07:23:26 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF02FD6DF494@HQMAIL01.nvidia.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF02FD6DF319@HQMAIL01.nvidia.com>
-	<201008051357.18821.anssi.hannula@iki.fi>	<s5hmxt1gw58.wl%tiwai@suse.de>
-	<201008051417.10835.anssi.hannula@iki.fi>
-	<s5heiedgs66.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] asoc/multi-component: fsl: add support	for
+	variable SSI FIFO depth
+Date: Thu, 5 Aug 2010 15:54:31 +0100
+Message-ID: <20100805145430.GB26801@opensource.wolfsonmicro.com>
+References: <1280952264-21813-1-git-send-email-timur@freescale.com>
+	<20100805111010.GA13146@rakim.wolfsonmicro.main>
+	<AANLkTinYjH-r3Myv=YavQBS0ULu-T0U4LPscsMOUtujR@mail.gmail.com>
+	<20100805135153.GB14470@opensource.wolfsonmicro.com>
+	<69A042BE-A5B7-4BD5-91FF-B3F635AF7839@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id B490D1038D4
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A7B741038F7
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Aug 2010 16:25:35 +0200 (CEST)
-In-Reply-To: <s5heiedgs66.wl%tiwai@suse.de>
-Content-Language: en-US
+	Thu,  5 Aug 2010 16:54:32 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <69A042BE-A5B7-4BD5-91FF-B3F635AF7839@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,223 +27,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Takashi Iwai' <tiwai@suse.de>, 'Anssi Hannula' <anssi.hannula@iki.fi>, Wei Ni <wni@nvidia.com>
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
+To: Tabi Timur-B04825 <B04825@freescale.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Sent: Thursday, August 05, 2010 6:28 AM
-> 
-> At Thu, 5 Aug 2010 14:17:10 +0300,
-> Anssi Hannula wrote:
-> >
-> > Takashi Iwai kirjoitti torstai, 5. elokuuta 2010 14:02:27:
-> > > At Thu, 5 Aug 2010 13:57:18 +0300,
-> > >
-> > > Anssi Hannula wrote:
-> > > > Takashi Iwai kirjoitti torstai, 5. elokuuta 2010 13:46:39:
-> > > > > At Thu, 5 Aug 2010 12:49:07 +0300,
-> > > > >
-> > > > > Anssi Hannula wrote:
-> > > > > > Anssi Hannula kirjoitti tiistai, 3. elokuuta 2010 20:39:20:
-> > > > > > > Stephen Warren kirjoitti tiistai, 3. elokuuta 2010 19:20:24:
-> > > > > > > > I don't see anything in patch_intelhdmi.c that relates to sample
-> > > > > > > > rate support at all. However, I see that patch_nvhdmi.c contains
-> > > > > > > > e.g.:
-> > > > > > > >
-> > > > > > > > static struct hda_pcm_stream nvhdmi_pcm_digital_playback_8ch_89 =
-> > > > > > > > {
-> > > > > > > >
-> > > > > > > >         .substreams = 1,
-> > > > > > > >         .channels_min = 2,
-> > > > > > > >         .rates = SUPPORTED_RATES,
-> > > > > > > >
-> > > > > > > > Should .rates not be initialized here,
-> > > > > > >
-> > > > > > > When .rates is not initialized, they are automatically read from
-> > > > > > > the codec, i.e. exactly the values you referenced above from
-> > > > > > > "/proc/asound/card1/codec#1".
-> > > > > > >
-> > > > > > > The values seem to differ (32000 vs 22050 is reported as
-> > > > > > > supported), though. If the codec reported values are wrong, the
-> > > > > > > .rates should be kept. Otherwise the rates set in .rates should be
-> > > > > > > fixed or the override just removed.
-> > > > > >
-> > > > > > As AFAICS HDMI specification allows 32000Hz but not 22050Hz, I'd say
-> > > > > > it is likely that the override is wrong and the codec reported rates
-> > > > > > are right.
+On Thu, Aug 05, 2010 at 09:10:08AM -0500, Tabi Timur-B04825 wrote:
+> On Aug 5, 2010, at 8:52 AM, "Mark Brown" <broonie@opensource.wolfsonmicro.com> wrote:
 
-Wei, 
+> > Are you saying that every DT for a system doing audio on a PowerPC
+> > system has to manually specify the depth of the FIFO on the silicon?
 
-Looking at our Windows driver, we should remove 22050 from the supported rates list
-and add 32000 instead. Can you confirm this? Thanks.
+> Only for SSI devices.
 
-> > > > > > (my receiver doesn't support 32000Hz so I can't confirm).
-> > > > >
-> > > > > So, the codec reports correct values based on EDID?
-> > > >
-> > > > No. The codec reports all the values it supports, regardless if the
-> > > > attached HDMI sink supports them or not.
-> > >
-> > > OK.  Then setting a static value was still needed.
-> >
-> > How so (for _89 I mean)?
-> 
-> For _89, yeah, that's not needed if it gives really all.
-> 
-> > > > > IIRC, the static values there were needed for old Nvidia codecs that
-> > > > > don't give the actual values.  Maybe newer chips work correctly.
-> > > > > If so, rates, maxbps and formats in *_89 (also *_7x, too?) can be
-> > > > > removed, indeed.
-> > > > >
-> > > > > Can any confirm?
-> > > >
-> > > > I have an older MCP7A codec as well and can confirm that it reports wrong
-> > > > values (only 48000/88200, while I can confirm in reality 192000 works
-> > > > with it). Though I guess the nonsensical 22050 should probably be 32000
-> > > > (but I can't test since my receiver doesn't support 32000).
-> > >
-> > > What actually show in eld#* proc file?
-> >
-> > The values that the connected HDMI sink supports.
-> >
-> > > If this shows the correct values, we can add the code to take over
-> > > rates & formats from ELD at hotplug.
-> >
-> > That's exactly what should be done (the intersection of supported formats of
-> > the codec and the sink).
-> 
-> OK, what about the patch below (totally untested)?
-> 
-> This updates the PCM info only at PCM open time. Apps usually check
-> parameters only at open (due to hw_params stuff), so it doesn't make
-> much sense to change dynamically at hotplug in the end.
+Right, but that's the audio controller on the overwhelming majority of
+PowerPC devices.
 
-Doesn't that patch only use the ELD to set up the stream's supported parameters?
-I think the code needs to determine the intersection of what's supported by the
-codec (from HDA node parsing if that's the correct terminology) *and* the display
-device (from the ELD), not just one of them.
+> > That doesn't sound particularly sensible, and I had been under the
+> > impression that DT systems had a better way of coping with this.
 
-> Takashi
-> 
-> ---
-> diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
-> index d8da18a..c41ba10 100644
-> --- a/sound/pci/hda/hda_eld.c
-> +++ b/sound/pci/hda/hda_eld.c
-> @@ -596,4 +596,42 @@ void snd_hda_eld_proc_free(struct hda_codec *codec, struct hdmi_eld *eld)
->  }
->  EXPORT_SYMBOL_HDA(snd_hda_eld_proc_free);
-> 
-> +/* update PCM info based on ELD */
-> +void hdmi_eld_update_pcm_info(struct hdmi_eld *eld, struct hda_pcm_stream *pcm)
-> +{
-> +	int i;
-> +
-> +	pcm->rates = 0;
-> +	pcm->formats = 0;
-> +	pcm->maxbps = 0;
-> +	pcm->channels_min = -1;
-> +	pcm->channels_max = 0;
-> +	for (i = 0; i < eld->sad_count; i++) {
-> +		struct cea_sad *a = &eld->sad[i];
-> +		pcm->rates |= a->rates;
-> +		if (a->channels < pcm->channels_min)
-> +			pcm->channels_min = a->channels;
-> +		if (a->channels > pcm->channels_max)
-> +			pcm->channels_max = a->channels;
-> +		if (a->format == AUDIO_CODING_TYPE_LPCM) {
-> +			if (a->sample_bits & AC_SUPPCM_BITS_16) {
-> +				pcm->formats |= SNDRV_PCM_FMTBIT_S16_LE;
-> +				if (pcm->maxbps < 16)
-> +					pcm->maxbps = 16;
-> +			}
-> +			if (a->sample_bits & AC_SUPPCM_BITS_20) {
-> +				pcm->formats |= SNDRV_PCM_FMTBIT_S32_LE;
-> +				if (pcm->maxbps < 20)
-> +					pcm->maxbps = 20;
-> +			}
-> +			if (a->sample_bits & AC_SUPPCM_BITS_24) {
-> +				pcm->formats |= SNDRV_PCM_FMTBIT_S32_LE;
-> +				if (pcm->maxbps < 24)
-> +					pcm->maxbps = 24;
-> +			}
-> +		}
-> +	}
-> +}
-> +EXPORT_SYMBOL_HDA(hdmi_eld_update_pcm_info);
-> +
->  #endif /* CONFIG_PROC_FS */
-> diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
-> index 7a97f12..af2699e 100644
-> --- a/sound/pci/hda/hda_local.h
-> +++ b/sound/pci/hda/hda_local.h
-> @@ -604,6 +604,7 @@ struct hdmi_eld {
->  int snd_hdmi_get_eld_size(struct hda_codec *codec, hda_nid_t nid);
->  int snd_hdmi_get_eld(struct hdmi_eld *, struct hda_codec *, hda_nid_t);
->  void snd_hdmi_show_eld(struct hdmi_eld *eld);
-> +void hdmi_eld_update_pcm_info(struct hdmi_eld *eld, struct hda_pcm_stream *pcm);
-> 
->  #ifdef CONFIG_PROC_FS
->  int snd_hda_eld_proc_new(struct hda_codec *codec, struct hdmi_eld *eld,
-> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> index 522e074..4176e6c 100644
-> --- a/sound/pci/hda/patch_hdmi.c
-> +++ b/sound/pci/hda/patch_hdmi.c
-> @@ -766,6 +766,29 @@ static int hdmi_setup_stream(struct hda_codec *codec, hda_nid_t nid,
->  }
-> 
->  /*
-> + * HDA PCM callbacks
-> + */
-> +static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
-> +			 struct hda_codec *codec,
-> +			 struct snd_pcm_substream *substream)
-> +{
-> +	struct hdmi_spec *spec = codec->spec;
-> +	struct hdmi_eld *eld;
-> +	unsigned int idx;
-> +
-> +	for (idx = 0; idx < spec->num_cvts; idx++)
-> +		if (hinfo->nid == spec->cvt[idx])
-> +			break;
-> +	if (snd_BUG_ON(idx >= spec->num_cvts) ||
-> +	    snd_BUG_ON(idx >= spec->num_pins))
-> +		return -EINVAL;
-> +	eld = &spec->sink_eld[idx];
-> +	if (eld->sad_count > 0)
-> +		hdmi_eld_update_pcm_info(eld, hinfo);
-> +	return 0;
-> +}
-> +
-> +/*
->   * HDA/HDMI auto parsing
->   */
-> 
-> diff --git a/sound/pci/hda/patch_intelhdmi.c b/sound/pci/hda/patch_intelhdmi.c
-> index 5972d5e..d382d3c 100644
-> --- a/sound/pci/hda/patch_intelhdmi.c
-> +++ b/sound/pci/hda/patch_intelhdmi.c
-> @@ -80,6 +80,7 @@ static struct hda_pcm_stream intel_hdmi_pcm_playback = {
->  	.substreams = 1,
->  	.channels_min = 2,
->  	.ops = {
-> +		.open = hdmi_pcm_open,
->  		.prepare = intel_hdmi_playback_pcm_prepare,
->  		.cleanup = intel_hdmi_playback_pcm_cleanup,
->  	},
-> diff --git a/sound/pci/hda/patch_nvhdmi.c b/sound/pci/hda/patch_nvhdmi.c
-> index a281836..004d1c6 100644
-> --- a/sound/pci/hda/patch_nvhdmi.c
-> +++ b/sound/pci/hda/patch_nvhdmi.c
-> @@ -351,6 +351,7 @@ static struct hda_pcm_stream nvhdmi_pcm_digital_playback_8ch_89 = {
->  	.maxbps = SUPPORTED_MAXBPS,
->  	.formats = SUPPORTED_FORMATS,
->  	.ops = {
-> +		.open = hdmi_pcm_open,
->  		.prepare = nvhdmi_dig_playback_pcm_prepare_8ch_89,
->  		.cleanup = nvhdmi_playback_pcm_cleanup,
->  	},
+> The whole point behind having a device tree is to specify device
+> information that cannot be probed.  So every piece of information in the
+> DT is something that the driver needs to be told because there is no way
+> to query the hardware.
 
--- 
-nvpublic
+This seems crazy, it means that we're not able to use new support for
+hardware features to the driver which require any kind of flag or data
+without also going through and updating the device trees for all
+existing boards.  That doesn't seem terribly helpful.
+
+I'm fairly sure that some of the previous discussion with other device
+tree people suggested that this was something that there was
+infrastructure to cope with.
