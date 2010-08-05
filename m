@@ -1,19 +1,27 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Question about WM8974 codec driver--Incorrect
- setup of dapm_route
-Date: Thu, 5 Aug 2010 17:41:43 +0100
-Message-ID: <20100805164143.GA17501@opensource.wolfsonmicro.com>
-References: <NBJJGLZNASKKARPOLZKJZXNGZJFU.jjinfo@nudt.edu.cn>
+Subject: Re: [PATCH] asoc/multi-component: fsl: add support for
+ variable SSI FIFO depth
+Date: Thu, 5 Aug 2010 19:18:32 +0100
+Message-ID: <20100805181832.GA32359@rakim.wolfsonmicro.main>
+References: <1280952264-21813-1-git-send-email-timur@freescale.com>
+	<20100805111010.GA13146@rakim.wolfsonmicro.main>
+	<AANLkTinYjH-r3Myv=YavQBS0ULu-T0U4LPscsMOUtujR@mail.gmail.com>
+	<20100805135153.GB14470@opensource.wolfsonmicro.com>
+	<69A042BE-A5B7-4BD5-91FF-B3F635AF7839@freescale.com>
+	<20100805145430.GB26801@opensource.wolfsonmicro.com>
+	<5610599F537DD74A8D1F5CC946A750730347914E@az33exm25.fsl.freescale.net>
+	<20100805160310.GA17454@opensource.wolfsonmicro.com>
+	<5610599F537DD74A8D1F5CC946A750730347914F@az33exm25.fsl.freescale.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EB7352456A
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 894A8245C1
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Aug 2010 18:41:28 +0200 (CEST)
+	Thu,  5 Aug 2010 20:18:35 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <NBJJGLZNASKKARPOLZKJZXNGZJFU.jjinfo@nudt.edu.cn>
+In-Reply-To: <5610599F537DD74A8D1F5CC946A750730347914F@az33exm25.fsl.freescale.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,49 +31,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "jjinfo@nudt.edu.cn" <jjinfo@nudt.edu.cn>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Tabi Timur-B04825 <B04825@freescale.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 05, 2010 at 11:16:18PM +0800, jjinfo@nudt.edu.cn wrote:
+On Thu, Aug 05, 2010 at 09:21:15AM -0700, Tabi Timur-B04825 wrote:
 
-Please fix your mail client to word wrap text, it makes your mail vastly
-more legible.  I've reflowed your text into 80 columns.
+> the FIFO depth, the drivers need to know that information.  The only way to 
+> pass that info to the drivers is via the device tree.
 
-> Recently I've been working on porting alsa-driver-1.0.22 to support
-> wm8974 codec with Freescale Mx27ipcam platform. By now the playback
-> channel can work as expected. But the capture stream can't work and
-> there is no data from the codec DAI interface.(Acutally, it is always
-> low level.)
+Clearly this is not entirely true, people manage to write non-DT kernels
+after all.  In a strongly device tree oriented model it does need to be
+via the device tree, but even there there's options for how the data
+gets there - for example, we can supply it by looking at the CPU type
+and fixing up the DTS prior to the driver seeing it, or any one of a
+number of other methods.  I'd probably not have queried this so much if
+I'd noticed some sort of handling for such a method.
 
-Please try a version of the driver from current kernel versions (you'll
-probably need a little backporting).  I do not recommend using
-alsa-driver for any embedded audio work, there are usually
-interdependencies with CPU code in the CPU sides of the drivers.
+It's not so much this particular property I'm worried about as the
+general style for things like this so CCing in Grant.
 
-> In the codec driver(wm8974.c), I note there is a potentioal problem
-> with the audio route setup.In the definition of struct
-> snd_soc_dapm_route audio_map[], the "Input PGA" is connected directly
-> to "Boost Mixer" as follows: {
+> Mark Brown wrote:
 
-> "Boost Mixer"
-> , NULL,
-> "Input PGA"
-> }, (Line 260).
+> > I'd have strongly expected that the
+> > device tree was able to incoporate all the properties that are standard
+> > to the CPU by reference somehow (with that data being distributed
+> > separately to the per system device tree).
 
-> However, according to the wm8974 hardware manual, the connection
-> between Input PGA and Boost Mixer IS controlled by a switch,
-> INPPGAMUTE(R45[6]).
+> Separately?  Why?  Look at the device trees we have today.  They are full of 
+> nodes with all sorts of device-specific properties that describe minor 
+> differences among the devices across various SOCs.
 
-This looks like a potential issue, yes.  Have you tried testing?
+Separately because people make and distribute systems with a parts on
+them well before software is finalised in mainline.  Requiring that both
+the DTS and the kernel match up and get updated for new feature support
+means that you've got two different things (potentially maintained by
+different groups in the end user environment) to distribute and get
+updated on systems separately.  Failure to update one may result in
+problems on another, either with features not getting enabled or with
+newer kernel versions not wanting to run on systems with older device
+trees.
 
-> Another problem in wm8974.c, bit 6 of Register WM8974_INPPGA is
-> defined as "Aux Switch"(line 191), and bit 2 of Register WM8974_INOUT
-> is also defined as "Aux Switch"(line 196). Will these two same names
-> cause any problem? (Since both the audio path from "Aux Input" to
-> "Input PGA"(line 264) and the autio path from "Aux Input" to "Boost
-> Mixer" use "Aux Switch", how can we distinguish from them?)
+It also seems like busy work for users to have to add things like this
+to their device trees.  I think what I'd expect to see in a strongly
+device tree model is something like the tree for a board saying it's
+using a given SoC and then a standard device tree for the SoC which is
+shared between all the different users of that SoC getting merged in
+early in boot (probably from the kernel).  That way if we gain support
+for a new feature on the SoC or discover something that needs to be
+flagged up for workaround then every board using the SoC will pick it
+up.  This seems particularly useful for things like crypto engines that
+are physically internal to the SoC and so don't normally require
+per-board hookup.  In ASoC terms you do need board specific hookup so
+that's a bit less of an issue but it looses us some of the benefit of
+having standard chip drivers by pushing some of the chip generic
+knowledge into a per-machine location.
 
-Without looking at the driver version you're using I'm not 100% certain
-but I believe both of these are controls for mixers.  Mixers controls
-have the name of the mixer prepended to thekm when presented to the API.
+The fact that the PowerPC systems are currently doing this isn't
+something I'd rely on with other architectures, the vendor and customer
+bases may be very different.
