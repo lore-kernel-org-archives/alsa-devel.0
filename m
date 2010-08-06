@@ -1,21 +1,15 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 4/5] ASoC: wm8580: Add to support Master
-	Mode Rates
-Date: Fri, 6 Aug 2010 13:32:25 +0900
-Message-ID: <AANLkTimkhYOXcEz+LJK29pM3=CU5urW0QOSktgg6OTCA@mail.gmail.com>
-References: <1281053592-3311-1-git-send-email-sw.youn@samsung.com>
-	<1281054738-15387-1-git-send-email-sw.youn@samsung.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH 0/2] ASoC: multi-comp: twl4030 updates
+Date: Fri,  6 Aug 2010 08:49:53 +0300
+Message-ID: <1281073795-4364-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id C13E524484
+Received: from mgw-sa02.nokia.com (mgw-sa02.nokia.com [147.243.1.48])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4DA9924390
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Aug 2010 06:32:30 +0200 (CEST)
-Received: by vws20 with SMTP id 20so6411302vws.38
-	for <alsa-devel@alsa-project.org>; Thu, 05 Aug 2010 21:32:26 -0700 (PDT)
-In-Reply-To: <1281054738-15387-1-git-send-email-sw.youn@samsung.com>
+	Fri,  6 Aug 2010 07:49:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,79 +19,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Seungwhan Youn <sw.youn@samsung.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Seungwhan Youn <claude.youn@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBBdWcgNiwgMjAxMCBhdCA5OjMyIEFNLCBTZXVuZ3doYW4gWW91biA8c3cueW91bkBz
-YW1zdW5nLmNvbT4gd3JvdGU6Cj4gVGhpcyBwYXRjaCBhZGRzIHRvIHN1cHBvcnQgTWFzdGVyIE1v
-ZGUgTFJDTEssIEJDTEsgcmF0ZXMKPiBzZXR0aW5nIGZvciB3bTg1ODAuCj4KPiBTaWduZWQtb2Zm
-LWJ5OiBTZXVuZ3doYW4gWW91biA8c3cueW91bkBzYW1zdW5nLmNvbT4KPiAtLS0KPiDCoHNvdW5k
-L3NvYy9jb2RlY3Mvd204NTgwLmMgfCDCoCA1MSArKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysKPiDCoHNvdW5kL3NvYy9jb2RlY3Mvd204NTgwLmggfCDCoCDCoDIg
-Kwo+IMKgMiBmaWxlcyBjaGFuZ2VkLCA1MyBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQo+
-Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3Mvd204NTgwLmMgYi9zb3VuZC9zb2MvY29k
-ZWNzL3dtODU4MC5jCj4gaW5kZXggZDI4MmViMy4uYTJiYjJhNCAxMDA2NDQKPiAtLS0gYS9zb3Vu
-ZC9zb2MvY29kZWNzL3dtODU4MC5jCj4gKysrIGIvc291bmQvc29jL2NvZGVjcy93bTg1ODAuYwo+
-IEBAIC03MDUsNiArNzA1LDU3IEBAIHN0YXRpYyBpbnQgd204NTgwX3NldF9kYWlfY2xrZGl2KHN0
-cnVjdCBzbmRfc29jX2RhaSAqY29kZWNfZGFpLAo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgc25k
-X3NvY193cml0ZShjb2RlYywgV004NTgwX0NMS1NFTCwgcmVnKTsKPiDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoGJyZWFrOwo+Cj4gKyDCoCDCoCDCoCBjYXNlIFdNODU4MF9MUkNMS19SQVRFOgo+ICsg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgcmVnID0gc25kX3NvY19yZWFkKGNvZGVjLCBXTTg1ODBfUEFJ
-RjEgKyBjb2RlY19kYWktPmlkKTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJlZyAmPSB+V004
-NTgwX0FJRl9SQVRFX01BU0s7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBzd2l0Y2ggKGRpdikg
-ewo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgY2FzZSAxMjg6Cj4gKyDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCByZWcgfD0gV004NTgwX0FJRl9SQVRFXzEyODsKPiArIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGJyZWFrOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-Y2FzZSAxOTI6Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZWcgfD0gV004
-NTgwX0FJRl9SQVRFXzE5MjsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGJy
-ZWFrOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgY2FzZSAyNTY6Cj4gKyDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCByZWcgfD0gV004NTgwX0FJRl9SQVRFXzI1NjsKPiArIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGJyZWFrOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgY2FzZSAzODQ6Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZWcgfD0g
-V004NTgwX0FJRl9SQVRFXzM4NDsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IGJyZWFrOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgY2FzZSA1MTI6Cj4gKyDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZWcgfD0gV004NTgwX0FJRl9SQVRFXzUxMjsKPiArIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGJyZWFrOwo+ICsgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgY2FzZSA3Njg6Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZWcg
-fD0gV004NTgwX0FJRl9SQVRFXzc2ODsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIGJyZWFrOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgY2FzZSAxMTUyOgo+ICsgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmVnIHw9IFdNODU4MF9BSUZfUkFURV8xMTUyOwo+
-ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgYnJlYWs7Cj4gKyDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCBkZWZhdWx0Ogo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-cmV0dXJuIC1FSU5WQUw7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCB9Cj4gKyDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCBzbmRfc29jX3dyaXRlKGNvZGVjLCBXTTg1ODBfUEFJRjEgKyBjb2RlY19kYWkt
-PmlkLCByZWcpOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgYnJlYWs7Cj4gKwo+ICsgwqAgwqAg
-wqAgY2FzZSBXTTg1ODBfQkNMS19SQVRFOgo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmVnID0g
-c25kX3NvY19yZWFkKGNvZGVjLCBXTTg1ODBfUEFJRjEgKyBjb2RlY19kYWktPmlkKTsKPiArIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIHJlZyAmPSB+V004NTgwX0FJRl9CQ0xLU0VMX01BU0s7Cj4gKyDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCBzd2l0Y2ggKGRpdikgewo+ICsgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgY2FzZSA2NDoKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJlZyB8PSBX
-TTg1ODBfQUlGX0JDTEtTRUxfNjQ7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCBicmVhazsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGNhc2UgMzI6Cj4gKyDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZWcgfD0gV004NTgwX0FJRl9CQ0xLU0VMXzMyOwo+ICsg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgYnJlYWs7Cj4gKyDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCBjYXNlIDE2Ogo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmVn
-IHw9IFdNODU4MF9BSUZfQkNMS1NFTF8xNjsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIGJyZWFrOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgZGVmYXVsdDoKPiArIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJlZyB8PSBXTTg1ODBfQUlGX0JDTEtTRUxfU1lT
-Q0xLOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgYnJlYWs7Cj4gKyDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCB9Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBzbmRfc29jX3dyaXRl
-KGNvZGVjLCBXTTg1ODBfUEFJRjEgKyBjb2RlY19kYWktPmlkLCByZWcpOwo+ICsgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgYnJlYWs7Cj4gKwo+IMKgIMKgIMKgIMKgZGVmYXVsdDoKPiDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoHJldHVybiAtRUlOVkFMOwo+IMKgIMKgIMKgIMKgfQo+IGRpZmYgLS1naXQg
-YS9zb3VuZC9zb2MvY29kZWNzL3dtODU4MC5oIGIvc291bmQvc29jL2NvZGVjcy93bTg1ODAuaAo+
-IGluZGV4IGFlYjY1ZWYuLjIyNzJlMzYgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2NvZGVjcy93
-bTg1ODAuaAo+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3Mvd204NTgwLmgKPiBAQCAtMjIsNiArMjIs
-OCBAQAo+IMKgI2RlZmluZSBXTTg1ODBfREFDX0NMS1NFTCAyCj4gwqAjZGVmaW5lIFdNODU4MF9B
-RENfQ0xLU0VMIDMKPiDCoCNkZWZpbmUgV004NTgwX0NMS09VVFNSQyDCoDQKPiArI2RlZmluZSBX
-TTg1ODBfTFJDTEtfUkFURSA1Cj4gKyNkZWZpbmUgV004NTgwX0JDTEtfUkFURSDCoDYKPgo+IMKg
-I2RlZmluZSBXTTg1ODBfQ0xLU1JDX01DTEsgwqAgwqAxCj4gwqAjZGVmaW5lIFdNODU4MF9DTEtT
-UkNfQURDTUNMSyAyCgpBZ2Fpbi4uLi4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9w
-aXBlcm1haWwvYWxzYS1kZXZlbC8yMDA5LVNlcHRlbWJlci8wMjEwMDUuaHRtbAoKQWxzbyBJTU8s
-IFdNODU4MF9NQ0xLUkFUSU8gYW5kICBXTTg1ODBfQkNMS1JBVElPIHNvdW5kIGJldHRlcgp0aGFu
-IFdNODU4MF9MUkNMS19SQVRFIGFuZCBXTTg1ODBfQkNMS19SQVRFIHJlc3AuIFRoYXQgaXMgaWYg
-dGhleQphcmUgdG8gYmUgYWNjZXB0ZWQuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYWxzYS1kZXZlbAo=
+Hello Liam, Mark!
+
+The following two patch is for the current multi-comp
+branch with twl4030 related fixes.
+
+I have separated them, so they can be squased to the
+corresponding commit in multi-comp branch for now.
+
+The changes in short:
+- We do not need the header sound/soc/codecs/twl4030.h
+  anymore, so remove it
+- Fix machine drivers with theis header removal
+- The codec no longer get's the former setup data, all
+  configuration is coming from board files via the
+  platform_data. So change the code accordingly
+- Move the twl4030_priv allocation to a proper place
+- Codec can shall go OFF instead of STANDBY, so add back
+  the idle_bias_off flag
+- The MFD driver is twl4030-audio
+
+TODO after the multi-comp is merged:
+- Rename the mfd driver to twl4030-audio.
+  Clean up the internal naming within the mfd
+  This going to touch many files...
+
+One more notice:
+The multi-comp branch does not have the
+"ASoC: TWL4030: Capture route runtime DAPM ordering fix" commit
+yet, and I have tested my changes on top of that, but it should
+not be a big problem, when you rebase this driver.
+
+What do you think?
+
+Peter
+
+---
+Peter Ujfalusi (2):
+  ASoC: multi-comp: twl4030: TI CODECs
+  ASoC: multi-comp: twl4030: TI OMAP Platform
+
+ drivers/mfd/twl-core.c        |    2 +-
+ drivers/mfd/twl4030-codec.c   |    4 +-
+ include/linux/i2c/twl.h       |    6 +++-
+ sound/soc/codecs/twl4030.c    |   73 ++++++++++++++++++++---------------------
+ sound/soc/codecs/twl4030.h    |   52 -----------------------------
+ sound/soc/omap/igep0020.c     |    1 -
+ sound/soc/omap/omap2evm.c     |    1 -
+ sound/soc/omap/omap3beagle.c  |    1 -
+ sound/soc/omap/omap3evm.c     |    1 -
+ sound/soc/omap/omap3pandora.c |    1 -
+ sound/soc/omap/overo.c        |    1 -
+ sound/soc/omap/sdp3430.c      |    4 ++-
+ sound/soc/omap/zoom2.c        |    4 ++-
+ 13 files changed, 50 insertions(+), 101 deletions(-)
+ delete mode 100644 sound/soc/codecs/twl4030.h
+
+--
+1.7.2
