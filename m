@@ -1,14 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/3] ASoC: Correct WM8580 Capture control names
-Date: Fri,  6 Aug 2010 18:35:32 +0100
-Message-ID: <1281116132-25432-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/3] ASoC: Document CFG switch settings for
+	SMDK6410 WM8580 usage
+Date: Fri,  6 Aug 2010 18:35:31 +0100
+Message-ID: <1281116132-25432-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1281116132-25432-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D9DDB103969
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ED666103985
 	for <alsa-devel@alsa-project.org>;
 	Fri,  6 Aug 2010 19:35:33 +0200 (CEST)
 In-Reply-To: <1281116132-25432-1-git-send-email-broonie@opensource.wolfsonmicro.com>
@@ -25,28 +26,29 @@ To: Liam Girdwood <lrg@slimlogic.co.uk>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Seungwhan Youn <sw.youn@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Should use Capture rather than ADC so the UI tools can identify their
-function more readily.
+Sadly these aren't soft controllable and can't be read back either :(
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8580.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/s3c24xx/smdk64xx_wm8580.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
-index c3571ee..1881b16 100644
---- a/sound/soc/codecs/wm8580.c
-+++ b/sound/soc/codecs/wm8580.c
-@@ -273,8 +273,8 @@ SOC_SINGLE("DAC1 Switch", WM8580_DAC_CONTROL5, 0, 1, 0),
- SOC_SINGLE("DAC2 Switch", WM8580_DAC_CONTROL5, 1, 1, 0),
- SOC_SINGLE("DAC3 Switch", WM8580_DAC_CONTROL5, 2, 1, 0),
+diff --git a/sound/soc/s3c24xx/smdk64xx_wm8580.c b/sound/soc/s3c24xx/smdk64xx_wm8580.c
+index 5853f66..4926aca 100644
+--- a/sound/soc/s3c24xx/smdk64xx_wm8580.c
++++ b/sound/soc/s3c24xx/smdk64xx_wm8580.c
+@@ -22,6 +22,12 @@
+ #include "s3c-dma.h"
+ #include "s3c64xx-i2s.h"
  
--SOC_DOUBLE("ADC Mute Switch", WM8580_ADC_CONTROL1, 0, 1, 1, 0),
--SOC_SINGLE("ADC High-Pass Filter Switch", WM8580_ADC_CONTROL1, 4, 1, 0),
-+SOC_DOUBLE("Capture Switch", WM8580_ADC_CONTROL1, 0, 1, 1, 0),
-+SOC_SINGLE("Capture High-Pass Filter Switch", WM8580_ADC_CONTROL1, 4, 1, 0),
- };
++/*
++ * Default CFG switch settings to use this driver:
++ *
++ *   SMDK6410: Set CFG1 1-3 Off, CFG2 1-4 On
++ */
++
+ /* SMDK64XX has a 12MHZ crystal attached to WM8580 */
+ #define SMDK64XX_WM8580_FREQ 12000000
  
- static const struct snd_soc_dapm_widget wm8580_dapm_widgets[] = {
 -- 
 1.7.1
