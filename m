@@ -1,18 +1,15 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 1/3] ASoC: multi-comp: OMAP McBSP: use macro
-	for platform_device
-Date: Fri,  6 Aug 2010 10:39:13 +0300
-Message-ID: <1281080355-22589-2-git-send-email-peter.ujfalusi@nokia.com>
-References: <1281080355-22589-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 0/3] ASoC: multi-comp: OMAP platform fixes
+Date: Fri,  6 Aug 2010 10:39:12 +0300
+Message-ID: <1281080355-22589-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id A8F69103951
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4CA7310395F
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Aug 2010 09:39:24 +0200 (CEST)
-In-Reply-To: <1281080355-22589-1-git-send-email-peter.ujfalusi@nokia.com>
+	Fri,  6 Aug 2010 09:39:31 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,72 +23,32 @@ To: alsa-devel@alsa-project.org
 Cc: jkrzyszt@tis.icnet.pl, broonie@opensource.wolfsonmicro.com, arunks@mistralsolutions.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Use macro (and define it in the plat/mcbsp.h) to create
-the omap-mcbsp-dai devices.
+Hello,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+The following series introduces some cleanups for OMAP platforms in
+multi-component branch.
+
+- Enable audio for OMAP1 class
+- Registers only the available amount of omap-mcbsp-dai devices for OMAP2,3,
+  and 4
+
+Please do verify, if the chages are correct, especially the number of McBSP
+ports on different devices.
+
+Liam: in case you take this, you can squash this to the corresponding commit.
+
+Peter
+
 ---
- arch/arm/mach-omap2/devices.c           |   29 +++++------------------------
- arch/arm/plat-omap/include/plat/mcbsp.h |    7 +++++++
- 2 files changed, 12 insertions(+), 24 deletions(-)
+Peter Ujfalusi (3):
+  ASoC: multi-comp: OMAP McBSP: use macro for platform_device
+  ASoC: multi-comp: OMAP McBSP: Enable audio on OMAP1 platform
+  ASoC: multi-comp: OMAP2,3,4 McBSP: register correct number of ports
 
-diff --git a/arch/arm/mach-omap2/devices.c b/arch/arm/mach-omap2/devices.c
-index 088b050..758d39b 100644
---- a/arch/arm/mach-omap2/devices.c
-+++ b/arch/arm/mach-omap2/devices.c
-@@ -297,30 +297,11 @@ static struct platform_device omap_pcm = {
- 	.id	= -1,
- };
- 
--static struct platform_device omap_mcbsp1 = {
--	.name	= "omap-mcbsp-dai",
--	.id	= OMAP_MCBSP1,
--};
--
--static struct platform_device omap_mcbsp2 = {
--	.name	= "omap-mcbsp-dai",
--	.id	= OMAP_MCBSP2,
--};
--
--static struct platform_device omap_mcbsp3 = {
--	.name	= "omap-mcbsp-dai",
--	.id	= OMAP_MCBSP3,
--};
--
--static struct platform_device omap_mcbsp4 = {
--	.name	= "omap-mcbsp-dai",
--	.id	= OMAP_MCBSP4,
--};
--
--static struct platform_device omap_mcbsp5 = {
--	.name	= "omap-mcbsp-dai",
--	.id	= OMAP_MCBSP5,
--};
-+OMAP_MCBSP_PLATFORM_DEVICE(1);
-+OMAP_MCBSP_PLATFORM_DEVICE(2);
-+OMAP_MCBSP_PLATFORM_DEVICE(3);
-+OMAP_MCBSP_PLATFORM_DEVICE(4);
-+OMAP_MCBSP_PLATFORM_DEVICE(5);
- 
- static void omap_init_audio(void)
- {
-diff --git a/arch/arm/plat-omap/include/plat/mcbsp.h b/arch/arm/plat-omap/include/plat/mcbsp.h
-index b4ff6a1..5b20103 100644
---- a/arch/arm/plat-omap/include/plat/mcbsp.h
-+++ b/arch/arm/plat-omap/include/plat/mcbsp.h
-@@ -30,6 +30,13 @@
- #include <mach/hardware.h>
- #include <plat/clock.h>
- 
-+/* macro for building platform_device for McBSP ports */
-+#define OMAP_MCBSP_PLATFORM_DEVICE(port_nr)		\
-+static struct platform_device omap_mcbsp##port_nr = {	\
-+	.name	= "omap-mcbsp-dai",			\
-+	.id	= OMAP_MCBSP##port_nr,			\
-+}
-+
- #define OMAP7XX_MCBSP1_BASE	0xfffb1000
- #define OMAP7XX_MCBSP2_BASE	0xfffb1800
- 
--- 
+ arch/arm/mach-omap1/devices.c           |   24 +++++++++++++++
+ arch/arm/mach-omap2/devices.c           |   50 ++++++++++++++++--------------
+ arch/arm/plat-omap/include/plat/mcbsp.h |    7 ++++
+ 3 files changed, 58 insertions(+), 23 deletions(-)
+
+--
 1.7.2
