@@ -1,21 +1,24 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: alsa-asoc-devel?
-Date: Fri, 6 Aug 2010 10:53:38 -0500
-Message-ID: <AANLkTin7n1tJVsOxsYP0VQNu=3u_+hN01bNvyQbK2967@mail.gmail.com>
-References: <4C5BC9E9.2000407@canonical.com> <1281091726.3077.6.camel@odin>
-	<4C5BECD2.4050208@canonical.com>
+From: Seungwhan Youn <claude.youn@gmail.com>
+Subject: Re: [PATCH 5/5] ASoC: S3C64XX: Fix to support BCLK,
+	LRCLK rates 	setting
+Date: Sat, 7 Aug 2010 01:26:21 +0900
+Message-ID: <AANLkTimKjBgqNMkhYhSHQuJQWaBMjuRr6WbLpCPmCRc0@mail.gmail.com>
+References: <1281053592-3311-1-git-send-email-sw.youn@samsung.com>
+	<1281054999-18243-1-git-send-email-sw.youn@samsung.com>
+	<AANLkTim2g4=j0TdYZb7QCbyZVJvhxMsCFa4yFokJCu1W@mail.gmail.com>
+	<AANLkTikQ2Mb=7mKghxJep-h4m2Myi3kF1ugKQHrjf1_y@mail.gmail.com>
+	<20100806111750.GE398@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id F14AA10396C
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C0B11037F9
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Aug 2010 17:53:39 +0200 (CEST)
-Received: by vws20 with SMTP id 20so6898508vws.38
-	for <alsa-devel@alsa-project.org>; Fri, 06 Aug 2010 08:53:38 -0700 (PDT)
-In-Reply-To: <4C5BECD2.4050208@canonical.com>
+	Fri,  6 Aug 2010 18:26:22 +0200 (CEST)
+Received: by wwb17 with SMTP id 17so4999655wwb.20
+	for <alsa-devel@alsa-project.org>; Fri, 06 Aug 2010 09:26:21 -0700 (PDT)
+In-Reply-To: <20100806111750.GE398@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,25 +28,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Seungwhan Youn <sw.youn@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday, August 6, 2010, David Henningsson
-<david.henningsson@canonical.com> wrote:
-> 2010-08-06 12:48, Liam Girdwood skrev:
-
-> Let's hear if more people has something to say about this proposal. If
-> I'm the only one thinking that a split would be good, obviously it
-> should stay the way it is :-)
-
-I'm pretty sure that anyone who works on ASOC drivers would be opposed
-to a split.  Sometimes it's hard to know whether a problem I'm having
-is because of asoc or alsa.
-
-My vote is against splitting.
-
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+T24gRnJpLCBBdWcgNiwgMjAxMCBhdCA4OjE3IFBNLCBNYXJrIEJyb3duCjxicm9vbmllQG9wZW5z
+b3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gRnJpLCBBdWcgMDYsIDIwMTAgYXQg
+MDM6MDI6NDlQTSArMDkwMCwgU2V1bmd3aGFuIFlvdW4gd3JvdGU6Cj4KPj4gSSBzZWUsIGlmIE1h
+cmsncyBvcGluaW9uIGlzIHNhbWUgYXMgYmVmb3JlLCBJIHRoaW5rIEkgY2FuIHRyeSB0byBtYWtl
+Cj4+IGFub3RoZXIgcGF0Y2ggZm9yIGl0LiA6KQo+Cj4gSSB3aWxsIGxvb2sgYXQgdGhpcyBteXNl
+bGYsIHRoZSBtYWpvciBibG9ja2VyIG9uIGRvaW5nIHNvIGhhZCBiZWVuIHRoYXQKPiBmb3IgbWFu
+eSBrZXJuZWwgcmVsZWFzZXMgaXQgd2FzIG5vdCBwb3NzaWJsZSB0byB1c2UgdGhlIElJU3Y0IGlu
+dGVyZmFjZQo+IHNpbmNlIHRoZSBzdXBwb3J0IGZvciB0aGUgSUlTdjQgbWFpbiBjbG9jayBkaWRu
+J3QgZ2V0IG1lcmdlZCBzbyBldmVyeQo+IHRpbWUgSSBzcGVudCBhbnkgdGltZSBvbiB0aGlzIGl0
+IHdhcyBhbGwgY29uc3VtZWQgaW1wbGVtZW50aW5nIHRoYXQgYW5kCj4gcmVzdWJtaXR0aW5nIGNo
+YW5nZXMgZm9yIHRoYXQuIMKgVGhhdCBhcHBlYXJzIHRvIGJlIHNvcnRlZCBpbiBhdCBsZWFzdAo+
+IDIuNi4zNCBzbyBJIGNhbiBub3cgcnVuIHRlc3RzIG11Y2ggbW9yZSBlYXNpbHkuCj4KCk9rYXks
+IFRoYW5rcy4KCkNsYXVkZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
