@@ -1,17 +1,22 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 2/2] ASoC: multi-comp: twl4030: TI OMAP Platform
-Date: Fri,  6 Aug 2010 08:49:55 +0300
-Message-ID: <1281073795-4364-3-git-send-email-peter.ujfalusi@nokia.com>
-References: <1281073795-4364-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Seungwhan Youn <claude.youn@gmail.com>
+Subject: Re: [PATCH 4/5] ASoC: wm8580: Add to support Master
+	Mode Rates
+Date: Fri, 6 Aug 2010 14:54:30 +0900
+Message-ID: <AANLkTin6nHMgcLDr=QYBMMn4_5oDwCQDTHuGDgyr2j7p@mail.gmail.com>
+References: <1281053592-3311-1-git-send-email-sw.youn@samsung.com>
+	<1281054738-15387-1-git-send-email-sw.youn@samsung.com>
+	<AANLkTimkhYOXcEz+LJK29pM3=CU5urW0QOSktgg6OTCA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa02.nokia.com (mgw-sa02.nokia.com [147.243.1.48])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4F3C924399
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0A8A124390
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Aug 2010 07:49:56 +0200 (CEST)
-In-Reply-To: <1281073795-4364-1-git-send-email-peter.ujfalusi@nokia.com>
+	Fri,  6 Aug 2010 07:54:30 +0200 (CEST)
+Received: by wwb17 with SMTP id 17so4448643wwb.20
+	for <alsa-devel@alsa-project.org>; Thu, 05 Aug 2010 22:54:30 -0700 (PDT)
+In-Reply-To: <AANLkTimkhYOXcEz+LJK29pM3=CU5urW0QOSktgg6OTCA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,189 +26,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: Jassi Brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Seungwhan Youn <sw.youn@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Changes for twl4030 codec:
-- in mfd level
-- in machine level
-
-This can be squashed to 'ASoC: multi-component - TI OMAP Platform'
-commit for now.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
- drivers/mfd/twl-core.c        |    2 +-
- drivers/mfd/twl4030-codec.c   |    4 ++--
- include/linux/i2c/twl.h       |    6 +++++-
- sound/soc/omap/igep0020.c     |    1 -
- sound/soc/omap/omap2evm.c     |    1 -
- sound/soc/omap/omap3beagle.c  |    1 -
- sound/soc/omap/omap3evm.c     |    1 -
- sound/soc/omap/omap3pandora.c |    1 -
- sound/soc/omap/overo.c        |    1 -
- sound/soc/omap/sdp3430.c      |    4 +++-
- sound/soc/omap/zoom2.c        |    4 +++-
- 11 files changed, 14 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/mfd/twl-core.c b/drivers/mfd/twl-core.c
-index be15203..5d0fb60 100644
---- a/drivers/mfd/twl-core.c
-+++ b/drivers/mfd/twl-core.c
-@@ -698,7 +698,7 @@ add_children(struct twl4030_platform_data *pdata, unsigned long features)
- 
- 	if (twl_has_codec() && pdata->codec && twl_class_is_4030()) {
- 		sub_chip_id = twl_map[TWL_MODULE_AUDIO_VOICE].sid;
--		child = add_child(sub_chip_id, "twl4030_audio",
-+		child = add_child(sub_chip_id, "twl4030-audio",
- 				pdata->codec, sizeof(*pdata->codec),
- 				false, 0, 0);
- 		if (IS_ERR(child))
-diff --git a/drivers/mfd/twl4030-codec.c b/drivers/mfd/twl4030-codec.c
-index e9e64e1..9a4b196 100644
---- a/drivers/mfd/twl4030-codec.c
-+++ b/drivers/mfd/twl4030-codec.c
-@@ -249,14 +249,14 @@ static int __devexit twl4030_codec_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--MODULE_ALIAS("platform:twl4030_audio");
-+MODULE_ALIAS("platform:twl4030-audio");
- 
- static struct platform_driver twl4030_codec_driver = {
- 	.probe		= twl4030_codec_probe,
- 	.remove		= __devexit_p(twl4030_codec_remove),
- 	.driver		= {
- 		.owner	= THIS_MODULE,
--		.name	= "twl4030_audio",
-+		.name	= "twl4030-audio",
- 	},
- };
- 
-diff --git a/include/linux/i2c/twl.h b/include/linux/i2c/twl.h
-index 6de90bf..4793d8a 100644
---- a/include/linux/i2c/twl.h
-+++ b/include/linux/i2c/twl.h
-@@ -553,8 +553,12 @@ extern void twl4030_power_init(struct twl4030_power_data *triton2_scripts);
- extern int twl4030_remove_script(u8 flags);
- 
- struct twl4030_codec_audio_data {
--	unsigned int	audio_mclk;
-+	unsigned int audio_mclk; /* not used, will be removed */
-+	unsigned int digimic_delay; /* in ms */
- 	unsigned int ramp_delay_value;
-+	unsigned int offset_cncl_path;
-+	unsigned int check_defaults:1;
-+	unsigned int reset_registers:1;
- 	unsigned int hs_extmute:1;
- 	void (*set_hs_extmute)(int mute);
- };
-diff --git a/sound/soc/omap/igep0020.c b/sound/soc/omap/igep0020.c
-index 050d81f..d296cfc 100644
---- a/sound/soc/omap/igep0020.c
-+++ b/sound/soc/omap/igep0020.c
-@@ -33,7 +33,6 @@
- 
- #include "omap-mcbsp.h"
- #include "omap-pcm.h"
--#include "../codecs/twl4030.h"
- 
- static int igep2_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
-diff --git a/sound/soc/omap/omap2evm.c b/sound/soc/omap/omap2evm.c
-index 3af2c17..38cd189 100644
---- a/sound/soc/omap/omap2evm.c
-+++ b/sound/soc/omap/omap2evm.c
-@@ -35,7 +35,6 @@
- 
- #include "omap-mcbsp.h"
- #include "omap-pcm.h"
--#include "../codecs/twl4030.h"
- 
- static int omap2evm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
-diff --git a/sound/soc/omap/omap3beagle.c b/sound/soc/omap/omap3beagle.c
-index ebad1de..7c11e1a 100644
---- a/sound/soc/omap/omap3beagle.c
-+++ b/sound/soc/omap/omap3beagle.c
-@@ -33,7 +33,6 @@
- 
- #include "omap-mcbsp.h"
- #include "omap-pcm.h"
--#include "../codecs/twl4030.h"
- 
- static int omap3beagle_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
-diff --git a/sound/soc/omap/omap3evm.c b/sound/soc/omap/omap3evm.c
-index bd45f62..1ac5bab 100644
---- a/sound/soc/omap/omap3evm.c
-+++ b/sound/soc/omap/omap3evm.c
-@@ -31,7 +31,6 @@
- 
- #include "omap-mcbsp.h"
- #include "omap-pcm.h"
--#include "../codecs/twl4030.h"
- 
- static int omap3evm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
-diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
-index f306f8f..dbd9d96 100644
---- a/sound/soc/omap/omap3pandora.c
-+++ b/sound/soc/omap/omap3pandora.c
-@@ -35,7 +35,6 @@
- 
- #include "omap-mcbsp.h"
- #include "omap-pcm.h"
--#include "../codecs/twl4030.h"
- 
- #define OMAP3_PANDORA_DAC_POWER_GPIO	118
- #define OMAP3_PANDORA_AMP_POWER_GPIO	14
-diff --git a/sound/soc/omap/overo.c b/sound/soc/omap/overo.c
-index 81e284e..e95a607 100644
---- a/sound/soc/omap/overo.c
-+++ b/sound/soc/omap/overo.c
-@@ -33,7 +33,6 @@
- 
- #include "omap-mcbsp.h"
- #include "omap-pcm.h"
--#include "../codecs/twl4030.h"
- 
- static int overo_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
-diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
-index 953abfb..76ce77b9 100644
---- a/sound/soc/omap/sdp3430.c
-+++ b/sound/soc/omap/sdp3430.c
-@@ -36,9 +36,11 @@
- #include <mach/gpio.h>
- #include <plat/mcbsp.h>
- 
-+/* Register descriptions for twl4030 codec part */
-+#include <linux/mfd/twl4030-codec.h>
-+
- #include "omap-mcbsp.h"
- #include "omap-pcm.h"
--#include "../codecs/twl4030.h"
- 
- /* TWL4030 PMBR1 Register */
- #define TWL4030_INTBR_PMBR1		0x0D
-diff --git a/sound/soc/omap/zoom2.c b/sound/soc/omap/zoom2.c
-index 0810b99..338dc95 100644
---- a/sound/soc/omap/zoom2.c
-+++ b/sound/soc/omap/zoom2.c
-@@ -32,9 +32,11 @@
- #include <mach/board-zoom.h>
- #include <plat/mcbsp.h>
- 
-+/* Register descriptions for twl4030 codec part */
-+#include <linux/mfd/twl4030-codec.h>
-+
- #include "omap-mcbsp.h"
- #include "omap-pcm.h"
--#include "../codecs/twl4030.h"
- 
- #define ZOOM2_HEADSET_MUX_GPIO		(OMAP_MAX_GPIO_LINES + 15)
- 
--- 
-1.7.2
+T24gRnJpLCBBdWcgNiwgMjAxMCBhdCAxOjMyIFBNLCBKYXNzaSBCcmFyIDxqYXNzaXNpbmdoYnJh
+ckBnbWFpbC5jb20+IHdyb3RlOgo+IE9uIEZyaSwgQXVnIDYsIDIwMTAgYXQgOTozMiBBTSwgU2V1
+bmd3aGFuIFlvdW4gPHN3LnlvdW5Ac2Ftc3VuZy5jb20+IHdyb3RlOgo+PiBUaGlzIHBhdGNoIGFk
+ZHMgdG8gc3VwcG9ydCBNYXN0ZXIgTW9kZSBMUkNMSywgQkNMSyByYXRlcwo+PiBzZXR0aW5nIGZv
+ciB3bTg1ODAuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IFNldW5nd2hhbiBZb3VuIDxzdy55b3VuQHNh
+bXN1bmcuY29tPgo+PiAtLS0KPj4gwqBzb3VuZC9zb2MvY29kZWNzL3dtODU4MC5jIHwgwqAgNTEg
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4+IMKgc291bmQv
+c29jL2NvZGVjcy93bTg1ODAuaCB8IMKgIMKgMiArCj4+IMKgMiBmaWxlcyBjaGFuZ2VkLCA1MyBp
+bnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29j
+L2NvZGVjcy93bTg1ODAuYyBiL3NvdW5kL3NvYy9jb2RlY3Mvd204NTgwLmMKPj4gaW5kZXggZDI4
+MmViMy4uYTJiYjJhNCAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29jL2NvZGVjcy93bTg1ODAuYwo+
+PiArKysgYi9zb3VuZC9zb2MvY29kZWNzL3dtODU4MC5jCj4+IEBAIC03MDUsNiArNzA1LDU3IEBA
+IHN0YXRpYyBpbnQgd204NTgwX3NldF9kYWlfY2xrZGl2KHN0cnVjdCBzbmRfc29jX2RhaSAqY29k
+ZWNfZGFpLAo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHNuZF9zb2Nfd3JpdGUoY29kZWMsIFdN
+ODU4MF9DTEtTRUwsIHJlZyk7Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgYnJlYWs7Cj4+Cj4+
+ICsgwqAgwqAgwqAgY2FzZSBXTTg1ODBfTFJDTEtfUkFURToKPj4gKyDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCByZWcgPSBzbmRfc29jX3JlYWQoY29kZWMsIFdNODU4MF9QQUlGMSArIGNvZGVjX2RhaS0+
+aWQpOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJlZyAmPSB+V004NTgwX0FJRl9SQVRFX01B
+U0s7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgc3dpdGNoIChkaXYpIHsKPj4gKyDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCBjYXNlIDEyODoKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCByZWcgfD0gV004NTgwX0FJRl9SQVRFXzEyODsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCBicmVhazsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBjYXNlIDE5MjoK
+Pj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZWcgfD0gV004NTgwX0FJRl9S
+QVRFXzE5MjsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBicmVhazsKPj4g
+KyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBjYXNlIDI1NjoKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCByZWcgfD0gV004NTgwX0FJRl9SQVRFXzI1NjsKPj4gKyDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBicmVhazsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBj
+YXNlIDM4NDoKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZWcgfD0gV004
+NTgwX0FJRl9SQVRFXzM4NDsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBi
+cmVhazsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBjYXNlIDUxMjoKPj4gKyDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZWcgfD0gV004NTgwX0FJRl9SQVRFXzUxMjsKPj4gKyDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBicmVhazsKPj4gKyDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCBjYXNlIDc2ODoKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBy
+ZWcgfD0gV004NTgwX0FJRl9SQVRFXzc2ODsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCBicmVhazsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBjYXNlIDExNTI6Cj4+ICsg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmVnIHw9IFdNODU4MF9BSUZfUkFURV8x
+MTUyOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGJyZWFrOwo+PiArIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIGRlZmF1bHQ6Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgcmV0dXJuIC1FSU5WQUw7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgfQo+PiAr
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHNuZF9zb2Nfd3JpdGUoY29kZWMsIFdNODU4MF9QQUlGMSAr
+IGNvZGVjX2RhaS0+aWQsIHJlZyk7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgYnJlYWs7Cj4+
+ICsKPj4gKyDCoCDCoCDCoCBjYXNlIFdNODU4MF9CQ0xLX1JBVEU6Cj4+ICsgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgcmVnID0gc25kX3NvY19yZWFkKGNvZGVjLCBXTTg1ODBfUEFJRjEgKyBjb2RlY19k
+YWktPmlkKTsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZWcgJj0gfldNODU4MF9BSUZfQkNM
+S1NFTF9NQVNLOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHN3aXRjaCAoZGl2KSB7Cj4+ICsg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgY2FzZSA2NDoKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCByZWcgfD0gV004NTgwX0FJRl9CQ0xLU0VMXzY0Owo+PiArIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIGJyZWFrOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGNh
+c2UgMzI6Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmVnIHw9IFdNODU4
+MF9BSUZfQkNMS1NFTF8zMjsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBi
+cmVhazsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBjYXNlIDE2Ogo+PiArIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJlZyB8PSBXTTg1ODBfQUlGX0JDTEtTRUxfMTY7Cj4+ICsg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgYnJlYWs7Cj4+ICsgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgZGVmYXVsdDoKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBy
+ZWcgfD0gV004NTgwX0FJRl9CQ0xLU0VMX1NZU0NMSzsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCBicmVhazsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCB9Cj4+ICsgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgc25kX3NvY193cml0ZShjb2RlYywgV004NTgwX1BBSUYxICsgY29k
+ZWNfZGFpLT5pZCwgcmVnKTsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBicmVhazsKPj4gKwo+
+PiDCoCDCoCDCoCDCoGRlZmF1bHQ6Cj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgcmV0dXJuIC1F
+SU5WQUw7Cj4+IMKgIMKgIMKgIMKgfQo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NvZGVjcy93
+bTg1ODAuaCBiL3NvdW5kL3NvYy9jb2RlY3Mvd204NTgwLmgKPj4gaW5kZXggYWViNjVlZi4uMjI3
+MmUzNiAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29jL2NvZGVjcy93bTg1ODAuaAo+PiArKysgYi9z
+b3VuZC9zb2MvY29kZWNzL3dtODU4MC5oCj4+IEBAIC0yMiw2ICsyMiw4IEBACj4+IMKgI2RlZmlu
+ZSBXTTg1ODBfREFDX0NMS1NFTCAyCj4+IMKgI2RlZmluZSBXTTg1ODBfQURDX0NMS1NFTCAzCj4+
+IMKgI2RlZmluZSBXTTg1ODBfQ0xLT1VUU1JDIMKgNAo+PiArI2RlZmluZSBXTTg1ODBfTFJDTEtf
+UkFURSA1Cj4+ICsjZGVmaW5lIFdNODU4MF9CQ0xLX1JBVEUgwqA2Cj4+Cj4+IMKgI2RlZmluZSBX
+TTg1ODBfQ0xLU1JDX01DTEsgwqAgwqAxCj4+IMKgI2RlZmluZSBXTTg1ODBfQ0xLU1JDX0FEQ01D
+TEsgMgo+Cj4gQWdhaW4uLi4uIGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJt
+YWlsL2Fsc2EtZGV2ZWwvMjAwOS1TZXB0ZW1iZXIvMDIxMDA1Lmh0bWwKPgo+IEFsc28gSU1PLCBX
+TTg1ODBfTUNMS1JBVElPIGFuZCDCoFdNODU4MF9CQ0xLUkFUSU8gc291bmQgYmV0dGVyCj4gdGhh
+biBXTTg1ODBfTFJDTEtfUkFURSBhbmQgV004NTgwX0JDTEtfUkFURSByZXNwLiBUaGF0IGlzIGlm
+IHRoZXkKPiBhcmUgdG8gYmUgYWNjZXB0ZWQuCj4KCldoZW4gSSB3cml0ZSB0aGlzIGNvZGUsIEkg
+YWxzbyB0aGluayB0aGF0IG5hbWUgJ1dNODU4MF9NQ0xLUkFUSU8nIGFuZAonV004NTgwX0JDTEtU
+UkFUSU8nLiBCdXQgSSB0aGluayB0aGF0ICdXTTg1ODBfTFJDTEtfUkFURScgYW5kCidXTTg1ODBf
+QkNMS19SQVRFJyBpcyBiZXR0ZXIgYmVjYXVzZSBvZiB0aGVzZSBhcmUgbmFtZWQgYWZ0ZXIgd204
+NTgwCnVzZXIgbWFudWFsLCB0byBhdm9pZCB0byBiZSBjb25mdXNlZCBhbm90aGVyIGd1eSB3aG8g
+c2VlIHRoaXMgY29kZQp3aXRoIHdtODU4MCBtYW51YWwuIElmIG90aGVyIGd1eXMgdGhpbmsgc2Ft
+ZSBhcyB5b3UsIEknbSByZWFkeSB0bwptb2RpZnkgdGhpcy4gOikKCgpUaGFua3MgZm9yIHlvdXIg
+b3Bpbmlvbi4gOikKCkNsYXVkZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
