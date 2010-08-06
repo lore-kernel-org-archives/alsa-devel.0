@@ -1,17 +1,15 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: alsa-asoc-devel?
-Date: Fri, 06 Aug 2010 13:06:58 +0200
-Message-ID: <4C5BECD2.4050208@canonical.com>
-References: <4C5BC9E9.2000407@canonical.com> <1281091726.3077.6.camel@odin>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH v2 0/3] ASoC: multi-comp: OMAP platform fixes
+Date: Fri,  6 Aug 2010 14:10:35 +0300
+Message-ID: <1281093038-24247-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id EC194103998
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 11B4110399E
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Aug 2010 13:07:01 +0200 (CEST)
-In-Reply-To: <1281091726.3077.6.camel@odin>
+	Fri,  6 Aug 2010 13:10:46 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,37 +19,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: jkrzyszt@tis.icnet.pl, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-2010-08-06 12:48, Liam Girdwood skrev:
-> On Fri, 2010-08-06 at 10:38 +0200, David Henningsson wrote:
->> Hi,
->>
->> There is a lot of asoc traffic on this list, and I assume many people
->> following this list are not interested in ASoC patches.
->>
->> Have you considered splitting the alsa-devel mailing list into an
->> alsa-asoc-devel mailing list, for ASoC specific stuff, and alsa-devel
->> for everything else?
-> 
-> IMO, I think it's pretty much fine where it is atm. It's easy enough to
-> filter the posts between ASoC, HDA, OSS etc if you are interested in a
-> particular area. Moving the list would also mean core ALSA changes may
-> not be fully discussed by ASoC developers/users etc.
+Hello,
 
-I'm not saying ASoC developers and users should stop subscribing to
-alsa-devel, if they want to know about core ALSA changes.
+Changes since v1:
+- include plat/mcbsp.c in arch/arm/mach-omap1/devices.c
+- Runtime port number configuration based on OMAP type (both omap1 and omap2)
 
-Also, filtering is easy enough for local mailboxes, but not for people
-following the list via gmane.org, or when looking through alsa-devel's
-archives.
+Commit message from the first series:
 
-Let's hear if more people has something to say about this proposal. If
-I'm the only one thinking that a split would be good, obviously it
-should stay the way it is :-)
+The following series introduces some cleanups for OMAP platforms in
+multi-component branch.
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+- Enable audio for OMAP1 class
+- Registers only the available amount of omap-mcbsp-dai devices for OMAP2,3,
+  and 4
+
+Please do verify, if the chages are correct, especially the number of McBSP
+ports on different devices.
+
+Liam: in case you take this, you can squash this to the corresponding commit.
+
+Since I do not have access at the moment to OMAP1 based board, the changes has
+not been tested, but at least it should allow the audio (in theory)..
+
+Peter
+
+---
+Peter Ujfalusi (3):
+  ASoC: multi-comp: OMAP McBSP: use macro for platform_device
+  ASoC: multi-comp: OMAP McBSP: Enable audio on OMAP1 platform
+  ASoC: multi-comp: OMAP2,3,4 McBSP: register correct number of ports
+
+ arch/arm/mach-omap1/devices.c           |   26 +++++++++++++++++
+ arch/arm/mach-omap2/devices.c           |   46 ++++++++++++-------------------
+ arch/arm/plat-omap/include/plat/mcbsp.h |    7 +++++
+ 3 files changed, 51 insertions(+), 28 deletions(-)
+
+--
+1.7.2
