@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/5] ASoC: S3C64XX: Add ADC source clock
-	setting
-Date: Fri, 6 Aug 2010 11:26:19 +0100
-Message-ID: <20100806102619.GC398@rakim.wolfsonmicro.main>
-References: <1281053592-3311-1-git-send-email-sw.youn@samsung.com>
-	<1281054064-4730-1-git-send-email-sw.youn@samsung.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: alsa-asoc-devel?
+Date: Fri, 06 Aug 2010 11:48:46 +0100
+Message-ID: <1281091726.3077.6.camel@odin>
+References: <4C5BC9E9.2000407@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 05DDD24159
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 556AB10398F
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Aug 2010 12:26:21 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1281054064-4730-1-git-send-email-sw.youn@samsung.com>
+	Fri,  6 Aug 2010 12:48:49 +0200 (CEST)
+Received: by wyb42 with SMTP id 42so7542656wyb.38
+	for <alsa-devel@alsa-project.org>; Fri, 06 Aug 2010 03:48:48 -0700 (PDT)
+In-Reply-To: <4C5BC9E9.2000407@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,16 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Seungwhan Youn <sw.youn@samsung.com>
-Cc: alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, Seungwhan Youn <claude.youn@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 06, 2010 at 09:21:04AM +0900, Seungwhan Youn wrote:
-> This patch adds ADC source clock setting to set wm8580 use ADC
-> source clock to ADC_MCLK.
+On Fri, 2010-08-06 at 10:38 +0200, David Henningsson wrote:
+> Hi,
 > 
-> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
-> ---
->  sound/soc/s3c24xx/smdk64xx_wm8580.c |    6 ++++++
+> There is a lot of asoc traffic on this list, and I assume many people
+> following this list are not interested in ASoC patches.
+> 
+> Have you considered splitting the alsa-devel mailing list into an
+> alsa-asoc-devel mailing list, for ASoC specific stuff, and alsa-devel
+> for everything else?
+> 
 
-This isn't a patch for S3C64xx, this is a patch for the SMDK boards.
+IMO, I think it's pretty much fine where it is atm. It's easy enough to
+filter the posts between ASoC, HDA, OSS etc if you are interested in a
+particular area. Moving the list would also mean core ALSA changes may
+not be fully discussed by ASoC developers/users etc.
+
+Liam
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
