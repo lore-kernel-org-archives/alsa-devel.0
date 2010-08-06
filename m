@@ -1,21 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Alsamixer-Qt4 0.4.0 released
-Date: Fri, 6 Aug 2010 08:26:17 +0800
-Message-ID: <AANLkTimSVVvT2zvhKhcSPyOgf76q2ea61xtjEOd3Kp3t@mail.gmail.com>
-References: <4C595A52.7030401@gmx.de>
-	<AANLkTim=OvWfYgvRLvGgELg5AiJPYZk0snkEHSxxdcaC@mail.gmail.com>
-	<4C5AB324.2020006@gmx.de>
+From: Seungwhan Youn <sw.youn@samsung.com>
+Subject: [PATCH 1/5] ASoC: wm8580: Add to support ADC clock
+	source setting
+Date: Fri,  6 Aug 2010 09:18:17 +0900
+Message-ID: <1281053897-4675-1-git-send-email-sw.youn@samsung.com>
+References: <1281053592-3311-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 304A8243A3
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5C09D24399
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Aug 2010 02:26:18 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so2522853ewy.38
-	for <alsa-devel@alsa-project.org>; Thu, 05 Aug 2010 17:26:18 -0700 (PDT)
-In-Reply-To: <4C5AB324.2020006@gmx.de>
+	Fri,  6 Aug 2010 02:29:38 +0200 (CEST)
+In-Reply-To: <1281053592-3311-1-git-send-email-sw.youn@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,144 +22,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Seungwhan Youn <sw.youn@samsung.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Seungwhan Youn <claude.youn@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-2010/8/5 Sebastian H. <vand2@gmx.de>
+This patch adds to support additional ADC clock source setting
+with R8 register for CLKSRC on wm8580.
 
-> Hello Raymond
->
-> >> I've been working on Alsamixer-Qt4 lately and compiled
-> >> the changes into a new release version 0.4.0.
-> >
-> > 1) au8830 Equalizer
-> > you can find the screenshot of the equalizer ( gnome volume control) and
-> the
-> > correct implementation of the equalizer of the vortexcontrol and python
-> > version of the equalizer
-> >
-> > the asound.state of au8830
-> >
-> > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3678
->
-> Ok, I tried to figure out how this relates to alsamixer-qt4 (since I
-> don't have the sound card).
->
-> Please correct me if I'm wrong.
->
-> The "EQ Peaks" Simple Mixer Element has more channels than the 9
-> channels described in the snd_mixer_selem_channel_id_t enum.
-> ( SND_MIXER_SCHN_FRONT_LEFT up to SND_MIXER_SCHN_REAR_CENTER ).
->
+Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+---
+ sound/soc/codecs/wm8580.c |   33 +++++++++++++++++++++++++++++++++
+ sound/soc/codecs/wm8580.h |   16 +++++++++-------
+ 2 files changed, 42 insertions(+), 7 deletions(-)
 
-EQ Peaks is a  volatile control without write access  (i.e. you cannot use
-slider since you cannot modify the value ) which provide the peak of  10
-bands (31Hz, 63Hz, 125Hz, 250Hz, 500Hz, 1Kz, 2Kz, 4Kz, 8Kz , 16Kz) stereo
-channels of the au8830's hardware equalizer  ,  ( one stereo vu-meters at
-each band )
-
-The values are ordered  by left channel of 10 bands followed by right
-channel of 10 bands
-
-
- control.12 {
-        comment.access read
-        comment.type INTEGER
-        comment.count 20
-        comment.range '0 - 32767'
-        iface MIXER
-        name 'EQ Peaks'
-        value.0 1
-        value.1 1
-        value.2 0
-        value.3 0
-        value.4 1
-        value.5 1
-        value.6 1
-        value.7 1
-        value.8 0
-        value.9 0
-        value.10 1
-        value.11 1
-        value.12 0
-        value.13 0
-        value.14 0
-        value.15 0
-        value.16 1
-        value.17 1
-        value.18 0
-        value.19 0
-    }
-
-EQ enable switch control the output of DSP pass through/bypass the equalizer
-,
-so your application can based on the on/off state of the switch to
-start/stop a timer which  read the value from EQ peak control and display on
-10 stereo vu-meters at regular time intervals
-
-There are also 10  stereo volume controls to control gain/atten of 10 bands
-of the hardware equalizer
-
-if your application are unable to display EQ peaks , it is better to skip
-this "EQ peaks" control with count =20 or simple mixer control with 20
-channels
-
-All the EQ controls appear on capture side is a bug of alsa-lib or the
-driver , either change the name of those  "EQ xx" controls to "EQ xx
-Playback" in the driver or add "EQ" to the definition of the controls name
-
-
-Simple mixer control 'EQ Peaks',0
-  Capabilities: volume
-  Playback channels: Front Left - Front Right - Rear Left - Rear Right -
-Front Center - Woofer - Side Left - Side Right - Rear Center - ? - ? - ? - ?
-- ? - ? - ? - ? - ? - ? - ?
-  Capture channels: Front Left - Front Right - Rear Left - Rear Right -
-Front Center - Woofer - Side Left - Side Right - Rear Center - ? - ? - ? - ?
-- ? - ? - ? - ? - ? - ? - ?
-  Limits: 0 - 32767
-  Front Left: 0 [0%]
-  Front Right: 0 [0%]
-  Rear Left: 0 [0%]
-  Rear Right: 0 [0%]
-  Front Center: 0 [0%]
-  Woofer: 0 [0%]
-  Side Left: 0 [0%]
-  Side Right: 0 [0%]
-  Rear Center: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-  ?: 0 [0%]
-
-
-
-
->
-> http://www.alsa-project.org/alsa-doc/alsa-lib/group___simple_mixer.html#g9cb8437b2f92d168c43e4da2c667e823
->
-> Alsamixer-Qt4 currently can only show these 9 channels - in the channels
-> mixer dialog - which is not sufficient.
->
-> I did not find a function like snd_mixer_selem_playback_channels
-> which would return the number of channels.
-> So to find out how many channels there actually are I would have to do
-> something like this
->
-> int num_playback = 0;
-> for ( int ii=0; ii < 1024; ++ii ) {
->        if ( snd_mixer_selem_has_playback_channel ( elem, ii ) ) {
->                num_playback += 1;
->        } else {
->                break;
->         }
-> }
->
->
+diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
+index c3571ee..e342da5 100644
+--- a/sound/soc/codecs/wm8580.c
++++ b/sound/soc/codecs/wm8580.c
+@@ -110,6 +110,12 @@
+ #define WM8580_CLKSEL_DAC_CLKSEL_PLLA 0x01
+ #define WM8580_CLKSEL_DAC_CLKSEL_PLLB 0x02
+ 
++#define WM8580_CLKSEL_ADC_CLKSEL_MASK     0x0c
++#define WM8580_CLKSEL_ADC_CLKSEL_ADCMCLK  0x00
++#define WM8580_CLKSEL_ADC_CLKSEL_PLLA     0x04
++#define WM8580_CLKSEL_ADC_CLKSEL_PLLB     0x08
++#define WM8580_CLKSEL_ADC_CLKSEL_MCLK     0x0c
++
+ /* AIF control 1 (registers 9h-bh) */
+ #define WM8580_AIF_RATE_MASK       0x7
+ #define WM8580_AIF_RATE_128        0x0
+@@ -672,6 +678,33 @@ static int wm8580_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
+ 		snd_soc_write(codec, WM8580_PLLB4, reg);
+ 		break;
+ 
++	case WM8580_ADC_CLKSEL:
++		reg = snd_soc_read(codec, WM8580_CLKSEL);
++		reg &= ~WM8580_CLKSEL_ADC_CLKSEL_MASK;
++
++		switch (div) {
++		case WM8580_CLKSRC_ADCMCLK:
++			reg |= WM8580_CLKSEL_ADC_CLKSEL_ADCMCLK;
++			break;
++
++		case WM8580_CLKSRC_MCLK:
++			reg |= WM8580_CLKSEL_ADC_CLKSEL_MCLK;
++			break;
++
++		case WM8580_CLKSRC_PLLA:
++			reg |= WM8580_CLKSEL_ADC_CLKSEL_PLLA;
++			break;
++
++		case WM8580_CLKSRC_PLLB:
++			reg |= WM8580_CLKSEL_ADC_CLKSEL_PLLB;
++			break;
++
++		default:
++			return -EINVAL;
++		}
++		snd_soc_write(codec, WM8580_CLKSEL, reg);
++		break;
++
+ 	default:
+ 		return -EINVAL;
+ 	}
+diff --git a/sound/soc/codecs/wm8580.h b/sound/soc/codecs/wm8580.h
+index 0dfb5dd..aeb65ef 100644
+--- a/sound/soc/codecs/wm8580.h
++++ b/sound/soc/codecs/wm8580.h
+@@ -20,13 +20,15 @@
+ 
+ #define WM8580_MCLK       1
+ #define WM8580_DAC_CLKSEL 2
+-#define WM8580_CLKOUTSRC  3
+-
+-#define WM8580_CLKSRC_MCLK 1
+-#define WM8580_CLKSRC_PLLA 2
+-#define WM8580_CLKSRC_PLLB 3
+-#define WM8580_CLKSRC_OSC  4
+-#define WM8580_CLKSRC_NONE 5
++#define WM8580_ADC_CLKSEL 3
++#define WM8580_CLKOUTSRC  4
++
++#define WM8580_CLKSRC_MCLK    1
++#define WM8580_CLKSRC_ADCMCLK 2
++#define WM8580_CLKSRC_PLLA    3
++#define WM8580_CLKSRC_PLLB    4
++#define WM8580_CLKSRC_OSC     5
++#define WM8580_CLKSRC_NONE    6
+ 
+ #define WM8580_DAI_PAIFRX 0
+ #define WM8580_DAI_PAIFTX 1
+-- 
+1.6.2.5
