@@ -1,20 +1,24 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 3/3] ASoC: multi-comp: OMAP2, 3,
-	4 McBSP: register correct number of ports
-Date: Fri, 6 Aug 2010 11:18:56 +0300
-Message-ID: <201008061118.56711.peter.ujfalusi@nokia.com>
-References: <1281080355-22589-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1281080355-22589-4-git-send-email-peter.ujfalusi@nokia.com>
-	<20100806110808.8452ec7a.jhnikula@gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: alsa-asoc-devel?
+Date: Fri, 06 Aug 2010 10:38:01 +0200
+Message-ID: <4C5BC9E9.2000407@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id E6F58103975
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3249124341
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Aug 2010 10:19:22 +0200 (CEST)
-In-Reply-To: <20100806110808.8452ec7a.jhnikula@gmail.com>
+	Fri,  6 Aug 2010 10:38:00 +0200 (CEST)
+Received: from hutte.canonical.com ([91.189.90.181])
+	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
+	id 1OhIRD-0002zo-8e
+	for <alsa-devel@alsa-project.org>; Fri, 06 Aug 2010 09:37:59 +0100
+Received: from [88.83.60.91] (helo=[192.168.8.103])
+	by hutte.canonical.com with esmtpsa
+	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
+	(envelope-from <david.henningsson@canonical.com>) id 1OhIRD-0001HL-4w
+	for alsa-devel@alsa-project.org; Fri, 06 Aug 2010 09:37:59 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,17 +28,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "arunks@mistralsolutions.com" <arunks@mistralsolutions.com>, "jkrzyszt@tis.icnet.pl" <jkrzyszt@tis.icnet.pl>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 06 August 2010 11:08:08 ext Jarkko Nikula wrote:
-> This must be done at runtime since we can have multi omap builds now.
-> So use cpu_is_omapxxx instead of conditional compilation. Simplifies
-> patch too :-)
+Hi,
 
-Yes, you are right, I'll do that.
-I'll do the same with OMAP1 (2 vs 3 ports)..
+There is a lot of asoc traffic on this list, and I assume many people
+following this list are not interested in ASoC patches.
 
-Thanks,
-P=E9ter
+Have you considered splitting the alsa-devel mailing list into an
+alsa-asoc-devel mailing list, for ASoC specific stuff, and alsa-devel
+for everything else?
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
