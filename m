@@ -1,20 +1,19 @@
-From: Andrea Gelmini <andrea.gelmini@gelma.net>
-Subject: [PATCH 13/15] sound: oss: au1550_ac97.c removed
-	duplicated #include
-Date: Thu,  5 Aug 2010 15:51:37 +0200
-Message-ID: <1281016299-23958-13-git-send-email-andrea.gelmini@gelma.net>
-References: <1281016299-23958-1-git-send-email-andrea.gelmini@gelma.net>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: [PATCH] ASoC: multi-component - Fix tlv320aic3x GPIO
+	initialization
+Date: Fri,  6 Aug 2010 10:04:38 +0300
+Message-ID: <1281078278-10675-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id F37D71038FB
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9654B243F2
 	for <alsa-devel@alsa-project.org>;
-	Thu,  5 Aug 2010 15:52:29 +0200 (CEST)
-Received: by wwa36 with SMTP id 36so789392wwa.2
-	for <alsa-devel@alsa-project.org>; Thu, 05 Aug 2010 06:52:29 -0700 (PDT)
-In-Reply-To: <1281016299-23958-1-git-send-email-andrea.gelmini@gelma.net>
+	Fri,  6 Aug 2010 09:03:35 +0200 (CEST)
+Received: by eye27 with SMTP id 27so2552114eye.38
+	for <alsa-devel@alsa-project.org>; Fri, 06 Aug 2010 00:03:35 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,26 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: gelma@gelma.net
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Ralf Baechle <ralf@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>, Andrea Gelmini <andrea.gelmini@gelma.net>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Andrea Gelmini <andrea.gelmini@gelma.net>
----
- sound/oss/au1550_ac97.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+aic3x_init does a soft reset first and thus TLV320AIC3x GPIO setup must be
+done after doing the basic init. Before multi-component the init was done
+at i2c probe time and GPIO setup at soc probe time.
 
-diff --git a/sound/oss/au1550_ac97.c b/sound/oss/au1550_ac97.c
-index c1070e3..3964306 100644
---- a/sound/oss/au1550_ac97.c
-+++ b/sound/oss/au1550_ac97.c
-@@ -49,7 +49,6 @@
- #include <linux/poll.h>
- #include <linux/bitops.h>
- #include <linux/spinlock.h>
--#include <linux/smp_lock.h>
- #include <linux/ac97_codec.h>
- #include <linux/mutex.h>
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+---
+Liam, squash into TI CODECs commit.
+---
+ sound/soc/codecs/tlv320aic3x.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 43fd9c1..0b80e24 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -1231,6 +1231,8 @@ static int aic3x_probe(struct snd_soc_codec *codec)
+ 	codec->hw_write = (hw_write_t) i2c_master_send;
+ 	codec->control_data = aic3x->control_data;
+ 
++	aic3x_init(codec);
++
+ 	if (aic3x->setup) {
+ 		/* setup GPIO functions */
+ 		aic3x_write(codec, AIC3X_GPIO1_REG,
+@@ -1239,8 +1241,6 @@ static int aic3x_probe(struct snd_soc_codec *codec)
+ 			    (aic3x->setup->gpio_func[1] & 0xf) << 4);
+ 	}
+ 
+-	aic3x_init(codec);
+-
+ 	snd_soc_add_controls(codec, aic3x_snd_controls,
+ 			     ARRAY_SIZE(aic3x_snd_controls));
  
 -- 
-1.7.2.1.85.g2d089
+1.7.1
