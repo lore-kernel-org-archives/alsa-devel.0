@@ -1,19 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 2/3] ASoC: multi-comp: OMAP McBSP: Enable
-	audio on OMAP1 platform
-Date: Fri, 6 Aug 2010 10:50:09 +0300
-Message-ID: <201008061050.41578.peter.ujfalusi@nokia.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH 0/3] ASoC: multi-comp: OMAP platform fixes
+Date: Fri, 6 Aug 2010 10:56:28 +0300
+Message-ID: <20100806105628.2971f8a1.jhnikula@gmail.com>
 References: <1281080355-22589-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1281080355-22589-3-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id B02EA2414A
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 749712414C
 	for <alsa-devel@alsa-project.org>;
-	Fri,  6 Aug 2010 09:50:59 +0200 (CEST)
-In-Reply-To: <1281080355-22589-3-git-send-email-peter.ujfalusi@nokia.com>
+	Fri,  6 Aug 2010 09:55:21 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so2582232ewy.38
+	for <alsa-devel@alsa-project.org>; Fri, 06 Aug 2010 00:55:21 -0700 (PDT)
+In-Reply-To: <1281080355-22589-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,78 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "arunks@mistralsolutions.com" <arunks@mistralsolutions.com>, "jkrzyszt@tis.icnet.pl" <jkrzyszt@tis.icnet.pl>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: jkrzyszt@tis.icnet.pl, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, arunks@mistralsolutions.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 06 August 2010 10:39:14 Ujfalusi Peter (Nokia-MS/Tampere) wrote:
-> OMAP1 class has 3 McBSP ports, if I'm not mistaken.
-> Enable the audio with multi-comp on OMAP1 class.
-> =
+Hi, notes for Arun and Janusz below.
 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> ---
->  arch/arm/mach-omap1/devices.c |   24 ++++++++++++++++++++++++
->  1 files changed, 24 insertions(+), 0 deletions(-)
-> =
+On Fri,  6 Aug 2010 10:39:12 +0300
+Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
 
-> diff --git a/arch/arm/mach-omap1/devices.c b/arch/arm/mach-omap1/devices.c
-> index 379100c..523bbc4 100644
-> --- a/arch/arm/mach-omap1/devices.c
-> +++ b/arch/arm/mach-omap1/devices.c
-> @@ -267,6 +267,29 @@ static inline void omap_init_sti(void)
->  static inline void omap_init_sti(void) {}
->  #endif
+> Hello,
+> 
+> The following series introduces some cleanups for OMAP platforms in
+> multi-component branch.
+> 
+> - Enable audio for OMAP1 class
 
-Hmm,
+There's a on-going development going on to update ASoC framework. This
+multi-compont work requires major changes and our problem is that we
+don't have any OMAP1 boards to test these changes.
 
- +#include <plat/mcbsp.h>
+We'd glad if you could test these changes with Peter's patches on OMAP1
+board.
 
-Might help at compile time ;)
+The ASoC multi-component development happens in
+origin/topic/multi-component branch of this tree:
 
-Liam, would you be so kind to fix this is you take the series.
-I could as well resend...
+git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git
 
-Thanks,
-P=E9ter
 
-> =
-
-> +#if defined(CONFIG_SND_SOC) || defined(CONFIG_SND_SOC_MODULE)
-> +
-> +static struct platform_device omap_pcm =3D {
-> +	.name	=3D "omap-pcm-audio",
-> +	.id	=3D -1,
-> +};
-> +
-> +OMAP_MCBSP_PLATFORM_DEVICE(1);
-> +OMAP_MCBSP_PLATFORM_DEVICE(2);
-> +OMAP_MCBSP_PLATFORM_DEVICE(3);
-> +
-> +static void omap_init_audio(void)
-> +{
-> +	platform_device_register(&omap_mcbsp1);
-> +	platform_device_register(&omap_mcbsp2);
-> +	platform_device_register(&omap_mcbsp3);
-> +	platform_device_register(&omap_pcm);
-> +}
-> +
-> +#else
-> +static inline void omap_init_audio(void) {}
-> +#endif
-> +
->  /*----------------------------------------------------------------------=
---
-> -*/
-> =
-
->  /*
-> @@ -299,6 +322,7 @@ static int __init omap1_init_devices(void)
->  	omap_init_rtc();
->  	omap_init_spi100k();
->  	omap_init_sti();
-> +	omap_init_audio();
-> =
-
->  	return 0;
->  }
+-- 
+Jarkko
