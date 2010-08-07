@@ -1,20 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/6] ASoC: new ADAU1381 codec driver
-Date: Sat, 7 Aug 2010 22:43:47 +0100
-Message-ID: <2E20D884-E177-4960-937D-5327DFDB185D@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/6] ASoC: add ADAU1361 codec driver
+Date: Sat, 7 Aug 2010 23:06:29 +0100
+Message-ID: <E27BA060-E4A2-4336-957A-4567769528B9@opensource.wolfsonmicro.com>
 References: <1281212905-12957-1-git-send-email-vapier@gentoo.org>
-	<1281212905-12957-3-git-send-email-vapier@gentoo.org>
-	(sfid-20100807_212829_472925_41562063)
+	(sfid-20100807_212833_803471_D906791A)
 Mime-Version: 1.0 (iPad Mail 7B405)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4A97810380E
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F0CF410380E
 	for <alsa-devel@alsa-project.org>;
-	Sat,  7 Aug 2010 23:43:27 +0200 (CEST)
-In-Reply-To: <1281212905-12957-3-git-send-email-vapier@gentoo.org>
-	(sfid-20100807_212829_472925_41562063)
+	Sun,  8 Aug 2010 00:06:09 +0200 (CEST)
+In-Reply-To: <1281212905-12957-1-git-send-email-vapier@gentoo.org>
+	(sfid-20100807_212833_803471_D906791A)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,58 +29,148 @@ List-Id: alsa-devel@alsa-project.org
 
 On 7 Aug 2010, at 21:28, Mike Frysinger <vapier@gentoo.org> wrote:
 
-> From: Cliff Cai <cliff.cai@analog.com>
-> 
-> Signed-off-by: Cliff Cai <cliff.cai@analog.com>
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> +#define AUDIO_NAME "adau1361"
+> +#define ADAU1361_VERSION "0.1"
 
-As with all your other postings today this needs to be redone based on the multi-component branch. It is safe to assume that any new drivers like this ought to be done against the multi-component branch.
-
-> +#define AUDIO_NAME "adau1381"
-> +#define ADAU1381_VERSION "0.1"
-
-Remove the version number at least.
+As ever, remove the version numbers and you need to convert to mullet-component.
 
 > +#define CAP_MIC  1
 > +#define CAP_LINE 2
 > +#define CAPTURE_SOURCE_NUMBER 2
-> +#define ADAU1381_DIG_MIC 0
 
-No ifdefs, this is all stuff that should be configured by the machine driver for the particular board rather than hard coded by the CODEC.
+This looks rather like more machine driver stuff.
 
-This comes back to the issue I keep raising with the way you guys are doing machine drivers. The machine drivers should describe how a particular board is set up while all the Blackfin machine drivers are producing a "generic" machine driver which attempts to cover all possible machines, which results in things like this and the SPORT stuff in Kconfig as soon as you get even a mildly flexible system setup. It really would be a good idea to fix up your machine drivers to use the framework in the intended fashion, especially as people start deploying more flexible CODECs in conjunction with Blackfin.
+> +	/* dapm */
+> +	u8 dapm_lineL;
+> +	u8 dapm_lineR;
+> +	u8 dapm_hpL;
+> +	u8 dapm_hpR;
+
+> +	addr[0] = (u8)(reg >> 8);
+
+I suspect the casts are redundant.
+
 
 > +	if (i2c_master_recv(codec->control_data, buf, len) != len)
 > +		return -EIO;
 
-If i2c_master_recv() gave you an error code you should return that. -EIO is reasonable for short reads.
+Pass back the error code if you got one.
 
-> +#if !defined(ADAU1381_DIG_MIC)
-> +SND_SOC_DAPM_MICBIAS("Mic Bias", ADAU_RECMBIA-ADAU_FIRSTREG, 0, 0),
-> +SND_SOC_DAPM_MIXER("Left Mic Mixer", ADAU_RECVLCL-ADAU_FIRSTREG, 0, 0, NULL, 0),
-> +SND_SOC_DAPM_MIXER("Right Mic Mixer", ADAU_RECVLCR-ADAU_FIRSTREG, 0, 0, NULL, 0),
-> +#else
-> +SND_SOC_DAPM_MICBIAS("Mic Bias Left", SND_SOC_NOPM, 1, 0),
-> +SND_SOC_DAPM_MICBIAS("Mic Bias Right", SND_SOC_NOPM, 1, 0),
-> +SND_SOC_DAPM_MIXER("Left Mic Mixer", SND_SOC_NOPM, 0, 0, NULL, 0),
-> +SND_SOC_DAPM_MIXER("Right Mic Mixer", SND_SOC_NOPM, 0, 0, NULL, 0),
+> +	if (codec->hw_write(codec->control_data, buf, count) == count)
+> +		return 0;
+> +	else {
+> +		dev_err(codec->dev, "address block write failed.");
+> +		return -EIO;
 
-It's difficult to see the point of the two biases here - they're not representing anything in the chip (they're _NOPM).
+Likewise.
 
-> +	snd_soc_write(codec, ADAU_DIGPWR0, 0xF3);
-> +	snd_soc_write(codec, ADAU_DIGPWR0, 0x0D);
-> +	reg = (snd_soc_read(codec, ADAU_CONVCT0) & 0xF8) | reg;
-> +	snd_soc_write(codec, ADAU_CONVCT0, reg);
-> +	reg = (snd_soc_read(codec, ADAU_SAMRATE)) | reg;
-> +	snd_soc_write(codec, ADAU_SAMRATE, reg);
+> +static int adau1361_mux_put(struct snd_kcontrol *kcontrol,
+> +	struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+> +	struct adau1361_priv *adau1361 = codec->private_data;
+> +	int src = ucontrol->value.integer.value[0];
+> +	u8 regvalue = 0;
 > +
-> +	reg = (snd_soc_read(codec, ADAU_FRMRATE)) | reg;
-> +	snd_soc_write(codec, ADAU_FRMRATE, reg);
-> +	snd_soc_write(codec, ADAU_ENGIRUN, 0x01);
+> +	if (src == 0) {/* Select Mic */
+> +		adau1361->in_source = CAP_MIC;
+> +#ifdef ADAU1361_DIG_MIC
+> +		regvalue = (snd_soc_read(codec, ADAU_ADCCTL0) & 0xFB)|0x4;
+> +		snd_soc_write(codec, ADAU_ADCCTL0, regvalue);
+> +#else
+> +		snd_soc_write(codec, ADAU_RECMBIA, RECMBIA_DISABLE);
+> +		regvalue = (snd_soc_read(codec, ADAU_RECVLCL)
+> +				| RECVLC_ENABLE_MASK);
+> +		snd_soc_write(codec, ADAU_RECVLCL, regvalue);
+> +		regvalue = (snd_soc_read(codec, ADAU_RECVLCR)
+> +				| RECVLC_ENABLE_MASK);
+> +		snd_soc_write(codec, ADAU_RECVLCR, regvalue);
+> +		snd_soc_write(codec, ADAU_RECMLC1, RECMLC_MIC_0DB);
+> +		snd_soc_write(codec, ADAU_RECMRC1, RECMLC_MIC_0DB);
 
-It's hard to tell what all this is doing due to the use of magic numbers but it feels like something that'd be better done through the power management infrastructure (either DAPM or the bias level configuration) rather than this.
+As well as the issue with the configuration of the digital microphone with an ifdef rather than a runtime selection it looks rather like this register configuration is doing a bunch of stuff like configuring volume controls and power which I'd rather expect to be done elsewhere.
 
-> +	/* set master/slave audio interface */
+> +static int adau1361_mic_boost_put(struct snd_kcontrol *kcontrol,
+> +	struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+> +	struct adau1361_priv *adau1361 = codec->private_data;
+> +	int val = ucontrol->value.integer.value[0];
+> +	u8 regvalue = 0;
+> +
+> +	if (adau1361->in_source & CAP_MIC) {
+> +		regvalue = (val) ? RECMLC_MIC_20DB : RECMLC_MIC_0DB;
+> +		if (snd_soc_read(codec, ADAU_RECMLC1) != regvalue) {
+> +			snd_soc_write(codec, ADAU_RECMLC1, regvalue);
+> +			snd_soc_write(codec, ADAU_RECMRC1, regvalue);
+> +			return 1;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+
+I'm having a hard time seeing why you're not just using standard controls here. You've also got a mono control exposed to the user but apparently stereo control in the chip - that seems restrictive for machine drivers (for example, a system might have a mono microphone plus a line input).
+
+> 
+> +static int adau1361_mute(struct snd_soc_dai *dai, int mute)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +	u8 reg = 0;
+> +
+> +	if (mute) {
+> +		/* mute inputs */
+> +		reg = (snd_soc_read(codec, ADAU_RECMLC0) & 0xFE) | 0x0;
+> +		snd_soc_write(codec, ADAU_RECMLC0, reg);
+> +		reg = (snd_soc_read(codec, ADAU_RECMRC0) & 0xFE) | 0x0;
+> +		snd_soc_write(codec, ADAU_RECMRC0, reg);
+> +		/* mute outputs */
+> +		reg = (snd_soc_read(codec, ADAU_PLBMLC0) & 0xFE) | 0x1;
+> +		snd_soc_write(codec, ADAU_PLBMLC0, reg);
+> +		reg = (snd_soc_read(codec, ADAU_PLBMRC0) & 0xFE) | 0x1;
+> +		snd_soc_write(codec, ADAU_PLBMRC0, reg);
+
+Ick, no. Your mute control should be muting and unmuting the DAC only. Quite apart from anything else this is going to leave the inputs muted unless there's an active playback which seems likely to cause problems during recordings.
+
+
+> +static int adau1361_pll_enable(struct snd_soc_codec *codec, int enable)
+> +{
+> +	struct adau1361_priv *adau1361 = codec->private_data;
+> +	u8 *pll_reg = adau1361->adau1361_pll_reg;
+> +	int counter = 0;
+> +
+> +	if (enable) {
+> +		pll_reg[5]  = PLLCTRL_ENABLE;
+> +		adau1361_write_reg_block(codec, ADAU_PLLCTRL, 6, pll_reg);
+> +
+> +		/* wait for PLL lock*/
+> +		do {
+> +			++counter;
+> +			schedule_timeout_interruptible(msecs_to_jiffies(1));
+> +			adau1361_read_reg_block(codec, ADAU_PLLCTRL, 6);
+
+Why interruptible?
+
+> +		if (counter >= 20)
+> +			return -1;
+
+Return proper error codes.
+
+
+> +	/* unmute outputs */
+> +	snd_soc_write(codec, ADAU_PLBHPVL, DAPM_HP_DEF);
+> +	snd_soc_write(codec, ADAU_PLBHPVR, DAPM_HP_DEF);
+> +	snd_soc_write(codec, ADAU_PLBLOVL, DAPM_LINE_DEF);
+> +	snd_soc_write(codec, ADAU_PLBLOVR, DAPM_LINE_DEF);
+
+Use chip defaults (this also applies to the register setting above).
+
+> +	/* initialize the PLL */
+> +	if (adau1361_pll_init(codec) != 0)
+> +		return -EINVAL;
+
+Pass back the error code.
+
 > +	reg = (snd_soc_read(codec, ADAU_SPRTCT0) & 0xFE);
 > +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
 > +	case SND_SOC_DAIFMT_CBM_CFM:  /*master*/
@@ -94,89 +183,25 @@ It's hard to tell what all this is doing due to the use of magic numbers but it 
 > +		return 0;
 > +	}
 
-Here and elsewhere in the driver I'd expect the default case to return an error rather than zero when it's bombing out.
+Return an error if the mode is unsupported here and elsewhere.
 
+> +static int adau1361_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+> +		int clk_id, unsigned int freq, int dir)
+> +{
+> +	struct snd_soc_codec *codec = codec_dai->codec;
+> +	struct adau1361_priv *adau1361 = codec->private_data;
+> +
 > +	switch (freq) {
 > +	case 12000000:
-> +		adau1381->sysclk = freq;
+> +		adau1361->sysclk = freq;
 > +		return 0;
 > +	case 12288000:
-> +		adau1381->sysclk = freq;
+> +		adau1361->sysclk = freq;
 > +		return 0;
 > +	}
 > +
 > +	/* supported 12MHz MCLK only for now */
 > +	return -EINVAL;
-
-This comment is bit rotted - it'd probably be clearer to just use a default: case in the switch statement.
-
-> +	/* Only update pll when freq changes */
-> +	if (adau1381->pll_enable && adau1381->pll_out == freq_out)
-> +		return 0;
-
-Given that you only store the value and don't actually reconfigure the PLL here this is redundant. Doesn't do any harm, though.
-
-> +	case SND_SOC_BIAS_STANDBY:
-> +		snd_soc_write(codec, ADAU_CLKCTRL,
-> +			(CLKCTRL_SRC_PLL | CLKCTRL_FRQ_1024 | CLKCTRL_DISABLE));
-> +		break;
-
-What exactly is this doing? Looking at the bitfields being set it looks like it's doing something that ought to be done elsewhere.
-
-> +static int adau1381_resume(struct platform_device *pdev)
-> +{
-> +	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-> +	struct snd_soc_codec *codec = socdev->card->codec;
-> +	struct adau1381_priv *adau1381 = codec->private_data;
 > +
-> +	adau1381->pdev = pdev;
 
-Why is this being done here rather than on init? Though all this will change when you redo this against multi-component?
-
-> +	schedule_work(&adau1381->resume_work);
-
-Why are you deferring this to scheduled work? ASoC already defers all resume work for non-AC97 devices to a workqueue in order to minimise the impact of things like lengthy rise times for VMIDs and register restores over slow buses so adding an additional deferral seems odd. This code seems likely to cause problems since it's not synchronised with userspace at all (the ASoC core stuff is) which means that applications may start trying to use the device before the work has completed.
-
-
-> +	adau1381->in_source = CAP_MIC; /*default is mic input*/
-> +	adau1381->sysclk = ADAU1381_MCLK_RATE;
-> +	adau1381->pll_out = ADAU1381_PLL_FREQ_48;
-> +	adau1381->dapm_lineL = DAPM_LINE_DEF;
-> +	adau1381->dapm_lineR = DAPM_LINE_DEF;
-> +	adau1381->dapm_hpL = DAPM_HP_DEF;
-> +	adau1381->dapm_hpR = DAPM_HP_DEF;
-
-As with your other drivers you should use chip defaults.
-
-> +struct adau1381_setup_data {
-> +	unsigned short i2c_bus;
-> +	unsigned short i2c_address;
-> +};
-
-This shouldn't be here.
-
-> +#define MASTER_MODE 1
-> +#ifdef MASTER_MODE
-> +/* IIS mater mode*/
-> +#define ADAU_SRPT_CTRL0		0x01
-> +#else
-> +/* IIS slave mode*/
-> +#define ADAU_SRPT_CTRL0		0x00
-> +#endif
-
-This should be controlled at runtime via set_dai_fmt(). There's also a namespace pollution issue with the define, but given that it shouldn't be there in the first place...
-
-
-> +/*
-> + * Reset Mode - ADC capture/DAC playback
-> + * (AInput mixers 0db, AOuput mixers 0db, HP out ON)
-> +*/
-> +static struct adau1381_mode_register adau1381_reset[RESET_REGISTER_COUNT] = {
-> +	/* mute outputs */
-> +	{ADAU_RGUCTRL, 0x00},
-
-This and all the other tables need to be in the body of the driver rather than the header file. I'm somewhat surprised the compiler isn't complaining about this stuff.
-
-> +	{ADAU_SPRTCT1, 0x21}, /*0x21 = 32bclocks frame, 0x41 = 48*/
-
-Is this not the chip default?
+Similar comments to the previous driver here - use the default for the switch statement and your comment is bit. I've not made further comments on this but many of the issues in the driver I previously reviewed also apply here.
