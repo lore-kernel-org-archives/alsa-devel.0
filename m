@@ -1,18 +1,26 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: add SSM2604 codec driver
-Date: Sat, 7 Aug 2010 13:44:16 +0100
-Message-ID: <20100807124416.GB11817@opensource.wolfsonmicro.com>
-References: <1281160447-10393-1-git-send-email-vapier@gentoo.org>
+From: Manuel Lauss <mano@roarinelk.homelinux.net>
+Subject: Re: ALC892 optical SPDIF not working
+Date: Sat, 7 Aug 2010 10:11:16 +0200
+Message-ID: <20100807081116.GA21350@wormhole>
+References: <AANLkTi=QxpJSyXgNH+WeUQdTo0kVNuPN73F-iXW5meAa@mail.gmail.com>
+	<AANLkTim=_kdSJJ1NSW2D5X7GVWp=8ffwKqSbdQ9MqjMb@mail.gmail.com>
+	<s5hvd7xp4dh.wl%tiwai@suse.de>
+	<AANLkTin+BUQr0iVq3MT+O-dA6PYyZZF_QVcEdoM-xK9p@mail.gmail.com>
+	<1280596972.4074.1.camel@mattotaupa>
+	<20100731233223.GA19209@wormhole> <s5hocdl787r.wl%tiwai@suse.de>
+	<s5htyndm27f.wl%tiwai@suse.de> <20100805185228.GA32760@wormhole>
+	<s5hy6ck2521.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6F49F2445E
+Received: from roarinelk.homelinux.net (fnoeppeil48.netpark.at
+	[217.175.205.176])
+	by alsa0.perex.cz (Postfix) with ESMTP id 62B03243E1
 	for <alsa-devel@alsa-project.org>;
-	Sat,  7 Aug 2010 14:44:17 +0200 (CEST)
+	Sat,  7 Aug 2010 10:11:19 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1281160447-10393-1-git-send-email-vapier@gentoo.org>
+In-Reply-To: <s5hy6ck2521.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,65 +30,125 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Cliff Cai <cliff.cai@analog.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Manuel Lauss <mano@roarinelk.homelinux.net>, alsa-devel@alsa-project.org, Paul Menzel <paulepanter@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 07, 2010 at 01:54:07AM -0400, Mike Frysinger wrote:
-> From: Cliff Cai <cliff.cai@analog.com>
+On Thu, Aug 05, 2010 at 10:11:18PM +0200, Takashi Iwai wrote:
+> At Thu, 5 Aug 2010 20:52:28 +0200,
+> Manuel Lauss wrote:
+> > 
+> > On Mon, Aug 02, 2010 at 06:03:32PM +0200, Takashi Iwai wrote:
+> > > At Mon, 02 Aug 2010 10:02:48 +0200,
+> > > I wrote:
+> > > > 
+> > > > At Sun, 1 Aug 2010 01:32:23 +0200,
+> > > > Manuel Lauss wrote:
+> > > > > 
+> > > > > > > >> Is there a way to insert an initial playback delay?  Under linux, the
+> > > > > > > >> first 2-2.5 seconds
+> > > > > > > >> of anything played are just silence; on windows audible playback
+> > > > > > > >> starts immediately.
+> > > > > > > >
+> > > > > > > > It's the time for synchronization your digital receiver takes, I guess.
+> > > > > > > > Maybe changing SPDIF status makes it resync, which happens at each
+> > > > > > > > opening / closing the stream.
+> > > > > > > 
+> > > > > > > Yes, seems so. I've found a workaround in meantime.
+> > > > > > 
+> > > > > > Could you elaborate on the workaround please, so others having this
+> > > > > > issue know it.
+> > > > > 
+> > > > > My receiver allows to mix analog and digital inputs; with analog mix
+> > > > > enabled it syncs immediately.
+> > > > 
+> > > > Just wondering whether the patch below helps?
+> > > > 
+> > > > It's just a proof-of-concept, and it's not safe for multiple streams.
+> > > > If this works, we can move on the improvement of the stream assignment.
+> > > 
+> > > ... and the below is the patch.  If the previous patch worked, try
+> > > this instead of the previous one.
+> > 
+> > 
+> > Tested with mplayer.  The initial 2-2.5sec silence is still there (on every
+> > invocation of mplayer), but seeking now works as it should (previously
+> > there was 2 sec silence too).  Disabling codec pm doesn't help.
 > 
-> Signed-off-by: Cliff Cai <cliff.cai@analog.com>
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> OK, it's a slight improvement.  Now the question is why it still happens
+> at each invocation of mplayer.  Assuming that it's no power-save, one
+> possible explanation is the call of azx_stream_reset() in prepare.
+> But, then this should happen at each seek, too.
+> 
+> Could you put some printk's and check whether AC_VERB_SET_CHANNEL_STREAMID
+> and/or AC_VERB_GET_STREAM_FORMAT verbs are executed at each time or
+> properly cached?
 
-This needs to be updated to the multi-component branch.  There's a few
-other issues as well.
+Something new in the dmesg:
 
-> +#define SSM2604_VERSION "0.1"
+hda_codec: ALC892: BIOS auto-probing.
+ALSA hda_codec.c:337: hda_codec: connection list not available for 0x1f
+ALSA device list:
+  #0: HDA ATI SB at 0xfe024000 irq 16
 
-Drop this, just track the version through git and kernel releases.
 
-> +static const struct soc_enum ssm2604_enum[] = {
-> +	SOC_ENUM_SINGLE(SSM2604_APDIGI, 1, 4, ssm2604_deemph),
-> +};
+I added a few printks (see patch below).  This is the output generated
+at every invocation of mplayer:
 
-Use individual variables for enums rather than stuffing them all in an
-array.  The arrays are just hard to read and error prone...
+S1: p->stream_tag 00000000 stream_tag 00000005 p->channel_id 0 channel_id 0
+S2: oldval 0 newval 50
+S3: p->format_id 0 format 49
+S4: oldval 0 newval 50
+S1: p->stream_tag 00000000 stream_tag 00000005 p->channel_id 0 channel_id 0
+S2: oldval 0 newval 50
+S3: p->format_id 0 format 49
+S4: oldval 0 newval 50
+S1: p->stream_tag 00000000 stream_tag 00000005 p->channel_id 0 channel_id 0
+S2: oldval 0 newval 50
+S3: p->format_id 0 format 49
+S4: oldval 0 newval 50
+S1: p->stream_tag 00000000 stream_tag 00000005 p->channel_id 0 channel_id 0
+S2: oldval 0 newval 50
+S3: p->format_id 0 format 49
+S4: oldval 0 newval 50
+S1: p->stream_tag 00000000 stream_tag 00000005 p->channel_id 0 channel_id 0
+S2: oldval 0 newval 50
+S3: p->format_id 0 format 49
+S4: oldval 0 newval 50
 
-> +SOC_ENUM("Capture Source", ssm2604_enum[0]),
-> +
-> +SOC_ENUM("Playback De-emphasis", ssm2604_enum[1]),
 
-...are you sure this code runs correctly?  I see only one element in the
-array.  It's worth checking this in your other drivers as well.
 
-> +	/* The DAI has shared clocks so if we already have a playback or
-> +	 * capture going then constrain this substream to match it.
-> +	 * TODO: the ssm2604 allows pairs of non-matching PB/REC rates
-> +	 */
-> +	if (ssm2604->master_substream) {
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index d510359..d6036c6 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -1227,9 +1227,13 @@ void snd_hda_codec_setup_stream(struct hda_codec *codec, hda_nid_t nid,
+        if (!p)
+                return;
+        /* update the stream-id if changed */
++       printk(KERN_ERR "S1: p->stream_tag %08lx stream_tag %08lx p->channel_id %d channel_id %d\n",
++               p->stream_tag, stream_tag, p->channel_id, channel_id);
++
+        if (p->stream_tag != stream_tag || p->channel_id != channel_id) {
+                oldval = snd_hda_codec_read(codec, nid, 0, AC_VERB_GET_CONV, 0);
+                newval = (stream_tag << 4) | channel_id;
++               printk(KERN_ERR "S2: oldval %x newval %x\n", oldval, newval);
+                if (oldval != newval)
+                        snd_hda_codec_write(codec, nid, 0,
+                                            AC_VERB_SET_CHANNEL_STREAMID,
+@@ -1238,9 +1242,11 @@ void snd_hda_codec_setup_stream(struct hda_codec *codec, hda_nid_t nid,
+                p->channel_id = channel_id;
+        }
+        /* update the format-id if changed */
++       printk(KERN_ERR "S3: p->format_id %d format %d\n", p->format_id, format);
+        if (p->format_id != format) {
+                oldval = snd_hda_codec_read(codec, nid, 0,
+                                            AC_VERB_GET_STREAM_FORMAT, 0);
++               printk(KERN_ERR "S4: oldval %x newval %x\n", oldval, newval);
+                if (oldval != format) {
+                        msleep(1);
+                        snd_hda_codec_write(codec, nid, 0,
 
-Set the symmetric_rates flag on the DAI rather than open coding this.
 
-> +	/* deactivate */
-> +	if (!codec->active)
-> +		snd_soc_write(codec, SSM2604_ACTIVE, 0);
-
-This probably wants to be managed by DAPM (possibly a supply widget for
-the DAC and ADC).
-
-> +#define SSM2604_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_32000 |\
-> +		SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |\
-> +		SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
-
-SNDRV_PCM_RATE_8000_96000
-
-> +	snd_soc_write(codec, SSM2604_APANA, APANA_SELECT_DAC);
-
-This could use a little explanation?
-
-> +struct ssm2604_setup_data {
-> +	int i2c_bus;
-> +	unsigned short i2c_address;
-> +};
-
-This is definitely not needed, even with the current code.
+Thanks!
+       Manuel Lauss
