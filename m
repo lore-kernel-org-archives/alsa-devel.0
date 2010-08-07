@@ -1,22 +1,19 @@
-From: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [Uclinux-dist-devel] [PATCH 2/6] ASoC: Blackfin:
-	new machine driver for ADAU1361 codecs
-Date: Sat, 7 Aug 2010 17:14:34 -0400
-Message-ID: <AANLkTikTQ=dhDPy33dcjKmm7EfQ8KVZhA2aRdCY3Ms84@mail.gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 1/6] ASoC: add ADAU1361 codec driver
+Date: Sat, 07 Aug 2010 22:20:35 +0100
+Message-ID: <1281216035.3088.19.camel@odin>
 References: <1281212905-12957-1-git-send-email-vapier@gentoo.org>
-	<1281212905-12957-2-git-send-email-vapier@gentoo.org>
-	<AC17F0B0-A138-46D6-B0A7-2752D291BA03@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91987103805
+Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 66E53103806
 	for <alsa-devel@alsa-project.org>;
-	Sat,  7 Aug 2010 23:14:54 +0200 (CEST)
-Received: by wwb31 with SMTP id 31so268405wwb.20
-	for <alsa-devel@alsa-project.org>; Sat, 07 Aug 2010 14:14:54 -0700 (PDT)
-In-Reply-To: <AC17F0B0-A138-46D6-B0A7-2752D291BA03@opensource.wolfsonmicro.com>
+	Sat,  7 Aug 2010 23:20:37 +0200 (CEST)
+Received: by wwd20 with SMTP id 20so294705wwd.2
+	for <alsa-devel@alsa-project.org>; Sat, 07 Aug 2010 14:20:37 -0700 (PDT)
+In-Reply-To: <1281212905-12957-1-git-send-email-vapier@gentoo.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,29 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "uclinux-dist-devel@blackfin.uclinux.org" <uclinux-dist-devel@blackfin.uclinux.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Cliff Cai <cliff.cai@analog.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Cliff Cai <cliff.cai@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBBdWcgNywgMjAxMCBhdCAxNzowOCwgTWFyayBCcm93biB3cm90ZToKPiBPbiA3IEF1
-ZyAyMDEwLCBhdCAyMToyOCwgTWlrZSBGcnlzaW5nZXIgPHZhcGllckBnZW50b28ub3JnPiB3cm90
-ZToKPgo+PiArY29uZmlnIFNORF9CRjVYWF9TT0NfQURBVTEzNjEKPj4gKyDCoCDCoCB0cmlzdGF0
-ZSAiU29DIEFEQVUxMzYxIEF1ZGlvIHN1cHBvcnQiCj4+ICsgwqAgwqAgZGVwZW5kcyBvbiBTTkRf
-QkY1WFhfSTJTCj4+ICsgwqAgwqAgc2VsZWN0IFNORF9CRjVYWF9TT0NfSTJTCj4+ICsgwqAgwqAg
-c2VsZWN0IFNORF9TT0NfQURBVTEzNjEKPj4gKyDCoCDCoCBzZWxlY3QgSTJDCj4+ICsgwqAgwqAg
-aGVscAo+PiArIMKgIMKgIMKgIFNheSBZIGlmIHlvdSB3YW50IHRvIGFkZCBzdXBwb3J0IGZvciBB
-REFVMTM2MSBTb0MgYXVkaW8uCj4+ICsKPgo+IElkZW50aWNhbCBjb21tZW50cyB0byB0aGUgbGFz
-dCBtYWNoaW5lIGRyaXZlciB5b3UgcG9zdGVkIGhlcmUuCj4KPiBJdCdkIGJlIHJlYWxseSBoZWxw
-ZnVsIGlmIHlvdSBjb3VsZCBkbyBhIGJpdCBtb3JlIHByZS1yZXZpZXcgb24gdGhlIHN0dWZmIHlv
-dSdyZSBwb3N0aW5nLCBlc3BlY2lhbGx5IHdoZXJlIHlvdSd2ZSBnb3QgYSBidW5jaCBvZiBkcml2
-ZXJzIHRoYXQgZm9sbG93IHNpbWlsYXIgcGF0dGVybnMgYW5kIGFyZSBnb2luZyB0byBnZW5lcmF0
-ZSBleGFjdGx5IHRoZSBzYW1lIGZlZWRiYWNrLiBQb3N0aW5nIGEgbGFyZ2UgYmF0Y2ggb2YgcGF0
-Y2hlcyBhdCBvbmNlIGlzbid0IGEgcHJvYmxlbSBidXQgaWYgeW91J3JlIHNlbmRpbmcgYWRkaXRp
-b25hbCBwYXRjaGVzIGxhdGVyIG9uIGl0J2QgYmUgaGVscGZ1bCB0byB0YWtlIGludG8gYWNjb3Vu
-dCB0aGUgZmVlZGJhY2sgdGhhdCBoYXMgYWxyZWFkeSBiZWVuIGdpdmVuIG9uIHByaW9yIHNlcmll
-c2VzLgoKcHJvYmFibHksIGJ1dCBpJ20gbm90IGZhbWlsaWFyIHdpdGggdGhlIEFTb0Mgc3R1ZmYg
-dG8gZml4L3JldmlldyBhbnkKb2YgdGhpcy4gIGknbGwgb3BlbiBhbm90aGVyIHRyYWNrZXIgaXRl
-bSBmb3IgdGhlc2UgY29kZWNzLgotbWlrZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+Hi Mike,
+
+On Sat, 2010-08-07 at 16:28 -0400, Mike Frysinger wrote:
+> From: Cliff Cai <cliff.cai@analog.com>
+> 
+> Signed-off-by: Cliff Cai <cliff.cai@analog.com>
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> ---
+>  sound/soc/codecs/Kconfig    |    4 +
+>  sound/soc/codecs/Makefile   |    2 +
+>  sound/soc/codecs/adau1361.c |  992 +++++++++++++++++++++++++++++++++++++++++++
+>  sound/soc/codecs/adau1361.h |  264 ++++++++++++
+>  4 files changed, 1262 insertions(+), 0 deletions(-)
+>  create mode 100644 sound/soc/codecs/adau1361.c
+>  create mode 100644 sound/soc/codecs/adau1361.h
+
+As Mark has mentioned, please re-work your CODEC probe() and remove()
+calls against the soon to be merged multi-component branch :-
+
+git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git topic/multi-component
+
+The machine drivers will also need modified to use the component
+dev_name() now instead of a pointer when creating a DAI link.
+
+Thanks
+
+Liam
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
