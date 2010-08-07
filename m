@@ -1,24 +1,23 @@
-From: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [Uclinux-dist-devel] [PATCH 2/6] ASoC: Blackfin:
- new machine driver for ADAU1361 codecs
-Date: Sat, 7 Aug 2010 18:31:23 -0400
-Message-ID: <AANLkTi=HY0yxD3XgCYt5YvsEmv_72oA46L44huL_tvhd@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [Uclinux-dist-devel] [PATCH 5/6] ASoC: new
+	ADAU1761 codec driver
+Date: Sat, 7 Aug 2010 23:36:48 +0100
+Message-ID: <DE733C15-5D63-4470-8124-238563F4629B@opensource.wolfsonmicro.com>
 References: <1281212905-12957-1-git-send-email-vapier@gentoo.org>
-	<1281212905-12957-2-git-send-email-vapier@gentoo.org>
-	<AC17F0B0-A138-46D6-B0A7-2752D291BA03@opensource.wolfsonmicro.com>
-	<AANLkTikTQ=dhDPy33dcjKmm7EfQ8KVZhA2aRdCY3Ms84@mail.gmail.com>
-	<FB9CDF75-F284-4D03-AB3A-CE3692EB8969@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	<1281212905-12957-5-git-send-email-vapier@gentoo.org>
+	<B3F28327-BBE5-489F-B077-C865B0F21332@opensource.wolfsonmicro.com>
+	<AANLkTinZd8KPqF+6r-sdZKkoSWF4tFVhxNV4B0xzwVqJ@mail.gmail.com>
+	(sfid-20100807_233001_599816_0748AEC1)
+Mime-Version: 1.0 (iPad Mail 7B405)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id B6AE0103806
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 50947103806
 	for <alsa-devel@alsa-project.org>;
-	Sun,  8 Aug 2010 00:31:43 +0200 (CEST)
-Received: by wwd20 with SMTP id 20so322618wwd.2
-	for <alsa-devel@alsa-project.org>; Sat, 07 Aug 2010 15:31:43 -0700 (PDT)
-In-Reply-To: <FB9CDF75-F284-4D03-AB3A-CE3692EB8969@opensource.wolfsonmicro.com>
+	Sun,  8 Aug 2010 00:36:28 +0200 (CEST)
+In-Reply-To: <AANLkTinZd8KPqF+6r-sdZKkoSWF4tFVhxNV4B0xzwVqJ@mail.gmail.com>
+	(sfid-20100807_233001_599816_0748AEC1)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,36 +27,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "uclinux-dist-devel@blackfin.uclinux.org" <uclinux-dist-devel@blackfin.uclinux.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Cliff Cai <cliff.cai@analog.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mike Frysinger <vapier.adi@gmail.com>
+Cc: "uclinux-dist-devel@blackfin.uclinux.org" <uclinux-dist-devel@blackfin.uclinux.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Cliff Cai <cliff.cai@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBBdWcgNywgMjAxMCBhdCAxODoyOSwgTWFyayBCcm93biB3cm90ZToKPiBPbiA3IEF1
-ZyAyMDEwLCBhdCAyMjoxNCwgTWlrZSBGcnlzaW5nZXIgd3JvdGU6Cj4+IE9uIFNhdCwgQXVnIDcs
-IDIwMTAgYXQgMTc6MDgsIE1hcmsgQnJvd24gd3JvdGU6Cj4+PiBJdCdkIGJlIHJlYWxseSBoZWxw
-ZnVsIGlmIHlvdSBjb3VsZCBkbyBhIGJpdCBtb3JlIHByZS1yZXZpZXcgb24gdGhlIHN0dWZmIHlv
-dSdyZSBwb3N0aW5nLCBlc3BlY2lhbGx5IHdoZXJlIHlvdSd2ZSBnb3QgYSBidW5jaCBvZiBkcml2
-ZXJzIHRoYXQgZm9sbG93IHNpbWlsYXIgcGF0dGVybnMgYW5kIGFyZSBnb2luZyB0byBnZW5lcmF0
-ZSBleGFjdGx5IHRoZSBzYW1lIGZlZWRiYWNrLiBQb3N0aW5nIGEgbGFyZ2UgYmF0Y2ggb2YgcGF0
-Y2hlcyBhdCBvbmNlIGlzbid0IGEgcHJvYmxlbSBidXQgaWYgeW91J3JlIHNlbmRpbmcgYWRkaXRp
-b25hbCBwYXRjaGVzIGxhdGVyIG9uIGl0J2QgYmUgaGVscGZ1bCB0byB0YWtlIGludG8gYWNjb3Vu
-dCB0aGUgZmVlZGJhY2sgdGhhdCBoYXMgYWxyZWFkeSBiZWVuIGdpdmVuIG9uIHByaW9yIHNlcmll
-c2VzLgo+Pgo+Pgo+PiBwcm9iYWJseSwgYnV0IGknbSBub3QgZmFtaWxpYXIgd2l0aCB0aGUgQVNv
-QyBzdHVmZiB0byBmaXgvcmV2aWV3IGFueQo+PiBvZiB0aGlzLiDCoGknbGwgb3BlbiBhbm90aGVy
-IHRyYWNrZXIgaXRlbSBmb3IgdGhlc2UgY29kZWNzLgo+Cj4gSXQnZCBwcm9iYWJseSBiZSBlbm91
-Z2ggdG8ganVzdCBhdm9pZCBwb3N0aW5nIGFkZGl0aW9uYWwgYmF0Y2hlcyBvZiBwYXRjaGVzIHdp
-dGhvdXQgaW5jb3Jwb3JhdGluZyBwcmV2aW91cyByZXZpZXcsIGVpdGhlciBieSBqdXN0IHBvc3Rp
-bmcgZXZlcnl0aGluZyBpbiBvbmUgc2VyaWVzIG9yIGJ5IGhvbGRpbmcgb2ZmIG9uIGxhdGVyIG9u
-ZXMgYWZ0ZXIgZ2V0dGluZyB0aGUgZmlyc3QgYmF0Y2ggb2YgcmV2aWV3LiBUaGUgcmVhc29uIEkg
-bWVudGlvbmVkIHRoaXMgd2FzIHRoYXQgSSdkIGFscmVhZHkgcmV2aWV3ZWQgcHJldmlvdXMgcG9z
-dGluZ3MgKGFuZCBzZWVuIHRoYXQgeW91J2QgcmVhZCBteSByZXZpZXcpIGJ1dCB3YXMgbm90aWNp
-bmcgbWFueSBvZiB0aGUgc2FtZSBpc3N1ZXMgY3JvcHBpbmcgdXAgaW4gdGhlIG5ldyBwb3N0aW5n
-cy4KCmknZCBsaWtlIHRvIGhhdmUgc2VudCB0aGVzZSBvdXQgYXMgb25lIGJhdGNoLCBidXQgaXQg
-dGFrZXMgdGltZSBmb3IgbWUKdG8gY2xlYW4gdXAgdGhlIGNvbW1pdHMgYmVpbmcgc2VudCB0byBt
-ZS4gIHlvdSdkIHByb2JhYmx5IGJhcmYgYWxsCm92ZXIgdGhlIGNoYW5nZXNldHMgdGhhdCBpIGhh
-dmUgdG8gcHJvY2VzcyA7KS4KCmkgZG9udCBoYXZlIGFueSBvdGhlciBjb2RlYyBkcml2ZXJzIGF0
-bSB0aG91Z2guICBqdXN0IGJ1ZyBmaXhlcyB0aGF0IGkKbmVlZCB0byBmdXJ0aGVyIGNsZWFuIHVw
-L3NwbGl0L2RvY3VtZW50L2V0Yy4uLgotbWlrZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+On 7 Aug 2010, at 23:29, Mike Frysinger <vapier.adi@gmail.com> wrote:
+
+>>> +static ssize_t adau1371_dsp_load(struct device *dev,
+>>> +                               struct device_attribute *attr,
+>>> +                               const char *buf, size_t count)
+>>> +{
+>>> +     struct snd_soc_device *socdev = dev_get_drvdata(dev);
+>>> +     struct snd_soc_codec *codec = socdev->card->codec;
+>>> +     int ret = 0;
+>>> +
+>>> +     ret = adau1761_setprogram(codec);
+>>> +     if (ret)
+>>> +             return ret;
+>>> +     else
+>>> +             return count;
+>>> +}
+>>> +static DEVICE_ATTR(dsp, 0644, NULL, adau1371_dsp_load);
+
+>> This looks redundant - it doesn't offer any opportunity to configure the firmware to download and you're already (as one one would expect) automatically downloading the firmware. If this is being exposed at all it should be via debugfs.
+
+> SigmaDSP parts have the ability to change firmwares on the fly.  this
+> isnt a debug feature, it's somewhat core to these parts.  idea being
+> that you can load up different mini signal processing engines based on
+> the current needs.
+
+Right, but see my point about there being no opportunity to configure the firmware - if you were allowing the user to select between multiple firmwares available then I expect that the value written into the sysfs file would be parsed as the name of the new firmware file to load or otherwise select a new firmware. With the current code the value written is totally ignored and the application layer has to overwrite the firmware in the filesystem (or have a custom helper program which does the equivalent thereof) so as far as the kernel is concerned it's going to reload the same firmware which isn't ideal.
