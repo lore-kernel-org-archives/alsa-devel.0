@@ -1,30 +1,44 @@
-From: Geoff Beasley <geoff-fGOvzBVr0Avf1ieJ4g5eiCgzcA0HbOu5@public.gmane.org>
-Subject: Re: [LAD] mudita24 1.02 -- improved envy24control mixer/router for
- ice1712-based sound-cards
-Date: Sun, 08 Aug 2010 11:10:38 +1000
-Message-ID: <9065.12644510276$1281229895@news.gmane.org>
-References: <AANLkTiksTwbb1+ZoAas9V2dROxo9x11Ee1wYVO_LrL4U@mail.gmail.com>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH 1/5] ASoC: wm8580: Add to support ADC clock
+	source setting
+Date: Sun, 8 Aug 2010 10:15:01 +0900
+Message-ID: <AANLkTi=a_AxMd3hbzw9h6tUz8ZVK8OahAWJAZZqpkUW0@mail.gmail.com>
+References: <1281053592-3311-1-git-send-email-sw.youn@samsung.com>
+	<1281053897-4675-1-git-send-email-sw.youn@samsung.com>
+	<AANLkTingw3AiJdN1_tahFbmHNWeqMZnb6HB0r=PuK20f@mail.gmail.com>
+	<20100806101918.GB398@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-In-Reply-To: <AANLkTiksTwbb1+ZoAas9V2dROxo9x11Ee1wYVO_LrL4U-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev>
-List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
-Sender: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-To: Niels Mayer <nielsmayer-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, mailinglist <planetccrma-l0SEpsmuUtBegcJQxxnBRDe48wsgrGvP@public.gmane.org>, linux-audio-announce-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org, linux-audio-user <linux-audio-user-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, alsa-user-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, Linux Audio Developers <linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>, PlanetCCRMA-dDzkXPnfpdzhj6bIAHgUAw@public.gmane.org, fedora-music-list <fedora-music-list-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
+	[209.85.216.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id A1E46103806
+	for <alsa-devel@alsa-project.org>;
+	Sun,  8 Aug 2010 03:15:02 +0200 (CEST)
+Received: by qwi2 with SMTP id 2so6441397qwi.38
+	for <alsa-devel@alsa-project.org>; Sat, 07 Aug 2010 18:15:01 -0700 (PDT)
+In-Reply-To: <20100806101918.GB398@rakim.wolfsonmicro.main>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Seungwhan Youn <claude.youn@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Seungwhan Youn <sw.youn@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Niels, great that you and Tim have fixed this app ;) One thing, can you
-explain what those 'profiles' are for and how to use them?
- 
-I have always wondered...
-
-g.
+On Fri, Aug 6, 2010 at 7:19 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Fri, Aug 06, 2010 at 01:27:48PM +0900, Jassi Brar wrote:
+>
+>> This is OK. Though I don't remember why it wasn't accepted when
+>> I submitted a few months ago.
+>
+> IIRC it was part of a larger patch or patch series which had other
+> issues.
+Yes you are right, seems I forgot to resubmit. My bad.
