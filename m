@@ -1,15 +1,14 @@
-From: john ffitch <jpff@codemist.co.uk>
-Subject: Re: [LAA] announcing envy24control,
-	mudita (*) edition.
-Date: Tue, 27 Jul 2010 16:25:32 +0100
-Message-ID: <3790-Tue27Jul2010162532+0100-jpff@codemist.co.uk>
-References: <AANLkTikX07nHbBsBSG04r54LEp3R+CRC9dC--aB_h2gQ@mail.gmail.com>
+From: Geoff Beasley <geoff@laughingboyrecords.com>
+Subject: Re: [LAD] mudita24 1.02 -- improved envy24control
+ mixer/router for ice1712-based sound-cards
+Date: Sun, 08 Aug 2010 11:10:38 +1000
+Message-ID: <21733.5372152322$1281394636@news.gmane.org>
+References: <AANLkTiksTwbb1+ZoAas9V2dROxo9x11Ee1wYVO_LrL4U@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <planetccrma-bounces@ccrma.Stanford.EDU>
-In-reply-to: <AANLkTikX07nHbBsBSG04r54LEp3R+CRC9dC--aB_h2gQ@mail.gmail.com>
-	(message from Niels Mayer on Sun, 25 Jul 2010 12:10:44 -0700)
+In-Reply-To: <AANLkTiksTwbb1+ZoAas9V2dROxo9x11Ee1wYVO_LrL4U@mail.gmail.com>
 List-Unsubscribe: <http://ccrma-mail.stanford.edu/mailman/listinfo/planetccrma>,
 	<mailto:planetccrma-request@ccrma.stanford.edu?subject=unsubscribe>
 List-Archive: <http://ccrma-mail.stanford.edu/pipermail/planetccrma>
@@ -20,10 +19,13 @@ List-Subscribe: <http://ccrma-mail.stanford.edu/mailman/listinfo/planetccrma>,
 Sender: planetccrma-bounces@ccrma.Stanford.EDU
 Errors-To: planetccrma-bounces@ccrma.Stanford.EDU
 To: Niels Mayer <nielsmayer@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-audio-announce@lists.linuxaudio.org, tiwai@suse.de, perex@perex.cz, linux-audio-dev@lists.linuxaudio.org, planetccrma@ccrma.Stanford.EDU, fedora-music-list@redhat.com
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, mailinglist <planetccrma@ccrma.Stanford.EDU>, linux-audio-announce@lists.linuxaudio.org, Takashi Iwai <tiwai@suse.de>, linux-audio-user <linux-audio-user@lists.linuxaudio.org>, Jaroslav Kysela <perex@perex.cz>, "Tim E.
+	Real" <termtech@rogers.com>, alsa-user@lists.sourceforge.net, Linux Audio Developers <linux-audio-dev@lists.linuxaudio.org>, PlanetCCRMA@ccrma.Stanford.EDU, fedora-music-list <fedora-music-list@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-Any chance of an option to envy24control to allow colour blind people
-to see three zones?  I had been using it for years before I was told
-that there is a red section at the top and green below
-==John ffitch
+Niels, great that you and Tim have fixed this app ;) One thing, can you
+explain what those 'profiles' are for and how to use them?
+ 
+I have always wondered...
+
+g.
