@@ -1,19 +1,21 @@
-From: Jerone Young <jerone.young@canonical.com>
-Subject: Re: codec support request: Conexant ID 5068
-Date: Mon, 09 Aug 2010 08:52:07 -0500
-Message-ID: <1281361927.5571.435.camel@laptop>
-References: <8CCFD1333DD6566-1368-9790@web-mmc-d06.sysops.aol.com>
-	<s5hy6cu8xgf.wl%tiwai@suse.de>
-	<8CD05CD62A8F2D3-3B0-1974@web-mmc-d01.sysops.aol.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: i.MX SDMA support
+Date: Mon, 9 Aug 2010 15:09:44 +0100
+Message-ID: <64008892-3D75-4309-A623-CCE9B335F77F@opensource.wolfsonmicro.com>
+References: <20100809091157.GC20065@pengutronix.de>
+	<1281350823.3035.54.camel@odin>
+	<20100809121956.GA27749@pengutronix.de>
+	(sfid-20100809_132005_107048_4FC8992A)
+Mime-Version: 1.0 (iPad Mail 7B405)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2A4AB103817
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C1B47103817
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Aug 2010 15:52:11 +0200 (CEST)
-In-Reply-To: <8CD05CD62A8F2D3-3B0-1974@web-mmc-d01.sysops.aol.com>
+	Mon,  9 Aug 2010 16:09:22 +0200 (CEST)
+In-Reply-To: <20100809121956.GA27749@pengutronix.de>
+	(sfid-20100809_132005_107048_4FC8992A)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,75 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Cristopher Camacho Leandro <ccamacho@linuxmail.org>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgQ3Jpc3RvcGVoZXIsCgoJSWYgeW91IGNhbiBjb25maXJtIHRoYXQgYWxsIHRoZSBvcHRpb25z
-IHdvcmsgYW5kIGNhbiBzZW5kICJsc3BjaSAtdnZubiIKb3V0cHV0IHdlIGNhbiBwdXQgYSBxdWly
-ayBpbiBmb3IgeW91ciBQYW5hc29uaWMgbWFjaGluZS4KCgkqIEJlc2lkZXMgdGhlIG91dHB1dHMg
-d29ya2luZyBhbHNvIG1ha2Ugc3VyZSB0byB0ZXN0CgktIE1ha2Ugc3VyZSBpZiB5b3UgcGx1ZyBp
-biBoZWFkcGhvbmVzIGV4dGVybmFsIHNwZWFrZXJzIG11dGUKCS0gTWFrZSBzdXJlIHdoZW4geW91
-IHBsdWcgaW4gdGhlIG1pYyBqYWNrLCB0aGF0IGl0IGF1dG8gc3dpdGNoZXMgdG8KdGhhdCBtaWMg
-YW5kIGlzIG5vdCB1c2luZyB0aGUgaW50ZXJuYWwgbWljcm9waG9uZS4KCglBbHNvIGRvZXMgd29y
-ay4KCgkJCQlUaGFua3MsCgkJCQkJSmVyb25lCgpPbiBNb24sIDIwMTAtMDgtMDkgYXQgMDc6MzAg
-LTA0MDAsIENyaXN0b3BoZXIgQ2FtYWNobyBMZWFuZHJvIHdyb3RlOgo+IEhpIFRha2FzaGnjgZXj
-gpMsCj4gCj4gCj4gVGhlIHBhdGNoIHlvdSBzZW50IG1lIHNlZW1zIHRvIHdvcmsgd2VsbCBmb3Ig
-bXkgUGFuYXNvbmljIENGLVM5SyB3aXRoIHRoZSBtb2RlbCBvcHRpb25zIGlkZWFwYWQgb3IgdGhp
-bmtwYWQuIEkganVzdCBhZGRlZCBhbiBleHRyYSBsaW5lIHRvIGl0Cj4gCj4gCj4gCj4gZGlmZiAt
-cnVwTiBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyBiL3NvdW5kL3BjaS9oZGEvcGF0
-Y2hfY29uZXhhbnQuYwo+IC0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyAgICAy
-MDEwLTA4LTAyIDA2OjExOjE0LjAwMDAwMDAwMCArMDgwMAo+ICsrKyBiL3NvdW5kL3BjaS9oZGEv
-cGF0Y2hfY29uZXhhbnQuYyAgICAyMDEwLTA4LTA5IDE5OjA5OjE0LjUzNDIyMDAwMCArMDgwMAo+
-IEBAIC0zMTIxLDYgKzMxMjEsOCBAQCBzdGF0aWMgc3RydWN0IGhkYV9jb2RlY19wcmVzZXQgc25k
-X2hkYV9wCj4gICAgICAgLnBhdGNoID0gcGF0Y2hfY3h0NTA2NiB9LAo+ICAgICB7IC5pZCA9IDB4
-MTRmMTUwNjcsIC5uYW1lID0gIkNYMjA1ODMgKFBlYmJsZSBIU0YpIiwKPiAgICAgICAucGF0Y2gg
-PSBwYXRjaF9jeHQ1MDY2IH0sCj4gKyAgIHsgLmlkID0gMHgxNGYxNTA2OCwgLm5hbWUgPSAiQ1gy
-MDU4NCIsCj4gKyAgICAgLnBhdGNoID0gcGF0Y2hfY3h0NTA2NiB9LAo+ICAgICB7IC5pZCA9IDB4
-MTRmMTUwNjksIC5uYW1lID0gIkNYMjA1ODUiLAo+ICAgICAgIC5wYXRjaCA9IHBhdGNoX2N4dDUw
-NjYgfSwKPiAgICAge30gLyogdGVybWluYXRvciAqLwo+IEBAIC0zMTMxLDYgKzMxMzMsNyBAQCBN
-T0RVTEVfQUxJQVMoInNuZC1oZGEtY29kZWMtaWQ6MTRmMTUwNDciCj4gIE1PRFVMRV9BTElBUygi
-c25kLWhkYS1jb2RlYy1pZDoxNGYxNTA1MSIpOwo+ICBNT0RVTEVfQUxJQVMoInNuZC1oZGEtY29k
-ZWMtaWQ6MTRmMTUwNjYiKTsKPiAgTU9EVUxFX0FMSUFTKCJzbmQtaGRhLWNvZGVjLWlkOjE0ZjE1
-MDY3Iik7Cj4gK01PRFVMRV9BTElBUygic25kLWhkYS1jb2RlYy1pZDoxNGYxNTA2OCIpOwo+ICBN
-T0RVTEVfQUxJQVMoInNuZC1oZGEtY29kZWMtaWQ6MTRmMTUwNjkiKTsKPiAKPiAKPiAKPiAgSSBh
-cHBsaWVkIGl0IGFnYWluc3QgMi42LjM1Lgo+IAo+IAo+IFRoYW5rcyBhIGxvdC4KPiAKPiAKPiBD
-aGVlcnMsCj4gCj4gCj4gQ3Jpc3RvcGhlcgo+IAo+IAo+IAo+IAo+IC0tLS0tT3JpZ2luYWwgTWVz
-c2FnZS0tLS0tCj4gRnJvbTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+IFRvOiBDcmlz
-dG9waGVyIENhbWFjaG8gTGVhbmRybyA8Y2NhbWFjaG9AbGludXhtYWlsLm9yZz4KPiBDYzogYWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gU2VudDogVGh1LCBKdWwgMjksIDIwMTAgNToxMCBw
-bQo+IFN1YmplY3Q6IFJlOiBbYWxzYS1kZXZlbF0gY29kZWMgc3VwcG9ydCByZXF1ZXN0OiBDb25l
-eGFudCBJRCA1MDY4Cj4gCj4gCj4gQXQgVGh1LCAyOSBKdWwgMjAxMCAwNDo1NzoyNiAtMDQwMCwK
-PiBDcmlzdG9waGVyIENhbWFjaG8gTGVhbmRybyB3cm90ZToKPiA+IAo+ID4gSGkgYWxsLAo+ID4g
-Cj4gPiBUaGUgY29kZWMgKENvbmV4YW50IElEIDUwNjgpIHJlcXVpcmVkIGJ5IG15IHNvdW5kIGNh
-cmQgKEludGVsIENvcnBvcmF0aW9uIDUgCj4gPiBTZXJpZXMvMzQwMCBTZXJpZXMgQ2hpcHNldCBI
-aWdoIERlZmluaXRpb24gQXVkaW8gKHJldiAwNikpIGlzIG5vdCBwcmVzZW50IHlldCAKPiBpbiAK
-PiA+IEFMU0EsIEkgd291bGQgaGlnaGx5IGFwcHJlY2lhdGUgaWYgeW91IGd1eXMgY291bGQgYWRk
-IHN1cHBvcnQgZm9yIGl0LiBZb3UgZ3V5cyAKPiAKPiA+IG1pZ2h0IGZpbmQgdGhlIGluZm9ybWF0
-aW9uIGNvbGxlY3RlZCBieSB0aGUgYWxzYS1pbmZvLnNoIHNjcmlwdCBvbgo+ID4gCj4gPiBodHRw
-Oi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9OGY4MDAxZDg3M2Q1YzEwYzI5M2VhYzFjOTRm
-MmVkZTBiNzNjZDg2NQo+IAo+IFRoZSBjb2RlYyBtaWdodCBiZSBjb21wYXRpYmxlIHdpdGggdGhl
-IGV4aXN0aW5nIGN4NTA2Ni4gIElmIHNvLCB0cnkKPiB0aGUgcGF0Y2ggYmVsb3csIGFuZCBjaG9v
-c2Ugb25lIG9mIGF2YWlsYWJsZSBtb2RlbHMgZm9yIGN4NTA2Ngo+IChsYXB0b3AsIGRlbGwtbGFw
-dG9wLCBvbHBjLXgwLTFfNSwgZGVsbC12b3N0cm8sIGlkZWFwYWQsIHRoaW5rcGFkKS4KPiBPbmUg
-b2YgdGhlbSBtaWdodCBtYXRjaCB3aXRoIHlvdXIgbWFjaGluZS4KPiAKPiBUYWthc2hpCj4gCj4g
-LS0tCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyBiL3NvdW5k
-L3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYwo+IGluZGV4IGM5OTQyNWEuLmNjMWNiZjEgMTAwNjQ0
-Cj4gLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jCj4gKysrIGIvc291bmQvcGNp
-L2hkYS9wYXRjaF9jb25leGFudC5jCj4gQEAgLTMxOTAsNiArMzE5MCw4IEBAIHN0YXRpYyBzdHJ1
-Y3QgaGRhX2NvZGVjX3ByZXNldCBzbmRfaGRhX3ByZXNldF9jb25leGFudFtdID0gCj4gewo+ICAg
-ICAgIC5wYXRjaCA9IHBhdGNoX2N4dDUwNjYgfSwKPiAgICAgeyAuaWQgPSAweDE0ZjE1MDY3LCAu
-bmFtZSA9ICJDWDIwNTgzIChQZWJibGUgSFNGKSIsCj4gICAgICAgLnBhdGNoID0gcGF0Y2hfY3h0
-NTA2NiB9LAo+ICsgICB7IC5pZCA9IDB4MTRmMTUwNjgsIC5uYW1lID0gIkNYMjA1ODQiLAo+ICsg
-ICAgIC5wYXRjaCA9IHBhdGNoX2N4dDUwNjYgfSwKPiAgICAgeyAuaWQgPSAweDE0ZjE1MDY5LCAu
-bmFtZSA9ICJDWDIwNTg1IiwKPiAgICAgICAucGF0Y2ggPSBwYXRjaF9jeHQ1MDY2IH0sCj4gICAg
-IHt9IC8qIHRlcm1pbmF0b3IgKi8KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwKPiAKPiAgCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCg==
+On 9 Aug 2010, at 13:19, Sascha Hauer <s.hauer@pengutronix.de> wrote:
+
+> On Mon, Aug 09, 2010 at 11:47:03AM +0100, Liam Girdwood wrote:
+>> 
+>> Yeah, that should be OK. However, we do have a ASoC core multi-component
+>> update merging later this week. This may conflict with some of your SDMA
+>> updates, although the multi-component support only really affects ASoC
+>> component probe() and remove() as every component is a regular Linux
+>> device now (with platform data, etc) and private data access.
+> 
+> That won't be a problem. The SDMA code will wait until the next merge
+> window anyway, I will rebase it after the multi-compoment merge if
+> necessary.
+
+This is precisely the issue - multi component will go in 2.6.37 too, meaning conflicts in -next unless one tree is pulled into the other during the release cycle.
+>> 
