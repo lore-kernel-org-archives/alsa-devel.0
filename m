@@ -1,16 +1,24 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: [PATCH -  1/1] patch_nvhdmi.c: Add missing codec IDs,
-	unify names
-Date: Mon,  9 Aug 2010 22:41:40 -0600
-Message-ID: <1281415300-4372-1-git-send-email-swarren@nvidia.com>
+From: "dominique.baudelin" <dominique.baudelin@laposte.net>
+Subject: VIA VT1708S
+Date: Mon,  9 Aug 2010 15:43:55 +0200 (CEST)
+Message-ID: <19374822.165450.1281361435671.JavaMail.www@wwinf8214>
+Reply-To: "dominique.baudelin" <dominique.baudelin@laposte.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id F35F724390
+Received: from out5.laposte.net (out6.laposte.net [193.251.214.123])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5720E103817
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Aug 2010 06:41:42 +0200 (CEST)
+	Mon,  9 Aug 2010 15:43:56 +0200 (CEST)
+Received: from meplus.info (localhost [127.0.0.1])
+	by mwinf8417.laposte.net (SMTP Server) with ESMTP id B52D4E000087
+	for <alsa-devel@alsa-project.org>;
+	Mon,  9 Aug 2010 15:43:55 +0200 (CEST)
+Received: from wwinf8214 (unknown [10.98.51.222])
+	by mwinf8417.laposte.net (SMTP Server) with ESMTP id A769FE000082
+	for <alsa-devel@alsa-project.org>;
+	Mon,  9 Aug 2010 15:43:55 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,99 +29,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Add missing codec IDs.
-* Modify some existing codec names for discrete GPUs to match newly
-  added IDs. Note: existing names were a mixture of marketing and
-  engineering GPU names. Equally, there's no reason that codec IDs
-  have to be specific to a particular GPU or board, so identify
-  codecs in a less marketing-oriented fashion.
-* Reformat codec ID table so it's easier to read, for me at least.
-
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
-
-diff --git a/pci/hda/patch_nvhdmi.c b/pci/hda/patch_nvhdmi.c
-index a281836..77e2b40 100644
---- a/pci/hda/patch_nvhdmi.c
-+++ b/pci/hda/patch_nvhdmi.c
-@@ -540,26 +540,32 @@ static int patch_nvhdmi_2ch(struct hda_codec *codec)
-  * patch entries
-  */
- static struct hda_codec_preset snd_hda_preset_nvhdmi[] = {
--	{ .id = 0x10de0002, .name = "MCP77/78 HDMI",
--	  .patch = patch_nvhdmi_8ch_7x },
--	{ .id = 0x10de0003, .name = "MCP77/78 HDMI",
--	  .patch = patch_nvhdmi_8ch_7x },
--	{ .id = 0x10de0005, .name = "MCP77/78 HDMI",
--	  .patch = patch_nvhdmi_8ch_7x },
--	{ .id = 0x10de0006, .name = "MCP77/78 HDMI",
--	  .patch = patch_nvhdmi_8ch_7x },
--	{ .id = 0x10de0007, .name = "MCP79/7A HDMI",
--	  .patch = patch_nvhdmi_8ch_7x },
--	{ .id = 0x10de000a, .name = "GT220 HDMI",
--	  .patch = patch_nvhdmi_8ch_89 },
--	{ .id = 0x10de000b, .name = "GT21x HDMI",
--	  .patch = patch_nvhdmi_8ch_89 },
--	{ .id = 0x10de000c, .name = "MCP89 HDMI",
--	  .patch = patch_nvhdmi_8ch_89 },
--	{ .id = 0x10de000d, .name = "GT240 HDMI",
--	  .patch = patch_nvhdmi_8ch_89 },
--	{ .id = 0x10de0067, .name = "MCP67 HDMI", .patch = patch_nvhdmi_2ch },
--	{ .id = 0x10de8001, .name = "MCP73 HDMI", .patch = patch_nvhdmi_2ch },
-+	{ .id = 0x10de0002, .name = "MCP77/78 HDMI",  .patch = patch_nvhdmi_8ch_7x },
-+	{ .id = 0x10de0003, .name = "MCP77/78 HDMI",  .patch = patch_nvhdmi_8ch_7x },
-+	{ .id = 0x10de0005, .name = "MCP77/78 HDMI",  .patch = patch_nvhdmi_8ch_7x },
-+	{ .id = 0x10de0006, .name = "MCP77/78 HDMI",  .patch = patch_nvhdmi_8ch_7x },
-+	{ .id = 0x10de0007, .name = "MCP79/7A HDMI",  .patch = patch_nvhdmi_8ch_7x },
-+	{ .id = 0x10de000a, .name = "GPU 0a HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de000b, .name = "GPU 0b HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de000c, .name = "MCP89 HDMI",     .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de000d, .name = "GPU 0d HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de0010, .name = "GPU 10 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de0011, .name = "GPU 11 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de0012, .name = "GPU 12 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de0013, .name = "GPU 13 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de0014, .name = "GPU 14 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de0018, .name = "GPU 18 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de0019, .name = "GPU 19 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de001a, .name = "GPU 1a HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de001b, .name = "GPU 1b HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de001c, .name = "GPU 1c HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de0040, .name = "GPU 40 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de0041, .name = "GPU 41 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de0042, .name = "GPU 42 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de0043, .name = "GPU 43 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de0044, .name = "GPU 44 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
-+	{ .id = 0x10de0067, .name = "MCP67 HDMI",     .patch = patch_nvhdmi_2ch },
-+	{ .id = 0x10de8001, .name = "MCP73 HDMI",     .patch = patch_nvhdmi_2ch },
- 	{} /* terminator */
- };
- 
-@@ -572,6 +578,21 @@ MODULE_ALIAS("snd-hda-codec-id:10de000a");
- MODULE_ALIAS("snd-hda-codec-id:10de000b");
- MODULE_ALIAS("snd-hda-codec-id:10de000c");
- MODULE_ALIAS("snd-hda-codec-id:10de000d");
-+MODULE_ALIAS("snd-hda-codec-id:10de0010");
-+MODULE_ALIAS("snd-hda-codec-id:10de0011");
-+MODULE_ALIAS("snd-hda-codec-id:10de0012");
-+MODULE_ALIAS("snd-hda-codec-id:10de0013");
-+MODULE_ALIAS("snd-hda-codec-id:10de0014");
-+MODULE_ALIAS("snd-hda-codec-id:10de0018");
-+MODULE_ALIAS("snd-hda-codec-id:10de0019");
-+MODULE_ALIAS("snd-hda-codec-id:10de001a");
-+MODULE_ALIAS("snd-hda-codec-id:10de001b");
-+MODULE_ALIAS("snd-hda-codec-id:10de001c");
-+MODULE_ALIAS("snd-hda-codec-id:10de0040");
-+MODULE_ALIAS("snd-hda-codec-id:10de0041");
-+MODULE_ALIAS("snd-hda-codec-id:10de0042");
-+MODULE_ALIAS("snd-hda-codec-id:10de0043");
-+MODULE_ALIAS("snd-hda-codec-id:10de0044");
- MODULE_ALIAS("snd-hda-codec-id:10de0067");
- MODULE_ALIAS("snd-hda-codec-id:10de8001");
- 
--- 
-1.6.0.6
-
-nvpublic
+CkFzdXMgTm90ZWJvb2sgWDcwIFNlcmllcyBYNzBBRCBBdGhsb24gTTMwMC02NCBBdGkgUmFkZW9u
+IEhEIDQ1NzAKT1MgTHVjaWQgTHlueCAxMC4wNCBMVFMKQXVkaW8gY2hpcHNldCBWSUEgVlQxNzA4
+UwoKCgoKCkRlYXIgU2lyLApJbiBIRC1BdWRpby1Nb2RlbHMudHh0Lmd6IGZpbGUgSSBkb24ndCBm
+aW5kIHRoZSBWSUEgVlQxNzA4UyBjb2RlYyBhbmQgdGhlIGFzc2lvY2lhdGVkIE1vZGVsIG5hbWUu
+CkhhdmUgeW91IGdvdCB0aGlzIGluZm9ybWF0aW9uPyBJIHdvdWxkIGxpa2Ugd3JpdGU6IG9wdGlv
+bnMgc25kLWhkYS1pbnRlbCBtb2RlbD0/Pz8/Pz8gYXQgdGhlIGVuZCBvZiBhbHNhLWJhc2UuY29u
+ZiBmaWxlLgpZb3VycyBzaW5jZXJlbHksCk0uIERvbWluaXF1ZSBCYXVkZWxpbgoKUC5TLjpJZiB5
+b3UgYXJlbid0IHRoZSBnb29kIGludGVybG9jdXRvciBJIGFtIHNvcnJ5IHRvIGRpc3R1cmIgeW91
+LgoKCgpVbmUgbWVzc2FnZXJpZSBncmF0dWl0ZSwgZ2FyYW50aWUgw6AgdmllIGV0IGRlcyBzZXJ2
+aWNlcyBlbiBwbHVzLCDDp2Egdm91cyB0ZW50ZSA/CkplIGNyw6llIG1hIGJvw650ZSBtYWlsIHd3
+dy5sYXBvc3RlLm5ldAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCg==
