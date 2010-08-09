@@ -1,23 +1,22 @@
-From: Michael Trimarchi <trimarchi@gandalf.sssup.it>
-Subject: amp power down event (resend with the correct email)
-Date: Mon, 09 Aug 2010 20:05:53 +0200
-Message-ID: <4C604381.2080000@gandalf.sssup.it>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH 0/3] ASoC: multi-comp: OMAP platform fixes
+Date: Mon, 9 Aug 2010 21:38:44 +0300
+Message-ID: <20100809213844.2a0e0d72.jhnikula@gmail.com>
+References: <1281080355-22589-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20100806105628.2971f8a1.jhnikula@gmail.com>
+	<201008091909.59930.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sssup.it (ms01.sssup.it [193.205.80.99])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4A1F824698
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id A9917246A7
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Aug 2010 20:05:54 +0200 (CEST)
-Received: from [10.30.3.4] (HELO granpasso.retis)
-	by sssup.it (CommuniGate Pro SMTP 5.3.2)
-	with ESMTPS id 62413768 for alsa-devel@alsa-project.org;
-	Mon, 09 Aug 2010 19:58:45 +0200
-Received: from [10.30.3.245] (dhcp245.retis [10.30.3.245])
-	by granpasso.retis (8.14.4/8.14.4) with ESMTP id o79I5rCk072770
-	for <alsa-devel@alsa-project.org>; Mon, 9 Aug 2010 20:05:53 +0200 (CEST)
-	(envelope-from trimarchi@gandalf.sssup.it)
+	Mon,  9 Aug 2010 20:37:27 +0200 (CEST)
+Received: by eye27 with SMTP id 27so3398760eye.38
+	for <alsa-devel@alsa-project.org>; Mon, 09 Aug 2010 11:37:27 -0700 (PDT)
+In-Reply-To: <201008091909.59930.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,29 +26,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Hi
 
-I'm t rying to unde rstand when the event a re called.
+On Mon, 9 Aug 2010 19:09:57 +0200
+Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
 
-...
-SND_SOC_DAPM_SPK("Front Speaker", amp_event),
-...
+> If your request for testing Peter's patches is still valid, what exact tree 
+> and branch would you like me to test the patches against? I've tried to 
+> locate a tree with the patches already applied by Liam, but failed.
+> 
+Sure, we are glad if you can give a test to ASoC multi-component as
+there are major changes coming and we don't have any omap1 boards to
+try.
 
-My idea was:
+Peter's patches are already integrated into TI OMAP update of
+multi-component so for you it's just enough to clone the development
+tree and then going to topic/multi-component branch of it.
 
-- set the mixe r
-- open st ream
+git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git
+and
+git checkout -b multi-component_20100809 origin/topic/multi-component
 
-amp_event: event =>
-[  169.820558] ON
+There are no config changes so you should be able to test with your
+regular .config. It should work as before if everything goes well.
+There could be probing problems but usually fix is around the struct
+snd_soc_dai_link in a machine driver (e.g. ams_delta_dai_link).
 
-- close st ream
 
-and receive the event => OFF. In the aplay example this happen
-afte r some seconds but in my application I don't receive the OFF
-event. What is w rong?
-
-Michael
+-- 
+Jarkko
