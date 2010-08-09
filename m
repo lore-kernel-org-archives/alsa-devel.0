@@ -1,16 +1,20 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: i.MX SDMA support
-Date: Mon, 9 Aug 2010 11:11:57 +0200
-Message-ID: <20100809091157.GC20065@pengutronix.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: tlv320dac33: Fixes for
+ multi-component
+Date: Mon, 09 Aug 2010 11:18:20 +0100
+Message-ID: <1281349100.3035.25.camel@odin>
+References: <1281344158-3563-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 69BBD245BE
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id BA0F9245D8
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Aug 2010 11:11:58 +0200 (CEST)
-Content-Disposition: inline
+	Mon,  9 Aug 2010 12:18:22 +0200 (CEST)
+Received: by wyb42 with SMTP id 42so9659940wyb.38
+	for <alsa-devel@alsa-project.org>; Mon, 09 Aug 2010 03:18:22 -0700 (PDT)
+In-Reply-To: <1281344158-3563-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,24 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Mon, 2010-08-09 at 11:55 +0300, Peter Ujfalusi wrote:
+> Small changes int module load sequence.
+> Keep the codec OFF when not active.
+> Reading the DAC33 ID at probe time.
+> In the private struct we need pointer for the codec.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> ---
+> 
+> Hello Liam, Mark!
+> 
+> This patch is against the multi-comp branch, and makes the tlv320dac33
+> driver working correctly (in a similar way as it used to work).
+> I have tested the codec with this patch on top of the multi-comp
+> branch, and works nicely.
+> 
+> Liam: You can squash this, if you think it's better..
+> 
 
-I just posted a series adding SDMA support for i.MX to the Arm Linux
-Kernel mailing list. It also contains a patch for adding SDMA support
-to the i.MX SSI units. I haven't cc'd alsa-devel because most of the
-stuff is not sound related. I know at least Mark and Liam are
-interested, so I leave a pointer here. The sound stuff needs to be
-synchronized with the other patches, so it's probably best if all
-patches go via my tree.
+Yeah, squashed since it's fixes. I think we will make this the last
+squashed patch as I'll do a multi-component patch series this evening
+with a view to merge by the end of the week.
 
-Sascha
+We can then deal with any fixes/updates incrementally.
 
+Thanks
+
+Liam
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
