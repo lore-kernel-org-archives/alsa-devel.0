@@ -1,18 +1,18 @@
-From: "Sebastian H." <vand2@gmx.de>
-Subject: Re: Alsamixer-Qt4 0.4.0 released
-Date: Mon, 09 Aug 2010 16:08:26 +0200
-Message-ID: <4C600BDA.5090400@gmx.de>
-References: <4C595A52.7030401@gmx.de>
-	<AANLkTin0b0yBvVeVEGrWdkXUYh1J5Hwvj7Hu29iw3oV2@mail.gmail.com>
+From: Cristopher Camacho Leandro <ccamacho@linuxmail.org>
+Subject: Re: codec support request: Conexant ID 5068
+Date: Mon, 09 Aug 2010 11:28:14 -0400
+Message-ID: <8CD05EE9E57E1E6-3B0-3285@web-mmc-d01.sysops.aol.com>
+References: <8CCFD1333DD6566-1368-9790@web-mmc-d06.sysops.aol.com><s5hy6cu8xgf.wl%tiwai@suse.de><8CD05CD62A8F2D3-3B0-1974@web-mmc-d01.sysops.aol.com>
+	<1281361927.5571.435.camel@laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mailout-de.gmx.net [213.165.64.23])
-	by alsa0.perex.cz (Postfix) with SMTP id 8B960103817
+Received: from imr-mb02.mx.aol.com (imr-mb02.mx.aol.com [64.12.207.163])
+	by alsa0.perex.cz (Postfix) with ESMTP id DC93D24615
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Aug 2010 16:12:29 +0200 (CEST)
-In-Reply-To: <AANLkTin0b0yBvVeVEGrWdkXUYh1J5Hwvj7Hu29iw3oV2@mail.gmail.com>
+	Mon,  9 Aug 2010 17:28:57 +0200 (CEST)
+In-Reply-To: <1281361927.5571.435.camel@laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,80 +22,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Niels Mayer <nielsmayer@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: jerone.young@canonical.com
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Niels
-
-> This mixer is a major improvement over alsamixergui and alsamixer.
-
-That's good to hear. It always bugged me that certain things that are
-supposed to be simple can be extraordinary complicated in linux. Like
-altering the output/input volume.
-
-> Unfortunately with envy24-based soundcards, it doesn't do the right
-> thing w/r/t the ice1712's built-in digital mixer (
-> http://nielsmayer.com/envy24control/envy24mixer-architecture.png ).
-> There's up to eight pairs of input monitors and PCM output monitors
-> that feed the mixer through L/R sliders that look like:
-> http://nielsmayer.com/envy24control/Mudita24-102-Monitor-Inputs.png
-> http://nielsmayer.com/envy24control/Mudita24-102-Monitor-Outputs.png
-> (Application shown in screenshots is envy24control modification known
-> as "mudita24"
->  http://nielsmayer.com/envy24control/mudita24-1.0.3.tar.gz . )
-> 
-> In alsamixer-qt4, both the left and right sides of these attenuators
-> are controlled simultaneously, rather than individually. Likewise, the
-> mutes are controlled simultaneously when they should be individually
-> controllable left and right. Note that each of these controls has a
-> front left capture and a front right capture that must be controlled
-> individually.
-
-Ok, I thought that the main area - for simplicity - should only contain
-combined mono sliders and if people really want to alter channels they
-could use the channel mixer (button on the sidebar).
-
-But if a combined mono slider is not appropriate at all for a
-multi channel element I wonder how get to known about it from
-the ALSA API. Or to put in an other way: When should all channel
-sliders be displayed instead of a combined mono slider?
-Is it when
-  snd_mixer_selem_has_playback_volume_joined ( elem ) == 0?
-or when
-  snd_mixer_selem_is_capture_mono ( elem ) == 0?
-or must there be a string comparison plus element
-database in the mixer application (not desireable IMHO)?
-
-
-> Furthermore, there appears to be a bug alsamixer-qt4 in
-> that it takes the value for the left setting for one channel (ie.
-> shows 100%) and then for the next it takes the setting for the right
-> (i.e. shows 0%). This gives an alternating pattern of sliders and
-> mutes that doesn't correspond to the alsa values. Of course, once
-> alsamixer-qt4 changes the values, then you have to go back in
-> envy24control and fix all values where left and right sides got set to
-> same value. http://nielsmayer.com/envy24control/Screenshot-Alsamixer-Qt4.png
-> is what it looks like.
-
-For the combined sliders the left channel value is take because
-SND_MIXER_SCHN_MONO == SND_MIXER_SCHN_FRONT_LEFT
-and on a slider change all channel values are adjusted.
-That seemed to me the most appropriate behaviour for a combined slider.
-And if a combined slider is the wrong choice for ane element it's again
-the question mentioned above.
-
-As far as I can see the alsamixer-qt4 screenshot shows the
-same value for the left channel as in the Mudita24 screenshot.
-The alternating of the left channel is present there, too.
-
-
-> (Btw "Delta IEC958 Input Status" should not be "writeable" -- it's a
-> status indicator, but in alsamixer-qt4, it doesn't turn on when then
-> digital input has signal).
-
-Ok, this surely can be fixed, too. But how do I know that an element is
-not writeable.
-
-Best,
-Sebastian
+CgpIaSBKZXJvbmUsCgo+ICAgIElmIHlvdSBjYW4gY29uZmlybSB0aGF0IGFsbCB0aGUgb3B0aW9u
+cyB3b3JrIGFuZCBjYW4gc2VuZCAibHNwY2kgLXZ2bm4iCj5vdXRwdXQgd2UgY2FuIHB1dCBhIHF1
+aXJrIGluIGZvciB5b3VyIFBhbmFzb25pYyBtYWNoaW5lLgoKMDA6MWIuMCBBdWRpbyBkZXZpY2Ug
+WzA0MDNdOiBJbnRlbCBDb3Jwb3JhdGlvbiA1IFNlcmllcy8zNDAwIFNlcmllcyBDaGlwc2V0IEhp
+Z2ggRGVmaW5pdGlvbiBBdWRpbyBbODA4NjozYjU2XSAocmV2IDA2KQogICAgU3Vic3lzdGVtOiBN
+YXRzdXNoaXRhIEVsZWN0cmljIEluZHVzdHJpYWwgQ28uLCBMdGQuIERldmljZSBbMTBmNzo4MzM4
+XQogICAgQ29udHJvbDogSS9PLSBNZW0rIEJ1c01hc3RlcisgU3BlY0N5Y2xlLSBNZW1XSU5WLSBW
+R0FTbm9vcC0gUGFyRXJyLSBTdGVwcGluZy0gU0VSUi0gRmFzdEIyQi0gRGlzSU5UeCsKICAgIFN0
+YXR1czogQ2FwKyA2Nk1Iei0gVURGLSBGYXN0QjJCLSBQYXJFcnItIERFVlNFTD1mYXN0ID5UQWJv
+cnQtIDxUQWJvcnQtIDxNQWJvcnQtID5TRVJSLSA8UEVSUi0gSU5UeC0KICAgIExhdGVuY3k6IDAs
+IENhY2hlIExpbmUgU2l6ZTogNjQgYnl0ZXMKICAgIEludGVycnVwdDogcGluIEEgcm91dGVkIHRv
+IElSUSA0NwogICAgUmVnaW9uIDA6IE1lbW9yeSBhdCBmNGEyMDAwMCAoNjQtYml0LCBub24tcHJl
+ZmV0Y2hhYmxlKSBbc2l6ZT0xNktdCiAgICBDYXBhYmlsaXRpZXM6IDxhY2Nlc3MgZGVuaWVkPgog
+ICAgS2VybmVsIGRyaXZlciBpbiB1c2U6IEhEQSBJbnRlbAoKPiAgICAqIEJlc2lkZXMgdGhlIG91
+dHB1dHMgd29ya2luZyBhbHNvIG1ha2Ugc3VyZSB0byB0ZXN0Cj4gICAgLSBNYWtlIHN1cmUgaWYg
+eW91IHBsdWcgaW4gaGVhZHBob25lcyBleHRlcm5hbCBzcGVha2VycyBtdXRlCgpZZXMsIHdoZW4g
+dGhlIGhlYWRwaG9uZXMgYXJlIHBsdWdnZWQgaW4gdGhlIHNwZWFrZXJzIG11dGUuCgo+ICAgICAg
+LSBNYWtlIHN1cmUgd2hlbiB5b3UgcGx1ZyBpbiB0aGUgbWljIGphY2ssIHRoYXQgaXQgYXV0byBz
+d2l0Y2hlcyB0bwo+dGhhdCBtaWMgYW5kIGlzIG5vdCB1c2luZyB0aGUgaW50ZXJuYWwgbWljcm9w
+aG9uZS4KClRoZXNlIFBhbmFzb25pYyBsYXB0b3BzIGRvIG5vdCBpbmNsdWRlIGEgYnVpbHQgaW4g
+bWljcm9waG9uZSwgdGhlbiBJIGNhbid0IHRlc3QgdGhpcyBmZWF0dXJlLiBXaGVuIEkgcGx1ZyBh
+IG1pY3JvcGhvbmUgaW4gdGhlIG1pYyBqYWNrIGl0IHdvcmtzIGFzIGV4cGVjdGVkLgoKSWYgdGhl
+cmUgaXMgYW55IG90aGVyIGluZm9ybWF0aW9uIHRoYXQgeW91IG1pZ2h0IG5lZWQgSSdsbCBiZSBo
+YXBweSB0byBwcm92aWRlIGl0LgoKQ2hlZXJzLAoKQ3Jpc3RvcGhlcgoKPk9uIE1vbiwgMjAxMC0w
+OC0wOSBhdCAwNzozMCAtMDQwMCwgQ3Jpc3RvcGhlciBDYW1hY2hvIExlYW5kcm8gd3JvdGU6Cj4+
+IEhpIFRha2FzaGnjgZXjgpMsCj4+Cj4+IAo+PiBUaGUgcGF0Y2ggeW91IHNlbnQgbWUgc2VlbXMg
+dG8gd29yayB3ZWxsIGZvciBteSBQYW5hc29uaWMgQ0YtUzlLIHdpdGggdGhlIAo+Pm1vZGVsIG9w
+dGlvbnMgaWRlYXBhZCBvciB0aGlua3BhZC4gSSBqdXN0IGFkZGVkIGFuIGV4dHJhIGxpbmUgdG8g
+aXQKPj4gCj4+IAo+PiAKPj4gZGlmZiAtcnVwTiBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhh
+bnQuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYwo+PiAtLS0gYS9zb3VuZC9wY2kv
+aGRhL3BhdGNoX2NvbmV4YW50LmMgICAgMjAxMC0wOC0wMiAwNjoxMToxNC4wMDAwMDAwMDAgKzA4
+MDAKPj4gKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jICAgIDIwMTAtMDgtMDkg
+MTk6MDk6MTQuNTM0MjIwMDAwICswODAwCj4+IEBAIC0zMTIxLDYgKzMxMjEsOCBAQCBzdGF0aWMg
+c3RydWN0IGhkYV9jb2RlY19wcmVzZXQgc25kX2hkYV9wCj4+ICAgICAgIC5wYXRjaCA9IHBhdGNo
+X2N4dDUwNjYgfSwKPj4gICAgIHsgLmlkID0gMHgxNGYxNTA2NywgLm5hbWUgPSAiQ1gyMDU4MyAo
+UGViYmxlIEhTRikiLAo+PiAgICAgICAucGF0Y2ggPSBwYXRjaF9jeHQ1MDY2IH0sCj4+ICsgICB7
+IC5pZCA9IDB4MTRmMTUwNjgsIC5uYW1lID0gIkNYMjA1ODQiLAo+PiArICAgICAucGF0Y2ggPSBw
+YXRjaF9jeHQ1MDY2IH0sCj4+ICAgICB7IC5pZCA9IDB4MTRmMTUwNjksIC5uYW1lID0gIkNYMjA1
+ODUiLAo+PiAgICAgICAucGF0Y2ggPSBwYXRjaF9jeHQ1MDY2IH0sCj4+ICAgICB7fSAvKiB0ZXJt
+aW5hdG9yICovCj4+IEBAIC0zMTMxLDYgKzMxMzMsNyBAQCBNT0RVTEVfQUxJQVMoInNuZC1oZGEt
+Y29kZWMtaWQ6MTRmMTUwNDciCj4+ICBNT0RVTEVfQUxJQVMoInNuZC1oZGEtY29kZWMtaWQ6MTRm
+MTUwNTEiKTsKPj4gIE1PRFVMRV9BTElBUygic25kLWhkYS1jb2RlYy1pZDoxNGYxNTA2NiIpOwo+
+PiAgTU9EVUxFX0FMSUFTKCJzbmQtaGRhLWNvZGVjLWlkOjE0ZjE1MDY3Iik7Cj4+ICtNT0RVTEVf
+QUxJQVMoInNuZC1oZGEtY29kZWMtaWQ6MTRmMTUwNjgiKTsKPj4gIE1PRFVMRV9BTElBUygic25k
+LWhkYS1jb2RlYy1pZDoxNGYxNTA2OSIpOwo+PiAKPj4gCj4+IAo+PiAgSSBhcHBsaWVkIGl0IGFn
+YWluc3QgMi42LjM1Lgo+PiAKPj4gCj4+IFRoYW5rcyBhIGxvdC4KPj4gCj4+IAo+PiBDaGVlcnMs
+Cj4+IAo+PiAKPj4gQ3Jpc3RvcGhlcgo+PiAKPj4gCj4+IAo+ID4KPiAtLS0tLU9yaWdpbmFsIE1l
+c3NhZ2UtLS0tLQo+IEZyb206IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KPiBUbzogQ3Jp
+c3RvcGhlciBDYW1hY2hvIExlYW5kcm8gPGNjYW1hY2hvQGxpbnV4bWFpbC5vcmc+Cj4gQ2M6IGFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IFNlbnQ6IFRodSwgSnVsIDI5LCAyMDEwIDU6MTAg
+cG0KPiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIGNvZGVjIHN1cHBvcnQgcmVxdWVzdDogQ29u
+ZXhhbnQgSUQgNTA2OAo+IAo+IAo+IEF0IFRodSwgMjkgSnVsIDIwMTAgMDQ6NTc6MjYgLTA0MDAs
+Cj4gQ3Jpc3RvcGhlciBDYW1hY2hvIExlYW5kcm8gd3JvdGU6Cj4gPiAKPiA+IEhpIGFsbCwKPiA+
+IAo+ID4gVGhlIGNvZGVjIChDb25leGFudCBJRCA1MDY4KSByZXF1aXJlZCBieSBteSBzb3VuZCBj
+YXJkIChJbnRlbCBDb3Jwb3JhdGlvbiA1IAo+ID4gU2VyaWVzLzM0MDAgU2VyaWVzIENoaXBzZXQg
+SGlnaCBEZWZpbml0aW9uIEF1ZGlvIChyZXYgMDYpKSBpcyBub3QgcHJlc2VudCAKeWV0IAo+IGlu
+IAo+ID4gQUxTQSwgSSB3b3VsZCBoaWdobHkgYXBwcmVjaWF0ZSBpZiB5b3UgZ3V5cyBjb3VsZCBh
+ZGQgc3VwcG9ydCBmb3IgaXQuIFlvdSAKZ3V5cyAKPiAKPiA+IG1pZ2h0IGZpbmQgdGhlIGluZm9y
+bWF0aW9uIGNvbGxlY3RlZCBieSB0aGUgYWxzYS1pbmZvLnNoIHNjcmlwdCBvbgo+ID4gCj4gPiBo
+dHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9OGY4MDAxZDg3M2Q1YzEwYzI5M2VhYzFj
+OTRmMmVkZTBiNzNjZDg2NQo+IAo+IFRoZSBjb2RlYyBtaWdodCBiZSBjb21wYXRpYmxlIHdpdGgg
+dGhlIGV4aXN0aW5nIGN4NTA2Ni4gIElmIHNvLCB0cnkKPiB0aGUgcGF0Y2ggYmVsb3csIGFuZCBj
+aG9vc2Ugb25lIG9mIGF2YWlsYWJsZSBtb2RlbHMgZm9yIGN4NTA2Ngo+IChsYXB0b3AsIGRlbGwt
+bGFwdG9wLCBvbHBjLXgwLTFfNSwgZGVsbC12b3N0cm8sIGlkZWFwYWQsIHRoaW5rcGFkKS4KPiBP
+bmUgb2YgdGhlbSBtaWdodCBtYXRjaCB3aXRoIHlvdXIgbWFjaGluZS4KPiAKPiBUYWthc2hpCj4g
+Cj4gLS0tCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyBiL3Nv
+dW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYwo+IGluZGV4IGM5OTQyNWEuLmNjMWNiZjEgMTAw
+NjQ0Cj4gLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jCj4gKysrIGIvc291bmQv
+cGNpL2hkYS9wYXRjaF9jb25leGFudC5jCj4gQEAgLTMxOTAsNiArMzE5MCw4IEBAIHN0YXRpYyBz
+dHJ1Y3QgaGRhX2NvZGVjX3ByZXNldCBzbmRfaGRhX3ByZXNldF9jb25leGFudFtdIAo9IAo+IHsK
+PiAgICAgICAucGF0Y2ggPSBwYXRjaF9jeHQ1MDY2IH0sCj4gICAgIHsgLmlkID0gMHgxNGYxNTA2
+NywgLm5hbWUgPSAiQ1gyMDU4MyAoUGViYmxlIEhTRikiLAo+ICAgICAgIC5wYXRjaCA9IHBhdGNo
+X2N4dDUwNjYgfSwKPiArICAgeyAuaWQgPSAweDE0ZjE1MDY4LCAubmFtZSA9ICJDWDIwNTg0IiwK
+PiArICAgICAucGF0Y2ggPSBwYXRjaF9jeHQ1MDY2IH0sCj4gICAgIHsgLmlkID0gMHgxNGYxNTA2
+OSwgLm5hbWUgPSAiQ1gyMDU4NSIsCj4gICAgICAgLnBhdGNoID0gcGF0Y2hfY3h0NTA2NiB9LAo+
+ICAgICB7fSAvKiB0ZXJtaW5hdG9yICovCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCj4gCj4gIAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAoKIApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
