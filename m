@@ -1,19 +1,20 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: i.MX SDMA support
-Date: Mon, 9 Aug 2010 14:19:56 +0200
-Message-ID: <20100809121956.GA27749@pengutronix.de>
-References: <20100809091157.GC20065@pengutronix.de>
-	<1281350823.3035.54.camel@odin>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: move snd-aloop to the alsa-kernel tree?
+Date: Mon, 9 Aug 2010 15:10:13 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1008091446210.10278@eeebox2.perex-int.cz>
+References: <alpine.LNX.2.00.1008090858190.10278@eeebox2.perex-int.cz>
+	<s5hbp9cz1kq.wl%tiwai@suse.de>
+	<alpine.LNX.2.00.1008091348140.10278@eeebox2.perex-int.cz>
+	<s5h39uodmsr.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 14A83103806
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id DC72210381C
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Aug 2010 14:19:57 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1281350823.3035.54.camel@odin>
+	Mon,  9 Aug 2010 15:10:13 +0200 (CEST)
+In-Reply-To: <s5h39uodmsr.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,53 +24,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 09, 2010 at 11:47:03AM +0100, Liam Girdwood wrote:
-> On Mon, 2010-08-09 at 11:11 +0200, Sascha Hauer wrote:
-> > Hi,
-> > 
-> > I just posted a series adding SDMA support for i.MX to the Arm Linux
-> > Kernel mailing list.
-> 
-> I noticed. It's good to see SDMA support going upstream :) 
-> 
-> >  It also contains a patch for adding SDMA support
-> > to the i.MX SSI units. I haven't cc'd alsa-devel because most of the
-> > stuff is not sound related. I know at least Mark and Liam are
-> > interested, so I leave a pointer here. The sound stuff needs to be
-> > synchronized with the other patches, so it's probably best if all
-> > patches go via my tree.
-> 
-> Yeah, that should be OK. However, we do have a ASoC core multi-component
-> update merging later this week. This may conflict with some of your SDMA
-> updates, although the multi-component support only really affects ASoC
-> component probe() and remove() as every component is a regular Linux
-> device now (with platform data, etc) and private data access.
+On Mon, 9 Aug 2010, Takashi Iwai wrote:
 
-That won't be a problem. The SDMA code will wait until the next merge
-window anyway, I will rebase it after the multi-compoment merge if
-necessary.
+> At Mon, 9 Aug 2010 13:50:37 +0200 (CEST),
+> Jaroslav Kysela wrote:
+>>
+>> On Mon, 9 Aug 2010, Takashi Iwai wrote:
+>>
+>>> At Mon, 9 Aug 2010 09:17:10 +0200 (CEST),
+>>> Jaroslav Kysela wrote:
+>>>>
+>>>> Hi all,
+>>>>
+>>>>  	does anyone have any objection to move the loop module (snd-aloop)
+>>>> from the alsa-driver tree to the alsa-kernel tree (Linux 2.6 tree)?
+>>>>  	I worked on these things last days:
+>>>>
+>>>> - fixed timing issues (we cannot use the identical period
+>>>>    timing for both playback/capture - it also means that the capture and
+>>>>    playback buffer setup might be different)
+>>>> - added proper buffer silencing when the playback is in the draining phase
+>>>> - added stream parameters change notification (stop the capture stream
+>>>>    when the playback stream parameters were changed)
+>>>> - added controls to propagate the playback stream parameters to the
+>>>>    user space with the notification of changes
+>>>> - added simple time shift functionality to compensate the time drift for
+>>>>    another clock source
+>>>
+>>> Sounds good.  But, let's merge it into 2.6.37.
+>>
+>> I don't see any reason to wait with merging of this pretty generic driver
+>> while 2.6.36-rc1 is not released, but I'm not in a hurry :-)
+>
+> As a generic rule, all new features to be merged should have appeared
+> in linux-next (i.e. also mm tree) before the merge window opened.
 
-> 
-> The multi-component branch is here:-
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git topic/multi-component
-> 
-> I did have to make some changes to i.MX ASoC in order to de-couple some
-> of the components in order for them to be distinct kernel devices. Any
-> chance you could give this a test with the new SDMA code ?
+OK, I put the snd-aloop driver to my devel git tree and removed the code 
+from the alsa-driver git tree (with the new pm_qos_request updates).
 
-Yes, will do later today or tomorrow. In fact, I wanted to do earlier, but
-didn't find the time.
+ 						Jaroslav
 
-Sascha
-
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
