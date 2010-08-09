@@ -1,22 +1,17 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH 0/3] ASoC: multi-comp: OMAP platform fixes
-Date: Mon, 9 Aug 2010 21:38:44 +0300
-Message-ID: <20100809213844.2a0e0d72.jhnikula@gmail.com>
-References: <1281080355-22589-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20100806105628.2971f8a1.jhnikula@gmail.com>
-	<201008091909.59930.jkrzyszt@tis.icnet.pl>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: patch_nvhdmi.c's snd_hda_preset_nvhdmi[] formatting,
+ entry naming, new entries
+Date: Mon, 9 Aug 2010 11:47:26 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF02FD6DF644@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id A9917246A7
+Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6B5B3246B8
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Aug 2010 20:37:27 +0200 (CEST)
-Received: by eye27 with SMTP id 27so3398760eye.38
-	for <alsa-devel@alsa-project.org>; Mon, 09 Aug 2010 11:37:27 -0700 (PDT)
-In-Reply-To: <201008091909.59930.jkrzyszt@tis.icnet.pl>
+	Mon,  9 Aug 2010 20:51:55 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,36 +21,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>, lrg@slimlogic.co.uk
+To: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+All,
 
-On Mon, 9 Aug 2010 19:09:57 +0200
-Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
+I'm working on a patch to add some new codec IDs to patch_nvhdmi.c. I notice
+that many lines in that table are wrapped to avoid long lines. Is there a hard
+80 column limit for ALSA driver or kernel files? I'd find the table and diff
+much easier to read if I could simply put each new entry on a single line,
+but don't want to violate any hard-and-fast coding style rules...
 
-> If your request for testing Peter's patches is still valid, what exact tree 
-> and branch would you like me to test the patches against? I've tried to 
-> locate a tree with the patches already applied by Liam, but failed.
-> 
-Sure, we are glad if you can give a test to ASoC multi-component as
-there are major changes coming and we don't have any omap1 boards to
-try.
+Second, I wish to add entries for some GPUs that haven't yet been released.
+For these, I'd like to make the codec names simply "GPU HDMI/DP", since I
+can't expose naming for unreleased products. We'd like to get these entries
+into the driver early so that they're available in distros before products
+ship, so that the hardware "just works" out of the box. Indications so far
+are that these devices will simply be standard Azalia codecs, and hence not
+need any code/tables/quirks to operate correctly (i.e. they'll follow the
+existing "MCP89" path).
 
-Peter's patches are already integrated into TI OMAP update of
-multi-component so for you it's just enough to clone the development
-tree and then going to topic/multi-component branch of it.
+Finally, the naming for existing discrete GPU entries (GT220/GT21x/GT240) is
+a mixture of engineering GPU names and marketing names. I'd like to edit these
+names to also be simply "GPU HDMI/DP" for consistency. Unfortunately, I'm not
+allowed to submit engineering GPU names for any GPUs, and using marketing
+names in these entries doesn't make sense, since there may be multiple
+marketing names per codec ID, and the marketing names many change over time.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git
-and
-git checkout -b multi-component_20100809 origin/topic/multi-component
+Does anyone have any problems with any of the above before I submit a proposed
+patch?
 
-There are no config changes so you should be able to test with your
-regular .config. It should work as before if everything goes well.
-There could be probing problems but usually fix is around the struct
-snd_soc_dai_link in a machine driver (e.g. ams_delta_dai_link).
-
+Thanks.
 
 -- 
-Jarkko
+nvpublic
