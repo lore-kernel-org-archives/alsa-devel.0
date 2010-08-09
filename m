@@ -1,18 +1,19 @@
-From: Cristopher Camacho Leandro <ccamacho@linuxmail.org>
-Subject: Re: codec support request: Conexant ID 5068
-Date: Mon, 09 Aug 2010 07:30:21 -0400
-Message-ID: <8CD05CD62A8F2D3-3B0-1974@web-mmc-d01.sysops.aol.com>
-References: <8CCFD1333DD6566-1368-9790@web-mmc-d06.sysops.aol.com>
-	<s5hy6cu8xgf.wl%tiwai@suse.de>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: [PATCH] ASoC: n810: Remove tlv320aic3x i2c
+	registration from n810 machine driver
+Date: Mon,  9 Aug 2010 14:35:34 +0300
+Message-ID: <1281353734-16387-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imr-ma04.mx.aol.com (imr-ma04.mx.aol.com [64.12.206.42])
-	by alsa0.perex.cz (Postfix) with ESMTP id 72E7A245FC
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 19F84245FC
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Aug 2010 13:30:57 +0200 (CEST)
-In-Reply-To: <s5hy6cu8xgf.wl%tiwai@suse.de>
+	Mon,  9 Aug 2010 13:34:22 +0200 (CEST)
+Received: by eye27 with SMTP id 27so3224117eye.38
+	for <alsa-devel@alsa-project.org>; Mon, 09 Aug 2010 04:34:21 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,60 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVGFrYXNoaeOBleOCkywKCgpUaGUgcGF0Y2ggeW91IHNlbnQgbWUgc2VlbXMgdG8gd29yayB3
-ZWxsIGZvciBteSBQYW5hc29uaWMgQ0YtUzlLIHdpdGggdGhlIG1vZGVsIG9wdGlvbnMgaWRlYXBh
-ZCBvciB0aGlua3BhZC4gSSBqdXN0IGFkZGVkIGFuIGV4dHJhIGxpbmUgdG8gaXQKCgoKZGlmZiAt
-cnVwTiBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyBiL3NvdW5kL3BjaS9oZGEvcGF0
-Y2hfY29uZXhhbnQuYwotLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2NvbmV4YW50LmMgICAgMjAx
-MC0wOC0wMiAwNjoxMToxNC4wMDAwMDAwMDAgKzA4MDAKKysrIGIvc291bmQvcGNpL2hkYS9wYXRj
-aF9jb25leGFudC5jICAgIDIwMTAtMDgtMDkgMTk6MDk6MTQuNTM0MjIwMDAwICswODAwCkBAIC0z
-MTIxLDYgKzMxMjEsOCBAQCBzdGF0aWMgc3RydWN0IGhkYV9jb2RlY19wcmVzZXQgc25kX2hkYV9w
-CiAgICAgIC5wYXRjaCA9IHBhdGNoX2N4dDUwNjYgfSwKICAgIHsgLmlkID0gMHgxNGYxNTA2Nywg
-Lm5hbWUgPSAiQ1gyMDU4MyAoUGViYmxlIEhTRikiLAogICAgICAucGF0Y2ggPSBwYXRjaF9jeHQ1
-MDY2IH0sCisgICB7IC5pZCA9IDB4MTRmMTUwNjgsIC5uYW1lID0gIkNYMjA1ODQiLAorICAgICAu
-cGF0Y2ggPSBwYXRjaF9jeHQ1MDY2IH0sCiAgICB7IC5pZCA9IDB4MTRmMTUwNjksIC5uYW1lID0g
-IkNYMjA1ODUiLAogICAgICAucGF0Y2ggPSBwYXRjaF9jeHQ1MDY2IH0sCiAgICB7fSAvKiB0ZXJt
-aW5hdG9yICovCkBAIC0zMTMxLDYgKzMxMzMsNyBAQCBNT0RVTEVfQUxJQVMoInNuZC1oZGEtY29k
-ZWMtaWQ6MTRmMTUwNDciCiBNT0RVTEVfQUxJQVMoInNuZC1oZGEtY29kZWMtaWQ6MTRmMTUwNTEi
-KTsKIE1PRFVMRV9BTElBUygic25kLWhkYS1jb2RlYy1pZDoxNGYxNTA2NiIpOwogTU9EVUxFX0FM
-SUFTKCJzbmQtaGRhLWNvZGVjLWlkOjE0ZjE1MDY3Iik7CitNT0RVTEVfQUxJQVMoInNuZC1oZGEt
-Y29kZWMtaWQ6MTRmMTUwNjgiKTsKIE1PRFVMRV9BTElBUygic25kLWhkYS1jb2RlYy1pZDoxNGYx
-NTA2OSIpOwoKCgogSSBhcHBsaWVkIGl0IGFnYWluc3QgMi42LjM1LgoKClRoYW5rcyBhIGxvdC4K
-CgpDaGVlcnMsCgoKQ3Jpc3RvcGhlcgoKCgoKLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KRnJv
-bTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgpUbzogQ3Jpc3RvcGhlciBDYW1hY2hvIExl
-YW5kcm8gPGNjYW1hY2hvQGxpbnV4bWFpbC5vcmc+CkNjOiBhbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKU2VudDogVGh1LCBKdWwgMjksIDIwMTAgNToxMCBwbQpTdWJqZWN0OiBSZTogW2Fsc2Et
-ZGV2ZWxdIGNvZGVjIHN1cHBvcnQgcmVxdWVzdDogQ29uZXhhbnQgSUQgNTA2OAoKCkF0IFRodSwg
-MjkgSnVsIDIwMTAgMDQ6NTc6MjYgLTA0MDAsCkNyaXN0b3BoZXIgQ2FtYWNobyBMZWFuZHJvIHdy
-b3RlOgo+IAo+IEhpIGFsbCwKPiAKPiBUaGUgY29kZWMgKENvbmV4YW50IElEIDUwNjgpIHJlcXVp
-cmVkIGJ5IG15IHNvdW5kIGNhcmQgKEludGVsIENvcnBvcmF0aW9uIDUgCj4gU2VyaWVzLzM0MDAg
-U2VyaWVzIENoaXBzZXQgSGlnaCBEZWZpbml0aW9uIEF1ZGlvIChyZXYgMDYpKSBpcyBub3QgcHJl
-c2VudCB5ZXQgCmluIAo+IEFMU0EsIEkgd291bGQgaGlnaGx5IGFwcHJlY2lhdGUgaWYgeW91IGd1
-eXMgY291bGQgYWRkIHN1cHBvcnQgZm9yIGl0LiBZb3UgZ3V5cyAKCj4gbWlnaHQgZmluZCB0aGUg
-aW5mb3JtYXRpb24gY29sbGVjdGVkIGJ5IHRoZSBhbHNhLWluZm8uc2ggc2NyaXB0IG9uCj4gCj4g
-aHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9mPThmODAwMWQ4NzNkNWMxMGMyOTNlYWMx
-Yzk0ZjJlZGUwYjczY2Q4NjUKClRoZSBjb2RlYyBtaWdodCBiZSBjb21wYXRpYmxlIHdpdGggdGhl
-IGV4aXN0aW5nIGN4NTA2Ni4gIElmIHNvLCB0cnkKdGhlIHBhdGNoIGJlbG93LCBhbmQgY2hvb3Nl
-IG9uZSBvZiBhdmFpbGFibGUgbW9kZWxzIGZvciBjeDUwNjYKKGxhcHRvcCwgZGVsbC1sYXB0b3As
-IG9scGMteDAtMV81LCBkZWxsLXZvc3RybywgaWRlYXBhZCwgdGhpbmtwYWQpLgpPbmUgb2YgdGhl
-bSBtaWdodCBtYXRjaCB3aXRoIHlvdXIgbWFjaGluZS4KClRha2FzaGkKCi0tLQpkaWZmIC0tZ2l0
-IGEvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9j
-b25leGFudC5jCmluZGV4IGM5OTQyNWEuLmNjMWNiZjEgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9o
-ZGEvcGF0Y2hfY29uZXhhbnQuYworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2NvbmV4YW50LmMK
-QEAgLTMxOTAsNiArMzE5MCw4IEBAIHN0YXRpYyBzdHJ1Y3QgaGRhX2NvZGVjX3ByZXNldCBzbmRf
-aGRhX3ByZXNldF9jb25leGFudFtdID0gCnsKICAgICAgLnBhdGNoID0gcGF0Y2hfY3h0NTA2NiB9
-LAogICAgeyAuaWQgPSAweDE0ZjE1MDY3LCAubmFtZSA9ICJDWDIwNTgzIChQZWJibGUgSFNGKSIs
-CiAgICAgIC5wYXRjaCA9IHBhdGNoX2N4dDUwNjYgfSwKKyAgIHsgLmlkID0gMHgxNGYxNTA2OCwg
-Lm5hbWUgPSAiQ1gyMDU4NCIsCisgICAgIC5wYXRjaCA9IHBhdGNoX2N4dDUwNjYgfSwKICAgIHsg
-LmlkID0gMHgxNGYxNTA2OSwgLm5hbWUgPSAiQ1gyMDU4NSIsCiAgICAgIC5wYXRjaCA9IHBhdGNo
-X2N4dDUwNjYgfSwKICAgIHt9IC8qIHRlcm1pbmF0b3IgKi8KX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCgogCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+tlv320aic3x board info registration here is not working for couple of
+reasons:
+
+- TLV320AIC33 i2c address is 0x18 instead of 0x1b
+- i2c bus indexing in omap starts from 1 so bus number should be 2
+- arch/arm/mach-omap2/board-n8x0.c doesn't register the second bus so
+  devices are not probed anyway
+
+As this is not currently working and there are patches adding tlv320aic3x
+registration into board-n8x0.c, this patch finally removes this temporary
+registration.
+
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+---
+Liam, I'm thinking the N810 multi-component conversion. I think it would be
+easiest for you if there is no board-n8x0.c changes. It avoids possible
+merge conflicts with those upcoming registration changes and adding
+n810_aic33_setup can be done afterwards. I.e. it's ok if m-c removes
+the n810_aic33_setup from n810.c but doesn't add it to board-n8x0.c.
+---
+ sound/soc/omap/n810.c |    9 ---------
+ 1 files changed, 0 insertions(+), 9 deletions(-)
+
+diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
+index 08e09d7..58dcaac 100644
+--- a/sound/soc/omap/n810.c
++++ b/sound/soc/omap/n810.c
+@@ -336,13 +336,6 @@ static struct snd_soc_device n810_snd_devdata = {
+ 
+ static struct platform_device *n810_snd_device;
+ 
+-/* temporary i2c device creation until this can be moved into the machine
+- * support file.
+-*/
+-static struct i2c_board_info i2c_device[] = {
+-	{ I2C_BOARD_INFO("tlv320aic3x", 0x1b), }
+-};
+-
+ static int __init n810_soc_init(void)
+ {
+ 	int err;
+@@ -351,8 +344,6 @@ static int __init n810_soc_init(void)
+ 	if (!(machine_is_nokia_n810() || machine_is_nokia_n810_wimax()))
+ 		return -ENODEV;
+ 
+-	i2c_register_board_info(1, i2c_device, ARRAY_SIZE(i2c_device));
+-
+ 	n810_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (!n810_snd_device)
+ 		return -ENOMEM;
+-- 
+1.7.1
