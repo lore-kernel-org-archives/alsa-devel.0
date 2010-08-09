@@ -1,19 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: i.MX SDMA support
-Date: Mon, 09 Aug 2010 11:47:03 +0100
-Message-ID: <1281350823.3035.54.camel@odin>
-References: <20100809091157.GC20065@pengutronix.de>
+From: Cristopher Camacho Leandro <ccamacho@linuxmail.org>
+Subject: Re: codec support request: Conexant ID 5068
+Date: Mon, 09 Aug 2010 07:30:21 -0400
+Message-ID: <8CD05CD62A8F2D3-3B0-1974@web-mmc-d01.sysops.aol.com>
+References: <8CCFD1333DD6566-1368-9790@web-mmc-d06.sysops.aol.com>
+	<s5hy6cu8xgf.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 63EDB245EF
+Received: from imr-ma04.mx.aol.com (imr-ma04.mx.aol.com [64.12.206.42])
+	by alsa0.perex.cz (Postfix) with ESMTP id 72E7A245FC
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Aug 2010 12:47:05 +0200 (CEST)
-Received: by wwa36 with SMTP id 36so403435wwa.20
-	for <alsa-devel@alsa-project.org>; Mon, 09 Aug 2010 03:47:04 -0700 (PDT)
-In-Reply-To: <20100809091157.GC20065@pengutronix.de>
+	Mon,  9 Aug 2010 13:30:57 +0200 (CEST)
+In-Reply-To: <s5hy6cu8xgf.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,43 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-08-09 at 11:11 +0200, Sascha Hauer wrote:
-> Hi,
-> 
-> I just posted a series adding SDMA support for i.MX to the Arm Linux
-> Kernel mailing list.
-
-I noticed. It's good to see SDMA support going upstream :) 
-
->  It also contains a patch for adding SDMA support
-> to the i.MX SSI units. I haven't cc'd alsa-devel because most of the
-> stuff is not sound related. I know at least Mark and Liam are
-> interested, so I leave a pointer here. The sound stuff needs to be
-> synchronized with the other patches, so it's probably best if all
-> patches go via my tree.
-
-Yeah, that should be OK. However, we do have a ASoC core multi-component
-update merging later this week. This may conflict with some of your SDMA
-updates, although the multi-component support only really affects ASoC
-component probe() and remove() as every component is a regular Linux
-device now (with platform data, etc) and private data access.
-
-The multi-component branch is here:-
-
-git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git topic/multi-component
-
-I did have to make some changes to i.MX ASoC in order to de-couple some
-of the components in order for them to be distinct kernel devices. Any
-chance you could give this a test with the new SDMA code ?
-
-Thanks
-
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+SGkgVGFrYXNoaeOBleOCkywKCgpUaGUgcGF0Y2ggeW91IHNlbnQgbWUgc2VlbXMgdG8gd29yayB3
+ZWxsIGZvciBteSBQYW5hc29uaWMgQ0YtUzlLIHdpdGggdGhlIG1vZGVsIG9wdGlvbnMgaWRlYXBh
+ZCBvciB0aGlua3BhZC4gSSBqdXN0IGFkZGVkIGFuIGV4dHJhIGxpbmUgdG8gaXQKCgoKZGlmZiAt
+cnVwTiBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyBiL3NvdW5kL3BjaS9oZGEvcGF0
+Y2hfY29uZXhhbnQuYwotLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2NvbmV4YW50LmMgICAgMjAx
+MC0wOC0wMiAwNjoxMToxNC4wMDAwMDAwMDAgKzA4MDAKKysrIGIvc291bmQvcGNpL2hkYS9wYXRj
+aF9jb25leGFudC5jICAgIDIwMTAtMDgtMDkgMTk6MDk6MTQuNTM0MjIwMDAwICswODAwCkBAIC0z
+MTIxLDYgKzMxMjEsOCBAQCBzdGF0aWMgc3RydWN0IGhkYV9jb2RlY19wcmVzZXQgc25kX2hkYV9w
+CiAgICAgIC5wYXRjaCA9IHBhdGNoX2N4dDUwNjYgfSwKICAgIHsgLmlkID0gMHgxNGYxNTA2Nywg
+Lm5hbWUgPSAiQ1gyMDU4MyAoUGViYmxlIEhTRikiLAogICAgICAucGF0Y2ggPSBwYXRjaF9jeHQ1
+MDY2IH0sCisgICB7IC5pZCA9IDB4MTRmMTUwNjgsIC5uYW1lID0gIkNYMjA1ODQiLAorICAgICAu
+cGF0Y2ggPSBwYXRjaF9jeHQ1MDY2IH0sCiAgICB7IC5pZCA9IDB4MTRmMTUwNjksIC5uYW1lID0g
+IkNYMjA1ODUiLAogICAgICAucGF0Y2ggPSBwYXRjaF9jeHQ1MDY2IH0sCiAgICB7fSAvKiB0ZXJt
+aW5hdG9yICovCkBAIC0zMTMxLDYgKzMxMzMsNyBAQCBNT0RVTEVfQUxJQVMoInNuZC1oZGEtY29k
+ZWMtaWQ6MTRmMTUwNDciCiBNT0RVTEVfQUxJQVMoInNuZC1oZGEtY29kZWMtaWQ6MTRmMTUwNTEi
+KTsKIE1PRFVMRV9BTElBUygic25kLWhkYS1jb2RlYy1pZDoxNGYxNTA2NiIpOwogTU9EVUxFX0FM
+SUFTKCJzbmQtaGRhLWNvZGVjLWlkOjE0ZjE1MDY3Iik7CitNT0RVTEVfQUxJQVMoInNuZC1oZGEt
+Y29kZWMtaWQ6MTRmMTUwNjgiKTsKIE1PRFVMRV9BTElBUygic25kLWhkYS1jb2RlYy1pZDoxNGYx
+NTA2OSIpOwoKCgogSSBhcHBsaWVkIGl0IGFnYWluc3QgMi42LjM1LgoKClRoYW5rcyBhIGxvdC4K
+CgpDaGVlcnMsCgoKQ3Jpc3RvcGhlcgoKCgoKLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KRnJv
+bTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgpUbzogQ3Jpc3RvcGhlciBDYW1hY2hvIExl
+YW5kcm8gPGNjYW1hY2hvQGxpbnV4bWFpbC5vcmc+CkNjOiBhbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKU2VudDogVGh1LCBKdWwgMjksIDIwMTAgNToxMCBwbQpTdWJqZWN0OiBSZTogW2Fsc2Et
+ZGV2ZWxdIGNvZGVjIHN1cHBvcnQgcmVxdWVzdDogQ29uZXhhbnQgSUQgNTA2OAoKCkF0IFRodSwg
+MjkgSnVsIDIwMTAgMDQ6NTc6MjYgLTA0MDAsCkNyaXN0b3BoZXIgQ2FtYWNobyBMZWFuZHJvIHdy
+b3RlOgo+IAo+IEhpIGFsbCwKPiAKPiBUaGUgY29kZWMgKENvbmV4YW50IElEIDUwNjgpIHJlcXVp
+cmVkIGJ5IG15IHNvdW5kIGNhcmQgKEludGVsIENvcnBvcmF0aW9uIDUgCj4gU2VyaWVzLzM0MDAg
+U2VyaWVzIENoaXBzZXQgSGlnaCBEZWZpbml0aW9uIEF1ZGlvIChyZXYgMDYpKSBpcyBub3QgcHJl
+c2VudCB5ZXQgCmluIAo+IEFMU0EsIEkgd291bGQgaGlnaGx5IGFwcHJlY2lhdGUgaWYgeW91IGd1
+eXMgY291bGQgYWRkIHN1cHBvcnQgZm9yIGl0LiBZb3UgZ3V5cyAKCj4gbWlnaHQgZmluZCB0aGUg
+aW5mb3JtYXRpb24gY29sbGVjdGVkIGJ5IHRoZSBhbHNhLWluZm8uc2ggc2NyaXB0IG9uCj4gCj4g
+aHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9mPThmODAwMWQ4NzNkNWMxMGMyOTNlYWMx
+Yzk0ZjJlZGUwYjczY2Q4NjUKClRoZSBjb2RlYyBtaWdodCBiZSBjb21wYXRpYmxlIHdpdGggdGhl
+IGV4aXN0aW5nIGN4NTA2Ni4gIElmIHNvLCB0cnkKdGhlIHBhdGNoIGJlbG93LCBhbmQgY2hvb3Nl
+IG9uZSBvZiBhdmFpbGFibGUgbW9kZWxzIGZvciBjeDUwNjYKKGxhcHRvcCwgZGVsbC1sYXB0b3As
+IG9scGMteDAtMV81LCBkZWxsLXZvc3RybywgaWRlYXBhZCwgdGhpbmtwYWQpLgpPbmUgb2YgdGhl
+bSBtaWdodCBtYXRjaCB3aXRoIHlvdXIgbWFjaGluZS4KClRha2FzaGkKCi0tLQpkaWZmIC0tZ2l0
+IGEvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9j
+b25leGFudC5jCmluZGV4IGM5OTQyNWEuLmNjMWNiZjEgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9o
+ZGEvcGF0Y2hfY29uZXhhbnQuYworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2NvbmV4YW50LmMK
+QEAgLTMxOTAsNiArMzE5MCw4IEBAIHN0YXRpYyBzdHJ1Y3QgaGRhX2NvZGVjX3ByZXNldCBzbmRf
+aGRhX3ByZXNldF9jb25leGFudFtdID0gCnsKICAgICAgLnBhdGNoID0gcGF0Y2hfY3h0NTA2NiB9
+LAogICAgeyAuaWQgPSAweDE0ZjE1MDY3LCAubmFtZSA9ICJDWDIwNTgzIChQZWJibGUgSFNGKSIs
+CiAgICAgIC5wYXRjaCA9IHBhdGNoX2N4dDUwNjYgfSwKKyAgIHsgLmlkID0gMHgxNGYxNTA2OCwg
+Lm5hbWUgPSAiQ1gyMDU4NCIsCisgICAgIC5wYXRjaCA9IHBhdGNoX2N4dDUwNjYgfSwKICAgIHsg
+LmlkID0gMHgxNGYxNTA2OSwgLm5hbWUgPSAiQ1gyMDU4NSIsCiAgICAgIC5wYXRjaCA9IHBhdGNo
+X2N4dDUwNjYgfSwKICAgIHt9IC8qIHRlcm1pbmF0b3IgKi8KX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCgogCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
