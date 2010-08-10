@@ -1,18 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [PATCH 04/17] ASoC: multi-component - TI CODECs
-Date: Wed, 11 Aug 2010 00:02:55 +0100
-Message-ID: <1281481388-3000-5-git-send-email-lrg@slimlogic.co.uk>
+Subject: [PATCH 09/17] ASoC: multi-component - Wolfson WM87xx
+	CODECs
+Date: Wed, 11 Aug 2010 00:03:00 +0100
+Message-ID: <1281481388-3000-10-git-send-email-lrg@slimlogic.co.uk>
 References: <1281481388-3000-1-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9029F103852
+	by alsa0.perex.cz (Postfix) with ESMTP id C9E48103870
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Aug 2010 01:03:34 +0200 (CEST)
-Received: by wwd20 with SMTP id 20so3289390wwd.2
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2010 16:03:34 -0700 (PDT)
+	Wed, 11 Aug 2010 01:03:44 +0200 (CEST)
+Received: by mail-ww0-f41.google.com with SMTP id 20so3289390wwd.2
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2010 16:03:44 -0700 (PDT)
 In-Reply-To: <1281481388-3000-1-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,10 +25,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Ryan Mallon <ryan@bluewatersys.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Move TI CODECs to multi-component
+Moved Wolfson WM87xx CODECs to multi-component model.
 
 This patch changes the probe() and remove() of the CODEC drivers as follows:-
 
@@ -40,2370 +41,2892 @@ This patch changes the probe() and remove() of the CODEC drivers as follows:-
 
 Other required changes due to multi-component model :-
 
- o tlv320aic3x: no more "setup_data" from ASoC machine drivers, platform data
- must be set in one place only. Moved platform defs out into platorm header.
-
-Some TLV320aic23 parts
-Signed-off-by: Ryan Mallon <ryan@bluewatersys.com>
-Some TWl4030 and TLV320DAC33 parts
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+ o wm8753: dai mode configuration now modifies private data to store mode.
 
 Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
 ---
- include/sound/tlv320aic3x.h    |   43 +++++++-
- sound/soc/codecs/tlv320aic23.c |  182 ++++++++++--------------------
- sound/soc/codecs/tlv320aic23.h |    3 -
- sound/soc/codecs/tlv320aic26.c |  180 ++++++++++-------------------
- sound/soc/codecs/tlv320aic26.h |    3 -
- sound/soc/codecs/tlv320aic3x.c |  223 ++++++++++++------------------------
- sound/soc/codecs/tlv320aic3x.h |   43 -------
- sound/soc/codecs/tlv320dac33.c |  249 +++++++++++++---------------------------
- sound/soc/codecs/tlv320dac33.h |    3 -
- sound/soc/codecs/twl4030.c     |  231 ++++++++++++--------------------------
- sound/soc/codecs/twl4030.h     |   55 ---------
- sound/soc/codecs/twl6040.c     |  170 +++++++--------------------
- sound/soc/codecs/twl6040.h     |    3 -
- 13 files changed, 431 insertions(+), 957 deletions(-)
- delete mode 100644 sound/soc/codecs/twl4030.h
+ sound/soc/codecs/wm8711.c |  206 +++++++----------------
+ sound/soc/codecs/wm8711.h |    3 -
+ sound/soc/codecs/wm8727.c |  106 +-----------
+ sound/soc/codecs/wm8727.h |    4 +-
+ sound/soc/codecs/wm8728.c |  294 +++++++++++----------------------
+ sound/soc/codecs/wm8728.h |    9 -
+ sound/soc/codecs/wm8731.c |  217 ++++++++-----------------
+ sound/soc/codecs/wm8731.h |    3 -
+ sound/soc/codecs/wm8750.c |  269 +++++++++--------------------
+ sound/soc/codecs/wm8750.h |    9 -
+ sound/soc/codecs/wm8753.c |  407 ++++++++++++++++-----------------------------
+ sound/soc/codecs/wm8753.h |    3 -
+ sound/soc/codecs/wm8776.c |  251 ++++++++--------------------
+ sound/soc/codecs/wm8776.h |    3 -
+ 14 files changed, 529 insertions(+), 1255 deletions(-)
 
-diff --git a/include/sound/tlv320aic3x.h b/include/sound/tlv320aic3x.h
-index b1a5f34..99e0308 100644
---- a/include/sound/tlv320aic3x.h
-+++ b/include/sound/tlv320aic3x.h
-@@ -10,8 +10,49 @@
- #ifndef __TLV320AIC3x_H__
- #define __TLV320AIC3x_H__
+diff --git a/sound/soc/codecs/wm8711.c b/sound/soc/codecs/wm8711.c
+index e2dba07..8d942b3 100644
+--- a/sound/soc/codecs/wm8711.c
++++ b/sound/soc/codecs/wm8711.c
+@@ -31,11 +31,10 @@
  
-+/* GPIO API */
-+enum {
-+	AIC3X_GPIO1_FUNC_DISABLED		= 0,
-+	AIC3X_GPIO1_FUNC_AUDIO_WORDCLK_ADC	= 1,
-+	AIC3X_GPIO1_FUNC_CLOCK_MUX		= 2,
-+	AIC3X_GPIO1_FUNC_CLOCK_MUX_DIV2		= 3,
-+	AIC3X_GPIO1_FUNC_CLOCK_MUX_DIV4		= 4,
-+	AIC3X_GPIO1_FUNC_CLOCK_MUX_DIV8		= 5,
-+	AIC3X_GPIO1_FUNC_SHORT_CIRCUIT_IRQ	= 6,
-+	AIC3X_GPIO1_FUNC_AGC_NOISE_IRQ		= 7,
-+	AIC3X_GPIO1_FUNC_INPUT			= 8,
-+	AIC3X_GPIO1_FUNC_OUTPUT			= 9,
-+	AIC3X_GPIO1_FUNC_DIGITAL_MIC_MODCLK	= 10,
-+	AIC3X_GPIO1_FUNC_AUDIO_WORDCLK		= 11,
-+	AIC3X_GPIO1_FUNC_BUTTON_IRQ		= 12,
-+	AIC3X_GPIO1_FUNC_HEADSET_DETECT_IRQ	= 13,
-+	AIC3X_GPIO1_FUNC_HEADSET_DETECT_OR_BUTTON_IRQ	= 14,
-+	AIC3X_GPIO1_FUNC_ALL_IRQ		= 16
-+};
-+
-+enum {
-+	AIC3X_GPIO2_FUNC_DISABLED		= 0,
-+	AIC3X_GPIO2_FUNC_HEADSET_DETECT_IRQ	= 2,
-+	AIC3X_GPIO2_FUNC_INPUT			= 3,
-+	AIC3X_GPIO2_FUNC_OUTPUT			= 4,
-+	AIC3X_GPIO2_FUNC_DIGITAL_MIC_INPUT	= 5,
-+	AIC3X_GPIO2_FUNC_AUDIO_BITCLK		= 8,
-+	AIC3X_GPIO2_FUNC_HEADSET_DETECT_OR_BUTTON_IRQ = 9,
-+	AIC3X_GPIO2_FUNC_ALL_IRQ		= 10,
-+	AIC3X_GPIO2_FUNC_SHORT_CIRCUIT_OR_AGC_IRQ = 11,
-+	AIC3X_GPIO2_FUNC_HEADSET_OR_BUTTON_PRESS_OR_SHORT_CIRCUIT_IRQ = 12,
-+	AIC3X_GPIO2_FUNC_SHORT_CIRCUIT_IRQ	= 13,
-+	AIC3X_GPIO2_FUNC_AGC_NOISE_IRQ		= 14,
-+	AIC3X_GPIO2_FUNC_BUTTON_PRESS_IRQ	= 15
-+};
-+
-+struct aic3x_setup_data {
-+	unsigned int gpio_func[2];
-+};
-+
- struct aic3x_pdata {
- 	int gpio_reset; /* < 0 if not used */
-+	struct aic3x_setup_data *setup;
- };
+ #include "wm8711.h"
  
--#endif
-\ No newline at end of file
-+#endif
-diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
-index 0a4b0fe..e8652b1 100644
---- a/sound/soc/codecs/tlv320aic23.c
-+++ b/sound/soc/codecs/tlv320aic23.c
-@@ -240,7 +240,8 @@ static const struct snd_soc_dapm_route intercon[] = {
- 
- /* AIC23 driver data */
- struct aic23 {
--	struct snd_soc_codec codec;
-+	enum snd_soc_control_type control_type;
-+	void *control_data;
- 	int mclk;
- 	int requested_adc;
- 	int requested_dac;
-@@ -404,11 +405,10 @@ static int tlv320aic23_hw_params(struct snd_pcm_substream *substream,
- 				 struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	u16 iface_reg;
- 	int ret;
--	struct aic23 *aic23 = container_of(codec, struct aic23, codec);
-+	struct aic23 *aic23 = snd_soc_codec_get_drvdata(codec);
- 	u32 sample_rate_adc = aic23->requested_adc;
- 	u32 sample_rate_dac = aic23->requested_dac;
- 	u32 sample_rate = params_rate(params);
-@@ -452,8 +452,7 @@ static int tlv320aic23_pcm_prepare(struct snd_pcm_substream *substream,
- 				   struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 
- 	/* set active */
- 	tlv320aic23_write(codec, TLV320AIC23_ACTIVE, 0x0001);
-@@ -465,9 +464,8 @@ static void tlv320aic23_shutdown(struct snd_pcm_substream *substream,
- 				 struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
--	struct aic23 *aic23 = container_of(codec, struct aic23, codec);
-+	struct snd_soc_codec *codec = rtd->codec;
-+	struct aic23 *aic23 = snd_soc_codec_get_drvdata(codec);
- 
- 	/* deactivate */
- 	if (!codec->active) {
-@@ -546,8 +544,7 @@ static int tlv320aic23_set_dai_fmt(struct snd_soc_dai *codec_dai,
- static int tlv320aic23_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 				      int clk_id, unsigned int freq, int dir)
- {
--	struct snd_soc_codec *codec = codec_dai->codec;
--	struct aic23 *aic23 = container_of(codec, struct aic23, codec);
-+	struct aic23 *aic23 = snd_soc_dai_get_drvdata(codec_dai);
- 	aic23->mclk = freq;
- 	return 0;
- }
-@@ -594,8 +591,8 @@ static struct snd_soc_dai_ops tlv320aic23_dai_ops = {
- 	.set_sysclk	= tlv320aic23_set_dai_sysclk,
- };
- 
--struct snd_soc_dai tlv320aic23_dai = {
--	.name = "tlv320aic23",
-+static struct snd_soc_dai_driver tlv320aic23_dai = {
-+	.name = "tlv320aic23-hifi",
- 	.playback = {
- 		     .stream_name = "Playback",
- 		     .channels_min = 2,
-@@ -610,23 +607,17 @@ struct snd_soc_dai tlv320aic23_dai = {
- 		    .formats = AIC23_FORMATS,},
- 	.ops = &tlv320aic23_dai_ops,
- };
--EXPORT_SYMBOL_GPL(tlv320aic23_dai);
- 
--static int tlv320aic23_suspend(struct platform_device *pdev,
-+static int tlv320aic23_suspend(struct snd_soc_codec *codec,
- 			       pm_message_t state)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
+-static struct snd_soc_codec *wm8711_codec;
 -
- 	tlv320aic23_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 
- 	return 0;
- }
- 
--static int tlv320aic23_resume(struct platform_device *pdev)
-+static int tlv320aic23_resume(struct snd_soc_codec *codec)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
- 	u16 reg;
- 
- 	/* Sync reg_cache with the hardware */
-@@ -639,39 +630,19 @@ static int tlv320aic23_resume(struct platform_device *pdev)
- 	return 0;
- }
- 
--/*
-- * initialise the AIC23 driver
-- * register the mixer and dsp interfaces with the kernel
-- */
--static int tlv320aic23_init(struct snd_soc_device *socdev)
-+static int tlv320aic23_probe(struct snd_soc_codec *codec)
- {
--	struct snd_soc_codec *codec = socdev->card->codec;
--	int ret = 0;
--	u16 reg;
-+	struct aic23 *aic23 = snd_soc_codec_get_drvdata(codec);
-+	int reg;
- 
--	codec->name = "tlv320aic23";
--	codec->owner = THIS_MODULE;
--	codec->read = tlv320aic23_read_reg_cache;
--	codec->write = tlv320aic23_write;
--	codec->set_bias_level = tlv320aic23_set_bias_level;
--	codec->dai = &tlv320aic23_dai;
--	codec->num_dai = 1;
--	codec->reg_cache_size = ARRAY_SIZE(tlv320aic23_reg);
--	codec->reg_cache =
--	    kmemdup(tlv320aic23_reg, sizeof(tlv320aic23_reg), GFP_KERNEL);
--	if (codec->reg_cache == NULL)
--		return -ENOMEM;
-+	printk(KERN_INFO "AIC23 Audio Codec %s\n", AIC23_VERSION);
-+	codec->control_data = aic23->control_data;
-+	codec->hw_write = (hw_write_t)i2c_master_send;
-+	codec->hw_read = NULL;
- 
- 	/* Reset codec */
- 	tlv320aic23_write(codec, TLV320AIC23_RESET, 0);
- 
--	/* register pcms */
--	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
--	if (ret < 0) {
--		printk(KERN_ERR "tlv320aic23: failed to create pcms\n");
--		goto pcm_err;
--	}
--
- 	/* power on device */
- 	tlv320aic23_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
-@@ -707,13 +678,27 @@ static int tlv320aic23_init(struct snd_soc_device *socdev)
- 				ARRAY_SIZE(tlv320aic23_snd_controls));
- 	tlv320aic23_add_widgets(codec);
- 
--	return ret;
-+	return 0;
-+}
- 
--pcm_err:
--	kfree(codec->reg_cache);
--	return ret;
-+static int tlv320aic23_remove(struct snd_soc_codec *codec)
-+{
-+	tlv320aic23_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	return 0;
- }
--static struct snd_soc_device *tlv320aic23_socdev;
-+
-+static struct snd_soc_codec_driver soc_codec_dev_tlv320aic23 = {
-+	.reg_cache_size = ARRAY_SIZE(tlv320aic23_reg),
-+	.reg_word_size = sizeof(u16),
-+	.reg_cache_default = tlv320aic23_reg,
-+	.probe = tlv320aic23_probe,
-+	.remove = tlv320aic23_remove,
-+	.suspend = tlv320aic23_suspend,
-+	.resume = tlv320aic23_resume,
-+	.read = tlv320aic23_read_reg_cache,
-+	.write = tlv320aic23_write,
-+	.set_bias_level = tlv320aic23_set_bias_level,
-+};
- 
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- /*
-@@ -723,31 +708,30 @@ static struct snd_soc_device *tlv320aic23_socdev;
- static int tlv320aic23_codec_probe(struct i2c_client *i2c,
- 				   const struct i2c_device_id *i2c_id)
- {
--	struct snd_soc_device *socdev = tlv320aic23_socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct aic23 *aic23;
- 	int ret;
- 
- 	if (!i2c_check_functionality(i2c->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
- 		return -EINVAL;
- 
--	i2c_set_clientdata(i2c, codec);
--	codec->control_data = i2c;
-+	aic23 = kzalloc(sizeof(struct aic23), GFP_KERNEL);
-+	if (aic23 == NULL)
-+		return -ENOMEM;
- 
--	ret = tlv320aic23_init(socdev);
--	if (ret < 0) {
--		printk(KERN_ERR "tlv320aic23: failed to initialise AIC23\n");
--		goto err;
--	}
--	return ret;
-+	i2c_set_clientdata(i2c, aic23);
-+	aic23->control_data = i2c;
-+	aic23->control_type = SND_SOC_I2C;
- 
--err:
--	kfree(codec);
--	kfree(i2c);
-+	ret =  snd_soc_register_codec(&i2c->dev,
-+			&soc_codec_dev_tlv320aic23, &tlv320aic23_dai, 1);
-+	if (ret < 0)
-+		kfree(aic23);
- 	return ret;
- }
- static int __exit tlv320aic23_i2c_remove(struct i2c_client *i2c)
- {
--	put_device(&i2c->dev);
-+	snd_soc_unregister_codec(&i2c->dev);
-+	kfree(i2c_get_clientdata(i2c));
- 	return 0;
- }
- 
-@@ -760,7 +744,7 @@ MODULE_DEVICE_TABLE(i2c, tlv320aic23_id);
- 
- static struct i2c_driver tlv320aic23_i2c_driver = {
- 	.driver = {
--		   .name = "tlv320aic23",
-+		   .name = "tlv320aic23-codec",
- 		   },
- 	.probe = tlv320aic23_codec_probe,
- 	.remove = __exit_p(tlv320aic23_i2c_remove),
-@@ -769,71 +753,25 @@ static struct i2c_driver tlv320aic23_i2c_driver = {
- 
- #endif
- 
--static int tlv320aic23_probe(struct platform_device *pdev)
-+static int __init tlv320aic23_modinit(void)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec;
--	struct aic23 *aic23;
--	int ret = 0;
--
--	printk(KERN_INFO "AIC23 Audio Codec %s\n", AIC23_VERSION);
--
--	aic23 = kzalloc(sizeof(struct aic23), GFP_KERNEL);
--	if (aic23 == NULL)
--		return -ENOMEM;
--	codec = &aic23->codec;
--	socdev->card->codec = codec;
--	mutex_init(&codec->mutex);
--	INIT_LIST_HEAD(&codec->dapm_widgets);
--	INIT_LIST_HEAD(&codec->dapm_paths);
--
--	tlv320aic23_socdev = socdev;
-+	int ret;
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
--	codec->hw_write = (hw_write_t) i2c_master_send;
--	codec->hw_read = NULL;
- 	ret = i2c_add_driver(&tlv320aic23_i2c_driver);
--	if (ret != 0)
--		printk(KERN_ERR "can't add i2c driver");
-+	if (ret != 0) {
-+		printk(KERN_ERR "Failed to register TLV320AIC23 I2C driver: %d\n",
-+		       ret);
-+	}
- #endif
- 	return ret;
- }
-+module_init(tlv320aic23_modinit);
- 
--static int tlv320aic23_remove(struct platform_device *pdev)
-+static void __exit tlv320aic23_exit(void)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
--	struct aic23 *aic23 = container_of(codec, struct aic23, codec);
--
--	if (codec->control_data)
--		tlv320aic23_set_bias_level(codec, SND_SOC_BIAS_OFF);
--
--	snd_soc_free_pcms(socdev);
--	snd_soc_dapm_free(socdev);
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- 	i2c_del_driver(&tlv320aic23_i2c_driver);
- #endif
--	kfree(codec->reg_cache);
--	kfree(aic23);
--
--	return 0;
--}
--struct snd_soc_codec_device soc_codec_dev_tlv320aic23 = {
--	.probe = tlv320aic23_probe,
--	.remove = tlv320aic23_remove,
--	.suspend = tlv320aic23_suspend,
--	.resume = tlv320aic23_resume,
--};
--EXPORT_SYMBOL_GPL(soc_codec_dev_tlv320aic23);
--
--static int __init tlv320aic23_modinit(void)
--{
--	return snd_soc_register_dai(&tlv320aic23_dai);
--}
--module_init(tlv320aic23_modinit);
--
--static void __exit tlv320aic23_exit(void)
--{
--	snd_soc_unregister_dai(&tlv320aic23_dai);
- }
- module_exit(tlv320aic23_exit);
- 
-diff --git a/sound/soc/codecs/tlv320aic23.h b/sound/soc/codecs/tlv320aic23.h
-index 79d1faf..e804120 100644
---- a/sound/soc/codecs/tlv320aic23.h
-+++ b/sound/soc/codecs/tlv320aic23.h
-@@ -116,7 +116,4 @@
- #define TLV320AIC23_SIDETONE_12		0x080
- #define TLV320AIC23_SIDETONE_18		0x0c0
- 
--extern struct snd_soc_dai tlv320aic23_dai;
--extern struct snd_soc_codec_device soc_codec_dev_tlv320aic23;
--
- #endif /* _TLV320AIC23_H */
-diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
-index f0e00fd..6b7d71e 100644
---- a/sound/soc/codecs/tlv320aic26.c
-+++ b/sound/soc/codecs/tlv320aic26.c
-@@ -19,7 +19,6 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/soc-dapm.h>
--#include <sound/soc-of-simple.h>
- #include <sound/initval.h>
- 
- #include "tlv320aic26.h"
-@@ -130,8 +129,7 @@ static int aic26_hw_params(struct snd_pcm_substream *substream,
- 			   struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	struct aic26 *aic26 = snd_soc_codec_get_drvdata(codec);
- 	int fsref, divisor, wlen, pval, jval, dval, qval;
- 	u16 reg;
-@@ -278,8 +276,8 @@ static struct snd_soc_dai_ops aic26_dai_ops = {
- 	.set_fmt	= aic26_set_fmt,
- };
- 
--struct snd_soc_dai aic26_dai = {
--	.name = "tlv320aic26",
-+static struct snd_soc_dai_driver aic26_dai = {
-+	.name = "tlv320aic26-hifi",
- 	.playback = {
- 		.stream_name = "Playback",
- 		.channels_min = 2,
-@@ -296,7 +294,6 @@ struct snd_soc_dai aic26_dai = {
- 	},
- 	.ops = &aic26_dai_ops,
- };
--EXPORT_SYMBOL_GPL(aic26_dai);
- 
- /* ---------------------------------------------------------------------
-  * ALSA controls
-@@ -319,61 +316,6 @@ static const struct snd_kcontrol_new aic26_snd_controls[] = {
- };
- 
- /* ---------------------------------------------------------------------
-- * SoC CODEC portion of driver: probe and release routines
-- */
--static int aic26_probe(struct platform_device *pdev)
--{
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec;
--	struct aic26 *aic26;
--	int ret, err;
--
--	dev_info(&pdev->dev, "Probing AIC26 SoC CODEC driver\n");
--	dev_dbg(&pdev->dev, "socdev=%p\n", socdev);
--	dev_dbg(&pdev->dev, "codec_data=%p\n", socdev->codec_data);
--
--	/* Fetch the relevant aic26 private data here (it's already been
--	 * stored in the .codec pointer) */
--	aic26 = socdev->codec_data;
--	if (aic26 == NULL) {
--		dev_err(&pdev->dev, "aic26: missing codec pointer\n");
--		return -ENODEV;
--	}
--	codec = &aic26->codec;
--	socdev->card->codec = codec;
--
--	dev_dbg(&pdev->dev, "Registering PCMs, dev=%p, socdev->dev=%p\n",
--		&pdev->dev, socdev->dev);
--	/* register pcms */
--	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
--	if (ret < 0) {
--		dev_err(&pdev->dev, "aic26: failed to create pcms\n");
--		return -ENODEV;
--	}
--
--	/* register controls */
--	dev_dbg(&pdev->dev, "Registering controls\n");
--	err = snd_soc_add_controls(codec, aic26_snd_controls,
--			ARRAY_SIZE(aic26_snd_controls));
--	WARN_ON(err < 0);
--
--	return 0;
--}
--
--static int aic26_remove(struct platform_device *pdev)
--{
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	snd_soc_free_pcms(socdev);
--	return 0;
--}
--
--struct snd_soc_codec_device aic26_soc_codec_dev = {
--	.probe = aic26_probe,
--	.remove = aic26_remove,
--};
--EXPORT_SYMBOL_GPL(aic26_soc_codec_dev);
--
--/* ---------------------------------------------------------------------
-  * SPI device portion of driver: sysfs files for debugging
-  */
- 
-@@ -409,95 +351,95 @@ static ssize_t aic26_keyclick_set(struct device *dev,
- static DEVICE_ATTR(keyclick, 0644, aic26_keyclick_show, aic26_keyclick_set);
- 
- /* ---------------------------------------------------------------------
-- * SPI device portion of driver: probe and release routines and SPI
-- * 				 driver registration.
-+ * SoC CODEC portion of driver: probe and release routines
-  */
--static int aic26_spi_probe(struct spi_device *spi)
-+static int aic26_probe(struct snd_soc_codec *codec)
- {
--	struct aic26 *aic26;
--	int ret, i, reg;
--
--	dev_dbg(&spi->dev, "probing tlv320aic26 spi device\n");
--
--	/* Allocate driver data */
--	aic26 = kzalloc(sizeof *aic26, GFP_KERNEL);
--	if (!aic26)
--		return -ENOMEM;
--
--	/* Initialize the driver data */
--	aic26->spi = spi;
--	dev_set_drvdata(&spi->dev, aic26);
-+	struct aic26 *aic26 = snd_soc_codec_get_drvdata(codec);
-+	int ret, err, i, reg;
- 
--	/* Setup what we can in the codec structure so that the register
--	 * access functions will work as expected.  More will be filled
--	 * out when it is probed by the SoC CODEC part of this driver */
--	snd_soc_codec_set_drvdata(&aic26->codec, aic26);
--	aic26->codec.name = "aic26";
--	aic26->codec.owner = THIS_MODULE;
--	aic26->codec.dai = &aic26_dai;
--	aic26->codec.num_dai = 1;
--	aic26->codec.read = aic26_reg_read;
--	aic26->codec.write = aic26_reg_write;
--	aic26->master = 1;
--	mutex_init(&aic26->codec.mutex);
--	INIT_LIST_HEAD(&aic26->codec.dapm_widgets);
--	INIT_LIST_HEAD(&aic26->codec.dapm_paths);
--	aic26->codec.reg_cache_size = AIC26_NUM_REGS;
--	aic26->codec.reg_cache = aic26->reg_cache;
--
--	aic26_dai.dev = &spi->dev;
--	ret = snd_soc_register_dai(&aic26_dai);
--	if (ret != 0) {
--		dev_err(&spi->dev, "Failed to register DAI: %d\n", ret);
--		kfree(aic26);
--		return ret;
--	}
-+	dev_info(codec->dev, "Probing AIC26 SoC CODEC driver\n");
- 
- 	/* Reset the codec to power on defaults */
--	aic26_reg_write(&aic26->codec, AIC26_REG_RESET, 0xBB00);
-+	aic26_reg_write(codec, AIC26_REG_RESET, 0xBB00);
- 
- 	/* Power up CODEC */
--	aic26_reg_write(&aic26->codec, AIC26_REG_POWER_CTRL, 0);
-+	aic26_reg_write(codec, AIC26_REG_POWER_CTRL, 0);
- 
- 	/* Audio Control 3 (master mode, fsref rate) */
--	reg = aic26_reg_read(&aic26->codec, AIC26_REG_AUDIO_CTRL3);
-+	reg = aic26_reg_read(codec, AIC26_REG_AUDIO_CTRL3);
- 	reg &= ~0xf800;
- 	reg |= 0x0800; /* set master mode */
--	aic26_reg_write(&aic26->codec, AIC26_REG_AUDIO_CTRL3, reg);
-+	aic26_reg_write(codec, AIC26_REG_AUDIO_CTRL3, reg);
- 
- 	/* Fill register cache */
- 	for (i = 0; i < ARRAY_SIZE(aic26->reg_cache); i++)
--		aic26_reg_read(&aic26->codec, i);
-+		aic26_reg_read(codec, i);
- 
- 	/* Register the sysfs files for debugging */
- 	/* Create SysFS files */
--	ret = device_create_file(&spi->dev, &dev_attr_keyclick);
-+	ret = device_create_file(codec->dev, &dev_attr_keyclick);
- 	if (ret)
--		dev_info(&spi->dev, "error creating sysfs files\n");
-+		dev_info(codec->dev, "error creating sysfs files\n");
- 
--#if defined(CONFIG_SND_SOC_OF_SIMPLE)
--	/* Tell the of_soc helper about this codec */
--	of_snd_soc_register_codec(&aic26_soc_codec_dev, aic26, &aic26_dai,
--				  spi->dev.archdata.of_node);
--#endif
-+	/* register controls */
-+	dev_dbg(codec->dev, "Registering controls\n");
-+	err = snd_soc_add_controls(codec, aic26_snd_controls,
-+			ARRAY_SIZE(aic26_snd_controls));
-+	WARN_ON(err < 0);
- 
--	dev_dbg(&spi->dev, "SPI device initialized\n");
- 	return 0;
- }
- 
--static int aic26_spi_remove(struct spi_device *spi)
-+static struct snd_soc_codec_driver aic26_soc_codec_dev = {
-+	.probe = aic26_probe,
-+	.read = aic26_reg_read,
-+	.write = aic26_reg_write,
-+	.reg_cache_size = AIC26_NUM_REGS,
-+	.reg_word_size = sizeof(u16),
-+};
-+
-+/* ---------------------------------------------------------------------
-+ * SPI device portion of driver: probe and release routines and SPI
-+ * 				 driver registration.
-+ */
-+static int aic26_spi_probe(struct spi_device *spi)
- {
--	struct aic26 *aic26 = dev_get_drvdata(&spi->dev);
-+	struct aic26 *aic26;
-+	int ret;
- 
--	snd_soc_unregister_dai(&aic26_dai);
--	kfree(aic26);
-+	dev_dbg(&spi->dev, "probing tlv320aic26 spi device\n");
-+
-+	/* Allocate driver data */
-+	aic26 = kzalloc(sizeof *aic26, GFP_KERNEL);
-+	if (!aic26)
-+		return -ENOMEM;
- 
-+	/* Initialize the driver data */
-+	aic26->spi = spi;
-+	dev_set_drvdata(&spi->dev, aic26);
-+	aic26->master = 1;
-+
-+	ret = snd_soc_register_codec(&spi->dev,
-+			&aic26_soc_codec_dev, &aic26_dai, 1);
-+	if (ret < 0)
-+		kfree(aic26);
-+	return ret;
-+
-+	dev_dbg(&spi->dev, "SPI device initialized\n");
-+	return 0;
-+}
-+
-+static int aic26_spi_remove(struct spi_device *spi)
-+{
-+	snd_soc_unregister_codec(&spi->dev);
-+	kfree(spi_get_drvdata(spi));
- 	return 0;
- }
- 
- static struct spi_driver aic26_spi = {
- 	.driver = {
--		.name = "tlv320aic26",
-+		.name = "tlv320aic26-codec",
- 		.owner = THIS_MODULE,
- 	},
- 	.probe = aic26_spi_probe,
-diff --git a/sound/soc/codecs/tlv320aic26.h b/sound/soc/codecs/tlv320aic26.h
-index 786ba16..62b1f22 100644
---- a/sound/soc/codecs/tlv320aic26.h
-+++ b/sound/soc/codecs/tlv320aic26.h
-@@ -90,7 +90,4 @@ enum aic26_wlen {
- 	AIC26_WLEN_32	= 3 << 10,
- };
- 
--extern struct snd_soc_dai aic26_dai;
--extern struct snd_soc_codec_device aic26_soc_codec_dev;
--
- #endif /* _TLV320AIC16_H_ */
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 71a6990..43fd9c1 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -63,8 +63,10 @@ static const char *aic3x_supply_names[AIC3X_NUM_SUPPLIES] = {
- 
  /* codec private data */
- struct aic3x_priv {
+ struct wm8711_priv {
 -	struct snd_soc_codec codec;
- 	struct regulator_bulk_data supplies[AIC3X_NUM_SUPPLIES];
-+	enum snd_soc_control_type control_type;
-+	struct aic3x_setup_data *setup;
++	enum snd_soc_control_type bus_type;
 +	void *control_data;
+ 	u16 reg_cache[WM8711_CACHEREGNUM];
  	unsigned int sysclk;
- 	int master;
- 	int gpio_reset;
-@@ -773,8 +775,7 @@ static int aic3x_hw_params(struct snd_pcm_substream *substream,
- 			   struct snd_soc_dai *dai)
+ };
+@@ -163,7 +162,7 @@ static int wm8711_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *dai)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec =rtd->codec;
- 	struct aic3x_priv *aic3x = snd_soc_codec_get_drvdata(codec);
- 	int codec_clk = 0, bypass_pll = 0, fsref, last_clk = 0;
- 	u8 data, j, r, p, pll_q, pll_p = 1, pll_r = 1, pll_j = 1;
-@@ -1101,8 +1102,8 @@ static struct snd_soc_dai_ops aic3x_dai_ops = {
- 	.set_fmt	= aic3x_set_dai_fmt,
+ 	struct snd_soc_codec *codec = dai->codec;
+-	struct wm8711_priv *wm8711 = snd_soc_codec_get_drvdata(codec);
++	struct wm8711_priv *wm8711 =  snd_soc_codec_get_drvdata(codec);
+ 	u16 iface = snd_soc_read(codec, WM8711_IFACE) & 0xfffc;
+ 	int i = get_coeff(wm8711->sysclk, params_rate(params));
+ 	u16 srate = (coeff_div[i].sr << 2) |
+@@ -227,7 +226,7 @@ static int wm8711_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 		int clk_id, unsigned int freq, int dir)
+ {
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+-	struct wm8711_priv *wm8711 = snd_soc_codec_get_drvdata(codec);
++	struct wm8711_priv *wm8711 =  snd_soc_codec_get_drvdata(codec);
+ 
+ 	switch (freq) {
+ 	case 11289600:
+@@ -338,8 +337,8 @@ static struct snd_soc_dai_ops wm8711_ops = {
+ 	.set_fmt = wm8711_set_dai_fmt,
  };
  
--struct snd_soc_dai aic3x_dai = {
--	.name = "tlv320aic3x",
-+static struct snd_soc_dai_driver aic3x_dai = {
-+	.name = "tlv320aic3x-hifi",
+-struct snd_soc_dai wm8711_dai = {
+-	.name = "WM8711",
++static struct snd_soc_dai_driver wm8711_dai = {
++	.name = "wm8711-hifi",
  	.playback = {
  		.stream_name = "Playback",
  		.channels_min = 1,
-@@ -1117,22 +1118,16 @@ struct snd_soc_dai aic3x_dai = {
- 		.formats = AIC3X_FORMATS,},
- 	.ops = &aic3x_dai_ops,
+@@ -349,22 +348,16 @@ struct snd_soc_dai wm8711_dai = {
+ 	},
+ 	.ops = &wm8711_ops,
  };
--EXPORT_SYMBOL_GPL(aic3x_dai);
+-EXPORT_SYMBOL_GPL(wm8711_dai);
  
--static int aic3x_suspend(struct platform_device *pdev, pm_message_t state)
-+static int aic3x_suspend(struct snd_soc_codec *codec, pm_message_t state)
+-static int wm8711_suspend(struct platform_device *pdev, pm_message_t state)
++static int wm8711_suspend(struct snd_soc_codec *codec, pm_message_t state)
  {
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
 -	struct snd_soc_codec *codec = socdev->card->codec;
 -
- 	aic3x_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 
+ 	snd_soc_write(codec, WM8711_ACTIVE, 0x0);
+ 	wm8711_set_bias_level(codec, SND_SOC_BIAS_OFF);
  	return 0;
  }
  
--static int aic3x_resume(struct platform_device *pdev)
-+static int aic3x_resume(struct snd_soc_codec *codec)
+-static int wm8711_resume(struct platform_device *pdev)
++static int wm8711_resume(struct snd_soc_codec *codec)
  {
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
 -	struct snd_soc_codec *codec = socdev->card->codec;
  	int i;
  	u8 data[2];
- 	u8 *cache = codec->reg_cache;
-@@ -1157,22 +1152,6 @@ static int aic3x_init(struct snd_soc_codec *codec)
- {
- 	int reg;
- 
--	mutex_init(&codec->mutex);
--	INIT_LIST_HEAD(&codec->dapm_widgets);
--	INIT_LIST_HEAD(&codec->dapm_paths);
--
--	codec->name = "tlv320aic3x";
--	codec->owner = THIS_MODULE;
--	codec->read = aic3x_read_reg_cache;
--	codec->write = aic3x_write;
--	codec->set_bias_level = aic3x_set_bias_level;
--	codec->dai = &aic3x_dai;
--	codec->num_dai = 1;
--	codec->reg_cache_size = ARRAY_SIZE(aic3x_reg);
--	codec->reg_cache = kmemdup(aic3x_reg, sizeof(aic3x_reg), GFP_KERNEL);
--	if (codec->reg_cache == NULL)
--		return -ENOMEM;
--
- 	aic3x_write(codec, AIC3X_PAGE_SELECT, PAGE0_SELECT);
- 	aic3x_write(codec, AIC3X_RESET, SOFT_RESET);
- 
-@@ -1245,56 +1224,50 @@ static int aic3x_init(struct snd_soc_codec *codec)
+ 	u16 *cache = codec->reg_cache;
+@@ -380,99 +373,24 @@ static int wm8711_resume(struct platform_device *pdev)
  	return 0;
  }
  
--static struct snd_soc_codec *aic3x_codec;
--
--static int aic3x_register(struct snd_soc_codec *codec)
-+static int aic3x_probe(struct snd_soc_codec *codec)
- {
--	int ret;
-+	struct aic3x_priv *aic3x = snd_soc_codec_get_drvdata(codec);
-+
-+	codec->hw_write = (hw_write_t) i2c_master_send;
-+	codec->control_data = aic3x->control_data;
- 
--	ret = aic3x_init(codec);
--	if (ret < 0) {
--		dev_err(codec->dev, "Failed to initialise device\n");
--		return ret;
-+	if (aic3x->setup) {
-+		/* setup GPIO functions */
-+		aic3x_write(codec, AIC3X_GPIO1_REG,
-+			    (aic3x->setup->gpio_func[0] & 0xf) << 4);
-+		aic3x_write(codec, AIC3X_GPIO2_REG,
-+			    (aic3x->setup->gpio_func[1] & 0xf) << 4);
- 	}
- 
--	aic3x_codec = codec;
-+	aic3x_init(codec);
- 
--	ret = snd_soc_register_codec(codec);
--	if (ret) {
--		dev_err(codec->dev, "Failed to register codec\n");
--		return ret;
--	}
-+	snd_soc_add_controls(codec, aic3x_snd_controls,
-+			     ARRAY_SIZE(aic3x_snd_controls));
- 
--	ret = snd_soc_register_dai(&aic3x_dai);
--	if (ret) {
--		dev_err(codec->dev, "Failed to register dai\n");
--		snd_soc_unregister_codec(codec);
--		return ret;
--	}
-+	aic3x_add_widgets(codec);
- 
- 	return 0;
- }
- 
--static int aic3x_unregister(struct aic3x_priv *aic3x)
-+static int aic3x_remove(struct snd_soc_codec *codec)
- {
--	aic3x_set_bias_level(&aic3x->codec, SND_SOC_BIAS_OFF);
--
--	snd_soc_unregister_dai(&aic3x_dai);
--	snd_soc_unregister_codec(&aic3x->codec);
--
--	if (aic3x->gpio_reset >= 0) {
--		gpio_set_value(aic3x->gpio_reset, 0);
--		gpio_free(aic3x->gpio_reset);
--	}
--	regulator_bulk_disable(ARRAY_SIZE(aic3x->supplies), aic3x->supplies);
--	regulator_bulk_free(ARRAY_SIZE(aic3x->supplies), aic3x->supplies);
--
--	kfree(aic3x);
--	aic3x_codec = NULL;
--
-+	aic3x_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 	return 0;
- }
- 
-+static struct snd_soc_codec_driver soc_codec_dev_aic3x = {
-+	.read = aic3x_read_reg_cache,
-+	.write = aic3x_write,
-+	.set_bias_level = aic3x_set_bias_level,
-+	.reg_cache_size = ARRAY_SIZE(aic3x_reg),
-+	.reg_word_size = sizeof(u8),
-+	.reg_cache_default = aic3x_reg,
-+	.probe = aic3x_probe,
-+	.remove = aic3x_remove,
-+	.suspend = aic3x_suspend,
-+	.resume = aic3x_resume,
-+};
-+
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- /*
-  * AIC3X 2 wire address can be up to 4 devices with device addresses
-@@ -1308,9 +1281,9 @@ static int aic3x_unregister(struct aic3x_priv *aic3x)
- static int aic3x_i2c_probe(struct i2c_client *i2c,
- 			   const struct i2c_device_id *id)
- {
--	struct snd_soc_codec *codec;
--	struct aic3x_priv *aic3x;
- 	struct aic3x_pdata *pdata = i2c->dev.platform_data;
-+	struct aic3x_setup_data *setup = pdata->setup;
-+	struct aic3x_priv *aic3x;
- 	int ret, i;
- 
- 	aic3x = kzalloc(sizeof(struct aic3x_priv), GFP_KERNEL);
-@@ -1319,12 +1292,8 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
- 		return -ENOMEM;
- 	}
- 
--	codec = &aic3x->codec;
--	codec->dev = &i2c->dev;
--	snd_soc_codec_set_drvdata(codec, aic3x);
--	codec->control_data = i2c;
--	codec->hw_write = (hw_write_t) i2c_master_send;
--
-+	aic3x->control_data = i2c;
-+	aic3x->setup = setup;
- 	i2c_set_clientdata(i2c, aic3x);
- 
- 	aic3x->gpio_reset = -1;
-@@ -1339,17 +1308,17 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
- 	for (i = 0; i < ARRAY_SIZE(aic3x->supplies); i++)
- 		aic3x->supplies[i].supply = aic3x_supply_names[i];
- 
--	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(aic3x->supplies),
-+	ret = regulator_bulk_get(&i2c->dev, ARRAY_SIZE(aic3x->supplies),
- 				 aic3x->supplies);
- 	if (ret != 0) {
--		dev_err(codec->dev, "Failed to request supplies: %d\n", ret);
-+		dev_err(&i2c->dev, "Failed to request supplies: %d\n", ret);
- 		goto err_get;
- 	}
- 
- 	ret = regulator_bulk_enable(ARRAY_SIZE(aic3x->supplies),
- 				    aic3x->supplies);
- 	if (ret != 0) {
--		dev_err(codec->dev, "Failed to enable supplies: %d\n", ret);
-+		dev_err(&i2c->dev, "Failed to enable supplies: %d\n", ret);
- 		goto err_enable;
- 	}
- 
-@@ -1358,7 +1327,11 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
- 		gpio_set_value(aic3x->gpio_reset, 1);
- 	}
- 
--	return aic3x_register(codec);
-+	ret = snd_soc_register_codec(&i2c->dev,
-+			&soc_codec_dev_aic3x, &aic3x_dai, 1);
-+	if (ret < 0)
-+		goto err_enable;
-+	return ret;
- 
- err_enable:
- 	regulator_bulk_free(ARRAY_SIZE(aic3x->supplies), aic3x->supplies);
-@@ -1374,7 +1347,16 @@ static int aic3x_i2c_remove(struct i2c_client *client)
- {
- 	struct aic3x_priv *aic3x = i2c_get_clientdata(client);
- 
--	return aic3x_unregister(aic3x);
-+	if (aic3x->gpio_reset >= 0) {
-+		gpio_set_value(aic3x->gpio_reset, 0);
-+		gpio_free(aic3x->gpio_reset);
-+	}
-+	regulator_bulk_disable(ARRAY_SIZE(aic3x->supplies), aic3x->supplies);
-+	regulator_bulk_free(ARRAY_SIZE(aic3x->supplies), aic3x->supplies);
-+
-+	snd_soc_unregister_codec(&client->dev);
-+	kfree(i2c_get_clientdata(client));
-+	return 0;
- }
- 
- static const struct i2c_device_id aic3x_i2c_id[] = {
-@@ -1387,7 +1369,7 @@ MODULE_DEVICE_TABLE(i2c, aic3x_i2c_id);
- /* machine i2c codec control layer */
- static struct i2c_driver aic3x_i2c_driver = {
- 	.driver = {
--		.name = "aic3x I2C Codec",
-+		.name = "tlv320aic3x-codec",
- 		.owner = THIS_MODULE,
- 	},
- 	.probe	= aic3x_i2c_probe,
-@@ -1409,90 +1391,27 @@ static inline void aic3x_i2c_exit(void)
- {
- 	i2c_del_driver(&aic3x_i2c_driver);
- }
--#else
--static inline void aic3x_i2c_init(void) { }
--static inline void aic3x_i2c_exit(void) { }
- #endif
- 
--static int aic3x_probe(struct platform_device *pdev)
-+static int __init aic3x_modinit(void)
+-static int wm8711_probe(struct platform_device *pdev)
++static int wm8711_probe(struct snd_soc_codec *codec)
  {
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct aic3x_setup_data *setup;
 -	struct snd_soc_codec *codec;
- 	int ret = 0;
+-	int ret = 0;
 -
--	codec = aic3x_codec;
--	if (!codec) {
--		dev_err(&pdev->dev, "Codec not registered\n");
+-	if (wm8711_codec == NULL) {
+-		dev_err(&pdev->dev, "Codec device not registered\n");
 -		return -ENODEV;
 -	}
 -
--	socdev->card->codec = codec;
--	setup = socdev->codec_data;
--
--	if (setup) {
--		/* setup GPIO functions */
--		aic3x_write(codec, AIC3X_GPIO1_REG,
--			    (setup->gpio_func[0] & 0xf) << 4);
--		aic3x_write(codec, AIC3X_GPIO2_REG,
--			    (setup->gpio_func[1] & 0xf) << 4);
--	}
+-	socdev->card->codec = wm8711_codec;
+-	codec = wm8711_codec;
 -
 -	/* register pcms */
 -	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
 -	if (ret < 0) {
--		printk(KERN_ERR "aic3x: failed to create pcms\n");
+-		dev_err(codec->dev, "failed to create pcms: %d\n", ret);
 -		goto pcm_err;
-+#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-+	ret = i2c_add_driver(&aic3x_i2c_driver);
-+	if (ret != 0) {
-+		printk(KERN_ERR "Failed to register TLV320AIC3x I2C driver: %d\n",
-+		       ret);
- 	}
+-	}
 -
--	snd_soc_add_controls(codec, aic3x_snd_controls,
--			     ARRAY_SIZE(aic3x_snd_controls));
--
--	aic3x_add_widgets(codec);
+-	snd_soc_add_controls(codec, wm8711_snd_controls,
+-			     ARRAY_SIZE(wm8711_snd_controls));
+-	wm8711_add_widgets(codec);
 -
 -	return ret;
 -
 -pcm_err:
--	kfree(codec->reg_cache);
-+#endif
- 	return ret;
- }
+-	return ret;
+-}
 -
--static int aic3x_remove(struct platform_device *pdev)
+-/* power down chip */
+-static int wm8711_remove(struct platform_device *pdev)
 -{
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
--
--	/* power down chip */
--	if (codec->control_data)
--		aic3x_set_bias_level(codec, SND_SOC_BIAS_OFF);
 -
 -	snd_soc_free_pcms(socdev);
 -	snd_soc_dapm_free(socdev);
 -
--	kfree(codec->reg_cache);
--
 -	return 0;
 -}
 -
--struct snd_soc_codec_device soc_codec_dev_aic3x = {
--	.probe = aic3x_probe,
--	.remove = aic3x_remove,
--	.suspend = aic3x_suspend,
--	.resume = aic3x_resume,
+-struct snd_soc_codec_device soc_codec_dev_wm8711 = {
+-	.probe = 	wm8711_probe,
+-	.remove = 	wm8711_remove,
+-	.suspend = 	wm8711_suspend,
+-	.resume =	wm8711_resume,
 -};
--EXPORT_SYMBOL_GPL(soc_codec_dev_aic3x);
+-EXPORT_SYMBOL_GPL(soc_codec_dev_wm8711);
 -
--static int __init aic3x_modinit(void)
+-static int wm8711_register(struct wm8711_priv *wm8711,
+-			   enum snd_soc_control_type control)
 -{
--	aic3x_i2c_init();
+-	int ret;
+-	struct snd_soc_codec *codec = &wm8711->codec;
+-	u16 reg;
 -
--	return 0;
--}
- module_init(aic3x_modinit);
- 
- static void __exit aic3x_exit(void)
- {
--	aic3x_i2c_exit();
-+#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-+	i2c_del_driver(&aic3x_i2c_driver);
-+#endif
- }
- module_exit(aic3x_exit);
- 
-diff --git a/sound/soc/codecs/tlv320aic3x.h b/sound/soc/codecs/tlv320aic3x.h
-index 9af1c88..f6e3d9b 100644
---- a/sound/soc/codecs/tlv320aic3x.h
-+++ b/sound/soc/codecs/tlv320aic3x.h
-@@ -199,42 +199,6 @@
- /* Default input volume */
- #define DEFAULT_GAIN    0x20
- 
--/* GPIO API */
--enum {
--	AIC3X_GPIO1_FUNC_DISABLED		= 0,
--	AIC3X_GPIO1_FUNC_AUDIO_WORDCLK_ADC	= 1,
--	AIC3X_GPIO1_FUNC_CLOCK_MUX		= 2,
--	AIC3X_GPIO1_FUNC_CLOCK_MUX_DIV2		= 3,
--	AIC3X_GPIO1_FUNC_CLOCK_MUX_DIV4		= 4,
--	AIC3X_GPIO1_FUNC_CLOCK_MUX_DIV8		= 5,
--	AIC3X_GPIO1_FUNC_SHORT_CIRCUIT_IRQ	= 6,
--	AIC3X_GPIO1_FUNC_AGC_NOISE_IRQ		= 7,
--	AIC3X_GPIO1_FUNC_INPUT			= 8,
--	AIC3X_GPIO1_FUNC_OUTPUT			= 9,
--	AIC3X_GPIO1_FUNC_DIGITAL_MIC_MODCLK	= 10,
--	AIC3X_GPIO1_FUNC_AUDIO_WORDCLK		= 11,
--	AIC3X_GPIO1_FUNC_BUTTON_IRQ		= 12,
--	AIC3X_GPIO1_FUNC_HEADSET_DETECT_IRQ	= 13,
--	AIC3X_GPIO1_FUNC_HEADSET_DETECT_OR_BUTTON_IRQ	= 14,
--	AIC3X_GPIO1_FUNC_ALL_IRQ		= 16
--};
--
--enum {
--	AIC3X_GPIO2_FUNC_DISABLED		= 0,
--	AIC3X_GPIO2_FUNC_HEADSET_DETECT_IRQ	= 2,
--	AIC3X_GPIO2_FUNC_INPUT			= 3,
--	AIC3X_GPIO2_FUNC_OUTPUT			= 4,
--	AIC3X_GPIO2_FUNC_DIGITAL_MIC_INPUT	= 5,
--	AIC3X_GPIO2_FUNC_AUDIO_BITCLK		= 8,
--	AIC3X_GPIO2_FUNC_HEADSET_DETECT_OR_BUTTON_IRQ = 9,
--	AIC3X_GPIO2_FUNC_ALL_IRQ		= 10,
--	AIC3X_GPIO2_FUNC_SHORT_CIRCUIT_OR_AGC_IRQ = 11,
--	AIC3X_GPIO2_FUNC_HEADSET_OR_BUTTON_PRESS_OR_SHORT_CIRCUIT_IRQ = 12,
--	AIC3X_GPIO2_FUNC_SHORT_CIRCUIT_IRQ	= 13,
--	AIC3X_GPIO2_FUNC_AGC_NOISE_IRQ		= 14,
--	AIC3X_GPIO2_FUNC_BUTTON_PRESS_IRQ	= 15
--};
--
- void aic3x_set_gpio(struct snd_soc_codec *codec, int gpio, int state);
- int aic3x_get_gpio(struct snd_soc_codec *codec, int gpio);
- 
-@@ -281,11 +245,4 @@ void aic3x_set_headset_detection(struct snd_soc_codec *codec, int detect,
- int aic3x_headset_detected(struct snd_soc_codec *codec);
- int aic3x_button_pressed(struct snd_soc_codec *codec);
- 
--struct aic3x_setup_data {
--	unsigned int gpio_func[2];
--};
--
--extern struct snd_soc_dai aic3x_dai;
--extern struct snd_soc_codec_device soc_codec_dev_aic3x;
--
- #endif /* _AIC3X_H */
-diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
-index 8651b01..a3c5b52 100644
---- a/sound/soc/codecs/tlv320dac33.c
-+++ b/sound/soc/codecs/tlv320dac33.c
-@@ -66,8 +66,6 @@
- static void dac33_calculate_times(struct snd_pcm_substream *substream);
- static int dac33_prepare_chip(struct snd_pcm_substream *substream);
- 
--static struct snd_soc_codec *tlv320dac33_codec;
--
- enum dac33_state {
- 	DAC33_IDLE = 0,
- 	DAC33_PREFILL,
-@@ -93,7 +91,7 @@ struct tlv320dac33_priv {
- 	struct mutex mutex;
- 	struct workqueue_struct *dac33_wq;
- 	struct work_struct work;
--	struct snd_soc_codec codec;
-+	struct snd_soc_codec *codec;
- 	struct regulator_bulk_data supplies[DAC33_NUM_SUPPLIES];
- 	struct snd_pcm_substream *substream;
- 	int power_gpio;
-@@ -128,6 +126,8 @@ struct tlv320dac33_priv {
- 	unsigned int uthr;
- 
- 	enum dac33_state state;
-+	enum snd_soc_control_type control_type;
-+	void *control_data;
- };
- 
- static const u8 dac33_reg[DAC33_CACHEREGNUM] = {
-@@ -650,9 +650,7 @@ static int dac33_set_bias_level(struct snd_soc_codec *codec,
- 
- static inline void dac33_prefill_handler(struct tlv320dac33_priv *dac33)
- {
--	struct snd_soc_codec *codec;
--
--	codec = &dac33->codec;
-+	struct snd_soc_codec *codec = dac33->codec;
- 
- 	switch (dac33->fifo_mode) {
- 	case DAC33_FIFO_MODE1:
-@@ -695,9 +693,7 @@ static inline void dac33_prefill_handler(struct tlv320dac33_priv *dac33)
- 
- static inline void dac33_playback_handler(struct tlv320dac33_priv *dac33)
- {
--	struct snd_soc_codec *codec;
--
--	codec = &dac33->codec;
-+	struct snd_soc_codec *codec = dac33->codec;
- 
- 	switch (dac33->fifo_mode) {
- 	case DAC33_FIFO_MODE1:
-@@ -726,7 +722,7 @@ static void dac33_work(struct work_struct *work)
- 	u8 reg;
- 
- 	dac33 = container_of(work, struct tlv320dac33_priv, work);
--	codec = &dac33->codec;
-+	codec = dac33->codec;
- 
- 	mutex_lock(&dac33->mutex);
- 	switch (dac33->state) {
-@@ -787,8 +783,7 @@ static int dac33_startup(struct snd_pcm_substream *substream,
- 			   struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
- 
- 	/* Stream started, save the substream pointer */
-@@ -801,8 +796,7 @@ static void dac33_shutdown(struct snd_pcm_substream *substream,
- 			     struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
- 
- 	dac33->substream = NULL;
-@@ -817,8 +811,7 @@ static int dac33_hw_params(struct snd_pcm_substream *substream,
- 			   struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 
- 	/* Check parameters for validity */
- 	switch (params_rate(params)) {
-@@ -856,8 +849,7 @@ static int dac33_hw_params(struct snd_pcm_substream *substream,
- static int dac33_prepare_chip(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int oscset, ratioset, pwr_ctrl, reg_tmp;
- 	u8 aictrl_a, aictrl_b, fifoctrl_a;
-@@ -1049,8 +1041,7 @@ static int dac33_prepare_chip(struct snd_pcm_substream *substream)
- static void dac33_calculate_times(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int period_size = substream->runtime->period_size;
- 	unsigned int rate = substream->runtime->rate;
-@@ -1129,8 +1120,7 @@ static int dac33_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
- 			     struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
- 	int ret = 0;
- 
-@@ -1163,8 +1153,7 @@ static snd_pcm_sframes_t dac33_dai_delay(
- 			struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
- 	unsigned long long t0, t1, t_now;
- 	unsigned int time_delta, uthr;
-@@ -1389,24 +1378,47 @@ static int dac33_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	return 0;
- }
- 
--static int dac33_soc_probe(struct platform_device *pdev)
-+static int dac33_soc_probe(struct snd_soc_codec *codec)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec;
--	struct tlv320dac33_priv *dac33;
-+	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
- 	int ret = 0;
- 
--	BUG_ON(!tlv320dac33_codec);
-+	codec->control_data = dac33->control_data;
-+	codec->hw_write = (hw_write_t) i2c_master_send;
-+	codec->bias_level = SND_SOC_BIAS_OFF;
-+	codec->idle_bias_off = 1;
-+	dac33->codec = codec;
- 
--	codec = tlv320dac33_codec;
--	socdev->card->codec = codec;
--	dac33 = snd_soc_codec_get_drvdata(codec);
-+	/* Read the tlv320dac33 ID registers */
-+	ret = dac33_hard_power(codec, 1);
-+	if (ret != 0) {
-+		dev_err(codec->dev, "Failed to power up codec: %d\n", ret);
-+		goto err_power;
-+	}
-+	dac33_read_id(codec);
-+	dac33_hard_power(codec, 0);
- 
--	/* register pcms */
--	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
--	if (ret < 0) {
--		dev_err(codec->dev, "failed to create pcms\n");
--		goto pcm_err;
-+	/* Check if the IRQ number is valid and request it */
-+	if (dac33->irq >= 0) {
-+		ret = request_irq(dac33->irq, dac33_interrupt_handler,
-+				  IRQF_TRIGGER_RISING | IRQF_DISABLED,
-+				  codec->name, codec);
-+		if (ret < 0) {
-+			dev_err(codec->dev, "Could not request IRQ%d (%d)\n",
-+						dac33->irq, ret);
-+			dac33->irq = -1;
-+		}
-+		if (dac33->irq != -1) {
-+			/* Setup work queue */
-+			dac33->dac33_wq =
-+				create_singlethread_workqueue("tlv320dac33");
-+			if (dac33->dac33_wq == NULL) {
-+				free_irq(dac33->irq, codec);
-+				return -ENOMEM;
-+			}
-+
-+			INIT_WORK(&dac33->work, dac33_work);
-+		}
- 	}
- 
- 	snd_soc_add_controls(codec, dac33_snd_controls,
-@@ -1420,56 +1432,51 @@ static int dac33_soc_probe(struct platform_device *pdev)
- 			snd_soc_add_controls(codec, dac33_fifo_snd_controls,
- 					ARRAY_SIZE(dac33_fifo_snd_controls));
- 	}
--
- 	dac33_add_widgets(codec);
- 
--	return 0;
--
--pcm_err:
--	dac33_hard_power(codec, 0);
-+err_power:
- 	return ret;
- }
- 
--static int dac33_soc_remove(struct platform_device *pdev)
-+static int dac33_soc_remove(struct snd_soc_codec *codec)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
- 
- 	dac33_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 
--	snd_soc_free_pcms(socdev);
--	snd_soc_dapm_free(socdev);
--
-+	if (dac33->irq >= 0) {
-+		free_irq(dac33->irq, dac33->codec);
-+		destroy_workqueue(dac33->dac33_wq);
-+	}
- 	return 0;
- }
- 
--static int dac33_soc_suspend(struct platform_device *pdev, pm_message_t state)
-+static int dac33_soc_suspend(struct snd_soc_codec *codec, pm_message_t state)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
--
- 	dac33_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 
- 	return 0;
- }
- 
--static int dac33_soc_resume(struct platform_device *pdev)
-+static int dac33_soc_resume(struct snd_soc_codec *codec)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
--
- 	dac33_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
- 	return 0;
- }
- 
--struct snd_soc_codec_device soc_codec_dev_tlv320dac33 = {
-+static struct snd_soc_codec_driver soc_codec_dev_tlv320dac33 = {
-+	.read = dac33_read_reg_cache,
-+	.write = dac33_write_locked,
-+	.set_bias_level = dac33_set_bias_level,
-+	.reg_cache_size = ARRAY_SIZE(dac33_reg),
-+	.reg_word_size = sizeof(u8),
-+	.reg_cache_default = dac33_reg,
- 	.probe = dac33_soc_probe,
- 	.remove = dac33_soc_remove,
- 	.suspend = dac33_soc_suspend,
- 	.resume = dac33_soc_resume,
- };
--EXPORT_SYMBOL_GPL(soc_codec_dev_tlv320dac33);
- 
- #define DAC33_RATES	(SNDRV_PCM_RATE_44100 | \
- 			 SNDRV_PCM_RATE_48000)
-@@ -1485,8 +1492,8 @@ static struct snd_soc_dai_ops dac33_dai_ops = {
- 	.set_fmt	= dac33_set_dai_fmt,
- };
- 
--struct snd_soc_dai dac33_dai = {
--	.name = "tlv320dac33",
-+static struct snd_soc_dai_driver dac33_dai = {
-+	.name = "tlv320dac33-hifi",
- 	.playback = {
- 		.stream_name = "Playback",
- 		.channels_min = 2,
-@@ -1495,14 +1502,12 @@ struct snd_soc_dai dac33_dai = {
- 		.formats = DAC33_FORMATS,},
- 	.ops = &dac33_dai_ops,
- };
--EXPORT_SYMBOL_GPL(dac33_dai);
- 
- static int __devinit dac33_i2c_probe(struct i2c_client *client,
- 				     const struct i2c_device_id *id)
- {
- 	struct tlv320dac33_platform_data *pdata;
- 	struct tlv320dac33_priv *dac33;
--	struct snd_soc_codec *codec;
- 	int ret, i;
- 
- 	if (client->dev.platform_data == NULL) {
-@@ -1515,33 +1520,9 @@ static int __devinit dac33_i2c_probe(struct i2c_client *client,
- 	if (dac33 == NULL)
- 		return -ENOMEM;
- 
--	codec = &dac33->codec;
--	snd_soc_codec_set_drvdata(codec, dac33);
--	codec->control_data = client;
+-	if (wm8711_codec) {
+-		dev_err(codec->dev, "Another WM8711 is registered\n");
+-		ret = -EINVAL;
+-		goto err;
+-	}
 -
 -	mutex_init(&codec->mutex);
-+	dac33->control_data = client;
- 	mutex_init(&dac33->mutex);
- 	spin_lock_init(&dac33->lock);
 -	INIT_LIST_HEAD(&codec->dapm_widgets);
 -	INIT_LIST_HEAD(&codec->dapm_paths);
 -
--	codec->name = "tlv320dac33";
+-	snd_soc_codec_set_drvdata(codec, wm8711);
+-	codec->name = "WM8711";
 -	codec->owner = THIS_MODULE;
--	codec->read = dac33_read_reg_cache;
--	codec->write = dac33_write_locked;
--	codec->hw_write = (hw_write_t) i2c_master_send;
 -	codec->bias_level = SND_SOC_BIAS_OFF;
--	codec->set_bias_level = dac33_set_bias_level;
--	codec->idle_bias_off = 1;
--	codec->dai = &dac33_dai;
+-	codec->set_bias_level = wm8711_set_bias_level;
+-	codec->dai = &wm8711_dai;
 -	codec->num_dai = 1;
--	codec->reg_cache_size = ARRAY_SIZE(dac33_reg);
--	codec->reg_cache = kmemdup(dac33_reg, ARRAY_SIZE(dac33_reg),
--				   GFP_KERNEL);
--	if (codec->reg_cache == NULL) {
--		ret = -ENOMEM;
--		goto error_reg;
--	}
- 
- 	i2c_set_clientdata(client, dac33);
- 
-@@ -1561,125 +1542,59 @@ static int __devinit dac33_i2c_probe(struct i2c_client *client,
- 	/* Disable FIFO use by default */
- 	dac33->fifo_mode = DAC33_FIFO_BYPASS;
- 
--	tlv320dac33_codec = codec;
+-	codec->reg_cache_size = WM8711_CACHEREGNUM;
+-	codec->reg_cache = &wm8711->reg_cache;
 -
--	codec->dev = &client->dev;
--	dac33_dai.dev = codec->dev;
--
- 	/* Check if the reset GPIO number is valid and request it */
- 	if (dac33->power_gpio >= 0) {
- 		ret = gpio_request(dac33->power_gpio, "tlv320dac33 reset");
- 		if (ret < 0) {
--			dev_err(codec->dev,
-+			dev_err(&client->dev,
- 				"Failed to request reset GPIO (%d)\n",
- 				dac33->power_gpio);
--			snd_soc_unregister_dai(&dac33_dai);
--			snd_soc_unregister_codec(codec);
--			goto error_gpio;
-+			goto err_gpio;
- 		}
- 		gpio_direction_output(dac33->power_gpio, 0);
+-	memcpy(codec->reg_cache, wm8711_reg, sizeof(wm8711_reg));
++	struct wm8711_priv *wm8711 = snd_soc_codec_get_drvdata(codec);
++	int ret, reg;
+ 
+-	ret = snd_soc_codec_set_cache_io(codec, 7, 9, control);
++	codec->control_data = wm8711->control_data;
++	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8711->bus_type);
+ 	if (ret < 0) {
+ 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+-		goto err;
++		return ret;
  	}
  
--	/* Check if the IRQ number is valid and request it */
--	if (dac33->irq >= 0) {
--		ret = request_irq(dac33->irq, dac33_interrupt_handler,
--				  IRQF_TRIGGER_RISING | IRQF_DISABLED,
--				  codec->name, codec);
--		if (ret < 0) {
--			dev_err(codec->dev, "Could not request IRQ%d (%d)\n",
--						dac33->irq, ret);
--			dac33->irq = -1;
--		}
--		if (dac33->irq != -1) {
--			/* Setup work queue */
--			dac33->dac33_wq =
--				create_singlethread_workqueue("tlv320dac33");
--			if (dac33->dac33_wq == NULL) {
--				free_irq(dac33->irq, &dac33->codec);
--				ret = -ENOMEM;
--				goto error_wq;
--			}
--
--			INIT_WORK(&dac33->work, dac33_work);
--		}
--	}
--
- 	for (i = 0; i < ARRAY_SIZE(dac33->supplies); i++)
- 		dac33->supplies[i].supply = dac33_supply_names[i];
- 
--	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(dac33->supplies),
-+	ret = regulator_bulk_get(&client->dev, ARRAY_SIZE(dac33->supplies),
- 				 dac33->supplies);
- 
- 	if (ret != 0) {
--		dev_err(codec->dev, "Failed to request supplies: %d\n", ret);
-+		dev_err(&client->dev, "Failed to request supplies: %d\n", ret);
- 		goto err_get;
+ 	ret = wm8711_reset(codec);
+ 	if (ret < 0) {
+ 		dev_err(codec->dev, "Failed to issue reset\n");
+-		goto err;
++		return ret;
  	}
  
--	/* Read the tlv320dac33 ID registers */
--	ret = dac33_hard_power(codec, 1);
--	if (ret != 0) {
--		dev_err(codec->dev, "Failed to power up codec: %d\n", ret);
--		goto error_codec;
--	}
--	dac33_read_id(codec);
--	dac33_hard_power(codec, 0);
+-	wm8711_dai.dev = codec->dev;
+-
+ 	wm8711_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
+ 	/* Latch the update bits */
+@@ -481,69 +399,63 @@ static int wm8711_register(struct wm8711_priv *wm8711,
+ 	reg = snd_soc_read(codec, WM8711_ROUT1V);
+ 	snd_soc_write(codec, WM8711_ROUT1V, reg | 0x0100);
+ 
+-	wm8711_codec = codec;
 -
 -	ret = snd_soc_register_codec(codec);
 -	if (ret != 0) {
 -		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
--		goto error_codec;
+-		goto err;
 -	}
 -
--	ret = snd_soc_register_dai(&dac33_dai);
+-	ret = snd_soc_register_dai(&wm8711_dai);
 -	if (ret != 0) {
 -		dev_err(codec->dev, "Failed to register DAI: %d\n", ret);
--		snd_soc_unregister_codec(codec);
--		goto error_codec;
+-		goto err_codec;
 -	}
-+	ret = snd_soc_register_codec(&client->dev,
-+			&soc_codec_dev_tlv320dac33, &dac33_dai, 1);
-+	if (ret < 0)
-+		goto err_register;
+-
+-	return 0;
++	snd_soc_add_controls(codec, wm8711_snd_controls,
++			     ARRAY_SIZE(wm8711_snd_controls));
++	wm8711_add_widgets(codec);
  
+-err_codec:
+-	snd_soc_unregister_codec(codec);
+-err:
+-	kfree(wm8711);
  	return ret;
--
--error_codec:
-+err_register:
- 	regulator_bulk_free(ARRAY_SIZE(dac33->supplies), dac33->supplies);
- err_get:
--	if (dac33->irq >= 0) {
--		free_irq(dac33->irq, &dac33->codec);
--		destroy_workqueue(dac33->dac33_wq);
--	}
--error_wq:
- 	if (dac33->power_gpio >= 0)
- 		gpio_free(dac33->power_gpio);
--error_gpio:
--	kfree(codec->reg_cache);
--error_reg:
--	tlv320dac33_codec = NULL;
-+err_gpio:
- 	kfree(dac33);
--
- 	return ret;
++
  }
  
- static int __devexit dac33_i2c_remove(struct i2c_client *client)
+-static void wm8711_unregister(struct wm8711_priv *wm8711)
++/* power down chip */
++static int wm8711_remove(struct snd_soc_codec *codec)
  {
--	struct tlv320dac33_priv *dac33;
+-	wm8711_set_bias_level(&wm8711->codec, SND_SOC_BIAS_OFF);
+-	snd_soc_unregister_dai(&wm8711_dai);
+-	snd_soc_unregister_codec(&wm8711->codec);
+-	kfree(wm8711);
+-	wm8711_codec = NULL;
++	wm8711_set_bias_level(codec, SND_SOC_BIAS_OFF);
++	return 0;
+ }
+ 
++static struct snd_soc_codec_driver soc_codec_dev_wm8711 = {
++	.probe =	wm8711_probe,
++	.remove =	wm8711_remove,
++	.suspend =	wm8711_suspend,
++	.resume =	wm8711_resume,
++	.set_bias_level = wm8711_set_bias_level,
++	.reg_cache_size = sizeof(wm8711_reg),
++	.reg_word_size = sizeof(u16),
++	.reg_cache_default = wm8711_reg,
++};
++
+ #if defined(CONFIG_SPI_MASTER)
+ static int __devinit wm8711_spi_probe(struct spi_device *spi)
+ {
+-	struct snd_soc_codec *codec;
+ 	struct wm8711_priv *wm8711;
++	int ret;
+ 
+ 	wm8711 = kzalloc(sizeof(struct wm8711_priv), GFP_KERNEL);
+ 	if (wm8711 == NULL)
+ 		return -ENOMEM;
+ 
+-	codec = &wm8711->codec;
+-	codec->control_data = spi;
+-	codec->dev = &spi->dev;
++	spi_set_drvdata(spi, wm8711);
++	wm8711->control_data = spi;
++	wm8711->bus_type = SND_SOC_SPI;
+ 
+-	dev_set_drvdata(&spi->dev, wm8711);
 -
--	dac33 = i2c_get_clientdata(client);
-+	struct tlv320dac33_priv *dac33 = i2c_get_clientdata(client);
+-	return wm8711_register(wm8711, SND_SOC_SPI);
++	ret = snd_soc_register_codec(&spi->dev,
++			&soc_codec_dev_wm8711, &wm8711_dai, 1);
++	if (ret < 0)
++		kfree(wm8711);
++	return ret;
+ }
  
- 	if (unlikely(dac33->chip_power))
--		dac33_hard_power(&dac33->codec, 0);
-+		dac33_hard_power(dac33->codec, 0);
+ static int __devexit wm8711_spi_remove(struct spi_device *spi)
+ {
+-	struct wm8711_priv *wm8711 = dev_get_drvdata(&spi->dev);
+-
+-	wm8711_unregister(wm8711);
+-
++	snd_soc_unregister_codec(&spi->dev);
++	kfree(spi_get_drvdata(spi));
+ 	return 0;
+ }
  
- 	if (dac33->power_gpio >= 0)
- 		gpio_free(dac33->power_gpio);
--	if (dac33->irq >= 0)
--		free_irq(dac33->irq, &dac33->codec);
+ static struct spi_driver wm8711_spi_driver = {
+ 	.driver = {
+-		.name	= "wm8711",
++		.name	= "wm8711-codec",
+ 		.bus	= &spi_bus_type,
+ 		.owner	= THIS_MODULE,
+ 	},
+@@ -553,31 +465,31 @@ static struct spi_driver wm8711_spi_driver = {
+ #endif /* CONFIG_SPI_MASTER */
  
- 	regulator_bulk_free(ARRAY_SIZE(dac33->supplies), dac33->supplies);
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+-static __devinit int wm8711_i2c_probe(struct i2c_client *i2c,
++static __devinit int wm8711_i2c_probe(struct i2c_client *client,
+ 				      const struct i2c_device_id *id)
+ {
+ 	struct wm8711_priv *wm8711;
+-	struct snd_soc_codec *codec;
++	int ret;
  
--	destroy_workqueue(dac33->dac33_wq);
--	snd_soc_unregister_dai(&dac33_dai);
--	snd_soc_unregister_codec(&dac33->codec);
--	kfree(dac33->codec.reg_cache);
+ 	wm8711 = kzalloc(sizeof(struct wm8711_priv), GFP_KERNEL);
+ 	if (wm8711 == NULL)
+ 		return -ENOMEM;
+ 
+-	codec = &wm8711->codec;
+-	codec->hw_write = (hw_write_t)i2c_master_send;
+-
+-	i2c_set_clientdata(i2c, wm8711);
+-	codec->control_data = i2c;
++	i2c_set_clientdata(client, wm8711);
++	wm8711->control_data = client;
++	wm8711->bus_type = SND_SOC_I2C;
+ 
+-	codec->dev = &i2c->dev;
+-
+-	return wm8711_register(wm8711, SND_SOC_I2C);
++	ret =  snd_soc_register_codec(&client->dev,
++			&soc_codec_dev_wm8711, &wm8711_dai, 1);
++	if (ret < 0)
++		kfree(wm8711);
++	return ret;
+ }
+ 
+ static __devexit int wm8711_i2c_remove(struct i2c_client *client)
+ {
+-	struct wm8711_priv *wm8711 = i2c_get_clientdata(client);
+-	wm8711_unregister(wm8711);
 +	snd_soc_unregister_codec(&client->dev);
- 	kfree(dac33);
--	tlv320dac33_codec = NULL;
++	kfree(i2c_get_clientdata(client));
+ 	return 0;
+ }
+ 
+@@ -589,7 +501,7 @@ MODULE_DEVICE_TABLE(i2c, wm8711_i2c_id);
+ 
+ static struct i2c_driver wm8711_i2c_driver = {
+ 	.driver = {
+-		.name = "WM8711 I2C Codec",
++		.name = "wm8711-codec",
+ 		.owner = THIS_MODULE,
+ 	},
+ 	.probe =    wm8711_i2c_probe,
+diff --git a/sound/soc/codecs/wm8711.h b/sound/soc/codecs/wm8711.h
+index 381e84a..a61db98 100644
+--- a/sound/soc/codecs/wm8711.h
++++ b/sound/soc/codecs/wm8711.h
+@@ -36,7 +36,4 @@ struct wm8711_setup_data {
+ 	unsigned short i2c_address;
+ };
+ 
+-extern struct snd_soc_dai wm8711_dai;
+-extern struct snd_soc_codec_device soc_codec_dev_wm8711;
+-
+ #endif
+diff --git a/sound/soc/codecs/wm8727.c b/sound/soc/codecs/wm8727.c
+index 9d1df26..6a40080 100644
+--- a/sound/soc/codecs/wm8727.c
++++ b/sound/soc/codecs/wm8727.c
+@@ -23,7 +23,6 @@
+ #include <sound/initval.h>
+ #include <sound/soc.h>
+ 
+-#include "wm8727.h"
+ /*
+  * Note this is a simple chip with no configuration interface, sample rate is
+  * determined automatically by examining the Master clock and Bit clock ratios
+@@ -33,8 +32,8 @@
+ 			SNDRV_PCM_RATE_192000)
+ 
+ 
+-struct snd_soc_dai wm8727_dai = {
+-	.name = "WM8727",
++static struct snd_soc_dai_driver wm8727_dai = {
++	.name = "wm8727-hifi",
+ 	.playback = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 2,
+@@ -43,103 +42,18 @@ struct snd_soc_dai wm8727_dai = {
+ 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
+ 		},
+ };
+-EXPORT_SYMBOL_GPL(wm8727_dai);
+ 
+-static struct snd_soc_codec *wm8727_codec;
++struct snd_soc_codec_driver soc_codec_dev_wm8727;
+ 
+-static int wm8727_soc_probe(struct platform_device *pdev)
++static __devinit int wm8727_probe(struct platform_device *pdev)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	int ret = 0;
+-
+-	BUG_ON(!wm8727_codec);
+-
+-	socdev->card->codec = wm8727_codec;
+-
+-	/* register pcms */
+-	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
+-	if (ret < 0) {
+-		printk(KERN_ERR "wm8727: failed to create pcms\n");
+-		goto pcm_err;
+-	}
+-
+-	return ret;
+-
+-pcm_err:
+-	kfree(socdev->card->codec);
+-	socdev->card->codec = NULL;
+-	return ret;
+-}
+-
+-static int wm8727_soc_remove(struct platform_device *pdev)
+-{
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-
+-	snd_soc_free_pcms(socdev);
+-
+-	return 0;
+-}
+-
+-struct snd_soc_codec_device soc_codec_dev_wm8727 = {
+-	.probe = 	wm8727_soc_probe,
+-	.remove = 	wm8727_soc_remove,
+-};
+-EXPORT_SYMBOL_GPL(soc_codec_dev_wm8727);
+-
+-
+-static __devinit int wm8727_platform_probe(struct platform_device *pdev)
+-{
+-	struct snd_soc_codec *codec;
+-	int ret;
+-
+-	if (wm8727_codec) {
+-		dev_err(&pdev->dev, "Another WM8727 is registered\n");
+-		return -EBUSY;
+-	}
+-
+-	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
+-	if (codec == NULL)
+-		return -ENOMEM;
+-	wm8727_codec = codec;
+-
+-	platform_set_drvdata(pdev, codec);
+-
+-	mutex_init(&codec->mutex);
+-	codec->dev = &pdev->dev;
+-	codec->name = "WM8727";
+-	codec->owner = THIS_MODULE;
+-	codec->dai = &wm8727_dai;
+-	codec->num_dai = 1;
+-	INIT_LIST_HEAD(&codec->dapm_widgets);
+-	INIT_LIST_HEAD(&codec->dapm_paths);
+-
+-	wm8727_dai.dev = &pdev->dev;
+-
+-	ret = snd_soc_register_codec(codec);
+-	if (ret != 0) {
+-		dev_err(&pdev->dev, "Failed to register CODEC: %d\n", ret);
+-		goto err;
+-	}
+-
+-	ret = snd_soc_register_dai(&wm8727_dai);
+-	if (ret != 0) {
+-		dev_err(&pdev->dev, "Failed to register DAI: %d\n", ret);
+-		goto err_codec;
+-	}
+-
+-	return 0;
+-
+-err_codec:
+-	snd_soc_unregister_codec(codec);
+-err:
+-	kfree(codec);
+-	return ret;
++	return snd_soc_register_codec(&pdev->dev,
++			&soc_codec_dev_wm8727, &wm8727_dai, 1);
+ }
+ 
+-static int __devexit wm8727_platform_remove(struct platform_device *pdev)
++static int __devexit wm8727_remove(struct platform_device *pdev)
+ {
+-	snd_soc_unregister_dai(&wm8727_dai);
+-	snd_soc_unregister_codec(platform_get_drvdata(pdev));
++	snd_soc_unregister_codec(&pdev->dev);
+ 	return 0;
+ }
+ 
+@@ -149,8 +63,8 @@ static struct platform_driver wm8727_codec_driver = {
+ 			.owner = THIS_MODULE,
+ 	},
+ 
+-	.probe = wm8727_platform_probe,
+-	.remove = __devexit_p(wm8727_platform_remove),
++	.probe = wm8727_probe,
++	.remove = __devexit_p(wm8727_remove),
+ };
+ 
+ static int __init wm8727_init(void)
+diff --git a/sound/soc/codecs/wm8727.h b/sound/soc/codecs/wm8727.h
+index ee19aa7..21fa74b 100644
+--- a/sound/soc/codecs/wm8727.h
++++ b/sound/soc/codecs/wm8727.h
+@@ -15,7 +15,7 @@
+ #ifndef WM8727_H_
+ #define WM8727_H_
+ 
+-extern struct snd_soc_dai wm8727_dai;
+-extern struct snd_soc_codec_device soc_codec_dev_wm8727;
++extern struct snd_soc_dai_driver wm8727_dai;
++extern struct snd_soc_codec_driver soc_codec_dev_wm8727;
+ 
+ #endif /* WM8727_H_ */
+diff --git a/sound/soc/codecs/wm8728.c b/sound/soc/codecs/wm8728.c
+index 34be2d2..ae22924 100644
+--- a/sound/soc/codecs/wm8728.c
++++ b/sound/soc/codecs/wm8728.c
+@@ -29,8 +29,6 @@
+ 
+ #include "wm8728.h"
+ 
+-struct snd_soc_codec_device soc_codec_dev_wm8728;
+-
+ /*
+  * We can't read the WM8728 register space so we cache them instead.
+  * Note that the defaults here aren't the physical defaults, we latch
+@@ -44,6 +42,12 @@ static const u16 wm8728_reg_defaults[] = {
+ 	0x100,
+ };
+ 
++/* codec private data */
++struct wm8728_priv {
++	enum snd_soc_control_type control_type;
++	void *control_data;
++};
++
+ static const DECLARE_TLV_DB_SCALE(wm8728_tlv, -12750, 50, 1);
+ 
+ static const struct snd_kcontrol_new wm8728_snd_controls[] = {
+@@ -96,8 +100,7 @@ static int wm8728_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_device *socdev = rtd->socdev;
+-	struct snd_soc_codec *codec = socdev->card->codec;
++	struct snd_soc_codec *codec = rtd->codec;
+ 	u16 dac = snd_soc_read(codec, WM8728_DACCTL);
+ 
+ 	dac &= ~0x18;
+@@ -210,8 +213,8 @@ static struct snd_soc_dai_ops wm8728_dai_ops = {
+ 	.set_fmt	= wm8728_set_dai_fmt,
+ };
+ 
+-struct snd_soc_dai wm8728_dai = {
+-	.name = "WM8728",
++static struct snd_soc_dai_driver wm8728_dai = {
++	.name = "wm8728-hifi",
+ 	.playback = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 2,
+@@ -221,63 +224,32 @@ struct snd_soc_dai wm8728_dai = {
+ 	},
+ 	.ops = &wm8728_dai_ops,
+ };
+-EXPORT_SYMBOL_GPL(wm8728_dai);
+ 
+-static int wm8728_suspend(struct platform_device *pdev, pm_message_t state)
++static int wm8728_suspend(struct snd_soc_codec *codec, pm_message_t state)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-
+ 	wm8728_set_bias_level(codec, SND_SOC_BIAS_OFF);
  
  	return 0;
  }
-@@ -1694,7 +1609,7 @@ static const struct i2c_device_id tlv320dac33_i2c_id[] = {
  
- static struct i2c_driver tlv320dac33_i2c_driver = {
- 	.driver = {
--		.name = "tlv320dac33",
-+		.name = "tlv320dac33-codec",
- 		.owner = THIS_MODULE,
- 	},
- 	.probe		= dac33_i2c_probe,
-diff --git a/sound/soc/codecs/tlv320dac33.h b/sound/soc/codecs/tlv320dac33.h
-index eb8ae07..7c318b5 100644
---- a/sound/soc/codecs/tlv320dac33.h
-+++ b/sound/soc/codecs/tlv320dac33.h
-@@ -261,7 +261,4 @@
- #define TLV320DAC33_MCLK		0
- #define TLV320DAC33_SLEEPCLK		1
- 
--extern struct snd_soc_dai dac33_dai;
--extern struct snd_soc_codec_device soc_codec_dev_tlv320dac33;
--
- #endif /* __TLV320DAC33_H */
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 7b618bb..898430f 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -36,7 +36,16 @@
- #include <sound/initval.h>
- #include <sound/tlv.h>
- 
--#include "twl4030.h"
-+/* Register descriptions are here */
-+#include <linux/mfd/twl4030-codec.h>
-+
-+/* Shadow register used by the audio driver */
-+#define TWL4030_REG_SW_SHADOW		0x4A
-+#define TWL4030_CACHEREGNUM	(TWL4030_REG_SW_SHADOW + 1)
-+
-+/* TWL4030_REG_SW_SHADOW (0x4A) Fields */
-+#define TWL4030_HFL_EN			0x01
-+#define TWL4030_HFR_EN			0x02
- 
- /*
-  * twl4030 register cache & default register settings
-@@ -277,21 +286,19 @@ static inline void twl4030_reset_registers(struct snd_soc_codec *codec)
- 
- }
- 
--static void twl4030_init_chip(struct platform_device *pdev)
-+static void twl4030_init_chip(struct snd_soc_codec *codec)
+-static int wm8728_resume(struct platform_device *pdev)
++static int wm8728_resume(struct snd_soc_codec *codec)
  {
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct twl4030_setup_data *setup = socdev->codec_data;
 -	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct twl4030_codec_audio_data *pdata = dev_get_platdata(codec->dev);
- 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
- 	u8 reg, byte;
- 	int i = 0;
- 
- 	/* Check defaults, if instructed before anything else */
--	if (setup && setup->check_defaults)
-+	if (pdata && pdata->check_defaults)
- 		twl4030_check_defaults(codec);
- 
- 	/* Reset registers, if no setup data or if instructed to do so */
--	if (!setup || (setup && setup->reset_registers))
-+	if (!pdata || (pdata && pdata->reset_registers))
- 		twl4030_reset_registers(codec);
- 
- 	/* Refresh APLL_CTL register from HW */
-@@ -312,20 +319,14 @@ static void twl4030_init_chip(struct platform_device *pdev)
- 	twl4030_write(codec, TWL4030_REG_ARXR2_APGA_CTL, 0x32);
- 
- 	/* Machine dependent setup */
--	if (!setup)
-+	if (!pdata)
- 		return;
- 
--	twl4030->digimic_delay = setup->digimic_delay;
 -
--	/* Configuration for headset ramp delay from setup data */
--	if (setup->sysclk != twl4030->sysclk)
--		dev_warn(codec->dev,
--				"Mismatch in APLL mclk: %u (configured: %u)\n",
--				setup->sysclk, twl4030->sysclk);
-+	twl4030->digimic_delay = pdata->digimic_delay;
+ 	wm8728_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
  
- 	reg = twl4030_read_reg_cache(codec, TWL4030_REG_HS_POPN_SET);
- 	reg &= ~TWL4030_RAMP_DELAY;
--	reg |= (setup->ramp_delay_value << 2);
-+	reg |= (pdata->ramp_delay_value << 2);
- 	twl4030_write_reg_cache(codec, TWL4030_REG_HS_POPN_SET, reg);
+ 	return 0;
+ }
  
- 	/* initiate offset cancellation */
-@@ -333,7 +334,7 @@ static void twl4030_init_chip(struct platform_device *pdev)
- 
- 	reg = twl4030_read_reg_cache(codec, TWL4030_REG_ANAMICL);
- 	reg &= ~TWL4030_OFFSET_CNCL_SEL;
--	reg |= setup->offset_cncl_path;
-+	reg |= pdata->offset_cncl_path;
- 	twl4030_write(codec, TWL4030_REG_ANAMICL,
- 		reg | TWL4030_CNCL_OFFSET_START);
- 
-@@ -718,9 +719,7 @@ static int aif_event(struct snd_soc_dapm_widget *w,
- 
- static void headset_ramp(struct snd_soc_codec *codec, int ramp)
+-/*
+- * initialise the WM8728 driver
+- * register the mixer and dsp interfaces with the kernel
+- */
+-static int wm8728_init(struct snd_soc_device *socdev,
+-		       enum snd_soc_control_type control)
++static int wm8728_probe(struct snd_soc_codec *codec)
  {
--	struct snd_soc_device *socdev = codec->socdev;
--	struct twl4030_setup_data *setup = socdev->codec_data;
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-	int ret = 0;
 -
-+	struct twl4030_codec_audio_data *pdata = codec->dev->platform_data;
- 	unsigned char hs_gain, hs_pop;
- 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
- 	/* Base values for ramp delay calculation: 2^19 - 2^26 */
-@@ -732,9 +731,9 @@ static void headset_ramp(struct snd_soc_codec *codec, int ramp)
+-	codec->name = "WM8728";
+-	codec->owner = THIS_MODULE;
+-	codec->set_bias_level = wm8728_set_bias_level;
+-	codec->dai = &wm8728_dai;
+-	codec->num_dai = 1;
+-	codec->bias_level = SND_SOC_BIAS_OFF;
+-	codec->reg_cache_size = ARRAY_SIZE(wm8728_reg_defaults);
+-	codec->reg_cache = kmemdup(wm8728_reg_defaults,
+-				   sizeof(wm8728_reg_defaults),
+-				   GFP_KERNEL);
+-	if (codec->reg_cache == NULL)
+-		return -ENOMEM;
++	struct wm8728_priv *wm8728 = snd_soc_codec_get_drvdata(codec);
++	int ret;
  
- 	/* Enable external mute control, this dramatically reduces
- 	 * the pop-noise */
--	if (setup && setup->hs_extmute) {
--		if (setup->set_hs_extmute) {
--			setup->set_hs_extmute(1);
-+	if (pdata && pdata->hs_extmute) {
-+		if (pdata->set_hs_extmute) {
-+			pdata->set_hs_extmute(1);
- 		} else {
- 			hs_pop |= TWL4030_EXTMUTE;
- 			twl4030_write(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
-@@ -772,9 +771,9 @@ static void headset_ramp(struct snd_soc_codec *codec, int ramp)
+-	ret = snd_soc_codec_set_cache_io(codec, 7, 9, control);
++	codec->control_data = wm8728->control_data;
++	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8728->control_type);
+ 	if (ret < 0) {
+ 		printk(KERN_ERR "wm8728: failed to configure cache I/O: %d\n",
+ 		       ret);
+-		goto err;
+-	}
+-
+-	/* register pcms */
+-	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
+-	if (ret < 0) {
+-		printk(KERN_ERR "wm8728: failed to create pcms\n");
+-		goto err;
++		return ret;
  	}
  
- 	/* Disable external mute */
--	if (setup && setup->hs_extmute) {
--		if (setup->set_hs_extmute) {
--			setup->set_hs_extmute(0);
-+	if (pdata && pdata->hs_extmute) {
-+		if (pdata->set_hs_extmute) {
-+			pdata->set_hs_extmute(0);
- 		} else {
- 			hs_pop &= ~TWL4030_EXTMUTE;
- 			twl4030_write(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
-@@ -1707,8 +1706,7 @@ static int twl4030_startup(struct snd_pcm_substream *substream,
- 			   struct snd_soc_dai *dai)
+ 	/* power on device */
+@@ -288,128 +260,56 @@ static int wm8728_init(struct snd_soc_device *socdev,
+ 	wm8728_add_widgets(codec);
+ 
+ 	return ret;
+-
+-err:
+-	kfree(codec->reg_cache);
+-	return ret;
+ }
+ 
+-static struct snd_soc_device *wm8728_socdev;
+-
+-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+-
+-/*
+- * WM8728 2 wire address is determined by GPIO5
+- * state during powerup.
+- *    low  = 0x1a
+- *    high = 0x1b
+- */
+-
+-static int wm8728_i2c_probe(struct i2c_client *i2c,
+-			    const struct i2c_device_id *id)
++static int wm8728_remove(struct snd_soc_codec *codec)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_device *socdev = wm8728_socdev;
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-	int ret;
+-
+-	i2c_set_clientdata(i2c, codec);
+-	codec->control_data = i2c;
+-
+-	ret = wm8728_init(socdev, SND_SOC_I2C);
+-	if (ret < 0)
+-		pr_err("failed to initialise WM8728\n");
+-
+-	return ret;
+-}
+-
+-static int wm8728_i2c_remove(struct i2c_client *client)
+-{
+-	struct snd_soc_codec *codec = i2c_get_clientdata(client);
+-	kfree(codec->reg_cache);
++	wm8728_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	return 0;
+ }
+ 
+-static const struct i2c_device_id wm8728_i2c_id[] = {
+-	{ "wm8728", 0 },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(i2c, wm8728_i2c_id);
+-
+-static struct i2c_driver wm8728_i2c_driver = {
+-	.driver = {
+-		.name = "WM8728 I2C Codec",
+-		.owner = THIS_MODULE,
+-	},
+-	.probe =    wm8728_i2c_probe,
+-	.remove =   wm8728_i2c_remove,
+-	.id_table = wm8728_i2c_id,
++static struct snd_soc_codec_driver soc_codec_dev_wm8728 = {
++	.probe =	wm8728_probe,
++	.remove =	wm8728_remove,
++	.suspend =	wm8728_suspend,
++	.resume =	wm8728_resume,
++	.set_bias_level = wm8728_set_bias_level,
++	.reg_cache_size = sizeof(wm8728_reg_defaults),
++	.reg_word_size = sizeof(u16),
++	.reg_cache_default = wm8728_reg_defaults,
+ };
+ 
+-static int wm8728_add_i2c_device(struct platform_device *pdev,
+-				 const struct wm8728_setup_data *setup)
+-{
+-	struct i2c_board_info info;
+-	struct i2c_adapter *adapter;
+-	struct i2c_client *client;
+-	int ret;
+-
+-	ret = i2c_add_driver(&wm8728_i2c_driver);
+-	if (ret != 0) {
+-		dev_err(&pdev->dev, "can't add i2c driver\n");
+-		return ret;
+-	}
+-
+-	memset(&info, 0, sizeof(struct i2c_board_info));
+-	info.addr = setup->i2c_address;
+-	strlcpy(info.type, "wm8728", I2C_NAME_SIZE);
+-
+-	adapter = i2c_get_adapter(setup->i2c_bus);
+-	if (!adapter) {
+-		dev_err(&pdev->dev, "can't get i2c adapter %d\n",
+-			setup->i2c_bus);
+-		goto err_driver;
+-	}
+-
+-	client = i2c_new_device(adapter, &info);
+-	i2c_put_adapter(adapter);
+-	if (!client) {
+-		dev_err(&pdev->dev, "can't add i2c device at 0x%x\n",
+-			(unsigned int)info.addr);
+-		goto err_driver;
+-	}
+-
+-	return 0;
+-
+-err_driver:
+-	i2c_del_driver(&wm8728_i2c_driver);
+-	return -ENODEV;
+-}
+-#endif
+-
+ #if defined(CONFIG_SPI_MASTER)
+ static int __devinit wm8728_spi_probe(struct spi_device *spi)
+ {
+-	struct snd_soc_device *socdev = wm8728_socdev;
+-	struct snd_soc_codec *codec = socdev->card->codec;
++	struct wm8728_priv *wm8728;
+ 	int ret;
+ 
+-	codec->control_data = spi;
++	wm8728 = kzalloc(sizeof(struct wm8728_priv), GFP_KERNEL);
++	if (wm8728 == NULL)
++		return -ENOMEM;
+ 
+-	ret = wm8728_init(socdev, SND_SOC_SPI);
+-	if (ret < 0)
+-		dev_err(&spi->dev, "failed to initialise WM8728\n");
++	wm8728->control_data = spi;
++	wm8728->control_type = SND_SOC_SPI;
++	spi_set_drvdata(spi, wm8728);
+ 
++	ret = snd_soc_register_codec(&spi->dev,
++			&soc_codec_dev_wm8728, &wm8728_dai, 1);
++	if (ret < 0)
++		kfree(wm8728);
+ 	return ret;
+ }
+ 
+ static int __devexit wm8728_spi_remove(struct spi_device *spi)
+ {
++	snd_soc_unregister_codec(&spi->dev);
++	kfree(spi_get_drvdata(spi));
+ 	return 0;
+ }
+ 
+ static struct spi_driver wm8728_spi_driver = {
+ 	.driver = {
+-		.name	= "wm8728",
++		.name	= "wm8728-codec",
+ 		.bus	= &spi_bus_type,
+ 		.owner	= THIS_MODULE,
+ 	},
+@@ -418,85 +318,81 @@ static struct spi_driver wm8728_spi_driver = {
+ };
+ #endif /* CONFIG_SPI_MASTER */
+ 
+-static int wm8728_probe(struct platform_device *pdev)
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++static __devinit int wm8728_i2c_probe(struct i2c_client *i2c,
++				      const struct i2c_device_id *id)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct wm8728_setup_data *setup;
+-	struct snd_soc_codec *codec;
+-	int ret = 0;
++	struct wm8728_priv *wm8728;
++	int ret;
+ 
+-	setup = socdev->codec_data;
+-	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
+-	if (codec == NULL)
++	wm8728 = kzalloc(sizeof(struct wm8728_priv), GFP_KERNEL);
++	if (wm8728 == NULL)
+ 		return -ENOMEM;
+ 
+-	socdev->card->codec = codec;
+-	mutex_init(&codec->mutex);
+-	INIT_LIST_HEAD(&codec->dapm_widgets);
+-	INIT_LIST_HEAD(&codec->dapm_paths);
++	i2c_set_clientdata(i2c, wm8728);
++	wm8728->control_data = i2c;
++	wm8728->control_type = SND_SOC_I2C;
++
++	ret =  snd_soc_register_codec(&i2c->dev,
++			&soc_codec_dev_wm8728, &wm8728_dai, 1);
++	if (ret < 0)
++		kfree(wm8728);
++	return ret;
++}
++
++static __devexit int wm8728_i2c_remove(struct i2c_client *client)
++{
++	snd_soc_unregister_codec(&client->dev);
++	kfree(i2c_get_clientdata(client));
++	return 0;
++}
+ 
+-	wm8728_socdev = socdev;
+-	ret = -ENODEV;
++static const struct i2c_device_id wm8728_i2c_id[] = {
++	{ "wm8728", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, wm8728_i2c_id);
++
++static struct i2c_driver wm8728_i2c_driver = {
++	.driver = {
++		.name = "wm8728-codec",
++		.owner = THIS_MODULE,
++	},
++	.probe =    wm8728_i2c_probe,
++	.remove =   __devexit_p(wm8728_i2c_remove),
++	.id_table = wm8728_i2c_id,
++};
++#endif
+ 
++static int __init wm8728_modinit(void)
++{
++	int ret = 0;
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+-	if (setup->i2c_address) {
+-		ret = wm8728_add_i2c_device(pdev, setup);
++	ret = i2c_add_driver(&wm8728_i2c_driver);
++	if (ret != 0) {
++		printk(KERN_ERR "Failed to register wm8728 I2C driver: %d\n",
++		       ret);
+ 	}
+ #endif
+ #if defined(CONFIG_SPI_MASTER)
+-	if (setup->spi) {
+-		ret = spi_register_driver(&wm8728_spi_driver);
+-		if (ret != 0)
+-			printk(KERN_ERR "can't add spi driver");
++	ret = spi_register_driver(&wm8728_spi_driver);
++	if (ret != 0) {
++		printk(KERN_ERR "Failed to register wm8728 SPI driver: %d\n",
++		       ret);
+ 	}
+ #endif
+-
+-	if (ret != 0)
+-		kfree(codec);
+-
+ 	return ret;
+ }
++module_init(wm8728_modinit);
+ 
+-/* power down chip */
+-static int wm8728_remove(struct platform_device *pdev)
++static void __exit wm8728_exit(void)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-
+-	if (codec->control_data)
+-		wm8728_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-
+-	snd_soc_free_pcms(socdev);
+-	snd_soc_dapm_free(socdev);
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+-	i2c_unregister_device(codec->control_data);
+ 	i2c_del_driver(&wm8728_i2c_driver);
+ #endif
+ #if defined(CONFIG_SPI_MASTER)
+ 	spi_unregister_driver(&wm8728_spi_driver);
+ #endif
+-	kfree(codec);
+-
+-	return 0;
+-}
+-
+-struct snd_soc_codec_device soc_codec_dev_wm8728 = {
+-	.probe = 	wm8728_probe,
+-	.remove = 	wm8728_remove,
+-	.suspend = 	wm8728_suspend,
+-	.resume =	wm8728_resume,
+-};
+-EXPORT_SYMBOL_GPL(soc_codec_dev_wm8728);
+-
+-static int __init wm8728_modinit(void)
+-{
+-	return snd_soc_register_dai(&wm8728_dai);
+-}
+-module_init(wm8728_modinit);
+-
+-static void __exit wm8728_exit(void)
+-{
+-	snd_soc_unregister_dai(&wm8728_dai);
+ }
+ module_exit(wm8728_exit);
+ 
+diff --git a/sound/soc/codecs/wm8728.h b/sound/soc/codecs/wm8728.h
+index d269c13..8aea362 100644
+--- a/sound/soc/codecs/wm8728.h
++++ b/sound/soc/codecs/wm8728.h
+@@ -18,13 +18,4 @@
+ #define WM8728_DACCTL    0x02
+ #define WM8728_IFCTL     0x03
+ 
+-struct wm8728_setup_data {
+-	int            spi;
+-	int            i2c_bus;
+-	unsigned short i2c_address;
+-};
+-
+-extern struct snd_soc_dai wm8728_dai;
+-extern struct snd_soc_codec_device soc_codec_dev_wm8728;
+-
+ #endif
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 0ab9b63..7da360e 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -32,9 +32,6 @@
+ 
+ #include "wm8731.h"
+ 
+-static struct snd_soc_codec *wm8731_codec;
+-struct snd_soc_codec_device soc_codec_dev_wm8731;
+-
+ #define WM8731_NUM_SUPPLIES 4
+ static const char *wm8731_supply_names[WM8731_NUM_SUPPLIES] = {
+ 	"AVDD",
+@@ -45,7 +42,8 @@ static const char *wm8731_supply_names[WM8731_NUM_SUPPLIES] = {
+ 
+ /* codec private data */
+ struct wm8731_priv {
+-	struct snd_soc_codec codec;
++	enum snd_soc_control_type control_type;
++	void *control_data;
+ 	struct regulator_bulk_data supplies[WM8731_NUM_SUPPLIES];
+ 	u16 reg_cache[WM8731_CACHEREGNUM];
+ 	unsigned int sysclk;
+@@ -222,9 +220,7 @@ static int wm8731_hw_params(struct snd_pcm_substream *substream,
+ 			    struct snd_pcm_hw_params *params,
+ 			    struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_device *socdev = rtd->socdev;
 -	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
- 
- 	if (twl4030->master_substream) {
-@@ -1738,8 +1736,7 @@ static void twl4030_shutdown(struct snd_pcm_substream *substream,
- 			     struct snd_soc_dai *dai)
++	struct snd_soc_codec *codec = dai->codec;
+ 	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
+ 	u16 iface = snd_soc_read(codec, WM8731_IFACE) & 0xfff3;
+ 	int i = get_coeff(wm8731->sysclk, params_rate(params));
+@@ -252,9 +248,7 @@ static int wm8731_hw_params(struct snd_pcm_substream *substream,
+ static int wm8731_pcm_prepare(struct snd_pcm_substream *substream,
+ 			      struct snd_soc_dai *dai)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_device *socdev = rtd->socdev;
 -	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_codec *codec = dai->codec;
  
- 	if (twl4030->master_substream == substream)
-@@ -1764,8 +1761,7 @@ static int twl4030_hw_params(struct snd_pcm_substream *substream,
- 			   struct snd_soc_dai *dai)
+ 	/* set active */
+ 	snd_soc_write(codec, WM8731_ACTIVE, 0x0001);
+@@ -265,9 +259,7 @@ static int wm8731_pcm_prepare(struct snd_pcm_substream *substream,
+ static void wm8731_shutdown(struct snd_pcm_substream *substream,
+ 			    struct snd_soc_dai *dai)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_device *socdev = rtd->socdev;
 -	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
- 	u8 mode, old_mode, format, old_format;
++	struct snd_soc_codec *codec = dai->codec;
  
-@@ -1999,8 +1995,7 @@ static int twl4030_voice_startup(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
+ 	/* deactivate */
+ 	if (!codec->active) {
+@@ -428,8 +420,8 @@ static struct snd_soc_dai_ops wm8731_dai_ops = {
+ 	.set_fmt	= wm8731_set_dai_fmt,
+ };
+ 
+-struct snd_soc_dai wm8731_dai = {
+-	.name = "WM8731",
++static struct snd_soc_dai_driver wm8731_dai = {
++	.name = "wm8731-hifi",
+ 	.playback = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 1,
+@@ -445,24 +437,17 @@ struct snd_soc_dai wm8731_dai = {
+ 	.ops = &wm8731_dai_ops,
+ 	.symmetric_rates = 1,
+ };
+-EXPORT_SYMBOL_GPL(wm8731_dai);
+ 
+ #ifdef CONFIG_PM
+-static int wm8731_suspend(struct platform_device *pdev, pm_message_t state)
++static int wm8731_suspend(struct snd_soc_codec *codec, pm_message_t state)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
 -	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
- 	u8 mode;
+-
+ 	wm8731_set_bias_level(codec, SND_SOC_BIAS_OFF);
  
-@@ -2033,8 +2028,7 @@ static void twl4030_voice_shutdown(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static int wm8731_resume(struct platform_device *pdev)
++static int wm8731_resume(struct snd_soc_codec *codec)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-
+ 	wm8731_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
+ 	return 0;
+@@ -472,88 +457,18 @@ static int wm8731_resume(struct platform_device *pdev)
+ #define wm8731_resume NULL
+ #endif
+ 
+-static int wm8731_probe(struct platform_device *pdev)
+-{
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec;
+-	int ret = 0;
+-
+-	if (wm8731_codec == NULL) {
+-		dev_err(&pdev->dev, "Codec device not registered\n");
+-		return -ENODEV;
+-	}
+-
+-	socdev->card->codec = wm8731_codec;
+-	codec = wm8731_codec;
+-
+-	/* register pcms */
+-	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
+-	if (ret < 0) {
+-		dev_err(codec->dev, "failed to create pcms: %d\n", ret);
+-		goto pcm_err;
+-	}
+-
+-	snd_soc_add_controls(codec, wm8731_snd_controls,
+-			     ARRAY_SIZE(wm8731_snd_controls));
+-	wm8731_add_widgets(codec);
+-
+-	return ret;
+-
+-pcm_err:
+-	return ret;
+-}
+-
+-/* power down chip */
+-static int wm8731_remove(struct platform_device *pdev)
++static int wm8731_probe(struct snd_soc_codec *codec)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-
+-	snd_soc_free_pcms(socdev);
+-	snd_soc_dapm_free(socdev);
+-
+-	return 0;
+-}
+-
+-struct snd_soc_codec_device soc_codec_dev_wm8731 = {
+-	.probe = 	wm8731_probe,
+-	.remove = 	wm8731_remove,
+-	.suspend = 	wm8731_suspend,
+-	.resume =	wm8731_resume,
+-};
+-EXPORT_SYMBOL_GPL(soc_codec_dev_wm8731);
+-
+-static int wm8731_register(struct wm8731_priv *wm8731,
+-			   enum snd_soc_control_type control)
+-{
+-	int ret, i;
+-	struct snd_soc_codec *codec = &wm8731->codec;
+-
+-	if (wm8731_codec) {
+-		dev_err(codec->dev, "Another WM8731 is registered\n");
+-		ret = -EINVAL;
+-		goto err;
+-	}
+-
+-	mutex_init(&codec->mutex);
+-	INIT_LIST_HEAD(&codec->dapm_widgets);
+-	INIT_LIST_HEAD(&codec->dapm_paths);
+-
+-	snd_soc_codec_set_drvdata(codec, wm8731);
+-	codec->name = "WM8731";
+-	codec->owner = THIS_MODULE;
+-	codec->bias_level = SND_SOC_BIAS_OFF;
+-	codec->set_bias_level = wm8731_set_bias_level;
+-	codec->dai = &wm8731_dai;
+-	codec->num_dai = 1;
+-	codec->reg_cache_size = WM8731_CACHEREGNUM;
+-	codec->reg_cache = &wm8731->reg_cache;
++	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
++	int ret = 0, i;
+ 
+-	memcpy(codec->reg_cache, wm8731_reg, sizeof(wm8731_reg));
++	codec->bias_level = SND_SOC_BIAS_OFF,
++	codec->control_data = wm8731->control_data;
+ 
+-	ret = snd_soc_codec_set_cache_io(codec, 7, 9, control);
++	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8731->control_type);
+ 	if (ret < 0) {
+ 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+-		goto err;
++		return ret;
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(wm8731->supplies); i++)
+@@ -563,7 +478,7 @@ static int wm8731_register(struct wm8731_priv *wm8731,
+ 				 wm8731->supplies);
+ 	if (ret != 0) {
+ 		dev_err(codec->dev, "Failed to request supplies: %d\n", ret);
+-		goto err;
++		return ret;
+ 	}
+ 
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(wm8731->supplies),
+@@ -579,8 +494,6 @@ static int wm8731_register(struct wm8731_priv *wm8731,
+ 		goto err_regulator_enable;
+ 	}
+ 
+-	wm8731_dai.dev = codec->dev;
+-
+ 	wm8731_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
+ 	/* Latch the update bits */
+@@ -592,78 +505,79 @@ static int wm8731_register(struct wm8731_priv *wm8731,
+ 	/* Disable bypass path by default */
+ 	snd_soc_update_bits(codec, WM8731_APANA, 0x4, 0);
+ 
+-	wm8731_codec = codec;
+-
+-	ret = snd_soc_register_codec(codec);
+-	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
+-		goto err_regulator_enable;
+-	}
+-
+-	ret = snd_soc_register_dai(&wm8731_dai);
+-	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to register DAI: %d\n", ret);
+-		snd_soc_unregister_codec(codec);
+-		goto err_codec;
+-	}
++	snd_soc_add_controls(codec, wm8731_snd_controls,
++			     ARRAY_SIZE(wm8731_snd_controls));
++	wm8731_add_widgets(codec);
+ 
+ 	/* Regulators will have been enabled by bias management */
+ 	regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
+ 
+ 	return 0;
+ 
+-err_codec:
+-	snd_soc_unregister_codec(codec);
+ err_regulator_enable:
+ 	regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
+ err_regulator_get:
+ 	regulator_bulk_free(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
+-err:
++
+ 	kfree(wm8731);
+ 	return ret;
+ }
+ 
+-static void wm8731_unregister(struct wm8731_priv *wm8731)
++/* power down chip */
++static int wm8731_remove(struct snd_soc_codec *codec)
+ {
+-	wm8731_set_bias_level(&wm8731->codec, SND_SOC_BIAS_OFF);
+-	snd_soc_unregister_dai(&wm8731_dai);
+-	snd_soc_unregister_codec(&wm8731->codec);
++	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
++
++	wm8731_set_bias_level(codec, SND_SOC_BIAS_OFF);
++
++	regulator_bulk_disable(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
+ 	regulator_bulk_free(ARRAY_SIZE(wm8731->supplies), wm8731->supplies);
+-	kfree(wm8731);
+-	wm8731_codec = NULL;
++
++	return 0;
+ }
+ 
++static struct snd_soc_codec_driver soc_codec_dev_wm8731 = {
++	.probe =	wm8731_probe,
++	.remove =	wm8731_remove,
++	.suspend =	wm8731_suspend,
++	.resume =	wm8731_resume,
++	.set_bias_level = wm8731_set_bias_level,
++	.reg_cache_size = sizeof(wm8731_reg),
++	.reg_word_size = sizeof(u16),
++	.reg_cache_default = wm8731_reg,
++};
++
+ #if defined(CONFIG_SPI_MASTER)
+ static int __devinit wm8731_spi_probe(struct spi_device *spi)
+ {
+-	struct snd_soc_codec *codec;
+ 	struct wm8731_priv *wm8731;
++	int ret;
+ 
+ 	wm8731 = kzalloc(sizeof(struct wm8731_priv), GFP_KERNEL);
+ 	if (wm8731 == NULL)
+ 		return -ENOMEM;
+ 
+-	codec = &wm8731->codec;
+-	codec->control_data = spi;
+-	codec->dev = &spi->dev;
+-
+-	dev_set_drvdata(&spi->dev, wm8731);
++	wm8731->control_data = spi;
++	wm8731->control_type = SND_SOC_SPI;
++	spi_set_drvdata(spi, wm8731);
+ 
+-	return wm8731_register(wm8731, SND_SOC_SPI);
++	ret = snd_soc_register_codec(&spi->dev,
++			&soc_codec_dev_wm8731, &wm8731_dai, 1);
++	if (ret < 0)
++		kfree(wm8731);
++	return ret;
+ }
+ 
+ static int __devexit wm8731_spi_remove(struct spi_device *spi)
+ {
+-	struct wm8731_priv *wm8731 = dev_get_drvdata(&spi->dev);
+-
+-	wm8731_unregister(wm8731);
+-
++	snd_soc_unregister_codec(&spi->dev);
++	kfree(spi_get_drvdata(spi));
+ 	return 0;
+ }
+ 
+ static struct spi_driver wm8731_spi_driver = {
+ 	.driver = {
+-		.name	= "wm8731",
++		.name	= "wm8731-codec",
+ 		.bus	= &spi_bus_type,
+ 		.owner	= THIS_MODULE,
+ 	},
+@@ -677,26 +591,27 @@ static __devinit int wm8731_i2c_probe(struct i2c_client *i2c,
+ 				      const struct i2c_device_id *id)
+ {
+ 	struct wm8731_priv *wm8731;
+-	struct snd_soc_codec *codec;
++	int ret;
+ 
+ 	wm8731 = kzalloc(sizeof(struct wm8731_priv), GFP_KERNEL);
+ 	if (wm8731 == NULL)
+ 		return -ENOMEM;
+ 
+-	codec = &wm8731->codec;
+-
+ 	i2c_set_clientdata(i2c, wm8731);
+-	codec->control_data = i2c;
++	wm8731->control_data = i2c;
++	wm8731->control_type = SND_SOC_I2C;
+ 
+-	codec->dev = &i2c->dev;
+-
+-	return wm8731_register(wm8731, SND_SOC_I2C);
++	ret =  snd_soc_register_codec(&i2c->dev,
++			&soc_codec_dev_wm8731, &wm8731_dai, 1);
++	if (ret < 0)
++		kfree(wm8731);
++	return ret;
+ }
+ 
+ static __devexit int wm8731_i2c_remove(struct i2c_client *client)
+ {
+-	struct wm8731_priv *wm8731 = i2c_get_clientdata(client);
+-	wm8731_unregister(wm8731);
++	snd_soc_unregister_codec(&client->dev);
++	kfree(i2c_get_clientdata(client));
+ 	return 0;
+ }
+ 
+@@ -708,7 +623,7 @@ MODULE_DEVICE_TABLE(i2c, wm8731_i2c_id);
+ 
+ static struct i2c_driver wm8731_i2c_driver = {
+ 	.driver = {
+-		.name = "wm8731",
++		.name = "wm8731-codec",
+ 		.owner = THIS_MODULE,
+ 	},
+ 	.probe =    wm8731_i2c_probe,
+@@ -719,7 +634,7 @@ static struct i2c_driver wm8731_i2c_driver = {
+ 
+ static int __init wm8731_modinit(void)
+ {
+-	int ret;
++	int ret = 0;
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ 	ret = i2c_add_driver(&wm8731_i2c_driver);
+ 	if (ret != 0) {
+@@ -734,7 +649,7 @@ static int __init wm8731_modinit(void)
+ 		       ret);
+ 	}
+ #endif
+-	return 0;
++	return ret;
+ }
+ module_init(wm8731_modinit);
+ 
+diff --git a/sound/soc/codecs/wm8731.h b/sound/soc/codecs/wm8731.h
+index cd7b806..73a70e2 100644
+--- a/sound/soc/codecs/wm8731.h
++++ b/sound/soc/codecs/wm8731.h
+@@ -34,7 +34,4 @@
+ #define WM8731_SYSCLK	0
+ #define WM8731_DAI		0
+ 
+-extern struct snd_soc_dai wm8731_dai;
+-extern struct snd_soc_codec_device soc_codec_dev_wm8731;
+-
+ #endif
+diff --git a/sound/soc/codecs/wm8750.c b/sound/soc/codecs/wm8750.c
+index e2c05e3..89863a5 100644
+--- a/sound/soc/codecs/wm8750.c
++++ b/sound/soc/codecs/wm8750.c
+@@ -52,7 +52,8 @@ static const u16 wm8750_reg[] = {
+ /* codec private data */
+ struct wm8750_priv {
+ 	unsigned int sysclk;
+-	struct snd_soc_codec codec;
++	enum snd_soc_control_type control_type;
++	void *control_data;
+ 	u16 reg_cache[ARRAY_SIZE(wm8750_reg)];
+ };
+ 
+@@ -560,8 +561,7 @@ static int wm8750_pcm_hw_params(struct snd_pcm_substream *substream,
  				struct snd_soc_dai *dai)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_device *socdev = rtd->socdev;
 -	struct snd_soc_codec *codec = socdev->card->codec;
 +	struct snd_soc_codec *codec = rtd->codec;
- 
- 	/* Enable voice digital filters */
- 	twl4030_voice_enable(codec, substream->stream, 0);
-@@ -2044,8 +2038,7 @@ static int twl4030_voice_hw_params(struct snd_pcm_substream *substream,
- 		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
- 	u8 old_mode, mode;
- 
-@@ -2175,7 +2168,7 @@ static int twl4030_voice_set_tristate(struct snd_soc_dai *dai, int tristate)
- #define TWL4030_RATES	 (SNDRV_PCM_RATE_8000_48000)
- #define TWL4030_FORMATS	 (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FORMAT_S24_LE)
- 
--static struct snd_soc_dai_ops twl4030_dai_ops = {
-+static struct snd_soc_dai_ops twl4030_dai_hifi_ops = {
- 	.startup	= twl4030_startup,
- 	.shutdown	= twl4030_shutdown,
- 	.hw_params	= twl4030_hw_params,
-@@ -2193,9 +2186,9 @@ static struct snd_soc_dai_ops twl4030_dai_voice_ops = {
- 	.set_tristate	= twl4030_voice_set_tristate,
+ 	struct wm8750_priv *wm8750 = snd_soc_codec_get_drvdata(codec);
+ 	u16 iface = snd_soc_read(codec, WM8750_IFACE) & 0x1f3;
+ 	u16 srate = snd_soc_read(codec, WM8750_SRATE) & 0x1c0;
+@@ -649,8 +649,8 @@ static struct snd_soc_dai_ops wm8750_dai_ops = {
+ 	.set_sysclk	= wm8750_set_dai_sysclk,
  };
  
--struct snd_soc_dai twl4030_dai[] = {
-+static struct snd_soc_dai_driver twl4030_dai[] = {
- {
--	.name = "twl4030",
-+	.name = "twl4030-hifi",
+-struct snd_soc_dai wm8750_dai = {
+-	.name = "WM8750",
++static struct snd_soc_dai_driver wm8750_dai = {
++	.name = "wm8750-hifi",
  	.playback = {
- 		.stream_name = "HiFi Playback",
- 		.channels_min = 2,
-@@ -2208,10 +2201,10 @@ struct snd_soc_dai twl4030_dai[] = {
- 		.channels_max = 4,
- 		.rates = TWL4030_RATES,
- 		.formats = TWL4030_FORMATS,},
--	.ops = &twl4030_dai_ops,
-+	.ops = &twl4030_dai_hifi_ops,
- },
- {
--	.name = "twl4030 Voice",
-+	.name = "twl4030-voice",
- 	.playback = {
- 		.stream_name = "Voice Playback",
+ 		.stream_name = "Playback",
  		.channels_min = 1,
-@@ -2227,164 +2220,90 @@ struct snd_soc_dai twl4030_dai[] = {
- 	.ops = &twl4030_dai_voice_ops,
- },
+@@ -665,21 +665,15 @@ struct snd_soc_dai wm8750_dai = {
+ 		.formats = WM8750_FORMATS,},
+ 	.ops = &wm8750_dai_ops,
  };
--EXPORT_SYMBOL_GPL(twl4030_dai);
+-EXPORT_SYMBOL_GPL(wm8750_dai);
  
--static int twl4030_soc_suspend(struct platform_device *pdev, pm_message_t state)
-+static int twl4030_soc_suspend(struct snd_soc_codec *codec, pm_message_t state)
+-static int wm8750_suspend(struct platform_device *pdev, pm_message_t state)
++static int wm8750_suspend(struct snd_soc_codec *codec, pm_message_t state)
  {
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
 -	struct snd_soc_codec *codec = socdev->card->codec;
 -
- 	twl4030_set_bias_level(codec, SND_SOC_BIAS_OFF);
--
+ 	wm8750_set_bias_level(codec, SND_SOC_BIAS_OFF);
  	return 0;
  }
  
--static int twl4030_soc_resume(struct platform_device *pdev)
-+static int twl4030_soc_resume(struct snd_soc_codec *codec)
+-static int wm8750_resume(struct platform_device *pdev)
++static int wm8750_resume(struct snd_soc_codec *codec)
  {
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
 -	struct snd_soc_codec *codec = socdev->card->codec;
--
- 	twl4030_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 	int i;
+ 	u8 data[2];
+ 	u16 *cache = codec->reg_cache;
+@@ -698,100 +692,22 @@ static int wm8750_resume(struct platform_device *pdev)
  	return 0;
  }
  
--static struct snd_soc_codec *twl4030_codec;
+-static struct snd_soc_codec *wm8750_codec;
 -
--static int twl4030_soc_probe(struct platform_device *pdev)
-+static int twl4030_soc_probe(struct snd_soc_codec *codec)
+-static int wm8750_probe(struct platform_device *pdev)
++static int wm8750_probe(struct snd_soc_codec *codec)
  {
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
 -	struct snd_soc_codec *codec;
--	int ret;
+-	int ret = 0;
 -
--	BUG_ON(!twl4030_codec);
+-	if (!wm8750_codec) {
+-		dev_err(&pdev->dev, "WM8750 codec not yet registered\n");
+-		return -EINVAL;
+-	}
 -
--	codec = twl4030_codec;
--	socdev->card->codec = codec;
+-	socdev->card->codec = wm8750_codec;
+-	codec = wm8750_codec;
 -
--	twl4030_init_chip(pdev);
-+	struct twl4030_priv *twl4030;
- 
 -	/* register pcms */
 -	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
 -	if (ret < 0) {
--		dev_err(&pdev->dev, "failed to create pcms\n");
--		return ret;
-+	twl4030 = kzalloc(sizeof(struct twl4030_priv), GFP_KERNEL);
-+	if (twl4030 == NULL) {
-+		printk("Can not allocate memroy\n");
-+		return -ENOMEM;
- 	}
-+	snd_soc_codec_set_drvdata(codec, twl4030);
-+	/* Set the defaults, and power up the codec */
-+	twl4030->sysclk = twl4030_codec_get_mclk() / 1000;
-+	codec->bias_level = SND_SOC_BIAS_OFF;
-+	codec->idle_bias_off = 1;
-+
-+	twl4030_init_chip(codec);
- 
- 	snd_soc_add_controls(codec, twl4030_snd_controls,
- 				ARRAY_SIZE(twl4030_snd_controls));
- 	twl4030_add_widgets(codec);
+-		printk(KERN_ERR "wm8750: failed to create pcms\n");
+-		goto err;
+-	}
 -
- 	return 0;
- }
- 
--static int twl4030_soc_remove(struct platform_device *pdev)
-+static int twl4030_soc_remove(struct snd_soc_codec *codec)
- {
+-	snd_soc_add_controls(codec, wm8750_snd_controls,
+-				ARRAY_SIZE(wm8750_snd_controls));
+-	wm8750_add_widgets(codec);
+-
+-	return 0;
+-
+-err:
+-	return ret;
+-}
+-
+-/* power down chip */
+-static int wm8750_remove(struct platform_device *pdev)
+-{
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
 -
--	/* Reset registers to their chip default before leaving */
--	twl4030_reset_registers(codec);
- 	twl4030_set_bias_level(codec, SND_SOC_BIAS_OFF);
 -	snd_soc_free_pcms(socdev);
 -	snd_soc_dapm_free(socdev);
 -
- 	return 0;
- }
- 
-+static struct snd_soc_codec_driver soc_codec_dev_twl4030 = {
-+	.probe = twl4030_soc_probe,
-+	.remove = twl4030_soc_remove,
-+	.suspend = twl4030_soc_suspend,
-+	.resume = twl4030_soc_resume,
-+	.read = twl4030_read_reg_cache,
-+	.write = twl4030_write,
-+	.set_bias_level = twl4030_set_bias_level,
-+	.reg_cache_size = sizeof(twl4030_reg),
-+	.reg_word_size = sizeof(u8),
-+	.reg_cache_default = twl4030_reg,
-+};
-+
- static int __devinit twl4030_codec_probe(struct platform_device *pdev)
- {
- 	struct twl4030_codec_audio_data *pdata = pdev->dev.platform_data;
--	struct snd_soc_codec *codec;
--	struct twl4030_priv *twl4030;
--	int ret;
- 
- 	if (!pdata) {
- 		dev_err(&pdev->dev, "platform_data is missing\n");
- 		return -EINVAL;
- 	}
- 
--	twl4030 = kzalloc(sizeof(struct twl4030_priv), GFP_KERNEL);
--	if (twl4030 == NULL) {
--		dev_err(&pdev->dev, "Can not allocate memroy\n");
--		return -ENOMEM;
--	}
+-	return 0;
+-}
 -
--	codec = &twl4030->codec;
--	snd_soc_codec_set_drvdata(codec, twl4030);
--	codec->dev = &pdev->dev;
--	twl4030_dai[0].dev = &pdev->dev;
--	twl4030_dai[1].dev = &pdev->dev;
+-struct snd_soc_codec_device soc_codec_dev_wm8750 = {
+-	.probe		= wm8750_probe,
+-	.remove		= wm8750_remove,
+-	.suspend	= wm8750_suspend,
+-	.resume		= wm8750_resume,
+-};
+-EXPORT_SYMBOL_GPL(soc_codec_dev_wm8750);
+-
+-/*
+- * initialise the WM8750 driver
+- * register the mixer and dsp interfaces with the kernel
+- */
+-static int wm8750_register(struct wm8750_priv *wm8750,
+-			enum snd_soc_control_type control)
+-{
+-	struct snd_soc_codec *codec = &wm8750->codec;
+-	int reg, ret = 0;
+-
+-	if (wm8750_codec) {
+-		dev_err(codec->dev, "Multiple WM8750 devices not supported\n");
+-		ret = -EINVAL;
+-		goto err;
+-	}
 -
 -	mutex_init(&codec->mutex);
 -	INIT_LIST_HEAD(&codec->dapm_widgets);
 -	INIT_LIST_HEAD(&codec->dapm_paths);
 -
--	codec->name = "twl4030";
+-	codec->name = "WM8750";
 -	codec->owner = THIS_MODULE;
--	codec->read = twl4030_read_reg_cache;
--	codec->write = twl4030_write;
--	codec->set_bias_level = twl4030_set_bias_level;
--	codec->idle_bias_off = 1;
--	codec->dai = twl4030_dai;
--	codec->num_dai = ARRAY_SIZE(twl4030_dai);
--	codec->reg_cache_size = sizeof(twl4030_reg);
--	codec->reg_cache = kmemdup(twl4030_reg, sizeof(twl4030_reg),
--					GFP_KERNEL);
--	if (codec->reg_cache == NULL) {
--		ret = -ENOMEM;
--		goto error_cache;
--	}
+-	codec->bias_level = SND_SOC_BIAS_STANDBY;
+-	codec->set_bias_level = wm8750_set_bias_level;
+-	codec->dai = &wm8750_dai;
+-	codec->num_dai = 1;
+-	codec->reg_cache_size = ARRAY_SIZE(wm8750->reg_cache) + 1;
+-	codec->reg_cache = &wm8750->reg_cache;
+-	snd_soc_codec_set_drvdata(codec, wm8750);
 -
--	platform_set_drvdata(pdev, twl4030);
--	twl4030_codec = codec;
--
--	/* Set the defaults, and power up the codec */
--	twl4030->sysclk = twl4030_codec_get_mclk() / 1000;
--	codec->bias_level = SND_SOC_BIAS_OFF;
+-	memcpy(codec->reg_cache, wm8750_reg, sizeof(wm8750->reg_cache));
++	struct wm8750_priv *wm8750 = snd_soc_codec_get_drvdata(codec);
++	int reg, ret;
+ 
+-	ret = snd_soc_codec_set_cache_io(codec, 7, 9, control);
++	codec->control_data = wm8750->control_data;
++	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8750->control_type);
+ 	if (ret < 0) {
+ 		printk(KERN_ERR "wm8750: failed to set cache I/O: %d\n", ret);
+-		goto err;
++		return ret;
+ 	}
+ 
+ 	ret = wm8750_reset(codec);
+ 	if (ret < 0) {
+ 		printk(KERN_ERR "wm8750: failed to reset: %d\n", ret);
+-		goto err;
++		return ret;
+ 	}
+ 
+ 	/* charge output caps */
+@@ -815,150 +731,133 @@ static int wm8750_register(struct wm8750_priv *wm8750,
+ 	reg = snd_soc_read(codec, WM8750_RINVOL);
+ 	snd_soc_write(codec, WM8750_RINVOL, reg | 0x0100);
+ 
+-	wm8750_codec = codec;
 -
 -	ret = snd_soc_register_codec(codec);
 -	if (ret != 0) {
 -		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
--		goto error_codec;
+-		goto err;
 -	}
 -
--	ret = snd_soc_register_dais(&twl4030_dai[0], ARRAY_SIZE(twl4030_dai));
+-	ret = snd_soc_register_dais(&wm8750_dai, 1);
 -	if (ret != 0) {
 -		dev_err(codec->dev, "Failed to register DAIs: %d\n", ret);
--		snd_soc_unregister_codec(codec);
--		goto error_codec;
+-		goto err_codec;
 -	}
 -
 -	return 0;
 -
--error_codec:
--	twl4030_codec_enable(codec, 0);
--	kfree(codec->reg_cache);
--error_cache:
--	kfree(twl4030);
--	return ret;
-+	return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_twl4030,
-+			twl4030_dai, ARRAY_SIZE(twl4030_dai));
+-err_codec:
+-	snd_soc_unregister_codec(codec);
+-err:
+-	kfree(wm8750);
++	snd_soc_add_controls(codec, wm8750_snd_controls,
++				ARRAY_SIZE(wm8750_snd_controls));
++	wm8750_add_widgets(codec);
+ 	return ret;
  }
  
- static int __devexit twl4030_codec_remove(struct platform_device *pdev)
+-static void wm8750_unregister(struct wm8750_priv *wm8750)
++static int wm8750_remove(struct snd_soc_codec *codec)
  {
--	struct twl4030_priv *twl4030 = platform_get_drvdata(pdev);
-+	struct twl4030_priv *twl4030 = dev_get_drvdata(&pdev->dev);
- 
--	snd_soc_unregister_dais(&twl4030_dai[0], ARRAY_SIZE(twl4030_dai));
--	snd_soc_unregister_codec(&twl4030->codec);
--	kfree(twl4030->codec.reg_cache);
-+	snd_soc_unregister_codec(&pdev->dev);
- 	kfree(twl4030);
--
--	twl4030_codec = NULL;
- 	return 0;
+-	wm8750_set_bias_level(&wm8750->codec, SND_SOC_BIAS_OFF);
+-	snd_soc_unregister_dais(&wm8750_dai, 1);
+-	snd_soc_unregister_codec(&wm8750->codec);
+-	kfree(wm8750);
+-	wm8750_codec = NULL;
++	wm8750_set_bias_level(codec, SND_SOC_BIAS_OFF);
++	return 0;
  }
  
--MODULE_ALIAS("platform:twl4030_codec_audio");
-+MODULE_ALIAS("platform:twl4030-codec");
- 
- static struct platform_driver twl4030_codec_driver = {
- 	.probe		= twl4030_codec_probe,
- 	.remove		= __devexit_p(twl4030_codec_remove),
- 	.driver		= {
--		.name	= "twl4030_codec_audio",
-+		.name	= "twl4030-codec",
- 		.owner	= THIS_MODULE,
- 	},
- };
-@@ -2401,14 +2320,6 @@ static void __exit twl4030_exit(void)
- }
- module_exit(twl4030_exit);
- 
--struct snd_soc_codec_device soc_codec_dev_twl4030 = {
--	.probe = twl4030_soc_probe,
--	.remove = twl4030_soc_remove,
--	.suspend = twl4030_soc_suspend,
--	.resume = twl4030_soc_resume,
--};
--EXPORT_SYMBOL_GPL(soc_codec_dev_twl4030);
+-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
 -
- MODULE_DESCRIPTION("ASoC TWL4030 codec driver");
- MODULE_AUTHOR("Steve Sakoman");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/codecs/twl4030.h b/sound/soc/codecs/twl4030.h
-deleted file mode 100644
-index 6c57430..0000000
---- a/sound/soc/codecs/twl4030.h
-+++ /dev/null
-@@ -1,55 +0,0 @@
 -/*
-- * ALSA SoC TWL4030 codec driver
-- *
-- * Author: Steve Sakoman <steve@sakoman.com>
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * version 2 as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-- * General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-- * 02110-1301 USA
-- *
+- * WM8750 2 wire address is determined by GPIO5
+- * state during powerup.
+- *    low  = 0x1a
+- *    high = 0x1b
 - */
--
--#ifndef __TWL4030_AUDIO_H__
--#define __TWL4030_AUDIO_H__
--
--/* Register descriptions are here */
--#include <linux/mfd/twl4030-codec.h>
--
--/* Shadow register used by the audio driver */
--#define TWL4030_REG_SW_SHADOW		0x4A
--#define TWL4030_CACHEREGNUM	(TWL4030_REG_SW_SHADOW + 1)
--
--/* TWL4030_REG_SW_SHADOW (0x4A) Fields */
--#define TWL4030_HFL_EN			0x01
--#define TWL4030_HFR_EN			0x02
--
--#define TWL4030_DAI_HIFI		0
--#define TWL4030_DAI_VOICE		1
--
--extern struct snd_soc_dai twl4030_dai[2];
--extern struct snd_soc_codec_device soc_codec_dev_twl4030;
--
--struct twl4030_setup_data {
--	unsigned int ramp_delay_value;
--	unsigned int digimic_delay; /* in ms */
--	unsigned int sysclk;
--	unsigned int offset_cncl_path;
--	unsigned int check_defaults:1;
--	unsigned int reset_registers:1;
--	unsigned int hs_extmute:1;
--	void (*set_hs_extmute)(int mute);
--};
--
--#endif	/* End of __TWL4030_AUDIO_H__ */
--
--
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 64a807f..10f6e52 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -45,7 +45,6 @@
++static struct snd_soc_codec_driver soc_codec_dev_wm8750 = {
++	.probe =	wm8750_probe,
++	.remove =	wm8750_remove,
++	.suspend =	wm8750_suspend,
++	.resume =	wm8750_resume,
++	.set_bias_level = wm8750_set_bias_level,
++	.reg_cache_size = sizeof(wm8750_reg),
++	.reg_word_size = sizeof(u16),
++	.reg_cache_default = wm8750_reg,
++};
  
- /* codec private data */
- struct twl6040_data {
--	struct snd_soc_codec codec;
- 	int audpwron;
- 	int naudint;
- 	int codec_powered;
-@@ -770,8 +769,7 @@ static int twl6040_startup(struct snd_pcm_substream *substream,
- 			struct snd_soc_dai *dai)
+-static int wm8750_i2c_probe(struct i2c_client *i2c,
+-			    const struct i2c_device_id *id)
++#if defined(CONFIG_SPI_MASTER)
++static int __devinit wm8750_spi_probe(struct spi_device *spi)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
+-	struct snd_soc_codec *codec;
+ 	struct wm8750_priv *wm8750;
++	int ret;
  
- 	if (!priv->sysclk) {
-@@ -803,8 +801,7 @@ static int twl6040_hw_params(struct snd_pcm_substream *substream,
- 			struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
- 	u8 lppllctl;
- 	int rate;
-@@ -839,8 +836,7 @@ static int twl6040_trigger(struct snd_pcm_substream *substream,
- 			int cmd, struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
+ 	wm8750 = kzalloc(sizeof(struct wm8750_priv), GFP_KERNEL);
+ 	if (wm8750 == NULL)
+ 		return -ENOMEM;
  
- 	switch (cmd) {
-@@ -978,8 +974,8 @@ static struct snd_soc_dai_ops twl6040_dai_ops = {
- 	.set_sysclk	= twl6040_set_dai_sysclk,
- };
- 
--struct snd_soc_dai twl6040_dai = {
--	.name = "twl6040",
-+static struct snd_soc_dai_driver twl6040_dai = {
-+	.name = "twl6040-hifi",
- 	.playback = {
- 		.stream_name = "Playback",
- 		.channels_min = 1,
-@@ -996,24 +992,17 @@ struct snd_soc_dai twl6040_dai = {
- 	},
- 	.ops = &twl6040_dai_ops,
- };
--EXPORT_SYMBOL_GPL(twl6040_dai);
- 
- #ifdef CONFIG_PM
--static int twl6040_suspend(struct platform_device *pdev, pm_message_t state)
-+static int twl6040_suspend(struct snd_soc_codec *codec, pm_message_t state)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
+-	codec = &wm8750->codec;
+-	codec->control_data = i2c;
+-	i2c_set_clientdata(i2c, wm8750);
 -
- 	twl6040_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	codec->dev = &i2c->dev;
++	wm8750->control_data = spi;
++	wm8750->control_type = SND_SOC_SPI;
++	spi_set_drvdata(spi, wm8750);
  
+-	return wm8750_register(wm8750, SND_SOC_I2C);
++	ret = snd_soc_register_codec(&spi->dev,
++			&soc_codec_dev_wm8750, &wm8750_dai, 1);
++	if (ret < 0)
++		kfree(wm8750);
++	return ret;
+ }
+ 
+-static int wm8750_i2c_remove(struct i2c_client *client)
++static int __devexit wm8750_spi_remove(struct spi_device *spi)
+ {
+-	struct wm8750_priv *wm8750 = i2c_get_clientdata(client);
+-	wm8750_unregister(wm8750);
++	snd_soc_unregister_codec(&spi->dev);
++	kfree(spi_get_drvdata(spi));
  	return 0;
  }
  
--static int twl6040_resume(struct platform_device *pdev)
-+static int twl6040_resume(struct snd_soc_codec *codec)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
+-static const struct i2c_device_id wm8750_i2c_id[] = {
+-	{ "wm8750", 0 },
+-	{ "wm8987", 0 }, /* WM8987 is register compatible with WM8750 */
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(i2c, wm8750_i2c_id);
 -
- 	twl6040_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-static struct i2c_driver wm8750_i2c_driver = {
++static struct spi_driver wm8750_spi_driver = {
+ 	.driver = {
+-		.name = "WM8750 I2C Codec",
+-		.owner = THIS_MODULE,
++		.name	= "wm8750-codec",
++		.bus	= &spi_bus_type,
++		.owner	= THIS_MODULE,
+ 	},
+-	.probe =    wm8750_i2c_probe,
+-	.remove =   wm8750_i2c_remove,
+-	.id_table = wm8750_i2c_id,
++	.probe		= wm8750_spi_probe,
++	.remove		= __devexit_p(wm8750_spi_remove),
+ };
+-#endif
++#endif /* CONFIG_SPI_MASTER */
  
+-#if defined(CONFIG_SPI_MASTER)
+-static int __devinit wm8750_spi_probe(struct spi_device *spi)
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++static __devinit int wm8750_i2c_probe(struct i2c_client *i2c,
++				      const struct i2c_device_id *id)
+ {
+-	struct snd_soc_codec *codec;
+ 	struct wm8750_priv *wm8750;
++	int ret;
+ 
+ 	wm8750 = kzalloc(sizeof(struct wm8750_priv), GFP_KERNEL);
+ 	if (wm8750 == NULL)
+ 		return -ENOMEM;
+ 
+-	codec = &wm8750->codec;
+-	codec->control_data = spi;
+-	codec->dev = &spi->dev;
+-
+-	dev_set_drvdata(&spi->dev, wm8750);
++	i2c_set_clientdata(i2c, wm8750);
++	wm8750->control_data = i2c;
++	wm8750->control_type = SND_SOC_I2C;
+ 
+-	return wm8750_register(wm8750, SND_SOC_SPI);
++	ret =  snd_soc_register_codec(&i2c->dev,
++			&soc_codec_dev_wm8750, &wm8750_dai, 1);
++	if (ret < 0)
++		kfree(wm8750);
++	return ret;
+ }
+ 
+-static int __devexit wm8750_spi_remove(struct spi_device *spi)
++static __devexit int wm8750_i2c_remove(struct i2c_client *client)
+ {
+-	struct wm8750_priv *wm8750 = dev_get_drvdata(&spi->dev);
+-	wm8750_unregister(wm8750);
++	snd_soc_unregister_codec(&client->dev);
++	kfree(i2c_get_clientdata(client));
  	return 0;
-@@ -1023,68 +1012,9 @@ static int twl6040_resume(struct platform_device *pdev)
- #define twl6040_resume NULL
+ }
+ 
+-static const struct spi_device_id wm8750_spi_id[] = {
++static const struct i2c_device_id wm8750_i2c_id[] = {
+ 	{ "wm8750", 0 },
+ 	{ "wm8987", 0 },
+ 	{ }
+ };
+-MODULE_DEVICE_TABLE(spi, wm8750_spi_id);
++MODULE_DEVICE_TABLE(i2c, wm8750_i2c_id);
+ 
+-static struct spi_driver wm8750_spi_driver = {
++static struct i2c_driver wm8750_i2c_driver = {
+ 	.driver = {
+-		.name	= "WM8750 SPI Codec",
+-		.bus	= &spi_bus_type,
+-		.owner	= THIS_MODULE,
++		.name = "wm8750-codec",
++		.owner = THIS_MODULE,
+ 	},
+-	.probe		= wm8750_spi_probe,
+-	.remove		= __devexit_p(wm8750_spi_remove),
+-	.id_table	= wm8750_spi_id,
++	.probe =    wm8750_i2c_probe,
++	.remove =   __devexit_p(wm8750_i2c_remove),
++	.id_table = wm8750_i2c_id,
+ };
  #endif
  
--static struct snd_soc_codec *twl6040_codec;
+ static int __init wm8750_modinit(void)
+ {
+-	int ret;
++	int ret = 0;
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ 	ret = i2c_add_driver(&wm8750_i2c_driver);
+-	if (ret != 0)
+-		pr_err("Failed to register WM8750 I2C driver: %d\n", ret);
++	if (ret != 0) {
++		printk(KERN_ERR "Failed to register wm8750 I2C driver: %d\n",
++		       ret);
++	}
+ #endif
+ #if defined(CONFIG_SPI_MASTER)
+ 	ret = spi_register_driver(&wm8750_spi_driver);
+-	if (ret != 0)
+-		pr_err("Failed to register WM8750 SPI driver: %d\n", ret);
++	if (ret != 0) {
++		printk(KERN_ERR "Failed to register wm8750 SPI driver: %d\n",
++		       ret);
++	}
+ #endif
+-	return 0;
++	return ret;
+ }
+ module_init(wm8750_modinit);
+ 
+diff --git a/sound/soc/codecs/wm8750.h b/sound/soc/codecs/wm8750.h
+index 1dc100e..121427c 100644
+--- a/sound/soc/codecs/wm8750.h
++++ b/sound/soc/codecs/wm8750.h
+@@ -57,13 +57,4 @@
+ 
+ #define WM8750_SYSCLK	0
+ 
+-struct wm8750_setup_data {
+-	int spi;
+-	int i2c_bus;
+-	unsigned short i2c_address;
+-};
 -
--static int twl6040_probe(struct platform_device *pdev)
+-extern struct snd_soc_dai wm8750_dai;
+-extern struct snd_soc_codec_device soc_codec_dev_wm8750;
+-
+ #endif
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index b59f349..976e408 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -57,7 +57,7 @@ module_param(caps_charge, int, 0);
+ MODULE_PARM_DESC(caps_charge, "WM8753 cap charge time (msecs)");
+ 
+ static void wm8753_set_dai_mode(struct snd_soc_codec *codec,
+-	unsigned int mode);
++		struct snd_soc_dai *dai, unsigned int hifi);
+ 
+ /*
+  * wm8753 register cache
+@@ -85,10 +85,12 @@ static const u16 wm8753_reg[] = {
+ 
+ /* codec private data */
+ struct wm8753_priv {
++	enum snd_soc_control_type control_type;
++	void *control_data;
+ 	unsigned int sysclk;
+ 	unsigned int pcmclk;
+-	struct snd_soc_codec codec;
+ 	u16 reg_cache[ARRAY_SIZE(wm8753_reg)];
++	int dai_func;
+ };
+ 
+ /*
+@@ -228,6 +230,7 @@ static int wm8753_set_dai(struct snd_kcontrol *kcontrol,
+ {
+ 	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
+ 	int mode = wm8753_read_reg_cache(codec, WM8753_IOCTL);
++	struct wm8753_priv *wm8753 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	if (((mode & 0xc) >> 2) == ucontrol->value.integer.value[0])
+ 		return 0;
+@@ -235,8 +238,7 @@ static int wm8753_set_dai(struct snd_kcontrol *kcontrol,
+ 	mode &= 0xfff3;
+ 	mode |= (ucontrol->value.integer.value[0] << 2);
+ 
+-	wm8753_write(codec, WM8753_IOCTL, mode);
+-	wm8753_set_dai_mode(codec, ucontrol->value.integer.value[0]);
++	wm8753->dai_func =  ucontrol->value.integer.value[0];
+ 	return 1;
+ }
+ 
+@@ -904,6 +906,13 @@ static int wm8753_vdac_adc_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	return 0;
+ }
+ 
++static int wm8753_pcm_startup(struct snd_pcm_substream *substream,
++				struct snd_soc_dai *dai)
++{
++	wm8753_set_dai_mode(dai->codec, dai, 0);
++	return 0;
++}
++
+ /*
+  * Set PCM DAI bit size and sample rate.
+  */
+@@ -912,8 +921,7 @@ static int wm8753_pcm_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_device *socdev = rtd->socdev;
+-	struct snd_soc_codec *codec = socdev->card->codec;
++	struct snd_soc_codec *codec = rtd->codec;
+ 	struct wm8753_priv *wm8753 = snd_soc_codec_get_drvdata(codec);
+ 	u16 voice = wm8753_read_reg_cache(codec, WM8753_PCM) & 0x01f3;
+ 	u16 srate = wm8753_read_reg_cache(codec, WM8753_SRATE1) & 0x017f;
+@@ -1138,6 +1146,13 @@ static int wm8753_i2s_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	return 0;
+ }
+ 
++static int wm8753_i2s_startup(struct snd_pcm_substream *substream,
++				struct snd_soc_dai *dai)
++{
++	wm8753_set_dai_mode(dai->codec, dai, 1);
++	return 0;
++}
++
+ /*
+  * Set PCM DAI bit size and sample rate.
+  */
+@@ -1146,8 +1161,7 @@ static int wm8753_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_device *socdev = rtd->socdev;
+-	struct snd_soc_codec *codec = socdev->card->codec;
++	struct snd_soc_codec *codec = rtd->codec;
+ 	struct wm8753_priv *wm8753 = snd_soc_codec_get_drvdata(codec);
+ 	u16 srate = wm8753_read_reg_cache(codec, WM8753_SRATE1) & 0x01c0;
+ 	u16 hifi = wm8753_read_reg_cache(codec, WM8753_HIFI) & 0x01f3;
+@@ -1240,12 +1254,12 @@ static int wm8753_mute(struct snd_soc_dai *dai, int mute)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	u16 mute_reg = wm8753_read_reg_cache(codec, WM8753_DAC) & 0xfff7;
++	struct wm8753_priv *wm8753 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	/* the digital mute covers the HiFi and Voice DAC's on the WM8753.
+ 	 * make sure we check if they are not both active when we mute */
+-	if (mute && dai->id == 1) {
+-		if (!wm8753_dai[WM8753_DAI_VOICE].playback.active ||
+-			!wm8753_dai[WM8753_DAI_HIFI].playback.active)
++	if (mute && wm8753->dai_func == 1) {
++		if (!codec->active)
+ 			wm8753_write(codec, WM8753_DAC, mute_reg | 0x8);
+ 	} else {
+ 		if (mute)
+@@ -1303,6 +1317,7 @@ static int wm8753_set_bias_level(struct snd_soc_codec *codec,
+  * 4. Voice disabled - HIFI over HIFI, uses voice DAI LRC for capture
+  */
+ static struct snd_soc_dai_ops wm8753_dai_ops_hifi_mode1 = {
++	.startup = wm8753_i2s_startup,
+ 	.hw_params	= wm8753_i2s_hw_params,
+ 	.digital_mute	= wm8753_mute,
+ 	.set_fmt	= wm8753_mode1h_set_dai_fmt,
+@@ -1312,6 +1327,7 @@ static struct snd_soc_dai_ops wm8753_dai_ops_hifi_mode1 = {
+ };
+ 
+ static struct snd_soc_dai_ops wm8753_dai_ops_voice_mode1 = {
++	.startup = wm8753_pcm_startup,
+ 	.hw_params	= wm8753_pcm_hw_params,
+ 	.digital_mute	= wm8753_mute,
+ 	.set_fmt	= wm8753_mode1v_set_dai_fmt,
+@@ -1321,6 +1337,7 @@ static struct snd_soc_dai_ops wm8753_dai_ops_voice_mode1 = {
+ };
+ 
+ static struct snd_soc_dai_ops wm8753_dai_ops_voice_mode2 = {
++	.startup = wm8753_pcm_startup,
+ 	.hw_params	= wm8753_pcm_hw_params,
+ 	.digital_mute	= wm8753_mute,
+ 	.set_fmt	= wm8753_mode2_set_dai_fmt,
+@@ -1330,6 +1347,7 @@ static struct snd_soc_dai_ops wm8753_dai_ops_voice_mode2 = {
+ };
+ 
+ static struct snd_soc_dai_ops wm8753_dai_ops_hifi_mode3	= {
++	.startup = wm8753_i2s_startup,
+ 	.hw_params	= wm8753_i2s_hw_params,
+ 	.digital_mute	= wm8753_mute,
+ 	.set_fmt	= wm8753_mode3_4_set_dai_fmt,
+@@ -1339,6 +1357,7 @@ static struct snd_soc_dai_ops wm8753_dai_ops_hifi_mode3	= {
+ };
+ 
+ static struct snd_soc_dai_ops wm8753_dai_ops_hifi_mode4	= {
++	.startup = wm8753_i2s_startup,
+ 	.hw_params	= wm8753_i2s_hw_params,
+ 	.digital_mute	= wm8753_mute,
+ 	.set_fmt	= wm8753_mode3_4_set_dai_fmt,
+@@ -1347,10 +1366,9 @@ static struct snd_soc_dai_ops wm8753_dai_ops_hifi_mode4	= {
+ 	.set_sysclk	= wm8753_set_dai_sysclk,
+ };
+ 
+-static const struct snd_soc_dai wm8753_all_dai[] = {
++static struct snd_soc_dai_driver wm8753_all_dai[] = {
+ /* DAI HiFi mode 1 */
+-{	.name = "WM8753 HiFi",
+-	.id = 1,
++{	.name = "wm8753-hifi",
+ 	.playback = {
+ 		.stream_name = "HiFi Playback",
+ 		.channels_min = 1,
+@@ -1366,8 +1384,7 @@ static const struct snd_soc_dai wm8753_all_dai[] = {
+ 	.ops = &wm8753_dai_ops_hifi_mode1,
+ },
+ /* DAI Voice mode 1 */
+-{	.name = "WM8753 Voice",
+-	.id = 1,
++{	.name = "wm8753-voice",
+ 	.playback = {
+ 		.stream_name = "Voice Playback",
+ 		.channels_min = 1,
+@@ -1383,12 +1400,10 @@ static const struct snd_soc_dai wm8753_all_dai[] = {
+ 	.ops = &wm8753_dai_ops_voice_mode1,
+ },
+ /* DAI HiFi mode 2 - dummy */
+-{	.name = "WM8753 HiFi",
+-	.id = 2,
++{	.name = "wm8753-hifi",
+ },
+ /* DAI Voice mode 2 */
+-{	.name = "WM8753 Voice",
+-	.id = 2,
++{	.name = "wm8753-voice",
+ 	.playback = {
+ 		.stream_name = "Voice Playback",
+ 		.channels_min = 1,
+@@ -1404,8 +1419,7 @@ static const struct snd_soc_dai wm8753_all_dai[] = {
+ 	.ops = &wm8753_dai_ops_voice_mode2,
+ },
+ /* DAI HiFi mode 3 */
+-{	.name = "WM8753 HiFi",
+-	.id = 3,
++{	.name = "wm8753-hifi",
+ 	.playback = {
+ 		.stream_name = "HiFi Playback",
+ 		.channels_min = 1,
+@@ -1421,12 +1435,10 @@ static const struct snd_soc_dai wm8753_all_dai[] = {
+ 	.ops = &wm8753_dai_ops_hifi_mode3,
+ },
+ /* DAI Voice mode 3 - dummy */
+-{	.name = "WM8753 Voice",
+-	.id = 3,
++{	.name = "wm8753-voice",
+ },
+ /* DAI HiFi mode 4 */
+-{	.name = "WM8753 HiFi",
+-	.id = 4,
++{	.name = "wm8753-hifi",
+ 	.playback = {
+ 		.stream_name = "HiFi Playback",
+ 		.channels_min = 1,
+@@ -1442,58 +1454,31 @@ static const struct snd_soc_dai wm8753_all_dai[] = {
+ 	.ops = &wm8753_dai_ops_hifi_mode4,
+ },
+ /* DAI Voice mode 4 - dummy */
+-{	.name = "WM8753 Voice",
+-	.id = 4,
++{	.name = "wm8753-voice",
+ },
+ };
+ 
+-struct snd_soc_dai wm8753_dai[] = {
++static struct snd_soc_dai_driver wm8753_dai[] = {
+ 	{
+-		.name = "WM8753 DAI 0",
++		.name = "wm8753-aif0",
+ 	},
+ 	{
+-		.name = "WM8753 DAI 1",
++		.name = "wm8753-aif1",
+ 	},
+ };
+-EXPORT_SYMBOL_GPL(wm8753_dai);
+ 
+-static void wm8753_set_dai_mode(struct snd_soc_codec *codec, unsigned int mode)
++static void wm8753_set_dai_mode(struct snd_soc_codec *codec,
++		struct snd_soc_dai *dai, unsigned int hifi)
+ {
+-	if (mode < 4) {
+-		int playback_active, capture_active, codec_active, pop_wait;
+-		void *private_data;
+-		struct list_head list;
+-
+-		playback_active = wm8753_dai[0].playback.active;
+-		capture_active = wm8753_dai[0].capture.active;
+-		codec_active = wm8753_dai[0].active;
+-		private_data = wm8753_dai[0].private_data;
+-		pop_wait = wm8753_dai[0].pop_wait;
+-		list = wm8753_dai[0].list;
+-		wm8753_dai[0] = wm8753_all_dai[mode << 1];
+-		wm8753_dai[0].playback.active = playback_active;
+-		wm8753_dai[0].capture.active = capture_active;
+-		wm8753_dai[0].active = codec_active;
+-		wm8753_dai[0].private_data = private_data;
+-		wm8753_dai[0].pop_wait = pop_wait;
+-		wm8753_dai[0].list = list;
+-
+-		playback_active = wm8753_dai[1].playback.active;
+-		capture_active = wm8753_dai[1].capture.active;
+-		codec_active = wm8753_dai[1].active;
+-		private_data = wm8753_dai[1].private_data;
+-		pop_wait = wm8753_dai[1].pop_wait;
+-		list = wm8753_dai[1].list;
+-		wm8753_dai[1] = wm8753_all_dai[(mode << 1) + 1];
+-		wm8753_dai[1].playback.active = playback_active;
+-		wm8753_dai[1].capture.active = capture_active;
+-		wm8753_dai[1].active = codec_active;
+-		wm8753_dai[1].private_data = private_data;
+-		wm8753_dai[1].pop_wait = pop_wait;
+-		wm8753_dai[1].list = list;
++	struct wm8753_priv *wm8753 = snd_soc_codec_get_drvdata(codec);
++
++	if (wm8753->dai_func < 4) {
++		if (hifi)
++			dai->driver = &wm8753_all_dai[wm8753->dai_func << 1];
++		else
++			dai->driver = &wm8753_all_dai[(wm8753->dai_func << 1) + 1];
+ 	}
+-	wm8753_dai[0].codec = codec;
+-	wm8753_dai[1].codec = codec;
++	wm8753_write(codec, WM8753_IOCTL, wm8753->dai_func);
+ }
+ 
+ static void wm8753_work(struct work_struct *work)
+@@ -1503,19 +1488,14 @@ static void wm8753_work(struct work_struct *work)
+ 	wm8753_set_bias_level(codec, codec->bias_level);
+ }
+ 
+-static int wm8753_suspend(struct platform_device *pdev, pm_message_t state)
++static int wm8753_suspend(struct snd_soc_codec *codec, pm_message_t state)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-
+ 	wm8753_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	return 0;
+ }
+ 
+-static int wm8753_resume(struct platform_device *pdev)
++static int wm8753_resume(struct snd_soc_codec *codec)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec = socdev->card->codec;
+ 	int i;
+ 	u8 data[2];
+ 	u16 *cache = codec->reg_cache;
+@@ -1547,41 +1527,6 @@ static int wm8753_resume(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct snd_soc_codec *wm8753_codec;
+-
+-static int wm8753_probe(struct platform_device *pdev)
 -{
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
 -	struct snd_soc_codec *codec;
 -	int ret = 0;
 -
--	BUG_ON(!twl6040_codec);
+-	if (!wm8753_codec) {
+-		dev_err(&pdev->dev, "WM8753 codec not yet registered\n");
+-		return -EINVAL;
+-	}
 -
--	codec = twl6040_codec;
--	socdev->card->codec = codec;
+-	socdev->card->codec = wm8753_codec;
+-	codec = wm8753_codec;
+-
+-	wm8753_set_dai_mode(codec, 0);
 -
 -	/* register pcms */
 -	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
 -	if (ret < 0) {
--		dev_err(&pdev->dev, "failed to create pcms\n");
--		return ret;
+-		printk(KERN_ERR "wm8753: failed to create pcms\n");
+-		goto pcm_err;
 -	}
 -
--	snd_soc_add_controls(codec, twl6040_snd_controls,
--				ARRAY_SIZE(twl6040_snd_controls));
--	twl6040_add_widgets(codec);
+-	snd_soc_add_controls(codec, wm8753_snd_controls,
+-			     ARRAY_SIZE(wm8753_snd_controls));
+-	wm8753_add_widgets(codec);
 -
--	if (ret < 0) {
--		dev_err(&pdev->dev, "failed to register card\n");
--		goto card_err;
--	}
+-	return 0;
 -
--	return ret;
--
--card_err:
--	snd_soc_free_pcms(socdev);
--	snd_soc_dapm_free(socdev);
+-pcm_err:
 -	return ret;
 -}
 -
--static int twl6040_remove(struct platform_device *pdev)
--{
+ /*
+  * This function forces any delayed work to be queued and run.
+  */
+@@ -1601,62 +1546,30 @@ static int run_delayed_work(struct delayed_work *dwork)
+ 	return ret;
+ }
+ 
+-/* power down chip */
+-static int wm8753_remove(struct platform_device *pdev)
++static int wm8753_probe(struct snd_soc_codec *codec)
+ {
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
 -
--	twl6040_set_bias_level(codec, SND_SOC_BIAS_OFF);
 -	snd_soc_free_pcms(socdev);
 -	snd_soc_dapm_free(socdev);
--	kfree(codec);
 -
 -	return 0;
 -}
 -
--struct snd_soc_codec_device soc_codec_dev_twl6040 = {
--	.probe = twl6040_probe,
--	.remove = twl6040_remove,
--	.suspend = twl6040_suspend,
--	.resume = twl6040_resume,
+-struct snd_soc_codec_device soc_codec_dev_wm8753 = {
+-	.probe = 	wm8753_probe,
+-	.remove = 	wm8753_remove,
+-	.suspend = 	wm8753_suspend,
+-	.resume =	wm8753_resume,
 -};
--EXPORT_SYMBOL_GPL(soc_codec_dev_twl6040);
--
--static int __devinit twl6040_codec_probe(struct platform_device *pdev)
-+static int twl6040_probe(struct snd_soc_codec *codec)
- {
--	struct twl4030_codec_data *twl_codec = pdev->dev.platform_data;
--	struct snd_soc_codec *codec;
-+	struct twl4030_codec_data *twl_codec = codec->dev->platform_data;
- 	struct twl6040_data *priv;
- 	int audpwron, naudint;
- 	int ret = 0;
-@@ -1092,6 +1022,7 @@ static int __devinit twl6040_codec_probe(struct platform_device *pdev)
- 	priv = kzalloc(sizeof(struct twl6040_data), GFP_KERNEL);
- 	if (priv == NULL)
- 		return -ENOMEM;
-+	snd_soc_codec_set_drvdata(codec, priv);
+-EXPORT_SYMBOL_GPL(soc_codec_dev_wm8753);
++	struct wm8753_priv *wm8753 = snd_soc_codec_get_drvdata(codec);
++	int ret = 0, reg;
  
- 	if (twl_codec) {
- 		audpwron = twl_codec->audpwron_gpio;
-@@ -1104,29 +1035,6 @@ static int __devinit twl6040_codec_probe(struct platform_device *pdev)
- 	priv->audpwron = audpwron;
- 	priv->naudint = naudint;
+-static int wm8753_register(struct wm8753_priv *wm8753)
+-{
+-	int ret, i;
+-	struct snd_soc_codec *codec = &wm8753->codec;
+-	u16 reg;
++	codec->bias_level = SND_SOC_BIAS_OFF,
++	codec->control_data = wm8753->control_data;
++	INIT_DELAYED_WORK(&codec->delayed_work, wm8753_work);
  
--	codec = &priv->codec;
--	codec->dev = &pdev->dev;
--	twl6040_dai.dev = &pdev->dev;
+-	if (wm8753_codec) {
+-		dev_err(codec->dev, "Multiple WM8753 devices not supported\n");
+-		ret = -EINVAL;
+-		goto err;
++	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8753->control_type);
++	if (ret < 0) {
++		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
++		return ret;
+ 	}
+ 
+-	mutex_init(&codec->mutex);
+-	INIT_LIST_HEAD(&codec->dapm_widgets);
+-	INIT_LIST_HEAD(&codec->dapm_paths);
 -
--	codec->name = "twl6040";
+-	codec->name = "WM8753";
 -	codec->owner = THIS_MODULE;
--	codec->read = twl6040_read_reg_cache;
--	codec->write = twl6040_write;
--	codec->set_bias_level = twl6040_set_bias_level;
--	snd_soc_codec_set_drvdata(codec, priv);
--	codec->dai = &twl6040_dai;
--	codec->num_dai = 1;
--	codec->reg_cache_size = ARRAY_SIZE(twl6040_reg);
--	codec->reg_cache = kmemdup(twl6040_reg, sizeof(twl6040_reg),
--					GFP_KERNEL);
--	if (codec->reg_cache == NULL) {
--		ret = -ENOMEM;
--		goto cache_err;
+-	codec->read = wm8753_read_reg_cache;
+-	codec->write = wm8753_write;
+-	codec->bias_level = SND_SOC_BIAS_STANDBY;
+-	codec->set_bias_level = wm8753_set_bias_level;
+-	codec->dai = wm8753_dai;
+-	codec->num_dai = 2;
+-	codec->reg_cache_size = ARRAY_SIZE(wm8753->reg_cache) + 1;
+-	codec->reg_cache = &wm8753->reg_cache;
+-	snd_soc_codec_set_drvdata(codec, wm8753);
+-
+-	memcpy(codec->reg_cache, wm8753_reg, sizeof(wm8753->reg_cache));
+-	INIT_DELAYED_WORK(&codec->delayed_work, wm8753_work);
+-
+ 	ret = wm8753_reset(codec);
+ 	if (ret < 0) {
+-		dev_err(codec->dev, "Failed to issue reset\n");
+-		goto err;
++		dev_err(codec->dev, "Failed to issue reset: %d\n", ret);
++		return ret;
+ 	}
+ 
++	wm8753_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
++	wm8753->dai_func = 0;
++
+ 	/* charge output caps */
+ 	wm8753_set_bias_level(codec, SND_SOC_BIAS_PREPARE);
+ 	schedule_delayed_work(&codec->delayed_work,
+@@ -1684,165 +1597,139 @@ static int wm8753_register(struct wm8753_priv *wm8753)
+ 	reg = wm8753_read_reg_cache(codec, WM8753_RINVOL);
+ 	wm8753_write(codec, WM8753_RINVOL, reg | 0x0100);
+ 
+-	wm8753_codec = codec;
+-
+-	for (i = 0; i < ARRAY_SIZE(wm8753_dai); i++)
+-		wm8753_dai[i].dev = codec->dev;
+-
+-	ret = snd_soc_register_codec(codec);
+-	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
+-		goto err;
+-	}
+-
+-	ret = snd_soc_register_dais(&wm8753_dai[0], ARRAY_SIZE(wm8753_dai));
+-	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to register DAIs: %d\n", ret);
+-		goto err_codec;
+-	}
++	snd_soc_add_controls(codec, wm8753_snd_controls,
++			     ARRAY_SIZE(wm8753_snd_controls));
++	wm8753_add_widgets(codec);
+ 
+ 	return 0;
+ 
+-err_codec:
+ 	run_delayed_work(&codec->delayed_work);
+-	snd_soc_unregister_codec(codec);
+-err:
+-	kfree(wm8753);
+ 	return ret;
+ }
+ 
+-static void wm8753_unregister(struct wm8753_priv *wm8753)
++/* power down chip */
++static int wm8753_remove(struct snd_soc_codec *codec)
+ {
+-	wm8753_set_bias_level(&wm8753->codec, SND_SOC_BIAS_OFF);
+-	run_delayed_work(&wm8753->codec.delayed_work);
+-	snd_soc_unregister_dais(&wm8753_dai[0], ARRAY_SIZE(wm8753_dai));
+-	snd_soc_unregister_codec(&wm8753->codec);
+-	kfree(wm8753);
+-	wm8753_codec = NULL;
++	run_delayed_work(&codec->delayed_work);
++	wm8753_set_bias_level(codec, SND_SOC_BIAS_OFF);
++
++	return 0;
+ }
+ 
+-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++static struct snd_soc_codec_driver soc_codec_dev_wm8753 = {
++	.probe =	wm8753_probe,
++	.remove =	wm8753_remove,
++	.suspend =	wm8753_suspend,
++	.resume =	wm8753_resume,
++	.set_bias_level = wm8753_set_bias_level,
++	.reg_cache_size = sizeof(wm8753_reg),
++	.reg_word_size = sizeof(u16),
++	.reg_cache_default = wm8753_reg,
++};
+ 
+-static int wm8753_i2c_probe(struct i2c_client *i2c,
+-			    const struct i2c_device_id *id)
++#if defined(CONFIG_SPI_MASTER)
++static int __devinit wm8753_spi_probe(struct spi_device *spi)
+ {
+-	struct snd_soc_codec *codec;
+ 	struct wm8753_priv *wm8753;
++	int ret;
+ 
+ 	wm8753 = kzalloc(sizeof(struct wm8753_priv), GFP_KERNEL);
+ 	if (wm8753 == NULL)
+ 		return -ENOMEM;
+ 
+-        codec = &wm8753->codec;
+-        codec->hw_write = (hw_write_t)i2c_master_send;
+-        codec->control_data = i2c;
+-        i2c_set_clientdata(i2c, wm8753);
+-
+-        codec->dev = &i2c->dev;
++	wm8753->control_data = spi;
++	wm8753->control_type = SND_SOC_SPI;
++	spi_set_drvdata(spi, wm8753);
+ 
+-	return wm8753_register(wm8753);
++	ret = snd_soc_register_codec(&spi->dev,
++			&soc_codec_dev_wm8753, wm8753_dai, ARRAY_SIZE(wm8753_dai));
++	if (ret < 0)
++		kfree(wm8753);
++	return ret;
+ }
+ 
+-static int wm8753_i2c_remove(struct i2c_client *client)
++static int __devexit wm8753_spi_remove(struct spi_device *spi)
+ {
+-        struct wm8753_priv *wm8753 = i2c_get_clientdata(client);
+-        wm8753_unregister(wm8753);
+-        return 0;
++	snd_soc_unregister_codec(&spi->dev);
++	kfree(spi_get_drvdata(spi));
++	return 0;
+ }
+ 
+-static const struct i2c_device_id wm8753_i2c_id[] = {
+-	{ "wm8753", 0 },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(i2c, wm8753_i2c_id);
+-
+-static struct i2c_driver wm8753_i2c_driver = {
++static struct spi_driver wm8753_spi_driver = {
+ 	.driver = {
+-		.name = "wm8753",
+-		.owner = THIS_MODULE,
++		.name	= "wm8753-codec",
++		.bus	= &spi_bus_type,
++		.owner	= THIS_MODULE,
+ 	},
+-	.probe =    wm8753_i2c_probe,
+-	.remove =   wm8753_i2c_remove,
+-	.id_table = wm8753_i2c_id,
++	.probe		= wm8753_spi_probe,
++	.remove		= __devexit_p(wm8753_spi_remove),
+ };
+-#endif
+-
+-#if defined(CONFIG_SPI_MASTER)
+-static int wm8753_spi_write(struct spi_device *spi, const char *data, int len)
+-{
+-	struct spi_transfer t;
+-	struct spi_message m;
+-	u8 msg[2];
+-
+-	if (len <= 0)
+-		return 0;
+-
+-	msg[0] = data[0];
+-	msg[1] = data[1];
++#endif /* CONFIG_SPI_MASTER */
+ 
+-	spi_message_init(&m);
+-	memset(&t, 0, (sizeof t));
+-
+-	t.tx_buf = &msg[0];
+-	t.len = len;
+-
+-	spi_message_add_tail(&t, &m);
+-	spi_sync(spi, &m);
+-
+-	return len;
+-}
+-
+-static int __devinit wm8753_spi_probe(struct spi_device *spi)
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++static __devinit int wm8753_i2c_probe(struct i2c_client *i2c,
++				      const struct i2c_device_id *id)
+ {
+-	struct snd_soc_codec *codec;
+ 	struct wm8753_priv *wm8753;
++	int ret;
+ 
+ 	wm8753 = kzalloc(sizeof(struct wm8753_priv), GFP_KERNEL);
+ 	if (wm8753 == NULL)
+ 		return -ENOMEM;
+ 
+-	codec = &wm8753->codec;
+-	codec->control_data = spi;
+-	codec->hw_write = (hw_write_t)wm8753_spi_write;
+-	codec->dev = &spi->dev;
+-
+-	dev_set_drvdata(&spi->dev, wm8753);
++	i2c_set_clientdata(i2c, wm8753);
++	wm8753->control_data = i2c;
++	wm8753->control_type = SND_SOC_I2C;
+ 
+-	return wm8753_register(wm8753);
++	ret =  snd_soc_register_codec(&i2c->dev,
++			&soc_codec_dev_wm8753, wm8753_dai, ARRAY_SIZE(wm8753_dai));
++	if (ret < 0)
++		kfree(wm8753);
++	return ret;
+ }
+ 
+-static int __devexit wm8753_spi_remove(struct spi_device *spi)
++static __devexit int wm8753_i2c_remove(struct i2c_client *client)
+ {
+-	struct wm8753_priv *wm8753 = dev_get_drvdata(&spi->dev);
+-	wm8753_unregister(wm8753);
++	snd_soc_unregister_codec(&client->dev);
++	kfree(i2c_get_clientdata(client));
+ 	return 0;
+ }
+ 
+-static struct spi_driver wm8753_spi_driver = {
++static const struct i2c_device_id wm8753_i2c_id[] = {
++	{ "wm8753", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, wm8753_i2c_id);
++
++static struct i2c_driver wm8753_i2c_driver = {
+ 	.driver = {
+-		.name	= "wm8753",
+-		.bus	= &spi_bus_type,
+-		.owner	= THIS_MODULE,
++		.name = "wm8753-codec",
++		.owner = THIS_MODULE,
+ 	},
+-	.probe		= wm8753_spi_probe,
+-	.remove		= __devexit_p(wm8753_spi_remove),
++	.probe =    wm8753_i2c_probe,
++	.remove =   __devexit_p(wm8753_i2c_remove),
++	.id_table = wm8753_i2c_id,
+ };
+ #endif
+ 
+ static int __init wm8753_modinit(void)
+ {
+-	int ret;
++	int ret = 0;
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ 	ret = i2c_add_driver(&wm8753_i2c_driver);
+-	if (ret != 0)
+-		pr_err("Failed to register WM8753 I2C driver: %d\n", ret);
++	if (ret != 0) {
++		printk(KERN_ERR "Failed to register wm8753 I2C driver: %d\n",
++		       ret);
++	}
+ #endif
+ #if defined(CONFIG_SPI_MASTER)
+ 	ret = spi_register_driver(&wm8753_spi_driver);
+-	if (ret != 0)
+-		pr_err("Failed to register WM8753 SPI driver: %d\n", ret);
++	if (ret != 0) {
++		printk(KERN_ERR "Failed to register wm8753 SPI driver: %d\n",
++		       ret);
++	}
+ #endif
+-	return 0;
++	return ret;
+ }
+ module_init(wm8753_modinit);
+ 
+diff --git a/sound/soc/codecs/wm8753.h b/sound/soc/codecs/wm8753.h
+index 57b2ba2..94edac1 100644
+--- a/sound/soc/codecs/wm8753.h
++++ b/sound/soc/codecs/wm8753.h
+@@ -115,7 +115,4 @@
+ #define WM8753_DAI_HIFI		0
+ #define WM8753_DAI_VOICE		1
+ 
+-extern struct snd_soc_dai wm8753_dai[2];
+-extern struct snd_soc_codec_device soc_codec_dev_wm8753;
+-
+ #endif
+diff --git a/sound/soc/codecs/wm8776.c b/sound/soc/codecs/wm8776.c
+index 4e212ed..51a2d26 100644
+--- a/sound/soc/codecs/wm8776.c
++++ b/sound/soc/codecs/wm8776.c
+@@ -31,20 +31,14 @@
+ 
+ #include "wm8776.h"
+ 
+-static struct snd_soc_codec *wm8776_codec;
+-struct snd_soc_codec_device soc_codec_dev_wm8776;
+-
+ /* codec private data */
+ struct wm8776_priv {
+-	struct snd_soc_codec codec;
++	enum snd_soc_control_type control_type;
++	void *control_data;
+ 	u16 reg_cache[WM8776_CACHEREGNUM];
+ 	int sysclk[2];
+ };
+ 
+-#ifdef CONFIG_SPI_MASTER
+-static int wm8776_spi_write(struct spi_device *spi, const char *data, int len);
+-#endif
+-
+ static const u16 wm8776_reg[WM8776_CACHEREGNUM] = {
+ 	0x79, 0x79, 0x79, 0xff, 0xff,  /* 4 */
+ 	0xff, 0x00, 0x90, 0x00, 0x00,  /* 9 */
+@@ -144,7 +138,7 @@ static int wm8776_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	int reg, iface, master;
+ 
+-	switch (dai->id) {
++	switch (dai->driver->id) {
+ 	case WM8776_DAI_DAC:
+ 		reg = WM8776_DACIFCTRL;
+ 		master = 0x80;
+@@ -233,7 +227,7 @@ static int wm8776_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	iface = 0;
+ 
+-	switch (dai->id) {
++	switch (dai->driver->id) {
+ 	case WM8776_DAI_DAC:
+ 		iface_reg = WM8776_DACIFCTRL;
+ 		master = 0x80;
+@@ -267,7 +261,7 @@ static int wm8776_hw_params(struct snd_pcm_substream *substream,
+ 	/* Only need to set MCLK/LRCLK ratio if we're master */
+ 	if (snd_soc_read(codec, WM8776_MSTRCTRL) & master) {
+ 		for (i = 0; i < ARRAY_SIZE(mclk_ratios); i++) {
+-			if (wm8776->sysclk[dai->id] / params_rate(params)
++			if (wm8776->sysclk[dai->driver->id] / params_rate(params)
+ 			    == mclk_ratios[i])
+ 				break;
+ 		}
+@@ -275,7 +269,7 @@ static int wm8776_hw_params(struct snd_pcm_substream *substream,
+ 		if (i == ARRAY_SIZE(mclk_ratios)) {
+ 			dev_err(codec->dev,
+ 				"Unable to configure MCLK ratio %d/%d\n",
+-				wm8776->sysclk[dai->id], params_rate(params));
++				wm8776->sysclk[dai->driver->id], params_rate(params));
+ 			return -EINVAL;
+ 		}
+ 
+@@ -305,9 +299,9 @@ static int wm8776_set_sysclk(struct snd_soc_dai *dai,
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct wm8776_priv *wm8776 = snd_soc_codec_get_drvdata(codec);
+ 
+-	BUG_ON(dai->id >= ARRAY_SIZE(wm8776->sysclk));
++	BUG_ON(dai->driver->id >= ARRAY_SIZE(wm8776->sysclk));
+ 
+-	wm8776->sysclk[dai->id] = freq;
++	wm8776->sysclk[dai->driver->id] = freq;
+ 
+ 	return 0;
+ }
+@@ -357,10 +351,10 @@ static struct snd_soc_dai_ops wm8776_adc_ops = {
+ 	.set_sysclk     = wm8776_set_sysclk,
+ };
+ 
+-struct snd_soc_dai wm8776_dai[] = {
++static struct snd_soc_dai_driver wm8776_dai[] = {
+ 	{
+-		.name = "WM8776 Playback",
+-		.id = WM8776_DAI_DAC,
++		.name = "wm8776-hifi-playback",
++		.id	= WM8776_DAI_DAC,
+ 		.playback = {
+ 			.stream_name = "Playback",
+ 			.channels_min = 2,
+@@ -371,8 +365,8 @@ struct snd_soc_dai wm8776_dai[] = {
+ 		.ops = &wm8776_dac_ops,
+ 	},
+ 	{
+-		.name = "WM8776 Capture",
+-		.id = WM8776_DAI_ADC,
++		.name = "wm8776-hifi-capture",
++		.id	= WM8776_DAI_ADC,
+ 		.capture = {
+ 			.stream_name = "Capture",
+ 			.channels_min = 2,
+@@ -383,23 +377,17 @@ struct snd_soc_dai wm8776_dai[] = {
+ 		.ops = &wm8776_adc_ops,
+ 	},
+ };
+-EXPORT_SYMBOL_GPL(wm8776_dai);
+ 
+ #ifdef CONFIG_PM
+-static int wm8776_suspend(struct platform_device *pdev, pm_message_t state)
++static int wm8776_suspend(struct snd_soc_codec *codec, pm_message_t state)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-
+ 	wm8776_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 
+ 	return 0;
+ }
+ 
+-static int wm8776_resume(struct platform_device *pdev)
++static int wm8776_resume(struct snd_soc_codec *codec)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec = socdev->card->codec;
+ 	int i;
+ 	u8 data[2];
+ 	u16 *cache = codec->reg_cache;
+@@ -422,27 +410,31 @@ static int wm8776_resume(struct platform_device *pdev)
+ #define wm8776_resume NULL
+ #endif
+ 
+-static int wm8776_probe(struct platform_device *pdev)
++static int wm8776_probe(struct snd_soc_codec *codec)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec;
++	struct wm8776_priv *wm8776 = snd_soc_codec_get_drvdata(codec);
+ 	int ret = 0;
+ 
+-	if (wm8776_codec == NULL) {
+-		dev_err(&pdev->dev, "Codec device not registered\n");
+-		return -ENODEV;
++	codec->control_data = wm8776->control_data;
++	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8776->control_type);
++	if (ret < 0) {
++		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
++		return ret;
+ 	}
+ 
+-	socdev->card->codec = wm8776_codec;
+-	codec = wm8776_codec;
+-
+-	/* register pcms */
+-	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
++	ret = wm8776_reset(codec);
+ 	if (ret < 0) {
+-		dev_err(codec->dev, "failed to create pcms: %d\n", ret);
+-		goto pcm_err;
++		dev_err(codec->dev, "Failed to issue reset: %d\n", ret);
++		return ret;
+ 	}
+ 
++	wm8776_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
++
++	/* Latch the update bits; right channel only since we always
++	 * update both. */
++	snd_soc_update_bits(codec, WM8776_HPRVOL, 0x100, 0x100);
++	snd_soc_update_bits(codec, WM8776_DACRVOL, 0x100, 0x100);
++
+ 	snd_soc_add_controls(codec, wm8776_snd_controls,
+ 			     ARRAY_SIZE(wm8776_snd_controls));
+ 	snd_soc_dapm_new_controls(codec, wm8776_dapm_widgets,
+@@ -450,168 +442,57 @@ static int wm8776_probe(struct platform_device *pdev)
+ 	snd_soc_dapm_add_routes(codec, routes, ARRAY_SIZE(routes));
+ 
+ 	return ret;
+-
+-pcm_err:
+-	return ret;
+ }
+ 
+ /* power down chip */
+-static int wm8776_remove(struct platform_device *pdev)
++static int wm8776_remove(struct snd_soc_codec *codec)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-
+-	snd_soc_free_pcms(socdev);
+-	snd_soc_dapm_free(socdev);
+-
++	wm8776_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	return 0;
+ }
+ 
+-struct snd_soc_codec_device soc_codec_dev_wm8776 = {
++static struct snd_soc_codec_driver soc_codec_dev_wm8776 = {
+ 	.probe = 	wm8776_probe,
+ 	.remove = 	wm8776_remove,
+ 	.suspend = 	wm8776_suspend,
+ 	.resume =	wm8776_resume,
++	.set_bias_level = wm8776_set_bias_level,
++	.reg_cache_size = sizeof(wm8776_reg),
++	.reg_word_size = sizeof(u16),
++	.reg_cache_default = wm8776_reg,
+ };
+-EXPORT_SYMBOL_GPL(soc_codec_dev_wm8776);
+-
+-static int wm8776_register(struct wm8776_priv *wm8776,
+-			   enum snd_soc_control_type control)
+-{
+-	int ret, i;
+-	struct snd_soc_codec *codec = &wm8776->codec;
+-
+-	if (wm8776_codec) {
+-		dev_err(codec->dev, "Another WM8776 is registered\n");
+-		ret = -EINVAL;
+-		goto err;
 -	}
 -
 -	mutex_init(&codec->mutex);
 -	INIT_LIST_HEAD(&codec->dapm_widgets);
 -	INIT_LIST_HEAD(&codec->dapm_paths);
- 	init_completion(&priv->ready);
- 
- 	if (gpio_is_valid(audpwron)) {
-@@ -1169,23 +1077,12 @@ static int __devinit twl6040_codec_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto irq_err;
- 
+-
+-	snd_soc_codec_set_drvdata(codec, wm8776);
+-	codec->name = "WM8776";
+-	codec->owner = THIS_MODULE;
+-	codec->bias_level = SND_SOC_BIAS_OFF;
+-	codec->set_bias_level = wm8776_set_bias_level;
+-	codec->dai = wm8776_dai;
+-	codec->num_dai = ARRAY_SIZE(wm8776_dai);
+-	codec->reg_cache_size = WM8776_CACHEREGNUM;
+-	codec->reg_cache = &wm8776->reg_cache;
+-
+-	memcpy(codec->reg_cache, wm8776_reg, sizeof(wm8776_reg));
+-
+-	ret = snd_soc_codec_set_cache_io(codec, 7, 9, control);
+-	if (ret < 0) {
+-		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+-		goto err;
+-	}
+-
+-	for (i = 0; i < ARRAY_SIZE(wm8776_dai); i++)
+-		wm8776_dai[i].dev = codec->dev;
+-
+-	ret = wm8776_reset(codec);
+-	if (ret < 0) {
+-		dev_err(codec->dev, "Failed to issue reset: %d\n", ret);
+-		goto err;
+-	}
+-
+-	wm8776_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-
+-	/* Latch the update bits; right channel only since we always
+-	 * update both. */
+-	snd_soc_update_bits(codec, WM8776_HPRVOL, 0x100, 0x100);
+-	snd_soc_update_bits(codec, WM8776_DACRVOL, 0x100, 0x100);
+-
+-	wm8776_codec = codec;
+-
 -	ret = snd_soc_register_codec(codec);
--	if (ret)
--		goto reg_err;
+-	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
+-		goto err;
+-	}
 -
--	twl6040_codec = codec;
+-	ret = snd_soc_register_dais(wm8776_dai, ARRAY_SIZE(wm8776_dai));
+-	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to register DAIs: %d\n", ret);
+-		goto err_codec;
+-	}
 -
--	ret = snd_soc_register_dai(&twl6040_dai);
--	if (ret)
--		goto dai_err;
-+	snd_soc_add_controls(codec, twl6040_snd_controls,
-+				ARRAY_SIZE(twl6040_snd_controls));
-+	twl6040_add_widgets(codec);
- 
- 	return 0;
- 
--dai_err:
+-	return 0;
+-
+-err_codec:
 -	snd_soc_unregister_codec(codec);
--	twl6040_codec = NULL;
--reg_err:
--	twl6040_set_bias_level(codec, SND_SOC_BIAS_OFF);
- irq_err:
- 	if (naudint)
- 		free_irq(naudint, codec);
-@@ -1193,36 +1090,57 @@ gpio2_err:
- 	if (gpio_is_valid(audpwron))
- 		gpio_free(audpwron);
- gpio1_err:
--	kfree(codec->reg_cache);
--cache_err:
- 	kfree(priv);
- 	return ret;
+-err:
+-	kfree(wm8776);
+-	return ret;
+-}
+-
+-static void wm8776_unregister(struct wm8776_priv *wm8776)
+-{
+-	wm8776_set_bias_level(&wm8776->codec, SND_SOC_BIAS_OFF);
+-	snd_soc_unregister_dais(wm8776_dai, ARRAY_SIZE(wm8776_dai));
+-	snd_soc_unregister_codec(&wm8776->codec);
+-	kfree(wm8776);
+-	wm8776_codec = NULL;
+-}
+ 
+ #if defined(CONFIG_SPI_MASTER)
+-static int wm8776_spi_write(struct spi_device *spi, const char *data, int len)
+-{
+-	struct spi_transfer t;
+-	struct spi_message m;
+-	u8 msg[2];
+-
+-	if (len <= 0)
+-		return 0;
+-
+-	msg[0] = data[0];
+-	msg[1] = data[1];
+-
+-	spi_message_init(&m);
+-	memset(&t, 0, (sizeof t));
+-
+-	t.tx_buf = &msg[0];
+-	t.len = len;
+-
+-	spi_message_add_tail(&t, &m);
+-	spi_sync(spi, &m);
+-
+-	return len;
+-}
+-
+ static int __devinit wm8776_spi_probe(struct spi_device *spi)
+ {
+-	struct snd_soc_codec *codec;
+ 	struct wm8776_priv *wm8776;
++	int ret;
+ 
+ 	wm8776 = kzalloc(sizeof(struct wm8776_priv), GFP_KERNEL);
+ 	if (wm8776 == NULL)
+ 		return -ENOMEM;
+ 
+-	codec = &wm8776->codec;
+-	codec->control_data = spi;
+-	codec->hw_write = (hw_write_t)wm8776_spi_write;
+-	codec->dev = &spi->dev;
++	wm8776->control_data = spi;
++	wm8776->control_type = SND_SOC_SPI;
++	spi_set_drvdata(spi, wm8776);
+ 
+-	dev_set_drvdata(&spi->dev, wm8776);
+-
+-	return wm8776_register(wm8776, SND_SOC_SPI);
++	ret = snd_soc_register_codec(&spi->dev,
++			&soc_codec_dev_wm8776, wm8776_dai, ARRAY_SIZE(wm8776_dai));
++	if (ret < 0)
++		kfree(wm8776);
++	return ret;
  }
  
--static int __devexit twl6040_codec_remove(struct platform_device *pdev)
-+static int twl6040_remove(struct snd_soc_codec *codec)
+ static int __devexit wm8776_spi_remove(struct spi_device *spi)
  {
--	struct twl6040_data *priv = snd_soc_codec_get_drvdata(twl6040_codec);
-+	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
- 	int audpwron = priv->audpwron;
- 	int naudint = priv->naudint;
- 
-+	twl6040_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+
- 	if (gpio_is_valid(audpwron))
- 		gpio_free(audpwron);
- 
- 	if (naudint)
--		free_irq(naudint, twl6040_codec);
-+		free_irq(naudint, codec);
- 
--	snd_soc_unregister_dai(&twl6040_dai);
--	snd_soc_unregister_codec(twl6040_codec);
-+	kfree(priv);
- 
--	kfree(twl6040_codec);
--	twl6040_codec = NULL;
-+	return 0;
-+}
- 
-+static struct snd_soc_codec_driver soc_codec_dev_twl6040 = {
-+	.probe = twl6040_probe,
-+	.remove = twl6040_remove,
-+	.suspend = twl6040_suspend,
-+	.resume = twl6040_resume,
-+	.read = twl6040_read_reg_cache,
-+	.write = twl6040_write,
-+	.set_bias_level = twl6040_set_bias_level,
-+	.reg_cache_size = ARRAY_SIZE(twl6040_reg),
-+	.reg_word_size = sizeof(u8),
-+	.reg_cache_default = twl6040_reg,
-+};
-+
-+static int __devinit twl6040_codec_probe(struct platform_device *pdev)
-+{
-+	return snd_soc_register_codec(&pdev->dev,
-+			&soc_codec_dev_twl6040, &twl6040_dai, 1);
-+}
-+
-+static int __devexit twl6040_codec_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_codec(&pdev->dev);
+-	struct wm8776_priv *wm8776 = dev_get_drvdata(&spi->dev);
+-
+-	wm8776_unregister(wm8776);
+-
++	snd_soc_unregister_codec(&spi->dev);
++	kfree(spi_get_drvdata(spi));
  	return 0;
  }
  
- static struct platform_driver twl6040_codec_driver = {
+ static struct spi_driver wm8776_spi_driver = {
  	.driver = {
--		.name = "twl6040_codec",
-+		.name = "twl6040-codec",
+-		.name	= "wm8776",
++		.name	= "wm8776-codec",
+ 		.bus	= &spi_bus_type,
+ 		.owner	= THIS_MODULE,
+ 	},
+@@ -625,27 +506,27 @@ static __devinit int wm8776_i2c_probe(struct i2c_client *i2c,
+ 				      const struct i2c_device_id *id)
+ {
+ 	struct wm8776_priv *wm8776;
+-	struct snd_soc_codec *codec;
++	int ret;
+ 
+ 	wm8776 = kzalloc(sizeof(struct wm8776_priv), GFP_KERNEL);
+ 	if (wm8776 == NULL)
+ 		return -ENOMEM;
+ 
+-	codec = &wm8776->codec;
+-	codec->hw_write = (hw_write_t)i2c_master_send;
+-
+ 	i2c_set_clientdata(i2c, wm8776);
+-	codec->control_data = i2c;
+-
+-	codec->dev = &i2c->dev;
++	wm8776->control_data = i2c;
++	wm8776->control_type = SND_SOC_I2C;
+ 
+-	return wm8776_register(wm8776, SND_SOC_I2C);
++	ret =  snd_soc_register_codec(&i2c->dev,
++			&soc_codec_dev_wm8776, wm8776_dai, ARRAY_SIZE(wm8776_dai));
++	if (ret < 0)
++		kfree(wm8776);
++	return ret;
+ }
+ 
+ static __devexit int wm8776_i2c_remove(struct i2c_client *client)
+ {
+-	struct wm8776_priv *wm8776 = i2c_get_clientdata(client);
+-	wm8776_unregister(wm8776);
++	snd_soc_unregister_codec(&client->dev);
++	kfree(i2c_get_clientdata(client));
+ 	return 0;
+ }
+ 
+@@ -657,7 +538,7 @@ MODULE_DEVICE_TABLE(i2c, wm8776_i2c_id);
+ 
+ static struct i2c_driver wm8776_i2c_driver = {
+ 	.driver = {
+-		.name = "wm8776",
++		.name = "wm8776-codec",
  		.owner = THIS_MODULE,
  	},
- 	.probe = twl6040_codec_probe,
-diff --git a/sound/soc/codecs/twl6040.h b/sound/soc/codecs/twl6040.h
-index c472070..f7c77fa 100644
---- a/sound/soc/codecs/twl6040.h
-+++ b/sound/soc/codecs/twl6040.h
-@@ -135,7 +135,4 @@
- #define TWL6040_HPPLL_ID		1
- #define TWL6040_LPPLL_ID		2
+ 	.probe =    wm8776_i2c_probe,
+@@ -668,22 +549,22 @@ static struct i2c_driver wm8776_i2c_driver = {
  
--extern struct snd_soc_dai twl6040_dai;
--extern struct snd_soc_codec_device soc_codec_dev_twl6040;
+ static int __init wm8776_modinit(void)
+ {
+-	int ret;
++	int ret = 0;
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ 	ret = i2c_add_driver(&wm8776_i2c_driver);
+ 	if (ret != 0) {
+-		printk(KERN_ERR "Failed to register WM8776 I2C driver: %d\n",
++		printk(KERN_ERR "Failed to register wm8776 I2C driver: %d\n",
+ 		       ret);
+ 	}
+ #endif
+ #if defined(CONFIG_SPI_MASTER)
+ 	ret = spi_register_driver(&wm8776_spi_driver);
+ 	if (ret != 0) {
+-		printk(KERN_ERR "Failed to register WM8776 SPI driver: %d\n",
++		printk(KERN_ERR "Failed to register wm8776 SPI driver: %d\n",
+ 		       ret);
+ 	}
+ #endif
+-	return 0;
++	return ret;
+ }
+ module_init(wm8776_modinit);
+ 
+diff --git a/sound/soc/codecs/wm8776.h b/sound/soc/codecs/wm8776.h
+index 6606d25..4cf1c8e 100644
+--- a/sound/soc/codecs/wm8776.h
++++ b/sound/soc/codecs/wm8776.h
+@@ -45,7 +45,4 @@
+ #define WM8776_DAI_DAC 0
+ #define WM8776_DAI_ADC 1
+ 
+-extern struct snd_soc_dai wm8776_dai[];
+-extern struct snd_soc_codec_device soc_codec_dev_wm8776;
 -
- #endif /* End of __TWL6040_H__ */
+ #endif
 -- 
 1.7.0.4
