@@ -1,31 +1,119 @@
-From: Geoff Beasley <geoff@laughingboyrecords.com>
-Subject: Re: [LAD] mudita24 1.02 -- improved envy24control
- mixer/router for ice1712-based sound-cards
-Date: Sun, 08 Aug 2010 11:10:38 +1000
-Message-ID: <21733.5372152322$1281394636@news.gmane.org>
-References: <AANLkTiksTwbb1+ZoAas9V2dROxo9x11Ee1wYVO_LrL4U@mail.gmail.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: [PATCH -  1/1] patch_nvhdmi.c: Add missing codec IDs,
+	unify names
+Date: Mon,  9 Aug 2010 22:41:40 -0600
+Message-ID: <1281415300-4372-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <planetccrma-bounces@ccrma.Stanford.EDU>
-In-Reply-To: <AANLkTiksTwbb1+ZoAas9V2dROxo9x11Ee1wYVO_LrL4U@mail.gmail.com>
-List-Unsubscribe: <http://ccrma-mail.stanford.edu/mailman/listinfo/planetccrma>,
-	<mailto:planetccrma-request@ccrma.stanford.edu?subject=unsubscribe>
-List-Archive: <http://ccrma-mail.stanford.edu/pipermail/planetccrma>
-List-Post: <mailto:planetccrma@ccrma.stanford.edu>
-List-Help: <mailto:planetccrma-request@ccrma.stanford.edu?subject=help>
-List-Subscribe: <http://ccrma-mail.stanford.edu/mailman/listinfo/planetccrma>,
-	<mailto:planetccrma-request@ccrma.stanford.edu?subject=subscribe>
-Sender: planetccrma-bounces@ccrma.Stanford.EDU
-Errors-To: planetccrma-bounces@ccrma.Stanford.EDU
-To: Niels Mayer <nielsmayer@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, mailinglist <planetccrma@ccrma.Stanford.EDU>, linux-audio-announce@lists.linuxaudio.org, Takashi Iwai <tiwai@suse.de>, linux-audio-user <linux-audio-user@lists.linuxaudio.org>, Jaroslav Kysela <perex@perex.cz>, "Tim E.
-	Real" <termtech@rogers.com>, alsa-user@lists.sourceforge.net, Linux Audio Developers <linux-audio-dev@lists.linuxaudio.org>, PlanetCCRMA@ccrma.Stanford.EDU, fedora-music-list <fedora-music-list@redhat.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id F35F724390
+	for <alsa-devel@alsa-project.org>;
+	Tue, 10 Aug 2010 06:41:42 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Niels, great that you and Tim have fixed this app ;) One thing, can you
-explain what those 'profiles' are for and how to use them?
- 
-I have always wondered...
+* Add missing codec IDs.
+* Modify some existing codec names for discrete GPUs to match newly
+  added IDs. Note: existing names were a mixture of marketing and
+  engineering GPU names. Equally, there's no reason that codec IDs
+  have to be specific to a particular GPU or board, so identify
+  codecs in a less marketing-oriented fashion.
+* Reformat codec ID table so it's easier to read, for me at least.
 
-g.
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
+
+diff --git a/pci/hda/patch_nvhdmi.c b/pci/hda/patch_nvhdmi.c
+index a281836..77e2b40 100644
+--- a/pci/hda/patch_nvhdmi.c
++++ b/pci/hda/patch_nvhdmi.c
+@@ -540,26 +540,32 @@ static int patch_nvhdmi_2ch(struct hda_codec *codec)
+  * patch entries
+  */
+ static struct hda_codec_preset snd_hda_preset_nvhdmi[] = {
+-	{ .id = 0x10de0002, .name = "MCP77/78 HDMI",
+-	  .patch = patch_nvhdmi_8ch_7x },
+-	{ .id = 0x10de0003, .name = "MCP77/78 HDMI",
+-	  .patch = patch_nvhdmi_8ch_7x },
+-	{ .id = 0x10de0005, .name = "MCP77/78 HDMI",
+-	  .patch = patch_nvhdmi_8ch_7x },
+-	{ .id = 0x10de0006, .name = "MCP77/78 HDMI",
+-	  .patch = patch_nvhdmi_8ch_7x },
+-	{ .id = 0x10de0007, .name = "MCP79/7A HDMI",
+-	  .patch = patch_nvhdmi_8ch_7x },
+-	{ .id = 0x10de000a, .name = "GT220 HDMI",
+-	  .patch = patch_nvhdmi_8ch_89 },
+-	{ .id = 0x10de000b, .name = "GT21x HDMI",
+-	  .patch = patch_nvhdmi_8ch_89 },
+-	{ .id = 0x10de000c, .name = "MCP89 HDMI",
+-	  .patch = patch_nvhdmi_8ch_89 },
+-	{ .id = 0x10de000d, .name = "GT240 HDMI",
+-	  .patch = patch_nvhdmi_8ch_89 },
+-	{ .id = 0x10de0067, .name = "MCP67 HDMI", .patch = patch_nvhdmi_2ch },
+-	{ .id = 0x10de8001, .name = "MCP73 HDMI", .patch = patch_nvhdmi_2ch },
++	{ .id = 0x10de0002, .name = "MCP77/78 HDMI",  .patch = patch_nvhdmi_8ch_7x },
++	{ .id = 0x10de0003, .name = "MCP77/78 HDMI",  .patch = patch_nvhdmi_8ch_7x },
++	{ .id = 0x10de0005, .name = "MCP77/78 HDMI",  .patch = patch_nvhdmi_8ch_7x },
++	{ .id = 0x10de0006, .name = "MCP77/78 HDMI",  .patch = patch_nvhdmi_8ch_7x },
++	{ .id = 0x10de0007, .name = "MCP79/7A HDMI",  .patch = patch_nvhdmi_8ch_7x },
++	{ .id = 0x10de000a, .name = "GPU 0a HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de000b, .name = "GPU 0b HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de000c, .name = "MCP89 HDMI",     .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de000d, .name = "GPU 0d HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de0010, .name = "GPU 10 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de0011, .name = "GPU 11 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de0012, .name = "GPU 12 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de0013, .name = "GPU 13 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de0014, .name = "GPU 14 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de0018, .name = "GPU 18 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de0019, .name = "GPU 19 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de001a, .name = "GPU 1a HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de001b, .name = "GPU 1b HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de001c, .name = "GPU 1c HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de0040, .name = "GPU 40 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de0041, .name = "GPU 41 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de0042, .name = "GPU 42 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de0043, .name = "GPU 43 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de0044, .name = "GPU 44 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
++	{ .id = 0x10de0067, .name = "MCP67 HDMI",     .patch = patch_nvhdmi_2ch },
++	{ .id = 0x10de8001, .name = "MCP73 HDMI",     .patch = patch_nvhdmi_2ch },
+ 	{} /* terminator */
+ };
+ 
+@@ -572,6 +578,21 @@ MODULE_ALIAS("snd-hda-codec-id:10de000a");
+ MODULE_ALIAS("snd-hda-codec-id:10de000b");
+ MODULE_ALIAS("snd-hda-codec-id:10de000c");
+ MODULE_ALIAS("snd-hda-codec-id:10de000d");
++MODULE_ALIAS("snd-hda-codec-id:10de0010");
++MODULE_ALIAS("snd-hda-codec-id:10de0011");
++MODULE_ALIAS("snd-hda-codec-id:10de0012");
++MODULE_ALIAS("snd-hda-codec-id:10de0013");
++MODULE_ALIAS("snd-hda-codec-id:10de0014");
++MODULE_ALIAS("snd-hda-codec-id:10de0018");
++MODULE_ALIAS("snd-hda-codec-id:10de0019");
++MODULE_ALIAS("snd-hda-codec-id:10de001a");
++MODULE_ALIAS("snd-hda-codec-id:10de001b");
++MODULE_ALIAS("snd-hda-codec-id:10de001c");
++MODULE_ALIAS("snd-hda-codec-id:10de0040");
++MODULE_ALIAS("snd-hda-codec-id:10de0041");
++MODULE_ALIAS("snd-hda-codec-id:10de0042");
++MODULE_ALIAS("snd-hda-codec-id:10de0043");
++MODULE_ALIAS("snd-hda-codec-id:10de0044");
+ MODULE_ALIAS("snd-hda-codec-id:10de0067");
+ MODULE_ALIAS("snd-hda-codec-id:10de8001");
+ 
+-- 
+1.6.0.6
+
+nvpublic
