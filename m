@@ -1,23 +1,22 @@
-From: Niels Mayer <nielsmayer@gmail.com>
-Subject: Re: [LAD] [LAU] mudita24 1.02 -- improved
-	envy24control mixer/router for ice1712-based sound-cards
-Date: Tue, 10 Aug 2010 07:06:17 -0700
-Message-ID: <AANLkTikJHOv5ZXDAtgrRCaibuE2WJrfGaG1d+B=-4kFD@mail.gmail.com>
-References: <AANLkTinM-sQn5L=TkZi9Jb1wWCqvxTe1vtxPkVxCkMqK@mail.gmail.com>
-	<AANLkTikiLvBdFmxJvqEB0duhTtJZBF4+i33K-Bxgavkz@mail.gmail.com>
-	<201008092045.49600.termtech@rogers.com>
-	<201008092053.21988.termtech@rogers.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: i.MX SDMA support
+Date: Tue, 10 Aug 2010 15:07:43 +0100
+Message-ID: <1281449263.3059.53.camel@odin>
+References: <20100809091157.GC20065@pengutronix.de>
+	<1281350823.3035.54.camel@odin> <20100809121956.GA27749@pengutronix.de>
+	<64008892-3D75-4309-A623-CCE9B335F77F@opensource.wolfsonmicro.com>
+	<20100810131527.GK27749@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id 664DC2447F
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id BC13B2447F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Aug 2010 16:06:31 +0200 (CEST)
-Received: by pzk5 with SMTP id 5so5128057pzk.38
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2010 07:06:29 -0700 (PDT)
-In-Reply-To: <201008092053.21988.termtech@rogers.com>
+	Tue, 10 Aug 2010 16:07:47 +0200 (CEST)
+Received: by wyb42 with SMTP id 42so10973677wyb.38
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2010 07:07:47 -0700 (PDT)
+In-Reply-To: <20100810131527.GK27749@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,61 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Tim E. Real" <termtech@rogers.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, linux-audio-dev@lists.linuxaudio.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBBdWcgOSwgMjAxMCBhdCA1OjUzIFBNLCBUaW0gRS4gUmVhbCA8dGVybXRlY2hAcm9n
-ZXJzLmNvbT4gd3JvdGU6Cj4gT24gQXVndXN0IDksIDIwMTAgMDg6NDU6NDkgcG0gVGltIEUuIFJl
-YWwgd3JvdGU6Cj4+IEhleSBoZXkgaGV5IQo+PiBMb29rIHdoYXQgSSd2ZSBnb3QuLi4KPj4gSSB0
-aG91Z2h0IGl0IGltcG9ydGFudCBhbmQgY29tcGxldGUgZW5vdWdoIHRvIGxldCB5b3Ugc2VlCj4+
-IMKgd2hlcmUgaXQgaXMgZ29pbmcuCgpKdXN0IGFwcGxpZWQgdGhlIHBhdGNoZXMsIGNvbXBpbGVk
-Li4uIEFXRVNPTUUhIFNsaWRlcnMsIGRCIHNjYWxlcyBhbmQKbWV0ZXJzIGluICJNb25pdG9yIElu
-cHV0cyIgYW5kICJNb25pdG9yIFBDTXMiIHJlc2l6ZSB3aGVuIHRoZSB3aW5kb3cKaXMgc3RyZXRj
-aGVkISBJJ20gbG9va2luZyBmb3J3YXJkIHRvIHRoZSBjb21wbGV0aW9uIG9mIHlvdXIgVE9ETyBp
-dGVtcwppbiBBVVRIT1JTIGVzcCB0aGUgZGlnaXRhbCBtaXhlciBtZXRlciByZXNpemluZyB3aXRo
-IHN0cmV0Y2h5IHNjYWxlcwpqdXN0IGxpa2UgdGhlIG1peGVyJ3MgY2hhbm5lbCBtZXRlcnMuIExl
-dCBtZSBrbm93IHdoZW4geW91IGhhdmUgdGhpbmdzCmZpbmFsaXplZCwgYW5kIEknbGwgYWRkIGEg
-bXVkaXRhMjQgMS4wNCB2ZXJzaW9uIHRvCmh0dHA6Ly9uaWVsc21heWVyLmNvbS9lbnZ5MjRjb250
-cm9sLyAuCgpPZiBjb3Vyc2UgdGhlIG5ldyByZXNpemVhYmlsaXR5IGZlYXR1cmUgYnJpbmdzIHVw
-IHRoZSBpc3N1ZSB0aGF0IHRoZQpzbGlkZXJzIGNhbiBiZWNvbWUgbG9uZyBlbm91Z2ggdG8gZGlz
-cGxheSBkaWZmZXJlbnQgcG9zaXRpb25zIGZvciB0d28Kc2xpZGVycyBhdCB0aGUgc2FtZSBhdHRl
-bnVhdG9yIGRCIHZhbHVlLiBQZXJoYXBzIHRoaXMgY291bGQgYmUKcmVtZWRpZWQgYnkgYW4gb24t
-cmVsZWFzZSBjYWxsYmFjayB0aGF0IHNldHMgdGhlIHNsaWRlciBiYWNrIHRvIHRoZQpjZW50ZXIg
-b2YgaXQncyBhY3R1YWwgZGJGUyB2YWx1ZSwgZS5nLiAtMS41ZEIsIC0zLjAsIC00LjUsIC02LjAg
-ZXRjLi4uClRoaXMgYmVjb21lcyBlc3BlY2lhbGx5IG5vdGljZWFibGUgb24gYSBzdHJldGNoZWQg
-c2xpZGVyIGluICJNb25pdG9yCklucHV0cyIgb3IgIk1vbml0b3IgUENNcyIgZHVlIHRvIHRoZSAx
-LjVkQiBzdGVwcyBwcm92aWRlZCBieSB0aGUgMjRiaXQKYXR0ZW51YXRvcnMgZmVlZGluZyB0aGUg
-ZGlnaXRhbCBtaXhlci4gSXQgZG9lc24ndCBzZWVtIHRvIGJlIGFzCm5vdGljZWFibGUgd2l0aCB0
-aGUgMC41ZEIgc3RlcHMgaW4gdGhlICJBbmFsb2cgVm9sdW1lcyIgcGFuZWwuCkhvd2V2ZXIsIG9u
-IGEgZnVsbHktaGVpZ2h0LWV4cGFuZGVkIHdpbmRvdywgeW91IGNhbiBub3RpY2UsIGZvcgpleGFt
-cGxlLCB0d28gc2xpZGVycyBvZiBhIHN0ZXJlbyBwYWlyIHNob3dpbmcgdGhlIHNhbWUgZEIgdmFs
-dWUgYnV0CnNsaWdodGx5IGRpZmZlcmVudCBwb3NpdGlvbnMgdmlzdWFsbHkuCgpPbmUgInJlZ3Jl
-c3Npb24iIGluIHlvdXIgY2hhbmdlOiBmb3JtZXJseSwgeW91IGNvdWxkIGNsaWNrIHdpdGhpbiB0
-aGUKc2NhbGUvbGFiZWxpbmcgYXJlYSB0byBzZXQgZm9jdXMgb24gYSBnaXZlbiBzbGlkZXIuIFRo
-aXMgaXMgYSBsYXJnZQphbmQgZWFzeS10by1jbGljayBhcmVhIGlmIHlvdSBqdXN0IHdhbnQgdG8g
-c2V0IEdVSSBmb2N1cyB0byB0aGF0CnBhcnRpY3VsYXIgY2hhbm5lbCBhbmQgdXNlIHRoZSBzY3Jv
-bGwtd2hlZWwgb3Iga2V5Ym9hcmQgdXAvZG93biBhcnJvd3MKdG8gY2hhbmdlIHZhbHVlcykuIEJl
-Y2F1c2UgaWYgeW91IGNsaWNrIGluIHRoZSBzbGlkZXIgYXJlYSB0byBzZXQgdGhlCnNlbGVjdGlv
-biwgdW5sZXNzIHlvdSBjbGljayBvbiB0aGUgc2xpZGVyIGl0c2VsZiwgdGhlIHZhbHVlIGdldHMK
-Y2hhbmdlZC4KCj4gT25lIG1vcmUgdGhpbmc6IEJlY2F1c2Ugb2YgbXkgdXNlIG9mIGd0a19hZGp1
-c3RtZW50X2dldF9wYWdlX2luY3JlbWVudCgpCj4gwqBhbmQgZnJpZW5kcywgd2hpY2ggcmVxdWly
-ZSBndGsrIDIuMTQsIEkgdGhpbmsgaXQgbWF5IGJlIG5lY2Vzc2FyeSB0bwo+IMKgcmVsZWFzZSB0
-aGlzIGFzIGEgc2VwYXJhdGUgcHJvZ3JhbSB0aGFuIGVudnkyNGNvbnRyb2wuCj4gVGhlcmUgbWF5
-IGJlIHBlb3BsZSBvdXQgdGhlcmUgd2l0aCBvbGQgc2V0dXBzIHdobyBuZWVkIHRoZSBvbGQgb25l
-Lgo+IFRoZSBBTFNBIGZvbGtzIG1heSBub3QgbGlrZSByZXBsYWNpbmcgdGhlIG9sZCBvbmUgd2l0
-aCBtdWRpdGEyNCBmb3IKPiB0aGF0IHJlYXNvbi4KClNlZW1zIGxpa2UgdGhlcmUgc2hvdWxkIGJl
-IGEgd2F5IGZvciB0aGVpciBidWlsZCBzeXN0ZW0gdG8gaGFuZGxlCnNraXBwaW5nIHByb2dyYW1z
-IHRoYXQgdXNlIGd0azIgaWYgb25seSBndGsxIGF2YWlsYWJsZSAuLi4gYXQgbGVhc3QKZm9yIHRo
-ZSBteXJpYWQgcGFja2FnZXMgaW4KYWxzYS10b29scyAiU3BlY2lhbGlzdCB0b29scyBmb3IgQUxT
-QSIgLS0gd2hpY2ggbWlnaHQgYWxzbyBiZSBhCnBlcmZlY3RseSBhcHByb3ByaWF0ZSBwbGFjZSB0
-byBwdXQgYSBsYXRlc3QtZ3RrMi11c2luZyB0b29sIHByb3ZpZGluZwpzcGVjaWFsIGNvbnRyb2wg
-dG8gYSBzcGVjaWZpYyBzZXQgb2YgY2FyZHMuIEkgaGF2ZW4ndCBzdXJ2ZXllZCB0aGUKb3RoZXIg
-cGFja2FnZXMgdG8gc2VlIHdoYXQga2luZCBvZiBkZXBlbmRlbmNpZXMgdGhleSBoYXZlLi4uIEkn
-bQpDQydpbmcgdG8gYWxzYS1kZXZlbCBpbiBob3BlcyBvZiBnZXR0aW5nIGFuIGFuc3dlciBvbiB0
-aGlzLgoodGhyZWFkIHN1bW1hcnk6Cmh0dHA6Ly9saW51eGF1ZGlvLm9yZy9tYWlsYXJjaGl2ZS9s
-YWQvMjAxMC84LzgvMTcyNjIzCmh0dHA6Ly9saW51eGF1ZGlvLm9yZy9tYWlsYXJjaGl2ZS9sYWQv
-MjAxMC84LzgvMTcyNjI5ICkKCk5pZWxzCmh0dHA6Ly9uaWVsc21heWVyLmNvbQpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Tue, 2010-08-10 at 15:15 +0200, Sascha Hauer wrote:
+
+> I just looked at the i.MX part in the multi-component update and this
+> is currently far from being in a working state, so there's still some
+> work to do before thinking about possible conflicts...
+
+Ok, I don't think it's that far off. Everything builds for i.MX and all
+components should register. The part I can't test is the component
+probe() and playback/capture.
+
+Have you seen an oops ?
+
+Thanks
+
+Liam 
