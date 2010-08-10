@@ -1,20 +1,19 @@
-From: Steven Eastland <seastland@gmail.com>
-Subject: Re: [PATCH] New snd-hda-intel model/pin config for hp
- dv7-4000
-Date: Mon, 09 Aug 2010 10:38:04 -0600
-Message-ID: <4C602EEC.2050301@gmail.com>
-References: <4C5C7997.8090107@gmail.com> <s5hmxswz3p8.wl%tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 0/3] ASoC: multi-comp: OMAP platform fixes
+Date: Tue, 10 Aug 2010 09:42:20 +0300
+Message-ID: <201008100942.20331.peter.ujfalusi@nokia.com>
+References: <1281080355-22589-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20100806105628.2971f8a1.jhnikula@gmail.com>
+	<201008091909.59930.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 3AE8B24648
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 44E6B24449
 	for <alsa-devel@alsa-project.org>;
-	Mon,  9 Aug 2010 18:38:06 +0200 (CEST)
-Received: by ywa6 with SMTP id 6so3812882ywa.38
-	for <alsa-devel@alsa-project.org>; Mon, 09 Aug 2010 09:38:04 -0700 (PDT)
-In-Reply-To: <s5hmxswz3p8.wl%tiwai@suse.de>
+	Tue, 10 Aug 2010 08:42:40 +0200 (CEST)
+In-Reply-To: <201008091909.59930.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,82 +23,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: ext Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+Hello Janusz,
 
+On Monday 09 August 2010 20:09:57 ext Janusz Krzysztofik wrote:
+> =
 
-On 08/09/2010 12:43 AM, Takashi Iwai wrote:
+> Hi,
+> If your request for testing Peter's patches is still valid, what exact tr=
+ee
+> and branch would you like me to test the patches against? I've tried to
+> locate a tree with the patches already applied by Liam, but failed.
+> =
 
-> At Fri, 06 Aug 2010 15:07:35 -0600,
-> Steven Eastland wrote:
->>
->>    This provides a new model and pin config for the snd-hda-intel
->> 92HD83XXX codec for hp laptop model dv7-4000, enabling the subwoofer.
->>
->> Signed-off-by: Steven Eastland<seastland at gmail.com>
->
-> Thanks, applied now.
->
-> But, I had to fix and apply your patch manually because your MUA / MTA
-> broke the line-feed and tabs.  At the next time, please fix your mail
-> setup or use attachments if it's difficult.
-Sorry about that.  I thought I had checked the settings.  Also, I forgot to mention that this patch was for bug 5073.
+> Meanwhile, I've verified that the patches, or their OMAP1 related bits, a=
+re
+> harmless when applied against (almost) current l-o master. However, I'm n=
+ot
+> sure if testing the new platform devices not actually used by any
+> corresponding platform drivers is what you expected.
 
+Since I do not have access to OMAP1 based boards, I can not test the patch =
 
-Thanks,
+which adds support for ASoC/multi-comp on OMAP1, I would be glad, if you co=
+uld =
 
-Steve
+verify, if it is working on your board.
 
->
->
-> Takashi
->
->
->
->> ---
->>
->> --- alsa-kernel/pci/hda/patch_sigmatel.c  2010-07-20 14:06:12.000000000
->> -0600
->> +++ alsa-kernel/pci/hda/patch_sigmatel.c  2010-07-26 13:04:55.000000000
->> -0600
->> @@ -94,6 +94,7 @@
->>     STAC_92HD83XXX_PWR_REF,
->>     STAC_DELL_S14,
->>     STAC_92HD83XXX_HP,
->> + STAC_HP_DV7_4000,
->>     STAC_92HD83XXX_MODELS
->>    };
->>
->> @@ -1628,10 +1629,17 @@
->>     0x40f000f0, 0x40f000f0,
->>    };
->>
->> +static unsigned int hp_dv7_4000_pin_configs[10] = {
->> + 0x03a12050, 0x0321201f, 0x40f000f0, 0x90170110,
->> + 0x40f000f0, 0x40f000f0, 0x90170110, 0xd5a30140,
->> + 0x40f000f0, 0x40f000f0,
->> +};
->> +
->>    static unsigned int *stac92hd83xxx_brd_tbl[STAC_92HD83XXX_MODELS] = {
->>     [STAC_92HD83XXX_REF] = ref92hd83xxx_pin_configs,
->>     [STAC_92HD83XXX_PWR_REF] = ref92hd83xxx_pin_configs,
->>     [STAC_DELL_S14] = dell_s14_pin_configs,
->> + [STAC_HP_DV7_4000] = hp_dv7_4000_pin_configs,
->>    };
->>
->>    static const char *stac92hd83xxx_models[STAC_92HD83XXX_MODELS] = {
->> @@ -1640,6 +1648,7 @@
->>     [STAC_92HD83XXX_PWR_REF] = "mic-ref",
->>     [STAC_DELL_S14] = "dell-s14",
->>     [STAC_92HD83XXX_HP] = "hp",
->> + [STAC_HP_DV7_4000] = "hp-dv7-4000",
->>    };
->>
->>    static struct snd_pci_quirk stac92hd83xxx_cfg_tbl[] = {
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
+Liam has squashed the patches, so they are not visible.
+In theory you can use your existing config, and the audio shall be working =
+as =
+
+it used to (before multi-comp).
+
+It would be nice to know, if OMAP1 still works...
+
+Thanks for taking time for this!
+P=E9ter
