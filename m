@@ -1,28 +1,14 @@
-From: Michael Trimarchi <trimarchi@gandalf.sssup.it>
-Subject: Re: Fixed Re: amp power down event (resend with the
- correct email)
-Date: Tue, 10 Aug 2010 09:13:36 +0200
-Message-ID: <4C60FC20.8040002@gandalf.sssup.it>
-References: <4C604381.2080000@gandalf.sssup.it>
-	<4C60FADF.8010608@gandalf.sssup.it>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Model=auto for LG R510
+Date: Tue, 10 Aug 2010 09:24:56 +0200
+Message-ID: <4C60FEC8.3010207@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------040608090104040106090302"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sssup.it (ms01.sssup.it [193.205.80.99])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1FBD324489
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7132924492
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Aug 2010 09:13:38 +0200 (CEST)
-Received: from [10.30.3.4] (HELO granpasso.retis)
-	by sssup.it (CommuniGate Pro SMTP 5.3.2)
-	with ESMTPS id 62421786 for alsa-devel@alsa-project.org;
-	Tue, 10 Aug 2010 09:06:27 +0200
-Received: from [10.30.3.245] (dhcp245.retis [10.30.3.245])
-	by granpasso.retis (8.14.4/8.14.4) with ESMTP id o7A7DaCx047117
-	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Aug 2010 09:13:37 +0200 (CEST)
-	(envelope-from trimarchi@gandalf.sssup.it)
-In-Reply-To: <4C60FADF.8010608@gandalf.sssup.it>
+	Tue, 10 Aug 2010 09:24:59 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,84 +18,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------040608090104040106090302
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Michael Trimarchi wrote:
-> Hi all
->
-> Michael Trimarchi wrote:
->   
->> Hi all,
->>
->> I'm t rying to unde rstand when the event a re called.
->>
->> ...
->> SND_SOC_DAPM_SPK("Front Speaker", amp_event),
->>   
->>     
-> I have fixed looking in the kernel code. Change this to:
->
-> SND_SOC_DAPM_PRE("Front Speaker", amp_event),
->
-> Is it correct?
->   
-So now:
+I've got two users saying model=auto is working better for them (it
+enables the internal mic and no regressions). I don't know if that is
+enough to remove an existing quirk, but if it is, please apply the
+attached patch.
 
-[  400.894580] widget Right Voice ADC
-[  400.894592]  Right Voice Capture stream HiFi Playback event 2
-[  400.903667] widget Left Voice ADC
-[  400.903673]  Left Voice Capture stream HiFi Playback event 2
-[  400.912593] widget Right HiFi ADC
-[  400.912599]  Right HiFi Capture stream HiFi Playback event 2
-[  400.921514] widget Left HiFi ADC
-[  400.921520]  Left HiFi Capture stream HiFi Playback event 2
-[  400.930282] widget Aux DAC
-[  400.930288]  Aux Playback stream HiFi Playback event 2
-[  400.938081] widget Voice DAC
-[  400.938087]  Voice Playback stream HiFi Playback event 2
-[  400.946232] widget Right DAC
-[  400.946237]  Right HiFi Playback stream HiFi Playback event 2
-[  400.954813] widget Left DAC
-[  400.954819]  Left HiFi Playback stream HiFi Playback event 2
-[  400.963617] amp_event: event =>
-[  400.966604] OFF
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
 
-when the stream is closed.
+--------------040608090104040106090302
+Content-Type: text/x-patch;
+ name="0007-HDA-Use-model-auto-for-LG-R510.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0007-HDA-Use-model-auto-for-LG-R510.patch"
 
-Michael
-> Michael
->   
->> ...
->>
->> My idea was:
->>
->> - set the mixe r
->> - open st ream
->>
->> amp_event: event =>
->> [  169.820558] ON
->>
->> - close st ream
->>
->> and receive the event => OFF. In the aplay example this happen
->> afte r some seconds but in my application I don't receive the OFF
->> event. What is w rong?
->>
->> Michael
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
->>   
->>     
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->   
+>From 8e19d29534d37b92a1ef63b328144b2a3837852f Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Tue, 10 Aug 2010 09:18:00 +0200
+Subject: [PATCH] HDA: Use model=auto for LG R510
+
+Two users report model=auto is needed to make the internal mic work properly.
+BugLink: https://bugs.launchpad.net/bugs/495134
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6b00a23..55d6e5b 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -13477,7 +13477,6 @@ static struct snd_pci_quirk alc268_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(0x14c0, 0x0025, "COMPAL IFL90/JFL-92", ALC268_TOSHIBA),
+ 	SND_PCI_QUIRK(0x152d, 0x0763, "Diverse (CPR2000)", ALC268_ACER),
+ 	SND_PCI_QUIRK(0x152d, 0x0771, "Quanta IL1", ALC267_QUANTA_IL1),
+-	SND_PCI_QUIRK(0x1854, 0x1775, "LG R510", ALC268_DELL),
+ 	{}
+ };
+ 
+-- 
+1.7.0.4
+
+
+--------------040608090104040106090302
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------040608090104040106090302--
