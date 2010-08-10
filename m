@@ -1,80 +1,73 @@
-From: Niels Mayer <nielsmayer-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [LAD] [LAU] mudita24 1.02 -- improved envy24control
-	mixer/router for ice1712-based sound-cards
-Date: Tue, 10 Aug 2010 07:08:51 -0700
-Message-ID: <AANLkTim9erqJMXRcyCg1LM-o5G57zFx_mX595=9m9a9W@mail.gmail.com>
-References: <AANLkTinM-sQn5L=TkZi9Jb1wWCqvxTe1vtxPkVxCkMqK@mail.gmail.com>
-	<201008092045.49600.termtech@rogers.com>
-	<201008092053.21988.termtech@rogers.com>
-	<201008100143.50486.termtech@rogers.com>
-	<20100810081437.GA4059@zita2>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: About the platform_name field in snd_soc_dai_link
+Date: Tue, 10 Aug 2010 16:09:30 +0200
+Message-ID: <20100810140930.GM27749@pengutronix.de>
+References: <20100810133818.GL27749@pengutronix.de>
+	<20100810134755.GC6416@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-In-Reply-To: <20100810081437.GA4059@zita2>
-List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev>
-List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
-Sender: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-To: fons-5YXofNvN5bf4jJi9/k9gcg@public.gmane.org, "Tim E. Real" <termtech-bJEeYj9oJeDQT0dZR+AlfA@public.gmane.org>
-Cc: ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 28B932447F
+	for <alsa-devel@alsa-project.org>;
+	Tue, 10 Aug 2010 16:09:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20100810134755.GC6416@rakim.wolfsonmicro.main>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBBdWcgMTAsIDIwMTAgYXQgMToxNCBBTSwgIDxmb25zQGtva2tpbml6aXRhLm5ldD4g
-d3JvdGU6Cj4gLSBUaGUgbWV0ZXJzIGFyZSB0aGVyZSB0byBzaG93IGxldmVscyBhdCB0aGUgQUQv
-REEgY29udmVydGVycywKPiDCoGkuZS4gdG8gYWxsb3cgeW91IHRvIGNoZWNrIHlvdSBhcmUgdXNp
-bmcgdGhvc2UgaW4gYSBzZW5zaWJsZQo+IMKgd2F5LiBUaGV5IGhhcHBlbiB0byBiZSBvbiB0aGUg
-c2FtZSB3aW5kb3cgYXMgdGhlIG1peGVyLCB3aGljaAo+IMKgY2FuIGJlIHVzZWZ1bCBhcyB0aGV5
-IHN1Z2dlc3QgdG8gdGhlIHVzZXIgd2hpY2ggc2lnbmFsIGlzCj4gwqBiZWluZyBjb250cm9sbGVk
-IGJ5IGEgZmFkZXIuIEJ1dCBvdGhlcndpc2UgdGhleSBhcmUgbm90IHBhcnQKPiDCoG9mIHRoZSBt
-aXhlciwgYW5kIGEgYmV0dGVyIHBsYWNlIGZvciB0aGVtIHdvdWxkIGJlIHdpdGggdGhlCj4gwqBI
-VyBnYWluIGNvbnRyb2xzLgoKVGhlIG1ldGVycyBzaG93IHRoZSBsZXZlbHMgYXQgdGhlIEEvRCZE
-L0EncyBidXQgYWxzbyBhdCBvdGhlciB0aGluZ3MKdGhhdCBkb24ndCBuZWNlc3NhcmlseSBlbmQg
-dXAgYmVpbmcgcm91dGVkIHRvIHRoZSBhbmFsb2cgSS9PLgoKU2VlIHRoZSAiUGVhayIgbGFiZWxz
-IG9uCmh0dHA6Ly9uaWVsc21heWVyLmNvbS9lbnZ5MjRjb250cm9sL2VudnkyNG1peGVyLWFyY2hp
-dGVjdHVyZS5wbmcgLi4uClRoYXQnczoKKiAxMCBjaGFubmVscyBvZiBoYXJkd2FyZSBwZWFrLWxl
-dmVscyBvZiBpbnB1dHMgKGluY2x1ZGluZyBhbiBTUERJRiBwYWlyKS4KKiAxMCBjaGFubmVscyBv
-ZiBoYXJkd2FyZSBwZWFrLWxldmVsIG91dHB1dHMgKGluY2x1ZGluZyBhbiBTUERJRiBwYWlyKS4K
-KiAyIGNoYW5uZWxzIGZvciB0aGUgZGlnaXRhbCBtaXhlciBvdXRwdXQuCgpTbyBpbiByZWFsaXR5
-IChhc3N1bWluZyByZWFsaXR5PT1kb2N1bWVudGF0aW9uPT0KaHR0cDovL2Fsc2EuY3liZXJtaXJy
-b3Iub3JnL21hbnVhbHMvaWNlbnNlbWJsZS9lbnZ5MjQucGRmICkKdGhlIHBlYWsgbWV0ZXJzIGFy
-ZSBwYXJ0IG9mIHRoZSBtaXhlci4gSG93ZXZlciwgdGhlIHBlYWsgbWV0ZXIKaW5mb3JtYXRpb24g
-aXMgbW9zdCB1c2VmdWwgaW4gdGhlICJBbmFsb2cgVm9sdW1lIiBwYW5lbCwgYnV0IHRoYXQKd291
-bGQgIG1pc3MgZm91ci1zaXggY2hhbm5lbHMgKyBzcGRpZi1wYWlyIG9mIG91dHB1dHMuIEFzIGEg
-c3RvcGdhcCwgSQpwdXQgdGhlIGRCRlMgdmFsdWUgYWxvbmdzaWRlIGVhY2ggY2hhbm5lbCwgc2lu
-Y2UgYWRkaW5nIHRoZSBmdWxsCm1ldGVycyB0byB0aGlzIHBhbmVsIHdhcyBhIG11Y2ggbGFyZ2Vy
-IGFuZCBtb3JlIHJhZGljYWwgY2hhbmdlIHRoYW4gbXkKaW5pdGlhbCBwYXRjaGVzLgoKQSBiZXR0
-ZXIgZGVzaWduIG92ZXJhbGwsIElNSE8gd291bGQgYmUgdG8gY29tYmluZSBhbGwgMjAgaW5wdXQg
-YW5kCm91dHB1dCBmYWRlcnMgZmVlZGluZyB0aGUgZGlnaXRhbC1zdW1tZXIgaW50byBhIHNpbmds
-ZSBwYW5lbC4gSW5zdGVhZApvZiB0d28gZmFkZXJzIHBlciBjaGFubmVsLCBqdXN0IG9uZSBmYWRl
-ciBhbmQgYSBwYW5wb3QsIHdoaWNoIHdvdWxkCm5vcm1hbGx5IGJlIHN3dW5nIGhhcmQtbGVmdCBv
-ciBoYXJkLXJpZ2h0LCBidXQgc2hvdWxkIGFsc28gaGF2ZSBhCmRldGVudCBvciBwYWdlLXBvc2l0
-aW9uIGF0IGNlbnRlciBtaXguIFRoZSBwYW5wb3Qgd291bGQgYWxzbyAgaW5kaWNhdGUKaW5hY3Rp
-dmUgYW5kIHNldCBhdCBjZW50ZXItbWl4IHdoZW4gIkwvUiBHYW5nIiBpcyBzZWxlY3RlZC4gRWFj
-aApjaGFubmVsIHdvdWxkIGhhdmUgdGhlIG51bWVyaWMgZGJGUyBpbnB1dCB2YWx1ZSBkaXNwbGF5
-ZWQgYXMgYQoiYnV0dG9uIiwgd2hpY2ggd2hlbiBzZWxlY3RlZCwgZXhwYW5kcyBhIG1ldGVyIHRo
-YXQgZmlsbHMgdGhlIGNvbHVtbgp2ZXJ0aWNhbGx5OyBhbmQgZGVzZWxlY3RlZCwgaXQgZ29lcyBi
-YWNrIHRvIGJlaW5nIGEgdGV4dCBkaXNwbGF5IG9mCnRoZSBwZWFrIGxldmVscy4gVGhhdCBtZWNo
-YW5pc20gb2YgZHluYW1pY2FsbHkgYWRkaW5nIGEgbWV0ZXIgcGVyCmNoYW5uZWwgY291bGQgYWxz
-byBiZSB1c2VkIGluIHRoZSAiQW5hbG9nIFZvbHVtZXMiIHNlY3Rpb24gdG8Kb3B0aW9uYWxseSBh
-bGxvdyBtZXRlciBpbmZvIHRvIGJlIGRpc3BsYXllZCBhbG9uZ3NpZGUgZWFjaCBzbGlkZXIuCgo+
-IC0gVGhlIHBvc3QtZmFkZXIgc2lnbmFscyBpbiB0aGUgbWl4ZXIgYXJlIG5vdCBhdmFpbGFibGUg
-YW55d2hlcmUsCj4gwqB0aGV5IGp1c3QgZ2V0IHN1bW1lZCB0byB0aGUgYnVzLgoKVGhleSBhcmUg
-ImF2YWlsYWJsZSIgaW4gdGhhdCB0aGUgb3V0cHV0IG9mIHRoZSBkaWdpdGFsIG1peGVyIGlzCm1l
-dGVyZWQgYW5kIHRoYXQgbWV0ZXIgaXMgYWx3YXlzIGRpc3BsYXllZCBpbiBlbnZ5MjRjb250cm9s
-LiBJZiB5b3UKd2FudCB0byBzZWUgdGhlIHJlc3VsdGluZyBsZXZlbCBvZiBhbnkgcGFydGljdWxh
-ciBjaGFubmVscycKYXR0ZW51YXRpb24sICJzb2xvIiBpdCAoYnkgbWFudWFsbHkgbXV0aW5nIHRo
-ZSBvdGhlciBpbmNvbWluZwpjaGFubmVscykgYW5kIG9ic2VydmUgdGhlIHJlc3VsdGluZyBsZXZl
-bHMgdW5kZXIgdGhlICJEaWdpdGFsIE1peGVyIgptZXRlcnMuIChBY3R1YWxseSwgYSAiQ2hhbm5l
-bCBTb2xvIiBvcHRpb24tbWVudSB3b3VsZCBiZSBhIHVzZWZ1bAphZGRpdGlvbiB0byB0aGUgZGln
-aXRhbCBtaXhlciBHVUk6ICJvZmYiLCAic29sbyBsZWZ0IiAic29sbyByaWdodCIKInNvbG8gY2Vu
-dGVyIi4KCi0tIE5pZWxzCmh0dHA6Ly9uaWVsc21heWVyLmNvbQpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eC1hdWRpby1kZXYgbWFpbGluZyBsaXN0
-CkxpbnV4LWF1ZGlvLWRldkBsaXN0cy5saW51eGF1ZGlvLm9yZwpodHRwOi8vbGlzdHMubGludXhh
-dWRpby5vcmcvbGlzdGluZm8vbGludXgtYXVkaW8tZGV2Cg==
+On Tue, Aug 10, 2010 at 02:47:55PM +0100, Mark Brown wrote:
+> On Tue, Aug 10, 2010 at 03:38:18PM +0200, Sascha Hauer wrote:
+> 
+> > I'm wondering what exactly a snd_soc_platform is. Apparently the
+> > snd_pcm_ops/pcm_new/pcm_free are specific to a platform. For my
+> > understanding these operations are more specific to a cpu_dai. Looking
+> > at the tree it seems that each cpu_dai has exactly one possible
+> > platform, which seems logical to me because the cpu_dai knows how to
+> > transfer the data.
+> 
+> They're for the DMA bit of the CPU.  While most platforms have a single
+> DMA controller (though some have more than one) it's moderately common
+> to have more than one DAI (eg, dedicated I2S and DSP mode controllers
+> rather than a programmable serial port, or an AC'97 controller) so it's
+> useful to share the DMA code.
+
+I didn't want to question that it's useful to share the code. It's just
+that in current i.MX implementation it would be simple to instantiate
+snd_pcm_ops (of fiq or dma type) in the platform_driver probe function
+passing all needed data like dma request line, fifo address and the like.
+Passing this data through the soc-core seems not very convenient.
+
+> 
+> > My problem on i.MX is that I currently have two possible cpu dais
+> > (imx-ssi.[01]) and each can be configured to use dma or fiq depending
+> > on the dma capabilities. So the cpu_dai knows which pcm_ops we have
+> > to use, but currently it's the soc glue code which has to decide in
+> > platform_name. Am I understanding something wrong here?
+> 
+> This is mostly a holdover from the existing (current mainline) ASoC
+> structuring at the minute, that also has the DMA configured per machine.
+> This may change depending on future hardware requirements, though.
+
+I would welcome such change.
+
+/Me is looking further to make the i.MX part working on multi-component.
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
