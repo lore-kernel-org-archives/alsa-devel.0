@@ -1,19 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [PATCH 13/17] ASoC: multi-component - Wolfson WM8978,
-	8988 and 8994 CODECs
-Date: Wed, 11 Aug 2010 00:03:04 +0100
-Message-ID: <1281481388-3000-14-git-send-email-lrg@slimlogic.co.uk>
+Subject: [PATCH 12/17] ASoC: multi-component - Wolfson WM8971,
+	8993, 8990 and 8974 CODECs
+Date: Wed, 11 Aug 2010 00:03:03 +0100
+Message-ID: <1281481388-3000-13-git-send-email-lrg@slimlogic.co.uk>
 References: <1281481388-3000-1-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8E24A103888
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6F89E103881
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Aug 2010 01:03:57 +0200 (CEST)
-Received: by mail-ww0-f51.google.com with SMTP id 36so2366031wwa.20
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2010 16:03:57 -0700 (PDT)
+	Wed, 11 Aug 2010 01:03:52 +0200 (CEST)
+Received: by mail-wy0-f179.google.com with SMTP id 42so11453003wyb.38
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2010 16:03:52 -0700 (PDT)
 In-Reply-To: <1281481388-3000-1-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,7 +29,7 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Move to Wolfson CODECs to multi-component model.
+Move Wolfson CODECs to multi-component model.
 
 This patch changes the probe() and remove() of the CODEC drivers as follows:-
 
@@ -41,502 +42,524 @@ This patch changes the probe() and remove() of the CODEC drivers as follows:-
 
 Other required changes due to multi-component model :-
 
- o wm8994: set_fll() needs to be accessed from both codec and dai
+ o wm8993: set_fll() needs to be accessed from both codec and dai
  device context, so wrapper added to acces from dai context.
 
 Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
 ---
- sound/soc/codecs/wm8978.c |  190 +++++++++-----------------------
- sound/soc/codecs/wm8978.h |    3 -
- sound/soc/codecs/wm8988.c |  266 +++++++++++++++------------------------------
- sound/soc/codecs/wm8988.h |    3 -
- sound/soc/codecs/wm8994.c |  230 +++++++++++++--------------------------
- sound/soc/codecs/wm8994.h |    3 -
- 6 files changed, 222 insertions(+), 473 deletions(-)
+ sound/soc/codecs/wm8971.c |  250 ++++++++++---------------------------
+ sound/soc/codecs/wm8971.h |    8 --
+ sound/soc/codecs/wm8974.c |  171 +++++++------------------
+ sound/soc/codecs/wm8974.h |    3 -
+ sound/soc/codecs/wm8990.c |  226 ++++++++-------------------------
+ sound/soc/codecs/wm8990.h |    8 --
+ sound/soc/codecs/wm8993.c |  307 ++++++++++++++++++---------------------------
+ sound/soc/codecs/wm8993.h |    3 -
+ 8 files changed, 292 insertions(+), 684 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8978.c b/sound/soc/codecs/wm8978.c
-index 8a1ad77..676a430 100644
---- a/sound/soc/codecs/wm8978.c
-+++ b/sound/soc/codecs/wm8978.c
-@@ -31,8 +31,6 @@
- 
- #include "wm8978.h"
- 
--static struct snd_soc_codec *wm8978_codec;
--
- /* wm8978 register cache. Note that register 0 is not included in the cache. */
- static const u16 wm8978_reg[WM8978_CACHEREGNUM] = {
- 	0x0000, 0x0000, 0x0000, 0x0000,	/* 0x00...0x03 */
-@@ -54,7 +52,8 @@ static const u16 wm8978_reg[WM8978_CACHEREGNUM] = {
+diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
+index a99620f..ad2692a 100644
+--- a/sound/soc/codecs/wm8971.c
++++ b/sound/soc/codecs/wm8971.c
+@@ -38,6 +38,8 @@ static struct workqueue_struct *wm8971_workq = NULL;
  
  /* codec private data */
- struct wm8978_priv {
--	struct snd_soc_codec codec;
+ struct wm8971_priv {
 +	enum snd_soc_control_type control_type;
 +	void *control_data;
- 	unsigned int f_pllout;
- 	unsigned int f_mclk;
- 	unsigned int f_256fs;
-@@ -374,8 +373,8 @@ struct wm8978_pll_div {
- 
- #define FIXED_PLL_SIZE (1 << 24)
- 
--static void pll_factors(struct wm8978_pll_div *pll_div, unsigned int target,
--			unsigned int source)
-+static void pll_factors(struct snd_soc_codec *codec,
-+		struct wm8978_pll_div *pll_div, unsigned int target, unsigned int source)
- {
- 	u64 k_part;
- 	unsigned int k, n_div, n_mod;
-@@ -390,7 +389,7 @@ static void pll_factors(struct wm8978_pll_div *pll_div, unsigned int target,
- 	}
- 
- 	if (n_div < 6 || n_div > 12)
--		dev_warn(wm8978_codec->dev,
-+		dev_warn(codec->dev,
- 			 "WM8978 N value exceeds recommended range! N = %u\n",
- 			 n_div);
- 
-@@ -505,7 +504,7 @@ static int wm8978_configure_pll(struct snd_soc_codec *codec)
- 	dev_dbg(codec->dev, "%s: f_MCLK=%uHz, f_PLLOUT=%uHz\n", __func__,
- 		wm8978->f_mclk, wm8978->f_pllout);
- 
--	pll_factors(&pll_div, f2, wm8978->f_mclk);
-+	pll_factors(codec, &pll_div, f2, wm8978->f_mclk);
- 
- 	dev_dbg(codec->dev, "%s: calculated PLL N=0x%x, K=0x%x, div2=%d\n",
- 		__func__, pll_div.n, pll_div.k, pll_div.div2);
-@@ -690,8 +689,7 @@ static int wm8978_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_device *socdev = rtd->socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 	struct wm8978_priv *wm8978 = snd_soc_codec_get_drvdata(codec);
- 	/* Word length mask = 0x60 */
- 	u16 iface_ctl = snd_soc_read(codec, WM8978_AUDIO_INTERFACE) & ~0x60;
-@@ -875,9 +873,8 @@ static struct snd_soc_dai_ops wm8978_dai_ops = {
- };
- 
- /* Also supports 12kHz */
--struct snd_soc_dai wm8978_dai = {
--	.name = "WM8978 HiFi",
--	.id = 1,
-+static struct snd_soc_dai_driver wm8978_dai = {
-+	.name = "wm8978-hifi",
- 	.playback = {
- 		.stream_name = "Playback",
- 		.channels_min = 1,
-@@ -894,13 +891,9 @@ struct snd_soc_dai wm8978_dai = {
- 	},
- 	.ops = &wm8978_dai_ops,
- };
--EXPORT_SYMBOL_GPL(wm8978_dai);
- 
--static int wm8978_suspend(struct platform_device *pdev, pm_message_t state)
-+static int wm8978_suspend(struct snd_soc_codec *codec, pm_message_t state)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
--
- 	wm8978_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 	/* Also switch PLL off */
- 	snd_soc_write(codec, WM8978_POWER_MANAGEMENT_1, 0);
-@@ -908,10 +901,8 @@ static int wm8978_suspend(struct platform_device *pdev, pm_message_t state)
- 	return 0;
- }
- 
--static int wm8978_resume(struct platform_device *pdev)
-+static int wm8978_resume(struct snd_soc_codec *codec)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
- 	struct wm8978_priv *wm8978 = snd_soc_codec_get_drvdata(codec);
- 	int i;
- 	u16 *cache = codec->reg_cache;
-@@ -933,54 +924,6 @@ static int wm8978_resume(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int wm8978_probe(struct platform_device *pdev)
--{
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec;
--	int ret = 0;
--
--	if (wm8978_codec == NULL) {
--		dev_err(&pdev->dev, "Codec device not registered\n");
--		return -ENODEV;
--	}
--
--	socdev->card->codec = wm8978_codec;
--	codec = wm8978_codec;
--
--	/* register pcms */
--	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
--	if (ret < 0) {
--		dev_err(codec->dev, "failed to create pcms: %d\n", ret);
--		goto pcm_err;
--	}
--
--	snd_soc_add_controls(codec, wm8978_snd_controls,
--			     ARRAY_SIZE(wm8978_snd_controls));
--	wm8978_add_widgets(codec);
--
--pcm_err:
--	return ret;
--}
--
--/* power down chip */
--static int wm8978_remove(struct platform_device *pdev)
--{
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--
--	snd_soc_free_pcms(socdev);
--	snd_soc_dapm_free(socdev);
--
--	return 0;
--}
--
--struct snd_soc_codec_device soc_codec_dev_wm8978 = {
--	.probe		= wm8978_probe,
--	.remove		= wm8978_remove,
--	.suspend	= wm8978_suspend,
--	.resume		= wm8978_resume,
--};
--EXPORT_SYMBOL_GPL(soc_codec_dev_wm8978);
--
- /*
-  * These registers contain an "update" bit - bit 8. This means, for example,
-  * that one can write new DAC digital volume for both channels, but only when
-@@ -1000,44 +943,23 @@ static const int update_reg[] = {
- 	WM8978_ROUT2_SPK_CONTROL,
- };
- 
--static __devinit int wm8978_register(struct wm8978_priv *wm8978)
-+static int wm8978_probe(struct snd_soc_codec *codec)
- {
--	int ret, i;
--	struct snd_soc_codec *codec = &wm8978->codec;
--
--	if (wm8978_codec) {
--		dev_err(codec->dev, "Another WM8978 is registered\n");
--		return -EINVAL;
--	}
-+	struct wm8978_priv *wm8978 = snd_soc_codec_get_drvdata(codec);
-+	int ret = 0, i;
- 
- 	/*
- 	 * Set default system clock to PLL, it is more precise, this is also the
- 	 * default hardware setting
- 	 */
- 	wm8978->sysclk = WM8978_PLL;
--
--	mutex_init(&codec->mutex);
--	INIT_LIST_HEAD(&codec->dapm_widgets);
--	INIT_LIST_HEAD(&codec->dapm_paths);
--
--	snd_soc_codec_set_drvdata(codec, wm8978);
--	codec->name = "WM8978";
--	codec->owner = THIS_MODULE;
--	codec->bias_level = SND_SOC_BIAS_OFF;
--	codec->set_bias_level = wm8978_set_bias_level;
--	codec->dai = &wm8978_dai;
--	codec->num_dai = 1;
--	codec->reg_cache_size = WM8978_CACHEREGNUM;
--	codec->reg_cache = &wm8978->reg_cache;
--
-+	codec->control_data = wm8978->control_data;
- 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_I2C);
- 	if (ret < 0) {
- 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
--		goto err;
-+		return ret;
- 	}
- 
--	memcpy(codec->reg_cache, wm8978_reg, sizeof(wm8978_reg));
--
- 	/*
- 	 * Set the update bit in all registers, that have one. This way all
- 	 * writes to those registers will also cause the update bit to be
-@@ -1050,74 +972,61 @@ static __devinit int wm8978_register(struct wm8978_priv *wm8978)
- 	ret = snd_soc_write(codec, WM8978_RESET, 0);
- 	if (ret < 0) {
- 		dev_err(codec->dev, "Failed to issue reset\n");
--		goto err;
-+		return ret;
- 	}
- 
--	wm8978_dai.dev = codec->dev;
--
- 	wm8978_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
--	wm8978_codec = codec;
--
--	ret = snd_soc_register_codec(codec);
--	if (ret != 0) {
--		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
--		goto err;
--	}
--
--	ret = snd_soc_register_dai(&wm8978_dai);
--	if (ret != 0) {
--		dev_err(codec->dev, "Failed to register DAI: %d\n", ret);
--		goto err_codec;
--	}
-+	snd_soc_add_controls(codec, wm8978_snd_controls,
-+			     ARRAY_SIZE(wm8978_snd_controls));
-+	wm8978_add_widgets(codec);
- 
- 	return 0;
--
--err_codec:
--	snd_soc_unregister_codec(codec);
--err:
--	return ret;
- }
- 
--static __devexit void wm8978_unregister(struct wm8978_priv *wm8978)
-+/* power down chip */
-+static int wm8978_remove(struct snd_soc_codec *codec)
- {
--	wm8978_set_bias_level(&wm8978->codec, SND_SOC_BIAS_OFF);
--	snd_soc_unregister_dai(&wm8978_dai);
--	snd_soc_unregister_codec(&wm8978->codec);
--	wm8978_codec = NULL;
-+	wm8978_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	return 0;
- }
- 
-+static struct snd_soc_codec_driver soc_codec_dev_wm8978 = {
-+	.probe =	wm8978_probe,
-+	.remove =	wm8978_remove,
-+	.suspend =	wm8978_suspend,
-+	.resume =	wm8978_resume,
-+	.set_bias_level = wm8978_set_bias_level,
-+	.reg_cache_size = ARRAY_SIZE(wm8978_reg),
-+	.reg_word_size = sizeof(u16),
-+	.reg_cache_default = wm8978_reg,
-+};
-+
-+#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- static __devinit int wm8978_i2c_probe(struct i2c_client *i2c,
- 				      const struct i2c_device_id *id)
- {
--	int ret;
- 	struct wm8978_priv *wm8978;
--	struct snd_soc_codec *codec;
-+	int ret;
- 
- 	wm8978 = kzalloc(sizeof(struct wm8978_priv), GFP_KERNEL);
- 	if (wm8978 == NULL)
- 		return -ENOMEM;
- 
--	codec = &wm8978->codec;
--	codec->hw_write = (hw_write_t)i2c_master_send;
--
- 	i2c_set_clientdata(i2c, wm8978);
--	codec->control_data = i2c;
--
--	codec->dev = &i2c->dev;
-+	wm8978->control_data = i2c;
- 
--	ret = wm8978_register(wm8978);
-+	ret = snd_soc_register_codec(&i2c->dev,
-+			&soc_codec_dev_wm8978, &wm8978_dai, 1);
- 	if (ret < 0)
- 		kfree(wm8978);
--
- 	return ret;
- }
- 
- static __devexit int wm8978_i2c_remove(struct i2c_client *client)
- {
--	struct wm8978_priv *wm8978 = i2c_get_clientdata(client);
--	wm8978_unregister(wm8978);
--	kfree(wm8978);
-+	snd_soc_unregister_codec(&client->dev);
-+	kfree(i2c_get_clientdata(client));
- 	return 0;
- }
- 
-@@ -1129,23 +1038,34 @@ MODULE_DEVICE_TABLE(i2c, wm8978_i2c_id);
- 
- static struct i2c_driver wm8978_i2c_driver = {
- 	.driver = {
--		.name = "WM8978",
-+		.name = "WM8978-codec",
- 		.owner = THIS_MODULE,
- 	},
- 	.probe =    wm8978_i2c_probe,
- 	.remove =   __devexit_p(wm8978_i2c_remove),
- 	.id_table = wm8978_i2c_id,
- };
-+#endif
- 
- static int __init wm8978_modinit(void)
- {
--	return i2c_add_driver(&wm8978_i2c_driver);
-+	int ret = 0;
-+#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-+	ret = i2c_add_driver(&wm8978_i2c_driver);
-+	if (ret != 0) {
-+		printk(KERN_ERR "Failed to register WM8978 I2C driver: %d\n",
-+		       ret);
-+	}
-+#endif
-+	return ret;
- }
- module_init(wm8978_modinit);
- 
- static void __exit wm8978_exit(void)
- {
-+#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- 	i2c_del_driver(&wm8978_i2c_driver);
-+#endif
- }
- module_exit(wm8978_exit);
- 
-diff --git a/sound/soc/codecs/wm8978.h b/sound/soc/codecs/wm8978.h
-index 56ec832..c75525b 100644
---- a/sound/soc/codecs/wm8978.h
-+++ b/sound/soc/codecs/wm8978.h
-@@ -80,7 +80,4 @@ enum wm8978_sysclk_src {
- 	WM8978_MCLK
- };
- 
--extern struct snd_soc_dai wm8978_dai;
--extern struct snd_soc_codec_device soc_codec_dev_wm8978;
--
- #endif	/* __WM8978_H__ */
-diff --git a/sound/soc/codecs/wm8988.c b/sound/soc/codecs/wm8988.c
-index 19ad590..ecbffce 100644
---- a/sound/soc/codecs/wm8988.c
-+++ b/sound/soc/codecs/wm8988.c
-@@ -52,7 +52,8 @@ static const u16 wm8988_reg[] = {
- /* codec private data */
- struct wm8988_priv {
  	unsigned int sysclk;
--	struct snd_soc_codec codec;
-+	enum snd_soc_control_type control_type;
-+	void *control_data;
- 	struct snd_pcm_hw_constraint_list *sysclk_constraints;
- 	u16 reg_cache[WM8988_NUM_REG];
  };
-@@ -608,8 +609,7 @@ static int wm8988_pcm_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
+ 
+@@ -492,8 +494,7 @@ static int wm8971_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *dai)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_device *socdev = rtd->socdev;
 -	struct snd_soc_codec *codec = socdev->card->codec;
 +	struct snd_soc_codec *codec = rtd->codec;
- 	struct wm8988_priv *wm8988 = snd_soc_codec_get_drvdata(codec);
- 	u16 iface = snd_soc_read(codec, WM8988_IFACE) & 0x1f3;
- 	u16 srate = snd_soc_read(codec, WM8988_SRATE) & 0x180;
-@@ -711,8 +711,8 @@ static struct snd_soc_dai_ops wm8988_ops = {
- 	.digital_mute = wm8988_mute,
+ 	struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
+ 	u16 iface = snd_soc_read(codec, WM8971_IFACE) & 0x1f3;
+ 	u16 srate = snd_soc_read(codec, WM8971_SRATE) & 0x1c0;
+@@ -573,8 +574,8 @@ static struct snd_soc_dai_ops wm8971_dai_ops = {
+ 	.set_sysclk	= wm8971_set_dai_sysclk,
  };
  
--struct snd_soc_dai wm8988_dai = {
--	.name = "WM8988",
-+static struct snd_soc_dai_driver wm8988_dai = {
-+	.name = "wm8988-hifi",
+-struct snd_soc_dai wm8971_dai = {
+-	.name = "WM8971",
++static struct snd_soc_dai_driver wm8971_dai = {
++	.name = "wm8971-hifi",
  	.playback = {
  		.stream_name = "Playback",
  		.channels_min = 1,
-@@ -730,21 +730,15 @@ struct snd_soc_dai wm8988_dai = {
- 	.ops = &wm8988_ops,
- 	.symmetric_rates = 1,
+@@ -589,7 +590,6 @@ struct snd_soc_dai wm8971_dai = {
+ 		.formats = WM8971_FORMATS,},
+ 	.ops = &wm8971_dai_ops,
  };
--EXPORT_SYMBOL_GPL(wm8988_dai);
+-EXPORT_SYMBOL_GPL(wm8971_dai);
  
--static int wm8988_suspend(struct platform_device *pdev, pm_message_t state)
-+static int wm8988_suspend(struct snd_soc_codec *codec, pm_message_t state)
+ static void wm8971_work(struct work_struct *work)
+ {
+@@ -598,19 +598,14 @@ static void wm8971_work(struct work_struct *work)
+ 	wm8971_set_bias_level(codec, codec->bias_level);
+ }
+ 
+-static int wm8971_suspend(struct platform_device *pdev, pm_message_t state)
++static int wm8971_suspend(struct snd_soc_codec *codec, pm_message_t state)
  {
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
 -	struct snd_soc_codec *codec = socdev->card->codec;
 -
- 	wm8988_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
  	return 0;
  }
  
--static int wm8988_resume(struct platform_device *pdev)
-+static int wm8988_resume(struct snd_soc_codec *codec)
+-static int wm8971_resume(struct platform_device *pdev)
++static int wm8971_resume(struct snd_soc_codec *codec)
  {
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
 -	struct snd_soc_codec *codec = socdev->card->codec;
  	int i;
  	u8 data[2];
  	u16 *cache = codec->reg_cache;
-@@ -763,99 +757,23 @@ static int wm8988_resume(struct platform_device *pdev)
+@@ -639,37 +634,27 @@ static int wm8971_resume(struct platform_device *pdev)
  	return 0;
  }
  
--static struct snd_soc_codec *wm8988_codec;
--
--static int wm8988_probe(struct platform_device *pdev)
-+static int wm8988_probe(struct snd_soc_codec *codec)
+-static int wm8971_init(struct snd_soc_device *socdev,
+-		       enum snd_soc_control_type control)
++static int wm8971_probe(struct snd_soc_codec *codec)
  {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec;
-+	struct wm8988_priv *wm8988 = snd_soc_codec_get_drvdata(codec);
- 	int ret = 0;
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-	int reg, ret = 0;
 -
--	if (wm8988_codec == NULL) {
--		dev_err(&pdev->dev, "Codec device not registered\n");
--		return -ENODEV;
--	}
+-	codec->name = "WM8971";
+-	codec->owner = THIS_MODULE;
+-	codec->set_bias_level = wm8971_set_bias_level;
+-	codec->dai = &wm8971_dai;
+-	codec->reg_cache_size = ARRAY_SIZE(wm8971_reg);
+-	codec->num_dai = 1;
+-	codec->reg_cache = kmemdup(wm8971_reg, sizeof(wm8971_reg), GFP_KERNEL);
 -
--	socdev->card->codec = wm8988_codec;
--	codec = wm8988_codec;
--
+-	if (codec->reg_cache == NULL)
+-		return -ENOMEM;
++	struct wm8971_priv *wm8971 = snd_soc_codec_get_drvdata(codec);
++	int ret = 0;
++	u16 reg;
++
++	pr_info("WM8971 Audio Codec %s", WM8971_VERSION);
+ 
+-	ret = snd_soc_codec_set_cache_io(codec, 7, 9, control);
++	codec->control_data = wm8971->control_data;
++	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8971->control_type);
+ 	if (ret < 0) {
+ 		printk(KERN_ERR "wm8971: failed to set cache I/O: %d\n", ret);
+-		goto err;
++		return ret;
+ 	}
+ 
+-	wm8971_reset(codec);
++	INIT_DELAYED_WORK(&codec->delayed_work, wm8971_work);
++	wm8971_workq = create_workqueue("wm8971");
++	if (wm8971_workq == NULL)
++		return -ENOMEM;
+ 
 -	/* register pcms */
 -	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
 -	if (ret < 0) {
--		dev_err(codec->dev, "failed to create pcms: %d\n", ret);
--		goto pcm_err;
+-		printk(KERN_ERR "wm8971: failed to create pcms\n");
+-		goto err;
+-	}
++	wm8971_reset(codec);
+ 
+ 	/* charge output caps - set vmid to 5k for quick power up */
+ 	reg = snd_soc_read(codec, WM8971_PWR1) & 0xfe3e;
+@@ -704,40 +689,55 @@ static int wm8971_init(struct snd_soc_device *socdev,
+ 	wm8971_add_widgets(codec);
+ 
+ 	return ret;
+-
+-err:
+-	kfree(codec->reg_cache);
+-	return ret;
+ }
+ 
+-/* If the i2c layer weren't so broken, we could pass this kind of data
+-   around */
+-static struct snd_soc_device *wm8971_socdev;
+ 
+-#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
++/* power down chip */
++static int wm8971_remove(struct snd_soc_codec *codec)
++{
++	wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
++
++	if (wm8971_workq)
++		destroy_workqueue(wm8971_workq);
++	return 0;
++}
++
++static struct snd_soc_codec_driver soc_codec_dev_wm8971 = {
++	.probe =	wm8971_probe,
++	.remove =	wm8971_remove,
++	.suspend =	wm8971_suspend,
++	.resume =	wm8971_resume,
++	.set_bias_level = wm8971_set_bias_level,
++	.reg_cache_size = ARRAY_SIZE(wm8971_reg),
++	.reg_word_size = sizeof(u16),
++	.reg_cache_default = wm8971_reg,
++};
+ 
+-static int wm8971_i2c_probe(struct i2c_client *i2c,
+-			    const struct i2c_device_id *id)
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++static __devinit int wm8971_i2c_probe(struct i2c_client *i2c,
++				      const struct i2c_device_id *id)
+ {
+-	struct snd_soc_device *socdev = wm8971_socdev;
+-	struct snd_soc_codec *codec = socdev->card->codec;
++	struct wm8971_priv *wm8971;
+ 	int ret;
+ 
+-	i2c_set_clientdata(i2c, codec);
++	wm8971 = kzalloc(sizeof(struct wm8971_priv), GFP_KERNEL);
++	if (wm8971 == NULL)
++		return -ENOMEM;
+ 
+-	codec->control_data = i2c;
++	i2c_set_clientdata(i2c, wm8971);
++	wm8971->control_data = i2c;
+ 
+-	ret = wm8971_init(socdev, SND_SOC_I2C);
++	ret = snd_soc_register_codec(&i2c->dev,
++			&soc_codec_dev_wm8971, &wm8971_dai, 1);
+ 	if (ret < 0)
+-		pr_err("failed to initialise WM8971\n");
+-
++		kfree(wm8971);
+ 	return ret;
+ }
+ 
+-static int wm8971_i2c_remove(struct i2c_client *client)
++static __devexit int wm8971_i2c_remove(struct i2c_client *client)
+ {
+-	struct snd_soc_codec *codec = i2c_get_clientdata(client);
+-	kfree(codec->reg_cache);
++	snd_soc_unregister_codec(&client->dev);
++	kfree(i2c_get_clientdata(client));
+ 	return 0;
+ }
+ 
+@@ -749,148 +749,34 @@ MODULE_DEVICE_TABLE(i2c, wm8971_i2c_id);
+ 
+ static struct i2c_driver wm8971_i2c_driver = {
+ 	.driver = {
+-		.name = "WM8971 I2C Codec",
++		.name = "wm8971-codec",
+ 		.owner = THIS_MODULE,
+ 	},
+-	.probe    = wm8971_i2c_probe,
+-	.remove   = wm8971_i2c_remove,
++	.probe =    wm8971_i2c_probe,
++	.remove =   __devexit_p(wm8971_i2c_remove),
+ 	.id_table = wm8971_i2c_id,
+ };
+-
+-static int wm8971_add_i2c_device(struct platform_device *pdev,
+-				 const struct wm8971_setup_data *setup)
+-{
+-	struct i2c_board_info info;
+-	struct i2c_adapter *adapter;
+-	struct i2c_client *client;
+-	int ret;
+-
+-	ret = i2c_add_driver(&wm8971_i2c_driver);
+-	if (ret != 0) {
+-		dev_err(&pdev->dev, "can't add i2c driver\n");
+-		return ret;
 -	}
 -
--	snd_soc_add_controls(codec, wm8988_snd_controls,
--				ARRAY_SIZE(wm8988_snd_controls));
--	snd_soc_dapm_new_controls(codec, wm8988_dapm_widgets,
--				  ARRAY_SIZE(wm8988_dapm_widgets));
--	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
+-	memset(&info, 0, sizeof(struct i2c_board_info));
+-	info.addr = setup->i2c_address;
+-	strlcpy(info.type, "wm8971", I2C_NAME_SIZE);
 -
--	return ret;
+-	adapter = i2c_get_adapter(setup->i2c_bus);
+-	if (!adapter) {
+-		dev_err(&pdev->dev, "can't get i2c adapter %d\n",
+-			setup->i2c_bus);
+-		goto err_driver;
+-	}
 -
--pcm_err:
+-	client = i2c_new_device(adapter, &info);
+-	i2c_put_adapter(adapter);
+-	if (!client) {
+-		dev_err(&pdev->dev, "can't add i2c device at 0x%x\n",
+-			(unsigned int)info.addr);
+-		goto err_driver;
+-	}
+-
+-	return 0;
+-
+-err_driver:
+-	i2c_del_driver(&wm8971_i2c_driver);
+-	return -ENODEV;
+-}
+-
+ #endif
+ 
+-static int wm8971_probe(struct platform_device *pdev)
++static int __init wm8971_modinit(void)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct wm8971_setup_data *setup;
+-	struct snd_soc_codec *codec;
+-	struct wm8971_priv *wm8971;
+ 	int ret = 0;
+-
+-	pr_info("WM8971 Audio Codec %s", WM8971_VERSION);
+-
+-	setup = socdev->codec_data;
+-	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
+-	if (codec == NULL)
+-		return -ENOMEM;
+-
+-	wm8971 = kzalloc(sizeof(struct wm8971_priv), GFP_KERNEL);
+-	if (wm8971 == NULL) {
+-		kfree(codec);
+-		return -ENOMEM;
+-	}
+-
+-	snd_soc_codec_set_drvdata(codec, wm8971);
+-	socdev->card->codec = codec;
+-	mutex_init(&codec->mutex);
+-	INIT_LIST_HEAD(&codec->dapm_widgets);
+-	INIT_LIST_HEAD(&codec->dapm_paths);
+-	wm8971_socdev = socdev;
+-
+-	INIT_DELAYED_WORK(&codec->delayed_work, wm8971_work);
+-	wm8971_workq = create_workqueue("wm8971");
+-	if (wm8971_workq == NULL) {
+-		kfree(snd_soc_codec_get_drvdata(codec));
+-		kfree(codec);
+-		return -ENOMEM;
+-	}
+-
+-#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
+-	if (setup->i2c_address) {
+-		ret = wm8971_add_i2c_device(pdev, setup);
+-	}
+-#endif
+-	/* Add other interfaces here */
+-
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++	ret = i2c_add_driver(&wm8971_i2c_driver);
+ 	if (ret != 0) {
+-		destroy_workqueue(wm8971_workq);
+-		kfree(snd_soc_codec_get_drvdata(codec));
+-		kfree(codec);
++		printk(KERN_ERR "Failed to register WM8971 I2C driver: %d\n",
++		       ret);
+ 	}
+-
 -	return ret;
 -}
 -
--static int wm8988_remove(struct platform_device *pdev)
+-/* power down chip */
+-static int wm8971_remove(struct platform_device *pdev)
 -{
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-
+-	if (codec->control_data)
+-		wm8971_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	if (wm8971_workq)
+-		destroy_workqueue(wm8971_workq);
+-	snd_soc_free_pcms(socdev);
+-	snd_soc_dapm_free(socdev);
+-#if defined (CONFIG_I2C) || defined (CONFIG_I2C_MODULE)
+-	i2c_unregister_device(codec->control_data);
+-	i2c_del_driver(&wm8971_i2c_driver);
+ #endif
+-	kfree(snd_soc_codec_get_drvdata(codec));
+-	kfree(codec);
+-
+-	return 0;
+-}
+-
+-struct snd_soc_codec_device soc_codec_dev_wm8971 = {
+-	.probe = 	wm8971_probe,
+-	.remove = 	wm8971_remove,
+-	.suspend = 	wm8971_suspend,
+-	.resume =	wm8971_resume,
+-};
+-
+-EXPORT_SYMBOL_GPL(soc_codec_dev_wm8971);
+-
+-static int __init wm8971_modinit(void)
+-{
+-	return snd_soc_register_dai(&wm8971_dai);
++	return ret;
+ }
+ module_init(wm8971_modinit);
+ 
+ static void __exit wm8971_exit(void)
+ {
+-	snd_soc_unregister_dai(&wm8971_dai);
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++	i2c_del_driver(&wm8971_i2c_driver);
++#endif
+ }
+ module_exit(wm8971_exit);
+ 
+diff --git a/sound/soc/codecs/wm8971.h b/sound/soc/codecs/wm8971.h
+index ef4f08f..f31c38f 100644
+--- a/sound/soc/codecs/wm8971.h
++++ b/sound/soc/codecs/wm8971.h
+@@ -53,12 +53,4 @@
+ 
+ #define WM8971_SYSCLK	0
+ 
+-struct wm8971_setup_data {
+-	int i2c_bus;
+-	unsigned short i2c_address;
+-};
+-
+-extern struct snd_soc_dai wm8971_dai;
+-extern struct snd_soc_codec_device soc_codec_dev_wm8971;
+-
+ #endif
+diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
+index 1468fe1..52f631c 100644
+--- a/sound/soc/codecs/wm8974.c
++++ b/sound/soc/codecs/wm8974.c
+@@ -51,12 +51,11 @@ static const u16 wm8974_reg[WM8974_CACHEREGNUM] = {
+ #define WM8974_POWER1_BUFIOEN 0x04
+ 
+ struct wm8974_priv {
+-	struct snd_soc_codec codec;
++	enum snd_soc_control_type control_type;
++	void *control_data;
+ 	u16 reg_cache[WM8974_CACHEREGNUM];
+ };
+ 
+-static struct snd_soc_codec *wm8974_codec;
+-
+ #define wm8974_reset(c)	snd_soc_write(c, WM8974_RESET, 0)
+ 
+ static const char *wm8974_companding[] = {"Off", "NC", "u-law", "A-law" };
+@@ -566,8 +565,8 @@ static struct snd_soc_dai_ops wm8974_ops = {
+ 	.set_pll = wm8974_set_dai_pll,
+ };
+ 
+-struct snd_soc_dai wm8974_dai = {
+-	.name = "WM8974 HiFi",
++static struct snd_soc_dai_driver wm8974_dai = {
++	.name = "wm8974-hifi",
+ 	.playback = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 1,
+@@ -583,21 +582,15 @@ struct snd_soc_dai wm8974_dai = {
+ 	.ops = &wm8974_ops,
+ 	.symmetric_rates = 1,
+ };
+-EXPORT_SYMBOL_GPL(wm8974_dai);
+ 
+-static int wm8974_suspend(struct platform_device *pdev, pm_message_t state)
++static int wm8974_suspend(struct snd_soc_codec *codec, pm_message_t state)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-
+ 	wm8974_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	return 0;
+ }
+ 
+-static int wm8974_resume(struct platform_device *pdev)
++static int wm8974_resume(struct snd_soc_codec *codec)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec = socdev->card->codec;
+ 	int i;
+ 	u8 data[2];
+ 	u16 *cache = codec->reg_cache;
+@@ -613,156 +606,75 @@ static int wm8974_resume(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int wm8974_probe(struct platform_device *pdev)
++static int wm8974_probe(struct snd_soc_codec *codec)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec;
++	struct wm8974_priv *wm8974 = snd_soc_codec_get_drvdata(codec);
+ 	int ret = 0;
+ 
+-	if (wm8974_codec == NULL) {
+-		dev_err(&pdev->dev, "Codec device not registered\n");
+-		return -ENODEV;
++	codec->control_data = wm8974->control_data;
++	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_I2C);
++	if (ret < 0) {
++		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
++		return ret;
+ 	}
+ 
+-	socdev->card->codec = wm8974_codec;
+-	codec = wm8974_codec;
+-
+-	/* register pcms */
+-	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
++	ret = wm8974_reset(codec);
+ 	if (ret < 0) {
+-		dev_err(codec->dev, "failed to create pcms: %d\n", ret);
+-		goto pcm_err;
++		dev_err(codec->dev, "Failed to issue reset\n");
++		return ret;
+ 	}
+ 
++	wm8974_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 	snd_soc_add_controls(codec, wm8974_snd_controls,
+ 			     ARRAY_SIZE(wm8974_snd_controls));
+ 	wm8974_add_widgets(codec);
+ 
+ 	return ret;
+-
+-pcm_err:
+-	return ret;
+ }
+ 
+ /* power down chip */
+-static int wm8974_remove(struct platform_device *pdev)
++static int wm8974_remove(struct snd_soc_codec *codec)
+ {
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
 -
 -	snd_soc_free_pcms(socdev);
 -	snd_soc_dapm_free(socdev);
 -
--	return 0;
--}
--
--struct snd_soc_codec_device soc_codec_dev_wm8988 = {
--	.probe = 	wm8988_probe,
--	.remove = 	wm8988_remove,
--	.suspend = 	wm8988_suspend,
--	.resume =	wm8988_resume,
--};
--EXPORT_SYMBOL_GPL(soc_codec_dev_wm8988);
--
--static int wm8988_register(struct wm8988_priv *wm8988,
--			   enum snd_soc_control_type control)
--{
--	struct snd_soc_codec *codec = &wm8988->codec;
--	int ret;
- 	u16 reg;
++	wm8974_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	return 0;
+ }
  
--	if (wm8988_codec) {
--		dev_err(codec->dev, "Another WM8988 is registered\n");
+-struct snd_soc_codec_device soc_codec_dev_wm8974 = {
++static struct snd_soc_codec_driver soc_codec_dev_wm8974 = {
+ 	.probe = 	wm8974_probe,
+ 	.remove = 	wm8974_remove,
+ 	.suspend = 	wm8974_suspend,
+ 	.resume =	wm8974_resume,
++	.set_bias_level = wm8974_set_bias_level,
++	.reg_cache_size = ARRAY_SIZE(wm8974_reg),
++	.reg_word_size = sizeof(u16),
++	.reg_cache_default = wm8974_reg,
+ };
+-EXPORT_SYMBOL_GPL(soc_codec_dev_wm8974);
+-
+-static __devinit int wm8974_register(struct wm8974_priv *wm8974)
+-{
+-	int ret;
+-	struct snd_soc_codec *codec = &wm8974->codec;
+-
+-	if (wm8974_codec) {
+-		dev_err(codec->dev, "Another WM8974 is registered\n");
 -		ret = -EINVAL;
 -		goto err;
 -	}
@@ -545,759 +568,963 @@ index 19ad590..ecbffce 100644
 -	INIT_LIST_HEAD(&codec->dapm_widgets);
 -	INIT_LIST_HEAD(&codec->dapm_paths);
 -
--	snd_soc_codec_set_drvdata(codec, wm8988);
--	codec->name = "WM8988";
+-	snd_soc_codec_set_drvdata(codec, wm8974);
+-	codec->name = "WM8974";
 -	codec->owner = THIS_MODULE;
--	codec->dai = &wm8988_dai;
--	codec->num_dai = 1;
--	codec->reg_cache_size = ARRAY_SIZE(wm8988->reg_cache);
--	codec->reg_cache = &wm8988->reg_cache;
 -	codec->bias_level = SND_SOC_BIAS_OFF;
--	codec->set_bias_level = wm8988_set_bias_level;
+-	codec->set_bias_level = wm8974_set_bias_level;
+-	codec->dai = &wm8974_dai;
+-	codec->num_dai = 1;
+-	codec->reg_cache_size = WM8974_CACHEREGNUM;
+-	codec->reg_cache = &wm8974->reg_cache;
 -
--	memcpy(codec->reg_cache, wm8988_reg,
--	       sizeof(wm8988_reg));
--
--	ret = snd_soc_codec_set_cache_io(codec, 7, 9, control);
-+	codec->control_data = wm8988->control_data;
-+	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8988->control_type);
- 	if (ret < 0) {
- 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+-	ret = snd_soc_codec_set_cache_io(codec, 7, 9, SND_SOC_I2C);
+-	if (ret < 0) {
+-		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 -		goto err;
-+		return ret;
- 	}
- 
- 	ret = wm8988_reset(codec);
- 	if (ret < 0) {
- 		dev_err(codec->dev, "Failed to issue reset\n");
+-	}
+-
+-	memcpy(codec->reg_cache, wm8974_reg, sizeof(wm8974_reg));
+-
+-	ret = wm8974_reset(codec);
+-	if (ret < 0) {
+-		dev_err(codec->dev, "Failed to issue reset\n");
 -		goto err;
-+		return ret;
- 	}
- 
- 	/* set the update bits (we always update left then right) */
-@@ -870,139 +788,135 @@ static int wm8988_register(struct wm8988_priv *wm8988,
- 	reg = snd_soc_read(codec, WM8988_RINVOL);
- 	snd_soc_write(codec, WM8988_RINVOL, reg | 0x0100);
- 
--	wm8988_set_bias_level(&wm8988->codec, SND_SOC_BIAS_STANDBY);
+-	}
 -
--	wm8988_dai.dev = codec->dev;
+-	wm8974_dai.dev = codec->dev;
 -
--	wm8988_codec = codec;
+-	wm8974_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-
+-	wm8974_codec = codec;
 -
 -	ret = snd_soc_register_codec(codec);
 -	if (ret != 0) {
 -		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
 -		goto err;
 -	}
-+	wm8988_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
--	ret = snd_soc_register_dai(&wm8988_dai);
+-
+-	ret = snd_soc_register_dai(&wm8974_dai);
 -	if (ret != 0) {
 -		dev_err(codec->dev, "Failed to register DAI: %d\n", ret);
 -		goto err_codec;
 -	}
-+	snd_soc_add_controls(codec, wm8988_snd_controls,
-+				ARRAY_SIZE(wm8988_snd_controls));
-+	snd_soc_dapm_new_controls(codec, wm8988_dapm_widgets,
-+				  ARRAY_SIZE(wm8988_dapm_widgets));
-+	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
- 
- 	return 0;
+-
+-	return 0;
 -
 -err_codec:
 -	snd_soc_unregister_codec(codec);
 -err:
--	kfree(wm8988);
+-	kfree(wm8974);
 -	return ret;
- }
+-}
+-
+-static __devexit void wm8974_unregister(struct wm8974_priv *wm8974)
+-{
+-	wm8974_set_bias_level(&wm8974->codec, SND_SOC_BIAS_OFF);
+-	snd_soc_unregister_dai(&wm8974_dai);
+-	snd_soc_unregister_codec(&wm8974->codec);
+-	kfree(wm8974);
+-	wm8974_codec = NULL;
+-}
  
--static void wm8988_unregister(struct wm8988_priv *wm8988)
-+static int wm8988_remove(struct snd_soc_codec *codec)
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ static __devinit int wm8974_i2c_probe(struct i2c_client *i2c,
+ 				      const struct i2c_device_id *id)
  {
--	wm8988_set_bias_level(&wm8988->codec, SND_SOC_BIAS_OFF);
--	snd_soc_unregister_dai(&wm8988_dai);
--	snd_soc_unregister_codec(&wm8988->codec);
--	kfree(wm8988);
--	wm8988_codec = NULL;
-+	wm8988_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	return 0;
- }
- 
--#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
--static int wm8988_i2c_probe(struct i2c_client *i2c,
--			    const struct i2c_device_id *id)
-+static struct snd_soc_codec_driver soc_codec_dev_wm8988 = {
-+	.probe =	wm8988_probe,
-+	.remove =	wm8988_remove,
-+	.suspend =	wm8988_suspend,
-+	.resume =	wm8988_resume,
-+	.set_bias_level = wm8988_set_bias_level,
-+	.reg_cache_size = sizeof(wm8988_reg),
-+	.reg_word_size = sizeof(u16),
-+	.reg_cache_default = wm8988_reg,
-+};
-+
-+#if defined(CONFIG_SPI_MASTER)
-+static int __devinit wm8988_spi_probe(struct spi_device *spi)
- {
- 	struct wm8988_priv *wm8988;
+ 	struct wm8974_priv *wm8974;
 -	struct snd_soc_codec *codec;
 +	int ret;
  
- 	wm8988 = kzalloc(sizeof(struct wm8988_priv), GFP_KERNEL);
- 	if (wm8988 == NULL)
+ 	wm8974 = kzalloc(sizeof(struct wm8974_priv), GFP_KERNEL);
+ 	if (wm8974 == NULL)
  		return -ENOMEM;
  
--	codec = &wm8988->codec;
+-	codec = &wm8974->codec;
+-	codec->hw_write = (hw_write_t)i2c_master_send;
 -
--	i2c_set_clientdata(i2c, wm8988);
+ 	i2c_set_clientdata(i2c, wm8974);
 -	codec->control_data = i2c;
 -
 -	codec->dev = &i2c->dev;
-+	wm8988->control_data = spi;
-+	wm8988->control_type = SND_SOC_SPI;
-+	spi_set_drvdata(spi, wm8988);
++	wm8974->control_data = i2c;
  
--	return wm8988_register(wm8988, SND_SOC_I2C);
-+	ret = snd_soc_register_codec(&spi->dev,
-+			&soc_codec_dev_wm8988, &wm8988_dai, 1);
+-	return wm8974_register(wm8974);
++	ret = snd_soc_register_codec(&i2c->dev,
++			&soc_codec_dev_wm8974, &wm8974_dai, 1);
 +	if (ret < 0)
-+		kfree(wm8988);
++		kfree(wm8974);
 +	return ret;
  }
  
--static int wm8988_i2c_remove(struct i2c_client *client)
-+static int __devexit wm8988_spi_remove(struct spi_device *spi)
+ static __devexit int wm8974_i2c_remove(struct i2c_client *client)
  {
--	struct wm8988_priv *wm8988 = i2c_get_clientdata(client);
--	wm8988_unregister(wm8988);
-+	snd_soc_unregister_codec(&spi->dev);
-+	kfree(spi_get_drvdata(spi));
+-	struct wm8974_priv *wm8974 = i2c_get_clientdata(client);
+-	wm8974_unregister(wm8974);
++	snd_soc_unregister_codec(&client->dev);
++	kfree(i2c_get_clientdata(client));
  	return 0;
  }
  
--static const struct i2c_device_id wm8988_i2c_id[] = {
--	{ "wm8988", 0 },
--	{ }
--};
--MODULE_DEVICE_TABLE(i2c, wm8988_i2c_id);
--
--static struct i2c_driver wm8988_i2c_driver = {
-+static struct spi_driver wm8988_spi_driver = {
+@@ -774,23 +686,34 @@ MODULE_DEVICE_TABLE(i2c, wm8974_i2c_id);
+ 
+ static struct i2c_driver wm8974_i2c_driver = {
  	.driver = {
--		.name = "WM8988",
--		.owner = THIS_MODULE,
-+		.name	= "wm8988-codec",
-+		.bus	= &spi_bus_type,
-+		.owner	= THIS_MODULE,
+-		.name = "WM8974",
++		.name = "wm8974-codec",
+ 		.owner = THIS_MODULE,
  	},
--	.probe = wm8988_i2c_probe,
--	.remove = wm8988_i2c_remove,
--	.id_table = wm8988_i2c_id,
-+	.probe		= wm8988_spi_probe,
-+	.remove		= __devexit_p(wm8988_spi_remove),
+ 	.probe =    wm8974_i2c_probe,
+ 	.remove =   __devexit_p(wm8974_i2c_remove),
+ 	.id_table = wm8974_i2c_id,
  };
--#endif
-+#endif /* CONFIG_SPI_MASTER */
++#endif
  
--#if defined(CONFIG_SPI_MASTER)
--static int __devinit wm8988_spi_probe(struct spi_device *spi)
-+#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-+static __devinit int wm8988_i2c_probe(struct i2c_client *i2c,
-+				      const struct i2c_device_id *id)
+ static int __init wm8974_modinit(void)
  {
- 	struct wm8988_priv *wm8988;
--	struct snd_soc_codec *codec;
-+	int ret;
- 
- 	wm8988 = kzalloc(sizeof(struct wm8988_priv), GFP_KERNEL);
- 	if (wm8988 == NULL)
- 		return -ENOMEM;
- 
--	codec = &wm8988->codec;
--	codec->control_data = spi;
--	codec->dev = &spi->dev;
--
--	dev_set_drvdata(&spi->dev, wm8988);
-+	i2c_set_clientdata(i2c, wm8988);
-+	wm8988->control_data = i2c;
-+	wm8988->control_type = SND_SOC_I2C;
- 
--	return wm8988_register(wm8988, SND_SOC_SPI);
-+	ret =  snd_soc_register_codec(&i2c->dev,
-+			&soc_codec_dev_wm8988, &wm8988_dai, 1);
-+	if (ret < 0)
-+		kfree(wm8988);
+-	return i2c_add_driver(&wm8974_i2c_driver);
++	int ret = 0;
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++	ret = i2c_add_driver(&wm8974_i2c_driver);
++	if (ret != 0) {
++		printk(KERN_ERR "Failed to register wm8974 I2C driver: %d\n",
++		       ret);
++	}
++#endif
 +	return ret;
  }
+ module_init(wm8974_modinit);
  
--static int __devexit wm8988_spi_remove(struct spi_device *spi)
-+static __devexit int wm8988_i2c_remove(struct i2c_client *client)
+ static void __exit wm8974_exit(void)
  {
--	struct wm8988_priv *wm8988 = dev_get_drvdata(&spi->dev);
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ 	i2c_del_driver(&wm8974_i2c_driver);
++#endif
+ }
+ module_exit(wm8974_exit);
+ 
+diff --git a/sound/soc/codecs/wm8974.h b/sound/soc/codecs/wm8974.h
+index 896a7f0..3c94e7b 100644
+--- a/sound/soc/codecs/wm8974.h
++++ b/sound/soc/codecs/wm8974.h
+@@ -83,7 +83,4 @@
+ #define WM8974_MCLKDIV_8	(6 << 5)
+ #define WM8974_MCLKDIV_12	(7 << 5)
+ 
+-extern struct snd_soc_dai wm8974_dai;
+-extern struct snd_soc_codec_device soc_codec_dev_wm8974;
 -
--	wm8988_unregister(wm8988);
+ #endif
+diff --git a/sound/soc/codecs/wm8990.c b/sound/soc/codecs/wm8990.c
+index dd8d909..b252433 100644
+--- a/sound/soc/codecs/wm8990.c
++++ b/sound/soc/codecs/wm8990.c
+@@ -32,6 +32,8 @@
+ 
+ /* codec private data */
+ struct wm8990_priv {
++	enum snd_soc_control_type control_type;
++	void *control_data;
+ 	unsigned int sysclk;
+ 	unsigned int pcmclk;
+ };
+@@ -1114,8 +1116,7 @@ static int wm8990_hw_params(struct snd_pcm_substream *substream,
+ 			    struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_device *socdev = rtd->socdev;
+-	struct snd_soc_codec *codec = socdev->card->codec;
++	struct snd_soc_codec *codec = rtd->codec;
+ 	u16 audio1 = snd_soc_read(codec, WM8990_AUDIO_INTERFACE_1);
+ 
+ 	audio1 &= ~WM8990_AIF_WL_MASK;
+@@ -1293,10 +1294,9 @@ static struct snd_soc_dai_ops wm8990_dai_ops = {
+ 	.set_sysclk	= wm8990_set_dai_sysclk,
+ };
+ 
+-struct snd_soc_dai wm8990_dai = {
++static struct snd_soc_dai_driver wm8990_dai = {
+ /* ADC/DAC on primary */
+-	.name = "WM8990 ADC/DAC Primary",
+-	.id = 1,
++	.name = "wm8990-hifi",
+ 	.playback = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 1,
+@@ -1311,21 +1311,15 @@ struct snd_soc_dai wm8990_dai = {
+ 		.formats = WM8990_FORMATS,},
+ 	.ops = &wm8990_dai_ops,
+ };
+-EXPORT_SYMBOL_GPL(wm8990_dai);
+ 
+-static int wm8990_suspend(struct platform_device *pdev, pm_message_t state)
++static int wm8990_suspend(struct snd_soc_codec *codec, pm_message_t state)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-
+ 	wm8990_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	return 0;
+ }
+ 
+-static int wm8990_resume(struct platform_device *pdev)
++static int wm8990_resume(struct snd_soc_codec *codec)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec = socdev->card->codec;
+ 	int i;
+ 	u8 data[2];
+ 	u16 *cache = codec->reg_cache;
+@@ -1347,38 +1341,21 @@ static int wm8990_resume(struct platform_device *pdev)
+  * initialise the WM8990 driver
+  * register the mixer and dsp interfaces with the kernel
+  */
+-static int wm8990_init(struct snd_soc_device *socdev)
++static int wm8990_probe(struct snd_soc_codec *codec)
+ {
+-	struct snd_soc_codec *codec = socdev->card->codec;
++	struct wm8990_priv *wm8990 = snd_soc_codec_get_drvdata(codec);
++	int ret;
+ 	u16 reg;
+-	int ret = 0;
+-
+-	codec->name = "WM8990";
+-	codec->owner = THIS_MODULE;
+-	codec->set_bias_level = wm8990_set_bias_level;
+-	codec->dai = &wm8990_dai;
+-	codec->num_dai = 2;
+-	codec->reg_cache_size = ARRAY_SIZE(wm8990_reg);
+-	codec->reg_cache = kmemdup(wm8990_reg, sizeof(wm8990_reg), GFP_KERNEL);
+-
+-	if (codec->reg_cache == NULL)
+-		return -ENOMEM;
+ 
++	codec->control_data = wm8990->control_data;
+ 	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_I2C);
+ 	if (ret < 0) {
+ 		printk(KERN_ERR "wm8990: failed to set cache I/O: %d\n", ret);
+-		goto pcm_err;
++		return ret;
+ 	}
+ 
+ 	wm8990_reset(codec);
+ 
+-	/* register pcms */
+-	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
+-	if (ret < 0) {
+-		printk(KERN_ERR "wm8990: failed to create pcms\n");
+-		goto pcm_err;
+-	}
+-
+ 	/* charge output caps */
+ 	codec->bias_level = SND_SOC_BIAS_OFF;
+ 	wm8990_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+@@ -1400,47 +1377,52 @@ static int wm8990_init(struct snd_soc_device *socdev)
+ 				ARRAY_SIZE(wm8990_snd_controls));
+ 	wm8990_add_widgets(codec);
+ 
+-	return ret;
++	return 0;
++}
+ 
+-pcm_err:
+-	kfree(codec->reg_cache);
+-	return ret;
++/* power down chip */
++static int wm8990_remove(struct snd_soc_codec *codec)
++{
++	wm8990_set_bias_level(codec, SND_SOC_BIAS_OFF);
++	return 0;
+ }
+ 
+-/* If the i2c layer weren't so broken, we could pass this kind of data
+-   around */
+-static struct snd_soc_device *wm8990_socdev;
++static struct snd_soc_codec_driver soc_codec_dev_wm8990 = {
++	.probe =	wm8990_probe,
++	.remove =	wm8990_remove,
++	.suspend =	wm8990_suspend,
++	.resume =	wm8990_resume,
++	.set_bias_level = wm8990_set_bias_level,
++	.reg_cache_size = ARRAY_SIZE(wm8990_reg),
++	.reg_word_size = sizeof(u16),
++	.reg_cache_default = wm8990_reg,
++};
+ 
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+-
+-/*
+- * WM891 2 wire address is determined by GPIO5
+- * state during powerup.
+- *    low  = 0x34
+- *    high = 0x36
+- */
+-
+-static int wm8990_i2c_probe(struct i2c_client *i2c,
+-			    const struct i2c_device_id *id)
++static __devinit int wm8990_i2c_probe(struct i2c_client *i2c,
++				      const struct i2c_device_id *id)
+ {
+-	struct snd_soc_device *socdev = wm8990_socdev;
+-	struct snd_soc_codec *codec = socdev->card->codec;
++	struct wm8990_priv *wm8990;
+ 	int ret;
+ 
+-	i2c_set_clientdata(i2c, codec);
+-	codec->control_data = i2c;
++	wm8990 = kzalloc(sizeof(struct wm8990_priv), GFP_KERNEL);
++	if (wm8990 == NULL)
++		return -ENOMEM;
+ 
+-	ret = wm8990_init(socdev);
+-	if (ret < 0)
+-		pr_err("failed to initialise WM8990\n");
++	i2c_set_clientdata(i2c, wm8990);
++	wm8990->control_data = i2c;
+ 
++	ret = snd_soc_register_codec(&i2c->dev,
++			&soc_codec_dev_wm8990, &wm8990_dai, 1);
++	if (ret < 0)
++		kfree(wm8990);
+ 	return ret;
+ }
+ 
+-static int wm8990_i2c_remove(struct i2c_client *client)
++static __devexit int wm8990_i2c_remove(struct i2c_client *client)
+ {
+-	struct snd_soc_codec *codec = i2c_get_clientdata(client);
+-	kfree(codec->reg_cache);
++	snd_soc_unregister_codec(&client->dev);
++	kfree(i2c_get_clientdata(client));
+ 	return 0;
+ }
+ 
+@@ -1452,134 +1434,34 @@ MODULE_DEVICE_TABLE(i2c, wm8990_i2c_id);
+ 
+ static struct i2c_driver wm8990_i2c_driver = {
+ 	.driver = {
+-		.name = "WM8990 I2C Codec",
++		.name = "wm8990-codec",
+ 		.owner = THIS_MODULE,
+ 	},
+ 	.probe =    wm8990_i2c_probe,
+-	.remove =   wm8990_i2c_remove,
++	.remove =   __devexit_p(wm8990_i2c_remove),
+ 	.id_table = wm8990_i2c_id,
+ };
+-
+-static int wm8990_add_i2c_device(struct platform_device *pdev,
+-				 const struct wm8990_setup_data *setup)
+-{
+-	struct i2c_board_info info;
+-	struct i2c_adapter *adapter;
+-	struct i2c_client *client;
+-	int ret;
+-
+-	ret = i2c_add_driver(&wm8990_i2c_driver);
+-	if (ret != 0) {
+-		dev_err(&pdev->dev, "can't add i2c driver\n");
+-		return ret;
+-	}
+-
+-	memset(&info, 0, sizeof(struct i2c_board_info));
+-	info.addr = setup->i2c_address;
+-	strlcpy(info.type, "wm8990", I2C_NAME_SIZE);
+-
+-	adapter = i2c_get_adapter(setup->i2c_bus);
+-	if (!adapter) {
+-		dev_err(&pdev->dev, "can't get i2c adapter %d\n",
+-			setup->i2c_bus);
+-		goto err_driver;
+-	}
+-
+-	client = i2c_new_device(adapter, &info);
+-	i2c_put_adapter(adapter);
+-	if (!client) {
+-		dev_err(&pdev->dev, "can't add i2c device at 0x%x\n",
+-			(unsigned int)info.addr);
+-		goto err_driver;
+-	}
+-
+-	return 0;
+-
+-err_driver:
+-	i2c_del_driver(&wm8990_i2c_driver);
+-	return -ENODEV;
+-}
+ #endif
+ 
+-static int wm8990_probe(struct platform_device *pdev)
++static int __init wm8990_modinit(void)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct wm8990_setup_data *setup;
+-	struct snd_soc_codec *codec;
+-	struct wm8990_priv *wm8990;
+-	int ret;
+-
+-	setup = socdev->codec_data;
+-	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
+-	if (codec == NULL)
+-		return -ENOMEM;
+-
+-	wm8990 = kzalloc(sizeof(struct wm8990_priv), GFP_KERNEL);
+-	if (wm8990 == NULL) {
+-		kfree(codec);
+-		return -ENOMEM;
+-	}
+-
+-	snd_soc_codec_set_drvdata(codec, wm8990);
+-	socdev->card->codec = codec;
+-	mutex_init(&codec->mutex);
+-	INIT_LIST_HEAD(&codec->dapm_widgets);
+-	INIT_LIST_HEAD(&codec->dapm_paths);
+-	wm8990_socdev = socdev;
+-
+-	ret = -ENODEV;
+-
++	int ret = 0;
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+-	if (setup->i2c_address) {
+-		codec->hw_write = (hw_write_t)i2c_master_send;
+-		ret = wm8990_add_i2c_device(pdev, setup);
+-	}
+-#endif
+-
++	ret = i2c_add_driver(&wm8990_i2c_driver);
+ 	if (ret != 0) {
+-		kfree(snd_soc_codec_get_drvdata(codec));
+-		kfree(codec);
++		printk(KERN_ERR "Failed to register wm8990 I2C driver: %d\n",
++		       ret);
+ 	}
++#endif
+ 	return ret;
+ }
++module_init(wm8990_modinit);
+ 
+-/* power down chip */
+-static int wm8990_remove(struct platform_device *pdev)
++static void __exit wm8990_exit(void)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-
+-	if (codec->control_data)
+-		wm8990_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	snd_soc_free_pcms(socdev);
+-	snd_soc_dapm_free(socdev);
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+-	i2c_unregister_device(codec->control_data);
+ 	i2c_del_driver(&wm8990_i2c_driver);
+ #endif
+-	kfree(snd_soc_codec_get_drvdata(codec));
+-	kfree(codec);
+-
+-	return 0;
+-}
+-
+-struct snd_soc_codec_device soc_codec_dev_wm8990 = {
+-	.probe =	wm8990_probe,
+-	.remove =	wm8990_remove,
+-	.suspend =	wm8990_suspend,
+-	.resume =	wm8990_resume,
+-};
+-EXPORT_SYMBOL_GPL(soc_codec_dev_wm8990);
+-
+-static int __init wm8990_modinit(void)
+-{
+-	return snd_soc_register_dai(&wm8990_dai);
+-}
+-module_init(wm8990_modinit);
+-
+-static void __exit wm8990_exit(void)
+-{
+-	snd_soc_unregister_dai(&wm8990_dai);
+ }
+ module_exit(wm8990_exit);
+ 
+diff --git a/sound/soc/codecs/wm8990.h b/sound/soc/codecs/wm8990.h
+index 7114ddc..77c98a4 100644
+--- a/sound/soc/codecs/wm8990.h
++++ b/sound/soc/codecs/wm8990.h
+@@ -826,18 +826,10 @@
+ #define WM8990_INMIXR_PWR_BIT			2
+ #define WM8990_AINRMUX_PWR_BIT			3
+ 
+-struct wm8990_setup_data {
+-	unsigned i2c_bus;
+-	unsigned short i2c_address;
+-};
+-
+ #define WM8990_MCLK_DIV 0
+ #define WM8990_DACCLK_DIV 1
+ #define WM8990_ADCCLK_DIV 2
+ #define WM8990_BCLK_DIV 3
+ 
+-extern struct snd_soc_dai wm8990_dai;
+-extern struct snd_soc_codec_device soc_codec_dev_wm8990;
+-
+ #endif	/* __WM8990REGISTERDEFS_H__ */
+ /*------------------------------ END OF FILE ---------------------------------*/
+diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
+index d8d300c..1d9e183 100644
+--- a/sound/soc/codecs/wm8993.c
++++ b/sound/soc/codecs/wm8993.c
+@@ -229,7 +229,8 @@ struct wm8993_priv {
+ 	u16 reg_cache[WM8993_REGISTER_COUNT];
+ 	struct regulator_bulk_data supplies[WM8993_NUM_SUPPLIES];
+ 	struct wm8993_platform_data pdata;
+-	struct snd_soc_codec codec;
++	enum snd_soc_control_type control_type;
++	void *control_data;
+ 	int master;
+ 	int sysclk_source;
+ 	int tdm_slots;
+@@ -367,10 +368,9 @@ static int fll_factors(struct _fll_div *fll_div, unsigned int Fref,
+ 	return 0;
+ }
+ 
+-static int wm8993_set_fll(struct snd_soc_dai *dai, int fll_id, int source,
++static int _wm8993_set_fll(struct snd_soc_codec *codec, int fll_id, int source,
+ 			  unsigned int Fref, unsigned int Fout)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+ 	struct wm8993_priv *wm8993 = snd_soc_codec_get_drvdata(codec);
+ 	u16 reg1, reg4, reg5;
+ 	struct _fll_div fll_div;
+@@ -456,6 +456,12 @@ static int wm8993_set_fll(struct snd_soc_dai *dai, int fll_id, int source,
+ 	return 0;
+ }
+ 
++static int wm8993_set_fll(struct snd_soc_dai *dai, int fll_id, int source,
++			  unsigned int Fref, unsigned int Fout)
++{
++	return _wm8993_set_fll(dai->codec, fll_id, source, Fref, Fout);
++}
++
+ static int configure_clock(struct snd_soc_codec *codec)
+ {
+ 	struct wm8993_priv *wm8993 = snd_soc_codec_get_drvdata(codec);
+@@ -1394,8 +1400,8 @@ static struct snd_soc_dai_ops wm8993_ops = {
+ 			SNDRV_PCM_FMTBIT_S24_LE |\
+ 			SNDRV_PCM_FMTBIT_S32_LE)
+ 
+-struct snd_soc_dai wm8993_dai = {
+-	.name = "WM8993",
++static struct snd_soc_dai_driver wm8993_dai = {
++	.name = "wm8993-hifi",
+ 	.playback = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 1,
+@@ -1413,32 +1419,82 @@ struct snd_soc_dai wm8993_dai = {
+ 	.ops = &wm8993_ops,
+ 	.symmetric_rates = 1,
+ };
+-EXPORT_SYMBOL_GPL(wm8993_dai);
+-
+-static struct snd_soc_codec *wm8993_codec;
+ 
+-static int wm8993_probe(struct platform_device *pdev)
++static int wm8993_probe(struct snd_soc_codec *codec)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec;
+-	struct wm8993_priv *wm8993;
+-	int ret = 0;
++	struct wm8993_priv *wm8993 = snd_soc_codec_get_drvdata(codec);
++	int ret, i, val;
++
++	codec->control_data = wm8993->control_data;
++	wm8993->hubs_data.hp_startup_mode = 1;
++	wm8993->hubs_data.dcs_codes = -2;
++
++	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_I2C);
++	if (ret != 0) {
++		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
++		return ret;
++	}
++
++	for (i = 0; i < ARRAY_SIZE(wm8993->supplies); i++)
++		wm8993->supplies[i].supply = wm8993_supply_names[i];
+ 
+-	if (!wm8993_codec) {
+-		dev_err(&pdev->dev, "I2C device not yet probed\n");
+-		goto err;
++	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(wm8993->supplies),
++				 wm8993->supplies);
++	if (ret != 0) {
++		dev_err(codec->dev, "Failed to request supplies: %d\n", ret);
++		return ret;
+ 	}
+ 
+-	socdev->card->codec = wm8993_codec;
+-	codec = wm8993_codec;
+-	wm8993 = snd_soc_codec_get_drvdata(codec);
++	ret = regulator_bulk_enable(ARRAY_SIZE(wm8993->supplies),
++				    wm8993->supplies);
++	if (ret != 0) {
++		dev_err(codec->dev, "Failed to enable supplies: %d\n", ret);
++		goto err_get;
++	}
+ 
+-	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
+-	if (ret < 0) {
+-		dev_err(codec->dev, "failed to create pcms\n");
+-		goto err;
++	val = snd_soc_read(codec, WM8993_SOFTWARE_RESET);
++	if (val != wm8993_reg_defaults[WM8993_SOFTWARE_RESET]) {
++		dev_err(codec->dev, "Invalid ID register value %x\n", val);
++		ret = -EINVAL;
++		goto err_enable;
+ 	}
+ 
++	ret = snd_soc_write(codec, WM8993_SOFTWARE_RESET, 0xffff);
++	if (ret != 0)
++		goto err_enable;
++
++	codec->cache_only = 1;
++
++	/* By default we're using the output mixers */
++	wm8993->class_w_users = 2;
++
++	/* Latch volume update bits and default ZC on */
++	snd_soc_update_bits(codec, WM8993_RIGHT_DAC_DIGITAL_VOLUME,
++			    WM8993_DAC_VU, WM8993_DAC_VU);
++	snd_soc_update_bits(codec, WM8993_RIGHT_ADC_DIGITAL_VOLUME,
++			    WM8993_ADC_VU, WM8993_ADC_VU);
++
++	/* Manualy manage the HPOUT sequencing for independent stereo
++	 * control. */
++	snd_soc_update_bits(codec, WM8993_ANALOGUE_HP_0,
++			    WM8993_HPOUT1_AUTO_PU, 0);
++
++	/* Use automatic clock configuration */
++	snd_soc_update_bits(codec, WM8993_CLOCKING_4, WM8993_SR_MODE, 0);
++
++	wm_hubs_handle_analogue_pdata(codec, wm8993->pdata.lineout1_diff,
++				      wm8993->pdata.lineout2_diff,
++				      wm8993->pdata.lineout1fb,
++				      wm8993->pdata.lineout2fb,
++				      wm8993->pdata.jd_scthr,
++				      wm8993->pdata.jd_thr,
++				      wm8993->pdata.micbias1_lvl,
++				      wm8993->pdata.micbias2_lvl);
++
++	ret = wm8993_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
++	if (ret != 0)
++		goto err_enable;
++
+ 	snd_soc_add_controls(codec, wm8993_snd_controls,
+ 			     ARRAY_SIZE(wm8993_snd_controls));
+ 	if (wm8993->pdata.num_retune_configs != 0) {
+@@ -1457,36 +1513,36 @@ static int wm8993_probe(struct platform_device *pdev)
+ 	wm_hubs_add_analogue_routes(codec, wm8993->pdata.lineout1_diff,
+ 				    wm8993->pdata.lineout2_diff);
+ 
+-	return ret;
++	return 0;
+ 
+-err:
++err_enable:
++	regulator_bulk_disable(ARRAY_SIZE(wm8993->supplies), wm8993->supplies);
++err_get:
++	regulator_bulk_free(ARRAY_SIZE(wm8993->supplies), wm8993->supplies);
+ 	return ret;
+ }
+ 
+-static int wm8993_remove(struct platform_device *pdev)
++static int wm8993_remove(struct snd_soc_codec *codec)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-
+-	snd_soc_free_pcms(socdev);
+-	snd_soc_dapm_free(socdev);
++	struct wm8993_priv *wm8993 = snd_soc_codec_get_drvdata(codec);
+ 
++	wm8993_set_bias_level(codec, SND_SOC_BIAS_OFF);
++	regulator_bulk_free(ARRAY_SIZE(wm8993->supplies), wm8993->supplies);
+ 	return 0;
+ }
+ 
+ #ifdef CONFIG_PM
+-static int wm8993_suspend(struct platform_device *pdev, pm_message_t state)
++static int wm8993_suspend(struct snd_soc_codec *codec, pm_message_t state)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec = socdev->card->codec;
+ 	struct wm8993_priv *wm8993 = snd_soc_codec_get_drvdata(codec);
+ 	int fll_fout = wm8993->fll_fout;
+ 	int fll_fref  = wm8993->fll_fref;
+ 	int ret;
+ 
+ 	/* Stop the FLL in an orderly fashion */
+-	ret = wm8993_set_fll(codec->dai, 0, 0, 0, 0);
++	ret = _wm8993_set_fll(codec, 0, 0, 0, 0);
+ 	if (ret != 0) {
+-		dev_err(&pdev->dev, "Failed to stop FLL\n");
++		dev_err(codec->dev, "Failed to stop FLL\n");
+ 		return ret;
+ 	}
+ 
+@@ -1498,10 +1554,8 @@ static int wm8993_suspend(struct platform_device *pdev, pm_message_t state)
+ 	return 0;
+ }
+ 
+-static int wm8993_resume(struct platform_device *pdev)
++static int wm8993_resume(struct snd_soc_codec *codec)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec = socdev->card->codec;
+ 	struct wm8993_priv *wm8993 = snd_soc_codec_get_drvdata(codec);
+ 	int ret;
+ 
+@@ -1515,7 +1569,7 @@ static int wm8993_resume(struct platform_device *pdev)
+ 		wm8993->fll_fref = 0;
+ 		wm8993->fll_fout = 0;
+ 
+-		ret = wm8993_set_fll(codec->dai, 0, wm8993->fll_src,
++		ret = _wm8993_set_fll(codec, 0, wm8993->fll_src,
+ 				     fll_fref, fll_fout);
+ 		if (ret != 0)
+ 			dev_err(codec->dev, "Failed to restart FLL\n");
+@@ -1528,162 +1582,43 @@ static int wm8993_resume(struct platform_device *pdev)
+ #define wm8993_resume NULL
+ #endif
+ 
+-struct snd_soc_codec_device soc_codec_dev_wm8993 = {
++static struct snd_soc_codec_driver soc_codec_dev_wm8993 = {
+ 	.probe = 	wm8993_probe,
+ 	.remove = 	wm8993_remove,
+ 	.suspend =	wm8993_suspend,
+ 	.resume =	wm8993_resume,
++	.set_bias_level = wm8993_set_bias_level,
++	.reg_cache_size = sizeof(wm8993_reg_defaults),
++	.reg_word_size = sizeof(u16),
++	.reg_cache_default = wm8993_reg_defaults,
++	.volatile_register = wm8993_volatile,
+ };
+-EXPORT_SYMBOL_GPL(soc_codec_dev_wm8993);
+ 
+-static int wm8993_i2c_probe(struct i2c_client *i2c,
+-			    const struct i2c_device_id *id)
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
++static __devinit int wm8993_i2c_probe(struct i2c_client *i2c,
++				      const struct i2c_device_id *id)
+ {
+ 	struct wm8993_priv *wm8993;
+-	struct snd_soc_codec *codec;
+-	unsigned int val;
+ 	int ret;
+-	int i;
+-
+-	if (wm8993_codec) {
+-		dev_err(&i2c->dev, "A WM8993 is already registered\n");
+-		return -EINVAL;
+-	}
+ 
+ 	wm8993 = kzalloc(sizeof(struct wm8993_priv), GFP_KERNEL);
+ 	if (wm8993 == NULL)
+ 		return -ENOMEM;
+ 
+-	codec = &wm8993->codec;
+-	if (i2c->dev.platform_data)
+-		memcpy(&wm8993->pdata, i2c->dev.platform_data,
+-		       sizeof(wm8993->pdata));
+-
+-	mutex_init(&codec->mutex);
+-	INIT_LIST_HEAD(&codec->dapm_widgets);
+-	INIT_LIST_HEAD(&codec->dapm_paths);
+-
+-	codec->name = "WM8993";
+-	codec->volatile_register = wm8993_volatile;
+-	codec->reg_cache = wm8993->reg_cache;
+-	codec->reg_cache_size = ARRAY_SIZE(wm8993->reg_cache);
+-	codec->bias_level = SND_SOC_BIAS_OFF;
+-	codec->set_bias_level = wm8993_set_bias_level;
+-	codec->dai = &wm8993_dai;
+-	codec->num_dai = 1;
+-	snd_soc_codec_set_drvdata(codec, wm8993);
+-
+-	wm8993->hubs_data.hp_startup_mode = 1;
+-	wm8993->hubs_data.dcs_codes = -2;
+-
+-	memcpy(wm8993->reg_cache, wm8993_reg_defaults,
+-	       sizeof(wm8993->reg_cache));
+-
+-	ret = snd_soc_codec_set_cache_io(codec, 8, 16, SND_SOC_I2C);
+-	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+-		goto err;
+-	}
+-
+ 	i2c_set_clientdata(i2c, wm8993);
+-	codec->control_data = i2c;
+-	wm8993_codec = codec;
+-
+-	codec->dev = &i2c->dev;
+-
+-	for (i = 0; i < ARRAY_SIZE(wm8993->supplies); i++)
+-		wm8993->supplies[i].supply = wm8993_supply_names[i];
+-
+-	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(wm8993->supplies),
+-				 wm8993->supplies);
+-	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to request supplies: %d\n", ret);
+-		goto err;
+-	}
+-
+-	ret = regulator_bulk_enable(ARRAY_SIZE(wm8993->supplies),
+-				    wm8993->supplies);
+-	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to enable supplies: %d\n", ret);
+-		goto err_get;
+-	}
+-
+-	val = snd_soc_read(codec, WM8993_SOFTWARE_RESET);
+-	if (val != wm8993_reg_defaults[WM8993_SOFTWARE_RESET]) {
+-		dev_err(codec->dev, "Invalid ID register value %x\n", val);
+-		ret = -EINVAL;
+-		goto err_enable;
+-	}
+-
+-	ret = snd_soc_write(codec, WM8993_SOFTWARE_RESET, 0xffff);
+-	if (ret != 0)
+-		goto err_enable;
+-
+-	codec->cache_only = 1;
+-
+-	/* By default we're using the output mixers */
+-	wm8993->class_w_users = 2;
+-
+-	/* Latch volume update bits and default ZC on */
+-	snd_soc_update_bits(codec, WM8993_RIGHT_DAC_DIGITAL_VOLUME,
+-			    WM8993_DAC_VU, WM8993_DAC_VU);
+-	snd_soc_update_bits(codec, WM8993_RIGHT_ADC_DIGITAL_VOLUME,
+-			    WM8993_ADC_VU, WM8993_ADC_VU);
++	wm8993->control_data = i2c;
+ 
+-	/* Manualy manage the HPOUT sequencing for independent stereo
+-	 * control. */
+-	snd_soc_update_bits(codec, WM8993_ANALOGUE_HP_0,
+-			    WM8993_HPOUT1_AUTO_PU, 0);
+-
+-	/* Use automatic clock configuration */
+-	snd_soc_update_bits(codec, WM8993_CLOCKING_4, WM8993_SR_MODE, 0);
+-
+-	wm_hubs_handle_analogue_pdata(codec, wm8993->pdata.lineout1_diff,
+-				      wm8993->pdata.lineout2_diff,
+-				      wm8993->pdata.lineout1fb,
+-				      wm8993->pdata.lineout2fb,
+-				      wm8993->pdata.jd_scthr,
+-				      wm8993->pdata.jd_thr,
+-				      wm8993->pdata.micbias1_lvl,
+-				      wm8993->pdata.micbias2_lvl);
+-			     
+-	ret = wm8993_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	if (ret != 0)
+-		goto err_enable;
+-
+-	wm8993_dai.dev = codec->dev;
+-
+-	ret = snd_soc_register_dai(&wm8993_dai);
+-	if (ret != 0)
+-		goto err_bias;
+-
+-	ret = snd_soc_register_codec(codec);
+-
+-	return 0;
+-
+-err_bias:
+-	wm8993_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-err_enable:
+-	regulator_bulk_disable(ARRAY_SIZE(wm8993->supplies), wm8993->supplies);
+-err_get:
+-	regulator_bulk_free(ARRAY_SIZE(wm8993->supplies), wm8993->supplies);
+-err:
+-	wm8993_codec = NULL;
+-	kfree(wm8993);
++	ret = snd_soc_register_codec(&i2c->dev,
++			&soc_codec_dev_wm8993, &wm8993_dai, 1);
++	if (ret < 0)
++		kfree(wm8993);
+ 	return ret;
+ }
+ 
+-static int wm8993_i2c_remove(struct i2c_client *client)
++static __devexit int wm8993_i2c_remove(struct i2c_client *client)
+ {
+-	struct wm8993_priv *wm8993 = i2c_get_clientdata(client);
+-
+-	snd_soc_unregister_codec(&wm8993->codec);
+-	snd_soc_unregister_dai(&wm8993_dai);
+-
+-	wm8993_set_bias_level(&wm8993->codec, SND_SOC_BIAS_OFF);
+-	regulator_bulk_free(ARRAY_SIZE(wm8993->supplies), wm8993->supplies);
+-	kfree(wm8993);
 -
 +	snd_soc_unregister_codec(&client->dev);
 +	kfree(i2c_get_clientdata(client));
  	return 0;
  }
  
--static struct spi_driver wm8988_spi_driver = {
-+static const struct i2c_device_id wm8988_i2c_id[] = {
-+	{ "wm8988", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(i2c, wm8988_i2c_id);
-+
-+static struct i2c_driver wm8988_i2c_driver = {
- 	.driver = {
--		.name	= "wm8988",
--		.bus	= &spi_bus_type,
--		.owner	= THIS_MODULE,
-+		.name = "wm8988-codec",
-+		.owner = THIS_MODULE,
- 	},
--	.probe		= wm8988_spi_probe,
--	.remove		= __devexit_p(wm8988_spi_remove),
-+	.probe =    wm8988_i2c_probe,
-+	.remove =   __devexit_p(wm8988_i2c_remove),
-+	.id_table = wm8988_i2c_id,
- };
- #endif
+@@ -1695,30 +1630,34 @@ MODULE_DEVICE_TABLE(i2c, wm8993_i2c_id);
  
- static int __init wm8988_modinit(void)
+ static struct i2c_driver wm8993_i2c_driver = {
+ 	.driver = {
+-		.name = "WM8993",
++		.name = "wm8993-codec",
+ 		.owner = THIS_MODULE,
+ 	},
+-	.probe = wm8993_i2c_probe,
+-	.remove = wm8993_i2c_remove,
++	.probe =    wm8993_i2c_probe,
++	.remove =   __devexit_p(wm8993_i2c_remove),
+ 	.id_table = wm8993_i2c_id,
+ };
+-
++#endif
+ 
+ static int __init wm8993_modinit(void)
  {
 -	int ret;
 -
 +	int ret = 0;
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
- 	ret = i2c_add_driver(&wm8988_i2c_driver);
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ 	ret = i2c_add_driver(&wm8993_i2c_driver);
 -	if (ret != 0)
--		pr_err("WM8988: Unable to register I2C driver: %d\n", ret);
+-		pr_err("WM8993: Unable to register I2C driver: %d\n", ret);
+-
 +	if (ret != 0) {
-+		printk(KERN_ERR "Failed to register WM8988 I2C driver: %d\n",
++		pr_err("WM8993: Unable to register I2C driver: %d\n",
 +		       ret);
 +	}
- #endif
- #if defined(CONFIG_SPI_MASTER)
- 	ret = spi_register_driver(&wm8988_spi_driver);
--	if (ret != 0)
--		pr_err("WM8988: Unable to register SPI driver: %d\n", ret);
-+	if (ret != 0) {
-+		printk(KERN_ERR "Failed to register WM8988 SPI driver: %d\n",
-+		       ret);
-+	}
- #endif
++#endif
  	return ret;
  }
-diff --git a/sound/soc/codecs/wm8988.h b/sound/soc/codecs/wm8988.h
-index 4552d37..5c04024 100644
---- a/sound/soc/codecs/wm8988.h
-+++ b/sound/soc/codecs/wm8988.h
-@@ -54,7 +54,4 @@
+ module_init(wm8993_modinit);
  
- #define WM8988_SYSCLK	0
- 
--extern struct snd_soc_dai wm8988_dai;
--extern struct snd_soc_codec_device soc_codec_dev_wm8988;
--
- #endif
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index a87046a..7823f92 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -36,9 +36,6 @@
- #include "wm8994.h"
- #include "wm_hubs.h"
- 
--static struct snd_soc_codec *wm8994_codec;
--struct snd_soc_codec_device soc_codec_dev_wm8994;
--
- struct fll_config {
- 	int src;
- 	int in;
-@@ -71,7 +68,9 @@ struct wm8994_micdet {
- /* codec private data */
- struct wm8994_priv {
- 	struct wm_hubs_data hubs;
--	struct snd_soc_codec codec;
-+	enum snd_soc_control_type control_type;
-+	void *control_data;
-+	struct snd_soc_codec *codec;
- 	u16 reg_cache[WM8994_REG_CACHE_SIZE + 1];
- 	int sysclk[2];
- 	int sysclk_rate[2];
-@@ -1901,8 +1900,6 @@ static int wm8994_put_drc_sw(struct snd_kcontrol *kcontrol,
- 	return snd_soc_put_volsw(kcontrol, ucontrol);
+ static void __exit wm8993_exit(void)
+ {
++#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ 	i2c_del_driver(&wm8993_i2c_driver);
++#endif
  }
+ module_exit(wm8993_exit);
  
+diff --git a/sound/soc/codecs/wm8993.h b/sound/soc/codecs/wm8993.h
+index 30e71ca..2184617 100644
+--- a/sound/soc/codecs/wm8993.h
++++ b/sound/soc/codecs/wm8993.h
+@@ -1,9 +1,6 @@
+ #ifndef WM8993_H
+ #define WM8993_H
+ 
+-extern struct snd_soc_dai wm8993_dai;
+-extern struct snd_soc_codec_device soc_codec_dev_wm8993;
 -
--
- static void wm8994_set_drc(struct snd_soc_codec *codec, int drc)
- {
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-@@ -1941,7 +1938,7 @@ static int wm8994_put_drc_enum(struct snd_kcontrol *kcontrol,
- 			       struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
--	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);	
-+	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
- 	struct wm8994_pdata *pdata = wm8994->pdata;
- 	int drc = wm8994_get_drc(kcontrol->id.name);
- 	int value = ucontrol->value.integer.value[0];
-@@ -2044,7 +2041,7 @@ static int wm8994_put_retune_mobile_enum(struct snd_kcontrol *kcontrol,
- 					 struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
--	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);	
-+	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
- 	struct wm8994_pdata *pdata = wm8994->pdata;
- 	int block = wm8994_get_retune_mobile_block(kcontrol->id.name);
- 	int value = ucontrol->value.integer.value[0];
-@@ -2066,7 +2063,7 @@ static int wm8994_get_retune_mobile_enum(struct snd_kcontrol *kcontrol,
- 					 struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
--	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-+	struct wm8994_priv *wm8994 =snd_soc_codec_get_drvdata(codec);
- 	int block = wm8994_get_retune_mobile_block(kcontrol->id.name);
+ #define WM8993_SYSCLK_MCLK     1
+ #define WM8993_SYSCLK_FLL      2
  
- 	ucontrol->value.enumerated.item[0] = wm8994->retune_mobile_cfg[block];
-@@ -2880,10 +2877,9 @@ static int wm8994_get_fll_config(struct fll_div *fll,
- 	return 0;
- }
- 
--static int wm8994_set_fll(struct snd_soc_dai *dai, int id, int src,
-+static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
- 			  unsigned int freq_in, unsigned int freq_out)
- {
--	struct snd_soc_codec *codec = dai->codec;
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
- 	int reg_offset, ret;
- 	struct fll_div fll;
-@@ -2994,8 +2990,15 @@ static int wm8994_set_fll(struct snd_soc_dai *dai, int id, int src,
- 	return 0;
- }
- 
-+
- static int opclk_divs[] = { 10, 20, 30, 40, 55, 60, 80, 120, 160 };
- 
-+static int wm8994_set_fll(struct snd_soc_dai *dai, int id, int src,
-+			  unsigned int freq_in, unsigned int freq_out)
-+{
-+	return _wm8994_set_fll(dai->codec, id, src, freq_in, freq_out);
-+}
-+
- static int wm8994_set_dai_sysclk(struct snd_soc_dai *dai,
- 		int clk_id, unsigned int freq, int dir)
- {
-@@ -3507,10 +3510,9 @@ static struct snd_soc_dai_ops wm8994_aif3_dai_ops = {
- 	.set_tristate	= wm8994_set_tristate,
- };
- 
--struct snd_soc_dai wm8994_dai[] = {
-+static struct snd_soc_dai_driver wm8994_dai[] = {
- 	{
--		.name = "WM8994 AIF1",
--		.id = 1,
-+		.name = "wm8994-aif1",
- 		.playback = {
- 			.stream_name = "AIF1 Playback",
- 			.channels_min = 2,
-@@ -3528,8 +3530,7 @@ struct snd_soc_dai wm8994_dai[] = {
- 		.ops = &wm8994_aif1_dai_ops,
- 	},
- 	{
--		.name = "WM8994 AIF2",
--		.id = 2,
-+		.name = "wm8994-aif2",
- 		.playback = {
- 			.stream_name = "AIF2 Playback",
- 			.channels_min = 2,
-@@ -3547,8 +3548,7 @@ struct snd_soc_dai wm8994_dai[] = {
- 		.ops = &wm8994_aif2_dai_ops,
- 	},
- 	{
--		.name = "WM8994 AIF3",
--		.id = 3,
-+		.name = "wm8994-aif3",
- 		.playback = {
- 			.stream_name = "AIF3 Playback",
- 			.channels_min = 2,
-@@ -3566,20 +3566,17 @@ struct snd_soc_dai wm8994_dai[] = {
- 		.ops = &wm8994_aif3_dai_ops,
- 	}
- };
--EXPORT_SYMBOL_GPL(wm8994_dai);
- 
- #ifdef CONFIG_PM
--static int wm8994_suspend(struct platform_device *pdev, pm_message_t state)
-+static int wm8994_suspend(struct snd_soc_codec *codec, pm_message_t state)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
- 	int i, ret;
- 
- 	for (i = 0; i < ARRAY_SIZE(wm8994->fll); i++) {
- 		memcpy(&wm8994->fll_suspend[i], &wm8994->fll[i],
- 		       sizeof(struct fll_config));
--		ret = wm8994_set_fll(&codec->dai[0], i + 1, 0, 0, 0);
-+		ret = _wm8994_set_fll(codec, i + 1, 0, 0, 0);
- 		if (ret < 0)
- 			dev_warn(codec->dev, "Failed to stop FLL%d: %d\n",
- 				 i + 1, ret);
-@@ -3590,10 +3587,8 @@ static int wm8994_suspend(struct platform_device *pdev, pm_message_t state)
- 	return 0;
- }
- 
--static int wm8994_resume(struct platform_device *pdev)
-+static int wm8994_resume(struct snd_soc_codec *codec)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
- 	u16 *reg_cache = codec->reg_cache;
- 	int i, ret;
-@@ -3622,7 +3617,7 @@ static int wm8994_resume(struct platform_device *pdev)
- 		if (!wm8994->fll_suspend[i].out)
- 			continue;
- 
--		ret = wm8994_set_fll(&codec->dai[0], i + 1,
-+		ret = _wm8994_set_fll(codec, i + 1,
- 				     wm8994->fll_suspend[i].src,
- 				     wm8994->fll_suspend[i].in,
- 				     wm8994->fll_suspend[i].out);
-@@ -3640,7 +3635,7 @@ static int wm8994_resume(struct platform_device *pdev)
- 
- static void wm8994_handle_retune_mobile_pdata(struct wm8994_priv *wm8994)
- {
--	struct snd_soc_codec *codec = &wm8994->codec;
-+	struct snd_soc_codec *codec = wm8994->codec;
- 	struct wm8994_pdata *pdata = wm8994->pdata;
- 	struct snd_kcontrol_new controls[] = {
- 		SOC_ENUM_EXT("AIF1.1 EQ Mode",
-@@ -3698,16 +3693,16 @@ static void wm8994_handle_retune_mobile_pdata(struct wm8994_priv *wm8994)
- 	wm8994->retune_mobile_enum.max = wm8994->num_retune_mobile_texts;
- 	wm8994->retune_mobile_enum.texts = wm8994->retune_mobile_texts;
- 
--	ret = snd_soc_add_controls(&wm8994->codec, controls,
-+	ret = snd_soc_add_controls(wm8994->codec, controls,
- 				   ARRAY_SIZE(controls));
- 	if (ret != 0)
--		dev_err(wm8994->codec.dev,
-+		dev_err(wm8994->codec->dev,
- 			"Failed to add ReTune Mobile controls: %d\n", ret);
- }
- 
- static void wm8994_handle_pdata(struct wm8994_priv *wm8994)
- {
--	struct snd_soc_codec *codec = &wm8994->codec;
-+	struct snd_soc_codec *codec = wm8994->codec;
- 	struct wm8994_pdata *pdata = wm8994->pdata;
- 	int ret, i;
- 
-@@ -3739,7 +3734,7 @@ static void wm8994_handle_pdata(struct wm8994_priv *wm8994)
- 		wm8994->drc_texts = kmalloc(sizeof(char *)
- 					    * pdata->num_drc_cfgs, GFP_KERNEL);
- 		if (!wm8994->drc_texts) {
--			dev_err(wm8994->codec.dev,
-+			dev_err(wm8994->codec->dev,
- 				"Failed to allocate %d DRC config texts\n",
- 				pdata->num_drc_cfgs);
- 			return;
-@@ -3751,10 +3746,10 @@ static void wm8994_handle_pdata(struct wm8994_priv *wm8994)
- 		wm8994->drc_enum.max = pdata->num_drc_cfgs;
- 		wm8994->drc_enum.texts = wm8994->drc_texts;
- 
--		ret = snd_soc_add_controls(&wm8994->codec, controls,
-+		ret = snd_soc_add_controls(wm8994->codec, controls,
- 					   ARRAY_SIZE(controls));
- 		if (ret != 0)
--			dev_err(wm8994->codec.dev,
-+			dev_err(wm8994->codec->dev,
- 				"Failed to add DRC mode controls: %d\n", ret);
- 
- 		for (i = 0; i < WM8994_NUM_DRC; i++)
-@@ -3767,62 +3762,10 @@ static void wm8994_handle_pdata(struct wm8994_priv *wm8994)
- 	if (pdata->num_retune_mobile_cfgs)
- 		wm8994_handle_retune_mobile_pdata(wm8994);
- 	else
--		snd_soc_add_controls(&wm8994->codec, wm8994_eq_controls,
-+		snd_soc_add_controls(wm8994->codec, wm8994_eq_controls,
- 				     ARRAY_SIZE(wm8994_eq_controls));
- }
- 
--static int wm8994_probe(struct platform_device *pdev)
--{
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec;
--	int ret = 0;
--
--	if (wm8994_codec == NULL) {
--		dev_err(&pdev->dev, "Codec device not registered\n");
--		return -ENODEV;
--	}
--
--	socdev->card->codec = wm8994_codec;
--	codec = wm8994_codec;
--
--	/* register pcms */
--	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
--	if (ret < 0) {
--		dev_err(codec->dev, "failed to create pcms: %d\n", ret);
--		return ret;
--	}
--
--	wm8994_handle_pdata(snd_soc_codec_get_drvdata(codec));
--
--	wm_hubs_add_analogue_controls(codec);
--	snd_soc_add_controls(codec, wm8994_snd_controls,
--			     ARRAY_SIZE(wm8994_snd_controls));
--	snd_soc_dapm_new_controls(codec, wm8994_dapm_widgets,
--				  ARRAY_SIZE(wm8994_dapm_widgets));
--	wm_hubs_add_analogue_routes(codec, 0, 0);
--	snd_soc_dapm_add_routes(codec, intercon, ARRAY_SIZE(intercon));
--
--	return 0;
--}
--
--static int wm8994_remove(struct platform_device *pdev)
--{
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--
--	snd_soc_free_pcms(socdev);
--	snd_soc_dapm_free(socdev);
--
--	return 0;
--}
--
--struct snd_soc_codec_device soc_codec_dev_wm8994 = {
--	.probe = 	wm8994_probe,
--	.remove = 	wm8994_remove,
--	.suspend = 	wm8994_suspend,
--	.resume =	wm8994_resume,
--};
--EXPORT_SYMBOL_GPL(soc_codec_dev_wm8994);
--
- /**
-  * wm8994_mic_detect - Enable microphone detection via the WM8994 IRQ
-  *
-@@ -3881,7 +3824,7 @@ EXPORT_SYMBOL_GPL(wm8994_mic_detect);
- static irqreturn_t wm8994_mic_irq(int irq, void *data)
- {
- 	struct wm8994_priv *priv = data;
--	struct snd_soc_codec *codec = &priv->codec;
-+	struct snd_soc_codec *codec = priv->codec;
- 	int reg;
- 	int report;
- 
-@@ -3913,47 +3856,20 @@ static irqreturn_t wm8994_mic_irq(int irq, void *data)
- 	return IRQ_HANDLED;
- }
- 
--static int wm8994_codec_probe(struct platform_device *pdev)
-+static int wm8994_codec_probe(struct snd_soc_codec *codec)
- {
--	int ret;
- 	struct wm8994_priv *wm8994;
--	struct snd_soc_codec *codec;
--	int i;
--	u16 rev;
-+	int ret, i, rev;
- 
--	if (wm8994_codec) {
--		dev_err(&pdev->dev, "Another WM8994 is registered\n");
--		return -EINVAL;
--	}
-+	codec->control_data = dev_get_drvdata(codec->dev->parent);
- 
- 	wm8994 = kzalloc(sizeof(struct wm8994_priv), GFP_KERNEL);
--	if (!wm8994) {
--		dev_err(&pdev->dev, "Failed to allocate private data\n");
-+	if (wm8994 == NULL)
- 		return -ENOMEM;
--	}
--
--	codec = &wm8994->codec;
--
--	mutex_init(&codec->mutex);
--	INIT_LIST_HEAD(&codec->dapm_widgets);
--	INIT_LIST_HEAD(&codec->dapm_paths);
--
- 	snd_soc_codec_set_drvdata(codec, wm8994);
--	codec->control_data = dev_get_drvdata(pdev->dev.parent);
--	codec->name = "WM8994";
--	codec->owner = THIS_MODULE;
--	codec->read = wm8994_read;
--	codec->write = wm8994_write;
--	codec->readable_register = wm8994_readable;
--	codec->bias_level = SND_SOC_BIAS_OFF;
--	codec->set_bias_level = wm8994_set_bias_level;
--	codec->dai = &wm8994_dai[0];
--	codec->num_dai = 3;
--	codec->reg_cache_size = WM8994_MAX_REGISTER;
--	codec->reg_cache = &wm8994->reg_cache;
--	codec->dev = &pdev->dev;
--
--	wm8994->pdata = pdev->dev.parent->platform_data;
-+
-+	wm8994->pdata = dev_get_platdata(codec->dev->parent);
-+	wm8994->codec = codec;
- 
- 	/* Fill the cache with physical values we inherited; don't reset */
- 	ret = wm8994_bulk_read(codec->control_data, 0,
-@@ -3989,25 +3905,25 @@ static int wm8994_codec_probe(struct platform_device *pdev)
- 	ret = wm8994_request_irq(codec->control_data, WM8994_IRQ_MIC1_DET,
- 				 wm8994_mic_irq, "Mic 1 detect", wm8994);
- 	if (ret != 0)
--		dev_warn(&pdev->dev,
-+		dev_warn(codec->dev,
- 			 "Failed to request Mic1 detect IRQ: %d\n", ret);
- 
- 	ret = wm8994_request_irq(codec->control_data, WM8994_IRQ_MIC1_SHRT,
- 				 wm8994_mic_irq, "Mic 1 short", wm8994);
- 	if (ret != 0)
--		dev_warn(&pdev->dev,
-+		dev_warn(codec->dev,
- 			 "Failed to request Mic1 short IRQ: %d\n", ret);
- 
- 	ret = wm8994_request_irq(codec->control_data, WM8994_IRQ_MIC2_DET,
- 				 wm8994_mic_irq, "Mic 2 detect", wm8994);
- 	if (ret != 0)
--		dev_warn(&pdev->dev,
-+		dev_warn(codec->dev,
- 			 "Failed to request Mic2 detect IRQ: %d\n", ret);
- 
- 	ret = wm8994_request_irq(codec->control_data, WM8994_IRQ_MIC2_SHRT,
- 				 wm8994_mic_irq, "Mic 2 short", wm8994);
- 	if (ret != 0)
--		dev_warn(&pdev->dev,
-+		dev_warn(codec->dev,
- 			 "Failed to request Mic2 short IRQ: %d\n", ret);
- 
- 	/* Remember if AIFnLRCLK is configured as a GPIO.  This should be
-@@ -4038,13 +3954,8 @@ static int wm8994_codec_probe(struct platform_device *pdev)
- 		wm8994->lrclk_shared[1] = 0;
- 	}
- 
--	for (i = 0; i < ARRAY_SIZE(wm8994_dai); i++)
--		wm8994_dai[i].dev = codec->dev;
--
- 	wm8994_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
--	wm8994_codec = codec;
--
- 	/* Latch volume updates (right only; we always do left then right). */
- 	snd_soc_update_bits(codec, WM8994_AIF1_DAC1_RIGHT_VOLUME,
- 			    WM8994_AIF1DAC1_VU, WM8994_AIF1DAC1_VU);
-@@ -4081,24 +3992,18 @@ static int wm8994_codec_probe(struct platform_device *pdev)
- 
- 	wm8994_update_class_w(codec);
- 
--	ret = snd_soc_register_codec(codec);
--	if (ret != 0) {
--		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
--		goto err_irq;
--	}
--
--	ret = snd_soc_register_dais(wm8994_dai, ARRAY_SIZE(wm8994_dai));
--	if (ret != 0) {
--		dev_err(codec->dev, "Failed to register DAIs: %d\n", ret);
--		goto err_codec;
--	}
-+	wm8994_handle_pdata(wm8994);
- 
--	platform_set_drvdata(pdev, wm8994);
-+	wm_hubs_add_analogue_controls(codec);
-+	snd_soc_add_controls(codec, wm8994_snd_controls,
-+			     ARRAY_SIZE(wm8994_snd_controls));
-+	snd_soc_dapm_new_controls(codec, wm8994_dapm_widgets,
-+				  ARRAY_SIZE(wm8994_dapm_widgets));
-+	wm_hubs_add_analogue_routes(codec, 0, 0);
-+	snd_soc_dapm_add_routes(codec, intercon, ARRAY_SIZE(intercon));
- 
- 	return 0;
- 
--err_codec:
--	snd_soc_unregister_codec(codec);
- err_irq:
- 	wm8994_free_irq(codec->control_data, WM8994_IRQ_MIC2_SHRT, wm8994);
- 	wm8994_free_irq(codec->control_data, WM8994_IRQ_MIC2_DET, wm8994);
-@@ -4109,31 +4014,50 @@ err:
- 	return ret;
- }
- 
--static int __devexit wm8994_codec_remove(struct platform_device *pdev)
-+static int  wm8994_codec_remove(struct snd_soc_codec *codec)
- {
--	struct wm8994_priv *wm8994 = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = &wm8994->codec;
-+	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
- 
- 	wm8994_set_bias_level(codec, SND_SOC_BIAS_OFF);
--	snd_soc_unregister_dais(wm8994_dai, ARRAY_SIZE(wm8994_dai));
--	snd_soc_unregister_codec(&wm8994->codec);
-+
- 	wm8994_free_irq(codec->control_data, WM8994_IRQ_MIC2_SHRT, wm8994);
- 	wm8994_free_irq(codec->control_data, WM8994_IRQ_MIC2_DET, wm8994);
- 	wm8994_free_irq(codec->control_data, WM8994_IRQ_MIC1_SHRT, wm8994);
- 	wm8994_free_irq(codec->control_data, WM8994_IRQ_MIC1_DET, wm8994);
- 	kfree(wm8994);
--	wm8994_codec = NULL;
- 
- 	return 0;
- }
- 
-+static struct snd_soc_codec_driver soc_codec_dev_wm8994 = {
-+	.probe =	wm8994_codec_probe,
-+	.remove =	wm8994_codec_remove,
-+	.suspend =	wm8994_suspend,
-+	.resume =	wm8994_resume,
-+	.read = wm8994_read,
-+	.write = wm8994_write,
-+	.set_bias_level = wm8994_set_bias_level,
-+};
-+
-+static int __devinit wm8994_probe(struct platform_device *pdev)
-+{
-+	return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_wm8994,
-+			wm8994_dai, ARRAY_SIZE(wm8994_dai));
-+}
-+
-+static int __devexit wm8994_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_codec(&pdev->dev);
-+	return 0;
-+}
-+
- static struct platform_driver wm8994_codec_driver = {
- 	.driver = {
- 		   .name = "wm8994-codec",
- 		   .owner = THIS_MODULE,
- 		   },
--	.probe = wm8994_codec_probe,
--	.remove = __devexit_p(wm8994_codec_remove),
-+	.probe = wm8994_probe,
-+	.remove = __devexit_p(wm8994_remove),
- };
- 
- static __init int wm8994_init(void)
-diff --git a/sound/soc/codecs/wm8994.h b/sound/soc/codecs/wm8994.h
-index 2e0ca67..d8dce26 100644
---- a/sound/soc/codecs/wm8994.h
-+++ b/sound/soc/codecs/wm8994.h
-@@ -11,9 +11,6 @@
- 
- #include <sound/soc.h>
- 
--extern struct snd_soc_codec_device soc_codec_dev_wm8994;
--extern struct snd_soc_dai wm8994_dai[];
--
- /* Sources for AIF1/2 SYSCLK - use with set_dai_sysclk() */
- #define WM8994_SYSCLK_MCLK1 1
- #define WM8994_SYSCLK_MCLK2 2
 -- 
 1.7.0.4
