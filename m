@@ -1,22 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: i.MX SDMA support
-Date: Tue, 10 Aug 2010 14:39:06 +0100
-Message-ID: <20100810133906.GB6416@rakim.wolfsonmicro.main>
-References: <20100809091157.GC20065@pengutronix.de>
-	<1281350823.3035.54.camel@odin>
-	<20100809121956.GA27749@pengutronix.de>
-	<64008892-3D75-4309-A623-CCE9B335F77F@opensource.wolfsonmicro.com>
-	<20100810131527.GK27749@pengutronix.de>
+Subject: Re: About the platform_name field in snd_soc_dai_link
+Date: Tue, 10 Aug 2010 14:47:55 +0100
+Message-ID: <20100810134755.GC6416@rakim.wolfsonmicro.main>
+References: <20100810133818.GL27749@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C107024385
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5F8DB24459
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Aug 2010 15:39:07 +0200 (CEST)
+	Tue, 10 Aug 2010 15:47:56 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20100810131527.GK27749@pengutronix.de>
+In-Reply-To: <20100810133818.GL27749@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,20 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 10, 2010 at 03:15:27PM +0200, Sascha Hauer wrote:
+On Tue, Aug 10, 2010 at 03:38:18PM +0200, Sascha Hauer wrote:
 
-> Linus Walleij just proposed to implement the SDMA engine as part of the
-> dmaengine API, so expect some delays here.
+> I'm wondering what exactly a snd_soc_platform is. Apparently the
+> snd_pcm_ops/pcm_new/pcm_free are specific to a platform. For my
+> understanding these operations are more specific to a cpu_dai. Looking
+> at the tree it seems that each cpu_dai has exactly one possible
+> platform, which seems logical to me because the cpu_dai knows how to
+> transfer the data.
 
-I saw.  I suspect it might be sensible to merge SDMA support and then do
-updates for DMAENGINE as followup work, the lack of it is painful enough
-to make the feature worth the win.
+They're for the DMA bit of the CPU.  While most platforms have a single
+DMA controller (though some have more than one) it's moderately common
+to have more than one DAI (eg, dedicated I2S and DSP mode controllers
+rather than a programmable serial port, or an AC'97 controller) so it's
+useful to share the DMA code.
 
-> I just looked at the i.MX part in the multi-component update and this
-> is currently far from being in a working state, so there's still some
-> work to do before thinking about possible conflicts...
+> My problem on i.MX is that I currently have two possible cpu dais
+> (imx-ssi.[01]) and each can be configured to use dma or fiq depending
+> on the dma capabilities. So the cpu_dai knows which pcm_ops we have
+> to use, but currently it's the soc glue code which has to decide in
+> platform_name. Am I understanding something wrong here?
 
-Oh dear.  It has been difficult to get testers, unfortunately.
+This is mostly a holdover from the existing (current mainline) ASoC
+structuring at the minute, that also has the DMA configured per machine.
+This may change depending on future hardware requirements, though.
