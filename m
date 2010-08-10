@@ -1,16 +1,19 @@
-From: Smilen Dimitrov <sd@imi.aau.dk>
-Subject: Minivosc entry on Wiki - discuss
-Date: Tue, 10 Aug 2010 12:28:46 +0200
-Message-ID: <4C6129DE.8040602@imi.aau.dk>
-Reply-To: sd@imi.aau.dk
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: amp power down event (resend with the
+	correct	email)
+Date: Tue, 10 Aug 2010 11:31:21 +0100
+Message-ID: <20100810103120.GA4020@sirena.org.uk>
+References: <4C604381.2080000@gandalf.sssup.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mho-02-ewr.mailhop.org (mho-02-ewr.mailhop.org [204.13.248.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id AF11A2457C
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4C82024582
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Aug 2010 12:28:51 +0200 (CEST)
+	Tue, 10 Aug 2010 12:31:22 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4C604381.2080000@gandalf.sssup.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,38 +23,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Michael Trimarchi <trimarchi@gandalf.sssup.it>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi ALSA-devel,
+On Mon, Aug 09, 2010 at 08:05:53PM +0200, Michael Trimarchi wrote:
 
-Since I found programming ALSA drivers - and understanding device 
-drivers in general - quite overwhelming, I had posted my starting steps 
-in the form of a *mini*mal *v*irtual *osc*illator ALSA driver code 
-(minivosc), and a  discussion/tutorial about it on:
+> I'm t rying to unde rstand when the event a re called.
 
-http://www.alsa-project.org/main/index.php/Minivosc
+As I believe I have reminded you on a number of occasions you should
+always CC the maintainers on Linux kernel queries.
 
-Originally intended to be "short", it is now in itself a mouthful - just 
-like all the other introductory stuff / tutorials I could find :) Still, 
-I don't think having an additional point of view will hurt...
+> and receive the event => OFF. In the aplay example this happen
+> afte r some seconds but in my application I don't receive the OFF
+> event. What is w rong?
 
-So, I would please ask the community to have a glance at it - and let me 
-know if there is something wrong with it - or if additional things 
-(links, comments) should be added.
-
-
-Also, I could notice that there are two ALSA "wiki's":
-
-Main Page - AlsaProject -
-http://www.alsa-project.org/main/index.php/Main_Page
-
-ALSA unofficial -
-http://alsa.opensrc.org/index.php/Main_Page
-
-I posted the wiki entry under the 'official' one - if it is 
-inappropriate, please let me know, and I'll move it elsewhere...
-
-
-Well - please let me know if you have any comments about this entry,
-Cheers!
+Your application will have left audio going to the speaker.  This will
+either be a running playback or an analogue path.
