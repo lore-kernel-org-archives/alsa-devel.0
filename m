@@ -1,18 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: About the platform_name field in snd_soc_dai_link
-Date: Tue, 10 Aug 2010 14:47:55 +0100
-Message-ID: <20100810134755.GC6416@rakim.wolfsonmicro.main>
-References: <20100810133818.GL27749@pengutronix.de>
+From: Niels Mayer <nielsmayer@gmail.com>
+Subject: Re: [LAD] [LAU] mudita24 1.02 -- improved
+	envy24control mixer/router for ice1712-based sound-cards
+Date: Tue, 10 Aug 2010 07:06:17 -0700
+Message-ID: <AANLkTikJHOv5ZXDAtgrRCaibuE2WJrfGaG1d+B=-4kFD@mail.gmail.com>
+References: <AANLkTinM-sQn5L=TkZi9Jb1wWCqvxTe1vtxPkVxCkMqK@mail.gmail.com>
+	<AANLkTikiLvBdFmxJvqEB0duhTtJZBF4+i33K-Bxgavkz@mail.gmail.com>
+	<201008092045.49600.termtech@rogers.com>
+	<201008092053.21988.termtech@rogers.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5F8DB24459
+Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
+	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id 664DC2447F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 10 Aug 2010 15:47:56 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100810133818.GL27749@pengutronix.de>
+	Tue, 10 Aug 2010 16:06:31 +0200 (CEST)
+Received: by pzk5 with SMTP id 5so5128057pzk.38
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2010 07:06:29 -0700 (PDT)
+In-Reply-To: <201008092053.21988.termtech@rogers.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +27,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "Tim E. Real" <termtech@rogers.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, linux-audio-dev@lists.linuxaudio.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 10, 2010 at 03:38:18PM +0200, Sascha Hauer wrote:
-
-> I'm wondering what exactly a snd_soc_platform is. Apparently the
-> snd_pcm_ops/pcm_new/pcm_free are specific to a platform. For my
-> understanding these operations are more specific to a cpu_dai. Looking
-> at the tree it seems that each cpu_dai has exactly one possible
-> platform, which seems logical to me because the cpu_dai knows how to
-> transfer the data.
-
-They're for the DMA bit of the CPU.  While most platforms have a single
-DMA controller (though some have more than one) it's moderately common
-to have more than one DAI (eg, dedicated I2S and DSP mode controllers
-rather than a programmable serial port, or an AC'97 controller) so it's
-useful to share the DMA code.
-
-> My problem on i.MX is that I currently have two possible cpu dais
-> (imx-ssi.[01]) and each can be configured to use dma or fiq depending
-> on the dma capabilities. So the cpu_dai knows which pcm_ops we have
-> to use, but currently it's the soc glue code which has to decide in
-> platform_name. Am I understanding something wrong here?
-
-This is mostly a holdover from the existing (current mainline) ASoC
-structuring at the minute, that also has the DMA configured per machine.
-This may change depending on future hardware requirements, though.
+T24gTW9uLCBBdWcgOSwgMjAxMCBhdCA1OjUzIFBNLCBUaW0gRS4gUmVhbCA8dGVybXRlY2hAcm9n
+ZXJzLmNvbT4gd3JvdGU6Cj4gT24gQXVndXN0IDksIDIwMTAgMDg6NDU6NDkgcG0gVGltIEUuIFJl
+YWwgd3JvdGU6Cj4+IEhleSBoZXkgaGV5IQo+PiBMb29rIHdoYXQgSSd2ZSBnb3QuLi4KPj4gSSB0
+aG91Z2h0IGl0IGltcG9ydGFudCBhbmQgY29tcGxldGUgZW5vdWdoIHRvIGxldCB5b3Ugc2VlCj4+
+IMKgd2hlcmUgaXQgaXMgZ29pbmcuCgpKdXN0IGFwcGxpZWQgdGhlIHBhdGNoZXMsIGNvbXBpbGVk
+Li4uIEFXRVNPTUUhIFNsaWRlcnMsIGRCIHNjYWxlcyBhbmQKbWV0ZXJzIGluICJNb25pdG9yIElu
+cHV0cyIgYW5kICJNb25pdG9yIFBDTXMiIHJlc2l6ZSB3aGVuIHRoZSB3aW5kb3cKaXMgc3RyZXRj
+aGVkISBJJ20gbG9va2luZyBmb3J3YXJkIHRvIHRoZSBjb21wbGV0aW9uIG9mIHlvdXIgVE9ETyBp
+dGVtcwppbiBBVVRIT1JTIGVzcCB0aGUgZGlnaXRhbCBtaXhlciBtZXRlciByZXNpemluZyB3aXRo
+IHN0cmV0Y2h5IHNjYWxlcwpqdXN0IGxpa2UgdGhlIG1peGVyJ3MgY2hhbm5lbCBtZXRlcnMuIExl
+dCBtZSBrbm93IHdoZW4geW91IGhhdmUgdGhpbmdzCmZpbmFsaXplZCwgYW5kIEknbGwgYWRkIGEg
+bXVkaXRhMjQgMS4wNCB2ZXJzaW9uIHRvCmh0dHA6Ly9uaWVsc21heWVyLmNvbS9lbnZ5MjRjb250
+cm9sLyAuCgpPZiBjb3Vyc2UgdGhlIG5ldyByZXNpemVhYmlsaXR5IGZlYXR1cmUgYnJpbmdzIHVw
+IHRoZSBpc3N1ZSB0aGF0IHRoZQpzbGlkZXJzIGNhbiBiZWNvbWUgbG9uZyBlbm91Z2ggdG8gZGlz
+cGxheSBkaWZmZXJlbnQgcG9zaXRpb25zIGZvciB0d28Kc2xpZGVycyBhdCB0aGUgc2FtZSBhdHRl
+bnVhdG9yIGRCIHZhbHVlLiBQZXJoYXBzIHRoaXMgY291bGQgYmUKcmVtZWRpZWQgYnkgYW4gb24t
+cmVsZWFzZSBjYWxsYmFjayB0aGF0IHNldHMgdGhlIHNsaWRlciBiYWNrIHRvIHRoZQpjZW50ZXIg
+b2YgaXQncyBhY3R1YWwgZGJGUyB2YWx1ZSwgZS5nLiAtMS41ZEIsIC0zLjAsIC00LjUsIC02LjAg
+ZXRjLi4uClRoaXMgYmVjb21lcyBlc3BlY2lhbGx5IG5vdGljZWFibGUgb24gYSBzdHJldGNoZWQg
+c2xpZGVyIGluICJNb25pdG9yCklucHV0cyIgb3IgIk1vbml0b3IgUENNcyIgZHVlIHRvIHRoZSAx
+LjVkQiBzdGVwcyBwcm92aWRlZCBieSB0aGUgMjRiaXQKYXR0ZW51YXRvcnMgZmVlZGluZyB0aGUg
+ZGlnaXRhbCBtaXhlci4gSXQgZG9lc24ndCBzZWVtIHRvIGJlIGFzCm5vdGljZWFibGUgd2l0aCB0
+aGUgMC41ZEIgc3RlcHMgaW4gdGhlICJBbmFsb2cgVm9sdW1lcyIgcGFuZWwuCkhvd2V2ZXIsIG9u
+IGEgZnVsbHktaGVpZ2h0LWV4cGFuZGVkIHdpbmRvdywgeW91IGNhbiBub3RpY2UsIGZvcgpleGFt
+cGxlLCB0d28gc2xpZGVycyBvZiBhIHN0ZXJlbyBwYWlyIHNob3dpbmcgdGhlIHNhbWUgZEIgdmFs
+dWUgYnV0CnNsaWdodGx5IGRpZmZlcmVudCBwb3NpdGlvbnMgdmlzdWFsbHkuCgpPbmUgInJlZ3Jl
+c3Npb24iIGluIHlvdXIgY2hhbmdlOiBmb3JtZXJseSwgeW91IGNvdWxkIGNsaWNrIHdpdGhpbiB0
+aGUKc2NhbGUvbGFiZWxpbmcgYXJlYSB0byBzZXQgZm9jdXMgb24gYSBnaXZlbiBzbGlkZXIuIFRo
+aXMgaXMgYSBsYXJnZQphbmQgZWFzeS10by1jbGljayBhcmVhIGlmIHlvdSBqdXN0IHdhbnQgdG8g
+c2V0IEdVSSBmb2N1cyB0byB0aGF0CnBhcnRpY3VsYXIgY2hhbm5lbCBhbmQgdXNlIHRoZSBzY3Jv
+bGwtd2hlZWwgb3Iga2V5Ym9hcmQgdXAvZG93biBhcnJvd3MKdG8gY2hhbmdlIHZhbHVlcykuIEJl
+Y2F1c2UgaWYgeW91IGNsaWNrIGluIHRoZSBzbGlkZXIgYXJlYSB0byBzZXQgdGhlCnNlbGVjdGlv
+biwgdW5sZXNzIHlvdSBjbGljayBvbiB0aGUgc2xpZGVyIGl0c2VsZiwgdGhlIHZhbHVlIGdldHMK
+Y2hhbmdlZC4KCj4gT25lIG1vcmUgdGhpbmc6IEJlY2F1c2Ugb2YgbXkgdXNlIG9mIGd0a19hZGp1
+c3RtZW50X2dldF9wYWdlX2luY3JlbWVudCgpCj4gwqBhbmQgZnJpZW5kcywgd2hpY2ggcmVxdWly
+ZSBndGsrIDIuMTQsIEkgdGhpbmsgaXQgbWF5IGJlIG5lY2Vzc2FyeSB0bwo+IMKgcmVsZWFzZSB0
+aGlzIGFzIGEgc2VwYXJhdGUgcHJvZ3JhbSB0aGFuIGVudnkyNGNvbnRyb2wuCj4gVGhlcmUgbWF5
+IGJlIHBlb3BsZSBvdXQgdGhlcmUgd2l0aCBvbGQgc2V0dXBzIHdobyBuZWVkIHRoZSBvbGQgb25l
+Lgo+IFRoZSBBTFNBIGZvbGtzIG1heSBub3QgbGlrZSByZXBsYWNpbmcgdGhlIG9sZCBvbmUgd2l0
+aCBtdWRpdGEyNCBmb3IKPiB0aGF0IHJlYXNvbi4KClNlZW1zIGxpa2UgdGhlcmUgc2hvdWxkIGJl
+IGEgd2F5IGZvciB0aGVpciBidWlsZCBzeXN0ZW0gdG8gaGFuZGxlCnNraXBwaW5nIHByb2dyYW1z
+IHRoYXQgdXNlIGd0azIgaWYgb25seSBndGsxIGF2YWlsYWJsZSAuLi4gYXQgbGVhc3QKZm9yIHRo
+ZSBteXJpYWQgcGFja2FnZXMgaW4KYWxzYS10b29scyAiU3BlY2lhbGlzdCB0b29scyBmb3IgQUxT
+QSIgLS0gd2hpY2ggbWlnaHQgYWxzbyBiZSBhCnBlcmZlY3RseSBhcHByb3ByaWF0ZSBwbGFjZSB0
+byBwdXQgYSBsYXRlc3QtZ3RrMi11c2luZyB0b29sIHByb3ZpZGluZwpzcGVjaWFsIGNvbnRyb2wg
+dG8gYSBzcGVjaWZpYyBzZXQgb2YgY2FyZHMuIEkgaGF2ZW4ndCBzdXJ2ZXllZCB0aGUKb3RoZXIg
+cGFja2FnZXMgdG8gc2VlIHdoYXQga2luZCBvZiBkZXBlbmRlbmNpZXMgdGhleSBoYXZlLi4uIEkn
+bQpDQydpbmcgdG8gYWxzYS1kZXZlbCBpbiBob3BlcyBvZiBnZXR0aW5nIGFuIGFuc3dlciBvbiB0
+aGlzLgoodGhyZWFkIHN1bW1hcnk6Cmh0dHA6Ly9saW51eGF1ZGlvLm9yZy9tYWlsYXJjaGl2ZS9s
+YWQvMjAxMC84LzgvMTcyNjIzCmh0dHA6Ly9saW51eGF1ZGlvLm9yZy9tYWlsYXJjaGl2ZS9sYWQv
+MjAxMC84LzgvMTcyNjI5ICkKCk5pZWxzCmh0dHA6Ly9uaWVsc21heWVyLmNvbQpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
