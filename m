@@ -1,17 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] sound: usb: USB3 Super Speed patch
-Date: Wed, 11 Aug 2010 08:58:29 +0200
-Message-ID: <4C624A15.206@ladisch.de>
-References: <F6C4814A9B336243ABC3D1FB44E08AE8012C2846E3@US01WXMBX1.internal.synopsys.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: ASoC: Make ams-delta/cx20442 pair back working for
+	multi-component
+Date: Wed, 11 Aug 2010 10:00:00 +0300
+Message-ID: <201008111000.00580.peter.ujfalusi@nokia.com>
+References: <201008110129.34662.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtprelay03.ispgateway.de (smtprelay03.ispgateway.de
-	[80.67.31.41]) by alsa0.perex.cz (Postfix) with ESMTP id 2CD2A103838
+Received: from mgw-sa02.nokia.com (mgw-sa02.nokia.com [147.243.1.48])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8626210384A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Aug 2010 08:59:01 +0200 (CEST)
-In-Reply-To: <F6C4814A9B336243ABC3D1FB44E08AE8012C2846E3@US01WXMBX1.internal.synopsys.com>
+	Wed, 11 Aug 2010 09:00:05 +0200 (CEST)
+In-Reply-To: <201008110129.34662.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,34 +22,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Paul Zimmerman <Paul.Zimmerman@synopsys.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@suse.de>, "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, ext Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 List-Id: alsa-devel@alsa-project.org
 
-Paul Zimmerman wrote:
-> This patch adds Super Speed support to the USB drivers under sound/. It adds
-> tests for USB_SPEED_SUPER to all the places that check for the USB speed.
+Hello Janusz!
 
-> +++ b/sound/usb/midi.c
-> @@ -834,7 +834,8 @@ static void snd_usbmidi_us122l_output(struct snd_usb_midi_out_endpoint *ep,
-> +++ b/sound/usb/misc/ua101.c
-> +++ b/sound/usb/usx2y/us122l.c
-> +++ b/sound/usb/usx2y/usb_stream.c
+Since you have not sent patch for the OMAP McBSP part, I assume that it is =
 
-These devices do not support super speed.
+working correctly on OMAP1.
+Thanks for taking time for testing it!
 
-> +++ b/sound/usb/pcm.c
-> -	if (snd_usb_get_speed(subs->dev) != USB_SPEED_HIGH)
-> +	if (snd_usb_get_speed(subs->dev) != USB_SPEED_HIGH &&
-> +	    snd_usb_get_speed(subs->dev) != USB_SPEED_SUPER)
->  		/* full speed devices have fixed data packet interval */
->  		ptmin = 1000;
+On Wednesday 11 August 2010 02:29:32 ext Janusz Krzysztofik wrote:
+> 1.
+> After a static codec pointer removal from the sound/soc/codecs/cx20442.c
+> code, both codec and card specific tty line discipline functions lost
+> their access to the codec structure data. Arrange for passing the pointer
+> back to the codec tty ldisc bits from the card initialization code.
+> =
 
-In places like this, it would be better to write something like
-	if (snd_usb_get_speed(subs->dev) == USB_SPEED_FULL)
-or
-	if (snd_usb_get_speed(subs->dev) < USB_SPEED_HIGH)
+> 2.
+> Update incosistent codec device naming in the card code.
+> =
+
+> 3.
+> Since a new element, control_data, has been added to the cx20442_priv
+> structure, it looks like the old snd_soc_codec->control_data may be
+> scheduled for removal. To avoid problems in the near future, use the
+> cx20442_priv->control_data instead of the snd_soc_codec->control_data
+> throughout the cx20442 code.
+
+I believe that the snd_soc_codec->control_data is not going away, the =
+
+control_data in the private struct is used to pass this information from bu=
+s =
+
+probe to soc probe within the private structure.
+If I'm not wrong, the reasoning is that sever chip can have I2C/SPI/etc con=
+trol =
+
+interfaces, and in this way the soc does not need to know anything about it=
+, =
+
+since the probe for the used bus will set the needed things for later use.
+I might misunderstood something, Mark or Liam will correct me for sure ;)
+
+> In the ams-delta card code, check for the
+> snd_soc_codec->hw_write not NULL instead of the
+> snd_soc_codec->control_data.
+> =
+
+> Created and tested on Amstrad Delta against
+> git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git,
+> commit a212dd5b2e1da045cbf423c70c87f48265531de4.
 
 
-Regards,
-Clemens
+-- =
+
+P=E9ter
