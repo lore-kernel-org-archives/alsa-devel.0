@@ -1,8 +1,8 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [PATCH 12/14] ASoC: multi-component - Marvell Kirkwood
+Subject: [PATCH 14/14] ASoC: multi-component - Ingenic J4740
 	Platform
-Date: Wed, 11 Aug 2010 09:46:31 +0100
-Message-ID: <1281516393-6060-13-git-send-email-lrg@slimlogic.co.uk>
+Date: Wed, 11 Aug 2010 09:46:33 +0100
+Message-ID: <1281516393-6060-15-git-send-email-lrg@slimlogic.co.uk>
 References: <1281516393-6060-1-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,11 +10,11 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
 	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3FAEE10387D
+	by alsa0.perex.cz (Postfix) with ESMTP id 96D8410389A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Aug 2010 10:47:15 +0200 (CEST)
+	Wed, 11 Aug 2010 10:47:18 +0200 (CEST)
 Received: by mail-wy0-f179.google.com with SMTP id 42so11847202wyb.38
-	for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2010 01:47:15 -0700 (PDT)
+	for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2010 01:47:18 -0700 (PDT)
 In-Reply-To: <1281516393-6060-1-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,10 +26,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Arnaud Patard <apatard@mandriva.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Update the Marvell Kirkwood platform and machines to new multi-component model.
+Update the Injenic J4740 platform and machines to new multi-component model.
 
 This patch changes the machine drivers for multi-component as follows :-
 
@@ -43,467 +43,398 @@ This patch also changes the DAI and platform DAM drivers as follows :-
    have platform data.
  o DAI and Platform DMA drivers have private data accessors.
 
-Other notable changes required for multi-component support:-
+Some fixes:-
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
- o Add platform devices for PCM.
-
-CC: Arnaud Patard <apatard@mandriva.com>
 Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
 ---
- arch/arm/mach-kirkwood/common.c      |    6 +++
- sound/soc/kirkwood/kirkwood-dma.c    |   64 ++++++++++++++++++++++------------
- sound/soc/kirkwood/kirkwood-dma.h    |   17 ---------
- sound/soc/kirkwood/kirkwood-i2s.c    |   54 ++++++++++++++++-------------
- sound/soc/kirkwood/kirkwood-i2s.h    |   17 ---------
- sound/soc/kirkwood/kirkwood-openrd.c |   21 ++++-------
- 6 files changed, 85 insertions(+), 94 deletions(-)
- delete mode 100644 sound/soc/kirkwood/kirkwood-dma.h
- delete mode 100644 sound/soc/kirkwood/kirkwood-i2s.h
+ sound/soc/jz4740/jz4740-i2s.c |  108 ++++++++++++++++++++---------------------
+ sound/soc/jz4740/jz4740-i2s.h |    2 -
+ sound/soc/jz4740/jz4740-pcm.c |   18 +++----
+ sound/soc/jz4740/jz4740-pcm.h |    2 -
+ sound/soc/jz4740/qi_lb60.c    |   20 +++-----
+ 5 files changed, 69 insertions(+), 81 deletions(-)
 
-diff --git a/arch/arm/mach-kirkwood/common.c b/arch/arm/mach-kirkwood/common.c
-index e1f3efe..0769013 100644
---- a/arch/arm/mach-kirkwood/common.c
-+++ b/arch/arm/mach-kirkwood/common.c
-@@ -896,10 +896,16 @@ static struct platform_device kirkwood_i2s_device = {
- 	},
- };
- 
-+static struct platform_device kirkwood_pcm_device = {
-+	.name		= "kirkwood-pcm",
-+	.id		= -1,
-+};
-+
- void __init kirkwood_audio_init(void)
- {
- 	kirkwood_clk_ctrl |= CGC_AUDIO;
- 	platform_device_register(&kirkwood_i2s_device);
-+	platform_device_register(&kirkwood_pcm_device);
+diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
+index eb518f0..1dd6cf5 100644
+--- a/sound/soc/jz4740/jz4740-i2s.c
++++ b/sound/soc/jz4740/jz4740-i2s.c
+@@ -106,15 +106,10 @@ static inline void jz4740_i2s_write(const struct jz4740_i2s *i2s,
+ 	writel(value, i2s->base + reg);
  }
  
- /*****************************************************************************
-diff --git a/sound/soc/kirkwood/kirkwood-dma.c b/sound/soc/kirkwood/kirkwood-dma.c
-index a30205b..693049d 100644
---- a/sound/soc/kirkwood/kirkwood-dma.c
-+++ b/sound/soc/kirkwood/kirkwood-dma.c
-@@ -18,7 +18,6 @@
- #include <linux/dma-mapping.h>
- #include <linux/mbus.h>
- #include <sound/soc.h>
--#include "kirkwood-dma.h"
- #include "kirkwood.h"
- 
- #define KIRKWOOD_RATES \
-@@ -123,9 +122,10 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
- 	int err;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
--	struct snd_soc_dai *cpu_dai = soc_runtime->dai->cpu_dai;
-+	struct snd_soc_platform *platform = soc_runtime->platform;
-+	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
- 	struct kirkwood_dma_data *priv;
--	struct kirkwood_dma_priv *prdata = cpu_dai->private_data;
-+	struct kirkwood_dma_priv *prdata = snd_soc_platform_get_drvdata(platform);
- 	unsigned long addr;
- 
- 	priv = snd_soc_dai_get_dma_data(cpu_dai, substream);
-@@ -151,7 +151,7 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
- 	if (err < 0)
- 		return err;
- 
--	if (soc_runtime->dai->cpu_dai->private_data == NULL) {
-+	if (prdata == NULL) {
- 		prdata = kzalloc(sizeof(struct kirkwood_dma_priv), GFP_KERNEL);
- 		if (prdata == NULL)
- 			return -ENOMEM;
-@@ -165,7 +165,7 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
- 			return -EBUSY;
- 		}
- 
--		soc_runtime->dai->cpu_dai->private_data = prdata;
-+		snd_soc_platform_set_drvdata(platform, prdata);
- 
- 		/*
- 		 * Enable Error interrupts. We're only ack'ing them but
-@@ -191,8 +191,9 @@ static int kirkwood_dma_open(struct snd_pcm_substream *substream)
- static int kirkwood_dma_close(struct snd_pcm_substream *substream)
+-static inline struct jz4740_i2s *jz4740_dai_to_i2s(struct snd_soc_dai *dai)
+-{
+-	return dai->private_data;
+-}
+-
+ static int jz4740_i2s_startup(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *dai)
  {
- 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
--	struct snd_soc_dai *cpu_dai = soc_runtime->dai->cpu_dai;
--	struct kirkwood_dma_priv *prdata = cpu_dai->private_data;
-+	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
-+	struct snd_soc_platform *platform = soc_runtime->platform;
-+	struct kirkwood_dma_priv *prdata = snd_soc_platform_get_drvdata(platform);
- 	struct kirkwood_dma_data *priv;
+-	struct jz4740_i2s *i2s = jz4740_dai_to_i2s(dai);
++	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 	uint32_t conf, ctrl;
  
- 	priv = snd_soc_dai_get_dma_data(cpu_dai, substream);
-@@ -209,7 +210,7 @@ static int kirkwood_dma_close(struct snd_pcm_substream *substream)
- 		writel(0, priv->io + KIRKWOOD_ERR_MASK);
- 		free_irq(priv->irq, prdata);
- 		kfree(prdata);
--		soc_runtime->dai->cpu_dai->private_data = NULL;
-+		snd_soc_platform_set_drvdata(platform, NULL);
+ 	if (dai->active)
+@@ -136,7 +131,7 @@ static int jz4740_i2s_startup(struct snd_pcm_substream *substream,
+ static void jz4740_i2s_shutdown(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *dai)
+ {
+-	struct jz4740_i2s *i2s = jz4740_dai_to_i2s(dai);
++	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 	uint32_t conf;
+ 
+ 	if (!dai->active)
+@@ -152,7 +147,7 @@ static void jz4740_i2s_shutdown(struct snd_pcm_substream *substream,
+ static int jz4740_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	struct snd_soc_dai *dai)
+ {
+-	struct jz4740_i2s *i2s = jz4740_dai_to_i2s(dai);
++	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 
+ 	uint32_t ctrl;
+ 	uint32_t mask;
+@@ -186,7 +181,7 @@ static int jz4740_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 
+ static int jz4740_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+-	struct jz4740_i2s *i2s = jz4740_dai_to_i2s(dai);
++	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 
+ 	uint32_t format = 0;
+ 	uint32_t conf;
+@@ -238,7 +233,7 @@ static int jz4740_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+ {
+-	struct jz4740_i2s *i2s = jz4740_dai_to_i2s(dai);
++	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 	enum jz4740_dma_width dma_width;
+ 	struct jz4740_pcm_config *pcm_config;
+ 	unsigned int sample_size;
+@@ -288,7 +283,7 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
+ static int jz4740_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 	unsigned int freq, int dir)
+ {
+-	struct jz4740_i2s *i2s = jz4740_dai_to_i2s(dai);
++	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 	struct clk *parent;
+ 	int ret = 0;
+ 
+@@ -312,7 +307,7 @@ static int jz4740_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 
+ static int jz4740_i2s_suspend(struct snd_soc_dai *dai)
+ {
+-	struct jz4740_i2s *i2s = jz4740_dai_to_i2s(dai);
++	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 	uint32_t conf;
+ 
+ 	if (dai->active) {
+@@ -330,7 +325,7 @@ static int jz4740_i2s_suspend(struct snd_soc_dai *dai)
+ 
+ static int jz4740_i2s_resume(struct snd_soc_dai *dai)
+ {
+-	struct jz4740_i2s *i2s = jz4740_dai_to_i2s(dai);
++	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 	uint32_t conf;
+ 
+ 	clk_enable(i2s->clk_aic);
+@@ -346,11 +341,38 @@ static int jz4740_i2s_resume(struct snd_soc_dai *dai)
+ 	return 0;
+ }
+ 
+-static int jz4740_i2s_probe(struct platform_device *pdev, struct snd_soc_dai *dai)
++static void jz4740_i2c_init_pcm_config(struct jz4740_i2s *i2s)
+ {
+-	struct jz4740_i2s *i2s = jz4740_dai_to_i2s(dai);
++	struct jz4740_dma_config *dma_config;
++
++	/* Playback */
++	dma_config = &i2s->pcm_config_playback.dma_config;
++	dma_config->src_width = JZ4740_DMA_WIDTH_32BIT,
++	dma_config->transfer_size = JZ4740_DMA_TRANSFER_SIZE_16BYTE;
++	dma_config->request_type = JZ4740_DMA_TYPE_AIC_TRANSMIT;
++	dma_config->flags = JZ4740_DMA_SRC_AUTOINC;
++	dma_config->mode = JZ4740_DMA_MODE_SINGLE;
++	i2s->pcm_config_playback.fifo_addr = i2s->phys_base + JZ_REG_AIC_FIFO;
++
++	/* Capture */
++	dma_config = &i2s->pcm_config_capture.dma_config;
++	dma_config->dst_width = JZ4740_DMA_WIDTH_32BIT,
++	dma_config->transfer_size = JZ4740_DMA_TRANSFER_SIZE_16BYTE;
++	dma_config->request_type = JZ4740_DMA_TYPE_AIC_RECEIVE;
++	dma_config->flags = JZ4740_DMA_DST_AUTOINC;
++	dma_config->mode = JZ4740_DMA_MODE_SINGLE;
++	i2s->pcm_config_capture.fifo_addr = i2s->phys_base + JZ_REG_AIC_FIFO;
++}
++
++static int jz4740_i2s_dai_probe(struct snd_soc_dai *dai)
++{
++	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+ 	uint32_t conf;
+ 
++	clk_enable(i2s->clk_aic);
++
++	jz4740_i2c_init_pcm_config(i2s);
++
+ 	conf = (7 << JZ_AIC_CONF_FIFO_RX_THRESHOLD_OFFSET) |
+ 		(8 << JZ_AIC_CONF_FIFO_TX_THRESHOLD_OFFSET) |
+ 		JZ_AIC_CONF_OVERFLOW_PLAY_LAST |
+@@ -363,6 +385,14 @@ static int jz4740_i2s_probe(struct platform_device *pdev, struct snd_soc_dai *da
+ 	return 0;
+ }
+ 
++static int jz4740_i2s_dai_remove(struct snd_soc_dai *dai)
++{
++	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++
++	clk_disable(i2s->clk_aic);
++	return 0;
++}
++
+ static struct snd_soc_dai_ops jz4740_i2s_dai_ops = {
+ 	.startup = jz4740_i2s_startup,
+ 	.shutdown = jz4740_i2s_shutdown,
+@@ -375,9 +405,9 @@ static struct snd_soc_dai_ops jz4740_i2s_dai_ops = {
+ #define JZ4740_I2S_FMTS (SNDRV_PCM_FMTBIT_S8 | \
+ 		SNDRV_PCM_FMTBIT_S16_LE)
+ 
+-struct snd_soc_dai jz4740_i2s_dai = {
+-	.name = "jz4740-i2s",
+-	.probe = jz4740_i2s_probe,
++static struct snd_soc_dai_driver jz4740_i2s_dai = {
++	.probe = jz4740_i2s_dai_probe,
++	.remove = jz4740_i2s_dai_remove,
+ 	.playback = {
+ 		.channels_min = 1,
+ 		.channels_max = 2,
+@@ -395,30 +425,6 @@ struct snd_soc_dai jz4740_i2s_dai = {
+ 	.suspend = jz4740_i2s_suspend,
+ 	.resume = jz4740_i2s_resume,
+ };
+-EXPORT_SYMBOL_GPL(jz4740_i2s_dai);
+-
+-static void __devinit jz4740_i2c_init_pcm_config(struct jz4740_i2s *i2s)
+-{
+-	struct jz4740_dma_config *dma_config;
+-
+-	/* Playback */
+-	dma_config = &i2s->pcm_config_playback.dma_config;
+-	dma_config->src_width = JZ4740_DMA_WIDTH_32BIT,
+-	dma_config->transfer_size = JZ4740_DMA_TRANSFER_SIZE_16BYTE;
+-	dma_config->request_type = JZ4740_DMA_TYPE_AIC_TRANSMIT;
+-	dma_config->flags = JZ4740_DMA_SRC_AUTOINC;
+-	dma_config->mode = JZ4740_DMA_MODE_SINGLE;
+-	i2s->pcm_config_playback.fifo_addr = i2s->phys_base + JZ_REG_AIC_FIFO;
+-
+-	/* Capture */
+-	dma_config = &i2s->pcm_config_capture.dma_config;
+-	dma_config->dst_width = JZ4740_DMA_WIDTH_32BIT,
+-	dma_config->transfer_size = JZ4740_DMA_TRANSFER_SIZE_16BYTE;
+-	dma_config->request_type = JZ4740_DMA_TYPE_AIC_RECEIVE;
+-	dma_config->flags = JZ4740_DMA_DST_AUTOINC;
+-	dma_config->mode = JZ4740_DMA_MODE_SINGLE;
+-	i2s->pcm_config_capture.fifo_addr = i2s->phys_base + JZ_REG_AIC_FIFO;
+-}
+ 
+ static int __devinit jz4740_i2s_dev_probe(struct platform_device *pdev)
+ {
+@@ -463,24 +469,17 @@ static int __devinit jz4740_i2s_dev_probe(struct platform_device *pdev)
+ 		goto err_clk_put_aic;
  	}
  
+-	clk_enable(i2s->clk_aic);
+-
+-	jz4740_i2c_init_pcm_config(i2s);
+-
+-	jz4740_i2s_dai.private_data = i2s;
+-	ret = snd_soc_register_dai(&jz4740_i2s_dai);
++	platform_set_drvdata(pdev, i2s);
++	ret = snd_soc_register_dai(&pdev->dev, &jz4740_i2s_dai);
+ 
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to register DAI\n");
+ 		goto err_clk_put_i2s;
+ 	}
+ 
+-	platform_set_drvdata(pdev, i2s);
+-
  	return 0;
-@@ -236,7 +237,7 @@ static int kirkwood_dma_prepare(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
--	struct snd_soc_dai *cpu_dai = soc_runtime->dai->cpu_dai;
-+	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
- 	struct kirkwood_dma_data *priv;
- 	unsigned long size, count;
  
-@@ -265,7 +266,7 @@ static snd_pcm_uframes_t kirkwood_dma_pointer(struct snd_pcm_substream
- 						*substream)
+ err_clk_put_i2s:
+-	clk_disable(i2s->clk_aic);
+ 	clk_put(i2s->clk_i2s);
+ err_clk_put_aic:
+ 	clk_put(i2s->clk_aic);
+@@ -498,9 +497,8 @@ static int __devexit jz4740_i2s_dev_remove(struct platform_device *pdev)
  {
- 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
--	struct snd_soc_dai *cpu_dai = soc_runtime->dai->cpu_dai;
-+	struct snd_soc_dai *cpu_dai = soc_runtime->cpu_dai;
- 	struct kirkwood_dma_data *priv;
- 	snd_pcm_uframes_t count;
+ 	struct jz4740_i2s *i2s = platform_get_drvdata(pdev);
  
-@@ -320,14 +321,14 @@ static int kirkwood_dma_new(struct snd_card *card,
+-	snd_soc_unregister_dai(&jz4740_i2s_dai);
++	snd_soc_unregister_dai(&pdev->dev);
+ 
+-	clk_disable(i2s->clk_aic);
+ 	clk_put(i2s->clk_i2s);
+ 	clk_put(i2s->clk_aic);
+ 
+@@ -517,7 +515,7 @@ static struct platform_driver jz4740_i2s_driver = {
+ 	.probe = jz4740_i2s_dev_probe,
+ 	.remove = __devexit_p(jz4740_i2s_dev_remove),
+ 	.driver = {
+-		.name = "jz4740-i2s",
++		.name = "jz4740-i2s-dai",
+ 		.owner = THIS_MODULE,
+ 	},
+ };
+@@ -537,4 +535,4 @@ module_exit(jz4740_i2s_exit);
+ MODULE_AUTHOR("Lars-Peter Clausen, <lars@metafoo.de>");
+ MODULE_DESCRIPTION("Ingenic JZ4740 SoC I2S driver");
+ MODULE_LICENSE("GPL");
+-MODULE_ALIAS("platform:jz4740-i2s");
++MODULE_ALIAS("platform:jz4740-i2s-dai");
+diff --git a/sound/soc/jz4740/jz4740-i2s.h b/sound/soc/jz4740/jz4740-i2s.h
+index da22ed8..5e49339 100644
+--- a/sound/soc/jz4740/jz4740-i2s.h
++++ b/sound/soc/jz4740/jz4740-i2s.h
+@@ -13,6 +13,4 @@
+ 
+ #define JZ4740_I2S_BIT_CLK		0
+ 
+-extern struct snd_soc_dai jz4740_i2s_dai;
+-
+ #endif
+diff --git a/sound/soc/jz4740/jz4740-pcm.c b/sound/soc/jz4740/jz4740-pcm.c
+index ee68d85..fb1483f 100644
+--- a/sound/soc/jz4740/jz4740-pcm.c
++++ b/sound/soc/jz4740/jz4740-pcm.c
+@@ -109,7 +109,7 @@ static int jz4740_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct jz4740_pcm_config *config;
+ 
+-	config = snd_soc_dai_get_dma_data(rtd->dai->cpu_dai, substream);
++	config = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+ 
+ 	if (!config)
+ 		return 0;
+@@ -310,14 +310,14 @@ int jz4740_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
  	if (!card->dev->coherent_dma_mask)
- 		card->dev->coherent_dma_mask = 0xffffffff;
+ 		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
  
 -	if (dai->playback.channels_min) {
 +	if (dai->driver->playback.channels_min) {
- 		ret = kirkwood_dma_preallocate_dma_buffer(pcm,
- 				SNDRV_PCM_STREAM_PLAYBACK);
+ 		ret = jz4740_pcm_preallocate_dma_buffer(pcm,
+ 			SNDRV_PCM_STREAM_PLAYBACK);
  		if (ret)
- 			return ret;
+ 			goto err;
  	}
  
 -	if (dai->capture.channels_min) {
 +	if (dai->driver->capture.channels_min) {
- 		ret = kirkwood_dma_preallocate_dma_buffer(pcm,
- 				SNDRV_PCM_STREAM_CAPTURE);
+ 		ret = jz4740_pcm_preallocate_dma_buffer(pcm,
+ 			SNDRV_PCM_STREAM_CAPTURE);
  		if (ret)
-@@ -357,25 +358,44 @@ static void kirkwood_dma_free_dma_buffers(struct snd_pcm *pcm)
- 	}
+@@ -328,22 +328,20 @@ err:
+ 	return ret;
  }
  
--struct snd_soc_platform kirkwood_soc_platform = {
--	.name		= "kirkwood-dma",
--	.pcm_ops	= &kirkwood_dma_ops,
-+static struct snd_soc_platform_driver kirkwood_soc_platform = {
-+	.ops		= &kirkwood_dma_ops,
- 	.pcm_new	= kirkwood_dma_new,
- 	.pcm_free	= kirkwood_dma_free_dma_buffers,
+-struct snd_soc_platform jz4740_soc_platform = {
+-		.name		= "jz4740-pcm",
+-		.pcm_ops	= &jz4740_pcm_ops,
++static struct snd_soc_platform_driver jz4740_soc_platform = {
++		.ops		= &jz4740_pcm_ops,
+ 		.pcm_new	= jz4740_pcm_new,
+ 		.pcm_free	= jz4740_pcm_free,
  };
--EXPORT_SYMBOL_GPL(kirkwood_soc_platform);
+-EXPORT_SYMBOL_GPL(jz4740_soc_platform);
  
--static int __init kirkwood_soc_platform_init(void)
-+static int __devinit kirkwood_soc_platform_probe(struct platform_device *pdev)
+ static int __devinit jz4740_pcm_probe(struct platform_device *pdev)
  {
--	return snd_soc_register_platform(&kirkwood_soc_platform);
-+	return snd_soc_register_platform(&pdev->dev, &kirkwood_soc_platform);
+-	return snd_soc_register_platform(&jz4740_soc_platform);
++	return snd_soc_register_platform(&pdev->dev, &jz4740_soc_platform);
  }
--module_init(kirkwood_soc_platform_init);
  
--static void __exit kirkwood_soc_platform_exit(void)
-+static int __devexit kirkwood_soc_platform_remove(struct platform_device *pdev)
+ static int __devexit jz4740_pcm_remove(struct platform_device *pdev)
  {
--	snd_soc_unregister_platform(&kirkwood_soc_platform);
+-	snd_soc_unregister_platform(&jz4740_soc_platform);
 +	snd_soc_unregister_platform(&pdev->dev);
-+	return 0;
-+}
-+
-+static struct platform_driver kirkwood_pcm_driver = {
-+	.driver = {
-+			.name = "kirkwood-pcm-audio",
-+			.owner = THIS_MODULE,
-+	},
-+
-+	.probe = kirkwood_soc_platform_probe,
-+	.remove = __devexit_p(kirkwood_soc_platform_remove),
-+};
-+
-+static int __init kirkwood_pcm_init(void)
-+{
-+	return platform_driver_register(&kirkwood_pcm_driver);
-+}
-+module_init(kirkwood_pcm_init);
-+
-+static void __exit kirkwood_pcm_exit(void)
-+{
-+	platform_driver_unregister(&kirkwood_pcm_driver);
- }
--module_exit(kirkwood_soc_platform_exit);
-+module_exit(kirkwood_pcm_exit);
- 
- MODULE_AUTHOR("Arnaud Patard <apatard@mandriva.com>");
- MODULE_DESCRIPTION("Marvell Kirkwood Audio DMA module");
-diff --git a/sound/soc/kirkwood/kirkwood-dma.h b/sound/soc/kirkwood/kirkwood-dma.h
-deleted file mode 100644
-index ba4454c..0000000
---- a/sound/soc/kirkwood/kirkwood-dma.h
-+++ /dev/null
-@@ -1,17 +0,0 @@
--/*
-- * kirkwood-dma.h
-- *
-- * (c) 2010 Arnaud Patard <apatard@mandriva.com>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- */
--
--#ifndef _KIRKWOOD_DMA_H
--#define _KIRKWOOD_DMA_H
--
--extern struct snd_soc_platform kirkwood_soc_platform;
--
--#endif
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
-index 981ffc2..c3e6dac 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c
-+++ b/sound/soc/kirkwood/kirkwood-i2s.c
-@@ -20,10 +20,9 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <plat/audio.h>
--#include "kirkwood-i2s.h"
- #include "kirkwood.h"
- 
--#define DRV_NAME	"kirkwood-i2s"
-+#define DRV_NAME	"kirkwood-i2s-dai"
- 
- #define KIRKWOOD_I2S_RATES \
- 	(SNDRV_PCM_RATE_44100 | \
-@@ -33,13 +32,10 @@
- 	 SNDRV_PCM_FMTBIT_S24_LE | \
- 	 SNDRV_PCM_FMTBIT_S32_LE)
- 
--
--struct snd_soc_dai kirkwood_i2s_dai;
--static struct kirkwood_dma_data *priv;
--
- static int kirkwood_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 		unsigned int fmt)
- {
-+	struct kirkwood_dma_data *priv = snd_soc_dai_get_drvdata(cpu_dai);
- 	unsigned long mask;
- 	unsigned long value;
- 
-@@ -101,10 +97,20 @@ static inline void kirkwood_set_dco(void __iomem *io, unsigned long rate)
- 	} while (value == 0);
- }
- 
-+static int kirkwood_i2s_startup(struct snd_pcm_substream *substream,
-+		struct snd_soc_dai *dai)
-+{
-+	struct kirkwood_dma_data *priv = snd_soc_dai_get_drvdata(dai);
-+
-+	snd_soc_dai_set_dma_data(dai, substream, priv);
-+	return 0;
-+}
-+
- static int kirkwood_i2s_hw_params(struct snd_pcm_substream *substream,
- 				 struct snd_pcm_hw_params *params,
- 				 struct snd_soc_dai *dai)
- {
-+	struct kirkwood_dma_data *priv = snd_soc_dai_get_drvdata(dai);
- 	unsigned int i2s_reg, reg;
- 	unsigned long i2s_value, value;
- 
-@@ -171,6 +177,7 @@ static int kirkwood_i2s_hw_params(struct snd_pcm_substream *substream,
- static int kirkwood_i2s_play_trigger(struct snd_pcm_substream *substream,
- 				int cmd, struct snd_soc_dai *dai)
- {
-+	struct kirkwood_dma_data *priv = snd_soc_dai_get_drvdata(dai);
- 	unsigned long value;
- 
- 	/*
-@@ -244,6 +251,7 @@ static int kirkwood_i2s_play_trigger(struct snd_pcm_substream *substream,
- static int kirkwood_i2s_rec_trigger(struct snd_pcm_substream *substream,
- 				int cmd, struct snd_soc_dai *dai)
- {
-+	struct kirkwood_dma_data *priv = snd_soc_dai_get_drvdata(dai);
- 	unsigned long value;
- 
- 	value = readl(priv->io + KIRKWOOD_RECCTL);
-@@ -323,9 +331,9 @@ static int kirkwood_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
  	return 0;
  }
  
--static int kirkwood_i2s_probe(struct platform_device *pdev,
--			     struct snd_soc_dai *dai)
-+static int kirkwood_i2s_probe(struct snd_soc_dai *dai)
- {
-+	struct kirkwood_dma_data *priv = snd_soc_dai_get_drvdata(dai);
- 	unsigned long value;
- 	unsigned int reg_data;
- 
-@@ -359,21 +367,20 @@ static int kirkwood_i2s_probe(struct platform_device *pdev,
- 
- }
- 
--static void kirkwood_i2s_remove(struct platform_device *pdev,
--				struct snd_soc_dai *dai)
-+static int kirkwood_i2s_remove(struct snd_soc_dai *dai)
- {
-+	return 0;
- }
- 
- static struct snd_soc_dai_ops kirkwood_i2s_dai_ops = {
-+	.startup	= kirkwood_i2s_startup,
- 	.trigger	= kirkwood_i2s_trigger,
- 	.hw_params      = kirkwood_i2s_hw_params,
- 	.set_fmt        = kirkwood_i2s_set_fmt,
+@@ -351,7 +349,7 @@ static struct platform_driver jz4740_pcm_driver = {
+ 	.probe = jz4740_pcm_probe,
+ 	.remove = __devexit_p(jz4740_pcm_remove),
+ 	.driver = {
+-		.name = "jz4740-pcm",
++		.name = "jz4740-pcm-audio",
+ 		.owner = THIS_MODULE,
+ 	},
  };
+diff --git a/sound/soc/jz4740/jz4740-pcm.h b/sound/soc/jz4740/jz4740-pcm.h
+index e3f221e..1220cbb 100644
+--- a/sound/soc/jz4740/jz4740-pcm.h
++++ b/sound/soc/jz4740/jz4740-pcm.h
+@@ -11,8 +11,6 @@
+ #include <linux/dma-mapping.h>
+ #include <asm/mach-jz4740/dma.h>
  
+-/* platform data */
+-extern struct snd_soc_platform jz4740_soc_platform;
  
--struct snd_soc_dai kirkwood_i2s_dai = {
--	.name = DRV_NAME,
--	.id = 0,
-+static struct snd_soc_dai_driver kirkwood_i2s_dai = {
- 	.probe = kirkwood_i2s_probe,
- 	.remove = kirkwood_i2s_remove,
- 	.playback = {
-@@ -388,13 +395,13 @@ struct snd_soc_dai kirkwood_i2s_dai = {
- 		.formats = KIRKWOOD_I2S_FORMATS,},
- 	.ops = &kirkwood_i2s_dai_ops,
- };
--EXPORT_SYMBOL_GPL(kirkwood_i2s_dai);
+ struct jz4740_pcm_config {
+ 	struct jz4740_dma_config dma_config;
+diff --git a/sound/soc/jz4740/qi_lb60.c b/sound/soc/jz4740/qi_lb60.c
+index f15f491..7989fbc 100644
+--- a/sound/soc/jz4740/qi_lb60.c
++++ b/sound/soc/jz4740/qi_lb60.c
+@@ -60,10 +60,11 @@ static const struct snd_soc_dapm_route qi_lb60_routes[] = {
+ 			SND_SOC_DAIFMT_NB_NF | \
+ 			SND_SOC_DAIFMT_CBM_CFM)
  
- static __devinit int kirkwood_i2s_dev_probe(struct platform_device *pdev)
+-static int qi_lb60_codec_init(struct snd_soc_codec *codec)
++static int qi_lb60_codec_init(struct snd_soc_pcm_runtime *rtd)
  {
- 	struct resource *mem;
- 	struct kirkwood_asoc_platform_data *data =
- 		pdev->dev.platform_data;
-+	struct kirkwood_dma_data *priv;
- 	int err;
- 
- 	priv = kzalloc(sizeof(struct kirkwood_dma_data), GFP_KERNEL);
-@@ -403,6 +410,7 @@ static __devinit int kirkwood_i2s_dev_probe(struct platform_device *pdev)
- 		err = -ENOMEM;
- 		goto error;
- 	}
-+	dev_set_drvdata(&pdev->dev, priv);
- 
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!mem) {
-@@ -441,10 +449,7 @@ static __devinit int kirkwood_i2s_dev_probe(struct platform_device *pdev)
- 	priv->dram = data->dram;
- 	priv->burst = data->burst;
- 
--	kirkwood_i2s_dai.capture.dma_data = priv;
--	kirkwood_i2s_dai.playback.dma_data = priv;
--
--	return snd_soc_register_dai(&kirkwood_i2s_dai);
-+	return snd_soc_register_dai(&pdev->dev, &kirkwood_i2s_dai);
- 
- err_ioremap:
- 	iounmap(priv->io);
-@@ -458,12 +463,13 @@ error:
- 
- static __devexit int kirkwood_i2s_dev_remove(struct platform_device *pdev)
- {
--	if (priv) {
--		iounmap(priv->io);
--		release_mem_region(priv->mem->start, SZ_16K);
--		kfree(priv);
--	}
--	snd_soc_unregister_dai(&kirkwood_i2s_dai);
-+	struct kirkwood_dma_data *priv = dev_get_drvdata(&pdev->dev);
-+
-+	snd_soc_unregister_dai(&pdev->dev);
-+	iounmap(priv->io);
-+	release_mem_region(priv->mem->start, SZ_16K);
-+	kfree(priv);
-+
- 	return 0;
- }
- 
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.h b/sound/soc/kirkwood/kirkwood-i2s.h
-deleted file mode 100644
-index c5595c6..0000000
---- a/sound/soc/kirkwood/kirkwood-i2s.h
-+++ /dev/null
-@@ -1,17 +0,0 @@
--/*
-- * kirkwood-i2s.h
-- *
-- * (c) 2010 Arnaud Patard <apatard@mandriva.com>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- */
--
--#ifndef _KIRKWOOD_I2S_H
--#define _KIRKWOOD_I2S_H
--
--extern struct snd_soc_dai kirkwood_i2s_dai;
--
--#endif
-diff --git a/sound/soc/kirkwood/kirkwood-openrd.c b/sound/soc/kirkwood/kirkwood-openrd.c
-index 0353d06..6f9ac42 100644
---- a/sound/soc/kirkwood/kirkwood-openrd.c
-+++ b/sound/soc/kirkwood/kirkwood-openrd.c
-@@ -18,16 +18,14 @@
- #include <mach/kirkwood.h>
- #include <plat/audio.h>
- #include <asm/mach-types.h>
--#include "kirkwood-i2s.h"
--#include "kirkwood-dma.h"
- #include "../codecs/cs42l51.h"
- 
- static int openrd_client_hw_params(struct snd_pcm_substream *substream,
- 		struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_codec *codec = rtd->codec;
 +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
  	int ret;
- 	unsigned int freq, fmt;
+-	struct snd_soc_dai *cpu_dai = codec->socdev->card->dai_link->cpu_dai;
  
-@@ -66,8 +64,10 @@ static struct snd_soc_dai_link openrd_client_dai[] = {
- {
- 	.name = "CS42L51",
- 	.stream_name = "CS42L51 HiFi",
--	.cpu_dai = &kirkwood_i2s_dai,
--	.codec_dai = &cs42l51_dai,
-+	.cpu_dai_name = "kirkwood-i2s-dai",
-+	.platform_name = "kirkwood-pcm-audio",
-+	.codec_dai_name = "cs42l51_hifi",
-+	.codec_name = "cs42l51-codec.0-0x4a",
- 	.ops = &openrd_client_ops,
- },
- };
-@@ -75,16 +75,10 @@ static struct snd_soc_dai_link openrd_client_dai[] = {
- 
- static struct snd_soc_card openrd_client = {
- 	.name = "OpenRD Client",
--	.platform = &kirkwood_soc_platform,
- 	.dai_link = openrd_client_dai,
- 	.num_links = ARRAY_SIZE(openrd_client_dai),
+ 	snd_soc_dapm_nc_pin(codec, "LIN");
+ 	snd_soc_dapm_nc_pin(codec, "RIN");
+@@ -84,8 +85,10 @@ static int qi_lb60_codec_init(struct snd_soc_codec *codec)
+ static struct snd_soc_dai_link qi_lb60_dai = {
+ 	.name = "jz4740",
+ 	.stream_name = "jz4740",
+-	.cpu_dai = &jz4740_i2s_dai,
+-	.codec_dai = &jz4740_codec_dai,
++	.cpu_dai_name = "jz4740-i2s-dai",
++	.platform_name = "jz4740-pmc-audio",
++	.codec_dai_name = "jz4740-hifi",
++	.codec_name = "jz4740-codec",
+ 	.init = qi_lb60_codec_init,
  };
  
--static struct snd_soc_device openrd_client_snd_devdata = {
--	.card = &openrd_client,
--	.codec_dev = &soc_codec_device_cs42l51,
+@@ -93,12 +96,6 @@ static struct snd_soc_card qi_lb60 = {
+ 	.name = "QI LB60",
+ 	.dai_link = &qi_lb60_dai,
+ 	.num_links = 1,
+-	.platform = &jz4740_soc_platform,
 -};
 -
- static struct platform_device *openrd_client_snd_device;
+-static struct snd_soc_device qi_lb60_snd_devdata = {
+-	.card = &qi_lb60,
+-	.codec_dev = &soc_codec_dev_jz4740_codec,
+ };
  
- static int __init openrd_client_init(void)
-@@ -99,8 +93,7 @@ static int __init openrd_client_init(void)
- 		return -ENOMEM;
+ static struct platform_device *qi_lb60_snd_device;
+@@ -129,8 +126,7 @@ static int __init qi_lb60_init(void)
+ 	gpio_direction_output(QI_LB60_SND_GPIO, 0);
+ 	gpio_direction_output(QI_LB60_AMP_GPIO, 0);
  
- 	platform_set_drvdata(openrd_client_snd_device,
--			&openrd_client_snd_devdata);
--	openrd_client_snd_devdata.dev = &openrd_client_snd_device->dev;
-+			&openrd_client);
+-	platform_set_drvdata(qi_lb60_snd_device, &qi_lb60_snd_devdata);
+-	qi_lb60_snd_devdata.dev = &qi_lb60_snd_device->dev;
++	platform_set_drvdata(qi_lb60_snd_device, &qi_lb60);
  
- 	ret = platform_device_add(openrd_client_snd_device);
+ 	ret = platform_device_add(qi_lb60_snd_device);
  	if (ret) {
 -- 
 1.7.0.4
