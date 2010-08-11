@@ -1,23 +1,22 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: i.MX SDMA support
-Date: Wed, 11 Aug 2010 11:24:08 +0100
-Message-ID: <1281522248.3080.40.camel@odin>
-References: <20100809091157.GC20065@pengutronix.de>
-	<1281350823.3035.54.camel@odin> <20100809121956.GA27749@pengutronix.de>
-	<64008892-3D75-4309-A623-CCE9B335F77F@opensource.wolfsonmicro.com>
-	<20100810131527.GK27749@pengutronix.de> <1281449263.3059.53.camel@odin>
-	<20100811084430.GO27749@pengutronix.de>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH 01/14] ASoC: multi-component - TI OMAP
+	Platform
+Date: Wed, 11 Aug 2010 14:04:18 +0300
+Message-ID: <20100811140418.a802cd94.jhnikula@gmail.com>
+References: <1281516393-6060-1-git-send-email-lrg@slimlogic.co.uk>
+	<1281516393-6060-2-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3873D24589
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id C5D6C245BC
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Aug 2010 12:24:12 +0200 (CEST)
-Received: by wwa36 with SMTP id 36so2860942wwa.20
-	for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2010 03:24:11 -0700 (PDT)
-In-Reply-To: <20100811084430.GO27749@pengutronix.de>
+	Wed, 11 Aug 2010 13:04:27 +0200 (CEST)
+Received: by eye27 with SMTP id 27so4121255eye.38
+	for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2010 04:04:27 -0700 (PDT)
+In-Reply-To: <1281516393-6060-2-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,60 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-08-11 at 10:44 +0200, Sascha Hauer wrote:
-> On Tue, Aug 10, 2010 at 03:07:43PM +0100, Liam Girdwood wrote:
-> > On Tue, 2010-08-10 at 15:15 +0200, Sascha Hauer wrote:
-> > 
-> > > I just looked at the i.MX part in the multi-component update and this
-> > > is currently far from being in a working state, so there's still some
-> > > work to do before thinking about possible conflicts...
-> > 
-> > Ok, I don't think it's that far off. Everything builds for i.MX and all
-> > components should register. The part I can't test is the component
-> > probe() and playback/capture.
-> > 
-> > Have you seen an oops ?
-> > 
+Hi
+
+On Wed, 11 Aug 2010 09:46:20 +0100
+Liam Girdwood <lrg@slimlogic.co.uk> wrote:
+
+> Other notable changes required for multi-component support:-
 > 
-> Besides the patch that I just sent I get a null pointer deref without
-> the following patch. I couldn't find who should set
-> codec->ac97->bus->card, but it's null when I get here. Is this an i.MX
-> fault or is there something else missing here?
+>  o Moved zoom2 audio platform data to board-zoom2.c
+>  o Moved n810 audio platform data to board-n810.c
+>  o Moved RX51 audio platform data to board-rx51-peripherals.c
+>  o Added ASoC DAI and DMA platform devices.
+
+Here are rejects from these two files when applied to Vanilla:
+
+arch/arm/mach-omap2/board-rx51-peripherals.c
+arch/arm/mach-omap2/board-zoom2.c
+
+Fortunately trivial.
+
+board-rx51-peripherals.c conflicts with rx51_aic3x_data (i.e. add only
+rx51_aic34_setup) and board-zoom2.c with board_nand_init in
+omap_zoom2_init.
+
+board-n8x0.c will conflict in 2.6.37 with changes from linux-omap but
+this is easiest to handle if you leave out the
+arch/arm/mach-omap2/board-n8x0.c changes. IMO n810_aic33_setup for
+the digital microphone can be patched after m-c.
+
+>  o Misc fixes from Jarkko Nikula
 > 
+Add Peter also as he sent fixes too :-)
 
-That is set in the AC97 core and did work at the time of the RFC (when I
-could test on my now non working Zylonite). Although since the RFC there
-had been changes to use the dev_name for component binding and a little
-re-reordering on the bind (and would have affected this piece of code
-too). 
-
-> Sascha
-> 
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 81a77e0..eddb26e 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -312,7 +312,7 @@ static int soc_ac97_dev_register(struct snd_soc_codec *codec)
->  	codec->ac97->dev.release = soc_ac97_device_release;
->  
->  	dev_set_name(&codec->ac97->dev, "%d-%d:%s",
-> -		     codec->ac97->bus->card->number, 0, codec->name);
-> +		     codec->snd_card->number, 0, codec->name);
->  	err = device_register(&codec->ac97->dev);
->  	if (err < 0) {
->  		snd_printk(KERN_ERR "Can't register ac97 bus\n");
-
-This looks good to me, as card will be set after the device_register.
-
-Thanks
-
-Liam
 
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Jarkko
