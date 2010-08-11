@@ -1,21 +1,15 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/2] asoc/multi-component: remove
- superfluous snd_card member from snd_soc_codec
-Date: Wed, 11 Aug 2010 14:44:29 +0100
-Message-ID: <1281534269.3080.113.camel@odin>
-References: <1281529786-5267-1-git-send-email-s.hauer@pengutronix.de>
-	<1281529786-5267-2-git-send-email-s.hauer@pengutronix.de>
+From: "Sebastian H." <vand2@gmx.de>
+Subject: Alsamixer-Qt 0.4.1 available
+Date: Wed, 11 Aug 2010 17:50:54 +0200
+Message-ID: <4C62C6DE.9020403@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id AEEF6103872
+Received: from mail.gmx.net (mailout-de.gmx.net [213.165.64.22])
+	by alsa0.perex.cz (Postfix) with SMTP id F3166103868
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Aug 2010 15:44:34 +0200 (CEST)
-Received: by wwa36 with SMTP id 36so100251wwa.20
-	for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2010 06:44:34 -0700 (PDT)
-In-Reply-To: <1281529786-5267-2-git-send-email-s.hauer@pengutronix.de>
+	Wed, 11 Aug 2010 17:49:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,26 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-user@lists.sourceforge.net
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-08-11 at 14:29 +0200, Sascha Hauer wrote:
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  include/sound/soc.h  |    1 -
->  sound/soc/soc-core.c |    6 +++---
->  sound/soc/soc-dapm.c |    6 +++---
->  sound/soc/soc-jack.c |    2 +-
->  4 files changed, 7 insertions(+), 8 deletions(-)
-> 
+Hello again
 
-Both applied.
+This is a bugfix release. Not all issues have been addressed, but
+hopefully the most annoying ones.
 
-Thanks.
+1.)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3678
 
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+The "EQ Peaks" mixer element gets skipped since there's not way to
+display it correctly at the moment.
+Also the mixer now looks for all element channels from 0 up to
+SND_MIXER_SCHN_LAST (= 31). Formerly it was only for the first 9 channels.
+
+
+2.)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4204
+
+Raymond brought this up but I'm not entirely sure what's the problem
+here. Are there actually 5 controls named "Master" on this card?
+If so alsamixer-qt4 now appends the element index to the element name
+for elements whose name appears more that once. This should happen for
+all elements but I could only test it for "Capture" and "Input Source".
+Both appear twice on my HDA-Intel onboard card.
+
+Download at:
+http://xwmw.org/alsamixer-qt4/
+http://sourceforge.net/projects/alsamixer-qt4/files/
+
+Comments are welcome!
+
+Best,
+Sebastian H.
