@@ -1,24 +1,21 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: i.MX SDMA support
-Date: Wed, 11 Aug 2010 14:43:52 +0100
-Message-ID: <1281534232.3080.112.camel@odin>
-References: <20100809091157.GC20065@pengutronix.de>
-	<1281350823.3035.54.camel@odin> <20100809121956.GA27749@pengutronix.de>
-	<64008892-3D75-4309-A623-CCE9B335F77F@opensource.wolfsonmicro.com>
-	<20100810131527.GK27749@pengutronix.de> <1281449263.3059.53.camel@odin>
-	<20100811084213.GN27749@pengutronix.de>
+Subject: Re: [PATCH 1/2] asoc/multi-component: remove
+ superfluous snd_card member from snd_soc_codec
+Date: Wed, 11 Aug 2010 14:44:29 +0100
+Message-ID: <1281534269.3080.113.camel@odin>
+References: <1281529786-5267-1-git-send-email-s.hauer@pengutronix.de>
+	<1281529786-5267-2-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5A6B5103872
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id AEEF6103872
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Aug 2010 15:43:57 +0200 (CEST)
-Received: by eye27 with SMTP id 27so39420eye.38
-	for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2010 06:43:57 -0700 (PDT)
-In-Reply-To: <20100811084213.GN27749@pengutronix.de>
+	Wed, 11 Aug 2010 15:44:34 +0200 (CEST)
+Received: by wwa36 with SMTP id 36so100251wwa.20
+	for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2010 06:44:34 -0700 (PDT)
+In-Reply-To: <1281529786-5267-2-git-send-email-s.hauer@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,32 +26,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-08-11 at 10:42 +0200, Sascha Hauer wrote:
-> On Tue, Aug 10, 2010 at 03:07:43PM +0100, Liam Girdwood wrote:
-> > On Tue, 2010-08-10 at 15:15 +0200, Sascha Hauer wrote:
-> > 
-> > > I just looked at the i.MX part in the multi-component update and this
-> > > is currently far from being in a working state, so there's still some
-> > > work to do before thinking about possible conflicts...
-> > 
-> > Ok, I don't think it's that far off. Everything builds for i.MX and all
-> > components should register. The part I can't test is the component
-> > probe() and playback/capture.
-> > 
-> > Have you seen an oops ?
-> 
-> Many of them, yes ;)
-> 
-> The following patch puts i.MX (nearly) back into business.
-> 
-> Sascha
+On Wed, 2010-08-11 at 14:29 +0200, Sascha Hauer wrote:
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  include/sound/soc.h  |    1 -
+>  sound/soc/soc-core.c |    6 +++---
+>  sound/soc/soc-dapm.c |    6 +++---
+>  sound/soc/soc-jack.c |    2 +-
+>  4 files changed, 7 insertions(+), 8 deletions(-)
 > 
 
-Both applied. I'll do the string change for SSI shortly.
+Both applied.
 
-Thanks
+Thanks.
 
 Liam
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
