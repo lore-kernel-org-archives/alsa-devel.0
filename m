@@ -1,18 +1,25 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 1/2] asoc/multi-component: remove superfluous
-	snd_card member from snd_soc_codec
-Date: Wed, 11 Aug 2010 14:29:45 +0200
-Message-ID: <1281529786-5267-2-git-send-email-s.hauer@pengutronix.de>
-References: <1281529786-5267-1-git-send-email-s.hauer@pengutronix.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: i.MX SDMA support
+Date: Wed, 11 Aug 2010 13:32:29 +0100
+Message-ID: <1281529949.3080.94.camel@odin>
+References: <20100809091157.GC20065@pengutronix.de>
+	<1281350823.3035.54.camel@odin> <20100809121956.GA27749@pengutronix.de>
+	<64008892-3D75-4309-A623-CCE9B335F77F@opensource.wolfsonmicro.com>
+	<20100810131527.GK27749@pengutronix.de> <1281449263.3059.53.camel@odin>
+	<20100811084213.GN27749@pengutronix.de> <1281521394.3080.26.camel@odin>
+	<20100811115936.GQ27749@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 0672810386E
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0FA83103874
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Aug 2010 14:29:48 +0200 (CEST)
-In-Reply-To: <1281529786-5267-1-git-send-email-s.hauer@pengutronix.de>
+	Wed, 11 Aug 2010 14:32:34 +0200 (CEST)
+Received: by wyb42 with SMTP id 42so62338wyb.38
+	for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2010 05:32:33 -0700 (PDT)
+In-Reply-To: <20100811115936.GQ27749@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,104 +29,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- include/sound/soc.h  |    1 -
- sound/soc/soc-core.c |    6 +++---
- sound/soc/soc-dapm.c |    6 +++---
- sound/soc/soc-jack.c |    2 +-
- 4 files changed, 7 insertions(+), 8 deletions(-)
+On Wed, 2010-08-11 at 13:59 +0200, Sascha Hauer wrote:
+> On Wed, Aug 11, 2010 at 11:09:54AM +0100, Liam Girdwood wrote:
+> > On Wed, 2010-08-11 at 10:42 +0200, Sascha Hauer wrote:
+> > > On Tue, Aug 10, 2010 at 03:07:43PM +0100, Liam Girdwood wrote:
+> > > > On Tue, 2010-08-10 at 15:15 +0200, Sascha Hauer wrote:
+> > > > 
+> > > > > I just looked at the i.MX part in the multi-component update and this
+> > > > > is currently far from being in a working state, so there's still some
+> > > > > work to do before thinking about possible conflicts...
+> > > > 
+> > > > Ok, I don't think it's that far off. Everything builds for i.MX and all
+> > > > components should register. The part I can't test is the component
+> > > > probe() and playback/capture.
+> > > > 
+> > > > Have you seen an oops ?
+> > > 
+> > > Many of them, yes ;)
+> > > 
+> > > The following patch puts i.MX (nearly) back into business.
+> > > 
+> > 
+> > Thanks for this.
+> 
+> There are probably some bits for the DMA part missing, I haven't tested
+> it yet, but will do soon.
+> 
+> > 
+> > >  	if (ssi->flags & IMX_SSI_USE_AC97)
+> > > @@ -706,7 +731,7 @@ static struct platform_driver imx_ssi_driver = {
+> > >  	.remove = __devexit_p(imx_ssi_remove),
+> > >  
+> > >  	.driver = {
+> > > -		.name = "imx-ssi-dai",
+> > > +		.name = "imx-ssi",
+> > 
+> > The reason that the DAI driver name was changed on all platforms to
+> > include a "-dai" suffix was to distinguish the ASoC SSI driver from a
+> > generic SSI serial IO driver (i.e. SSI for non audio users). This is
+> > mainly due to the fact that most audio interfaces on SoC CPUs exist
+> > within a generic serial interface and are also often used for non audio
+> > purposes.
+> > 
+> > So if this suffix is ok, I guess I would need to update the the
+> > following too ?
+> 
+> Yes, they have to be updated too. I have some more occurences in my
+> tree, but a wcgrep imx-ssi should catch them all.
+> 
+> > 
+> > arch/arm/mach-mx2/devices.c:418:		.name = "imx-ssi",		\
+> > arch/arm/mach-mx2/clock_imx27.c:656:	_REGISTER_CLOCK("imx-ssi.0", NULL, ssi1_clk)
+> > arch/arm/mach-mx2/clock_imx27.c:657:	_REGISTER_CLOCK("imx-ssi.1", NULL, ssi2_clk)
+> > arch/arm/mach-mx3/clock-imx31.c:561:	_REGISTER_CLOCK("imx-ssi.0", NULL, ssi1_clk)
+> > arch/arm/mach-mx3/clock-imx31.c:562:	_REGISTER_CLOCK("imx-ssi.1", NULL, ssi2_clk)
+> > arch/arm/mach-mx3/clock-imx35.c:467:	_REGISTER_CLOCK("imx-ssi.0", NULL, ssi1_clk)
+> > arch/arm/mach-mx3/clock-imx35.c:468:	_REGISTER_CLOCK("imx-ssi.1", NULL, ssi2_clk)
+> > arch/arm/mach-mx3/devices.c:565:	.name = "imx-ssi",
+> > arch/arm/mach-mx3/devices.c:572:	.name = "imx-ssi",
+> > arch/arm/plat-mxc/audmux-v2.c:52:		return "imx-ssi.0";
+> > arch/arm/plat-mxc/audmux-v2.c:54:		return "imx-ssi.1";
+> > 
+> > 
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 6982b15..4b0f4cd 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -428,7 +428,6 @@ struct snd_soc_codec {
- 	struct snd_soc_codec_driver *driver;
- 
- 	struct mutex mutex;
--	struct snd_card *snd_card;
- 	struct snd_soc_card *card;
- 	struct list_head list;
- 	struct list_head card_list;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e2cc8fa..4300d6f 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1287,7 +1287,7 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num)
- 	dev_dbg(card->dev, "probe %s dai link %d\n", card->name, num);
- 
- 	/* config components */
--	platform->snd_card = codec->snd_card = card->snd_card;
-+	platform->snd_card = card->snd_card;
- 	codec_dai->codec = codec;
- 	codec->card = card;
- 	cpu_dai->platform = platform;
-@@ -1902,7 +1902,7 @@ EXPORT_SYMBOL_GPL(snd_soc_cnew);
- int snd_soc_add_controls(struct snd_soc_codec *codec,
- 	const struct snd_kcontrol_new *controls, int num_controls)
- {
--	struct snd_card *card = codec->snd_card;
-+	struct snd_card *card = codec->card->snd_card;
- 	int err, i;
- 
- 	for (i = 0; i < num_controls; i++) {
-@@ -2457,7 +2457,7 @@ EXPORT_SYMBOL_GPL(snd_soc_put_volsw_s8);
- int snd_soc_limit_volume(struct snd_soc_codec *codec,
- 	const char *name, int max)
- {
--	struct snd_card *card = codec->snd_card;
-+	struct snd_card *card = codec->card->snd_card;
- 	struct snd_kcontrol *kctl;
- 	struct soc_mixer_control *mc;
- 	int found = 0;
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index fb68c7d..035cab8 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -368,7 +368,7 @@ static int dapm_new_mixer(struct snd_soc_codec *codec,
- 
- 			path->kcontrol = snd_soc_cnew(&w->kcontrols[i], w,
- 				path->long_name);
--			ret = snd_ctl_add(codec->snd_card, path->kcontrol);
-+			ret = snd_ctl_add(codec->card->snd_card, path->kcontrol);
- 			if (ret < 0) {
- 				printk(KERN_ERR "asoc: failed to add dapm kcontrol %s: %d\n",
- 				       path->long_name,
-@@ -396,7 +396,7 @@ static int dapm_new_mux(struct snd_soc_codec *codec,
- 	}
- 
- 	kcontrol = snd_soc_cnew(&w->kcontrols[0], w, w->name);
--	ret = snd_ctl_add(codec->snd_card, kcontrol);
-+	ret = snd_ctl_add(codec->card->snd_card, kcontrol);
- 	if (ret < 0)
- 		goto err;
- 
-@@ -435,7 +435,7 @@ static inline void dapm_clear_walk(struct snd_soc_codec *codec)
-  */
- static int snd_soc_dapm_suspend_check(struct snd_soc_dapm_widget *widget)
- {
--	int level = snd_power_get_state(widget->codec->snd_card);
-+	int level = snd_power_get_state(widget->codec->card->snd_card);
- 
- 	switch (level) {
- 	case SNDRV_CTL_POWER_D3hot:
-diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index 1dfc4fd..8862770 100644
---- a/sound/soc/soc-jack.c
-+++ b/sound/soc/soc-jack.c
-@@ -39,7 +39,7 @@ int snd_soc_jack_new(struct snd_soc_codec *codec, const char *id, int type,
- 	INIT_LIST_HEAD(&jack->pins);
- 	BLOCKING_INIT_NOTIFIER_HEAD(&jack->notifier);
- 
--	return snd_jack_new(codec->snd_card, id, type, &jack->jack);
-+	return snd_jack_new(codec->card->snd_card, id, type, &jack->jack);
- }
- EXPORT_SYMBOL_GPL(snd_soc_jack_new);
- 
--- 
-1.7.1
+Ok, I'll apply and fix these up too.
+
+Thanks
+
+Liam
