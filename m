@@ -1,19 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [PATCH 04/14] ASoC: multi-component - Freescale i.MX
+Subject: [PATCH 03/14] ASoC: multi-component - TI DaVinci
 	Platform
-Date: Wed, 11 Aug 2010 09:46:23 +0100
-Message-ID: <1281516393-6060-5-git-send-email-lrg@slimlogic.co.uk>
+Date: Wed, 11 Aug 2010 09:46:22 +0100
+Message-ID: <1281516393-6060-4-git-send-email-lrg@slimlogic.co.uk>
 References: <1281516393-6060-1-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 01864103875
+	by alsa0.perex.cz (Postfix) with ESMTP id 0190C103870
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Aug 2010 10:46:56 +0200 (CEST)
+	Wed, 11 Aug 2010 10:46:54 +0200 (CEST)
 Received: by mail-ww0-f51.google.com with SMTP id 36so2779440wwa.20
-	for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2010 01:46:56 -0700 (PDT)
+	for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2010 01:46:54 -0700 (PDT)
 In-Reply-To: <1281516393-6060-1-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,10 +25,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Kevin Hilman <khilman@deeprootsystems.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Update the Freescale i.MX platform and machines to new multi-component model.
+Update the TI DaVinci platform and machines to new multi-component model.
 
 This patch changes the machine drivers for multi-component as follows :-
 
@@ -36,7 +36,7 @@ This patch changes the machine drivers for multi-component as follows :-
  o Each DAI link entry now contains platform and codec fields.
  o DAI link init() now passed snd_soc_pcm_runtime instread of snd_soc_codec.
 
-This patch also changes the DAI and platform DMA drivers as follows :-
+This patch also changes the DAI and platform DAM drivers as follows :-
 
  o Each platform DAI and platform DMA driver is a kernel device and can
    have platform data.
@@ -44,764 +44,1064 @@ This patch also changes the DAI and platform DMA drivers as follows :-
 
 Other notable changes required for multi-component support:-
 
- o Decoupled platform DMA, DAI and FIQ drivers.
+ o Added ASoC DMA platform device.
+ o EVM now has 2 DAI links instead of #ifdef around CODEC choice.
+ o aic3x_setup data is now platform data.
 
-Sascha, I'd prefer for the fix/update that you are working on to
-merge incremetally after this so that we dont block anything else.
-Although, if you have something ready today or tomorrow we can
-merge it with this.
-
-CC: Sascha Hauer <s.hauer@pengutronix.de>
+CC: Kevin Hilman <khilman@deeprootsystems.com>
 Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
 ---
- sound/soc/imx/Kconfig           |   16 ++++++
- sound/soc/imx/Makefile          |   10 ++--
- sound/soc/imx/eukrea-tlv320.c   |   16 ++----
- sound/soc/imx/imx-pcm-dma-mx2.c |   43 ++++++++++++----
- sound/soc/imx/imx-pcm-fiq.c     |   81 +++++++++++++++++++---------
- sound/soc/imx/imx-ssi.c         |  111 +++++++++++++--------------------------
- sound/soc/imx/imx-ssi.h         |    5 +--
- sound/soc/imx/phycore-ac97.c    |   16 ++----
- sound/soc/imx/wm1133-ev1.c      |   27 ++++------
- 9 files changed, 167 insertions(+), 158 deletions(-)
+ arch/arm/mach-davinci/da830.c         |    6 +-
+ arch/arm/mach-davinci/da850.c         |    2 +-
+ arch/arm/mach-davinci/devices-da8xx.c |    4 +-
+ arch/arm/mach-davinci/devices.c       |   13 ++++
+ arch/arm/mach-davinci/dm355.c         |    6 +-
+ arch/arm/mach-davinci/dm365.c         |    4 +-
+ arch/arm/mach-davinci/dm644x.c        |    4 +-
+ arch/arm/mach-davinci/dm646x.c        |    8 +-
+ sound/soc/davinci/davinci-evm.c       |  109 +++++++++++----------------------
+ sound/soc/davinci/davinci-i2s.c       |   44 ++++++-------
+ sound/soc/davinci/davinci-i2s.h       |    2 -
+ sound/soc/davinci/davinci-mcasp.c     |   34 ++++------
+ sound/soc/davinci/davinci-mcasp.h     |    2 -
+ sound/soc/davinci/davinci-pcm.c       |   45 ++++++++++----
+ sound/soc/davinci/davinci-pcm.h       |    3 -
+ sound/soc/davinci/davinci-sffsdr.c    |   27 +++++----
+ sound/soc/davinci/davinci-vcif.c      |   25 +++----
+ sound/soc/davinci/davinci-vcif.h      |   28 ---------
+ 18 files changed, 159 insertions(+), 207 deletions(-)
+ delete mode 100644 sound/soc/davinci/davinci-vcif.h
 
-diff --git a/sound/soc/imx/Kconfig b/sound/soc/imx/Kconfig
-index 52dac5e..66ba263 100644
---- a/sound/soc/imx/Kconfig
-+++ b/sound/soc/imx/Kconfig
-@@ -8,12 +8,24 @@ menuconfig SND_IMX_SOC
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the i.MX SSI interface.
- 
-+
- if SND_IMX_SOC
- 
-+config SND_MXC_SOC_SSI
-+	tristate
-+
-+config SND_MXC_SOC_FIQ
-+	tristate
-+
-+config SND_MXC_SOC_MX2
-+	tristate
-+
- config SND_MXC_SOC_WM1133_EV1
- 	tristate "Audio on the the i.MX31ADS with WM1133-EV1 fitted"
- 	depends on MACH_MX31ADS_WM1133_EV1 && EXPERIMENTAL
- 	select SND_SOC_WM8350
-+	select SND_MXC_SOC_SSI
-+	select SND_MXC_SOC_FIQ
- 	help
- 	  Enable support for audio on the i.MX31ADS with the WM1133-EV1
- 	  PMIC board with WM8835x fitted.
-@@ -22,6 +34,8 @@ config SND_SOC_PHYCORE_AC97
- 	tristate "SoC Audio support for Phytec phyCORE (and phyCARD) boards"
- 	depends on MACH_PCM043 || MACH_PCA100
- 	select SND_SOC_WM9712
-+	select SND_MXC_SOC_SSI
-+	select SND_MXC_SOC_FIQ
- 	help
- 	  Say Y if you want to add support for SoC audio on Phytec phyCORE
- 	  and phyCARD boards in AC97 mode
-@@ -30,6 +44,8 @@ config SND_SOC_EUKREA_TLV320
- 	tristate "Eukrea TLV320"
- 	depends on MACH_EUKREA_MBIMX27_BASEBOARD || MACH_EUKREA_MBIMXSD_BASEBOARD
- 	select SND_SOC_TLV320AIC23
-+	select SND_MXC_SOC_SSI
-+	select SND_MXC_SOC_FIQ
- 	help
- 	  Enable I2S based access to the TLV320AIC23B codec attached
- 	  to the SSI interface
-diff --git a/sound/soc/imx/Makefile b/sound/soc/imx/Makefile
-index 7bc57ba..b67fc02 100644
---- a/sound/soc/imx/Makefile
-+++ b/sound/soc/imx/Makefile
-@@ -1,11 +1,11 @@
- # i.MX Platform Support
--snd-soc-imx-objs := imx-ssi.o imx-pcm-fiq.o
--
--ifdef CONFIG_MACH_MX27
--snd-soc-imx-objs += imx-pcm-dma-mx2.o
--endif
-+snd-soc-imx-objs := imx-ssi.o
-+snd-soc-imx-fiq-objs := imx-pcm-fiq.o
-+snd-soc-imx-mx2-objs := imx-pcm-dma-mx2.o
- 
- obj-$(CONFIG_SND_IMX_SOC) += snd-soc-imx.o
-+obj-$(CONFIG_SND_MXC_SOC_FIQ) += snd-soc-imx-fiq.o
-+obj-$(CONFIG_SND_MXC_SOC_MX2) += snd-soc-imx-mx2.o
- 
- # i.MX Machine Support
- snd-soc-eukrea-tlv320-objs := eukrea-tlv320.o
-diff --git a/sound/soc/imx/eukrea-tlv320.c b/sound/soc/imx/eukrea-tlv320.c
-index f15dfbd..3a9dc3b 100644
---- a/sound/soc/imx/eukrea-tlv320.c
-+++ b/sound/soc/imx/eukrea-tlv320.c
-@@ -79,22 +79,19 @@ static struct snd_soc_ops eukrea_tlv320_snd_ops = {
- static struct snd_soc_dai_link eukrea_tlv320_dai = {
- 	.name		= "tlv320aic23",
- 	.stream_name	= "TLV320AIC23",
--	.codec_dai	= &tlv320aic23_dai,
-+	.codec_dai	= "tlv320aic23-hifi",
-+	.platform_name	= "imx-pcm-audio",
-+	.codec_name	= "tlv320aic23-codec.0-0x1a",
-+	.cpu_dai = "imx-ssi-dai.0",
- 	.ops		= &eukrea_tlv320_snd_ops,
+diff --git a/arch/arm/mach-davinci/da830.c b/arch/arm/mach-davinci/da830.c
+index 23e9eda..d2eb4fe 100644
+--- a/arch/arm/mach-davinci/da830.c
++++ b/arch/arm/mach-davinci/da830.c
+@@ -408,9 +408,9 @@ static struct clk_lookup da830_clks[] = {
+ 	CLK("eqep.0",		NULL,		&eqep0_clk),
+ 	CLK("eqep.1",		NULL,		&eqep1_clk),
+ 	CLK("da8xx_lcdc.0",	NULL,		&lcdc_clk),
+-	CLK("davinci-mcasp.0",	NULL,		&mcasp0_clk),
+-	CLK("davinci-mcasp.1",	NULL,		&mcasp1_clk),
+-	CLK("davinci-mcasp.2",	NULL,		&mcasp2_clk),
++	CLK("davinci-mcasp-dai.0",	NULL,		&mcasp0_clk),
++	CLK("davinci-mcasp-dai.1",	NULL,		&mcasp1_clk),
++	CLK("davinci-mcasp-dai.2",	NULL,		&mcasp2_clk),
+ 	CLK(NULL,		"usb20",	&usb20_clk),
+ 	CLK(NULL,		"aemif",	&aemif_clk),
+ 	CLK(NULL,		"aintc",	&aintc_clk),
+diff --git a/arch/arm/mach-davinci/da850.c b/arch/arm/mach-davinci/da850.c
+index 6b8331b..e5b273d 100644
+--- a/arch/arm/mach-davinci/da850.c
++++ b/arch/arm/mach-davinci/da850.c
+@@ -373,7 +373,7 @@ static struct clk_lookup da850_clks[] = {
+ 	CLK(NULL,		"arm",		&arm_clk),
+ 	CLK(NULL,		"rmii",		&rmii_clk),
+ 	CLK("davinci_emac.1",	NULL,		&emac_clk),
+-	CLK("davinci-mcasp.0",	NULL,		&mcasp_clk),
++	CLK("davinci-mcasp-dai.0",	NULL,		&mcasp_clk),
+ 	CLK("da8xx_lcdc.0",	NULL,		&lcdc_clk),
+ 	CLK("davinci_mmc.0",	NULL,		&mmcsd_clk),
+ 	CLK(NULL,		"aemif",	&aemif_clk),
+diff --git a/arch/arm/mach-davinci/devices-da8xx.c b/arch/arm/mach-davinci/devices-da8xx.c
+index 8cda729..7cfed10 100644
+--- a/arch/arm/mach-davinci/devices-da8xx.c
++++ b/arch/arm/mach-davinci/devices-da8xx.c
+@@ -412,7 +412,7 @@ static struct resource da830_mcasp1_resources[] = {
  };
  
- static struct snd_soc_card eukrea_tlv320 = {
- 	.name		= "cpuimx-audio",
--	.platform	= &imx_soc_platform,
- 	.dai_link	= &eukrea_tlv320_dai,
- 	.num_links	= 1,
+ static struct platform_device da830_mcasp1_device = {
+-	.name		= "davinci-mcasp",
++	.name		= "davinci-mcasp-dai",
+ 	.id		= 1,
+ 	.num_resources	= ARRAY_SIZE(da830_mcasp1_resources),
+ 	.resource	= da830_mcasp1_resources,
+@@ -440,7 +440,7 @@ static struct resource da850_mcasp_resources[] = {
  };
  
--static struct snd_soc_device eukrea_tlv320_snd_devdata = {
--	.card		= &eukrea_tlv320,
--	.codec_dev	= &soc_codec_dev_tlv320aic23,
--};
--
- static struct platform_device *eukrea_tlv320_snd_device;
+ static struct platform_device da850_mcasp_device = {
+-	.name		= "davinci-mcasp",
++	.name		= "davinci-mcasp-dai",
+ 	.id		= 0,
+ 	.num_resources	= ARRAY_SIZE(da850_mcasp_resources),
+ 	.resource	= da850_mcasp_resources,
+diff --git a/arch/arm/mach-davinci/devices.c b/arch/arm/mach-davinci/devices.c
+index 8b7201e..de40e9c 100644
+--- a/arch/arm/mach-davinci/devices.c
++++ b/arch/arm/mach-davinci/devices.c
+@@ -295,6 +295,18 @@ static void davinci_init_wdt(void)
  
- static int __init eukrea_tlv320_init(void)
-@@ -110,10 +107,7 @@ static int __init eukrea_tlv320_init(void)
- 	if (!eukrea_tlv320_snd_device)
- 		return -ENOMEM;
+ /*-------------------------------------------------------------------------*/
  
--	eukrea_tlv320_dai.cpu_dai = &imx_ssi_pcm_dai[0];
--
--	platform_set_drvdata(eukrea_tlv320_snd_device, &eukrea_tlv320_snd_devdata);
--	eukrea_tlv320_snd_devdata.dev = &eukrea_tlv320_snd_device->dev;
-+	platform_set_drvdata(eukrea_tlv320_snd_device, &eukrea_tlv320);
- 	ret = platform_device_add(eukrea_tlv320_snd_device);
- 
- 	if (ret) {
-diff --git a/sound/soc/imx/imx-pcm-dma-mx2.c b/sound/soc/imx/imx-pcm-dma-mx2.c
-index 0a595da..fd493ee 100644
---- a/sound/soc/imx/imx-pcm-dma-mx2.c
-+++ b/sound/soc/imx/imx-pcm-dma-mx2.c
-@@ -103,7 +103,7 @@ static int imx_ssi_dma_alloc(struct snd_pcm_substream *substream)
- 	struct imx_pcm_runtime_data *iprtd = runtime->private_data;
- 	int ret;
- 
--	dma_params = snd_soc_dai_get_dma_data(rtd->dai->cpu_dai, substream);
-+	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
- 
- 	iprtd->dma = imx_dma_request_by_prio(DRV_NAME, DMA_PRIO_HIGH);
- 	if (iprtd->dma < 0) {
-@@ -213,7 +213,7 @@ static int snd_imx_pcm_prepare(struct snd_pcm_substream *substream)
- 	struct imx_pcm_runtime_data *iprtd = runtime->private_data;
- 	int err;
- 
--	dma_params = snd_soc_dai_get_dma_data(rtd->dai->cpu_dai, substream);
-+	dma_params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
- 
- 	iprtd->substream = substream;
- 	iprtd->buf = (unsigned int *)substream->dma_buffer.area;
-@@ -318,19 +318,42 @@ static struct snd_pcm_ops imx_pcm_ops = {
- 	.mmap		= snd_imx_pcm_mmap,
- };
- 
--static struct snd_soc_platform imx_soc_platform_dma = {
--	.name		= "imx-audio",
--	.pcm_ops 	= &imx_pcm_ops,
-+static struct snd_soc_platform_driver imx_soc_platform_mx2 = {
-+	.ops		= &imx_pcm_ops,
- 	.pcm_new	= imx_pcm_new,
- 	.pcm_free	= imx_pcm_free,
- };
- 
--struct snd_soc_platform *imx_ssi_dma_mx2_init(struct platform_device *pdev,
--		struct imx_ssi *ssi)
-+static int __devinit imx_soc_platform_probe(struct platform_device *pdev)
- {
--	ssi->dma_params_tx.burstsize = DMA_TXFIFO_BURST;
--	ssi->dma_params_rx.burstsize = DMA_RXFIFO_BURST;
-+	return snd_soc_register_platform(&pdev->dev, &imx_soc_platform_mx2);
-+}
-+
-+static int __devexit imx_soc_platform_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_platform(&pdev->dev);
-+	return 0;
-+}
-+
-+static struct platform_driver imx_pcm_driver = {
-+	.driver = {
-+			.name = "imx-pcm-audio",
-+			.owner = THIS_MODULE,
-+	},
- 
--	return &imx_soc_platform_dma;
-+	.probe = imx_soc_platform_probe,
-+	.remove = __devexit_p(imx_soc_platform_remove),
++struct platform_device davinci_pcm_device = {
++	.name		= "davinci-pcm-audio",
++	.id		= -1,
 +};
 +
-+static int __init snd_imx_pcm_init(void)
++static void davinci_init_pcm(void)
 +{
-+	return platform_driver_register(&imx_pcm_driver);
++	platform_device_register(&davinci_pcm_device);
 +}
-+module_init(snd_imx_pcm_init);
 +
-+static void __exit snd_imx_pcm_exit(void)
-+{
-+	platform_driver_unregister(&imx_pcm_driver);
- }
-+module_exit(snd_imx_pcm_exit);
- 
-diff --git a/sound/soc/imx/imx-pcm-fiq.c b/sound/soc/imx/imx-pcm-fiq.c
-index b2bf272..bb69825 100644
---- a/sound/soc/imx/imx-pcm-fiq.c
-+++ b/sound/soc/imx/imx-pcm-fiq.c
-@@ -236,16 +236,25 @@ static struct snd_pcm_ops imx_pcm_ops = {
- 	.mmap		= snd_imx_pcm_mmap,
- };
- 
-+static int ssi_irq = 0;
++/*-------------------------------------------------------------------------*/
 +
- static int imx_pcm_fiq_new(struct snd_card *card, struct snd_soc_dai *dai,
- 	struct snd_pcm *pcm)
- {
-+	struct imx_ssi *ssi = snd_soc_dai_get_drvdata(dai);
- 	int ret;
- 
-+	ret = claim_fiq(&fh);
-+	if (ret) {
-+		dev_err(dai->dev, "failed to claim fiq: %d", ret);
-+		return ret;
-+	}
-+
- 	ret = imx_pcm_new(card, dai, pcm);
- 	if (ret)
- 		return ret;
- 
--	if (dai->playback.channels_min) {
-+	if (dai->driver->playback.channels_min) {
- 		struct snd_pcm_substream *substream =
- 			pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
- 		struct snd_dma_buffer *buf = &substream->dma_buffer;
-@@ -253,7 +262,7 @@ static int imx_pcm_fiq_new(struct snd_card *card, struct snd_soc_dai *dai,
- 		imx_ssi_fiq_tx_buffer = (unsigned long)buf->area;
- 	}
- 
--	if (dai->capture.channels_min) {
-+	if (dai->driver->capture.channels_min) {
- 		struct snd_pcm_substream *substream =
- 			pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream;
- 		struct snd_dma_buffer *buf = &substream->dma_buffer;
-@@ -261,45 +270,65 @@ static int imx_pcm_fiq_new(struct snd_card *card, struct snd_soc_dai *dai,
- 		imx_ssi_fiq_rx_buffer = (unsigned long)buf->area;
- 	}
- 
-+	mxc_set_irq_fiq(ssi->irq, 1);
-+	ssi_irq = ssi->irq;
-+
-+	imx_pcm_fiq = ssi->irq;
-+
-+	imx_ssi_fiq_base = (unsigned long)ssi->base;
-+
-+	ssi->dma_params_tx.burstsize = 4;
-+	ssi->dma_params_rx.burstsize = 6;
-+
-+
- 	set_fiq_handler(&imx_ssi_fiq_start,
- 		&imx_ssi_fiq_end - &imx_ssi_fiq_start);
+ struct davinci_timer_instance davinci_timer_instance[2] = {
+ 	{
+ 		.base		= DAVINCI_TIMER0_BASE,
+@@ -315,6 +327,7 @@ static int __init davinci_init_devices(void)
+ 	/* please keep these calls, and their implementations above,
+ 	 * in alphabetical order so they're easier to sort through.
+ 	 */
++	davinci_init_pcm();
+ 	davinci_init_wdt();
  
  	return 0;
- }
- 
--static struct snd_soc_platform imx_soc_platform_fiq = {
--	.pcm_ops 	= &imx_pcm_ops,
-+static void imx_pcm_fiq_free(struct snd_pcm *pcm)
-+{
-+	mxc_set_irq_fiq(ssi_irq, 0);
-+	release_fiq(&fh);
-+	imx_pcm_free(pcm);
-+}
-+
-+static struct snd_soc_platform_driver imx_soc_platform_fiq = {
-+	.ops		= &imx_pcm_ops,
- 	.pcm_new	= imx_pcm_fiq_new,
--	.pcm_free	= imx_pcm_free,
-+	.pcm_free	= imx_pcm_fiq_free,
+diff --git a/arch/arm/mach-davinci/dm355.c b/arch/arm/mach-davinci/dm355.c
+index 3834781..479ad90 100644
+--- a/arch/arm/mach-davinci/dm355.c
++++ b/arch/arm/mach-davinci/dm355.c
+@@ -359,8 +359,8 @@ static struct clk_lookup dm355_clks[] = {
+ 	CLK(NULL, "uart1", &uart1_clk),
+ 	CLK(NULL, "uart2", &uart2_clk),
+ 	CLK("i2c_davinci.1", NULL, &i2c_clk),
+-	CLK("davinci-asp.0", NULL, &asp0_clk),
+-	CLK("davinci-asp.1", NULL, &asp1_clk),
++	CLK("davinci-asp-dai.0", NULL, &asp0_clk),
++	CLK("davinci-asp-dai.1", NULL, &asp1_clk),
+ 	CLK("davinci_mmc.0", NULL, &mmcsd0_clk),
+ 	CLK("davinci_mmc.1", NULL, &mmcsd1_clk),
+ 	CLK("spi_davinci.0", NULL, &spi0_clk),
+@@ -662,7 +662,7 @@ static struct resource dm355_asp1_resources[] = {
  };
  
--struct snd_soc_platform *imx_ssi_fiq_init(struct platform_device *pdev,
--		struct imx_ssi *ssi)
-+static int __devinit imx_soc_platform_probe(struct platform_device *pdev)
- {
--	int ret = 0;
--
--	ret = claim_fiq(&fh);
--	if (ret) {
--		dev_err(&pdev->dev, "failed to claim fiq: %d", ret);
--		return ERR_PTR(ret);
--	}
--
--	mxc_set_irq_fiq(ssi->irq, 1);
-+	return snd_soc_register_platform(&pdev->dev, &imx_soc_platform_fiq);
-+}
- 
--	imx_pcm_fiq = ssi->irq;
-+static int __devexit imx_soc_platform_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_platform(&pdev->dev);
-+	return 0;
-+}
- 
--	imx_ssi_fiq_base = (unsigned long)ssi->base;
-+static struct platform_driver imx_pcm_driver = {
-+	.driver = {
-+			.name = "imx-fiq-pcm-audio",
-+			.owner = THIS_MODULE,
-+	},
- 
--	ssi->dma_params_tx.burstsize = 4;
--	ssi->dma_params_rx.burstsize = 6;
-+	.probe = imx_soc_platform_probe,
-+	.remove = __devexit_p(imx_soc_platform_remove),
-+};
- 
--	return &imx_soc_platform_fiq;
-+static int __init snd_imx_pcm_init(void)
-+{
-+	return platform_driver_register(&imx_pcm_driver);
- }
-+module_init(snd_imx_pcm_init);
- 
--void imx_ssi_fiq_exit(struct platform_device *pdev,
--		struct imx_ssi *ssi)
-+static void __exit snd_imx_pcm_exit(void)
- {
--	mxc_set_irq_fiq(ssi->irq, 0);
--	release_fiq(&fh);
-+	platform_driver_unregister(&imx_pcm_driver);
- }
--
-+module_exit(snd_imx_pcm_exit);
-diff --git a/sound/soc/imx/imx-ssi.c b/sound/soc/imx/imx-ssi.c
-index 50f5162..b1daf04 100644
---- a/sound/soc/imx/imx-ssi.c
-+++ b/sound/soc/imx/imx-ssi.c
-@@ -61,7 +61,7 @@
- static int imx_ssi_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai,
- 	unsigned int tx_mask, unsigned int rx_mask, int slots, int slot_width)
- {
--	struct imx_ssi *ssi = cpu_dai->private_data;
-+	struct imx_ssi *ssi = snd_soc_dai_get_drvdata(cpu_dai);
- 	u32 sccr;
- 
- 	sccr = readl(ssi->base + SSI_STCCR);
-@@ -86,7 +86,7 @@ static int imx_ssi_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai,
-  */
- static int imx_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
- {
--	struct imx_ssi *ssi = cpu_dai->private_data;
-+	struct imx_ssi *ssi = snd_soc_dai_get_drvdata(cpu_dai);
- 	u32 strcr = 0, scr;
- 
- 	scr = readl(ssi->base + SSI_SCR) & ~(SSI_SCR_SYN | SSI_SCR_NET);
-@@ -164,7 +164,7 @@ static int imx_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
- static int imx_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 				  int clk_id, unsigned int freq, int dir)
- {
--	struct imx_ssi *ssi = cpu_dai->private_data;
-+	struct imx_ssi *ssi = snd_soc_dai_get_drvdata(cpu_dai);
- 	u32 scr;
- 
- 	scr = readl(ssi->base + SSI_SCR);
-@@ -192,7 +192,7 @@ static int imx_ssi_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- static int imx_ssi_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
- 				  int div_id, int div)
- {
--	struct imx_ssi *ssi = cpu_dai->private_data;
-+	struct imx_ssi *ssi = snd_soc_dai_get_drvdata(cpu_dai);
- 	u32 stccr, srccr;
- 
- 	stccr = readl(ssi->base + SSI_STCCR);
-@@ -241,7 +241,7 @@ static int imx_ssi_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params,
- 			     struct snd_soc_dai *cpu_dai)
- {
--	struct imx_ssi *ssi = cpu_dai->private_data;
-+	struct imx_ssi *ssi = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct imx_pcm_dma_params *dma_data;
- 	u32 reg, sccr;
- 
-@@ -279,9 +279,7 @@ static int imx_ssi_hw_params(struct snd_pcm_substream *substream,
- static int imx_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
- 		struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
--	struct imx_ssi *ssi = cpu_dai->private_data;
-+	struct imx_ssi *ssi = snd_soc_dai_get_drvdata(dai);
- 	unsigned int sier_bits, sier;
- 	unsigned int scr;
- 
-@@ -350,22 +348,6 @@ static struct snd_soc_dai_ops imx_ssi_pcm_dai_ops = {
- 	.trigger	= imx_ssi_trigger,
+ static struct platform_device dm355_asp1_device = {
+-	.name		= "davinci-asp",
++	.name		= "davinci-asp-dai",
+ 	.id		= 1,
+ 	.num_resources	= ARRAY_SIZE(dm355_asp1_resources),
+ 	.resource	= dm355_asp1_resources,
+diff --git a/arch/arm/mach-davinci/dm365.c b/arch/arm/mach-davinci/dm365.c
+index a146849..3b457cb 100644
+--- a/arch/arm/mach-davinci/dm365.c
++++ b/arch/arm/mach-davinci/dm365.c
+@@ -459,7 +459,7 @@ static struct clk_lookup dm365_clks[] = {
+ 	CLK(NULL, "usb", &usb_clk),
+ 	CLK("davinci_emac.1", NULL, &emac_clk),
+ 	CLK("davinci_voicecodec", NULL, &voicecodec_clk),
+-	CLK("davinci-asp.0", NULL, &asp0_clk),
++	CLK("davinci-asp-dai.0", NULL, &asp0_clk),
+ 	CLK(NULL, "rto", &rto_clk),
+ 	CLK(NULL, "mjcp", &mjcp_clk),
+ 	CLK(NULL, NULL, NULL),
+@@ -906,7 +906,7 @@ static struct resource dm365_asp_resources[] = {
  };
  
--static struct snd_soc_dai imx_ssi_dai = {
--	.playback = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_8000_96000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
--	},
--	.capture = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_8000_96000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
--	},
--	.ops = &imx_ssi_pcm_dai_ops,
--};
--
- int snd_imx_pcm_mmap(struct snd_pcm_substream *substream,
- 		struct vm_area_struct *vma)
- {
-@@ -381,6 +363,7 @@ int snd_imx_pcm_mmap(struct snd_pcm_substream *substream,
- 			runtime->dma_bytes);
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(snd_imx_pcm_mmap);
- 
- static int imx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
- {
-@@ -412,14 +395,14 @@ int imx_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
- 		card->dev->dma_mask = &imx_pcm_dmamask;
- 	if (!card->dev->coherent_dma_mask)
- 		card->dev->coherent_dma_mask = DMA_BIT_MASK(32);
--	if (dai->playback.channels_min) {
-+	if (dai->driver->playback.channels_min) {
- 		ret = imx_pcm_preallocate_dma_buffer(pcm,
- 			SNDRV_PCM_STREAM_PLAYBACK);
- 		if (ret)
- 			goto out;
- 	}
- 
--	if (dai->capture.channels_min) {
-+	if (dai->driver->capture.channels_min) {
- 		ret = imx_pcm_preallocate_dma_buffer(pcm,
- 			SNDRV_PCM_STREAM_CAPTURE);
- 		if (ret)
-@@ -429,6 +412,7 @@ int imx_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
- out:
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(imx_pcm_new);
- 
- void imx_pcm_free(struct snd_pcm *pcm)
- {
-@@ -450,14 +434,25 @@ void imx_pcm_free(struct snd_pcm *pcm)
- 		buf->area = NULL;
- 	}
- }
-+EXPORT_SYMBOL_GPL(imx_pcm_free);
- 
--struct snd_soc_platform imx_soc_platform = {
--	.name		= "imx-audio",
-+static struct snd_soc_dai_driver imx_ssi_dai = {
-+	.playback = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_8000_96000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.capture = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_8000_96000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.ops = &imx_ssi_pcm_dai_ops,
- };
--EXPORT_SYMBOL_GPL(imx_soc_platform);
- 
--static struct snd_soc_dai imx_ac97_dai = {
--	.name = "AC97",
-+static struct snd_soc_dai_driver imx_ac97_dai = {
- 	.ac97_control = 1,
- 	.playback = {
- 		.stream_name = "AC97 Playback",
-@@ -577,25 +572,21 @@ struct snd_ac97_bus_ops soc_ac97_ops = {
- };
- EXPORT_SYMBOL_GPL(soc_ac97_ops);
- 
--struct snd_soc_dai imx_ssi_pcm_dai[2];
--EXPORT_SYMBOL_GPL(imx_ssi_pcm_dai);
-+static struct snd_soc_dai_driver imx_ssi_pcm_dai[2];
- 
- static int imx_ssi_probe(struct platform_device *pdev)
- {
- 	struct resource *res;
- 	struct imx_ssi *ssi;
- 	struct imx_ssi_platform_data *pdata = pdev->dev.platform_data;
--	struct snd_soc_platform *platform;
- 	int ret = 0;
- 	unsigned int val;
--	struct snd_soc_dai *dai = &imx_ssi_pcm_dai[pdev->id];
--
--	if (dai->id >= ARRAY_SIZE(imx_ssi_pcm_dai))
--		return -EINVAL;
-+	struct snd_soc_dai_driver *dai;
- 
- 	ssi = kzalloc(sizeof(*ssi), GFP_KERNEL);
- 	if (!ssi)
- 		return -ENOMEM;
-+	dev_set_drvdata(&pdev->dev, ssi);
- 
- 	if (pdata) {
- 		ssi->ac97_reset = pdata->ac97_reset;
-@@ -640,9 +631,9 @@ static int imx_ssi_probe(struct platform_device *pdev)
- 		}
- 		ac97_ssi = ssi;
- 		setup_channel_to_ac97(ssi);
--		memcpy(dai, &imx_ac97_dai, sizeof(imx_ac97_dai));
-+		dai = &imx_ac97_dai;
- 	} else
--		memcpy(dai, &imx_ssi_dai, sizeof(imx_ssi_dai));
-+		dai = &imx_ssi_dai;
- 
- 	writel(0x0, ssi->base + SSI_SIER);
- 
-@@ -657,28 +648,17 @@ static int imx_ssi_probe(struct platform_device *pdev)
- 	if (res)
- 		ssi->dma_params_rx.dma = res->start;
- 
--	dai->id = pdev->id;
--	dai->dev = &pdev->dev;
--	dai->name = kasprintf(GFP_KERNEL, "imx-ssi.%d", pdev->id);
--	dai->private_data = ssi;
--
- 	if ((cpu_is_mx27() || cpu_is_mx21()) &&
- 			!(ssi->flags & IMX_SSI_USE_AC97) &&
- 			(ssi->flags & IMX_SSI_DMA)) {
- 		ssi->flags |= IMX_SSI_DMA;
--		platform = imx_ssi_dma_mx2_init(pdev, ssi);
--	} else
--		platform = imx_ssi_fiq_init(pdev, ssi);
--
--	imx_soc_platform.pcm_ops = platform->pcm_ops;
--	imx_soc_platform.pcm_new = platform->pcm_new;
--	imx_soc_platform.pcm_free = platform->pcm_free;
-+	}
- 
- 	val = SSI_SFCSR_TFWM0(ssi->dma_params_tx.burstsize) |
- 		SSI_SFCSR_RFWM0(ssi->dma_params_rx.burstsize);
- 	writel(val, ssi->base + SSI_SFCSR);
- 
--	ret = snd_soc_register_dai(dai);
-+	ret = snd_soc_register_dai(&pdev->dev, dai);
- 	if (ret) {
- 		dev_err(&pdev->dev, "register DAI failed\n");
- 		goto failed_register;
-@@ -706,16 +686,12 @@ static int __devexit imx_ssi_remove(struct platform_device *pdev)
- {
- 	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	struct imx_ssi *ssi = platform_get_drvdata(pdev);
--	struct snd_soc_dai *dai = &imx_ssi_pcm_dai[pdev->id];
- 
--	snd_soc_unregister_dai(dai);
-+	snd_soc_unregister_dai(&pdev->dev);
- 
- 	if (ssi->flags & IMX_SSI_USE_AC97)
- 		ac97_ssi = NULL;
- 
--	if (!(ssi->flags & IMX_SSI_DMA))
--		imx_ssi_fiq_exit(pdev, ssi);
--
- 	iounmap(ssi->base);
- 	release_mem_region(res->start, resource_size(res));
- 	clk_disable(ssi->clk);
-@@ -730,34 +706,19 @@ static struct platform_driver imx_ssi_driver = {
- 	.remove = __devexit_p(imx_ssi_remove),
- 
- 	.driver = {
--		.name = DRV_NAME,
-+		.name = "imx-ssi-dai",
- 		.owner = THIS_MODULE,
- 	},
+ static struct platform_device dm365_asp_device = {
+-	.name		= "davinci-asp",
++	.name		= "davinci-asp-dai",
+ 	.id		= 0,
+ 	.num_resources	= ARRAY_SIZE(dm365_asp_resources),
+ 	.resource	= dm365_asp_resources,
+diff --git a/arch/arm/mach-davinci/dm644x.c b/arch/arm/mach-davinci/dm644x.c
+index 7ad1520..1a0f557 100644
+--- a/arch/arm/mach-davinci/dm644x.c
++++ b/arch/arm/mach-davinci/dm644x.c
+@@ -302,7 +302,7 @@ static struct clk_lookup dm644x_clks[] = {
+ 	CLK("davinci_emac.1", NULL, &emac_clk),
+ 	CLK("i2c_davinci.1", NULL, &i2c_clk),
+ 	CLK("palm_bk3710", NULL, &ide_clk),
+-	CLK("davinci-asp", NULL, &asp_clk),
++	CLK("davinci-asp-dai", NULL, &asp_clk),
+ 	CLK("davinci_mmc.0", NULL, &mmcsd_clk),
+ 	CLK(NULL, "spi", &spi_clk),
+ 	CLK(NULL, "gpio", &gpio_clk),
+@@ -564,7 +564,7 @@ static struct resource dm644x_asp_resources[] = {
  };
  
- static int __init imx_ssi_init(void)
- {
--	int ret;
--
--	ret = snd_soc_register_platform(&imx_soc_platform);
--	if (ret) {
--		pr_err("failed to register soc platform: %d\n", ret);
--		return ret;
--	}
--
--	ret = platform_driver_register(&imx_ssi_driver);
--	if (ret) {
--		snd_soc_unregister_platform(&imx_soc_platform);
--		return ret;
--	}
--
--	return 0;
-+	return platform_driver_register(&imx_ssi_driver);
- }
- 
- static void __exit imx_ssi_exit(void)
- {
- 	platform_driver_unregister(&imx_ssi_driver);
--	snd_soc_unregister_platform(&imx_soc_platform);
- }
- 
- module_init(imx_ssi_init);
-diff --git a/sound/soc/imx/imx-ssi.h b/sound/soc/imx/imx-ssi.h
-index 55f26eb..c46d8df 100644
---- a/sound/soc/imx/imx-ssi.h
-+++ b/sound/soc/imx/imx-ssi.h
-@@ -183,9 +183,6 @@
- #define IMX_SSI_RX_DIV_PSR	4
- #define IMX_SSI_RX_DIV_PM	5
- 
--extern struct snd_soc_dai imx_ssi_pcm_dai[2];
--extern struct snd_soc_platform imx_soc_platform;
--
- #define DRV_NAME "imx-ssi"
- 
- struct imx_pcm_dma_params {
-@@ -197,7 +194,7 @@ struct imx_pcm_dma_params {
- struct imx_ssi {
- 	struct platform_device *ac97_dev;
- 
--	struct snd_soc_device imx_ac97;
-+	struct snd_soc_dai *imx_ac97;
- 	struct clk *clk;
- 	void __iomem *base;
- 	int irq;
-diff --git a/sound/soc/imx/phycore-ac97.c b/sound/soc/imx/phycore-ac97.c
-index a8307d5..18fa91b 100644
---- a/sound/soc/imx/phycore-ac97.c
-+++ b/sound/soc/imx/phycore-ac97.c
-@@ -32,23 +32,20 @@ static struct snd_soc_dai_link imx_phycore_dai_ac97[] = {
- 	{
- 		.name		= "HiFi",
- 		.stream_name	= "HiFi",
--		.codec_dai	= &wm9712_dai[WM9712_DAI_AC97_HIFI],
-+		.codec_dai_name		= "wm9712-hifi",
-+		.codec_name	= "wm9712-codec",
-+		.cpu_dai_name	= "imx-ssi-dai.0",
-+		.platform_name	= "imx-pcm-audio",
- 		.ops		= &imx_phycore_hifi_ops,
- 	},
+ static struct platform_device dm644x_asp_device = {
+-	.name		= "davinci-asp",
++	.name		= "davinci-asp-dai",
+ 	.id		= -1,
+ 	.num_resources	= ARRAY_SIZE(dm644x_asp_resources),
+ 	.resource	= dm644x_asp_resources,
+diff --git a/arch/arm/mach-davinci/dm646x.c b/arch/arm/mach-davinci/dm646x.c
+index 9404565..d04457c 100644
+--- a/arch/arm/mach-davinci/dm646x.c
++++ b/arch/arm/mach-davinci/dm646x.c
+@@ -339,8 +339,8 @@ static struct clk_lookup dm646x_clks[] = {
+ 	CLK(NULL, "uart2", &uart2_clk),
+ 	CLK("i2c_davinci.1", NULL, &i2c_clk),
+ 	CLK(NULL, "gpio", &gpio_clk),
+-	CLK("davinci-mcasp.0", NULL, &mcasp0_clk),
+-	CLK("davinci-mcasp.1", NULL, &mcasp1_clk),
++	CLK("davinci-mcasp-dai.0", NULL, &mcasp0_clk),
++	CLK("davinci-mcasp-dai.1", NULL, &mcasp1_clk),
+ 	CLK(NULL, "aemif", &aemif_clk),
+ 	CLK("davinci_emac.1", NULL, &emac_clk),
+ 	CLK(NULL, "pwm0", &pwm0_clk),
+@@ -635,14 +635,14 @@ static struct resource dm646x_mcasp1_resources[] = {
  };
  
- static struct snd_soc_card imx_phycore = {
- 	.name		= "PhyCORE-audio",
--	.platform	= &imx_soc_platform,
- 	.dai_link	= imx_phycore_dai_ac97,
- 	.num_links	= ARRAY_SIZE(imx_phycore_dai_ac97),
+ static struct platform_device dm646x_mcasp0_device = {
+-	.name		= "davinci-mcasp",
++	.name		= "davinci-mcasp-dai",
+ 	.id		= 0,
+ 	.num_resources	= ARRAY_SIZE(dm646x_mcasp0_resources),
+ 	.resource	= dm646x_mcasp0_resources,
  };
  
--static struct snd_soc_device imx_phycore_snd_devdata = {
--	.card		= &imx_phycore,
--	.codec_dev	= &soc_codec_dev_wm9712,
--};
--
- static struct platform_device *imx_phycore_snd_device;
+ static struct platform_device dm646x_mcasp1_device = {
+-	.name		= "davinci-mcasp",
++	.name		= "davinci-mcasp-dai",
+ 	.id		= 1,
+ 	.num_resources	= ARRAY_SIZE(dm646x_mcasp1_resources),
+ 	.resource	= dm646x_mcasp1_resources,
+diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
+index 97f74d6..3d6b5b6 100644
+--- a/sound/soc/davinci/davinci-evm.c
++++ b/sound/soc/davinci/davinci-evm.c
+@@ -28,12 +28,9 @@
+ #include <mach/mux.h>
  
- static int __init imx_phycore_init(void)
-@@ -63,10 +60,7 @@ static int __init imx_phycore_init(void)
- 	if (!imx_phycore_snd_device)
- 		return -ENOMEM;
+ #include "../codecs/tlv320aic3x.h"
+-#include "../codecs/cq93vc.h"
+-#include "../codecs/spdif_transciever.h"
+ #include "davinci-pcm.h"
+ #include "davinci-i2s.h"
+ #include "davinci-mcasp.h"
+-#include "davinci-vcif.h"
  
--	imx_phycore_dai_ac97[0].cpu_dai = &imx_ssi_pcm_dai[0];
--
--	platform_set_drvdata(imx_phycore_snd_device, &imx_phycore_snd_devdata);
--	imx_phycore_snd_devdata.dev = &imx_phycore_snd_device->dev;
-+	platform_set_drvdata(imx_phycore_snd_device, &imx_phycore);
- 	ret = platform_device_add(imx_phycore_snd_device);
- 
- 	if (ret) {
-diff --git a/sound/soc/imx/wm1133-ev1.c b/sound/soc/imx/wm1133-ev1.c
-index a6e7d94..d892507 100644
---- a/sound/soc/imx/wm1133-ev1.c
-+++ b/sound/soc/imx/wm1133-ev1.c
-@@ -82,8 +82,8 @@ static int wm1133_ev1_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params)
+ #define AUDIO_FORMAT (SND_SOC_DAIFMT_DSP_B | \
+ 		SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_IB_NF)
+@@ -41,8 +38,8 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
+ 			 struct snd_pcm_hw_params *params)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
 -	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
 +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
 +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int i, found = 0;
- 	snd_pcm_format_t format = params_format(params);
- 	unsigned int rate = params_rate(params);
-@@ -210,9 +210,9 @@ static struct snd_soc_jack_pin mic_jack_pins[] = {
- 	{ .pin = "Mic2 Jack", .mask = SND_JACK_MICROPHONE },
+ 	int ret = 0;
+ 	unsigned sysclk;
+ 
+@@ -87,7 +84,7 @@ static int evm_spdif_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 
+ 	/* set cpu DAI configuration */
+ 	return snd_soc_dai_set_fmt(cpu_dai, AUDIO_FORMAT);
+@@ -132,8 +129,10 @@ static const struct snd_soc_dapm_route audio_map[] = {
  };
  
--static int wm1133_ev1_init(struct snd_soc_codec *codec)
-+static int wm1133_ev1_init(struct snd_soc_pcm_runtime *rtd)
+ /* Logic for a aic3x as connected on a davinci-evm */
+-static int evm_aic3x_init(struct snd_soc_codec *codec)
++static int evm_aic3x_init(struct snd_soc_pcm_runtime *rtd)
  {
--	struct snd_soc_card *card = codec->socdev->card;
 +	struct snd_soc_codec *codec = rtd->codec;
++
+ 	/* Add davinci-evm specific widgets */
+ 	snd_soc_dapm_new_controls(codec, aic3x_dapm_widgets,
+ 				  ARRAY_SIZE(aic3x_dapm_widgets));
+@@ -161,8 +160,10 @@ static int evm_aic3x_init(struct snd_soc_codec *codec)
+ static struct snd_soc_dai_link evm_dai = {
+ 	.name = "TLV320AIC3X",
+ 	.stream_name = "AIC3X",
+-	.cpu_dai = &davinci_i2s_dai,
+-	.codec_dai = &aic3x_dai,
++	.cpu_dai_name = "davinci-mcasp-dai.0",
++	.codec_dai_name = "tlv320aic3x-hifi",
++	.codec_name = "tlv320aic3x-codec.0-0x1a",
++	.platform_name = "davinci-pcm-audio",
+ 	.init = evm_aic3x_init,
+ 	.ops = &evm_ops,
+ };
+@@ -171,40 +172,49 @@ static struct snd_soc_dai_link dm365_evm_dai = {
+ #ifdef CONFIG_SND_DM365_AIC3X_CODEC
+ 	.name = "TLV320AIC3X",
+ 	.stream_name = "AIC3X",
+-	.cpu_dai = &davinci_i2s_dai,
+-	.codec_dai = &aic3x_dai,
++	.cpu_dai_name = "davinci-i2s-dai",
++	.codec_dai_name = "tlv320aic3x-hifi",
+ 	.init = evm_aic3x_init,
++	.codec_name = "tlv320aic3x-codec.0-0x1a",
+ 	.ops = &evm_ops,
+ #elif defined(CONFIG_SND_DM365_VOICE_CODEC)
+ 	.name = "Voice Codec - CQ93VC",
+ 	.stream_name = "CQ93",
+-	.cpu_dai = &davinci_vcif_dai,
+-	.codec_dai = &cq93vc_dai,
++	.cpu_dai_name = "davinci-vcif-dai",
++	.codec_dai_name = "cq93vc-hifi",
++	.codec_name = "cq93vc-codec",
+ #endif
++	.platform_name = "davinci-pcm-audio",
+ };
  
- 	snd_soc_dapm_new_controls(codec, wm1133_ev1_widgets,
- 				  ARRAY_SIZE(wm1133_ev1_widgets));
-@@ -221,13 +221,13 @@ static int wm1133_ev1_init(struct snd_soc_codec *codec)
- 				ARRAY_SIZE(wm1133_ev1_map));
- 
- 	/* Headphone jack detection */
--	snd_soc_jack_new(card, "Headphone", SND_JACK_HEADPHONE, &hp_jack);
-+	snd_soc_jack_new(codec, "Headphone", SND_JACK_HEADPHONE, &hp_jack);
- 	snd_soc_jack_add_pins(&hp_jack, ARRAY_SIZE(hp_jack_pins),
- 			      hp_jack_pins);
- 	wm8350_hp_jack_detect(codec, WM8350_JDR, &hp_jack, SND_JACK_HEADPHONE);
- 
- 	/* Microphone jack detection */
--	snd_soc_jack_new(card, "Microphone",
-+	snd_soc_jack_new(codec, "Microphone",
- 			 SND_JACK_MICROPHONE | SND_JACK_BTN_0, &mic_jack);
- 	snd_soc_jack_add_pins(&mic_jack, ARRAY_SIZE(mic_jack_pins),
- 			      mic_jack_pins);
-@@ -243,8 +243,10 @@ static int wm1133_ev1_init(struct snd_soc_codec *codec)
- static struct snd_soc_dai_link wm1133_ev1_dai = {
- 	.name = "WM1133-EV1",
- 	.stream_name = "Audio",
--	.cpu_dai = &imx_ssi_pcm_dai[0],
--	.codec_dai = &wm8350_dai,
-+	.cpu_dai_name = "imx-ssi-dai.0",
-+	.codec_dai_name = "wm8350-hifi",
-+	.platform_name = "imx-fiq-pcm-audio",
-+	.codec_name = "wm8350-codec.0-0x1a",
- 	.init = wm1133_ev1_init,
- 	.ops = &wm1133_ev1_ops,
- 	.symmetric_rates = 1,
-@@ -252,16 +254,10 @@ static struct snd_soc_dai_link wm1133_ev1_dai = {
- 
- static struct snd_soc_card wm1133_ev1 = {
- 	.name = "WM1133-EV1",
--	.platform = &imx_soc_platform,
- 	.dai_link = &wm1133_ev1_dai,
+ static struct snd_soc_dai_link dm6467_evm_dai[] = {
+ 	{
+ 		.name = "TLV320AIC3X",
+ 		.stream_name = "AIC3X",
+-		.cpu_dai = &davinci_mcasp_dai[DAVINCI_MCASP_I2S_DAI],
+-		.codec_dai = &aic3x_dai,
++		.cpu_dai_name= "davinci-mcasp-dai.0",
++		.codec_dai_name = "tlv320aic3x-hifi",
++		.platform_name ="davinci-pcm-audio",
++		.codec_name = "tlv320aic3x-codec.0-0x1a",
+ 		.init = evm_aic3x_init,
+ 		.ops = &evm_ops,
+ 	},
+ 	{
+ 		.name = "McASP",
+ 		.stream_name = "spdif",
+-		.cpu_dai = &davinci_mcasp_dai[DAVINCI_MCASP_DIT_DAI],
+-		.codec_dai = &dit_stub_dai,
++		.cpu_dai_name= "davinci-mcasp-dai.1",
++		.codec_dai_name = "dit-hifi",
++		.codec_name = "spdif_dit",
++		.platform_name = "davinci-pcm-audio",
+ 		.ops = &evm_spdif_ops,
+ 	},
+ };
+ static struct snd_soc_dai_link da8xx_evm_dai = {
+ 	.name = "TLV320AIC3X",
+ 	.stream_name = "AIC3X",
+-	.cpu_dai = &davinci_mcasp_dai[DAVINCI_MCASP_I2S_DAI],
+-	.codec_dai = &aic3x_dai,
++	.cpu_dai_name= "davinci-mcasp-dai.0",
++	.codec_dai_name = "tlv320aic3x-hifi",
++	.codec_name = "tlv320aic3x-codec.0-0x1a",
++	.platform_name = "davinci-pcm-audio",
+ 	.init = evm_aic3x_init,
+ 	.ops = &evm_ops,
+ };
+@@ -212,7 +222,6 @@ static struct snd_soc_dai_link da8xx_evm_dai = {
+ /* davinci dm6446, dm355 evm audio machine driver */
+ static struct snd_soc_card snd_soc_card_evm = {
+ 	.name = "DaVinci EVM",
+-	.platform = &davinci_soc_platform,
+ 	.dai_link = &evm_dai,
+ 	.num_links = 1,
+ };
+@@ -220,16 +229,13 @@ static struct snd_soc_card snd_soc_card_evm = {
+ /* davinci dm365 evm audio machine driver */
+ static struct snd_soc_card dm365_snd_soc_card_evm = {
+ 	.name = "DaVinci DM365 EVM",
+-	.platform = &davinci_soc_platform,
+ 	.dai_link = &dm365_evm_dai,
  	.num_links = 1,
  };
  
--static struct snd_soc_device wm1133_ev1_snd_devdata = {
--	.card = &wm1133_ev1,
--	.codec_dev = &soc_codec_dev_wm8350,
+-
+ /* davinci dm6467 evm audio machine driver */
+ static struct snd_soc_card dm6467_snd_soc_card_evm = {
+ 	.name = "DaVinci DM6467 EVM",
+-	.platform = &davinci_soc_platform,
+ 	.dai_link = dm6467_evm_dai,
+ 	.num_links = ARRAY_SIZE(dm6467_evm_dai),
+ };
+@@ -237,82 +243,40 @@ static struct snd_soc_card dm6467_snd_soc_card_evm = {
+ static struct snd_soc_card da830_snd_soc_card = {
+ 	.name = "DA830/OMAP-L137 EVM",
+ 	.dai_link = &da8xx_evm_dai,
+-	.platform = &davinci_soc_platform,
+ 	.num_links = 1,
+ };
+ 
+ static struct snd_soc_card da850_snd_soc_card = {
+ 	.name = "DA850/OMAP-L138 EVM",
+ 	.dai_link = &da8xx_evm_dai,
+-	.platform = &davinci_soc_platform,
+ 	.num_links = 1,
+ };
+ 
+-static struct aic3x_setup_data aic3x_setup;
+-
+-/* evm audio subsystem */
+-static struct snd_soc_device evm_snd_devdata = {
+-	.card = &snd_soc_card_evm,
+-	.codec_dev = &soc_codec_dev_aic3x,
+-	.codec_data = &aic3x_setup,
 -};
 -
- static struct platform_device *wm1133_ev1_snd_device;
+-/* evm audio subsystem */
+-static struct snd_soc_device dm365_evm_snd_devdata = {
+-	.card = &dm365_snd_soc_card_evm,
+-#ifdef CONFIG_SND_DM365_AIC3X_CODEC
+-	.codec_dev = &soc_codec_dev_aic3x,
+-	.codec_data = &aic3x_setup,
+-#elif defined(CONFIG_SND_DM365_VOICE_CODEC)
+-	.codec_dev = &soc_codec_dev_cq93vc,
+-#endif
+-};
+-
+-/* evm audio subsystem */
+-static struct snd_soc_device dm6467_evm_snd_devdata = {
+-	.card = &dm6467_snd_soc_card_evm,
+-	.codec_dev = &soc_codec_dev_aic3x,
+-	.codec_data = &aic3x_setup,
+-};
+-
+-/* evm audio subsystem */
+-static struct snd_soc_device da830_evm_snd_devdata = {
+-	.card = &da830_snd_soc_card,
+-	.codec_dev = &soc_codec_dev_aic3x,
+-	.codec_data = &aic3x_setup,
+-};
+-
+-static struct snd_soc_device da850_evm_snd_devdata = {
+-	.card		= &da850_snd_soc_card,
+-	.codec_dev	= &soc_codec_dev_aic3x,
+-	.codec_data	= &aic3x_setup,
+-};
+-
+ static struct platform_device *evm_snd_device;
  
- static int __init wm1133_ev1_audio_init(void)
-@@ -286,8 +282,7 @@ static int __init wm1133_ev1_audio_init(void)
- 	if (!wm1133_ev1_snd_device)
+ static int __init evm_init(void)
+ {
+-	struct snd_soc_device *evm_snd_dev_data;
++	struct snd_soc_card *evm_snd_dev_data;
+ 	int index;
+ 	int ret;
+ 
+ 	if (machine_is_davinci_evm()) {
+-		evm_snd_dev_data = &evm_snd_devdata;
++		evm_snd_dev_data = &snd_soc_card_evm;
+ 		index = 0;
+ 	} else if (machine_is_davinci_dm355_evm()) {
+-		evm_snd_dev_data = &evm_snd_devdata;
++		evm_snd_dev_data = &snd_soc_card_evm;
+ 		index = 1;
+ 	} else if (machine_is_davinci_dm365_evm()) {
+-		evm_snd_dev_data = &dm365_evm_snd_devdata;
++		evm_snd_dev_data = &dm365_snd_soc_card_evm;
+ 		index = 0;
+ 	} else if (machine_is_davinci_dm6467_evm()) {
+-		evm_snd_dev_data = &dm6467_evm_snd_devdata;
++		evm_snd_dev_data = &dm6467_snd_soc_card_evm;
+ 		index = 0;
+ 	} else if (machine_is_davinci_da830_evm()) {
+-		evm_snd_dev_data = &da830_evm_snd_devdata;
++		evm_snd_dev_data = &da830_snd_soc_card;
+ 		index = 1;
+ 	} else if (machine_is_davinci_da850_evm()) {
+-		evm_snd_dev_data = &da850_evm_snd_devdata;
++		evm_snd_dev_data = &da850_snd_soc_card;
+ 		index = 0;
+ 	} else
+ 		return -EINVAL;
+@@ -322,7 +286,6 @@ static int __init evm_init(void)
  		return -ENOMEM;
  
--	platform_set_drvdata(wm1133_ev1_snd_device, &wm1133_ev1_snd_devdata);
--	wm1133_ev1_snd_devdata.dev = &wm1133_ev1_snd_device->dev;
-+	platform_set_drvdata(wm1133_ev1_snd_device, &wm1133_ev1);
- 	ret = platform_device_add(wm1133_ev1_snd_device);
- 
+ 	platform_set_drvdata(evm_snd_device, evm_snd_dev_data);
+-	evm_snd_dev_data->dev = &evm_snd_device->dev;
+ 	ret = platform_device_add(evm_snd_device);
  	if (ret)
+ 		platform_device_put(evm_snd_device);
+diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
+index 9e8932a..3eadcfd 100644
+--- a/sound/soc/davinci/davinci-i2s.c
++++ b/sound/soc/davinci/davinci-i2s.c
+@@ -183,8 +183,7 @@ static void davinci_mcbsp_start(struct davinci_mcbsp_dev *dev,
+ 		struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_device *socdev = rtd->socdev;
+-	struct snd_soc_platform *platform = socdev->card->platform;
++	struct snd_soc_platform *platform = rtd->platform;
+ 	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+ 	u32 spcr;
+ 	u32 mask = playback ? DAVINCI_MCBSP_SPCR_XRST : DAVINCI_MCBSP_SPCR_RRST;
+@@ -205,8 +204,8 @@ static void davinci_mcbsp_start(struct davinci_mcbsp_dev *dev,
+ 	if (playback) {
+ 		/* Stop the DMA to avoid data loss */
+ 		/* while the transmitter is out of reset to handle XSYNCERR */
+-		if (platform->pcm_ops->trigger) {
+-			int ret = platform->pcm_ops->trigger(substream,
++		if (platform->driver->ops->trigger) {
++			int ret = platform->driver->ops->trigger(substream,
+ 				SNDRV_PCM_TRIGGER_STOP);
+ 			if (ret < 0)
+ 				printk(KERN_DEBUG "Playback DMA stop failed\n");
+@@ -227,8 +226,8 @@ static void davinci_mcbsp_start(struct davinci_mcbsp_dev *dev,
+ 		toggle_clock(dev, playback);
+ 
+ 		/* Restart the DMA */
+-		if (platform->pcm_ops->trigger) {
+-			int ret = platform->pcm_ops->trigger(substream,
++		if (platform->driver->ops->trigger) {
++			int ret = platform->driver->ops->trigger(substream,
+ 				SNDRV_PCM_TRIGGER_START);
+ 			if (ret < 0)
+ 				printk(KERN_DEBUG "Playback DMA start failed\n");
+@@ -263,7 +262,7 @@ static void davinci_mcbsp_stop(struct davinci_mcbsp_dev *dev, int playback)
+ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 				   unsigned int fmt)
+ {
+-	struct davinci_mcbsp_dev *dev = cpu_dai->private_data;
++	struct davinci_mcbsp_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
+ 	unsigned int pcr;
+ 	unsigned int srgr;
+ 	/* Attention srgr is updated by hw_params! */
+@@ -404,7 +403,7 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ static int davinci_i2s_dai_set_clkdiv(struct snd_soc_dai *cpu_dai,
+ 				int div_id, int div)
+ {
+-	struct davinci_mcbsp_dev *dev = cpu_dai->private_data;
++	struct davinci_mcbsp_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
+ 
+ 	if (div_id != DAVINCI_MCBSP_CLKGDV)
+ 		return -ENODEV;
+@@ -417,7 +416,7 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *params,
+ 				 struct snd_soc_dai *dai)
+ {
+-	struct davinci_mcbsp_dev *dev = dai->private_data;
++	struct davinci_mcbsp_dev *dev = snd_soc_dai_get_drvdata(dai);
+ 	struct davinci_pcm_dma_params *dma_params =
+ 					&dev->dma_params[substream->stream];
+ 	struct snd_interval *i = NULL;
+@@ -427,6 +426,9 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	snd_pcm_format_t fmt;
+ 	unsigned element_cnt = 1;
+ 
++	dai->capture_dma_data = dev->dma_params;
++	dai->playback_dma_data = dev->dma_params;
++
+ 	/* general line settings */
+ 	spcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
+ 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+@@ -569,7 +571,7 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+ static int davinci_i2s_prepare(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+-	struct davinci_mcbsp_dev *dev = dai->private_data;
++	struct davinci_mcbsp_dev *dev = snd_soc_dai_get_drvdata(dai);
+ 	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+ 	davinci_mcbsp_stop(dev, playback);
+ 	if ((dev->pcr & DAVINCI_MCBSP_PCR_FSXM) == 0) {
+@@ -582,7 +584,7 @@ static int davinci_i2s_prepare(struct snd_pcm_substream *substream,
+ static int davinci_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			       struct snd_soc_dai *dai)
+ {
+-	struct davinci_mcbsp_dev *dev = dai->private_data;
++	struct davinci_mcbsp_dev *dev = snd_soc_dai_get_drvdata(dai);
+ 	int ret = 0;
+ 	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+ 	if ((dev->pcr & DAVINCI_MCBSP_PCR_FSXM) == 0)
+@@ -608,7 +610,7 @@ static int davinci_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ static void davinci_i2s_shutdown(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+-	struct davinci_mcbsp_dev *dev = dai->private_data;
++	struct davinci_mcbsp_dev *dev = snd_soc_dai_get_drvdata(dai);
+ 	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+ 	davinci_mcbsp_stop(dev, playback);
+ }
+@@ -625,9 +627,7 @@ static struct snd_soc_dai_ops davinci_i2s_dai_ops = {
+ 
+ };
+ 
+-struct snd_soc_dai davinci_i2s_dai = {
+-	.name = "davinci-i2s",
+-	.id = 0,
++static struct snd_soc_dai_driver davinci_i2s_dai = {
+ 	.playback = {
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+@@ -641,7 +641,6 @@ struct snd_soc_dai davinci_i2s_dai = {
+ 	.ops = &davinci_i2s_dai_ops,
+ 
+ };
+-EXPORT_SYMBOL_GPL(davinci_i2s_dai);
+ 
+ static int davinci_i2s_probe(struct platform_device *pdev)
+ {
+@@ -720,10 +719,9 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ 	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE].channel = res->start;
+ 	dev->dev = &pdev->dev;
+ 
+-	davinci_i2s_dai.private_data = dev;
+-	davinci_i2s_dai.capture.dma_data = dev->dma_params;
+-	davinci_i2s_dai.playback.dma_data = dev->dma_params;
+-	ret = snd_soc_register_dai(&davinci_i2s_dai);
++	dev_set_drvdata(&pdev->dev, dev);
++
++	ret = snd_soc_register_dai(&pdev->dev, &davinci_i2s_dai);
+ 	if (ret != 0)
+ 		goto err_free_mem;
+ 
+@@ -739,10 +737,10 @@ err_release_region:
+ 
+ static int davinci_i2s_remove(struct platform_device *pdev)
+ {
+-	struct davinci_mcbsp_dev *dev = davinci_i2s_dai.private_data;
++	struct davinci_mcbsp_dev *dev = dev_get_drvdata(&pdev->dev);
+ 	struct resource *mem;
+ 
+-	snd_soc_unregister_dai(&davinci_i2s_dai);
++	snd_soc_unregister_dai(&pdev->dev);
+ 	clk_disable(dev->clk);
+ 	clk_put(dev->clk);
+ 	dev->clk = NULL;
+@@ -757,7 +755,7 @@ static struct platform_driver davinci_mcbsp_driver = {
+ 	.probe		= davinci_i2s_probe,
+ 	.remove		= davinci_i2s_remove,
+ 	.driver		= {
+-		.name	= "davinci-asp",
++		.name	= "davinci-i2s-dai",
+ 		.owner	= THIS_MODULE,
+ 	},
+ };
+diff --git a/sound/soc/davinci/davinci-i2s.h b/sound/soc/davinci/davinci-i2s.h
+index 0b1e77b..48dac3e 100644
+--- a/sound/soc/davinci/davinci-i2s.h
++++ b/sound/soc/davinci/davinci-i2s.h
+@@ -17,6 +17,4 @@ enum davinci_mcbsp_div {
+ 	DAVINCI_MCBSP_CLKGDV,              /* Sample rate generator divider */
+ };
+ 
+-extern struct snd_soc_dai davinci_i2s_dai;
+-
+ #endif
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index b247208..a1f14e4 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -422,7 +422,7 @@ static void davinci_mcasp_stop(struct davinci_audio_dev *dev, int stream)
+ static int davinci_mcasp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 					 unsigned int fmt)
+ {
+-	struct davinci_audio_dev *dev = cpu_dai->private_data;
++	struct davinci_audio_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
+ 	void __iomem *base = dev->base;
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+@@ -709,12 +709,15 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
+ 					struct snd_pcm_hw_params *params,
+ 					struct snd_soc_dai *cpu_dai)
+ {
+-	struct davinci_audio_dev *dev = cpu_dai->private_data;
++	struct davinci_audio_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct davinci_pcm_dma_params *dma_params =
+ 					&dev->dma_params[substream->stream];
+ 	int word_length;
+ 	u8 fifo_level;
+ 
++	cpu_dai->capture_dma_data = dev->dma_params;
++	cpu_dai->playback_dma_data = dev->dma_params;
++
+ 	davinci_hw_common_param(dev, substream->stream);
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		fifo_level = dev->txnumevt;
+@@ -761,8 +764,7 @@ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
+ static int davinci_mcasp_trigger(struct snd_pcm_substream *substream,
+ 				     int cmd, struct snd_soc_dai *cpu_dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct davinci_audio_dev *dev = rtd->dai->cpu_dai->private_data;
++	struct davinci_audio_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
+ 	int ret = 0;
+ 
+ 	switch (cmd) {
+@@ -804,10 +806,9 @@ static struct snd_soc_dai_ops davinci_mcasp_dai_ops = {
+ 
+ };
+ 
+-struct snd_soc_dai davinci_mcasp_dai[] = {
++static struct snd_soc_dai_driver davinci_mcasp_dai[] = {
+ 	{
+-		.name 		= "davinci-i2s",
+-		.id 		= 0,
++		.name		= "davinci-mcasp-dai.0",
+ 		.playback	= {
+ 			.channels_min	= 2,
+ 			.channels_max 	= 2,
+@@ -828,8 +829,7 @@ struct snd_soc_dai davinci_mcasp_dai[] = {
+ 
+ 	},
+ 	{
+-		.name 		= "davinci-dit",
+-		.id 		= 1,
++		"davinci-mcasp-dai.1",
+ 		.playback 	= {
+ 			.channels_min	= 1,
+ 			.channels_max	= 384,
+@@ -840,7 +840,6 @@ struct snd_soc_dai davinci_mcasp_dai[] = {
+ 	},
+ 
+ };
+-EXPORT_SYMBOL_GPL(davinci_mcasp_dai);
+ 
+ static int davinci_mcasp_probe(struct platform_device *pdev)
+ {
+@@ -917,11 +916,8 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	dma_data->channel = res->start;
+-	davinci_mcasp_dai[pdata->op_mode].private_data = dev;
+-	davinci_mcasp_dai[pdata->op_mode].capture.dma_data = dev->dma_params;
+-	davinci_mcasp_dai[pdata->op_mode].playback.dma_data = dev->dma_params;
+-	davinci_mcasp_dai[pdata->op_mode].dev = &pdev->dev;
+-	ret = snd_soc_register_dai(&davinci_mcasp_dai[pdata->op_mode]);
++	dev_set_drvdata(&pdev->dev, dev);
++	ret = snd_soc_register_dai(&pdev->dev, &davinci_mcasp_dai[pdata->op_mode]);
+ 
+ 	if (ret != 0)
+ 		goto err_release_region;
+@@ -937,12 +933,10 @@ err_release_data:
+ 
+ static int davinci_mcasp_remove(struct platform_device *pdev)
+ {
+-	struct snd_platform_data *pdata = pdev->dev.platform_data;
+-	struct davinci_audio_dev *dev;
++	struct davinci_audio_dev *dev = dev_get_drvdata(&pdev->dev);
+ 	struct resource *mem;
+ 
+-	snd_soc_unregister_dai(&davinci_mcasp_dai[pdata->op_mode]);
+-	dev = davinci_mcasp_dai[pdata->op_mode].private_data;
++	snd_soc_unregister_dai(&pdev->dev);
+ 	clk_disable(dev->clk);
+ 	clk_put(dev->clk);
+ 	dev->clk = NULL;
+@@ -959,7 +953,7 @@ static struct platform_driver davinci_mcasp_driver = {
+ 	.probe		= davinci_mcasp_probe,
+ 	.remove		= davinci_mcasp_remove,
+ 	.driver		= {
+-		.name	= "davinci-mcasp",
++		.name	= "davinci-mcasp-dai",
+ 		.owner	= THIS_MODULE,
+ 	},
+ };
+diff --git a/sound/soc/davinci/davinci-mcasp.h b/sound/soc/davinci/davinci-mcasp.h
+index e755b51..4681acc 100644
+--- a/sound/soc/davinci/davinci-mcasp.h
++++ b/sound/soc/davinci/davinci-mcasp.h
+@@ -22,8 +22,6 @@
+ #include <mach/asp.h>
+ #include "davinci-pcm.h"
+ 
+-extern struct snd_soc_dai davinci_mcasp_dai[];
+-
+ #define DAVINCI_MCASP_RATES	SNDRV_PCM_RATE_8000_96000
+ #define DAVINCI_MCASP_I2S_DAI	0
+ #define DAVINCI_MCASP_DIT_DAI	1
+diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
+index a712411..9d35b8c 100644
+--- a/sound/soc/davinci/davinci-pcm.c
++++ b/sound/soc/davinci/davinci-pcm.c
+@@ -653,7 +653,7 @@ static int davinci_pcm_open(struct snd_pcm_substream *substream)
+ 	struct davinci_pcm_dma_params *pa;
+ 	struct davinci_pcm_dma_params *params;
+ 
+-	pa = snd_soc_dai_get_dma_data(rtd->dai->cpu_dai, substream);
++	pa = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+ 	if (!pa)
+ 		return -ENODEV;
+ 	params = &pa[substream->stream];
+@@ -821,7 +821,7 @@ static int davinci_pcm_new(struct snd_card *card,
+ 	if (!card->dev->coherent_dma_mask)
+ 		card->dev->coherent_dma_mask = 0xffffffff;
+ 
+-	if (dai->playback.channels_min) {
++	if (dai->driver->playback.channels_min) {
+ 		ret = davinci_pcm_preallocate_dma_buffer(pcm,
+ 			SNDRV_PCM_STREAM_PLAYBACK,
+ 			pcm_hardware_playback.buffer_bytes_max);
+@@ -829,7 +829,7 @@ static int davinci_pcm_new(struct snd_card *card,
+ 			return ret;
+ 	}
+ 
+-	if (dai->capture.channels_min) {
++	if (dai->driver->capture.channels_min) {
+ 		ret = davinci_pcm_preallocate_dma_buffer(pcm,
+ 			SNDRV_PCM_STREAM_CAPTURE,
+ 			pcm_hardware_capture.buffer_bytes_max);
+@@ -840,25 +840,44 @@ static int davinci_pcm_new(struct snd_card *card,
+ 	return 0;
+ }
+ 
+-struct snd_soc_platform davinci_soc_platform = {
+-	.name = 	"davinci-audio",
+-	.pcm_ops = 	&davinci_pcm_ops,
++static struct snd_soc_platform_driver davinci_soc_platform = {
++	.ops =		&davinci_pcm_ops,
+ 	.pcm_new = 	davinci_pcm_new,
+ 	.pcm_free = 	davinci_pcm_free,
+ };
+-EXPORT_SYMBOL_GPL(davinci_soc_platform);
+ 
+-static int __init davinci_soc_platform_init(void)
++static int __devinit davinci_soc_platform_probe(struct platform_device *pdev)
+ {
+-	return snd_soc_register_platform(&davinci_soc_platform);
++	return snd_soc_register_platform(&pdev->dev, &davinci_soc_platform);
+ }
+-module_init(davinci_soc_platform_init);
+ 
+-static void __exit davinci_soc_platform_exit(void)
++static int __devexit davinci_soc_platform_remove(struct platform_device *pdev)
+ {
+-	snd_soc_unregister_platform(&davinci_soc_platform);
++	snd_soc_unregister_platform(&pdev->dev);
++	return 0;
++}
++
++static struct platform_driver davinci_pcm_driver = {
++	.driver = {
++			.name = "davinci-pcm-audio",
++			.owner = THIS_MODULE,
++	},
++
++	.probe = davinci_soc_platform_probe,
++	.remove = __devexit_p(davinci_soc_platform_remove),
++};
++
++static int __init snd_davinci_pcm_init(void)
++{
++	return platform_driver_register(&davinci_pcm_driver);
++}
++module_init(snd_davinci_pcm_init);
++
++static void __exit snd_davinci_pcm_exit(void)
++{
++	platform_driver_unregister(&davinci_pcm_driver);
+ }
+-module_exit(davinci_soc_platform_exit);
++module_exit(snd_davinci_pcm_exit);
+ 
+ MODULE_AUTHOR("Vladimir Barinov");
+ MODULE_DESCRIPTION("TI DAVINCI PCM DMA module");
+diff --git a/sound/soc/davinci/davinci-pcm.h b/sound/soc/davinci/davinci-pcm.h
+index b799a02..c0d6c9b 100644
+--- a/sound/soc/davinci/davinci-pcm.h
++++ b/sound/soc/davinci/davinci-pcm.h
+@@ -28,7 +28,4 @@ struct davinci_pcm_dma_params {
+ 	unsigned int fifo_level;
+ };
+ 
+-
+-extern struct snd_soc_platform davinci_soc_platform;
+-
+ #endif
+diff --git a/sound/soc/davinci/davinci-sffsdr.c b/sound/soc/davinci/davinci-sffsdr.c
+index 40eccfe..1fd51a6 100644
+--- a/sound/soc/davinci/davinci-sffsdr.c
++++ b/sound/soc/davinci/davinci-sffsdr.c
+@@ -29,7 +29,6 @@
+ #include <asm/plat-sffsdr/sffsdr-fpga.h>
+ #endif
+ 
+-#include <mach/mcbsp.h>
+ #include <mach/edma.h>
+ 
+ #include "../codecs/pcm3008.h"
+@@ -48,7 +47,7 @@ static int sffsdr_hw_params(struct snd_pcm_substream *substream,
+ 			    struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int fs;
+ 	int ret = 0;
+ 
+@@ -85,15 +84,16 @@ static struct snd_soc_ops sffsdr_ops = {
+ static struct snd_soc_dai_link sffsdr_dai = {
+ 	.name = "PCM3008", /* Codec name */
+ 	.stream_name = "PCM3008 HiFi",
+-	.cpu_dai = &davinci_i2s_dai,
+-	.codec_dai = &pcm3008_dai,
++	.cpu_dai_name = "davinci-asp-dai.0",
++	.codec_dai_name = "pcm3008-hifi",
++	.codec_name = "pcm3008-codec",
++	.platform_name = "davinci-pcm-audio",
+ 	.ops = &sffsdr_ops,
+ };
+ 
+ /* davinci-sffsdr audio machine driver */
+ static struct snd_soc_card snd_soc_sffsdr = {
+ 	.name = "DaVinci SFFSDR",
+-	.platform = &davinci_soc_platform,
+ 	.dai_link = &sffsdr_dai,
+ 	.num_links = 1,
+ };
+@@ -106,11 +106,12 @@ static struct pcm3008_setup_data sffsdr_pcm3008_setup = {
+ 	.pdda_pin = GPIO(38),
+ };
+ 
+-/* sffsdr audio subsystem */
+-static struct snd_soc_device sffsdr_snd_devdata = {
+-	.card = &snd_soc_sffsdr,
+-	.codec_dev = &soc_codec_dev_pcm3008,
+-	.codec_data = &sffsdr_pcm3008_setup,
++struct platform_device pcm3008_codec = {
++		.name = "pcm3008_codec_audio",
++		.id = 0,
++		.dev = {
++				.platform_data = &sffsdr_pcm3008_setup,
++		},
+ };
+ 
+ static struct resource sffsdr_snd_resources[] = {
+@@ -135,14 +136,15 @@ static int __init sffsdr_init(void)
+ 	if (!machine_is_sffsdr())
+ 		return -EINVAL;
+ 
++	platform_device_register(&pcm3008_codec);
++
+ 	sffsdr_snd_device = platform_device_alloc("soc-audio", 0);
+ 	if (!sffsdr_snd_device) {
+ 		printk(KERN_ERR "platform device allocation failed\n");
+ 		return -ENOMEM;
+ 	}
+ 
+-	platform_set_drvdata(sffsdr_snd_device, &sffsdr_snd_devdata);
+-	sffsdr_snd_devdata.dev = &sffsdr_snd_device->dev;
++	platform_set_drvdata(sffsdr_snd_device, &snd_soc_sffsdr);
+ 	platform_device_add_data(sffsdr_snd_device, &sffsdr_snd_data,
+ 				 sizeof(sffsdr_snd_data));
+ 
+@@ -168,6 +170,7 @@ error:
+ static void __exit sffsdr_exit(void)
+ {
+ 	platform_device_unregister(sffsdr_snd_device);
++	platform_device_unregister(&pcm3008_codec);
+ }
+ 
+ module_init(sffsdr_init);
+diff --git a/sound/soc/davinci/davinci-vcif.c b/sound/soc/davinci/davinci-vcif.c
+index 4867853..01d2298 100644
+--- a/sound/soc/davinci/davinci-vcif.c
++++ b/sound/soc/davinci/davinci-vcif.c
+@@ -36,7 +36,6 @@
+ 
+ #include "davinci-pcm.h"
+ #include "davinci-i2s.h"
+-#include "davinci-vcif.h"
+ 
+ #define MOD_REG_BIT(val, mask, set) do { \
+ 	if (set) { \
+@@ -55,7 +54,7 @@ static void davinci_vcif_start(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct davinci_vcif_dev *davinci_vcif_dev =
+-					rtd->dai->cpu_dai->private_data;
++			snd_soc_dai_get_drvdata(rtd->cpu_dai);
+ 	struct davinci_vc *davinci_vc = davinci_vcif_dev->davinci_vc;
+ 	u32 w;
+ 
+@@ -74,7 +73,7 @@ static void davinci_vcif_stop(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct davinci_vcif_dev *davinci_vcif_dev =
+-					rtd->dai->cpu_dai->private_data;
++			snd_soc_dai_get_drvdata(rtd->cpu_dai);
+ 	struct davinci_vc *davinci_vc = davinci_vcif_dev->davinci_vc;
+ 	u32 w;
+ 
+@@ -92,12 +91,15 @@ static int davinci_vcif_hw_params(struct snd_pcm_substream *substream,
+ 				  struct snd_pcm_hw_params *params,
+ 				  struct snd_soc_dai *dai)
+ {
+-	struct davinci_vcif_dev *davinci_vcif_dev = dai->private_data;
++	struct davinci_vcif_dev *davinci_vcif_dev = snd_soc_dai_get_drvdata(dai);
+ 	struct davinci_vc *davinci_vc = davinci_vcif_dev->davinci_vc;
+ 	struct davinci_pcm_dma_params *dma_params =
+ 			&davinci_vcif_dev->dma_params[substream->stream];
+ 	u32 w;
+ 
++	dai->capture_dma_data = davinci_vcif_dev->dma_params;
++	dai->playback_dma_data = davinci_vcif_dev->dma_params;
++
+ 	/* Restart the codec before setup */
+ 	davinci_vcif_stop(substream);
+ 	davinci_vcif_start(substream);
+@@ -179,8 +181,7 @@ static struct snd_soc_dai_ops davinci_vcif_dai_ops = {
+ 	.hw_params	= davinci_vcif_hw_params,
+ };
+ 
+-struct snd_soc_dai davinci_vcif_dai = {
+-	.name = "davinci-vcif",
++static struct snd_soc_dai_driver davinci_vcif_dai = {
+ 	.playback = {
+ 		.channels_min = 1,
+ 		.channels_max = 2,
+@@ -194,7 +195,6 @@ struct snd_soc_dai davinci_vcif_dai = {
+ 	.ops = &davinci_vcif_dai_ops,
+ 
+ };
+-EXPORT_SYMBOL_GPL(davinci_vcif_dai);
+ 
+ static int davinci_vcif_probe(struct platform_device *pdev)
+ {
+@@ -222,12 +222,9 @@ static int davinci_vcif_probe(struct platform_device *pdev)
+ 	davinci_vcif_dev->dma_params[SNDRV_PCM_STREAM_CAPTURE].dma_addr =
+ 					davinci_vc->davinci_vcif.dma_rx_addr;
+ 
+-	davinci_vcif_dai.dev = &pdev->dev;
+-	davinci_vcif_dai.capture.dma_data = davinci_vcif_dev->dma_params;
+-	davinci_vcif_dai.playback.dma_data = davinci_vcif_dev->dma_params;
+-	davinci_vcif_dai.private_data = davinci_vcif_dev;
++	dev_set_drvdata(&pdev->dev, davinci_vcif_dev);
+ 
+-	ret = snd_soc_register_dai(&davinci_vcif_dai);
++	ret = snd_soc_register_dai(&pdev->dev, &davinci_vcif_dai);
+ 	if (ret != 0) {
+ 		dev_err(&pdev->dev, "could not register dai\n");
+ 		goto fail;
+@@ -243,7 +240,7 @@ fail:
+ 
+ static int davinci_vcif_remove(struct platform_device *pdev)
+ {
+-	snd_soc_unregister_dai(&davinci_vcif_dai);
++	snd_soc_unregister_dai(&pdev->dev);
+ 
+ 	return 0;
+ }
+@@ -252,7 +249,7 @@ static struct platform_driver davinci_vcif_driver = {
+ 	.probe		= davinci_vcif_probe,
+ 	.remove		= davinci_vcif_remove,
+ 	.driver		= {
+-		.name	= "davinci_vcif",
++		.name	= "davinci-vcif-dai",
+ 		.owner	= THIS_MODULE,
+ 	},
+ };
+diff --git a/sound/soc/davinci/davinci-vcif.h b/sound/soc/davinci/davinci-vcif.h
+deleted file mode 100644
+index 571c994..0000000
+--- a/sound/soc/davinci/davinci-vcif.h
++++ /dev/null
+@@ -1,28 +0,0 @@
+-/*
+- * ALSA SoC Voice Codec Interface for TI DAVINCI processor
+- *
+- * Copyright (C) 2010 Texas Instruments.
+- *
+- * Author: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+- */
+-
+-#ifndef _DAVINCI_VCIF_H
+-#define _DAVINCI_VCIF_H
+-
+-extern struct snd_soc_dai davinci_vcif_dai;
+-
+-#endif
 -- 
 1.7.0.4
