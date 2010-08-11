@@ -1,22 +1,25 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 01/14] ASoC: multi-component - TI OMAP
- Platform
-Date: Wed, 11 Aug 2010 12:44:28 +0100
-Message-ID: <1281527068.3080.82.camel@odin>
-References: <1281516393-6060-1-git-send-email-lrg@slimlogic.co.uk>
-	<1281516393-6060-2-git-send-email-lrg@slimlogic.co.uk>
-	<20100811140418.a802cd94.jhnikula@gmail.com>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: i.MX SDMA support
+Date: Wed, 11 Aug 2010 13:59:36 +0200
+Message-ID: <20100811115936.GQ27749@pengutronix.de>
+References: <20100809091157.GC20065@pengutronix.de>
+	<1281350823.3035.54.camel@odin>
+	<20100809121956.GA27749@pengutronix.de>
+	<64008892-3D75-4309-A623-CCE9B335F77F@opensource.wolfsonmicro.com>
+	<20100810131527.GK27749@pengutronix.de>
+	<1281449263.3059.53.camel@odin>
+	<20100811084213.GN27749@pengutronix.de>
+	<1281521394.3080.26.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 01C39103861
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 6E3E3103868
 	for <alsa-devel@alsa-project.org>;
-	Wed, 11 Aug 2010 13:44:38 +0200 (CEST)
-Received: by wwa36 with SMTP id 36so2932655wwa.20
-	for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2010 04:44:38 -0700 (PDT)
-In-Reply-To: <20100811140418.a802cd94.jhnikula@gmail.com>
+	Wed, 11 Aug 2010 13:59:36 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1281521394.3080.26.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,54 +29,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-08-11 at 14:04 +0300, Jarkko Nikula wrote:
-> Hi
-> 
-> On Wed, 11 Aug 2010 09:46:20 +0100
-> Liam Girdwood <lrg@slimlogic.co.uk> wrote:
-> 
-> > Other notable changes required for multi-component support:-
+On Wed, Aug 11, 2010 at 11:09:54AM +0100, Liam Girdwood wrote:
+> On Wed, 2010-08-11 at 10:42 +0200, Sascha Hauer wrote:
+> > On Tue, Aug 10, 2010 at 03:07:43PM +0100, Liam Girdwood wrote:
+> > > On Tue, 2010-08-10 at 15:15 +0200, Sascha Hauer wrote:
+> > > 
+> > > > I just looked at the i.MX part in the multi-component update and this
+> > > > is currently far from being in a working state, so there's still some
+> > > > work to do before thinking about possible conflicts...
+> > > 
+> > > Ok, I don't think it's that far off. Everything builds for i.MX and all
+> > > components should register. The part I can't test is the component
+> > > probe() and playback/capture.
+> > > 
+> > > Have you seen an oops ?
 > > 
-> >  o Moved zoom2 audio platform data to board-zoom2.c
-> >  o Moved n810 audio platform data to board-n810.c
-> >  o Moved RX51 audio platform data to board-rx51-peripherals.c
-> >  o Added ASoC DAI and DMA platform devices.
-> 
-> Here are rejects from these two files when applied to Vanilla:
-> 
-> arch/arm/mach-omap2/board-rx51-peripherals.c
-> arch/arm/mach-omap2/board-zoom2.c
-> 
-> Fortunately trivial.
-> 
-> board-rx51-peripherals.c conflicts with rx51_aic3x_data (i.e. add only
-> rx51_aic34_setup) and board-zoom2.c with board_nand_init in
-> omap_zoom2_init.
-> 
-> board-n8x0.c will conflict in 2.6.37 with changes from linux-omap but
-> this is easiest to handle if you leave out the
-> arch/arm/mach-omap2/board-n8x0.c changes. IMO n810_aic33_setup for
-> the digital microphone can be patched after m-c.
-> 
-
-Thanks, I was expecting some conflicts in arch. Hopefully, these will
-lessen when the 2.6.37 merge starts and I can rebase to a more recent
-kernel before m-c is merged.
-
-> >  o Misc fixes from Jarkko Nikula
+> > Many of them, yes ;)
 > > 
-> Add Peter also as he sent fixes too :-)
+> > The following patch puts i.MX (nearly) back into business.
+> > 
+> 
+> Thanks for this.
 
-Oops.
+There are probably some bits for the DMA part missing, I haven't tested
+it yet, but will do soon.
 
-Thanks
+> 
+> >  	if (ssi->flags & IMX_SSI_USE_AC97)
+> > @@ -706,7 +731,7 @@ static struct platform_driver imx_ssi_driver = {
+> >  	.remove = __devexit_p(imx_ssi_remove),
+> >  
+> >  	.driver = {
+> > -		.name = "imx-ssi-dai",
+> > +		.name = "imx-ssi",
+> 
+> The reason that the DAI driver name was changed on all platforms to
+> include a "-dai" suffix was to distinguish the ASoC SSI driver from a
+> generic SSI serial IO driver (i.e. SSI for non audio users). This is
+> mainly due to the fact that most audio interfaces on SoC CPUs exist
+> within a generic serial interface and are also often used for non audio
+> purposes.
+> 
+> So if this suffix is ok, I guess I would need to update the the
+> following too ?
 
-Liam
+Yes, they have to be updated too. I have some more occurences in my
+tree, but a wcgrep imx-ssi should catch them all.
+
+> 
+> arch/arm/mach-mx2/devices.c:418:		.name = "imx-ssi",		\
+> arch/arm/mach-mx2/clock_imx27.c:656:	_REGISTER_CLOCK("imx-ssi.0", NULL, ssi1_clk)
+> arch/arm/mach-mx2/clock_imx27.c:657:	_REGISTER_CLOCK("imx-ssi.1", NULL, ssi2_clk)
+> arch/arm/mach-mx3/clock-imx31.c:561:	_REGISTER_CLOCK("imx-ssi.0", NULL, ssi1_clk)
+> arch/arm/mach-mx3/clock-imx31.c:562:	_REGISTER_CLOCK("imx-ssi.1", NULL, ssi2_clk)
+> arch/arm/mach-mx3/clock-imx35.c:467:	_REGISTER_CLOCK("imx-ssi.0", NULL, ssi1_clk)
+> arch/arm/mach-mx3/clock-imx35.c:468:	_REGISTER_CLOCK("imx-ssi.1", NULL, ssi2_clk)
+> arch/arm/mach-mx3/devices.c:565:	.name = "imx-ssi",
+> arch/arm/mach-mx3/devices.c:572:	.name = "imx-ssi",
+> arch/arm/plat-mxc/audmux-v2.c:52:		return "imx-ssi.0";
+> arch/arm/plat-mxc/audmux-v2.c:54:		return "imx-ssi.1";
+> 
+> 
+
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
