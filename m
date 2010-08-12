@@ -1,26 +1,17 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Beginner to Alsa Development
-Date: Thu, 12 Aug 2010 12:13:04 +0200
-Message-ID: <4C63C930.3080802@canonical.com>
-References: <000001cb3a06$5a5202d0$0ef60870$@in>
+From: Randolph Chung <rchung42@gmail.com>
+Subject: Problem with MX27 ASoC audio
+Date: Thu, 12 Aug 2010 18:15:47 +0800
+Message-ID: <AANLkTikAybX=rP-DfWm5z8eVcC1EaujyEofsSoSJQ1M8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9052D1038D5
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5686D1038D8
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 Aug 2010 12:13:07 +0200 (CEST)
-Received: from hutte.canonical.com ([91.189.90.181])
-	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
-	id 1OjUmY-00069a-Sh
-	for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2010 11:13:07 +0100
-Received: from [88.83.60.91] (helo=[192.168.8.103])
-	by hutte.canonical.com with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
-	(envelope-from <david.henningsson@canonical.com>) id 1OjUmY-00089h-P0
-	for alsa-devel@alsa-project.org; Thu, 12 Aug 2010 11:13:06 +0100
-In-Reply-To: <000001cb3a06$5a5202d0$0ef60870$@in>
+	Thu, 12 Aug 2010 12:15:48 +0200 (CEST)
+Received: by wwc33 with SMTP id 33so517064wwc.20
+	for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2010 03:15:48 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,41 +22,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: s.hauer@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-There is a small tutorial here, I don't know if it's outdated though:
-http://www.suse.de/~mana/alsa090_howto.html
+I have a target that uses iMX27(L) + tlv320aic3x. The kernel tree is
+HEAD of linux-arm from about a week ago.
 
-2010-08-12 12:08, Tejas skrev:
-> Hello All,
-> 
->                I am new to alsa interface development. I would like to write
-> one application which accept *.pcm file as input and give playback of it on
-> sound device on linux system. My requirement is to set sample rate 44100,
-> channel 2 and access method is SND_PCM_ACCESS_RW_INTERLEAVED and data length
-> is 16 bit little endian. 
-> 
->  
-> 
->                Can any oen guide me how can I start writing application in c
-> file and which are those APIs which I need to take care and handling of
-> different error codes. It is very urgent.
-> 
->  
-> 
->                Please correct me if I am wrong at anywhere.
-> 
->  
-> 
-> -Tejas.
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+Simple playback and recording (using aplay and arecord) work fine.
+However, I've run into a strange problem when both playback and
+capture streams are opened at the same time.
+
+Consider the attached test program. The capture device is setup with a
+period time of 10ms, and the program reads samples in a loop. The
+expected result is that I get a sample every 10ms. This works fine if
+the playback device is *not* opened (more specifically, if the
+hw_params are not set). However if the playback device is opened (#if
+1 code) then I get samples every 20ms, which seems very wrong.
+
+I have tried using both DMA and FIQ ssi-pcm interfaces and both give
+the same strange result. With the FIQ driver, if I instrument the
+timer callback, the timer triggers every 10ms but there is only enough
+data every 20ms.
+
+The codec is being driven with a 13MHz MCLK (output from MX27) and the
+BCLK and WCLK come from the codec. They seem to have the correct
+rates.
+
+Any ideas? Can anybody else with MX27 hardware verify if my test
+program also fails on their target?
+
+thanks,
+randolph
 
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+/* Test program */
+
+#include <alsa/asoundlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <sys/time.h>
+
+int main(int argc, char **argv)
+{
+    int err = -1;
+    char buf[4096];
+    unsigned long period_size;
+    snd_pcm_t *in_handle = NULL, *out_handle;
+    snd_pcm_hw_params_t *hwparams;
+
+    if (snd_pcm_open(&in_handle, "hw:0,0", SND_PCM_STREAM_CAPTURE, 0) < 0) {
+        printf("Cannot open capture device\n");
+        return -1;
+    }
+    snd_pcm_hw_params_malloc(&hwparams);
+    snd_pcm_hw_params_any(in_handle, hwparams);
+    snd_pcm_hw_params_set_access(in_handle, hwparams,
+SND_PCM_ACCESS_RW_INTERLEAVED);
+    snd_pcm_hw_params_set_format(in_handle, hwparams, SND_PCM_FORMAT_S16_LE);
+    snd_pcm_hw_params_set_channels(in_handle, hwparams, 1);
+    snd_pcm_hw_params_set_rate(in_handle, hwparams, 8000, 0);
+    snd_pcm_hw_params_set_period_time(in_handle, hwparams, 10000, 0);
+    snd_pcm_hw_params_get_period_size(hwparams, &period_size, 0);
+    snd_pcm_hw_params(in_handle, hwparams);
+    snd_pcm_hw_params_free(hwparams);
+
+    if (snd_pcm_open(&out_handle, "hw:0,0", SND_PCM_STREAM_PLAYBACK, 0) < 0) {
+        printf("Cannot open playback device\n");
+        return -1;
+    }
+#if 1
+    snd_pcm_hw_params_malloc(&hwparams);
+    snd_pcm_hw_params_any(out_handle, hwparams);
+    snd_pcm_hw_params_set_access(out_handle, hwparams,
+SND_PCM_ACCESS_RW_INTERLEAVED);
+    snd_pcm_hw_params_set_format(out_handle, hwparams, SND_PCM_FORMAT_S16_LE);
+    snd_pcm_hw_params_set_channels(out_handle, hwparams, 1);
+    snd_pcm_hw_params_set_rate(out_handle, hwparams, 8000, 0);
+    snd_pcm_hw_params_set_period_time(out_handle, hwparams, 10000, 0);
+    snd_pcm_hw_params(out_handle, hwparams);
+    snd_pcm_hw_params_free(hwparams);
+#endif
+
+    printf("period size = %u\n", period_size);
+
+    printf("Config done, start loop\n");
+    while (1) {
+        struct timeval tv;
+        int ret = snd_pcm_readi(in_handle, buf, period_size);
+        if (ret < 0)
+            snd_pcm_prepare(in_handle);
+        gettimeofday(&tv, NULL);
+        printf("[%u.%06u] snd_pcm_readi() return %d\n",
+            tv.tv_sec, tv.tv_usec, ret);
+    }
+
+    return 0;
+}
