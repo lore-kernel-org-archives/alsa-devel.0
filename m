@@ -1,15 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: Set up debugfs only once per CODEC
-Date: Thu, 12 Aug 2010 15:50:31 +0100
-Message-ID: <1281624632-17992-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: Remove redundant device name from
+	debugfs directory
+Date: Thu, 12 Aug 2010 15:50:32 +0100
+Message-ID: <1281624632-17992-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1281624632-17992-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 16B64103868
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 16F331038CF
 	for <alsa-devel@alsa-project.org>;
 	Thu, 12 Aug 2010 16:50:37 +0200 (CEST)
+In-Reply-To: <1281624632-17992-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,41 +26,35 @@ To: Liam Girdwood <lrg@slimlogic.co.uk>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Since the debugfs directory is current per CODEC we should only init
-it when the CODEC is initialised, otherwise we end up with errors
-being generated when an attempt is made to add duplicate debugfs
-entries.
-
-Since most of this stuff is actually for the card we should refactor
-but this can come later.
+Since the core now includes deduplication in the name of CODEC
+devices there's no need to add extra for the debugfs directory name.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-core.c |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/soc-core.c |   11 +----------
+ 1 files changed, 1 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index a004876..ac0fa22 100644
+index ac0fa22..cea0fe4 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1323,6 +1323,9 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num)
- 				return ret;
- 			}
- 		}
-+
-+		soc_init_codec_debugfs(codec);
-+
- 		/* mark codec as probed and add to card codec list */
- 		codec->probed = 1;
- 		list_add(&codec->card_list, &card->codec_dev_list);
-@@ -1400,8 +1403,6 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num)
- 	if (ret < 0)
- 		printk(KERN_WARNING "asoc: failed to add codec sysfs files\n");
+@@ -234,16 +234,7 @@ static const struct file_operations codec_reg_fops = {
  
--	soc_init_codec_debugfs(codec);
+ static void soc_init_codec_debugfs(struct snd_soc_codec *codec)
+ {
+-	char codec_root[128];
 -
- 	/* create the pcm */
- 	ret = soc_new_pcm(rtd, num);
- 	if (ret < 0) {
+-	if (codec->dev)
+-		snprintf(codec_root, sizeof(codec_root),
+-			"%s.%s", codec->name, dev_name(codec->dev));
+-	else
+-		snprintf(codec_root, sizeof(codec_root),
+-			"%s", codec->name);
+-
+-	codec->debugfs_codec_root = debugfs_create_dir(codec_root,
++	codec->debugfs_codec_root = debugfs_create_dir(codec->name ,
+ 						       debugfs_root);
+ 	if (!codec->debugfs_codec_root) {
+ 		printk(KERN_WARNING
 -- 
 1.7.1
