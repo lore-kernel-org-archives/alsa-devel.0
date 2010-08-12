@@ -1,17 +1,16 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: defaults.pcm.minperiodtime 5000
-Date: Thu, 12 Aug 2010 08:27:23 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1008120822420.10278@eeebox2.perex-int.cz>
-References: <AANLkTinW0tbBLOczuTY=2p2+EZQrqBAFdEHdLeOFX8y5@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH] ASoC: multi-component: TWL4030: Restore
+	registers on removal
+Date: Thu, 12 Aug 2010 09:29:52 +0300
+Message-ID: <1281594592-2251-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 61FF0243AF
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4068E243B7
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 Aug 2010 08:27:24 +0200 (CEST)
-In-Reply-To: <AANLkTinW0tbBLOczuTY=2p2+EZQrqBAFdEHdLeOFX8y5@mail.gmail.com>
+	Thu, 12 Aug 2010 08:30:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,36 +20,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 12 Aug 2010, Raymond Yau wrote:
+Add back the register restore call, when the codec driver is
+removed.
+This does not affect normal operation, but it is usefull when
+debugging audio through the twl4030 class codecs.
 
-> It seem that there is a bug in the patch which remove "if ( err < 0 )"
->
->
-> -       if (err < 0)
->                return err;
-> +       if (pcm->minperiodtime > 0) {
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+Hello Liam, Mark
 
-Thanks. It's usuall typo. Fixed now.
+I did missed the removal of the register restore from the module
+unload path in multi-comp.
+This patchs adds it back.
 
-> http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=09879a4bb58199f64abcb8df506f917c8efc2383;hp=e6d5dcf1f625984605d362338d71162de45a6c60
->
-> BTW , it seem this patch change the behaviour of alsa-lib too.
->
-> all sound cards will now have a minperiodtime 5000
+Peter
 
-Nope. If application settles the period time/size, the behaviour is 
-unchanged (see the min/max condition). We just want to limit the period 
-sizes for applications which do not know what they are doing and allow 
-any period time/sizes. It's better to limit the minimal period size to 
-avoid generation of many interrupts per second in this case.
+ sound/soc/codecs/twl4030.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 898430f..c7ee1a4 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -2258,6 +2258,8 @@ static int twl4030_soc_probe(struct snd_soc_codec *codec)
+ 
+ static int twl4030_soc_remove(struct snd_soc_codec *codec)
+ {
++	/* Reset registers to their chip default before leaving */
++	twl4030_reset_registers(codec);
+ 	twl4030_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	return 0;
+ }
+-- 
+1.7.2
