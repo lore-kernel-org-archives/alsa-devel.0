@@ -1,19 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Alsamixer-Qt 0.4.1 available
-Date: Thu, 12 Aug 2010 08:10:44 +0800
-Message-ID: <AANLkTin_exCQw8RG2Mhc-NBff+kTmRCeejtLZyTcVDZ7@mail.gmail.com>
-References: <4C62C6DE.9020403@gmx.de>
+From: Dave Zielinski <DZielinski@righthandtech.com>
+Subject: Pops, Clicks on Capture w/ S/PDIF, Cirrus Logic CS4207,
+	HDA
+Date: Wed, 11 Aug 2010 19:20:19 -0500
+Message-ID: <69FA8BA3444DD443841AF768F2F6C65A12490213C9@SERVER2.righthandtech.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 8A9332437D
+Received: from remote.righthandtech.com
+	(173-161-64-18-Illinois.hfc.comcastbusiness.net [173.161.64.18])
+	by alsa0.perex.cz (Postfix) with ESMTP id 13F5F24383
 	for <alsa-devel@alsa-project.org>;
-	Thu, 12 Aug 2010 02:10:45 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so393130ewy.38
-	for <alsa-devel@alsa-project.org>; Wed, 11 Aug 2010 17:10:45 -0700 (PDT)
-In-Reply-To: <4C62C6DE.9020403@gmx.de>
+	Thu, 12 Aug 2010 02:20:16 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,90 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/8/11 Sebastian H. <vand2@gmx.de>
+Hello,
+   I have a custom platform with a Cirrus Logic CS4207 connected to an HDA bus of a Intel US15W & Atom processor.  I'm trying to capture audio from the S/PDIF input of the CS4207 and getting pops & clicks.   I'm not sure if there is another platform out there that utilizes the S/PDIF input of this chip so this might be new although usage of US15W shouldn't be anything new.  
 
-> Hello again
->
-> This is a bugfix release. Not all issues have been addressed, but
-> hopefully the most annoying ones.
->
-> 1.)
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3678
->
-> The "EQ Peaks" mixer element gets skipped since there's not way to
-> display it correctly at the moment.
-> Also the mixer now looks for all element channels from 0 up to
-> SND_MIXER_SCHN_LAST (= 31). Formerly it was only for the first 9 channels.
->
->
+Software-wise I'm running: 
+Moblin release 2.1
+Advanced Linux Sound Architecture Driver Version 1.0.20.
+2.6.31.6-17.10.moblin2-custom - The kernel is built to include a back ported version of the 2.6.32 Cirrus Logic patch for HDA.  I guess we backported a checkin from the nearest stable kernel release.   We had to do a couple of things to get it to work like comment a line in the driver so that it ignores the digital mic input as it seems the driver only supported one digital input and during the parsing the private data (NID and such) were getting clobbered when the DMIC node is parsed.  As a result the capture was using the wrong node.  position_fix=1 had to be applied also because there was a repeating audio issue.  
 
-  control.12 {
-         comment.access read
-         comment.type INTEGER
-         comment.count 20
+So now we're getting some audio but it comes with pops and clicks when we try to capture.  An analysis of the captured stream shows there are corruptions of the data that are 8192 frames apart which I believe are the 4096 frame period boundaries (although tough to know for sure).  When the corruption occurs there seems to be 5 to 7 frames that are screwed up.   Also worth noting: these same exact samples appear in the stream at a prior location so I think its old buffer data.   My guess is that we're reading the buffer before the "writer" was done writing it.  
 
-The main problem  is this EQ peak control is read only and your
-alsamixer-qt4-0.4.0 generate a lot of error messages when the user try to
-move the slider , so the only way is to skip the volume control or implement
-the equalizer peak using 10 qt4 vumeter widgets
+I've tried to mess around with the buffer size & period size (although buff was always == per*4); tried mmap;  I also tried messing around with the bdl_pos_adj option in the driver.  It sounded like maybe this was most likely to solve the problem.  But that didn't have any effect.  So I started studying the code and realized there was going to be some learning curve here so I was hoping someone could point me in the right direction to help resolve this.
 
-[EE] EQ Peaks: snd_mixer_selem_set_playback_
-volume_all: Operation not permitted
+Thank you!
+Dave Z.
 
+Here are my capture settings:
 
-
-
-
-For CMI8788 , there is only one Master volume control controls with 8
-channels volume control but it seem only has one mute switch
-
-card hw:0 'CMI8788'/'C-Media Oxygen HD Audio (rev 2) at 0xec00, irq 17'
-  Mixer name	: 'CMI8788'
-  Components	: 'AK4396 AK5385 CMI8788'
-  Controls      : 23
-  Simple ctrls  : 12
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined
-  Playback channels: Front Left - Front Right - Rear Left - Rear Right
-- Front Center - Woofer - Side Left - Side Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 112 [44%] [-7.14dB] [on]
-  Front Right: Playback 112 [44%] [-7.14dB] [on]
-  Rear Left: Playback 178 [70%] [-3.12dB] [on]
-  Rear Right: Playback 178 [70%] [-3.12dB] [on]
-  Front Center: Playback 178 [70%] [-3.12dB] [on]
-  Woofer: Playback 178 [70%] [-3.12dB] [on]
-  Side Left: Playback 178 [70%] [-3.12dB] [on]
-  Side Right: Playback 178 [70%] [-3.12dB] [on]
-
-
-	control.1 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 8
-		comment.range '0 - 255'
-		comment.dbmin -9999999
-		comment.dbmax 0
-		iface MIXER
-		name 'Master Playback Volume'
-		value.0 112
-		value.1 112
-		value.2 178
-		value.3 178
-		value.4 178
-		value.5 178
-		value.6 178
-		value.7 178
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Master Playback Switch'
-		value true
-	}
+Recording raw data 'test.raw' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+Hardware PCM card 0 'HDA Intel MID' device 1 subdevice 0
+Its setup is:
+  stream       : CAPTURE
+  access       : RW_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 16384
+  period_size  : 4096
+  period_time  : 85333
+  tstamp_mode  : NONE
+  period_step  : 1
+  avail_min    : 4096
+  period_event : 0
+  start_threshold  : 1
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+  appl_ptr     : 0
+  hw_ptr       : 0
