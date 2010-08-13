@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 0/7] WM8580 updates
-Date: Fri, 13 Aug 2010 20:33:05 +0100
-Message-ID: <20100813193305.GB3778@sirena.org.uk>
+Subject: Re: n810 diablo and alsa ?
+Date: Fri, 13 Aug 2010 20:34:51 +0100
+Message-ID: <20100813193451.GC3778@sirena.org.uk>
+References: <AANLkTimX+DVR0y5Qurii9ELxx3g0YGb0RvrBvgi4StB4@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 851D51038C8
+	by alsa0.perex.cz (Postfix) with ESMTP id 0903A1038C8
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Aug 2010 21:33:09 +0200 (CEST)
+	Fri, 13 Aug 2010 21:34:52 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <AANLkTimX+DVR0y5Qurii9ELxx3g0YGb0RvrBvgi4StB4@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,32 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, Seungwhan Youn <sw.youn@samsung.com>
+To: John Simpson <john@swajime.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This batch of patches should get the sample ratio selection for the
-WM8580 based on the configured sysclk correct, and also fixes a few
-random other things.
+On Fri, Aug 13, 2010 at 02:14:46PM -0500, John Simpson wrote:
+> Is there a how-to for installing the alsa-lib correctly on the n810?
+> (hopefully from a fresh install of Maemo/Diablo?)
 
-The configuration of the ADC clocking (which is slaved to the DAC
-clocking) is still not ideal - userspace has to configure playback at
-the sample rate to be used prior to starting a record - but this needs
-some more thought at the framework level since this is essentially the
-same problem we have when multiple DAIs run over one physical interface
-using TDM.  Ideally we'd solve the more general problem.
+The most obvious place to ask for support on using Maemo would be
+whatever place people normally discuss Maemo - your problems here look
+to be entirely related to the Maemo distribution rather than upstream
+ALSA problems.
 
-Mark Brown (7):
-      ASoC: Add a bit of resource unwinding in the S3C IISv4 driver
-      ASoC: Convert WM8580 hw_params to use snd_soc_update_bits()
-      ASoC: Remove unused rate selection bitmasks from WM8580
-      ASoC: Automatically calculate clock ratio for WM8580
-      ASoC: Implement BCLK rate selection for WM8580
-      ASoC: Fix inverted WM8580 capture mute control
-      ASoC: Automatically manage WM8580 DAC OSR
+> The alsa-lib in the diablo repository seems to be outdated:
 
- sound/soc/codecs/wm8580.c           |  144 +++++++++++++++++++++++++---------
- sound/soc/codecs/wm8580.h           |   14 ++--
- sound/soc/s3c24xx/s3c64xx-i2s-v4.c  |   11 +++
- sound/soc/s3c24xx/smdk64xx_wm8580.c |    9 +-
- 4 files changed, 128 insertions(+), 50 deletions(-)
+Presumbably it's a reasonable version to use with whatver kernel is
+shipping on those devices, though?
