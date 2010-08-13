@@ -1,274 +1,192 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/7] ASoC: Automatically calculate clock ratio
-	for WM8580
-Date: Fri, 13 Aug 2010 20:35:04 +0100
-Message-ID: <1281728107-25386-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <20100813193305.GB3778@sirena.org.uk>
+From: Paul Zimmerman <Paul.Zimmerman-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH V2] sound: usb: USB3 SuperSpeed sound support
+Date: Fri, 13 Aug 2010 12:42:07 -0700
+Message-ID: <F6C4814A9B336243ABC3D1FB44E08AE8012C3462C1@US01WXMBX1.internal.synopsys.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4EB08103904
-	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Aug 2010 21:35:13 +0200 (CEST)
-In-Reply-To: <20100813193305.GB3778@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Seungwhan Youn <sw.youn@samsung.com>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Language: en-US
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
+Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Daniel Mack <daniel-rDUAYElUppE@public.gmane.org>, Greg Kroah-Hartman <gregkh-l3A5Bk7waGM@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Implement set_sysclk() and then rather than assuming 256fs use the
-supplied value to calculate and configure the clock ratio for the
-currently used sample rate. As a side effect we also end up
-implementing clock selection for the ADC path.
+This is V2 of the patch, after feedback from Clemens and Daniel.
 
-In order to avoid confusion remove the existing set_clkdiv() based
-configuration of the clock source for the DAC and update the SMDK64xx
-driver (which is the only in-tree user of the CODEC).
+This patch adds SuperSpeed support to the USB drivers under sound/. It adds
+tests for USB_SPEED_SUPER to the appropriate places that check for the USB
+speed.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8580.c           |  101 +++++++++++++++++++++++++++--------
- sound/soc/codecs/wm8580.h           |   14 +++---
- sound/soc/s3c24xx/smdk64xx_wm8580.c |    9 ++--
- 3 files changed, 90 insertions(+), 34 deletions(-)
+This patch has been tested with our SS USB3 device emulating a set of Yamaha
+speakers and a Logitech microphone, but with the descriptors modified to add
+USB3 support. It has also been tested with the real speakers and microphone,
+to make sure that USB2 devices still work.
 
-diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
-index 9964f02..3d7ff55 100644
---- a/sound/soc/codecs/wm8580.c
-+++ b/sound/soc/codecs/wm8580.c
-@@ -192,6 +192,7 @@ struct wm8580_priv {
- 	u16 reg_cache[WM8580_MAX_REGISTER + 1];
- 	struct pll_state a;
- 	struct pll_state b;
-+	int sysclk[2];
- };
+Signed-off-by: Paul Zimmerman <paulz-HKixBCOQz3hWk0Htik3J/w@public.gmane.org>
+
+Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Cc: Daniel Mack <daniel-rDUAYElUppE@public.gmane.org>
+Cc: Greg Kroah-Hartman <gregkh-l3A5Bk7waGM@public.gmane.org>
+--- 
+ sound/usb/card.c   |   31 +++++++++++++++++++++++--------
+ sound/usb/helper.c |   17 +++++++++++------
+ sound/usb/midi.c   |    9 ++++++++-
+ sound/usb/pcm.c    |    4 ++--
+ sound/usb/proc.c   |    2 +-
+ sound/usb/urb.c    |    2 +-
+ 6 files changed, 46 insertions(+), 19 deletions(-)
+
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 7a8ac1d..6c49763 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -299,9 +299,13 @@ static int snd_usb_audio_create(struct usb_device *dev, int idx,
  
- static const DECLARE_TLV_DB_SCALE(dac_tlv, -12750, 50, 1);
-@@ -464,6 +465,10 @@ static int wm8580_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
- 	return 0;
- }
+ 	*rchip = NULL;
  
-+static const int wm8580_sysclk_ratios[] = {
-+	128, 192, 256, 384, 512, 768, 1152,
-+};
-+
- /*
-  * Set PCM DAI bit size and sample rate.
-  */
-@@ -473,7 +478,10 @@ static int wm8580_paif_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_codec *codec = rtd->codec;
-+	struct wm8580_priv *wm8580 = snd_soc_codec_get_drvdata(codec);
-+	u16 paifa = 0;
- 	u16 paifb = 0;
-+	int i, ratio;
- 
- 	/* bit size */
- 	switch (params_format(params)) {
-@@ -492,6 +500,22 @@ static int wm8580_paif_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
-+	/* Look up the SYSCLK ratio; accept only exact matches */
-+	ratio = wm8580->sysclk[dai->id] / params_rate(params);
-+	for (i = 0; i < ARRAY_SIZE(wm8580_sysclk_ratios); i++)
-+		if (ratio == wm8580_sysclk_ratios[i])
-+			break;
-+	if (i == ARRAY_SIZE(wm8580_sysclk_ratios)) {
-+		dev_err(codec->dev, "Invalid clock ratio %d/%d\n",
-+			wm8580->sysclk[dai->id], params_rate(params));
-+		return -EINVAL;
-+	}
-+	paifa |= i;
-+	dev_dbg(codec->dev, "Running at %dfs with %dHz clock\n",
-+		wm8580_sysclk_ratios[i], wm8580->sysclk[dai->driver->id]);
-+
-+	snd_soc_update_bits(codec, WM8580_PAIF1 + dai->driver->id,
-+			    WM8580_AIF_RATE_MASK, paifa);
- 	snd_soc_update_bits(codec, WM8580_PAIF3 + dai->driver->id,
- 			    WM8580_AIF_LENGTH_MASK, paifb);
- 	return 0;
-@@ -501,9 +525,11 @@ static int wm8580_set_paif_dai_fmt(struct snd_soc_dai *codec_dai,
- 				      unsigned int fmt)
- {
- 	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct wm8580_priv *wm8580 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int aifa;
- 	unsigned int aifb;
- 	int can_invert_lrclk;
-+	int sysclk;
- 
- 	aifa = snd_soc_read(codec, WM8580_PAIF1 + codec_dai->driver->id);
- 	aifb = snd_soc_read(codec, WM8580_PAIF3 + codec_dai->driver->id);
-@@ -572,6 +598,8 @@ static int wm8580_set_paif_dai_fmt(struct snd_soc_dai *codec_dai,
- 		return -EINVAL;
- 	}
- 
-+	sysclk = wm8580->sysclk[codec_dai->driver->id];
-+
- 	snd_soc_write(codec, WM8580_PAIF1 + codec_dai->driver->id, aifa);
- 	snd_soc_write(codec, WM8580_PAIF3 + codec_dai->driver->id, aifb);
- 
-@@ -611,28 +639,6 @@ static int wm8580_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
- 		snd_soc_write(codec, WM8580_PLLB4, reg);
- 		break;
- 
--	case WM8580_DAC_CLKSEL:
--		reg = snd_soc_read(codec, WM8580_CLKSEL);
--		reg &= ~WM8580_CLKSEL_DAC_CLKSEL_MASK;
--
--		switch (div) {
--		case WM8580_CLKSRC_MCLK:
--			break;
--
--		case WM8580_CLKSRC_PLLA:
--			reg |= WM8580_CLKSEL_DAC_CLKSEL_PLLA;
--			break;
--
--		case WM8580_CLKSRC_PLLB:
--			reg |= WM8580_CLKSEL_DAC_CLKSEL_PLLB;
--			break;
--
--		default:
--			return -EINVAL;
--		}
--		snd_soc_write(codec, WM8580_CLKSEL, reg);
--		break;
--
- 	case WM8580_CLKOUTSRC:
- 		reg = snd_soc_read(codec, WM8580_PLLB4);
- 		reg &= ~WM8580_PLLB4_CLKOUTSRC_MASK;
-@@ -666,6 +672,55 @@ static int wm8580_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
- 	return 0;
- }
- 
-+static int wm8580_set_sysclk(struct snd_soc_dai *dai, int clk_id,
-+			     unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct wm8580_priv *wm8580 = snd_soc_codec_get_drvdata(codec);
-+	int sel, sel_mask, sel_shift;
-+
-+	switch (dai->driver->id) {
-+	case WM8580_DAI_PAIFTX:
-+		sel_mask = 0x3;
-+		sel_shift = 0;
-+		break;
-+
-+	case WM8580_DAI_PAIFRX:
-+		sel_mask = 0xc;
-+		sel_shift = 3;
-+		break;
-+
-+	default:
-+		BUG_ON("Unknown DAI driver ID\n");
-+		return -EINVAL;
-+	}
-+
-+	switch (clk_id) {
-+	case WM8580_CLKSRC_ADCMCLK:
-+		if (dai->id != WM8580_DAI_PAIFTX)
-+			return -EINVAL;
-+		sel = 0 << sel_shift;
-+		break;
-+	case WM8580_CLKSRC_PLLA:
-+		sel = 1 << sel_shift;
-+		break;
-+	case WM8580_CLKSRC_PLLB:
-+		sel = 2 << sel_shift;
-+		break;
-+	case WM8580_CLKSRC_MCLK:
-+		sel = 3 << sel_shift;
+-	if (snd_usb_get_speed(dev) != USB_SPEED_LOW &&
+-	    snd_usb_get_speed(dev) != USB_SPEED_FULL &&
+-	    snd_usb_get_speed(dev) != USB_SPEED_HIGH) {
++	switch (snd_usb_get_speed(dev)) {
++	case USB_SPEED_LOW:
++	case USB_SPEED_FULL:
++	case USB_SPEED_HIGH:
++	case USB_SPEED_SUPER:
 +		break;
 +	default:
-+		dev_err(codec->dev, "Unknown clock %d\n", clk_id);
-+		return -EINVAL;
+ 		snd_printk(KERN_ERR "unknown device speed %d\n", snd_usb_get_speed(dev));
+ 		return -ENXIO;
+ 	}
+@@ -377,11 +381,22 @@ static int snd_usb_audio_create(struct usb_device *dev, int idx,
+ 	if (len < sizeof(card->longname))
+ 		usb_make_path(dev, card->longname + len, sizeof(card->longname) - len);
+ 
+-	strlcat(card->longname,
+-		snd_usb_get_speed(dev) == USB_SPEED_LOW ? ", low speed" :
+-		snd_usb_get_speed(dev) == USB_SPEED_FULL ? ", full speed" :
+-		", high speed",
+-		sizeof(card->longname));
++	switch (snd_usb_get_speed(dev)) {
++	case USB_SPEED_LOW:
++		strlcat(card->longname, ", low speed", sizeof(card->longname));
++		break;
++	case USB_SPEED_FULL:
++		strlcat(card->longname, ", full speed", sizeof(card->longname));
++		break;
++	case USB_SPEED_HIGH:
++		strlcat(card->longname, ", high speed", sizeof(card->longname));
++		break;
++	case USB_SPEED_SUPER:
++		strlcat(card->longname, ", super speed", sizeof(card->longname));
++		break;
++	default:
++		break;
 +	}
-+
-+	/* We really should validate PLL settings but not yet */
-+	wm8580->sysclk[dai->id] = freq;
-+
-+	return snd_soc_update_bits(codec, WM8580_CLKSEL, sel, sel_mask);
-+}
-+
- static int wm8580_digital_mute(struct snd_soc_dai *codec_dai, int mute)
+ 
+ 	snd_usb_audio_create_proc(chip);
+ 
+diff --git a/sound/usb/helper.c b/sound/usb/helper.c
+index d48d6f8..f280c19 100644
+--- a/sound/usb/helper.c
++++ b/sound/usb/helper.c
+@@ -103,11 +103,16 @@ int snd_usb_ctl_msg(struct usb_device *dev, unsigned int pipe, __u8 request,
+ unsigned char snd_usb_parse_datainterval(struct snd_usb_audio *chip,
+ 					 struct usb_host_interface *alts)
  {
- 	struct snd_soc_codec *codec = codec_dai->codec;
-@@ -719,6 +774,7 @@ static int wm8580_set_bias_level(struct snd_soc_codec *codec,
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
+-	if (snd_usb_get_speed(chip->dev) == USB_SPEED_HIGH &&
+-	    get_endpoint(alts, 0)->bInterval >= 1 &&
+-	    get_endpoint(alts, 0)->bInterval <= 4)
+-		return get_endpoint(alts, 0)->bInterval - 1;
+-	else
+-		return 0;
++	switch (snd_usb_get_speed(chip->dev)) {
++	case USB_SPEED_HIGH:
++	case USB_SPEED_SUPER:
++		if (get_endpoint(alts, 0)->bInterval >= 1 &&
++		    get_endpoint(alts, 0)->bInterval <= 4)
++			return get_endpoint(alts, 0)->bInterval - 1;
++		break;
++	default:
++		break;
++	}
++	return 0;
+ }
  
- static struct snd_soc_dai_ops wm8580_dai_ops_playback = {
-+	.set_sysclk	= wm8580_set_sysclk,
- 	.hw_params	= wm8580_paif_hw_params,
- 	.set_fmt	= wm8580_set_paif_dai_fmt,
- 	.set_clkdiv	= wm8580_set_dai_clkdiv,
-@@ -727,6 +783,7 @@ static struct snd_soc_dai_ops wm8580_dai_ops_playback = {
- };
+diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+index 4678564..6b42ce6 100644
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -834,7 +834,14 @@ static void snd_usbmidi_us122l_output(struct snd_usb_midi_out_endpoint *ep,
  
- static struct snd_soc_dai_ops wm8580_dai_ops_capture = {
-+	.set_sysclk	= wm8580_set_sysclk,
- 	.hw_params	= wm8580_paif_hw_params,
- 	.set_fmt	= wm8580_set_paif_dai_fmt,
- 	.set_clkdiv	= wm8580_set_dai_clkdiv,
-diff --git a/sound/soc/codecs/wm8580.h b/sound/soc/codecs/wm8580.h
-index 8328ef6..1d34656 100644
---- a/sound/soc/codecs/wm8580.h
-+++ b/sound/soc/codecs/wm8580.h
-@@ -19,14 +19,14 @@
- #define WM8580_PLLB  2
+ 	if (!ep->ports[0].active)
+ 		return;
+-	count = snd_usb_get_speed(ep->umidi->dev) == USB_SPEED_HIGH ? 1 : 2;
++	switch (snd_usb_get_speed(ep->umidi->dev)) {
++	case USB_SPEED_HIGH:
++	case USB_SPEED_SUPER:
++		count = 1;
++		break;
++	default:
++		count = 2;
++	}
+ 	count = snd_rawmidi_transmit(ep->ports[0].substream,
+ 				     urb->transfer_buffer,
+ 				     count);
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 4568298..ebd09ac 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -467,7 +467,7 @@ static int hw_check_valid_format(struct snd_usb_substream *subs,
+ 		return 0;
+ 	}
+ 	/* check whether the period time is >= the data packet interval */
+-	if (snd_usb_get_speed(subs->dev) == USB_SPEED_HIGH) {
++	if (snd_usb_get_speed(subs->dev) != USB_SPEED_FULL) {
+ 		ptime = 125 * (1 << fp->datainterval);
+ 		if (ptime > pt->max || (ptime == pt->max && pt->openmax)) {
+ 			hwc_debug("   > check: ptime %u > max %u\n", ptime, pt->max);
+@@ -735,7 +735,7 @@ static int setup_hw_info(struct snd_pcm_runtime *runtime, struct snd_usb_substre
+ 	}
  
- #define WM8580_MCLK       1
--#define WM8580_DAC_CLKSEL 2
--#define WM8580_CLKOUTSRC  3
-+#define WM8580_CLKOUTSRC  2
+ 	param_period_time_if_needed = SNDRV_PCM_HW_PARAM_PERIOD_TIME;
+-	if (snd_usb_get_speed(subs->dev) != USB_SPEED_HIGH)
++	if (snd_usb_get_speed(subs->dev) == USB_SPEED_FULL)
+ 		/* full speed devices have fixed data packet interval */
+ 		ptmin = 1000;
+ 	if (ptmin == 1000)
+diff --git a/sound/usb/proc.c b/sound/usb/proc.c
+index f5e3f35..3c650ab 100644
+--- a/sound/usb/proc.c
++++ b/sound/usb/proc.c
+@@ -107,7 +107,7 @@ static void proc_dump_substream_formats(struct snd_usb_substream *subs, struct s
+ 			}
+ 			snd_iprintf(buffer, "\n");
+ 		}
+-		if (snd_usb_get_speed(subs->dev) == USB_SPEED_HIGH)
++		if (snd_usb_get_speed(subs->dev) != USB_SPEED_FULL)
+ 			snd_iprintf(buffer, "    Data packet interval: %d us\n",
+ 				    125 * (1 << fp->datainterval));
+ 		// snd_iprintf(buffer, "    Max Packet Size = %d\n", fp->maxpacksize);
+diff --git a/sound/usb/urb.c b/sound/usb/urb.c
+index de607d4..8deeaad 100644
+--- a/sound/usb/urb.c
++++ b/sound/usb/urb.c
+@@ -244,7 +244,7 @@ int snd_usb_init_substream_urbs(struct snd_usb_substream *subs,
+ 	else
+ 		subs->curpacksize = maxsize;
  
--#define WM8580_CLKSRC_MCLK 1
--#define WM8580_CLKSRC_PLLA 2
--#define WM8580_CLKSRC_PLLB 3
--#define WM8580_CLKSRC_OSC  4
--#define WM8580_CLKSRC_NONE 5
-+#define WM8580_CLKSRC_MCLK    1
-+#define WM8580_CLKSRC_PLLA    2
-+#define WM8580_CLKSRC_PLLB    3
-+#define WM8580_CLKSRC_OSC     4
-+#define WM8580_CLKSRC_NONE    5
-+#define WM8580_CLKSRC_ADCMCLK 6
- 
- #define WM8580_DAI_PAIFRX 0
- #define WM8580_DAI_PAIFTX 1
-diff --git a/sound/soc/s3c24xx/smdk64xx_wm8580.c b/sound/soc/s3c24xx/smdk64xx_wm8580.c
-index 5c21e26..91367f7 100644
---- a/sound/soc/s3c24xx/smdk64xx_wm8580.c
-+++ b/sound/soc/s3c24xx/smdk64xx_wm8580.c
-@@ -113,14 +113,13 @@ static int smdk64xx_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		return ret;
- 
--	/* Explicitly set WM8580-DAC to source from MCLK */
--	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8580_DAC_CLKSEL,
--					WM8580_CLKSRC_MCLK);
-+	ret = snd_soc_dai_set_pll(codec_dai, WM8580_PLLA, 0,
-+					SMDK64XX_WM8580_FREQ, pll_out);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = snd_soc_dai_set_pll(codec_dai, WM8580_PLLA, 0,
--					SMDK64XX_WM8580_FREQ, pll_out);
-+	ret = snd_soc_dai_set_sysclk(codec_dai, WM8580_CLKSRC_PLLA,
-+				     pll_out, SND_SOC_CLOCK_IN);
- 	if (ret < 0)
- 		return ret;
- 
+-	if (snd_usb_get_speed(subs->dev) == USB_SPEED_HIGH)
++	if (snd_usb_get_speed(subs->dev) != USB_SPEED_FULL)
+ 		packs_per_ms = 8 >> subs->datainterval;
+ 	else
+ 		packs_per_ms = 1;
 -- 
-1.7.1
+
+Paul
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
