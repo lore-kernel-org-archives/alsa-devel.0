@@ -1,20 +1,19 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: ASoC: Make ams-delta/cx20442 pair back working for
-	multi-component
-Date: Fri, 13 Aug 2010 21:10:33 +0200
-Message-ID: <201008132110.34697.jkrzyszt@tis.icnet.pl>
-References: <201008110129.34662.jkrzyszt@tis.icnet.pl>
-	<1281534151.3080.111.camel@odin>
+From: John Simpson <john@swajime.com>
+Subject: n810 diablo and alsa ?
+Date: Fri, 13 Aug 2010 14:14:46 -0500
+Message-ID: <AANLkTimX+DVR0y5Qurii9ELxx3g0YGb0RvrBvgi4StB4@mail.gmail.com>
+Reply-To: john@swajime.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7BB66103868
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1FFBB1038C8
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Aug 2010 21:11:03 +0200 (CEST)
-In-Reply-To: <1281534151.3080.111.camel@odin>
-Content-Disposition: inline
+	Fri, 13 Aug 2010 21:14:47 +0200 (CEST)
+Received: by eyd9 with SMTP id 9so493227eyd.38
+	for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2010 12:14:46 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,38 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-V2VkbmVzZGF5IDExIEF1Z3VzdCAyMDEwIDE1OjQyOjMxIExpYW0gR2lyZHdvb2QgbmFwaXNhxYIo
-YSk6Cj4gT24gV2VkLCAyMDEwLTA4LTExIGF0IDAxOjI5ICswMjAwLCBKYW51c3ogS3J6eXN6dG9m
-aWsgd3JvdGU6Cj4gPiAxLgo+ID4gQWZ0ZXIgYSBzdGF0aWMgY29kZWMgcG9pbnRlciByZW1vdmFs
-IGZyb20gdGhlIHNvdW5kL3NvYy9jb2RlY3MvY3gyMDQ0Mi5jCj4gPiBjb2RlLCBib3RoIGNvZGVj
-IGFuZCBjYXJkIHNwZWNpZmljIHR0eSBsaW5lIGRpc2NpcGxpbmUgZnVuY3Rpb25zIGxvc3QKPiA+
-IHRoZWlyIGFjY2VzcyB0byB0aGUgY29kZWMgc3RydWN0dXJlIGRhdGEuIEFycmFuZ2UgZm9yIHBh
-c3NpbmcgdGhlIHBvaW50ZXIKPiA+IGJhY2sgdG8gdGhlIGNvZGVjIHR0eSBsZGlzYyBiaXRzIGZy
-b20gdGhlIGNhcmQgaW5pdGlhbGl6YXRpb24gY29kZS4KPiA+Cj4gPiAyLgo+ID4gVXBkYXRlIGlu
-Y29zaXN0ZW50IGNvZGVjIGRldmljZSBuYW1pbmcgaW4gdGhlIGNhcmQgY29kZS4KPiA+Cj4gPiAz
-Lgo+ID4gU2luY2UgYSBuZXcgZWxlbWVudCwgY29udHJvbF9kYXRhLCBoYXMgYmVlbiBhZGRlZCB0
-byB0aGUgY3gyMDQ0Ml9wcml2Cj4gPiBzdHJ1Y3R1cmUsIGl0IGxvb2tzIGxpa2UgdGhlIG9sZCBz
-bmRfc29jX2NvZGVjLT5jb250cm9sX2RhdGEgbWF5IGJlCj4gPiBzY2hlZHVsZWQgZm9yIHJlbW92
-YWwuIFRvIGF2b2lkIHByb2JsZW1zIGluIHRoZSBuZWFyIGZ1dHVyZSwgdXNlIHRoZQo+ID4gY3gy
-MDQ0Ml9wcml2LT5jb250cm9sX2RhdGEgaW5zdGVhZCBvZiB0aGUgc25kX3NvY19jb2RlYy0+Y29u
-dHJvbF9kYXRhCj4gPiB0aHJvdWdob3V0IHRoZSBjeDIwNDQyIGNvZGUuIEluIHRoZSBhbXMtZGVs
-dGEgY2FyZCBjb2RlLCBjaGVjayBmb3IgdGhlCj4gPiBzbmRfc29jX2NvZGVjLT5od193cml0ZSBu
-b3QgTlVMTCBpbnN0ZWFkIG9mIHRoZQo+ID4gc25kX3NvY19jb2RlYy0+Y29udHJvbF9kYXRhLgo+
-ID4KPiA+IENyZWF0ZWQgYW5kIHRlc3RlZCBvbiBBbXN0cmFkIERlbHRhIGFnYWluc3QKPiA+IGdp
-dDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9scmcvYXNvYy0yLjYu
-Z2l0LAo+ID4gY29tbWl0IGEyMTJkZDViMmUxZGEwNDVjYmY0MjNjNzBjODdmNDgyNjU1MzFkZTQu
-Cj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogSmFudXN6IEtyenlzenRvZmlrIDxqa3J6eXN6dEB0aXMu
-aWNuZXQucGw+Cj4KPiBBcHBsaWVkLgoKVGhhbmtzLCBhbmQgc29ycnkgZm9yIG5vdCBjb21tZW50
-aW5nIG9uIHRpbWUgeW91ciByZWxhdGVkIFJGQyBwb3N0ZWQgaW4gSnVuZS4gCkkgd2FzIG5vdCBz
-dWJzY3JpYmVkIHRvIHRoZSBsaXN0LgoKQlRXLCB3aGF0IHdhcyB0aGUgcmF0aW9uYWxlIGZvciBy
-ZW5hbWluZyB0aGUgY29kZWMgZGFpIHRvICJjeDIwNDIyLWhpZmkiPyAKV2hpbGUgdGhpcyBkb2Vz
-bid0IGJyZWFrIGFueXRoaW5nIG9idmlvdXNseSwgSSB0aGluayB0aGUgaGlmaSBzdWZmaXggaXMg
-Cm1pc3NsZWFkaW5nIGZvciBhIGNvZGVjIHdpdGggYSBzYW1wbGluZyByYXRlIG9mIDgga0h6IDsp
-LgoKVGhhbmtzLApKYW51c3oKCj4KPiBUaGFua3MKPgo+IExpYW0KX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Is there a how-to for installing the alsa-lib correctly on the n810?
+(hopefully from a fresh install of Maemo/Diablo?)
+
+I've been hitting brick walls in every direction. :-(
+
+The alsa-lib in the diablo repository seems to be outdated:
+
+ [1|user@tablet|~/src]cat alsa-lib_1.0.14sa-2maemo2.dsc
+ Format: 1.0
+ Source: alsa-lib
+ Version: 1.0.14sa-2maemo2
+ Binary: lib32asound2-dev, lib64asound2, lib32asound2, libasound2-dev,
+libasound2, libasound2-doc, libasound2-dbg, lib64asound2-dev
+ Maintainer: Debian ALSA Maintainers <pkg-alsa-devel@lists.alioth.debian.org>
+ Architecture: any
+ Standards-Version: 3.7.2
+ Build-Depends: debhelper (>= 4.2.32), quilt (>= 0.40), autotools-dev,
+doxygen, libc6-dev-powerpc [ppc64], libc6-dev-i386 [amd64],
+libc6-dev-ppc64 [powerpc], libc6-dev-s390x [s390], libc6-dev-sparc64
+[sparc], lib32gcc1 [amd64 ppc64], libc6-dev (>= 2.5) [armel]
+ Vcs-Browser: http://svn.debian.org/wsvn/pkg-alsa/trunk/alsa-lib/
+ Uploaders: Jordi Mallach <jordi@debian.org>, Mikael Magnusson
+<mikma@users.sourceforge.net>, Elimar Riesebieter <riesebie@lxtec.de>,
+Marc-Andre Lureau <marc-andre.lureau@nokia.com>
+ Vcs-Svn: svn://svn.debian.org/pkg-alsa/trunk/alsa-lib
