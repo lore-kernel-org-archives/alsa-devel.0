@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 5/5] ASoc: add machine driver for 88pm860x
-Date: Fri, 13 Aug 2010 15:26:46 +0100
-Message-ID: <20100813142646.GE6449@rakim.wolfsonmicro.main>
-References: <AANLkTikpcA0RTxdGne2L5n06d0AjfnWEMsh0GP8nvyO6@mail.gmail.com>
+Subject: ASoC updates for 2.6.36
+Date: Fri, 13 Aug 2010 15:49:35 +0100
+Message-ID: <20100813144934.GA11661@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DE76610384F
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6C9C024154
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Aug 2010 16:26:47 +0200 (CEST)
+	Fri, 13 Aug 2010 16:49:36 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <AANLkTikpcA0RTxdGne2L5n06d0AjfnWEMsh0GP8nvyO6@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,34 +20,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Haojian Zhuang <haojian.zhuang@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 13, 2010 at 09:55:53PM +0800, Haojian Zhuang wrote:
-> From cd2063f68b233a86b24efa3f4dc3ca3c438b1576 Mon Sep 17 00:00:00 2001
-> From: Haojian Zhuang <haojian.zhuang@marvell.com>
-> Date: Thu, 12 Aug 2010 12:04:23 +0800
+The following changes since commit 2e2211a387e70c62e1249822a94f4a33933ecd62:
 
-Please fix your configuration for sending patches - none of this header
-stuff should be in the body of the mail.
+  ASoC: add AD1980 obsolete information (2010-08-10 15:43:45 +0100)
 
-> Subject: [PATCH 5/5] ASoc: add machine driver for 88pm860x
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.36
 
-It's not a machine driver for this CODEC, it appears to be two machine
-drivers for...
+A couple of focused patches for the WM8994, plus the MAINTAINERS
+additions.  They're not 100% ASoC but mostly so by volume of code
+covered so hopefully not a problem for you to take via your tree - let
+me know if it's an issue and I'll drop them.
 
-> 88PM860x codec is used in Marvell development board (Saarb and tavorevb3).
-> Codec is used as master mode in both of these two boards.
+Mark Brown (4):
+      ASoC: Optimise DSP performance for WM8994
+      ASoC: Only tweak WM8994 chip configuration on devices up to rev D
+      MAINTAINERS: Make Wolfson entry also cover CODEC drivers
+      MAINTAINERS: Add Ian Lartey as comaintaner for Wolfson devices
 
-...these two boards.  I'd suggest supplying one board per patch.
-
-> +#include "../../arm/pxa2xx-pcm.h"
-
-Why?
-
-> +	SND_SOC_DAPM_SPK("Board Speaker", NULL),
-> +	SND_SOC_DAPM_MIC("Board Mic 1", NULL),
-> +	SND_SOC_DAPM_MIC("Board Mic 3", NULL),
-
-What happened to Mic 2?
+ MAINTAINERS               |    7 ++++---
+ sound/soc/codecs/wm8994.c |   23 +++++++++++++++--------
+ 2 files changed, 19 insertions(+), 11 deletions(-)
