@@ -1,21 +1,23 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re:
- =?iso-8859-1?q?=5BPATCH_1/2=5D_ASoC=3A_Set_up_debugf?=
- =?iso-8859-1?q?s_only_once=09per_CODEC?=
-Date: Fri, 13 Aug 2010 13:49:46 +0300
-Message-ID: <201008131349.46624.peter.ujfalusi@nokia.com>
-References: <1281624632-17992-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<201008130742.45006.peter.ujfalusi@nokia.com>
-	<20100813090249.GA32249@sirena.org.uk>
+From: Seungwhan Youn <claude.youn@gmail.com>
+Subject: Re: [PATCH 1/5] ASoC: Remove -dai suffix from Samsung
+ DAI devices
+Date: Fri, 13 Aug 2010 20:20:22 +0900
+Message-ID: <AANLkTimKpO311uc5zFyGVtUoXVetkk=f3GODyczFmkT4@mail.gmail.com>
+References: <1281607342-13127-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<AANLkTinKaUygGxZc+pBg_LdOpvWcEErcf8yCvqfid5CU@mail.gmail.com>
+	<4C64E2DB.5020602@samsung.com>
+	<CC690F15-7FCE-4BA3-B161-DA7B1216BCC9@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa02.nokia.com (mgw-sa02.nokia.com [147.243.1.48])
-	by alsa0.perex.cz (Postfix) with ESMTP id D442E2414F
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8828024522
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Aug 2010 12:49:47 +0200 (CEST)
-In-Reply-To: <20100813090249.GA32249@sirena.org.uk>
+	Fri, 13 Aug 2010 13:20:23 +0200 (CEST)
+Received: by wwi17 with SMTP id 17so613224wwi.20
+	for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2010 04:20:23 -0700 (PDT)
+In-Reply-To: <CC690F15-7FCE-4BA3-B161-DA7B1216BCC9@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,50 +27,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Joonyoung Shim <jy0922.shim@samsung.com>, Jassi Brar <jassisinghbrar@gmail.com>, Chanwoo Choi <cw00.choi@samsung.com>, Seungwhan Youn <sw.youn@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 13 August 2010 12:02:49 ext Mark Brown wrote:
-> Sure, but the big problem there is that these aren't really CODEC
-> specific objects.
-
-Sure, but those widgets are directly connected to the CODEC's widgets.
-And even if we have more than one codec under a single card, the widgets fr=
-om =
-
-the machine driver are kind of attached to the codec's chain (plus the =
-
-interconnect routes between the multiple codecs if any).
-
-> > > Since most of this stuff is actually for the card we should refactor
-> > > but this can come later.
-> > =
-
-> > Sure, refactoring will help, but with this change we have missing debug=
-fs
-> > files for widgets, which is kind of confusing.
-> =
-
-> Meh, it's a debug facility and I hope it'll be sorted out within a week
-> or so anyway.
-
-Well, than it does not matter that much (the missing debugfs widget entries=
-), =
-
-if you have plans for this.
-
-> Besides, you're not really loosing much information since
-> there tends to be no interesting routing outside the CODEC.
-
-Yeah. True. I have seen machines where there were some widgets of interest =
-
-coming from the machine driver, but it is really only causes problems =
-
-(inconvenience) with the debugfs.
-
-Just wanted to mention the short term effect of this patch.
-
--- =
-
-P=E9ter
+T24gRnJpLCBBdWcgMTMsIDIwMTAgYXQgNTo1OSBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIDEzIEF1ZyAyMDEwLCBhdCAwNzox
+NCwgSm9vbnlvdW5nIFNoaW0gd3JvdGU6Cj4+IE9uIDIwMTAtMDgtMTMg7Jik7ZuEIDI6MTIsIFNl
+dW5nd2hhbiBZb3VuIHdyb3RlOgo+Pj4gT24gVGh1LCBBdWcgMTIsIDIwMTAgYXQgNzowMiBQTSwg
+TWFyayBCcm93bgo+Cj4+Pj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zM2MyNHh4L2FxdWlsYV93
+bTg5OTQuYyBiL3NvdW5kL3NvYy9zM2MyNHh4L2FxdWlsYV93bTg5OTQuYwo+Pj4+IGluZGV4IDQ0
+YjA2ZTkuLjIzNWQxOTcgMTAwNjQ0Cj4+Pj4gLS0tIGEvc291bmQvc29jL3MzYzI0eHgvYXF1aWxh
+X3dtODk5NC5jCj4+Pj4gKysrIGIvc291bmQvc29jL3MzYzI0eHgvYXF1aWxhX3dtODk5NC5jCj4+
+Pj4gQEAgLTIzMyw3ICsyMzMsNyBAQCBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsgYXF1
+aWxhX2RhaVtdID0gewo+Pj4+IMKgewo+Pj4+IMKgIMKgIMKgIMKgLm5hbWUgPSAiV004OTk0IiwK
+Pj4+PiDCoCDCoCDCoCDCoC5zdHJlYW1fbmFtZSA9ICJXTTg5OTQgSGlGaSIsCj4+Pj4gLSDCoCDC
+oCDCoCAuY3B1X2RhaV9uYW1lID0gInMzYzY0eHgtaTJzLXY0LWRhaSIsCj4+Pj4gKyDCoCDCoCDC
+oCAuY3B1X2RhaV9uYW1lID0gInMzYzY0eHgtaTJzLXY0IiwKPgo+Pj4gVGhpcyBhcXVpbGEgYm9h
+cmQgYWxzbyB1c2UgSTJTdjQgZnJvbSAnczNjNjR4eC1pMnMtdjQuYycsIHNvIEkgdGhpbmsKPj4+
+IGl0J2xsIG5vdCB3b3JrIGlmIGNwdV9kYWlfbmFtZSBpcyAnczNjNjR4eC1pMnMtdjQnIG5vdAo+
+Pj4gJ3MzYzY0eHgtaWlzLXY0Jy4KPgo+PiBJdCBjb25mdXNlZCBtZSBhIGxpdHRsZSB0byB1c2Ug
+dHdvIG5hbWVzICJpaXMiIGFuZCAiaTJzIi4gQ2FuIHdlIHVuaWZ5IHRvIG9uZT8KPgo+IFRoZXJl
+J3Mgbm8gY2hhbmdlIGJldHdlZW4gLWkycyBhbmQgLWlpcyBpbnRyb2R1Y2VkIGJ5IHRoaXMgcGF0
+Y2gsIGFsbCB0aGlzIHBhdGNoIGRpZCB3YXMgc3RyaXAgdGhlIC1kYWkgc3VmZml4IGZyb20gdGhl
+IG5hbWVzLiBJdCBsb29rcyBsaWtlIHRoaXMgaXMgYW4gZXJyb3IgaW4gdGhlIEFxdWlsbGEgZHJp
+dmVyIHdoaWNoIHNob3VsZCBiZSBjb3JyZWN0ZWQuCgpJIHNlZS4gSSBqdXN0IHRoaW5rIHRoYXQg
+dGhpcyBwYXRjaCBtb2RpZnkgdG8gZml4IG5hbWluZyBvZiBpMnMKcGxhdGZvcm0gZHJpdmVyIHdp
+dGggc2V0dGluZyBjb3JyZXNwb25kaW5nIGFybS9hcmNoIGxpa2UgeW91cgptb2RpZmljYXRpb24g
+b2YgJ3NtZGs2NHh4X3dtODU4MC5jJyBpbiB0aGlzIHBhdGNoLiBJIHRoaW5rIHRoYXQgYXF1aWxh
+CmJvYXJkIHdhcyB3cm9uZyBleGFtcGxlLCBidXQgSSdtIGFmcmFpZCB0aGF0IG90aGVyIGJvYXJk
+cyB3aGljaCB3YXMKbW9kaWZpZWQgY3B1X2RhaV9uYW1lIGZyb20gTGlhbSdzIG11bHRpLWNvbXAg
+cGF0Y2hlcywgYWxzbyBsb29rCm5vdC1jb3JyZWN0LiBCZWNhdXNlIEkgZG9uJ3Qga25vdyB0aGV5
+IGFyZSB1c2luZyBwbGF0Zm9ybSBkcml2ZXIgb24KYXJjaC9hcm0sIGJ1dCBJIHRoaW5rIHRoYXQg
+dGhleShvdGhlciBtYWNoaW5lIGNvZGUsIGxpa2UKaml2ZV93bTg3NTAuYykgdXNlIEkyUyBkcml2
+ZXIgbmFtZWQgJ3MzYzI0eHgtaWlzJywgJ3MzYzI0MTItaWlzJyBhbmQKJ3MzYzY0eHgtaWlzJy4K
+Ck9mIGNvdXJzZSwgdGhhdCB0aGluZ3MgY2FuIGJlIGhhbmRsZWQgYW5vdGhlciBwYXRjaCB3aXRo
+IGFub3RoZXIgZ3V5CndobyBjYW4gdmVyaWZ5IGl0cyB3b3JrLiBCdXQsIEkgdGhpbmsgdGhhdCBm
+aXggb24gdGhpcyBwYXRjaCB3aWxsIGJlCm1vcmUgbmljZSB0byBtZS4KCgpJJ20gc29ycnksIGlm
+IEknbSBib3RoZXJpbmcgeW91LCBhbmQgdGhhbmsgeW91IGZvciB5b3VyIGNvbW1lbnQsCgpDbGF1
+ZGUKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
