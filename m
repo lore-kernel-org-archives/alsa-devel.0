@@ -1,19 +1,18 @@
-From: Valdis.Kletnieks@vt.edu
-Subject: Re: mmotm 2010-08-11 - audio volume issues
-Date: Thu, 12 Aug 2010 22:13:25 -0400
-Message-ID: <4695.1281665605@localhost>
-References: <201008112340.o7BNenDe021017@imap1.linux-foundation.org>
-	<5043.1281639572@localhost> <4C64624E.7040002@gmail.com>
-	<s5hd3tntu29.wl%tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 1/2] ASoC: Set up debugfs only once per
+	CODEC
+Date: Fri, 13 Aug 2010 07:42:44 +0300
+Message-ID: <201008130742.45006.peter.ujfalusi@nokia.com>
+References: <1281624632-17992-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6509512325201580344=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lennier.cc.vt.edu (lennier.cc.vt.edu [198.82.162.213])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5CB7B24374
+Received: from mgw-sa02.nokia.com (mgw-sa02.nokia.com [147.243.1.48])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8315024439
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Aug 2010 04:13:28 +0200 (CEST)
-In-Reply-To: Your message of "Thu, 12 Aug 2010 23:11:42 +0200."
-	<s5hd3tntu29.wl%tiwai@suse.de>
+	Fri, 13 Aug 2010 06:42:48 +0200 (CEST)
+In-Reply-To: <1281624632-17992-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,90 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Wu Fengguang <fengguang.wu@intel.com>, Jiri Slaby <jirislaby@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
---===============6509512325201580344==
-Content-Type: multipart/signed; boundary="==_Exmh_1281665605_4567P";
-	 micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
+On Thursday 12 August 2010 17:50:31 ext Mark Brown wrote:
+> Since the debugfs directory is current per CODEC we should only init
+> it when the CODEC is initialised, otherwise we end up with errors
+> being generated when an attempt is made to add duplicate debugfs
+> entries.
 
---==_Exmh_1281665605_4567P
-Content-Type: text/plain; charset=us-ascii
+But if you move the init of debugfs where you have moved it, than the machi=
+ne =
 
-On Thu, 12 Aug 2010 23:11:42 +0200, Takashi Iwai said:
-> At Thu, 12 Aug 2010 23:06:22 +0200,
-> Jiri Slaby wrote:
-> > 
-> > On 08/12/2010 08:59 PM, Valdis.Kletnieks@vt.edu wrote:
-> > > On Wed, 11 Aug 2010 16:10:49 PDT, akpm@linux-foundation.org said:
-> > >> The mm-of-the-moment snapshot 2010-08-11-16-10 has been uploaded to
-> > >>
-> > >>    http://userweb.kernel.org/~akpm/mmotm/
-> > > 
-> > > Something appears to be borked in the ALSA arena.  There's no actual volume coming
-> > > out of the system, and 'alsamixer' is insisting that the volume slider only goes from 0
-> > > to 10% or so, no further.  However, experimentation shows that the volume slider
-> > > in 'xine' *does* affect the 'Amp-Out vals' lines, and alsamixer has *no* effect on
-> > > what 'Amp-Out vals' lists.
-> > > 
-> > > A diff of alsa-info.sh for the two kernels shows them being identical, so I'm only
-> > > attaching one copy.
-> > > 
-> > > It may be the weekend before I find time to do a bisection of this.
-> > 
-> > Didn't you (like some other people) get into the state where pulseaudio
-> > doesn't work? It chooses as an output a dummy driver automatically, then
-> > you can change volume, play sound, but actually it all goes to /dev/null.
-> > 
-> > It took me a while before I figured out that it's a "dummy" driver I
-> > have in pulseaudio.
-> 
-> Looks like there is a breakage regarding open/close due to fs/notify/*
-> changes.  I guess you can hear still sounds like:
-> 
-> 	% aplay -Dplughw foo.wav
+driver given DAPM widgets will have no debugfs entries, since the machine i=
+nit =
 
-Confirming that Linus's patch fixes it for me:
+is going to be called later (dai_link->init)...
 
-commit 2069601b3f0ea38170d4b509b89f3ca0a373bdc1
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu Aug 12 14:23:04 2010 -0700
+> =
 
-    Revert "fsnotify: store struct file not struct path"
-    
-    This reverts commit 3bcf3860a4ff9bbc522820b4b765e65e4deceb3e (and the
-    accompanying commit c1e5c954020e "vfs/fsnotify: fsnotify_close can delay
-    the final work in fput" that was a horribly ugly hack to make it work at
-    all).
+> Since most of this stuff is actually for the card we should refactor
+> but this can come later.
 
+Sure, refactoring will help, but with this change we have missing debugfs f=
+iles =
 
+for widgets, which is kind of confusing.
 
---==_Exmh_1281665605_4567P
-Content-Type: application/pgp-signature
+-- =
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Exmh version 2.5 07/13/2001
+P=E9ter
 
-iD8DBQFMZKpFcC3lWbTT17ARAufmAJ9goOndYraZ66zllcjiuyc/Ns5wKgCZAWp1
-LomGTJVERVbUPSSBCZBaz/w=
-=f7M+
------END PGP SIGNATURE-----
+> =
 
---==_Exmh_1281665605_4567P--
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/soc-core.c |    5 +++--
+>  1 files changed, 3 insertions(+), 2 deletions(-)
+> =
 
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index a004876..ac0fa22 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -1323,6 +1323,9 @@ static int soc_probe_dai_link(struct snd_soc_card
+> *card, int num) return ret;
+>  			}
+>  		}
+> +
+> +		soc_init_codec_debugfs(codec);
+> +
+>  		/* mark codec as probed and add to card codec list */
+>  		codec->probed =3D 1;
+>  		list_add(&codec->card_list, &card->codec_dev_list);
+> @@ -1400,8 +1403,6 @@ static int soc_probe_dai_link(struct snd_soc_card
+> *card, int num) if (ret < 0)
+>  		printk(KERN_WARNING "asoc: failed to add codec sysfs files\n");
+> =
 
---===============6509512325201580344==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============6509512325201580344==--
+> -	soc_init_codec_debugfs(codec);
+> -
+>  	/* create the pcm */
+>  	ret =3D soc_new_pcm(rtd, num);
+>  	if (ret < 0) {
