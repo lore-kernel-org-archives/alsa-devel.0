@@ -1,18 +1,20 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 1/2] ASoC: Set up debugfs only once per
-	CODEC
-Date: Fri, 13 Aug 2010 07:42:44 +0300
-Message-ID: <201008130742.45006.peter.ujfalusi@nokia.com>
-References: <1281624632-17992-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Seungwhan Youn <claude.youn@gmail.com>
+Subject: Re: [PATCH 1/5] ASoC: Remove -dai suffix from Samsung
+ DAI devices
+Date: Fri, 13 Aug 2010 14:12:24 +0900
+Message-ID: <AANLkTinKaUygGxZc+pBg_LdOpvWcEErcf8yCvqfid5CU@mail.gmail.com>
+References: <1281607342-13127-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa02.nokia.com (mgw-sa02.nokia.com [147.243.1.48])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8315024439
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id A99C824457
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Aug 2010 06:42:48 +0200 (CEST)
-In-Reply-To: <1281624632-17992-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Fri, 13 Aug 2010 07:12:24 +0200 (CEST)
+Received: by wyb42 with SMTP id 42so2212701wyb.38
+	for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2010 22:12:24 -0700 (PDT)
+In-Reply-To: <1281607342-13127-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,67 +24,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Seungwhan Youn <sw.youn@samsung.com>, alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, Chanwoo Choi <cw00.choi@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 12 August 2010 17:50:31 ext Mark Brown wrote:
-> Since the debugfs directory is current per CODEC we should only init
-> it when the CODEC is initialised, otherwise we end up with errors
-> being generated when an attempt is made to add duplicate debugfs
-> entries.
-
-But if you move the init of debugfs where you have moved it, than the machi=
-ne =
-
-driver given DAPM widgets will have no debugfs entries, since the machine i=
-nit =
-
-is going to be called later (dai_link->init)...
-
-> =
-
-> Since most of this stuff is actually for the card we should refactor
-> but this can come later.
-
-Sure, refactoring will help, but with this change we have missing debugfs f=
-iles =
-
-for widgets, which is kind of confusing.
-
--- =
-
-P=E9ter
-
-> =
-
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/soc-core.c |    5 +++--
->  1 files changed, 3 insertions(+), 2 deletions(-)
-> =
-
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index a004876..ac0fa22 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -1323,6 +1323,9 @@ static int soc_probe_dai_link(struct snd_soc_card
-> *card, int num) return ret;
->  			}
->  		}
-> +
-> +		soc_init_codec_debugfs(codec);
-> +
->  		/* mark codec as probed and add to card codec list */
->  		codec->probed =3D 1;
->  		list_add(&codec->card_list, &card->codec_dev_list);
-> @@ -1400,8 +1403,6 @@ static int soc_probe_dai_link(struct snd_soc_card
-> *card, int num) if (ret < 0)
->  		printk(KERN_WARNING "asoc: failed to add codec sysfs files\n");
-> =
-
-> -	soc_init_codec_debugfs(codec);
-> -
->  	/* create the pcm */
->  	ret =3D soc_new_pcm(rtd, num);
->  	if (ret < 0) {
+SGkgTWFyaywKCk9uIFRodSwgQXVnIDEyLCAyMDEwIGF0IDc6MDIgUE0sIE1hcmsgQnJvd24KPGJy
+b29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPiBUaGUgSVAgYmxvY2tz
+IGFyZSBhbGwgZml4ZWQgZnVuY3Rpb24gYXVkaW8gY29udHJvbGxlcnMgc28gdGhlcmUncyBubwo+
+IG5lZWQgdG8gZGVkdXBlIGFnYWluc3Qgb3RoZXIgdXNhZ2VzIGFuZCB0aGUgY29ycmVzcG9uZGlu
+ZyBhcmNoL2FybQo+IHVwZGF0ZXMgZ290IG1pc3NlZCBhbnl3YXkgc28gcmV2ZXJ0IHRvIHRoZSBv
+cmlnaW5hbCBuYW1lcyBmb3IgdGhlCj4gZHJpdmVycy4KPgo+IFNpZ25lZC1vZmYtYnk6IE1hcmsg
+QnJvd24gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29tPgo+IC0tLQo+IMKgc291
+bmQvc29jL3MzYzI0eHgvYXF1aWxhX3dtODk5NC5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCDC
+oDIgKy0KPiDCoHNvdW5kL3NvYy9zM2MyNHh4L2dvbmlfd204OTk0LmMgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqB8IMKgIMKgMiArLQo+IMKgc291bmQvc29jL3MzYzI0eHgvaml2ZV93bTg3NTAuYyDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoHwgwqAgwqAyICstCj4gwqBzb3VuZC9zb2MvczNjMjR4eC9s
+bjI0NDBzYmNfYWxjNjUwLmMgwqAgwqAgwqAgwqAgwqAgfCDCoCDCoDIgKy0KPiDCoHNvdW5kL3Nv
+Yy9zM2MyNHh4L25lbzE5NzNfZ3RhMDJfd204NzUzLmMgwqAgwqAgwqAgfCDCoCDCoDIgKy0KPiDC
+oHNvdW5kL3NvYy9zM2MyNHh4L25lbzE5NzNfd204NzUzLmMgwqAgwqAgwqAgwqAgwqAgwqAgfCDC
+oCDCoDIgKy0KPiDCoHNvdW5kL3NvYy9zM2MyNHh4L3MzYzI0MTItaTJzLmMgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqB8IMKgIMKgMiArLQo+IMKgc291bmQvc29jL3MzYzI0eHgvczNjMjR4eC1pMnMu
+YyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHwgwqAgwqAyICstCj4gwqBzb3VuZC9zb2MvczNjMjR4
+eC9zM2MyNHh4X3NpbXRlY19oZXJtZXMuYyDCoCDCoCDCoHwgwqAgwqAyICstCj4gwqBzb3VuZC9z
+b2MvczNjMjR4eC9zM2MyNHh4X3NpbXRlY190bHYzMjBhaWMyMy5jIHwgwqAgwqAyICstCj4gwqBz
+b3VuZC9zb2MvczNjMjR4eC9zM2MyNHh4X3VkYTEzNHguYyDCoCDCoCDCoCDCoCDCoCDCoHwgwqAg
+wqAyICstCj4gwqBzb3VuZC9zb2MvczNjMjR4eC9zM2M2NHh4LWkycy12NC5jIMKgIMKgIMKgIMKg
+IMKgIMKgIHwgwqAgwqAyICstCj4gwqBzb3VuZC9zb2MvczNjMjR4eC9zM2M2NHh4LWkycy5jIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCDCoDIgKy0KPiDCoHNvdW5kL3NvYy9zM2MyNHh4L3Nt
+YXJ0cV93bTg5ODcuYyDCoCDCoCDCoCDCoCDCoCDCoCDCoHwgwqAgwqAyICstCj4gwqBzb3VuZC9z
+b2MvczNjMjR4eC9zbWRrNjR4eF93bTg1ODAuYyDCoCDCoCDCoCDCoCDCoCDCoHwgwqAgwqA0ICsr
+LS0KPiDCoDE1IGZpbGVzIGNoYW5nZWQsIDE2IGluc2VydGlvbnMoKyksIDE2IGRlbGV0aW9ucygt
+KQo+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zM2MyNHh4L2FxdWlsYV93bTg5OTQuYyBiL3Nv
+dW5kL3NvYy9zM2MyNHh4L2FxdWlsYV93bTg5OTQuYwo+IGluZGV4IDQ0YjA2ZTkuLjIzNWQxOTcg
+MTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL3MzYzI0eHgvYXF1aWxhX3dtODk5NC5jCj4gKysrIGIv
+c291bmQvc29jL3MzYzI0eHgvYXF1aWxhX3dtODk5NC5jCj4gQEAgLTIzMyw3ICsyMzMsNyBAQCBz
+dGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsgYXF1aWxhX2RhaVtdID0gewo+IMKgewo+IMKg
+IMKgIMKgIMKgLm5hbWUgPSAiV004OTk0IiwKPiDCoCDCoCDCoCDCoC5zdHJlYW1fbmFtZSA9ICJX
+TTg5OTQgSGlGaSIsCj4gLSDCoCDCoCDCoCAuY3B1X2RhaV9uYW1lID0gInMzYzY0eHgtaTJzLXY0
+LWRhaSIsCj4gKyDCoCDCoCDCoCAuY3B1X2RhaV9uYW1lID0gInMzYzY0eHgtaTJzLXY0IiwKClRo
+aXMgYXF1aWxhIGJvYXJkIGFsc28gdXNlIEkyU3Y0IGZyb20gJ3MzYzY0eHgtaTJzLXY0LmMnLCBz
+byBJIHRoaW5rCml0J2xsIG5vdCB3b3JrIGlmIGNwdV9kYWlfbmFtZSBpcyAnczNjNjR4eC1pMnMt
+djQnIG5vdAonczNjNjR4eC1paXMtdjQnLgpJbiB0aGlzIGNhc2UsIGRvIHdlIGhhdmUgdG8gcmVx
+dWVzdCB0byBjaGVjayB0aGlzIHRvIE1yLiBDaGFud29vIG9yCmp1c3QgbW9kaWZ5IHRoaXMgZmly
+c3Q/CgpBbmQgSSB0aGluayBvdGhlciBtYWNoaW5lIGNvZGVzIGFsc28gbmVlZCB0byByZXZlcnQg
+dG8gb3JpZ2luYWwsIGlmCnlvdSB3YW50IHRvIHdvcmsgbWFjaGluZSBjb2RlcyB3aXRoICdzM2My
+NHh4X2lpc19kcml2ZXInLAonczNjMjQxMl9paXNfZHJpdmVyJyBhbmQgJ3MzYzY0eHhfaWlzX2Ry
+aXZlcicuCgo+IMKgIMKgIMKgIMKgLmNvZGVjX2RhaV9uYW1lID0gIndtODk5NC1oaWZpIiwKPiDC
+oCDCoCDCoCDCoC5wbGF0Zm9ybV9uYW1lID0gInMzYzI0eHgtcGNtLWF1ZGlvIiwKPiDCoCDCoCDC
+oCDCoC5jb2RlY19uYW1lID0gIndtODk5NC1jb2RlYy4wLTB4MWEiLAoKKHNuaXApCgo+IGRpZmYg
+LS1naXQgYS9zb3VuZC9zb2MvczNjMjR4eC9zM2M2NHh4LWkycy12NC5jIGIvc291bmQvc29jL3Mz
+YzI0eHgvczNjNjR4eC1pMnMtdjQuYwo+IGluZGV4IDg4NTA0MGIuLjdjYWI0ZmMgMTAwNjQ0Cj4g
+LS0tIGEvc291bmQvc29jL3MzYzI0eHgvczNjNjR4eC1pMnMtdjQuYwo+ICsrKyBiL3NvdW5kL3Nv
+Yy9zM2MyNHh4L3MzYzY0eHgtaTJzLXY0LmMKPiBAQCAtMTk1LDcgKzE5NSw3IEBAIHN0YXRpYyBz
+dHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIHMzYzY0eHhfaTJzdjRfZHJpdmVyID0gewo+IMKgIMKgIMKg
+IMKgLnByb2JlIMKgPSBzM2M2NHh4X2kyc3Y0X2Rldl9wcm9iZSwKPiDCoCDCoCDCoCDCoC5yZW1v
+dmUgPSBzM2M2NHh4X2kyc3Y0X2Rldl9yZW1vdmUsCj4gwqAgwqAgwqAgwqAuZHJpdmVyID0gewo+
+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgLm5hbWUgPSAiczNjNjR4eC1paXMtdjQtZGFpIiwKPiAr
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIC5uYW1lID0gInMzYzY0eHgtaWlzLXY0IiwKPiDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoC5vd25lciA9IFRISVNfTU9EVUxFLAo+IMKgIMKgIMKgIMKgfSwKPiDC
+oH07Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zM2MyNHh4L3MzYzY0eHgtaTJzLmMgYi9zb3Vu
+ZC9zb2MvczNjMjR4eC9zM2M2NHh4LWkycy5jCj4gaW5kZXggMTYxMTg5Yi4uYTFkMGIyNSAxMDA2
+NDQKPiAtLS0gYS9zb3VuZC9zb2MvczNjMjR4eC9zM2M2NHh4LWkycy5jCj4gKysrIGIvc291bmQv
+c29jL3MzYzI0eHgvczNjNjR4eC1pMnMuYwo+IEBAIC0yMTgsNyArMjE4LDcgQEAgc3RhdGljIHN0
+cnVjdCBwbGF0Zm9ybV9kcml2ZXIgczNjNjR4eF9paXNfZHJpdmVyID0gewo+IMKgIMKgIMKgIMKg
+LnByb2JlIMKgPSBzM2M2NHh4X2lpc19kZXZfcHJvYmUsCj4gwqAgwqAgwqAgwqAucmVtb3ZlID0g
+czNjNjR4eF9paXNfZGV2X3JlbW92ZSwKPiDCoCDCoCDCoCDCoC5kcml2ZXIgPSB7Cj4gLSDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCAubmFtZSA9ICJzM2M2NHh4LWlpcy1kYWkiLAo+ICsgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgLm5hbWUgPSAiczNjNjR4eC1paXMiLAo+IMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgLm93bmVyID0gVEhJU19NT0RVTEUsCj4gwqAgwqAgwqAgwqB9LAo+IMKgfTsKCgpUaGFua3Ms
+CgpDbGF1ZGUKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
