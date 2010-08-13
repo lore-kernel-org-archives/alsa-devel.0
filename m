@@ -1,19 +1,16 @@
-From: John Simpson <john@swajime.com>
-Subject: n810 diablo and alsa ?
-Date: Fri, 13 Aug 2010 14:14:46 -0500
-Message-ID: <AANLkTimX+DVR0y5Qurii9ELxx3g0YGb0RvrBvgi4StB4@mail.gmail.com>
-Reply-To: john@swajime.com
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 0/7] WM8580 updates
+Date: Fri, 13 Aug 2010 20:33:05 +0100
+Message-ID: <20100813193305.GB3778@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1FFBB1038C8
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 851D51038C8
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Aug 2010 21:14:47 +0200 (CEST)
-Received: by eyd9 with SMTP id 9so493227eyd.38
-	for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2010 12:14:46 -0700 (PDT)
+	Fri, 13 Aug 2010 21:33:09 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,31 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, Seungwhan Youn <sw.youn@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Is there a how-to for installing the alsa-lib correctly on the n810?
-(hopefully from a fresh install of Maemo/Diablo?)
+This batch of patches should get the sample ratio selection for the
+WM8580 based on the configured sysclk correct, and also fixes a few
+random other things.
 
-I've been hitting brick walls in every direction. :-(
+The configuration of the ADC clocking (which is slaved to the DAC
+clocking) is still not ideal - userspace has to configure playback at
+the sample rate to be used prior to starting a record - but this needs
+some more thought at the framework level since this is essentially the
+same problem we have when multiple DAIs run over one physical interface
+using TDM.  Ideally we'd solve the more general problem.
 
-The alsa-lib in the diablo repository seems to be outdated:
+Mark Brown (7):
+      ASoC: Add a bit of resource unwinding in the S3C IISv4 driver
+      ASoC: Convert WM8580 hw_params to use snd_soc_update_bits()
+      ASoC: Remove unused rate selection bitmasks from WM8580
+      ASoC: Automatically calculate clock ratio for WM8580
+      ASoC: Implement BCLK rate selection for WM8580
+      ASoC: Fix inverted WM8580 capture mute control
+      ASoC: Automatically manage WM8580 DAC OSR
 
- [1|user@tablet|~/src]cat alsa-lib_1.0.14sa-2maemo2.dsc
- Format: 1.0
- Source: alsa-lib
- Version: 1.0.14sa-2maemo2
- Binary: lib32asound2-dev, lib64asound2, lib32asound2, libasound2-dev,
-libasound2, libasound2-doc, libasound2-dbg, lib64asound2-dev
- Maintainer: Debian ALSA Maintainers <pkg-alsa-devel@lists.alioth.debian.org>
- Architecture: any
- Standards-Version: 3.7.2
- Build-Depends: debhelper (>= 4.2.32), quilt (>= 0.40), autotools-dev,
-doxygen, libc6-dev-powerpc [ppc64], libc6-dev-i386 [amd64],
-libc6-dev-ppc64 [powerpc], libc6-dev-s390x [s390], libc6-dev-sparc64
-[sparc], lib32gcc1 [amd64 ppc64], libc6-dev (>= 2.5) [armel]
- Vcs-Browser: http://svn.debian.org/wsvn/pkg-alsa/trunk/alsa-lib/
- Uploaders: Jordi Mallach <jordi@debian.org>, Mikael Magnusson
-<mikma@users.sourceforge.net>, Elimar Riesebieter <riesebie@lxtec.de>,
-Marc-Andre Lureau <marc-andre.lureau@nokia.com>
- Vcs-Svn: svn://svn.debian.org/pkg-alsa/trunk/alsa-lib
+ sound/soc/codecs/wm8580.c           |  144 +++++++++++++++++++++++++---------
+ sound/soc/codecs/wm8580.h           |   14 ++--
+ sound/soc/s3c24xx/s3c64xx-i2s-v4.c  |   11 +++
+ sound/soc/s3c24xx/smdk64xx_wm8580.c |    9 +-
+ 4 files changed, 128 insertions(+), 50 deletions(-)
