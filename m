@@ -1,25 +1,22 @@
-From: Lex F <archguest@gmail.com>
-Subject: Re: intel 8x0 ALSA driver in virtualbox - choppy sound
-Date: Fri, 13 Aug 2010 21:25:00 +0100
-Message-ID: <AANLkTim1XGs+XbkZ9K+6cDEx02Tp2TpBoWyE0p9MGr2J@mail.gmail.com>
-References: <AANLkTimduCOUeqdd=M6q7Qf6m55Q_8yn9EXQfROQJ4Gh@mail.gmail.com>
-	<AANLkTi=DVX6iSTXzT3WMqYC_RViqbOWe7gFn+h6Kow8u@mail.gmail.com>
-	<alpine.LNX.2.00.1008131718300.10278@eeebox2.perex-int.cz>
-	<s5hfwyiv6nl.wl%tiwai@suse.de>
-	<AANLkTimXcy26EkE4Og+rLrDV0+S3VqfkHjiZirgeX7w+@mail.gmail.com>
-	<AANLkTi=CZUSggYNua7NfhyowCP++u-LU45cB-A47UtSy@mail.gmail.com>
-	<AANLkTimMopMesUzACpfNR6r4f8sLS4P2PpP1-qegcxhL@mail.gmail.com>
+From: John Simpson <john@swajime.com>
+Subject: Re: n810 diablo and alsa ?
+Date: Fri, 13 Aug 2010 15:44:45 -0500
+Message-ID: <AANLkTineSrea+BYh6-swPGmztrbK1WKzX6tfUf9gFMAJ@mail.gmail.com>
+References: <AANLkTimX+DVR0y5Qurii9ELxx3g0YGb0RvrBvgi4StB4@mail.gmail.com>
+	<20100813193451.GC3778@sirena.org.uk>
+Reply-To: john@swajime.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 81F191038C8
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0C2EC1038C8
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Aug 2010 22:25:01 +0200 (CEST)
-Received: by wwi17 with SMTP id 17so1166745wwi.20
-	for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2010 13:25:01 -0700 (PDT)
-In-Reply-To: <AANLkTimMopMesUzACpfNR6r4f8sLS4P2PpP1-qegcxhL@mail.gmail.com>
+	Fri, 13 Aug 2010 22:44:46 +0200 (CEST)
+Received: by eyd9 with SMTP id 9so540396eyd.38
+	for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2010 13:44:46 -0700 (PDT)
+In-Reply-To: <20100813193451.GC3778@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,24 +26,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Chen <seven.steps@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 13 August 2010 18:07, Daniel Chen <seven.steps@gmail.com> wrote:
-> On Fri, Aug 13, 2010 at 12:38 PM, Lex F <archguest@gmail.com> wrote:
->> I believe it's direct ALSA, I have choppy output even with
->> aplay /usr/share/sounds/alsa/*.wav
->
-> Make sure you aren't being routed through pulse; i.e., try:
-> aplay -Dplug:front /usr/share/sounds/alsa/*.wav
->
-
-I am perfectly sure it is not being routed through pulse as I do not
-have pulse installed. I run arch linux and I know pretty much every
-package on my system :)
-
-For the sake of experiment, I run the command as you suggested and it
-did not make any difference.
-
-I have just booted the kernel with sound debug on, will see what it tells.
+SSB0cmllZCB0aGF0IDotKApJIGFza2VkIGZvciBoZWxwIGhlcmUgLT4KaHR0cHM6Ly9nYXJhZ2Uu
+bWFlbW8ub3JnL3BpcGVybWFpbC9kc3AtYWxzYS11c2VyLzIwMTAtSnVseS8wMDAwMDIuaHRtbAoK
+SSBmaWxlZCBhIGJ1ZyByZXBvcnQgaGVyZSAtPgpodHRwczovL2dhcmFnZS5tYWVtby5vcmcvdHJh
+Y2tlci8/ZnVuYz1kZXRhaWwmYWlkPTYwOTMmZ3JvdXBfaWQ9ODIwJmF0aWQ9MzA2OAoKSSBmaWxl
+ZCBhIGJ1ZyByZXBvcnQgaGVyZSAtPiBodHRwczovL2J1Z3MubWFlbW8ub3JnL3Nob3dfYnVnLmNn
+aT9pZD0xMTAxNQpJdCB3YXMgbWFya2VkIGFzICJXT05URklYIiBmb3IgTWFlbW8uCgpJIGZpbGVk
+IGl0IGFnYWluIGhlcmUgZm9yIE1lciAtPiBodHRwczovL2J1Z3MubWFlbW8ub3JnL3Nob3dfYnVn
+LmNnaT9pZD0xMTAzMwoKSSBnb3QgbW9yZSBoZWxwIGhlcmUgdGhhbiBhbnl3aGVyZSBlbHNlIC0+
+Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAx
+MC1KdWx5LzAyOTY3Ni5odG1sCgpIZXJlIGFsc28gLT4gaHR0cDovL3RhbGsubWFlbW8ub3JnL3No
+b3d0aHJlYWQucGhwP3A9NzcwODk3I3Bvc3Q3NzA4OTcKCkxvb2tpbmcgaGVyZSBqdXN0IG1hZGUg
+bWUgYW5ncnkgOi0oIC0+Cmh0dHA6Ly9saXN0cy5hbGlvdGguZGViaWFuLm9yZy9waXBlcm1haWwv
+cGtnLWFsc2EtZGV2ZWwvMjAxMC1BdWd1c3QvMDA4MzY4Lmh0bWwKCkV2ZW4gdGhvdWdoIGhlIG1h
+ZGUgbWUgYW5ncnksIEkgdHJpZWQgYWdhaW4gaGVyZSAtPgpodHRwOi8vbGlzdHMuYWxpb3RoLmRl
+Ymlhbi5vcmcvcGlwZXJtYWlsL3BrZy1tYWVtby1tYWludGFpbmVycy8yMDEwLUF1Z3VzdC8wMDA5
+MDQuaHRtbAoKSSBob25lc3RseSBkbyBub3Qga25vdyB3aGVyZSB0byBnbyBuZXh0ID8/PwoKT24g
+OC8xMy8xMCwgTWFyayBCcm93biA8YnJvb25pZUBvcGVuc291cmNlLndvbGZzb25taWNyby5jb20+
+IHdyb3RlOgo+IE9uIEZyaSwgQXVnIDEzLCAyMDEwIGF0IDAyOjE0OjQ2UE0gLTA1MDAsIEpvaG4g
+U2ltcHNvbiB3cm90ZToKPj4gSXMgdGhlcmUgYSBob3ctdG8gZm9yIGluc3RhbGxpbmcgdGhlIGFs
+c2EtbGliIGNvcnJlY3RseSBvbiB0aGUgbjgxMD8KPj4gKGhvcGVmdWxseSBmcm9tIGEgZnJlc2gg
+aW5zdGFsbCBvZiBNYWVtby9EaWFibG8/KQo+Cj4gVGhlIG1vc3Qgb2J2aW91cyBwbGFjZSB0byBh
+c2sgZm9yIHN1cHBvcnQgb24gdXNpbmcgTWFlbW8gd291bGQgYmUKPiB3aGF0ZXZlciBwbGFjZSBw
+ZW9wbGUgbm9ybWFsbHkgZGlzY3VzcyBNYWVtbyAtIHlvdXIgcHJvYmxlbXMgaGVyZSBsb29rCj4g
+dG8gYmUgZW50aXJlbHkgcmVsYXRlZCB0byB0aGUgTWFlbW8gZGlzdHJpYnV0aW9uIHJhdGhlciB0
+aGFuIHVwc3RyZWFtCj4gQUxTQSBwcm9ibGVtcy4KPgo+PiBUaGUgYWxzYS1saWIgaW4gdGhlIGRp
+YWJsbyByZXBvc2l0b3J5IHNlZW1zIHRvIGJlIG91dGRhdGVkOgo+Cj4gUHJlc3VtYmFibHkgaXQn
+cyBhIHJlYXNvbmFibGUgdmVyc2lvbiB0byB1c2Ugd2l0aCB3aGF0dmVyIGtlcm5lbCBpcwo+IHNo
+aXBwaW5nIG9uIHRob3NlIGRldmljZXMsIHRob3VnaD8KPgoKCi0tIApKb2huIFdlc2xleSBTaW1w
+c29uClN3YUppbWUncyBDb3Zl4oSgCnd3dy5zd2FqaW1lLmNvbQpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
