@@ -1,22 +1,24 @@
-From: John Simpson <john@swajime.com>
-Subject: Re: n810 diablo and alsa ?
-Date: Fri, 13 Aug 2010 15:44:45 -0500
-Message-ID: <AANLkTineSrea+BYh6-swPGmztrbK1WKzX6tfUf9gFMAJ@mail.gmail.com>
-References: <AANLkTimX+DVR0y5Qurii9ELxx3g0YGb0RvrBvgi4StB4@mail.gmail.com>
-	<20100813193451.GC3778@sirena.org.uk>
-Reply-To: john@swajime.com
+From: Lex F <archguest@gmail.com>
+Subject: Re: intel 8x0 ALSA driver in virtualbox - choppy sound
+Date: Fri, 13 Aug 2010 21:54:24 +0100
+Message-ID: <AANLkTi=vmn11DL+nifkw4f4EYG4YWA1+mLyUbkcmWK1W@mail.gmail.com>
+References: <AANLkTimduCOUeqdd=M6q7Qf6m55Q_8yn9EXQfROQJ4Gh@mail.gmail.com>
+	<AANLkTi=DVX6iSTXzT3WMqYC_RViqbOWe7gFn+h6Kow8u@mail.gmail.com>
+	<alpine.LNX.2.00.1008131718300.10278@eeebox2.perex-int.cz>
+	<s5hfwyiv6nl.wl%tiwai@suse.de>
+	<AANLkTimXcy26EkE4Og+rLrDV0+S3VqfkHjiZirgeX7w+@mail.gmail.com>
+	<s5hsk2ixt14.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0C2EC1038C8
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id EE9431038C8
 	for <alsa-devel@alsa-project.org>;
-	Fri, 13 Aug 2010 22:44:46 +0200 (CEST)
-Received: by eyd9 with SMTP id 9so540396eyd.38
-	for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2010 13:44:46 -0700 (PDT)
-In-Reply-To: <20100813193451.GC3778@sirena.org.uk>
+	Fri, 13 Aug 2010 22:54:24 +0200 (CEST)
+Received: by wwi17 with SMTP id 17so1195977wwi.20
+	for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2010 13:54:24 -0700 (PDT)
+In-Reply-To: <s5hsk2ixt14.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,38 +28,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SSB0cmllZCB0aGF0IDotKApJIGFza2VkIGZvciBoZWxwIGhlcmUgLT4KaHR0cHM6Ly9nYXJhZ2Uu
-bWFlbW8ub3JnL3BpcGVybWFpbC9kc3AtYWxzYS11c2VyLzIwMTAtSnVseS8wMDAwMDIuaHRtbAoK
-SSBmaWxlZCBhIGJ1ZyByZXBvcnQgaGVyZSAtPgpodHRwczovL2dhcmFnZS5tYWVtby5vcmcvdHJh
-Y2tlci8/ZnVuYz1kZXRhaWwmYWlkPTYwOTMmZ3JvdXBfaWQ9ODIwJmF0aWQ9MzA2OAoKSSBmaWxl
-ZCBhIGJ1ZyByZXBvcnQgaGVyZSAtPiBodHRwczovL2J1Z3MubWFlbW8ub3JnL3Nob3dfYnVnLmNn
-aT9pZD0xMTAxNQpJdCB3YXMgbWFya2VkIGFzICJXT05URklYIiBmb3IgTWFlbW8uCgpJIGZpbGVk
-IGl0IGFnYWluIGhlcmUgZm9yIE1lciAtPiBodHRwczovL2J1Z3MubWFlbW8ub3JnL3Nob3dfYnVn
-LmNnaT9pZD0xMTAzMwoKSSBnb3QgbW9yZSBoZWxwIGhlcmUgdGhhbiBhbnl3aGVyZSBlbHNlIC0+
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAx
-MC1KdWx5LzAyOTY3Ni5odG1sCgpIZXJlIGFsc28gLT4gaHR0cDovL3RhbGsubWFlbW8ub3JnL3No
-b3d0aHJlYWQucGhwP3A9NzcwODk3I3Bvc3Q3NzA4OTcKCkxvb2tpbmcgaGVyZSBqdXN0IG1hZGUg
-bWUgYW5ncnkgOi0oIC0+Cmh0dHA6Ly9saXN0cy5hbGlvdGguZGViaWFuLm9yZy9waXBlcm1haWwv
-cGtnLWFsc2EtZGV2ZWwvMjAxMC1BdWd1c3QvMDA4MzY4Lmh0bWwKCkV2ZW4gdGhvdWdoIGhlIG1h
-ZGUgbWUgYW5ncnksIEkgdHJpZWQgYWdhaW4gaGVyZSAtPgpodHRwOi8vbGlzdHMuYWxpb3RoLmRl
-Ymlhbi5vcmcvcGlwZXJtYWlsL3BrZy1tYWVtby1tYWludGFpbmVycy8yMDEwLUF1Z3VzdC8wMDA5
-MDQuaHRtbAoKSSBob25lc3RseSBkbyBub3Qga25vdyB3aGVyZSB0byBnbyBuZXh0ID8/PwoKT24g
-OC8xMy8xMCwgTWFyayBCcm93biA8YnJvb25pZUBvcGVuc291cmNlLndvbGZzb25taWNyby5jb20+
-IHdyb3RlOgo+IE9uIEZyaSwgQXVnIDEzLCAyMDEwIGF0IDAyOjE0OjQ2UE0gLTA1MDAsIEpvaG4g
-U2ltcHNvbiB3cm90ZToKPj4gSXMgdGhlcmUgYSBob3ctdG8gZm9yIGluc3RhbGxpbmcgdGhlIGFs
-c2EtbGliIGNvcnJlY3RseSBvbiB0aGUgbjgxMD8KPj4gKGhvcGVmdWxseSBmcm9tIGEgZnJlc2gg
-aW5zdGFsbCBvZiBNYWVtby9EaWFibG8/KQo+Cj4gVGhlIG1vc3Qgb2J2aW91cyBwbGFjZSB0byBh
-c2sgZm9yIHN1cHBvcnQgb24gdXNpbmcgTWFlbW8gd291bGQgYmUKPiB3aGF0ZXZlciBwbGFjZSBw
-ZW9wbGUgbm9ybWFsbHkgZGlzY3VzcyBNYWVtbyAtIHlvdXIgcHJvYmxlbXMgaGVyZSBsb29rCj4g
-dG8gYmUgZW50aXJlbHkgcmVsYXRlZCB0byB0aGUgTWFlbW8gZGlzdHJpYnV0aW9uIHJhdGhlciB0
-aGFuIHVwc3RyZWFtCj4gQUxTQSBwcm9ibGVtcy4KPgo+PiBUaGUgYWxzYS1saWIgaW4gdGhlIGRp
-YWJsbyByZXBvc2l0b3J5IHNlZW1zIHRvIGJlIG91dGRhdGVkOgo+Cj4gUHJlc3VtYmFibHkgaXQn
-cyBhIHJlYXNvbmFibGUgdmVyc2lvbiB0byB1c2Ugd2l0aCB3aGF0dmVyIGtlcm5lbCBpcwo+IHNo
-aXBwaW5nIG9uIHRob3NlIGRldmljZXMsIHRob3VnaD8KPgoKCi0tIApKb2huIFdlc2xleSBTaW1w
-c29uClN3YUppbWUncyBDb3Zl4oSgCnd3dy5zd2FqaW1lLmNvbQpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+T24gMTMgQXVndXN0IDIwMTAgMTk6MzIsIFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4gd3Jv
+dGU6Cj4gQXQgRnJpLCAxMyBBdWcgMjAxMCAxNzozNzozMyArMDEwMCwKPiBMZXggRiB3cm90ZToK
+Pj4KPj4gSGkKPj4KPj4gVGhhbmtzIGZvciB5b3VyIHJlcGx5LiBJIHRyaWVkIHRvIGFuc3dlciB5
+b3VyIHF1ZXN0aW9ucyBiZWxvdy4KPj4KPj4gT24gMTMgQXVndXN0IDIwMTAgMTc6MDYsIFRha2Fz
+aGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4gd3JvdGU6Cj4+ID4gV2UgaGF2ZSBoYWQgbWFueSBwcm9i
+bGVtcyB3aXRoIFZNd2FyZSwgdG9vIDopCj4+ID4gV2hpY2ggc291bmQgYmFja2VuZCBhcmUgeW91
+IHVzaW5nPyDCoERpcmVjdCBBTFNBIC8gZG1peCBvciBQQT8KPj4KPj4gSSBiZWxpZXZlIGl0J3Mg
+ZGlyZWN0IEFMU0EsIEkgaGF2ZSBjaG9wcHkgb3V0cHV0IGV2ZW4gd2l0aAo+PiBhcGxheSAvdXNy
+L3NoYXJlL3NvdW5kcy9hbHNhLyoud2F2Cj4KPiBJdCBkb2Vzbid0IG1lYW4gYWx3YXlzIHRoYXQg
+eW91IHVzZSBkaXJlY3QgQUxTQS4gwqBUcnkgdG8gcGFzcyAtRHBsdWdodwo+IG9wdGlvbiB0byBh
+cGxheS4KCkl0IHRyaWVkIHRoYXQgYnV0IGl0IGRpZCBub3QgbWFrZSBhbnkgZGlmZmVyZW5jZS4g
+QXMgSSBhbHJlYWR5IHBvaW50ZWQKb3V0IHRvIERhbmllbCwgSSBkbyBub3QgaGF2ZSBwdWxzZSBh
+dWRpbyBpbnN0YWxsZWQgb3IgYW55IG90aGVyIGF1ZGlvCnNlcnZlciBmb3IgdGhhdCBtYXR0ZXIu
+IEkgcnVuIGFyY2ggYW5kIGtub3cgbXkgaW5zdGFsbGVkIHBhY2thZ2VzCnF1aXRlIHdlbGwuCgo+
+Cj4+IEkgYW0gY29tcGlsaW5nIGEga2VybmVsIHdpdGggdGhlIGZvbGxvd2luZyBvcHRpb25zIGVu
+YWJsZWQ6Cj4+IENPTkZJR19TTkRfUENNX1hSVU5fREVCVUcsIENPTkZJR19TTkRfVkVSQk9TRV9Q
+Uk9DRlMsCj4+IENPTkZJR19TTkRfREVCVUcKPj4KPj4gV291bGQgYW55IG9mIHRoZXNlIGhlbHAg
+dG8gZGV0ZXJtaW5lIHRoZSBjYXVzZSBhbmQgc3VnZ2VzdCBhIGZpeD8KPgo+IEZpeCBWaXJ0dWFs
+Qm94IDopCj4KPiBPciB0cnkgdG8gc2V0IHhydW5fZGVidWcgYW5kIGNoZWNrIGtlcm5lbCBsb2cg
+YXMgSmFyb3NsYXYgd3JvdGUuCj4KCkkndmUgdHJpZWQgc2V0dGluZyB4cnVuX2RlYnVnIHRvIHZh
+cmlvdXMgdmFsdWVzIGFzIHBlciBYUlVOIERFQlVHIHBhZ2UKb24gQWxzYSBQcm9qZWN0IFdpa2kg
+eWV0IGFsbCBJIHNlZSBpbiBteSBrZXJuZWwubG9nIGlzIGxvYWRzIG9mCmh3cHRyX3VwZGF0ZXMg
+YW5kIHNvbWV0aW1lcyBwZXJpb2RfdXBkYXRlLiBJIGFtIGFmcmFpZCBpdCBkb2VzIG5vdAptZWFu
+IGFueXRoaW5nIHRvIG1lLiBJIGNlcnRhaW5seSBkbyBub3Qgc2VlIGFueSBvYnZpb3VzIGVycm9y
+cy4KCkNhbiBzb21lYm9keSBwbGVhc2UgYWR2aXNlIHdoYXQgSSBzaG91bGQgYmUgbG9va2luZyBm
+b3I/IEkgY2FuIHBvc3QKdGhlIG91dHB1dCBoZXJlLgoKVGhhbmtzIQoKTGV4Cl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
