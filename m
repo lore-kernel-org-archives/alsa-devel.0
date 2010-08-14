@@ -1,20 +1,22 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/2] ASoC: Set up debugfs only once per
- CODEC
-Date: Sat, 14 Aug 2010 11:31:34 +0100
-Message-ID: <1281781894.3394.100.camel@odin>
-References: <1281624632-17992-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC: Make ams-delta/cx20442 pair back working for
+ multi-component
+Date: Sat, 14 Aug 2010 11:35:35 +0100
+Message-ID: <1281782135.3394.106.camel@odin>
+References: <201008110129.34662.jkrzyszt@tis.icnet.pl>
+	<1281534151.3080.111.camel@odin>
+	<201008132110.34697.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6A87E24479
+	by alsa0.perex.cz (Postfix) with ESMTP id 81F9424479
 	for <alsa-devel@alsa-project.org>;
-	Sat, 14 Aug 2010 12:31:38 +0200 (CEST)
-Received: by wwi17 with SMTP id 17so1796318wwi.20
-	for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2010 03:31:37 -0700 (PDT)
-In-Reply-To: <1281624632-17992-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Sat, 14 Aug 2010 12:35:38 +0200 (CEST)
+Received: by wwi17 with SMTP id 17so1798942wwi.20
+	for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2010 03:35:38 -0700 (PDT)
+In-Reply-To: <201008132110.34697.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,53 +26,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-08-12 at 15:50 +0100, Mark Brown wrote:
-> Since the debugfs directory is current per CODEC we should only init
-> it when the CODEC is initialised, otherwise we end up with errors
-> being generated when an attempt is made to add duplicate debugfs
-> entries.
-> 
-> Since most of this stuff is actually for the card we should refactor
-> but this can come later.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/soc-core.c |    5 +++--
->  1 files changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index a004876..ac0fa22 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -1323,6 +1323,9 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num)
->  				return ret;
->  			}
->  		}
-> +
-> +		soc_init_codec_debugfs(codec);
-> +
->  		/* mark codec as probed and add to card codec list */
->  		codec->probed = 1;
->  		list_add(&codec->card_list, &card->codec_dev_list);
-> @@ -1400,8 +1403,6 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num)
->  	if (ret < 0)
->  		printk(KERN_WARNING "asoc: failed to add codec sysfs files\n");
->  
-> -	soc_init_codec_debugfs(codec);
-> -
->  	/* create the pcm */
->  	ret = soc_new_pcm(rtd, num);
->  	if (ret < 0) {
-
-
-Both
-
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+T24gRnJpLCAyMDEwLTA4LTEzIGF0IDIxOjEwICswMjAwLCBKYW51c3ogS3J6eXN6dG9maWsgd3Jv
+dGU6Cj4gV2VkbmVzZGF5IDExIEF1Z3VzdCAyMDEwIDE1OjQyOjMxIExpYW0gR2lyZHdvb2QgbmFw
+aXNhxYIoYSk6Cj4gPiBPbiBXZWQsIDIwMTAtMDgtMTEgYXQgMDE6MjkgKzAyMDAsIEphbnVzeiBL
+cnp5c3p0b2ZpayB3cm90ZToKPiA+ID4gMS4KPiA+ID4gQWZ0ZXIgYSBzdGF0aWMgY29kZWMgcG9p
+bnRlciByZW1vdmFsIGZyb20gdGhlIHNvdW5kL3NvYy9jb2RlY3MvY3gyMDQ0Mi5jCj4gPiA+IGNv
+ZGUsIGJvdGggY29kZWMgYW5kIGNhcmQgc3BlY2lmaWMgdHR5IGxpbmUgZGlzY2lwbGluZSBmdW5j
+dGlvbnMgbG9zdAo+ID4gPiB0aGVpciBhY2Nlc3MgdG8gdGhlIGNvZGVjIHN0cnVjdHVyZSBkYXRh
+LiBBcnJhbmdlIGZvciBwYXNzaW5nIHRoZSBwb2ludGVyCj4gPiA+IGJhY2sgdG8gdGhlIGNvZGVj
+IHR0eSBsZGlzYyBiaXRzIGZyb20gdGhlIGNhcmQgaW5pdGlhbGl6YXRpb24gY29kZS4KPiA+ID4K
+PiA+ID4gMi4KPiA+ID4gVXBkYXRlIGluY29zaXN0ZW50IGNvZGVjIGRldmljZSBuYW1pbmcgaW4g
+dGhlIGNhcmQgY29kZS4KPiA+ID4KPiA+ID4gMy4KPiA+ID4gU2luY2UgYSBuZXcgZWxlbWVudCwg
+Y29udHJvbF9kYXRhLCBoYXMgYmVlbiBhZGRlZCB0byB0aGUgY3gyMDQ0Ml9wcml2Cj4gPiA+IHN0
+cnVjdHVyZSwgaXQgbG9va3MgbGlrZSB0aGUgb2xkIHNuZF9zb2NfY29kZWMtPmNvbnRyb2xfZGF0
+YSBtYXkgYmUKPiA+ID4gc2NoZWR1bGVkIGZvciByZW1vdmFsLiBUbyBhdm9pZCBwcm9ibGVtcyBp
+biB0aGUgbmVhciBmdXR1cmUsIHVzZSB0aGUKPiA+ID4gY3gyMDQ0Ml9wcml2LT5jb250cm9sX2Rh
+dGEgaW5zdGVhZCBvZiB0aGUgc25kX3NvY19jb2RlYy0+Y29udHJvbF9kYXRhCj4gPiA+IHRocm91
+Z2hvdXQgdGhlIGN4MjA0NDIgY29kZS4gSW4gdGhlIGFtcy1kZWx0YSBjYXJkIGNvZGUsIGNoZWNr
+IGZvciB0aGUKPiA+ID4gc25kX3NvY19jb2RlYy0+aHdfd3JpdGUgbm90IE5VTEwgaW5zdGVhZCBv
+ZiB0aGUKPiA+ID4gc25kX3NvY19jb2RlYy0+Y29udHJvbF9kYXRhLgo+ID4gPgo+ID4gPiBDcmVh
+dGVkIGFuZCB0ZXN0ZWQgb24gQW1zdHJhZCBEZWx0YSBhZ2FpbnN0Cj4gPiA+IGdpdDovL2dpdC5r
+ZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9scmcvYXNvYy0yLjYuZ2l0LAo+ID4g
+PiBjb21taXQgYTIxMmRkNWIyZTFkYTA0NWNiZjQyM2M3MGM4N2Y0ODI2NTUzMWRlNC4KPiA+ID4K
+PiA+ID4gU2lnbmVkLW9mZi1ieTogSmFudXN6IEtyenlzenRvZmlrIDxqa3J6eXN6dEB0aXMuaWNu
+ZXQucGw+Cj4gPgo+ID4gQXBwbGllZC4KPiAKPiBUaGFua3MsIGFuZCBzb3JyeSBmb3Igbm90IGNv
+bW1lbnRpbmcgb24gdGltZSB5b3VyIHJlbGF0ZWQgUkZDIHBvc3RlZCBpbiBKdW5lLiAKPiBJIHdh
+cyBub3Qgc3Vic2NyaWJlZCB0byB0aGUgbGlzdC4KPiAKPiBCVFcsIHdoYXQgd2FzIHRoZSByYXRp
+b25hbGUgZm9yIHJlbmFtaW5nIHRoZSBjb2RlYyBkYWkgdG8gImN4MjA0MjItaGlmaSI/IAo+IFdo
+aWxlIHRoaXMgZG9lc24ndCBicmVhayBhbnl0aGluZyBvYnZpb3VzbHksIEkgdGhpbmsgdGhlIGhp
+Zmkgc3VmZml4IGlzIAo+IG1pc3NsZWFkaW5nIGZvciBhIGNvZGVjIHdpdGggYSBzYW1wbGluZyBy
+YXRlIG9mIDgga0h6IDspLgoKWW91IGFyZSByaWdodCwgcGVyaGFwcyB0aGlzIHNob3VsZCBiZSBs
+YWJlbGxlZCAiY3gyMDQyMi12b2ljZSIuIENhcmUgdG8Kc2VuZCBhIHBhdGNoID8KClRoYW5rcwoK
+TGlhbQotLSAKRnJlZWxhbmNlIERldmVsb3BlciwgU2xpbUxvZ2ljIEx0ZApBU29DIGFuZCBWb2x0
+YWdlIFJlZ3VsYXRvciBNYWludGFpbmVyLgpodHRwOi8vd3d3LnNsaW1sb2dpYy5jby51awoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
+YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
