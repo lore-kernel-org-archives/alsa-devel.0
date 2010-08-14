@@ -1,20 +1,15 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [patch v2] sound/usb/format: silence uninitialized
- variable warnings
-Date: Sat, 14 Aug 2010 19:38:24 +0200
-Message-ID: <20100814173824.GX17833@buzzloop.caiaq.de>
-References: <20100814085846.GV645@bicker> <s5hbp95xoem.wl%tiwai@suse.de>
-	<20100814172953.GA645@bicker>
+From: Denis 'GNUtoo' Carikli <GNUtoo@no-log.org>
+Subject: possible fix for buffer underruns on msm7k alsa driver
+Date: Sat, 14 Aug 2010 20:29:44 +0200
+Message-ID: <1281810584.15120.13.camel@gnutoo-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id C2E9A1037F2
+Received: from smtp207.alice.it (smtp207.alice.it [82.57.200.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3212E2452A
 	for <alsa-devel@alsa-project.org>;
-	Sat, 14 Aug 2010 19:38:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100814172953.GA645@bicker>
+	Sat, 14 Aug 2010 20:29:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,41 +19,138 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <error27@gmail.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, kernel-janitors@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBBdWcgMTQsIDIwMTAgYXQgMDc6Mjk6NTNQTSArMDIwMCwgRGFuIENhcnBlbnRlciB3
-cm90ZToKPiBHY2MgY29tcGxhaW5zIHRoYXQgcmV0IG1pZ2h0IGJlIHVzZWQgdW5pbml0aWFsaXpl
-ZDoKPiAKPiBzb3VuZC91c2IvZm9ybWF0LmM6IEluIGZ1bmN0aW9uIOKAmHNuZF91c2JfcGFyc2Vf
-YXVkaW9fZm9ybWF04oCZOgo+IHNvdW5kL3VzYi9mb3JtYXQuYzozNTQ6IHdhcm5pbmc6IOKAmHJl
-dOKAmSBtYXkgYmUgdXNlZCB1bmluaXRpYWxpemVkIGluIHRoaXMgZnVuY3Rpb24KPiBzb3VuZC91
-c2IvZm9ybWF0LmM6MzU0OiBub3RlOiDigJhyZXTigJkgd2FzIGRlY2xhcmVkIGhlcmUKPiBzb3Vu
-ZC91c2IvZm9ybWF0LmM6NDE0OiB3YXJuaW5nOiDigJhyZXTigJkgbWF5IGJlIHVzZWQgdW5pbml0
-aWFsaXplZCBpbiB0aGlzIGZ1bmN0aW9uCj4gc291bmQvdXNiL2Zvcm1hdC5jOjQxNDogbm90ZTog
-4oCYcmV04oCZIHdhcyBkZWNsYXJlZCBoZXJlCj4gCj4gSSBzdXBwb3NlIGl0IGNvdWxkIGJlIHVu
-aW5pdGlhbGl6ZWQgaWYgdGhlcmUgaXMgZXZlciBhIFVBQ19WRVJTSU9OXzMKPiByZWxlYXNlZC4g
-QW55d2F5IHRoaXMgcGF0Y2ggaXMgd29ydGh3aGlsZSBpZiBvbmx5IHRvIHNpbGVuY2UgdGhlIGdj
-Ywo+IHdhcm5pbmcuCj4gCj4gU2lnbmVkLW9mZi1ieTogRGFuIENhcnBlbnRlciA8ZXJyb3IyN0Bn
-bWFpbC5jb20+CgpZZXMsIHN1Y2ggYSBjaGVjayBjYW4ndCBoYXJtLiBZb3UgY2FuIGhhdmUgbXkg
-CgogIEFja2VkLWJ5OiBEYW5pZWwgTWFjayA8ZGFuaWVsQGNhaWFxLmRlPgoKaWYgeW91IHdhbnQg
-OikKCgpUaGFua3MsCkRhbmllbAoKPiAtLS0KPiBWMjogVG90YWxseSBkaWZmZXJlbnQuICBBZGRl
-ZCBwcmludGsoKXMKPiAKPiBkaWZmIC0tZ2l0IGEvc291bmQvdXNiL2Zvcm1hdC5jIGIvc291bmQv
-dXNiL2Zvcm1hdC5jCj4gaW5kZXggNDM4N2Y1NC4uM2ExMzc1NCAxMDA2NDQKPiAtLS0gYS9zb3Vu
-ZC91c2IvZm9ybWF0LmMKPiArKysgYi9zb3VuZC91c2IvZm9ybWF0LmMKPiBAQCAtMzkyLDYgKzM5
-MiwxMCBAQCBzdGF0aWMgaW50IHBhcnNlX2F1ZGlvX2Zvcm1hdF9pKHN0cnVjdCBzbmRfdXNiX2F1
-ZGlvICpjaGlwLAo+ICAJCS8qIGZwLT5jaGFubmVscyBpcyBhbHJlYWR5IHNldCBpbiB0aGlzIGNh
-c2UgKi8KPiAgCQlyZXQgPSBwYXJzZV9hdWRpb19mb3JtYXRfcmF0ZXNfdjIoY2hpcCwgZnApOwo+
-ICAJCWJyZWFrOwo+ICsJZGVmYXVsdDoKPiArCQlzbmRfcHJpbnRrKEtFUk5fRVJSICIlZDoldTol
-ZCA6IGludmFsaWQgcHJvdG9jb2wgdmVyc2lvbiAlZFxuIiwKPiArCQkJICAgY2hpcC0+ZGV2LT5k
-ZXZudW0sIGZwLT5pZmFjZSwgZnAtPmFsdHNldHRpbmcsIHByb3RvY29sKTsKPiArCQlyZXR1cm4g
-LUVJTlZBTDsKPiAgCX0KPiAgCj4gIAlpZiAoZnAtPmNoYW5uZWxzIDwgMSkgewo+IEBAIC00NTIs
-NiArNDU2LDEwIEBAIHN0YXRpYyBpbnQgcGFyc2VfYXVkaW9fZm9ybWF0X2lpKHN0cnVjdCBzbmRf
-dXNiX2F1ZGlvICpjaGlwLAo+ICAJCXJldCA9IHBhcnNlX2F1ZGlvX2Zvcm1hdF9yYXRlc192Mihj
-aGlwLCBmcCk7Cj4gIAkJYnJlYWs7Cj4gIAl9Cj4gKwlkZWZhdWx0Ogo+ICsJCXNuZF9wcmludGso
-S0VSTl9FUlIgIiVkOiV1OiVkIDogaW52YWxpZCBwcm90b2NvbCB2ZXJzaW9uICVkXG4iLAo+ICsJ
-CQkgICBjaGlwLT5kZXYtPmRldm51bSwgZnAtPmlmYWNlLCBmcC0+YWx0c2V0dGluZywgcHJvdG9j
-b2wpOwo+ICsJCXJldHVybiAtRUlOVkFMOwo+ICAJfQo+ICAKPiAgCXJldHVybiByZXQ7Cl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+hi, I'm still rebasing the codeaurora alsa driver for msm soc like the
+htcdream on the android msm 2.6.32 kernel.
+I looked the commits for the other socs like msm7kv2 and
+qsd8k(snapdragon)
+
+and I found that commit:
+commit ac97ef246a754b9a2b4236ca08c6ade389dc206f
+Author: Pradeep Jilagam <pjilagam@qualcomm.com>
+Date:   Wed Apr 7 17:38:20 2010 +0530
+
+    alsa: 8k: Limit period size for sample rates greater than 8KHz
+    
+    The DSP interrupts are non-periodic. ALSA expects periodic
+    acknowledgement for the buffers sent. Hence, the alsa driver uses
+    timer as alternate interrupt source. The min resolution is 10ms
+    which results in distorted audio for some sample rates. Hence
+    restricting the minimum period size for sample rates greater
+    than 8KHz to 512 frames.
+    
+    Change-Id: Ic8c4180fbee7242fa3139230ddcf6a9f98e4c7ab
+    CRs-fixed: 231784
+    Signed-off-by: Pradeep Jilagam <pjilagam@qualcomm.com>
+
+I tried a big buck bunny at 44100 Hz: lots(too much) of buffer underrun
+=> too bad to be usable.
+Then I tried it with 8000 Hz and found nearly no buffer underruns =>
+usable.
+
+So I've great expectations for that fix.
+
+here's the source code involved in the fix:
+
+static int hw_rule_periodsize_by_rate(struct snd_pcm_hw_params *params,
+struct snd_pcm_hw_rule *rule)
+{
+struct snd_interval *ps = hw_param_interval(params,
+SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
+struct snd_interval *r = hw_param_interval(params,
+SNDRV_PCM_HW_PARAM_RATE);
+struct snd_interval ch;
+
+if (!ps || !r){
+pr_debug("REMOVE_THAT: exiting from !ps||!r\n");
+return 0;
+}else{
+pr_debug("REMOVE_THAT: not exiting\n");
+}
+snd_interval_any(&ch);
+
+if (r->min > 8000) {
+ch.min = 512;
+pr_debug("Minimum period size is adjusted to 512\n");
+return snd_interval_refine(ps, &ch);
+}
+return 0;
+}
+
+
+static int msm_pcm_open(struct snd_pcm_substream *substream)
+{
+struct snd_pcm_runtime *runtime = substream->runtime;
+struct msm_audio *prtd;
+int ret = 0;
+
+prtd = kzalloc(sizeof(struct msm_audio), GFP_KERNEL);
+if (prtd == NULL) {
+ret = -ENOMEM;
+return ret;
+}
+if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+msm_vol_ctl.update = 1; /* Update Volume, with Cached value */
+runtime->hw = msm_pcm_playback_hardware;
+prtd->dir = SNDRV_PCM_STREAM_PLAYBACK;
+prtd->playback_substream = substream;
+prtd->eos_ack = 0;
+} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+runtime->hw = msm_pcm_capture_hardware;
+prtd->dir = SNDRV_PCM_STREAM_CAPTURE;
+prtd->capture_substream = substream;
+}
+ret = snd_pcm_hw_constraint_list(runtime, 0,
+SNDRV_PCM_HW_PARAM_RATE,
+&constraints_sample_rates);
+if (ret < 0)
+goto out;
+/* Ensure that buffer size is a multiple of period size */
+ret = snd_pcm_hw_constraint_integer(runtime,
+    SNDRV_PCM_HW_PARAM_PERIODS);
+if (ret < 0)
+goto out;
+
+
+ret = snd_pcm_hw_rule_add(substream->runtime, 0,
+SNDRV_PCM_HW_PARAM_PERIOD_SIZE,
+hw_rule_periodsize_by_rate, substream,
+SNDRV_PCM_HW_PARAM_RATE, -1);
+
+if (ret < 0)
+goto out;
+
+prtd->ops = &snd_msm_audio_ops;
+prtd->out[0].used = BUF_INVALID_LEN;
+prtd->out_head = 1; /* point to second buffer on startup */
+runtime->private_data = prtd;
+
+ret = alsa_adsp_configure(prtd);
+if (ret)
+goto out;
+copy_count = 0;
+return 0;
+
+out:
+kfree(prtd);
+return ret;
+}
+
+Unfortunately it doesn't seem to print the REMOVE_THAT debug messages in
+dmesg,after playing something with mplayer, like a 44100 Hz song in mp3
+format with mplayer.
+
+I wonder why the hw_rule_periodsize_by_rate function is not executed.
+
+Background:
+The htcdream is the first android smartphone and has by default a dsp
+interface that is not alsa nor oss nor something that was created
+before.
+Codeaurora(qualcomm) had some alsa driver,I rebased it  but it was
+buggy,so I tried to debug it and succedded at making mplayer run,but it
+had many buffer underruns...
+
+Denis.
