@@ -1,20 +1,21 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 2/5] ASoC: fix pxa2xx-pcm.h path
-Date: Sat, 14 Aug 2010 11:47:27 +0100
-Message-ID: <1281782847.3394.121.camel@odin>
-References: <AANLkTi=_BX_z68p3SGhr08K5JOmudaNRvZMVUAvSGfZV@mail.gmail.com>
-	<1281713056.2074.28.camel@Tapajos>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: ASoC: Make ams-delta/cx20442 pair back working for
+	multi-component
+Date: Sat, 14 Aug 2010 16:19:58 +0200
+Message-ID: <201008141620.00247.jkrzyszt@tis.icnet.pl>
+References: <201008110129.34662.jkrzyszt@tis.icnet.pl>
+	<201008132110.34697.jkrzyszt@tis.icnet.pl>
+	<1281782135.3394.106.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id A71B024485
+Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0F49A1037EE
 	for <alsa-devel@alsa-project.org>;
-	Sat, 14 Aug 2010 12:47:30 +0200 (CEST)
-Received: by wwi17 with SMTP id 17so1807110wwi.20
-	for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2010 03:47:30 -0700 (PDT)
-In-Reply-To: <1281713056.2074.28.camel@Tapajos>
+	Sat, 14 Aug 2010 16:20:38 +0200 (CEST)
+In-Reply-To: <1281782135.3394.106.camel@odin>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,31 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ian Lartey <ian@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Haojian Zhuang <haojian.zhuang@gmail.com>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-08-13 at 16:24 +0100, Ian Lartey wrote:
-> On Fri, 2010-08-13 at 21:55 +0800, Haojian Zhuang wrote:
-> > From b761e3bb374e630011f22ce54963877310a0baca Mon Sep 17 00:00:00 2001
-> > From: Haojian Zhuang <haojian.zhuang@marvell.com>
-> > Date: Fri, 13 Aug 2010 21:14:52 +0800
-> > Subject: [PATCH 2/5] ASoC: fix pxa2xx-pcm.h path
-> > 
-> > Since pxa2xx-pcm.h is removed from sound/soc/pxa, we need to update the
-> > path in related files.
-> > 
-> > Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
-> > ---
-> >  sound/soc/pxa/pxa-ssp.c    |    2 +-
-> >  sound/soc/pxa/pxa2xx-pcm.c |    1 -
-> >  2 files changed, 1 insertions(+), 2 deletions(-)
-> 
-> Tested-by: Ian Lartey <ian@opensource.wolfsonmicro.com>
-> 
-
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+U2F0dXJkYXkgMTQgQXVndXN0IDIwMTAgMTI6MzU6MzUgTGlhbSBHaXJkd29vZCBuYXBpc2HFgihh
+KToKPiBPbiBGcmksIDIwMTAtMDgtMTMgYXQgMjE6MTAgKzAyMDAsIEphbnVzeiBLcnp5c3p0b2Zp
+ayB3cm90ZToKPiA+Cj4gPiBCVFcsIHdoYXQgd2FzIHRoZSByYXRpb25hbGUgZm9yIHJlbmFtaW5n
+IHRoZSBjb2RlYyBkYWkgdG8gImN4MjA0MjItaGlmaSI/Cj4gPiBXaGlsZSB0aGlzIGRvZXNuJ3Qg
+YnJlYWsgYW55dGhpbmcgb2J2aW91c2x5LCBJIHRoaW5rIHRoZSBoaWZpIHN1ZmZpeCBpcwo+ID4g
+bWlzc2xlYWRpbmcgZm9yIGEgY29kZWMgd2l0aCBhIHNhbXBsaW5nIHJhdGUgb2YgOCBrSHogOyku
+Cj4KPiBZb3UgYXJlIHJpZ2h0LCBwZXJoYXBzIHRoaXMgc2hvdWxkIGJlIGxhYmVsbGVkICJjeDIw
+NDIyLXZvaWNlIi4gQ2FyZSB0bwo+IHNlbmQgYSBwYXRjaCA/CgpPSywgSSB3aWxsLgoKVGhhbmtz
+LApKYW51c3oKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
