@@ -1,20 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/7] WM8580 updates
-Date: Sun, 15 Aug 2010 12:10:43 +0100
-Message-ID: <20100815111043.GB25723@opensource.wolfsonmicro.com>
-References: <20100813193305.GB3778@sirena.org.uk>
-	<AANLkTinjBpbdJNVyszADoLzkYA_r7jmbaHJC8gNLVGCH@mail.gmail.com>
-	<AANLkTikh_WFPc-M6pFaC-n91aCzQPvH9YaTnwjwOg6ap@mail.gmail.com>
+Subject: Re: possible fix for buffer underruns on msm7k alsa
+ driver
+Date: Sun, 15 Aug 2010 12:29:25 +0100
+Message-ID: <20100815112925.GA11017@sirena.org.uk>
+References: <1281810584.15120.13.camel@gnutoo-laptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 07AF524505
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8024F2451C
 	for <alsa-devel@alsa-project.org>;
-	Sun, 15 Aug 2010 13:10:44 +0200 (CEST)
+	Sun, 15 Aug 2010 13:29:27 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <AANLkTikh_WFPc-M6pFaC-n91aCzQPvH9YaTnwjwOg6ap@mail.gmail.com>
+In-Reply-To: <1281810584.15120.13.camel@gnutoo-laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,14 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Seungwhan Youn <claude.youn@gmail.com>
-Cc: alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Seungwhan Youn <sw.youn@samsung.com>
+To: Denis 'GNUtoo' Carikli <GNUtoo@no-log.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 15, 2010 at 06:21:08PM +0900, Seungwhan Youn wrote:
+On Sat, Aug 14, 2010 at 08:29:44PM +0200, Denis 'GNUtoo' Carikli wrote:
+> hi, I'm still rebasing the codeaurora alsa driver for msm soc like the
+> htcdream on the android msm 2.6.32 kernel.
+> I looked the commits for the other socs like msm7kv2 and
+> qsd8k(snapdragon)
 
->  o Capture test ; it doesn't work, even after capture, playback also
-> doesn't work.
+Your mail is very lengthy and something seems to have stripped all the
+indentation from the source code you've pasted.  This all makes it
+extremely hard to read, and the fact that it's discussing drivers which
+have never been sent upstream doesn't help either.
 
-This doesn't match up with my testing at all, especially the impact on
-playback.  What revision of the SMDK hardware are you using?
+The last time I looked at MSM audio drivers I noticed several abuses of
+APIs in there which make me concerned about the robustness of any
+changes that one might make to the code.  I've no idea if this was the
+same set of drivers as you are looking at, it's really unfortunate that
+work on these drivers appears so fragmented.
