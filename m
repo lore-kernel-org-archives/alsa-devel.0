@@ -1,20 +1,21 @@
-From: Seungwhan Youn <claude.youn@gmail.com>
-Subject: Re: [PATCH 0/7] WM8580 updates
-Date: Sun, 15 Aug 2010 18:21:08 +0900
-Message-ID: <AANLkTikh_WFPc-M6pFaC-n91aCzQPvH9YaTnwjwOg6ap@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/7] ASoC: Automatically calculate
+	clock	ratio for WM8580
+Date: Sun, 15 Aug 2010 12:09:24 +0100
+Message-ID: <20100815110924.GA25723@opensource.wolfsonmicro.com>
 References: <20100813193305.GB3778@sirena.org.uk>
-	<AANLkTinjBpbdJNVyszADoLzkYA_r7jmbaHJC8gNLVGCH@mail.gmail.com>
+	<1281728107-25386-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<AANLkTi=6Op9C3adxhN8HsZu9FewFYqeCWRoQs=P3LP18@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id D95352440E
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E9C9624505
 	for <alsa-devel@alsa-project.org>;
-	Sun, 15 Aug 2010 11:21:11 +0200 (CEST)
-Received: by wwi17 with SMTP id 17so2680109wwi.20
-	for <alsa-devel@alsa-project.org>; Sun, 15 Aug 2010 02:21:08 -0700 (PDT)
-In-Reply-To: <AANLkTinjBpbdJNVyszADoLzkYA_r7jmbaHJC8gNLVGCH@mail.gmail.com>
+	Sun, 15 Aug 2010 13:09:26 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=6Op9C3adxhN8HsZu9FewFYqeCWRoQs=P3LP18@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,46 +25,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Seungwhan Youn <sw.youn@samsung.com>
+To: Seungwhan Youn <claude.youn@gmail.com>
+Cc: Seungwhan Youn <sw.youn@samsung.com>, alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBBdWcgMTQsIDIwMTAgYXQgMTowOSBQTSwgSmFzc2kgQnJhciA8amFzc2lzaW5naGJy
-YXJAZ21haWwuY29tPiB3cm90ZToKPiBPbiBTYXQsIEF1ZyAxNCwgMjAxMCBhdCA0OjMzIEFNLCBN
-YXJrIEJyb3duCj4gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToK
-Pj4gVGhpcyBiYXRjaCBvZiBwYXRjaGVzIHNob3VsZCBnZXQgdGhlIHNhbXBsZSByYXRpbyBzZWxl
-Y3Rpb24gZm9yIHRoZQo+PiBXTTg1ODAgYmFzZWQgb24gdGhlIGNvbmZpZ3VyZWQgc3lzY2xrIGNv
-cnJlY3QsIGFuZCBhbHNvIGZpeGVzIGEgZmV3Cj4+IHJhbmRvbSBvdGhlciB0aGluZ3MuCj4+Cj4+
-IFRoZSBjb25maWd1cmF0aW9uIG9mIHRoZSBBREMgY2xvY2tpbmcgKHdoaWNoIGlzIHNsYXZlZCB0
-byB0aGUgREFDCj4+IGNsb2NraW5nKSBpcyBzdGlsbCBub3QgaWRlYWwgLSB1c2Vyc3BhY2UgaGFz
-IHRvIGNvbmZpZ3VyZSBwbGF5YmFjayBhdAo+PiB0aGUgc2FtcGxlIHJhdGUgdG8gYmUgdXNlZCBw
-cmlvciB0byBzdGFydGluZyBhIHJlY29yZCAtIGJ1dCB0aGlzIG5lZWRzCj4+IHNvbWUgbW9yZSB0
-aG91Z2h0IGF0IHRoZSBmcmFtZXdvcmsgbGV2ZWwgc2luY2UgdGhpcyBpcyBlc3NlbnRpYWxseSB0
-aGUKPj4gc2FtZSBwcm9ibGVtIHdlIGhhdmUgd2hlbiBtdWx0aXBsZSBEQUlzIHJ1biBvdmVyIG9u
-ZSBwaHlzaWNhbCBpbnRlcmZhY2UKPj4gdXNpbmcgVERNLiDCoElkZWFsbHkgd2UnZCBzb2x2ZSB0
-aGUgbW9yZSBnZW5lcmFsIHByb2JsZW0uCj4+Cj4+IE1hcmsgQnJvd24gKDcpOgo+PiDCoCDCoCDC
-oEFTb0M6IEFkZCBhIGJpdCBvZiByZXNvdXJjZSB1bndpbmRpbmcgaW4gdGhlIFMzQyBJSVN2NCBk
-cml2ZXIKPj4gwqAgwqAgwqBBU29DOiBDb252ZXJ0IFdNODU4MCBod19wYXJhbXMgdG8gdXNlIHNu
-ZF9zb2NfdXBkYXRlX2JpdHMoKQo+PiDCoCDCoCDCoEFTb0M6IFJlbW92ZSB1bnVzZWQgcmF0ZSBz
-ZWxlY3Rpb24gYml0bWFza3MgZnJvbSBXTTg1ODAKPj4gwqAgwqAgwqBBU29DOiBBdXRvbWF0aWNh
-bGx5IGNhbGN1bGF0ZSBjbG9jayByYXRpbyBmb3IgV004NTgwCj4+IMKgIMKgIMKgQVNvQzogSW1w
-bGVtZW50IEJDTEsgcmF0ZSBzZWxlY3Rpb24gZm9yIFdNODU4MAo+PiDCoCDCoCDCoEFTb0M6IEZp
-eCBpbnZlcnRlZCBXTTg1ODAgY2FwdHVyZSBtdXRlIGNvbnRyb2wKPj4gwqAgwqAgwqBBU29DOiBB
-dXRvbWF0aWNhbGx5IG1hbmFnZSBXTTg1ODAgREFDIE9TUgo+Cj4gTXVjaCBuZWVkZWQgY2hhbmdl
-cy4gVGhhbmtzIGEgbG90Lgo+IEhhcHBpbHksIEkgYW0gdG9vIG9jY3VwaWVkIHdpdGggb3RoZXIg
-bWF0dGVycyBhcyB3ZWxsIHRoZXNlIGRheXMuIEkgaG9wZQo+IENsYXVkZShTZXVuZ3doYW4gWW91
-bikgdGVzdHMgYW5kIGdpdmUgc3RhdHVzIG9uIHRoZSBwYXRjaGVzLgo+CgpIaSwKCkZpcnN0IG9m
-IGFsbCwgSSdtIHJlYWxseSBoYXBweSB0byB0ZXN0IHRoaXMgcGF0Y2gtc2V0LiBUaGFua3MgTWFy
-ay4gOi0pCgpBbnl3YXksIEkgdGVzdGVkIHRoaXMgcGF0Y2gtc2V0IGFib3V0IFdNODU4MCB1cGRh
-dGVzIHdpdGggU01ESzY0MTAKYm9hcmQuIFVuZm9ydHVuYXRlbHksIEkgZmFjZWQgd2l0aCBzb21l
-IHByb2JsZW0gaW4gY2FwdHVyZS4KCkJyaWVmbHkgcmVwb3J0IG9mIHRlc3QgaXMgOi0KIG8gUGxh
-eWJhY2sgdGVzdCB3aXRoIHZhcmlvdXMgZnJlcXVlbmN5IDsgYWxsIHdvcmtzIGZpbmUuCiAgICA4
-MDAwIEh6IHNhbXBsaW5nIGZyZXEuCiAgICAxMTAyNSBIeiBzYW1wbGluZyBmcmVxLgogICAgMTYw
-MDAgSHogc2FtcGxpbmcgZnJlcS4KICAgIDIyMDUwIEh6IHNhbXBsaW5nIGZyZXEuCiAgICA0NDEw
-MCBIeiBzYW1wbGluZyBmcmVxLgogICAgNDgwMDAgSHogc2FtcGxpbmcgZnJlcS4KICAgIDg4MjAw
-IEh6IHNhbXBsaW5nIGZyZXEuCiBvIENhcHR1cmUgdGVzdCA7IGl0IGRvZXNuJ3Qgd29yaywgZXZl
-biBhZnRlciBjYXB0dXJlLCBwbGF5YmFjayBhbHNvCmRvZXNuJ3Qgd29yay4KCkkgY29tbWVudGVk
-IG1vcmUgZGV0YWlscyBhdCBjb3JyZXNwb25kaW5nIHBhdGNoLgoKClRoYW5rcywKQ2xhdWRlCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Sun, Aug 15, 2010 at 06:00:50PM +0900, Seungwhan Youn wrote:
+> On Sat, Aug 14, 2010 at 4:35 AM, Mark Brown
+
+> > +
+> > + =A0 =A0 =A0 switch (dai->driver->id) {
+> > + =A0 =A0 =A0 case WM8580_DAI_PAIFTX:
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sel_mask =3D 0x3;
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sel_shift =3D 0;
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> > +
+> > + =A0 =A0 =A0 case WM8580_DAI_PAIFRX:
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sel_mask =3D 0xc;
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sel_shift =3D 3;
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+
+> These CLKSEL settings looks different with my WM8580 datasheet
+> (released March 2009, Rev 4.7).
+> I think these codes look...
+> +       case WM8580_DAI_PAIFRX:
+> +               sel_mask =3D 0x3;
+> +               sel_shift =3D 0;
+> +               break;
+
+This one is exactly what's above as far as I can tell?....
+
+> +       case WM8580_DAI_PAIFTX:
+> +               sel_mask =3D 0xc;
+> +               sel_shift =3D 2;
+> +               break;
+
+...but the shift is typoed here, yes.
+
+> > + =A0 =A0 =A0 switch (clk_id) {
+> > + =A0 =A0 =A0 case WM8580_CLKSRC_ADCMCLK:
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (dai->id !=3D WM8580_DAI_PAIFTX)
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EINVAL;
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 sel =3D 0 << sel_shift;
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+
+> During my test case with smdk6410 board, clock source of ADC should be
+> set by ADCMCLK, if we want to hear a correct sound on playback and
+> capture. And when ADC select MCLK or PLLA, source clock was broken
+> both of playback and capture.
+> Can you verify this(set source clock of ADC set to ADCMCLK) is right
+> or is there something missing on other settings?
+
+This should not be required in general.  Without knowing anything about
+the tests you did, the problems you observed or why you believe this
+configuration helps it's a bit hard to comment in detail.  I did test
+briefly since I remembered the use of this from your code.
+
+My best guess would be that this is related to the issue I mentioned in
+the cover mail with multiple DAI links on one physical DAI.  Since the
+DAIs are cross wired we really shouldn't have both CODEC interfaces
+driving the audio interface simultaneously.  =
+
+
+What would be much more straightforward for this configuration is to run
+the PLL output from the CODEC into the CPU and then have the CPU master
+the actual audio interface but Jassi was fairly insistent on having the
+CODEC master the bus and I'd need to verify again with the schematic if
+the appropriate clock lines are run.  Actually, I think I'll just do
+that if the hardware allows.
