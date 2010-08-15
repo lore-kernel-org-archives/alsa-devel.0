@@ -1,19 +1,21 @@
-From: Christoph Kuhr <christoph.kuhr@web.de>
-Subject: Extern dsp device
-Date: Sat, 14 Aug 2010 23:14:26 +0200
-Message-ID: <1184DC07-4A5D-4DB0-816B-8FE8ACD074A7@web.de>
-Mime-Version: 1.0 (iPhone Mail 7E18)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Seungwhan Youn <claude.youn@gmail.com>
+Subject: Re: [PATCH 6/7] ASoC: Fix inverted WM8580 capture mute
+	control
+Date: Sun, 15 Aug 2010 13:50:20 +0900
+Message-ID: <AANLkTinBu55RMSgWOmfa3hMKuP4ze3+0yz0qF1Wr8Uv4@mail.gmail.com>
+References: <20100813193305.GB3778@sirena.org.uk>
+	<1281728107-25386-6-git-send-email-broonie@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fmmailgate03.web.de (fmmailgate03.web.de [217.72.192.234])
-	by alsa0.perex.cz (Postfix) with ESMTP id 938B724569
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E420624152
 	for <alsa-devel@alsa-project.org>;
-	Sat, 14 Aug 2010 23:15:26 +0200 (CEST)
-Received: from smtp04.web.de  ( [172.20.0.225])
-	by fmmailgate03.web.de (Postfix) with ESMTP id 5436015D94454
-	for <alsa-devel@alsa-project.org>;
-	Sat, 14 Aug 2010 23:15:26 +0200 (CEST)
+	Sun, 15 Aug 2010 06:50:20 +0200 (CEST)
+Received: by wwi17 with SMTP id 17so2534576wwi.20
+	for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2010 21:50:20 -0700 (PDT)
+In-Reply-To: <1281728107-25386-6-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +25,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Seungwhan Youn <sw.youn@samsung.com>, alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-
-Hi everybody,
-
-In my bachlor project im planing to realise an outboard fpga dsp  
-device connected by gbit ethernet and driven by alsa.
-
-The idea:
-computer system with linux rt kernel, extra gbit ethernet if and for  
-example rme hdsp 9652  audio if.
-Outboard fpga with gbit if and DSP routines (PureD ata Engine?)
-
-Now the fpga board is connected via gbit eth, the kernel gets it and  
-inserts the gbit ethernet card into the audio signal path.
-Managed with and alsa driver, cooperating with the snd-rme9652.
-With a gui sending OSC to the fpga board, controlling the dsp.
-
-Goal: zero-latency routing and dsp
-
-Do you think this strategy might work?
-
-Ck
+T24gU2F0LCBBdWcgMTQsIDIwMTAgYXQgNDozNSBBTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IFNpZ25lZC1vZmYtYnk6IE1hcmsgQnJv
+d24gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29tPgo+IC0tLQo+IMKgc291bmQv
+c29jL2NvZGVjcy93bTg1ODAuYyB8IMKgIMKgMiArLQo+IMKgMSBmaWxlcyBjaGFuZ2VkLCAxIGlu
+c2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2Nv
+ZGVjcy93bTg1ODAuYyBiL3NvdW5kL3NvYy9jb2RlY3Mvd204NTgwLmMKPiBpbmRleCA2MjYyMTI0
+Li4zNTdmN2Q1IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3Mvd204NTgwLmMKPiArKysg
+Yi9zb3VuZC9zb2MvY29kZWNzL3dtODU4MC5jCj4gQEAgLTI2Miw3ICsyNjIsNyBAQCBTT0NfU0lO
+R0xFKCJEQUMxIFN3aXRjaCIsIFdNODU4MF9EQUNfQ09OVFJPTDUsIDAsIDEsIDApLAo+IMKgU09D
+X1NJTkdMRSgiREFDMiBTd2l0Y2giLCBXTTg1ODBfREFDX0NPTlRST0w1LCAxLCAxLCAwKSwKPiDC
+oFNPQ19TSU5HTEUoIkRBQzMgU3dpdGNoIiwgV004NTgwX0RBQ19DT05UUk9MNSwgMiwgMSwgMCks
+Cj4KPiAtU09DX0RPVUJMRSgiQ2FwdHVyZSBTd2l0Y2giLCBXTTg1ODBfQURDX0NPTlRST0wxLCAw
+LCAxLCAxLCAwKSwKPiArU09DX0RPVUJMRSgiQ2FwdHVyZSBTd2l0Y2giLCBXTTg1ODBfQURDX0NP
+TlRST0wxLCAwLCAxLCAxLCAxKSwKPiDCoFNPQ19TSU5HTEUoIkNhcHR1cmUgSGlnaC1QYXNzIEZp
+bHRlciBTd2l0Y2giLCBXTTg1ODBfQURDX0NPTlRST0wxLCA0LCAxLCAwKSwKPiDCoH07Cj4KPiAt
+LQo+IDEuNy4xCj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwKPgoKSSBjYW4ndCBhcHBseSBvbmx5IHRoaXMgcGF0Y2ggb24gTGlhbSdzIGJyYW5j
+aCAnZm9yLTIuNi4zNycsCidmb3ItMi42LjM2JyBhbmQgJ3RvcGljL211bHRpLWNvbXBvbmVudCcg
+LiBDYW4geW91IHRlbGwgbWUgd2hpY2gKYnJhbmNoIGRpZCB5b3Ugd29yayBvbj8KClRoYW5rIHlv
+dSwKCkNsYXVkZS4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
