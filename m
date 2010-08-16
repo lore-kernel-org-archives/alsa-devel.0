@@ -1,23 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/7] ASoC: Automatically calculate clock
- ratio for WM8580
-Date: Mon, 16 Aug 2010 11:20:11 +0100
-Message-ID: <20100816102010.GB3276@rakim.wolfsonmicro.main>
-References: <20100813193305.GB3778@sirena.org.uk>
-	<1281728107-25386-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<AANLkTi=6Op9C3adxhN8HsZu9FewFYqeCWRoQs=P3LP18@mail.gmail.com>
-	<20100815110924.GA25723@opensource.wolfsonmicro.com>
-	<AANLkTi=9Y=uhX2b+Y=OMGCVA=gJNif8HwXe3Eg517nbq@mail.gmail.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [RFC] ASoC: multi-component: Add optional kcontrol
+ prefix name for a DAI link
+Date: Mon, 16 Aug 2010 13:53:28 +0300
+Message-ID: <20100816135328.077b5ea3.jhnikula@gmail.com>
+References: <1281943770-2990-1-git-send-email-jhnikula@gmail.com>
+	<20100816100705.GA3276@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4D778103821
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 786C0103834
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Aug 2010 12:20:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <AANLkTi=9Y=uhX2b+Y=OMGCVA=gJNif8HwXe3Eg517nbq@mail.gmail.com>
+	Mon, 16 Aug 2010 12:53:24 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so2165275ewy.38
+	for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2010 03:53:20 -0700 (PDT)
+In-Reply-To: <20100816100705.GA3276@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,24 +26,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: Seungwhan Youn <sw.youn@samsung.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Seungwhan Youn <claude.youn@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 16, 2010 at 01:36:50PM +0900, Jassi Brar wrote:
+On Mon, 16 Aug 2010 11:07:05 +0100
+Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
 
-> For us, having CPU in slave mode is more important than clearing all the
-> use cases perfectly on a _reference_ platform.
-> More so when the 'problem' can be obviously attributed to the h/w design.
+> On Mon, Aug 16, 2010 at 10:29:30AM +0300, Jarkko Nikula wrote:
+> > This optional kcontrol_prefix allows to specify unique prefix for ALSA
+> > control names for each DAI link. This makes possible to have a sound card
+> > configuration with multiple DAIs and each of them using the same codec
+> > driver without name collision.
+> 
+> This isn't going to work in general - consider what happens for CODECs
+> with multiple DAIs, or for devices with no DAIs at all like external
+> analogue amps.  We do need to do this but it probably needs to be per
+> CODEC rather than per link I fear.
 
-Hrm, OK - this is the opposite way around to what most CPU vendors would
-ask for.  Is there any particular reason for this preference?
+Yeah, true, this is not going to work if there are multiple amplifiers
+that are registered for a same link.
 
-> So please modify only if you must, otherwise, as I said, we'd prefer
-> CPU slave mode working
-> by default in mainline.
+Multi-DAI codecs are not so clear to me. I thought codecs are exporting
+different controls for different DAIs? Like "foo Playback Volume" and
+"bar Playback Volume".
 
-Well, I'd like to see the driver working as well as possible, especially
-since people tend to take reference code from mainline and clone it.
-The way the hardware is the clock tree should definitely be rooted in
-the WM8580, it's just the LRCLK and BCLK I'm thinking about here.
+But anyway, I'll try to look some better idea.
+
+
+-- 
+Jarkko
