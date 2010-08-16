@@ -1,34 +1,21 @@
-From: Sander Knopper <sander@knopper.tk>
-Subject: Re: ALC892 support for multiple spdif outputs
-Date: Mon, 16 Aug 2010 10:43:41 +0200
-Message-ID: <201008161043.42070.sander@knopper.tk>
-References: <201008151457.51996.sander@knopper.tk>
-	<201008160952.31279.sander@knopper.tk>
-	<s5hd3tjvu21.wl%tiwai@suse.de>
+From: Sven Zeisberg <sven.zeisberg@googlemail.com>
+Subject: Re: Problem to init AD1938 on i.MX25
+Date: Mon, 16 Aug 2010 10:39:40 +0200
+Message-ID: <4C68F94C.8090703@googlemail.com>
+References: <4C68C3C5.5030701@googlemail.com>
+	<20100816073040.GH27749@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.knopper-ict.nl (odysseus.knopper-ict.nl [82.94.221.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0316D10380C
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5D13210380C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Aug 2010 10:42:55 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by mx1.knopper-ict.nl (Postfix) with ESMTP id 737A617F44B
-	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Aug 2010 10:39:48 +0200 (CEST)
-Received: from mx1.knopper-ict.nl ([127.0.0.1])
-	by localhost (odysseus.knopper-ict.nl [127.0.0.1]) (amavisd-new,
-	port 10024)
-	with LMTP id Gm-tdGJjOhCs for <alsa-devel@alsa-project.org>;
-	Mon, 16 Aug 2010 10:39:47 +0200 (CEST)
-Received: from sander.knopper.tk (maknopper.demon.nl [83.161.20.78])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.knopper-ict.nl (Postfix) with ESMTPSA id B52A317F445
-	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Aug 2010 10:39:47 +0200 (CEST)
-In-Reply-To: <s5hd3tjvu21.wl%tiwai@suse.de>
+	Mon, 16 Aug 2010 10:40:06 +0200 (CEST)
+Received: by bwz10 with SMTP id 10so1891290bwz.38
+	for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2010 01:40:06 -0700 (PDT)
+In-Reply-To: <20100816073040.GH27749@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -38,69 +25,130 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 16 August 2010 10:30:14 you wrote:
-> At Mon, 16 Aug 2010 09:52:31 +0200,
-> 
-> Sander Knopper wrote:
-> > [1  <text/plain; iso-8859-1 (7bit)>]
-> > 
-> > On Monday 16 August 2010 08:42:07 you wrote:
-> > > At Sun, 15 Aug 2010 14:57:51 +0200,
-> > > 
-> > > Sander Knopper wrote:
-> > > > Dear developers,
-> > > > 
-> > > > I've opened a bug about this problem which can be viewed here:
-> > > > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5101
-> > > > 
-> > > > Raymond mentions in his last comment that I should ask you to, if I
-> > > > understand correctly, do the same trick as in the commit he refers to
-> > > > also for the ALC892 chip. Which obviously is the one I have...
-> > > > 
-> > > > You can find all the relevant information in the bug entry.
-> > > 
-> > > Could you post the exact problem and attach alsa-info.sh output to ML?
-> > > It'll help much for communication on ML.
-> > > 
-> > > 
-> > > Takashi
-> > 
-> > Ok, I can do that...
-> > 
-> > The problem is that I have an Asus P7H55 M Pro motherboard which uses the
-> > ALC892 codec. I'm using this system as a HTPC and thus I'm trying to get
-> > sound from the HTPC to my receiver. The motherboard only has an optical
-> > output which shouldn't be an problem, be it that my receiver only has a
-> > coaxial input.
-> > 
-> > So I bought an spdif bracket made by Asus which has both a coaxial and
-> > optical output and connected it to the internal spdif pins on the
-> > motherboard. So far so good, but the real problem is that I can't get
-> > the bracket to work. When I unmute all the spdif related entries with
-> > alsamixer only the optical output on the motherboard itself "gives
-> > light" and the one on the bracket doesn't.
-> > 
-> > I've searched the internet a bit and I tried switching the audio output
-> > in the bios from HDMI to SPDIF and vice versa, but that doesn't make any
-> > difference.
-> > 
-> > alsa-info is attached.
-> 
-> OK.  Did you test the latest alsa-driver-snapshot?
-> 
->  
-> ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-sn
-> apshot.tar.gz
-> 
-> The multi-SPDIF support is generic for all Realtek codecs.
-> 
-> 
-> Takashi
+  Thank you, Sascha, for helping!
 
-Should kernel 2.6.36-rc1 work too? Otherwise I'll try the snapshot...
+You're probably right - there is actually no "i.MX25" path in the SPI =
+
+driver!
+Since I'm on a congress for the rest of the week, a colleague of mine =
+
+will takeover and return with the results of the test you suggested.
+
+*/Sven Chris Zeisberg
+/*
+*Zeisberg GmbH*
+Wilhelmstrasse 162 Geb=E4ude 16
+72805 Lichtenstein
+
+Tel
+
+	=
 
 
-Sander
+	=
+
+
++49 (0) 7129 938 277 10
+
+Fax
+
+	=
+
+
+	=
+
+
++49 (0) 7129 938 277 77
+
+Mobile
+
+	=
+
+
+	=
+
+
++49 (0) 163 27 66 769
+
+e-Mail
+
+	=
+
+
+	=
+
+
+sven.zeisberg@zego.org <mailto:sven_zeisberg@zego.org>
+
+Web
+
+	=
+
+
+	=
+
+
+www.zego.org <http://www.zego.org/>
+
+Hauptsitz der Gesellschaft / Head Office: Wilhelmstrasse 162, Geb=E4ude =
+
+16, D-72805 Lichtenstein
+Registergericht Stuttgart HRB 723336
+USt.-Id Nr.: DE254794586
+Gesch=E4ftsf=FChrer / General Manager: Sven Zeisberg
+
+Der Inhalt dieser e-Mail ist vertraulich. Geben Sie den Inhalt nicht =
+
+weiter und verwenden Sie keine Informationen daraus, falls Sie nicht der =
+
+gew=FCnschte Empf=E4nger sind. Falls Ihnen diese e-Mail f=E4lschlicherweise =
+
+geschickt wurde, machen Sie uns bitte unverz=FCglich durch R=FCcksendung =
+
+darauf aufmerksam und l=F6schen Sie das Dokument.
+This e-mail (including any attachments) is intended for the addressee(s) =
+
+stated above only and may contain confidential information protected by =
+
+law. You are hereby notified that any unauthorized reading, disclosure, =
+
+copying or distribution of this e-mail or use of information contained =
+
+herein is strictly prohibited and may violate rights to proprietary =
+
+information. If you are not an intended recipient, please return this =
+
+e-mail to the sender and delete it immediately hereafter.
+
+
+Am 16.08.2010 09:30, schrieb Sascha Hauer:
+> Hello Sven,
+>
+> On Mon, Aug 16, 2010 at 06:51:17AM +0200, Sven Zeisberg wrote:
+>>    Hello,
+>>
+>> we're working on an ALSA  driver for AD1938 for i.MX25 based system.
+>> On the I=B2S the CODEC is Master. On the SPI, the MCU is Master.
+>>
+>> SSI seems to work (when we set the CODEC as Master by Hardware).
+>>
+>> We have problems to get the communication via SPI working. The CODEC
+>> requires 24Bit words and we can set SPI according to this in the
+>> board-file and verify this also with a logic analyzer. However, we can
+>> send only one word to the CODEC! This first word is transferred
+>> correctly, but all subsequent transfers show no activity on the SPI
+>> lines. We do not get any error messages from the SPI drivers! All SPI
+>> writes after the first word seem to be executed in software but show not
+>> effect in hardware. All reads return 0xff.
+> This is probaly more a problem in the SPI driver than alsa related. The
+> i.MX SPI unit comes in many different variants and there may well be a
+> bug in the i.MX25 path. As a test you could configure the SPI pads in
+> gpio mode and use the bitbang gpio spi driver (drivers/spi/spi_gpio.c).
+> When this works you can hunt down the bug in the SPI driver.
+>
+> Sascha
+>
