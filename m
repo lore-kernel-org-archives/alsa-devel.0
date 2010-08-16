@@ -1,22 +1,25 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/7] WM8580 updates
-Date: Mon, 16 Aug 2010 15:49:55 +0100
-Message-ID: <20100816144954.GD3276@rakim.wolfsonmicro.main>
+Subject: Re: [PATCH 4/7] ASoC: Automatically calculate clock
+ ratio for WM8580
+Date: Mon, 16 Aug 2010 16:19:58 +0100
+Message-ID: <20100816151958.GE3276@rakim.wolfsonmicro.main>
 References: <20100813193305.GB3778@sirena.org.uk>
-	<AANLkTinjBpbdJNVyszADoLzkYA_r7jmbaHJC8gNLVGCH@mail.gmail.com>
-	<AANLkTikh_WFPc-M6pFaC-n91aCzQPvH9YaTnwjwOg6ap@mail.gmail.com>
-	<20100815111043.GB25723@opensource.wolfsonmicro.com>
-	<AANLkTik-vDfN39HT-yiO1hgp7rzhgk_=gw-=MiuE+3w=@mail.gmail.com>
+	<1281728107-25386-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<AANLkTi=6Op9C3adxhN8HsZu9FewFYqeCWRoQs=P3LP18@mail.gmail.com>
+	<20100815110924.GA25723@opensource.wolfsonmicro.com>
+	<AANLkTi=9Y=uhX2b+Y=OMGCVA=gJNif8HwXe3Eg517nbq@mail.gmail.com>
+	<20100816102010.GB3276@rakim.wolfsonmicro.main>
+	<AANLkTinTYo6_BBSkhTt8Km-MR4wwexDS3orFJdNSiufT@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B4C61243F0
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CF28C24418
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Aug 2010 16:49:57 +0200 (CEST)
+	Mon, 16 Aug 2010 17:19:59 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <AANLkTik-vDfN39HT-yiO1hgp7rzhgk_=gw-=MiuE+3w=@mail.gmail.com>
+In-Reply-To: <AANLkTinTYo6_BBSkhTt8Km-MR4wwexDS3orFJdNSiufT@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,34 +29,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Seungwhan Youn <claude.youn@gmail.com>
-Cc: alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Seungwhan Youn <sw.youn@samsung.com>
+To: Jassi Brar <jassisinghbrar@gmail.com>
+Cc: Seungwhan Youn <sw.youn@samsung.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Seungwhan Youn <claude.youn@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 16, 2010 at 06:44:28PM +0900, Seungwhan Youn wrote:
-> On Sun, Aug 15, 2010 at 8:10 PM, Mark Brown
+On Mon, Aug 16, 2010 at 09:51:35PM +0900, Jassi Brar wrote:
 
->  - CPU board Rev. 1.0
->  - Base board Rev. 1.0 (2008.07.23)
+> When CPU MASTER was default, people asked for SLAVE. But nobody asked
+> for MASTER since we selected SLAVE by default. Both work equally well, it just
+> saves our efforts.
 
-> Board switch settings
+What were people actually complaining about?  I suspect it was the root
+clock for the audio tree that they were concerned about rather than the
+I2S bus clock.
 
->  - Base board
->     - CFG1 - 0000 (all off)
->     - CFG2 - 1000 (only 1 pin is on, others off)
+> Btw, I thought CODEC usually provide more accurate signals and hence CPU SLAVE
+> is better. Is is too wrong?
 
-Hrm, I have CFG2 all on.  Why would I want a mixed configuration?
-
->     - CFG5 - set I2SMULTI_CDCLK (pin 1-2 connected)
-
-I have pins 2 and 3 connected (which was the board default as shipped)
-but this does sound like it might be relevant.  Unfortunately I don't
-have a schematic for the R1.0 base board so I can't comment on this
-configuration.  If you could supply me with an updated schematic that'd
-be great.
-
-> [root@Samsung ~]# arecord -Dhw:0,1 -d5 -fS16_LE -r48000 -c2 >
-
--f dat might be easier here FWIW.  Once the S3C CPU has started
-reporting errors it tends not to recover terribly well so any further
-tests you've done without a reboot are a bit suspect.
+Well, the main issue is the quality of the root clock for the tree which
+I'd not propose to change away from the CODEC.  In terms of just passing
+through a well generated clock at a useful rate it's fairly rare to have
+problems, the problem is getting that 256fs (or whatever) root clock.
