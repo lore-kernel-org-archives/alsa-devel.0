@@ -1,25 +1,22 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 4/7] ASoC: Automatically calculate clock
- ratio for WM8580
-Date: Mon, 16 Aug 2010 21:51:35 +0900
-Message-ID: <AANLkTinTYo6_BBSkhTt8Km-MR4wwexDS3orFJdNSiufT@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/7] WM8580 updates
+Date: Mon, 16 Aug 2010 15:49:55 +0100
+Message-ID: <20100816144954.GD3276@rakim.wolfsonmicro.main>
 References: <20100813193305.GB3778@sirena.org.uk>
-	<1281728107-25386-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<AANLkTi=6Op9C3adxhN8HsZu9FewFYqeCWRoQs=P3LP18@mail.gmail.com>
-	<20100815110924.GA25723@opensource.wolfsonmicro.com>
-	<AANLkTi=9Y=uhX2b+Y=OMGCVA=gJNif8HwXe3Eg517nbq@mail.gmail.com>
-	<20100816102010.GB3276@rakim.wolfsonmicro.main>
+	<AANLkTinjBpbdJNVyszADoLzkYA_r7jmbaHJC8gNLVGCH@mail.gmail.com>
+	<AANLkTikh_WFPc-M6pFaC-n91aCzQPvH9YaTnwjwOg6ap@mail.gmail.com>
+	<20100815111043.GB25723@opensource.wolfsonmicro.com>
+	<AANLkTik-vDfN39HT-yiO1hgp7rzhgk_=gw-=MiuE+3w=@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 1ADA524333
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B4C61243F0
 	for <alsa-devel@alsa-project.org>;
-	Mon, 16 Aug 2010 14:51:36 +0200 (CEST)
-Received: by fxm11 with SMTP id 11so2935244fxm.38
-	for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2010 05:51:35 -0700 (PDT)
-In-Reply-To: <20100816102010.GB3276@rakim.wolfsonmicro.main>
+	Mon, 16 Aug 2010 16:49:57 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTik-vDfN39HT-yiO1hgp7rzhgk_=gw-=MiuE+3w=@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,24 +26,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Seungwhan Youn <sw.youn@samsung.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Seungwhan Youn <claude.youn@gmail.com>
+To: Seungwhan Youn <claude.youn@gmail.com>
+Cc: alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Seungwhan Youn <sw.youn@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBBdWcgMTYsIDIwMTAgYXQgNzoyMCBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIE1vbiwgQXVnIDE2LCAyMDEwIGF0
-IDAxOjM2OjUwUE0gKzA5MDAsIEphc3NpIEJyYXIgd3JvdGU6Cj4KPj4gRm9yIHVzLCBoYXZpbmcg
-Q1BVIGluIHNsYXZlIG1vZGUgaXMgbW9yZSBpbXBvcnRhbnQgdGhhbiBjbGVhcmluZyBhbGwgdGhl
-Cj4+IHVzZSBjYXNlcyBwZXJmZWN0bHkgb24gYSBfcmVmZXJlbmNlXyBwbGF0Zm9ybS4KPj4gTW9y
-ZSBzbyB3aGVuIHRoZSAncHJvYmxlbScgY2FuIGJlIG9idmlvdXNseSBhdHRyaWJ1dGVkIHRvIHRo
-ZSBoL3cgZGVzaWduLgo+Cj4gSHJtLCBPSyAtIHRoaXMgaXMgdGhlIG9wcG9zaXRlIHdheSBhcm91
-bmQgdG8gd2hhdCBtb3N0IENQVSB2ZW5kb3JzIHdvdWxkCj4gYXNrIGZvci4gwqBJcyB0aGVyZSBh
-bnkgcGFydGljdWxhciByZWFzb24gZm9yIHRoaXMgcHJlZmVyZW5jZT8KV2hlbiBDUFUgTUFTVEVS
-IHdhcyBkZWZhdWx0LCBwZW9wbGUgYXNrZWQgZm9yIFNMQVZFLiBCdXQgbm9ib2R5IGFza2VkCmZv
-ciBNQVNURVIgc2luY2Ugd2Ugc2VsZWN0ZWQgU0xBVkUgYnkgZGVmYXVsdC4gQm90aCB3b3JrIGVx
-dWFsbHkgd2VsbCwgaXQganVzdApzYXZlcyBvdXIgZWZmb3J0cy4KQnR3LCBJIHRob3VnaHQgQ09E
-RUMgdXN1YWxseSBwcm92aWRlIG1vcmUgYWNjdXJhdGUgc2lnbmFscyBhbmQgaGVuY2UgQ1BVIFNM
-QVZFCmlzIGJldHRlci4gSXMgaXMgdG9vIHdyb25nPwpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Mon, Aug 16, 2010 at 06:44:28PM +0900, Seungwhan Youn wrote:
+> On Sun, Aug 15, 2010 at 8:10 PM, Mark Brown
+
+>  - CPU board Rev. 1.0
+>  - Base board Rev. 1.0 (2008.07.23)
+
+> Board switch settings
+
+>  - Base board
+>     - CFG1 - 0000 (all off)
+>     - CFG2 - 1000 (only 1 pin is on, others off)
+
+Hrm, I have CFG2 all on.  Why would I want a mixed configuration?
+
+>     - CFG5 - set I2SMULTI_CDCLK (pin 1-2 connected)
+
+I have pins 2 and 3 connected (which was the board default as shipped)
+but this does sound like it might be relevant.  Unfortunately I don't
+have a schematic for the R1.0 base board so I can't comment on this
+configuration.  If you could supply me with an updated schematic that'd
+be great.
+
+> [root@Samsung ~]# arecord -Dhw:0,1 -d5 -fS16_LE -r48000 -c2 >
+
+-f dat might be easier here FWIW.  Once the S3C CPU has started
+reporting errors it tends not to recover terribly well so any further
+tests you've done without a reboot are a bit suspect.
