@@ -1,58 +1,93 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 4/7] ASoC: Automatically calculate clock
- ratio for WM8580
-Date: Tue, 17 Aug 2010 08:14:43 +0900
-Message-ID: <AANLkTindYfm3vh_OgF-0tt_MS+Uxii2s7Dw=Kk487RTd@mail.gmail.com>
-References: <20100813193305.GB3778@sirena.org.uk>
-	<1281728107-25386-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<AANLkTi=6Op9C3adxhN8HsZu9FewFYqeCWRoQs=P3LP18@mail.gmail.com>
-	<20100815110924.GA25723@opensource.wolfsonmicro.com>
-	<AANLkTi=9Y=uhX2b+Y=OMGCVA=gJNif8HwXe3Eg517nbq@mail.gmail.com>
-	<20100816102010.GB3276@rakim.wolfsonmicro.main>
-	<AANLkTinTYo6_BBSkhTt8Km-MR4wwexDS3orFJdNSiufT@mail.gmail.com>
-	<20100816151958.GE3276@rakim.wolfsonmicro.main>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: Temporary ASoC tree for next
+Date: Tue, 17 Aug 2010 10:59:50 +1000
+Message-ID: <20100817105950.11fdbb77.sfr@canb.auug.org.au>
+References: <20100816163457.GF3276@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0B46B10383E
-	for <alsa-devel@alsa-project.org>;
-	Tue, 17 Aug 2010 01:14:47 +0200 (CEST)
-Received: by fxm11 with SMTP id 11so3244344fxm.38
-	for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2010 16:14:43 -0700 (PDT)
-In-Reply-To: <20100816151958.GE3276@rakim.wolfsonmicro.main>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA1";
+ boundary="Signature=_Tue__17_Aug_2010_10_59_50_+1000_HpULTVfnyPoPyVXZ"
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <20100816163457.GF3276@rakim.wolfsonmicro.main>
+Sender: linux-next-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Seungwhan Youn <sw.youn@samsung.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Seungwhan Youn <claude.youn@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>, linux-next@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBBdWcgMTcsIDIwMTAgYXQgMTI6MTkgQU0sIE1hcmsgQnJvd24KPGJyb29uaWVAb3Bl
-bnNvdXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPiBPbiBNb24sIEF1ZyAxNiwgMjAxMCBh
-dCAwOTo1MTozNVBNICswOTAwLCBKYXNzaSBCcmFyIHdyb3RlOgo+Cj4+IFdoZW4gQ1BVIE1BU1RF
-UiB3YXMgZGVmYXVsdCwgcGVvcGxlIGFza2VkIGZvciBTTEFWRS4gQnV0IG5vYm9keSBhc2tlZAo+
-PiBmb3IgTUFTVEVSIHNpbmNlIHdlIHNlbGVjdGVkIFNMQVZFIGJ5IGRlZmF1bHQuIEJvdGggd29y
-ayBlcXVhbGx5IHdlbGwsIGl0IGp1c3QKPj4gc2F2ZXMgb3VyIGVmZm9ydHMuCj4KPiBXaGF0IHdl
-cmUgcGVvcGxlIGFjdHVhbGx5IGNvbXBsYWluaW5nIGFib3V0PyDCoEkgc3VzcGVjdCBpdCB3YXMg
-dGhlIHJvb3QKPiBjbG9jayBmb3IgdGhlIGF1ZGlvIHRyZWUgdGhhdCB0aGV5IHdlcmUgY29uY2Vy
-bmVkIGFib3V0IHJhdGhlciB0aGFuIHRoZQo+IEkyUyBidXMgY2xvY2suCk5vIGNvbXBsYWludHMu
-IEkganVzdCBnZXQgdGhlIHRhc2sgdG8gZG8uCkkgZ3Vlc3MgbW9zdCBxdWFsaXR5IGNvbnNjaW91
-cyBwcm9kdWN0cyBjYW4gYWZmb3JkIHRvIGF0dGFjaCBhIGRlZGljYXRlZApPU0MgdG8gYSBnb29k
-IENPREVDLiBBIENPREVDIGFscmVhZHkgc3BlY2lmaWVzIHRoZSBjbG9ja3MgaXQgc3VwcG9ydAph
-bmQgdXN1YWxseSBjb21lcyB3aXRoICdwcmVmZXJyZWQnIGlucHV0IGNsb2Nrcy4gU28sIGp1c3Qg
-aGF2aW5nIGEgc3BlY2lmaWVkCnJhdGluZyBhY2N1cmF0ZSBlbm91Z2ggT1NDIGNhbiB0YWtlIGNh
-cmUgb2YgcXVhbGl0eS4gT24gdGhlIG90aGVyIGhhbmQKdGhlIGNsb2NrIHNvdXJjZXMgb24gQ1BV
-IHNpZGUgYXJlIG5vdCBwYXJ0aWN1bGFybHkgYWNjdXJhdGUgZm9yIGF1ZGlvLWNsb2NrCmdlbmVy
-YXRpb24uIE9yIHNvIGhhdmUgSSBzZWVuIHNvIGZhci4KX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+--Signature=_Tue__17_Aug_2010_10_59_50_+1000_HpULTVfnyPoPyVXZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Mark,
+
+On Mon, 16 Aug 2010 17:34:57 +0100 Mark Brown <broonie@opensource.wolfsonmi=
+cro.com> wrote:
+>
+> Liam has recently done some work on ASoC to enhance the ability to work
+> with multiple external devices which we're expecting to get in for .37.
+> Since this work required some architecture modifications and we've had a
+> bit of trouble getting testers we're expecting a higher than average
+> degree of cross-tree issues this cycle so in order to avoid affecting
+> all other ALSA work we'd like to have a separate ASoC-specific tree in
+> -next for this release cycle if possible:
+>=20
+>    git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git fo=
+r-next
+>=20
+> Please also include Liam as a contact for the tree.
+
+Added from today - called sound-asoc.  I will merge it before the main
+sound tree so we see the conflicts in this tree and (hopefully) not in
+the main sound tree.
+
+Thanks for adding your subsystem tree as a participant of linux-next.  As
+you may know, this is not a judgment of your code.  The purpose of
+linux-next is for integration testing and to lower the impact of
+conflicts between subsystems in the next merge window.=20
+
+You will need to ensure that the patches/commits in your tree/series have
+been:
+     * submitted under GPL v2 (or later) and include the Contributor's
+	Signed-off-by,
+     * posted to the relevant mailing list,
+     * reviewed by you (or another maintainer of your subsystem tree),
+     * successfully unit tested, and=20
+     * destined for the current or next Linux merge window.
+
+Basically, this should be just what you would send to Linus (or ask him
+to fetch).  It is allowed to be rebased if you deem it necessary.
+
+--=20
+Cheers,
+Stephen Rothwell=20
+sfr@canb.auug.org.au
+
+Legal Stuff:
+By participating in linux-next, your subsystem tree contributions are
+public and will be included in the linux-next trees.  You may be sent
+e-mail messages indicating errors or other issues when the
+patches/commits from your subsystem tree are merged and tested in
+linux-next.  These messages may also be cross-posted to the linux-next
+mailing list, the linux-kernel mailing list, etc.  The linux-next tree
+project and IBM (my employer) make no warranties regarding the linux-next
+project, the testing procedures, the results, the e-mails, etc.  If you
+don't agree to these ground rules, let me know and I'll remove your tree
+from participation in linux-next.
+
+--Signature=_Tue__17_Aug_2010_10_59_50_+1000_HpULTVfnyPoPyVXZ
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iQEcBAEBAgAGBQJMad8GAAoJEDMEi1NhKgbsKroH/1tOJrCx5iq/or8as/WWYUva
+XfMPFBb080HduDbpv3dJEOihrZv0JnU/w86jAPtGh9i9BGQUlQI7GgOklHlXuor2
+w2RZFWAA9Bh4EdY6s+KN3JmxYvVkUtNjc1vmHJ8xtCqyixezeWacQwbAq9F7EJjI
+H1fLq331XvtcV7O1wm3BdYyBVjKCttCkM1PRRkE4BtLQc/pcULSeeAOsVkneY/Il
+WAj42AOs+RK4qCdN8nNxq8b76R7/t/kq3f5pOOXTJszPSkgmppDaAAeB7pcQlm9/
+NKqhYkCJ5fdhRwCG37gkE2YLPsjgUilp9LKCBejIycl3cPQ0Zil7u/laEI9lcOA=
+=y38v
+-----END PGP SIGNATURE-----
+
+--Signature=_Tue__17_Aug_2010_10_59_50_+1000_HpULTVfnyPoPyVXZ--
