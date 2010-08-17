@@ -1,18 +1,19 @@
-From: Randolph Chung <rchung42@gmail.com>
-Subject: [PATCH] Add support for tlv320aic3007 to tlv320aic3x
-	driver
-Date: Thu, 19 Aug 2010 14:19:16 +0800
-Message-ID: <AANLkTinScuZVufiHO15uvBMrf4oPMAV=r__G72b=o2u8@mail.gmail.com>
+From: Sander Knopper <sander@knopper.tk>
+Subject: Re: ALC892 support for multiple spdif outputs
+Date: Tue, 17 Aug 2010 09:00:27 +0200
+Message-ID: <201008170900.27189.sander@knopper.tk>
+References: <201008151457.51996.sander@knopper.tk>
+	<201008161043.42070.sander@knopper.tk>
+	<s5hmxsliv9z.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=0016367b6f006693c9048e2729f0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5B85824381
+Received: from mx1.knopper-ict.nl (odysseus.knopper-ict.nl [82.94.221.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id BAB042438A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Aug 2010 08:19:17 +0200 (CEST)
-Received: by iwn34 with SMTP id 34so1098932iwn.38
-	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2010 23:19:16 -0700 (PDT)
+	Tue, 17 Aug 2010 08:59:41 +0200 (CEST)
+In-Reply-To: <s5hmxsliv9z.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,147 +23,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---0016367b6f006693c9048e2729f0
-Content-Type: text/plain; charset=ISO-8859-1
+On Tuesday 17 August 2010 08:54:32 Takashi Iwai wrote:
+> At Mon, 16 Aug 2010 10:43:41 +0200,
+> 
+> Sander Knopper wrote:
+> > On Monday 16 August 2010 10:30:14 you wrote:
+> > > At Mon, 16 Aug 2010 09:52:31 +0200,
+> > > 
+> > > Sander Knopper wrote:
+> > > > [1  <text/plain; iso-8859-1 (7bit)>]
+> > > > 
+> > > > On Monday 16 August 2010 08:42:07 you wrote:
+> > > > > At Sun, 15 Aug 2010 14:57:51 +0200,
+> > > > > 
+> > > > > Sander Knopper wrote:
+> > > > > > Dear developers,
+> > > > > > 
+> > > > > > I've opened a bug about this problem which can be viewed here:
+> > > > > > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5101
+> > > > > > 
+> > > > > > Raymond mentions in his last comment that I should ask you to, if
+> > > > > > I understand correctly, do the same trick as in the commit he
+> > > > > > refers to also for the ALC892 chip. Which obviously is the one I
+> > > > > > have...
+> > > > > > 
+> > > > > > You can find all the relevant information in the bug entry.
+> > > > > 
+> > > > > Could you post the exact problem and attach alsa-info.sh output to
+> > > > > ML? It'll help much for communication on ML.
+> > > > > 
+> > > > > 
+> > > > > Takashi
+> > > > 
+> > > > Ok, I can do that...
+> > > > 
+> > > > The problem is that I have an Asus P7H55 M Pro motherboard which uses
+> > > > the ALC892 codec. I'm using this system as a HTPC and thus I'm
+> > > > trying to get sound from the HTPC to my receiver. The motherboard
+> > > > only has an optical output which shouldn't be an problem, be it that
+> > > > my receiver only has a coaxial input.
+> > > > 
+> > > > So I bought an spdif bracket made by Asus which has both a coaxial
+> > > > and optical output and connected it to the internal spdif pins on
+> > > > the motherboard. So far so good, but the real problem is that I
+> > > > can't get the bracket to work. When I unmute all the spdif related
+> > > > entries with alsamixer only the optical output on the motherboard
+> > > > itself "gives light" and the one on the bracket doesn't.
+> > > > 
+> > > > I've searched the internet a bit and I tried switching the audio
+> > > > output in the bios from HDMI to SPDIF and vice versa, but that
+> > > > doesn't make any difference.
+> > > > 
+> > > > alsa-info is attached.
+> > > 
+> > > OK.  Did you test the latest alsa-driver-snapshot?
+> > > 
+> > > 
+> > > ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver
+> > > -sn apshot.tar.gz
+> > > 
+> > > The multi-SPDIF support is generic for all Realtek codecs.
+> > > 
+> > > 
+> > > Takashi
+> > 
+> > Should kernel 2.6.36-rc1 work too? Otherwise I'll try the snapshot...
+> 
+> 2.6.36-rc1 should be OK, too.
+> 
+> 
+> Takashi
 
-The attached patch adds support for the tlv320aic3007 codec to the
-tlv320aic3x driver.
 
-The tlv320aic3007 is similar to the aic31, but has an additional
-class-D speaker amp. The speaker amp control register overlaps with
-the mono output register of other codecs in this family, so we allow
-the board driver to pass in a model id to identify the codec being
-used.
+It works! Thanks a lot!
 
-randolph
 
---0016367b6f006693c9048e2729f0
-Content-Type: application/octet-stream; name="tlv320aic3x.diff"
-Content-Disposition: attachment; filename="tlv320aic3x.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gd17v2sh0
-
-QWRkIHN1cHBvcnQgZm9yIHRsdjMyMGFpYzMwMDcgY29kZWMuCgpTaWduZWQtb2ZmLWJ5OiBSYW5k
-b2xwaCBDaHVuZyA8dGF1c3FAcGFyaXNjLWxpbnV4Lm9yZz4KCmRpZmYgLS1naXQgYS9pbmNsdWRl
-L3NvdW5kL3RsdjMyMGFpYzN4LmggYi9pbmNsdWRlL3NvdW5kL3RsdjMyMGFpYzN4LmgKaW5kZXgg
-YjFhNWYzNC4uMGMyOTMwMyAxMDA2NDQKLS0tIGEvaW5jbHVkZS9zb3VuZC90bHYzMjBhaWMzeC5o
-CisrKyBiL2luY2x1ZGUvc291bmQvdGx2MzIwYWljM3guaApAQCAtMTIsNiArMTIsOCBAQAogCiBz
-dHJ1Y3QgYWljM3hfcGRhdGEgewogCWludCBncGlvX3Jlc2V0OyAvKiA8IDAgaWYgbm90IHVzZWQg
-Ki8KKyNkZWZpbmUgQUlDM1hfTU9ERUxfMzAwNyAxICAvKiB0bHYzMjBhaWMzMDA3ICovCisgICAg
-dTE2IG1vZGVsOwogfTsKIAogI2VuZGlmCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3Rs
-djMyMGFpYzN4LmMgYi9zb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzN4LmMKaW5kZXggNjNjYWQ0
-My4uM2ZhMWQ2ZSAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzeC5jCisr
-KyBiL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWljM3guYwpAQCAtMTIsMTEgKzEyLDExIEBACiAg
-KgogICogTm90ZXM6CiAgKiAgVGhlIEFJQzNYIGlzIGEgZHJpdmVyIGZvciBhIGxvdyBwb3dlciBz
-dGVyZW8gYXVkaW8KLSAqICBjb2RlY3MgYWljMzEsIGFpYzMyLCBhaWMzMy4KKyAqICBjb2RlY3Mg
-YWljMzEsIGFpYzMyLCBhaWMzMywgYWljMzAwNy4KICAqCiAgKiAgSXQgc3VwcG9ydHMgZnVsbCBh
-aWMzMyBjb2RlYyBmdW5jdGlvbmFsaXR5LgogICogIFRoZSBjb21wYXRpYmlsaXR5IHdpdGggYWlj
-MzIsIGFpYzMxIGlzIGFzIGZvbGxvd3M6Ci0gKiAgICAgICAgYWljMzIgICAgICAgIHwgICAgICAg
-IGFpYzMxCisgKiAgICBhaWMzMi9haWMzMDA3ICAgIHwgICAgICAgIGFpYzMxCiAgKiAgLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiAgKiAgIE1PTk9fTE9VVCAtPiBOL0Eg
-IHwgIE1PTk9fTE9VVCAtPiBOL0EKICAqICAgICAgICAgICAgICAgICAgICAgfCAgSU4xTCAtPiBM
-SU5FMUwKQEAgLTY4LDYgKzY4LDcgQEAgc3RydWN0IGFpYzN4X3ByaXYgewogCXVuc2lnbmVkIGlu
-dCBzeXNjbGs7CiAJaW50IG1hc3RlcjsKIAlpbnQgZ3Bpb19yZXNldDsKKyAgICB1MTYgbW9kZWw7
-CiB9OwogCiAvKgpAQCAtMjQxLDYgKzI0Miw3IEBAIHN0YXRpYyBjb25zdCBjaGFyICphaWMzeF9y
-aWdodF9ocGNvbV9tdXhbXSA9CiBzdGF0aWMgY29uc3QgY2hhciAqYWljM3hfbGluZWluX21vZGVf
-bXV4W10gPSB7ICJzaW5nbGUtZW5kZWQiLCAiZGlmZmVyZW50aWFsIiB9Owogc3RhdGljIGNvbnN0
-IGNoYXIgKmFpYzN4X2FkY19ocGZbXSA9CiAgICAgeyAiRGlzYWJsZWQiLCAiMC4wMDQ1eEZzIiwg
-IjAuMDEyNXhGcyIsICIwLjAyNXhGcyIgfTsKK3N0YXRpYyBjb25zdCBjaGFyICphaWMzeF9jbGFz
-c2RfYW1wX2dhaW5bXSA9IHsgIjBkQiIsICI2ZEIiLCAiMTJkQiIsICIxOGRCIiB9OwogCiAjZGVm
-aW5lIExEQUNfRU5VTQkwCiAjZGVmaW5lIFJEQUNfRU5VTQkxCkBAIC0yNjQsNiArMjY2LDkgQEAg
-c3RhdGljIGNvbnN0IHN0cnVjdCBzb2NfZW51bSBhaWMzeF9lbnVtW10gPSB7CiAJU09DX0VOVU1f
-RE9VQkxFKEFJQzNYX0NPREVDX0RGSUxUX0NUUkwsIDYsIDQsIDQsIGFpYzN4X2FkY19ocGYpLAog
-fTsKIAorc3RhdGljIGNvbnN0IHN0cnVjdCBzb2NfZW51bSBhaWMzeF9jbGFzc2RfYW1wX2dhaW5f
-ZW51bSA9CisJU09DX0VOVU1fRE9VQkxFKENMQVNTRF9DVFJMLCA2LCA0LCA0LCBhaWMzeF9jbGFz
-c2RfYW1wX2dhaW4pOworCiAvKgogICogREFDIGRpZ2l0YWwgdm9sdW1lcy4gRnJvbSAtNjMuNSB0
-byAwIGRCIGluIDAuNSBkQiBzdGVwcwogICovCkBAIC0zNTksNiArMzY0LDkgQEAgc3RhdGljIGNv
-bnN0IHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IGFpYzN4X3NuZF9jb250cm9sc1tdID0gewogCVNP
-Q19FTlVNKCJBREMgSFBGIEN1dC1vZmYiLCBhaWMzeF9lbnVtW0FEQ19IUEZfRU5VTV0pLAogfTsK
-IAorc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IGFpYzN4X2NsYXNzZF9hbXBf
-Z2Fpbl9jdHJsID0KKwlTT0NfRU5VTSgiQ2xhc3MtRCBBbXBsaWZpZXIgR2FpbiIsIGFpYzN4X2Ns
-YXNzZF9hbXBfZ2Fpbl9lbnVtKTsKKwogLyogTGVmdCBEQUMgTXV4ICovCiBzdGF0aWMgY29uc3Qg
-c3RydWN0IHNuZF9rY29udHJvbF9uZXcgYWljM3hfbGVmdF9kYWNfbXV4X2NvbnRyb2xzID0KIFNP
-Q19EQVBNX0VOVU0oIlJvdXRlIiwgYWljM3hfZW51bVtMREFDX0VOVU1dKTsKQEAgLTU4Nyw2ICs1
-OTUsMTUgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0IGFpYzN4X2Rh
-cG1fd2lkZ2V0c1tdID0gewogCVNORF9TT0NfREFQTV9JTlBVVCgiTElORTJSIiksCiB9OwogCitz
-dGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV93aWRnZXQgYWljMzAwN19kYXBtX3dpZGdl
-dHNbXSA9IHsKKwkvKiBDbGFzcy1EIG91dHB1dHMgKi8KKwlTTkRfU09DX0RBUE1fUEdBKCJMZWZ0
-IENsYXNzLUQgT3V0IiwgQ0xBU1NEX0NUUkwsIDMsIDAsIE5VTEwsIDApLAorCVNORF9TT0NfREFQ
-TV9QR0EoIlJpZ2h0IENsYXNzLUQgT3V0IiwgQ0xBU1NEX0NUUkwsIDIsIDAsIE5VTEwsIDApLAor
-CisJU05EX1NPQ19EQVBNX09VVFBVVCgiU1BPUCIpLAorCVNORF9TT0NfREFQTV9PVVRQVVQoIlNQ
-T00iKSwKK307CisKIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3JvdXRlIGludGVy
-Y29uW10gPSB7CiAJLyogTGVmdCBPdXRwdXQgKi8KIAl7IkxlZnQgREFDIE11eCIsICJEQUNfTDEi
-LCAiTGVmdCBEQUMifSwKQEAgLTc1NywxNCArNzc0LDMwIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
-c25kX3NvY19kYXBtX3JvdXRlIGludGVyY29uW10gPSB7CiAJeyJHUElPMSBkbWljIG1vZGNsayIs
-IE5VTEwsICJETWljIFJhdGUgMzIifSwKIH07CiAKK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3Nv
-Y19kYXBtX3JvdXRlIGludGVyY29uXzMwMDdbXSA9IHsKKwkvKiBDbGFzcy1EIG91dHB1dHMgKi8K
-Kwl7IkxlZnQgQ2xhc3MtRCBPdXQiLCBOVUxMLCAiTGVmdCBMaW5lIE91dCJ9LAorCXsiUmlnaHQg
-Q2xhc3MtRCBPdXQiLCBOVUxMLCAiTGVmdCBMaW5lIE91dCJ9LAorCXsiU1BPUCIsIE5VTEwsICJM
-ZWZ0IENsYXNzLUQgT3V0In0sCisJeyJTUE9NIiwgTlVMTCwgIlJpZ2h0IENsYXNzLUQgT3V0In0s
-Cit9OworCiBzdGF0aWMgaW50IGFpYzN4X2FkZF93aWRnZXRzKHN0cnVjdCBzbmRfc29jX2NvZGVj
-ICpjb2RlYykKIHsKKwlzdHJ1Y3QgYWljM3hfcHJpdiAqYWljM3ggPSBzbmRfc29jX2NvZGVjX2dl
-dF9kcnZkYXRhKGNvZGVjKTsKKwogCXNuZF9zb2NfZGFwbV9uZXdfY29udHJvbHMoY29kZWMsIGFp
-YzN4X2RhcG1fd2lkZ2V0cywKIAkJCQkgIEFSUkFZX1NJWkUoYWljM3hfZGFwbV93aWRnZXRzKSk7
-CiAKIAkvKiBzZXQgdXAgYXVkaW8gcGF0aCBpbnRlcmNvbm5lY3RzICovCiAJc25kX3NvY19kYXBt
-X2FkZF9yb3V0ZXMoY29kZWMsIGludGVyY29uLCBBUlJBWV9TSVpFKGludGVyY29uKSk7CiAKKwlp
-ZiAoYWljM3gtPm1vZGVsID09IEFJQzNYX01PREVMXzMwMDcpIHsKKwkJc25kX3NvY19kYXBtX25l
-d19jb250cm9scyhjb2RlYywgYWljMzAwN19kYXBtX3dpZGdldHMsCisJCQlBUlJBWV9TSVpFKGFp
-YzMwMDdfZGFwbV93aWRnZXRzKSk7CisJCXNuZF9zb2NfZGFwbV9hZGRfcm91dGVzKGNvZGVjLCBp
-bnRlcmNvbl8zMDA3LCBBUlJBWV9TSVpFKGludGVyY29uXzMwMDcpKTsKKyAgICB9CisKIAlyZXR1
-cm4gMDsKIH0KIApAQCAtMTE1Niw2ICsxMTg5LDcgQEAgc3RhdGljIGludCBhaWMzeF9yZXN1bWUo
-c3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKICAqLwogc3RhdGljIGludCBhaWMzeF9pbml0
-KHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYykKIHsKKwlzdHJ1Y3QgYWljM3hfcHJpdiAqYWlj
-M3ggPSBzbmRfc29jX2NvZGVjX2dldF9kcnZkYXRhKGNvZGVjKTsKIAlpbnQgcmVnOwogCiAJbXV0
-ZXhfaW5pdCgmY29kZWMtPm11dGV4KTsKQEAgLTEyNDAsNiArMTI3NCwxNiBAQCBzdGF0aWMgaW50
-IGFpYzN4X2luaXQoc3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjKQogCWFpYzN4X3dyaXRlKGNv
-ZGVjLCBMSU5FMkxfMl9NT05PTE9QTV9WT0wsIERFRkFVTFRfVk9MKTsKIAlhaWMzeF93cml0ZShj
-b2RlYywgTElORTJSXzJfTU9OT0xPUE1fVk9MLCBERUZBVUxUX1ZPTCk7CiAKKwlpZiAoYWljM3gt
-Pm1vZGVsID09IEFJQzNYX01PREVMXzMwMDcpIHsKKwkJLyogQ2xhc3MtRCBzcGVha2VyIGRyaXZl
-ciBpbml0OyBkYXRhc2hlZXQgcC4gNDYgKi8KKwkJYWljM3hfd3JpdGUoY29kZWMsIEFJQzNYX1BB
-R0VfU0VMRUNULCAweDBEKTsKKwkJYWljM3hfd3JpdGUoY29kZWMsIDB4RCwgMHgwRCk7CisJCWFp
-YzN4X3dyaXRlKGNvZGVjLCAweDgsIDB4NUMpOworCQlhaWMzeF93cml0ZShjb2RlYywgMHg4LCAw
-eDVEKTsKKwkJYWljM3hfd3JpdGUoY29kZWMsIDB4OCwgMHg1Qyk7CisJCWFpYzN4X3dyaXRlKGNv
-ZGVjLCBBSUMzWF9QQUdFX1NFTEVDVCwgMHgwMCk7CisJfQorCiAJLyogb2ZmLCB3aXRoIHBvd2Vy
-IG9uICovCiAJYWljM3hfc2V0X2JpYXNfbGV2ZWwoY29kZWMsIFNORF9TT0NfQklBU19TVEFOREJZ
-KTsKIApAQCAtMTMzNiw2ICsxMzgwLDggQEAgc3RhdGljIGludCBhaWMzeF9pMmNfcHJvYmUoc3Ry
-dWN0IGkyY19jbGllbnQgKmkyYywKIAkJYWljM3gtPmdwaW9fcmVzZXQgPSBwZGF0YS0+Z3Bpb19y
-ZXNldDsKIAkJZ3Bpb19kaXJlY3Rpb25fb3V0cHV0KGFpYzN4LT5ncGlvX3Jlc2V0LCAwKTsKIAl9
-CisJaWYgKHBkYXRhKQorCQlhaWMzeC0+bW9kZWwgPSBwZGF0YS0+bW9kZWw7CiAKIAlmb3IgKGkg
-PSAwOyBpIDwgQVJSQVlfU0laRShhaWMzeC0+c3VwcGxpZXMpOyBpKyspCiAJCWFpYzN4LT5zdXBw
-bGllc1tpXS5zdXBwbHkgPSBhaWMzeF9zdXBwbHlfbmFtZXNbaV07CkBAIC0xNDIwLDYgKzE0NjYs
-NyBAQCBzdGF0aWMgaW50IGFpYzN4X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYp
-CiAJc3RydWN0IHNuZF9zb2NfZGV2aWNlICpzb2NkZXYgPSBwbGF0Zm9ybV9nZXRfZHJ2ZGF0YShw
-ZGV2KTsKIAlzdHJ1Y3QgYWljM3hfc2V0dXBfZGF0YSAqc2V0dXA7CiAJc3RydWN0IHNuZF9zb2Nf
-Y29kZWMgKmNvZGVjOworCXN0cnVjdCBhaWMzeF9wcml2ICphaWMzeDsKIAlpbnQgcmV0ID0gMDsK
-IAogCWNvZGVjID0gYWljM3hfY29kZWM7CkBAIC0xNDQ5LDYgKzE0OTYsOSBAQCBzdGF0aWMgaW50
-IGFpYzN4X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiAJc25kX3NvY19hZGRf
-Y29udHJvbHMoY29kZWMsIGFpYzN4X3NuZF9jb250cm9scywKIAkJCSAgICAgQVJSQVlfU0laRShh
-aWMzeF9zbmRfY29udHJvbHMpKTsKIAorCWFpYzN4ID0gc25kX3NvY19jb2RlY19nZXRfZHJ2ZGF0
-YShjb2RlYyk7CisJaWYgKGFpYzN4LT5tb2RlbCA9PSBBSUMzWF9NT0RFTF8zMDA3KQorCQlzbmRf
-c29jX2FkZF9jb250cm9scyhjb2RlYywgJmFpYzN4X2NsYXNzZF9hbXBfZ2Fpbl9jdHJsLCAxKTsK
-IAlhaWMzeF9hZGRfd2lkZ2V0cyhjb2RlYyk7CiAKIAlyZXR1cm4gcmV0OwpkaWZmIC0tZ2l0IGEv
-c291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMzeC5oIGIvc291bmQvc29jL2NvZGVjcy90bHYzMjBh
-aWMzeC5oCmluZGV4IDlhZjFjODguLjE5ZWY3ZGMgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9jb2Rl
-Y3MvdGx2MzIwYWljM3guaAorKysgYi9zb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzN4LmgKQEAg
-LTExMSw2ICsxMTEsOCBAQAogI2RlZmluZSBEQUNMMV8yX01PTk9MT1BNX1ZPTAkJNzUKICNkZWZp
-bmUgREFDUjFfMl9NT05PTE9QTV9WT0wJCTc4CiAjZGVmaW5lIE1PTk9MT1BNX0NUUkwJCQk3OQor
-LyogQ2xhc3MtRCBzcGVha2VyIGRyaXZlciBvbiB0bHYzMjBhaWMzMDA3ICovCisjZGVmaW5lIENM
-QVNTRF9DVFJMCQkJNzMKIC8qIExpbmUgT3V0cHV0IFBsdXMvTWludXMgY29udHJvbCByZWdpc3Rl
-cnMgKi8KICNkZWZpbmUgTElORTJMXzJfTExPUE1fVk9MCQk4MAogI2RlZmluZSBMSU5FMkxfMl9S
-TE9QTV9WT0wJCTg3Cg==
---0016367b6f006693c9048e2729f0
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---0016367b6f006693c9048e2729f0--
+Sander
