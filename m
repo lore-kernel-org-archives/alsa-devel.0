@@ -1,27 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/7] ASoC: Automatically calculate clock
- ratio for WM8580
-Date: Tue, 17 Aug 2010 10:46:05 +0100
-Message-ID: <20100817094605.GC18622@rakim.wolfsonmicro.main>
-References: <20100813193305.GB3778@sirena.org.uk>
-	<1281728107-25386-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<AANLkTi=6Op9C3adxhN8HsZu9FewFYqeCWRoQs=P3LP18@mail.gmail.com>
-	<20100815110924.GA25723@opensource.wolfsonmicro.com>
-	<AANLkTi=9Y=uhX2b+Y=OMGCVA=gJNif8HwXe3Eg517nbq@mail.gmail.com>
-	<20100816102010.GB3276@rakim.wolfsonmicro.main>
-	<AANLkTinTYo6_BBSkhTt8Km-MR4wwexDS3orFJdNSiufT@mail.gmail.com>
-	<20100816151958.GE3276@rakim.wolfsonmicro.main>
-	<AANLkTindYfm3vh_OgF-0tt_MS+Uxii2s7Dw=Kk487RTd@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: add 88pm860x codec driver
+Date: Tue, 17 Aug 2010 10:58:00 +0100
+Message-ID: <20100817095800.GD18622@rakim.wolfsonmicro.main>
+References: <AANLkTi=i5H_oJvXzMv71ofxyw9FFXpiXU=pgzf+rdgk0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 86C522440E
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9319F24435
 	for <alsa-devel@alsa-project.org>;
-	Tue, 17 Aug 2010 11:46:07 +0200 (CEST)
+	Tue, 17 Aug 2010 11:58:01 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <AANLkTindYfm3vh_OgF-0tt_MS+Uxii2s7Dw=Kk487RTd@mail.gmail.com>
+In-Reply-To: <AANLkTi=i5H_oJvXzMv71ofxyw9FFXpiXU=pgzf+rdgk0@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,25 +22,122 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: Seungwhan Youn <sw.youn@samsung.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Seungwhan Youn <claude.youn@gmail.com>
+To: Haojian Zhuang <haojian.zhuang@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 17, 2010 at 08:14:43AM +0900, Jassi Brar wrote:
+On Tue, Aug 17, 2010 at 03:47:59PM +0800, Haojian Zhuang wrote:
 
-> I guess most quality conscious products can afford to attach a dedicated
-> OSC to a good CODEC. A CODEC already specifies the clocks it support
-> and usually comes with 'preferred' input clocks. So, just having a specified
-> rating accurate enough OSC can take care of quality. On the other hand
-> the clock sources on CPU side are not particularly accurate for audio-clock
-> generation. Or so have I seen so far.
+> +enum {
+> +	FILTER_BYPASS = 0,
+> +	FILTER_LOW_PASS_1,
+> +	FILTER_LOW_PASS_2,
+> +	FILTER_HIGH_PASS_3,
+> +	FILTER_MAX,
+> +};
 
-Right, this shouldn't be an issue with the change I proposed - the
-clocks are still rooted from the CODEC and its clock generation
-facilities would still be used, it's just that they get routed
-differently.
+This looks to be unused.
 
-The issue with using most CPU clocks isn't really the dedicated
-oscillator so much as the ability to generate non-integer divisions of
-whatever input clock is available.  If this can't be done then it can be
-hard to generate the full range of common audio frequencies.
+> +/* DAPM Widget Events */
+> +static int pm860x_rsync_event(struct snd_soc_dapm_widget *w,
+> +			      struct snd_kcontrol *kcontrol, int event)
+> +{
+> +	struct snd_soc_codec *codec = w->codec;
+> +
+> +	/* unmute DAC */
+> +	snd_soc_update_bits(codec, PM860X_DAC_OFFSET, DAC_MUTE, 0);
+
+Can you explain what's going on with this mute handling please?
+
+> +	switch (event) {
+> +	case SND_SOC_DAPM_PRE_PMU:
+> +		snd_soc_update_bits(codec, PM860X_ADC_EN_1, en1, en1);
+> +		snd_soc_update_bits(codec, PM860X_ADC_EN_2, en2, en2);
+
+I still don't follow why you need a custom event for this.
+
+> +	switch (event) {
+> +	case SND_SOC_DAPM_PRE_PMU:
+> +		if (dac) {
+> +			dac |= MODULATOR;
+> +			/* mute */
+> +			snd_soc_update_bits(codec, PM860X_DAC_OFFSET,
+> +					    DAC_MUTE, DAC_MUTE);
+
+This mute handling looks very suspicious.
+
+> +static int pm860x_mic1_event(struct snd_soc_dapm_widget *w,
+> +			     struct snd_kcontrol *kcontrol, int event)
+> +{
+> +	struct snd_soc_codec *codec = w->codec;
+> +
+> +	switch (event) {
+> +	case SND_SOC_DAPM_POST_PMU:
+> +		/* Enable Mic1 Bias & MICDET, HSDET */
+> +		snd_soc_update_bits(codec, PM860X_ADC_ANA_1, MIC1BIAS_MASK,
+> +				    MIC1BIAS_MASK);
+
+As I said last time you should handle this via DAPM.
+
+> +		pm860x_set_bits(codec->control_data, REG_MIC_DET,
+> +				MICDET_MASK, MICDET_MASK);
+> +		pm860x_set_bits(codec->control_data, REG_HS_DET,
+> +				EN_HS_DET, EN_HS_DET);
+
+This should be associated with enabling microphone detection.
+
+> +	/* set master/slave audio interface */
+> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> +	case SND_SOC_DAIFMT_CBM_CFM:
+> +	case SND_SOC_DAIFMT_CBM_CFS:
+> +		if (pm860x->dir == PM860X_CLK_DIR_OUT)
+> +			*inf |= PCM_INF2_MASTER;
+> +		else
+> +			return -EINVAL;
+> +		break;
+
+You're setting the same register configuration for two different DAI
+clock master configurations here.  Presumably one of the settings is
+inaccurate?
+
+> +static int pm860x_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+> +				 int clk_id, unsigned int freq, int dir)
+> +{
+> +	struct snd_soc_codec *codec = codec_dai->codec;
+> +	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
+> +
+> +	if (dir == PM860X_CLK_DIR_OUT)
+> +		pm860x->dir = PM860X_CLK_DIR_OUT;
+> +	else
+> +		pm860x->dir = PM860X_CLK_DIR_IN;
+> +
+> +	return 0;
+> +}
+
+What is this actually setting - which clock is being configured here?
+
+> +static irqreturn_t pm860x_codec_handler(int irq, void *data)
+> +{
+> +	struct pm860x_priv *pm860x = data;
+> +	int status, shrt, report = 0;
+> +
+> +	status = pm860x_reg_read(pm860x->i2c, REG_STATUS_1);
+> +	shrt = pm860x_reg_read(pm860x->i2c, REG_SHORTS);
+> +
+> +	if (status & HEADSET_STATUS)
+> +		report |= PM860X_DET_HEADSET;
+> +	if (status & MIC_STATUS)
+> +		report |= PM860X_DET_MIC;
+> +	if (status & HOOK_STATUS)
+> +		report |= PM860X_DET_HOOK;
+> +	if (shrt & (SHORT_LO1 | SHORT_LO2))
+> +		report |= PM860X_SHORT_LINEOUT;
+> +	if (shrt & (SHORT_HS1 | SHORT_HS2))
+> +		report |= PM860X_SHORT_HEADSET;
+> +	dev_dbg(pm860x->codec->dev, "report:0x%x\n", report);
+> +	return IRQ_HANDLED;
+
+It would seem better to just remove the interrupt handling support
+entirely if you're not going to implement jack detection.  Right now all
+the curernt code will do is waste power by enabling the feature but
+ignoring the result.
