@@ -1,17 +1,18 @@
 From: Haojian Zhuang <haojian.zhuang@gmail.com>
-Subject: [PATCH 0/3] ASoC: support 88pm860x codec
-Date: Wed, 18 Aug 2010 21:49:09 +0800
-Message-ID: <AANLkTimUX7hhVzCGOpzadrOgMVZV7OgLNhxcHsF1radK@mail.gmail.com>
+Subject: [PATCH 1/3] ASoC: add 88pm860x codec driver
+Date: Wed, 18 Aug 2010 21:49:26 +0800
+Message-ID: <AANLkTimBPhvukwqDGY8iORhY+wg8OnHi9+eOedJB2E8k@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=0016367f9c26769077048e19543c
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
 	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id A0DC51037E3
+	by alsa0.perex.cz (Postfix) with ESMTP id DD1C61037E3
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 Aug 2010 15:49:09 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so333392ewy.38
-	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2010 06:49:09 -0700 (PDT)
+	Wed, 18 Aug 2010 15:49:26 +0200 (CEST)
+Received: by mail-ew0-f51.google.com with SMTP id 21so333392ewy.38
+	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2010 06:49:26 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,388 +25,1666 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <Mark.Brown@wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---0016367f9c26769077048e19543c
-Content-Type: text/plain; charset=ISO-8859-1
+>From 1f0cd241b93702d8e4655516a3884464cda43aab Mon Sep 17 00:00:00 2001
+From: Haojian Zhuang <haojian.zhuang@marvell.com>
+Date: Thu, 12 Aug 2010 12:01:47 +0800
+Subject: [PATCH 1/3] ASoC: add 88pm860x codec driver
 
-Chagelog:
+Add 88PM860x codec driver. 88PM860x codec supports two interfaces. And it
+also supports headset/mic/hook/short detection.
 
-1. Jack is added back.
+Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
+---
+ sound/soc/codecs/88pm860x-codec.c | 1493 +++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/88pm860x-codec.h |   97 +++
+ sound/soc/codecs/Kconfig          |    4 +
+ sound/soc/codecs/Makefile         |    2 +
+ 4 files changed, 1596 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/codecs/88pm860x-codec.c
+ create mode 100644 sound/soc/codecs/88pm860x-codec.h
 
-2. Update followed by comments.
+diff --git a/sound/soc/codecs/88pm860x-codec.c
+b/sound/soc/codecs/88pm860x-codec.c
+new file mode 100644
+index 0000000..1cc7565
+--- /dev/null
++++ b/sound/soc/codecs/88pm860x-codec.c
+@@ -0,0 +1,1493 @@
++/*
++ * 88pm860x-codec.c -- 88PM860x ALSA SoC Audio Driver
++ *
++ * Copyright 2010 Marvell International Ltd.
++ * Author: Haojian Zhuang <haojian.zhuang@marvell.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/i2c.h>
++#include <linux/platform_device.h>
++#include <linux/mfd/88pm860x.h>
++#include <linux/slab.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/tlv.h>
++#include <sound/initval.h>
++#include <sound/jack.h>
++
++#include "88pm860x-codec.h"
++
++#define MAX_NAME_LEN		20
++#define REG_CACHE_SIZE		0x40
++#define REG_CACHE_BASE		0xb0
++
++/* Status Register 1 (0x01) */
++#define REG_STATUS_1		0x01
++#define MIC_STATUS		(1 << 7)
++#define HOOK_STATUS		(1 << 6)
++#define HEADSET_STATUS		(1 << 5)
++
++/* Mic Detection Register (0x37) */
++#define REG_MIC_DET		0x37
++#define CONTINUOUS_POLLING	(3 << 1)
++#define EN_MIC_DET		(1 << 0)
++#define MICDET_MASK		0x07
++
++/* Headset Detection Register (0x38) */
++#define REG_HS_DET		0x38
++#define EN_HS_DET		(1 << 0)
++
++/* Misc2 Register (0x42) */
++#define REG_MISC2		0x42
++#define AUDIO_PLL		(1 << 5)
++#define AUDIO_SECTION_RESET	(1 << 4)
++#define AUDIO_SECTION_ON	(1 << 3)
++
++/* PCM Interface Register 2 (0xb1) */
++#define PCM_INF2_BCLK		(1 << 6)	/* Bit clock polarity */
++#define PCM_INF2_FS		(1 << 5)	/* Frame Sync polarity */
++#define PCM_INF2_MASTER		(1 << 4)	/* Master / Slave */
++#define PCM_INF2_18WL		(1 << 3)	/* 18 / 16 bits */
++#define PCM_GENERAL_I2S		0
++#define PCM_EXACT_I2S		1
++#define PCM_LEFT_I2S		2
++#define PCM_RIGHT_I2S		3
++#define PCM_SHORT_FS		4
++#define PCM_LONG_FS		5
++#define PCM_MODE_MASK		7
++
++/* I2S Interface Register 4 (0xbe) */
++#define I2S_EQU_BYP		(1 << 6)
++
++/* DAC Offset Register (0xcb) */
++#define DAC_MUTE		(1 << 7)
++
++/* ADC Analog Register 1 (0xd0) */
++#define REG_ADC_ANA_1		0xd0
++#define MIC1BIAS_MASK		0x60
++
++/* Earpiece/Speaker Control Register 2 (0xda) */
++#define REG_EAR2		0xda
++#define RSYNC_CHANGE		(1 << 2)
++
++/* Audio Supplies Register 2 (0xdc) */
++#define REG_SUPPLIES2		0xdc
++#define LDO15_READY		(1 << 4)
++#define LDO15_EN		(1 << 3)
++#define CPUMP_READY		(1 << 2)
++#define CPUMP_EN		(1 << 1)
++#define AUDIO_EN		(1 << 0)
++#define SUPPLY_MASK		(LDO15_EN | CPUMP_EN | AUDIO_EN)
++
++/* Audio Enable Register 1 (0xdd) */
++#define ADC_MOD_RIGHT		(1 << 1)
++#define ADC_MOD_LEFT		(1 << 0)
++
++/* Audio Enable Register 2 (0xde) */
++#define ADC_LEFT		(1 << 5)
++#define ADC_RIGHT		(1 << 4)
++
++/* DAC Enable Register 2 (0xe1) */
++#define DAC_LEFT		(1 << 5)
++#define DAC_RIGHT		(1 << 4)
++#define MODULATOR		(1 << 3)
++
++/* Shorts Register (0xeb) */
++#define REG_SHORTS		0xeb
++#define CLR_SHORT_LO2		(1 << 7)
++#define SHORT_LO2		(1 << 6)
++#define CLR_SHORT_LO1		(1 << 5)
++#define SHORT_LO1		(1 << 4)
++#define CLR_SHORT_HS2		(1 << 3)
++#define SHORT_HS2		(1 << 2)
++#define CLR_SHORT_HS1		(1 << 1)
++#define SHORT_HS1		(1 << 0)
++
++#define PM860X_DAPM_OUTPUT(wname, wevent)	\
++{	.id = snd_soc_dapm_output, .name = wname, .kcontrols = NULL, \
++	.num_kcontrols = 0, .event = wevent, \
++	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD, }
++
++struct pm860x_det {
++	struct snd_soc_jack	*jack;
++	int			hs_det;
++	int			hs_shrt;
++	int			hook_det;
++	int			lo_shrt;
++};
++
++struct pm860x_priv {
++	unsigned int		sysclk;
++	unsigned int		pcmclk;
++	unsigned int		dir;
++	unsigned int		automute;
++	unsigned int		filter;
++	struct snd_soc_codec	*codec;
++	struct i2c_client	*i2c;
++	struct pm860x_chip	*chip;
++	struct mutex		mutex;
++	struct pm860x_det	det;
++
++	int			irq[4];
++	unsigned char		name[4][MAX_NAME_LEN];
++	unsigned char		reg_cache[REG_CACHE_SIZE];
++};
++
++/* -9450dB to 0dB in 150dB steps ( mute instead of -9450dB) */
++static const DECLARE_TLV_DB_SCALE(dpga_tlv, -9450, 150, 1);
++
++/* -9dB to 0db in 3dB steps */
++static const DECLARE_TLV_DB_SCALE(adc_tlv, -900, 300, 0);
++
++/* {-23, -17, -13.5, -11, -9, -6, -3, 0}dB */
++static const unsigned int mic_tlv[] = {
++	TLV_DB_RANGE_HEAD(5),
++	0, 0, TLV_DB_SCALE_ITEM(-2300, 0, 0),
++	1, 1, TLV_DB_SCALE_ITEM(-1700, 0, 0),
++	2, 2, TLV_DB_SCALE_ITEM(-1350, 0, 0),
++	3, 3, TLV_DB_SCALE_ITEM(-1100, 0, 0),
++	4, 7, TLV_DB_SCALE_ITEM(-900, 300, 0),
++};
++
++/* {0, 0, 0, -6, 0, 6, 12, 18}dB */
++static const unsigned int aux_tlv[] = {
++	TLV_DB_RANGE_HEAD(2),
++	0, 2, TLV_DB_SCALE_ITEM(0, 0, 0),
++	3, 7, TLV_DB_SCALE_ITEM(-600, 600, 0),
++};
++
++/* {-16, -13, -10, -7, -5.2, -3,3, -2.2, 0}dB, mute instead of -16dB */
++static const unsigned int out_tlv[] = {
++	TLV_DB_RANGE_HEAD(4),
++	0, 3, TLV_DB_SCALE_ITEM(-1600, 300, 1),
++	4, 4, TLV_DB_SCALE_ITEM(-520, 0, 0),
++	5, 5, TLV_DB_SCALE_ITEM(-330, 0, 0),
++	6, 7, TLV_DB_SCALE_ITEM(-220, 220, 0),
++};
++
++static const unsigned int st_tlv[] = {
++	TLV_DB_RANGE_HEAD(8),
++	0, 1, TLV_DB_SCALE_ITEM(-12041, 602, 0),
++	2, 3, TLV_DB_SCALE_ITEM(-11087, 250, 0),
++	4, 5, TLV_DB_SCALE_ITEM(-10643, 158, 0),
++	6, 7, TLV_DB_SCALE_ITEM(-10351, 116, 0),
++	8, 9, TLV_DB_SCALE_ITEM(-10133, 92, 0),
++	10, 13, TLV_DB_SCALE_ITEM(-9958, 70, 0),
++	14, 17, TLV_DB_SCALE_ITEM(-9689, 53, 0),
++	18, 271, TLV_DB_SCALE_ITEM(-9484, 37, 0),
++};
++
++/* Sidetone Gain = M * 2^(-5-N) */
++struct st_gain {
++	unsigned int	db;
++	unsigned int	m;
++	unsigned int	n;
++};
++
++static struct st_gain st_table[] = {
++	{-12041,  1, 15}, {-11439,  1, 14}, {-11087,  3, 15}, {-10837,  1, 13},
++	{-10643,  5, 15}, {-10485,  3, 14}, {-10351,  7, 15}, {-10235,  1, 12},
++	{-10133,  9, 15}, {-10041,  5, 14}, { -9958, 11, 15}, { -9883,  3, 13},
++	{ -9813, 13, 15}, { -9749,  7, 14}, { -9689, 15, 15}, { -9633,  1, 11},
++	{ -9580, 17, 15}, { -9531,  9, 14}, { -9484, 19, 15}, { -9439,  5, 13},
++	{ -9397, 21, 15}, { -9356, 11, 14}, { -9318, 23, 15}, { -9281,  3, 12},
++	{ -9245, 25, 15}, { -9211, 13, 14}, { -9178, 27, 15}, { -9147,  7, 13},
++	{ -9116, 29, 15}, { -9087, 15, 14}, { -9058, 31, 15}, { -9031,  1, 10},
++	{ -8978, 17, 14}, { -8929,  9, 13}, { -8882, 19, 14}, { -8837,  5, 12},
++	{ -8795, 21, 14}, { -8754, 11, 13}, { -8716, 23, 14}, { -8679,  3, 11},
++	{ -8643, 25, 14}, { -8609, 13, 13}, { -8576, 27, 14}, { -8545,  7, 12},
++	{ -8514, 29, 14}, { -8485, 15, 13}, { -8456, 31, 14}, { -8429,  1,  9},
++	{ -8376, 17, 13}, { -8327,  9, 12}, { -8280, 19, 13}, { -8235,  5, 11},
++	{ -8193, 21, 13}, { -8152, 11, 12}, { -8114, 23, 13}, { -8077,  3, 10},
++	{ -8041, 25, 13}, { -8007, 13, 12}, { -7974, 27, 13}, { -7943,  7, 11},
++	{ -7912, 29, 13}, { -7883, 15, 12}, { -7854, 31, 13}, { -7827,  1,  8},
++	{ -7774, 17, 12}, { -7724,  9, 11}, { -7678, 19, 12}, { -7633,  5, 10},
++	{ -7591, 21, 12}, { -7550, 11, 11}, { -7512, 23, 12}, { -7475,  3,  9},
++	{ -7439, 25, 12}, { -7405, 13, 11}, { -7372, 27, 12}, { -7341,  7, 10},
++	{ -7310, 29, 12}, { -7281, 15, 11}, { -7252, 31, 12}, { -7225,  1,  7},
++	{ -7172, 17, 11}, { -7122,  9, 10}, { -7075, 19, 11}, { -7031,  5,  9},
++	{ -6989, 21, 11}, { -6948, 11, 10}, { -6910, 23, 11}, { -6873,  3,  8},
++	{ -6837, 25, 11}, { -6803, 13, 10}, { -6770, 27, 11}, { -6739,  7,  9},
++	{ -6708, 29, 11}, { -6679, 15, 10}, { -6650, 31, 11}, { -6623,  1,  6},
++	{ -6570, 17, 10}, { -6520,  9,  9}, { -6473, 19, 10}, { -6429,  5,  8},
++	{ -6386, 21, 10}, { -6346, 11,  9}, { -6307, 23, 10}, { -6270,  3,  7},
++	{ -6235, 25, 10}, { -6201, 13,  9}, { -6168, 27, 10}, { -6137,  7,  8},
++	{ -6106, 29, 10}, { -6077, 15,  9}, { -6048, 31, 10}, { -6021,  1,  5},
++	{ -5968, 17,  9}, { -5918,  9,  8}, { -5871, 19,  9}, { -5827,  5,  7},
++	{ -5784, 21,  9}, { -5744, 11,  8}, { -5705, 23,  9}, { -5668,  3,  6},
++	{ -5633, 25,  9}, { -5599, 13,  8}, { -5566, 27,  9}, { -5535,  7,  7},
++	{ -5504, 29,  9}, { -5475, 15,  8}, { -5446, 31,  9}, { -5419,  1,  4},
++	{ -5366, 17,  8}, { -5316,  9,  7}, { -5269, 19,  8}, { -5225,  5,  6},
++	{ -5182, 21,  8}, { -5142, 11,  7}, { -5103, 23,  8}, { -5066,  3,  5},
++	{ -5031, 25,  8}, { -4997, 13,  7}, { -4964, 27,  8}, { -4932,  7,  6},
++	{ -4902, 29,  8}, { -4873, 15,  7}, { -4844, 31,  8}, { -4816,  1,  3},
++	{ -4764, 17,  7}, { -4714,  9,  6}, { -4667, 19,  7}, { -4623,  5,  5},
++	{ -4580, 21,  7}, { -4540, 11,  6}, { -4501, 23,  7}, { -4464,  3,  4},
++	{ -4429, 25,  7}, { -4395, 13,  6}, { -4362, 27,  7}, { -4330,  7,  5},
++	{ -4300, 29,  7}, { -4270, 15,  6}, { -4242, 31,  7}, { -4214,  1,  2},
++	{ -4162, 17,  6}, { -4112,  9,  5}, { -4065, 19,  6}, { -4021,  5,  4},
++	{ -3978, 21,  6}, { -3938, 11,  5}, { -3899, 23,  6}, { -3862,  3,  3},
++	{ -3827, 25,  6}, { -3793, 13,  5}, { -3760, 27,  6}, { -3728,  7,  4},
++	{ -3698, 29,  6}, { -3668, 15,  5}, { -3640, 31,  6}, { -3612,  1,  1},
++	{ -3560, 17,  5}, { -3510,  9,  4}, { -3463, 19,  5}, { -3419,  5,  3},
++	{ -3376, 21,  5}, { -3336, 11,  4}, { -3297, 23,  5}, { -3260,  3,  2},
++	{ -3225, 25,  5}, { -3191, 13,  4}, { -3158, 27,  5}, { -3126,  7,  3},
++	{ -3096, 29,  5}, { -3066, 15,  4}, { -3038, 31,  5}, { -3010,  1,  0},
++	{ -2958, 17,  4}, { -2908,  9,  3}, { -2861, 19,  4}, { -2816,  5,  2},
++	{ -2774, 21,  4}, { -2734, 11,  3}, { -2695, 23,  4}, { -2658,  3,  1},
++	{ -2623, 25,  4}, { -2589, 13,  3}, { -2556, 27,  4}, { -2524,  7,  2},
++	{ -2494, 29,  4}, { -2464, 15,  3}, { -2436, 31,  4}, { -2408,  2,  0},
++	{ -2356, 17,  3}, { -2306,  9,  2}, { -2259, 19,  3}, { -2214,  5,  1},
++	{ -2172, 21,  3}, { -2132, 11,  2}, { -2093, 23,  3}, { -2056,  3,  0},
++	{ -2021, 25,  3}, { -1987, 13,  2}, { -1954, 27,  3}, { -1922,  7,  1},
++	{ -1892, 29,  3}, { -1862, 15,  2}, { -1834, 31,  3}, { -1806,  4,  0},
++	{ -1754, 17,  2}, { -1704,  9,  1}, { -1657, 19,  2}, { -1612,  5,  0},
++	{ -1570, 21,  2}, { -1530, 11,  1}, { -1491, 23,  2}, { -1454,  6,  0},
++	{ -1419, 25,  2}, { -1384, 13,  1}, { -1352, 27,  2}, { -1320,  7,  0},
++	{ -1290, 29,  2}, { -1260, 15,  1}, { -1232, 31,  2}, { -1204,  8,  0},
++	{ -1151, 17,  1}, { -1102,  9,  0}, { -1055, 19,  1}, { -1010, 10,  0},
++	{  -968, 21,  1}, {  -928, 11,  0}, {  -889, 23,  1}, {  -852, 12,  0},
++	{  -816, 25,  1}, {  -782, 13,  0}, {  -750, 27,  1}, {  -718, 14,  0},
++	{  -688, 29,  1}, {  -658, 15,  0}, {  -630, 31,  1}, {  -602, 16,  0},
++	{  -549, 17,  0}, {  -500, 18,  0}, {  -453, 19,  0}, {  -408, 20,  0},
++	{  -366, 21,  0}, {  -325, 22,  0}, {  -287, 23,  0}, {  -250, 24,  0},
++	{  -214, 25,  0}, {  -180, 26,  0}, {  -148, 27,  0}, {  -116, 28,  0},
++	{   -86, 29,  0}, {   -56, 30,  0}, {   -28, 31,  0}, {     0,  0,  0},
++};
++
++static int pm860x_volatile(unsigned int reg)
++{
++	BUG_ON(reg >= REG_CACHE_SIZE);
++
++	switch (reg) {
++	case PM860X_AUDIO_SUPPLIES_2:
++		return 1;
++	}
++
++	return 0;
++}
++
++static unsigned int pm860x_read_reg_cache(struct snd_soc_codec *codec,
++					  unsigned int reg)
++{
++	unsigned char *cache = codec->reg_cache;
++
++	BUG_ON(reg >= REG_CACHE_SIZE);
++
++	if (pm860x_volatile(reg))
++		return cache[reg];
++
++	reg += REG_CACHE_BASE;
++
++	return pm860x_reg_read(codec->control_data, reg);
++}
++
++static int pm860x_write_reg_cache(struct snd_soc_codec *codec,
++				  unsigned int reg, unsigned int value)
++{
++	unsigned char *cache = codec->reg_cache;
++
++	BUG_ON(reg >= REG_CACHE_SIZE);
++
++	if (!pm860x_volatile(reg))
++		cache[reg] = (unsigned char)value;
++
++	reg += REG_CACHE_BASE;
++
++	return pm860x_reg_write(codec->control_data, reg, value);
++}
++
++static int snd_soc_get_volsw_2r_st(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	unsigned int reg = mc->reg;
++	unsigned int reg2 = mc->rreg;
++	int val[2], val2[2], i;
++
++	val[0] = snd_soc_read(codec, reg) & 0x3f;
++	val[1] = (snd_soc_read(codec, PM860X_SIDETONE_SHIFT) >> 4) & 0xf;
++	val2[0] = snd_soc_read(codec, reg2) & 0x3f;
++	val2[1] = (snd_soc_read(codec, PM860X_SIDETONE_SHIFT)) & 0xf;
++
++	for (i = 0; i < ARRAY_SIZE(st_table); i++) {
++		if ((st_table[i].m == val[0]) && (st_table[i].n == val[1]))
++			ucontrol->value.integer.value[0] = i;
++		if ((st_table[i].m == val2[0]) && (st_table[i].n == val2[1]))
++			ucontrol->value.integer.value[1] = i;
++	}
++	return 0;
++}
++
++static int snd_soc_put_volsw_2r_st(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	unsigned int reg = mc->reg;
++	unsigned int reg2 = mc->rreg;
++	int err;
++	unsigned int val, val2;
++
++	val = ucontrol->value.integer.value[0];
++	val2 = ucontrol->value.integer.value[1];
++
++	err = snd_soc_update_bits(codec, reg, 0x3f, st_table[val].m);
++	if (err < 0)
++		return err;
++	err = snd_soc_update_bits(codec, PM860X_SIDETONE_SHIFT, 0xf0,
++				  st_table[val].n << 4);
++	if (err < 0)
++		return err;
++
++	err = snd_soc_update_bits(codec, reg2, 0x3f, st_table[val2].m);
++	if (err < 0)
++		return err;
++	err = snd_soc_update_bits(codec, PM860X_SIDETONE_SHIFT, 0x0f,
++				  st_table[val2].n);
++	return err;
++}
++
++static int snd_soc_get_volsw_2r_out(struct snd_kcontrol *kcontrol,
++				    struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	unsigned int reg = mc->reg;
++	unsigned int reg2 = mc->rreg;
++	unsigned int shift = mc->shift;
++	int max = mc->max, val, val2;
++	unsigned int mask = (1 << fls(max)) - 1;
++
++	val = snd_soc_read(codec, reg) >> shift;
++	val2 = snd_soc_read(codec, reg2) >> shift;
++	ucontrol->value.integer.value[0] = (max - val) & mask;
++	ucontrol->value.integer.value[1] = (max - val2) & mask;
++
++	return 0;
++}
++
++static int snd_soc_put_volsw_2r_out(struct snd_kcontrol *kcontrol,
++				    struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	unsigned int reg = mc->reg;
++	unsigned int reg2 = mc->rreg;
++	unsigned int shift = mc->shift;
++	int max = mc->max;
++	unsigned int mask = (1 << fls(max)) - 1;
++	int err;
++	unsigned int val, val2, val_mask;
++
++	val_mask = mask << shift;
++	val = ((max - ucontrol->value.integer.value[0]) & mask);
++	val2 = ((max - ucontrol->value.integer.value[1]) & mask);
++
++	val = val << shift;
++	val2 = val2 << shift;
++
++	err = snd_soc_update_bits(codec, reg, val_mask, val);
++	if (err < 0)
++		return err;
++
++	err = snd_soc_update_bits(codec, reg2, val_mask, val2);
++	return err;
++}
++
++/* DAPM Widget Events */
++/*
++ * A lot registers are belong to RSYNC domain. It requires enabling RSYNC bit
++ * after updating these registers. Otherwise, these updated registers won't
++ * be effective.
++ */
++static int pm860x_rsync_event(struct snd_soc_dapm_widget *w,
++			      struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
++
++	/*
++	 * automute will be set before DAC enabling. automute is used to
++	 * anti-pop.
++	 */
++	if (pm860x->automute) {
++		mutex_lock(&pm860x->mutex);
++		snd_soc_update_bits(codec, PM860X_DAC_OFFSET, DAC_MUTE, 0);
++		pm860x->automute = 0;
++		mutex_unlock(&pm860x->mutex);
++	}
++	snd_soc_update_bits(codec, PM860X_EAR_CTRL_2,
++			    RSYNC_CHANGE, RSYNC_CHANGE);
++	return 0;
++}
++
++static int pm860x_dac_event(struct snd_soc_dapm_widget *w,
++			    struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
++	unsigned int dac = 0;
++	int data;
++
++	if (!strcmp(w->name, "Left DAC"))
++		dac = DAC_LEFT;
++	if (!strcmp(w->name, "Right DAC"))
++		dac = DAC_RIGHT;
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		if (dac) {
++			/* automute is set before operating DAC. Anti-pop */
++			mutex_lock(&pm860x->mutex);
++			pm860x->automute = 1;
++			dac |= MODULATOR;
++			/* mute */
++			snd_soc_update_bits(codec, PM860X_DAC_OFFSET,
++					    DAC_MUTE, DAC_MUTE);
++			snd_soc_update_bits(codec, PM860X_EAR_CTRL_2,
++					    RSYNC_CHANGE, RSYNC_CHANGE);
++			mutex_unlock(&pm860x->mutex);
++			/* update dac */
++			snd_soc_update_bits(codec, PM860X_DAC_EN_2,
++					    dac, dac);
++		}
++		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		if (dac) {
++			mutex_lock(&pm860x->mutex);
++			pm860x->automute = 1;
++			/* mute */
++			snd_soc_update_bits(codec, PM860X_DAC_OFFSET,
++					    DAC_MUTE, DAC_MUTE);
++			snd_soc_update_bits(codec, PM860X_EAR_CTRL_2,
++					    RSYNC_CHANGE, RSYNC_CHANGE);
++			mutex_unlock(&pm860x->mutex);
++			/* update dac */
++			data = snd_soc_read(codec, PM860X_DAC_EN_2);
++			data &= ~dac;
++			if (!(data & (DAC_LEFT | DAC_RIGHT)))
++				data &= ~MODULATOR;
++			snd_soc_write(codec, PM860X_DAC_EN_2, data);
++		}
++		break;
++	}
++	return 0;
++}
++
++static const char *pm860x_opamp_texts[] = {"-50%", "-25%", "0%", "75%"};
++
++static const char *pm860x_pa_texts[] = {"-33%", "0%", "33%", "66%"};
++
++static const struct soc_enum pm860x_hs1_opamp_enum =
++	SOC_ENUM_SINGLE(PM860X_HS1_CTRL, 5, 4, pm860x_opamp_texts);
++
++static const struct soc_enum pm860x_hs2_opamp_enum =
++	SOC_ENUM_SINGLE(PM860X_HS2_CTRL, 5, 4, pm860x_opamp_texts);
++
++static const struct soc_enum pm860x_hs1_pa_enum =
++	SOC_ENUM_SINGLE(PM860X_HS1_CTRL, 3, 4, pm860x_pa_texts);
++
++static const struct soc_enum pm860x_hs2_pa_enum =
++	SOC_ENUM_SINGLE(PM860X_HS2_CTRL, 3, 4, pm860x_pa_texts);
++
++static const struct soc_enum pm860x_lo1_opamp_enum =
++	SOC_ENUM_SINGLE(PM860X_LO1_CTRL, 5, 4, pm860x_opamp_texts);
++
++static const struct soc_enum pm860x_lo2_opamp_enum =
++	SOC_ENUM_SINGLE(PM860X_LO2_CTRL, 5, 4, pm860x_opamp_texts);
++
++static const struct soc_enum pm860x_lo1_pa_enum =
++	SOC_ENUM_SINGLE(PM860X_LO1_CTRL, 3, 4, pm860x_pa_texts);
++
++static const struct soc_enum pm860x_lo2_pa_enum =
++	SOC_ENUM_SINGLE(PM860X_LO2_CTRL, 3, 4, pm860x_pa_texts);
++
++static const struct soc_enum pm860x_spk_pa_enum =
++	SOC_ENUM_SINGLE(PM860X_EAR_CTRL_1, 5, 4, pm860x_pa_texts);
++
++static const struct soc_enum pm860x_ear_pa_enum =
++	SOC_ENUM_SINGLE(PM860X_EAR_CTRL_2, 0, 4, pm860x_pa_texts);
++
++static const struct soc_enum pm860x_spk_ear_opamp_enum =
++	SOC_ENUM_SINGLE(PM860X_EAR_CTRL_1, 3, 4, pm860x_opamp_texts);
++
++static const struct snd_kcontrol_new pm860x_snd_controls[] = {
++	SOC_DOUBLE_R_TLV("ADC Capture Volume", PM860X_ADC_ANA_2,
++			PM860X_ADC_ANA_3, 6, 3, 0, adc_tlv),
++	SOC_DOUBLE_TLV("AUX Capture Volume", PM860X_ADC_ANA_3, 0, 3, 7, 0,
++			aux_tlv),
++	SOC_SINGLE_TLV("MIC1 Capture Volume", PM860X_ADC_ANA_2, 0, 7, 0,
++			mic_tlv),
++	SOC_SINGLE_TLV("MIC3 Capture Volume", PM860X_ADC_ANA_2, 3, 7, 0,
++			mic_tlv),
++	SOC_DOUBLE_R_EXT_TLV("Sidetone Volume", PM860X_SIDETONE_L_GAIN,
++			     PM860X_SIDETONE_R_GAIN, 0, ARRAY_SIZE(st_table)-1,
++			     0, snd_soc_get_volsw_2r_st,
++			     snd_soc_put_volsw_2r_st, st_tlv),
++	SOC_SINGLE_TLV("Speaker Playback Volume", PM860X_EAR_CTRL_1,
++			0, 7, 0, out_tlv),
++	SOC_DOUBLE_R_TLV("Line Playback Volume", PM860X_LO1_CTRL,
++			 PM860X_LO2_CTRL, 0, 7, 0, out_tlv),
++	SOC_DOUBLE_R_TLV("Headset Playback Volume", PM860X_HS1_CTRL,
++			 PM860X_HS2_CTRL, 0, 7, 0, out_tlv),
++	SOC_DOUBLE_R_EXT_TLV("Hifi Left Playback Volume",
++			     PM860X_HIFIL_GAIN_LEFT,
++			     PM860X_HIFIL_GAIN_RIGHT, 0, 63, 0,
++			     snd_soc_get_volsw_2r_out,
++			     snd_soc_put_volsw_2r_out, dpga_tlv),
++	SOC_DOUBLE_R_EXT_TLV("Hifi Right Playback Volume",
++			     PM860X_HIFIR_GAIN_LEFT,
++			     PM860X_HIFIR_GAIN_RIGHT, 0, 63, 0,
++			     snd_soc_get_volsw_2r_out,
++			     snd_soc_put_volsw_2r_out, dpga_tlv),
++	SOC_DOUBLE_R_EXT_TLV("Lofi Playback Volume", PM860X_LOFI_GAIN_LEFT,
++			     PM860X_LOFI_GAIN_RIGHT, 0, 63, 0,
++			     snd_soc_get_volsw_2r_out,
++			     snd_soc_put_volsw_2r_out, dpga_tlv),
++	SOC_ENUM("Headset1 Operational Amplifier Current",
++		 pm860x_hs1_opamp_enum),
++	SOC_ENUM("Headset2 Operational Amplifier Current",
++		 pm860x_hs2_opamp_enum),
++	SOC_ENUM("Headset1 Amplifier Current", pm860x_hs1_pa_enum),
++	SOC_ENUM("Headset2 Amplifier Current", pm860x_hs2_pa_enum),
++	SOC_ENUM("Lineout1 Operational Amplifier Current",
++		 pm860x_lo1_opamp_enum),
++	SOC_ENUM("Lineout2 Operational Amplifier Current",
++		 pm860x_lo2_opamp_enum),
++	SOC_ENUM("Lineout1 Amplifier Current", pm860x_lo1_pa_enum),
++	SOC_ENUM("Lineout2 Amplifier Current", pm860x_lo2_pa_enum),
++	SOC_ENUM("Speaker Operational Amplifier Current",
++		 pm860x_spk_ear_opamp_enum),
++	SOC_ENUM("Speaker Amplifier Current", pm860x_spk_pa_enum),
++	SOC_ENUM("Earpiece Amplifier Current", pm860x_ear_pa_enum),
++};
++
++/*
++ * DAPM Controls
++ */
++
++/* PCM Switch / PCM Interface */
++static const struct snd_kcontrol_new pcm_switch_controls =
++	SOC_DAPM_SINGLE("Switch", PM860X_ADC_EN_2, 0, 1, 0);
++
++/* AUX1 Switch */
++static const struct snd_kcontrol_new aux1_switch_controls =
++	SOC_DAPM_SINGLE("Switch", PM860X_ANA_TO_ANA, 4, 1, 0);
++
++/* AUX2 Switch */
++static const struct snd_kcontrol_new aux2_switch_controls =
++	SOC_DAPM_SINGLE("Switch", PM860X_ANA_TO_ANA, 5, 1, 0);
++
++/* Left Ex. PA Switch */
++static const struct snd_kcontrol_new lepa_switch_controls =
++	SOC_DAPM_SINGLE("Switch", PM860X_DAC_EN_2, 2, 1, 0);
++
++/* Right Ex. PA Switch */
++static const struct snd_kcontrol_new repa_switch_controls =
++	SOC_DAPM_SINGLE("Switch", PM860X_DAC_EN_2, 1, 1, 0);
++
++/* PCM Mux / Mux7 */
++static const char *aif1_text[] = {
++	"PCM L", "PCM R",
++};
++
++static const struct soc_enum aif1_enum =
++	SOC_ENUM_SINGLE(PM860X_PCM_IFACE_3, 6, 2, aif1_text);
++
++static const struct snd_kcontrol_new aif1_mux =
++	SOC_DAPM_ENUM("PCM Mux", aif1_enum);
++
++/* I2S Mux / Mux9 */
++static const char *i2s_din_text[] = {
++	"DIN", "DIN1",
++};
++
++static const struct soc_enum i2s_din_enum =
++	SOC_ENUM_SINGLE(PM860X_I2S_IFACE_3, 1, 2, i2s_din_text);
++
++static const struct snd_kcontrol_new i2s_din_mux =
++	SOC_DAPM_ENUM("I2S DIN Mux", i2s_din_enum);
++
++/* I2S Mic Mux / Mux8 */
++static const char *i2s_mic_text[] = {
++	"Ex PA", "ADC",
++};
++
++static const struct soc_enum i2s_mic_enum =
++	SOC_ENUM_SINGLE(PM860X_I2S_IFACE_3, 4, 2, i2s_mic_text);
++
++static const struct snd_kcontrol_new i2s_mic_mux =
++	SOC_DAPM_ENUM("I2S Mic Mux", i2s_mic_enum);
++
++/* ADCL Mux / Mux2 */
++static const char *adcl_text[] = {
++	"ADCR", "ADCL",
++};
++
++static const struct soc_enum adcl_enum =
++	SOC_ENUM_SINGLE(PM860X_PCM_IFACE_3, 4, 2, adcl_text);
++
++static const struct snd_kcontrol_new adcl_mux =
++	SOC_DAPM_ENUM("ADC Left Mux", adcl_enum);
++
++/* ADCR Mux / Mux3 */
++static const char *adcr_text[] = {
++	"ADCL", "ADCR",
++};
++
++static const struct soc_enum adcr_enum =
++	SOC_ENUM_SINGLE(PM860X_PCM_IFACE_3, 2, 2, adcr_text);
++
++static const struct snd_kcontrol_new adcr_mux =
++	SOC_DAPM_ENUM("ADC Right Mux", adcr_enum);
++
++/* ADCR EC Mux / Mux6 */
++static const char *adcr_ec_text[] = {
++	"ADCR", "EC",
++};
++
++static const struct soc_enum adcr_ec_enum =
++	SOC_ENUM_SINGLE(PM860X_ADC_EN_2, 3, 2, adcr_ec_text);
++
++static const struct snd_kcontrol_new adcr_ec_mux =
++	SOC_DAPM_ENUM("ADCR EC Mux", adcr_ec_enum);
++
++/* EC Mux / Mux4 */
++static const char *ec_text[] = {
++	"Left", "Right", "Left + Right",
++};
++
++static const struct soc_enum ec_enum =
++	SOC_ENUM_SINGLE(PM860X_EC_PATH, 1, 3, ec_text);
++
++static const struct snd_kcontrol_new ec_mux =
++	SOC_DAPM_ENUM("EC Mux", ec_enum);
++
++static const char *dac_text[] = {
++	"No input", "Right", "Left", "No input",
++};
++
++/* DAC Headset 1 Mux / Mux10 */
++static const struct soc_enum dac_hs1_enum =
++	SOC_ENUM_SINGLE(PM860X_ANA_INPUT_SEL_1, 0, 4, dac_text);
++
++static const struct snd_kcontrol_new dac_hs1_mux =
++	SOC_DAPM_ENUM("DAC HS1 Mux", dac_hs1_enum);
++
++/* DAC Headset 2 Mux / Mux11 */
++static const struct soc_enum dac_hs2_enum =
++	SOC_ENUM_SINGLE(PM860X_ANA_INPUT_SEL_1, 2, 4, dac_text);
++
++static const struct snd_kcontrol_new dac_hs2_mux =
++	SOC_DAPM_ENUM("DAC HS2 Mux", dac_hs2_enum);
++
++/* DAC Lineout 1 Mux / Mux12 */
++static const struct soc_enum dac_lo1_enum =
++	SOC_ENUM_SINGLE(PM860X_ANA_INPUT_SEL_1, 4, 4, dac_text);
++
++static const struct snd_kcontrol_new dac_lo1_mux =
++	SOC_DAPM_ENUM("DAC LO1 Mux", dac_lo1_enum);
++
++/* DAC Lineout 2 Mux / Mux13 */
++static const struct soc_enum dac_lo2_enum =
++	SOC_ENUM_SINGLE(PM860X_ANA_INPUT_SEL_1, 6, 4, dac_text);
++
++static const struct snd_kcontrol_new dac_lo2_mux =
++	SOC_DAPM_ENUM("DAC LO2 Mux", dac_lo2_enum);
++
++/* DAC Spearker Earphone Mux / Mux14 */
++static const struct soc_enum dac_spk_ear_enum =
++	SOC_ENUM_SINGLE(PM860X_ANA_INPUT_SEL_2, 0, 4, dac_text);
++
++static const struct snd_kcontrol_new dac_spk_ear_mux =
++	SOC_DAPM_ENUM("DAC SP Mux", dac_spk_ear_enum);
++
++/* Headset 1 Mux / Mux15 */
++static const char *in_text[] = {
++	"Digital", "Analog",
++};
++
++static const struct soc_enum hs1_enum =
++	SOC_ENUM_SINGLE(PM860X_ANA_TO_ANA, 0, 2, in_text);
++
++static const struct snd_kcontrol_new hs1_mux =
++	SOC_DAPM_ENUM("Headset1 Mux", hs1_enum);
++
++/* Headset 2 Mux / Mux16 */
++static const struct soc_enum hs2_enum =
++	SOC_ENUM_SINGLE(PM860X_ANA_TO_ANA, 1, 2, in_text);
++
++static const struct snd_kcontrol_new hs2_mux =
++	SOC_DAPM_ENUM("Headset2 Mux", hs2_enum);
++
++/* Lineout 1 Mux / Mux17 */
++static const struct soc_enum lo1_enum =
++	SOC_ENUM_SINGLE(PM860X_ANA_TO_ANA, 2, 2, in_text);
++
++static const struct snd_kcontrol_new lo1_mux =
++	SOC_DAPM_ENUM("Lineout1 Mux", lo1_enum);
++
++/* Lineout 2 Mux / Mux18 */
++static const struct soc_enum lo2_enum =
++	SOC_ENUM_SINGLE(PM860X_ANA_TO_ANA, 3, 2, in_text);
++
++static const struct snd_kcontrol_new lo2_mux =
++	SOC_DAPM_ENUM("Lineout2 Mux", lo2_enum);
++
++/* Speaker Earpiece Demux */
++static const char *spk_text[] = {
++	"Earpiece", "Speaker",
++};
++
++static const struct soc_enum spk_enum =
++	SOC_ENUM_SINGLE(PM860X_ANA_TO_ANA, 6, 2, spk_text);
++
++static const struct snd_kcontrol_new spk_demux =
++	SOC_DAPM_ENUM("Speaker Earpiece Demux", spk_enum);
++
++/* MIC Mux / Mux1 */
++static const char *mic_text[] = {
++	"Mic 1", "Mic 2",
++};
++
++static const struct soc_enum mic_enum =
++	SOC_ENUM_SINGLE(PM860X_ADC_ANA_4, 4, 2, mic_text);
++
++static const struct snd_kcontrol_new mic_mux =
++	SOC_DAPM_ENUM("MIC Mux", mic_enum);
++
++static const struct snd_soc_dapm_widget pm860x_dapm_widgets[] = {
++	SND_SOC_DAPM_AIF_IN("PCM SDI", "PCM Playback", 0,
++			    PM860X_ADC_EN_2, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("PCM SDO", "PCM Capture", 0,
++			     PM860X_PCM_IFACE_3, 1, 1),
++
++
++	SND_SOC_DAPM_AIF_IN("I2S DIN", "I2S Playback", 0,
++			    PM860X_DAC_EN_2, 0, 0),
++	SND_SOC_DAPM_AIF_IN("I2S DIN1", "I2S Playback", 0,
++			    PM860X_DAC_EN_2, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("I2S DOUT", "I2S Capture", 0,
++			     PM860X_I2S_IFACE_3, 5, 1),
++	SND_SOC_DAPM_MUX("I2S Mic Mux", SND_SOC_NOPM, 0, 0, &i2s_mic_mux),
++	SND_SOC_DAPM_MUX("ADC Left Mux", SND_SOC_NOPM, 0, 0, &adcl_mux),
++	SND_SOC_DAPM_MUX("ADC Right Mux", SND_SOC_NOPM, 0, 0, &adcr_mux),
++	SND_SOC_DAPM_MUX("EC Mux", SND_SOC_NOPM, 0, 0, &ec_mux),
++	SND_SOC_DAPM_MUX("ADCR EC Mux", SND_SOC_NOPM, 0, 0, &adcr_ec_mux),
++	SND_SOC_DAPM_SWITCH("Left EPA", SND_SOC_NOPM, 0, 0,
++			    &lepa_switch_controls),
++	SND_SOC_DAPM_SWITCH("Right EPA", SND_SOC_NOPM, 0, 0,
++			    &repa_switch_controls),
++
++	SND_SOC_DAPM_REG(snd_soc_dapm_supply, "Left ADC MOD", PM860X_ADC_EN_1,
++			 0, 1, 1, 0),
++	SND_SOC_DAPM_REG(snd_soc_dapm_supply, "Right ADC MOD", PM860X_ADC_EN_1,
++			 1, 1, 1, 0),
++	SND_SOC_DAPM_ADC("Left ADC", NULL, PM860X_ADC_EN_2, 5, 0),
++	SND_SOC_DAPM_ADC("Right ADC", NULL, PM860X_ADC_EN_2, 4, 0),
++
++	SND_SOC_DAPM_SWITCH("AUX1 Switch", SND_SOC_NOPM, 0, 0,
++			    &aux1_switch_controls),
++	SND_SOC_DAPM_SWITCH("AUX2 Switch", SND_SOC_NOPM, 0, 0,
++			    &aux2_switch_controls),
++
++	SND_SOC_DAPM_MUX("MIC Mux", SND_SOC_NOPM, 0, 0, &mic_mux),
++	SND_SOC_DAPM_MICBIAS("Mic1 Bias", PM860X_ADC_ANA_1, 2, 0),
++	SND_SOC_DAPM_MICBIAS("Mic3 Bias", PM860X_ADC_ANA_1, 7, 0),
++	SND_SOC_DAPM_PGA("MIC1 Volume", PM860X_ADC_EN_1, 2, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("MIC3 Volume", PM860X_ADC_EN_1, 3, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("AUX1 Volume", PM860X_ADC_EN_1, 4, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("AUX2 Volume", PM860X_ADC_EN_1, 5, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Sidetone PGA", PM860X_ADC_EN_2, 1, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Lofi PGA", PM860X_ADC_EN_2, 2, 0, NULL, 0),
++
++	SND_SOC_DAPM_INPUT("AUX1"),
++	SND_SOC_DAPM_INPUT("AUX2"),
++	SND_SOC_DAPM_INPUT("MIC1P"),
++	SND_SOC_DAPM_INPUT("MIC1N"),
++	SND_SOC_DAPM_INPUT("MIC2P"),
++	SND_SOC_DAPM_INPUT("MIC2N"),
++	SND_SOC_DAPM_INPUT("MIC3P"),
++	SND_SOC_DAPM_INPUT("MIC3N"),
++
++	SND_SOC_DAPM_DAC_E("Left DAC", NULL, SND_SOC_NOPM, 0, 0,
++			   pm860x_dac_event,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
++	SND_SOC_DAPM_DAC_E("Right DAC", NULL, SND_SOC_NOPM, 0, 0,
++			   pm860x_dac_event,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
++
++	SND_SOC_DAPM_MUX("I2S DIN Mux", SND_SOC_NOPM, 0, 0, &i2s_din_mux),
++	SND_SOC_DAPM_MUX("DAC HS1 Mux", SND_SOC_NOPM, 0, 0, &dac_hs1_mux),
++	SND_SOC_DAPM_MUX("DAC HS2 Mux", SND_SOC_NOPM, 0, 0, &dac_hs2_mux),
++	SND_SOC_DAPM_MUX("DAC LO1 Mux", SND_SOC_NOPM, 0, 0, &dac_lo1_mux),
++	SND_SOC_DAPM_MUX("DAC LO2 Mux", SND_SOC_NOPM, 0, 0, &dac_lo2_mux),
++	SND_SOC_DAPM_MUX("DAC SP Mux", SND_SOC_NOPM, 0, 0, &dac_spk_ear_mux),
++	SND_SOC_DAPM_MUX("Headset1 Mux", SND_SOC_NOPM, 0, 0, &hs1_mux),
++	SND_SOC_DAPM_MUX("Headset2 Mux", SND_SOC_NOPM, 0, 0, &hs2_mux),
++	SND_SOC_DAPM_MUX("Lineout1 Mux", SND_SOC_NOPM, 0, 0, &lo1_mux),
++	SND_SOC_DAPM_MUX("Lineout2 Mux", SND_SOC_NOPM, 0, 0, &lo2_mux),
++	SND_SOC_DAPM_MUX("Speaker Earpiece Demux", SND_SOC_NOPM, 0, 0,
++			 &spk_demux),
++
++
++	SND_SOC_DAPM_PGA("Headset1 PGA", PM860X_DAC_EN_1, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Headset2 PGA", PM860X_DAC_EN_1, 1, 0, NULL, 0),
++	SND_SOC_DAPM_OUTPUT("HS1"),
++	SND_SOC_DAPM_OUTPUT("HS2"),
++	SND_SOC_DAPM_PGA("Lineout1 PGA", PM860X_DAC_EN_1, 2, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Lineout2 PGA", PM860X_DAC_EN_1, 3, 0, NULL, 0),
++	SND_SOC_DAPM_OUTPUT("LINEOUT1"),
++	SND_SOC_DAPM_OUTPUT("LINEOUT2"),
++	SND_SOC_DAPM_PGA("Earpiece PGA", PM860X_DAC_EN_1, 4, 0, NULL, 0),
++	SND_SOC_DAPM_OUTPUT("EARP"),
++	SND_SOC_DAPM_OUTPUT("EARN"),
++	SND_SOC_DAPM_PGA("Speaker PGA", PM860X_DAC_EN_1, 5, 0, NULL, 0),
++	SND_SOC_DAPM_OUTPUT("LSP"),
++	SND_SOC_DAPM_OUTPUT("LSN"),
++	SND_SOC_DAPM_REG(snd_soc_dapm_supply, "VCODEC", PM860X_AUDIO_SUPPLIES_2,
++			 0, SUPPLY_MASK, SUPPLY_MASK, 0),
++
++	PM860X_DAPM_OUTPUT("RSYNC", pm860x_rsync_event),
++};
++
++static const struct snd_soc_dapm_route audio_map[] = {
++	/* supply */
++	{"Left DAC", NULL, "VCODEC"},
++	{"Right DAC", NULL, "VCODEC"},
++	{"Left ADC", NULL, "VCODEC"},
++	{"Right ADC", NULL, "VCODEC"},
++	{"Left ADC", NULL, "Left ADC MOD"},
++	{"Right ADC", NULL, "Right ADC MOD"},
++
++	/* PCM/AIF1 Inputs */
++	{"PCM SDO", NULL, "ADC Left Mux"},
++	{"PCM SDO", NULL, "ADCR EC Mux"},
++
++	/* PCM/AFI2 Outputs */
++	{"Lofi PGA", NULL, "PCM SDI"},
++	{"Lofi PGA", NULL, "Sidetone PGA"},
++	{"Left DAC", NULL, "Lofi PGA"},
++	{"Right DAC", NULL, "Lofi PGA"},
++
++	/* I2S/AIF2 Inputs */
++	{"MIC Mux", "Mic 1", "MIC1P"},
++	{"MIC Mux", "Mic 1", "MIC1N"},
++	{"MIC Mux", "Mic 2", "MIC2P"},
++	{"MIC Mux", "Mic 2", "MIC2N"},
++	{"MIC1 Volume", NULL, "MIC Mux"},
++	{"MIC3 Volume", NULL, "MIC3P"},
++	{"MIC3 Volume", NULL, "MIC3N"},
++	{"Left ADC", NULL, "MIC1 Volume"},
++	{"Right ADC", NULL, "MIC3 Volume"},
++	{"ADC Left Mux", "ADCR", "Right ADC"},
++	{"ADC Left Mux", "ADCL", "Left ADC"},
++	{"ADC Right Mux", "ADCL", "Left ADC"},
++	{"ADC Right Mux", "ADCR", "Right ADC"},
++	{"Left EPA", "Switch", "Left DAC"},
++	{"Right EPA", "Switch", "Right DAC"},
++	{"EC Mux", "Left", "Left DAC"},
++	{"EC Mux", "Right", "Right DAC"},
++	{"EC Mux", "Left + Right", "Left DAC"},
++	{"EC Mux", "Left + Right", "Right DAC"},
++	{"ADCR EC Mux", "ADCR", "ADC Right Mux"},
++	{"ADCR EC Mux", "EC", "EC Mux"},
++	{"I2S Mic Mux", "Ex PA", "Left EPA"},
++	{"I2S Mic Mux", "Ex PA", "Right EPA"},
++	{"I2S Mic Mux", "ADC", "ADC Left Mux"},
++	{"I2S Mic Mux", "ADC", "ADCR EC Mux"},
++	{"I2S DOUT", NULL, "I2S Mic Mux"},
++
++	/* I2S/AIF2 Outputs */
++	{"I2S DIN Mux", "DIN", "I2S DIN"},
++	{"I2S DIN Mux", "DIN1", "I2S DIN1"},
++	{"Left DAC", NULL, "I2S DIN Mux"},
++	{"Right DAC", NULL, "I2S DIN Mux"},
++	{"DAC HS1 Mux", "Left", "Left DAC"},
++	{"DAC HS1 Mux", "Right", "Right DAC"},
++	{"DAC HS2 Mux", "Left", "Left DAC"},
++	{"DAC HS2 Mux", "Right", "Right DAC"},
++	{"DAC LO1 Mux", "Left", "Left DAC"},
++	{"DAC LO1 Mux", "Right", "Right DAC"},
++	{"DAC LO2 Mux", "Left", "Left DAC"},
++	{"DAC LO2 Mux", "Right", "Right DAC"},
++	{"Headset1 Mux", "Digital", "DAC HS1 Mux"},
++	{"Headset2 Mux", "Digital", "DAC HS2 Mux"},
++	{"Lineout1 Mux", "Digital", "DAC LO1 Mux"},
++	{"Lineout2 Mux", "Digital", "DAC LO2 Mux"},
++	{"Headset1 PGA", NULL, "Headset1 Mux"},
++	{"Headset2 PGA", NULL, "Headset2 Mux"},
++	{"Lineout1 PGA", NULL, "Lineout1 Mux"},
++	{"Lineout2 PGA", NULL, "Lineout2 Mux"},
++	{"DAC SP Mux", "Left", "Left DAC"},
++	{"DAC SP Mux", "Right", "Right DAC"},
++	{"Speaker Earpiece Demux", "Speaker", "DAC SP Mux"},
++	{"Speaker PGA", NULL, "Speaker Earpiece Demux"},
++	{"Earpiece PGA", NULL, "Speaker Earpiece Demux"},
++
++	{"HS1", NULL, "Headset1 PGA"},
++	{"HS2", NULL, "Headset2 PGA"},
++	{"LINEOUT1", NULL, "Lineout1 PGA"},
++	{"LINEOUT2", NULL, "Lineout2 PGA"},
++	{"LSP", NULL, "Speaker PGA"},
++	{"LSN", NULL, "Speaker PGA"},
++	{"EARP", NULL, "Earpiece PGA"},
++	{"EARN", NULL, "Earpiece PGA"},
++
++	{"RSYNC", NULL, "Headset1 PGA"},
++	{"RSYNC", NULL, "Headset2 PGA"},
++	{"RSYNC", NULL, "Lineout1 PGA"},
++	{"RSYNC", NULL, "Lineout2 PGA"},
++	{"RSYNC", NULL, "Speaker PGA"},
++	{"RSYNC", NULL, "Earpiece PGA"},
++};
++
++static int pm860x_digital_mute(struct snd_soc_dai *codec_dai, int mute)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	int data = 0;
++
++	if (mute)
++		data = DAC_MUTE;
++	snd_soc_update_bits(codec, PM860X_DAC_OFFSET, DAC_MUTE, data);
++	snd_soc_update_bits(codec, PM860X_EAR_CTRL_2,
++			    RSYNC_CHANGE, RSYNC_CHANGE);
++	return 0;
++}
++
++static int pm860x_pcm_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params,
++				struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	unsigned char inf = 0, mask = 0;
++
++	/* bit size */
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		inf &= ~PCM_INF2_18WL;
++		break;
++	case SNDRV_PCM_FORMAT_S18_3LE:
++		inf |= PCM_INF2_18WL;
++		break;
++	default:
++		return -EINVAL;
++	}
++	mask |= PCM_INF2_18WL;
++	snd_soc_update_bits(codec, PM860X_PCM_IFACE_2, mask, inf);
++
++	/* sample rate */
++	switch (params_rate(params)) {
++	case 8000:
++		inf = 0;
++		break;
++	case 16000:
++		inf = 3;
++		break;
++	case 32000:
++		inf = 6;
++		break;
++	case 48000:
++		inf = 8;
++		break;
++	default:
++		return -EINVAL;
++	}
++	snd_soc_update_bits(codec, PM860X_PCM_RATE, 0x0f, inf);
++
++	return 0;
++}
++
++static int pm860x_pcm_set_dai_fmt(struct snd_soc_dai *codec_dai,
++				  unsigned int fmt)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
++	unsigned char inf = 0, mask = 0;
++	int ret = -EINVAL;
++
++	mask |= PCM_INF2_BCLK | PCM_INF2_FS | PCM_INF2_MASTER;
++
++	/* set master/slave audio interface */
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++	case SND_SOC_DAIFMT_CBM_CFS:
++		if (pm860x->dir == PM860X_CLK_DIR_OUT) {
++			inf |= PCM_INF2_MASTER;
++			ret = 0;
++		}
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		if (pm860x->dir == PM860X_CLK_DIR_IN) {
++			inf &= ~PCM_INF2_MASTER;
++			ret = 0;
++		}
++		break;
++	}
++
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		inf |= PCM_EXACT_I2S;
++		ret = 0;
++		break;
++	}
++	mask |= PCM_MODE_MASK;
++	if (ret)
++		return ret;
++	snd_soc_update_bits(codec, PM860X_PCM_IFACE_2, mask, inf);
++	return 0;
++}
++
++static int pm860x_set_dai_sysclk(struct snd_soc_dai *codec_dai,
++				 int clk_id, unsigned int freq, int dir)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
++
++	if (dir == PM860X_CLK_DIR_OUT)
++		pm860x->dir = PM860X_CLK_DIR_OUT;
++	else {
++		pm860x->dir = PM860X_CLK_DIR_IN;
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int pm860x_i2s_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params,
++				struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	unsigned char inf;
++
++	/* bit size */
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		inf = 0;
++		break;
++	case SNDRV_PCM_FORMAT_S18_3LE:
++		inf = PCM_INF2_18WL;
++		break;
++	default:
++		return -EINVAL;
++	}
++	snd_soc_update_bits(codec, PM860X_I2S_IFACE_2, PCM_INF2_18WL, inf);
++
++	/* sample rate */
++	switch (params_rate(params)) {
++	case 8000:
++		inf = 0;
++		break;
++	case 11025:
++		inf = 1;
++		break;
++	case 16000:
++		inf = 3;
++		break;
++	case 22050:
++		inf = 4;
++		break;
++	case 32000:
++		inf = 6;
++		break;
++	case 44100:
++		inf = 7;
++		break;
++	case 48000:
++		inf = 8;
++		break;
++	default:
++		return -EINVAL;
++	}
++	snd_soc_update_bits(codec, PM860X_I2S_IFACE_4, 0xf, inf);
++
++	return 0;
++}
++
++static int pm860x_i2s_set_dai_fmt(struct snd_soc_dai *codec_dai,
++				  unsigned int fmt)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
++	unsigned char inf = 0, mask = 0;
++	int ret = -EINVAL;
++
++	mask |= PCM_INF2_BCLK | PCM_INF2_FS | PCM_INF2_MASTER;
++
++	/* set master/slave audio interface */
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++	case SND_SOC_DAIFMT_CBM_CFS:
++		if (pm860x->dir == PM860X_CLK_DIR_OUT) {
++			inf |= PCM_INF2_MASTER;
++			ret = 0;
++		}
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		if (pm860x->dir == PM860X_CLK_DIR_IN) {
++			inf &= ~PCM_INF2_MASTER;
++			ret = 0;
++		}
++		break;
++	}
++
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		inf |= PCM_EXACT_I2S;
++		ret = 0;
++		break;
++	}
++	mask |= PCM_MODE_MASK;
++	if (ret)
++		return ret;
++	snd_soc_update_bits(codec, PM860X_I2S_IFACE_2, mask, inf);
++	return 0;
++}
++
++static int pm860x_set_bias_level(struct snd_soc_codec *codec,
++				 enum snd_soc_bias_level level)
++{
++	int data;
++
++	switch (level) {
++	case SND_SOC_BIAS_ON:
++		break;
++
++	case SND_SOC_BIAS_PREPARE:
++		break;
++
++	case SND_SOC_BIAS_STANDBY:
++		if (codec->bias_level == SND_SOC_BIAS_OFF) {
++			/* Enable Audio PLL & Audio section */
++			data = AUDIO_PLL | AUDIO_SECTION_RESET
++				| AUDIO_SECTION_ON;
++			pm860x_reg_write(codec->control_data, REG_MISC2, data);
++		}
++		break;
++
++	case SND_SOC_BIAS_OFF:
++		data = AUDIO_PLL | AUDIO_SECTION_RESET | AUDIO_SECTION_ON;
++		pm860x_set_bits(codec->control_data, REG_MISC2, data, 0);
++		break;
++	}
++	codec->bias_level = level;
++	return 0;
++}
++
++static struct snd_soc_dai_ops pm860x_pcm_dai_ops = {
++	.digital_mute	= pm860x_digital_mute,
++	.hw_params	= pm860x_pcm_hw_params,
++	.set_fmt	= pm860x_pcm_set_dai_fmt,
++	.set_sysclk	= pm860x_set_dai_sysclk,
++};
++
++static struct snd_soc_dai_ops pm860x_i2s_dai_ops = {
++	.digital_mute	= pm860x_digital_mute,
++	.hw_params	= pm860x_i2s_hw_params,
++	.set_fmt	= pm860x_i2s_set_dai_fmt,
++	.set_sysclk	= pm860x_set_dai_sysclk,
++};
++
++#define PM860X_RATES	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |	\
++			 SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000)
++
++static struct snd_soc_dai_driver pm860x_dai[] = {
++	{
++		/* DAI PCM */
++		.name	= "88pm860x-pcm",
++		.id	= 1,
++		.playback = {
++			.stream_name	= "PCM Playback",
++			.channels_min	= 2,
++			.channels_max	= 2,
++			.rates		= PM860X_RATES,
++			.formats	= SNDRV_PCM_FORMAT_S16_LE | \
++					  SNDRV_PCM_FORMAT_S18_3LE,
++		},
++		.capture = {
++			.stream_name	= "PCM Capture",
++			.channels_min	= 2,
++			.channels_max	= 2,
++			.rates		= PM860X_RATES,
++			.formats	= SNDRV_PCM_FORMAT_S16_LE | \
++					  SNDRV_PCM_FORMAT_S18_3LE,
++		},
++		.ops	= &pm860x_pcm_dai_ops,
++	}, {
++		/* DAI I2S */
++		.name	= "88pm860x-i2s",
++		.id	= 2,
++		.playback = {
++			.stream_name	= "I2S Playback",
++			.channels_min	= 2,
++			.channels_max	= 2,
++			.rates		= SNDRV_PCM_RATE_8000_48000,
++			.formats	= SNDRV_PCM_FORMAT_S16_LE | \
++					  SNDRV_PCM_FORMAT_S18_3LE,
++		},
++		.capture = {
++			.stream_name	= "I2S Capture",
++			.channels_min	= 2,
++			.channels_max	= 2,
++			.rates		= SNDRV_PCM_RATE_8000_48000,
++			.formats	= SNDRV_PCM_FORMAT_S16_LE | \
++					  SNDRV_PCM_FORMAT_S18_3LE,
++		},
++		.ops	= &pm860x_i2s_dai_ops,
++	},
++};
++
++static irqreturn_t pm860x_codec_handler(int irq, void *data)
++{
++	struct pm860x_priv *pm860x = data;
++	int status, shrt, report = 0;
++	int mask;
++
++	status = pm860x_reg_read(pm860x->i2c, REG_STATUS_1);
++	shrt = pm860x_reg_read(pm860x->i2c, REG_SHORTS);
++	mask = SND_JACK_HEADSET | SND_JACK_BTN_0 | SND_JACK_BTN_1
++		| SND_JACK_BTN_2;
++
++	if ((pm860x->det.hs_det & SND_JACK_HEADPHONE)
++		&& (status & HEADSET_STATUS))
++		report |= SND_JACK_HEADPHONE;
++
++	if ((pm860x->det.hs_det & SND_JACK_MICROPHONE)
++		&& (status & MIC_STATUS))
++		report |= SND_JACK_MICROPHONE;
++
++	if ((pm860x->det.hs_shrt & SND_JACK_BTN_0)
++		&& (shrt & (SHORT_HS1 | SHORT_HS2)))
++		report |= SND_JACK_BTN_0;
++
++	if ((pm860x->det.hook_det & SND_JACK_BTN_1)
++		&& (status & HOOK_STATUS))
++		report |= SND_JACK_BTN_1;
++
++	if ((pm860x->det.lo_shrt & SND_JACK_BTN_2)
++		&& (shrt & (SHORT_LO1 | SHORT_LO2)))
++		report |= SND_JACK_BTN_2;
++
++	snd_soc_jack_report(pm860x->det.jack, report, mask);
++	dev_dbg(pm860x->codec->dev, "report:0x%x, mask:%x\n", report, mask);
++	return IRQ_HANDLED;
++}
++
++int pm860x_hs_jack_detect(struct snd_soc_codec *codec,
++			  struct snd_soc_jack *jack,
++			  int det, int shrt)
++{
++	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
++	int data;
++
++	pm860x->det.hs_det = 0;
++	pm860x->det.hs_shrt = 0;
++	pm860x->det.jack = jack;
++
++	if (det & SND_JACK_MICROPHONE) {
++		pm860x->det.hs_det |= SND_JACK_MICROPHONE;
++		pm860x_set_bits(codec->control_data, REG_MIC_DET,
++				MICDET_MASK, MICDET_MASK);
++	}
++	if (det & SND_JACK_HEADPHONE) {
++		pm860x->det.hs_det |= SND_JACK_HEADPHONE;
++		pm860x_set_bits(codec->control_data, REG_HS_DET,
++				EN_HS_DET, EN_HS_DET);
++	}
++	/* headset short */
++	if (shrt & SND_JACK_BTN_0) {
++		pm860x->det.hs_shrt |= SND_JACK_BTN_0;
++		data = CLR_SHORT_HS2 | CLR_SHORT_HS1;
++		pm860x_set_bits(codec->control_data, REG_SHORTS, data, data);
++	}
++
++	/* sync status */
++	pm860x_codec_handler(0, pm860x);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(pm860x_hs_jack_detect);
++
++int pm860x_hook_detect(struct snd_soc_codec *codec,
++			struct snd_soc_jack *jack,
++			int det, int shrt)
++{
++	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
++	int data;
++
++	pm860x->det.hook_det = 0;
++	pm860x->det.lo_shrt = 0;
++	pm860x->det.jack = jack;
++
++	/* enable hook detect */
++	if (det & SND_JACK_BTN_1)
++		pm860x->det.hook_det = SND_JACK_BTN_1;
++	/* Lineout short detect */
++	if (shrt & SND_JACK_BTN_2) {
++		pm860x->det.lo_shrt = SND_JACK_BTN_2;
++		data = CLR_SHORT_LO2 | CLR_SHORT_LO1;
++		pm860x_set_bits(codec->control_data, REG_SHORTS, data, data);
++	}
++
++	/* sync status */
++	pm860x_codec_handler(0, pm860x);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(pm860x_hook_detect);
++
++static int pm860x_probe(struct snd_soc_codec *codec)
++{
++	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
++	int i, ret;
++
++	pm860x->codec = codec;
++
++	codec->control_data = pm860x->i2c;
++
++	for (i = 0; i < 4; i++) {
++		ret = request_threaded_irq(pm860x->irq[i], NULL,
++					   pm860x_codec_handler, IRQF_ONESHOT,
++					   pm860x->name[i], pm860x);
++		if (ret < 0) {
++			dev_err(codec->dev, "Failed to request IRQ!\n");
++			goto out_irq;
++		}
++	}
++
++	pm860x_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
++
++	ret = pm860x_bulk_read(codec->control_data, REG_CACHE_BASE,
++			       REG_CACHE_SIZE, codec->reg_cache);
++	if (ret < 0) {
++		dev_err(codec->dev, "Failed to fill register cache: %d\n",
++			ret);
++		goto out_codec;
++	}
++
++	snd_soc_add_controls(codec, pm860x_snd_controls,
++			     ARRAY_SIZE(pm860x_snd_controls));
++	snd_soc_dapm_new_controls(codec, pm860x_dapm_widgets,
++				  ARRAY_SIZE(pm860x_dapm_widgets));
++	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
++	return 0;
++
++out_codec:
++	i = 3;
++out_irq:
++	for (; i >= 0; i--)
++		free_irq(pm860x->irq[i], pm860x);
++	return -EINVAL;
++}
++
++static int pm860x_remove(struct snd_soc_codec *codec)
++{
++	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
++	int i;
++
++	for (i = 3; i >= 0; i--)
++		free_irq(pm860x->irq[i], pm860x);
++	pm860x_set_bias_level(codec, SND_SOC_BIAS_OFF);
++	return 0;
++}
++
++static struct snd_soc_codec_driver soc_codec_dev_pm860x = {
++	.probe		= pm860x_probe,
++	.remove		= pm860x_remove,
++	.read		= pm860x_read_reg_cache,
++	.write		= pm860x_write_reg_cache,
++	.reg_cache_size	= REG_CACHE_SIZE,
++	.reg_word_size	= sizeof(u8),
++	.set_bias_level	= pm860x_set_bias_level,
++};
++
++static int __devinit pm860x_codec_probe(struct platform_device *pdev)
++{
++	struct pm860x_chip *chip = dev_get_drvdata(pdev->dev.parent);
++	struct pm860x_priv *pm860x;
++	struct resource *res;
++	int i, ret;
++
++	pm860x = kzalloc(sizeof(struct pm860x_priv), GFP_KERNEL);
++	if (pm860x == NULL)
++		return -ENOMEM;
++
++	pm860x->chip = chip;
++	pm860x->i2c = (chip->id == CHIP_PM8607) ? chip->client
++			: chip->companion;
++	platform_set_drvdata(pdev, pm860x);
++	mutex_init(&pm860x->mutex);
++
++	for (i = 0; i < 4; i++) {
++		res = platform_get_resource(pdev, IORESOURCE_IRQ, i);
++		if (!res) {
++			dev_err(&pdev->dev, "Failed to get IRQ resources\n");
++			goto out;
++		}
++		pm860x->irq[i] = res->start + chip->irq_base;
++		strncpy(pm860x->name[i], res->name, MAX_NAME_LEN);
++	}
++
++	ret = snd_soc_register_codec(&pdev->dev, &soc_codec_dev_pm860x,
++				     pm860x_dai, ARRAY_SIZE(pm860x_dai));
++	if (ret) {
++		dev_err(&pdev->dev, "Failed to register codec\n");
++		goto out;
++	}
++	return ret;
++
++out:
++	platform_set_drvdata(pdev, NULL);
++	kfree(pm860x);
++	return -EINVAL;
++}
++
++static int __devexit pm860x_codec_remove(struct platform_device *pdev)
++{
++	struct pm860x_priv *pm860x = platform_get_drvdata(pdev);
++
++	snd_soc_unregister_codec(&pdev->dev);
++	platform_set_drvdata(pdev, NULL);
++	kfree(pm860x);
++	return 0;
++}
++
++static struct platform_driver pm860x_codec_driver = {
++	.driver	= {
++		.name	= "88pm860x-codec",
++		.owner	= THIS_MODULE,
++	},
++	.probe	= pm860x_codec_probe,
++	.remove	= __devexit_p(pm860x_codec_remove),
++};
++
++static __init int pm860x_init(void)
++{
++	return platform_driver_register(&pm860x_codec_driver);
++}
++module_init(pm860x_init);
++
++static __exit void pm860x_exit(void)
++{
++	platform_driver_unregister(&pm860x_codec_driver);
++}
++module_exit(pm860x_exit);
++
++MODULE_DESCRIPTION("ASoC 88PM860x driver");
++MODULE_AUTHOR("Haojian Zhuang <haojian.zhuang@marvell.com>");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:88pm860x-codec");
++
+diff --git a/sound/soc/codecs/88pm860x-codec.h
+b/sound/soc/codecs/88pm860x-codec.h
+new file mode 100644
+index 0000000..247c1a4
+--- /dev/null
++++ b/sound/soc/codecs/88pm860x-codec.h
+@@ -0,0 +1,97 @@
++/*
++ * 88pm860x-codec.h -- 88PM860x ALSA SoC Audio Driver
++ *
++ * Copyright 2010 Marvell International Ltd.
++ *	Haojian Zhuang <haojian.zhuang@marvell.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef __88PM860X_H
++#define __88PM860X_H
++
++/* The offset of these registers are 0xb0 */
++#define PM860X_PCM_IFACE_1		0x00
++#define PM860X_PCM_IFACE_2		0x01
++#define PM860X_PCM_IFACE_3		0x02
++#define PM860X_PCM_RATE			0x03
++#define PM860X_EC_PATH			0x04
++#define PM860X_SIDETONE_L_GAIN		0x05
++#define PM860X_SIDETONE_R_GAIN		0x06
++#define PM860X_SIDETONE_SHIFT		0x07
++#define PM860X_ADC_OFFSET_1		0x08
++#define PM860X_ADC_OFFSET_2		0x09
++#define PM860X_DMIC_DELAY		0x0a
++
++#define PM860X_I2S_IFACE_1		0x0b
++#define PM860X_I2S_IFACE_2		0x0c
++#define PM860X_I2S_IFACE_3		0x0d
++#define PM860X_I2S_IFACE_4		0x0e
++#define PM860X_EQUALIZER_N0_1		0x0f
++#define PM860X_EQUALIZER_N0_2		0x10
++#define PM860X_EQUALIZER_N1_1		0x11
++#define PM860X_EQUALIZER_N1_2		0x12
++#define PM860X_EQUALIZER_D1_1		0x13
++#define PM860X_EQUALIZER_D1_2		0x14
++#define PM860X_LOFI_GAIN_LEFT		0x15
++#define PM860X_LOFI_GAIN_RIGHT		0x16
++#define PM860X_HIFIL_GAIN_LEFT		0x17
++#define PM860X_HIFIL_GAIN_RIGHT		0x18
++#define PM860X_HIFIR_GAIN_LEFT		0x19
++#define PM860X_HIFIR_GAIN_RIGHT		0x1a
++#define PM860X_DAC_OFFSET		0x1b
++#define PM860X_OFFSET_LEFT_1		0x1c
++#define PM860X_OFFSET_LEFT_2		0x1d
++#define PM860X_OFFSET_RIGHT_1		0x1e
++#define PM860X_OFFSET_RIGHT_2		0x1f
++#define PM860X_ADC_ANA_1		0x20
++#define PM860X_ADC_ANA_2		0x21
++#define PM860X_ADC_ANA_3		0x22
++#define PM860X_ADC_ANA_4		0x23
++#define PM860X_ANA_TO_ANA		0x24
++#define PM860X_HS1_CTRL			0x25
++#define PM860X_HS2_CTRL			0x26
++#define PM860X_LO1_CTRL			0x27
++#define PM860X_LO2_CTRL			0x28
++#define PM860X_EAR_CTRL_1		0x29
++#define PM860X_EAR_CTRL_2		0x2a
++#define PM860X_AUDIO_SUPPLIES_1		0x2b
++#define PM860X_AUDIO_SUPPLIES_2		0x2c
++#define PM860X_ADC_EN_1			0x2d
++#define PM860X_ADC_EN_2			0x2e
++#define PM860X_DAC_EN_1			0x2f
++#define PM860X_DAC_EN_2			0x31
++#define PM860X_AUDIO_CAL_1		0x32
++#define PM860X_AUDIO_CAL_2		0x33
++#define PM860X_AUDIO_CAL_3		0x34
++#define PM860X_AUDIO_CAL_4		0x35
++#define PM860X_AUDIO_CAL_5		0x36
++#define PM860X_ANA_INPUT_SEL_1		0x37
++#define PM860X_ANA_INPUT_SEL_2		0x38
++
++#define PM860X_PCM_IFACE_4		0x39
++#define PM860X_I2S_IFACE_5		0x3a
++
++#define PM860X_SHORTS			0x3b
++#define PM860X_PLL_ADJ_1		0x3c
++#define PM860X_PLL_ADJ_2		0x3d
++
++/* bits definition */
++#define PM860X_CLK_DIR_IN		0
++#define PM860X_CLK_DIR_OUT		1
++
++#define PM860X_DET_HEADSET		(1 << 0)
++#define PM860X_DET_MIC			(1 << 1)
++#define PM860X_DET_HOOK			(1 << 2)
++#define PM860X_SHORT_HEADSET		(1 << 3)
++#define PM860X_SHORT_LINEOUT		(1 << 4)
++#define PM860X_DET_MASK			0x1F
++
++extern int pm860x_hs_jack_detect(struct snd_soc_codec *, struct snd_soc_jack *,
++				 int, int);
++extern int pm860x_hook_detect(struct snd_soc_codec *, struct snd_soc_jack *,
++			      int, int);
++
++#endif	/* __88PM860X_H */
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index bfdd92b..a3cfc18 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -10,6 +10,7 @@ config SND_SOC_I2C_AND_SPI
 
-3. EQ is still removed. It'll be added in later patches.
+ config SND_SOC_ALL_CODECS
+ 	tristate "Build all ASoC CODEC drivers"
++	select SND_SOC_88PM860X if MFD_88PM860X
+ 	select SND_SOC_L3
+ 	select SND_SOC_AC97_CODEC if SND_SOC_AC97_BUS
+ 	select SND_SOC_AD1836 if SPI_MASTER
+@@ -85,6 +86,9 @@ config SND_SOC_ALL_CODECS
 
-Thanks
-Haojian
+           If unsure select "N".
 
---0016367f9c26769077048e19543c
-Content-Type: application/x-gzip; name="88pm860x_codec.tgz"
-Content-Disposition: attachment; filename="88pm860x_codec.tgz"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gd08dyxk0
++config SND_SOC_88PM860X
++	tristate
++
+ config SND_SOC_WM_HUBS
+ 	tristate
+ 	default y if SND_SOC_WM8993=y || SND_SOC_WM8994=y
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 9c3c39f..b9c4358 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -1,3 +1,4 @@
++snd-soc-88pm860x-objs := 88pm860x-codec.o
+ snd-soc-ac97-objs := ac97.o
+ snd-soc-ad1836-objs := ad1836.o
+ snd-soc-ad193x-objs := ad193x.o
+@@ -67,6 +68,7 @@ snd-soc-tpa6130a2-objs := tpa6130a2.o
+ snd-soc-wm2000-objs := wm2000.o
+ snd-soc-wm9090-objs := wm9090.o
 
-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
---0016367f9c26769077048e19543c
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---0016367f9c26769077048e19543c--
++obj-$(CONFIG_SND_SOC_88PM860X)	+= snd-soc-88pm860x.o
+ obj-$(CONFIG_SND_SOC_AC97_CODEC)	+= snd-soc-ac97.o
+ obj-$(CONFIG_SND_SOC_AD1836)	+= snd-soc-ad1836.o
+ obj-$(CONFIG_SND_SOC_AD193X)	+= snd-soc-ad193x.o
+-- 
+1.5.6.5
