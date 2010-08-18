@@ -1,21 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] tlv320aic3x symmetric rates
-Date: Wed, 18 Aug 2010 13:54:40 +0100
-Message-ID: <1282136080.3117.384.camel@odin>
+Date: Wed, 18 Aug 2010 14:00:11 +0100
+Message-ID: <20100818130010.GB15972@rakim.wolfsonmicro.main>
 References: <AANLkTimG1yR48_hZiKJrG_kuXK0d5EHXA8DnCun4Eq2A@mail.gmail.com>
-	<20100818091928.GA5719@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 142A61037FC
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B0CA4103801
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 Aug 2010 14:54:44 +0200 (CEST)
-Received: by wyb42 with SMTP id 42so729823wyb.38
-	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2010 05:54:43 -0700 (PDT)
-In-Reply-To: <20100818091928.GA5719@sirena.org.uk>
+	Wed, 18 Aug 2010 15:00:12 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTimG1yR48_hZiKJrG_kuXK0d5EHXA8DnCun4Eq2A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,39 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Randolph Chung <rchung42@gmail.com>
+To: Randolph Chung <rchung42@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-08-18 at 10:19 +0100, Mark Brown wrote:
-> On Wed, Aug 18, 2010 at 05:09:45PM +0800, Randolph Chung wrote:
-> > The tlv320aic3x codec driver only supports symmetric rates for
-> > capture/playback. Set the flag in the DAI accordingly.
-> > 
-> > Signed-off-by: Randolph Chung <tausq@parisc-linux.org>
+On Wed, Aug 18, 2010 at 05:09:45PM +0800, Randolph Chung wrote:
+> The tlv320aic3x codec driver only supports symmetric rates for
+> capture/playback. Set the flag in the DAI accordingly.
 > 
-> Please remember to always CC maintainers on patches.
+> Signed-off-by: Randolph Chung <tausq@parisc-linux.org>
 > 
-> > diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-> > index 71a6990..63cad43 100644
-> > --- a/sound/soc/codecs/tlv320aic3x.c
-> > +++ b/sound/soc/codecs/tlv320aic3x.c
-> > @@ -1116,6 +1116,7 @@ struct snd_soc_dai aic3x_dai = {
-> >                 .rates = AIC3X_RATES,
-> >                 .formats = AIC3X_FORMATS,},
-> >         .ops = &aic3x_dai_ops,
-> > +       .symmetric_rates = 1,
-> >  };
-> >  EXPORT_SYMBOL_GPL(aic3x_dai);
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> > 
-> 
+> diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+> index 71a6990..63cad43 100644
+> --- a/sound/soc/codecs/tlv320aic3x.c
+> +++ b/sound/soc/codecs/tlv320aic3x.c
+> @@ -1116,6 +1116,7 @@ struct snd_soc_dai aic3x_dai = {
+>                 .rates = AIC3X_RATES,
+>                 .formats = AIC3X_FORMATS,},
+>         .ops = &aic3x_dai_ops,
+> +       .symmetric_rates = 1,
+>  };
+>  EXPORT_SYMBOL_GPL(aic3x_dai);
+> _______________________________________________
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+This doesn't apply due to corruption, I've not checked the exact cause
+but I suspect either whitespace damage or the lack of any separation
+between the context and the signature.  Could you please resend?
