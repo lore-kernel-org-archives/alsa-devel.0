@@ -1,1690 +1,1241 @@
 From: Haojian Zhuang <haojian.zhuang@gmail.com>
-Subject: [PATCH 1/3] ASoC: add 88pm860x codec driver
-Date: Wed, 18 Aug 2010 21:49:26 +0800
-Message-ID: <AANLkTimBPhvukwqDGY8iORhY+wg8OnHi9+eOedJB2E8k@mail.gmail.com>
+Subject: [PATCH 2/3] ASoC: add tavorevb3 machine driver for 88pm860x
+Date: Wed, 18 Aug 2010 21:49:39 +0800
+Message-ID: <AANLkTi=o7+GtXz1ZxuLJiYkREpMB=RPckig95FQrSqLd@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id DD1C61037E3
-	for <alsa-devel@alsa-project.org>;
-	Wed, 18 Aug 2010 15:49:26 +0200 (CEST)
-Received: by mail-ew0-f51.google.com with SMTP id 21so333392ewy.38
-	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2010 06:49:26 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Mark Brown <Mark.Brown@wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->From 1f0cd241b93702d8e4655516a3884464cda43aab Mon Sep 17 00:00:00 2001
+>From 114a6f2d4629b0bbff4c4ce9b4a633ddf7e25498 Mon Sep 17 00:00:00 2001
 From: Haojian Zhuang <haojian.zhuang@marvell.com>
-Date: Thu, 12 Aug 2010 12:01:47 +0800
-Subject: [PATCH 1/3] ASoC: add 88pm860x codec driver
+Date: Tue, 17 Aug 2010 13:24:35 +0800
+Subject: [PATCH 2/3] ASoC: add tavorevb3 machine driver for 88pm860x
 
-Add 88PM860x codec driver. 88PM860x codec supports two interfaces. And it
-also supports headset/mic/hook/short detection.
+88PM860x codec is used in Marvell tavorevb3 development board. 88PM860x
+codec is used as master mode of SSP communication. Only I2S format is
+supported.
 
 Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
 ---
- sound/soc/codecs/88pm860x-codec.c | 1493 +++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/88pm860x-codec.h |   97 +++
- sound/soc/codecs/Kconfig          |    4 +
- sound/soc/codecs/Makefile         |    2 +
- 4 files changed, 1596 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/codecs/88pm860x-codec.c
- create mode 100644 sound/soc/codecs/88pm860x-codec.h
+ sound/soc/pxa/Kconfig      |    9 +
+ sound/soc/pxa/Makefile     |    2 +
+ sound/soc/pxa/pxa2xx-ssp.c |  532 ++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/pxa/pxa2xx-ssp.h |   59 +++++
+ sound/soc/pxa/ssp.c        |  298 +++++++++++++++++++++++++
+ sound/soc/pxa/ssp.h        |   42 ++++
+ sound/soc/pxa/tavorevb3.c  |  193 ++++++++++++++++
+ 7 files changed, 1135 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/pxa/pxa2xx-ssp.c
+ create mode 100644 sound/soc/pxa/pxa2xx-ssp.h
+ create mode 100644 sound/soc/pxa/ssp.c
+ create mode 100644 sound/soc/pxa/ssp.h
+ create mode 100644 sound/soc/pxa/tavorevb3.c
 
-diff --git a/sound/soc/codecs/88pm860x-codec.c
-b/sound/soc/codecs/88pm860x-codec.c
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index e30c832..04ddc7b 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -117,6 +117,15 @@ config SND_PXA2XX_SOC_PALM27X
+ 	  Say Y if you want to add support for SoC audio on
+ 	  Palm T|X, T5, E2 or LifeDrive handheld computer.
+
++config SND_SOC_TAVOREVB3
++	tristate "SoC Audio support for Marvell Tavor EVB3"
++	depends on SND_PXA2XX_SOC && MACH_TAVOREVB3
++	select SND_PXA_SOC_SSP
++	select SND_SOC_88PM860X
++	help
++	  Say Y if you want to add support for SoC audio on the
++	  Marvell Saarb reference platform.
++
+ config SND_SOC_ZYLONITE
+ 	tristate "SoC Audio support for Marvell Zylonite"
+ 	depends on SND_PXA2XX_SOC && MACH_ZYLONITE
+diff --git a/sound/soc/pxa/Makefile b/sound/soc/pxa/Makefile
+index caa03d8..315941f 100644
+--- a/sound/soc/pxa/Makefile
++++ b/sound/soc/pxa/Makefile
+@@ -19,6 +19,7 @@ snd-soc-e800-objs := e800_wm9712.o
+ snd-soc-spitz-objs := spitz.o
+ snd-soc-em-x270-objs := em-x270.o
+ snd-soc-palm27x-objs := palm27x.o
++snd-soc-tavorevb3-objs := tavorevb3.o
+ snd-soc-zylonite-objs := zylonite.o
+ snd-soc-magician-objs := magician.o
+ snd-soc-mioa701-objs := mioa701_wm9713.o
+@@ -38,6 +39,7 @@ obj-$(CONFIG_SND_PXA2XX_SOC_PALM27X) += snd-soc-palm27x.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_MAGICIAN) += snd-soc-magician.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_MIOA701) += snd-soc-mioa701.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_Z2) += snd-soc-z2.o
++obj-$(CONFIG_SND_SOC_TAVOREVB3) += snd-soc-tavorevb3.o
+ obj-$(CONFIG_SND_SOC_ZYLONITE) += snd-soc-zylonite.o
+ obj-$(CONFIG_SND_PXA2XX_SOC_IMOTE2) += snd-soc-imote2.o
+ obj-$(CONFIG_SND_SOC_RAUMFELD) += snd-soc-raumfeld.o
+diff --git a/sound/soc/pxa/pxa2xx-ssp.c b/sound/soc/pxa/pxa2xx-ssp.c
 new file mode 100644
-index 0000000..1cc7565
+index 0000000..5eab055
 --- /dev/null
-+++ b/sound/soc/codecs/88pm860x-codec.c
-@@ -0,0 +1,1493 @@
++++ b/sound/soc/pxa/pxa2xx-ssp.c
+@@ -0,0 +1,532 @@
 +/*
-+ * 88pm860x-codec.c -- 88PM860x ALSA SoC Audio Driver
++ * pxa2xx-ssp.c  --  ALSA Soc Audio Layer
 + *
-+ * Copyright 2010 Marvell International Ltd.
++ * Copyright 2005,2008 Wolfson Microelectronics PLC.
++ * Author: Liam Girdwood
++ *         Mark Brown <broonie@opensource.wolfsonmicro.com>
++ *
++ * Copyright 2009-2010 Marvell International Ltd.
 + * Author: Haojian Zhuang <haojian.zhuang@marvell.com>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ * TODO:
++ *  o Test network mode for > 16bit sample size
++ */
++
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/clk.h>
++#include <linux/io.h>
++
++#include <asm/irq.h>
++
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/initval.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/pxa2xx-lib.h>
++
++#include <mach/hardware.h>
++#include <mach/dma.h>
++#include <mach/regs-ssp.h>
++#include <mach/audio.h>
++#include <plat/ssp.h>
++
++#include "pxa2xx-pcm.h"
++#include "pxa2xx-ssp.h"
++#include "ssp.h"
++
++static void dump_registers(struct ssp_device *ssp)
++{
++	dev_dbg(&ssp->pdev->dev, "SSCR0 0x%08x SSCR1 0x%08x SSTO 0x%08x\n",
++		 ssp_read_reg(ssp, SSCR0), ssp_read_reg(ssp, SSCR1),
++		 ssp_read_reg(ssp, SSTO));
++
++	dev_dbg(&ssp->pdev->dev, "SSPSP 0x%08x SSSR 0x%08x SSACD 0x%08x\n",
++		 ssp_read_reg(ssp, SSPSP), ssp_read_reg(ssp, SSSR),
++		 ssp_read_reg(ssp, SSACD));
++}
++
++/**
++ * ssp_set_clkdiv - set SSP clock divider
++ * @div: serial clock rate divider
++ */
++static void ssp_set_scr(struct ssp_device *ssp, u32 div)
++{
++	u32 sscr0 = ssp_read_reg(ssp, SSCR0);
++
++	if (cpu_is_pxa25x() && ssp->type == PXA25x_SSP) {
++		sscr0 &= ~0x0000ff00;
++		sscr0 |= ((div - 2)/2) << 8; /* 2..512 */
++	} else {
++		sscr0 &= ~0x000fff00;
++		sscr0 |= (div - 1) << 8;     /* 1..4096 */
++	}
++	ssp_write_reg(ssp, SSCR0, sscr0);
++}
++
++/**
++ * ssp_get_clkdiv - get SSP clock divider
++ */
++static u32 ssp_get_scr(struct ssp_device *ssp)
++{
++	u32 sscr0 = ssp_read_reg(ssp, SSCR0);
++	u32 div;
++
++	if (cpu_is_pxa25x() && ssp->type == PXA25x_SSP)
++		div = ((sscr0 >> 8) & 0xff) * 2 + 2;
++	else
++		div = ((sscr0 >> 8) & 0xfff) + 1;
++	return div;
++}
++
++/*
++ * Set the SSP ports SYSCLK.
++ */
++static int pxa2xx_ssp_set_dai_sysclk(struct snd_soc_dai *cpu_dai, int clk_id,
++				     unsigned int freq, int dir)
++{
++	struct ssp_info *info = cpu_dai->private_data;
++	struct ssp_device *ssp = info->dev.ssp;
++	int val;
++
++	u32 sscr0 = ssp_read_reg(ssp, SSCR0) &
++		~(SSCR0_ECS |  SSCR0_NCS | SSCR0_MOD | SSCR0_ACS);
++
++	dev_dbg(&ssp->pdev->dev,
++		"pxa_ssp_set_dai_sysclk id: %d, clk_id %d, freq %u\n",
++		cpu_dai->id, clk_id, freq);
++
++	switch (clk_id) {
++	case PXA2XX_SSP_CLK_NET_PLL:
++		sscr0 |= SSCR0_MOD;
++		break;
++	case PXA2XX_SSP_CLK_PLL:
++		/* Internal PLL is fixed */
++		if (cpu_is_pxa25x())
++			info->sysclk = 1843200;
++		else
++			info->sysclk = 13000000;
++		break;
++	case PXA2XX_SSP_CLK_EXT:
++		info->sysclk = freq;
++		sscr0 |= SSCR0_ECS;
++		break;
++	case PXA2XX_SSP_CLK_NET:
++		info->sysclk = freq;
++		sscr0 |= SSCR0_NCS | SSCR0_MOD;
++		break;
++	case PXA2XX_SSP_CLK_AUDIO:
++		info->sysclk = 0;
++		ssp_set_scr(ssp, 1);
++		sscr0 |= SSCR0_ACS;
++		break;
++	default:
++		return -ENODEV;
++	}
++
++	/* The SSP clock must be disabled when changing SSP clock mode
++	 * on PXA2xx.  On PXA3xx it must be enabled when doing so. */
++	if (!cpu_is_pxa3xx())
++		clk_disable(info->dev.ssp->clk);
++	val = ssp_read_reg(ssp, SSCR0) | sscr0;
++	ssp_write_reg(ssp, SSCR0, val);
++	if (!cpu_is_pxa3xx())
++		clk_enable(info->dev.ssp->clk);
++
++	return 0;
++}
++
++/*
++ * Set the SSP clock dividers.
++ */
++static int pxa2xx_ssp_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
++				     int div_id, int div)
++{
++	struct ssp_info *info = cpu_dai->private_data;
++	struct ssp_device *ssp = info->dev.ssp;
++	int val;
++
++	switch (div_id) {
++	case PXA2XX_SSP_AUDIO_DIV_ACDS:
++		val = (ssp_read_reg(ssp, SSACD) & ~0x7) | SSACD_ACDS(div);
++		ssp_write_reg(ssp, SSACD, val);
++		break;
++	case PXA2XX_SSP_AUDIO_DIV_SCDB:
++		val = ssp_read_reg(ssp, SSACD);
++		val &= ~SSACD_SCDB;
++		if (cpu_is_pxa3xx())
++			val &= ~SSACD_SCDX8;
++		switch (div) {
++		case PXA2XX_SSP_CLK_SCDB_1:
++			val |= SSACD_SCDB;
++			break;
++		case PXA2XX_SSP_CLK_SCDB_4:
++			break;
++		case PXA2XX_SSP_CLK_SCDB_8:
++			if (cpu_is_pxa3xx())
++				val |= SSACD_SCDX8;
++			else
++				return -EINVAL;
++			break;
++		default:
++			return -EINVAL;
++		}
++		ssp_write_reg(ssp, SSACD, val);
++		break;
++	case PXA2XX_SSP_DIV_SCR:
++		ssp_set_scr(ssp, div);
++		break;
++	default:
++		return -ENODEV;
++	}
++
++	return 0;
++}
++
++/*
++ * Configure the PLL frequency pxa27x and (afaik - pxa320 only)
++ */
++static int pxa2xx_ssp_set_dai_pll(struct snd_soc_dai *cpu_dai, int pll_id,
++				  int source, unsigned int freq_in,
++				  unsigned int freq_out)
++{
++	struct ssp_info *info = cpu_dai->private_data;
++	struct ssp_device *ssp = info->dev.ssp;
++	u32 ssacd = ssp_read_reg(ssp, SSACD) & ~0x70;
++
++	if (cpu_is_pxa3xx())
++		ssp_write_reg(ssp, SSACDD, 0);
++
++	switch (freq_out) {
++	case 5622000:
++		break;
++	case 11345000:
++		ssacd |= (0x1 << 4);
++		break;
++	case 12235000:
++		ssacd |= (0x2 << 4);
++		break;
++	case 14857000:
++		ssacd |= (0x3 << 4);
++		break;
++	case 32842000:
++		ssacd |= (0x4 << 4);
++		break;
++	case 48000000:
++		ssacd |= (0x5 << 4);
++		break;
++	case 0:
++		/* Disable */
++		break;
++
++	default:
++		/* PXA3xx has a clock ditherer which can be used to generate
++		 * a wider range of frequencies - calculate a value for it.
++		 */
++		if (cpu_is_pxa3xx()) {
++			u32 val;
++			u64 tmp = 19968;
++			tmp *= 1000000;
++			do_div(tmp, freq_out);
++			val = tmp;
++
++			val = (val << 16) | 64;
++			ssp_write_reg(ssp, SSACDD, val);
++
++			ssacd |= (0x6 << 4);
++
++			dev_dbg(&ssp->pdev->dev,
++				"Using SSACDD %x to supply %uHz\n",
++				val, freq_out);
++			break;
++		}
++
++		return -EINVAL;
++	}
++
++	ssp_write_reg(ssp, SSACD, ssacd);
++
++	return 0;
++}
++
++/*
++ * Set up the SSP DAI format.
++ * The SSP Port must be inactive before calling this function as the
++ * physical interface format is changed.
++ */
++static int pxa2xx_ssp_set_dai_fmt(struct snd_soc_dai *cpu_dai,
++				  unsigned int fmt)
++{
++	struct ssp_info *info = cpu_dai->private_data;
++	struct ssp_device *ssp = info->dev.ssp;
++	u32 sscr0;
++	u32 sscr1;
++	u32 sspsp;
++
++	/* check if we need to change anything at all */
++	if (info->dai_fmt == fmt)
++		return 0;
++
++	/* we can only change the settings if the port is not in use */
++	if (ssp_read_reg(ssp, SSCR0) & SSCR0_SSE) {
++		dev_err(&ssp->pdev->dev,
++			"can't change hardware dai format: stream is in use");
++		return -EINVAL;
++	}
++
++	/* reset port settings */
++	sscr0 = ssp_read_reg(ssp, SSCR0) &
++		(SSCR0_ECS |  SSCR0_NCS | SSCR0_MOD | SSCR0_ACS);
++	sscr1 = SSCR1_RxTresh(8) | SSCR1_TxTresh(7);
++	sspsp = 0;
++
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++		sscr1 |= SSCR1_SCLKDIR | SSCR1_SFRMDIR;
++		break;
++	case SND_SOC_DAIFMT_CBM_CFS:
++		sscr1 |= SSCR1_SCLKDIR;
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_NB_NF:
++		sspsp |= SSPSP_SFRMP;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		break;
++	case SND_SOC_DAIFMT_IB_IF:
++		sspsp |= SSPSP_SCMODE(2);
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		sspsp |= SSPSP_SCMODE(2) | SSPSP_SFRMP;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++		sscr0 |= SSCR0_PSP;
++		sscr1 |= SSCR1_RWOT | SSCR1_TRAIL;
++		/* See hw_params() */
++		break;
++
++	case SND_SOC_DAIFMT_DSP_A:
++		sspsp |= SSPSP_FSRT;
++	case SND_SOC_DAIFMT_DSP_B:
++		sscr0 |= SSCR0_MOD | SSCR0_PSP;
++		sscr1 |= SSCR1_TRAIL | SSCR1_RWOT;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	ssp_write_reg(ssp, SSCR0, sscr0);
++	ssp_write_reg(ssp, SSCR1, sscr1);
++	ssp_write_reg(ssp, SSPSP, sspsp);
++
++	dump_registers(ssp);
++
++	/* Since we are configuring the timings for the format by hand
++	 * we have to defer some things until hw_params() where we
++	 * know parameters like the sample size.
++	 */
++	info->dai_fmt = fmt;
++
++	return 0;
++}
++
++/*
++ * Set the SSP audio DMA parameters and sample size.
++ * Can be called multiple times by oss emulation.
++ */
++static int pxa2xx_ssp_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params,
++				struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct ssp_info *info = cpu_dai->private_data;
++	struct ssp_device *ssp = info->dev.ssp;
++	int chn = params_channels(params);
++	u32 sscr0;
++	u32 sspsp;
++	int width = snd_pcm_format_physical_width(params_format(params));
++	int ttsa = ssp_read_reg(ssp, SSTSA) & 0xf;
++
++	/* generate correct DMA params */
++	if (cpu_dai->dma_data)
++		kfree(cpu_dai->dma_data);
++
++	/* Network mode with one active slot (ttsa == 1) can be used
++	 * to force 16-bit frame width on the wire (for S16_LE), even
++	 * with two channels. Use 16-bit DMA transfers for this case.
++	 */
++	cpu_dai->dma_data = pxa_ssp_get_dma_params(ssp,
++			((chn == 2) && (ttsa != 1)) || (width == 32),
++			substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
++
++	/* we can only change the settings if the port is not in use */
++	if (ssp_read_reg(ssp, SSCR0) & SSCR0_SSE)
++		return 0;
++
++	/* clear selected SSP bits */
++	sscr0 = ssp_read_reg(ssp, SSCR0) & ~(SSCR0_DSS | SSCR0_EDSS);
++	ssp_write_reg(ssp, SSCR0, sscr0);
++
++	/* bit size */
++	sscr0 = ssp_read_reg(ssp, SSCR0);
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		if (cpu_is_pxa3xx())
++			sscr0 |= SSCR0_FPCKE;
++		sscr0 |= SSCR0_DataSize(16);
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		sscr0 |= (SSCR0_EDSS | SSCR0_DataSize(8));
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		sscr0 |= (SSCR0_EDSS | SSCR0_DataSize(16));
++		break;
++	}
++	ssp_write_reg(ssp, SSCR0, sscr0);
++
++	switch (info->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_I2S:
++	       sspsp = ssp_read_reg(ssp, SSPSP);
++
++		if ((ssp_get_scr(ssp) == 4) && (width == 16)) {
++			/* This is a special case where the bitclk is 64fs
++			* and we're not dealing with 2*32 bits of audio
++			* samples.
++			*
++			* The SSP values used for that are all found out by
++			* trying and failing a lot; some of the registers
++			* needed for that mode are only available on PXA3xx.
++			*/
++
++			if (!cpu_is_pxa3xx())
++				return -EINVAL;
++
++			sspsp |= SSPSP_SFRMWDTH(width * 2);
++			sspsp |= SSPSP_SFRMDLY(width * 4);
++			sspsp |= SSPSP_EDMYSTOP(3);
++			sspsp |= SSPSP_DMYSTOP(3);
++			sspsp |= SSPSP_DMYSTRT(1);
++		} else {
++			/* The frame width is the width the LRCLK is
++			 * asserted for; the delay is expressed in
++			 * half cycle units.  We need the extra cycle
++			 * because the data starts clocking out one BCLK
++			 * after LRCLK changes polarity.
++			 */
++			sspsp |= SSPSP_SFRMWDTH(width + 1);
++			sspsp |= SSPSP_SFRMDLY((width + 1) * 2);
++			sspsp |= SSPSP_DMYSTRT(1);
++		}
++
++		ssp_write_reg(ssp, SSPSP, sspsp);
++		break;
++	default:
++		break;
++	}
++
++	/* When we use a network mode, we always require TDM slots
++	 * - complain loudly and fail if they've not been set up yet.
++	 */
++	if ((sscr0 & SSCR0_MOD) && !ttsa) {
++		dev_err(&ssp->pdev->dev, "No TDM timeslot configured\n");
++		return -EINVAL;
++	}
++
++	dump_registers(ssp);
++
++	return 0;
++}
++
++static struct snd_soc_dai_ops pxa2xx_ssp_dai_ops = {
++	.hw_params	= pxa2xx_ssp_hw_params,
++	.set_sysclk	= pxa2xx_ssp_set_dai_sysclk,
++	.set_clkdiv	= pxa2xx_ssp_set_dai_clkdiv,
++	.set_pll	= pxa2xx_ssp_set_dai_pll,
++	.set_fmt	= pxa2xx_ssp_set_dai_fmt,
++};
++
++struct snd_soc_dai pxa2xx_ssp_dai[PXA2XX_DAI_SSP_MAX];
++EXPORT_SYMBOL(pxa2xx_ssp_dai);
++
++static int __devinit pxa2xx_ssp_dev_probe(struct platform_device *pdev)
++{
++	struct snd_soc_dai *dai;
++	int ret;
++
++	if (pdev->id >= PXA2XX_DAI_SSP_MAX) {
++		dev_err(&pdev->dev, "id %d is out of range\n", pdev->id);
++		return -EINVAL;
++	}
++
++	dai = &pxa2xx_ssp_dai[pdev->id];
++	dai->dev = &pdev->dev;
++	dai->name = "pxa2xx-ssp";
++	dai->id = pdev->id;
++	dai->playback.channels_min = 1;
++	dai->playback.channels_max = 8;
++	dai->playback.rates = PXA2XX_SSP_RATES;
++	dai->playback.formats = PXA2XX_SSP_FORMATS;
++	dai->capture.channels_min = 1;
++	dai->capture.channels_max = 8;
++	dai->capture.rates = PXA2XX_SSP_RATES;
++	dai->capture.formats = PXA2XX_SSP_FORMATS;
++	dai->ops = &pxa2xx_ssp_dai_ops;
++
++	ret = pxa_ssp_register_dai(dai);
++	return ret;
++}
++
++static int __devexit pxa2xx_ssp_dev_remove(struct platform_device *pdev)
++{
++	struct snd_soc_dai *dai;
++
++	dai = &pxa2xx_ssp_dai[pdev->id];
++	snd_soc_unregister_dai(dai);
++	return 0;
++}
++
++static struct platform_driver pxa2xx_ssp_driver = {
++	.probe	= pxa2xx_ssp_dev_probe,
++	.remove	= __devexit_p(pxa2xx_ssp_dev_remove),
++	.driver	= {
++		.name	= "pxa2xx-ssp",
++		.owner	= THIS_MODULE,
++	},
++};
++
++static int __init pxa2xx_ssp_init(void)
++{
++	return platform_driver_register(&pxa2xx_ssp_driver);
++}
++module_init(pxa2xx_ssp_init);
++
++static void __exit pxa2xx_ssp_exit(void)
++{
++	platform_driver_unregister(&pxa2xx_ssp_driver);
++}
++module_exit(pxa2xx_ssp_exit);
++
++/* Module information */
++MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
++MODULE_DESCRIPTION("PXA SSP/PCM SoC Interface");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/pxa/pxa2xx-ssp.h b/sound/soc/pxa/pxa2xx-ssp.h
+new file mode 100644
+index 0000000..2455bf4
+--- /dev/null
++++ b/sound/soc/pxa/pxa2xx-ssp.h
+@@ -0,0 +1,59 @@
++/*
++ * ASoC PXA SSP port support
 + *
 + * This program is free software; you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License version 2 as
 + * published by the Free Software Foundation.
 + */
 +
-+#include <linux/kernel.h>
++#ifndef __PXA2XX_SOC_SSP_H
++#define __PXA2XX_SOC_SSP_H
++
++#define PXA2XX_SSP_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
++			  SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |	\
++			  SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |	\
++			  SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
++
++#define PXA2XX_SSP_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
++			    SNDRV_PCM_FMTBIT_S24_LE |	\
++			    SNDRV_PCM_FMTBIT_S32_LE)
++
++/* pxa DAI SSP IDs */
++enum {
++	PXA2XX_DAI_SSP1,
++	PXA2XX_DAI_SSP2,
++	PXA2XX_DAI_SSP3,
++	PXA2XX_DAI_SSP4,
++	PXA2XX_DAI_SSP_MAX,
++};
++
++/* SSP clock sources */
++#define PXA2XX_SSP_CLK_PLL			0
++#define PXA2XX_SSP_CLK_EXT			1
++#define PXA2XX_SSP_CLK_NET			2
++#define PXA2XX_SSP_CLK_AUDIO			3
++#define PXA2XX_SSP_CLK_NET_PLL			4
++
++/* SSP audio dividers */
++#define PXA2XX_SSP_AUDIO_DIV_ACDS		0
++#define PXA2XX_SSP_AUDIO_DIV_SCDB		1
++#define PXA2XX_SSP_DIV_SCR			2
++
++/* SSP ACDS audio dividers values */
++#define PXA2XX_SSP_CLK_AUDIO_DIV_1		0
++#define PXA2XX_SSP_CLK_AUDIO_DIV_2		1
++#define PXA2XX_SSP_CLK_AUDIO_DIV_4		2
++#define PXA2XX_SSP_CLK_AUDIO_DIV_8		3
++#define PXA2XX_SSP_CLK_AUDIO_DIV_16		4
++#define PXA2XX_SSP_CLK_AUDIO_DIV_32		5
++
++/* SSP divider bypass */
++#define PXA2XX_SSP_CLK_SCDB_4			0
++#define PXA2XX_SSP_CLK_SCDB_1			1
++#define PXA2XX_SSP_CLK_SCDB_8			2
++
++#define PXA2XX_SSP_PLL_OUT  			0
++
++extern struct snd_soc_dai pxa2xx_ssp_dai[PXA2XX_DAI_SSP_MAX];
++
++#endif	/* __PXA2XX_SOC_SSP_H */
+diff --git a/sound/soc/pxa/ssp.c b/sound/soc/pxa/ssp.c
+new file mode 100644
+index 0000000..444b643
+--- /dev/null
++++ b/sound/soc/pxa/ssp.c
+@@ -0,0 +1,298 @@
++/*
++ * ssp.c  --  ALSA Soc Audio Layer
++ *
++ * Copyright 2009-2010 Marvell International Ltd.
++ * Author:
++ *	Haojian Zhuang <haojian.zhuang@marvell.com>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ */
++
++#include <linux/clk.h>
++#include <sound/core.h>
++#include <sound/soc.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/pxa2xx-lib.h>
++
++#include <mach/hardware.h>
++#include <mach/dma.h>
++#include <mach/regs-ssp.h>
++
++#include <plat/ssp.h>
++
++#include "ssp.h"
++
++struct pxa2xx_pcm_dma_data {
++	struct pxa2xx_pcm_dma_params params;
++	char name[20];
++};
++
++struct pxa2xx_pcm_dma_params *
++pxa_ssp_get_dma_params(struct ssp_device *ssp, int width4, int out)
++{
++	struct pxa2xx_pcm_dma_data *dma;
++
++	dma = kzalloc(sizeof(struct pxa2xx_pcm_dma_data), GFP_KERNEL);
++	if (dma == NULL)
++		return NULL;
++
++	snprintf(dma->name, 20, "SSP%d PCM %s %s", ssp->port_id,
++			width4 ? "32-bit" : "16-bit", out ? "out" : "in");
++
++	dma->params.name = dma->name;
++	dma->params.drcmr = &DRCMR(out ? ssp->drcmr_tx : ssp->drcmr_rx);
++	dma->params.dcmd = (out ? (DCMD_INCSRCADDR | DCMD_FLOWTRG) :
++				  (DCMD_INCTRGADDR | DCMD_FLOWSRC)) |
++			(width4 ? DCMD_WIDTH4 : DCMD_WIDTH2) | DCMD_BURST16;
++	dma->params.dev_addr = ssp->phys_base + SSDR;
++
++	return &dma->params;
++}
++EXPORT_SYMBOL(pxa_ssp_get_dma_params);
++
++static int pxa_ssp_startup(struct snd_pcm_substream *substream,
++			   struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct ssp_info *info = cpu_dai->private_data;
++	int ret = 0;
++
++	if (!cpu_dai->active) {
++		info->dev.port = cpu_dai->id + 1;
++		info->dev.irq = NO_IRQ;
++		clk_enable(info->dev.ssp->clk);
++		ssp_disable(&info->dev);
++	}
++
++	if (cpu_dai->dma_data) {
++		kfree(cpu_dai->dma_data);
++		cpu_dai->dma_data = NULL;
++	}
++	return ret;
++}
++
++static void pxa_ssp_shutdown(struct snd_pcm_substream *substream,
++			     struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct ssp_info *info = cpu_dai->private_data;
++
++	if (!cpu_dai->active) {
++		ssp_disable(&info->dev);
++		clk_disable(info->dev.ssp->clk);
++	}
++
++	if (cpu_dai->dma_data) {
++		kfree(cpu_dai->dma_data);
++		cpu_dai->dma_data = NULL;
++	}
++}
++
++#ifdef CONFIG_PM
++
++static int pxa_ssp_suspend(struct snd_soc_dai *cpu_dai)
++{
++	struct ssp_info *info = cpu_dai->private_data;
++
++	if (!cpu_dai->active)
++		clk_enable(info->dev.ssp->clk);
++
++	ssp_save_state(&info->dev, &info->state);
++	clk_disable(info->dev.ssp->clk);
++
++	return 0;
++}
++
++static int pxa_ssp_resume(struct snd_soc_dai *cpu_dai)
++{
++	struct ssp_info *info = cpu_dai->private_data;
++
++	clk_enable(info->dev.ssp->clk);
++	ssp_restore_state(&info->dev, &info->state);
++
++	if (cpu_dai->active)
++		ssp_enable(&info->dev);
++	else
++		clk_disable(info->dev.ssp->clk);
++
++	return 0;
++}
++
++#else
++#define pxa_ssp_suspend	NULL
++#define pxa_ssp_resume	NULL
++#endif
++
++/*
++ * Set the active slots in TDM/Network mode
++ */
++static int pxa_ssp_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai,
++	unsigned int tx_mask, unsigned int rx_mask, int slots, int slot_width)
++{
++	struct ssp_info *info = cpu_dai->private_data;
++	struct ssp_device *ssp = info->dev.ssp;
++	u32 sscr0;
++
++	sscr0 = ssp_read_reg(ssp, SSCR0);
++	sscr0 &= ~(SSCR0_MOD | SSCR0_SlotsPerFrm(8) | SSCR0_EDSS | SSCR0_DSS);
++
++	/* set slot width */
++	if (slot_width > 16)
++		sscr0 |= SSCR0_EDSS | SSCR0_DataSize(slot_width - 16);
++	else
++		sscr0 |= SSCR0_DataSize(slot_width);
++
++	if (slots > 1) {
++		/* enable network mode */
++		sscr0 |= SSCR0_MOD;
++
++		/* set number of active slots */
++		sscr0 |= SSCR0_SlotsPerFrm(slots);
++
++		/* set active slot mask */
++		ssp_write_reg(ssp, SSTSA, tx_mask);
++		ssp_write_reg(ssp, SSRSA, rx_mask);
++	}
++	ssp_write_reg(ssp, SSCR0, sscr0);
++
++	return 0;
++}
++
++/*
++ * Tristate the SSP DAI lines
++ */
++static int pxa_ssp_set_dai_tristate(struct snd_soc_dai *cpu_dai,
++	int tristate)
++{
++	struct ssp_info *info = cpu_dai->private_data;
++	struct ssp_device *ssp = info->dev.ssp;
++	u32 sscr1;
++
++	sscr1 = ssp_read_reg(ssp, SSCR1);
++	if (tristate)
++		sscr1 &= ~SSCR1_TTE;
++	else
++		sscr1 |= SSCR1_TTE;
++	ssp_write_reg(ssp, SSCR1, sscr1);
++
++	return 0;
++}
++
++static int pxa_ssp_trigger(struct snd_pcm_substream *substream, int cmd,
++			   struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	int ret = 0;
++	struct ssp_info *info = cpu_dai->private_data;
++	struct ssp_device *ssp = info->dev.ssp;
++	int val;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_RESUME:
++		ssp_enable(&info->dev);
++		break;
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		val = ssp_read_reg(ssp, SSCR1);
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			val |= SSCR1_TSRE;
++		else
++			val |= SSCR1_RSRE;
++		ssp_write_reg(ssp, SSCR1, val);
++		val = ssp_read_reg(ssp, SSSR);
++		ssp_write_reg(ssp, SSSR, val);
++		break;
++	case SNDRV_PCM_TRIGGER_START:
++		val = ssp_read_reg(ssp, SSCR1);
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			val |= SSCR1_TSRE;
++		else
++			val |= SSCR1_RSRE;
++		ssp_write_reg(ssp, SSCR1, val);
++		ssp_enable(&info->dev);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		val = ssp_read_reg(ssp, SSCR1);
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			val &= ~SSCR1_TSRE;
++		else
++			val &= ~SSCR1_RSRE;
++		ssp_write_reg(ssp, SSCR1, val);
++		break;
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		ssp_disable(&info->dev);
++		break;
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		val = ssp_read_reg(ssp, SSCR1);
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			val &= ~SSCR1_TSRE;
++		else
++			val &= ~SSCR1_RSRE;
++		ssp_write_reg(ssp, SSCR1, val);
++		break;
++
++	default:
++		ret = -EINVAL;
++	}
++
++	return ret;
++}
++
++static int pxa_ssp_probe(struct platform_device *pdev,
++			    struct snd_soc_dai *dai)
++{
++	struct ssp_info *info;
++	int ret;
++
++	info = kzalloc(sizeof(struct ssp_info), GFP_KERNEL);
++	if (!info)
++		return -ENOMEM;
++
++	info->dev.ssp = ssp_request(dai->id + 1, "SoC audio");
++	if (info->dev.ssp == NULL) {
++		ret = -ENODEV;
++		goto err;
++	}
++
++	info->dai_fmt = (unsigned int) -1;
++	dai->private_data = info;
++
++	return 0;
++
++err:
++	kfree(info);
++	return ret;
++}
++
++static void pxa_ssp_remove(struct platform_device *pdev,
++			      struct snd_soc_dai *dai)
++{
++	struct ssp_info *info = dai->private_data;
++	ssp_free(info->dev.ssp);
++}
++
++int pxa_ssp_register_dai(struct snd_soc_dai *dai)
++{
++	struct snd_soc_dai_ops *ops = dai->ops;
++
++	ops->startup = pxa_ssp_startup;
++	ops->shutdown = pxa_ssp_shutdown;
++	ops->trigger = pxa_ssp_trigger;
++	ops->set_tdm_slot = pxa_ssp_set_dai_tdm_slot;
++	ops->set_tristate = pxa_ssp_set_dai_tristate;
++
++	dai->probe = pxa_ssp_probe;
++	dai->remove = pxa_ssp_remove;
++	dai->suspend = pxa_ssp_suspend;
++	dai->resume = pxa_ssp_resume;
++
++	return snd_soc_register_dai(dai);
++}
++EXPORT_SYMBOL(pxa_ssp_register_dai);
+diff --git a/sound/soc/pxa/ssp.h b/sound/soc/pxa/ssp.h
+new file mode 100644
+index 0000000..314c06d
+--- /dev/null
++++ b/sound/soc/pxa/ssp.h
+@@ -0,0 +1,42 @@
++/*
++ * ssp.h  --  ALSA Soc Audio Layer Head file
++ *
++ * Copyright 2009-2010 Marvell International Ltd.
++ * Author:
++ *	Haojian Zhuang <haojian.zhuang@marvell.com>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ */
++
++#ifndef __PXA_SSP_H
++#define __PXA_SSP_H
++
++/*
++ * SSP audio data
++ */
++struct ssp_info {
++	struct ssp_dev		dev;
++	unsigned int		sysclk;
++	int			dai_fmt;
++#ifdef CONFIG_PM
++	struct ssp_state	state;
++#endif
++};
++
++struct dai_ssp {
++	unsigned int		sysclk;
++	int			dai_fmt;
++#ifdef CONFIG_PM
++	struct ssp_state	state;
++#endif
++};
++
++extern struct pxa2xx_pcm_dma_params *
++pxa_ssp_get_dma_params(struct ssp_device *ssp, int width4, int out);
++extern int pxa_ssp_register_dai(struct snd_soc_dai *dai);
++
++#endif	/* __PXA_SSP_H */
+diff --git a/sound/soc/pxa/tavorevb3.c b/sound/soc/pxa/tavorevb3.c
+new file mode 100644
+index 0000000..3ee39d4
+--- /dev/null
++++ b/sound/soc/pxa/tavorevb3.c
+@@ -0,0 +1,193 @@
++/*
++ * tavorevb3.c -- SoC audio for Tavor EVB3
++ *
++ * Copyright (C) 2010 Marvell International Ltd.
++ * 	Haojian Zhuang <haojian.zhuang@marvell.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
 +#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/device.h>
++#include <linux/clk.h>
 +#include <linux/i2c.h>
-+#include <linux/platform_device.h>
-+#include <linux/mfd/88pm860x.h>
-+#include <linux/slab.h>
 +#include <sound/core.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
 +#include <sound/soc.h>
 +#include <sound/soc-dapm.h>
-+#include <sound/tlv.h>
-+#include <sound/initval.h>
 +#include <sound/jack.h>
 +
-+#include "88pm860x-codec.h"
++#include <asm/mach-types.h>
 +
-+#define MAX_NAME_LEN		20
-+#define REG_CACHE_SIZE		0x40
-+#define REG_CACHE_BASE		0xb0
++#include "../codecs/88pm860x-codec.h"
++#include "pxa-ssp.h"
 +
-+/* Status Register 1 (0x01) */
-+#define REG_STATUS_1		0x01
-+#define MIC_STATUS		(1 << 7)
-+#define HOOK_STATUS		(1 << 6)
-+#define HEADSET_STATUS		(1 << 5)
++static int evb3_pm860x_init(struct snd_soc_pcm_runtime *rtd);
 +
-+/* Mic Detection Register (0x37) */
-+#define REG_MIC_DET		0x37
-+#define CONTINUOUS_POLLING	(3 << 1)
-+#define EN_MIC_DET		(1 << 0)
-+#define MICDET_MASK		0x07
++static struct platform_device *evb3_snd_device;
 +
-+/* Headset Detection Register (0x38) */
-+#define REG_HS_DET		0x38
-+#define EN_HS_DET		(1 << 0)
++static struct snd_soc_jack hs_jack;
 +
-+/* Misc2 Register (0x42) */
-+#define REG_MISC2		0x42
-+#define AUDIO_PLL		(1 << 5)
-+#define AUDIO_SECTION_RESET	(1 << 4)
-+#define AUDIO_SECTION_ON	(1 << 3)
-+
-+/* PCM Interface Register 2 (0xb1) */
-+#define PCM_INF2_BCLK		(1 << 6)	/* Bit clock polarity */
-+#define PCM_INF2_FS		(1 << 5)	/* Frame Sync polarity */
-+#define PCM_INF2_MASTER		(1 << 4)	/* Master / Slave */
-+#define PCM_INF2_18WL		(1 << 3)	/* 18 / 16 bits */
-+#define PCM_GENERAL_I2S		0
-+#define PCM_EXACT_I2S		1
-+#define PCM_LEFT_I2S		2
-+#define PCM_RIGHT_I2S		3
-+#define PCM_SHORT_FS		4
-+#define PCM_LONG_FS		5
-+#define PCM_MODE_MASK		7
-+
-+/* I2S Interface Register 4 (0xbe) */
-+#define I2S_EQU_BYP		(1 << 6)
-+
-+/* DAC Offset Register (0xcb) */
-+#define DAC_MUTE		(1 << 7)
-+
-+/* ADC Analog Register 1 (0xd0) */
-+#define REG_ADC_ANA_1		0xd0
-+#define MIC1BIAS_MASK		0x60
-+
-+/* Earpiece/Speaker Control Register 2 (0xda) */
-+#define REG_EAR2		0xda
-+#define RSYNC_CHANGE		(1 << 2)
-+
-+/* Audio Supplies Register 2 (0xdc) */
-+#define REG_SUPPLIES2		0xdc
-+#define LDO15_READY		(1 << 4)
-+#define LDO15_EN		(1 << 3)
-+#define CPUMP_READY		(1 << 2)
-+#define CPUMP_EN		(1 << 1)
-+#define AUDIO_EN		(1 << 0)
-+#define SUPPLY_MASK		(LDO15_EN | CPUMP_EN | AUDIO_EN)
-+
-+/* Audio Enable Register 1 (0xdd) */
-+#define ADC_MOD_RIGHT		(1 << 1)
-+#define ADC_MOD_LEFT		(1 << 0)
-+
-+/* Audio Enable Register 2 (0xde) */
-+#define ADC_LEFT		(1 << 5)
-+#define ADC_RIGHT		(1 << 4)
-+
-+/* DAC Enable Register 2 (0xe1) */
-+#define DAC_LEFT		(1 << 5)
-+#define DAC_RIGHT		(1 << 4)
-+#define MODULATOR		(1 << 3)
-+
-+/* Shorts Register (0xeb) */
-+#define REG_SHORTS		0xeb
-+#define CLR_SHORT_LO2		(1 << 7)
-+#define SHORT_LO2		(1 << 6)
-+#define CLR_SHORT_LO1		(1 << 5)
-+#define SHORT_LO1		(1 << 4)
-+#define CLR_SHORT_HS2		(1 << 3)
-+#define SHORT_HS2		(1 << 2)
-+#define CLR_SHORT_HS1		(1 << 1)
-+#define SHORT_HS1		(1 << 0)
-+
-+#define PM860X_DAPM_OUTPUT(wname, wevent)	\
-+{	.id = snd_soc_dapm_output, .name = wname, .kcontrols = NULL, \
-+	.num_kcontrols = 0, .event = wevent, \
-+	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD, }
-+
-+struct pm860x_det {
-+	struct snd_soc_jack	*jack;
-+	int			hs_det;
-+	int			hs_shrt;
-+	int			hook_det;
-+	int			lo_shrt;
++static struct snd_soc_jack_pin hs_jack_pins[] = {
++	{ .pin = "Headset Stereophone",	.mask = SND_JACK_HEADPHONE, },
++	{ .pin = "Headset Mic 2",	.mask = SND_JACK_MICROPHONE, },
 +};
 +
-+struct pm860x_priv {
-+	unsigned int		sysclk;
-+	unsigned int		pcmclk;
-+	unsigned int		dir;
-+	unsigned int		automute;
-+	unsigned int		filter;
-+	struct snd_soc_codec	*codec;
-+	struct i2c_client	*i2c;
-+	struct pm860x_chip	*chip;
-+	struct mutex		mutex;
-+	struct pm860x_det	det;
-+
-+	int			irq[4];
-+	unsigned char		name[4][MAX_NAME_LEN];
-+	unsigned char		reg_cache[REG_CACHE_SIZE];
++/* tavorevb3 machine dapm widgets */
++static const struct snd_soc_dapm_widget evb3_dapm_widgets[] = {
++	SND_SOC_DAPM_HP("Headset Stereophone", NULL),
++	SND_SOC_DAPM_LINE("Lineout Out 1", NULL),
++	SND_SOC_DAPM_LINE("Lineout Out 2", NULL),
++	SND_SOC_DAPM_SPK("Ext Speaker", NULL),
++	SND_SOC_DAPM_MIC("Ext Mic 1", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic 2", NULL),
++	SND_SOC_DAPM_MIC("Ext Mic 3", NULL),
 +};
 +
-+/* -9450dB to 0dB in 150dB steps ( mute instead of -9450dB) */
-+static const DECLARE_TLV_DB_SCALE(dpga_tlv, -9450, 150, 1);
-+
-+/* -9dB to 0db in 3dB steps */
-+static const DECLARE_TLV_DB_SCALE(adc_tlv, -900, 300, 0);
-+
-+/* {-23, -17, -13.5, -11, -9, -6, -3, 0}dB */
-+static const unsigned int mic_tlv[] = {
-+	TLV_DB_RANGE_HEAD(5),
-+	0, 0, TLV_DB_SCALE_ITEM(-2300, 0, 0),
-+	1, 1, TLV_DB_SCALE_ITEM(-1700, 0, 0),
-+	2, 2, TLV_DB_SCALE_ITEM(-1350, 0, 0),
-+	3, 3, TLV_DB_SCALE_ITEM(-1100, 0, 0),
-+	4, 7, TLV_DB_SCALE_ITEM(-900, 300, 0),
-+};
-+
-+/* {0, 0, 0, -6, 0, 6, 12, 18}dB */
-+static const unsigned int aux_tlv[] = {
-+	TLV_DB_RANGE_HEAD(2),
-+	0, 2, TLV_DB_SCALE_ITEM(0, 0, 0),
-+	3, 7, TLV_DB_SCALE_ITEM(-600, 600, 0),
-+};
-+
-+/* {-16, -13, -10, -7, -5.2, -3,3, -2.2, 0}dB, mute instead of -16dB */
-+static const unsigned int out_tlv[] = {
-+	TLV_DB_RANGE_HEAD(4),
-+	0, 3, TLV_DB_SCALE_ITEM(-1600, 300, 1),
-+	4, 4, TLV_DB_SCALE_ITEM(-520, 0, 0),
-+	5, 5, TLV_DB_SCALE_ITEM(-330, 0, 0),
-+	6, 7, TLV_DB_SCALE_ITEM(-220, 220, 0),
-+};
-+
-+static const unsigned int st_tlv[] = {
-+	TLV_DB_RANGE_HEAD(8),
-+	0, 1, TLV_DB_SCALE_ITEM(-12041, 602, 0),
-+	2, 3, TLV_DB_SCALE_ITEM(-11087, 250, 0),
-+	4, 5, TLV_DB_SCALE_ITEM(-10643, 158, 0),
-+	6, 7, TLV_DB_SCALE_ITEM(-10351, 116, 0),
-+	8, 9, TLV_DB_SCALE_ITEM(-10133, 92, 0),
-+	10, 13, TLV_DB_SCALE_ITEM(-9958, 70, 0),
-+	14, 17, TLV_DB_SCALE_ITEM(-9689, 53, 0),
-+	18, 271, TLV_DB_SCALE_ITEM(-9484, 37, 0),
-+};
-+
-+/* Sidetone Gain = M * 2^(-5-N) */
-+struct st_gain {
-+	unsigned int	db;
-+	unsigned int	m;
-+	unsigned int	n;
-+};
-+
-+static struct st_gain st_table[] = {
-+	{-12041,  1, 15}, {-11439,  1, 14}, {-11087,  3, 15}, {-10837,  1, 13},
-+	{-10643,  5, 15}, {-10485,  3, 14}, {-10351,  7, 15}, {-10235,  1, 12},
-+	{-10133,  9, 15}, {-10041,  5, 14}, { -9958, 11, 15}, { -9883,  3, 13},
-+	{ -9813, 13, 15}, { -9749,  7, 14}, { -9689, 15, 15}, { -9633,  1, 11},
-+	{ -9580, 17, 15}, { -9531,  9, 14}, { -9484, 19, 15}, { -9439,  5, 13},
-+	{ -9397, 21, 15}, { -9356, 11, 14}, { -9318, 23, 15}, { -9281,  3, 12},
-+	{ -9245, 25, 15}, { -9211, 13, 14}, { -9178, 27, 15}, { -9147,  7, 13},
-+	{ -9116, 29, 15}, { -9087, 15, 14}, { -9058, 31, 15}, { -9031,  1, 10},
-+	{ -8978, 17, 14}, { -8929,  9, 13}, { -8882, 19, 14}, { -8837,  5, 12},
-+	{ -8795, 21, 14}, { -8754, 11, 13}, { -8716, 23, 14}, { -8679,  3, 11},
-+	{ -8643, 25, 14}, { -8609, 13, 13}, { -8576, 27, 14}, { -8545,  7, 12},
-+	{ -8514, 29, 14}, { -8485, 15, 13}, { -8456, 31, 14}, { -8429,  1,  9},
-+	{ -8376, 17, 13}, { -8327,  9, 12}, { -8280, 19, 13}, { -8235,  5, 11},
-+	{ -8193, 21, 13}, { -8152, 11, 12}, { -8114, 23, 13}, { -8077,  3, 10},
-+	{ -8041, 25, 13}, { -8007, 13, 12}, { -7974, 27, 13}, { -7943,  7, 11},
-+	{ -7912, 29, 13}, { -7883, 15, 12}, { -7854, 31, 13}, { -7827,  1,  8},
-+	{ -7774, 17, 12}, { -7724,  9, 11}, { -7678, 19, 12}, { -7633,  5, 10},
-+	{ -7591, 21, 12}, { -7550, 11, 11}, { -7512, 23, 12}, { -7475,  3,  9},
-+	{ -7439, 25, 12}, { -7405, 13, 11}, { -7372, 27, 12}, { -7341,  7, 10},
-+	{ -7310, 29, 12}, { -7281, 15, 11}, { -7252, 31, 12}, { -7225,  1,  7},
-+	{ -7172, 17, 11}, { -7122,  9, 10}, { -7075, 19, 11}, { -7031,  5,  9},
-+	{ -6989, 21, 11}, { -6948, 11, 10}, { -6910, 23, 11}, { -6873,  3,  8},
-+	{ -6837, 25, 11}, { -6803, 13, 10}, { -6770, 27, 11}, { -6739,  7,  9},
-+	{ -6708, 29, 11}, { -6679, 15, 10}, { -6650, 31, 11}, { -6623,  1,  6},
-+	{ -6570, 17, 10}, { -6520,  9,  9}, { -6473, 19, 10}, { -6429,  5,  8},
-+	{ -6386, 21, 10}, { -6346, 11,  9}, { -6307, 23, 10}, { -6270,  3,  7},
-+	{ -6235, 25, 10}, { -6201, 13,  9}, { -6168, 27, 10}, { -6137,  7,  8},
-+	{ -6106, 29, 10}, { -6077, 15,  9}, { -6048, 31, 10}, { -6021,  1,  5},
-+	{ -5968, 17,  9}, { -5918,  9,  8}, { -5871, 19,  9}, { -5827,  5,  7},
-+	{ -5784, 21,  9}, { -5744, 11,  8}, { -5705, 23,  9}, { -5668,  3,  6},
-+	{ -5633, 25,  9}, { -5599, 13,  8}, { -5566, 27,  9}, { -5535,  7,  7},
-+	{ -5504, 29,  9}, { -5475, 15,  8}, { -5446, 31,  9}, { -5419,  1,  4},
-+	{ -5366, 17,  8}, { -5316,  9,  7}, { -5269, 19,  8}, { -5225,  5,  6},
-+	{ -5182, 21,  8}, { -5142, 11,  7}, { -5103, 23,  8}, { -5066,  3,  5},
-+	{ -5031, 25,  8}, { -4997, 13,  7}, { -4964, 27,  8}, { -4932,  7,  6},
-+	{ -4902, 29,  8}, { -4873, 15,  7}, { -4844, 31,  8}, { -4816,  1,  3},
-+	{ -4764, 17,  7}, { -4714,  9,  6}, { -4667, 19,  7}, { -4623,  5,  5},
-+	{ -4580, 21,  7}, { -4540, 11,  6}, { -4501, 23,  7}, { -4464,  3,  4},
-+	{ -4429, 25,  7}, { -4395, 13,  6}, { -4362, 27,  7}, { -4330,  7,  5},
-+	{ -4300, 29,  7}, { -4270, 15,  6}, { -4242, 31,  7}, { -4214,  1,  2},
-+	{ -4162, 17,  6}, { -4112,  9,  5}, { -4065, 19,  6}, { -4021,  5,  4},
-+	{ -3978, 21,  6}, { -3938, 11,  5}, { -3899, 23,  6}, { -3862,  3,  3},
-+	{ -3827, 25,  6}, { -3793, 13,  5}, { -3760, 27,  6}, { -3728,  7,  4},
-+	{ -3698, 29,  6}, { -3668, 15,  5}, { -3640, 31,  6}, { -3612,  1,  1},
-+	{ -3560, 17,  5}, { -3510,  9,  4}, { -3463, 19,  5}, { -3419,  5,  3},
-+	{ -3376, 21,  5}, { -3336, 11,  4}, { -3297, 23,  5}, { -3260,  3,  2},
-+	{ -3225, 25,  5}, { -3191, 13,  4}, { -3158, 27,  5}, { -3126,  7,  3},
-+	{ -3096, 29,  5}, { -3066, 15,  4}, { -3038, 31,  5}, { -3010,  1,  0},
-+	{ -2958, 17,  4}, { -2908,  9,  3}, { -2861, 19,  4}, { -2816,  5,  2},
-+	{ -2774, 21,  4}, { -2734, 11,  3}, { -2695, 23,  4}, { -2658,  3,  1},
-+	{ -2623, 25,  4}, { -2589, 13,  3}, { -2556, 27,  4}, { -2524,  7,  2},
-+	{ -2494, 29,  4}, { -2464, 15,  3}, { -2436, 31,  4}, { -2408,  2,  0},
-+	{ -2356, 17,  3}, { -2306,  9,  2}, { -2259, 19,  3}, { -2214,  5,  1},
-+	{ -2172, 21,  3}, { -2132, 11,  2}, { -2093, 23,  3}, { -2056,  3,  0},
-+	{ -2021, 25,  3}, { -1987, 13,  2}, { -1954, 27,  3}, { -1922,  7,  1},
-+	{ -1892, 29,  3}, { -1862, 15,  2}, { -1834, 31,  3}, { -1806,  4,  0},
-+	{ -1754, 17,  2}, { -1704,  9,  1}, { -1657, 19,  2}, { -1612,  5,  0},
-+	{ -1570, 21,  2}, { -1530, 11,  1}, { -1491, 23,  2}, { -1454,  6,  0},
-+	{ -1419, 25,  2}, { -1384, 13,  1}, { -1352, 27,  2}, { -1320,  7,  0},
-+	{ -1290, 29,  2}, { -1260, 15,  1}, { -1232, 31,  2}, { -1204,  8,  0},
-+	{ -1151, 17,  1}, { -1102,  9,  0}, { -1055, 19,  1}, { -1010, 10,  0},
-+	{  -968, 21,  1}, {  -928, 11,  0}, {  -889, 23,  1}, {  -852, 12,  0},
-+	{  -816, 25,  1}, {  -782, 13,  0}, {  -750, 27,  1}, {  -718, 14,  0},
-+	{  -688, 29,  1}, {  -658, 15,  0}, {  -630, 31,  1}, {  -602, 16,  0},
-+	{  -549, 17,  0}, {  -500, 18,  0}, {  -453, 19,  0}, {  -408, 20,  0},
-+	{  -366, 21,  0}, {  -325, 22,  0}, {  -287, 23,  0}, {  -250, 24,  0},
-+	{  -214, 25,  0}, {  -180, 26,  0}, {  -148, 27,  0}, {  -116, 28,  0},
-+	{   -86, 29,  0}, {   -56, 30,  0}, {   -28, 31,  0}, {     0,  0,  0},
-+};
-+
-+static int pm860x_volatile(unsigned int reg)
-+{
-+	BUG_ON(reg >= REG_CACHE_SIZE);
-+
-+	switch (reg) {
-+	case PM860X_AUDIO_SUPPLIES_2:
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+
-+static unsigned int pm860x_read_reg_cache(struct snd_soc_codec *codec,
-+					  unsigned int reg)
-+{
-+	unsigned char *cache = codec->reg_cache;
-+
-+	BUG_ON(reg >= REG_CACHE_SIZE);
-+
-+	if (pm860x_volatile(reg))
-+		return cache[reg];
-+
-+	reg += REG_CACHE_BASE;
-+
-+	return pm860x_reg_read(codec->control_data, reg);
-+}
-+
-+static int pm860x_write_reg_cache(struct snd_soc_codec *codec,
-+				  unsigned int reg, unsigned int value)
-+{
-+	unsigned char *cache = codec->reg_cache;
-+
-+	BUG_ON(reg >= REG_CACHE_SIZE);
-+
-+	if (!pm860x_volatile(reg))
-+		cache[reg] = (unsigned char)value;
-+
-+	reg += REG_CACHE_BASE;
-+
-+	return pm860x_reg_write(codec->control_data, reg, value);
-+}
-+
-+static int snd_soc_get_volsw_2r_st(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	unsigned int reg = mc->reg;
-+	unsigned int reg2 = mc->rreg;
-+	int val[2], val2[2], i;
-+
-+	val[0] = snd_soc_read(codec, reg) & 0x3f;
-+	val[1] = (snd_soc_read(codec, PM860X_SIDETONE_SHIFT) >> 4) & 0xf;
-+	val2[0] = snd_soc_read(codec, reg2) & 0x3f;
-+	val2[1] = (snd_soc_read(codec, PM860X_SIDETONE_SHIFT)) & 0xf;
-+
-+	for (i = 0; i < ARRAY_SIZE(st_table); i++) {
-+		if ((st_table[i].m == val[0]) && (st_table[i].n == val[1]))
-+			ucontrol->value.integer.value[0] = i;
-+		if ((st_table[i].m == val2[0]) && (st_table[i].n == val2[1]))
-+			ucontrol->value.integer.value[1] = i;
-+	}
-+	return 0;
-+}
-+
-+static int snd_soc_put_volsw_2r_st(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	unsigned int reg = mc->reg;
-+	unsigned int reg2 = mc->rreg;
-+	int err;
-+	unsigned int val, val2;
-+
-+	val = ucontrol->value.integer.value[0];
-+	val2 = ucontrol->value.integer.value[1];
-+
-+	err = snd_soc_update_bits(codec, reg, 0x3f, st_table[val].m);
-+	if (err < 0)
-+		return err;
-+	err = snd_soc_update_bits(codec, PM860X_SIDETONE_SHIFT, 0xf0,
-+				  st_table[val].n << 4);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_soc_update_bits(codec, reg2, 0x3f, st_table[val2].m);
-+	if (err < 0)
-+		return err;
-+	err = snd_soc_update_bits(codec, PM860X_SIDETONE_SHIFT, 0x0f,
-+				  st_table[val2].n);
-+	return err;
-+}
-+
-+static int snd_soc_get_volsw_2r_out(struct snd_kcontrol *kcontrol,
-+				    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	unsigned int reg = mc->reg;
-+	unsigned int reg2 = mc->rreg;
-+	unsigned int shift = mc->shift;
-+	int max = mc->max, val, val2;
-+	unsigned int mask = (1 << fls(max)) - 1;
-+
-+	val = snd_soc_read(codec, reg) >> shift;
-+	val2 = snd_soc_read(codec, reg2) >> shift;
-+	ucontrol->value.integer.value[0] = (max - val) & mask;
-+	ucontrol->value.integer.value[1] = (max - val2) & mask;
-+
-+	return 0;
-+}
-+
-+static int snd_soc_put_volsw_2r_out(struct snd_kcontrol *kcontrol,
-+				    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	unsigned int reg = mc->reg;
-+	unsigned int reg2 = mc->rreg;
-+	unsigned int shift = mc->shift;
-+	int max = mc->max;
-+	unsigned int mask = (1 << fls(max)) - 1;
-+	int err;
-+	unsigned int val, val2, val_mask;
-+
-+	val_mask = mask << shift;
-+	val = ((max - ucontrol->value.integer.value[0]) & mask);
-+	val2 = ((max - ucontrol->value.integer.value[1]) & mask);
-+
-+	val = val << shift;
-+	val2 = val2 << shift;
-+
-+	err = snd_soc_update_bits(codec, reg, val_mask, val);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_soc_update_bits(codec, reg2, val_mask, val2);
-+	return err;
-+}
-+
-+/* DAPM Widget Events */
-+/*
-+ * A lot registers are belong to RSYNC domain. It requires enabling RSYNC bit
-+ * after updating these registers. Otherwise, these updated registers won't
-+ * be effective.
-+ */
-+static int pm860x_rsync_event(struct snd_soc_dapm_widget *w,
-+			      struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = w->codec;
-+	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
-+
-+	/*
-+	 * automute will be set before DAC enabling. automute is used to
-+	 * anti-pop.
-+	 */
-+	if (pm860x->automute) {
-+		mutex_lock(&pm860x->mutex);
-+		snd_soc_update_bits(codec, PM860X_DAC_OFFSET, DAC_MUTE, 0);
-+		pm860x->automute = 0;
-+		mutex_unlock(&pm860x->mutex);
-+	}
-+	snd_soc_update_bits(codec, PM860X_EAR_CTRL_2,
-+			    RSYNC_CHANGE, RSYNC_CHANGE);
-+	return 0;
-+}
-+
-+static int pm860x_dac_event(struct snd_soc_dapm_widget *w,
-+			    struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = w->codec;
-+	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
-+	unsigned int dac = 0;
-+	int data;
-+
-+	if (!strcmp(w->name, "Left DAC"))
-+		dac = DAC_LEFT;
-+	if (!strcmp(w->name, "Right DAC"))
-+		dac = DAC_RIGHT;
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		if (dac) {
-+			/* automute is set before operating DAC. Anti-pop */
-+			mutex_lock(&pm860x->mutex);
-+			pm860x->automute = 1;
-+			dac |= MODULATOR;
-+			/* mute */
-+			snd_soc_update_bits(codec, PM860X_DAC_OFFSET,
-+					    DAC_MUTE, DAC_MUTE);
-+			snd_soc_update_bits(codec, PM860X_EAR_CTRL_2,
-+					    RSYNC_CHANGE, RSYNC_CHANGE);
-+			mutex_unlock(&pm860x->mutex);
-+			/* update dac */
-+			snd_soc_update_bits(codec, PM860X_DAC_EN_2,
-+					    dac, dac);
-+		}
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		if (dac) {
-+			mutex_lock(&pm860x->mutex);
-+			pm860x->automute = 1;
-+			/* mute */
-+			snd_soc_update_bits(codec, PM860X_DAC_OFFSET,
-+					    DAC_MUTE, DAC_MUTE);
-+			snd_soc_update_bits(codec, PM860X_EAR_CTRL_2,
-+					    RSYNC_CHANGE, RSYNC_CHANGE);
-+			mutex_unlock(&pm860x->mutex);
-+			/* update dac */
-+			data = snd_soc_read(codec, PM860X_DAC_EN_2);
-+			data &= ~dac;
-+			if (!(data & (DAC_LEFT | DAC_RIGHT)))
-+				data &= ~MODULATOR;
-+			snd_soc_write(codec, PM860X_DAC_EN_2, data);
-+		}
-+		break;
-+	}
-+	return 0;
-+}
-+
-+static const char *pm860x_opamp_texts[] = {"-50%", "-25%", "0%", "75%"};
-+
-+static const char *pm860x_pa_texts[] = {"-33%", "0%", "33%", "66%"};
-+
-+static const struct soc_enum pm860x_hs1_opamp_enum =
-+	SOC_ENUM_SINGLE(PM860X_HS1_CTRL, 5, 4, pm860x_opamp_texts);
-+
-+static const struct soc_enum pm860x_hs2_opamp_enum =
-+	SOC_ENUM_SINGLE(PM860X_HS2_CTRL, 5, 4, pm860x_opamp_texts);
-+
-+static const struct soc_enum pm860x_hs1_pa_enum =
-+	SOC_ENUM_SINGLE(PM860X_HS1_CTRL, 3, 4, pm860x_pa_texts);
-+
-+static const struct soc_enum pm860x_hs2_pa_enum =
-+	SOC_ENUM_SINGLE(PM860X_HS2_CTRL, 3, 4, pm860x_pa_texts);
-+
-+static const struct soc_enum pm860x_lo1_opamp_enum =
-+	SOC_ENUM_SINGLE(PM860X_LO1_CTRL, 5, 4, pm860x_opamp_texts);
-+
-+static const struct soc_enum pm860x_lo2_opamp_enum =
-+	SOC_ENUM_SINGLE(PM860X_LO2_CTRL, 5, 4, pm860x_opamp_texts);
-+
-+static const struct soc_enum pm860x_lo1_pa_enum =
-+	SOC_ENUM_SINGLE(PM860X_LO1_CTRL, 3, 4, pm860x_pa_texts);
-+
-+static const struct soc_enum pm860x_lo2_pa_enum =
-+	SOC_ENUM_SINGLE(PM860X_LO2_CTRL, 3, 4, pm860x_pa_texts);
-+
-+static const struct soc_enum pm860x_spk_pa_enum =
-+	SOC_ENUM_SINGLE(PM860X_EAR_CTRL_1, 5, 4, pm860x_pa_texts);
-+
-+static const struct soc_enum pm860x_ear_pa_enum =
-+	SOC_ENUM_SINGLE(PM860X_EAR_CTRL_2, 0, 4, pm860x_pa_texts);
-+
-+static const struct soc_enum pm860x_spk_ear_opamp_enum =
-+	SOC_ENUM_SINGLE(PM860X_EAR_CTRL_1, 3, 4, pm860x_opamp_texts);
-+
-+static const struct snd_kcontrol_new pm860x_snd_controls[] = {
-+	SOC_DOUBLE_R_TLV("ADC Capture Volume", PM860X_ADC_ANA_2,
-+			PM860X_ADC_ANA_3, 6, 3, 0, adc_tlv),
-+	SOC_DOUBLE_TLV("AUX Capture Volume", PM860X_ADC_ANA_3, 0, 3, 7, 0,
-+			aux_tlv),
-+	SOC_SINGLE_TLV("MIC1 Capture Volume", PM860X_ADC_ANA_2, 0, 7, 0,
-+			mic_tlv),
-+	SOC_SINGLE_TLV("MIC3 Capture Volume", PM860X_ADC_ANA_2, 3, 7, 0,
-+			mic_tlv),
-+	SOC_DOUBLE_R_EXT_TLV("Sidetone Volume", PM860X_SIDETONE_L_GAIN,
-+			     PM860X_SIDETONE_R_GAIN, 0, ARRAY_SIZE(st_table)-1,
-+			     0, snd_soc_get_volsw_2r_st,
-+			     snd_soc_put_volsw_2r_st, st_tlv),
-+	SOC_SINGLE_TLV("Speaker Playback Volume", PM860X_EAR_CTRL_1,
-+			0, 7, 0, out_tlv),
-+	SOC_DOUBLE_R_TLV("Line Playback Volume", PM860X_LO1_CTRL,
-+			 PM860X_LO2_CTRL, 0, 7, 0, out_tlv),
-+	SOC_DOUBLE_R_TLV("Headset Playback Volume", PM860X_HS1_CTRL,
-+			 PM860X_HS2_CTRL, 0, 7, 0, out_tlv),
-+	SOC_DOUBLE_R_EXT_TLV("Hifi Left Playback Volume",
-+			     PM860X_HIFIL_GAIN_LEFT,
-+			     PM860X_HIFIL_GAIN_RIGHT, 0, 63, 0,
-+			     snd_soc_get_volsw_2r_out,
-+			     snd_soc_put_volsw_2r_out, dpga_tlv),
-+	SOC_DOUBLE_R_EXT_TLV("Hifi Right Playback Volume",
-+			     PM860X_HIFIR_GAIN_LEFT,
-+			     PM860X_HIFIR_GAIN_RIGHT, 0, 63, 0,
-+			     snd_soc_get_volsw_2r_out,
-+			     snd_soc_put_volsw_2r_out, dpga_tlv),
-+	SOC_DOUBLE_R_EXT_TLV("Lofi Playback Volume", PM860X_LOFI_GAIN_LEFT,
-+			     PM860X_LOFI_GAIN_RIGHT, 0, 63, 0,
-+			     snd_soc_get_volsw_2r_out,
-+			     snd_soc_put_volsw_2r_out, dpga_tlv),
-+	SOC_ENUM("Headset1 Operational Amplifier Current",
-+		 pm860x_hs1_opamp_enum),
-+	SOC_ENUM("Headset2 Operational Amplifier Current",
-+		 pm860x_hs2_opamp_enum),
-+	SOC_ENUM("Headset1 Amplifier Current", pm860x_hs1_pa_enum),
-+	SOC_ENUM("Headset2 Amplifier Current", pm860x_hs2_pa_enum),
-+	SOC_ENUM("Lineout1 Operational Amplifier Current",
-+		 pm860x_lo1_opamp_enum),
-+	SOC_ENUM("Lineout2 Operational Amplifier Current",
-+		 pm860x_lo2_opamp_enum),
-+	SOC_ENUM("Lineout1 Amplifier Current", pm860x_lo1_pa_enum),
-+	SOC_ENUM("Lineout2 Amplifier Current", pm860x_lo2_pa_enum),
-+	SOC_ENUM("Speaker Operational Amplifier Current",
-+		 pm860x_spk_ear_opamp_enum),
-+	SOC_ENUM("Speaker Amplifier Current", pm860x_spk_pa_enum),
-+	SOC_ENUM("Earpiece Amplifier Current", pm860x_ear_pa_enum),
-+};
-+
-+/*
-+ * DAPM Controls
-+ */
-+
-+/* PCM Switch / PCM Interface */
-+static const struct snd_kcontrol_new pcm_switch_controls =
-+	SOC_DAPM_SINGLE("Switch", PM860X_ADC_EN_2, 0, 1, 0);
-+
-+/* AUX1 Switch */
-+static const struct snd_kcontrol_new aux1_switch_controls =
-+	SOC_DAPM_SINGLE("Switch", PM860X_ANA_TO_ANA, 4, 1, 0);
-+
-+/* AUX2 Switch */
-+static const struct snd_kcontrol_new aux2_switch_controls =
-+	SOC_DAPM_SINGLE("Switch", PM860X_ANA_TO_ANA, 5, 1, 0);
-+
-+/* Left Ex. PA Switch */
-+static const struct snd_kcontrol_new lepa_switch_controls =
-+	SOC_DAPM_SINGLE("Switch", PM860X_DAC_EN_2, 2, 1, 0);
-+
-+/* Right Ex. PA Switch */
-+static const struct snd_kcontrol_new repa_switch_controls =
-+	SOC_DAPM_SINGLE("Switch", PM860X_DAC_EN_2, 1, 1, 0);
-+
-+/* PCM Mux / Mux7 */
-+static const char *aif1_text[] = {
-+	"PCM L", "PCM R",
-+};
-+
-+static const struct soc_enum aif1_enum =
-+	SOC_ENUM_SINGLE(PM860X_PCM_IFACE_3, 6, 2, aif1_text);
-+
-+static const struct snd_kcontrol_new aif1_mux =
-+	SOC_DAPM_ENUM("PCM Mux", aif1_enum);
-+
-+/* I2S Mux / Mux9 */
-+static const char *i2s_din_text[] = {
-+	"DIN", "DIN1",
-+};
-+
-+static const struct soc_enum i2s_din_enum =
-+	SOC_ENUM_SINGLE(PM860X_I2S_IFACE_3, 1, 2, i2s_din_text);
-+
-+static const struct snd_kcontrol_new i2s_din_mux =
-+	SOC_DAPM_ENUM("I2S DIN Mux", i2s_din_enum);
-+
-+/* I2S Mic Mux / Mux8 */
-+static const char *i2s_mic_text[] = {
-+	"Ex PA", "ADC",
-+};
-+
-+static const struct soc_enum i2s_mic_enum =
-+	SOC_ENUM_SINGLE(PM860X_I2S_IFACE_3, 4, 2, i2s_mic_text);
-+
-+static const struct snd_kcontrol_new i2s_mic_mux =
-+	SOC_DAPM_ENUM("I2S Mic Mux", i2s_mic_enum);
-+
-+/* ADCL Mux / Mux2 */
-+static const char *adcl_text[] = {
-+	"ADCR", "ADCL",
-+};
-+
-+static const struct soc_enum adcl_enum =
-+	SOC_ENUM_SINGLE(PM860X_PCM_IFACE_3, 4, 2, adcl_text);
-+
-+static const struct snd_kcontrol_new adcl_mux =
-+	SOC_DAPM_ENUM("ADC Left Mux", adcl_enum);
-+
-+/* ADCR Mux / Mux3 */
-+static const char *adcr_text[] = {
-+	"ADCL", "ADCR",
-+};
-+
-+static const struct soc_enum adcr_enum =
-+	SOC_ENUM_SINGLE(PM860X_PCM_IFACE_3, 2, 2, adcr_text);
-+
-+static const struct snd_kcontrol_new adcr_mux =
-+	SOC_DAPM_ENUM("ADC Right Mux", adcr_enum);
-+
-+/* ADCR EC Mux / Mux6 */
-+static const char *adcr_ec_text[] = {
-+	"ADCR", "EC",
-+};
-+
-+static const struct soc_enum adcr_ec_enum =
-+	SOC_ENUM_SINGLE(PM860X_ADC_EN_2, 3, 2, adcr_ec_text);
-+
-+static const struct snd_kcontrol_new adcr_ec_mux =
-+	SOC_DAPM_ENUM("ADCR EC Mux", adcr_ec_enum);
-+
-+/* EC Mux / Mux4 */
-+static const char *ec_text[] = {
-+	"Left", "Right", "Left + Right",
-+};
-+
-+static const struct soc_enum ec_enum =
-+	SOC_ENUM_SINGLE(PM860X_EC_PATH, 1, 3, ec_text);
-+
-+static const struct snd_kcontrol_new ec_mux =
-+	SOC_DAPM_ENUM("EC Mux", ec_enum);
-+
-+static const char *dac_text[] = {
-+	"No input", "Right", "Left", "No input",
-+};
-+
-+/* DAC Headset 1 Mux / Mux10 */
-+static const struct soc_enum dac_hs1_enum =
-+	SOC_ENUM_SINGLE(PM860X_ANA_INPUT_SEL_1, 0, 4, dac_text);
-+
-+static const struct snd_kcontrol_new dac_hs1_mux =
-+	SOC_DAPM_ENUM("DAC HS1 Mux", dac_hs1_enum);
-+
-+/* DAC Headset 2 Mux / Mux11 */
-+static const struct soc_enum dac_hs2_enum =
-+	SOC_ENUM_SINGLE(PM860X_ANA_INPUT_SEL_1, 2, 4, dac_text);
-+
-+static const struct snd_kcontrol_new dac_hs2_mux =
-+	SOC_DAPM_ENUM("DAC HS2 Mux", dac_hs2_enum);
-+
-+/* DAC Lineout 1 Mux / Mux12 */
-+static const struct soc_enum dac_lo1_enum =
-+	SOC_ENUM_SINGLE(PM860X_ANA_INPUT_SEL_1, 4, 4, dac_text);
-+
-+static const struct snd_kcontrol_new dac_lo1_mux =
-+	SOC_DAPM_ENUM("DAC LO1 Mux", dac_lo1_enum);
-+
-+/* DAC Lineout 2 Mux / Mux13 */
-+static const struct soc_enum dac_lo2_enum =
-+	SOC_ENUM_SINGLE(PM860X_ANA_INPUT_SEL_1, 6, 4, dac_text);
-+
-+static const struct snd_kcontrol_new dac_lo2_mux =
-+	SOC_DAPM_ENUM("DAC LO2 Mux", dac_lo2_enum);
-+
-+/* DAC Spearker Earphone Mux / Mux14 */
-+static const struct soc_enum dac_spk_ear_enum =
-+	SOC_ENUM_SINGLE(PM860X_ANA_INPUT_SEL_2, 0, 4, dac_text);
-+
-+static const struct snd_kcontrol_new dac_spk_ear_mux =
-+	SOC_DAPM_ENUM("DAC SP Mux", dac_spk_ear_enum);
-+
-+/* Headset 1 Mux / Mux15 */
-+static const char *in_text[] = {
-+	"Digital", "Analog",
-+};
-+
-+static const struct soc_enum hs1_enum =
-+	SOC_ENUM_SINGLE(PM860X_ANA_TO_ANA, 0, 2, in_text);
-+
-+static const struct snd_kcontrol_new hs1_mux =
-+	SOC_DAPM_ENUM("Headset1 Mux", hs1_enum);
-+
-+/* Headset 2 Mux / Mux16 */
-+static const struct soc_enum hs2_enum =
-+	SOC_ENUM_SINGLE(PM860X_ANA_TO_ANA, 1, 2, in_text);
-+
-+static const struct snd_kcontrol_new hs2_mux =
-+	SOC_DAPM_ENUM("Headset2 Mux", hs2_enum);
-+
-+/* Lineout 1 Mux / Mux17 */
-+static const struct soc_enum lo1_enum =
-+	SOC_ENUM_SINGLE(PM860X_ANA_TO_ANA, 2, 2, in_text);
-+
-+static const struct snd_kcontrol_new lo1_mux =
-+	SOC_DAPM_ENUM("Lineout1 Mux", lo1_enum);
-+
-+/* Lineout 2 Mux / Mux18 */
-+static const struct soc_enum lo2_enum =
-+	SOC_ENUM_SINGLE(PM860X_ANA_TO_ANA, 3, 2, in_text);
-+
-+static const struct snd_kcontrol_new lo2_mux =
-+	SOC_DAPM_ENUM("Lineout2 Mux", lo2_enum);
-+
-+/* Speaker Earpiece Demux */
-+static const char *spk_text[] = {
-+	"Earpiece", "Speaker",
-+};
-+
-+static const struct soc_enum spk_enum =
-+	SOC_ENUM_SINGLE(PM860X_ANA_TO_ANA, 6, 2, spk_text);
-+
-+static const struct snd_kcontrol_new spk_demux =
-+	SOC_DAPM_ENUM("Speaker Earpiece Demux", spk_enum);
-+
-+/* MIC Mux / Mux1 */
-+static const char *mic_text[] = {
-+	"Mic 1", "Mic 2",
-+};
-+
-+static const struct soc_enum mic_enum =
-+	SOC_ENUM_SINGLE(PM860X_ADC_ANA_4, 4, 2, mic_text);
-+
-+static const struct snd_kcontrol_new mic_mux =
-+	SOC_DAPM_ENUM("MIC Mux", mic_enum);
-+
-+static const struct snd_soc_dapm_widget pm860x_dapm_widgets[] = {
-+	SND_SOC_DAPM_AIF_IN("PCM SDI", "PCM Playback", 0,
-+			    PM860X_ADC_EN_2, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("PCM SDO", "PCM Capture", 0,
-+			     PM860X_PCM_IFACE_3, 1, 1),
-+
-+
-+	SND_SOC_DAPM_AIF_IN("I2S DIN", "I2S Playback", 0,
-+			    PM860X_DAC_EN_2, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("I2S DIN1", "I2S Playback", 0,
-+			    PM860X_DAC_EN_2, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("I2S DOUT", "I2S Capture", 0,
-+			     PM860X_I2S_IFACE_3, 5, 1),
-+	SND_SOC_DAPM_MUX("I2S Mic Mux", SND_SOC_NOPM, 0, 0, &i2s_mic_mux),
-+	SND_SOC_DAPM_MUX("ADC Left Mux", SND_SOC_NOPM, 0, 0, &adcl_mux),
-+	SND_SOC_DAPM_MUX("ADC Right Mux", SND_SOC_NOPM, 0, 0, &adcr_mux),
-+	SND_SOC_DAPM_MUX("EC Mux", SND_SOC_NOPM, 0, 0, &ec_mux),
-+	SND_SOC_DAPM_MUX("ADCR EC Mux", SND_SOC_NOPM, 0, 0, &adcr_ec_mux),
-+	SND_SOC_DAPM_SWITCH("Left EPA", SND_SOC_NOPM, 0, 0,
-+			    &lepa_switch_controls),
-+	SND_SOC_DAPM_SWITCH("Right EPA", SND_SOC_NOPM, 0, 0,
-+			    &repa_switch_controls),
-+
-+	SND_SOC_DAPM_REG(snd_soc_dapm_supply, "Left ADC MOD", PM860X_ADC_EN_1,
-+			 0, 1, 1, 0),
-+	SND_SOC_DAPM_REG(snd_soc_dapm_supply, "Right ADC MOD", PM860X_ADC_EN_1,
-+			 1, 1, 1, 0),
-+	SND_SOC_DAPM_ADC("Left ADC", NULL, PM860X_ADC_EN_2, 5, 0),
-+	SND_SOC_DAPM_ADC("Right ADC", NULL, PM860X_ADC_EN_2, 4, 0),
-+
-+	SND_SOC_DAPM_SWITCH("AUX1 Switch", SND_SOC_NOPM, 0, 0,
-+			    &aux1_switch_controls),
-+	SND_SOC_DAPM_SWITCH("AUX2 Switch", SND_SOC_NOPM, 0, 0,
-+			    &aux2_switch_controls),
-+
-+	SND_SOC_DAPM_MUX("MIC Mux", SND_SOC_NOPM, 0, 0, &mic_mux),
-+	SND_SOC_DAPM_MICBIAS("Mic1 Bias", PM860X_ADC_ANA_1, 2, 0),
-+	SND_SOC_DAPM_MICBIAS("Mic3 Bias", PM860X_ADC_ANA_1, 7, 0),
-+	SND_SOC_DAPM_PGA("MIC1 Volume", PM860X_ADC_EN_1, 2, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("MIC3 Volume", PM860X_ADC_EN_1, 3, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("AUX1 Volume", PM860X_ADC_EN_1, 4, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("AUX2 Volume", PM860X_ADC_EN_1, 5, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Sidetone PGA", PM860X_ADC_EN_2, 1, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Lofi PGA", PM860X_ADC_EN_2, 2, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_INPUT("AUX1"),
-+	SND_SOC_DAPM_INPUT("AUX2"),
-+	SND_SOC_DAPM_INPUT("MIC1P"),
-+	SND_SOC_DAPM_INPUT("MIC1N"),
-+	SND_SOC_DAPM_INPUT("MIC2P"),
-+	SND_SOC_DAPM_INPUT("MIC2N"),
-+	SND_SOC_DAPM_INPUT("MIC3P"),
-+	SND_SOC_DAPM_INPUT("MIC3N"),
-+
-+	SND_SOC_DAPM_DAC_E("Left DAC", NULL, SND_SOC_NOPM, 0, 0,
-+			   pm860x_dac_event,
-+			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
-+	SND_SOC_DAPM_DAC_E("Right DAC", NULL, SND_SOC_NOPM, 0, 0,
-+			   pm860x_dac_event,
-+			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
-+
-+	SND_SOC_DAPM_MUX("I2S DIN Mux", SND_SOC_NOPM, 0, 0, &i2s_din_mux),
-+	SND_SOC_DAPM_MUX("DAC HS1 Mux", SND_SOC_NOPM, 0, 0, &dac_hs1_mux),
-+	SND_SOC_DAPM_MUX("DAC HS2 Mux", SND_SOC_NOPM, 0, 0, &dac_hs2_mux),
-+	SND_SOC_DAPM_MUX("DAC LO1 Mux", SND_SOC_NOPM, 0, 0, &dac_lo1_mux),
-+	SND_SOC_DAPM_MUX("DAC LO2 Mux", SND_SOC_NOPM, 0, 0, &dac_lo2_mux),
-+	SND_SOC_DAPM_MUX("DAC SP Mux", SND_SOC_NOPM, 0, 0, &dac_spk_ear_mux),
-+	SND_SOC_DAPM_MUX("Headset1 Mux", SND_SOC_NOPM, 0, 0, &hs1_mux),
-+	SND_SOC_DAPM_MUX("Headset2 Mux", SND_SOC_NOPM, 0, 0, &hs2_mux),
-+	SND_SOC_DAPM_MUX("Lineout1 Mux", SND_SOC_NOPM, 0, 0, &lo1_mux),
-+	SND_SOC_DAPM_MUX("Lineout2 Mux", SND_SOC_NOPM, 0, 0, &lo2_mux),
-+	SND_SOC_DAPM_MUX("Speaker Earpiece Demux", SND_SOC_NOPM, 0, 0,
-+			 &spk_demux),
-+
-+
-+	SND_SOC_DAPM_PGA("Headset1 PGA", PM860X_DAC_EN_1, 0, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Headset2 PGA", PM860X_DAC_EN_1, 1, 0, NULL, 0),
-+	SND_SOC_DAPM_OUTPUT("HS1"),
-+	SND_SOC_DAPM_OUTPUT("HS2"),
-+	SND_SOC_DAPM_PGA("Lineout1 PGA", PM860X_DAC_EN_1, 2, 0, NULL, 0),
-+	SND_SOC_DAPM_PGA("Lineout2 PGA", PM860X_DAC_EN_1, 3, 0, NULL, 0),
-+	SND_SOC_DAPM_OUTPUT("LINEOUT1"),
-+	SND_SOC_DAPM_OUTPUT("LINEOUT2"),
-+	SND_SOC_DAPM_PGA("Earpiece PGA", PM860X_DAC_EN_1, 4, 0, NULL, 0),
-+	SND_SOC_DAPM_OUTPUT("EARP"),
-+	SND_SOC_DAPM_OUTPUT("EARN"),
-+	SND_SOC_DAPM_PGA("Speaker PGA", PM860X_DAC_EN_1, 5, 0, NULL, 0),
-+	SND_SOC_DAPM_OUTPUT("LSP"),
-+	SND_SOC_DAPM_OUTPUT("LSN"),
-+	SND_SOC_DAPM_REG(snd_soc_dapm_supply, "VCODEC", PM860X_AUDIO_SUPPLIES_2,
-+			 0, SUPPLY_MASK, SUPPLY_MASK, 0),
-+
-+	PM860X_DAPM_OUTPUT("RSYNC", pm860x_rsync_event),
-+};
-+
++/* tavorevb3 machine audio map */
 +static const struct snd_soc_dapm_route audio_map[] = {
-+	/* supply */
-+	{"Left DAC", NULL, "VCODEC"},
-+	{"Right DAC", NULL, "VCODEC"},
-+	{"Left ADC", NULL, "VCODEC"},
-+	{"Right ADC", NULL, "VCODEC"},
-+	{"Left ADC", NULL, "Left ADC MOD"},
-+	{"Right ADC", NULL, "Right ADC MOD"},
++	{"Headset Stereophone", NULL, "HS1"},
++	{"Headset Stereophone", NULL, "HS2"},
 +
-+	/* PCM/AIF1 Inputs */
-+	{"PCM SDO", NULL, "ADC Left Mux"},
-+	{"PCM SDO", NULL, "ADCR EC Mux"},
++	{"Ext Speaker", NULL, "LSP"},
++	{"Ext Speaker", NULL, "LSN"},
 +
-+	/* PCM/AFI2 Outputs */
-+	{"Lofi PGA", NULL, "PCM SDI"},
-+	{"Lofi PGA", NULL, "Sidetone PGA"},
-+	{"Left DAC", NULL, "Lofi PGA"},
-+	{"Right DAC", NULL, "Lofi PGA"},
++	{"Lineout Out 1", NULL, "LINEOUT1"},
++	{"Lineout Out 2", NULL, "LINEOUT2"},
 +
-+	/* I2S/AIF2 Inputs */
-+	{"MIC Mux", "Mic 1", "MIC1P"},
-+	{"MIC Mux", "Mic 1", "MIC1N"},
-+	{"MIC Mux", "Mic 2", "MIC2P"},
-+	{"MIC Mux", "Mic 2", "MIC2N"},
-+	{"MIC1 Volume", NULL, "MIC Mux"},
-+	{"MIC3 Volume", NULL, "MIC3P"},
-+	{"MIC3 Volume", NULL, "MIC3N"},
-+	{"Left ADC", NULL, "MIC1 Volume"},
-+	{"Right ADC", NULL, "MIC3 Volume"},
-+	{"ADC Left Mux", "ADCR", "Right ADC"},
-+	{"ADC Left Mux", "ADCL", "Left ADC"},
-+	{"ADC Right Mux", "ADCL", "Left ADC"},
-+	{"ADC Right Mux", "ADCR", "Right ADC"},
-+	{"Left EPA", "Switch", "Left DAC"},
-+	{"Right EPA", "Switch", "Right DAC"},
-+	{"EC Mux", "Left", "Left DAC"},
-+	{"EC Mux", "Right", "Right DAC"},
-+	{"EC Mux", "Left + Right", "Left DAC"},
-+	{"EC Mux", "Left + Right", "Right DAC"},
-+	{"ADCR EC Mux", "ADCR", "ADC Right Mux"},
-+	{"ADCR EC Mux", "EC", "EC Mux"},
-+	{"I2S Mic Mux", "Ex PA", "Left EPA"},
-+	{"I2S Mic Mux", "Ex PA", "Right EPA"},
-+	{"I2S Mic Mux", "ADC", "ADC Left Mux"},
-+	{"I2S Mic Mux", "ADC", "ADCR EC Mux"},
-+	{"I2S DOUT", NULL, "I2S Mic Mux"},
++	{"MIC1P", NULL, "Mic1 Bias"},
++	{"MIC1N", NULL, "Mic1 Bias"},
++	{"Mic1 Bias", NULL, "Ext Mic 1"},
 +
-+	/* I2S/AIF2 Outputs */
-+	{"I2S DIN Mux", "DIN", "I2S DIN"},
-+	{"I2S DIN Mux", "DIN1", "I2S DIN1"},
-+	{"Left DAC", NULL, "I2S DIN Mux"},
-+	{"Right DAC", NULL, "I2S DIN Mux"},
-+	{"DAC HS1 Mux", "Left", "Left DAC"},
-+	{"DAC HS1 Mux", "Right", "Right DAC"},
-+	{"DAC HS2 Mux", "Left", "Left DAC"},
-+	{"DAC HS2 Mux", "Right", "Right DAC"},
-+	{"DAC LO1 Mux", "Left", "Left DAC"},
-+	{"DAC LO1 Mux", "Right", "Right DAC"},
-+	{"DAC LO2 Mux", "Left", "Left DAC"},
-+	{"DAC LO2 Mux", "Right", "Right DAC"},
-+	{"Headset1 Mux", "Digital", "DAC HS1 Mux"},
-+	{"Headset2 Mux", "Digital", "DAC HS2 Mux"},
-+	{"Lineout1 Mux", "Digital", "DAC LO1 Mux"},
-+	{"Lineout2 Mux", "Digital", "DAC LO2 Mux"},
-+	{"Headset1 PGA", NULL, "Headset1 Mux"},
-+	{"Headset2 PGA", NULL, "Headset2 Mux"},
-+	{"Lineout1 PGA", NULL, "Lineout1 Mux"},
-+	{"Lineout2 PGA", NULL, "Lineout2 Mux"},
-+	{"DAC SP Mux", "Left", "Left DAC"},
-+	{"DAC SP Mux", "Right", "Right DAC"},
-+	{"Speaker Earpiece Demux", "Speaker", "DAC SP Mux"},
-+	{"Speaker PGA", NULL, "Speaker Earpiece Demux"},
-+	{"Earpiece PGA", NULL, "Speaker Earpiece Demux"},
++	{"MIC2P", NULL, "Mic1 Bias"},
++	{"MIC2N", NULL, "Mic1 Bias"},
++	{"Mic1 Bias", NULL, "Headset Mic 2"},
 +
-+	{"HS1", NULL, "Headset1 PGA"},
-+	{"HS2", NULL, "Headset2 PGA"},
-+	{"LINEOUT1", NULL, "Lineout1 PGA"},
-+	{"LINEOUT2", NULL, "Lineout2 PGA"},
-+	{"LSP", NULL, "Speaker PGA"},
-+	{"LSN", NULL, "Speaker PGA"},
-+	{"EARP", NULL, "Earpiece PGA"},
-+	{"EARN", NULL, "Earpiece PGA"},
-+
-+	{"RSYNC", NULL, "Headset1 PGA"},
-+	{"RSYNC", NULL, "Headset2 PGA"},
-+	{"RSYNC", NULL, "Lineout1 PGA"},
-+	{"RSYNC", NULL, "Lineout2 PGA"},
-+	{"RSYNC", NULL, "Speaker PGA"},
-+	{"RSYNC", NULL, "Earpiece PGA"},
++	{"MIC3P", NULL, "Mic3 Bias"},
++	{"MIC3N", NULL, "Mic3 Bias"},
++	{"Mic3 Bias", NULL, "Ext Mic 3"},
 +};
 +
-+static int pm860x_digital_mute(struct snd_soc_dai *codec_dai, int mute)
++static int evb3_i2s_hw_params(struct snd_pcm_substream *substream,
++			      struct snd_pcm_hw_params *params)
 +{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	int data = 0;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	int width = snd_pcm_format_physical_width(params_format(params));
++	int ret;
 +
-+	if (mute)
-+		data = DAC_MUTE;
-+	snd_soc_update_bits(codec, PM860X_DAC_OFFSET, DAC_MUTE, data);
-+	snd_soc_update_bits(codec, PM860X_EAR_CTRL_2,
-+			    RSYNC_CHANGE, RSYNC_CHANGE);
-+	return 0;
-+}
-+
-+static int pm860x_pcm_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params,
-+				struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	unsigned char inf = 0, mask = 0;
-+
-+	/* bit size */
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		inf &= ~PCM_INF2_18WL;
-+		break;
-+	case SNDRV_PCM_FORMAT_S18_3LE:
-+		inf |= PCM_INF2_18WL;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	mask |= PCM_INF2_18WL;
-+	snd_soc_update_bits(codec, PM860X_PCM_IFACE_2, mask, inf);
-+
-+	/* sample rate */
-+	switch (params_rate(params)) {
-+	case 8000:
-+		inf = 0;
-+		break;
-+	case 16000:
-+		inf = 3;
-+		break;
-+	case 32000:
-+		inf = 6;
-+		break;
-+	case 48000:
-+		inf = 8;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	snd_soc_update_bits(codec, PM860X_PCM_RATE, 0x0f, inf);
-+
-+	return 0;
-+}
-+
-+static int pm860x_pcm_set_dai_fmt(struct snd_soc_dai *codec_dai,
-+				  unsigned int fmt)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
-+	unsigned char inf = 0, mask = 0;
-+	int ret = -EINVAL;
-+
-+	mask |= PCM_INF2_BCLK | PCM_INF2_FS | PCM_INF2_MASTER;
-+
-+	/* set master/slave audio interface */
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+	case SND_SOC_DAIFMT_CBM_CFS:
-+		if (pm860x->dir == PM860X_CLK_DIR_OUT) {
-+			inf |= PCM_INF2_MASTER;
-+			ret = 0;
-+		}
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		if (pm860x->dir == PM860X_CLK_DIR_IN) {
-+			inf &= ~PCM_INF2_MASTER;
-+			ret = 0;
-+		}
-+		break;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		inf |= PCM_EXACT_I2S;
-+		ret = 0;
-+		break;
-+	}
-+	mask |= PCM_MODE_MASK;
-+	if (ret)
++	ret = snd_soc_dai_set_sysclk(cpu_dai, PXA_SSP_CLK_NET_PLL, 0,
++				     PM860X_CLK_DIR_OUT);
++	if (ret < 0)
 +		return ret;
-+	snd_soc_update_bits(codec, PM860X_PCM_IFACE_2, mask, inf);
-+	return 0;
-+}
 +
-+static int pm860x_set_dai_sysclk(struct snd_soc_dai *codec_dai,
-+				 int clk_id, unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
-+
-+	if (dir == PM860X_CLK_DIR_OUT)
-+		pm860x->dir = PM860X_CLK_DIR_OUT;
-+	else {
-+		pm860x->dir = PM860X_CLK_DIR_IN;
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int pm860x_i2s_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params,
-+				struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	unsigned char inf;
-+
-+	/* bit size */
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		inf = 0;
-+		break;
-+	case SNDRV_PCM_FORMAT_S18_3LE:
-+		inf = PCM_INF2_18WL;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	snd_soc_update_bits(codec, PM860X_I2S_IFACE_2, PCM_INF2_18WL, inf);
-+
-+	/* sample rate */
-+	switch (params_rate(params)) {
-+	case 8000:
-+		inf = 0;
-+		break;
-+	case 11025:
-+		inf = 1;
-+		break;
-+	case 16000:
-+		inf = 3;
-+		break;
-+	case 22050:
-+		inf = 4;
-+		break;
-+	case 32000:
-+		inf = 6;
-+		break;
-+	case 44100:
-+		inf = 7;
-+		break;
-+	case 48000:
-+		inf = 8;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	snd_soc_update_bits(codec, PM860X_I2S_IFACE_4, 0xf, inf);
-+
-+	return 0;
-+}
-+
-+static int pm860x_i2s_set_dai_fmt(struct snd_soc_dai *codec_dai,
-+				  unsigned int fmt)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
-+	unsigned char inf = 0, mask = 0;
-+	int ret = -EINVAL;
-+
-+	mask |= PCM_INF2_BCLK | PCM_INF2_FS | PCM_INF2_MASTER;
-+
-+	/* set master/slave audio interface */
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+	case SND_SOC_DAIFMT_CBM_CFS:
-+		if (pm860x->dir == PM860X_CLK_DIR_OUT) {
-+			inf |= PCM_INF2_MASTER;
-+			ret = 0;
-+		}
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		if (pm860x->dir == PM860X_CLK_DIR_IN) {
-+			inf &= ~PCM_INF2_MASTER;
-+			ret = 0;
-+		}
-+		break;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		inf |= PCM_EXACT_I2S;
-+		ret = 0;
-+		break;
-+	}
-+	mask |= PCM_MODE_MASK;
-+	if (ret)
++	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 0, PM860X_CLK_DIR_OUT);
++	if (ret < 0)
 +		return ret;
-+	snd_soc_update_bits(codec, PM860X_I2S_IFACE_2, mask, inf);
-+	return 0;
++
++	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
++			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
++			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 3, 3, 2, width);
++	return ret;
 +}
 +
-+static int pm860x_set_bias_level(struct snd_soc_codec *codec,
-+				 enum snd_soc_bias_level level)
-+{
-+	int data;
-+
-+	switch (level) {
-+	case SND_SOC_BIAS_ON:
-+		break;
-+
-+	case SND_SOC_BIAS_PREPARE:
-+		break;
-+
-+	case SND_SOC_BIAS_STANDBY:
-+		if (codec->bias_level == SND_SOC_BIAS_OFF) {
-+			/* Enable Audio PLL & Audio section */
-+			data = AUDIO_PLL | AUDIO_SECTION_RESET
-+				| AUDIO_SECTION_ON;
-+			pm860x_reg_write(codec->control_data, REG_MISC2, data);
-+		}
-+		break;
-+
-+	case SND_SOC_BIAS_OFF:
-+		data = AUDIO_PLL | AUDIO_SECTION_RESET | AUDIO_SECTION_ON;
-+		pm860x_set_bits(codec->control_data, REG_MISC2, data, 0);
-+		break;
-+	}
-+	codec->bias_level = level;
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_ops pm860x_pcm_dai_ops = {
-+	.digital_mute	= pm860x_digital_mute,
-+	.hw_params	= pm860x_pcm_hw_params,
-+	.set_fmt	= pm860x_pcm_set_dai_fmt,
-+	.set_sysclk	= pm860x_set_dai_sysclk,
++static struct snd_soc_ops evb3_i2s_ops = {
++	.hw_params	= evb3_i2s_hw_params,
 +};
 +
-+static struct snd_soc_dai_ops pm860x_i2s_dai_ops = {
-+	.digital_mute	= pm860x_digital_mute,
-+	.hw_params	= pm860x_i2s_hw_params,
-+	.set_fmt	= pm860x_i2s_set_dai_fmt,
-+	.set_sysclk	= pm860x_set_dai_sysclk,
-+};
-+
-+#define PM860X_RATES	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |	\
-+			 SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_48000)
-+
-+static struct snd_soc_dai_driver pm860x_dai[] = {
++static struct snd_soc_dai_link evb3_dai[] = {
 +	{
-+		/* DAI PCM */
-+		.name	= "88pm860x-pcm",
-+		.id	= 1,
-+		.playback = {
-+			.stream_name	= "PCM Playback",
-+			.channels_min	= 2,
-+			.channels_max	= 2,
-+			.rates		= PM860X_RATES,
-+			.formats	= SNDRV_PCM_FORMAT_S16_LE | \
-+					  SNDRV_PCM_FORMAT_S18_3LE,
-+		},
-+		.capture = {
-+			.stream_name	= "PCM Capture",
-+			.channels_min	= 2,
-+			.channels_max	= 2,
-+			.rates		= PM860X_RATES,
-+			.formats	= SNDRV_PCM_FORMAT_S16_LE | \
-+					  SNDRV_PCM_FORMAT_S18_3LE,
-+		},
-+		.ops	= &pm860x_pcm_dai_ops,
-+	}, {
-+		/* DAI I2S */
-+		.name	= "88pm860x-i2s",
-+		.id	= 2,
-+		.playback = {
-+			.stream_name	= "I2S Playback",
-+			.channels_min	= 2,
-+			.channels_max	= 2,
-+			.rates		= SNDRV_PCM_RATE_8000_48000,
-+			.formats	= SNDRV_PCM_FORMAT_S16_LE | \
-+					  SNDRV_PCM_FORMAT_S18_3LE,
-+		},
-+		.capture = {
-+			.stream_name	= "I2S Capture",
-+			.channels_min	= 2,
-+			.channels_max	= 2,
-+			.rates		= SNDRV_PCM_RATE_8000_48000,
-+			.formats	= SNDRV_PCM_FORMAT_S16_LE | \
-+					  SNDRV_PCM_FORMAT_S18_3LE,
-+		},
-+		.ops	= &pm860x_i2s_dai_ops,
++		.name		= "88PM860x I2S",
++		.stream_name	= "I2S Audio",
++		.cpu_dai_name	= "pxa-ssp-dai.1",
++		.codec_dai_name	= "88pm860x-i2s",
++		.platform_name	= "pxa-pcm-audio",
++		.codec_name	= "88pm860x-codec",
++		.init		= evb3_pm860x_init,
++		.ops		= &evb3_i2s_ops,
 +	},
 +};
 +
-+static irqreturn_t pm860x_codec_handler(int irq, void *data)
-+{
-+	struct pm860x_priv *pm860x = data;
-+	int status, shrt, report = 0;
-+	int mask;
-+
-+	status = pm860x_reg_read(pm860x->i2c, REG_STATUS_1);
-+	shrt = pm860x_reg_read(pm860x->i2c, REG_SHORTS);
-+	mask = SND_JACK_HEADSET | SND_JACK_BTN_0 | SND_JACK_BTN_1
-+		| SND_JACK_BTN_2;
-+
-+	if ((pm860x->det.hs_det & SND_JACK_HEADPHONE)
-+		&& (status & HEADSET_STATUS))
-+		report |= SND_JACK_HEADPHONE;
-+
-+	if ((pm860x->det.hs_det & SND_JACK_MICROPHONE)
-+		&& (status & MIC_STATUS))
-+		report |= SND_JACK_MICROPHONE;
-+
-+	if ((pm860x->det.hs_shrt & SND_JACK_BTN_0)
-+		&& (shrt & (SHORT_HS1 | SHORT_HS2)))
-+		report |= SND_JACK_BTN_0;
-+
-+	if ((pm860x->det.hook_det & SND_JACK_BTN_1)
-+		&& (status & HOOK_STATUS))
-+		report |= SND_JACK_BTN_1;
-+
-+	if ((pm860x->det.lo_shrt & SND_JACK_BTN_2)
-+		&& (shrt & (SHORT_LO1 | SHORT_LO2)))
-+		report |= SND_JACK_BTN_2;
-+
-+	snd_soc_jack_report(pm860x->det.jack, report, mask);
-+	dev_dbg(pm860x->codec->dev, "report:0x%x, mask:%x\n", report, mask);
-+	return IRQ_HANDLED;
-+}
-+
-+int pm860x_hs_jack_detect(struct snd_soc_codec *codec,
-+			  struct snd_soc_jack *jack,
-+			  int det, int shrt)
-+{
-+	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
-+	int data;
-+
-+	pm860x->det.hs_det = 0;
-+	pm860x->det.hs_shrt = 0;
-+	pm860x->det.jack = jack;
-+
-+	if (det & SND_JACK_MICROPHONE) {
-+		pm860x->det.hs_det |= SND_JACK_MICROPHONE;
-+		pm860x_set_bits(codec->control_data, REG_MIC_DET,
-+				MICDET_MASK, MICDET_MASK);
-+	}
-+	if (det & SND_JACK_HEADPHONE) {
-+		pm860x->det.hs_det |= SND_JACK_HEADPHONE;
-+		pm860x_set_bits(codec->control_data, REG_HS_DET,
-+				EN_HS_DET, EN_HS_DET);
-+	}
-+	/* headset short */
-+	if (shrt & SND_JACK_BTN_0) {
-+		pm860x->det.hs_shrt |= SND_JACK_BTN_0;
-+		data = CLR_SHORT_HS2 | CLR_SHORT_HS1;
-+		pm860x_set_bits(codec->control_data, REG_SHORTS, data, data);
-+	}
-+
-+	/* sync status */
-+	pm860x_codec_handler(0, pm860x);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(pm860x_hs_jack_detect);
-+
-+int pm860x_hook_detect(struct snd_soc_codec *codec,
-+			struct snd_soc_jack *jack,
-+			int det, int shrt)
-+{
-+	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
-+	int data;
-+
-+	pm860x->det.hook_det = 0;
-+	pm860x->det.lo_shrt = 0;
-+	pm860x->det.jack = jack;
-+
-+	/* enable hook detect */
-+	if (det & SND_JACK_BTN_1)
-+		pm860x->det.hook_det = SND_JACK_BTN_1;
-+	/* Lineout short detect */
-+	if (shrt & SND_JACK_BTN_2) {
-+		pm860x->det.lo_shrt = SND_JACK_BTN_2;
-+		data = CLR_SHORT_LO2 | CLR_SHORT_LO1;
-+		pm860x_set_bits(codec->control_data, REG_SHORTS, data, data);
-+	}
-+
-+	/* sync status */
-+	pm860x_codec_handler(0, pm860x);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(pm860x_hook_detect);
-+
-+static int pm860x_probe(struct snd_soc_codec *codec)
-+{
-+	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
-+	int i, ret;
-+
-+	pm860x->codec = codec;
-+
-+	codec->control_data = pm860x->i2c;
-+
-+	for (i = 0; i < 4; i++) {
-+		ret = request_threaded_irq(pm860x->irq[i], NULL,
-+					   pm860x_codec_handler, IRQF_ONESHOT,
-+					   pm860x->name[i], pm860x);
-+		if (ret < 0) {
-+			dev_err(codec->dev, "Failed to request IRQ!\n");
-+			goto out_irq;
-+		}
-+	}
-+
-+	pm860x_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+
-+	ret = pm860x_bulk_read(codec->control_data, REG_CACHE_BASE,
-+			       REG_CACHE_SIZE, codec->reg_cache);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to fill register cache: %d\n",
-+			ret);
-+		goto out_codec;
-+	}
-+
-+	snd_soc_add_controls(codec, pm860x_snd_controls,
-+			     ARRAY_SIZE(pm860x_snd_controls));
-+	snd_soc_dapm_new_controls(codec, pm860x_dapm_widgets,
-+				  ARRAY_SIZE(pm860x_dapm_widgets));
-+	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
-+	return 0;
-+
-+out_codec:
-+	i = 3;
-+out_irq:
-+	for (; i >= 0; i--)
-+		free_irq(pm860x->irq[i], pm860x);
-+	return -EINVAL;
-+}
-+
-+static int pm860x_remove(struct snd_soc_codec *codec)
-+{
-+	struct pm860x_priv *pm860x = snd_soc_codec_get_drvdata(codec);
-+	int i;
-+
-+	for (i = 3; i >= 0; i--)
-+		free_irq(pm860x->irq[i], pm860x);
-+	pm860x_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	return 0;
-+}
-+
-+static struct snd_soc_codec_driver soc_codec_dev_pm860x = {
-+	.probe		= pm860x_probe,
-+	.remove		= pm860x_remove,
-+	.read		= pm860x_read_reg_cache,
-+	.write		= pm860x_write_reg_cache,
-+	.reg_cache_size	= REG_CACHE_SIZE,
-+	.reg_word_size	= sizeof(u8),
-+	.set_bias_level	= pm860x_set_bias_level,
++static struct snd_soc_card snd_soc_card_evb3 = {
++	.name = "Tavor EVB3",
++	.dai_link = evb3_dai,
++	.num_links = ARRAY_SIZE(evb3_dai),
 +};
 +
-+static int __devinit pm860x_codec_probe(struct platform_device *pdev)
++static int evb3_pm860x_init(struct snd_soc_pcm_runtime *rtd)
 +{
-+	struct pm860x_chip *chip = dev_get_drvdata(pdev->dev.parent);
-+	struct pm860x_priv *pm860x;
-+	struct resource *res;
-+	int i, ret;
++	struct snd_soc_codec *codec = rtd->codec;
++	int ret;
 +
-+	pm860x = kzalloc(sizeof(struct pm860x_priv), GFP_KERNEL);
-+	if (pm860x == NULL)
++	snd_soc_dapm_new_controls(codec, evb3_dapm_widgets,
++				  ARRAY_SIZE(evb3_dapm_widgets));
++	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
++
++	/* connected pins */
++	snd_soc_dapm_enable_pin(codec, "Ext Speaker");
++	snd_soc_dapm_enable_pin(codec, "Ext Mic 1");
++	snd_soc_dapm_enable_pin(codec, "Ext Mic 3");
++	snd_soc_dapm_disable_pin(codec, "Headset Mic 2");
++	snd_soc_dapm_disable_pin(codec, "Headset Stereophone");
++
++	ret = snd_soc_dapm_sync(codec);
++	if (ret)
++		return ret;
++
++	/* Headset jack detection */
++	snd_soc_jack_new(codec, "Headset Jack", SND_JACK_HEADSET
++			| SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_BTN_2,
++			&hs_jack);
++	snd_soc_jack_add_pins(&hs_jack, ARRAY_SIZE(hs_jack_pins),
++			      hs_jack_pins);
++	/* headphone, microphone detection & headset short detection */
++	pm860x_hs_jack_detect(codec, &hs_jack, SND_JACK_HEADSET,
++			      SND_JACK_BTN_0);
++	pm860x_hook_detect(codec, &hs_jack, SND_JACK_BTN_1, SND_JACK_BTN_2);
++	return 0;
++}
++
++static int __init tavorevb3_init(void)
++{
++	int ret;
++
++	if (!machine_is_tavorevb3())
++		return -ENODEV;
++	evb3_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!evb3_snd_device)
 +		return -ENOMEM;
 +
-+	pm860x->chip = chip;
-+	pm860x->i2c = (chip->id == CHIP_PM8607) ? chip->client
-+			: chip->companion;
-+	platform_set_drvdata(pdev, pm860x);
-+	mutex_init(&pm860x->mutex);
++	platform_set_drvdata(evb3_snd_device, &snd_soc_card_evb3);
 +
-+	for (i = 0; i < 4; i++) {
-+		res = platform_get_resource(pdev, IORESOURCE_IRQ, i);
-+		if (!res) {
-+			dev_err(&pdev->dev, "Failed to get IRQ resources\n");
-+			goto out;
-+		}
-+		pm860x->irq[i] = res->start + chip->irq_base;
-+		strncpy(pm860x->name[i], res->name, MAX_NAME_LEN);
-+	}
++	ret = platform_device_add(evb3_snd_device);
++	if (ret)
++		platform_device_put(evb3_snd_device);
 +
-+	ret = snd_soc_register_codec(&pdev->dev, &soc_codec_dev_pm860x,
-+				     pm860x_dai, ARRAY_SIZE(pm860x_dai));
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to register codec\n");
-+		goto out;
-+	}
 +	return ret;
-+
-+out:
-+	platform_set_drvdata(pdev, NULL);
-+	kfree(pm860x);
-+	return -EINVAL;
 +}
 +
-+static int __devexit pm860x_codec_remove(struct platform_device *pdev)
++static void __exit tavorevb3_exit(void)
 +{
-+	struct pm860x_priv *pm860x = platform_get_drvdata(pdev);
-+
-+	snd_soc_unregister_codec(&pdev->dev);
-+	platform_set_drvdata(pdev, NULL);
-+	kfree(pm860x);
-+	return 0;
++	platform_device_unregister(evb3_snd_device);
 +}
 +
-+static struct platform_driver pm860x_codec_driver = {
-+	.driver	= {
-+		.name	= "88pm860x-codec",
-+		.owner	= THIS_MODULE,
-+	},
-+	.probe	= pm860x_codec_probe,
-+	.remove	= __devexit_p(pm860x_codec_remove),
-+};
++module_init(tavorevb3_init);
++module_exit(tavorevb3_exit);
 +
-+static __init int pm860x_init(void)
-+{
-+	return platform_driver_register(&pm860x_codec_driver);
-+}
-+module_init(pm860x_init);
-+
-+static __exit void pm860x_exit(void)
-+{
-+	platform_driver_unregister(&pm860x_codec_driver);
-+}
-+module_exit(pm860x_exit);
-+
-+MODULE_DESCRIPTION("ASoC 88PM860x driver");
 +MODULE_AUTHOR("Haojian Zhuang <haojian.zhuang@marvell.com>");
++MODULE_DESCRIPTION("ALSA SoC 88PM860x Tavor EVB3");
 +MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:88pm860x-codec");
 +
-diff --git a/sound/soc/codecs/88pm860x-codec.h
-b/sound/soc/codecs/88pm860x-codec.h
-new file mode 100644
-index 0000000..247c1a4
---- /dev/null
-+++ b/sound/soc/codecs/88pm860x-codec.h
-@@ -0,0 +1,97 @@
-+/*
-+ * 88pm860x-codec.h -- 88PM860x ALSA SoC Audio Driver
-+ *
-+ * Copyright 2010 Marvell International Ltd.
-+ *	Haojian Zhuang <haojian.zhuang@marvell.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __88PM860X_H
-+#define __88PM860X_H
-+
-+/* The offset of these registers are 0xb0 */
-+#define PM860X_PCM_IFACE_1		0x00
-+#define PM860X_PCM_IFACE_2		0x01
-+#define PM860X_PCM_IFACE_3		0x02
-+#define PM860X_PCM_RATE			0x03
-+#define PM860X_EC_PATH			0x04
-+#define PM860X_SIDETONE_L_GAIN		0x05
-+#define PM860X_SIDETONE_R_GAIN		0x06
-+#define PM860X_SIDETONE_SHIFT		0x07
-+#define PM860X_ADC_OFFSET_1		0x08
-+#define PM860X_ADC_OFFSET_2		0x09
-+#define PM860X_DMIC_DELAY		0x0a
-+
-+#define PM860X_I2S_IFACE_1		0x0b
-+#define PM860X_I2S_IFACE_2		0x0c
-+#define PM860X_I2S_IFACE_3		0x0d
-+#define PM860X_I2S_IFACE_4		0x0e
-+#define PM860X_EQUALIZER_N0_1		0x0f
-+#define PM860X_EQUALIZER_N0_2		0x10
-+#define PM860X_EQUALIZER_N1_1		0x11
-+#define PM860X_EQUALIZER_N1_2		0x12
-+#define PM860X_EQUALIZER_D1_1		0x13
-+#define PM860X_EQUALIZER_D1_2		0x14
-+#define PM860X_LOFI_GAIN_LEFT		0x15
-+#define PM860X_LOFI_GAIN_RIGHT		0x16
-+#define PM860X_HIFIL_GAIN_LEFT		0x17
-+#define PM860X_HIFIL_GAIN_RIGHT		0x18
-+#define PM860X_HIFIR_GAIN_LEFT		0x19
-+#define PM860X_HIFIR_GAIN_RIGHT		0x1a
-+#define PM860X_DAC_OFFSET		0x1b
-+#define PM860X_OFFSET_LEFT_1		0x1c
-+#define PM860X_OFFSET_LEFT_2		0x1d
-+#define PM860X_OFFSET_RIGHT_1		0x1e
-+#define PM860X_OFFSET_RIGHT_2		0x1f
-+#define PM860X_ADC_ANA_1		0x20
-+#define PM860X_ADC_ANA_2		0x21
-+#define PM860X_ADC_ANA_3		0x22
-+#define PM860X_ADC_ANA_4		0x23
-+#define PM860X_ANA_TO_ANA		0x24
-+#define PM860X_HS1_CTRL			0x25
-+#define PM860X_HS2_CTRL			0x26
-+#define PM860X_LO1_CTRL			0x27
-+#define PM860X_LO2_CTRL			0x28
-+#define PM860X_EAR_CTRL_1		0x29
-+#define PM860X_EAR_CTRL_2		0x2a
-+#define PM860X_AUDIO_SUPPLIES_1		0x2b
-+#define PM860X_AUDIO_SUPPLIES_2		0x2c
-+#define PM860X_ADC_EN_1			0x2d
-+#define PM860X_ADC_EN_2			0x2e
-+#define PM860X_DAC_EN_1			0x2f
-+#define PM860X_DAC_EN_2			0x31
-+#define PM860X_AUDIO_CAL_1		0x32
-+#define PM860X_AUDIO_CAL_2		0x33
-+#define PM860X_AUDIO_CAL_3		0x34
-+#define PM860X_AUDIO_CAL_4		0x35
-+#define PM860X_AUDIO_CAL_5		0x36
-+#define PM860X_ANA_INPUT_SEL_1		0x37
-+#define PM860X_ANA_INPUT_SEL_2		0x38
-+
-+#define PM860X_PCM_IFACE_4		0x39
-+#define PM860X_I2S_IFACE_5		0x3a
-+
-+#define PM860X_SHORTS			0x3b
-+#define PM860X_PLL_ADJ_1		0x3c
-+#define PM860X_PLL_ADJ_2		0x3d
-+
-+/* bits definition */
-+#define PM860X_CLK_DIR_IN		0
-+#define PM860X_CLK_DIR_OUT		1
-+
-+#define PM860X_DET_HEADSET		(1 << 0)
-+#define PM860X_DET_MIC			(1 << 1)
-+#define PM860X_DET_HOOK			(1 << 2)
-+#define PM860X_SHORT_HEADSET		(1 << 3)
-+#define PM860X_SHORT_LINEOUT		(1 << 4)
-+#define PM860X_DET_MASK			0x1F
-+
-+extern int pm860x_hs_jack_detect(struct snd_soc_codec *, struct snd_soc_jack *,
-+				 int, int);
-+extern int pm860x_hook_detect(struct snd_soc_codec *, struct snd_soc_jack *,
-+			      int, int);
-+
-+#endif	/* __88PM860X_H */
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index bfdd92b..a3cfc18 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -10,6 +10,7 @@ config SND_SOC_I2C_AND_SPI
-
- config SND_SOC_ALL_CODECS
- 	tristate "Build all ASoC CODEC drivers"
-+	select SND_SOC_88PM860X if MFD_88PM860X
- 	select SND_SOC_L3
- 	select SND_SOC_AC97_CODEC if SND_SOC_AC97_BUS
- 	select SND_SOC_AD1836 if SPI_MASTER
-@@ -85,6 +86,9 @@ config SND_SOC_ALL_CODECS
-
-           If unsure select "N".
-
-+config SND_SOC_88PM860X
-+	tristate
-+
- config SND_SOC_WM_HUBS
- 	tristate
- 	default y if SND_SOC_WM8993=y || SND_SOC_WM8994=y
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 9c3c39f..b9c4358 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -1,3 +1,4 @@
-+snd-soc-88pm860x-objs := 88pm860x-codec.o
- snd-soc-ac97-objs := ac97.o
- snd-soc-ad1836-objs := ad1836.o
- snd-soc-ad193x-objs := ad193x.o
-@@ -67,6 +68,7 @@ snd-soc-tpa6130a2-objs := tpa6130a2.o
- snd-soc-wm2000-objs := wm2000.o
- snd-soc-wm9090-objs := wm9090.o
-
-+obj-$(CONFIG_SND_SOC_88PM860X)	+= snd-soc-88pm860x.o
- obj-$(CONFIG_SND_SOC_AC97_CODEC)	+= snd-soc-ac97.o
- obj-$(CONFIG_SND_SOC_AD1836)	+= snd-soc-ad1836.o
- obj-$(CONFIG_SND_SOC_AD193X)	+= snd-soc-ad193x.o
 -- 
 1.5.6.5
