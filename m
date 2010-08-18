@@ -1,22 +1,21 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] [v2] asoc/multi-component: fsl: add
- support for variable SSI FIFO depth
-Date: Wed, 18 Aug 2010 20:29:13 +0100
-Message-ID: <1282159753.3117.908.camel@odin>
-References: <1281114972-21450-1-git-send-email-timur@freescale.com>
-	<20100807122739.GA11817@opensource.wolfsonmicro.com>
-	<AANLkTi=TVDpmP2OX0t9g+CjhJ0cUPFEsR9WmdRN1YvOb@mail.gmail.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: Information request - writing a driver for a
+ virtual soundcard
+Date: Wed, 18 Aug 2010 21:33:54 +0200
+Message-ID: <20100818193354.GM17833@buzzloop.caiaq.de>
+References: <AANLkTiksDnhg=kBupJ1uQO_vXq+8q-tk+TXwAwgtRaSm@mail.gmail.com>
+	<20100818191510.GL17833@buzzloop.caiaq.de>
+	<AANLkTi=EO295r9BpmR105gYLRsjFhG3_kiD81mHTSLKP@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 5B9782447D
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id A98E710383D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 Aug 2010 21:29:18 +0200 (CEST)
-Received: by wyb42 with SMTP id 42so1106881wyb.38
-	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2010 12:29:18 -0700 (PDT)
-In-Reply-To: <AANLkTi=TVDpmP2OX0t9g+CjhJ0cUPFEsR9WmdRN1YvOb@mail.gmail.com>
+	Wed, 18 Aug 2010 21:33:58 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=EO295r9BpmR105gYLRsjFhG3_kiD81mHTSLKP@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,28 +25,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Olof <olof@baah.se>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-08-18 at 13:54 -0500, Timur Tabi wrote:
-> On Sat, Aug 7, 2010 at 7:27 AM, Mark Brown
-> <broonie@opensource.wolfsonmicro.com> wrote:
-> 
-> >> Signed-off-by: Timur Tabi <timur@freescale.com>
-> >
-> > Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> 
-> Would someone please apply this patch?
+(please never remove any people from the list of recipients when
+ replying, and please do not top-post)
 
-Sorry, I forgot about that one.
+On Wed, Aug 18, 2010 at 09:27:36PM +0200, Olof wrote:
+> I want to connect my smartphone to my amplifier and then use it as a
+> virtual soundcard. The actual sound data shall be transmitted over
+> wireless TCP/IP from my laptop to the smartphone, enabling me to move
+> around in the flat without wiring.
 
-Applied now.
+I still don't understand where the actual audio material has its origin,
+or where it should be sent to, respectively.
 
-Thanks
+> Thought a virtual soundcard was a
+> good idea since it the whole system then would be independent of
+> application playing sound on the laptop. I intended to do the
+> compressing & transmission in user space, but perhaps everything can
+> be done in user space? I wasn't aware of the possibility. Where can I
+> read more?
 
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+I think the easiest API to access your existing sound cards and to
+create virtual sinks and sources is offered by PulseAudio:
+
+  http://pulseaudio.org/wiki/DeveloperDocumentation
+
+In case your distribution uses PulseAudio natively, you souldn't even
+need to set up anything.
+
+HTH,
+Daniel
