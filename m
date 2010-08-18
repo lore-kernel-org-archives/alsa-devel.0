@@ -1,18 +1,18 @@
 From: Haojian Zhuang <haojian.zhuang@gmail.com>
 Subject: [PATCH 1/3] ASoC: add 88pm860x codec driver
-Date: Thu, 19 Aug 2010 00:35:25 +0800
-Message-ID: <AANLkTikTLgJcL=1tYQ-4dTqoiQZFmauBLC9vHtNC-LVy@mail.gmail.com>
+Date: Thu, 19 Aug 2010 00:35:24 +0800
+Message-ID: <AANLkTikpLmxLbQN_tg-Q4mhDyd1k1=Za403VOuvWK2Ja@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4A256243AE
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id B6C36243A5
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 Aug 2010 18:35:26 +0200 (CEST)
-Received: by eyd9 with SMTP id 9so467204eyd.38
-	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2010 09:35:26 -0700 (PDT)
+	Wed, 18 Aug 2010 18:35:25 +0200 (CEST)
+Received: by yxp4 with SMTP id 4so289189yxp.38
+	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2010 09:35:25 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
