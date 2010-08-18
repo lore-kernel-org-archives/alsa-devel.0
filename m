@@ -1,17 +1,18 @@
-From: Haojian Zhuang <haojian.zhuang@gmail.com>
-Subject: [PATCH 3/3] ASoC: add saarb machine driver for 88pm860x
-Date: Wed, 18 Aug 2010 22:18:30 +0800
-Message-ID: <AANLkTi=o9RhfJgDsgjdVO-HnCAU4D+nU1YCdcL+KSHzn@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] ASoC: add 88pm860x codec driver
+Date: Wed, 18 Aug 2010 15:19:15 +0100
+Message-ID: <20100818141914.GC15536@sirena.org.uk>
+References: <AANLkTimBPhvukwqDGY8iORhY+wg8OnHi9+eOedJB2E8k@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 284E6103866
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id B57F010385D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 Aug 2010 16:18:31 +0200 (CEST)
-Received: by gwb17 with SMTP id 17so230185gwb.38
-	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2010 07:18:30 -0700 (PDT)
+	Wed, 18 Aug 2010 16:19:16 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTimBPhvukwqDGY8iORhY+wg8OnHi9+eOedJB2E8k@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,262 +22,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org
+To: Haojian Zhuang <haojian.zhuang@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
->From b1ecde9db7c0038e3ee6339f3db662a0ebbe8173 Mon Sep 17 00:00:00 2001
-From: Haojian Zhuang <haojian.zhuang@marvell.com>
-Date: Tue, 17 Aug 2010 13:53:14 +0800
-Subject: [PATCH 3/3] ASoC: add saarb machine driver for 88pm860x
+On Wed, Aug 18, 2010 at 09:49:26PM +0800, Haojian Zhuang wrote:
 
-88PM860x codec is used in Marvell saarb development board. 88PM860x codec
-is used as master mode for SSP communication. Only I2S format is supported.
+> +		if (dac) {
+> +			/* automute is set before operating DAC. Anti-pop */
+> +			mutex_lock(&pm860x->mutex);
+> +			pm860x->automute = 1;
+> +			dac |= MODULATOR;
+> +			/* mute */
+> +			snd_soc_update_bits(codec, PM860X_DAC_OFFSET,
+> +					    DAC_MUTE, DAC_MUTE);
+> +			snd_soc_update_bits(codec, PM860X_EAR_CTRL_2,
+> +					    RSYNC_CHANGE, RSYNC_CHANGE);
+> +			mutex_unlock(&pm860x->mutex);
+> +			/* update dac */
+> +			snd_soc_update_bits(codec, PM860X_DAC_EN_2,
+> +					    dac, dac);
+> +		}
 
-Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
----
- sound/soc/pxa/Kconfig  |    9 ++
- sound/soc/pxa/Makefile |    2 +
- sound/soc/pxa/saarb.c  |  192 ++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 203 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/pxa/saarb.c
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 04ddc7b..37f191b 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -117,6 +117,15 @@ config SND_PXA2XX_SOC_PALM27X
- 	  Say Y if you want to add support for SoC audio on
- 	  Palm T|X, T5, E2 or LifeDrive handheld computer.
+I still can't follow what this automute variable is supposed to be
+doing.  In both the PMU and the PMD cases you set automute, and the fact
+that you forcibly clear it when you apply the change means that it
+doesn't look like it's doing anything I'd recognise as automute,
+suggesting that the variable is misnamed.  It's very difficult to follow
+what all this is supposed to be doing.
 
-+config SND_SOC_SAARB
-+	tristate "SoC Audio support for Marvell Saarb"
-+	depends on SND_PXA2XX_SOC && MACH_SAARB
-+	select SND_PXA_SOC_SSP
-+	select SND_SOC_88PM860X
-+	help
-+	  Say Y if you want to add support for SoC audio on the
-+	  Marvell Saarb reference platform.
-+
- config SND_SOC_TAVOREVB3
- 	tristate "SoC Audio support for Marvell Tavor EVB3"
- 	depends on SND_PXA2XX_SOC && MACH_TAVOREVB3
-diff --git a/sound/soc/pxa/Makefile b/sound/soc/pxa/Makefile
-index 315941f..0766016 100644
---- a/sound/soc/pxa/Makefile
-+++ b/sound/soc/pxa/Makefile
-@@ -19,6 +19,7 @@ snd-soc-e800-objs := e800_wm9712.o
- snd-soc-spitz-objs := spitz.o
- snd-soc-em-x270-objs := em-x270.o
- snd-soc-palm27x-objs := palm27x.o
-+snd-soc-saarb-objs := saarb.o
- snd-soc-tavorevb3-objs := tavorevb3.o
- snd-soc-zylonite-objs := zylonite.o
- snd-soc-magician-objs := magician.o
-@@ -39,6 +40,7 @@ obj-$(CONFIG_SND_PXA2XX_SOC_PALM27X) += snd-soc-palm27x.o
- obj-$(CONFIG_SND_PXA2XX_SOC_MAGICIAN) += snd-soc-magician.o
- obj-$(CONFIG_SND_PXA2XX_SOC_MIOA701) += snd-soc-mioa701.o
- obj-$(CONFIG_SND_PXA2XX_SOC_Z2) += snd-soc-z2.o
-+obj-$(CONFIG_SND_SOC_SAARB) += snd-soc-saarb.o
- obj-$(CONFIG_SND_SOC_TAVOREVB3) += snd-soc-tavorevb3.o
- obj-$(CONFIG_SND_SOC_ZYLONITE) += snd-soc-zylonite.o
- obj-$(CONFIG_SND_PXA2XX_SOC_IMOTE2) += snd-soc-imote2.o
-diff --git a/sound/soc/pxa/saarb.c b/sound/soc/pxa/saarb.c
-new file mode 100644
-index 0000000..b347b54
---- /dev/null
-+++ b/sound/soc/pxa/saarb.c
-@@ -0,0 +1,192 @@
-+/*
-+ * saarb.c -- SoC audio for saarb
-+ *
-+ * Copyright (C) 2010 Marvell International Ltd.
-+ * 	Haojian Zhuang <haojian.zhuang@marvell.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/device.h>
-+#include <linux/clk.h>
-+#include <linux/i2c.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/jack.h>
-+
-+#include <asm/mach-types.h>
-+
-+#include "../codecs/88pm860x-codec.h"
-+#include "pxa-ssp.h"
-+
-+static int saarb_pm860x_init(struct snd_soc_pcm_runtime *rtd);
-+
-+static struct platform_device *saarb_snd_device;
-+
-+static struct snd_soc_jack hs_jack;
-+
-+static struct snd_soc_jack_pin hs_jack_pins[] = {
-+	{ .pin = "Headset Stereophone",	.mask = SND_JACK_HEADPHONE, },
-+	{ .pin = "Headset Mic 2",	.mask = SND_JACK_MICROPHONE, },
-+};
-+
-+/* saarb machine dapm widgets */
-+static const struct snd_soc_dapm_widget saarb_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Stereophone", NULL),
-+	SND_SOC_DAPM_LINE("Lineout Out 1", NULL),
-+	SND_SOC_DAPM_LINE("Lineout Out 2", NULL),
-+	SND_SOC_DAPM_SPK("Ext Speaker", NULL),
-+	SND_SOC_DAPM_MIC("Ext Mic 1", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_MIC("Ext Mic 3", NULL),
-+};
-+
-+/* saarb machine audio map */
-+static const struct snd_soc_dapm_route audio_map[] = {
-+	{"Headset Stereophone", NULL, "HS1"},
-+	{"Headset Stereophone", NULL, "HS2"},
-+
-+	{"Ext Speaker", NULL, "LSP"},
-+	{"Ext Speaker", NULL, "LSN"},
-+
-+	{"Lineout Out 1", NULL, "LINEOUT1"},
-+	{"Lineout Out 2", NULL, "LINEOUT2"},
-+
-+	{"MIC1P", NULL, "Mic1 Bias"},
-+	{"MIC1N", NULL, "Mic1 Bias"},
-+	{"Mic1 Bias", NULL, "Ext Mic 1"},
-+
-+	{"MIC2P", NULL, "Mic1 Bias"},
-+	{"MIC2N", NULL, "Mic1 Bias"},
-+	{"Mic1 Bias", NULL, "Headset Mic 2"},
-+
-+	{"MIC3P", NULL, "Mic3 Bias"},
-+	{"MIC3N", NULL, "Mic3 Bias"},
-+	{"Mic3 Bias", NULL, "Ext Mic 3"},
-+};
-+
-+static int saarb_i2s_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	int width = snd_pcm_format_physical_width(params_format(params));
-+	int ret;
-+
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, PXA_SSP_CLK_NET_PLL, 0,
-+				     PM860X_CLK_DIR_OUT);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 0, PM860X_CLK_DIR_OUT);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
-+			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0)
-+		return ret;
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-+			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 3, 3, 2, width);
-+
-+	return ret;
-+}
-+
-+static struct snd_soc_ops saarb_i2s_ops = {
-+	.hw_params	= saarb_i2s_hw_params,
-+};
-+
-+static struct snd_soc_dai_link saarb_dai[] = {
-+	{
-+		.name		= "88PM860x I2S",
-+		.stream_name	= "I2S Audio",
-+		.cpu_dai_name	= "pxa-ssp-dai.1",
-+		.codec_dai_name	= "88pm860x-i2s",
-+		.platform_name	= "pxa-pcm-audio",
-+		.codec_name	= "88pm860x-codec",
-+		.init		= saarb_pm860x_init,
-+		.ops		= &saarb_i2s_ops,
-+	},
-+};
-+
-+static struct snd_soc_card snd_soc_card_saarb = {
-+	.name = "Saarb",
-+	.dai_link = saarb_dai,
-+	.num_links = ARRAY_SIZE(saarb_dai),
-+};
-+
-+static int saarb_pm860x_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+	int ret;
-+
-+	snd_soc_dapm_new_controls(codec, saarb_dapm_widgets,
-+				  ARRAY_SIZE(saarb_dapm_widgets));
-+	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
-+
-+	/* connected pins */
-+	snd_soc_dapm_enable_pin(codec, "Ext Speaker");
-+	snd_soc_dapm_enable_pin(codec, "Ext Mic 1");
-+	snd_soc_dapm_enable_pin(codec, "Ext Mic 3");
-+	snd_soc_dapm_disable_pin(codec, "Headset Mic 2");
-+	snd_soc_dapm_disable_pin(codec, "Headset Stereophone");
-+
-+	ret = snd_soc_dapm_sync(codec);
-+	if (ret)
-+		return ret;
-+
-+	/* Headset jack detection */
-+	snd_soc_jack_new(codec, "Headset Jack", SND_JACK_HEADSET
-+			| SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_BTN_2,
-+			&hs_jack);
-+	snd_soc_jack_add_pins(&hs_jack, ARRAY_SIZE(hs_jack_pins),
-+			      hs_jack_pins);
-+	/* headphone, microphone detection & headset short detection */
-+	pm860x_hs_jack_detect(codec, &hs_jack, SND_JACK_HEADSET,
-+			      SND_JACK_BTN_0);
-+	pm860x_hook_detect(codec, &hs_jack, SND_JACK_BTN_1, SND_JACK_BTN_2);
-+	return 0;
-+}
-+
-+static int __init saarb_init(void)
-+{
-+	int ret;
-+
-+	if (!machine_is_saarb())
-+		return -ENODEV;
-+	saarb_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!saarb_snd_device)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(saarb_snd_device, &snd_soc_card_saarb);
-+
-+	ret = platform_device_add(saarb_snd_device);
-+	if (ret)
-+		platform_device_put(saarb_snd_device);
-+
-+	return ret;
-+}
-+
-+static void __exit saarb_exit(void)
-+{
-+	platform_device_unregister(saarb_snd_device);
-+}
-+
-+module_init(saarb_init);
-+module_exit(saarb_exit);
-+
-+MODULE_AUTHOR("Haojian Zhuang <haojian.zhuang@marvell.com>");
-+MODULE_DESCRIPTION("ALSA SoC 88PM860x Saarb");
-+MODULE_LICENSE("GPL");
--- 
-1.5.6.5
+As I said last time what I'd expect to see is a user visible mute
+control which sets a variable in the driver which is then updated in the
+chip only while the DAC is powered.  The other option is to tie the
+control to the DAC power, in which case things should be handleable in
+the widget event without the variable.
+
+> +static int pm860x_digital_mute(struct snd_soc_dai *codec_dai, int mute)
+> +{
+> +	struct snd_soc_codec *codec = codec_dai->codec;
+> +	int data = 0;
+> +
+> +	if (mute)
+> +		data = DAC_MUTE;
+> +	snd_soc_update_bits(codec, PM860X_DAC_OFFSET, DAC_MUTE, data);
+
+This isn't joined up at all with the automute code above...
+
+> +	/* set master/slave audio interface */
+> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> +	case SND_SOC_DAIFMT_CBM_CFM:
+> +	case SND_SOC_DAIFMT_CBM_CFS:
+> +		if (pm860x->dir == PM860X_CLK_DIR_OUT) {
+> +			inf |= PCM_INF2_MASTER;
+> +			ret = 0;
+
+This is still setting the same register value for two different DAI
+formats.  You need to fix this, and in the other set_fmt() function.
+
+You're also missing a default: case.
+
+> +	if ((pm860x->det.hs_shrt & SND_JACK_BTN_0)
+> +		&& (shrt & (SHORT_HS1 | SHORT_HS2)))
+> +		report |= SND_JACK_BTN_0;
+> +
+> +	if ((pm860x->det.hook_det & SND_JACK_BTN_1)
+> +		&& (status & HOOK_STATUS))
+> +		report |= SND_JACK_BTN_1;
+> +
+> +	if ((pm860x->det.lo_shrt & SND_JACK_BTN_2)
+> +		&& (shrt & (SHORT_LO1 | SHORT_LO2)))
+> +		report |= SND_JACK_BTN_2;
+
+You should ideally allow the user to override these via platform data if
+the buttons have specific functions.
+
+One other thing you should do is split the jack configuration for
+headphone and microphone - a system may have two physical jacks, one for
+each, so you should allow the user to configure the detection onto
+separate jacks if they want to.
