@@ -1,20 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: add 88pm860x codec driver
-Date: Wed, 18 Aug 2010 15:40:27 +0100
-Message-ID: <20100818144027.GB4588@rakim.wolfsonmicro.main>
-References: <AANLkTimBPhvukwqDGY8iORhY+wg8OnHi9+eOedJB2E8k@mail.gmail.com>
-	<20100818141914.GC15536@sirena.org.uk>
-	<AANLkTi=2FboP+xhSHjgyoM6LfmKw1khV62gTVrkxxUHF@mail.gmail.com>
+Subject: [PATCH] ASoC: Support non-crystal master clocks for
+	WM8731
+Date: Wed, 18 Aug 2010 16:19:53 +0100
+Message-ID: <1282144793-32137-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 826AF103866
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4144A2453A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 Aug 2010 16:40:29 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <AANLkTi=2FboP+xhSHjgyoM6LfmKw1khV62gTVrkxxUHF@mail.gmail.com>
+	Wed, 18 Aug 2010 17:19:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,80 +20,167 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Haojian Zhuang <haojian.zhuang@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 18, 2010 at 10:33:19PM +0800, Haojian Zhuang wrote:
-> On Wed, Aug 18, 2010 at 10:19 PM, Mark Brown
+Instead of unconditionally enabling the crystal oscillator on the WM8731
+only enable it when explicitly selected via set_sysclk(), allowing machine
+drivers to specify that they drive a clock into MCLK alone. This avoids
+any conflicts between the oscillator and the external MCLK source and saves
+power for systems which do not need the oscillator.
 
-> >
-> > I still can't follow what this automute variable is supposed to be
-> > doing. =A0In both the PMU and the PMD cases you set automute, and the f=
-act
-> > that you forcibly clear it when you apply the change means that it
-> > doesn't look like it's doing anything I'd recognise as automute,
-> > suggesting that the variable is misnamed. =A0It's very difficult to fol=
-low
-> > what all this is supposed to be doing.
+This should also deliver a small power saving on systems using the crystal
+since the oscillator will only be enabled when the ADC or DAC is active.
 
-> Mute while DAC is enabled and PGA is updated. It's the purpose of
-> anti-pop by silicon.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/atmel/sam9g20_wm8731.c |    2 +-
+ sound/soc/au1x/db1200.c          |    2 +-
+ sound/soc/codecs/wm8731.c        |   31 +++++++++++++++++++++++++++++--
+ sound/soc/codecs/wm8731.h        |    4 +++-
+ sound/soc/pxa/corgi.c            |    2 +-
+ sound/soc/pxa/poodle.c           |    2 +-
+ 6 files changed, 36 insertions(+), 7 deletions(-)
 
-This behaviour is entirely non-obvious from the code.  Please improve
-the documentation within the code so that someone reading the code can
-tell what it's supposed to do.  This will allow the code to be reviewed,
-it certainly seems buggy in relation to the DAI mute operation at the
-minute.
-
-> > As I said last time what I'd expect to see is a user visible mute
-> > control which sets a variable in the driver which is then updated in the
-> > chip only while the DAC is powered. =A0The other option is to tie the
-> > control to the DAC power, in which case things should be handleable in
-> > the widget event without the variable.
-
-> Why should I move the work to invoking amixer by user? Why shouldn't
-> it be taken by driver automatically?
-
-Either of my suggestions would leave the workaround transparent to the
-user.  The first suggestion will provide additional control to the user
-but will still hide the workaround from them.
-
-> >> + =A0 =A0 switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-> >> + =A0 =A0 case SND_SOC_DAIFMT_CBM_CFM:
-> >> + =A0 =A0 case SND_SOC_DAIFMT_CBM_CFS:
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 if (pm860x->dir =3D=3D PM860X_CLK_DIR_OUT) {
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 inf |=3D PCM_INF2_MASTER;
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D 0;
-
-> > This is still setting the same register value for two different DAI
-> > formats. =A0You need to fix this, and in the other set_fmt() function.
-
-> These two registers are EXACTLY same. Why do I need to define two same
-> bit macro?
-
-You need to validate the arguments you're being passed.  If your driver
-reports that it successfully set _CFS and really it set the hardware
-into _CFM then the system isn't going to work as expected.  =
-
-
-> > You're also missing a default: case.
-
-> Please check the code. If it's default case, it'll return -EINVAL. I
-> didn't miss it.
-
-No, that's not the case.  Your error handling strategy here is
-problematic - if any one of the parameters set is correct (eg, the
-format mask sets I2S) then ret will be reset to zero and you'll return
-success.
-
-> > One other thing you should do is split the jack configuration for
-> > headphone and microphone - a system may have two physical jacks, one for
-> > each, so you should allow the user to configure the detection onto
-> > separate jacks if they want to.
-
-> Up to now, I can't split it to two different jacks. Since there's some
-> issue on mic detection.
-
-You can do this in software even if the individual board designs you're
-using don't have any separation.
+diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
+index 66a6f18..8399ac4 100644
+--- a/sound/soc/atmel/sam9g20_wm8731.c
++++ b/sound/soc/atmel/sam9g20_wm8731.c
+@@ -146,7 +146,7 @@ static int at91sam9g20ek_wm8731_init(struct snd_soc_pcm_runtime *rtd)
+ 			"at91sam9g20ek_wm8731 "
+ 			": at91sam9g20ek_wm8731_init() called\n");
+ 
+-	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK,
++	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK_XTAL,
+ 		MCLK_RATE, SND_SOC_CLOCK_IN);
+ 	if (ret < 0) {
+ 		printk(KERN_ERR "Failed to set WM8731 SYSCLK: %d\n", ret);
+diff --git a/sound/soc/au1x/db1200.c b/sound/soc/au1x/db1200.c
+index 8780c90..d8dc822 100644
+--- a/sound/soc/au1x/db1200.c
++++ b/sound/soc/au1x/db1200.c
+@@ -49,7 +49,7 @@ static int db1200_i2s_startup(struct snd_pcm_substream *substream)
+ 	int ret;
+ 
+ 	/* WM8731 has its own 12MHz crystal */
+-	snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK,
++	snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK_XTAL,
+ 				12000000, SND_SOC_CLOCK_IN);
+ 
+ 	/* codec is bitclock and lrclk master */
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 19844fc..56f5408 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -46,6 +46,7 @@ struct wm8731_priv {
+ 	struct regulator_bulk_data supplies[WM8731_NUM_SUPPLIES];
+ 	u16 reg_cache[WM8731_CACHEREGNUM];
+ 	unsigned int sysclk;
++	int sysclk_type;
+ };
+ 
+ 
+@@ -110,6 +111,7 @@ static const struct snd_kcontrol_new wm8731_input_mux_controls =
+ SOC_DAPM_ENUM("Input Select", wm8731_enum[0]);
+ 
+ static const struct snd_soc_dapm_widget wm8731_dapm_widgets[] = {
++SND_SOC_DAPM_SUPPLY("OSC", WM8731_PWR, 5, 1, NULL, 0),
+ SND_SOC_DAPM_MIXER("Output Mixer", WM8731_PWR, 4, 1,
+ 	&wm8731_output_mixer_controls[0],
+ 	ARRAY_SIZE(wm8731_output_mixer_controls)),
+@@ -127,7 +129,18 @@ SND_SOC_DAPM_INPUT("RLINEIN"),
+ SND_SOC_DAPM_INPUT("LLINEIN"),
+ };
+ 
++static int wm8731_check_osc(struct snd_soc_dapm_widget *source,
++			    struct snd_soc_dapm_widget *sink)
++{
++	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(source->codec);
++
++	return wm8731->sysclk_type == WM8731_SYSCLK_MCLK;
++}
++
+ static const struct snd_soc_dapm_route intercon[] = {
++	{"DAC", NULL, "OSC", wm8731_check_osc},
++	{"ADC", NULL, "OSC", wm8731_check_osc},
++
+ 	/* output mixer */
+ 	{"Output Mixer", "Line Bypass Switch", "Line Input"},
+ 	{"Output Mixer", "HiFi Playback Switch", "DAC"},
+@@ -285,6 +298,15 @@ static int wm8731_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+ 	struct wm8731_priv *wm8731 = snd_soc_codec_get_drvdata(codec);
+ 
++	switch (clk_id) {
++	case WM8731_SYSCLK_XTAL:
++	case WM8731_SYSCLK_MCLK:
++		wm8731->sysclk_type = clk_id;
++		break;
++	default:
++		return -EINVAL;
++	}
++
+ 	switch (freq) {
+ 	case 11289600:
+ 	case 12000000:
+@@ -292,9 +314,14 @@ static int wm8731_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	case 16934400:
+ 	case 18432000:
+ 		wm8731->sysclk = freq;
+-		return 0;
++		break;
++	default:
++		return -EINVAL;
+ 	}
+-	return -EINVAL;
++
++	snd_soc_dapm_sync(codec);
++
++	return 0;
+ }
+ 
+ 
+diff --git a/sound/soc/codecs/wm8731.h b/sound/soc/codecs/wm8731.h
+index 73a70e2..e9c0c76 100644
+--- a/sound/soc/codecs/wm8731.h
++++ b/sound/soc/codecs/wm8731.h
+@@ -31,7 +31,9 @@
+ 
+ #define WM8731_CACHEREGNUM 	10
+ 
+-#define WM8731_SYSCLK	0
++#define WM8731_SYSCLK_XTAL 1
++#define WM8731_SYSCLK_MCLK 2
++
+ #define WM8731_DAI		0
+ 
+ #endif
+diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
+index 11c6a49..7325b66 100644
+--- a/sound/soc/pxa/corgi.c
++++ b/sound/soc/pxa/corgi.c
+@@ -150,7 +150,7 @@ static int corgi_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
+ 
+ 	/* set the codec system clock for DAC and ADC */
+-	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK, clk,
++	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK_XTAL, clk,
+ 		SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+ 		return ret;
+diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
+index 3ba5a96..9e63745 100644
+--- a/sound/soc/pxa/poodle.c
++++ b/sound/soc/pxa/poodle.c
+@@ -128,7 +128,7 @@ static int poodle_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
+ 
+ 	/* set the codec system clock for DAC and ADC */
+-	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK, clk,
++	ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK_XTAL, clk,
+ 		SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+ 		return ret;
+-- 
+1.7.1
