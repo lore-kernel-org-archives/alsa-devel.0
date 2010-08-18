@@ -1,17 +1,20 @@
-From: Michael Trimarchi <trimarchi@gandalf.sssup.it>
-Subject: Re: Routing irq throw a gpio using the wm9713
-Date: Wed, 18 Aug 2010 12:35:09 +0200
-Message-ID: <4C6BB75D.4010406@gandalf.sssup.it>
-References: <4BFBF44F.1010000@gandalf.sssup.it>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v6 0/1] A codec driver for the TI WL1273	FM
+	Radio.
+Date: Wed, 18 Aug 2010 13:04:54 +0100
+Message-ID: <20100818120454.GA15536@sirena.org.uk>
+References: <1282045280-16696-1-git-send-email-matti.j.aaltonen@nokia.com>
+	<1282125215.14489.114.camel@masi.mnp.nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay2.tre.it (mail.tre.it [62.13.171.46])
-	by alsa0.perex.cz (Postfix) with ESMTP id C19C6244C7
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id AEAB42450E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 18 Aug 2010 12:35:14 +0200 (CEST)
-In-Reply-To: <4BFBF44F.1010000@gandalf.sssup.it>
+	Wed, 18 Aug 2010 14:04:55 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1282125215.14489.114.camel@masi.mnp.nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,49 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark
+On Wed, Aug 18, 2010 at 12:53:35PM +0300, Matti J. Aaltonen wrote:
 
-Sorry for the silly question but I have tried to route the gpio to the 
-irq line
-on wm9713 without success. Can you comment the below code?
+> Haven't heard from you in a while. Have you silently accepted the codec
+> or is there still something to change?
 
-Michael Trimarchi wrote:
-> Hi all,
->
-> I'm trying to rise an irq using irq2 of the wm9713 so I have configured
-> the codec like this:
->
-> #define GPIO2 (1 << 2)
-> #define GPIO6 (1 << 6)
->
-> /* Enable Interrupt Output enable on GPIO02 */
-> reg = codec->read(codec, AC97_MISC_AFE);
-> codec->write(codec, AC97_MISC_AFE, reg & ~GPIO02);
->
-> reg = codec->read(codec, AC97_GPIO_CFG);
-> codec->write(codec, AC97_GPIO_CFG, reg & ~GPIO02);
->
-> reg = codec->read(codec, AC97_GPIO_STICKY);
-> codec->write(codec, AC97_GPIO_STICKY, reg | GPIO06);
->
-> reg = codec->read(codec, AC97_GPIO_WAKEUP);
-> codec->write(codec, AC97_GPIO_WAKEUP, reg | GPIO06);
->
->
-> Then create a soc-jack on a gpio that is wired with the gpio6
-> of the codec.
->
-> I don't received any interrupt
->
-> Michael Trimarchi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->   
-Regards Michael
+Actually, looking at your original mail again I see you've waited less -
+that's really not very long at all.  Waiting at least a week would be a
+lot more appropriate.
