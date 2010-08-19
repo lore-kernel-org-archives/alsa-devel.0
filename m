@@ -1,19 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v7 1/1] ASoC: TI WL1273 FM Radio Codec.
-Date: Thu, 19 Aug 2010 15:20:22 +0100
-Message-ID: <20100819142022.GA29453@opensource.wolfsonmicro.com>
-References: <1282226421-23202-1-git-send-email-matti.j.aaltonen@nokia.com>
-	<1282226421-23202-2-git-send-email-matti.j.aaltonen@nokia.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Multi-component: Use a more adequate
+ name for the CX20442 codec DAI
+Date: Thu, 19 Aug 2010 15:24:22 +0100
+Message-ID: <1282227862.3074.457.camel@odin>
+References: <201008191515.51877.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5BAAA24400
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1DF3324403
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Aug 2010 16:20:05 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1282226421-23202-2-git-send-email-matti.j.aaltonen@nokia.com>
+	Thu, 19 Aug 2010 16:24:22 +0200 (CEST)
+Received: by eyd9 with SMTP id 9so1254365eyd.38
+	for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2010 07:24:21 -0700 (PDT)
+In-Reply-To: <201008191515.51877.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,13 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
-Cc: alsa-devel@alsa-project.org, peter.ujfalusi@nokia.com, lrg@slimlogic.co.uk
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 19, 2010 at 05:00:21PM +0300, Matti J. Aaltonen wrote:
-> This is an ALSA codec for the Texas Instruments WL1273 FM Radio.
+On Thu, 2010-08-19 at 15:15 +0200, Janusz Krzysztofik wrote:
+> In the process of unification of codec DAI names while implementing 
+> multi-component, the CX20442 codec DAI has been renamed to "cx20442-hifi". 
+> This new name seems not adequate for a 8kHz voice codec.
 > 
-> Signed-off-by: Matti J. Aaltonen <matti.j.aaltonen@nokia.com>
+> Use a better name, "cx20442-voice", as suggested by Liam Girdwood.
+> 
+> Created against git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git 
+> commit 5dcba5d6741d4533e0ef696507f93f2a4c738efb dated 12 Aug 2010.
+> 
+> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
