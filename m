@@ -1,16 +1,20 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: [PATCH 3/3] asoc/multi-component: add support for
-	separate codec DAIs to the fsl_dma driver
-Date: Thu, 19 Aug 2010 16:43:42 -0500
-Message-ID: <1282254222-19990-1-git-send-email-timur@freescale.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: purify_inactive_streams and Azalia controllers
+ with >1 codec
+Date: Thu, 19 Aug 2010 14:58:07 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF02FE37660E@HQMAIL01.nvidia.com>
+References: <74CDBE0F657A3D45AFBB94109FB122FF02FE3765BF@HQMAIL01.nvidia.com>
+	<s5hvd76e3cg.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from VA3EHSOBE005.bigfish.com (va3ehsobe005.messaging.microsoft.com
-	[216.32.180.31]) by alsa0.perex.cz (Postfix) with ESMTP id 5B91B243FA
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7FA2C24421
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Aug 2010 23:43:51 +0200 (CEST)
+	Thu, 19 Aug 2010 23:58:14 +0200 (CEST)
+In-Reply-To: <s5hvd76e3cg.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,64 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Some codecs have separate DAIs for playback and capture, so the DMA driver
-should allocate a DMA buffer only for the streams that are valid when the
-driver is opened.
+Takashi Iwai wrote:
+> 
+> At Thu, 19 Aug 2010 12:08:59 -0700,
+> Stephen Warren wrote:
+> >
+> > NVIDIA GPUs that contain Azalia controllers currently all have 1 controller,
+> > each having 4 codecs, each having 1 converter.
+> >
+> > I think there's a logic bug in hda_codec.c:purify_inactive_streams();
+> > streams are controller-wide, but purify_inactive_streams() only cleans up the
+> > converters a single codec as far as I can tell.
+> 
+>...
+> Below is a quick fix patch.  Could you give it a try?
 
-Signed-off-by: Timur Tabi <timur@freescale.com>
----
- sound/soc/fsl/fsl_dma.c |   34 +++++++++++++++++++++-------------
- 1 files changed, 21 insertions(+), 13 deletions(-)
+Yes, that seems to work great.
 
-diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
-index cb78698..4cf98c0 100644
---- a/sound/soc/fsl/fsl_dma.c
-+++ b/sound/soc/fsl/fsl_dma.c
-@@ -306,21 +306,29 @@ static int fsl_dma_new(struct snd_card *card, struct snd_soc_dai *dai,
- 	if (!card->dev->coherent_dma_mask)
- 		card->dev->coherent_dma_mask = fsl_dma_dmamask;
- 
--	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
--		fsl_dma_hardware.buffer_bytes_max,
--		&pcm->streams[0].substream->dma_buffer);
--	if (ret) {
--		dev_err(card->dev, "can't allocate playback dma buffer\n");
--		return ret;
-+	/* Some codecs have separate DAIs for playback and capture, so we
-+	 * should allocate a DMA buffer only for the streams that are valid.
-+	 */
-+
-+	if (dai->driver->playback.channels_min) {
-+		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
-+			fsl_dma_hardware.buffer_bytes_max,
-+			&pcm->streams[0].substream->dma_buffer);
-+		if (ret) {
-+			dev_err(card->dev, "can't alloc playback dma buffer\n");
-+			return ret;
-+		}
- 	}
- 
--	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
--		fsl_dma_hardware.buffer_bytes_max,
--		&pcm->streams[1].substream->dma_buffer);
--	if (ret) {
--		snd_dma_free_pages(&pcm->streams[0].substream->dma_buffer);
--		dev_err(card->dev, "can't allocate capture dma buffer\n");
--		return ret;
-+	if (dai->driver->capture.channels_min) {
-+		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
-+			fsl_dma_hardware.buffer_bytes_max,
-+			&pcm->streams[1].substream->dma_buffer);
-+		if (ret) {
-+			snd_dma_free_pages(&pcm->streams[0].substream->dma_buffer);
-+			dev_err(card->dev, "can't alloc capture dma buffer\n");
-+			return ret;
-+		}
- 	}
- 
- 	return 0;
+Could you explain more why patch_atihdmi.c mostly calls snd_hda_multi_out_* yet
+patch_nvhdmi.c and patch_intelhdmi.c mostly call hdmi_*?
+
+Thanks very much.
+
 -- 
-1.7.0.1
+nvpublic
