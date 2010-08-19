@@ -1,97 +1,52 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: aplay -l  vs.  aplay -L: Missing PCMs?
-Date: Thu, 19 Aug 2010 15:12:57 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF02FE376614@HQMAIL01.nvidia.com>
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [PATCH] of/device: Replace struct of_device with struct of_platform
+Date: Thu, 19 Aug 2010 16:23:36 -0600
+Message-ID: <AANLkTiktjcwQrjBf1sF+2Y8ZTpmsTwo+-4cXfkkb5H+i@mail.gmail.com>
+References: <20100801074831.1099.3318.stgit@angua> <AANLkTiny_N-UqzuVaftLj75e_b0PjsdHstH8ZKx5mw7O@mail.gmail.com>
+ <AANLkTi=12oe7hquDJ4NN_S=cFdfndfxxkOmzqPziD2CE@mail.gmail.com> <4C6DA3E7.20206@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id B542D1038A6
-	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Aug 2010 00:13:01 +0200 (CEST)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <sparclinux-owner@vger.kernel.org>
+In-Reply-To: <4C6DA3E7.20206@freescale.com>
+Sender: sparclinux-owner@vger.kernel.org
+To: Timur Tabi <timur@freescale.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, sfr@canb.auug.org.au, monstr@monstr.eu, microblaze-uclinux@itee.uq.edu.au, devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org, benh@kernel.crashing.org, sparclinux@vger.kernel.org, davem@davemloft.net, alsa-devel mailing list <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The Azalia controller on NVIDIA GPUs gives 4 ALSA hw devices:
+On Thu, Aug 19, 2010 at 3:36 PM, Timur Tabi <timur@freescale.com> wrote=
+:
+> Grant Likely wrote:
+>> On Thu, Aug 19, 2010 at 2:36 PM, Timur Tabi <timur@freescale.com> wr=
+ote:
+>>> On Sun, Aug 1, 2010 at 2:57 AM, Grant Likely <grant.likely@secretla=
+b.ca> wrote:
+>>>
+>>>> =A0sound/soc/fsl/mpc8610_hpcd.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+| =A0 =A04 +-
+>>>
+>>> This file is/was significantly rewritten for 2.6.37. =A0I posted a =
+fix
+>>> to the alsa mailing list, but it will conflict with your patch. =A0=
+You
+>>> might want to remove all changes to sound/soc/fsl from this commit.
+>>
+>> This change is already in Linus' tree.
+>
+> Then I suspect the ALSA guys are going to have a merge conflict comin=
+g up,
+> because I had to make these changes to the -next branch.
 
-(on card 1):
+It is a trivial conflict.  They shouldn't have any problem fixing it up=
+=2E
 
-[swarren@swarren-lx2 ~]$ sudo aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: NVidia [HDA NVidia], device 0: ALC1200 Analog [ALC1200 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: NVidia [HDA NVidia], device 3: ALC1200 Digital [ALC1200 Digital]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: NVidia_1 [HDA NVidia], device 3: NVIDIA HDMI [NVIDIA HDMI]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: NVidia_1 [HDA NVidia], device 7: NVIDIA HDMI [NVIDIA HDMI]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: NVidia_1 [HDA NVidia], device 8: NVIDIA HDMI [NVIDIA HDMI]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: NVidia_1 [HDA NVidia], device 9: NVIDIA HDMI [NVIDIA HDMI]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+g.
 
-... all of which appear to work OK.
-
-However, the list of available "PCMs" from aplay -L doesn't expose them all:
-
-[swarren@swarren-lx2 ~]$ sudo aplay -L
-front:CARD=NVidia,DEV=0
-    HDA NVidia, ALC1200 Analog
-    Front speakers
-surround40:CARD=NVidia,DEV=0
-    HDA NVidia, ALC1200 Analog
-    4.0 Surround output to Front and Rear speakers
-surround41:CARD=NVidia,DEV=0
-    HDA NVidia, ALC1200 Analog
-    4.1 Surround output to Front, Rear and Subwoofer speakers
-surround50:CARD=NVidia,DEV=0
-    HDA NVidia, ALC1200 Analog
-    5.0 Surround output to Front, Center and Rear speakers
-surround51:CARD=NVidia,DEV=0
-    HDA NVidia, ALC1200 Analog
-    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
-surround71:CARD=NVidia,DEV=0
-    HDA NVidia, ALC1200 Analog
-    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
-hdmi:CARD=NVidia,DEV=0
-    HDA NVidia, ALC1200 Digital
-    HDMI Audio Output
-null
-    Discard all samples (playback) or generate zero samples (capture)
-pulse
-    Playback/recording through the PulseAudio sound server
-hdmi:CARD=NVidia_1
-    HDA NVidia, NVIDIA HDMI
-    HDMI Audio Output
-
-Similarly, pulseaudio only shows one output for the GPU; I assume it uses
-the same enumeration mechanism for ALSA sinks as "aplay -L".
-
-Instead, I imagined that I'd see 4 PCMs listed by "aplay -L"; one for each
-converter. Is this an incorrect assumption? How would I make that happen?
-
-I imagine that's why Google shows up so many hits on probe_mask for NVIDIA
-GPUs, so that the one that does show up is the one users want?
-
-Thanks.
-
--- 
-nvpublic
+--=20
+Grant Likely, B.Sc., P.Eng.
+Secret Lab Technologies Ltd.
+--
+To unsubscribe from this list: send the line "unsubscribe sparclinux" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
