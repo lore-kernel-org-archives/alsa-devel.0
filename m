@@ -1,23 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC] ASoC: multi-component: Add optional kcontrol
- prefix name for a DAI link
-Date: Thu, 19 Aug 2010 14:54:14 +0100
-Message-ID: <20100819135413.GA19582@opensource.wolfsonmicro.com>
-References: <1281943770-2990-1-git-send-email-jhnikula@gmail.com>
-	<20100816100705.GA3276@rakim.wolfsonmicro.main>
-	<20100816135328.077b5ea3.jhnikula@gmail.com>
-	<20100816110902.GA10354@sirena.org.uk>
-	<20100819144451.1d827367.jhnikula@gmail.com>
+From: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
+Subject: [PATCH v7 0/1] A codec driver for the TI WL1273 FM
+	Radio.
+Date: Thu, 19 Aug 2010 17:00:20 +0300
+Message-ID: <1282226421-23202-1-git-send-email-matti.j.aaltonen@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4E4C8243D3
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4544B243EF
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Aug 2010 15:53:57 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100819144451.1d827367.jhnikula@gmail.com>
+	Thu, 19 Aug 2010 16:00:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,30 +20,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, peter.ujfalusi@nokia.com
+Cc: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 19, 2010 at 02:44:51PM +0300, Jarkko Nikula wrote:
+Hello.
 
-> kcontrol or name prefix still comes from dai_link->kcontrol_prefix
-> (where it should be per codec as pointer by Mark). And no drivers are
-> patched for snd_soc_add_controls, snd_soc_dapm_new_control,
-> snd_soc_dapm_new_controls and snd_soc_dapm_add_routes API changes.
+And thanks for the comments to patch sets v5 and v6.
 
-It seems inelegant to have to bounce the prefix information through the
-CODEC driver - we're already supplying the CODEC when we register the
-controls so it seems like the core ought to be able to work out which
-controls need to be renamed from the machine description without needing
-this.
+New in this version is that I've removed the global codec pointer and
+also removed the codec pointer from the private data. The probe and remove
+functions have also been revised accordingly.
 
-It seems best to have the data come from machine-specific config so that
-we can allow them to provide something that makes things clearer to
-users on the particular board.
+Thanks,
+Matti
 
-> Codec:
-> - kcontrol prefix
-> - no widget name prefix (as they are per codec)
-> - no audio map prefix (as they are per codec)
+Matti J. Aaltonen (1):
+  ASoC: TI WL1273 FM Radio Codec.
 
-Are you sure these are per CODEC?
+ sound/soc/codecs/wl1273.c |  533 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/wl1273.h |  101 +++++++++
+ 2 files changed, 634 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/codecs/wl1273.c
+ create mode 100644 sound/soc/codecs/wl1273.h
