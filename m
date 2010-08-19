@@ -1,14 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC/multi-component: fix au1x platform
-Date: Thu, 19 Aug 2010 15:06:50 +0100
-Message-ID: <20100819140649.GA29395@opensource.wolfsonmicro.com>
-References: <AANLkTikyZKhs6t8RRRd36KjW_Enb-+NGvUCraxEakHO5@mail.gmail.com>
+Subject: Re: [PATCH v7 1/1] ASoC: TI WL1273 FM Radio Codec.
+Date: Thu, 19 Aug 2010 15:20:22 +0100
+Message-ID: <20100819142022.GA29453@opensource.wolfsonmicro.com>
+References: <1282226421-23202-1-git-send-email-matti.j.aaltonen@nokia.com>
+	<1282226421-23202-2-git-send-email-matti.j.aaltonen@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5BAAA24400
+	for <alsa-devel@alsa-project.org>;
+	Thu, 19 Aug 2010 16:20:05 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <AANLkTikyZKhs6t8RRRd36KjW_Enb-+NGvUCraxEakHO5@mail.gmail.com>
+In-Reply-To: <1282226421-23202-2-git-send-email-matti.j.aaltonen@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,23 +23,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: alsa-devel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
+Cc: alsa-devel@alsa-project.org, peter.ujfalusi@nokia.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 19, 2010 at 03:21:35PM +0200, Manuel Lauss wrote:
+On Thu, Aug 19, 2010 at 05:00:21PM +0300, Matti J. Aaltonen wrote:
+> This is an ALSA codec for the Texas Instruments WL1273 FM Radio.
+> 
+> Signed-off-by: Matti J. Aaltonen <matti.j.aaltonen@nokia.com>
 
-> Attached is a patch which fixes the Alchemy (au1x) audio platform
-> in your "topic/multi-component" branch.
-
-I would provide more detailed review but you've attached your patch as a
-base64 encoded attachment rather than including it inline so my MUA
-hasn't quoted it.
-
-As far as your comments about multiple cards go this should now be
-supported, though the fact that you're modifying the static data for the
-DAI means that the aux1x drivers probably don't support this or only
-support it in a limited fashion.
-
-Your kobject_name() stuff looks pretty fishy - is there some reason for
-not using dev_name()?
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
