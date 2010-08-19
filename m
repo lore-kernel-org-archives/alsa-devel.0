@@ -1,25 +1,24 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [RFC] ASoC: multi-component: Add optional kcontrol
- prefix name for a DAI link
-Date: Thu, 19 Aug 2010 18:20:49 +0300
-Message-ID: <20100819182049.3ecdd0bc.jhnikula@gmail.com>
-References: <1281943770-2990-1-git-send-email-jhnikula@gmail.com>
-	<20100816100705.GA3276@rakim.wolfsonmicro.main>
-	<20100816135328.077b5ea3.jhnikula@gmail.com>
-	<20100816110902.GA10354@sirena.org.uk>
-	<20100819144451.1d827367.jhnikula@gmail.com>
-	<20100819135413.GA19582@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC/multi-component: fix au1x platform
+Date: Thu, 19 Aug 2010 16:52:44 +0100
+Message-ID: <20100819155244.GB9307@sirena.org.uk>
+References: <AANLkTikyZKhs6t8RRRd36KjW_Enb-+NGvUCraxEakHO5@mail.gmail.com>
+	<20100819140649.GA29395@opensource.wolfsonmicro.com>
+	<AANLkTik_VdzUEZ0+079iZciOryRbFNDyjE-jdzJXztcW@mail.gmail.com>
+	<20100819143555.GB29453@opensource.wolfsonmicro.com>
+	<AANLkTikUN0xDGnDPk7Jxk9YihOD3mPxRzxhv+s+A5Fsz@mail.gmail.com>
+	<20100819144841.GC29453@opensource.wolfsonmicro.com>
+	<AANLkTimbasVqtJLeg-F+M9Ry9AzLgy8EG213vy_rEbc=@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 285492444E
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7E60A24487
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Aug 2010 17:20:32 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so1315276ewy.38
-	for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2010 08:20:31 -0700 (PDT)
-In-Reply-To: <20100819135413.GA19582@opensource.wolfsonmicro.com>
+	Thu, 19 Aug 2010 17:52:45 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTimbasVqtJLeg-F+M9Ry9AzLgy8EG213vy_rEbc=@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,73 +28,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Manuel Lauss <manuel.lauss@googlemail.com>
+Cc: alsa-devel@alsa-project.org, alsa-devel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 19 Aug 2010 14:54:14 +0100
-Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+On Thu, Aug 19, 2010 at 04:58:55PM +0200, Manuel Lauss wrote:
+> On Thu, Aug 19, 2010 at 4:48 PM, Mark Brown
 
-> On Thu, Aug 19, 2010 at 02:44:51PM +0300, Jarkko Nikula wrote:
-> 
-> > kcontrol or name prefix still comes from dai_link->kcontrol_prefix
-> > (where it should be per codec as pointer by Mark). And no drivers are
-> > patched for snd_soc_add_controls, snd_soc_dapm_new_control,
-> > snd_soc_dapm_new_controls and snd_soc_dapm_add_routes API changes.
-> 
-> It seems inelegant to have to bounce the prefix information through the
-> CODEC driver - we're already supplying the CODEC when we register the
-> controls so it seems like the core ought to be able to work out which
-> controls need to be renamed from the machine description without needing
-> this.
-> 
-Yeah, I agree. It would be best if there is no need to change API of
-those functions but I haven't figured out yet how those functions
-can see should they add prefix or not and what prefix.
+Please remember to keep people CCed on Linux mailing list postings.
 
-So what we do in soc_probe_dai_link:
+> > The struct snd_ac97 * passed in to them has a pointer to the struct
+> > snd_card * for the card which should (via some further indirection)
+> > allow you to get back to the ASoC specific structures.
 
-	cpu_dai->driver->probe
-	codec->driver->probe
-	-> Codec adds controls, widgets and routes (only controls
-	are prefixed. E.g. "front.")
-	platform->driver->probe
-	codec_dai->driver->probe
-	dai_link->init
-	-> Machine adds controls, widgets and routes (no prefixes)
-	-> Machine registers stuff from extra drivers (all
-	controls, widgets and routes are prefixed per driver.
-	E.g. "front-left-amp.", "front-right-amp." )
+> Are there an in-tree examples I could look at?  (and for example on how
+> to pass per-instance platform data around?  It's not immediately obvious
+> to me how to get data allocated in a platform_driver.probe() callback to
+> the various dai_ops and pcm_ops).
 
-Codec and machine registrations are easy to separate e.g. by some flag
-and use only codec->kcontrol_prefix and continue using unmodified API.
-
-I think extra drivers could use own variants of those registration
-functions that have the name_prefix argument (and core would call them
-too). Then we don't need to patch all the codec and machine drivers.
-Does this sound feasible?
-
-> It seems best to have the data come from machine-specific config so that
-> we can allow them to provide something that makes things clearer to
-> users on the particular board.
-> 
-Pointer to some codec_name<->prefix table in struct snd_soc_card at
-least eliminates the dai_link->kcontrol_prefix.
-
-> > Codec:
-> > - kcontrol prefix
-> > - no widget name prefix (as they are per codec)
-> > - no audio map prefix (as they are per codec)
-> 
-> Are you sure these are per CODEC?
-
-I thought they and audio map of machine (registered in
-dai_link->init) were per codec. Read that as I haven't tried with
-second map yet in the test board :-)
-
-Do you think there are some issues e.g. with multi-dai codecs that we
-need to address?
-
-
--- 
-Jarkko
+This is the only embedded device I've ever seen where anyone wanted to
+use multiple AC97 controllers so not directly.  If you look at the SoC
+core you can see how the various ALSA structures are converted into ASoC
+specific ones, though.
