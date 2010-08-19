@@ -1,52 +1,64 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH] of/device: Replace struct of_device with struct of_platform
-Date: Thu, 19 Aug 2010 16:23:36 -0600
-Message-ID: <AANLkTiktjcwQrjBf1sF+2Y8ZTpmsTwo+-4cXfkkb5H+i@mail.gmail.com>
-References: <20100801074831.1099.3318.stgit@angua> <AANLkTiny_N-UqzuVaftLj75e_b0PjsdHstH8ZKx5mw7O@mail.gmail.com>
- <AANLkTi=12oe7hquDJ4NN_S=cFdfndfxxkOmzqPziD2CE@mail.gmail.com> <4C6DA3E7.20206@freescale.com>
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: HDMI hot-plug/ELD issues
+Date: Thu, 19 Aug 2010 17:25:53 -0500
+Message-ID: <AANLkTi=Nmtn8DsXH7u+tt0j_Cs1tnjaHO4XoLAPoyAAs@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <sparclinux-owner@vger.kernel.org>
-In-Reply-To: <4C6DA3E7.20206@freescale.com>
-Sender: sparclinux-owner@vger.kernel.org
-To: Timur Tabi <timur@freescale.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, sfr@canb.auug.org.au, monstr@monstr.eu, microblaze-uclinux@itee.uq.edu.au, devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org, benh@kernel.crashing.org, sparclinux@vger.kernel.org, davem@davemloft.net, alsa-devel mailing list <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id D09BA1038AA
+	for <alsa-devel@alsa-project.org>;
+	Fri, 20 Aug 2010 00:25:54 +0200 (CEST)
+Received: by iwn4 with SMTP id 4so437229iwn.38
+	for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2010 15:25:54 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 19, 2010 at 3:36 PM, Timur Tabi <timur@freescale.com> wrote=
-:
-> Grant Likely wrote:
->> On Thu, Aug 19, 2010 at 2:36 PM, Timur Tabi <timur@freescale.com> wr=
-ote:
->>> On Sun, Aug 1, 2010 at 2:57 AM, Grant Likely <grant.likely@secretla=
-b.ca> wrote:
->>>
->>>> =A0sound/soc/fsl/mpc8610_hpcd.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
-| =A0 =A04 +-
->>>
->>> This file is/was significantly rewritten for 2.6.37. =A0I posted a =
-fix
->>> to the alsa mailing list, but it will conflict with your patch. =A0=
-You
->>> might want to remove all changes to sound/soc/fsl from this commit.
->>
->> This change is already in Linus' tree.
->
-> Then I suspect the ALSA guys are going to have a merge conflict comin=
-g up,
-> because I had to make these changes to the -next branch.
+Hi,
+I was testing my pulseaudio AC3 passthrough patch on my new laptop
+(all Intel hw, Corei5/IbexPeak, 2.6.35) and noticed a set of issues
+with the HDMI output:
+1. Playback can happen even if there's no HDMI cable plugged. Or when
+I remove the cable, the player isn't notified and keeps sending data
+to the driver. This is fine for PCM but I noticed that the receiver
+can handle some trouble synchronizing with in AC3-passthrough mode if
+the cable is inserted after the playback starts. It would be much
+cleaner to allow playback only when there's an actual cable connected,
+and to return -ENODEV or something to apps when this happens.
+2. It looks like the ELD info is invalid in /proc/asound/cards/. Tried
+both with my TV and AV receiver, no luck, all zeroes except for
+'monitor_present'
 
-It is a trivial conflict.  They shouldn't have any problem fixing it up=
-=2E
+monitor_present         1
+eld_valid               0
+monitor_name
+connection_type         HDMI
+eld_version             [0x0] reserved
+edid_version            [0x0] no CEA EDID Timing Extension block present
+manufacture_id          0x0
+product_id              0x0
+port_id                 0x0
+support_hdcp            0
+support_ai              0
+audio_sync_delay        0
+speakers                [0xffff] FL/FR LFE FC RL/RR RC FLC/FRC RLC/RRC
+FLW/FRW FLH/FRH TC FCH
+sad_count               0
 
-g.
-
---=20
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
---
-To unsubscribe from this list: send the line "unsubscribe sparclinux" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Is there a missing link with the display driver so that this info
+would make sense? I remember having a conversation with Fengguang Wu
+on this, but I can't remember what the outcome was. Or is this a case
+of back luck with broken hardware not sending the legal EDID info?
+Thanks for your help on this.
+-Pierre
