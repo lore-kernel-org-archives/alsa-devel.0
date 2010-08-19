@@ -1,24 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v6 0/1] A codec driver for the TI WL1273 FM
- Radio.
-Date: Thu, 19 Aug 2010 10:41:39 +0100
-Message-ID: <20100819094139.GA22272@rakim.wolfsonmicro.main>
-References: <1282045280-16696-1-git-send-email-matti.j.aaltonen@nokia.com>
-	<1282125215.14489.114.camel@masi.mnp.nokia.com>
-	<20100818120454.GA15536@sirena.org.uk>
-	<1282138337.14489.129.camel@masi.mnp.nokia.com>
-	<20100818134533.GA4588@rakim.wolfsonmicro.main>
-	<1282201063.14489.142.camel@masi.mnp.nokia.com>
+Subject: Re: [PATCH] Add support for tlv320aic3007
+	to	tlv320aic3x driver
+Date: Thu, 19 Aug 2010 10:47:45 +0100
+Message-ID: <20100819094744.GA9307@sirena.org.uk>
+References: <AANLkTinScuZVufiHO15uvBMrf4oPMAV=r__G72b=o2u8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 76B9E24153
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9FD7C24157
 	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Aug 2010 11:41:42 +0200 (CEST)
+	Thu, 19 Aug 2010 11:47:46 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1282201063.14489.142.camel@masi.mnp.nokia.com>
+In-Reply-To: <AANLkTinScuZVufiHO15uvBMrf4oPMAV=r__G72b=o2u8@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,29 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Randolph Chung <rchung42@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 19, 2010 at 09:57:43AM +0300, Matti J. Aaltonen wrote:
+On Thu, Aug 19, 2010 at 02:19:16PM +0800, Randolph Chung wrote:
+> The attached patch adds support for the tlv320aic3007 codec to the
+> tlv320aic3x driver.
+> 
+> The tlv320aic3007 is similar to the aic31, but has an additional
+> class-D speaker amp. The speaker amp control register overlaps with
+> the mono output register of other codecs in this family, so we allow
+> the board driver to pass in a model id to identify the codec being
+> used.
 
-> Above you are talking about v3 because v4 was the first multi component
-> version:
+Rather than passing something in the platform data you should use the
+I2C device ID table for the device and have the board register the
+device as a tlv320aic3007.
 
-Nope, I'm talking about v5 though it does look I misread our comments
-about multi-component, it was already multi-component just out of date
-from the looks of it.
+I would review the patch in more detail but you attached it as a base64
+encoded attachment which means my MUA hasn't quoted it for me and won't
+even display it unless I explicitly open it...  The main thing I noticed
+was that you're using an enum instead of a TLV control for the amp
+volume.
 
-> Then I sent v5 (on 5 of Aug) to which I got no comment, then I sent v6
-> after being able to test the codec... And be because I hadn't heard you
-> in 13 days I wrote the unfortunate phrase: "I haven't heard you in a
-> while"... Which I meant as a form a small talk and of course as way to
-> get attention, which I got...
-
-Hrm, you might need to get your mail setup looked at - the v5 posting is
-here:
-
-http://thread.gmane.org/gmane.linux.alsa.devel/75510
-
-and as you can see from the archive both myself and Liam followed up to
-it.  
+As I reminded you last time you always need to CC maintainers on
+patches.  This is very helpful for ensuring that we actually see things
+on busy lists and is helpful for keeping track of what needs reviewing.
