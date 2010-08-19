@@ -1,17 +1,10 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: [PATCH] ASoC: Multi-component: Use a more adequate
-	name for the CX20442 codec DAI
-Date: Thu, 19 Aug 2010 15:15:50 +0200
-Message-ID: <201008191515.51877.jkrzyszt@tis.icnet.pl>
+From: Manuel Lauss <manuel.lauss@googlemail.com>
+Subject: [PATCH] ASoC/multi-component: fix au1x platform
+Date: Thu, 19 Aug 2010 15:21:35 +0200
+Message-ID: <AANLkTikyZKhs6t8RRRd36KjW_Enb-+NGvUCraxEakHO5@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=0016e644b98ab9f2bf048e2d0fc9
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id C247F24387
-	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Aug 2010 15:16:32 +0200 (CEST)
-Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,39 +15,165 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-In the process of unification of codec DAI names while implementing 
-multi-component, the CX20442 codec DAI has been renamed to "cx20442-hifi". 
-This new name seems not adequate for a 8kHz voice codec.
+--0016e644b98ab9f2bf048e2d0fc9
+Content-Type: text/plain; charset=ISO-8859-1
 
-Use a better name, "cx20442-voice", as suggested by Liam Girdwood.
+Hi Liam,
 
-Created against git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git 
-commit 5dcba5d6741d4533e0ef696507f93f2a4c738efb dated 12 Aug 2010.
+Attached is a patch which fixes the Alchemy (au1x) audio platform
+in your "topic/multi-component" branch.
 
-Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
----
---- git/sound/soc/codecs/cx20442.c.orig	2010-08-19 14:48:27.000000000 +0200
-+++ git/sound/soc/codecs/cx20442.c	2010-08-19 15:01:55.000000000 +0200
-@@ -318,7 +318,7 @@ EXPORT_SYMBOL_GPL(v253_ops);
-  */
- 
- static struct snd_soc_dai_driver cx20442_dai = {
--	.name = "cx20442-hifi",
-+	.name = "cx20442-voice",
- 	.playback = {
- 		.stream_name = "Playback",
- 		.channels_min = 1,
---- git/sound/soc/omap/ams-delta.c.orig	2010-08-19 14:48:28.000000000 +0200
-+++ git/sound/soc/omap/ams-delta.c	2010-08-19 15:02:05.000000000 +0200
-@@ -584,7 +584,7 @@ static struct snd_soc_dai_link ams_delta
- 	.name = "CX20442",
- 	.stream_name = "CX20442",
- 	.cpu_dai_name ="omap-mcbsp-dai.0",
--	.codec_dai_name = "cx20442-hifi",
-+	.codec_dai_name = "cx20442-voice",
- 	.init = ams_delta_cx20442_init,
- 	.platform_name = "omap-pcm-audio",
- 	.codec_name = "cx20442-codec",
+Tested on my Db1200.
+
+One minor issue remains: with AC97, the following warning is generated,
+courtesy of the generic ac97 codec:
+asoc: ac97-hifi <-> au1xpsc-ac97.1 mapping ok
+kobject (8fdc59b0): tried to init an initialized object, something is
+seriously wrong.
+Call Trace:
+[<804959c4>] dump_stack+0x8/0x34
+[<802a30e4>] kobject_init+0x50/0xcc
+[<802ec27c>] device_initialize+0x2c/0x70
+[<802ecb64>] device_register+0x14/0x28
+[<8039e058>] snd_soc_instantiate_cards+0xa00/0xb10
+[<8039e27c>] soc_probe+0x114/0x154
+[<802ef0fc>] driver_probe_device+0xe4/0x1a0
+[<802ee404>] bus_for_each_drv+0x60/0xb0
+[<802ef370>] device_attach+0x74/0xa8
+[<802ee1e8>] bus_probe_device+0x30/0x54
+[<802ec9a0>] device_add+0x384/0x534
+[<802f09a4>] platform_device_add+0x15c/0x1c8
+[<805ccb14>] db1200_audio_load+0x70/0x9c
+[<801004fc>] do_one_initcall+0xfc/0x1e0
+[<805ba32c>] kernel_init+0xc8/0x168
+[<80105904>] kernel_thread_helper+0x10/0x18
+
+ALSA device list:
+  #0: DB1200_AC97
+
+
+Best regards,
+      Manuel Lauss
+
+--0016e644b98ab9f2bf048e2d0fc9
+Content-Type: application/octet-stream;
+	name="1000-ASoC-multi-component-fix-au1x-platform.patch"
+Content-Disposition: attachment;
+	filename="1000-ASoC-multi-component-fix-au1x-platform.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gd1mz3c90
+
+RnJvbSBlZjk3MGJmNmY4NGNlZThlZWQ4ZTRmYTM4ZjQ1ZmQ1ODcyZDViNDdiIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBNYW51ZWwgTGF1c3MgPG1hbnVlbC5sYXVzc0Bnb29nbGVtYWls
+LmNvbT4KRGF0ZTogVGh1LCAxOSBBdWcgMjAxMCAxNToxMzowNCArMDIwMApTdWJqZWN0OiBbUEFU
+Q0hdIEFTb0M6IG11bHRpLWNvbXBvbmVudDogZml4IGF1MXggcGxhdGZvcm0KCkZpeGVzIHRoZSBh
+dTF4IGF1ZGlvIHBsYXRmb3JtIGluIExpYW0gR2lyZHdvb2QncyB0b3BpYy9tdWx0aS1jb21wb25l
+bnQgYnJhbmNoLgoKU2lnbmVkLW9mZi1ieTogTWFudWVsIExhdXNzIDxtYW51ZWwubGF1c3NAZ29v
+Z2xlbWFpbC5jb20+Ci0tLQogYXJjaC9taXBzL2FsY2hlbXkvZGV2Ym9hcmRzL2RiMTIwMC9wbGF0
+Zm9ybS5jIHwgICAxMCArKysrKysrKy0tCiBzb3VuZC9zb2MvYXUxeC9kYjEyMDAuYyAgICAgICAg
+ICAgICAgICAgICAgICAgfCAgIDE4ICsrKysrKysrKy0tLS0tLS0tLQogc291bmQvc29jL2F1MXgv
+ZGJkbWEyLmMgICAgICAgICAgICAgICAgICAgICAgIHwgICAgNyArKysrKy0tCiBzb3VuZC9zb2Mv
+YXUxeC9wc2MtYWM5Ny5jICAgICAgICAgICAgICAgICAgICAgfCAgICA3ICsrKysrKysKIHNvdW5k
+L3NvYy9hdTF4L3BzYy1pMnMuYyAgICAgICAgICAgICAgICAgICAgICB8ICAgIDkgKysrKysrKyst
+CiA1IGZpbGVzIGNoYW5nZWQsIDM3IGluc2VydGlvbnMoKyksIDE0IGRlbGV0aW9ucygtKQoKZGlm
+ZiAtLWdpdCBhL2FyY2gvbWlwcy9hbGNoZW15L2RldmJvYXJkcy9kYjEyMDAvcGxhdGZvcm0uYyBi
+L2FyY2gvbWlwcy9hbGNoZW15L2RldmJvYXJkcy9kYjEyMDAvcGxhdGZvcm0uYwppbmRleCAzZmEz
+NGMzLi5mOTg1MzczIDEwMDY0NAotLS0gYS9hcmNoL21pcHMvYWxjaGVteS9kZXZib2FyZHMvZGIx
+MjAwL3BsYXRmb3JtLmMKKysrIGIvYXJjaC9taXBzL2FsY2hlbXkvZGV2Ym9hcmRzL2RiMTIwMC9w
+bGF0Zm9ybS5jCkBAIC00MjksOCArNDI5LDE0IEBAIHN0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZGV2
+aWNlIGRiMTIwMF9hdWRpb19kZXYgPSB7CiAJLnJlc291cmNlCT0gYXUxMjAwX3BzYzFfcmVzLAog
+fTsKIAorc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgZGIxMjAwX2FjOTdfY29kZWMgPSB7
+CisJLm5hbWUJCT0gImFjOTctY29kZWMiLAorCS5pZAkJPSAxLAkvKiBvbiBQU0MxICovCit9Owor
+CiBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RldmljZSAqZGIxMjAwX2RldnNbXSBfX2luaXRkYXRh
+ID0gewogCU5VTEwsCQkvKiBQU0MwLCBzZWxlY3RlZCBieSBTNi44ICovCisJJmRiMTIwMF9hYzk3
+X2NvZGVjLAogCSZkYjEyMDBfaWRlX2RldiwKIAkmZGIxMjAwX2V0aF9kZXYsCiAJJmRiMTIwMF9y
+dGNfZGV2LApAQCAtNDk0LDExICs1MDAsMTEgQEAgc3RhdGljIGludCBfX2luaXQgZGIxMjAwX2Rl
+dl9pbml0KHZvaWQpCiAJc3cgJj0gQkNTUl9TV0lUQ0hFU19ESVBfOCB8IEJDU1JfU1dJVENIRVNf
+RElQXzc7CiAJaWYgKHN3ID09IEJDU1JfU1dJVENIRVNfRElQXzgpIHsKIAkJYmNzcl9tb2QoQkNT
+Ul9SRVNFVFMsIDAsIEJDU1JfUkVTRVRTX1BTQzFNVVgpOwotCQlkYjEyMDBfYXVkaW9fZGV2Lm5h
+bWUgPSAiYXUxeHBzY19pMnMiOworCQlkYjEyMDBfYXVkaW9fZGV2Lm5hbWUgPSAiYXUxeHBzYy1p
+MnMiOwogCQlwcmludGsoS0VSTl9JTkZPICIgUzYuNyBPTiA6IFBTQzEgbW9kZSBJMlNcbiIpOwog
+CX0gZWxzZSB7CiAJCWJjc3JfbW9kKEJDU1JfUkVTRVRTLCBCQ1NSX1JFU0VUU19QU0MxTVVYLCAw
+KTsKLQkJZGIxMjAwX2F1ZGlvX2Rldi5uYW1lID0gImF1MXhwc2NfYWM5NyI7CisJCWRiMTIwMF9h
+dWRpb19kZXYubmFtZSA9ICJhdTF4cHNjLWFjOTciOwogCQlwcmludGsoS0VSTl9JTkZPICIgUzYu
+NyBPRkY6IFBTQzEgbW9kZSBBQzk3XG4iKTsKIAl9CiAKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9h
+dTF4L2RiMTIwMC5jIGIvc291bmQvc29jL2F1MXgvZGIxMjAwLmMKaW5kZXggODc4MGM5MC4uMjA2
+NWQwMyAxMDA2NDQKLS0tIGEvc291bmQvc29jL2F1MXgvZGIxMjAwLmMKKysrIGIvc291bmQvc29j
+L2F1MXgvZGIxMjAwLmMKQEAgLTI2LDExICsyNiwxMSBAQAogCiBzdGF0aWMgc3RydWN0IHNuZF9z
+b2NfZGFpX2xpbmsgZGIxMjAwX2FjOTdfZGFpID0gewogCS5uYW1lCQk9ICJBQzk3IiwKLQkuc3Ry
+ZWFtX25hbWUJPSAiQUM5NyBIaUZpIiwKLQkuY3B1X2RhaV9uYW1lCT0gImF1MXhwc2MtYWM5NyIs
+CisJLnN0cmVhbV9uYW1lCT0gIkFDOTcgUGxheWJhY2siLAorCS5jcHVfZGFpX25hbWUJPSAiYXUx
+eHBzYy1hYzk3LjEiLAogCS5jb2RlY19kYWlfbmFtZQk9ICJhYzk3LWhpZmkiLAotCS5wbGF0Zm9y
+bV9uYW1lCT0gICJhdTF4cHNjLXBjbS1hdWRpbyIsCi0JLmNvZGVjX25hbWUJPSAiYWM5Ny1jb2Rl
+YyIsCisJLnBsYXRmb3JtX25hbWUJPSAiYXUxeHBzYy1wY20tYXVkaW8uMSIsCisJLmNvZGVjX25h
+bWUJPSAiYWM5Ny1jb2RlYy4xIiwKIH07CiAKIHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19jYXJkIGRi
+MTIwMF9hYzk3X21hY2hpbmUgPSB7CkBAIC03NCwxMSArNzQsMTEgQEAgc3RhdGljIHN0cnVjdCBz
+bmRfc29jX29wcyBkYjEyMDBfaTJzX3dtODczMV9vcHMgPSB7CiAKIHN0YXRpYyBzdHJ1Y3Qgc25k
+X3NvY19kYWlfbGluayBkYjEyMDBfaTJzX2RhaSA9IHsKIAkubmFtZQkJPSAiV004NzMxIiwKLQku
+c3RyZWFtX25hbWUJPSAiV004NzMxIFBDTSIsCi0JLmNwdV9kYWlfbmFtZQk9ICJhdTF4cHNjIiwK
+LQkuY29kZWNfZGFpX25hbWUJPSAid204NzMxLWhpZmkiCi0JLnBsYXRmb3JtX25hbWUJPSAiYXUx
+eHBzYy1wY20tYXVkaW8iLAotCS5jb2RlY19uYW1lCT0gIndtODczMS1jb2RlYy4wLTAwMWEiLAor
+CS5zdHJlYW1fbmFtZQk9ICJXTTg3MzEiLAorCS5jcHVfZGFpX25hbWUJPSAiYXUxeHBzYy1pMnMu
+MSIsCisJLmNvZGVjX2RhaV9uYW1lCT0gIndtODczMS1oaWZpIiwKKwkucGxhdGZvcm1fbmFtZQk9
+ICJhdTF4cHNjLXBjbS1hdWRpby4xIiwKKwkuY29kZWNfbmFtZQk9ICJ3bTg3MzEtY29kZWMuMC0w
+MDFiIiwKIAkub3BzCQk9ICZkYjEyMDBfaTJzX3dtODczMV9vcHMsCiB9OwogCmRpZmYgLS1naXQg
+YS9zb3VuZC9zb2MvYXUxeC9kYmRtYTIuYyBiL3NvdW5kL3NvYy9hdTF4L2RiZG1hMi5jCmluZGV4
+IDAwZmRiOWMuLmI2ZDNkYjggMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9hdTF4L2RiZG1hMi5jCisr
+KyBiL3NvdW5kL3NvYy9hdTF4L2RiZG1hMi5jCkBAIC0zNDQsNyArMzQ0LDYgQEAgc3RydWN0IHNu
+ZF9zb2NfcGxhdGZvcm1fZHJpdmVyIGF1MXhwc2Nfc29jX3BsYXRmb3JtID0gewogCS5wY21fbmV3
+CT0gYXUxeHBzY19wY21fbmV3LAogCS5wY21fZnJlZQk9IGF1MXhwc2NfcGNtX2ZyZWVfZG1hX2J1
+ZmZlcnMsCiB9OwotRVhQT1JUX1NZTUJPTF9HUEwoYXUxeHBzY19zb2NfcGxhdGZvcm0pOwogCiBz
+dGF0aWMgaW50IF9fZGV2aW5pdCBhdTF4cHNjX3BjbV9kcnZwcm9iZShzdHJ1Y3QgcGxhdGZvcm1f
+ZGV2aWNlICpwZGV2KQogewpAQCAtNDYwLDcgKzQ1OSwxMSBAQCBzdHJ1Y3QgcGxhdGZvcm1fZGV2
+aWNlICphdTF4cHNjX3BjbV9hZGQoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKIAlyZXNb
+MV0uc3RhcnQgPSByZXNbMV0uZW5kID0gaWRbMV07CiAJcmVzWzBdLmZsYWdzID0gcmVzWzFdLmZs
+YWdzID0gSU9SRVNPVVJDRV9ETUE7CiAKLQlwZCA9IHBsYXRmb3JtX2RldmljZV9hbGxvYygiYXUx
+eHBzYy1wY20iLCAtMSk7CisJLyogbWF0Y2ggdGhlIGRldmljZSBpZCB3aXRoIHRoZSBQU0MgaW5z
+dGFuY2UgdGhhdCBpcyByZWdpc3RlcmluZworCSAqIHVzLiAgTWF5IGJlIHVzZWZ1bCB3aGVuIEFT
+b0Mgb25lIGRheSBjYW4gaGFuZGxlIG11bHRpcGxlIGluZGVwZW5kZW50CisJICogImNhcmRzIi4K
+KwkgKi8KKwlwZCA9IHBsYXRmb3JtX2RldmljZV9hbGxvYygiYXUxeHBzYy1wY20tYXVkaW8iLCBw
+ZGV2LT5pZCk7CiAJaWYgKCFwZCkKIAkJZ290byBvdXQ7CiAKZGlmZiAtLWdpdCBhL3NvdW5kL3Nv
+Yy9hdTF4L3BzYy1hYzk3LmMgYi9zb3VuZC9zb2MvYXUxeC9wc2MtYWM5Ny5jCmluZGV4IDZhOTUx
+NmMuLjhmNmM0ZjQgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9hdTF4L3BzYy1hYzk3LmMKKysrIGIv
+c291bmQvc29jL2F1MXgvcHNjLWFjOTcuYwpAQCAtMzg3LDYgKzM4NywxMyBAQCBzdGF0aWMgaW50
+IF9fZGV2aW5pdCBhdTF4cHNjX2FjOTdfZHJ2cHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAq
+cGRldikKIAlhdV93cml0ZWwoUFNDX1NFTF9QU19BQzk3TU9ERSB8IHNlbCwgUFNDX1NFTCh3ZCkp
+OwogCWF1X3N5bmMoKTsKIAorCS8qIG5hbWUgdGhlIERBSSBhZnRlciB0aGlzIGRldmljZXMnIGlu
+c3RhbmNlICgiYXUxeHBzYy1hYzk3LlBTQ0lOREVYIikuCisJICogWFhYOiBVc2VmdWwgaWYgQVNv
+QyBldmVyIGdhaW5zIHRoZSBhYmlsaXR5IHRvIGhhbmRsZSBtdWx0aXBsZQorCSAqIGluZGVwZW5k
+ZW50ICJjYXJkcyIgKGRvbid0IGZvcmdldCB0byBkeW5hbWljYWxseSBhbGxvY2F0ZQorCSAqIHRo
+ZSBzbmRfc29jX2RhaV9kcml2ZXIgc3RydWN0dXJlIHRoZW4pCisJICovCisJYXUxeHBzY19hYzk3
+X2RhaS5uYW1lID0ga29iamVjdF9uYW1lKCZwZGV2LT5kZXYua29iaik7CisKIAlyZXQgPSBzbmRf
+c29jX3JlZ2lzdGVyX2RhaSgmcGRldi0+ZGV2LCAmYXUxeHBzY19hYzk3X2RhaSk7CiAJaWYgKHJl
+dCkKIAkJZ290byBvdXQxOwpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2F1MXgvcHNjLWkycy5jIGIv
+c291bmQvc29jL2F1MXgvcHNjLWkycy5jCmluZGV4IDk0ZTU2MGEuLjJlN2U1OTkgMTAwNjQ0Ci0t
+LSBhL3NvdW5kL3NvYy9hdTF4L3BzYy1pMnMuYworKysgYi9zb3VuZC9zb2MvYXUxeC9wc2MtaTJz
+LmMKQEAgLTMzNyw2ICszMzcsMTMgQEAgc3RhdGljIGludCBfX2RldmluaXQgYXUxeHBzY19pMnNf
+ZHJ2cHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKIAkgKiB0aW1lIG91dC4KIAkg
+Ki8KIAorCS8qIG5hbWUgdGhlIERBSSBhZnRlciB0aGlzIGRldmljZXMnIGluc3RhbmNlICgiYXUx
+eHBzYy1pMnMuUFNDSU5ERVgiKS4KKwkgKiBYWFg6IFVzZWZ1bCBpZiBBU29DIGV2ZXIgZ2FpbnMg
+dGhlIGFiaWxpdHkgdG8gaGFuZGxlIG11bHRpcGxlCisJICogaW5kZXBlbmRlbnQgImNhcmRzIiAo
+ZG9uJ3QgZm9yZ2V0IHRvIGR5bmFtaWNhbGx5IGFsbG9jYXRlCisJICogdGhlIHNuZF9zb2NfZGFp
+X2RyaXZlciBzdHJ1Y3R1cmUgdGhlbikKKwkgKi8KKwlhdTF4cHNjX2kyc19kYWkubmFtZSA9IGtv
+YmplY3RfbmFtZSgmcGRldi0+ZGV2LmtvYmopOworCiAJcmV0ID0gc25kX3NvY19yZWdpc3Rlcl9k
+YWkoJnBkZXYtPmRldiwgJmF1MXhwc2NfaTJzX2RhaSk7CiAJaWYgKHJldCkKIAkJZ290byBvdXQx
+OwpAQCAtNDI3LDcgKzQzNCw3IEBAIHN0YXRpYyBzdHJ1Y3QgZGV2X3BtX29wcyBhdTF4cHNjaTJz
+X3Btb3BzID0gewogCiBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBhdTF4cHNjX2kyc19k
+cml2ZXIgPSB7CiAJLmRyaXZlcgkJPSB7Ci0JCS5uYW1lCT0gImF1MXhwc2MiLAorCQkubmFtZQk9
+ICJhdTF4cHNjLWkycyIsCiAJCS5vd25lcgk9IFRISVNfTU9EVUxFLAogCQkucG0JPSBBVTFYUFND
+STJTX1BNT1BTLAogCX0sCi0tIAoxLjcuMgoK
+--0016e644b98ab9f2bf048e2d0fc9
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--0016e644b98ab9f2bf048e2d0fc9--
