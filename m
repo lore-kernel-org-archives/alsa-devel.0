@@ -1,20 +1,16 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v7 1/1] ASoC: TI WL1273 FM Radio Codec.
-Date: Thu, 19 Aug 2010 15:32:32 +0100
-Message-ID: <1282228352.3074.471.camel@odin>
-References: <1282226421-23202-1-git-send-email-matti.j.aaltonen@nokia.com>
-	<1282226421-23202-2-git-send-email-matti.j.aaltonen@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC/multi-component: fix au1x platform
+Date: Thu, 19 Aug 2010 15:35:56 +0100
+Message-ID: <20100819143555.GB29453@opensource.wolfsonmicro.com>
+References: <AANLkTikyZKhs6t8RRRd36KjW_Enb-+NGvUCraxEakHO5@mail.gmail.com>
+	<20100819140649.GA29395@opensource.wolfsonmicro.com>
+	<AANLkTik_VdzUEZ0+079iZciOryRbFNDyjE-jdzJXztcW@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9227E24405
-	for <alsa-devel@alsa-project.org>;
-	Thu, 19 Aug 2010 16:32:32 +0200 (CEST)
-Received: by wwi18 with SMTP id 18so2205678wwi.20
-	for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2010 07:32:32 -0700 (PDT)
-In-Reply-To: <1282226421-23202-2-git-send-email-matti.j.aaltonen@nokia.com>
+Content-Disposition: inline
+In-Reply-To: <AANLkTik_VdzUEZ0+079iZciOryRbFNDyjE-jdzJXztcW@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,74 +20,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, peter.ujfalusi@nokia.com
+To: alsa-devel@alsa-project.org
+Cc: alsa-devel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-08-19 at 17:00 +0300, Matti J. Aaltonen wrote:
-> This is an ALSA codec for the Texas Instruments WL1273 FM Radio.
-> 
-> Signed-off-by: Matti J. Aaltonen <matti.j.aaltonen@nokia.com>
-> ---
->  sound/soc/codecs/wl1273.c |  533 +++++++++++++++++++++++++++++++++++++++++++++
->  sound/soc/codecs/wl1273.h |  101 +++++++++
->  2 files changed, 634 insertions(+), 0 deletions(-)
->  create mode 100644 sound/soc/codecs/wl1273.c
->  create mode 100644 sound/soc/codecs/wl1273.h
-> 
-> diff --git a/sound/soc/codecs/wl1273.c b/sound/soc/codecs/wl1273.c
-> new file mode 100644
-> index 0000000..a179303
-> --- /dev/null
-> +++ b/sound/soc/codecs/wl1273.c
-> @@ -0,0 +1,533 @@
+On Thu, Aug 19, 2010 at 04:30:10PM +0200, Manuel Lauss wrote:
+> On Thu, Aug 19, 2010 at 4:06 PM, Mark Brown
 
-snip
+> > As far as your comments about multiple cards go this should now be
+> > supported, though the fact that you're modifying the static data for the
+> > DAI means that the aux1x drivers probably don't support this or only
+> > support it in a limited fashion.
 
-> +
-> +static int wl1273_probe(struct snd_soc_codec *codec)
-> +{
-> +	struct wl1273_core **core = codec->dev->platform_data;
+> The hardware does support it with the issue you mentioned fixed, but the
+> global "soc_ac97_ops" needs to go away first.  The alchemy line can
+> support up to 4 independent ac97 "cards" with certain models.
 
-Just curious, why is your platform data here not just a pointer to a
-struct wl1273 ?
-
-> +	struct wl1273_priv *wl1273;
-> +	int r;
-> +
-> +	dev_dbg(codec->dev, "%s.\n", __func__);
-> +
-> +	if (!core) {
-> +		dev_err(codec->dev, "Platform data is missing.\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	wl1273 = kzalloc(sizeof(struct wl1273_priv), GFP_KERNEL);
-> +	if (wl1273 == NULL) {
-> +		dev_err(codec->dev, "Cannot allocate memory.\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	wl1273->mode = WL1273_MODE_BT;
-> +	wl1273->core = *core;
-> +
-> +	snd_soc_codec_set_drvdata(codec, wl1273);
-> +
-> +	mutex_init(&codec->mutex);
-> +	INIT_LIST_HEAD(&codec->dapm_widgets);
-> +	INIT_LIST_HEAD(&codec->dapm_paths);
-> +
-> +	codec->name = "wl1273";
-> +	codec->num_dai = 1;
-> +	codec->bias_level = SND_SOC_BIAS_OFF;
-
-Above 6 lines now done by core, so not needed now (I mentioned that for
-V5, but maybe not explicitly)
-
-Thanks
-
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+So this comment only applies to the AC97 DAIs, not the I2S ones?
+Actually, even for AC97 I'd expect things to work fine off the top of my
+head - while you are forced to use the same ops for everything the ops
+is just a vtable which I'd expect to be the same for all DAIs?
