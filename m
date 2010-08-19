@@ -1,31 +1,83 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] of/device: Replace struct of_device with struct of_platform
-Date: Thu, 19 Aug 2010 16:36:39 -0500
-Message-ID: <4C6DA3E7.20206@freescale.com>
-References: <20100801074831.1099.3318.stgit@angua> <AANLkTiny_N-UqzuVaftLj75e_b0PjsdHstH8ZKx5mw7O@mail.gmail.com> <AANLkTi=12oe7hquDJ4NN_S=cFdfndfxxkOmzqPziD2CE@mail.gmail.com>
+Subject: [PATCH 3/3] asoc/multi-component: add support for
+	separate codec DAIs to the fsl_dma driver
+Date: Thu, 19 Aug 2010 16:43:42 -0500
+Message-ID: <1282254222-19990-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <sparclinux-owner@vger.kernel.org>
-In-Reply-To: <AANLkTi=12oe7hquDJ4NN_S=cFdfndfxxkOmzqPziD2CE@mail.gmail.com>
-Sender: sparclinux-owner@vger.kernel.org
-To: Grant Likely <grant.likely@secretlab.ca>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: sfr@canb.auug.org.au, monstr@monstr.eu, microblaze-uclinux@itee.uq.edu.au, devicetree-discuss@lists.ozlabs.org, linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org, benh@kernel.crashing.org, sparclinux@vger.kernel.org, davem@davemloft.net, alsa-devel mailing list <alsa-devel@alsa-project.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from VA3EHSOBE005.bigfish.com (va3ehsobe005.messaging.microsoft.com
+	[216.32.180.31]) by alsa0.perex.cz (Postfix) with ESMTP id 5B91B243FA
+	for <alsa-devel@alsa-project.org>;
+	Thu, 19 Aug 2010 23:43:51 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Grant Likely wrote:
-> On Thu, Aug 19, 2010 at 2:36 PM, Timur Tabi <timur@freescale.com> wrote:
->> On Sun, Aug 1, 2010 at 2:57 AM, Grant Likely <grant.likely@secretlab.ca> wrote:
->>
->>>  sound/soc/fsl/mpc8610_hpcd.c                  |    4 +-
->>
->> This file is/was significantly rewritten for 2.6.37.  I posted a fix
->> to the alsa mailing list, but it will conflict with your patch.  You
->> might want to remove all changes to sound/soc/fsl from this commit.
-> 
-> This change is already in Linus' tree.
+Some codecs have separate DAIs for playback and capture, so the DMA driver
+should allocate a DMA buffer only for the streams that are valid when the
+driver is opened.
 
-Then I suspect the ALSA guys are going to have a merge conflict coming up,
-because I had to make these changes to the -next branch.
+Signed-off-by: Timur Tabi <timur@freescale.com>
+---
+ sound/soc/fsl/fsl_dma.c |   34 +++++++++++++++++++++-------------
+ 1 files changed, 21 insertions(+), 13 deletions(-)
 
-
+diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+index cb78698..4cf98c0 100644
+--- a/sound/soc/fsl/fsl_dma.c
++++ b/sound/soc/fsl/fsl_dma.c
+@@ -306,21 +306,29 @@ static int fsl_dma_new(struct snd_card *card, struct snd_soc_dai *dai,
+ 	if (!card->dev->coherent_dma_mask)
+ 		card->dev->coherent_dma_mask = fsl_dma_dmamask;
+ 
+-	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
+-		fsl_dma_hardware.buffer_bytes_max,
+-		&pcm->streams[0].substream->dma_buffer);
+-	if (ret) {
+-		dev_err(card->dev, "can't allocate playback dma buffer\n");
+-		return ret;
++	/* Some codecs have separate DAIs for playback and capture, so we
++	 * should allocate a DMA buffer only for the streams that are valid.
++	 */
++
++	if (dai->driver->playback.channels_min) {
++		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
++			fsl_dma_hardware.buffer_bytes_max,
++			&pcm->streams[0].substream->dma_buffer);
++		if (ret) {
++			dev_err(card->dev, "can't alloc playback dma buffer\n");
++			return ret;
++		}
+ 	}
+ 
+-	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
+-		fsl_dma_hardware.buffer_bytes_max,
+-		&pcm->streams[1].substream->dma_buffer);
+-	if (ret) {
+-		snd_dma_free_pages(&pcm->streams[0].substream->dma_buffer);
+-		dev_err(card->dev, "can't allocate capture dma buffer\n");
+-		return ret;
++	if (dai->driver->capture.channels_min) {
++		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
++			fsl_dma_hardware.buffer_bytes_max,
++			&pcm->streams[1].substream->dma_buffer);
++		if (ret) {
++			snd_dma_free_pages(&pcm->streams[0].substream->dma_buffer);
++			dev_err(card->dev, "can't alloc capture dma buffer\n");
++			return ret;
++		}
+ 	}
+ 
+ 	return 0;
+-- 
+1.7.0.1
