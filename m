@@ -1,20 +1,22 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] Show processing coefficients in codec proc
- file
-Date: Fri, 20 Aug 2010 16:46:25 +0200
-Message-ID: <4C6E9541.6000402@canonical.com>
-References: <4C6D7546.4000506@canonical.com>
-	<s5h4oeqfoe7.wl%tiwai@suse.de>	<4C6D7C98.5030207@canonical.com>
-	<s5hy6c2e4gs.wl%tiwai@suse.de>
+From: Randolph Chung <rchung42@gmail.com>
+Subject: Re: [PATCH v2] Add support for tlv320aic3007 to
+	tlv320aic3x codec.
+Date: Fri, 20 Aug 2010 22:58:20 +0800
+Message-ID: <AANLkTi=O=6WSje5dxytsO+EG6T2ksnyqw42PvZs12Kav@mail.gmail.com>
+References: <1282279673-27319-1-git-send-email-rchung42@gmail.com>
+	<20100820110840.GF13668@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id AFBC724536
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id D1C0524548
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Aug 2010 16:46:28 +0200 (CEST)
-In-Reply-To: <s5hy6c2e4gs.wl%tiwai@suse.de>
+	Fri, 20 Aug 2010 16:58:23 +0200 (CEST)
+Received: by iwn4 with SMTP id 4so1277798iwn.38
+	for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2010 07:58:22 -0700 (PDT)
+In-Reply-To: <20100820110840.GF13668@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,49 +26,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-2010-08-19 22:24, Takashi Iwai skrev:
-> At Thu, 19 Aug 2010 20:48:56 +0200,
-> David Henningsson wrote:
->>
->> 2010-08-19 20:28, Takashi Iwai skrev:
->>> At Thu, 19 Aug 2010 20:17:42 +0200,
->>> David Henningsson wrote:
->>>>
->>>> This patch is helpful for tracking down bugs without having all
->>>> information about the chip.
->>>
->>> I don't want to change coef index in reading a proc file in general.
->>
->> Good point. But I think the solution to that problem would be to
->> - read current index
->> - do the loop
->> - restore current index
->>
->> ...and perhaps protect that with an appropriate mutex (which one)?
->>
->>> If any, you should implement a codec-specific hook.
->>
->> I'm sorry, but I don't really see how that would help...?
-> 
-> If it's specific to a codec, then you know whether reading the coef
-> in that way can be harmful or not.  It's not only about the race
-> via proc file but also the influence of coef on the actual codec
-> behavior.
+> Applied but...
+>
+>> +static const struct i2c_device_id aic3x_i2c_id[] =3D {
+>> + =A0 =A0 [AIC3X_MODEL_3X] =3D { "tlv320aic3x", 0 },
+>> + =A0 =A0 [AIC3X_MODEL_33] =3D { "tlv320aic33", 0 },
+>> + =A0 =A0 [AIC3X_MODEL_3007] =3D { "tlv320aic3007", 0 },
+>> + =A0 =A0 { }
+>> +};
+>> +MODULE_DEVICE_TABLE(i2c, aic3x_i2c_id);
+>
+> The more idiomatic way to write this stuff is:
+>
+> =A0 =A0 =A0 =A0{ "tlv320aic3007", AIC3X_MODEL_3007 }
+>
+> and then look at the id field in the probe() function. =A0Could you send a
+> followup patch doing that, please?
 
-Oh, so there are chips that are *that* broken...
+The second field in that struct is normally the i2c address, so this
+seems a bit confusing...
 
-Yet it could be a lifesaver so I wouldn't want to give up on the idea
-just yet...
-
-Do you know off the top of your head approximately what codec chips this
-is about, where reading a coef (or setting its index) can cause unwanted
-side-effects?
-
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+randolph
