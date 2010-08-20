@@ -1,18 +1,21 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: ASoC multi-component branch is no more.
-Date: Fri, 20 Aug 2010 12:19:38 +0100
-Message-ID: <1282303178.3084.245.camel@odin>
+Subject: Re: [PATCH v8 1/1] ASoC: TI WL1273 FM Radio Codec.
+Date: Fri, 20 Aug 2010 13:29:42 +0100
+Message-ID: <1282307382.3084.386.camel@odin>
+References: <1282296766-21166-1-git-send-email-matti.j.aaltonen@nokia.com>
+	<1282296766-21166-2-git-send-email-matti.j.aaltonen@nokia.com>
+	<20100820111151.GI13668@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9ED401038F3
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 99C641038E3
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Aug 2010 13:19:42 +0200 (CEST)
-Received: by eyd9 with SMTP id 9so1938208eyd.38
-	for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2010 04:19:42 -0700 (PDT)
+	Fri, 20 Aug 2010 14:29:47 +0200 (CEST)
+Received: by wwc33 with SMTP id 33so576580wwc.20
+	for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2010 05:29:46 -0700 (PDT)
+In-Reply-To: <20100820111151.GI13668@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,24 +25,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>, peter.ujfalusi@nokia.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Quick note, subject says it all.
+On Fri, 2010-08-20 at 12:11 +0100, Mark Brown wrote:
+> On Fri, Aug 20, 2010 at 12:32:46PM +0300, Matti J. Aaltonen wrote:
+> > This is an ALSA codec for the Texas Instruments WL1273 FM Radio.
+> > 
+> > Signed-off-by: Matti J. Aaltonen <matti.j.aaltonen@nokia.com>
+> 
+> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-Since ASoC multi-component has now been merged (in -next and both Mark
-and my for-2.6.37 branches)  I'm going to archive the multi-component
-branch in order to stop any future confusion over where patches should
-be against for submission.
-
-Also please note that 'multi-component' is no longer require in subject
-or commit message ;)
+Applied.
 
 Thanks
 
-Liam 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Liam
