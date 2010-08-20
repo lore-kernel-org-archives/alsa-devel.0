@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] asoc/multi-component: add support for
- the Freescale P1022 DS reference board
-Date: Fri, 20 Aug 2010 12:14:14 +0100
-Message-ID: <20100820111414.GJ13668@rakim.wolfsonmicro.main>
-References: <1282255900-20515-1-git-send-email-timur@freescale.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: ASoC multi-component branch is no more.
+Date: Fri, 20 Aug 2010 12:19:38 +0100
+Message-ID: <1282303178.3084.245.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 591DD1038EC
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9ED401038F3
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Aug 2010 13:14:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1282255900-20515-1-git-send-email-timur@freescale.com>
+	Fri, 20 Aug 2010 13:19:42 +0200 (CEST)
+Received: by eyd9 with SMTP id 9so1938208eyd.38
+	for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2010 04:19:42 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 19, 2010 at 05:11:40PM -0500, Timur Tabi wrote:
-> The Freescale P1022 is a dual-core e500-based SOC with multimedia capabilities,
-> specifically the same SSI audio controller on the MPC8610.  The P1022 DS
-> reference board includes a P1022 and a Wolfson Microelectronics WM8776
-> codec.
-> 
-> Signed-off-by: Timur Tabi <timur@freescale.com>
+Quick note, subject says it all.
 
-Applied, thanks.
+Since ASoC multi-component has now been merged (in -next and both Mark
+and my for-2.6.37 branches)  I'm going to archive the multi-component
+branch in order to stop any future confusion over where patches should
+be against for submission.
 
-> +static struct device_node *get_node_by_phandle_name(struct device_node *np,
-> +	const char *name, const char *compatible)
-> +{
+Also please note that 'multi-component' is no longer require in subject
+or commit message ;)
 
-This and a few of the other functions look like they ought to be moved
-somewhere more generic - they don't look specific to this driver at all.
+Thanks
+
+Liam 
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
