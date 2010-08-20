@@ -1,33 +1,21 @@
-From: Tabi Timur-B04825 <B04825@freescale.com>
-Subject: Re: [PATCH 1/3] asoc/multi-component: add support for
-	the Freescale P1022 DS reference board
-Date: Fri, 20 Aug 2010 07:45:49 -0500
-Message-ID: <91F4F361-3F6A-4D4A-A754-EE571C8FC7E0@freescale.com>
-References: <1282255900-20515-1-git-send-email-timur@freescale.com>
-	<20100820111414.GJ13668@rakim.wolfsonmicro.main>
-Mime-Version: 1.0 (iPad Mail 7B405)
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] asoc/multi-component: mpc8610: replace
+ of_device with platform_device
+Date: Fri, 20 Aug 2010 13:46:54 +0100
+Message-ID: <20100820124654.GA18845@rakim.wolfsonmicro.main>
+References: <1282249618-27137-1-git-send-email-timur@freescale.com>
+	<20100820094113.GB13668@rakim.wolfsonmicro.main>
+	<1E324AB3-D941-4FB8-896E-97227A0CBCE7@freescale.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from TX2EHSOBE006.bigfish.com (tx2ehsobe003.messaging.microsoft.com
-	[65.55.88.13]) by alsa0.perex.cz (Postfix) with ESMTP id 77E1810381A
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F3F44103826
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Aug 2010 14:44:27 +0200 (CEST)
-Received: from mail97-tx2 (localhost.localdomain [127.0.0.1])	by
-	mail97-tx2-R.bigfish.com (Postfix) with ESMTP id 9AE1F5C8262	for
-	<alsa-devel@alsa-project.org>; Fri, 20 Aug 2010 12:44:24 +0000 (UTC)
-Received: from TX2EHSMHS009.bigfish.com (unknown [10.9.14.235])	by
-	mail97-tx2.bigfish.com (Postfix) with ESMTP id 7574819C004F	for
-	<alsa-devel@alsa-project.org>; Fri, 20 Aug 2010 12:44:24 +0000 (UTC)
-Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
-	by az33egw02.freescale.net (8.14.3/8.14.3) with ESMTP id
-	o7KCiN7A013919	for
-	<alsa-devel@alsa-project.org>; Fri, 20 Aug 2010 05:44:23 -0700 (MST)
-Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
-	[10.64.32.16])	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id
-	o7KCwd0w007069	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Aug 2010 07:58:39 -0500 (CDT)
-In-Reply-To: <20100820111414.GJ13668@rakim.wolfsonmicro.main>
+	Fri, 20 Aug 2010 14:46:55 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1E324AB3-D941-4FB8-896E-97227A0CBCE7@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,18 +25,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Tabi Timur-B04825 <B04825@freescale.com>
 Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Aug 20, 2010, at 6:14 AM, "Mark Brown" <broonie@opensource.wolfsonmicro.com> wrote:
+On Fri, Aug 20, 2010 at 07:43:57AM -0500, Tabi Timur-B04825 wrote:
+> I based it off the for-2.6.37 branch, so it has to apply as is.  Can
+> you tell me where the conflict is?
 
-> +static struct device_node *get_node_by_phandle_name(struct device_node *np,
->> +	const char *name, const char *compatible)
->> +{
-> 
-> This and a few of the other functions look like they ought to be moved
-> somewhere more generic - they don't look specific to this driver at all.
+This is the result of an attempt to apply with a 3 way merge:
 
-I'm planning on doing that, but I can't be sure that they'll be accepted as generic functions, so I put them here first.
-> 
+diff --cc sound/soc/fsl/fsl_dma.c
+index 5a6f56d,cb78698..0000000
+--- a/sound/soc/fsl/fsl_dma.c
++++ b/sound/soc/fsl/fsl_dma.c
+@@@ -876,9 -892,10 +877,9 @@@ static int __devinit fsl_soc_dma_probe(
+  				       const struct of_device_id *match)
+   {
+  	struct dma_object *dma;
+- 	struct device_node *np = of_dev->dev.of_node;
++ 	struct device_node *np = pdev->dev.of_node;
+  	struct device_node *ssi_np;
+  	struct resource res;
+ -	const uint32_t *iprop;
+  	int ret;
+  
+  	/* Find the SSI node that points to us. */
+@@@ -889,15 -906,17 +890,26 @@@
+  	}
+  
+  	ret = of_address_to_resource(ssi_np, 0, &res);
+ +	of_node_put(ssi_np);
+  	if (ret) {
+++<<<<<<< HEAD
+ +		dev_err(&of_dev->dev, "could not determine device resources\n");
+++=======
++ 		dev_err(&pdev->dev, "could not determine resources for %s\n",
++ 			ssi_np->full_name);
++ 		of_node_put(ssi_np);
+++>>>>>>> asoc/multi-component: mpc8610: replace of_device with platform_device
+  		return ret;
+  	}
+  
+  	dma = kzalloc(sizeof(*dma) + strlen(np->full_name), GFP_KERNEL);
+  	if (!dma) {
+++<<<<<<< HEAD
+ +		dev_err(&of_dev->dev, "could not allocate dma object\n");
+++=======
++ 		dev_err(&pdev->dev, "could not allocate dma object\n");
++ 		of_node_put(ssi_np);
+++>>>>>>> asoc/multi-component: mpc8610: replace of_device with platform_device
+  		return -ENOMEM;
+  	}
+  
+@@@ -910,9 -929,18 +922,22 @@@
+  	dma->ssi_stx_phys = res.start + offsetof(struct ccsr_ssi, stx0);
+  	dma->ssi_srx_phys = res.start + offsetof(struct ccsr_ssi, srx0);
+  
+++<<<<<<< HEAD
+ +	ret = snd_soc_register_platform(&of_dev->dev, &dma->dai);
+++=======
++ 	iprop = of_get_property(ssi_np, "fsl,fifo-depth", NULL);
++ 	if (iprop)
++ 		dma->ssi_fifo_depth = *iprop;
++ 	else
++                 /* Older 8610 DTs didn't have the fifo-depth property */
++ 		dma->ssi_fifo_depth = 8;
++ 
++ 	of_node_put(ssi_np);
++ 
++ 	ret = snd_soc_register_platform(&pdev->dev, &dma->dai);
+++>>>>>>> asoc/multi-component: mpc8610: replace of_device with platform_device
+  	if (ret) {
+- 		dev_err(&of_dev->dev, "could not register platform\n");
++ 		dev_err(&pdev->dev, "could not register platform\n");
+  		kfree(dma);
+  		return ret;
+  	}
