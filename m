@@ -1,49 +1,123 @@
-From: Jerone Young <jerone.young@canonical.com>
-Subject: [PATCH] Add support for Lenovo S10-3t
-Date: Fri, 20 Aug 2010 16:16:02 -0500
-Message-ID: <1282338962.1630.130.camel@laptop>
+From: Samuel Ortiz <sameo@linux.intel.com>
+Subject: Re: [PATCH 1/5] mfd: add codec resource into 88pm860x driver
+Date: Fri, 20 Aug 2010 23:42:36 +0200
+Message-ID: <20100820214235.GG3650@sortiz-mobl>
+References: <AANLkTi=NVRGys_Mv8u-2Ca6w2r1F2DCvKdquqsquwbpH@mail.gmail.com>
+	<20100813135858.GA6449@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 25082244AD
-	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Aug 2010 23:16:09 +0200 (CEST)
-Received: from hutte.canonical.com ([91.189.90.181])
-	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
-	id 1OmYwY-0007LS-7j
-	for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2010 22:16:06 +0100
-Received: from rrcs-24-227-244-55.sw.biz.rr.com ([24.227.244.55]
-	helo=[192.168.1.230]) by hutte.canonical.com with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
-	(envelope-from <jerone.young@canonical.com>) id 1OmYwX-0000gl-SB
-	for alsa-devel@alsa-project.org; Fri, 20 Aug 2010 22:16:06 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20100813135858.GA6449@rakim.wolfsonmicro.main>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds quirk for the Lenovo S10-3t so the headphone &
-microphone jacks will now work.
+On Fri, Aug 13, 2010 at 02:58:58PM +0100, Mark Brown wrote:
+> On Fri, Aug 13, 2010 at 09:55:19PM +0800, Haojian Zhuang wrote:
+> > From 7f48ab298f0017ff8b86dbc11f8de21505965ce7 Mon Sep 17 00:00:00 2001
+> > From: Haojian Zhuang <haojian.zhuang@marvell.com>
+> > Date: Thu, 12 Aug 2010 11:59:33 +0800
+> > Subject: [PATCH 1/5] mfd: add codec resource into 88pm860x driver
+> > 
+> > Add codec IRQ resources that are used in 88pm860x codec driver.
+> 
+> CCing in Samuel since this ought to have his ack.  
+The patch looks good. I'll ack it once Mark's comment gets integrated.
+As for how it should hit upstream, I'm fine taking it unless Haojian prefers
+to see the whole patchset going through Liam's tree.
 
-Signed-off-by: Jerone Young <jerone.young@canonical.com>
+Cheers,
+Samuel.
 
-diff --git a/pci/hda/patch_conexant.c b/pci/hda/patch_conexant.c
-index c424952..6bee4fc 100644
---- a/pci/hda/patch_conexant.c
-+++ b/pci/hda/patch_conexant.c
-@@ -3061,6 +3061,7 @@ static struct snd_pci_quirk cxt5066_cfg_tbl[] = {
-  	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo G series", CXT5066_IDEAPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x3938, "Lenovo G series (AMD)", CXT5066_IDEAPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "ideapad", CXT5066_IDEAPAD),
-+	SND_PCI_QUIRK(0x17aa, 0x390a, "Lenovo S10-3t", CXT5066_IDEAPAD),
- 	{}
- };
+> It may as well be
+> merged via the MFD tree since there's no build time dependency, I guess.
+> I do have one comment...
+> 
+> > Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
+> > ---
+> >  drivers/mfd/88pm860x-core.c |   44 +++++++++++++++++++++++++++++++++++++++++++
+> >  1 files changed, 44 insertions(+), 0 deletions(-)
+> > 
+> > diff --git a/drivers/mfd/88pm860x-core.c b/drivers/mfd/88pm860x-core.c
+> > index 1580f1f..fba00b4 100644
+> > --- a/drivers/mfd/88pm860x-core.c
+> > +++ b/drivers/mfd/88pm860x-core.c
+> > @@ -158,6 +158,43 @@ static struct mfd_cell onkey_devs[] = {
+> >  	},
+> >  };
+> > 
+> > +static struct resource codec_resources[] = {
+> > +	{
+> > +		/* Headset microphone insertion or removal */
+> > +		.name		= "micin",
+> > +		.start		= PM8607_IRQ_MICIN,
+> > +		.end		= PM8607_IRQ_MICIN,
+> > +		.flags		= IORESOURCE_IRQ,
+> > +	}, {
+> > +		/* Hook-switch press or release */
+> > +		.name		= "hook",
+> > +		.start		= PM8607_IRQ_HOOK,
+> > +		.end		= PM8607_IRQ_HOOK,
+> > +		.flags		= IORESOURCE_IRQ,
+> > +	}, {
+> > +		/* Headset insertion or removal */
+> > +		.name		= "headset",
+> > +		.start		= PM8607_IRQ_HEADSET,
+> > +		.end		= PM8607_IRQ_HEADSET,
+> > +		.flags		= IORESOURCE_IRQ,
+> > +	}, {
+> > +		/* Audio short */
+> > +		.name		= "audio-short",
+> > +		.start		= PM8607_IRQ_AUDIO_SHORT,
+> > +		.end		= PM8607_IRQ_AUDIO_SHORT,
+> > +		.flags		= IORESOURCE_IRQ,
+> > +	},
+> > +};
+> > +
+> > +static struct mfd_cell codec_devs[] = {
+> > +	{
+> > +		.name		= "88pm860x-codec",
+> > +		.num_resources	= 4,
+> 
+> It'd be better to use ARRAY_SIZE() here.
+> 
+> > +		.resources	= &codec_resources[0],
+> > +		.id		= -1,
+> > +	},
+> > +};
+> > +
+> >  static struct resource regulator_resources[] = {
+> >  	PM8607_REG_RESOURCE(BUCK1, BUCK1),
+> >  	PM8607_REG_RESOURCE(BUCK2, BUCK2),
+> > @@ -695,6 +732,13 @@ static void __devinit device_8607_init(struct
+> > pm860x_chip *chip,
+> >  		goto out_dev;
+> >  	}
+> > 
+> > +	ret = mfd_add_devices(chip->dev, 0, &codec_devs[0],
+> > +			      ARRAY_SIZE(codec_devs),
+> > +			      &codec_resources[0], 0);
+> > +	if (ret < 0) {
+> > +		dev_err(chip->dev, "Failed to add codec subdev\n");
+> > +		goto out_dev;
+> > +	}
+> >  	return;
+> >  out_dev:
+> >  	mfd_remove_devices(chip->dev);
+> > -- 
+> > 1.5.6.5
+
+-- 
+Intel Open Source Technology Centre
+http://oss.intel.com/
