@@ -1,15 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Add build infrastructure for WL1273
-Date: Fri, 20 Aug 2010 17:25:57 +0100
-Message-ID: <1282321557-453-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Building Takashi's sound-2.6.git?
+Date: Fri, 20 Aug 2010 18:34:38 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1008201833100.10278@eeebox2.perex-int.cz>
+References: <74CDBE0F657A3D45AFBB94109FB122FF02FE376611@HQMAIL01.nvidia.com>
+	<s5hsk29conv.wl%tiwai@suse.de>
+	<alpine.LNX.2.00.1008201729440.10278@eeebox2.perex-int.cz>
+	<74CDBE0F657A3D45AFBB94109FB122FF02FE37665A@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 98585103915
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id B28942413A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Aug 2010 18:26:07 +0200 (CEST)
+	Fri, 20 Aug 2010 18:34:38 +0200 (CEST)
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF02FE37665A@HQMAIL01.nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,60 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: 'Takashi Iwai' <tiwai@suse.de>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The Makefile and Kconfig updates for WL1273 appear to have been mising
-from the patch posted, add them.
+On Fri, 20 Aug 2010, Stephen Warren wrote:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/Kconfig  |    4 ++++
- sound/soc/codecs/Makefile |    2 ++
- 2 files changed, 6 insertions(+), 0 deletions(-)
+> Jaroslav Kysela wrote:
+>>
+>> On Fri, 20 Aug 2010, Takashi Iwai wrote:
+>>
+>>> At Thu, 19 Aug 2010 15:04:03 -0700,
+>>> Stephen Warren wrote:
+>>>>
+>>>> I'd like to use/develop-against/patch the ALSA drivers from:
+>>>> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+>>>> ...
+>>>> ... However, I can't see how to
+>>>> get gitcompile from there to build the sound subset of a complete kernel
+>>>> tree rather than e.g. something like:
+>>>
+>>> See alsa-driver/INSTALL, "Compilation from Linux kernel tree" section.
+>>> In short, run utils/setup-alsa-kernel $YOUR_SOUND_GIT_TREE_APATH
+>>> then gitcompile can be used.
+>>
+>> It's not required. The alsa-driver/Makefile handles both alsa-kmirror and
+>> alsa-kernel trees now.
+>
+> When I check out Takashi's sound-2.6 tree, am I suppose to explicitly
+> specify the checkout directory so that it's named alsa-kmirror now instead
+> of sound-2.6; the git-compile script doesn't check for the name sound-2.6.
+> Should the following be updated to search for more names:
+>
+> test -z $ALSAKERNELDIR && ALSAKERNELDIR=../alsa-kmirror
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index a3cfc18..155c127 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -41,6 +41,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_TWL6040 if TWL4030_CORE
- 	select SND_SOC_UDA134X
- 	select SND_SOC_UDA1380 if I2C
-+	select SND_SOC_WL1273 if WL1273_CORE
- 	select SND_SOC_WM2000 if I2C
- 	select SND_SOC_WM8350 if MFD_WM8350
- 	select SND_SOC_WM8400 if MFD_WM8400
-@@ -193,6 +194,9 @@ config SND_SOC_UDA134X
- config SND_SOC_UDA1380
-         tristate
- 
-+config SND_SOC_WL1273
-+	tristate
-+
- config SND_SOC_WM8350
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index b9c4358..10d468e 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -27,6 +27,7 @@ snd-soc-twl4030-objs := twl4030.o
- snd-soc-twl6040-objs := twl6040.o
- snd-soc-uda134x-objs := uda134x.o
- snd-soc-uda1380-objs := uda1380.o
-+snd-soc-wl1273-objs := wl1273.o
- snd-soc-wm8350-objs := wm8350.o
- snd-soc-wm8400-objs := wm8400.o
- snd-soc-wm8510-objs := wm8510.o
-@@ -98,6 +99,7 @@ obj-$(CONFIG_SND_SOC_TWL4030)	+= snd-soc-twl4030.o
- obj-$(CONFIG_SND_SOC_TWL6040)	+= snd-soc-twl6040.o
- obj-$(CONFIG_SND_SOC_UDA134X)	+= snd-soc-uda134x.o
- obj-$(CONFIG_SND_SOC_UDA1380)	+= snd-soc-uda1380.o
-+obj-$(CONFIG_SND_SOC_WL1273)	+= snd-soc-wl1273.o
- obj-$(CONFIG_SND_SOC_WM8350)	+= snd-soc-wm8350.o
- obj-$(CONFIG_SND_SOC_WM8400)	+= snd-soc-wm8400.o
- obj-$(CONFIG_SND_SOC_WM8510)	+= snd-soc-wm8510.o
--- 
-1.7.1
+If you like, send a patch to gitcompile to check for sound-2.6 directory 
+as well. I'm using different naming (alsa-kernel), so the gitcompile 
+script checks for alsa-kernel and alsa-kmirror trees.
+
+ 						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
