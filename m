@@ -1,26 +1,21 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Building Takashi's sound-2.6.git?
-Date: Fri, 20 Aug 2010 22:29:57 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1008202229190.10278@eeebox2.perex-int.cz>
-References: <74CDBE0F657A3D45AFBB94109FB122FF02FE376611@HQMAIL01.nvidia.com>
-	<s5hsk29conv.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.1008201729440.10278@eeebox2.perex-int.cz>
-	<74CDBE0F657A3D45AFBB94109FB122FF02FE37665A@HQMAIL01.nvidia.com>
-	<alpine.LNX.2.00.1008201833100.10278@eeebox2.perex-int.cz>
-	<74CDBE0F657A3D45AFBB94109FB122FF02FE37666D@HQMAIL01.nvidia.com>
-	<alpine.LNX.2.00.1008202011380.10278@eeebox2.perex-int.cz>
-	<74CDBE0F657A3D45AFBB94109FB122FF02FE376670@HQMAIL01.nvidia.com>
-	<alpine.LNX.2.00.1008202134330.10278@eeebox2.perex-int.cz>
-	<74CDBE0F657A3D45AFBB94109FB122FF02FE37668C@HQMAIL01.nvidia.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: aplay -l  vs.  aplay -L: Missing PCMs?
+Date: Fri, 20 Aug 2010 13:35:56 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF02FE376692@HQMAIL01.nvidia.com>
+References: <74CDBE0F657A3D45AFBB94109FB122FF02FE376614@HQMAIL01.nvidia.com>
+	<alpine.LNX.2.00.1008200802560.10278@eeebox2.perex-int.cz>
+	<74CDBE0F657A3D45AFBB94109FB122FF02FE376668@HQMAIL01.nvidia.com>
+	<alpine.LNX.2.00.1008202215590.10278@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 55D1F24465
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4A07224471
 	for <alsa-devel@alsa-project.org>;
-	Fri, 20 Aug 2010 22:29:58 +0200 (CEST)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF02FE37668C@HQMAIL01.nvidia.com>
+	Fri, 20 Aug 2010 22:39:50 +0200 (CEST)
+In-Reply-To: <alpine.LNX.2.00.1008202215590.10278@eeebox2.perex-int.cz>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,61 +25,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: 'Takashi Iwai' <tiwai@suse.de>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
+To: 'Jaroslav Kysela' <perex@perex.cz>
+Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 20 Aug 2010, Stephen Warren wrote:
+Jaroslav Kysela wrote:
+> 
+> On Fri, 20 Aug 2010, Stephen Warren wrote:
+> 
+> > Jaroslav Kysela wrote:
+> >>
+> >> On Thu, 19 Aug 2010, Stephen Warren wrote:
+> >>
+> >>> The Azalia controller on NVIDIA GPUs gives 4 ALSA hw devices:
+> >>>
+> >>> (on card 1):
+> >>>
+> >>> [swarren@swarren-lx2 ~]$ sudo aplay -l
+> >>> << includes hw=1,3 hw=1,7 hw=1,8 hw=1,9 >>
+> >>> ... all of which appear to work OK.
+> >>>
+> >>> However, the list of available "PCMs" from aplay -L doesn't expose them all:
+> >>>
+> >>> [swarren@swarren-lx2 ~]$ sudo aplay -L
+> >>> <<card 0 "Nvidia" elided>>
+> >>> hdmi:CARD=NVidia_1
+> >>>    HDA NVidia, NVIDIA HDMI
+> >>>    HDMI Audio Output
+> >>>
+> >>> Instead, I imagined that I'd see 4 PCMs listed by "aplay -L"; one for each
+> >>> converter. Is this an incorrect assumption? How would I make that happen?
+> >>
+> >> There is a bug in alsa-lib to namehint.c. The code assumes that hw device
+> >> number is similar to logical device numbers which is not true in case of
+> >> your HDMI devices:
+> >>
+> >> 3, 7, 8, 9
+> >>
+> >> The fallback code is used and only first logical device 0 is created.
+> >>
+> >> Could you test this patch?
+> >>
+> >> http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=97d25c0766405453d3c298bd51dd4916121a4f6a
+> >
+> > I tested that, and unfortunately it doesn't seem to work; I get the exact same
+> > aplay -L output.
+> >
+> > I debugged this a little, and see that add_card() is calculating the correct
+> > max_devices value for card=1 str=hdmi. However, in the loop that right after
+> > that calls try_config, when device=0, it returns 0, but when device=1, it
+> > returns -2 (-ENOENT). This happens inside try_config where it calls
+> > snd_config_search_definition (line 244 in latest git). At that point, buf is:
+> >
+> > hdmi:CARD=NVidia_1,DEV=1
+> >
+> > ... which seems reasonable.
+> >
+> > I'm a little confused about the device numbering though: The max_devices
+> > value is counting values "3, 7, 8, 9" and hence gets 9. However, the
+> > loop that calls try_config loops 0..max_devices-1, but bails out as soon
+> > as any error is found, thus disallowing "holes" in the numbering. That
+> > implies that "device" in that loop is a different numbering space? After
+> > I noticed that, I hacked that loop to continue instead of break on
+> > errors, and also removed the "err >= 0" condition from the loop,
+> > expecting that when device==3/7/8/9, try_config might work. In fact, 0
+> > still works (of course) and 1..8 all fail with err=-2, so I assume at
+> > the same place in try_config.
+> 
+> See my description. It's assumed that the logical devices
+> (hdmi:DEV=<logical_device>) are continous. Does
+> 'aplay -D hdmi:CARD=NVidia_1,DEV=1' work in your system?
 
-> Jaroslav Kysela wrote:
->> Stephen Warren wrote:
->>> Jaroslav Kysela wrote:
->>>> Stephen Warren wrote:
->>>>> Unfortunately, it doesn't seem to work:
->>>>>
->>>>> ALSAKERNELDIR=../sound-2.6/sound ./gitcompile
->>>>
->>>> It should be:
->>>>
->>>> ALSAKERNELDIR=../sound-2.6 ./gitcompile
->>>
->>> sound-2.6 is a complete Linux kernel tree, not just the ALSA drivers.
->>> Hence, the second part of the following test fails, because last.c is in
->>> ../sound-2.6/sound/last.c not ../sound-2.6/last.c
->>>
->>> if [ ! -d $ALSAKERNELDIR -o ! -f $ALSAKERNELDIR/last.c ]; then
->>>    echo "No alsa-kmirror is found."
->>
->> You're right. But the Makefile accepts both trees. This patch should solve
->> this issue:
->
-> OK, that patch works OK, but I actually ended up getting the exact same issue.
->
-> make[3]: Warning: File `.includes' has modification time 0.04 s in the future
-> cp ../../alsa-kernel/include/*.h .
-> cp: cannot stat `../../alsa-kernel/include/*.h': No such file or directory
->
-> I looked into that further this time, and I found it's because
-> alsa-driver-build/alsa-kernel/include points at ../sound-2.6/include/sound,
-> but should have an extra "../" on the front. Doing the following fixes this:
->
-> ALSAKERNELDIR=`cd ../sound-2.6 && pwd` ./gitcompile
->
-> Doesn't this affect the ../alsa-kmirror case too? Perhaps everyone who checks
-> out alsa-kmirror places it inside the alsa-driver-build directory, or symlinks
-> it themselves first?
->
-> Perhaps gitcompile can add the following right before the make:
->
-> ALSAKERNELDIR=`cd ${ALSAKERNELDIR} && pwd`
+Sure, the logical device IDs should be contiguous. But then, I don't see why
+the code would need to calculate max_devices (which is max HW device ID and
+hence something other than logical device ID). Anyway...
 
-Good catch. The fix is in my tree now:
+[swarren@swarren-lx2 ~]$ aplay -D hw:1,7 Shamisen-C4.wav 
+Playing WAVE 'Shamisen-C4.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
 
-http://git.alsa-project.org/?p=alsa-driver.git;a=commitdiff;h=59ca79b3253de1c160ee446a67d3d5fd2b4dba92
+[swarren@swarren-lx2 ~]$ aplay -D hdmi:CARD=NVidia_1,DEV=1 Shamisen-C4.wav 
+ALSA lib confmisc.c:1286:(snd_func_refer) Unable to find definition 'cards.HDA-Intel.pcm.hdmi.1:CARD=NVidia_1,AES0=4,AES1=130,AES2=0,AES3=2'
+ALSA lib conf.c:4170:(_snd_config_evaluate) function snd_func_refer returned error: No such file or directory
+ALSA lib conf.c:4649:(snd_config_expand) Evaluate error: No such file or directory
+ALSA lib pcm.c:2229:(snd_pcm_open_noupdate) Unknown PCM hdmi:CARD=NVidia_1,DEV=1
+aplay: main:608: audio open error: No such file or directory
 
- 				Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+-- 
+nvpublic
