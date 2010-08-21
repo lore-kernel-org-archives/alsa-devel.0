@@ -1,21 +1,16 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: omap: rx51: Use
- gpio_set_value_cansleep for speaker amp control
-Date: Mon, 23 Aug 2010 12:06:08 +0100
-Message-ID: <1282561568.3053.28.camel@odin>
-References: <1282549001-10391-1-git-send-email-jhnikula@gmail.com>
-	<20100823095816.GB6061@rakim.wolfsonmicro.main>
+From: Garnet MacPhee <dhubsith@comcast.net>
+Subject: [PATCH] ICE1712: Add support for Edirol DA-2496
+Date: Sat, 21 Aug 2010 14:37:34 -0600
+Message-ID: <1282423054-2550-1-git-send-email-dhubsith@comcast.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 84FBB24501
+Received: from qmta11.emeryville.ca.mail.comcast.net
+	(qmta11.emeryville.ca.mail.comcast.net [76.96.27.211])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8E1B110380C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Aug 2010 13:06:12 +0200 (CEST)
-Received: by wwb17 with SMTP id 17so66369wwb.20
-	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2010 04:06:12 -0700 (PDT)
-In-Reply-To: <20100823095816.GB6061@rakim.wolfsonmicro.main>
+	Sat, 21 Aug 2010 22:37:27 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,27 +20,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: patch@alsa-project.org
+Cc: Garnet MacPhee <dhubsith@comcast.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-08-23 at 10:58 +0100, Mark Brown wrote:
-> On Mon, Aug 23, 2010 at 10:36:41AM +0300, Jarkko Nikula wrote:
-> > Speaker amplifier is controlled by TWL4030 GPIO which may sleep. Therefore
-> > use gpio_set_value_cansleep to get rid of runtime warning that is introduced
-> > after the commit 9c4ba94 and to get a stack trace if ever executing this
-> > code in atomic context.
-> > 
-> > Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-> 
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+This device is similar to the M-Audio Delta 1010LT in that it uses the AK4524VF ADC/DAC, but it does not use the CS8427 for SPDIF.
 
-All 3 applied.
+The SPDIF appears to be set up correctly, but I am not able to test it as I do not have any devices that use it.
 
-Thanks
+This patch makes the ADC/DAC's and the hardware mixer visible to apps such as alsamixer and envy24control.
 
-Liam
+Signed-off-by: Garnet MacPhee <dhubsith@comcast.net>
+---
+ sound/pci/ice1712/delta.c |   10 ++++++++++
+ sound/pci/ice1712/delta.h |    4 +++-
+ 2 files changed, 13 insertions(+), 1 deletions(-)
+
+diff --git a/sound/pci/ice1712/delta.c b/sound/pci/ice1712/delta.c
+index d216362..712c171 100644
+--- a/sound/pci/ice1712/delta.c
++++ b/sound/pci/ice1712/delta.c
+@@ -563,6 +563,7 @@ static int __devinit snd_ice1712_delta_init(struct snd_ice1712 *ice)
+ 	case ICE1712_SUBDEVICE_DELTA1010E:
+ 	case ICE1712_SUBDEVICE_DELTA1010LT:
+ 	case ICE1712_SUBDEVICE_MEDIASTATION:
++	case ICE1712_SUBDEVICE_EDIROLDA2496:
+ 		ice->num_total_dacs = 8;
+ 		ice->num_total_adcs = 8;
+ 		break;
+@@ -635,6 +636,7 @@ static int __devinit snd_ice1712_delta_init(struct snd_ice1712 *ice)
+ 		err = snd_ice1712_akm4xxx_init(ak, &akm_delta410, &akm_delta410_priv, ice);
+ 		break;
+ 	case ICE1712_SUBDEVICE_DELTA1010LT:
++	case ICE1712_SUBDEVICE_EDIROLDA2496:
+ 		err = snd_ice1712_akm4xxx_init(ak, &akm_delta1010lt, &akm_delta1010lt_priv, ice);
+ 		break;
+ 	case ICE1712_SUBDEVICE_DELTA66:
+@@ -734,6 +736,7 @@ static int __devinit snd_ice1712_delta_add_controls(struct snd_ice1712 *ice)
+ 	case ICE1712_SUBDEVICE_DELTA66:
+ 	case ICE1712_SUBDEVICE_VX442:
+ 	case ICE1712_SUBDEVICE_DELTA66E:
++	case ICE1712_SUBDEVICE_EDIROLDA2496:
+ 		err = snd_ice1712_akm4xxx_build_controls(ice);
+ 		if (err < 0)
+ 			return err;
+@@ -813,5 +816,12 @@ struct snd_ice1712_card_info snd_ice1712_delta_cards[] __devinitdata = {
+ 		.chip_init = snd_ice1712_delta_init,
+ 		.build_controls = snd_ice1712_delta_add_controls,
+ 	},
++	{
++		.subvendor = ICE1712_SUBDEVICE_EDIROLDA2496,
++		.name = "Edirol DA2496",
++		.model = "da2496",
++		.chip_init = snd_ice1712_delta_init,
++		.build_controls = snd_ice1712_delta_add_controls,
++	},
+ 	{ } /* terminator */
+ };
+diff --git a/sound/pci/ice1712/delta.h b/sound/pci/ice1712/delta.h
+index f7f14df..1a0ac6c 100644
+--- a/sound/pci/ice1712/delta.h
++++ b/sound/pci/ice1712/delta.h
+@@ -34,7 +34,8 @@
+ 		"{MidiMan M Audio,Delta 410},"\
+ 		"{MidiMan M Audio,Audiophile 24/96},"\
+ 		"{Digigram,VX442},"\
+-		"{Lionstracs,Mediastation},"
++		"{Lionstracs,Mediastation},"\
++		"{Edirol,DA2496},"
+ 
+ #define ICE1712_SUBDEVICE_DELTA1010	0x121430d6
+ #define ICE1712_SUBDEVICE_DELTA1010E	0xff1430d6
+@@ -47,6 +48,7 @@
+ #define ICE1712_SUBDEVICE_DELTA1010LT	0x12143bd6
+ #define ICE1712_SUBDEVICE_VX442		0x12143cd6
+ #define ICE1712_SUBDEVICE_MEDIASTATION	0x694c0100
++#define ICE1712_SUBDEVICE_EDIROLDA2496	0xce164010
+ 
+ /* entry point */
+ extern struct snd_ice1712_card_info snd_ice1712_delta_cards[];
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+1.6.4
