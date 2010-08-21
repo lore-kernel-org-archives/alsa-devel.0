@@ -1,18 +1,20 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: Problem with USB Class 2 Audio Driver
-Date: Sat, 21 Aug 2010 11:27:00 +0200
-Message-ID: <20100821092700.GS17833@buzzloop.caiaq.de>
-References: <054801cb40c9$70349710$509dc530$@com>
+From: =?ISO-8859-1?Q?Alberto_Molina_D=EDaz?= <albertomolina.dz@gmail.com>
+Subject: Re: Install Infrasonic Amon on Ubuntu?
+Date: Sat, 21 Aug 2010 13:11:14 +0200
+Message-ID: <AANLkTimPetL=zsbV5BrTkavUu+gYpq0nZ7T0UchpP7-k@mail.gmail.com>
+References: <AANLkTinJ4CwMghjwx+LO0c+J0X5awCyC55FogvvmKcnC@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8A10A1037EC
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 71ED51037F7
 	for <alsa-devel@alsa-project.org>;
-	Sat, 21 Aug 2010 11:27:09 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <054801cb40c9$70349710$509dc530$@com>
+	Sat, 21 Aug 2010 13:11:16 +0200 (CEST)
+Received: by iwn4 with SMTP id 4so2130274iwn.38
+	for <alsa-devel@alsa-project.org>; Sat, 21 Aug 2010 04:11:15 -0700 (PDT)
+In-Reply-To: <AANLkTinJ4CwMghjwx+LO0c+J0X5awCyC55FogvvmKcnC@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,57 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Demian Martin <demianm_1@yahoo.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 20, 2010 at 05:40:22PM -0700, Demian Martin wrote:
-> I'm testing an early sample of the Wavelength Wavelink, a USB to S/PDIF
-> adapter that supports 44.1-192 KHz sample rates and uses async usb to talk
-> to ALSA. It works and plays all of the sample rates correctly with the git
-> version of Alsa from 7/30/2010 whenthe files are sourced from the network.
+Anyine know it?
 
-What do you mean by "from the network"? How does your test setup look
-like?
+2010/8/19 Alberto Molina D=EDaz <albertomolina.dz@gmail.com>
 
-> However if I try to play from a usb source to the usb dac it doesn't work
-> and the whole system gets unstable. 
-
-You could also be more precise here :) What doesn't work, how are you
-testing, and in which regard does the system get unstable?
-
-> The platforms I have tested it on seem
-> to have a single USB host interface but with USB 2 there should be enough
-> bandwidth to pass the data from a USB stick to the cpu and back. If I use an
-> older 96 only usb dac on the same system it works (unless the down
-> conversion isn't a direct divide, which overloads the CPU, but that is a
-> different issue). The problem seems to be sample rate independent and hits
-> the moment I try to access the file. This is using MPD as a player.
-
-Ah, so your data file is stored on a media which is also connected to
-USB? Did you connect the two devices to different USB ports or do they
-share one uplink with a hub?
-
-> What additional info do you need to troubleshoot this? Is it an intrinsic
-> limitation to the interface? What additional tests should I do? It's
-> possible it's a hardware issue but how do I divide them so I can go back to
-> the hardware guy if it's his issue? 
-
-I'm not aware of any limitation, but there could be such issues as
-exceeded bandwith on the bus and the like. How many audio channels are
-we talking about?
-
-You could measure the speed of your USB media by using something like
-this:
-
-	$ time dd if=/path/to/192khz.file of=/dev/null
-
-This should take significantly less time than - let's say - half the
-real-time audio playback time of the file, so there's enough headroom to
-transport the audio data back to the USB DAC.
-
-What kind of system is this, after all? Did you try other OS on the same
-hardware for comparsion?
+> I have a Infrasonic Amon usb audio interface, but I Can't use it in ubuntu
+> beacuse I can't install it.
+>
+> The id of this sound card this is 1a4e:7021
+> =BFAnyone know how to install it?
+> Thanks
+>
 
 
-Daniel
+
+-- =
+
+Alberto Molina
+
+albertomolina.dz@gmail.com
+molinadiazalberto@hotmail.com
