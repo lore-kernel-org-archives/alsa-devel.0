@@ -1,18 +1,21 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [alsa-lib] Query regarding
- snd_config_update_free_global() and threads etc.
-Date: Mon, 23 Aug 2010 17:13:15 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1008231710320.10278@eeebox2.perex-int.cz>
-References: <i4tflh$8c4$1@dough.gmane.org>
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: Re: HDMI hot-plug/ELD issues
+Date: Mon, 23 Aug 2010 10:16:48 -0500
+Message-ID: <AANLkTimyAGDPmhk4CEPSjTFAk12vE6nbMp5CLHQ=7eqS@mail.gmail.com>
+References: <AANLkTi=Nmtn8DsXH7u+tt0j_Cs1tnjaHO4XoLAPoyAAs@mail.gmail.com>
+	<20100823010122.GA5740@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0605D2413A
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 67BAF2412E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Aug 2010 17:13:16 +0200 (CEST)
-In-Reply-To: <i4tflh$8c4$1@dough.gmane.org>
+	Mon, 23 Aug 2010 17:16:51 +0200 (CEST)
+Received: by yxp4 with SMTP id 4so2309256yxp.38
+	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2010 08:16:50 -0700 (PDT)
+In-Reply-To: <20100823010122.GA5740@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +25,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Colin Guthrie <gmane@colin.guthr.ie>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Wu Fengguang <fengguang.wu@intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 23 Aug 2010, Colin Guthrie wrote:
+>> 1. Playback can happen even if there's no HDMI cable plugged. Or when
+>> I remove the cable, the player isn't notified and keeps sending data
+>> to the driver. This is fine for PCM but I noticed that the receiver
+>> can handle some trouble synchronizing with in AC3-passthrough mode if
+>> the cable is inserted after the playback starts. It would be much
+>> cleaner to allow playback only when there's an actual cable connected,
+>> and to return -ENODEV or something to apps when this happens.
+>
+> We used to turn off HDMI link when not playing. However that caused
+> loss of 0.5s samples when starting next playback, due to the slow
+> responding HDMI sink devices (in fact all my tested monitors/AV
+> receivers have this problem).
 
-> Hi there,
->
-> I've got a (hopefully quick) query about snd_config_update_free_global()
-> and it's general thread safetyness.
->
->
-> I'm currently going insane on this bug:
-> https://bugs.kde.org/show_bug.cgi?id=232068
-> which revolves around a bug manifested in snd_pcm_close() (or rather
-> snd_pcm_ioplug_close()) when dealing with the ALSA->PulseAudio plugin.
->
->> From what I can gather, this problem is related to a KDE module that is
-> loaded into the library in question which does some alsa probing and
-> ultimately calls snd_config_update_free_global() several times. The
-> library itself then goes on to use GStreamer to do actual audio output.
-> The crash then manifests itself prior to any sound actually being output.
->
-> I can reliably reproduce the machine on two machines (I don't have many
-> at my disposal), but cannot reproduce on a third. The two I can
-> reproduce it on are two and four core intel duo's. The one I cannot
-> reproduce on is an older, single core machine. I am leaning towards some
-> kind of thread safety issue.
->
->
-> In searching for similar problems, I found several references to similar
-> crashes attributed to snd_dlobj_cache_cleanup() perhaps not being thread
-> safe.
+I think it's fine if you leave the link on.
 
-I tried to work on snd_dlobj_cache issues. Please, could you test this 
-patch?
+> What's your test case? Keep playing during plug/unplug, or
+> play -- plug -- stop playing -- unplug -- play a new track?
 
-http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=91c9c8f1b85e69b4bdc94a777d2767c4906c3f47
+The player keeps playing, and then I unplug/replug/unplug/replug the
+cable. At some point the receiver will lose the sync with compressed
+data.
 
- 					Thanks,
- 						Jaroslav
+> Then there's the question whether to send -ENODEV to the audio player,
+> or to send udev events (for pulseaudio) on hotplug events, or to
+> disable HDMI link only for passthrough mode, or whatever policy.
+> Any ideas?
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+I think we really need a consistent approach for all HDMI devices so
+that middleware, PulseAudio specifically works without quirks and
+hardware-specific work-arounds.
+Ideally when the HDMI cable is plugged you would register a new card
+and this would generate the relevant hot-plug events.However in the
+case of HDAudio you have 2 devices for the same card. I am not sure
+ALSA would generate hot-plug events if you registered/exposed the
+HDMI-related devices only when a cable is played. Alternatively we
+could leave the devices exposed at all times generate a dedicated HDMI
+event, and have PulseAudio handle it.
+How is this handled on non-Intel hardware?
+
+>> Is there a missing link with the display driver so that this info
+>> would make sense? I remember having a conversation with Fengguang Wu
+>> on this, but I can't remember what the outcome was. Or is this a case
+>> of back luck with broken hardware not sending the legal EDID info?
+>> Thanks for your help on this.
+>
+> Sorry we have not implemented the ELD feature in video driver. =A0The
+> Intel gfx driver should read&parse HW EDID and pass the ELD info to
+> the audio driver.
+
+It doesn't seem like rocket science, is this something that could be
+patched? That really needs to be fixed, so that we can work with
+Takashi and expose the ELD info to user-space. All this information is
+badly needed by middleware.
+-Pierre
