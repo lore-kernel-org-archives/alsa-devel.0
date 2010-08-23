@@ -1,16 +1,20 @@
-From: Garnet MacPhee <dhubsith@comcast.net>
-Subject: [PATCH] ICE1712: Add support for Edirol DA-2496
-Date: Sat, 21 Aug 2010 14:37:34 -0600
-Message-ID: <1282423054-2550-1-git-send-email-dhubsith@comcast.net>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 1/3] ASoC: pxa2xx-i2s is the proper name of
+ the I2S DAI, not pxa-i2s.
+Date: Mon, 23 Aug 2010 13:33:52 +0100
+Message-ID: <1282566832.3053.31.camel@odin>
+References: <1282321125-15761-1-git-send-email-ian@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qmta11.emeryville.ca.mail.comcast.net
-	(qmta11.emeryville.ca.mail.comcast.net [76.96.27.211])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8E1B110380C
+Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id F014124343
 	for <alsa-devel@alsa-project.org>;
-	Sat, 21 Aug 2010 22:37:27 +0200 (CEST)
+	Mon, 23 Aug 2010 14:33:54 +0200 (CEST)
+Received: by wwb39 with SMTP id 39so127583wwb.2
+	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2010 05:33:54 -0700 (PDT)
+In-Reply-To: <1282321125-15761-1-git-send-email-ian@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,84 +24,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Garnet MacPhee <dhubsith@comcast.net>, alsa-devel@alsa-project.org
+To: Ian Lartey <ian@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-This device is similar to the M-Audio Delta 1010LT in that it uses the AK4524VF ADC/DAC, but it does not use the CS8427 for SPDIF.
+On Fri, 2010-08-20 at 17:18 +0100, Ian Lartey wrote:
+> Signed-off-by: Ian Lartey <ian@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/pxa/imote2.c   |    2 +-
+>  sound/soc/pxa/magician.c |    2 +-
+>  sound/soc/pxa/poodle.c   |    2 +-
+>  sound/soc/pxa/z2.c       |    2 +-
+>  4 files changed, 4 insertions(+), 4 deletions(-)
 
-The SPDIF appears to be set up correctly, but I am not able to test it as I do not have any devices that use it.
+All
 
-This patch makes the ADC/DAC's and the hardware mixer visible to apps such as alsamixer and envy24control.
-
-Signed-off-by: Garnet MacPhee <dhubsith@comcast.net>
----
- sound/pci/ice1712/delta.c |   10 ++++++++++
- sound/pci/ice1712/delta.h |    4 +++-
- 2 files changed, 13 insertions(+), 1 deletions(-)
-
-diff --git a/sound/pci/ice1712/delta.c b/sound/pci/ice1712/delta.c
-index d216362..712c171 100644
---- a/sound/pci/ice1712/delta.c
-+++ b/sound/pci/ice1712/delta.c
-@@ -563,6 +563,7 @@ static int __devinit snd_ice1712_delta_init(struct snd_ice1712 *ice)
- 	case ICE1712_SUBDEVICE_DELTA1010E:
- 	case ICE1712_SUBDEVICE_DELTA1010LT:
- 	case ICE1712_SUBDEVICE_MEDIASTATION:
-+	case ICE1712_SUBDEVICE_EDIROLDA2496:
- 		ice->num_total_dacs = 8;
- 		ice->num_total_adcs = 8;
- 		break;
-@@ -635,6 +636,7 @@ static int __devinit snd_ice1712_delta_init(struct snd_ice1712 *ice)
- 		err = snd_ice1712_akm4xxx_init(ak, &akm_delta410, &akm_delta410_priv, ice);
- 		break;
- 	case ICE1712_SUBDEVICE_DELTA1010LT:
-+	case ICE1712_SUBDEVICE_EDIROLDA2496:
- 		err = snd_ice1712_akm4xxx_init(ak, &akm_delta1010lt, &akm_delta1010lt_priv, ice);
- 		break;
- 	case ICE1712_SUBDEVICE_DELTA66:
-@@ -734,6 +736,7 @@ static int __devinit snd_ice1712_delta_add_controls(struct snd_ice1712 *ice)
- 	case ICE1712_SUBDEVICE_DELTA66:
- 	case ICE1712_SUBDEVICE_VX442:
- 	case ICE1712_SUBDEVICE_DELTA66E:
-+	case ICE1712_SUBDEVICE_EDIROLDA2496:
- 		err = snd_ice1712_akm4xxx_build_controls(ice);
- 		if (err < 0)
- 			return err;
-@@ -813,5 +816,12 @@ struct snd_ice1712_card_info snd_ice1712_delta_cards[] __devinitdata = {
- 		.chip_init = snd_ice1712_delta_init,
- 		.build_controls = snd_ice1712_delta_add_controls,
- 	},
-+	{
-+		.subvendor = ICE1712_SUBDEVICE_EDIROLDA2496,
-+		.name = "Edirol DA2496",
-+		.model = "da2496",
-+		.chip_init = snd_ice1712_delta_init,
-+		.build_controls = snd_ice1712_delta_add_controls,
-+	},
- 	{ } /* terminator */
- };
-diff --git a/sound/pci/ice1712/delta.h b/sound/pci/ice1712/delta.h
-index f7f14df..1a0ac6c 100644
---- a/sound/pci/ice1712/delta.h
-+++ b/sound/pci/ice1712/delta.h
-@@ -34,7 +34,8 @@
- 		"{MidiMan M Audio,Delta 410},"\
- 		"{MidiMan M Audio,Audiophile 24/96},"\
- 		"{Digigram,VX442},"\
--		"{Lionstracs,Mediastation},"
-+		"{Lionstracs,Mediastation},"\
-+		"{Edirol,DA2496},"
- 
- #define ICE1712_SUBDEVICE_DELTA1010	0x121430d6
- #define ICE1712_SUBDEVICE_DELTA1010E	0xff1430d6
-@@ -47,6 +48,7 @@
- #define ICE1712_SUBDEVICE_DELTA1010LT	0x12143bd6
- #define ICE1712_SUBDEVICE_VX442		0x12143cd6
- #define ICE1712_SUBDEVICE_MEDIASTATION	0x694c0100
-+#define ICE1712_SUBDEVICE_EDIROLDA2496	0xce164010
- 
- /* entry point */
- extern struct snd_ice1712_card_info snd_ice1712_delta_cards[];
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
-1.6.4
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
