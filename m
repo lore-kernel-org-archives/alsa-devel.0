@@ -1,22 +1,15 @@
 From: Sascha Hauer <s.hauer@pengutronix.de>
 Subject: ASoC i.MX ssi: use SSI_STCCR in synchronous mode
-Date: Mon, 23 Aug 2010 08:52:11 +0200
-Message-ID: <20100823065211.GQ27749@pengutronix.de>
+Date: Mon, 23 Aug 2010 08:54:02 +0200
+Message-ID: <20100823065402.GR27749@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 5B83F243EE
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 94433243EE
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Aug 2010 08:52:11 +0200 (CEST)
-Received: from octopus.hi.pengutronix.de ([2001:6f8:1178:2:215:17ff:fe12:23b0])
-	by metis.ext.pengutronix.de with esmtp (Exim 4.71)
-	(envelope-from <sha@pengutronix.de>) id 1OnQt9-0003jj-4x
-	for alsa-devel@alsa-project.org; Mon, 23 Aug 2010 08:52:11 +0200
-Received: from sha by octopus.hi.pengutronix.de with local (Exim 4.69)
-	(envelope-from <sha@pengutronix.de>) id 1OnQt9-000466-2t
-	for alsa-devel@alsa-project.org; Mon, 23 Aug 2010 08:52:11 +0200
+	Mon, 23 Aug 2010 08:54:03 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,12 +21,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric =?iso-8859-15?Q?B=E9nard?= <eric@eukrea.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
-
 
 Hi,
 
-Please consider applying this for -rc.
+This time with cc list.
+
+Please consider applying for -rc.
 
 Sascha
 
