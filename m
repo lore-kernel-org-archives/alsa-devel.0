@@ -1,20 +1,21 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: ASoC i.MX ssi: use SSI_STCCR in synchronous mode
-Date: Mon, 23 Aug 2010 11:38:23 +0100
-Message-ID: <1282559903.3053.26.camel@odin>
-References: <20100823065402.GR27749@pengutronix.de>
+Subject: Re: [PATCH] ASoC: Log WM8994 separate ADC LRCLKs every
+ time we configure
+Date: Mon, 23 Aug 2010 11:38:56 +0100
+Message-ID: <1282559936.3053.27.camel@odin>
+References: <1282557397-9451-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
 	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 75AC310384E
+	by alsa0.perex.cz (Postfix) with ESMTP id 1FDA4103865
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Aug 2010 12:38:26 +0200 (CEST)
-Received: by wyb42 with SMTP id 42so6522693wyb.38
-	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2010 03:38:26 -0700 (PDT)
-In-Reply-To: <20100823065402.GR27749@pengutronix.de>
+	Mon, 23 Aug 2010 12:39:01 +0200 (CEST)
+Received: by wyb42 with SMTP id 42so6523198wyb.38
+	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2010 03:39:00 -0700 (PDT)
+In-Reply-To: <1282557397-9451-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,45 +25,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric =?ISO-8859-1?Q?B=E9nard?= <eric@eukrea.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-08-23 at 08:54 +0200, Sascha Hauer wrote:
-> Hi,
+On Mon, 2010-08-23 at 10:56 +0100, Mark Brown wrote:
+> This makes it that little bit easier to spot the diagnostics in the
+> logs.
 > 
-> This time with cc list.
-> 
-> Please consider applying for -rc.
-> 
-> Sascha
-> 
-> 
-> In synchronous mode the SSI_SRCCR values are ignored. Instead
-> SSI_STCCR must be used for both receiving and transmitting.
-> 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  sound/soc/imx/imx-ssi.c |    3 +++
->  1 files changed, 3 insertions(+), 0 deletions(-)
-> 
-> diff --git a/sound/soc/imx/imx-ssi.c b/sound/soc/imx/imx-ssi.c
-> index a11daa1..c81da05 100644
-> --- a/sound/soc/imx/imx-ssi.c
-> +++ b/sound/soc/imx/imx-ssi.c
-> @@ -254,6 +254,9 @@ static int imx_ssi_hw_params(struct snd_pcm_substream *substream,
->  		dma_data = &ssi->dma_params_rx;
->  	}
->  
-> +	if (ssi->flags & IMX_SSI_SYN)
-> +		reg = SSI_STCCR;
-> +
->  	snd_soc_dai_set_dma_data(cpu_dai, substream, dma_data);
->  
->  	sccr = readl(ssi->base + reg) & ~SSI_STCCR_WL_MASK;
-> -- 
-> 1.7.1
-> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
 Freelance Developer, SlimLogic Ltd
