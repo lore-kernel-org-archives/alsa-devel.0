@@ -1,29 +1,19 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] ALSA: HDA: Fix front mic on Dell Precision
- M6500
-Date: Tue, 24 Aug 2010 08:04:23 +0200
-Message-ID: <4C7360E7.6060300@canonical.com>
-References: <4C72C5EF.6090600@canonical.com>
-	<1282590450.2600.9.camel@laptop>	<4C72CB43.2040800@canonical.com>
-	<AANLkTin4X_gNKCeuEbFZ87QcUybx+AuGV7HSaXNEZsLT@mail.gmail.com>
+From: "J. Gordon Rankin" <waudio@cinti.net>
+Subject: Re: Problem with USB Class 2 Audio Driver
+Date: Mon, 23 Aug 2010 08:41:23 -0400
+Message-ID: <4C726C73.3040508@cinti.net>
+References: <054801cb40c9$70349710$509dc530$@com>
+	<20100821092700.GS17833@buzzloop.caiaq.de>
+	<060e01cb4255$007593b0$0160bb10$@com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 21268245F1
+Received: from mail-out1.fuse.net (mail-out1.fuse.net [216.68.8.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8EDEF10393F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Aug 2010 08:04:26 +0200 (CEST)
-Received: from hutte.canonical.com ([91.189.90.181])
-	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
-	id 1OnmcT-0004Sa-DY
-	for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2010 07:04:25 +0100
-Received: from [88.83.60.91] (helo=[192.168.8.103])
-	by hutte.canonical.com with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
-	(envelope-from <david.henningsson@canonical.com>) id 1OnmcT-0000Yg-9z
-	for alsa-devel@alsa-project.org; Tue, 24 Aug 2010 07:04:25 +0100
-In-Reply-To: <AANLkTin4X_gNKCeuEbFZ87QcUybx+AuGV7HSaXNEZsLT@mail.gmail.com>
+	Mon, 23 Aug 2010 14:41:25 +0200 (CEST)
+In-Reply-To: <060e01cb4255$007593b0$0160bb10$@com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,71 +23,408 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Demian Martin <demianm_1@yahoo.com>
+Cc: "'Ray @ Auraliti'" <ray@auraliti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010-08-24 02:57, Raymond Yau skrev:
-> 2010/8/24 David Henningsson <david.henningsson@canonical.com>
-> 
->> I admit that the best thing would be to make the driver support all
->> three mics, but at this point, the alsa driver can only support two, one
->> called "mic" and one called "front mic". I believe the best choice is to
->> select the internal mic as "front mic" and the mic jack on the laptop as
->> "mic", thus leaving the docking station mic jack non-functional.
->>
->> The behavior without this patch is to select the mic jack on the laptop
->> as "mic" and the mic on the docking station as "front mic", thus leaving
->> the internal mic non-functional in all cases, and that regardless of you
->> have a docking station or not.
->>
->> 2010-08-23 21:07, Jerone Young skrev:
->>> For laptops you would want to take preference of the docking jack over
->>> the interal mic if you are in a docking station.
->>>
->>> So if you do plug into a docking station and you have a microphone in
->>> the docking station, a user would want to use that over the internal
->>> microphone. You wouldn't want the laptop internal mic preferred over the
->>> docking station microphone.
->>>
->>>                               Thanks,
->>>                                       Jerone
->>>
->>> On Mon, 2010-08-23 at 21:03 +0200, David Henningsson wrote:
->>>> The BIOS of Dell Precision M6500 lists both 0x0e and 0x11 as
->>>> front mics, and the driver only supports one front mic. This
->>>> commit adds a quirk for preferring node 0x11 (internal mic) to
->>>> node 0x0e (possibly docking station mic).
->>>>
->>>> Alsa-info reference:
->>>> http://launchpadlibrarian.net/54232083/alsa-info.txt.xyFVpIysHt
->>>>
->>
-> 
-> There are two ADC , this mean that the correct model should provide two
-> capture subdevices instead of one
-> 
-> Node 0x15 [Audio Input] wcaps 0x1d0541: Stereo
->   Device: name="STAC92xx Analog", type="Audio", device=0
->   Converter: stream=1, channel=0
->   SDI-Select: 0
->   Power: setting=D0, actual=D0
->   Delay: 13 samples
->   Connection: 1
->      0x17
->   Processing caps: benign=0, ncoeff=0
-> Node 0x16 [Audio Input] wcaps 0x1d0541: Stereo
->   Converter: stream=0, channel=0
->   SDI-Select: 0
->   Power: setting=D0, actual=D0
->   Delay: 13 samples
->   Connection: 1
->      0x18
->   Processing caps: benign=0, ncoeff=0
+Demian,
 
-I don't disagree. Feel free to write a patch for that, I assume Takashi
-will take it if it's written well enough and according to his/Linus's
-standards.
+USB Hubs can come in several forms especially USB 2.0 hubs. There are 
+load leveling and store and forward hubs that can mask the underlying 
+problem.
+
+I would suggest direct connection. BUT!!!!! We have found that some 
+front panel USB ports which either travel the length of the PCB or are 
+wire attached sometimes do not retain their correct impedance and run 
+into problems, especially with hard drives and such which have error 
+corrected protocols. Some front panel USB ports will actually force the 
+USB device into Full instead of High Speed because of this problem.
+
+Presently the player is underruning data from the USB stick. Also not 
+all sticks are the same. I bought a 128GB unit for a show to store music 
+on and it's slower than any other unit I have available. You should make 
+sure you try many variations of these to assure success.
+
+Thanks
+Gordon
+
+Demian Martin wrote:
+> Daniel:
+> I'll try to provide all the info you want. I'll need some prompting for some
+> details, please be patient with me.
+>
+> First the system.
+> I have tested on both an intel D945GSEJT atom based MB and an Alis 3.3 AMD
+> Geode based mb.
+> OS: Linux auraliti-player 2.6.32auraliti-2.0 #1 PREEMPT Fri Jul 30 06:48:14
+> GMT 2010 i686 GNU/Linux
+> Distro Voyage Linux 0.6.1
+> It's a dedicated headless 2 channel audio player, sort of a high performance
+> squeezebox. Details here: www.auraliti.com
+>
+> When I play a file from a network source (connected through nfs) I have no
+> problems with either .wav or .flac. 
+>
+> I don't know how to tell with certainty if the USB devices are connecting
+> through a common or separate root hubs.
+>
+> USB stick speed- It took 6.2 seconds to pass a 1 minute 19 second 192/24
+> file to dev/null so USB speed is not a problem. 
+>
+> It seems there is a collision when there is a high speed USB storage device
+> and the USB class 2 audio on the same host port both moving data at the same
+> time. 
+>
+> All of the following were done with the Alix board (Geode 500 MHz
+> processor). The Intel does similar but seems more likely to work.
+>
+> Under some conditions the system loses connection to the USB audio device:
+> auraliti-player:~# aplay -v -Dplughw:1
+> /media/usb0/Trio-Mytek8X192ADDA-192k.WAV
+> Playing WAVE '/media/usb0/Trio-Mytek8X192ADDA-192k.WAV' : Signed 24 bit
+> Little Endian in 3bytes, Rate 192000 Hz, Stereo
+> aplay: set_params:1116: Unable to install hw params:
+> ACCESS:  RW_INTERLEAVED
+> FORMAT:  S24_3LE
+> SUBFORMAT:  STD
+> SAMPLE_BITS: 24
+> FRAME_BITS: 48
+> CHANNELS: 2
+> RATE: 192000
+> PERIOD_TIME: 125000
+> PERIOD_SIZE: 24000
+> PERIOD_BYTES: 144000
+> PERIODS: 4
+> BUFFER_TIME: 500000
+> BUFFER_SIZE: 96000
+> BUFFER_BYTES: 576000
+> TICK_TIME: 0
+> auraliti-player:~#
+>
+> Fixed by disconnecting and reconnecting the device.
+>
+>
+> Here is what I get playing a 44.1 file, after about 15 seconds:
+>
+> Playing WAVE '/media/usb0/Piano_44_1.wav' : Signed 24 bit Little Endian in
+> 3bytes, Rate 44100 Hz, Stereo
+> Plug PCM: Linear conversion PCM (S32_LE)
+> Its setup is:
+>   stream       : PLAYBACK
+>   access       : RW_INTERLEAVED
+>   format       : S24_3LE
+>   subformat    : STD
+>   channels     : 2
+>   rate         : 44100
+>   exact rate   : 44100 (44100/1)
+>   msbits       : 24
+>   buffer_size  : 22050
+>   period_size  : 5513
+>   period_time  : 125011
+>   tstamp_mode  : NONE
+>   period_step  : 1
+>   avail_min    : 5513
+>   period_event : 0
+>   start_threshold  : 22050
+>   stop_threshold   : 22050
+>   silence_threshold: 0
+>   silence_size : 0
+>   boundary     : 1445068800
+> Slave: Hardware PCM card 1 'WaveLink HS SPDIF' device 0 subdevice 0
+> Its setup is:
+>   stream       : PLAYBACK
+>   access       : MMAP_INTERLEAVED
+>   format       : S32_LE
+>   subformat    : STD
+>   channels     : 2
+>   rate         : 44100
+>   exact rate   : 44100 (44100/1)
+>   msbits       : 32
+>   buffer_size  : 22050
+>   period_size  : 5513
+>   period_time  : 125011
+>   tstamp_mode  : NONE
+>   period_step  : 1
+>   avail_min    : 5513
+>   period_event : 0
+>   start_threshold  : 22050
+>   stop_threshold   : 22050
+>   silence_threshold: 0
+>   silence_size : 0
+>   boundary     : 1445068800
+>   appl_ptr     : 0
+>   hw_ptr       : 0
+> underrun!!! (at least 0.015 ms long)
+> Status:
+>   state       : XRUN
+>   trigger_time: 903.806908643
+>   tstamp      : 903.807038997
+>   delay       : 0
+>   avail       : 0
+>   avail_max   : 11028
+> aplay: xrun:1259: xrun: prepare error: File descriptor in bad state
+> auraliti-player:~#
+>
+> And the system stops playing.
+>
+> And very quickly on a 176.4 file:
+>
+> Playing WAVE '/media/usb0/01_Rimsky-Korsakov Dance of the Tumblers.wav' :
+> Signed 24 bit Little Endian in 3bytes, Rate 176400 Hz, Stereo
+> Plug PCM: Linear conversion PCM (S32_LE)
+> Its setup is:
+>   stream       : PLAYBACK
+>   access       : RW_INTERLEAVED
+>   format       : S24_3LE
+>   subformat    : STD
+>   channels     : 2
+>   rate         : 176400
+>   exact rate   : 176400 (176400/1)
+>   msbits       : 24
+>   buffer_size  : 88200
+>   period_size  : 22050
+>   period_time  : 125000
+>   tstamp_mode  : NONE
+>   period_step  : 1
+>   avail_min    : 22050
+>   period_event : 0
+>   start_threshold  : 88200
+>   stop_threshold   : 88200
+>   silence_threshold: 0
+>   silence_size : 0
+>   boundary     : 1445068800
+> Slave: Hardware PCM card 1 'WaveLink HS SPDIF' device 0 subdevice 0
+> Its setup is:
+>   stream       : PLAYBACK
+>   access       : MMAP_INTERLEAVED
+>   format       : S32_LE
+>   subformat    : STD
+>   channels     : 2
+>   rate         : 176400
+>   exact rate   : 176400 (176400/1)
+>   msbits       : 32
+>   buffer_size  : 88200
+>   period_size  : 22050
+>   period_time  : 125000
+>   tstamp_mode  : NONE
+>   period_step  : 1
+>   avail_min    : 22050
+>   period_event : 0
+>   start_threshold  : 88200
+>   stop_threshold   : 88200
+>   silence_threshold: 0
+>   silence_size : 0
+>   boundary     : 1445068800
+>   appl_ptr     : 0
+>   hw_ptr       : 0
+> underrun!!! (at least 0.010 ms long)
+> Status:
+>   state       : XRUN
+>   trigger_time: 1050.313984810
+>   tstamp      : 1050.314067000
+>   delay       : 0
+>   avail       : 1413
+>   avail_max   : 22071
+> aplay: xrun:1259: xrun: prepare error: File descriptor in bad state
+> auraliti-player:~#
+>
+> If in interpose a USB 1 hub on the usb storage I get this:
+>
+> auraliti-player:~# aplay -v -Dplughw:1 /media/usb0/01_Rimsky-Korsakov\
+> Dance\ of\ the\ Tumblers.wav
+> Playing WAVE '/media/usb0/01_Rimsky-Korsakov Dance of the Tumblers.wav' :
+> Signed 24 bit Little Endian in 3bytes, Rate 176400 Hz, Stereo
+> Plug PCM: Linear conversion PCM (S32_LE)
+> Its setup is:
+>   stream       : PLAYBACK
+>   access       : RW_INTERLEAVED
+>   format       : S24_3LE
+>   subformat    : STD
+>   channels     : 2
+>   rate         : 176400
+>   exact rate   : 176400 (176400/1)
+>   msbits       : 24
+>   buffer_size  : 88200
+>   period_size  : 22050
+>   period_time  : 125000
+>   tstamp_mode  : NONE
+>   period_step  : 1
+>   avail_min    : 22050
+>   period_event : 0
+>   start_threshold  : 88200
+>   stop_threshold   : 88200
+>   silence_threshold: 0
+>   silence_size : 0
+>   boundary     : 1445068800
+> Slave: Hardware PCM card 1 'WaveLink HS SPDIF' device 0 subdevice 0
+> Its setup is:
+>   stream       : PLAYBACK
+>   access       : MMAP_INTERLEAVED
+>   format       : S32_LE
+>   subformat    : STD
+>   channels     : 2
+>   rate         : 176400
+>   exact rate   : 176400 (176400/1)
+>   msbits       : 32
+>   buffer_size  : 88200
+>   period_size  : 22050
+>   period_time  : 125000
+>   tstamp_mode  : NONE
+>   period_step  : 1
+>   avail_min    : 22050
+>   period_event : 0
+>   start_threshold  : 88200
+>   stop_threshold   : 88200
+>   silence_threshold: 0
+>   silence_size : 0
+>   boundary     : 1445068800
+>   appl_ptr     : 0
+>   hw_ptr       : 0
+> underrun!!! (at least 1.537 ms long)
+> Status:
+>   state       : XRUN
+>   trigger_time: 1219.804905467
+>   tstamp      : 1219.820257912
+>   delay       : 0
+>   avail       : 88220
+>   avail_max   : 88220
+> underrun!!! (at least 13.900 ms long)
+> Status:
+>   state       : XRUN
+>   trigger_time: 1222.763695807
+>   tstamp      : 1222.902684537
+>   delay       : 0
+>   avail       : 66169
+>   avail_max   : 88219
+> underrun!!! (at least 1.279 ms long)
+> Status:
+>   state       : XRUN
+>   trigger_time: 1225.972436940
+>   tstamp      : 1225.985216250
+>   delay       : 0
+>   avail       : 88221
+>   avail_max   : 88221
+> underrun!!! (at least 14.141 ms long)
+>
+> etc. until I stop the playback. 
+>
+> 44.1 playback is fine under these conditions (but then why USB audio class
+> 2?)
+>
+> Further, using MPD for playback I have discovered that the high bit rate
+> flac files play fine but the same files as wave have the same type of
+> stall/stop problems.
+>
+> I tried Windows on the Intel platform with similar problems using windows
+> media player but no problems with VLC. However with Windows it is not easy
+> to know what is really going on inside.
+>
+> Is it possible that the essentially synchronous nature of playing a wave
+> file from USB source to USB Audio device causes a collision since the data
+> is going both ways at essentially the same rate and timing?
+>
+> Let me know what other info you need.
+>
+> Thanks for looking at this.
+>             -Demian
+>
+>
+>
+>
+> -----Original Message-----
+> From: Daniel Mack [mailto:daniel@caiaq.de] 
+> Sent: Saturday, August 21, 2010 2:27 AM
+> To: Demian Martin
+> Cc: alsa-devel@alsa-project.org
+> Subject: Re: Problem with USB Class 2 Audio Driver
+>
+> On Fri, Aug 20, 2010 at 05:40:22PM -0700, Demian Martin wrote:
+>   
+>> I'm testing an early sample of the Wavelength Wavelink, a USB to S/PDIF
+>> adapter that supports 44.1-192 KHz sample rates and uses async usb to talk
+>> to ALSA. It works and plays all of the sample rates correctly with the git
+>> version of Alsa from 7/30/2010 whenthe files are sourced from the network.
+>>     
+>
+> What do you mean by "from the network"? How does your test setup look
+> like?
+>
+>   
+>> However if I try to play from a usb source to the usb dac it doesn't work
+>> and the whole system gets unstable. 
+>>     
+>
+> You could also be more precise here :) What doesn't work, how are you
+> testing, and in which regard does the system get unstable?
+>
+>   
+>> The platforms I have tested it on seem
+>> to have a single USB host interface but with USB 2 there should be enough
+>> bandwidth to pass the data from a USB stick to the cpu and back. If I use
+>>     
+> an
+>   
+>> older 96 only usb dac on the same system it works (unless the down
+>> conversion isn't a direct divide, which overloads the CPU, but that is a
+>> different issue). The problem seems to be sample rate independent and hits
+>> the moment I try to access the file. This is using MPD as a player.
+>>     
+>
+> Ah, so your data file is stored on a media which is also connected to
+> USB? Did you connect the two devices to different USB ports or do they
+> share one uplink with a hub?
+>
+>   
+>> What additional info do you need to troubleshoot this? Is it an intrinsic
+>> limitation to the interface? What additional tests should I do? It's
+>> possible it's a hardware issue but how do I divide them so I can go back
+>>     
+> to
+>   
+>> the hardware guy if it's his issue? 
+>>     
+>
+> I'm not aware of any limitation, but there could be such issues as
+> exceeded bandwith on the bus and the like. How many audio channels are
+> we talking about?
+>
+> You could measure the speed of your USB media by using something like
+> this:
+>
+> 	$ time dd if=/path/to/192khz.file of=/dev/null
+>
+> This should take significantly less time than - let's say - half the
+> real-time audio playback time of the file, so there's enough headroom to
+> transport the audio data back to the USB DAC.
+>
+> What kind of system is this, after all? Did you try other OS on the same
+> hardware for comparsion?
+>
+>
+> Daniel
+>
+>
+>
+>
+>   
 
 -- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+J. Gordon Rankin
+Owner and Chief Scientist
+====== Wavelength Audio, ltd ======
+High-End Audio since 1981
+SET Tube Amplifiers, DACS & Preamps
+http://www.WavelengthAudio.com
+===================================
+Computer USB DACS
+http://www.USBDacs.com
+===================================
+SET Tube Guitar Amplifiers
+NAMM Member since 1998
+http://www.Guitar-Engines.com
+===================================
+3703 Petoskey Avenue
+Cincinnati, Ohio 45227 USA
+mailto:waudio@cinti.net
+mailto:wavelength@fuse.net
+(513) 271-4186 phone/voicemail
