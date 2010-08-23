@@ -1,21 +1,26 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: Re: HDMI hot-plug/ELD issues
-Date: Mon, 23 Aug 2010 10:16:48 -0500
-Message-ID: <AANLkTimyAGDPmhk4CEPSjTFAk12vE6nbMp5CLHQ=7eqS@mail.gmail.com>
-References: <AANLkTi=Nmtn8DsXH7u+tt0j_Cs1tnjaHO4XoLAPoyAAs@mail.gmail.com>
-	<20100823010122.GA5740@localhost>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC] ASoC: multi-component: Add optional kcontrol
+ prefix name for a DAI link
+Date: Mon, 23 Aug 2010 16:21:45 +0100
+Message-ID: <20100823152145.GD14504@rakim.wolfsonmicro.main>
+References: <1281943770-2990-1-git-send-email-jhnikula@gmail.com>
+	<20100816100705.GA3276@rakim.wolfsonmicro.main>
+	<20100816135328.077b5ea3.jhnikula@gmail.com>
+	<20100816110902.GA10354@sirena.org.uk>
+	<20100819144451.1d827367.jhnikula@gmail.com>
+	<20100819135413.GA19582@opensource.wolfsonmicro.com>
+	<20100819182049.3ecdd0bc.jhnikula@gmail.com>
+	<20100820115144.451b474f.jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 67BAF2412E
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8220B2414F
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Aug 2010 17:16:51 +0200 (CEST)
-Received: by yxp4 with SMTP id 4so2309256yxp.38
-	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2010 08:16:50 -0700 (PDT)
-In-Reply-To: <20100823010122.GA5740@localhost>
+	Mon, 23 Aug 2010 17:21:47 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20100820115144.451b474f.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,61 +30,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wu Fengguang <fengguang.wu@intel.com>
-Cc: alsa-devel@alsa-project.org
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
->> 1. Playback can happen even if there's no HDMI cable plugged. Or when
->> I remove the cable, the player isn't notified and keeps sending data
->> to the driver. This is fine for PCM but I noticed that the receiver
->> can handle some trouble synchronizing with in AC3-passthrough mode if
->> the cable is inserted after the playback starts. It would be much
->> cleaner to allow playback only when there's an actual cable connected,
->> and to return -ENODEV or something to apps when this happens.
->
-> We used to turn off HDMI link when not playing. However that caused
-> loss of 0.5s samples when starting next playback, due to the slow
-> responding HDMI sink devices (in fact all my tested monitors/AV
-> receivers have this problem).
+On Fri, Aug 20, 2010 at 11:51:44AM +0300, Jarkko Nikula wrote:
+> Jarkko Nikula <jhnikula@gmail.com> wrote:
 
-I think it's fine if you leave the link on.
+> +int _snd_soc_dapm_new_control(struct snd_soc_codec *codec,
+> +	const struct snd_soc_dapm_widget *widget,
+> +	const char *name_prefix);
+>  int snd_soc_dapm_new_control(struct snd_soc_codec *codec,
+>  	const struct snd_soc_dapm_widget *widget);
+> +int _snd_soc_dapm_new_controls(struct snd_soc_codec *codec,
+> +	const struct snd_soc_dapm_widget *widget,
+> +	int num, const char *name_prefix);
 
-> What's your test case? Keep playing during plug/unplug, or
-> play -- plug -- stop playing -- unplug -- play a new track?
+Best not in the header; these are not things individual drivers should
+be worrying their pretty little heads about.  If they should be used by
+individual drivers then we need better names than just _.
 
-The player keeps playing, and then I unplug/replug/unplug/replug the
-cable. At some point the receiver will lose the sync with compressed
-data.
+> @@ -539,6 +543,7 @@ struct snd_soc_dai_link {
+>  	const char *platform_name;	/* for multi-platform */
+>  	const char *cpu_dai_name;
+>  	const char *codec_dai_name;
+> +	const char *kcontrol_prefix;	/* kcontrol prefix for multi-codec */
+>  
+>  	/* Keep DAI active over suspend */
+>  	unsigned int ignore_suspend:1;
 
-> Then there's the question whether to send -ENODEV to the audio player,
-> or to send udev events (for pulseaudio) on hotplug events, or to
-> disable HDMI link only for passthrough mode, or whatever policy.
-> Any ideas?
+I don't see how a DAI link can ever be used to configure prefix names -
+there's just not any real association between DAI links and controls,
+and as soon as you hit mixing any that does exist gets lost.  Probably a
+table of CODEC to prefix mappings would be better.
 
-I think we really need a consistent approach for all HDMI devices so
-that middleware, PulseAudio specifically works without quirks and
-hardware-specific work-arounds.
-Ideally when the HDMI cable is plugged you would register a new card
-and this would generate the relevant hot-plug events.However in the
-case of HDAudio you have 2 devices for the same card. I am not sure
-ALSA would generate hot-plug events if you registered/exposed the
-HDMI-related devices only when a cable is played. Alternatively we
-could leave the devices exposed at all times generate a dedicated HDMI
-event, and have PulseAudio handle it.
-How is this handled on non-Intel hardware?
+> +			if (codec->kcontrol_prefix && !w->prefixed) {
+> +				name_len += 1 + strlen(codec->kcontrol_prefix);
+> +				snprintf(prefix, sizeof(prefix), "%s.",
+> +					 codec->kcontrol_prefix);
 
->> Is there a missing link with the display driver so that this info
->> would make sense? I remember having a conversation with Fengguang Wu
->> on this, but I can't remember what the outcome was. Or is this a case
->> of back luck with broken hardware not sending the legal EDID info?
->> Thanks for your help on this.
->
-> Sorry we have not implemented the ELD feature in video driver. =A0The
-> Intel gfx driver should read&parse HW EDID and pass the ELD info to
-> the audio driver.
+A space would probably be more idiomatic for the separator.
 
-It doesn't seem like rocket science, is this something that could be
-patched? That really needs to be fixed, so that we can work with
-Takashi and expose the ELD info to user-space. All this information is
-badly needed by middleware.
--Pierre
+> +int _snd_soc_dapm_add_routes(struct snd_soc_codec *codec,
+> +			    const struct snd_soc_dapm_route *route, int num,
+> +			    const char *name_prefix)
+>  {
+>  	int i, ret;
+>  
+>  	for (i = 0; i < num; i++) {
+> -		ret = snd_soc_dapm_add_route(codec, route);
+> +		ret = snd_soc_dapm_add_route(codec, route, name_prefix);
+
+This one is a bit more fun.  For this to work properly we need to
+consider what happens with the cross-device links in the DAI maps which
+means we need to able to cope with separate prefixes for the source and
+the sink.
