@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] omap: rx51: Remove redefinition of
-	rx51_aic3x_data
-Date: Mon, 23 Aug 2010 10:58:51 +0100
-Message-ID: <20100823095851.GC6061@rakim.wolfsonmicro.main>
-References: <1282548905-10287-1-git-send-email-jhnikula@gmail.com>
+Subject: Re: [PATCH] tlv32aic3x: Use driver_data to pass codec
+	model id
+Date: Mon, 23 Aug 2010 10:59:41 +0100
+Message-ID: <20100823095941.GD6061@rakim.wolfsonmicro.main>
+References: <1282367669-14099-1-git-send-email-rchung42@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1FB2224464
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 26E0A244A1
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Aug 2010 11:58:52 +0200 (CEST)
+	Mon, 23 Aug 2010 11:59:42 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1282548905-10287-1-git-send-email-jhnikula@gmail.com>
+In-Reply-To: <1282367669-14099-1-git-send-email-rchung42@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,17 +23,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Randolph Chung <rchung42@gmail.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 23, 2010 at 10:35:05AM +0300, Jarkko Nikula wrote:
-> Redefinition of rx51_aic3x_data got introduced when merging upstread changes
-> for 2.6.36 and ASoC Multi-Component Support.
+On Sat, Aug 21, 2010 at 01:14:29PM +0800, Randolph Chung wrote:
+> Per Mark's suggestion, use a cleaner syntax for passing the model id.
 > 
-> This must go together with multi-component commit f0fba2a.
-> 
-> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-> Cc: Tony Lindgren <tony@atomide.com>
+> Signed-off-by: Randolph Chung <tausq@parisc-linux.org>
 
 Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
