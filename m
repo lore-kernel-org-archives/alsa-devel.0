@@ -1,20 +1,18 @@
-From: Murat Sahin <murat.sahin.zeisberg@googlemail.com>
-Subject: Problem to init AD1938 on i.MX25
-Date: Mon, 23 Aug 2010 16:55:50 +0200
-Message-ID: <4C728BF6.506@googlemail.com>
-Reply-To: murat.sahin@zeisberg.net
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [alsa-lib] Query regarding
+ snd_config_update_free_global() and threads etc.
+Date: Mon, 23 Aug 2010 17:13:15 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1008231710320.10278@eeebox2.perex-int.cz>
+References: <i4tflh$8c4$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 300F1103805
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0605D2413A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Aug 2010 16:55:55 +0200 (CEST)
-Received: by bwz4 with SMTP id 4so134389bwz.38
-	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2010 07:55:55 -0700 (PDT)
-References: 20100816073040.GH27749@pengutronix.de
+	Mon, 23 Aug 2010 17:13:16 +0200 (CEST)
+In-Reply-To: <i4tflh$8c4$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,53 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Colin Guthrie <gmane@colin.guthr.ie>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-  Thanks Sascha for your Informations.
-The Problem was solved by adding soc-cache.c and changing the KARO-SPI 
-driver with them from Mainline.
+On Mon, 23 Aug 2010, Colin Guthrie wrote:
 
-The codec is still running, but now we have another problem.
-The AD1938 has 8 channels, the driver for i.mx25 supports 2 channels.
-How we can solve the Problem?
+> Hi there,
+>
+> I've got a (hopefully quick) query about snd_config_update_free_global()
+> and it's general thread safetyness.
+>
+>
+> I'm currently going insane on this bug:
+> https://bugs.kde.org/show_bug.cgi?id=232068
+> which revolves around a bug manifested in snd_pcm_close() (or rather
+> snd_pcm_ioplug_close()) when dealing with the ALSA->PulseAudio plugin.
+>
+>> From what I can gather, this problem is related to a KDE module that is
+> loaded into the library in question which does some alsa probing and
+> ultimately calls snd_config_update_free_global() several times. The
+> library itself then goes on to use GStreamer to do actual audio output.
+> The crash then manifests itself prior to any sound actually being output.
+>
+> I can reliably reproduce the machine on two machines (I don't have many
+> at my disposal), but cannot reproduce on a third. The two I can
+> reproduce it on are two and four core intel duo's. The one I cannot
+> reproduce on is an older, single core machine. I am leaning towards some
+> kind of thread safety issue.
+>
+>
+> In searching for similar problems, I found several references to similar
+> crashes attributed to snd_dlobj_cache_cleanup() perhaps not being thread
+> safe.
 
-static int imx_ad1938_hw_params(struct snd_pcm_substream *substream,
-     struct snd_pcm_hw_params *params)
-{
-     struct snd_soc_pcm_runtime *rtd = substream->private_data;
-     struct snd_soc_dai_link *machine = rtd->dai;
-     struct snd_soc_dai *cpu_dai = machine->cpu_dai;
-     struct snd_soc_dai *codec_dai = machine->codec_dai;
-     struct imx_ssi *ssi_mode = cpu_dai->private_data;
-     unsigned int channels = params_channels(params);
-     u32 dai_format;
+I tried to work on snd_dlobj_cache issues. Please, could you test this 
+patch?
 
-     int ret;
+http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=91c9c8f1b85e69b4bdc94a777d2767c4906c3f47
 
-        ssi_mode->sync_mode = 1;
-     if (channels == 1)
-         ssi_mode->network_mode = 0;
-     else
-         ssi_mode->network_mode = 1;
+ 					Thanks,
+ 						Jaroslav
 
-         dai_format = SND_SOC_DAIFMT_DSP_A |
-         SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_CBM_CFM;
-
-     /* set codec DAI configuration */
-     ret = snd_soc_dai_set_fmt(codec_dai, dai_format);
-     if (ret) {
-         pr_err("%s: failed set codec dai format\n", __func__);
-     return ret;
-     }
-
-     /* set codec DAI slots, 8 channels, all channels are enabled */
-     ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xFF, 0xFF, 8, 32);
-     if (ret) {
-         pr_err("%s: failed set codec dai tdm slot\n", __func__);
-     return ret;
-     }
-
-BR
-Murat Sahin
-Zeisberg GmbH
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
