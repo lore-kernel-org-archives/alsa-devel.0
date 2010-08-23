@@ -1,29 +1,17 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: [alsa-lib] Query regarding
- snd_config_update_free_global() and threads etc.
-Date: Mon, 23 Aug 2010 16:49:54 +0100
-Message-ID: <i4u5b2$c4r$1@dough.gmane.org>
-References: <i4tflh$8c4$1@dough.gmane.org>
-	<alpine.LNX.2.00.1008231710320.10278@eeebox2.perex-int.cz>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: [PATCH 0/3] alsa-lib: UCM - Use Case Manager
+Date: Mon, 23 Aug 2010 17:17:16 +0100
+Message-ID: <1282580239-10549-1-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id B8B2A2436F
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 15C5A243E6
 	for <alsa-devel@alsa-project.org>;
-	Mon, 23 Aug 2010 17:50:05 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OnZHg-0007GD-0G
-	for alsa-devel@alsa-project.org; Mon, 23 Aug 2010 17:50:04 +0200
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2010 17:50:03 +0200
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2010 17:50:03 +0200
-In-Reply-To: <alpine.LNX.2.00.1008231710320.10278@eeebox2.perex-int.cz>
+	Mon, 23 Aug 2010 18:17:26 +0200 (CEST)
+Received: by wyb42 with SMTP id 42so6848722wyb.38
+	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2010 09:17:25 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,57 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Jaroslav Kysela at 23/08/10 16:13 did gyre and gimble:
-> On Mon, 23 Aug 2010, Colin Guthrie wrote:
-> 
->> Hi there,
->>
->> I've got a (hopefully quick) query about snd_config_update_free_global()
->> and it's general thread safetyness.
->>
->>
->> I'm currently going insane on this bug:
->> https://bugs.kde.org/show_bug.cgi?id=232068
->> which revolves around a bug manifested in snd_pcm_close() (or rather
->> snd_pcm_ioplug_close()) when dealing with the ALSA->PulseAudio plugin.
->>
->>> From what I can gather, this problem is related to a KDE module that is
->> loaded into the library in question which does some alsa probing and
->> ultimately calls snd_config_update_free_global() several times. The
->> library itself then goes on to use GStreamer to do actual audio output.
->> The crash then manifests itself prior to any sound actually being output.
->>
->> I can reliably reproduce the machine on two machines (I don't have many
->> at my disposal), but cannot reproduce on a third. The two I can
->> reproduce it on are two and four core intel duo's. The one I cannot
->> reproduce on is an older, single core machine. I am leaning towards some
->> kind of thread safety issue.
->>
->>
->> In searching for similar problems, I found several references to similar
->> crashes attributed to snd_dlobj_cache_cleanup() perhaps not being thread
->> safe.
-> 
-> I tried to work on snd_dlobj_cache issues. Please, could you test this 
-> patch?
-> 
-> http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=91c9c8f1b85e69b4bdc94a777d2767c4906c3f47
+This patch series follows on from the RFC and adds sound card hardware Use Case
+Management support to alsa-lib. 
+ 
+The main features of UCM are :-
 
-Sure, will try and do so this evening and report back. Thanks!
+ o Abstraction of sound card hardware routing and controls into high level
+   use case verbs, devices and modifiers.
+ o Discovery of source/sink PCMs for each use case.
+ o Discovery of hardware master volume controls for each use case.
 
-Col
+It's intended UCM will provide clients (like pulseaudio) complete control over
+hardware signal routing within a sound card without any knowledge of the
+sound card hardware.
 
--- 
+Use case definintions are stored in text files (per sound card) and are now
+divided into three components as descibed in the RFC. 
 
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
+A working use case definition file can be found here :-
 
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mandriva Linux Contributor [http://www.mandriva.com/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+http://git.slimlogic.co.uk/cgi-bin/cgit.cgi/alsa-ucm-conf.git/tree/cards/SDP4430/hifi
+
+The three components of a use case are now :-
+
+1) Verb (or action). This is mandatory and describes (in terms of ALSA
+control settings) the system use case action. e.g "Phone Call", "Music
+Playback".
+
+2) Device. This is also mandatory and describes the audio playback or
+capture device. e.g. "Handset", "Bluetooth", "Headset".
+
+3) Modifier. This is optional and is used to modify the current use case
+verb. i.e. The user could be listening to music when an incoming phone
+call requires that a ring tone is played. In this case the use case verb
+would be set to "Music Playback" when the music playback started and
+then the "Tone Playback" modifier could be enabled to play the ring
+tone. The use case verb would then be changed to "Voice Call" if the
+call was accepted. 
+
+Patch 2/3 is a little on the large side so, I've included a link if it gets
+bounced by the list.
+
+http://git.slimlogic.co.uk/cgi-bin/cgit.cgi/alsa-lib.git/commit/?h=ucm-upstream&id=15d5f619deba20f87075e7c711e6331115fd836d
+
+Liam Girdwood (3):
+  ucm: header - ALSA Use Case Manager
+  ucm: core - Add initial Use Case Manager support.
+  ucm: build - add build support for Use Case Manager
+
+ doc/doxygen.cfg.in  |    1 +
+ include/Makefile.am |    2 +-
+ include/use-case.h  |  427 +++++++
+ src/Makefile.am     |    2 +-
+ src/use-case.c      | 3515 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 3945 insertions(+), 2 deletions(-)
+ create mode 100644 include/use-case.h
+ create mode 100644 src/use-case.c
