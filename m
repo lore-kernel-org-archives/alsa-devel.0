@@ -1,20 +1,17 @@
-From: Chris Winter <elwintro@gmail.com>
-Subject: Re: [PATCH 1/3] ucm: header - ALSA Use Case Manager
-Date: Tue, 24 Aug 2010 14:09:45 -0500
-Message-ID: <AANLkTimRsGPX6ZL8_iMe+TieozVr_fNx7aDYckBXHbZW@mail.gmail.com>
-References: <1282580239-10549-1-git-send-email-lrg@slimlogic.co.uk>
-	<1282580239-10549-2-git-send-email-lrg@slimlogic.co.uk>
+From: Adam Rosenberg <adam@alcorn.com>
+Subject: Problem with underrun on new CS42448 x2 driver
+Date: Tue, 24 Aug 2010 15:47:13 -0400
+Message-ID: <AANLkTi=3kc74QqDopiAw+u8ie2Qn47p9XQpw54b6iB4Z@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 764B224466
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 39F9324494
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Aug 2010 21:10:19 +0200 (CEST)
-Received: by ywg8 with SMTP id 8so2689490ywg.38
-	for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2010 12:10:15 -0700 (PDT)
-In-Reply-To: <1282580239-10549-2-git-send-email-lrg@slimlogic.co.uk>
+	Tue, 24 Aug 2010 21:47:13 +0200 (CEST)
+Received: by vws20 with SMTP id 20so6546781vws.38
+	for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2010 12:47:13 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,75 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Stefan Schmidt <stefan@slimlogic.co.uk>, Justin Xu <justinx@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Liam,
+I am trying to write a driver for the Blackfin BF537 processor on a custom
+board that has two CS42448 CODECs connected to SPORT0.  I am using TDM and
+there are 8 channels per frame on each data line (primary and secondary).
+My DMA buffer must interleave the data for the two data lines (for a total
+of 16 channels of data per frame).  I have completed all of this and the
+driver will sometimes work properly but I am having underrun problems.  I
+would like to use snd_async_add_pcm_handler as it is used in the /test/pcm.c
+example but it seems as though an underrun occurs at regular intervals
+causing the PCM prepare function to be called again (this results in a tone
+that sounds good but only for a short time before it stops and then starts
+again).
 
-On Mon, Aug 23, 2010 at 11:17 AM, Liam Girdwood <lrg@slimlogic.co.uk> wrote:
-> This patch adds the API header for alsa-lib Use Case Management support.
->
-> This file defines the public interface exported by UCM to client
-> applications.
->
-> UCM development has been kindly sponsored by Texas Instruments Inc,
-> Wolfson Microelectronics PLC and Slimlogic Ltd.
->
-> CC: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Signed-off-by: Stefan Schmidt <stefan@slimlogic.co.uk>
-> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-> Signed-off-by: Justin Xu <justinx@slimlogic.co.uk>
-> Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
-> ---
-> =A0include/use-case.h | =A0427 ++++++++++++++++++++++++++++++++++++++++++=
-++++++++++
-> =A01 files changed, 427 insertions(+), 0 deletions(-)
-> =A0create mode 100644 include/use-case.h
+There is plenty of time for the data to be transferred.  I feel as though
+the driver is not calling snd_pcm_period_elapsed fast enough.  At the
+moment, I call snd_pcm_period_elapsed from within a callback function that
+occurs every time a DMA period elapse occurs.  I have been working on this
+for quite a while now.  Is there someone who can look at the driver code for
+me or provide detailed information on when ALSA expects to have
+snd_pcm_period_elapsed get called to avoid an underrun?
 
-[...]
+The other thing that is strange is that I have to explicitly set the period
+size for aplay to work.  For example:
+aplay --period-size=1024 test.wav
+which gives me a period time of 21333 but when I use this period time with
+the /test/pcm.c sample that is provided the tone still does not sound right
+(although it does seem to improve)
 
-> +/**
-> + * \brief Get ALSA volume/mute control names depending on use case devic=
-e.
-> + * \param uc_mgr Use case manager
-> + * \param type The control type we are looking for
-> + * \param device The device we are interested in.
-> + * \return name if success, otherwise NULL
-> + *
-> + * Get the control name for common volume and mute controls that are ali=
-ased
-> + * in the current use case verb.
-> + */
-> +const char *snd_use_case_get_device_ctl_elem_id(snd_use_case_mgr_t *uc_m=
-gr,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 enum snd_use_case_control_alias type, const=
- char *device);
-> +
-> +/**
-> + * \brief Get ALSA volume/mute control names depending on use case modif=
-ier.
-> + * \param uc_mgr Use case manager
-> + * \param type The control type we are looking for
-> + * \param modifier The modifier we are interested in.
-> + * \return name if success, otherwise NULL
-> + *
-> + * Get the control name for common volume and mute controls that are ali=
-ased
-> + * in the current use case modifier.
-> + */
-> +const char *snd_use_case_get_modifier_ctl_elem_id(snd_use_case_mgr_t *uc=
-_mgr,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 enum snd_use_case_control_alias type, const=
- char *modifier);
+I am about ready to bypass ALSA entirely but I hate the idea of breaking
+from standards (not to mention having to rewrite an entire audio
+interface).  Any help would be greatly appreciated!
 
+You can check out the driver here:
+http://www.alcorn.com/ftp/swap/ami_cs42448.zip
 
-It would appear that the implementations of the above two functions
-are named differently in src/use-case.c:
+Thank you,
+Adam
 
-const char *snd_use_case_get_device_ctl_elem_name(...)
-const char *snd_use_case_get_modifier_ctl_elem_name(...)
+Adam Rosenberg
+Software Engineer
 
-Regards,
+Alcorn McBride Inc.
+3300 South Hiawassee
+Building 105
+Orlando, FL 32835
 
-Chris
+(407) 296 - 5800 ext. 5490
