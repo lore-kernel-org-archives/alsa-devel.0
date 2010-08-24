@@ -1,21 +1,20 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH] ALSA: HDA: Fix front mic on Dell Precision
-	M6500
-Date: Tue, 24 Aug 2010 08:57:55 +0800
-Message-ID: <AANLkTin4X_gNKCeuEbFZ87QcUybx+AuGV7HSaXNEZsLT@mail.gmail.com>
-References: <4C72C5EF.6090600@canonical.com> <1282590450.2600.9.camel@laptop>
-	<4C72CB43.2040800@canonical.com>
+Subject: Re: [PATCH 0/3] alsa-lib: UCM - Use Case Manager
+Date: Tue, 24 Aug 2010 09:23:14 +0800
+Message-ID: <AANLkTingUF7Ad1z568kfkhNR3eQsQ5SmLvONnGTXqOiP@mail.gmail.com>
+References: <1282580239-10549-1-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id EF93E24545
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id AF6C024555
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Aug 2010 02:57:57 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so3017667ewy.38
-	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2010 17:57:57 -0700 (PDT)
-In-Reply-To: <4C72CB43.2040800@canonical.com>
+	Tue, 24 Aug 2010 03:23:14 +0200 (CEST)
+Received: by eyd9 with SMTP id 9so3020008eyd.38
+	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2010 18:23:14 -0700 (PDT)
+In-Reply-To: <1282580239-10549-1-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,59 +27,75 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/8/24 David Henningsson <david.henningsson@canonical.com>
+2010/8/24 Liam Girdwood <lrg@slimlogic.co.uk>
 
-> I admit that the best thing would be to make the driver support all
-> three mics, but at this point, the alsa driver can only support two, one
-> called "mic" and one called "front mic". I believe the best choice is to
-> select the internal mic as "front mic" and the mic jack on the laptop as
-> "mic", thus leaving the docking station mic jack non-functional.
+> This patch series follows on from the RFC and adds sound card hardware Use
+> Case
+> Management support to alsa-lib.
 >
-> The behavior without this patch is to select the mic jack on the laptop
-> as "mic" and the mic on the docking station as "front mic", thus leaving
-> the internal mic non-functional in all cases, and that regardless of you
-> have a docking station or not.
+> The main features of UCM are :-
 >
-> 2010-08-23 21:07, Jerone Young skrev:
-> > For laptops you would want to take preference of the docking jack over
-> > the interal mic if you are in a docking station.
-> >
-> > So if you do plug into a docking station and you have a microphone in
-> > the docking station, a user would want to use that over the internal
-> > microphone. You wouldn't want the laptop internal mic preferred over the
-> > docking station microphone.
-> >
-> >                               Thanks,
-> >                                       Jerone
-> >
-> > On Mon, 2010-08-23 at 21:03 +0200, David Henningsson wrote:
-> >> The BIOS of Dell Precision M6500 lists both 0x0e and 0x11 as
-> >> front mics, and the driver only supports one front mic. This
-> >> commit adds a quirk for preferring node 0x11 (internal mic) to
-> >> node 0x0e (possibly docking station mic).
-> >>
-> >> Alsa-info reference:
-> >> http://launchpadlibrarian.net/54232083/alsa-info.txt.xyFVpIysHt
-> >>
+>  o Abstraction of sound card hardware routing and controls into high level
+>   use case verbs, devices and modifiers.
+>  o Discovery of source/sink PCMs for each use case.
+>  o Discovery of hardware master volume controls for each use case.
+>
+> It's intended UCM will provide clients (like pulseaudio) complete control
+> over
+> hardware signal routing within a sound card without any knowledge of the
+> sound card hardware.
+>
+> Use case definintions are stored in text files (per sound card) and are now
+> divided into three components as descibed in the RFC.
+>
+> A working use case definition file can be found here :-
+>
+>
+> http://git.slimlogic.co.uk/cgi-bin/cgit.cgi/alsa-ucm-conf.git/tree/cards/SDP4430/hifi
+>
+> The three components of a use case are now :-
+>
+> 1) Verb (or action). This is mandatory and describes (in terms of ALSA
+> control settings) the system use case action. e.g "Phone Call", "Music
+> Playback".
+>
+> 2) Device. This is also mandatory and describes the audio playback or
+> capture device. e.g. "Handset", "Bluetooth", "Headset".
+>
+> 3) Modifier. This is optional and is used to modify the current use case
+> verb. i.e. The user could be listening to music when an incoming phone
+> call requires that a ring tone is played. In this case the use case verb
+> would be set to "Music Playback" when the music playback started and
+> then the "Tone Playback" modifier could be enabled to play the ring
+> tone. The use case verb would then be changed to "Voice Call" if the
+> call was accepted.
+>
+> Patch 2/3 is a little on the large side so, I've included a link if it gets
+> bounced by the list.
+>
+>
+> http://git.slimlogic.co.uk/cgi-bin/cgit.cgi/alsa-lib.git/commit/?h=ucm-upstream&id=15d5f619deba20f87075e7c711e6331115fd836d
+>
+> Liam Girdwood (3):
+>  ucm: header - ALSA Use Case Manager
+>  ucm: core - Add initial Use Case Manager support.
+>  ucm: build - add build support for Use Case Manager
+>
+>  doc/doxygen.cfg.in  |    1 +
+>  include/Makefile.am |    2 +-
+>  include/use-case.h  |  427 +++++++
+>  src/Makefile.am     |    2 +-
+>  src/use-case.c      | 3515
+> +++++++++++++++++++++++++++++++++++++++++++++++++++
+>  5 files changed, 3945 insertions(+), 2 deletions(-)
+>  create mode 100644 include/use-case.h
+>  create mode 100644 src/use-case.c
 >
 
-There are two ADC , this mean that the correct model should provide two
-capture subdevices instead of one
+Can the use case manager discover whether the green/pink jack in front panel
+can be used independent of  those audio jacks in rear panel for HDA-Intel in
+desktop pc ?
 
-Node 0x15 [Audio Input] wcaps 0x1d0541: Stereo
-  Device: name="STAC92xx Analog", type="Audio", device=0
-  Converter: stream=1, channel=0
-  SDI-Select: 0
-  Power: setting=D0, actual=D0
-  Delay: 13 samples
-  Connection: 1
-     0x17
-  Processing caps: benign=0, ncoeff=0
-Node 0x16 [Audio Input] wcaps 0x1d0541: Stereo
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  Power: setting=D0, actual=D0
-  Delay: 13 samples
-  Connection: 1
-     0x18
-  Processing caps: benign=0, ncoeff=0
+How about those hardware mixing sound card ?
+e.g. emu10k1 allow the user to output stereo to the selected  jacks (front ,
+rear, .... )
