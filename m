@@ -1,20 +1,17 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH 0/3] alsa-lib: UCM - Use Case Manager
-Date: Tue, 24 Aug 2010 09:23:14 +0800
-Message-ID: <AANLkTingUF7Ad1z568kfkhNR3eQsQ5SmLvONnGTXqOiP@mail.gmail.com>
-References: <1282580239-10549-1-git-send-email-lrg@slimlogic.co.uk>
+Subject: snd_pcm_multi_rewind
+Date: Tue, 24 Aug 2010 11:56:56 +0800
+Message-ID: <AANLkTinY8Q1d2Bo4HSVQYKAeRy0K_xPHU9Y-bT=m1t9i@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id AF6C024555
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id BDD46245C7
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Aug 2010 03:23:14 +0200 (CEST)
-Received: by eyd9 with SMTP id 9so3020008eyd.38
-	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2010 18:23:14 -0700 (PDT)
-In-Reply-To: <1282580239-10549-1-git-send-email-lrg@slimlogic.co.uk>
+	Tue, 24 Aug 2010 05:56:56 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so3043539ewy.38
+	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2010 20:56:56 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,75 +24,43 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/8/24 Liam Girdwood <lrg@slimlogic.co.uk>
+why the pos array can be assigned dimension by multi->slaves_count ?
 
-> This patch series follows on from the RFC and adds sound card hardware Use
-> Case
-> Management support to alsa-lib.
->
-> The main features of UCM are :-
->
->  o Abstraction of sound card hardware routing and controls into high level
->   use case verbs, devices and modifiers.
->  o Discovery of source/sink PCMs for each use case.
->  o Discovery of hardware master volume controls for each use case.
->
-> It's intended UCM will provide clients (like pulseaudio) complete control
-> over
-> hardware signal routing within a sound card without any knowledge of the
-> sound card hardware.
->
-> Use case definintions are stored in text files (per sound card) and are now
-> divided into three components as descibed in the RFC.
->
-> A working use case definition file can be found here :-
->
->
-> http://git.slimlogic.co.uk/cgi-bin/cgit.cgi/alsa-ucm-conf.git/tree/cards/SDP4430/hifi
->
-> The three components of a use case are now :-
->
-> 1) Verb (or action). This is mandatory and describes (in terms of ALSA
-> control settings) the system use case action. e.g "Phone Call", "Music
-> Playback".
->
-> 2) Device. This is also mandatory and describes the audio playback or
-> capture device. e.g. "Handset", "Bluetooth", "Headset".
->
-> 3) Modifier. This is optional and is used to modify the current use case
-> verb. i.e. The user could be listening to music when an incoming phone
-> call requires that a ring tone is played. In this case the use case verb
-> would be set to "Music Playback" when the music playback started and
-> then the "Tone Playback" modifier could be enabled to play the ring
-> tone. The use case verb would then be changed to "Voice Call" if the
-> call was accepted.
->
-> Patch 2/3 is a little on the large side so, I've included a link if it gets
-> bounced by the list.
->
->
-> http://git.slimlogic.co.uk/cgi-bin/cgit.cgi/alsa-lib.git/commit/?h=ucm-upstream&id=15d5f619deba20f87075e7c711e6331115fd836d
->
-> Liam Girdwood (3):
->  ucm: header - ALSA Use Case Manager
->  ucm: core - Add initial Use Case Manager support.
->  ucm: build - add build support for Use Case Manager
->
->  doc/doxygen.cfg.in  |    1 +
->  include/Makefile.am |    2 +-
->  include/use-case.h  |  427 +++++++
->  src/Makefile.am     |    2 +-
->  src/use-case.c      | 3515
-> +++++++++++++++++++++++++++++++++++++++++++++++++++
->  5 files changed, 3945 insertions(+), 2 deletions(-)
->  create mode 100644 include/use-case.h
->  create mode 100644 src/use-case.c
->
+does sizeof(pos) return the correct size ?
 
-Can the use case manager discover whether the green/pink jack in front panel
-can be used independent of  those audio jacks in rear panel for HDA-Intel in
-desktop pc ?
+why input parameter "frames" can be modified ?
 
-How about those hardware mixing sound card ?
-e.g. emu10k1 allow the user to output stereo to the selected  jacks (front ,
-rear, .... )
+        frames = f;
+
+
+
+static snd_pcm_sframes_t snd_pcm_multi_rewind(snd_pcm_t *pcm,
+snd_pcm_uframes_t frames)
+{
+    snd_pcm_multi_t *multi = pcm->private_data;
+    unsigned int i;
+    snd_pcm_uframes_t pos[multi->slaves_count];
+    memset(pos, 0, sizeof(pos));
+    for (i = 0; i < multi->slaves_count; ++i) {
+        snd_pcm_t *slave_i = multi->slaves[i].pcm;
+        snd_pcm_sframes_t f = snd_pcm_rewind(slave_i, frames);
+        if (f < 0)
+            return f;
+        pos[i] = f;
+        frames = f;
+    }
+    /* Realign the pointers */
+    for (i = 0; i < multi->slaves_count; ++i) {
+        snd_pcm_t *slave_i = multi->slaves[i].pcm;
+        snd_pcm_uframes_t f = pos[i] - frames;
+        snd_pcm_sframes_t result;
+        if (f > 0) {
+            result = INTERNAL(snd_pcm_forward)(slave_i, f);
+            if (result < 0)
+                return result;
+            if ((snd_pcm_uframes_t)result != f)
+                return -EIO;
+        }
+    }
+    return frames;
+}
