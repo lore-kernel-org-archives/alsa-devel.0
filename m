@@ -1,36 +1,38 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Install Infrasonic Amon on Ubuntu?
-Date: Tue, 24 Aug 2010 09:41:18 +0200
-Message-ID: <4C73779E.6080504@ladisch.de>
-References: <AANLkTinJ4CwMghjwx+LO0c+J0X5awCyC55FogvvmKcnC@mail.gmail.com>
+From: Oliver Neukum <oneukum-l3A5Bk7waGM@public.gmane.org>
+Subject: Re: Problem with USB Class 2 Audio Driver
+Date: Tue, 24 Aug 2010 09:52:59 +0200
+Message-ID: <201008240952.59903.oneukum@suse.de>
+References: <054801cb40c9$70349710$509dc530$@com> <4C72DB6A.5080601@cinti.net> <20100824070601.GK17833@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 325CC24632
-	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Aug 2010 09:41:11 +0200 (CEST)
-In-Reply-To: <AANLkTinJ4CwMghjwx+LO0c+J0X5awCyC55FogvvmKcnC@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?QWxiZXJ0byBNb2xpbmEgRMOtYXo=?= <albertomolina.dz@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20100824070601.GK17833-ahpEBR4enfnCULTFXS99ULNAH6kLmebB@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Daniel Mack <daniel-rDUAYElUppE@public.gmane.org>
+Cc: "J. Gordon Rankin" <waudio-P3U7sUXGDiZeoWH0uzbU5w@public.gmane.org>, Demian Martin <demianm_1-/E1597aS9LQAvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-QWxiZXJ0byBNb2xpbmEgRMOtYXogd3JvdGU6Cj4gSSBoYXZlIGEgSW5mcmFzb25pYyBBbW9uIHVz
-YiBhdWRpbyBpbnRlcmZhY2UsIGJ1dCBJIENhbid0IHVzZSBpdCBpbiB1YnVudHUKPiBiZWFjdXNl
-IEkgY2FuJ3QgaW5zdGFsbCBpdC4KCldoYXQgZG8geW91IG1lYW4gd2l0aCAiY2FuJ3QgaW5zdGFs
-bCI/ICBEb2VzIHRoZSBjb21wdXRlciBub3QgcmVjb2duaXplCnRoZSBVU0IgZGV2aWNlIChzZWUg
-dGhlIG91dHB1dCBvZiBsc3VzYik/ICBJcyB0aGVyZSBubyBzb3VuZCBjYXJkIGZvcgp0aGlzIGRl
-dmljZSAoc2VlIHRoZSBvdXRwdXQgb2YgImFwbGF5IC1sIik/CgoKUmVnYXJkcywKQ2xlbWVucwpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Am Dienstag, 24. August 2010, 09:06:02 schrieb Daniel Mack:
+> On Mon, Aug 23, 2010 at 04:34:50PM -0400, J. Gordon Rankin wrote:
+> > Part of the problem could be that everything is working
+> > synchronously. The reading of the USB drive and the outputting to
+> > the USB converter are both happening  in sync because the
+> > application would work this way.
+> 
+> True. But for the USB side of the story, there is a reserved part of the
+> bandwidth for isochronous (real-time) data which is guaranteed for
+> exacty such scenarios, so bulk data bursts wont't kill the stream.
+
+Yes, but note that this works one-way. The audio can still starve the disk.
+You need to check in the device descriptors, how much bandwidth
+the audio device will take. Then you need to compute whether the
+rest left to the disk is enough. 
+
+	Regards
+		Oliver
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
