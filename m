@@ -1,49 +1,46 @@
-From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Subject: Re: Problem with USB Class 2 Audio Driver
-Date: Tue, 24 Aug 2010 10:56:05 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1008241050320.1652-100000@iolanthe.rowland.org>
-References: <20100823191209.GF17833@buzzloop.caiaq.de>
+From: Adam Rosenberg <adam@alcorn.com>
+Subject: Re: using plug for sample format conversion
+Date: Tue, 24 Aug 2010 11:17:33 -0400
+Message-ID: <AANLkTimHu1QqsTwM8zQ1cz2ho-aym3h4_tv0hz0bRi2n@mail.gmail.com>
+References: <AANLkTik=MskE7rGhBmuyDtJTe5BAie7AckiANrheJ8Qi@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20100823191209.GF17833-ahpEBR4enfnCULTFXS99ULNAH6kLmebB@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Daniel Mack <daniel-rDUAYElUppE@public.gmane.org>
-Cc: Demian Martin <demianm_1-/E1597aS9LQAvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "'J. Gordon Rankin'" <waudio-P3U7sUXGDiZeoWH0uzbU5w@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 5151C24382
+	for <alsa-devel@alsa-project.org>;
+	Tue, 24 Aug 2010 17:17:34 +0200 (CEST)
+Received: by vws20 with SMTP id 20so6295851vws.38
+	for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2010 08:17:33 -0700 (PDT)
+In-Reply-To: <AANLkTik=MskE7rGhBmuyDtJTe5BAie7AckiANrheJ8Qi@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 23 Aug 2010, Daniel Mack wrote:
+I have a few other things going on at the office but here is a month
+late status to close out this thread:
 
-> Hi,
-> 
-> FWIW, I currently have no clue what could be the reason for this issue.
-> I copied the linux-usb mailing list, maybe anyone over there has an
-> idea.
-> 
-> Summary is: Demian is trying to play back an audio file over an USB
-> connected soundcard, and the file itself is also stored on a media
-> connected via USB. The transfer alone seems to be reasonably fast
-> (tested with 'dd'), and the card itself also works fine (tested with a
-> file stored on a different media), but the combination of them both
-> fails. At least for high sample rates - iow, high data throughput.
-> 
-> Could there be anything wrong with the isochronous bandwith reservation?
+I see now that it fails with S16_LE because of this:
 
-I doubt it.  But we have seen reports of problems before from people 
-trying to do high-bandwidth transfers to multiple devices concurrently.
+ACCESS = 0000000000000007 -> 0000000000000000
 
-To start, let's see the "lsusb -v" output for the audio card and the
-storage device, together with the dmesg log showing the two devices
-being plugged in.
+when it works using S32_LE is shows this:
 
-For tracking down the exact problem, it will help to have a usbmon
-trace showing what happens during playback.  (Stop the playback after
-the first underrun occurs.)  Instructions are in
-Documentation/usb/usbmon.txt.
+ACCESS = 0000000000000008 -> 0000000000000008
 
-Alan Stern
+because of this issue I decided to implement S16_LE support in my
+driver directly.  This turned out to just be a workaround though as
+the real problem seems to be in the organization of the actual driver.
+ I will send a separate message to alsa-devel about this.
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+Adam
