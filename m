@@ -1,22 +1,20 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: Re: [PATCH] ALSA: HDA: Add Sony VAIO quirk for ALC269
-Date: Tue, 24 Aug 2010 10:29:00 +0200
-Message-ID: <1282638540.5459.0.camel@mattotaupa>
-References: <4C736D35.6000003@canonical.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 0/3] alsa-lib: UCM - Use Case Manager
+Date: Tue, 24 Aug 2010 10:09:48 +0100
+Message-ID: <1282640988.3053.43.camel@odin>
+References: <1282580239-10549-1-git-send-email-lrg@slimlogic.co.uk>
+	<alpine.LNX.2.00.1008231907170.10278@eeebox2.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9142608983423576993=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0FCB124634
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 647E824663
 	for <alsa-devel@alsa-project.org>;
-	Tue, 24 Aug 2010 10:29:07 +0200 (CEST)
-Received: from f053038254.adsl.alicedsl.de ([78.53.38.254]
-	helo=[192.168.178.21])
-	by mail.gw90.de with esmtpsa (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
-	id 1OnosT-00026U-OZ
-	for alsa-devel@alsa-project.org; Tue, 24 Aug 2010 08:29:05 +0000
-In-Reply-To: <4C736D35.6000003@canonical.com>
+	Tue, 24 Aug 2010 11:09:52 +0200 (CEST)
+Received: by wwb17 with SMTP id 17so1384968wwb.20
+	for <alsa-devel@alsa-project.org>; Tue, 24 Aug 2010 02:09:52 -0700 (PDT)
+In-Reply-To: <alpine.LNX.2.00.1008231907170.10278@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,57 +24,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2010-08-23 at 19:47 +0200, Jaroslav Kysela wrote:
+> On Mon, 23 Aug 2010, Liam Girdwood wrote:
+> 
+> > This patch series follows on from the RFC and adds sound card hardware Use Case
+> > Management support to alsa-lib.
+> 
+> Liam, can you give a URL for anonymous GIT repository with these patches?
+> 
 
---===============9142608983423576993==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-+rhyM3RRYvlcA9a9MYKS"
+There is also a testing tool called alsaucm in the ucm-upstream branch
+of the alsa-utils git repo here :-
 
+git://git.slimlogic.co.uk/alsa-utils.git
 
---=-+rhyM3RRYvlcA9a9MYKS
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+This will probably be useful if you are testing your ideas.
 
-Am Dienstag, den 24.08.2010, 08:56 +0200 schrieb David Henningsson:
-> The attached patch enables playback on a Sony VAIO machine.
->=20
-> References:
-> http://launchpadlibrarian.net/53762567/Card0.Codecs.codec.0.txt
-> http://launchpadlibrarian.net/53762571/PciMultimedia.txt
-> https://bugs.launchpad.net/bugs/618271
+There are also some initial configuration files here :-
 
-Maybe add these references to the commit message too?
+git://git.slimlogic.co.uk/alsa-ucm-conf.git
 
+> Unfortunately, I have many ideas to improve the API before I can approve 
+> or recommend the inclusion to the alsa-lib's tree.
+> 
 
-Thanks,
+I wish you had shared your API ideas with us at the time of the RFC. A
+lot of time and effort has since went into UCM development :-/
 
-Paul
+Can you share your ideas atm, or do you have some patches planned ?
 
---=-+rhyM3RRYvlcA9a9MYKS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
+Thanks
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEABECAAYFAkxzgsYACgkQPX1aK2wOHVglogCeLcbW8AQIbTLB/DCogYC351iS
-u20AmwUTSUvOV25DBHulEl8L0wOMEQyr
-=FHUB
------END PGP SIGNATURE-----
-
---=-+rhyM3RRYvlcA9a9MYKS--
-
-
---===============9142608983423576993==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============9142608983423576993==--
+Liam
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
