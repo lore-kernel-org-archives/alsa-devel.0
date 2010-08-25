@@ -1,18 +1,20 @@
-From: Keith Chew <keith.chew@gmail.com>
-Subject: 5.1 surround on 3 jacks (retasking)
-Date: Thu, 26 Aug 2010 07:45:45 +1200
-Message-ID: <AANLkTin3DKSRuUZwARAadMTVPTrj17eHK8557bCsb3YM@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: explicit commandline control of speakers vs
+ headphone output
+Date: Thu, 26 Aug 2010 06:48:34 +0800
+Message-ID: <AANLkTi=8tUSmD+h4oUODAWk7xU63Mb66FU_7N4OxgxFz@mail.gmail.com>
+References: <858637.27362.qm@web50708.mail.re2.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id B56D224699
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 08B1C24778
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Aug 2010 21:45:46 +0200 (CEST)
-Received: by iwn4 with SMTP id 4so825985iwn.38
-	for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2010 12:45:45 -0700 (PDT)
+	Thu, 26 Aug 2010 00:48:35 +0200 (CEST)
+Received: by fxm11 with SMTP id 11so800143fxm.38
+	for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2010 15:48:34 -0700 (PDT)
+In-Reply-To: <858637.27362.qm@web50708.mail.re2.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,26 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+2010/8/26 Eric Holstege <eric_holstege@yahoo.com>
 
-I have a small-form factor PC (KingYoung brand, model S645), which has
-3 jacks connected to a Realtek ALC888 chipset. I have confirmed with
-the manufacturers the pin outs:
-1) The front panel left side phone jack : Codec Line2-L & Line2-R (pin
-14 & pin 15)
-2) The front panel right side phone jack : Codec Mic2-L & Mic2-R (pin
-16 & pin 17)
-3) The back panel phone jack : Codec Front-L & Front-R (pin 35 & pin 36)
+> It appears that when I have a headphone plugged in, the speakers are
+> automatically disabled and the output sound is sent to the headphone.
+>
+> However, I want to explicitly control (e.g. via a script or commandline
+> - not a GUI) whether the sound from an (arbitrary) application is going
+> to the speakers or to the headphone even when the headphone is plugged in.
+> (When I say "arbitrary application" that means I can't alter the code of
+> the application itself).
+>
+> Is this possible?
+>
+> (I have heard that ALSA mutes the speakers when it detects plugged-in
+> headphones. Is switching between them as simple as using e.g. amixer(1)
+> to unmute the speakers and mute the headphones and vice versa, or is
+> there more to it.)
+>
+>
+>
+it is really hardware dependent
 
-I would like to update patch_realtek.c in alsa-drivers, to output 5.1
-surround using these 3 jacks.
+Which on-board sound driver are you using ?
 
-Can someone give me some guidance on how I can do this? I have looked
-and studied patch_realtek as much as I can, I just need some help in
-getting started.
+auto mute is a specific feature for notebook in old day
 
-Regards
-Keith
+For the desktop,  the front panel audio connector of the AC97' chassis and
+HDA chassis
+
+http://www.intel.com/support/motherboards/desktop/sb/cs-015851.htm
+
+For some HDA codec, the headphone (front panel green jack) can be used
+indpendent of the rear panel jacks on desktop
