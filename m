@@ -1,20 +1,19 @@
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH 1/6] ASoC: ad1980: Stay in 20bit mode for
-	architectures	other than blackfin
-Date: Wed, 25 Aug 2010 07:03:32 +0200
-Message-ID: <20100825050332.GA14033@pengutronix.de>
-References: <1282655384-13357-1-git-send-email-u.kleine-koenig@pengutronix.de>
-	<0F1B54C89D5F954D8535DB252AF412FA06C36392@chinexm1.ad.analog.com>
+From: Sven Zeisberg <sven.zeisberg@googlemail.com>
+Subject: How to transfer more than 2 channels between i.MX25 &
+ AD1938 using SSI?
+Date: Wed, 25 Aug 2010 16:39:51 +0200
+Message-ID: <4C752B37.40601@googlemail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 4E1D110380B
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 090D71037FB
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Aug 2010 07:03:35 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <0F1B54C89D5F954D8535DB252AF412FA06C36392@chinexm1.ad.analog.com>
+	Wed, 25 Aug 2010 16:39:59 +0200 (CEST)
+Received: by bwz4 with SMTP id 4so617778bwz.38
+	for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2010 07:39:59 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,24 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Zhang, Sonic" <Sonic.Zhang@analog.com>
-Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sonic,
+  Hi,
 
-On Wed, Aug 25, 2010 at 11:28:48AM +0800, Zhang, Sonic wrote:
-> Hi Sascha,
-s/Sascha/Uwe/
- =
+has anybody succeeded to transfer more than 2 audio channels between 
+i.MX25 and a CODEC throught the i.MX25 SSI Port?
 
-> The ad1980 from ADI is obsolete. We have no plan to maintain this
-> driver any more.
-I assume this means you don't object my patches to be merged?!
+We have succeeded to set the CODEC (AD1938) as Master to the required 
+mode (TDM with 8 Timeslots and 32 Bit per Timeslot). However, as soon as 
+we start to play a wav file with aplay, we can see on the logic analyzer 
+that the data format on the SSI lines is reset to a stereo mode (2 
+channels with frame sync changing level between channels).
 
-Uwe
+In the imx-ssi driver, I can see that .channel_max = 2 - therefore my 
+question: does this driver support more than two channels at all?
 
--- =
-
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+BR
+Sven
