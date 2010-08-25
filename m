@@ -1,19 +1,17 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 0/3] alsa-lib: UCM - Use Case Manager
-Date: Wed, 25 Aug 2010 10:28:14 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1008250925540.10278@eeebox2.perex-int.cz>
-References: <1282580239-10549-1-git-send-email-lrg@slimlogic.co.uk>
-	<alpine.LNX.2.00.1008231907170.10278@eeebox2.perex-int.cz>
-	<1282640988.3053.43.camel@odin>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: HDA: Add Sony VAIO quirk for ALC269
+Date: Wed, 25 Aug 2010 10:33:13 +0200
+Message-ID: <4C74D549.4000705@canonical.com>
+References: <4C736D35.6000003@canonical.com>
+	<1282638540.5459.0.camel@mattotaupa>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------050802040905060106010704"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id E575210384F
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5132410384F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 25 Aug 2010 10:28:14 +0200 (CEST)
-In-Reply-To: <1282640988.3053.43.camel@odin>
+	Wed, 25 Aug 2010 10:33:14 +0200 (CEST)
+In-Reply-To: <1282638540.5459.0.camel@mattotaupa>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,66 +21,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: Paul Menzel <paulepanter@users.sourceforge.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 24 Aug 2010, Liam Girdwood wrote:
+This is a multi-part message in MIME format.
+--------------050802040905060106010704
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> On Mon, 2010-08-23 at 19:47 +0200, Jaroslav Kysela wrote:
->
->> Unfortunately, I have many ideas to improve the API before I can approve
->> or recommend the inclusion to the alsa-lib's tree.
+2010-08-24 10:29, Paul Menzel skrev:
+> Am Dienstag, den 24.08.2010, 08:56 +0200 schrieb David Henningsson:
+>> The attached patch enables playback on a Sony VAIO machine.
 >>
->
-> I wish you had shared your API ideas with us at the time of the RFC. A
-> lot of time and effort has since went into UCM development :-/
+>> References:
+>> http://launchpadlibrarian.net/53762567/Card0.Codecs.codec.0.txt
+>> http://launchpadlibrarian.net/53762571/PciMultimedia.txt
+>> https://bugs.launchpad.net/bugs/618271
+> 
+> Maybe add these references to the commit message too?
 
-I too. My big problem is the lack of time.
+Sure. I'll add the buglink only, since that one in turn points to the
+other ones. Does this one look better?
 
-I tried to rethink the API to be more universal for future extensions (but 
-the implementation will not dramatically change and the mechanisms you 
-want to expose are not touched at all). I just wanted to add the 
-possibility to create the virtual cards combining resources from any 
-PCM/control/mixer device available in system. The proper device evaluation 
-and mixer control assignments is something which is wanted by PulseAudio 
-developers.
+Learning slowly, aren't I? :-)
 
-My proposed header file with reduced function set but not reduced 
-functionality is available at:
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
 
-http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=include/use-case.h;h=33d480f66d000fa7c86367c68b98bdaad9217a74;hb=fcc9adb26058667656277ba92032ba7e0b00261c
+--------------050802040905060106010704
+Content-Type: text/x-patch;
+ name="0004-Add-Sony-VAIO-quirk.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0004-Add-Sony-VAIO-quirk.patch"
 
-The syntax of your proposed files is very close to the other alsa-lib's 
-syntax. For example:
+>From 1130bd522e5e57aeb4ee847f64ed8e3be32665be Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Mon, 23 Aug 2010 08:14:35 +0200
+Subject: [PATCH] ALSA: HDA: Add Sony VAIO quirk for ALC269
 
-SectionModifier
- 	Name "Capture Voice"
- 	EnableSequence
- 		seq1 1
- 	EndSequence
- 	QoS Voice
-EndSection
+BugLink: http://launchpad.net/bugs/618271
+Cc: stable@kernel.org
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-Can be written in alsa-lib's syntax:
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index a4dd045..627bf99 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -14467,6 +14467,7 @@ static const struct alc_fixup alc269_fixups[] = {
+ 
+ static struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x104d, 0x9071, "Sony VAIO", ALC269_FIXUP_SONY_VAIO),
++	SND_PCI_QUIRK(0x104d, 0x9077, "Sony VAIO", ALC269_FIXUP_SONY_VAIO),
+ 	{}
+ };
+ 
+-- 
+1.7.0.4
 
-SectionModifier."Capture Voice" [
- 	EnableSequence [
- 		seq1 1
- 	]
- 	QoS Voice
-]
 
-So I'm thinking to recode all parsers to use the alsa-lib configuration 
-parsers. As bonus, the alsa-lib configuration routines give us some 
-runtime evaluation and possibility to reference (include) other files.
+--------------050802040905060106010704
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Next step may be to support the 'amixer' like syntax for the control and 
-mixer element handling.
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+--------------050802040905060106010704--
