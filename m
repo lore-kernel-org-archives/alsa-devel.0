@@ -1,16 +1,17 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH] ARM: S3C64XX: Fix fallthrough bug in i2sv3
-	gpio configuration, improve logging
-Date: Thu, 26 Aug 2010 16:07:23 +0100
-Message-ID: <1282835243-20493-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Alison Gravley <rdhddmazoku@gmail.com>
+Subject: EEE PC 1001P Driver Issues
+Date: Thu, 26 Aug 2010 11:10:06 -0400
+Message-ID: <AANLkTikW4hJjuVVCHx0wir4CGyVsUoV70Y1GpUmeCpSa@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7B3902498C
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id B6F122498F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Aug 2010 17:07:14 +0200 (CEST)
+	Thu, 26 Aug 2010 17:10:07 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so1316421ewy.38
+	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2010 08:10:07 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,47 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-If the platform device id is 1, the code will fallthrough the
-case and incorrectly return -EINVAL. Add a break to avoid fallthrough.
+ALSA Info is at:
+http://www.alsa-project.org/db/?f=49ae352709904da7e3201343ec639bdaf5c8563a
 
-Make logging slightly more verbose by including the device id.
+Issues:
+When plugging in headhpones, it plays audio through both them and speaker.
+Have to manually mute one or the other. Built in Mic is also buggy and does
+not work reliably, though external ones through mic jack work ok. Have had
+same issues regardless of distro it seems. If you need any more information,
+feel free to ask.
 
-This is a fix for a change in ASoC multi-component as well.
-
-Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
----
- arch/arm/mach-s3c64xx/dev-audio.c |    7 +++++--
- 1 files changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm/mach-s3c64xx/dev-audio.c b/arch/arm/mach-s3c64xx/dev-audio.c
-index f094258..3838335 100644
---- a/arch/arm/mach-s3c64xx/dev-audio.c
-+++ b/arch/arm/mach-s3c64xx/dev-audio.c
-@@ -43,8 +43,10 @@ static int s3c64xx_i2sv3_cfg_gpio(struct platform_device *pdev)
- 		s3c_gpio_cfgpin(S3C64XX_GPE(2), S3C64XX_GPE2_I2S1_LRCLK);
- 		s3c_gpio_cfgpin(S3C64XX_GPE(3), S3C64XX_GPE3_I2S1_DI);
- 		s3c_gpio_cfgpin(S3C64XX_GPE(4), S3C64XX_GPE4_I2S1_D0);
-+		break;
- 	default:
--		printk(KERN_DEBUG "Invalid I2S Controller number!");
-+		printk(KERN_DEBUG "Invalid I2S Controller number: %d\n",
-+			pdev->id);
- 		return -EINVAL;
- 	}
- 
-@@ -184,7 +186,8 @@ static int s3c64xx_pcm_cfg_gpio(struct platform_device *pdev)
- 		s3c_gpio_cfgpin(S3C64XX_GPE(4), S3C64XX_GPE4_PCM1_SOUT);
- 		break;
- 	default:
--		printk(KERN_DEBUG "Invalid PCM Controller number!");
-+		printk(KERN_DEBUG "Invalid PCM Controller number: %d\n",
-+			pdev->id);
- 		return -EINVAL;
- 	}
- 
 -- 
-1.7.2.2
+Alison
