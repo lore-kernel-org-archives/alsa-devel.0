@@ -1,18 +1,17 @@
 From: Sven Zeisberg <sven.zeisberg@googlemail.com>
-Subject: How to transfer more than 2 channels between i.MX25 &
- AD1938 using SSI?
-Date: Thu, 26 Aug 2010 17:30:18 +0200
-Message-ID: <4C76888A.50409@googlemail.com>
+Subject: imx-ssi in master mode?
+Date: Thu, 26 Aug 2010 17:30:43 +0200
+Message-ID: <4C7688A3.9090700@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 34D0A24997
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 254F124997
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Aug 2010 17:30:29 +0200 (CEST)
-Received: by bwz4 with SMTP id 4so1276324bwz.38
-	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2010 08:30:29 -0700 (PDT)
+	Thu, 26 Aug 2010 17:30:53 +0200 (CEST)
+Received: by mail-bw0-f51.google.com with SMTP id 4so1276324bwz.38
+	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2010 08:30:53 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,19 +24,16 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-  Hi,
+  Hi
 
-has anybody succeeded to transfer more than 2 audio channels between 
-i.MX25 and a CODEC throught the i.MX25 SSI Port?
+I found that the i.MX25 can not transfer multichannels frames through 
+SSI when it is set up as slave.
+(when the i.MX25 SSI is set up as slave, the SSI is set to "normal" mode 
+in which only one word per frame is transfered)
 
-We have succeeded to set the CODEC (AD1938) as Master to the required 
-mode (TDM with 8 Timeslots and 32 Bit per Timeslot). However, as soon as 
-we start to play a wav file with aplay, we can see on the logic analyzer 
-that the data format on the SSI lines is reset to a stereo mode (2 
-channels with frame sync changing level between channels).
-
-In the imx-ssi driver, I can see that .channel_max = 2 - therefore my 
-question: does this driver support more than two channels at all?
+Now I'm wondering if anybody has successfully used a codec with the 
+i.MX25 SSI set up as Master. When we do this here, we can see that the 
+i.MX25 is generating the bit clock but no frame sync.
 
 BR
 Sven
