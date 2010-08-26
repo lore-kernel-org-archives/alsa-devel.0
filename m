@@ -1,22 +1,18 @@
-From: Randolph Chung <rchung42@gmail.com>
-Subject: Re: Questions about alsa driver for i.Mx27 + wm8974:
- playback time shorter than the original record time
-Date: Thu, 26 Aug 2010 22:13:37 +0800
-Message-ID: <AANLkTin7TWwLH1B9WGebA0_wL_qLK6KQo+FENs7doQg3@mail.gmail.com>
-References: <1282824338.1106.44.camel@UT43>
-	<20100826124137.GA3509@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: ice1712 and the delta 1010
+Date: Thu, 26 Aug 2010 16:55:32 +0200
+Message-ID: <4C768064.5050207@ladisch.de>
+References: <20100826065854.519ee1d3@debussy>	<4C7665CC.5080302@ladisch.de>
+	<20100826092713.3debd6c1@debussy>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id AC57F103836
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 0F549103854
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Aug 2010 16:13:38 +0200 (CEST)
-Received: by yxj4 with SMTP id 4so603557yxj.38
-	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2010 07:13:38 -0700 (PDT)
-In-Reply-To: <20100826124137.GA3509@opensource.wolfsonmicro.com>
+	Thu, 26 Aug 2010 16:55:32 +0200 (CEST)
+In-Reply-To: <20100826092713.3debd6c1@debussy>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,21 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Jie Jiang <jjinfo@nudt.edu.cn>
-Cc: alsa-devel@alsa-project.org
+To: David Santamauro <david.santamauro@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->> What's the possible reason causing the incorrect faster playback speed?
->> Any suggestion is appreciated.
->
-> Normally this will be the result of either an incorrect frame rate or
-> the hardware trying to play back mono data as stereo (which will cause
-> data to be consumed as twice the expected rate).
+David Santamauro wrote:
+> Clemens Ladisch <clemens@ladisch.de> wrote:
+> > Does the 32-bit Linux use the same driver version?
+> 
+> To be honest, I'm not sure exactly how to check. They are the latest
+> versions of fedora 11 (32-bit) and fedora 12 (64-bit).
 
-Although I have only seen this on capture, another possible reason for
-this is due to the way the SSI registers are setup on the MX27.
+> Linux beethoven 2.6.29.6-1.rt23.4.fc11.ccrma.i586.rt
+> Linux debussy 2.6.31.12-1.rt21.1.fc12.ccrma.x86_64.rt
 
-Eric B=E9nard's patches that are in the latest kernel fixed a similar
-problem for me. The eukrea audio machine driver was a good reference.
+That's different.
 
-randolph
+> > If yes, then it's possible that the 32-bit and 64-bit kernels
+> > configure the PC differently; for example, there might be noise on
+> > the power line due to a different kind of power management.
+> 
+> another interesting angle... I thought it might be power or some kind
+> of internal noise. How could I pursue that further?
+
+Try running something on all CPU cores so that it doesn't switch into
+power saving mode.
+
+
+Regards,
+Clemens
