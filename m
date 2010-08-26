@@ -1,20 +1,23 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH] omap: rx51: Remove redefinition of
-	rx51_aic3x_data
-Date: Thu, 26 Aug 2010 13:49:30 -0700
-Message-ID: <20100826204929.GC12567@atomide.com>
-References: <1282548905-10287-1-git-send-email-jhnikula@gmail.com>
-	<20100823095851.GC6061@rakim.wolfsonmicro.main>
+From: Keith Chew <keith.chew@gmail.com>
+Subject: Re: 5.1 surround on 3 jacks (retasking)
+Date: Fri, 27 Aug 2010 11:19:50 +1200
+Message-ID: <AANLkTimRwKPFohM46pOKXDmGbcbnCuGWX1VwwcGbk+6o@mail.gmail.com>
+References: <AANLkTin3DKSRuUZwARAadMTVPTrj17eHK8557bCsb3YM@mail.gmail.com>
+	<4C75A7D9.1030604@canonical.com>
+	<AANLkTinE8sjRWWsHYJYq1w_rLJu9Y91J4gs7k-Q_M3j-@mail.gmail.com>
+	<4C76100C.3040205@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mho-01-ewr.mailhop.org (mho-01-ewr.mailhop.org [204.13.248.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id D74AC243A6
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id D8D4E24492
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Aug 2010 22:49:37 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100823095851.GC6061@rakim.wolfsonmicro.main>
+	Fri, 27 Aug 2010 01:19:51 +0200 (CEST)
+Received: by iwn4 with SMTP id 4so1968213iwn.38
+	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2010 16:19:50 -0700 (PDT)
+In-Reply-To: <4C76100C.3040205@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,20 +27,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-* Mark Brown <broonie@opensource.wolfsonmicro.com> [100823 02:51]:
-> On Mon, Aug 23, 2010 at 10:35:05AM +0300, Jarkko Nikula wrote:
-> > Redefinition of rx51_aic3x_data got introduced when merging upstread changes
-> > for 2.6.36 and ASoC Multi-Component Support.
-> > 
-> > This must go together with multi-component commit f0fba2a.
-> > 
-> > Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-> > Cc: Tony Lindgren <tony@atomide.com>
-> 
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> I'm not 100% sure, but I think that HDA-analyzer approach will probably
+> not work here as you'll need a complete codec reconfig. After the
+> reconfig, you shouldn't even have a "Line in" in alsamixer, instead you
+> should have volume controls for "rear" and "center/lfe".
+> Also make sure that the pin configs are configured as "front", "rear",
+> and "center/lfe".
+>
 
-Acked-by: Tony Lindgren <tony@atomide.com>
+Hi David
+
+It is now working! I couldn't find documentation on how to determine
+the correct pin config values, but found in patch_realtek.c the values
+for rear, clfe and front. So, I executed this:
+
+echo 0x14 0x01014510 > /sys/class/sound/hwC0D2/user_pin_configs
+echo 0x19 0x01011012 > /sys/class/sound/hwC0D2/user_pin_configs
+echo 0x1b 0x01016011 > /sys/class/sound/hwC0D2/user_pin_configs
+echo 1 > /sys/class/sound/hwC0D2/reconfig
+
+And 6 channels is now working perfectly. I have also tried the early
+patch method, and that works too!
+
+Thanks again for all your help.
+
+Regards
+Keith
