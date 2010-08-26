@@ -1,18 +1,17 @@
-From: David Santamauro <david.santamauro@gmail.com>
-Subject: ice1712 and the delta 1010
-Date: Thu, 26 Aug 2010 06:58:54 -0400
-Message-ID: <20100826065854.519ee1d3@debussy>
+From: Jie Jiang <jjinfo@nudt.edu.cn>
+Subject: Questions about alsa driver for i.Mx27 + wm8974:
+ playback time shorter than the original record time
+Date: Thu, 26 Aug 2010 20:05:38 +0800
+Message-ID: <1282824338.1106.44.camel@UT43>
+Reply-To: jjinfo@nudt.edu.cn
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
-	[209.85.216.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA1111037F3
+Received: from nudt.edu.cn (mail.nudt.edu.cn [61.187.54.11])
+	by alsa0.perex.cz (Postfix) with SMTP id 254A924965
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Aug 2010 13:02:04 +0200 (CEST)
-Received: by qwj9 with SMTP id 9so1486004qwj.38
-	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2010 04:02:04 -0700 (PDT)
+	Thu, 26 Aug 2010 14:09:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,69 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.orgalsa-devel@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-Hi all,
+I have been working on developing alsa driver for wm8974 codec on i.mx27
+platform. The wm8974 codec is connected to i.mx27 via SSI1 port. And the
+OS kernel is linux-2.6.19.2.By now, the driver modules can be
+successfully built and installed/loaded into kernel. 
 
-this is my first post as I was guided here from the linux audio user
-list to follow up on a problem I've been having with my delta 1010.
+I tested the driver playback function with a wav file (8KHz, 16-bit,
+mono) recorded by Audacity on my laptop.The playback of this wave file
+on my laptop lasts about 51 seconds. But when I play it (via aplay) on
+the mx27 platform, the playback time lasts about 34 seconds, and the
+playback speed is quite faster than the normal speed and the speaker
+output sounds like being compressed.
 
-Background:
-Since upgrading my audio PC to 64-bit, the delta 1010 analog inputs
-emit a constant 'hiss' -36 -30dB. Analog outputs and digital ins and
-outs are fine. The delta 1010 from a hardware perspective is fine as I
-tested it on the same pc hardware under windows7 64-bit.
+In my driver, wm8974 works in I2S master mode and mx27 ssi1 is
+configured as I2S slave. 
 
-So far, I have tested it in a 32-bit fedora, 32-bit windows vista and
-64-bit windows7 all successfully. This problem arises only in 64-bit
-fedora.
+The configuration of wm9874 audio interface register is 0x10, which set
+wm8974 as I2S master, word length is 16bits, normal bclk and frame clock
+polarity.
 
-My kernel:
-Linux 2.6.31.12-1.rt21.1.fc12.ccrma.x86_64.rt
+The configuration of mx27 ssi1 transmission channel is as follows(using
+ssi api from kernel 2.6.19.2):
 
-My alsa packages and versions:
-alsa-lib.x86_64                          1.0.23-1.fc12
-alsa-lib-devel.x86_64                    1.0.23-1.fc12
-alsa-tools.x86_64                        1.0.22-1.1.fc12.ccrma
-alsa-utils.x86_64                        1.0.23-3.fc12
+ssi_tx_shift_direction(ssi, 0);	// MSB first shift   
+ssi_tx_clock_polarity(ssi, 0);	// clock on RISING edge   
+ssi_tx_frame_sync_active(ssi, 1);// frame sync LOW active   
+ssi_tx_early_frame_sync(ssi, 1);//init frame sync one bit before data
+ssi_tx_frame_sync_length(ssi, 0);  //one word length frame
+ssi_tx_bit0(ssi, 1); // shifting w.r.t. bit 0 of TXSR   
+ssi_tx_word_length(ssi, 0x7);  //16bit WL 
+ssi_tx_frame_rate(ssi, 2); // DC[4:0] non-zero
+ssi_tx_clock_direction(ssi, 0); // external bit clock    
+ssi_tx_frame_direction(ssi, 0); // external frame sync   
+ssi_tx_clock_divide_by_two(ssi, 0);
+ssi_tx_clock_prescaler(ssi, 0);
+ssi_tx_fifo_empty_watermark(ssi, 0, TX_WATERMARK);//TX_WATERMARK=4
+ssi_tx_fifo_enable(ssi, 0, 1); // tx fifo0 enable   
+ssi_transmit_enable(ssi, 1); // transmit section enable   
+ssi_interrupt_enable(ssi, ssi_tx_dma_interrupt_enable); // enable tx dma
+ssi_interrupt_enable(ssi, ssi_tx_fifo_0_empty);
+ssi_interrupt_enable(ssi, ssi_tx_fifo_1_empty);
+ssi_i2s_mode(ssi, 2); //i2s slave
 
-My modinfo:
+Here I'm not very sure about the setting of frame rate and frame sync
+length.  Is the above setting right?  But even I set frame rate to 1, it
+does not make any difference. 
 
-$ modinfo snd_ice1712
-filename:       /lib/modules/2.6.31.12-1.rt21.1.fc12.ccrma.x86_64.rt/kernel/sound/pci/ice1712/snd-ice1712.ko
-license:        GPL
-description:    ICEnsemble ICE1712 (Envy24)
-author:         Jaroslav Kysela <perex@perex.cz>
-srcversion:     0B183929429B4C5102B7D09
-alias:          pci:v00001412d00001712sv*sd*bc*sc*i*
-depends:
-snd-pcm,snd,snd-i2c,snd-mpu401-uart,snd-ice17xx-ak4xxx,snd-cs8427,snd-ak4xxx-adda,snd-ac97-codec
-vermagic:       2.6.31.12-1.rt21.1.fc12.ccrma.x86_64.rt SMP preempt
-mod_unload parm:           index:Index value for ICE1712 soundcard.
-(array of int) parm:           id:ID string for ICE1712 soundcard.
-(array of charp) parm:           enable:Enable ICE1712 soundcard.
-(array of bool) parm:           omni:Enable Midiman M-Audio Delta Omni
-I/O support. (array of bool) parm:           cs8427_timeout:Define
-reset timeout for cs8427 chip in msec resolution. (array of int)
-parm:           model:Use the given board model. (array of charp)
-parm:           dxr_enable:Enable DXR support for Terratec DMX6FIRE.
-(array of int)
+What's the possible reason causing the incorrect faster playback speed?
+Any suggestion is appreciated.
 
-
-So, my question is simply: has this been reported before, in
-particular regarding the 64-bit ice1712 module?
-
-I'm pretty convinced it is a software/driver 32/64-bit issue based on my
-observations above and confirmation of the same problem under the same
-conditions by another user, but am willing to be corrected.
-
-I'm a pretty competent C/C++ coder but a novice coder in the linux audio
-world so I'd be willing to learn and help from a driver perspective
-given the right direction -- at the least help debug the problem (if it
-is even at the driver level).
-
-Thanks for any input.
-
-David
+Regards,
+Jie Jiang
