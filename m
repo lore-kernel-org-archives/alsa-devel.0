@@ -1,18 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ice1712 and the delta 1010
-Date: Thu, 26 Aug 2010 16:55:32 +0200
-Message-ID: <4C768064.5050207@ladisch.de>
-References: <20100826065854.519ee1d3@debussy>	<4C7665CC.5080302@ladisch.de>
-	<20100826092713.3debd6c1@debussy>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH] ARM: S3C64XX: Fix fallthrough bug in i2sv3
+	gpio configuration, improve logging
+Date: Thu, 26 Aug 2010 16:07:23 +0100
+Message-ID: <1282835243-20493-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 0F549103854
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7B3902498C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Aug 2010 16:55:32 +0200 (CEST)
-In-Reply-To: <20100826092713.3debd6c1@debussy>
+	Thu, 26 Aug 2010 17:07:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,32 +20,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Santamauro <david.santamauro@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-David Santamauro wrote:
-> Clemens Ladisch <clemens@ladisch.de> wrote:
-> > Does the 32-bit Linux use the same driver version?
-> 
-> To be honest, I'm not sure exactly how to check. They are the latest
-> versions of fedora 11 (32-bit) and fedora 12 (64-bit).
+If the platform device id is 1, the code will fallthrough the
+case and incorrectly return -EINVAL. Add a break to avoid fallthrough.
 
-> Linux beethoven 2.6.29.6-1.rt23.4.fc11.ccrma.i586.rt
-> Linux debussy 2.6.31.12-1.rt21.1.fc12.ccrma.x86_64.rt
+Make logging slightly more verbose by including the device id.
 
-That's different.
+This is a fix for a change in ASoC multi-component as well.
 
-> > If yes, then it's possible that the 32-bit and 64-bit kernels
-> > configure the PC differently; for example, there might be noise on
-> > the power line due to a different kind of power management.
-> 
-> another interesting angle... I thought it might be power or some kind
-> of internal noise. How could I pursue that further?
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ arch/arm/mach-s3c64xx/dev-audio.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
 
-Try running something on all CPU cores so that it doesn't switch into
-power saving mode.
-
-
-Regards,
-Clemens
+diff --git a/arch/arm/mach-s3c64xx/dev-audio.c b/arch/arm/mach-s3c64xx/dev-audio.c
+index f094258..3838335 100644
+--- a/arch/arm/mach-s3c64xx/dev-audio.c
++++ b/arch/arm/mach-s3c64xx/dev-audio.c
+@@ -43,8 +43,10 @@ static int s3c64xx_i2sv3_cfg_gpio(struct platform_device *pdev)
+ 		s3c_gpio_cfgpin(S3C64XX_GPE(2), S3C64XX_GPE2_I2S1_LRCLK);
+ 		s3c_gpio_cfgpin(S3C64XX_GPE(3), S3C64XX_GPE3_I2S1_DI);
+ 		s3c_gpio_cfgpin(S3C64XX_GPE(4), S3C64XX_GPE4_I2S1_D0);
++		break;
+ 	default:
+-		printk(KERN_DEBUG "Invalid I2S Controller number!");
++		printk(KERN_DEBUG "Invalid I2S Controller number: %d\n",
++			pdev->id);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -184,7 +186,8 @@ static int s3c64xx_pcm_cfg_gpio(struct platform_device *pdev)
+ 		s3c_gpio_cfgpin(S3C64XX_GPE(4), S3C64XX_GPE4_PCM1_SOUT);
+ 		break;
+ 	default:
+-		printk(KERN_DEBUG "Invalid PCM Controller number!");
++		printk(KERN_DEBUG "Invalid PCM Controller number: %d\n",
++			pdev->id);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+1.7.2.2
