@@ -1,28 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC] ASoC: multi-component: Add optional kcontrol
- prefix name for a DAI link
-Date: Thu, 26 Aug 2010 14:32:29 +0100
-Message-ID: <20100826133229.GA3803@opensource.wolfsonmicro.com>
-References: <20100816135328.077b5ea3.jhnikula@gmail.com>
-	<20100816110902.GA10354@sirena.org.uk>
-	<20100819144451.1d827367.jhnikula@gmail.com>
-	<20100819135413.GA19582@opensource.wolfsonmicro.com>
-	<20100819182049.3ecdd0bc.jhnikula@gmail.com>
-	<20100820115144.451b474f.jhnikula@gmail.com>
-	<20100823152145.GD14504@rakim.wolfsonmicro.main>
-	<20100824102343.4dfaafe1.jhnikula@gmail.com>
-	<20100824101032.GA15278@rakim.wolfsonmicro.main>
-	<20100825135922.5589ba30.jhnikula@gmail.com>
+From: Randolph Chung <rchung42@gmail.com>
+Subject: Re: Questions about alsa driver for i.Mx27 + wm8974:
+ playback time shorter than the original record time
+Date: Thu, 26 Aug 2010 22:13:37 +0800
+Message-ID: <AANLkTin7TWwLH1B9WGebA0_wL_qLK6KQo+FENs7doQg3@mail.gmail.com>
+References: <1282824338.1106.44.camel@UT43>
+	<20100826124137.GA3509@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 08ACD10383B
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id AC57F103836
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Aug 2010 15:32:11 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100825135922.5589ba30.jhnikula@gmail.com>
+	Thu, 26 Aug 2010 16:13:38 +0200 (CEST)
+Received: by yxj4 with SMTP id 4so603557yxj.38
+	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2010 07:13:38 -0700 (PDT)
+In-Reply-To: <20100826124137.GA3509@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,24 +26,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Jie Jiang <jjinfo@nudt.edu.cn>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Aug 25, 2010 at 01:59:22PM +0300, Jarkko Nikula wrote:
+>> What's the possible reason causing the incorrect faster playback speed?
+>> Any suggestion is appreciated.
+>
+> Normally this will be the result of either an incorrect frame rate or
+> the hardware trying to play back mono data as stereo (which will cause
+> data to be consumed as twice the expected rate).
 
-> I went back to original idea that prefixes only kcontrols of codec and
-> doesn't add any new API. So if we can have DAIless codec drivers (i.e.
-> amplifiers) then there is no immediate need for prefixing widgets and
-> routes.
+Although I have only seen this on capture, another possible reason for
+this is due to the way the SSI registers are setup on the MX27.
 
-Note that even DAIless drivers can have routing in them - see WM9090 for
-example.
+Eric B=E9nard's patches that are in the latest kernel fixed a similar
+problem for me. The eukrea audio machine driver was a good reference.
 
-> Cross-device links and DAPM between them remains unsolved as this tries
-> to solve only kcontrol name issue with multiple codecs only.
-
-I really think anything along these lines needs to handle DAPM somehow -
-given that virtually every driver has DAPM support of some kind and
-there are some fairly standard pin names for things it's likely that
-you'll get the same issues there.
+randolph
