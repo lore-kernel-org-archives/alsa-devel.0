@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ARM: S3C64XX: Fix fallthrough bug in i2sv3
- gpio configuration, improve logging
-Date: Thu, 26 Aug 2010 16:21:41 +0100
-Message-ID: <20100826152140.GB4363@opensource.wolfsonmicro.com>
-References: <1282835243-20493-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Sven Zeisberg <sven.zeisberg@googlemail.com>
+Subject: How to transfer more than 2 channels between i.MX25 &
+ AD1938 using SSI?
+Date: Thu, 26 Aug 2010 17:30:18 +0200
+Message-ID: <4C76888A.50409@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6B04A24992
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 34D0A24997
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Aug 2010 17:21:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1282835243-20493-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	Thu, 26 Aug 2010 17:30:29 +0200 (CEST)
+Received: by bwz4 with SMTP id 4so1276324bwz.38
+	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2010 08:30:29 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,13 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 26, 2010 at 04:07:23PM +0100, Dimitris Papastamos wrote:
+  Hi,
 
-> This is a fix for a change in ASoC multi-component as well.
+has anybody succeeded to transfer more than 2 audio channels between 
+i.MX25 and a CODEC throught the i.MX25 SSI Port?
 
-Clarifying from offline discussion: the issue isn't present in mainline,
-it came in with m-c.
+We have succeeded to set the CODEC (AD1938) as Master to the required 
+mode (TDM with 8 Timeslots and 32 Bit per Timeslot). However, as soon as 
+we start to play a wav file with aplay, we can see on the logic analyzer 
+that the data format on the SSI lines is reset to a stereo mode (2 
+channels with frame sync changing level between channels).
+
+In the imx-ssi driver, I can see that .channel_max = 2 - therefore my 
+question: does this driver support more than two channels at all?
+
+BR
+Sven
