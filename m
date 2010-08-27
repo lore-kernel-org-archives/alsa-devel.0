@@ -1,26 +1,21 @@
-From: Keith Chew <keith.chew@gmail.com>
-Subject: Re: 5.1 surround on 3 jacks (retasking)
-Date: Sun, 29 Aug 2010 03:08:36 +1200
-Message-ID: <AANLkTimYykihF=1vvzGhYbHYHPtxVMJK_hND=4hy+L4Z@mail.gmail.com>
-References: <AANLkTin3DKSRuUZwARAadMTVPTrj17eHK8557bCsb3YM@mail.gmail.com>
-	<4C75A7D9.1030604@canonical.com>
-	<AANLkTinE8sjRWWsHYJYq1w_rLJu9Y91J4gs7k-Q_M3j-@mail.gmail.com>
-	<4C76100C.3040205@canonical.com>
-	<AANLkTimRwKPFohM46pOKXDmGbcbnCuGWX1VwwcGbk+6o@mail.gmail.com>
-	<AANLkTinzKoqc7xDgU1r4yL4AxS4OwUPzkwQ3ieJuXA4h@mail.gmail.com>
-	<4C792365.6050308@canonical.com>
+From: VDR User <user.vdr@gmail.com>
+Subject: Re: xine AC3 dropout problem - Please help!
+Date: Fri, 27 Aug 2010 13:03:22 -0700
+Message-ID: <AANLkTimQZz0k-MMWw_rT4v-GwjS7oZy8-8GRLSetf-nF@mail.gmail.com>
+References: <AANLkTim_nj3t6FUY1Qnd=3AXkajELkAGzswOHN3ox3xE@mail.gmail.com>
+	<alpine.LNX.2.00.1008271926500.10278@eeebox2.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id A167110381D
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id CC27D1038B6
 	for <alsa-devel@alsa-project.org>;
-	Sat, 28 Aug 2010 17:08:40 +0200 (CEST)
-Received: by iwn4 with SMTP id 4so3473974iwn.38
-	for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2010 08:08:39 -0700 (PDT)
-In-Reply-To: <4C792365.6050308@canonical.com>
+	Fri, 27 Aug 2010 22:03:23 +0200 (CEST)
+Received: by gxk28 with SMTP id 28so1411647gxk.38
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2010 13:03:22 -0700 (PDT)
+In-Reply-To: <alpine.LNX.2.00.1008271926500.10278@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,26 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: "mailing list: alsa-dev" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> Answering as a layman - make sure there are no other volume controls you
-> need turn up. There is also the -10 dBv <=> +4 dBu difference, could be
-> that your old card had the other voltage reference. Other than that, I
-> don't know.
+On Fri, Aug 27, 2010 at 10:33 AM, Jaroslav Kysela <perex@perex.cz> wrote:
+> On Fri, 27 Aug 2010, VDR User wrote:
+>
+>> occurs in xine. =A0The error I see in the xine log when the dropout
+>> occurs is: pcm_hw.c: snd_pcm_hw_delay() SNDRV_PCM_IOCTL_DELAY failed
+>> (-32).
+>
+> -32 means -EPIPE - underrun has occured. It means that xine does not deli=
+ver
+> samples in time to the driver for some reason. Because mplayer works, it
+> does not seem like a general ALSA issue. I would ask xine developers for
+> further debugging of this issue (compare the audio write calls with the
+> realtime clock).
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0Jaroslav
 
-Thank you very much for your quick response. I have actually made
-progress. Using hda_analyzer, I have changed the pin ctls to be OUT
-and HP, instead of just OUT. I read from the Intel doc that setting a
-pin to HP will enable an output amplifier. True enough, this gave a
-boost to the volume, it is close enough to the soundblaster's volume.
 
-Now I am back to trying to figure out how to set the HP in the
-user_pin_configs hex value. Do you have any documentation references
-on how to set the hex value for user_pin_configs? I have tried to
-Google for it, and also tried to find it from Intel's website, but to
-no avail.
+Hi Jaroslav.  Thanks for your reply.  It seems I mistakeningly sent
+this to the alsa-dev mailing list instead of xine-dev for which it was
+intended.  Sorry about that, but thanks for the comments!
 
-Regards
-Keith
+Best regards,
+Derek
