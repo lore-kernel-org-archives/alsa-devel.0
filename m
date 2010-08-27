@@ -1,24 +1,21 @@
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: Re: [PATCH v5] ASoC/2.6.37: fix au1x platform
-Date: Sat, 28 Aug 2010 00:43:27 +0200
-Message-ID: <AANLkTimNHTDFp2g8c_s5hDc_3D9QPaeWDWcFr9UCPn9-@mail.gmail.com>
-References: <1282827231-17323-1-git-send-email-manuel.lauss@googlemail.com>
-	<1282913484.3025.25.camel@odin>
-	<1365302F-4C5D-4075-8D38-94DEEEF2583E@opensource.wolfsonmicro.com>
-	<AANLkTikr3rpij1FuKAQrwR0U8kpJUnKzfVJEzeYeGEsk@mail.gmail.com>
-	<20100827191428.GB6666@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: alsactl adds volume controls?
+Date: Sat, 28 Aug 2010 06:58:20 +0800
+Message-ID: <AANLkTi=cgE30nh1LPj84=Jv+YfJZWTj8BF3B5kNSGMTb@mail.gmail.com>
+References: <4C77CE1D.2070501@canonical.com> <4C77DD09.3060909@ladisch.de>
+	<4C78059B.50801@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1E5EE1038BE
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8CE581038BE
 	for <alsa-devel@alsa-project.org>;
-	Sat, 28 Aug 2010 00:43:27 +0200 (CEST)
-Received: by iwn4 with SMTP id 4so2957223iwn.38
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2010 15:43:27 -0700 (PDT)
-In-Reply-To: <20100827191428.GB6666@opensource.wolfsonmicro.com>
+	Sat, 28 Aug 2010 00:58:23 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so2390807ewy.38
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2010 15:58:23 -0700 (PDT)
+In-Reply-To: <4C78059B.50801@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,25 +25,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Ian Lartey <ian@opensource.wolfsonmicro.com>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 27, 2010 at 9:14 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Fri, Aug 27, 2010 at 03:32:16PM +0200, Manuel Lauss wrote:
->
->> I've found another AC97-related issue on another board (DB1300):
->> With AC97 enabled, the device warning doesn't appear but my ethernet
->> is gone instead:
->
-> This seems like some sort of pin mux issue or something driver specific?
+2010/8/28 David Henningsson <david.henningsson@canonical.com>
 
-No, no.  The drivers don't touch pin config.  It is related to the AC97 parts
-of ASoC, however.  Somewhere memory gets overwritten which causes
-the DB1300's ethernet and the DB1200's reset code to fail.  I'll see if I
-can find out exactly what's going on.  There was something similar in
-the ASoC AC97 code 1-2 years ago which caused linked list corruption,
-but Liam fixed that pretty quickly.
+> 2010-08-27 17:43, Clemens Ladisch skrev:
+> > David Henningsson wrote:
+> >> So I've discovered that my sound card has a "PCM Playback Volume"
+> >> control, but changing that control does not alter the volume.
+> >>
+> >> Interestingly enough, this control does not come from the HDA parser, it
+> >> is added by alsactl at boot time...!
+> >
+> > This control was created by the software volume plugin.  When not using
+> > this plugin, the control does not have any effect.
+> >
+> > To get rid of it, delete its entry from /etc/asound.state.
+>
+> Hmm, I wonder if this is an Ubuntu-specific bug then? Because when I run
+> Maverick (the upcoming Ubuntu release) from a Live-CD, the "PCM Playback
+> Volume" control is still there (and there is no asound.state, neither in
+> /etc or in /var/lib/alsa).
+> When I use the plughw interface, the "PCM Playback Volume" does not
+> affect volume output. Should I use another device string to test the
+> softvol plugin, to see if it's there or not?
+>
 
-Manuel
+The softvol plugin it is defined in "front" device in
+/usr/share/alsa/cards/HDA-Intel.conf
+
+reason is some HDA codec does not has any hardware volume control (analog)
+
+this user-defined control only effective when the application use "front"
+device
+
+it is a bug in PA server to open "front" device for playback and capture
+
+it is not easy to remove the control unless you know the trick
+
+shutdown without alsactl store
