@@ -1,17 +1,21 @@
-From: Sven Zeisberg <sven.zeisberg@googlemail.com>
-Subject: imx-ssi in master mode?
-Date: Thu, 26 Aug 2010 17:23:53 +0200
-Message-ID: <4C768708.50903@googlemail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ARM: S3C64XX: Fix fallthrough bug in i2sv3
+ gpio configuration, improve logging
+Date: Fri, 27 Aug 2010 11:18:40 +0100
+Message-ID: <1282904320.3025.2.camel@odin>
+References: <1282835243-20493-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	<20100826152140.GB4363@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 2E3DE24997
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id DBDC92453D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 26 Aug 2010 17:24:03 +0200 (CEST)
-Received: by bwz4 with SMTP id 4so1270367bwz.38
-	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2010 08:24:02 -0700 (PDT)
+	Fri, 27 Aug 2010 12:18:43 +0200 (CEST)
+Received: by wyb32 with SMTP id 32so3216487wyb.38
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2010 03:18:43 -0700 (PDT)
+In-Reply-To: <20100826152140.GB4363@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,19 +25,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-  Hi
+On Thu, 2010-08-26 at 16:21 +0100, Mark Brown wrote:
+> On Thu, Aug 26, 2010 at 04:07:23PM +0100, Dimitris Papastamos wrote:
+> 
+> > This is a fix for a change in ASoC multi-component as well.
+> 
+> Clarifying from offline discussion: the issue isn't present in mainline,
+> it came in with m-c.
 
-I found that the i.MX25 can not transfer multichannels frames through 
-SSI when it is set up as slave.
-(when the i.MX25 SSI is set up as slave, the SSI is set to "normal" mode 
-in which only one word per frame is transfered)
-
-Now I'm wondering if anybody has successfully used a codec with the 
-i.MX25 SSI set up as Master. When we do this here, we can see that the 
-i.MX25 is generating the bit clock but no frame sync.
-
-BR
-Sven
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
