@@ -1,21 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/4] ASoC: tlv320aic3x: Sanitize output
-	controls
-Date: Fri, 27 Aug 2010 15:24:14 +0100
-Message-ID: <9CB0AF61-AC6C-4E37-9595-55EA47D966A6@opensource.wolfsonmicro.com>
-References: <1282917410-12000-1-git-send-email-jhnikula@gmail.com>
-	<1282917410-12000-5-git-send-email-jhnikula@gmail.com>
-	(sfid-20100827_145630_701379_761FEB67)
-Mime-Version: 1.0 (iPad Mail 7B500)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Niels Mayer <nielsmayer@gmail.com>
+Subject: Re: using plug for sample format conversion
+Date: Fri, 27 Aug 2010 07:37:51 -0700
+Message-ID: <AANLkTi=DPinXjVOD1t3PXXpjainZf-RgjxWhfBiV1Suh@mail.gmail.com>
+References: <AANLkTik=MskE7rGhBmuyDtJTe5BAie7AckiANrheJ8Qi@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 195DD24625
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 40015103885
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Aug 2010 16:24:15 +0200 (CEST)
-In-Reply-To: <1282917410-12000-5-git-send-email-jhnikula@gmail.com>
-	(sfid-20100827_145630_701379_761FEB67)
+	Fri, 27 Aug 2010 16:37:55 +0200 (CEST)
+Received: by vws20 with SMTP id 20so2903832vws.38
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2010 07:37:54 -0700 (PDT)
+In-Reply-To: <AANLkTik=MskE7rGhBmuyDtJTe5BAie7AckiANrheJ8Qi@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,31 +24,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Adam Rosenberg <adam@alcorn.com>, stefan@space.twc.de
+Cc: superquad.vortex2@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-On 27 Aug 2010, at 14:56, Jarkko Nikula <jhnikula@gmail.com> wrote:
-
-> Currently output controls are not uniform. Some routes are adjusted by
-> mono controls that don't match to associated mixer switch, many routes are
-> not covered at all and stereo controls have following variants:
-> 
-> - L-to-L & R-to-R
-> - R-to-L & R-to-R
-> - L-to-L & R-to-L
-> 
-> This patch attempts to fix these issues. First, for the convenience, only
-> direct L-to-L, R-to-R and [L | R]-to-Mono routes are controlled by the
-> stereo controls. This logic is also used with the output pin mute controls
-> so all of them except mono output are controlled by stereo switches.
-> 
-> Then rest of the swapped L-to-R and R-to-L routes are controlled by the
-> mono controls that map to mixer switches with a same name. Mixers can then
-> associate these switches and volumes together.
-> 
-> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> 
+T24gV2VkLCBKdWwgMjgsIDIwMTAgYXQgOTo1NSBBTSwgQWRhbSBSb3NlbmJlcmcgPGFkYW1AYWxj
+b3JuLmNvbT4gd3JvdGU6Cj4gSSBhbSB0cnlpbmcgdG8gdXNlIHBsdWcgdG8gcGxheSBhdWRpbyBm
+aWxlcyB0aGF0IGFyZSBTMTZfTEUgYnV0IG15Cj4gaGFyZHdhcmUgb25seSBzdXBwb3J0cyBTMzJf
+TEUuIMKgSXQgaXMgbm90IHdvcmtpbmcuIMKgSGVyZSBpcyBhbiBleGFtcGxlCj4gb2YgdGhlIHBy
+b2JsZW0gdXNpbmcgc3BlYWtlci10ZXN0LiDCoEZpcnN0IEkgdXNlIFMzMl9MRSBhbmQgaXQgd29y
+a3MgYXMKPiBleHBlY3RlZC4gwqBJIHRoZW4gdHJ5IFMxNl9MRSBidXQgaXQgZmFpbHMuIMKgRG9l
+cyB0aGlzIG1lYW4gdGhlIHBsdWcKPiBwbHVnaW4gY2Fubm90IGNvbnZlcnQgYmV0d2VlbiB0aGVz
+ZSBzYW1wbGUgZm9ybWF0cz8KCk9uIGEgc2ltaWxhciBub3RlLCBzb21lb25lIHBsZWFzZSBleHBs
+YWluIHRoZSBmb2xsb3dpbmcgYmVoYXZpb3IgdGhhdCBvY2N1cnMgaW4KcGxheWluZyBhbiBTMTZf
+TEUgc3RyZWFtIG9uIGFuIE0tQXVkaW8gRGVsdGEgNjYgKC4uLmtlcm5lbC9zb3VuZC9wY2kvaWNl
+MTcxMikuCgpUaGUgZm9sbG93aW5nIG1wbGF5ZXIgaW52b2NhdGlvbiBzZW5kcyDCoGEgImJpdCBt
+YW5nbGVkIiB2ZXJzaW9uIG9mIHRoZQpvcmlnaW5hbCBzb3VyY2Ugc3RyZWFtIHRvIHRoZSBvdXRw
+dXRzIG9mIHRoZSBzb3VuZGNhcmQsIHdoZXJlICI2NmNoMzQiCmlzIGEgZHNoYXJlJ2QgZGV2aWNl
+LCBkZWZpbmVkIHBlcgpodHRwOi8vbmllbHNtYXllci5jb20vbnBtL2RvdC1hc291bmRyYy50eHQg
+LgoKLy8vLy8vLyDCoC8vLy8vLy8vLyDCoC8vLy8vLy8vIMKgLy8vLy8vLy8gwqAvLy8vLy8vLy8v
+CiTCoG1wbGF5ZXLCoC1xdWlldMKgaHR0cDovL21lZGlhLmtjcncuY29tL2xpdmUva2Nyd2xpdmUu
+cGxzwqAtYW8gYWxzYTpkZXZpY2U9NjZjaDM0ClsuLi5dCk9wZW5pbmcgYXVkaW8gZGVjb2Rlcjog
+W21wM2xpYl0gTVBFRyBsYXllci0yLCBsYXllci0zCkFVRElPOiA0NDEwMCBIeiwgMiBjaCwgczE2
+bGUsIDExMi4wIGtiaXQvNy45NCUgKHJhdGlvOiAxNDAwMC0+MTc2NDAwKQpbLi4uXQpBTzogW2Fs
+c2FdIDQ0MTAwSHogMmNoIHMxNmxlICgyIGJ5dGVzIHBlciBzYW1wbGUpClsuLi5dClN0YXJ0aW5n
+IHBsYXliYWNrLi4uCi8vLy8vLy8gwqAvLy8vLy8vLy8gwqAvLy8vLy8vLyDCoC8vLy8vLy8vIMKg
+Ly8vLy8vLy8vLwoKUGxheWluZyB0aGUgZXhhY3Qgc2FtZSBzdHJlYW0gdXNpbmcgwqBodHRwOi8v
+c3BhY2UudHdjLmRlL35zdGVmYW4vZ3N0MTIzLnBocAokIGdzdDEyMyAtYSBhbHNhPTY2Y2gzNMKg
+aHR0cDovLzY0LjEyLjYxLjE6ODAvc3RyZWFtLzEwNDYKdXNlcyB0aGUgY29ycmVjdCBmb3JtYXQg
+YW5kIHNvIHRoZSBwbGF5YmFjayBzb3VuZHMgYXMgaW50ZW5kZWQuCgpBbmQgd2hlcmVhcyBtcGxh
+eWVyIGhhcyBubyBwcm9ibGVtIHRhbGtpbmcgZGlyZWN0bHkgdG/CoHNuZF9oZGFfaW50ZWwKZGV2
+aWNlLCBlLmcuOgokIG1wbGF5ZXIgLXF1aWV0IGh0dHA6Ly9tZWRpYS5rY3J3LmNvbS9saXZlL2tj
+cndsaXZlLnBscyAtYW8gYWxzYTpkZXZpY2U9aHc9U0IKCkRvaW5nIHRoZSBzYW1lIHdpdGggdGhl
+IGRlbHRhLTY2IGdpdmVzOgoKLy8vLy8vLyDCoC8vLy8vLy8vLyDCoC8vLy8vLy8vIMKgLy8vLy8v
+Ly8gwqAvLy8vLy8vLy8vCltBT19BTFNBXSBGb3JtYXQgczE2bGUgaXMgbm90IHN1cHBvcnRlZCBi
+eSBoYXJkd2FyZSwgdHJ5aW5nIGRlZmF1bHQuCltBT19BTFNBXSBVbmFibGUgdG8gc2V0IGZvcm1h
+dDogSW52YWxpZCBhcmd1bWVudApGYWlsZWQgdG8gaW5pdGlhbGl6ZSBhdWRpbyBkcml2ZXIgJ2Fs
+c2E6ZGV2aWNlPWh3PU02NicKLy8vLy8vLyDCoC8vLy8vLy8vLyDCoC8vLy8vLy8vIMKgLy8vLy8v
+Ly8gwqAvLy8vLy8vLy8vCgpTbyB3aGVyZSBleGFjdGx5IGlzIGdzdDEyMyBzdWNjZWVkaW5nIGFu
+ZCBob3cgaXMgdGhlIGFwcGxpY2F0aW9uIGFibGUKdG8gZmluZCBvdXQgZm9ybSBBTFNBIHRoYXQg
+dGhlIGZvcm1hdCBpc24ndCBzdXBwb3J0ZWQsIGFuZCB0aGVuCmNvcnJlY3RseSBnb2VzIG9mZiBh
+bmQgdXNlcyBwbHVnaHcgKHByZXN1bWFibHkpIHRvIGdldCB0aGUgY29ycmVjdCBiaXQKZGVwdGgv
+b3JkZXIvY29tcGxlbWVudCBtYXRjaGluZz8KCkFsdGVybmF0ZWx5LCB3aHkgZG8gZGlmZmVyZW50
+IGFwcGxpY2F0aW9ucyBiZWhhdmUgZGlmZmVyZW50bHkgYmFzZWQgb24KdGhlIHNvdW5kIGNhcmQg
+dGhleSdyZSB0YWxraW5nIHRvLiBJcyB0aGlzIGFuIG1wbGF5ZXIgYnVnIChpbiBub3QKaGFuZGxp
+bmcvcHJldmVudGluZyBBTFNBIGZhaWx1cmUgIlVuYWJsZSB0byBzZXQgZm9ybWF0OiBJbnZhbGlk
+CmFyZ3VtZW50IikuIEhvdyBpcyBnc3QxMjMgYW5kIGl0cyBodHRwOi8vd3d3LmdzdHJlYW1lci5u
+ZXQvCmluZnJhc3RydWN0dXJlwqBoYW5kbGluZyB0aGlzLCBhbmQgc2hvdWxkbid0IHRoaXMgY2Fw
+YWJpbGl0eSBiZSBhbgp1bmRlcmx5aW5nIHBhcnQgb2YgQUxTQSB0aGF0IGlzIGF1dG9tYXRpY2Fs
+bHnCoGludm9rZWQ/CgpJbiBwcm9ncmFtbWluZywgdGhvc2Ugd29ya2luZyBpbiBkeW5hbWljIGxh
+bmd1YWdlcyBoYXZlIGxvbmcgZW5qb3llZAp0aGUgYmVuZWZpdHMgb2YgInNlbGYtaWRlbnRpZnlp
+bmcgZGF0YSIgKApodHRwOi8vd3d3LmNzLnJpY2UuZWR1L35qYXZhcGx0LzMxMS9Ob3Rlcy8wOS8w
+NS5zdXBwLmh0bWzCoCkuCldoYXQgYWJvdXQgc2VsZi1pZGVudGlmeWluZyBkZXZpY2VzPz8gV2hp
+Y2ggaXMgcGVyaGFwcyB3aGF0IGdzdHJlYW1lcgphbmQgZmFjaWxpdGllcyBsaWtlwqBodHRwOi8v
+bGl2ZS5nbm9tZS5vcmcvR09iamVjdEludHJvc3BlY3Rpb27CoMKgaGVscAplbmFibGUsIMKgdGhl
+IGZydWl0cyBvZiB3aGljaCBjYW4gYmUgYXV0b21hdGljYWxseSBlbmpveWVkIGJ5IGFwcHMgbGlr
+ZQpnc3QxMjMgPwoKSXMgdGhlcmUgYSBWYWxhLWJhc2VkICJnc3RyZWFtZXIgdG9vbGtpdCIgPz8g
+U2VlbXMgbGlrZSB0aGF0IHdvdWxkIGJlCnRoZSBlYXNpZXN0IHdheSB0byBnYWluIHdlbGwtaW50
+ZWdyYXRlZCwgYW5kIHByb3Blcmx5IGludHJvc3BlY3RlZAphY2Nlc3MgYWxsIHRoZSB3YXkgZG93
+biB0byB0aGUgQUxTQSBsZXZlbC4gQWx0aG91Z2ggSSBndWVzcyB0aGlzIHdvdWxkCnJlcXVpcmUg
+R2xpYi13cmFwcGVycyBmb3IgQUxTQSB0byBoZWxwIGRlc2NyaWJlIHdoYXQncyBhY3R1YWxseSB0
+aGVyZSwKc28gYXMgdG8gYWxsb3cgdGhlIGZyYW1ld29yayB0byBkZWxlZ2F0ZSB0byB0aGUgYXBw
+cm9wcmlhdGUgQUxTQSBsZXZlbAppbiBhIGRhdGEtZHJpdmVuIGZhc2hpb24uCgpOaWVscwpodHRw
+Oi8vbmllbHNtYXllci5jb20KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
