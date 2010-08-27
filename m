@@ -1,20 +1,24 @@
-From: Niels Mayer <nielsmayer@gmail.com>
-Subject: Re: using plug for sample format conversion
-Date: Fri, 27 Aug 2010 07:37:51 -0700
-Message-ID: <AANLkTi=DPinXjVOD1t3PXXpjainZf-RgjxWhfBiV1Suh@mail.gmail.com>
-References: <AANLkTik=MskE7rGhBmuyDtJTe5BAie7AckiANrheJ8Qi@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: alsactl adds volume controls?
+Date: Fri, 27 Aug 2010 16:39:25 +0200
+Message-ID: <4C77CE1D.2070501@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 40015103885
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6DBC41038A3
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Aug 2010 16:37:55 +0200 (CEST)
-Received: by vws20 with SMTP id 20so2903832vws.38
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2010 07:37:54 -0700 (PDT)
-In-Reply-To: <AANLkTik=MskE7rGhBmuyDtJTe5BAie7AckiANrheJ8Qi@mail.gmail.com>
+	Fri, 27 Aug 2010 16:39:28 +0200 (CEST)
+Received: from hutte.canonical.com ([91.189.90.181])
+	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
+	id 1Op05X-0008VB-4o
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2010 15:39:27 +0100
+Received: from c-83-233-18-148.cust.bredband2.com ([83.233.18.148]
+	helo=[192.168.8.103]) by hutte.canonical.com with esmtpsa
+	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
+	(envelope-from <david.henningsson@canonical.com>) id 1Op05X-0007OX-1Q
+	for alsa-devel@alsa-project.org; Fri, 27 Aug 2010 15:39:27 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,69 +28,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Adam Rosenberg <adam@alcorn.com>, stefan@space.twc.de
-Cc: superquad.vortex2@gmail.com, alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBKdWwgMjgsIDIwMTAgYXQgOTo1NSBBTSwgQWRhbSBSb3NlbmJlcmcgPGFkYW1AYWxj
-b3JuLmNvbT4gd3JvdGU6Cj4gSSBhbSB0cnlpbmcgdG8gdXNlIHBsdWcgdG8gcGxheSBhdWRpbyBm
-aWxlcyB0aGF0IGFyZSBTMTZfTEUgYnV0IG15Cj4gaGFyZHdhcmUgb25seSBzdXBwb3J0cyBTMzJf
-TEUuIMKgSXQgaXMgbm90IHdvcmtpbmcuIMKgSGVyZSBpcyBhbiBleGFtcGxlCj4gb2YgdGhlIHBy
-b2JsZW0gdXNpbmcgc3BlYWtlci10ZXN0LiDCoEZpcnN0IEkgdXNlIFMzMl9MRSBhbmQgaXQgd29y
-a3MgYXMKPiBleHBlY3RlZC4gwqBJIHRoZW4gdHJ5IFMxNl9MRSBidXQgaXQgZmFpbHMuIMKgRG9l
-cyB0aGlzIG1lYW4gdGhlIHBsdWcKPiBwbHVnaW4gY2Fubm90IGNvbnZlcnQgYmV0d2VlbiB0aGVz
-ZSBzYW1wbGUgZm9ybWF0cz8KCk9uIGEgc2ltaWxhciBub3RlLCBzb21lb25lIHBsZWFzZSBleHBs
-YWluIHRoZSBmb2xsb3dpbmcgYmVoYXZpb3IgdGhhdCBvY2N1cnMgaW4KcGxheWluZyBhbiBTMTZf
-TEUgc3RyZWFtIG9uIGFuIE0tQXVkaW8gRGVsdGEgNjYgKC4uLmtlcm5lbC9zb3VuZC9wY2kvaWNl
-MTcxMikuCgpUaGUgZm9sbG93aW5nIG1wbGF5ZXIgaW52b2NhdGlvbiBzZW5kcyDCoGEgImJpdCBt
-YW5nbGVkIiB2ZXJzaW9uIG9mIHRoZQpvcmlnaW5hbCBzb3VyY2Ugc3RyZWFtIHRvIHRoZSBvdXRw
-dXRzIG9mIHRoZSBzb3VuZGNhcmQsIHdoZXJlICI2NmNoMzQiCmlzIGEgZHNoYXJlJ2QgZGV2aWNl
-LCBkZWZpbmVkIHBlcgpodHRwOi8vbmllbHNtYXllci5jb20vbnBtL2RvdC1hc291bmRyYy50eHQg
-LgoKLy8vLy8vLyDCoC8vLy8vLy8vLyDCoC8vLy8vLy8vIMKgLy8vLy8vLy8gwqAvLy8vLy8vLy8v
-CiTCoG1wbGF5ZXLCoC1xdWlldMKgaHR0cDovL21lZGlhLmtjcncuY29tL2xpdmUva2Nyd2xpdmUu
-cGxzwqAtYW8gYWxzYTpkZXZpY2U9NjZjaDM0ClsuLi5dCk9wZW5pbmcgYXVkaW8gZGVjb2Rlcjog
-W21wM2xpYl0gTVBFRyBsYXllci0yLCBsYXllci0zCkFVRElPOiA0NDEwMCBIeiwgMiBjaCwgczE2
-bGUsIDExMi4wIGtiaXQvNy45NCUgKHJhdGlvOiAxNDAwMC0+MTc2NDAwKQpbLi4uXQpBTzogW2Fs
-c2FdIDQ0MTAwSHogMmNoIHMxNmxlICgyIGJ5dGVzIHBlciBzYW1wbGUpClsuLi5dClN0YXJ0aW5n
-IHBsYXliYWNrLi4uCi8vLy8vLy8gwqAvLy8vLy8vLy8gwqAvLy8vLy8vLyDCoC8vLy8vLy8vIMKg
-Ly8vLy8vLy8vLwoKUGxheWluZyB0aGUgZXhhY3Qgc2FtZSBzdHJlYW0gdXNpbmcgwqBodHRwOi8v
-c3BhY2UudHdjLmRlL35zdGVmYW4vZ3N0MTIzLnBocAokIGdzdDEyMyAtYSBhbHNhPTY2Y2gzNMKg
-aHR0cDovLzY0LjEyLjYxLjE6ODAvc3RyZWFtLzEwNDYKdXNlcyB0aGUgY29ycmVjdCBmb3JtYXQg
-YW5kIHNvIHRoZSBwbGF5YmFjayBzb3VuZHMgYXMgaW50ZW5kZWQuCgpBbmQgd2hlcmVhcyBtcGxh
-eWVyIGhhcyBubyBwcm9ibGVtIHRhbGtpbmcgZGlyZWN0bHkgdG/CoHNuZF9oZGFfaW50ZWwKZGV2
-aWNlLCBlLmcuOgokIG1wbGF5ZXIgLXF1aWV0IGh0dHA6Ly9tZWRpYS5rY3J3LmNvbS9saXZlL2tj
-cndsaXZlLnBscyAtYW8gYWxzYTpkZXZpY2U9aHc9U0IKCkRvaW5nIHRoZSBzYW1lIHdpdGggdGhl
-IGRlbHRhLTY2IGdpdmVzOgoKLy8vLy8vLyDCoC8vLy8vLy8vLyDCoC8vLy8vLy8vIMKgLy8vLy8v
-Ly8gwqAvLy8vLy8vLy8vCltBT19BTFNBXSBGb3JtYXQgczE2bGUgaXMgbm90IHN1cHBvcnRlZCBi
-eSBoYXJkd2FyZSwgdHJ5aW5nIGRlZmF1bHQuCltBT19BTFNBXSBVbmFibGUgdG8gc2V0IGZvcm1h
-dDogSW52YWxpZCBhcmd1bWVudApGYWlsZWQgdG8gaW5pdGlhbGl6ZSBhdWRpbyBkcml2ZXIgJ2Fs
-c2E6ZGV2aWNlPWh3PU02NicKLy8vLy8vLyDCoC8vLy8vLy8vLyDCoC8vLy8vLy8vIMKgLy8vLy8v
-Ly8gwqAvLy8vLy8vLy8vCgpTbyB3aGVyZSBleGFjdGx5IGlzIGdzdDEyMyBzdWNjZWVkaW5nIGFu
-ZCBob3cgaXMgdGhlIGFwcGxpY2F0aW9uIGFibGUKdG8gZmluZCBvdXQgZm9ybSBBTFNBIHRoYXQg
-dGhlIGZvcm1hdCBpc24ndCBzdXBwb3J0ZWQsIGFuZCB0aGVuCmNvcnJlY3RseSBnb2VzIG9mZiBh
-bmQgdXNlcyBwbHVnaHcgKHByZXN1bWFibHkpIHRvIGdldCB0aGUgY29ycmVjdCBiaXQKZGVwdGgv
-b3JkZXIvY29tcGxlbWVudCBtYXRjaGluZz8KCkFsdGVybmF0ZWx5LCB3aHkgZG8gZGlmZmVyZW50
-IGFwcGxpY2F0aW9ucyBiZWhhdmUgZGlmZmVyZW50bHkgYmFzZWQgb24KdGhlIHNvdW5kIGNhcmQg
-dGhleSdyZSB0YWxraW5nIHRvLiBJcyB0aGlzIGFuIG1wbGF5ZXIgYnVnIChpbiBub3QKaGFuZGxp
-bmcvcHJldmVudGluZyBBTFNBIGZhaWx1cmUgIlVuYWJsZSB0byBzZXQgZm9ybWF0OiBJbnZhbGlk
-CmFyZ3VtZW50IikuIEhvdyBpcyBnc3QxMjMgYW5kIGl0cyBodHRwOi8vd3d3LmdzdHJlYW1lci5u
-ZXQvCmluZnJhc3RydWN0dXJlwqBoYW5kbGluZyB0aGlzLCBhbmQgc2hvdWxkbid0IHRoaXMgY2Fw
-YWJpbGl0eSBiZSBhbgp1bmRlcmx5aW5nIHBhcnQgb2YgQUxTQSB0aGF0IGlzIGF1dG9tYXRpY2Fs
-bHnCoGludm9rZWQ/CgpJbiBwcm9ncmFtbWluZywgdGhvc2Ugd29ya2luZyBpbiBkeW5hbWljIGxh
-bmd1YWdlcyBoYXZlIGxvbmcgZW5qb3llZAp0aGUgYmVuZWZpdHMgb2YgInNlbGYtaWRlbnRpZnlp
-bmcgZGF0YSIgKApodHRwOi8vd3d3LmNzLnJpY2UuZWR1L35qYXZhcGx0LzMxMS9Ob3Rlcy8wOS8w
-NS5zdXBwLmh0bWzCoCkuCldoYXQgYWJvdXQgc2VsZi1pZGVudGlmeWluZyBkZXZpY2VzPz8gV2hp
-Y2ggaXMgcGVyaGFwcyB3aGF0IGdzdHJlYW1lcgphbmQgZmFjaWxpdGllcyBsaWtlwqBodHRwOi8v
-bGl2ZS5nbm9tZS5vcmcvR09iamVjdEludHJvc3BlY3Rpb27CoMKgaGVscAplbmFibGUsIMKgdGhl
-IGZydWl0cyBvZiB3aGljaCBjYW4gYmUgYXV0b21hdGljYWxseSBlbmpveWVkIGJ5IGFwcHMgbGlr
-ZQpnc3QxMjMgPwoKSXMgdGhlcmUgYSBWYWxhLWJhc2VkICJnc3RyZWFtZXIgdG9vbGtpdCIgPz8g
-U2VlbXMgbGlrZSB0aGF0IHdvdWxkIGJlCnRoZSBlYXNpZXN0IHdheSB0byBnYWluIHdlbGwtaW50
-ZWdyYXRlZCwgYW5kIHByb3Blcmx5IGludHJvc3BlY3RlZAphY2Nlc3MgYWxsIHRoZSB3YXkgZG93
-biB0byB0aGUgQUxTQSBsZXZlbC4gQWx0aG91Z2ggSSBndWVzcyB0aGlzIHdvdWxkCnJlcXVpcmUg
-R2xpYi13cmFwcGVycyBmb3IgQUxTQSB0byBoZWxwIGRlc2NyaWJlIHdoYXQncyBhY3R1YWxseSB0
-aGVyZSwKc28gYXMgdG8gYWxsb3cgdGhlIGZyYW1ld29yayB0byBkZWxlZ2F0ZSB0byB0aGUgYXBw
-cm9wcmlhdGUgQUxTQSBsZXZlbAppbiBhIGRhdGEtZHJpdmVuIGZhc2hpb24uCgpOaWVscwpodHRw
-Oi8vbmllbHNtYXllci5jb20KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+So I've discovered that my sound card has a "PCM Playback Volume"
+control, but changing that control does not alter the volume. This is
+not only confusing but also a problem for PulseAudio. (PA merges this
+control into it's overall volume, and so when the user moves PA's volume
+control, in some ranges nothing happens.)
+
+Interestingly enough, this control does not come from the HDA parser, it
+is added by alsactl at boot time...! (Through alsa-lib's
+snd_ctl_elem_add_integer, which does an snd_ctl_ioctl.)
+
+So the question is, why is alsactl creating volume controls, and why is
+userspace allowed to add controls in the first place, if the kernel
+can't use them for anything anyway? That doesn't make sense to me.
+
+This a generic problem, but sound card info, if that matters, is
+available here:
+https://launchpad.net/bugs/625149
+Codec: http://launchpadlibrarian.net/54478760/Card0.Codecs.codec.0.txt
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
