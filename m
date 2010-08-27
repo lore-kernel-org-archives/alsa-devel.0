@@ -1,22 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: explicit commandline control of speakers vs
- headphone output
-Date: Sat, 28 Aug 2010 07:26:38 +0800
-Message-ID: <AANLkTinOchsjwU5543eDh5vMHZkTaw_JMFs2orOL-gR0@mail.gmail.com>
-References: <210284.64008.qm@web50707.mail.re2.yahoo.com>
-	<4C78116D.9040704@canonical.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v5] ASoC/2.6.37: fix au1x platform
+Date: Sat, 28 Aug 2010 00:43:28 +0100
+Message-ID: <20100827234315.GA8619@opensource.wolfsonmicro.com>
+References: <1282827231-17323-1-git-send-email-manuel.lauss@googlemail.com>
+	<1282913484.3025.25.camel@odin>
+	<1365302F-4C5D-4075-8D38-94DEEEF2583E@opensource.wolfsonmicro.com>
+	<AANLkTikr3rpij1FuKAQrwR0U8kpJUnKzfVJEzeYeGEsk@mail.gmail.com>
+	<20100827191428.GB6666@opensource.wolfsonmicro.com>
+	<AANLkTimNHTDFp2g8c_s5hDc_3D9QPaeWDWcFr9UCPn9-@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6989A1038BE
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ABC5B24332
 	for <alsa-devel@alsa-project.org>;
-	Sat, 28 Aug 2010 01:26:39 +0200 (CEST)
-Received: by eyd9 with SMTP id 9so2424239eyd.38
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2010 16:26:39 -0700 (PDT)
-In-Reply-To: <4C78116D.9040704@canonical.com>
+	Sat, 28 Aug 2010 01:43:16 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTimNHTDFp2g8c_s5hDc_3D9QPaeWDWcFr9UCPn9-@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,45 +27,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Manuel Lauss <manuel.lauss@googlemail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Ian Lartey <ian@opensource.wolfsonmicro.com>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-2010/8/28 David Henningsson <david.henningsson@canonical.com>
+On Sat, Aug 28, 2010 at 12:43:27AM +0200, Manuel Lauss wrote:
+> On Fri, Aug 27, 2010 at 9:14 PM, Mark Brown
 
-> 2010-08-27 20:46, Eric Holstege skrev:
-> > Thanks, Clemens;
-> >
-> > How were you able to determine that from the "amixer scontents" output.
-> >
-> > Although I can't disable *automatic* speaker mute on headphone
-> > insertion, can I explicitly unmute them again (e.g. with amixer sset or
-> > cset)?
-> >
-> > If not....
-> > "cat /proc/asound/card*/codec*" says it is the Realtek ALC888.
-> > Does this mean I have to somehow patch the kernel sound module file
-> > .../linux-source-2.6.*/sound/pci/hda/patch_realtek.c
-> > to fix this somehow?
->
-> So in the long run, I think it would be better to leave all auto-muting
-> to userspace. Then stuff like pulseaudio could to advanced decision of
-> how to handle input events. But that's the long way.
->
-> There are certainly ways to disable auto-muting for Realtek ALC888, look
-> along the lines of "speaker_automute" and "unsol_event". It is also
-> possible that you could tweak your user_pin_config to trick your HP out
-> into a Line Out. That way it won't automute, and you don't have to
-> recompile your kernel.
->
-> As a side note: The VIA HDA driver, I believe, have an option for
-> turning automute off. But it also sets "mute" on a misnamed control at
-> the same time, tricking PA into believing that you want to mute all
-> output. So PA is "helpful" and mutes everything else as well. :-/
->
->
-Some of the VIA codec allow independent headphone and the extra DAC and ADC
-(i.e. subdevice 1)  can only be connected to headphone  and mic .at front
-panel
+> > This seems like some sort of pin mux issue or something driver specific?
 
-the current implementation of the driver is buggy , since the sudevice 0
-support multi channels but sudevice 1 only support 2 channels
+> No, no.  The drivers don't touch pin config.  It is related to the AC97 parts
+> of ASoC, however.  Somewhere memory gets overwritten which causes
+> the DB1300's ethernet and the DB1200's reset code to fail.  I'll see if I
+> can find out exactly what's going on.  There was something similar in
+> the ASoC AC97 code 1-2 years ago which caused linked list corruption,
+> but Liam fixed that pretty quickly.
+
+This sounds like the driver specifics I was talking about.  ASoC doesn't
+get involved in anything that's likely to affect memory much in a way
+that'd only show up on one system, and I'd expect things that did go
+wrong to have a much less specific effect.  It could possibly be the
+generic AC97 bodge (at which point it's specific to ac97.c) but it's
+unlikely to be ASoC itself.
