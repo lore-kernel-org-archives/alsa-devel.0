@@ -1,18 +1,19 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: imx-ssi in master mode?
-Date: Fri, 27 Aug 2010 13:54:16 +0200
-Message-ID: <20100827115416.GD1473@pengutronix.de>
-References: <4C768708.50903@googlemail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH v5] ASoC/2.6.37: fix au1x platform
+Date: Fri, 27 Aug 2010 13:51:24 +0100
+Message-ID: <1282913484.3025.25.camel@odin>
+References: <1282827231-17323-1-git-send-email-manuel.lauss@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 9944A245AE
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 1E858245CF
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Aug 2010 13:54:16 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4C768708.50903@googlemail.com>
+	Fri, 27 Aug 2010 14:51:28 +0200 (CEST)
+Received: by wyb32 with SMTP id 32so3362559wyb.38
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2010 05:51:27 -0700 (PDT)
+In-Reply-To: <1282827231-17323-1-git-send-email-manuel.lauss@googlemail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +23,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sven Zeisberg <sven.zeisberg@googlemail.com>
-Cc: alsa-devel@alsa-project.org
+To: Manuel Lauss <manuel.lauss@googlemail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@vger.kernel.org, Ian Lartey <ian@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 26, 2010 at 05:23:53PM +0200, Sven Zeisberg wrote:
->   Hi
+On Thu, 2010-08-26 at 14:53 +0200, Manuel Lauss wrote:
+> This patch fixes up the au1x audio platform after the multi-component
+> merge:
+> - compile fixes and updates to get DB1200 platform audio working again,
+> - removal of global variables in AC97/I2S/DMA(PCM) modules.
 > 
-> I found that the i.MX25 can not transfer multichannels frames through 
-> SSI when it is set up as slave.
-> (when the i.MX25 SSI is set up as slave, the SSI is set to "normal" mode 
-> in which only one word per frame is transfered)
+> The AC97 part is limited to one instance only for now due to issues
+> with getting at driver data in the soc_ac97_ops.
 > 
-> Now I'm wondering if anybody has successfully used a codec with the 
-> i.MX25 SSI set up as Master. When we do this here, we can see that the 
-> i.MX25 is generating the bit clock but no frame sync.
+> Signed-off-by: Manuel Lauss <manuel.lauss@googlemail.com>
+> ---
+> v5: smaller patch
+> v4: fixed a bug in the previous bugfix, and added DAI drvdata accessors.
+> v3: fixed a bug which caused cat /proc/iomem to loop endlessly.
+> v2: prepare PCM,I2S for multiple card operation, use dev_name() for DAI name.
+> 
+> Against Liam's asoc/for-2.6.37 branch.
+> 
+> Tested on DB1200 and DB1300 (here both I2S and AC97 operate as
+> independent cards),  please fold this into the other Au1x multi-component
+> patches.
+> 
 
-Master mode is currently not supported by the i.MX driver. You'd have to
-implement the clk_get_rate functions for the ssi clocks first before
-implementing the missing pieces in the driver.
+This all looks fine
 
-Sascha
+> Issues I observed with AC97:
+> * AC97 is limited to a single instance since I cannot get at the driver
+>   data in the AC97 callbacks at all time (or did I miss anything?):
+>   when the AC97 codec calls snd_ac97_mixer(), it calls into the soc_ac97_ops
+>   callbacks; however ac97->bus->card->private_data (suggested by Mark)
+>   is _always_ NULL, so no way to get at the dai and ultimately driver data.
+> 
+> * generic AC97 codec use spits out this kobject warning, which is caused by the
+>   "device_register()" in soc-core.c::soc_ac97_dev_register():
+> 
 
+Although I'm curious about these issues. I didn't see them when testing
+on my now non working Zylonite with WM9713 (AC97), so I'm suspecting
+it's related to the generic AC97 somehow. 
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Unfortunately, this will need someone with working AC97 hardware to fix
+this issue. 
+
+Is the AC97 DAI being probed before the generic AC97 codec driver in
+this case ?
+
+Liam
