@@ -1,23 +1,22 @@
-From: Adam Rosenberg <adam@alcorn.com>
+From: Mike Frysinger <vapier@gentoo.org>
 Subject: Re: Problem with underrun on new CS42448 x2 driver
-Date: Fri, 27 Aug 2010 16:11:48 -0400
-Message-ID: <AANLkTimZdZnXRc9hL6zPhhauf7U=ihCGaNOKK+ve3vXw@mail.gmail.com>
+Date: Fri, 27 Aug 2010 16:37:45 -0400
+Message-ID: <AANLkTinVdY6qsuBMngOsnXrm=chfqkwJAn8msJtnyt_=@mail.gmail.com>
 References: <AANLkTi=3kc74QqDopiAw+u8ie2Qn47p9XQpw54b6iB4Z@mail.gmail.com>
 	<20100826124757.GC5721@sirena.org.uk>
 	<AANLkTinY5mcCPKEJcm+Yru-+7U+nEWe+VaWL558UhhrB@mail.gmail.com>
-	<20100826185226.GC24381@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
 	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 88D3910388B
+	by alsa0.perex.cz (Postfix) with ESMTP id A71371038B8
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Aug 2010 22:11:49 +0200 (CEST)
-Received: by vws20 with SMTP id 20so3258963vws.38
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2010 13:11:48 -0700 (PDT)
-In-Reply-To: <20100826185226.GC24381@opensource.wolfsonmicro.com>
+	Fri, 27 Aug 2010 22:38:07 +0200 (CEST)
+Received: by vws20 with SMTP id 20so3286667vws.38
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2010 13:38:05 -0700 (PDT)
+In-Reply-To: <AANLkTinY5mcCPKEJcm+Yru-+7U+nEWe+VaWL558UhhrB@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,91 +26,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Mike Frysinger <vapier@gentoo.org>, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>, Cliff Cai <cliff.cai@analog.com>
+To: Adam Rosenberg <adam@alcorn.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Barry Song <21cnbao@gmail.com>, Cliff Cai <cliff.cai@analog.com>, Sonic Zhang <Sonic.Zhang@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-> Please don't top post, and remember to include context in your reply so
-> people can understand the context of your message0. =A0This is standard
-> for Linux kernel mailing lists.
-
-
-Thanks, no more top posts for me...
-
-
->
->> I have not entered any constraints into the driver because there really
->> should be no need. =A0The driver just copies whatever PCM data that is
->> provided directly to the DMA buffer. =A0It seems that the problem occurs
->> because the location to copy to is based on the pos suggested by the
->> callback function. =A0I am still finding it difficult to tell how ALSA d=
-ecides
->> there is an underrun or overrun. =A0I am definitely trying to read or wr=
-ite
->> the pcm data fast enough but it seems as though I get these errors anywa=
-y.
->
-> I've no idea what "the callback function" is?
-
-
-The callback function is the PCM copy function that I define in struct
-snd_pcm_ops
-
-
->
->> Questions:
->> 1. =A0How do I implement an ASoC-style driver that supports multiple chi=
-ps
->> when they are connected to the same SPORT but use different SPI chip
->> selects?
->
-> Look at current ASoC in -next, I've never tried this multi drop DAI
-> setup directly myself but it does support multiple CODECs in the system.
-
-
-I could not find anything in the linux-2.6.x/sound/soc/ directory
-called "next" and cannot find any documentation in
-linux-2.6.x/Documentation/sound/alsa/soc about "multi drop"
-
-
->
->> 2. =A0How do I define the proper buffer/period size constraints or shoul=
-d I
->> ignore the suggested position during copy operations and just keep track=
- of
->> the position within the DMA buffer myself?
->
-> Your constraints will flow from the requirements of the hardware plus
-> any additional requirements that the driver you've written imposes. =A0For
-> example, if you always need a period of data ready to start DMA on which
-> the application can't touch for coherency reasons then you need to make
-> sure that there's at least three periods (running, about to run and
-> updatable), or if your hardware DMAs in blocks you need a minimum period
-> size for that.
-
-
-This information was a little cryptic at first.  It turns out it was
-the diamond in the rough though.  I set periods_min in struct
-snd_pcm_hardware to 3 and it solved quite a few underrun problems.
-
-Question: Is there a way I can force ALSA to always use a period size
-that is a multiple of 16?
-
-
->
->> 3. =A0Can you suggest a good way to debug underrun/overrun problems?
->
-> There's a few settings for XRUN detection diagnostics in the ALSA core
-> code which can be useful - see pcm_lib.c and the SND_PCM_XRUN_DEBUG
-> config option.
->
-
-
-Thank you for this tip.  It turns out you need to enable
-SND_VERBOSE_PROCFS to see this option in the kernel configuration.  I
-am hoping this additional debug information may help me to figure out
-why plughw has never been able to properly convert the sample rate for
-me.
-
-Thanks and have a great weekend,
-Adam
+T24gVGh1LCBBdWcgMjYsIDIwMTAgYXQgMTQ6MDYsIEFkYW0gUm9zZW5iZXJnIHdyb3RlOgo+IFRo
+YW5rIHlvdSBmb3IgdGhlIHJlcGx5LsKgIEkgZW1haWxlZCBCYXJyeSBTb25nIG9uIEp1bHkgMzB0
+aCB0byByZXF1ZXN0IHNvbWUKPiBoZWxwIG1vdmluZyB0byB0aGUgbmV3IEFTb0Mgc3RhbmRhcmRz
+IGJ1dCByZWNlaXZlZCBubyByZXNwb25zZS4KCmRldmVsb3BlcnMgc2hvdWxkbnQgYmUgZS1tYWls
+ZWQgZGlyZWN0bHkgLi4uIGl0IGlzbnQgdW5jb21tb24gZm9yIHRoZW0KdG8gc2ltcGx5IGJlIHB1
+bnRlZC4gIHRoaXMgaXMgd2h5IHdlIGhhdmUgbWFpbGluZyBsaXN0cyBhbmQgZm9ydW1zLgoKPiBJ
+IGJlZ2FuIHdyaXRpbmcgdGhpcyBkcml2ZXIgb24gdGhlIEJsYWNrZmluIHVDbGludXggMjAwOSBy
+ZWxlYXNlIGFuZCBiYXNlZAo+IGl0IG9uIHRoZSBBRDE4MzYgYW5kIEFEMTkzOCBkcml2ZXJzLsKg
+IEkgYW0gbm93IHVzaW5nIHRoZSBCbGFja2ZpbiBTVk4gdHJ1bmsKPiBhbmQgaGF2ZSBmb3VuZCB0
+aGF0IHRoZSBkcml2ZXIgbW9kZWwgd2FzIGNoYW5nZWQgdG8gQVNvQy7CoCBJdCBpcyBub3QKPiBh
+cHBhcmVudCBob3cgSSB3b3VsZCBjcmVhdGUgYSBkcml2ZXIgdGhhdCBzdXBwb3J0cyB0d28gY2hp
+cHMgb2ZmIG9mIHRoZSBzYW1lCj4gU1BPUlQgdXNpbmcgdGhlIEFTb0MgZnJhbWV3b3JrLgo+Cj4g
+VGhlIGJlc3QgSSBjb3VsZCBkbyB3YXMgdXNlIHRoZSBzYW1lIFNQT1JUIGRyaXZlciB0aGF0IHRo
+ZSBBU29DIGNvZGUgdXNlcwo+IChiZjV4eC1zcG9ydC5jKSBzbyB0aGF0IEkgd2FzIGF0IGxlYXN0
+IHVwLXRvLWRhdGUgaW4gdGhhdCBhcmVhLsKgIEkgaGFkIHRvCj4gbW9kaWZ5IHRoYXQgZHJpdmVy
+IHNvIHRoYXQgaXQgd291bGQgc3VwcG9ydCB0aGUgc2Vjb25kYXJ5IGRhdGEgbGluZXMgb2YgdGhl
+Cj4gU1BPUlQuwqAgSSBmb3VuZCB0aGF0IHRoZSBkcml2ZXIgZGlkIG5vdCBmdW5jdGlvbiB3ZWxs
+IGluIDJEIERNQSBtb2RlIHNvIEkKPiBoYXZlIHRvIGtlZXAgbXkgcGVyaW9kIHNpemUgYmVsb3cg
+NjRrYi7CoCBUaGVyZSBpcyBhbHNvIGEgcHJvYmxlbSB3aXRoCj4gc3RhcnRpbmcgUnggYW5kIFR4
+IHRoYXQgY2F1c2VzIHRoZSBETUEgZGF0YSB0byBiZSBwbGFjZWQgaW50byB0aGUgU1BPUlQKPiBt
+dWx0aWNoYW5uZWwgd2luZG93IGluY29ycmVjdGx5LsKgIEkgYWRkZWQgYSBmdW5jdGlvbiB0byB0
+aGUgU1BPUlQgZHJpdmVyCj4geWVzdGVyZGF5IHRoYXQgY2FuIHdvcmsgYXJvdW5kIHRoaXMgcHJv
+YmxlbSBieSBzdGFydGluZyBib3RoIFJ4IGFuZCBUeCBhcwo+IG5vcm1hbCB0aGVuIHN0b3BwaW5n
+IHRoZSBTUE9SVCBhbmQgcmVzdGFydGluZyBpdCBsaWtlIHRoaXM6Cj4KPiBpbnQgc3BvcnRfc3Rh
+cnRfYm90aChzdHJ1Y3Qgc3BvcnRfZGV2aWNlICpzcG9ydCkKPiB7Cj4gwqDCoMKgIHNwb3J0X3R4
+X3N0YXJ0KHNwb3J0KTsKPiDCoMKgwqAgbXNsZWVwKDEpO8KgIC8vIGlzIHRoaXMgbmVlZGVkPwo+
+IMKgwqDCoCBzcG9ydF9yeF9zdGFydChzcG9ydCk7Cj4gwqDCoMKgIG1zbGVlcCgxKTvCoCAvLyBp
+cyB0aGlzIG5lZWRlZD8KPiDCoMKgwqAgc3BvcnRfc3RvcChzcG9ydCk7Cj4gwqDCoMKgIG1zbGVl
+cCgxKTvCoCAvLyBpcyB0aGlzIG5lZWRlZD8KPiDCoMKgwqAgc3BvcnRfc3RhcnQoc3BvcnQpOwo+
+IMKgwqDCoCByZXR1cm4gMDsKPiB9Cj4gRVhQT1JUX1NZTUJPTChzcG9ydF9zdGFydF9ib3RoKTsK
+Pgo+IFRoaXMgZW5zdXJlcyB0aGF0IHRoZSBkYXRhIGZyb20gdGhlIERNQSBidWZmZXIgaXMgcHJv
+cGVybHkgbG9hZGVkIGludG8gdGhlCj4gU1BPUlQgbXVsdGljaGFubmVsIHdpbmRvdyBmb3IgYm90
+aCB0aGUgUnggYW5kIFR4IGRhdGEgbGluZXMuwqAgSWYgaXQgaXMgbm90Cj4gZG9uZSB0aGlzIHdh
+eSBpdCBzZWVtcyB0aGF0IG9uZSBvZiB0aGVtIGlzIGFsd2F5cyBiZWluZyBmaWxsZWQgaW5jb3Jy
+ZWN0bHkuCj4gVGhpcyBtYXkgaGF2ZSBzb21ldGltZSB0byBkbyB3aXRoIHRoZSBmYWN0IHRoYXQg
+SSBoYXZlIHRvIGVuYWJsZSB0aGUKPiBzZWNvbmRhcnkgZGF0YSBsaW5lcyBidXQgdGhlcmUgaXMg
+bm8gY2xlYXIgZXhwbGFuYXRpb24gZm9yIHdoeSB0aGF0IHdvdWxkCj4gaGF2ZSBhbiBlZmZlY3Qu
+Cj4KPiBJIGhhdmUgbm90IGVudGVyZWQgYW55IGNvbnN0cmFpbnRzIGludG8gdGhlIGRyaXZlciBi
+ZWNhdXNlIHRoZXJlIHJlYWxseQo+IHNob3VsZCBiZSBubyBuZWVkLsKgIFRoZSBkcml2ZXIganVz
+dCBjb3BpZXMgd2hhdGV2ZXIgUENNIGRhdGEgdGhhdCBpcwo+IHByb3ZpZGVkIGRpcmVjdGx5IHRv
+IHRoZSBETUEgYnVmZmVyLsKgIEl0IHNlZW1zIHRoYXQgdGhlIHByb2JsZW0gb2NjdXJzCj4gYmVj
+YXVzZSB0aGUgbG9jYXRpb24gdG8gY29weSB0byBpcyBiYXNlZCBvbiB0aGUgcG9zIHN1Z2dlc3Rl
+ZCBieSB0aGUKPiBjYWxsYmFjayBmdW5jdGlvbi7CoCBJIGFtIHN0aWxsIGZpbmRpbmcgaXQgZGlm
+ZmljdWx0IHRvIHRlbGwgaG93IEFMU0EgZGVjaWRlcwo+IHRoZXJlIGlzIGFuIHVuZGVycnVuIG9y
+IG92ZXJydW4uwqAgSSBhbSBkZWZpbml0ZWx5IHRyeWluZyB0byByZWFkIG9yIHdyaXRlCj4gdGhl
+IHBjbSBkYXRhIGZhc3QgZW5vdWdoIGJ1dCBpdCBzZWVtcyBhcyB0aG91Z2ggSSBnZXQgdGhlc2Ug
+ZXJyb3JzIGFueXdheS4KPgo+IFF1ZXN0aW9uczoKPiAxLsKgIEhvdyBkbyBJIGltcGxlbWVudCBh
+biBBU29DLXN0eWxlIGRyaXZlciB0aGF0IHN1cHBvcnRzIG11bHRpcGxlIGNoaXBzCj4gd2hlbiB0
+aGV5IGFyZSBjb25uZWN0ZWQgdG8gdGhlIHNhbWUgU1BPUlQgYnV0IHVzZSBkaWZmZXJlbnQgU1BJ
+IGNoaXAKPiBzZWxlY3RzPwo+IDIuwqAgSG93IGRvIEkgZGVmaW5lIHRoZSBwcm9wZXIgYnVmZmVy
+L3BlcmlvZCBzaXplIGNvbnN0cmFpbnRzIG9yIHNob3VsZCBJCj4gaWdub3JlIHRoZSBzdWdnZXN0
+ZWQgcG9zaXRpb24gZHVyaW5nIGNvcHkgb3BlcmF0aW9ucyBhbmQganVzdCBrZWVwIHRyYWNrIG9m
+Cj4gdGhlIHBvc2l0aW9uIHdpdGhpbiB0aGUgRE1BIGJ1ZmZlciBteXNlbGY/Cj4gMy7CoCBDYW4g
+eW91IHN1Z2dlc3QgYSBnb29kIHdheSB0byBkZWJ1ZyB1bmRlcnJ1bi9vdmVycnVuIHByb2JsZW1z
+PwoKaSBkb250IHJlYWxseSBrbm93IEFTb0MvU1BPUlRzLCBzbyB3ZSdkIGhhdmUgdG8gZ2V0IHNv
+bWVvbmUgdG8gbG9vayBpbnRvIGl0Ci1taWtlCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
