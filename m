@@ -1,21 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v5] ASoC/2.6.37: fix au1x platform
-Date: Fri, 27 Aug 2010 20:14:30 +0100
-Message-ID: <20100827191428.GB6666@opensource.wolfsonmicro.com>
-References: <1282827231-17323-1-git-send-email-manuel.lauss@googlemail.com>
-	<1282913484.3025.25.camel@odin>
-	<1365302F-4C5D-4075-8D38-94DEEEF2583E@opensource.wolfsonmicro.com>
-	<AANLkTikr3rpij1FuKAQrwR0U8kpJUnKzfVJEzeYeGEsk@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: explicit commandline control of speakers
+ vs	headphone output
+Date: Fri, 27 Aug 2010 21:26:37 +0200
+Message-ID: <4C78116D.9040704@canonical.com>
+References: <210284.64008.qm@web50707.mail.re2.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5B2321038A6
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 822321038B2
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Aug 2010 21:14:19 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <AANLkTikr3rpij1FuKAQrwR0U8kpJUnKzfVJEzeYeGEsk@mail.gmail.com>
+	Fri, 27 Aug 2010 21:26:39 +0200 (CEST)
+In-Reply-To: <210284.64008.qm@web50707.mail.re2.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,23 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Manuel Lauss <manuel.lauss@googlemail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Ian Lartey <ian@opensource.wolfsonmicro.com>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Eric Holstege <eric_holstege@yahoo.com>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 27, 2010 at 03:32:16PM +0200, Manuel Lauss wrote:
+2010-08-27 20:46, Eric Holstege skrev:
+> Thanks, Clemens;
+> 
+> How were you able to determine that from the "amixer scontents" output.
+> 
+> Although I can't disable *automatic* speaker mute on headphone 
+> insertion, can I explicitly unmute them again (e.g. with amixer sset or 
+> cset)?
+> 
+> If not....
+> "cat /proc/asound/card*/codec*" says it is the Realtek ALC888.
+> Does this mean I have to somehow patch the kernel sound module file
+> .../linux-source-2.6.*/sound/pci/hda/patch_realtek.c
+> to fix this somehow?
 
-> I've found another AC97-related issue on another board (DB1300):
-> With AC97 enabled, the device warning doesn't appear but my ethernet
-> is gone instead:
+So in the long run, I think it would be better to leave all auto-muting
+to userspace. Then stuff like pulseaudio could to advanced decision of
+how to handle input events. But that's the long way.
 
-This seems like some sort of pin mux issue or something driver specific?
-I'm having a hard time thinking of anything ASoC could do that'd cause
-this, but I don't know how the two subsystems might interact on this
-system or au1x in general.
+There are certainly ways to disable auto-muting for Realtek ALC888, look
+along the lines of "speaker_automute" and "unsol_event". It is also
+possible that you could tweak your user_pin_config to trick your HP out
+into a Line Out. That way it won't automute, and you don't have to
+recompile your kernel.
 
-In any case I'm tempted to apply what we've got here since while there
-are still issues it's all au1x (and seemingly AC97) specific and it
-improves the situation for that platform - we can continue to work on
-the remaining problems without re-reviewing this code again.  Liam, does
-that seem reasonable?
+As a side note: The VIA HDA driver, I believe, have an option for
+turning automute off. But it also sets "mute" on a misnamed control at
+the same time, tricking PA into believing that you want to mute all
+output. So PA is "helpful" and mutes everything else as well. :-/
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
