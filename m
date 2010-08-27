@@ -1,19 +1,20 @@
 From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCH 1/4] ASoC: tlv320aic3x: Fix remaining output
-	pin switch names
-Date: Fri, 27 Aug 2010 16:56:47 +0300
-Message-ID: <1282917410-12000-2-git-send-email-jhnikula@gmail.com>
+Subject: [PATCH 2/4] ASoC: tlv320aic3x: Sort output pin control
+	registers in header file
+Date: Fri, 27 Aug 2010 16:56:48 +0300
+Message-ID: <1282917410-12000-3-git-send-email-jhnikula@gmail.com>
 References: <1282917410-12000-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 8649224614
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 567FA103885
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Aug 2010 15:56:06 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so1983186ewy.38
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2010 06:56:05 -0700 (PDT)
+	Fri, 27 Aug 2010 15:56:09 +0200 (CEST)
+Received: by mail-ew0-f51.google.com with SMTP id 21so1983186ewy.38
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2010 06:56:09 -0700 (PDT)
 In-Reply-To: <1282917410-12000-1-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,45 +29,100 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Bit 3 in output pin_CTRL register mutes the whole output pin not just the
-route from DAC so remove misleading DAC from control name. Currently only
-"Line[L | R] Playback Switch" were correct.
+Each output pin has 7 consecutive control registers in tlv320aic3x register
+map. First 6 of them control the signal mixing and one is for output level
+and power control.
+
+Sort these registers as they are sorted clearly in hardware, it makes also
+definitions more readable and easier to pinpoint missing register
+definitions.
 
 Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
 ---
- sound/soc/codecs/tlv320aic3x.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/tlv320aic3x.h |   47 +++++++++++++++++++++------------------
+ 1 files changed, 25 insertions(+), 22 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index efae8b5..6e4ed79 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -314,7 +314,7 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
- 	SOC_DOUBLE_R_TLV("Mono DAC Playback Volume",
- 			 DACL1_2_MONOLOPM_VOL, DACR1_2_MONOLOPM_VOL,
- 			 0, 118, 1, output_stage_tlv),
--	SOC_SINGLE("Mono DAC Playback Switch", MONOLOPM_CTRL, 3, 0x01, 0),
-+	SOC_SINGLE("Mono Playback Switch", MONOLOPM_CTRL, 3, 0x01, 0),
- 	SOC_DOUBLE_R_TLV("Mono PGA Bypass Playback Volume",
- 			 PGAL_2_MONOLOPM_VOL, PGAR_2_MONOLOPM_VOL,
- 			 0, 118, 1, output_stage_tlv),
-@@ -325,7 +325,7 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
- 	SOC_DOUBLE_R_TLV("HP DAC Playback Volume",
- 			 DACL1_2_HPLOUT_VOL, DACR1_2_HPROUT_VOL,
- 			 0, 118, 1, output_stage_tlv),
--	SOC_DOUBLE_R("HP DAC Playback Switch", HPLOUT_CTRL, HPROUT_CTRL, 3,
-+	SOC_DOUBLE_R("HP Playback Switch", HPLOUT_CTRL, HPROUT_CTRL, 3,
- 		     0x01, 0),
- 	SOC_DOUBLE_R_TLV("HP Right PGA Bypass Playback Volume",
- 			 PGAR_2_HPLOUT_VOL, PGAR_2_HPROUT_VOL,
-@@ -341,7 +341,7 @@ static const struct snd_kcontrol_new aic3x_snd_controls[] = {
- 	SOC_DOUBLE_R_TLV("HPCOM DAC Playback Volume",
- 			 DACL1_2_HPLCOM_VOL, DACR1_2_HPRCOM_VOL,
- 			 0, 118, 1, output_stage_tlv),
--	SOC_DOUBLE_R("HPCOM DAC Playback Switch", HPLCOM_CTRL, HPRCOM_CTRL, 3,
-+	SOC_DOUBLE_R("HPCOM Playback Switch", HPLCOM_CTRL, HPRCOM_CTRL, 3,
- 		     0x01, 0),
- 	SOC_SINGLE_TLV("HPLCOM PGA Bypass Playback Volume",
- 		       PGAL_2_HPLCOM_VOL, 0, 118, 1, output_stage_tlv),
+diff --git a/sound/soc/codecs/tlv320aic3x.h b/sound/soc/codecs/tlv320aic3x.h
+index 98e4439..20d8cac 100644
+--- a/sound/soc/codecs/tlv320aic3x.h
++++ b/sound/soc/codecs/tlv320aic3x.h
+@@ -81,52 +81,55 @@
+ /* DAC Digital control registers */
+ #define LDAC_VOL			43
+ #define RDAC_VOL			44
+-/* High Power Output control registers */
++/* Left High Power Output control registers */
+ #define LINE2L_2_HPLOUT_VOL		45
+-#define LINE2R_2_HPROUT_VOL		62
+ #define PGAL_2_HPLOUT_VOL		46
+-#define PGAL_2_HPROUT_VOL		60
+-#define PGAR_2_HPLOUT_VOL		49
+-#define PGAR_2_HPROUT_VOL		63
+ #define DACL1_2_HPLOUT_VOL		47
+-#define DACR1_2_HPROUT_VOL		64
++#define PGAR_2_HPLOUT_VOL		49
+ #define HPLOUT_CTRL			51
+-#define HPROUT_CTRL			65
+-/* High Power COM control registers */
++/* Left High Power COM control registers */
+ #define LINE2L_2_HPLCOM_VOL		52
+-#define LINE2R_2_HPRCOM_VOL		69
+ #define PGAL_2_HPLCOM_VOL		53
++#define DACL1_2_HPLCOM_VOL		54
+ #define PGAR_2_HPLCOM_VOL		56
++#define HPLCOM_CTRL			58
++/* Right High Power Output control registers */
++#define PGAL_2_HPROUT_VOL		60
++#define LINE2R_2_HPROUT_VOL		62
++#define PGAR_2_HPROUT_VOL		63
++#define DACR1_2_HPROUT_VOL		64
++#define HPROUT_CTRL			65
++/* Right High Power COM control registers */
+ #define PGAL_2_HPRCOM_VOL		67
++#define LINE2R_2_HPRCOM_VOL		69
+ #define PGAR_2_HPRCOM_VOL		70
+-#define DACL1_2_HPLCOM_VOL		54
+ #define DACR1_2_HPRCOM_VOL		71
+-#define HPLCOM_CTRL			58
+ #define HPRCOM_CTRL			72
+ /* Mono Line Output Plus/Minus control registers */
+ #define LINE2L_2_MONOLOPM_VOL		73
+-#define LINE2R_2_MONOLOPM_VOL		76
+ #define PGAL_2_MONOLOPM_VOL		74
+-#define PGAR_2_MONOLOPM_VOL		77
+ #define DACL1_2_MONOLOPM_VOL		75
++#define LINE2R_2_MONOLOPM_VOL		76
++#define PGAR_2_MONOLOPM_VOL		77
+ #define DACR1_2_MONOLOPM_VOL		78
+ #define MONOLOPM_CTRL			79
+ /* Class-D speaker driver on tlv320aic3007 */
+ #define CLASSD_CTRL			73
+-/* Line Output Plus/Minus control registers */
++/* Left Line Output Plus/Minus control registers */
+ #define LINE2L_2_LLOPM_VOL		80
+-#define LINE2L_2_RLOPM_VOL		87
+-#define LINE2R_2_LLOPM_VOL		83
+-#define LINE2R_2_RLOPM_VOL		90
+ #define PGAL_2_LLOPM_VOL		81
+-#define PGAL_2_RLOPM_VOL		88
+-#define PGAR_2_LLOPM_VOL		84
+-#define PGAR_2_RLOPM_VOL		91
+ #define DACL1_2_LLOPM_VOL		82
+-#define DACL1_2_RLOPM_VOL		89
+-#define DACR1_2_RLOPM_VOL		92
++#define LINE2R_2_LLOPM_VOL		83
++#define PGAR_2_LLOPM_VOL		84
+ #define DACR1_2_LLOPM_VOL		85
+ #define LLOPM_CTRL			86
++/* Right Line Output Plus/Minus control registers */
++#define LINE2L_2_RLOPM_VOL		87
++#define PGAL_2_RLOPM_VOL		88
++#define DACL1_2_RLOPM_VOL		89
++#define LINE2R_2_RLOPM_VOL		90
++#define PGAR_2_RLOPM_VOL		91
++#define DACR1_2_RLOPM_VOL		92
+ #define RLOPM_CTRL			93
+ /* GPIO/IRQ registers */
+ #define AIC3X_STICKY_IRQ_FLAGS_REG	96
 -- 
 1.7.1
