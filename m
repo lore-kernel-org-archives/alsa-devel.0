@@ -1,22 +1,21 @@
-From: Mike Frysinger <vapier@gentoo.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: Problem with underrun on new CS42448 x2 driver
-Date: Fri, 27 Aug 2010 16:37:45 -0400
-Message-ID: <AANLkTinVdY6qsuBMngOsnXrm=chfqkwJAn8msJtnyt_=@mail.gmail.com>
+Date: Fri, 27 Aug 2010 22:20:25 +0100
+Message-ID: <20100827212019.GA7399@opensource.wolfsonmicro.com>
 References: <AANLkTi=3kc74QqDopiAw+u8ie2Qn47p9XQpw54b6iB4Z@mail.gmail.com>
 	<20100826124757.GC5721@sirena.org.uk>
 	<AANLkTinY5mcCPKEJcm+Yru-+7U+nEWe+VaWL558UhhrB@mail.gmail.com>
+	<AANLkTinVdY6qsuBMngOsnXrm=chfqkwJAn8msJtnyt_=@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id A71371038B8
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E962A1038BE
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Aug 2010 22:38:07 +0200 (CEST)
-Received: by vws20 with SMTP id 20so3286667vws.38
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2010 13:38:05 -0700 (PDT)
-In-Reply-To: <AANLkTinY5mcCPKEJcm+Yru-+7U+nEWe+VaWL558UhhrB@mail.gmail.com>
+	Fri, 27 Aug 2010 23:20:52 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTinVdY6qsuBMngOsnXrm=chfqkwJAn8msJtnyt_=@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,66 +25,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Adam Rosenberg <adam@alcorn.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Barry Song <21cnbao@gmail.com>, Cliff Cai <cliff.cai@analog.com>, Sonic Zhang <Sonic.Zhang@analog.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Cc: Adam Rosenberg <adam@alcorn.com>, alsa-devel@alsa-project.org, Sonic Zhang <Sonic.Zhang@analog.com>, Barry Song <21cnbao@gmail.com>, Cliff Cai <cliff.cai@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBBdWcgMjYsIDIwMTAgYXQgMTQ6MDYsIEFkYW0gUm9zZW5iZXJnIHdyb3RlOgo+IFRo
-YW5rIHlvdSBmb3IgdGhlIHJlcGx5LsKgIEkgZW1haWxlZCBCYXJyeSBTb25nIG9uIEp1bHkgMzB0
-aCB0byByZXF1ZXN0IHNvbWUKPiBoZWxwIG1vdmluZyB0byB0aGUgbmV3IEFTb0Mgc3RhbmRhcmRz
-IGJ1dCByZWNlaXZlZCBubyByZXNwb25zZS4KCmRldmVsb3BlcnMgc2hvdWxkbnQgYmUgZS1tYWls
-ZWQgZGlyZWN0bHkgLi4uIGl0IGlzbnQgdW5jb21tb24gZm9yIHRoZW0KdG8gc2ltcGx5IGJlIHB1
-bnRlZC4gIHRoaXMgaXMgd2h5IHdlIGhhdmUgbWFpbGluZyBsaXN0cyBhbmQgZm9ydW1zLgoKPiBJ
-IGJlZ2FuIHdyaXRpbmcgdGhpcyBkcml2ZXIgb24gdGhlIEJsYWNrZmluIHVDbGludXggMjAwOSBy
-ZWxlYXNlIGFuZCBiYXNlZAo+IGl0IG9uIHRoZSBBRDE4MzYgYW5kIEFEMTkzOCBkcml2ZXJzLsKg
-IEkgYW0gbm93IHVzaW5nIHRoZSBCbGFja2ZpbiBTVk4gdHJ1bmsKPiBhbmQgaGF2ZSBmb3VuZCB0
-aGF0IHRoZSBkcml2ZXIgbW9kZWwgd2FzIGNoYW5nZWQgdG8gQVNvQy7CoCBJdCBpcyBub3QKPiBh
-cHBhcmVudCBob3cgSSB3b3VsZCBjcmVhdGUgYSBkcml2ZXIgdGhhdCBzdXBwb3J0cyB0d28gY2hp
-cHMgb2ZmIG9mIHRoZSBzYW1lCj4gU1BPUlQgdXNpbmcgdGhlIEFTb0MgZnJhbWV3b3JrLgo+Cj4g
-VGhlIGJlc3QgSSBjb3VsZCBkbyB3YXMgdXNlIHRoZSBzYW1lIFNQT1JUIGRyaXZlciB0aGF0IHRo
-ZSBBU29DIGNvZGUgdXNlcwo+IChiZjV4eC1zcG9ydC5jKSBzbyB0aGF0IEkgd2FzIGF0IGxlYXN0
-IHVwLXRvLWRhdGUgaW4gdGhhdCBhcmVhLsKgIEkgaGFkIHRvCj4gbW9kaWZ5IHRoYXQgZHJpdmVy
-IHNvIHRoYXQgaXQgd291bGQgc3VwcG9ydCB0aGUgc2Vjb25kYXJ5IGRhdGEgbGluZXMgb2YgdGhl
-Cj4gU1BPUlQuwqAgSSBmb3VuZCB0aGF0IHRoZSBkcml2ZXIgZGlkIG5vdCBmdW5jdGlvbiB3ZWxs
-IGluIDJEIERNQSBtb2RlIHNvIEkKPiBoYXZlIHRvIGtlZXAgbXkgcGVyaW9kIHNpemUgYmVsb3cg
-NjRrYi7CoCBUaGVyZSBpcyBhbHNvIGEgcHJvYmxlbSB3aXRoCj4gc3RhcnRpbmcgUnggYW5kIFR4
-IHRoYXQgY2F1c2VzIHRoZSBETUEgZGF0YSB0byBiZSBwbGFjZWQgaW50byB0aGUgU1BPUlQKPiBt
-dWx0aWNoYW5uZWwgd2luZG93IGluY29ycmVjdGx5LsKgIEkgYWRkZWQgYSBmdW5jdGlvbiB0byB0
-aGUgU1BPUlQgZHJpdmVyCj4geWVzdGVyZGF5IHRoYXQgY2FuIHdvcmsgYXJvdW5kIHRoaXMgcHJv
-YmxlbSBieSBzdGFydGluZyBib3RoIFJ4IGFuZCBUeCBhcwo+IG5vcm1hbCB0aGVuIHN0b3BwaW5n
-IHRoZSBTUE9SVCBhbmQgcmVzdGFydGluZyBpdCBsaWtlIHRoaXM6Cj4KPiBpbnQgc3BvcnRfc3Rh
-cnRfYm90aChzdHJ1Y3Qgc3BvcnRfZGV2aWNlICpzcG9ydCkKPiB7Cj4gwqDCoMKgIHNwb3J0X3R4
-X3N0YXJ0KHNwb3J0KTsKPiDCoMKgwqAgbXNsZWVwKDEpO8KgIC8vIGlzIHRoaXMgbmVlZGVkPwo+
-IMKgwqDCoCBzcG9ydF9yeF9zdGFydChzcG9ydCk7Cj4gwqDCoMKgIG1zbGVlcCgxKTvCoCAvLyBp
-cyB0aGlzIG5lZWRlZD8KPiDCoMKgwqAgc3BvcnRfc3RvcChzcG9ydCk7Cj4gwqDCoMKgIG1zbGVl
-cCgxKTvCoCAvLyBpcyB0aGlzIG5lZWRlZD8KPiDCoMKgwqAgc3BvcnRfc3RhcnQoc3BvcnQpOwo+
-IMKgwqDCoCByZXR1cm4gMDsKPiB9Cj4gRVhQT1JUX1NZTUJPTChzcG9ydF9zdGFydF9ib3RoKTsK
-Pgo+IFRoaXMgZW5zdXJlcyB0aGF0IHRoZSBkYXRhIGZyb20gdGhlIERNQSBidWZmZXIgaXMgcHJv
-cGVybHkgbG9hZGVkIGludG8gdGhlCj4gU1BPUlQgbXVsdGljaGFubmVsIHdpbmRvdyBmb3IgYm90
-aCB0aGUgUnggYW5kIFR4IGRhdGEgbGluZXMuwqAgSWYgaXQgaXMgbm90Cj4gZG9uZSB0aGlzIHdh
-eSBpdCBzZWVtcyB0aGF0IG9uZSBvZiB0aGVtIGlzIGFsd2F5cyBiZWluZyBmaWxsZWQgaW5jb3Jy
-ZWN0bHkuCj4gVGhpcyBtYXkgaGF2ZSBzb21ldGltZSB0byBkbyB3aXRoIHRoZSBmYWN0IHRoYXQg
-SSBoYXZlIHRvIGVuYWJsZSB0aGUKPiBzZWNvbmRhcnkgZGF0YSBsaW5lcyBidXQgdGhlcmUgaXMg
-bm8gY2xlYXIgZXhwbGFuYXRpb24gZm9yIHdoeSB0aGF0IHdvdWxkCj4gaGF2ZSBhbiBlZmZlY3Qu
-Cj4KPiBJIGhhdmUgbm90IGVudGVyZWQgYW55IGNvbnN0cmFpbnRzIGludG8gdGhlIGRyaXZlciBi
-ZWNhdXNlIHRoZXJlIHJlYWxseQo+IHNob3VsZCBiZSBubyBuZWVkLsKgIFRoZSBkcml2ZXIganVz
-dCBjb3BpZXMgd2hhdGV2ZXIgUENNIGRhdGEgdGhhdCBpcwo+IHByb3ZpZGVkIGRpcmVjdGx5IHRv
-IHRoZSBETUEgYnVmZmVyLsKgIEl0IHNlZW1zIHRoYXQgdGhlIHByb2JsZW0gb2NjdXJzCj4gYmVj
-YXVzZSB0aGUgbG9jYXRpb24gdG8gY29weSB0byBpcyBiYXNlZCBvbiB0aGUgcG9zIHN1Z2dlc3Rl
-ZCBieSB0aGUKPiBjYWxsYmFjayBmdW5jdGlvbi7CoCBJIGFtIHN0aWxsIGZpbmRpbmcgaXQgZGlm
-ZmljdWx0IHRvIHRlbGwgaG93IEFMU0EgZGVjaWRlcwo+IHRoZXJlIGlzIGFuIHVuZGVycnVuIG9y
-IG92ZXJydW4uwqAgSSBhbSBkZWZpbml0ZWx5IHRyeWluZyB0byByZWFkIG9yIHdyaXRlCj4gdGhl
-IHBjbSBkYXRhIGZhc3QgZW5vdWdoIGJ1dCBpdCBzZWVtcyBhcyB0aG91Z2ggSSBnZXQgdGhlc2Ug
-ZXJyb3JzIGFueXdheS4KPgo+IFF1ZXN0aW9uczoKPiAxLsKgIEhvdyBkbyBJIGltcGxlbWVudCBh
-biBBU29DLXN0eWxlIGRyaXZlciB0aGF0IHN1cHBvcnRzIG11bHRpcGxlIGNoaXBzCj4gd2hlbiB0
-aGV5IGFyZSBjb25uZWN0ZWQgdG8gdGhlIHNhbWUgU1BPUlQgYnV0IHVzZSBkaWZmZXJlbnQgU1BJ
-IGNoaXAKPiBzZWxlY3RzPwo+IDIuwqAgSG93IGRvIEkgZGVmaW5lIHRoZSBwcm9wZXIgYnVmZmVy
-L3BlcmlvZCBzaXplIGNvbnN0cmFpbnRzIG9yIHNob3VsZCBJCj4gaWdub3JlIHRoZSBzdWdnZXN0
-ZWQgcG9zaXRpb24gZHVyaW5nIGNvcHkgb3BlcmF0aW9ucyBhbmQganVzdCBrZWVwIHRyYWNrIG9m
-Cj4gdGhlIHBvc2l0aW9uIHdpdGhpbiB0aGUgRE1BIGJ1ZmZlciBteXNlbGY/Cj4gMy7CoCBDYW4g
-eW91IHN1Z2dlc3QgYSBnb29kIHdheSB0byBkZWJ1ZyB1bmRlcnJ1bi9vdmVycnVuIHByb2JsZW1z
-PwoKaSBkb250IHJlYWxseSBrbm93IEFTb0MvU1BPUlRzLCBzbyB3ZSdkIGhhdmUgdG8gZ2V0IHNv
-bWVvbmUgdG8gbG9vayBpbnRvIGl0Ci1taWtlCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+On Fri, Aug 27, 2010 at 04:37:45PM -0400, Mike Frysinger wrote:
+> On Thu, Aug 26, 2010 at 14:06, Adam Rosenberg wrote:
+> > Thank you for the reply.=A0 I emailed Barry Song on July 30th to reques=
+t some
+> > help moving to the new ASoC standards but received no response.
+
+> developers shouldnt be e-mailed directly ... it isnt uncommon for them
+> to simply be punted.  this is why we have mailing lists and forums.
+
+That's shouldn't *only* be e-mailed directly (for Linux stuff).  You
+should generally keep the relevant folks in the CC as well but also mail
+the lists concerned.  The direct mail is there because the lists can be
+high volume so it helps people see the mail, while the lists mean that
+people other than those you thought of will be able to help and that any
+answers will be archived for other people who might need them.
