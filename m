@@ -1,21 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ARM: S3C64XX: Fix fallthrough bug in	i2sv3
-	gpio configuration, improve logging
-Date: Fri, 27 Aug 2010 11:26:06 +0100
-Message-ID: <20100827102606.GA14881@opensource.wolfsonmicro.com>
-References: <1282835243-20493-1-git-send-email-dp@opensource.wolfsonmicro.com>
-	<20100826152140.GB4363@opensource.wolfsonmicro.com>
-	<1282904320.3025.2.camel@odin>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: How to transfer more than 2 channels
+	between	i.MX25 & AD1938 using SSI?
+Date: Fri, 27 Aug 2010 13:45:12 +0200
+Message-ID: <20100827114512.GC1473@pengutronix.de>
+References: <4C752B37.40601@googlemail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 571382453F
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 95354245A5
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Aug 2010 12:26:07 +0200 (CEST)
+	Fri, 27 Aug 2010 13:45:15 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1282904320.3025.2.camel@odin>
+In-Reply-To: <4C752B37.40601@googlemail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,19 +23,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Sven Zeisberg <sven.zeisberg@googlemail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 27, 2010 at 11:18:40AM +0100, Liam Girdwood wrote:
-> On Thu, 2010-08-26 at 16:21 +0100, Mark Brown wrote:
-> > On Thu, Aug 26, 2010 at 04:07:23PM +0100, Dimitris Papastamos wrote:
-> > 
-> > > This is a fix for a change in ASoC multi-component as well.
-> > 
-> > Clarifying from offline discussion: the issue isn't present in mainline,
-> > it came in with m-c.
-> 
-> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+Hi Sven,
 
-Applied, thanks.
+On Wed, Aug 25, 2010 at 04:39:51PM +0200, Sven Zeisberg wrote:
+>   Hi,
+> 
+> has anybody succeeded to transfer more than 2 audio channels between 
+> i.MX25 and a CODEC throught the i.MX25 SSI Port?
+> 
+> We have succeeded to set the CODEC (AD1938) as Master to the required 
+> mode (TDM with 8 Timeslots and 32 Bit per Timeslot). However, as soon as 
+> we start to play a wav file with aplay, we can see on the logic analyzer 
+> that the data format on the SSI lines is reset to a stereo mode (2 
+> channels with frame sync changing level between channels).
+> 
+> In the imx-ssi driver, I can see that .channel_max = 2 - therefore my 
+> question: does this driver support more than two channels at all?
+
+You have to call snd_soc_dai_set_tdm_slot() with the correct parameters.
+This function is currently relatively untested, so expect bugs here. I
+would try something like:
+
+snd_soc_dai_set_tdm_slot(cpu_dai, 0xfffff00, 0xfffff00, 8, 32);
+
+slot_width is currently not handled in this function, this may be
+wrong. I don't know whether a slot length of 32bit is supported at all
+in the hardware.
+
+I only tested this driver with 2 channels since I have no access to a
+codec supporting something else.
+
+Hope that helps
+
+  Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
