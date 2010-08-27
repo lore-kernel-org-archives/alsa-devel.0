@@ -1,17 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: xine AC3 dropout problem - Please help!
-Date: Fri, 27 Aug 2010 19:33:06 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1008271926500.10278@eeebox2.perex-int.cz>
-References: <AANLkTim_nj3t6FUY1Qnd=3AXkajELkAGzswOHN3ox3xE@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/6] ASoC: ad1980: Stay in 20bit mode
+	for	architectures other than blackfin
+Date: Fri, 27 Aug 2010 19:06:32 +0100
+Message-ID: <20100827180632.GA30429@sirena.org.uk>
+References: <1282655384-13357-1-git-send-email-u.kleine-koenig@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7212310381E
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 72C79103882
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Aug 2010 19:33:07 +0200 (CEST)
-In-Reply-To: <AANLkTim_nj3t6FUY1Qnd=3AXkajELkAGzswOHN3ox3xE@mail.gmail.com>
+	Fri, 27 Aug 2010 20:06:35 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1282655384-13357-1-git-send-email-u.kleine-koenig@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,25 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: VDR User <user.vdr@gmail.com>
-Cc: "mailing list: alsa-dev" <alsa-devel@alsa-project.org>
+To: Uwe Kleine-K??nig <u.kleine-koenig@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Sonic Zhang <sonic.zhang@analog.com>, Sascha Hauer <s.hauer@pengutronix.de>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 27 Aug 2010, VDR User wrote:
+On Tue, Aug 24, 2010 at 03:09:39PM +0200, Uwe Kleine-K??nig wrote:
+> From: Sascha Hauer <s.hauer@pengutronix.de>
+> 
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> Signed-off-by: Uwe Kleine-K??nig <u.kleine-koenig@pengutronix.de>
 
-> occurs in xine.  The error I see in the xine log when the dropout
-> occurs is: pcm_hw.c: snd_pcm_hw_delay() SNDRV_PCM_IOCTL_DELAY failed
-> (-32).
+Please remember to CC maintainers on patches.
 
--32 means -EPIPE - underrun has occured. It means that xine does not 
-deliver samples in time to the driver for some reason. Because mplayer 
-works, it does not seem like a general ALSA issue. I would ask xine 
-developers for further debugging of this issue (compare the audio write 
-calls with the realtime clock).
+> ---
+>  sound/soc/codecs/ad1980.c |   10 +++++++++-
+>  1 files changed, 9 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
+> index 70cfaec..35c0580 100644
+> --- a/sound/soc/codecs/ad1980.c
+> +++ b/sound/soc/codecs/ad1980.c
+> @@ -168,13 +168,21 @@ retry:
+>  	}
+>  
+>  	soc_ac97_ops.reset(codec->ac97);
+> +
+> +#ifdef SND_BF5XX_SOC_AD1980
+>  	/* Set bit 16slot in register 74h, then every slot will has only 16
+>  	 * bits. This command is sent out in 20bit mode, in which case the
+> -	 * first nibble of data is eaten by the addr. (Tag is always 16 bit)*/
+> +	 * first nibble of data is eaten by the addr. (Tag is always 16 bit).
+> +	 *
+> +	 * This seems to be blackfin specific. On other systems we want 20bit
+> +	 * mode.
+> +	 */
+>  	ac97_write(codec, AC97_AD_SERIAL_CFG, 0x9900);
+> +#endif
 
- 					Jaroslav
+If you're going to ifdef this out you should be ifdefing it based on the
+architecture or the AC'97 controller rather than a specific machine
+driver.
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+>  	if (ac97_read(codec, AC97_RESET)  != 0x0090)
+>  		goto err;
+> +
+>  	return 0;
+
+Random whitespace change...
