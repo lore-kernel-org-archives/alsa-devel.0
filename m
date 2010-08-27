@@ -1,17 +1,16 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: alsactl adds volume controls?
-Date: Fri, 27 Aug 2010 20:36:11 +0200
-Message-ID: <4C78059B.50801@canonical.com>
-References: <4C77CE1D.2070501@canonical.com> <4C77DD09.3060909@ladisch.de>
+From: Eric Holstege <eric_holstege@yahoo.com>
+Subject: Re: explicit commandline control of speakers vs
+	headphone output
+Date: Fri, 27 Aug 2010 11:46:45 -0700 (PDT)
+Message-ID: <210284.64008.qm@web50707.mail.re2.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8BBCD2469B
+Received: from web50707.mail.re2.yahoo.com (web50707.mail.re2.yahoo.com
+	[206.190.38.105]) by alsa0.perex.cz (Postfix) with SMTP id 466BC246A5
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Aug 2010 20:36:16 +0200 (CEST)
-In-Reply-To: <4C77DD09.3060909@ladisch.de>
+	Fri, 27 Aug 2010 20:46:46 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,35 +20,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010-08-27 17:43, Clemens Ladisch skrev:
-> David Henningsson wrote:
->> So I've discovered that my sound card has a "PCM Playback Volume"
->> control, but changing that control does not alter the volume.
->>
->> Interestingly enough, this control does not come from the HDA parser, it
->> is added by alsactl at boot time...!
-> 
-> This control was created by the software volume plugin.  When not using
-> this plugin, the control does not have any effect.
-> 
-> To get rid of it, delete its entry from /etc/asound.state.
+Thanks, Clemens;
 
-Hmm, I wonder if this is an Ubuntu-specific bug then? Because when I run
-Maverick (the upcoming Ubuntu release) from a Live-CD, the "PCM Playback
-Volume" control is still there (and there is no asound.state, neither in
-/etc or in /var/lib/alsa).
-When I use the plughw interface, the "PCM Playback Volume" does not
-affect volume output. Should I use another device string to test the
-softvol plugin, to see if it's there or not?
+How were you able to determine that from the "amixer scontents" output.
 
-Btw, I still think it's strange that a userspace plugin, with controls
-that only effects userspace, still can create controls in kernel-space.
-Am I missing something?
+Although I can't disable *automatic* speaker mute on headphone 
+insertion, can I explicitly unmute them again (e.g. with amixer sset or 
+cset)?
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+If not....
+"cat /proc/asound/card*/codec*" says it is the Realtek ALC888.
+Does this mean I have to somehow patch the kernel sound module file
+.../linux-source-2.6.*/sound/pci/hda/patch_realtek.c
+to fix this somehow?
+
+Regards
+-Eric
+
+
+Clemens Ladisch wrote:
+> Eric Holstege wrote:
+>   
+>> Simple mixer control ...
+>>     
+>
+> It looks as if your codec cannot be configured to disable the automatic
+> headphone switching.
+>
+>
+> Regards,
+> Clemens
+>
+>
+>   
