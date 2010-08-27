@@ -1,20 +1,18 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: imx-ssi in master mode?
-Date: Thu, 26 Aug 2010 20:15:58 -0500
-Message-ID: <AANLkTimoyDKWnvETOMat=t2Ns_dwmZhggPbJUoS+6gQX@mail.gmail.com>
-References: <4C7688A3.9090700@googlemail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: explicit commandline control of speakers vs
+ headphone output
+Date: Fri, 27 Aug 2010 08:26:09 +0200
+Message-ID: <4C775A81.6070606@ladisch.de>
+References: <562109.6212.qm@web50708.mail.re2.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 765B824503
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 02A04243FA
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Aug 2010 03:15:59 +0200 (CEST)
-Received: by iwn4 with SMTP id 4so2062208iwn.38
-	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2010 18:15:58 -0700 (PDT)
-In-Reply-To: <4C7688A3.9090700@googlemail.com>
+	Fri, 27 Aug 2010 08:26:08 +0200 (CEST)
+In-Reply-To: <562109.6212.qm@web50708.mail.re2.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,21 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sven Zeisberg <sven.zeisberg@googlemail.com>
+To: Eric Holstege <eric_holstege@yahoo.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 26, 2010 at 10:30 AM, Sven Zeisberg
-<sven.zeisberg@googlemail.com> wrote:
+Eric Holstege wrote:
+> My specific sound HW is "nVidia Corporation MCP79 High Definition Audio 
+> (rev b1)"
 
-> Now I'm wondering if anybody has successfully used a codec with the
-> i.MX25 SSI set up as Master. When we do this here, we can see that the
-> i.MX25 is generating the bit clock but no frame sync.
+This is the HDA controller, which can be combined with any HDA codec,
+which actually controls mixing.
 
-This is board-dependent.  That is, you would need to have a board that
-was wired up for the SSI to be in master mode before you can start
-working on the driver.
+Please show the output of "amixer scontents".
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+
+Regards,
+Clemens
