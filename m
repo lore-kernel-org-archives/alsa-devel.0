@@ -1,18 +1,22 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: Problem with underrun on new CS42448 x2 driver
-Date: Fri, 27 Aug 2010 19:00:30 -0400
-Message-ID: <201008271900.32511.vapier@gentoo.org>
-References: <AANLkTi=3kc74QqDopiAw+u8ie2Qn47p9XQpw54b6iB4Z@mail.gmail.com>
-	<AANLkTinVdY6qsuBMngOsnXrm=chfqkwJAn8msJtnyt_=@mail.gmail.com>
-	<20100827212019.GA7399@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: explicit commandline control of speakers vs
+ headphone output
+Date: Sat, 28 Aug 2010 07:26:38 +0800
+Message-ID: <AANLkTinOchsjwU5543eDh5vMHZkTaw_JMFs2orOL-gR0@mail.gmail.com>
+References: <210284.64008.qm@web50707.mail.re2.yahoo.com>
+	<4C78116D.9040704@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7375351635188031579=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id A599D1038BE
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6989A1038BE
 	for <alsa-devel@alsa-project.org>;
-	Sat, 28 Aug 2010 01:01:24 +0200 (CEST)
-In-Reply-To: <20100827212019.GA7399@opensource.wolfsonmicro.com>
+	Sat, 28 Aug 2010 01:26:39 +0200 (CEST)
+Received: by eyd9 with SMTP id 9so2424239eyd.38
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2010 16:26:39 -0700 (PDT)
+In-Reply-To: <4C78116D.9040704@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,77 +26,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Adam Rosenberg <adam@alcorn.com>, alsa-devel@alsa-project.org, Sonic Zhang <Sonic.Zhang@analog.com>, Barry Song <21cnbao@gmail.com>, Cliff Cai <cliff.cai@analog.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============7375351635188031579==
-Content-Type: multipart/signed;
-  boundary="nextPart2393407.HRXRJxI8nD";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+2010/8/28 David Henningsson <david.henningsson@canonical.com>
 
---nextPart2393407.HRXRJxI8nD
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+> 2010-08-27 20:46, Eric Holstege skrev:
+> > Thanks, Clemens;
+> >
+> > How were you able to determine that from the "amixer scontents" output.
+> >
+> > Although I can't disable *automatic* speaker mute on headphone
+> > insertion, can I explicitly unmute them again (e.g. with amixer sset or
+> > cset)?
+> >
+> > If not....
+> > "cat /proc/asound/card*/codec*" says it is the Realtek ALC888.
+> > Does this mean I have to somehow patch the kernel sound module file
+> > .../linux-source-2.6.*/sound/pci/hda/patch_realtek.c
+> > to fix this somehow?
+>
+> So in the long run, I think it would be better to leave all auto-muting
+> to userspace. Then stuff like pulseaudio could to advanced decision of
+> how to handle input events. But that's the long way.
+>
+> There are certainly ways to disable auto-muting for Realtek ALC888, look
+> along the lines of "speaker_automute" and "unsol_event". It is also
+> possible that you could tweak your user_pin_config to trick your HP out
+> into a Line Out. That way it won't automute, and you don't have to
+> recompile your kernel.
+>
+> As a side note: The VIA HDA driver, I believe, have an option for
+> turning automute off. But it also sets "mute" on a misnamed control at
+> the same time, tricking PA into believing that you want to mute all
+> output. So PA is "helpful" and mutes everything else as well. :-/
+>
+>
+Some of the VIA codec allow independent headphone and the extra DAC and ADC
+(i.e. subdevice 1)  can only be connected to headphone  and mic .at front
+panel
 
-On Friday, August 27, 2010 17:20:25 Mark Brown wrote:
-> On Fri, Aug 27, 2010 at 04:37:45PM -0400, Mike Frysinger wrote:
-> > On Thu, Aug 26, 2010 at 14:06, Adam Rosenberg wrote:
-> > > Thank you for the reply.  I emailed Barry Song on July 30th to request
-> > > some help moving to the new ASoC standards but received no response.
-> >=20
-> > developers shouldnt be e-mailed directly ... it isnt uncommon for them
-> > to simply be punted.  this is why we have mailing lists and forums.
->=20
-> That's shouldn't *only* be e-mailed directly (for Linux stuff).  You
-> should generally keep the relevant folks in the CC as well but also mail
-> the lists concerned.  The direct mail is there because the lists can be
-> high volume so it helps people see the mail, while the lists mean that
-> people other than those you thought of will be able to help and that any
-> answers will be archived for other people who might need them.
-
-right of course.  i meant e-mailing people directly and not including lists.
-
-for Blackfin issues, we have a mailing list that should always be CC-ed=20
-whenever the Blackfin is involved.
-=2Dmike
-
---nextPart2393407.HRXRJxI8nD
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.16 (GNU/Linux)
-
-iQIcBAABAgAGBQJMeEOQAAoJEEFjO5/oN/WBhX4P/jg9fAXcHLEE/aCxpyFIYXIj
-N43cylZPjo0LzumrEQToC3MeADTkoO6yGFn3x/X/3YBh1/M3bpWIF2DiRK5aJAdR
-H+wwSeve10ZQyN1MDuunYK4y7JMSRz+pOG/30mD2nxp2O0DmJN9H+zz612X+j/Kk
-HnRPR0zMhrBY12qZ/yolB0hNkA/fxujVlotnn4JLCzeTm1/2Tq7jNyzuMn5G8qPk
-O1hEEprnCwQIsQie5S1+HE8N/bIGi/3Rp6TLK2RtvV9GwzreiOyvWJZy8yDQYEiy
-LBMMFplWEWk+FvJUdUW6ckxA7JmM9MNyVtPXlao2lleKV/ruV7kuFg9GX4zKQr1X
-X+lSqperHqIoqk2XNvD7h7YXhPhNaaYolk4RqjEaRQIuUiDocxWMdDNOX/8bD0Qk
-yyKzg79YBlSPnBoNh3y0pOVs4Ri1DRVrEzCW/Twmu/41OXpKgBONVMwmDst3Cg1l
-QjYw520TimM2LEZWz/rMQf8+9PNvMh4YJMV625W+KHJ57XUsEYa2qJp6FVdfsP1n
-N9kH3olI5vJ8MqoN1/ypJ1nMNlfdgMdsrbC/rJ4OMOwX9OJAgeHU+VxnSu2nIgaw
-C/26gX38PvKIHDweD6VFSwsmJy4qpysChRs1FRlSaZzZvQMJeNc/RNXtsNmf+B2w
-1teo7QVFMY9qvD4/cMLu
-=yfVl
------END PGP SIGNATURE-----
-
---nextPart2393407.HRXRJxI8nD--
-
---===============7375351635188031579==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============7375351635188031579==--
+the current implementation of the driver is buggy , since the sudevice 0
+support multi channels but sudevice 1 only support 2 channels
