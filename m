@@ -1,19 +1,18 @@
-From: Dan Carpenter <error27@gmail.com>
-Subject: [patch] ALSA: pcm: add more format names
-Date: Fri, 27 Aug 2010 22:02:15 +0200
-Message-ID: <20100827200215.GA15220@bicker>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: [PATCH 0/2] ASoC: Add iPAQ RX1950 sound support
+Date: Sat, 28 Aug 2010 10:49:34 +0300
+Message-ID: <1282981776-10014-1-git-send-email-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 038C41038B6
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id AB0FD245C7
 	for <alsa-devel@alsa-project.org>;
-	Fri, 27 Aug 2010 22:02:52 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so3782890wyb.38
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2010 13:02:52 -0700 (PDT)
-Content-Disposition: inline
+	Sat, 28 Aug 2010 09:50:16 +0200 (CEST)
+Received: by eyd9 with SMTP id 9so2496233eyd.38
+	for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2010 00:50:16 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,46 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, markgross <mgross@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, kernel-janitors@vger.kernel.org, Ben Collins <bcollins@bluecherry.net>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel <alsa-devel@alsa-project.org>, Philipp Zabel <philipp.zabel@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Vasily
 List-Id: alsa-devel@alsa-project.org
 
-There were some new formats added in commit 15c0cee6c809 "ALSA: pcm:
-Define G723 3-bit and 5-bit formats".  That commit increased
-SNDRV_PCM_FORMAT_LAST as well.  My concern is that there are a couple
-places which do:
+These two patches are necessary to add sound support for
+iPAQ RX1950 PDA, appropriate mach-rx1950.c patch is missing,
+as it depends on battery and LEDs patches which are still not
+merged nor reviewed.
 
-        for (i = 0; i < SNDRV_PCM_FORMAT_LAST; i++) {
-                if (dummy->pcm_hw.formats & (1ULL << i))
-                        snd_iprintf(buffer, " %s", snd_pcm_format_name(i));
-        }
+First patch improves situation with power consumption for uda1380
+and also fixes suspend/resume.
 
-I haven't tested these but it looks like if "i" were equal to
-SNDRV_PCM_FORMAT_G723_24 or higher then we might read past the end of
-the array. 
-
-Signed-off-by: Dan Carpenter <error27@gmail.com>
----
-Resending because I screwed up the CC lis on my first mail.
-
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index cbe815d..204af48 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -203,10 +203,16 @@ static char *snd_pcm_format_names[] = {
- 	FORMAT(S18_3BE),
- 	FORMAT(U18_3LE),
- 	FORMAT(U18_3BE),
-+	FORMAT(G723_24),
-+	FORMAT(G723_24_1B),
-+	FORMAT(G723_40),
-+	FORMAT(G723_40_1B),
- };
- 
- const char *snd_pcm_format_name(snd_pcm_format_t format)
- {
-+	if (format >= ARRAY_SIZE(snd_pcm_format_names))
-+		return "Unknown";
- 	return snd_pcm_format_names[format];
- }
- EXPORT_SYMBOL_GPL(snd_pcm_format_name);
+Second patch just adds glue driver.
