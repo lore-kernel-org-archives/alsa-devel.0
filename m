@@ -1,22 +1,20 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 3/6] ASoC: ad1980: remove unneeded	function
-	declaration
-Date: Sat, 28 Aug 2010 09:14:39 +0100
-Message-ID: <1282983279.3041.0.camel@odin>
-References: <1282655384-13357-1-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1282655384-13357-3-git-send-email-u.kleine-koenig@pengutronix.de>
-	<20100827181211.GC30429@sirena.org.uk>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: Add HP iPAQ RX1950 support
+Date: Sat, 28 Aug 2010 11:31:49 +0300
+Message-ID: <201008281131.56450.anarsoul@gmail.com>
+References: <1282981776-10014-1-git-send-email-anarsoul@gmail.com>
+	<1282981776-10014-3-git-send-email-anarsoul@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2386239978578994047=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 8628C245F4
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id B771A24607
 	for <alsa-devel@alsa-project.org>;
-	Sat, 28 Aug 2010 10:14:43 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so4378511wyb.38
-	for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2010 01:14:43 -0700 (PDT)
-In-Reply-To: <20100827181211.GC30429@sirena.org.uk>
+	Sat, 28 Aug 2010 10:32:13 +0200 (CEST)
+Received: by eyd9 with SMTP id 9so2502078eyd.38
+	for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2010 01:32:13 -0700 (PDT)
+In-Reply-To: <1282981776-10014-3-git-send-email-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,19 +25,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Sonic Zhang <sonic.zhang@analog.com>, Uwe Kleine-K??nig <u.kleine-koenig@pengutronix.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Philipp Zabel <philipp.zabel@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-08-27 at 19:12 +0100, Mark Brown wrote:
-> On Tue, Aug 24, 2010 at 03:09:41PM +0200, Uwe Kleine-K??nig wrote:
-> 
-> Please remember to CC maintainers on patches.  This looks OK, I've CCed
-> in Liam.
-> 
-> > Signed-off-by: Uwe Kleine-K??nig <u.kleine-koenig@pengutronix.de>
+--===============2386239978578994047==
+Content-Type: multipart/signed;
+  boundary="nextPart2434936.pqJWPinmzQ";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+--nextPart2434936.pqJWPinmzQ
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: base64
+
+0JIg0YHQvtC+0LHRidC10L3QuNC4INC+0YIgMjgg0LDQstCz0YPRgdGC0LAgMjAxMCAxMDo0OToz
+NiDQsNCy0YLQvtGAIFZhc2lseSBLaG9ydXpoaWNrINC90LDQv9C40YHQsNC7Ogo+IFNpZ25lZC1v
+ZmYtYnk6IFZhc2lseSBLaG9ydXpoaWNrIDxhbmFyc291bEBnbWFpbC5jb20+CgpPb29wcywgc2Vu
+dCB3cm9uZyB2ZXJzaW9uIG9mIHRoaXMgcGF0Y2gsIHdpbGwgcmVzZW5kIGl0IHNvb24K
+
+--nextPart2434936.pqJWPinmzQ
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.16 (GNU/Linux)
+
+iEYEABECAAYFAkx4yXwACgkQRM6pQpltKE7ZtQCggBasx07BFE4Hv/FYpi+uQhYM
+fU0AoLxYgdtwfxoT0w6ivkmJYyEIpTta
+=d5ck
+-----END PGP SIGNATURE-----
+
+--nextPart2434936.pqJWPinmzQ--
+
+--===============2386239978578994047==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============2386239978578994047==--
