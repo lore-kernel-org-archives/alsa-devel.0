@@ -1,11 +1,21 @@
-From: linux@audioscience.com
-Subject: [PATCH] Return hw error directly from oustream_write.
-Date: Sat, 28 Aug 2010 19:52:24 +1200
-Message-ID: <1282981944-2781-1-git-send-email-linux@audioscience.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: explicit commandline control of speakers vs
+ headphone output
+Date: Sat, 28 Aug 2010 16:02:19 +0800
+Message-ID: <AANLkTinBmkR5+rROEJJPuioMhBNjJ+61qZ2JV3+HcQUJ@mail.gmail.com>
+References: <210284.64008.qm@web50707.mail.re2.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6CE7F245DD
+	for <alsa-devel@alsa-project.org>;
+	Sat, 28 Aug 2010 10:02:19 +0200 (CEST)
+Received: by eyd9 with SMTP id 9so2497746eyd.38
+	for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2010 01:02:19 -0700 (PDT)
+In-Reply-To: <210284.64008.qm@web50707.mail.re2.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -15,43 +25,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: tiwai@suse.de, Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+2010/8/28 Eric Holstege <eric_holstege@yahoo.com>
 
-If hw error is ignored, status is updated with invalid info.
+> Thanks, Clemens;
+>
+> How were you able to determine that from the "amixer scontents" output.
+>
+> Although I can't disable *automatic* speaker mute on headphone
+> insertion, can I explicitly unmute them again (e.g. with amixer sset or
+> cset)?
+>
+> If not....
+> "cat /proc/asound/card*/codec*" says it is the Realtek ALC888.
+> Does this mean I have to somehow patch the kernel sound module file
+> .../linux-source-2.6.*/sound/pci/hda/patch_realtek.c
+> to fix this somehow?
+>
 
-Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
----
- sound/pci/asihpi/hpi6205.c |    7 +++++--
- 1 files changed, 5 insertions(+), 2 deletions(-)
+Post output of alsa-info.sh after a cold boot to allow BIOS setup the pins
 
-diff --git a/sound/pci/asihpi/hpi6205.c b/sound/pci/asihpi/hpi6205.c
-index 3b44134..22c5fc6 100644
---- a/sound/pci/asihpi/hpi6205.c
-+++ b/sound/pci/asihpi/hpi6205.c
-@@ -941,8 +941,7 @@ static void outstream_host_buffer_free(struct hpi_adapter_obj *pao,
- 
- }
- 
--static u32 outstream_get_space_available(struct hpi_hostbuffer_status
--	*status)
-+static u32 outstream_get_space_available(struct hpi_hostbuffer_status *status)
- {
- 	return status->size_in_bytes - (status->host_index -
- 		status->dSP_index);
-@@ -987,6 +986,10 @@ static void outstream_write(struct hpi_adapter_obj *pao,
- 		/* write it */
- 		phm->function = HPI_OSTREAM_WRITE;
- 		hw_message(pao, phm, phr);
-+
-+		if (phr->error)
-+			return;
-+
- 		/* update status information that the DSP would typically
- 		 * update (and will update next time the DSP
- 		 * buffer update task reads data from the host BBM buffer)
--- 
-1.7.0.4
+ALC888 has 5 DAC and 2 ADC , if you want to implement a new model which
+allow internal mic and  internal  speaker , mic jack and headphone jack to
+be used independently by two applications  , you will need to disable the
+automute function
