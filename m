@@ -1,21 +1,22 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: explicit commandline control of speakers vs
- headphone output
-Date: Sat, 28 Aug 2010 16:02:19 +0800
-Message-ID: <AANLkTinBmkR5+rROEJJPuioMhBNjJ+61qZ2JV3+HcQUJ@mail.gmail.com>
-References: <210284.64008.qm@web50707.mail.re2.yahoo.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 3/6] ASoC: ad1980: remove unneeded	function
+	declaration
+Date: Sat, 28 Aug 2010 09:14:39 +0100
+Message-ID: <1282983279.3041.0.camel@odin>
+References: <1282655384-13357-1-git-send-email-u.kleine-koenig@pengutronix.de>
+	<1282655384-13357-3-git-send-email-u.kleine-koenig@pengutronix.de>
+	<20100827181211.GC30429@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6CE7F245DD
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 8628C245F4
 	for <alsa-devel@alsa-project.org>;
-	Sat, 28 Aug 2010 10:02:19 +0200 (CEST)
-Received: by eyd9 with SMTP id 9so2497746eyd.38
-	for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2010 01:02:19 -0700 (PDT)
-In-Reply-To: <210284.64008.qm@web50707.mail.re2.yahoo.com>
+	Sat, 28 Aug 2010 10:14:43 +0200 (CEST)
+Received: by wyb32 with SMTP id 32so4378511wyb.38
+	for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2010 01:14:43 -0700 (PDT)
+In-Reply-To: <20100827181211.GC30429@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,29 +26,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Sonic Zhang <sonic.zhang@analog.com>, Uwe Kleine-K??nig <u.kleine-koenig@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-2010/8/28 Eric Holstege <eric_holstege@yahoo.com>
+On Fri, 2010-08-27 at 19:12 +0100, Mark Brown wrote:
+> On Tue, Aug 24, 2010 at 03:09:41PM +0200, Uwe Kleine-K??nig wrote:
+> 
+> Please remember to CC maintainers on patches.  This looks OK, I've CCed
+> in Liam.
+> 
+> > Signed-off-by: Uwe Kleine-K??nig <u.kleine-koenig@pengutronix.de>
 
-> Thanks, Clemens;
->
-> How were you able to determine that from the "amixer scontents" output.
->
-> Although I can't disable *automatic* speaker mute on headphone
-> insertion, can I explicitly unmute them again (e.g. with amixer sset or
-> cset)?
->
-> If not....
-> "cat /proc/asound/card*/codec*" says it is the Realtek ALC888.
-> Does this mean I have to somehow patch the kernel sound module file
-> .../linux-source-2.6.*/sound/pci/hda/patch_realtek.c
-> to fix this somehow?
->
-
-Post output of alsa-info.sh after a cold boot to allow BIOS setup the pins
-
-ALC888 has 5 DAC and 2 ADC , if you want to implement a new model which
-allow internal mic and  internal  speaker , mic jack and headphone jack to
-be used independently by two applications  , you will need to disable the
-automute function
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
