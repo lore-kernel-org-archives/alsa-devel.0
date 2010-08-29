@@ -1,22 +1,21 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: [PATCH v4 3/3] ARM: S3C24XX: I2S
-	multi-component-related fixes
-Date: Sun, 29 Aug 2010 20:47:36 +0300
-Message-ID: <201008292047.42584.anarsoul@gmail.com>
-References: <1283101872-6410-1-git-send-email-anarsoul@gmail.com>
-	<1283101872-6410-4-git-send-email-anarsoul@gmail.com>
-	<201008291941.54216.marek.vasut@gmail.com>
+From: Martin <mwolf@adiumentum.com>
+Subject: Re: problem with bisecting a bug in the alsa driver
+Date: Sun, 29 Aug 2010 19:57:57 +0200
+Message-ID: <4C7A9FA5.1000207@adiumentum.com>
+References: <4C7A8375.3000009@adiumentum.com>	<alpine.LNX.2.00.1008291805250.10278@eeebox2.perex-int.cz>	<4C7A9067.8090809@adiumentum.com>
+	<alpine.LNX.2.00.1008291926590.10278@eeebox2.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2553798650438753847=="
+Content-Type: multipart/mixed; boundary="------------050500070504040301030604"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3B3041037E3
+Received: from adiumentum.com (adiumentum.com [83.142.83.186])
+	by alsa0.perex.cz (Postfix) with ESMTP id E00A31037E3
 	for <alsa-devel@alsa-project.org>;
-	Sun, 29 Aug 2010 19:48:00 +0200 (CEST)
-Received: by eyd9 with SMTP id 9so2750973eyd.38
-	for <alsa-devel@alsa-project.org>; Sun, 29 Aug 2010 10:48:00 -0700 (PDT)
-In-Reply-To: <201008291941.54216.marek.vasut@gmail.com>
+	Sun, 29 Aug 2010 19:57:58 +0200 (CEST)
+Received: from [192.168.2.26] (p54A87988.dip.t-dialin.net [84.168.121.136])
+	by adiumentum.com (Postfix) with ESMTPSA id A66814400A0
+	for <alsa-devel@alsa-project.org>;
+	Sun, 29 Aug 2010 19:57:57 +0200 (CEST)
+In-Reply-To: <alpine.LNX.2.00.1008291926590.10278@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,46 +25,480 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ben Dooks <ben-linux@fluff.org>, Philipp Zabel <philipp.zabel@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============2553798650438753847==
-Content-Type: multipart/signed;
-  boundary="nextPart7337065.jyN84tAm2y";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
+This is a multi-part message in MIME format.
+--------------050500070504040301030604
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 
---nextPart7337065.jyN84tAm2y
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: base64
+im sorry to say it did not help.
 
-0JIg0YHQvtC+0LHRidC10L3QuNC4INC+0YIgMjkg0LDQstCz0YPRgdGC0LAgMjAxMCAyMDo0MTo1
-NCDQsNCy0YLQvtGAIE1hcmVrIFZhc3V0INC90LDQv9C40YHQsNC7Ogo+IERuZSBOZSAyOS4gc3Jw
-bmEgMjAxMCAxOToxMToxMiBWYXNpbHkgS2hvcnV6aGljayBuYXBzYWwoYSk6Cj4gPiBFeHBvcnQg
-czNjX2RldmljZV9wY20gZm9yIGFsbCBTM0MyNHh4LWRldmljZXMsIG5vdAo+ID4gb25seSBmb3Ig
-UzNDMjQ0MDsKPiA+IEZpeCBkZXZpY2UgbmFtZSBmb3IgczNjX2RldmljZV9paXM7Cj4gCj4gV29u
-J3QgbW92aW5nIHRoaXMgZnJvbSAjaWZkZWYgQ09ORklHX0NQVV9TMzI0NDAgdHJvdWJsZSBvdGhl
-ciBzM2MyNHh4IENQVXM/Cj4gSWYgbm90LCB0aGF0J3Mgb2suCgpOb3BlLCBpdCdzIG5lY2Vzc2Fy
-eSBmb3IgYWxsIHMzYzI0eHgtYmFzZWQgZGV2aWNlcy4K
 
---nextPart7337065.jyN84tAm2y
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.16 (GNU/Linux)
+Am 29.08.2010 19:28, schrieb Jaroslav Kysela:
+> On Sun, 29 Aug 2010, Martin wrote:
+>
+>    
+>> hi,
+>>
+>> thanks for the quick help.
+>> here is the diff.txt
+>>      
+> I would try to play with these two module parameters:
+>
+>           bdl_pos_adj : 1,-1,-1,-1,-1,-1,-1,-1
+>           enable_msi : -1
+>
+> Try to set 'enable_msi=0' and 'bdl_pos_adj=16' for the snd-hda-intel
+> module.
+>
+>   						Jaroslav
+>
+> -----
+> Jaroslav Kysela<perex@perex.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, Red Hat, Inc.
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>    
 
-iEYEABECAAYFAkx6nT4ACgkQRM6pQpltKE7l+gCbBbXzN0N5e5SfW1EmWFWwMfcH
-fM0AoK7MHiMwYdwM2t1it7c/RSvhZ2gb
-=ctqC
------END PGP SIGNATURE-----
 
---nextPart7337065.jyN84tAm2y--
+--------------050500070504040301030604
+Content-Type: text/plain;
+ name="diff1.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="diff1.txt"
 
---===============2553798650438753847==
+--- alsa1021.txt	2010-08-29 18:49:05.479945563 +0200
++++ test1.txt	2010-08-29 19:56:48.936148375 +0200
+@@ -3,7 +3,7 @@
+ !!ALSA Information Script v 0.4.59
+ !!################################
+ 
+-!!Script ran on: Sun Aug 29 16:48:50 UTC 2010
++!!Script ran on: Sun Aug 29 17:56:36 UTC 2010
+ 
+ 
+ !!Linux Distribution
+@@ -32,7 +32,7 @@
+ !!ALSA Version
+ !!------------
+ 
+-Driver version:     1.0.21
++Driver version:     1.0.23
+ Library version:    1.0.22
+ Utilities version:  1.0.22
+ 
+@@ -87,13 +87,16 @@
+ snd-usb-caiaq: index=-2
+ snd-cmipci: mpu_port=0x330 fm_port=0x388
+ snd-pcsp: index=-2
++snd-hda-intel: bdl_pos_adj=16
++snd-hda-intel: enable_msi=0
+ 
+ 
+ !!Loaded sound module options
+ !!--------------------------
+ 
+ !!Module: snd_hda_intel
+-	bdl_pos_adj : 1,-1,-1,-1,-1,-1,-1,-1
++	bdl_pos_adj : 16,-1,-1,-1,-1,-1,-1,-1
++	beep_mode : 1,1,1,1,1,1,1,1
+ 	enable : Y,Y,Y,Y,Y,Y,Y,Y
+ 	enable_msi : 0
+ 	id : <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
+@@ -104,7 +107,7 @@
+ 	power_save : 0
+ 	power_save_controller : Y
+ 	probe_mask : -1,-1,-1,-1,-1,-1,-1,-1
+-	probe_only : N,N,N,N,N,N,N,N
++	probe_only : 0,0,0,0,0,0,0,0
+ 	single_cmd : N
+ 
+ 
+@@ -129,6 +132,7 @@
+   IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+   IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+ Node 0x02 [Audio Output] wcaps 0x11: Stereo
++  Device: name="ALC889A Analog", type="Audio", device=0
+   Converter: stream=0, channel=0
+   PCM:
+     rates [0x560]: 44100 48000 96000 192000
+@@ -153,6 +157,12 @@
+     bits [0xe]: 16 20 24
+     formats [0x1]: PCM
+ Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
++  Control: name="IEC958 Playback Con Mask", index=0, device=0
++  Control: name="IEC958 Playback Pro Mask", index=0, device=0
++  Control: name="IEC958 Playback Default", index=0, device=0
++  Control: name="IEC958 Playback Switch", index=0, device=0
++  Control: name="IEC958 Default PCM Playback Switch", index=0, device=0
++  Device: name="ALC889A Digital", type="SPDIF", device=1
+   Converter: stream=0, channel=0
+   Digital: Enabled GenLevel
+   Digital category: 0x2
+@@ -161,6 +171,9 @@
+     bits [0x1e]: 16 20 24 32
+     formats [0x1]: PCM
+ Node 0x07 [Audio Input] wcaps 0x10011b: Stereo Amp-In
++  Control: name="Capture Switch", index=0, device=0
++  Control: name="Capture Volume", index=0, device=0
++  Device: name="ALC889A Analog", type="Audio", device=0
+   Amp-In caps: ofs=0x10, nsteps=0x2e, stepsize=0x03, mute=1
+   Amp-In vals:  [0x2e 0x2e]
+   Converter: stream=0, channel=0
+@@ -172,6 +185,9 @@
+   Connection: 1
+      0x24
+ Node 0x08 [Audio Input] wcaps 0x10011b: Stereo Amp-In
++  Control: name="Capture Switch", index=1, device=0
++  Control: name="Capture Volume", index=1, device=0
++  Device: name="ALC889A Analog", type="Audio", device=2
+   Amp-In caps: ofs=0x10, nsteps=0x2e, stepsize=0x03, mute=1
+   Amp-In vals:  [0xae 0xae]
+   Converter: stream=0, channel=0
+@@ -183,6 +199,8 @@
+   Connection: 1
+      0x23
+ Node 0x09 [Audio Input] wcaps 0x10011b: Stereo Amp-In
++  Control: name="Capture Switch", index=2, device=0
++  Control: name="Capture Volume", index=2, device=0
+   Amp-In caps: ofs=0x10, nsteps=0x2e, stepsize=0x03, mute=1
+   Amp-In vals:  [0x00 0x00]
+   Converter: stream=0, channel=0
+@@ -194,6 +212,9 @@
+   Connection: 1
+      0x22
+ Node 0x0a [Audio Input] wcaps 0x100391: Stereo Digital
++  Control: name="IEC958 Capture Switch", index=0, device=0
++  Control: name="IEC958 Capture Default", index=0, device=0
++  Device: name="ALC889A Digital", type="SPDIF", device=1
+   Converter: stream=0, channel=0
+   SDI-Select: 0
+   Digital:
+@@ -206,11 +227,27 @@
+   Connection: 1
+      0x1f
+ Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
++  Control: name="Mic Playback Volume", index=0, device=0
++    ControlAmp: chs=3, dir=In, idx=0, ofs=0
++  Control: name="Mic Playback Switch", index=0, device=0
++    ControlAmp: chs=3, dir=In, idx=0, ofs=0
++  Control: name="Front Mic Playback Volume", index=0, device=0
++    ControlAmp: chs=3, dir=In, idx=1, ofs=0
++  Control: name="Front Mic Playback Switch", index=0, device=0
++    ControlAmp: chs=3, dir=In, idx=1, ofs=0
++  Control: name="Line Playback Volume", index=0, device=0
++    ControlAmp: chs=3, dir=In, idx=2, ofs=0
++  Control: name="Line Playback Switch", index=0, device=0
++    ControlAmp: chs=3, dir=In, idx=2, ofs=0
+   Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+-  Amp-In vals:  [0x80 0x80] [0x9f 0x9f] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x97 0x97]
++  Amp-In vals:  [0x80 0x80] [0x9f 0x9f] [0x80 0x80] [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x97 0x97]
+   Connection: 10
+      0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17
+ Node 0x0c [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
++  Control: name="Front Playback Volume", index=0, device=0
++    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
++  Control: name="Front Playback Switch", index=0, device=0
++    ControlAmp: chs=3, dir=In, idx=2, ofs=0
+   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-In vals:  [0x00 0x00] [0x00 0x00]
+   Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+@@ -218,6 +255,10 @@
+   Connection: 2
+      0x02 0x0b
+ Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
++  Control: name="Surround Playback Volume", index=0, device=0
++    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
++  Control: name="Surround Playback Switch", index=0, device=0
++    ControlAmp: chs=3, dir=In, idx=2, ofs=0
+   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-In vals:  [0x00 0x00] [0x00 0x00]
+   Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+@@ -225,6 +266,14 @@
+   Connection: 2
+      0x03 0x0b
+ Node 0x0e [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
++  Control: name="Center Playback Volume", index=0, device=0
++    ControlAmp: chs=1, dir=Out, idx=0, ofs=0
++  Control: name="LFE Playback Volume", index=0, device=0
++    ControlAmp: chs=2, dir=Out, idx=0, ofs=0
++  Control: name="Center Playback Switch", index=0, device=0
++    ControlAmp: chs=1, dir=In, idx=2, ofs=0
++  Control: name="LFE Playback Switch", index=0, device=0
++    ControlAmp: chs=2, dir=In, idx=2, ofs=0
+   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-In vals:  [0x00 0x00] [0x00 0x00]
+   Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+@@ -232,6 +281,10 @@
+   Connection: 2
+      0x04 0x0b
+ Node 0x0f [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
++  Control: name="Side Playback Volume", index=0, device=0
++    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
++  Control: name="Side Playback Switch", index=0, device=0
++    ControlAmp: chs=3, dir=In, idx=2, ofs=0
+   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-In vals:  [0x00 0x00] [0x00 0x00]
+   Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
+@@ -297,6 +350,8 @@
+   Connection: 5
+      0x0c 0x0d 0x0e 0x0f* 0x26
+ Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
++  Control: name="Mic Boost", index=0, device=0
++    ControlAmp: chs=3, dir=In, idx=0, ofs=0
+   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+   Amp-In vals:  [0x00 0x00]
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+@@ -311,6 +366,8 @@
+   Connection: 5
+      0x0c* 0x0d 0x0e 0x0f 0x26
+ Node 0x19 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
++  Control: name="Front Mic Boost", index=0, device=0
++    ControlAmp: chs=3, dir=In, idx=0, ofs=0
+   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+   Amp-In vals:  [0x00 0x00]
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+@@ -339,6 +396,8 @@
+   Connection: 5
+      0x0c* 0x0d 0x0e 0x0f 0x26
+ Node 0x1b [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
++  Control: name="Headphone Playback Switch", index=0, device=0
++    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+   Amp-In vals:  [0x00 0x00]
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+@@ -383,23 +442,24 @@
+   Pin-ctls: 0x20: IN
+ Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
+   Processing caps: benign=0, ncoeff=17
+-  Processing Coefficient: 0xf012
+-  Coefficient Index: 0x01
+ Node 0x21 [Volume Knob Widget] wcaps 0x600080: Mono
+   Volume-Knob: delta=0, steps=32, direct=0, val=0
+   Unsolicited: tag=00, enabled=0
+   Connection: 0
+ Node 0x22 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
++  Control: name="Input Source", index=2, device=0
+   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+   Connection: 11
+      0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
+ Node 0x23 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
++  Control: name="Input Source", index=1, device=0
+   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+   Connection: 11
+      0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
+ Node 0x24 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
++  Control: name="Input Source", index=0, device=0
+   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+   Connection: 11
+@@ -423,21 +483,21 @@
+ !!ALSA Device nodes
+ !!-----------------
+ 
+-crw-rw----+ 1 root audio 116,  0 Aug 29 18:48 /dev/snd/controlC0
+-crw-rw----+ 1 root audio 116,  6 Aug 29 18:48 /dev/snd/hwC0D2
+-crw-rw----+ 1 root audio 116, 24 Aug 29 18:48 /dev/snd/pcmC0D0c
+-crw-rw----+ 1 root audio 116, 16 Aug 29 18:48 /dev/snd/pcmC0D0p
+-crw-rw----+ 1 root audio 116, 25 Aug 29 18:48 /dev/snd/pcmC0D1c
+-crw-rw----+ 1 root audio 116, 17 Aug 29 18:48 /dev/snd/pcmC0D1p
+-crw-rw----+ 1 root audio 116, 26 Aug 29 18:48 /dev/snd/pcmC0D2c
+-crw-rw----+ 1 root audio 116,  1 Aug 29 18:48 /dev/snd/seq
+-crw-rw----+ 1 root audio 116, 33 Aug 29 18:48 /dev/snd/timer
++crw-rw----+ 1 root audio 116,  0 Aug 29 19:55 /dev/snd/controlC0
++crw-rw----+ 1 root audio 116,  6 Aug 29 19:55 /dev/snd/hwC0D2
++crw-rw----+ 1 root audio 116, 24 Aug 29 19:56 /dev/snd/pcmC0D0c
++crw-rw----+ 1 root audio 116, 16 Aug 29 19:56 /dev/snd/pcmC0D0p
++crw-rw----+ 1 root audio 116, 25 Aug 29 19:55 /dev/snd/pcmC0D1c
++crw-rw----+ 1 root audio 116, 17 Aug 29 19:55 /dev/snd/pcmC0D1p
++crw-rw----+ 1 root audio 116, 26 Aug 29 19:55 /dev/snd/pcmC0D2c
++crw-rw----+ 1 root audio 116,  1 Aug 29 19:55 /dev/snd/seq
++crw-rw----+ 1 root audio 116, 33 Aug 29 19:55 /dev/snd/timer
+ 
+ /dev/snd/by-path:
+ total 0
+-drwxr-xr-x 2 root root  60 Aug 29 18:48 .
+-drwxr-xr-x 3 root root 240 Aug 29 18:48 ..
+-lrwxrwxrwx 1 root root  12 Aug 29 18:48 pci-0000:00:1b.0 -> ../controlC0
++drwxr-xr-x 2 root root  60 Aug 29 19:55 .
++drwxr-xr-x 3 root root 240 Aug 29 19:55 ..
++lrwxrwxrwx 1 root root  12 Aug 29 19:55 pci-0000:00:1b.0 -> ../controlC0
+ 
+ 
+ !!Aplay/Arecord output
+@@ -475,8 +535,8 @@
+ Card hw:0 'Intel'/'HDA Intel at 0xfa200000 irq 22'
+   Mixer name	: 'Realtek ALC889A'
+   Components	: 'HDA:10ec0885,1458a002,00100101'
+-  Controls      : 41
+-  Simple ctrls  : 23
++  Controls      : 39
++  Simple ctrls  : 22
+ Simple mixer control 'Master',0
+   Capabilities: pvolume pvolume-joined pswitch pswitch-joined penum
+   Playback channels: Mono
+@@ -570,13 +630,6 @@
+   Capabilities: pswitch pswitch-joined penum
+   Playback channels: Mono
+   Mono: Playback [on]
+-Simple mixer control 'Beep',0
+-  Capabilities: pvolume pswitch penum
+-  Playback channels: Front Left - Front Right
+-  Limits: Playback 0 - 31
+-  Mono:
+-  Front Left: Playback 23 [74%] [0.00dB] [off]
+-  Front Right: Playback 23 [74%] [0.00dB] [off]
+ Simple mixer control 'Capture',0
+   Capabilities: cvolume cswitch penum
+   Capture channels: Front Left - Front Right
+@@ -978,27 +1031,6 @@
+ 	control.36 {
+ 		comment.access 'read write'
+ 		comment.type INTEGER
+-		comment.count 2
+-		comment.range '0 - 31'
+-		comment.dbmin -3450
+-		comment.dbmax 1200
+-		iface MIXER
+-		name 'Beep Playback Volume'
+-		value.0 23
+-		value.1 23
+-	}
+-	control.37 {
+-		comment.access 'read write'
+-		comment.type BOOLEAN
+-		comment.count 2
+-		iface MIXER
+-		name 'Beep Playback Switch'
+-		value.0 false
+-		value.1 false
+-	}
+-	control.38 {
+-		comment.access 'read write'
+-		comment.type INTEGER
+ 		comment.count 1
+ 		comment.range '0 - 64'
+ 		comment.dbmin -6400
+@@ -1007,7 +1039,7 @@
+ 		name 'Master Playback Volume'
+ 		value 64
+ 	}
+-	control.39 {
++	control.37 {
+ 		comment.access 'read write'
+ 		comment.type BOOLEAN
+ 		comment.count 1
+@@ -1015,7 +1047,7 @@
+ 		name 'Master Playback Switch'
+ 		value true
+ 	}
+-	control.40 {
++	control.38 {
+ 		comment.access 'read write user'
+ 		comment.type INTEGER
+ 		comment.count 2
+@@ -1028,7 +1060,7 @@
+ 		value.0 255
+ 		value.1 255
+ 	}
+-	control.41 {
++	control.39 {
+ 		comment.access 'read write user'
+ 		comment.type INTEGER
+ 		comment.count 2
+@@ -1051,6 +1083,11 @@
+ Module
+ binfmt_misc
+ ppdev
++joydev
++hid_logitech
++ff_memless
++usbhid
++hid
+ snd_hda_codec_realtek
+ snd_hda_intel
+ snd_hda_codec
+@@ -1063,6 +1100,8 @@
+ snd_seq
+ snd_timer
+ snd_seq_device
++snd
++ohci1394
+ uvcvideo
+ videodev
+ v4l1_compat
+@@ -1072,27 +1111,20 @@
+ font
+ bitblit
+ softcursor
+-joydev
+-snd
+-nvidia
+-vga16fb
+-vgastate
+ intel_agp
+ soundcore
+ snd_page_alloc
++nvidia
++vga16fb
++vgastate
+ lp
+ parport
+-hid_logitech
+-ff_memless
+-usbhid
+-hid
+-ohci1394
+ floppy
+-pata_jmicron
+ ieee1394
+ r8169
+ mii
+ ahci
++pata_jmicron
+ 
+ 
+ !!Sysfs Files
+@@ -1122,14 +1154,19 @@
+ !!ALSA/HDA dmesg
+ !!------------------
+ 
+-[   16.176781]   alloc kstat_irqs on node -1
+-[   16.176785] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 22 (level, low) -> IRQ 22
+-[   16.176815] HDA Intel 0000:00:1b.0: setting latency timer to 64
+-[   16.234511] Console: switching to colour frame buffer device 80x30
++[   12.651476]   alloc kstat_irqs on node -1
++[   12.651480] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 22 (level, low) -> IRQ 22
++[   12.651482] hda_intel: position_fix set to 1 for device 1458:a022
++[   12.651512] HDA Intel 0000:00:1b.0: setting latency timer to 64
++[   12.702626] ohci1394: fw-host0: OHCI-1394 1.1 (PCI): IRQ=[18]  MMIO=[fa104000-fa1047ff]  Max Packet=[2048]  IR/IT contexts=[4/8]
++--
++[   12.742995] NVRM: loading NVIDIA UNIX x86_64 Kernel Module  256.44  Thu Jul 29 01:22:44 PDT 2010
++[   12.768885] hda_codec: ALC889A: BIOS auto-probing.
++[   12.770556] input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input5
++[   12.877157] usbcore: registered new interface driver hiddev
+ --
+-[   16.260389] NVRM: loading NVIDIA UNIX x86_64 Kernel Module  256.44  Thu Jul 29 01:22:44 PDT 2010
+-[   16.324997] hda_codec: ALC889A: BIOS auto-probing.
+-[   16.326329] input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input8
+-[   16.631050] type=1505 audit(1283100504.725:5):  operation="profile_load" pid=1003 name="/usr/share/gdm/guest-session/Xsession"
++[   16.141304]   groups: 1 0
++[   17.788878] hda-intel: IRQ timing workaround is activated for card #0. Suggest a bigger bdl_pos_adj.
++[   23.380075] eth0: no IPv6 routers present
+ 
+ 
+
+--------------050500070504040301030604
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -76,4 +509,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============2553798650438753847==--
+--------------050500070504040301030604--
