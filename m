@@ -1,21 +1,21 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/2] ASoC: fsi: modify compile error
-Date: Mon, 30 Aug 2010 15:35:09 +0100
-Message-ID: <1283178909.3055.118.camel@odin>
+Subject: Re: [PATCH 2/2] ASoC: fsi-ak4642/fsi-da7210: modify
+ dai link settings for card detect
+Date: Mon, 30 Aug 2010 15:37:35 +0100
+Message-ID: <1283179055.3055.122.camel@odin>
 References: <w3ppqx0jpbk.wl%kuninori.morimoto.gx@renesas.com>
-	<w3pocckjpa7.wl%kuninori.morimoto.gx@renesas.com>
+	<w3pmxs4jp9x.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8E98C10385C
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA788103912
 	for <alsa-devel@alsa-project.org>;
-	Mon, 30 Aug 2010 16:35:11 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so6472421wyb.38
-	for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2010 07:35:11 -0700 (PDT)
-In-Reply-To: <w3pocckjpa7.wl%kuninori.morimoto.gx@renesas.com>
+	Mon, 30 Aug 2010 16:37:37 +0200 (CEST)
+Received: by wwb39 with SMTP id 39so3085182wwb.20
+	for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2010 07:37:37 -0700 (PDT)
+In-Reply-To: <w3pmxs4jp9x.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,26 +29,54 @@ To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-08-30 at 19:40 +0900, Kuninori Morimoto wrote:
+On Mon, 2010-08-30 at 20:47 +0900, Kuninori Morimoto wrote:
+> This patch modify dai link
+> - platform_name: sh_fsi/sh_fsi2 are used for FSI driver
+> - codec_name: ak4642/ak4643 are used for ak4642 driver
+> 
+> This is quick hack. I should modify it more wisely in future
+> 
 > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > ---
->  include/sound/sh_fsi.h |    3 ---
->  1 files changed, 0 insertions(+), 3 deletions(-)
+>  sound/soc/sh/fsi-ak4642.c |    7 ++++++-
+>  sound/soc/sh/fsi-da7210.c |    2 +-
+>  2 files changed, 7 insertions(+), 2 deletions(-)
 > 
-> diff --git a/include/sound/sh_fsi.h b/include/sound/sh_fsi.h
-> index 3fd6456..fa60cbd 100644
-> --- a/include/sound/sh_fsi.h
-> +++ b/include/sound/sh_fsi.h
-> @@ -114,7 +114,4 @@ struct sh_fsi_platform_info {
->  	int (*set_rate)(int is_porta, int rate); /* for master mode */
+> diff --git a/sound/soc/sh/fsi-ak4642.c b/sound/soc/sh/fsi-ak4642.c
+> index 9e107a9..53836ca 100644
+> --- a/sound/soc/sh/fsi-ak4642.c
+> +++ b/sound/soc/sh/fsi-ak4642.c
+> @@ -31,8 +31,13 @@ static struct snd_soc_dai_link fsi_dai_link = {
+>  	.stream_name	= "AK4642",
+>  	.cpu_dai_name	= "fsia-dai", /* fsi A */
+>  	.codec_dai_name	= "ak4642-hifi",
+> -	.platform_name	= "fsi-pcm-audio",
+> +#ifdef CONFIG_MACH_AP4EVB
+> +	.platform_name	= "sh_fsi2.0",
+> +	.codec_name	= "ak4642-codec.0-0013",
+> +#else
+> +	.platform_name	= "sh_fsi.0",
+>  	.codec_name	= "ak4642-codec.0-0012",
+> +#endif
+>  	.init		= fsi_ak4642_dai_init,
+>  	.ops		= NULL,
 >  };
->  
-> -extern struct snd_soc_dai_driver fsi_soc_dai[2];
-> -extern struct snd_soc_platform_driver fsi_soc_platform;
-> -
->  #endif /* __SOUND_FSI_H */
+> diff --git a/sound/soc/sh/fsi-da7210.c b/sound/soc/sh/fsi-da7210.c
+> index 4f9298f..b527015 100644
+> --- a/sound/soc/sh/fsi-da7210.c
+> +++ b/sound/soc/sh/fsi-da7210.c
+> @@ -27,7 +27,7 @@ static struct snd_soc_dai_link fsi_da7210_dai = {
+>  	.stream_name	= "DA7210",
+>  	.cpu_dai_name	= "fsib-dai", /* FSI B */
+>  	.codec_dai_name	= "da7210-hifi",
+> -	.platform_name	= "fsi-pcm-audio",
+> +	.platform_name	= "sh_fsi.0",
+>  	.codec_name	= "da7210-codec.0-001a",
+>  	.init		= fsi_da7210_init,
+>  };
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+
 
 -- 
 Freelance Developer, SlimLogic Ltd
