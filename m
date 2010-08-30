@@ -1,16 +1,44 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Missing 4-channel support on older NVIDIA MCP HW
-Date: Mon, 30 Aug 2010 10:11:09 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF02FEF39906@HQMAIL01.nvidia.com>
+From: Thor Kristoffersen <thorkr@gmail.com>
+Subject: Re: X-Fi Titanium: Capture is possible only with
+ unmuted input
+Date: Mon, 30 Aug 2010 19:22:35 +0200
+Message-ID: <m2lj7oyq04.fsf@getmail.no>
+References: <m2pqx1yx42.fsf@getmail.no> <s5h8w3o8rez.wl%tiwai@suse.de>
+	<AANLkTikUP83MJkgH_eb+u1QSvoKCvs=L8F7nCaKYMMS-@mail.gmail.com>
+	<s5htymc4he8.wl%tiwai@suse.de>
+	<AANLkTinR0HRz2rnkvPJ2Mqd4kFn0=mzn4pd+HqhS+-wP@mail.gmail.com>
+	<s5hr5hg4gex.wl%tiwai@suse.de>
+	<AANLkTi=HGMh266rHKKm7zO3i8ygxEkjQGWR1NHbP24DZ@mail.gmail.com>
+	<s5hocck4f9x.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2C04D243FF
+Received: from smtp.getmail.no (smtp.getmail.no [84.208.15.66])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3FCCD2440B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 30 Aug 2010 19:11:13 +0200 (CEST)
-Content-Language: en-US
+	Mon, 30 Aug 2010 19:22:39 +0200 (CEST)
+Received: from get-mta-scan01.get.basefarm.net ([10.5.16.4])
+	by get-mta-out01.get.basefarm.net
+	(Sun Java(tm) System Messaging Server 7.0-0.04 64bit (built Jun 20
+	2008))
+	with ESMTP id <0L7Z00ETR6XPYI90@get-mta-out01.get.basefarm.net> for
+	alsa-devel@alsa-project.org; Mon, 30 Aug 2010 19:22:37 +0200 (MEST)
+Received: from get-mta-scan01.get.basefarm.net
+	(localhost.localdomain [127.0.0.1])	by localhost (Email Security
+	Appliance)
+	with SMTP id DCC3D17993DC_C7BE8DCB	for <alsa-devel@alsa-project.org>;
+	Mon, 30 Aug 2010 17:22:36 +0000 (GMT)
+Received: from smtp.getmail.no (unknown [10.5.16.4])
+	by get-mta-scan01.get.basefarm.net (Sophos Email Appliance)
+	with ESMTP id 975021797CC5_C7BE8DCF	for <alsa-devel@alsa-project.org>;
+	Mon, 30 Aug 2010 17:22:36 +0000 (GMT)
+Received: from localhost ([84.215.109.218]) by get-mta-in01.get.basefarm.net
+	(Sun Java(tm) System Messaging Server 7.0-0.04 64bit (built Jun 20
+	2008))
+	with ESMTP id <0L7Z001XE6XONH00@get-mta-in01.get.basefarm.net> for
+	alsa-devel@alsa-project.org; Mon, 30 Aug 2010 19:22:36 +0200 (MEST)
+In-reply-to: <s5hocck4f9x.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,33 +48,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
-Cc: Wei Ni <wni@nvidia.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-It looks like even though some NVIDIA MCPs have min/max channel of 2/8, not
-all HW supports the intermediate # channels (4 and 6) over HDMI. Various
-combinations are supported on various HW: 2, 2/8, 2/6/8, 2/4/6/8.
-
-At present, when an application uses an unsupported number of channels,
-playback appears to operate correctly, but the HW doesn't actually send the
-audio data over HDMI.
-
-Is it possible for patch_nvhdmi.c to simply program codec the HW in 8-channel
-mode even though the controller is only sending 4-/6-channel data? I'm not
-sure if this would cause the codec to get out of sync with the controller's
-data stream. Would the controller end up grabbing 8 channels worth of data
-from the stream at a time, have no way to synchronize to the start of each
-sample, and hence end up packing e.g. 2 complete 4 channel samples into a
-single 8 channel sample?
-
-If not, it seems that patch_nvhdmi.c should be modified so that each codec's
-_open() function returns an error for unsupported rates. I can code that up
-if we need.
-
-Unfortunately, it doesn't look like it's possible for applications to query
-this information from ALSA, since a hw_params_t exposes just a min/max
-channel count rather than a mask.
-
--- 
-nvpublic
+VGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cml0ZXM6Cj4gQXQgTW9uLCAzMCBBdWcgMjAx
+MCAxMToxODowMSArMDIwMCwKPiBUaG9yIEtyaXN0b2ZmZXJzZW4gd3JvdGU6Cj4+IAo+PiBPbiBN
+b24sIEF1ZyAzMCwgMjAxMCBhdCAxMTowNyBBTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRl
+PiB3cm90ZToKPj4gPj4gT24gTW9uLCBBdWcgMzAsIDIwMTAgYXQgMTA6NDYgQU0sIFRha2FzaGkg
+SXdhaSA8dGl3YWlAc3VzZS5kZT4gd3JvdGU6Cj4+ID4+ID4+ID4+IEknbSBoYXZpbmcgaXNzdWVz
+IHdpdGggYW4gWC1GaSBUaXRhbml1bSBhbmQgQUxTQS4gwqBUaGUgcHJvYmxlbSBpcyB0aGF0Cj4+
+ID4+ID4+ID4+IGl0IGFwcGVhcnMgdG8gYmUgaW1wb3NzaWJsZSB0byBjYXB0dXJlIHdpdGhvdXQg
+dW5tdXRpbmcgdGhlIGNoYW5uZWwgSSdtCj4+ID4+ID4+ID4+IGNhcHR1cmluZyBmcm9tLgo+PiA+
+PiA+PiA+Cj4+ID4+ID4+ID4gV2hhdCBkbyB5b3UgbWVhbiBleGFjdGx5ICJ1bm11dGluZyB0aGUg
+Y2hhbm5lbCBJJ20gY2FwdHVyaW5nIGZyb20iPwo+PiA+PiA+PiA+IElmIHlvdSBtZWFuIHRvIHR1
+cm4gb24vb2ZmICJYWFggQ2FwdHVyZSBTd2l0Y2giLCB0aGVuIGl0J3MgYSBmZWF0dXJlLAo+PiA+
+PiA+PiA+IG5vIGJ1Zy4KPj4gPj4gPj4KPj4gPj4gPj4gTm8sIEkgbWVhbiB0aGF0IGNhcHR1cmUg
+aXMgcG9zc2libGUgb25seSB3aGVuIG11dGU9b2ZmIGFuZCBjYXB0dXJlPW9uLgo+PiA+PiA+Cj4+
+ID4+ID4gV2hpY2ggbXV0ZT8gwqBQbGVhc2UgYmUgbW9yZSBzcGVjaWZpYy4KPj4gPj4KPj4gPj4g
+VGhlIHNpZ25hbCBJJ20gdHJ5aW5nIHRvIGNhcHR1cmUgaXMgY29taW5nIGluIHRocm91Z2ggdGhl
+IFNQRElGLWkKPj4gPj4gY2hhbm5lbCwgc28gSSdtIHRhbGtpbmcgYWJvdXQgdGhlIG11dGUgYW5k
+IGNhcHR1cmUgZmxhZ3Mgb24gdGhhdAo+PiA+PiBjaGFubmVsLiBIb3dldmVyLCBJIGFsc28gdHJp
+ZWQgdGhlIGFuYWxvZyBpbnB1dCAobGluZSksIGFuZCB0aGUKPj4gPj4gcHJvYmxlbSBpcyBleGFj
+dGx5IHRoZSBzYW1lIG9uIHRoYXQgY2hhbm5lbC4KPj4gPgo+PiA+IFdlbGwsIHRoaXMgaXMgc3Rp
+bGwgdW5jbGVhciAod2hhdCBhY3R1YWxseSBkbyB5b3UgbWVhbiAiY2hhbm5lbCIpIGJ1dAo+PiA+
+IGxldCBtZSBndWVzczoKPj4gPgo+PiA+IMKgdGhlIHJlY29yZGluZyBmcm9tIGVpdGhlciBtaWMg
+b3IgbGluZS1pbiBkb2Vzbid0IHdvcmsgdW5sZXNzIHlvdSB1bm11dGUKPj4gPiDCoHZpYSAiRnJv
+bnQgUGxheWJhY2sgU3dpdGNoIiBtaXhlciBlbGVtZW50Lgo+PiA+Cj4+ID4gQ29ycmVjdD8KPj4g
+Cj4+IE5vdCByZWFsbHkuIEkgdXNlIGdub21lLWFsc2FtaXhlciwgYW5kIHRoZXJlIGlzIGEgbWl4
+ZXIgZWxlbWVudCBjYWxsZWQKPj4gIlNQRElGLWkiIHRoYXQgaGFzIGEgc2xpZGVyLCBhICJNdXRl
+IiBzd2l0Y2gsIGFuZCBhICJDYXB0dXJlIiBzd2l0Y2guCj4+IEkgY29ubmVjdCBhIGRpZ2l0YWwg
+c291cmNlIHRvIHRoZSBTUERJRiBpbnB1dCBvbiB0aGUgY2FyZCwgYW5kIHRoZW4gSQo+PiB0cnkg
+dG8gcmVjb3JkIGl0IHdpdGggYXJlY29yZCBmcm9tIGRldmljZSBodzowLDAuIFRoZSBvbmx5IHdh
+eSBJJ20KPj4gYWJsZSB0byByZWNvcmQgc291bmQgaXMgYnkgc2V0dGluZyB0aGUgTXV0ZSBzd2l0
+Y2ggKG9mIHRoZSBTUERJRi1pCj4+IG1peGVyIGVsZW1lbnQpIHRvIG9mZiBhbmQgdGhlIENhcHR1
+cmUgc3dpdGNoIHRvIG9uLgo+Cj4gVGhlcmUgaXMgbm8gbWl4ZXIgc3dpdGNoIG5hbWVzICJTUERJ
+Ri1pIi4gIEl0J3MgY3V0IGluIGFsc2FtaXhlcidzCj4gZGlzcGxheS4KCkknbSBub3Qgc3VyZSBJ
+IHVuZGVyc3RhbmQgd2hhdCB5b3UgbWVhbi4gIFRoZXJlIGlzIGRlZmluaXRlbHkgYSBtaXhlcgpl
+bGVtZW50IGNhbGxlZCAiUy9QRElGLWluIi4gIEl0IGlzIHByZXNlbnQgaW4gZ25vbWUtYWxzYW1p
+eGVyLAphbHNhbWl4ZXIsIGFuZCBhbWl4ZXIgKHRob3VnaCBpbiBnbm9tZS1hbHNhbWl4ZXIgdGhl
+IHRleHQgc2F5cwoiUy9QRElGLWkiKS4gIFRoaXMgaXMgd2hhdCB0aGUgZWxlbWVudCBsb29rcyBs
+aWtlIGluIHRoZSBhbWl4ZXIgb3V0cHV0OgoKU2ltcGxlIG1peGVyIGNvbnRyb2wgJ1MvUERJRi1p
+bicsMAogIENhcGFiaWxpdGllczogcHZvbHVtZSBjdm9sdW1lIHBzd2l0Y2ggcHN3aXRjaC1qb2lu
+ZWQgY3N3aXRjaCBjc3dpdGNoLWpvaW5lZCBwZW51bQogIFBsYXliYWNrIGNoYW5uZWxzOiBGcm9u
+dCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBDYXB0dXJlIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJv
+bnQgUmlnaHQKICBMaW1pdHM6IFBsYXliYWNrIDAgLSAyNTYgQ2FwdHVyZSAwIC0gMjU2CiAgRnJv
+bnQgTGVmdDogUGxheWJhY2sgMjU2IFsxMDAlXSBbMC4wMGRCXSBbb2ZmXSBDYXB0dXJlIDI1NiBb
+MTAwJV0gWzAuMDBkQl0gW29uXQogIEZyb250IFJpZ2h0OiBQbGF5YmFjayAyNTYgWzEwMCVdIFsw
+LjAwZEJdIFtvZmZdIENhcHR1cmUgMjU2IFsxMDAlXSBbMC4wMGRCXSBbb25dCgo+IFRvIGNoZWNr
+IG1vcmUgZXhhY3RseSwgbWFrZSBhIGRpZmYgb2YgYW1peGVyIG91dHB1dHMgYmV0d2Vlbgo+IHdv
+cmtpbmcgYW5kIG5vbi13b3JraW5nIHN0YXRlcy4KCk9rLCBoZXJlJ3MgYSB0cmFuc2NyaXB0IG9m
+IHRoZSB0ZXN0IHRoYXQgcmVwcm9kdWNlcyB0aGUgaXNzdWUuICBGaXJzdCBJCnNlbmQgaW4gYSBk
+aWdpdGFsIHN0cmVhbSBvbiB0aGUgUy9QRElGIGlucHV0IG9uIHRoZSBzb3VuZCBjYXJkLiAgVGhl
+biBJCnNldCB0aGUgIlMvUERJRi1pbiIgbWl4ZXIgY29udHJvbCB0byB2b2x1bWU9MTAwJSwgbXV0
+ZT1vbiwgY2FwdHVyZT1vbi4KVGhlbiBJIGlzc3VlIHRoZSBmb2xsb3dpbmcgY29tbWFuZHMuCgpb
+Y2FsdmluOn5dYW1peGVyID4gY2FwdHVyZS1ub3Qtd29ya2luZy50eHQKW2NhbHZpbjp+XWFyZWNv
+cmQgLUQgaHc6MCwwIC1jIDIgLWYgUzE2X0xFIC1yIDk2MDAwIC1kIDUgc25kdGVzdDEud2F2ClJl
+Y29yZGluZyBXQVZFICdzbmR0ZXN0MS53YXYnIDogU2lnbmVkIDE2IGJpdCBMaXR0bGUgRW5kaWFu
+LCBSYXRlIDk2MDAwIEh6LCBTdGVyZW8KW2NhbHZpbjp+XWFwbGF5IC1EIGh3OjAsMCBzbmR0ZXN0
+MS53YXYgClBsYXlpbmcgV0FWRSAnc25kdGVzdDEud2F2JyA6IFNpZ25lZCAxNiBiaXQgTGl0dGxl
+IEVuZGlhbiwgUmF0ZSA5NjAwMCBIeiwgU3RlcmVvCgpObyBzb3VuZCBpcyBwbGF5ZWQuICBOb3cg
+SSBjaGFuZ2UgdGhlICJTL1BESUYtaW4iIG1peGVyIGNvbnRyb2wgdG8gbXV0ZT1vZmYuClRoZW4g
+SSBpc3N1ZSB0aGUgZm9sbG93aW5nIGNvbW1hbmRzLgoKW2NhbHZpbjp+XWFtaXhlciA+IGNhcHR1
+cmUtd29ya2luZy50eHQKW2NhbHZpbjp+XWFyZWNvcmQgLUQgaHc6MCwwIC1jIDIgLWYgUzE2X0xF
+IC1yIDk2MDAwIC1kIDUgc25kdGVzdDEud2F2ClJlY29yZGluZyBXQVZFICdzbmR0ZXN0MS53YXYn
+IDogU2lnbmVkIDE2IGJpdCBMaXR0bGUgRW5kaWFuLCBSYXRlIDk2MDAwIEh6LCBTdGVyZW8KW2Nh
+bHZpbjp+XWFwbGF5IC1EIGh3OjAsMCBzbmR0ZXN0MS53YXYgClBsYXlpbmcgV0FWRSAnc25kdGVz
+dDEud2F2JyA6IFNpZ25lZCAxNiBiaXQgTGl0dGxlIEVuZGlhbiwgUmF0ZSA5NjAwMCBIeiwgU3Rl
+cmVvCgpTb3VuZCBwbGF5cyBqdXN0IGZpbmUuICBUaGlzIGlzIHRoZSBkaWZmIGJldHdlZW4gdGhl
+IG5vbi13b3JraW5nIGFuZAp3b3JraW5nIHN0YXRlczoKCltjYWx2aW46fl1kaWZmIC11IGNhcHR1
+cmUtbm90LXdvcmtpbmcudHh0IGNhcHR1cmUtd29ya2luZy50eHQgCi0tLSBjYXB0dXJlLW5vdC13
+b3JraW5nLnR4dCAgICAgMjAxMC0wOC0zMCAxOTowMTowMi4zNDQzMTk3NjIgKzAyMDAKKysrIGNh
+cHR1cmUtd29ya2luZy50eHQgMjAxMC0wOC0zMCAxOTowMTo0Ni45NjQ5NDUzNjEgKzAyMDAKQEAg
+LTU5LDggKzU5LDggQEAKICAgUGxheWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBS
+aWdodAogICBDYXB0dXJlIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICAgTGlt
+aXRzOiBQbGF5YmFjayAwIC0gMjU2IENhcHR1cmUgMCAtIDI1NgotICBGcm9udCBMZWZ0OiBQbGF5
+YmFjayAyNTYgWzEwMCVdIFswLjAwZEJdIFtvZmZdIENhcHR1cmUgMjU2IFsxMDAlXSBbMC4wMGRC
+XSBbb25dCi0gIEZyb250IFJpZ2h0OiBQbGF5YmFjayAyNTYgWzEwMCVdIFswLjAwZEJdIFtvZmZd
+IENhcHR1cmUgMjU2IFsxMDAlXSBbMC4wMGRCXSBbb25dCisgIEZyb250IExlZnQ6IFBsYXliYWNr
+IDI1NiBbMTAwJV0gWzAuMDBkQl0gW29uXSBDYXB0dXJlIDI1NiBbMTAwJV0gWzAuMDBkQl0gW29u
+XQorICBGcm9udCBSaWdodDogUGxheWJhY2sgMjU2IFsxMDAlXSBbMC4wMGRCXSBbb25dIENhcHR1
+cmUgMjU2IFsxMDAlXSBbMC4wMGRCXSBbb25dCiBTaW1wbGUgbWl4ZXIgY29udHJvbCAnUy9QRElG
+LW91dCcsMAogICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUgcHN3aXRjaCBwc3dpdGNoLWpvaW5lZCBw
+ZW51bQogICBQbGF5YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZyb250IFJpZ2h0CgpQbGVh
+c2UgbGV0IG1lIGtub3cgaWYgdGhlcmUgYXJlIGFueSBvdGhlciB0ZXN0cyB5b3Ugd2FudCBtZSB0
+byBwZXJmb3JtLgoKVGhvcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
