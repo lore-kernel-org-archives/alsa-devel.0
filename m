@@ -1,25 +1,21 @@
-From: Thor Kristoffersen <thorkr@gmail.com>
-Subject: Re: X-Fi Titanium: Capture is possible only with
-	unmuted input
-Date: Mon, 30 Aug 2010 11:18:01 +0200
-Message-ID: <AANLkTi=HGMh266rHKKm7zO3i8ygxEkjQGWR1NHbP24DZ@mail.gmail.com>
-References: <m2pqx1yx42.fsf@getmail.no> <s5h8w3o8rez.wl%tiwai@suse.de>
-	<AANLkTikUP83MJkgH_eb+u1QSvoKCvs=L8F7nCaKYMMS-@mail.gmail.com>
-	<s5htymc4he8.wl%tiwai@suse.de>
-	<AANLkTinR0HRz2rnkvPJ2Mqd4kFn0=mzn4pd+HqhS+-wP@mail.gmail.com>
-	<s5hr5hg4gex.wl%tiwai@suse.de>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: Re: [PATCH RESEND v6 1/3] ASoC: uda1380: make driver
+	more powersave-friendly
+Date: Mon, 30 Aug 2010 12:18:46 +0300
+Message-ID: <201008301218.52125.anarsoul@gmail.com>
+References: <1283156889-5544-1-git-send-email-anarsoul@gmail.com>
+	<1283156889-5544-2-git-send-email-anarsoul@gmail.com>
+	<201008301043.22165.marek.vasut@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============6997946296012494327=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id A47AC243E6
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 4D9A9243E6
 	for <alsa-devel@alsa-project.org>;
-	Mon, 30 Aug 2010 11:18:34 +0200 (CEST)
-Received: by gxk28 with SMTP id 28so2098280gxk.38
-	for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2010 02:18:34 -0700 (PDT)
-In-Reply-To: <s5hr5hg4gex.wl%tiwai@suse.de>
+	Mon, 30 Aug 2010 11:19:21 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so2948612ewy.38
+	for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2010 02:19:21 -0700 (PDT)
+In-Reply-To: <201008301043.22165.marek.vasut@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,46 +25,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ben Dooks <ben-linux@fluff.org>, Philipp Zabel <philipp.zabel@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 30, 2010 at 11:07 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> On Mon, Aug 30, 2010 at 10:46 AM, Takashi Iwai <tiwai@suse.de> wrote:
->> >> >> I'm having issues with an X-Fi Titanium and ALSA. =A0The problem i=
-s that
->> >> >> it appears to be impossible to capture without unmuting the channe=
-l I'm
->> >> >> capturing from.
->> >> >
->> >> > What do you mean exactly "unmuting the channel I'm capturing from"?
->> >> > If you mean to turn on/off "XXX Capture Switch", then it's a featur=
-e,
->> >> > no bug.
->> >>
->> >> No, I mean that capture is possible only when mute=3Doff and capture=
-=3Don.
->> >
->> > Which mute? =A0Please be more specific.
->>
->> The signal I'm trying to capture is coming in through the SPDIF-i
->> channel, so I'm talking about the mute and capture flags on that
->> channel. However, I also tried the analog input (line), and the
->> problem is exactly the same on that channel.
->
-> Well, this is still unclear (what actually do you mean "channel") but
-> let me guess:
->
-> =A0the recording from either mic or line-in doesn't work unless you unmute
-> =A0via "Front Playback Switch" mixer element.
->
-> Correct?
+--===============6997946296012494327==
+Content-Type: multipart/signed;
+  boundary="nextPart1645913.c0YqpMDjWj";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-Not really. I use gnome-alsamixer, and there is a mixer element called
-"SPDIF-i" that has a slider, a "Mute" switch, and a "Capture" switch.
-I connect a digital source to the SPDIF input on the card, and then I
-try to record it with arecord from device hw:0,0. The only way I'm
-able to record sound is by setting the Mute switch (of the SPDIF-i
-mixer element) to off and the Capture switch to on.
+--nextPart1645913.c0YqpMDjWj
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thor
+=D0=92 =D1=81=D0=BE=D0=BE=D0=B1=D1=89=D0=B5=D0=BD=D0=B8=D0=B8 =D0=BE=D1=82 =
+30 =D0=B0=D0=B2=D0=B3=D1=83=D1=81=D1=82=D0=B0 2010 11:43:22 =D0=B0=D0=B2=D1=
+=82=D0=BE=D1=80 Marek Vasut =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=D0=BB:
+> Dne Po 30. srpna 2010 10:28:07 Vasily Khoruzhick napsal(a):
+> > Disable some codec modules in standby mode, completely disable
+> > codec in off mode to save some power.
+> > Fix suspend/resume: mark mixer regs as dirty on resume to
+> > restore mixer values, otherwise driver produces no sound
+> > (master is muted by default).
+> >=20
+> > Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+>=20
+> Please have my:
+>=20
+> Acked-by: Marek Vasut <marek.vasut@gmail.com>
+
+Does it mean I should resend patches with this line included? :)
+
+--nextPart1645913.c0YqpMDjWj
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.16 (GNU/Linux)
+
+iEYEABECAAYFAkx7d3wACgkQRM6pQpltKE7htACgxlmcRTircfk91EXpY3ugnHvC
+bg8AoL3+F2KwV9NukK3QB+oN7D01v6jC
+=9PRi
+-----END PGP SIGNATURE-----
+
+--nextPart1645913.c0YqpMDjWj--
+
+--===============6997946296012494327==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============6997946296012494327==--
