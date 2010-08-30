@@ -1,18 +1,21 @@
-From: Arnaud Patard (Rtp) <arnaud.patard@rtp-net.org>
-Subject: [patch 1/1] ASoC: OpenRD Client : Fix naming breakage
-	due to multicomponent support
-Date: Mon, 30 Aug 2010 16:00:05 +0200
-Message-ID: <20100830140015.356460045@rtp-net.org>
-References: <20100830140004.266980003@rtp-net.org>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 1/2] ASoC: fsi: modify compile error
+Date: Mon, 30 Aug 2010 15:35:09 +0100
+Message-ID: <1283178909.3055.118.camel@odin>
+References: <w3ppqx0jpbk.wl%kuninori.morimoto.gx@renesas.com>
+	<w3pocckjpa7.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lechat.rtp-net.org (lechat.rtp-net.org [88.191.19.38])
-	by alsa0.perex.cz (Postfix) with ESMTP id A58CD103807
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8E98C10385C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 30 Aug 2010 16:01:33 +0200 (CEST)
-Content-Disposition: inline; filename=conversion_fixes.patch
+	Mon, 30 Aug 2010 16:35:11 +0200 (CEST)
+Received: by wyb32 with SMTP id 32so6472421wyb.38
+	for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2010 07:35:11 -0700 (PDT)
+In-Reply-To: <w3pocckjpa7.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,52 +25,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Arnaud Patard <arnaud.patard@rtp-net.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-multicomponent support added/changed some device name but added some typos,
-breaking existing OpenRD Client support.
+On Mon, 2010-08-30 at 19:40 +0900, Kuninori Morimoto wrote:
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  include/sound/sh_fsi.h |    3 ---
+>  1 files changed, 0 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/sound/sh_fsi.h b/include/sound/sh_fsi.h
+> index 3fd6456..fa60cbd 100644
+> --- a/include/sound/sh_fsi.h
+> +++ b/include/sound/sh_fsi.h
+> @@ -114,7 +114,4 @@ struct sh_fsi_platform_info {
+>  	int (*set_rate)(int is_porta, int rate); /* for master mode */
+>  };
+>  
+> -extern struct snd_soc_dai_driver fsi_soc_dai[2];
+> -extern struct snd_soc_platform_driver fsi_soc_platform;
+> -
+>  #endif /* __SOUND_FSI_H */
 
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-Signed-off-by: Arnaud Patard <arnaud.patard@rtp-net.org>
-
-Index: sound-2.6/arch/arm/mach-kirkwood/common.c
-===================================================================
---- sound-2.6.orig/arch/arm/mach-kirkwood/common.c	2010-08-23 10:13:13.000000000 +0200
-+++ sound-2.6/arch/arm/mach-kirkwood/common.c	2010-08-23 10:13:14.000000000 +0200
-@@ -905,7 +905,7 @@
- };
- 
- static struct platform_device kirkwood_pcm_device = {
--	.name		= "kirkwood-pcm",
-+	.name		= "kirkwood-pcm-audio",
- 	.id		= -1,
- };
- 
-Index: sound-2.6/sound/soc/kirkwood/kirkwood-openrd.c
-===================================================================
---- sound-2.6.orig/sound/soc/kirkwood/kirkwood-openrd.c	2010-08-23 10:11:33.000000000 +0200
-+++ sound-2.6/sound/soc/kirkwood/kirkwood-openrd.c	2010-08-23 10:13:14.000000000 +0200
-@@ -66,7 +66,7 @@
- 	.stream_name = "CS42L51 HiFi",
- 	.cpu_dai_name = "kirkwood-i2s",
- 	.platform_name = "kirkwood-pcm-audio",
--	.codec_dai_name = "cs42l51_hifi",
-+	.codec_dai_name = "cs42l51-hifi",
- 	.codec_name = "cs42l51-codec.0-004a",
- 	.ops = &openrd_client_ops,
- },
-Index: sound-2.6/sound/soc/codecs/cs42l51.c
-===================================================================
---- sound-2.6.orig/sound/soc/codecs/cs42l51.c	2010-08-30 15:56:38.000000000 +0200
-+++ sound-2.6/sound/soc/codecs/cs42l51.c	2010-08-30 15:56:53.000000000 +0200
-@@ -622,7 +622,7 @@
- 
- static struct i2c_driver cs42l51_i2c_driver = {
- 	.driver = {
--		.name = "cs42L51-codec",
-+		.name = "cs42l51-codec",
- 		.owner = THIS_MODULE,
- 	},
- 	.id_table = cs42l51_id,
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
