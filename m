@@ -1,21 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH RESEND v6 0/3] ASoC: Add iPAQ RX1950 support
-Date: Tue, 31 Aug 2010 18:52:52 +0100
-Message-ID: <20100831175252.GC30599@rakim.wolfsonmicro.main>
-References: <1283156889-5544-1-git-send-email-anarsoul@gmail.com>
-	<1283160241.3055.18.camel@odin>
-	<20100831122559.GJ20849@rakim.wolfsonmicro.main>
-	<201008312049.29591.anarsoul@gmail.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: [PATCH - 1/1] patch_nvhdmi.c: Add missing codec
+ IDs, unify names
+Date: Tue, 31 Aug 2010 11:22:38 -0700
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF02FF9E2A8D@HQMAIL01.nvidia.com>
+References: <1281415300-4372-1-git-send-email-swarren@nvidia.com>
+	<s5hfwymylbt.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9CF82103828
+Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id E5EF710382B
 	for <alsa-devel@alsa-project.org>;
-	Tue, 31 Aug 2010 19:52:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <201008312049.29591.anarsoul@gmail.com>
+	Tue, 31 Aug 2010 20:22:44 +0200 (CEST)
+In-Reply-To: <s5hfwymylbt.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,15 +24,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: marek.vasut@gmail.com, alsa-devel <alsa-devel@alsa-project.org>, Ben Dooks <ben-linux@fluff.org>, Philipp Zabel <philipp.zabel@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 31, 2010 at 08:49:19PM +0300, Vasily Khoruzhick wrote:
+Takashi Iwai wrote:
+> 
+> At Mon,  9 Aug 2010 22:41:40 -0600,
+> Stephen Warren wrote:
+> >
+> > * Add missing codec IDs.
+> > * Modify some existing codec names for discrete GPUs to match newly
+> >   added IDs. Note: existing names were a mixture of marketing and
+> >   engineering GPU names. Equally, there's no reason that codec IDs
+> >   have to be specific to a particular GPU or board, so identify
+> >   codecs in a less marketing-oriented fashion.
+> > * Reformat codec ID table so it's easier to read, for me at least.
+> >
+> > Signed-off-by: Stephen Warren <swarren@nvidia.com>
+> 
+> Applied now as is.  It doesn't exceed too much over 80 columns ;)
 
-> Mark, maybe merging third patch without Ben's comment is not good idea? It 
-> touches arch/arm/plat-s3c24xx/devs.c
+Does such a change automatically go into previous stable kernels as well as the
+current development kernel? Or, do I/you need to specifically request this? I'm
+hoping to get the patches for this and the previous old_pin_detect fix widely
+distributed to solve the issues some end-users are seeing.
 
-It's required for multi-component which is going in during the next
-merge window and Ben is currently not very available.  If there's a
-problem we can always fix it up later.
+I guess this is a little moot, since many distros seem to update the ALSA
+driver directly, rather than using the version in the kernel they build.
+
+Related, one end-user asked when the alsa-lib patches to expose N HDMI PCMs per
+GPU would be available in distros. Does alsa-lib make scheduled releases, so
+I could predict when the current git would be picked up by a distro?
+
+Thanks.
+
+> > diff --git a/pci/hda/patch_nvhdmi.c b/pci/hda/patch_nvhdmi.c
+> > index a281836..77e2b40 100644
+> > --- a/pci/hda/patch_nvhdmi.c
+> > +++ b/pci/hda/patch_nvhdmi.c
+> > @@ -540,26 +540,32 @@ static int patch_nvhdmi_2ch(struct hda_codec *codec)
+> >   * patch entries
+> >   */
+> >  static struct hda_codec_preset snd_hda_preset_nvhdmi[] = {
+> > ...
+> > +	{ .id = 0x10de0002, .name = "MCP77/78 HDMI",  .patch = patch_nvhdmi_8ch_7x },
+> > +	{ .id = 0x10de0003, .name = "MCP77/78 HDMI",  .patch = patch_nvhdmi_8ch_7x },
+> > +	{ .id = 0x10de0005, .name = "MCP77/78 HDMI",  .patch = patch_nvhdmi_8ch_7x },
+> > +	{ .id = 0x10de0006, .name = "MCP77/78 HDMI",  .patch = patch_nvhdmi_8ch_7x },
+> > +	{ .id = 0x10de0007, .name = "MCP79/7A HDMI",  .patch = patch_nvhdmi_8ch_7x },
+> > +	{ .id = 0x10de000a, .name = "GPU 0a HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
+> > +	{ .id = 0x10de000b, .name = "GPU 0b HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
+> > +	{ .id = 0x10de000c, .name = "MCP89 HDMI",     .patch = patch_nvhdmi_8ch_89 },
+> > +	{ .id = 0x10de000d, .name = "GPU 0d HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
+> > +	{ .id = 0x10de0010, .name = "GPU 10 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
+> > +	{ .id = 0x10de0011, .name = "GPU 11 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
+> > +	{ .id = 0x10de0012, .name = "GPU 12 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
+> > +	{ .id = 0x10de0013, .name = "GPU 13 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
+> > +	{ .id = 0x10de0014, .name = "GPU 14 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
+> > +	{ .id = 0x10de0018, .name = "GPU 18 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
+> > +	{ .id = 0x10de0019, .name = "GPU 19 HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
+> > +	{ .id = 0x10de001a, .name = "GPU 1a HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
+> > +	{ .id = 0x10de001b, .name = "GPU 1b HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
+> > +	{ .id = 0x10de001c, .name = "GPU 1c HDMI/DP", .patch = patch_nvhdmi_8ch_89 },
+> > ...
+
+-- 
+nvpublic
