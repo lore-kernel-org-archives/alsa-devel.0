@@ -1,16 +1,19 @@
-From: marcus.weigelt@fwd-online.de
-Subject: Re-2: [PATCH 2/6] ASoC: ad1980: fix names of a few
- kcontrols
-Date: Mon, 30 Aug 2010 11:52:52 +0000
-Message-ID: <0034DBC1.4C7BB7B3@mail.fwd-online.de>
+From: Felix Homann <fexpop@web.de>
+Subject: Re: [PATCH - Fix Fast Track Ultra series: 44.1/88.1
+ kHz 1/Fix playback/capture issues and related chrashes at 44100 Hz and
+ 88200 Hz for M-Audio Fast Track Ultra series.
+Date: Tue, 31 Aug 2010 08:39:24 +0200
+Message-ID: <4C7CA39C.60205@web.de>
+References: <4C32E3B2.5080707@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="------------000806000303030107040809"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.fwd-online.de (mail.fwd-online.de [217.243.225.242])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7FA4D10385C
+Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
+	[83.169.30.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id 365FB103800
 	for <alsa-devel@alsa-project.org>;
-	Mon, 30 Aug 2010 13:52:55 +0200 (CEST)
+	Tue, 31 Aug 2010 08:39:26 +0200 (CEST)
+In-Reply-To: <4C32E3B2.5080707@web.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,125 +23,135 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, u.kleine-koenig@pengutronix.de
-Cc: alsa-devel@alsa-project.org, sonic.zhang@analog.com, lrg@slimlogic.co.uk
+To: Felix Homann <fexpop@web.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Subject: Re: [alsa-devel] [PATCH 2/6] ASoC: ad1980: fix names of a few kcon=
-trols (27-Aug-2010 20:32)
-From:    Mark Brown <broonie@opensource.wolfsonmicro.com>
-To:      marcus.weigelt@fwd-online.de
+This is a multi-part message in MIME format.
+--------------000806000303030107040809
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> On Tue, Aug 24, 2010 at 03:09:40PM +0200, Uwe Kleine-K??nig wrote:
-> > From: Marcus Weigelt <marcus.weigelt@fwd-online.de>
-> > =
+Dear Alsa developers,
 
-> > The names used before keep alsamixer from showing the appropriate
-> > controls for the AD1980.  Mic and phone volume controls were shown in
-> > alsamixers' capture tab where they don??t belong to.  Phone playback
-> =
+almost 2 months ago I send a patch making the M-Audio Fast Track Ultra 
+series audio interfaces work flawlessly in Linux except for missing 
+mixer support:
 
-> It's not massively obvious that microphone and phone aren't inputs and
-> therefore don't sensibly appear in the capture tab?
+Am 06.07.2010 10:05, schrieb Felix Homann:
+> This fixes issues with M-Audio's Fast Track Ultra series:
+>
+> * devices now work at 44100 and 88200 Hz
+> * apparently, fixes some crashes, too
 
-The volume controls for mic and phone are actually hw mixing volumes that d=
-o not affect the recording path, therefore only the record selector belongs=
- to capture tab, but not the volume control.
+Unfortunately, the patch didn't make it into Alsa so far. Clemens 
+Ladisch seemed reluctant to apply a fixed endpoint quirk since the 
+device should have worked without in his opinion. I gave him all the 
+requested information to see what was happening without the fixed 
+endpoint quirk. I never heard back from him again.
 
-> =
+So, could someone in charge kindly tell me why the patch didn't make it 
+into Alsa? What's missing, what's wrong?
 
-> > volume did not appear in playback tab and the microphone playback could
-> > never be unmuted.  Further it was not possible to select phone as
-> > capture source.  Changing the names fixes these problems.
-> =
+If it's just the fact that Clemens doesn't like the fixed endpoint quirk 
+please find attached a different patch yielding the same result. 
+(Against Linux 2.6.35. It's again from dhubsith who posted it on the 
+M-Audio forum. He would sign it off if requested - on the other hand it 
+is already derived work of the Alsa sources).
 
-> This doesn't sound real - misnamed controls might cause UI problems but
-> you'd have to try *really* hard to make the control name completely
-> prevent the setting of the control.
+And please, if it's not going anywhere, please tell us "laymen, 
+volunteer Alsa helpers" about the reasons.
 
-May sound unreal, but if you look at the specific changes I=B4ve done, you =
-will notice that I just added "Playback" to the mic volume and mic switch a=
-nd changed "Phone Capture" to "Phone Playback". From the ALSA amixer.c I kn=
-ow, that there is some string compare on "playback" and "capture", don=B4t =
-know if it is the same with the alsamixer, but this would explain the diffe=
-rent behaviour after changing the names. I can see the result here - the co=
-ntrols are in the right place now and they are doing what they were suppose=
-d to.
-> =
+The current situation is most frustrating: We know how to make the 
+device work (much better than in Windows, btw) but we don't know why we 
+have to patch alsa again and again.
 
-> What is the actual problem that is is being fixed here?
+Thanks in advance,
 
-- microphone playback could not be unmuted before, that means that the hw m=
-ixing path from mic in to spk out/line out could never work - fixed by this
-- microphone volume was shown twice in "All" tab of Alsamixer, but running =
-synchroniously, if you change one, the other will follow with the same valu=
-e - fixed by this
-- if microphone voulme was changed in capture tab, the volume also changed =
-in playback tab - fixed by this
-- microphone was never shown as active capture source, even if it was selec=
-ted correctly, neither in capture tab nor in all-tab - fixed by this
-- phone was shown as selected capture source in capture tab, but actually i=
-t was not selected, instead it was muted/unmuted everytime one tries to sel=
-ect it as capture source - fixed by this
-
-> =
-
-> > Signed-off-by: Marcus Weigelt <marcus.weigelt@fwd-online.de>
-> > Signed-off-by: Uwe Kleine-K??nig <u.kleine-koenig@pengutronix.de>
-> =
-
-> Please remember to CC maintaintainers on patches.
-> =
-
-> > ---
-> >  sound/soc/codecs/ad1980.c |    8 ++++----
-> >  1 files changed, 4 insertions(+), 4 deletions(-)
-> > =
-
-> > diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
-> > index 35c0580..c1550b8 100644
-> > --- a/sound/soc/codecs/ad1980.c
-> > +++ b/sound/soc/codecs/ad1980.c
-> >                     SOC_SINGLE("PCM Capture Switch", AC97_REC_GAIN, 15,=
- 1, =
-
-> > 1),
-> >  SOC_SINGLE("Mono Playback Volume", AC97_MASTER_MONO, 0, 31, 1),
-> >  SOC_SINGLE("Mono Playback Switch", AC97_MASTER_MONO, 15, 1, 1),
-> >  =
-
-> > -SOC_SINGLE("Phone Capture Volume", AC97_PHONE, 0, 31, 1),
-> > -SOC_SINGLE("Phone Capture Switch", AC97_PHONE, 15, 1, 1),
-> > +SOC_SINGLE("Phone Playback Volume", AC97_PHONE, 0, 31, 1),
-> > +SOC_SINGLE("Phone Playback Switch", AC97_PHONE, 15, 1, 1),
-> >  =
-
-> > -SOC_SINGLE("Mic Volume", AC97_MIC, 0, 31, 1),
-> > -SOC_SINGLE("Mic Switch", AC97_MIC, 15, 1, 1),
-> > +SOC_SINGLE("Mic Playback Volume", AC97_MIC, 0, 31, 1),
-> > +SOC_SINGLE("Mic Playback Switch", AC97_MIC, 15, 1, 1),
-> >  =
-
-> >  SOC_SINGLE("Stereo Mic Switch", AC97_AD_MISC, 6, 1, 0),
-> >  SOC_DOUBLE("Line HP Swap Switch", AC97_AD_MISC, 10, 5, 1, 0),
-> > -- =
-
-> > 1.7.1
-> > =
-
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> =
-
-> -- =
-
-> "You grabbed my hand and we fell into it, like a daydream - or a fever."
+Felix
 
 
-To: broonie@opensource.wolfsonmicro.com
-    u.kleine-koenig@pengutronix.de
-Cc: alsa-devel@alsa-project.org
-    sonic.zhang@analog.com
-    lrg@slimlogic.co.uk
+
+--------------000806000303030107040809
+Content-Type: text/plain;
+ name="maudio.patch-2.6.35.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="maudio.patch-2.6.35.txt"
+
+diff -rupN /sound/usb/card.c /sound/usb/card.c
+--- /sound/usb/card.c
++++ /sound/usb/card.c
+@@ -209,6 +209,8 @@ static int snd_usb_create_streams(struct
+ 						 NULL, UAC_HEADER);
+ 	altsd = get_iface_desc(host_iface);
+ 	protocol = altsd->bInterfaceProtocol;
++                if (chip->usb_id == USB_ID(0x0763, 0x2080) || chip->usb_id == USB_ID(0x0763, 0x2081))
++		protocol = UAC_VERSION_1;
+ 
+ 	if (!control_header) {
+ 		snd_printk(KERN_ERR "cannot find UAC_HEADER\n");
+diff -rupN /sound/usb/endpoint.c /sound/usb/endpoint.c
+--- /sound/usb/endpoint.c
++++ /sound/usb/endpoint.c
+@@ -252,6 +252,8 @@ int snd_usb_parse_audio_endpoints(struct
+ 		alts = &iface->altsetting[i];
+ 		altsd = get_iface_desc(alts);
+ 		protocol = altsd->bInterfaceProtocol;
++                if (chip->usb_id == USB_ID(0x0763, 0x2080) || chip->usb_id == USB_ID(0x0763, 0x2081))
++		protocol = UAC_VERSION_1;
+ 		/* skip invalid one */
+ 		if ((altsd->bInterfaceClass != USB_CLASS_AUDIO &&
+ 		     altsd->bInterfaceClass != USB_CLASS_VENDOR_SPEC) ||
+@@ -403,11 +405,15 @@ int snd_usb_parse_audio_endpoints(struct
+ 			break;
+ 		case USB_ID(0x041e, 0x3020): /* Creative SB Audigy 2 NX */
+ 		case USB_ID(0x0763, 0x2003): /* M-Audio Audiophile USB */
+-		case USB_ID(0x0763, 0x2080): /* M-Audio Fast Track Ultra 8 */
+-		case USB_ID(0x0763, 0x2081): /* M-Audio Fast Track Ultra 8R */
+ 			/* doesn't set the sample rate attribute, but supports it */
+ 			fp->attributes |= UAC_EP_CS_ATTR_SAMPLE_RATE;
+ 			break;
++		case USB_ID(0x0763, 0x2080): /* M-Audio Fast Track Ultra   */
++		case USB_ID(0x0763, 0x2081): /* M-Audio Fast Track Ultra 8R */
++			/* force playback sync to adaptive only and turn off async*/
++			if (stream == SNDRV_PCM_STREAM_PLAYBACK)
++				fp->ep_attr = 0x09;
++			break;
+ 		case USB_ID(0x047f, 0x0ca1): /* plantronics headset */
+ 		case USB_ID(0x077d, 0x07af): /* Griffin iMic (note that there is
+ 						an older model 77d:223) */
+diff -rupN /sound/usb/format.c /sound/usb/format.c
+--- /sound/usb/format.c
++++ /sound/usb/format.c
+@@ -353,6 +353,8 @@ static int parse_audio_format_i(struct s
+ 	struct usb_interface_descriptor *altsd = get_iface_desc(iface);
+ 	int protocol = altsd->bInterfaceProtocol;
+ 	int pcm_format, ret;
++                if (chip->usb_id == USB_ID(0x0763, 0x2080) || chip->usb_id == USB_ID(0x0763, 0x2081))
++		protocol = UAC_VERSION_1;
+ 
+ 	if (fmt->bFormatType == UAC_FORMAT_TYPE_III) {
+ 		/* FIXME: the format type is really IECxxx
+@@ -415,6 +417,8 @@ static int parse_audio_format_ii(struct 
+ 	int brate, framesize, ret;
+ 	struct usb_interface_descriptor *altsd = get_iface_desc(iface);
+ 	int protocol = altsd->bInterfaceProtocol;
++                if (chip->usb_id == USB_ID(0x0763, 0x2080) || chip->usb_id == USB_ID(0x0763, 0x2081))
++		protocol = UAC_VERSION_1;
+ 
+ 	switch (format) {
+ 	case UAC_FORMAT_TYPE_II_AC3:
+
+--------------000806000303030107040809
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------000806000303030107040809--
