@@ -1,30 +1,24 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 4/7] ASoC: Automatically calculate clock
- ratio for WM8580
-Date: Tue, 31 Aug 2010 15:46:44 +0900
-Message-ID: <AANLkTimG-LqfTG1x++uME1DaAAysgqS=5zwjHE_o0hsR@mail.gmail.com>
-References: <20100813193305.GB3778@sirena.org.uk>
-	<1281728107-25386-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<AANLkTi=6Op9C3adxhN8HsZu9FewFYqeCWRoQs=P3LP18@mail.gmail.com>
-	<20100815110924.GA25723@opensource.wolfsonmicro.com>
-	<AANLkTi=9Y=uhX2b+Y=OMGCVA=gJNif8HwXe3Eg517nbq@mail.gmail.com>
-	<20100816102010.GB3276@rakim.wolfsonmicro.main>
-	<AANLkTinTYo6_BBSkhTt8Km-MR4wwexDS3orFJdNSiufT@mail.gmail.com>
-	<20100816151958.GE3276@rakim.wolfsonmicro.main>
-	<AANLkTindYfm3vh_OgF-0tt_MS+Uxii2s7Dw=Kk487RTd@mail.gmail.com>
-	<20100817094605.GC18622@rakim.wolfsonmicro.main>
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Subject: Re: [PATCH] - Fix Fast Track Ultra series: 44.1/88.1
+ kHz 1/Fix playback/capture issues and related crashes at 44100 Hz and 88200
+ Hz for M-Audio Fast Track Ultra series.
+Date: Tue, 31 Aug 2010 10:24:20 +0200
+Message-ID: <1283243061.3971.20.camel@mattotaupa>
+References: <4C32E3B2.5080707@web.de>  <4C7CA39C.60205@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0786449200782168481=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8F98610381B
+Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id A8D1B1037FB
 	for <alsa-devel@alsa-project.org>;
-	Tue, 31 Aug 2010 08:46:44 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so7307594wyb.38
-	for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2010 23:46:44 -0700 (PDT)
-In-Reply-To: <20100817094605.GC18622@rakim.wolfsonmicro.main>
+	Tue, 31 Aug 2010 10:24:25 +0200 (CEST)
+Received: from f053040237.adsl.alicedsl.de ([78.53.40.237]
+	helo=[192.168.178.21])
+	by mail.gw90.de with esmtpsa (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
+	id 1OqM8l-0004VI-PY
+	for alsa-devel@alsa-project.org; Tue, 31 Aug 2010 08:24:23 +0000
+In-Reply-To: <4C7CA39C.60205@web.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,36 +28,128 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Seungwhan Youn <sw.youn@samsung.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Seungwhan Youn <claude.youn@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBBdWcgMTcsIDIwMTAgYXQgNjo0NiBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFR1ZSwgQXVnIDE3LCAyMDEwIGF0
-IDA4OjE0OjQzQU0gKzA5MDAsIEphc3NpIEJyYXIgd3JvdGU6Cj4KPj4gSSBndWVzcyBtb3N0IHF1
-YWxpdHkgY29uc2Npb3VzIHByb2R1Y3RzIGNhbiBhZmZvcmQgdG8gYXR0YWNoIGEgZGVkaWNhdGVk
-Cj4+IE9TQyB0byBhIGdvb2QgQ09ERUMuIEEgQ09ERUMgYWxyZWFkeSBzcGVjaWZpZXMgdGhlIGNs
-b2NrcyBpdCBzdXBwb3J0Cj4+IGFuZCB1c3VhbGx5IGNvbWVzIHdpdGggJ3ByZWZlcnJlZCcgaW5w
-dXQgY2xvY2tzLiBTbywganVzdCBoYXZpbmcgYSBzcGVjaWZpZWQKPj4gcmF0aW5nIGFjY3VyYXRl
-IGVub3VnaCBPU0MgY2FuIHRha2UgY2FyZSBvZiBxdWFsaXR5LiBPbiB0aGUgb3RoZXIgaGFuZAo+
-PiB0aGUgY2xvY2sgc291cmNlcyBvbiBDUFUgc2lkZSBhcmUgbm90IHBhcnRpY3VsYXJseSBhY2N1
-cmF0ZSBmb3IgYXVkaW8tY2xvY2sKPj4gZ2VuZXJhdGlvbi4gT3Igc28gaGF2ZSBJIHNlZW4gc28g
-ZmFyLgo+Cj4gUmlnaHQsIHRoaXMgc2hvdWxkbid0IGJlIGFuIGlzc3VlIHdpdGggdGhlIGNoYW5n
-ZSBJIHByb3Bvc2VkIC0gdGhlCj4gY2xvY2tzIGFyZSBzdGlsbCByb290ZWQgZnJvbSB0aGUgQ09E
-RUMgYW5kIGl0cyBjbG9jayBnZW5lcmF0aW9uCj4gZmFjaWxpdGllcyB3b3VsZCBzdGlsbCBiZSB1
-c2VkLCBpdCdzIGp1c3QgdGhhdCB0aGV5IGdldCByb3V0ZWQKPiBkaWZmZXJlbnRseS4KPgo+IFRo
-ZSBpc3N1ZSB3aXRoIHVzaW5nIG1vc3QgQ1BVIGNsb2NrcyBpc24ndCByZWFsbHkgdGhlIGRlZGlj
-YXRlZAo+IG9zY2lsbGF0b3Igc28gbXVjaCBhcyB0aGUgYWJpbGl0eSB0byBnZW5lcmF0ZSBub24t
-aW50ZWdlciBkaXZpc2lvbnMgb2YKPiB3aGF0ZXZlciBpbnB1dCBjbG9jayBpcyBhdmFpbGFibGUu
-IMKgSWYgdGhpcyBjYW4ndCBiZSBkb25lIHRoZW4gaXQgY2FuIGJlCj4gaGFyZCB0byBnZW5lcmF0
-ZSB0aGUgZnVsbCByYW5nZSBvZiBjb21tb24gYXVkaW8gZnJlcXVlbmNpZXMuCgpPaywgbm93IHRo
-YXQgSSBhbSBmYWNlZCB3aXRoIHN1cHBvcnRpbmcgbGF0ZXN0IFNNREtzIHRoYXQgdXNlIGNvZGVj
-cwpvdGhlciB0aGFuIFdNODU4MCAobGlrZSB3bTg5OTQpLCBJIHRoaW5rIHdlJ2QgYmV0dGVyIGJy
-ZWFrIHRoZSBNQUNISU5FCmRyaXZlciBpbnRvIFNNREsgc3BlY2lmaWMgKHNldHVwIENQVSBtYXN0
-ZXIsIENPREVDIHNsYXZlIGFuZApyb290LWNsb2NrIHNvdXJjZWQgYWNjIHRvIG9wdGlvbiBwcm92
-aWRlZCB2YWkgcGxhdGZvcm1fZGF0YSkKYW5kIENPREVDIHNwZWNpZmljIHBhcnQuClRoYXQgd2ls
-bCBhbHNvIGhlbHAgY29kZSByZXVzZS4KCkFueSBvcGluaW9ucywgYmVmb3JlIEkgc3RhcnQgd29y
-a2luZyBvbiBpdD8KClRoYW5rcywKSmFzc2kKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+
+--===============0786449200782168481==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-/eEkRVK+WzpRxqhH0tG3"
+
+
+--=-/eEkRVK+WzpRxqhH0tG3
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Dear Felix,
+
+
+Am Dienstag, den 31.08.2010, 08:39 +0200 schrieb Felix Homann:
+
+> almost 2 months ago I send a patch making the M-Audio Fast Track Ultra=
+=20
+> series audio interfaces work flawlessly in Linux except for missing=20
+> mixer support:
+
+for people having subscribe later or deleted the last messages, you can
+find Felix=E2=80=99s message in the archive [1]. I could not download the
+attachment though, so please try [2] instead.
+
+> Am 06.07.2010 10:05, schrieb Felix Homann:
+> > This fixes issues with M-Audio's Fast Track Ultra series:
+> >
+> > * devices now work at 44100 and 88200 Hz
+> > * apparently, fixes some crashes, too
+>=20
+> Unfortunately, the patch didn't make it into Alsa so far. Clemens=20
+> Ladisch seemed reluctant to apply a fixed endpoint quirk since the=20
+> device should have worked without in his opinion. I gave him all the=20
+> requested information to see what was happening without the fixed=20
+> endpoint quirk. I never heard back from him again.
+>=20
+> So, could someone in charge kindly tell me why the patch didn't make it=
+=20
+> into Alsa? What's missing, what's wrong?
+>=20
+> If it's just the fact that Clemens doesn't like the fixed endpoint quirk=
+=20
+> please find attached a different patch yielding the same result.=20
+> (Against Linux 2.6.35. It's again from dhubsith who posted it on the=20
+> M-Audio forum.
+
+Could you include the link to the forum post.
+
+> He would sign it off if requested - on the other hand it=20
+> is already derived work of the Alsa sources).
+
+I guess his signed-off-by line additionally to yours (Tested-by: is also
+good) would not hurt.
+
+> And please, if it's not going anywhere, please tell us "laymen,=20
+> volunteer Alsa helpers" about the reasons.
+>=20
+> The current situation is most frustrating: We know how to make the=20
+> device work (much better than in Windows, btw) but we don't know why we=
+=20
+> have to patch alsa again and again.
+
+Sorry, unfortunately I cannot tell you why your work has not been
+committed yet and I do understand your frustration. The reasons might be
+simple, that the developers were caught up by different things and your
+patch just fall through the cracks. So it is a good thing, that you come
+back and ask for the status.
+
+So to ease work for the developers, could you please resend your patch.
+Do you know if it can be split up, so that the controversial parts can
+be left out at first?
+
+Please use `git format-patch` with
+
+1. a short commit summary line,
+2. links to the respective Web pages where this patch was discussed.
+
+You can just copy the lines from the resulting file into a normal
+message (delete the header fields and copy the subject manually marking
+it with [RESENT]). Just make sure the lines do not get wrapped.
+
+Then make sure to CC the maintainers (I think Clemens, Takashi,
+Jaroslav) too so that they do not miss it.
+
+I hope your patch will be included soon afterward.
+
+
+Thanks and good luck,
+
+Paul
+
+
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2010-July/thread.h=
+tml#29193
+[2] http://www.spinics.net/lists/alsa-devel/msg35372.html
+
+--=-/eEkRVK+WzpRxqhH0tG3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEABECAAYFAkx8vC4ACgkQPX1aK2wOHVhGfQCffJAnJ5B+XJ5Z1+YCfIx2ZnrF
+VnoAn1Bbjc/mqNEcdNE1V45Ki8PcfTAE
+=LEWP
+-----END PGP SIGNATURE-----
+
+--=-/eEkRVK+WzpRxqhH0tG3--
+
+
+--===============0786449200782168481==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============0786449200782168481==--
