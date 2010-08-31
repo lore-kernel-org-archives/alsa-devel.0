@@ -1,18 +1,20 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCH] ASoC: Swap bias level enumeration
-Date: Tue, 31 Aug 2010 14:52:35 +0300
-Message-ID: <1283255555-1547-1-git-send-email-jhnikula@gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Swap bias level enumeration
+Date: Tue, 31 Aug 2010 13:03:44 +0100
+Message-ID: <1283256224.3147.43.camel@odin>
+References: <1283255555-1547-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5FAF31037F3
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 376961037F3
 	for <alsa-devel@alsa-project.org>;
-	Tue, 31 Aug 2010 13:57:48 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so3521741ewy.38
-	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2010 04:57:47 -0700 (PDT)
+	Tue, 31 Aug 2010 14:03:46 +0200 (CEST)
+Received: by wyb32 with SMTP id 32so7580778wyb.38
+	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2010 05:03:45 -0700 (PDT)
+In-Reply-To: <1283255555-1547-1-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Swapping the bias level enumeration is only meant to help debugging. It is
-easier if number 0 means bias off and bigger number means bigger bias level.
+On Tue, 2010-08-31 at 14:52 +0300, Jarkko Nikula wrote:
+> Swapping the bias level enumeration is only meant to help debugging. It is
+> easier if number 0 means bias off and bigger number means bigger bias level.
+> 
 
-Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
----
- include/sound/soc.h |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+Good point.
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index d31e8b7..493b3a4 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -214,10 +214,10 @@
-  * @OFF:     Power Off. No restrictions on transition times.
-  */
- enum snd_soc_bias_level {
--	SND_SOC_BIAS_ON,
--	SND_SOC_BIAS_PREPARE,
--	SND_SOC_BIAS_STANDBY,
- 	SND_SOC_BIAS_OFF,
-+	SND_SOC_BIAS_STANDBY,
-+	SND_SOC_BIAS_PREPARE,
-+	SND_SOC_BIAS_ON,
- };
- 
- struct snd_jack;
+> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
-1.7.1
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
