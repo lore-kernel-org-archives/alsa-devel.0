@@ -1,17 +1,16 @@
-Return-Path: <BATV+0f032b38dfaf2097d6af+5413+infradead.org+mchehab@bombadil.srs.infradead.org>
-Received: from mail03.syd.optusnet.com.au (mail03.syd.optusnet.com.au
-	[211.29.132.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id D411D103806
-	for <alsa-devel@alsa-project.org>;
-	Sun,  8 Aug 2010 03:11:13 +0200 (CEST)
-From: Geoff Beasley <geoff@laughingboyrecords.com>
-In-Reply-To: <AANLkTiksTwbb1+ZoAas9V2dROxo9x11Ee1wYVO_LrL4U@mail.gmail.com>
-References: <AANLkTiksTwbb1+ZoAas9V2dROxo9x11Ee1wYVO_LrL4U@mail.gmail.com>
-Date: Sun, 08 Aug 2010 11:10:38 +1000
-Message-ID: <1281229838.2085.1.camel@<LapLin>>
+From: Ian Lartey <ian@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Added a missing 32-bit PCM format,
+ to the wm8994 codec.
+Date: Tue, 31 Aug 2010 23:56:34 +0100
+Message-ID: <1283295394.1831.12.camel@Tapajos>
 Mime-Version: 1.0
-Subject: Re: [alsa-devel] [LAD] mudita24 1.02 -- improved envy24control
- mixer/router for ice1712-based sound-cards
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 33A472468C
+	for <alsa-devel@alsa-project.org>;
+	Wed,  1 Sep 2010 00:56:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,22 +18,29 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: Mauro Carvalho Chehab <mchehab@infradead.org>
-To: Niels Mayer <nielsmayer@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, mailinglist <planetccrma@ccrma.stanford.edu>, linux-audio-announce@lists.linuxaudio.org, Takashi Iwai <tiwai@suse.de>, linux-audio-user <linux-audio-user@lists.linuxaudio.org>, "Tim E.  Real" <termtech@rogers.com>, alsa-user@lists.sourceforge.net, Linux Audio Developers <linux-audio-dev@lists.linuxaudio.org>, PlanetCCRMA@alsa-project.org, fedora-music-list <fedora-music-list@redhat.com>
-List-ID: <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Wolfson Patches <patches@opensource.wolfsonmicro.com>
+List-Id: alsa-devel@alsa-project.org
 
-Niels, great that you and Tim have fixed this app ;) One thing, can you
-explain what those 'profiles' are for and how to use them?
+Signed-off-by: Ian Lartey <ian@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index e03072c..23d9227 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -3498,7 +3498,7 @@ static int wm8994_set_tristate(struct snd_soc_dai *codec_dai, int tristate)
+ #define WM8994_RATES SNDRV_PCM_RATE_8000_96000
  
-I have always wondered...
-
-g.
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+ #define WM8994_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
+-			SNDRV_PCM_FMTBIT_S24_LE)
++			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ static struct snd_soc_dai_ops wm8994_aif1_dai_ops = {
+ 	.set_sysclk	= wm8994_set_dai_sysclk,
+-- 
+1.7.0.4
