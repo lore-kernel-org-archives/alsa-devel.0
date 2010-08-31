@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Swap bias level enumeration
-Date: Tue, 31 Aug 2010 13:06:17 +0100
-Message-ID: <20100831120617.GH20849@rakim.wolfsonmicro.main>
-References: <1283255555-1547-1-git-send-email-jhnikula@gmail.com>
-	<1283256224.3147.43.camel@odin>
+Subject: Re: [PATCH RESEND v6 0/3] ASoC: Add iPAQ RX1950 support
+Date: Tue, 31 Aug 2010 13:25:59 +0100
+Message-ID: <20100831122559.GJ20849@rakim.wolfsonmicro.main>
+References: <1283156889-5544-1-git-send-email-anarsoul@gmail.com>
+	<1283160241.3055.18.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A84B41037F3
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 316FA10381C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 31 Aug 2010 14:06:18 +0200 (CEST)
+	Tue, 31 Aug 2010 14:26:00 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1283256224.3147.43.camel@odin>
+In-Reply-To: <1283160241.3055.18.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,17 +24,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org
+Cc: Vasily Khoruzhick <anarsoul@gmail.com>, marek.vasut@gmail.com, alsa-devel <alsa-devel@alsa-project.org>, Ben Dooks <ben-linux@fluff.org>, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 31, 2010 at 01:03:44PM +0100, Liam Girdwood wrote:
-> On Tue, 2010-08-31 at 14:52 +0300, Jarkko Nikula wrote:
+On Mon, Aug 30, 2010 at 10:24:01AM +0100, Liam Girdwood wrote:
 
-> > Swapping the bias level enumeration is only meant to help debugging. It is
-> > easier if number 0 means bias off and bigger number means bigger bias level.
+> All
 
-> Good point.
-
-Personally I always display as plain text which is even more legible :)
+> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
 Applied, thanks.
