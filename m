@@ -1,19 +1,18 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: Missing 4-channel support on older NVIDIA MCP HW
-Date: Tue, 31 Aug 2010 08:41:53 -0700
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF02FF9E2A63@HQMAIL01.nvidia.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF02FEF39906@HQMAIL01.nvidia.com>
-	<s5h4oebyk72.wl%tiwai@suse.de>
+From: Julia Lawall <julia@diku.dk>
+Subject: [PATCH 2/4] sound/soc/fsl/p1022_ds.c: Add of_node_put
+	to avoid memory leak
+Date: Tue, 31 Aug 2010 17:48:56 +0200
+Message-ID: <1283269738-14612-3-git-send-email-julia@diku.dk>
+References: <1283269738-14612-1-git-send-email-julia@diku.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id DC5E91037EA
+Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
+	by alsa0.perex.cz (Postfix) with ESMTP id B1B0D1037EA
 	for <alsa-devel@alsa-project.org>;
-	Tue, 31 Aug 2010 17:42:03 +0200 (CEST)
-In-Reply-To: <s5h4oebyk72.wl%tiwai@suse.de>
-Content-Language: en-US
+	Tue, 31 Aug 2010 17:48:47 +0200 (CEST)
+In-Reply-To: <1283269738-14612-1-git-send-email-julia@diku.dk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,61 +22,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, Wei Ni <wni@nvidia.com>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, devicetree-discuss@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Grant Likely <grant.likely@secretlab.ca>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> 
-> At Mon, 30 Aug 2010 10:11:09 -0700,
-> Stephen Warren wrote:
-> >
-> > It looks like even though some NVIDIA MCPs have min/max channel of 2/8, not
-> > all HW supports the intermediate # channels (4 and 6) over HDMI. Various
-> > combinations are supported on various HW: 2, 2/8, 2/6/8, 2/4/6/8.
-> >
-> > At present, when an application uses an unsupported number of channels,
-> > playback appears to operate correctly, but the HW doesn't actually send the
-> > audio data over HDMI.
-> >
-> > Is it possible for patch_nvhdmi.c to simply program codec the HW in 8-channel
-> > mode even though the controller is only sending 4-/6-channel data?
-> 
-> I'm not sure whether HD-audio codec can have a /dev/zero-kind of stream.
-> It's possible to set up but I don't think it's worth.
-> It'd be far easier to omit 4 and 6-channels for such a case.
-> 
-> > I'm not
-> > sure if this would cause the codec to get out of sync with the controller's
-> > data stream. Would the controller end up grabbing 8 channels worth of data
-> > from the stream at a time, have no way to synchronize to the start of each
-> > sample, and hence end up packing e.g. 2 complete 4 channel samples into a
-> > single 8 channel sample?
-> >
-> > If not, it seems that patch_nvhdmi.c should be modified so that each codec's
-> > _open() function returns an error for unsupported rates. I can code that up
-> > if we need.
-> 
-> Do you mean for unsupported channels?
+Add a call to of_node_put in the error handling code following a call to
+of_parse_phandle.
 
-Oops, yes.
+This patch also moves the existing call to of_node_put tothe end of the
+error handling code, to make it possible to jump to of_node_put without
+doing the other cleanup operations.  These appear to be disjoint
+operations, so the ordering doesn't matter.
 
-Do you think that's the correct fix?
+The semantic match that finds this problem is as follows:
+(http://coccinelle.lip6.fr/)
 
-If the driver errors out the open, will a plug: (or other non hw:) ALSA device
-dynamically "upsample" a 4-channel stream to the next supported (8-channel), or
-will the user application have to handle this?
+// <smpl>
+@r exists@
+local idexpression x;
+expression E,E1,E2;
+statement S;
+@@
 
-> > Unfortunately, it doesn't look like it's possible for applications to query
-> > this information from ALSA, since a hw_params_t exposes just a min/max
-> > channel count rather than a mask.
-> 
-> It can be also masked.
+*x = 
+(of_find_node_by_path
+|of_find_node_by_name
+|of_find_node_by_phandle
+|of_get_parent
+|of_get_next_parent
+|of_get_next_child
+|of_find_compatible_node
+|of_match_node
+|of_find_node_by_type
+|of_find_node_with_property
+|of_find_matching_node
+|of_parse_phandle
+)(...);
+...
+if (x == NULL) S
+<... when != x = E
+*if (...) {
+  ... when != of_node_put(x)
+      when != if (...) { ... of_node_put(x); ... }
+(
+  return <+...x...+>;
+|
+*  return ...;
+)
+}
+...>
+(
+E2 = x;
+|
+of_node_put(x);
+)
+// </smpl>
 
-Are you saying the APIs already support a mask for channel count, and I just
-didn't find it, or that the APIUs should be updated to report a mask?
+Signed-off-by: Julia Lawall <julia@diku.dk>
 
-Thanks.
+---
+ sound/soc/fsl/p1022_ds.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
--- 
-nvpublic
+diff --git a/sound/soc/fsl/p1022_ds.c b/sound/soc/fsl/p1022_ds.c
+index f8176e8..63b9eaa 100644
+--- a/sound/soc/fsl/p1022_ds.c
++++ b/sound/soc/fsl/p1022_ds.c
+@@ -346,8 +346,10 @@ static int p1022_ds_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	mdata = kzalloc(sizeof(struct machine_data), GFP_KERNEL);
+-	if (!mdata)
+-		return -ENOMEM;
++	if (!mdata) {
++		ret = -ENOMEM;
++		goto error_put;
++	}
+ 
+ 	mdata->dai[0].cpu_dai_name = dev_name(&ssi_pdev->dev);
+ 	mdata->dai[0].ops = &p1022_ds_ops;
+@@ -502,13 +504,12 @@ static int p1022_ds_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ error:
+-	of_node_put(codec_np);
+-
+ 	if (sound_device)
+ 		platform_device_unregister(sound_device);
+ 
+ 	kfree(mdata);
+-
++error_put:
++	of_node_put(codec_np);
+ 	return ret;
+ }
