@@ -1,28 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/7] ASoC: Automatically calculate
-	clock	ratio for WM8580
-Date: Tue, 31 Aug 2010 11:42:32 +0100
-Message-ID: <20100831104232.GB31948@sirena.org.uk>
-References: <1281728107-25386-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<AANLkTi=6Op9C3adxhN8HsZu9FewFYqeCWRoQs=P3LP18@mail.gmail.com>
-	<20100815110924.GA25723@opensource.wolfsonmicro.com>
-	<AANLkTi=9Y=uhX2b+Y=OMGCVA=gJNif8HwXe3Eg517nbq@mail.gmail.com>
-	<20100816102010.GB3276@rakim.wolfsonmicro.main>
-	<AANLkTinTYo6_BBSkhTt8Km-MR4wwexDS3orFJdNSiufT@mail.gmail.com>
-	<20100816151958.GE3276@rakim.wolfsonmicro.main>
-	<AANLkTindYfm3vh_OgF-0tt_MS+Uxii2s7Dw=Kk487RTd@mail.gmail.com>
-	<20100817094605.GC18622@rakim.wolfsonmicro.main>
-	<AANLkTimG-LqfTG1x++uME1DaAAysgqS=5zwjHE_o0hsR@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] ASoC: Add HP iPAQ RX1950 support
+Date: Tue, 31 Aug 2010 11:45:47 +0100
+Message-ID: <20100831104546.GA20849@rakim.wolfsonmicro.main>
+References: <1282984632-12665-1-git-send-email-anarsoul@gmail.com>
+	<1282985666-13973-1-git-send-email-anarsoul@gmail.com>
+	<20100828090604.GB9324@opensource.wolfsonmicro.com>
+	<201008281228.24097.anarsoul@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E83D01037EC
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BA9A1103832
 	for <alsa-devel@alsa-project.org>;
-	Tue, 31 Aug 2010 12:42:33 +0200 (CEST)
+	Tue, 31 Aug 2010 12:45:48 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <AANLkTimG-LqfTG1x++uME1DaAAysgqS=5zwjHE_o0hsR@mail.gmail.com>
+In-Reply-To: <201008281228.24097.anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,33 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Seungwhan Youn <claude.youn@gmail.com>, Seungwhan Youn <sw.youn@samsung.com>
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Philipp Zabel <philipp.zabel@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 31, 2010 at 03:46:44PM +0900, Jassi Brar wrote:
-
-> Ok, now that I am faced with supporting latest SMDKs that use codecs
-> other than WM8580 (like wm8994), I think we'd better break the MACHINE
-> driver into SMDK specific (setup CPU master, CODEC slave and
-> root-clock sourced acc to option provided vai platform_data)
-> and CODEC specific part.
-> That will also help code reuse.
-
-> Any opinions, before I start working on it?
-
-If you're looking at this it'd be a good idea to look at pulling the
-clocking configuration for the CPU into the CPU driver - the Samsung
-CPU hardware is fairly straightforward and easy to use and it should be
-possible to automate much more of the configuration, at least by
-default.  At the minute there's a lot of cut'n'paste code for the
-clocking configuration which could do with being shared.
-
-In terms of the stuff that is genuinely board specific I'd need to look
-at the designs and discuss the use cases with you to really comment in
-too much detail.  The WM8994 is a vastly more flexible part and there's
-a number of interesting things you can do with it that might result in a
-noticably different clocking configuration from the machine driver,
-especially around things like the analogue bypass cases and keeping the
-the device active during suspend, but a lot of this depends on the
-system design as a whole.
+T24gU2F0LCBBdWcgMjgsIDIwMTAgYXQgMTI6Mjg6MTlQTSArMDMwMCwgVmFzaWx5IEtob3J1emhp
+Y2sgd3JvdGU6Cj4g0JIg0YHQvtC+0LHRidC10L3QuNC4INC+0YIgMjgg0LDQstCz0YPRgdGC0LAg
+MjAxMCAxMjowNjoxNyDQsNCy0YLQvtGAIE1hcmsgQnJvd24g0L3QsNC/0LjRgdCw0Ls6Cgo+ID4g
+Li4ucmlnaHQsIGl0J3MgdGhlIENQVSBkcml2ZXIgd2hpY2ggaXMgYSBiaXQgbW9yZSBtYW51YWwg
+dGhhbiBpcyBpZGVhbC4KPiA+IE9LLCBhZ2FpbiBub3QgYSBwcm9ibGVtIGZvciB0aGlzIGRyaXZl
+ci4KCj4gVGhlc2UgY29uc3RyYWludHMgYXJlIG1hY2hpbmUtc3BlY2lmaWMuIFRoZXkgZGVwZW5k
+cyBvbiB3aGF0IGNsb2NrIHNvdXJjZSBmb3IgCj4gaTJzIG1hY2hpbmUgY2FuIHByb3ZpZGUsIGZv
+ciByeDE5NTAgaXQncyB+NDkuOW1oeiBhbmQgMjk5bWh6LCBzbyBJIGRvdWJ0IHRoYXQgCj4gdGhl
+c2UgY29uc3RyYWludHMgY2FuIGJlIGludGVncmF0ZWQgaW50byBzM2MyNHh4LWkycyBkcml2ZXIK
+ClJpZ2h0LCBidXQgdGhlIENQVSBkcml2ZXIgc2hvdWxkIGJlIGFibGUgdG8gaW1wbGVtZW50IHRo
+ZW0gYXMgYSByZXN1bHQKb2Yga25vd2luZyB0aGUgY2xvY2tzIGl0J3MgYmVlbiBnaXZlbiAtIHRo
+ZSBtYWNoaW5lIHNwZWNpZmljIGJpdCBpcyB0aGUKY2xvY2tpbmcgYXZhaWxhYmxlIHRvIHRoZSBD
+UFUsIG5vdCB0aGUgc2FtcGxlIHJhdGVzIHRoYXQgdGhpcyByZXN1bHRzCmluLgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
