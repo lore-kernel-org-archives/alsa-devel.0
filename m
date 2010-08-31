@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] sound/soc/fsl/p1022_ds.c: Add
- of_node_put to avoid memory leak
-Date: Tue, 31 Aug 2010 16:59:48 +0100
-Message-ID: <20100831155948.GB30599@rakim.wolfsonmicro.main>
-References: <1283269738-14612-1-git-send-email-julia@diku.dk>
-	<1283269738-14612-3-git-send-email-julia@diku.dk>
+From: Jie Jiang <jjinfo@nudt.edu.cn>
+Subject: Re: Questions about alsa driver for i.Mx27 + wm8974:
+ playback time shorter than the original record time
+Date: Wed, 01 Sep 2010 00:21:40 +0800
+Message-ID: <1283271700.10728.8.camel@UT43>
+References: <1282824338.1106.44.camel@UT43>
+	<20100826124137.GA3509@opensource.wolfsonmicro.com>
+Reply-To: jjinfo@nudt.edu.cn
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BB9751037F5
+Received: from nudt.edu.cn (unknown [61.187.54.11])
+	by alsa0.perex.cz (Postfix) with SMTP id C3D3D1037F5
 	for <alsa-devel@alsa-project.org>;
-	Tue, 31 Aug 2010 17:59:49 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1283269738-14612-3-git-send-email-julia@diku.dk>
+	Tue, 31 Aug 2010 18:16:37 +0200 (CEST)
+In-Reply-To: <20100826124137.GA3509@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,103 +24,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Julia Lawall <julia@diku.dk>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, devicetree-discuss@lists.ozlabs.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Grant Likely <grant.likely@secretlab.ca>, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 31, 2010 at 05:48:56PM +0200, Julia Lawall wrote:
-> Add a call to of_node_put in the error handling code following a call to
-> of_parse_phandle.
-> 
-> This patch also moves the existing call to of_node_put tothe end of the
-> error handling code, to make it possible to jump to of_node_put without
-> doing the other cleanup operations.  These appear to be disjoint
-> operations, so the ordering doesn't matter.
+Hi Mark,
 
-CCing in Timur who wrote and maintains that driver - looks OK to me.
+Thanks for your advice!
 
+On Thu, 2010-08-26 at 13:41 +0100, Mark Brown wrote:
+> On Thu, Aug 26, 2010 at 08:05:38PM +0800, Jie Jiang wrote:
 > 
-> The semantic match that finds this problem is as follows:
-> (http://coccinelle.lip6.fr/)
+> > The configuration of mx27 ssi1 transmission channel is as follows(using
+> > ssi api from kernel 2.6.19.2):
 > 
-> // <smpl>
-> @r exists@
-> local idexpression x;
-> expression E,E1,E2;
-> statement S;
-> @@
+> This is an extremely old kernel version, the current kernel version is
+> 2.6.35 with 2.6.36 in development.  Current mainline kernels have a
+> different API for configuring the IOMUX.  I'd strongly recommend working
+> with a more current kernel if you're looking for community support.
 > 
-> *x = 
-> (of_find_node_by_path
-> |of_find_node_by_name
-> |of_find_node_by_phandle
-> |of_get_parent
-> |of_get_next_parent
-> |of_get_next_child
-> |of_find_compatible_node
-> |of_match_node
-> |of_find_node_by_type
-> |of_find_node_with_property
-> |of_find_matching_node
-> |of_parse_phandle
-> )(...);
-> ...
-> if (x == NULL) S
-> <... when != x = E
-> *if (...) {
->   ... when != of_node_put(x)
->       when != if (...) { ... of_node_put(x); ... }
-> (
->   return <+...x...+>;
-> |
-> *  return ...;
-> )
-> }
-> ...>
-> (
-> E2 = x;
-> |
-> of_node_put(x);
-> )
-> // </smpl>
+> > Here I'm not very sure about the setting of frame rate and frame sync
+> > length.  Is the above setting right?  But even I set frame rate to 1, it
+> > does not make any difference. 
 > 
-> Signed-off-by: Julia Lawall <julia@diku.dk>
+> > What's the possible reason causing the incorrect faster playback speed?
+> > Any suggestion is appreciated.
 > 
-> ---
->  sound/soc/fsl/p1022_ds.c |   11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/p1022_ds.c b/sound/soc/fsl/p1022_ds.c
-> index f8176e8..63b9eaa 100644
-> --- a/sound/soc/fsl/p1022_ds.c
-> +++ b/sound/soc/fsl/p1022_ds.c
-> @@ -346,8 +346,10 @@ static int p1022_ds_probe(struct platform_device *pdev)
->  	}
->  
->  	mdata = kzalloc(sizeof(struct machine_data), GFP_KERNEL);
-> -	if (!mdata)
-> -		return -ENOMEM;
-> +	if (!mdata) {
-> +		ret = -ENOMEM;
-> +		goto error_put;
-> +	}
->  
->  	mdata->dai[0].cpu_dai_name = dev_name(&ssi_pdev->dev);
->  	mdata->dai[0].ops = &p1022_ds_ops;
-> @@ -502,13 +504,12 @@ static int p1022_ds_probe(struct platform_device *pdev)
->  	return 0;
->  
->  error:
-> -	of_node_put(codec_np);
-> -
->  	if (sound_device)
->  		platform_device_unregister(sound_device);
->  
->  	kfree(mdata);
-> -
-> +error_put:
-> +	of_node_put(codec_np);
->  	return ret;
->  }
->  
-> 
+> Normally this will be the result of either an incorrect frame rate or
+> the hardware trying to play back mono data as stereo (which will cause
+> data to be consumed as twice the expected rate).
+
+Yes, it seems to be this reason that causes problem.
+When I playback a stereo wav file(8kHz,16bit, stereo), everything goes
+well.But when trying to playback a mono wav (8kHz,16bit, mono)file,
+problem stills exist.
+
+What's the possible reason for incorrect handling of mono file?
+How to solve it so I can playback mono file correctly?
+
+Regards,
+Jie
