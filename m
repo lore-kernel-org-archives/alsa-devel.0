@@ -1,16 +1,15 @@
-From: Ian Lartey <ian@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Added a missing 32-bit PCM format,
- to the wm8994 codec.
-Date: Tue, 31 Aug 2010 23:56:34 +0100
-Message-ID: <1283295394.1831.12.camel@Tapajos>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Implement WM8994 DAC data source muxes
+Date: Wed,  1 Sep 2010 00:16:55 +0100
+Message-ID: <1283296615-16328-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 33A472468C
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B13EC24699
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Sep 2010 00:56:54 +0200 (CEST)
+	Wed,  1 Sep 2010 01:16:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,27 +19,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Wolfson Patches <patches@opensource.wolfsonmicro.com>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Ian Lartey <ian@opensource.wolfsonmicro.com>
+Allow selection of the channel used for input to the AIFnDAC signals.
+This isn't integrated into DAPM since we treat the data as a single
+mono channel until just beyond this selection so it ends up having
+no visible effect on the routing.
+
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8994.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/soc/codecs/wm8994.c |   21 +++++++++++++++++++++
+ 1 files changed, 21 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index e03072c..23d9227 100644
+index e03072c..c45ab00 100644
 --- a/sound/soc/codecs/wm8994.c
 +++ b/sound/soc/codecs/wm8994.c
-@@ -3498,7 +3498,7 @@ static int wm8994_set_tristate(struct snd_soc_dai *codec_dai, int tristate)
- #define WM8994_RATES SNDRV_PCM_RATE_8000_96000
+@@ -2072,6 +2072,22 @@ static int wm8994_get_retune_mobile_enum(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
  
- #define WM8994_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
--			SNDRV_PCM_FMTBIT_S24_LE)
-+			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
++static const char *aifdac_src_text[] = {
++	"Left", "Right"
++};
++
++static const struct soc_enum aif1dacl_src =
++	SOC_ENUM_SINGLE(WM8994_AIF1_CONTROL_2, 15, 2, aifdac_src_text);
++
++static const struct soc_enum aif1dacr_src =
++	SOC_ENUM_SINGLE(WM8994_AIF1_CONTROL_2, 14, 2, aifdac_src_text);
++
++static const struct soc_enum aif2dacl_src =
++	SOC_ENUM_SINGLE(WM8994_AIF2_CONTROL_2, 15, 2, aifdac_src_text);
++
++static const struct soc_enum aif2dacr_src =
++	SOC_ENUM_SINGLE(WM8994_AIF2_CONTROL_2, 14, 2, aifdac_src_text);
++
+ static const struct snd_kcontrol_new wm8994_snd_controls[] = {
+ SOC_DOUBLE_R_TLV("AIF1ADC1 Volume", WM8994_AIF1_ADC1_LEFT_VOLUME,
+ 		 WM8994_AIF1_ADC1_RIGHT_VOLUME,
+@@ -2083,6 +2099,11 @@ SOC_DOUBLE_R_TLV("AIF2ADC Volume", WM8994_AIF2_ADC_LEFT_VOLUME,
+ 		 WM8994_AIF2_ADC_RIGHT_VOLUME,
+ 		 1, 119, 0, digital_tlv),
  
- static struct snd_soc_dai_ops wm8994_aif1_dai_ops = {
- 	.set_sysclk	= wm8994_set_dai_sysclk,
++SOC_ENUM("AIF1DACL Source", aif1dacl_src),
++SOC_ENUM("AIF1DACR Source", aif1dacr_src),
++SOC_ENUM("AIF2DACL Source", aif1dacl_src),
++SOC_ENUM("AIF2DACR Source", aif1dacr_src),
++
+ SOC_DOUBLE_R_TLV("AIF1DAC1 Volume", WM8994_AIF1_DAC1_LEFT_VOLUME,
+ 		 WM8994_AIF1_DAC1_RIGHT_VOLUME, 1, 96, 0, digital_tlv),
+ SOC_DOUBLE_R_TLV("AIF1DAC2 Volume", WM8994_AIF1_DAC2_LEFT_VOLUME,
 -- 
-1.7.0.4
+1.7.1
