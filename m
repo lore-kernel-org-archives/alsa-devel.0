@@ -1,16 +1,14 @@
-From: Chuck Ebbert <cebbert@redhat.com>
-Subject: 2.6.36-rc2-git5: Oops in
-	snd_pcm_substream_proc_status_read()
-Date: Wed, 1 Sep 2010 04:19:24 -0400
-Message-ID: <20100901041924.23a8a865@katamari>
+From: Felix Homann <fexpop@web.de>
+Subject: [RESENT] [PATCH - Fix Fast Track Ultra series:
+ 44.1/88.1 kHz 1/Fix playback/capture issues and related chrashes at 44100
+ Hz and 88200 Hz for M-Audio Fast Track Ultra series.
+Date: Wed, 01 Sep 2010 10:48:54 +0200
+Message-ID: <4C7E1376.9030208@web.de>
+References: <4C32E3B2.5080707@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------020109060502090203040503"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
-	by alsa0.perex.cz (Postfix) with ESMTP id 77F8424475
-	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Sep 2010 10:21:18 +0200 (CEST)
+In-Reply-To: <4C32E3B2.5080707@web.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,84 +18,246 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------020109060502090203040503
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
- https://bugzilla.redhat.com/show_bug.cgi?id=628404
+Hi,
 
-general protection fault: 0000 [#1] SMP 
-last sysfs file:
-/sys/devices/pci0000:00/0000:00:1b.0/sound/card0/pcmC0D0c/pcm_class
-CPU 1 
-Modules linked in: vfat fat fuse ebtable_nat ebtables ipt_MASQUERADE
-iptable_nat nf_nat bridge stp llc sunrpc cpufreq_ondemand acpi_cpufreq
-freq_table mperf ip6t_REJECT nf_conntrack_ipv6 xt_physdev ip6table_filter
-ip6_tables kvm_intel kvm uinput snd_hda_codec_conexant usblp arc4 ecb
-snd_hda_intel snd_hda_codec snd_hwdep snd_seq snd_seq_device iwlagn snd_pcm
-iwlcore thinkpad_acpi snd_timer snd i2c_i801 mac80211 soundcore microcode
-iTCO_wdt iTCO_vendor_support e1000e cfg80211 wmi snd_page_alloc rfkill ipv6
-usb_storage i915 drm_kms_helper drm i2c_algo_bit i2c_core video output [last
-unloaded: scsi_wait_scan]
+This is my second try to get support for all supported sample rates for 
+the Fast Track Ultra (FTU) series into mainline alsa.
 
-Pid: 16071, comm: pulseaudio Not tainted 2.6.36-0.11.rc2.git5.fc15.x86_64 #1
-74585FU/74585FU
-RIP: 0010:[<ffffffffa0296742>]  [<ffffffffa0296742>]
-snd_pcm_substream_proc_status_read+0x164/0x1ad [snd_pcm]
-RSP: 0018:ffff8801178c1b58  EFLAGS: 00010292
-RAX: 6b6b6b6b6b6b6b6b RBX: ffff88003d993bc8 RCX: 0000000000000000
-RDX: ffffffffa02a1996 RSI: ffffffffa02a1997 RDI: ffff88003d993bc8
-RBP: ffff8801178c1c18 R08: 0000000000000006 R09: 00000000fffffff7
-R10: ffff8800044ea048 R11: 0000000000000000 R12: ffff8801332d31b0
-R13: ffff88013438d488 R14: ffff88013438e050 R15: ffff880111131880
-FS:  00007fbccba77780(0000) GS:ffff880002e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
-CR2: 00007fbf324db008 CR3: 00000001157be000 CR4: 00000000000006e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-Process pulseaudio (pid: 16071, threadinfo ffff8801178c0000, task
-ffff880130f88000)
-Stack:
- 0000000000000003 0000000000005e84 000000002ee6c142 0000000000005e85
-<0> 000000001624774a 0000000000000000 00000000000064b0 00000000000064b0
-<0> 00000000000064b0 00000000000064b0 0000000000000000 0000000000000000
-Call Trace:
- [<ffffffffa020ac22>] snd_info_entry_open+0x307/0x389 [snd]
- [<ffffffff81179034>] proc_reg_open+0xfa/0x17a
- [<ffffffffa020a91b>] ? snd_info_entry_open+0x0/0x389 [snd]
- [<ffffffffa0209fa7>] ? snd_info_entry_release+0x0/0xd8 [snd]
- [<ffffffff81178f3a>] ? proc_reg_open+0x0/0x17a
- [<ffffffff81128f1f>] __dentry_open+0x1c2/0x338
- [<ffffffff81129da0>] nameidata_to_filp+0x3f/0x50
- [<ffffffff81136200>] do_last+0x432/0x5af
- [<ffffffff81246a75>] ? __raw_spin_lock_init+0x31/0x50
- [<ffffffff811365ad>] do_filp_open+0x230/0x5e1
- [<ffffffff810fac10>] ? might_fault+0x5c/0xac
- [<ffffffff8114040b>] ? alloc_fd+0x3b/0x17c
- [<ffffffff8107fc2a>] ? lock_release+0x19a/0x1a6
- [<ffffffff8114053a>] ? alloc_fd+0x16a/0x17c
- [<ffffffff81129e11>] do_sys_open+0x60/0xfc
- [<ffffffff8149aca2>] ? trace_hardirqs_on_thunk+0x3a/0x3f
- [<ffffffff81129ecd>] sys_open+0x20/0x22
- [<ffffffff81009cb2>] system_call_fastpath+0x16/0x1b
-Code: df 31 c0 e8 e6 40 f7 ff 48 c7 c6 90 19 2a a0 48 89 df 31 c0 e8 d5 40 f7
-ff 49 8b 84 24 f0 00 00 00 48 c7 c6 97 19 2a a0 48 89 df <48> 8b 50 08 31 c0 e8
-b8 40 f7 ff 49 8b 84 24 f8 00 00 00 48 c7 
-RIP  [<ffffffffa0296742>] snd_pcm_substream_proc_status_read+0x164/0x1ad
-[snd_pcm]
- RSP <ffff8801178c1b58>
----[ end trace 96389f116dd90473 ]---
+For clarification: Current Alsa already recognizes the supported sample 
+rates. But it will sound very corrupted at 44.1000 Hz and 88.200 Hz. 
+Without this patch your system will even probably freeze eventually when 
+using the FTU at 44.100/88.200 Hz too long.
 
-Faulting insn:
-48 8b 50 08           mov    0x8(%rax),%rdx
+So the key idea in this patch is not to get 44.1 kHz and 88.2 kHz listed 
+as supported sample rates (as they already are recognized) but to change 
+the endpoint attributes.
 
-RAX: 6b6b6b6b6b6b6b6b
+Citing dhubsith on the M-Audio forum:
 
-sound/core/pcm.c:453:
+" The problem with using QUIRK_AUDIO_STANDARD_INTERFACE rather than 
+QUIRK_AUDIO_FIXED_ENDPOINT is that ep_attr does not get set correctly. 
+The device default for synchronization is async (0x05) for both capture 
+and playback, but in fact it should be set to adaptive (0x09) on 
+playback, so that playback follows capture, this way you don't get 
+capture and playback using different sample rates.
 
-   snd_iprintf(buffer, "hw_ptr : %ld\n", runtime->status->hw_ptr);
+Also, the Interface Class protocol for the device defaults to Vendor 
+Specific Class, but the driver only recognizes Class 1 or 2. The device 
+is really Class 1, so we have to force it to reflect this. There are 4 
+places that we need to set this."
 
-runtime = 0x6b6b6b6b6b6b6b6b
 
-The code checks for NULL before using it, but this is a poison value.
+
+The patch has been discussed starting here:
+
+http://forums.m-audio.com/showthread.php?714-Not-a-problem.-FastTrack-on-linux/page8
+
+The "key" has been found by dhubsith. Please read posts #79, #81, #84, 
+#87, #97.
+
+
+In post #102 of that forum you can even find an alternate patch by 
+dhubsith which doesn't use a fixed endpoint quirk but sets
+
+      protocol = UAC_VERSION_1;
+
+for the FTU devices in sound/usb/format .c. You might even consider that 
+patch. (I've resend it to alsa-devel yesterday).
+
+After all, either one of the above mentioned patches should go into 
+alsa, as right now we can't use the FTU devices at 44.1 and 88.2 kHz.
+
+Kind regards,
+
+Felix
+
+
+--------------020109060502090203040503
+Content-Type: text/x-patch;
+ name="0001-fix-sample-rates-ftu-v3.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0001-fix-sample-rates-ftu-v3.patch"
+
+>From 1573e7e973e6adcfe39fbfdaae0be2d1a5e01501 Mon Sep 17 00:00:00 2001
+From: Felix Homann <fexpop@web.de>
+Date: Wed, 7 Jul 2010 15:51:58 +0200
+Subject: [PATCH - Fix Fast Track Ultra series 1/1] Fix 44.1/88.1 kHz 1/Fix playback/capture issues and related chrashes at 44100 Hz and 88200 Hz for M-Audio Fast Track Ultra series.
+
+
+Signed-off-by: Felix Homann <fexpop@web.de>
+
+diff --git a/usb/endpoint.c b/usb/endpoint.c
+index 1a701f1..bb9f938 100644
+--- a/usb/endpoint.c
++++ b/usb/endpoint.c
+@@ -404,8 +404,6 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+ 			break;
+ 		case USB_ID(0x041e, 0x3020): /* Creative SB Audigy 2 NX */
+ 		case USB_ID(0x0763, 0x2003): /* M-Audio Audiophile USB */
+-		case USB_ID(0x0763, 0x2080): /* M-Audio Fast Track Ultra 8 */
+-		case USB_ID(0x0763, 0x2081): /* M-Audio Fast Track Ultra 8R */
+ 			/* doesn't set the sample rate attribute, but supports it */
+ 			fp->attributes |= UAC_EP_CS_ATTR_SAMPLE_RATE;
+ 			break;
+diff --git a/usb/quirks-table.h b/usb/quirks-table.h
+index f8797f6..4c1dc12 100644
+--- a/usb/quirks-table.h
++++ b/usb/quirks-table.h
+@@ -1827,10 +1827,10 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 	}
+ },
+ {
+-	USB_DEVICE(0x0763, 0x2080),
+-	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		USB_DEVICE(0x0763, 0x2080),
++		.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+ 		/* .vendor_name = "M-Audio", */
+-		/* .product_name = "Fast Track Ultra 8", */
++		/* .product_name = "Fast Track Ultra", */
+ 		.ifnum = QUIRK_ANY_INTERFACE,
+ 		.type = QUIRK_COMPOSITE,
+ 		.data = & (const struct snd_usb_audio_quirk[]) {
+@@ -1840,11 +1840,51 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 			},
+ 			{
+ 				.ifnum = 1,
+-				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = & (const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8,
++					.iface = 1,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x01,
++					.ep_attr = 0x09,
++					.rates = SNDRV_PCM_RATE_44100 |
++						SNDRV_PCM_RATE_48000 |
++						SNDRV_PCM_RATE_88200 |
++						SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 4,
++					.rate_table = (unsigned int[]) {
++						44100, 48000, 88200, 96000
++					}
++				}
+ 			},
+ 			{
+ 				.ifnum = 2,
+-				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = & (const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8,
++					.iface = 2,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x81,
++					.ep_attr = 0x05,
++					.rates = SNDRV_PCM_RATE_44100 |
++						SNDRV_PCM_RATE_48000 |
++						SNDRV_PCM_RATE_88200 |
++						SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 4,
++					.rate_table = (unsigned int[]) {
++						44100, 48000, 88200, 96000
++					}
++				}
+ 			},
+ 			/* interface 3 (MIDI) is standard compliant */
+ 			{
+@@ -1855,7 +1895,7 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ },
+ {
+ 	USB_DEVICE(0x0763, 0x2081),
+-	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
++		.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+ 		/* .vendor_name = "M-Audio", */
+ 		/* .product_name = "Fast Track Ultra 8R", */
+ 		.ifnum = QUIRK_ANY_INTERFACE,
+@@ -1867,11 +1907,51 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 			},
+ 			{
+ 				.ifnum = 1,
+-				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = & (const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8,
++					.iface = 1,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x01,
++					.ep_attr = 0x09,
++					.rates = SNDRV_PCM_RATE_44100 |
++						SNDRV_PCM_RATE_48000 |
++						SNDRV_PCM_RATE_88200 |
++						SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 4,
++					.rate_table = (unsigned int[]) {
++							44100, 48000, 88200, 96000
++					}
++				}
+ 			},
+ 			{
+ 				.ifnum = 2,
+-				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = & (const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 8,
++					.iface = 2,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
++					.endpoint = 0x81,
++					.ep_attr = 0x05,
++					.rates = SNDRV_PCM_RATE_44100 |
++						SNDRV_PCM_RATE_48000 |
++						SNDRV_PCM_RATE_88200 |
++						SNDRV_PCM_RATE_96000,
++					.rate_min = 44100,
++					.rate_max = 96000,
++					.nr_rates = 4,
++					.rate_table = (unsigned int[]) {
++						44100, 48000, 88200, 96000
++					}
++				}
+ 			},
+ 			/* interface 3 (MIDI) is standard compliant */
+ 			{
+-- 
+1.7.1
+
+
+
+--------------020109060502090203040503
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------020109060502090203040503--
