@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/4 v2] ARM: mach-shmobile: ap4evb: Add
- HDMI sound support
-Date: Wed, 1 Sep 2010 11:23:45 +0100
-Message-ID: <20100901102345.GD17548@opensource.wolfsonmicro.com>
-References: <w3p39tv72sx.wl%kuninori.morimoto.gx@renesas.com>
-	<w3py6bn5o6m.wl%kuninori.morimoto.gx@renesas.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Implement WM8994 DAC data source
+	muxes
+Date: Wed, 01 Sep 2010 11:27:38 +0100
+Message-ID: <1283336858.3081.124.camel@odin>
+References: <1283296615-16328-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CF01624437
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 99802244EC
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Sep 2010 12:23:27 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <w3py6bn5o6m.wl%kuninori.morimoto.gx@renesas.com>
+	Wed,  1 Sep 2010 12:28:59 +0200 (CEST)
+Received: by eyd9 with SMTP id 9so4070116eyd.38
+	for <alsa-devel@alsa-project.org>; Wed, 01 Sep 2010 03:28:59 -0700 (PDT)
+In-Reply-To: <1283296615-16328-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,16 +25,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Paul Mundt <lethal@linux-sh.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Linux-SH <linux-sh@vger.kernel.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 31, 2010 at 02:46:58PM +0900, Kuninori Morimoto wrote:
-> It support only 48kHz frame rate
+On Wed, 2010-09-01 at 00:16 +0100, Mark Brown wrote:
+> Allow selection of the channel used for input to the AIFnDAC signals.
+> This isn't integrated into DAPM since we treat the data as a single
+> mono channel until just beyond this selection so it ends up having
+> no visible effect on the routing.
 > 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-
-I can apply this if required but it seems to make sense for it to go via
-the SH tree.
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
