@@ -1,18 +1,17 @@
 From: asim khan <khan.asim.2009@gmail.com>
 Subject: alsa-2.6.24
-Date: Wed, 1 Sep 2010 09:04:11 +0530
-Message-ID: <AANLkTinQE9N+9C2Knxy28Refo+HaaP4Z68tW18MOeoPX@mail.gmail.com>
+Date: Wed, 1 Sep 2010 09:20:34 +0530
+Message-ID: <AANLkTikHomanw0pg+n6t0cavL4NLkx7-5kbUk7BUBem7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 22AB624713
+Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id B60E31037FB
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Sep 2010 05:34:12 +0200 (CEST)
-Received: by gxk28 with SMTP id 28so3080813gxk.38
-	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2010 20:34:11 -0700 (PDT)
+	Wed,  1 Sep 2010 05:50:35 +0200 (CEST)
+Received: by gwj15 with SMTP id 15so1821279gwj.38
+	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2010 20:50:35 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -44,6 +43,5 @@ as on x86 machine.same application is running well on x86
 can anyone please help me in this that what could be the problem as soon as
 possible..and what is solution for it....Thanks in advance
 
-
-Regards
+--Regards
 Asim
