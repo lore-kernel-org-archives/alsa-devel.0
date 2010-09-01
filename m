@@ -1,22 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Missing 4-channel support on older NVIDIA MCP HW
-Date: Wed, 1 Sep 2010 09:54:40 +0800
-Message-ID: <AANLkTimCoX7KhJXh+8xbGfxQak8Xh1D47Eg91uaXcZk=@mail.gmail.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF02FEF39906@HQMAIL01.nvidia.com>
-	<s5h4oebyk72.wl%tiwai@suse.de>
-	<74CDBE0F657A3D45AFBB94109FB122FF02FF9E2A63@HQMAIL01.nvidia.com>
+From: asim khan <khan.asim.2009@gmail.com>
+Subject: alsa-2.6.24
+Date: Wed, 1 Sep 2010 09:04:11 +0530
+Message-ID: <AANLkTinQE9N+9C2Knxy28Refo+HaaP4Z68tW18MOeoPX@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id A9EF2246E2
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 22AB624713
 	for <alsa-devel@alsa-project.org>;
-	Wed,  1 Sep 2010 03:54:41 +0200 (CEST)
-Received: by eyd9 with SMTP id 9so3978729eyd.38
-	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2010 18:54:40 -0700 (PDT)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF02FF9E2A63@HQMAIL01.nvidia.com>
+	Wed,  1 Sep 2010 05:34:12 +0200 (CEST)
+Received: by gxk28 with SMTP id 28so3080813gxk.38
+	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2010 20:34:11 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,47 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/8/31 Stephen Warren <swarren@nvidia.com>
+Hello
 
-> Takashi Iwai wrote:
-> >
->
-> > > Unfortunately, it doesn't look like it's possible for applications to
-> query
-> > > this information from ALSA, since a hw_params_t exposes just a min/max
-> > > channel count rather than a mask.
-> >
-> > It can be also masked.
->
-> Are you saying the APIs already support a mask for channel count, and I
-> just
-> didn't find it, or that the APIUs should be updated to report a mask?
->
-> Thanks.
->
-> you can find the examples in intel8x0.c
+Iam using kernel 2.6.24 and trying run an ALSA capture application on arm11
+board
+this application when tries to open the device snd_pcm_open
+(&capture_handle, "plughw:1,0",
+SND_PCM_STREAM_CAPTURE, 0)) < 0)...it gives an error
+ALSA lib pcm_hw.c:1399 _snd_pcm_hw_open) Invalid value for card
+I have also tried using  device "hw:1,0" plughw:0,1...but it didnt help. I
+get same error
+then i checked /dev directory ,there it has not created /dev/snd directory
+but I can see /dev/dsp0 dsp1,dsp2 ....which seems its not using ALSA as it
+has not created /dev/snd .so I manually created the /dev/snd and the devices
+like /dev/snd/pcmC0D0p and /dev/snd/controlC0. with major and minor number
+as on x86 machine.same application is running well on x86
 
+can anyone please help me in this that what could be the problem as soon as
+possible..and what is solution for it....Thanks in advance
 
 
-static unsigned int channels2and8[] = {
-    2,  8,
-};
-
-static struct snd_pcm_hw_constraint_list hw_constraints_channels2and8 = {
-    .count = ARRAY_SIZE(channels2and8),
-    .list = channels8,
-    .mask = 0,
-};
-
-        runtime->hw.channels_max = 8;
-        snd_pcm_hw_constraint_list(runtime, 0,
-                        SNDRV_PCM_HW_PARAM_CHANNELS,
-                        &hw_constraints_channels2and8);
-
-
-
-The ALSA application need to snd_pcm_hw_params_test_channels() to find the
-supported channel one by one
+Regards
+Asim
