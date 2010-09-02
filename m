@@ -1,18 +1,19 @@
-From: Pacho Ramos <pacho@condmat1.ciencias.uniovi.es>
+From: David Henningsson <david.henningsson@canonical.com>
 Subject: Re: Since kernel-2.6.32 alsactl thinks my sound card
  is "Unknown"
-Date: Thu, 02 Sep 2010 11:26:14 +0200
-Message-ID: <1283419574.6497.4.camel@localhost.localdomain>
+Date: Thu, 02 Sep 2010 11:34:51 +0200
+Message-ID: <4C7F6FBB.3060509@canonical.com>
 References: <s5hmxs0zgxs.wl%tiwai@suse.de>
-Reply-To: pacho@condmat1.ciencias.uniovi.es
+	<1283419574.6497.4.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1155276981431915638=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp02.jazztel.es (smtp02.jazztel.es [62.14.3.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id F3B0324624
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 915E924624
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Sep 2010 11:26:21 +0200 (CEST)
-In-Reply-To: <s5hmxs0zgxs.wl%tiwai@suse.de>
+	Thu,  2 Sep 2010 11:34:53 +0200 (CEST)
+In-Reply-To: <1283419574.6497.4.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,89 +23,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: pacho@condmat1.ciencias.uniovi.es
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============1155276981431915638==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-mgcTafYqMQZ0MlQ7dZ8A"
-
-
---=-mgcTafYqMQZ0MlQ7dZ8A
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-El jue, 02-09-2010 a las 10:29 +0200, Takashi Iwai escribi=C3=B3:
-> Rejected by SPF lookup: (recv=3Dllar.net.uniovi.es,
->  send-ip=3D195.135.220.2) Could not find a valid SPF record
-> User-Agent: Wanderlust/2.15.6 (Almost Unreal) SEMI/1.14.6 (Maruoka) FLIM/=
-1.14.9
->  (=3D?UTF-8?B?R29qxY0=3D?=3D) APEL/10.7 Emacs/23.1 (x86_64-suse-linux-gnu=
-) MULE/6.0
->  (HANACHIRUSATO)
-> References: <1283357723.8159.4.camel@localhost.localdomain>
->=20
-> At Wed, 01 Sep 2010 18:15:23 +0200,
-> Pacho Ramos wrote:
-> >=20
-> > This is an old problem I am suffering since kernel-2.6.32 and that is
-> > still unresolved even with 2.6.35 and alsa-utils-1.0.23:
-> > http://www.spinics.net/lists/alsa-devel/msg31422.html
-> >=20
-> > If you follow the thread, it got stalled in:
-> > http://www.spinics.net/lists/alsa-devel/msg31433.html
-> >=20
-> > In summary, I get the following:
-> > # alsactl -f /etc/asound.state restore /dev/snd/controlC0=20
-> > Unknown hardware: "VIA8237" "Realtek ALC658D" "AC97a:414c4781" "0x147b"
-> > "0x1415"
-> > Hardware is initialized using a guess method
-> > # echo $?
-> > 99
->=20
-> This is no error.  It means that alsactl has no special workaround
-> for your hardware.  The return code of alsactl looks strange.
-> I thought Jaroslav has already fixed it, though...
->=20
->=20
-> Takashi
->=20
-
-Well, Jaroslav fixed it to use "99" instead of "157":
-http://www.spinics.net/lists/alsa-devel/msg31430.html
-
-And, about the message, could it be reworded for preventing to make
-users think their hardware is "Unknown"? Maybe it could simply show "No
-workaround needed for: ..." instead of "Unknown hardware"
-
-Thanks :-)
-
-
---=-mgcTafYqMQZ0MlQ7dZ8A
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.16 (GNU/Linux)
-
-iEYEABECAAYFAkx/bbYACgkQCaWpQKGI+9TiYwCfd1jpIIBJdhATdYyqgYEOYTA9
-TU4An2uAN9dPlSWD8pJ/gYX31SBElLQ8
-=f90U
------END PGP SIGNATURE-----
-
---=-mgcTafYqMQZ0MlQ7dZ8A--
-
-
---===============1155276981431915638==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============1155276981431915638==--
+MjAxMC0wOS0wMiAxMToyNiwgUGFjaG8gUmFtb3Mgc2tyZXY6Cj4gRWwganVlLCAwMi0wOS0yMDEw
+IGEgbGFzIDEwOjI5ICswMjAwLCBUYWthc2hpIEl3YWkgZXNjcmliacOzOgo+PiBSZWplY3RlZCBi
+eSBTUEYgbG9va3VwOiAocmVjdj1sbGFyLm5ldC51bmlvdmkuZXMsCj4+ICBzZW5kLWlwPTE5NS4x
+MzUuMjIwLjIpIENvdWxkIG5vdCBmaW5kIGEgdmFsaWQgU1BGIHJlY29yZAo+PiBVc2VyLUFnZW50
+OiBXYW5kZXJsdXN0LzIuMTUuNiAoQWxtb3N0IFVucmVhbCkgU0VNSS8xLjE0LjYgKE1hcnVva2Ep
+IEZMSU0vMS4xNC45Cj4+ICAoPT9VVEYtOD9CP1IyOXF4WTA9Pz0pIEFQRUwvMTAuNyBFbWFjcy8y
+My4xICh4ODZfNjQtc3VzZS1saW51eC1nbnUpIE1VTEUvNi4wCj4+ICAoSEFOQUNISVJVU0FUTykK
+Pj4gUmVmZXJlbmNlczogPDEyODMzNTc3MjMuODE1OS40LmNhbWVsQGxvY2FsaG9zdC5sb2NhbGRv
+bWFpbj4KPj4KPj4gQXQgV2VkLCAwMSBTZXAgMjAxMCAxODoxNToyMyArMDIwMCwKPj4gUGFjaG8g
+UmFtb3Mgd3JvdGU6Cj4+Pgo+Pj4gVGhpcyBpcyBhbiBvbGQgcHJvYmxlbSBJIGFtIHN1ZmZlcmlu
+ZyBzaW5jZSBrZXJuZWwtMi42LjMyIGFuZCB0aGF0IGlzCj4+PiBzdGlsbCB1bnJlc29sdmVkIGV2
+ZW4gd2l0aCAyLjYuMzUgYW5kIGFsc2EtdXRpbHMtMS4wLjIzOgo+Pj4gaHR0cDovL3d3dy5zcGlu
+aWNzLm5ldC9saXN0cy9hbHNhLWRldmVsL21zZzMxNDIyLmh0bWwKPj4+Cj4+PiBJZiB5b3UgZm9s
+bG93IHRoZSB0aHJlYWQsIGl0IGdvdCBzdGFsbGVkIGluOgo+Pj4gaHR0cDovL3d3dy5zcGluaWNz
+Lm5ldC9saXN0cy9hbHNhLWRldmVsL21zZzMxNDMzLmh0bWwKPj4+Cj4+PiBJbiBzdW1tYXJ5LCBJ
+IGdldCB0aGUgZm9sbG93aW5nOgo+Pj4gIyBhbHNhY3RsIC1mIC9ldGMvYXNvdW5kLnN0YXRlIHJl
+c3RvcmUgL2Rldi9zbmQvY29udHJvbEMwIAo+Pj4gVW5rbm93biBoYXJkd2FyZTogIlZJQTgyMzci
+ICJSZWFsdGVrIEFMQzY1OEQiICJBQzk3YTo0MTRjNDc4MSIgIjB4MTQ3YiIKPj4+ICIweDE0MTUi
+Cj4+PiBIYXJkd2FyZSBpcyBpbml0aWFsaXplZCB1c2luZyBhIGd1ZXNzIG1ldGhvZAo+Pj4gIyBl
+Y2hvICQ/Cj4+PiA5OQo+Pgo+PiBUaGlzIGlzIG5vIGVycm9yLiAgSXQgbWVhbnMgdGhhdCBhbHNh
+Y3RsIGhhcyBubyBzcGVjaWFsIHdvcmthcm91bmQKPj4gZm9yIHlvdXIgaGFyZHdhcmUuICBUaGUg
+cmV0dXJuIGNvZGUgb2YgYWxzYWN0bCBsb29rcyBzdHJhbmdlLgo+PiBJIHRob3VnaHQgSmFyb3Ns
+YXYgaGFzIGFscmVhZHkgZml4ZWQgaXQsIHRob3VnaC4uLgo+Pgo+Pgo+PiBUYWthc2hpCj4+Cj4g
+Cj4gV2VsbCwgSmFyb3NsYXYgZml4ZWQgaXQgdG8gdXNlICI5OSIgaW5zdGVhZCBvZiAiMTU3IjoK
+PiBodHRwOi8vd3d3LnNwaW5pY3MubmV0L2xpc3RzL2Fsc2EtZGV2ZWwvbXNnMzE0MzAuaHRtbAo+
+IAo+IEFuZCwgYWJvdXQgdGhlIG1lc3NhZ2UsIGNvdWxkIGl0IGJlIHJld29yZGVkIGZvciBwcmV2
+ZW50aW5nIHRvIG1ha2UKPiB1c2VycyB0aGluayB0aGVpciBoYXJkd2FyZSBpcyAiVW5rbm93biI/
+IE1heWJlIGl0IGNvdWxkIHNpbXBseSBzaG93ICJObwo+IHdvcmthcm91bmQgbmVlZGVkIGZvcjog
+Li4uIiBpbnN0ZWFkIG9mICJVbmtub3duIGhhcmR3YXJlIgoKUGVyaGFwcyAiR2VuZXJpYyIgaGFy
+ZHdhcmU/CgotLSAKRGF2aWQgSGVubmluZ3Nzb24sIENhbm9uaWNhbCBMdGQuCmh0dHA6Ly9sYXVu
+Y2hwYWQubmV0L35kaXdpYwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
