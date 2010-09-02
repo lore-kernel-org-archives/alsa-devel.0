@@ -1,20 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: alsactl adds volume controls?
-Date: Thu, 02 Sep 2010 11:24:45 +0200
-Message-ID: <4C7F6D5D.7020101@canonical.com>
-References: <4C77CE1D.2070501@canonical.com>
-	<4C77DD09.3060909@ladisch.de>	<4C78059B.50801@canonical.com>	<AANLkTi=cgE30nh1LPj84=Jv+YfJZWTj8BF3B5kNSGMTb@mail.gmail.com>	<s5h4oec8r6f.wl%tiwai@suse.de>
-	<4C7BABA9.1010100@canonical.com>	<s5hlj7ont8e.wl%tiwai@suse.de>
-	<4C7E549E.4080505@canonical.com> <s5hr5hczi06.wl%tiwai@suse.de>
+From: Pacho Ramos <pacho@condmat1.ciencias.uniovi.es>
+Subject: Re: Since kernel-2.6.32 alsactl thinks my sound card
+ is "Unknown"
+Date: Thu, 02 Sep 2010 11:26:14 +0200
+Message-ID: <1283419574.6497.4.camel@localhost.localdomain>
+References: <s5hmxs0zgxs.wl%tiwai@suse.de>
+Reply-To: pacho@condmat1.ciencias.uniovi.es
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1155276981431915638=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9606324624
+Received: from smtp02.jazztel.es (smtp02.jazztel.es [62.14.3.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id F3B0324624
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Sep 2010 11:24:45 +0200 (CEST)
-In-Reply-To: <s5hr5hczi06.wl%tiwai@suse.de>
+	Thu,  2 Sep 2010 11:26:21 +0200 (CEST)
+In-Reply-To: <s5hmxs0zgxs.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,125 +26,85 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010-09-02 10:06, Takashi Iwai skrev:
-> At Wed, 01 Sep 2010 15:26:54 +0200,
-> David Henningsson wrote:
->>
->> 2010-08-30 15:08, Takashi Iwai skrev:
->>> At Mon, 30 Aug 2010 15:01:29 +0200,
->>> David Henningsson wrote:
->>>>
->>>> 2010-08-30 10:01, Takashi Iwai skrev:
->>>>> At Sat, 28 Aug 2010 06:58:20 +0800,
->>>>> Raymond Yau wrote:
->>>>>>
->>>>>> 2010/8/28 David Henningsson <david.henningsson@canonical.com>
->>>>>>
->>>>>>> 2010-08-27 17:43, Clemens Ladisch skrev:
->>>>>>>> David Henningsson wrote:
->>>>>>>>> So I've discovered that my sound card has a "PCM Playback Volume"
->>>>>>>>> control, but changing that control does not alter the volume.
->>>>>>>>>
->>>>>>>>> Interestingly enough, this control does not come from the HDA parser, it
->>>>>>>>> is added by alsactl at boot time...!
->>>>>>>>
->>>>>>>> This control was created by the software volume plugin.  When not using
->>>>>>>> this plugin, the control does not have any effect.
->>>>>>>>
->>>>>>>> To get rid of it, delete its entry from /etc/asound.state.
->>>>>>>
->>>>>>> Hmm, I wonder if this is an Ubuntu-specific bug then? Because when I run
->>>>>>> Maverick (the upcoming Ubuntu release) from a Live-CD, the "PCM Playback
->>>>>>> Volume" control is still there (and there is no asound.state, neither in
->>>>>>> /etc or in /var/lib/alsa).
->>>>>>> When I use the plughw interface, the "PCM Playback Volume" does not
->>>>>>> affect volume output. Should I use another device string to test the
->>>>>>> softvol plugin, to see if it's there or not?
->>>>>>
->>>>>> The softvol plugin it is defined in "front" device in
->>>>>> /usr/share/alsa/cards/HDA-Intel.conf
->>>>>>
->>>>>> reason is some HDA codec does not has any hardware volume control (analog)
->>>>>>
->>>>>> this user-defined control only effective when the application use "front"
->>>>>> device
->>>>>
->>>>> Hm, but if PA opens the device with SND_PCM_NO_SOFTVOL flag, the
->>>>> softvol should be skipped.
->>>>
->>>> But that does not apply to the mixer controls as well, does it?
->>>
->>> It does.  The mixer element is created when this kind of PCM stream is
->>> opened without SND_PCM_NO_SOFTVOL flag.  Then it leaves the control
->>> for the later use, and alsactl saves/restores it.  So, it's a chicken-
->>> and-egg problem.
->>
->> Sounds a little strange to me. Thinking in general, if something is
->> created when a stream is opened, that something should be destroyed when
->> the stream is closed.
-> 
-> It's not about the stream-level volume.  It's about the global volume.
-> There have been bunch of machines that have no h/w volume control.
-> This is the mechanism for such environment.  You certainly don't want
-> to reset the system-level volume at each time you close the stream.
 
-So if it's about the global volume it should be created on startup
-rather than when the stream is opened for the first time.
+--===============1155276981431915638==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-mgcTafYqMQZ0MlQ7dZ8A"
 
->>> Of course, it's possible that it wasn't PA who opened the PCM stream.
->>> But, something opened the stream and it created the mixer element.
->>> This is the correct behavior.
->>
->> And once created, it stays there forever...
-> 
-> Not necessarily forever.  It's alsactl who saves/restores the element
-> 
->> So even if PA does not
->> create it, we'll just transform a persistent problem to an suddenly
->> appearing problem?
-> 
-> Yes, it's just because you started an app that doesn't cope with PA.
-> And, it's PA who doesn't cope with softvol setup.  This is the
-> conflicting situation.
 
-So as I understand it PA should call snd_pcm_open with the
-SND_PCM_NO_SOFTVOL, which it currently does not. It still puzzles me
-however how PA manages to open without that flag, which creates a mixer
-control, and later on that softvol control has no effect.
+--=-mgcTafYqMQZ0MlQ7dZ8A
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> Now the system doesn't know whether you'll start the non-PA app
-> again.  So, the volume has to be retained.
-> 
->> Anyway, do we want softvol at all for HDA? Wouldn't that be such an
->> unusual use case, that those people that can't adjust volume any other
->> way, can add that softvol themselves in .asoundrc?
-> 
-> The softvol itself does nothing if the corresponding h/w volume
-> control exists.  It's activated only when the corresponding volume
-> element is unavailable.
+El jue, 02-09-2010 a las 10:29 +0200, Takashi Iwai escribi=C3=B3:
+> Rejected by SPF lookup: (recv=3Dllar.net.uniovi.es,
+>  send-ip=3D195.135.220.2) Could not find a valid SPF record
+> User-Agent: Wanderlust/2.15.6 (Almost Unreal) SEMI/1.14.6 (Maruoka) FLIM/=
+1.14.9
+>  (=3D?UTF-8?B?R29qxY0=3D?=3D) APEL/10.7 Emacs/23.1 (x86_64-suse-linux-gnu=
+) MULE/6.0
+>  (HANACHIRUSATO)
+> References: <1283357723.8159.4.camel@localhost.localdomain>
+>=20
+> At Wed, 01 Sep 2010 18:15:23 +0200,
+> Pacho Ramos wrote:
+> >=20
+> > This is an old problem I am suffering since kernel-2.6.32 and that is
+> > still unresolved even with 2.6.35 and alsa-utils-1.0.23:
+> > http://www.spinics.net/lists/alsa-devel/msg31422.html
+> >=20
+> > If you follow the thread, it got stalled in:
+> > http://www.spinics.net/lists/alsa-devel/msg31433.html
+> >=20
+> > In summary, I get the following:
+> > # alsactl -f /etc/asound.state restore /dev/snd/controlC0=20
+> > Unknown hardware: "VIA8237" "Realtek ALC658D" "AC97a:414c4781" "0x147b"
+> > "0x1415"
+> > Hardware is initialized using a guess method
+> > # echo $?
+> > 99
+>=20
+> This is no error.  It means that alsactl has no special workaround
+> for your hardware.  The return code of alsactl looks strange.
+> I thought Jaroslav has already fixed it, though...
+>=20
+>=20
+> Takashi
+>=20
 
-Right, but I have a "Master" volume, a "Front" volume, "Headphone"
-volume and so on, so I have all the HW volumes I need, it's just that
-none of them happen to be labeled "PCM".
+Well, Jaroslav fixed it to use "99" instead of "157":
+http://www.spinics.net/lists/alsa-devel/msg31430.html
 
->>>> I think
->>>> we still have a problem with PA assuming that it can change the PCM
->>>> volume control to change the output volume.
->>>
->>> PA can check whether it's a user-defined control or not.
->>
->> Would that be safe - I mean, can't there be user-defined controls PA
->> *should* care about?
-> 
-> It depends on the driver implementation, but as long as PA does
-> software volume control by itself, and as long as the control elements
-> are mixer elements, they can be ignored.
+And, about the message, could it be reworded for preventing to make
+users think their hardware is "Unknown"? Maybe it could simply show "No
+workaround needed for: ..." instead of "Unknown hardware"
 
-Interesting. I went looking into the snd_mixer_selem_* documentation (PA
-uses the simple mixer interface), but I couldn't find a function for
-determining whether a control is user-defined or not, would you mind
-pointing me to it? Thanks!
+Thanks :-)
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+
+--=-mgcTafYqMQZ0MlQ7dZ8A
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.16 (GNU/Linux)
+
+iEYEABECAAYFAkx/bbYACgkQCaWpQKGI+9TiYwCfd1jpIIBJdhATdYyqgYEOYTA9
+TU4An2uAN9dPlSWD8pJ/gYX31SBElLQ8
+=f90U
+-----END PGP SIGNATURE-----
+
+--=-mgcTafYqMQZ0MlQ7dZ8A--
+
+
+--===============1155276981431915638==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1155276981431915638==--
