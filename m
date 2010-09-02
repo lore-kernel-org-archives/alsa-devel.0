@@ -1,19 +1,23 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Since kernel-2.6.32 alsactl thinks my sound card
- is "Unknown"
-Date: Thu, 2 Sep 2010 15:38:46 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1009021538070.10278@eeebox2.perex-int.cz>
-References: <4C7F6FBB.3060509@canonical.com>
-	<1283421609.6497.5.camel@localhost.localdomain>
+Subject: Re: alsactl adds volume controls?
+Date: Thu, 2 Sep 2010 16:10:08 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1009021553460.10278@eeebox2.perex-int.cz>
+References: <4C77CE1D.2070501@canonical.com> <4C77DD09.3060909@ladisch.de>
+	<4C78059B.50801@canonical.com>
+	<AANLkTi=cgE30nh1LPj84=Jv+YfJZWTj8BF3B5kNSGMTb@mail.gmail.com>
+	<s5h4oec8r6f.wl%tiwai@suse.de> <4C7BABA9.1010100@canonical.com>
+	<s5hlj7ont8e.wl%tiwai@suse.de>
+	<4C7E549E.4080505@canonical.com> <s5hr5hczi06.wl%tiwai@suse.de>
+	<4C7F6D5D.7020101@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 419A02471F
+	by alsa0.perex.cz (Postfix) with ESMTP id 6599D2473A
 	for <alsa-devel@alsa-project.org>;
-	Thu,  2 Sep 2010 15:38:47 +0200 (CEST)
-In-Reply-To: <1283421609.6497.5.camel@localhost.localdomain>
+	Thu,  2 Sep 2010 16:10:09 +0200 (CEST)
+In-Reply-To: <4C7F6D5D.7020101@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +27,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pacho Ramos <pacho@condmat1.ciencias.uniovi.es>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2 Sep 2010, Pacho Ramos wrote:
+On Thu, 2 Sep 2010, David Henningsson wrote:
 
->> Perhaps "Generic" hardware?
->>
->
-> Looks fine for me :-)
+> Interesting. I went looking into the snd_mixer_selem_* documentation (PA
+> uses the simple mixer interface), but I couldn't find a function for
+> determining whether a control is user-defined or not, would you mind
+> pointing me to it? Thanks!
 
-I changed the message to text like:
+This logic is bad. We can have user-defined controls for the user space 
+drivers or daemons.
 
-Found hardware: "HDA-Intel" "Realtek ALC888" "HDA:10ec0888,10438331,00100001" "0x1043" "0x8331"
-Hardware is initialized using a generic method
+The additional flag to mixer open functions - as proposed by Takashi - is 
+more appropriate in this case when there is a system handling the software 
+volume itself. But the question is quite same: How we can distinguish the 
+software volume control? I think that some TLV information might do this 
+job well.
 
  					Jaroslav
 
