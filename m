@@ -1,21 +1,30 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: HCTL element callback
-Date: Fri, 3 Sep 2010 09:33:38 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1009030931220.10278@eeebox2.perex-int.cz>
-References: <1283464109.6921.10.camel@aviva.ttga.homeip.net>
-	<alpine.LNX.2.00.1009030832140.10278@eeebox2.perex-int.cz>
-	<1283498035.6921.20.camel@aviva.ttga.homeip.net>
-	<alpine.LNX.2.00.1009030915440.10278@eeebox2.perex-int.cz>
-	<1283498966.5621.5.camel@aviva.ttga.homeip.net>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [RFC] ASoC: multi-component: Add optional kcontrol
+ prefix name for a DAI link
+Date: Fri, 3 Sep 2010 10:55:32 +0300
+Message-ID: <20100903105532.07894824.jhnikula@gmail.com>
+References: <20100819144451.1d827367.jhnikula@gmail.com>
+	<20100819135413.GA19582@opensource.wolfsonmicro.com>
+	<20100819182049.3ecdd0bc.jhnikula@gmail.com>
+	<20100820115144.451b474f.jhnikula@gmail.com>
+	<20100823152145.GD14504@rakim.wolfsonmicro.main>
+	<20100824102343.4dfaafe1.jhnikula@gmail.com>
+	<20100824101032.GA15278@rakim.wolfsonmicro.main>
+	<20100825135922.5589ba30.jhnikula@gmail.com>
+	<20100826133229.GA3803@opensource.wolfsonmicro.com>
+	<20100830141729.75388459.jhnikula@gmail.com>
+	<20100902142518.GA5809@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9C9AD24532
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 8976C2454F
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Sep 2010 09:33:38 +0200 (CEST)
-In-Reply-To: <1283498966.5621.5.camel@aviva.ttga.homeip.net>
+	Fri,  3 Sep 2010 09:55:11 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so834244ewy.38
+	for <alsa-devel@alsa-project.org>; Fri, 03 Sep 2010 00:55:11 -0700 (PDT)
+In-Reply-To: <20100902142518.GA5809@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,93 +34,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Camilo Polymeris <cpolymeris@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, James Courtier-Dutton <James@superbug.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 3 Sep 2010, Camilo Polymeris wrote:
+On Thu, 2 Sep 2010 15:25:18 +0100
+Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
 
-> On Fri, 2010-09-03 at 09:16 +0200, Jaroslav Kysela wrote:
->> On Fri, 3 Sep 2010, Camilo Polymeris wrote:
->>
->>> On Fri, 2010-09-03 at 08:35 +0200, Jaroslav Kysela wrote:
->>>> On Thu, 2 Sep 2010, Camilo Polymeris wrote:
->>>>
->>>>> Hello.
->>>>> I am writing this mixer app:
->>>>> http://emutrix.googlecode.com
->>>>>
->>>>> I have trouble with callbacks. So far I have implemented callbacks for
->>>>> the master volume fader and clock rate selection (integer and enum,
->>>>> resp.)
->>>>> But "pad" callbacks (boolean) won't work. In fact, I have noticed that
->>>>> alsamixer 1.0.22 also doesn't react to pad changes from the application.
->>>>> But the driver reacts to both as expected, so we're dealing with the
->>>>> same element.
->>>>
->>>> It seems like a bug in the emu driver. The elem put callbacks does not
->>>> check for changes (they should return 1).
->>>>
->>>> Does this patch help?
->>>>
->>>> diff --git a/sound/pci/emu10k1/emumixer.c b/sound/pci/emu10k1/emumixer.c
->>>> index 05afe06..7bd1c1a 100644
->>>> --- a/sound/pci/emu10k1/emumixer.c
->>>> +++ b/sound/pci/emu10k1/emumixer.c
->>>> @@ -622,6 +622,7 @@ static int snd_emu1010_adc_pads_put(struct snd_kcontrol *kcontrol, struct snd_ct
->>>>   	if (cache != emu->emu1010.adc_pads) {
->>>>   		snd_emu1010_fpga_write(emu, EMU_HANA_ADC_PADS, cache );
->>>>   	        emu->emu1010.adc_pads = cache;
->>>> +	        return 1;
->>>>   	}
->>>>
->>>>   	return 0;
->>>> @@ -670,6 +671,7 @@ static int snd_emu1010_dac_pads_put(struct snd_kcontrol *kcontrol, struct snd_ct
->>>>   	if (cache != emu->emu1010.dac_pads) {
->>>>   		snd_emu1010_fpga_write(emu, EMU_HANA_DAC_PADS, cache );
->>>>   	        emu->emu1010.dac_pads = cache;
->>>> +	        return 1;
->>>>   	}
->>>>
->>>>   	return 0;
->>>>
->>>>  					Jaroslav
->>>>
->>>> -----
->>>> Jaroslav Kysela <perex@perex.cz>
->>>> Linux Kernel Sound Maintainer
->>>> ALSA Project, Red Hat, Inc.
->>>>
->>>
->>>
->>> Hello.
->>> I think it doesn't help. I applied the patch, built the sources,
->>> installed them (with 'make install') and reloaded alsa (with 'alsa
->>> reload'). That should have installed the new module, right?
->>> If so, the patch didn't help. I am not very experienced with kernel
->>> stuff, so if I did something wrong, please tell me and I'll try again.
->>
->> Reboot your machine at first to ensure that you have loaded new ALSA
->> kernel modules.
->>
->>  					Jaroslav
->>
->
-> Very nice. That worked. Thanks!
-> By the way, I have noticed two small errors (I think) with element
-> names:
-> * Pads are labeled 14dB, but they are actually ~12dB (intended as
-> -10dBV/+4dBu)
-> * Enum items (inputs) are labeled 0202 SPDIF Left/Right, but the
-> connector is on the 1010 card. The outputs are ok.
-> Are you keeping those for backwards-compatibility?
+> On Mon, Aug 30, 2010 at 02:17:29PM +0300, Jarkko Nikula wrote:
+> 
+> > I don't see it are there any problems. For me it looks the routes in
+> > WM9090 are unique and registered to own codec instance so there should
+> > not be route prefixing needed.
+> 
+> Meh, right.  DAPM isn't coping with things that cross CODECs really.
+> This will need to be looked at.
+> 
+> > How these amplifier drivers are actually meant to be probed? Currently
+> > struct snd_soc_codec_driver->probe is called only from
+> > soc_probe_dai_link.
+> 
+> We need to set up a list of anciliary devices which are registered
+> without DAIs for this.
 
-The whole emu card support code is from James. So these questions should 
-go to him.
+So we need to split these into three separate problems:
 
- 						Jaroslav
+- Prefixing
+- DAPM linking between codecs
+- Registering DAIless codecs in machine drivers
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+What you think: is it better to hold my prefixing patch until DAPM
+linking is solved or can it be applied before? I mean if we need to go
+some global, not codec based DAPM, then there is need to prefix but not
+if DAPM remains per codec.
+
+
+-- 
+Jarkko
