@@ -1,28 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC] ASoC: multi-component: Add optional kcontrol
- prefix name for a DAI link
-Date: Fri, 3 Sep 2010 10:33:46 +0100
-Message-ID: <20100903093345.GA16587@rakim.wolfsonmicro.main>
-References: <20100819182049.3ecdd0bc.jhnikula@gmail.com>
-	<20100820115144.451b474f.jhnikula@gmail.com>
-	<20100823152145.GD14504@rakim.wolfsonmicro.main>
-	<20100824102343.4dfaafe1.jhnikula@gmail.com>
-	<20100824101032.GA15278@rakim.wolfsonmicro.main>
-	<20100825135922.5589ba30.jhnikula@gmail.com>
-	<20100826133229.GA3803@opensource.wolfsonmicro.com>
-	<20100830141729.75388459.jhnikula@gmail.com>
-	<20100902142518.GA5809@rakim.wolfsonmicro.main>
-	<20100903105532.07894824.jhnikula@gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: ak4642: Revive ak4642_snd_controls
+Date: Fri, 03 Sep 2010 10:43:23 +0100
+Message-ID: <1283507003.3069.29.camel@odin>
+References: <w3p8w3jb8rf.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2D5572434C
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 84E842437B
 	for <alsa-devel@alsa-project.org>;
-	Fri,  3 Sep 2010 11:33:49 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100903105532.07894824.jhnikula@gmail.com>
+	Fri,  3 Sep 2010 11:43:43 +0200 (CEST)
+Received: by wyb32 with SMTP id 32so1441123wyb.38
+	for <alsa-devel@alsa-project.org>; Fri, 03 Sep 2010 02:43:43 -0700 (PDT)
+In-Reply-To: <w3p8w3jb8rf.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,30 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 03, 2010 at 10:55:32AM +0300, Jarkko Nikula wrote:
-
-> So we need to split these into three separate problems:
-
-> - Prefixing
-> - DAPM linking between codecs
-> - Registering DAIless codecs in machine drivers
-
-> What you think: is it better to hold my prefixing patch until DAPM
-> linking is solved or can it be applied before? I mean if we need to go
-> some global, not codec based DAPM, then there is need to prefix but not
-> if DAPM remains per codec.
-
-Well, the DAPM map needs to be global in some sense since it needs to
-flow between CODECs and we need board widgets which are definitely not
-fixed on an individual chip.  
-
-I think I'd like a firm idea of how the cross device DAPM works before
-we do anything with the prefixes since there's some overlap there (if
-only due to the fact that half the controls come from DAPM), even if the
-cross device DAPM doesn't actually work yet.  I think your current code
-is probably going to work well with DAPM but I need to have a bit of a
-think about that over the weekend.
+On Fri, 2010-09-03 at 16:12 +0900, Kuninori Morimoto wrote:
+> This patch revive ak4642_snd_controls which was removed on
+> f0fba2ad1b6b53d5360125c41953b7afcd6deff0
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  sound/soc/codecs/ak4642.c |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
+> index 31b35e9..c84cc9c 100644
+> --- a/sound/soc/codecs/ak4642.c
+> +++ b/sound/soc/codecs/ak4642.c
+> @@ -424,6 +424,8 @@ static int ak4642_probe(struct snd_soc_codec *codec)
+>  	codec->hw_write		= (hw_write_t)i2c_master_send;
+>  	codec->control_data = ak4642->control_data;
+>  
+> +	snd_soc_add_controls(codec, ak4642_snd_controls,
+> +			     ARRAY_SIZE(ak4642_snd_controls));
+>  
+>  	return 0;
+>  }
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
