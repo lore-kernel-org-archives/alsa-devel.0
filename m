@@ -1,19 +1,18 @@
-From: Patrick Doyle <wpdster@gmail.com>
-Subject: ALSA sound/core/pcm_lib.c:318: BUG: pcmC0D0p:0,
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: ALSA sound/core/pcm_lib.c:318: BUG: pcmC0D0p:0,
  pos = 32768, buffer size = 32768 , period size = 2048
-Date: Sun, 5 Sep 2010 14:28:31 -0400
-Message-ID: <AANLkTikmZ0k2YQGMM+wdrqc+xAMgqYOZHtLA7Heag69H@mail.gmail.com>
+Date: Mon, 06 Sep 2010 09:16:18 +0200
+Message-ID: <4C849542.4030409@ladisch.de>
+References: <AANLkTikmZ0k2YQGMM+wdrqc+xAMgqYOZHtLA7Heag69H@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id F0550243D3
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id A2D891037EA
 	for <alsa-devel@alsa-project.org>;
-	Sun,  5 Sep 2010 20:28:52 +0200 (CEST)
-Received: by iwn4 with SMTP id 4so3488551iwn.38
-	for <alsa-devel@alsa-project.org>; Sun, 05 Sep 2010 11:28:52 -0700 (PDT)
+	Mon,  6 Sep 2010 09:15:50 +0200 (CEST)
+In-Reply-To: <AANLkTikmZ0k2YQGMM+wdrqc+xAMgqYOZHtLA7Heag69H@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Patrick Doyle <wpdster@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I'm getting this error when running an OSS application in emulation
-mode (on an ADI Blackfin processor to which an SSM2602 codec is
-attached, if anybody is interested).  I don't have a pure ALSA
-application (yet) than i can try.  Can anybody give me pointers as to
-how to try to track the source of this error down?
+Patrick Doyle wrote:
+> pos = 32768, buffer size = 32768
 
-Thanks.
+This means that the driver's pointer callback returned a position that
+is outside the buffer; in this case, the position is just after the end
+of the buffer.
 
---wpd
+
+Regards,
+Clemens
