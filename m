@@ -1,110 +1,186 @@
 From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: Re: [PATCH 1/4 v2] fbdev: sh-mobile: Add HDMI sound type selection
-Date: Mon, 6 Sep 2010 09:32:37 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.1009060915100.20387@axis700.grange>
+Subject: Re: [PATCH 2/4 v2] ASoC: Add sh_mobile_hdmi sound support
+Date: Mon, 6 Sep 2010 10:27:56 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.1009060932430.20387@axis700.grange>
 References: <w3p39tv72sx.wl%kuninori.morimoto.gx@renesas.com>
- <w3p1v9f72rk.wl%kuninori.morimoto.gx@renesas.com>
+ <w3pwrr75o6d.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <w3p1v9f72rk.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <w3pwrr75o6d.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-sh-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Paul Mundt <lethal@linux-sh.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
-
-Hi Morimoto-san
 
 On Tue, 31 Aug 2010, Kuninori Morimoto wrote:
 
 > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > ---
 > v1 -> v2
->  no change
 > 
->  drivers/video/sh_mobile_hdmi.c |   21 ++++++++++++++++++++-
->  include/video/sh_mobile_hdmi.h |   16 ++++++++++++++++
->  2 files changed, 36 insertions(+), 1 deletions(-)
+> o based on Mark's latest "for-2.6.37"
+> 
+>  drivers/video/sh_mobile_hdmi.c |   65 ++++++++++++++++++++++++++++++++++++++++
+>  1 files changed, 65 insertions(+), 0 deletions(-)
 > 
 > diff --git a/drivers/video/sh_mobile_hdmi.c b/drivers/video/sh_mobile_hdmi.c
-> index afebe80..d25e348 100644
+> index d25e348..f14c58a 100644
 > --- a/drivers/video/sh_mobile_hdmi.c
 > +++ b/drivers/video/sh_mobile_hdmi.c
-> @@ -318,6 +318,9 @@ static void sh_hdmi_video_config(struct sh_hdmi *hdmi)
->   */
->  static void sh_hdmi_audio_config(struct sh_hdmi *hdmi)
+> @@ -22,6 +22,8 @@
+>  #include <linux/slab.h>
+>  #include <linux/types.h>
+>  #include <linux/workqueue.h>
+> +#include <sound/soc-dapm.h>
+> +#include <sound/initval.h>
+>  
+>  #include <video/sh_mobile_hdmi.h>
+>  #include <video/sh_mobile_lcdc.h>
+> @@ -222,6 +224,62 @@ static u8 hdmi_read(struct sh_hdmi *hdmi, u8 reg)
+>  	return ioread8(hdmi->base + reg);
+>  }
+>  
+> +/************************************************************************
+> +
+> +
+> +			HDMI sound
+> +
+> +
+> +************************************************************************/
+
+I don't think this comment deserves 7 lines of text, besides breaking the 
+multiline comment style. If you think, one line like
+
+/*			HDMI sound			*/
+
+is not enough how about just
+
+/*
+ *			HDMI sound
+ */
+
+?
+
+> +static unsigned int sh_hdmi_snd_read(struct snd_soc_codec *codec,
+> +				     unsigned int reg)
+> +{
+> +	struct sh_hdmi *hdmi = snd_soc_codec_get_drvdata(codec);
+> +
+> +	return hdmi_read(hdmi, reg);
+> +}
+> +
+> +static int sh_hdmi_snd_write(struct snd_soc_codec *codec,
+> +			     unsigned int reg,
+> +			     unsigned int value)
+> +{
+> +	struct sh_hdmi *hdmi = snd_soc_codec_get_drvdata(codec);
+> +
+> +	hdmi_write(hdmi, value, reg);
+> +	return 0;
+> +}
+
+Are these two actually needed? As long as you don't have a register cache 
+- no need for these?
+
+> +
+> +static struct snd_soc_dai_driver sh_hdmi_dai = {
+> +	.name = "sh_mobile_hdmi-hifi",
+> +	.playback = {
+> +		.stream_name = "Playback",
+> +		.channels_min = 1,
+
+Can it actually do mono? Maybe at probe time you could look at audio flags 
+from your previous patch and, e.g., for SPDIF set channels_min to 2?
+
+> +		.channels_max = 2,
+
+That's the "smallest max," yes. With some other interfaces (I2S, DSD) it 
+can support up to 8 channels...
+
+> +		.rates = SNDRV_PCM_RATE_8000_48000,
+
+Hm, in the datasheet I see supported frequencies 32kHz to 192kHz. And if 
+you promise support for multiple frequencies, don't you want to implement 
+.hw_params? Besides, not all of these frequencies will be available, 
+depending on your supplied clock and your willingness to implement 
+downsampling.
+
+> +		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
+
+Again, this I am not sure about. The datasheet says 16 to 32 bit are 
+possible, but then I only see configuration for 16 to 24 bits, but in any 
+case, I think, you'd want to implement .hw_params to support non-default 
+formats.
+
+> +	},
+> +};
+> +
+> +static int sh_hdmi_snd_probe(struct snd_soc_codec *codec)
+> +{
+> +	dev_info(codec->dev, "SH Mobile HDMI Audio Codec");
+> +
+> +	return 0;
+> +}
+> +
+> +static struct snd_soc_codec_driver soc_codec_dev_sh_hdmi = {
+> +	.probe		= sh_hdmi_snd_probe,
+> +	.read		= sh_hdmi_snd_read,
+> +	.write		= sh_hdmi_snd_write,
+> +};
+> +
+> +/************************************************************************
+> +
+> +
+> +			HDMI video
+> +
+> +
+> +************************************************************************/
+
+See above - 7 lines seem to be an overkill to me.
+
+>  /* External video parameter settings */
+>  static void hdmi_external_video_param(struct sh_hdmi *hdmi)
 >  {
-> +	u8 data;
-> +	struct sh_mobile_hdmi_info *pdata = hdmi->dev->platform_data;
-> +
->  	/*
->  	 * [7:4] L/R data swap control
->  	 * [3:0] appropriate N[19:16]
-> @@ -335,7 +338,23 @@ static void sh_hdmi_audio_config(struct sh_hdmi *hdmi)
->  	 * [6:5] set required down sampling rate if required
->  	 * [4:3] set required audio source
->  	 */
-> -	hdmi_write(hdmi, 0x00, HDMI_AUDIO_SETTING_1);
-> +	switch (pdata->flags & HDMI_SRC_MASK) {
-> +	default:
-> +		/* FALL THROUGH */
-
-I'm not sure I like the capitalisation here - no reason to shout;)
-
-> +	case HDMI_SRC_I2S:
-> +		data = (0x0 << 3);
-> +		break;
-> +	case HDMI_SRC_SPDIF:
-> +		data = (0x1 << 3);
-> +		break;
-> +	case HDMI_SRC_DSD:
-> +		data = (0x2 << 3);
-> +		break;
-> +	case HDMI_SRC_HBR:
-> +		data = (0x3 << 3);
-
-In all above cases parenthesis are superfluous.
-
-> +		break;
-> +	}
-> +	hdmi_write(hdmi, data, HDMI_AUDIO_SETTING_1);
+> @@ -804,6 +862,11 @@ static int __init sh_hdmi_probe(struct platform_device *pdev)
+>  		return -ENOMEM;
+>  	}
 >  
->  	/* [3:0] set sending channel number for channel status */
->  	hdmi_write(hdmi, 0x40, HDMI_AUDIO_SETTING_2);
-> diff --git a/include/video/sh_mobile_hdmi.h b/include/video/sh_mobile_hdmi.h
-> index 577cf18..929c2d3 100644
-> --- a/include/video/sh_mobile_hdmi.h
-> +++ b/include/video/sh_mobile_hdmi.h
-> @@ -14,9 +14,25 @@
->  struct sh_mobile_lcdc_chan_cfg;
->  struct device;
->  
-> +/*
-> + * flags format
-> + *
-> + * 0x0000000A
-> + *
-> + * A: Audio source select
-> + */
+> +	ret =  snd_soc_register_codec(&pdev->dev,
+> +			&soc_codec_dev_sh_hdmi, &sh_hdmi_dai, 1);
+> +	if (ret < 0)
+> +		goto egetclk;
 > +
-> +/* Audio source select */
-> +#define HDMI_SRC_MASK		(0xF << 0)
-> +#define HDMI_SRC_I2S		(0 << 0) /* default */
-> +#define HDMI_SRC_SPDIF		(1 << 0)
-> +#define HDMI_SRC_DSD		(2 << 0)
-> +#define HDMI_SRC_HBR		(3 << 0)
-
-I would be more specific with these macro names, i.e., include "AUDIO" or 
-"SND" or something similar in them, e.g., HDMI_AUDIO_SRC_I2S.
-
-> +
->  struct sh_mobile_hdmi_info {
->  	struct sh_mobile_lcdc_chan_cfg	*lcd_chan;
->  	struct device			*lcd_dev;
-> +	unsigned int			 flags;
->  };
+>  	hdmi->dev = &pdev->dev;
 >  
->  #endif
+>  	hdmi->hdmi_clk = clk_get(&pdev->dev, "ick");
+
+NAK. This breaks the error path and has to be fixed. Firstly, please, use 
+a new label like "esndreg," secondly, you have to add
+
+ 	clk_disable(hdmi->hdmi_clk);
+ erate:
+ 	clk_put(hdmi->hdmi_clk);
+ egetclk:
++	snd_soc_unregister_codec(&pdev->dev);
++esndreg:
+ 	mutex_destroy(&hdmi->mutex);
+ 	kfree(hdmi);
+ 
+
+to the error path.
+
+Besides, I think, this will not link without CONFIG_SND_SOC.
+
+> @@ -901,6 +964,8 @@ static int __exit sh_hdmi_remove(struct platform_device *pdev)
+>  	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	int irq = platform_get_irq(pdev, 0);
+>  
+> +	snd_soc_unregister_codec(&pdev->dev);
+> +
+>  	pdata->lcd_chan->board_cfg.display_on = NULL;
+>  	pdata->lcd_chan->board_cfg.display_off = NULL;
+>  	pdata->lcd_chan->board_cfg.board_data = NULL;
 > -- 
 > 1.7.0.4
 
