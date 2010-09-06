@@ -1,38 +1,116 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ALSA sound/core/pcm_lib.c:318: BUG: pcmC0D0p:0,
- pos = 32768, buffer size = 32768 , period size = 2048
-Date: Mon, 06 Sep 2010 09:16:18 +0200
-Message-ID: <4C849542.4030409@ladisch.de>
-References: <AANLkTikmZ0k2YQGMM+wdrqc+xAMgqYOZHtLA7Heag69H@mail.gmail.com>
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: Re: [PATCH 1/4 v2] fbdev: sh-mobile: Add HDMI sound type selection
+Date: Mon, 6 Sep 2010 09:32:37 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.1009060915100.20387@axis700.grange>
+References: <w3p39tv72sx.wl%kuninori.morimoto.gx@renesas.com>
+ <w3p1v9f72rk.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id A2D891037EA
-	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Sep 2010 09:15:50 +0200 (CEST)
-In-Reply-To: <AANLkTikmZ0k2YQGMM+wdrqc+xAMgqYOZHtLA7Heag69H@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Patrick Doyle <wpdster@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <w3p1v9f72rk.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Paul Mundt <lethal@linux-sh.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Doyle wrote:
-> pos = 32768, buffer size = 32768
+Hi Morimoto-san
 
-This means that the driver's pointer callback returned a position that
-is outside the buffer; in this case, the position is just after the end
-of the buffer.
+On Tue, 31 Aug 2010, Kuninori Morimoto wrote:
 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+> v1 -> v2
+>  no change
+> 
+>  drivers/video/sh_mobile_hdmi.c |   21 ++++++++++++++++++++-
+>  include/video/sh_mobile_hdmi.h |   16 ++++++++++++++++
+>  2 files changed, 36 insertions(+), 1 deletions(-)
+> 
+> diff --git a/drivers/video/sh_mobile_hdmi.c b/drivers/video/sh_mobile_hdmi.c
+> index afebe80..d25e348 100644
+> --- a/drivers/video/sh_mobile_hdmi.c
+> +++ b/drivers/video/sh_mobile_hdmi.c
+> @@ -318,6 +318,9 @@ static void sh_hdmi_video_config(struct sh_hdmi *hdmi)
+>   */
+>  static void sh_hdmi_audio_config(struct sh_hdmi *hdmi)
+>  {
+> +	u8 data;
+> +	struct sh_mobile_hdmi_info *pdata = hdmi->dev->platform_data;
+> +
+>  	/*
+>  	 * [7:4] L/R data swap control
+>  	 * [3:0] appropriate N[19:16]
+> @@ -335,7 +338,23 @@ static void sh_hdmi_audio_config(struct sh_hdmi *hdmi)
+>  	 * [6:5] set required down sampling rate if required
+>  	 * [4:3] set required audio source
+>  	 */
+> -	hdmi_write(hdmi, 0x00, HDMI_AUDIO_SETTING_1);
+> +	switch (pdata->flags & HDMI_SRC_MASK) {
+> +	default:
+> +		/* FALL THROUGH */
 
-Regards,
-Clemens
+I'm not sure I like the capitalisation here - no reason to shout;)
+
+> +	case HDMI_SRC_I2S:
+> +		data = (0x0 << 3);
+> +		break;
+> +	case HDMI_SRC_SPDIF:
+> +		data = (0x1 << 3);
+> +		break;
+> +	case HDMI_SRC_DSD:
+> +		data = (0x2 << 3);
+> +		break;
+> +	case HDMI_SRC_HBR:
+> +		data = (0x3 << 3);
+
+In all above cases parenthesis are superfluous.
+
+> +		break;
+> +	}
+> +	hdmi_write(hdmi, data, HDMI_AUDIO_SETTING_1);
+>  
+>  	/* [3:0] set sending channel number for channel status */
+>  	hdmi_write(hdmi, 0x40, HDMI_AUDIO_SETTING_2);
+> diff --git a/include/video/sh_mobile_hdmi.h b/include/video/sh_mobile_hdmi.h
+> index 577cf18..929c2d3 100644
+> --- a/include/video/sh_mobile_hdmi.h
+> +++ b/include/video/sh_mobile_hdmi.h
+> @@ -14,9 +14,25 @@
+>  struct sh_mobile_lcdc_chan_cfg;
+>  struct device;
+>  
+> +/*
+> + * flags format
+> + *
+> + * 0x0000000A
+> + *
+> + * A: Audio source select
+> + */
+> +
+> +/* Audio source select */
+> +#define HDMI_SRC_MASK		(0xF << 0)
+> +#define HDMI_SRC_I2S		(0 << 0) /* default */
+> +#define HDMI_SRC_SPDIF		(1 << 0)
+> +#define HDMI_SRC_DSD		(2 << 0)
+> +#define HDMI_SRC_HBR		(3 << 0)
+
+I would be more specific with these macro names, i.e., include "AUDIO" or 
+"SND" or something similar in them, e.g., HDMI_AUDIO_SRC_I2S.
+
+> +
+>  struct sh_mobile_hdmi_info {
+>  	struct sh_mobile_lcdc_chan_cfg	*lcd_chan;
+>  	struct device			*lcd_dev;
+> +	unsigned int			 flags;
+>  };
+>  
+>  #endif
+> -- 
+> 1.7.0.4
+
+Thanks
+Guennadi
+---
+Guennadi Liakhovetski, Ph.D.
+Freelance Open-Source Software Developer
+http://www.open-technology.de/
