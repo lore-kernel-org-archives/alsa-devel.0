@@ -1,19 +1,21 @@
-From: "Brand, Mark (Mr) (Summerstrand Campus South)" <Mark.Brand@nmmu.ac.za>
-Subject: Re: Turtle Beach Tahiti (snd-msnd-classic)
-Date: Mon, 6 Sep 2010 12:38:45 +0200
-Message-ID: <F5D2EA2BCBDF9247A489B479BEB484B60B02A46A96@sicily.nmmu.ac.za>
-References: <F5D2EA2BCBDF9247A489B479BEB484B60B02A45910@sicily.nmmu.ac.za>
-	<20100904111603.a158dd2c.krzysztof.h1@wp.pl>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: tlv320aic3x: Fix null pointer
+ dereference when pdata is not set
+Date: Mon, 06 Sep 2010 11:39:01 +0100
+Message-ID: <1283769541.3078.17.camel@odin>
+References: <1283703022-3730-1-git-send-email-jhnikula@gmail.com>
+	<20100906094514.GC10367@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ra.nmmu.ac.za (ra.nmmu.ac.za [192.96.15.50])
-	by alsa0.perex.cz (Postfix) with ESMTP id 726DC24506
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id BC90324505
 	for <alsa-devel@alsa-project.org>;
-	Mon,  6 Sep 2010 12:38:22 +0200 (CEST)
-In-Reply-To: <20100904111603.a158dd2c.krzysztof.h1@wp.pl>
-Content-Language: en-US
+	Mon,  6 Sep 2010 12:39:04 +0200 (CEST)
+Received: by wyb32 with SMTP id 32so4503342wyb.38
+	for <alsa-devel@alsa-project.org>; Mon, 06 Sep 2010 03:39:04 -0700 (PDT)
+In-Reply-To: <20100906094514.GC10367@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,38 +25,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Krzysztof Helt' <krzysztof.h1@wp.pl>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "anabellesgarden@yahoo.de" <anabellesgarden@yahoo.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Jiri Slaby <jirislaby@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Krzysztof,
+On Mon, 2010-09-06 at 10:45 +0100, Mark Brown wrote:
+> On Sun, Sep 05, 2010 at 07:10:22PM +0300, Jarkko Nikula wrote:
+> > Null pointer dereference will occur from *setup = pdata->setup if pdata
+> > is not set. Fix this by moving assignments from pdata inside non-null case.
+> > 
+> > Thanks to Jiri Slaby <jirislaby@gmail.com> for noticing.
+> > 
+> > Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+> > Cc: Jiri Slaby <jirislaby@gmail.com>
+> 
+> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-No problem, Takashi sent me in the right direction (see his patch and my reply).  I did not find the time to spend on this over the weekend as I'd hoped, but I can report that:
-* I now have audio playback
-* There is a regular click, at about 200ms intervals (while playing, of course, not otherwise)
-* Audio does vanish occasionally - I reload alsa and it returns
-* I suspect the isapnp and cfg parameters shouldn't be necessary, but as it stands the driver defaults to PnP mode without them
+Applied.
 
-Just as soon as I can squeeze off a bit more time to spend on this, I'll try to provide better feedback.
+Thanks
 
-Kind regards, and thank you for responding.
-Mark Brand.
-
------Original Message-----
-From: Krzysztof Helt [mailto:krzysztof.h1@wp.pl]
-Sent: 04 September 2010 11:16 AM
-To: Brand, Mark (Mr) (Summerstrand Campus South)
-Cc: alsa-devel@alsa-project.org; tiwai@suse.de; anabellesgarden@yahoo.de
-Subject: Re: Turtle Beach Tahiti (snd-msnd-classic)
-
-Dear Mark,
-
-I was on a business trip for one month so please forgive the delay in answering your request.
-
-I will dig into the issue this weekend.
-
-Thank you for testing,
-Krzysztof
-
-NOTICE: Please note that this eMail, and the contents thereof, is subject to the standard NMMU eMail disclaimer which may be found at:
-http://www.nmmu.ac.za/disclaimer/email.htm
+Liam
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
