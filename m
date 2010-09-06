@@ -1,35 +1,61 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4 v2] ASoC: Add sh_mobile_hdmi sound support
-Date: Mon, 6 Sep 2010 11:25:58 +0100
-Message-ID: <20100906102557.GE10367@rakim.wolfsonmicro.main>
-References: <w3p39tv72sx.wl%kuninori.morimoto.gx@renesas.com>
- <w3pwrr75o6d.wl%kuninori.morimoto.gx@renesas.com>
- <Pine.LNX.4.64.1009060932430.20387@axis700.grange>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 1/1] SOUND: wm8753, remove dead code
+Date: Mon, 06 Sep 2010 11:32:30 +0100
+Message-ID: <1283769150.3078.15.camel@odin>
+References: <1283605929-15961-1-git-send-email-jslaby@suse.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1009060932430.20387@axis700.grange>
-Sender: linux-sh-owner@vger.kernel.org
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Paul Mundt <lethal@linux-sh.org>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id B358F24501
+	for <alsa-devel@alsa-project.org>;
+	Mon,  6 Sep 2010 12:32:34 +0200 (CEST)
+Received: by wyb32 with SMTP id 32so4497444wyb.38
+	for <alsa-devel@alsa-project.org>; Mon, 06 Sep 2010 03:32:34 -0700 (PDT)
+In-Reply-To: <1283605929-15961-1-git-send-email-jslaby@suse.cz>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jiri Slaby <jslaby@suse.cz>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lg@opensource.wolfsonmicro.com>, jirislaby@gmail.com, tiwai@suse.de, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 06, 2010 at 10:27:56AM +0200, Guennadi Liakhovetski wrote:
-> On Tue, 31 Aug 2010, Kuninori Morimoto wrote:
+On Sat, 2010-09-04 at 15:12 +0200, Jiri Slaby wrote:
+> There is adangling code in wm8753_probe which is never executed.
+> Remove it.
+> 
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> Cc: Liam Girdwood <lg@opensource.wolfsonmicro.com>
+> Cc: Takashi Iwai <tiwai@suse.de>
+> Cc: Jaroslav Kysela <perex@suse.cz>
+> ---
+>  sound/soc/codecs/wm8753.c |    3 ---
+>  1 files changed, 0 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+> index 4844232..4a945d3 100644
+> --- a/sound/soc/codecs/wm8753.c
+> +++ b/sound/soc/codecs/wm8753.c
+> @@ -1600,9 +1600,6 @@ static int wm8753_probe(struct snd_soc_codec *codec)
+>  	wm8753_add_widgets(codec);
+>  
+>  	return 0;
+> -
+> -	run_delayed_work(&codec->delayed_work);
+> -	return ret;
+>  }
+>  
+>  /* power down chip */
 
-> > +static int sh_hdmi_snd_write(struct snd_soc_codec *codec,
-> > +			     unsigned int reg,
-> > +			     unsigned int value)
-> > +{
-> > +	struct sh_hdmi *hdmi = snd_soc_codec_get_drvdata(codec);
-> > +
-> > +	hdmi_write(hdmi, value, reg);
-> > +	return 0;
-> > +}
-
-> Are these two actually needed? As long as you don't have a register cache 
-> - no need for these?
-
-Something needs to translate the ASoC register I/O functions into what
-the HDMI layer code is expecting.
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
