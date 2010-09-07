@@ -1,20 +1,20 @@
 From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH 4/4] ASoC: rx1950: Fix clkdiv for 16khz and
-	48khz
-Date: Tue,  7 Sep 2010 17:04:18 +0300
-Message-ID: <1283868258-26493-5-git-send-email-anarsoul@gmail.com>
+Subject: [PATCH 1/4] ASoC: rx1950: check that machine is rx1950
+	in glue driver
+Date: Tue,  7 Sep 2010 17:04:15 +0300
+Message-ID: <1283868258-26493-2-git-send-email-anarsoul@gmail.com>
 References: <1283868258-26493-1-git-send-email-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0EF14103821
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3B5F8103821
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Sep 2010 16:16:25 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so2233229ewy.38
-	for <alsa-devel@alsa-project.org>; Tue, 07 Sep 2010 07:16:24 -0700 (PDT)
+	Tue,  7 Sep 2010 16:17:27 +0200 (CEST)
+Received: by eyd9 with SMTP id 9so2230382eyd.38
+	for <alsa-devel@alsa-project.org>; Tue, 07 Sep 2010 07:17:27 -0700 (PDT)
 In-Reply-To: <1283868258-26493-1-git-send-email-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,30 +28,33 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Philipp Zabel <philipp.zabel@gmail.com>, anarsoul@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Usage of 256 as clkdiv gives better rounding error (<1%)
-for 16khz and 48khz
-
 Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
 ---
- sound/soc/s3c24xx/rx1950_uda1380.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/s3c24xx/rx1950_uda1380.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/s3c24xx/rx1950_uda1380.c b/sound/soc/s3c24xx/rx1950_uda1380.c
-index 9552296..ffd5cf2 100644
+index 2a16113..0f6e806 100644
 --- a/sound/soc/s3c24xx/rx1950_uda1380.c
 +++ b/sound/soc/s3c24xx/rx1950_uda1380.c
-@@ -171,9 +171,9 @@ static int rx1950_hw_params(struct snd_pcm_substream *substream,
- 	case 16000:
- 	case 48000:
- 		clk_source = S3C24XX_CLKSRC_PCLK;
--		fs_mode = S3C2410_IISMOD_384FS;
--		div = s3c24xx_i2s_get_clockrate() / (384 * rate);
--		if (s3c24xx_i2s_get_clockrate() % (384 * rate) > (182 * rate))
-+		fs_mode = S3C2410_IISMOD_256FS;
-+		div = s3c24xx_i2s_get_clockrate() / (256 * rate);
-+		if (s3c24xx_i2s_get_clockrate() % (256 * rate) > (128 * rate))
- 			div++;
- 		break;
- 	case 44100:
+@@ -40,6 +40,8 @@
+ 
+ #include <mach/regs-clock.h>
+ 
++#include <asm/mach-types.h>
++
+ #include "s3c-dma.h"
+ #include "s3c24xx-i2s.h"
+ #include "../codecs/uda1380.h"
+@@ -274,6 +276,9 @@ static int __init rx1950_init(void)
+ {
+ 	int ret;
+ 
++	if (!machine_is_rx1950())
++		return -ENODEV;
++
+ 	/* configure some gpios */
+ 	ret = gpio_request(S3C2410_GPA(1), "speaker-power");
+ 	if (ret)
 -- 
 1.7.2.2
