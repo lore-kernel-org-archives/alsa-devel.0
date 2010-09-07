@@ -1,18 +1,20 @@
 From: IOhannes m zmoelnig <zmoelnig@iem.at>
-Subject: crash with assertion (?)
-Date: Tue, 07 Sep 2010 18:05:01 +0200
-Message-ID: <4C8662AD.1040607@iem.at>
+Subject: Re: crash with assertion (?)
+Date: Tue, 07 Sep 2010 18:07:37 +0200
+Message-ID: <4C866349.8020502@iem.at>
+References: <4C8662AD.1040607@iem.at>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5823071712302800499=="
+Content-Type: multipart/mixed; boundary="===============5752133622187941800=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.iem.at (iem.kug.ac.at [193.170.191.180])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9E951244ED
+	by alsa0.perex.cz (Postfix) with ESMTP id 3DF0F10386C
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Sep 2010 18:05:02 +0200 (CEST)
-Received: from router.iemnet ([192.168.7.1]:43735 helo=[192.168.7.141])
+	Tue,  7 Sep 2010 18:07:38 +0200 (CEST)
+Received: from router.iemnet ([192.168.7.1]:58687 helo=[192.168.7.141])
 	by mail.iem.at with esmtpsa (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.69) (envelope-from <zmoelnig@iem.at>) id 1Ot0fO-00052L-5M
-	for alsa-devel@alsa-project.org; Tue, 07 Sep 2010 18:05:02 +0200
+	(Exim 4.69) (envelope-from <zmoelnig@iem.at>) id 1Ot0hu-000546-0D
+	for alsa-devel@alsa-project.org; Tue, 07 Sep 2010 18:07:38 +0200
+In-Reply-To: <4C8662AD.1040607@iem.at>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,66 +29,35 @@ List-Id: alsa-devel@alsa-project.org
 
 This is a cryptographically signed message in MIME format.
 
---===============5823071712302800499==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms060501010303040700040605"
+--===============5752133622187941800==
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms040207010306040803030501"
 
 This is a cryptographically signed message in MIME format.
 
---------------ms060501010303040700040605
+--------------ms040207010306040803030501
 Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: quoted-printable
 
-hi all,
+On 2010-09-07 18:05, IOhannes m zmoelnig wrote:
+> hi all,
+>=20
+> is this a bug?
+> in alsa-lib? in the debian-packages?
+>=20
 
-(just in case: sorry for double posting, i first sent from a
-non-subscribed address)
+it seems like debian compiles the package without explicitely adding the
+"--without-debug" configure-flag, does resulting in assert()ions that
+exist the application.
 
-this might have been discussed already ages ago, but i didn't find much
-on the web, and i'm a bit confused why it happens, so:
+i will file a bug-report with debian, so they can fix this.
 
-i'm developing/bugfixing an application using (well, obviously) alsa,
-and i get crashes with assertions.
+in the meantime: why is it the default to compile with asserts?
 
-my setup:
-- nvidia CK804 onboard soundcard (this soundcard seems to only be able
-to run at 48kHz)
-- debian squeeze/sid (libasound2 1.0.23-1)
-
-what i'm trying to do:
-i'm requesting my "plughw" device with 44100Hz
-the request is done with something like:
- rate=3D44100;
- err =3D snd_pcm_hw_params_set_rate_min(handle, params, &rate, 0);
-[...]
- err =3D snd_pcm_hw_params(handle, params);
-
-what happens:
-in the snd_pcm_hw_params(), my program exits with:
-"interval_inline.h:52: snd_interval_single: Assertion
-`!snd_interval_empty(i)' failed."
-
-sidenotes:
-if i use the "hw" device, i get away with the wrong samplerate (no
-crash, though the requested samplerate does not take effect)
-
-
-now i understand, that my soundcard does not accept 44100Hz.
-what i don't understand is, that alsa-lib crashes with an assertion error=
-=2E
-i expect snd_pcm_hw_params() return an error!=3D0 if it fails to do what
-it is asked to do.
-imho, a library should _never ever_ crash the application.
-
-
-
-is this a bug?
-in alsa-lib? in the debian-packages?
-
-fgmasdr
+fgamdf
 IOhannes
 
 
---------------ms060501010303040700040605
+--------------ms040207010306040803030501
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -146,7 +117,7 @@ dW5hTQQJn0IbeTGCA5QwggOQAgEBMIGAMHkxEDAOBgNVBAoTB1Jvb3QgQ0ExHjAcBgNVBAsT
 FWh0dHA6Ly93d3cuY2FjZXJ0Lm9yZzEiMCAGA1UEAxMZQ0EgQ2VydCBTaWduaW5nIEF1dGhv
 cml0eTEhMB8GCSqGSIb3DQEJARYSc3VwcG9ydEBjYWNlcnQub3JnAgMGKXAwCQYFKw4DAhoF
 AKCCAegwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTAwOTA3
-MTYwNTAxWjAjBgkqhkiG9w0BCQQxFgQUKlBq2WQw8mPKOHqL0xygOAx/EiIwXwYJKoZIhvcN
+MTYwNzM3WjAjBgkqhkiG9w0BCQQxFgQU07A+UIlygCXR5gX9e9NQ3YnD6zQwXwYJKoZIhvcN
 AQkPMVIwUDALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqG
 SIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEoMIGRBgkrBgEEAYI3EAQxgYMwgYAw
 eTEQMA4GA1UEChMHUm9vdCBDQTEeMBwGA1UECxMVaHR0cDovL3d3dy5jYWNlcnQub3JnMSIw
@@ -154,15 +125,15 @@ IAYDVQQDExlDQSBDZXJ0IFNpZ25pbmcgQXV0aG9yaXR5MSEwHwYJKoZIhvcNAQkBFhJzdXBw
 b3J0QGNhY2VydC5vcmcCAwYpcDCBkwYLKoZIhvcNAQkQAgsxgYOggYAweTEQMA4GA1UEChMH
 Um9vdCBDQTEeMBwGA1UECxMVaHR0cDovL3d3dy5jYWNlcnQub3JnMSIwIAYDVQQDExlDQSBD
 ZXJ0IFNpZ25pbmcgQXV0aG9yaXR5MSEwHwYJKoZIhvcNAQkBFhJzdXBwb3J0QGNhY2VydC5v
-cmcCAwYpcDANBgkqhkiG9w0BAQEFAASCAQBX+/48kWBe7C+8uVCDfnNVX9SRHncCHkWx2wFr
-7evn4adhJXKFwJ7WNyVCrrswuF1or51ylS//O4cX5YoT+cm3JECOzJ8H4WkNxTTAYZHfyzMU
-AqJqNBf5BvnbCLV4gx046JFW0HARHFmzo/aK1VLV+kVyQNvWY5T/BxaW9ICj7/9PlbJnW816
-YByS83KlMi3b2xjTf9NOcubdgLt3TWQ1xhE/fBqCMKUyzo/QlSvJmGeU9HIUCoDILLdX8XuN
-Abd+qcDxZ6lX85pGg6gEeIlWe3b7KGsH0/wga6BYwiO2XZN1NTOlH7oLFb/UD8OvrCtAvSmh
-IGNDueA25o+xlZcJAAAAAAAA
---------------ms060501010303040700040605--
+cmcCAwYpcDANBgkqhkiG9w0BAQEFAASCAQBeq/bjzw45PUWyHifwPwuahbFqIQ0pKU5AxAHP
+hhoYlhLfchtfZ24SlDJ3t8HbVXOes6Pca32762fmLnAr8FRC4EkEKk/i9mY5z4rGUkNexJVN
+KueBj+SCgq8YjaKof/Rs8WvMMzkeJOoYHRkHMrQI/8AhGVk/+DkdcyL0SbEv9CSHC/wF/uB/
+AtWNktfZyeFd9pdFB8ZNn448yFZZSl1oEIfbYQ+zwzN6T5aRALRDfrD3NLbXGgZPZvH0AfnQ
+6i9edMZuoBU/61BMQ6crR0TxyYd3ZHvtwfj9T/eBXkRn/nYJQrxw4sS6GW2Aj4sKUl5EJiYv
+1iAZ2vkVt2CcyUZSAAAAAAAA
+--------------ms040207010306040803030501--
 
---===============5823071712302800499==
+--===============5752133622187941800==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -173,4 +144,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============5823071712302800499==--
+--===============5752133622187941800==--
