@@ -1,20 +1,24 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Since kernel-2.6.32 alsactl thinks my sound card
- is "Unknown"
-Date: Tue, 7 Sep 2010 17:10:25 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1009071709560.10278@eeebox2.perex-int.cz>
-References: <1283357723.8159.4.camel@localhost.localdomain>
-	<s5hmxs0zgxs.wl%tiwai@suse.de>
-	<AANLkTinrEAooT1ZUnsxy+bA2CNtSAeOwOT1WSNdTL0o1@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: multi-component: SAMSUNG: Modify the
+ name of I2S driver
+Date: Tue, 7 Sep 2010 16:39:02 +0100
+Message-ID: <20100907153902.GC8678@rakim.wolfsonmicro.main>
+References: <4C4CEDE1.5010605@samsung.com>
+	<B9F57799-417E-4006-80D4-7768EE347BF5@opensource.wolfsonmicro.com>
+	<AANLkTi=20B0K+87HeRjdKAONVjwEhar09QRmj-SB2zbO@mail.gmail.com>
+	<AANLkTimV+mJF_Qz2JvDcAUc+pApVApFQMHkLK32w+MWp@mail.gmail.com>
+	<1280141088.3072.33.camel@odin>
+	<AANLkTi=5JvZup0c9xXrgYkFszLd_T-wPbPZnuu4bRQ9W@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 26563244CD
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2D342244CE
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Sep 2010 17:10:28 +0200 (CEST)
-In-Reply-To: <AANLkTinrEAooT1ZUnsxy+bA2CNtSAeOwOT1WSNdTL0o1@mail.gmail.com>
+	Tue,  7 Sep 2010 17:39:04 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=5JvZup0c9xXrgYkFszLd_T-wPbPZnuu4bRQ9W@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,61 +28,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Jassi Brar <jassisinghbrar@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kyungmin Park <kmpark@infradead.org>, Joonyoung Shim <jy0922.shim@samsung.com>, "jassi.brar@samsung.com" <jassi.brar@samsung.com>, Chanwoo Choi <cw00.choi@samsung.com>, ben-linux <ben-linux@fluff.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 7 Sep 2010, Raymond Yau wrote:
+On Tue, Sep 07, 2010 at 04:32:17PM +0900, Jassi Brar wrote:
 
-> 2010/9/2 Takashi Iwai <tiwai@suse.de>
->
->> At Wed, 01 Sep 2010 18:15:23 +0200,
->> Pacho Ramos wrote:
->>>
->>> This is an old problem I am suffering since kernel-2.6.32 and that is
->>> still unresolved even with 2.6.35 and alsa-utils-1.0.23:
->>> http://www.spinics.net/lists/alsa-devel/msg31422.html
->>>
->>> If you follow the thread, it got stalled in:
->>> http://www.spinics.net/lists/alsa-devel/msg31433.html
->>>
->>> In summary, I get the following:
->>> # alsactl -f /etc/asound.state restore /dev/snd/controlC0
->>> Unknown hardware: "VIA8237" "Realtek ALC658D" "AC97a:414c4781" "0x147b"
->>> "0x1415"
->>> Hardware is initialized using a guess method
->>> # echo $?
->>> 99
->>
->> This is no error.  It means that alsactl has no special workaround
->> for your hardware.  The return code of alsactl looks strange.
->> I thought Jaroslav has already fixed it, though...
->>
->>
->> Takashi
->>
->>>
->>> As you can see, the exit code was solved, but I don't know why my
->>> hardware is still shown as "Unknown" even if
->>> via82xx.c clearly has some lines for my device:
->>>         SND_PCI_QUIRK(0x147b, 0x1415, "ABIT AV8", VIA_DXS_NO_VRA),
->>>
->>>
->>
->
->
-> why "alsactl init" does not select "Mic" as "Capture Source" for AC97 codec
-> ?
->
-> it seem "alsactl init" does not set "Mic Boost" too
+> Since the changes due to multi-component support has already overridden the
+> 'prohibitions' Ben had put in place and Ben doesn't seem to be bothered by these
+> changes(no reply)... I guess we can move ahead with further cosmetic and name
+> changing that people so long for ?
 
-This patch should change the initial script to set these two controls:
-
-http://git.alsa-project.org/?p=alsa-utils.git;a=commitdiff;h=52bd2f8acedaacce32ca8e89cb1f21683658648e
-
- 					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+I guess now's a good time to look at it, yes.
