@@ -1,21 +1,25 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/5] fbdev: sh_mobile_hdmi: add new label
- for sound error path
-Date: Tue, 7 Sep 2010 10:59:08 +0100
-Message-ID: <20100907095908.GB7886@rakim.wolfsonmicro.main>
-References: <w3pvd6i6ois.wl%kuninori.morimoto.gx@renesas.com>
-	<w3ppqwq6ofp.wl%kuninori.morimoto.gx@renesas.com>
-	<Pine.LNX.4.64.1009070912140.1345@axis700.grange>
+Subject: Re: [PATCH 2/4 v2] ASoC: Add sh_mobile_hdmi sound
+	support
+Date: Tue, 7 Sep 2010 11:02:55 +0100
+Message-ID: <20100907100255.GC7886@rakim.wolfsonmicro.main>
+References: <w3p39tv72sx.wl%kuninori.morimoto.gx@renesas.com>
+	<w3pwrr75o6d.wl%kuninori.morimoto.gx@renesas.com>
+	<Pine.LNX.4.64.1009060932430.20387@axis700.grange>
+	<20100906102557.GE10367@rakim.wolfsonmicro.main>
+	<Pine.LNX.4.64.1009070910370.1345@axis700.grange>
+	<20100907094047.GA7886@rakim.wolfsonmicro.main>
+	<Pine.LNX.4.64.1009071152330.1345@axis700.grange>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5FD5F24491
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BA70424438
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Sep 2010 11:59:11 +0200 (CEST)
+	Tue,  7 Sep 2010 12:02:56 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1009070912140.1345@axis700.grange>
+In-Reply-To: <Pine.LNX.4.64.1009071152330.1345@axis700.grange>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,24 +30,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Paul Mundt <lethal@linux-sh.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Linux-SH <linux-sh@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 07, 2010 at 09:13:57AM +0200, Guennadi Liakhovetski wrote:
-> On Tue, 7 Sep 2010, Kuninori Morimoto wrote:
+On Tue, Sep 07, 2010 at 11:56:34AM +0200, Guennadi Liakhovetski wrote:
+> On Tue, 7 Sep 2010, Mark Brown wrote:
 
-> > Reported-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > Could you please be more explicit here?  Register I/O needs to happen
+> > somehow...
 
-> You have not addressed all of my comments to your sh_mobile_hdmi.c patch 
+> Sorry, maybe I am missing something, but my understanding is, that the 
+> ASoC core knows nothing about codec's specific register layout, so, the 
+> core itself cannot initiate any register IO. So, I presume, there can be 
+> only two instances, that can do that - the codec driver itself and some 
+> user-space (debugging) programs. The driver doesn't use cached register 
+> accesses, so, it can access the registers directly, and it doesn't have to 
+> provide an ability to the user-space to access registers - if it chooses 
+> so. So, I don't see, who should be trying to use generic ASoC register 
+> access routines here.
 
-Please do this Morimoto-san - if you wish to leave things for addressing
-on a subsequent patch series then just note that in your covering mail
-or similar.
-
-> and you have not explained, why you do not address them. On the whole, I 
-> am still in favour of reverting that original patch and redoing it.
-
-It would seem like we'd make more progress if the two of you could both
-work on incrementally fixing the problems with the current code rather
-than blocking its inclusion totally.
+All register I/O, cached or not, is supposed to go through the register
+I/O operations.  Any cache is abstraced away within those operations.
+Since the driver presumably needs do do some I/O (even if only in the
+hw_params() you have identified as missing) I would expect it to provide
+register I/O functionality.
