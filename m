@@ -1,19 +1,18 @@
 From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: Re: [PATCH 1/5] fbdev: sh_mobile_hdmi: modify HDMI
- flags name to more specific
-Date: Tue, 7 Sep 2010 09:06:29 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.1009070905220.1345@axis700.grange>
+Subject: Re: [PATCH 4/5] ASoC: fsi-hdmi: remove unneeded header
+Date: Tue, 7 Sep 2010 09:06:56 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.1009070906380.1345@axis700.grange>
 References: <w3pvd6i6ois.wl%kuninori.morimoto.gx@renesas.com>
-	<w3ptym26ogw.wl%kuninori.morimoto.gx@renesas.com>
+	<w3pocca6ofi.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.gmx.net (mailout-de.gmx.net [213.165.64.22])
-	by alsa0.perex.cz (Postfix) with SMTP id 0A320243FA
+	by alsa0.perex.cz (Postfix) with SMTP id 1EDCA243FA
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Sep 2010 09:06:22 +0200 (CEST)
-In-Reply-To: <w3ptym26ogw.wl%kuninori.morimoto.gx@renesas.com>
+	Tue,  7 Sep 2010 09:06:52 +0200 (CEST)
+In-Reply-To: <w3pocca6ofi.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,67 +31,27 @@ On Tue, 7 Sep 2010, Kuninori Morimoto wrote:
 > Reported-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > ---
->  drivers/video/sh_mobile_hdmi.c |   10 +++++-----
->  include/video/sh_mobile_hdmi.h |   10 +++++-----
->  2 files changed, 10 insertions(+), 10 deletions(-)
+>  sound/soc/sh/fsi-hdmi.c |    1 -
+>  1 files changed, 0 insertions(+), 1 deletions(-)
 > 
-> diff --git a/drivers/video/sh_mobile_hdmi.c b/drivers/video/sh_mobile_hdmi.c
-> index 16187d6..5e855cc 100644
-> --- a/drivers/video/sh_mobile_hdmi.c
-> +++ b/drivers/video/sh_mobile_hdmi.c
-> @@ -396,19 +396,19 @@ static void sh_hdmi_audio_config(struct sh_hdmi *hdmi)
->  	 * [6:5] set required down sampling rate if required
->  	 * [4:3] set required audio source
->  	 */
-> -	switch (pdata->flags & HDMI_SRC_MASK) {
-> +	switch (pdata->flags & HDMI_SND_SRC_MASK) {
->  	default:
->  		/* FALL THROUGH */
-> -	case HDMI_SRC_I2S:
-> +	case HDMI_SND_SRC_I2S:
->  		data = (0x0 << 3);
+> diff --git a/sound/soc/sh/fsi-hdmi.c b/sound/soc/sh/fsi-hdmi.c
+> index 950e3e0..fcda149 100644
+> --- a/sound/soc/sh/fsi-hdmi.c
+> +++ b/sound/soc/sh/fsi-hdmi.c
+> @@ -11,7 +11,6 @@
+>  
+>  #include <linux/platform_device.h>
+>  #include <sound/sh_fsi.h>
 
-While at it you could as well remove these parenthesis - in all 4 cases, 
-of course.
+Is this header needed?
 
 Thanks
 Guennadi
 
->  		break;
-> -	case HDMI_SRC_SPDIF:
-> +	case HDMI_SND_SRC_SPDIF:
->  		data = (0x1 << 3);
->  		break;
-> -	case HDMI_SRC_DSD:
-> +	case HDMI_SND_SRC_DSD:
->  		data = (0x2 << 3);
->  		break;
-> -	case HDMI_SRC_HBR:
-> +	case HDMI_SND_SRC_HBR:
->  		data = (0x3 << 3);
->  		break;
->  	}
-> diff --git a/include/video/sh_mobile_hdmi.h b/include/video/sh_mobile_hdmi.h
-> index 929c2d3..1e1aa54 100644
-> --- a/include/video/sh_mobile_hdmi.h
-> +++ b/include/video/sh_mobile_hdmi.h
-> @@ -23,11 +23,11 @@ struct device;
->   */
+> -#include <video/sh_mobile_hdmi.h>
 >  
->  /* Audio source select */
-> -#define HDMI_SRC_MASK		(0xF << 0)
-> -#define HDMI_SRC_I2S		(0 << 0) /* default */
-> -#define HDMI_SRC_SPDIF		(1 << 0)
-> -#define HDMI_SRC_DSD		(2 << 0)
-> -#define HDMI_SRC_HBR		(3 << 0)
-> +#define HDMI_SND_SRC_MASK	(0xF << 0)
-> +#define HDMI_SND_SRC_I2S	(0 << 0) /* default */
-> +#define HDMI_SND_SRC_SPDIF	(1 << 0)
-> +#define HDMI_SND_SRC_DSD	(2 << 0)
-> +#define HDMI_SND_SRC_HBR	(3 << 0)
->  
->  struct sh_mobile_hdmi_info {
->  	struct sh_mobile_lcdc_chan_cfg	*lcd_chan;
+>  static struct snd_soc_dai_link fsi_dai_link = {
+>  	.name		= "HDMI",
 > -- 
 > 1.7.0.4
 > 
