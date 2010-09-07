@@ -1,22 +1,21 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: Re: No jack sense Acer Aspire 7736ZG laptop
-Date: Tue, 07 Sep 2010 14:15:54 +0200
-Message-ID: <1283861754.3951.40.camel@mattotaupa>
-References: <4C827206.9080300@gmail.com>
+From: Arnaud Patard (Rtp) <arnaud.patard@rtp-net.org>
+Subject: Re: [patch 1/3] ASoC: add support for alc562[123]
+	codecs
+Date: Tue, 07 Sep 2010 15:23:20 +0200
+Message-ID: <87d3spd6wn.fsf@lechat.rtp-net.org>
+References: <20100907070127.305740006@rtp-net.org>
+	<20100907071008.224980268@rtp-net.org>
+	<20100907102112.GE7886@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1340718851932283264=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8698F243CF
+Received: from lechat.rtp-net.org (lechat.rtp-net.org [88.191.19.38])
+	by alsa0.perex.cz (Postfix) with ESMTP id 01DA72443E
 	for <alsa-devel@alsa-project.org>;
-	Tue,  7 Sep 2010 14:15:57 +0200 (CEST)
-Received: from f053042255.adsl.alicedsl.de ([78.53.42.255]
-	helo=[192.168.178.21])
-	by mail.gw90.de with esmtpsa (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
-	id 1Osx5f-0007WK-Ug
-	for alsa-devel@alsa-project.org; Tue, 07 Sep 2010 12:15:56 +0000
-In-Reply-To: <4C827206.9080300@gmail.com>
+	Tue,  7 Sep 2010 15:19:56 +0200 (CEST)
+In-Reply-To: <20100907102112.GE7886@rakim.wolfsonmicro.main> (Mark Brown's
+	message of "Tue\, 7 Sep 2010 11\:21\:12 +0100")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,70 +25,221 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Saeed Bishara <saeed@marvell.com>, Martin Michlmayr <tbm@cyrius.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+Mark Brown <broonie@opensource.wolfsonmicro.com> writes:
 
---===============1340718851932283264==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-yvtxLDjtUIMoY9F5iH/5"
+> On Tue, Sep 07, 2010 at 09:01:28AM +0200, Arnaud Patard wrote:
+>> This patch is adding support for alc562[123] codecs. It's based
+>> on the source code available in HP source code and other places.
+>> 
+>> Signed-off-by: Arnaud Patard <arnaud.patard@rtp-net.org>
+>
+>> +++ sound-2.6/sound/soc/codecs/Kconfig	2010-09-06 23:29:31.000000000 +0200
+>> @@ -159,6 +159,9 @@
+>>  config SND_SOC_PCM3008
+>>         tristate
+>>  
+>> +config SND_SOC_ALC5623
+>> +       tristate
+>> +
+>
+> Keep this and the Makefile sorted.  Also remember to add this to
+> SND_SOC_ALL_CODECS.
 
+ok
 
---=-yvtxLDjtUIMoY9F5iH/5
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+>
+>> +#define ALC5623_VERSION "0.01"
+>
+> git should provide enough tracking for version numbers.
 
-Dear Hans,
+oops. forgot to kill it. It's unused.
 
+>
+>> +static int caps_charge = 2000;
+>> +module_param(caps_charge, int, 0);
+>> +MODULE_PARM_DESC(caps_charge, "ALC5623 cap charge time (msecs)");
+>
+>> +static int alc5623_write_mask(struct snd_soc_codec *codec, unsigned int reg,
+>> +		unsigned int value, unsigned int mask)
+>
+> This is snd_soc_update_bits().
 
-Am Samstag, den 04.09.2010, 18:21 +0200 schrieb Hans L=C3=B6vhaga:
+great. will use it.
 
-> Headphones doesn't cut front speakers.
->=20
-> Have tried adding this line to alsa-base.conf
-> options snd-hda-intel model=3D? enable=3D1 index=3D0
-> (alsa-info script ran with above line commented out)
->=20
-> Havent tried all available models for ALC888 but 3stack-dig and acer=20
-> didn't change anything. acer-aspire gave no sound at all.
->=20
-> Ubuntu 10.04
-> Acer Aspire 7736ZG
->=20
-> New install, problem was there from first boot.
+>
+>> +/*
+>> + * problem is :
+>> + * - hp mixer has 2 bits in PM reg 0x3C
+>> + * - adc input of the hp mixer has 2 mute bits
+>> + * - all the other inputs of the hp mixer have 1 bit
+>> + * =>  the bits for adc and pm can't be used separately
+>> + */
+>> +static int hp_mixer_event(struct snd_soc_dapm_widget *w,
+>> +	struct snd_kcontrol *kcontrol, int event)
+>> +{
+>> +	u16 reg;
+>> +	u16 mask = ALC5623_PWR_ADD2_L_HP_MIXER|ALC5623_PWR_ADD2_R_HP_MIXER;
+>> +
+>> +	reg = snd_soc_read(w->codec, ALC5623_PWR_MANAG_ADD2);
+>> +	reg &= ~mask;
+>> +	if (event == SND_SOC_DAPM_POST_PMU)
+>> +		reg |= mask;
+>> +	return snd_soc_write(w->codec, ALC5623_PWR_MANAG_ADD2, reg);
+>> +}
+>
+> It looks like it'd be simpler to do something like:
+>
+> 	{ "HPL", NULL, "HP" },
+> 	{ "HPR", NULL, "HP" },
+>
+> then have the two ADC channels feed into the left and right channels of
+> the headphone while having the single switches feed into the HP widget
+> (which would be a NOPM dummy widget for routing purposes).
 
-you could open a report at Launchpad (and report back the number). I
-have seen some patches sent to the list from the Ubuntu guys. Maybe you
-will get their attention this way. Everyone is always quite busy.
+hmm... I'm not sure to understand correctly. The two bits
+ALC5623_PWR_ADD2_?_HP_MIXER are for the HP mixers. There are 2 mixers
+but I'm doing like there's only 1 mixer due to the single bit inputs.
+Can you please give more details about your suggestion ?
 
+>
+>> +static int amp_mixer_event(struct snd_soc_dapm_widget *w,
+>> +	struct snd_kcontrol *kcontrol, int event)
+>> +{
+>> +	/* index 0x46: class-d internal register */
+>> +	snd_soc_write(w->codec, ALC5623_HID_CTRL_INDEX, 0x46);
+>> +	if (event == SND_SOC_DAPM_PRE_PMU)
+>> +		snd_soc_write(w->codec, ALC5623_HID_CTRL_DATA, 0xFFFF);
+>> +	else
+>> +		snd_soc_write(w->codec, ALC5623_HID_CTRL_DATA, 0);
+>> +	return 0;
+>> +}
+>
+> A switch statement would be more idiomatic here.
+>
 
-Thanks,
+ok
 
-Paul
+>> +static const struct soc_enum alc5623_enum[] = {
+>> +SOC_ENUM_SINGLE(ALC5623_OUTPUT_MIXER_CTRL, 14, 4, alc5623_spk_n_sour_sel),
+>> +SOC_ENUM_SINGLE(ALC5623_OUTPUT_MIXER_CTRL, 9, 2, alc5623_hpl_out_input_sel),
+>
+> Don't put your enums in an array, declare them as variables.  The enum
+> arrays are harder to read and vastly more error prone.
+>
+ok
 
---=-yvtxLDjtUIMoY9F5iH/5
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
+>> +	if (pll_div) {
+>> +		snd_soc_write(codec, ALC5623_GLOBAL_CLK_CTRL_REG, gbl_clk);
+>> +		snd_soc_write(codec, ALC5623_PLL_CTRL, pll_div);
+>> +		alc5623_write_mask(codec, ALC5623_PWR_MANAG_ADD2,
+>> +					ALC5623_PWR_ADD2_PLL,
+>> +					ALC5623_PWR_ADD2_PLL);
+>> +		gbl_clk |= ALC5623_GBL_CLK_SYS_SOUR_SEL_PLL;
+>> +		snd_soc_write(codec, ALC5623_GLOBAL_CLK_CTRL_REG, gbl_clk);
+>> +	}
+>
+> Should complain if we fail to find a configuration.
+>
+>> +#define ALC5623_ADD3_POWER_EN (ALC5623_PWR_ADD3_MAIN_BIAS \
+>> +	| ALC5623_PWR_ADD3_MIC1_BOOST_AD)
+>
+>> +#define ALC5623_ADD1_POWER_EN \
+>> +	(ALC5623_PWR_ADD1_MAIN_I2S_EN | ALC5623_PWR_ADD1_MIC1_BIAS_EN \
+>> +	| ALC5623_PWR_ADD1_SHORT_CURR_DET_EN | ALC5623_PWR_ADD1_SOFTGEN_EN \
+>> +	| ALC5623_PWR_ADD1_DEPOP_BUF_HP | ALC5623_PWR_ADD1_HP_OUT_AMP \
+>> +	| ALC5623_PWR_ADD1_HP_OUT_ENH_AMP)
+>
+>> +#define ALC5623_ADD1_POWER_EN_5622 \
+>> +	(ALC5623_PWR_ADD1_MAIN_I2S_EN | ALC5623_PWR_ADD1_MIC1_BIAS_EN \
+>> +	| ALC5623_PWR_ADD1_SHORT_CURR_DET_EN \
+>> +	| ALC5623_PWR_ADD1_HP_OUT_AMP)
+>
+> Most of the stuff in here looks like it ought to be managed by DAPM?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
+hmm... I thought it was easier/better done like this. Is it a hard
+requirement ?
 
-iEYEABECAAYFAkyGLPoACgkQPX1aK2wOHViN9gCeI7v5XQLBUampgTX6T0F6TqzM
-9tUAniIgiDGTPdJioNj4b1RsO+dGLxWh
-=53Ed
------END PGP SIGNATURE-----
+>
+>> +static int alc5623_probe(struct snd_soc_codec *codec)
+>> +{
+>> +	struct alc5623_priv *alc5623 = snd_soc_codec_get_drvdata(codec);
+>> +	int ret;
+>> +
+>> +	INIT_DELAYED_WORK(&codec->delayed_work, alc5623_work);
+>> +	schedule_delayed_work(&codec->delayed_work,
+>> +				msecs_to_jiffies(caps_charge));
+>
+> Since we now support out of line resume for ASoC devices (so we don't
+> hold up the rest of the system) it should be possible to just do this
+> stuff in the set_bias_level() function rather than faffing around with
+> delayed work like this.  This is less racy.
+>
 
---=-yvtxLDjtUIMoY9F5iH/5--
+I was even wondering about removing that stuff but as it was there in
+original driver, I choose to keep it. WDYT ?
 
+>> +	alc5623_reset(codec);
+>> +	alc5623_fill_cache(codec);
+>
+> Don't we know the defaults for the device?
 
---===============1340718851932283264==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+as this driver is handling 3 codec with some small differencies, instead
+of having to hunt for the changes between the default values, I prefered
+reading them from the device.
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>> +	if (alc5623->add_ctrl) {
+>> +		snd_soc_write(codec, ALC5623_ADD_CTRL_REG,
+>> +				alc5623->add_ctrl);
+>> +	}
+>
+> Hrm?
 
---===============1340718851932283264==--
+this register contains some board specific values and I didn't see how
+it could be handled except by using platform_data.
+
+>
+>> +	if (alc5623->jack_det_ctrl) {
+>> +		snd_soc_write(codec, ALC5623_JACK_DET_CTRL,
+>> +				alc5623->jack_det_ctrl);
+>> +	}
+>
+> I didn't see any jack detection support in the driver, and I wouldn't
+> expect to see anything exported to userspace for it?
+
+the jack detection is handled by the codec itself. The pin are connected
+to gpio on it and the codec is switching channels on/off without user
+intervention. Nothing to do on driver side except configuring this
+register.
+
+>
+>> +	if ((vid1 != 0x10ec) || (vid2 != id->driver_data)) {
+>> +		dev_err(&client->dev, "unknown or wrong codec\n");
+>> +		return -ENODEV;
+>> +	}
+>
+> Better to say what the IDs you were looking at are, especially for id2.
+>
+>> --- /dev/null	1970-01-01 00:00:00.000000000 +0000
+>> +++ sound-2.6/include/linux/alc5623.h	2010-09-06 23:29:31.000000000 +0200
+>
+> include/sound
+>
+>> @@ -0,0 +1,8 @@
+>> +#ifndef _INCLUDE_LINUX_ALC5623_H
+>> +#define _INCLUDE_LINUX_ALC5623_H
+>> +struct alc5623_platform_data {
+>> +	unsigned int add_ctrl;
+>> +	unsigned int jack_det_ctrl;
+>> +};
+>
+> Some documentation explaining what these are would probably be useful.
+
+The names are really near to the names in the specs. As you need to look
+at the specs to have their values, I thought it would be enough.
+
+Arnaud
