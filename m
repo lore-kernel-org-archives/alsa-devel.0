@@ -1,21 +1,49 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] OMAP: McBSP: Fix static function warning
-Date: Wed, 8 Sep 2010 10:13:30 +0100
-Message-ID: <20100908091330.GC31253@rakim.wolfsonmicro.main>
-References: <1283916223-23567-1-git-send-email-manjugk@ti.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [patch] ALSA: rawmidi: cleanup the get next midi
+	device ioctl
+Date: Wed, 08 Sep 2010 11:40:16 +0200
+Message-ID: <4C875A00.7030005@ladisch.de>
+References: <20100908085308.GC32047@bicker>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1283916223-23567-1-git-send-email-manjugk@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "G, Manjunath Kondaiah" <manjugk@ti.com>
-Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, Jarkko Nikula <jhnikula@gmail.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id D249F24441
+	for <alsa-devel@alsa-project.org>;
+	Wed,  8 Sep 2010 11:39:50 +0200 (CEST)
+In-Reply-To: <20100908085308.GC32047@bicker>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Dan Carpenter <error27@gmail.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>, Ulrich Drepper <drepper@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 08, 2010 at 08:53:43AM +0530, G, Manjunath Kondaiah wrote:
-> This patch fixes sparse warning due non declaration of static function
+Dan Carpenter wrote:
+> I'm doing an audit to find integer overflows and my static checker
+> complained that in the original code "device + 1" could overflow.  The
+> overflow is harmless, but it's still worth cleaning up.  The other thing
+> that I noticed is that if you pass in a device which is higher than
+> SNDRV_RAWMIDI_DEVICES then it doesn't return an error code but just
+> tells you that the next device is "device + 1".
 > 
-> sound/soc/omap/omap-mcbsp.c:783:5: warning: symbol 'omap_mcbsp_st_info_volsw' was not declared. Should it be static?
+> I have rewritten it to just return -EINVAL if you pass in a bogus value
+> that's either too high or too low.
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+A negative value is a valid input.
+
+> +		if (device > SNDRV_RAWMIDI_DEVICES)
+> +			return -EINVAL;
+
+		if (device >= SNDRV_RAWMIDI_DEVICES)
+
+
+Regards,
+Clemens
