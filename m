@@ -1,19 +1,20 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] OMAP: McBSP: Fix static function warning
-Date: Wed, 08 Sep 2010 12:14:59 +0100
-Message-ID: <1283944499.3097.98.camel@odin>
-References: <1283916223-23567-1-git-send-email-manjugk@ti.com>
+From: 6275 kson <6275.kson@gmail.com>
+Subject: USB Audio device syncpipe error
+Date: Wed, 8 Sep 2010 14:40:55 -0500
+Message-ID: <AANLkTi=EXqFDPn+a1K+OeLA+G5pnh0yMt6nX2VA_wQDD@mail.gmail.com>
+References: <AANLkTinzHSVgsUocCMBTW=+A=b2qc6vzKuq7t9jzgojX@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id CABBC24489
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9E56710383A
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Sep 2010 13:15:04 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so7099307wyb.38
-	for <alsa-devel@alsa-project.org>; Wed, 08 Sep 2010 04:15:04 -0700 (PDT)
-In-Reply-To: <1283916223-23567-1-git-send-email-manjugk@ti.com>
+	Wed,  8 Sep 2010 21:40:57 +0200 (CEST)
+Received: by ywg8 with SMTP id 8so269801ywg.38
+	for <alsa-devel@alsa-project.org>; Wed, 08 Sep 2010 12:40:56 -0700 (PDT)
+In-Reply-To: <AANLkTinzHSVgsUocCMBTW=+A=b2qc6vzKuq7t9jzgojX@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,47 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "G, Manjunath Kondaiah" <manjugk@ti.com>
-Cc: Nishanth Menon <nm@ti.com>, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, linux-omap@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-09-08 at 08:53 +0530, G, Manjunath Kondaiah wrote:
-> This patch fixes sparse warning due non declaration of static function
-> 
-> sound/soc/omap/omap-mcbsp.c:783:5: warning: symbol 'omap_mcbsp_st_info_volsw' was not declared. Should it be static?
-> 
-> Signed-off-by: G, Manjunath Kondaiah <manjugk@ti.com>
-> Cc: alsa-devel@alsa-project.org
-> Cc: Jarkko Nikula <jhnikula@gmail.com>
-> Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> Cc: Liam Girdwood <lrg@slimlogic.co.uk>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: Tony Lindgren <tony@atomide.com>
-> Cc: Nishanth Menon <nm@ti.com>
-> 
-> ---
->  sound/soc/omap/omap-mcbsp.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-> index 86f2139..5768381 100644
-> --- a/sound/soc/omap/omap-mcbsp.c
-> +++ b/sound/soc/omap/omap-mcbsp.c
-> @@ -780,7 +780,7 @@ struct snd_soc_dai omap_mcbsp_dai[] = {
->  
->  EXPORT_SYMBOL_GPL(omap_mcbsp_dai);
->  
-> -int omap_mcbsp_st_info_volsw(struct snd_kcontrol *kcontrol,
-> +static int omap_mcbsp_st_info_volsw(struct snd_kcontrol *kcontrol,
->  			struct snd_ctl_elem_info *uinfo)
->  {
->  	struct soc_mixer_control *mc =
+Hello,
 
-Applied.
-Thanks
+I am working on a usb audio device and I'm having trouble getting it to show
+up as an output device in Ubuntu's (10.4) sound preferences.  The device is
+working well with other OS's.
 
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+My syslog shows this error.
+'cannot submit syncpipe for urb 0, error -90: internal error'
+
+If someone could help me diagnose the source of the problem I would
+appreciate it very much.
+
+Here are some more details.
+The device operates at high speed but uses USB Audio Class 1.0.
+
+The output endpoint is Isochronous asynchronous and I am using a feedback
+endpoint with a 32ms polling interval.
+
+The device works with Ubuntu when running at full speed. (Input and Output
+show up in the sound preferences).
+At High Speed only the Input shows up in the sound preferences.
+
+>From my usb analyzer log I never see a request for the feedback endpoint
+when running at HS, while I do see the request at FS.
+
+Cheers,
