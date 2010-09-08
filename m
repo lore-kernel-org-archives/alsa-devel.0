@@ -1,20 +1,15 @@
-From: Seungwhan Youn <claude.youn@gmail.com>
-Subject: Re: s3c6410/s3c64xx support in ALSA
-Date: Wed, 8 Sep 2010 17:45:24 +0900
-Message-ID: <AANLkTikQz1jL0ZPC1c0+PbzQCz259TK-_NQmFzeQm29z@mail.gmail.com>
-References: <1283605929-15961-1-git-send-email-jslaby@suse.cz>
-	<290463D19D2E064191F1F96ECA480A894323EC61F0@EXMAIL02.scwf.nsc.com>
+From: Seungwhan Youn <sw.youn@samsung.com>
+Subject: [PATCH] ASoC: S3C: Fix PCM RX FIFO settings
+Date: Wed,  8 Sep 2010 17:51:36 +0900
+Message-ID: <1283935896-18469-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4AB4724430
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id D925B10387E
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Sep 2010 10:45:25 +0200 (CEST)
-Received: by wwi18 with SMTP id 18so4402673wwi.20
-	for <alsa-devel@alsa-project.org>; Wed, 08 Sep 2010 01:45:25 -0700 (PDT)
-In-Reply-To: <290463D19D2E064191F1F96ECA480A894323EC61F0@EXMAIL02.scwf.nsc.com>
+	Wed,  8 Sep 2010 11:07:09 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,29 +19,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Reddy, MR Swami" <MR.Swami.Reddy@nsc.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Seungwhan Youn <sw.youn@samsung.com>, Jassi Brar <jassisinghbrar@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Seungwhan Youn <claude.youn@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+When PCM capture, sound recorded abnormally because of RX FIFO
+threshold settings are missing. So, This patch modify PCM RX FIFO
+setting codes same as TX.
 
-On Tue, Sep 7, 2010 at 1:12 PM, Reddy, MR Swami <MR.Swami.Reddy@nsc.com> wrote:
-> Hello,
-> Could you plz let me know, if the S3C6410/S3C64XX supports in ALSA soc supported machines?
+Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+---
+ sound/soc/s3c24xx/s3c-pcm.c |    3 +++
+ sound/soc/s3c24xx/s3c-pcm.h |    3 ++-
+ 2 files changed, 5 insertions(+), 1 deletions(-)
 
-If my understand is right, smdk6410 board with wm8580(I2S) and
-WM9713(AC97) is supported based on s3c6410 soc, and you can find
-related codes in 'sound/soc/s3c24xx/*'.
-
->
-> Thanks
-> Swami
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
-
-Thanks
-Claude
+diff --git a/sound/soc/s3c24xx/s3c-pcm.c b/sound/soc/s3c24xx/s3c-pcm.c
+index 43dcc6b..deaa3f2 100644
+--- a/sound/soc/s3c24xx/s3c-pcm.c
++++ b/sound/soc/s3c24xx/s3c-pcm.c
+@@ -107,11 +107,14 @@ static void s3c_pcm_snd_rxctrl(struct s3c_pcm_info *pcm, int on)
+ 
+ 	ctl = readl(regs + S3C_PCM_CTL);
+ 	clkctl = readl(regs + S3C_PCM_CLKCTL);
++	ctl &= ~(S3C_PCM_CTL_RXDIPSTICK_MASK
++			 << S3C_PCM_CTL_RXDIPSTICK_SHIFT);
+ 
+ 	if (on) {
+ 		ctl |= S3C_PCM_CTL_RXDMA_EN;
+ 		ctl |= S3C_PCM_CTL_RXFIFO_EN;
+ 		ctl |= S3C_PCM_CTL_ENABLE;
++		ctl |= (0x20<<S3C_PCM_CTL_RXDIPSTICK_SHIFT);
+ 		clkctl |= S3C_PCM_CLKCTL_SERCLK_EN;
+ 	} else {
+ 		ctl &= ~S3C_PCM_CTL_RXDMA_EN;
+diff --git a/sound/soc/s3c24xx/s3c-pcm.h b/sound/soc/s3c24xx/s3c-pcm.h
+index 3e9bfc9..b85eaf2 100644
+--- a/sound/soc/s3c24xx/s3c-pcm.h
++++ b/sound/soc/s3c24xx/s3c-pcm.h
+@@ -22,7 +22,8 @@
+ /* PCM_CTL Bit-Fields */
+ #define S3C_PCM_CTL_TXDIPSTICK_MASK		(0x3f)
+ #define S3C_PCM_CTL_TXDIPSTICK_SHIFT	(13)
+-#define S3C_PCM_CTL_RXDIPSTICK_MSK		(0x3f<<7)
++#define S3C_PCM_CTL_RXDIPSTICK_MASK		(0x3f)
++#define S3C_PCM_CTL_RXDIPSTICK_SHIFT	(7)
+ #define S3C_PCM_CTL_TXDMA_EN		(0x1<<6)
+ #define S3C_PCM_CTL_RXDMA_EN		(0x1<<5)
+ #define S3C_PCM_CTL_TXMSB_AFTER_FSYNC	(0x1<<4)
+-- 
+1.6.2.5
