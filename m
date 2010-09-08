@@ -1,43 +1,43 @@
-From: "G, Manjunath Kondaiah" <manjugk@ti.com>
-Subject: [PATCH] OMAP: McBSP: Fix static function warning
-Date: Wed,  8 Sep 2010 08:53:43 +0530
-Message-ID: <1283916223-23567-1-git-send-email-manjugk@ti.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: linux-omap@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Jarkko Nikula <jhnikula@gmail.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: ALSA lib pcm.c:2175 snd_pcm_open_conf) symbol
+ _snd_pcm_plug_open is not defined inside [builtin]
+Date: Wed, 08 Sep 2010 07:51:23 +0200
+Message-ID: <4C87245B.1090305@ladisch.de>
+References: <AANLkTimybMC1f_eB04G0-WeOoCapKBeeKGR7wXO3GxWm@mail.gmail.com>	<4C861FCB.3080502@ladisch.de>
+	<AANLkTinUwv_=sTQyKQT89SMZyUxNzDKvwZ0NuokGBwnL@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 1D6C2103858
+	for <alsa-devel@alsa-project.org>;
+	Wed,  8 Sep 2010 07:50:57 +0200 (CEST)
+In-Reply-To: <AANLkTinUwv_=sTQyKQT89SMZyUxNzDKvwZ0NuokGBwnL@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: asim khan <khan.asim.2009@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes sparse warning due non declaration of static function
+(please don't top-post)
 
-sound/soc/omap/omap-mcbsp.c:783:5: warning: symbol 'omap_mcbsp_st_info_volsw' was not declared. Should it be static?
+asim khan wrote:
+> ./configure CC=arm_v7_vfp_le-gcc --target=arm-linux --host=i386-linux
+> --with-pcm-plugins=dmix --with-pcm-plugins=dsnoop --with-pcm-plugins=plug
+> --with-pcm-plugins=softvol --with-pcm-plugins=asym --build=$BUILD
+> --enable-static  --enable-static --disable-debug --disable-python
+> --prefix=/mtd_rwarea.
 
-Signed-off-by: G, Manjunath Kondaiah <manjugk@ti.com>
-Cc: alsa-devel@alsa-project.org
-Cc: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Tony Lindgren <tony@atomide.com>
-Cc: Nishanth Menon <nm@ti.com>
+--with-pcm-plugins=dmix,dsnoop,plug,softvol,asym
 
----
- sound/soc/omap/omap-mcbsp.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 86f2139..5768381 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -780,7 +780,7 @@ struct snd_soc_dai omap_mcbsp_dai[] = {
- 
- EXPORT_SYMBOL_GPL(omap_mcbsp_dai);
- 
--int omap_mcbsp_st_info_volsw(struct snd_kcontrol *kcontrol,
-+static int omap_mcbsp_st_info_volsw(struct snd_kcontrol *kcontrol,
- 			struct snd_ctl_elem_info *uinfo)
- {
- 	struct soc_mixer_control *mc =
--- 
-1.7.0.4
-
+Regards,
+Clemens
