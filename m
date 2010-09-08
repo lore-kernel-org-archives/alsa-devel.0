@@ -1,19 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ALSA lib pcm.c:2175 snd_pcm_open_conf) symbol
- _snd_pcm_plug_open is not defined inside [builtin]
-Date: Wed, 08 Sep 2010 07:51:23 +0200
-Message-ID: <4C87245B.1090305@ladisch.de>
-References: <AANLkTimybMC1f_eB04G0-WeOoCapKBeeKGR7wXO3GxWm@mail.gmail.com>	<4C861FCB.3080502@ladisch.de>
-	<AANLkTinUwv_=sTQyKQT89SMZyUxNzDKvwZ0NuokGBwnL@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH] OMAP: McBSP: Fix static function warning
+Date: Wed, 8 Sep 2010 09:03:09 +0300
+Message-ID: <201009080903.09652.peter.ujfalusi@nokia.com>
+References: <1283916223-23567-1-git-send-email-manjugk@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 1D6C2103858
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id D1F512458E
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Sep 2010 07:50:57 +0200 (CEST)
-In-Reply-To: <AANLkTinUwv_=sTQyKQT89SMZyUxNzDKvwZ0NuokGBwnL@mail.gmail.com>
+	Wed,  8 Sep 2010 08:03:29 +0200 (CEST)
+In-Reply-To: <1283916223-23567-1-git-send-email-manjugk@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +21,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: asim khan <khan.asim.2009@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: "ext G, Manjunath Kondaiah" <manjugk@ti.com>
+Cc: Nishanth Menon <nm@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-(please don't top-post)
+On Wednesday 08 September 2010 06:23:43 ext G, Manjunath Kondaiah wrote:
+> This patch fixes sparse warning due non declaration of static function
+> 
+> sound/soc/omap/omap-mcbsp.c:783:5: warning: symbol
+> 'omap_mcbsp_st_info_volsw' was not declared. Should it be static?
+> 
+> Signed-off-by: G, Manjunath Kondaiah <manjugk@ti.com>
+> Cc: alsa-devel@alsa-project.org
+> Cc: Jarkko Nikula <jhnikula@gmail.com>
+> Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> Cc: Liam Girdwood <lrg@slimlogic.co.uk>
+> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Cc: Tony Lindgren <tony@atomide.com>
+> Cc: Nishanth Menon <nm@ti.com>
 
-asim khan wrote:
-> ./configure CC=arm_v7_vfp_le-gcc --target=arm-linux --host=i386-linux
-> --with-pcm-plugins=dmix --with-pcm-plugins=dsnoop --with-pcm-plugins=plug
-> --with-pcm-plugins=softvol --with-pcm-plugins=asym --build=$BUILD
-> --enable-static  --enable-static --disable-debug --disable-python
-> --prefix=/mtd_rwarea.
+The patch name could be ASoC: omap-mcbsp: ...
 
---with-pcm-plugins=dmix,dsnoop,plug,softvol,asym
+Other than that:
 
-
-Regards,
-Clemens
+Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
