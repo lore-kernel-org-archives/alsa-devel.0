@@ -1,17 +1,21 @@
-From: asim khan <khan.asim.2009@gmail.com>
-Subject: (no subject)
-Date: Wed, 8 Sep 2010 12:55:46 +0530
-Message-ID: <AANLkTimpjDn89D1qkS3vpf00JODjyFF4+w-=R6GDBi5m@mail.gmail.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH] OMAP: McBSP: Fix static function warning
+Date: Wed, 8 Sep 2010 10:28:36 +0300
+Message-ID: <20100908102836.04e64383.jhnikula@gmail.com>
+References: <1283916223-23567-1-git-send-email-manjugk@ti.com>
+	<201009080903.09652.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id 50A0424383
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id EC1D324383
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Sep 2010 09:25:51 +0200 (CEST)
-Received: by pzk5 with SMTP id 5so2587289pzk.38
-	for <alsa-devel@alsa-project.org>; Wed, 08 Sep 2010 00:25:46 -0700 (PDT)
+	Wed,  8 Sep 2010 09:27:53 +0200 (CEST)
+Received: by eyd9 with SMTP id 9so2713858eyd.38
+	for <alsa-devel@alsa-project.org>; Wed, 08 Sep 2010 00:27:53 -0700 (PDT)
+In-Reply-To: <201009080903.09652.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,41 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: Nishanth Menon <nm@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, "ext G,
+	Manjunath Kondaiah" <manjugk@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
- Iam using alsa lib version 1.0.22..and Iam running an alsa capture
-application.
- if Iam running this standalone application on my arm11 target ..it runs
-fine
-but when iam runnig this with my complete BD player integrated application
-it gives an error
-ALSA lib pcm.c:2175 snd_pcm_open_conf) symbol _snd_pcm_plug_open is not
-defined inside [builtin]
-cannot open audio device plughw:0,0 (No such device or address).
+On Wed, 8 Sep 2010 09:03:09 +0300
+Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
 
-I googled Which explained the errors meant I didn't have the Alsa plugins
-set via ALSA_PCM_PLUGINS in make.conf
+> On Wednesday 08 September 2010 06:23:43 ext G, Manjunath Kondaiah wrote:
+> > This patch fixes sparse warning due non declaration of static function
+> > 
+> > sound/soc/omap/omap-mcbsp.c:783:5: warning: symbol
+> > 'omap_mcbsp_st_info_volsw' was not declared. Should it be static?
+> > 
+> > Signed-off-by: G, Manjunath Kondaiah <manjugk@ti.com>
+> > Cc: alsa-devel@alsa-project.org
+> > Cc: Jarkko Nikula <jhnikula@gmail.com>
+> > Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> > Cc: Liam Girdwood <lrg@slimlogic.co.uk>
+> > Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> > Cc: Tony Lindgren <tony@atomide.com>
+> > Cc: Nishanth Menon <nm@ti.com>
+> 
+> The patch name could be ASoC: omap-mcbsp: ...
+> 
+> Other than that:
+> 
+> Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 
-I have enabled  --with-pcm-plugins  option in my configure script which will
-select all pcm-plugins
-#!/bin/sh
-./configure CC=arm_v7_vfp_le-gcc --target=arm-linux --host=i386-linux
---build=$BUILD --enable-static  --enable-pcm --with-pcm-plugins
---disable-debug --disable-python --prefix=/mtd_rwarea
+Yep, name should start with ASoC.
 
-I have checked using pcm plugins the created library(.so,.a) size is
-reduced...
-                              but still Iam getting above same error *ALSA
-lib pcm.c:2175 snd_pcm_open_conf) symbol _snd_pcm_plug_open is not defined
-inside [builtin]*
-**
-Please let me know is there any other thing i can check to solve this
-problem
-
----Thanks
-Asim
-*
-
-*
+Acked-by: Jarkko Nikula <jhnikula@gmail.com>
