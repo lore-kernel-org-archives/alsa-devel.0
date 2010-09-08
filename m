@@ -1,22 +1,18 @@
-From: Dan Carpenter <error27@gmail.com>
-Subject: [patch v2] ALSA: rawmidi: fix the get next midi device
-	ioctl
-Date: Wed, 8 Sep 2010 21:36:41 +0200
-Message-ID: <20100908193641.GA3463@bicker>
-References: <20100908085308.GC32047@bicker>
+From: walter harms <wharms@bfs.de>
+Subject: Re: [patch] sound/oss: potential integer overflow
+Date: Wed, 08 Sep 2010 11:50:20 +0200
+Message-ID: <4C875C5C.8080608@bfs.de>
+References: <20100908072632.GB32047@bicker> <s5h39tkvfez.wl%tiwai@suse.de>
+Reply-To: wharms@bfs.de
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7CFF310383A
+Received: from mx01.sz.bfs.de (mx01.sz.bfs.de [194.94.69.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 476112444B
 	for <alsa-devel@alsa-project.org>;
-	Wed,  8 Sep 2010 21:38:13 +0200 (CEST)
-Received: by yxj4 with SMTP id 4so267444yxj.38
-	for <alsa-devel@alsa-project.org>; Wed, 08 Sep 2010 12:38:11 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20100908085308.GC32047@bicker>
+	Wed,  8 Sep 2010 11:50:25 +0200 (CEST)
+In-Reply-To: <s5h39tkvfez.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,31 +22,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, kernel-janitors@vger.kernel.org, Kyle McMartin <kyle@mcmartin.ca>, Ulrich Drepper <drepper@redhat.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Dan Carpenter <error27@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-If we pass in a device which is higher than SNDRV_RAWMIDI_DEVICES then
-this function just returns device + 1 which isn't helpful.  I've
-modified it to return -EINVAL instead.
 
-Also Smatch complains because the "device + 1" could be an integer
-overflow.  It's harmless, but we may as well silence the warning.
 
-Signed-off-by: Dan Carpenter <error27@gmail.com>
----
-V2:  In the first version I made negative values return -EINVAL
+Takashi Iwai schrieb:
+> At Wed, 8 Sep 2010 09:26:32 +0200,
+> Dan Carpenter wrote:
+>> We don't want "pre_event_timeout" to be negative because that would
+>> result in a stack traces in dmesg when we schedule a negative timeout.
+>> In the original code "HZ * val" could overflow so I just moved the 
+>> check for negative below the multiply.
+> 
+> This would bring another side-effect.  When a value like 0x80001234
+> is passed, this would result in a positive value in turn.
+> We need additional check like below.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> ---
+> diff --git a/sound/core/seq/oss/seq_oss_ioctl.c b/sound/core/seq/oss/seq_oss_ioctl.c
+> index 5ac701c..b2e0789 100644
+> --- a/sound/core/seq/oss/seq_oss_ioctl.c
+> +++ b/sound/core/seq/oss/seq_oss_ioctl.c
+> @@ -191,10 +191,13 @@ snd_seq_oss_ioctl(struct seq_oss_devinfo *dp, unsigned int cmd, unsigned long ca
+>  			return 0;
+>  		if (get_user(val, p))
+>  			return -EFAULT;
+> -		if (val <= 0)
+> -			val = -1;
+> -		else
+> +		if (val < 0)
+> +			val = 0;
+> +		else {
+>  			val = (HZ * val) / 10;
+> +			if (val < 0) /* check overflow */
+> +				val = 0;
+> +		}
+>  		dp->readq->pre_event_timeout = val;
+>  		return put_user(val, p) ? -EFAULT : 0;
+>  
+> diff --git a/sound/oss/midibuf.c b/sound/oss/midibuf.c
+> index 782b3b8..b8da210 100644
+> --- a/sound/oss/midibuf.c
+> +++ b/sound/oss/midibuf.c
+> @@ -382,7 +382,11 @@ int MIDIbuf_ioctl(int dev, struct file *file,
+>  					return -EFAULT;
+>  				if (val < 0)
+>  					val = 0;
+> -				val = (HZ * val) / 10;
+> +				else {
+> +					val = (HZ * val) / 10;
+> +					if (val < 0) /* check overflow */
+> +						val = 0;
+> +				}
+>  				parms[dev].prech_timeout = val;
+>  				return put_user(val, (int __user *)arg);
+>  			
+> diff --git a/sound/oss/sequencer.c b/sound/oss/sequencer.c
+> index e85789e..f579210 100644
+> --- a/sound/oss/sequencer.c
+> +++ b/sound/oss/sequencer.c
+> @@ -1509,7 +1509,11 @@ int sequencer_ioctl(int dev, struct file *file, unsigned int cmd, void __user *a
+>  				return -EFAULT;
+>  			if (val < 0)
+>  				val = 0;
+> -			val = (HZ * val) / 10;
+> +			else {
+> +				val = (HZ * val) / 10;
+> +				if (val < 0) /* check overflow */
+> +					val = 0;
+> +			}
+>  			pre_event_timeout = val;
+>  			break;
+>  
+> --
 
-diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
-index eb68326..1633bac 100644
---- a/sound/core/rawmidi.c
-+++ b/sound/core/rawmidi.c
-@@ -829,6 +829,8 @@ static int snd_rawmidi_control_ioctl(struct snd_card *card,
- 		
- 		if (get_user(device, (int __user *)argp))
- 			return -EFAULT;
-+		if (device > SNDRV_RAWMIDI_DEVICES)
-+			return -EINVAL;
- 		mutex_lock(&register_mutex);
- 		device = device < 0 ? 0 : device + 1;
- 		while (device < SNDRV_RAWMIDI_DEVICES) {
+Perhaps a recalc_val() is here better ? That would avoid duplication
+and make sure that they behave equal.
+(see: > -		if (val <= 0)
+      > -			val = -1;
+)
+
+
+int  recalc_val(int hz, int val)
+{
+	if (val < 0)
+		return 0
+        val = (hz * val) / 10;
+	if (val < 0)
+		return 0
+
+	return val;
+}
+
+
+just my 2 cents,
+not a tested patch.
+re,
+ wh
