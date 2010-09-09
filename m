@@ -1,18 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: USB Audio device syncpipe error
-Date: Thu, 09 Sep 2010 09:50:42 +0200
-Message-ID: <4C8891D2.1020300@ladisch.de>
-References: <AANLkTinzHSVgsUocCMBTW=+A=b2qc6vzKuq7t9jzgojX@mail.gmail.com>
-	<AANLkTi=EXqFDPn+a1K+OeLA+G5pnh0yMt6nX2VA_wQDD@mail.gmail.com>
+From: Tom Corner <tom.c.corner@gmail.com>
+Subject: cmipci surround sound front-left plays on lfe
+Date: Thu, 09 Sep 2010 10:10:47 +0200
+Message-ID: <4C889687.4090603@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 7F8D124552
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id E5D2424565
 	for <alsa-devel@alsa-project.org>;
-	Thu,  9 Sep 2010 09:50:19 +0200 (CEST)
-In-Reply-To: <AANLkTi=EXqFDPn+a1K+OeLA+G5pnh0yMt6nX2VA_wQDD@mail.gmail.com>
+	Thu,  9 Sep 2010 10:10:49 +0200 (CEST)
+Received: by bwz4 with SMTP id 4so962277bwz.38
+	for <alsa-devel@alsa-project.org>; Thu, 09 Sep 2010 01:10:49 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +21,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 6275 kson <6275.kson@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-6275 kson wrote:
-> cannot submit syncpipe for urb 0, error -90: internal error
+ I've been going around and around on this.  The surround sound 5.1 is
+playing fine except channel 0 (front-left) is playing on the woofer.  I
+have a Terratec Aureon fun - CMI8738-MC6. I can redirect the output on 0
+to right-front successfully using .asoundrc and "ttable.0.1 1".  I have
+gotten desperate and have tested this card in Windows and was able to
+get it working right there. I have been using the file
+www_lynnemusic_com_surround_test.wma through mplayer and speaker-test to
+to test the setup. I am using pulseaudio, but I reconfigured my system
+without pulseaudio and get the same result.
 
-Documentation/usb/error-codes.txt says:
-| -EMSGSIZE       (a) endpoint maxpacket size is zero; it is not usable
-|                     in the current interface altsetting.
-|                 (b) ISO packet is larger than the endpoint maxpacket.
-|                 (c) requested data transfer length is invalid: negative
-|                     or too large for the host controller.
+Any help would be much appreciated.
 
-So, what is the sync packet size?
-
-
-Regards,
-Clemens
+Tom Corner
