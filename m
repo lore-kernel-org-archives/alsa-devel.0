@@ -1,17 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: cmipci surround sound front-left plays on lfe
-Date: Fri, 10 Sep 2010 09:10:26 +0200
-Message-ID: <4C89D9E2.1070008@ladisch.de>
-References: <4C89D660.4020705@gmail.com>
+Subject: Re: M-Audio Fast Track Ultra (8r) mixer: How to verify
+ dB	information?
+Date: Fri, 10 Sep 2010 09:18:29 +0200
+Message-ID: <4C89DBC5.7070906@ladisch.de>
+References: <4C89539E.8030701@web.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 91FA82447F
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 7E38724490
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Sep 2010 09:10:03 +0200 (CEST)
-In-Reply-To: <4C89D660.4020705@gmail.com>
+	Fri, 10 Sep 2010 09:18:06 +0200 (CEST)
+In-Reply-To: <4C89539E.8030701@web.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,21 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tom Corner <tom.c.corner@gmail.com>
+To: Felix Homann <fexpop@web.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Tom Corner wrote:
-> The surround sound 5.1 is playing fine except channel 0 (front-left)
-> is playing on the woofer.
+Felix Homann wrote:
+> after some struggle I managed to get the mixer in the M-Audio working.
+> Before I submit a patch I would like to know if there's an way to test
+> the dB information for the controls. I'm using the mixer_vol_tlv TLV
+> callback right now but I'm not sure it produces correct data.
 
-And the software's front left channel is also playing on the front left
-speaker?  And the subwoofer channel isn't playing on any speaker?
-
-> I can redirect the output on 0 to right-front successfully using
-> .asoundrc and "ttable.0.1 1".
-
-I do not understand how this is related to your problem.
+Try alsamixer.  Or just post the output of "amixer contents" here.
 
 
 Regards,
