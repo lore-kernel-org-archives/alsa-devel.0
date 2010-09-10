@@ -1,18 +1,20 @@
-From: Felix Homann <fexpop@web.de>
-Subject: Re: [PATCH] ALSA: usb-audio: Assume first
- control	interface is for audio
-Date: Fri, 10 Sep 2010 19:15:25 +0200
-Message-ID: <4C8A67AD.5040309@web.de>
-References: <1283418795-3319-1-git-send-email-daniel@caiaq.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Fix incorrect register cache size
+ configuration
+Date: Fri, 10 Sep 2010 18:22:21 +0100
+Message-ID: <1284139341.3088.340.camel@odin>
+References: <1284138896-3789-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
-	[83.169.30.203]) by alsa0.perex.cz (Postfix) with ESMTP id 3234C24534
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 74CF12453A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Sep 2010 19:15:24 +0200 (CEST)
-In-Reply-To: <1283418795-3319-1-git-send-email-daniel@caiaq.de>
+	Fri, 10 Sep 2010 19:22:24 +0200 (CEST)
+Received: by wwb22 with SMTP id 22so3006401wwb.20
+	for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2010 10:22:24 -0700 (PDT)
+In-Reply-To: <1284138896-3789-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Thanks,
+On Fri, 2010-09-10 at 18:14 +0100, Dimitris Papastamos wrote:
+> The reg_cache_size is the number of elements in the register cache,
+> not the size of the cache itself. This is not a problem if the size
+> of each element of the cache is 1 byte but it matters in any other
+> case.
+> 
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
-that's very useful for the mixer in the Fast Track Ultra!
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-Am 02.09.2010 11:13, schrieb Daniel Mack:
-> +	/*
-> +	 * For devices with more than one control interface, we assume the
-> +	 * first contains the audio controls. We might need a more specific
-> +	 * check here in the future.
-> +	 */
-> +	if (!chip->ctrl_intf)
-> +		chip->ctrl_intf = alts;
->
->   	if (err>  0) {
->   		/* create normal USB audio interfaces */
->
+Have you checked the other codecs too ?
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
