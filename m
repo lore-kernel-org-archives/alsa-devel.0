@@ -1,21 +1,15 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 2/3] ALSA: snd-usb-caiaq: set up internal
- sample pointer positions in trigger callback
-Date: Fri, 10 Sep 2010 10:10:10 +0200
-Message-ID: <20100910081010.GN7159@buzzloop.caiaq.de>
-References: <1284090901-4533-1-git-send-email-daniel@caiaq.de>
-	<1284090901-4533-2-git-send-email-daniel@caiaq.de>
-	<4C89DDF4.8030200@ladisch.de>
+Subject: [PATCH 1/2] ALSA: snd-usb-caiaq: drop version number
+Date: Fri, 10 Sep 2010 16:12:34 +0800
+Message-ID: <1284106355-5193-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 28B62103939
+	by alsa0.perex.cz (Postfix) with ESMTP id 9E5A8103939
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Sep 2010 10:10:14 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4C89DDF4.8030200@ladisch.de>
+	Fri, 10 Sep 2010 10:12:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,23 +19,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 10, 2010 at 09:27:48AM +0200, Clemens Ladisch wrote:
-> Daniel Mack wrote:
-> > Calling prepare() on a stream which is already active
-> 
-> ... would be a bug; snd_pcm_pre_prepare() in sound/core/pcm_native.c
-> should prevent this.  Why do you feel the need for this patch?
+Let git do the job.
 
-You're right, thanks for the heads-up. It was indeed a bug in a
-different part of my driver which only affected the newly added model it
-supports. I was increasing the periods counter for inactive streams,
-which confused the ALSA core.
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+---
+ sound/usb/caiaq/device.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Forget about this one, I'll repost a new series in a second.
-
-Thanks,
-Daniel
+diff --git a/sound/usb/caiaq/device.c b/sound/usb/caiaq/device.c
+index cdfb856..da9cb6d 100644
+--- a/sound/usb/caiaq/device.c
++++ b/sound/usb/caiaq/device.c
+@@ -36,7 +36,7 @@
+ #include "input.h"
+ 
+ MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
+-MODULE_DESCRIPTION("caiaq USB audio, version 1.3.21");
++MODULE_DESCRIPTION("caiaq USB audio");
+ MODULE_LICENSE("GPL");
+ MODULE_SUPPORTED_DEVICE("{{Native Instruments, RigKontrol2},"
+ 			 "{Native Instruments, RigKontrol3},"
+-- 
+1.7.0.4
