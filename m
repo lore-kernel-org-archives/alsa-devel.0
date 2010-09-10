@@ -1,28 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: multi-component: SAMSUNG: Modify the
- name of I2S driver
-Date: Fri, 10 Sep 2010 13:05:20 +0100
-Message-ID: <20100910120520.GM7259@rakim.wolfsonmicro.main>
-References: <AANLkTi=20B0K+87HeRjdKAONVjwEhar09QRmj-SB2zbO@mail.gmail.com>
-	<AANLkTimV+mJF_Qz2JvDcAUc+pApVApFQMHkLK32w+MWp@mail.gmail.com>
-	<1280141088.3072.33.camel@odin>
-	<AANLkTi=5JvZup0c9xXrgYkFszLd_T-wPbPZnuu4bRQ9W@mail.gmail.com>
-	<20100907153902.GC8678@rakim.wolfsonmicro.main>
-	<AANLkTi=h5wGxrkLqYb0+HzZ-zHFe=UhpfBqOLT36G3fr@mail.gmail.com>
-	<20100909132259.GF25855@rakim.wolfsonmicro.main>
-	<AANLkTimV8hQ6L2j2djDdCp6XJGDj3Hjq2Dv4iLnGJHQ1@mail.gmail.com>
-	<20100910093926.GB3068@rakim.wolfsonmicro.main>
-	<AANLkTik1eexiDM994Lak_acfGvgz+4VN2-CJSAY5M3M6@mail.gmail.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH 2/4] ASoC: tlv320aic3x: Add runtime
+ regulator control to aic3x_set_bias_level
+Date: Fri, 10 Sep 2010 15:18:27 +0300
+Message-ID: <20100910151827.debce417.jhnikula@gmail.com>
+References: <1284117812-8618-1-git-send-email-jhnikula@gmail.com>
+	<1284117812-8618-2-git-send-email-jhnikula@gmail.com>
+	<20100910114717.GI7259@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7F5211039D2
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5945C1039B6
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Sep 2010 14:05:21 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <AANLkTik1eexiDM994Lak_acfGvgz+4VN2-CJSAY5M3M6@mail.gmail.com>
+	Fri, 10 Sep 2010 14:17:32 +0200 (CEST)
+Received: by eye27 with SMTP id 27so577812eye.38
+	for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2010 05:17:32 -0700 (PDT)
+In-Reply-To: <20100910114717.GI7259@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,48 +27,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kyungmin Park <kmpark@infradead.org>, Joonyoung Shim <jy0922.shim@samsung.com>, "jassi.brar@samsung.com" <jassi.brar@samsung.com>, Chanwoo Choi <cw00.choi@samsung.com>, ben-linux <ben-linux@fluff.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 10, 2010 at 08:32:46PM +0900, Jassi Brar wrote:
-> On Fri, Sep 10, 2010 at 6:39 PM, Mark Brown
-> > On Fri, Sep 10, 2010 at 05:43:14PM +0900, Jassi Brar wrote:
+On Fri, 10 Sep 2010 12:47:17 +0100
+Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
 
-> > As I've said in the past the concern I have with all this stuff is that
-> > outside of Samsung there's no documentation of the IIS block versions or
-> > their relationships, the only references I've seen to versions have been
-> > for chips with multiple versions (like the 6410) and there it's just a
-> > mention that versions exist and the register documentation is completely
+> On Fri, Sep 10, 2010 at 02:23:30PM +0300, Jarkko Nikula wrote:
+> 
+> > This patch manages all the regulators and reset since it seems that register
+> > sync is needed even if only analog supplies AVDD and DRVDD are disabled.
+> > This was noted when the system was running with idle behavior changed and
+> > IOVDD and DVDD were on.
+> 
+> This is normal, chips normally require all the core supplies to be
+> enabled to take them out of reset.
+> 
+Some chips were programmable with digital IO supply only. I'll leave
+this comment here to show that this chip has been noted to require all
+of them :-)
 
-> > cut'n'pasted.
-> All this info could be gotten by comparing the I2S chapters of relevant
-> SoCs... which is what I do.
-> I don't have any special documentation either.... there is none.
-> The only luxury I have is to be able to get clarifications via
-> appropriate channels of info.
+> > @@ -151,7 +153,8 @@ static int aic3x_write(struct snd_soc_codec *codec, unsigned int reg,
+> >  	data[1] = value & 0xff;
+> >  
+> >  	aic3x_write_reg_cache(codec, data[0], data[1]);
+> > -	if (codec->hw_write(codec->control_data, data, 2) == 2)
+> > +	if (!aic3x->power ||
+> > +	    codec->hw_write(codec->control_data, data, 2) == 2)
+> >  		return 0;
+> >  	else
+> >  		return -EIO;
+> 
+> If you were using the soc-core stuff you'd be able to use the cache_only
+> flag in the CODEC to do this.  It might make sense to still use the flag
+> so that when someone converts the driver to use soc-cache this doesn't
+> get missed.
+> 
+Makes sense, I'll change this.
 
-You appear to be at least aware of the versions :)  Most of us were
-going on naming based on CPU names.
+> >  static int aic3x_read(struct snd_soc_codec *codec, unsigned int reg,
+> >  		      u8 *value)
+> >  {
+> > +	struct aic3x_priv *aic3x = snd_soc_codec_get_drvdata(codec);
+> >  	*value = reg & 0xff;
+> >  
+> > -	value[0] = i2c_smbus_read_byte_data(codec->control_data, value[0]);
+> > +	if (aic3x->power) {
+> > +		value[0] = i2c_smbus_read_byte_data(codec->control_data,
+> > +						    value[0]);
+> > +		aic3x_write_reg_cache(codec, reg, *value);
+> > +	} else {
+> > +		value[0] = aic3x_read_reg_cache(codec, reg);
+> > +	}
+> >  
+> > -	aic3x_write_reg_cache(codec, reg, *value);
+> >  	return 0;
+> >  }
+> 
+> This seems fishy - surely the read should be being satisfied from cache
+> all the time if it can be, and if the register does need to be read from
+> the hardware due to being volatile then it's an error to read it while
+> powered off?
 
-> > =A0It would be good if you could make sure that any platform
-> > data for identifying the versions is sufficiently clear to allow someone
-> > to go from datasheet to knowing which IP version they have.
+Good question. I didn't look at this. Actually it seems there is a need
+to add some function to indicate if headset & button detection or gpio
+readings are required. We cannot shutdown if those are needed.
 
-> Actually I plan to use enum for I2S types and assign them alongside
-> platform_device
-> definition of I2S blocks and their platform_data.
-> Any I2S block that matches register description of 2-channel block of
-> 6410 is v3,
-> that with 5.1 is v4 and that with 5.1 of C100 is v5.
 
-Including a listing of the registers you look at when doing the
-comparison would be useful here - some sort of flow chart to work
-through, for example.  Bear in mind that the datasheets for the CPUs
-aren't (all?) public either so people might not be able to look at the
-register maps for older CPUs if they only have the datasheet for the CPU
-they have been working on.
-
-> There are no differentiating IDs to be read from any register.
-
-Yup, I'm aware of this.
+-- 
+Jarkko
