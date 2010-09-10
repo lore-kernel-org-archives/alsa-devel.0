@@ -1,16 +1,21 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCH 3/3] ASoC: Samsung: Debug PCM platform device
-	name
-Date: Fri, 10 Sep 2010 16:41:17 +0900
-Message-ID: <1284104477-18493-1-git-send-email-jassisinghbrar@gmail.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [PATCH 2/3] ALSA: snd-usb-caiaq: set up internal
+ sample pointer positions in trigger callback
+Date: Fri, 10 Sep 2010 10:10:10 +0200
+Message-ID: <20100910081010.GN7159@buzzloop.caiaq.de>
+References: <1284090901-4533-1-git-send-email-daniel@caiaq.de>
+	<1284090901-4533-2-git-send-email-daniel@caiaq.de>
+	<4C89DDF4.8030200@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 63A94103945
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 28B62103939
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Sep 2010 09:57:25 +0200 (CEST)
+	Fri, 10 Sep 2010 10:10:14 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4C89DDF4.8030200@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,38 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: sw.youn@samsung.com, broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jassi Brar <jassi.brar@samsung.com>
+On Fri, Sep 10, 2010 at 09:27:48AM +0200, Clemens Ladisch wrote:
+> Daniel Mack wrote:
+> > Calling prepare() on a stream which is already active
+> 
+> ... would be a bug; snd_pcm_pre_prepare() in sound/core/pcm_native.c
+> should prevent this.  Why do you feel the need for this patch?
 
-The PCM controller platform devices are registered by the
-name 'samsung-pcm', so use the same in the CPU driver.
+You're right, thanks for the heads-up. It was indeed a bug in a
+different part of my driver which only affected the newly added model it
+supports. I was increasing the periods counter for inactive streams,
+which confused the ALSA core.
 
-Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
----
- sound/soc/s3c24xx/s3c-pcm.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Forget about this one, I'll repost a new series in a second.
 
-diff --git a/sound/soc/s3c24xx/s3c-pcm.c b/sound/soc/s3c24xx/s3c-pcm.c
-index d404f80..6e9139f 100644
---- a/sound/soc/s3c24xx/s3c-pcm.c
-+++ b/sound/soc/s3c24xx/s3c-pcm.c
-@@ -525,7 +525,7 @@ static struct platform_driver s3c_pcm_driver = {
- 	.probe  = s3c_pcm_dev_probe,
- 	.remove = s3c_pcm_dev_remove,
- 	.driver = {
--		.name = "samsung-pcm-audio",
-+		.name = "samsung-pcm",
- 		.owner = THIS_MODULE,
- 	},
- };
-@@ -546,4 +546,4 @@ module_exit(s3c_pcm_exit);
- MODULE_AUTHOR("Jaswinder Singh, <jassi.brar@samsung.com>");
- MODULE_DESCRIPTION("S3C PCM Controller Driver");
- MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:samsung-pcm-audio");
-+MODULE_ALIAS("platform:samsung-pcm");
--- 
-1.6.2.5
+Thanks,
+Daniel
