@@ -1,18 +1,19 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: USB Audio device syncpipe error
-Date: Fri, 10 Sep 2010 09:01:32 +0200
-Message-ID: <4C89D7CC.3070605@ladisch.de>
-References: <AANLkTinzHSVgsUocCMBTW=+A=b2qc6vzKuq7t9jzgojX@mail.gmail.com>	<AANLkTi=EXqFDPn+a1K+OeLA+G5pnh0yMt6nX2VA_wQDD@mail.gmail.com>	<4C8891D2.1020300@ladisch.de>	<AANLkTingHyn2wyJ50uH9GpjnTg_YsL6Q0gzDoVyArvgv@mail.gmail.com>
-	<AANLkTimzCNquUNQapdo4afcwtBYYVHGPH9U-J1xXHqXE@mail.gmail.com>
+Subject: Re: crash with assertion (?)
+Date: Fri, 10 Sep 2010 09:06:16 +0200
+Message-ID: <4C89D8E8.2080305@ladisch.de>
+References: <4C8662AD.1040607@iem.at>
+	<4C8670FD.5020906@ladisch.de>	<4C874C1E.8040007@iem.at>	<AANLkTi=5nxDDyfsUrvF3z+EpApiAjau6hbLK=a08WnKr@mail.gmail.com>	<4C88AC51.9030803@iem.at>
+	<AANLkTi=DVhWmzSvSDQW8+_vzCCDPp+aquy8LcTEFq0xY@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 972372441D
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id D10962446A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Sep 2010 09:01:09 +0200 (CEST)
-In-Reply-To: <AANLkTimzCNquUNQapdo4afcwtBYYVHGPH9U-J1xXHqXE@mail.gmail.com>
+	Fri, 10 Sep 2010 09:05:53 +0200 (CEST)
+In-Reply-To: <AANLkTi=DVhWmzSvSDQW8+_vzCCDPp+aquy8LcTEFq0xY@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,30 +23,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 6275 kson <6275.kson@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-6275 kson wrote:
-> Well I basically understand what is wrong.  Usbaudio is expecting the packet
-> size to be 4 and the value to be encoded as 16.16 because the device is
-> operating at high speed.  I made the change and my device now shows up
-> properly as an output device and playback works but the feedback polling
-> interval is incorrect.
+Raymond Yau wrote:
+> Yes, I can reprodued the assertion with a patched intel8x0 driver inside
+> virtualbox
+> since there is no error when using the emulated ac97 controller and codec
+> which support 8000Hz<->48000Hz
 
-What interval do you expect in this situation, and what interval do you
-actually get?
+How exactly did you patch it?
 
-> Since the feedback endpoint descriptor is not class specific I can see why
-> one would expect it to be a usb 2.0 standard endpoint descriptor,
+> Rule 7 (0xb7773aa0): RATE=44100 -> NONE PERIOD_SIZE=64 PERIOD_TIME=(166
+> 1438)
+> 
+> alsatest: interval_inline.h:52: snd_interval_single: Assertion
+> `!snd_interval_empty(i)' failed.
 
-Yes, the UAC 1.0 spec cannot override the USB spec in this regard.
-
-> however, that would mean I should also change my other audio
-> streaming endpoint descriptors.
-
-Which other descriptors?  AFAICS, the only other thing that is affected
-by high-speed is the packet size and format of the sync endpoint.
+This looks like a definite bug.
 
 
 Regards,
