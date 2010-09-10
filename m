@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] ASoC: Samsung: Debug PCM
- snd_soc_dai_driver registration
-Date: Fri, 10 Sep 2010 10:54:39 +0100
-Message-ID: <20100910095438.GD3068@rakim.wolfsonmicro.main>
-References: <1284104465-17287-1-git-send-email-jassisinghbrar@gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: M-Audio Fast Track Ultra (8r) mixer: How to verify
+ dB	information?
+Date: Fri, 10 Sep 2010 12:33:20 +0200
+Message-ID: <4C8A0970.4080602@ladisch.de>
+References: <4C89539E.8030701@web.de> <4C89DBC5.7070906@ladisch.de>
+	<4C89E2CA.2090206@web.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 200F910396C
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 7B1D4103981
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Sep 2010 11:54:40 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1284104465-17287-1-git-send-email-jassisinghbrar@gmail.com>
+	Fri, 10 Sep 2010 12:32:58 +0200 (CEST)
+In-Reply-To: <4C89E2CA.2090206@web.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,18 +23,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, sw.youn@samsung.com, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
+To: Felix Homann <fexpop@web.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 10, 2010 at 04:41:05PM +0900, Jassi Brar wrote:
+Felix Homann wrote:
+> Well, according to alsamixer the mixer values are mapped to a range from 
+> 0 to -128 dB.
+> 
+> 'amixer contents' show entries of the form
+> 
+>        | unk-4-0xffffce00,0x00000000,
 
->  struct snd_soc_dai_driver s3c_pcm_dai[] = {
-> -	S3C_PCM_DAI_DECLARE,
-> -	S3C_PCM_DAI_DECLARE,
-> +	[0] = {
-> +		.name	= "samsung-pcm.0",
-> +		S3C_PCM_DAI_DECLARE,
+Install the latest alsa-utils, or if you already have it, recompile it.
 
-You should be able to use the id field rather than adding the number to
-the names here.
+
+Regards,
+Clemens
