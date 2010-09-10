@@ -1,23 +1,23 @@
 From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH 3/4] ASoC: tlv320aic3x: Use regulator
- notifiers for optimizing the cache sync
-Date: Fri, 10 Sep 2010 15:33:32 +0300
-Message-ID: <20100910153332.8a3255b0.jhnikula@gmail.com>
+Subject: Re: [PATCH 4/4] ASoC: tlv320aic3x: Let the codec hit
+ SND_SOC_BIAS_OFF when idle
+Date: Fri, 10 Sep 2010 15:42:38 +0300
+Message-ID: <20100910154238.8377bed9.jhnikula@gmail.com>
 References: <1284117812-8618-1-git-send-email-jhnikula@gmail.com>
-	<1284117812-8618-3-git-send-email-jhnikula@gmail.com>
-	<20100910115808.GK7259@rakim.wolfsonmicro.main>
+	<1284117812-8618-4-git-send-email-jhnikula@gmail.com>
+	<20100910120016.GL7259@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6AA5010395F
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7149510395E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Sep 2010 14:32:37 +0200 (CEST)
-Received: by eye27 with SMTP id 27so588850eye.38
-	for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2010 05:32:37 -0700 (PDT)
-In-Reply-To: <20100910115808.GK7259@rakim.wolfsonmicro.main>
+	Fri, 10 Sep 2010 14:41:43 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so1594309ewy.38
+	for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2010 05:41:43 -0700 (PDT)
+In-Reply-To: <20100910120016.GL7259@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,43 +31,32 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 10 Sep 2010 12:58:08 +0100
+On Fri, 10 Sep 2010 13:00:17 +0100
 Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
 
-> On Fri, Sep 10, 2010 at 02:23:31PM +0300, Jarkko Nikula wrote:
+> On Fri, Sep 10, 2010 at 02:23:32PM +0300, Jarkko Nikula wrote:
 > 
-> > Mark, struct aic3x_disable_nb was created for getting pointer to aic3x easily.
-> > Probably same idea could be applied to wm8962 as well?
+> > -	regulator_bulk_disable(ARRAY_SIZE(aic3x->supplies), aic3x->supplies);
+> > +	if (aic3x->power)
+> > +		regulator_bulk_disable(ARRAY_SIZE(aic3x->supplies),
+> > +				       aic3x->supplies);
 > 
-> Probably.  TBH I'd rather fix this in the notifier API - either way it's
-> pretty nasty.
-> 
-Yep. I read this that I can still use this idea in v2 :-)
+> This looks suspicious - doesn't it mean that the enable/disables won't
+> be balanced any more?  I'd expect to either see the disable being
+> uncondtional or the power flag being updated.  I could be missing
+> something, though.
 
-I noticed that I managed to forget to add test for event in
-aic3x_regulator_event so I need to resend.
+I agree.
 
-> > @@ -153,7 +161,7 @@ static int aic3x_write(struct snd_soc_codec *codec, unsigned int reg,
-> >  	data[1] = value & 0xff;
-> >  
-> >  	aic3x_write_reg_cache(codec, data[0], data[1]);
-> > -	if (!aic3x->power ||
-> > +	if (codec->cache_sync ||
-> >  	    codec->hw_write(codec->control_data, data, 2) == 2)
-> >  		return 0;
-> >  	else
-> 
-> This isn't the expected use of cache_sync, the idea is that it is a flag
-> indicating that a cache sync is required - this will happen when writes
-> are held while the regulators are disabled but the regualators haven't
-> actually been powered down.  This can be nice since we end up not
-> needing to do I2C I/O during bulk configuration at startup, I'm hoping
-> that we may be able to exploit this even more in the future.
+This is actually due the current implementation where the regulators are
+enabled in aic3x_i2c_probe and disabled in aic3x_probe. So this disable
+is needed only if the driver is removed without aic3x_probe being
+called.
 
-I'll change this to cache_only and set both flags in
-aic3x_regulator_event so that core can take use of them. My idea was to
-cover both regulators not disabled case and CONFIG_REGULATOR not set
-case and picked up this flag as it was set.
+I'll cook up one patch more that moves regulator setup to aic3x_probe
+as most of the codec drivers are doing. (side issue: it's hard to probe
+a chip if voltages are missing but doing regulator setup in i2c probe is
+not any better either).
 
 
 -- 
