@@ -1,54 +1,46 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH next 16/16] sound: Use static const char * const where possible
-Date: Mon, 13 Sep 2010 21:24:02 -0700
-Message-ID: <8d1ddb8c4ad5c5454e647d753c072721ad1002f6.1284435710.git.joe@perches.com>
-References: <cover.1284435709.git.joe@perches.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1284435709.git.joe@perches.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+From: Samuel Ortiz <sameo@linux.intel.com>
+Subject: Re: [PATCH 1/1] mfd: add codec resource into 88pm860x
+	driver
+Date: Fri, 10 Sep 2010 17:44:35 +0200
+Message-ID: <20100910154435.GK2561@sortiz-mobl>
+References: <AANLkTimu5hFvdCgHkXniDqi4OF+fsFR=zj9Rje4Sx4Oi@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id A9554244E4
+	for <alsa-devel@alsa-project.org>;
+	Fri, 10 Sep 2010 17:44:39 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTimu5hFvdCgHkXniDqi4OF+fsFR=zj9Rje4Sx4Oi@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Haojian Zhuang <haojian.zhuang@gmail.com>
+Cc: Samuel Ortiz <sameo@openedhand.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- sound/core/misc.c       |    5 +----
- sound/core/pcm_native.c |    2 +-
- 2 files changed, 2 insertions(+), 5 deletions(-)
+Hi Haojian,
 
-diff --git a/sound/core/misc.c b/sound/core/misc.c
-index 0e5e77f..2c41825 100644
---- a/sound/core/misc.c
-+++ b/sound/core/misc.c
-@@ -64,15 +64,12 @@ static int print_snd_pfx(unsigned int level, const char *path, int line,
- 			 const char *format)
- {
- 	const char *file = sanity_file_name(path);
--	char tmp[sizeof("<0>")];
-+	char tmp[] = "<0>";
- 	const char *pfx = level ? KERN_DEBUG : KERN_DEFAULT;
- 	int ret = 0;
- 
- 	if (format[0] == '<' && format[2] == '>') {
--		tmp[0] = '<';
- 		tmp[1] = format[1];
--		tmp[2] = '>';
--		tmp[3] = 0;
- 		pfx = tmp;
- 		ret = 1;
- 	}
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index e2e7389..eb40942 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -142,7 +142,7 @@ int snd_pcm_info_user(struct snd_pcm_substream *substream,
- 
- #ifdef RULES_DEBUG
- #define HW_PARAM(v) [SNDRV_PCM_HW_PARAM_##v] = #v
--char *snd_pcm_hw_param_names[] = {
-+static const char * const snd_pcm_hw_param_names[] = {
- 	HW_PARAM(ACCESS),
- 	HW_PARAM(FORMAT),
- 	HW_PARAM(SUBFORMAT),
+On Mon, Aug 23, 2010 at 06:24:50PM +0800, Haojian Zhuang wrote:
+> From 28ed4af3929120b9b3853ffcb8055eb6a81d31d8 Mon Sep 17 00:00:00 2001
+> From: Haojian Zhuang <haojian.zhuang@marvell.com>
+> Date: Thu, 12 Aug 2010 11:59:33 +0800
+> Subject: [PATCH 1/1] mfd: add codec resource into 88pm860x driver
+> 
+> Add codec IRQ resources that are used in 88pm860x codec driver.
+Many thanks, patch applied.
+
+Cheers,
+Samuel.
+
 -- 
-1.7.3.rc1
+Intel Open Source Technology Centre
+http://oss.intel.com/
