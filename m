@@ -1,18 +1,15 @@
-From: Felix Homann <fexpop@web.de>
-Subject: Re: M-Audio Fast Track Ultra (8r) mixer: How to verify
- dB	information?
-Date: Fri, 10 Sep 2010 09:48:26 +0200
-Message-ID: <4C89E2CA.2090206@web.de>
-References: <4C89539E.8030701@web.de> <4C89DBC5.7070906@ladisch.de>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: [PATCH 1/3] ASoC: S3C: AC97: Remove the -dai suffix
+Date: Fri, 10 Sep 2010 16:40:31 +0900
+Message-ID: <1284104431-14378-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
-	[83.169.30.203]) by alsa0.perex.cz (Postfix) with ESMTP id A5AFF244B6
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id CBF3C103932
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Sep 2010 09:48:29 +0200 (CEST)
-In-Reply-To: <4C89DBC5.7070906@ladisch.de>
+	Fri, 10 Sep 2010 09:57:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,64 +19,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Felix Homann <fexpop@web.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: sw.youn@samsung.com, broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+From: Jassi Brar <jassi.brar@samsung.com>
 
+Drop the invalid -dai suffix appended to the Samsung AC97 CPU DAI.
 
-Am 10.09.2010 09:18, schrieb Clemens Ladisch:
-> I'm using the mixer_vol_tlv TLV
->> callback right now but I'm not sure it produces correct data.
->>      
-> Try alsamixer.  Or just post the output of "amixer contents" here.
->
->    
+Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+---
+ sound/soc/s3c24xx/smdk2443_wm9710.c |    2 +-
+ sound/soc/s3c24xx/smdk_wm9713.c     |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Well, according to alsamixer the mixer values are mapped to a range from 
-0 to -128 dB.
-
-'amixer contents' show entries of the form
-
-     numid=112,iface=MIXER,name='DIn8 - Out7 Playback Volume'
-       ; type=INTEGER,access=rw---R--,values=1,min=0,max=32768,step=0
-       : values=-32768
-       | unk-4-0xffffce00,0x00000000,
-
-(numid and name changing of xourse for each control ).
-
-Here are some examples of setting values with amixer:
-
-     :~$ amixer -c 2 cset numid=1 50%
-     numid=1,iface=MIXER,name='AIn1 - Out1 Playback Volume'
-       ; type=INTEGER,access=rw---R--,values=1,min=0,max=32768,step=0
-       : values=16384
-       | unk-4-0xffffce00,0x00000000,
-
-     :~$ amixer -c 2 cset numid=1 80%
-     numid=1,iface=MIXER,name='AIn1 - Out1 Playback Volume'
-       ; type=INTEGER,access=rw---R--,values=1,min=0,max=32768,step=0
-       : values=26215
-       | unk-4-0xffffce00,0x00000000,
-
-
-     :~$ amixer -c 2 cset numid=1 100%
-     numid=1,iface=MIXER,name='AIn1 - Out1 Playback Volume'
-       ; type=INTEGER,access=rw---R--,values=1,min=0,max=32768,step=0
-       : values=32768
-       | unk-4-0xffffce00,0x00000000,
-
-
-cat /proc/asound/F8R/usbmixer gives lines like this:
-
-   Unit: 5
-     Control: name="DIn8 - Out7 Playback Volume", index=0
-     Info: id=5, control=7, cmask=0x8000, channels=1, type="S16"
-     Volume: min=-32768, max=0, dBmin=-12800, dBmax=0
-
-How do I tell the controls value range is correctly mapped to the dB values?
-
-Kind regards,
-
-Felix
+diff --git a/sound/soc/s3c24xx/smdk2443_wm9710.c b/sound/soc/s3c24xx/smdk2443_wm9710.c
+index 66f9e22..4613288 100644
+--- a/sound/soc/s3c24xx/smdk2443_wm9710.c
++++ b/sound/soc/s3c24xx/smdk2443_wm9710.c
+@@ -28,7 +28,7 @@ static struct snd_soc_dai_link smdk2443_dai[] = {
+ {
+ 	.name = "AC97",
+ 	.stream_name = "AC97 HiFi",
+-	.cpu_dai_name = "s3c-ac97-dai",
++	.cpu_dai_name = "s3c-ac97",
+ 	.codec_dai_name = "ac97-hifi",
+ 	.codec_name = "ac97-codec",
+ 	.platform_name = "s3c24xx-pcm-audio",
+diff --git a/sound/soc/s3c24xx/smdk_wm9713.c b/sound/soc/s3c24xx/smdk_wm9713.c
+index 90108a7..11086f8 100644
+--- a/sound/soc/s3c24xx/smdk_wm9713.c
++++ b/sound/soc/s3c24xx/smdk_wm9713.c
+@@ -47,7 +47,7 @@ static struct snd_soc_dai_link smdk_dai = {
+ 	.name = "AC97",
+ 	.stream_name = "AC97 PCM",
+ 	.platform_name = "s3c24xx-pcm-audio",
+-	.cpu_dai_name = "s3c-ac97-dai",
++	.cpu_dai_name = "s3c-ac97",
+ 	.codec_dai_name = "wm9713-hifi",
+ 	.codec_name = "wm9713-codec",
+ };
+-- 
+1.6.2.5
