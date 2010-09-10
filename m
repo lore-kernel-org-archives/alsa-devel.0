@@ -1,53 +1,40 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: crash with assertion (?)
-Date: Sat, 11 Sep 2010 07:20:29 +0800
-Message-ID: <AANLkTikqYR8WpfkT+5_1J1nQreo-KOyfnRCZ4yJ-5KJK@mail.gmail.com>
-References: <4C8662AD.1040607@iem.at> <4C8670FD.5020906@ladisch.de>
-	<4C874C1E.8040007@iem.at>
-	<AANLkTi=5nxDDyfsUrvF3z+EpApiAjau6hbLK=a08WnKr@mail.gmail.com>
-	<4C88AC51.9030803@iem.at>
-	<AANLkTi=DVhWmzSvSDQW8+_vzCCDPp+aquy8LcTEFq0xY@mail.gmail.com>
-	<4C89D8E8.2080305@ladisch.de>
+From: Seth Heasley <seth.heasley@intel.com>
+Subject: [PATCH 2.6.35.4] hda_intel: ALSA HD Audio patch for Intel Patsburg DeviceIDs
+Date: Fri, 10 Sep 2010 16:29:56 -0700
+Message-ID: <201009101629.56579.seth.heasley@intel.com>
+References: <201001121703.36016.seth.heasley@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 7EF7324644
-	for <alsa-devel@alsa-project.org>;
-	Sat, 11 Sep 2010 01:20:33 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so2114753ewy.38
-	for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2010 16:20:29 -0700 (PDT)
-In-Reply-To: <4C89D8E8.2080305@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <201001121703.36016.seth.heasley@intel.com>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de, seth.heasley@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-2010/9/10 Clemens Ladisch <clemens@ladisch.de>
+This patch adds the Intel Patsburg (PCH) HD Audio Controller DeviceIDs.
+ 
+Signed-off-by: Seth Heasley <seth.heasley@intel.com>
 
-> Raymond Yau wrote:
-> > Yes, I can reprodued the assertion with a patched intel8x0 driver inside
-> > virtualbox
-> > since there is no error when using the emulated ac97 controller and codec
-> > which support 8000Hz<->48000Hz
->
-> How exactly did you patch it?
->
-
-based on his log and his card seem support rate 48000 and 96000 only
-
- SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000
-
-the assertion also occur with snd-dummy model=ac97 with the above change in
-rate constraint on Fedora 13
-
-may need the output of alsa-info.sh to find out his ac97 codec and
-snd_pcm_dump to find out the resampler
+--- linux-2.6.35.4/sound/pci/hda/hda_intel.c.orig	2010-08-26 16:47:12.000000000 -0700
++++ linux-2.6.35.4/sound/pci/hda/hda_intel.c	2010-09-01 13:25:54.429224879 -0700
+@@ -126,6 +126,7 @@
+ 			 "{Intel, ICH10},"
+ 			 "{Intel, PCH},"
+ 			 "{Intel, CPT},"
++			 "{Intel, PBG},"
+ 			 "{Intel, SCH},"
+ 			 "{ATI, SB450},"
+ 			 "{ATI, SB600},"
+@@ -2748,6 +2749,8 @@
+ 	{ PCI_DEVICE(0x8086, 0x3b57), .driver_data = AZX_DRIVER_ICH },
+ 	/* CPT */
+ 	{ PCI_DEVICE(0x8086, 0x1c20), .driver_data = AZX_DRIVER_PCH },
++	/* PBG */
++	{ PCI_DEVICE(0x8086, 0x1d20), .driver_data = AZX_DRIVER_PCH },
+ 	/* SCH */
+ 	{ PCI_DEVICE(0x8086, 0x811b), .driver_data = AZX_DRIVER_SCH },
+ 	/* ATI SB 450/600 */
