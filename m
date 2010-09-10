@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 5/5] ASoC: fsi-ak4642: modiry platform_name
-Date: Fri, 10 Sep 2010 11:39:02 +0100
-Message-ID: <20100910103902.GH3068@rakim.wolfsonmicro.main>
-References: <w3pvd6i6ois.wl%kuninori.morimoto.gx@renesas.com>
-	<w3pmxru6ofb.wl%kuninori.morimoto.gx@renesas.com>
-	<1283944130.3097.97.camel@odin>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCHv2 1/2] ASoC: S3C: Fix PCM RX FIFO settings
+Date: Fri, 10 Sep 2010 12:13:39 +0100
+Message-ID: <1284117219.3088.226.camel@odin>
+References: <AANLkTimWZ-eSr4boXbyxbunDcm3Da1vEAZvP65Up63uE@mail.gmail.com>
+	<1284106800-13520-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A0317103981
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id E706F10397C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Sep 2010 12:39:03 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1283944130.3097.97.camel@odin>
+	Fri, 10 Sep 2010 13:13:44 +0200 (CEST)
+Received: by wyb32 with SMTP id 32so2570803wyb.38
+	for <alsa-devel@alsa-project.org>; Fri, 10 Sep 2010 04:13:43 -0700 (PDT)
+In-Reply-To: <1284106800-13520-1-git-send-email-sw.youn@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,21 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Guennadi <g.liakhovetski@gmx.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Seungwhan Youn <sw.youn@samsung.com>
+Cc: alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, Seungwhan Youn <claude.youn@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 08, 2010 at 12:08:50PM +0100, Liam Girdwood wrote:
-> On Tue, 2010-09-07 at 15:46 +0900, Kuninori Morimoto wrote:
-> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+On Fri, 2010-09-10 at 17:20 +0900, Seungwhan Youn wrote:
+> When PCM capture, sound recorded abnormally because of RX FIFO
+> threshold settings are missing. So, This patch modify PCM RX FIFO
+> setting codes same as TX.
+> And for DMA, if PCM RXFIFO_DIPSTICK is not '0', it doesn't effect
+> to DMA request, because DMA refer RX_FIFO_EMPTY flag as the DMA
+> request.
+> 
+> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
 
-> >  #ifdef CONFIG_MACH_AP4EVB
-> > -	.platform_name	= "sh_fsi2.0",
-> > +	.platform_name	= "sh_fsi2",
-> >  	.codec_name	= "ak4642-codec.0-0013",
-> >  #else
-> >  	.platform_name	= "sh_fsi.0",
+Both
 
-> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
-
-Applied, thanks.
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
