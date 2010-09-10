@@ -1,19 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: M-Audio Fast Track Ultra (8r) mixer: How to verify
- dB	information?
-Date: Fri, 10 Sep 2010 12:33:20 +0200
-Message-ID: <4C8A0970.4080602@ladisch.de>
-References: <4C89539E.8030701@web.de> <4C89DBC5.7070906@ladisch.de>
-	<4C89E2CA.2090206@web.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 5/5] ASoC: fsi-ak4642: modiry platform_name
+Date: Fri, 10 Sep 2010 11:39:02 +0100
+Message-ID: <20100910103902.GH3068@rakim.wolfsonmicro.main>
+References: <w3pvd6i6ois.wl%kuninori.morimoto.gx@renesas.com>
+	<w3pmxru6ofb.wl%kuninori.morimoto.gx@renesas.com>
+	<1283944130.3097.97.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 7B1D4103981
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A0317103981
 	for <alsa-devel@alsa-project.org>;
-	Fri, 10 Sep 2010 12:32:58 +0200 (CEST)
-In-Reply-To: <4C89E2CA.2090206@web.de>
+	Fri, 10 Sep 2010 12:39:03 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1283944130.3097.97.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Felix Homann <fexpop@web.de>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Guennadi <g.liakhovetski@gmx.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-Felix Homann wrote:
-> Well, according to alsamixer the mixer values are mapped to a range from 
-> 0 to -128 dB.
-> 
-> 'amixer contents' show entries of the form
-> 
->        | unk-4-0xffffce00,0x00000000,
+On Wed, Sep 08, 2010 at 12:08:50PM +0100, Liam Girdwood wrote:
+> On Tue, 2010-09-07 at 15:46 +0900, Kuninori Morimoto wrote:
+> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-Install the latest alsa-utils, or if you already have it, recompile it.
+> >  #ifdef CONFIG_MACH_AP4EVB
+> > -	.platform_name	= "sh_fsi2.0",
+> > +	.platform_name	= "sh_fsi2",
+> >  	.codec_name	= "ak4642-codec.0-0013",
+> >  #else
+> >  	.platform_name	= "sh_fsi.0",
 
+> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-Regards,
-Clemens
+Applied, thanks.
