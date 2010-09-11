@@ -1,37 +1,49 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv2 1/2] ASoC: S3C: Fix PCM RX FIFO settings
-Date: Sat, 11 Sep 2010 12:12:03 +0100
-Message-ID: <20100911111202.GA29325@opensource.wolfsonmicro.com>
-References: <AANLkTimWZ-eSr4boXbyxbunDcm3Da1vEAZvP65Up63uE@mail.gmail.com>
-	<1284106800-13520-1-git-send-email-sw.youn@samsung.com>
-	<1284117219.3088.226.camel@odin>
-	<20100911100755.GB28571@opensource.wolfsonmicro.com>
-	<AANLkTikQe6nOus9ZQKZgHJTHT1RugXuNuAnZdKoChoZU@mail.gmail.com>
+From: Andreas Schwab <schwab@linux-m68k.org>
+Subject: [PATCH] sound/ppc/powermac: remove undefined operations
+Date: Sat, 11 Sep 2010 13:16:41 +0200
+Message-ID: <m2iq2cfs2u.fsf@igel.home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ACC0624567
-	for <alsa-devel@alsa-project.org>;
-	Sat, 11 Sep 2010 13:12:04 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <AANLkTikQe6nOus9ZQKZgHJTHT1RugXuNuAnZdKoChoZU@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, Seungwhan Youn <sw.youn@samsung.com>, Seungwhan Youn <claude.youn@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+To: alsa-devel@alsa-project.org
+Cc: linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Sep 11, 2010 at 07:59:01PM +0900, Jassi Brar wrote:
+Modifying an object twice without an intervening sequence point is
+undefined.
 
-> Acked-by: Jassi Brar <jassi.brar@samsung.com>
+Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
+---
+ sound/ppc/tumbler.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Great, applied both now - thanks.
+diff --git a/sound/ppc/tumbler.c b/sound/ppc/tumbler.c
+index 20afdf9..961d982 100644
+--- a/sound/ppc/tumbler.c
++++ b/sound/ppc/tumbler.c
+@@ -785,7 +785,7 @@ static int snapper_set_capture_source(struct pmac_tumbler *mix)
+ 	if (! mix->i2c.client)
+ 		return -ENODEV;
+ 	if (mix->capture_source)
+-		mix->acs = mix->acs |= 2;
++		mix->acs |= 2;
+ 	else
+ 		mix->acs &= ~2;
+ 	return i2c_smbus_write_byte_data(mix->i2c.client, TAS_REG_ACS, mix->acs);
+-- 
+1.7.2.3
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
+"And now for something completely different."
