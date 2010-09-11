@@ -1,21 +1,19 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/4] ASoC: tlv320aic3x: Optimize PLL
- programming in aic3x_set_bias_level
-Date: Sat, 11 Sep 2010 09:04:56 +0100
-Message-ID: <1284192296.3409.2.camel@odin>
-References: <1284117812-8618-1-git-send-email-jhnikula@gmail.com>
-	<20100910113650.GE7259@rakim.wolfsonmicro.main>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Fix off-by-one bug in register cache
+ size configuration
+Date: Sat, 11 Sep 2010 10:46:04 +0100
+Message-ID: <20100911094603.GA16497@sirena.org.uk>
+References: <1284139448-12043-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 83E5F244DE
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 436F624529
 	for <alsa-devel@alsa-project.org>;
-	Sat, 11 Sep 2010 10:05:00 +0200 (CEST)
-Received: by mail-wy0-f179.google.com with SMTP id 32so3691386wyb.38
-	for <alsa-devel@alsa-project.org>; Sat, 11 Sep 2010 01:05:00 -0700 (PDT)
-In-Reply-To: <20100910113650.GE7259@rakim.wolfsonmicro.main>
+	Sat, 11 Sep 2010 11:46:07 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1284139448-12043-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,23 +23,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-09-10 at 12:36 +0100, Mark Brown wrote:
-> On Fri, Sep 10, 2010 at 02:23:29PM +0300, Jarkko Nikula wrote:
-> > There is only need to enable/disable once the PLL when the bias is going
-> > between on, prepare, standby and off states.
+On Fri, Sep 10, 2010 at 06:24:08PM +0100, Dimitris Papastamos wrote:
+> This is a simple off-by-one bug, the size of the register cache is
+> incorrectly set to the maximum register index. Fix it by adding one.
 > 
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
-Applied.
-
-Thanks
-
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Applied, thanks.
