@@ -1,20 +1,20 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH v2 1/1] ASoC: Add HP iPAQ H1940 support
-Date: Sun, 12 Sep 2010 15:18:47 +0300
-Message-ID: <1284293927-15983-2-git-send-email-anarsoul@gmail.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH v2 1/1] ASoC: Add HP iPAQ H1940 support
+Date: Sun, 12 Sep 2010 15:25:36 +0200
+Message-ID: <201009121525.37476.marek.vasut@gmail.com>
 References: <1284288909-5961-1-git-send-email-anarsoul@gmail.com>
+	<1284293927-15983-2-git-send-email-anarsoul@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9F793246F0
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 0A2652433E
 	for <alsa-devel@alsa-project.org>;
-	Sun, 12 Sep 2010 14:20:06 +0200 (CEST)
-Received: by mail-ey0-f179.google.com with SMTP id 27so1391337eye.38
-	for <alsa-devel@alsa-project.org>; Sun, 12 Sep 2010 05:20:06 -0700 (PDT)
-In-Reply-To: <1284288909-5961-1-git-send-email-anarsoul@gmail.com>
+	Sun, 12 Sep 2010 15:25:42 +0200 (CEST)
+Received: by bwz4 with SMTP id 4so4126258bwz.38
+	for <alsa-devel@alsa-project.org>; Sun, 12 Sep 2010 06:25:41 -0700 (PDT)
+In-Reply-To: <1284293927-15983-2-git-send-email-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,359 +24,196 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel <alsa-devel@alsa-project.org>, Ben Dooks <ben-linux@fluff.org>, Arnaud Patard (Rt
+To: alsa-devel@alsa-project.org
+Cc: Vasily Khoruzhick <anarsoul@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>, Ben Dooks <ben-linux@fluff.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
-Tested-by: Arnaud Patard <arnaud.patard@rtp-net.org>
----
- sound/soc/s3c24xx/Kconfig         |    8 +
- sound/soc/s3c24xx/Makefile        |    2 +
- sound/soc/s3c24xx/h1940_uda1380.c |  297 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 307 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/s3c24xx/h1940_uda1380.c
-
-diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
-index 7d8235d..6b50509 100644
---- a/sound/soc/s3c24xx/Kconfig
-+++ b/sound/soc/s3c24xx/Kconfig
-@@ -118,6 +118,14 @@ config SND_S3C24XX_SOC_SIMTEC_HERMES
- 	select SND_SOC_TLV320AIC3X
- 	select SND_S3C24XX_SOC_SIMTEC
- 
-+config SND_S3C24XX_SOC_H1940_UDA1380
-+	tristate "Audio support for the HP iPAQ H1940"
-+	depends on SND_S3C24XX_SOC && ARCH_H1940
-+	select SND_S3C24XX_SOC_I2S
-+	select SND_SOC_UDA1380
-+	help
-+	  This driver provides audio support for HP iPAQ h1940 PDA.
-+
- config SND_S3C24XX_SOC_RX1950_UDA1380
- 	tristate "Audio support for the HP iPAQ RX1950"
- 	depends on SND_S3C24XX_SOC && MACH_RX1950
-diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/s3c24xx/Makefile
-index dd412a9..33a7c68 100644
---- a/sound/soc/s3c24xx/Makefile
-+++ b/sound/soc/s3c24xx/Makefile
-@@ -28,6 +28,7 @@ snd-soc-s3c24xx-simtec-objs := s3c24xx_simtec.o
- snd-soc-s3c24xx-simtec-hermes-objs := s3c24xx_simtec_hermes.o
- snd-soc-s3c24xx-simtec-tlv320aic23-objs := s3c24xx_simtec_tlv320aic23.o
- snd-soc-rx1950-uda1380-objs := rx1950_uda1380.o
-+snd-soc-h1940-uda1380-objs := h1940_uda1380.o
- snd-soc-smdk64xx-wm8580-objs := smdk64xx_wm8580.o
- snd-soc-smdk-wm9713-objs := smdk_wm9713.o
- snd-soc-s3c64xx-smartq-wm8987-objs := smartq_wm8987.o
-@@ -44,6 +45,7 @@ obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC) += snd-soc-s3c24xx-simtec.o
- obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC_HERMES) += snd-soc-s3c24xx-simtec-hermes.o
- obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC_TLV320AIC23) += snd-soc-s3c24xx-simtec-tlv320aic23.o
- obj-$(CONFIG_SND_S3C24XX_SOC_RX1950_UDA1380) += snd-soc-rx1950-uda1380.o
-+obj-$(CONFIG_SND_S3C24XX_SOC_H1940_UDA1380) += snd-soc-h1940-uda1380.o
- obj-$(CONFIG_SND_S3C64XX_SOC_WM8580) += snd-soc-smdk64xx-wm8580.o
- obj-$(CONFIG_SND_SOC_SMDK_WM9713) += snd-soc-smdk-wm9713.o
- obj-$(CONFIG_SND_S3C64XX_SOC_SMARTQ) += snd-soc-s3c64xx-smartq-wm8987.o
-diff --git a/sound/soc/s3c24xx/h1940_uda1380.c b/sound/soc/s3c24xx/h1940_uda1380.c
-new file mode 100644
-index 0000000..5dbc0ea
---- /dev/null
-+++ b/sound/soc/s3c24xx/h1940_uda1380.c
-@@ -0,0 +1,297 @@
-+/*
-+ * h1940-uda1380.c  --  ALSA Soc Audio Layer
-+ *
-+ * Copyright (c) 2010 Arnaud Patard <arnaud.patard@rtp-net.org>
-+ * Copyright (c) 2010 Vasily Khoruzhick <anarsoul@gmail.com>
-+ *
-+ * Based on version from Arnaud Patard <arnaud.patard@rtp-net.org>
-+ *
-+ * This program is free software; you can redistribute  it and/or modify it
-+ * under  the terms of  the GNU General  Public License as published by the
-+ * Free Software Foundation;  either version 2 of the  License, or (at your
-+ * option) any later version.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/platform_device.h>
-+#include <linux/i2c.h>
-+#include <linux/gpio.h>
-+
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/uda1380.h>
-+#include <sound/jack.h>
-+
-+#include <plat/regs-iis.h>
-+
-+#include <mach/h1940-latch.h>
-+
-+#include <asm/mach-types.h>
-+
-+#include "s3c-dma.h"
-+#include "s3c24xx-i2s.h"
-+#include "../codecs/uda1380.h"
-+
-+static unsigned int rates[] = {
-+	11025,
-+	22050,
-+	44100,
-+};
-+
-+static struct snd_pcm_hw_constraint_list hw_rates = {
-+	.count = ARRAY_SIZE(rates),
-+	.list = rates,
-+	.mask = 0,
-+};
-+
-+static struct snd_soc_jack hp_jack;
-+
-+static struct snd_soc_jack_pin hp_jack_pins[] = {
-+	{
-+		.pin	= "Headphone Jack",
-+		.mask	= SND_JACK_HEADPHONE,
-+	},
-+	{
-+		.pin	= "Speaker",
-+		.mask	= SND_JACK_HEADPHONE,
-+		.invert	= 1,
-+	},
-+};
-+
-+static struct snd_soc_jack_gpio hp_jack_gpios[] = {
-+	{
-+		.gpio			= S3C2410_GPG(4),
-+		.name			= "hp-gpio",
-+		.report			= SND_JACK_HEADPHONE,
-+		.invert			= 1,
-+		.debounce_time		= 200,
-+	},
-+};
-+
-+static int h1940_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+	runtime->hw.rate_min = hw_rates.list[0];
-+	runtime->hw.rate_max = hw_rates.list[hw_rates.count - 1];
-+	runtime->hw.rates = SNDRV_PCM_RATE_KNOT;
-+
-+	return snd_pcm_hw_constraint_list(runtime, 0,
-+					SNDRV_PCM_HW_PARAM_RATE,
-+					&hw_rates);
-+}
-+
-+static int h1940_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int div;
-+	int ret;
-+	unsigned int rate = params_rate(params);
-+
-+	switch (rate) {
-+	case 11025:
-+	case 22050:
-+	case 44100:
-+		div = s3c24xx_i2s_get_clockrate() / (384 * rate);
-+		if (s3c24xx_i2s_get_clockrate() % (384 * rate) > (192 * rate))
-+			div++;
-+		break;
-+	default:
-+		dev_err(&rtd->dev, "%s: rate %d is not supported\n",
-+			__func__, rate);
-+		return -EINVAL;
-+	}
-+
-+	/* set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-+		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set cpu DAI configuration */
-+	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
-+		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* select clock source */
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, S3C24XX_CLKSRC_PCLK, rate,
-+			SND_SOC_CLOCK_OUT);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set MCLK division for sample rate */
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_MCLK,
-+		S3C2410_IISMOD_384FS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set BCLK division for sample rate */
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_BCLK,
-+		S3C2410_IISMOD_32FS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set prescaler division for sample rate */
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_PRESCALER,
-+		S3C24XX_PRESCALE(div, div));
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops h1940_ops = {
-+	.startup	= h1940_startup,
-+	.hw_params	= h1940_hw_params,
-+};
-+
-+static int h1940_spk_power(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *kcontrol, int event)
-+{
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		gpio_set_value(H1940_LATCH_AUDIO_POWER, 1);
-+	else
-+		gpio_set_value(H1940_LATCH_AUDIO_POWER, 0);
-+
-+	return 0;
-+}
-+
-+/* h1940 machine dapm widgets */
-+static const struct snd_soc_dapm_widget uda1380_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Mic Jack", NULL),
-+	SND_SOC_DAPM_SPK("Speaker", h1940_spk_power),
-+};
-+
-+/* h1940 machine audio_map */
-+static const struct snd_soc_dapm_route audio_map[] = {
-+	/* headphone connected to VOUTLHP, VOUTRHP */
-+	{"Headphone Jack", NULL, "VOUTLHP"},
-+	{"Headphone Jack", NULL, "VOUTRHP"},
-+
-+	/* ext speaker connected to VOUTL, VOUTR  */
-+	{"Speaker", NULL, "VOUTL"},
-+	{"Speaker", NULL, "VOUTR"},
-+
-+	/* mic is connected to VINM */
-+	{"VINM", NULL, "Mic Jack"},
-+};
-+
-+static struct platform_device *s3c24xx_snd_device;
-+
-+static int h1940_uda1380_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+	int err;
-+
-+	/* Add h1940 specific widgets */
-+	err = snd_soc_dapm_new_controls(codec, uda1380_dapm_widgets,
-+				  ARRAY_SIZE(uda1380_dapm_widgets));
-+	if (err)
-+		return err;
-+
-+	/* Set up h1940 specific audio path audio_mapnects */
-+	err = snd_soc_dapm_add_routes(codec, audio_map,
-+				      ARRAY_SIZE(audio_map));
-+	if (err)
-+		return err;
-+
-+	snd_soc_dapm_enable_pin(codec, "Headphone Jack");
-+	snd_soc_dapm_enable_pin(codec, "Speaker");
-+	snd_soc_dapm_enable_pin(codec, "Mic Jack");
-+
-+	snd_soc_dapm_sync(codec);
-+
-+	snd_soc_jack_new(codec, "Headphone Jack", SND_JACK_HEADPHONE,
-+		&hp_jack);
-+
-+	snd_soc_jack_add_pins(&hp_jack, ARRAY_SIZE(hp_jack_pins),
-+		hp_jack_pins);
-+
-+	snd_soc_jack_add_gpios(&hp_jack, ARRAY_SIZE(hp_jack_gpios),
-+		hp_jack_gpios);
-+
-+	return 0;
-+}
-+
-+/* s3c24xx digital audio interface glue - connects codec <--> CPU */
-+static struct snd_soc_dai_link h1940_uda1380_dai[] = {
-+	{
-+		.name		= "uda1380",
-+		.stream_name	= "UDA1380 Duplex",
-+		.cpu_dai_name	= "s3c24xx-iis",
-+		.codec_dai_name	= "uda1380-hifi",
-+		.init		= h1940_uda1380_init,
-+		.platform_name	= "s3c24xx-pcm-audio",
-+		.codec_name	= "uda1380-codec.0-001a",
-+		.ops		= &h1940_ops,
-+	},
-+};
-+
-+static struct snd_soc_card h1940_asoc = {
-+	.name = "h1940",
-+	.dai_link = h1940_uda1380_dai,
-+	.num_links = ARRAY_SIZE(h1940_uda1380_dai),
-+};
-+
-+static int __init h1940_init(void)
-+{
-+	int ret;
-+
-+	if (!machine_is_h1940())
-+		return -ENODEV;
-+
-+	/* configure some gpios */
-+	ret = gpio_request(H1940_LATCH_AUDIO_POWER, "speaker-power");
-+	if (ret)
-+		goto err_out;
-+
-+	ret = gpio_direction_output(H1940_LATCH_AUDIO_POWER, 0);
-+	if (ret)
-+		goto err_gpio;
-+
-+	s3c24xx_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!s3c24xx_snd_device) {
-+		ret = -ENOMEM;
-+		goto err_gpio;
-+	}
-+
-+	platform_set_drvdata(s3c24xx_snd_device, &h1940_asoc);
-+	ret = platform_device_add(s3c24xx_snd_device);
-+
-+	if (ret)
-+		goto err_plat;
-+
-+	return 0;
-+
-+err_plat:
-+	platform_device_put(s3c24xx_snd_device);
-+err_gpio:
-+	gpio_free(H1940_LATCH_AUDIO_POWER);
-+
-+err_out:
-+	return ret;
-+}
-+
-+static void __exit h1940_exit(void)
-+{
-+	platform_device_unregister(s3c24xx_snd_device);
-+	snd_soc_jack_free_gpios(&hp_jack, ARRAY_SIZE(hp_jack_gpios),
-+		hp_jack_gpios);
-+	gpio_free(H1940_LATCH_AUDIO_POWER);
-+}
-+
-+module_init(h1940_init);
-+module_exit(h1940_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Arnaud Patard, Vasily Khoruzhick");
-+MODULE_DESCRIPTION("ALSA SoC H1940");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:soc-audio");
--- 
-1.7.2.2
+RG5lIE5lIDEyLiB6w6HFmcOtIDIwMTAgMTQ6MTg6NDcgVmFzaWx5IEtob3J1emhpY2sgbmFwc2Fs
+KGEpOgo+IFNpZ25lZC1vZmYtYnk6IFZhc2lseSBLaG9ydXpoaWNrIDxhbmFyc291bEBnbWFpbC5j
+b20+Cj4gVGVzdGVkLWJ5OiBBcm5hdWQgUGF0YXJkIDxhcm5hdWQucGF0YXJkQHJ0cC1uZXQub3Jn
+PgoKaGF2ZSBteToKUmV2aWV3ZWQtYnk6IE1hcmVrIFZhc3V0IDxtYXJlay52YXN1dEBnbWFpbC5j
+b20+Cj4gLS0tCj4gIHNvdW5kL3NvYy9zM2MyNHh4L0tjb25maWcgICAgICAgICB8ICAgIDggKwo+
+ICBzb3VuZC9zb2MvczNjMjR4eC9NYWtlZmlsZSAgICAgICAgfCAgICAyICsKPiAgc291bmQvc29j
+L3MzYzI0eHgvaDE5NDBfdWRhMTM4MC5jIHwgIDI5Nwo+ICsrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysgMyBmaWxlcyBjaGFuZ2VkLCAzMDcgaW5zZXJ0aW9ucygrKSwKPiAwIGRl
+bGV0aW9ucygtKQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL3MzYzI0eHgvaDE5NDBf
+dWRhMTM4MC5jCj4gCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zM2MyNHh4L0tjb25maWcgYi9z
+b3VuZC9zb2MvczNjMjR4eC9LY29uZmlnCj4gaW5kZXggN2Q4MjM1ZC4uNmI1MDUwOSAxMDA2NDQK
+PiAtLS0gYS9zb3VuZC9zb2MvczNjMjR4eC9LY29uZmlnCj4gKysrIGIvc291bmQvc29jL3MzYzI0
+eHgvS2NvbmZpZwo+IEBAIC0xMTgsNiArMTE4LDE0IEBAIGNvbmZpZyBTTkRfUzNDMjRYWF9TT0Nf
+U0lNVEVDX0hFUk1FUwo+ICAJc2VsZWN0IFNORF9TT0NfVExWMzIwQUlDM1gKPiAgCXNlbGVjdCBT
+TkRfUzNDMjRYWF9TT0NfU0lNVEVDCj4gCj4gK2NvbmZpZyBTTkRfUzNDMjRYWF9TT0NfSDE5NDBf
+VURBMTM4MAo+ICsJdHJpc3RhdGUgIkF1ZGlvIHN1cHBvcnQgZm9yIHRoZSBIUCBpUEFRIEgxOTQw
+Igo+ICsJZGVwZW5kcyBvbiBTTkRfUzNDMjRYWF9TT0MgJiYgQVJDSF9IMTk0MAo+ICsJc2VsZWN0
+IFNORF9TM0MyNFhYX1NPQ19JMlMKPiArCXNlbGVjdCBTTkRfU09DX1VEQTEzODAKPiArCWhlbHAK
+PiArCSAgVGhpcyBkcml2ZXIgcHJvdmlkZXMgYXVkaW8gc3VwcG9ydCBmb3IgSFAgaVBBUSBoMTk0
+MCBQREEuCj4gKwo+ICBjb25maWcgU05EX1MzQzI0WFhfU09DX1JYMTk1MF9VREExMzgwCj4gIAl0
+cmlzdGF0ZSAiQXVkaW8gc3VwcG9ydCBmb3IgdGhlIEhQIGlQQVEgUlgxOTUwIgo+ICAJZGVwZW5k
+cyBvbiBTTkRfUzNDMjRYWF9TT0MgJiYgTUFDSF9SWDE5NTAKPiBkaWZmIC0tZ2l0IGEvc291bmQv
+c29jL3MzYzI0eHgvTWFrZWZpbGUgYi9zb3VuZC9zb2MvczNjMjR4eC9NYWtlZmlsZQo+IGluZGV4
+IGRkNDEyYTkuLjMzYTdjNjggMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL3MzYzI0eHgvTWFrZWZp
+bGUKPiArKysgYi9zb3VuZC9zb2MvczNjMjR4eC9NYWtlZmlsZQo+IEBAIC0yOCw2ICsyOCw3IEBA
+IHNuZC1zb2MtczNjMjR4eC1zaW10ZWMtb2JqcyA6PSBzM2MyNHh4X3NpbXRlYy5vCj4gIHNuZC1z
+b2MtczNjMjR4eC1zaW10ZWMtaGVybWVzLW9ianMgOj0gczNjMjR4eF9zaW10ZWNfaGVybWVzLm8K
+PiAgc25kLXNvYy1zM2MyNHh4LXNpbXRlYy10bHYzMjBhaWMyMy1vYmpzIDo9IHMzYzI0eHhfc2lt
+dGVjX3RsdjMyMGFpYzIzLm8KPiAgc25kLXNvYy1yeDE5NTAtdWRhMTM4MC1vYmpzIDo9IHJ4MTk1
+MF91ZGExMzgwLm8KPiArc25kLXNvYy1oMTk0MC11ZGExMzgwLW9ianMgOj0gaDE5NDBfdWRhMTM4
+MC5vCj4gIHNuZC1zb2Mtc21kazY0eHgtd204NTgwLW9ianMgOj0gc21kazY0eHhfd204NTgwLm8K
+PiAgc25kLXNvYy1zbWRrLXdtOTcxMy1vYmpzIDo9IHNtZGtfd205NzEzLm8KPiAgc25kLXNvYy1z
+M2M2NHh4LXNtYXJ0cS13bTg5ODctb2JqcyA6PSBzbWFydHFfd204OTg3Lm8KPiBAQCAtNDQsNiAr
+NDUsNyBAQCBvYmotJChDT05GSUdfU05EX1MzQzI0WFhfU09DX1NJTVRFQykgKz0KPiBzbmQtc29j
+LXMzYzI0eHgtc2ltdGVjLm8gb2JqLSQoQ09ORklHX1NORF9TM0MyNFhYX1NPQ19TSU1URUNfSEVS
+TUVTKSArPQo+IHNuZC1zb2MtczNjMjR4eC1zaW10ZWMtaGVybWVzLm8KPiBvYmotJChDT05GSUdf
+U05EX1MzQzI0WFhfU09DX1NJTVRFQ19UTFYzMjBBSUMyMykgKz0KPiBzbmQtc29jLXMzYzI0eHgt
+c2ltdGVjLXRsdjMyMGFpYzIzLm8KPiBvYmotJChDT05GSUdfU05EX1MzQzI0WFhfU09DX1JYMTk1
+MF9VREExMzgwKSArPSBzbmQtc29jLXJ4MTk1MC11ZGExMzgwLm8KPiArb2JqLSQoQ09ORklHX1NO
+RF9TM0MyNFhYX1NPQ19IMTk0MF9VREExMzgwKSArPSBzbmQtc29jLWgxOTQwLXVkYTEzODAubwo+
+IG9iai0kKENPTkZJR19TTkRfUzNDNjRYWF9TT0NfV004NTgwKSArPSBzbmQtc29jLXNtZGs2NHh4
+LXdtODU4MC5vCj4gb2JqLSQoQ09ORklHX1NORF9TT0NfU01ES19XTTk3MTMpICs9IHNuZC1zb2Mt
+c21kay13bTk3MTMubwo+ICBvYmotJChDT05GSUdfU05EX1MzQzY0WFhfU09DX1NNQVJUUSkgKz0g
+c25kLXNvYy1zM2M2NHh4LXNtYXJ0cS13bTg5ODcubwo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2Mv
+czNjMjR4eC9oMTk0MF91ZGExMzgwLmMKPiBiL3NvdW5kL3NvYy9zM2MyNHh4L2gxOTQwX3VkYTEz
+ODAuYyBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAuLjVkYmMwZWEKPiAtLS0g
+L2Rldi9udWxsCj4gKysrIGIvc291bmQvc29jL3MzYzI0eHgvaDE5NDBfdWRhMTM4MC5jCj4gQEAg
+LTAsMCArMSwyOTcgQEAKPiArLyoKPiArICogaDE5NDAtdWRhMTM4MC5jICAtLSAgQUxTQSBTb2Mg
+QXVkaW8gTGF5ZXIKPiArICoKPiArICogQ29weXJpZ2h0IChjKSAyMDEwIEFybmF1ZCBQYXRhcmQg
+PGFybmF1ZC5wYXRhcmRAcnRwLW5ldC5vcmc+Cj4gKyAqIENvcHlyaWdodCAoYykgMjAxMCBWYXNp
+bHkgS2hvcnV6aGljayA8YW5hcnNvdWxAZ21haWwuY29tPgo+ICsgKgo+ICsgKiBCYXNlZCBvbiB2
+ZXJzaW9uIGZyb20gQXJuYXVkIFBhdGFyZCA8YXJuYXVkLnBhdGFyZEBydHAtbmV0Lm9yZz4KPiAr
+ICoKPiArICogVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmli
+dXRlICBpdCBhbmQvb3IgbW9kaWZ5Cj4gaXQgKyAqIHVuZGVyICB0aGUgdGVybXMgb2YgIHRoZSBH
+TlUgR2VuZXJhbCAgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkCj4gYnkgdGhlICsgKiBGcmVl
+IFNvZnR3YXJlIEZvdW5kYXRpb247ICBlaXRoZXIgdmVyc2lvbiAyIG9mIHRoZSAgTGljZW5zZSwg
+b3IKPiAoYXQgeW91ciArICogb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4KPiArICoKPiArICov
+Cj4gKwo+ICsjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+Cj4gKyNpbmNsdWRlIDxsaW51eC9tb2R1
+bGVwYXJhbS5oPgo+ICsjaW5jbHVkZSA8bGludXgvcGxhdGZvcm1fZGV2aWNlLmg+Cj4gKyNpbmNs
+dWRlIDxsaW51eC9pMmMuaD4KPiArI2luY2x1ZGUgPGxpbnV4L2dwaW8uaD4KPiArCj4gKyNpbmNs
+dWRlIDxzb3VuZC9zb2MuaD4KPiArI2luY2x1ZGUgPHNvdW5kL3NvYy1kYXBtLmg+Cj4gKyNpbmNs
+dWRlIDxzb3VuZC91ZGExMzgwLmg+Cj4gKyNpbmNsdWRlIDxzb3VuZC9qYWNrLmg+Cj4gKwo+ICsj
+aW5jbHVkZSA8cGxhdC9yZWdzLWlpcy5oPgo+ICsKPiArI2luY2x1ZGUgPG1hY2gvaDE5NDAtbGF0
+Y2guaD4KPiArCj4gKyNpbmNsdWRlIDxhc20vbWFjaC10eXBlcy5oPgo+ICsKPiArI2luY2x1ZGUg
+InMzYy1kbWEuaCIKPiArI2luY2x1ZGUgInMzYzI0eHgtaTJzLmgiCj4gKyNpbmNsdWRlICIuLi9j
+b2RlY3MvdWRhMTM4MC5oIgo+ICsKPiArc3RhdGljIHVuc2lnbmVkIGludCByYXRlc1tdID0gewo+
+ICsJMTEwMjUsCj4gKwkyMjA1MCwKPiArCTQ0MTAwLAo+ICt9Owo+ICsKPiArc3RhdGljIHN0cnVj
+dCBzbmRfcGNtX2h3X2NvbnN0cmFpbnRfbGlzdCBod19yYXRlcyA9IHsKPiArCS5jb3VudCA9IEFS
+UkFZX1NJWkUocmF0ZXMpLAo+ICsJLmxpc3QgPSByYXRlcywKPiArCS5tYXNrID0gMCwKPiArfTsK
+PiArCj4gK3N0YXRpYyBzdHJ1Y3Qgc25kX3NvY19qYWNrIGhwX2phY2s7Cj4gKwo+ICtzdGF0aWMg
+c3RydWN0IHNuZF9zb2NfamFja19waW4gaHBfamFja19waW5zW10gPSB7Cj4gKwl7Cj4gKwkJLnBp
+bgk9ICJIZWFkcGhvbmUgSmFjayIsCj4gKwkJLm1hc2sJPSBTTkRfSkFDS19IRUFEUEhPTkUsCj4g
+Kwl9LAo+ICsJewo+ICsJCS5waW4JPSAiU3BlYWtlciIsCj4gKwkJLm1hc2sJPSBTTkRfSkFDS19I
+RUFEUEhPTkUsCj4gKwkJLmludmVydAk9IDEsCj4gKwl9LAo+ICt9Owo+ICsKPiArc3RhdGljIHN0
+cnVjdCBzbmRfc29jX2phY2tfZ3BpbyBocF9qYWNrX2dwaW9zW10gPSB7Cj4gKwl7Cj4gKwkJLmdw
+aW8JCQk9IFMzQzI0MTBfR1BHKDQpLAo+ICsJCS5uYW1lCQkJPSAiaHAtZ3BpbyIsCj4gKwkJLnJl
+cG9ydAkJCT0gU05EX0pBQ0tfSEVBRFBIT05FLAo+ICsJCS5pbnZlcnQJCQk9IDEsCj4gKwkJLmRl
+Ym91bmNlX3RpbWUJCT0gMjAwLAo+ICsJfSwKPiArfTsKPiArCj4gK3N0YXRpYyBpbnQgaDE5NDBf
+c3RhcnR1cChzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKPiArewo+ICsJc3Ry
+dWN0IHNuZF9wY21fcnVudGltZSAqcnVudGltZSA9IHN1YnN0cmVhbS0+cnVudGltZTsKPiArCj4g
+KwlydW50aW1lLT5ody5yYXRlX21pbiA9IGh3X3JhdGVzLmxpc3RbMF07Cj4gKwlydW50aW1lLT5o
+dy5yYXRlX21heCA9IGh3X3JhdGVzLmxpc3RbaHdfcmF0ZXMuY291bnQgLSAxXTsKPiArCXJ1bnRp
+bWUtPmh3LnJhdGVzID0gU05EUlZfUENNX1JBVEVfS05PVDsKPiArCj4gKwlyZXR1cm4gc25kX3Bj
+bV9od19jb25zdHJhaW50X2xpc3QocnVudGltZSwgMCwKPiArCQkJCQlTTkRSVl9QQ01fSFdfUEFS
+QU1fUkFURSwKPiArCQkJCQkmaHdfcmF0ZXMpOwo+ICt9Cj4gKwo+ICtzdGF0aWMgaW50IGgxOTQw
+X2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKPiArCQkJCXN0
+cnVjdCBzbmRfcGNtX2h3X3BhcmFtcyAqcGFyYW1zKQo+ICt7Cj4gKwlzdHJ1Y3Qgc25kX3NvY19w
+Y21fcnVudGltZSAqcnRkID0gc3Vic3RyZWFtLT5wcml2YXRlX2RhdGE7Cj4gKwlzdHJ1Y3Qgc25k
+X3NvY19kYWkgKmNwdV9kYWkgPSBydGQtPmNwdV9kYWk7Cj4gKwlzdHJ1Y3Qgc25kX3NvY19kYWkg
+KmNvZGVjX2RhaSA9IHJ0ZC0+Y29kZWNfZGFpOwo+ICsJaW50IGRpdjsKPiArCWludCByZXQ7Cj4g
+Kwl1bnNpZ25lZCBpbnQgcmF0ZSA9IHBhcmFtc19yYXRlKHBhcmFtcyk7Cj4gKwo+ICsJc3dpdGNo
+IChyYXRlKSB7Cj4gKwljYXNlIDExMDI1Ogo+ICsJY2FzZSAyMjA1MDoKPiArCWNhc2UgNDQxMDA6
+Cj4gKwkJZGl2ID0gczNjMjR4eF9pMnNfZ2V0X2Nsb2NrcmF0ZSgpIC8gKDM4NCAqIHJhdGUpOwo+
+ICsJCWlmIChzM2MyNHh4X2kyc19nZXRfY2xvY2tyYXRlKCkgJSAoMzg0ICogcmF0ZSkgPiAoMTky
+ICogcmF0ZSkpCj4gKwkJCWRpdisrOwo+ICsJCWJyZWFrOwo+ICsJZGVmYXVsdDoKPiArCQlkZXZf
+ZXJyKCZydGQtPmRldiwgIiVzOiByYXRlICVkIGlzIG5vdCBzdXBwb3J0ZWRcbiIsCj4gKwkJCV9f
+ZnVuY19fLCByYXRlKTsKPiArCQlyZXR1cm4gLUVJTlZBTDsKPiArCX0KPiArCj4gKwkvKiBzZXQg
+Y29kZWMgREFJIGNvbmZpZ3VyYXRpb24gKi8KPiArCXJldCA9IHNuZF9zb2NfZGFpX3NldF9mbXQo
+Y29kZWNfZGFpLCBTTkRfU09DX0RBSUZNVF9JMlMgfAo+ICsJCVNORF9TT0NfREFJRk1UX05CX05G
+IHwgU05EX1NPQ19EQUlGTVRfQ0JTX0NGUyk7Cj4gKwlpZiAocmV0IDwgMCkKPiArCQlyZXR1cm4g
+cmV0Owo+ICsKPiArCS8qIHNldCBjcHUgREFJIGNvbmZpZ3VyYXRpb24gKi8KPiArCXJldCA9IHNu
+ZF9zb2NfZGFpX3NldF9mbXQoY3B1X2RhaSwgU05EX1NPQ19EQUlGTVRfSTJTIHwKPiArCQlTTkRf
+U09DX0RBSUZNVF9OQl9ORiB8IFNORF9TT0NfREFJRk1UX0NCU19DRlMpOwo+ICsJaWYgKHJldCA8
+IDApCj4gKwkJcmV0dXJuIHJldDsKPiArCj4gKwkvKiBzZWxlY3QgY2xvY2sgc291cmNlICovCj4g
+KwlyZXQgPSBzbmRfc29jX2RhaV9zZXRfc3lzY2xrKGNwdV9kYWksIFMzQzI0WFhfQ0xLU1JDX1BD
+TEssIHJhdGUsCj4gKwkJCVNORF9TT0NfQ0xPQ0tfT1VUKTsKPiArCWlmIChyZXQgPCAwKQo+ICsJ
+CXJldHVybiByZXQ7Cj4gKwo+ICsJLyogc2V0IE1DTEsgZGl2aXNpb24gZm9yIHNhbXBsZSByYXRl
+ICovCj4gKwlyZXQgPSBzbmRfc29jX2RhaV9zZXRfY2xrZGl2KGNwdV9kYWksIFMzQzI0WFhfRElW
+X01DTEssCj4gKwkJUzNDMjQxMF9JSVNNT0RfMzg0RlMpOwo+ICsJaWYgKHJldCA8IDApCj4gKwkJ
+cmV0dXJuIHJldDsKPiArCj4gKwkvKiBzZXQgQkNMSyBkaXZpc2lvbiBmb3Igc2FtcGxlIHJhdGUg
+Ki8KPiArCXJldCA9IHNuZF9zb2NfZGFpX3NldF9jbGtkaXYoY3B1X2RhaSwgUzNDMjRYWF9ESVZf
+QkNMSywKPiArCQlTM0MyNDEwX0lJU01PRF8zMkZTKTsKPiArCWlmIChyZXQgPCAwKQo+ICsJCXJl
+dHVybiByZXQ7Cj4gKwo+ICsJLyogc2V0IHByZXNjYWxlciBkaXZpc2lvbiBmb3Igc2FtcGxlIHJh
+dGUgKi8KPiArCXJldCA9IHNuZF9zb2NfZGFpX3NldF9jbGtkaXYoY3B1X2RhaSwgUzNDMjRYWF9E
+SVZfUFJFU0NBTEVSLAo+ICsJCVMzQzI0WFhfUFJFU0NBTEUoZGl2LCBkaXYpKTsKPiArCWlmIChy
+ZXQgPCAwKQo+ICsJCXJldHVybiByZXQ7Cj4gKwo+ICsJcmV0dXJuIDA7Cj4gK30KPiArCj4gK3N0
+YXRpYyBzdHJ1Y3Qgc25kX3NvY19vcHMgaDE5NDBfb3BzID0gewo+ICsJLnN0YXJ0dXAJPSBoMTk0
+MF9zdGFydHVwLAo+ICsJLmh3X3BhcmFtcwk9IGgxOTQwX2h3X3BhcmFtcywKPiArfTsKPiArCj4g
+K3N0YXRpYyBpbnQgaDE5NDBfc3BrX3Bvd2VyKHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0ICp3
+LAo+ICsJCQkJc3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsIGludCBldmVudCkKPiArewo+
+ICsJaWYgKFNORF9TT0NfREFQTV9FVkVOVF9PTihldmVudCkpCj4gKwkJZ3Bpb19zZXRfdmFsdWUo
+SDE5NDBfTEFUQ0hfQVVESU9fUE9XRVIsIDEpOwo+ICsJZWxzZQo+ICsJCWdwaW9fc2V0X3ZhbHVl
+KEgxOTQwX0xBVENIX0FVRElPX1BPV0VSLCAwKTsKPiArCj4gKwlyZXR1cm4gMDsKPiArfQo+ICsK
+PiArLyogaDE5NDAgbWFjaGluZSBkYXBtIHdpZGdldHMgKi8KPiArc3RhdGljIGNvbnN0IHN0cnVj
+dCBzbmRfc29jX2RhcG1fd2lkZ2V0IHVkYTEzODBfZGFwbV93aWRnZXRzW10gPSB7Cj4gKwlTTkRf
+U09DX0RBUE1fSFAoIkhlYWRwaG9uZSBKYWNrIiwgTlVMTCksCj4gKwlTTkRfU09DX0RBUE1fTUlD
+KCJNaWMgSmFjayIsIE5VTEwpLAo+ICsJU05EX1NPQ19EQVBNX1NQSygiU3BlYWtlciIsIGgxOTQw
+X3Nwa19wb3dlciksCj4gK307Cj4gKwo+ICsvKiBoMTk0MCBtYWNoaW5lIGF1ZGlvX21hcCAqLwo+
+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV9yb3V0ZSBhdWRpb19tYXBbXSA9IHsK
+PiArCS8qIGhlYWRwaG9uZSBjb25uZWN0ZWQgdG8gVk9VVExIUCwgVk9VVFJIUCAqLwo+ICsJeyJI
+ZWFkcGhvbmUgSmFjayIsIE5VTEwsICJWT1VUTEhQIn0sCj4gKwl7IkhlYWRwaG9uZSBKYWNrIiwg
+TlVMTCwgIlZPVVRSSFAifSwKPiArCj4gKwkvKiBleHQgc3BlYWtlciBjb25uZWN0ZWQgdG8gVk9V
+VEwsIFZPVVRSICAqLwo+ICsJeyJTcGVha2VyIiwgTlVMTCwgIlZPVVRMIn0sCj4gKwl7IlNwZWFr
+ZXIiLCBOVUxMLCAiVk9VVFIifSwKPiArCj4gKwkvKiBtaWMgaXMgY29ubmVjdGVkIHRvIFZJTk0g
+Ki8KPiArCXsiVklOTSIsIE5VTEwsICJNaWMgSmFjayJ9LAo+ICt9Owo+ICsKPiArc3RhdGljIHN0
+cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnMzYzI0eHhfc25kX2RldmljZTsKPiArCj4gK3N0YXRpYyBp
+bnQgaDE5NDBfdWRhMTM4MF9pbml0KHN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1lICpydGQpCj4g
+K3sKPiArCXN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYyA9IHJ0ZC0+Y29kZWM7Cj4gKwlpbnQg
+ZXJyOwo+ICsKPiArCS8qIEFkZCBoMTk0MCBzcGVjaWZpYyB3aWRnZXRzICovCj4gKwllcnIgPSBz
+bmRfc29jX2RhcG1fbmV3X2NvbnRyb2xzKGNvZGVjLCB1ZGExMzgwX2RhcG1fd2lkZ2V0cywKPiAr
+CQkJCSAgQVJSQVlfU0laRSh1ZGExMzgwX2RhcG1fd2lkZ2V0cykpOwo+ICsJaWYgKGVycikKPiAr
+CQlyZXR1cm4gZXJyOwo+ICsKPiArCS8qIFNldCB1cCBoMTk0MCBzcGVjaWZpYyBhdWRpbyBwYXRo
+IGF1ZGlvX21hcG5lY3RzICovCj4gKwllcnIgPSBzbmRfc29jX2RhcG1fYWRkX3JvdXRlcyhjb2Rl
+YywgYXVkaW9fbWFwLAo+ICsJCQkJICAgICAgQVJSQVlfU0laRShhdWRpb19tYXApKTsKPiArCWlm
+IChlcnIpCj4gKwkJcmV0dXJuIGVycjsKPiArCj4gKwlzbmRfc29jX2RhcG1fZW5hYmxlX3Bpbihj
+b2RlYywgIkhlYWRwaG9uZSBKYWNrIik7Cj4gKwlzbmRfc29jX2RhcG1fZW5hYmxlX3Bpbihjb2Rl
+YywgIlNwZWFrZXIiKTsKPiArCXNuZF9zb2NfZGFwbV9lbmFibGVfcGluKGNvZGVjLCAiTWljIEph
+Y2siKTsKPiArCj4gKwlzbmRfc29jX2RhcG1fc3luYyhjb2RlYyk7Cj4gKwo+ICsJc25kX3NvY19q
+YWNrX25ldyhjb2RlYywgIkhlYWRwaG9uZSBKYWNrIiwgU05EX0pBQ0tfSEVBRFBIT05FLAo+ICsJ
+CSZocF9qYWNrKTsKPiArCj4gKwlzbmRfc29jX2phY2tfYWRkX3BpbnMoJmhwX2phY2ssIEFSUkFZ
+X1NJWkUoaHBfamFja19waW5zKSwKPiArCQlocF9qYWNrX3BpbnMpOwo+ICsKPiArCXNuZF9zb2Nf
+amFja19hZGRfZ3Bpb3MoJmhwX2phY2ssIEFSUkFZX1NJWkUoaHBfamFja19ncGlvcyksCj4gKwkJ
+aHBfamFja19ncGlvcyk7Cj4gKwo+ICsJcmV0dXJuIDA7Cj4gK30KPiArCj4gKy8qIHMzYzI0eHgg
+ZGlnaXRhbCBhdWRpbyBpbnRlcmZhY2UgZ2x1ZSAtIGNvbm5lY3RzIGNvZGVjIDwtLT4gQ1BVICov
+Cj4gK3N0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kYWlfbGluayBoMTk0MF91ZGExMzgwX2RhaVtdID0g
+ewo+ICsJewo+ICsJCS5uYW1lCQk9ICJ1ZGExMzgwIiwKPiArCQkuc3RyZWFtX25hbWUJPSAiVURB
+MTM4MCBEdXBsZXgiLAo+ICsJCS5jcHVfZGFpX25hbWUJPSAiczNjMjR4eC1paXMiLAo+ICsJCS5j
+b2RlY19kYWlfbmFtZQk9ICJ1ZGExMzgwLWhpZmkiLAo+ICsJCS5pbml0CQk9IGgxOTQwX3VkYTEz
+ODBfaW5pdCwKPiArCQkucGxhdGZvcm1fbmFtZQk9ICJzM2MyNHh4LXBjbS1hdWRpbyIsCj4gKwkJ
+LmNvZGVjX25hbWUJPSAidWRhMTM4MC1jb2RlYy4wLTAwMWEiLAo+ICsJCS5vcHMJCT0gJmgxOTQw
+X29wcywKPiArCX0sCj4gK307Cj4gKwo+ICtzdGF0aWMgc3RydWN0IHNuZF9zb2NfY2FyZCBoMTk0
+MF9hc29jID0gewo+ICsJLm5hbWUgPSAiaDE5NDAiLAo+ICsJLmRhaV9saW5rID0gaDE5NDBfdWRh
+MTM4MF9kYWksCj4gKwkubnVtX2xpbmtzID0gQVJSQVlfU0laRShoMTk0MF91ZGExMzgwX2RhaSks
+Cj4gK307Cj4gKwo+ICtzdGF0aWMgaW50IF9faW5pdCBoMTk0MF9pbml0KHZvaWQpCj4gK3sKPiAr
+CWludCByZXQ7Cj4gKwo+ICsJaWYgKCFtYWNoaW5lX2lzX2gxOTQwKCkpCj4gKwkJcmV0dXJuIC1F
+Tk9ERVY7Cj4gKwo+ICsJLyogY29uZmlndXJlIHNvbWUgZ3Bpb3MgKi8KPiArCXJldCA9IGdwaW9f
+cmVxdWVzdChIMTk0MF9MQVRDSF9BVURJT19QT1dFUiwgInNwZWFrZXItcG93ZXIiKTsKPiArCWlm
+IChyZXQpCj4gKwkJZ290byBlcnJfb3V0Owo+ICsKPiArCXJldCA9IGdwaW9fZGlyZWN0aW9uX291
+dHB1dChIMTk0MF9MQVRDSF9BVURJT19QT1dFUiwgMCk7Cj4gKwlpZiAocmV0KQo+ICsJCWdvdG8g
+ZXJyX2dwaW87Cj4gKwo+ICsJczNjMjR4eF9zbmRfZGV2aWNlID0gcGxhdGZvcm1fZGV2aWNlX2Fs
+bG9jKCJzb2MtYXVkaW8iLCAtMSk7Cj4gKwlpZiAoIXMzYzI0eHhfc25kX2RldmljZSkgewo+ICsJ
+CXJldCA9IC1FTk9NRU07Cj4gKwkJZ290byBlcnJfZ3BpbzsKPiArCX0KPiArCj4gKwlwbGF0Zm9y
+bV9zZXRfZHJ2ZGF0YShzM2MyNHh4X3NuZF9kZXZpY2UsICZoMTk0MF9hc29jKTsKPiArCXJldCA9
+IHBsYXRmb3JtX2RldmljZV9hZGQoczNjMjR4eF9zbmRfZGV2aWNlKTsKPiArCj4gKwlpZiAocmV0
+KQo+ICsJCWdvdG8gZXJyX3BsYXQ7Cj4gKwo+ICsJcmV0dXJuIDA7Cj4gKwo+ICtlcnJfcGxhdDoK
+PiArCXBsYXRmb3JtX2RldmljZV9wdXQoczNjMjR4eF9zbmRfZGV2aWNlKTsKPiArZXJyX2dwaW86
+Cj4gKwlncGlvX2ZyZWUoSDE5NDBfTEFUQ0hfQVVESU9fUE9XRVIpOwo+ICsKPiArZXJyX291dDoK
+PiArCXJldHVybiByZXQ7Cj4gK30KPiArCj4gK3N0YXRpYyB2b2lkIF9fZXhpdCBoMTk0MF9leGl0
+KHZvaWQpCj4gK3sKPiArCXBsYXRmb3JtX2RldmljZV91bnJlZ2lzdGVyKHMzYzI0eHhfc25kX2Rl
+dmljZSk7Cj4gKwlzbmRfc29jX2phY2tfZnJlZV9ncGlvcygmaHBfamFjaywgQVJSQVlfU0laRSho
+cF9qYWNrX2dwaW9zKSwKPiArCQlocF9qYWNrX2dwaW9zKTsKPiArCWdwaW9fZnJlZShIMTk0MF9M
+QVRDSF9BVURJT19QT1dFUik7Cj4gK30KPiArCj4gK21vZHVsZV9pbml0KGgxOTQwX2luaXQpOwo+
+ICttb2R1bGVfZXhpdChoMTk0MF9leGl0KTsKPiArCj4gKy8qIE1vZHVsZSBpbmZvcm1hdGlvbiAq
+Lwo+ICtNT0RVTEVfQVVUSE9SKCJBcm5hdWQgUGF0YXJkLCBWYXNpbHkgS2hvcnV6aGljayIpOwo+
+ICtNT0RVTEVfREVTQ1JJUFRJT04oIkFMU0EgU29DIEgxOTQwIik7Cj4gK01PRFVMRV9MSUNFTlNF
+KCJHUEwiKTsKPiArTU9EVUxFX0FMSUFTKCJwbGF0Zm9ybTpzb2MtYXVkaW8iKTsKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
