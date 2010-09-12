@@ -1,49 +1,46 @@
-From: Andreas Schwab <schwab@linux-m68k.org>
-Subject: [PATCH] sound/ppc/powermac: remove undefined operations
-Date: Sat, 11 Sep 2010 13:16:41 +0200
-Message-ID: <m2iq2cfs2u.fsf@igel.home>
+From: Ben Hutchings <ben@decadent.org.uk>
+Subject: Bug#596478: [PATCH] ALSA: emux: Add trivial compat ioctl handler
+Date: Sun, 12 Sep 2010 02:41:47 +0100
+Message-ID: <1284255707.5323.638.camel@localhost>
+Reply-To: Ben Hutchings <ben@decadent.org.uk>, 596478@bugs.debian.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-To: alsa-devel@alsa-project.org
-Cc: linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <bounce-debian-kernel=glddk-debian-kernel=m.gmane.org@lists.debian.org>
+Resent-To: debian-bugs-dist@lists.debian.org
+Resent-Message-ID: <handler.596478.B596478.128425572113929@bugs.debian.org>
+List-URL: <http://lists.debian.org/debian-kernel/>
+List-Post: <mailto:debian-kernel@lists.debian.org>
+List-Help: <mailto:debian-kernel-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-kernel-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-kernel-request@lists.debian.org?subject=unsubscribe>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Carmen Cru <carmen.cru@belgacom.net>, 596478@bugs.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-Modifying an object twice without an intervening sequence point is
-undefined.
-
-Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
+Reported-by: Carmen Cru <carmen.cru@belgacom.net>
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
 ---
- sound/ppc/tumbler.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+This is compile-tested only.
 
-diff --git a/sound/ppc/tumbler.c b/sound/ppc/tumbler.c
-index 20afdf9..961d982 100644
---- a/sound/ppc/tumbler.c
-+++ b/sound/ppc/tumbler.c
-@@ -785,7 +785,7 @@ static int snapper_set_capture_source(struct pmac_tumbler *mix)
- 	if (! mix->i2c.client)
- 		return -ENODEV;
- 	if (mix->capture_source)
--		mix->acs = mix->acs |= 2;
-+		mix->acs |= 2;
- 	else
- 		mix->acs &= ~2;
- 	return i2c_smbus_write_byte_data(mix->i2c.client, TAS_REG_ACS, mix->acs);
--- 
-1.7.2.3
+Ben.
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 58CA 54C7 6D53 942B 1756  01D3 44D5 214B 8276 4ED5
-"And now for something completely different."
+ sound/synth/emux/emux_hwdep.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/sound/synth/emux/emux_hwdep.c b/sound/synth/emux/emux_hwdep.c
+index ff0b2a8..5ae1eae 100644
+--- a/sound/synth/emux/emux_hwdep.c
++++ b/sound/synth/emux/emux_hwdep.c
+@@ -128,6 +128,9 @@ snd_emux_init_hwdep(struct snd_emux *emu)
+ 	strcpy(hw->name, SNDRV_EMUX_HWDEP_NAME);
+ 	hw->iface =3D SNDRV_HWDEP_IFACE_EMUX_WAVETABLE;
+ 	hw->ops.ioctl =3D snd_emux_hwdep_ioctl;
++	/* The ioctl parameter types are compatible between 32- and
++	 * 64-bit architectures, so use the same function. */
++	hw->ops.ioctl_compat =3D snd_emux_hwdep_ioctl;
+ 	hw->exclusive =3D 1;
+ 	hw->private_data =3D emu;
+ 	if ((err =3D snd_card_register(emu->card)) < 0)
+--=20
+1.7.1
