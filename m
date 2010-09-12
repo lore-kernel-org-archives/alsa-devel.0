@@ -1,96 +1,55 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: [PATCH] alsactl init: Add db entry for Compaq nx6110
-	quirk
-Date: Sat, 11 Sep 2010 22:13:40 -0400
-Message-ID: <AANLkTi=Vq5b_hOSgYC7U4VuhYPyUSE36H9NEsHPMSDjT@mail.gmail.com>
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH 00/11] treewide: Remove pr_<level> uses with KERN_<level>
+Date: Sat, 11 Sep 2010 22:10:48 -0700
+Message-ID: <cover.1284267142.git.joe@perches.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=0016e65b5ee0402a480490068740
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 8CF97245B1
-	for <alsa-devel@alsa-project.org>;
-	Sun, 12 Sep 2010 04:13:40 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so4549329wyb.38
-	for <alsa-devel@alsa-project.org>; Sat, 11 Sep 2010 19:13:40 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <devel-bounces@linuxdriverproject.org>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/devel>,
+	<mailto:devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/devel>
+List-Post: <mailto:devel@linuxdriverproject.org>
+List-Help: <mailto:devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/devel>,
+	<mailto:devel-request@linuxdriverproject.org?subject=subscribe>
+Sender: devel-bounces@linuxdriverproject.org
+Errors-To: devel-bounces@linuxdriverproject.org
+To: Jiri Kosina <trivial@kernel.org>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Marcelo Tosatti <mtosatti@redhat.com>, kvm@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Steve Wise <swise@opengridcomputing.com>, Tom Tucker <tom@opengridcomputing.com>, Jaroslav Kysela <perex@perex.cz>, Paul Mackerras <paulus@samba.org>, "H. Peter Anvin" <hpa@zytor.com>, Sean Hefty <sean.hefty@intel.com>, devel@driverdev.osuosl.org, David Brownell <dbrownell@users.sourceforge.net>, Russell King <linux@arm.linux.org.uk>, linux-rdma@vger.kernel.org, x86@kernel.org, Alexander Graf <agraf@suse.de>, Ingo Molnar <mingo@redhat.com>, Avi Kivity <avi@redhat.com>, Roland Dreier <rolandd@cisco.com>, Hal Rosenstock <hal.rosenstock@gmail.com>, cbe-oss-dev@lists.ozlabs.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, microblaze-uclinux@itee.uq.edu.au, kvm-ppc@vger.kern
 List-Id: alsa-devel@alsa-project.org
 
---0016e65b5ee0402a480490068740
-Content-Type: text/plain; charset=UTF-8
+Most of these are pr_debug(KERN_<foo>.
+pr_<level>(KERN_<level> is unnecessary.
 
-Hi,
+Joe Perches (11):
+  arch/arm: Remove pr_<level> uses of KERN_<level>
+  arch/avr32: Remove pr_<level> uses of KERN_<level>
+  arch/microblaze: Remove pr_<level> uses of KERN_<level>
+  arch/mips: Remove pr_<level> uses of KERN_<level>
+  arch/powerpc: Remove pr_<level> uses of KERN_<level>
+  arch/x86: Remove pr_<level> uses of KERN_<level>
+  drivers/infiniband: Remove pr_<level> uses of KERN_<level>
+  drivers/net/skfp: Remove pr_<level> uses of KERN_<level>
+  drivers/staging/msm: Remove pr_<level> uses of KERN_<level>
+  drivers/usb/gadget: Remove pr_<level> uses of KERN_<level>
+  sound: Remove pr_<level> uses of KERN_<level>
 
-Attached please find a patch for alsa-utils that adds a necessary
-control quirk for the Compaq nx6110 (the 'Headphone Jack Sense'
-control needs to be unmuted).
+ arch/arm/mach-pxa/cpufreq-pxa2xx.c       |    3 +-
+ arch/avr32/mach-at32ap/at32ap700x.c      |    4 +-
+ arch/microblaze/kernel/exceptions.c      |   16 ++----
+ arch/mips/kernel/irq-gic.c               |    2 +-
+ arch/mips/pci/pci-rc32434.c              |    2 +-
+ arch/powerpc/kvm/emulate.c               |    4 +-
+ arch/powerpc/sysdev/pmi.c                |    2 +-
+ arch/x86/kernel/apb_timer.c              |    4 +-
+ drivers/infiniband/hw/amso1100/c2_intr.c |    4 +-
+ drivers/net/skfp/skfddi.c                |   84 +++++++++++++++---------------
+ drivers/staging/msm/staging-devices.c    |    2 +-
+ drivers/usb/gadget/r8a66597-udc.c        |    2 +-
+ sound/ppc/snd_ps3.c                      |    2 +-
+ sound/soc/s3c24xx/s3c-dma.c              |    3 +-
+ 14 files changed, 64 insertions(+), 70 deletions(-)
 
-Thanks,
-Dan
-
---0016e65b5ee0402a480490068740
-Content-Type: text/x-patch; charset=US-ASCII;
-	name="0001-alsactl-init-Add-db-entry-for-Compaq-nx6110-quirk.patch"
-Content-Disposition: attachment;
-	filename="0001-alsactl-init-Add-db-entry-for-Compaq-nx6110-quirk.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gdz9qglr0
-
-RnJvbSBmNmZkNDRjZjVjZWNhOTU5MTVjYmVhZGM1NTFjMjJlMzgyZGU3NTk3IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
-dGU6IFNhdCwgMTEgU2VwIDIwMTAgMjI6MDI6MjggLTA0MDAKU3ViamVjdDogW1BBVENIXSBhbHNh
-Y3RsIGluaXQ6IEFkZCBkYiBlbnRyeSBmb3IgQ29tcGFxIG54NjExMCBxdWlyawoKQnVnTGluazog
-aHR0cHM6Ly9sYXVuY2hwYWQubmV0L2J1Z3MvNTg1Nzc3CgpUaGUgcmVwb3J0ZXIgaGFzIHZlcmlm
-aWVkIHRoYXQgJ0hlYWRwaG9uZSBKYWNrIFNlbnNlJyBzaG91bGQgYmUgdW5tdXRlZApzbyB0aGF0
-IGF1ZGlvIGlzIGF1ZGlibGUgYnkgZGVmYXVsdC4gIFRvIGRvIHNvLCBJJ3ZlIGFkZGVkIGEgc2Vw
-YXJhdGUKZmlsZSBmb3IgdGhlIElDSDQvNS82IGNvbmZpZ3VyYXRpb24uCgpSZXBvcnRlZC1hbmQt
-VGVzdGVkLWJ5OiBBbnRvbmlvClNpZ25lZC1vZmYtYnk6IERhbmllbCBUIENoZW4gPGNyaW1zdW5A
-dWJ1bnR1LmNvbT4KLS0tCiBhbHNhY3RsL2luaXQvMDBtYWluICAgICAgfCAgICAxICsKIGFsc2Fj
-dGwvaW5pdC9NYWtlZmlsZS5hbSB8ICAgIDIgKy0KIGFsc2FjdGwvaW5pdC9pY2g0ICAgICAgICB8
-ICAgMTIgKysrKysrKysrKysrCiAzIGZpbGVzIGNoYW5nZWQsIDE0IGluc2VydGlvbnMoKyksIDEg
-ZGVsZXRpb25zKC0pCiBjcmVhdGUgbW9kZSAxMDA2NDQgYWxzYWN0bC9pbml0L2ljaDQKCmRpZmYg
-LS1naXQgYS9hbHNhY3RsL2luaXQvMDBtYWluIGIvYWxzYWN0bC9pbml0LzAwbWFpbgppbmRleCA2
-NjBkZjM4Li5iZWI3MmExIDEwMDY0NAotLS0gYS9hbHNhY3RsL2luaXQvMDBtYWluCisrKyBiL2Fs
-c2FjdGwvaW5pdC8wMG1haW4KQEAgLTMxLDYgKzMxLDcgQEAgUkVTVUxUPT0ic2tpcCIsIEdPVE89
-ImluaXRfZW5kIgogCiAjIHJlYWwgQUxTQSBjb25maWd1cmF0aW9uIGRhdGFiYXNlCiBDQVJESU5G
-T3tkcml2ZXJ9PT0iSERBLUludGVsIiwgSU5DTFVERT0iaGRhIiwgR09UTz0iaW5pdF9lbmQiCitD
-QVJESU5GT3tkcml2ZXJ9PT0iSUNINCIsIElOQ0xVREU9ImljaDQiLCBHT1RPPSJpbml0X2VuZCIK
-IENBUkRJTkZPe2RyaXZlcn09PSJDQTAxMDYiLCBJTkNMVURFPSJjYTAxMDYiLCBHT1RPPSJpbml0
-X2VuZCIKIENBUkRJTkZPe2RyaXZlcn09PSJUZXN0IiwgSU5DTFVERT0idGVzdCIsIEdPVE89Imlu
-aXRfZW5kIgogCmRpZmYgLS1naXQgYS9hbHNhY3RsL2luaXQvTWFrZWZpbGUuYW0gYi9hbHNhY3Rs
-L2luaXQvTWFrZWZpbGUuYW0KaW5kZXggOWUyYjgzZC4uMzk2ZDM5OCAxMDA2NDQKLS0tIGEvYWxz
-YWN0bC9pbml0L01ha2VmaWxlLmFtCisrKyBiL2Fsc2FjdGwvaW5pdC9NYWtlZmlsZS5hbQpAQCAt
-MSw2ICsxLDYgQEAKIAogaW5pdF9maWxlcyA9IFwKLQkwMG1haW4gZGVmYXVsdCBoZWxwIGluZm8g
-dGVzdCBcCisJMDBtYWluIGRlZmF1bHQgaGVscCBpY2g0IGluZm8gdGVzdCBcCiAJaGRhCiBFWFRS
-QV9ESVNUID0gJChpbml0X2ZpbGVzKQogYWxzYWluaXRkaXIgPSAkKGRhdGFkaXIpL2Fsc2EvaW5p
-dApkaWZmIC0tZ2l0IGEvYWxzYWN0bC9pbml0L2ljaDQgYi9hbHNhY3RsL2luaXQvaWNoNApuZXcg
-ZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAwMDAwLi5lY2NiYTJmCi0tLSAvZGV2L251bGwKKysr
-IGIvYWxzYWN0bC9pbml0L2ljaDQKQEAgLTAsMCArMSwxMiBAQAorIyBDb25maWd1cmF0aW9uIGZv
-ciBJbnRlbCBJQ0g0LzUvNgorCitDQVJESU5GT3ttaXhlcm5hbWV9PT0iQW5hbG9nIERldmljZXMg
-QUQxOTgxQiIsIFwKKyAgQVRUUntzdWJzeXN0ZW1fdmVuZG9yfT09IjB4MTAzYyIsIEFUVFJ7c3Vi
-c3lzdGVtX2RldmljZX09PSIweDA5OWMiLCBcCisgIEdPVE89IkNvbXBhcSBueDYxMTAiCitSRVNV
-TFQ9ImZhbHNlIiwgRVhJVD0icmV0dXJuIgorCitMQUJFTD0iQ29tcGFxIG54NjExMCIKKyMgcGxh
-eWJhY2sKK0NUTHtyZXNldH09Im1peGVyIgorQ1RMe25hbWV9PSJIZWFkcGhvbmUgSmFjayBTZW5z
-ZSIsIENUTHt2YWx1ZX09Im9uIgorUkVTVUxUPSJ0cnVlIiwgRVhJVD0icmV0dXJuIgotLSAKMS43
-LjAuNAoK
---0016e65b5ee0402a480490068740
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---0016e65b5ee0402a480490068740--
+-- 
+1.7.3.rc1
