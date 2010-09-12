@@ -1,21 +1,23 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: [PATCH v2 1/1] ASoC: Add HP iPAQ H1940 support
-Date: Sun, 12 Sep 2010 21:09:55 +0300
-Message-ID: <201009122110.00148.anarsoul@gmail.com>
-References: <1284288909-5961-1-git-send-email-anarsoul@gmail.com>
-	<1284293927-15983-2-git-send-email-anarsoul@gmail.com>
-	<AANLkTi=TO4ADGEzeJucHnCDkSELxy_buZRrZPRdcX+Nx@mail.gmail.com>
+From: Stuart Longland <redhatter@gentoo.org>
+Subject: Binding multiple registers to an enum
+Date: Mon, 13 Sep 2010 09:31:51 +1000
+Message-ID: <20100912233151.GU14056@atomos.longlandclan.yi.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5848181981095217074=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2BAA224403
+Received: from ossa.mas.viperplatform.net.au (ossa.mas.viperplatform.net.au
+	[202.147.75.25]) by alsa0.perex.cz (Postfix) with ESMTP id 7499124454
 	for <alsa-devel@alsa-project.org>;
-	Sun, 12 Sep 2010 20:10:55 +0200 (CEST)
-Received: by eye27 with SMTP id 27so1440654eye.38
-	for <alsa-devel@alsa-project.org>; Sun, 12 Sep 2010 11:10:52 -0700 (PDT)
-In-Reply-To: <AANLkTi=TO4ADGEzeJucHnCDkSELxy_buZRrZPRdcX+Nx@mail.gmail.com>
+	Mon, 13 Sep 2010 01:32:01 +0200 (CEST)
+Received: from mail by ossa.mas.viperplatform.net.au with spam-scanned (Exim
+	4.43) id 1Ouw1Z-0005tw-Jq
+	for alsa-devel@alsa-project.org; Mon, 13 Sep 2010 09:31:57 +1000
+Received: from [203.94.56.252] (helo=atomos.dmz.longlandclan.yi.org)
+	by ossa.mas.viperplatform.net.au with esmtp (Exim 4.43)
+	id 1Ouw1Z-0005tN-2q
+	for alsa-devel@alsa-project.org; Mon, 13 Sep 2010 09:31:53 +1000
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,53 +27,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>, Ben Dooks <ben-linux@fluff.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
---===============5848181981095217074==
-Content-Type: multipart/signed;
-  boundary="nextPart3055664.CMjriT7VXy";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Hi all,
 
---nextPart3055664.CMjriT7VXy
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: base64
+Just working on the TLV320AIC3204 driver again... I've got an issue
+where we get noise on recording inputs if I don't drive unused inputs to
+the common mode.  Now there's a register which can do exactly this.
 
-0JIg0YHQvtC+0LHRidC10L3QuNC4INC+0YIgMTIg0YHQtdC90YLRj9Cx0YDRjyAyMDEwIDIwOjA3
-OjQxINCw0LLRgtC+0YAgSmFzc2kgQnJhciDQvdCw0L/QuNGB0LDQuzoKCj4gSXMgcGxhdGZvcm06
-c29jLWF1ZGlvIHNwZWNpZmljIGVub3VnaCBpbiBtdWx0aS1wbGF0Zm9ybSBidWlsZHMgb2YgdGhl
-IE9TPwo+IFRob3VnaCBpdCBpcyB1bmxpa2VseSB0aGVyZSB3b3VsZCBldmVyIGJlIHN1Y2ggYSBj
-b25mbGljdCwgYnV0IHN0aWxsLi4uCgpPdGhlciBnbHVlIGRyaXZlcnMganVzdCBjYW4ndCBsb2Fk
-LCB1c3VhbGx5IHRoZXkgaW5jbHVkZSBtYWNoaW5lIGNoZWNrIGluIAptb2R1bGVfaW5pdC4KClJl
-Z2FyZHMKVmFzaWx5Cg==
+Each of the inputs can be routed through a difference series
+resistance... this selection is done by enum controls, with the options
+being: not-connected, 10k, 20k or 40k.  My plan, is that when
+'not-selected' is chosen, I set the appropriate bit in the floating
+input register so it gets connected to common-mode... and when something
+else is chosen, that bit gets cleared.
 
---nextPart3055664.CMjriT7VXy
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+I've tried lying to DAPM and telling it these bits control PGAs on the
+inputs themselves... but it gets the wrong idea about which ones need to
+be turned on.  Perhaps I should investigate that ... but the idea of
+using PGA controls doesn't seem quite right.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.16 (GNU/Linux)
+I've looked at SOC_ENUM_EXT, which would do what I want (I already use
+this to keep ADC OSR and DAC OSR settings in sync) however, these
+controls have implications for signal routing, and therefore DAPM needs
+to know about them, so really it'd be a SOC_DAPM_ENUM_EXT control I'd be
+after.  I can't see such a thing however... how does one go about doing
+this?
 
-iEYEABECAAYFAkyNF3gACgkQRM6pQpltKE539ACgwqj6oh6Ho3SmLDK3/p457tM2
-cUMAn3uKiOuUK0pv/Zw5tgYZESglU8Ys
-=Wunq
------END PGP SIGNATURE-----
+Regards,
+-- 
+Stuart Longland (aka Redhatter, VK4MSL)      .'''.
+Gentoo Linux/MIPS Cobalt and Docs Developer  '.'` :
+. . . . . . . . . . . . . . . . . . . . . .   .'.'
+http://dev.gentoo.org/~redhatter             :.'
 
---nextPart3055664.CMjriT7VXy--
-
---===============5848181981095217074==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5848181981095217074==--
+I haven't lost my mind...
+  ...it's backed up on a tape somewhere.
