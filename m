@@ -1,19 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 1/1] ASoC: Add HP iPAQ H1940 support
-Date: Mon, 13 Sep 2010 10:07:12 +0100
-Message-ID: <20100913090712.GH16606@rakim.wolfsonmicro.main>
-References: <1284288909-5961-1-git-send-email-anarsoul@gmail.com>
-	<1284293927-15983-2-git-send-email-anarsoul@gmail.com>
+Subject: [PATCH] ASoC: Set more meaningful name for SMDK64xx
+	WM8580 audio
+Date: Mon, 13 Sep 2010 10:11:14 +0100
+Message-ID: <1284369074-3494-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ACF00245F8
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BA329103815
 	for <alsa-devel@alsa-project.org>;
-	Mon, 13 Sep 2010 11:07:13 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1284293927-15983-2-git-send-email-anarsoul@gmail.com>
+	Mon, 13 Sep 2010 11:11:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,12 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>, Ben Dooks <ben-linux@fluff.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Jassi Brar <jassi.brar@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Sep 12, 2010 at 03:18:47PM +0300, Vasily Khoruzhick wrote:
-> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
-> Tested-by: Arnaud Patard <arnaud.patard@rtp-net.org>
+Since the SMDK64xx boards have two audio subsystems using the board
+name as the card name by itself isn't so user friendly as it might
+be.
 
-Aside from the MODULE_ALIAS thing Jassi picked up on this looks good.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/s3c24xx/smdk64xx_wm8580.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/s3c24xx/smdk64xx_wm8580.c b/sound/soc/s3c24xx/smdk64xx_wm8580.c
+index 91367f7..052e499 100644
+--- a/sound/soc/s3c24xx/smdk64xx_wm8580.c
++++ b/sound/soc/s3c24xx/smdk64xx_wm8580.c
+@@ -242,7 +242,7 @@ static struct snd_soc_dai_link smdk64xx_dai[] = {
+ };
+ 
+ static struct snd_soc_card smdk64xx = {
+-	.name = "smdk64xx",
++	.name = "SMDK64xx 5.1",
+ 	.dai_link = smdk64xx_dai,
+ 	.num_links = ARRAY_SIZE(smdk64xx_dai),
+ };
+-- 
+1.7.1
