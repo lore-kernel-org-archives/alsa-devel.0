@@ -1,116 +1,56 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 00/25] treewide-next: Use static const char arrays
-Date: Mon, 13 Sep 2010 12:47:38 -0700
-Message-ID: <cover.1284406638.git.joe@perches.com>
-Return-path: <linux-mips-bounce@linux-mips.org>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-To: linux-kernel@vger.kernel.org
-Cc: Ralf Baechle <ralf@linux-mips.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Len Brown <lenb@kernel.org>, Linus Walleij <linus.walleij@stericsson.com>, "Jean Delvare (PC drivers, core)" <khali@linux-fr.org>, "Ben Dooks (embedded platforms)" <ben-linux@fluff.org>, Karsten Keil <isdn@linux-pingi.de>, Mauro Carvalho Chehab <mchehab@infradead.org>, Jeff Kirsher <jeffrey.t.kirsher@intel.com>, Jesse Brandeburg <jesse.brandeburg@intel.com>, Bruce Allan <bruce.w.allan@intel.com>, Alex Duyck <alexander.h.duyck@intel.com>, PJ Waskiewicz <peter.p.waskiewicz.jr@intel.com>, John Ronciak <john.ronciak@intel.com>, Amit Kumar Salecha <amit.salecha@qlogic.com>, Anirban Chakraborty <anirban.chakraborty@qlogic.com>, linux-driver@qlo
+From: "Justin P. Mattock" <justinmattock@gmail.com>
+Subject: [PATCH 1/3 v2]sound/oss/ac97_codec.c Update broken web
+	addresses.
+Date: Mon, 13 Sep 2010 13:17:01 -0700
+Message-ID: <1284409023-4419-1-git-send-email-justinmattock@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1E0A0103847
+	for <alsa-devel@alsa-project.org>;
+	Mon, 13 Sep 2010 22:16:31 +0200 (CEST)
+Received: by pwi4 with SMTP id 4so2372820pwi.38
+	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2010 13:16:31 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: trivial@kernel.org
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, linux-kernel@vger.kernel.org, "Justin P. Mattock" <justinmattock@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Using static const char foo[] = "bar" can save some
-code and text space, so change the places where it's possible.
+This is a resend from the original, due to Clemens Ladisch providing
+the right locations of the *.pdf's etc..
+ 
+Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
+Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+---
+ sound/oss/ac97_codec.c |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
 
-Also change the places that use
-	char foo[] = "barX";
-	...
-	foo[3] = value + '0';
-where X is typically changed
-	char foo[sizeof("barX")];
-	...
-	sprintf(foo, "bar%c", value + '0');
-
-Joe Perches (25):
-  arch/mips: Use static const char arrays
-  arch/powerpc: Use static const char arrays
-  drivers/acpi: Use static const char arrays
-  drivers/char: Use static const char arrays
-  drivers/i2c: Use static const char arrays
-  drivers/isdn: Use static const char arrays
-  drivers/media: Use static const char arrays
-  drivers/net/atl1c: Use static const char arrays
-  drivers/net/atl1e: Use static const char arrays
-  drivers/net/(intel): Use static const char arrays
-  drivers/net/netxen: Use static const char arrays
-  drivers/net/qlcnic: Use static const char arrays
-  drivers/net/spider_net.c: Use static const char arrays
-  drivers/net/vnxnet3: Use static const char arrays
-  drivers/net/wireless/ipw2x00: Use static const char arrays
-  drivers/s390/char: Use static const char arrays
-  drivers/scsi: Use static const char arrays
-  drivers/serial/suncore.c: Use static const char arrays
-  drivers/staging: Use static const char arrays
-  drivers/usb: Use static const char arrays
-  drivers/video: Use static const char arrays
-  net/dsa: Use static const char arrays
-  net/sunrpc: Use static const char arrays
-  sound: Use static const char arrays
-  tools/perf/util: Use static const char arrays
-
- arch/mips/pnx8550/common/reset.c                   |    4 ++--
- arch/powerpc/boot/addnote.c                        |    4 ++--
- arch/powerpc/boot/cuboot-c2k.c                     |    4 ++--
- arch/powerpc/kernel/irq.c                          |    2 +-
- drivers/acpi/sleep.c                               |    4 ++--
- drivers/char/hvc_vio.c                             |    2 +-
- drivers/i2c/busses/i2c-stu300.c                    |    4 ++--
- drivers/isdn/hysdn/hycapi.c                        |    2 +-
- drivers/isdn/mISDN/dsp_cmx.c                       |    2 +-
- drivers/media/video/zoran/zoran_device.c           |    5 ++---
- drivers/net/atl1c/atl1c.h                          |    4 ++--
- drivers/net/atl1c/atl1c_main.c                     |    4 ++--
- drivers/net/atl1e/atl1e.h                          |    4 ++--
- drivers/net/atl1e/atl1e_main.c                     |    4 ++--
- drivers/net/e1000/e1000.h                          |    2 +-
- drivers/net/e1000/e1000_main.c                     |    4 ++--
- drivers/net/e1000e/e1000.h                         |    2 +-
- drivers/net/e1000e/netdev.c                        |    2 +-
- drivers/net/igb/igb.h                              |    4 ++--
- drivers/net/igb/igb_main.c                         |    4 ++--
- drivers/net/igbvf/igbvf.h                          |    2 +-
- drivers/net/igbvf/netdev.c                         |    2 +-
- drivers/net/ixgb/ixgb.h                            |    2 +-
- drivers/net/ixgb/ixgb_main.c                       |    2 +-
- drivers/net/ixgbe/ixgbe.h                          |    2 +-
- drivers/net/ixgbe/ixgbe_main.c                     |    4 ++--
- drivers/net/ixgbevf/ixgbevf.h                      |    2 +-
- drivers/net/ixgbevf/ixgbevf_main.c                 |    2 +-
- drivers/net/netxen/netxen_nic.h                    |    2 +-
- drivers/net/netxen/netxen_nic_main.c               |    2 +-
- drivers/net/qlcnic/qlcnic.h                        |    2 +-
- drivers/net/qlcnic/qlcnic_main.c                   |    2 +-
- drivers/net/spider_net.c                           |    2 +-
- drivers/net/vmxnet3/vmxnet3_drv.c                  |    2 +-
- drivers/net/vmxnet3/vmxnet3_int.h                  |    2 +-
- drivers/net/wireless/ipw2x00/ipw2100.c             |    2 +-
- drivers/net/wireless/ipw2x00/ipw2200.c             |    2 +-
- drivers/net/wireless/ipw2x00/libipw_module.c       |    2 +-
- drivers/s390/char/vmlogrdr.c                       |    4 ++--
- drivers/scsi/bnx2i/bnx2i_hwi.c                     |    6 +++---
- drivers/scsi/lpfc/lpfc_init.c                      |    2 +-
- drivers/scsi/megaraid/megaraid_mbox.c              |    6 +++---
- drivers/serial/suncore.c                           |    4 ++--
- drivers/staging/brcm80211/util/bcmutils.c          |    2 +-
- drivers/staging/comedi/drivers/comedi_bond.c       |    2 +-
- drivers/staging/cxt1e1/ossiRelease.c               |    2 +-
- drivers/staging/go7007/go7007-driver.c             |    2 +-
- drivers/staging/msm/mdp.c                          |    2 +-
- .../staging/rtl8192e/ieee80211/ieee80211_module.c  |    2 +-
- .../staging/rtl8192u/ieee80211/ieee80211_module.c  |    2 +-
- drivers/staging/tidspbridge/rmgr/dbdcd.c           |    6 +++---
- drivers/usb/atm/ueagle-atm.c                       |   14 +++++---------
- drivers/usb/otg/langwell_otg.c                     |    2 +-
- drivers/video/sh_mipi_dsi.c                        |    4 ++--
- drivers/video/sis/sis_main.c                       |   10 +++++-----
- drivers/video/via/viafbdev.c                       |    2 +-
- net/dsa/dsa.c                                      |    2 +-
- net/dsa/dsa_priv.h                                 |    2 +-
- net/sunrpc/auth_gss/gss_krb5_mech.c                |    2 +-
- sound/core/misc.c                                  |    5 ++++-
- tools/perf/util/ui/setup.c                         |    3 ++-
- tools/perf/util/ui/util.c                          |    3 ++-
- 62 files changed, 98 insertions(+), 98 deletions(-)
-
+diff --git a/sound/oss/ac97_codec.c b/sound/oss/ac97_codec.c
+index 456a1b4..e2c5fe9 100644
+--- a/sound/oss/ac97_codec.c
++++ b/sound/oss/ac97_codec.c
+@@ -22,10 +22,7 @@
+  **************************************************************************
+  *
+  * The Intel Audio Codec '97 specification is available at the Intel
+- * audio homepage: http://developer.intel.com/ial/scalableplatforms/audio/
+- *
+- * The specification itself is currently available at:
+- * ftp://download.intel.com/ial/scalableplatforms/ac97r22.pdf
++ * http://download.intel.com/support/motherboards/desktop/sb/ac97_r23.pdf
+  *
+  **************************************************************************
+  *
 -- 
-1.7.3.rc1
+1.7.2.1
