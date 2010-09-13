@@ -1,23 +1,22 @@
-From: Stuart Longland <redhatter@gentoo.org>
-Subject: Binding multiple registers to an enum
-Date: Mon, 13 Sep 2010 09:31:51 +1000
-Message-ID: <20100912233151.GU14056@atomos.longlandclan.yi.org>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH v2 1/1] ASoC: Add HP iPAQ H1940 support
+Date: Mon, 13 Sep 2010 10:09:16 +0900
+Message-ID: <AANLkTi=u08V3V70p9Prv5MVfqigFkeYggTAdh5Dx28NK@mail.gmail.com>
+References: <1284288909-5961-1-git-send-email-anarsoul@gmail.com>
+	<1284293927-15983-2-git-send-email-anarsoul@gmail.com>
+	<AANLkTi=TO4ADGEzeJucHnCDkSELxy_buZRrZPRdcX+Nx@mail.gmail.com>
+	<201009122110.00148.anarsoul@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ossa.mas.viperplatform.net.au (ossa.mas.viperplatform.net.au
-	[202.147.75.25]) by alsa0.perex.cz (Postfix) with ESMTP id 7499124454
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id C05CD244B9
 	for <alsa-devel@alsa-project.org>;
-	Mon, 13 Sep 2010 01:32:01 +0200 (CEST)
-Received: from mail by ossa.mas.viperplatform.net.au with spam-scanned (Exim
-	4.43) id 1Ouw1Z-0005tw-Jq
-	for alsa-devel@alsa-project.org; Mon, 13 Sep 2010 09:31:57 +1000
-Received: from [203.94.56.252] (helo=atomos.dmz.longlandclan.yi.org)
-	by ossa.mas.viperplatform.net.au with esmtp (Exim 4.43)
-	id 1Ouw1Z-0005tN-2q
-	for alsa-devel@alsa-project.org; Mon, 13 Sep 2010 09:31:53 +1000
-Content-Disposition: inline
+	Mon, 13 Sep 2010 03:09:16 +0200 (CEST)
+Received: by wyb32 with SMTP id 32so5473466wyb.38
+	for <alsa-devel@alsa-project.org>; Sun, 12 Sep 2010 18:09:16 -0700 (PDT)
+In-Reply-To: <201009122110.00148.anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,41 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>, Ben Dooks <ben-linux@fluff.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-
-Just working on the TLV320AIC3204 driver again... I've got an issue
-where we get noise on recording inputs if I don't drive unused inputs to
-the common mode.  Now there's a register which can do exactly this.
-
-Each of the inputs can be routed through a difference series
-resistance... this selection is done by enum controls, with the options
-being: not-connected, 10k, 20k or 40k.  My plan, is that when
-'not-selected' is chosen, I set the appropriate bit in the floating
-input register so it gets connected to common-mode... and when something
-else is chosen, that bit gets cleared.
-
-I've tried lying to DAPM and telling it these bits control PGAs on the
-inputs themselves... but it gets the wrong idea about which ones need to
-be turned on.  Perhaps I should investigate that ... but the idea of
-using PGA controls doesn't seem quite right.
-
-I've looked at SOC_ENUM_EXT, which would do what I want (I already use
-this to keep ADC OSR and DAC OSR settings in sync) however, these
-controls have implications for signal routing, and therefore DAPM needs
-to know about them, so really it'd be a SOC_DAPM_ENUM_EXT control I'd be
-after.  I can't see such a thing however... how does one go about doing
-this?
-
-Regards,
--- 
-Stuart Longland (aka Redhatter, VK4MSL)      .'''.
-Gentoo Linux/MIPS Cobalt and Docs Developer  '.'` :
-. . . . . . . . . . . . . . . . . . . . . .   .'.'
-http://dev.gentoo.org/~redhatter             :.'
-
-I haven't lost my mind...
-  ...it's backed up on a tape somewhere.
+T24gTW9uLCBTZXAgMTMsIDIwMTAgYXQgMzowOSBBTSwgVmFzaWx5IEtob3J1emhpY2sgPGFuYXJz
+b3VsQGdtYWlsLmNvbT4gd3JvdGU6Cj4g0JIg0YHQvtC+0LHRidC10L3QuNC4INC+0YIgMTIg0YHQ
+tdC90YLRj9Cx0YDRjyAyMDEwIDIwOjA3OjQxINCw0LLRgtC+0YAgSmFzc2kgQnJhciDQvdCw0L/Q
+uNGB0LDQuzoKPgo+PiBJcyBwbGF0Zm9ybTpzb2MtYXVkaW8gc3BlY2lmaWMgZW5vdWdoIGluIG11
+bHRpLXBsYXRmb3JtIGJ1aWxkcyBvZiB0aGUgT1M/Cj4+IFRob3VnaCBpdCBpcyB1bmxpa2VseSB0
+aGVyZSB3b3VsZCBldmVyIGJlIHN1Y2ggYSBjb25mbGljdCwgYnV0IHN0aWxsLi4uCj4KPiBPdGhl
+ciBnbHVlIGRyaXZlcnMganVzdCBjYW4ndCBsb2FkLCB1c3VhbGx5IHRoZXkgaW5jbHVkZSBtYWNo
+aW5lIGNoZWNrIGluCj4gbW9kdWxlX2luaXQuCgpCdHcsIHNvdW5kL3NvYy9zb2MtY29yZS5jIGlz
+IHRoZSByZWFsICdzb2MtYXVkaW8nIGRyaXZlciBtb2R1bGUgbm90CnRoZSBNQUNISU5FIGRyaXZl
+ci4KVHVybnMgb3V0LCBzb3VuZC9zb2Mvc29jLWNvcmUuYyBhbHJlYWR5IGhhcyB0aGUKTU9EVUxF
+X0FMSUFTKCJwbGF0Zm9ybTpzb2MtYXVkaW8iKTsKU28gaXQgc2VlbXMgbGlrZSBhbiBpbW1lZGlh
+dGUgY29uZmxpY3QuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
