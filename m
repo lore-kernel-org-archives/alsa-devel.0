@@ -1,23 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] ASoC: Samsung: Debug PCM
- snd_soc_dai_driver registration
-Date: Mon, 13 Sep 2010 09:53:13 +0100
-Message-ID: <20100913085313.GD16606@rakim.wolfsonmicro.main>
-References: <1284104465-17287-1-git-send-email-jassisinghbrar@gmail.com>
-	<20100910095438.GD3068@rakim.wolfsonmicro.main>
-	<AANLkTimajKCsDLPuGRoO=339BpUQ_wXn8pDsC+7ErzET@mail.gmail.com>
-	<20100910114754.GJ7259@rakim.wolfsonmicro.main>
-	<AANLkTinrn=RPk5tktyXrdQ_KokkSYT6g+xYL_ZKiGkW=@mail.gmail.com>
+Subject: Re: Question about "ALSA device list" on kernel boot
+Date: Mon, 13 Sep 2010 10:05:02 +0100
+Message-ID: <20100913090502.GF16606@rakim.wolfsonmicro.main>
+References: <w3paanmfjth.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 12858245EA
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0D593245F5
 	for <alsa-devel@alsa-project.org>;
-	Mon, 13 Sep 2010 10:53:15 +0200 (CEST)
+	Mon, 13 Sep 2010 11:05:06 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <AANLkTinrn=RPk5tktyXrdQ_KokkSYT6g+xYL_ZKiGkW=@mail.gmail.com>
+In-Reply-To: <w3paanmfjth.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,21 +22,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, sw.youn@samsung.com, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 13, 2010 at 10:34:30AM +0900, Jassi Brar wrote:
+On Mon, Sep 13, 2010 at 11:39:39AM +0900, Kuninori Morimoto wrote:
 
-> ok, but I don't seem to be able to find out where
-> snd_soc_dai_driver.id is being used
+> Was print policy changed ?
+> If it is strange, where is ?
+>  => soc-core side ? or FSI side ?
 
-Meh, actually it's ignored in the driver and concocted from the device.
-The id field should just go from the driver structure, sorry.
-
-> and  sound/soc/sh/hac.c and sound/soc/atmel/atmel_ssc_dai.c seems to
-> be doing similar
-> Are we on the same page? Please help me understand it.
-
-Neither of these platforms are especially good to use as references -
-for multi-component Liam was working mostly with OMAP.
+There is now only one name for cards, set in the card name field.  I'd
+recommend updating this with more informative names for the affected
+boards.
