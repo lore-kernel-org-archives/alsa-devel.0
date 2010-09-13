@@ -1,18 +1,23 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Binding multiple registers to an enum
-Date: Mon, 13 Sep 2010 09:43:07 +0100
-Message-ID: <20100913084307.GC16606@rakim.wolfsonmicro.main>
-References: <20100912233151.GU14056@atomos.longlandclan.yi.org>
+Subject: Re: [PATCH 2/3] ASoC: Samsung: Debug PCM
+ snd_soc_dai_driver registration
+Date: Mon, 13 Sep 2010 09:53:13 +0100
+Message-ID: <20100913085313.GD16606@rakim.wolfsonmicro.main>
+References: <1284104465-17287-1-git-send-email-jassisinghbrar@gmail.com>
+	<20100910095438.GD3068@rakim.wolfsonmicro.main>
+	<AANLkTimajKCsDLPuGRoO=339BpUQ_wXn8pDsC+7ErzET@mail.gmail.com>
+	<20100910114754.GJ7259@rakim.wolfsonmicro.main>
+	<AANLkTinrn=RPk5tktyXrdQ_KokkSYT6g+xYL_ZKiGkW=@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D5CEA245E1
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 12858245EA
 	for <alsa-devel@alsa-project.org>;
-	Mon, 13 Sep 2010 10:43:08 +0200 (CEST)
+	Mon, 13 Sep 2010 10:53:15 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20100912233151.GU14056@atomos.longlandclan.yi.org>
+In-Reply-To: <AANLkTinrn=RPk5tktyXrdQ_KokkSYT6g+xYL_ZKiGkW=@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,30 +27,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stuart Longland <redhatter@gentoo.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Jassi Brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, sw.youn@samsung.com, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 13, 2010 at 09:31:51AM +1000, Stuart Longland wrote:
+On Mon, Sep 13, 2010 at 10:34:30AM +0900, Jassi Brar wrote:
 
-> I've tried lying to DAPM and telling it these bits control PGAs on the
-> inputs themselves... but it gets the wrong idea about which ones need to
-> be turned on.  Perhaps I should investigate that ... but the idea of
-> using PGA controls doesn't seem quite right.
+> ok, but I don't seem to be able to find out where
+> snd_soc_dai_driver.id is being used
 
-It would be helpful if you could be a bit more specific about what the
-registers look like and what the problems you are encountering are.
-Since what you're saying is so generic and non-specific it's hard to
-really say anything concrete.  Possibly what you want to do is have an
-event on the widgets for the mixers which does the appropriate setup?
+Meh, actually it's ignored in the driver and concocted from the device.
+The id field should just go from the driver structure, sorry.
 
-> I've looked at SOC_ENUM_EXT, which would do what I want (I already use
-> this to keep ADC OSR and DAC OSR settings in sync) however, these
-> controls have implications for signal routing, and therefore DAPM needs
-> to know about them, so really it'd be a SOC_DAPM_ENUM_EXT control I'd be
-> after.  I can't see such a thing however... how does one go about doing
-> this?
+> and  sound/soc/sh/hac.c and sound/soc/atmel/atmel_ssc_dai.c seems to
+> be doing similar
+> Are we on the same page? Please help me understand it.
 
-The easiest thing is to look at the git logs and see how similar things
-were added then do the equivalent thing.  That'll show all the areas
-that need updating.
+Neither of these platforms are especially good to use as references -
+for multi-component Liam was working mostly with OMAP.
