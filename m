@@ -1,269 +1,201 @@
-From: Niels Mayer <nielsmayer-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [LAU] Terratec EWS88D (ice1712) optical stuck on ADAT (no IEC958
-	optical i/o)
-Date: Mon, 13 Sep 2010 08:55:48 -0700
-Message-ID: <AANLkTik7=sY9VJ2QX9j=W4+qH5s6SfBKi-LGG2WeF3x1@mail.gmail.com>
+From: Geoff Levand <geoff@infradead.org>
+Subject: Re: [PATCH 11/11] sound: Remove pr_<level> uses of KERN_<level>
+Date: Mon, 13 Sep 2010 10:55:20 -0700
+Message-ID: <4C8E6588.7070707@infradead.org>
+References: <cover.1284267142.git.joe@perches.com> <27a88f64b5bfec16c8abf5aca89b7a1b7533ecb9.1284267142.git.joe@perches.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3459862315705793277=="
-Return-path: <linux-audio-user-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-user>,
-	<mailto:linux-audio-user-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-user>
-List-Post: <mailto:linux-audio-user-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-List-Help: <mailto:linux-audio-user-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-user>,
-	<mailto:linux-audio-user-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
-Mime-version: 1.0
-Sender: linux-audio-user-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-Errors-To: linux-audio-user-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-audio-user <linux-audio-user-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+Content-Type: multipart/mixed;
+ boundary="------------030101080700030200040308"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <27a88f64b5bfec16c8abf5aca89b7a1b7533ecb9.1284267142.git.joe@perches.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Joe Perches <joe@perches.com>
+Cc: Jiri Kosina <trivial@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linuxppc-dev@lists.ozlabs.org, cbe-oss-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============3459862315705793277==
-Content-Type: multipart/alternative; boundary=90e6ba53a6524457eb04902621b0
-
---90e6ba53a6524457eb04902621b0
-Content-Type: text/plain; charset=UTF-8
-
-I just scored a nice Terratec EWS88D for $20.00. :-)  (
-http://nielsmayer.com/envy24control/EWS88D_Board_L.jpg missing midi cable
-though (*))
-It works nicely with Linux and http://mudita24.googlecode.com ,  although
-it's missing some important controls to turn off the ADAT parts of the card.
-Alas, it wouldn't help to support them in mudita24, as I cannot get them to
-change values through standard ALSA tools like amixer(1) and alsamixer(1).
-
-Therefore, the question: is what is it about snd-ice1712 that prevents the
-mixer control values detailed below from changing, and is there anything I
-can do to fix it? (sometimes you want to use this card in it's dual IEC958
-optical + spdif I/O config, other times, you want to use the optical for
-ADAT and the spdif for IEC958, which is the only configuration I can get
-currently.)
-
-The results from amixer(1):
-  http://nielsmayer.com/envy24control/terratec-ews88d-amixer.txt
-Results of "cat /proc/asound/EWS88D/ice1712":
-  http://nielsmayer.com/envy24control/terratec-ews88d-ice1712.txt
-
-My attempts at changing optical port from ADAT to IEC958. Nothing happens:
-
-///// ///// ///// ///// ///// ///// ///// /////
-coggie-7-~>  foreach i ( 'IEC958 Input Optical' 'IEC958 Input Optical' 'ADAT
-External Master Clock' 'ADAT Output Optical' 'ADAT Through' 'Enable ADAT' )
-foreach? amixer cget iface=MIXER,name="$i"
-foreach? end
-numid=95,iface=MIXER,name='IEC958 Input Optical'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=off
-numid=95,iface=MIXER,name='IEC958 Input Optical'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=off
-numid=97,iface=MIXER,name='ADAT External Master Clock'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=on
-numid=96,iface=MIXER,name='ADAT Output Optical'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=on
-numid=99,iface=MIXER,name='ADAT Through'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=off
-numid=98,iface=MIXER,name='Enable ADAT'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=on
-coggie-10-~> amixer cset iface=MIXER,name='Enable ADAT' off
-numid=98,iface=MIXER,name='Enable ADAT'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=on
-coggie-11-~> amixer cset iface=MIXER,name='Enable ADAT' false
-numid=98,iface=MIXER,name='Enable ADAT'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=on
-coggie-12-~> amixer cset iface=MIXER,name='Enable ADAT' off
-numid=98,iface=MIXER,name='Enable ADAT'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=on
-coggie-13-~> amixer cset iface=MIXER,name='Enable ADAT' 0
-numid=98,iface=MIXER,name='Enable ADAT'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=on
-coggie-14-~> amixer cset iface=MIXER,name='IEC958 Input Optical' on
-numid=95,iface=MIXER,name='IEC958 Input Optical'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=off
-coggie-15-~> amixer cset iface=MIXER,name='IEC958 Input Optical' true
-numid=95,iface=MIXER,name='IEC958 Input Optical'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=off
-coggie-16-~> amixer cset iface=MIXER,name='IEC958 Input Optical' 1
-numid=95,iface=MIXER,name='IEC958 Input Optical'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=off
-///// ///// ///// ///// ///// ///// ///// /////
-
-FYI, for more info on this board:
-  ftp://ftp.terratec.de/Audio/EWS/88D/Manual/EWS88D_Manual_GB.pdf
-  ftp://ftp.terratec.de/Audio/EWS/88D/TechnicalData/EWS88D_GB.pdf
-
-Relevant snd-ice1712 sources:
-
-http://git.alsa-project.org/?p=alsa-kernel.git;a=blob_plain;f=sound/pci/ice1712/ews.c;hb=HEAD
-
-http://git.alsa-project.org/?p=alsa-kernel.git;a=blob_plain;f=sound/pci/ice1712/ice1712.c;hb=HEAD
-
-Also, I'm running on Fedora12 ( 2.6.32.21-166.fc12.x86_64 ) which seems to
-have a somewhat odd mix of ALSA drivers and runtime:
-
-coggie-17-~> drumstick-sysinfo
-ALSA Sequencer System Info, version: 0.5.0
-Compiled ALSA library: 1.0.23
-Runtime ALSA library: 1.0.23
-Runtime ALSA drivers: 1.0.21.
-Numeric ALSA compiled library: 10017
-Numeric ALSA runtime library: 10017
-Numeric ALSA runtime driver: 10015
-
-Will Fedora13 or "runtime ALSA drivers: 1.0.23" remedy this situation?
-(Probably not EWS88D is a pretty old card and I don't see any changes
-related to it recently). The target machine for this card will actually be
-running Fedora13, however, that machine hasn't been decommissioned, wiped,
-or setup for that purpose yet....
-
-Niels
-http://nielsmayer.com
-
-PS: (*) Anybody know where to find/build a 9-pin MIDI cable for the EWS88D?
-Will the RME HDSP9652 cable fit/work?
-http://www.bananasmusic.com/productdetail.asp/pid_3970/productname_RME-BOHDSP9652MIDI-MIDI-Breakout-Cable
-
---90e6ba53a6524457eb04902621b0
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<div>I just scored a nice Terratec EWS88D=C2=A0for $20.00. :-) =C2=A0(=C2=
-=A0<a href=3D"http://nielsmayer.com/envy24control/EWS88D_Board_L.jpg">http:=
-//nielsmayer.com/envy24control/EWS88D_Board_L.jpg</a>=C2=A0missing midi cab=
-le though (*))</div><div>
-It works nicely with Linux and <a href=3D"http://mudita24.googlecode.com">h=
-ttp://mudita24.googlecode.com</a> , =C2=A0although it&#39;s missing some im=
-portant controls to turn off the ADAT parts of the card. Alas, it wouldn&#3=
-9;t help to support them in mudita24, as I cannot get them to change values=
- through standard ALSA tools like amixer(1) and alsamixer(1).</div>
-<meta http-equiv=3D"content-type" content=3D"text/html; charset=3Dutf-8"><d=
-iv><br></div><div>Therefore, the question: is what is it about snd-ice1712 =
-that prevents the mixer control values detailed below from changing, and is=
- there anything I can do to fix it? (sometimes you want to use this card in=
- it&#39;s dual IEC958 optical + spdif I/O config, other times, you want to =
-use the optical for ADAT and the spdif for IEC958, which is the only config=
-uration I can get currently.)</div>
-<div><br></div><div>The results from amixer(1):=C2=A0</div><div>=C2=A0=C2=
-=A0<a href=3D"http://nielsmayer.com/envy24control/terratec-ews88d-amixer.tx=
-t">http://nielsmayer.com/envy24control/terratec-ews88d-amixer.txt</a></div>=
-<div>Results of &quot;cat /proc/asound/EWS88D/ice1712&quot;:=C2=A0</div>
-<div>=C2=A0=C2=A0<a href=3D"http://nielsmayer.com/envy24control/terratec-ew=
-s88d-ice1712.txt">http://nielsmayer.com/envy24control/terratec-ews88d-ice17=
-12.txt</a></div><div><br></div><div>My attempts at changing optical port fr=
-om ADAT to IEC958. Nothing happens: =C2=A0</div>
-<div><br></div><meta http-equiv=3D"content-type" content=3D"text/html; char=
-set=3Dutf-8"><div><div>///// ///// ///// ///// ///// ///// ///// /////</div=
-></div><div>coggie-7-~&gt; =C2=A0foreach i ( &#39;IEC958 Input Optical&#39;=
- &#39;IEC958 Input Optical&#39; &#39;ADAT External Master Clock&#39; &#39;A=
-DAT Output Optical&#39; &#39;ADAT Through&#39; &#39;Enable ADAT&#39; )</div=
->
-<div><div>foreach? amixer cget iface=3DMIXER,name=3D&quot;$i&quot;</div><di=
-v>foreach? end</div><div>numid=3D95,iface=3DMIXER,name=3D&#39;IEC958 Input =
-Optical&#39;</div><div>=C2=A0=C2=A0; type=3DBOOLEAN,access=3Drw------,value=
-s=3D1</div><div>=C2=A0=C2=A0: values=3Doff</div>
-<div>numid=3D95,iface=3DMIXER,name=3D&#39;IEC958 Input Optical&#39;</div><d=
-iv>=C2=A0=C2=A0; type=3DBOOLEAN,access=3Drw------,values=3D1</div><div>=C2=
-=A0=C2=A0: values=3Doff</div><div>numid=3D97,iface=3DMIXER,name=3D&#39;ADAT=
- External Master Clock&#39;</div><div>
-=C2=A0=C2=A0; type=3DBOOLEAN,access=3Drw------,values=3D1</div><div>=C2=A0=
-=C2=A0: values=3Don</div><div>numid=3D96,iface=3DMIXER,name=3D&#39;ADAT Out=
-put Optical&#39;</div><div>=C2=A0=C2=A0; type=3DBOOLEAN,access=3Drw------,v=
-alues=3D1</div><div>=C2=A0=C2=A0: values=3Don</div><div>numid=3D99,iface=3D=
-MIXER,name=3D&#39;ADAT Through&#39;</div>
-<div>=C2=A0=C2=A0; type=3DBOOLEAN,access=3Drw------,values=3D1</div><div>=
-=C2=A0=C2=A0: values=3Doff</div><div>numid=3D98,iface=3DMIXER,name=3D&#39;E=
-nable ADAT&#39;</div><div>=C2=A0=C2=A0; type=3DBOOLEAN,access=3Drw------,va=
-lues=3D1</div><div>=C2=A0=C2=A0: values=3Don</div><div>coggie-10-~&gt; amix=
-er cset iface=3DMIXER,name=3D&#39;Enable ADAT&#39; off</div>
-<div>numid=3D98,iface=3DMIXER,name=3D&#39;Enable ADAT&#39;</div><div>=C2=A0=
-=C2=A0; type=3DBOOLEAN,access=3Drw------,values=3D1</div><div>=C2=A0=C2=A0:=
- values=3Don</div><div>coggie-11-~&gt; amixer cset iface=3DMIXER,name=3D&#3=
-9;Enable ADAT&#39; false</div><div>
-numid=3D98,iface=3DMIXER,name=3D&#39;Enable ADAT&#39;</div><div>=C2=A0=C2=
-=A0; type=3DBOOLEAN,access=3Drw------,values=3D1</div><div>=C2=A0=C2=A0: va=
-lues=3Don</div><div>coggie-12-~&gt; amixer cset iface=3DMIXER,name=3D&#39;E=
-nable ADAT&#39; off</div><div>numid=3D98,iface=3DMIXER,name=3D&#39;Enable A=
-DAT&#39;</div>
-<div>=C2=A0=C2=A0; type=3DBOOLEAN,access=3Drw------,values=3D1</div><div>=
-=C2=A0=C2=A0: values=3Don</div><div>coggie-13-~&gt; amixer cset iface=3DMIX=
-ER,name=3D&#39;Enable ADAT&#39; 0</div><div>numid=3D98,iface=3DMIXER,name=
-=3D&#39;Enable ADAT&#39;</div><div>=C2=A0=C2=A0; type=3DBOOLEAN,access=3Drw=
-------,values=3D1</div>
-<div>=C2=A0=C2=A0: values=3Don</div><div>coggie-14-~&gt; amixer cset iface=
-=3DMIXER,name=3D&#39;IEC958 Input Optical&#39; on</div><div>numid=3D95,ifac=
-e=3DMIXER,name=3D&#39;IEC958 Input Optical&#39;</div><div>=C2=A0=C2=A0; typ=
-e=3DBOOLEAN,access=3Drw------,values=3D1</div>
-<div>=C2=A0=C2=A0: values=3Doff</div><div>coggie-15-~&gt; amixer cset iface=
-=3DMIXER,name=3D&#39;IEC958 Input Optical&#39; true</div><div>numid=3D95,if=
-ace=3DMIXER,name=3D&#39;IEC958 Input Optical&#39;</div><div>=C2=A0=C2=A0; t=
-ype=3DBOOLEAN,access=3Drw------,values=3D1</div>
-<div>=C2=A0=C2=A0: values=3Doff</div><div>coggie-16-~&gt; amixer cset iface=
-=3DMIXER,name=3D&#39;IEC958 Input Optical&#39; 1</div><div>numid=3D95,iface=
-=3DMIXER,name=3D&#39;IEC958 Input Optical&#39;</div><div>=C2=A0=C2=A0; type=
-=3DBOOLEAN,access=3Drw------,values=3D1</div>
-<div>=C2=A0=C2=A0: values=3Doff</div></div><div>///// ///// ///// ///// ///=
-// ///// ///// /////</div><div><br></div><div><div>FYI, for more info on th=
-is board:</div><div>=C2=A0=C2=A0<a href=3D"ftp://ftp.terratec.de/Audio/EWS/=
-88D/Manual/EWS88D_Manual_GB.pdf">ftp://ftp.terratec.de/Audio/EWS/88D/Manual=
-/EWS88D_Manual_GB.pdf</a></div>
-<div>=C2=A0=C2=A0<a href=3D"ftp://ftp.terratec.de/Audio/EWS/88D/TechnicalDa=
-ta/EWS88D_GB.pdf">ftp://ftp.terratec.de/Audio/EWS/88D/TechnicalData/EWS88D_=
-GB.pdf</a></div></div><div><br></div><div>Relevant snd-ice1712 sources:</di=
-v><div>=C2=A0=C2=A0<a href=3D"http://git.alsa-project.org/?p=3Dalsa-kernel.=
-git;a=3Dblob_plain;f=3Dsound/pci/ice1712/ews.c;hb=3DHEAD">http://git.alsa-p=
-roject.org/?p=3Dalsa-kernel.git;a=3Dblob_plain;f=3Dsound/pci/ice1712/ews.c;=
-hb=3DHEAD</a></div>
-<div>=C2=A0=C2=A0<a href=3D"http://git.alsa-project.org/?p=3Dalsa-kernel.gi=
-t;a=3Dblob_plain;f=3Dsound/pci/ice1712/ice1712.c;hb=3DHEAD">http://git.alsa=
--project.org/?p=3Dalsa-kernel.git;a=3Dblob_plain;f=3Dsound/pci/ice1712/ice1=
-712.c;hb=3DHEAD</a></div>
-<div><br></div><div>Also, I&#39;m running on Fedora12 ( 2.6.32.21-166.fc12.=
-x86_64 ) which seems to have a somewhat odd mix of ALSA drivers and runtime=
-:</div><div><br></div><div><div>coggie-17-~&gt; drumstick-sysinfo=C2=A0</di=
-v>
-<div>ALSA Sequencer System Info, version: 0.5.0</div><div>Compiled ALSA lib=
-rary: 1.0.23</div><div>Runtime ALSA library: 1.0.23</div><div>Runtime ALSA =
-drivers: 1.0.21.</div><div>Numeric ALSA compiled library: 10017</div><div>
-Numeric ALSA runtime library: 10017</div><div>Numeric ALSA runtime driver: =
-10015</div></div><div><br></div><div>Will Fedora13 or &quot;runtime ALSA dr=
-ivers: 1.0.23&quot; remedy this situation? (Probably not EWS88D is a pretty=
- old card and I don&#39;t see any changes related to it recently). The targ=
-et machine for this card will actually be running Fedora13, however, that m=
-achine hasn&#39;t been=C2=A0decommissioned, wiped, or setup for that purpos=
-e yet....</div>
-<div><br></div>Niels<br><a href=3D"http://nielsmayer.com">http://nielsmayer=
-.com</a><br><div><br></div><div>PS: (*) Anybody know where to find/build a =
-9-pin MIDI cable for the EWS88D? Will the RME HDSP9652 cable fit/work?</div=
->
-<div><a href=3D"http://www.bananasmusic.com/productdetail.asp/pid_3970/prod=
-uctname_RME-BOHDSP9652MIDI-MIDI-Breakout-Cable">http://www.bananasmusic.com=
-/productdetail.asp/pid_3970/productname_RME-BOHDSP9652MIDI-MIDI-Breakout-Ca=
-ble</a></div>
-<meta http-equiv=3D"content-type" content=3D"text/html; charset=3Dutf-8">
-
---90e6ba53a6524457eb04902621b0--
-
---===============3459862315705793277==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
+This is a multi-part message in MIME format.
+--------------030101080700030200040308
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-_______________________________________________
-Linux-audio-user mailing list
-Linux-audio-user-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-http://lists.linuxaudio.org/listinfo/linux-audio-user
+Hi Joe,
 
---===============3459862315705793277==--
+On 09/11/2010 10:10 PM, Joe Perches wrote:
+>  sound/ppc/snd_ps3.c         |    2 +-
+> 
+> diff --git a/sound/ppc/snd_ps3.c b/sound/ppc/snd_ps3.c
+> index 2f12da4..581a670 100644
+> --- a/sound/ppc/snd_ps3.c
+> +++ b/sound/ppc/snd_ps3.c
+> @@ -579,7 +579,7 @@ static int snd_ps3_delay_to_bytes(struct snd_pcm_substream *substream,
+>  				  rate * delay_ms / 1000)
+>  		* substream->runtime->channels;
+>  
+> -	pr_debug(KERN_ERR "%s: time=%d rate=%d bytes=%ld, frames=%d, ret=%d\n",
+> +	pr_debug("%s: time=%d rate=%d bytes=%ld, frames=%d, ret=%d\n",
+>  		 __func__,
+>  		 delay_ms,
+>  		 rate,
+
+snd_ps3.c looks OK.
+
+Acked-by: Geoff Levand <geoff@infradead.org>
+
+--------------030101080700030200040308
+Content-Type: application/pgp-keys;
+ name="0x2E141B16.asc"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0x2E141B16.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+mQGiBEvYoA8RBADGqP5emq65NjHKbh1LrxTv31gMPg7NROfl3I9T+Ha5AtKfcGHu
+U4DiDpT4+zW/k3U+JZxIW+BABv6Wjc76pXVgBAFdmOJIMmw+s3i+WqyxJZNFU3iJ
+djFZzgH6RCmkaaPOO2vCvXAkqAp4AbM1+B31JElJSDsDMnEOarAEVHGeWwCg37Tj
+B5yi07txOzo5yZzJFVDFIw8D/16SjXUcVtrliSpjbLOZuHxSSMOvxXUcFPfAnXnH
+21B9MvPZZFGCXKOy8Zb7/fCKbl1q9URTbKibZLk5EYvNvu1SdAOahBRGyGZdCeOv
+jAPIHdEV5kmxBZ8lDmSiUmI4lQDWaSmSX7MYYxd7Q9x5TckFXnHOsz5Z7Tnxetf1
+UEeIA/40P/1O6UJn9yEXrdwfouBjjgcGkvg+Xvf6+QN542FfT99cJt/PlM3QRH6O
+DK9lzy95Pq7Fu2yBoubsM8Bl5ASkUrCrodlPAmvRAAw1vGYxHeYsjzJa1oYj+hBs
+mOJbaeShr4Hlv20jhxC5XJgZiAuqso+adhL3zVWY3tET7/qp84hJBCARAgAJBQJM
+SwegAh0AAAoJEIz66pYuFBsWe70AniGKN80PALmAUHepEPrVU6ajFp+aAKDH+1eq
+Hz4X9Qri9QGzXKCykazRfbQiR2VvZmYgTGV2YW5kIDxnZW9mZkBpbmZyYWRlYWQu
+b3JnPohgBBMRAgAgBQJL2KAPAhsDBgsJCAcDAgQVAggDBBYCAwECHgECF4AACgkQ
+jPrqli4UGxZBvACgnab45AhwHS6anejdWh0iFK0sBGcAn23F4AgUICmP5DXsNtfn
+2PpInNqQ0dXe1dwBEAABAQAAAAAAAAAAAAAAAP/Y/+AAEEpGSUYAAQEBAEgASAAA
+/+EQIEV4aWYAAElJKgAIAAAACwAOAQIAIAAAAJIAAAAPAQIABQAAALIAAAAQAQIA
+BwAAALgAAAASAQMAAQAAAAEAAAAaAQUAAQAAAMAAAAAbAQUAAQAAAMgAAAAoAQMA
+AQAAAAIAAAAyAQIAFAAAANAAAAATAgMAAQAAAAIAAABphwQAAQAAAAABAAClxAcA
+HAAAAOQAAADcCQAAICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIABTT05Z
+AABEU0MtVDkAAEgAAAABAAAASAAAAAEAAAAyMDEwOjA0OjI4IDEzOjQ2OjEyAFBy
+aW50SU0AMDMwMAAAAgACAAEAAAABAQEAAAAeAJqCBQABAAAAbgIAAJ2CBQABAAAA
+dgIAACKIAwABAAAAAgAAACeIAwABAAAAQAEAAACQBwAEAAAAMDIyMAOQAgAUAAAA
+fgIAAASQAgAUAAAAkgIAAAGRBwAEAAAAAQIDAAKRBQABAAAApgIAAASSCgABAAAA
+rgIAAAWSBQABAAAAtgIAAAeSAwABAAAABQAAAAiSAwABAAAAAAAAAAmSAwABAAAA
+EAAAAAqSBQABAAAAvgIAAHySBwD4BgAAxgIAAACgBwAEAAAAMDEwMAGgAwABAAAA
+AQAAAAKgBAABAAAAQAAAAAOgBAABAAAASwAAAAWgBAABAAAAvgkAAACjBwABAAAA
+AwAAAAGjBwABAAAAAQAAAAGkAwABAAAAAAAAAAKkAwABAAAAAAAAAAOkAwABAAAA
+AAAAAAakAwABAAAAAAAAAAikAwABAAAAAAAAAAmkAwABAAAAAAAAAAqkAwABAAAA
+AAAAAAAAAAAKAAAAyAAAACMAAAAKAAAAMjAwNjowNzowNiAxMjowODo0OAAyMDA2
+OjA3OjA2IDEyOjA4OjQ4AAgAAAABAAAAAAAAAAoAAAA6AAAAEAAAAHkCAABkAAAA
+U09OWSBEU0MgAAAAGQAAIAcAAQAAAAAAAAAgsAIACQAAAAAEAABAsAMAAQAAAAAA
+AABBsAMAAQAAAAYAAABCsAMAAQAAAAEAAABDsAMAAQAAAAAAAABEsAMAAQAAAAEA
+AABFsAMAAQAAAAAAAABGsAMAAQAAAAAAAABHsAMAAQAAAAEAAABIsAgAAQAAAAAA
+AABJsAMAAQAAAAAAAABKsAMAAQAAAAAAAABLsAMAAQAAAAEAAABMsAUAAQAAABAE
+AABNsAMAAQAAAAAAAABOsAMAAQAAAAAAAAABkAcAlAAAABgEAAACkAcAyAAAAKwE
+AAADkAcAyAAAAHQFAAAEkAcAfAAAADwGAAAFkAcAegAAALgGAAAGkAcA/AAAADIH
+AAAHkAcAyAAAAC4IAAAIkAcAyAAAAPYIAABTdGFuZGFyZAAAAAAAAAAAAQAAAAEA
+AAAB1XAAAAgAMwAfAAAACx4SAAseEgAEsAAAAAAzAAAAAAAAADMAwqZ+/wAA2AAA
+DPC7dQBWYEx9CgRl/x4ABQAAAKEgn4hjBQAgn4hjBQAwcAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAQAAAAAoAIrNPwAAAAVwfXB9cH1wAHAAAAUEUOo+AAAAAAAAAABwwoom
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAABFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACsAedKfQBWAAAAffsAAAAA
+AMhAxwAAcBvHBQAAAAAB3HNGAMUAGgBFAMIAOQBcAE4AMwFjAQABtAEAAQABAAEA
+st/Z8nTjM069vb29AACgMFZc7JlWQ7YfiPZw9CAz/lgBmQDjYpDyxFuNCHAyvhEA
+PgDcAEYA03AAAAAAAAAAAABwAAAAAAAAAAAAcAAAAAAAAAAAAHAAvb1c88UQGqka
+qQdzViHQ0P4ArkwnTCdMJwdzTFi0XeA44DgaqQEAGqkAAAGIABsEwkAAGznAMeYB
+AAAAAAAHc7e+VDrEUV59AEDc3LxfEAEBAY0BPgFZAT4BPgE+AT4BPmwAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJUAOQB/AE0AlQA5AH8ATQAAAAGN0gAB
+Pp0AAVkwAAE+AwABjdIAAT6dAAFZMAABPgP////G////fP///87////3AAAAAAAA
+ABUBAQABAAAAAABAAAAAAAAAAAAAAAAAANgAAAAAABsAAAABAAEAAQAAAAAAAQAB
+AAAAAABAAEAAQAAA2IjC6K/M5s6MoAUOfUBAfQAAtgAAAF7//wD/AAAAAEYAAAAk
+2AAAJ/8AAM3hoAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAOqrAAC2DwAAkr4AAIiS
+AAC2SgAAMLsAAIiRAADNFAAAaYUAAIFLAAC+KAAAINsAAIh+AABp8QAAcNAAAIhg
+AACBuQAAgcIAANc4AAAg8gAAIHwAADCOAADXhwAAu74AAIcGAABdegAADFEAACAJ
+AAC7DgAA128AACgBAADsIQAAAi4AAOySAADXTQAAbL0AALtrAAAg7wAAaSIAAL7X
+AACVzwAAUckAAOyPAACSRgAAME4AAAV8AABw8QAADKQAAKDXDupwcHDqDupwgZWB
+cOpwgSQ4JIFwcJU4SjiVcHCBJDgkgXDqcIGVgXDqDupwcHDqDgAAAAEAgVGSzAwH
+u6cwCgCjkkDsqqDlKKOBCwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAcC0gHDCltvXN1QCjtsW+6LvnMExwbAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8UHxQeRB5EHxQCjiiaKm3DN
+cAdwwgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AQAAAACpMa8AeSMJAHWAIwBXaJ0AACEbAL7AOQDNBLYA6pTVACCPUwAAVPoAvsA5
+AM0EtgDqlNUAII9TAABU+gBDAPMAdgA7AZoAlABvAREBUgDGADQBRAEuABIBfQGE
+ASUAPwD1AekBSQDtAMkBrwG4AHEAIQHHAWsAcQFdAYQb5QEpCCUb1EA/COwbiUCX
+AekA0QD8AbMB8gBnAbABQwESAbYBUQFDAKoAUgB3AKcIbQFbAaUInwhgAfYBKwgk
+CDMBTAFtCJYCAAEAAgAEAAAAUjk4AAIABwAEAAAAMDEwMAAAAAAJAAMBAwABAAAA
+BgAAAA8BAgAFAAAATgoAABABAgAHAAAAVAoAABIBAwABAAAAAQAAABoBBQABAAAA
+XAoAABsBBQABAAAAZAoAACgBAwABAAAAAgAAAAECBAABAAAAbAoAAAICBAABAAAA
+rAUAAAAAAABTT05ZAABEU0MtVDkAAEgAAAABAAAASAAAAAEAAAD/2P/gABBKRklG
+AAEBAAABAAEAAP/bAEMACAYGBwYFCAcHBwkJCAoMFA0MCwsMGRITDxQdGh8eHRoc
+HCAkLicgIiwjHBwoNyksMDE0NDQfJzk9ODI8LjM0Mv/bAEMBCQkJDAsMGA0NGDIh
+HCEyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIy
+MjIyMv/AABEIAEAANgMBIgACEQEDEQH/xAAfAAABBQEBAQEBAQAAAAAAAAAAAQID
+BAUGBwgJCgv/xAC1EAACAQMDAgQDBQUEBAAAAX0BAgMABBEFEiExQQYTUWEHInEU
+MoGRoQgjQrHBFVLR8CQzYnKCCQoWFxgZGiUmJygpKjQ1Njc4OTpDREVGR0hJSlNU
+VVZXWFlaY2RlZmdoaWpzdHV2d3h5eoOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmq
+srO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4eLj5OXm5+jp6vHy8/T19vf4+fr/
+xAAfAQADAQEBAQEBAQEBAAAAAAAAAQIDBAUGBwgJCgv/xAC1EQACAQIEBAMEBwUE
+BAABAncAAQIDEQQFITEGEkFRB2FxEyIygQgUQpGhscEJIzNS8BVictEKFiQ04SXx
+FxgZGiYnKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqC
+g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV
+1tfY2dri4+Tl5ufo6ery8/T19vf4+fr/2gAMAwEAAhEDEQA/AOOsrVbi0BULhGIz
+3P0rSEUSRjBKMqAHJ5zVSyjlh0qOR2ZIuGG05zWXe6sZJAiKAScBR602wSOgtr0R
+yBULPj0ArRtJLi6uRuiJjPtin6HpEFrAkl1iWdgCc9B7AV1lmYYwCiKPwppXNlSu
+r3OcliWcPCZGhkGMMo4FclqGktb60BdMVgdR+9AyX9ce9eq3+lQajAXt38m6HIde
+h+o71xn9qbLyTTdShCzIcdcBvcU5aK5EoWMq31eS0+VmDRBQEAUgj2IxRT5bWe7k
+aKSQLGh+WNSR+NFTYyKOr3BtdJSIlAAg2gDBwK5bQwb3XId3IVtx/Cp9ZuWkfYeO
+K0PC9hsvBIwxlcZ+tSbRjc9AguIFRdzqfb0rTgvbPAHmAGuRutFLOAs7Lg5yOc1q
+x6IZPD+FlPmh/wDWd8VWptGR2MMsLpmGVScdK8r+Icpg8QW8ynBKc/nW1pGkXpuD
+Gt2WPBTk/jWP8QrL/TYGkfLCMDg9eaPUmWuxchSC6ghluJ5FDICFRtvP50VX01Bc
+6VbqzJhFx8xxRULmtoYNanPeKrMLKJUx83UjjmrWi6rFL5Fuqssyr84x1xVDX5ZD
+MsCkME5YgYFUdEnJ1uNhxgHp6VRcZNM9RWRntTtxkipdJ1ee5Uaetq4I6t2FYqNL
+IpMcoXA4GM5qWyvNQDsIpIwQMElMZ/GhM3R1V1MbMbo1CMfvEVw/ie4W9i85yuUJ
+UZ65rXn1KQ2jPOclBk+9ebQTNe3kkspJLOWxmk2S5W0Ow0JRJp6q2eD2NFSacBZ2
+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
+srVHfw==
+=xmyo
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------030101080700030200040308--
