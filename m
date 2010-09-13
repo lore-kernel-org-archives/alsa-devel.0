@@ -1,22 +1,23 @@
 From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH v2 1/1] ASoC: Add HP iPAQ H1940 support
-Date: Mon, 13 Sep 2010 10:09:16 +0900
-Message-ID: <AANLkTi=u08V3V70p9Prv5MVfqigFkeYggTAdh5Dx28NK@mail.gmail.com>
-References: <1284288909-5961-1-git-send-email-anarsoul@gmail.com>
-	<1284293927-15983-2-git-send-email-anarsoul@gmail.com>
-	<AANLkTi=TO4ADGEzeJucHnCDkSELxy_buZRrZPRdcX+Nx@mail.gmail.com>
-	<201009122110.00148.anarsoul@gmail.com>
+Subject: Re: [PATCH 2/3] ASoC: Samsung: Debug PCM
+	snd_soc_dai_driver registration
+Date: Mon, 13 Sep 2010 10:34:30 +0900
+Message-ID: <AANLkTinrn=RPk5tktyXrdQ_KokkSYT6g+xYL_ZKiGkW=@mail.gmail.com>
+References: <1284104465-17287-1-git-send-email-jassisinghbrar@gmail.com>
+	<20100910095438.GD3068@rakim.wolfsonmicro.main>
+	<AANLkTimajKCsDLPuGRoO=339BpUQ_wXn8pDsC+7ErzET@mail.gmail.com>
+	<20100910114754.GJ7259@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id C05CD244B9
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 7930F244D0
 	for <alsa-devel@alsa-project.org>;
-	Mon, 13 Sep 2010 03:09:16 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so5473466wyb.38
-	for <alsa-devel@alsa-project.org>; Sun, 12 Sep 2010 18:09:16 -0700 (PDT)
-In-Reply-To: <201009122110.00148.anarsoul@gmail.com>
+	Mon, 13 Sep 2010 03:34:31 +0200 (CEST)
+Received: by wyb32 with SMTP id 32so5491791wyb.38
+	for <alsa-devel@alsa-project.org>; Sun, 12 Sep 2010 18:34:31 -0700 (PDT)
+In-Reply-To: <20100910114754.GJ7259@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,22 +27,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>, Ben Dooks <ben-linux@fluff.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, sw.youn@samsung.com, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBTZXAgMTMsIDIwMTAgYXQgMzowOSBBTSwgVmFzaWx5IEtob3J1emhpY2sgPGFuYXJz
-b3VsQGdtYWlsLmNvbT4gd3JvdGU6Cj4g0JIg0YHQvtC+0LHRidC10L3QuNC4INC+0YIgMTIg0YHQ
-tdC90YLRj9Cx0YDRjyAyMDEwIDIwOjA3OjQxINCw0LLRgtC+0YAgSmFzc2kgQnJhciDQvdCw0L/Q
-uNGB0LDQuzoKPgo+PiBJcyBwbGF0Zm9ybTpzb2MtYXVkaW8gc3BlY2lmaWMgZW5vdWdoIGluIG11
-bHRpLXBsYXRmb3JtIGJ1aWxkcyBvZiB0aGUgT1M/Cj4+IFRob3VnaCBpdCBpcyB1bmxpa2VseSB0
-aGVyZSB3b3VsZCBldmVyIGJlIHN1Y2ggYSBjb25mbGljdCwgYnV0IHN0aWxsLi4uCj4KPiBPdGhl
-ciBnbHVlIGRyaXZlcnMganVzdCBjYW4ndCBsb2FkLCB1c3VhbGx5IHRoZXkgaW5jbHVkZSBtYWNo
-aW5lIGNoZWNrIGluCj4gbW9kdWxlX2luaXQuCgpCdHcsIHNvdW5kL3NvYy9zb2MtY29yZS5jIGlz
-IHRoZSByZWFsICdzb2MtYXVkaW8nIGRyaXZlciBtb2R1bGUgbm90CnRoZSBNQUNISU5FIGRyaXZl
-ci4KVHVybnMgb3V0LCBzb3VuZC9zb2Mvc29jLWNvcmUuYyBhbHJlYWR5IGhhcyB0aGUKTU9EVUxF
-X0FMSUFTKCJwbGF0Zm9ybTpzb2MtYXVkaW8iKTsKU28gaXQgc2VlbXMgbGlrZSBhbiBpbW1lZGlh
-dGUgY29uZmxpY3QuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+On Fri, Sep 10, 2010 at 8:47 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Fri, Sep 10, 2010 at 08:24:03PM +0900, Jassi Brar wrote:
+>> 2010/9/10 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+>
+>> > You should be able to use the id field rather than adding the number to
+>> > the names here.
+>
+>> But the id assignment was removed by Liam's patch, maybe unintentional ?
+>
+> Most likely an error - earlier versions of the patches didn't have the
+> separate ID field IIRC.
+>
+
+ok, but I don't seem to be able to find out where
+snd_soc_dai_driver.id is being used
+and  sound/soc/sh/hac.c and sound/soc/atmel/atmel_ssc_dai.c seems to
+be doing similar
+Are we on the same page? Please help me understand it.
