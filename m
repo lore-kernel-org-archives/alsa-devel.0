@@ -1,20 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
 Subject: Re: [PATCH 3/3] ASoC: tlv320aic3x: Complete the
  soc-cache conversion
-Date: Tue, 14 Sep 2010 13:04:58 +0100
-Message-ID: <20100914120458.GE27029@rakim.wolfsonmicro.main>
+Date: Tue, 14 Sep 2010 15:14:45 +0300
+Message-ID: <20100914151445.2fe7fd54.jhnikula@gmail.com>
 References: <1284465289-4865-1-git-send-email-jhnikula@gmail.com>
 	<1284465289-4865-3-git-send-email-jhnikula@gmail.com>
+	<20100914120458.GE27029@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F323610387C
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3CFAF10387C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Sep 2010 14:04:59 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1284465289-4865-3-git-send-email-jhnikula@gmail.com>
+	Tue, 14 Sep 2010 14:14:49 +0200 (CEST)
+Received: by eye27 with SMTP id 27so2019322eye.38
+	for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2010 05:14:48 -0700 (PDT)
+In-Reply-To: <20100914120458.GE27029@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,22 +27,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 14, 2010 at 02:54:49PM +0300, Jarkko Nikula wrote:
-> Complete the phasing out of aic3x_read_reg_cache, aic3x_write_reg_cache,
-> aic3x_read and aic3x_write calls.
-> 
-> This patch replaces the aic3x_read with codec->hw_read that points to a
-> function implemented by soc-cache. There is no need to cache the value from
-> chip since the functions using aic3x_read are interested only read-only
-> bits.
-> 
-> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+On Tue, 14 Sep 2010 13:04:58 +0100
+Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
 
-It'd be a bit nicer to do this by using snd_soc_read() here also and
-marking the registers as volatile.  This makes the process much less
-error prone since users can just use snd_soc_read() and the register
-cache code will work out if it needs to go to the chip or not.
+> On Tue, Sep 14, 2010 at 02:54:49PM +0300, Jarkko Nikula wrote:
+> > Complete the phasing out of aic3x_read_reg_cache, aic3x_write_reg_cache,
+> > aic3x_read and aic3x_write calls.
+> > 
+> > This patch replaces the aic3x_read with codec->hw_read that points to a
+> > function implemented by soc-cache. There is no need to cache the value from
+> > chip since the functions using aic3x_read are interested only read-only
+> > bits.
+> > 
+> > Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+> 
+> It'd be a bit nicer to do this by using snd_soc_read() here also and
+> marking the registers as volatile.  This makes the process much less
+> error prone since users can just use snd_soc_read() and the register
+> cache code will work out if it needs to go to the chip or not.
+
+Actually I looked that but problem with aic3x is that most of the
+volatile bits are with r/w configuration bits in the same registers.
+There are a few completely volatile read-only registers but currently
+there is no use for them.
+
+
+-- 
+Jarkko
