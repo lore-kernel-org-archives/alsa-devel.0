@@ -1,24 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] ASoC: tlv320aic3x: Complete the
- soc-cache conversion
-Date: Tue, 14 Sep 2010 13:55:10 +0100
-Message-ID: <20100914125510.GA21715@rakim.wolfsonmicro.main>
-References: <1284465289-4865-1-git-send-email-jhnikula@gmail.com>
-	<1284465289-4865-3-git-send-email-jhnikula@gmail.com>
-	<20100914120458.GE27029@rakim.wolfsonmicro.main>
-	<20100914151445.2fe7fd54.jhnikula@gmail.com>
-	<20100914122139.GF27029@rakim.wolfsonmicro.main>
-	<20100914154525.77e86440.jhnikula@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: snd-aloop PCM Slave Channels
+Date: Tue, 14 Sep 2010 21:33:56 +0800
+Message-ID: <AANLkTi=KvkkaXsXrL+Do7-=P0CZhH9pGcwCuQ-Z3KZuy@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0332C24474
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 10957103881
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Sep 2010 14:55:12 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100914154525.77e86440.jhnikula@gmail.com>
+	Tue, 14 Sep 2010 15:33:57 +0200 (CEST)
+Received: by bwz4 with SMTP id 4so5997429bwz.38
+	for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2010 06:33:56 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,14 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 14, 2010 at 03:45:25PM +0300, Jarkko Nikula wrote:
+it seem there is a bug in snd-aloop
 
-> But is it marking register as volatile due 1-2 bits causing more
-> problems if we don't cache rest of the r/w bits?
+those IFACE_PCM "PCM Slave Channels" controls return 48000
 
-Depends on what else is there - ultimately if the chip has read support
-then the register cache is just a performance improvement.
+
+ static int loopback_channels_get(struct snd_kcontrol *kcontrol,
+                                  struct snd_ctl_elem_value *ucontrol)
+ {
+         struct loopback *loopback = snd_kcontrol_chip(kcontrol);
+-         ucontrol->value.integer.value[0]
+=loopback->setup[kcontrol->id.subdevice][kcontrol->id.device].rate;
++        ucontrol->value.integer.value[0]
+=loopback->setup[kcontrol->id.subdevice][kcontrol->id.device].channels;
+         return 0;
+ }
+
+BTW , AFAIK dmix/dsnoop only work with subdevice 0 and there are 8
+subdevices by default
+
+How can the application access Loopback.pcm.default ?
+
+http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=72c7260ce624adcb40377bc2093cd4d965b9b22e;hp=91c9c8f1b85e69b4bdc94a777d2767c4906c3f47
