@@ -1,18 +1,21 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: snd-aloop PCM Slave Channels
-Date: Tue, 14 Sep 2010 21:33:56 +0800
-Message-ID: <AANLkTi=KvkkaXsXrL+Do7-=P0CZhH9pGcwCuQ-Z3KZuy@mail.gmail.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: [PATCHv2 3/3] ASoC: tlv320aic3x: Complete the
+	soc-cache conversion
+Date: Tue, 14 Sep 2010 16:59:47 +0300
+Message-ID: <1284472787-9881-1-git-send-email-jhnikula@gmail.com>
+References: <20100914125510.GA21715@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 10957103881
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E4475103885
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Sep 2010 15:33:57 +0200 (CEST)
-Received: by bwz4 with SMTP id 4so5997429bwz.38
-	for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2010 06:33:56 -0700 (PDT)
+	Tue, 14 Sep 2010 15:59:53 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so3056280ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2010 06:59:51 -0700 (PDT)
+In-Reply-To: <20100914125510.GA21715@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +25,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-it seem there is a bug in snd-aloop
+Complete the phasing out of aic3x_read_reg_cache, aic3x_write_reg_cache,
+aic3x_read and aic3x_write calls.
 
-those IFACE_PCM "PCM Slave Channels" controls return 48000
+This patch uses in aic3x_read the codec->hw_read that points to a function
+implemented by soc-cache. Only use for aic3x_read is if wanting to read
+volatile bits from those registers that has both read-only and read/write
+bits. All other cases should use snd_soc_read.
 
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+---
+ sound/soc/codecs/tlv320aic3x.c |   25 +++++++++----------------
+ 1 files changed, 9 insertions(+), 16 deletions(-)
 
- static int loopback_channels_get(struct snd_kcontrol *kcontrol,
-                                  struct snd_ctl_elem_value *ucontrol)
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 86e5a58..7b5f159 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -112,28 +112,21 @@ static const u8 aic3x_reg[AIC3X_CACHEREGNUM] = {
+ };
+ 
+ /*
+- * write aic3x register cache
+- */
+-static inline void aic3x_write_reg_cache(struct snd_soc_codec *codec,
+-					 u8 reg, u8 value)
+-{
+-	u8 *cache = codec->reg_cache;
+-	if (reg >= AIC3X_CACHEREGNUM)
+-		return;
+-	cache[reg] = value;
+-}
+-
+-/*
+- * read from the aic3x register space
++ * read from the aic3x register space. Only use for this function is if
++ * wanting to read volatile bits from those registers that has both read-only
++ * and read/write bits. All other cases should use snd_soc_read.
+  */
+ static int aic3x_read(struct snd_soc_codec *codec, unsigned int reg,
+ 		      u8 *value)
  {
-         struct loopback *loopback = snd_kcontrol_chip(kcontrol);
--         ucontrol->value.integer.value[0]
-=loopback->setup[kcontrol->id.subdevice][kcontrol->id.device].rate;
-+        ucontrol->value.integer.value[0]
-=loopback->setup[kcontrol->id.subdevice][kcontrol->id.device].channels;
-         return 0;
+-	*value = reg & 0xff;
++	u8 *cache = codec->reg_cache;
++
++	if (reg >= AIC3X_CACHEREGNUM)
++		return -1;
+ 
+-	value[0] = i2c_smbus_read_byte_data(codec->control_data, value[0]);
++	*value = codec->hw_read(codec, reg);
++	cache[reg] = *value;
+ 
+-	aic3x_write_reg_cache(codec, reg, *value);
+ 	return 0;
  }
-
-BTW , AFAIK dmix/dsnoop only work with subdevice 0 and there are 8
-subdevices by default
-
-How can the application access Loopback.pcm.default ?
-
-http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=72c7260ce624adcb40377bc2093cd4d965b9b22e;hp=91c9c8f1b85e69b4bdc94a777d2767c4906c3f47
+ 
+-- 
+1.7.1
