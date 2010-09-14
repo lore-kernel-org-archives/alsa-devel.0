@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] ASoC: Samsung: Debug PCM
- snd_soc_dai_driver registration
-Date: Tue, 14 Sep 2010 08:50:39 +0100
-Message-ID: <20100914075038.GA423@opensource.wolfsonmicro.com>
-References: <1284104465-17287-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: Re: [PATCH] ASoC: fsi codecs: Update card name field
+Date: Tue, 14 Sep 2010 08:51:15 +0100
+Message-ID: <20100914075115.GA1052@opensource.wolfsonmicro.com>
+References: <w3pwrqqdj02.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 094DE243AF
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D39F310386A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 14 Sep 2010 09:50:22 +0200 (CEST)
+	Tue, 14 Sep 2010 09:50:56 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1284104465-17287-1-git-send-email-jassisinghbrar@gmail.com>
+In-Reply-To: <w3pwrqqdj02.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,16 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, Jassi Brar <jassi.brar@samsung.com>, sw.youn@samsung.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 10, 2010 at 04:41:05PM +0900, Jassi Brar wrote:
-> From: Jassi Brar <jassi.brar@samsung.com>
-> 
-> Each of the two PCM controllers need to be registered during probe
-> with appropriate 'name' of the dai driver.
-> 
-> Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+On Mon, Sep 13, 2010 at 07:40:13PM +0900, Kuninori Morimoto wrote:
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+> I think Mark's advice means this patch
 
-Applied, thanks.
+Yes, it does.  Applied, thanks.
