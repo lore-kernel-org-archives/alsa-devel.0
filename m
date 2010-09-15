@@ -1,21 +1,20 @@
-From: Thomas Corner <tom.c.corner@gmail.com>
-Subject: cmipci  CMI8738-MC6 - left channel no sound
-Date: Wed, 15 Sep 2010 16:42:20 +0200
-Message-ID: <4C90DB4C.2040603@gmail.com>
-References: <4C89D660.4020705@gmail.com> <4C89D9E2.1070008@ladisch.de>
-	<4C89DCD5.6040806@gmail.com> <4C89DF45.5090100@ladisch.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: WM8985: Initial driver
+Date: Wed, 15 Sep 2010 15:43:07 +0100
+Message-ID: <1284561787.10618.205.camel@vega>
+References: <1284560600-27978-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id F376F103805
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 802371037E3
 	for <alsa-devel@alsa-project.org>;
 	Wed, 15 Sep 2010 16:43:13 +0200 (CEST)
-Received: by bwz4 with SMTP id 4so639310bwz.38
+Received: by ewy21 with SMTP id 21so121086ewy.38
 	for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2010 07:43:13 -0700 (PDT)
-In-Reply-To: <4C89DF45.5090100@ladisch.de>
+In-Reply-To: <1284560600-27978-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,56 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: pulseaudio-discuss@mail.0pointer.de
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-  I've been going around and around on this.  The surround sound 5.1 is
-playing fine except channel 0 (front-left) is playing on the woofer. The 
-card is a Terratec Aureon fun - CMI8738-MC6. I have
-gotten desperate and have tested this card in Windows and was able to
-get it working right there. I have been using speaker-test to
-to test the setup. I am using pulseaudio.
+On Wed, 2010-09-15 at 15:23 +0100, Dimitris Papastamos wrote:
+> The WM8985 is a low power, high quality, feature-rich stereo
+> CODEC designed for portable multimedia applications that
+> require low power consumption and high quality audio.
+> 
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/wm8985.c | 1195 +++++++++++++++++++++++++++++++++++++++++++++
+>  sound/soc/codecs/wm8985.h | 1046 +++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 2241 insertions(+), 0 deletions(-)
+>  create mode 100644 sound/soc/codecs/wm8985.c
+>  create mode 100644 sound/soc/codecs/wm8985.h
 
-This is the summary of my results with speaker-test:
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-speaker-test -c 6 -D surround51 -t wav
-speaker          output
-  ----------------------
-  front L         silence
-  front R         front R
-  center          center
-  bass            mix of front L + bass
-  surround L      surround L
-  surround R      surround R
-
-
-speaker-test -c 4 -D surround40  -t wav
-----------------------------------------------------
-front L       silence
-front R       front R
-center        silence
-bass          mix of front L + bass
-rear L        rear L       rear R        rear R
-
-
-speaker-test -c 4   -t wav
-speaker-test -c 6   -t wav
-speaker -test -c 2 -t  wav
----------------------------------
-front L       silence
-front R       front R
-center        silence
-bass          mix of front L + bass
-rear L        silence
-rear R        silence
-
-I have removed pulseaudio again (recompiled all software with optional
-pulseaudio support without pulseaudio support)  I should be outputting
-directly to alsa and the driver now.
-
-Under pulseaudio speaker-test gives error messages when surround40 and
-surround51 is specified.
-
-Thanks
-Tom
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
