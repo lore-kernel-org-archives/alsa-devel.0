@@ -1,18 +1,21 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Emulated IEC958 Card
-Date: Wed, 15 Sep 2010 23:05:40 +0900
-Message-ID: <AANLkTi=52wHCZZNSBitaMO+O6--JLHg7nmtNOVYQ6cof@mail.gmail.com>
+From: Thomas Corner <tom.c.corner@gmail.com>
+Subject: cmipci  CMI8738-MC6 - left channel no sound
+Date: Wed, 15 Sep 2010 16:42:20 +0200
+Message-ID: <4C90DB4C.2040603@gmail.com>
+References: <4C89D660.4020705@gmail.com> <4C89D9E2.1070008@ladisch.de>
+	<4C89DCD5.6040806@gmail.com> <4C89DF45.5090100@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0ED0F1037E3
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id F376F103805
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Sep 2010 16:05:42 +0200 (CEST)
-Received: by eye27 with SMTP id 27so83216eye.38
-	for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2010 07:05:41 -0700 (PDT)
+	Wed, 15 Sep 2010 16:43:13 +0200 (CEST)
+Received: by bwz4 with SMTP id 4so639310bwz.38
+	for <alsa-devel@alsa-project.org>; Wed, 15 Sep 2010 07:43:13 -0700 (PDT)
+In-Reply-To: <4C89DF45.5090100@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,37 +26,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, yadi brar <yadi.brar01@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: pulseaudio-discuss@mail.0pointer.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+  I've been going around and around on this.  The surround sound 5.1 is
+playing fine except channel 0 (front-left) is playing on the woofer. The 
+card is a Terratec Aureon fun - CMI8738-MC6. I have
+gotten desperate and have tested this card in Windows and was able to
+get it working right there. I have been using speaker-test to
+to test the setup. I am using pulseaudio.
 
- Ok, so there is already the iec958 plugin, but wouldn't it be nice to have an
-'Emulated IEC958-Card' driver that implements implements all the possible
-components of the IEC958-cum-AES/EBU specification. The user could have
-the look and feel of a real card via ALSA control and audio i/f ....
-User Data can be
-provided too (which lacks in the iec958 plugin ?)
+This is the summary of my results with speaker-test:
 
-This driver might be boon for low-end embedded devices which have neither IEC958
-controller in the SoC nor a codec chip that supports it. In fact the
-SPDIF controller
-of one SoC that I know implements only a subset of the standard with
-limitations.
+speaker-test -c 6 -D surround51 -t wav
+speaker          output
+  ----------------------
+  front L         silence
+  front R         front R
+  center          center
+  bass            mix of front L + bass
+  surround L      surround L
+  surround R      surround R
 
-The only requirement for the emulated-iec958 card would be a shifter
-with deep enough
-fifo, that can shift out bits at around 6Mbps (for 48KHz Stereo). And
-most SoCs have
-such a resource available that can be put to the use -- OMAP has
-McBSP, Samsung's
-and other SoCs can leverage a SPI controller.
 
-Any suggestions welcome.
+speaker-test -c 4 -D surround40  -t wav
+----------------------------------------------------
+front L       silence
+front R       front R
+center        silence
+bass          mix of front L + bass
+rear L        rear L       rear R        rear R
 
-Regards,
-Jassi
 
-PS: I start the topic upon insistence from Angat
-<yadi.brar01@gmail.com>, a grad student who
-wanted to implement the feature for his univ project on his beagle board.
+speaker-test -c 4   -t wav
+speaker-test -c 6   -t wav
+speaker -test -c 2 -t  wav
+---------------------------------
+front L       silence
+front R       front R
+center        silence
+bass          mix of front L + bass
+rear L        silence
+rear R        silence
+
+I have removed pulseaudio again (recompiled all software with optional
+pulseaudio support without pulseaudio support)  I should be outputting
+directly to alsa and the driver now.
+
+Under pulseaudio speaker-test gives error messages when surround40 and
+surround51 is specified.
+
+Thanks
+Tom
