@@ -1,16 +1,16 @@
 From: Wu Fengguang <wfg@linux.intel.com>
 Subject: Re: Unifying sound/pci/hda/patch_*hdmi.c
-Date: Wed, 15 Sep 2010 22:51:42 +0800
-Message-ID: <20100915145142.GA11222@localhost>
+Date: Wed, 15 Sep 2010 23:01:40 +0800
+Message-ID: <20100915150140.GA11634@localhost>
 References: <s5hsk1b12qw.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id DC752103805
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id D846A24480
 	for <alsa-devel@alsa-project.org>;
-	Wed, 15 Sep 2010 16:51:50 +0200 (CEST)
+	Wed, 15 Sep 2010 17:01:48 +0200 (CEST)
 Content-Disposition: inline
 In-Reply-To: <s5hsk1b12qw.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -26,22 +26,22 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, wni@nvidia.com
 List-Id: alsa-devel@alsa-project.org
 
-Thanks. I'll test it on Intel hardware tomorrow :)
+Takashi,
 
-On Wed, Sep 15, 2010 at 04:48:55PM +0200, Takashi Iwai wrote:
-> Hi,
-> 
-> the below is a patch for unifying three patch_*hdmi.c into a single
-> file.  I'd like to push this to 2.6.37, so please review, especially
-> whether it can break Nvidia hardware (since I have no h/w available).
-> 
-> In future, we can reduce ATI- and Nvidia-specific codes gradually
-> after confirming the generic parser works.
-> 
-> The patch is found in sound-unstable git tree, too.  The corresponding
-> alsa-driver-unstable tarball can be used for external builds.
-> 
-> 
-> thanks,
-> 
-> Takashi
+Since the driver will also be supporting DisplayPort audio,
+would you add "DisplayPort" too in the following chunk?
+
+        +config SND_HDA_CODEC_HDMI
+==>     +       bool "Build HDMI HD-audio codec support"
+                select SND_DYNAMIC_MINORS
+                default y
+                help
+        -         Say Y here to include INTEL HDMI HD-audio codec support in
+        -         snd-hda-intel driver, such as Eaglelake integrated HDMI.
+==>     +         Say Y here to include HDMI HD-audio codec support in
+        +         snd-hda-intel driver.  This includes all AMD/ATI, Intel and
+==>     +         Nvidia HDMI codecs.
+                 
+
+Thanks,
+Fengguang
