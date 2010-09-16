@@ -1,19 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: cmipci CMI8738-MC6 - left channel no sound
-Date: Thu, 16 Sep 2010 13:51:41 +0200
-Message-ID: <4C9204CD.6030400@ladisch.de>
-References: <4C89D660.4020705@gmail.com>
-	<4C89D9E2.1070008@ladisch.de>	<4C89DCD5.6040806@gmail.com>
-	<4C89DF45.5090100@ladisch.de> <4C90DB4C.2040603@gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 1/3] ASoC: Add debugfs listing of
+	registered CODECs
+Date: Thu, 16 Sep 2010 14:10:55 +0100
+Message-ID: <1284642655.21170.14.camel@vega>
+References: <1284571911-23123-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 06B5224486
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 8EA6A2433D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Sep 2010 13:51:31 +0200 (CEST)
-In-Reply-To: <4C90DB4C.2040603@gmail.com>
+	Thu, 16 Sep 2010 15:11:01 +0200 (CEST)
+Received: by vws20 with SMTP id 20so1029713vws.38
+	for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2010 06:10:59 -0700 (PDT)
+In-Reply-To: <1284571911-23123-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,16 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Thomas Corner <tom.c.corner@gmail.com>
-Cc: pulseaudio-discuss@mail.0pointer.de, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Thomas Corner wrote:
-> The surround sound 5.1 is playing fine except channel 0 (front-left)
-> is playing on the woofer.
+On Wed, 2010-09-15 at 18:31 +0100, Mark Brown wrote:
+> Help with diagnostics for machine driver setup by listing all the
+> registered CODECs in debugfs.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/soc-core.c |   32 ++++++++++++++++++++++++++++++++
+>  1 files changed, 32 insertions(+), 0 deletions(-)
+> 
 
-Please show the output of "amixer".
+All
 
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-Regards,
-Clemens
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
