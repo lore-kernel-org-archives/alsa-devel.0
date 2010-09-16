@@ -1,19 +1,19 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ASoC: ak4642: code clean up
-Date: Thu, 16 Sep 2010 14:12:27 +0100
-Message-ID: <1284642747.21170.15.camel@vega>
+Date: Thu, 16 Sep 2010 14:15:09 +0100
+Message-ID: <20100916131508.GE7837@rakim.wolfsonmicro.main>
 References: <w3pd3sewcvk.wl%kuninori.morimoto.gx@renesas.com>
+	<1284642747.21170.15.camel@vega>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6E88C24366
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 62D4B24366
 	for <alsa-devel@alsa-project.org>;
-	Thu, 16 Sep 2010 15:12:33 +0200 (CEST)
-Received: by gwj15 with SMTP id 15so467500gwj.38
-	for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2010 06:12:32 -0700 (PDT)
-In-Reply-To: <w3pd3sewcvk.wl%kuninori.morimoto.gx@renesas.com>
+	Thu, 16 Sep 2010 15:15:12 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1284642747.21170.15.camel@vega>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-09-16 at 13:06 +0900, Kuninori Morimoto wrote:
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  sound/soc/codecs/ak4642.c |   22 +++++++++++-----------
->  1 files changed, 11 insertions(+), 11 deletions(-)
+On Thu, Sep 16, 2010 at 02:12:27PM +0100, Liam Girdwood wrote:
+> On Thu, 2010-09-16 at 13:06 +0900, Kuninori Morimoto wrote:
+> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > ---
+> >  sound/soc/codecs/ak4642.c |   22 +++++++++++-----------
+> >  1 files changed, 11 insertions(+), 11 deletions(-)
 
-Both ak4642 and da7210 cleanups
+> Both ak4642 and da7210 cleanups
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Applied.
