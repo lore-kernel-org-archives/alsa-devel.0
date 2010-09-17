@@ -1,8 +1,7 @@
 From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: [PATCH 3/5] ASoC: lowercase wm8978 codec name to match its only user
- and other codecs
-Date: Fri, 17 Sep 2010 12:30:05 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.1009171214281.4988@axis700.grange>
+Subject: [PATCH 4/5] ASoC: fix clkdev API usage in sh/migor.c
+Date: Fri, 17 Sep 2010 12:30:11 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.1009171215120.4988@axis700.grange>
 References: <Pine.LNX.4.64.1009171129550.4988@axis700.grange>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
@@ -13,27 +12,75 @@ To: alsa-devel@alsa-project.org
 Cc: linux-sh@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-All ASoC codecs are called in lower case, adjust wm8978 to match them and also
-to match its so far only user - the sh7722 migor board.
+The clkdev API doesn't use .name and .id members of struct clk for clock
+lookup. Instead clocks should be added to a lookup list. Without this patch
+audio om the Migo-R board fails silently.
 
 Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 ---
- sound/soc/codecs/wm8978.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8978.c b/sound/soc/codecs/wm8978.c
-index 676a430..a521678 100644
---- a/sound/soc/codecs/wm8978.c
-+++ b/sound/soc/codecs/wm8978.c
-@@ -1038,7 +1038,7 @@ MODULE_DEVICE_TABLE(i2c, wm8978_i2c_id);
+As mentioned before - please also apply to 2.6.36.
+
+ sound/soc/sh/migor.c |   15 +++++++++++++--
+ 1 files changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/sh/migor.c b/sound/soc/sh/migor.c
+index 866d78f..f462017 100644
+--- a/sound/soc/sh/migor.c
++++ b/sound/soc/sh/migor.c
+@@ -12,6 +12,7 @@
+ #include <linux/firmware.h>
+ #include <linux/module.h>
  
- static struct i2c_driver wm8978_i2c_driver = {
- 	.driver = {
--		.name = "WM8978-codec",
-+		.name = "wm8978-codec",
- 		.owner = THIS_MODULE,
- 	},
- 	.probe =    wm8978_i2c_probe,
++#include <asm/clkdev.h>
+ #include <asm/clock.h>
+ 
+ #include <cpu/sh7722.h>
+@@ -40,12 +41,12 @@ static struct clk_ops siumckb_clk_ops = {
+ };
+ 
+ static struct clk siumckb_clk = {
+-	.name		= "siumckb_clk",
+-	.id		= -1,
+ 	.ops		= &siumckb_clk_ops,
+ 	.rate		= 0, /* initialised at run-time */
+ };
+ 
++static struct clk_lookup *siumckb_lookup;
++
+ static int migor_hw_params(struct snd_pcm_substream *substream,
+ 			   struct snd_pcm_hw_params *params)
+ {
+@@ -177,6 +178,13 @@ static int __init migor_init(void)
+ 	if (ret < 0)
+ 		return ret;
+ 
++	siumckb_lookup = clkdev_alloc(&siumckb_clk, "siumckb_clk", NULL);
++	if (!siumckb_lookup) {
++		ret = -ENOMEM;
++		goto eclkdevalloc;
++	}
++	clkdev_add(siumckb_lookup);
++
+ 	/* Port number used on this machine: port B */
+ 	migor_snd_device = platform_device_alloc("soc-audio", 1);
+ 	if (!migor_snd_device) {
+@@ -195,12 +203,15 @@ static int __init migor_init(void)
+ epdevadd:
+ 	platform_device_put(migor_snd_device);
+ epdevalloc:
++	clkdev_drop(siumckb_lookup);
++eclkdevalloc:
+ 	clk_unregister(&siumckb_clk);
+ 	return ret;
+ }
+ 
+ static void __exit migor_exit(void)
+ {
++	clkdev_drop(siumckb_lookup);
+ 	clk_unregister(&siumckb_clk);
+ 	platform_device_unregister(migor_snd_device);
+ }
 -- 
 1.7.1
 
