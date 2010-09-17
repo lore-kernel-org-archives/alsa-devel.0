@@ -1,73 +1,25 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCH] ASoC: tlv320aic3x: Add virtual output pin
-	Detection
-Date: Fri, 17 Sep 2010 14:39:01 +0300
-Message-ID: <1284723541-21813-1-git-send-email-jhnikula@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/5] fix SIU and Migo-R sound for 2.6.37
+Date: Fri, 17 Sep 2010 13:19:31 +0100
+Message-ID: <20100917121931.GC4322@rakim.wolfsonmicro.main>
+References: <Pine.LNX.4.64.1009171129550.4988@axis700.grange>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1242A24470
-	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Sep 2010 13:42:32 +0200 (CEST)
-Received: by eye27 with SMTP id 27so1042877eye.38
-	for <alsa-devel@alsa-project.org>; Fri, 17 Sep 2010 04:42:31 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.1009171129550.4988@axis700.grange>
+Sender: linux-sh-owner@vger.kernel.org
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Purpose of this virtual Detection pin is to keep codec bias on whenever the
-GPIO or jack detection features are needed.
+On Fri, Sep 17, 2010 at 12:29:41PM +0200, Guennadi Liakhovetski wrote:
 
-Jack detection needs a mic bias so machine drivers can construct a following
-route for instance for keeping the path and codec bias on:
+> Conversion to the multi-component design has broken the SIU driver and its 
+> users. This patch series fixes the breakages. All patches against 
+> next/master, but one of them (#4) shall also go into 2.6.36.
 
-"Input Jack" -> "Mic Bias xV" -> "Detection" -> detection block inside codec.
-
-For the GPIO the machine driver can force the pin on with
-snd_soc_dapm_force_enable_pin.
-
-Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
----
-PLL is activated when in SND_SOC_BIAS_PREPARE or _ON so it could be running
-but I have a vague impression that it's active only when ADC or DAC is on.
-I don't have at the moment possibility to measure it and don't want to move
-it to DAPM either before doing some oscilloscope and pop & clicks measurements.
-Current consumption anyway doesn't differ between standby and on when there is
-no active stream and other widgets are off.
----
- sound/soc/codecs/tlv320aic3x.c |    8 ++++++++
- 1 files changed, 8 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 7b5f159..6190351 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -605,6 +605,14 @@ static const struct snd_soc_dapm_widget aic3x_dapm_widgets[] = {
- 	SND_SOC_DAPM_INPUT("LINE1R"),
- 	SND_SOC_DAPM_INPUT("LINE2L"),
- 	SND_SOC_DAPM_INPUT("LINE2R"),
-+
-+	/*
-+	 * Virtual output pin to detection block inside codec. This can be
-+	 * used to keep codec bias on if gpio or detection features are needed.
-+	 * Force pin on or construct a path with an input jack and mic bias
-+	 * widgets.
-+	 */
-+	SND_SOC_DAPM_OUTPUT("Detection"),
- };
- 
- static const struct snd_soc_dapm_widget aic3007_dapm_widgets[] = {
--- 
-1.7.1
+Please don't do this.  If you want a patch to go to Linus send it
+separately.  If you do feel the need to include the patch in another
+series not for Linus for some reason then please include it at the start
+of the series so that it can be easily split out.
