@@ -1,23 +1,20 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: Emulated IEC958 Card
-Date: Fri, 17 Sep 2010 22:01:23 +0900
-Message-ID: <AANLkTi=33GGcUt8mt6NFkKmfu08FyR5TzQU0XdMk50gN@mail.gmail.com>
-References: <AANLkTi=52wHCZZNSBitaMO+O6--JLHg7nmtNOVYQ6cof@mail.gmail.com>
-	<AANLkTi=oECj18_gWM-16YTHrCOE-=nTnG9L0CummTdvh@mail.gmail.com>
-	<20100917122724.GA29739@sirena.org.uk>
-	<AANLkTim3+i3zFC=G6tZyBf_wQf9C2xy2K0SYb5jfXF=j@mail.gmail.com>
-	<20100917124702.GE4322@rakim.wolfsonmicro.main>
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: Re: [PATCH 0/5] fix SIU and Migo-R sound for 2.6.37
+Date: Fri, 17 Sep 2010 15:13:13 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.1009171509280.4988@axis700.grange>
+References: <Pine.LNX.4.64.1009171129550.4988@axis700.grange>
+	<20100917121931.GC4322@rakim.wolfsonmicro.main>
+	<Pine.LNX.4.64.1009171433270.4988@axis700.grange>
+	<20100917125939.GG4322@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5C8A410396A
+Received: from mail.gmx.net (mailout-de.gmx.net [213.165.64.23])
+	by alsa0.perex.cz (Postfix) with SMTP id 76284103968
 	for <alsa-devel@alsa-project.org>;
-	Fri, 17 Sep 2010 15:01:24 +0200 (CEST)
-Received: by wwb28 with SMTP id 28so2118675wwb.20
-	for <alsa-devel@alsa-project.org>; Fri, 17 Sep 2010 06:01:24 -0700 (PDT)
-In-Reply-To: <20100917124702.GE4322@rakim.wolfsonmicro.main>
+	Fri, 17 Sep 2010 15:12:58 +0200 (CEST)
+In-Reply-To: <20100917125939.GG4322@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,19 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, yadi brar <yadi.brar01@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, linux-sh@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBTZXAgMTcsIDIwMTAgYXQgOTo0NyBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgoKPj4gQWxzbywgSU1PLCBpdCB3b3VsZCBt
-YWtlIG1vcmUgc2Vuc2UgdG8gaW1wbGVtZW50IGl0IGFzIGEgVmlydHVhbCBjYXJkCj4+IGluZGVw
-ZW5kZW50Cj4+IG9mIEFTb0Mob3V0c2lkZSBvZiBsaW51eC9zb3VuZC9zb2MvKSwgd2l0aCBudW1i
-ZXIgb2YgZGV2aWNlcyBlcXVhbGxpbmcKPj4gdGhlIG51bWJlcgo+PiBvZiBzaGlmdGVycyByZWdp
-c3RlcmVkLgo+Cj4gSSBhZ3JlZSwgdGhvdWdoIGl0IHdvdWxkIGJlIG5pY2UgdG8gaGF2ZSBzb21l
-IGZhY2lsaXR5IGZvciBpbXBsZW1lbnRpbmcKPiBhbiBpbnRlcmZhY2UgYmV0d2VlbiB0aGUgdHdv
-IHNpbmNlIHlvdSBjYW4gZ2V0IElFQzk1OCBJL08gb24gQVNvQwo+IENPREVDcy4gwqBJIGRvbid0
-IHRoaW5rIHRoYXQncyBuZWVkZWQgYXQgZmlyc3QgcGFzcywgYnV0IGl0IG1heSBjb21lIHVwCj4g
-YXQgc29tZSBwb2ludC4KT2ssIHdlJ2xsIHRyeSB0byBmaWd1cmUgdGhhdCBvdXQuClRoYW5rcy4K
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Fri, 17 Sep 2010, Mark Brown wrote:
+
+> On Fri, Sep 17, 2010 at 02:35:09PM +0200, Guennadi Liakhovetski wrote:
+> 
+> > Ok, sorry, but in fact this patch and the rest of the series are 
+> > independent, so, it should be no problem just to pick it up from here, or 
+> > do I have to re-send anything?
+> 
+> I've not yet tried applying it
+
+I did, worked fine - only with offsets. Otherwise, I certainly wouldn't 
+suggest to take it directly.
+
+> but I'd anticipate some breakage trying
+> to do so due to the multi-component changes in the file in for-2.6.37.
+> I'll do so later today or tomorrow, if it applies fine there's no need
+> to resubmit.
+
+Good, thanks!
+Guennadi
+---
+Guennadi Liakhovetski, Ph.D.
+Freelance Open-Source Software Developer
+http://www.open-technology.de/
