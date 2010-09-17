@@ -1,26 +1,27 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/5] ASoC: lowercase wm8978 codec name to match its
- only user and other codecs
-Date: Fri, 17 Sep 2010 13:53:19 +0100
-Message-ID: <20100917125319.GF4322@rakim.wolfsonmicro.main>
+Subject: Re: [PATCH 0/5] fix SIU and Migo-R sound for 2.6.37
+Date: Fri, 17 Sep 2010 13:59:39 +0100
+Message-ID: <20100917125939.GG4322@rakim.wolfsonmicro.main>
 References: <Pine.LNX.4.64.1009171129550.4988@axis700.grange>
- <Pine.LNX.4.64.1009171214281.4988@axis700.grange>
+ <20100917121931.GC4322@rakim.wolfsonmicro.main>
+ <Pine.LNX.4.64.1009171433270.4988@axis700.grange>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-sh-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1009171214281.4988@axis700.grange>
+In-Reply-To: <Pine.LNX.4.64.1009171433270.4988@axis700.grange>
 Sender: linux-sh-owner@vger.kernel.org
 To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 17, 2010 at 12:30:05PM +0200, Guennadi Liakhovetski wrote:
-> All ASoC codecs are called in lower case, adjust wm8978 to match them and also
-> to match its so far only user - the sh7722 migor board.
+On Fri, Sep 17, 2010 at 02:35:09PM +0200, Guennadi Liakhovetski wrote:
 
->  	.driver = {
-> -		.name = "WM8978-codec",
-> +		.name = "wm8978-codec",
+> Ok, sorry, but in fact this patch and the rest of the series are 
+> independent, so, it should be no problem just to pick it up from here, or 
+> do I have to re-send anything?
 
-Better yet would be to rename this to wm8978 (and adjust the board).
+I've not yet tried applying it but I'd anticipate some breakage trying
+to do so due to the multi-component changes in the file in for-2.6.37.
+I'll do so later today or tomorrow, if it applies fine there's no need
+to resubmit.
