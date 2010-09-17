@@ -1,7 +1,8 @@
 From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: [PATCH 2/5] sh: fix an SIU device name mismatch
-Date: Fri, 17 Sep 2010 12:30:00 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.1009171212280.4988@axis700.grange>
+Subject: [PATCH 3/5] ASoC: lowercase wm8978 codec name to match its only user
+ and other codecs
+Date: Fri, 17 Sep 2010 12:30:05 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.1009171214281.4988@axis700.grange>
 References: <Pine.LNX.4.64.1009171129550.4988@axis700.grange>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
@@ -9,29 +10,30 @@ Return-path: <linux-sh-owner@vger.kernel.org>
 In-Reply-To: <Pine.LNX.4.64.1009171129550.4988@axis700.grange>
 Sender: linux-sh-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: linux-sh@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Paul Mundt <lethal@linux-sh.org>
+Cc: linux-sh@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Recent ASoC changes unified all PCM names, fix the platform code to match.
+All ASoC codecs are called in lower case, adjust wm8978 to match them and also
+to match its so far only user - the sh7722 migor board.
 
 Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 ---
- arch/sh/kernel/cpu/sh4a/setup-sh7722.c |    2 +-
+ sound/soc/codecs/wm8978.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/arch/sh/kernel/cpu/sh4a/setup-sh7722.c b/arch/sh/kernel/cpu/sh4a/setup-sh7722.c
-index 156ccc9..d551ed8 100644
---- a/arch/sh/kernel/cpu/sh4a/setup-sh7722.c
-+++ b/arch/sh/kernel/cpu/sh4a/setup-sh7722.c
-@@ -551,7 +551,7 @@ static struct resource siu_resources[] = {
- };
+diff --git a/sound/soc/codecs/wm8978.c b/sound/soc/codecs/wm8978.c
+index 676a430..a521678 100644
+--- a/sound/soc/codecs/wm8978.c
++++ b/sound/soc/codecs/wm8978.c
+@@ -1038,7 +1038,7 @@ MODULE_DEVICE_TABLE(i2c, wm8978_i2c_id);
  
- static struct platform_device siu_device = {
--	.name		= "sh_siu",
-+	.name		= "siu-pcm-audio",
- 	.id		= -1,
- 	.dev = {
- 		.platform_data	= &siu_platform_data,
+ static struct i2c_driver wm8978_i2c_driver = {
+ 	.driver = {
+-		.name = "WM8978-codec",
++		.name = "wm8978-codec",
+ 		.owner = THIS_MODULE,
+ 	},
+ 	.probe =    wm8978_i2c_probe,
 -- 
 1.7.1
 
