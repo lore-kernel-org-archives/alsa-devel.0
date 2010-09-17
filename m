@@ -1,27 +1,44 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/5] fix SIU and Migo-R sound for 2.6.37
-Date: Fri, 17 Sep 2010 13:59:39 +0100
-Message-ID: <20100917125939.GG4322@rakim.wolfsonmicro.main>
-References: <Pine.LNX.4.64.1009171129550.4988@axis700.grange>
- <20100917121931.GC4322@rakim.wolfsonmicro.main>
- <Pine.LNX.4.64.1009171433270.4988@axis700.grange>
+Subject: Re: [PATCH] ASoC: tlv320aic3x: Add virtual output pin
+	Detection
+Date: Fri, 17 Sep 2010 14:00:11 +0100
+Message-ID: <20100917130011.GH4322@rakim.wolfsonmicro.main>
+References: <1284723541-21813-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BBBB5103980
+	for <alsa-devel@alsa-project.org>;
+	Fri, 17 Sep 2010 15:00:17 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1009171433270.4988@axis700.grange>
-Sender: linux-sh-owner@vger.kernel.org
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+In-Reply-To: <1284723541-21813-1-git-send-email-jhnikula@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 17, 2010 at 02:35:09PM +0200, Guennadi Liakhovetski wrote:
+On Fri, Sep 17, 2010 at 02:39:01PM +0300, Jarkko Nikula wrote:
+> Purpose of this virtual Detection pin is to keep codec bias on whenever the
+> GPIO or jack detection features are needed.
+> 
+> Jack detection needs a mic bias so machine drivers can construct a following
+> route for instance for keeping the path and codec bias on:
 
-> Ok, sorry, but in fact this patch and the rest of the series are 
-> independent, so, it should be no problem just to pick it up from here, or 
-> do I have to re-send anything?
+> "Input Jack" -> "Mic Bias xV" -> "Detection" -> detection block inside codec.
 
-I've not yet tried applying it but I'd anticipate some breakage trying
-to do so due to the multi-component changes in the file in for-2.6.37.
-I'll do so later today or tomorrow, if it applies fine there's no need
-to resubmit.
+> For the GPIO the machine driver can force the pin on with
+> snd_soc_dapm_force_enable_pin.
+
+> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
