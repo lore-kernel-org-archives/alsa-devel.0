@@ -1,22 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCHv2 1/4] ASoC: tlv320aic3x: Move regulator
- management from i2c to soc domain
-Date: Mon, 20 Sep 2010 18:41:42 +0100
-Message-ID: <1285004502.3048.83.camel@odin>
-References: <1284968354-12536-1-git-send-email-jhnikula@gmail.com>
-	<1284968354-12536-2-git-send-email-jhnikula@gmail.com>
-	<20100920092637.GA31167@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: Prototype s3c64xx_i2s_get_clock()
+Date: Mon, 20 Sep 2010 18:42:17 +0100
+Message-ID: <1285004537.3048.85.camel@odin>
+References: <1285003485-13801-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id E486C24506
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id B990E1037E3
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Sep 2010 19:41:45 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so4471277wyb.38
-	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2010 10:41:45 -0700 (PDT)
-In-Reply-To: <20100920092637.GA31167@sirena.org.uk>
+	Mon, 20 Sep 2010 19:42:20 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so1841522ewy.38
+	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2010 10:42:20 -0700 (PDT)
+In-Reply-To: <1285003485-13801-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,24 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-09-20 at 10:26 +0100, Mark Brown wrote:
-> On Mon, Sep 20, 2010 at 10:39:11AM +0300, Jarkko Nikula wrote:
-> > It will be easier to keep regulator enable/disable calls in sync when dynamic
-> > regulator management is added if regulator management is moved from
-> > aic3x_i2c_probe/_remove to aic3x_probe/_remove.
-> > 
-> > Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+On Mon, 2010-09-20 at 18:24 +0100, Mark Brown wrote:
+> So machine drivers can see the declaration.
 > 
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/s3c24xx/s3c64xx-i2s.h |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.h b/sound/soc/s3c24xx/s3c64xx-i2s.h
+> index 19bd444..de4075d 100644
+> --- a/sound/soc/s3c24xx/s3c64xx-i2s.h
+> +++ b/sound/soc/s3c24xx/s3c64xx-i2s.h
+> @@ -36,5 +36,6 @@ struct clk;
+>  	(SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |\
+>  	 SNDRV_PCM_FMTBIT_S24_LE)
+>  
+> +struct clk *s3c64xx_i2s_get_clock(struct snd_soc_dai *dai);
+>  
+>  #endif /* __SND_SOC_S3C24XX_S3C64XX_I2S_H */
 
-All Applied.
-
-Thanks
-
-Liam
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
 Freelance Developer, SlimLogic Ltd
 ASoC and Voltage Regulator Maintainer.
