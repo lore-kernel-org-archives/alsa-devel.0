@@ -1,38 +1,32 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv2 1/4] ASoC: tlv320aic3x: Move
-	regulator	management from i2c to soc domain
-Date: Mon, 20 Sep 2010 10:26:38 +0100
-Message-ID: <20100920092637.GA31167@sirena.org.uk>
-References: <1284968354-12536-1-git-send-email-jhnikula@gmail.com>
-	<1284968354-12536-2-git-send-email-jhnikula@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 3/5] ASoC: lowercase wm8978 codec name to
+ match its only user and other codecs
+Date: Mon, 20 Sep 2010 10:29:08 +0100
+Message-ID: <20100920092908.GA3414@rakim.wolfsonmicro.main>
+References: <Pine.LNX.4.64.1009171129550.4988@axis700.grange>
+ <Pine.LNX.4.64.1009171214281.4988@axis700.grange>
+ <20100917125319.GF4322@rakim.wolfsonmicro.main>
+ <1284970372.3403.15.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 44ED3103818
-	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Sep 2010 11:26:39 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1284968354-12536-2-git-send-email-jhnikula@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+In-Reply-To: <1284970372.3403.15.camel@odin>
+Sender: linux-sh-owner@vger.kernel.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Guennadi Liakhovetski <g.liakhovetski@gmx.de>, alsa-devel@alsa-project.org, linux-sh@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 20, 2010 at 10:39:11AM +0300, Jarkko Nikula wrote:
-> It will be easier to keep regulator enable/disable calls in sync when dynamic
-> regulator management is added if regulator management is moved from
-> aic3x_i2c_probe/_remove to aic3x_probe/_remove.
-> 
-> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+On Mon, Sep 20, 2010 at 09:12:52AM +0100, Liam Girdwood wrote:
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Fwiw, the reason for the "-codec" suffix was to distinguish codec
+> devices from their other multi-function IC siblings. It also makes sense
+
+Yes, MFDs do need something to distinguish them.
+
+> here to use convention with the device naming too (even if the device is
+> single purpose).
+
+I don't find it adds much more than making the name longer to type - we
+always use the name in a context where it's fairly obvious that the
+device is a CODEC.
