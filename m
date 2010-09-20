@@ -1,20 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Prototype s3c64xx_i2s_get_clock()
-Date: Mon, 20 Sep 2010 18:42:17 +0100
-Message-ID: <1285004537.3048.85.camel@odin>
-References: <1285003485-13801-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Fix WM8978/migor driver name conflict
+Date: Mon, 20 Sep 2010 18:43:10 +0100
+Message-ID: <1285004590.3048.88.camel@odin>
+References: <1284926062-20549-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id B990E1037E3
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4C00B1037E3
 	for <alsa-devel@alsa-project.org>;
-	Mon, 20 Sep 2010 19:42:20 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so1841522ewy.38
-	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2010 10:42:20 -0700 (PDT)
-In-Reply-To: <1285003485-13801-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Mon, 20 Sep 2010 19:43:13 +0200 (CEST)
+Received: by wwb28 with SMTP id 28so4541476wwb.20
+	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2010 10:43:13 -0700 (PDT)
+In-Reply-To: <1284926062-20549-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,28 +24,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-09-20 at 18:24 +0100, Mark Brown wrote:
-> So machine drivers can see the declaration.
+On Sun, 2010-09-19 at 20:54 +0100, Mark Brown wrote:
+> Standardise on 'wm8978' as the name for the CODEC.
 > 
+> Reported-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 > ---
->  sound/soc/s3c24xx/s3c64xx-i2s.h |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
+>  sound/soc/codecs/wm8978.c |    2 +-
+>  sound/soc/sh/migor.c      |    2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.h b/sound/soc/s3c24xx/s3c64xx-i2s.h
-> index 19bd444..de4075d 100644
-> --- a/sound/soc/s3c24xx/s3c64xx-i2s.h
-> +++ b/sound/soc/s3c24xx/s3c64xx-i2s.h
-> @@ -36,5 +36,6 @@ struct clk;
->  	(SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |\
->  	 SNDRV_PCM_FMTBIT_S24_LE)
+> diff --git a/sound/soc/codecs/wm8978.c b/sound/soc/codecs/wm8978.c
+> index 676a430..13b979a 100644
+> --- a/sound/soc/codecs/wm8978.c
+> +++ b/sound/soc/codecs/wm8978.c
+> @@ -1038,7 +1038,7 @@ MODULE_DEVICE_TABLE(i2c, wm8978_i2c_id);
 >  
-> +struct clk *s3c64xx_i2s_get_clock(struct snd_soc_dai *dai);
->  
->  #endif /* __SND_SOC_S3C24XX_S3C64XX_I2S_H */
+>  static struct i2c_driver wm8978_i2c_driver = {
+>  	.driver = {
+> -		.name = "WM8978-codec",
+> +		.name = "wm8978",
+>  		.owner = THIS_MODULE,
+>  	},
+>  	.probe =    wm8978_i2c_probe,
+> diff --git a/sound/soc/sh/migor.c b/sound/soc/sh/migor.c
+> index f462017..ac6c49c 100644
+> --- a/sound/soc/sh/migor.c
+> +++ b/sound/soc/sh/migor.c
+> @@ -156,7 +156,7 @@ static struct snd_soc_dai_link migor_dai = {
+>  	.cpu_dai_name = "siu-i2s-dai",
+>  	.codec_dai_name = "wm8978-hifi",
+>  	.platform_name = "siu-pcm-audio",
+> -	.codec_name = "wm8978-codec.0-001a",
+> +	.codec_name = "wm8978.0-001a",
+>  	.ops = &migor_dai_ops,
+>  	.init = migor_dai_init,
+>  };
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
