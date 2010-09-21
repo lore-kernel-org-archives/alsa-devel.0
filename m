@@ -1,20 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Prototype s3c64xx_i2s_get_clock()
-Date: Tue, 21 Sep 2010 14:06:33 +0100
-Message-ID: <1285074393.3089.40.camel@odin>
-References: <1285003485-13801-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Report error code when failing to
+ add controls
+Date: Tue, 21 Sep 2010 14:06:43 +0100
+Message-ID: <1285074403.3089.41.camel@odin>
+References: <1285006551-24084-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0556510388C
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1848610388C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Sep 2010 15:06:37 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so5275394wyb.38
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2010 06:06:37 -0700 (PDT)
-In-Reply-To: <1285003485-13801-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Tue, 21 Sep 2010 15:06:48 +0200 (CEST)
+Received: by wwb28 with SMTP id 28so5393074wwb.20
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2010 06:06:47 -0700 (PDT)
+In-Reply-To: <1285006551-24084-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,30 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-09-20 at 18:24 +0100, Mark Brown wrote:
-> So machine drivers can see the declaration.
+On Mon, 2010-09-20 at 19:15 +0100, Mark Brown wrote:
+> Helps with diagnostics.
 > 
 > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 > ---
->  sound/soc/s3c24xx/s3c64xx-i2s.h |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
+>  sound/soc/soc-core.c |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.h b/sound/soc/s3c24xx/s3c64xx-i2s.h
-> index 19bd444..de4075d 100644
-> --- a/sound/soc/s3c24xx/s3c64xx-i2s.h
-> +++ b/sound/soc/s3c24xx/s3c64xx-i2s.h
-> @@ -36,5 +36,6 @@ struct clk;
->  	(SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |\
->  	 SNDRV_PCM_FMTBIT_S24_LE)
->  
-> +struct clk *s3c64xx_i2s_get_clock(struct snd_soc_dai *dai);
->  
->  #endif /* __SND_SOC_S3C24XX_S3C64XX_I2S_H */
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 8d8c5cd..7c64e03 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -1983,8 +1983,8 @@ int snd_soc_add_controls(struct snd_soc_codec *codec,
+>  		const struct snd_kcontrol_new *control = &controls[i];
+>  		err = snd_ctl_add(card, snd_soc_cnew(control, codec, NULL));
+>  		if (err < 0) {
+> -			dev_err(codec->dev, "%s: Failed to add %s\n",
+> -				codec->name, control->name);
+> +			dev_err(codec->dev, "%s: Failed to add %s: %d\n",
+> +				codec->name, control->name, err);
+>  			return err;
+>  		}
+>  	}
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+
 -- 
 Freelance Developer, SlimLogic Ltd
 ASoC and Voltage Regulator Maintainer.
