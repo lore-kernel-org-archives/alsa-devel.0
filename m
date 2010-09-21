@@ -1,18 +1,19 @@
-From: Krzysztof Foltman <wdev@foltman.com>
+From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: proposed MPD16 latency workaround
-Date: Tue, 21 Sep 2010 11:01:37 +0100
-Message-ID: <4C988281.4010700@foltman.com>
+Date: Tue, 21 Sep 2010 13:22:32 +0200
+Message-ID: <4C989578.3030009@ladisch.de>
 References: <4C9154F4.8040304@foltman.com> <4C91DD19.5000005@ladisch.de>
 	<4C921DA5.6080301@foltman.com> <4C970BFD.3080006@ladisch.de>
+	<4C988281.4010700@foltman.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cpoproxy2-pub.bluehost.com (cpoproxy2-pub.bluehost.com
-	[67.222.39.38]) by alsa0.perex.cz (Postfix) with SMTP id 939CB243ED
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id A2F0624602
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Sep 2010 12:06:40 +0200 (CEST)
-In-Reply-To: <4C970BFD.3080006@ladisch.de>
+	Tue, 21 Sep 2010 13:21:39 +0200 (CEST)
+In-Reply-To: <4C988281.4010700@foltman.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,50 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
+To: Krzysztof Foltman <wdev@foltman.com>
 Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 20/09/10 08:23, Clemens Ladisch wrote:
+Krzysztof Foltman wrote:
+> Checked it yesterday. The data input works, however, the trying to
+> output some sysex data with amidi prints the "bad dma" messages from the
+> UHCI driver,
 
-> It is possible that an opened MIDI port uses resources that would be
-> needed by other devices.
+Never heard of that message. 
 
-True.
+> Also, either on disconnection or rmmod it OOPSes (can't tell which of
+> them, it came up in the dmesg output but I couldn't do proper tests yet).
 
-> I'd estimate that the power usage is measurable on laptops.  Changing
-> the driver to submit URBs only when a port is open is one of those
-> changes that I want to do whenever I have time to do unimportant
-> changes.
+Might be the same problem with some DMA buffer ...
 
-In that case, you can probably just use my changes as a starting point. 
-They should be easily adaptable for at least some of the devices (I 
-think only multiple cables per port are hard to support with current 
-set-up). Some day, maybe :)
+> That aside, why do you need URB_NO_FSBR flag for the URBs?
 
-> Well, it turned out bigger than I would have liked.
-> Compile-tested.  Handle with care.
+It's optional, so it isn't really needed.  I'm using it for control
+input transfers because those aren't latency sensitive, and using less
+polling might help with the latency problem on the data input endpoint.
 
-Checked it yesterday. The data input works, however, the trying to 
-output some sysex data with amidi prints the "bad dma" messages from the 
-UHCI driver, and data don't end up on a device. Also, either on 
-disconnection or rmmod it OOPSes (can't tell which of them, it came up 
-in the dmesg output but I couldn't do proper tests yet).
+> I'll try to write a patch for all JACKs to blacklist the control device,
+> that should take care of the JACK incompatibility.
 
-I'll try to investigate it further when I have a couple of hours.
+In theory, Jack should never open any MIDI port that isn't actually used.
 
-That aside, why do you need URB_NO_FSBR flag for the URBs? Because of 
-prevalence of very short packets in the Akai MIDI protocol?
 
->> To clarify: in this solution, to enable control input, you need to send
->> a fake sysex on control output.
-> I've changed it so that you can send anything to enable the input.
-
-That might cause some problems if I (or anyone else) create the config 
-program. They're avoidable (only run the config tool while JACK is not 
-running), but still, it's not what I'd expect as a user.
-
-I'll try to write a patch for all JACKs to blacklist the control device, 
-that should take care of the JACK incompatibility.
-
-Krzysztof
+Regards,
+Clemens
