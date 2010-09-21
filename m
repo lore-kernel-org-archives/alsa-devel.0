@@ -1,20 +1,20 @@
-From: Andy Owen <andy-alsa@ultra-premium.com>
-Subject: Re: [PATCH 2/2] ALSA: ca0106: Fix mixer and dac
- channel	assignments.
-Date: Wed, 22 Sep 2010 00:24:56 +1000
-Message-ID: <1285079096.5919.0.camel@marvin>
-References: <1285077079-5519-1-git-send-email-andy-alsa@ultra-premium.com>
-	<1285077079-5519-2-git-send-email-andy-alsa@ultra-premium.com>
-	<s5hhbhjdwn9.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Fix soc-cache buffer overflow bug
+Date: Tue, 21 Sep 2010 15:36:24 +0100
+Message-ID: <1285079784.3089.52.camel@odin>
+References: <1285074755-8627-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	<20100921132139.GB29838@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from starfish.geekisp.com (mail.geekisp.com [216.168.135.169])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9E55E2434C
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA6FB24368
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Sep 2010 16:25:03 +0200 (CEST)
-In-Reply-To: <s5hhbhjdwn9.wl%tiwai@suse.de>
+	Tue, 21 Sep 2010 16:36:30 +0200 (CEST)
+Received: by wwb28 with SMTP id 28so5494398wwb.20
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2010 07:36:29 -0700 (PDT)
+In-Reply-To: <20100921132139.GB29838@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,35 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2010-09-21 at 16:00 +0200, Takashi Iwai wrote:
-> I wonder whether this can regress on other boards.
-> The front channel is the obvious channel so this must have been
-> tested.  Maybe we should change the mapping only for your specific
-> model by adding some flag.
+On Tue, 2010-09-21 at 14:21 +0100, Mark Brown wrote:
+> On Tue, Sep 21, 2010 at 02:12:35PM +0100, Dimitris Papastamos wrote:
+> > Make sure we stay within the cache boundaries when updating the
+> > register cache.
+> > 
+> > Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+> 
+> OK, will wait for Liam's review before applying but as discussed
+> off-line please also do a version of this patch that applies to
+> 2.6.36-rc since it's a bug fix.
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-The behaviour I was seeing was that if I just added the device id, then
-the front channel would work fine, but I would get no sound from the
-rears, and the mixer controls didn't quite match the labels. 
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-I was a bit suspect of this change:
-
-> -     if (chip->details->spi_dac && channel_id != PCM_FRONT_CHANNEL) {
-> +     if (chip->details->spi_dac) {
-
-But I convinced myself that it was a hack to work around the registers
-being wrong in other places, and the card in its default state had the
-front dac already powered up. Looking at the code, I can see similar
-logic in the snd_ca0106_pcm_close_playback() function, which has a
-special case for the front channel, and I think should also be modified.
-
-I'll put together some revised patches (with sign offs and the proposed
-fix) hopefully tomorrow.
-
-If anyone has a ca0106 card that they can test this with, it would be
-much appreciated.
-
-Andy
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
