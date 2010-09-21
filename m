@@ -1,21 +1,28 @@
-From: Gavin Stark <gavin@gstark.com>
-Subject: Re: Spurious "Unable to find definition
-	'defaults.pcm.dmix.device'"
-Date: Tue, 21 Sep 2010 14:02:41 -0400
-Message-ID: <619D4838-7959-4769-A23E-A0414CF5EE5B@gstark.com>
-References: <mailman.10529.1285004508.2074.alsa-devel@alsa-project.org>
-Mime-Version: 1.0 (Apple Message framework v1081)
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH 0/3] alsa-lib: UCM - Use Case Manager
+Date: Tue, 21 Sep 2010 20:11:35 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1009211938110.6226@eeebox2.perex-int.cz>
+References: <1282580239-10549-1-git-send-email-lrg@slimlogic.co.uk>
+	<alpine.LNX.2.00.1008231907170.10278@eeebox2.perex-int.cz>
+	<1282640988.3053.43.camel@odin>
+	<alpine.LNX.2.00.1008250925540.10278@eeebox2.perex-int.cz>
+	<1282728400.2991.114.camel@odin>
+	<alpine.LNX.2.00.1008251128140.10278@eeebox2.perex-int.cz>
+	<1282732983.2991.161.camel@odin>
+	<alpine.LNX.2.00.1008251831330.10278@eeebox2.perex-int.cz>
+	<1283864698.3048.26.camel@odin>
+	<alpine.LNX.2.00.1009071618230.10278@eeebox2.perex-int.cz>
+	<i781vn$nhb$1@dough.gmane.org>
+	<AANLkTin8fTA0CoUiPzASG4kepbSyWiDf7xrX-iJB8EQA@mail.gmail.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id E9A56243F7
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 201BE243FB
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Sep 2010 20:02:45 +0200 (CEST)
-Received: by yxj4 with SMTP id 4so2180671yxj.38
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2010 11:02:45 -0700 (PDT)
-In-Reply-To: <mailman.10529.1285004508.2074.alsa-devel@alsa-project.org>
+	Tue, 21 Sep 2010 20:11:37 +0200 (CEST)
+In-Reply-To: <AANLkTin8fTA0CoUiPzASG4kepbSyWiDf7xrX-iJB8EQA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,74 +32,130 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Chris Winter <elwintro@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Colin, thanks for the suggestion.  I tried building and running from the current git HEAD version and still had the same problem.  I also noticed that my app has been causing a core dump due to an infinite recursion in snd_config_searcha_hooks.   I'm not sure what would cause both of these problems.  I'm trying going back to stock packages on my system (Ubuntu 9.04) to see if a version incompatibility.
+On Tue, 21 Sep 2010, Chris Winter wrote:
 
-Gavin Stark
+> On Mon, Sep 20, 2010 at 11:26 AM, Colin Guthrie <gmane@colin.guthr.ie> wrote:
+>> Hi Jaroslav,
+>>
+>> 'Twas brillig, and Jaroslav Kysela at 07/09/10 15:42 did gyre and gimble:
+>>> On Tue, 7 Sep 2010, Liam Girdwood wrote:
+>>>
+>>>> Hi Jaroslav,
+>>>>
+>>>> Any update on this ? I have someone scheduled to write new use case
+>>>> files and someone else ready to add PA support.
+>>>
+>>> Hi,
+>>>
+>>> I'm working on this. Unfortunately, I have other things which interrupts
+>>> this work. The actual code is at:
+>>>
+>>> http://git.alsa-project.org/?p=alsa-lib.git;a=shortlog;h=ucm
+>>
+>> Has there been any progress on the UCM stuff? I'm quite interested to
+>> see how this will develop from a PA perspective. It does have some
+>> impact on work that I've been wanting to do for a while in PA so the
+>> sooner this is available in ALSA the sooner I can start thinking about
+>> some of the knock on effects. I know Liam is intending to do some work
+>> on PA too to integrate UCM once the API has stabilised, so I'm obviously
+>> keen to encourage that too :D
+>
+> Since progress on UCM seems to have stalled, I'd also like to chip in
+> and say that it would be great to see UCM pushed to mainline as soon
+> as possible. I'm a software engineer at Garmin, responsible for
+> system-level audio support on Linux-based personal navigation devices,
+> and UCM would *really* help to simplify the management of audio state
+> on those devices. In fact, I've been hurting for something like UCM
+> for so long that I'm already developing against the version that Liam
+> has posted to the list.
 
-On Sep 20, 2010, at 1:41 PM, alsa-devel-request@alsa-project.org wrote:
+Hi all,
 
-> Date: Mon, 20 Sep 2010 16:22:02 +0100
-> From: Colin Guthrie <gmane@colin.guthr.ie>
-> Subject: Re: [alsa-devel] Spurious "Unable to find definition
-> 	'defaults.pcm.dmix.device'"
-> To: alsa-devel@alsa-project.org
-> Message-ID: <i77u6q$2ma$1@dough.gmane.org>
-> Content-Type: text/plain; charset=UTF-8
-> 
-> 'Twas brillig, and Gavin Stark at 20/09/10 16:05 did gyre and gimble:
->> I am using ALSA in a gstreamer project.  When playing many videos
->> (with audio) in the same application and the same gstreamer instance
->> every once in a while (maybe once every 500 times) I will receive the
->> following errors (in a call chain that passes through snd_pcm_open)
->> 
->> confmisc.c:1286:snd_func_refer: alsalib error: Unable to find
->> definition 'defaults.pcm.dmix.device' alsa
->> conf.c:4154:_snd_config_evaluate: alsalib error: function
->> snd_func_refer returned error: No such file or directory alsa
->> conf.c:4633:snd_config_expand: alsalib error: Evaluate error: No such
->> file or directory alsa pcm.c:2211:snd_pcm_open_noupdate: alsalib
->> error: Unknown PCM default
->> 
->> The next playback will be fine.  Looking through the ALSA code it
->> seems that the configuration data should be cached and re-used unless
->> the number of config files changes, or the files themselves change
->> (name, device, inode. mtime)  So I am wonder why on one instance of
->> snd_pcm_open I'd end up with this error but not on most previous or
->> subsequent calls.
->> 
->> All the ALSA configuration files are the defaults, I have no
->> ~/.asoundrc, and I'm running version 1.0.23
-> 
-> I guess there is an outside chance that this could be some threading
-> race condition in the config stuff.
-> 
-> Jaroslav recently fixed some threading issues in libalsa2 and config
-> stuff. Perhaps it's worth pulling across those changes to your alsa lib
-> to see if this is related?
-> 
-> Can't remember the git commit #'s off hand, but git master of libalsa2
-> is probably fine.
-> 
-> 
-> Long shot maybe but an relatively easy one to test.
-> 
-> Col
-> 
-> -- 
-> 
-> Colin Guthrie
-> gmane(at)colin.guthr.ie
-> http://colin.guthr.ie/
-> 
-> Day Job:
->  Tribalogic Limited [http://www.tribalogic.net/]
-> Open Source:
->  Mageia Contributor [http://www.mageia.org/]
->  PulseAudio Hacker [http://www.pulseaudio.org/]
->  Trac Hacker [http://trac.edgewall.org/]
-> 
-> 
-> 
+ 	I'm sorry to be silent in the last week, but the reason was quite 
+simple - vacation. As my life goes, my second son was born and I decided 
+to be with my family, so I was able to handle only really urgent things.
+
+> I not entirely convinced that Jaroslav's proposed changes to UCM will
+> add much value to overall functionality. The reworked API seems more
+> clumsy and confusing to me, and I think it's a bad idea to make UCM
+> responsible for coordinating audio state management throughout
+> userspace -- as Mark B. said, that responsibility would seem to be
+> better left to some other entity who would be the sole consumer of UCM
+> API in the system (e.g., pulseaudio), which is really no different
+> from the current situation for basic playback or capture through Alsa,
+> i.e., if multiple processes want to playback/capture PCM data at the
+> same time, then some other entity must coordinate access (e.g., dmix,
+> pulseaudio).
+
+There are two things and I think that we both talking about different 
+ones.
+
+1) Which devices can be used simultaneously in the system
+    (basically determining the number of handled streams).
+2) Physical output (or input) switching (I mean physical jacks etc.).
+
+I don't want to add any complex manager. I just think that the UCM layer 
+should give the information to the application which PCM streams can be 
+used concurrently for a named card. Something like stream grouping.
+
+The problem is that you think in the "ASoC" way to handle just one 
+input and output stream for phones etc. and I think in "multiple 
+independant streams" per card way.
+
+>> From the PND perspective, there is often a complex intermix of
+> business logic and asynchronous system events (from both hardware and
+> software) driving the audio hardware state changes. I can tell you
+> from experience that it is a nightmare to have to pass such arbitrary
+> information between processes for the purposes of making even the
+> simplest of policy decisions for system-wide audio state. If it is
+> truly desired to turn UCM into userspace's central manager and
+> coordinator for audio state, then it absolutely must provide a clear
+> and flexible way to pass arbitrary state variables through the system,
+> and also a generic mechanism for specifying how the audio policy must
+> change based on those state variables. A superb and worthy ideal,
+> perhaps, but it's a tall order, and I don't see it becoming a viable
+> reality any time soon.
+
+I agree.
+
+> I think the proposed switch to using alsa-lib's present conf file
+> parser code may be worth doing (even though I find the syntax to be
+> uglier). Otherwise, the only thing I would really like to see added to
+> UCM (after it gets mainlined!) is a more generic mechanism for
+> aliasing mixer control names, instead of how it is currently limited
+> to aliasing master playback/capture volumes and master
+> playback/capture switches. On PNDs at least, it is often necessary to
+> read/write some mixer controls directly, e.g., for mic gain, and so
+> it's a pain when mixer control names differ across codecs. It would be
+> great if Alsa provided for such aliasing, instead of leaving
+> developers to rely on custom solutions.
+
+This is really point why I switched from "many functions returning 
+just values" to "one function with a universal string identifier 
+returning requested value". It makes API much flexible for future 
+extensions and the library will not export a next bunch of similar 
+functions.
+
+The question is how we can make much flexible the passing of these values 
+from the configuration files. I think that we may use just a direct way 
+between the "identifier" from the snd_use_case_get/set function and the 
+configuration files, having syntax something like:
+
+SectionDevice."Headphones".0 {
+ 	...
+ 	Value."_ctl_/_pctlsw" "name='Master Playback Switch'"
+ 	...
+}
+
+Note that we may talk about the API, identifier names etc.
+
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
