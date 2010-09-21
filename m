@@ -1,20 +1,17 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Fix soc-cache buffer overflow bug
-Date: Tue, 21 Sep 2010 15:36:24 +0100
-Message-ID: <1285079784.3089.52.camel@odin>
-References: <1285074755-8627-1-git-send-email-dp@opensource.wolfsonmicro.com>
-	<20100921132139.GB29838@rakim.wolfsonmicro.main>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: alsa-kernel repository corrupted?
+Date: Tue, 21 Sep 2010 17:14:17 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1009211712570.6226@eeebox2.perex-int.cz>
+References: <1285071931.1852.6.camel@marvin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id EA6FB24368
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7308A2438E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Sep 2010 16:36:30 +0200 (CEST)
-Received: by wwb28 with SMTP id 28so5494398wwb.20
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2010 07:36:29 -0700 (PDT)
-In-Reply-To: <20100921132139.GB29838@rakim.wolfsonmicro.main>
+	Tue, 21 Sep 2010 17:14:19 +0200 (CEST)
+In-Reply-To: <1285071931.1852.6.camel@marvin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,28 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Andy Owen <andy-alsa@ultra-premium.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2010-09-21 at 14:21 +0100, Mark Brown wrote:
-> On Tue, Sep 21, 2010 at 02:12:35PM +0100, Dimitris Papastamos wrote:
-> > Make sure we stay within the cache boundaries when updating the
-> > register cache.
-> > 
-> > Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-> 
-> OK, will wait for Liam's review before applying but as discussed
-> off-line please also do a version of this patch that applies to
-> 2.6.36-rc since it's a bug fix.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+On Tue, 21 Sep 2010, Andy Owen wrote:
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> Hi, I'm trying to put together a patch for the ca0106 driver, and I'm
+> having trouble cloning the alsa-kernel repository. I've tried it a few
+> times from different places and while it is downloading I get "fatal:
+> delta size changed" when it is partially through. Here are two runs of
+> git clone with slightly different output (consecutive runs on the same
+> computer):
+>
+> % git clone git://git.alsa-project.org/alsa-kernel.git alsa-kernel
+> Initialized empty Git repository in /home/andy/src/alsa-kernel/.git/
+> remote: Counting objects: 1708307, done.
+> remote: Compressing objects: 100% (313659/313659), done.
+> remote: fatal: delta size changed
+> remote: aborting due to possible repository corruption on the remote
+> side.
+> fatal: early EOF
+> fatal: index-pack failed
 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+It's fixed now. The 'git gc' command on server fixed this issue.
+
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
