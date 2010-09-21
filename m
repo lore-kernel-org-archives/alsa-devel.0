@@ -1,27 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/3] alsa-lib: UCM - Use Case Manager
-Date: Tue, 21 Sep 2010 18:40:47 +0100
-Message-ID: <20100921174047.GB32476@sirena.org.uk>
-References: <1282640988.3053.43.camel@odin>
-	<alpine.LNX.2.00.1008250925540.10278@eeebox2.perex-int.cz>
-	<1282728400.2991.114.camel@odin>
-	<alpine.LNX.2.00.1008251128140.10278@eeebox2.perex-int.cz>
-	<1282732983.2991.161.camel@odin>
-	<alpine.LNX.2.00.1008251831330.10278@eeebox2.perex-int.cz>
-	<1283864698.3048.26.camel@odin>
-	<alpine.LNX.2.00.1009071618230.10278@eeebox2.perex-int.cz>
-	<i781vn$nhb$1@dough.gmane.org>
-	<AANLkTin8fTA0CoUiPzASG4kepbSyWiDf7xrX-iJB8EQA@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: Remove extra rtd->dev.init_name
+ assignment in soc_probe_dai_link
+Date: Tue, 21 Sep 2010 18:43:08 +0100
+Message-ID: <20100921174307.GA26395@rakim.wolfsonmicro.main>
+References: <1285072609-22191-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2400910388F
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D464710388F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Sep 2010 19:40:48 +0200 (CEST)
+	Tue, 21 Sep 2010 19:43:10 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <AANLkTin8fTA0CoUiPzASG4kepbSyWiDf7xrX-iJB8EQA@mail.gmail.com>
+In-Reply-To: <1285072609-22191-1-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,21 +23,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Chris Winter <elwintro@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 21, 2010 at 12:13:33PM -0500, Chris Winter wrote:
+On Tue, Sep 21, 2010 at 03:36:49PM +0300, Jarkko Nikula wrote:
+> rtd->dev.init_name is set twice in soc_probe_dai_link. I removed the first
+> assignement from dai_link->stream_name since then there won't be sysfs name
+> changes and usually dai_link->name seems to fit anyway better for a sysfs
+> directory name.
+> 
+> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
 
-> I think the proposed switch to using alsa-lib's present conf file
-> parser code may be worth doing (even though I find the syntax to be
-> uglier). Otherwise, the only thing I would really like to see added to
-> UCM (after it gets mainlined!) is a more generic mechanism for
-> aliasing mixer control names, instead of how it is currently limited
-> to aliasing master playback/capture volumes and master
-
-This was discussed when the original review round happened a while ago
-and is the reason why the interfaces support other names even though the
-implementation can't - it means someone can just substitute in different
-library code without disrupting applications.  Definitely on the list to
-do.
+Applied, thanks.
