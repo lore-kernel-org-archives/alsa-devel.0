@@ -1,19 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: proposed MPD16 latency workaround
-Date: Tue, 21 Sep 2010 13:22:32 +0200
-Message-ID: <4C989578.3030009@ladisch.de>
-References: <4C9154F4.8040304@foltman.com> <4C91DD19.5000005@ladisch.de>
-	<4C921DA5.6080301@foltman.com> <4C970BFD.3080006@ladisch.de>
-	<4C988281.4010700@foltman.com>
+From: Andy Owen <andy-alsa@ultra-premium.com>
+Subject: alsa-kernel repository corrupted?
+Date: Tue, 21 Sep 2010 22:25:31 +1000
+Message-ID: <1285071931.1852.6.camel@marvin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id A2F0624602
+Received: from starfish.geekisp.com (mail.geekisp.com [216.168.135.169])
+	by alsa0.perex.cz (Postfix) with ESMTP id E254A2462E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Sep 2010 13:21:39 +0200 (CEST)
-In-Reply-To: <4C988281.4010700@foltman.com>
+	Tue, 21 Sep 2010 14:25:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,33 +19,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Foltman <wdev@foltman.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Krzysztof Foltman wrote:
-> Checked it yesterday. The data input works, however, the trying to
-> output some sysex data with amidi prints the "bad dma" messages from the
-> UHCI driver,
+Hi, I'm trying to put together a patch for the ca0106 driver, and I'm
+having trouble cloning the alsa-kernel repository. I've tried it a few
+times from different places and while it is downloading I get "fatal:
+delta size changed" when it is partially through. Here are two runs of
+git clone with slightly different output (consecutive runs on the same
+computer): 
 
-Never heard of that message. 
+% git clone git://git.alsa-project.org/alsa-kernel.git alsa-kernel
+Initialized empty Git repository in /home/andy/src/alsa-kernel/.git/
+remote: Counting objects: 1708307, done.
+remote: Compressing objects: 100% (313659/313659), done.
+remote: fatal: delta size changed
+remote: aborting due to possible repository corruption on the remote
+side.
+fatal: early EOF
+fatal: index-pack failed
 
-> Also, either on disconnection or rmmod it OOPSes (can't tell which of
-> them, it came up in the dmesg output but I couldn't do proper tests yet).
+% git clone git://git.alsa-project.org/alsa-kernel.git alsa-kernel
+Initialized empty Git repository in /home/andy/src/alsa-kernel/.git/
+remote: Counting objects: 1708307, done.
+remote: Compressing objects: 100% (313659/313659), done.
+remote: fatal: delta size changed
+remote: aborting due to possible repository corruption on the remote
+side.
+fatal: early EOFs:  15% (260156/1708307), 157.79 MiB | 47 KiB/s   
+fatal: index-pack failed
 
-Might be the same problem with some DMA buffer ...
+Does anyone else have any luck getting the repo?
 
-> That aside, why do you need URB_NO_FSBR flag for the URBs?
-
-It's optional, so it isn't really needed.  I'm using it for control
-input transfers because those aren't latency sensitive, and using less
-polling might help with the latency problem on the data input endpoint.
-
-> I'll try to write a patch for all JACKs to blacklist the control device,
-> that should take care of the JACK incompatibility.
-
-In theory, Jack should never open any MIDI port that isn't actually used.
-
-
-Regards,
-Clemens
+Andy
