@@ -1,20 +1,16 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH] ASoC: Select DMA driver for Samsung DAIs
-Date: Tue, 21 Sep 2010 09:38:04 +0900
-Message-ID: <AANLkTikQeNoKCHnizQ74H5q4bacfmYBCVvJVbznNrZOx@mail.gmail.com>
-References: <1285011508-8750-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: [PATCH] alsa: hdmi - support infoframe for DisplayPort
+Date: Tue, 21 Sep 2010 14:25:49 +0800
+Message-ID: <20100921062549.GA23426@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 87505103844
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3E54C1037F2
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Sep 2010 02:38:04 +0200 (CEST)
-Received: by bwz4 with SMTP id 4so5512521bwz.38
-	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2010 17:38:04 -0700 (PDT)
-In-Reply-To: <1285011508-8750-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Tue, 21 Sep 2010 08:25:59 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,36 +20,289 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBTZXAgMjEsIDIwMTAgYXQgNDozOCBBTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IEtjb25maWcgZ290IHNtYXJ0IGVub3Vn
-aCB0byBkbyBkZXBlbmRlbmNpZXMgdGhyb3VnaCBzZWxlY3RzIHNvIGxldCdzIG1ha2UKPiB1c2Ug
-b2YgdGhhdC4KPgo+IFNpZ25lZC1vZmYtYnk6IE1hcmsgQnJvd24gPGJyb29uaWVAb3BlbnNvdXJj
-ZS53b2xmc29ubWljcm8uY29tPgo+IC0tLQo+IMKgc291bmQvc29jL3MzYzI0eHgvS2NvbmZpZyB8
-IMKgIMKgNCArKysrCj4gwqAxIGZpbGVzIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMCBkZWxl
-dGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvczNjMjR4eC9LY29uZmlnIGIvc291
-bmQvc29jL3MzYzI0eHgvS2NvbmZpZwo+IGluZGV4IDdkODIzNWQuLjExNDJkM2UgMTAwNjQ0Cj4g
-LS0tIGEvc291bmQvc29jL3MzYzI0eHgvS2NvbmZpZwo+ICsrKyBiL3NvdW5kL3NvYy9zM2MyNHh4
-L0tjb25maWcKPiBAQCAtMTAsNiArMTAsNyBAQCBjb25maWcgU05EX1MzQzI0WFhfU09DCj4gwqBj
-b25maWcgU05EX1MzQzI0WFhfU09DX0kyUwo+IMKgIMKgIMKgIMKgdHJpc3RhdGUKPiDCoCDCoCDC
-oCDCoHNlbGVjdCBTM0MyNDEwX0RNQQo+ICsgwqAgwqAgwqAgc2VsZWN0IFNORF9TM0NfU09DX1BD
-TQo+Cj4gwqBjb25maWcgU05EX1MzQ19JMlNWMl9TT0MKPiDCoCDCoCDCoCDCoHRyaXN0YXRlCj4g
-QEAgLTE4LDE2ICsxOSwxOSBAQCBjb25maWcgU05EX1MzQzI0MTJfU09DX0kyUwo+IMKgIMKgIMKg
-IMKgdHJpc3RhdGUKPiDCoCDCoCDCoCDCoHNlbGVjdCBTTkRfUzNDX0kyU1YyX1NPQwo+IMKgIMKg
-IMKgIMKgc2VsZWN0IFMzQzI0MTBfRE1BCj4gKyDCoCDCoCDCoCBzZWxlY3QgU05EX1MzQ19TT0Nf
-UENNCj4KPiDCoGNvbmZpZyBTTkRfUzNDNjRYWF9TT0NfSTJTCj4gwqAgwqAgwqAgwqB0cmlzdGF0
-ZQo+IMKgIMKgIMKgIMKgc2VsZWN0IFNORF9TM0NfSTJTVjJfU09DCj4gwqAgwqAgwqAgwqBzZWxl
-Y3QgUzNDNjRYWF9ETUEKPiArIMKgIMKgIMKgIHNlbGVjdCBTTkRfUzNDX1NPQ19QQ00KPgo+IMKg
-Y29uZmlnIFNORF9TM0M2NFhYX1NPQ19JMlNfVjQKPiDCoCDCoCDCoCDCoHRyaXN0YXRlCj4gwqAg
-wqAgwqAgwqBzZWxlY3QgU05EX1MzQ19JMlNWMl9TT0MKPiDCoCDCoCDCoCDCoHNlbGVjdCBTM0M2
-NFhYX0RNQQo+ICsgwqAgwqAgwqAgc2VsZWN0IFNORF9TM0NfU09DX1BDTQo+Cj4gwqBjb25maWcg
-U05EX1MzQ19TT0NfUENNCj4gwqAgwqAgwqAgwqB0cmlzdGF0ZQo+IC0tCgpTTkRfUzNDX1NPQ19Q
-Q00gYnVpbGRzIHMzYy1wY20uYywgd2hpY2ggaXMgdGhlIFBDTSBjb250cm9sbGVyJ3MgQ1BVIGRy
-aXZlci4KCnMzYy1kbWEuYyBpcyB0aGUgRE1BIGRyaXZlciBmb3IgU2Ftc3VuZyBTb0NzLCB3aGlj
-aCBpcyBhbHJlYWR5IGJ1aWx0CmFzIHRoZSBmaXJzdAp0aGluZyBmb3IgU2Ftc3VuZyBBU29DLgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+DisplayPort works mostly in the same way as HDMI, except that it expects
+a slightly different audio infoframe format.
+
+Citations from "HDA036-A: Display Port Support and HDMI Miscellaneous
+Corrections":
+
+The HDMI specification defines a data island packet with a header of 4
+bytes (3 bytes content + 1 byte ECC) and packet body of 32 bytes (28
+bytes content and 4 bytes ECC). Display Port specification on the other
+hand defines a data island packet (secondary data packet) with header of
+4 bytes protected by 4 bytes of parity, and data of theoretically up to
+1024 bytes with each 16 bytes chunk of data protected by 4 bytes of
+parity. Note that the ECC or parity bytes are not present in the DIP
+content populated by software and are hardware generated.
+
+It tests DP connection based on the ELD conn_type field, which will be
+set by the graphics driver and can be overriden manually by users
+through the /proc/asound/card0/eld* interface.
+
+The DP infoframe is tested OK on Intel SandyBridge/CougarPoint platform.
+
+Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
+---
+ sound/pci/hda/patch_hdmi.c |  110 +++++++++++++++++++++++------------
+ 1 file changed, 73 insertions(+), 37 deletions(-)
+
+Takashi: half of the patch is harmless code refactor.
+The real changes happen in the first and last chunks.
+
+--- sound-2.6.orig/sound/pci/hda/patch_hdmi.c	2010-09-21 09:41:46.000000000 +0800
++++ sound-2.6/sound/pci/hda/patch_hdmi.c	2010-09-21 11:20:59.000000000 +0800
+@@ -82,17 +82,29 @@ struct hdmi_spec {
+ struct hdmi_audio_infoframe {
+ 	u8 type; /* 0x84 */
+ 	u8 ver;  /* 0x01 */
+ 	u8 len;  /* 0x0a */
+ 
+-	u8 checksum;	/* PB0 */
++	u8 checksum;
++
+ 	u8 CC02_CT47;	/* CC in bits 0:2, CT in 4:7 */
+ 	u8 SS01_SF24;
+ 	u8 CXT04;
+ 	u8 CA;
+ 	u8 LFEPBL01_LSV36_DM_INH7;
+-	u8 reserved[5];	/* PB6 - PB10 */
++};
++
++struct dp_audio_infoframe {
++	u8 type; /* 0x84 */
++	u8 len;  /* 0x1b */
++	u8 ver;  /* 0x11 << 2 */
++
++	u8 CC02_CT47;	/* match with HDMI infoframe from this on */
++	u8 SS01_SF24;
++	u8 CXT04;
++	u8 CA;
++	u8 LFEPBL01_LSV36_DM_INH7;
+ };
+ 
+ /*
+  * CEA speaker placement:
+  *
+@@ -192,11 +204,11 @@ static int hdmi_channel_mapping[0x32][8]
+ 
+ /*
+  * This is an ordered list!
+  *
+  * The preceding ones have better chances to be selected by
+- * hdmi_setup_channel_allocation().
++ * hdmi_channel_allocation().
+  */
+ static struct cea_channel_speaker_allocation channel_allocations[] = {
+ /*			  channel:   7     6    5    4    3     2    1    0  */
+ { .ca_index = 0x00,  .speakers = {   0,    0,   0,   0,   0,    0,  FR,  FL } },
+ 				 /* 2.1 */
+@@ -369,18 +381,18 @@ static void init_channel_allocations(voi
+  *	eld->spk_alloc => (eld_speaker_allocation_bits[]) => spk_mask
+  *	      spk_mask => (channel_allocations[])         => ai->CA
+  *
+  * TODO: it could select the wrong CA from multiple candidates.
+ */
+-static int hdmi_setup_channel_allocation(struct hda_codec *codec, hda_nid_t nid,
+-					 struct hdmi_audio_infoframe *ai)
++static int hdmi_channel_allocation(struct hda_codec *codec, hda_nid_t nid,
++				   int channels)
+ {
+ 	struct hdmi_spec *spec = codec->spec;
+ 	struct hdmi_eld *eld;
+ 	int i;
++	int ca = 0;
+ 	int spk_mask = 0;
+-	int channels = 1 + (ai->CC02_CT47 & 0x7);
+ 	char buf[SND_PRINT_CHANNEL_ALLOCATION_ADVISED_BUFSIZE];
+ 
+ 	/*
+ 	 * CA defaults to 0 for basic stereo audio
+ 	 */
+@@ -414,20 +426,20 @@ static int hdmi_setup_channel_allocation
+ 	/* search for the first working match in the CA table */
+ 	for (i = 0; i < ARRAY_SIZE(channel_allocations); i++) {
+ 		if (channels == channel_allocations[i].channels &&
+ 		    (spk_mask & channel_allocations[i].spk_mask) ==
+ 				channel_allocations[i].spk_mask) {
+-			ai->CA = channel_allocations[i].ca_index;
++			ca = channel_allocations[i].ca_index;
+ 			break;
+ 		}
+ 	}
+ 
+ 	snd_print_channel_allocation(eld->spk_alloc, buf, sizeof(buf));
+ 	snd_printdd("HDMI: select CA 0x%x for %d-channel allocation: %s\n",
+-		    ai->CA, channels, buf);
++		    ca, channels, buf);
+ 
+-	return ai->CA;
++	return ca;
+ }
+ 
+ static void hdmi_debug_channel_mapping(struct hda_codec *codec,
+ 				       hda_nid_t pin_nid)
+ {
+@@ -445,14 +457,13 @@ static void hdmi_debug_channel_mapping(s
+ }
+ 
+ 
+ static void hdmi_setup_channel_mapping(struct hda_codec *codec,
+ 				       hda_nid_t pin_nid,
+-				       struct hdmi_audio_infoframe *ai)
++				       int ca)
+ {
+ 	int i;
+-	int ca = ai->CA;
+ 	int err;
+ 
+ 	if (hdmi_channel_mapping[ca][1] == 0) {
+ 		for (i = 0; i < channel_allocations[ca].channels; i++)
+ 			hdmi_channel_mapping[ca][i] = i | (i << 4);
+@@ -545,57 +556,53 @@ static void hdmi_clear_dip_buffers(struc
+ 			i, size, j);
+ 	}
+ #endif
+ }
+ 
+-static void hdmi_checksum_audio_infoframe(struct hdmi_audio_infoframe *ai)
++static void hdmi_checksum_audio_infoframe(struct hdmi_audio_infoframe *hdmi_ai)
+ {
+-	u8 *bytes = (u8 *)ai;
++	u8 *bytes = (u8 *)hdmi_ai;
+ 	u8 sum = 0;
+ 	int i;
+ 
+-	ai->checksum = 0;
++	hdmi_ai->checksum = 0;
+ 
+-	for (i = 0; i < sizeof(*ai); i++)
++	for (i = 0; i < sizeof(*hdmi_ai); i++)
+ 		sum += bytes[i];
+ 
+-	ai->checksum = -sum;
++	hdmi_ai->checksum = -sum;
+ }
+ 
+ static void hdmi_fill_audio_infoframe(struct hda_codec *codec,
+ 				      hda_nid_t pin_nid,
+-				      struct hdmi_audio_infoframe *ai)
++				      u8 *dip, int size)
+ {
+-	u8 *bytes = (u8 *)ai;
+ 	int i;
+ 
+ 	hdmi_debug_dip_size(codec, pin_nid);
+ 	hdmi_clear_dip_buffers(codec, pin_nid); /* be paranoid */
+ 
+-	hdmi_checksum_audio_infoframe(ai);
+-
+ 	hdmi_set_dip_index(codec, pin_nid, 0x0, 0x0);
+-	for (i = 0; i < sizeof(*ai); i++)
+-		hdmi_write_dip_byte(codec, pin_nid, bytes[i]);
++	for (i = 0; i < size; i++)
++		hdmi_write_dip_byte(codec, pin_nid, dip[i]);
+ }
+ 
+ static bool hdmi_infoframe_uptodate(struct hda_codec *codec, hda_nid_t pin_nid,
+-				    struct hdmi_audio_infoframe *ai)
++				    u8 *dip, int size)
+ {
+-	u8 *bytes = (u8 *)ai;
+ 	u8 val;
+ 	int i;
+ 
+ 	if (snd_hda_codec_read(codec, pin_nid, 0, AC_VERB_GET_HDMI_DIP_XMIT, 0)
+ 							    != AC_DIPXMIT_BEST)
+ 		return false;
+ 
+ 	hdmi_set_dip_index(codec, pin_nid, 0x0, 0x0);
+-	for (i = 0; i < sizeof(*ai); i++) {
++	for (i = 0; i < size; i++) {
+ 		val = snd_hda_codec_read(codec, pin_nid, 0,
+ 					 AC_VERB_GET_HDMI_DIP_DATA, 0);
+-		if (val != bytes[i])
++		if (val != dip[i])
+ 			return false;
+ 	}
+ 
+ 	return true;
+ }
+@@ -603,35 +610,64 @@ static bool hdmi_infoframe_uptodate(stru
+ static void hdmi_setup_audio_infoframe(struct hda_codec *codec, hda_nid_t nid,
+ 					struct snd_pcm_substream *substream)
+ {
+ 	struct hdmi_spec *spec = codec->spec;
+ 	hda_nid_t pin_nid;
++	int channels = substream->runtime->channels;
++	int ca;
+ 	int i;
+-	struct hdmi_audio_infoframe ai = {
+-		.type		= 0x84,
+-		.ver		= 0x01,
+-		.len		= 0x0a,
+-		.CC02_CT47	= substream->runtime->channels - 1,
+-	};
++	u8 ai[max(sizeof(struct hdmi_audio_infoframe),
++		  sizeof(struct dp_audio_infoframe))];
+ 
+-	hdmi_setup_channel_allocation(codec, nid, &ai);
++	ca = hdmi_channel_allocation(codec, nid, channels);
+ 
+ 	for (i = 0; i < spec->num_pins; i++) {
+ 		if (spec->pin_cvt[i] != nid)
+ 			continue;
+ 		if (!spec->sink_eld[i].monitor_present)
+ 			continue;
+ 
+ 		pin_nid = spec->pin[i];
+-		if (!hdmi_infoframe_uptodate(codec, pin_nid, &ai)) {
++
++		memset(ai, 0, sizeof(ai));
++		if (spec->sink_eld[i].conn_type == 0) { /* HDMI */
++			struct hdmi_audio_infoframe *hdmi_ai;
++
++			hdmi_ai = (struct hdmi_audio_infoframe *)ai;
++			hdmi_ai->type		= 0x84;
++			hdmi_ai->ver		= 0x01;
++			hdmi_ai->len		= 0x0a;
++			hdmi_ai->CC02_CT47	= channels - 1;
++			hdmi_checksum_audio_infoframe(hdmi_ai);
++		} else if (spec->sink_eld[i].conn_type == 1) { /* DisplayPort */
++			struct dp_audio_infoframe *dp_ai;
++
++			dp_ai = (struct dp_audio_infoframe *)ai;
++			dp_ai->type		= 0x84;
++			dp_ai->len		= 0x1b;
++			dp_ai->ver		= 0x11 << 2;
++			dp_ai->CC02_CT47	= channels - 1;
++		} else {
++			snd_printd("HDMI: unknown connection type at pin %d\n",
++				   pin_nid);
++			continue;
++		}
++
++		/*
++		 * sizeof(ai) is used instead of sizeof(*hdmi_ai) or
++		 * sizeof(*dp_ai) to avoid partial match/update problems when
++		 * the user switches between HDMI/DP monitors.
++		 */
++		if (!hdmi_infoframe_uptodate(codec, pin_nid, ai, sizeof(ai))) {
+ 			snd_printdd("hdmi_setup_audio_infoframe: "
+ 				    "cvt=%d pin=%d channels=%d\n",
+ 				    nid, pin_nid,
+-				    substream->runtime->channels);
+-			hdmi_setup_channel_mapping(codec, pin_nid, &ai);
++				    channels);
++			hdmi_setup_channel_mapping(codec, pin_nid, ca);
+ 			hdmi_stop_infoframe_trans(codec, pin_nid);
+-			hdmi_fill_audio_infoframe(codec, pin_nid, &ai);
++			hdmi_fill_audio_infoframe(codec, pin_nid,
++						  ai, sizeof(ai));
+ 			hdmi_start_infoframe_trans(codec, pin_nid);
+ 		}
+ 	}
+ }
