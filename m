@@ -1,15 +1,18 @@
-From: Andy Owen <andy-alsa@ultra-premium.com>
-Subject: alsa-kernel repository corrupted?
-Date: Tue, 21 Sep 2010 22:25:31 +1000
-Message-ID: <1285071931.1852.6.camel@marvin>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: [PATCH] ASoC: Remove extra rtd->dev.init_name
+	assignment in soc_probe_dai_link
+Date: Tue, 21 Sep 2010 15:36:49 +0300
+Message-ID: <1285072609-22191-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from starfish.geekisp.com (mail.geekisp.com [216.168.135.169])
-	by alsa0.perex.cz (Postfix) with ESMTP id E254A2462E
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id D5A4C2463A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 21 Sep 2010 14:25:42 +0200 (CEST)
+	Tue, 21 Sep 2010 14:36:29 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so2057622ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2010 05:36:29 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,35 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, I'm trying to put together a patch for the ca0106 driver, and I'm
-having trouble cloning the alsa-kernel repository. I've tried it a few
-times from different places and while it is downloading I get "fatal:
-delta size changed" when it is partially through. Here are two runs of
-git clone with slightly different output (consecutive runs on the same
-computer): 
+rtd->dev.init_name is set twice in soc_probe_dai_link. I removed the first
+assignement from dai_link->stream_name since then there won't be sysfs name
+changes and usually dai_link->name seems to fit anyway better for a sysfs
+directory name.
 
-% git clone git://git.alsa-project.org/alsa-kernel.git alsa-kernel
-Initialized empty Git repository in /home/andy/src/alsa-kernel/.git/
-remote: Counting objects: 1708307, done.
-remote: Compressing objects: 100% (313659/313659), done.
-remote: fatal: delta size changed
-remote: aborting due to possible repository corruption on the remote
-side.
-fatal: early EOF
-fatal: index-pack failed
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+---
+ sound/soc/soc-core.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-% git clone git://git.alsa-project.org/alsa-kernel.git alsa-kernel
-Initialized empty Git repository in /home/andy/src/alsa-kernel/.git/
-remote: Counting objects: 1708307, done.
-remote: Compressing objects: 100% (313659/313659), done.
-remote: fatal: delta size changed
-remote: aborting due to possible repository corruption on the remote
-side.
-fatal: early EOFs:  15% (260156/1708307), 157.79 MiB | 47 KiB/s   
-fatal: index-pack failed
-
-Does anyone else have any luck getting the repo?
-
-Andy
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 6001b7f..c8d1596 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1451,7 +1451,6 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num)
+ 	snd_soc_dapm_sync(codec);
+ 
+ 	/* register the rtd device */
+-	rtd->dev.init_name = rtd->dai_link->stream_name;
+ 	rtd->dev.release = rtd_release;
+ 	rtd->dev.init_name = dai_link->name;
+ 	ret = device_register(&rtd->dev);
+-- 
+1.7.1
