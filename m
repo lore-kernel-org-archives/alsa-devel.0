@@ -1,22 +1,20 @@
-From: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
-Subject: Re: [PATCH] ASoC: Add max98088 CODEC driver
-Date: Tue, 21 Sep 2010 19:49:30 -0700
-Message-ID: <B2150E1E4418E1438554A300EA5040E40D46E1B8E7@ITSVLEX06.it.maxim-ic.internal>
-References: <B2150E1E4418E1438554A300EA5040E40D469C123B@ITSVLEX06.it.maxim-ic.internal>
-	<20100901111432.GE17548@opensource.wolfsonmicro.com>
-	<B2150E1E4418E1438554A300EA5040E40D46A5BB13@ITSVLEX06.it.maxim-ic.internal>
-	<20100903101721.GE16587@rakim.wolfsonmicro.main>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: Re: [PATCH] ASoC: Select DMA driver for Samsung DAIs
+Date: Wed, 22 Sep 2010 09:10:48 +0300
+Message-ID: <201009220910.49066.anarsoul@gmail.com>
+References: <1285011508-8750-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from antispam01.maxim-ic.com (antispam01.maxim-ic.com
-	[205.153.101.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id AC89A103809
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4F5DA1037F1
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Sep 2010 04:49:38 +0200 (CEST)
-In-Reply-To: <20100903101721.GE16587@rakim.wolfsonmicro.main>
-Content-Language: en-US
+	Wed, 22 Sep 2010 08:12:01 +0200 (CEST)
+Received: by eye27 with SMTP id 27so44625eye.38
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2010 23:12:00 -0700 (PDT)
+In-Reply-To: <1285011508-8750-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,40 +24,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Joonyoung@alsa-project.org, Shim <jy0922.shim@samsung.com>, Takashi Iwai <tiwai@suse.de>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Marroquin <Jesse.Marroquin@maxim-ic.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jesse@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 03, 2010, Mark Brown wrote:
-> On Thu, Sep 02, 2010 at 04:30:14PM -0700, Peter Hsiang wrote:
-> > On Wed, Sep 01, 2010, Mark Brown wrote:
+On 20 of September 2010 22:38:28 Mark Brown wrote:
+> Kconfig got smart enough to do dependencies through selects so let's make
+> use of that.
 > 
-> > > > +/*
-> > > > + * Read the MAX98088 I2C register space
-> > > > + * Note: this driver source code is backward compatible to kernel
-> > > > + * version 2.6.32.
-> > > > + */
-> > > > +static unsigned int max98088_read(struct snd_soc_codec *codec,
-> > > > +                                 unsigned int reg)
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/s3c24xx/Kconfig |    4 ++++
+>  1 files changed, 4 insertions(+), 0 deletions(-)
 > 
-> > > Just use soc-cache.  Compatibility code for older kernels isn't really
-> > > acceptable for mainline due to the increased maintainance burden and it
-> > > will at best result in a driver that doesn't work as well as possible.
-> 
-> > This integrated registers feature is not available in 2.6.32
-> > Is it ok with you to keep it this way for this release?  Thanks.
-> 
-> No, you should use the features of the current kernel.  For your
-> backport you can do things like supply soc-cache.c as well.
+> diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
+> index 7d8235d..1142d3e 100644
+> --- a/sound/soc/s3c24xx/Kconfig
+> +++ b/sound/soc/s3c24xx/Kconfig
+> @@ -10,6 +10,7 @@ config SND_S3C24XX_SOC
+>  config SND_S3C24XX_SOC_I2S
+>  	tristate
+>  	select S3C2410_DMA
+> +	select SND_S3C_SOC_PCM
 
-The soc-cache.c in the latest kernel-next version supports codecs
-with volatile registers in 16 bit mode, but not for the 8 bit mode.
-See snd_soc_8_8_write.
+SND_S3C_SOC_PCM is not necessary for SND_S3C24XX_SOC, actually it works fine 
+without it on my rx1950 (s3c2442-based)
 
-The source code comments confirmed this:
-"Note at present this code can not be used by CODECs with 
-volatile registers."  
+>  config SND_S3C_I2SV2_SOC
+>  	tristate
+> @@ -18,16 +19,19 @@ config SND_S3C2412_SOC_I2S
+>  	tristate
+>  	select SND_S3C_I2SV2_SOC
+>  	select S3C2410_DMA
+> +	select SND_S3C_SOC_PCM
+> 
+>  config SND_S3C64XX_SOC_I2S
+>  	tristate
+>  	select SND_S3C_I2SV2_SOC
+>  	select S3C64XX_DMA
+> +	select SND_S3C_SOC_PCM
+> 
+>  config SND_S3C64XX_SOC_I2S_V4
+>  	tristate
+>  	select SND_S3C_I2SV2_SOC
+>  	select S3C64XX_DMA
+> +	select SND_S3C_SOC_PCM
+> 
+>  config SND_S3C_SOC_PCM
+>  	tristate
 
-For this codec (with volatile registers), should we use the read
-and write functions in the codec driver until the 8-bit mode is
-supported by Linux soc-cache.c?
+Regards
+Vasily
