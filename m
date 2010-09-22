@@ -1,19 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2.6.36] ASoC: Fix soc-cache buffer overflow
-	bug
-Date: Wed, 22 Sep 2010 12:02:34 +0100
-Message-ID: <20100922110234.GA23058@opensource.wolfsonmicro.com>
-References: <1285077806-29415-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Subject: ASoC update for 2.6.36
+Date: Wed, 22 Sep 2010 12:46:39 +0100
+Message-ID: <20100922114639.GA30657@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B6DDB1038CC
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3AFA31038D8
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Sep 2010 13:02:13 +0200 (CEST)
+	Wed, 22 Sep 2010 13:46:19 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1285077806-29415-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,14 +20,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 21, 2010 at 03:03:26PM +0100, Dimitris Papastamos wrote:
-> Make sure we stay within the cache boundaries when updating the
-> register cache.
-> 
-> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+The following changes since commit cbfa5184cc5f58627f08c7fad225424f565b439d:
 
-Applied, thanks.
+  ASoC: fix clkdev API usage in sh/migor.c (2010-09-19 16:02:47 +0100)
+
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.36
+
+Dimitris Papastamos (1):
+      ASoC: Fix soc-cache buffer overflow bug
+
+ sound/soc/soc-cache.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
