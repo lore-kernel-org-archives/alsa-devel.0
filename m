@@ -1,38 +1,34 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Return -1 instead of -EINVAL to
- ensure consistency
-Date: Wed, 22 Sep 2010 16:49:05 +0100
-Message-ID: <20100922154905.GJ26395@rakim.wolfsonmicro.main>
-References: <1285085047-31508-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: John Kacur <jkacur@redhat.com>
+Subject: Re: [PATCH] SOUND-OSS: Remove sh_dac_audio
+Date: Wed, 22 Sep 2010 18:27:46 +0200
+Message-ID: <AANLkTi=L9vJ9Bfek8HGb30c0U949H0EgiXX7oHxj-F_=@mail.gmail.com>
+References: <1285156021-4973-1-git-send-email-jkacur@redhat.com>
+	<20100922145737.GA12663@linux-mips.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A304810390B
-	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Sep 2010 17:49:06 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1285085047-31508-1-git-send-email-dp@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20100922145737.GA12663@linux-mips.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: lkml <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Frederic Weisbecker <fweisbec@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 21, 2010 at 05:04:07PM +0100, Dimitris Papastamos wrote:
-> The code can't really cope with I/O errors, so it would be better
-> to be consistent throughout all cache functions and return -1 instead
-> of -EINVAL.
-> 
-> The return value of snd_soc_read(...) is mostly checked in the probe
-> function and nowhere else.
+On Wed, Sep 22, 2010 at 4:57 PM, Ralf Baechle <ralf@linux-mips.org> wrote:
+> On Wed, Sep 22, 2010 at 01:47:01PM +0200, John Kacur wrote:
+>
+>> Remove the SH DAC oss driver since there is an equivalent alsa driver.
+>> oss has been deprecated for years. Furthermore this driver has BKL code
+>> which we are trying to remove. Rather than attempt to fix this, simply
+>> remove the driver.
+>>
+>> Signed-off-by: John Kacur <jkacur@redhat.com>
+>
+> No idea why I was cc'ed as I have no interested in the driver but certainly
+> support the motivation behind the patch:
+>
+> Acked-by: Ralf Baechle <ralf@linux-mips.org>
+>
 
-Applied, thanks.
+Thanks. FWIW, I cced you because you were part of the original conversation
+back in the Stone Ages (or maybe it was just May) about removing certain
+OSS drivers that had equivalent ALSA drivers.
