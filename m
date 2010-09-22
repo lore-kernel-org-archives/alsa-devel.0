@@ -1,22 +1,16 @@
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH] SOUND-OSS: Remove sh_dac_audio
-Date: Wed, 22 Sep 2010 15:57:37 +0100
-Message-ID: <20100922145737.GA12663@linux-mips.org>
-References: <1285156021-4973-1-git-send-email-jkacur@redhat.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Fix incorrect parameter to
+	snd_soc_codec_volatile
+Date: Wed, 22 Sep 2010 16:06:23 +0100
+Message-ID: <1285167983-31865-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cvs.linux-mips.org (eddie.linux-mips.org [78.24.191.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2C7591038F8
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 342302448B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Sep 2010 16:57:40 +0200 (CEST)
-Received: (from localhost user: 'ralf' uid#500 fake: STDIN
-	(ralf@eddie.linux-mips.org)) by eddie.linux-mips.org
-	id S1491762Ab0IVO5i (ORCPT <rfc822;alsa-devel@alsa-project.org>);
-	Wed, 22 Sep 2010 16:57:38 +0200
-Content-Disposition: inline
-In-Reply-To: <1285156021-4973-1-git-send-email-jkacur@redhat.com>
+	Wed, 22 Sep 2010 17:06:25 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,22 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Kacur <jkacur@redhat.com>
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Takashi Iwai <tiwai@suse.de>, Frederic Weisbecker <fweisbec@gmail.com>, lkml <linux-kernel@vger.kernel.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 22, 2010 at 01:47:01PM +0200, John Kacur wrote:
+We need to pass the register index and not the register value.
+This patch depends on my previous patch "ASoC: Delegate to hw
+specific read for volatile registers".
 
-> Remove the SH DAC oss driver since there is an equivalent alsa driver.
-> oss has been deprecated for years. Furthermore this driver has BKL code
-> which we are trying to remove. Rather than attempt to fix this, simply
-> remove the driver.
-> 
-> Signed-off-by: John Kacur <jkacur@redhat.com>
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-cache.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-No idea why I was cc'ed as I have no interested in the driver but certainly
-support the motivation behind the patch:
-
-Acked-by: Ralf Baechle <ralf@linux-mips.org>
-
-  Ralf
+diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
+index 5d9d2f8..3e4680b 100644
+--- a/sound/soc/soc-cache.c
++++ b/sound/soc/soc-cache.c
+@@ -177,7 +177,7 @@ static int snd_soc_8_8_write(struct snd_soc_codec *codec, unsigned int reg,
+ 	data[0] = reg;
+ 	data[1] = value & 0xff;
+ 
+-	if (!snd_soc_codec_volatile_register(codec, value) &&
++	if (!snd_soc_codec_volatile_register(codec, reg) &&
+ 		reg < codec->driver->reg_cache_size)
+ 			cache[reg] = value;
+ 
+-- 
+1.7.3
