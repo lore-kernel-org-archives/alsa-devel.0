@@ -1,65 +1,59 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 0/3] alsa-lib: UCM - Use Case Manager
-Date: Wed, 22 Sep 2010 16:20:28 +0100
-Message-ID: <1285168828.3107.108.camel@odin>
-References: <alpine.LNX.2.00.1008250925540.10278@eeebox2.perex-int.cz>
-	<1282728400.2991.114.camel@odin>
-	<alpine.LNX.2.00.1008251128140.10278@eeebox2.perex-int.cz>
-	<1282732983.2991.161.camel@odin>
-	<alpine.LNX.2.00.1008251831330.10278@eeebox2.perex-int.cz>
-	<1283864698.3048.26.camel@odin>
-	<alpine.LNX.2.00.1009071618230.10278@eeebox2.perex-int.cz>
-	<i781vn$nhb$1@dough.gmane.org>
-	<AANLkTin8fTA0CoUiPzASG4kepbSyWiDf7xrX-iJB8EQA@mail.gmail.com>
-	<alpine.LNX.2.00.1009211938110.6226@eeebox2.perex-int.cz>
-	<20100922132052.GC32476@sirena.org.uk>
-	<alpine.LNX.2.00.1009221544480.6226@eeebox2.perex-int.cz>
+From: Aki Parviainen <aki.parviainen@iki.fi>
+Subject: Re: PROBLEM: snd_intel_hda audio regression in 2.6.36-rc5
+Date: Wed, 22 Sep 2010 18:31:26 +0300
+Message-ID: <AANLkTi=Tctwyz=wLWSpf09Ex18wNgHqDv7PRSxXQ8LTw@mail.gmail.com>
+References: <20100921173254.GA3037@ht>
+	<s5hwrqenmz4.wl%tiwai@suse.de>
+	<AANLkTikgOaBizi2z+AuAgD+anvmc+kG3z9KTqfzXs1zm@mail.gmail.com>
+	<s5hmxr97sfb.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 27D62103903
-	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Sep 2010 17:20:27 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so568387wyb.38
-	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2010 08:20:26 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.1009221544480.6226@eeebox2.perex-int.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Chris Winter <elwintro@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hmxr97sfb.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-09-22 at 16:06 +0200, Jaroslav Kysela wrote:
+>
+> So, you are testing only over SPDIF output, right?
 
-> 
-> I just finished the implementation for all functions in my GIT tree 
-> (except card listing). Also, the "Value {}" section is implemented as I 
-> proposed - it means that users can pass any read-only values to the API 
-> user.
-> 
+Yes, I'm only using SPDIF output!
 
-Not had a good look yet, I assume all the functionality from the old API
-is preserved ? 
+> Looks like the SPDIF status bits has been reset by some reason.
+> Try to restore via iecset program included in alsa-utils package,
+> e.g.
+> =A0 =A0iecset original on
+> =A0 =A0iecset category 0x02
 
+I tried this and didn't notice any difference.
 
-> The code is not tested, I need to write a simple command line tool for 
-> testing the API and also move the control/mixer ID and value handling 
-> code from the alsa-utils/amixer utility to alsa-lib.
-> 
+>
+> If this doesn't help, try to unload sound driver once, remove (or
+> backup) /etc/asound.state (which might be in a different path
+> depending on the distro), then load sound modules again.
+> This will restore the default SPDIF status. =A0Unmute / adjust mixer
+> setups appropriately after doing this.
 
-Fwiw, there is some command line code for the old API that may be useful
-here :-
+I also tried this but didn't notice a difference but however I noticed
+a workaround to this problem that might be related to deleting the
+asound.state (debian places it btw to /var/lib/alsa/asound.state): now
+the regular audio works via SPDIF once again if I first play a file
+with digital preencoded audio. Ie:
 
-git://git.slimlogic.co.uk/alsa-utils.git ucm-upstream
+-Boot with 2.6.36-rc5
+-Start kaffeine
+-Play mp3 file -> no sound at all via spdif
+-Play mkv file with 5.1 sound -> sound ok
+-Play mp3 file again -> sound ok!
+-Exit kaffeine & restart kaffeine or vlc
+-Play mp3 file again -> sound ok!
 
-Liam
+Unfortunately the fix isn't permanent because after reboot I cannot
+get regular sound via spdif until I have once played a file with 5.1
+audio track.
+
+Yours,
+
+Aki
