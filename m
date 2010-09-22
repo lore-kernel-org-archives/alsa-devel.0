@@ -1,20 +1,16 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: [PATCH] ASoC: Select DMA driver for Samsung DAIs
-Date: Wed, 22 Sep 2010 09:10:48 +0300
-Message-ID: <201009220910.49066.anarsoul@gmail.com>
-References: <1285011508-8750-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Delegate to hw specific read for
+	volatile registers
+Date: Wed, 22 Sep 2010 08:54:27 +0100
+Message-ID: <1285142067-4741-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4F5DA1037F1
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 869EA1037F1
 	for <alsa-devel@alsa-project.org>;
-	Wed, 22 Sep 2010 08:12:01 +0200 (CEST)
-Received: by eye27 with SMTP id 27so44625eye.38
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2010 23:12:00 -0700 (PDT)
-In-Reply-To: <1285011508-8750-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Wed, 22 Sep 2010 09:54:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,54 +20,176 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On 20 of September 2010 22:38:28 Mark Brown wrote:
-> Kconfig got smart enough to do dependencies through selects so let's make
-> use of that.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/s3c24xx/Kconfig |    4 ++++
->  1 files changed, 4 insertions(+), 0 deletions(-)
-> 
-> diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
-> index 7d8235d..1142d3e 100644
-> --- a/sound/soc/s3c24xx/Kconfig
-> +++ b/sound/soc/s3c24xx/Kconfig
-> @@ -10,6 +10,7 @@ config SND_S3C24XX_SOC
->  config SND_S3C24XX_SOC_I2S
->  	tristate
->  	select S3C2410_DMA
-> +	select SND_S3C_SOC_PCM
+Ensure that reads on volatile registers will correctly delegate
+to the bus specific read function.
 
-SND_S3C_SOC_PCM is not necessary for SND_S3C24XX_SOC, actually it works fine 
-without it on my rx1950 (s3c2442-based)
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-cache.c |   76 ++++++++++++++++++++++++++++++++-----------------
+ 1 files changed, 50 insertions(+), 26 deletions(-)
 
->  config SND_S3C_I2SV2_SOC
->  	tristate
-> @@ -18,16 +19,19 @@ config SND_S3C2412_SOC_I2S
->  	tristate
->  	select SND_S3C_I2SV2_SOC
->  	select S3C2410_DMA
-> +	select SND_S3C_SOC_PCM
-> 
->  config SND_S3C64XX_SOC_I2S
->  	tristate
->  	select SND_S3C_I2SV2_SOC
->  	select S3C64XX_DMA
-> +	select SND_S3C_SOC_PCM
-> 
->  config SND_S3C64XX_SOC_I2S_V4
->  	tristate
->  	select SND_S3C_I2SV2_SOC
->  	select S3C64XX_DMA
-> +	select SND_S3C_SOC_PCM
-> 
->  config SND_S3C_SOC_PCM
->  	tristate
-
-Regards
-Vasily
+diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
+index 6702a3d..c4f31b8 100644
+--- a/sound/soc/soc-cache.c
++++ b/sound/soc/soc-cache.c
+@@ -19,8 +19,15 @@ static unsigned int snd_soc_4_12_read(struct snd_soc_codec *codec,
+ 				     unsigned int reg)
+ {
+ 	u16 *cache = codec->reg_cache;
+-	if (reg >= codec->driver->reg_cache_size)
+-		return -1;
++
++	if (reg >= codec->driver->reg_cache_size ||
++	    snd_soc_codec_volatile_register(codec, reg)) {
++	    	if (codec->cache_only)
++			return -1;
++
++		return codec->hw_read(codec, reg);
++	}
++	
+ 	return cache[reg];
+ }
+ 
+@@ -31,13 +38,12 @@ static int snd_soc_4_12_write(struct snd_soc_codec *codec, unsigned int reg,
+ 	u8 data[2];
+ 	int ret;
+ 
+-	BUG_ON(codec->driver->volatile_register);
+-
+ 	data[0] = (reg << 4) | ((value >> 8) & 0x000f);
+ 	data[1] = value & 0x00ff;
+ 
+-	if (reg < codec->driver->reg_cache_size)
+-		cache[reg] = value;
++	if (!snd_soc_codec_volatile_register(codec, reg) &&
++	    reg < codec->driver->reg_cache_size)
++	    	cache[reg] = value;
+ 
+ 	if (codec->cache_only) {
+ 		codec->cache_sync = 1;
+@@ -89,8 +95,15 @@ static unsigned int snd_soc_7_9_read(struct snd_soc_codec *codec,
+ 				     unsigned int reg)
+ {
+ 	u16 *cache = codec->reg_cache;
+-	if (reg >= codec->driver->reg_cache_size)
+-		return -1;
++
++	if (reg >= codec->driver->reg_cache_size ||
++	    snd_soc_codec_volatile_register(codec, reg)) {
++	    	if (codec->cache_only)
++			return -1;
++				
++		return codec->hw_read(codec, reg);
++	}
++	
+ 	return cache[reg];
+ }
+ 
+@@ -101,13 +114,12 @@ static int snd_soc_7_9_write(struct snd_soc_codec *codec, unsigned int reg,
+ 	u8 data[2];
+ 	int ret;
+ 
+-	BUG_ON(codec->driver->volatile_register);
+-
+ 	data[0] = (reg << 1) | ((value >> 8) & 0x0001);
+ 	data[1] = value & 0x00ff;
+ 
+-	if (reg < codec->driver->reg_cache_size)
+-		cache[reg] = value;
++	if (!snd_soc_codec_volatile_register(codec, reg) &&
++	    reg < codec->driver->reg_cache_size)
++	    	cache[reg] = value;
+ 
+ 	if (codec->cache_only) {
+ 		codec->cache_sync = 1;
+@@ -161,14 +173,13 @@ static int snd_soc_8_8_write(struct snd_soc_codec *codec, unsigned int reg,
+ 	u8 *cache = codec->reg_cache;
+ 	u8 data[2];
+ 
+-	BUG_ON(codec->driver->volatile_register);
+-
+ 	reg &= 0xff;
+ 	data[0] = reg;
+ 	data[1] = value & 0xff;
+ 
+-	if (reg < codec->driver->reg_cache_size)
+-		cache[reg] = value;
++	if (!snd_soc_codec_volatile_register(codec, value) &&
++	    reg < codec->driver->reg_cache_size)
++	    	cache[reg] = value;
+ 
+ 	if (codec->cache_only) {
+ 		codec->cache_sync = 1;
+@@ -187,9 +198,16 @@ static unsigned int snd_soc_8_8_read(struct snd_soc_codec *codec,
+ 				     unsigned int reg)
+ {
+ 	u8 *cache = codec->reg_cache;
++
+ 	reg &= 0xff;
+-	if (reg >= codec->driver->reg_cache_size)
+-		return -1;
++	if (reg >= codec->driver->reg_cache_size ||
++	    snd_soc_codec_volatile_register(codec, reg)) {
++	    	if (codec->cache_only)
++			return -1;
++		
++		return codec->hw_read(codec, reg);
++	}
++	
+ 	return cache[reg];
+ }
+ 
+@@ -344,8 +362,14 @@ static unsigned int snd_soc_16_8_read(struct snd_soc_codec *codec,
+ 	u8 *cache = codec->reg_cache;
+ 
+ 	reg &= 0xff;
+-	if (reg >= codec->driver->reg_cache_size)
+-		return -1;
++	if (reg >= codec->driver->reg_cache_size ||
++	    snd_soc_codec_volatile_register(codec, reg)) {
++	    	if (codec->cache_only)
++			return -1;
++
++		return codec->hw_read(codec, reg);
++	}
++	
+ 	return cache[reg];
+ }
+ 
+@@ -356,15 +380,14 @@ static int snd_soc_16_8_write(struct snd_soc_codec *codec, unsigned int reg,
+ 	u8 data[3];
+ 	int ret;
+ 
+-	BUG_ON(codec->driver->volatile_register);
+-
+ 	data[0] = (reg >> 8) & 0xff;
+ 	data[1] = reg & 0xff;
+ 	data[2] = value;
+ 
+ 	reg &= 0xff;
+-	if (reg < codec->driver->reg_cache_size)
+-		cache[reg] = value;
++	if (!snd_soc_codec_volatile_register(codec, reg) &&
++	    reg < codec->driver->reg_cache_size)
++	    	cache[reg] = value;
+ 
+ 	if (codec->cache_only) {
+ 		codec->cache_sync = 1;
+@@ -475,8 +498,9 @@ static int snd_soc_16_16_write(struct snd_soc_codec *codec, unsigned int reg,
+ 	data[2] = (value >> 8) & 0xff;
+ 	data[3] = value & 0xff;
+ 
+-	if (reg < codec->driver->reg_cache_size)
+-		cache[reg] = value;
++	if (!snd_soc_codec_volatile_register(codec, reg) && 
++	    reg < codec->driver->reg_cache_size)
++	    	cache[reg] = value;
+ 
+ 	if (codec->cache_only) {
+ 		codec->cache_sync = 1;
+-- 
+1.7.3
