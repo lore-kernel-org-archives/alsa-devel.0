@@ -1,27 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/3] alsa-lib: UCM - Use Case Manager
-Date: Thu, 23 Sep 2010 11:06:00 +0100
-Message-ID: <20100923100600.GB25663@rakim.wolfsonmicro.main>
-References: <alpine.LNX.2.00.1009071618230.10278@eeebox2.perex-int.cz>
-	<i781vn$nhb$1@dough.gmane.org>
-	<AANLkTin8fTA0CoUiPzASG4kepbSyWiDf7xrX-iJB8EQA@mail.gmail.com>
-	<alpine.LNX.2.00.1009211938110.6226@eeebox2.perex-int.cz>
-	<20100922132052.GC32476@sirena.org.uk>
-	<alpine.LNX.2.00.1009221544480.6226@eeebox2.perex-int.cz>
-	<20100922151419.GF26395@rakim.wolfsonmicro.main>
-	<alpine.LNX.2.00.1009221950540.6226@eeebox2.perex-int.cz>
-	<20100922184817.GT26395@rakim.wolfsonmicro.main>
-	<AANLkTimJQeLohP-3q=Qe1VrEe9DUuC+DZUJoyXDxKBSk@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: Add max98088 CODEC driver
+Date: Thu, 23 Sep 2010 13:04:43 +0100
+Message-ID: <20100923120443.GF25663@rakim.wolfsonmicro.main>
+References: <B2150E1E4418E1438554A300EA5040E40D469C1248@ITSVLEX06.it.maxim-ic.internal>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 102C0103803
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B49CE2414A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Sep 2010 12:06:03 +0200 (CEST)
+	Thu, 23 Sep 2010 14:04:45 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <AANLkTimJQeLohP-3q=Qe1VrEe9DUuC+DZUJoyXDxKBSk@mail.gmail.com>
+In-Reply-To: <B2150E1E4418E1438554A300EA5040E40D469C1248@ITSVLEX06.it.maxim-ic.internal>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,25 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Niels Mayer <nielsmayer@gmail.com>
-Cc: Chris Winter <elwintro@gmail.com>, ALSA development <alsa-devel@alsa-project.org>
+To: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jesse Marroquin <Jesse.Marroquin@maxim-ic.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 23, 2010 at 12:18:33AM -0700, Niels Mayer wrote:
-> On Wed, Sep 22, 2010 at 11:48 AM, Mark Brown
+On Wed, Sep 22, 2010 at 07:58:48PM -0700, Peter Hsiang wrote:
 
-> > If we make everything procedural now it will become much harder to back
-> > out of it later, and I would hope that one of the things that use case
-> > management can do is ensure that users only need to specify their goal
-> > states and don't need to deal with the mechanics of how to achieve them
-> > except in exceptional circumstances.
+> This patch adds the MAX98088 CODEC driver.
 
-> I completely agree. This problem seems best solved by "logic
-> programming" and ontologies describing both hardware capabilities,
-> constraints, as well as the applications needs and requirements. Such
+> Signed-off-by: Peter Hsiang <peter.hsiang@maxim-ic.com>
 
-A strong note of caution here: this is a very difficult task which
-nobody is currently attempting to do except for very constrained sets of
-systems such as standard PC hardware.  Nothing anyone is discussing here
-involves the automatic generation of settings, it's all about how we
-manage sets of explicitly defined settings.
+When you submitted the driver on the 31st of August my first comment in
+the review was:
+
+| The major issue with this is that the driver needs to be updated to
+| current ASoC versions - you should always be working against the trees
+| that are in linux-next for new drivers.  For ASoC you should be looking
+| at:
+
+|   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git
+
+Currently you should be looking at for-next or for-2.6.37, though the
+branch names will change as kernel development moves forward.
+
+This must be rectified before the driver can be considered for inclusion
+in the kernel.  As things stand the code will not compile.
