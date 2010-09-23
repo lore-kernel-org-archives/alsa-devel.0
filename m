@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ASoC: Fix incorrect parameter to
  snd_soc_codec_volatile_register
-Date: Thu, 23 Sep 2010 20:05:47 +0100
-Message-ID: <20100923190547.GE32112@rakim.wolfsonmicro.main>
+Date: Thu, 23 Sep 2010 20:06:00 +0100
+Message-ID: <20100923190559.GF32112@rakim.wolfsonmicro.main>
 References: <1285168566-20226-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6928C10395C
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2187210396C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Sep 2010 21:05:48 +0200 (CEST)
+	Thu, 23 Sep 2010 21:06:00 +0200 (CEST)
 Content-Disposition: inline
 In-Reply-To: <1285168566-20226-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -34,4 +34,4 @@ On Wed, Sep 22, 2010 at 04:16:06PM +0100, Dimitris Papastamos wrote:
 > 
 > Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Meh, wrong finger macro - applied thanks!
