@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Fix incorrect parameter to
- snd_soc_codec_volatile_register
-Date: Thu, 23 Sep 2010 20:06:00 +0100
-Message-ID: <20100923190559.GF32112@rakim.wolfsonmicro.main>
-References: <1285168566-20226-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Radivoje Jovanovic <radivojejovanovic@gmail.com>
+Subject: Problems with ALSA driver
+Date: Thu, 23 Sep 2010 14:53:13 -0700
+Message-ID: <AANLkTikAzuKY4zXabqyVzc1JiW7b0yQA2NjFWkOVhkHN@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2187210396C
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id AEFAD103962
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Sep 2010 21:06:00 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1285168566-20226-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	Thu, 23 Sep 2010 23:53:13 +0200 (CEST)
+Received: by wyb32 with SMTP id 32so37203wyb.38
+	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2010 14:53:13 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 22, 2010 at 04:16:06PM +0100, Dimitris Papastamos wrote:
-> We need to pass the register index and not the register value.
-> This patch depends on my previous patch "ASoC: Delegate to hw
-> specific read for volatile registers".
-> 
-> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Hi All,
+I am trying to write ALSA driver for my audio card. I have initial driver
+version in place.
+aplay -l gives:
+**** List of PLAYBACK Hardware Devices ****
+card 0: default [], device 0: myMonoCard []
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
-Meh, wrong finger macro - applied thanks!
+and aplay -L gives:
+
+default:CARD=default
+    Default Audio Device
+null
+    Discard all samples (playback) or generate zero samples (capture)
+
+It seems to me that all looks good here but when I try:
+aplay 101a.4.wav
+
+Calling open method in the mono driver! (Output from my driver open method)
+Calling hw_free method (Output from my driver hw_free method)
+Calling close method in the mono driver! (Output from my driver close
+method)
+aplay: main:608: audio open error: Invalid argument
+
+All my open method does is this:
+int ret;
+struct snd_pcm_runtime *runtime = substream->runtime;
+printk ("Calling open method in the mono driver!\n");
+ /*Associate the hardware capabilities of this PCM component */
+ runtime->hw = monocard_playback_mono;
+return 0;
+
+and my struct snd_pcm_hardware monocard_playback_mono = {
+    .info = (SNDRV_PCM_INFO_BLOCK_TRANSFER |
+         SNDRV_PCM_INFO_RESUME |
+         SNDRV_PCM_INFO_PAUSE),
+    .formats = SNDRV_PCM_FMTBIT_S16_LE |
+           SNDRV_PCM_FMTBIT_S16_BE |
+           SNDRV_PCM_FMTBIT_S8 |
+           SNDRV_PCM_FMTBIT_U8,
+    .rates = SNDRV_PCM_RATE_CONTINUOUS,
+    .rate_min = 8000,
+    .rate_min = 48000,
+    .channels_min = 1,
+    .channels_max = 1,
+    .buffer_bytes_max=32768,
+
+I am not sure if alsa-lib is saying that one of these arguments is invalid
+or what?
+Thank you
+Ogi
