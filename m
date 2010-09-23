@@ -1,20 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Add max98088 CODEC driver
-Date: Thu, 23 Sep 2010 19:38:35 +0100
-Message-ID: <20100923183835.GC32112@rakim.wolfsonmicro.main>
-References: <B2150E1E4418E1438554A300EA5040E40D469C1248@ITSVLEX06.it.maxim-ic.internal>
-	<20100923120443.GF25663@rakim.wolfsonmicro.main>
-	<B2150E1E4418E1438554A300EA5040E40D46E1BE7C@ITSVLEX06.it.maxim-ic.internal>
+Subject: [PATCH 1/2] ASoC: Convert s3c-ac97 to pr_() macros
+Date: Thu, 23 Sep 2010 19:41:09 +0100
+Message-ID: <1285267270-22426-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6FFE9244D5
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8F706244D5
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Sep 2010 20:38:38 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <B2150E1E4418E1438554A300EA5040E40D46E1BE7C@ITSVLEX06.it.maxim-ic.internal>
+	Thu, 23 Sep 2010 20:41:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,33 +19,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jesse Marroquin <Jesse.Marroquin@maxim-ic.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Liam Girdwood <lrg@slimlogic.co.uk>, Jassi Brar <jassi.brar@samsung.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 23, 2010 at 10:56:38AM -0700, Peter Hsiang wrote:
-> On Thu, Sep 23, 2010, Mark Brown wrote:
+Could use dev_() but we'd have to remember the struct device somewhere
+and it wouldn't make the logging clearer.
 
-> > |   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/s3c24xx/s3c-ac97.c |   11 ++++++-----
+ 1 files changed, 6 insertions(+), 5 deletions(-)
 
-> > Currently you should be looking at for-next or for-2.6.37, though the
-> > branch names will change as kernel development moves forward.
-
-> What is the git command line path/parameter for for-next or for-2.6.37?
-> Something equivalent to...
-> ....pub/scm/linux/kernel/git/next/linux-next.git 
-
-That is the git path to the repository.  for-next and for-2.6.37 are
-branches in that repository.
-
-> Why do the files in git/broonie/sound-2.6.git look older than -next?
-> For example, it's missing soc-cache.c, and the codec drivers there
-> use the old I/O method.  Same drivers in -next are newer and use the soc-cache.
-
-You're looking at the wrong branch, you need to look at one of the
-branches mentioned above.  git branch -r to list remote branches.  I
-can't remember what the default branch is but since it changes with
-every release it's not always up to date.
-
-Developing against -next is also OK, it contains everything in the above
-tree (and then some).
+diff --git a/sound/soc/s3c24xx/s3c-ac97.c b/sound/soc/s3c24xx/s3c-ac97.c
+index 26f4ed9..31e2b3d 100644
+--- a/sound/soc/s3c24xx/s3c-ac97.c
++++ b/sound/soc/s3c24xx/s3c-ac97.c
+@@ -89,7 +89,7 @@ static void s3c_ac97_activate(struct snd_ac97 *ac97)
+ 	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
+ 
+ 	if (!wait_for_completion_timeout(&s3c_ac97.done, HZ))
+-		printk(KERN_ERR "AC97: Unable to activate!");
++		pr_err("AC97: Unable to activate!");
+ }
+ 
+ static unsigned short s3c_ac97_read(struct snd_ac97 *ac97,
+@@ -115,14 +115,15 @@ static unsigned short s3c_ac97_read(struct snd_ac97 *ac97,
+ 	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
+ 
+ 	if (!wait_for_completion_timeout(&s3c_ac97.done, HZ))
+-		printk(KERN_ERR "AC97: Unable to read!");
++		pr_err("AC97: Unable to read!");
+ 
+ 	stat = readl(s3c_ac97.regs + S3C_AC97_STAT);
+ 	addr = (stat >> 16) & 0x7f;
+ 	data = (stat & 0xffff);
+ 
+ 	if (addr != reg)
+-		printk(KERN_ERR "s3c-ac97: req addr = %02x, rep addr = %02x\n", reg, addr);
++		pr_err("s3c-ac97: req addr = %02x, rep addr = %02x\n",
++			reg, addr);
+ 
+ 	mutex_unlock(&s3c_ac97.lock);
+ 
+@@ -151,7 +152,7 @@ static void s3c_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
+ 	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
+ 
+ 	if (!wait_for_completion_timeout(&s3c_ac97.done, HZ))
+-		printk(KERN_ERR "AC97: Unable to write!");
++		pr_err("AC97: Unable to write!");
+ 
+ 	ac_codec_cmd = readl(s3c_ac97.regs + S3C_AC97_CODEC_CMD);
+ 	ac_codec_cmd |= S3C_AC97_CODEC_CMD_READ;
+@@ -442,7 +443,7 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
+ 	ret = request_irq(irq_res->start, s3c_ac97_irq,
+ 					IRQF_DISABLED, "AC97", NULL);
+ 	if (ret < 0) {
+-		printk(KERN_ERR "s3c-ac97: interrupt request failed.\n");
++		dev_err(&pdev->dev, "s3c-ac97: interrupt request failed.\n");
+ 		goto err4;
+ 	}
+ 
+-- 
+1.7.1
