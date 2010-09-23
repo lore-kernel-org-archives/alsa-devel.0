@@ -1,10 +1,8 @@
-From: Niels Mayer <nielsmayer@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 0/3] alsa-lib: UCM - Use Case Manager
-Date: Thu, 23 Sep 2010 00:18:33 -0700
-Message-ID: <AANLkTimJQeLohP-3q=Qe1VrEe9DUuC+DZUJoyXDxKBSk@mail.gmail.com>
-References: <alpine.LNX.2.00.1008251831330.10278@eeebox2.perex-int.cz>
-	<1283864698.3048.26.camel@odin>
-	<alpine.LNX.2.00.1009071618230.10278@eeebox2.perex-int.cz>
+Date: Thu, 23 Sep 2010 11:06:00 +0100
+Message-ID: <20100923100600.GB25663@rakim.wolfsonmicro.main>
+References: <alpine.LNX.2.00.1009071618230.10278@eeebox2.perex-int.cz>
 	<i781vn$nhb$1@dough.gmane.org>
 	<AANLkTin8fTA0CoUiPzASG4kepbSyWiDf7xrX-iJB8EQA@mail.gmail.com>
 	<alpine.LNX.2.00.1009211938110.6226@eeebox2.perex-int.cz>
@@ -13,18 +11,17 @@ References: <alpine.LNX.2.00.1008251831330.10278@eeebox2.perex-int.cz>
 	<20100922151419.GF26395@rakim.wolfsonmicro.main>
 	<alpine.LNX.2.00.1009221950540.6226@eeebox2.perex-int.cz>
 	<20100922184817.GT26395@rakim.wolfsonmicro.main>
+	<AANLkTimJQeLohP-3q=Qe1VrEe9DUuC+DZUJoyXDxKBSk@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f172.google.com (mail-qy0-f172.google.com
-	[209.85.216.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id 78D36103803
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 102C0103803
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Sep 2010 09:18:38 +0200 (CEST)
-Received: by qyk34 with SMTP id 34so1109539qyk.17
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2010 00:18:35 -0700 (PDT)
-In-Reply-To: <20100922184817.GT26395@rakim.wolfsonmicro.main>
+	Thu, 23 Sep 2010 12:06:03 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTimJQeLohP-3q=Qe1VrEe9DUuC+DZUJoyXDxKBSk@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,82 +31,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Niels Mayer <nielsmayer@gmail.com>
 Cc: Chris Winter <elwintro@gmail.com>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBTZXAgMjIsIDIwMTAgYXQgMTE6NDggQU0sIE1hcmsgQnJvd24KPGJyb29uaWVAb3Bl
-bnNvdXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPiBIYXZpbmcgbG9va2VkIGF0IHRoZSBp
-bXBsZW1lbnRhdGlvbiBicmllZmx5IEkgYWxzbyBub3RlIHRoYXQgeW91J3ZlCj4ga2VwdCB0aGUg
-cHJvY2VkdXJhbCBzcGVjaWZpY2F0aW9uIG9mIHRoZSBjb250cm9sIHNldHRpbmdzIGluIHlvdXIK
-PiBjb25maWd1cmF0aW9uIGZpbGUgZm9ybWF0LiDCoEFzIEkgb3V0bGluZWQgcHJldmlvdXNseSBJ
-IGRvIGhhdmUgc2VyaW91cwo+IGNvbmNlcm5zIGFib3V0IHRoaXMgYXMgYSBtb2RlbCBmb3IgdXNl
-cnMgdG8gd29yayB3aXRoIChvcnRob2dvbmFsbHkgdG8KPiB0aGUgYWN0dWFsIGltcGxlbWVudGF0
-aW9uIHdoaWNoIG11c3QgY29tZSBkb3duIHRvIGEgcHJvY2VkdXJlIGF0IHByZXNlbnQKPiBkdWUg
-dG8gdGhlIEFMU0EgQVBJLCBzb21ldGhpbmcgSSBob3BlIHRvIHByb3ZpZGUgZmVhdHVyZXMgdG8g
-YXZvaWQgaW4KPiB0aGUgZnV0dXJlKS4KPgo+IElmIHdlIG1ha2UgZXZlcnl0aGluZyBwcm9jZWR1
-cmFsIG5vdyBpdCB3aWxsIGJlY29tZSBtdWNoIGhhcmRlciB0byBiYWNrCj4gb3V0IG9mIGl0IGxh
-dGVyLCBhbmQgSSB3b3VsZCBob3BlIHRoYXQgb25lIG9mIHRoZSB0aGluZ3MgdGhhdCB1c2UgY2Fz
-ZQo+IG1hbmFnZW1lbnQgY2FuIGRvIGlzIGVuc3VyZSB0aGF0IHVzZXJzIG9ubHkgbmVlZCB0byBz
-cGVjaWZ5IHRoZWlyIGdvYWwKPiBzdGF0ZXMgYW5kIGRvbid0IG5lZWQgdG8gZGVhbCB3aXRoIHRo
-ZSBtZWNoYW5pY3Mgb2YgaG93IHRvIGFjaGlldmUgdGhlbQo+IGV4Y2VwdCBpbiBleGNlcHRpb25h
-bCBjaXJjdW1zdGFuY2VzLgoKSSBjb21wbGV0ZWx5IGFncmVlLiBUaGlzIHByb2JsZW0gc2VlbXMg
-YmVzdCBzb2x2ZWQgYnkgImxvZ2ljCnByb2dyYW1taW5nIiBhbmQgb250b2xvZ2llcyBkZXNjcmli
-aW5nIGJvdGggaGFyZHdhcmUgY2FwYWJpbGl0aWVzLApjb25zdHJhaW50cywgYXMgd2VsbCBhcyB0
-aGUgYXBwbGljYXRpb25zIG5lZWRzIGFuZCByZXF1aXJlbWVudHMuIFN1Y2gKcHJvYmxlbXMgdGVu
-ZCB0byBoYXZlIG11bHRpcGxlIHNvbHV0aW9ucyBhbmQgb2Z0ZW4gcmVxdWlyZSBhIHdheSBmb3IK
-Y29uc3RyYWludHMgdG8gYmUgbG9vc2VseSwgb3IgbXVsdGlwbHkgc2F0aXNmaWVkIC0tIGluY2x1
-ZGluZyBhc2tpbmcKdGhlIHVzZXIgYWZ0ZXIgbmFycm93aW5nIGRvd24gdGhlIHNlYXJjaCBzcGFj
-ZSB0byBqdXN0IGEgZmV3IGVxdWFsbHkKd2VpZ2h0ZWQgY2hvaWNlcyAoZS5nLiBkbyBpIG1hdGNo
-IHRoZSBjaGFubmVsIGNvdW50IG9mIHRoZSBzb3VyY2UgdG8KdGhlIGRldmljZSBieSBkdXBsaWNh
-dGluZyBjaGFubmVscyBvciBzZW5kaW5nIGJsYW5rIGNoYW5uZWxzPykuCgpUaGVyZSBpcyBtdWNo
-IGxpdGVyYXR1cmUgYW5kIG1hbnkgaW5kdXN0cnkgc29sdXRpb25zIGVtcGxveWluZyBzdWNoCnNp
-bXBsZSAiQUkiIHRlY2huaXF1ZXMsIGFuZCB0aGVyZSdzIG5vIHJlYXNvbiB3aHkgZGVjbGFyYXRp
-dmUKcHJvZ3JhbW1pbmcgY2FwYWJpbGl0aWVzIGNvdWxkbid0IGJlIGJ1aWx0IGludG8gYW55IEMt
-YmFzZWQgbGlicmFyeSAtLQplLmcuIGh0dHA6Ly9jbGlwc3J1bGVzLnNvdXJjZWZvcmdlLm5ldCBo
-dHRwOi8vd3d3Lmdwcm9sb2cub3JnIGV0Yy4KQ2VydGFpbmx5LCB0aGVyZSBpcyBubyBuZWVkIHRv
-ICJyZWludmVudCB0aGUgd2hlZWwiIGhhY2tpbmcgbGFuZ3VhZ2UKY29uc3RydWN0cyBhbmQgY29u
-Y2VwdHMgdGhhdCBhbHJlYWR5IGV4aXN0IGFuZCBoYXZlIHNvbWUgZm9ybWFsaXNtcwpiZWhpbmQg
-dGhlbS4KCkV4YW1wbGUgbGl0ZXJhdHVyZSBmcm9tIGEgc2xpZ2h0bHkgZGlmZmVyZW50IGRvbWFp
-biB0aGF0IGNvdWxkIGJlCmFwcGxpZWQgaGVyZSBpbmNsdWRlOgpodHRwOi8vZWJpcXVpdHkudW1i
-Yy5lZHUvZ2V0L2EvcHVibGljYXRpb24vNDY2LnBkZiAoIlRvd2FyZHMgYQpEZWNsYXJhdGl2ZSBG
-cmFtZXdvcmsgZm9yIE1hbmFnaW5nIEFwcGxpY2F0aW9uIGFuZCBOZXR3b3JrCkFkYXB0YXRpb25z
-IikKLi4uLi4uLi4uLi4uLi4uLi4uCkFic3RyYWN04oCUQ3Jvc3MgbGF5ZXIgb3B0aW1pemF0aW9u
-cyBhcmUgaW5jcmVhc2luZ2x5IGJlaW5nCnVzZWQgaW4gYSB2YXJpZXR5IG9mIGFwcGxpY2F0aW9u
-cyB0byBpbXByb3ZlIGFwcGxpY2F0aW9uIHBlcmZvci0KbWFuY2UuIEhvd2V2ZXIgbW9zdCBvZiB0
-aGVzZSBpbXBsZW1lbnRhdGlvbnMgYXJlIGFkIGhvYyBhbmQKcGVyZm9ybWVkIG9uIGEgcGVyIGFw
-cGxpY2F0aW9uIGJhc2lzLiBJbiB0aGlzIHBhcGVyIHdlIHByb3Bvc2UKYSBkZWNsYXJhdGl2ZSBm
-cmFtZXdvcmsgZm9yIG1hbmFnaW5nIGFwcGxpY2F0aW9uIGFuZCBuZXR3b3JrCmFkYXB0YXRpb25z
-LiBUaGUgZGVjbGFyYXRpdmUgcGFyYWRpZ20gcHJvdmlkZXMgYSBtdWNoIG5lZWRlZApjbGVhbiBs
-aW5lIG9mIHNlcGFyYXRpb24gYmV0d2VlbiB0aGUgaGlnaCBsZXZlbCBnb2FscyBhbmQgdGhlCmxv
-dyBsZXZlbCBpbXBsZW1lbnRhdGlvbnMuIE91ciBmcmFtZXdvcmsgZXhwb3NlcyB0aGUgdHVuYWJs
-ZQpmZWF0dXJlcyBvZiBib3RoIHRoZSBhcHBsaWNhdGlvbiBhbmQgdGhlIG5ldHdvcmsgYWNyb3Nz
-IGxheWVycyBvZgp0aGUgbmV0d29yayBzdGFjayB3aGljaCBjYW4gdGhlbiBiZSBqb2ludGx5IG9w
-dGltaXplZC4gV2UgYWxsb3cKb3BlcmF0b3JzIHRvIGNvbnRyb2wgdGhlIGFkYXB0YXRpb24gcHJv
-Y2VzcyB0aHJvdWdoIG9wZXJhdG9yCnNwZWNp76yBZWQgcG9saWNpZXMuIFsuLi5dIFRvIHN1cHBv
-cnQgZXZvbHV0aW9uLCB3ZSBwdXJzdWUKYW4gb250b2xvZ2ljYWwgYXBwcm9hY2ggYW5kIHVzZSBz
-ZW1hbnRpYyB3ZWIgbGFuZ3VhZ2VzIHN1Y2ggYXMKT1dMIGFuZCBSREYgaW4gb3VyIGZyYW1ld29y
-ayBmb3IgdGhlIHBvbGljeSBhbmQgZGVjbGFyYXRpdmUKc3BlY2lmaWNhdGlvbnMsIHRoZXJlYnkg
-YWxzbyBsZXZlcmFnaW5nIHRoZSBpbmhlcmVudCByZWFzb25pbmcgYW5kCmNvbu+sgmljdCByZXNv
-bHV0aW9uIGZlYXR1cmVzIG9mIHRoZXNlIGxhbmd1YWdlcy4gLi4uCi4uLi4uLi4uLi4uLi4uLi4u
-Li4uLgoKTmVwb211ayBEZXNrdG9wIG9udG9sb2dpZXMgYXJlIHJlbGV2YW50IGhlcmUgYXMgd2Vs
-bDoKaHR0cDovL2xpYnJhcnkuZ25vbWUub3JnL2RldmVsL29udG9sb2d5L3Vuc3RhYmxlL25tbS1v
-bnRvbG9neS5odG1sCmh0dHA6Ly9saWJyYXJ5Lmdub21lLm9yZy9kZXZlbC9vbnRvbG9neS91bnN0
-YWJsZS9uZm8tb250b2xvZ3kuaHRtbAouLi4gd2hhdCdzIG5lZWRlZCBpcyBzaW1pbGFyIG9udG9s
-b2dpZXMgYWJzdHJhY3RseSBkZXNjcmliaW5nIGhhcmR3YXJlCmFuZCBwcm92aWRpbmcgdGhlIHNl
-bWFudGljcyBvZiBjb25zdHJhaW50cyBvbiB1c2luZyB0aGUgaGFyZHdhcmUgLS0Kd2hldGhlciBp
-dCBiZSBsb2NraW5nIHNlbWFudGljcyBmb3IgY29uY3VycmVudCBvciBtdWx0aXBsZSBhY2Nlc3Ms
-IGJpdApkZXB0aCBvciBzYW1wbGUgcmF0ZSBtYXRjaGluZywgZXRjLiBUaHVzIHRoZSBhcHBsaWNh
-dGlvbiBjb25zdHJhaW50cwp3b3VsZCBuZWVkIHRvIG1hdGNoIHVwIGFnYWluc3QgY29uc3RyYWlu
-dHMgcG9zZWQgYnkgYSAibWVkaWEgaGFyZHdhcmUKb250b2xvZ3kuIiBTb2x2aW5nIHRoZSBjb25z
-dHJhaW50IHByb2JsZW0gYmV0d2VlbiBhcHBsaWNhdGlvbiBhbmQKaGFyZHdhcmUgbWF5IHRodXMg
-ZHluYW1pY2FsbHkgaW52b2tlIHNhbXBsZS1yYXRlIGNvbnZlcnNpb24sIGJpdC1kZXB0aApjb252
-ZXJzaW9uLCBjaGFubmVsIGR1cGxpY2F0aW9uIG9yIHJlZHVjdGlvbiwgc3RyZWFtIG1peGluZywg
-ZXRjLgoKSU1ITywgc3VjaCBhIGxheWVyIGNvdWxkIG9idmlhdGUgdGhlIG5lZWQgZm9yIHB1bHNl
-YXVkaW8gYW5kIGluc3RlYWQKZHluYW1pY2FsbHkgIGludm9rZSB0aGUgYXBwcm9wcmlhdGUgQUxT
-QSBjb25zdHJ1Y3RzIChkbWl4LCBkc25vb3AsCnBsdWcsIGV0YykgbmVlZGVkIHRvIHNhdGlzZnkg
-YXBwbGljYXRpb24gY29uc3RyYWludHMgYWdhaW5zdCBoYXJkd2FyZQpsaW1pdGF0aW9ucy4KCi0t
-IE5pZWxzCmh0dHA6Ly9uaWVsc21heWVyLmNvbQpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+On Thu, Sep 23, 2010 at 12:18:33AM -0700, Niels Mayer wrote:
+> On Wed, Sep 22, 2010 at 11:48 AM, Mark Brown
+
+> > If we make everything procedural now it will become much harder to back
+> > out of it later, and I would hope that one of the things that use case
+> > management can do is ensure that users only need to specify their goal
+> > states and don't need to deal with the mechanics of how to achieve them
+> > except in exceptional circumstances.
+
+> I completely agree. This problem seems best solved by "logic
+> programming" and ontologies describing both hardware capabilities,
+> constraints, as well as the applications needs and requirements. Such
+
+A strong note of caution here: this is a very difficult task which
+nobody is currently attempting to do except for very constrained sets of
+systems such as standard PC hardware.  Nothing anyone is discussing here
+involves the automatic generation of settings, it's all about how we
+manage sets of explicitly defined settings.
