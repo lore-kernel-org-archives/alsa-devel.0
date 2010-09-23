@@ -1,18 +1,20 @@
-From: Radivoje Jovanovic <radivojejovanovic@gmail.com>
-Subject: Problems with ALSA driver
-Date: Thu, 23 Sep 2010 14:53:13 -0700
-Message-ID: <AANLkTikAzuKY4zXabqyVzc1JiW7b0yQA2NjFWkOVhkHN@mail.gmail.com>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: Convert s3c-ac97 to pr_() macros
+Date: Fri, 24 Sep 2010 07:59:37 +0900
+Message-ID: <AANLkTimu8Cx6AJ3eJpVNFRXOpgB8fJtcp-e-2r-3d8Mj@mail.gmail.com>
+References: <1285267270-22426-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id AEFAD103962
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2558F103962
 	for <alsa-devel@alsa-project.org>;
-	Thu, 23 Sep 2010 23:53:13 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so37203wyb.38
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2010 14:53:13 -0700 (PDT)
+	Fri, 24 Sep 2010 00:59:46 +0200 (CEST)
+Received: by bwz13 with SMTP id 13so1085686bwz.38
+	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2010 15:59:42 -0700 (PDT)
+In-Reply-To: <1285267270-22426-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,58 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
-I am trying to write ALSA driver for my audio card. I have initial driver
-version in place.
-aplay -l gives:
-**** List of PLAYBACK Hardware Devices ****
-card 0: default [], device 0: myMonoCard []
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-and aplay -L gives:
-
-default:CARD=default
-    Default Audio Device
-null
-    Discard all samples (playback) or generate zero samples (capture)
-
-It seems to me that all looks good here but when I try:
-aplay 101a.4.wav
-
-Calling open method in the mono driver! (Output from my driver open method)
-Calling hw_free method (Output from my driver hw_free method)
-Calling close method in the mono driver! (Output from my driver close
-method)
-aplay: main:608: audio open error: Invalid argument
-
-All my open method does is this:
-int ret;
-struct snd_pcm_runtime *runtime = substream->runtime;
-printk ("Calling open method in the mono driver!\n");
- /*Associate the hardware capabilities of this PCM component */
- runtime->hw = monocard_playback_mono;
-return 0;
-
-and my struct snd_pcm_hardware monocard_playback_mono = {
-    .info = (SNDRV_PCM_INFO_BLOCK_TRANSFER |
-         SNDRV_PCM_INFO_RESUME |
-         SNDRV_PCM_INFO_PAUSE),
-    .formats = SNDRV_PCM_FMTBIT_S16_LE |
-           SNDRV_PCM_FMTBIT_S16_BE |
-           SNDRV_PCM_FMTBIT_S8 |
-           SNDRV_PCM_FMTBIT_U8,
-    .rates = SNDRV_PCM_RATE_CONTINUOUS,
-    .rate_min = 8000,
-    .rate_min = 48000,
-    .channels_min = 1,
-    .channels_max = 1,
-    .buffer_bytes_max=32768,
-
-I am not sure if alsa-lib is saying that one of these arguments is invalid
-or what?
-Thank you
-Ogi
+T24gRnJpLCBTZXAgMjQsIDIwMTAgYXQgMzo0MSBBTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IENvdWxkIHVzZSBkZXZfKCkgYnV0IHdl
+J2QgaGF2ZSB0byByZW1lbWJlciB0aGUgc3RydWN0IGRldmljZSBzb21ld2hlcmUKPiBhbmQgaXQg
+d291bGRuJ3QgbWFrZSB0aGUgbG9nZ2luZyBjbGVhcmVyLgo+Cj4gU2lnbmVkLW9mZi1ieTogTWFy
+ayBCcm93biA8YnJvb25pZUBvcGVuc291cmNlLndvbGZzb25taWNyby5jb20+Cj4gLS0tCj4gwqBz
+b3VuZC9zb2MvczNjMjR4eC9zM2MtYWM5Ny5jIHwgwqAgMTEgKysrKysrLS0tLS0KPiDCoDEgZmls
+ZXMgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdp
+dCBhL3NvdW5kL3NvYy9zM2MyNHh4L3MzYy1hYzk3LmMgYi9zb3VuZC9zb2MvczNjMjR4eC9zM2Mt
+YWM5Ny5jCj4gaW5kZXggMjZmNGVkOS4uMzFlMmIzZCAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2Mv
+czNjMjR4eC9zM2MtYWM5Ny5jCj4gKysrIGIvc291bmQvc29jL3MzYzI0eHgvczNjLWFjOTcuYwo+
+IEBAIC04OSw3ICs4OSw3IEBAIHN0YXRpYyB2b2lkIHMzY19hYzk3X2FjdGl2YXRlKHN0cnVjdCBz
+bmRfYWM5NyAqYWM5NykKPiDCoCDCoCDCoCDCoHdyaXRlbChhY19nbGJjdHJsLCBzM2NfYWM5Ny5y
+ZWdzICsgUzNDX0FDOTdfR0xCQ1RSTCk7Cj4KPiDCoCDCoCDCoCDCoGlmICghd2FpdF9mb3JfY29t
+cGxldGlvbl90aW1lb3V0KCZzM2NfYWM5Ny5kb25lLCBIWikpCj4gLSDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCBwcmludGsoS0VSTl9FUlIgIkFDOTc6IFVuYWJsZSB0byBhY3RpdmF0ZSEiKTsKPiArIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIHByX2VycigiQUM5NzogVW5hYmxlIHRvIGFjdGl2YXRlISIpOwo+
+IMKgfQo+Cj4gwqBzdGF0aWMgdW5zaWduZWQgc2hvcnQgczNjX2FjOTdfcmVhZChzdHJ1Y3Qgc25k
+X2FjOTcgKmFjOTcsCj4gQEAgLTExNSwxNCArMTE1LDE1IEBAIHN0YXRpYyB1bnNpZ25lZCBzaG9y
+dCBzM2NfYWM5N19yZWFkKHN0cnVjdCBzbmRfYWM5NyAqYWM5NywKPiDCoCDCoCDCoCDCoHdyaXRl
+bChhY19nbGJjdHJsLCBzM2NfYWM5Ny5yZWdzICsgUzNDX0FDOTdfR0xCQ1RSTCk7Cj4KPiDCoCDC
+oCDCoCDCoGlmICghd2FpdF9mb3JfY29tcGxldGlvbl90aW1lb3V0KCZzM2NfYWM5Ny5kb25lLCBI
+WikpCj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCBwcmludGsoS0VSTl9FUlIgIkFDOTc6IFVuYWJs
+ZSB0byByZWFkISIpOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcHJfZXJyKCJBQzk3OiBVbmFi
+bGUgdG8gcmVhZCEiKTsKPgo+IMKgIMKgIMKgIMKgc3RhdCA9IHJlYWRsKHMzY19hYzk3LnJlZ3Mg
+KyBTM0NfQUM5N19TVEFUKTsKPiDCoCDCoCDCoCDCoGFkZHIgPSAoc3RhdCA+PiAxNikgJiAweDdm
+Owo+IMKgIMKgIMKgIMKgZGF0YSA9IChzdGF0ICYgMHhmZmZmKTsKPgo+IMKgIMKgIMKgIMKgaWYg
+KGFkZHIgIT0gcmVnKQo+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgcHJpbnRrKEtFUk5fRVJSICJz
+M2MtYWM5NzogcmVxIGFkZHIgPSAlMDJ4LCByZXAgYWRkciA9ICUwMnhcbiIsIHJlZywgYWRkcik7
+Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBwcl9lcnIoInMzYy1hYzk3OiByZXEgYWRkciA9ICUw
+MngsIHJlcCBhZGRyID0gJTAyeFxuIiwKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIHJlZywgYWRkcik7Cj4KPiDCoCDCoCDCoCDCoG11dGV4X3VubG9jaygmczNjX2FjOTcubG9j
+ayk7Cj4KPiBAQCAtMTUxLDcgKzE1Miw3IEBAIHN0YXRpYyB2b2lkIHMzY19hYzk3X3dyaXRlKHN0
+cnVjdCBzbmRfYWM5NyAqYWM5NywgdW5zaWduZWQgc2hvcnQgcmVnLAo+IMKgIMKgIMKgIMKgd3Jp
+dGVsKGFjX2dsYmN0cmwsIHMzY19hYzk3LnJlZ3MgKyBTM0NfQUM5N19HTEJDVFJMKTsKPgo+IMKg
+IMKgIMKgIMKgaWYgKCF3YWl0X2Zvcl9jb21wbGV0aW9uX3RpbWVvdXQoJnMzY19hYzk3LmRvbmUs
+IEhaKSkKPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50ayhLRVJOX0VSUiAiQUM5NzogVW5h
+YmxlIHRvIHdyaXRlISIpOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcHJfZXJyKCJBQzk3OiBV
+bmFibGUgdG8gd3JpdGUhIik7Cj4KPiDCoCDCoCDCoCDCoGFjX2NvZGVjX2NtZCA9IHJlYWRsKHMz
+Y19hYzk3LnJlZ3MgKyBTM0NfQUM5N19DT0RFQ19DTUQpOwo+IMKgIMKgIMKgIMKgYWNfY29kZWNf
+Y21kIHw9IFMzQ19BQzk3X0NPREVDX0NNRF9SRUFEOwo+IEBAIC00NDIsNyArNDQzLDcgQEAgc3Rh
+dGljIF9fZGV2aW5pdCBpbnQgczNjX2FjOTdfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAq
+cGRldikKPiDCoCDCoCDCoCDCoHJldCA9IHJlcXVlc3RfaXJxKGlycV9yZXMtPnN0YXJ0LCBzM2Nf
+YWM5N19pcnEsCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqBJUlFGX0RJU0FCTEVELCAiQUM5NyIsIE5VTEwpOwo+IMKgIMKgIMKgIMKg
+aWYgKHJldCA8IDApIHsKPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50ayhLRVJOX0VSUiAi
+czNjLWFjOTc6IGludGVycnVwdCByZXF1ZXN0IGZhaWxlZC5cbiIpOwo+ICsgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgZGV2X2VycigmcGRldi0+ZGV2LCAiczNjLWFjOTc6IGludGVycnVwdCByZXF1ZXN0
+IGZhaWxlZC5cbiIpOwo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgZ290byBlcnI0Owo+IMKgIMKg
+IMKgIMKgfQoKQWNrZWQtYnk6IEphc3NpIEJyYXIgPGphc3NpLmJyYXJAc2Ftc3VuZy5jb20+Cl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
