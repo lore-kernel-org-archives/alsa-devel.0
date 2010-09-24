@@ -1,24 +1,21 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 3/3] ASoC: Clean up the CODEC device as
- well as the board for SMDK WM9713
-Date: Fri, 24 Sep 2010 09:27:02 +0900
-Message-ID: <AANLkTiksrurq_GQOp7gmZ=NeWX8NQFq2W2cA7hvwPveP@mail.gmail.com>
-References: <1285252845-24171-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1285252845-24171-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<AANLkTi=8G9jt7KWafeUhinWCQMqRtxfXY1ZxwSNZBby1@mail.gmail.com>
-	<20100923145614.GJ25663@rakim.wolfsonmicro.main>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Spurious "Unable to find definition
+	'defaults.pcm.dmix.device'"
+Date: Fri, 24 Sep 2010 11:58:24 +0800
+Message-ID: <AANLkTinU0svw_fGvPH8yJ3E3mJ76wxXS-tcSKdFP0vft@mail.gmail.com>
+References: <A0740C4B-D41B-4567-9013-4CC0CE8B92F7@gstark.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id C7B2310396D
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id AC97F103970
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Sep 2010 02:27:07 +0200 (CEST)
-Received: by bwz13 with SMTP id 13so1128083bwz.38
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2010 17:27:03 -0700 (PDT)
-In-Reply-To: <20100923145614.GJ25663@rakim.wolfsonmicro.main>
+	Fri, 24 Sep 2010 05:58:24 +0200 (CEST)
+Received: by eye27 with SMTP id 27so650641eye.38
+	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2010 20:58:24 -0700 (PDT)
+In-Reply-To: <A0740C4B-D41B-4567-9013-4CC0CE8B92F7@gstark.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,27 +25,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBTZXAgMjMsIDIwMTAgYXQgMTE6NTYgUE0sIE1hcmsgQnJvd24KPGJyb29uaWVAb3Bl
-bnNvdXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPiBPbiBUaHUsIFNlcCAyMywgMjAxMCBh
-dCAxMTo1MzowMFBNICswOTAwLCBKYXNzaSBCcmFyIHdyb3RlOgo+PiBPbiBUaHUsIFNlcCAyMywg
-MjAxMCBhdCAxMTo0MCBQTSwgTWFyayBCcm93bgo+Cj4+ID4gwqBzdGF0aWMgdm9pZCBfX2V4aXQg
-c21ka19leGl0KHZvaWQpCj4+ID4gwqB7Cj4+ID4gwqAgwqAgwqAgwqBwbGF0Zm9ybV9kZXZpY2Vf
-dW5yZWdpc3RlcihzbWRrX3NuZF9hYzk3X2RldmljZSk7Cj4+ID4gKyDCoCDCoCDCoCBwbGF0Zm9y
-bV9kZXZpY2VfdW5yZWdpc3RlcihzbWRrX3NuZF93bTk3MTNfZGV2aWNlKTsKPj4gPiDCoH0KPj4g
-Pgo+PiA+IMKgbW9kdWxlX2luaXQoc21ka19pbml0KTsKPgo+PiBJIHRoaW5rIHdlIG5lZWQgbW9y
-ZSB0aGFuIHRoaXMgdG8gbWFrZSBtb2R1bGUgbG9hZC91bmxvYWQvbG9hZCB3b3JrLgo+PiBMaWtl
-IHRoZSBzb2MtYXVkaW8gZGV2aWNlIGFkZGVkLiBXb3VsZG4ndCB0aGF0IHNwb2lsIHRoZSBwYXJ0
-eSBuZXh0IHRpbWUKPj4gdGhlIG1vZHVsZSBpcyB0cmllZCB0byBsb2FkZWQgPwo+Cj4gWWVzLCB0
-aGUgc29jLWF1ZGlvIGRldmljZSBkb2VzIG5lZWQgdG8gYmUgdW5yZWdpc3RlcmVkIC0gaXQncyB0
-aGUKPiBzbWRrX3NuZF9hYzk3X2RldmljZSB0aGF0IHdhcyBhbHJlYWR5IGJlaW5nIHVucmVnaXN0
-ZXJlZCBoZXJlLgoKRXZlbiB0aG91Z2ggbW9yZSBuZWVkcyB0byBiZSBkb25lIHRvIGFjaGlldmUg
-cHVycG9zZSBvZiB0aGlzIHBhdGNoLAp0aGlzIGNoYW5nZSBpcyBoYXJtbGVzcy4KU28gYXMgaXMg
-b3Igd2l0aCBtb3JlIGNoYW5nZXMuLi4uCgpBY2tlZC1ieTogSmFzc2kgQnJhciA8amFzc2kuYnJh
-ckBzYW1zdW5nLmNvbT4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+2010/9/20 Gavin Stark <gavin@gstark.com>
+
+> I am using ALSA in a gstreamer project.  When playing many videos (with
+> audio) in the same application and the same gstreamer instance every once in
+> a while (maybe once every 500 times) I will receive the following errors (in
+> a call chain that passes through snd_pcm_open)
+>
+> confmisc.c:1286:snd_func_refer: alsalib error: Unable to find definition
+> 'defaults.pcm.dmix.device'
+> alsa conf.c:4154:_snd_config_evaluate: alsalib error: function
+> snd_func_refer returned error: No such file or directory
+> alsa conf.c:4633:snd_config_expand: alsalib error: Evaluate error: No such
+> file or directory
+> alsa pcm.c:2211:snd_pcm_open_noupdate: alsalib error: Unknown PCM default
+>
+> The next playback will be fine.  Looking through the ALSA code it seems
+> that the configuration data should be cached and re-used unless the number
+> of config files changes, or the files themselves change (name, device,
+> inode. mtime)  So I am wonder why on one instance of snd_pcm_open I'd end up
+> with this error but not on most previous or subsequent calls.
+>
+> All the ALSA configuration files are the defaults, I have no ~/.asoundrc,
+> and I'm running version 1.0.23
+>
+> Thank you,
+> Gavin Stark
+>
+> which distribution are you using ?
+
+if your "default" PCM want to find "defaults.pcm.dmix.device" which is
+defined in alsa-lib/src/alsa/alsa.conf
+
+defaults.pcm.dmix.device defaults.pcm.device
+
+AFAIK, Mandriva 2010/2010 spring can be reconfigued to use dmix/dsnoop
+instead of pulseaudio
+
+But I have no idea how Mandriva 's alsa-lib support "default:0" and
+"default:1"
