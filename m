@@ -1,22 +1,19 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 2/2] omap: zoom: Move new code introduced
- by ASoC m-c to board-zoom-peripherals
-Date: Fri, 24 Sep 2010 18:30:12 +0100
-Message-ID: <1285349412.13240.42.camel@odin>
-References: <1285258314-23721-1-git-send-email-jhnikula@gmail.com>
-	<1285258314-23721-2-git-send-email-jhnikula@gmail.com>
-	<C9D59C82B94F474B872F2092A87F26141272FF6109@dlee07.ent.ti.com>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: Re: [PATCH V1 09/11] ASoC: DaVinci: i2s,
+ add davinci_i2s_prepare and shutdown
+Date: Fri, 24 Sep 2010 12:14:32 -0700
+Message-ID: <4C9CF898.7070906@boundarydevices.com>
+References: <1246761001-21982-1-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-2-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-3-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-4-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-5-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-6-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-7-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-8-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-9-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-10-git-send-email-troy.kisky@boundarydevices.com>
+	<A24693684029E5489D1D202277BE89447289CD0A@dlee02.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id C411C24560
+Received: from cpoproxy3-pub.bluehost.com (cpoproxy3-pub.bluehost.com
+	[67.222.54.6]) by alsa0.perex.cz (Postfix) with SMTP id BC454245E1
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Sep 2010 19:30:14 +0200 (CEST)
-Received: by wya21 with SMTP id 21so132392wya.38
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2010 10:30:14 -0700 (PDT)
-In-Reply-To: <C9D59C82B94F474B872F2092A87F26141272FF6109@dlee07.ent.ti.com>
+	Fri, 24 Sep 2010 21:14:39 +0200 (CEST)
+In-Reply-To: <A24693684029E5489D1D202277BE89447289CD0A@dlee02.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,39 +23,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Lopez Cruz, Misael" <misael.lopez@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Pandita,
-	Vikram" <vikram.pandita@ti.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Candelaria Villarreal, Jorge" <jorge.candelaria@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: "Ambrose, Martin" <martin@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-09-24 at 11:31 -0500, Lopez Cruz, Misael wrote:
-> Hi Jarkko,
+On 9/24/2010 9:48 AM, Ambrose, Martin wrote:
+> On Sat, Jul 04, 2009 at 21:29:59, Troy Kisky wrote:
 > 
-> > ASoC Multi-Component Support moves some code from sound/soc/omap/zoom2.c
-> > into
-> > arch/arm/mach-omap2/board-zoom2.c. However, that code should go to
-> > board-zoom-peripherals.c instead as there is common code and registration
-> > for zoom boards.
-> > 
-> > Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-> > Cc: Vikram Pandita <vikram.pandita@ti.com>
-> > Cc: Lopez Cruz, Misael <x0052729@ti.com>
-> > Cc: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
-> > Cc: Tony Lindgren <tony@atomide.com>
-> > ---
-> > I don't have this HW so not tested.
-> Tested on zoom2 using the 2 patches of your series, compilation break is
-> gone and audio works fine.
+>> If the codec is master then prepare should call
+>> mcbsp_start, not trigger.
 > 
-> Thanks,
-> -Misael
+> For me this change induces audio artifacts when starting or stopping a gstreamer pipeline.
+> Take, e.g., the pipeline
+> 	gst-launch -v filesrc location=file.mp3 ! mad ! alsasink
+> 
+> In the setup, before the file is opened, gstreamer places the pipeline into the PAUSE state.
+> 	... posting state-changed READY to PAUSED
+> 
+> This results in a call to the davinci_i2s_prepare function which, when the codec is master,
+> stops then starts the mcbsp driver. However at this point in the pipeline no valid data has
+> been provided to the DMA layer (davinci-pcm). Consequently there is random noise of somewhat
+> random length played out the DAC at the start of file playback. Moreover when the stream changes
+> from the PAUSE to the PLAYING state another mcbsp_stop/mcbsp_start sequence is performed which
+> seems inefficient. Similar behavior, and noise, occurs when the pipeline is shutdown.
+> 
+> The aplay utility has a simpler startup/shutdown procedure which doesn't produce any noise.
+> 
+> There doesn't seem to be any state context, e.g. pause vs start, provided to the prepare
+> function so I can't see how to handle such cases in the current driver while preserving
+> the use of this patch. If I revert this patch then I don't get any noise but I don't 
+> know what the consequences are. 
+> 
+> Comments/suggestions welcome.
+> 
 
-Applied, and manually added your Tested-by:
+I don't see the problem because my codec waits until trigger to activate its interface.
+
+So the question is, who should be responsible for the final turn on?
+
+My thought was that the device (master) which starts the external wires to wiggling should be last.
+
+If the codec is master, and starts the clocks before the mcbsp is ready that could also cause a pop
+or noise.
+
+
+It would be nice if such rules could be documented, are they???
 
 Thanks
-
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Troy
