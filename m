@@ -1,21 +1,24 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Spurious "Unable to find definition
-	'defaults.pcm.dmix.device'"
-Date: Fri, 24 Sep 2010 11:58:24 +0800
-Message-ID: <AANLkTinU0svw_fGvPH8yJ3E3mJ76wxXS-tcSKdFP0vft@mail.gmail.com>
-References: <A0740C4B-D41B-4567-9013-4CC0CE8B92F7@gstark.com>
+From: Luke Yelavich <themuso@ubuntu.com>
+Subject: [PATCH] include/adriver.h: Define pr_warn to allow
+	compilation against older kernels
+Date: Fri, 24 Sep 2010 15:06:43 +1000
+Message-ID: <1285304803-10345-1-git-send-email-themuso@ubuntu.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id AC97F103970
+Received: from nschwmtas01p.mx.bigpond.com (nschwmtas01p.mx.bigpond.com
+	[61.9.189.137]) by alsa0.perex.cz (Postfix) with ESMTP id E3550103973
 	for <alsa-devel@alsa-project.org>;
-	Fri, 24 Sep 2010 05:58:24 +0200 (CEST)
-Received: by eye27 with SMTP id 27so650641eye.38
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2010 20:58:24 -0700 (PDT)
-In-Reply-To: <A0740C4B-D41B-4567-9013-4CC0CE8B92F7@gstark.com>
+	Fri, 24 Sep 2010 07:06:49 +0200 (CEST)
+Received: from nschwotgx01p.mx.bigpond.com ([124.189.85.102])
+	by nschwmtas01p.mx.bigpond.com with ESMTP id
+	<20100924050645.TLFD24965.nschwmtas01p.mx.bigpond.com@nschwotgx01p.mx.bigpond.com>
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2010 05:06:45 +0000
+Received: from strigy.yelavich.home ([124.189.85.102])
+	by nschwotgx01p.mx.bigpond.com with ESMTP id
+	<20100924050644.UHL8424.nschwotgx01p.mx.bigpond.com@strigy.yelavich.home>
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2010 05:06:44 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,45 +28,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/9/20 Gavin Stark <gavin@gstark.com>
+From: Luke Yelavich <luke.yelavich@canonical.com>
 
-> I am using ALSA in a gstreamer project.  When playing many videos (with
-> audio) in the same application and the same gstreamer instance every once in
-> a while (maybe once every 500 times) I will receive the following errors (in
-> a call chain that passes through snd_pcm_open)
->
-> confmisc.c:1286:snd_func_refer: alsalib error: Unable to find definition
-> 'defaults.pcm.dmix.device'
-> alsa conf.c:4154:_snd_config_evaluate: alsalib error: function
-> snd_func_refer returned error: No such file or directory
-> alsa conf.c:4633:snd_config_expand: alsalib error: Evaluate error: No such
-> file or directory
-> alsa pcm.c:2211:snd_pcm_open_noupdate: alsalib error: Unknown PCM default
->
-> The next playback will be fine.  Looking through the ALSA code it seems
-> that the configuration data should be cached and re-used unless the number
-> of config files changes, or the files themselves change (name, device,
-> inode. mtime)  So I am wonder why on one instance of snd_pcm_open I'd end up
-> with this error but not on most previous or subsequent calls.
->
-> All the ALSA configuration files are the defaults, I have no ~/.asoundrc,
-> and I'm running version 1.0.23
->
-> Thank you,
-> Gavin Stark
->
-> which distribution are you using ?
+In my testing of the daily tarball, I am unable to build against 2.6.32. I
+assume that older kernels would be affected in a similar way.
 
-if your "default" PCM want to find "defaults.pcm.dmix.device" which is
-defined in alsa-lib/src/alsa/alsa.conf
+Signed-off-by: Luke Yelavich <luke.yelavich@canonical.com>
+---
+ include/adriver.h |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-defaults.pcm.dmix.device defaults.pcm.device
-
-AFAIK, Mandriva 2010/2010 spring can be reconfigued to use dmix/dsnoop
-instead of pulseaudio
-
-But I have no idea how Mandriva 's alsa-lib support "default:0" and
-"default:1"
+diff --git a/include/adriver.h b/include/adriver.h
+index 1c7e87b..495e640 100644
+--- a/include/adriver.h
++++ b/include/adriver.h
+@@ -1566,6 +1566,10 @@ XXX_DEFINE_STRTO(ull, unsigned long long);
+ #define pr_warning(fmt, arg...) \
+ 	printk(KERN_WARNING fmt, ##arg)
+ #endif
++#ifndef pr_warn
++#define pr_warn(fmt, arg...) \
++	printk(KERN_WARNING fmt, ##arg)
++#endif
+ #ifndef pr_notice
+ #define pr_notice(fmt, arg...) \
+ 	printk(KERN_NOTICE fmt, ##arg)
+-- 
+1.7.1
