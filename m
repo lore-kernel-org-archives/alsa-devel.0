@@ -1,18 +1,19 @@
-From: "Sebastian H." <vand2@gmx.de>
-Subject: Re: Alsamixer-Qt4 0.4.0 released
-Date: Sat, 25 Sep 2010 12:42:36 +0200
-Message-ID: <4C9DD21C.4000505@gmx.de>
-References: <4C595A52.7030401@gmx.de>
-	<AANLkTimM9L=_Day945Y0XQZotLN7-HrXZbiWuO5dCO65@mail.gmail.com>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH] ASoC: Add Jassi Brar as Samsung maintainer
+Date: Sat, 25 Sep 2010 21:15:46 +0900
+Message-ID: <AANLkTik5q1B9B5V0rUHVfAXPHe7vWbxJm3dK_A6QfTJ=@mail.gmail.com>
+References: <1285402601-10131-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mailout-de.gmx.net [213.165.64.22])
-	by alsa0.perex.cz (Postfix) with SMTP id C2B92244AC
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 4367A24501
 	for <alsa-devel@alsa-project.org>;
-	Sat, 25 Sep 2010 12:43:59 +0200 (CEST)
-In-Reply-To: <AANLkTimM9L=_Day945Y0XQZotLN7-HrXZbiWuO5dCO65@mail.gmail.com>
+	Sat, 25 Sep 2010 14:15:47 +0200 (CEST)
+Received: by bwz13 with SMTP id 13so2108125bwz.38
+	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2010 05:15:46 -0700 (PDT)
+In-Reply-To: <1285402601-10131-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,47 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Am 25.09.2010 03:25, schrieb Raymond Yau:
-> 2010/8/4 Sebastian H. <vand2@gmx.de>
-> 
->> Hello everyone
->>
->> I've been working on Alsamixer-Qt4 lately and compiled
->> the changes into a new release version 0.4.0.
->> Most importantly the cards list can be refreshed now
->> and the style got a little overhaul, too.
->> A more detailed changelog can be found at the xwmw.org page.
->>
->> The new version 0.4.0 is available at the known places.
->> http://xwmw.org/alsamixer-qt4/
->> http://sourceforge.net/projects/alsamixer-qt4/files/
->>
->> Any comments are welcome.
->>
->> Cheers,
->> Sebastian
->>
-> 
-> How about those inactive controls ? snd_mixer_selem_is_active()
-> 
-> e.g. for those motherboard with 3 audio jacks at the rear panel,  the pink
-> and blue jacks are retasked as output pins after turn the "Smart 5.1" switch
-> on , the controls of "Mic" and "Line-in" , "ceter/lfe" and "rear"  are
-> active/inactive
-
-snd_mixer_selem_is_active() has been ignored so far since I wasn't sure
-what it really meant.
-
-Seems the proper way to handle and *inactive* element is to hide the
-slider/switch/enum widgets completely.
-Alternatively they could be greyed out. But showing dead
-widgets would probably just distract users and waste screen space.
-
-Btw. I'm still working on a alsamixer-qt4. There've been just so many
-changes in the background that it takes some time to stabilize
-everything again. And there're still open issues (mostly QT stuff).
-So I would estimate two or three more weeks for a new release.
+T24gU2F0LCBTZXAgMjUsIDIwMTAgYXQgNToxNiBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IFNpbmNlIEphc3NpIGlzIGRvaW5nIHNv
+IG11Y2ggZ29vZCB3b3JrIGFuZCBjYW4gb2ZmZXIgc3VjaCBnb29kIHJldmlldwo+IGZvciB0aGUg
+U2Ftc3VuZyBDUFUgc3VwcG9ydCBhZGQgYW4gZW50cnkgZm9yIHRoZSBTYW1zdW5nIEFTb0MgZHJp
+dmVycwo+IHRvIE1BSU5UQUlORVJTIGxpc3RpbmcgaGltLgo+Cj4gU2lnbmVkLW9mZi1ieTogTWFy
+ayBCcm93biA8YnJvb25pZUBvcGVuc291cmNlLndvbGZzb25taWNyby5jb20+Cj4gQWNrZWQtYnk6
+IExpYW0gR2lyZHdvb2QgPGxyZ0BzbGltbG9naWMuY28udWs+Cj4gLS0tCj4gwqBNQUlOVEFJTkVS
+UyB8IMKgIMKgNiArKysrKysKPiDCoDEgZmlsZXMgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspLCAw
+IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL01BSU5UQUlORVJTIGIvTUFJTlRBSU5FUlMK
+PiBpbmRleCBiNWI4YmFhLi5mNTE0MDliIDEwMDY0NAo+IC0tLSBhL01BSU5UQUlORVJTCj4gKysr
+IGIvTUFJTlRBSU5FUlMKPiBAQCAtNDk2NSw2ICs0OTY1LDEyIEBAIEY6IMKgIMKgIMKgIGRyaXZl
+cnMvbWVkaWEvY29tbW9uL3NhYTcxNDYqCj4gwqBGOiDCoCDCoCBkcml2ZXJzL21lZGlhL3ZpZGVv
+Lyo3MTQ2Kgo+IMKgRjogwqAgwqAgaW5jbHVkZS9tZWRpYS8qNzE0NioKPgo+ICtTQU1TVU5HIEFV
+RElPIChBU29DKSBEUklWRVJTCj4gK006IMKgIMKgIEphc3NpIEJyYXIgPGphc3NpLmJyYXJAc2Ft
+c3VuZy5jb20+Cj4gK0w6IMKgIMKgIGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZyAobW9kZXJh
+dGVkIGZvciBub24tc3Vic2NyaWJlcnMpCj4gK1M6IMKgIMKgIFN1cHBvcnRlZAo+ICtGOiDCoCDC
+oCBzb3VuZC9zb2MvczNjMjR4eAo+ICsKPiDCoFRMRzIzMDAgVklERU80TElOVVgtMiBEUklWRVIK
+PiDCoE06IMKgIMKgIEh1YW5nIFNoaWppZSA8c2hpamllOEBnbWFpbC5jb20+Cj4gwqBNOiDCoCDC
+oCBLYW5nIFlvbmcgPGthbmd5b25nQHRlbGVnZW50LmNvbT4KCkFja2VkLWJ5OiBKYXNzaSBCcmFy
+IDxqYXNzaS5icmFyQHNhbXN1bmcuY29tPgoKVGhhbmtzLgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
