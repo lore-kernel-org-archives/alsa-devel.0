@@ -1,16 +1,18 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Need expert's advice - Fast Track Ultra (8R) dropping
-	samples
-Date: Sat, 25 Sep 2010 11:57:53 +0200
-Message-ID: <4C9DC7A1.8050001@showlabor.de>
+From: "Sebastian H." <vand2@gmx.de>
+Subject: Re: Alsamixer-Qt4 0.4.0 released
+Date: Sat, 25 Sep 2010 12:42:36 +0200
+Message-ID: <4C9DD21C.4000505@gmx.de>
+References: <4C595A52.7030401@gmx.de>
+	<AANLkTimM9L=_Day945Y0XQZotLN7-HrXZbiWuO5dCO65@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
-	[83.169.30.203]) by alsa0.perex.cz (Postfix) with ESMTP id E0C9124465
+Received: from mail.gmx.net (mailout-de.gmx.net [213.165.64.22])
+	by alsa0.perex.cz (Postfix) with SMTP id C2B92244AC
 	for <alsa-devel@alsa-project.org>;
-	Sat, 25 Sep 2010 11:57:56 +0200 (CEST)
+	Sat, 25 Sep 2010 12:43:59 +0200 (CEST)
+In-Reply-To: <AANLkTimM9L=_Day945Y0XQZotLN7-HrXZbiWuO5dCO65@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,42 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Clemens Ladisch <clemens@ladisch.de>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Am 25.09.2010 03:25, schrieb Raymond Yau:
+> 2010/8/4 Sebastian H. <vand2@gmx.de>
+> 
+>> Hello everyone
+>>
+>> I've been working on Alsamixer-Qt4 lately and compiled
+>> the changes into a new release version 0.4.0.
+>> Most importantly the cards list can be refreshed now
+>> and the style got a little overhaul, too.
+>> A more detailed changelog can be found at the xwmw.org page.
+>>
+>> The new version 0.4.0 is available at the known places.
+>> http://xwmw.org/alsamixer-qt4/
+>> http://sourceforge.net/projects/alsamixer-qt4/files/
+>>
+>> Any comments are welcome.
+>>
+>> Cheers,
+>> Sebastian
+>>
+> 
+> How about those inactive controls ? snd_mixer_selem_is_active()
+> 
+> e.g. for those motherboard with 3 audio jacks at the rear panel,  the pink
+> and blue jacks are retasked as output pins after turn the "Smart 5.1" switch
+> on , the controls of "Mic" and "Line-in" , "ceter/lfe" and "rear"  are
+> active/inactive
 
-in that past months I've been trying get the Fast Track Ultra devices 
-working properly in Alsa. We've had lots of progress, most of the code 
-has moved to Alsa git and today I've even posted a patch for getting 
-mixer support for these devices.
+snd_mixer_selem_is_active() has been ignored so far since I wasn't sure
+what it really meant.
 
-Now, I need to get some expert's advice: The devices seem to drop 
-samples or frames. Here's a report I've got today on the M-Audio forum:
+Seems the proper way to handle and *inactive* element is to hide the
+slider/switch/enum widgets completely.
+Alternatively they could be greyed out. But showing dead
+widgets would probably just distract users and waste screen space.
 
-"I've got a subtle problem to report: I think audio playback is dropping
-sample frames. To hear the problem, open Audacity at 48 kHz and play
-a 10-kHz. sine wave. When I do that I hear a regular clicking sound, about
-four clicks a second. I've tried recording the output and if I'm seeing 
-correctly,
-exactly one sample frame in every 13312 (13x1024) is being dropped on 
-output.
-I don't see anything similar on input. When either jack or Pd has both 
-the input and
-the output open, the delay from input to output gradually decreases 
-until it forces
-occasional sync errors. (I haven't tried this with audacity though.)"
-
-(see 
-http://forums.m-audio.com/showthread.php?714-Not-a-problem.-FastTrack-on-linux&p=98101#post98101)
-
-I could reproduce it on my machines, even at 44.1 kHz. The clicking 
-sound is very subtle, it goes unnoticed when not listening to pure sines 
-without attention to clicks.
-
-How can this be sorted out. Any ideas?
-
-Kind regards,
-
-Felix
+Btw. I'm still working on a alsamixer-qt4. There've been just so many
+changes in the background that it takes some time to stabilize
+everything again. And there're still open issues (mostly QT stuff).
+So I would estimate two or three more weeks for a new release.
