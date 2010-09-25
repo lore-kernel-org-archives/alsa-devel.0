@@ -1,23 +1,22 @@
-From: "Justin P. Mattock" <justinmattock@gmail.com>
-Subject: Re: [RFC 2/3 v3]update web addresses in stagging
-Date: Sat, 25 Sep 2010 14:30:49 -0700
-Message-ID: <4C9E6A09.10007@gmail.com>
-References: <1285373337-10945-1-git-send-email-justinmattock@gmail.com>
-	<1285373337-10945-2-git-send-email-justinmattock@gmail.com>
-	<20100925003406.GA30029@kroah.com> <4C9D47AC.6000002@gmail.com>
-	<20100925204736.GD25677@one-eyed-alien.net>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Alsamixer-Qt4 0.4.0 released
+Date: Sun, 26 Sep 2010 07:56:29 +0800
+Message-ID: <AANLkTi=4Uc_vy1xTZMzxy3Komt4up+OAAnioPZdAiO26@mail.gmail.com>
+References: <4C595A52.7030401@gmx.de>
+	<AANLkTimM9L=_Day945Y0XQZotLN7-HrXZbiWuO5dCO65@mail.gmail.com>
+	<4C9DD21C.4000505@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
-	[209.85.210.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id B60C41037E3
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 01C8E1037EE
 	for <alsa-devel@alsa-project.org>;
-	Sat, 25 Sep 2010 23:30:42 +0200 (CEST)
-Received: by pzk5 with SMTP id 5so1255354pzk.38
-	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2010 14:30:41 -0700 (PDT)
-In-Reply-To: <20100925204736.GD25677@one-eyed-alien.net>
+	Sun, 26 Sep 2010 01:56:31 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so1011147ewy.38
+	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2010 16:56:30 -0700 (PDT)
+In-Reply-To: <4C9DD21C.4000505@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,51 +26,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Greg KH <greg@kroah.com>, trivial@kernel.org, linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, linux-usb@vger.kernel.org, linux-scsi@vger.kernel.org, linux-fbdev@vger.
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/25/2010 01:47 PM, Matthew Dharm wrote:
-> On Fri, Sep 24, 2010 at 05:51:56PM -0700, Justin P. Mattock wrote:
->> On 09/24/2010 05:34 PM, Greg KH wrote:
->>> On Fri, Sep 24, 2010 at 05:08:56PM -0700, Justin P. Mattock wrote:
->>>> The below patch, is a simple fix to a broken web address not using a
->>>> period in it's
->>>> name. I'll leave this up to you guys if you want to use it...
->>>>
->>>>   Signed-off-by: Justin P. Mattock<justinmattock@gmail.com>
->>>
->>> I'll queue it up, thanks.
->>>
->>> Oh, it's "staging", not "stagging" as you have up there in the Subject:
->>> :)
->>>
->>> thanks,
->>>
->>> greg k-h
->>>
->>
->> shoot... and I actually changed it from staging to stagging thinking
->> that was correct..(duh)..
->>
->> Anyways alright.. I'll exclude this one if the other sets get finalized.
+2010/9/25 Sebastian H. <vand2@gmx.de>
+
 >
-> One random suggestion:  Perhaps you should include a date here?  i.e. "URL
-> blah blah blah (as of Sept 2010)"
 >
-> That way, people have some idea how much they can trust that URL without
-> having to dig into the kernel history to see when it was last changed.
+> snd_mixer_selem_is_active() has been ignored so far since I wasn't sure
+> what it really meant.
 >
-> Matt
+> Seems the proper way to handle and *inactive* element is to hide the
+> slider/switch/enum widgets completely.
+> Alternatively they could be greyed out. But showing dead
+> widgets would probably just distract users and waste screen space.
+>
+> Btw. I'm still working on a alsamixer-qt4. There've been just so many
+> changes in the background that it takes some time to stabilize
+> everything again. And there're still open issues (mostly QT stuff).
+> So I would estimate two or three more weeks for a new release.
 >
 
+Seem I have quoted a wrong example
 
-well.. as it stand right now doing grep -Re "http" in all the 
-directories(minus COPYING/MAINTAINERS) gave me a little over 2000
-addresses to check(not so bad, only a few days worth of checking(finding 
-the broken address is time consuming)).. so I could go back and do this 
-for all of them except the webarchive addresses that are broken(maybe 
-put a tag on them saying use_webarchive or something).
-then there is the question of how much more bloated will the kernel get 
-with such a thing(I'm guessing not much, but then again you never know).
+Refer to patch_via.c , when "Independent Headphone" switch is on/off,
+In via_independent_hp_put() function call activate_ctl() which set the
+"Headphone Playback volume" and "Headphone Playback switch" controls to
+active/inactive
 
-Justin P. Mattock
+This mean that the controls are only temporary inactive and can become
+active again
+the driver also call snd_ctl_notify(codec->bus->card,
+SNDRV_CTL_EVENT_MASK_VALUE, &ctl->id)
+
+Does it mean that the mixer application receive an event about the change of
+the active/inactive state of the control ?
