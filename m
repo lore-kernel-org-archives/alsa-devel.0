@@ -1,119 +1,727 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: [PATCH V1 09/11] ASoC: DaVinci: i2s,
- add davinci_i2s_prepare and shutdown
-Date: Fri, 24 Sep 2010 16:13:50 -0700
-Message-ID: <4C9D30AE.6080103@boundarydevices.com>
-References: <1246761001-21982-1-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-2-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-3-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-4-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-5-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-6-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-7-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-8-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-9-git-send-email-troy.kisky@boundarydevices.com>	<1246761001-21982-10-git-send-email-troy.kisky@boundarydevices.com>	<A24693684029E5489D1D202277BE89447289CD0A@dlee02.ent.ti.com>	<4C9CF898.7070906@boundarydevices.com>
-	<A24693684029E5489D1D202277BE89447289CF40@dlee02.ent.ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cpoproxy3-pub.bluehost.com (cpoproxy3-pub.bluehost.com
-	[67.222.54.6]) by alsa0.perex.cz (Postfix) with SMTP id CF5421037FC
-	for <alsa-devel@alsa-project.org>;
-	Sat, 25 Sep 2010 01:13:57 +0200 (CEST)
-In-Reply-To: <A24693684029E5489D1D202277BE89447289CF40@dlee02.ent.ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Ambrose, Martin" <martin@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: "Justin P. Mattock" <justinmattock-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [RFC 2/3 v3]update web addresses in stagging
+Date: Fri, 24 Sep 2010 17:08:56 -0700
+Message-ID: <1285373337-10945-2-git-send-email-justinmattock@gmail.com>
+References: <1285373337-10945-1-git-send-email-justinmattock@gmail.com>
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1285373337-10945-1-git-send-email-justinmattock-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: trivial-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-ide-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "Justin P. Mattock" <justinmattock-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
->> I don't see the problem because my codec waits until trigger to activate its interface.
-> 
-> Thanks for the feedback. I'm using the tlv320aic3x codec driver. Which codec are you using?
+The below patch, is a simple fix to a broken web address not using a period in it's
+name. I'll leave this up to you guys if you want to use it...
 
-A modified tlv320aic23. I wrote it before it was available in the kernel, and never finished
-a merge.
+ Signed-off-by: Justin P. Mattock <justinmattock-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-> 
->> So the question is, who should be responsible for the final turn on?
->>
->> My thought was that the device (master) which starts the external wires to wiggling should be last.
-> 
-> Fair enough. I suppose that is the reasoning for the addition of the prepare function.
-> The assumption being that a cpu_dai callback to the prepare function will always proceed
-> a call to the codec_dai trigger function. In this way the serial port can be configured and enabled.
-> Then the codec can turn on the bit/frame clocks which will start the flow of data. 
-> Although it would seem the codec is unmuted a bit prematurely in this scenario since it happens
-> before the clocks are enabled in the core prepare function -- at least I think this is the case.
-> 
-> However there would still seem to be spurious, or at least superfluous, calls
-> to mcbsp_stop/start when just requesting the device to enter the pause state.
-> 
-> I guess the call tree is then different in the case where the cpu, or machine, is the 
-> clock master. This has pros/cons obviously.
-> 
->> If the codec is master, and starts the clocks before the mcbsp is ready that could also cause a pop
->> or noise.
-> 
-> I still a newbie when it comes to the ALSA architecture.
-> Is the proper signal indicating everything is ready, including valid data, a trigger call with cmd=START?
-> 
+---
+ .../comedi/drivers/addi-data/APCI1710_82x54.c      |    2 +-
+ .../comedi/drivers/addi-data/APCI1710_82x54.h      |    2 +-
+ .../comedi/drivers/addi-data/APCI1710_Chrono.c     |    2 +-
+ .../comedi/drivers/addi-data/APCI1710_Dig_io.c     |    2 +-
+ .../comedi/drivers/addi-data/APCI1710_Dig_io.h     |    2 +-
+ .../comedi/drivers/addi-data/APCI1710_INCCPT.c     |    2 +-
+ .../comedi/drivers/addi-data/APCI1710_INCCPT.h     |    2 +-
+ .../comedi/drivers/addi-data/APCI1710_Inp_cpt.c    |    2 +-
+ .../comedi/drivers/addi-data/APCI1710_Inp_cpt.h    |    2 +-
+ .../comedi/drivers/addi-data/APCI1710_Pwm.c        |    2 +-
+ .../comedi/drivers/addi-data/APCI1710_Pwm.h        |    2 +-
+ .../comedi/drivers/addi-data/APCI1710_Ssi.c        |    2 +-
+ .../comedi/drivers/addi-data/APCI1710_Ssi.h        |    2 +-
+ .../comedi/drivers/addi-data/APCI1710_Tor.c        |    2 +-
+ .../comedi/drivers/addi-data/APCI1710_Tor.h        |    2 +-
+ .../comedi/drivers/addi-data/APCI1710_Ttl.c        |    2 +-
+ .../comedi/drivers/addi-data/APCI1710_Ttl.h        |    2 +-
+ .../comedi/drivers/addi-data/addi_amcc_S5920.c     |    2 +-
+ .../comedi/drivers/addi-data/addi_amcc_S5920.h     |    2 +-
+ .../comedi/drivers/addi-data/addi_amcc_s5933.h     |    2 +-
+ .../staging/comedi/drivers/addi-data/addi_common.c |    2 +-
+ .../staging/comedi/drivers/addi-data/addi_common.h |    2 +-
+ .../staging/comedi/drivers/addi-data/addi_eeprom.c |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_APCI1710.c      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_APCI1710.h      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci035.c       |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci035.h       |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci1032.c      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci1032.h      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci1500.c      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci1500.h      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci1516.c      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci1516.h      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci1564.c      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci1564.h      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci16xx.c      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci2016.c      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci2016.h      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci2032.c      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci2032.h      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci2200.c      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci2200.h      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci3120.c      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci3120.h      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci3200.c      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci3200.h      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci3501.c      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci3501.h      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci3xxx.c      |    2 +-
+ .../comedi/drivers/addi-data/hwdrv_apci3xxx.h      |    2 +-
+ 50 files changed, 50 insertions(+), 50 deletions(-)
 
-That is my understanding.
+diff --git a/drivers/staging/comedi/drivers/addi-data/APCI1710_82x54.c b/drivers/staging/comedi/drivers/addi-data/APCI1710_82x54.c
+index 60213d2..b59f2d4 100644
+--- a/drivers/staging/comedi/drivers/addi-data/APCI1710_82x54.c
++++ b/drivers/staging/comedi/drivers/addi-data/APCI1710_82x54.c
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/APCI1710_82x54.h b/drivers/staging/comedi/drivers/addi-data/APCI1710_82x54.h
+index 9698ae1..81346db 100644
+--- a/drivers/staging/comedi/drivers/addi-data/APCI1710_82x54.h
++++ b/drivers/staging/comedi/drivers/addi-data/APCI1710_82x54.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/APCI1710_Chrono.c b/drivers/staging/comedi/drivers/addi-data/APCI1710_Chrono.c
+index fbc26a0..644bda4 100644
+--- a/drivers/staging/comedi/drivers/addi-data/APCI1710_Chrono.c
++++ b/drivers/staging/comedi/drivers/addi-data/APCI1710_Chrono.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/APCI1710_Dig_io.c b/drivers/staging/comedi/drivers/addi-data/APCI1710_Dig_io.c
+index a6898e4..07108f9 100644
+--- a/drivers/staging/comedi/drivers/addi-data/APCI1710_Dig_io.c
++++ b/drivers/staging/comedi/drivers/addi-data/APCI1710_Dig_io.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/APCI1710_Dig_io.h b/drivers/staging/comedi/drivers/addi-data/APCI1710_Dig_io.h
+index af1b9cd..cc3973d 100644
+--- a/drivers/staging/comedi/drivers/addi-data/APCI1710_Dig_io.h
++++ b/drivers/staging/comedi/drivers/addi-data/APCI1710_Dig_io.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/APCI1710_INCCPT.c b/drivers/staging/comedi/drivers/addi-data/APCI1710_INCCPT.c
+index 0e498e9..14b13ea 100644
+--- a/drivers/staging/comedi/drivers/addi-data/APCI1710_INCCPT.c
++++ b/drivers/staging/comedi/drivers/addi-data/APCI1710_INCCPT.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/APCI1710_INCCPT.h b/drivers/staging/comedi/drivers/addi-data/APCI1710_INCCPT.h
+index 7b48110..358298b 100644
+--- a/drivers/staging/comedi/drivers/addi-data/APCI1710_INCCPT.h
++++ b/drivers/staging/comedi/drivers/addi-data/APCI1710_INCCPT.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/APCI1710_Inp_cpt.c b/drivers/staging/comedi/drivers/addi-data/APCI1710_Inp_cpt.c
+index 204d798..3f9cfa2 100644
+--- a/drivers/staging/comedi/drivers/addi-data/APCI1710_Inp_cpt.c
++++ b/drivers/staging/comedi/drivers/addi-data/APCI1710_Inp_cpt.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/APCI1710_Inp_cpt.h b/drivers/staging/comedi/drivers/addi-data/APCI1710_Inp_cpt.h
+index 61a21cc..31fbb0b 100644
+--- a/drivers/staging/comedi/drivers/addi-data/APCI1710_Inp_cpt.h
++++ b/drivers/staging/comedi/drivers/addi-data/APCI1710_Inp_cpt.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/APCI1710_Pwm.c b/drivers/staging/comedi/drivers/addi-data/APCI1710_Pwm.c
+index 148ce6f..8883e66 100644
+--- a/drivers/staging/comedi/drivers/addi-data/APCI1710_Pwm.c
++++ b/drivers/staging/comedi/drivers/addi-data/APCI1710_Pwm.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/APCI1710_Pwm.h b/drivers/staging/comedi/drivers/addi-data/APCI1710_Pwm.h
+index bf1b4c3..d8ad0b9 100644
+--- a/drivers/staging/comedi/drivers/addi-data/APCI1710_Pwm.h
++++ b/drivers/staging/comedi/drivers/addi-data/APCI1710_Pwm.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/APCI1710_Ssi.c b/drivers/staging/comedi/drivers/addi-data/APCI1710_Ssi.c
+index 6360de5..0c890a9 100644
+--- a/drivers/staging/comedi/drivers/addi-data/APCI1710_Ssi.c
++++ b/drivers/staging/comedi/drivers/addi-data/APCI1710_Ssi.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/APCI1710_Ssi.h b/drivers/staging/comedi/drivers/addi-data/APCI1710_Ssi.h
+index eb7f101..ef4d887 100644
+--- a/drivers/staging/comedi/drivers/addi-data/APCI1710_Ssi.h
++++ b/drivers/staging/comedi/drivers/addi-data/APCI1710_Ssi.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/APCI1710_Tor.c b/drivers/staging/comedi/drivers/addi-data/APCI1710_Tor.c
+index 344df94..7361d50 100644
+--- a/drivers/staging/comedi/drivers/addi-data/APCI1710_Tor.c
++++ b/drivers/staging/comedi/drivers/addi-data/APCI1710_Tor.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/APCI1710_Tor.h b/drivers/staging/comedi/drivers/addi-data/APCI1710_Tor.h
+index 03a93cb..537d475 100644
+--- a/drivers/staging/comedi/drivers/addi-data/APCI1710_Tor.h
++++ b/drivers/staging/comedi/drivers/addi-data/APCI1710_Tor.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/APCI1710_Ttl.c b/drivers/staging/comedi/drivers/addi-data/APCI1710_Ttl.c
+index de6f772..9e177f4 100644
+--- a/drivers/staging/comedi/drivers/addi-data/APCI1710_Ttl.c
++++ b/drivers/staging/comedi/drivers/addi-data/APCI1710_Ttl.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/APCI1710_Ttl.h b/drivers/staging/comedi/drivers/addi-data/APCI1710_Ttl.h
+index c4f1134..adcab82 100644
+--- a/drivers/staging/comedi/drivers/addi-data/APCI1710_Ttl.h
++++ b/drivers/staging/comedi/drivers/addi-data/APCI1710_Ttl.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/addi_amcc_S5920.c b/drivers/staging/comedi/drivers/addi-data/addi_amcc_S5920.c
+index 97c10aa..90e71e1 100644
+--- a/drivers/staging/comedi/drivers/addi-data/addi_amcc_S5920.c
++++ b/drivers/staging/comedi/drivers/addi-data/addi_amcc_S5920.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/addi_amcc_S5920.h b/drivers/staging/comedi/drivers/addi-data/addi_amcc_S5920.h
+index 622a4ac..9afdb13 100644
+--- a/drivers/staging/comedi/drivers/addi-data/addi_amcc_S5920.h
++++ b/drivers/staging/comedi/drivers/addi-data/addi_amcc_S5920.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/addi_amcc_s5933.h b/drivers/staging/comedi/drivers/addi-data/addi_amcc_s5933.h
+index 8ed19bc..35a3ea1 100644
+--- a/drivers/staging/comedi/drivers/addi-data/addi_amcc_s5933.h
++++ b/drivers/staging/comedi/drivers/addi-data/addi_amcc_s5933.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/addi_common.c b/drivers/staging/comedi/drivers/addi-data/addi_common.c
+index 5ed4b94..93d7c05 100644
+--- a/drivers/staging/comedi/drivers/addi-data/addi_common.c
++++ b/drivers/staging/comedi/drivers/addi-data/addi_common.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/addi_common.h b/drivers/staging/comedi/drivers/addi-data/addi_common.h
+index 1a28169..13621d4 100644
+--- a/drivers/staging/comedi/drivers/addi-data/addi_common.h
++++ b/drivers/staging/comedi/drivers/addi-data/addi_common.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/addi_eeprom.c b/drivers/staging/comedi/drivers/addi-data/addi_eeprom.c
+index e0213a9..0aa11a0 100644
+--- a/drivers/staging/comedi/drivers/addi-data/addi_eeprom.c
++++ b/drivers/staging/comedi/drivers/addi-data/addi_eeprom.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_APCI1710.c b/drivers/staging/comedi/drivers/addi-data/hwdrv_APCI1710.c
+index d7d768e..b748efc 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_APCI1710.c
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_APCI1710.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_APCI1710.h b/drivers/staging/comedi/drivers/addi-data/hwdrv_APCI1710.h
+index 22b3e56..89c99eb 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_APCI1710.h
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_APCI1710.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci035.c b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci035.c
+index 1369e22..74012e0 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci035.c
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci035.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci035.h b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci035.h
+index 68db9c1..3c700c7 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci035.h
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci035.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1032.c b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1032.c
+index faea003..6e06d9d 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1032.c
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1032.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1032.h b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1032.h
+index e29a72a..7114acb 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1032.h
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1032.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1500.c b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1500.c
+index b3b9218..b5d7d98 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1500.c
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1500.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1500.h b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1500.h
+index 0579033..647f9eb 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1500.h
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1500.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1516.c b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1516.c
+index 7948c41..70edc38 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1516.c
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1516.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1516.h b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1516.h
+index 21c09ed..4472829 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1516.h
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1516.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1564.c b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1564.c
+index 4299ff5..806f76d 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1564.c
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1564.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1564.h b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1564.h
+index 0780c44..c91594d 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1564.h
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci1564.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci16xx.c b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci16xx.c
+index 8bc88ad..8ebb254 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci16xx.c
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci16xx.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2016.c b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2016.c
+index 89783b1eb..7090c24 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2016.c
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2016.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2016.h b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2016.h
+index 639944c..c42612a 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2016.h
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2016.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2032.c b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2032.c
+index d7d2223..73802ab 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2032.c
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2032.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2032.h b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2032.h
+index c971d14..ab145e7 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2032.h
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2032.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2200.c b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2200.c
+index e01889c..ced101f 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2200.c
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2200.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2200.h b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2200.h
+index 63e5f1f..83f42af 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2200.h
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci2200.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3120.c b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3120.c
+index 851f71b..a813fdb 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3120.c
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3120.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3120.h b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3120.h
+index fedfc9c..b3c8197 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3120.h
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3120.h
+@@ -9,7 +9,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3200.c b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3200.c
+index 560c848..5fd0303 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3200.c
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3200.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3200.h b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3200.h
+index f3e7ebf..812a9c4 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3200.h
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3200.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3501.c b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3501.c
+index 4ed441a..517e9ab 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3501.c
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3501.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3501.h b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3501.h
+index 743523e..63df635 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3501.h
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3501.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3xxx.c b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3xxx.c
+index 2e20bc7..d3c5963 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3xxx.c
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3xxx.c
+@@ -8,7 +8,7 @@ Copyright (C) 2004,2005  ADDI-DATA GmbH for the source code of this module.
+ 	D-77833 Ottersweier
+ 	Tel: +19(0)7223/9493-0
+ 	Fax: +49(0)7223/9493-92
+-	http://www.addi-data-com
++	http://www.addi-data.com
+ 	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+ 
+ This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+diff --git a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3xxx.h b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3xxx.h
+index 788d7c1..cce9e12 100644
+--- a/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3xxx.h
++++ b/drivers/staging/comedi/drivers/addi-data/hwdrv_apci3xxx.h
+@@ -6,7 +6,7 @@
+  *	D-77833 Ottersweier
+  *	Tel: +19(0)7223/9493-0
+  *	Fax: +49(0)7223/9493-92
+- *	http://www.addi-data-com
++ *	http://www.addi-data.com
+  *	info-1jq6dPlqA8eB+jHODAdFcQ@public.gmane.org
+  *
+  * This program is free software; you can redistribute it and/or modify it
+-- 
+1.7.2.1
 
-I think the main problem with using trigger to start the codec wiggling wires
-is the need to use schedule_work to do i2c writes. That's probably why the mainline
-aic23 driver doesn't use trigger. Sample below.
-
-
-static void codec_trigger_deferred(struct work_struct *work)
-{
-       struct aic23 *aic23 = container_of(work, struct aic23,
-                       deferred_trigger_work);
-       struct snd_soc_codec *codec = &aic23->codec;
-       int playback = aic23->active_mask & ACTIVE_PLAYBACK;
-       u16 dia = (aic23->active_mask) ? 1 : 0;
-       if (playback) {
-               tlv320aic23_set(codec, TLV320AIC23_ACTIVE, 1);
-               tlv320aic23_modify(codec, TLV320AIC23_ANLG, 0, TLV320AIC23_DAC_SELECTED);
-               tlv320aic23_mute_volume(codec, 0);
-       } else {
-               tlv320aic23_mute_volume(codec, 1);
-               if (dia)
-                       tlv320aic23_set(codec, TLV320AIC23_ACTIVE, dia);
-               tlv320aic23_modify(codec, TLV320AIC23_ANLG, TLV320AIC23_DAC_SELECTED, 0);
-               if (!dia)
-                       tlv320aic23_set(codec, TLV320AIC23_ACTIVE, dia);
-       }
-}
-
-static int tlv320aic23_trigger(struct snd_pcm_substream *substream, int cmd,
-                  struct snd_soc_dai *dai)
-{
-       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-       struct snd_soc_device *socdev = rtd->socdev;
-       struct snd_soc_codec *codec = socdev->card->codec;
-       struct aic23 *aic23 = container_of(codec, struct aic23, codec);
-       int ret = 0;
-       int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
-       unsigned char mask = (playback)? ACTIVE_PLAYBACK : ACTIVE_CAPTURE;
-
-       switch (cmd) {
-       case SNDRV_PCM_TRIGGER_START:
-       case SNDRV_PCM_TRIGGER_RESUME:
-       case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-               aic23->active_mask |= mask;
-               schedule_work(&aic23->deferred_trigger_work);
-               break;
-       case SNDRV_PCM_TRIGGER_STOP:
-       case SNDRV_PCM_TRIGGER_SUSPEND:
-       case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-               aic23->active_mask &= ~mask;
-               schedule_work(&aic23->deferred_trigger_work);
-               /* don't stop driving data lines
-                * until digital_mute done
-                */
-               break;
-       default:
-       return ret;
-}
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
