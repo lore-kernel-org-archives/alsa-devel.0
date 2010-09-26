@@ -1,18 +1,21 @@
-From: "Sebastian H." <vand2@gmx.de>
-Subject: Re: Alsamixer-Qt4 0.4.0 released
-Date: Sun, 26 Sep 2010 12:36:09 +0200
-Message-ID: <4C9F2219.9040304@gmx.de>
-References: <4C595A52.7030401@gmx.de>	<AANLkTimM9L=_Day945Y0XQZotLN7-HrXZbiWuO5dCO65@mail.gmail.com>	<4C9DD21C.4000505@gmx.de>
-	<AANLkTi=4Uc_vy1xTZMzxy3Komt4up+OAAnioPZdAiO26@mail.gmail.com>
+From: Kyungmin Park <kmpark@infradead.org>
+Subject: Re: [PATCH] ASoC: Add Jassi Brar as Samsung maintainer
+Date: Sun, 26 Sep 2010 19:38:05 +0900
+Message-ID: <AANLkTi=xEwPGsf756EG3c4sC5F4mDevoXwcMtSYnrXt_@mail.gmail.com>
+References: <1285402601-10131-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<AANLkTik5q1B9B5V0rUHVfAXPHe7vWbxJm3dK_A6QfTJ=@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mailout-de.gmx.net [213.165.64.23])
-	by alsa0.perex.cz (Postfix) with SMTP id B971F244BA
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id D9E101037F2
 	for <alsa-devel@alsa-project.org>;
-	Sun, 26 Sep 2010 12:37:35 +0200 (CEST)
-In-Reply-To: <AANLkTi=4Uc_vy1xTZMzxy3Komt4up+OAAnioPZdAiO26@mail.gmail.com>
+	Sun, 26 Sep 2010 12:38:06 +0200 (CEST)
+Received: by wya21 with SMTP id 21so1091106wya.38
+	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2010 03:38:06 -0700 (PDT)
+In-Reply-To: <AANLkTik5q1B9B5V0rUHVfAXPHe7vWbxJm3dK_A6QfTJ=@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,75 +25,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Jassi Brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jassi Brar <jassi.brar@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Am 26.09.2010 01:56, schrieb Raymond Yau:
-> 2010/9/25 Sebastian H. <vand2@gmx.de>
-> 
+Good news,
+
+At the first work, can you proceed the directory name change from
+s3c24xx to samsung?
+
+it's really misleading and confusing to others.
+
+Thank you,
+Kyungmin Park
+
+On Sat, Sep 25, 2010 at 9:15 PM, Jassi Brar <jassisinghbrar@gmail.com> wrot=
+e:
+> On Sat, Sep 25, 2010 at 5:16 PM, Mark Brown
+> <broonie@opensource.wolfsonmicro.com> wrote:
+>> Since Jassi is doing so much good work and can offer such good review
+>> for the Samsung CPU support add an entry for the Samsung ASoC drivers
+>> to MAINTAINERS listing him.
 >>
+>> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+>> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+>> ---
+>> =A0MAINTAINERS | =A0 =A06 ++++++
+>> =A01 files changed, 6 insertions(+), 0 deletions(-)
 >>
->> snd_mixer_selem_is_active() has been ignored so far since I wasn't sure
->> what it really meant.
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index b5b8baa..f51409b 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -4965,6 +4965,12 @@ F: =A0 =A0 =A0 drivers/media/common/saa7146*
+>> =A0F: =A0 =A0 drivers/media/video/*7146*
+>> =A0F: =A0 =A0 include/media/*7146*
 >>
->> Seems the proper way to handle and *inactive* element is to hide the
->> slider/switch/enum widgets completely.
->> Alternatively they could be greyed out. But showing dead
->> widgets would probably just distract users and waste screen space.
->>
->> Btw. I'm still working on a alsamixer-qt4. There've been just so many
->> changes in the background that it takes some time to stabilize
->> everything again. And there're still open issues (mostly QT stuff).
->> So I would estimate two or three more weeks for a new release.
->>
-> 
-> Seem I have quoted a wrong example
-> 
-> Refer to patch_via.c , when "Independent Headphone" switch is on/off,
-> In via_independent_hp_put() function call activate_ctl() which set the
-> "Headphone Playback volume" and "Headphone Playback switch" controls to
-> active/inactive
-> 
-> This mean that the controls are only temporary inactive and can become
-> active again
-> the driver also call snd_ctl_notify(codec->bus->card,
-> SNDRV_CTL_EVENT_MASK_VALUE, &ctl->id)
-> 
-> Does it mean that the mixer application receive an event about the change of
-> the active/inactive state of the control ?
-
-The quick answer is likely yes.
-Although the active/inactive evaluation part
-it is not implemented, yet. But this shouldn't be too difficult with
-the new dynamic design which roughly looks like this.
-
-Buffer A - Offline buffer in in the background.
-           Contains snd_mixer_t and snd_mixer_elem_t structs.
-           Gets created once during mixer loading (or reloading).
-
-Buffer B - Online buffer. Corresponds to the widgets.
-           The layout (also means widgets visibility) can be changed
-           on demand.
-
-
-The value update flow then goes somewhat like this
-
-- Socket event on the snd_mixer_t!
-- Read the whole mixer state from the snd_* functions into Buffer A
-- Value evaluation in Buffer A.
-  On demand:
-  - Adjust Buffer B to separate sliders with unequal channel values
-  - Adjust Buffer B to hide/reveal inactive/active sliders (to be done)
-- Copy the state from Buffer A into Buffer B updating the GUI widgets.
-
-The slider separation already works (and is pretty neat :).
-Though there still is an issue with channel values changing
-one by one and not all together. This makes the Buffer A evaluator
-think the sliders should be separated just to become equal again
-directly after. I already thought about introducing a delay of a
-second or so for slider separation (to be done).
-
-The active/inactive state evaluation will be another check in the Buffer
-A evaluation step. The check then can adjust Buffer B to
-show/hide the respective GUI widget (to be done).
+>> +SAMSUNG AUDIO (ASoC) DRIVERS
+>> +M: =A0 =A0 Jassi Brar <jassi.brar@samsung.com>
+>> +L: =A0 =A0 alsa-devel@alsa-project.org (moderated for non-subscribers)
+>> +S: =A0 =A0 Supported
+>> +F: =A0 =A0 sound/soc/s3c24xx
+>> +
+>> =A0TLG2300 VIDEO4LINUX-2 DRIVER
+>> =A0M: =A0 =A0 Huang Shijie <shijie8@gmail.com>
+>> =A0M: =A0 =A0 Kang Yong <kangyong@telegent.com>
+>
+> Acked-by: Jassi Brar <jassi.brar@samsung.com>
+>
+> Thanks.
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
