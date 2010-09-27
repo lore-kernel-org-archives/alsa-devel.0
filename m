@@ -1,23 +1,28 @@
-From: Reimundo Heluani <rheluani@gmail.com>
-Subject: Re: mic on macbook air
-Date: Mon, 27 Sep 2010 14:47:35 -0300
-Message-ID: <AANLkTi=1KbpHrTC9oNL2PPL5yTOOVbqKunVY8h-Tgf1b@mail.gmail.com>
-References: <1285540323.2205.11.camel@vino> <s5hvd5rxncg.wl%tiwai@suse.de>
-	<4CA0C81E.5030103@gmail.com>
-	<AANLkTikbkubbhOnc0hCRmWRv5H6vqQTRjE6afmmJ48t=@mail.gmail.com>
-	<4CA0D537.1000209@gmail.com>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: how to mandate the use of PCM plugin?
+Date: Mon, 27 Sep 2010 18:57:04 +0100
+Message-ID: <i7qltg$bph$1@dough.gmane.org>
+References: <4C9F6409.6010400@aknet.ru> <20100927005858.GD21247@sirena.org.uk>
+	<4CA0221D.6030208@aknet.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8E765243E2
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id EEF82243E4
 	for <alsa-devel@alsa-project.org>;
-	Mon, 27 Sep 2010 19:47:36 +0200 (CEST)
-Received: by iwn4 with SMTP id 4so44019iwn.38
-	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2010 10:47:35 -0700 (PDT)
-In-Reply-To: <4CA0D537.1000209@gmail.com>
+	Mon, 27 Sep 2010 19:57:19 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1P0Hwv-0006k2-RP
+	for alsa-devel@alsa-project.org; Mon, 27 Sep 2010 19:57:13 +0200
+Received: from cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
+	([94.173.13.3]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2010 19:57:13 +0200
+Received: from gmane by cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
+	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2010 19:57:13 +0200
+In-Reply-To: <4CA0221D.6030208@aknet.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,50 +32,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Justin P. Mattock" <justinmattock@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 27, 2010 at 2:32 PM, Justin P. Mattock
-<justinmattock@gmail.com> wrote:
-> On 09/27/2010 09:40 AM, Reimundo Heluani wrote:
->>
->> As far as I know I wrote the only patch for macbook air 2,1 that
->> shipped with 2.6.34 but that was for the internal speaker only. I
->> could never get the mic going.
->>
->> Cheers,
->>
->> R.
->
-> when doing a cat codec#0 | grep Pin on my iMac9,1
-> I can see:
->
-> Node 0x19 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-> =A0Pincap 0x0000373c: IN OUT HP Detect
-> =A0Pin Default 0x90a00110: [Fixed] Mic at Int N/A
-> =A0Pin-ctls: 0x24: IN VREF_80
->
-> when doing the same for the mba1,1 I didn't see anything in there that sa=
-id
-> Mic.. I'm wondering if the Mic is there, it's just not being shown when
-> doing cat codec#0 due to apple changing something with the hardware. did =
-you
-> try different pin numbers?(even though none of the pins say Mic)
->
-> Justin P. Mattock
->
+'Twas brillig, and Stas Sergeev at 27/09/10 05:48 did gyre and gimble:
+>   Hello.
+> 
+> 27.09.2010 04:58, Mark Brown wrote:
+>>> Is it possible to somehow mandate the
+>>> use of a PCM plugin? For example, the
+>>> PC-Speaker.conf defines the use of softvol
+>>> plugin for "default" and "front" devices.
+>>> It is still possible for the software to bypass
+>>> it by the use of "hw", and some software
+>>> does exactly that.
+>>> Is it possible to somehow make some
+>>> plugin a mandatory?
+>> What is the actual problem you are trying to solve here?  It's not
+>> possible to *mandate* anything to all users, if nothing else someone
+>> with administrative access can always rebuild whatever part of the
+>> system is trying to restrict them.
+> What I am trying to solve, is the problem
+> that people have with my snd-pcsp driver.
+> Pulseaudio uses "hw" to bypass some pcm
+> plugins, and then people are left with the
+> non-functional softvol control, and they blame
+> my driver.
 
-Well, here it could just be my ignorance, but I think last year when I
-was trying, I tried all possible pins and didn't find the mic
-anywhere. Then I thought that it could be some vendor parameters on
-0x20, but then I saw the plist file in the kext and the only thing
-they adjust is the pindefault to 0x90a00110: [Fixed] Mic at Int N/A on
-what it seems to be either pin 0x1c (which I tried) or 0x27 (which is
-nonexistent). There's a thread at the ubuntu forums with people
-running alsa on air 2,1 but I couldn't get anyone to play with
-hda-verb.
+FWIW, PA does not actually use "hw" to open the device in most cases. It
+actually uses front, surround51 etc. etc.
 
-Cheers,
+The volume control pipeline can be summed up here if you're not already
+familiar with it:
+http://pulseaudio.org/wiki/PulseAudioStoleMyVolumes
 
-R.
+which explains how the various mixer elements are used.
+
+It is quite common however for incorrect dB data to be presented from
+drivers.
+
+This can be rectified by calculating proper dB information and fixing up
+the driver. Some details can be found here:
+http://www.pulseaudio.org/wiki/BadDecibel
+
+And today, one of the Canonical guys published his version of a tool to
+help here:
+http://thread.gmane.org/gmane.comp.audio.pulseaudio.general/7542
+
+Hope this helps.
+
+Col
+
+
+-- 
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mageia Contributor [http://www.mageia.org/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
