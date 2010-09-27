@@ -1,10 +1,9 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH V1 09/11] ASoC: DaVinci: i2s,
 	add	davinci_i2s_prepare and shutdown
-Date: Mon, 27 Sep 2010 01:27:52 +0100
-Message-ID: <20100927002752.GB21247@sirena.org.uk>
-References: <1246761001-21982-3-git-send-email-troy.kisky@boundarydevices.com>
-	<1246761001-21982-4-git-send-email-troy.kisky@boundarydevices.com>
+Date: Mon, 27 Sep 2010 01:56:36 +0100
+Message-ID: <20100927005636.GC21247@sirena.org.uk>
+References: <1246761001-21982-4-git-send-email-troy.kisky@boundarydevices.com>
 	<1246761001-21982-5-git-send-email-troy.kisky@boundarydevices.com>
 	<1246761001-21982-6-git-send-email-troy.kisky@boundarydevices.com>
 	<1246761001-21982-7-git-send-email-troy.kisky@boundarydevices.com>
@@ -13,16 +12,17 @@ References: <1246761001-21982-3-git-send-email-troy.kisky@boundarydevices.com>
 	<1246761001-21982-10-git-send-email-troy.kisky@boundarydevices.com>
 	<A24693684029E5489D1D202277BE89447289CD0A@dlee02.ent.ti.com>
 	<4C9CF898.7070906@boundarydevices.com>
+	<A24693684029E5489D1D202277BE89447289CF40@dlee02.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id B7C1924610
+	by alsa0.perex.cz (Postfix) with ESMTP id 35DA124634
 	for <alsa-devel@alsa-project.org>;
-	Mon, 27 Sep 2010 02:27:56 +0200 (CEST)
+	Mon, 27 Sep 2010 02:56:40 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4C9CF898.7070906@boundarydevices.com>
+In-Reply-To: <A24693684029E5489D1D202277BE89447289CF40@dlee02.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,28 +32,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Troy Kisky <troy.kisky@boundarydevices.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Ambrose,
-	Martin" <martin@ti.com>
+To: "Ambrose, Martin" <martin@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 24, 2010 at 12:14:32PM -0700, Troy Kisky wrote:
-> On 9/24/2010 9:48 AM, Ambrose, Martin wrote:
+On Fri, Sep 24, 2010 at 02:43:30PM -0500, Ambrose, Martin wrote:
+> On Fri, Sep 24, 2010 at 14:14:32, Troy Kisky wrote:
 
-Guys, please fix the configurations of your mail clients to word wrap
-within paragraphs at less than 80 columns - makes things much easier to
-read.
+> > My thought was that the device (master) which starts the external
+> > wires to wiggling should be last.
 
-> My thought was that the device (master) which starts the external
-> wires to wiggling should be last.
+> Fair enough. I suppose that is the reasoning for the addition of the
+> prepare function.  The assumption being that a cpu_dai callback to the
+> prepare function will always proceed a call to the codec_dai trigger
+> function. In this way the serial port can be configured and enabled.
 
-> If the codec is master, and starts the clocks before the mcbsp is
-> ready that could also cause a pop or noise.
+These are all generic ALSA things, not ASoC specific - ASoC is just
+passing them straight through.  The idea is that prepare() allows the
+driver to finalise the configuration of the hardware and do any setup
+that can't be done in an atomic context prior to the trigger, there's no
+consideration for any aspect of the ASoC design in this arrangement.
 
-That seems unlikely, especially since we keep the output muted until
-very late on in the game.  Any noise should be consumed within the time
-the mute is running.
+> > If the codec is master, and starts the clocks before the mcbsp is
+> > ready that could also cause a pop or noise.
 
-There's more often a problem the other way around with things in the CPU
-(or the software looking after them) getting upset when they're left
-sitting without a clock for too long.
+> I still a newbie when it comes to the ALSA architecture.
+> Is the proper signal indicating everything is ready, including valid
+> data, a trigger call with cmd=START?
+
+Yes, the trigger callback actually starts data flowing.  This is mostly
+down to DMA, it's rare for anything except the CPU to be involved in the
+trigger operation.
