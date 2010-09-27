@@ -1,19 +1,16 @@
 From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: Re: ASoC updates for 2.6.37
-Date: Mon, 27 Sep 2010 09:58:53 +0100
-Message-ID: <1285577933.4658.6.camel@dplaptop>
-References: <20100927002429.GB10992@opensource.wolfsonmicro.com>
-	<s5htylbiu70.wl%tiwai@suse.de> <1285575674.4658.5.camel@dplaptop>
-	<s5hhbhbio60.wl%tiwai@suse.de>
+Subject: [PATCH] ASoC: WM8985: Use the correct macro for the
+	kcontrol defined
+Date: Mon, 27 Sep 2010 11:16:30 +0100
+Message-ID: <1285582590-30770-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7DA7210380A
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DB1D624368
 	for <alsa-devel@alsa-project.org>;
-	Mon, 27 Sep 2010 10:58:56 +0200 (CEST)
-In-Reply-To: <s5hhbhbio60.wl%tiwai@suse.de>
+	Mon, 27 Sep 2010 12:16:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,17 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-09-27 at 10:30 +0200, Takashi Iwai wrote:
-> Yeah, I do understand the initial intention, but size_t for such a
-> case (just for an index of a small fixed size array) is obviously too
-> much.  If it must be size_t, it shouldn't be a variable name like "i"
-> but a more specific name.
+Since we are using custom get/put handlers
+use SOC_ENUM_SINGLE_EXT_DECL instead of the original SOC_ENUM_SINGLE_DECL
+macro.
 
-I see your point. Makes sense.
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8985.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-Cheers,
-Dimitrios
+diff --git a/sound/soc/codecs/wm8985.c b/sound/soc/codecs/wm8985.c
+index b94af96..09660b3 100644
+--- a/sound/soc/codecs/wm8985.c
++++ b/sound/soc/codecs/wm8985.c
+@@ -185,8 +185,8 @@ static const SOC_ENUM_SINGLE_DECL(filter_mode, WM8985_ADC_CONTROL, 7,
+ 
+ static const char *eq_bw_text[] = { "Narrow", "Wide" };
+ static const char *eqmode_text[] = { "Capture", "Playback" };
+-static const SOC_ENUM_SINGLE_DECL(eqmode, WM8985_EQ1_LOW_SHELF, 8,
+-				  eqmode_text);
++static const SOC_ENUM_SINGLE_EXT_DECL(eqmode, eqmode_text);
++
+ static const char *eq1_cutoff_text[] = {
+ 	"80Hz", "105Hz", "135Hz", "175Hz"
+ };
+-- 
+1.7.3
