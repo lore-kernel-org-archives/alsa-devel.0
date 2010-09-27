@@ -1,23 +1,19 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: [PATCH RESEND v3 1/1] ASoC: Add HP iPAQ H1940
-	support
-Date: Mon, 27 Sep 2010 18:29:33 +0300
-Message-ID: <201009271829.34230.anarsoul@gmail.com>
-References: <20100920103813.GD3414@rakim.wolfsonmicro.main>
-	<1285573668-5415-1-git-send-email-anarsoul@gmail.com>
-	<20100927150609.GB13754@opensource.wolfsonmicro.com>
+From: "Justin P. Mattock" <justinmattock@gmail.com>
+Subject: Re: mic on macbook air
+Date: Mon, 27 Sep 2010 09:36:46 -0700
+Message-ID: <4CA0C81E.5030103@gmail.com>
+References: <1285540323.2205.11.camel@vino> <s5hvd5rxncg.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id A9C4924448
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id 7653224371
 	for <alsa-devel@alsa-project.org>;
-	Mon, 27 Sep 2010 17:31:05 +0200 (CEST)
-Received: by eye27 with SMTP id 27so1370382eye.38
-	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2010 08:31:05 -0700 (PDT)
-In-Reply-To: <20100927150609.GB13754@opensource.wolfsonmicro.com>
+	Mon, 27 Sep 2010 18:36:47 +0200 (CEST)
+Received: by pvg13 with SMTP id 13so1795928pvg.38
+	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2010 09:36:46 -0700 (PDT)
+In-Reply-To: <s5hvd5rxncg.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,23 +23,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Ben Dooks <ben-linux@fluff.org>, "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Reimundo <rheluani@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 27 of September 2010 18:06:10 Mark Brown wrote:
-> On Mon, Sep 27, 2010 at 10:47:48AM +0300, Vasily Khoruzhick wrote:
-> > Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
-> > Tested-by: Arnaud Patard <arnaud.patard@rtp-net.org>
-> > ---
-> > This patch can be merged upstream now, since dependencies
-> > were merged into Ben's tree
-> 
-> We need to wait until Ben's tree has been merged into mainline and back
-> up into ASoC - probably after/during the next merge window - unless Ben
-> has a focused branch with this stuff on it which I can pull.
+On 09/27/2010 07:39 AM, Takashi Iwai wrote:
+> At Mon, 27 Sep 2010 00:32:03 +0200,
+> Reimundo wrote:
+>>
+>> Hello list, from time to time I spend some time trying to get the mic
+>> working on a Macbook air 2,1. I tried looking at the relevant info from
+>> the corresponding kernel extensions on mac os X. The codec has  "Vendor
+>> Id: 0x10ec0885" so the relevant part of the info.plist on mac os X reads
+>>
+>> <dict>
+>> <key>MicAttributes</key>
+>> <integer>28</integer>
+>> <key>MicInfo</key>
+>> <string>Sampled on rising edge</string>
+>> <key>NodeID</key>
+>> <integer>39</integer>
+>> <key>PinConfigDefault</key>
+>> <integer>2426405136</integer>
+>> </dict>
+>>
+>> Which tells me nothing. In particular I don't have a node 0x27=39 (at
+>> least not that hda-analyzer sees) so it's not surprising that if I send
+>> the corresponding verbs to set_config_default I don't get anything.
+>> Also, I don't see how setting the pinconfigdefault could affect my not
+>> having the mic working (anyway I tried setting those pinconfigdefaults
+>> that put the node as a fixed mic on all nids 0x19-0x1c to no avail)
+>>
+>> As for the sampled on rising edge, I don't know how to use this info.
+>> any ideas?
+>
+> Justin Mattock made once some patches for MacBookAir, but they are
+> pending because no one tested yet.
+>
+> Justin, could you repost the patches (rebase if needed) for testing
+> again?
+>
+>
+> thanks,
+>
+> Takashi
+>
 
-Well, then it should be discussed with Ben.
 
-Regards
-Vasily
+Sure I can rebase them... but there's no guarantee that they work...
+from what I remember the mic on the macbookAir is not shown with the 
+codec file so you might have to change the pins around.
+
+Justin P. Mattock
