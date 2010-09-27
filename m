@@ -1,23 +1,17 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH] ASoC: Add Jassi Brar as Samsung maintainer
-Date: Mon, 27 Sep 2010 11:23:55 +0900
-Message-ID: <AANLkTimRdkJL=vWddcZYGt-ip=va8Oo5s_qb1qzdYrw9@mail.gmail.com>
-References: <1285402601-10131-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<AANLkTik5q1B9B5V0rUHVfAXPHe7vWbxJm3dK_A6QfTJ=@mail.gmail.com>
-	<AANLkTi=xEwPGsf756EG3c4sC5F4mDevoXwcMtSYnrXt_@mail.gmail.com>
-	<AANLkTimf1BmDe0pPqPgi0qWYG9pb2tZVgvLQ4VVEh6K5@mail.gmail.com>
-	<AANLkTimvdZP3pjYv56+AXGy5d7ceb+q1=NomH3fr1isC@mail.gmail.com>
+From: Stas Sergeev <stsp@aknet.ru>
+Subject: Re: how to mandate the use of PCM plugin?
+Date: Mon, 27 Sep 2010 08:48:29 +0400
+Message-ID: <4CA0221D.6030208@aknet.ru>
+References: <4C9F6409.6010400@aknet.ru> <20100927005858.GD21247@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id E5DFA243AE
+Received: from mail.aknet.ru (mail.aknet.ru [78.158.192.28])
+	by alsa0.perex.cz (Postfix) with ESMTP id A651D24515
 	for <alsa-devel@alsa-project.org>;
-	Mon, 27 Sep 2010 04:23:55 +0200 (CEST)
-Received: by bwz13 with SMTP id 13so2772105bwz.38
-	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2010 19:23:55 -0700 (PDT)
-In-Reply-To: <AANLkTimvdZP3pjYv56+AXGy5d7ceb+q1=NomH3fr1isC@mail.gmail.com>
+	Mon, 27 Sep 2010 06:49:35 +0200 (CEST)
+In-Reply-To: <20100927005858.GD21247@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,42 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kyungmin Park <kmpark@infradead.org>
-Cc: Chanwoo Choi <cw00.choi@samsung.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jassi Brar <jassi.brar@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Sep 26, 2010 at 7:49 PM, Kyungmin Park <kmpark@infradead.org> wrote:
->>> Good news,
->>>
->>> At the first work, can you proceed the directory name change from
->>> s3c24xx to samsung?
->>>
->>> it's really misleading and confusing to others.
->> I am currently working on overhauling the Samsung ASoC support (AC97,
->> PCM, DMA rename and I2S redesign).
->> Hopefully patches will be ready within few days.
->
-> Also please consider the power consumption issues. Lower Power (LP)
-> and runtime PM.
-> In the previous time it's handled by multimedia team (user level) but
-> they can't control it well.
-> In rough idea, it creates the some interface and just toggle it either
-> LP and normal.
-> As you know Lower Power Audio is one of big issues at power consumption.
+  Hello.
 
-The Secondary fifo(overlay stereo channel) of I2Sv5 can receive data from a
-dedicated h/w buffer via dedicated audio-internal DMA as well as from
-system memory via system DMA(ex PL330).
-
-LPAM(power saving by using iDMA and iBuff while system is in deep-idle mode)
-is just one use of the overlay channel.
-Please remember that some other user might use it purely for h/w mixing
-in normal-power mode while using system RAM and DMA.
-So, ATM, I am against putting any power-mode detection mechanism into
-audio drivers.
-IMO, it's the responsibility of user-space to setup routes/modes to
-serve it's purpose.
-
-Anyways, I am open to suggestions. Mr Choi may ping me anytime.
-
-Thanks.
+27.09.2010 04:58, Mark Brown wrote:
+>> Is it possible to somehow mandate the
+>> use of a PCM plugin? For example, the
+>> PC-Speaker.conf defines the use of softvol
+>> plugin for "default" and "front" devices.
+>> It is still possible for the software to bypass
+>> it by the use of "hw", and some software
+>> does exactly that.
+>> Is it possible to somehow make some
+>> plugin a mandatory?
+> What is the actual problem you are trying to solve here?  It's not
+> possible to *mandate* anything to all users, if nothing else someone
+> with administrative access can always rebuild whatever part of the
+> system is trying to restrict them.
+What I am trying to solve, is the problem
+that people have with my snd-pcsp driver.
+Pulseaudio uses "hw" to bypass some pcm
+plugins, and then people are left with the
+non-functional softvol control, and they blame
+my driver.
+I am looking for the way to mandate the
+softvol plugin even for the "hw" device.
+Is this possible?
