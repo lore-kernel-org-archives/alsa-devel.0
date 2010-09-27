@@ -1,40 +1,43 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH RESEND v3 1/1] ASoC: Add HP iPAQ H1940
-	support
-Date: Mon, 27 Sep 2010 08:06:10 -0700
-Message-ID: <20100927150609.GB13754@opensource.wolfsonmicro.com>
-References: <20100920103813.GD3414@rakim.wolfsonmicro.main>
-	<1285573668-5415-1-git-send-email-anarsoul@gmail.com>
+From: "John W. Linville" <linville@tuxdriver.com>
+Subject: Re: [RFC v4]update broken web addresses in the kernel.
+Date: Mon, 27 Sep 2010 11:10:06 -0400
+Message-ID: <20100927151005.GC11086@tuxdriver.com>
+References: <1285525875-9920-1-git-send-email-justinmattock@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 712B72442E
-	for <alsa-devel@alsa-project.org>;
-	Mon, 27 Sep 2010 17:05:51 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-scsi-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1285573668-5415-1-git-send-email-anarsoul@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>, Ben Dooks <ben-linux@fluff.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+In-Reply-To: <1285525875-9920-1-git-send-email-justinmattock@gmail.com>
+Sender: linux-scsi-owner@vger.kernel.org
+To: "Justin P. Mattock" <justinmattock@gmail.com>
+Cc: trivial@kernel.org, linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, linux-usb@vger.kernel.org, linux-scsi@vger.kernel.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-ide@vger.kernel.org, "Maciej W. Rozycki" <macro@linux-mips.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Finn Thain <fthain@telegraphics.com.au>, Randy Dunlap <rdunlap@xenotime.net>, Matt Turner <mattst88@gmail.com>, Dimitry Torokhov <dmitry.torokhov@gmail.com>, Mike Frysinger <vapier.adi@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 27, 2010 at 10:47:48AM +0300, Vasily Khoruzhick wrote:
-> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
-> Tested-by: Arnaud Patard <arnaud.patard@rtp-net.org>
-> ---
-> This patch can be merged upstream now, since dependencies
-> were merged into Ben's tree
+On Sun, Sep 26, 2010 at 11:31:15AM -0700, Justin P. Mattock wrote:
+> Below is an updated patch from the original fixing broken web addresses in the kernel.
+> Thanks for all the help and info on this to everybody..
+> Hopefully I didnt miss any of them(if so let me know, and I'll resend).
 
-We need to wait until Ben's tree has been merged into mainline and back
-up into ASoC - probably after/during the next merge window - unless Ben
-has a focused branch with this stuff on it which I can pull.
+Changing a URL for a relocated page is one thing, but removing links
+isn't necessarily a great idea.  Even if the site is technically
+gone, it may be possible to find information e.g through the Internet
+Archive Wayback Machine.
+
+> diff --git a/drivers/net/wireless/orinoco/main.c b/drivers/net/wireless/orinoco/main.c
+> index e8e2d0f..ba10b07 100644
+> --- a/drivers/net/wireless/orinoco/main.c
+> +++ b/drivers/net/wireless/orinoco/main.c
+> @@ -17,7 +17,6 @@
+>   *
+>   * Portions based on wvlan_cs.c 1.0.6, Copyright Andreas Neuhaus <andy
+>   * AT fasta.fh-dortmund.de>
+> - *      http://www.stud.fh-dortmund.de/~andy/wvlan/
+>   *
+>   * The contents of this file are subject to the Mozilla Public License
+>   * Version 1.1 (the "License"); you may not use this file except in
+
+http://web.archive.org/web/20070716051348/http://www.stud.fh-dortmund.de/~andy/wvlan/
+
+-- 
+John W. Linville		Someday the world will need a hero, and you
+linville@tuxdriver.com			might be all we have.  Be ready.
