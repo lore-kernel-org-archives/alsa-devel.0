@@ -1,15 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Fix masking of WM8962 FLL1 register
-Date: Mon, 27 Sep 2010 18:52:21 -0700
-Message-ID: <1285638741-8987-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Luke Yelavich <themuso@ubuntu.com>
+Subject: [PATCH] ALSA: hda - Add quirk for another Acer laptop
+	with a CX20585 codec
+Date: Tue, 28 Sep 2010 12:04:06 +1000
+Message-ID: <1285639446-29419-1-git-send-email-themuso@ubuntu.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A2ECF10387A
+Received: from nschwmtas01p.mx.bigpond.com (nschwmtas01p.mx.bigpond.com
+	[61.9.189.137]) by alsa0.perex.cz (Postfix) with ESMTP id E2C9210387C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 28 Sep 2010 03:52:05 +0200 (CEST)
+	Tue, 28 Sep 2010 04:04:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,31 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
+Cc: Luke Yelavich <luke.yelavich@canonical.com>, stable@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-When configuring the FLL we preserve the FLL enable configuration in order
-to allow us to reenable the FLL after configuration but we do not clear
-the other bits in the register, causing old configuration to be preserved.
+From: Luke Yelavich <luke.yelavich@canonical.com>
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+BugLink: https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/647374
+
+Set another Acer laptop (SSID 1025:043d) to use CXT5066_IDEAPAD
+
+Cc: stable@kernel.org
+Signed-off-by: Luke Yelavich <luke.yelavich@canonical.com>
 ---
- sound/soc/codecs/wm8962.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/pci/hda/patch_conexant.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 7de5194..12286d6 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -1342,7 +1342,7 @@ static int wm8962_set_fll(struct snd_soc_dai *dai, int fll_id, int source,
- 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
- 	struct _fll_div fll_div;
- 	int ret;
--	int fll1 = snd_soc_read(codec, WM8962_FLL_CONTROL_1);
-+	int fll1 = snd_soc_read(codec, WM8962_FLL_CONTROL_1) & WM8962_FLL_ENA;
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index a6c68cb..80cc74b 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -3094,6 +3094,7 @@ static const char *cxt5066_models[CXT5066_MODELS] = {
  
- 	/* Any change? */
- 	if (source == wm8962->fll_src && Fref == wm8962->fll_fref &&
+ static struct snd_pci_quirk cxt5066_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x040a, "Acer", CXT5066_IDEAPAD),
++	SND_PCI_QUIRK(0x1025, 0x043d, "Acer", CXT5066_IDEAPAD),
+ 	SND_PCI_QUIRK(0x1028, 0x02d8, "Dell Vostro", CXT5066_DELL_VOSTRO),
+ 	SND_PCI_QUIRK(0x1028, 0x02f5, "Dell",
+ 		      CXT5066_DELL_LAPTOP),
 -- 
 1.7.1
