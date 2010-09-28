@@ -1,28 +1,37 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 1/2] omap: zoom2: Fix ASoC multi-component build
- breakage by removing dead code
-Date: Tue, 28 Sep 2010 14:03:12 -0700
-Message-ID: <20100928210311.GK3117@atomide.com>
-References: <1285258314-23721-1-git-send-email-jhnikula@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: WM8985: Use the correct macro for
+ the kcontrol defined
+Date: Tue, 28 Sep 2010 14:10:11 -0700
+Message-ID: <20100928211011.GK10739@opensource.wolfsonmicro.com>
+References: <1285582590-30770-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AA16F24447
+	for <alsa-devel@alsa-project.org>;
+	Tue, 28 Sep 2010 23:09:54 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1285258314-23721-1-git-send-email-jhnikula@gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-omap@vger.kernel.org, Vikram Pandita <vikram.pandita@ti.com>
+In-Reply-To: <1285582590-30770-1-git-send-email-dp@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-* Jarkko Nikula <jhnikula@gmail.com> [100923 09:05]:
-> ASoC Multi-Component Support patch removes #if 0 in board-zoom2.c that was
-> used to protect some uncompiling dead code. Remove that code as it seems to
-> be here quite some time since commit 479f12c.
+On Mon, Sep 27, 2010 at 11:16:30AM +0100, Dimitris Papastamos wrote:
+> Since we are using custom get/put handlers
+> use SOC_ENUM_SINGLE_EXT_DECL instead of the original SOC_ENUM_SINGLE_DECL
+> macro.
 > 
-> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-> Cc: Vikram Pandita <vikram.pandita@ti.com>
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
-I assume you guys want to merge this via ASoC patches.
-
-Acked-by: Tony Lindgren <tony@atomide.com>
-
+Applied, thanks.
