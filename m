@@ -1,22 +1,22 @@
-From: Jeff Chua <jeff.chua.linux@gmail.com>
-Subject: Re: Microphone not working on PCI ID 8086:3b56
-Date: Tue, 28 Sep 2010 21:33:11 +0800
-Message-ID: <AANLkTimHO7OLrr+MN4pYmtOS7gF1qiXGP34Jkien0MpO@mail.gmail.com>
-References: <Pine.LNX.4.64.1009150615510.4515@boston.corp.fedex.com>
-	<s5htylbxn6b.wl%tiwai@suse.de>
-	<AANLkTimXBLM8POjeU6gET7twhV3SVxN0cS99ehLwf7DT@mail.gmail.com>
-	<s5haan3hwxi.wl%tiwai@suse.de>
+From: "Justin P. Mattock" <justinmattock@gmail.com>
+Subject: Re: [RFC v5]update broken web addresses in the kernel.
+Date: Tue, 28 Sep 2010 06:41:22 -0700
+Message-ID: <4CA1F082.2010900@gmail.com>
+References: <1285647599-14719-1-git-send-email-justinmattock@gmail.com>
+	<alpine.OSX.2.00.1009281613260.276@localhost>
+	<4CA193B6.8020503@gmail.com>
+	<alpine.OSX.2.00.1009281713410.276@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 436D624159
+Received: from mail-pz0-f51.google.com (mail-pz0-f51.google.com
+	[209.85.210.51]) by alsa0.perex.cz (Postfix) with ESMTP id 420EB24334
 	for <alsa-devel@alsa-project.org>;
-	Tue, 28 Sep 2010 15:33:13 +0200 (CEST)
-Received: by wwb28 with SMTP id 28so6054531wwb.20
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2010 06:33:12 -0700 (PDT)
-In-Reply-To: <s5haan3hwxi.wl%tiwai@suse.de>
+	Tue, 28 Sep 2010 15:41:16 +0200 (CEST)
+Received: by pzk5 with SMTP id 5so2080610pzk.38
+	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2010 06:41:12 -0700 (PDT)
+In-Reply-To: <alpine.OSX.2.00.1009281713410.276@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,32 +26,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Wu Fengguang <fengguang.wu@intel.com>, Linux Kernel <linux-kernel@vger.kernel.org>
+To: Finn Thain <fthain@telegraphics.com.au>
+Cc: linux-fbdev@vger.kernel.org, Dimitry Torokhov <dmitry.torokhov@gmail.com>, trivial@kernel.org, Mike Frysinger <vapier.adi@gmail.com>, linux-scsi@vger.kernel.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-ide@vger.kernel.org, Randy Dunlap <rdunlap@xenotime.net>, Geert Uytterhoeven <geert@linux-m68k.org>, "Maciej W. Rozycki" <macro@linux-mips.org>, Matt Turner <mattst88@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 28, 2010 at 2:18 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Tue, 28 Sep 2010 01:56:44 +0800,
-> Jeff Chua wrote:
->>
->> On Mon, Sep 27, 2010 at 10:42 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> > At Wed, 15 Sep 2010 06:32:22 +0800 (SGT),
->> > Did you try to play with model option for snd-hda-intel driver?
->> > For example, model=lenovo-x200 ?
->>
->> Didn't know there's such option. But I'll try it now. Is there an
->> option to if the driver is not compiled as a module?
+On 09/28/2010 12:35 AM, Finn Thain wrote:
 >
-> Yes, you can pass via a boot option like MODULENAME.OPTIONNAME=xxx,yyy,...
-> In this case, snd-hda-intel.model=lenovo-x200
+> On Tue, 28 Sep 2010, Justin P. Mattock wrote:
+>
+>> o.k... I'll make the changes to the arch patch, and combine the two, and
+>> send it to jiri..
+>
+> Why?
+>
+> My advice is don't do it unless you want to waste reviewers' time.
+>
+>> as for the names and signed offs is what is below fine or do I need to
+>> change some of them?
+>
+> If you combine patch 1 and patch 2 and submit that as patch 3, you will
+> likely have to CC patch 3 to everyone to whom you sent patch 1 plus
+> everyone to whom you sent patch 2. You must also change any "acked-by" to
+> "Cc", since patch 3 is new.
+>
+> Keep the same CC list since Jiri is already on it ("trivial@kernel.org").
+>
+> Finn
+>
 
-Tried, still no mic. Perhaps I'm not using the right driver. Which one
-should I enable?
+alright.. so it will be two patches then..(not the best at the CC etc.. 
+thing) cool... and thanks again for reviewing this for me..(back 
+breaking work, but somebodies _gots_ to do it..)
 
-CONFIG_SND_HDA_CODEC_CONEXANT
-CONFIG_SND_HDA_CODEC_INTELHDMI
-CONFIG_SND_HDA_CODEC_REALTEK
-
-
-Thanks,
-Jeff
+Justin P. Mattock
