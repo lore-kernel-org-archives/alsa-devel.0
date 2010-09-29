@@ -1,16 +1,15 @@
 From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: WM8985: Register notifier for the
-	regulator being disabled
-Date: Wed, 29 Sep 2010 11:38:37 +0100
-Message-ID: <1285756717-27149-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Remove unneeded use of spi_bus_type
+Date: Wed, 29 Sep 2010 11:48:19 +0100
+Message-ID: <1285757299-2065-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A9EB11038E4
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BA8931038E7
 	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Sep 2010 12:38:39 +0200 (CEST)
+	Wed, 29 Sep 2010 12:48:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,127 +23,142 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlog
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Make sure we get an event when the regulator is disabled so we know
-we have to sync the cache afterwards.
-
-Minor stylistic changes.
+No need to explicitly set the bus type, spi_register_driver does
+that for us.
 
 Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8985.c |   51 +++++++++++++++++++++++++++++++++++++++++---
- 1 files changed, 47 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wm8510.c |    1 -
+ sound/soc/codecs/wm8711.c |    1 -
+ sound/soc/codecs/wm8728.c |    1 -
+ sound/soc/codecs/wm8731.c |    1 -
+ sound/soc/codecs/wm8750.c |    1 -
+ sound/soc/codecs/wm8753.c |    1 -
+ sound/soc/codecs/wm8776.c |    1 -
+ sound/soc/codecs/wm8900.c |    1 -
+ sound/soc/codecs/wm8985.c |    1 -
+ sound/soc/codecs/wm8988.c |    1 -
+ 10 files changed, 0 insertions(+), 10 deletions(-)
 
+diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
+index 02ecf54..8f10709 100644
+--- a/sound/soc/codecs/wm8510.c
++++ b/sound/soc/codecs/wm8510.c
+@@ -627,7 +627,6 @@ static int __devexit wm8510_spi_remove(struct spi_device *spi)
+ static struct spi_driver wm8510_spi_driver = {
+ 	.driver = {
+ 		.name	= "wm8510",
+-		.bus	= &spi_bus_type,
+ 		.owner	= THIS_MODULE,
+ 	},
+ 	.probe		= wm8510_spi_probe,
+diff --git a/sound/soc/codecs/wm8711.c b/sound/soc/codecs/wm8711.c
+index 52a923a..54fbd76 100644
+--- a/sound/soc/codecs/wm8711.c
++++ b/sound/soc/codecs/wm8711.c
+@@ -453,7 +453,6 @@ static int __devexit wm8711_spi_remove(struct spi_device *spi)
+ static struct spi_driver wm8711_spi_driver = {
+ 	.driver = {
+ 		.name	= "wm8711-codec",
+-		.bus	= &spi_bus_type,
+ 		.owner	= THIS_MODULE,
+ 	},
+ 	.probe		= wm8711_spi_probe,
+diff --git a/sound/soc/codecs/wm8728.c b/sound/soc/codecs/wm8728.c
+index 32eba85..075f35e 100644
+--- a/sound/soc/codecs/wm8728.c
++++ b/sound/soc/codecs/wm8728.c
+@@ -307,7 +307,6 @@ static int __devexit wm8728_spi_remove(struct spi_device *spi)
+ static struct spi_driver wm8728_spi_driver = {
+ 	.driver = {
+ 		.name	= "wm8728-codec",
+-		.bus	= &spi_bus_type,
+ 		.owner	= THIS_MODULE,
+ 	},
+ 	.probe		= wm8728_spi_probe,
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index bdce125..6313858 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -600,7 +600,6 @@ static int __devexit wm8731_spi_remove(struct spi_device *spi)
+ static struct spi_driver wm8731_spi_driver = {
+ 	.driver = {
+ 		.name	= "wm8731-codec",
+-		.bus	= &spi_bus_type,
+ 		.owner	= THIS_MODULE,
+ 	},
+ 	.probe		= wm8731_spi_probe,
+diff --git a/sound/soc/codecs/wm8750.c b/sound/soc/codecs/wm8750.c
+index 4d1ec9d..6c924cd 100644
+--- a/sound/soc/codecs/wm8750.c
++++ b/sound/soc/codecs/wm8750.c
+@@ -782,7 +782,6 @@ static int __devexit wm8750_spi_remove(struct spi_device *spi)
+ static struct spi_driver wm8750_spi_driver = {
+ 	.driver = {
+ 		.name	= "wm8750-codec",
+-		.bus	= &spi_bus_type,
+ 		.owner	= THIS_MODULE,
+ 	},
+ 	.probe		= wm8750_spi_probe,
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index 64ea066..8f679a1 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -1651,7 +1651,6 @@ static int __devexit wm8753_spi_remove(struct spi_device *spi)
+ static struct spi_driver wm8753_spi_driver = {
+ 	.driver = {
+ 		.name	= "wm8753-codec",
+-		.bus	= &spi_bus_type,
+ 		.owner	= THIS_MODULE,
+ 	},
+ 	.probe		= wm8753_spi_probe,
+diff --git a/sound/soc/codecs/wm8776.c b/sound/soc/codecs/wm8776.c
+index c0b6917..04182c4 100644
+--- a/sound/soc/codecs/wm8776.c
++++ b/sound/soc/codecs/wm8776.c
+@@ -483,7 +483,6 @@ static int __devexit wm8776_spi_remove(struct spi_device *spi)
+ static struct spi_driver wm8776_spi_driver = {
+ 	.driver = {
+ 		.name	= "wm8776-codec",
+-		.bus	= &spi_bus_type,
+ 		.owner	= THIS_MODULE,
+ 	},
+ 	.probe		= wm8776_spi_probe,
+diff --git a/sound/soc/codecs/wm8900.c b/sound/soc/codecs/wm8900.c
+index 25c8ccd..b4f1172 100644
+--- a/sound/soc/codecs/wm8900.c
++++ b/sound/soc/codecs/wm8900.c
+@@ -1291,7 +1291,6 @@ static int __devexit wm8900_spi_remove(struct spi_device *spi)
+ static struct spi_driver wm8900_spi_driver = {
+ 	.driver = {
+ 		.name	= "wm8900-codec",
+-		.bus	= &spi_bus_type,
+ 		.owner	= THIS_MODULE,
+ 	},
+ 	.probe		= wm8900_spi_probe,
 diff --git a/sound/soc/codecs/wm8985.c b/sound/soc/codecs/wm8985.c
-index 6116b42..bd109c4 100644
+index bd109c4..04ec1fe 100644
 --- a/sound/soc/codecs/wm8985.c
 +++ b/sound/soc/codecs/wm8985.c
-@@ -126,11 +126,35 @@ static const int volume_update_regs[] = {
- 
- struct wm8985_priv {
- 	enum snd_soc_control_type control_type;
-+	struct snd_soc_codec *codec;
- 	struct regulator_bulk_data supplies[WM8985_NUM_SUPPLIES];
-+	struct notifier_block disable_nb[WM8985_NUM_SUPPLIES];
- 	unsigned int sysclk;
- 	unsigned int bclk;
- };
- 
-+/*
-+ * We can't use the same notifier block for more than one supply and
-+ * there's no way I can see to get from a callback to the caller
-+ * except container_of().
-+ */
-+#define WM8985_REGULATOR_EVENT(n) \
-+static int wm8985_regulator_event_##n(struct notifier_block *nb, \
-+				      unsigned long event, void *data)    \
-+{ \
-+	struct wm8985_priv *wm8985 = container_of(nb, struct wm8985_priv, \
-+							  disable_nb[n]); \
-+	if (event & REGULATOR_EVENT_DISABLE) { \
-+		wm8985->codec->cache_sync = 1; \
-+	} \
-+	return 0; \
-+}
-+
-+WM8985_REGULATOR_EVENT(0)
-+WM8985_REGULATOR_EVENT(1)
-+WM8985_REGULATOR_EVENT(2)
-+WM8985_REGULATOR_EVENT(3)
-+
- static const struct {
- 	int div;
- 	int ratio;
-@@ -782,7 +806,7 @@ static int wm8985_set_pll(struct snd_soc_dai *dai, int pll_id,
- {
- 	int ret;
- 	struct snd_soc_codec *codec;
--	struct pll_div pll_div;
-+	struct pll_div pll_div = { 0 };
- 
- 	codec = dai->codec;
- 	if (freq_in && freq_out) {
-@@ -794,7 +818,7 @@ static int wm8985_set_pll(struct snd_soc_dai *dai, int pll_id,
- 	/* disable the PLL before reprogramming it */
- 	snd_soc_update_bits(codec, WM8985_POWER_MANAGEMENT_1,
- 			    WM8985_PLLEN_MASK, 0);
--	
-+
- 	if (!freq_in || !freq_out)
- 		return 0;
- 
-@@ -932,8 +956,6 @@ static int wm8985_set_bias_level(struct snd_soc_codec *codec,
- 		snd_soc_write(codec, WM8985_POWER_MANAGEMENT_2, 0);
- 		snd_soc_write(codec, WM8985_POWER_MANAGEMENT_3, 0);
- 
--		codec->cache_sync = 1;
--
- 		regulator_bulk_disable(ARRAY_SIZE(wm8985->supplies),
- 				       wm8985->supplies);
- 		break;
-@@ -963,9 +985,13 @@ static int wm8985_resume(struct snd_soc_codec *codec)
- static int wm8985_remove(struct snd_soc_codec *codec)
- {
- 	struct wm8985_priv *wm8985;
-+	int i;
- 
- 	wm8985 = snd_soc_codec_get_drvdata(codec);
- 	wm8985_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	for (i = 0; i < ARRAY_SIZE(wm8985->supplies); i++)
-+		regulator_unregister_notifier(wm8985->supplies[i].consumer,
-+					      &wm8985->disable_nb[i]);
- 	regulator_bulk_free(ARRAY_SIZE(wm8985->supplies), wm8985->supplies);
- 	return 0;
- }
-@@ -978,6 +1004,7 @@ static int wm8985_probe(struct snd_soc_codec *codec)
- 	u16 *cache;
- 
- 	wm8985 = snd_soc_codec_get_drvdata(codec);
-+	wm8985->codec = codec;
- 
- 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8985->control_type);
- 	if (ret < 0) {
-@@ -995,6 +1022,22 @@ static int wm8985_probe(struct snd_soc_codec *codec)
- 		return ret;
- 	}
- 
-+	wm8985->disable_nb[0].notifier_call = wm8985_regulator_event_0;
-+	wm8985->disable_nb[1].notifier_call = wm8985_regulator_event_1;
-+	wm8985->disable_nb[2].notifier_call = wm8985_regulator_event_2;
-+	wm8985->disable_nb[3].notifier_call = wm8985_regulator_event_3;
-+
-+	/* This should really be moved into the regulator core */
-+	for (i = 0; i < ARRAY_SIZE(wm8985->supplies); i++) {
-+		ret = regulator_register_notifier(wm8985->supplies[i].consumer,
-+						  &wm8985->disable_nb[i]);
-+		if (ret != 0) {
-+			dev_err(codec->dev,
-+				"Failed to register regulator notifier: %d\n",
-+				ret);
-+		}
-+	}
-+
- 	ret = regulator_bulk_enable(ARRAY_SIZE(wm8985->supplies),
- 				    wm8985->supplies);
- 	if (ret) {
+@@ -1145,7 +1145,6 @@ static int __devexit wm8985_spi_remove(struct spi_device *spi)
+ static struct spi_driver wm8985_spi_driver = {
+ 	.driver = {
+ 		.name = "wm8985",
+-		.bus = &spi_bus_type,
+ 		.owner = THIS_MODULE,
+ 	},
+ 	.probe = wm8985_spi_probe,
+diff --git a/sound/soc/codecs/wm8988.c b/sound/soc/codecs/wm8988.c
+index d08b1fe..d7f2597 100644
+--- a/sound/soc/codecs/wm8988.c
++++ b/sound/soc/codecs/wm8988.c
+@@ -844,7 +844,6 @@ static int __devexit wm8988_spi_remove(struct spi_device *spi)
+ static struct spi_driver wm8988_spi_driver = {
+ 	.driver = {
+ 		.name	= "wm8988-codec",
+-		.bus	= &spi_bus_type,
+ 		.owner	= THIS_MODULE,
+ 	},
+ 	.probe		= wm8988_spi_probe,
 -- 
 1.7.3
