@@ -1,22 +1,18 @@
-From: Michael Niemeck <michael@niemeck.org>
-Subject: TASCAM US-144mkII Driver
-Date: Tue, 28 Sep 2010 08:59:54 +0200
-Message-ID: <20100928085954.729252qribunofb4@secure.niemeck.net>
+From: Jakub Narebski <jnareb@gmail.com>
+Subject: [ANNOUNCE] Git User's Survey 2010 is now up!
+Date: Thu, 30 Sep 2010 01:20:21 +0200
+Message-ID: <201009300120.25173.jnareb__1641.31468995965$1286004258$gmane$org@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from alpha.niemeck.net (alpha.niemeck.net [213.208.138.154])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3230D103883
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 611A3103804
 	for <alsa-devel@alsa-project.org>;
-	Tue, 28 Sep 2010 09:00:10 +0200 (CEST)
-Received: from alpha.niemeck.net (localhost [127.0.0.1])
-	by alpha.niemeck.net (8.14.3/8.14.3) with ESMTP id o8S6xtag029602
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2010 08:59:55 +0200
-Received: (from apache@localhost)
-	by alpha.niemeck.net (8.14.3/8.14.3/Submit) id o8S6xsBd029601
-	for alsa-devel@alsa-project.org; Tue, 28 Sep 2010 08:59:54 +0200
+	Thu, 30 Sep 2010 01:20:40 +0200 (CEST)
+Received: by fxm2 with SMTP id 2so1017342fxm.38
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2010 16:20:40 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,26 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Common consensus in the forums seems to be that the mkII versions of  
-the TASCAM 122 and 144 have different hard- and/or software than their  
-respective predecessors, and won't work with the current ALSA drivers.  
-At least the latter I can confirm for my US-144mkII. Lacking the  
-resources to modify the existing driver to work with the above  
-interface, let alone write a new one, I wanted to ask if anyone of the  
-active ALSA developers would be willing to (or is even already in the  
-process of) write or modify a driver for the new TASCAMs. I would be  
-more than willing to contribute to a bounty, if such a thing is common  
-or at least accepted in the ALSA community, and according to this post  
-(http://article.gmane.org/gmane.linux.alsa.user/34586) TASCAM is ready  
-to support such a project with demo units. I would also be willing to  
-function as a tester, of course.
+Hello all,
 
-Still hoping,
+This announcement is sent to this mailing list because yout project
+uses Git as a version control system.
 
-Mike
+We would like to ask you a few questions about your use of the Git
+version control system. This survey is mainly to understand who is
+using Git, how and why.
 
-----------------------------------------------------------------
-This message was sent using IMP, the Internet Messaging Program.
+The results will be published to the Git wiki on the GitSurvey2010
+page (https://git.wiki.kernel.org/index.php/GitSurvey2010) and
+discussed on the git mailing list (git@vger.kernel.org).
+
+
+The survey would be open from 1 September till 15 October 2010.
+
+
+Please devote a few minutes of your time to fill this simple
+questionnaire, it will help a lot the git community to understand your
+needs, what you like of Git, and of course what you don't like  of it.
+
+The survey can be found here:
+  http://tinyurl.com/GitSurvey2010
+  https://www.survs.com/survey/MUPYR8UJ4B
+
+
+Git User's Survey 2010 was originally announced on git mailing list
+in the following mail:
+  http://article.gmane.org/gmane.comp.version-control.git/154986
+
+-- 
+Jakub Narebski
+on behalf of
+Git Development Community
+http://git-scm.com
