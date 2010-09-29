@@ -1,29 +1,24 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: how to mandate the use of PCM plugin?
-Date: Wed, 29 Sep 2010 11:28:43 +0200
-Message-ID: <4CA306CB.1090305@canonical.com>
-References: <4C9F6409.6010400@aknet.ru>
-	<20100927005858.GD21247@sirena.org.uk>	<4CA0221D.6030208@aknet.ru>
-	<i7qltg$bph$1@dough.gmane.org>
-	<AANLkTi=9gcs0A6s55wSS-RP4NucvUqkxCoYynezdF+5g@mail.gmail.com>
+Subject: Alsamixertest
+Date: Wed, 29 Sep 2010 11:42:43 +0200
+Message-ID: <4CA30A13.2030802@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 79A231037F7
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D1931038C7
 	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Sep 2010 11:28:46 +0200 (CEST)
+	Wed, 29 Sep 2010 11:42:44 +0200 (CEST)
 Received: from hutte.canonical.com ([91.189.90.181])
 	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
-	id 1P0sxx-0001WK-1e
-	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2010 10:28:45 +0100
+	id 1P0tBU-0005dy-9e
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2010 10:42:44 +0100
 Received: from c-83-233-18-148.cust.bredband2.com ([83.233.18.148]
 	helo=[192.168.8.102]) by hutte.canonical.com with esmtpsa
 	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
-	(envelope-from <david.henningsson@canonical.com>) id 1P0sxw-0008GG-Ut
-	for alsa-devel@alsa-project.org; Wed, 29 Sep 2010 10:28:45 +0100
-In-Reply-To: <AANLkTi=9gcs0A6s55wSS-RP4NucvUqkxCoYynezdF+5g@mail.gmail.com>
+	(envelope-from <david.henningsson@canonical.com>) id 1P0tBU-0008Vr-6f
+	for alsa-devel@alsa-project.org; Wed, 29 Sep 2010 10:42:44 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,30 +31,39 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2010-09-28 06:07, Raymond Yau wrote:
-> 2010/9/28 Colin Guthrie<gmane@colin.guthr.ie>
->
->>
->>
->> And today, one of the Canonical guys published his version of a tool to
->> help here:
->> http://thread.gmane.org/gmane.comp.audio.pulseaudio.general/7542
->>
->> Hope this helps.
->>
->> Col
->>
->>
->>
-> why did runtest.sh use a format  FLOAT64_LE which was not supported by PA ?
+Here's the tool "one of the Mandriva guys" ;-) was talking about the 
+other day. I should probably have announced it on both lists simultaneously.
 
-runtest.sh isn't meant to be used directly in that way, you're supposed 
-to run "alsamixertest". Try "alsamixertest -r" and "alsamixertest -h" to 
-get started. (Perhaps I should rename the .sh file to something else.)
+Anyway, over the previous weeks I've been working on a small script 
+which tests whether the ALSA mixer lives up to PA's expectations. If you 
+are familiar with dbmeasure or dbverify by Lennart Poettering, this 
+application's purpose is very similar, but this one is hopefully easier 
+to set up, more user friendly, and also tests that the names of the 
+volume controls are correct.
+My hope is that this will aid as a debugging tool for all these 
+"everything below 20% of my speaker is muted, and then 21% blows my 
+speakers" bugs.
 
-That said, if you find a good use case where you want to use it directly 
-and need a different sample format - patches welcome (as long as they 
-don't break something else).
+To use the tool, you'll need some kind of loopback. You can e g use a 
+loopback cable and connect that between line in and line out, or test 
+your laptop's internal speakers with your laptop's internal mic (just 
+stop humming when you do so :-) ). Just set up the recording levels 
+appropriately.
+
+Alsamixertest is available for Ubuntu Lucid and Ubuntu Maverick from 
+these PPAs:
+Lucid: https://launchpad.net/~diwic/+archive/ppa
+Maverick: https://launchpad.net/~diwic/+archive/maverick
+
+For other distributions, download the tarball:
+https://launchpad.net/~diwic/+archive/ppa/+files/alsamixertest_47.14.tar.gz
+Unpack and read the readme file for compilation and install instructions.
+
+When it is installed, run "alsamixertest -r" for a small tutorial and 
+"alsamixertest -h" for command line options help.
+
+Looking forward to your comments about this new little tool! I think it 
+should be considered "beta" quality at this point.
 
 -- 
 David Henningsson, Canonical Ltd.
