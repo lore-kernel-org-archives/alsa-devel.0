@@ -1,146 +1,130 @@
-From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: RE: [PATCH 1/2] ARM: S5PV210: Add audio support to Aquila
-Date: Wed, 29 Sep 2010 21:16:36 +0900
-Message-ID: <001b01cb5fd0$2c73bd50$855b37f0$%kim@samsung.com>
-References: <4C4F9E4C.7000001@samsung.com>
- <20100729173825.GE24781@opensource.wolfsonmicro.com>
- <4C527C11.5090409@samsung.com>
+From: Mark Goldstein <goldstein.mark@gmail.com>
+Subject: Re: Problem with VIA VT1708S and git versions of
+	alsa-driver.
+Date: Wed, 29 Sep 2010 15:27:19 +0200
+Message-ID: <AANLkTimz3iiXPhEarEUY1Gw5GxrTuv+UXgKKZS3ObzuS@mail.gmail.com>
+References: <AANLkTikaYCybUxW7dE3tizYZztT8pVo6Jeg-mh=e0NqZ@mail.gmail.com>
+	<AANLkTi=UTy8tdLqL-90UJOXtU=Ks1+ZZrGV2nCbw=xjD@mail.gmail.com>
+	<AANLkTinYcRqMwH2FSUjXiOxZg4x09q673FL9m15YvXEa@mail.gmail.com>
+	<AANLkTik8HayTEADWn74PJ0NgjGunamsSAZpy_GanuZo3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <4C527C11.5090409@samsung.com>
-Content-language: ko
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: 'Chanwoo Choi' <cw00.choi@samsung.com>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
-Cc: 'linux-arm-kernel' <linux-arm-kernel@lists.infradead.org>, 'linux-samsung-soc' <linux-samsung-soc@vger.kernel.org>, alsa-devel@alsa-project.org, 'Ben Dooks' <ben@simtec.co.uk>, 'Liam Girdwood' <lrg@slimlogic.co.uk>, 'Kyungmin Park' <kyungmin.park@samsung.com>, 'Joonyoung Shim' <jy0922.shim@samsung.com>, 'Myungjoo Ham' <myungjoo.ham@samsung.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 96F7A1037F8
+	for <alsa-devel@alsa-project.org>;
+	Wed, 29 Sep 2010 15:27:43 +0200 (CEST)
+Received: by iwn4 with SMTP id 4so1075294iwn.38
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2010 06:27:40 -0700 (PDT)
+In-Reply-To: <AANLkTik8HayTEADWn74PJ0NgjGunamsSAZpy_GanuZo3@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Chanwoo Choi wrote:
-> 
-> Mark Brown wrote:
-> > On Wed, Jul 28, 2010 at 12:04:44PM +0900, Chanwoo Choi wrote:
-> >
-> >> +static struct regulator_consumer_supply wm8994_fixed_voltage0_supplies[] =
-> {
-> >> +	{
-> >> +		.dev_name	= "5-001a",
-> >> +		.supply		= "DBVDD",
-> >> +	}, {
-> >> +		.dev_name	= "5-001a",
-> >> +		.supply		= "AVDD2",
-> >> +	}, {
-> >> +		.dev_name	= "5-001a",
-> >> +		.supply		= "CPVDD",
-> >> +	},
-> >> +
-> >> +};
-> >> +
-> >> +static struct regulator_consumer_supply wm8994_fixed_voltage1_supplies[] =
-> {
-> >
-> > All these fixed voltage regulators seem a bit suspicous for a mobile
-> > phone - I'd have expected that the supplies would all be being provided
-> > by your PMIC except for things taken directly from the battery supply
-> > (like the speakers tend to be, for example)?  There's no problem with
-> > the code itself, it just looks a bit odd.
-> >
-> 
-> All these consumer supply of WM8994 codec connected the below
-> regulator(VCC_1.8V) on
-> a circuit diagram. "VCC_1.8V" regualtor is always enabled, because it is used to
-> many devices.
-> Then I haven't connected all these consumer supply of WM8994 codec to
-> "VCC_1.8V" regulator.
-> I will modify that the consumer supply would be provided by PMIC.
-> 
-> static struct regulator_init_data aquila_buck3_data = {
-> 	.constraints	= {
-> 		.name		= "VCC_1.8V",
-> 		.min_uV		= 1800000,
-> 		.max_uV		= 1800000,
-> 		.apply_uV	= 1,
-> 		.state_mem	= {
-> 			.enabled = 1,
-> 		},
-> 	},
-> };
-> 
-> >> +static struct i2c_board_info i2c_gpio5_devs[] __initdata = {
-> >> +	{
-> >> +		/* CS/ADDR = low 0x34 (FYI: high = 0x36) */
-> >> +		I2C_BOARD_INFO("wm8994", 0x34 >> 1),
-> >> +		.platform_data	= &wm8994_platform_data,
-> >> +	},
-> >> +};
-> >
-> > Probably clearer for generic Linux use to specify the address as 0x1a
-> > directly.
-> 
-> Ok, I will do.
-> 
-> >
-> >> +static void __init aquila_sound_init(void)
-> >> +{
-> >> +	unsigned int gpio;
-> >> +
-> >> +	/* CODEC_XTAL_EN */
-> >> +	gpio = S5PV210_GPH3(2);		/* XEINT_26 */
-> >> +	gpio_request(gpio, "CODEC_XTAL_EN");
-> >> +	s3c_gpio_cfgpin(gpio, S3C_GPIO_OUTPUT);
-> >> +	s3c_gpio_setpull(gpio, S3C_GPIO_PULL_NONE);
-> >> +	gpio_direction_output(gpio, 1);
-> >
-> > Might be as well to provide some or all this stuff in your audio machine
-> > driver?
-> 
-> The Aquila board have a oscillator which provide main clock to
-> WM8994 audio codec. The oscillator provide 24MHz clock to WM8994 audio codec
-> (MCLK1 pin). I set gpio setting of "CODEC_XTAL_EN" to enable a oscillator.
-> 
-> >
-> >> +	/* MICBIAS_EN */
-> >> +	gpio = S5PV210_GPJ4(2);			/* XMSMRN */
-> >> +	gpio_request(gpio, "MICBIAS_EN");
-> >> +	s3c_gpio_cfgpin(gpio, S3C_GPIO_OUTPUT);
-> >> +	gpio_direction_output(gpio, 1);
-> >
-> > This in particular would benefit from keeping the request of the GPIO
-> > joined up with the driver that uses it.
-> 
-> Ok, I will move this code to machine driver(sound/soc/s3c24xxx/aquila_wm8994.c).
-> 
-> >> +	/* ADC_EN */
-> >> +	gpio = S5PV210_GPJ3(2);
-> >> +	gpio_request(gpio, "ADC_EN");
-> >> +	s3c_gpio_cfgpin(gpio, S3C_GPIO_OUTPUT);
-> >> +	gpio_direction_output(gpio, 1);
-> >
-> > I'm not sure what this does?
-> >
-> 
-> I explained below description about "ADC_EN" :
-> "ADC_EN : This gpio enable the ADC device which is used to detect
->  the kind of jack. (SND_JACK_HEADPHONE/HEADSET/MECHANICAL/AVOUT)
->  According to the kind of jack, an electric current is changed.
->  (Only used on Aquila board) "
-> 
-> When inserting the jack to Aquila board, I used ADC driver so that, detecting
-> the kind of jack(SND_JACK_HEADPHONE/HEADSET/MECHANICAL/AVOUT).
-> 
-> I will separately make the another function to initialize ADC driver.
-> 
-> Thank you for your comment.
-> Chanwoo Choi
-> 
 Hi,
 
-How was going on?
+On Wed, Sep 29, 2010 at 5:06 AM, Raymond Yau
+<superquad.vortex2@gmail.com> wrote:
+> 2010/9/28 Mark Goldstein <goldstein.mark@gmail.com>
+>
+>> Hi,
+>>
+>> > In theory, a motherboard with 6 audio jacks at back panel does not need
+>> > retasking pink and blue jacks as output pins , it seem to me that the
+>> > "smart5.1" switch is redundant for your motherboard.
+>> >
+>> > it seem this patch may has side effect on those via codec since they n=
+eed
+>> to
+>> > differentate the front mic and mic at rear panel for retasking
+>> >
+>> >
+>> http://git.alsa-project.org/?p=3Dalsa-kernel.git;a=3Dcommitdiff;h=3Dbbe9=
+59733a719ecffda8ecd7d4b9631a2745e8b4;hp=3D6650d30dfe1cf9ef6e639bd898d3b2f63=
+7f4bf3b
+>>
+>> Looks like a possibility.
+>>
+>> What bothers me is the fact that with git version the card is not
+>> detected properly (on oS 11.1). I missed this detail in my report just
+>> because I did not try alsaconf after the problem first occurred.
+>> That is, alsaconf does not show it in the list of cards.
+>> So I guess that the sound driver uses some defaults (it does indicate
+>> the this is hda-intel) that just does not match the actual codec.
+>> While when I use stable 1.0.23 version card is detected by alsaconf
+>> and works correctly.
+>>
+>> From the other side, the problem on oS 11.3 looks very different.
+>> I did not update driver there, just installed additional kernel that
+>> also has alsa 1.0.23.
+>>
+>> How it could lead to "Capture1" switch "reversing"? And now when I
+>> found it out and set it to "mute", Mic works correctly with recording
+>> SW and produces distorted audio in Skype in exactly the same
+>> configuration where it worked perfectly a couple of weeks ago.
+>>
+>> Regards,
+>> --
+>> Mark Goldstein
+>>
+>
+> How did you perform the recording since there are two capturing subdevice=
+s ?
 
-Thanks.
+When I played with alsamixer before, I saw that only Capture1 works
+for me. This time I set both Capture1 and Capture2 levels to some high
+value and saw that Capture2 does not change anything.
+>From the other side, using hda_analyzer I noticed that that MSB of the
+volume actually means "mute", that is when I see something like 9f
+there is no sound recored, while 1f produces sound. And then I saw
+that this bit reflects the "Mute" checkbox state.
 
-Best regards,
-Kgene.
---
-Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
-SW Solution Development Team, Samsung Electronics Co., Ltd.
+>
+> Are you sure that Skype/pulseaudo open the same subdevice ?
+
+I think so. First, It worked before. I have no pulseaudio. Skype just
+uses hw:0 device. It does some recording, but the audio is very
+distorted (low volume, no high frequencies, kind of clipped). I
+disabled the Skype option to adjust mixer volumes and play with it
+myself.
+
+>
+> "Capture1" switch is associated with Node 0x14 [Audio Input]
+>
+> Refer to the graph in hda_analyzer , when you place the mouse cursor insi=
+de
+> the "out" box of the Node 0x1e (Front Mic Pin) , there are three red lines
+> indicate the possible connections to 0x14, 0x16 and 0x17
+>
+> Unlike the other HDA codec , your vt1708s has only one "Input Souce" cont=
+rol
+> and two ADC
+>
+> For the other HDA codec, the number of "Input Source" controls is =A0usua=
+lly
+> equal to the number of ADC, this mean that some input sources (e.g. mic =
+=A0)
+> can only be connected to one ADC .
+>
+> As you can see in the graph, node 0x14 can be connected to 0x1e only
+>
+> All the connected audio path are displayed as blue line and it is strange
+> there are no blue line connected to =A0both the node 0x13 and 0x14 [Audio
+> Input]
+
+I will not be able to check it for about a week. When I'll have access
+to my PC again, I'll re-check and let you know what I see.
+Thanks a lot.
+-- =
+
+Mark Goldstein
