@@ -1,25 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: alsactl adds volume controls?
-Date: Wed, 29 Sep 2010 19:09:37 +0100
-Message-ID: <20100929180937.GD19087@sirena.org.uk>
-References: <s5hlj7ont8e.wl%tiwai@suse.de> <4C7E549E.4080505@canonical.com>
-	<s5hr5hczi06.wl%tiwai@suse.de> <4C7F6D5D.7020101@canonical.com>
-	<alpine.LNX.2.00.1009021553460.10278@eeebox2.perex-int.cz>
-	<4C7FB2CF.5060505@ladisch.de>
-	<alpine.LNX.2.00.1009021721100.10278@eeebox2.perex-int.cz>
-	<4C7FC85B.4000009@ladisch.de>
-	<alpine.LNX.2.00.1009021926120.10278@eeebox2.perex-int.cz>
-	<i7viav$kjb$1@dough.gmane.org>
+From: Paul Vojta <vojta@math.berkeley.edu>
+Subject: Re: list-admin: Mails cut off in archive?
+Date: Wed, 29 Sep 2010 11:26:15 -0700
+Message-ID: <20100929182615.GA32120@math.berkeley.edu>
+References: <i7vk3v$to0$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 452EF24395
+Received: from cm04fe.IST.Berkeley.EDU (cm04fe.IST.Berkeley.EDU
+	[169.229.218.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA6CC243A4
 	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Sep 2010 20:09:39 +0200 (CEST)
+	Wed, 29 Sep 2010 20:26:26 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <i7viav$kjb$1@dough.gmane.org>
+In-Reply-To: <i7vk3v$to0$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,32 +27,60 @@ To: Colin Guthrie <gmane@colin.guthr.ie>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 29, 2010 at 03:26:38PM +0100, Colin Guthrie wrote:
+Possibly this was caused by the same thing that put your email in my spam filter.
+The reason was URIBL_DBL_SPAM -- use google to find an explanation.
 
-> 2. Using the UCM system to indicate whether a mixer element is relevant
-> or not is a potential nice solution in the future, but it's not
-> available now and it will also require that UCM metadata is available.
+Sincerely,
 
-...
 
->  3. Add an API to know whether a mixer element is active (IMO
-> is_writable() is insufficient. If the current value of PCM says it's set
-> to e.g. -28dB then we need to believe what it says. Even if we decide
-> not to write new values to PCM mixer, we have to believe what it says -
-> we is_writable() does not solve the overall problem of knowing the
-> ultimate product of the various attenuations in the pipeline).
+Paul Vojta
 
-I think a new API is called for here - the basic problem we've got is
-that while we do have a fairly good idea of how the controls are
-conected to audio routes inside the kernel for HDA and for embedded
-stuff we've no way of exposing this to the userspace applications.  This
-is the root cause of a lot of the hassle here, we don't know which
-controls are involved in a given audio path reliably and we don't know
-if there are additional gain stages in the path.  I see this as separate
-to the UCM thing with saying which control you should use for adjusting
-a particular use case - UCM says "use this as your master volume for
-headphone" or whatever which is separate to determining the total system
-gain through the audio path.
 
-There's some time in the LPC audio track discussion set aside for doing
-some requirements gathering on this.
+On Wed, Sep 29, 2010 at 03:57:03PM +0100, Colin Guthrie wrote:
+> Hi,
+> 
+> I recently sent a message to this list.
+> 
+> It was sent via gmane and I can see and read the contents fine via NNTP
+> with gmane.
+> 
+> The gmane archive is fine:
+>   http://permalink.gmane.org/gmane.linux.alsa.devel/77313
+> 
+> However the official Mailman archive cuts the message off:
+> 
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2010-September/032025.html
+> 
+> 
+> Did people directly subscribed to the list get my mail OK or was it cut
+> off there too? Is there a bug in the archive.
+> 
+> Col
+> 
+> PS Is it OK to remove geocrawler links on
+> http://mailman.alsa-project.org/main/index.php/Mailing-lists ? They are
+> all broken.
+> 
+> Also the mail-archive link for this list isn't updated past 2004...
+> (seems to be based on the sourceforge list). It's probably worth marking
+> as "old" and/or reconfiguring it to point at the new list.
+> 
+> 
+> 
+> -- 
+> 
+> Colin Guthrie
+> gmane(at)colin.guthr.ie
+> http://colin.guthr.ie/
+> 
+> Day Job:
+>   Tribalogic Limited [http://www.tribalogic.net/]
+> Open Source:
+>   Mageia Contributor [http://www.mageia.org/]
+>   PulseAudio Hacker [http://www.pulseaudio.org/]
+>   Trac Hacker [http://trac.edgewall.org/]
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
