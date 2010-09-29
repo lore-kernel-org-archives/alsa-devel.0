@@ -1,18 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Add max98088 CODEC driver
-Date: Tue, 28 Sep 2010 20:37:58 -0700
-Message-ID: <20100929033757.GB29975@opensource.wolfsonmicro.com>
-References: <B2150E1E4418E1438554A300EA5040E40D469C124D@ITSVLEX06.it.maxim-ic.internal>
+Subject: [PATCH] ASoC: Initial WM8962 IRQ support
+Date: Tue, 28 Sep 2010 20:53:26 -0700
+Message-ID: <1285732406-30090-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EFA6E103883
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 24862103897
 	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Sep 2010 05:37:46 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <B2150E1E4418E1438554A300EA5040E40D469C124D@ITSVLEX06.it.maxim-ic.internal>
+	Wed, 29 Sep 2010 05:53:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,245 +19,125 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jesse Marroquin <Jesse.Marroquin@maxim-ic.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 28, 2010 at 07:34:34PM -0700, Peter Hsiang wrote:
+Provide an initial hookup for interrupts on the WM8962. Currently we simply
+report error status via log messages if an IRQ is provided for the device.
 
-> +#define EQ_CFG_MAX 32
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ include/sound/wm8962.h    |    2 +
+ sound/soc/codecs/wm8962.c |   60 ++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 61 insertions(+), 1 deletions(-)
 
-There doesn't seem to be any need to hard code a limit here?
-
-> +static int max98088_hw_write(struct snd_soc_codec *codec, unsigned int reg,
-> +                            unsigned int value)
-> +{
-> +       u8 data[2];
-> +
-> +       data[0] = reg;
-> +       data[1] = value;
-> +       if (codec->hw_write(codec->control_data, data, 2) == 2)
-> +               return 0;
-> +       else
-> +               return -EIO;
-> +}
-
-As previously discussed you should use the soc-cache code here.
-
-> +/*
-> + * For kernels compiled without unsigned long long int division
-> + */
-> +unsigned long long int ulldiv(unsigned long long int dividend,
-> +                             unsigned long long int divisor)
-
-This is causing me some concern.  Even if it is required this does not
-look like something that should be part of a specific driver - what
-happens if some other driver needs the same thing?
-
-> +/*
-> + * The INx1 and INx2 PGAs share a power control signal.
-> + * This function OR's the two power events to keep an unpowered INx
-> + * from turning off it's counterpart.
-> + * The control names are used to identify the PGA.
-> + */
-
-This...
-
-> +       if (strncmp(w->name, "INA1", 4) == 0) {
-> +               pga = INA1_PGA_BIT;
-> +               mask = INA1_PGA_BIT | INA2_PGA_BIT;
-
-...doesn't seem to correspond to this, at least with the normal way mask
-is used.  Apart from anything else it looks like you have individual
-mask bits for each of the INx1 and INx2 PGAs (since you can define mask
-bits for each of them).  It would be much clearer if the code made it
-obvious that these aren't register bits but rather that you're storing
-the data in a register-like bitfield in a variable.  I can't help but
-think that a reference count would be much clearer.
-
-> +       if (event == SND_SOC_DAPM_POST_PMU) {
-> +               /* ON */
-> +               *state |= pga;
-> +
-> +               /* Turn on, avoiding unnecessary writes */
-> +               val = snd_soc_read(codec, w->reg);
-> +               if (!(val & (1 << w->shift))) {
-> +                       val |= (1 << w->shift);
-> +                       snd_soc_write(codec, w->reg, val);
-> +               }
-
-snd_soc_update_bits() will suppress unwanted register writes.
-
-> +       }
-> +
-> +       return;
-> +}
-
-No need for return statements at the end of void functions.
-
-> +
-> +static const unsigned int ex_mode_table[] = {
-> +       0x00,           /* disabled */
-> +       (0<<4)|3,       /* 100Hz */
-> +       (1<<4)|0,       /* 400Hz */
-> +       (2<<4)|0,       /* 600Hz */
-> +       (3<<4)|0,       /* 800Hz */
-> +       (4<<4)|0,       /* 1000Hz */
-> +       (1<<4)|1,       /* 200-400Hz */
-> +       (2<<4)|2,       /* 400-600Hz */
-> +       (3<<4)|2,       /* 400-800Hz */
-> +};
-
-You should add value muxes like we have for DAPM.
-
-> +static const char *max98088_micpre[] = {
-> +       "0dB",
-> +       "20dB",
-> +       "30dB",
-> +};
-
-> +static const struct soc_enum max98088_micpre_enum[] = {
-> +       SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(max98088_micpre), max98088_micpre),
-> +};
-
-This should be a TLV control, not an enum.
-
-> +static const char *max98088_extmic[] = {
-> +       "Off",
-> +       "MIC1",
-> +       "MIC2",
-> +};
-
-> +static const struct soc_enum max98088_extmic_enum[] = {
-> +       SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(max98088_extmic), max98088_extmic),
-> +};
-
-This looks like it should be in DAPM.
-
-> +static int max98088_mic1pre_set(struct snd_kcontrol *kcontrol,
-> +                               struct snd_ctl_elem_value *ucontrol)
-> +{
-> +       struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-> +       struct max98088_priv *max98088 = snd_soc_codec_get_drvdata(codec);
-> +       unsigned int *mode = &max98088->mic1pre;
-> +       int sel = ucontrol->value.integer.value[0];
-> +
-> +       if (sel >= ARRAY_SIZE(max98088_micpre))
-> +               return -EINVAL;
-> +
-> +       *mode = ucontrol->value.integer.value[0];
-> +       return 0;
-> +}
-
-I'd expect that some action would be taken when the value is set here.
-All this does is set a variable, changing the control will have no
-effect.
-
-> +static int max98088_hp_event(struct snd_soc_dapm_widget *w,
-> +                            struct snd_kcontrol *kcontrol, int event)
-> +{
-> +       struct snd_soc_codec *codec = w->codec;
-> +       u16 status;
-> +
-> +       BUG_ON(event != SND_SOC_DAPM_PRE_PMD);
-> +
-> +       /* powering down headphone gracefully */
-> +       status = snd_soc_read(codec, M98088_REG_4D_PWR_EN_OUT);
-> +       if ((status & M98088_HPEN) == M98088_HPEN) {
-> +               max98088_hw_write(codec, M98088_REG_4D_PWR_EN_OUT,
-> +                       (status & ~M98088_HPEN));
-> +       }
-> +       schedule_timeout(msecs_to_jiffies(20));
-
-This looks rather like it should just be a post event implementing a
-timeout?
-
-> +       if (rate != cdata->rate) {
-> +               /* set DAI1 SR1 value for the DSP; FREQ1:0=anyclock */
-> +               if (rate_value(rate, &regval))
-> +                       return -EINVAL;
-> +
-> +               snd_soc_write(codec, M98088_REG_11_DAI1_CLKMODE, regval);
-> +               cdata->rate = rate;
-> +       }
-
-Just use snd_soc_update_bits() to suppress unneeded writes.  Many of the
-operaations have this issue.
-
-> +               & M98088_DAI_MAS) {
-> +               if (max98088->sysclk == 0)
-> +                       return -EINVAL;
-
-You should print an error here so users can tell what went wrong.
-
-> +               switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-> +               case SND_SOC_DAIFMT_I2S:
-> +                       reg14val |= M98088_DAI_DLY;
-> +                       break;
-> +               case SND_SOC_DAIFMT_LEFT_J:
-> +                       reg14msk |= M98088_DAI_DLY;
-> +                       break;
-
-This looks fishy - in one case you set the value, in another format you
-set the mask, both to the same bitfield.   I'd expect the mask of bits
-being updated to stay constant, but you seem to be treating the mask as
-meaning bits to be cleared.  I rather suspect you'll run into problems
-if you test this.
-
-> +       case SND_SOC_BIAS_STANDBY:
-> +               max98088_sync_cache(codec);
-> +               snd_soc_update_bits(codec, M98088_REG_4C_PWR_EN_IN,
-> +                               M98088_MBEN, M98088_MBEN);
-> +               break;
-
-Do you really want to sync the cache *every* time you go into standby?
-
-> +
-> +       case SND_SOC_BIAS_OFF:
-> +               snd_soc_update_bits(codec, M98088_REG_4C_PWR_EN_IN,
-> +                               M98088_MBEN, 0);
-> +#ifdef CONFIG_REGULATOR
-> +               codec->cache_sync = 1;
-> +#endif
-
-Why the ifdef?
-
-> +
-> +       /* Build an array of texts for the enum API. The number
-> +        * of texts is likely fewer than the number of configurations
-> +        * due to multiple sample rates for the same text name. */
-> +       cdata->eq_textcnt = 0;
-> +       for (i = 0; i < pdata->eq1_cfgcnt; i++) {
-
-It might be nice to give credit to the drivers you've based your work on :)
-
-> +       max98088_set_bias_level(codec, SND_SOC_BIAS_OFF);
-> +
-> +       /* Sync reg_cache with the hardware */
-> +       for (i = 0; i < M98088_REG_CNT; i++) {
-> +               if (i == M98088_REG_51_PWR_SYS)
-> +                       continue;
-> +
-> +               if (!max98088_access[i].writable)
-> +                       continue;
-> +
-> +               max98088_hw_write(codec, i, cache[i]);
-> +       }
-
-This appears to duplicate the register sync in your bias management.
-
-> +static struct i2c_driver max98088_i2c_driver = {
-> +       .driver = {
-> +               .name = "max98088-codec",
-
-Drop the -codec from the name.
-
-> +module_init(max98088_init);
-
-Normally this would be next to the function it references.
-
-> +struct max98088_setup_data {
-> +       unsigned short i2c_address;
-> +};
-
-This should be removed.
+diff --git a/include/sound/wm8962.h b/include/sound/wm8962.h
+index f70258e..cc32aff 100644
+--- a/include/sound/wm8962.h
++++ b/include/sound/wm8962.h
+@@ -17,6 +17,8 @@
+ struct wm8962_pdata {
+ 	u32 gpio_init[WM8962_MAX_GPIO];
+ 
++	bool irq_active_low;
++
+ 	bool spk_mono;   /* Speaker outputs tied together as mono */
+ };
+ 
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 12286d6..009321b 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -1461,6 +1461,29 @@ static struct snd_soc_dai_driver wm8962_dai = {
+ 	.symmetric_rates = 1,
+ };
+ 
++static irqreturn_t wm8962_irq(int irq, void *data)
++{
++	struct snd_soc_codec *codec = data;
++	int mask;
++	int active;
++
++	mask = snd_soc_read(codec, WM8962_INTERRUPT_STATUS_2);
++
++	active = snd_soc_read(codec, WM8962_INTERRUPT_STATUS_2);
++	active &= ~mask;
++
++	if (active & WM8962_FIFOS_ERR_EINT)
++		dev_err(codec->dev, "FIFO error\n");
++
++	if (active & WM8962_TEMP_SHUT_EINT)
++		dev_crit(codec->dev, "Thermal shutdown\n");
++
++	/* Acknowledge the interrupts */
++	snd_soc_write(codec, WM8962_INTERRUPT_STATUS_2, active);
++
++	return IRQ_HANDLED;
++}
++
+ #ifdef CONFIG_PM
+ static int wm8962_resume(struct snd_soc_codec *codec)
+ {
+@@ -1632,7 +1655,9 @@ static int wm8962_probe(struct snd_soc_codec *codec)
+ 	int ret;
+ 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
+ 	struct wm8962_pdata *pdata = dev_get_platdata(codec->dev);
+-	int i;
++	struct i2c_client *i2c = container_of(codec->dev, struct i2c_client,
++					      dev);
++	int i, trigger, irq_pol;
+ 
+ 	wm8962->codec = codec;
+ 
+@@ -1748,6 +1773,34 @@ static int wm8962_probe(struct snd_soc_codec *codec)
+ 
+ 	wm8962_init_beep(codec);
+ 
++	if (i2c->irq) {
++		if (pdata && pdata->irq_active_low) {
++			trigger = IRQF_TRIGGER_LOW;
++			irq_pol = WM8962_IRQ_POL;
++		} else {
++			trigger = IRQF_TRIGGER_HIGH;
++			irq_pol = 0;
++		}
++
++		snd_soc_update_bits(codec, WM8962_INTERRUPT_CONTROL,
++				    WM8962_IRQ_POL, irq_pol);
++
++		ret = request_threaded_irq(i2c->irq, NULL, wm8962_irq,
++					   trigger | IRQF_ONESHOT,
++					   "wm8962", codec);
++		if (ret != 0) {
++			dev_err(codec->dev, "Failed to request IRQ %d: %d\n",
++				i2c->irq, ret);
++			/* Non-fatal */
++		} else {
++			/* Enable error reporting IRQs by default */
++			snd_soc_update_bits(codec,
++					    WM8962_INTERRUPT_STATUS_2_MASK,
++					    WM8962_TEMP_SHUT_EINT |
++					    WM8962_FIFOS_ERR_EINT, 0);
++		}
++	}
++
+ 	return 0;
+ 
+ err_enable:
+@@ -1762,8 +1815,13 @@ err:
+ static int wm8962_remove(struct snd_soc_codec *codec)
+ {
+ 	struct wm8962_priv *wm8962 = snd_soc_codec_get_drvdata(codec);
++	struct i2c_client *i2c = container_of(codec->dev, struct i2c_client,
++					      dev);
+ 	int i;
+ 
++	if (i2c->irq)
++		free_irq(i2c->irq, codec);
++
+ 	wm8962_free_beep(codec);
+ 	for (i = 0; i < ARRAY_SIZE(wm8962->supplies); i++)
+ 		regulator_unregister_notifier(wm8962->supplies[i].consumer,
+-- 
+1.7.1
