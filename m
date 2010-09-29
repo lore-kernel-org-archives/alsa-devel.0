@@ -1,23 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Problem with VIA VT1708S and git versions of
-	alsa-driver.
-Date: Wed, 29 Sep 2010 11:06:22 +0800
-Message-ID: <AANLkTik8HayTEADWn74PJ0NgjGunamsSAZpy_GanuZo3@mail.gmail.com>
-References: <AANLkTikaYCybUxW7dE3tizYZztT8pVo6Jeg-mh=e0NqZ@mail.gmail.com>
-	<AANLkTi=UTy8tdLqL-90UJOXtU=Ks1+ZZrGV2nCbw=xjD@mail.gmail.com>
-	<AANLkTinYcRqMwH2FSUjXiOxZg4x09q673FL9m15YvXEa@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Add max98088 CODEC driver
+Date: Tue, 28 Sep 2010 20:37:58 -0700
+Message-ID: <20100929033757.GB29975@opensource.wolfsonmicro.com>
+References: <B2150E1E4418E1438554A300EA5040E40D469C124D@ITSVLEX06.it.maxim-ic.internal>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id B06F0103897
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EFA6E103883
 	for <alsa-devel@alsa-project.org>;
-	Wed, 29 Sep 2010 05:06:23 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so94285ewy.38
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2010 20:06:23 -0700 (PDT)
-In-Reply-To: <AANLkTinYcRqMwH2FSUjXiOxZg4x09q673FL9m15YvXEa@mail.gmail.com>
+	Wed, 29 Sep 2010 05:37:46 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <B2150E1E4418E1438554A300EA5040E40D469C124D@ITSVLEX06.it.maxim-ic.internal>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,68 +22,245 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jesse Marroquin <Jesse.Marroquin@maxim-ic.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-2010/9/28 Mark Goldstein <goldstein.mark@gmail.com>
+On Tue, Sep 28, 2010 at 07:34:34PM -0700, Peter Hsiang wrote:
 
-> Hi,
->
-> > In theory, a motherboard with 6 audio jacks at back panel does not need
-> > retasking pink and blue jacks as output pins , it seem to me that the
-> > "smart5.1" switch is redundant for your motherboard.
-> >
-> > it seem this patch may has side effect on those via codec since they need
-> to
-> > differentate the front mic and mic at rear panel for retasking
-> >
-> >
-> http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=bbe959733a719ecffda8ecd7d4b9631a2745e8b4;hp=6650d30dfe1cf9ef6e639bd898d3b2f637f4bf3b
->
-> Looks like a possibility.
->
-> What bothers me is the fact that with git version the card is not
-> detected properly (on oS 11.1). I missed this detail in my report just
-> because I did not try alsaconf after the problem first occurred.
-> That is, alsaconf does not show it in the list of cards.
-> So I guess that the sound driver uses some defaults (it does indicate
-> the this is hda-intel) that just does not match the actual codec.
-> While when I use stable 1.0.23 version card is detected by alsaconf
-> and works correctly.
->
-> From the other side, the problem on oS 11.3 looks very different.
-> I did not update driver there, just installed additional kernel that
-> also has alsa 1.0.23.
->
-> How it could lead to "Capture1" switch "reversing"? And now when I
-> found it out and set it to "mute", Mic works correctly with recording
-> SW and produces distorted audio in Skype in exactly the same
-> configuration where it worked perfectly a couple of weeks ago.
->
-> Regards,
-> --
-> Mark Goldstein
->
+> +#define EQ_CFG_MAX 32
 
-How did you perform the recording since there are two capturing subdevices ?
+There doesn't seem to be any need to hard code a limit here?
 
-Are you sure that Skype/pulseaudo open the same subdevice ?
+> +static int max98088_hw_write(struct snd_soc_codec *codec, unsigned int reg,
+> +                            unsigned int value)
+> +{
+> +       u8 data[2];
+> +
+> +       data[0] = reg;
+> +       data[1] = value;
+> +       if (codec->hw_write(codec->control_data, data, 2) == 2)
+> +               return 0;
+> +       else
+> +               return -EIO;
+> +}
 
-"Capture1" switch is associated with Node 0x14 [Audio Input]
+As previously discussed you should use the soc-cache code here.
 
-Refer to the graph in hda_analyzer , when you place the mouse cursor inside
-the "out" box of the Node 0x1e (Front Mic Pin) , there are three red lines
-indicate the possible connections to 0x14, 0x16 and 0x17
+> +/*
+> + * For kernels compiled without unsigned long long int division
+> + */
+> +unsigned long long int ulldiv(unsigned long long int dividend,
+> +                             unsigned long long int divisor)
 
-Unlike the other HDA codec , your vt1708s has only one "Input Souce" control
-and two ADC
+This is causing me some concern.  Even if it is required this does not
+look like something that should be part of a specific driver - what
+happens if some other driver needs the same thing?
 
-For the other HDA codec, the number of "Input Source" controls is  usually
-equal to the number of ADC, this mean that some input sources (e.g. mic  )
-can only be connected to one ADC .
+> +/*
+> + * The INx1 and INx2 PGAs share a power control signal.
+> + * This function OR's the two power events to keep an unpowered INx
+> + * from turning off it's counterpart.
+> + * The control names are used to identify the PGA.
+> + */
 
-As you can see in the graph, node 0x14 can be connected to 0x1e only
+This...
 
-All the connected audio path are displayed as blue line and it is strange
-there are no blue line connected to  both the node 0x13 and 0x14 [Audio
-Input]
+> +       if (strncmp(w->name, "INA1", 4) == 0) {
+> +               pga = INA1_PGA_BIT;
+> +               mask = INA1_PGA_BIT | INA2_PGA_BIT;
+
+...doesn't seem to correspond to this, at least with the normal way mask
+is used.  Apart from anything else it looks like you have individual
+mask bits for each of the INx1 and INx2 PGAs (since you can define mask
+bits for each of them).  It would be much clearer if the code made it
+obvious that these aren't register bits but rather that you're storing
+the data in a register-like bitfield in a variable.  I can't help but
+think that a reference count would be much clearer.
+
+> +       if (event == SND_SOC_DAPM_POST_PMU) {
+> +               /* ON */
+> +               *state |= pga;
+> +
+> +               /* Turn on, avoiding unnecessary writes */
+> +               val = snd_soc_read(codec, w->reg);
+> +               if (!(val & (1 << w->shift))) {
+> +                       val |= (1 << w->shift);
+> +                       snd_soc_write(codec, w->reg, val);
+> +               }
+
+snd_soc_update_bits() will suppress unwanted register writes.
+
+> +       }
+> +
+> +       return;
+> +}
+
+No need for return statements at the end of void functions.
+
+> +
+> +static const unsigned int ex_mode_table[] = {
+> +       0x00,           /* disabled */
+> +       (0<<4)|3,       /* 100Hz */
+> +       (1<<4)|0,       /* 400Hz */
+> +       (2<<4)|0,       /* 600Hz */
+> +       (3<<4)|0,       /* 800Hz */
+> +       (4<<4)|0,       /* 1000Hz */
+> +       (1<<4)|1,       /* 200-400Hz */
+> +       (2<<4)|2,       /* 400-600Hz */
+> +       (3<<4)|2,       /* 400-800Hz */
+> +};
+
+You should add value muxes like we have for DAPM.
+
+> +static const char *max98088_micpre[] = {
+> +       "0dB",
+> +       "20dB",
+> +       "30dB",
+> +};
+
+> +static const struct soc_enum max98088_micpre_enum[] = {
+> +       SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(max98088_micpre), max98088_micpre),
+> +};
+
+This should be a TLV control, not an enum.
+
+> +static const char *max98088_extmic[] = {
+> +       "Off",
+> +       "MIC1",
+> +       "MIC2",
+> +};
+
+> +static const struct soc_enum max98088_extmic_enum[] = {
+> +       SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(max98088_extmic), max98088_extmic),
+> +};
+
+This looks like it should be in DAPM.
+
+> +static int max98088_mic1pre_set(struct snd_kcontrol *kcontrol,
+> +                               struct snd_ctl_elem_value *ucontrol)
+> +{
+> +       struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+> +       struct max98088_priv *max98088 = snd_soc_codec_get_drvdata(codec);
+> +       unsigned int *mode = &max98088->mic1pre;
+> +       int sel = ucontrol->value.integer.value[0];
+> +
+> +       if (sel >= ARRAY_SIZE(max98088_micpre))
+> +               return -EINVAL;
+> +
+> +       *mode = ucontrol->value.integer.value[0];
+> +       return 0;
+> +}
+
+I'd expect that some action would be taken when the value is set here.
+All this does is set a variable, changing the control will have no
+effect.
+
+> +static int max98088_hp_event(struct snd_soc_dapm_widget *w,
+> +                            struct snd_kcontrol *kcontrol, int event)
+> +{
+> +       struct snd_soc_codec *codec = w->codec;
+> +       u16 status;
+> +
+> +       BUG_ON(event != SND_SOC_DAPM_PRE_PMD);
+> +
+> +       /* powering down headphone gracefully */
+> +       status = snd_soc_read(codec, M98088_REG_4D_PWR_EN_OUT);
+> +       if ((status & M98088_HPEN) == M98088_HPEN) {
+> +               max98088_hw_write(codec, M98088_REG_4D_PWR_EN_OUT,
+> +                       (status & ~M98088_HPEN));
+> +       }
+> +       schedule_timeout(msecs_to_jiffies(20));
+
+This looks rather like it should just be a post event implementing a
+timeout?
+
+> +       if (rate != cdata->rate) {
+> +               /* set DAI1 SR1 value for the DSP; FREQ1:0=anyclock */
+> +               if (rate_value(rate, &regval))
+> +                       return -EINVAL;
+> +
+> +               snd_soc_write(codec, M98088_REG_11_DAI1_CLKMODE, regval);
+> +               cdata->rate = rate;
+> +       }
+
+Just use snd_soc_update_bits() to suppress unneeded writes.  Many of the
+operaations have this issue.
+
+> +               & M98088_DAI_MAS) {
+> +               if (max98088->sysclk == 0)
+> +                       return -EINVAL;
+
+You should print an error here so users can tell what went wrong.
+
+> +               switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> +               case SND_SOC_DAIFMT_I2S:
+> +                       reg14val |= M98088_DAI_DLY;
+> +                       break;
+> +               case SND_SOC_DAIFMT_LEFT_J:
+> +                       reg14msk |= M98088_DAI_DLY;
+> +                       break;
+
+This looks fishy - in one case you set the value, in another format you
+set the mask, both to the same bitfield.   I'd expect the mask of bits
+being updated to stay constant, but you seem to be treating the mask as
+meaning bits to be cleared.  I rather suspect you'll run into problems
+if you test this.
+
+> +       case SND_SOC_BIAS_STANDBY:
+> +               max98088_sync_cache(codec);
+> +               snd_soc_update_bits(codec, M98088_REG_4C_PWR_EN_IN,
+> +                               M98088_MBEN, M98088_MBEN);
+> +               break;
+
+Do you really want to sync the cache *every* time you go into standby?
+
+> +
+> +       case SND_SOC_BIAS_OFF:
+> +               snd_soc_update_bits(codec, M98088_REG_4C_PWR_EN_IN,
+> +                               M98088_MBEN, 0);
+> +#ifdef CONFIG_REGULATOR
+> +               codec->cache_sync = 1;
+> +#endif
+
+Why the ifdef?
+
+> +
+> +       /* Build an array of texts for the enum API. The number
+> +        * of texts is likely fewer than the number of configurations
+> +        * due to multiple sample rates for the same text name. */
+> +       cdata->eq_textcnt = 0;
+> +       for (i = 0; i < pdata->eq1_cfgcnt; i++) {
+
+It might be nice to give credit to the drivers you've based your work on :)
+
+> +       max98088_set_bias_level(codec, SND_SOC_BIAS_OFF);
+> +
+> +       /* Sync reg_cache with the hardware */
+> +       for (i = 0; i < M98088_REG_CNT; i++) {
+> +               if (i == M98088_REG_51_PWR_SYS)
+> +                       continue;
+> +
+> +               if (!max98088_access[i].writable)
+> +                       continue;
+> +
+> +               max98088_hw_write(codec, i, cache[i]);
+> +       }
+
+This appears to duplicate the register sync in your bias management.
+
+> +static struct i2c_driver max98088_i2c_driver = {
+> +       .driver = {
+> +               .name = "max98088-codec",
+
+Drop the -codec from the name.
+
+> +module_init(max98088_init);
+
+Normally this would be next to the function it references.
+
+> +struct max98088_setup_data {
+> +       unsigned short i2c_address;
+> +};
+
+This should be removed.
