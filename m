@@ -1,37 +1,47 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: WM8985: Use the correct macro for
- the kcontrol defined
-Date: Tue, 28 Sep 2010 14:10:11 -0700
-Message-ID: <20100928211011.GK10739@opensource.wolfsonmicro.com>
-References: <1285582590-30770-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: =?UTF-8?q?Diego=20Elio=20Petten=C3=B2?= <flameeyes@gmail.com>
+Subject: Band-aid solution for Dell Latitude E6410/E6510 microphone
+Date: Wed, 29 Sep 2010 04:09:00 +0200
+Message-ID: <1285726141-26448-1-git-send-email-flameeyes@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AA16F24447
-	for <alsa-devel@alsa-project.org>;
-	Tue, 28 Sep 2010 23:09:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1285582590-30770-1-git-send-email-dp@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 27, 2010 at 11:16:30AM +0100, Dimitris Papastamos wrote:
-> Since we are using custom get/put handlers
-> use SOC_ENUM_SINGLE_EXT_DECL instead of the original SOC_ENUM_SINGLE_DECL
-> macro.
-> 
-> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Hi all,
 
-Applied, thanks.
+I'm sending out a patch that I didn't write (and thus most likely requi=
+re
+David's Signed-Off), but which I think might be a good idea to at least
+have accessible to search.
+
+As David already pointed out to me, the proper fix for the issue is
+Takashi's commit 75e0eb24ee3ec3549c2e53707dcc87e5f7a2c791, but that has=
+n't
+made it into .36 RCs and thus seem unlikely to come to users anytime so=
+on.
+
+David's patch is a "band aid" solution; it solves most of the problem b=
+y
+adding one more special case to the sigmatel patches; on the other hand=
+ it
+makes the internal microphone to work fine on my laptop, which is a goo=
+d
+thing, right?
+
+Anyway, if this can be considered for .36 or for some stable branch (*l=
+ooks
+toward Greg hoping for pity*), it would probably make me (and other own=
+ers
+of such laptops) probably very happy. Especially given that we have eno=
+ugh
+trouble with a non-working SDHCI and a not-yet-supported Alps
+touchpad/trackpoint combination.
+
+Thanks in advance, whatever the outcome,
+
+--=20
+Diego Elio Petten=C3=B2
