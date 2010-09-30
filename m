@@ -1,155 +1,80 @@
-From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: RE: [PATCH 1/2] ARM: S5PV210: Add audio support to Aquila
-Date: Thu, 30 Sep 2010 10:50:28 +0900
-Message-ID: <005a01cb6041$de5c9020$9b15b060$%kim@samsung.com>
-References: <4C4F9E4C.7000001@samsung.com>
- <20100729173825.GE24781@opensource.wolfsonmicro.com>
- <4C527C11.5090409@samsung.com>
- <001b01cb5fd0$2c73bd50$855b37f0$%kim@samsung.com> <4CA3E67A.3070309@gmail.com>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: asihpi: Control naming
+Date: Thu, 30 Sep 2010 16:44:14 +1300
+Message-ID: <4CA4078E.6010601@audioscience.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <4CA3E67A.3070309@gmail.com>
-Content-language: ko
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: 'Chanwoo Choi' <cwchoi00@gmail.com>
-Cc: 'Chanwoo Choi' <cw00.choi@samsung.com>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, 'linux-samsung-soc' <linux-samsung-soc@vger.kernel.org>, 'Joonyoung Shim' <jy0922.shim@samsung.com>, 'Ben Dooks' <ben@simtec.co.uk>, 'Kyungmin Park' <kyungmin.park@samsung.com>, 'Myungjoo Ham' <myungjoo.ham@samsung.com>, 'linux-arm-kernel' <linux-arm-kernel@lists.infradead.org>, 'Liam Girdwood' <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 179E1103821
+	for <alsa-devel@alsa-project.org>;
+	Thu, 30 Sep 2010 05:44:50 +0200 (CEST)
+Received: from [192.168.36.2]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp3.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0L9J000HRJPQ7700@smtp3.clear.net.nz> for
+	alsa-devel@alsa-project.org; Thu, 30 Sep 2010 16:44:15 +1300 (NZDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Chanwoo Choi wrote:
-> Kukjin Kim wrote:
-> > Chanwoo Choi wrote:
-> >> Mark Brown wrote:
-> >>> On Wed, Jul 28, 2010 at 12:04:44PM +0900, Chanwoo Choi wrote:
-> >>>
-> >>>> +static struct regulator_consumer_supply wm8994_fixed_voltage0_supplies[]
-> =
-> >> {
-> >>>> +	{
-> >>>> +		.dev_name	= "5-001a",
-> >>>> +		.supply		= "DBVDD",
-> >>>> +	}, {
-> >>>> +		.dev_name	= "5-001a",
-> >>>> +		.supply		= "AVDD2",
-> >>>> +	}, {
-> >>>> +		.dev_name	= "5-001a",
-> >>>> +		.supply		= "CPVDD",
-> >>>> +	},
-> >>>> +
-> >>>> +};
-> >>>> +
-> >>>> +static struct regulator_consumer_supply wm8994_fixed_voltage1_supplies[]
-> =
-> >> {
-> >>> All these fixed voltage regulators seem a bit suspicous for a mobile
-> >>> phone - I'd have expected that the supplies would all be being provided
-> >>> by your PMIC except for things taken directly from the battery supply
-> >>> (like the speakers tend to be, for example)?  There's no problem with
-> >>> the code itself, it just looks a bit odd.
-> >>>
-> >> All these consumer supply of WM8994 codec connected the below
-> >> regulator(VCC_1.8V) on
-> >> a circuit diagram. "VCC_1.8V" regualtor is always enabled, because it is used
-> to
-> >> many devices.
-> >> Then I haven't connected all these consumer supply of WM8994 codec to
-> >> "VCC_1.8V" regulator.
-> >> I will modify that the consumer supply would be provided by PMIC.
-> >>
-> >> static struct regulator_init_data aquila_buck3_data = {
-> >> 	.constraints	= {
-> >> 		.name		= "VCC_1.8V",
-> >> 		.min_uV		= 1800000,
-> >> 		.max_uV		= 1800000,
-> >> 		.apply_uV	= 1,
-> >> 		.state_mem	= {
-> >> 			.enabled = 1,
-> >> 		},
-> >> 	},
-> >> };
-> >>
-> >>>> +static struct i2c_board_info i2c_gpio5_devs[] __initdata = {
-> >>>> +	{
-> >>>> +		/* CS/ADDR = low 0x34 (FYI: high = 0x36) */
-> >>>> +		I2C_BOARD_INFO("wm8994", 0x34 >> 1),
-> >>>> +		.platform_data	= &wm8994_platform_data,
-> >>>> +	},
-> >>>> +};
-> >>> Probably clearer for generic Linux use to specify the address as 0x1a
-> >>> directly.
-> >> Ok, I will do.
-> >>
-> >>>> +static void __init aquila_sound_init(void)
-> >>>> +{
-> >>>> +	unsigned int gpio;
-> >>>> +
-> >>>> +	/* CODEC_XTAL_EN */
-> >>>> +	gpio = S5PV210_GPH3(2);		/* XEINT_26 */
-> >>>> +	gpio_request(gpio, "CODEC_XTAL_EN");
-> >>>> +	s3c_gpio_cfgpin(gpio, S3C_GPIO_OUTPUT);
-> >>>> +	s3c_gpio_setpull(gpio, S3C_GPIO_PULL_NONE);
-> >>>> +	gpio_direction_output(gpio, 1);
-> >>> Might be as well to provide some or all this stuff in your audio machine
-> >>> driver?
-> >> The Aquila board have a oscillator which provide main clock to
-> >> WM8994 audio codec. The oscillator provide 24MHz clock to WM8994 audio
-> codec
-> >> (MCLK1 pin). I set gpio setting of "CODEC_XTAL_EN" to enable a oscillator.
-> >>
-> >>>> +	/* MICBIAS_EN */
-> >>>> +	gpio = S5PV210_GPJ4(2);			/* XMSMRN */
-> >>>> +	gpio_request(gpio, "MICBIAS_EN");
-> >>>> +	s3c_gpio_cfgpin(gpio, S3C_GPIO_OUTPUT);
-> >>>> +	gpio_direction_output(gpio, 1);
-> >>> This in particular would benefit from keeping the request of the GPIO
-> >>> joined up with the driver that uses it.
-> >> Ok, I will move this code to machine
-> driver(sound/soc/s3c24xxx/aquila_wm8994.c).
-> >>
-> >>>> +	/* ADC_EN */
-> >>>> +	gpio = S5PV210_GPJ3(2);
-> >>>> +	gpio_request(gpio, "ADC_EN");
-> >>>> +	s3c_gpio_cfgpin(gpio, S3C_GPIO_OUTPUT);
-> >>>> +	gpio_direction_output(gpio, 1);
-> >>> I'm not sure what this does?
-> >>>
-> >> I explained below description about "ADC_EN" :
-> >> "ADC_EN : This gpio enable the ADC device which is used to detect
-> >>  the kind of jack. (SND_JACK_HEADPHONE/HEADSET/MECHANICAL/AVOUT)
-> >>  According to the kind of jack, an electric current is changed.
-> >>  (Only used on Aquila board) "
-> >>
-> >> When inserting the jack to Aquila board, I used ADC driver so that, detecting
-> >> the kind of jack(SND_JACK_HEADPHONE/HEADSET/MECHANICAL/AVOUT).
-> >>
-> >> I will separately make the another function to initialize ADC driver.
-> >>
-> >> Thank you for your comment.
-> >> Chanwoo Choi
-> >>
-> > Hi,
-> >
-> > How was going on?
-> >
-> 
-> I did post this patch and reviewed by maintainer.
-> The request was reflected to following patch.
-> Also, I did explain the constraints of the regulator of WM8994 codec
-> and resend following patch. This patch include Goni and Aquila board code
-> related to audio.
-> 	[PATCH] ARM: S5PV210: Add audio support to Goni and Aquila board
-> 
-> This is my mistake, "RESEND" word is leaved out in the subject.
-> 
-Hmm...so may missed. :-(
+Hi all,
 
-It would helpful to me if you could add patch version and changelog.
+I'm struggling with getting the correct names for controls, so that they
+show up correctly in the Playback or Capture modes of alsamixer
 
-Thanks.
+E.g. "PCM 3 Capture Meter" appears in the playback controls?
 
-Best regards,
-Kgene.
---
-Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
-SW Solution Development Team, Samsung Electronics Co., Ltd.
+How is capture vs playback display determined?
+or to put it another way: What are the rules for creating control names.
+
+Here is a reduced schematic of one of our cards (in reality more
+channels e.g. 4 physical stereo ins and outs, 12 players, 8 recorders)
+All players and inputs are mixed to outputs.
+All inputs and players multiplexed to each capture.
+
+How should all these controls be named?
+
+
+                               (1)-[vol]--+
+                               (2)-[vol]--+
+[play0]--[vol]--[meter]--[mode]--,-[vol]--+----[vol]-[meter]--[level]--[lineout0]
+                                 `-[vol]--|-.
+                                          | |
+                                 .-[vol]--' |
+[play1]--[vol]--[meter]--[mode]--'-[vol]----+--[vol]-[meter]--[level]--[lineout1]
+                               (1)-[vol]----+
+                               (2)-[vol]----+
+
+[linein0]-[level]-\                     \
+                mux>-[meter]-(1)-,-------|\
+[digitalin0]------/              |    mux >--[mode]--[meter]--[cap0]
+                                 |    ,../
+                                 |   |
+                                  `--|--\
+[linein1]-[level]-\                  |   >--[mode]--[meter]--[cap1]
+                mux>-[meter]-(2)-----'--/
+[digitalin1]------/
+
+notes
+[level] means calibrated reference level setting in dBu
+[mode] stereo channel modifier
++ summing junction
+--|-- wires cross, no join
+(1) connect from input to matrix mix output
+
+thanks and regards
+
+-- 
+Eliot Blennerhassett
+AudioScience Inc.
