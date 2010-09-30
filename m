@@ -1,158 +1,182 @@
-From: Chanwoo Choi <cwchoi00@gmail.com>
-Subject: Re: [PATCH 1/2] ARM: S5PV210: Add audio support to Aquila
-Date: Thu, 30 Sep 2010 13:55:14 +0900
-Message-ID: <4CA41832.5070301@gmail.com>
-References: <4C4F9E4C.7000001@samsung.com>
- <20100729173825.GE24781@opensource.wolfsonmicro.com>
- <4C527C11.5090409@samsung.com>
- <001b01cb5fd0$2c73bd50$855b37f0$%kim@samsung.com> <4CA3E67A.3070309@gmail.com>
- <005a01cb6041$de5c9020$9b15b060$%kim@samsung.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: Fix typos in I2C address formatting
+Date: Wed, 29 Sep 2010 22:20:27 -0700
+Message-ID: <1285824027-897-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1285824027-897-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <005a01cb6041$de5c9020$9b15b060$%kim@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Kukjin Kim <kgene.kim@samsung.com>
-Cc: 'Chanwoo Choi' <cw00.choi@samsung.com>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, 'linux-samsung-soc' <linux-samsung-soc@vger.kernel.org>, 'Joonyoung Shim' <jy0922.shim@samsung.com>, 'Ben Dooks' <ben@simtec.co.uk>, 'Kyungmin Park' <kyungmin.park@samsung.com>, 'Myungjoo Ham' <myungjoo.ham@samsung.com>, 'linux-arm-kernel' <linux-arm-kernel@lists.infradead.org>, 'Liam Girdwood' <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 998EF10390F
+	for <alsa-devel@alsa-project.org>;
+	Thu, 30 Sep 2010 07:20:16 +0200 (CEST)
+In-Reply-To: <1285824027-897-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+In the addition of address information for multi-component a few of the
+machine drivers had typos in the I2C addrsses, with the bus address added
+in the form 0xNN rather than 00NN as the I2C core formats it. Correct
+these.
 
-Kukjin Kim wrote:
-> Chanwoo Choi wrote:
->> Kukjin Kim wrote:
->>> Chanwoo Choi wrote:
->>>> Mark Brown wrote:
->>>>> On Wed, Jul 28, 2010 at 12:04:44PM +0900, Chanwoo Choi wrote:
->>>>>
->>>>>> +static struct regulator_consumer_supply wm8994_fixed_voltage0_supplies[]
->> =
->>>> {
->>>>>> +	{
->>>>>> +		.dev_name	= "5-001a",
->>>>>> +		.supply		= "DBVDD",
->>>>>> +	}, {
->>>>>> +		.dev_name	= "5-001a",
->>>>>> +		.supply		= "AVDD2",
->>>>>> +	}, {
->>>>>> +		.dev_name	= "5-001a",
->>>>>> +		.supply		= "CPVDD",
->>>>>> +	},
->>>>>> +
->>>>>> +};
->>>>>> +
->>>>>> +static struct regulator_consumer_supply wm8994_fixed_voltage1_supplies[]
->> =
->>>> {
->>>>> All these fixed voltage regulators seem a bit suspicous for a mobile
->>>>> phone - I'd have expected that the supplies would all be being provided
->>>>> by your PMIC except for things taken directly from the battery supply
->>>>> (like the speakers tend to be, for example)?  There's no problem with
->>>>> the code itself, it just looks a bit odd.
->>>>>
->>>> All these consumer supply of WM8994 codec connected the below
->>>> regulator(VCC_1.8V) on
->>>> a circuit diagram. "VCC_1.8V" regualtor is always enabled, because it is used
->> to
->>>> many devices.
->>>> Then I haven't connected all these consumer supply of WM8994 codec to
->>>> "VCC_1.8V" regulator.
->>>> I will modify that the consumer supply would be provided by PMIC.
->>>>
->>>> static struct regulator_init_data aquila_buck3_data = {
->>>> 	.constraints	= {
->>>> 		.name		= "VCC_1.8V",
->>>> 		.min_uV		= 1800000,
->>>> 		.max_uV		= 1800000,
->>>> 		.apply_uV	= 1,
->>>> 		.state_mem	= {
->>>> 			.enabled = 1,
->>>> 		},
->>>> 	},
->>>> };
->>>>
->>>>>> +static struct i2c_board_info i2c_gpio5_devs[] __initdata = {
->>>>>> +	{
->>>>>> +		/* CS/ADDR = low 0x34 (FYI: high = 0x36) */
->>>>>> +		I2C_BOARD_INFO("wm8994", 0x34 >> 1),
->>>>>> +		.platform_data	= &wm8994_platform_data,
->>>>>> +	},
->>>>>> +};
->>>>> Probably clearer for generic Linux use to specify the address as 0x1a
->>>>> directly.
->>>> Ok, I will do.
->>>>
->>>>>> +static void __init aquila_sound_init(void)
->>>>>> +{
->>>>>> +	unsigned int gpio;
->>>>>> +
->>>>>> +	/* CODEC_XTAL_EN */
->>>>>> +	gpio = S5PV210_GPH3(2);		/* XEINT_26 */
->>>>>> +	gpio_request(gpio, "CODEC_XTAL_EN");
->>>>>> +	s3c_gpio_cfgpin(gpio, S3C_GPIO_OUTPUT);
->>>>>> +	s3c_gpio_setpull(gpio, S3C_GPIO_PULL_NONE);
->>>>>> +	gpio_direction_output(gpio, 1);
->>>>> Might be as well to provide some or all this stuff in your audio machine
->>>>> driver?
->>>> The Aquila board have a oscillator which provide main clock to
->>>> WM8994 audio codec. The oscillator provide 24MHz clock to WM8994 audio
->> codec
->>>> (MCLK1 pin). I set gpio setting of "CODEC_XTAL_EN" to enable a oscillator.
->>>>
->>>>>> +	/* MICBIAS_EN */
->>>>>> +	gpio = S5PV210_GPJ4(2);			/* XMSMRN */
->>>>>> +	gpio_request(gpio, "MICBIAS_EN");
->>>>>> +	s3c_gpio_cfgpin(gpio, S3C_GPIO_OUTPUT);
->>>>>> +	gpio_direction_output(gpio, 1);
->>>>> This in particular would benefit from keeping the request of the GPIO
->>>>> joined up with the driver that uses it.
->>>> Ok, I will move this code to machine
->> driver(sound/soc/s3c24xxx/aquila_wm8994.c).
->>>>>> +	/* ADC_EN */
->>>>>> +	gpio = S5PV210_GPJ3(2);
->>>>>> +	gpio_request(gpio, "ADC_EN");
->>>>>> +	s3c_gpio_cfgpin(gpio, S3C_GPIO_OUTPUT);
->>>>>> +	gpio_direction_output(gpio, 1);
->>>>> I'm not sure what this does?
->>>>>
->>>> I explained below description about "ADC_EN" :
->>>> "ADC_EN : This gpio enable the ADC device which is used to detect
->>>>  the kind of jack. (SND_JACK_HEADPHONE/HEADSET/MECHANICAL/AVOUT)
->>>>  According to the kind of jack, an electric current is changed.
->>>>  (Only used on Aquila board) "
->>>>
->>>> When inserting the jack to Aquila board, I used ADC driver so that, detecting
->>>> the kind of jack(SND_JACK_HEADPHONE/HEADSET/MECHANICAL/AVOUT).
->>>>
->>>> I will separately make the another function to initialize ADC driver.
->>>>
->>>> Thank you for your comment.
->>>> Chanwoo Choi
->>>>
->>> Hi,
->>>
->>> How was going on?
->>>
->> I did post this patch and reviewed by maintainer.
->> The request was reflected to following patch.
->> Also, I did explain the constraints of the regulator of WM8994 codec
->> and resend following patch. This patch include Goni and Aquila board code
->> related to audio.
->> 	[PATCH] ARM: S5PV210: Add audio support to Goni and Aquila board
->>
->> This is my mistake, "RESEND" word is leaved out in the subject.
->>
-> Hmm...so may missed. :-(
-> 
-> It would helpful to me if you could add patch version and changelog.
-> 
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/atmel/playpaq_wm8510.c               |    2 +-
+ sound/soc/atmel/snd-soc-afeb9260.c             |    2 +-
+ sound/soc/blackfin/bf5xx-ssm2602.c             |    2 +-
+ sound/soc/s3c24xx/jive_wm8750.c                |    2 +-
+ sound/soc/s3c24xx/neo1973_gta02_wm8753.c       |    4 ++--
+ sound/soc/s3c24xx/neo1973_wm8753.c             |    4 ++--
+ sound/soc/s3c24xx/s3c24xx_simtec_hermes.c      |    2 +-
+ sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c |    2 +-
+ sound/soc/s3c24xx/smartq_wm8987.c              |    2 +-
+ 9 files changed, 11 insertions(+), 11 deletions(-)
 
-You refer to following url :
-http://lists.infradead.org/pipermail/linux-arm-kernel/2010-September/025677.html
-
-Do you need additional info(changelog, patch version)?
-
-Thanks
-
-Best regards,
-Chanwoo Choi.
+diff --git a/sound/soc/atmel/playpaq_wm8510.c b/sound/soc/atmel/playpaq_wm8510.c
+index 9d545f2..80c4c01 100644
+--- a/sound/soc/atmel/playpaq_wm8510.c
++++ b/sound/soc/atmel/playpaq_wm8510.c
+@@ -356,7 +356,7 @@ static struct snd_soc_dai_link playpaq_wm8510_dai = {
+ 	.stream_name = "WM8510 PCM",
+ 	.cpu_dai_name= "atmel-ssc-dai.0",
+ 	.platform_name = "atmel-pcm-audio",
+-	.codec_name = "wm8510.0-0x1a",
++	.codec_name = "wm8510.0-001a",
+ 	.codec_dai_name = "wm8510-hifi",
+ 	.init = playpaq_wm8510_init,
+ 	.ops = &playpaq_wm8510_ops,
+diff --git a/sound/soc/atmel/snd-soc-afeb9260.c b/sound/soc/atmel/snd-soc-afeb9260.c
+index ff6499b..c52fb6b 100644
+--- a/sound/soc/atmel/snd-soc-afeb9260.c
++++ b/sound/soc/atmel/snd-soc-afeb9260.c
+@@ -129,7 +129,7 @@ static struct snd_soc_dai_link afeb9260_dai = {
+ 	.cpu_dai_name = "atmel-ssc-dai.0",
+ 	.codec_dai_name = "tlv320aic23-hifi",
+ 	.platform_name = "atmel_pcm-audio",
+-	.codec_name = "tlv320aic23.0-0x1a",
++	.codec_name = "tlv320aic23.0-001a",
+ 	.init = afeb9260_tlv320aic23_init,
+ 	.ops = &afeb9260_ops,
+ };
+diff --git a/sound/soc/blackfin/bf5xx-ssm2602.c b/sound/soc/blackfin/bf5xx-ssm2602.c
+index e1fda9b..1ecd0e7 100644
+--- a/sound/soc/blackfin/bf5xx-ssm2602.c
++++ b/sound/soc/blackfin/bf5xx-ssm2602.c
+@@ -120,7 +120,7 @@ static struct snd_soc_dai_link bf5xx_ssm2602_dai = {
+ 	.cpu_dai_name = "bf5xx-i2s",
+ 	.codec_dai_name = "ssm2602-hifi",
+ 	.platform_name = "bf5xx-pcm-audio",
+-	.codec_name = "ssm2602.0-0x1b",
++	.codec_name = "ssm2602.0-001b",
+ 	.ops = &bf5xx_ssm2602_ops,
+ };
+ 
+diff --git a/sound/soc/s3c24xx/jive_wm8750.c b/sound/soc/s3c24xx/jive_wm8750.c
+index 5f3ab8b..518782c 100644
+--- a/sound/soc/s3c24xx/jive_wm8750.c
++++ b/sound/soc/s3c24xx/jive_wm8750.c
+@@ -142,7 +142,7 @@ static struct snd_soc_dai_link jive_dai = {
+ 	.cpu_dai_name	= "s3c2412-i2s",
+ 	.codec_dai_name = "wm8750-hifi",
+ 	.platform_name	= "s3c24xx-pcm-audio",
+-	.codec_name	= "wm8750.0-0x1a",
++	.codec_name	= "wm8750.0-001a",
+ 	.init		= jive_wm8750_init,
+ 	.ops		= &jive_ops,
+ };
+diff --git a/sound/soc/s3c24xx/neo1973_gta02_wm8753.c b/sound/soc/s3c24xx/neo1973_gta02_wm8753.c
+index 08b9ef7..641ea07 100644
+--- a/sound/soc/s3c24xx/neo1973_gta02_wm8753.c
++++ b/sound/soc/s3c24xx/neo1973_gta02_wm8753.c
+@@ -401,7 +401,7 @@ static struct snd_soc_dai_link neo1973_gta02_dai[] = {
+ 	.codec_dai_name = "wm8753-hifi",
+ 	.init = neo1973_gta02_wm8753_init,
+ 	.platform_name = "s3c24xx-pcm-audio",
+-	.codec_name = "wm8753.0-0x1a",
++	.codec_name = "wm8753.0-001a",
+ 	.ops = &neo1973_gta02_hifi_ops,
+ },
+ { /* Voice via BT */
+@@ -410,7 +410,7 @@ static struct snd_soc_dai_link neo1973_gta02_dai[] = {
+ 	.cpu_dai_name = "bluetooth-dai",
+ 	.codec_dai_name = "wm8753-voice",
+ 	.ops = &neo1973_gta02_voice_ops,
+-	.codec_name = "wm8753.0-0x1a",
++	.codec_name = "wm8753.0-001a",
+ 	.platform_name = "s3c24xx-pcm-audio",
+ },
+ };
+diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
+index dd3fae2..4998fae 100644
+--- a/sound/soc/s3c24xx/neo1973_wm8753.c
++++ b/sound/soc/s3c24xx/neo1973_wm8753.c
+@@ -559,7 +559,7 @@ static struct snd_soc_dai_link neo1973_dai[] = {
+ 	.platform_name = "s3c24xx-pcm-audio",
+ 	.cpu_dai_name = "s3c24xx-i2s",
+ 	.codec_dai_name = "wm8753-hifi",
+-	.codec_name = "wm8753.0-0x1a",
++	.codec_name = "wm8753.0-001a",
+ 	.init = neo1973_wm8753_init,
+ 	.ops = &neo1973_hifi_ops,
+ },
+@@ -569,7 +569,7 @@ static struct snd_soc_dai_link neo1973_dai[] = {
+ 	.platform_name = "s3c24xx-pcm-audio",
+ 	.cpu_dai_name = "bluetooth-dai",
+ 	.codec_dai_name = "wm8753-voice",
+-	.codec_name = "wm8753.0-0x1a",
++	.codec_name = "wm8753.0-001a",
+ 	.ops = &neo1973_voice_ops,
+ },
+ };
+diff --git a/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c b/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
+index 6ad2144..51ad069 100644
+--- a/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
++++ b/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
+@@ -96,7 +96,7 @@ static int simtec_hermes_init(struct snd_soc_pcm_runtime *rtd)
+ static struct snd_soc_dai_link simtec_dai_aic33 = {
+ 	.name		= "tlv320aic33",
+ 	.stream_name	= "TLV320AIC33",
+-	.codec_name	= "tlv320aic3x.0-0x1a",
++	.codec_name	= "tlv320aic3x.0-001a",
+ 	.cpu_dai_name	= "s3c24xx-i2s",
+ 	.codec_dai_name = "tlv320aic3x-hifi",
+ 	.platform_name	= "s3c24xx-pcm-audio",
+diff --git a/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c b/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
+index 7fd1b2a..c2bb0c7 100644
+--- a/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
++++ b/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
+@@ -85,7 +85,7 @@ static int simtec_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
+ static struct snd_soc_dai_link simtec_dai_aic23 = {
+ 	.name		= "tlv320aic23",
+ 	.stream_name	= "TLV320AIC23",
+-	.codec_name	= "tlv320aic3x.0-0x1a",
++	.codec_name	= "tlv320aic3x.0-001a",
+ 	.cpu_dai_name	= "s3c24xx-i2s",
+ 	.codec_dai_name = "tlv320aic3x-hifi",
+ 	.platform_name	= "s3c24xx-pcm-audio",
+diff --git a/sound/soc/s3c24xx/smartq_wm8987.c b/sound/soc/s3c24xx/smartq_wm8987.c
+index f63dab9..1fb85a2 100644
+--- a/sound/soc/s3c24xx/smartq_wm8987.c
++++ b/sound/soc/s3c24xx/smartq_wm8987.c
+@@ -214,7 +214,7 @@ static struct snd_soc_dai_link smartq_dai[] = {
+ 		.cpu_dai_name	= "s3c64xx-i2s.0",
+ 		.codec_dai_name	= "wm8750-hifi",
+ 		.platform_name	= "s3c24xx-pcm-audio",
+-		.codec_name	= "wm8750.0-0x1a",
++		.codec_name	= "wm8750.0-001a",
+ 		.init		= smartq_wm8987_init,
+ 		.ops		= &smartq_hifi_ops,
+ 	},
+-- 
+1.7.1
