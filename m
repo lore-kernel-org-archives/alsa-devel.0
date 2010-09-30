@@ -1,21 +1,25 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: WM8985: Register notifier for
-	the	regulator being disabled
-Date: Thu, 30 Sep 2010 17:40:37 +0100
-Message-ID: <20100930164037.GA9431@sirena.org.uk>
-References: <1285756717-27149-1-git-send-email-dp@opensource.wolfsonmicro.com>
-	<20100929174322.GA31934@opensource.wolfsonmicro.com>
-	<1285840292.4722.17.camel@dplaptop>
+Subject: Re: alsactl adds volume controls?
+Date: Thu, 30 Sep 2010 17:47:53 +0100
+Message-ID: <20100930164753.GB9431@sirena.org.uk>
+References: <s5hr5hczi06.wl%tiwai@suse.de> <4C7F6D5D.7020101@canonical.com>
+	<alpine.LNX.2.00.1009021553460.10278@eeebox2.perex-int.cz>
+	<4C7FB2CF.5060505@ladisch.de>
+	<alpine.LNX.2.00.1009021721100.10278@eeebox2.perex-int.cz>
+	<4C7FC85B.4000009@ladisch.de>
+	<alpine.LNX.2.00.1009021926120.10278@eeebox2.perex-int.cz>
+	<i7viav$kjb$1@dough.gmane.org> <4CA46E98.10402@ladisch.de>
+	<4CA4A844.7060403@colin.guthr.ie>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2CED610394A
+	by alsa0.perex.cz (Postfix) with ESMTP id 808141037FF
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Sep 2010 18:40:38 +0200 (CEST)
+	Thu, 30 Sep 2010 18:47:54 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1285840292.4722.17.camel@dplaptop>
+In-Reply-To: <4CA4A844.7060403@colin.guthr.ie>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,26 +29,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Colin Guthrie <gmane@colin.guthr.ie>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 30, 2010 at 10:51:32AM +0100, Dimitris Papastamos wrote:
-> On Wed, 2010-09-29 at 10:43 -0700, Mark Brown wrote:
+On Thu, Sep 30, 2010 at 04:09:56PM +0100, Colin Guthrie wrote:
 
-> > It's better to restructure the code so that the compiler is able to
-> > follow the control flow and see that there's no uninitialised access -
-> > this sort of change will just shut up legitimate warnings as well.  Some
-> > of the other CODEC drivers (wm8400 is one) have had similar changes
-> > which seem to do the trick.
+> *shouldn't* use them, but at present it does and they *are* active and
+> used, so it's not an issue for me), the problem is rather one of setting
+> Master (not PCM) to 0% aka -46.5dB causes some kind of auto-mute that
+> cuts off all sound. It shouldn't do that. I've not muted it. I've set it
 
-> My version of GCC (4.5.1) does not seem to have a problem figuring out
-> the flow of execution.  It is just that some of the people who use this
-> code and have an older version of GCC get these warnings.  I agree this
-> is not the way to fix it as it silences legitimate warnings.  However I
-> can't really test any changes I make in an attempt to fixing this due
-> to not having an older version of gcc.
-
-Yes, there's some particular version of GCC that has trouble with this.
-Whatever the WM8400 did to avoid the issue should work when applied to
-this driver, it's a very common pattern in the Wolfson drivers.
+Is this perhaps just an error in the TLV information - should it be
+flagging that the minimim gain is mute but isn't?
