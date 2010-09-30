@@ -1,19 +1,20 @@
-From: "Sebastian H." <vand2@gmx.de>
-Subject: Re: asihpi: Control naming
-Date: Thu, 30 Sep 2010 23:28:46 +0200
-Message-ID: <4CA5010E.4050705@gmx.de>
-References: <4CA4078E.6010601@audioscience.com>
-	<s5h62xng4wm.wl%tiwai@suse.de>	<4CA4F1D8.50800@audioscience.com>
-	<s5haamz9che.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Relax restrictions on WM8962 BCLK
+	configuration
+Date: Thu, 30 Sep 2010 22:50:59 +0100
+Message-ID: <1285883459.3101.130.camel@odin>
+References: <1285882000-17669-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mailout-de.gmx.net [213.165.64.23])
-	by alsa0.perex.cz (Postfix) with SMTP id 0350410397C
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E517C103998
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Sep 2010 23:26:56 +0200 (CEST)
-In-Reply-To: <s5haamz9che.wl%tiwai@suse.de>
+	Thu, 30 Sep 2010 23:51:00 +0200 (CEST)
+Received: by wwb28 with SMTP id 28so2545836wwb.20
+	for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2010 14:51:00 -0700 (PDT)
+In-Reply-To: <1285882000-17669-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,36 +24,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Eliot Blennerhassett <eblennerhassett@audioscience.com>, Eliot Blennerhassett <linux@audioscience.com>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
->>> "PCM 3 Capture Meter" is regarded as a playback control since it has
->>> an invalid (unknown) suffix.  If it's "PCM 3 Meter Capture Volume",
->>
->> But it is not a volume, it is a level meter?!
->> We also have controls for tuners, microphones, equalizers, sampleclocks
->> etc.  Surely these can't be all "Volume" or "Switch"
->> I'm not sure why the suffix has any bearing on the direction?
+On Thu, 2010-09-30 at 14:26 -0700, Mark Brown wrote:
+> The restrictions on configuring BCLK are overly cautious, other constraints
+> in the system should ensure that reconfiguration is not possible when the
+> device is sufficiently active to be unable to support reclocking.
 > 
-> Actually, this control is handled as a "neutral" control without
-> the directional attribute.  alsamixer or else may show it in the
-> playback but also may show in capture, too.
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/wm8962.c |    6 ------
+>  1 files changed, 0 insertions(+), 6 deletions(-)
 > 
+> diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+> index be34146..38cbf85 100644
+> --- a/sound/soc/codecs/wm8962.c
+> +++ b/sound/soc/codecs/wm8962.c
+> @@ -911,12 +911,6 @@ static void wm8962_configure_bclk(struct snd_soc_codec *codec)
+>  	int clocking2 = 0;
+>  	int aif2 = 0;
+>  
+> -	/* If the CODEC is powered on we can configure BCLK */
+> -	if (codec->bias_level != SND_SOC_BIAS_OFF) {
+> -		dev_dbg(codec->dev, "Bias is off, can't configure BCLK\n");
+> -		return;
+> -	}
+> -
+>  	if (!wm8962->bclk) {
+>  		dev_dbg(codec->dev, "No BCLK rate configured\n");
+>  		return;
 
-This is interesting. In alsamixer-qt4 I've just stumbled over
-enum elements for which both
-snd_mixer_selem_is_enum_playback and
-snd_mixer_selem_is_enum_capture
-return 0/false (2.6.32 kernel emu10k1 chip).
-
-May I drop the question in if this state can be considered valid
-and besides *playback* and *capture* elements there's a third group of
-*neutral* elements?
-
-(On the other hand switches and volumes are always directed.)
-
-Right now I handle it by dumping a warning message to stdout
-and puting it into the playback direction element list.
-
-Sebastian
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
