@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ALSA AUDIOj support for PXA320
-Date: Thu, 30 Sep 2010 17:50:23 +0100
-Message-ID: <20100930165023.GC9431@sirena.org.uk>
-References: <AANLkTinW0wQoeP3gm5bCZBJ27pJd5ubZ3S5Kq_Kaf6Cd@mail.gmail.com>
+From: Valentine Sinitsyn <valentine.sinitsyn@gmail.com>
+Subject: ALC662 NID 0x09 is not unmuted anymore - intentional?
+Date: Thu, 30 Sep 2010 23:18:51 +0600
+Message-ID: <AANLkTikCL0DBhQo4YhuTEjLxUQBE+ONmtgJGu-s0Vec7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE9821037FF
+Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6B1CE10382B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Sep 2010 18:50:23 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <AANLkTinW0wQoeP3gm5bCZBJ27pJd5ubZ3S5Kq_Kaf6Cd@mail.gmail.com>
+	Thu, 30 Sep 2010 19:18:55 +0200 (CEST)
+Received: by pxi1 with SMTP id 1so764096pxi.38
+	for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2010 10:18:52 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sayiram K N <sayiram.kothuri@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 30, 2010 at 02:34:12PM +0530, Sayiram K N wrote:
+Hello,
 
->  I am using PXA320 where it has ALSA . but  for Linux 2.6.29 there is no
-> support for PXA320. can i get a patch to support PXA320 .
-> thanks in advance
+I happened to spend last couple of evenings figuring out what's wrong with
+microphone on my laptop (Lenovo Y550P, in case you are interested in). It
+has Intel HDA soundcard with Realtek 272 codec. No, I'm not going to ask for
+a help on devel mailing list, at the very least because I know what's wrong
+myself. But this knowledge poses some questions regarding snd-hda-intel
+kenel driver (more precisely, patch_realtek.c, which is part of it) I want
+to clarify. Anyway, sorry for the long intro :)
 
-The 2.6.29 kernel is extremely old.  Support for PXA3xx SSP and AC'97
-controllers has been present in the kernel for quite some time (indeed,
-the AC'97 part appears to have already been present in 2.6.29).
+It quickly appeared that AUD_IN widget of the codec (NID 0x09) has no way to
+be unmuted - its input amplifier is muted at the very beginning of
+alc662_init_verbs and is not connected to any ALSA control (maybe it
+should). I remembered the mic was working some time ago, so I've skimmed
+through kernel versions and found the offending commit:
+
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=cec27c891b805b2ab2302f9fcbdacb6f179ac0d4
+
+One can clearly see from it that before it was applied (i.e. Linux 2.6.34),
+this widget was unmuted in alc662_auto_init_verbs (thus it happened to every
+auto-configured card, including mine), but it is not unmuted anymore (as far
+as I can see, for any model except maybe ecs - I haven't dug into this too
+much).
+
+The question is if it is intentional (i.e. there should be some ALSA switch
+connected to 0x09 input amplifier) or is it a bug?
+
+Thanks for the explanations.
+
+-- 
+Regards,
+Valentine Sinitsyn
