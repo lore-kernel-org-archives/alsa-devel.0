@@ -1,26 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: alsactl adds volume controls?
-Date: Thu, 30 Sep 2010 13:36:56 -0700
-Message-ID: <20100930203655.GD4175@opensource.wolfsonmicro.com>
-References: <alpine.LNX.2.00.1009021553460.10278@eeebox2.perex-int.cz>
-	<4C7FB2CF.5060505@ladisch.de>
-	<alpine.LNX.2.00.1009021721100.10278@eeebox2.perex-int.cz>
-	<4C7FC85B.4000009@ladisch.de>
-	<alpine.LNX.2.00.1009021926120.10278@eeebox2.perex-int.cz>
-	<i7viav$kjb$1@dough.gmane.org> <4CA46E98.10402@ladisch.de>
-	<4CA4A844.7060403@colin.guthr.ie>
-	<20100930164753.GB9431@sirena.org.uk>
-	<s5hr5gb9k83.wl%tiwai@suse.de>
+Subject: ASoC updates for 2.6.37
+Date: Thu, 30 Sep 2010 13:49:48 -0700
+Message-ID: <20100930204947.GE4175@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9BF4210397C
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D2A2D103974
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Sep 2010 22:36:39 +0200 (CEST)
+	Thu, 30 Sep 2010 22:49:32 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hr5gb9k83.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,16 +21,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Colin Guthrie <gmane@colin.guthr.ie>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 30, 2010 at 08:09:32PM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
+The following changes since commit 45e655047fd64ba7eb52d14ef5acc41763c8ea34:
 
-> > Is this perhaps just an error in the TLV information - should it be
-> > flagging that the minimim gain is mute but isn't?
+  ASoC: Initial WM8962 IRQ support (2010-09-29 00:32:36 -0700)
 
-> There is no clear (or consistent) definition in HD-audio codec, I guess.
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.37
 
-Oh, fail.  Of course, a sufficient attenuation is indistinguishable from
-mute anyway which complicates matters a little.
+Dimitris Papastamos (2):
+      ASoC: Remove unneeded use of spi_bus_type
+      ASoC: WM8804: Initial driver
+
+Mark Brown (2):
+      ASoC: Mark WM8962 Additional Control 4 register as volatile
+      ASoC: Provide microphone bias configuration for WM8962
+
+ include/sound/wm8962.h           |    6 +
+ sound/soc/codecs/Kconfig         |    4 +
+ sound/soc/codecs/Makefile        |    2 +
+ sound/soc/codecs/wm8510.c        |    1 -
+ sound/soc/codecs/wm8711.c        |    1 -
+ sound/soc/codecs/wm8728.c        |    1 -
+ sound/soc/codecs/wm8731.c        |    1 -
+ sound/soc/codecs/wm8750.c        |    1 -
+ sound/soc/codecs/wm8753.c        |    1 -
+ sound/soc/codecs/wm8776.c        |    1 -
+ sound/soc/codecs/wm8804.c        |  820 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/wm8804.h        |   61 +++
+ sound/soc/codecs/wm8900.c        |    1 -
+ sound/soc/codecs/wm8962-tables.c |    2 +-
+ sound/soc/codecs/wm8962.c        |   12 +
+ sound/soc/codecs/wm8985.c        |    1 -
+ sound/soc/codecs/wm8988.c        |    1 -
+ 17 files changed, 906 insertions(+), 11 deletions(-)
+ create mode 100644 sound/soc/codecs/wm8804.c
+ create mode 100644 sound/soc/codecs/wm8804.h
