@@ -1,14 +1,21 @@
-From: Stas Sergeev <stsp@aknet.ru>
-Subject: namehint: Evaluate more possibilities for hw devices
-Date: Thu, 30 Sep 2010 20:11:43 +0400
-Message-ID: <4CA4B6BF.3080503@aknet.ru>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: WM8985: Register notifier for
+	the	regulator being disabled
+Date: Thu, 30 Sep 2010 17:40:37 +0100
+Message-ID: <20100930164037.GA9431@sirena.org.uk>
+References: <1285756717-27149-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	<20100929174322.GA31934@opensource.wolfsonmicro.com>
+	<1285840292.4722.17.camel@dplaptop>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------070700060201050705040002"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.aknet.ru (mail.aknet.ru [78.158.192.28])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9E24910393B
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2CED610394A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 30 Sep 2010 18:11:46 +0200 (CEST)
+	Thu, 30 Sep 2010 18:40:38 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1285840292.4722.17.camel@dplaptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,87 +25,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070700060201050705040002
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Thu, Sep 30, 2010 at 10:51:32AM +0100, Dimitris Papastamos wrote:
+> On Wed, 2010-09-29 at 10:43 -0700, Mark Brown wrote:
 
-  Hi Jaroslav.
+> > It's better to restructure the code so that the compiler is able to
+> > follow the control flow and see that there's no uninitialised access -
+> > this sort of change will just shut up legitimate warnings as well.  Some
+> > of the other CODEC drivers (wm8400 is one) have had similar changes
+> > which seem to do the trick.
 
-I updated the alsa-lib from git, and "aplay -L"
-no longer shows some PCMs it used to list before.
-I tracked this down to this commit:
----
-commit 97d25c0766405453d3c298bd51dd4916121a4f6a
-Author: Jaroslav Kysela <perex@perex.cz>
-Date:   Fri Aug 20 10:31:17 2010 +0200
+> My version of GCC (4.5.1) does not seem to have a problem figuring out
+> the flow of execution.  It is just that some of the people who use this
+> code and have an older version of GCC get these warnings.  I agree this
+> is not the way to fix it as it silences legitimate warnings.  However I
+> can't really test any changes I make in an attempt to fixing this due
+> to not having an older version of gcc.
 
-     namehint: Evaluate more possibilities for hw devices
----
-
-Attached are the outputs before and after the commit.
-So why some devices are now missing?
-
---------------070700060201050705040002
-Content-Type: text/plain;
- name="before.log"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="before.log"
-
-ZGVmYXVsdAogICAgRGVmYXVsdApmcm9udDpDQVJEPU5WaWRpYSxERVY9MAogICAgSERBIE5W
-aWRpYSwgQUxDODg3IEFuYWxvZwogICAgRnJvbnQgc3BlYWtlcnMKc3Vycm91bmQ0MDpDQVJE
-PU5WaWRpYSxERVY9MAogICAgSERBIE5WaWRpYSwgQUxDODg3IEFuYWxvZwogICAgNC4wIFN1
-cnJvdW5kIG91dHB1dCB0byBGcm9udCBhbmQgUmVhciBzcGVha2VycwpzdXJyb3VuZDQxOkNB
-UkQ9TlZpZGlhLERFVj0wCiAgICBIREEgTlZpZGlhLCBBTEM4ODcgQW5hbG9nCiAgICA0LjEg
-U3Vycm91bmQgb3V0cHV0IHRvIEZyb250LCBSZWFyIGFuZCBTdWJ3b29mZXIgc3BlYWtlcnMK
-c3Vycm91bmQ1MDpDQVJEPU5WaWRpYSxERVY9MAogICAgSERBIE5WaWRpYSwgQUxDODg3IEFu
-YWxvZwogICAgNS4wIFN1cnJvdW5kIG91dHB1dCB0byBGcm9udCwgQ2VudGVyIGFuZCBSZWFy
-IHNwZWFrZXJzCnN1cnJvdW5kNTE6Q0FSRD1OVmlkaWEsREVWPTAKICAgIEhEQSBOVmlkaWEs
-IEFMQzg4NyBBbmFsb2cKICAgIDUuMSBTdXJyb3VuZCBvdXRwdXQgdG8gRnJvbnQsIENlbnRl
-ciwgUmVhciBhbmQgU3Vid29vZmVyIHNwZWFrZXJzCnN1cnJvdW5kNzE6Q0FSRD1OVmlkaWEs
-REVWPTAKICAgIEhEQSBOVmlkaWEsIEFMQzg4NyBBbmFsb2cKICAgIDcuMSBTdXJyb3VuZCBv
-dXRwdXQgdG8gRnJvbnQsIENlbnRlciwgU2lkZSwgUmVhciBhbmQgV29vZmVyIHNwZWFrZXJz
-CmllYzk1ODpDQVJEPU5WaWRpYSxERVY9MAogICAgSERBIE5WaWRpYSwgQUxDODg3IERpZ2l0
-YWwKICAgIElFQzk1OCAoUy9QRElGKSBEaWdpdGFsIEF1ZGlvIE91dHB1dApoZG1pOkNBUkQ9
-SERNSQogICAgSERBIEFUSSBIRE1JLCBBVEkgSERNSQogICAgSERNSSBBdWRpbyBPdXRwdXQK
-ZnJvbnQ6Q0FSRD1wY3NwLERFVj0wCiAgICBwY3NwLCBwY3NwCiAgICBGcm9udCBzcGVha2Vy
-cwpmcm9udDpDQVJEPUR1bW15LERFVj0wCiAgICBEdW1teSwgRHVtbXkgUENNCiAgICBGcm9u
-dCBzcGVha2Vycwo=
---------------070700060201050705040002
-Content-Type: text/plain;
- name="after.log"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="after.log"
-
-ZGVmYXVsdAogICAgRGVmYXVsdApmcm9udDpDQVJEPU5WaWRpYSxERVY9MAogICAgSERBIE5W
-aWRpYSwgQUxDODg3IEFuYWxvZwogICAgRnJvbnQgc3BlYWtlcnMKc3Vycm91bmQ0MDpDQVJE
-PU5WaWRpYSxERVY9MAogICAgSERBIE5WaWRpYSwgQUxDODg3IEFuYWxvZwogICAgNC4wIFN1
-cnJvdW5kIG91dHB1dCB0byBGcm9udCBhbmQgUmVhciBzcGVha2VycwpzdXJyb3VuZDQxOkNB
-UkQ9TlZpZGlhLERFVj0wCiAgICBIREEgTlZpZGlhLCBBTEM4ODcgQW5hbG9nCiAgICA0LjEg
-U3Vycm91bmQgb3V0cHV0IHRvIEZyb250LCBSZWFyIGFuZCBTdWJ3b29mZXIgc3BlYWtlcnMK
-c3Vycm91bmQ1MDpDQVJEPU5WaWRpYSxERVY9MAogICAgSERBIE5WaWRpYSwgQUxDODg3IEFu
-YWxvZwogICAgNS4wIFN1cnJvdW5kIG91dHB1dCB0byBGcm9udCwgQ2VudGVyIGFuZCBSZWFy
-IHNwZWFrZXJzCnN1cnJvdW5kNTE6Q0FSRD1OVmlkaWEsREVWPTAKICAgIEhEQSBOVmlkaWEs
-IEFMQzg4NyBBbmFsb2cKICAgIDUuMSBTdXJyb3VuZCBvdXRwdXQgdG8gRnJvbnQsIENlbnRl
-ciwgUmVhciBhbmQgU3Vid29vZmVyIHNwZWFrZXJzCnN1cnJvdW5kNzE6Q0FSRD1OVmlkaWEs
-REVWPTAKICAgIEhEQSBOVmlkaWEsIEFMQzg4NyBBbmFsb2cKICAgIDcuMSBTdXJyb3VuZCBv
-dXRwdXQgdG8gRnJvbnQsIENlbnRlciwgU2lkZSwgUmVhciBhbmQgV29vZmVyIHNwZWFrZXJz
-CmllYzk1ODpDQVJEPU5WaWRpYSxERVY9MAogICAgSERBIE5WaWRpYSwgQUxDODg3IERpZ2l0
-YWwKICAgIElFQzk1OCAoUy9QRElGKSBEaWdpdGFsIEF1ZGlvIE91dHB1dAo=
---------------070700060201050705040002
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------070700060201050705040002--
+Yes, there's some particular version of GCC that has trouble with this.
+Whatever the WM8400 did to avoid the issue should work when applied to
+this driver, it's a very common pattern in the Wolfson drivers.
