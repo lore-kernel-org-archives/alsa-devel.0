@@ -1,23 +1,22 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: asihpi: Control naming
-Date: Fri, 1 Oct 2010 20:45:57 +0800
-Message-ID: <AANLkTikZ3MK9pydoLKAqOsO_K69HkOrg-rZuzyRDS0j-@mail.gmail.com>
-References: <4CA4078E.6010601@audioscience.com> <s5h62xng4wm.wl%tiwai@suse.de>
-	<4CA4F1D8.50800@audioscience.com> <s5haamz9che.wl%tiwai@suse.de>
-	<4CA5010E.4050705@gmx.de> <4CA58856.8070505@ladisch.de>
-	<4CA5C69B.4000703@gmx.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: namehint: Evaluate more possibilities for hw
+	devices
+Date: Fri, 1 Oct 2010 15:14:03 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1010011512520.20467@eeebox2.perex-int.cz>
+References: <4CA4B6BF.3080503@aknet.ru>
+	<alpine.LNX.2.00.1010011332210.20467@eeebox2.perex-int.cz>
+	<4CA5CB0D.9030003@aknet.ru>
+	<alpine.LNX.2.00.1010011408410.20467@eeebox2.perex-int.cz>
+	<4CA5D359.9040400@aknet.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7F21010381D
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 32B07103839
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Oct 2010 14:45:57 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so1263849ewy.38
-	for <alsa-devel@alsa-project.org>; Fri, 01 Oct 2010 05:45:57 -0700 (PDT)
-In-Reply-To: <4CA5C69B.4000703@gmx.de>
+	Fri,  1 Oct 2010 15:14:04 +0200 (CEST)
+In-Reply-To: <4CA5D359.9040400@aknet.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,50 +26,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Stas Sergeev <stsp@aknet.ru>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/10/1 Sebastian H. <vand2@gmx.de>
+On Fri, 1 Oct 2010, Stas Sergeev wrote:
 
-> Am 01.10.2010 09:05, schrieb Clemens Ladisch:
-> > Sebastian H. wrote:
-> >> In alsamixer-qt4 I've just stumbled over enum elements for which both
-> >> snd_mixer_selem_is_enum_playback and
-> >> snd_mixer_selem_is_enum_capture
-> >> return 0/false (2.6.32 kernel emu10k1 chip).
-> >>
-> >> May I drop the question in if this state can be considered valid
-> >
-> > Yes.
-> >
-> >> and besides *playback* and *capture* elements there's a third group of
-> >> *neutral* elements?
-> >
-> > Those are elements where the simple mixer code doesn't know the
-> > direction (because the driver author didn't put "Playback" or "Capture"
-> > into the name).
->
-> Ok, but I wonder how to interpret this state in which both functions
-> return zero.
->
-> 1) There's a bug or uncertainty somewhere in the libs/driver and
-> in a perfekt world this would not happen. It always should be either.
->
-> 2) This is intentional and the respective element belongs to the
-> group of *general* elements which exists in parallel
-> to the *playback* and the *capture* element groups.
->
-> As mentioned alsamixer-qt4 considers 1) and handles it somehow
-> gracefully. I just wonder if that is the correct thing to do in case.
->
+> 01.10.2010 16:08, Jaroslav Kysela wrote:
+>       This patch should definitely fix it:
+> 
+> http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=c049d48407ff0459
+>       ff15e466edeeee6ecff67fcd
+> 
+> Much better now, thanks!
+> I still have an issue though.
+> If the device registers only the playback
+> substreams and no record substreams,
+> it is still not listed. To reproduce, set the
+> "capture_count" param of snd_pcm_new()
+> to 0 in dummy.c, and then it disappears
+> from the list, as follows:
 
-But the number of control related to capture is limited
+Try upgrade alsa-utils (aplay). Appearenly, the bug is there (at least on 
+my system the latest aplay lists devices correctly, but aplay 1.0.18 is 
+buggy).
 
-1) Capture Volume
-2) Capture Switch
-3) Capture Source
-4) Input Source
-5) Mic Boost
-6) ADC attenuation
+ 					Jaroslav
 
-Most of the other controls are related to playback
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
