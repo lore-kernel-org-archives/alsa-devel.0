@@ -1,64 +1,79 @@
-From: Anand Gadiyar <gadiyar@ti.com>
-Subject: RE: [PATCH 2/2] omap: zoom: Move new code introduced by ASoC m-c to board-zoom-peripherals
-Date: Sat, 2 Oct 2010 04:09:49 +0530
-Message-ID: <ac252c0b89d0931d54a4d763e11035a3@mail.gmail.com>
+From: "Lopez Cruz, Misael" <misael.lopez@ti.com>
+Subject: RE: [PATCH 2/2] omap: zoom: Move new code introduced by ASoC m-c to
+ board-zoom-peripherals
+Date: Fri, 1 Oct 2010 18:47:49 -0500
+Message-ID: <C9D59C82B94F474B872F2092A87F261412730D6302@dlee07.ent.ti.com>
 References: <1285258314-23721-1-git-send-email-jhnikula@gmail.com>
- <1285258314-23721-2-git-send-email-jhnikula@gmail.com> <C9D59C82B94F474B872F2092A87F26141272FF6109@dlee07.ent.ti.com>
+ <1285258314-23721-2-git-send-email-jhnikula@gmail.com>
+ <C9D59C82B94F474B872F2092A87F26141272FF6109@dlee07.ent.ti.com>
  <1285349412.13240.42.camel@odin>
+ <ac252c0b89d0931d54a4d763e11035a3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1285349412.13240.42.camel@odin>
+In-Reply-To: <ac252c0b89d0931d54a4d763e11035a3@mail.gmail.com>
+Content-Language: en-US
 Sender: linux-omap-owner@vger.kernel.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>, Misael Lopez Cruz <misael.lopez@ti.com>
-Cc: Jarkko Nikula <jhnikula@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-omap@vger.kernel.org, Vikram Pandita <vikram.pandita@ti.com>, Jorge Candelaria Villarreal <jorge.candelaria@ti.com>, Tony Lindgren <tony@atomide.com>
+To: "Gadiyar, Anand" <gadiyar@ti.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Jarkko Nikula <jhnikula@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Pandita, Vikram" <vikram.pandita@ti.com>, "Candelaria Villarreal, Jorge" <jorge.candelaria@ti.com>, Tony Lindgren <tony@atomide.com>
 List-Id: alsa-devel@alsa-project.org
 
-Liam Girdwood wrote:
-> On Fri, 2010-09-24 at 11:31 -0500, Lopez Cruz, Misael wrote:
-> > Hi Jarkko,
-> >
-> > > ASoC Multi-Component Support moves some code from
-> > > sound/soc/omap/zoom2.c
-> > > into
-> > > arch/arm/mach-omap2/board-zoom2.c. However, that code should go to
-> > > board-zoom-peripherals.c instead as there is common code and
-> > > registration
-> > > for zoom boards.
+> Liam Girdwood wrote:
+> > On Fri, 2010-09-24 at 11:31 -0500, Lopez Cruz, Misael wrote:
+> > > Hi Jarkko,
 > > >
-> > > Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-> > > Cc: Vikram Pandita <vikram.pandita@ti.com>
-> > > Cc: Lopez Cruz, Misael <x0052729@ti.com>
-> > > Cc: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
-> > > Cc: Tony Lindgren <tony@atomide.com>
-> > > ---
-> > > I don't have this HW so not tested.
-> > Tested on zoom2 using the 2 patches of your series, compilation break is
-> > gone and audio works fine.
+> > > > ASoC Multi-Component Support moves some code from
+> > > > sound/soc/omap/zoom2.c
+> > > > into
+> > > > arch/arm/mach-omap2/board-zoom2.c. However, that code should go to
+> > > > board-zoom-peripherals.c instead as there is common code and
+> > > > registration
+> > > > for zoom boards.
+> > > >
+> > > > Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+> > > > Cc: Vikram Pandita <vikram.pandita@ti.com>
+> > > > Cc: Lopez Cruz, Misael <x0052729@ti.com>
+> > > > Cc: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
+> > > > Cc: Tony Lindgren <tony@atomide.com>
+> > > > ---
+> > > > I don't have this HW so not tested.
+> > > Tested on zoom2 using the 2 patches of your series, compilation break
+> is
+> > > gone and audio works fine.
+> > >
+> > > Thanks,
+> > > -Misael
 > >
-> > Thanks,
-> > -Misael
->
-> Applied, and manually added your Tested-by:
->
-> Thanks
->
-> Liam
+> > Applied, and manually added your Tested-by:
+> >
+> > Thanks
+> >
+> > Liam
+> 
+> Misael, Liam,
+> 
+> Sorry I noticed this patch only now. I have a minor comment on the patch:
+> 
+> Specifically, the part below
+> 
+> +	if (machine_is_omap_zoom2()) {
+> +		zoom_audio_data.ramp_delay_value = 3;	/* 161 ms */
+> +		zoom_audio_data.hs_extmute = 1;
+> +		zoom_audio_data.set_hs_extmute = zoom2_set_hs_extmute;
+> +	}
+> 
+> Isn't the audio on a zoom2/zoom3/3630 SDP the same? (Or at least the
+> same on a zoom2 and zoom3)?
+Yes, at least zoom2 and zoom3 are the same for audio. 
 
-Misael, Liam,
+> If so, we could probably get rid of the
+> machine_is_omap_zoom2() check, right?
+I think it'd better to add checks for the machines supported by the
+driver, so it fails nicely with unsupported ones. I'll go thru the
+differences between our boards and send a patch soon.
 
-Sorry I noticed this patch only now. I have a minor comment on the patch:
+> - Anand
 
-Specifically, the part below
-
-+	if (machine_is_omap_zoom2()) {
-+		zoom_audio_data.ramp_delay_value = 3;	/* 161 ms */
-+		zoom_audio_data.hs_extmute = 1;
-+		zoom_audio_data.set_hs_extmute = zoom2_set_hs_extmute;
-+	}
-
-Isn't the audio on a zoom2/zoom3/3630 SDP the same? (Or at least the
-same on a zoom2 and zoom3)? If so, we could probably get rid of the
-machine_is_omap_zoom2() check, right?
-
-- Anand
+Thanks,
+-Misa
