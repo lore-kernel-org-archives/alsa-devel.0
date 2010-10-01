@@ -1,18 +1,21 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: alsactl adds volume controls?
-Date: Fri, 01 Oct 2010 11:02:02 +0200
-Message-ID: <4CA5A38A.7050006@ladisch.de>
-References: <s5hr5hczi06.wl%tiwai@suse.de>	<4C7F6D5D.7020101@canonical.com>	<alpine.LNX.2.00.1009021553460.10278@eeebox2.perex-int.cz>	<4C7FB2CF.5060505@ladisch.de>	<alpine.LNX.2.00.1009021721100.10278@eeebox2.perex-int.cz>	<4C7FC85B.4000009@ladisch.de>	<alpine.LNX.2.00.1009021926120.10278@eeebox2.perex-int.cz>	<i7viav$kjb$1@dough.gmane.org>	<4CA46E98.10402@ladisch.de>	<4CA4A844.7060403@colin.guthr.ie>	<20100930164753.GB9431@sirena.org.uk>	<s5hr5gb9k83.wl%tiwai@suse.de>	<4CA5834D.5030408@ladisch.de>
-	<4CA59976.2020306@colin.guthr.ie>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: namehint: Evaluate more possibilities for hw
+	devices
+Date: Fri, 1 Oct 2010 17:08:16 +0800
+Message-ID: <AANLkTi=fb6xACkYSDc9Pa4N_ABiN7DDNpe3woVT7+Mxt@mail.gmail.com>
+References: <4CA4B6BF.3080503@aknet.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 926C71039E8
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6F4FE1039ED
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Oct 2010 11:01:18 +0200 (CEST)
-In-Reply-To: <4CA59976.2020306@colin.guthr.ie>
+	Fri,  1 Oct 2010 11:08:16 +0200 (CEST)
+Received: by eye27 with SMTP id 27so1217356eye.38
+	for <alsa-devel@alsa-project.org>; Fri, 01 Oct 2010 02:08:16 -0700 (PDT)
+In-Reply-To: <4CA4B6BF.3080503@aknet.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +25,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Colin Guthrie <gmane@colin.guthr.ie>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Colin Guthrie wrote:
-> 'Twas brillig, and Clemens Ladisch at 01/10/10 07:44 did gyre and gimble:
-> > Colin, please tell us the IDs of your codec so that we can add a TLV
-> > workaround to the driver.
-> 
-> I presume the alsa-info.sh output is sufficient here?
+2010/10/1 Stas Sergeev <stsp@aknet.ru>
 
-| Codec: SigmaTel STAC9200
-| Vendor Id: 0x83847690
+>  Hi Jaroslav.
+>
+> I updated the alsa-lib from git, and "aplay -L"
+> no longer shows some PCMs it used to list before.
+> I tracked this down to this commit:
+> ---
+> commit 97d25c0766405453d3c298bd51dd4916121a4f6a
+> Author: Jaroslav Kysela <perex@perex.cz>
+> Date:   Fri Aug 20 10:31:17 2010 +0200
+>
+>    namehint: Evaluate more possibilities for hw devices
+> ---
+>
+> Attached are the outputs before and after the commit.
+> So why some devices are now missing?
+>
+>
+it seem that only occur when card with one playback device or one capture
+device
 
-Yes.
-
-| Node 0x0b [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-|   Control: name="Master Playback Volume", index=0, device=0
-|     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-|   Control: name="Master Playback Switch", index=0, device=0
-|     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-|   Amp-Out caps: N/A
-
-Is this still "N/A" when you try again?
-
-
-Regards,
-Clemens
+(e.g. snd-dummy also has this problem but snd-aloop does not )
