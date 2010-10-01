@@ -1,64 +1,54 @@
-From: Niels Mayer <nielsmayer-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [LAD] question on ADAT S/MUX using snd-ice1712 and Alesis AI4
-Date: Fri, 1 Oct 2010 12:20:41 -0700
-Message-ID: <AANLkTi=sRJ_JS-P8SSEcw37JkQnvEpdK0GKboS+7q3VY@mail.gmail.com>
+From: "Sebastian H." <vand2@gmx.de>
+Subject: Re: asihpi: Control naming
+Date: Fri, 01 Oct 2010 22:06:16 +0200
+Message-ID: <4CA63F38.7000307@gmx.de>
+References: <4CA4078E.6010601@audioscience.com>	<s5h62xng4wm.wl%tiwai@suse.de>	<4CA4F1D8.50800@audioscience.com>	<s5haamz9che.wl%tiwai@suse.de>	<4CA5010E.4050705@gmx.de>
+	<4CA58856.8070505@ladisch.de> <4CA5C69B.4000703@gmx.de>
+	<4CA5DFFC.40004@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev>
-List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
-List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
-	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
-Sender: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
-To: ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Linux Audio Developers <linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.gmx.net (mailout-de.gmx.net [213.165.64.22])
+	by alsa0.perex.cz (Postfix) with SMTP id 5FB83103A2B
+	for <alsa-devel@alsa-project.org>;
+	Fri,  1 Oct 2010 22:07:52 +0200 (CEST)
+In-Reply-To: <4CA5DFFC.40004@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Now that I have an ADAT-capable card ($20 ebay ice1712-based terratec
-ews88d) I'm curious... if I combine it with
-something like http://www.kellyindustries.com/computer/alesis_ai4.html
-( http://www.alesis.com/ai4 ) and use the
-S/MUX mode built in to the AI4 across eight channels to create four
-24/96 channels.
-//// //// //// ////
-In order for the AI-4 to operate at the 96 kHz samplerate it has to be
-run in S/MUX mode or sample split mode which means that you get 4
-channels of conversion and not 8. This is standard and perfectly
-acceptable. The first two channels will be routed out to the ADAT
-lightpipe outputs 1 through 4 and the 2nd two channels with be routed
-out ADAT lightpipe outputs 5 through 8.
-//// //// //// ////
+Am 01.10.2010 15:19, schrieb Clemens Ladisch:
+> Sebastian H. wrote:
+>> Am 01.10.2010 09:05, schrieb Clemens Ladisch:
+>>> Those are elements where the simple mixer code doesn't know the
+>>> direction (because the driver author didn't put "Playback" or "Capture"
+>>> into the name).
+>>
+>> Ok, but I wonder how to interpret this state in which both functions
+>> return zero.
+> 
+> There are cases where the playback/capture direction is obvious from the
+> name ("just implement an AI!"), but these can be considered bugs.
 
-Would I be able to "transparently" use these "S/MUX"d channels in a
-linux DAW, by simply recording/playing-back a higher channel count per
-track (e.g. 4 for a stereo track, 2 for a mono)? This seems like a
-good way to achieve "studio quality" 24/96 record&playback at a
-distance from the computer -- via ADAT cable -- using high quality
-outboard A/D and D/A or interfacing to external equipment already
-presenting AES/EBU format I/O.
+Ok, I'll stick to the element name list from Raymond then for an
+automated detection.
 
-If a device like the AI4 actually does all the bit-splitting and other
-fu, both for input and output -- wouldn't it not matter that the
-actual 2-track or 4-track contents are essentially "noise" because
-nothing in Linux-land would understand the S/MUX format.
+> In the other cases, the control really doesn't belong to a direction.
+> (Which doesn't prevent many mixers that have two pages from just
+> throwing them in with the playback controls.)
 
-Next question: to avoid the hack suggested above, is there some kind
-of ALSA plugin that would reconstitute/create synchronized pairs of
-S/MUX data on the same soundcard into single 24/96 streams, both for
-input and output? How is S/Mux handled in Linux & ALSA?
+Bringing up a separate page for rare *general* elements doesn't seem
+worthwile then and the *playback* page should be fine.
 
-Thanks.
-
-Niels
-http://nielsmayer.com
-
-PS: The Alesis AI4 seems nicer than the http://www.aphex.com/144.htm
--- for one I won't need to make 110 ohm cables with XLR connectors to
-DB25. The AI4's support for S/MUX mode is especially nice-sounding --
-if there was a way for it to work in linux. Any other suggestions for
-converting ADAT to AES/EBU (or spdif)  w/ decent synchronization
-options for input?
+Cheers,
+Sebastian
