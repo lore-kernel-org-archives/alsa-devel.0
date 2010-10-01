@@ -1,22 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: namehint: Evaluate more possibilities for hw
-	devices
-Date: Fri, 1 Oct 2010 15:14:03 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1010011512520.20467@eeebox2.perex-int.cz>
-References: <4CA4B6BF.3080503@aknet.ru>
-	<alpine.LNX.2.00.1010011332210.20467@eeebox2.perex-int.cz>
-	<4CA5CB0D.9030003@aknet.ru>
-	<alpine.LNX.2.00.1010011408410.20467@eeebox2.perex-int.cz>
-	<4CA5D359.9040400@aknet.ru>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: asihpi: Control naming
+Date: Fri, 01 Oct 2010 15:19:56 +0200
+Message-ID: <4CA5DFFC.40004@ladisch.de>
+References: <4CA4078E.6010601@audioscience.com>	<s5h62xng4wm.wl%tiwai@suse.de>	<4CA4F1D8.50800@audioscience.com>	<s5haamz9che.wl%tiwai@suse.de>	<4CA5010E.4050705@gmx.de>
+	<4CA58856.8070505@ladisch.de> <4CA5C69B.4000703@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 32B07103839
+Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 35AA9103A0E
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Oct 2010 15:14:04 +0200 (CEST)
-In-Reply-To: <4CA5D359.9040400@aknet.ru>
+	Fri,  1 Oct 2010 15:19:16 +0200 (CEST)
+In-Reply-To: <4CA5C69B.4000703@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,34 +22,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stas Sergeev <stsp@aknet.ru>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: "Sebastian H." <vand2@gmx.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 1 Oct 2010, Stas Sergeev wrote:
-
-> 01.10.2010 16:08, Jaroslav Kysela wrote:
->       This patch should definitely fix it:
+Sebastian H. wrote:
+> Am 01.10.2010 09:05, schrieb Clemens Ladisch:
+> > Those are elements where the simple mixer code doesn't know the
+> > direction (because the driver author didn't put "Playback" or "Capture"
+> > into the name).
 > 
-> http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=c049d48407ff0459
->       ff15e466edeeee6ecff67fcd
-> 
-> Much better now, thanks!
-> I still have an issue though.
-> If the device registers only the playback
-> substreams and no record substreams,
-> it is still not listed. To reproduce, set the
-> "capture_count" param of snd_pcm_new()
-> to 0 in dummy.c, and then it disappears
-> from the list, as follows:
+> Ok, but I wonder how to interpret this state in which both functions
+> return zero.
 
-Try upgrade alsa-utils (aplay). Appearenly, the bug is there (at least on 
-my system the latest aplay lists devices correctly, but aplay 1.0.18 is 
-buggy).
+There are cases where the playback/capture direction is obvious from the
+name ("just implement an AI!"), but these can be considered bugs.
 
- 					Jaroslav
+In the other cases, the control really doesn't belong to a direction.
+(Which doesn't prevent many mixers that have two pages from just
+throwing them in with the playback controls.)
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+
+Regards,
+Clemens
