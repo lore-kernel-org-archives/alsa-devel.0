@@ -1,12 +1,18 @@
-From: valentine.sinitsyn@gmail.com
-Subject: [PATCH - Realtek HDA Codec 1/1] Added fixup for Lenovo
-	Y550P
-Date: Fri,  1 Oct 2010 22:24:08 +0600
-Message-ID: <1285950248-4114-1-git-send-email-valentine.sinitsyn@gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Need expert's advice - Fast Track Ultra (8R)
+ dropping samples
+Date: Fri, 01 Oct 2010 18:29:15 +0200
+Message-ID: <4CA60C5B.6010809@ladisch.de>
+References: <4C9DC7A1.8050001@showlabor.de> <4CA5BF35.2030108@showlabor.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id A972424478
+	for <alsa-devel@alsa-project.org>;
+	Fri,  1 Oct 2010 18:28:27 +0200 (CEST)
+In-Reply-To: <4CA5BF35.2030108@showlabor.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -16,26 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Valentine Sinitsyn <valentine.sinitsyn@gmail.com>
+To: Felix Homann <linuxaudio@showlabor.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Valentine Sinitsyn <valentine.sinitsyn@gmail.com>
+Felix Homann wrote:
+> I guess the right place to fix the issues mentioned in my original post
+> is in snd_usb_init_substream() in urb.c:
+> 
+>          case USB_ID(0x0763, 0x2081): /* M-Audio Fast Track Ultra 8R */
+>              subs->ops.prepare_sync = prepare_playback_sync_urb;
+>              subs->ops.retire_sync = retire_playback_sync_urb;
+> 
+> I've tried combinations using the _hs and _emu versions of the
+> retire.../prepare... functions. It either didn't change anything or made
+> it worse. I guess we need  _ftu versions.
+> 
+> Could somebody at least tell me how to find out what's exactly going
+> wrong with the sync.
+
+Add an else to the inner if in retire_playback_sync_urb, and log the
+value of f.
+
+The value received in this function should be the desired sample
+frequency, relative to the USB frame rate.  There are different formats
+(therefore we have three functions); maybe the FTU uses a fourth one.
 
 
-Signed-off-by: Valentine Sinitsyn <valentine.sinitsyn@gmail.com>
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 3b04087..124d52f 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -19074,6 +19074,7 @@ static const struct alc_fixup alc662_fixups[] = {
- 
- static struct snd_pci_quirk alc662_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Ideapad Y550", ALC662_FIXUP_IDEAPAD),
-+	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo Ideapad Y550P", ALC662_FIXUP_IDEAPAD),
- 	{}
- };
- 
--- 
-1.7.3.1
+Regards,
+Clemens
