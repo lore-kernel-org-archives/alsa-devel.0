@@ -1,27 +1,30 @@
-From: Alex <lee188@singnet.com.sg>
-Subject: Re: OSX Core Audio ASYNC OUT with rate feedback format
-	?
-Date: Fri, 1 Oct 2010 01:30:13 +0000 (UTC)
-Message-ID: <loom.20101001T032726-548@post.gmane.org>
-References: <loom.20100930T054110-986@post.gmane.org>
+From: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
+Subject: Re: user space control app driver interface for sound
+	soc
+Date: Thu, 30 Sep 2010 18:56:58 -0700
+Message-ID: <B2150E1E4418E1438554A300EA5040E40D46F92B44@ITSVLEX06.it.maxim-ic.internal>
+References: <20100929033757.GB29975@opensource.wolfsonmicro.com>
+	<B2150E1E4418E1438554A300EA5040E40D46F2D8D8@ITSVLEX06.it.maxim-ic.internal>
+	<20100929221826.GC31934@opensource.wolfsonmicro.com>
+	<B2150E1E4418E1438554A300EA5040E40D46F2D9E9@ITSVLEX06.it.maxim-ic.internal>
+	<20100930005850.GB4517@opensource.wolfsonmicro.com>
+	<B2150E1E4418E1438554A300EA5040E40D46F92916@ITSVLEX06.it.maxim-ic.internal>
+	<20100930203118.GA4175@opensource.wolfsonmicro.com>
+	<B2150E1E4418E1438554A300EA5040E40D46F92A44@ITSVLEX06.it.maxim-ic.internal>
+	<20100930220953.GF4175@opensource.wolfsonmicro.com>
+	<B2150E1E4418E1438554A300EA5040E40D46F92A90@ITSVLEX06.it.maxim-ic.internal>
+	<20100930233453.GH4175@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 710E0103991
+Received: from antispam01.maxim-ic.com (antispam01.maxim-ic.com
+	[205.153.101.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id C550310399E
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Oct 2010 03:30:27 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1P1US7-0008EN-Mv
-	for alsa-devel@alsa-project.org; Fri, 01 Oct 2010 03:30:23 +0200
-Received: from 220.255.7.233 ([220.255.7.233])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 01 Oct 2010 03:30:23 +0200
-Received: from lee188 by 220.255.7.233 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 01 Oct 2010 03:30:23 +0200
+	Fri,  1 Oct 2010 03:57:14 +0200 (CEST)
+In-Reply-To: <20100930233453.GH4175@opensource.wolfsonmicro.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,54 +34,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Alex <lee188 <at> singnet.com.sg> writes:
+On Thu, Sep 30, 2010, Mark Brown wrote:
+> On Thu, Sep 30, 2010 at 04:10:15PM -0700, Peter Hsiang wrote:
+> > On Thu, Sep 30, 2010, Mark Brown wrote:
+> 
+> > > For these it depends; frequently these are (like your existing EQ
+> > > configuration) included in platform data but it really depends on how
+> > > they are generated and if they are custom to a particular system (eg,
+> > > dependant on plastics or particular speakers).
+> 
+> > In addition to the platform data, I would like in the future be
+> > able to load in data values that are stored in or generated from the
+> > user space.  Would I use the ALSA interface for this, or would it
+> > need to be a separate interface?
+> 
+> This would not be idiomatic for ALSA.  The particular interface to use
+> would depend on the volume of data being configured and the format it is
+> provided in.  If this is just for test and development purposes then
+> adding something to debugfs would be the normal thing.
 
-> 
-> Hi Daniel et al,
-> 
-> I have successfully interfaced the sdr-widget with Linux alsa-driver
->  for ASYNC 
-> OUT with rate feedback.  Found out after much trial
->  and error and reading of the 
-> usbaudio alsa-driver source code that you are
->  using 12.13 as the format for the 
-> feedback rate !!!  I was trying with 10.14 (UAC1 v1.2 specs
-> , I think) in 3 bytes, 
-> and 16.16 (USB 2.0) in 4 bytes for quite a number of days
->  with no success !!!
-> 
-> However, 12.13 in 4 bytes, whilst working like a charm
->  with Linux, does NOT work 
-> with OSX.
-> 
-> Would you know the format used by OSX?
-> 
-> Thanks.
-> 
-> Alex
->
+This will be intended for normal operation.
+The volume of data would be both small amounts (say 20 bytes or so)
+for custom parameters, and also larger amounts (order of kilo bytes) 
+for firmware image.
+Seems like ALSA does not have build-in interfaces that can be 
+directly used for these use cases right?
+Will it be better to extend on ALSA or setup a separate path?
 
-Hi Daniel et al,
+> > > > binary code image that goes into the chip's memory.
+> 
+> > > For this use request_firmware() and associated interfaces.
+> 
+> > Is it more common to load the firmware from the kernel space?
+> > Is there an established mechanism for loading from user space?
+> 
+> Have you looked at request_firmware()?  It is the established mechanism
+> for doing this and supports both firmware images built into the kernel
+> and firmware loaded from userspace, though firmware in userspace is the
+> more common approach.
 
-This is an excerpt from:
-http://www.opensource.apple.com/source/AppleUSBAudio/AppleUSBAudio-
-273.4.1/AppleUSBAudioStream.cpp
-
-==============================================================
-	associatedEndpoint.type = kUSBIsoc;
-	associatedEndpoint.direction = kUSBIn;
-	// The associated endpoint always goes "in"
-	// The sample rate should be either
- a 3-byte 10.14 or a 4-byte 16.16
-	associatedEndpoint.maxPacketSize = mFeedbackPacketSize;
-	associatedEndpoint.interval = 0xFF;
-	mAssociatedPipe = mStreamInterface->FindNextPipe (NULL, 
-&associatedEndpoint);
-	FailWithAction (NULL == mAssociatedPipe, result = 
-kIOReturnError, Exit);
-===============================================================
-
-Alex
+Thanks, yes I see that it's a kernel space only feature, regardless 
+of where the firmware image is located.
+Would it be ok for a user space app to handle the image file directly
+and send down the file content for the driver to process?
