@@ -1,83 +1,64 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: WM8940: incorrect mask for BCLKDIV
-Date: Fri, 1 Oct 2010 19:13:39 +0100
-Message-ID: <20101001181338.GA12031@sirena.org.uk>
-References: <4CA59A8F.3000800@elproma.com.pl>
+From: Niels Mayer <nielsmayer-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [LAD] question on ADAT S/MUX using snd-ice1712 and Alesis AI4
+Date: Fri, 1 Oct 2010 12:20:41 -0700
+Message-ID: <AANLkTi=sRJ_JS-P8SSEcw37JkQnvEpdK0GKboS+7q3VY@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1ECC4103A14
-	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Oct 2010 20:13:40 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4CA59A8F.3000800@elproma.com.pl>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grzegorz Daniluk <g.daniluk@elproma.com.pl>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Unsubscribe: <http://lists.linuxaudio.org/options/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+To: ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Linux Audio Developers <linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 01, 2010 at 10:23:43AM +0200, Grzegorz Daniluk wrote:
-> corrected bitmask in BCLKDIV setting (wm8940_set_dai_clkdiv) and
-> bias_level in wm8940 register function.
+Now that I have an ADAT-capable card ($20 ebay ice1712-based terratec
+ews88d) I'm curious... if I combine it with
+something like http://www.kellyindustries.com/computer/alesis_ai4.html
+( http://www.alesis.com/ai4 ) and use the
+S/MUX mode built in to the AI4 across eight channels to create four
+24/96 channels.
+//// //// //// ////
+In order for the AI-4 to operate at the 96 kHz samplerate it has to be
+run in S/MUX mode or sample split mode which means that you get 4
+channels of conversion and not 8. This is standard and perfectly
+acceptable. The first two channels will be routed out to the ADAT
+lightpipe outputs 1 through 4 and the 2nd two channels with be routed
+out ADAT lightpipe outputs 5 through 8.
+//// //// //// ////
 
-This doesn't correspond to the contents of the patch?
+Would I be able to "transparently" use these "S/MUX"d channels in a
+linux DAW, by simply recording/playing-back a higher channel count per
+track (e.g. 4 for a stereo track, 2 for a mono)? This seems like a
+good way to achieve "studio quality" 24/96 record&playback at a
+distance from the computer -- via ADAT cable -- using high quality
+outboard A/D and D/A or interfacing to external equipment already
+presenting AES/EBU format I/O.
 
-You also need to provide a Signed-off-by for your patches - the meaning
-and purpose of this is covered in Documentation/SubmittingPatches.
-Please remember to CC maintainers on patches also.
+If a device like the AI4 actually does all the bit-splitting and other
+fu, both for input and output -- wouldn't it not matter that the
+actual 2-track or 4-track contents are essentially "noise" because
+nothing in Linux-land would understand the S/MUX format.
 
-> ----
-> diff -urN a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
-> --- a/sound/soc/codecs/wm8940.c    2010-04-16 11:10:10.000000000 +0000
-> +++ b/sound/soc/codecs/wm8940.c    2010-09-29 14:12:17.263497290 +0000
-> @@ -514,7 +514,7 @@
-> 
->      if ((Ndiv < 6) || (Ndiv > 12))
->          printk(KERN_WARNING
-> -            "WM8940 N value %d outwith recommended range!d\n",
-> +            "WM8940 N value %d outwith recommended range!\n",
->              Ndiv);
-> 
->      pll_div.n = Ndiv;
+Next question: to avoid the hack suggested above, is there some kind
+of ALSA plugin that would reconstitute/create synchronized pairs of
+S/MUX data on the same soundcard into single 24/96 streams, both for
+input and output? How is S/Mux handled in Linux & ALSA?
 
-This is a typo fix, it's fine but should ideally be submitted as a
-separate patch and should at least be noted in the changelog.
+Thanks.
 
-> @@ -604,7 +604,7 @@
-> 
->      switch (div_id) {
->      case WM8940_BCLKDIV:
-> -        reg = snd_soc_read(codec, WM8940_CLOCK) & 0xFFEF3;
-> +        reg = snd_soc_read(codec, WM8940_CLOCK) & 0xFFE3;
->          ret = snd_soc_write(codec, WM8940_CLOCK, reg | (div << 2));
->          break;
->      case WM8940_MCLKDIV:
+Niels
+http://nielsmayer.com
 
-This is the bit from the changelog, this looks like a good fix.
-
-> @@ -800,9 +800,10 @@
-> 
->      wm8940_dai.dev = codec->dev;
-> 
-> -    wm8940_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-> +    wm8940_set_bias_level(codec, SND_SOC_BIAS_PREPARE);
-> 
-> -    ret = snd_soc_write(codec, WM8940_POWER1, 0x180);
-> +    reg = snd_soc_read(codec, WM8940_POWER1);
-> +    ret = snd_soc_write(codec, WM8940_POWER1, reg | 0x180);
->      if (ret < 0)
->          return ret;
-
-These are another separate change which wasn't mentioned in the
-changelog.  I don't understand the purpose of this change but it doesn't
-look like a change I'd expect to see made.
+PS: The Alesis AI4 seems nicer than the http://www.aphex.com/144.htm
+-- for one I won't need to make 110 ohm cables with XLR connectors to
+DB25. The AI4's support for S/MUX mode is especially nice-sounding --
+if there was a way for it to work in linux. Any other suggestions for
+converting ADAT to AES/EBU (or spdif)  w/ decent synchronization
+options for input?
