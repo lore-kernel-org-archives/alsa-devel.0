@@ -1,38 +1,18 @@
-From: Thor Kristoffersen <thorkr@gmail.com>
-Subject: Re: Creative Sound Blaster X-Fi Titanium PCIe support
-Date: Fri, 01 Oct 2010 19:40:50 +0200
-Message-ID: <m2lj6hx13x.fsf@getmail.no>
-References: <AANLkTik5Xtk1SP72qOgVaAJfvytZE=Nz+ifo7VXcUcuJ@mail.gmail.com>
-	<4CA5894E.1030907@ladisch.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: WM8940: incorrect mask for BCLKDIV
+Date: Fri, 1 Oct 2010 19:13:39 +0100
+Message-ID: <20101001181338.GA12031@sirena.org.uk>
+References: <4CA59A8F.3000800@elproma.com.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.getmail.no (smtp.getmail.no [84.208.15.66])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1580F103A34
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1ECC4103A14
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Oct 2010 19:40:52 +0200 (CEST)
-Received: from get-mta-scan02.get.basefarm.net ([10.5.16.4])
-	by get-mta-out03.get.basefarm.net
-	(Sun Java(tm) System Messaging Server 7.0-0.04 64bit (built Jun 20
-	2008))
-	with ESMTP id <0L9M0046GH42J040@get-mta-out03.get.basefarm.net> for
-	alsa-devel@alsa-project.org; Fri, 01 Oct 2010 19:40:50 +0200 (MEST)
-Received: from get-mta-scan02.get.basefarm.net
-	(localhost.localdomain [127.0.0.1])	by localhost (Email Security
-	Appliance)
-	with SMTP id B80B71EA55D5_CA61D22B	for <alsa-devel@alsa-project.org>;
-	Fri, 01 Oct 2010 17:40:50 +0000 (GMT)
-Received: from smtp.getmail.no (unknown [10.5.16.4])
-	by get-mta-scan02.get.basefarm.net (Sophos Email Appliance)
-	with ESMTP id 9916D1EA296F_CA61D22F	for <alsa-devel@alsa-project.org>;
-	Fri, 01 Oct 2010 17:40:50 +0000 (GMT)
-Received: from localhost ([84.215.109.218]) by get-mta-in01.get.basefarm.net
-	(Sun Java(tm) System Messaging Server 7.0-0.04 64bit (built Jun 20
-	2008))
-	with ESMTP id <0L9M00KDOH42JC10@get-mta-in01.get.basefarm.net> for
-	alsa-devel@alsa-project.org; Fri, 01 Oct 2010 19:40:50 +0200 (MEST)
-In-reply-to: <4CA5894E.1030907@ladisch.de>
+	Fri,  1 Oct 2010 20:13:40 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4CA59A8F.3000800@elproma.com.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -42,23 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org, nidujay <nidujay@gmail.com>
+To: Grzegorz Daniluk <g.daniluk@elproma.com.pl>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch <clemens@ladisch.de> writes:
-> nidujay wrote:
->> Any idea what I can do?
->
-> Don't buy Creative.
+On Fri, Oct 01, 2010 at 10:23:43AM +0200, Grzegorz Daniluk wrote:
+> corrected bitmask in BCLKDIV setting (wm8940_set_dai_clkdiv) and
+> bias_level in wm8940 register function.
 
-Ok, I have the following requirements to a soundcard:
- - PCI Express
- - 96kHz/24-bit
- - Optical SPDIF I/O
- - Works correctly in ALSA
+This doesn't correspond to the contents of the patch?
 
-Do you know of any card that fulfils these requirements?  (Preferably
-less than EUR250.)
+You also need to provide a Signed-off-by for your patches - the meaning
+and purpose of this is covered in Documentation/SubmittingPatches.
+Please remember to CC maintainers on patches also.
 
-Thor
+> ----
+> diff -urN a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
+> --- a/sound/soc/codecs/wm8940.c    2010-04-16 11:10:10.000000000 +0000
+> +++ b/sound/soc/codecs/wm8940.c    2010-09-29 14:12:17.263497290 +0000
+> @@ -514,7 +514,7 @@
+> 
+>      if ((Ndiv < 6) || (Ndiv > 12))
+>          printk(KERN_WARNING
+> -            "WM8940 N value %d outwith recommended range!d\n",
+> +            "WM8940 N value %d outwith recommended range!\n",
+>              Ndiv);
+> 
+>      pll_div.n = Ndiv;
+
+This is a typo fix, it's fine but should ideally be submitted as a
+separate patch and should at least be noted in the changelog.
+
+> @@ -604,7 +604,7 @@
+> 
+>      switch (div_id) {
+>      case WM8940_BCLKDIV:
+> -        reg = snd_soc_read(codec, WM8940_CLOCK) & 0xFFEF3;
+> +        reg = snd_soc_read(codec, WM8940_CLOCK) & 0xFFE3;
+>          ret = snd_soc_write(codec, WM8940_CLOCK, reg | (div << 2));
+>          break;
+>      case WM8940_MCLKDIV:
+
+This is the bit from the changelog, this looks like a good fix.
+
+> @@ -800,9 +800,10 @@
+> 
+>      wm8940_dai.dev = codec->dev;
+> 
+> -    wm8940_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+> +    wm8940_set_bias_level(codec, SND_SOC_BIAS_PREPARE);
+> 
+> -    ret = snd_soc_write(codec, WM8940_POWER1, 0x180);
+> +    reg = snd_soc_read(codec, WM8940_POWER1);
+> +    ret = snd_soc_write(codec, WM8940_POWER1, reg | 0x180);
+>      if (ret < 0)
+>          return ret;
+
+These are another separate change which wasn't mentioned in the
+changelog.  I don't understand the purpose of this change but it doesn't
+look like a change I'd expect to see made.
