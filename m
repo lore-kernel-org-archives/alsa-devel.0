@@ -1,25 +1,16 @@
-From: Grzegorz Daniluk <g.daniluk@elproma.com.pl>
-Subject: [PATCH] ASoC: WM8940: incorrect mask for BCLKDIV
-Date: Fri, 01 Oct 2010 10:23:43 +0200
-Message-ID: <4CA59A8F.3000800@elproma.com.pl>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: WM8804: Workaround GCC uninitialised
+	variable warning
+Date: Fri,  1 Oct 2010 09:32:55 +0100
+Message-ID: <1285921975-13467-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailmxout.mailmx.agnat.pl (mailmxout.mailmx.agnat.pl
-	[193.239.44.238])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6D02E1039E2
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F15F21039E8
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Oct 2010 10:23:49 +0200 (CEST)
-Received: from smtp.agnat.pl ([193.239.44.82])
-	by mailmxout.mailmx.agnat.pl with esmtp (Exim 4.72)
-	(envelope-from <g.daniluk@elproma.com.pl>) id 1P1auB-0005F5-Kt
-	for alsa-devel@alsa-project.org; Fri, 01 Oct 2010 10:23:47 +0200
-Received: from [83.19.137.3] (helo=[192.168.1.79])
-	by smtp.agnat.pl with esmtpsa (TLSv1:DHE-RSA-AES256-SHA:256)
-	(Exim 4.71) (envelope-from <g.daniluk@elproma.com.pl>)
-	id 1P1auB-0004xF-AV
-	for alsa-devel@alsa-project.org; Fri, 01 Oct 2010 10:23:47 +0200
+	Fri,  1 Oct 2010 10:33:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,46 +20,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-corrected bitmask in BCLKDIV setting (wm8940_set_dai_clkdiv) and
-bias_level in wm8940 register function.
+GCC 4.4.0 does not seem capable of working out that the variable is
+never used unless it is initialised.
 
-best regards,
-Grzegorz Daniluk
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8804.c |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
 
-----
-diff -urN a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
---- a/sound/soc/codecs/wm8940.c    2010-04-16 11:10:10.000000000 +0000
-+++ b/sound/soc/codecs/wm8940.c    2010-09-29 14:12:17.263497290 +0000
-@@ -514,7 +514,7 @@
-
-     if ((Ndiv < 6) || (Ndiv > 12))
-         printk(KERN_WARNING
--            "WM8940 N value %d outwith recommended range!d\n",
-+            "WM8940 N value %d outwith recommended range!\n",
-             Ndiv);
-
-     pll_div.n = Ndiv;
-@@ -604,7 +604,7 @@
-
-     switch (div_id) {
-     case WM8940_BCLKDIV:
--        reg = snd_soc_read(codec, WM8940_CLOCK) & 0xFFEF3;
-+        reg = snd_soc_read(codec, WM8940_CLOCK) & 0xFFE3;
-         ret = snd_soc_write(codec, WM8940_CLOCK, reg | (div << 2));
-         break;
-     case WM8940_MCLKDIV:
-@@ -800,9 +800,10 @@
-
-     wm8940_dai.dev = codec->dev;
-
--    wm8940_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-+    wm8940_set_bias_level(codec, SND_SOC_BIAS_PREPARE);
-
--    ret = snd_soc_write(codec, WM8940_POWER1, 0x180);
-+    reg = snd_soc_read(codec, WM8940_POWER1);
-+    ret = snd_soc_write(codec, WM8940_POWER1, reg | 0x180);
-     if (ret < 0)
-         return ret;
+diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
+index 40e5067..e1fc722 100644
+--- a/sound/soc/codecs/wm8804.c
++++ b/sound/soc/codecs/wm8804.c
+@@ -392,13 +392,20 @@ static int wm8804_set_pll(struct snd_soc_dai *dai, int pll_id,
+ {
+ 	int ret;
+ 	struct snd_soc_codec *codec;
+-	struct pll_div pll_div = { 0 };
++	struct pll_div pll_div;
+ 
+ 	codec = dai->codec;
+ 	if (freq_in && freq_out) {
+ 		ret = pll_factors(&pll_div, freq_out, freq_in);
+ 		if (ret)
+ 			return ret;
++	} else {
++		/*
++		 * Bodge GCC 4.4.0 uninitialised variable warning - it
++		 * doesn't seem capable of working out that we exit if
++		 * freq_in or freq_out is 0 before any of the uses.
++		 */
++		memset(&pll_div, 0, sizeof pll_div);
+ 	}
+ 
+ 	/* power down the PLL before reprogramming it */
+-- 
+1.7.3.1
