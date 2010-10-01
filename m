@@ -1,18 +1,18 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: Need expert's advice - Fast Track Ultra (8R)
- dropping samples
-Date: Fri, 01 Oct 2010 13:00:05 +0200
-Message-ID: <4CA5BF35.2030108@showlabor.de>
-References: <4C9DC7A1.8050001@showlabor.de>
+From: "Sebastian H." <vand2@gmx.de>
+Subject: Re: asihpi: Control naming
+Date: Fri, 01 Oct 2010 13:31:39 +0200
+Message-ID: <4CA5C69B.4000703@gmx.de>
+References: <4CA4078E.6010601@audioscience.com>	<s5h62xng4wm.wl%tiwai@suse.de>	<4CA4F1D8.50800@audioscience.com>	<s5haamz9che.wl%tiwai@suse.de>
+	<4CA5010E.4050705@gmx.de> <4CA58856.8070505@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
-	[83.169.30.203]) by alsa0.perex.cz (Postfix) with ESMTP id AA08D2440B
+Received: from mail.gmx.net (mailout-de.gmx.net [213.165.64.22])
+	by alsa0.perex.cz (Postfix) with SMTP id DA80224417
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Oct 2010 13:00:05 +0200 (CEST)
-In-Reply-To: <4C9DC7A1.8050001@showlabor.de>
+	Fri,  1 Oct 2010 13:29:49 +0200 (CEST)
+In-Reply-To: <4CA58856.8070505@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,75 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Clemens Ladisch <clemens@ladisch.de>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I guess the right place to fix the issues mentioned in my original post 
-is in snd_usb_init_substream() in urb.c:
+Am 01.10.2010 09:05, schrieb Clemens Ladisch:
+> Sebastian H. wrote:
+>> In alsamixer-qt4 I've just stumbled over enum elements for which both
+>> snd_mixer_selem_is_enum_playback and
+>> snd_mixer_selem_is_enum_capture
+>> return 0/false (2.6.32 kernel emu10k1 chip).
+>>
+>> May I drop the question in if this state can be considered valid
+> 
+> Yes.
+> 
+>> and besides *playback* and *capture* elements there's a third group of
+>> *neutral* elements?
+> 
+> Those are elements where the simple mixer code doesn't know the
+> direction (because the driver author didn't put "Playback" or "Capture"
+> into the name).
 
+Ok, but I wonder how to interpret this state in which both functions
+return zero.
 
-         case USB_ID(0x0763, 0x2081): /* M-Audio Fast Track Ultra 8R */
-             subs->ops.prepare_sync = prepare_playback_sync_urb;
-             subs->ops.retire_sync = retire_playback_sync_urb;
+1) There's a bug or uncertainty somewhere in the libs/driver and
+in a perfekt world this would not happen. It always should be either.
 
-I've tried combinations using the _hs and _emu versions of the 
-retire.../prepare... functions. It either didn't change anything or made 
-it worse. I guess we need  _ftu versions.
+2) This is intentional and the respective element belongs to the
+group of *general* elements which exists in parallel
+to the *playback* and the *capture* element groups.
 
-Could somebody at least tell me how to find out what's exactly going 
-wrong with the sync. Can I find something useful monitoring the urbs in 
-Windows?
-
-Please, help me. We're so very close to full support of these devices, 
-but I don't know how to proceed.
-
-Thanks in advance,
-
-Felix
-
-Am 25.09.2010 11:57, schrieb Felix Homann:
-> Hi,
->
-> in that past months I've been trying get the Fast Track Ultra devices
-> working properly in Alsa. We've had lots of progress, most of the code
-> has moved to Alsa git and today I've even posted a patch for getting
-> mixer support for these devices.
->
-> Now, I need to get some expert's advice: The devices seem to drop
-> samples or frames. Here's a report I've got today on the M-Audio forum:
->
-> "I've got a subtle problem to report: I think audio playback is dropping
-> sample frames. To hear the problem, open Audacity at 48 kHz and play
-> a 10-kHz. sine wave. When I do that I hear a regular clicking sound, about
-> four clicks a second. I've tried recording the output and if I'm seeing
-> correctly,
-> exactly one sample frame in every 13312 (13x1024) is being dropped on
-> output.
-> I don't see anything similar on input. When either jack or Pd has both
-> the input and
-> the output open, the delay from input to output gradually decreases
-> until it forces
-> occasional sync errors. (I haven't tried this with audacity though.)"
->
-> (see
-> http://forums.m-audio.com/showthread.php?714-Not-a-problem.-FastTrack-on-linux&p=98101#post98101)
->
-> I could reproduce it on my machines, even at 44.1 kHz. The clicking
-> sound is very subtle, it goes unnoticed when not listening to pure sines
-> without attention to clicks.
->
-> How can this be sorted out. Any ideas?
->
->    
-
-
-> Kind regards,
->
-> Felix
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->    
+As mentioned alsamixer-qt4 considers 1) and handles it somehow
+gracefully. I just wonder if that is the correct thing to do in case.
