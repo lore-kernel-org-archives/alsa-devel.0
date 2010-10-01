@@ -1,18 +1,17 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: asihpi: Control naming
-Date: Fri, 01 Oct 2010 09:05:58 +0200
-Message-ID: <4CA58856.8070505@ladisch.de>
-References: <4CA4078E.6010601@audioscience.com>	<s5h62xng4wm.wl%tiwai@suse.de>	<4CA4F1D8.50800@audioscience.com>	<s5haamz9che.wl%tiwai@suse.de>
-	<4CA5010E.4050705@gmx.de>
+Subject: Re: Creative Sound Blaster X-Fi Titanium PCIe support
+Date: Fri, 01 Oct 2010 09:10:06 +0200
+Message-ID: <4CA5894E.1030907@ladisch.de>
+References: <AANLkTik5Xtk1SP72qOgVaAJfvytZE=Nz+ifo7VXcUcuJ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 564F91039CD
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id C8F761039D8
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Oct 2010 09:05:07 +0200 (CEST)
-In-Reply-To: <4CA5010E.4050705@gmx.de>
+	Fri,  1 Oct 2010 09:09:15 +0200 (CEST)
+In-Reply-To: <AANLkTik5Xtk1SP72qOgVaAJfvytZE=Nz+ifo7VXcUcuJ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,26 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Sebastian H." <vand2@gmx.de>
-Cc: Takashi Iwai <tiwai@suse.de>, Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org
+To: nidujay <nidujay@gmail.com>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sebastian H. wrote:
-> In alsamixer-qt4 I've just stumbled over enum elements for which both
-> snd_mixer_selem_is_enum_playback and
-> snd_mixer_selem_is_enum_capture
-> return 0/false (2.6.32 kernel emu10k1 chip).
+nidujay wrote:
+> I've got a Creative Sound Blaster X-Fi Titanium PCIe sound card which I
+> purchased for the following 2 reasons:
 > 
-> May I drop the question in if this state can be considered valid
+> 1. It supports sound fonts
 
-Yes.
+Not in Linux.
 
-> and besides *playback* and *capture* elements there's a third group of
-> *neutral* elements?
+> 2. I require an SPDIF optical input
 
-Those are elements where the simple mixer code doesn't know the
-direction (because the driver author didn't put "Playback" or "Capture"
-into the name).
+Apparently not supported in Linux.
+
+The driver was written by Creative, and they obviously don't bother to
+extend it to support all hardware features.
+
+> Any idea what I can do?
+
+Don't buy Creative.
 
 
 Regards,
