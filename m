@@ -1,25 +1,12 @@
-From: Stas Sergeev <stsp@aknet.ru>
-Subject: Re: namehint: Evaluate more possibilities for hw
-	devices
-Date: Fri, 01 Oct 2010 19:21:50 +0400
-Message-ID: <4CA5FC8E.4020209@aknet.ru>
-References: <4CA4B6BF.3080503@aknet.ru>
-	<alpine.LNX.2.00.1010011332210.20467@eeebox2.perex-int.cz>
-	<4CA5CB0D.9030003@aknet.ru>
-	<alpine.LNX.2.00.1010011408410.20467@eeebox2.perex-int.cz>
-	<4CA5D359.9040400@aknet.ru>
-	<alpine.LNX.2.00.1010011512520.20467@eeebox2.perex-int.cz>
-	<4CA5F5D5.4090508@aknet.ru>
-	<alpine.LNX.2.00.1010011701180.20467@eeebox2.perex-int.cz>
+From: valentine.sinitsyn@gmail.com
+Subject: [PATCH - Realtek HDA Codec 1/1] Added fixup for Lenovo
+	Y550P
+Date: Fri,  1 Oct 2010 22:24:08 +0600
+Message-ID: <1285950248-4114-1-git-send-email-valentine.sinitsyn@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.aknet.ru (mail.aknet.ru [78.158.192.28])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5E55924461
-	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Oct 2010 17:21:51 +0200 (CEST)
-In-Reply-To: <alpine.LNX.2.00.1010011701180.20467@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,15 +16,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Valentine Sinitsyn <valentine.sinitsyn@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-  01.10.2010 19:04, Jaroslav Kysela wrote:
-> The Dummy and STx7109 devices does not have appropriate configuration 
-> files in /usr/share/alsa/cards tree and namehint does not list hw: 
-> like devices by default. Use "defaults.namehint.showall=1" in your 
-> configuration file (~/.asoundrc).
-defaults.namehint.showall=1 didn't make a difference,
-but defaults.namehint.extended=1 did.
-Thanks again!
+From: Valentine Sinitsyn <valentine.sinitsyn@gmail.com>
+
+
+Signed-off-by: Valentine Sinitsyn <valentine.sinitsyn@gmail.com>
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 3b04087..124d52f 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -19074,6 +19074,7 @@ static const struct alc_fixup alc662_fixups[] = {
+ 
+ static struct snd_pci_quirk alc662_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Ideapad Y550", ALC662_FIXUP_IDEAPAD),
++	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo Ideapad Y550P", ALC662_FIXUP_IDEAPAD),
+ 	{}
+ };
+ 
+-- 
+1.7.3.1
