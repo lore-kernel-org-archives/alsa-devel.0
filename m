@@ -1,17 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: how many processed frames? + various thoughts
-Date: Fri, 01 Oct 2010 09:03:37 +0200
-Message-ID: <4CA587C9.6040506@ladisch.de>
-References: <BAY148-w10DFB4C223E0F94E5ABEB58A680@phx.gbl>
+Subject: Re: asihpi: Control naming
+Date: Fri, 01 Oct 2010 09:05:58 +0200
+Message-ID: <4CA58856.8070505@ladisch.de>
+References: <4CA4078E.6010601@audioscience.com>	<s5h62xng4wm.wl%tiwai@suse.de>	<4CA4F1D8.50800@audioscience.com>	<s5haamz9che.wl%tiwai@suse.de>
+	<4CA5010E.4050705@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 20B681039C9
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 564F91039CD
 	for <alsa-devel@alsa-project.org>;
-	Fri,  1 Oct 2010 09:02:47 +0200 (CEST)
-In-Reply-To: <BAY148-w10DFB4C223E0F94E5ABEB58A680@phx.gbl>
+	Fri,  1 Oct 2010 09:05:07 +0200 (CEST)
+In-Reply-To: <4CA5010E.4050705@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,24 +22,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John John <tobler_one@hotmail.it>
-Cc: alsa-devel@alsa-project.org
+To: "Sebastian H." <vand2@gmx.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-John John wrote:
-> Knowing the sample rate and the processed samples, I'm able to
-> calculate the clock (what do you think about this approach?).
+Sebastian H. wrote:
+> In alsamixer-qt4 I've just stumbled over enum elements for which both
+> snd_mixer_selem_is_enum_playback and
+> snd_mixer_selem_is_enum_capture
+> return 0/false (2.6.32 kernel emu10k1 chip).
+> 
+> May I drop the question in if this state can be considered valid
 
-The sound card's clock will not be exactly synchronous with the
-computer's clock.
+Yes.
 
-> is there a good function into alsa API which returns the number of
-> processed frames?
+> and besides *playback* and *capture* elements there's a third group of
+> *neutral* elements?
 
-snd_pcm_writei() does return the number of processed frames.
-
-snd_pcm_delay() returns the offset to the position of the sample that is
-currently being played.
+Those are elements where the simple mixer code doesn't know the
+direction (because the driver author didn't put "Playback" or "Capture"
+into the name).
 
 
 Regards,
