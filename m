@@ -1,19 +1,19 @@
-From: stan <gryt2@q.com>
-Subject: Re: unsupported variant of snd_hda_intel
-Date: Sat, 2 Oct 2010 08:18:16 -0700
-Message-ID: <BLU0-SMTP1485E34B4CF728168B0A42FEE6A0@phx.gbl>
-References: <AANLkTinDxaesb-=AZi8sALtw6MkERjMr3WK7Nixkv06P@mail.gmail.com>
-	<AANLkTik3nGq22b0t+f3NMn23CK7x5b+hLJpaW9rjhr0Q@mail.gmail.com>
-	<AANLkTikO0QKPO0pfbUj7zJq1Em5v_TWY1b-dZu6VhMPA@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: WM8804: Use a proper DAI name
+Date: Sat, 2 Oct 2010 14:25:40 -0700
+Message-ID: <20101002212539.GA29647@opensource.wolfsonmicro.com>
+References: <1285920734-25573-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	<1286017450.3125.4.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from blu0-omc3-s25.blu0.hotmail.com (blu0-omc3-s25.blu0.hotmail.com
-	[65.55.116.100]) by alsa0.perex.cz (Postfix) with ESMTP id E7FCB24600
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 92658243F9
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 Oct 2010 17:18:25 +0200 (CEST)
-In-Reply-To: <AANLkTikO0QKPO0pfbUj7zJq1Em5v_TWY1b-dZu6VhMPA@mail.gmail.com>
+	Sat,  2 Oct 2010 23:25:26 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1286017450.3125.4.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +23,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 1 Oct 2010 20:44:58 -1000
-Alexandre <alxgomz@gmail.com> wrote:
+On Sat, Oct 02, 2010 at 12:04:10PM +0100, Liam Girdwood wrote:
+> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-> How could I test the internal mic by passing pulseaudio?
-
-Install pavuctl, the pulseaudio volume control, and turn off this
-device for pulseaudio.  It will then use alsa by default.  You might
-have to fiddle with applications to be sure *they* expect to use alsa
-instead of pulseaudio as well.
+Applied, thanks.
