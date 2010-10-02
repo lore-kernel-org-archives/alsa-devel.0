@@ -1,17 +1,19 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [GIT PULL] ASoC updates for 2.6.37
-Date: Sat, 02 Oct 2010 14:43:02 +0100
-Message-ID: <1286026982.3125.32.camel@odin>
+From: stan <gryt2@q.com>
+Subject: Re: unsupported variant of snd_hda_intel
+Date: Sat, 2 Oct 2010 08:18:16 -0700
+Message-ID: <BLU0-SMTP1485E34B4CF728168B0A42FEE6A0@phx.gbl>
+References: <AANLkTinDxaesb-=AZi8sALtw6MkERjMr3WK7Nixkv06P@mail.gmail.com>
+	<AANLkTik3nGq22b0t+f3NMn23CK7x5b+hLJpaW9rjhr0Q@mail.gmail.com>
+	<AANLkTikO0QKPO0pfbUj7zJq1Em5v_TWY1b-dZu6VhMPA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id B83911037F1
+Received: from blu0-omc3-s25.blu0.hotmail.com (blu0-omc3-s25.blu0.hotmail.com
+	[65.55.116.100]) by alsa0.perex.cz (Postfix) with ESMTP id E7FCB24600
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 Oct 2010 15:43:03 +0200 (CEST)
-Received: by wwb28 with SMTP id 28so3995341wwb.20
-	for <alsa-devel@alsa-project.org>; Sat, 02 Oct 2010 06:43:03 -0700 (PDT)
+	Sat,  2 Oct 2010 17:18:25 +0200 (CEST)
+In-Reply-To: <AANLkTikO0QKPO0pfbUj7zJq1Em5v_TWY1b-dZu6VhMPA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,22 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit fc38a8a11d332549e4de0537ba34f197cf42788b:
-  Dimitris Papastamos (1):
-        ASoC: WM8985: Remove unneeded declaration.
+On Fri, 1 Oct 2010 20:44:58 -1000
+Alexandre <alxgomz@gmail.com> wrote:
 
-are available in the git repository at:
+> How could I test the internal mic by passing pulseaudio?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.37
-
-Jarkko Nikula (2):
-      omap: zoom2: Fix ASoC multi-component build breakage by removing dead code
-      omap: zoom: Move new code introduced by ASoC m-c to board-zoom-peripherals
-
- arch/arm/mach-omap2/board-zoom-peripherals.c |   12 ++++++
- arch/arm/mach-omap2/board-zoom2.c            |   56 --------------------------
- 2 files changed, 12 insertions(+), 56 deletions(-)
+Install pavuctl, the pulseaudio volume control, and turn off this
+device for pulseaudio.  It will then use alsa by default.  You might
+have to fiddle with applications to be sure *they* expect to use alsa
+instead of pulseaudio as well.
