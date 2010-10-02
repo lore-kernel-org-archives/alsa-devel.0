@@ -1,17 +1,23 @@
-From: Alexander Lam <lambchop468@gmail.com>
-Subject: Acer Aspire One Volume Low
-Date: Fri, 1 Oct 2010 20:52:36 -0400
-Message-ID: <AANLkTineQfCpW3zCzLMd2EitdAQfn6sSgJ+UOz78XY0+@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: how to mandate the use of PCM plugin?
+Date: Sat, 2 Oct 2010 10:11:10 +0800
+Message-ID: <AANLkTi=h+ZKXNdhmC1BtTbBaGF6_V+uD2ZO7sx4WMJMW@mail.gmail.com>
+References: <4C9F6409.6010400@aknet.ru> <20100927005858.GD21247@sirena.org.uk>
+	<4CA0221D.6030208@aknet.ru> <i7qltg$bph$1@dough.gmane.org>
+	<AANLkTi=9gcs0A6s55wSS-RP4NucvUqkxCoYynezdF+5g@mail.gmail.com>
+	<4CA306CB.1090305@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id D5923244E7
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id E7D782450F
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 Oct 2010 02:53:16 +0200 (CEST)
-Received: by bwz13 with SMTP id 13so2843857bwz.38
-	for <alsa-devel@alsa-project.org>; Fri, 01 Oct 2010 17:53:16 -0700 (PDT)
+	Sat,  2 Oct 2010 04:11:11 +0200 (CEST)
+Received: by eye27 with SMTP id 27so1485509eye.38
+	for <alsa-devel@alsa-project.org>; Fri, 01 Oct 2010 19:11:11 -0700 (PDT)
+In-Reply-To: <4CA306CB.1090305@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,28 +27,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, alsa-user@lists.sourceforge.net
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+2010/9/29 David Henningsson <david.henningsson@canonical.com>
 
-I have an Acer Aspire one (the original one) with a realtek alc268 codec
-(intel hda)
+> On 2010-09-28 06:07, Raymond Yau wrote:
+> > 2010/9/28 Colin Guthrie<gmane@colin.guthr.ie>
+> >
+> >>
+> >>
+> >> And today, one of the Canonical guys published his version of a tool to
+> >> help here:
+> >> http://thread.gmane.org/gmane.comp.audio.pulseaudio.general/7542
+> >>
+> >> Hope this helps.
+> >>
+> >> Col
+> >>
+> >>
+> >>
+> > why did runtest.sh use a format  FLOAT64_LE which was not supported by PA
+> ?
+>
+> runtest.sh isn't meant to be used directly in that way, you're supposed
+> to run "alsamixertest". Try "alsamixertest -r" and "alsamixertest -h" to
+> get started. (Perhaps I should rename the .sh file to something else.)
+>
+> That said, if you find a good use case where you want to use it directly
+> and need a different sample format - patches welcome (as long as they
+> don't break something else).
+>
+>
+I just try to see whether this tool can help me to calibrate the 10 band
+gain/atten controls of the hardware equalizer of au8830.
 
-In windows XP, I would say that the maximum volume is somewhere around 5
-times higher than in linux.
+Have anyone test your tool on the sound card with ac97 codec ?
 
-I am running kernel 2.6.35.6.
+It seem that the program keep complain about those controls without dB scale
+(e.g. AC97 3D Control - depth and rear depth , .) with the emulated intel8x0
+driver  and no volume control with the emulated sb16 in virtualbox
 
-I actually have the spec sheet for the codec (from a google search) and the
-mixer ranges that are specified in the kernel seem sane,so I'm clueless as
-to what's happening. Maybe there's some mystery bit to set, because the
-windows XP Realtek driver has a "limit output" option that when turned on,
-makes the output be about as loud as in linux. (or maybe this option just
-cuts the mixer values in half...)
+Your program seem really behave as same as pulseaudio server , set the dB
+value of control but don't verify the dB value can be set by re-reading the
+value since dB -> volume conversion
 
-Suggestions? Lacking that, is there a tool already written to read back the
-codec configuration in windows XP?
+Even though your program start at 0dB  , ac97 volume controls are in 1.5dB
+per step but your program use 2 dB step
 
--- 
-Alexander Lam
+Still finding why the program running into infinite loop and try to set dB
+to -7xx dB , however amixer does output the min dB when 0%
