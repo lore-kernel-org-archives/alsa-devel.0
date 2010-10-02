@@ -1,16 +1,27 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Put WM8962 GPIO2/3 into GPIO mode when
-	configuring platform data too
-Date: Fri,  1 Oct 2010 17:51:39 -0700
-Message-ID: <1285980699-27382-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: alsactl adds volume controls?
+Date: Sat, 2 Oct 2010 08:51:53 +0800
+Message-ID: <AANLkTimvVfeJuHoostHccffcFewdVXQM-wQFTBfLPa6c@mail.gmail.com>
+References: <4C77CE1D.2070501@canonical.com> <4C77DD09.3060909@ladisch.de>
+	<4C78059B.50801@canonical.com>
+	<AANLkTi=cgE30nh1LPj84=Jv+YfJZWTj8BF3B5kNSGMTb@mail.gmail.com>
+	<s5h4oec8r6f.wl%tiwai@suse.de> <4C7BABA9.1010100@canonical.com>
+	<s5hlj7ont8e.wl%tiwai@suse.de> <4C7E549E.4080505@canonical.com>
+	<s5hr5hczi06.wl%tiwai@suse.de> <4C7F6D5D.7020101@canonical.com>
+	<s5hmxs0h437.wl%tiwai@suse.de> <4C809DB3.9090201@canonical.com>
+	<alpine.LNX.2.00.1009030905210.10278@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8B66F244E4
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8C7CA10382E
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 Oct 2010 02:51:28 +0200 (CEST)
+	Sat,  2 Oct 2010 02:51:53 +0200 (CEST)
+Received: by eye27 with SMTP id 27so1477920eye.38
+	for <alsa-devel@alsa-project.org>; Fri, 01 Oct 2010 17:51:53 -0700 (PDT)
+In-Reply-To: <alpine.LNX.2.00.1009030905210.10278@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,103 +31,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-GPIO2 and GPIO3 on the WM8962 are MFPs and need to be put into GPIO mode
-before the GPIO block can be used to control them. We're already doing
-this when used via gpiolib, factor out the code for use when setting static
-configurations via platform data as well.
+2010/9/3 Jaroslav Kysela <perex@perex.cz>
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8962.c |   42 +++++++++++++++++++++++++++++-------------
- 1 files changed, 29 insertions(+), 13 deletions(-)
+> On Fri, 3 Sep 2010, David Henningsson wrote:
+>
+> > What would be really helpful would be if snd_mixer_open() took an
+> > optional pcm handle, and then only returned the mixer controls that
+> > affects the signal path of that pcm.
+>
+> This will be solved by another mechanism like ucm (use case manager). The
+> idea is to return the PCM handle and associated mixer controls (master +
+> pcm) for specified use case (like hdmi output etc.).
+>
+>                                        Jaroslav
+>
+>
+How about those [Volume Knob Widget] , can the driver read back the step or
+dB of the volume knob from the codec ?
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 3a1db4a..6d30f34 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -1733,6 +1733,31 @@ static void wm8962_free_beep(struct snd_soc_codec *codec)
- }
- #endif
- 
-+static void wm8962_set_gpio_mode(struct snd_soc_codec *codec, int gpio)
-+{
-+	int mask = 0;
-+	int val = 0;
-+
-+	/* Some of the GPIOs are behind MFP configuration and need to
-+	 * be put into GPIO mode. */
-+	switch (gpio) {
-+	case 2:
-+		mask = WM8962_CLKOUT2_SEL_MASK;
-+		val = 1 << WM8962_CLKOUT2_SEL_SHIFT;
-+		break;
-+	case 3:
-+		mask = WM8962_CLKOUT3_SEL_MASK;
-+		val = 1 << WM8962_CLKOUT3_SEL_SHIFT;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	if (mask)
-+		snd_soc_update_bits(codec, WM8962_ANALOGUE_CLOCKING1,
-+				    mask, val);
-+}
-+
- #ifdef CONFIG_GPIOLIB
- static inline struct wm8962_priv *gpio_to_wm8962(struct gpio_chip *chip)
- {
-@@ -1743,8 +1768,6 @@ static int wm8962_gpio_request(struct gpio_chip *chip, unsigned offset)
- {
- 	struct wm8962_priv *wm8962 = gpio_to_wm8962(chip);
- 	struct snd_soc_codec *codec = wm8962->codec;
--	int mask = 0;
--	int val;
- 
- 	/* The WM8962 GPIOs aren't linearly numbered.  For simplicity
- 	 * we export linear numbers and error out if the unsupported
-@@ -1752,13 +1775,7 @@ static int wm8962_gpio_request(struct gpio_chip *chip, unsigned offset)
- 	 */
- 	switch (offset + 1) {
- 	case 2:
--		mask = WM8962_CLKOUT2_SEL_MASK;
--		val = 1 << WM8962_CLKOUT2_SEL_SHIFT;
--		break;
- 	case 3:
--		mask = WM8962_CLKOUT3_SEL_MASK;
--		val = 1 << WM8962_CLKOUT3_SEL_SHIFT;
--		break;
- 	case 5:
- 	case 6:
- 		break;
-@@ -1766,10 +1783,7 @@ static int wm8962_gpio_request(struct gpio_chip *chip, unsigned offset)
- 		return -EINVAL;
- 	}
- 
--	/* Some of the GPIOs are behind MFP configuration */
--	if (mask)
--		snd_soc_update_bits(codec, WM8962_ANALOGUE_CLOCKING1,
--				    mask, val);
-+	wm8962_set_gpio_mode(codec, offset + 1);
- 
- 	return 0;
- }
-@@ -1943,9 +1957,11 @@ static int wm8962_probe(struct snd_soc_codec *codec)
- 	if (pdata) {
- 		/* Apply static configuration for GPIOs */
- 		for (i = 0; i < ARRAY_SIZE(pdata->gpio_init); i++)
--			if (pdata->gpio_init[i])
-+			if (pdata->gpio_init[i]) {
-+				wm8962_set_gpio_mode(codec, i + 1);
- 				snd_soc_write(codec, 0x200 + i,
- 					      pdata->gpio_init[i] & 0xffff);
-+			}
- 
- 		/* Put the speakers into mono mode? */
- 		if (pdata->spk_mono)
--- 
-1.7.1
+
+Node 0x24 [Volume Knob Widget] wcaps 0x600000: Mono
+  Volume-Knob: delta=1, steps=127, direct=0, val=127
+  Connection: 4
+     0x02 0x03 0x04 0x05
