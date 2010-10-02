@@ -1,23 +1,24 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: how to mandate the use of PCM plugin?
-Date: Sat, 2 Oct 2010 10:11:10 +0800
-Message-ID: <AANLkTi=h+ZKXNdhmC1BtTbBaGF6_V+uD2ZO7sx4WMJMW@mail.gmail.com>
-References: <4C9F6409.6010400@aknet.ru> <20100927005858.GD21247@sirena.org.uk>
-	<4CA0221D.6030208@aknet.ru> <i7qltg$bph$1@dough.gmane.org>
-	<AANLkTi=9gcs0A6s55wSS-RP4NucvUqkxCoYynezdF+5g@mail.gmail.com>
-	<4CA306CB.1090305@canonical.com>
+Subject: Re: asihpi: Control naming
+Date: Sat, 2 Oct 2010 12:10:26 +0800
+Message-ID: <AANLkTikZ7tHB2YhBT496DSvSCE85Qm-s3dfVLPVwCXLb@mail.gmail.com>
+References: <4CA4078E.6010601@audioscience.com> <s5h62xng4wm.wl%tiwai@suse.de>
+	<4CA4F1D8.50800@audioscience.com> <s5haamz9che.wl%tiwai@suse.de>
+	<4CA5010E.4050705@gmx.de> <4CA58856.8070505@ladisch.de>
+	<4CA5C69B.4000703@gmx.de> <4CA5DFFC.40004@ladisch.de>
+	<4CA63F38.7000307@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
 	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id E7D782450F
+	by alsa0.perex.cz (Postfix) with ESMTP id 6008624554
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 Oct 2010 04:11:11 +0200 (CEST)
-Received: by eye27 with SMTP id 27so1485509eye.38
-	for <alsa-devel@alsa-project.org>; Fri, 01 Oct 2010 19:11:11 -0700 (PDT)
-In-Reply-To: <4CA306CB.1090305@canonical.com>
+	Sat,  2 Oct 2010 06:10:27 +0200 (CEST)
+Received: by eye27 with SMTP id 27so1495382eye.38
+	for <alsa-devel@alsa-project.org>; Fri, 01 Oct 2010 21:10:27 -0700 (PDT)
+In-Reply-To: <4CA63F38.7000307@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,50 +31,71 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/9/29 David Henningsson <david.henningsson@canonical.com>
+2010/10/2 Sebastian H. <vand2@gmx.de>
 
-> On 2010-09-28 06:07, Raymond Yau wrote:
-> > 2010/9/28 Colin Guthrie<gmane@colin.guthr.ie>
+> Am 01.10.2010 15:19, schrieb Clemens Ladisch:
+> > Sebastian H. wrote:
+> >> Am 01.10.2010 09:05, schrieb Clemens Ladisch:
+> >>> Those are elements where the simple mixer code doesn't know the
+> >>> direction (because the driver author didn't put "Playback" or "Capture"
+> >>> into the name).
+> >>
+> >> Ok, but I wonder how to interpret this state in which both functions
+> >> return zero.
 > >
-> >>
-> >>
-> >> And today, one of the Canonical guys published his version of a tool to
-> >> help here:
-> >> http://thread.gmane.org/gmane.comp.audio.pulseaudio.general/7542
-> >>
-> >> Hope this helps.
-> >>
-> >> Col
-> >>
-> >>
-> >>
-> > why did runtest.sh use a format  FLOAT64_LE which was not supported by PA
-> ?
+> > There are cases where the playback/capture direction is obvious from the
+> > name ("just implement an AI!"), but these can be considered bugs.
 >
-> runtest.sh isn't meant to be used directly in that way, you're supposed
-> to run "alsamixertest". Try "alsamixertest -r" and "alsamixertest -h" to
-> get started. (Perhaps I should rename the .sh file to something else.)
+> Ok, I'll stick to the element name list from Raymond then for an
+> automated detection.
 >
-> That said, if you find a good use case where you want to use it directly
-> and need a different sample format - patches welcome (as long as they
-> don't break something else).
+
+I just only mention the keywords in those capture controls in sound card
+drivers.
+They may have slightly different name (e.g. 'Mic Boost (+20dB)' , 'Front Mic
+Boost' )
+
+
+In simple_none.c , it also defined some keywords for stanard ac97 control
+too
+
+some of them are used (e.g. "3D Control - Switch" is regarded a pswitch) but
+"Depth and Rear Depth are regarded as volume )
+
+
+Simple mixer control '3D Control - Switch',0
+  Capabilities: pswitch pswitch-joined penum
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control '3D Control Sigmatel - Depth',0
+  Capabilities: volume volume-joined penum
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 3
+  Mono: 0 [0%]
+Simple mixer control '3D Control Sigmatel - Rear Depth',0
+  Capabilities: volume volume-joined penum
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 3
+  Mono: 0 [0%]
+
+They are just 3D effect and have no dB information.
+
+However alsa-python return run-time error when you try to use the function
+get_volume_range_dB() to find out whether the mixer elem has dB Info or not
+
+
+
+>
+> > In the other cases, the control really doesn't belong to a direction.
+> > (Which doesn't prevent many mixers that have two pages from just
+> > throwing them in with the playback controls.)
+>
+> Bringing up a separate page for rare *general* elements doesn't seem
+> worthwile then and the *playback* page should be fine.
+>
+> Cheers,
+> Sebastian
 >
 >
-I just try to see whether this tool can help me to calibrate the 10 band
-gain/atten controls of the hardware equalizer of au8830.
-
-Have anyone test your tool on the sound card with ac97 codec ?
-
-It seem that the program keep complain about those controls without dB scale
-(e.g. AC97 3D Control - depth and rear depth , .) with the emulated intel8x0
-driver  and no volume control with the emulated sb16 in virtualbox
-
-Your program seem really behave as same as pulseaudio server , set the dB
-value of control but don't verify the dB value can be set by re-reading the
-value since dB -> volume conversion
-
-Even though your program start at 0dB  , ac97 volume controls are in 1.5dB
-per step but your program use 2 dB step
-
-Still finding why the program running into infinite loop and try to set dB
-to -7xx dB , however amixer does output the min dB when 0%
