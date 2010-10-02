@@ -1,79 +1,122 @@
-From: "Lopez Cruz, Misael" <misael.lopez@ti.com>
-Subject: RE: [PATCH 2/2] omap: zoom: Move new code introduced by ASoC m-c to
- board-zoom-peripherals
-Date: Fri, 1 Oct 2010 18:47:49 -0500
-Message-ID: <C9D59C82B94F474B872F2092A87F261412730D6302@dlee07.ent.ti.com>
-References: <1285258314-23721-1-git-send-email-jhnikula@gmail.com>
- <1285258314-23721-2-git-send-email-jhnikula@gmail.com>
- <C9D59C82B94F474B872F2092A87F26141272FF6109@dlee07.ent.ti.com>
- <1285349412.13240.42.camel@odin>
- <ac252c0b89d0931d54a4d763e11035a3@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Put WM8962 GPIO2/3 into GPIO mode when
+	configuring platform data too
+Date: Fri,  1 Oct 2010 17:51:39 -0700
+Message-ID: <1285980699-27382-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <ac252c0b89d0931d54a4d763e11035a3@mail.gmail.com>
-Content-Language: en-US
-Sender: linux-omap-owner@vger.kernel.org
-To: "Gadiyar, Anand" <gadiyar@ti.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Jarkko Nikula <jhnikula@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Pandita, Vikram" <vikram.pandita@ti.com>, "Candelaria Villarreal, Jorge" <jorge.candelaria@ti.com>, Tony Lindgren <tony@atomide.com>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8B66F244E4
+	for <alsa-devel@alsa-project.org>;
+	Sat,  2 Oct 2010 02:51:28 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-> Liam Girdwood wrote:
-> > On Fri, 2010-09-24 at 11:31 -0500, Lopez Cruz, Misael wrote:
-> > > Hi Jarkko,
-> > >
-> > > > ASoC Multi-Component Support moves some code from
-> > > > sound/soc/omap/zoom2.c
-> > > > into
-> > > > arch/arm/mach-omap2/board-zoom2.c. However, that code should go to
-> > > > board-zoom-peripherals.c instead as there is common code and
-> > > > registration
-> > > > for zoom boards.
-> > > >
-> > > > Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-> > > > Cc: Vikram Pandita <vikram.pandita@ti.com>
-> > > > Cc: Lopez Cruz, Misael <x0052729@ti.com>
-> > > > Cc: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
-> > > > Cc: Tony Lindgren <tony@atomide.com>
-> > > > ---
-> > > > I don't have this HW so not tested.
-> > > Tested on zoom2 using the 2 patches of your series, compilation break
-> is
-> > > gone and audio works fine.
-> > >
-> > > Thanks,
-> > > -Misael
-> >
-> > Applied, and manually added your Tested-by:
-> >
-> > Thanks
-> >
-> > Liam
-> 
-> Misael, Liam,
-> 
-> Sorry I noticed this patch only now. I have a minor comment on the patch:
-> 
-> Specifically, the part below
-> 
-> +	if (machine_is_omap_zoom2()) {
-> +		zoom_audio_data.ramp_delay_value = 3;	/* 161 ms */
-> +		zoom_audio_data.hs_extmute = 1;
-> +		zoom_audio_data.set_hs_extmute = zoom2_set_hs_extmute;
-> +	}
-> 
-> Isn't the audio on a zoom2/zoom3/3630 SDP the same? (Or at least the
-> same on a zoom2 and zoom3)?
-Yes, at least zoom2 and zoom3 are the same for audio. 
+GPIO2 and GPIO3 on the WM8962 are MFPs and need to be put into GPIO mode
+before the GPIO block can be used to control them. We're already doing
+this when used via gpiolib, factor out the code for use when setting static
+configurations via platform data as well.
 
-> If so, we could probably get rid of the
-> machine_is_omap_zoom2() check, right?
-I think it'd better to add checks for the machines supported by the
-driver, so it fails nicely with unsupported ones. I'll go thru the
-differences between our boards and send a patch soon.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8962.c |   42 +++++++++++++++++++++++++++++-------------
+ 1 files changed, 29 insertions(+), 13 deletions(-)
 
-> - Anand
-
-Thanks,
--Misa
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 3a1db4a..6d30f34 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -1733,6 +1733,31 @@ static void wm8962_free_beep(struct snd_soc_codec *codec)
+ }
+ #endif
+ 
++static void wm8962_set_gpio_mode(struct snd_soc_codec *codec, int gpio)
++{
++	int mask = 0;
++	int val = 0;
++
++	/* Some of the GPIOs are behind MFP configuration and need to
++	 * be put into GPIO mode. */
++	switch (gpio) {
++	case 2:
++		mask = WM8962_CLKOUT2_SEL_MASK;
++		val = 1 << WM8962_CLKOUT2_SEL_SHIFT;
++		break;
++	case 3:
++		mask = WM8962_CLKOUT3_SEL_MASK;
++		val = 1 << WM8962_CLKOUT3_SEL_SHIFT;
++		break;
++	default:
++		break;
++	}
++
++	if (mask)
++		snd_soc_update_bits(codec, WM8962_ANALOGUE_CLOCKING1,
++				    mask, val);
++}
++
+ #ifdef CONFIG_GPIOLIB
+ static inline struct wm8962_priv *gpio_to_wm8962(struct gpio_chip *chip)
+ {
+@@ -1743,8 +1768,6 @@ static int wm8962_gpio_request(struct gpio_chip *chip, unsigned offset)
+ {
+ 	struct wm8962_priv *wm8962 = gpio_to_wm8962(chip);
+ 	struct snd_soc_codec *codec = wm8962->codec;
+-	int mask = 0;
+-	int val;
+ 
+ 	/* The WM8962 GPIOs aren't linearly numbered.  For simplicity
+ 	 * we export linear numbers and error out if the unsupported
+@@ -1752,13 +1775,7 @@ static int wm8962_gpio_request(struct gpio_chip *chip, unsigned offset)
+ 	 */
+ 	switch (offset + 1) {
+ 	case 2:
+-		mask = WM8962_CLKOUT2_SEL_MASK;
+-		val = 1 << WM8962_CLKOUT2_SEL_SHIFT;
+-		break;
+ 	case 3:
+-		mask = WM8962_CLKOUT3_SEL_MASK;
+-		val = 1 << WM8962_CLKOUT3_SEL_SHIFT;
+-		break;
+ 	case 5:
+ 	case 6:
+ 		break;
+@@ -1766,10 +1783,7 @@ static int wm8962_gpio_request(struct gpio_chip *chip, unsigned offset)
+ 		return -EINVAL;
+ 	}
+ 
+-	/* Some of the GPIOs are behind MFP configuration */
+-	if (mask)
+-		snd_soc_update_bits(codec, WM8962_ANALOGUE_CLOCKING1,
+-				    mask, val);
++	wm8962_set_gpio_mode(codec, offset + 1);
+ 
+ 	return 0;
+ }
+@@ -1943,9 +1957,11 @@ static int wm8962_probe(struct snd_soc_codec *codec)
+ 	if (pdata) {
+ 		/* Apply static configuration for GPIOs */
+ 		for (i = 0; i < ARRAY_SIZE(pdata->gpio_init); i++)
+-			if (pdata->gpio_init[i])
++			if (pdata->gpio_init[i]) {
++				wm8962_set_gpio_mode(codec, i + 1);
+ 				snd_soc_write(codec, 0x200 + i,
+ 					      pdata->gpio_init[i] & 0xffff);
++			}
+ 
+ 		/* Put the speakers into mono mode? */
+ 		if (pdata->spk_mono)
+-- 
+1.7.1
