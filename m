@@ -1,21 +1,17 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Put WM8962 GPIO2/3 into GPIO mode
- when configuring platform data too
-Date: Sat, 02 Oct 2010 12:20:16 +0100
-Message-ID: <1286018416.3125.7.camel@odin>
-References: <1285980699-27382-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [GIT PULL] ASoC updates for 2.6.37
+Date: Sat, 02 Oct 2010 14:43:02 +0100
+Message-ID: <1286026982.3125.32.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 26A76103A67
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id B83911037F1
 	for <alsa-devel@alsa-project.org>;
-	Sat,  2 Oct 2010 13:20:18 +0200 (CEST)
-Received: by wyb42 with SMTP id 42so3733553wyb.38
-	for <alsa-devel@alsa-project.org>; Sat, 02 Oct 2010 04:20:17 -0700 (PDT)
-In-Reply-To: <1285980699-27382-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Sat,  2 Oct 2010 15:43:03 +0200 (CEST)
+Received: by wwb28 with SMTP id 28so3995341wwb.20
+	for <alsa-devel@alsa-project.org>; Sat, 02 Oct 2010 06:43:03 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,21 +21,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-10-01 at 17:51 -0700, Mark Brown wrote:
-> GPIO2 and GPIO3 on the WM8962 are MFPs and need to be put into GPIO mode
-> before the GPIO block can be used to control them. We're already doing
-> this when used via gpiolib, factor out the code for use when setting static
-> configurations via platform data as well.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+The following changes since commit fc38a8a11d332549e4de0537ba34f197cf42788b:
+  Dimitris Papastamos (1):
+        ASoC: WM8985: Remove unneeded declaration.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+are available in the git repository at:
 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.37
+
+Jarkko Nikula (2):
+      omap: zoom2: Fix ASoC multi-component build breakage by removing dead code
+      omap: zoom: Move new code introduced by ASoC m-c to board-zoom-peripherals
+
+ arch/arm/mach-omap2/board-zoom-peripherals.c |   12 ++++++
+ arch/arm/mach-omap2/board-zoom2.c            |   56 --------------------------
+ 2 files changed, 12 insertions(+), 56 deletions(-)
