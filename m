@@ -1,99 +1,43 @@
-From: Seungwhan Youn <sw.youn@samsung.com>
-Subject: [PATCH 3/10] ARM: S5PC100: Add SCLK_SPDIF clock
-Date: Mon,  4 Oct 2010 20:42:25 +0900
-Message-ID: <1286192545-18327-1-git-send-email-sw.youn@samsung.com>
-References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: ben-linux@fluff.org, kgene.kim@samsung.com, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com, Seungwhan Youn <sw.youn@samsung.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: [PATCH] omap: devices: Avoid merge conflict between ASoC and OMAP hwmod changes
+Date: Mon,  4 Oct 2010 15:04:53 +0300
+Message-ID: <1286193893-22131-1-git-send-email-jhnikula@gmail.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-omap@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jarkko Nikula <jhnikula@gmail.com>, Paul Walmsley <paul@pwsan.com>, Tony Lindgren <tony@atomide.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch add SCLK_SPDIF clock to support source clock of S/PDIF
-on S5PC100.
+Upcoming ASoC multi-component and OMAP hwmod changes will conflict
+in arch/arm/mach-omap2/devices.c. Avoid this by moving a little bit
+include statement introduced by ASoC Multi-Component Support patch.
 
-Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+Cc: Paul Walmsley <paul@pwsan.com>
+Cc: Tony Lindgren <tony@atomide.com>
 ---
- arch/arm/mach-s5pc100/clock.c |   59 +++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 59 insertions(+), 0 deletions(-)
+This is intended to be merged with "ASoC: multi-component -
+ASoC Multi-Component Support" patch via ASoC tree.
+---
+ arch/arm/mach-omap2/devices.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/arch/arm/mach-s5pc100/clock.c b/arch/arm/mach-s5pc100/clock.c
-index 42b7138..306ae74 100644
---- a/arch/arm/mach-s5pc100/clock.c
-+++ b/arch/arm/mach-s5pc100/clock.c
-@@ -980,6 +980,64 @@ struct clksrc_sources clk_src_pwi = {
- 	.nr_sources	= ARRAY_SIZE(clk_src_pwi_list),
- };
+diff --git a/arch/arm/mach-omap2/devices.c b/arch/arm/mach-omap2/devices.c
+index 08e1ad5..512ae46 100644
+--- a/arch/arm/mach-omap2/devices.c
++++ b/arch/arm/mach-omap2/devices.c
+@@ -25,10 +25,10 @@
+ #include <plat/control.h>
+ #include <plat/tc.h>
+ #include <plat/board.h>
++#include <plat/mcbsp.h>
+ #include <mach/gpio.h>
+ #include <plat/mmc.h>
+ #include <plat/dma.h>
+-#include <plat/mcbsp.h>
  
-+static struct clk *clk_sclk_spdif_list[] = {
-+	[0] = &clk_sclk_audio0.clk,
-+	[1] = &clk_sclk_audio1.clk,
-+	[2] = &clk_sclk_audio2.clk,
-+};
-+
-+struct clksrc_sources clk_src_sclk_spdif = {
-+	.sources	= clk_sclk_spdif_list,
-+	.nr_sources	= ARRAY_SIZE(clk_sclk_spdif_list),
-+};
-+
-+static int s5pc100_spdif_set_rate(struct clk *clk, unsigned long rate)
-+{
-+	struct clk *pclk;
-+	int ret;
-+
-+	pclk = clk_get_parent(clk);
-+	if (IS_ERR(pclk))
-+		return -EINVAL;
-+
-+	ret = pclk->ops->set_rate(pclk, rate);
-+	clk_put(pclk);
-+
-+	return ret;
-+}
-+
-+static unsigned long s5pc100_spdif_get_rate(struct clk *clk)
-+{
-+	struct clk *pclk;
-+	int rate;
-+
-+	pclk = clk_get_parent(clk);
-+	if (IS_ERR(pclk))
-+		return -EINVAL;
-+
-+	rate = pclk->ops->get_rate(clk);
-+	clk_put(pclk);
-+
-+	return rate;
-+}
-+
-+static struct clk_ops s5pc100_sclk_spdif_ops = {
-+	.set_rate	= s5pc100_spdif_set_rate,
-+	.get_rate	= s5pc100_spdif_get_rate,
-+};
-+
-+static struct clksrc_clk clk_sclk_spdif = {
-+	.clk	= {
-+		.name		= "sclk_spdif",
-+		.id		= -1,
-+		.ctrlbit	= (1 << 11),
-+		.enable		= s5pc100_sclk1_ctrl,
-+		.ops		= &s5pc100_sclk_spdif_ops,
-+	},
-+	.sources = &clk_src_sclk_spdif,
-+	.reg_src = { .reg = S5P_CLK_SRC3, .shift = 24, .size = 2 },
-+};
-+
- static struct clksrc_clk clksrcs[] = {
- 	{
- 		.clk	= {
-@@ -1185,6 +1243,7 @@ static struct clksrc_clk *sysclks[] = {
- 	&clk_sclk_audio0,
- 	&clk_sclk_audio1,
- 	&clk_sclk_audio2,
-+	&clk_sclk_spdif,
- };
+ #include "mux.h"
  
- void __init_or_cpufreq s5pc100_setup_clocks(void)
 -- 
-1.6.2.5
+1.7.1
+
