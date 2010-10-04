@@ -1,19 +1,15 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: WM8804: Power down the PLL correctly
-Date: Mon, 04 Oct 2010 11:11:35 +0100
-Message-ID: <1286187095.3148.21.camel@odin>
-References: <1286181468-13095-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Correctly apply position_fix quirks
+ for ATI and VIA controllers
+Date: Mon, 04 Oct 2010 12:15:45 +0200
+Message-ID: <4CA9A951.2010604@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------030003000506090905050009"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3EAFF243E6
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 46067243E6
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Oct 2010 12:11:38 +0200 (CEST)
-Received: by wwb28 with SMTP id 28so5060284wwb.20
-	for <alsa-devel@alsa-project.org>; Mon, 04 Oct 2010 03:11:38 -0700 (PDT)
-In-Reply-To: <1286181468-13095-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	Mon,  4 Oct 2010 12:15:46 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,19 +19,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-10-04 at 09:37 +0100, Dimitris Papastamos wrote:
-> The PLL is disabled when the corresponding bit is set not the other
-> way around.  This commit depends on my other commit with Subject
-> "ASoC: WM8804: Refactor set_pll code to avoid GCC warnings".
-> 
-> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+This is a multi-part message in MIME format.
+--------------030003000506090905050009
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+Position_fix quirks for specific machines now override the default
+position_fix behavior for all HDA controllers.
+
+BugLink: http://launchpad.net/bugs/465942
+BugLink: http://launchpad.net/bugs/580749
+BugLink: http://launchpad.net/bugs/587546
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
+
+--------------030003000506090905050009
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Correctly-apply-position_fix-quirks-for-ATI.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Correctly-apply-position_fix-quirks-for-ATI.pa";
+ filename*1="tch"
+
+>From b36e71f568c26ab11909454c5bf8bc5d47dbf025 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Mon, 4 Oct 2010 12:02:14 +0200
+Subject: [PATCH] ALSA: HDA: Correctly apply position_fix quirks for ATI and VIA controllers
+
+Position_fix quirks for specific machines now override the default
+position_fix behavior for all HDA controllers.
+
+BugLink: http://launchpad.net/bugs/465942
+BugLink: http://launchpad.net/bugs/580749
+BugLink: http://launchpad.net/bugs/587546
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/hda_intel.c |   17 +++++++++--------
+ 1 files changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 38b063e..5cbea85 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2315,14 +2315,6 @@ static int __devinit check_position_fix(struct azx *chip, int fix)
+ 		return fix;
+ 	}
+ 
+-	/* Check VIA/ATI HD Audio Controller exist */
+-	switch (chip->driver_type) {
+-	case AZX_DRIVER_VIA:
+-	case AZX_DRIVER_ATI:
+-		/* Use link position directly, avoid any transfer problem. */
+-		return POS_FIX_VIACOMBO;
+-	}
+-
+ 	q = snd_pci_quirk_lookup(chip->pci, position_fix_list);
+ 	if (q) {
+ 		printk(KERN_INFO
+@@ -2331,6 +2323,15 @@ static int __devinit check_position_fix(struct azx *chip, int fix)
+ 		       q->value, q->subvendor, q->subdevice);
+ 		return q->value;
+ 	}
++
++	/* Check VIA/ATI HD Audio Controller exist */
++	switch (chip->driver_type) {
++	case AZX_DRIVER_VIA:
++	case AZX_DRIVER_ATI:
++		/* Use link position directly, avoid any transfer problem. */
++		return POS_FIX_VIACOMBO;
++	}
++
+ 	return POS_FIX_AUTO;
+ }
+ 
+-- 
+1.7.1
+
+
+--------------030003000506090905050009
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------030003000506090905050009--
