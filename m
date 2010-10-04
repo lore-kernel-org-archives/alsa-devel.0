@@ -1,28 +1,17 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: alsactl adds volume controls?
-Date: Mon, 04 Oct 2010 12:35:25 +0100
-Message-ID: <i8ce5u$fj3$1@dough.gmane.org>
-References: <s5hr5hczi06.wl%tiwai@suse.de>	<4C7F6D5D.7020101@canonical.com>	<alpine.LNX.2.00.1009021553460.10278@eeebox2.perex-int.cz>	<4C7FB2CF.5060505@ladisch.de>	<alpine.LNX.2.00.1009021721100.10278@eeebox2.perex-int.cz>	<4C7FC85B.4000009@ladisch.de>	<alpine.LNX.2.00.1009021926120.10278@eeebox2.perex-int.cz>	<i7viav$kjb$1@dough.gmane.org>	<4CA46E98.10402@ladisch.de>	<4CA4A844.7060403@colin.guthr.ie>	<20100930164753.GB9431@sirena.org.uk>	<s5hr5gb9k83.wl%tiwai@suse.de>	<4CA5834D.5030408@ladisch.de>	<4CA59976.2020306@colin.guthr.ie>
-	<4CA5A38A.7050006@ladisch.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: HDA: Correctly apply position_fix
+ quirks for ATI and VIA controllers
+Date: Mon, 04 Oct 2010 13:37:48 +0200
+Message-ID: <4CA9BC8C.4030809@canonical.com>
+References: <4CA9A951.2010604@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------090100040709030507040104"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5BE7D24447
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 50E8B24450
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Oct 2010 13:35:44 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1P2jKX-0008Ob-0R
-	for alsa-devel@alsa-project.org; Mon, 04 Oct 2010 13:35:41 +0200
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 04 Oct 2010 13:35:41 +0200
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 04 Oct 2010 13:35:41 +0200
-In-Reply-To: <4CA5A38A.7050006@ladisch.de>
+	Mon,  4 Oct 2010 13:37:46 +0200 (CEST)
+In-Reply-To: <4CA9A951.2010604@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,38 +21,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, stable@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Clemens Ladisch at 01/10/10 10:02 did gyre and gimble:
-> | Node 0x0b [Audio Selector] wcaps 0x300105: Stereo Amp-Out
-> |   Control: name="Master Playback Volume", index=0, device=0
-> |     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-> |   Control: name="Master Playback Switch", index=0, device=0
-> |     ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-> |   Amp-Out caps: N/A
-> 
-> Is this still "N/A" when you try again?
+This is a multi-part message in MIME format.
+--------------090100040709030507040104
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Yeah, I've run the script a few times and this has always been N/A.
+On 2010-10-04 12:15, David Henningsson wrote:
+> Position_fix quirks for specific machines now override the default
+> position_fix behavior for all HDA controllers.
+>
+> BugLink: http://launchpad.net/bugs/465942
+> BugLink: http://launchpad.net/bugs/580749
+> BugLink: http://launchpad.net/bugs/587546
+>
+> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 
-
-
-As a more general question, how is the quirk for fixing the 0==mute
-thing added? Is it a kernel patch or some tweak in the /usr/share/alsa/
-tree (i.e. alsalib based quirk?)
-
-Col
+...and here's the version for 2.6.35 and 2.6.32 stable trees.
 
 -- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
 
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
+--------------090100040709030507040104
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Correctly-apply-position_fix-quirks-for-ATI.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Correctly-apply-position_fix-quirks-for-ATI.pa";
+ filename*1="tch"
 
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mageia Contributor [http://www.mageia.org/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+>From 693810d675f1923449d7d38893a614c975bd359c Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Mon, 4 Oct 2010 13:13:44 +0200
+Subject: [PATCH] ALSA: HDA: Correctly apply position_fix quirks for ATI and VIA controllers
+
+BugLink: http://launchpad.net/bugs/465942
+BugLink: http://launchpad.net/bugs/580749
+BugLink: http://launchpad.net/bugs/587546
+
+Position_fix quirks for specific machines now override the default
+position_fix behavior for all HDA controllers.
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/hda_intel.c |   21 ++++++++++++---------
+ 1 files changed, 12 insertions(+), 9 deletions(-)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 741ad32..51b088e 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2264,12 +2264,24 @@ static int __devinit check_position_fix(struct azx *chip, int fix)
+ {
+ 	const struct snd_pci_quirk *q;
+ 
++	chip->via_dmapos_patch = 0;
++
+ 	switch (fix) {
+ 	case POS_FIX_LPIB:
+ 	case POS_FIX_POSBUF:
+ 		return fix;
+ 	}
+ 
++	q = snd_pci_quirk_lookup(chip->pci, position_fix_list);
++	if (q) {
++		/* Note that this implicitly sets via_dmapos_patch to zero */
++		printk(KERN_INFO
++		       "hda_intel: position_fix set to %d "
++		       "for device %04x:%04x\n",
++		       q->value, q->subvendor, q->subdevice);
++		return q->value;
++	}
++
+ 	/* Check VIA/ATI HD Audio Controller exist */
+ 	switch (chip->driver_type) {
+ 	case AZX_DRIVER_VIA:
+@@ -2278,16 +2290,7 @@ static int __devinit check_position_fix(struct azx *chip, int fix)
+ 		/* Use link position directly, avoid any transfer problem. */
+ 		return POS_FIX_LPIB;
+ 	}
+-	chip->via_dmapos_patch = 0;
+ 
+-	q = snd_pci_quirk_lookup(chip->pci, position_fix_list);
+-	if (q) {
+-		printk(KERN_INFO
+-		       "hda_intel: position_fix set to %d "
+-		       "for device %04x:%04x\n",
+-		       q->value, q->subvendor, q->subdevice);
+-		return q->value;
+-	}
+ 	return POS_FIX_AUTO;
+ }
+ 
+-- 
+1.7.1
+
+
+--------------090100040709030507040104
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------090100040709030507040104--
