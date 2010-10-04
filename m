@@ -1,48 +1,99 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Alsamixertest
-Date: Mon, 04 Oct 2010 14:01:46 +0200
-Message-ID: <4CA9C22A.2010104@ladisch.de>
-References: <4C9F6409.6010400@aknet.ru>	<20100927005858.GD21247@sirena.org.uk>	<4CA0221D.6030208@aknet.ru>	<i7qltg$bph$1@dough.gmane.org>	<AANLkTi=9gcs0A6s55wSS-RP4NucvUqkxCoYynezdF+5g@mail.gmail.com>	<4CA306CB.1090305@canonical.com>	<AANLkTi=h+ZKXNdhmC1BtTbBaGF6_V+uD2ZO7sx4WMJMW@mail.gmail.com>
-	<4CA9877F.7060009@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id EF01824466
-	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Oct 2010 14:00:59 +0200 (CEST)
-In-Reply-To: <4CA9877F.7060009@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: alsa-devel@alsa-project.org
+From: Seungwhan Youn <sw.youn@samsung.com>
+Subject: [PATCH 3/10] ARM: S5PC100: Add SCLK_SPDIF clock
+Date: Mon,  4 Oct 2010 20:42:25 +0900
+Message-ID: <1286192545-18327-1-git-send-email-sw.youn@samsung.com>
+References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: ben-linux@fluff.org, kgene.kim@samsung.com, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com, Seungwhan Youn <sw.youn@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-David Henningsson wrote:
-> On 2010-10-02 04:11, Raymond Yau wrote:
-> > It seem that the program keep complain about those controls without dB scale
-> > (e.g. AC97 3D Control - depth and rear depth , .) with the emulated intel8x0
-> > driver  and no volume control with the emulated sb16 in virtualbox
-> 
-> It's a righteous warning if you ask me - all volume controls should
-> provide dB information,
+This patch add SCLK_SPDIF clock to support source clock of S/PDIF
+on S5PC100.
 
-But "3D Depth" and some other controls are not volume controls and are
-not measured in dB.
+Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+---
+ arch/arm/mach-s5pc100/clock.c |   59 +++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 59 insertions(+), 0 deletions(-)
 
-> or we don't know what they actually do.
-
-Where "we" = "generic software like PA".  Non-standard controls can be
-controlled only by hardware-specific tools or by the user.
-
-
-Regards,
-Clemens
+diff --git a/arch/arm/mach-s5pc100/clock.c b/arch/arm/mach-s5pc100/clock.c
+index 42b7138..306ae74 100644
+--- a/arch/arm/mach-s5pc100/clock.c
++++ b/arch/arm/mach-s5pc100/clock.c
+@@ -980,6 +980,64 @@ struct clksrc_sources clk_src_pwi = {
+ 	.nr_sources	= ARRAY_SIZE(clk_src_pwi_list),
+ };
+ 
++static struct clk *clk_sclk_spdif_list[] = {
++	[0] = &clk_sclk_audio0.clk,
++	[1] = &clk_sclk_audio1.clk,
++	[2] = &clk_sclk_audio2.clk,
++};
++
++struct clksrc_sources clk_src_sclk_spdif = {
++	.sources	= clk_sclk_spdif_list,
++	.nr_sources	= ARRAY_SIZE(clk_sclk_spdif_list),
++};
++
++static int s5pc100_spdif_set_rate(struct clk *clk, unsigned long rate)
++{
++	struct clk *pclk;
++	int ret;
++
++	pclk = clk_get_parent(clk);
++	if (IS_ERR(pclk))
++		return -EINVAL;
++
++	ret = pclk->ops->set_rate(pclk, rate);
++	clk_put(pclk);
++
++	return ret;
++}
++
++static unsigned long s5pc100_spdif_get_rate(struct clk *clk)
++{
++	struct clk *pclk;
++	int rate;
++
++	pclk = clk_get_parent(clk);
++	if (IS_ERR(pclk))
++		return -EINVAL;
++
++	rate = pclk->ops->get_rate(clk);
++	clk_put(pclk);
++
++	return rate;
++}
++
++static struct clk_ops s5pc100_sclk_spdif_ops = {
++	.set_rate	= s5pc100_spdif_set_rate,
++	.get_rate	= s5pc100_spdif_get_rate,
++};
++
++static struct clksrc_clk clk_sclk_spdif = {
++	.clk	= {
++		.name		= "sclk_spdif",
++		.id		= -1,
++		.ctrlbit	= (1 << 11),
++		.enable		= s5pc100_sclk1_ctrl,
++		.ops		= &s5pc100_sclk_spdif_ops,
++	},
++	.sources = &clk_src_sclk_spdif,
++	.reg_src = { .reg = S5P_CLK_SRC3, .shift = 24, .size = 2 },
++};
++
+ static struct clksrc_clk clksrcs[] = {
+ 	{
+ 		.clk	= {
+@@ -1185,6 +1243,7 @@ static struct clksrc_clk *sysclks[] = {
+ 	&clk_sclk_audio0,
+ 	&clk_sclk_audio1,
+ 	&clk_sclk_audio2,
++	&clk_sclk_spdif,
+ };
+ 
+ void __init_or_cpufreq s5pc100_setup_clocks(void)
+-- 
+1.6.2.5
