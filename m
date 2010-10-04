@@ -1,16 +1,18 @@
-From: <martin@ti.com>
-Subject: [PATCH 1/1] ALSA: ASoc: DaVinci Delay start of ASP to
-	trigger
-Date: Sun, 3 Oct 2010 16:44:19 -0500
-Message-ID: <1286142259-6625-1-git-send-email-martin@ti.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: S51 usb support
+Date: Mon, 4 Oct 2010 06:41:52 +0200
+Message-ID: <20101004044152.GC7159@buzzloop.caiaq.de>
+References: <4CA8F3F8.6010705@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id B9AFB103871
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 398FB103871
 	for <alsa-devel@alsa-project.org>;
-	Sun,  3 Oct 2010 23:45:24 +0200 (CEST)
+	Mon,  4 Oct 2010 06:42:41 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4CA8F3F8.6010705@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,48 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: davinci-linux-open-source@linux.davincidsp.com, broonie@sirena.org.uk, Martin Ambrose <martin@ti.com>, Troy Kisky <troy.kisky@boundarydevices.com>
+To: Matti Picus <matti.picus@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Troy Kisky <troy.kisky@boundarydevices.com>
+On Sun, Oct 03, 2010 at 11:22:00PM +0200, Matti Picus wrote:
+> My X-FI Surround USB card is barely usable. pulseaudio will let me 
+> control the volume levels, alsa support cannot view any volume controls.
 
-Since only 4 mainline ASoC codecs support the trigger
-callback, we cannot rely upon them stopping the frame clock
-if they are master and must assume it is running even if the
-sound is paused. Thus we cannot start the ASP until the trigger
-method.
+But audio streaming does work for you? I heard people reporting success
+with this kind of hardware.
 
-Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
-Signed-off-by: Martin Ambrose <martin@ti.com>
+> How can I contribute to better support for this card under alsa? I would 
+> like to get to the point where amixer can control the analog 
+> input/output volume levels.
 
----
- sound/soc/davinci/davinci-i2s.c |    6 ------
- 1 files changed, 0 insertions(+), 6 deletions(-)
+As for the volume controls, there are merely two ways how they can be
+implemented on USB soundcards. One is as feature unit control, and the
+other is a proprietary vendor specific USB request. You should start
+having a look at the USB descriptors the devices exports (by running
+"lsusb -v").
 
-diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
-index 9e8932a..a66c237 100644
---- a/sound/soc/davinci/davinci-i2s.c
-+++ b/sound/soc/davinci/davinci-i2s.c
-@@ -572,10 +572,6 @@ static int davinci_i2s_prepare(struct snd_pcm_substream *substream,
- 	struct davinci_mcbsp_dev *dev = dai->private_data;
- 	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
- 	davinci_mcbsp_stop(dev, playback);
--	if ((dev->pcr & DAVINCI_MCBSP_PCR_FSXM) == 0) {
--		/* codec is master */
--		davinci_mcbsp_start(dev, substream);
--	}
- 	return 0;
- }
- 
-@@ -585,8 +581,6 @@ static int davinci_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 	struct davinci_mcbsp_dev *dev = dai->private_data;
- 	int ret = 0;
- 	int playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
--	if ((dev->pcr & DAVINCI_MCBSP_PCR_FSXM) == 0)
--		return 0;	/* return if codec is master */
- 
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
--- 
-1.7.0.4
+In case the card does not offer a standard way to control the volume
+levels, you need to trace how the Windows driver does it by sniffing
+the communication while performing this specific operation, either with
+an USB hardware analyzer, or with a piece of software. There are some
+projects aiming for this, but I can't give you any recommendation. Just
+try some of these, maybe:
+
+  http://www.google.com/search?q=windows+usb+traffic+sniffer
+
+Once you found out how they do it in Windows, you can add device
+specific mixer handlers, as they exist for other hardware. Have a look
+at sound/usb/mixer_quirks.c.
+
+Hope that helps,
+
+Daniel
