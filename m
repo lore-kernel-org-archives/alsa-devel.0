@@ -1,18 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Alsamixertest
-Date: Mon, 04 Oct 2010 14:25:34 +0200
-Message-ID: <4CA9C7BE.7020804@canonical.com>
-References: <4C9F6409.6010400@aknet.ru>	<20100927005858.GD21247@sirena.org.uk>	<4CA0221D.6030208@aknet.ru>	<i7qltg$bph$1@dough.gmane.org>	<AANLkTi=9gcs0A6s55wSS-RP4NucvUqkxCoYynezdF+5g@mail.gmail.com>	<4CA306CB.1090305@canonical.com>	<AANLkTi=h+ZKXNdhmC1BtTbBaGF6_V+uD2ZO7sx4WMJMW@mail.gmail.com>
-	<4CA9877F.7060009@canonical.com> <4CA9C22A.2010104@ladisch.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: alsactl adds volume controls?
+Date: Mon, 04 Oct 2010 14:26:56 +0200
+Message-ID: <4CA9C810.2030803@ladisch.de>
+References: <s5hr5hczi06.wl%tiwai@suse.de>	<4C7F6D5D.7020101@canonical.com>	<alpine.LNX.2.00.1009021553460.10278@eeebox2.perex-int.cz>	<4C7FB2CF.5060505@ladisch.de>	<alpine.LNX.2.00.1009021721100.10278@eeebox2.perex-int.cz>	<4C7FC85B.4000009@ladisch.de>	<alpine.LNX.2.00.1009021926120.10278@eeebox2.perex-int.cz>	<i7viav$kjb$1@dough.gmane.org>	<4CA46E98.10402@ladisch.de>	<4CA4A844.7060403@colin.guthr.ie>	<20100930164753.GB9431@sirena.org.uk>	<s5hr5gb9k83.wl%tiwai@suse.de>	<4CA5834D.5030408@ladisch.de>	<4CA59976.2020306@colin.guthr.ie>	<4CA5A38A.7050006@ladisch.de>
+	<i8ce5u$fj3$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id E7EDB1038BD
+Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id DBE411038BD
 	for <alsa-devel@alsa-project.org>;
-	Mon,  4 Oct 2010 14:25:30 +0200 (CEST)
-In-Reply-To: <4CA9C22A.2010104@ladisch.de>
+	Mon,  4 Oct 2010 14:26:11 +0200 (CEST)
+In-Reply-To: <i8ce5u$fj3$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,36 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
+To: Colin Guthrie <gmane@colin.guthr.ie>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2010-10-04 14:01, Clemens Ladisch wrote:
-> David Henningsson wrote:
->> On 2010-10-02 04:11, Raymond Yau wrote:
->>> It seem that the program keep complain about those controls without dB scale
->>> (e.g. AC97 3D Control - depth and rear depth , .) with the emulated intel8x0
->>> driver  and no volume control with the emulated sb16 in virtualbox
->>
->> It's a righteous warning if you ask me - all volume controls should
->> provide dB information,
->
-> But "3D Depth" and some other controls are not volume controls and are
-> not measured in dB.
->
->> or we don't know what they actually do.
->
-> Where "we" = "generic software like PA".  Non-standard controls can be
-> controlled only by hardware-specific tools or by the user.
+Colin Guthrie wrote:
+> 'Twas brillig, and Clemens Ladisch at 01/10/10 10:02 did gyre and gimble:
+> > |   Amp-Out caps: N/A
+> > 
+> > Is this still "N/A" when you try again?
+> 
+> Yeah, I've run the script a few times and this has always been N/A.
 
-Exactly, this is a test tool that checks whether the mixer control names 
-and dB information live up to PulseAudio's expectations. That's the 
-tool's purpose.
+No problem; according to the datasheet, this node does not have amp-out
+caps, and the driver has to read them from the default node instead.
+But this appears to work correctly, or you wouldn't have any control for
+this node.
 
-Given some thought, perhaps the application warning should be removed. 
-It might be that it should only require dB information for the controls 
-it actually wants to test (i e Master, PCM etc)...what do you think?
+> As a more general question, how is the quirk for fixing the 0==mute
+> thing added? Is it a kernel patch or some tweak in the /usr/share/alsa/
+> tree (i.e. alsalib based quirk?)
 
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+At the moment, no working mechanism for changing control information in
+user space exists.  (But it should be possible to make the "default"
+control device some new plugin that redirects to the "hw" device while
+changing some entries.)
+
+
+Regards,
+Clemens
