@@ -1,133 +1,48 @@
-From: Seungwhan Youn <sw.youn@samsung.com>
-Subject: [PATCH 2/10] ARM: S5PC100: Modify SCLK_AUDIO{0,1,2} clock as sysclks
-Date: Mon,  4 Oct 2010 20:39:16 +0900
-Message-ID: <1286192356-17997-1-git-send-email-sw.youn@samsung.com>
-References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: ben-linux@fluff.org, kgene.kim@samsung.com, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com, Seungwhan Youn <sw.youn@samsung.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Alsamixertest
+Date: Mon, 04 Oct 2010 14:01:46 +0200
+Message-ID: <4CA9C22A.2010104@ladisch.de>
+References: <4C9F6409.6010400@aknet.ru>	<20100927005858.GD21247@sirena.org.uk>	<4CA0221D.6030208@aknet.ru>	<i7qltg$bph$1@dough.gmane.org>	<AANLkTi=9gcs0A6s55wSS-RP4NucvUqkxCoYynezdF+5g@mail.gmail.com>	<4CA306CB.1090305@canonical.com>	<AANLkTi=h+ZKXNdhmC1BtTbBaGF6_V+uD2ZO7sx4WMJMW@mail.gmail.com>
+	<4CA9877F.7060009@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id EF01824466
+	for <alsa-devel@alsa-project.org>;
+	Mon,  4 Oct 2010 14:00:59 +0200 (CEST)
+In-Reply-To: <4CA9877F.7060009@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch modify SCLK_AUDIO{0,1,2} to be initial as sysclks
-on boot-time.
+David Henningsson wrote:
+> On 2010-10-02 04:11, Raymond Yau wrote:
+> > It seem that the program keep complain about those controls without dB scale
+> > (e.g. AC97 3D Control - depth and rear depth , .) with the emulated intel8x0
+> > driver  and no volume control with the emulated sb16 in virtualbox
+> 
+> It's a righteous warning if you ask me - all volume controls should
+> provide dB information,
 
-Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
----
- arch/arm/mach-s5pc100/clock.c |   72 ++++++++++++++++++++++-------------------
- 1 files changed, 39 insertions(+), 33 deletions(-)
+But "3D Depth" and some other controls are not volume controls and are
+not measured in dB.
 
-diff --git a/arch/arm/mach-s5pc100/clock.c b/arch/arm/mach-s5pc100/clock.c
-index 084abd1..42b7138 100644
---- a/arch/arm/mach-s5pc100/clock.c
-+++ b/arch/arm/mach-s5pc100/clock.c
-@@ -848,6 +848,18 @@ struct clksrc_sources clk_src_group3 = {
- 	.nr_sources	= ARRAY_SIZE(clk_src_group3_list),
- };
- 
-+static struct clksrc_clk clk_sclk_audio0 = {
-+	.clk	= {
-+		.name		= "sclk_audio",
-+		.id		= 0,
-+		.ctrlbit	= (1 << 8),
-+		.enable		= s5pc100_sclk1_ctrl,
-+	},
-+	.sources = &clk_src_group3,
-+	.reg_src = { .reg = S5P_CLK_SRC3, .shift = 12, .size = 3 },
-+	.reg_div = { .reg = S5P_CLK_DIV4, .shift = 12, .size = 4 },
-+};
-+
- static struct clk *clk_src_group4_list[] = {
- 	[0] = &clk_mout_epll.clk,
- 	[1] = &clk_div_mpll.clk,
-@@ -862,6 +874,18 @@ struct clksrc_sources clk_src_group4 = {
- 	.nr_sources	= ARRAY_SIZE(clk_src_group4_list),
- };
- 
-+static struct clksrc_clk clk_sclk_audio1 = {
-+	.clk	= {
-+		.name		= "sclk_audio",
-+		.id		= 1,
-+		.ctrlbit	= (1 << 9),
-+		.enable		= s5pc100_sclk1_ctrl,
-+	},
-+	.sources = &clk_src_group4,
-+	.reg_src = { .reg = S5P_CLK_SRC3, .shift = 16, .size = 3 },
-+	.reg_div = { .reg = S5P_CLK_DIV4, .shift = 16, .size = 4 },
-+};
-+
- static struct clk *clk_src_group5_list[] = {
- 	[0] = &clk_mout_epll.clk,
- 	[1] = &clk_div_mpll.clk,
-@@ -875,6 +899,18 @@ struct clksrc_sources clk_src_group5 = {
- 	.nr_sources	= ARRAY_SIZE(clk_src_group5_list),
- };
- 
-+static struct clksrc_clk clk_sclk_audio2 = {
-+	.clk	= {
-+		.name		= "sclk_audio",
-+		.id		= 2,
-+		.ctrlbit	= (1 << 10),
-+		.enable		= s5pc100_sclk1_ctrl,
-+	},
-+	.sources = &clk_src_group5,
-+	.reg_src = { .reg = S5P_CLK_SRC3, .shift = 20, .size = 3 },
-+	.reg_div = { .reg = S5P_CLK_DIV4, .shift = 20, .size = 4 },
-+};
-+
- static struct clk *clk_src_group6_list[] = {
- 	[0] = &s5p_clk_27m,
- 	[1] = &clk_vclk54m,
-@@ -1001,39 +1037,6 @@ static struct clksrc_clk clksrcs[] = {
- 		.reg_src = { .reg = S5P_CLK_SRC2, .shift = 28, .size = 2 },
- 	}, {
- 		.clk	= {
--			.name		= "sclk_audio",
--			.id		= 0,
--			.ctrlbit	= (1 << 8),
--			.enable		= s5pc100_sclk1_ctrl,
--
--		},
--		.sources = &clk_src_group3,
--		.reg_src = { .reg = S5P_CLK_SRC3, .shift = 12, .size = 3 },
--		.reg_div = { .reg = S5P_CLK_DIV4, .shift = 12, .size = 4 },
--	}, {
--		.clk	= {
--			.name		= "sclk_audio",
--			.id		= 1,
--			.ctrlbit	= (1 << 9),
--			.enable		= s5pc100_sclk1_ctrl,
--
--		},
--		.sources = &clk_src_group4,
--		.reg_src = { .reg = S5P_CLK_SRC3, .shift = 16, .size = 3 },
--		.reg_div = { .reg = S5P_CLK_DIV4, .shift = 16, .size = 4 },
--	}, {
--		.clk	= {
--			.name		= "sclk_audio",
--			.id		= 2,
--			.ctrlbit	= (1 << 10),
--			.enable		= s5pc100_sclk1_ctrl,
--
--		},
--		.sources = &clk_src_group5,
--		.reg_src = { .reg = S5P_CLK_SRC3, .shift = 20, .size = 3 },
--		.reg_div = { .reg = S5P_CLK_DIV4, .shift = 20, .size = 4 },
--	}, {
--		.clk	= {
- 			.name		= "sclk_lcd",
- 			.id		= -1,
- 			.ctrlbit	= (1 << 0),
-@@ -1179,6 +1182,9 @@ static struct clksrc_clk *sysclks[] = {
- 	&clk_div_pclkd1,
- 	&clk_div_cam,
- 	&clk_div_hdmi,
-+	&clk_sclk_audio0,
-+	&clk_sclk_audio1,
-+	&clk_sclk_audio2,
- };
- 
- void __init_or_cpufreq s5pc100_setup_clocks(void)
--- 
-1.6.2.5
+> or we don't know what they actually do.
+
+Where "we" = "generic software like PA".  Non-standard controls can be
+controlled only by hardware-specific tools or by the user.
+
+
+Regards,
+Clemens
