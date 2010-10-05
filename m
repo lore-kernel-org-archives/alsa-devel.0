@@ -1,59 +1,77 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH 10/10] ASoC: SAMSUNG: Add Machine driver
- for S/PDIF PCM audio
-Date: Mon, 4 Oct 2010 21:43:05 -0700
-Message-ID: <20101005044304.GA26509@opensource.wolfsonmicro.com>
-References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
- <1286194583-19937-1-git-send-email-sw.youn@samsung.com>
- <20101004224159.GA4972@opensource.wolfsonmicro.com>
- <AANLkTi=FHGw+qzL507K546vr8zEZgXBP3Mk=O__Rpd4H@mail.gmail.com>
- <AANLkTincwL_nQAmu7Dcmht0FV43BiN7OoecE_60QJhS2@mail.gmail.com>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Re: asihpi: Control naming
+Date: Tue, 05 Oct 2010 18:10:27 +1300
+Message-ID: <4CAAB343.9040603@audioscience.com>
+References: <4CA4078E.6010601@audioscience.com> <s5h62xng4wm.wl%tiwai@suse.de>
+	<4CA4F1D8.50800@audioscience.com> <s5haamz9che.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <AANLkTincwL_nQAmu7Dcmht0FV43BiN7OoecE_60QJhS2@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: Seungwhan Youn <sw.youn@samsung.com>, alsa-devel@alsa-project.org, kgene.kim@samsung.com, jassi.brar@samsung.com, linux-samsung-soc@vger.kernel.org, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id BE784103815
+	for <alsa-devel@alsa-project.org>;
+	Tue,  5 Oct 2010 07:10:34 +0200 (CEST)
+Received: from [192.168.36.2]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp3.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0L9S00IJ3X1F9O00@smtp3.clear.net.nz> for
+	alsa-devel@alsa-project.org; Tue, 05 Oct 2010 18:10:28 +1300 (NZDT)
+In-reply-to: <s5haamz9che.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Eliot Blennerhassett <linux@audioscience.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 05, 2010 at 11:19:35AM +0900, Jassi Brar wrote:
-> On Tue, Oct 5, 2010 at 10:10 AM, Jassi Brar <jassisinghbrar@gmail.com> wrote:
-> > On Tue, Oct 5, 2010 at 7:42 AM, Mark Brown
+On 01/10/10 09:56, Takashi Iwai wrote:
 
-> >> I'd expect this to be with the other clock configuration code under
-> >> arch/arm, especially as it's involving the EPLL which can have fairly
-> >> wide usage - it seems better to make sure people working with other,
-> >> non-audio, bits of the system are aware of the EPLL usage.
+> So, you have matrix volumes.  We had discussions how to implement
+> the matrix volumes, and there is actually an infrastructure to
+> handle multi-dimension volume arrays.  But, no driver is using the
+> feature, IIRC...
 
-> > But that would have made us have EPLL manipulation in two places -
-> > one in arch/arm/mach/board-init and other in ASoC Machine driver because
-> > we would need to change the source clock's rate in runtime(using
-> > callback pointers
-> > for the purpose seemed too over the top).
-> > If ASoC doesn't change EPLL, it doesn't matter to other devices, if it
-> > does there
-> > is currently no means for other drivers to know about it. So, we might just
-> > as well move the EPLL related code to ASoC machine driver.
 
-The reason I'm concerned about this is that I've had actual problems
-with users of your out of tree BSPs getting confused by similar code
-there.  Thinking about it some more it's not so much the fact that
-the code is spread out as the fact that the the EPLL is so widely used
-within the system that having one driver change it can easily disrupt
-another subsystem in surprising ways.
+Further on the subject of playback vs capture vs other...
+Of course we do have controls that are obviously "Playback" or "Capture",
+however we also have controls that connect PCM out to PCM in i.e. both
+Playback and Capture are involved,
 
-Since the clock API currently doesn't have a good way of resolving this
-perhaps a config option or something which masks the EPLL behaviour
-controllable and leaves it alone by default?  That would show people how
-to use this chip feature without affecting the other subsystems so
-non-obviously.
+"PCM0 to PCM1 Playback Capture Volume"  .. nooo!
+"PCM0 to PCM1 Loop Volume"  ???
 
-> Btw, another important reason is that having EPLL manipulation in board-int
-> would result in code-duplication on other SMDK platforms as most have the
-> same clock routing options available in h/w and we want to use the same ASoC
-> machine driver for SoCs whenever possible.
+and others that connect linein to lineout ie. neither Capture or
+Playback involved.
 
-This doesn't seem such a big deal - you could create a shared file for
-the code under arch/arm.
+"LineIn2 to LineOut3 Volume"
+maybe "LineIn2 to LineOut3 Loop Volume" ?
+
+> 
+>> Also, on the input multiplexer (route?), the options are
+...
+>> I.e. the names match, rather than using indices in one place, and
+>> distinct names in another
+> 
+> One (known) remaining problem is the matching between an enum item
+> string to a control (or mixer) with an index number.  
+
+Exactly!
+
+> For example,
+> some HD-audio codecs have multiple mics, and a similar problem appears
+> there.
+> 
+> 
+> Takashi
+
+
+-- 
+Eliot Blennerhassett
+AudioScience Inc.
