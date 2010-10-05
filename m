@@ -1,21 +1,27 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: soc-cache: Add spi_write support for
- all I/O types
-Date: Tue, 05 Oct 2010 17:49:31 +0100
-Message-ID: <1286297371.3111.114.camel@odin>
-References: <1286187913-6600-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 10/10] ASoC: SAMSUNG: Add Machine driver
+ for S/PDIF PCM audio
+Date: Tue, 5 Oct 2010 09:54:28 -0700
+Message-ID: <20101005165427.GB20555@opensource.wolfsonmicro.com>
+References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
+	<1286194583-19937-1-git-send-email-sw.youn@samsung.com>
+	<20101004224159.GA4972@opensource.wolfsonmicro.com>
+	<AANLkTi=FHGw+qzL507K546vr8zEZgXBP3Mk=O__Rpd4H@mail.gmail.com>
+	<AANLkTincwL_nQAmu7Dcmht0FV43BiN7OoecE_60QJhS2@mail.gmail.com>
+	<20101005044304.GA26509@opensource.wolfsonmicro.com>
+	<AANLkTi=x_fi5HTBBmMUv8YTxSdbgcnJ=ZbacJQj6rcgf@mail.gmail.com>
+	<20101005055937.GA19989@opensource.wolfsonmicro.com>
+	<AANLkTimi1t5S2XWdUFzaPttD4Hywm0SLt5CvR1YnVOjj@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8BE2E10382D
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A27AC10381B
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Oct 2010 18:49:33 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so2611005ewy.38
-	for <alsa-devel@alsa-project.org>; Tue, 05 Oct 2010 09:49:33 -0700 (PDT)
-In-Reply-To: <1286187913-6600-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	Tue,  5 Oct 2010 18:54:17 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTimi1t5S2XWdUFzaPttD4Hywm0SLt5CvR1YnVOjj@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,18 +31,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
+To: Jassi Brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, jassi.brar@samsung.com, kgene.kim@samsung.com, ben-linux@fluff.org, lrg@slimlogic.co.uk, linux-arm-kernel@lists.infradead.org, Seungwhan Youn <sw.youn@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-10-04 at 11:25 +0100, Dimitris Papastamos wrote:
-> Ensure that all drivers that use SPI and I2C will work properly
-> by providing SPI write functions for all different I/O types.
-> 
-> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-> ---
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+On Tue, Oct 05, 2010 at 04:09:47PM +0900, Jassi Brar wrote:
+> On Tue, Oct 5, 2010 at 2:59 PM, Mark Brown
+
+> > Well, there's two approaches the driver can take: one is to change the
+> > EPLL to deliver the clock rates which allow maximum flexibility, the
+> > other is to constrain the clock rates offered to applications based on
+> > the frequencies that can be generated from the current EPLL setup.
+
+> For SMDKs(our reference platform) I would like to change EPLL in order
+> to be able to verify accuracy and provide all capabilities of the controllers.
+
+That's why I'm saying provide an option to turn this behaviour on - I
+agree that it's useful to be able to show the feature, I just think it's
+going to catch users out if they're not warned that it's happening
+somehow.
+
+> >> (our priority is accuracy of each IP's functioning rather than having
+> >> all parts of
+> >> SMDK playing nice with each other on such h/w design issues)
+
+> > That'd be the problem, kind of - it does mean people can get burned when
+> > they pick up the BSP code and use it as a reference for their systems.
+
+> I expect people to replace/modify/inspect board specific code before they
+> run the BSP on their systems. IMO reference platforms are not good for
+> integrated-testing.
+
+To be fair the users doing this the individual drivers do look OK by
+themselves - there's only a problem when it comes to system integration
+and that's not going to be obvious unless someone has reviewed the
+drivers while understanding the clock tree for the chip as a whole.
