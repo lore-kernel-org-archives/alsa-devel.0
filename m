@@ -1,16 +1,23 @@
-From: Luke Yelavich <themuso@ubuntu.com>
-Subject: [PATCH] ALSA: hda - Add a quirk for MacBookPro 7,
-	1 with a CS4206 codec
-Date: Tue,  5 Oct 2010 12:08:17 +1100
-Message-ID: <1286240897-3969-1-git-send-email-themuso@ubuntu.com>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH 10/10] ASoC: SAMSUNG: Add Machine driver
+ for S/PDIF PCM audio
+Date: Tue, 5 Oct 2010 10:10:55 +0900
+Message-ID: <AANLkTi=FHGw+qzL507K546vr8zEZgXBP3Mk=O__Rpd4H@mail.gmail.com>
+References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
+	<1286194583-19937-1-git-send-email-sw.youn@samsung.com>
+	<20101004224159.GA4972@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nskntmtas03p.mx.bigpond.com (nskntmtas03p.mx.bigpond.com
-	[61.9.168.143]) by alsa0.perex.cz (Postfix) with ESMTP id ABCB4103822
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8ADFF103900
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Oct 2010 03:08:23 +0200 (CEST)
+	Tue,  5 Oct 2010 03:10:55 +0200 (CEST)
+Received: by bwz13 with SMTP id 13so4864075bwz.38
+	for <alsa-devel@alsa-project.org>; Mon, 04 Oct 2010 18:10:55 -0700 (PDT)
+In-Reply-To: <20101004224159.GA4972@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,33 +27,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: stable@kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, jassi.brar@samsung.com, kgene.kim@samsung.com, ben-linux@fluff.org, lrg@slimlogic.co.uk, linux-arm-kernel@lists.infradead.org, Seungwhan Youn <sw.youn@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Luke Yelavich <luke.yelavich@canonical.com>
+On Tue, Oct 5, 2010 at 7:42 AM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Mon, Oct 04, 2010 at 09:16:23PM +0900, Seungwhan Youn wrote:
+>
+>> +/* Audio clock settings are belonged to board specific part. Every
+>> + * board can set audio source clock setting which is matched with H/W
+>> + * like this function-'set_audio_clock_heirachy'.
+>> + */
+>> +static int set_audio_clock_heirachy(struct platform_device *pdev)
+>> +{
+>
+> I'd expect this to be with the other clock configuration code under
+> arch/arm, especially as it's involving the EPLL which can have fairly
+> wide usage - it seems better to make sure people working with other,
+> non-audio, bits of the system are aware of the EPLL usage.
 
-BugLink: https://bugs.launchpad.net/bugs/647389
-
-Add an SSID for MacBookPro 7,1 (10de,cb89) to use CS420X_MBP55.
-
-Cc: stable@kernel.org
-Signed-off-by: Luke Yelavich <luke.yelavich@canonical.com>
----
- sound/pci/hda/patch_cirrus.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
-index 5c00106..d9a3dbc 100644
---- a/sound/pci/hda/patch_cirrus.c
-+++ b/sound/pci/hda/patch_cirrus.c
-@@ -1140,6 +1140,7 @@ static const char *cs420x_models[CS420X_MODELS] = {
- static struct snd_pci_quirk cs420x_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x10de, 0x0ac0, "MacBookPro 5,3", CS420X_MBP53),
- 	SND_PCI_QUIRK(0x10de, 0xcb79, "MacBookPro 5,5", CS420X_MBP55),
-+	SND_PCI_QUIRK(0x10de, 0xcb89, "MacBookPro 7,1", CS420X_MBP55),
- 	SND_PCI_QUIRK(0x8086, 0x7270, "IMac 27 Inch", CS420X_IMAC27),
- 	{} /* terminator */
- };
--- 
-1.7.1
+Please let me explain on Claude's behalf.
+That is the first option that crossed my mind as well.
+But that would have made us have EPLL manipulation in two places -
+one in arch/arm/mach/board-init and other in ASoC Machine driver because
+we would need to change the source clock's rate in runtime(using
+callback pointers
+for the purpose seemed too over the top).
+If ASoC doesn't change EPLL, it doesn't matter to other devices, if it
+does there
+is currently no means for other drivers to know about it. So, we might just
+as well move the EPLL related code to ASoC machine driver.
