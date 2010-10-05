@@ -1,28 +1,19 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 10/10] ASoC: SAMSUNG: Add Machine driver
- for S/PDIF PCM audio
-Date: Tue, 5 Oct 2010 16:09:47 +0900
-Message-ID: <AANLkTimi1t5S2XWdUFzaPttD4Hywm0SLt5CvR1YnVOjj@mail.gmail.com>
-References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
-	<1286194583-19937-1-git-send-email-sw.youn@samsung.com>
-	<20101004224159.GA4972@opensource.wolfsonmicro.com>
-	<AANLkTi=FHGw+qzL507K546vr8zEZgXBP3Mk=O__Rpd4H@mail.gmail.com>
-	<AANLkTincwL_nQAmu7Dcmht0FV43BiN7OoecE_60QJhS2@mail.gmail.com>
-	<20101005044304.GA26509@opensource.wolfsonmicro.com>
-	<AANLkTi=x_fi5HTBBmMUv8YTxSdbgcnJ=ZbacJQj6rcgf@mail.gmail.com>
-	<20101005055937.GA19989@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Need expert's advice - Fast Track Ultra (8R)
+ dropping samples
+Date: Tue, 05 Oct 2010 09:21:54 +0200
+Message-ID: <4CAAD212.9090805@ladisch.de>
+References: <4C9DC7A1.8050001@showlabor.de> <4CA5BF35.2030108@showlabor.de>
+	<4CA60C5B.6010809@ladisch.de> <4CA86E1A.30405@showlabor.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id BD0E010390F
+Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 8CD83103911
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Oct 2010 09:09:47 +0200 (CEST)
-Received: by bwz13 with SMTP id 13so4997847bwz.38
-	for <alsa-devel@alsa-project.org>; Tue, 05 Oct 2010 00:09:47 -0700 (PDT)
-In-Reply-To: <20101005055937.GA19989@opensource.wolfsonmicro.com>
+	Tue,  5 Oct 2010 09:21:12 +0200 (CEST)
+In-Reply-To: <4CA86E1A.30405@showlabor.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,53 +23,310 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, jassi.brar@samsung.com, kgene.kim@samsung.com, ben-linux@fluff.org, lrg@slimlogic.co.uk, linux-arm-kernel@lists.infradead.org, Seungwhan Youn <sw.youn@samsung.com>
+To: Felix Homann <linuxaudio@showlabor.de>, Alex <lee188@singnet.com.sg>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBPY3QgNSwgMjAxMCBhdCAyOjU5IFBNLCBNYXJrIEJyb3duCjxicm9vbmllQG9wZW5z
-b3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gVHVlLCBPY3QgMDUsIDIwMTAgYXQg
-MDI6Mzk6MDBQTSArMDkwMCwgSmFzc2kgQnJhciB3cm90ZToKPgo+PiBZZXMgd2UgY2FuIGhhdmUg
-YSBrY29uZmlnIGVudHJ5IGZvciAnQ29udHJvbGxhYmxlIEVQTEwnIGJ1dCB0aGF0IHNlZW1zCj4+
-IG9ydGhvZ29uYWwgdG8gQVNvQyBiZWNhdXNlLCBmb3IgU01ES3MsIHdlIGNob29zZSB0byBwcm9k
-dWNlCj4+IGFjY3VyYXRlIHNpZ25hbHMgaGVuY2UgbmVlZCB0byBtYW5pcHVsYXRlIEVQTEwuIFRo
-ZSBvbmx5IHBvaW50IGlzCj4+IHdoZXJlIHRvIGRvIGl0Lgo+Cj4gV2VsbCwgdGhlcmUncyB0d28g
-YXBwcm9hY2hlcyB0aGUgZHJpdmVyIGNhbiB0YWtlOiBvbmUgaXMgdG8gY2hhbmdlIHRoZQo+IEVQ
-TEwgdG8gZGVsaXZlciB0aGUgY2xvY2sgcmF0ZXMgd2hpY2ggYWxsb3cgbWF4aW11bSBmbGV4aWJp
-bGl0eSwgdGhlCj4gb3RoZXIgaXMgdG8gY29uc3RyYWluIHRoZSBjbG9jayByYXRlcyBvZmZlcmVk
-IHRvIGFwcGxpY2F0aW9ucyBiYXNlZCBvbgo+IHRoZSBmcmVxdWVuY2llcyB0aGF0IGNhbiBiZSBn
-ZW5lcmF0ZWQgZnJvbSB0aGUgY3VycmVudCBFUExMIHNldHVwLgpGb3IgU01ES3Mob3VyIHJlZmVy
-ZW5jZSBwbGF0Zm9ybSkgSSB3b3VsZCBsaWtlIHRvIGNoYW5nZSBFUExMIGluIG9yZGVyCnRvIGJl
-IGFibGUgdG8gdmVyaWZ5IGFjY3VyYWN5IGFuZCBwcm92aWRlIGFsbCBjYXBhYmlsaXRpZXMgb2Yg
-dGhlIGNvbnRyb2xsZXJzLgpGb3IgYSBmaW5hbCBwcm9kdWN0LCBpdCB3b3VsZCBtYWtlIHNlbnNl
-IHRvIGZpeCB0aGUgRVBMTCB0byBvbmUgb3B0aW1hbCB2YWx1ZQphY2NvcmRpbmcgdG8gdGhlIHR5
-cGUgb2YgaC93IGFuZCBzL3cgY29tcG9uZW50cyhleCBQQSBjYW4gYmUgY29uZmlndXJlZAp0byA0
-OEtIeiBhZnRlciBtYWtpbmcgc3VyZSBFUExMIGNhbiBhbHNvIGJlIHVzZWQgdG8gZ2VuZXJhdGUg
-c3VpdGFibGUKY2xvY2tzIGZvciB0aGUgU1BJIGRldmljZXMgb24gYm9hcmQpCgo+PiAob3VyIHBy
-aW9yaXR5IGlzIGFjY3VyYWN5IG9mIGVhY2ggSVAncyBmdW5jdGlvbmluZyByYXRoZXIgdGhhbiBo
-YXZpbmcKPj4gYWxsIHBhcnRzIG9mCj4+IFNNREsgcGxheWluZyBuaWNlIHdpdGggZWFjaCBvdGhl
-ciBvbiBzdWNoIGgvdyBkZXNpZ24gaXNzdWVzKQo+Cj4gVGhhdCdkIGJlIHRoZSBwcm9ibGVtLCBr
-aW5kIG9mIC0gaXQgZG9lcyBtZWFuIHBlb3BsZSBjYW4gZ2V0IGJ1cm5lZCB3aGVuCj4gdGhleSBw
-aWNrIHVwIHRoZSBCU1AgY29kZSBhbmQgdXNlIGl0IGFzIGEgcmVmZXJlbmNlIGZvciB0aGVpciBz
-eXN0ZW1zLgpJIGV4cGVjdCBwZW9wbGUgdG8gcmVwbGFjZS9tb2RpZnkvaW5zcGVjdCBib2FyZCBz
-cGVjaWZpYyBjb2RlIGJlZm9yZSB0aGV5CnJ1biB0aGUgQlNQIG9uIHRoZWlyIHN5c3RlbXMuIElN
-TyByZWZlcmVuY2UgcGxhdGZvcm1zIGFyZSBub3QgZ29vZCBmb3IKaW50ZWdyYXRlZC10ZXN0aW5n
-LgpNZWFud2hpbGUsIHdlIHNob3VsZCBtYWtlIHN1cmUgdGhlIFNvQyBzcGVjaWZpYyBzdHVmZiBz
-dXBwb3J0cyBhbmQgaXMKdGVzdGVkIHdpdGgKYXMgbWFueSBjb25maWd1cmF0aW9ucyBhcyBhcmUg
-cG9zc2libGUgb24gU01ES3MuCgo+PiBJIGhvcGUgeW91IG5vdGljZWQgdGhhdCB0aGlzIGNsb2Nr
-IGhpZXJhcmNoeSBpcyBhIF92ZXJ5XyBib2FyZCBzcGVjaWZpYyB0aGluZy4KPj4gV2UgY2FuIGVh
-c2lseSBwbGFjZSBTb0NzJyBzaGFyZWQgc3R1ZmYgaW4gYXJjaC9hcm0vcGxhdC1zYW1zdW5nIChv
-ciBzaW1pbGFyKQo+PiBBbnkgc3VnZ2VzdGlvbnMsIHdoZXJlIGRvIHdlIHBsYWNlIGNvZGUgc2hh
-cmVkIGJ5IFNNREstYm9hcmRzID8KPgo+IHBsYXQtc2Ftc3VuZyB3b3VsZCBwcm9iYWJseSBiZSBm
-aW5lIGZvciB0aGF0IGFsc28gLSBjcmVhdGUgYSBmaWxlIGNhbGxlZAo+IGNvbW1vbi1zbWRrIG9y
-IHNvbWV0aGluZy4gwqBTb21lIG90aGVyIHRoaW5ncyBoYXZlIGdvbmUgZm9yIGEgcGxhdC1zbWRr
-Cj4gc3R5bGUgYXBwcm9hY2ggdG9vLCB0aG91Z2ggSSdtIG5vdCBzdXJlIGhvdyB0YXN0ZWZ1bCBJ
-IGZpbmQgdGhhdAo+IHBlcnNvbmFsbHkuCkV2ZW4gdGhvdWdoIEkgd291bGQgcGVyc29uYWxseSBs
-aWtlIHRvIGhhdmUgRVBMTCBjb250cm9sIGZvciBhIGRldmljZQppbiBtYWNoaW5lIHNwZWNpZmlj
-IG1hbm5lciBhcyBwYXJ0IG9mIGl0cyBkcml2ZXIsIEkgYWNjZXB0IHlvdXIgb3Bpbmlvbi4KCkNs
-YXVkZSwgbGV0IHVzIGNyZWF0ZSBvbmUgYXJjaC9hcm0vcGxhdC1zYW1zdW5nL3NtZGsuYyB0byBk
-byBjb21tb24Kc3R1ZmYgZm9yIFNNS0RzIGxpa2UgRVBMTCBjb250cm9sLiBXaGF0IGRvIHlvdSB0
-aGluayA/CgoKVGhhbmtzLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+Felix Homann wrote:
+> Am 01.10.2010 18:29, schrieb Clemens Ladisch:
+> > Add an else to the inner if in retire_playback_sync_urb, and log the
+> > value of f.
+> >
+> > The value received in this function should be the desired sample
+> > frequency, relative to the USB frame rate.  There are different formats
+> > (therefore we have three functions); maybe the FTU uses a fourth one.
+> 
+> Trying to log the value of f reveals that retire_playback_sync_urb()
+> doesn't seem to be called at all.
+
+The entire function or that part of the code?
+
+Anyway, please try the patch below, which makes the driver
+autodetect the feedback format.  (The actual format can be
+seen in /proc/asound/cardX/stream0 while running.)
+
+Alex, please test this with your widget.
+
+
+Regards,
+Clemens
+
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -62,12 +62,14 @@ struct snd_usb_substream {
+ 	unsigned int syncinterval;  /* P for adaptive mode, 0 otherwise */
+ 	unsigned int freqn;      /* nominal sampling rate in fs/fps in Q16.16 format */
+ 	unsigned int freqm;      /* momentary sampling rate in fs/fps in Q16.16 format */
++	int          freqshift;  /* how much to shift the feedback value to get Q16.16 */
+ 	unsigned int freqmax;    /* maximum sampling rate, used for buffer management */
+ 	unsigned int phase;      /* phase accumulator */
+ 	unsigned int maxpacksize;	/* max packet size in bytes */
+ 	unsigned int maxframesize;	/* max packet size in frames */
+ 	unsigned int curpacksize;	/* current packet size in bytes (for capture) */
+ 	unsigned int curframesize;	/* current packet size in frames (for capture) */
++	unsigned int syncmaxsize;	/* sync endpoint packet size */
+ 	unsigned int fill_max: 1;	/* fill max packet size always */
+ 	unsigned int txfr_quirk:1;	/* allow sub-frame alignment */
+ 	unsigned int fmt_type;		/* USB audio format type (1-3) */
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -237,6 +237,7 @@ static int set_format(struct snd_usb_sub
+ 	subs->datainterval = fmt->datainterval;
+ 	subs->syncpipe = subs->syncinterval = 0;
+ 	subs->maxpacksize = fmt->maxpacksize;
++	subs->syncmaxsize = 0;
+ 	subs->fill_max = 0;
+ 
+ 	/* we need a sync pipe in async OUT or adaptive IN mode */
+@@ -283,6 +284,7 @@ static int set_format(struct snd_usb_sub
+ 			subs->syncinterval = get_endpoint(alts, 1)->bInterval - 1;
+ 		else
+ 			subs->syncinterval = 3;
++		subs->syncmaxsize = le16_to_cpu(get_endpoint(alts, 1)->wMaxPacketSize);
+ 	}
+ 
+ 	/* always fill max packet size */
+--- a/sound/usb/proc.c
++++ b/sound/usb/proc.c
+@@ -132,6 +132,11 @@ static void proc_dump_substream_status(s
+ 			    ? get_full_speed_hz(subs->freqm)
+ 			    : get_high_speed_hz(subs->freqm),
+ 			    subs->freqm >> 16, subs->freqm & 0xffff);
++		if (subs->freqshift != INT_MIN)
++			snd_iprintf(buffer, "    Feedback Format = %d.%d\n",
++				    (subs->syncmaxsize > 3 ? 32 : 24)
++						- (16 - subs->freqshift),
++				    16 - subs->freqshift);
+ 	} else {
+ 		snd_iprintf(buffer, "  Status: Stop\n");
+ 	}
+--- a/sound/usb/urb.c
++++ b/sound/usb/urb.c
+@@ -225,6 +225,7 @@ int snd_usb_init_substream_urbs(struct s
+ 	else
+ 		subs->freqn = get_usb_high_speed_rate(rate);
+ 	subs->freqm = subs->freqn;
++	subs->freqshift = INT_MIN;
+ 	/* calculate max. frequency */
+ 	if (subs->maxpacksize) {
+ 		/* whatever fits into a max. size packet */
+@@ -513,11 +514,10 @@ static int retire_paused_capture_urb(str
+ 
+ 
+ /*
+- * prepare urb for full speed playback sync pipe
++ * prepare urb for playback sync pipe
+  *
+  * set up the offset and length to receive the current frequency.
+  */
+-
+ static int prepare_playback_sync_urb(struct snd_usb_substream *subs,
+ 				     struct snd_pcm_runtime *runtime,
+ 				     struct urb *urb)
+@@ -525,103 +525,78 @@ static int prepare_playback_sync_urb(str
+ 	struct snd_urb_ctx *ctx = urb->context;
+ 
+ 	urb->dev = ctx->subs->dev; /* we need to set this at each time */
+-	urb->iso_frame_desc[0].length = 3;
++	urb->iso_frame_desc[0].length = min(4u, ctx->subs->syncmaxsize);
+ 	urb->iso_frame_desc[0].offset = 0;
+ 	return 0;
+ }
+ 
+ /*
+- * prepare urb for high speed playback sync pipe
++ * process after playback sync complete
+  *
+- * set up the offset and length to receive the current frequency.
+- */
+-
+-static int prepare_playback_sync_urb_hs(struct snd_usb_substream *subs,
+-					struct snd_pcm_runtime *runtime,
+-					struct urb *urb)
+-{
+-	struct snd_urb_ctx *ctx = urb->context;
+-
+-	urb->dev = ctx->subs->dev; /* we need to set this at each time */
+-	urb->iso_frame_desc[0].length = 4;
+-	urb->iso_frame_desc[0].offset = 0;
+-	return 0;
+-}
+-
+-/*
+- * process after full speed playback sync complete
+- *
+- * retrieve the current 10.14 frequency from pipe, and set it.
+- * the value is referred in prepare_playback_urb().
++ * Full speed devices report feedback values in 10.14 format as samples per
++ * frame, high speed devices in 16.16 format as samples per microframe.
++ * Because the Audio Class 1 spec was written before USB 2.0, many high speed
++ * devices use a wrong interpretation, some others use an entirely different
++ * format.  Therefore, we cannot predict what format any particular device uses
++ * and must detect it automatically.
+  */
+ static int retire_playback_sync_urb(struct snd_usb_substream *subs,
+ 				    struct snd_pcm_runtime *runtime,
+ 				    struct urb *urb)
+ {
+ 	unsigned int f;
++	int shift;
+ 	unsigned long flags;
+ 
+-	if (urb->iso_frame_desc[0].status == 0 &&
+-	    urb->iso_frame_desc[0].actual_length == 3) {
+-		f = combine_triple((u8*)urb->transfer_buffer) << 2;
+-		if (f >= subs->freqn - subs->freqn / 8 && f <= subs->freqmax) {
+-			spin_lock_irqsave(&subs->lock, flags);
+-			subs->freqm = f;
+-			spin_unlock_irqrestore(&subs->lock, flags);
+-		}
+-	}
+-
+-	return 0;
+-}
+-
+-/*
+- * process after high speed playback sync complete
+- *
+- * retrieve the current 12.13 frequency from pipe, and set it.
+- * the value is referred in prepare_playback_urb().
+- */
+-static int retire_playback_sync_urb_hs(struct snd_usb_substream *subs,
+-				       struct snd_pcm_runtime *runtime,
+-				       struct urb *urb)
+-{
+-	unsigned int f;
+-	unsigned long flags;
+-
+-	if (urb->iso_frame_desc[0].status == 0 &&
+-	    urb->iso_frame_desc[0].actual_length == 4) {
+-		f = combine_quad((u8*)urb->transfer_buffer) & 0x0fffffff;
+-		if (f >= subs->freqn - subs->freqn / 8 && f <= subs->freqmax) {
+-			spin_lock_irqsave(&subs->lock, flags);
+-			subs->freqm = f;
+-			spin_unlock_irqrestore(&subs->lock, flags);
++	if (urb->iso_frame_desc[0].status != 0 ||
++	    urb->iso_frame_desc[0].actual_length < 3)
++		return 0;
++
++	f = le32_to_cpup((__force __le32 *)urb->transfer_buffer);
++	if (urb->iso_frame_desc[0].actual_length == 3)
++		f &= 0x00ffffff;
++	else
++		f &= 0x0fffffff;
++	if (f == 0)
++		return 0;
++
++	if (unlikely(subs->freqshift == INT_MIN)) {
++		/*
++		 * The first time we see a feedback value, determine its format
++		 * by shifting it left or right until it matches the nominal
++		 * frequency value.  This assumes that the feedback does not
++		 * differ from the nominal value more than +50 % or -25 %.
++		 */
++		shift = 0;
++		while (f < subs->freqn - subs->freqn / 4) {
++			f <<= 1;
++			shift++;
++		}
++		while (f > subs->freqn + subs->freqn / 2) {
++			f >>= 1;
++			shift--;
+ 		}
++		subs->freqshift = shift;
+ 	}
++	else if (subs->freqshift >= 0)
++		f <<= subs->freqshift;
++	else
++		f >>= -subs->freqshift;
+ 
+-	return 0;
+-}
+-
+-/*
+- * process after E-Mu 0202/0404/Tracker Pre high speed playback sync complete
+- *
+- * These devices return the number of samples per packet instead of the number
+- * of samples per microframe.
+- */
+-static int retire_playback_sync_urb_hs_emu(struct snd_usb_substream *subs,
+-					   struct snd_pcm_runtime *runtime,
+-					   struct urb *urb)
+-{
+-	unsigned int f;
+-	unsigned long flags;
+-
+-	if (urb->iso_frame_desc[0].status == 0 &&
+-	    urb->iso_frame_desc[0].actual_length == 4) {
+-		f = combine_quad((u8*)urb->transfer_buffer) & 0x0fffffff;
+-		f >>= subs->datainterval;
+-		if (f >= subs->freqn - subs->freqn / 8 && f <= subs->freqmax) {
+-			spin_lock_irqsave(&subs->lock, flags);
+-			subs->freqm = f;
+-			spin_unlock_irqrestore(&subs->lock, flags);
+-		}
++	if (likely(f >= subs->freqn - subs->freqn / 8 && f <= subs->freqmax)) {
++		/*
++		 * If the frequency looks valid, set it.
++		 * This value is referred to in prepare_playback_urb().
++		 */
++		spin_lock_irqsave(&subs->lock, flags);
++		subs->freqm = f;
++		spin_unlock_irqrestore(&subs->lock, flags);
++	} else {
++		/*
++		 * Out of range; maybe the shift value is wrong.
++		 * Reset it so that we autodetect again the next time.
++		 */
++		subs->freqshift = INT_MIN;
+ 	}
+ 
+ 	return 0;
+@@ -878,21 +853,6 @@ static struct snd_urb_ops audio_urb_ops[
+ 	},
+ };
+ 
+-static struct snd_urb_ops audio_urb_ops_high_speed[2] = {
+-	{
+-		.prepare =	prepare_nodata_playback_urb,
+-		.retire =	retire_playback_urb,
+-		.prepare_sync =	prepare_playback_sync_urb_hs,
+-		.retire_sync =	retire_playback_sync_urb_hs,
+-	},
+-	{
+-		.prepare =	prepare_capture_urb,
+-		.retire =	retire_capture_urb,
+-		.prepare_sync =	prepare_capture_sync_urb_hs,
+-		.retire_sync =	retire_capture_sync_urb,
+-	},
+-};
+-
+ /*
+  * initialize the substream instance.
+  */
+@@ -909,23 +869,9 @@ void snd_usb_init_substream(struct snd_u
+ 	subs->direction = stream;
+ 	subs->dev = as->chip->dev;
+ 	subs->txfr_quirk = as->chip->txfr_quirk;
+-	if (snd_usb_get_speed(subs->dev) == USB_SPEED_FULL) {
+-		subs->ops = audio_urb_ops[stream];
+-	} else {
+-		subs->ops = audio_urb_ops_high_speed[stream];
+-		switch (as->chip->usb_id) {
+-		case USB_ID(0x041e, 0x3f02): /* E-Mu 0202 USB */
+-		case USB_ID(0x041e, 0x3f04): /* E-Mu 0404 USB */
+-		case USB_ID(0x041e, 0x3f0a): /* E-Mu Tracker Pre */
+-			subs->ops.retire_sync = retire_playback_sync_urb_hs_emu;
+-			break;
+-		case USB_ID(0x0763, 0x2080): /* M-Audio Fast Track Ultra 8  */
+-		case USB_ID(0x0763, 0x2081): /* M-Audio Fast Track Ultra 8R */
+-			subs->ops.prepare_sync = prepare_playback_sync_urb;
+-			subs->ops.retire_sync = retire_playback_sync_urb;
+-			break;
+-		}
+-	}
++	subs->ops = audio_urb_ops[stream];
++	if (snd_usb_get_speed(subs->dev) >= USB_SPEED_HIGH)
++		subs->ops.prepare_sync = prepare_capture_sync_urb_hs;
+ 
+ 	snd_usb_set_pcm_ops(as->pcm, stream);
