@@ -1,51 +1,59 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 10/10] ASoC: SAMSUNG: Add Machine driver for
- S/PDIF PCM audio
-Date: Tue, 5 Oct 2010 11:19:35 +0900
-Message-ID: <AANLkTincwL_nQAmu7Dcmht0FV43BiN7OoecE_60QJhS2@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH 10/10] ASoC: SAMSUNG: Add Machine driver
+ for S/PDIF PCM audio
+Date: Mon, 4 Oct 2010 21:43:05 -0700
+Message-ID: <20101005044304.GA26509@opensource.wolfsonmicro.com>
 References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
-	<1286194583-19937-1-git-send-email-sw.youn@samsung.com>
-	<20101004224159.GA4972@opensource.wolfsonmicro.com>
-	<AANLkTi=FHGw+qzL507K546vr8zEZgXBP3Mk=O__Rpd4H@mail.gmail.com>
+ <1286194583-19937-1-git-send-email-sw.youn@samsung.com>
+ <20101004224159.GA4972@opensource.wolfsonmicro.com>
+ <AANLkTi=FHGw+qzL507K546vr8zEZgXBP3Mk=O__Rpd4H@mail.gmail.com>
+ <AANLkTincwL_nQAmu7Dcmht0FV43BiN7OoecE_60QJhS2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <AANLkTi=FHGw+qzL507K546vr8zEZgXBP3Mk=O__Rpd4H@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <AANLkTincwL_nQAmu7Dcmht0FV43BiN7OoecE_60QJhS2@mail.gmail.com>
 Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Jassi Brar <jassisinghbrar@gmail.com>
 Cc: Seungwhan Youn <sw.youn@samsung.com>, alsa-devel@alsa-project.org, kgene.kim@samsung.com, jassi.brar@samsung.com, linux-samsung-soc@vger.kernel.org, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 5, 2010 at 10:10 AM, Jassi Brar <jassisinghbrar@gmail.com> wrote:
-> On Tue, Oct 5, 2010 at 7:42 AM, Mark Brown
-> <broonie@opensource.wolfsonmicro.com> wrote:
->> On Mon, Oct 04, 2010 at 09:16:23PM +0900, Seungwhan Youn wrote:
->>
->>> +/* Audio clock settings are belonged to board specific part. Every
->>> + * board can set audio source clock setting which is matched with H/W
->>> + * like this function-'set_audio_clock_heirachy'.
->>> + */
->>> +static int set_audio_clock_heirachy(struct platform_device *pdev)
->>> +{
->>
->> I'd expect this to be with the other clock configuration code under
->> arch/arm, especially as it's involving the EPLL which can have fairly
->> wide usage - it seems better to make sure people working with other,
->> non-audio, bits of the system are aware of the EPLL usage.
->
-> Please let me explain on Claude's behalf.
-> That is the first option that crossed my mind as well.
-> But that would have made us have EPLL manipulation in two places -
-> one in arch/arm/mach/board-init and other in ASoC Machine driver because
-> we would need to change the source clock's rate in runtime(using
-> callback pointers
-> for the purpose seemed too over the top).
-> If ASoC doesn't change EPLL, it doesn't matter to other devices, if it
-> does there
-> is currently no means for other drivers to know about it. So, we might just
-> as well move the EPLL related code to ASoC machine driver.
+On Tue, Oct 05, 2010 at 11:19:35AM +0900, Jassi Brar wrote:
+> On Tue, Oct 5, 2010 at 10:10 AM, Jassi Brar <jassisinghbrar@gmail.com> wrote:
+> > On Tue, Oct 5, 2010 at 7:42 AM, Mark Brown
 
-Btw, another important reason is that having EPLL manipulation in board-int
-would result in code-duplication on other SMDK platforms as most have the
-same clock routing options available in h/w and we want to use the same ASoC
-machine driver for SoCs whenever possible.
+> >> I'd expect this to be with the other clock configuration code under
+> >> arch/arm, especially as it's involving the EPLL which can have fairly
+> >> wide usage - it seems better to make sure people working with other,
+> >> non-audio, bits of the system are aware of the EPLL usage.
+
+> > But that would have made us have EPLL manipulation in two places -
+> > one in arch/arm/mach/board-init and other in ASoC Machine driver because
+> > we would need to change the source clock's rate in runtime(using
+> > callback pointers
+> > for the purpose seemed too over the top).
+> > If ASoC doesn't change EPLL, it doesn't matter to other devices, if it
+> > does there
+> > is currently no means for other drivers to know about it. So, we might just
+> > as well move the EPLL related code to ASoC machine driver.
+
+The reason I'm concerned about this is that I've had actual problems
+with users of your out of tree BSPs getting confused by similar code
+there.  Thinking about it some more it's not so much the fact that
+the code is spread out as the fact that the the EPLL is so widely used
+within the system that having one driver change it can easily disrupt
+another subsystem in surprising ways.
+
+Since the clock API currently doesn't have a good way of resolving this
+perhaps a config option or something which masks the EPLL behaviour
+controllable and leaves it alone by default?  That would show people how
+to use this chip feature without affecting the other subsystems so
+non-obviously.
+
+> Btw, another important reason is that having EPLL manipulation in board-int
+> would result in code-duplication on other SMDK platforms as most have the
+> same clock routing options available in h/w and we want to use the same ASoC
+> machine driver for SoCs whenever possible.
+
+This doesn't seem such a big deal - you could create a shared file for
+the code under arch/arm.
