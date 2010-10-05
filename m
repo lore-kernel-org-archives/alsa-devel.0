@@ -1,77 +1,67 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: asihpi: Control naming
-Date: Tue, 05 Oct 2010 18:10:27 +1300
-Message-ID: <4CAAB343.9040603@audioscience.com>
-References: <4CA4078E.6010601@audioscience.com> <s5h62xng4wm.wl%tiwai@suse.de>
-	<4CA4F1D8.50800@audioscience.com> <s5haamz9che.wl%tiwai@suse.de>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 10/10] ASoC: SAMSUNG: Add Machine driver for
+ S/PDIF PCM audio
+Date: Tue, 5 Oct 2010 14:39:00 +0900
+Message-ID: <AANLkTi=x_fi5HTBBmMUv8YTxSdbgcnJ=ZbacJQj6rcgf@mail.gmail.com>
+References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
+	<1286194583-19937-1-git-send-email-sw.youn@samsung.com>
+	<20101004224159.GA4972@opensource.wolfsonmicro.com>
+	<AANLkTi=FHGw+qzL507K546vr8zEZgXBP3Mk=O__Rpd4H@mail.gmail.com>
+	<AANLkTincwL_nQAmu7Dcmht0FV43BiN7OoecE_60QJhS2@mail.gmail.com>
+	<20101005044304.GA26509@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id BE784103815
-	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Oct 2010 07:10:34 +0200 (CEST)
-Received: from [192.168.36.2]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp3.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0L9S00IJ3X1F9O00@smtp3.clear.net.nz> for
-	alsa-devel@alsa-project.org; Tue, 05 Oct 2010 18:10:28 +1300 (NZDT)
-In-reply-to: <s5haamz9che.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Eliot Blennerhassett <linux@audioscience.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20101005044304.GA26509@opensource.wolfsonmicro.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Seungwhan Youn <sw.youn@samsung.com>, alsa-devel@alsa-project.org, kgene.kim@samsung.com, jassi.brar@samsung.com, linux-samsung-soc@vger.kernel.org, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On 01/10/10 09:56, Takashi Iwai wrote:
+On Tue, Oct 5, 2010 at 1:43 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Tue, Oct 05, 2010 at 11:19:35AM +0900, Jassi Brar wrote:
+>> On Tue, Oct 5, 2010 at 10:10 AM, Jassi Brar <jassisinghbrar@gmail.co=
+m> wrote:
+>> > On Tue, Oct 5, 2010 at 7:42 AM, Mark Brown
 
-> So, you have matrix volumes.  We had discussions how to implement
-> the matrix volumes, and there is actually an infrastructure to
-> handle multi-dimension volume arrays.  But, no driver is using the
-> feature, IIRC...
-
-
-Further on the subject of playback vs capture vs other...
-Of course we do have controls that are obviously "Playback" or "Capture",
-however we also have controls that connect PCM out to PCM in i.e. both
-Playback and Capture are involved,
-
-"PCM0 to PCM1 Playback Capture Volume"  .. nooo!
-"PCM0 to PCM1 Loop Volume"  ???
-
-and others that connect linein to lineout ie. neither Capture or
-Playback involved.
-
-"LineIn2 to LineOut3 Volume"
-maybe "LineIn2 to LineOut3 Loop Volume" ?
-
-> 
->> Also, on the input multiplexer (route?), the options are
-...
->> I.e. the names match, rather than using indices in one place, and
->> distinct names in another
-> 
-> One (known) remaining problem is the matching between an enum item
-> string to a control (or mixer) with an index number.  
-
-Exactly!
-
-> For example,
-> some HD-audio codecs have multiple mics, and a similar problem appears
+> The reason I'm concerned about this is that I've had actual problems
+> with users of your out of tree BSPs getting confused by similar code
 > there.
-> 
-> 
-> Takashi
+Yes, past mistakes haunt us still.
 
+> Since the clock API currently doesn't have a good way of resolving th=
+is
+> perhaps a config option or something which masks the EPLL behaviour
+> controllable and leaves it alone by default? =C2=A0That would show pe=
+ople how
+> to use this chip feature without affecting the other subsystems so
+> non-obviously.
+Yes we can have a kconfig entry for 'Controllable EPLL' but that seems
+orthogonal to ASoC because, for SMDKs, we choose to produce
+accurate signals hence need to manipulate EPLL. The only point is
+where to do it.
+(our priority is accuracy of each IP's functioning rather than having
+all parts of
+SMDK playing nice with each other on such h/w design issues)
 
--- 
-Eliot Blennerhassett
-AudioScience Inc.
+>> Btw, another important reason is that having EPLL manipulation in bo=
+ard-int
+>> would result in code-duplication on other SMDK platforms as most hav=
+e the
+>> same clock routing options available in h/w and we want to use the s=
+ame ASoC
+>> machine driver for SoCs whenever possible.
+>
+> This doesn't seem such a big deal - you could create a shared file fo=
+r
+> the code under arch/arm.
+
+I hope you noticed that this clock hierarchy is a _very_ board specific=
+ thing.
+We can easily place SoCs' shared stuff in arch/arm/plat-samsung (or sim=
+ilar)
+Any suggestions, where do we place code shared by SMDK-boards ?
+
+Thanks
