@@ -1,23 +1,26 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 10/10] ASoC: SAMSUNG: Add Machine driver
- for S/PDIF PCM audio
-Date: Tue, 5 Oct 2010 10:10:55 +0900
-Message-ID: <AANLkTi=FHGw+qzL507K546vr8zEZgXBP3Mk=O__Rpd4H@mail.gmail.com>
-References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
-	<1286194583-19937-1-git-send-email-sw.youn@samsung.com>
-	<20101004224159.GA4972@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Alsamixertest
+Date: Tue, 5 Oct 2010 09:50:09 +0800
+Message-ID: <AANLkTikFPuevqTe7M=gVRfqhfB66-9Y473tNjohyJCdi@mail.gmail.com>
+References: <4C9F6409.6010400@aknet.ru> <20100927005858.GD21247@sirena.org.uk>
+	<4CA0221D.6030208@aknet.ru> <i7qltg$bph$1@dough.gmane.org>
+	<AANLkTi=9gcs0A6s55wSS-RP4NucvUqkxCoYynezdF+5g@mail.gmail.com>
+	<4CA306CB.1090305@canonical.com>
+	<AANLkTi=h+ZKXNdhmC1BtTbBaGF6_V+uD2ZO7sx4WMJMW@mail.gmail.com>
+	<4CA9877F.7060009@canonical.com> <4CA9C22A.2010104@ladisch.de>
+	<4CA9C7BE.7020804@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8ADFF103900
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 27D371038F2
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Oct 2010 03:10:55 +0200 (CEST)
-Received: by bwz13 with SMTP id 13so4864075bwz.38
-	for <alsa-devel@alsa-project.org>; Mon, 04 Oct 2010 18:10:55 -0700 (PDT)
-In-Reply-To: <20101004224159.GA4972@opensource.wolfsonmicro.com>
+	Tue,  5 Oct 2010 03:50:10 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so2378268ewy.38
+	for <alsa-devel@alsa-project.org>; Mon, 04 Oct 2010 18:50:09 -0700 (PDT)
+In-Reply-To: <4CA9C7BE.7020804@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,34 +30,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, jassi.brar@samsung.com, kgene.kim@samsung.com, ben-linux@fluff.org, lrg@slimlogic.co.uk, linux-arm-kernel@lists.infradead.org, Seungwhan Youn <sw.youn@samsung.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 5, 2010 at 7:42 AM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Mon, Oct 04, 2010 at 09:16:23PM +0900, Seungwhan Youn wrote:
->
->> +/* Audio clock settings are belonged to board specific part. Every
->> + * board can set audio source clock setting which is matched with H/W
->> + * like this function-'set_audio_clock_heirachy'.
->> + */
->> +static int set_audio_clock_heirachy(struct platform_device *pdev)
->> +{
->
-> I'd expect this to be with the other clock configuration code under
-> arch/arm, especially as it's involving the EPLL which can have fairly
-> wide usage - it seems better to make sure people working with other,
-> non-audio, bits of the system are aware of the EPLL usage.
+2010/10/4 David Henningsson <david.henningsson@canonical.com>
 
-Please let me explain on Claude's behalf.
-That is the first option that crossed my mind as well.
-But that would have made us have EPLL manipulation in two places -
-one in arch/arm/mach/board-init and other in ASoC Machine driver because
-we would need to change the source clock's rate in runtime(using
-callback pointers
-for the purpose seemed too over the top).
-If ASoC doesn't change EPLL, it doesn't matter to other devices, if it
-does there
-is currently no means for other drivers to know about it. So, we might just
-as well move the EPLL related code to ASoC machine driver.
+> On 2010-10-04 14:01, Clemens Ladisch wrote:
+> > David Henningsson wrote:
+> >> On 2010-10-02 04:11, Raymond Yau wrote:
+> >>> It seem that the program keep complain about those controls without dB
+> scale
+> >>> (e.g. AC97 3D Control - depth and rear depth , .) with the emulated
+> intel8x0
+> >>> driver  and no volume control with the emulated sb16 in virtualbox
+> >>
+> >> It's a righteous warning if you ask me - all volume controls should
+> >> provide dB information,
+> >
+> > But "3D Depth" and some other controls are not volume controls and are
+> > not measured in dB.
+> >
+> >> or we don't know what they actually do.
+> >
+> > Where "we" = "generic software like PA".  Non-standard controls can be
+> > controlled only by hardware-specific tools or by the user.
+>
+> Exactly, this is a test tool that checks whether the mixer control names
+> and dB information live up to PulseAudio's expectations. That's the
+> tool's purpose.
+>
+> Given some thought, perhaps the application warning should be removed.
+> It might be that it should only require dB information for the controls
+> it actually wants to test (i e Master, PCM etc)...what do you think?
+>
+> --
+> David Henningsson, Canonical Ltd.
+> http://launchpad.net/~diwic <http://launchpad.net/%7Ediwic>
+>
+
+But some drivers (e.g. ISA drivers ) does not provide dB info for "Master"
+and "Capture" volume control
+
+There are different model of sound cards using snd-sb16 driver
+
+SB16 support joint duplex , only 16 bit playback and 8 bit capture instead
+of 16bits playback and capture
+
+your runtest.sh use "-q" option and I had spend some time to discover the
+overrun occur during arecord with sb16 inside virtualbox
