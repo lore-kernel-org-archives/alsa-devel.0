@@ -1,19 +1,28 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: asihpi: Control naming
-Date: Tue, 05 Oct 2010 09:07:27 +0200
-Message-ID: <4CAACEAF.2070208@ladisch.de>
-References: <4CA4078E.6010601@audioscience.com>
-	<s5h62xng4wm.wl%tiwai@suse.de>	<4CA4F1D8.50800@audioscience.com>
-	<s5haamz9che.wl%tiwai@suse.de> <4CAAB343.9040603@audioscience.com>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH 10/10] ASoC: SAMSUNG: Add Machine driver
+ for S/PDIF PCM audio
+Date: Tue, 5 Oct 2010 16:09:47 +0900
+Message-ID: <AANLkTimi1t5S2XWdUFzaPttD4Hywm0SLt5CvR1YnVOjj@mail.gmail.com>
+References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
+	<1286194583-19937-1-git-send-email-sw.youn@samsung.com>
+	<20101004224159.GA4972@opensource.wolfsonmicro.com>
+	<AANLkTi=FHGw+qzL507K546vr8zEZgXBP3Mk=O__Rpd4H@mail.gmail.com>
+	<AANLkTincwL_nQAmu7Dcmht0FV43BiN7OoecE_60QJhS2@mail.gmail.com>
+	<20101005044304.GA26509@opensource.wolfsonmicro.com>
+	<AANLkTi=x_fi5HTBBmMUv8YTxSdbgcnJ=ZbacJQj6rcgf@mail.gmail.com>
+	<20101005055937.GA19989@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 719BB1038F7
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id BD0E010390F
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Oct 2010 09:07:00 +0200 (CEST)
-In-Reply-To: <4CAAB343.9040603@audioscience.com>
+	Tue,  5 Oct 2010 09:09:47 +0200 (CEST)
+Received: by bwz13 with SMTP id 13so4997847bwz.38
+	for <alsa-devel@alsa-project.org>; Tue, 05 Oct 2010 00:09:47 -0700 (PDT)
+In-Reply-To: <20101005055937.GA19989@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,38 +32,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eliot Blennerhassett <linux@audioscience.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, jassi.brar@samsung.com, kgene.kim@samsung.com, ben-linux@fluff.org, lrg@slimlogic.co.uk, linux-arm-kernel@lists.infradead.org, Seungwhan Youn <sw.youn@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Eliot Blennerhassett wrote:
-> Further on the subject of playback vs capture vs other...
-> Of course we do have controls that are obviously "Playback" or "Capture",
-> however we also have controls that connect PCM out to PCM in i.e. both
-> Playback and Capture are involved,
-> 
-> "PCM0 to PCM1 Playback Capture Volume"  .. nooo!
-> "PCM0 to PCM1 Loop Volume"  ???
-
-Capture controls affect audio data that is recorded by the computer.
-Playback controls affect audio data that comes out of the sound card.
-
-With this definition, these controls are clearly capture controls,
-e.g., "PCM0 to PCM1 Loopback Capture Volume".
-
-> and others that connect linein to lineout ie. neither Capture or
-> Playback involved.
-> 
-> "LineIn2 to LineOut3 Volume"
-> maybe "LineIn2 to LineOut3 Loop Volume" ?
-
-Monitoring controls like these are playback controls:
-"LineIn2 to LineOut3 Monitor Playback Volume"
-
-
-If your card has so many controls that you need a special mixer
-application, the exact control names don't matter anyway.
-
-
-Regards,
-Clemens
+T24gVHVlLCBPY3QgNSwgMjAxMCBhdCAyOjU5IFBNLCBNYXJrIEJyb3duCjxicm9vbmllQG9wZW5z
+b3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gVHVlLCBPY3QgMDUsIDIwMTAgYXQg
+MDI6Mzk6MDBQTSArMDkwMCwgSmFzc2kgQnJhciB3cm90ZToKPgo+PiBZZXMgd2UgY2FuIGhhdmUg
+YSBrY29uZmlnIGVudHJ5IGZvciAnQ29udHJvbGxhYmxlIEVQTEwnIGJ1dCB0aGF0IHNlZW1zCj4+
+IG9ydGhvZ29uYWwgdG8gQVNvQyBiZWNhdXNlLCBmb3IgU01ES3MsIHdlIGNob29zZSB0byBwcm9k
+dWNlCj4+IGFjY3VyYXRlIHNpZ25hbHMgaGVuY2UgbmVlZCB0byBtYW5pcHVsYXRlIEVQTEwuIFRo
+ZSBvbmx5IHBvaW50IGlzCj4+IHdoZXJlIHRvIGRvIGl0Lgo+Cj4gV2VsbCwgdGhlcmUncyB0d28g
+YXBwcm9hY2hlcyB0aGUgZHJpdmVyIGNhbiB0YWtlOiBvbmUgaXMgdG8gY2hhbmdlIHRoZQo+IEVQ
+TEwgdG8gZGVsaXZlciB0aGUgY2xvY2sgcmF0ZXMgd2hpY2ggYWxsb3cgbWF4aW11bSBmbGV4aWJp
+bGl0eSwgdGhlCj4gb3RoZXIgaXMgdG8gY29uc3RyYWluIHRoZSBjbG9jayByYXRlcyBvZmZlcmVk
+IHRvIGFwcGxpY2F0aW9ucyBiYXNlZCBvbgo+IHRoZSBmcmVxdWVuY2llcyB0aGF0IGNhbiBiZSBn
+ZW5lcmF0ZWQgZnJvbSB0aGUgY3VycmVudCBFUExMIHNldHVwLgpGb3IgU01ES3Mob3VyIHJlZmVy
+ZW5jZSBwbGF0Zm9ybSkgSSB3b3VsZCBsaWtlIHRvIGNoYW5nZSBFUExMIGluIG9yZGVyCnRvIGJl
+IGFibGUgdG8gdmVyaWZ5IGFjY3VyYWN5IGFuZCBwcm92aWRlIGFsbCBjYXBhYmlsaXRpZXMgb2Yg
+dGhlIGNvbnRyb2xsZXJzLgpGb3IgYSBmaW5hbCBwcm9kdWN0LCBpdCB3b3VsZCBtYWtlIHNlbnNl
+IHRvIGZpeCB0aGUgRVBMTCB0byBvbmUgb3B0aW1hbCB2YWx1ZQphY2NvcmRpbmcgdG8gdGhlIHR5
+cGUgb2YgaC93IGFuZCBzL3cgY29tcG9uZW50cyhleCBQQSBjYW4gYmUgY29uZmlndXJlZAp0byA0
+OEtIeiBhZnRlciBtYWtpbmcgc3VyZSBFUExMIGNhbiBhbHNvIGJlIHVzZWQgdG8gZ2VuZXJhdGUg
+c3VpdGFibGUKY2xvY2tzIGZvciB0aGUgU1BJIGRldmljZXMgb24gYm9hcmQpCgo+PiAob3VyIHBy
+aW9yaXR5IGlzIGFjY3VyYWN5IG9mIGVhY2ggSVAncyBmdW5jdGlvbmluZyByYXRoZXIgdGhhbiBo
+YXZpbmcKPj4gYWxsIHBhcnRzIG9mCj4+IFNNREsgcGxheWluZyBuaWNlIHdpdGggZWFjaCBvdGhl
+ciBvbiBzdWNoIGgvdyBkZXNpZ24gaXNzdWVzKQo+Cj4gVGhhdCdkIGJlIHRoZSBwcm9ibGVtLCBr
+aW5kIG9mIC0gaXQgZG9lcyBtZWFuIHBlb3BsZSBjYW4gZ2V0IGJ1cm5lZCB3aGVuCj4gdGhleSBw
+aWNrIHVwIHRoZSBCU1AgY29kZSBhbmQgdXNlIGl0IGFzIGEgcmVmZXJlbmNlIGZvciB0aGVpciBz
+eXN0ZW1zLgpJIGV4cGVjdCBwZW9wbGUgdG8gcmVwbGFjZS9tb2RpZnkvaW5zcGVjdCBib2FyZCBz
+cGVjaWZpYyBjb2RlIGJlZm9yZSB0aGV5CnJ1biB0aGUgQlNQIG9uIHRoZWlyIHN5c3RlbXMuIElN
+TyByZWZlcmVuY2UgcGxhdGZvcm1zIGFyZSBub3QgZ29vZCBmb3IKaW50ZWdyYXRlZC10ZXN0aW5n
+LgpNZWFud2hpbGUsIHdlIHNob3VsZCBtYWtlIHN1cmUgdGhlIFNvQyBzcGVjaWZpYyBzdHVmZiBz
+dXBwb3J0cyBhbmQgaXMKdGVzdGVkIHdpdGgKYXMgbWFueSBjb25maWd1cmF0aW9ucyBhcyBhcmUg
+cG9zc2libGUgb24gU01ES3MuCgo+PiBJIGhvcGUgeW91IG5vdGljZWQgdGhhdCB0aGlzIGNsb2Nr
+IGhpZXJhcmNoeSBpcyBhIF92ZXJ5XyBib2FyZCBzcGVjaWZpYyB0aGluZy4KPj4gV2UgY2FuIGVh
+c2lseSBwbGFjZSBTb0NzJyBzaGFyZWQgc3R1ZmYgaW4gYXJjaC9hcm0vcGxhdC1zYW1zdW5nIChv
+ciBzaW1pbGFyKQo+PiBBbnkgc3VnZ2VzdGlvbnMsIHdoZXJlIGRvIHdlIHBsYWNlIGNvZGUgc2hh
+cmVkIGJ5IFNNREstYm9hcmRzID8KPgo+IHBsYXQtc2Ftc3VuZyB3b3VsZCBwcm9iYWJseSBiZSBm
+aW5lIGZvciB0aGF0IGFsc28gLSBjcmVhdGUgYSBmaWxlIGNhbGxlZAo+IGNvbW1vbi1zbWRrIG9y
+IHNvbWV0aGluZy4gwqBTb21lIG90aGVyIHRoaW5ncyBoYXZlIGdvbmUgZm9yIGEgcGxhdC1zbWRr
+Cj4gc3R5bGUgYXBwcm9hY2ggdG9vLCB0aG91Z2ggSSdtIG5vdCBzdXJlIGhvdyB0YXN0ZWZ1bCBJ
+IGZpbmQgdGhhdAo+IHBlcnNvbmFsbHkuCkV2ZW4gdGhvdWdoIEkgd291bGQgcGVyc29uYWxseSBs
+aWtlIHRvIGhhdmUgRVBMTCBjb250cm9sIGZvciBhIGRldmljZQppbiBtYWNoaW5lIHNwZWNpZmlj
+IG1hbm5lciBhcyBwYXJ0IG9mIGl0cyBkcml2ZXIsIEkgYWNjZXB0IHlvdXIgb3Bpbmlvbi4KCkNs
+YXVkZSwgbGV0IHVzIGNyZWF0ZSBvbmUgYXJjaC9hcm0vcGxhdC1zYW1zdW5nL3NtZGsuYyB0byBk
+byBjb21tb24Kc3R1ZmYgZm9yIFNNS0RzIGxpa2UgRVBMTCBjb250cm9sLiBXaGF0IGRvIHlvdSB0
+aGluayA/CgoKVGhhbmtzLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
