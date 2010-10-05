@@ -1,22 +1,19 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [Alsa-user] Creative Sound Blaster X-Fi Titanium
- PCIe support
-Date: Tue, 05 Oct 2010 08:11:47 +0200
-Message-ID: <4CAAC1A3.9030500@ladisch.de>
-References: <AANLkTik5Xtk1SP72qOgVaAJfvytZE=Nz+ifo7VXcUcuJ@mail.gmail.com>	<4CA5894E.1030907@ladisch.de>
-	<m2lj6hx13x.fsf@getmail.no>	<20101001204054.28d16bd4@symphony.aura-online.co.uk>	<m2hbh5wsi8.fsf@getmail.no>
-	<4CA976B3.9090009@ladisch.de> <m2mxqtvq4h.fsf@getmail.no>
+Subject: Re: asihpi: Control naming
+Date: Tue, 05 Oct 2010 09:07:27 +0200
+Message-ID: <4CAACEAF.2070208@ladisch.de>
+References: <4CA4078E.6010601@audioscience.com>
+	<s5h62xng4wm.wl%tiwai@suse.de>	<4CA4F1D8.50800@audioscience.com>
+	<s5haamz9che.wl%tiwai@suse.de> <4CAAB343.9040603@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id A0D43103827
+Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 719BB1038F7
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Oct 2010 08:11:54 +0200 (CEST)
-Received: by wwi18 with SMTP id 18so320794wwi.2
-	for <alsa-devel@alsa-project.org>; Mon, 04 Oct 2010 23:11:54 -0700 (PDT)
-In-Reply-To: <m2mxqtvq4h.fsf@getmail.no>
+	Tue,  5 Oct 2010 09:07:00 +0200 (CEST)
+In-Reply-To: <4CAAB343.9040603@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,26 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Thor Kristoffersen <thorkr@gmail.com>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+To: Eliot Blennerhassett <linux@audioscience.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thor Kristoffersen wrote:
-> I did a bit of searching, and I found that
-> if I relax my requirements a bit to include PCI cards, there is another
-> card called HT-Omega Claro that would seemingly fit the bill, and it's
-> significantly cheaper than the Xonar.  Do you (or anyone else) happen to
-> know if this is also fully supported by ALSA?
+Eliot Blennerhassett wrote:
+> Further on the subject of playback vs capture vs other...
+> Of course we do have controls that are obviously "Playback" or "Capture",
+> however we also have controls that connect PCM out to PCM in i.e. both
+> Playback and Capture are involved,
+> 
+> "PCM0 to PCM1 Playback Capture Volume"  .. nooo!
+> "PCM0 to PCM1 Loop Volume"  ???
 
-http://www.alsa-project.org/main/index.php/Matrix:Vendor-HT_Omega
+Capture controls affect audio data that is recorded by the computer.
+Playback controls affect audio data that comes out of the sound card.
 
-> By the way, does the volume control work on the digital output stream on
-> these cards?
+With this definition, these controls are clearly capture controls,
+e.g., "PCM0 to PCM1 Loopback Capture Volume".
 
-No; on most cards (including these ones), the digital output does not
-have a volume control because this would reduce the precision of the
-samples; the volume is supposed to be controlled by whichever device
-does the digital-to-analog conversion.
+> and others that connect linein to lineout ie. neither Capture or
+> Playback involved.
+> 
+> "LineIn2 to LineOut3 Volume"
+> maybe "LineIn2 to LineOut3 Loop Volume" ?
+
+Monitoring controls like these are playback controls:
+"LineIn2 to LineOut3 Monitor Playback Volume"
+
+
+If your card has so many controls that you need a special mixer
+application, the exact control names don't matter anyway.
 
 
 Regards,
