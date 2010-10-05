@@ -1,30 +1,39 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 5/10] ARM: S5PV210: Add SCLK_SPDIF clock
-Date: Tue, 5 Oct 2010 09:30:27 +0900
-Message-ID: <AANLkTinz98X+L9-VeaL9nkUi1LKPtajibR3=d9ipXmns@mail.gmail.com>
-References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
-	<1286193154-17201-1-git-send-email-sw.youn@samsung.com>
-	<20101004183903.GF2835@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/1] ALSA: ASoc: DaVinci Delay start of ASP
+	to trigger
+Date: Tue, 5 Oct 2010 01:55:20 +0100
+Message-ID: <20101005005519.GB20773@sirena.org.uk>
+References: <1286142259-6625-1-git-send-email-martin@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20101004183903.GF2835@opensource.wolfsonmicro.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Seungwhan Youn <sw.youn@samsung.com>, alsa-devel@alsa-project.org, kgene.kim@samsung.com, jassi.brar@samsung.com, linux-samsung-soc@vger.kernel.org, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 285DF103810
+	for <alsa-devel@alsa-project.org>;
+	Tue,  5 Oct 2010 02:55:23 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1286142259-6625-1-git-send-email-martin@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: martin@ti.com
+Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 5, 2010 at 3:39 AM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Mon, Oct 04, 2010 at 08:52:34PM +0900, Seungwhan Youn wrote:
->> This patch add SCLK_SPDIF clock to support source clock of S/PDIF
->> on S5PV210.
->>
->> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
->
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
->
-> but this looks like an example of where the get and set rate operations
-> could readily be shared as mentioned in reply to the previous patch.
+On Sun, Oct 03, 2010 at 04:44:19PM -0500, martin@ti.com wrote:
+> From: Troy Kisky <troy.kisky@boundarydevices.com>
+> 
+> Since only 4 mainline ASoC codecs support the trigger
+> callback, we cannot rely upon them stopping the frame clock
+> if they are master and must assume it is running even if the
+> sound is paused. Thus we cannot start the ASP until the trigger
+> method.
 
-Please see this in context of my reply to your previous comment.
+Applied, thanks.
