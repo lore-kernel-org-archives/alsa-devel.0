@@ -1,80 +1,96 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Alsamixertest
-Date: Tue, 5 Oct 2010 09:50:09 +0800
-Message-ID: <AANLkTikFPuevqTe7M=gVRfqhfB66-9Y473tNjohyJCdi@mail.gmail.com>
-References: <4C9F6409.6010400@aknet.ru> <20100927005858.GD21247@sirena.org.uk>
-	<4CA0221D.6030208@aknet.ru> <i7qltg$bph$1@dough.gmane.org>
-	<AANLkTi=9gcs0A6s55wSS-RP4NucvUqkxCoYynezdF+5g@mail.gmail.com>
-	<4CA306CB.1090305@canonical.com>
-	<AANLkTi=h+ZKXNdhmC1BtTbBaGF6_V+uD2ZO7sx4WMJMW@mail.gmail.com>
-	<4CA9877F.7060009@canonical.com> <4CA9C22A.2010104@ladisch.de>
-	<4CA9C7BE.7020804@canonical.com>
+From: Seungwhan Youn <claude.youn@gmail.com>
+Subject: Re: [PATCH 9/10] ASoC: SAMSUNG: Add S/PDIF CPU driver
+Date: Tue, 5 Oct 2010 11:08:21 +0900
+Message-ID: <AANLkTimfgdwhBi1grDpKT0XrKbL7Xc0L=SK=-X3rh1pa@mail.gmail.com>
+References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
+	<1286194397-19904-1-git-send-email-sw.youn@samsung.com>
+	<20101004220207.GA3545@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 27D371038F2
-	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Oct 2010 03:50:10 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so2378268ewy.38
-	for <alsa-devel@alsa-project.org>; Mon, 04 Oct 2010 18:50:09 -0700 (PDT)
-In-Reply-To: <4CA9C7BE.7020804@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20101004220207.GA3545@opensource.wolfsonmicro.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Seungwhan Youn <sw.youn@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, ben-linux@fluff.org, kgene.kim@samsung.com, lrg@slimlogic.co.uk, jassi.brar@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-2010/10/4 David Henningsson <david.henningsson@canonical.com>
+Hi,
 
-> On 2010-10-04 14:01, Clemens Ladisch wrote:
-> > David Henningsson wrote:
-> >> On 2010-10-02 04:11, Raymond Yau wrote:
-> >>> It seem that the program keep complain about those controls without dB
-> scale
-> >>> (e.g. AC97 3D Control - depth and rear depth , .) with the emulated
-> intel8x0
-> >>> driver  and no volume control with the emulated sb16 in virtualbox
-> >>
-> >> It's a righteous warning if you ask me - all volume controls should
-> >> provide dB information,
-> >
-> > But "3D Depth" and some other controls are not volume controls and are
-> > not measured in dB.
-> >
-> >> or we don't know what they actually do.
-> >
-> > Where "we" = "generic software like PA".  Non-standard controls can be
-> > controlled only by hardware-specific tools or by the user.
+On Tue, Oct 5, 2010 at 7:02 AM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Mon, Oct 04, 2010 at 09:13:17PM +0900, Seungwhan Youn wrote:
 >
-> Exactly, this is a test tool that checks whether the mixer control names
-> and dB information live up to PulseAudio's expectations. That's the
-> tool's purpose.
+>> +static int spdif_set_sysclk(struct snd_soc_dai *cpu_dai,
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 int clk_id, unsigned int freq, int dir)
+>> +{
 >
-> Given some thought, perhaps the application warning should be removed.
-> It might be that it should only require dB information for the controls
-> it actually wants to test (i e Master, PCM etc)...what do you think?
+> If you save the clock rate here...
 >
-> --
-> David Henningsson, Canonical Ltd.
-> http://launchpad.net/~diwic <http://launchpad.net/%7Ediwic>
+>> + =C2=A0 =C2=A0 case SND_SOC_SPDIF_MAIN_AUDIO_CLK:
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 switch (div) {
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 case 256:
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 con |=3D CON_MCLKDIV_256FS;
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 break;
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 case 384:
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 con |=3D CON_MCLKDIV_384FS;
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 break;
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 case 512:
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 con |=3D CON_MCLKDIV_512FS;
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 break;
 >
+> ...then you can calculate this dynamically at runtime in hw_params wh=
+ich
+> makes life easier for users.
 
-But some drivers (e.g. ISA drivers ) does not provide dB info for "Master"
-and "Capture" volume control
+Yes, right. I'll fix this and resend a patch.
+Actually the first time, I implemented like your opinion but I and
+Jassi were afraid about S/PDIF use external clock rate.
+But it's no matter that machine driver can give external clock rate als=
+o.
 
-There are different model of sound cards using snd-sb16 driver
+>
+>> +/**
+>> + * struct samsung_spdif_info - Samsung S/PDIF Controller informatio=
+n
+>> + * @lock: Spin lock for S/PDIF.
+>> + * @dev: The parent device passed to use from the probe.
+>> + * @regs: The pointer to the device register block.
+>> + * @pclk: The peri-clock pointer for spdif master operation.
+>> + * @sclk: The source clock pointer for making sync signals.
+>> + * @save_clkcon: Backup clkcon reg. in suspend.
+>> + * @save_con: Backup con reg. in suspend.
+>> + * @save_cstas: Backup cstas reg. in suspend.
+>> + * @dma_playback: DMA information for playback channel.
+>> + */
+>> +struct samsung_spdif_info {
+>> + =C2=A0 =C2=A0 spinlock_t =C2=A0 =C2=A0 =C2=A0lock;
+>
+> No need to have this in the headers.
+>
+>> +/* Registers */
+>> +#define CLKCON =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0x00
+>> +#define CON =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x04
+>> +#define BSTAS =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00x08
+>
+> These should all be namespaced or in the driver file to avoid colliso=
+ons
+> with other things - even if only used in this driver things like CON =
+are
+> risky for collisions with normal kernel headers the driver needs.
 
-SB16 support joint duplex , only 16 bit playback and 8 bit capture instead
-of 16bits playback and capture
+Okay, I'll move these into driver file(and remove header file), and
+resend patch few days later after listen other people's opinions.
 
-your runtest.sh use "-q" option and I had spend some time to discover the
-overrun occur during arecord with sb16 inside virtualbox
+Thanks,
+Claude
