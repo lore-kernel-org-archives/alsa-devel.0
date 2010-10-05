@@ -1,18 +1,21 @@
-From: Greg KH <greg@kroah.com>
-Subject: Re: Staging: sst: add Intel SST audio driver
-Date: Tue, 5 Oct 2010 08:48:56 -0700
-Message-ID: <20101005154856.GA24478@kroah.com>
-References: <20100930162123.21348.86482.stgit@localhost.localdomain>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: WM8804: Retrieve the device revision
+ and print it
+Date: Tue, 05 Oct 2010 17:48:48 +0100
+Message-ID: <1286297328.3111.113.camel@odin>
+References: <1286206139-8851-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from coco.kroah.org (kroah.org [198.145.64.141])
-	by alsa0.perex.cz (Postfix) with ESMTP id 92A0724525
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id EE4D710381A
 	for <alsa-devel@alsa-project.org>;
-	Tue,  5 Oct 2010 18:10:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100930162123.21348.86482.stgit@localhost.localdomain>
+	Tue,  5 Oct 2010 18:48:50 +0200 (CEST)
+Received: by eye27 with SMTP id 27so2605542eye.38
+	for <alsa-devel@alsa-project.org>; Tue, 05 Oct 2010 09:48:50 -0700 (PDT)
+In-Reply-To: <1286206139-8851-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,50 +25,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alan Cox <alan@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 30, 2010 at 05:21:32PM +0100, Alan Cox wrote:
-> From: Vinod Koul <vinod.koul@intel.com>
+On Mon, 2010-10-04 at 16:28 +0100, Dimitris Papastamos wrote:
+> Be verbose and print out the device revision.
 > 
-> This is the Intel SST audio driver.
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/wm8804.c |    8 ++++++++
+>  1 files changed, 8 insertions(+), 0 deletions(-)
 > 
-> As compared to the previous versions it has all the printks and other stuff
-> noted cleaned up and more hardware support. The Aava support is disabled in
-> this patch (is_aava resolves to 0) because the Aava board detection logic
-> is not yet upstream.
-> 
-> The driver itself is a combination of a traditional ALSA driver and a
-> hardware assisted offload driver which can play audio while the processor
-> is asleep but which can't do all the more interactive stuff.
-> 
-> In the general case most software would use the ALSA interface, but the
-> other interface is needed for certain classes of use such as music playback
-> on highly power consumption sensitive devices.
-> 
-> This is going to staging primarily because it depends upon the staging memrar
-> driver.
-> 
-> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-> Signed-off-by: Harsha Priya <priya.harsha@intel.com>
-> [Merged together and tweaked for -next]
-> Signed-off-by: Alan Cox <alan@linux.intel.com>
-> 
-> 
-> --- a/drivers/staging/Kconfig
-> +++ b/drivers/staging/Kconfig
-> @@ -165,5 +165,7 @@ source "drivers/staging/bcm/Kconfig"
+> diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
+> index 2657f5c..642b07c 100644
+> --- a/sound/soc/codecs/wm8804.c
+> +++ b/sound/soc/codecs/wm8804.c
+> @@ -643,6 +643,14 @@ static int wm8804_probe(struct snd_soc_codec *codec)
+>  		goto err_reg_enable;
+>  	}
 >  
->  source "drivers/staging/ft1000/Kconfig"
->  
-> +source "drivers/staging/intel_sst/Kconfig"
+> +	ret = snd_soc_read(codec, WM8804_DEVREV);
+> +	if (ret < 0) {
+> +		dev_err(codec->dev, "Failed to read device revision: %d\n",
+> +			ret);
+> +		goto err_reg_enable;
+> +	}
+> +	dev_info(codec->dev, "revision %c\n", ret + 'A');
+> +
+>  	ret = wm8804_reset(codec);
+>  	if (ret < 0) {
+>  		dev_err(codec->dev, "Failed to issue reset: %d\n", ret);
 
-You forgot to include the drivers/staging/intel_sst/Kconfig file in this
-patch, so it breaks the build :(
-
-Care to add it and resend the whole patch?
-
-thanks,
-
-greg k-h
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
