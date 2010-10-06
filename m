@@ -1,19 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 1/7] [RFC] OMAP: MCBSP: hwmod database for
-	2xxx devices
-Date: Wed, 6 Oct 2010 10:17:13 +0300
-Message-ID: <201010061017.13908.peter.ujfalusi@nokia.com>
-References: <1286296662-7639-1-git-send-email-kishon@ti.com>
-	<EAF47CD23C76F840A9E7FCE10091EFAB030CF13384@dbde02.ent.ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC updates for 2.6.37
+Date: Wed, 6 Oct 2010 08:31:04 +0100
+Message-ID: <20101006073104.GC17998@sirena.org.uk>
+References: <20101005191359.GA23315@opensource.wolfsonmicro.com>
+	<s5h4ocz6doz.wl%tiwai@suse.de>
+	<20101006063401.GB17998@sirena.org.uk>
+	<s5hzkur4x0g.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 88DD6103964
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id DFECC24425
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Oct 2010 09:17:24 +0200 (CEST)
-In-Reply-To: <EAF47CD23C76F840A9E7FCE10091EFAB030CF13384@dbde02.ent.ti.com>
+	Wed,  6 Oct 2010 09:31:04 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hzkur4x0g.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,109 +25,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext Varadarajan, Charulatha" <charu@ti.com>
-Cc: "Girdwood, Liam" <x0135381@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Kamat, Nishant" <nskamat@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "ABRAHAM,
-	KISHON VIJAY" <kishon@ti.com>, "Basak, Partha" <p-basak2@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Datta, Shubhrajyoti" <shubhrajyoti@ti.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: dp@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Wed, Oct 06, 2010 at 09:10:23AM +0200, Takashi Iwai wrote:
 
-On Wednesday 06 October 2010 10:01:28 ext Varadarajan, Charulatha wrote:
-> This patch series is targeted to implement mcbsp driver in
-> hwmod way and to make use of pm_runtime APIs.
-> =
+> If the above difference is intentional, it should be commented
+> somewhere.
 
-> This patch series is tested on OMAP3 & 4 and yet to be tested
-> on OMAP2.
-> =
+Meh, yes.  Dimitris, please fix or add a comment as appropriate.
 
-> There are few clarifications required so that the next patch series
-> can be implemented after aligning.
-> =
+> > They also differ in the type of the cache variable.  You could do
+> > something with macros but it'd not be terribly pleasant.
 
-> 1. Audio layer is making use of mcbsp and it's dma base addresses and
-> is closely coupled with omap-mcbsp.
-> This can be handled either by
-> a. providing an API with which Audio layer can get these addresses.
-> (or)
-> b. move the plat-omap/mcbsp.c and mach-omap2/mcbsp.c to sound/soc/omap/
-> [1]
-> =
+> Hm, this can be tricky.  Meanwhile, we could have it always int,
+> instead of different types.  The amount of memory you save by
+> supporting different size might be more than the waste of 3 bytes for
+> 1 byte data array.
 
-> Option (a) would only be a workaround to handle the situation. As
-> audio is the only user for mcbsp, option (b) is better. If option(b)
-> is agreed upon, the same can be addressed on top of the mcbsp hwmod
-> series.
-
-it is true that at the moment only audio is using the McBSP ports, but McBS=
-P is =
-
-really flexible, it can run for example in SPI mode, and it can be configur=
-ed to =
-
-use other serial protocols.
-I would go with option c.
-Since ASoC is moving to multi-component (the conversion is already in linux-
-next), this means that the sound/soc/omap/omap-mcbsp, omap-pcm drivers are =
-
-platform drivers.
-So if the plat-omap/mcbsp would register the platform device for McBSP clie=
-nts =
-
-(we have only ASoC client at the moment), and use platform data to pass the =
-
-needed information to the McBSP client driver, than we do not need new API.
-We still need to modify the ASoC drivers to make use of this platform data,=
- but =
-
-at least we are going to keep the door open for others to use the McBSP por=
-ts =
-
-for other than audio.
-
-> 2. Sidetone feature is available only in OMAP3 (McBSP2&3) which has
-> different base address and sys configs compared to it's mcbsp port.
-> Hence the mcbsp is considered as a single device with two hwmods
-> for McBSP2&3 devices in OMAP3.
-
-Sounds fair enough.
- =
-
-> 3. Autoidle needs to be disabled for sidetone before enabling the sidetone
-> feature. There was a design proposed by Kishon [2] to add an API in hwmod
-> to modify the autoidle bit but was not agreed upon. How do we handle this
-> situation where the device has to disable or enable the autoidle bit at
-> runtime?
-
-Yeah, this is really annoying problem. The McBSP ST should block autoidle f=
-rom =
-
-McBSP side, but it does not.
-If you can not get through the proposed API, we should consider to switch t=
-he =
-
-corresponding McBSP port to NoIdle, when the ST is in use (and restore the =
-idle =
-
-mode, when the ST has been disabled).
-When McBSP is in NoIdle the interface clock is not going to be gated, so ST =
-
-block will be running without a problem (ST needs the iface clock for opera=
-tion)
-
-What do you think?
-> =
-
-> [1] https://patchwork.kernel.org/patch/225582/
-> [2] https://patchwork.kernel.org/patch/134371/
-> =
-
-> We would resend the same patch series by including alsa mailing list
-> (alsa-devel@alsa-project.org)
-> =
-
-> <<snip>>
-
--- =
-
-P=E9ter
+Given the size of the register maps for modern chips with visible DSPs
+in them the overhead can be non-trivial.  Doing this also inhibits
+operations like doing bulk writes of data from cache (which we don't do
+right now but may wish to do in future) since the data can't just be
+passed to the bus I/O functions so it's not purely a memory efficiency
+thing.
