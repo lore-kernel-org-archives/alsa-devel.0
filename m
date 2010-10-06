@@ -1,22 +1,19 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: Question on HW Pointer
-Date: Wed, 06 Oct 2010 20:15:46 +1300
-Message-ID: <4CAC2222.6090903@audioscience.com>
-References: <001201cb64ee$5beec5c0$13cc5140$@fl-eng.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 1/7] [RFC] OMAP: MCBSP: hwmod database for
+	2xxx devices
+Date: Wed, 6 Oct 2010 10:17:13 +0300
+Message-ID: <201010061017.13908.peter.ujfalusi@nokia.com>
+References: <1286296662-7639-1-git-send-email-kishon@ti.com>
+	<EAF47CD23C76F840A9E7FCE10091EFAB030CF13384@dbde02.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2876310395C
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 88DD6103964
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Oct 2010 09:15:51 +0200 (CEST)
-Received: from [192.168.36.2]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp4.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0L9U00B9BXIARA10@smtp4.clear.net.nz> for
-	alsa-devel@alsa-project.org; Wed, 06 Oct 2010 20:15:47 +1300 (NZDT)
-In-reply-to: <001201cb64ee$5beec5c0$13cc5140$@fl-eng.com>
+	Wed,  6 Oct 2010 09:17:24 +0200 (CEST)
+In-Reply-To: <EAF47CD23C76F840A9E7FCE10091EFAB030CF13384@dbde02.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,60 +23,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Steve Spano <steve@fl-eng.com>
-Cc: alsa-devel@alsa-project.org
+To: "ext Varadarajan, Charulatha" <charu@ti.com>
+Cc: "Girdwood, Liam" <x0135381@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Kamat, Nishant" <nskamat@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "ABRAHAM,
+	KISHON VIJAY" <kishon@ti.com>, "Basak, Partha" <p-basak2@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Datta, Shubhrajyoti" <shubhrajyoti@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Steve,
+Hello,
 
-the usual refrain is "show us the code" - please do so, as it is much
-easier to see the details of where you may be going wrong.
+On Wednesday 06 October 2010 10:01:28 ext Varadarajan, Charulatha wrote:
+> This patch series is targeted to implement mcbsp driver in
+> hwmod way and to make use of pm_runtime APIs.
+> =
 
-Also can you describe in a bit more detail how your DMA engine behaves.
+> This patch series is tested on OMAP3 & 4 and yet to be tested
+> on OMAP2.
+> =
 
+> There are few clarifications required so that the next patch series
+> can be implemented after aligning.
+> =
 
-On 06/10/10 13:35, Steve Spano wrote:
-> Step #1 ) interrupt occurs
-> 
-> Step #2) dma/transfer begins as kicked off in interrupt routine
-> 
-> Step #3) we advance the buffer pointer for the alsa buffer
-> 
-> Step #4) we exit the interrupt
-> 
-> . then the hardware should start advancing its pointer as it is reading the
-> new samples
-> 
-> .. then sometime later, the alsa layer calls the "hw_pointer" function
+> 1. Audio layer is making use of mcbsp and it's dma base addresses and
+> is closely coupled with omap-mcbsp.
+> This can be handled either by
+> a. providing an API with which Audio layer can get these addresses.
+> (or)
+> b. move the plat-omap/mcbsp.c and mach-omap2/mcbsp.c to sound/soc/omap/
+> [1]
+> =
 
-0) ALSA puts some data in the dma buffer, probably at least 2 periods.
+> Option (a) would only be a workaround to handle the situation. As
+> audio is the only user for mcbsp, option (b) is better. If option(b)
+> is agreed upon, the same can be addressed on top of the mcbsp hwmod
+> series.
 
-1) In trigger callback,case SNDRV_PCM_TRIGGER_START kick off dma,
-assuming for now that the DMA free-runs around the buffer forever,
-the buffer size is >= 2 periods,
-and your hardware can interrupt every time the DMA has transferred one
-period.
+it is true that at the moment only audio is using the McBSP ports, but McBS=
+P is =
 
-2) later, in interrupt, call period_elapsed (assuming it has!)
-this lets ALSA midlevel know that one period worth of the buffered data
-has been consumed, and free to be written with new data.
+really flexible, it can run for example in SPI mode, and it can be configur=
+ed to =
 
-> And then we return the current value of the hardware pointer from the board?
-> So alsa knows how many samples the board has processed from the interrupt?
+use other serial protocols.
+I would go with option c.
+Since ASoC is moving to multi-component (the conversion is already in linux-
+next), this means that the sound/soc/omap/omap-mcbsp, omap-pcm drivers are =
 
-If you can read the exact read pointer position from your DMA engine,
-then use that in the pointer callback.
-(Be sure to convert to frames first),
-otherwise, in your interrupt routine keep track of where the DMA has
-read and use that.
+platform drivers.
+So if the plat-omap/mcbsp would register the platform device for McBSP clie=
+nts =
 
-> We should be pretty close, because it is working for the most part..but I
-> think this pointer is not right. 
-> 
-> Can someone explain how this pointer/etc is supposed to flow and what alsa
-> may be using it for? Maybe some latency calculation in a an upper layer?
+(we have only ASoC client at the moment), and use platform data to pass the =
 
+needed information to the McBSP client driver, than we do not need new API.
+We still need to modify the ASoC drivers to make use of this platform data,=
+ but =
 
--- 
-Eliot Blennerhassett
-AudioScience Inc.
+at least we are going to keep the door open for others to use the McBSP por=
+ts =
+
+for other than audio.
+
+> 2. Sidetone feature is available only in OMAP3 (McBSP2&3) which has
+> different base address and sys configs compared to it's mcbsp port.
+> Hence the mcbsp is considered as a single device with two hwmods
+> for McBSP2&3 devices in OMAP3.
+
+Sounds fair enough.
+ =
+
+> 3. Autoidle needs to be disabled for sidetone before enabling the sidetone
+> feature. There was a design proposed by Kishon [2] to add an API in hwmod
+> to modify the autoidle bit but was not agreed upon. How do we handle this
+> situation where the device has to disable or enable the autoidle bit at
+> runtime?
+
+Yeah, this is really annoying problem. The McBSP ST should block autoidle f=
+rom =
+
+McBSP side, but it does not.
+If you can not get through the proposed API, we should consider to switch t=
+he =
+
+corresponding McBSP port to NoIdle, when the ST is in use (and restore the =
+idle =
+
+mode, when the ST has been disabled).
+When McBSP is in NoIdle the interface clock is not going to be gated, so ST =
+
+block will be running without a problem (ST needs the iface clock for opera=
+tion)
+
+What do you think?
+> =
+
+> [1] https://patchwork.kernel.org/patch/225582/
+> [2] https://patchwork.kernel.org/patch/134371/
+> =
+
+> We would resend the same patch series by including alsa mailing list
+> (alsa-devel@alsa-project.org)
+> =
+
+> <<snip>>
+
+-- =
+
+P=E9ter
