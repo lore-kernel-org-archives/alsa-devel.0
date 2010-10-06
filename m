@@ -1,75 +1,68 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ### Question on HW Pointer
-Date: Wed, 06 Oct 2010 08:46:51 +0200
-Message-ID: <4CAC1B5B.6000705@ladisch.de>
-References: <001201cb64ee$5beec5c0$13cc5140$@fl-eng.com>
+From: "Varadarajan, Charulatha" <charu@ti.com>
+Subject: RE: [PATCH 1/7] [RFC] OMAP: MCBSP: hwmod database for 2xxx devices
+Date: Wed, 6 Oct 2010 12:31:28 +0530
+Message-ID: <EAF47CD23C76F840A9E7FCE10091EFAB030CF13384@dbde02.ent.ti.com>
+References: <1286296662-7639-1-git-send-email-kishon@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 39F8E103958
-	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Oct 2010 08:46:08 +0200 (CEST)
-In-Reply-To: <001201cb64ee$5beec5c0$13cc5140$@fl-eng.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Steve Spano <steve@fl-eng.com>
-Cc: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1286296662-7639-1-git-send-email-kishon@ti.com>
+Content-Language: en-US
+Sender: linux-omap-owner@vger.kernel.org
+To: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "Kamat, Nishant" <nskamat@ti.com>, "Datta, Shubhrajyoti" <shubhrajyoti@ti.com>, "Basak, Partha" <p-basak2@ti.com>, "Girdwood, Liam" <x0135381@ti.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "jhnikula@gmail.com" <jhnikula@gmail.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "ABRAHAM, KISHON VIJAY" <kishon@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Steve Spano wrote:
-> I think the flow should be as follows (lets consider the dac part)
+ 
+
+> -----Original Message-----
+> From: ABRAHAM, KISHON VIJAY 
+> Sent: Tuesday, October 05, 2010 10:08 PM
+> To: linux-omap@vger.kernel.org
+> Cc: Kamat, Nishant; Varadarajan, Charulatha; ABRAHAM, KISHON 
+> VIJAY; Datta, Shubhrajyoti; Basak, Partha
+> Subject: [PATCH 1/7] [RFC] OMAP: MCBSP: hwmod database for 
+> 2xxx devices
 > 
-> Step #1 ) interrupt occurs
-> Step #2) dma/transfer begins as kicked off in interrupt routine
 
-So I assume the driver is responsible for telling the hardware to begin
-transferring the next period.  Doesn't it do this automatically?
+This patch series is targeted to implement mcbsp driver in
+hwmod way and to make use of pm_runtime APIs.
 
-> Step #3) we advance the buffer pointer for the alsa buffer
+This patch series is tested on OMAP3 & 4 and yet to be tested
+on OMAP2.
 
-An interrupt (that is, for ALSA, the call to snd_pcm_period_elapsed)
-signals the end of the previous period.
+There are few clarifications required so that the next patch series
+can be implemented after aligning.
 
-> Step #4) we exit the interrupt
-> 
-> . then the hardware should start advancing its pointer as it is reading the
-> new samples
-> 
-> .. then sometime later, the alsa layer calls the "hw_pointer" function
+1. Audio layer is making use of mcbsp and it's dma base addresses and
+is closely coupled with omap-mcbsp.
+This can be handled either by
+a. providing an API with which Audio layer can get these addresses.
+(or)
+b. move the plat-omap/mcbsp.c and mach-omap2/mcbsp.c to sound/soc/omap/
+[1]
 
-The pointer callback can be called at any time.  It will definitely be
-called from snd_pcm_period_elapsed, so the buffer pointer must already
-have been increased before that call.
+Option (a) would only be a workaround to handle the situation. As
+audio is the only user for mcbsp, option (b) is better. If option(b)
+is agreed upon, the same can be addressed on top of the mcbsp hwmod
+series.
 
-> And then we return the current value of the hardware pointer from the board?
+2. Sidetone feature is available only in OMAP3 (McBSP2&3) which has
+different base address and sys configs compared to it's mcbsp port.
+Hence the mcbsp is considered as a single device with two hwmods
+for McBSP2&3 devices in OMAP3.
 
-Drop the word "then"; the pointer callback _always_ must return the
-current value. :)
+3. Autoidle needs to be disabled for sidetone before enabling the sidetone
+feature. There was a design proposed by Kishon [2] to add an API in hwmod
+to modify the autoidle bit but was not agreed upon. How do we handle this
+situation where the device has to disable or enable the autoidle bit at
+runtime?
 
-> So alsa knows how many samples the board has processed from the interrupt?
+[1] https://patchwork.kernel.org/patch/225582/
+[2] https://patchwork.kernel.org/patch/134371/
 
-Yes; ALSA (or the application) wants to know how many samples the board
-has processed.  If your DMA controller does not have a register for this,
-the pointer must be calculated and updated in the interrupt handler (as
-you do).
+We would resend the same patch series by including alsa mailing list
+(alsa-devel@alsa-project.org)
 
-> Can someone explain how this pointer/etc is supposed to flow and what alsa
-> may be using it for? Maybe some latency calculation in a an upper layer?
-
-This, and to know which part of the buffer can be written to (the
-hardware pointer indicates which part of the buffer has been processed
-by the hardware; the samples after the pointer will be read now or
-later).
-
-
-Regards,
-Clemens
+<<snip>>
