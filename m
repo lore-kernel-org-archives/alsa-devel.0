@@ -1,21 +1,15 @@
-From: Wan ZongShun <mcuos.com@gmail.com>
-Subject: Re: [PATCH] sound/soc/nuc900: remove duplicated include
-Date: Wed, 6 Oct 2010 10:36:58 +0800
-Message-ID: <AANLkTi=TgsJivTpYqfGTuwz8qjm=yJa+ur10ZAE54KBy@mail.gmail.com>
-References: <20101005141140.0276dc14@absol.kitzblitz>
-	<20101005190551.GA23055@opensource.wolfsonmicro.com>
+From: Jaime Torres <jaimeurieltorres@hotmail.com>
+Subject: X-Fi Xtreme Audio PCIe
+Date: Tue, 5 Oct 2010 22:15:46 -0500
+Message-ID: <SNT136-w16AB2F31C1D85EDBEED317CF6E0@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5AEE11037E3
+Received: from snt0-omc3-s11.snt0.hotmail.com (snt0-omc3-s11.snt0.hotmail.com
+	[65.55.90.150]) by alsa0.perex.cz (Postfix) with ESMTP id 4A8722414F
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Oct 2010 04:36:59 +0200 (CEST)
-Received: by wyb42 with SMTP id 42so6757650wyb.38
-	for <alsa-devel@alsa-project.org>; Tue, 05 Oct 2010 19:36:58 -0700 (PDT)
-In-Reply-To: <20101005190551.GA23055@opensource.wolfsonmicro.com>
+	Wed,  6 Oct 2010 05:15:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,33 +19,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Nicolas Kaiser <nikai@nikai.net>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/10/6 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Tue, Oct 05, 2010 at 02:11:40PM +0200, Nicolas Kaiser wrote:
->> Remove duplicated include.
->>
->> Signed-off-by: Nicolas Kaiser <nikai@nikai.net>
->
-> Applied, but please always remember to CC maintainers on patches as
-> explained in Documentation/SubmittingPatches.
->
 
-Acked-by: Wan ZongShun <mcuos.com@gmail.com>
+Hello Alsa developers:
 
-Thanks all.
+We have 500 linux servers with X-Fi Xtreme Audio PCIe. The audio card is properly detected by kernel. The card is unmuted, the sound applications works fine. But the card doesn't sound.  
+
+Googling I discover the same case on several forums, no solution.   
+
+First Question:   The driver is finished? Is it on development? Is it abandoned?
+Second Question: Can I join to driver development. I need to make work this soundcard.
+
+----------------------------------------------------------------------------------
+Distribution: Fedora 13
+kernel 2.6.34.7-56.fc13.i686.PAE 
+alsa version: alsa-lib-1.0.23
+01:00.0 PCI bridge: Creative Labs [SB X-Fi Xtreme Audio] CA0110-IBG PCI to PCIe Bridge
 
 
--- 
-*linux-arm-kernel mailing list
-mail addr:linux-arm-kernel@lists.infradead.org
-you can subscribe by:
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+[root@localhost ~]# lsmod 
+Module                  Size  Used by
+snd_ctxfi              69769  0 
+fuse                   47907  2 
+sunrpc                163601  1 
+ip6t_REJECT             3310  2 
+nf_conntrack_ipv6      14223  2 
+ip6table_filter         1199  1 
+ip6_tables              9774  1 ip6table_filter
+ipv6                  221726  88 ip6t_REJECT,nf_conntrack_ipv6
+uinput                  5287  0 
+snd_hda_codec_ca0110     4769  1 
+snd_hda_intel          19995  0 
+iTCO_wdt                8940  0 
+iTCO_vendor_support     2027  1 iTCO_wdt
+snd_hda_codec          70968  2 snd_hda_codec_ca0110,snd_hda_intel
+snd_hwdep               4860  1 snd_hda_codec
+snd_seq                42775  0 
+snd_seq_device          5035  1 snd_seq
+dcdbas                  6552  0 
+snd_pcm                62185  3 snd_ctxfi,snd_hda_intel,snd_hda_codec
+bnx2                   57069  0 
+snd_timer              15391  2 snd_seq,snd_pcm
+power_meter             7602  0 
+snd                    46591  9 snd_ctxfi,snd_hda_codec_ca0110,snd_hda_intel,snd_hda_codec,snd_hwdep,snd_seq,snd_seq_device,snd_pcm,snd_timer
+soundcore               4934  1 snd
+snd_page_alloc          6097  3 snd_ctxfi,snd_hda_intel,snd_pcm
+microcode              10249  0 
 
-* linux-arm-NUC900 mailing list
-mail addr:NUC900@googlegroups.com
-main web: https://groups.google.com/group/NUC900
-you can subscribe it by sending me mail:
-mcuos.com@gmail.com
+
+
+
+
+
+ 		 	   		  
