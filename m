@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: omap: Remove needless prints from
-	machine drivers
-Date: Wed, 6 Oct 2010 08:43:34 -0700
-Message-ID: <20101006154334.GD2803@opensource.wolfsonmicro.com>
-References: <1286372846-10238-1-git-send-email-jhnikula@gmail.com>
+Subject: [PATCH 2/2] ASoC: Update links for Wolfson MAINTAINERS
+	entry
+Date: Wed,  6 Oct 2010 09:25:00 -0700
+Message-ID: <1286382300-3236-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1286382300-3236-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4CFC5103981
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AD531103986
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Oct 2010 17:43:24 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1286372846-10238-1-git-send-email-jhnikula@gmail.com>
+	Wed,  6 Oct 2010 18:24:51 +0200 (CEST)
+In-Reply-To: <1286382300-3236-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,18 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 06, 2010 at 04:47:26PM +0300, Jarkko Nikula wrote:
-> It is currently completely normal to execute these machine drivers code on
-> different boards if the kernel includes support for multiple boards so no
-> error message should be printed if the machine_is_xxx does not match with
-> the machine driver.
-> 
-> Therefore remove these pr_err and pr_debug prints in those cases.
-> 
-> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+We also have a separate git for audio, and a generic page for all of our
+drivers not just the PMICs.
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ MAINTAINERS |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8c1180f..31306ce 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6412,8 +6412,9 @@ WOLFSON MICROELECTRONICS DRIVERS
+ M:	Mark Brown <broonie@opensource.wolfsonmicro.com>
+ M:	Ian Lartey <ian@opensource.wolfsonmicro.com>
+ M:	Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
++T:	git git://opensource.wolfsonmicro.com/linux-2.6-asoc
+ T:	git git://opensource.wolfsonmicro.com/linux-2.6-audioplus
+-W:	http://opensource.wolfsonmicro.com/node/8
++W:	http://opensource.wolfsonmicro.com/content/linux-drivers-wolfson-devices
+ S:	Supported
+ F:	Documentation/hwmon/wm83??
+ F:	drivers/leds/leds-wm83*.c
+-- 
+1.7.1
