@@ -1,22 +1,31 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: S51 usb support
-Date: Wed, 6 Oct 2010 00:04:46 +0200
-Message-ID: <20101005220446.GR7159@buzzloop.caiaq.de>
-References: <4CA8F3F8.6010705@gmail.com>
-	<20101004044152.GC7159@buzzloop.caiaq.de>
-	<4CAA3458.9080007@gmail.com>
-	<20101005073853.GL7159@buzzloop.caiaq.de>
-	<4CAB787E.1050409@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: alsactl adds volume controls?
+Date: Wed, 6 Oct 2010 08:05:44 +0800
+Message-ID: <AANLkTi=9yMV8FrQJpZdEjW2tv4+xdujJaRBzRG7Zp+T9@mail.gmail.com>
+References: <s5hr5hczi06.wl%tiwai@suse.de> <4C7F6D5D.7020101@canonical.com>
+	<alpine.LNX.2.00.1009021553460.10278@eeebox2.perex-int.cz>
+	<4C7FB2CF.5060505@ladisch.de>
+	<alpine.LNX.2.00.1009021721100.10278@eeebox2.perex-int.cz>
+	<4C7FC85B.4000009@ladisch.de>
+	<alpine.LNX.2.00.1009021926120.10278@eeebox2.perex-int.cz>
+	<i7viav$kjb$1@dough.gmane.org> <4CA46E98.10402@ladisch.de>
+	<4CA4A844.7060403@colin.guthr.ie>
+	<20100930164753.GB9431@sirena.org.uk>
+	<s5hr5gb9k83.wl%tiwai@suse.de> <4CA5834D.5030408@ladisch.de>
+	<AANLkTi=zwH4CK+=eC-NaY+wTy-W90HiBFp7Vk67xN0Wk@mail.gmail.com>
+	<i8cecd$gge$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id D6E71103939
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2F4B910382C
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Oct 2010 00:04:49 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4CAB787E.1050409@gmail.com>
+	Wed,  6 Oct 2010 02:05:48 +0200 (CEST)
+Received: by eye27 with SMTP id 27so2720506eye.38
+	for <alsa-devel@alsa-project.org>; Tue, 05 Oct 2010 17:05:45 -0700 (PDT)
+In-Reply-To: <i8cecd$gge$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,38 +35,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Matti Picus <matti.picus@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 05, 2010 at 09:11:58PM +0200, Matti Picus wrote:
-> On 10/05/2010 09:38 AM, Daniel Mack wrote:
+2010/10/4 Colin Guthrie <gmane@colin.guthr.ie>
+
+> 'Twas brillig, and Raymond Yau at 04/10/10 12:09 did gyre and gimble:
+> > 2010/10/1 Clemens Ladisch <clemens@ladisch.de>
 > >
-> >Normally, the volume would be controlled by a feature unit. Just post
-> >the whole output of 'lsusb -v' to some pastebin website and post the
-> >link.
+> >> Takashi Iwai wrote:
+> >>> Mark Brown wrote:
+> >>>> On Thu, Sep 30, 2010 at 04:09:56PM +0100, Colin Guthrie wrote:
+> >>>>> *shouldn't* use them, but at present it does and they *are* active
+> >> and
+> >>>>> used, so it's not an issue for me), the problem is rather one of
+> >> setting
+> >>>>> Master (not PCM) to 0% aka -46.5dB causes some kind of auto-mute that
+> >>>>> cuts off all sound. It shouldn't do that.
+> >>>>
+> >>>> Is this perhaps just an error in the TLV information - should it be
+> >>>> flagging that the minimim gain is mute but isn't?
+> >>>
+> >>> There is no clear (or consistent) definition in HD-audio codec, I
+> guess.
+> >>
+> >> The HDA spec is quite clear that muting is done only with the mute bit.
+> >>
+> >>> Some chips do mute at 0 and some not.
+> >>
+> >> Those that do are violating the specification.
+> >>
+> >> But we have to support them anyway.
+> >> Colin, please tell us the IDs of your codec so that we can add a TLV
+> >> workaround to the driver.
+> >>
+> >>
+> >> Regards,
+> >> Clemens
+> >>
+> >>
+> > Actually, the softvol plugin behave as the same way as Colin describe
+> since
+> > when the resolution is 2 , the softvol become a mute switch
 > >
-> http://pastebin.com/e8ZcX9TN
+> >
+> http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=f78af4ab0412052aabb74c9122a8d8f3ab6d45e6
+> >
+> > So the question is why -51dB is selected as min_dB
+> >
+> > Is this value enough for S16_LE or  S32_LE for hda-intel ?
+> >
+> >
+> http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=eacbb9dba6b4c982a0217ea2c7d15db88d4fda37;hp=d91b424d6d7bda0773b6b6b606d48d089c4f5115
+> >
+> > As those DACs support -120dB to 0dB , but the driver can actually limit
+> the
+> > dB range to -60dB to 0dB . so the minimum volume -60dB is definitly not
+> mute
+> > in this case
+> >
+> > why -60dB is selected  ?
+>
+>
+> Just for clarity, the 0 -> -51dB range is for the PCM control (i.e.
+> softvol) only. The Master control gives me -46.5dB in addtiion to that
+> giving a total of -97.5dB. This still isn't as high as the -120dB you
+> are mentioning, but it's a lot closer.
+>
+> Of course I am lucky in that my Master apparently works fine but for
+> those souls without any Master control, I presume the full range should
+> be offered by the PCM softvol?
+>
+> Col
+>
+>
+Did it happen on both channels or only left channel ?
 
-Hmm, there is no feature unit in this dump, so the volume is most
-probably set with an vendor-specific USB request. Unless the Windows
-driver does something similar than PulseAudio and handles the volume
-level control in software (iow, modify each sample before sending it to
-the hardware) rather than setting any actual hardware volume level.
-
-> >>Any guidance you can give toward getting the volume controls
-> >>recognized would be greatly appreciate.
-> >The best way is to sniff the USB communication when Windows sets the
-> >volume
-> Is there an example in the alsa source tree of some of this?
-
-Of a sniff dump you mean? I doubt so, but once you manage to get one
-with any of the software tools around or with a hardware analyzer, the
-dump itself shouldn't be hard to understand. You just need to understand
-the packet layout and where they store the actual volume information.
-
-Once you got this information, feel free to share it, so we can figure
-out a nice way of generating the same kind of messages from inside the
-kernel driver.
-
-Daniel
+The workaround mentioned in errata is to lock the sample rate
