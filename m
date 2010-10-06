@@ -1,61 +1,75 @@
-From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: RE: [alsa-devel] [PATCH 10/10] ASoC: SAMSUNG: Add Machine driver for
- S/PDIF PCM audio
-Date: Wed, 06 Oct 2010 15:34:47 +0900
-Message-ID: <00c401cb6520$9484ef90$bd8eceb0$%kim@samsung.com>
-References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
- <1286194583-19937-1-git-send-email-sw.youn@samsung.com>
- <20101004224159.GA4972@opensource.wolfsonmicro.com>
- <AANLkTi=FHGw+qzL507K546vr8zEZgXBP3Mk=O__Rpd4H@mail.gmail.com>
- <AANLkTincwL_nQAmu7Dcmht0FV43BiN7OoecE_60QJhS2@mail.gmail.com>
- <20101005044304.GA26509@opensource.wolfsonmicro.com>
- <AANLkTi=x_fi5HTBBmMUv8YTxSdbgcnJ=ZbacJQj6rcgf@mail.gmail.com>
- <20101005055937.GA19989@opensource.wolfsonmicro.com>
- <AANLkTimi1t5S2XWdUFzaPttD4Hywm0SLt5CvR1YnVOjj@mail.gmail.com>
- <AANLkTin4skx+aiL2FXwWO1ekKqT2YWDd3SM1H5WnGkhC@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: ### Question on HW Pointer
+Date: Wed, 06 Oct 2010 08:46:51 +0200
+Message-ID: <4CAC1B5B.6000705@ladisch.de>
+References: <001201cb64ee$5beec5c0$13cc5140$@fl-eng.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <AANLkTin4skx+aiL2FXwWO1ekKqT2YWDd3SM1H5WnGkhC@mail.gmail.com>
-Content-language: ko
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: 'Seungwhan Youn' <claude.youn@gmail.com>, 'Jassi Brar' <jassisinghbrar@gmail.com>
-Cc: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Seungwhan Youn' <sw.youn@samsung.com>, alsa-devel@alsa-project.org, jassi.brar@samsung.com, linux-samsung-soc@vger.kernel.org, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 39F8E103958
+	for <alsa-devel@alsa-project.org>;
+	Wed,  6 Oct 2010 08:46:08 +0200 (CEST)
+In-Reply-To: <001201cb64ee$5beec5c0$13cc5140$@fl-eng.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Steve Spano <steve@fl-eng.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Seungwhan Youn wrote:
+Steve Spano wrote:
+> I think the flow should be as follows (lets consider the dac part)
 > 
-> >>> I hope you noticed that this clock hierarchy is a _very_ board specific thing.
-> >>> We can easily place SoCs' shared stuff in arch/arm/plat-samsung (or similar)
-> >>> Any suggestions, where do we place code shared by SMDK-boards ?
-> >>
-> >> plat-samsung would probably be fine for that also - create a file called
-> >> common-smdk or something.  Some other things have gone for a plat-smdk
-> >> style approach too, though I'm not sure how tasteful I find that
-> >> personally.
-> > Even though I would personally like to have EPLL control for a device
-> > in machine specific manner as part of its driver, I accept your opinion.
-> >
-> > Claude, let us create one arch/arm/plat-samsung/smdk.c to do common
-> > stuff for SMKDs like EPLL control. What do you think ?
+> Step #1 ) interrupt occurs
+> Step #2) dma/transfer begins as kicked off in interrupt routine
+
+So I assume the driver is responsible for telling the hardware to begin
+transferring the next period.  Doesn't it do this automatically?
+
+> Step #3) we advance the buffer pointer for the alsa buffer
+
+An interrupt (that is, for ALSA, the call to snd_pcm_period_elapsed)
+signals the end of the previous period.
+
+> Step #4) we exit the interrupt
 > 
-> Actually if we add this file on plat-samsung, board-init will be
-> separated two-part, one is machine(board) specific and other is all
-> smdk specific. So, If it doesn't make confusion to other guys who
-> wants to add settings for their features on board-init, it looks good
-> to me. But I think that we also have to listen Mr. Ben Dooks and Mr.
-> Kukjin Kim's opinion about this before we get a conclusion.
+> . then the hardware should start advancing its pointer as it is reading the
+> new samples
+> 
+> .. then sometime later, the alsa layer calls the "hw_pointer" function
 
-Hi all,
+The pointer callback can be called at any time.  It will definitely be
+called from snd_pcm_period_elapsed, so the buffer pointer must already
+have been increased before that call.
 
-I think, basically it'd better if could control clock stuff in each driver for it when need it such as clk_get, clk_enable and so on.
-Actually there is no policy/protection for EPLL usage in plat-samsung or plat-s5p now and need to sort out other similar case for it also....so in my opinion, right now to proceed with the current style is helpful to me and will consider it in the future.
+> And then we return the current value of the hardware pointer from the board?
 
-Thanks.
+Drop the word "then"; the pointer callback _always_ must return the
+current value. :)
 
-Best regards,
-Kgene.
---
-Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
-SW Solution Development Team, Samsung Electronics Co., Ltd.
+> So alsa knows how many samples the board has processed from the interrupt?
+
+Yes; ALSA (or the application) wants to know how many samples the board
+has processed.  If your DMA controller does not have a register for this,
+the pointer must be calculated and updated in the interrupt handler (as
+you do).
+
+> Can someone explain how this pointer/etc is supposed to flow and what alsa
+> may be using it for? Maybe some latency calculation in a an upper layer?
+
+This, and to know which part of the buffer can be written to (the
+hardware pointer indicates which part of the buffer has been processed
+by the hardware; the samples after the pointer will be read now or
+later).
+
+
+Regards,
+Clemens
