@@ -1,16 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: Add Dimitris Papastamos to Wolfson
-	maintainers
-Date: Wed,  6 Oct 2010 09:24:59 -0700
-Message-ID: <1286382300-3236-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Felix Homann <linuxaudio@showlabor.de>
+Subject: Re: Need expert's advice - Fast Track Ultra (8R)
+ dropping samples
+Date: Wed, 06 Oct 2010 18:31:45 +0200
+Message-ID: <4CACA471.2000504@showlabor.de>
+References: <4C9DC7A1.8050001@showlabor.de>	<4CA5BF35.2030108@showlabor.de>	<4CA60C5B.6010809@ladisch.de>	<4CA86E1A.30405@showlabor.de>
+	<4CAAD212.9090805@ladisch.de>	<4CAC804A.8040806@showlabor.de>
+	<4CAC89EA.8080207@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ACDCA103984
+Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
+	[83.169.30.203]) by alsa0.perex.cz (Postfix) with ESMTP id 007B5244E6
 	for <alsa-devel@alsa-project.org>;
-	Wed,  6 Oct 2010 18:24:51 +0200 (CEST)
+	Wed,  6 Oct 2010 18:31:50 +0200 (CEST)
+In-Reply-To: <4CAC89EA.8080207@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,29 +24,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add Dimitris Papastamos as a contact for Wolfson device drivers.
+Thanks Clemens for your quick response!
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
----
- MAINTAINERS |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+Am 06.10.2010 16:38, schrieb Clemens Ladisch:
+>>
+>> Playback:
+>>     Status: Running
+>>       Interface = 1
+>>       Altset = 1
+>>       URBs = 3 [ 57 57 57 ]
+>>       Packet Size = 312
+>>       Momentary freq = 48000 Hz (0x6.0000)
+>>     Interface 1
+>>       Altset 1
+>>       Format: S24_3LE
+>>       Channels: 8
+>>       Endpoint: 1 OUT (ADAPTIVE)
+>>       Rates: 44100, 48000, 88200, 96000
+>>       Data packet interval: 125 us
+>>
+>> Does it tell us anything?
+>>      
+> That this device does not use frequency feedback.
+>
+> What happens when you are recording something and then try to play
+> something else with a different sample rate? (use arecord/aplay with
+> "-D hw:X")
+>
+>    
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f51409b..8c1180f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6411,6 +6411,7 @@ F:	include/linux/wm97xx.h
- WOLFSON MICROELECTRONICS DRIVERS
- M:	Mark Brown <broonie@opensource.wolfsonmicro.com>
- M:	Ian Lartey <ian@opensource.wolfsonmicro.com>
-+M:	Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
- T:	git git://opensource.wolfsonmicro.com/linux-2.6-audioplus
- W:	http://opensource.wolfsonmicro.com/node/8
- S:	Supported
--- 
-1.7.1
+When I start recording at 44.1 kHz while playing a wav at 48 kHz the 
+playback gets very distorted, sounds like lots of missing samples. I get 
+this from stream0:
+
+M-Audio Fast Track Ultra 8R at usb-0000:00:1a.7-4, high speed : USB Audio
+
+Playback:
+   Status: Running
+     Interface = 1
+     Altset = 1
+     URBs = 2 [ 5 6 ]
+     Packet Size = 312
+     Momentary freq = 48000 Hz (0x6.0000)
+   Interface 1
+     Altset 1
+     Format: S24_3LE
+     Channels: 8
+     Endpoint: 1 OUT (ADAPTIVE)
+     Rates: 44100, 48000, 88200, 96000
+     Data packet interval: 125 us
+
+Capture:
+   Status: Running
+     Interface = 2
+     Altset = 1
+     URBs = 8 [ 8 8 8 8 8 8 8 8 ]
+     Packet Size = 312
+     Momentary freq = 44100 Hz (0x5.8333)
+   Interface 2
+     Altset 1
+     Format: S24_3LE
+     Channels: 8
+     Endpoint: 1 IN (ASYNC)
+     Rates: 44100, 48000, 88200, 96000
+     Data packet interval: 125 us
+
+
+The sound stays corrupted until I record at 48 kHz again. Then 
+everything sounds as before, i.e. with thos noticable clicks we're 
+trying to sort out.
+
+Do you need more infos?
+
+Regards,
+
+Felix
