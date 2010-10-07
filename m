@@ -1,20 +1,20 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH] ASoC: Use delayed work for debounce of
-	GPIO based jacks
-Date: Thu, 7 Oct 2010 08:54:31 +0300
-Message-ID: <20101007085431.879415b7.jhnikula@gmail.com>
-References: <1286406301-25767-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Need expert's advice - Fast Track Ultra (8R)
+ dropping samples
+Date: Thu, 07 Oct 2010 08:37:22 +0200
+Message-ID: <4CAD6AA2.4050205@ladisch.de>
+References: <4C9DC7A1.8050001@showlabor.de>	<4CA5BF35.2030108@showlabor.de>	<4CA60C5B.6010809@ladisch.de>	<4CA86E1A.30405@showlabor.de>
+	<4CAAD212.9090805@ladisch.de>	<4CAC804A.8040806@showlabor.de>
+	<4CAC89EA.8080207@ladisch.de> <4CACA471.2000504@showlabor.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 624F42413B
+Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 18E0424340
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Oct 2010 07:53:49 +0200 (CEST)
-Received: by ewy8 with SMTP id 8so136724ewy.38
-	for <alsa-devel@alsa-project.org>; Wed, 06 Oct 2010 22:53:49 -0700 (PDT)
-In-Reply-To: <1286406301-25767-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	Thu,  7 Oct 2010 08:35:51 +0200 (CEST)
+In-Reply-To: <4CACA471.2000504@showlabor.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,35 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Peter@alsa-project.org, Ujfalusi <peter.ujfalusi@nokia.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Felix Homann <linuxaudio@showlabor.de>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed,  6 Oct 2010 16:05:01 -0700
-Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+Felix Homann wrote:
+> Am 06.10.2010 16:38, schrieb Clemens Ladisch:
+> > this device does not use frequency feedback.
+> >
+> > What happens when you are recording something and then try to play
+> > something else with a different sample rate?
+> 
+> When I start recording at 44.1 kHz while playing a wav at 48 kHz the
+> playback gets very distorted, sounds like lots of missing samples.
 
-> Rather than block the workqueue by sleeping to do the debounce use delayed
-> work to implement the debounce time. This should also mean that we extend
-> the debounce time on each new bounce, potentially allowing shorter debounce
-> times for clean insertions.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
-> 
-> This is completely untested as I do not have any systems to hand which
-> can make use of this functionality but I believe it should work - I've
-> CCed a couple of the OMAP people since they seem to be the main users.
-> 
->  include/sound/soc.h  |    2 +-
->  sound/soc/soc-jack.c |   11 +++++------
->  2 files changed, 6 insertions(+), 7 deletions(-)
-> 
-Works fine on N900 when testing with
-hexdump /dev/input/by-path/platform-soc-audio-event
+So this device expects the computer to take the sample clock from the
+capture data.   This is just like the UA-101; it should be possible to
+write a similar driver (with opportunities for code sharing, and AFAIK
+UAC 2 requires such a feedback mode, too).
 
-I have a vague memory that user space and actual state can get soon out
-of sync if using delay based debouncing only and doing some insane plug
-in/out cycle. So this is a step to right direction for implementing
-more advanced debouncing.
 
-Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+Regards,
+Clemens
