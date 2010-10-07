@@ -1,20 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Need expert's advice - Fast Track Ultra (8R)
- dropping samples
-Date: Thu, 07 Oct 2010 08:37:22 +0200
-Message-ID: <4CAD6AA2.4050205@ladisch.de>
-References: <4C9DC7A1.8050001@showlabor.de>	<4CA5BF35.2030108@showlabor.de>	<4CA60C5B.6010809@ladisch.de>	<4CA86E1A.30405@showlabor.de>
-	<4CAAD212.9090805@ladisch.de>	<4CAC804A.8040806@showlabor.de>
-	<4CAC89EA.8080207@ladisch.de> <4CACA471.2000504@showlabor.de>
+Subject: Re: alsactl adds volume controls?
+Date: Thu, 07 Oct 2010 10:05:17 +0200
+Message-ID: <4CAD7F3D.3090205@ladisch.de>
+References: <s5hr5hczi06.wl%tiwai@suse.de>	<4C7F6D5D.7020101@canonical.com>	<alpine.LNX.2.00.1009021553460.10278@eeebox2.perex-int.cz>	<4C7FB2CF.5060505@ladisch.de>	<alpine.LNX.2.00.1009021721100.10278@eeebox2.perex-int.cz>	<4C7FC85B.4000009@ladisch.de>	<alpine.LNX.2.00.1009021926120.10278@eeebox2.perex-int.cz>	<i7viav$kjb$1@dough.gmane.org>	<4CA46E98.10402@ladisch.de>	<4CA4A844.7060403@colin.guthr.ie>	<20100930164753.GB9431@sirena.org.uk>	<s5hr5gb9k83.wl%tiwai@suse.de>	<4CA5834D.5030408@ladisch.de>	<4CA59976.2020306@colin.guthr.ie>	<4CA5A38A.7050006@ladisch.de>
+	<i8ce5u$fj3$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 18E0424340
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id C306A243E3
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Oct 2010 08:35:51 +0200 (CEST)
-In-Reply-To: <4CACA471.2000504@showlabor.de>
+	Thu,  7 Oct 2010 10:03:48 +0200 (CEST)
+In-Reply-To: <i8ce5u$fj3$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,25 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Felix Homann <linuxaudio@showlabor.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: Colin Guthrie <gmane@colin.guthr.ie>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Felix Homann wrote:
-> Am 06.10.2010 16:38, schrieb Clemens Ladisch:
-> > this device does not use frequency feedback.
-> >
-> > What happens when you are recording something and then try to play
-> > something else with a different sample rate?
-> 
-> When I start recording at 44.1 kHz while playing a wav at 48 kHz the
-> playback gets very distorted, sounds like lots of missing samples.
+Please try this patch.
 
-So this device expects the computer to take the sample clock from the
-capture data.   This is just like the UA-101; it should be possible to
-write a similar driver (with opportunities for code sharing, and AFAIK
-UAC 2 requires such a feedback mode, too).
-
-
-Regards,
-Clemens
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -606,6 +606,24 @@ static hda_nid_t stac9205_pin_nids[12] = {
+ 	0x21, 0x22,
+ };
+ 
++static int stac92xx_minmute_volume_tlv(struct snd_kcontrol *control,
++				       int op_flag, unsigned int size,
++				       unsigned int __user *_tlv)
++{
++	int ret;
++	unsigned int val;
++
++	ret = snd_hda_mixer_amp_tlv(control, op_flag, size, _tlv);
++	if (ret >= 0) {
++		if (get_user(val, _tlv + 3))
++			return -EFAULT;
++		val |= 0x10000; /* min is mute */
++		if (put_user(val, _tlv + 3))
++			return -EFAULT;
++	}
++	return ret;
++}
++
+ static int stac92xx_dmux_enum_info(struct snd_kcontrol *kcontrol,
+ 				   struct snd_ctl_elem_info *uinfo)
+ {
+@@ -959,6 +977,21 @@ static struct hda_verb stac9205_core_init[] = {
+ 	{}
+ };
+ 
++#define STAC_MINMUTE_VOLUME(xname, xnid) \
++	{ \
++		.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++		.name = xname, \
++		.subdevice = HDA_SUBDEV_AMP_FLAG, \
++		.access = SNDRV_CTL_ELEM_ACCESS_READWRITE | \
++			  SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
++			  SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK, \
++		.info = snd_hda_mixer_amp_volume_info, \
++		.get = snd_hda_mixer_amp_volume_get, \
++		.put = snd_hda_mixer_amp_volume_put, \
++		.tlv = { .c = stac92xx_minmute_volume_tlv }, \
++		.private_value = HDA_COMPOSE_AMP_VAL(xnid, 3, 0, HDA_OUTPUT), \
++	}
++
+ #define STAC_MONO_MUX \
+ 	{ \
+ 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
+@@ -992,7 +1025,7 @@ static struct hda_verb stac9205_core_init[] = {
+ 	}
+ 
+ static struct snd_kcontrol_new stac9200_mixer[] = {
+-	HDA_CODEC_VOLUME("Master Playback Volume", 0xb, 0, HDA_OUTPUT),
++	STAC_MINMUTE_VOLUME("Master Playback Volume", 0xb),
+ 	HDA_CODEC_MUTE("Master Playback Switch", 0xb, 0, HDA_OUTPUT),
+ 	HDA_CODEC_VOLUME("Capture Volume", 0x0a, 0, HDA_OUTPUT),
+ 	HDA_CODEC_MUTE("Capture Switch", 0x0a, 0, HDA_OUTPUT),
