@@ -1,18 +1,32 @@
-From: Andrushka <andrusha@gmail.com>
-Subject: HDA, Conexant CX20585: low volume of sound
-Date: Thu, 7 Oct 2010 22:55:14 +0400
-Message-ID: <AANLkTikPPFTjEpM=9jjzzNC72ke0P41bqg7EKpg=B+9E@mail.gmail.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH 1/2] ASoC: Staticise CS4270 DAI
+Date: Thu, 7 Oct 2010 15:06:23 -0500
+Message-ID: <4CAE283F.40900@freescale.com>
+References: <1286407557-30413-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 056AA103855
+Received: from VA3EHSOBE001.bigfish.com (va3ehsobe001.messaging.microsoft.com
+	[216.32.180.11])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3B514103855
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Oct 2010 20:55:16 +0200 (CEST)
-Received: by gyh4 with SMTP id 4so75572gyh.38
-	for <alsa-devel@alsa-project.org>; Thu, 07 Oct 2010 11:55:16 -0700 (PDT)
+	Thu,  7 Oct 2010 22:06:34 +0200 (CEST)
+Received: from mail67-va3 (localhost.localdomain [127.0.0.1])	by
+	mail67-va3-R.bigfish.com (Postfix) with ESMTP id 0EB859E03FC	for
+	<alsa-devel@alsa-project.org>; Thu,  7 Oct 2010 20:06:28 +0000 (UTC)
+Received: from VA3EHSMHS013.bigfish.com (unknown [10.7.14.244])	by
+	mail67-va3.bigfish.com (Postfix) with ESMTP id E5E7C1C6804C	for
+	<alsa-devel@alsa-project.org>; Thu,  7 Oct 2010 20:06:27 +0000 (UTC)
+Received: from az33smr01.freescale.net (az33smr01.freescale.net
+	[10.64.34.199])	by az33egw02.freescale.net (8.14.3/8.14.3) with ESMTP
+	id o97K6OoR012847	for <alsa-devel@alsa-project.org>;
+	Thu, 7 Oct 2010 13:06:24 -0700 (MST)
+Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
+	[10.64.32.16])	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP id
+	o97K6Oph014146	for <alsa-devel@alsa-project.org>;
+	Thu, 7 Oct 2010 15:06:24 -0500 (CDT)
+In-Reply-To: <1286407557-30413-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,20 +36,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+Mark Brown wrote:
+> It's not needed with multi-component.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-I have thinkpad x201i.
+Acked-by: Timur Tabi <timur@freescale.com>
 
-Hardware and software info located at:
-
-http://www.alsa-project.org/db/?f=fe6a745fc2fa12cd082914aac2a9d810e978cb55
-
-In mixer Master & PCM is set to 100%.
-
-But sound volume in internal laptops speakers and headphones too low
-:( In win7 sound volume much higher.
-
-Please help.
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
