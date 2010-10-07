@@ -1,47 +1,37 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.37
-Date: Thu, 7 Oct 2010 14:17:56 -0700
-Message-ID: <20101007211755.GB11935@opensource.wolfsonmicro.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH 1/2] ASoC: Add CS4271 codec support
+Date: Thu, 7 Oct 2010 16:46:20 -0500
+Message-ID: <4CAE3FAC.6010508@freescale.com>
+References: <4CAD16A5.1090501@bluewatersys.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B0D091039DA
-	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Oct 2010 23:17:43 +0200 (CEST)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <4CAD16A5.1090501@bluewatersys.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Ryan Mallon <ryan@bluewatersys.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit ad5e4655f9a920b1cc13972e0389eaf9e0ba10b3:
+Ryan Mallon wrote:
+> + * For setups with variable MCLKs, pass 0 as 'freq' argument. This will cause
+> + * theoretically possible sample rates to be enabled. Call it again with a
+> + * proper value set one the external clock is set (most probably you would do
+> + * that from a machine's driver 'hw_param' hook.
 
-  ASoC: remove duplicated include for nuc900 (2010-10-05 19:26:00 -0700)
+If you're going to copy/paste parts of my driver verbatim into yours, you should
+put something like this in the comments:
 
-are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.37
+	Based on the CS4270 driver by Timur Tabi <timur@freescale.com>
 
-Mark Brown (6):
-      ASoC: Add Dimitris Papastamos to Wolfson maintainers
-      ASoC: Update links for Wolfson MAINTAINERS entry
-      ASoC: Staticise AD1980 DAI
-      ASoC: Use delayed work for debounce of GPIO based jacks
-      ASoC: Staticise CS4270 DAI
-      Merge branch 'for-2.6.36' into for-2.6.37
-
- MAINTAINERS               |    4 +++-
- include/sound/soc.h       |    2 +-
- sound/soc/codecs/ad1980.c |    2 +-
- sound/soc/codecs/cs4270.c |    2 +-
- sound/soc/soc-jack.c      |   11 +++++------
- 5 files changed, 11 insertions(+), 10 deletions(-)
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
