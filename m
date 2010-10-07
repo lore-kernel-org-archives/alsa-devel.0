@@ -1,23 +1,18 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: Need expert's advice - Fast Track Ultra (8R)
- dropping samples
-Date: Thu, 07 Oct 2010 13:35:19 +0200
-Message-ID: <4CADB077.3060907@showlabor.de>
-References: <4C9DC7A1.8050001@showlabor.de>
-	<4CA5BF35.2030108@showlabor.de>	<4CA60C5B.6010809@ladisch.de>
-	<4CA86E1A.30405@showlabor.de>	<4CAAD212.9090805@ladisch.de>
-	<4CAC804A.8040806@showlabor.de>	<4CAC89EA.8080207@ladisch.de>
-	<4CACA471.2000504@showlabor.de>	<4CAD6AA2.4050205@ladisch.de>
-	<20101007081010.GZ7159@buzzloop.caiaq.de>
+From: Davyd McColl <davydm@gmail.com>
+Subject: Headphone jack and auto-mute of speak output
+Date: Thu, 7 Oct 2010 13:55:14 +0200
+Message-ID: <AANLkTi=ZhMVY1abcpxviy50yfSbdc1vABCtKa9jJXfig@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
-	[83.169.30.203]) by alsa0.perex.cz (Postfix) with ESMTP id 8EC9324480
+Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
+	[209.85.216.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0849D24490
 	for <alsa-devel@alsa-project.org>;
-	Thu,  7 Oct 2010 13:35:27 +0200 (CEST)
-In-Reply-To: <20101007081010.GZ7159@buzzloop.caiaq.de>
+	Thu,  7 Oct 2010 13:55:35 +0200 (CEST)
+Received: by qyk8 with SMTP id 8so656065qyk.17
+	for <alsa-devel@alsa-project.org>; Thu, 07 Oct 2010 04:55:35 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,74 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Am 07.10.2010 10:10, schrieb Daniel Mack:
->
-> Ah, that makes sense, yes. UAC2 calls this mode "implicit feedback".
-> Felix, can you provide a dump of "lsusb -v" for this device?
->
-> Daniel
->
->    
+Good day
 
-A couple of additional notes:
+I'm new to this list (though I've done some searching, I'm sure I could have
+missed something), so please bear with me.
 
-1.
-If I force the playback endpoint to async mode  (.ep_attr = 0x05) the 
-regular clicks disappear at 48 kHz. But then we are back to completely 
-distorted playback at 44.1 kHz.
+I filed a bug report recently against Ubuntu with respect to the problem I'm
+experiencing (as per the subject: jacking in my headphones doesn't mute the
+speaker output) and was informed that the decision had been made upstream as
+a design intention. I was linked off to:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2010-August/030071.html
+with respect to the thread on this topic. I'd like to raise it again though,
+perhaps as a configurable feature, for the following reasons:
 
-I guess those of you understanding "implicit feedback" probably expected 
-this result.
+1) headphones muting the speakers used to work some time ago (before Ubuntu
+9.04, iirc), so we have an established user expectation even under Linux
+distros.
+2) headphones mute the built-in speakers of my laptop (windows and ubuntu)
+-- why the inconsistent behaviour for a desktop? Just because the speakers
+in the laptop are bolted into the frame of the machine?
+3) Windows "gets it right": plugging in headphones mutes external speakers
+-- it's convenient (Though I think you can disable that feature if you
+want). I'm told by a person at work that his Mac does the same. Again, the
+user expectation is unmet under a newish Linux distro.
+4) The user expectation theory is held up by the number of bug reports
+against this design choice on Ubuntu Launchpad alone (I haven't looked at
+other bug lists). The average user is not expecting the current behaviour,
+obviously
+5) For people without hardware volume controls on their speakers, the
+problem is exacerbated: instead of being able to plug in headphones to
+disturb others around them less (ie: contain their music/noises), they have
+to unplug their speakers too -- which may not be trivial since speakers are
+normally plugged in at the back of the machine, not at the front where the
+headphone jack would be found. On a machine in an enclosure, this is
+especially troublesome.
 
-2.
-In Windows switching the clock source from internal to external gives 
-these Co packets in usbmon:
+So I'd really like to know if it would be possible to allow the behaviour
+most users are expecting. Sometimes it's useful to be able to output to both
+speakers and headphones, but I would say that the average user doesn't want
+both at the same time.
 
-ffff88007426a980 49576636 S Co:1:009:0 s 01 0b 0000 0001 0000 0
-ffff88007426a980 49577887 C Co:1:009:0 0 0
-ffff88007426ab00 49650954 S Co:1:009:0 s 01 0b 0000 0002 0000 0
-ffff88007426ab00 49652256 C Co:1:009:0 0 0
-ffff88007426a8c0 49789965 S Co:1:009:0 s 01 0b 0001 0001 0000 0
-ffff88007426a8c0 49790233 C Co:1:009:0 0 0
-ffff88007426a8c0 49808331 S Co:1:009:0 s 01 0b 0002 0002 0000 0 <---- 
-here's a difference
-ffff88007426a8c0 49808727 C Co:1:009:0 0 0
-ffff88007426aa40 49947450 S Co:1:009:0 s 22 01 0100 0001 0003 3 = 80bb00
-ffff88007426aa40 49947823 C Co:1:009:0 0 3 >
-ffff88007426aa40 49962321 S Co:1:009:0 s 22 01 0100 0081 0003 3 = 80bb00
-ffff88007426aa40 49962691 C Co:1:009:0 0 3 >
-
-The device seems to accept an external clock at 48 kHz only.
-
-3.
-In Windows switching the clock source from external to internal gives 
-these Co packets in usbmon:
-
-ffff88007426aec0 97962867 S Co:1:009:0 s 01 0b 0000 0001 0000 0
-ffff88007426aec0 97964056 C Co:1:009:0 0 0
-ffff88007426ab00 98031831 S Co:1:009:0 s 01 0b 0000 0002 0000 0
-ffff88007426ab00 98033165 C Co:1:009:0 0 0
-ffff88007426a980 98093945 S Co:1:009:0 s 01 0b 0001 0001 0000 0
-ffff88007426a980 98094160 C Co:1:009:0 0 0
-ffff88007426a980 98099994 S Co:1:009:0 s 01 0b 0001 0002 0000 0 <---- 
-here's a difference
-ffff88007426a980 98101277 C Co:1:009:0 0 0
+-d
 
 
-@Daniel:
-You asked for the output of lsusb. Are you thinking of modifying the 
-UA-101 driver yourself? Or something more generic? In other words, if 
-you already have an idea of a solution I wouldn't have to work myself 
-through ua101.c (which I don't understand right now).
-
-@all:
-Did anyone notice the patch adding mixer support for the FTU devices I 
-send on Sept, 25?
-
-Kind regards,
-
-Felix
+-- 
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+The competent programmer is fully aware of the limited size of his own
+skull. He therefore approaches his task with full humility, and avoids
+clever tricks like the plague.
+- Djikstra.
