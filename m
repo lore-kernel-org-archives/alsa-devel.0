@@ -1,16 +1,18 @@
 From: Simon McVittie <smcv@debian.org>
-Subject: [PATCH 2/2] configure.in: don't rely on test -a,
+Subject: Re: [PATCH 2/2] configure.in: don't rely on test -a,
  not all shells support it
-Date: Fri, 8 Oct 2010 09:06:58 +0100
-Message-ID: <20101008080658.GA11099@reptile.pseudorandom.co.uk>
+Date: Fri, 8 Oct 2010 09:31:53 +0100
+Message-ID: <20101008083153.GA30622@reptile.pseudorandom.co.uk>
+References: <20101008080658.GA11099@reptile.pseudorandom.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9136152838647494577=="
+Content-Type: multipart/mixed; boundary="===============8258244156556823875=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from figment.pseudorandom.co.uk (figment.pseudorandom.co.uk
 	[195.10.223.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1FF1D10381C
+	by alsa0.perex.cz (Postfix) with ESMTP id D7D66245B5
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Oct 2010 10:07:00 +0200 (CEST)
+	Fri,  8 Oct 2010 10:31:54 +0200 (CEST)
+In-Reply-To: <20101008080658.GA11099@reptile.pseudorandom.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,64 +26,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9136152838647494577==
+--===============8258244156556823875==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="yrj/dFKFPuw6o+aM"
+	protocol="application/pgp-signature"; boundary="BOKacYhQ+x31HxR3"
 Content-Disposition: inline
 
 
---yrj/dFKFPuw6o+aM
+--BOKacYhQ+x31HxR3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Notably, /bin/sh in Debian and Ubuntu is dash, which doesn't.
----
- configure.in |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+On Fri, 08 Oct 2010 at 09:06:58 +0100, Simon McVittie wrote:
+> Notably, /bin/sh in Debian and Ubuntu is dash, which doesn't.
 
-diff --git a/configure.in b/configure.in
-index e904956..c353759 100644
---- a/configure.in
-+++ b/configure.in
-@@ -119,7 +119,7 @@ if test "$versioned" =3D "yes"; then
-   major=3D`echo $xres | cut -d . -f 1`
-   minor=3D`echo $xres | cut -d . -f 2`
-   pass=3D0
--  if test $major -eq 1 -a $minor -gt 3; then
-+  if test $major -eq 1 && test $minor -gt 3; then
-     pass=3D1
-   else
-     if test $major -gt 1; then
---=20
-1.7.1
+Sorry, I'd misinterpreted the error produced when grep fails (fixed by patch
+1/2). Recent dash versions do support test -a, so patch 2/2 turns out to be
+unnecessary on current Debian, although it might conceivably be useful for
+backports to older Ubuntu versions.
 
+    S
 
---yrj/dFKFPuw6o+aM
+--BOKacYhQ+x31HxR3
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIVAwUBTK7RIk3o/ypjx8yQAQijNxAAjFb3xjfIGmgnwnrXi62zo7z8BT4nQtyC
-YnT/P59l3dbjvxr+1f1hsbjnndJxYa/uHFuP6qNAI9kSVBBKH8s1WUTv6n8rb1Km
-lNcyQyEhm1vAl8txzVKbIXWRk38d7Ao2Ir9dHeTjNnD7pt8YiaZ0wwMnySqwhYCG
-20s8KN6tsaA5gSN0hpzhTtK1uWA3kKPZe4wuvCUFOfRGg9rDTVJNLl8Hj5KLbEDa
-8bB8dylkzYgFcT3PUGGqaFm01nyUP232PXn+o160bWA3RAhmezR0e46E0TDuPqCI
-WHLtQh+HBrAjZjYudJqmtV/Eksx9cGrSALKwDX8fxN8s28VOlgN1yDPfo3fau5NV
-LPfURg7IvOKs71OGaslwP9TX/XCUTV7N6v2hCwz0KxkZ47MPPAke5FqVJ0YsrthL
-bzvT4a75wA53Z+0S+32hg9piyTPpdSjNUVm7nKVrxuDqlZMQFT3pcYIGRDIluO4X
-nySPx7EvNHV6Pm0v6rXpWvJukUNQWYGi+tdb2p9WMNkC1sAjm4kmpT1iDYwZDpQO
-WEVmi6229lRg934J0SSE5vQaApEXC/thGmhT1sqKfHV8ZD74dmBdP49wU1KYAcIE
-Fb2GoNSgQWPkaav+f42+ffoEYabBwVYNznfVkD4cSuiHp12elDELBeCWQ/462ADh
-CXyS2px8o2M=
-=eghh
+iQIVAwUBTK7W+U3o/ypjx8yQAQg7Sw/9HQ7ZUyM/Jq5vbwUxYgmFPzxoEkBzoLws
++ZzHyYKRULb4T0UoaMJ9ZrveVAs4JGvNFPoKgXax5VpAUFeVdkwm6QYMTu30IyJN
+SPZ2oHjKyg8YZKdjFWGrzslqF7IysmeBekKdoxE2DBudt6cy6/pY7AS73Xkz6Isu
+p/kyDJlgKzyi5+VH/NxqwU65rIbJIFFEzz4g1beh3x/DQjyYXHN15pgzm1pT9p3w
+/6mS8UYU/UT/V3g9m6hWc5ze0YoosN6mmCVqeIgUXUTsNF72lRApYxA1w02eZRqE
+iD3OZW/7GXpJcyaMH1O6nFI6PRIZsbrwEv78YEaaVle9Ne9ty6B8bC/LKeolypih
+iNcp66qdUoDBdDK8l5xwTqG3/qq1xWWlxeDRVSqKi9Uj63detBWubKA7UI0EvCxX
+9BWSeiAnzWSQdlDgC8EndsRQePjOIvKhqQoYafm1cRR7Rpb+Zwr0jw09yBuAMF8L
+AHXCbFUR2SQskA8mmb5BhmAykoH2LJYYP+MUyby+E3EiF1PTv4auA/Uz7cGkyaTY
+6THGm9yK6UIjttTRI17YuIqMFb3aWSIJU1lpc8D7PwEnAzWT0X9v87vIMBE2u34m
+u2jYkCYDVGpCB5aKNKISeO19it/Cfz2FSLTK2PuKPUqhUCVzn6Wi2SXJAb4jRKpR
+Ok5tneKB4AM=
+=cwkC
 -----END PGP SIGNATURE-----
 
---yrj/dFKFPuw6o+aM--
+--BOKacYhQ+x31HxR3--
 
---===============9136152838647494577==
+--===============8258244156556823875==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -92,4 +81,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============9136152838647494577==--
+--===============8258244156556823875==--
