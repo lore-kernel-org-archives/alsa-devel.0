@@ -1,20 +1,20 @@
-From: Volkan YAZICI <yazicivo@ttmail.com>
+From: Valentine Sinitsyn <valentine.sinitsyn@gmail.com>
 Subject: Re: Mic + Headphone Problem in Samsung R540
-Date: Fri, 08 Oct 2010 14:55:08 +0300
-Message-ID: <87vd5cew6b.fsf@alamut.ozu.edu.tr>
+Date: Fri, 08 Oct 2010 18:37:34 +0600
+Message-ID: <4CAF108E.9040602@gmail.com>
 References: <87aams5t14.fsf@alamut.ozu.edu.tr>
+	<87vd5cew6b.fsf@alamut.ozu.edu.tr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail2.ttmail.com (mail.ttmail.com [88.255.235.9])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8D44724386
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id C03FB243C6
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Oct 2010 14:15:51 +0200 (CEST)
-Resent-To: alsa-devel@alsa-project.org
-Resent-Message-ID: <87k4lsev79.fsf@alamut.ozu.edu.tr>
-In-Reply-To: <87aams5t14.fsf@alamut.ozu.edu.tr> (Volkan YAZICI's message of
-	"Tue, 05 Oct 2010 22:38:47 +0300")
+	Fri,  8 Oct 2010 14:37:38 +0200 (CEST)
+Received: by ewy8 with SMTP id 8so463660ewy.38
+	for <alsa-devel@alsa-project.org>; Fri, 08 Oct 2010 05:37:38 -0700 (PDT)
+In-Reply-To: <87vd5cew6b.fsf@alamut.ozu.edu.tr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,27 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel-request@alsa-project.org
+To: Volkan YAZICI <yazicivo@ttmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hello,
 
-I'm struggling with mic+headphone issues in Samsung R540. I posted below
-message to alsa-user, but couldn't get any response. I'll be really
-appreciated for any help. BTW, I can provide any other information to
-fix the problem. (Even remote access maybe.) I'm really in need to solve
-this issue.
+Looks like your Capture switch is disabled. Run alsamixer, find Capture 
+(press F4) and then press Space to start capturing sound. Obviously, you 
+will need to run arecord after that (I recommend using -vv to see the 
+bar moving as you speak anything into mic).
 
+P.S. You shouldn't send messages to alsa-devel-request email, it is 
+intended for list management functions.
 
-Regards.
-
-On Tue, 05 Oct 2010, Volkan YAZICI <yazicivo@ttmail.com> writes:
-> This is a damn Samsung R540 notebook with kernel 2.6.5.37 and ALSA
-> 1.0.23 installed. (See here[1] for details.) I couldn't get mic and
-> headphone work. Setting model=basic brings much more configurations to
-> the alsamixer screen and I can hear my sound and that ssshhhh noise from
-> the speakers (which means mic directs sound to speakers somehow), but I
-> couldn't make arecord to record anything. In any configuration
-> combination I tried, I couldn't make headphone work. Any ideas?
->
-> [1] http://www.alsa-project.org/db/?f=3571a643ab90e53100fa319edaa32b8b0dabfd00
+Regards,
+Valentine Sinitsyn
