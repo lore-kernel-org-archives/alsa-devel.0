@@ -1,88 +1,182 @@
 From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: RE: [alsa-devel] [PATCH 10/10] ASoC: SAMSUNG: Add Machine driver for
- S/PDIF PCM audio
-Date: Fri, 08 Oct 2010 18:48:26 +0900
-Message-ID: <001401cb66cd$fc49b990$f4dd2cb0$%kim@samsung.com>
+Subject: RE: [PATCH 1/10] ARM: S5PC100: Add S/PDIF platform device
+Date: Fri, 08 Oct 2010 18:54:44 +0900
+Message-ID: <001601cb66ce$d87da480$8978ed80$%kim@samsung.com>
 References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
- <1286194583-19937-1-git-send-email-sw.youn@samsung.com>
- <20101004224159.GA4972@opensource.wolfsonmicro.com>
- <AANLkTi=FHGw+qzL507K546vr8zEZgXBP3Mk=O__Rpd4H@mail.gmail.com>
- <AANLkTincwL_nQAmu7Dcmht0FV43BiN7OoecE_60QJhS2@mail.gmail.com>
- <20101005044304.GA26509@opensource.wolfsonmicro.com>
- <AANLkTi=x_fi5HTBBmMUv8YTxSdbgcnJ=ZbacJQj6rcgf@mail.gmail.com>
- <20101005055937.GA19989@opensource.wolfsonmicro.com>
- <AANLkTimi1t5S2XWdUFzaPttD4Hywm0SLt5CvR1YnVOjj@mail.gmail.com>
- <AANLkTin4skx+aiL2FXwWO1ekKqT2YWDd3SM1H5WnGkhC@mail.gmail.com>
- <00c401cb6520$9484ef90$bd8eceb0$%kim@samsung.com>
- <AANLkTikf4CAWm49Q_AfcfiQDBQUVcE_BC-a_4F7d8xOz@mail.gmail.com>
- <AANLkTinPXcjHcaM1puzz00Sfhob9Y-X4HGDDVGMTqhH5@mail.gmail.com>
+ <1286191919-22356-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7BIT
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <AANLkTinPXcjHcaM1puzz00Sfhob9Y-X4HGDDVGMTqhH5@mail.gmail.com>
+In-reply-to: <1286191919-22356-1-git-send-email-sw.youn@samsung.com>
 Content-language: ko
 Sender: linux-samsung-soc-owner@vger.kernel.org
-To: 'Seungwhan Youn' <claude.youn@gmail.com>, 'Jassi Brar' <jassisinghbrar@gmail.com>, 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, jassi.brar@samsung.com
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 'Seungwhan Youn' <sw.youn@samsung.com>, ben-linux@fluff.org, lrg@slimlogic.co.uk
+To: 'Seungwhan Youn' <sw.youn@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: ben-linux@fluff.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
 Seungwhan Youn wrote:
+> 
+> This patch add S/PDIF platform device to support S/PDIF PCM audio
+> on S5PC100.
+> 
+> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+> ---
+>  arch/arm/mach-s5pc100/dev-audio.c          |   54
+> ++++++++++++++++++++++++++++
+>  arch/arm/mach-s5pc100/include/mach/map.h   |    2 +
+>  arch/arm/mach-s5pc100/mach-smdkc100.c      |    4 ++
+>  arch/arm/plat-samsung/include/plat/audio.h |    9 +++++
+>  arch/arm/plat-samsung/include/plat/devs.h  |    1 +
+>  5 files changed, 70 insertions(+), 0 deletions(-)
+> 
+> diff --git a/arch/arm/mach-s5pc100/dev-audio.c
+b/arch/arm/mach-s5pc100/dev-
+> audio.c
+> index a699ed6..9f7b17a 100644
+> --- a/arch/arm/mach-s5pc100/dev-audio.c
+> +++ b/arch/arm/mach-s5pc100/dev-audio.c
+> @@ -285,3 +285,57 @@ struct platform_device s5pc100_device_ac97 = {
+>  		.coherent_dma_mask = DMA_BIT_MASK(32),
+>  	},
+>  };
+> +
+> +/* S/PDIF Controller platform_device */
+> +static int s5pc100_spdif_cfg_gpd(struct platform_device *pdev)
+> +{
+> +	s3c_gpio_cfgpin_range(S5PC100_GPD(5), 2, S3C_GPIO_SFN(3));
+> +
+> +	return 0;
+> +}
+> +
+> +static int s5pc100_spdif_cfg_gpg3(struct platform_device *pdev)
+> +{
+> +	s3c_gpio_cfgpin_range(S5PC100_GPG3(5), 2, S3C_GPIO_SFN(3));
+> +
+> +	return 0;
+> +}
+> +
+> +static struct resource s5pc100_spdif_resource[] = {
+> +	[0] = {
+> +		.start	= S5PC100_PA_SPDIF,
+> +		.end	= S5PC100_PA_SPDIF + 0x100 - 1,
+> +		.flags	= IORESOURCE_MEM,
+> +	},
+> +	[1] = {
+> +		.start	= DMACH_SPDIF,
+> +		.end	= DMACH_SPDIF,
+> +		.flags	= IORESOURCE_DMA,
+> +	},
+> +};
+> +
+> +static struct s3c_audio_pdata s5p_spdif_pdata = {
+> +	.cfg_gpio = s5pc100_spdif_cfg_gpd,
+> +};
+> +
+> +static u64 s5pc100_spdif_dmamask = DMA_BIT_MASK(32);
+> +
+> +struct platform_device s5pc100_device_spdif = {
+> +	.name		= "samsung-spdif",
+> +	.id		= -1,
+> +	.num_resources	= ARRAY_SIZE(s5pc100_spdif_resource),
+> +	.resource	= s5pc100_spdif_resource,
+> +	.dev = {
+> +		.platform_data = &s5p_spdif_pdata,
+> +		.dma_mask = &s5pc100_spdif_dmamask,
+> +		.coherent_dma_mask = DMA_BIT_MASK(32),
+> +	},
+> +};
+> +
+> +void __init s5pc100_spdif_setup_gpio(int gpio)
+> +{
+> +	if (gpio == S5PC100_SPDIF_GPD)
+> +		s5p_spdif_pdata.cfg_gpio = s5pc100_spdif_cfg_gpd;
+> +	else
+> +		s5p_spdif_pdata.cfg_gpio = s5pc100_spdif_cfg_gpg3;
+> +}
+> diff --git a/arch/arm/mach-s5pc100/include/mach/map.h b/arch/arm/mach-
+> s5pc100/include/mach/map.h
+> index 8751ef4..32e9cab 100644
+> --- a/arch/arm/mach-s5pc100/include/mach/map.h
+> +++ b/arch/arm/mach-s5pc100/include/mach/map.h
+> @@ -110,6 +110,8 @@
+>  #define S5PC100_PA_PCM0		0xF2400000
+>  #define S5PC100_PA_PCM1		0xF2500000
+> 
+> +#define S5PC100_PA_SPDIF	0xF2600000
+> +
+>  #define S5PC100_PA_TSADC	(0xF3000000)
+> 
+>  /* KEYPAD */
+> diff --git a/arch/arm/mach-s5pc100/mach-smdkc100.c b/arch/arm/mach-
+> s5pc100/mach-smdkc100.c
+> index 020c3f9..994a1e1 100644
+> --- a/arch/arm/mach-s5pc100/mach-smdkc100.c
+> +++ b/arch/arm/mach-s5pc100/mach-smdkc100.c
+> @@ -47,6 +47,7 @@
+>  #include <plat/adc.h>
+>  #include <plat/keypad.h>
+>  #include <plat/ts.h>
+> +#include <plat/audio.h>
+> 
+>  /* Following are default values for UCON, ULCON and UFCON UART registers
+*/
+>  #define SMDKC100_UCON_DEFAULT	(S3C2410_UCON_TXILEVEL |	\
+> @@ -196,6 +197,7 @@ static struct platform_device *smdkc100_devices[]
+> __initdata = {
+>  	&s5p_device_fimc0,
+>  	&s5p_device_fimc1,
+>  	&s5p_device_fimc2,
+> +	&s5pc100_device_spdif,
+>  };
+> 
+>  static struct s3c2410_ts_mach_info s3c_ts_platform __initdata = {
+> @@ -226,6 +228,8 @@ static void __init smdkc100_machine_init(void)
+> 
+>  	samsung_keypad_set_platdata(&smdkc100_keypad_data);
+> 
+> +	s5pc100_spdif_setup_gpio(S5PC100_SPDIF_GPD);
+> +
+>  	/* LCD init */
+>  	gpio_request(S5PC100_GPD(0), "GPD");
+>  	gpio_request(S5PC100_GPH0(6), "GPH0");
+> diff --git a/arch/arm/plat-samsung/include/plat/audio.h b/arch/arm/plat-
+> samsung/include/plat/audio.h
+> index e32f9ed..7712ff6 100644
+> --- a/arch/arm/plat-samsung/include/plat/audio.h
+> +++ b/arch/arm/plat-samsung/include/plat/audio.h
+> @@ -16,6 +16,15 @@
+>  #define S3C64XX_AC97_GPE  1
+>  extern void s3c64xx_ac97_setup_gpio(int);
+> 
+> +/*
+> + * The machine init code calls s5p*_spdif_setup_gpio with
+> + * one of these defines in order to select appropriate bank
+> + * of GPIO for S/PDIF pins
+> + */
+> +#define S5PC100_SPDIF_GPD  0
+> +#define S5PC100_SPDIF_GPG3 1
+> +extern void s5pc100_spdif_setup_gpio(int);
+> +
+>  /**
+>   * struct s3c_audio_pdata - common platform data for audio device drivers
+>   * @cfg_gpio: Callback function to setup mux'ed pins in I2S/PCM/AC97 mode
+> diff --git a/arch/arm/plat-samsung/include/plat/devs.h b/arch/arm/plat-
+> samsung/include/plat/devs.h
+> index 7d448e1..a1c3b93 100644
+> --- a/arch/arm/plat-samsung/include/plat/devs.h
+> +++ b/arch/arm/plat-samsung/include/plat/devs.h
+> @@ -106,6 +106,7 @@ extern struct platform_device s5pc100_device_pcm1;
+>  extern struct platform_device s5pc100_device_iis0;
+>  extern struct platform_device s5pc100_device_iis1;
+>  extern struct platform_device s5pc100_device_iis2;
+> +extern struct platform_device s5pc100_device_spdif;
+> 
+>  extern struct platform_device samsung_device_keypad;
+> 
+> --
 
-> 
-> On Thu, Oct 7, 2010 at 10:33 AM, Seungwhan Youn <claude.youn@gmail.com>
-> wrote:
-> > Dear Maintainers,
-> >
-> >>> >> plat-samsung would probably be fine for that also - create a file called
-> >>> >> common-smdk or something.  Some other things have gone for a plat-
-> smdk
-> >>> >> style approach too, though I'm not sure how tasteful I find that
-> >>> >> personally.
-> >>> > Even though I would personally like to have EPLL control for a device
-> >>> > in machine specific manner as part of its driver, I accept your opinion.
-> >>> >
-> >>> > Claude, let us create one arch/arm/plat-samsung/smdk.c to do common
-> >>> > stuff for SMKDs like EPLL control. What do you think ?
-> >>>
-> >>> Actually if we add this file on plat-samsung, board-init will be
-> >>> separated two-part, one is machine(board) specific and other is all
-> >>> smdk specific. So, If it doesn't make confusion to other guys who
-> >>> wants to add settings for their features on board-init, it looks good
-> >>> to me. But I think that we also have to listen Mr. Ben Dooks and Mr.
-> >>> Kukjin Kim's opinion about this before we get a conclusion.
-> >>
-> >> Hi all,
-> >>
-> >> I think, basically it'd better if could control clock stuff in each driver for it when
-> need it such as clk_get, clk_enable and so on.
-> >> Actually there is no policy/protection for EPLL usage in plat-samsung or plat-
-> s5p now and need to sort out other similar case for it also....so in my opinion, right
-> now to proceed with the current style is helpful to me and will consider it in the
-> future.
-> >>
-> >
-> > I wander to know that this is a last discussion, or more, and also
-> > know about finial decision. Of course, if we didn't get reached to the
-> > conclusion, we can talk more.
-> >
-> > Can you give me a hand to finish this? :-)
-> >
-> 
-> Dear Mr. Mark and Mr. Jassi,
-> 
-> Now, I'm almost finished 2nd patch for submit except this audio clock
-> setting. For now, I can only think that remove audio clock setting
-
-Hmm...so, maybe its working has problem...right?
-
-> from this machine code, and add audio clock settings in arch later(may
-> be after arch/arm/plat-samsung get EPLL policy as Mr. Kukjin said).
-> 
-I think, firstly put the clock stuff in the driver like your patch, and then if required, to move is better later.
-
-> Is this okay?
-> 
+Ok...will apply.
 
 Thanks.
 
