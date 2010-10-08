@@ -1,24 +1,20 @@
-From: Simon Brenner <simon.brenner@mobotix.com>
-Subject: Problem configuring alsa-lib for cross-compilation
-Date: Fri, 08 Oct 2010 13:00:16 +0200
-Message-ID: <4CAEF9C0.5000509@mobotix.com>
-Reply-To: simon.brenner@mobotix.com
+From: Volkan YAZICI <yazicivo@ttmail.com>
+Subject: Re: Mic + Headphone Problem in Samsung R540
+Date: Fri, 08 Oct 2010 14:55:08 +0300
+Message-ID: <87vd5cew6b.fsf@alamut.ozu.edu.tr>
+References: <87aams5t14.fsf@alamut.ozu.edu.tr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smail.mobotixserver.de (smail.mobotixserver.de [213.183.84.167])
-	by alsa0.perex.cz (Postfix) with ESMTP id D5AA42433C
+Received: from mail2.ttmail.com (mail.ttmail.com [88.255.235.9])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D44724386
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Oct 2010 13:00:16 +0200 (CEST)
-Received: from mobotix.com (localhost [127.0.0.1])
-	by smail.mobotixserver.de (Postfix) with ESMTP id 53370783
-	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Oct 2010 13:00:16 +0200 (CEST)
-Received: from [192.168.24.20] ([192.168.24.20] verified)
-	by mobotix.com (CommuniGate Pro SMTP 5.3.7)
-	with ESMTP id 10725275 for alsa-devel@alsa-project.org;
-	Fri, 08 Oct 2010 13:00:16 +0200
+	Fri,  8 Oct 2010 14:15:51 +0200 (CEST)
+Resent-To: alsa-devel@alsa-project.org
+Resent-Message-ID: <87k4lsev79.fsf@alamut.ozu.edu.tr>
+In-Reply-To: <87aams5t14.fsf@alamut.ozu.edu.tr> (Volkan YAZICI's message of
+	"Tue, 05 Oct 2010 22:38:47 +0300")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,36 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel-request@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-I'm building and installing the alsa libs for an embedded system.
-My current process runs as follows:
+I'm struggling with mic+headphone issues in Samsung R540. I posted below
+message to alsa-user, but couldn't get any response. I'll be really
+appreciated for any help. BTW, I can provide any other information to
+fix the problem. (Even remote access maybe.) I'm really in need to solve
+this issue.
 
- 1) the alsa-lib package is crosscompiled on my PC host system (x86);
- 2) the alsa-lib package is installed on a special prefix (say '/tmp/dest') on the host system;
- 3) some installed files are copied from the dir. '/tmp/dest' to the final target root filesystem
-   tree (say '/tmp/emb_root');
 
-Now there are a couple of details that do not work with this process:
+Regards.
 
-in point 1) I configure the alsa-lib package with the option --prefix=/tmp/dest because I want
-to install the package there and use it later to compile other packages against it (alsa-utils for
-example); at the same time I want also to use the alsa libs in my target system but it is not
-possible because, at runtime, the init functions in the libasound.so looks for its configuration
-file under '/tmp/dest/share/alsa/alsa.conf'!
-The same problem happens with the plugins dir.
-
-I tracked back this problems to the fact that, in the configure.in, the variable ALSA_CONFIG_DIR is
-used both to be substituted in the Makefile.am's (AC_SUBST(ALSA_CONFIG_DIR)) and to define the
-preprocessor constant in the 'include/config.h' (C_DEFINE_UNQUOTED(ALSA_CONFIG_DIR,...)). There is
-currently no way to have two independent values for the two cases.
-
-My current 'best' solution is to patch the header 'include/config.h' after running the configure script.
-
-Is there any standard solution to this without patching the configure results ?
-
-Regards,
--Simon.
+On Tue, 05 Oct 2010, Volkan YAZICI <yazicivo@ttmail.com> writes:
+> This is a damn Samsung R540 notebook with kernel 2.6.5.37 and ALSA
+> 1.0.23 installed. (See here[1] for details.) I couldn't get mic and
+> headphone work. Setting model=basic brings much more configurations to
+> the alsamixer screen and I can hear my sound and that ssshhhh noise from
+> the speakers (which means mic directs sound to speakers somehow), but I
+> couldn't make arecord to record anything. In any configuration
+> combination I tried, I couldn't make headphone work. Any ideas?
+>
+> [1] http://www.alsa-project.org/db/?f=3571a643ab90e53100fa319edaa32b8b0dabfd00
