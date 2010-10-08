@@ -1,16 +1,16 @@
 From: Simon McVittie <smcv@debian.org>
-Subject: [PATCH 1/2] Version-check libtool correctly when doing
- an out-of-tree build
-Date: Fri, 8 Oct 2010 09:06:29 +0100
-Message-ID: <20101008080629.GA11076@reptile.pseudorandom.co.uk>
+Subject: [PATCH 2/2] configure.in: don't rely on test -a,
+ not all shells support it
+Date: Fri, 8 Oct 2010 09:06:58 +0100
+Message-ID: <20101008080658.GA11099@reptile.pseudorandom.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4502433975049915377=="
+Content-Type: multipart/mixed; boundary="===============9136152838647494577=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from figment.pseudorandom.co.uk (figment.pseudorandom.co.uk
 	[195.10.223.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 11AC610381C
+	by alsa0.perex.cz (Postfix) with ESMTP id 1FF1D10381C
 	for <alsa-devel@alsa-project.org>;
-	Fri,  8 Oct 2010 10:06:32 +0200 (CEST)
+	Fri,  8 Oct 2010 10:07:00 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,70 +24,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4502433975049915377==
+--===============9136152838647494577==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="J/dobhs11T7y2rNN"
+	protocol="application/pgp-signature"; boundary="yrj/dFKFPuw6o+aM"
 Content-Disposition: inline
 
 
---J/dobhs11T7y2rNN
+--yrj/dFKFPuw6o+aM
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-libtool is only created at the end of ./configure, so it doesn't make
-sense to grep it in ./configure (the check would always fail the first
-time). However, ltmain.sh is copied into the ${srcdir} by libtoolize and
-should be safe to check at any time that configure can be run.
-
-Signed-off-by: Simon McVittie <smcv@debian.org>
+Notably, /bin/sh in Debian and Ubuntu is dash, which doesn't.
 ---
  configure.in |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/configure.in b/configure.in
-index abc4687..e904956 100644
+index e904956..c353759 100644
 --- a/configure.in
 +++ b/configure.in
-@@ -115,7 +115,7 @@ AC_ARG_WITH(versioned,
-   versioned=3D"$withval", versioned=3D"yes")
- if test "$versioned" =3D "yes"; then
-   # it seems that GNU ld versions since 2.10 are not broken
--  xres=3D`grep '^VERSION=3D' libtool | cut -d =3D -f 2 | cut -d \" -f 2`
-+  xres=3D`grep '^VERSION=3D' ${srcdir}/ltmain.sh | cut -d =3D -f 2 | cut -=
-d \" -f 2`
+@@ -119,7 +119,7 @@ if test "$versioned" =3D "yes"; then
    major=3D`echo $xres | cut -d . -f 1`
    minor=3D`echo $xres | cut -d . -f 2`
    pass=3D0
+-  if test $major -eq 1 -a $minor -gt 3; then
++  if test $major -eq 1 && test $minor -gt 3; then
+     pass=3D1
+   else
+     if test $major -gt 1; then
 --=20
 1.7.1
 
 
---J/dobhs11T7y2rNN
+--yrj/dFKFPuw6o+aM
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIVAwUBTK7Q/E3o/ypjx8yQAQjWKw//R6xaRY/S4phd0bfWOgumGkkJq6bfG4mM
-XyksV67eUH4N0/BHtTwx/h2oNr9J7vrKHJiIkh8Skqy0CFsMp/sQ51p7qyhumURF
-wGwjQZqPHSo4GTTDL2yfCFsVVNDY7Ur/pudr1IH5nDgAp4JbFlJ40ptUm7wsPPQE
-CCuZ5dKcidguGQr0A6BSg6LsJ5pHMDRhc7XdxkFGr48ZQ8OHyOfXaFFX/Vy546zv
-qu1QypSDpQTduNO9LVj5SABujMPbb075c+vZ0NSV0I/9DaBuj6taW8oPE5NXLPrM
-TSL8SMjYvy0lVn+kS5S3Bm2kq1LUrJ0U/rq1OesC6/qDLtkHWxjgBEF9z0rC2ZnJ
-bTY8nfJqBWMca1UsRD5or/ne7IH5lmfOWqWG9H4Za0kBbyqLgB13HqRjHzE99P4V
-yq0SNKWaRzST8+GvPolHsXU59sdJpf5zm8PAT8xkKkfmCK9gu19Iujkh9ETZkrcB
-xCf4d1yOGulMFhYn66Cry2QABRBIN+eym0FCviSAdtkTWdJuww+kn9FXy38xQ77H
-Kn1XF8YMaPOYMxwnI8KVLU+KtO04LhwjUy9uGSJ1uu3zIRKQwlP/hJpoErDQ0Y2q
-GaYNwj0rmwA2G0ChJ8F4cM57in84z3Yq8POYRkiGM+qALM+X3M0xSNgeXxFEpMp1
-0Rrl+KR+j8g=
-=mGHf
+iQIVAwUBTK7RIk3o/ypjx8yQAQijNxAAjFb3xjfIGmgnwnrXi62zo7z8BT4nQtyC
+YnT/P59l3dbjvxr+1f1hsbjnndJxYa/uHFuP6qNAI9kSVBBKH8s1WUTv6n8rb1Km
+lNcyQyEhm1vAl8txzVKbIXWRk38d7Ao2Ir9dHeTjNnD7pt8YiaZ0wwMnySqwhYCG
+20s8KN6tsaA5gSN0hpzhTtK1uWA3kKPZe4wuvCUFOfRGg9rDTVJNLl8Hj5KLbEDa
+8bB8dylkzYgFcT3PUGGqaFm01nyUP232PXn+o160bWA3RAhmezR0e46E0TDuPqCI
+WHLtQh+HBrAjZjYudJqmtV/Eksx9cGrSALKwDX8fxN8s28VOlgN1yDPfo3fau5NV
+LPfURg7IvOKs71OGaslwP9TX/XCUTV7N6v2hCwz0KxkZ47MPPAke5FqVJ0YsrthL
+bzvT4a75wA53Z+0S+32hg9piyTPpdSjNUVm7nKVrxuDqlZMQFT3pcYIGRDIluO4X
+nySPx7EvNHV6Pm0v6rXpWvJukUNQWYGi+tdb2p9WMNkC1sAjm4kmpT1iDYwZDpQO
+WEVmi6229lRg934J0SSE5vQaApEXC/thGmhT1sqKfHV8ZD74dmBdP49wU1KYAcIE
+Fb2GoNSgQWPkaav+f42+ffoEYabBwVYNznfVkD4cSuiHp12elDELBeCWQ/462ADh
+CXyS2px8o2M=
+=eghh
 -----END PGP SIGNATURE-----
 
---J/dobhs11T7y2rNN--
+--yrj/dFKFPuw6o+aM--
 
---===============4502433975049915377==
+--===============9136152838647494577==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -98,4 +92,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============4502433975049915377==--
+--===============9136152838647494577==--
