@@ -1,59 +1,63 @@
-From: Seungwhan Youn <claude.youn@gmail.com>
-Subject: Re: [PATCH 7/10] ARM: S5PV210: Fix wrong EPLL rate getting on setup clocks
-Date: Fri, 8 Oct 2010 19:55:27 +0900
-Message-ID: <AANLkTim4epO5cmoGw9ub1ERgHxruvoC+dFLP=k6aYms9@mail.gmail.com>
-References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
-	<1286193919-19830-1-git-send-email-sw.youn@samsung.com>
-	<001e01cb66d4$c178a400$4469ec00$%kim@samsung.com>
+From: Simon Brenner <simon.brenner@mobotix.com>
+Subject: Problem configuring alsa-lib for cross-compilation
+Date: Fri, 08 Oct 2010 13:00:16 +0200
+Message-ID: <4CAEF9C0.5000509@mobotix.com>
+Reply-To: simon.brenner@mobotix.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <001e01cb66d4$c178a400$4469ec00$%kim@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Kukjin Kim <kgene.kim@samsung.com>
-Cc: Seungwhan Youn <sw.youn@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, ben-linux@fluff.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smail.mobotixserver.de (smail.mobotixserver.de [213.183.84.167])
+	by alsa0.perex.cz (Postfix) with ESMTP id D5AA42433C
+	for <alsa-devel@alsa-project.org>;
+	Fri,  8 Oct 2010 13:00:16 +0200 (CEST)
+Received: from mobotix.com (localhost [127.0.0.1])
+	by smail.mobotixserver.de (Postfix) with ESMTP id 53370783
+	for <alsa-devel@alsa-project.org>;
+	Fri,  8 Oct 2010 13:00:16 +0200 (CEST)
+Received: from [192.168.24.20] ([192.168.24.20] verified)
+	by mobotix.com (CommuniGate Pro SMTP 5.3.7)
+	with ESMTP id 10725275 for alsa-devel@alsa-project.org;
+	Fri, 08 Oct 2010 13:00:16 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 8, 2010 at 7:37 PM, Kukjin Kim <kgene.kim@samsung.com> wrot=
-e:
-> Seungwhan Youn wrote:
->>
->> This patch fix wrong EPLL getting on setup clocks on S5PV210.
->>
->> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
->> ---
->> =C2=A0arch/arm/mach-s5pv210/clock.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A03 ++-
->> =C2=A0arch/arm/mach-s5pv210/include/mach/regs-clock.h | =C2=A0 =C2=A0=
-3 ++-
->> =C2=A02 files changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm/mach-s5pv210/clock.c b/arch/arm/mach-s5pv210/c=
-lock.c
->> index 3f3b7ba..bcbe7e9 100644
->> --- a/arch/arm/mach-s5pv210/clock.c
->> +++ b/arch/arm/mach-s5pv210/clock.c
->> @@ -1040,7 +1040,8 @@ void __init_or_cpufreq s5pv210_setup_clocks(vo=
-id)
->>
->> =C2=A0 =C2=A0 =C2=A0 apll =3D s5p_get_pll45xx(xtal, __raw_readl(S5P_=
-APLL_CON), pll_4508);
->> =C2=A0 =C2=A0 =C2=A0 mpll =3D s5p_get_pll45xx(xtal, __raw_readl(S5P_=
-MPLL_CON), pll_4502);
->> - =C2=A0 =C2=A0 epll =3D s5p_get_pll45xx(xtal, __raw_readl(S5P_EPLL_=
-CON), pll_4500);
->> + =C2=A0 =C2=A0 epll =3D s5p_get_pll90xx(xtal, __raw_readl(S5P_EPLL_=
-CON0),
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 __raw_readl(S5P_EPLL_CON1));
->
-> Maybe you wanted to implement fractional PLL 4600B...not used 90xx in=
- there.
-> So need to update plat/pll.h to epll of s5pv210.
->
+Hi,
 
-Okay, I'll fix it and add PLL_4600B also.
+I'm building and installing the alsa libs for an embedded system.
+My current process runs as follows:
 
-Thanks,
-Claude
+ 1) the alsa-lib package is crosscompiled on my PC host system (x86);
+ 2) the alsa-lib package is installed on a special prefix (say '/tmp/dest') on the host system;
+ 3) some installed files are copied from the dir. '/tmp/dest' to the final target root filesystem
+   tree (say '/tmp/emb_root');
+
+Now there are a couple of details that do not work with this process:
+
+in point 1) I configure the alsa-lib package with the option --prefix=/tmp/dest because I want
+to install the package there and use it later to compile other packages against it (alsa-utils for
+example); at the same time I want also to use the alsa libs in my target system but it is not
+possible because, at runtime, the init functions in the libasound.so looks for its configuration
+file under '/tmp/dest/share/alsa/alsa.conf'!
+The same problem happens with the plugins dir.
+
+I tracked back this problems to the fact that, in the configure.in, the variable ALSA_CONFIG_DIR is
+used both to be substituted in the Makefile.am's (AC_SUBST(ALSA_CONFIG_DIR)) and to define the
+preprocessor constant in the 'include/config.h' (C_DEFINE_UNQUOTED(ALSA_CONFIG_DIR,...)). There is
+currently no way to have two independent values for the two cases.
+
+My current 'best' solution is to patch the header 'include/config.h' after running the configure script.
+
+Is there any standard solution to this without patching the configure results ?
+
+Regards,
+-Simon.
