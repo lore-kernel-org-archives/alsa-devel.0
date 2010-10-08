@@ -1,15 +1,14 @@
 From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: RE: [PATCH 2/10] ARM: S5PC100: Modify SCLK_AUDIO{0,1,2} clock as
- sysclks
-Date: Fri, 08 Oct 2010 18:57:52 +0900
-Message-ID: <001801cb66cf$50855590$f19000b0$%kim@samsung.com>
+Subject: RE: [PATCH 3/10] ARM: S5PC100: Add SCLK_SPDIF clock
+Date: Fri, 08 Oct 2010 19:11:34 +0900
+Message-ID: <001901cb66d1$32db1e10$98915a30$%kim@samsung.com>
 References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
- <1286192356-17997-1-git-send-email-sw.youn@samsung.com>
+ <1286192545-18327-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7BIT
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1286192356-17997-1-git-send-email-sw.youn@samsung.com>
+In-reply-to: <1286192545-18327-1-git-send-email-sw.youn@samsung.com>
 Content-language: ko
 Sender: linux-samsung-soc-owner@vger.kernel.org
 To: 'Seungwhan Youn' <sw.youn@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
@@ -18,129 +17,115 @@ List-Id: alsa-devel@alsa-project.org
 
 Seungwhan Youn wrote:
 > 
-> This patch modify SCLK_AUDIO{0,1,2} to be initial as sysclks
-> on boot-time.
+> This patch add SCLK_SPDIF clock to support source clock of S/PDIF
+> on S5PC100.
 > 
 > Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
 > ---
->  arch/arm/mach-s5pc100/clock.c |   72
-++++++++++++++++++++++-------------------
->  1 files changed, 39 insertions(+), 33 deletions(-)
+>  arch/arm/mach-s5pc100/clock.c |   59
+> +++++++++++++++++++++++++++++++++++++++++
+>  1 files changed, 59 insertions(+), 0 deletions(-)
 > 
 > diff --git a/arch/arm/mach-s5pc100/clock.c b/arch/arm/mach-s5pc100/clock.c
-> index 084abd1..42b7138 100644
+> index 42b7138..306ae74 100644
 > --- a/arch/arm/mach-s5pc100/clock.c
 > +++ b/arch/arm/mach-s5pc100/clock.c
-> @@ -848,6 +848,18 @@ struct clksrc_sources clk_src_group3 = {
->  	.nr_sources	= ARRAY_SIZE(clk_src_group3_list),
+> @@ -980,6 +980,64 @@ struct clksrc_sources clk_src_pwi = {
+>  	.nr_sources	= ARRAY_SIZE(clk_src_pwi_list),
 >  };
 > 
-> +static struct clksrc_clk clk_sclk_audio0 = {
-> +	.clk	= {
-> +		.name		= "sclk_audio",
-> +		.id		= 0,
-> +		.ctrlbit	= (1 << 8),
-> +		.enable		= s5pc100_sclk1_ctrl,
-> +	},
-> +	.sources = &clk_src_group3,
-> +	.reg_src = { .reg = S5P_CLK_SRC3, .shift = 12, .size = 3 },
-> +	.reg_div = { .reg = S5P_CLK_DIV4, .shift = 12, .size = 4 },
+> +static struct clk *clk_sclk_spdif_list[] = {
+> +	[0] = &clk_sclk_audio0.clk,
+> +	[1] = &clk_sclk_audio1.clk,
+> +	[2] = &clk_sclk_audio2.clk,
 > +};
 > +
->  static struct clk *clk_src_group4_list[] = {
->  	[0] = &clk_mout_epll.clk,
->  	[1] = &clk_div_mpll.clk,
-> @@ -862,6 +874,18 @@ struct clksrc_sources clk_src_group4 = {
->  	.nr_sources	= ARRAY_SIZE(clk_src_group4_list),
->  };
-> 
-> +static struct clksrc_clk clk_sclk_audio1 = {
-> +	.clk	= {
-> +		.name		= "sclk_audio",
-> +		.id		= 1,
-> +		.ctrlbit	= (1 << 9),
-> +		.enable		= s5pc100_sclk1_ctrl,
-> +	},
-> +	.sources = &clk_src_group4,
-> +	.reg_src = { .reg = S5P_CLK_SRC3, .shift = 16, .size = 3 },
-> +	.reg_div = { .reg = S5P_CLK_DIV4, .shift = 16, .size = 4 },
+> +struct clksrc_sources clk_src_sclk_spdif = {
+> +	.sources	= clk_sclk_spdif_list,
+> +	.nr_sources	= ARRAY_SIZE(clk_sclk_spdif_list),
 > +};
 > +
->  static struct clk *clk_src_group5_list[] = {
->  	[0] = &clk_mout_epll.clk,
->  	[1] = &clk_div_mpll.clk,
-> @@ -875,6 +899,18 @@ struct clksrc_sources clk_src_group5 = {
->  	.nr_sources	= ARRAY_SIZE(clk_src_group5_list),
->  };
-> 
-> +static struct clksrc_clk clk_sclk_audio2 = {
-> +	.clk	= {
-> +		.name		= "sclk_audio",
-> +		.id		= 2,
-> +		.ctrlbit	= (1 << 10),
-> +		.enable		= s5pc100_sclk1_ctrl,
-> +	},
-> +	.sources = &clk_src_group5,
-> +	.reg_src = { .reg = S5P_CLK_SRC3, .shift = 20, .size = 3 },
-> +	.reg_div = { .reg = S5P_CLK_DIV4, .shift = 20, .size = 4 },
+> +static int s5pc100_spdif_set_rate(struct clk *clk, unsigned long rate)
+> +{
+> +	struct clk *pclk;
+> +	int ret;
+> +
+> +	pclk = clk_get_parent(clk);
+> +	if (IS_ERR(pclk))
+> +		return -EINVAL;
+> +
+> +	ret = pclk->ops->set_rate(pclk, rate);
+> +	clk_put(pclk);
+> +
+> +	return ret;
+
+How about following?
+
+static int parent_set_rate(struct clk *clk, unsigned long rate)
+{
+	struct clk *p_clk;
+	int ret;
+	
+	p_clk = clk_get_parent(clk);
+	ret = clk_set_rate(p_clk, rate);
+
+	clk_put(p_clk);
+
+	return ret;
+}
+
+Hmm...isn't there any method?...
+
+> +}
+> +
+> +static unsigned long s5pc100_spdif_get_rate(struct clk *clk)
+> +{
+> +	struct clk *pclk;
+> +	int rate;
+> +
+> +	pclk = clk_get_parent(clk);
+> +	if (IS_ERR(pclk))
+> +		return -EINVAL;
+> +
+> +	rate = pclk->ops->get_rate(clk);
+> +	clk_put(pclk);
+> +
+> +	return rate;
+> +}
+> +
+
+Similar...
+
+> +static struct clk_ops s5pc100_sclk_spdif_ops = {
+> +	.set_rate	= s5pc100_spdif_set_rate,
+> +	.get_rate	= s5pc100_spdif_get_rate,
 > +};
 > +
->  static struct clk *clk_src_group6_list[] = {
->  	[0] = &s5p_clk_27m,
->  	[1] = &clk_vclk54m,
-> @@ -1001,39 +1037,6 @@ static struct clksrc_clk clksrcs[] = {
->  		.reg_src = { .reg = S5P_CLK_SRC2, .shift = 28, .size = 2 },
->  	}, {
+> +static struct clksrc_clk clk_sclk_spdif = {
+> +	.clk	= {
+> +		.name		= "sclk_spdif",
+> +		.id		= -1,
+> +		.ctrlbit	= (1 << 11),
+> +		.enable		= s5pc100_sclk1_ctrl,
+> +		.ops		= &s5pc100_sclk_spdif_ops,
+> +	},
+> +	.sources = &clk_src_sclk_spdif,
+> +	.reg_src = { .reg = S5P_CLK_SRC3, .shift = 24, .size = 2 },
+> +};
+> +
+>  static struct clksrc_clk clksrcs[] = {
+>  	{
 >  		.clk	= {
-> -			.name		= "sclk_audio",
-> -			.id		= 0,
-> -			.ctrlbit	= (1 << 8),
-> -			.enable		= s5pc100_sclk1_ctrl,
-> -
-> -		},
-> -		.sources = &clk_src_group3,
-> -		.reg_src = { .reg = S5P_CLK_SRC3, .shift = 12, .size = 3 },
-> -		.reg_div = { .reg = S5P_CLK_DIV4, .shift = 12, .size = 4 },
-> -	}, {
-> -		.clk	= {
-> -			.name		= "sclk_audio",
-> -			.id		= 1,
-> -			.ctrlbit	= (1 << 9),
-> -			.enable		= s5pc100_sclk1_ctrl,
-> -
-> -		},
-> -		.sources = &clk_src_group4,
-> -		.reg_src = { .reg = S5P_CLK_SRC3, .shift = 16, .size = 3 },
-> -		.reg_div = { .reg = S5P_CLK_DIV4, .shift = 16, .size = 4 },
-> -	}, {
-> -		.clk	= {
-> -			.name		= "sclk_audio",
-> -			.id		= 2,
-> -			.ctrlbit	= (1 << 10),
-> -			.enable		= s5pc100_sclk1_ctrl,
-> -
-> -		},
-> -		.sources = &clk_src_group5,
-> -		.reg_src = { .reg = S5P_CLK_SRC3, .shift = 20, .size = 3 },
-> -		.reg_div = { .reg = S5P_CLK_DIV4, .shift = 20, .size = 4 },
-> -	}, {
-> -		.clk	= {
->  			.name		= "sclk_lcd",
->  			.id		= -1,
->  			.ctrlbit	= (1 << 0),
-> @@ -1179,6 +1182,9 @@ static struct clksrc_clk *sysclks[] = {
->  	&clk_div_pclkd1,
->  	&clk_div_cam,
->  	&clk_div_hdmi,
-> +	&clk_sclk_audio0,
-> +	&clk_sclk_audio1,
-> +	&clk_sclk_audio2,
+> @@ -1185,6 +1243,7 @@ static struct clksrc_clk *sysclks[] = {
+>  	&clk_sclk_audio0,
+>  	&clk_sclk_audio1,
+>  	&clk_sclk_audio2,
+> +	&clk_sclk_spdif,
 >  };
 > 
 >  void __init_or_cpufreq s5pc100_setup_clocks(void)
 > --
 
-Ok...will apply.
 
 Thanks.
 
