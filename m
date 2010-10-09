@@ -1,33 +1,21 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 10/10] ASoC: SAMSUNG: Add Machine driver
- for S/PDIF PCM audio
-Date: Sat, 9 Oct 2010 10:52:26 +0900
-Message-ID: <AANLkTindvBBOyWwkbwUo+oG31r8xSgCLbjuDNgvTNY_Q@mail.gmail.com>
-References: <1286191550-22197-1-git-send-email-sw.youn@samsung.com>
-	<1286194583-19937-1-git-send-email-sw.youn@samsung.com>
-	<20101004224159.GA4972@opensource.wolfsonmicro.com>
-	<AANLkTi=FHGw+qzL507K546vr8zEZgXBP3Mk=O__Rpd4H@mail.gmail.com>
-	<AANLkTincwL_nQAmu7Dcmht0FV43BiN7OoecE_60QJhS2@mail.gmail.com>
-	<20101005044304.GA26509@opensource.wolfsonmicro.com>
-	<AANLkTi=x_fi5HTBBmMUv8YTxSdbgcnJ=ZbacJQj6rcgf@mail.gmail.com>
-	<20101005055937.GA19989@opensource.wolfsonmicro.com>
-	<AANLkTimi1t5S2XWdUFzaPttD4Hywm0SLt5CvR1YnVOjj@mail.gmail.com>
-	<AANLkTin4skx+aiL2FXwWO1ekKqT2YWDd3SM1H5WnGkhC@mail.gmail.com>
-	<00c401cb6520$9484ef90$bd8eceb0$%kim@samsung.com>
-	<AANLkTikf4CAWm49Q_AfcfiQDBQUVcE_BC-a_4F7d8xOz@mail.gmail.com>
-	<AANLkTinPXcjHcaM1puzz00Sfhob9Y-X4HGDDVGMTqhH5@mail.gmail.com>
+From: Valentine Sinitsyn <valentine.sinitsyn@gmail.com>
+Subject: Re: Mic + Headphone Problem in Samsung R540
+Date: Sat, 09 Oct 2010 11:46:27 +0600
+Message-ID: <4CB001B3.807@gmail.com>
+References: <87aams5t14.fsf@alamut.ozu.edu.tr>	<87vd5cew6b.fsf@alamut.ozu.edu.tr>
+	<4CAF104F.30201@gmail.com> <87y6a8de30.fsf_-_@alamut.ozu.edu.tr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 89C8010385C
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7548B103871
 	for <alsa-devel@alsa-project.org>;
-	Sat,  9 Oct 2010 03:52:26 +0200 (CEST)
-Received: by bwz18 with SMTP id 18so950495bwz.38
-	for <alsa-devel@alsa-project.org>; Fri, 08 Oct 2010 18:52:26 -0700 (PDT)
-In-Reply-To: <AANLkTinPXcjHcaM1puzz00Sfhob9Y-X4HGDDVGMTqhH5@mail.gmail.com>
+	Sat,  9 Oct 2010 07:46:32 +0200 (CEST)
+Received: by ewy8 with SMTP id 8so955165ewy.38
+	for <alsa-devel@alsa-project.org>; Fri, 08 Oct 2010 22:46:32 -0700 (PDT)
+In-Reply-To: <87y6a8de30.fsf_-_@alamut.ozu.edu.tr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,20 +25,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Seungwhan Youn <claude.youn@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, jassi.brar@samsung.com, Mark Brown <broonie@opensource.wolfsonmicro.com>, Kukjin Kim <kgene.kim@samsung.com>, ben-linux@fluff.org, lrg@slimlogic.co.uk, linux-arm-kernel@lists.infradead.org, Seungwhan Youn <sw.youn@samsung.com>
+To: Volkan YAZICI <yazicivo@ttmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 8, 2010 at 6:07 PM, Seungwhan Youn <claude.youn@gmail.com> wrote:
-> Dear Mr. Mark and Mr. Jassi,
->
-> Now, I'm almost finished 2nd patch for submit except this audio clock
-> setting. For now, I can only think that remove audio clock setting
-> from this machine code, and add audio clock settings in arch later(may
-> be after arch/arm/plat-samsung get EPLL policy as Mr. Kukjin said).
->
-> Is this okay?
-IMO neither of the method is much better than the other.
+Hi,
 
-If neither of the maintainers relent, maybe drop the clock setting altogether
-and mark the machine driver 'BROKEN' until the EPLL management is fixed?
+> Can you say anything about the headphone problem? Plugging -in/-out
+> headphones doesn't have any effect.
+It's not easy to say anything definite without having similar laptop at 
+hands, but at the first glance it looks like the model you've selected 
+for your soundcard (model=basic) attaches headphones to the wrong pin 
+complex (Node 0x15 in the output [1]). Node 0x21 seems to be correct one 
+for me, but it is just a guess which you can check by downloading HDA 
+Analyzer GUI tool (python and pygtk are required) from ALSA website [2] 
+and unmuting Node 0x21 output amplifiers manually, without using 
+alsamixer or any other ALSA tool. This wouldn't help to fix your problem 
+once and forever, but may help to see if the guess is correct. If it is, 
+try another model for your soundcard (my impression is that 
+autodetection, i.e. removing model= part altogether usually gives good 
+results - you can even try to do it in a first place, without resorting 
+to HDA Analyzer, and see if that helps). If it's not, try to loop 
+through other pin widgets (0x1a is another suspect) in HDA Analyzer and 
+unmute them while trying to play something in your headphones.
+
+[1] 
+http://www.alsa-project.org/db/?f=3571a643ab90e53100fa319edaa32b8b0dabfd00
+[2] http://www.alsa-project.org/main/index.php/HDA_Analyzer
+
+Regards,
+Valentine
