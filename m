@@ -1,71 +1,70 @@
-From: Vasiliy Kulikov <segooon@gmail.com>
-Subject: [PATCH] ASoC: wm8804: fix error handling code
-Date: Sun, 10 Oct 2010 21:29:04 +0400
-Message-ID: <1286731745-18169-1-git-send-email-segooon@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: kernel-janitors@vger.kernel.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Ryan Mallon <ryan@bluewatersys.com>
+Subject: Re: [PATCH 1/4] ARM: ep93xx: DMA: fix channel_disable
+Date: Mon, 11 Oct 2010 08:34:29 +1300
+Message-ID: <4CB21545.7040301@bluewatersys.com>
+References: <cover.1286707213.git.mika.westerberg@iki.fi>
+	<43bf7ec49ce8ee7e7c7c375be053d6095ba53511.1286707213.git.mika.westerberg@iki.fi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hayes.bluewaternz.com (mail.bluewatersys.com [202.124.120.130])
+	by alsa0.perex.cz (Postfix) with ESMTP id EE3CE245BF
+	for <alsa-devel@alsa-project.org>;
+	Sun, 10 Oct 2010 21:34:02 +0200 (CEST)
+In-Reply-To: <43bf7ec49ce8ee7e7c7c375be053d6095ba53511.1286707213.git.mika.westerberg@iki.fi>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mika Westerberg <mika.westerberg@iki.fi>
+Cc: alsa-devel@alsa-project.org, martinwguy@gmail.com, broonie@opensource.wolfsonmicro.com, hsweeten@visionengravers.com, Lennert Buytenhek <buytenh@wantstofly.org>, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-kzalloc() returns NULL on error, not ERR_PTR().
-Also wm8804_modinit() didn't called i2c_del_driver() if
-spi_register_driver() failed.
+On 10/10/2010 11:54 PM, Mika Westerberg wrote:
+> When channel_disable() is called, it disables per channel interrupts and
+> waits until channels state becomes STATE_STALL, and then disables the
+> channel. Now, if the DMA transfer is disabled while the channel is in
+> STATE_NEXT we will not wait anything and disable the channel immediately.
+> This seems to cause weird data corruption for example in audio transfers.
+> 
+> Fix is to wait while we are in STATE_NEXT or STATE_ON and only then
+> disable the channel.
+> 
+> Signed-off-by: Mika Westerberg <mika.westerberg@iki.fi>
+> ---
+>  arch/arm/mach-ep93xx/dma-m2p.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/arch/arm/mach-ep93xx/dma-m2p.c b/arch/arm/mach-ep93xx/dma-m2p.c
+> index 8904ca4..a696d35 100644
+> --- a/arch/arm/mach-ep93xx/dma-m2p.c
+> +++ b/arch/arm/mach-ep93xx/dma-m2p.c
+> @@ -276,7 +276,7 @@ static void channel_disable(struct m2p_channel *ch)
+>  	v &= ~(M2P_CONTROL_STALL_IRQ_EN | M2P_CONTROL_NFB_IRQ_EN);
+>  	m2p_set_control(ch, v);
+>  
+> -	while (m2p_channel_state(ch) == STATE_ON)
+> +	while (m2p_channel_state(ch) >= STATE_ON)
+>  		cpu_relax();
+>  
+>  	m2p_set_control(ch, 0x0);
 
-Signed-off-by: Vasiliy Kulikov <segooon@gmail.com>
----
- Compile tested.
+Looks correct to me. CC'ed Lennert, who originally wrote the DMA M2P
+support, but otherwise:
 
- sound/soc/codecs/wm8804.c |   15 +++++++++++----
- 1 files changed, 11 insertions(+), 4 deletions(-)
+Acked-by: Ryan Mallon <ryan@bluewatersys.com>
 
-diff --git a/sound/soc/codecs/wm8804.c b/sound/soc/codecs/wm8804.c
-index 642b07c..ff4dffd 100644
---- a/sound/soc/codecs/wm8804.c
-+++ b/sound/soc/codecs/wm8804.c
-@@ -720,8 +720,8 @@ static int __devinit wm8804_spi_probe(struct spi_device *spi)
- 	int ret;
- 
- 	wm8804 = kzalloc(sizeof *wm8804, GFP_KERNEL);
--	if (IS_ERR(wm8804))
--		return PTR_ERR(wm8804);
-+	if (!wm8804)
-+		return -ENOMEM;
- 
- 	wm8804->control_type = SND_SOC_SPI;
- 	spi_set_drvdata(spi, wm8804);
-@@ -758,8 +758,8 @@ static __devinit int wm8804_i2c_probe(struct i2c_client *i2c,
- 	int ret;
- 
- 	wm8804 = kzalloc(sizeof *wm8804, GFP_KERNEL);
--	if (IS_ERR(wm8804))
--		return PTR_ERR(wm8804);
-+	if (!wm8804)
-+		return -ENOMEM;
- 
- 	wm8804->control_type = SND_SOC_I2C;
- 	i2c_set_clientdata(i2c, wm8804);
-@@ -804,6 +804,7 @@ static int __init wm8804_modinit(void)
- 	if (ret) {
- 		printk(KERN_ERR "Failed to register wm8804 I2C driver: %d\n",
- 		       ret);
-+		goto err;
- 	}
- #endif
- #if defined(CONFIG_SPI_MASTER)
-@@ -811,7 +812,13 @@ static int __init wm8804_modinit(void)
- 	if (ret != 0) {
- 		printk(KERN_ERR "Failed to register wm8804 SPI driver: %d\n",
- 		       ret);
-+		goto err_i2c;
- 	}
-+err_i2c:
-+#endif
-+#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-+	i2c_del_driver(&wm8804_i2c_driver);
-+err:
- #endif
- 	return ret;
- }
 -- 
-1.7.0.4
+Bluewater Systems Ltd - ARM Technology Solution Centre
+
+Ryan Mallon         		5 Amuri Park, 404 Barbadoes St
+ryan@bluewatersys.com         	PO Box 13 889, Christchurch 8013
+http://www.bluewatersys.com	New Zealand
+Phone: +64 3 3779127		Freecall: Australia 1800 148 751
+Fax:   +64 3 3779135			  USA 1800 261 2934
