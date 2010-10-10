@@ -1,18 +1,20 @@
-From: Matthew Robbetts <wingfeathera@gmail.com>
-Subject: RME HDSP9632, mute headphones
-Date: Sun, 10 Oct 2010 17:45:03 +0100
-Message-ID: <4CB1ED8F.2010008@gmail.com>
+From: Mika Westerberg <mika.westerberg@iki.fi>
+Subject: Re: [PATCH 0/4] ASoC AC97 audio support for ep93xx
+Date: Sun, 10 Oct 2010 20:02:52 +0300
+Message-ID: <20101010170252.GA27142@gw.healthdatacare.com>
+References: <cover.1286707213.git.mika.westerberg@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 17CA610380E
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id C84C624551
 	for <alsa-devel@alsa-project.org>;
-	Sun, 10 Oct 2010 18:45:06 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so1261298wyb.38
-	for <alsa-devel@alsa-project.org>; Sun, 10 Oct 2010 09:45:05 -0700 (PDT)
+	Sun, 10 Oct 2010 19:02:56 +0200 (CEST)
+Received: by bwz18 with SMTP id 18so1623357bwz.38
+	for <alsa-devel@alsa-project.org>; Sun, 10 Oct 2010 10:02:56 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <cover.1286707213.git.mika.westerberg@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: martinwguy@gmail.com, broonie@opensource.wolfsonmicro.com, hsweeten@visionengravers.com, ryan@bluewatersys.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Sun, Oct 10, 2010 at 01:54:08PM +0300, Mika Westerberg wrote:
+> 
+> This series adds AC97 audio support for Cirrus Logic EP93xx family SoCs. Example
+> machine driver is for Simplemachines Sim.One (which is the only hardware that I
+> have which has AC97 codec).
 
-I've just acquired myself a HDSP9632 and noticed what I think is a
-missing feature from the drivers (compared to Windows, at least): the
-ability to set the headphones to "mute", in addition to -6dB and -12dB
-of gain. I would find this feature useful.
+Oops, I sent a wrong version of the patches. These were against my own Sim.One branch and don't
+apply to the latest mainline.
 
-Is there a reason it is missing or has it just been overlooked? Or,
-alternatively, am I doing something stupid?
+I'll send a new version in a minute.
 
-I'm using the alsa that comes with kernel 2.6.36-rc5 (I think it is
-1.0.21?).
+Sorry for any inconvenience.
 
-Thanks a lot,
-Matt
+Regards,
+MW
