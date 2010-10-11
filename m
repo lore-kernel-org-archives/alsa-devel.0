@@ -1,22 +1,24 @@
-From: Volkan YAZICI <yazicivo@ttmail.com>
-Subject: Re: Mic + Headphone Problem in Samsung R540
-Date: Mon, 11 Oct 2010 22:16:35 +0300
-Message-ID: <87eibwleuk.fsf@alamut.ozu.edu.tr>
-References: <87aams5t14.fsf@alamut.ozu.edu.tr>
-	<87vd5cew6b.fsf@alamut.ozu.edu.tr> <4CAF104F.30201@gmail.com>
-	<87y6a8de30.fsf_-_@alamut.ozu.edu.tr>
-	<AANLkTi=mqYdTGZxxGH7fQN6rZLx9LMv7Hx16s+Lt_bs_@mail.gmail.com>
-	<87wrprus88.fsf_-_@alamut.ozu.edu.tr> <4CB29FB7.6070305@gmail.com>
+From: Dan Carpenter <error27@gmail.com>
+Subject: Re: [patch] ASoC: soc: snprintf() doesn't return
+	negative
+Date: Mon, 11 Oct 2010 21:45:02 +0200
+Message-ID: <20101011194502.GK5851@bicker>
+References: <20101011035416.GD5851@bicker>
+	<20101011104009.GB9231@rakim.wolfsonmicro.main>
+	<20101011164038.GE5851@bicker>
+	<20101011185148.GB22355@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.ttmail.com (mail.ttmail.com [88.255.235.9])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9FA9E1037F2
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id D602410381D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Oct 2010 21:16:14 +0200 (CEST)
-In-Reply-To: <4CB29FB7.6070305@gmail.com> (Valentine Sinitsyn's message of
-	"Mon, 11 Oct 2010 11:25:11 +0600")
+	Mon, 11 Oct 2010 21:45:20 +0200 (CEST)
+Received: by wwb28 with SMTP id 28so3331487wwb.20
+	for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2010 12:45:20 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20101011185148.GB22355@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,29 +28,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Valentine Sinitsyn <valentine.sinitsyn@gmail.com>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 11 Oct 2010, Valentine Sinitsyn <valentine.sinitsyn@gmail.com> writes:
-> 1. Reload soundcard driver with no model specified (i.e. delete "model=basic"
-> from modprobe.conf and reboot or do rmmod snd-hda-intel/modprobe snd-hda-intel
-> model=auto). This will reset all mixers, so you'll need to enable Capture again
-> in order for mic to work.
-> 2. If headphones work, you are done.
+On Mon, Oct 11, 2010 at 07:51:48PM +0100, Mark Brown wrote:
+> In actual fact quite a few devices have enough registers to be
+> truncated, meaning that it's not only possible but likely we'll exercise
+> the cases that deal with the end of buffer.  If snprintf() is returning
+> values larger than buffer size it was given we're likely to have an
+> issue but it seems that there's something missing in your analysis since
+> we're never seeing WARN_ON()s and are instead seeing the behaviour the
+> code is intended to give, which is to truncate the output when we run
+> out of space.
+> 
+> Could you re-check your analysis, please?
 
-Despite I tried this setting at least 4 times, this time it worked in
-the first try. Maybe I should quit PhD while I am the start of it.
+That's odd.  I'm sorry, I can't explain why you wouldn't see a stack
+trace...  The code is straight forward:
 
-> 3. If not, run HDA Analyzer, find "PIN 0x21" in the left sidebar. Look at
-> "Output Amplifier" checkbox group and clear mute checkboxes. Then, switch to
-> "AUD_MIX (0x0C)" in the same sidebar and adjust output volume (the same checkbox
-> group). You should hear sound in your headphones.
-> 4. If not, look at PIN 0x1a and do the same as at step 3.
-> 5. If this doesn't help, file a bug report.
+        /* Reject out-of-range values early.  Large positive sizes are
+           used for unknown buffer sizes. */
+        if (WARN_ON_ONCE((int) size < 0))
+                return 0;
 
-Thanks so much Raymond and Valentine for your helpful support. I am in
-dept to you.
+It would still give you truncated output but after the NULL terminator
+there would be information leaked from the kernel.  If the reader
+program had allocated a large enough buffer to handle the extra
+information it wouldn't cause a problem.
 
-
-Regards.
+regards,
+dan carpenter
