@@ -1,23 +1,21 @@
-From: Dan Carpenter <error27@gmail.com>
-Subject: Re: [patch] ASoC: soc: snprintf() doesn't return
-	negative
-Date: Mon, 11 Oct 2010 18:40:38 +0200
-Message-ID: <20101011164038.GE5851@bicker>
-References: <20101011035416.GD5851@bicker>
-	<20101011104009.GB9231@rakim.wolfsonmicro.main>
+From: Matthew Robbetts <wingfeathera@gmail.com>
+Subject: Re: RME HDSP9632, mute headphones
+Date: Mon, 11 Oct 2010 18:48:15 +0100
+Message-ID: <4CB34DDF.7060406@gmail.com>
+References: <4CB1ED8F.2010008@gmail.com> <4CB2A17B.70508@faberman.de>
+	<AB66E110-2A0E-4777-A8FD-674ADCB00C39@gmail.com>
+	<4CB31F1D.2080603@faberman.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 467A2103800
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id D47B1244BF
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Oct 2010 18:41:06 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so2015549wyb.38
-	for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2010 09:41:03 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20101011104009.GB9231@rakim.wolfsonmicro.main>
+	Mon, 11 Oct 2010 19:48:20 +0200 (CEST)
+Received: by wyb32 with SMTP id 32so2070409wyb.38
+	for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2010 10:48:18 -0700 (PDT)
+In-Reply-To: <4CB31F1D.2080603@faberman.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,68 +25,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Florian Faber <faber@faberman.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 11, 2010 at 11:40:09AM +0100, Mark Brown wrote:
-> On Mon, Oct 11, 2010 at 05:54:17AM +0200, Dan Carpenter wrote:
-> > In user space snprintf() returns negative on errors but the kernel
-> > version only returns positives.  It could potentially return sizes
-> 
-> I'm not going to apply this. snprintf() returns a signed type, checking
-> that the return value is a reasonable thing to do here - at worst we're
-> wasting a few cycles in code that's nowhere near a hot path, at best
-> we're robust in the face of a decision to add error reporting to
-> snprintf() so it's hard to see this change as an improvement.
-> 
+hi Flo,
 
-It's not a matter of cycles.  My check probably takes the exact same
-number of cycles as your check.  The point is that checking for negative
-doesn't make any sort of sense.  If we did return an error code then we
-should check it immediately after return instead of adding it to previous
-return code.
+Thanks for your reply.
 
-The snprintf() function is documented.  It can't be changed because that
-would break a ton of code as explained below.
 
-> > larger than the size of the buffer so we should check for that.
+On 10/11/10 15:28, Florian Faber wrote:
+> Matthew,
 > 
-> > -	if (ret >= 0)
-> > -		ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
-> > +	if (ret > PAGE_SIZE)
-> > +		ret = PAGE_SIZE;
-> > +
-> > +	ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
+>> Of course, you can adjust the volume digitally (though since hdspmixer overwrites all your routing every time you open it, it's a bit annoying to use). However, the card appears to have a dedicated a analogue gain stage just for the headphones. It's not a full PGA, but can be set to 0db, -6db, -12dB and mute - under windows. The ALSA driver only gives the first 3 options as controls. 
 > 
-> The PAGE_SIZE part of the change has an issue too, the code immediately
-> preceeding this is:
+> Ah, yes, that is something special with that old cards. I actually had
+> to look it up in the manual.
+
+Are you sure? I don't have one, but it looks like the AIO is very similar:
+http://www.rme-audio.de/images/products/aio_set.gif
+
+Anyhow - hardly important! :)
+
+
 > 
-> 	list_for_each_entry(codec, &codec_list, list)
-> 		ret += snprintf(buf + ret, PAGE_SIZE - ret, "%s\n",
-> 				codec->name);
+>> I had a quick look in the code, and it seems there's a 2-bit field in the 9632 control register for controlling this. Sounds neat, as we have 4 possible values. Can anyone confirm that the unused value (0x10, IIRC) in the ALSA driver is used to mute the headphones?
 > 
-> so it's rather late to be worrying about PAGE_SIZE after the loop.
+> I only have the sources for the newer cards, sorry. Just try it out,
+> nothing bad should happen there.
 > 
 
-There is no buffer overflow in these lines.  If "ret" *were* a negative
-then there would be.  In that scenario we could end up copying data
-before the start of the buffer because "buf - ret" could be before the
-start of the buffer and we could end up copying after the end of the
-buffer because "PAGE_SIZE - ret" would be larger than PAGE_SIZE.
+Hmmm, is there any advice you can give me on what might be affected or
+need modifying to stay in sync? I've not contributed to a project like
+this before...
 
-If "PAGE_SIZE - ret" is a negative number then it triggers a
-WARN_ON_ONCE() in vsnprintf().  It's not possible in this case however.
-Really the original code works fine in practice because the information
-we are printing out is less than PAGE_SIZE.
+The obvious ones to me are of course the driver itself, and adding a new
+radio button to hdspconf. Is there anything else?
 
-So my patch is effectively just a code cleanup.  If you don't apply it,
-I'll probably sob into my pillow until it's wet but in the end it
-doesn't matter much either way.  :P
-
-regards,
-dan carpenter
-
-> Please also try to be a bit more thoughtful in your use of
-> get_maintainers; try to have a look at why people have come up and
-> consider if it's really sensible to include them.
+Thanks a lot,
+Matt
