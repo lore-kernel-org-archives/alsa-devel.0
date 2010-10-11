@@ -1,69 +1,144 @@
-From: Dan Carpenter <error27@gmail.com>
-Subject: Re: [patch] ASoC: soc: snprintf() doesn't return
-	negative
-Date: Mon, 11 Oct 2010 23:11:38 +0200
-Message-ID: <20101011211138.GL5851@bicker>
-References: <20101011035416.GD5851@bicker>
-	<20101011104009.GB9231@rakim.wolfsonmicro.main>
-	<20101011164038.GE5851@bicker>
-	<20101011185148.GB22355@opensource.wolfsonmicro.com>
-	<20101011194502.GK5851@bicker>
+From: Josh Triplett <josh@joshtriplett.org>
+Subject: Re: [patch 1/2] OSS: soundcard: locking bug in sound_ioctl()
+Date: Mon, 11 Oct 2010 15:23:08 -0700
+Message-ID: <20101011222307.GA10570@feather>
+References: <20101010173352.GB5851@bicker>
+ <1286794326.3634.13.camel@jlt3.sipsolutions.net>
+ <20101011185455.GB8537@feather>
+ <201010112242.19246.arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8F249103974
-	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Oct 2010 23:11:56 +0200 (CEST)
-Received: by wwb28 with SMTP id 28so3406131wwb.20
-	for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2010 14:11:52 -0700 (PDT)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sparse-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20101011194502.GK5851@bicker>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Peter Ujfalusi <peter.ujfalusi@n>
+In-Reply-To: <201010112242.19246.arnd@arndb.de>
+Sender: linux-sparse-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Johannes Berg <johannes@sipsolutions.net>, Dan Carpenter <error27@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-sparse@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 11, 2010 at 09:45:02PM +0200, Dan Carpenter wrote:
-> On Mon, Oct 11, 2010 at 07:51:48PM +0100, Mark Brown wrote:
-> > In actual fact quite a few devices have enough registers to be
-> > truncated, meaning that it's not only possible but likely we'll exercise
-> > the cases that deal with the end of buffer.  If snprintf() is returning
-> > values larger than buffer size it was given we're likely to have an
-> > issue but it seems that there's something missing in your analysis since
-> > we're never seeing WARN_ON()s and are instead seeing the behaviour the
-> > code is intended to give, which is to truncate the output when we run
-> > out of space.
+On Mon, Oct 11, 2010 at 10:42:18PM +0200, Arnd Bergmann wrote:
+> On Monday 11 October 2010 20:54:56 Josh Triplett wrote:
+> > On Mon, Oct 11, 2010 at 12:52:06PM +0200, Johannes Berg wrote:
+> >
+> > > I don't know. Could be related to trylock issues, could be just historic
+> > > since semaphores can't really be annotated, or could be something else
+> > > entirely... I would expect a huge amount of warnings from sparse though
+> > > if you "just" annotate them since there are things like rtnl_lock()
+> > > which would have to propagate context.
 > > 
-> > Could you re-check your analysis, please?
+> > As far as I know, no reason exists to not just annotate mutexes; I think
+> > mutexes just came along later and nobody happened to add the appropriate
+> > annotations.  (Also, sparse does handle trylock.)
+> > 
+> > But yes, annotating mutexes will then introduce a giant pile of lock
+> > warnings that need further annotation propagation.  It will also
+> > introduce lock warnings that represent actual bugs, making it important
+> > to not just blindly propagate annotations to make warnings go away.
 > 
-> That's odd.  I'm sorry, I can't explain why you wouldn't see a stack
-> trace...  The code is straight forward:
+> I've given it a try, wrapping the trylock/interruptible/killable variants
+> into macros and the number of additional warnings was much less than
+> I had feared. This is the diff for today's sparse with today's linux-next
+> x86_64_defconfig:
 > 
->         /* Reject out-of-range values early.  Large positive sizes are
->            used for unknown buffer sizes. */
->         if (WARN_ON_ONCE((int) size < 0))
->                 return 0;
+[...snip...]
 > 
-> It would still give you truncated output but after the NULL terminator
-> there would be information leaked from the kernel.  If the reader
-> program had allocated a large enough buffer to handle the extra
-> information it wouldn't cause a problem.
+> And this is the patch I used for testing. There may still be some flaws in it,
+> but it seems to do the trick.
 > 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Actually it will never cause a problem with userspace because we pass
-the size of the userspace buffer to the kernel.  The only issues are the
-information leak if the user passes in a 8k buffer and the also the
-WARN_ON_ONCE()
+Thanks!
 
+One minor suggetsion below to simplify the patch; with that added,
+Reviewed-by: Josh Triplett <josh@joshtriplett.org>
 
-regards,
-dan carpenter
+> diff --git a/include/linux/mutex.h b/include/linux/mutex.h
+> index f363bc8..d4940af 100644
+> --- a/include/linux/mutex.h
+> +++ b/include/linux/mutex.h
+> @@ -14,6 +14,7 @@
+>  #include <linux/spinlock_types.h>
+>  #include <linux/linkage.h>
+>  #include <linux/lockdep.h>
+> +#include <linux/compiler.h>
+>  
+>  #include <asm/atomic.h>
+>  
+> @@ -131,20 +132,35 @@ static inline int mutex_is_locked(struct mutex *lock)
+>   * Also see Documentation/mutex-design.txt.
+>   */
+>  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+> -extern void mutex_lock_nested(struct mutex *lock, unsigned int subclass);
+> -extern int __must_check mutex_lock_interruptible_nested(struct mutex *lock,
+> -					unsigned int subclass);
+> -extern int __must_check mutex_lock_killable_nested(struct mutex *lock,
+> -					unsigned int subclass);
+> -
+> +extern void mutex_lock_nested(struct mutex *lock, unsigned int subclass)
+> +				__acquires(lock);
+> +extern int __must_check __mutex_lock_interruptible_nested(struct mutex *lock,
+> +						unsigned int subclass);
+> +extern int __must_check __mutex_lock_killable_nested(struct mutex *lock,
+> +						unsigned int subclass);
+> +#define mutex_lock_interruptible_nested(lock, subclass)	({		\
+> +   int __mutex_ret = __mutex_lock_interruptible_nested(lock, subclass);	\
+> +   if (!__mutex_ret) __acquire(lock); __mutex_ret; 			\
+> +})
+> +#define mutex_lock_killable_nested(lock, subclass)	({		\
+> +   int __mutex_ret = __mutex_lock_killable_nested(lock, subclass);	\
+> +   if (!__mutex_ret) __acquire(lock); __mutex_ret; 			\
+> +})
+
+Assuming that the underlying function only returns zero/non-zero and
+that the actual return value doesn't matter, then you can use the
+__cond_lock macro from compiler.h for this:
+
+# define __cond_lock(x,c)       ((c) ? ({ __acquire(x); 1; }) : 0)
+
+>  #define mutex_lock(lock) mutex_lock_nested(lock, 0)
+>  #define mutex_lock_interruptible(lock) mutex_lock_interruptible_nested(lock, 0)
+>  #define mutex_lock_killable(lock) mutex_lock_killable_nested(lock, 0)
+>  #else
+> -extern void mutex_lock(struct mutex *lock);
+> -extern int __must_check mutex_lock_interruptible(struct mutex *lock);
+> -extern int __must_check mutex_lock_killable(struct mutex *lock);
+> -
+> +extern void mutex_lock(struct mutex *lock) __acquires(lock);
+> +extern int __must_check __mutex_lock_interruptible(struct mutex *lock);
+> +extern int __must_check __mutex_lock_killable(struct mutex *lock);
+> +#define mutex_lock_interruptible(lock)	({				\
+> +   int __mutex_ret = __mutex_lock_interruptible(lock);			\
+> +   if (!__mutex_ret) __acquire(lock); __mutex_ret; 			\
+> +})
+> +#define mutex_lock_killable(lock)	({				\
+> +   int __mutex_ret = __mutex_lock_killable(lock);			\
+> +   if (!__mutex_ret) __acquire(lock); __mutex_ret; 			\
+> +})
+
+Same here.
+
+>  # define mutex_lock_nested(lock, subclass) mutex_lock(lock)
+>  # define mutex_lock_interruptible_nested(lock, subclass) mutex_lock_interruptible(lock)
+>  # define mutex_lock_killable_nested(lock, subclass) mutex_lock_killable(lock)
+> @@ -156,8 +172,16 @@ extern int __must_check mutex_lock_killable(struct mutex *lock);
+>   *
+>   * Returns 1 if the mutex has been acquired successfully, and 0 on contention.
+>   */
+> -extern int mutex_trylock(struct mutex *lock);
+> -extern void mutex_unlock(struct mutex *lock);
+> -extern int atomic_dec_and_mutex_lock(atomic_t *cnt, struct mutex *lock);
+> +extern int __mutex_trylock(struct mutex *lock);
+> +#define mutex_trylock(lock)	({					\
+> +   int __mutex_ret = __mutex_trylock(lock);				\
+> +   if (__mutex_ret) __acquire(lock); __mutex_ret; 			\
+> +})
+> +extern void mutex_unlock(struct mutex *lock) __releases(lock);
+> +extern int __atomic_dec_and_mutex_lock(atomic_t *cnt, struct mutex *lock);
+> +#define atomic_dec_and_mutex_lock(cnt, lock)	({			\
+> +   int __mutex_ret = __atomic_dec_and_mutex_lock(cnt, lock);		\
+> +   if (__mutex_ret) __acquire(lock); __mutex_ret; 			\
+> +})
+
+And here.
+
+- Josh Triplett
