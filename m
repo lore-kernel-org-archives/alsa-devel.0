@@ -1,55 +1,43 @@
-From: Mika Westerberg <mika.westerberg@iki.fi>
-Subject: Re: [PATCH 3/4] ARM: ep93xx: add AC97 platform support
-Date: Mon, 11 Oct 2010 10:47:31 +0300
-Message-ID: <20101011074731.GD27142@gw.healthdatacare.com>
-References: <cover.1286707213.git.mika.westerberg@iki.fi>
-	<d63475d15634d7ffa4c4167cbead782a5aa1cfc9.1286707213.git.mika.westerberg@iki.fi>
-	<4CB2166D.5080706@bluewatersys.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [patch 1/2] OSS: soundcard: locking bug in sound_ioctl()
+Date: Mon, 11 Oct 2010 10:13:27 +0200
+Message-ID: <201010111013.28952.arnd@arndb.de>
+References: <20101010173352.GB5851@bicker> <201010102039.34858.arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 80D9D243EB
-	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Oct 2010 09:47:35 +0200 (CEST)
-Received: by bwz18 with SMTP id 18so1932326bwz.38
-	for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2010 00:47:35 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <4CB2166D.5080706@bluewatersys.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ryan Mallon <ryan@bluewatersys.com>
-Cc: alsa-devel@alsa-project.org, martinwguy@gmail.com, broonie@opensource.wolfsonmicro.com, hsweeten@visionengravers.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+Return-path: <linux-sparse-owner@vger.kernel.org>
+In-Reply-To: <201010102039.34858.arnd@arndb.de>
+Sender: linux-sparse-owner@vger.kernel.org
+To: Dan Carpenter <error27@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-sparse@vger.kernel.org, Josh Triplett <josh@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 11, 2010 at 08:39:25AM +1300, Ryan Mallon wrote:
-> On 10/10/2010 11:54 PM, Mika Westerberg wrote:
-> > +
-> > +void __init ep93xx_register_ac97(void)
-> > +{
-> > +	/*
-> > +	 * Make sure that the AC97 pins are not used by I2S.
-> > +	 */
-> > +	ep93xx_devcfg_clear_bits(EP93XX_SYSCON_DEVCFG_I2SONAC97);
-> > +	platform_device_register(&ep93xx_ac97_device);
-> > +}
+On Sunday 10 October 2010 20:39:34 Arnd Bergmann wrote:
+> On Sunday 10 October 2010 19:33:52 Dan Carpenter wrote:
+> > We shouldn't return directly here because we're still holding the
+> > &soundcard_mutex.
+> > 
+> > This bug goes all the way back to the start of git.  It's strange that
+> > no one has complained about it as a runtime bug.
+> > 
+> > CC: stable@kernel.org
+> > Signed-off-by: Dan Carpenter <error27@gmail.com>
 > 
-> The other ep93xx device support functions do this with acquire/release
-> functions. However, it is quite unlikely that a board will ever need to
-> switch from i2s to ac97 audio at runtime. Will see what Hartley thinks.
+> It was only recently converted to a mutex from the BKL, which is much
+> more friendly to misusage because it is automatically released when
+> the kernel sleeps or when the program exits.
+> 
+> The behavior was already broken with the BKL but the problem was far
+> less visible. I fear we might be seeing more of these as fallout from
+> the BKL removal. Sparse should be able to detect most of these cases
+> though, so maybe we can look more carefully for them.
+ 
+Hmm, actually sparse does *not* warn about sound_ioctl returning in
+different lock contexts. Sparse developers: is there a known limitation
+in sparse for this? I expected to see context warnings because
+sound_ioctl normally releases soundcard_mutex (previously lock_kernel)
+in some cases returns while holding the lock.
 
-There is really no other option where to connect the AC97 codec.
-In cases where both are needed, one needs to mux I2S to the SSP
-pins. So not sure whether it makes sense to make the switch work
-at runtime.
-
-Thanks,
-MW
+	Arnd
