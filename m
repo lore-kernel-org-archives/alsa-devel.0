@@ -1,49 +1,63 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.37
-Date: Mon, 11 Oct 2010 13:11:43 +0100
-Message-ID: <20101011121143.GK9231@rakim.wolfsonmicro.main>
+From: Vasiliy Kulikov <segooon@gmail.com>
+Subject: Re: [PATCH] ASoC: wm8804: fix error handling code
+Date: Mon, 11 Oct 2010 16:15:55 +0400
+Message-ID: <20101011121555.GA32652@albatros>
+References: <1286731745-18169-1-git-send-email-segooon@gmail.com>
+ <20101011120014.GJ9231@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6E82F103A88
-	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Oct 2010 14:11:45 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+In-Reply-To: <20101011120014.GJ9231@rakim.wolfsonmicro.main>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: kernel-janitors@vger.kernel.org, Ian Lartey <ian@opensource.wolfsonmicro.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 9d9641ec891a53ef93a8972c7913605aeb8127c7:
+Hi Mark,
 
-  Merge branch 'for-2.6.36' into for-2.6.37 (2010-10-07 13:44:20 -0700)
+On Mon, Oct 11, 2010 at 13:00 +0100, Mark Brown wrote:
+> On Sun, Oct 10, 2010 at 09:29:04PM +0400, Vasiliy Kulikov wrote:
+> > kzalloc() returns NULL on error, not ERR_PTR().
+> > Also wm8804_modinit() didn't called i2c_del_driver() if
+> > spi_register_driver() failed.
+> > 
+> > Signed-off-by: Vasiliy Kulikov <segooon@gmail.com>
+> 
+> Please try to follow Documentation/SubmittingPatches - in particular,
+> you should always split unrelated changes into separate patches.  In
+> this case your I2C and kzalloc() changes have nothing to do with each
+> other and so should be in separate patches,
 
-are available in the git repository at:
+Agreed, thanks.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.37
+> and the kzalloc() changes
+> were already applied from a patch by someone else.
 
-Dan Carpenter (1):
-      ASoC: checking kzalloc() for IS_ERR() instead of NULL
+Yes, it was sent by Dan just one day before my patch ;)
 
-Mark Brown (2):
-      ASoC: Shrink code size for WM8962 register defaults table
-      ASoC: Compress WM8962 register access map
+> For the registration
+> changes...
 
- sound/soc/codecs/Makefile        |    2 +-
- sound/soc/codecs/wm8804.c        |    8 +-
- sound/soc/codecs/wm8962-tables.c |42299 --------------------------------------
- sound/soc/codecs/wm8962.c        | 1834 ++
- sound/soc/codecs/wm8962.h        |   11 -
- sound/soc/codecs/wm8985.c        |    8 +-
- 6 files changed, 1843 insertions(+), 42319 deletions(-)
- delete mode 100644 sound/soc/codecs/wm8962-tables.c
+> > @@ -804,6 +804,7 @@ static int __init wm8804_modinit(void)
+> >  	if (ret) {
+> >  		printk(KERN_ERR "Failed to register wm8804 I2C driver: %d\n",
+> >  		       ret);
+> > +		goto err;
+> >  	}
+> >  #endif
+> >  #if defined(CONFIG_SPI_MASTER)
+> 
+> ...it's not clear to me that this change is an improvement - it'll make
+> the driver more fragile in the face of errors, I don't see a benefit in
+> refusing to register the variant for one bus if the other fails?
+
+I tried to implement your variant with depca driver in past, but it was
+rejected by David Miller:
+http://lists.openwall.net/netdev/2010/07/12/9
+
+
+Thanks,
+
+-- 
+Vasiliy
