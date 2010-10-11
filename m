@@ -1,21 +1,34 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 4/4] ASoC: ep93xx: add Simplemachines
- Sim.One AC97 audio support
-Date: Mon, 11 Oct 2010 09:22:51 +0900
-Message-ID: <AANLkTi=PAp8pQeVM=GWYVVeKnf2-f+YG2bdSuu5QZH87@mail.gmail.com>
-References: <cover.1286707213.git.mika.westerberg@iki.fi>
-	<cbadad77a7e11b27fedd9e92fe05322291ca1377.1286707213.git.mika.westerberg@iki.fi>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: alsactl adds volume controls?
+Date: Mon, 11 Oct 2010 09:34:45 +0800
+Message-ID: <AANLkTi=go5q_+zw2EMh7fSa6SesNG3s8ZXjEJHsU=B--@mail.gmail.com>
+References: <s5hr5hczi06.wl%tiwai@suse.de> <4C7F6D5D.7020101@canonical.com>
+	<alpine.LNX.2.00.1009021553460.10278@eeebox2.perex-int.cz>
+	<4C7FB2CF.5060505@ladisch.de>
+	<alpine.LNX.2.00.1009021721100.10278@eeebox2.perex-int.cz>
+	<4C7FC85B.4000009@ladisch.de>
+	<alpine.LNX.2.00.1009021926120.10278@eeebox2.perex-int.cz>
+	<i7viav$kjb$1@dough.gmane.org> <4CA46E98.10402@ladisch.de>
+	<4CA4A844.7060403@colin.guthr.ie>
+	<20100930164753.GB9431@sirena.org.uk>
+	<s5hr5gb9k83.wl%tiwai@suse.de> <4CA5834D.5030408@ladisch.de>
+	<4CA59976.2020306@colin.guthr.ie> <4CA5A38A.7050006@ladisch.de>
+	<i8ce5u$fj3$1@dough.gmane.org> <4CAD7F3D.3090205@ladisch.de>
+	<4CAF1AF2.3060907@colin.guthr.ie> <4CAF1FA3.5000402@ladisch.de>
+	<4CAF2533.1060102@colin.guthr.ie> <4CAF27B7.9080909@colin.guthr.ie>
+	<4CAF2DD1.5050306@ladisch.de> <4CAF37DE.8070205@colin.guthr.ie>
+	<4CAF3DA0.9020908@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id E268724386
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 66B43243EC
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Oct 2010 02:22:51 +0200 (CEST)
-Received: by bwz18 with SMTP id 18so1773534bwz.38
-	for <alsa-devel@alsa-project.org>; Sun, 10 Oct 2010 17:22:51 -0700 (PDT)
-In-Reply-To: <cbadad77a7e11b27fedd9e92fe05322291ca1377.1286707213.git.mika.westerberg@iki.fi>
+	Mon, 11 Oct 2010 03:34:48 +0200 (CEST)
+Received: by ewy9 with SMTP id 9so39977ewy.38
+	for <alsa-devel@alsa-project.org>; Sun, 10 Oct 2010 18:34:48 -0700 (PDT)
+In-Reply-To: <4CAF3DA0.9020908@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,20 +38,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mika Westerberg <mika.westerberg@iki.fi>
-Cc: alsa-devel@alsa-project.org, martinwguy@gmail.com, broonie@opensource.wolfsonmicro.com, hsweeten@visionengravers.com, ryan@bluewatersys.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCBPY3QgMTAsIDIwMTAgYXQgNzo1NCBQTSwgTWlrYSBXZXN0ZXJiZXJnIDxtaWthLndl
-c3RlcmJlcmdAaWtpLmZpPiB3cm90ZToKCj4gKwo+ICtzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFp
-X2xpbmsgc2ltb25lX2RhaSA9IHsKPiArIMKgIMKgIMKgIC5uYW1lIMKgIMKgIMKgIMKgIMKgID0g
-IkFDOTciLAo+ICsgwqAgwqAgwqAgLnN0cmVhbV9uYW1lIMKgIMKgPSAiQUM5NyBIaUZpIiwKPiAr
-IMKgIMKgIMKgIC5jcHVfZGFpIMKgIMKgIMKgIMKgPSAmZXA5M3h4X2FjOTdfZGFpLAo+ICsgwqAg
-wqAgwqAgLmNvZGVjX2RhaSDCoCDCoCDCoD0gJmFjOTdfZGFpLAo+ICt9OwpBU29DIG5vIGxvbmdl
-ciB3b3JrcyBvbiBjcHUgYW5kIGNvZGVjX2RhaS4gWW91IG5lZWQgdG8gb25seQpwcm92aWRlIHRo
-ZSBuYW1lIG9mIHRoZSBkYWlzLi4uIEFTb0MgZG9lcyBzdHJpbmcgbWF0Y2hpbmcgdG8KbGluayBh
-cHByb3ByaWF0ZSBkYWlzIGluIGEgbGluay4KCllvdSBtaWdodCB3YW50IHRvIGdpdmUgYW5vdGhl
-ciB0aG9yb3VnaCBsb29rIHRvIGFsbCBvZiB5b3VyIGRyaXZlcnMKdW5kZXIgdGhlIG5ldyBBU29D
-LgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+2010/10/8 Clemens Ladisch <clemens@ladisch.de>
+
+> Colin Guthrie wrote:
+> > What is odd about this tho', is that the flag for min is mute (0x10000)
+> > is checked on tlv[3] which is also used here for the "max" value.
+>
+> SND_CTL_TLVT_DB_SCALE uses a flag in tlv[3] to indicate min-is-mute, but
+> SND_CTL_TLVT_DB_MINMAX has a variant SND_CTL_TLVT_DB_MINMAX_MUTE.
+> (The HDA driver uses DB_SCALE).
+>
+> > +       if (db_gain <= min) {
+> >                 *value = rangemin;
+> > +               if (xdir > 0 && (tlv[3] & 0x10000) && db_gain >
+> SND_CTL_TLV_DB_GAIN_MUTE)
+> > +                       *value = rangemin + 1;
+>
+> This should go at the same place in the SND_CTL_TLVT_DB_SCALE branch.
+>
+>
+> Regards,
+> Clemens
+>
+
+
+How about softvol plugin , the dB scale seem wrong, it alwaysl mute at
+min_dB even if I change min_dB to -21 ?
+
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
