@@ -1,17 +1,23 @@
-From: Florian Faber <faber@faberman.de>
-Subject: Re: RME HDSP9632, mute headphones
-Date: Mon, 11 Oct 2010 07:32:43 +0200
-Message-ID: <4CB2A17B.70508@faberman.de>
-References: <4CB1ED8F.2010008@gmail.com>
+From: Mika Westerberg <mika.westerberg@iki.fi>
+Subject: Re: [PATCH 4/4] ASoC: ep93xx: add
+	Simplemachines	Sim.One AC97 audio support
+Date: Mon, 11 Oct 2010 10:38:16 +0300
+Message-ID: <20101011073816.GC27142@gw.healthdatacare.com>
+References: <cover.1286707213.git.mika.westerberg@iki.fi>
+	<cbadad77a7e11b27fedd9e92fe05322291ca1377.1286707213.git.mika.westerberg@iki.fi>
+	<AANLkTi=PAp8pQeVM=GWYVVeKnf2-f+YG2bdSuu5QZH87@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from india820.server4you.de (india820.server4you.de [85.25.152.101])
-	by alsa0.perex.cz (Postfix) with ESMTP id B880324158
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 23902243E4
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Oct 2010 07:32:47 +0200 (CEST)
-In-Reply-To: <4CB1ED8F.2010008@gmail.com>
+	Mon, 11 Oct 2010 09:38:22 +0200 (CEST)
+Received: by bwz18 with SMTP id 18so1928699bwz.38
+	for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2010 00:38:21 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=PAp8pQeVM=GWYVVeKnf2-f+YG2bdSuu5QZH87@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,24 +27,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jassi Brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, martinwguy@gmail.com, broonie@opensource.wolfsonmicro.com, hsweeten@visionengravers.com, ryan@bluewatersys.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On 10/10/10 18:45, Matthew Robbetts wrote:
+On Mon, Oct 11, 2010 at 09:22:51AM +0900, Jassi Brar wrote:
+> On Sun, Oct 10, 2010 at 7:54 PM, Mika Westerberg <mika.westerberg@iki.fi>=
+ wrote:
+> =
 
-> I've just acquired myself a HDSP9632 and noticed what I think is a
-> missing feature from the drivers (compared to Windows, at least): the
-> ability to set the headphones to "mute", in addition to -6dB and -12dB
-> of gain. I would find this feature useful.
-> 
-> Is there a reason it is missing or has it just been overlooked? Or,
-> alternatively, am I doing something stupid?
+> > +
+> > +static struct snd_soc_dai_link simone_dai =3D {
+> > + =A0 =A0 =A0 .name =A0 =A0 =A0 =A0 =A0 =3D "AC97",
+> > + =A0 =A0 =A0 .stream_name =A0 =A0=3D "AC97 HiFi",
+> > + =A0 =A0 =A0 .cpu_dai =A0 =A0 =A0 =A0=3D &ep93xx_ac97_dai,
+> > + =A0 =A0 =A0 .codec_dai =A0 =A0 =A0=3D &ac97_dai,
+> > +};
+> ASoC no longer works on cpu and codec_dai. You need to only
+> provide the name of the dais... ASoC does string matching to
+> link appropriate dais in a link.
+> =
 
-This has nothing to do with the driver. You set the headphone volume
-with hdspmixer, like you would do with TotalMix on Windows/Mac.
+> You might want to give another thorough look to all of your drivers
+> under the new ASoC.
 
+Thanks.
 
-Flo
--- 
-Machines can do the work, so people have time to think.
-public key DA43FEF4          x-hkp://wwwkeys.eu.pgp.net
+Which tree/branch should I use for preparing the driver to work
+with the new ASoC? Is it the official
+git://git.alsa-project.org/alsa-kernel tree or something else?
+
+Regards,
+MW
