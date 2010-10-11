@@ -1,19 +1,18 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [patch 1/2] OSS: soundcard: locking bug in
-	sound_ioctl()
-Date: Sun, 10 Oct 2010 20:39:34 +0200
-Message-ID: <201010102039.34858.arnd@arndb.de>
-References: <20101010173352.GB5851@bicker>
+From: Dan Carpenter <error27@gmail.com>
+Subject: [patch] ASoC: soc: snprintf() doesn't return negative
+Date: Mon, 11 Oct 2010 05:54:17 +0200
+Message-ID: <20101011035416.GD5851@bicker>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
-	[212.227.126.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id C8D1F2459F
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id ABAFC2444E
 	for <alsa-devel@alsa-project.org>;
-	Sun, 10 Oct 2010 20:39:52 +0200 (CEST)
-In-Reply-To: <20101010173352.GB5851@bicker>
+	Mon, 11 Oct 2010 05:54:36 +0200 (CEST)
+Received: by wwb28 with SMTP id 28so2642572wwb.20
+	for <alsa-devel@alsa-project.org>; Sun, 10 Oct 2010 20:54:35 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,29 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <error27@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sunday 10 October 2010 19:33:52 Dan Carpenter wrote:
-> We shouldn't return directly here because we're still holding the
-> &soundcard_mutex.
-> 
-> This bug goes all the way back to the start of git.  It's strange that
-> no one has complained about it as a runtime bug.
-> 
-> CC: stable@kernel.org
-> Signed-off-by: Dan Carpenter <error27@gmail.com>
+In user space snprintf() returns negative on errors but the kernel
+version only returns positives.  It could potentially return sizes
+larger than the size of the buffer so we should check for that.
 
-It was only recently converted to a mutex from the BKL, which is much
-more friendly to misusage because it is automatically released when
-the kernel sleeps or when the program exits.
+Signed-off-by: Dan Carpenter <error27@gmail.com>
 
-The behavior was already broken with the BKL but the problem was far
-less visible. I fear we might be seeing more of these as fallout from
-the BKL removal. Sparse should be able to detect most of these cases
-though, so maybe we can look more carefully for them.
-
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-
-	Arnd
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 8751efd..8da307b 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -284,8 +284,10 @@ static ssize_t codec_list_read_file(struct file *file, char __user *user_buf,
+ 		ret += snprintf(buf + ret, PAGE_SIZE - ret, "%s\n",
+ 				codec->name);
+ 
+-	if (ret >= 0)
+-		ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
++	if (ret > PAGE_SIZE)
++		ret = PAGE_SIZE;
++
++	ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
+ 
+ 	kfree(buf);
+ 
+@@ -310,8 +312,10 @@ static ssize_t dai_list_read_file(struct file *file, char __user *user_buf,
+ 	list_for_each_entry(dai, &dai_list, list)
+ 		ret += snprintf(buf + ret, PAGE_SIZE - ret, "%s\n", dai->name);
+ 
+-	if (ret >= 0)
+-		ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
++	if (ret > PAGE_SIZE)
++		ret = PAGE_SIZE;
++
++	ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
+ 
+ 	kfree(buf);
+ 
+@@ -338,8 +342,10 @@ static ssize_t platform_list_read_file(struct file *file,
+ 		ret += snprintf(buf + ret, PAGE_SIZE - ret, "%s\n",
+ 				platform->name);
+ 
+-	if (ret >= 0)
+-		ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
++	if (ret > PAGE_SIZE)
++		ret = PAGE_SIZE;
++
++	ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
+ 
+ 	kfree(buf);
