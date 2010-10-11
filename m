@@ -1,36 +1,19 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: alsactl adds volume controls?
-Date: Mon, 11 Oct 2010 09:25:50 +0100
-Message-ID: <i8uhme$c09$1@dough.gmane.org>
-References: <s5hr5hczi06.wl%tiwai@suse.de>
-	<4C7F6D5D.7020101@canonical.com>	<alpine.LNX.2.00.1009021553460.10278@eeebox2.perex-int.cz>	<4C7FB2CF.5060505@ladisch.de>	<alpine.LNX.2.00.1009021721100.10278@eeebox2.perex-int.cz>	<4C7FC85B.4000009@ladisch.de>	<alpine.LNX.2.00.1009021926120.10278@eeebox2.perex-int.cz>	<i7viav$kjb$1@dough.gmane.org>
-	<4CA46E98.10402@ladisch.de>	<4CA4A844.7060403@colin.guthr.ie>	<20100930164753.GB9431@sirena.org.uk>	<s5hr5gb9k83.wl%tiwai@suse.de>
-	<4CA5834D.5030408@ladisch.de>	<4CA59976.2020306@colin.guthr.ie>
-	<4CA5A38A.7050006@ladisch.de>	<i8ce5u$fj3$1@dough.gmane.org>
-	<4CAD7F3D.3090205@ladisch.de>	<4CAF1AF2.3060907@colin.guthr.ie>
-	<4CAF1FA3.5000402@ladisch.de>	<4CAF2533.1060102@colin.guthr.ie>
-	<4CAF27B7.9080909@colin.guthr.ie>	<4CAF2DD1.5050306@ladisch.de>
-	<4CAF37DE.8070205@colin.guthr.ie>	<4CAF3DA0.9020908@ladisch.de>
-	<AANLkTi=go5q_+zw2EMh7fSa6SesNG3s8ZXjEJHsU=B--@mail.gmail.com>
-Mime-Version: 1.0
+From: Matthew Robbetts <wingfeathera@gmail.com>
+Subject: Re: RME HDSP9632, mute headphones
+Date: Mon, 11 Oct 2010 09:35:38 +0100
+Message-ID: <AB66E110-2A0E-4777-A8FD-674ADCB00C39@gmail.com>
+References: <4CB1ED8F.2010008@gmail.com> <4CB2A17B.70508@faberman.de>
+Mime-Version: 1.0 (iPhone Mail 8B117)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C55C2440E
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id B909E24418
 	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Oct 2010 10:26:00 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1P5Dhn-0004yZ-EM
-	for alsa-devel@alsa-project.org; Mon, 11 Oct 2010 10:25:59 +0200
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2010 10:25:59 +0200
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2010 10:25:59 +0200
-In-Reply-To: <AANLkTi=go5q_+zw2EMh7fSa6SesNG3s8ZXjEJHsU=B--@mail.gmail.com>
+	Mon, 11 Oct 2010 10:36:34 +0200 (CEST)
+Received: by wyb32 with SMTP id 32so1659013wyb.38
+	for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2010 01:36:34 -0700 (PDT)
+In-Reply-To: <4CB2A17B.70508@faberman.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -40,27 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Florian Faber <faber@faberman.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Raymond Yau at 11/10/10 02:34 did gyre and gimble:
-> How about softvol plugin , the dB scale seem wrong, it alwaysl mute at
-> min_dB even if I change min_dB to -21 ?
 
-I would suspect that this needs fixed also. David's alsamixertest does
-indeed report when PCM mutes at min, to identify this error case.
 
-Col
+On 11 Oct 2010, at 06:32, Florian Faber <faber@faberman.de> wrote:
 
--- 
+> On 10/10/10 18:45, Matthew Robbetts wrote:
+> 
+>> I've just acquired myself a HDSP9632 and noticed what I think is a
+>> missing feature from the drivers (compared to Windows, at least): the
+>> ability to set the headphones to "mute", in addition to -6dB and -12dB
+>> of gain. I would find this feature useful.
+>> 
+>> Is there a reason it is missing or has it just been overlooked? Or,
+>> alternatively, am I doing something stupid?
+> 
+> This has nothing to do with the driver. You set the headphone volume
+> with hdspmixer, like you would do with TotalMix on Windows/Mac.
+> 
 
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
+Hi Flo,
 
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mageia Contributor [http://www.mageia.org/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+Of course, you can adjust the volume digitally (though since hdspmixer overwrites all your routing every time you open it, it's a bit annoying to use). However, the card appears to have a dedicated a analogue gain stage just for the headphones. It's not a full PGA, but can be set to 0db, -6db, -12dB and mute - under windows. The ALSA driver only gives the first 3 options as controls. 
+
+I had a quick look in the code, and it seems there's a 2-bit field in the 9632 control register for controlling this. Sounds neat, as we have 4 possible values. Can anyone confirm that the unused value (0x10, IIRC) in the ALSA driver is used to mute the headphones?
+
+Regards,
+Matt
