@@ -1,54 +1,35 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] ASoC: add ep93xx AC97 audio driver
-Date: Mon, 11 Oct 2010 11:43:36 +0100
-Message-ID: <20101011104335.GC9231@rakim.wolfsonmicro.main>
-References: <cover.1286707213.git.mika.westerberg@iki.fi>
-	<b0202066df3bb9732fbecca627d0149165905a95.1286707213.git.mika.westerberg@iki.fi>
-	<20101011094717.GA9231@rakim.wolfsonmicro.main>
-	<20101011100742.GE27142@gw.healthdatacare.com>
+Subject: Re: [alsa-devel] [PATCH 10/10] ASoC: SAMSUNG: Add Machine driver
+	for S/PDIF PCM audio
+Date: Mon, 11 Oct 2010 11:47:38 +0100
+Message-ID: <20101011104737.GB16777@sirena.org.uk>
+References: <AANLkTincwL_nQAmu7Dcmht0FV43BiN7OoecE_60QJhS2@mail.gmail.com> <20101005044304.GA26509@opensource.wolfsonmicro.com> <AANLkTi=x_fi5HTBBmMUv8YTxSdbgcnJ=ZbacJQj6rcgf@mail.gmail.com> <20101005055937.GA19989@opensource.wolfsonmicro.com> <AANLkTimi1t5S2XWdUFzaPttD4Hywm0SLt5CvR1YnVOjj@mail.gmail.com> <AANLkTin4skx+aiL2FXwWO1ekKqT2YWDd3SM1H5WnGkhC@mail.gmail.com> <00c401cb6520$9484ef90$bd8eceb0$%kim@samsung.com> <AANLkTikf4CAWm49Q_AfcfiQDBQUVcE_BC-a_4F7d8xOz@mail.gmail.com> <AANLkTinPXcjHcaM1puzz00Sfhob9Y-X4HGDDVGMTqhH5@mail.gmail.com> <AANLkTindvBBOyWwkbwUo+oG31r8xSgCLbjuDNgvTNY_Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 58B821038DE
-	for <alsa-devel@alsa-project.org>;
-	Mon, 11 Oct 2010 12:43:37 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20101011100742.GE27142@gw.healthdatacare.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mika Westerberg <mika.westerberg@iki.fi>
-Cc: alsa-devel@alsa-project.org, martinwguy@gmail.com, hsweeten@visionengravers.com, ryan@bluewatersys.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+In-Reply-To: <AANLkTindvBBOyWwkbwUo+oG31r8xSgCLbjuDNgvTNY_Q@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Jassi Brar <jassisinghbrar@gmail.com>
+Cc: Seungwhan Youn <claude.youn@gmail.com>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, jassi.brar@samsung.com, Kukjin Kim <kgene.kim@samsung.com>, ben-linux@fluff.org, lrg@slimlogic.co.uk, linux-arm-kernel@lists.infradead.org, Seungwhan Youn <sw.youn@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 11, 2010 at 01:07:42PM +0300, Mika Westerberg wrote:
-> On Mon, Oct 11, 2010 at 10:47:18AM +0100, Mark Brown wrote:
-> > On Sun, Oct 10, 2010 at 01:54:10PM +0300, Mika Westerberg wrote:
+On Sat, Oct 09, 2010 at 10:52:26AM +0900, Jassi Brar wrote:
+> On Fri, Oct 8, 2010 at 6:07 PM, Seungwhan Youn <claude.youn@gmail.com> wrote:
 
-> > > +	mutex_lock(&info->lock);
+> > Now, I'm almost finished 2nd patch for submit except this audio clock
+> > setting. For now, I can only think that remove audio clock setting
+> > from this machine code, and add audio clock settings in arch later(may
+> > be after arch/arm/plat-samsung get EPLL policy as Mr. Kukjin said).
 
-> > > +	INIT_COMPLETION(info->done);
+> > Is this okay?
 
-> > Do you really need to do this on every single register I/O?
+> IMO neither of the method is much better than the other.
 
-> Sorry, didn't quite understand you. Do you mean that should I take
-> the mutex and init the completion or wait for an interrupt?
+> If neither of the maintainers relent, maybe drop the clock setting altogether
+> and mark the machine driver 'BROKEN' until the EPLL management is fixed?
 
-You're doing INIT_COMPLETION every single time you use it - is that
-really required?
-
-> Yeah, sorry about that. I had the impression that using the latest
-> mainline would be right thing to do :( I will base the next version
-> against that tree pointed by Jassi.
-
-Latest mainline means you're missing any changes that are ready for the
-next merge window, once code has gone to Linus it's bugfix only outside
-of the merge window so actual development happens in -next.
+I'm OK with having the code in the driver, I just want something there
+that makes it more discoverable that it's there like a config option.
+Having the driver log loudly when it reconfigures the EPLL would
+probably also cover it.
