@@ -1,29 +1,63 @@
-From: Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: [patch 1/2] OSS: soundcard: locking bug in sound_ioctl()
-Date: Mon, 11 Oct 2010 10:50:00 +0200
-Message-ID: <1286787000.3634.1.camel@jlt3.sipsolutions.net>
-References: <20101010173352.GB5851@bicker>
-	 <201010102039.34858.arnd@arndb.de>  <201010111013.28952.arnd@arndb.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/4] ASoC: add ep93xx AC97 audio driver
+Date: Mon, 11 Oct 2010 10:47:18 +0100
+Message-ID: <20101011094717.GA9231@rakim.wolfsonmicro.main>
+References: <cover.1286707213.git.mika.westerberg@iki.fi>
+	<b0202066df3bb9732fbecca627d0149165905a95.1286707213.git.mika.westerberg@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sparse-owner@vger.kernel.org>
-In-Reply-To: <201010111013.28952.arnd@arndb.de>
-Sender: linux-sparse-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Dan Carpenter <error27@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-sparse@vger.kernel.org, Josh Triplett <josh@kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A312A1037E3
+	for <alsa-devel@alsa-project.org>;
+	Mon, 11 Oct 2010 11:47:20 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <b0202066df3bb9732fbecca627d0149165905a95.1286707213.git.mika.westerberg@iki.fi>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mika Westerberg <mika.westerberg@iki.fi>
+Cc: alsa-devel@alsa-project.org, martinwguy@gmail.com, hsweeten@visionengravers.com, ryan@bluewatersys.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-10-11 at 10:13 +0200, Arnd Bergmann wrote:
+On Sun, Oct 10, 2010 at 01:54:10PM +0300, Mika Westerberg wrote:
 
-> Hmm, actually sparse does *not* warn about sound_ioctl returning in
-> different lock contexts. Sparse developers: is there a known limitation
-> in sparse for this? I expected to see context warnings because
-> sound_ioctl normally releases soundcard_mutex (previously lock_kernel)
-> in some cases returns while holding the lock.
+> +	mutex_lock(&info->lock);
+> +
+> +	INIT_COMPLETION(info->done);
 
-Arnd, mutexes aren't annotated in the kernel source to make use of
-sparse's context checking.
+Do you really need to do this on every single register I/O?
 
-johannes
+> +	ep93xx_ac97_write_reg(info, AC97S1DATA, reg);
+> +	ep93xx_ac97_write_reg(info, AC97IM, AC97_SLOT2RXVALID);
+> +	if (!wait_for_completion_timeout(&info->done, AC97_TIMEOUT)) {
+> +		dev_warn(info->dev, "timeout reading register %x\n", reg);
+> +		mutex_unlock(&info->lock);
+> +		return -1;
 
+Return a real error code.
+
+> +module_init(ep93xx_ac97_init);
+> +module_exit(ep93xx_ac97_exit);
+
+Put these next to the functions they're referencing.
+
+> +#ifndef _EP93XX_SND_SOC_AC97_H
+> +#define _EP93XX_SND_SOC_AC97_H
+> +
+> +extern struct snd_soc_dai ep93xx_ac97_dai;
+> +
+> +#endif /* _EP93XX_SND_SOC_AC97_H */
+
+This is not needed with current ASoC.  Are you sure you've tested with
+current code?  You should always submit against the development version
+of the subsystem you're working with for any new drivers - for ASoC
+Jassi already pointed you at the tree, and you can in the general case
+also look at -next.
