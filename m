@@ -1,215 +1,42 @@
-From: kishon <a0393678@ti.com>
-Subject: Re: [PATCH 1/7] [RFC] OMAP: MCBSP: hwmod database for 2xxx devices
-Date: Tue, 12 Oct 2010 15:03:10 +0530
-Message-ID: <4CB42B56.5000808@ti.com>
-References: <1286296662-7639-1-git-send-email-kishon@ti.com> <EAF47CD23C76F840A9E7FCE10091EFAB030CF13384@dbde02.ent.ti.com> <201010061017.13908.peter.ujfalusi@nokia.com> <EAF47CD23C76F840A9E7FCE10091EFAB030CF14091@dbde02.ent.ti.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 2/2] ASoC: ak4642: simultaneous
+ playback/recorde support
+Date: Tue, 12 Oct 2010 10:38:19 +0100
+Message-ID: <1286876299.3267.24.camel@odin>
+References: <w3pbp70rpoq.wl%kuninori.morimoto.gx@renesas.com>
+	<w3p8w24rpmr.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1;
-	format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <EAF47CD23C76F840A9E7FCE10091EFAB030CF14091@dbde02.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "Varadarajan, Charulatha" <charu@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Kamat, Nishant" <nskamat@ti.com>, "Datta, Shubhrajyoti" <shubhrajyoti@ti.com>, "Basak, Partha" <p-basak2@ti.com>, "Girdwood, Liam" <x0135381@ti.com>, "jhnikula@gmail.com" <jhnikula@gmail.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "ABRAHAM, KISHON VIJAY" <kishon@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8F43B103845
+	for <alsa-devel@alsa-project.org>;
+	Tue, 12 Oct 2010 11:38:21 +0200 (CEST)
+Received: by wwb28 with SMTP id 28so3839327wwb.20
+	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2010 02:38:21 -0700 (PDT)
+In-Reply-To: <w3p8w24rpmr.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-ping..
+On Tue, 2010-10-12 at 13:39 +0900, Kuninori Morimoto wrote:
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+>  sound/soc/codecs/ak4642.c |    8 ++++----
+>  1 files changed, 4 insertions(+), 4 deletions(-)
 
-On Friday 08 October 2010 11:50 AM, Varadarajan, Charulatha wrote:
->
->
->> -----Original Message-----
->> From: Peter Ujfalusi [mailto:peter.ujfalusi@nokia.com]
->> Sent: Wednesday, October 06, 2010 12:47 PM
->> To: Varadarajan, Charulatha
->> Cc: linux-omap@vger.kernel.org; alsa-devel@alsa-project.org; Kamat,
->> Nishant; Datta, Shubhrajyoti; Basak, Partha; Girdwood, Liam;
->> jhnikula@gmail.com; broonie@opensource.wolfsonmicro.com; ABRAHAM, KI=
-SHON
->> VIJAY
->> Subject: Re: [PATCH 1/7] [RFC] OMAP: MCBSP: hwmod database for 2xxx
->> devices
->>
->> Hello,
->
-> Thanks for the quick response.
->
->>
->> On Wednesday 06 October 2010 10:01:28 ext Varadarajan, Charulatha wr=
-ote:
->>> This patch series is targeted to implement mcbsp driver in
->>> hwmod way and to make use of pm_runtime APIs.
->>>
->>> This patch series is tested on OMAP3&  4 and yet to be tested
->>> on OMAP2.
->>>
->>> There are few clarifications required so that the next patch series
->>> can be implemented after aligning.
->>>
->>> 1. Audio layer is making use of mcbsp and it's dma base addresses a=
-nd
->>> is closely coupled with omap-mcbsp.
->>> This can be handled either by
->>> a. providing an API with which Audio layer can get these addresses.
->>> (or)
->>> b. move the plat-omap/mcbsp.c and mach-omap2/mcbsp.c to sound/soc/o=
-map/
->>> [1]
->>>
->>> Option (a) would only be a workaround to handle the situation. As
->>> audio is the only user for mcbsp, option (b) is better. If option(b=
-)
->>> is agreed upon, the same can be addressed on top of the mcbsp hwmod
->>> series.
->>
->> it is true that at the moment only audio is using the McBSP ports, b=
-ut
->> McBSP is
->> really flexible, it can run for example in SPI mode, and it can be
->> configured to
->> use other serial protocols.
->
-> Yes.
->
->> I would go with option c.
->> Since ASoC is moving to multi-component (the conversion is already i=
-n
->> linux-
->> next), this means that the sound/soc/omap/omap-mcbsp, omap-pcm drive=
-rs are
->> platform drivers.
->> So if the plat-omap/mcbsp would register the platform device for McB=
-SP
->> clients
->> (we have only ASoC client at the moment), and use platform data to p=
-ass
->> the
->> needed information to the McBSP client driver, than we do not need n=
-ew API.
->
-> Sorry I am confused.
->
-> With hwmod implementation, there is a device register code for mcbsp
-> devices in mach-omap2/mcbsp.c and a probe in plat-omap/mcbsp.c. The b=
-ase
-> address, dma info are not part of pdata and are available to the driv=
-er
-> only after probe. I do not understand how the multi-component design =
-in
-> ASOC can avoid the new API.
->
-> Also with this multi-component approach in ASOC, two device
-> registrations happens for a single mcbsp device with two different
-> rames ("omap-mcbsp-dai.id"&  "omap-mcbsp.id"). Please explain if this
-> what is expected?
->
->> We still need to modify the ASoC drivers to make use of this platfor=
-m data,
->> but
->> at least we are going to keep the door open for others to use the Mc=
-BSP
->> ports
->> for other than audio.
->
-> Agreed. But the current omap-mcbsp driver cannot work standalone for
-> OMAP3/4 due to the issues stated below:
-> 1. omap_mcbsp_pollwrite and omap_mcbsp_pollread functions access McBS=
-P
-> registers as 16-bit. But in OMAP3/4, McBSP registers (DRR_REG and DXR=
-_REG)
-> are limited to 32-bit data accesses and hence poll mode would not wor=
-k [x].
-> 2. DMA transfers would also not work as it requires a patch similar t=
-o [y].
->
-> Patches [x]&  [y] were rejected as there are no users other than asoc=
-=2E
-> If it is not agreed to move omap-mcbsp driver to asoc layer, we need =
-to
-> get the omap-mcbsp driver working as a standalone driver. Otherwise i=
-t
-> is of no use keeping the mcbsp driver in plat-omap.
->
-> Once [x]&  [y] patches are upstreamed, audio layer needs to be modifi=
-ed
-> to make use of omap-mcbsp APIs rather than Audio layer calling dma
-> APIs directly to transfer data.
->
-> Coming back to the original question. Either we need to fix the broke=
-n
-> legacy mcbsp driver or move the omap-mcbsp driver completely to asoc
-> layer. What do you say?
->
-> [x] http://www.mail-archive.com/linux-omap@vger.kernel.org/msg19531.h=
-tml
-> [y] http://www.mail-archive.com/linux-omap@vger.kernel.org/msg04085.h=
-tml
->>
->>> 2. Sidetone feature is available only in OMAP3 (McBSP2&3) which has
->>> different base address and sys configs compared to it's mcbsp port.
->>> Hence the mcbsp is considered as a single device with two hwmods
->>> for McBSP2&3 devices in OMAP3.
->>
->> Sounds fair enough.
->
-> Thanks.
->
->>
->>> 3. Autoidle needs to be disabled for sidetone before enabling the
->> sidetone
->>> feature. There was a design proposed by Kishon [2] to add an API in
->> hwmod
->>> to modify the autoidle bit but was not agreed upon. How do we handl=
-e
->> this
->>> situation where the device has to disable or enable the autoidle bi=
-t at
->>> runtime?
->>
->> Yeah, this is really annoying problem. The McBSP ST should block aut=
-oidle
->> from
->> McBSP side, but it does not.
->> If you can not get through the proposed API, we should consider to s=
-witch
->> the
->> corresponding McBSP port to NoIdle, when the ST is in use (and resto=
-re the
->> idle
->> mode, when the ST has been disabled).
->> When McBSP is in NoIdle the interface clock is not going to be gated=
-, so
->> ST
->> block will be running without a problem (ST needs the iface clock fo=
-r
->> operation)
->>
->> What do you think?
->
-> I think it might not be possible to handle this, as the clocks are th=
-e same for ST
- > and mcbsp port. pm_runtime APIs are not called during ST=20
-enable/disable as clocks
- > are already enabled while enabling mcbsp port. Hence the idle bit=20
-change cannot happen
-> even  if the oh->flags are modified runtime during ST enable/disable.
->
->>>
->>> [1] https://patchwork.kernel.org/patch/225582/
->>> [2] https://patchwork.kernel.org/patch/134371/
->>>
->>> We would resend the same patch series by including alsa mailing lis=
-t
->>> (alsa-devel@alsa-project.org)
->>>
->>> <<snip>>
->>
->> --
->> P=E9ter
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
