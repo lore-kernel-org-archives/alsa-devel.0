@@ -1,23 +1,36 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: Need expert's advice - Fast Track Ultra (8R)
- dropping samples
-Date: Tue, 12 Oct 2010 10:18:24 +0200
-Message-ID: <4CB419D0.70808@showlabor.de>
-References: <4CA60C5B.6010809@ladisch.de>
-	<4CA86E1A.30405@showlabor.de>	<4CAAD212.9090805@ladisch.de>
-	<4CAC804A.8040806@showlabor.de>	<4CAC89EA.8080207@ladisch.de>
-	<4CACA471.2000504@showlabor.de>	<4CAD6AA2.4050205@ladisch.de>	<20101007081010.GZ7159@buzzloop.caiaq.de>	<4CADB077.3060907@showlabor.de>
-	<4CAEB9AC.1060208@ladisch.de>
-	<20101012071831.GA7159@buzzloop.caiaq.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: alsactl adds volume controls?
+Date: Tue, 12 Oct 2010 16:37:59 +0800
+Message-ID: <AANLkTinkQRJUqbhq-Jj+X8HsjSdy3YY8DvYTC84RMZvk@mail.gmail.com>
+References: <s5hr5hczi06.wl%tiwai@suse.de> <4C7F6D5D.7020101@canonical.com>
+	<alpine.LNX.2.00.1009021553460.10278@eeebox2.perex-int.cz>
+	<4C7FB2CF.5060505@ladisch.de>
+	<alpine.LNX.2.00.1009021721100.10278@eeebox2.perex-int.cz>
+	<4C7FC85B.4000009@ladisch.de>
+	<alpine.LNX.2.00.1009021926120.10278@eeebox2.perex-int.cz>
+	<i7viav$kjb$1@dough.gmane.org> <4CA46E98.10402@ladisch.de>
+	<4CA4A844.7060403@colin.guthr.ie>
+	<20100930164753.GB9431@sirena.org.uk>
+	<s5hr5gb9k83.wl%tiwai@suse.de> <4CA5834D.5030408@ladisch.de>
+	<4CA59976.2020306@colin.guthr.ie> <4CA5A38A.7050006@ladisch.de>
+	<i8ce5u$fj3$1@dough.gmane.org> <4CAD7F3D.3090205@ladisch.de>
+	<4CAF1AF2.3060907@colin.guthr.ie> <4CAF1FA3.5000402@ladisch.de>
+	<4CAF2533.1060102@colin.guthr.ie> <4CAF27B7.9080909@colin.guthr.ie>
+	<4CAF2DD1.5050306@ladisch.de> <4CAF37DE.8070205@colin.guthr.ie>
+	<4CAF3DA0.9020908@ladisch.de>
+	<AANLkTi=go5q_+zw2EMh7fSa6SesNG3s8ZXjEJHsU=B--@mail.gmail.com>
+	<i8uhme$c09$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
-	[83.169.30.203]) by alsa0.perex.cz (Postfix) with ESMTP id BE99924487
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id B34B024496
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Oct 2010 10:18:35 +0200 (CEST)
-In-Reply-To: <20101012071831.GA7159@buzzloop.caiaq.de>
+	Tue, 12 Oct 2010 10:37:59 +0200 (CEST)
+Received: by ewy9 with SMTP id 9so580714ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2010 01:37:59 -0700 (PDT)
+In-Reply-To: <i8uhme$c09$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,38 +40,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Daniel,
+2010/10/11 Colin Guthrie <gmane@colin.guthr.ie>
 
-
-Am 12.10.2010 09:18, schrieb Daniel Mack:
+> 'Twas brillig, and Raymond Yau at 11/10/10 02:34 did gyre and gimble:
+> > How about softvol plugin , the dB scale seem wrong, it alwaysl mute at
+> > min_dB even if I change min_dB to -21 ?
 >
-> Felix, can you add a
+> I would suspect that this needs fixed also. David's alsamixertest does
+> indeed report when PCM mutes at min, to identify this error case.
 >
->    printk(KERN_WARNING "%s() is_playback %d fill_max %d syncpipe %d\n",
->    	 __func__, is_playback, subs->fill_max, subs->syncpipe);
+> Col
 >
-> at the end of set_format() in pcm.c and send us the output?
->    
-
-
-Here you go:
-
-[195791.510900] set_format() is_playback 0 fill_max 0 syncpipe 0
-[195791.513495] set_format() is_playback 1 fill_max 0 syncpipe 0
-
-
-> I have an untested patch ready which should add support for implicit
-> feedback, but I'm uncertain about the condition when to activate this
-> mode.
 >
->    
+if you look at the 16bits preset_dB_value table , the minimum value is not
+zero and it is strange that it mute at min_dB -51dB
 
-That sounds great. I'm looking forward to give it a try!
-
-Thanks,
-
-Felix
+static const unsigned int preset_dB_value[PRESET_RESOLUTION] = {
+	0x00b8, 0x00bd, 0x00c1, 0x00c5, 0x00ca, 0x00cf, 0x00d4, 0x00d9,
+	0x00de, 0x00e3, 0x00e8, 0x00ed, 0x00f3, 0x00f9, 0x00fe, 0x0104,
+	0x010a, 0x0111, 0x0117, 0x011e, 0x0124, 0x012b, 0x0132, 0x0139,
+	0x0140, 0x0148, 0x0150, 0x0157, 0x015f, 0x0168, 0x0170, 0x0179,
+	0x0181, 0x018a, 0x0194, 0x019d, 0x01a7, 0x01b0, 0x01bb, 0x01c5,
+	0x01cf, 0x01da, 0x01e5, 0x01f1, 0x01fc, 0x0208, 0x0214, 0x0221,
+	0x022d, 0x023a, 0x0248, 0x0255, 0x0263, 0x0271, 0x0280, 0x028f,
+	0x029e, 0x02ae, 0x02be, 0x02ce, 0x02df, 0x02f0, 0x0301, 0x0313,
+	0x0326, 0x0339, 0x034c, 0x035f, 0x0374, 0x0388, 0x039d, 0x03b3,
+	0x03c9, 0x03df, 0x03f7, 0x040e, 0x0426, 0x043f, 0x0458, 0x0472,
+	0x048d, 0x04a8, 0x04c4, 0x04e0, 0x04fd, 0x051b, 0x053a, 0x0559,
+	0x0579, 0x0599, 0x05bb, 0x05dd, 0x0600, 0x0624, 0x0648, 0x066e,
+	0x0694, 0x06bb, 0x06e3, 0x070c, 0x0737, 0x0762, 0x078e, 0x07bb,
+	0x07e9, 0x0818, 0x0848, 0x087a, 0x08ac, 0x08e0, 0x0915, 0x094b,
+	0x0982, 0x09bb, 0x09f5, 0x0a30, 0x0a6d, 0x0aab, 0x0aeb, 0x0b2c,
+	0x0b6f, 0x0bb3, 0x0bf9, 0x0c40, 0x0c89, 0x0cd4, 0x0d21, 0x0d6f,
+	0x0dbf, 0x0e11, 0x0e65, 0x0ebb, 0x0f12, 0x0f6c, 0x0fc8, 0x1026,
+	0x1087, 0x10e9, 0x114e, 0x11b5, 0x121f, 0x128b, 0x12fa, 0x136b,
+	0x13df, 0x1455, 0x14ce, 0x154a, 0x15c9, 0x164b, 0x16d0, 0x1758,
+	0x17e4, 0x1872, 0x1904, 0x1999, 0x1a32, 0x1ace, 0x1b6e, 0x1c11,
+	0x1cb9, 0x1d64, 0x1e13, 0x1ec7, 0x1f7e, 0x203a, 0x20fa, 0x21bf,
+	0x2288, 0x2356, 0x2429, 0x2500, 0x25dd, 0x26bf, 0x27a6, 0x2892,
+	0x2984, 0x2a7c, 0x2b79, 0x2c7c, 0x2d85, 0x2e95, 0x2fab, 0x30c7,
+	0x31ea, 0x3313, 0x3444, 0x357c, 0x36bb, 0x3801, 0x394f, 0x3aa5,
+	0x3c02, 0x3d68, 0x3ed6, 0x404d, 0x41cd, 0x4355, 0x44e6, 0x4681,
+	0x4826, 0x49d4, 0x4b8c, 0x4d4f, 0x4f1c, 0x50f3, 0x52d6, 0x54c4,
+	0x56be, 0x58c3, 0x5ad4, 0x5cf2, 0x5f1c, 0x6153, 0x6398, 0x65e9,
+	0x6849, 0x6ab7, 0x6d33, 0x6fbf, 0x7259, 0x7503, 0x77bd, 0x7a87,
+	0x7d61, 0x804d, 0x834a, 0x8659, 0x897a, 0x8cae, 0x8ff5, 0x934f,
+	0x96bd, 0x9a40, 0x9dd8, 0xa185, 0xa548, 0xa922, 0xad13, 0xb11b,
+	0xb53b, 0xb973, 0xbdc5, 0xc231, 0xc6b7, 0xcb58, 0xd014, 0xd4ed,
+	0xd9e3, 0xdef6, 0xe428, 0xe978, 0xeee8, 0xf479, 0xfa2b, 0xffff,
+}
