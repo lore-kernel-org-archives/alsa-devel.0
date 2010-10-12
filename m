@@ -1,50 +1,40 @@
-From: Paul Walmsley <paul@pwsan.com>
-Subject: Re: [PATCH] ASoC: OMAP4: MCPDM: Remove unnecessary include of
- plat/control.h
-Date: Tue, 12 Oct 2010 09:06:30 -0600 (MDT)
-Message-ID: <alpine.DEB.2.00.1010120905570.16871@utopia.booyaka.com>
-References: <1286890078-32610-1-git-send-email-gadiyar@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: Pay attention to driver	supplied
+	DAI IDs
+Date: Tue, 12 Oct 2010 18:05:50 +0100
+Message-ID: <20101012170550.GA10861@sirena.org.uk>
+References: <1286895476-23198-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1286890078-32610-1-git-send-email-gadiyar@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Anand Gadiyar <gadiyar@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id E567A24472
+	for <alsa-devel@alsa-project.org>;
+	Tue, 12 Oct 2010 19:05:51 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1286895476-23198-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 12 Oct 2010, Anand Gadiyar wrote:
+On Tue, Oct 12, 2010 at 03:57:55PM +0100, Mark Brown wrote:
+>  		dai->dev = dev;
+> -		dai->id = i;
+> +		if (dai->driver->id)
+> +			dai->id = dai->driver->id;
+> +		else
+> +			dai->id = i;
+>  		dai->driver = &dai_drv[i];
 
-> Commit 346a5c890 (OMAP: control: move plat-omap/control.h
-> to mach-omap2/control.h) in the linux-omap tree removed
-> plat/control.h and most of its callers. This one slipped
-> through - breaking the build as below when
-> CONFIG_SND_OMAP_SOC_MCPDM is defined. Fix this.
-> 
->   CC      sound/soc/omap/omap-mcpdm.o
-> sound/soc/omap/omap-mcpdm.c:35: fatal error: plat/control.h: No such file or directory
-> compilation terminated.
-> make[3]: *** [sound/soc/omap/omap-mcpdm.o] Error 1
-> make[2]: *** [sound/soc/omap] Error 2
-> make[1]: *** [sound/soc] Error 2
-> make: *** [sound] Error 2
-> 
-> Signed-off-by: Anand Gadiyar <gadiyar@ti.com>
-> Cc: Misael Lopez Cruz <misael.lopez@ti.com>
-> Cc: Liam Girdwood <lrg@slimlogic.co.uk>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: Paul Walmsley <paul@pwsan.com>
-> Cc: Tony Lindgren <tony@atomide.com>
-> ---
-> This break is reproducible on linux-next as of 20101011;
-> I think it also exists in mainline, but I did not check.
-> 
-> Probably worth taking this through the ALSA tree with Tony
-> or Paul's ack. 
-
-Acked-by: Paul Walmsley <paul@pwsan.com>
-
-thanks Anand,
-
-
-- Paul
+Sorry, sent the wrong version of this - obviously the new check should
+go after the assignment.
