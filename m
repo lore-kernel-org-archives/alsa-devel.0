@@ -1,16 +1,16 @@
 From: <vm.rod25@gmail.com>
-Subject: [PATCH v2 03/10] davinci: ASoC support for
+Subject: [PATCH v2 04/10] davinci: McASP configuration for
 	Omapl138-Hawkboard
-Date: Mon, 11 Oct 2010 22:54:49 -0500
-Message-ID: <1286855689-31787-1-git-send-email-vm.rod25@gmail.com>
+Date: Mon, 11 Oct 2010 22:54:59 -0500
+Message-ID: <1286855699-31810-1-git-send-email-vm.rod25@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8E208103984
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4DC15103999
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Oct 2010 05:53:57 +0200 (CEST)
+	Tue, 12 Oct 2010 05:54:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,53 +26,26 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Victor Rodriguez <victor.rodriguez@sasken.com>
 
-This patch adds ASoC support for the Hawkboard-L138 system
+This patch defines Pin Mux configuration for MacASP
+used on the Hawkboard-L138 system in order to add Audio support
 
 Signed-off-by: Victor Rodriguez <victor.rodriguez@sasken.com>
 ---
- sound/soc/davinci/Kconfig       |    5 +++--
- sound/soc/davinci/davinci-evm.c |    6 ++++--
- 2 files changed, 7 insertions(+), 4 deletions(-)
+ arch/arm/mach-davinci/da850.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
-index 6bbf001..72c6752 100644
---- a/sound/soc/davinci/Kconfig
-+++ b/sound/soc/davinci/Kconfig
-@@ -76,8 +76,9 @@ config  SND_DA830_SOC_EVM
- 	  DA830/OMAP-L137 EVM
+diff --git a/arch/arm/mach-davinci/da850.c b/arch/arm/mach-davinci/da850.c
+index 63916b9..f033a0a 100644
+--- a/arch/arm/mach-davinci/da850.c
++++ b/arch/arm/mach-davinci/da850.c
+@@ -591,7 +591,7 @@ const short da850_cpgmac_pins[] __initdata = {
+ const short da850_mcasp_pins[] __initdata = {
+ 	DA850_AHCLKX, DA850_ACLKX, DA850_AFSX,
+ 	DA850_AHCLKR, DA850_ACLKR, DA850_AFSR, DA850_AMUTE,
+-	DA850_AXR_11, DA850_AXR_12,
++	DA850_AXR_11, DA850_AXR_12, DA850_AXR_13, DA850_AXR_14,
+ 	-1
+ };
  
- config  SND_DA850_SOC_EVM
--	tristate "SoC Audio support for DA850/OMAP-L138 EVM"
--	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DA850_EVM
-+	tristate "SoC Audio support for DA850/OMAP-L138 EVM/Hawkboard"
-+	depends on SND_DAVINCI_SOC && (MACH_DAVINCI_DA850_EVM || \
-+			MACH_OMAPL138_HAWKBOARD)
- 	select SND_DAVINCI_SOC_MCASP
- 	select SND_SOC_TLV320AIC3X
- 	help
-diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
-index 97f74d6..73093eb 100644
---- a/sound/soc/davinci/davinci-evm.c
-+++ b/sound/soc/davinci/davinci-evm.c
-@@ -59,7 +59,8 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
- 		sysclk = 12288000;
- 
- 	else if (machine_is_davinci_da830_evm() ||
--				machine_is_davinci_da850_evm())
-+				machine_is_davinci_da850_evm() ||
-+				machine_is_omapl138_hawkboard())
- 		sysclk = 24576000;
- 
- 	else
-@@ -311,7 +312,8 @@ static int __init evm_init(void)
- 	} else if (machine_is_davinci_da830_evm()) {
- 		evm_snd_dev_data = &da830_evm_snd_devdata;
- 		index = 1;
--	} else if (machine_is_davinci_da850_evm()) {
-+	} else if (machine_is_davinci_da850_evm() ||
-+			machine_is_omapl138_hawkboard()) {
- 		evm_snd_dev_data = &da850_evm_snd_devdata;
- 		index = 0;
- 	} else
 -- 
 1.6.0.5
