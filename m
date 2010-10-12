@@ -1,68 +1,215 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [patch] ASoC: soc: snprintf() doesn't return
-	negative
-Date: Tue, 12 Oct 2010 10:35:07 +0100
-Message-ID: <20101012093506.GB30933@rakim.wolfsonmicro.main>
-References: <20101011035416.GD5851@bicker>
-	<20101011104009.GB9231@rakim.wolfsonmicro.main>
-	<20101011164038.GE5851@bicker>
-	<20101011185148.GB22355@opensource.wolfsonmicro.com>
-	<20101011194502.GK5851@bicker> <s5hpqvg1m7v.wl%tiwai@suse.de>
+From: kishon <a0393678@ti.com>
+Subject: Re: [PATCH 1/7] [RFC] OMAP: MCBSP: hwmod database for 2xxx devices
+Date: Tue, 12 Oct 2010 15:03:10 +0530
+Message-ID: <4CB42B56.5000808@ti.com>
+References: <1286296662-7639-1-git-send-email-kishon@ti.com> <EAF47CD23C76F840A9E7FCE10091EFAB030CF13384@dbde02.ent.ti.com> <201010061017.13908.peter.ujfalusi@nokia.com> <EAF47CD23C76F840A9E7FCE10091EFAB030CF14091@dbde02.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4729010383D
-	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Oct 2010 11:35:09 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hpqvg1m7v.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Dan Carpenter <error27@gmail.com>, Jassi Brar <jassi.brar@samsung.com>, kernel-janitors@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset=ISO-8859-1;
+	format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <EAF47CD23C76F840A9E7FCE10091EFAB030CF14091@dbde02.ent.ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "Varadarajan, Charulatha" <charu@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Kamat, Nishant" <nskamat@ti.com>, "Datta, Shubhrajyoti" <shubhrajyoti@ti.com>, "Basak, Partha" <p-basak2@ti.com>, "Girdwood, Liam" <x0135381@ti.com>, "jhnikula@gmail.com" <jhnikula@gmail.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "ABRAHAM, KISHON VIJAY" <kishon@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 11, 2010 at 10:57:40PM +0200, Takashi Iwai wrote:
-> Dan Carpenter wrote:
+ping..
 
-> Well, actually we should fix either:
+On Friday 08 October 2010 11:50 AM, Varadarajan, Charulatha wrote:
+>
+>
+>> -----Original Message-----
+>> From: Peter Ujfalusi [mailto:peter.ujfalusi@nokia.com]
+>> Sent: Wednesday, October 06, 2010 12:47 PM
+>> To: Varadarajan, Charulatha
+>> Cc: linux-omap@vger.kernel.org; alsa-devel@alsa-project.org; Kamat,
+>> Nishant; Datta, Shubhrajyoti; Basak, Partha; Girdwood, Liam;
+>> jhnikula@gmail.com; broonie@opensource.wolfsonmicro.com; ABRAHAM, KI=
+SHON
+>> VIJAY
+>> Subject: Re: [PATCH 1/7] [RFC] OMAP: MCBSP: hwmod database for 2xxx
+>> devices
+>>
+>> Hello,
+>
+> Thanks for the quick response.
+>
+>>
+>> On Wednesday 06 October 2010 10:01:28 ext Varadarajan, Charulatha wr=
+ote:
+>>> This patch series is targeted to implement mcbsp driver in
+>>> hwmod way and to make use of pm_runtime APIs.
+>>>
+>>> This patch series is tested on OMAP3&  4 and yet to be tested
+>>> on OMAP2.
+>>>
+>>> There are few clarifications required so that the next patch series
+>>> can be implemented after aligning.
+>>>
+>>> 1. Audio layer is making use of mcbsp and it's dma base addresses a=
+nd
+>>> is closely coupled with omap-mcbsp.
+>>> This can be handled either by
+>>> a. providing an API with which Audio layer can get these addresses.
+>>> (or)
+>>> b. move the plat-omap/mcbsp.c and mach-omap2/mcbsp.c to sound/soc/o=
+map/
+>>> [1]
+>>>
+>>> Option (a) would only be a workaround to handle the situation. As
+>>> audio is the only user for mcbsp, option (b) is better. If option(b=
+)
+>>> is agreed upon, the same can be addressed on top of the mcbsp hwmod
+>>> series.
+>>
+>> it is true that at the moment only audio is using the McBSP ports, b=
+ut
+>> McBSP is
+>> really flexible, it can run for example in SPI mode, and it can be
+>> configured to
+>> use other serial protocols.
+>
+> Yes.
+>
+>> I would go with option c.
+>> Since ASoC is moving to multi-component (the conversion is already i=
+n
+>> linux-
+>> next), this means that the sound/soc/omap/omap-mcbsp, omap-pcm drive=
+rs are
+>> platform drivers.
+>> So if the plat-omap/mcbsp would register the platform device for McB=
+SP
+>> clients
+>> (we have only ASoC client at the moment), and use platform data to p=
+ass
+>> the
+>> needed information to the McBSP client driver, than we do not need n=
+ew API.
+>
+> Sorry I am confused.
+>
+> With hwmod implementation, there is a device register code for mcbsp
+> devices in mach-omap2/mcbsp.c and a probe in plat-omap/mcbsp.c. The b=
+ase
+> address, dma info are not part of pdata and are available to the driv=
+er
+> only after probe. I do not understand how the multi-component design =
+in
+> ASOC can avoid the new API.
+>
+> Also with this multi-component approach in ASOC, two device
+> registrations happens for a single mcbsp device with two different
+> rames ("omap-mcbsp-dai.id"&  "omap-mcbsp.id"). Please explain if this
+> what is expected?
+>
+>> We still need to modify the ASoC drivers to make use of this platfor=
+m data,
+>> but
+>> at least we are going to keep the door open for others to use the Mc=
+BSP
+>> ports
+>> for other than audio.
+>
+> Agreed. But the current omap-mcbsp driver cannot work standalone for
+> OMAP3/4 due to the issues stated below:
+> 1. omap_mcbsp_pollwrite and omap_mcbsp_pollread functions access McBS=
+P
+> registers as 16-bit. But in OMAP3/4, McBSP registers (DRR_REG and DXR=
+_REG)
+> are limited to 32-bit data accesses and hence poll mode would not wor=
+k [x].
+> 2. DMA transfers would also not work as it requires a patch similar t=
+o [y].
+>
+> Patches [x]&  [y] were rejected as there are no users other than asoc=
+=2E
+> If it is not agreed to move omap-mcbsp driver to asoc layer, we need =
+to
+> get the omap-mcbsp driver working as a standalone driver. Otherwise i=
+t
+> is of no use keeping the mcbsp driver in plat-omap.
+>
+> Once [x]&  [y] patches are upstreamed, audio layer needs to be modifi=
+ed
+> to make use of omap-mcbsp APIs rather than Audio layer calling dma
+> APIs directly to transfer data.
+>
+> Coming back to the original question. Either we need to fix the broke=
+n
+> legacy mcbsp driver or move the omap-mcbsp driver completely to asoc
+> layer. What do you say?
+>
+> [x] http://www.mail-archive.com/linux-omap@vger.kernel.org/msg19531.h=
+tml
+> [y] http://www.mail-archive.com/linux-omap@vger.kernel.org/msg04085.h=
+tml
+>>
+>>> 2. Sidetone feature is available only in OMAP3 (McBSP2&3) which has
+>>> different base address and sys configs compared to it's mcbsp port.
+>>> Hence the mcbsp is considered as a single device with two hwmods
+>>> for McBSP2&3 devices in OMAP3.
+>>
+>> Sounds fair enough.
+>
+> Thanks.
+>
+>>
+>>> 3. Autoidle needs to be disabled for sidetone before enabling the
+>> sidetone
+>>> feature. There was a design proposed by Kishon [2] to add an API in
+>> hwmod
+>>> to modify the autoidle bit but was not agreed upon. How do we handl=
+e
+>> this
+>>> situation where the device has to disable or enable the autoidle bi=
+t at
+>>> runtime?
+>>
+>> Yeah, this is really annoying problem. The McBSP ST should block aut=
+oidle
+>> from
+>> McBSP side, but it does not.
+>> If you can not get through the proposed API, we should consider to s=
+witch
+>> the
+>> corresponding McBSP port to NoIdle, when the ST is in use (and resto=
+re the
+>> idle
+>> mode, when the ST has been disabled).
+>> When McBSP is in NoIdle the interface clock is not going to be gated=
+, so
+>> ST
+>> block will be running without a problem (ST needs the iface clock fo=
+r
+>> operation)
+>>
+>> What do you think?
+>
+> I think it might not be possible to handle this, as the clocks are th=
+e same for ST
+ > and mcbsp port. pm_runtime APIs are not called during ST=20
+enable/disable as clocks
+ > are already enabled while enabling mcbsp port. Hence the idle bit=20
+change cannot happen
+> even  if the oh->flags are modified runtime during ST enable/disable.
+>
+>>>
+>>> [1] https://patchwork.kernel.org/patch/225582/
+>>> [2] https://patchwork.kernel.org/patch/134371/
+>>>
+>>> We would resend the same patch series by including alsa mailing lis=
+t
+>>> (alsa-devel@alsa-project.org)
+>>>
+>>> <<snip>>
+>>
+>> --
+>> P=E9ter
 
-> - check the return of snprintf() at each time properly,
-> 
-> 	list_for_each_entry(dai, &dai_list, list) {
-> 		int len = snprintf(buf + ret, PAGE_SIZE - ret, "%s\n", dai->name);
-> 		if (len < 0)
-> 			return len;
-> 		ret += len;
-> 	}
-
-In this case we're deliberately eating the error since all these files
-are about getting diagnostics out - the code is intentionally soldiering
-on and trying to get as much data out as possible rather than giving up
-on error.
-
-> In either case, a negative check after for loop is superfluous.
-
-In those ones, yes - it's pretty much there for paranoia since the copy
-to userspace is more likely to explode than random memory corruption.
-
-> And, when no negative return value is assured (or filtered out like
-> above), there can't be overflow, too.  snprintf() fills the string
-> at most the size including NUL-char.  OTOH, it returns the size that
-> doesn't include NUL-char.
-
-Dan was saying that it would return sizes larger than the string it
-wrote (which is a behaviour of some implementations) which would be
-an issue since it would cause us to pass bad buffer pointers into
-subsequent snprintf() calls.
-
-I've not had time to look at this properly but Dan's analysis seems off.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
