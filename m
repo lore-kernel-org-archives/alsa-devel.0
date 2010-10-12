@@ -1,29 +1,21 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: alsactl adds volume controls?
-Date: Tue, 12 Oct 2010 09:51:24 +0100
-Message-ID: <4CB4218C.6070501@colin.guthr.ie>
-References: <s5hr5hczi06.wl%tiwai@suse.de>	<4C7F6D5D.7020101@canonical.com>	<alpine.LNX.2.00.1009021553460.10278@eeebox2.perex-int.cz>	<4C7FB2CF.5060505@ladisch.de>	<alpine.LNX.2.00.1009021721100.10278@eeebox2.perex-int.cz>	<4C7FC85B.4000009@ladisch.de>	<alpine.LNX.2.00.1009021926120.10278@eeebox2.perex-int.cz>	<i7viav$kjb$1@dough.gmane.org>	<4CA46E98.10402@ladisch.de>	<4CA4A844.7060403@colin.guthr.ie>	<20100930164753.GB9431@sirena.org.uk>	<s5hr5gb9k83.wl%tiwai@suse.de>	<4CA5834D.5030408@ladisch.de>	<4CA59976.2020306@colin.guthr.ie>	<4CA5A38A.7050006@ladisch.de>	<i8ce5u$fj3$1@dough.gmane.org>	<4CAD7F3D.3090205@ladisch.de>	<4CAF1AF2.3060907@colin.guthr.ie>	<4CAF1FA3.5000402@ladisch.de>	<4CAF2533.1060102@colin.guthr.ie>	<4CAF27B7.9080909@colin.guthr.ie>	<4CAF2DD1.5050306@ladisch.de>	<4CAF37D
- E.8070205@colin.guthr.ie>
-	<4CAF38D7.6030901@colin.guthr.ie> <4CAF3D97.8070209@colin.guthr.ie>
+From: Valentine Sinitsyn <valentine.sinitsyn@gmail.com>
+Subject: Re: Mic + Headphone Problem in Samsung R540
+Date: Tue, 12 Oct 2010 15:15:48 +0600
+Message-ID: <4CB42744.7050901@gmail.com>
+References: <87aams5t14.fsf@alamut.ozu.edu.tr>	<87vd5cew6b.fsf@alamut.ozu.edu.tr>
+	<4CAF104F.30201@gmail.com>	<87y6a8de30.fsf_-_@alamut.ozu.edu.tr>	<AANLkTi=mqYdTGZxxGH7fQN6rZLx9LMv7Hx16s+Lt_bs_@mail.gmail.com>	<87wrprus88.fsf_-_@alamut.ozu.edu.tr>
+	<4CB29FB7.6070305@gmail.com> <87eibwleuk.fsf@alamut.ozu.edu.tr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3FB24243F2
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 727BF243F7
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Oct 2010 10:51:33 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1P5aa4-0002Wd-II
-	for alsa-devel@alsa-project.org; Tue, 12 Oct 2010 10:51:32 +0200
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2010 10:51:32 +0200
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2010 10:51:32 +0200
-In-Reply-To: <4CAF3D97.8070209@colin.guthr.ie>
+	Tue, 12 Oct 2010 11:15:50 +0200 (CEST)
+Received: by ewy9 with SMTP id 9so591657ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2010 02:15:50 -0700 (PDT)
+In-Reply-To: <87eibwleuk.fsf@alamut.ozu.edu.tr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,35 +25,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Clemens Ladisch <clemens@ladisch.de>
+To: Volkan YAZICI <yazicivo@ttmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Colin Guthrie at 08/10/10 16:49 did gyre and gimble:
-> I've attached the final patch I used. I modified your one slightly to
-> correct case when passing in a value that is <= min (e.g. -5000dB on my
-> setup) to also fix that up. As I'm not 100% sure it's needed, I'll leave
-> it up to you to decide which patch to apply.
-> 
-> Many thanks once again.
+Hello,
 
-Clemens, are you able to commit the two patches here (my modification of
-your alsa-lib patch and your kernel patch).
+> Despite I tried this setting at least 4 times, this time it worked in
+> the first try. Maybe I should quit PhD while I am the start of it.
+Not necessarily. At least, having a doctorate degree entitles you to a 
+bit of absent-mindness ;)
 
-Or should I resubmit them as new threads here for Takashi or Jaroslav to
-commit? I suspect they are somewhat lost at the end of this thread.
+> Thanks so much Raymond and Valentine for your helpful support. I am in
+> dept to you.
+Welcome. Next time I'll be in Turkey you can buy me a beer. Just kidding :)
 
-Col
+Good luck in your studies!
 
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mageia Contributor [http://www.mageia.org/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+Regards,
+Valentine (Ph.D., too)
