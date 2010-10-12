@@ -1,15 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Add WM8962 microphone bias control
-Date: Tue, 12 Oct 2010 19:37:17 +0100
-Message-ID: <1286908637-10424-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH 1/2] ASoC: Pay attention to driver supplied
+ DAI IDs
+Date: Tue, 12 Oct 2010 13:49:52 -0500
+Message-ID: <AANLkTikNLX_0y4Mo3TqsjAecHk8x0ZR-_iz3EL87vkUM@mail.gmail.com>
+References: <1286895476-23198-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F263B1037F1
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 088E0103843
 	for <alsa-devel@alsa-project.org>;
-	Tue, 12 Oct 2010 20:37:31 +0200 (CEST)
+	Tue, 12 Oct 2010 20:50:24 +0200 (CEST)
+Received: by iwn33 with SMTP id 33so1189130iwn.38
+	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2010 11:50:23 -0700 (PDT)
+In-Reply-To: <1286895476-23198-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,32 +25,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-We unconditionally require SYSCLK since while only microphone detection
-specifically requires SYSCLK any actual use case would enable it via
-some other means but microphone detection may have nothing active other
-than the bias itself.
+On Tue, Oct 12, 2010 at 9:57 AM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> The driver can specify a DAI ID number so use that.
+>
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+> =A0sound/soc/soc-core.c | =A0 =A05 ++++-
+> =A01 files changed, 4 insertions(+), 1 deletions(-)
+>
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 4f6ea8c..c20cf7f 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -3015,7 +3015,10 @@ int snd_soc_register_dais(struct device *dev,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0dai->dev =3D dev;
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 dai->id =3D i;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (dai->driver->id)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 dai->id =3D dai->driver->id;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 else
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 dai->id =3D i;
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8962.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+I haven't looked at the code, but doesn't this assume that a DAI ID of
+0 is invalid?
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index e5009d0..894d0cd 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -2566,6 +2566,8 @@ static const struct snd_soc_dapm_route wm8962_intercon[] = {
- 	{ "MIXINR", "IN3R Switch", "IN3R" },
- 	{ "MIXINR", "PGA Switch", "INPGAR" },
- 
-+	{ "MICBIAS", NULL, "SYSCLK" },
-+
- 	{ "ADCL", NULL, "SYSCLK" },
- 	{ "ADCL", NULL, "TOCLK" },
- 	{ "ADCL", NULL, "MIXINL" },
--- 
-1.7.1
+I have a suspicion I need to retest my driver to make sure it still works.
+
+-- =
+
+Timur Tabi
+Linux kernel developer at Freescale
