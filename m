@@ -1,144 +1,51 @@
-From: Josh Triplett <josh@joshtriplett.org>
-Subject: Re: [patch 1/2] OSS: soundcard: locking bug in sound_ioctl()
-Date: Mon, 11 Oct 2010 15:23:08 -0700
-Message-ID: <20101011222307.GA10570@feather>
-References: <20101010173352.GB5851@bicker>
- <1286794326.3634.13.camel@jlt3.sipsolutions.net>
- <20101011185455.GB8537@feather>
- <201010112242.19246.arnd@arndb.de>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 10/10] ASoC: SAMSUNG: Add Machine driver for
+ S/PDIF PCM audio
+Date: Tue, 12 Oct 2010 10:27:33 +0900
+Message-ID: <AANLkTi=NrEm8XHWbD6UxrxxAeCtTrdwr9_KYNSBv5+nm@mail.gmail.com>
+References: <AANLkTincwL_nQAmu7Dcmht0FV43BiN7OoecE_60QJhS2@mail.gmail.com>
+	<20101005044304.GA26509@opensource.wolfsonmicro.com>
+	<AANLkTi=x_fi5HTBBmMUv8YTxSdbgcnJ=ZbacJQj6rcgf@mail.gmail.com>
+	<20101005055937.GA19989@opensource.wolfsonmicro.com>
+	<AANLkTimi1t5S2XWdUFzaPttD4Hywm0SLt5CvR1YnVOjj@mail.gmail.com>
+	<AANLkTin4skx+aiL2FXwWO1ekKqT2YWDd3SM1H5WnGkhC@mail.gmail.com>
+	<00c401cb6520$9484ef90$bd8eceb0$%kim@samsung.com>
+	<AANLkTikf4CAWm49Q_AfcfiQDBQUVcE_BC-a_4F7d8xOz@mail.gmail.com>
+	<AANLkTinPXcjHcaM1puzz00Sfhob9Y-X4HGDDVGMTqhH5@mail.gmail.com>
+	<AANLkTindvBBOyWwkbwUo+oG31r8xSgCLbjuDNgvTNY_Q@mail.gmail.com>
+	<20101011104737.GB16777@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sparse-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <201010112242.19246.arnd@arndb.de>
-Sender: linux-sparse-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Johannes Berg <johannes@sipsolutions.net>, Dan Carpenter <error27@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-sparse@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20101011104737.GB16777@sirena.org.uk>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Seungwhan Youn <claude.youn@gmail.com>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, jassi.brar@samsung.com, Kukjin Kim <kgene.kim@samsung.com>, ben-linux@fluff.org, lrg@slimlogic.co.uk, linux-arm-kernel@lists.infradead.org, Seungwhan Youn <sw.youn@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 11, 2010 at 10:42:18PM +0200, Arnd Bergmann wrote:
-> On Monday 11 October 2010 20:54:56 Josh Triplett wrote:
-> > On Mon, Oct 11, 2010 at 12:52:06PM +0200, Johannes Berg wrote:
-> >
-> > > I don't know. Could be related to trylock issues, could be just historic
-> > > since semaphores can't really be annotated, or could be something else
-> > > entirely... I would expect a huge amount of warnings from sparse though
-> > > if you "just" annotate them since there are things like rtnl_lock()
-> > > which would have to propagate context.
-> > 
-> > As far as I know, no reason exists to not just annotate mutexes; I think
-> > mutexes just came along later and nobody happened to add the appropriate
-> > annotations.  (Also, sparse does handle trylock.)
-> > 
-> > But yes, annotating mutexes will then introduce a giant pile of lock
-> > warnings that need further annotation propagation.  It will also
-> > introduce lock warnings that represent actual bugs, making it important
-> > to not just blindly propagate annotations to make warnings go away.
-> 
-> I've given it a try, wrapping the trylock/interruptible/killable variants
-> into macros and the number of additional warnings was much less than
-> I had feared. This is the diff for today's sparse with today's linux-next
-> x86_64_defconfig:
-> 
-[...snip...]
-> 
-> And this is the patch I used for testing. There may still be some flaws in it,
-> but it seems to do the trick.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Mon, Oct 11, 2010 at 7:47 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Sat, Oct 09, 2010 at 10:52:26AM +0900, Jassi Brar wrote:
+>> On Fri, Oct 8, 2010 at 6:07 PM, Seungwhan Youn <claude.youn@gmail.com> wrote:
+>
+>> > Now, I'm almost finished 2nd patch for submit except this audio clock
+>> > setting. For now, I can only think that remove audio clock setting
+>> > from this machine code, and add audio clock settings in arch later(may
+>> > be after arch/arm/plat-samsung get EPLL policy as Mr. Kukjin said).
+>
+>> > Is this okay?
+>
+>> IMO neither of the method is much better than the other.
+>
+>> If neither of the maintainers relent, maybe drop the clock setting altogether
+>> and mark the machine driver 'BROKEN' until the EPLL management is fixed?
+>
+> I'm OK with having the code in the driver, I just want something there
+> that makes it more discoverable that it's there like a config option.
+> Having the driver log loudly when it reconfigures the EPLL would
+> probably also cover it.
 
-Thanks!
-
-One minor suggetsion below to simplify the patch; with that added,
-Reviewed-by: Josh Triplett <josh@joshtriplett.org>
-
-> diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-> index f363bc8..d4940af 100644
-> --- a/include/linux/mutex.h
-> +++ b/include/linux/mutex.h
-> @@ -14,6 +14,7 @@
->  #include <linux/spinlock_types.h>
->  #include <linux/linkage.h>
->  #include <linux/lockdep.h>
-> +#include <linux/compiler.h>
->  
->  #include <asm/atomic.h>
->  
-> @@ -131,20 +132,35 @@ static inline int mutex_is_locked(struct mutex *lock)
->   * Also see Documentation/mutex-design.txt.
->   */
->  #ifdef CONFIG_DEBUG_LOCK_ALLOC
-> -extern void mutex_lock_nested(struct mutex *lock, unsigned int subclass);
-> -extern int __must_check mutex_lock_interruptible_nested(struct mutex *lock,
-> -					unsigned int subclass);
-> -extern int __must_check mutex_lock_killable_nested(struct mutex *lock,
-> -					unsigned int subclass);
-> -
-> +extern void mutex_lock_nested(struct mutex *lock, unsigned int subclass)
-> +				__acquires(lock);
-> +extern int __must_check __mutex_lock_interruptible_nested(struct mutex *lock,
-> +						unsigned int subclass);
-> +extern int __must_check __mutex_lock_killable_nested(struct mutex *lock,
-> +						unsigned int subclass);
-> +#define mutex_lock_interruptible_nested(lock, subclass)	({		\
-> +   int __mutex_ret = __mutex_lock_interruptible_nested(lock, subclass);	\
-> +   if (!__mutex_ret) __acquire(lock); __mutex_ret; 			\
-> +})
-> +#define mutex_lock_killable_nested(lock, subclass)	({		\
-> +   int __mutex_ret = __mutex_lock_killable_nested(lock, subclass);	\
-> +   if (!__mutex_ret) __acquire(lock); __mutex_ret; 			\
-> +})
-
-Assuming that the underlying function only returns zero/non-zero and
-that the actual return value doesn't matter, then you can use the
-__cond_lock macro from compiler.h for this:
-
-# define __cond_lock(x,c)       ((c) ? ({ __acquire(x); 1; }) : 0)
-
->  #define mutex_lock(lock) mutex_lock_nested(lock, 0)
->  #define mutex_lock_interruptible(lock) mutex_lock_interruptible_nested(lock, 0)
->  #define mutex_lock_killable(lock) mutex_lock_killable_nested(lock, 0)
->  #else
-> -extern void mutex_lock(struct mutex *lock);
-> -extern int __must_check mutex_lock_interruptible(struct mutex *lock);
-> -extern int __must_check mutex_lock_killable(struct mutex *lock);
-> -
-> +extern void mutex_lock(struct mutex *lock) __acquires(lock);
-> +extern int __must_check __mutex_lock_interruptible(struct mutex *lock);
-> +extern int __must_check __mutex_lock_killable(struct mutex *lock);
-> +#define mutex_lock_interruptible(lock)	({				\
-> +   int __mutex_ret = __mutex_lock_interruptible(lock);			\
-> +   if (!__mutex_ret) __acquire(lock); __mutex_ret; 			\
-> +})
-> +#define mutex_lock_killable(lock)	({				\
-> +   int __mutex_ret = __mutex_lock_killable(lock);			\
-> +   if (!__mutex_ret) __acquire(lock); __mutex_ret; 			\
-> +})
-
-Same here.
-
->  # define mutex_lock_nested(lock, subclass) mutex_lock(lock)
->  # define mutex_lock_interruptible_nested(lock, subclass) mutex_lock_interruptible(lock)
->  # define mutex_lock_killable_nested(lock, subclass) mutex_lock_killable(lock)
-> @@ -156,8 +172,16 @@ extern int __must_check mutex_lock_killable(struct mutex *lock);
->   *
->   * Returns 1 if the mutex has been acquired successfully, and 0 on contention.
->   */
-> -extern int mutex_trylock(struct mutex *lock);
-> -extern void mutex_unlock(struct mutex *lock);
-> -extern int atomic_dec_and_mutex_lock(atomic_t *cnt, struct mutex *lock);
-> +extern int __mutex_trylock(struct mutex *lock);
-> +#define mutex_trylock(lock)	({					\
-> +   int __mutex_ret = __mutex_trylock(lock);				\
-> +   if (__mutex_ret) __acquire(lock); __mutex_ret; 			\
-> +})
-> +extern void mutex_unlock(struct mutex *lock) __releases(lock);
-> +extern int __atomic_dec_and_mutex_lock(atomic_t *cnt, struct mutex *lock);
-> +#define atomic_dec_and_mutex_lock(cnt, lock)	({			\
-> +   int __mutex_ret = __atomic_dec_and_mutex_lock(cnt, lock);		\
-> +   if (__mutex_ret) __acquire(lock); __mutex_ret; 			\
-> +})
-
-And here.
-
-- Josh Triplett
+Thanks. Yes, we should print warning upon changing EPLL.
+Even better would be to have some sane EPLL(clocks in general)
+management policy in place. Perhaps, after I am done with Samsung ASoC overhaul,
+I'll take it up if others parameters favor.
