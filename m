@@ -1,63 +1,86 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Move soc-core module init next to
- functon definition
-Date: Wed, 13 Oct 2010 11:00:10 +0100
-Message-ID: <1286964010.3282.33.camel@odin>
-References: <1286963853-10116-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 48D4A244B9
-	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Oct 2010 12:00:13 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so3677927wyb.38
-	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2010 03:00:13 -0700 (PDT)
-In-Reply-To: <1286963853-10116-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+From: Seungwhan Youn <sw.youn@samsung.com>
+Subject: [PATCH v3 4/6] ARM: S5P: Add EPLL rate change warning
+Date: Wed, 13 Oct 2010 18:51:08 +0900
+Message-ID: <1286963468-17469-1-git-send-email-sw.youn@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: ben-linux@fluff.org, kgene.kim@samsung.com, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com, Seungwhan Youn <sw.youn@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-10-13 at 10:57 +0100, Mark Brown wrote:
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/soc-core.c |    3 +--
->  1 files changed, 1 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index f4286ab..4cbfe46 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -3311,6 +3311,7 @@ static int __init snd_soc_init(void)
->  
->  	return platform_driver_register(&soc_driver);
->  }
-> +module_init(snd_soc_init);
->  
->  static void __exit snd_soc_exit(void)
->  {
-> @@ -3319,8 +3320,6 @@ static void __exit snd_soc_exit(void)
->  #endif
->  	platform_driver_unregister(&soc_driver);
->  }
-> -
-> -module_init(snd_soc_init);
->  module_exit(snd_soc_exit);
->  
->  /* Module information */
+This patch adds warning about changing EPLL rate to notice that other
+driver that controls H/W, which is using EPLL, will has unknown effects
+by this EPLL rate change.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+---
+This patch is re-worked to avoid conflict with previous re-worked patch(
+[PATCH v3 1/6] ARM: S5P: Reduce duplicated EPLL control codes).
+
+This patch also depends on previous v1 and v2 petch-set which was accepted,
+and depends on re-workd patch v3 1/6.
+--
+ arch/arm/mach-s5p64x0/clock-s5p6440.c |    3 +++
+ arch/arm/mach-s5p64x0/clock-s5p6450.c |    3 +++
+ arch/arm/mach-s5pc100/clock.c         |    3 +++
+ arch/arm/mach-s5pv210/clock.c         |    3 +++
+ 4 files changed, 12 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-s5p64x0/clock-s5p6440.c b/arch/arm/mach-s5p64x0/clock-s5p6440.c
+index cfccdff..0d728d3 100644
+--- a/arch/arm/mach-s5p64x0/clock-s5p6440.c
++++ b/arch/arm/mach-s5p64x0/clock-s5p6440.c
+@@ -79,6 +79,9 @@ static int s5p6440_epll_set_rate(struct clk *clk, unsigned long rate)
+ 	__raw_writel(epll_con, S5P64X0_EPLL_CON);
+ 	__raw_writel(epll_con_k, S5P64X0_EPLL_CON_K);
+ 
++	printk(KERN_WARNING "EPLL Rate changes from %lu to %lu\n",
++			clk->rate, rate);
++
+ 	clk->rate = rate;
+ 
+ 	return 0;
+diff --git a/arch/arm/mach-s5p64x0/clock-s5p6450.c b/arch/arm/mach-s5p64x0/clock-s5p6450.c
+index f1498d3..1b9b0f9 100644
+--- a/arch/arm/mach-s5p64x0/clock-s5p6450.c
++++ b/arch/arm/mach-s5p64x0/clock-s5p6450.c
+@@ -80,6 +80,9 @@ static int s5p6450_epll_set_rate(struct clk *clk, unsigned long rate)
+ 	__raw_writel(epll_con, S5P64X0_EPLL_CON);
+ 	__raw_writel(epll_con_k, S5P64X0_EPLL_CON_K);
+ 
++	printk(KERN_WARNING "EPLL Rate changes from %lu to %lu\n",
++			clk->rate, rate);
++
+ 	clk->rate = rate;
+ 
+ 	return 0;
+diff --git a/arch/arm/mach-s5pc100/clock.c b/arch/arm/mach-s5pc100/clock.c
+index 42c2636..9e192a0 100644
+--- a/arch/arm/mach-s5pc100/clock.c
++++ b/arch/arm/mach-s5pc100/clock.c
+@@ -323,6 +323,9 @@ static int s5pc100_epll_set_rate(struct clk *clk, unsigned long rate)
+ 
+ 	__raw_writel(epll_con, S5P_EPLL_CON);
+ 
++	printk(KERN_WARNING "EPLL Rate changes from %lu to %lu\n",
++			clk->rate, rate);
++
+ 	clk->rate = rate;
+ 
+ 	return 0;
+diff --git a/arch/arm/mach-s5pv210/clock.c b/arch/arm/mach-s5pv210/clock.c
+index fdfadac..25eb839 100644
+--- a/arch/arm/mach-s5pv210/clock.c
++++ b/arch/arm/mach-s5pv210/clock.c
+@@ -1066,6 +1066,9 @@ static int s5pv210_epll_set_rate(struct clk *clk, unsigned long rate)
+ 	__raw_writel(epll_con, S5P_EPLL_CON);
+ 	__raw_writel(epll_con_k, S5P_EPLL_CON1);
+ 
++	printk(KERN_WARNING "EPLL Rate changes from %lu to %lu\n",
++			clk->rate, rate);
++
+ 	clk->rate = rate;
+ 
+ 	return 0;
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+1.6.2.5
