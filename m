@@ -1,23 +1,16 @@
-From: Seungwhan Youn <claude.youn@gmail.com>
-Subject: Re: [PATCH v2 1/6] ARM: S5P: Reduce duplicated EPLL
-	control codes
-Date: Wed, 13 Oct 2010 17:48:31 +0900
-Message-ID: <AANLkTikKF5jcu2ffB=Xf6LCSiXgTp4AL9T3niHAOXMvc@mail.gmail.com>
-References: <1286882399-27595-1-git-send-email-sw.youn@samsung.com>
-	<1286883281-27656-1-git-send-email-sw.youn@samsung.com>
-	<002401cb6aad$77ccfb80$6766f280$%kim@samsung.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH v2] ASoC: tlv320dac33: Control for line output
+	gain
+Date: Wed, 13 Oct 2010 11:56:28 +0300
+Message-ID: <1286960188-29334-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 25A4810385A
+Received: from mgw-sa01.nokia.com (smtp.nokia.com [147.243.1.47])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2971410385A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Oct 2010 10:48:32 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so3631131wyb.38
-	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2010 01:48:31 -0700 (PDT)
-In-Reply-To: <002401cb6aad$77ccfb80$6766f280$%kim@samsung.com>
+	Wed, 13 Oct 2010 10:56:30 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,44 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kukjin Kim <kgene.kim@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, jassi.brar@samsung.com, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org, Seungwhan Youn <sw.youn@samsung.com>, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBPY3QgMTMsIDIwMTAgYXQgNTowNSBQTSwgS3VramluIEtpbSA8a2dlbmUua2ltQHNh
-bXN1bmcuY29tPiB3cm90ZToKPiBTZXVuZ3doYW4gWW91biB3cm90ZToKPj4KPj4gUzVQIFNhbXN1
-bmcgU29DcyBoYXMgYSBFUExMIHRvIHN1cHBvcnQgdmFyaW91cyBQTEwgY2xvY2sgc291cmNlcyBm
-b3Igb3RoZXIKPj4gSC9XIGJsb2Nrcy4gVW50aWwgbm93LCB0byBjb250cm9sIEVQTEwsIGVhY2gg
-b2YgU29DcyBtYWtlIHRoZWlyIG93bgo+IGZ1bmN0aW9ucwo+PiBpbiAnbWFjaC1zNXB4eHgvY2xv
-Y2suYycuIEJ1dCBzb21lIG9mIGZ1bmN0aW9ucywgJ3h4eF9lcGxsX2dldF9yYXRlKCknIGFuZAo+
-PiAneHh4X2VwbGxfZW5hYmxlKCknLCBhcmUgZXhhY3RseSBzYW1lIGluIGFsbCBTNVAgU29Dcywg
-c28gdGhpcyBwYXRjaCBtb3ZlCj4+IHRoZXNlIGR1cGxpY2F0ZWQgY29kZXMgdG8gY29tbW9uIEVQ
-TEwgZnVuY3Rpb25zIHRoYXQgdXNlIHBsYXRmb3JtIHdpZGUuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6
-IFNldW5nd2hhbiBZb3VuIDxzdy55b3VuQHNhbXN1bmcuY29tPgo+PiAtLS0KPj4gwqBhcmNoL2Fy
-bS9tYWNoLXM1cDY0eDAvY2xvY2stczVwNjQ0MC5jIMKgIMKgIMKgIMKgIMKgIHwgwqAgMTYgKysr
-KysrKystLS0tLS0tLQo+PiDCoGFyY2gvYXJtL21hY2gtczVwNjR4MC9jbG9jay1zNXA2NDUwLmMg
-wqAgwqAgwqAgwqAgwqAgfCDCoCAxNiArKysrKysrKy0tLS0tLS0tCj4+IMKgYXJjaC9hcm0vbWFj
-aC1zNXA2NHgwL2Nsb2NrLmMgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgfCDCoCAxOCAtLS0t
-LS0tLS0tLS0tLS0tLS0KPj4gwqBhcmNoL2FybS9tYWNoLXM1cDY0eDAvaW5jbHVkZS9tYWNoL3Jl
-Z3MtY2xvY2suaCB8IMKgIMKgNCArKy0tCj4+IMKgYXJjaC9hcm0vbWFjaC1zNXBjMTAwL2Nsb2Nr
-LmMgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgfCDCoCAyMgo+ICsrLS0tLS0tLS0tLS0tLS0t
-LS0tLS0KPj4gwqBhcmNoL2FybS9wbGF0LXM1cC9jbG9jay5jIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIHwgwqAgMjAKPj4gKysrKysrKysrKysrKysrKysrKysKPj4gwqBhcmNoL2Fy
-bS9wbGF0LXM1cC9pbmNsdWRlL3BsYXQvczVwLWNsb2NrLmggwqAgwqAgwqB8IMKgIMKgNCArKysr
-Cj4+IMKgNyBmaWxlcyBjaGFuZ2VkLCA0NCBpbnNlcnRpb25zKCspLCA1NiBkZWxldGlvbnMoLSkK
-Pj4KPiBIaSwKPgo+IFRoYW5rcyBmb3IgeW91ciB1cGRhdGluZyBFUExMIGNvbnRyb2wuCj4KPiBJ
-IHRoaW5rLCBpZiB3ZSB1c2UganVzdCBTNVA2NFgwX0VQTExfQ09OIGluIHRoZQo+IG1hY2gtczVw
-NjR4MC9pbmNsdWRlL21hY2gvcmVncy1jbG9jay5oLCBubyBuZWVkIHRvIGNoYW5nZSBtYW55IGNv
-ZGVzIHN1Y2ggYXMKPiB0aGlzIHBhdGNoLgo+IEJ1dCBuZWVkIHRvIHJlLWRlZmluZSBmb3IgY29t
-cGF0aWJpbGl0eSBsaWtlIGZvbGxvd2luZyBpbiB0aGUgbWFjaC1zNXA2NHgwLgo+IC4uLgo+ICsv
-KiBjb21wYXRpYmlsaXR5IGRlZmluZXMgKi8KPiArI2RlZmluZSBTNVBfRVBMTF9DT04gwqAgwqAg
-wqAgwqAgwqAgUzVQNjRYMF9FUExMX0NPTgo+IC4uLgo+Cj4gTWF5YmUgYXMgeW91IGtub3csIFM1
-UFYzMTAgRVBMTCBjb25maWd1cmF0aW9uIGRlZmluaXRpb24gaXMgZGlmZmVyZW50IGZyb20KPiB0
-aGUgb3RoZXJzLgo+IFNvIG5lZWQgdG8gYWRkIFM1UF9FUExMX0NPTiBkZWZpbml0aW9uIGZvciBi
-dWlsZGluZy4KPgo+IEFuZCBhY3R1YWxseSwgd2UgbmVlZCB0byBzb3J0IG91dCBjbG9jayBkZWZp
-bml0aW9ucyBmb3IgU2Ftc3VuZyBTb0NzLiBXaWxsCj4gZG8gaXQgc29vbi4KPgo+IEFueXdheSwg
-Y291bGQgeW91IHBsZWFzZSByZS13b3JrIHRoaXM/Cj4KCk9rYXksIEknbGwgcmUtd29yayBhbmQg
-cmUtc2VuZCB0aGlzIHJpZ2h0IG5vdy4KClRoYW5rIHlvdSwKQ2xhdWRlCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+New control to select the line output gain.
+This gain control affects the linein-to-lineout and
+dac-to-loneout gain differently.
+Use enum type to select the desired gain combination.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ sound/soc/codecs/tlv320dac33.c |   18 ++++++++++++++++++
+ 1 files changed, 18 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index bf6d01f..58349dc 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -524,6 +524,22 @@ static const struct soc_enum dac33_fifo_mode_enum =
+ 	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(dac33_fifo_mode_texts),
+ 			    dac33_fifo_mode_texts);
+ 
++/* L/R Line Output Gain */
++static const char *lr_lineout_gain_texts[] = {
++	"Line -12dB DAC 0dB", "Line -6dB DAC 6dB",
++	"Line 0dB DAC 12dB", "Line 6dB DAC 18dB",
++};
++
++static const struct soc_enum l_lineout_gain_enum =
++	SOC_ENUM_SINGLE(DAC33_LDAC_PWR_CTRL, 0,
++			ARRAY_SIZE(lr_lineout_gain_texts),
++			lr_lineout_gain_texts);
++
++static const struct soc_enum r_lineout_gain_enum =
++	SOC_ENUM_SINGLE(DAC33_RDAC_PWR_CTRL, 0,
++			ARRAY_SIZE(lr_lineout_gain_texts),
++			lr_lineout_gain_texts);
++
+ /*
+  * DACL/R digital volume control:
+  * from 0 dB to -63.5 in 0.5 dB steps
+@@ -541,6 +557,8 @@ static const struct snd_kcontrol_new dac33_snd_controls[] = {
+ 		 DAC33_LDAC_DIG_VOL_CTRL, DAC33_RDAC_DIG_VOL_CTRL, 7, 1, 1),
+ 	SOC_DOUBLE_R("Line to Line Out Volume",
+ 		 DAC33_LINEL_TO_LLO_VOL, DAC33_LINER_TO_RLO_VOL, 0, 127, 1),
++	SOC_ENUM("Left Line Output Gain", l_lineout_gain_enum),
++	SOC_ENUM("Right Line Output Gain", r_lineout_gain_enum),
+ };
+ 
+ static const struct snd_kcontrol_new dac33_mode_snd_controls[] = {
+-- 
+1.7.3.1
