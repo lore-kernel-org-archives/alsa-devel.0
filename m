@@ -1,16 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.37
-Date: Wed, 13 Oct 2010 18:53:21 +0100
-Message-ID: <20101013175320.GA5781@rakim.wolfsonmicro.main>
+From: Arnaud Patard (Rtp) <arnaud.patard@rtp-net.org>
+Subject: Re: [patch 1/3] ASoC: add support for alc562[123]
+	codecs
+Date: Wed, 13 Oct 2010 19:58:03 +0200
+Message-ID: <871v7ux9ec.fsf@lechat.rtp-net.org>
+References: <20101012094453.660938870@rtp-net.org>
+	<20101012100036.605541759@rtp-net.org>
+	<20101012171602.GG30933@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3A34524458
+Received: from lechat.rtp-net.org (lechat.rtp-net.org [88.191.19.38])
+	by alsa0.perex.cz (Postfix) with ESMTP id 31A2524461
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Oct 2010 19:53:25 +0200 (CEST)
-Content-Disposition: inline
+	Wed, 13 Oct 2010 19:58:03 +0200 (CEST)
+In-Reply-To: <20101012171602.GG30933@rakim.wolfsonmicro.main> (Mark Brown's
+	message of "Tue\, 12 Oct 2010 18\:16\:02 +0100")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,42 +25,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Saeed Bishara <saeed@marvell.com>, Martin Michlmayr <tbm@cyrius.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit fe3e2e7ff2da41bd7a985c4c206e05a95ebe7a6b:
+Mark Brown <broonie@opensource.wolfsonmicro.com> writes:
 
-  ASoC: checking kzalloc() for IS_ERR() instead of NULL (2010-10-11 12:38:21 +0100)
+Hi,
 
-are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.37
+> On Tue, Oct 12, 2010 at 11:44:54AM +0200, Arnaud Patard wrote:
+>
+>> This patch is adding support for alc562[123] codecs. It's based
+>> on the source code available in HP source code and other places.
+>
+> Looks very good - a few minor things below but they should be fairly
+> easy to fix up.
+>
+>> +static int amp_mixer_event(struct snd_soc_dapm_widget *w,
+>> +	struct snd_kcontrol *kcontrol, int event)
+>> +{
+>> +	/* index 0x46: class-d internal register */
+>> +	snd_soc_write(w->codec, ALC5623_HID_CTRL_INDEX, 0x46);
+>
+> This is a bit magic; some comments would help.
 
-Kuninori Morimoto (6):
-      ASoC: ak4642: simultaneous playback/recorde support
-      ASoC: fsi: Add fsi_get_frame_width function
-      ASoC: fsi: remove un-necessary variable from fsi_dai_startup
-      ASoC: fsi: avoid un-necessary status read
-      ASoC: fsi: Add new macro and shift for PortA/B In/Out
-      ASoC: Add fsi_is_play function
+ok. I've added a comment. The aim is to power on/off the class-d amp
+parts and to do that one has to write to index-46h reg and to do that
+one has to write 0x46 to ALC5623_HID_CTRL_INDEX and then the value into
+ALC5623_HID_CTRL_DATA.
 
-Mark Brown (5):
-      ASoC: Add WM8962 microphone bias control
-      ASoC: Restore DAI ID specification for WM8994
-      ASoC: Move soc-core module init next to functon definition
-      ASoC: Check list debugfs files for PAGE_SIZE overflow
-      ASoC: Pay attention to driver supplied DAI IDs
+>
+>> +	if (pll_id == ALC5623_PLL_FR_MCLK) {
+>> +		for (i = 0; i < ARRAY_SIZE(codec_master_pll_div); i++) {
+>> +			if (codec_master_pll_div[i].pll_in == freq_in
+>> +			   && codec_master_pll_div[i].pll_out == freq_out) {
+>> +				/* PLL source from MCLK */
+>> +				pll_div  = codec_master_pll_div[i].regvalue;
+>> +				break;
+>> +			}
+>> +		}
+>> +	} else {
+>> +		for (i = 0; i < ARRAY_SIZE(codec_slave_pll_div); i++) {
+>
+> I'd expect a switch statement here.
 
-Mika Westerberg (3):
-      ASoC: ac97: don't call snd_soc_new_ac97_codec at probe
-      ASoC: don't register AC97 devices twice
-      ASoC: ac97: add MODULE_ALIAS for the platform driver
+ok.
 
- include/sound/soc.h       |    1 +
- sound/soc/codecs/ac97.c   |    7 +---
- sound/soc/codecs/ak4642.c |    8 ++--
- sound/soc/codecs/wm8962.c |    2 +
- sound/soc/codecs/wm8994.c |    3 ++
- sound/soc/sh/fsi.c        |   74 +++++++++++++++++++++++++-------------------
- sound/soc/soc-core.c      |   75 ++++++++++++++++++++++++++++++++++-----------
- 7 files changed, 110 insertions(+), 60 deletions(-)
+>
+>> +	coeff = get_coeff(codec, rate);
+>> +	if (coeff >= 0) {
+>> +		coeff = coeff_div[coeff].regvalue;
+>> +		dev_dbg(codec->dev, "%s: sysclk=%d,rate=%d,coeff=0x%04x\n",
+>> +			__func__, alc5623->sysclk, rate, coeff);
+>> +		snd_soc_write(codec, ALC5623_STEREO_AD_DA_CLK_CTRL, coeff);
+>> +	}
+>
+> Shouldn't we be returning an error if we can't get coefficients?
+
+I was hoping that current value of the ALC5623_STEREO_AD_DA_CLK_CTRL
+would be ok but you're probably right. It should be safer to return an
+error.
+
+
+>
+>> +	switch (level) {
+>> +	case SND_SOC_BIAS_ON:
+>> +		enable_power_depop(codec);
+>> +		break;
+>
+> enable_power_depop() takes a rather long time - about 500ms - which is
+> surprising for _ON.  Are you sure it should be done here?
+
+It was there in the original driver and when working on this driver, I
+didn't see any reason for moving it elsewhere. tbh, if I have to move it
+elsewhere, I don't know where I'll put it.
+>
+>> +static int alc5623_suspend(struct snd_soc_codec *codec, pm_message_t mesg)
+>> +{
+>> +	/* we only need to suspend if we are a valid card */
+>> +	if (!codec->card)
+>> +		return 0;
+>
+> This isn't needed any more, this won't get called if there isn't a card.
+
+ok. removed.
+>
+>> +	/* charge alc5623 caps */
+>> +	if (codec->suspend_bias_level == SND_SOC_BIAS_ON) {
+>> +		alc5623_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+>> +		codec->bias_level = SND_SOC_BIAS_ON;
+>> +		schedule_delayed_work(&codec->delayed_work,
+>> +			msecs_to_jiffies(caps_charge));
+>> +	}
+>
+> Just go directly to the bias level you want, don't use delayed work.
+> ASoC will already do resume out of line with the main system so there's
+> no need to do this and it will disrupt audio operation just after resume
+> if you do it.
+
+ok.
+
+
+Arnaud
