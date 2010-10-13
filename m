@@ -1,86 +1,52 @@
-From: Seungwhan Youn <sw.youn@samsung.com>
-Subject: [PATCH v3 4/6] ARM: S5P: Add EPLL rate change warning
-Date: Wed, 13 Oct 2010 18:51:08 +0900
-Message-ID: <1286963468-17469-1-git-send-email-sw.youn@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: ben-linux@fluff.org, kgene.kim@samsung.com, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com, Seungwhan Youn <sw.youn@samsung.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Add max98088 CODEC driver
+Date: Wed, 13 Oct 2010 11:32:24 +0100
+Message-ID: <20101013103224.GK6424@rakim.wolfsonmicro.main>
+References: <B2150E1E4418E1438554A300EA5040E40D469C124D@ITSVLEX06.it.maxim-ic.internal>
+	<B2150E1E4418E1438554A300EA5040E40D469C124F@ITSVLEX06.it.maxim-ic.internal>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CC35610381C
+	for <alsa-devel@alsa-project.org>;
+	Wed, 13 Oct 2010 12:32:29 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <B2150E1E4418E1438554A300EA5040E40D469C124F@ITSVLEX06.it.maxim-ic.internal>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jesse Marroquin <Jesse.Marroquin@maxim-ic.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds warning about changing EPLL rate to notice that other
-driver that controls H/W, which is using EPLL, will has unknown effects
-by this EPLL rate change.
+On Tue, Oct 12, 2010 at 06:20:10PM -0700, Peter Hsiang wrote:
 
-Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
----
-This patch is re-worked to avoid conflict with previous re-worked patch(
-[PATCH v3 1/6] ARM: S5P: Reduce duplicated EPLL control codes).
+This looks pretty good, waiting for Liam's review but I think we can do
+further stuff incrementally.  Minor comments:
 
-This patch also depends on previous v1 and v2 petch-set which was accepted,
-and depends on re-workd patch v3 1/6.
---
- arch/arm/mach-s5p64x0/clock-s5p6440.c |    3 +++
- arch/arm/mach-s5p64x0/clock-s5p6450.c |    3 +++
- arch/arm/mach-s5pc100/clock.c         |    3 +++
- arch/arm/mach-s5pv210/clock.c         |    3 +++
- 4 files changed, 12 insertions(+), 0 deletions(-)
+> +
+> +       /* Setup an array of texts for the equalizer enum.
+> +        * This is based on Mark Brown's equalizer driver code.
+> +        * It has been extended to support multiple equalizers.
+> +        */
 
-diff --git a/arch/arm/mach-s5p64x0/clock-s5p6440.c b/arch/arm/mach-s5p64x0/clock-s5p6440.c
-index cfccdff..0d728d3 100644
---- a/arch/arm/mach-s5p64x0/clock-s5p6440.c
-+++ b/arch/arm/mach-s5p64x0/clock-s5p6440.c
-@@ -79,6 +79,9 @@ static int s5p6440_epll_set_rate(struct clk *clk, unsigned long rate)
- 	__raw_writel(epll_con, S5P64X0_EPLL_CON);
- 	__raw_writel(epll_con_k, S5P64X0_EPLL_CON_K);
- 
-+	printk(KERN_WARNING "EPLL Rate changes from %lu to %lu\n",
-+			clk->rate, rate);
-+
- 	clk->rate = rate;
- 
- 	return 0;
-diff --git a/arch/arm/mach-s5p64x0/clock-s5p6450.c b/arch/arm/mach-s5p64x0/clock-s5p6450.c
-index f1498d3..1b9b0f9 100644
---- a/arch/arm/mach-s5p64x0/clock-s5p6450.c
-+++ b/arch/arm/mach-s5p64x0/clock-s5p6450.c
-@@ -80,6 +80,9 @@ static int s5p6450_epll_set_rate(struct clk *clk, unsigned long rate)
- 	__raw_writel(epll_con, S5P64X0_EPLL_CON);
- 	__raw_writel(epll_con_k, S5P64X0_EPLL_CON_K);
- 
-+	printk(KERN_WARNING "EPLL Rate changes from %lu to %lu\n",
-+			clk->rate, rate);
-+
- 	clk->rate = rate;
- 
- 	return 0;
-diff --git a/arch/arm/mach-s5pc100/clock.c b/arch/arm/mach-s5pc100/clock.c
-index 42c2636..9e192a0 100644
---- a/arch/arm/mach-s5pc100/clock.c
-+++ b/arch/arm/mach-s5pc100/clock.c
-@@ -323,6 +323,9 @@ static int s5pc100_epll_set_rate(struct clk *clk, unsigned long rate)
- 
- 	__raw_writel(epll_con, S5P_EPLL_CON);
- 
-+	printk(KERN_WARNING "EPLL Rate changes from %lu to %lu\n",
-+			clk->rate, rate);
-+
- 	clk->rate = rate;
- 
- 	return 0;
-diff --git a/arch/arm/mach-s5pv210/clock.c b/arch/arm/mach-s5pv210/clock.c
-index fdfadac..25eb839 100644
---- a/arch/arm/mach-s5pv210/clock.c
-+++ b/arch/arm/mach-s5pv210/clock.c
-@@ -1066,6 +1066,9 @@ static int s5pv210_epll_set_rate(struct clk *clk, unsigned long rate)
- 	__raw_writel(epll_con, S5P_EPLL_CON);
- 	__raw_writel(epll_con_k, S5P_EPLL_CON1);
- 
-+	printk(KERN_WARNING "EPLL Rate changes from %lu to %lu\n",
-+			clk->rate, rate);
-+
- 	clk->rate = rate;
- 
- 	return 0;
--- 
-1.6.2.5
+The code that you're basing this on supports multiple equalizers too -
+things like the WM8994 have several.  Given that all those supported by
+the original code are identical there didn't seem to be any point in
+restricting which EQ a given setup can be deployed on - it's just one
+more thing that can go wrong.
+
+> +static int max98088_remove(struct snd_soc_codec *codec)
+> +{
+> +       if (codec->control_data)
+> +               max98088_set_bias_level(codec, SND_SOC_BIAS_OFF);
+
+The control_data check should be redundant here.
