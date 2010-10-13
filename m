@@ -1,21 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: tlv320dac33: Control for line output
-	gain
-Date: Wed, 13 Oct 2010 01:43:43 -0700
-Message-ID: <20101013084343.GA29239@opensource.wolfsonmicro.com>
-References: <1286957298-28615-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20101013081402.GB6424@rakim.wolfsonmicro.main>
-	<201010131140.26724.peter.ujfalusi@nokia.com>
+From: Seungwhan Youn <claude.youn@gmail.com>
+Subject: Re: [PATCH v2 1/6] ARM: S5P: Reduce duplicated EPLL
+	control codes
+Date: Wed, 13 Oct 2010 17:48:31 +0900
+Message-ID: <AANLkTikKF5jcu2ffB=Xf6LCSiXgTp4AL9T3niHAOXMvc@mail.gmail.com>
+References: <1286882399-27595-1-git-send-email-sw.youn@samsung.com>
+	<1286883281-27656-1-git-send-email-sw.youn@samsung.com>
+	<002401cb6aad$77ccfb80$6766f280$%kim@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 35CD91039FE
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 25A4810385A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Oct 2010 10:43:29 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <201010131140.26724.peter.ujfalusi@nokia.com>
+	Wed, 13 Oct 2010 10:48:32 +0200 (CEST)
+Received: by wyb32 with SMTP id 32so3631131wyb.38
+	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2010 01:48:31 -0700 (PDT)
+In-Reply-To: <002401cb6aad$77ccfb80$6766f280$%kim@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,19 +27,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Kukjin Kim <kgene.kim@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, jassi.brar@samsung.com, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org, Seungwhan Youn <sw.youn@samsung.com>, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 13, 2010 at 11:40:26AM +0300, Peter Ujfalusi wrote:
-
-> In the documentation these gains are described like that (0.25V.V / 1V/V), and I 
-> wanted to use the same in the enum elements, but what about:
-
-> /* L/R Line Output Gain */
-> static const char *lr_lineout_gain_texts[] = {
->        "Line -12dB DAC 0dB", "Line -6dB DAC 6dB",
->        "Line 0dB DAC 12dB", "Line 6dB DAC 18dB",
-> };
-
-That's *much* clearer.
+T24gV2VkLCBPY3QgMTMsIDIwMTAgYXQgNTowNSBQTSwgS3VramluIEtpbSA8a2dlbmUua2ltQHNh
+bXN1bmcuY29tPiB3cm90ZToKPiBTZXVuZ3doYW4gWW91biB3cm90ZToKPj4KPj4gUzVQIFNhbXN1
+bmcgU29DcyBoYXMgYSBFUExMIHRvIHN1cHBvcnQgdmFyaW91cyBQTEwgY2xvY2sgc291cmNlcyBm
+b3Igb3RoZXIKPj4gSC9XIGJsb2Nrcy4gVW50aWwgbm93LCB0byBjb250cm9sIEVQTEwsIGVhY2gg
+b2YgU29DcyBtYWtlIHRoZWlyIG93bgo+IGZ1bmN0aW9ucwo+PiBpbiAnbWFjaC1zNXB4eHgvY2xv
+Y2suYycuIEJ1dCBzb21lIG9mIGZ1bmN0aW9ucywgJ3h4eF9lcGxsX2dldF9yYXRlKCknIGFuZAo+
+PiAneHh4X2VwbGxfZW5hYmxlKCknLCBhcmUgZXhhY3RseSBzYW1lIGluIGFsbCBTNVAgU29Dcywg
+c28gdGhpcyBwYXRjaCBtb3ZlCj4+IHRoZXNlIGR1cGxpY2F0ZWQgY29kZXMgdG8gY29tbW9uIEVQ
+TEwgZnVuY3Rpb25zIHRoYXQgdXNlIHBsYXRmb3JtIHdpZGUuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6
+IFNldW5nd2hhbiBZb3VuIDxzdy55b3VuQHNhbXN1bmcuY29tPgo+PiAtLS0KPj4gwqBhcmNoL2Fy
+bS9tYWNoLXM1cDY0eDAvY2xvY2stczVwNjQ0MC5jIMKgIMKgIMKgIMKgIMKgIHwgwqAgMTYgKysr
+KysrKystLS0tLS0tLQo+PiDCoGFyY2gvYXJtL21hY2gtczVwNjR4MC9jbG9jay1zNXA2NDUwLmMg
+wqAgwqAgwqAgwqAgwqAgfCDCoCAxNiArKysrKysrKy0tLS0tLS0tCj4+IMKgYXJjaC9hcm0vbWFj
+aC1zNXA2NHgwL2Nsb2NrLmMgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgfCDCoCAxOCAtLS0t
+LS0tLS0tLS0tLS0tLS0KPj4gwqBhcmNoL2FybS9tYWNoLXM1cDY0eDAvaW5jbHVkZS9tYWNoL3Jl
+Z3MtY2xvY2suaCB8IMKgIMKgNCArKy0tCj4+IMKgYXJjaC9hcm0vbWFjaC1zNXBjMTAwL2Nsb2Nr
+LmMgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgfCDCoCAyMgo+ICsrLS0tLS0tLS0tLS0tLS0t
+LS0tLS0KPj4gwqBhcmNoL2FybS9wbGF0LXM1cC9jbG9jay5jIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIHwgwqAgMjAKPj4gKysrKysrKysrKysrKysrKysrKysKPj4gwqBhcmNoL2Fy
+bS9wbGF0LXM1cC9pbmNsdWRlL3BsYXQvczVwLWNsb2NrLmggwqAgwqAgwqB8IMKgIMKgNCArKysr
+Cj4+IMKgNyBmaWxlcyBjaGFuZ2VkLCA0NCBpbnNlcnRpb25zKCspLCA1NiBkZWxldGlvbnMoLSkK
+Pj4KPiBIaSwKPgo+IFRoYW5rcyBmb3IgeW91ciB1cGRhdGluZyBFUExMIGNvbnRyb2wuCj4KPiBJ
+IHRoaW5rLCBpZiB3ZSB1c2UganVzdCBTNVA2NFgwX0VQTExfQ09OIGluIHRoZQo+IG1hY2gtczVw
+NjR4MC9pbmNsdWRlL21hY2gvcmVncy1jbG9jay5oLCBubyBuZWVkIHRvIGNoYW5nZSBtYW55IGNv
+ZGVzIHN1Y2ggYXMKPiB0aGlzIHBhdGNoLgo+IEJ1dCBuZWVkIHRvIHJlLWRlZmluZSBmb3IgY29t
+cGF0aWJpbGl0eSBsaWtlIGZvbGxvd2luZyBpbiB0aGUgbWFjaC1zNXA2NHgwLgo+IC4uLgo+ICsv
+KiBjb21wYXRpYmlsaXR5IGRlZmluZXMgKi8KPiArI2RlZmluZSBTNVBfRVBMTF9DT04gwqAgwqAg
+wqAgwqAgwqAgUzVQNjRYMF9FUExMX0NPTgo+IC4uLgo+Cj4gTWF5YmUgYXMgeW91IGtub3csIFM1
+UFYzMTAgRVBMTCBjb25maWd1cmF0aW9uIGRlZmluaXRpb24gaXMgZGlmZmVyZW50IGZyb20KPiB0
+aGUgb3RoZXJzLgo+IFNvIG5lZWQgdG8gYWRkIFM1UF9FUExMX0NPTiBkZWZpbml0aW9uIGZvciBi
+dWlsZGluZy4KPgo+IEFuZCBhY3R1YWxseSwgd2UgbmVlZCB0byBzb3J0IG91dCBjbG9jayBkZWZp
+bml0aW9ucyBmb3IgU2Ftc3VuZyBTb0NzLiBXaWxsCj4gZG8gaXQgc29vbi4KPgo+IEFueXdheSwg
+Y291bGQgeW91IHBsZWFzZSByZS13b3JrIHRoaXM/Cj4KCk9rYXksIEknbGwgcmUtd29yayBhbmQg
+cmUtc2VuZCB0aGlzIHJpZ2h0IG5vdy4KClRoYW5rIHlvdSwKQ2xhdWRlCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
