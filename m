@@ -1,65 +1,275 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC PATCH] sound/soc/codecs/wm8962.c: Use
- register index, save 100kb text
-Date: Wed, 13 Oct 2010 21:29:38 +0100
-Message-ID: <20101013202938.GA25495@rakim.wolfsonmicro.main>
-References: <20101013082414.GD6424@rakim.wolfsonmicro.main>
-	<1286971846.1117.191.camel@Joe-Laptop>
-	<20101013123301.GL6424@rakim.wolfsonmicro.main>
-	<1286974549.1117.254.camel@Joe-Laptop>
-	<20101013151117.GM6424@rakim.wolfsonmicro.main>
-	<1286983667.1117.347.camel@Joe-Laptop>
-	<20101013152916.GA20270@rakim.wolfsonmicro.main>
-	<1286997031.1117.405.camel@Joe-Laptop>
-	<20101013194017.GB17574@rakim.wolfsonmicro.main>
-	<1287000382.1117.416.camel@Joe-Laptop>
+From: Kukjin Kim <kgene.kim@samsung.com>
+Subject: RE: [PATCH v3 1/6] ARM: S5P: Reduce duplicated EPLL control codes
+Date: Thu, 14 Oct 2010 07:56:51 +0900
+Message-ID: <003301cb6b29$ee8f21e0$cbad65a0$%kim@samsung.com>
+References: <1286963291-9194-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C8A23103A2C
-	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Oct 2010 22:29:40 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1287000382.1117.416.camel@Joe-Laptop>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joe Perches <joe@perches.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Peter Hsiang <Peter.Hsiang@maxim-ic.com>, Jesse Marroquin <Jesse.Marroquin@maxim-ic.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <1286963291-9194-1-git-send-email-sw.youn@samsung.com>
+Content-language: ko
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: 'Seungwhan Youn' <sw.youn@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: ben-linux@fluff.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 13, 2010 at 01:06:22PM -0700, Joe Perches wrote:
-> On Wed, 2010-10-13 at 20:40 +0100, Mark Brown wrote:
+Seungwhan Youn wrote:
+> 
+> S5P Samsung SoCs has a EPLL to support various PLL clock sources for other
+> H/W blocks. Until now, to control EPLL, each of SoCs make their own
+functions
+> in 'mach-s5pxxx/clock.c'. But some of functions, 'xxx_epll_get_rate()' and
+> 'xxx_epll_enable()', are exactly same in all S5P SoCs, so this patch move
+> these duplicated codes to common EPLL functions that use platform wide.
+> 
+> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+> ---
+> This patch is re-worked followings, requested by Kukjin Kim, from v2 :-
+>  o Set re-define S5P_EPLL_CON with specific EPLL definations on S5P
+platform.
+>  o and, keep original EPLL definations.
+> 
+> And also, this patch depends on v1 patch-set which was submitted.
+>  o [PATCH 1/10] ARM: S5PC100: Add S/PDIF platform device
+>  o [PATCH 2/10] ARM: S5PC100: Modify SCLK_AUDIO{0,1,2} clock as sysclks
+>  o [PATCH 3/10] ARM: S5PC100: Add SCLK_SPDIF clock
+>  o [PATCH 4/10] ARM: S5PV210: Add S/PDIF platform device
+>  o [PATCH 5/10] ARM: S5PV210: Add SCLK_SPDIF clock
+>  o [PATCH 6/10] ARM: S5PV210: Add audio clocks as sysclk
+> --
+>  arch/arm/mach-s5p64x0/clock-s5p6440.c           |    4 ++--
+>  arch/arm/mach-s5p64x0/clock-s5p6450.c           |    4 ++--
+>  arch/arm/mach-s5p64x0/clock.c                   |   18 ------------------
+>  arch/arm/mach-s5p64x0/include/mach/regs-clock.h |    2 ++
+>  arch/arm/mach-s5pc100/clock.c                   |   22
+++--------------------
+>  arch/arm/mach-s5pv310/include/mach/regs-clock.h |    4 ++++
+>  arch/arm/plat-s5p/clock.c                       |   20
+> ++++++++++++++++++++
+>  arch/arm/plat-s5p/include/plat/s5p-clock.h      |    4 ++++
+>  8 files changed, 36 insertions(+), 42 deletions(-)
+> 
+> diff --git a/arch/arm/mach-s5p64x0/clock-s5p6440.c b/arch/arm/mach-
+> s5p64x0/clock-s5p6440.c
+> index f93dcd8..cfccdff 100644
+> --- a/arch/arm/mach-s5p64x0/clock-s5p6440.c
+> +++ b/arch/arm/mach-s5p64x0/clock-s5p6440.c
+> @@ -85,7 +85,7 @@ static int s5p6440_epll_set_rate(struct clk *clk,
+unsigned long
+> rate)
+>  }
+> 
+>  static struct clk_ops s5p6440_epll_ops = {
+> -	.get_rate = s5p64x0_epll_get_rate,
+> +	.get_rate = s5p_epll_get_rate,
+>  	.set_rate = s5p6440_epll_set_rate,
+>  };
+> 
+> @@ -548,7 +548,7 @@ void __init_or_cpufreq s5p6440_setup_clocks(void)
+> 
+>  	/* Set S5P6440 functions for clk_fout_epll */
+> 
+> -	clk_fout_epll.enable = s5p64x0_epll_enable;
+> +	clk_fout_epll.enable = s5p_epll_enable;
+>  	clk_fout_epll.ops = &s5p6440_epll_ops;
+> 
+>  	clk_48m.enable = s5p64x0_clk48m_ctrl;
+> diff --git a/arch/arm/mach-s5p64x0/clock-s5p6450.c b/arch/arm/mach-
+> s5p64x0/clock-s5p6450.c
+> index f9afb05..f1498d3 100644
+> --- a/arch/arm/mach-s5p64x0/clock-s5p6450.c
+> +++ b/arch/arm/mach-s5p64x0/clock-s5p6450.c
+> @@ -86,7 +86,7 @@ static int s5p6450_epll_set_rate(struct clk *clk,
+unsigned long
+> rate)
+>  }
+> 
+>  static struct clk_ops s5p6450_epll_ops = {
+> -	.get_rate = s5p64x0_epll_get_rate,
+> +	.get_rate = s5p_epll_get_rate,
+>  	.set_rate = s5p6450_epll_set_rate,
+>  };
+> 
+> @@ -581,7 +581,7 @@ void __init_or_cpufreq s5p6450_setup_clocks(void)
+> 
+>  	/* Set S5P6450 functions for clk_fout_epll */
+> 
+> -	clk_fout_epll.enable = s5p64x0_epll_enable;
+> +	clk_fout_epll.enable = s5p_epll_enable;
+>  	clk_fout_epll.ops = &s5p6450_epll_ops;
+> 
+>  	clk_48m.enable = s5p64x0_clk48m_ctrl;
+> diff --git a/arch/arm/mach-s5p64x0/clock.c b/arch/arm/mach-s5p64x0/clock.c
+> index 523ba80..b52c6e2 100644
+> --- a/arch/arm/mach-s5p64x0/clock.c
+> +++ b/arch/arm/mach-s5p64x0/clock.c
+> @@ -73,24 +73,6 @@ static const u32 clock_table[][3] = {
+>  	{L2 * 1000, (3 << ARM_DIV_RATIO_SHIFT), (0 <<
+> S5P64X0_CLKDIV0_HCLK_SHIFT)},
+>  };
+> 
+> -int s5p64x0_epll_enable(struct clk *clk, int enable)
+> -{
+> -	unsigned int ctrlbit = clk->ctrlbit;
+> -	unsigned int epll_con = __raw_readl(S5P64X0_EPLL_CON) & ~ctrlbit;
+> -
+> -	if (enable)
+> -		__raw_writel(epll_con | ctrlbit, S5P64X0_EPLL_CON);
+> -	else
+> -		__raw_writel(epll_con, S5P64X0_EPLL_CON);
+> -
+> -	return 0;
+> -}
+> -
+> -unsigned long s5p64x0_epll_get_rate(struct clk *clk)
+> -{
+> -	return clk->rate;
+> -}
+> -
+>  unsigned long s5p64x0_armclk_get_rate(struct clk *clk)
+>  {
+>  	unsigned long rate = clk_get_rate(clk->parent);
+> diff --git a/arch/arm/mach-s5p64x0/include/mach/regs-clock.h
+b/arch/arm/mach-
+> s5p64x0/include/mach/regs-clock.h
+> index 58e1bc8..a133f22 100644
+> --- a/arch/arm/mach-s5p64x0/include/mach/regs-clock.h
+> +++ b/arch/arm/mach-s5p64x0/include/mach/regs-clock.h
+> @@ -60,4 +60,6 @@
+>  #define ARM_DIV_RATIO_SHIFT		0
+>  #define ARM_DIV_MASK			(0xF << ARM_DIV_RATIO_SHIFT)
+> 
+> +#define S5P_EPLL_CON			S5P64X0_EPLL_CON
+> +
+>  #endif /* __ASM_ARCH_REGS_CLOCK_H */
+> diff --git a/arch/arm/mach-s5pc100/clock.c b/arch/arm/mach-s5pc100/clock.c
+> index 306ae74..42c2636 100644
+> --- a/arch/arm/mach-s5pc100/clock.c
+> +++ b/arch/arm/mach-s5pc100/clock.c
+> @@ -273,24 +273,6 @@ static struct clksrc_clk clk_div_hdmi = {
+>  	.reg_div = { .reg = S5P_CLK_DIV3, .shift = 28, .size = 4 },
+>  };
+> 
+> -static int s5pc100_epll_enable(struct clk *clk, int enable)
+> -{
+> -	unsigned int ctrlbit = clk->ctrlbit;
+> -	unsigned int epll_con = __raw_readl(S5P_EPLL_CON) & ~ctrlbit;
+> -
+> -	if (enable)
+> -		__raw_writel(epll_con | ctrlbit, S5P_EPLL_CON);
+> -	else
+> -		__raw_writel(epll_con, S5P_EPLL_CON);
+> -
+> -	return 0;
+> -}
+> -
+> -static unsigned long s5pc100_epll_get_rate(struct clk *clk)
+> -{
+> -	return clk->rate;
+> -}
+> -
+>  static u32 epll_div[][4] = {
+>  	{ 32750000,	131, 3, 4 },
+>  	{ 32768000,	131, 3, 4 },
+> @@ -347,7 +329,7 @@ static int s5pc100_epll_set_rate(struct clk *clk,
+unsigned
+> long rate)
+>  }
+> 
+>  static struct clk_ops s5pc100_epll_ops = {
+> -	.get_rate = s5pc100_epll_get_rate,
+> +	.get_rate = s5p_epll_get_rate,
+>  	.set_rate = s5pc100_epll_set_rate,
+>  };
+> 
+> @@ -1261,7 +1243,7 @@ void __init_or_cpufreq s5pc100_setup_clocks(void)
+>  	unsigned int ptr;
+> 
+>  	/* Set S5PC100 functions for clk_fout_epll */
+> -	clk_fout_epll.enable = s5pc100_epll_enable;
+> +	clk_fout_epll.enable = s5p_epll_enable;
+>  	clk_fout_epll.ops = &s5pc100_epll_ops;
+> 
+>  	printk(KERN_DEBUG "%s: registering clocks\n", __func__);
+> diff --git a/arch/arm/mach-s5pv310/include/mach/regs-clock.h
+b/arch/arm/mach-
+> s5pv310/include/mach/regs-clock.h
+> index 5d0bb40..9e9e44c 100644
+> --- a/arch/arm/mach-s5pv310/include/mach/regs-clock.h
+> +++ b/arch/arm/mach-s5pv310/include/mach/regs-clock.h
+> @@ -157,4 +157,8 @@
+>  #define S5P_CLKDIV_BUS_GPLR_SHIFT	(4)
+>  #define S5P_CLKDIV_BUS_GPLR_MASK	(0x7 <<
+> S5P_CLKDIV_BUS_GPLR_SHIFT)
+> 
+> +/* Compatibility defines */
+> +
+> +#define S5P_EPLL_CON			S5P_EPLL_CON0
+> +
+>  #endif /* __ASM_ARCH_REGS_CLOCK_H */
+> diff --git a/arch/arm/plat-s5p/clock.c b/arch/arm/plat-s5p/clock.c
+> index 8188009..8d081d9 100644
+> --- a/arch/arm/plat-s5p/clock.c
+> +++ b/arch/arm/plat-s5p/clock.c
+> @@ -21,6 +21,8 @@
+>  #include <linux/io.h>
+>  #include <asm/div64.h>
+> 
+> +#include <mach/regs-clock.h>
+> +
+>  #include <plat/clock.h>
+>  #include <plat/clock-clksrc.h>
+>  #include <plat/s5p-clock.h>
+> @@ -148,6 +150,24 @@ int s5p_gatectrl(void __iomem *reg, struct clk *clk,
+int
+> enable)
+>  	return 0;
+>  }
+> 
+> +int s5p_epll_enable(struct clk *clk, int enable)
+> +{
+> +	unsigned int ctrlbit = clk->ctrlbit;
+> +	unsigned int epll_con = __raw_readl(S5P_EPLL_CON) & ~ctrlbit;
+> +
+> +	if (enable)
+> +		__raw_writel(epll_con | ctrlbit, S5P_EPLL_CON);
+> +	else
+> +		__raw_writel(epll_con, S5P_EPLL_CON);
+> +
+> +	return 0;
+> +}
+> +
+> +unsigned long s5p_epll_get_rate(struct clk *clk)
+> +{
+> +	return clk->rate;
+> +}
+> +
+>  static struct clk *s5p_clks[] __initdata = {
+>  	&clk_ext_xtal_mux,
+>  	&clk_48m,
+> diff --git a/arch/arm/plat-s5p/include/plat/s5p-clock.h b/arch/arm/plat-
+> s5p/include/plat/s5p-clock.h
+> index 17036c8..2b6dcff 100644
+> --- a/arch/arm/plat-s5p/include/plat/s5p-clock.h
+> +++ b/arch/arm/plat-s5p/include/plat/s5p-clock.h
+> @@ -43,4 +43,8 @@ extern struct clksrc_sources clk_src_dpll;
+> 
+>  extern int s5p_gatectrl(void __iomem *reg, struct clk *clk, int enable);
+> 
+> +/* Common EPLL operations for S5P platform */
+> +extern int s5p_epll_enable(struct clk *clk, int enable);
+> +extern unsigned long s5p_epll_get_rate(struct clk *clk);
+> +
+>  #endif /* __ASM_PLAT_S5P_CLOCK_H */
+> --
 
-> > The size impact of doing something
-> > simple is a bit annoying but not usually a pressing issue on devices
-> > that would want a CODEC with a noticably large register map.
+Looks ok to me..will apply.
 
-> I think wasting 100+ KB is excessive if I
-> were designing some cheap mp3 player.
+Thanks.
 
-Absolutely, but if you're desigining a cheap MP3 player you're very much
-more likely to be using a much simpler device which doesn't have the
-very large, sparse register maps that get a substantial benefit from
-compressing the data like this.  As I said, devices that would want a
-CODEC with a register map that is affected usually aren't under that
-much size pressure for the kernel.
-
-> Up to you how/when it should be resolved/fixed,
-> but I think it should be.
-
-As I said in the text which you cut I agree that this should be improved
-but don't want to have to go through each and every device cut'n'pasting
-code since that's not going to do anything for maintainbility.
-
-In addition to my previous comments about your subject lines for patches
-please also avoid burying new patches in the middle of tangentially
-related threads.
+Best regards,
+Kgene.
+--
+Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
+SW Solution Development Team, Samsung Electronics Co., Ltd.
