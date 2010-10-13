@@ -1,69 +1,58 @@
-From: Felix Homann <linuxaudio@showlabor.de>
-Subject: Re: Need expert's advice - Fast Track Ultra (8R)
- dropping samples
-Date: Wed, 13 Oct 2010 09:47:13 +0200
-Message-ID: <4CB56401.60508@showlabor.de>
-References: <4CAAD212.9090805@ladisch.de>
-	<4CAC804A.8040806@showlabor.de>	<4CAC89EA.8080207@ladisch.de>
-	<4CACA471.2000504@showlabor.de>	<4CAD6AA2.4050205@ladisch.de>	<20101007081010.GZ7159@buzzloop.caiaq.de>	<4CADB077.3060907@showlabor.de>
-	<4CAEB9AC.1060208@ladisch.de>	<20101012071831.GA7159@buzzloop.caiaq.de>	<4CB419D0.70808@showlabor.de>
-	<20101012102600.GB7159@buzzloop.caiaq.de>
+From: Kukjin Kim <kgene.kim@samsung.com>
+Subject: RE: [PATCH v2 4/6] ARM: S5P: Add EPLL rate change warning
+Date: Wed, 13 Oct 2010 16:55:55 +0900
+Message-ID: <002301cb6aac$12a05e10$37e11a30$%kim@samsung.com>
+References: <1286882399-27595-1-git-send-email-sw.youn@samsung.com>
+ <1286883983-27790-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vwp5738.webpack.hosteurope.de (vwp5738.webpack.hosteurope.de
-	[83.169.30.203]) by alsa0.perex.cz (Postfix) with ESMTP id D18252444C
-	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Oct 2010 09:47:17 +0200 (CEST)
-In-Reply-To: <20101012102600.GB7159@buzzloop.caiaq.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <1286883983-27790-1-git-send-email-sw.youn@samsung.com>
+Content-language: ko
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: 'Seungwhan Youn' <sw.youn@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: ben-linux@fluff.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-Am 12.10.2010 12:26, schrieb Daniel Mack:
->
-> Thanks for testing!
->
->    
+Seungwhan Youn wrote:
+> 
+> This patch adds warning about changing EPLL rate to notice that other
+> driver that controls H/W, which is using EPLL, will has unknown effects
+> by this EPLL rate change.
+> 
+> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+> ---
+>  arch/arm/mach-s5p64x0/clock-s5p6440.c |    3 +++
+>  arch/arm/mach-s5p64x0/clock-s5p6450.c |    3 +++
+>  arch/arm/mach-s5pc100/clock.c         |    3 +++
+>  arch/arm/mach-s5pv210/clock.c         |    3 +++
+>  4 files changed, 12 insertions(+), 0 deletions(-)
+> 
+> diff --git a/arch/arm/mach-s5p64x0/clock-s5p6440.c b/arch/arm/mach-
+> s5p64x0/clock-s5p6440.c
+> index 1e3f517..0b539d5 100644
+> --- a/arch/arm/mach-s5p64x0/clock-s5p6440.c
+> +++ b/arch/arm/mach-s5p64x0/clock-s5p6440.c
+> @@ -79,6 +79,9 @@ static int s5p6440_epll_set_rate(struct clk *clk,
+unsigned long
+> rate)
+>  	__raw_writel(epll_con, S5P_EPLL_CON);
+>  	__raw_writel(epll_con_k, S5P_EPLL_CON_K);
+> 
+> +	printk(KERN_WARNING "EPLL Rate changes from %lu to %lu\n",
+> +			clk->rate, rate);
 
-Thanks for *your* help on *my* problem!!!
+Do we really need KERN_WARNING here?
+How about just KERN_INFO?...In my opinion, to change EPLL value seems to be
+nearer 'information' message more than 'warning'.
 
+(others, same)
 
+Thanks.
 
->
-> I attached a patch below, only compile-tested. Please also check the USB
-> ID again, as I'm not sure whether you sent the right lsusb dump (the
-> device name looks suspicious).
->    
-
-Yes, it's been the right lsusb dump. The reported device name is a bit 
-strange indeed. In /proc/asound it is listed as F8R which is is a bit 
-more reasonable.
-
-
-> If that doesn't work, try debugging the value returned by
-> urb.c:snd_usb_audio_next_packet_size(). For your device, you should end
-> up in the "subs->stream->implicit_feedback" branch.
->
->    
-
-I've tested your patch. Unfortunately I don't get any sound. 
-snd_usb_audio_next_packet_size() returns from the 
-"subs->stream->implicit_feedback" branch. But the return value is always 
-0. ('frames' is returned, not the  0 from the if (WARN_ONCE...) statement).
-
-Any ideas how to proceed?
-
-Thank you very much again,
-
-Felix
+Best regards,
+Kgene.
+--
+Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
+SW Solution Development Team, Samsung Electronics Co., Ltd.
