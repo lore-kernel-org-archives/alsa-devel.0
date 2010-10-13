@@ -1,20 +1,19 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 1/7] [RFC] OMAP: MCBSP: hwmod database for
-	2xxx devices
-Date: Wed, 13 Oct 2010 11:31:49 +0300
-Message-ID: <201010131131.49967.peter.ujfalusi@nokia.com>
-References: <1286296662-7639-1-git-send-email-kishon@ti.com>
-	<201010061017.13908.peter.ujfalusi@nokia.com>
-	<EAF47CD23C76F840A9E7FCE10091EFAB030CF14091@dbde02.ent.ti.com>
+Subject: Re: [PATCH] ASoC: tlv320dac33: Control for line output
+	gain
+Date: Wed, 13 Oct 2010 11:40:26 +0300
+Message-ID: <201010131140.26724.peter.ujfalusi@nokia.com>
+References: <1286957298-28615-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20101013081402.GB6424@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa01.nokia.com (smtp.nokia.com [147.243.1.47])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0E08B1039DA
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 285621039FB
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Oct 2010 10:31:52 +0200 (CEST)
-In-Reply-To: <EAF47CD23C76F840A9E7FCE10091EFAB030CF14091@dbde02.ent.ti.com>
+	Wed, 13 Oct 2010 10:40:52 +0200 (CEST)
+In-Reply-To: <20101013081402.GB6424@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,91 +23,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext Varadarajan, Charulatha" <charu@ti.com>
-Cc: "Girdwood, Liam" <x0135381@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Kamat, Nishant" <nskamat@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "ABRAHAM,
-	KISHON VIJAY" <kishon@ti.com>, "Basak, Partha" <p-basak2@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Datta, Shubhrajyoti" <shubhrajyoti@ti.com>
+To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Friday 08 October 2010 09:20:19 ext Varadarajan, Charulatha wrote:
-> Sorry I am confused.
+On Wednesday 13 October 2010 11:14:03 ext Mark Brown wrote:
+> On Wed, Oct 13, 2010 at 11:08:18AM +0300, Peter Ujfalusi wrote:
+> > +/* L/R Line Output Gain */
+> > +static const char *lr_lineout_gain_texts[] =3D {
+> > +	"Line 0.25V/V DAC 1V/V", "Line 0.5V/V DAC 2V/V",
+> > +	"Line 1V/V DAC 4V/V", "Line 2V/V DAC 8V/V",
+> > +};
 > =
 
-> With hwmod implementation, there is a device register code for mcbsp
-> devices in mach-omap2/mcbsp.c and a probe in plat-omap/mcbsp.c. The base
-> address, dma info are not part of pdata and are available to the driver
-> only after probe. I do not understand how the multi-component design in
-> ASOC can avoid the new API.
-> =
+> I'm having a hard time parsing what these actually mean so I'm guessing
+> users are going to have trouble also - is there anything that could be
+> done to make things clearer?
 
-> Also with this multi-component approach in ASOC, two device
-> registrations happens for a single mcbsp device with two different
-> rames ("omap-mcbsp-dai.id" & "omap-mcbsp.id"). Please explain if this
-> what is expected?
+In the documentation these gains are described like that (0.25V.V / 1V/V), =
+and I =
 
-I have given myself some time to think this over...
-I think the best way forward is to provide an API from plat-omap/mcbsp.c fo=
-r =
+wanted to use the same in the enum elements, but what about:
 
-client drivers (like ASoC audio) to ask for the needed configuration (the t=
-hings =
+/* L/R Line Output Gain */
+static const char *lr_lineout_gain_texts[] =3D {
+       "Line -12dB DAC 0dB", "Line -6dB DAC 6dB",
+       "Line 0dB DAC 12dB", "Line 6dB DAC 18dB",
+};
 
-that is 'hard wired' in soc/omap/omap-mcbsp.c at the monent).
-Something like omap-mcbsp-get-config(id, &config);
+Value 0 in the registers mean:
+linein-to-lineout gain 0.25V/V (-12dB)
+dac-to-lineout gain 1V/V (0dB)
 
-In this way we can keep the door open for other uses of McBSP if ever neede=
-d.
+Value 1 in the registers mean:
+linein-to-lineout gain 0.5V/V (-6dB)
+dac-to-lineout gain 2V/V (6dB)
 
-> > We still need to modify the ASoC drivers to make use of this platform
-> > data, but
-> > at least we are going to keep the door open for others to use the McBSP
-> > ports
-> > for other than audio.
-> =
-
-> Agreed. But the current omap-mcbsp driver cannot work standalone for
-> OMAP3/4 due to the issues stated below:
-> 1. omap_mcbsp_pollwrite and omap_mcbsp_pollread functions access McBSP
-> registers as 16-bit. But in OMAP3/4, McBSP registers (DRR_REG and DXR_REG)
-> are limited to 32-bit data accesses and hence poll mode would not work [x=
-].
-
-Yes, this need to be fixed, but it can be done later, it does not need to b=
-e =
-
-part of the hwmod series.
-
-> 2. DMA transfers would also not work as it requires a patch similar to [y=
-].
-
-Well, this patch was sent in 2008. nowdays we moved the OMAP audio support =
-to =
-
-ASoC, and there are no 'legacy' ALSA arm/omap drivers anymore.
-In ASoC the cpu_dai and the platform drivers are separate things.
-This allows us to use the same platform driver (omap-pcm) for McBSp, McPDM =
-(and =
-
-in theory we could have OMAP2 EAC) cpu_dai drivers without duplicating code.
-As a note: most of the features this patch was trying to implement is alrea=
-dy =
-
-done for the ASoC implementation, but if there is need for new features, it=
- has =
-
-to be done using the ASoC framework.
-
-> Coming back to the original question. Either we need to fix the broken
-> legacy mcbsp driver or move the omap-mcbsp driver completely to asoc
-> layer. What do you say?
-
-I would keep the partitioning same as it is now.
-If there is a reason we can add bus driver functionality to McBSP, but at t=
-he =
-
-moment there is no need for that.
- =
+What do you think?
 
 -- =
 
