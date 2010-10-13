@@ -1,54 +1,137 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v2] ASoC: tlv320dac33: Control for line
- output gain
-Date: Wed, 13 Oct 2010 11:41:32 +0100
-Message-ID: <1286966492.3282.36.camel@odin>
-References: <1286960188-29334-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20101013085717.GC29239@opensource.wolfsonmicro.com>
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH] sound/soc: rename vol to volatile_register as appropriate
+Date: Wed, 13 Oct 2010 05:10:45 -0700
+Message-ID: <1286971846.1117.191.camel@Joe-Laptop>
+References: <B2150E1E4418E1438554A300EA5040E40D469C124D@ITSVLEX06.it.maxim-ic.internal>
+	 <B2150E1E4418E1438554A300EA5040E40D469C124F@ITSVLEX06.it.maxim-ic.internal>
+	 <1286934472.1117.129.camel@Joe-Laptop>
+	 <20101013082414.GD6424@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 590B1103A13
-	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Oct 2010 12:41:36 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so3706167wyb.38
-	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2010 03:41:36 -0700 (PDT)
-In-Reply-To: <20101013085717.GC29239@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20101013082414.GD6424@rakim.wolfsonmicro.main>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: Peter Hsiang <Peter.Hsiang@maxim-ic.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Jesse Marroquin <Jesse.Marroquin@maxim-ic.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-10-13 at 01:57 -0700, Mark Brown wrote:
-> On Wed, Oct 13, 2010 at 11:56:28AM +0300, Peter Ujfalusi wrote:
-> > New control to select the line output gain.
-> > This gain control affects the linein-to-lineout and
-> > dac-to-loneout gain differently.
-> > Use enum type to select the desired gain combination.
-> > 
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Rename the declaration and uses of variables
+named vol to volatile_register to avoid name
+clash with the much more common use of vol
+for volume.
+
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+On Wed, 2010-10-13 at 09:24 +0100, Mark Brown wrote:
+> On Tue, Oct 12, 2010 at 06:47:52PM -0700, Joe Perches wrote:
+> > On Tue, 2010-10-12 at 18:20 -0700, Peter Hsiang wrote:
 > 
-> Looks good!
+> > > +static struct {
+> > > +       int readable;
+> > > +       int writable;
+> > > +       int vol;
+> > > +} max98088_access[M98088_REG_CNT] = {
 > 
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> > bool instead?
+> 
+> > static struct {
+> > 	bool readable;
+> > 	bool writable,
+> > 	bool vol;
+> > } etc...
+> 
+> The readable and writable fields are being used as bitmasks:
 
-Applied.
+No, they are being declared as bitmasks.
+writable is used once as bool, readable isn't used at all.
 
-Thanks
+> | +       { 0x1F, 0x1F, 1 }, /* 03 battery voltage */
+> so this discards data which we may wish to use in future.
 
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+It's not used as bitmask now, what use would there
+be in the future for it as a bitmask?
+
+> > readable isn't used anywhere, writeable is used as bool
+> > vol isn't a good name as it's easy to confuse with
+> > volume.  Maybe volatile_register?
+> 
+> vol is traditionally used for this throughout the subsystem.  It's
+> unfortuante that volatile is a keyword.
+
+As far as I see, your description of vol being
+used throughout the subsystem is not true.
+
+vol is defined 3 times in sound/soc/codecs for
+volatility, used twice, and there are about 500
+uses in sound for vol as volume.
+
+Here's a patch for the current defines and uses.
+
+ sound/soc/codecs/wm8904.c |    4 ++--
+ sound/soc/codecs/wm8962.c |    2 +-
+ sound/soc/codecs/wm8962.h |    2 +-
+ sound/soc/codecs/wm8994.c |    2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index 33be84e..18a6f5c 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -346,7 +346,7 @@ static const u16 wm8904_reg[WM8904_MAX_REGISTER + 1] = {
+ static struct {
+ 	int readable;
+ 	int writable;
+-	int vol;
++	bool volatile_register;
+ } wm8904_access[] = {
+ 	{ 0xFFFF, 0xFFFF, 1 }, /* R0   - SW Reset and ID */
+ 	{ 0x0000, 0x0000, 0 }, /* R1   - Revision */
+@@ -601,7 +601,7 @@ static struct {
+ 
+ static int wm8904_volatile_register(unsigned int reg)
+ {
+-	return wm8904_access[reg].vol;
++	return wm8904_access[reg].volatile_register;
+ }
+ 
+ static int wm8904_reset(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 6d30f34..98ed910 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -108,7 +108,7 @@ WM8962_REGULATOR_EVENT(7)
+ 
+ static int wm8962_volatile_register(unsigned int reg)
+ {
+-	if (wm8962_reg_access[reg].vol)
++	if (wm8962_reg_access[reg].volatile_register)
+ 		return 1;
+ 	else
+ 		return 0;
+diff --git a/sound/soc/codecs/wm8962.h b/sound/soc/codecs/wm8962.h
+index 2af6c93..070a4c9 100644
+--- a/sound/soc/codecs/wm8962.h
++++ b/sound/soc/codecs/wm8962.h
+@@ -3780,7 +3780,7 @@ extern const u16 wm8962_reg[WM8962_MAX_REGISTER + 1];
+ struct wm8962_reg_access {
+ 	u16 read;
+ 	u16 write;
+-	u16 vol;
++	bool volatile_register;
+ };
+ 
+ extern
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 218bcd2..d46f661 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -101,7 +101,7 @@ struct wm8994_priv {
+ static struct {
+ 	unsigned short  readable;   /* Mask of readable bits */
+ 	unsigned short  writable;   /* Mask of writable bits */
+-	unsigned short  vol;        /* Mask of volatile bits */
++	unsigned short  volatile_register;    /* Mask of volatile bits */
+ } access_masks[] = {
+ 	{ 0xFFFF, 0xFFFF, 0x0000 }, /* R0     - Software Reset */
+ 	{ 0x3B37, 0x3B37, 0x0000 }, /* R1     - Power Management (1) */
