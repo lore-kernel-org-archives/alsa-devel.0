@@ -1,139 +1,73 @@
-From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: RE: [PATCH v2 3/6] ARM: S5PV210: Add EPLL clock operations
-Date: Wed, 13 Oct 2010 17:08:16 +0900
-Message-ID: <002601cb6aad$cc4a29d0$64de7d70$%kim@samsung.com>
-References: <1286882399-27595-1-git-send-email-sw.youn@samsung.com>
- <1286883755-27755-1-git-send-email-sw.youn@samsung.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH] ASoC: tlv320dac33: Control for line output gain
+Date: Wed, 13 Oct 2010 11:08:18 +0300
+Message-ID: <1286957298-28615-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1286883755-27755-1-git-send-email-sw.youn@samsung.com>
-Content-language: ko
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: 'Seungwhan Youn' <sw.youn@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: ben-linux@fluff.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id A9DE424340
+	for <alsa-devel@alsa-project.org>;
+	Wed, 13 Oct 2010 10:08:35 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Seungwhan Youn wrote:
-> 
-> This patch adds EPLL specific clock get_rate/set_rate operations
-> on S5PV210.
-> 
-> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
-> ---
->  arch/arm/mach-s5pv210/clock.c |   77
-> +++++++++++++++++++++++++++++++++++++++++
->  1 files changed, 77 insertions(+), 0 deletions(-)
-> 
-> diff --git a/arch/arm/mach-s5pv210/clock.c b/arch/arm/mach-s5pv210/clock.c
-> index f1ec5bb..fdfadac 100644
-> --- a/arch/arm/mach-s5pv210/clock.c
-> +++ b/arch/arm/mach-s5pv210/clock.c
-> @@ -1003,6 +1003,79 @@ static struct clksrc_clk *sysclks[] = {
->  	&clk_sclk_spdif,
->  };
-> 
-> +static u32 epll_div[][6] = {
-> +	{  48000000, 0, 48, 3, 3, 0 },
-> +	{  96000000, 0, 48, 3, 2, 0 },
-> +	{ 144000000, 1, 72, 3, 2, 0 },
-> +	{ 192000000, 0, 48, 3, 1, 0 },
-> +	{ 288000000, 1, 72, 3, 1, 0 },
-> +	{  32750000, 1, 65, 3, 4, 35127 },
-> +	{  32768000, 1, 65, 3, 4, 35127 },
-> +	{  45158400, 0, 45, 3, 3, 10355 },
-> +	{  45000000, 0, 45, 3, 3, 10355 },
-> +	{  45158000, 0, 45, 3, 3, 10355 },
-> +	{  49125000, 0, 49, 3, 3, 9961 },
-> +	{  49152000, 0, 49, 3, 3, 9961 },
-> +	{  67737600, 1, 67, 3, 3, 48366 },
-> +	{  67738000, 1, 67, 3, 3, 48366 },
-> +	{  73800000, 1, 73, 3, 3, 47710 },
-> +	{  73728000, 1, 73, 3, 3, 47710 },
-> +	{  36000000, 1, 32, 3, 4, 0 },
-> +	{  60000000, 1, 60, 3, 3, 0 },
-> +	{  72000000, 1, 72, 3, 3, 0 },
-> +	{  80000000, 1, 80, 3, 3, 0 },
-> +	{  84000000, 0, 42, 3, 2, 0 },
-> +	{  50000000, 0, 50, 3, 3, 0 },
-> +};
-> +
-> +static int s5pv210_epll_set_rate(struct clk *clk, unsigned long rate)
-> +{
-> +	unsigned int epll_con, epll_con_k;
-> +	unsigned int i;
-> +
-> +	/* Return if nothing changed */
-> +	if (clk->rate == rate)
-> +		return 0;
-> +
-> +	epll_con = __raw_readl(S5P_EPLL_CON);
-> +	epll_con_k = __raw_readl(S5P_EPLL_CON1);
-> +
-> +	epll_con_k &= ~PLL46XX_KDIV_MASK;
-> +	epll_con &= ~(1 << 27 |
-> +			PLL46XX_MDIV_MASK << PLL46XX_MDIV_SHIFT |
-> +			PLL46XX_PDIV_MASK << PLL46XX_PDIV_SHIFT |
-> +			PLL46XX_SDIV_MASK << PLL46XX_SDIV_SHIFT);
-> +
-> +	for (i = 0; i < ARRAY_SIZE(epll_div); i++) {
-> +		if (epll_div[i][0] == rate) {
-> +			epll_con_k |= epll_div[i][5] << 0;
-> +			epll_con |= (epll_div[i][1] << 27 |
-> +					epll_div[i][2] <<
-> PLL46XX_MDIV_SHIFT |
-> +					epll_div[i][3] <<
-> PLL46XX_PDIV_SHIFT |
-> +					epll_div[i][4] <<
-> PLL46XX_SDIV_SHIFT);
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (i == ARRAY_SIZE(epll_div)) {
-> +		printk(KERN_ERR "%s: Invalid Clock EPLL Frequency\n",
-> +				__func__);
-> +		return -EINVAL;
-> +	}
-> +
-> +	__raw_writel(epll_con, S5P_EPLL_CON);
-> +	__raw_writel(epll_con_k, S5P_EPLL_CON1);
-> +
-> +	clk->rate = rate;
-> +
-> +	return 0;
-> +}
-> +
-> +static struct clk_ops s5pv210_epll_ops = {
-> +	.set_rate = s5pv210_epll_set_rate,
-> +	.get_rate = s5p_epll_get_rate,
-> +};
-> +
->  void __init_or_cpufreq s5pv210_setup_clocks(void)
->  {
->  	struct clk *xtal_clk;
-> @@ -1022,6 +1095,10 @@ void __init_or_cpufreq s5pv210_setup_clocks(void)
->  	unsigned int ptr;
->  	u32 clkdiv0, clkdiv1;
-> 
-> +	/* Set functions for clk_fout_epll */
-> +	clk_fout_epll.enable = s5p_epll_enable;
-> +	clk_fout_epll.ops = &s5pv210_epll_ops;
-> +
->  	printk(KERN_DEBUG "%s: registering clocks\n", __func__);
-> 
->  	clkdiv0 = __raw_readl(S5P_CLK_DIV0);
-> --
+New control to select the line output gain.
+This gain control affects the linein-to-lineout and
+dac-to-loneout gain differently.
+Use enum type to select the desired gain combination.
 
-I think...we need to sort out epll_set_rate() like epll_get_rate() later.
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ sound/soc/codecs/tlv320dac33.c |   18 ++++++++++++++++++
+ 1 files changed, 18 insertions(+), 0 deletions(-)
 
-Will apply anyway.
-
-Thanks.
-
-Best regards,
-Kgene.
---
-Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
-SW Solution Development Team, Samsung Electronics Co., Ltd.
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index bf6d01f..4d86bf6 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -524,6 +524,22 @@ static const struct soc_enum dac33_fifo_mode_enum =
+ 	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(dac33_fifo_mode_texts),
+ 			    dac33_fifo_mode_texts);
+ 
++/* L/R Line Output Gain */
++static const char *lr_lineout_gain_texts[] = {
++	"Line 0.25V/V DAC 1V/V", "Line 0.5V/V DAC 2V/V",
++	"Line 1V/V DAC 4V/V", "Line 2V/V DAC 8V/V",
++};
++
++static const struct soc_enum l_lineout_gain_enum =
++	SOC_ENUM_SINGLE(DAC33_LDAC_PWR_CTRL, 0,
++			ARRAY_SIZE(lr_lineout_gain_texts),
++			lr_lineout_gain_texts);
++
++static const struct soc_enum r_lineout_gain_enum =
++	SOC_ENUM_SINGLE(DAC33_RDAC_PWR_CTRL, 0,
++			ARRAY_SIZE(lr_lineout_gain_texts),
++			lr_lineout_gain_texts);
++
+ /*
+  * DACL/R digital volume control:
+  * from 0 dB to -63.5 in 0.5 dB steps
+@@ -541,6 +557,8 @@ static const struct snd_kcontrol_new dac33_snd_controls[] = {
+ 		 DAC33_LDAC_DIG_VOL_CTRL, DAC33_RDAC_DIG_VOL_CTRL, 7, 1, 1),
+ 	SOC_DOUBLE_R("Line to Line Out Volume",
+ 		 DAC33_LINEL_TO_LLO_VOL, DAC33_LINER_TO_RLO_VOL, 0, 127, 1),
++	SOC_ENUM("Left Line Output Gain", l_lineout_gain_enum),
++	SOC_ENUM("Right Line Output Gain", r_lineout_gain_enum),
+ };
+ 
+ static const struct snd_kcontrol_new dac33_mode_snd_controls[] = {
+-- 
+1.7.3.1
