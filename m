@@ -1,19 +1,21 @@
-From: Julian Scheel <julian@jusst.de>
+From: Daniel Mack <daniel@caiaq.de>
 Subject: Re: USB asynchronous mode feedback format
-Date: Thu, 14 Oct 2010 13:01:52 +0200
-Message-ID: <201010141301.52856.julian@jusst.de>
+Date: Thu, 14 Oct 2010 13:16:12 +0200
+Message-ID: <20101014111612.GJ10432@buzzloop.caiaq.de>
 References: <1287046026.4cb6c38a2a179@discus.singnet.com.sg>
 	<201010141227.38510.julian@jusst.de>
 	<20101014104855.GI10432@buzzloop.caiaq.de>
+	<201010141301.52856.julian@jusst.de>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_gMutMpdmiUrsMNJ"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2.work.de (smtp.work.de [212.12.45.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id 968DA24420
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 173D224431
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Oct 2010 13:01:55 +0200 (CEST)
-In-Reply-To: <20101014104855.GI10432@buzzloop.caiaq.de>
+	Thu, 14 Oct 2010 13:16:16 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <201010141301.52856.julian@jusst.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,160 +25,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: lee188@singnet.com.sg
+To: Julian Scheel <julian@jusst.de>
+Cc: alsa-devel@alsa-project.org, lee188@singnet.com.sg
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_gMutMpdmiUrsMNJ
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-
-Am Donnerstag, 14. Oktober 2010, 12:48:55 schrieb Daniel Mack:
-> On Thu, Oct 14, 2010 at 12:27:38PM +0200, Julian Scheel wrote:
-> > thanks a lot! You made my day (c:
-> > Using EP5 for feedback makes it working. So I now get the data out even
-> > in async mode. Currently I have a problem left that channel assignment
-> > jumps here and then. Probably a buffering issue...
-> > Also neither a SRC4192  (sample rate converter) nor a PCM1794 (dac) seem
-> > to be able to understand what I am sending right now... Not sure why.
-> > Looking at the measurements it really looks like a proper I2S signal.
+On Thu, Oct 14, 2010 at 01:01:52PM +0200, Julian Scheel wrote:
+> Am Donnerstag, 14. Oktober 2010, 12:48:55 schrieb Daniel Mack:
+> > On Thu, Oct 14, 2010 at 12:27:38PM +0200, Julian Scheel wrote:
+> > > thanks a lot! You made my day (c:
+> > > Using EP5 for feedback makes it working. So I now get the data out even
+> > > in async mode. Currently I have a problem left that channel assignment
+> > > jumps here and then. Probably a buffering issue...
+> > > Also neither a SRC4192  (sample rate converter) nor a PCM1794 (dac) seem
+> > > to be able to understand what I am sending right now... Not sure why.
+> > > Looking at the measurements it really looks like a proper I2S signal.
+> > 
+> > Can you send oscilloscope screenshots? Which data format are you using?
 > 
-> Can you send oscilloscope screenshots? Which data format are you using?
+> Sure, attached you see a capture while running speaker-test to generate a 1khz 
+> sine wave on one channel. (Blue: BCLK 1,536MHz, Yellow: LRCLK: 48kHz, Green: 
+> I2S data)
+> If you want to see more/other captures just let me know what you need.
 
-Sure, attached you see a capture while running speaker-test to generate a 1khz 
-sine wave on one channel. (Blue: BCLK 1,536MHz, Yellow: LRCLK: 48kHz, Green: 
-I2S data)
-If you want to see more/other captures just let me know what you need.
+The dump doesn't show whether the LRCLK is symmetrical, iow, whether the
+low phase of LRCLK has the same number of BCLK cycles as the high phase.
 
-Signal is 48kHz 16Bit. As it's I2S it is MSB with 1 BCLK-Cycle delay.
+But if that's the case, the signals do indeed look alright. Maybe you
+need the configure the codec to this format?
 
-Regards,
-Julian
-
---Boundary-00=_gMutMpdmiUrsMNJ
-Content-Type: image/png;
-  name="1khzsine_i2s.png"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="1khzsine_i2s.png"
-
-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
-
---Boundary-00=_gMutMpdmiUrsMNJ
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---Boundary-00=_gMutMpdmiUrsMNJ--
+Daniel
