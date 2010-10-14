@@ -1,61 +1,107 @@
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-Subject: RE: [PATCH v3 2/3] ARM: ep93xx: add AC97 platform support
-Date: Thu, 14 Oct 2010 17:07:03 -0500
-Message-ID: <0D753D10438DA54287A00B02708426976450C42B60@AUSP01VMBX24.collaborationhost.net>
-References: <cover.1287066937.git.mika.westerberg@iki.fi>
-	<14a8c7ea0482375fa32a022ea7e318ea4feae6f1.1287066937.git.mika.westerberg@iki.fi>
-	<0D753D10438DA54287A00B02708426976450C42B0E@AUSP01VMBX24.collaborationhost.net>
-	<4CB77CDB.6050908@bluewatersys.com>
+From: Tom Burger <tvburger@gmail.com>
+Subject: HDA Analyzer - Dell M4500 Internal Mic
+Date: Fri, 15 Oct 2010 01:31:04 +0200
+Message-ID: <AANLkTi=s3+gk_PKBYdad8YZv065fJukUGDZ1c2RmL8ZA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <4CB77CDB.6050908@bluewatersys.com>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Ryan Mallon <ryan@bluewatersys.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mika Westerberg <mika.westerberg@iki.fi>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "martinwguy@gmail.com" <martinwguy@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qy0-f172.google.com (mail-qy0-f172.google.com
+	[209.85.216.172])
+	by alsa0.perex.cz (Postfix) with ESMTP id BD0761037F5
+	for <alsa-devel@alsa-project.org>;
+	Fri, 15 Oct 2010 02:01:57 +0200 (CEST)
+Received: by qyk8 with SMTP id 8so648754qyk.17
+	for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2010 17:01:54 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday, October 14, 2010 2:58 PM, Ryan Mallon wrote:
-> On 10/15/2010 10:46 AM, H Hartley Sweeten wrote:
->> On Thursday, October 14, 2010 7:49 AM, Mika Westerberg wrote:
->>>
->>> +void __init ep93xx_register_ac97(void)
->>> +{
->>> +	/*
->>> +	 * Make sure that the AC97 pins are not used by I2S.
->>> +	 */
->>> +	ep93xx_devcfg_clear_bits(EP93XX_SYSCON_DEVCFG_I2SONAC97);
->> 
->> This is fine for now.
->> 
->> Eventually some thought should go into a proper iomux to prevent
->> loading drivers with conflicting pin requirements.  Currently, depending
->> on the configuration, this could break if a user should try to use the
->> ac97 and i2s audio at the same time (I2SONAC97 mode).  But, the same
->> problem already exists if a user tries using spi and i2s audio (I2SONSSP
->> mode).
->
-> I initially suggested this also, since we have acquire/release functions
-> for some other drivers, but I now think this is fine as is. It's highly
-> unlikely that a board is going to have both I2S and AC97 audio. We can
-> change this later if such a board shows up, no need to make the code
-> more complicated for hypothetical boards :-).
+Hi all!
 
-Agree.  That's why I said eventually.... ;-)
+My mic didn't work (Dell M4500) . Using HDA Analyzer I create a
+configuration that does work. I read that I could send my working
+codec to here. So here it is.
 
-The only platforms I know of that have both audio systems are the EDB9307,
-EDB9312, and EDB9315 boards from Cirrus.  I don't have any of these so,
-unless someone steps up with one to test, Mika's implementation is fine.
+Maybe you can also tell me how te make this change permanent?
 
-Regards,
-Hartley
+Good luck,
+
+Tom
+
+
+
+Diff for codec 0/0 (0x111d76d5):
+---
++++
+@@ -100,16 +100,17 @@
+ Node 0x11 [Pin Complex] wcaps 0x400483: Stereo Amp-In
+   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+   Amp-In vals: [0x00 0x00]
+   Pincap 0x00000024: IN Detect
+   Pin Default 0x90a60130: [Fixed] Mic at Int N/A
+     Conn = Digital, Color = Unknown
+     DefAssociation = 0x3, Sequence = 0x0
+     Misc = NO_PRESENCE
++  Pin-ctls: 0x20: IN
+   Unsolicited: tag=0x00, enabled=0
+   Power: setting=D0, actual=D0
+ Node 0x12 [Vendor Defined Widget] wcaps 0xf00503: Stereo Amp-In
+   Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+   Amp-In vals: [0x00 0x00]
+   Power: setting=D0, actual=D0
+   Connection: 1
+      0x20
+@@ -121,37 +122,37 @@
+   Delay: 13 samples
+ Node 0x14 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
+   Amp-Out caps: ofs=0x7f, nsteps=0x7f, stepsize=0x02, mute=1
+   Amp-Out vals: [0x79 0x79]
+   Converter: stream=0, channel=0
+   Power: setting=D0, actual=D0
+   Delay: 13 samples
+ Node 0x15 [Audio Input] wcaps 0x1d0541: Stereo
+-  Converter: stream=0, channel=0
++  Converter: stream=1, channel=0
+   SDI-Select: 0
+   Power: setting=D0, actual=D0
+   Delay: 13 samples
+   Connection: 1
+      0x17
+   Processing caps: benign=0, ncoeff=0
+ Node 0x16 [Audio Input] wcaps 0x1d0541: Stereo
+   Converter: stream=0, channel=0
+   SDI-Select: 0
+   Power: setting=D0, actual=D0
+   Delay: 13 samples
+   Connection: 1
+      0x18
+   Processing caps: benign=0, ncoeff=0
+ Node 0x17 [Audio Selector] wcaps 0x300d0d: Stereo Amp-Out R/L
+   Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
+-  Amp-Out vals: [0x0f 0x0f]
++  Amp-Out vals: [0x00 0x00]
+   Power: setting=D0, actual=D0
+   Connection: 7
+-     0x0c 0x0e 0x0f 0x1b 0x11 0x12 0x0a*
++     0x0c 0x0e 0x0f 0x1b 0x11* 0x12 0x0a
+ Node 0x18 [Audio Selector] wcaps 0x300d0d: Stereo Amp-Out R/L
+   Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
+   Amp-Out vals: [0x80 0x80]
+   Power: setting=D0, actual=D0
+   Connection: 7
+      0x0c 0x0e 0x0f 0x1b 0x11 0x12 0x0a*
+ Node 0x19 [Audio Selector] wcaps 0x300501: Stereo
+   Power: setting=D0, actual=D
+
+-- 
+Tom Burger | tvburger@gmail.com | +31 (0)62 412 20 27
+http://www.linkedin.com/in/tvburger
