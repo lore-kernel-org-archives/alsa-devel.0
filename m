@@ -1,93 +1,122 @@
-From: Sergei Shtylyov <sshtylyov-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH v3 9/9] davinci: USB-OHCI support for Omapl138-Hawkboard
-Date: Thu, 14 Oct 2010 21:47:22 +0400
-Message-ID: <4CB7422A.6020904@mvista.com>
-References: <1287077018-4550-1-git-send-email-vm.rod25@gmail.com>
+From: Ryan Mallon <ryan@bluewatersys.com>
+Subject: Re: [PATCH v3 2/3] ARM: ep93xx: add AC97 platform
+	support
+Date: Fri, 15 Oct 2010 08:56:18 +1300
+Message-ID: <4CB76062.3020904@bluewatersys.com>
+References: <cover.1287066937.git.mika.westerberg@iki.fi>
+	<14a8c7ea0482375fa32a022ea7e318ea4feae6f1.1287066937.git.mika.westerberg@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <1287077018-4550-1-git-send-email-vm.rod25-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: vm.rod25-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Cc: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hayes.bluewaternz.com (mail.bluewatersys.com [202.124.120.130])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7C4EC2414D
+	for <alsa-devel@alsa-project.org>;
+	Thu, 14 Oct 2010 21:55:48 +0200 (CEST)
+In-Reply-To: <14a8c7ea0482375fa32a022ea7e318ea4feae6f1.1287066937.git.mika.westerberg@iki.fi>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mika Westerberg <mika.westerberg@iki.fi>
+Cc: alsa-devel@alsa-project.org, martinwguy@gmail.com, broonie@opensource.wolfsonmicro.com, hsweeten@visionengravers.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On 10/14/10 21:23, vm.rod25-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
+On 10/15/2010 03:49 AM, Mika Westerberg wrote:
+> Add platform support for the EP93xx AC97 controller driver.
+> 
+> Signed-off-by: Mika Westerberg <mika.westerberg@iki.fi>
+> ---
+>  arch/arm/mach-ep93xx/core.c                     |   34 +++++++++++++++++++++++
+>  arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h |    1 +
+>  arch/arm/mach-ep93xx/include/mach/platform.h    |    1 +
+>  3 files changed, 36 insertions(+), 0 deletions(-)
 
-> From: Victor Rodriguez<victor.rodriguez-Ut8ZLSGP1ULQT0dZR+AlfA@public.gmane.org>
+Looks good.
 
-> This patch adds USB-OHCI support for the Hawkboard-L138 system
+Acked-by: Ryan Mallon <ryan@bluewatersys.com>
 
-> Signed-off-by: Victor Rodriguez<victor.rodriguez-Ut8ZLSGP1ULQT0dZR+AlfA@public.gmane.org>
-[,,,]
-> diff --git a/arch/arm/mach-davinci/board-omapl138-hawk.c b/arch/arm/mach-davinci/board-omapl138-hawk.c
-> index 723ac03..bac29fc 100644
-> --- a/arch/arm/mach-davinci/board-omapl138-hawk.c
-> +++ b/arch/arm/mach-davinci/board-omapl138-hawk.c
-[...]
-> @@ -177,6 +180,94 @@ static struct davinci_mmc_config da850_mmc_config = {
-[...]
-> +static __init void omapl138_hawk_usb_init(void)
+> diff --git a/arch/arm/mach-ep93xx/core.c b/arch/arm/mach-ep93xx/core.c
+> index 1990e22..ffdf87b 100644
+> --- a/arch/arm/mach-ep93xx/core.c
+> +++ b/arch/arm/mach-ep93xx/core.c
+> @@ -832,6 +832,40 @@ void ep93xx_i2s_release(void)
+>  }
+>  EXPORT_SYMBOL(ep93xx_i2s_release);
+>  
+> +/*************************************************************************
+> + * EP93xx AC97 audio peripheral handling
+> + *************************************************************************/
+> +static struct resource ep93xx_ac97_resources[] = {
+> +	{
+> +		.start	= EP93XX_AAC_PHYS_BASE,
+> +		.end	= EP93XX_AAC_PHYS_BASE + 0xb0 - 1,
+> +		.flags	= IORESOURCE_MEM,
+> +	},
+> +	{
+> +		.start	= IRQ_EP93XX_AACINTR,
+> +		.end	= IRQ_EP93XX_AACINTR,
+> +		.flags	= IORESOURCE_IRQ,
+> +	},
+> +};
+> +
+> +static struct platform_device ep93xx_ac97_device = {
+> +	.name		= "ep93xx-ac97",
+> +	.id		= -1,
+> +	.num_resources	= ARRAY_SIZE(ep93xx_ac97_resources),
+> +	.resource	= ep93xx_ac97_resources,
+> +};
+> +
+> +void __init ep93xx_register_ac97(void)
 > +{
-> +	int ret;
-> +	u32 cfgchip2;
-
-   Empty line is needed here...
-
 > +	/*
-> +	 * Setup the Ref. clock frequency for the HAWK at 24 MHz.
+> +	 * Make sure that the AC97 pins are not used by I2S.
 > +	 */
-> +	cfgchip2 = __raw_readl(DA8XX_SYSCFG0_VIRT(DA8XX_CFGCHIP2_REG));
-> +	cfgchip2&= ~CFGCHIP2_REFFREQ;
-> +	cfgchip2 |=  CFGCHIP2_REFFREQ_24MHZ;
-> +	__raw_writel(cfgchip2, DA8XX_SYSCFG0_VIRT(DA8XX_CFGCHIP2_REG));
+> +	ep93xx_devcfg_clear_bits(EP93XX_SYSCON_DEVCFG_I2SONAC97);
 > +
-> +	ret = gpio_request(DA850_USB1_VBUS_PIN, "USB1 VBUS\n");
-> +	if (ret) {
-> +		printk(KERN_ERR "%s: failed to request GPIO for USB 1.1 port "
-> +			"power control: %d\n", __func__, ret);
-> +		return;
-> +	}
-> +	gpio_direction_output(DA850_USB1_VBUS_PIN, 0);
-> +
-> +	ret = gpio_request(DA850_USB1_OC_PIN, "USB1 OC");
-> +	if (ret) {
-> +		printk(KERN_ERR "%s: failed to request GPIO for USB 1.1 port "
-> +			"over-current indicator: %d\n", __func__, ret);
-> +		return;
-> +	}
-> +	gpio_direction_input(DA850_USB1_OC_PIN);
+> +	platform_device_register(&ep93xx_ac97_device);
+> +	platform_device_register(&ep93xx_pcm_device);
 > +}
 > +
->   static struct davinci_uart_config omapl138_hawk_uart_config __initdata = {
->   	.enabled_uarts = 0x7,
->   };
-> @@ -229,6 +320,16 @@ static __init void omapl138_hawk_init(void)
->   		pr_warning("%s: MMC/SD0 registration failed: %d\n",
->   			__func__, ret);
->
-> +	ret = davinci_cfg_reg_list(da850_hawk_usb11_pins);
-> +	if (ret)
-> +		pr_warning("%s: USB 1.1 PinMux setup failed: %d\n",
-> +			   __func__, ret);
+>  extern void ep93xx_gpio_init(void);
+>  
+>  void __init ep93xx_init_devices(void)
+> diff --git a/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h b/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
+> index c54b3e5..9ac4d10 100644
+> --- a/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
+> +++ b/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
+> @@ -105,6 +105,7 @@
+>  #define EP93XX_GPIO_B_INT_STATUS	EP93XX_GPIO_REG(0xbc)
+>  #define EP93XX_GPIO_EEDRIVE		EP93XX_GPIO_REG(0xc8)
+>  
+> +#define EP93XX_AAC_PHYS_BASE		EP93XX_APB_PHYS(0x00080000)
+>  #define EP93XX_AAC_BASE			EP93XX_APB_IOMEM(0x00080000)
+>  
+>  #define EP93XX_SPI_PHYS_BASE		EP93XX_APB_PHYS(0x000a0000)
+> diff --git a/arch/arm/mach-ep93xx/include/mach/platform.h b/arch/arm/mach-ep93xx/include/mach/platform.h
+> index 3330b36..5066045 100644
+> --- a/arch/arm/mach-ep93xx/include/mach/platform.h
+> +++ b/arch/arm/mach-ep93xx/include/mach/platform.h
+> @@ -61,6 +61,7 @@ void ep93xx_keypad_release_gpio(struct platform_device *pdev);
+>  void ep93xx_register_i2s(void);
+>  int ep93xx_i2s_acquire(unsigned i2s_pins, unsigned i2s_config);
+>  void ep93xx_i2s_release(void);
+> +void ep93xx_register_ac97(void);
+>  
+>  void ep93xx_init_devices(void);
+>  extern struct sys_timer ep93xx_timer;
 
-    Why are you requesting pins outside omapl138_hawk_usb_init() I wonder?
 
-> +	omapl138_hawk_usb_init();
-> +	ret = da8xx_register_usb11(&omapl138_hawk_usb11_pdata);
-> +	if (ret)
-> +		pr_warning("%s: USB 1.1 registration failed: %d\n",
-> +			   __func__, ret);
+-- 
+Bluewater Systems Ltd - ARM Technology Solution Centre
 
-    Same question...
-
-WBR, Sergei
+Ryan Mallon         		5 Amuri Park, 404 Barbadoes St
+ryan@bluewatersys.com         	PO Box 13 889, Christchurch 8013
+http://www.bluewatersys.com	New Zealand
+Phone: +64 3 3779127		Freecall: Australia 1800 148 751
+Fax:   +64 3 3779135			  USA 1800 261 2934
