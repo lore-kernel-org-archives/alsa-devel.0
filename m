@@ -1,19 +1,21 @@
-From: Julian Scheel <julian@jusst.de>
+From: Daniel Mack <daniel@caiaq.de>
 Subject: Re: USB asynchronous mode feedback format
-Date: Thu, 14 Oct 2010 13:58:27 +0200
-Message-ID: <201010141358.27706.julian@jusst.de>
+Date: Thu, 14 Oct 2010 14:06:41 +0200
+Message-ID: <20101014120641.GM10432@buzzloop.caiaq.de>
 References: <1287046026.4cb6c38a2a179@discus.singnet.com.sg>
-	<20101014104855.GI10432@buzzloop.caiaq.de>
-	<3879AFD1-61E6-47FB-8ECB-8A7D7B233B3B@singnet.com.sg>
+	<201010141301.52856.julian@jusst.de>
+	<20101014111612.GJ10432@buzzloop.caiaq.de>
+	<201010141332.37735.julian@jusst.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2.work.de (smtp.work.de [212.12.45.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id ECF84103B50
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id A786D103B56
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Oct 2010 13:58:29 +0200 (CEST)
-In-Reply-To: <3879AFD1-61E6-47FB-8ECB-8A7D7B233B3B@singnet.com.sg>
+	Thu, 14 Oct 2010 14:06:44 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <201010141332.37735.julian@jusst.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,25 +25,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alex <lee188@singnet.com.sg>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Julian Scheel <julian@jusst.de>
+Cc: alsa-devel@alsa-project.org, lee188@singnet.com.sg
 List-Id: alsa-devel@alsa-project.org
 
-Am Donnerstag, 14. Oktober 2010, 13:15:45 schrieb Alex:
-> > Great to hear that ASYNC OUT with rate feedback is working for u now :-)
+On Thu, Oct 14, 2010 at 01:32:37PM +0200, Julian Scheel wrote:
+> Am Donnerstag, 14. Oktober 2010, 13:16:12 schrieb Daniel Mack:
+> > The dump doesn't show whether the LRCLK is symmetrical, iow, whether the
+> > low phase of LRCLK has the same number of BCLK cycles as the high phase.
+> > 
+> > But if that's the case, the signals do indeed look alright. Maybe you
+> > need the configure the codec to this format?
 > 
-> Btw, are u using 12.13 format for Linux ?  U can try with OSX snow leopard,
-> which can understand 10.14 and 16.16.  Apply Clemens' patch and linux can
-> understand all formats - but users will have to wait for kernel 2.6.37 !
+> LRCLK is symmetrical. I use the modules from twistedpearaudio 
+> (http://www.twistedpearaudio.com/digital/metronome.aspx, 
+> http://www.twistedpearaudio.com/digital/cod.aspx) because this saved me some 
+> time designing a PCB for now...
+> They are configured through DIP switches - and I think correctly. For the SRC 
+> the settings are:
+> OWL0,1,2: 0, 0, 0 
+> OFMT0,1: 1, 0
+> MODE0,1,2: 1, 0, 0
+> IFMT0,1,2: 1, 0, 0
+> BYPASS: 0
+> LGRP: 0
 > 
-> I have implemented a sophisticated rate feedback with ping pong audio
-> buffer, calculation of gap between USB data and i2s data, determining
-> whether gap is increasing or decreasing etc.
+> What I am actually wondering about is, that the SRC produces some output even 
+> when the input is null. Attached is a picture of this case. I did not measure 
+> the BCLK this time.
 
-One more question on the feedback: In your project you fo 10.14 for Full Speed 
-devices (which mine is - the AT91SAM7A3 can't do High Speed) and 12.13 for 
-highspeed. Why do you distinguish that way? Is your device initialised in High 
-Speed mode whenever it's connected to a Linux host?
+Yes, that looks suspicious, especially because it doesn't only affect
+the lower bits. What do you need this sample rate converter for, anyway?
+Can't you feed your signals directly to the DAC? FMT0 and FMT1 should
+both be set to 0.
 
-Regards,
-Julian
+Daniel
