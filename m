@@ -1,22 +1,18 @@
-From: Valentine Sinitsyn <valentine.sinitsyn@gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
 Subject: Re: [PATCH] ALSA: hda: Add speaker pin to automute
  Acer Aspire 8943G
-Date: Thu, 14 Oct 2010 12:38:50 +0600
-Message-ID: <4CB6A57A.90101@gmail.com>
-References: <4CB68FC7.2060601@canonical.com>	<4CB69FA4.9030702@gmail.com>
-	<AANLkTimu4xyGTKPqV8hRRAthuraACrat9g4mmYpgHX5K@mail.gmail.com>
+Date: Thu, 14 Oct 2010 09:49:07 +0200
+Message-ID: <4CB6B5F3.9000700@canonical.com>
+References: <4CB68FC7.2060601@canonical.com> <4CB69FA4.9030702@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 98FC8103A73
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id A4EFB103869
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Oct 2010 08:38:50 +0200 (CEST)
-Received: by ewy9 with SMTP id 9so1848438ewy.38
-	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2010 23:38:50 -0700 (PDT)
-In-Reply-To: <AANLkTimu4xyGTKPqV8hRRAthuraACrat9g4mmYpgHX5K@mail.gmail.com>
+	Thu, 14 Oct 2010 09:49:11 +0200 (CEST)
+In-Reply-To: <4CB69FA4.9030702@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,19 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
+To: Valentine Sinitsyn <valentine.sinitsyn@gmail.com>
 Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> Do you mean that you want to add that "subwoofer" control which is connected
-> the the master mono pin of the codec  to the slave controls of the virtual
-> master volume control ?
-Yes, except "subwoofer" control is to be connected to subwoofer's own 
-pin (for instance, 0x17 on Lenovo machines). Subwoofer pins I've seen so 
-far have their own output amplifier with mute.
+On 2010-10-14 08:13, Valentine Sinitsyn wrote:
+> Hi David,
+>
+> First of all, thank you for your work on subwoofer issues. I've had a
+> chance to test them on my system lately, and they do really fix the bug
+> reported, but another one (more serious, in my opinion) remains:
+> subwoofer is not muted via normal mute button (more precisely, by muting
+> Master ALSA mixer). The problem is that during autoconfiguration
+> procedure, subwoofer is mapped on PCM channel, and there seems (at least
+> to me) to be no reliable way to distinguish subwoofer from other
+> possibly existing outputs on a general system and change this behavior.
+> Creating dedicated presets for the machines with a subwoofer seems to be
+> right way to workaround this, but then _quirks you've implemented should
+> be merged with this preset.
+>
+> Does this sound reasonable to you or I am missing anything?
 
-Apart of this, adding presets has usual benefits like giving other 
-controls descriptive names (say, "Int. Mic" instead of just "Mic"), but 
-obviously it has nothing to do with a subwoofer.
+I would say that advertising this pin correctly to the driver is the 
+first step. Trying to make the auto-parser treat this pin better would 
+be a second step, separate from this patch. Making a new model (if that 
+is what you call a "preset") would work as well, and might be easier for 
+this particular case, while improving the auto-parser would be better in 
+the long run.
 
-Valentine
+Do you agree?
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
