@@ -1,18 +1,21 @@
-From: Julian Scheel <julian@jusst.de>
-Subject: Re: USB asynchronous mode feedback format
-Date: Thu, 14 Oct 2010 07:57:58 +0200
-Message-ID: <2021c8d0-f183-4739-a65c-703f3dfc5073@email.android.com>
-References: <201010131750.18897.julian@jusst.de>
-	<loom.20101014T031422-361@post.gmane.org>
+From: Valentine Sinitsyn <valentine.sinitsyn@gmail.com>
+Subject: Re: [PATCH] ALSA: hda: Add speaker pin to automute
+ Acer Aspire 8943G
+Date: Thu, 14 Oct 2010 12:13:56 +0600
+Message-ID: <4CB69FA4.9030702@gmail.com>
+References: <4CB68FC7.2060601@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2.work.de (smtp.work.de [212.12.45.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id D0E6510385C
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9C142103882
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Oct 2010 07:58:10 +0200 (CEST)
-In-Reply-To: <loom.20101014T031422-361@post.gmane.org>
+	Thu, 14 Oct 2010 08:13:56 +0200 (CEST)
+Received: by ewy9 with SMTP id 9so1841352ewy.38
+	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2010 23:13:56 -0700 (PDT)
+In-Reply-To: <4CB68FC7.2060601@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alex <lee188@singnet.com.sg>, alsa-devel@alsa-project.org
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Alex,
+Hi David,
 
+First of all, thank you for your work on subwoofer issues. I've had a 
+chance to test them on my system lately, and they do really fix the bug 
+reported, but another one (more serious, in my opinion) remains: 
+subwoofer is not muted via normal mute button (more precisely, by muting 
+Master ALSA mixer). The problem is that during autoconfiguration 
+procedure, subwoofer is mapped on PCM channel, and there seems (at least 
+to me) to be no reliable way to distinguish subwoofer from other 
+possibly existing outputs on a general system and change this behavior. 
+Creating dedicated presets for the machines with a subwoofer seems to be 
+right way to workaround this, but then _quirks you've implemented should 
+be merged with this preset.
 
-"Alex" <lee188@singnet.com.sg> schrieb:
+Does this sound reasonable to you or I am missing anything?
 
->The current alsa rate feedback rate feedback format is
->12.13 in 4 bytes.  Clemens has a patch to make the rate
->feedback format automatic such that it will work with
->10.14 16.16 or any other formats.  We are still testing the
->patch put .  Currently with 12.13 format rate feedback
->works well.
+Thanks.
 
-How does it come that alsa uses 12.13? I don't see that mentioned in the specs?
-Is it right or left aligned in the 4 bytes?
-
->For example, AT91SAM7 has a limitation of EP siE of 64
->bytes for EP 3 used for ISO transfers.  There may also be
->a limitation in that the Same EP number cannot be used
->for both IN and OUT.
-
-Hm, I'm not sure about this. You think I should move the feedback pipe into it's own EP?
-I will recheck the At91SAM7 specs later, to see if I can find a note on such a limitation.
-
-Thanks,
-Julian
+Regards,
+Valentine Sinitsyn
