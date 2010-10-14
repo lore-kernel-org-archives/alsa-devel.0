@@ -1,15 +1,18 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: hda: Add speaker pin to automute Acer
-	Aspire 8943G
-Date: Thu, 14 Oct 2010 07:06:15 +0200
-Message-ID: <4CB68FC7.2060601@canonical.com>
+From: Julian Scheel <julian@jusst.de>
+Subject: Re: USB asynchronous mode feedback format
+Date: Thu, 14 Oct 2010 07:57:58 +0200
+Message-ID: <2021c8d0-f183-4739-a65c-703f3dfc5073@email.android.com>
+References: <201010131750.18897.julian@jusst.de>
+	<loom.20101014T031422-361@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050408050300090409070003"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id B8F0A103803
+Received: from smtp2.work.de (smtp.work.de [212.12.45.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id D0E6510385C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Oct 2010 07:06:18 +0200 (CEST)
+	Thu, 14 Oct 2010 07:58:10 +0200 (CEST)
+In-Reply-To: <loom.20101014T031422-361@post.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,98 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
-Cc: crimsun@ubuntu.com
+To: Alex <lee188@singnet.com.sg>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050408050300090409070003
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-BugLink: https://bugs.launchpad.net/bugs/656625
-
-Add clause for handling Acer Aspire 8943G's subwoofer as additional
-speaker pin for automuting.
-
-Reported-by: RussianNeuroMancer
-Cc: stable@kernel.org
-Signed-off-by: Daniel T Chen <crimsun@ubuntu.com>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
-
---------------050408050300090409070003
-Content-Type: text/x-patch;
- name="0001-ALSA-hda-Add-speaker-pin-to-automute-Acer-Aspire-894.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-ALSA-hda-Add-speaker-pin-to-automute-Acer-Aspire-894.pa";
- filename*1="tch"
-
->From 6491325b75dcfbd1c9db212fd6d653783b626e4d Mon Sep 17 00:00:00 2001
-From: Daniel T Chen <crimsun@ubuntu.com>
-Date: Sun, 10 Oct 2010 22:39:28 -0400
-Subject: [PATCH] ALSA: hda: Add speaker pin to automute Acer Aspire 8943G
-
-BugLink: https://bugs.launchpad.net/bugs/656625
-
-Add clause for handling Acer Aspire 8943G's subwoofer as additional
-speaker pin for automuting.
-
-Reported-by: RussianNeuroMancer
-Cc: stable@kernel.org
-Signed-off-by: Daniel T Chen <crimsun@ubuntu.com>
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |    8 ++++++++
- 1 files changed, 8 insertions(+), 0 deletions(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index b4e0959..c41ac30 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -19233,10 +19233,17 @@ static void alc662_auto_init(struct hda_codec *codec)
- }
- 
- enum {
-+	ALC662_FIXUP_ASPIRE,
- 	ALC662_FIXUP_IDEAPAD,
- };
- 
- static const struct alc_fixup alc662_fixups[] = {
-+	[ALC662_FIXUP_ASPIRE] = {
-+		.pins = (const struct alc_pincfg[]) {
-+			{ 0x15, 0x99130112 }, /* subwoofer */
-+			{ }
-+		}
-+	},
- 	[ALC662_FIXUP_IDEAPAD] = {
- 		.pins = (const struct alc_pincfg[]) {
- 			{ 0x17, 0x99130112 }, /* subwoofer */
-@@ -19246,6 +19253,7 @@ static const struct alc_fixup alc662_fixups[] = {
- };
- 
- static struct snd_pci_quirk alc662_fixup_tbl[] = {
-+	SND_PCI_QUIRK(0x1025, 0x038b, "Acer Aspire 8943G", ALC662_FIXUP_ASPIRE),
- 	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo Ideapad Y550P", ALC662_FIXUP_IDEAPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Ideapad Y550", ALC662_FIXUP_IDEAPAD),
- 	{}
--- 
-1.7.0.4
+Hi Alex,
 
 
---------------050408050300090409070003
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+"Alex" <lee188@singnet.com.sg> schrieb:
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>The current alsa rate feedback rate feedback format is
+>12.13 in 4 bytes.  Clemens has a patch to make the rate
+>feedback format automatic such that it will work with
+>10.14 16.16 or any other formats.  We are still testing the
+>patch put .  Currently with 12.13 format rate feedback
+>works well.
 
---------------050408050300090409070003--
+How does it come that alsa uses 12.13? I don't see that mentioned in the specs?
+Is it right or left aligned in the 4 bytes?
+
+>For example, AT91SAM7 has a limitation of EP siE of 64
+>bytes for EP 3 used for ISO transfers.  There may also be
+>a limitation in that the Same EP number cannot be used
+>for both IN and OUT.
+
+Hm, I'm not sure about this. You think I should move the feedback pipe into it's own EP?
+I will recheck the At91SAM7 specs later, to see if I can find a note on such a limitation.
+
+Thanks,
+Julian
