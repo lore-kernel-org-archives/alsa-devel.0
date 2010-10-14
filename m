@@ -1,19 +1,18 @@
-From: Ryan Mallon <ryan@bluewatersys.com>
-Subject: Re: [PATCH v3 2/3] ARM: ep93xx: add AC97 platform
-	support
-Date: Fri, 15 Oct 2010 08:56:18 +1300
-Message-ID: <4CB76062.3020904@bluewatersys.com>
-References: <cover.1287066937.git.mika.westerberg@iki.fi>
-	<14a8c7ea0482375fa32a022ea7e318ea4feae6f1.1287066937.git.mika.westerberg@iki.fi>
+From: Julian Scheel <julian@jusst.de>
+Subject: Re: USB asynchronous mode feedback format
+Date: Thu, 14 Oct 2010 22:14:23 +0200
+Message-ID: <201010142214.24155.julian@jusst.de>
+References: <1287046026.4cb6c38a2a179@discus.singnet.com.sg>
+	<201010141754.35809.julian@jusst.de> <20101014161123.GA28512@wok>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hayes.bluewaternz.com (mail.bluewatersys.com [202.124.120.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7C4EC2414D
+Received: from smtp2.work.de (smtp.work.de [212.12.45.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id DA897243E9
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Oct 2010 21:55:48 +0200 (CEST)
-In-Reply-To: <14a8c7ea0482375fa32a022ea7e318ea4feae6f1.1287066937.git.mika.westerberg@iki.fi>
+	Thu, 14 Oct 2010 22:14:25 +0200 (CEST)
+In-Reply-To: <20101014161123.GA28512@wok>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,100 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mika Westerberg <mika.westerberg@iki.fi>
-Cc: alsa-devel@alsa-project.org, martinwguy@gmail.com, broonie@opensource.wolfsonmicro.com, hsweeten@visionengravers.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
+Cc: lee188@singnet.com.sg, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/15/2010 03:49 AM, Mika Westerberg wrote:
-> Add platform support for the EP93xx AC97 controller driver.
+Am Donnerstag, 14. Oktober 2010, 18:11:23 schrieb Daniel Mack:
+> On Thu, Oct 14, 2010 at 05:54:35PM +0200, Julian Scheel wrote:
+> > Am Donnerstag, 14. Oktober 2010, 17:39:13 schrieb Daniel Mack:
+> > > What about the voltage levels? Are they within the specs? I had a quick
+> > > look and it seems that Vdd on the codec has to be within 3.0 .. 3.6V,
+> > > while the signals you provide rather seem to be in the range of 5V? The
+> > > absolute maximum ratings say that Vdd must not be greater than 4.0V.
+> > 
+> > This might indeed be an issue. The clock signals have about 5V level...
+> > The data coming from the uC still has 4.2V
+> > This might be too much... Stays the question how to lower the voltage
+> > properly there... Any suggestions?
 > 
-> Signed-off-by: Mika Westerberg <mika.westerberg@iki.fi>
-> ---
->  arch/arm/mach-ep93xx/core.c                     |   34 +++++++++++++++++++++++
->  arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h |    1 +
->  arch/arm/mach-ep93xx/include/mach/platform.h    |    1 +
->  3 files changed, 36 insertions(+), 0 deletions(-)
+> This get more and more off-topic for the ALSA community, but ...
 
-Looks good.
+Indeed sorry for that...
+ 
+> For the signals, use a voltage shifter, something like the 74LVC2T45.
+> For Vdd, if you have to provide that to the board, use a proper
+> switching power regulator with low ripple, or an LDO, and care well for
+> blocking.
 
-Acked-by: Ryan Mallon <ryan@bluewatersys.com>
+Even found an easier way, at least for the clock signals. As they are 
+generated from a 74HCT4060 right now they are 5V. Replacing it with a 74HC4060 
+(or 4040) will allow me to reduce Vcc to 3V, so that the output will match.
+Thanks anyway...
+ 
+> Also check whether the voltages you applied all the time could have
+> damaged the chip permanently.
 
-> diff --git a/arch/arm/mach-ep93xx/core.c b/arch/arm/mach-ep93xx/core.c
-> index 1990e22..ffdf87b 100644
-> --- a/arch/arm/mach-ep93xx/core.c
-> +++ b/arch/arm/mach-ep93xx/core.c
-> @@ -832,6 +832,40 @@ void ep93xx_i2s_release(void)
->  }
->  EXPORT_SYMBOL(ep93xx_i2s_release);
->  
-> +/*************************************************************************
-> + * EP93xx AC97 audio peripheral handling
-> + *************************************************************************/
-> +static struct resource ep93xx_ac97_resources[] = {
-> +	{
-> +		.start	= EP93XX_AAC_PHYS_BASE,
-> +		.end	= EP93XX_AAC_PHYS_BASE + 0xb0 - 1,
-> +		.flags	= IORESOURCE_MEM,
-> +	},
-> +	{
-> +		.start	= IRQ_EP93XX_AACINTR,
-> +		.end	= IRQ_EP93XX_AACINTR,
-> +		.flags	= IORESOURCE_IRQ,
-> +	},
-> +};
-> +
-> +static struct platform_device ep93xx_ac97_device = {
-> +	.name		= "ep93xx-ac97",
-> +	.id		= -1,
-> +	.num_resources	= ARRAY_SIZE(ep93xx_ac97_resources),
-> +	.resource	= ep93xx_ac97_resources,
-> +};
-> +
-> +void __init ep93xx_register_ac97(void)
-> +{
-> +	/*
-> +	 * Make sure that the AC97 pins are not used by I2S.
-> +	 */
-> +	ep93xx_devcfg_clear_bits(EP93XX_SYSCON_DEVCFG_I2SONAC97);
-> +
-> +	platform_device_register(&ep93xx_ac97_device);
-> +	platform_device_register(&ep93xx_pcm_device);
-> +}
-> +
->  extern void ep93xx_gpio_init(void);
->  
->  void __init ep93xx_init_devices(void)
-> diff --git a/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h b/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
-> index c54b3e5..9ac4d10 100644
-> --- a/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
-> +++ b/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
-> @@ -105,6 +105,7 @@
->  #define EP93XX_GPIO_B_INT_STATUS	EP93XX_GPIO_REG(0xbc)
->  #define EP93XX_GPIO_EEDRIVE		EP93XX_GPIO_REG(0xc8)
->  
-> +#define EP93XX_AAC_PHYS_BASE		EP93XX_APB_PHYS(0x00080000)
->  #define EP93XX_AAC_BASE			EP93XX_APB_IOMEM(0x00080000)
->  
->  #define EP93XX_SPI_PHYS_BASE		EP93XX_APB_PHYS(0x000a0000)
-> diff --git a/arch/arm/mach-ep93xx/include/mach/platform.h b/arch/arm/mach-ep93xx/include/mach/platform.h
-> index 3330b36..5066045 100644
-> --- a/arch/arm/mach-ep93xx/include/mach/platform.h
-> +++ b/arch/arm/mach-ep93xx/include/mach/platform.h
-> @@ -61,6 +61,7 @@ void ep93xx_keypad_release_gpio(struct platform_device *pdev);
->  void ep93xx_register_i2s(void);
->  int ep93xx_i2s_acquire(unsigned i2s_pins, unsigned i2s_config);
->  void ep93xx_i2s_release(void);
-> +void ep93xx_register_ac97(void);
->  
->  void ep93xx_init_devices(void);
->  extern struct sys_timer ep93xx_timer;
+Will check it... Have another board in backup for the worst case.
 
-
--- 
-Bluewater Systems Ltd - ARM Technology Solution Centre
-
-Ryan Mallon         		5 Amuri Park, 404 Barbadoes St
-ryan@bluewatersys.com         	PO Box 13 889, Christchurch 8013
-http://www.bluewatersys.com	New Zealand
-Phone: +64 3 3779127		Freecall: Australia 1800 148 751
-Fax:   +64 3 3779135			  USA 1800 261 2934
+Thanks so far... (c:
+Julian
