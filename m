@@ -1,22 +1,15 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: USB asynchronous mode feedback format
-Date: Thu, 14 Oct 2010 18:11:23 +0200
-Message-ID: <20101014161123.GA28512@wok>
-References: <1287046026.4cb6c38a2a179@discus.singnet.com.sg>
-	<201010141710.02194.julian@jusst.de> <20101014153912.GA28334@wok>
-	<201010141754.35809.julian@jusst.de>
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+Subject: [PATCH 1/2] sst: remove the kernel locking in ioctl
+Date: Thu, 14 Oct 2010 16:59:38 +0100
+Message-ID: <20101014155933.27495.51005.stgit@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id BA201243D8
+Received: from lxorguk.ukuu.org.uk (lxorguk.ukuu.org.uk [81.2.110.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7058024430
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Oct 2010 18:11:26 +0200 (CEST)
-Received: by fxm14 with SMTP id 14so2282921fxm.38
-	for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2010 09:11:26 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <201010141754.35809.julian@jusst.de>
+	Thu, 14 Oct 2010 18:51:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,30 +19,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Julian Scheel <julian@jusst.de>
-Cc: alsa-devel@alsa-project.org, lee188@singnet.com.sg, Daniel Mack <zonque@gmail.com>
+To: alsa-devel@alsa-project.org, greg@kroah.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 14, 2010 at 05:54:35PM +0200, Julian Scheel wrote:
-> Am Donnerstag, 14. Oktober 2010, 17:39:13 schrieb Daniel Mack:
-> > What about the voltage levels? Are they within the specs? I had a quick
-> > look and it seems that Vdd on the codec has to be within 3.0 .. 3.6V,
-> > while the signals you provide rather seem to be in the range of 5V? The
-> > absolute maximum ratings say that Vdd must not be greater than 4.0V.
-> 
-> This might indeed be an issue. The clock signals have about 5V level... The 
-> data coming from the uC still has 4.2V
-> This might be too much... Stays the question how to lower the voltage properly 
-> there... Any suggestions?
+From: Vinod Koul <vinod.koul@intel.com>
 
-This get more and more off-topic for the ALSA community, but ...
+kernel locking in ioctl was introduced when ioctl function was
+moved from ioctl to unlocked ioctl
+This is no longer required hence removed
 
-For the signals, use a voltage shifter, something like the 74LVC2T45.
-For Vdd, if you have to provide that to the board, use a proper
-switching power regulator with low ripple, or an LDO, and care well for
-blocking.
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Alan Cox <alan@linux.intel.com>
+---
 
-Also check whether the voltages you applied all the time could have
-damaged the chip permanently.
+ .../staging/intel_sst/intel_sst_app_interface.c    |    7 +------
+ 1 files changed, 1 insertions(+), 6 deletions(-)
 
-Daniel
+
+diff --git a/drivers/staging/intel_sst/intel_sst_app_interface.c b/drivers/staging/intel_sst/intel_sst_app_interface.c
+index baf0ddc..82768fa 100644
+--- a/drivers/staging/intel_sst/intel_sst_app_interface.c
++++ b/drivers/staging/intel_sst/intel_sst_app_interface.c
+@@ -812,8 +812,6 @@ long intel_sst_ioctl(struct file *file_ptr, unsigned int cmd, unsigned long arg)
+ 	struct ioctl_pvt_data *data = NULL;
+ 	int str_id = 0, minor = 0;
+ 
+-	lock_kernel();
+-
+ 	data = file_ptr->private_data;
+ 	if (data) {
+ 		minor = 0;
+@@ -821,10 +819,8 @@ long intel_sst_ioctl(struct file *file_ptr, unsigned int cmd, unsigned long arg)
+ 	} else
+ 		minor = 1;
+ 
+-	if (sst_drv_ctx->sst_state != SST_FW_RUNNING) {
+-		unlock_kernel();
++	if (sst_drv_ctx->sst_state != SST_FW_RUNNING)
+ 		return -EBUSY;
+-	}
+ 
+ 	switch (_IOC_NR(cmd)) {
+ 	case _IOC_NR(SNDRV_SST_STREAM_PAUSE):
+@@ -1227,7 +1223,6 @@ long intel_sst_ioctl(struct file *file_ptr, unsigned int cmd, unsigned long arg)
+ 	default:
+ 		retval = -EINVAL;
+ 	}
+-	unlock_kernel();
+ 	pr_debug("sst: intel_sst_ioctl:complete ret code = %d\n", retval);
+ 	return retval;
+ }
