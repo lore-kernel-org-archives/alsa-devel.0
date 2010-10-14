@@ -1,234 +1,125 @@
-From: Victor Rodriguez <vm.rod25@gmail.com>
-Subject: Re: [PATCH v3 1/9] davinci: EMAC support for
-	Omapl138-Hawkboard
-Date: Thu, 14 Oct 2010 16:44:08 -0500
-Message-ID: <AANLkTikaDB1Cf9T5W-ogbQgEvGpmhYjJ8YHa3UftFTjL@mail.gmail.com>
-References: <1287076899-4365-1-git-send-email-vm.rod25@gmail.com>
-	<4CB73AD5.2060907@mvista.com>
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+Subject: RE: [PATCH v3 2/3] ARM: ep93xx: add AC97 platform support
+Date: Thu, 14 Oct 2010 16:46:58 -0500
+Message-ID: <0D753D10438DA54287A00B02708426976450C42B0E@AUSP01VMBX24.collaborationhost.net>
+References: <cover.1287066937.git.mika.westerberg@iki.fi>
+	<14a8c7ea0482375fa32a022ea7e318ea4feae6f1.1287066937.git.mika.westerberg@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id E6FE11037EA
-	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Oct 2010 23:44:10 +0200 (CEST)
-Received: by gwaa20 with SMTP id a20so70119gwa.38
-	for <alsa-devel@alsa-project.org>; Thu, 14 Oct 2010 14:44:09 -0700 (PDT)
-In-Reply-To: <4CB73AD5.2060907@mvista.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sergei Shtylyov <sshtylyov@mvista.com>
-Cc: nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, khasim@ti.com, alsa-devel@alsa-project.org, caglarakyuz@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <14a8c7ea0482375fa32a022ea7e318ea4feae6f1.1287066937.git.mika.westerberg@iki.fi>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mika Westerberg <mika.westerberg@iki.fi>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "ryan@bluewatersys.com" <ryan@bluewatersys.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "martinwguy@gmail.com" <martinwguy@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 14, 2010 at 12:16 PM, Sergei Shtylyov <sshtylyov@mvista.com> wr=
-ote:
-> Hello.
+On Thursday, October 14, 2010 7:49 AM, Mika Westerberg wrote:
 >
-> On 10/14/10 21:21, vm.rod25@gmail.com wrote:
+> Add platform support for the EP93xx AC97 controller driver.
 >
->> From: Victor Rodriguez<vm.rod25@gmail.com>
+> Signed-off-by: Mika Westerberg <mika.westerberg@iki.fi>
+> ---
+>  arch/arm/mach-ep93xx/core.c                     |   34 +++++++++++++++++++++++
+>  arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h |    1 +
+>  arch/arm/mach-ep93xx/include/mach/platform.h    |    1 +
+>  3 files changed, 36 insertions(+), 0 deletions(-)
 >
->> This patch adds EMAC support for the Hawkboard-L138 system
->
->> Signed-off-by: Victor Rodriguez<victor.rodriguez@sasken.com>
->> ---
->> =A0arch/arm/mach-davinci/board-omapl138-hawk.c | =A0 49
->> +++++++++++++++++++++++++++
->> =A01 files changed, 49 insertions(+), 0 deletions(-)
->
->> diff --git a/arch/arm/mach-davinci/board-omapl138-hawk.c
->> b/arch/arm/mach-davinci/board-omapl138-hawk.c
->> index c472dd8..3ae5178 100644
->> --- a/arch/arm/mach-davinci/board-omapl138-hawk.c
->> +++ b/arch/arm/mach-davinci/board-omapl138-hawk.c
->> @@ -19,6 +19,53 @@
->>
->> =A0#include<mach/cp_intc.h>
->> =A0#include<mach/da8xx.h>
->> +#include<mach/mux.h>
->> +
->> +#define HAWKBOARD_PHY_ID =A0 =A0 =A0 =A0 =A0 =A0 =A0 "0:07"
->> +
->> +static short omapl138_hawk_mii_pins[] __initdata =3D {
->> + =A0 =A0 =A0 DA850_MII_TXEN, DA850_MII_TXCLK, DA850_MII_COL, DA850_MII_=
-TXD_3,
->> + =A0 =A0 =A0 DA850_MII_TXD_2, DA850_MII_TXD_1, DA850_MII_TXD_0, DA850_M=
-II_RXER,
->> + =A0 =A0 =A0 DA850_MII_CRS, DA850_MII_RXCLK, DA850_MII_RXDV, DA850_MII_=
-RXD_3,
->> + =A0 =A0 =A0 DA850_MII_RXD_2, DA850_MII_RXD_1, DA850_MII_RXD_0, DA850_M=
-DIO_CLK,
->> + =A0 =A0 =A0 DA850_MDIO_D,
->> + =A0 =A0 =A0 -1
->> +};
->> +
->> +static int __init omapl138_hawk_config_emac(void)
->> +{
->> + =A0 =A0 =A0 void __iomem *cfgchip3;
->> + =A0 =A0 =A0 int ret;
->> + =A0 =A0 =A0 u32 val;
->> + =A0 =A0 =A0 struct davinci_soc_info *soc_info =3D&davinci_soc_info;
->> +
->> + =A0 =A0 =A0 if (!machine_is_omapl138_hawkboard())
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
->> +
->> + =A0 =A0 =A0 cfgchip3 =3D DA8XSYSCFG0_VIRT(DA8XX_CFGCHIP3_REG);
->
-> =A0 Could be initializer...
+> diff --git a/arch/arm/mach-ep93xx/core.c b/arch/arm/mach-ep93xx/core.c
+> index 1990e22..ffdf87b 100644
+> --- a/arch/arm/mach-ep93xx/core.c
+> +++ b/arch/arm/mach-ep93xx/core.c
+> @@ -832,6 +832,40 @@ void ep93xx_i2s_release(void)
+>  }
+>  EXPORT_SYMBOL(ep93xx_i2s_release);
+>  
+> +/*************************************************************************
+> + * EP93xx AC97 audio peripheral handling
+> + *************************************************************************/
+> +static struct resource ep93xx_ac97_resources[] = {
+> +	{
+> +		.start	= EP93XX_AAC_PHYS_BASE,
+> +		.end	= EP93XX_AAC_PHYS_BASE + 0xb0 - 1,
 
+The last register in the AC97 peripheral is AC97GCIS at offset 0xa8.  So the
+end address should be:
 
-I do not understand this
+	.end	= EP93XX_AAC_PHYS_BASE + 0xac - 1,
 
+> +		.flags	= IORESOURCE_MEM,
+> +	},
+> +	{
+> +		.start	= IRQ_EP93XX_AACINTR,
+> +		.end	= IRQ_EP93XX_AACINTR,
+> +		.flags	= IORESOURCE_IRQ,
+> +	},
+> +};
+> +
+> +static struct platform_device ep93xx_ac97_device = {
+> +	.name		= "ep93xx-ac97",
+> +	.id		= -1,
+> +	.num_resources	= ARRAY_SIZE(ep93xx_ac97_resources),
+> +	.resource	= ep93xx_ac97_resources,
+> +};
+> +
+> +void __init ep93xx_register_ac97(void)
+> +{
+> +	/*
+> +	 * Make sure that the AC97 pins are not used by I2S.
+> +	 */
+> +	ep93xx_devcfg_clear_bits(EP93XX_SYSCON_DEVCFG_I2SONAC97);
 
->> + =A0 =A0 =A0 val =3D __raw_readl(cfgchip3);
->> +
->> + =A0 =A0 =A0 val &=3D ~BIT(8);
->> + =A0 =A0 =A0 ret =3D davinci_cfg_reg_list(omapl138_hawk_mii_pins);
->> + =A0 =A0 =A0 pr_info("EMAC: MII PHY configured\n");
->
-> =A0 I think this pr_info() should follow __raw_writel() call.
+This is fine for now.
 
+Eventually some thought should go into a proper iomux to prevent
+loading drivers with conflicting pin requirements.  Currently, depending
+on the configuration, this could break if a user should try to use the
+ac97 and i2s audio at the same time (I2SONAC97 mode).  But, the same
+problem already exists if a user tries using spi and i2s audio (I2SONSSP
+mode).
 
-Ok
+> +
+> +	platform_device_register(&ep93xx_ac97_device);
+> +	platform_device_register(&ep93xx_pcm_device);
+> +}
+> +
+>  extern void ep93xx_gpio_init(void);
+>  
+>  void __init ep93xx_init_devices(void)
+> diff --git a/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h b/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
+> index c54b3e5..9ac4d10 100644
+> --- a/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
+> +++ b/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
+> @@ -105,6 +105,7 @@
+>  #define EP93XX_GPIO_B_INT_STATUS	EP93XX_GPIO_REG(0xbc)
+>  #define EP93XX_GPIO_EEDRIVE		EP93XX_GPIO_REG(0xc8)
+>  
+> +#define EP93XX_AAC_PHYS_BASE		EP93XX_APB_PHYS(0x00080000)
+>  #define EP93XX_AAC_BASE			EP93XX_APB_IOMEM(0x00080000)
+>  
+>  #define EP93XX_SPI_PHYS_BASE		EP93XX_APB_PHYS(0x000a0000)
+> diff --git a/arch/arm/mach-ep93xx/include/mach/platform.h b/arch/arm/mach-ep93xx/include/mach/platform.h
+> index 3330b36..5066045 100644
+> --- a/arch/arm/mach-ep93xx/include/mach/platform.h
+> +++ b/arch/arm/mach-ep93xx/include/mach/platform.h
+> @@ -61,6 +61,7 @@ void ep93xx_keypad_release_gpio(struct platform_device *pdev);
+>  void ep93xx_register_i2s(void);
+>  int ep93xx_i2s_acquire(unsigned i2s_pins, unsigned i2s_config);
+>  void ep93xx_i2s_release(void);
+> +void ep93xx_register_ac97(void);
+>  
+>  void ep93xx_init_devices(void);
+>  extern struct sys_timer ep93xx_timer;
 
+Other than the end resource this all looks fine.
 
->> + =A0 =A0 =A0 if (ret)
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 pr_warning("%s: "
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 "cpgmac/mii mux setup fail=
-ed: %d\n", __func__,
->> ret);
->
-> =A0 You should return here.
->
->> +
->> + =A0 =A0 =A0 /* configure the CFGCHIP3 register for MII */
->> + =A0 =A0 =A0 __raw_writel(val, cfgchip3);
->> +
->> + =A0 =A0 =A0 soc_info->emac_pdata->phy_id =3D HAWKBOARD_PHY_ID;
->> +
->> + =A0 =A0 =A0 ret =3D da8xx_register_emac();
->> + =A0 =A0 =A0 if (ret)
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 pr_warning("%s: "
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 "emac registration failed:=
- %d\n", __func__, ret);
->> + =A0 =A0 =A0 return 0;
->
-> =A0 Why this function returns anything at all if it'a always 0, and the r=
-esult
-> is ignored?
->
->> @@ -30,6 +77,8 @@ static __init void omapl138_hawk_init(void)
->>
->> =A0 =A0 =A0 =A0davinci_serial_init(&omapl138_hawk_uart_config);
->>
->> + =A0 =A0 =A0 ret =3D omapl138_hawk_config_emac();
->
-> =A0 Why assign 'ret', if you're ignoring the result?
-
-
-Sorry my mistake I  forgot to check this, please check the nest patch
-maybe it is a better implementation
-
----
- arch/arm/mach-davinci/board-omapl138-hawk.c |   49 +++++++++++++++++++++++=
-++++
- 1 files changed, 49 insertions(+), 0 deletions(-)
-
-diff --git a/arch/arm/mach-davinci/board-omapl138-hawk.c
-b/arch/arm/mach-davinci/board-omapl138-hawk.c
-index c472dd8..35bcea1 100644
---- a/arch/arm/mach-davinci/board-omapl138-hawk.c
-+++ b/arch/arm/mach-davinci/board-omapl138-hawk.c
-@@ -19,6 +19,53 @@
-
- #include <mach/cp_intc.h>
- #include <mach/da8xx.h>
-+#include <mach/mux.h>
-+
-+#define HAWKBOARD_PHY_ID		"0:07"
-+
-+static short omapl138_hawk_mii_pins[] __initdata =3D {
-+	DA850_MII_TXEN, DA850_MII_TXCLK, DA850_MII_COL, DA850_MII_TXD_3,
-+	DA850_MII_TXD_2, DA850_MII_TXD_1, DA850_MII_TXD_0, DA850_MII_RXER,
-+	DA850_MII_CRS, DA850_MII_RXCLK, DA850_MII_RXDV, DA850_MII_RXD_3,
-+	DA850_MII_RXD_2, DA850_MII_RXD_1, DA850_MII_RXD_0, DA850_MDIO_CLK,
-+	DA850_MDIO_D,
-+	-1
-+};
-+
-+static __init void omapl138_hawk_config_emac(void)
-+{
-+	void __iomem *cfgchip3;
-+	int ret;
-+	u32 val;
-+	struct davinci_soc_info *soc_info =3D &davinci_soc_info;
-+
-+	if (!machine_is_omapl138_hawkboard())
-+			return;
-+
-+	cfgchip3 =3D DA8XX_SYSCFG0_VIRT(DA8XX_CFGCHIP3_REG);
-+
-+	val =3D __raw_readl(cfgchip3);
-+
-+	val &=3D ~BIT(8);
-+	ret =3D davinci_cfg_reg_list(omapl138_hawk_mii_pins);
-+	if (ret)
-+		pr_warning("%s: "
-+			"cpgmac/mii mux setup failed: %d\n", __func__, ret);
-+			return;
-+
-+	/* configure the CFGCHIP3 register for MII */
-+	__raw_writel(val, cfgchip3);
-+	pr_info("EMAC: MII PHY configured\n");
-+
-+	soc_info->emac_pdata->phy_id =3D HAWKBOARD_PHY_ID;
-+
-+	ret =3D da8xx_register_emac();
-+	if (ret)
-+		pr_warning("%s: "
-+			"emac registration failed: %d\n", __func__, ret);
-+			return;
-+}
-+
-
- static struct davinci_uart_config omapl138_hawk_uart_config __initdata =3D=
- {
- 	.enabled_uarts =3D 0x7,
-@@ -30,6 +77,8 @@ static __init void omapl138_hawk_init(void)
-
- 	davinci_serial_init(&omapl138_hawk_uart_config);
-
-+	omapl138_hawk_config_emac();
-+
- 	ret =3D da8xx_register_watchdog();
- 	if (ret)
- 		pr_warning("omapl138_hawk_init: "
--- =
-
-1.6.0.5
-
-
-
-Thanks for all
-
-Regards
-
-Victor Rodriguez
-
-
->> +
->> =A0 =A0 =A0 =A0ret =3D da8xx_register_watchdog();
->> =A0 =A0 =A0 =A0if (ret)
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0pr_warning("omapl138_hawk_init: "
->
-> WBR, Sergei
->
+Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
