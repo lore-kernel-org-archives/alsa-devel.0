@@ -1,10 +1,7 @@
 From: lee188@singnet.com.sg
 Subject: Re: USB asynchronous mode feedback format
-Date: Thu, 14 Oct 2010 16:46:34 +0800 (SGT)
-Message-ID: <1287045994.4cb6c36a7f8be@discus.singnet.com.sg>
-References: <201010131750.18897.julian@jusst.de>
-	<loom.20101014T031422-361@post.gmane.org>
-	<2021c8d0-f183-4739-a65c-703f3dfc5073@email.android.com>
+Date: Thu, 14 Oct 2010 16:47:06 +0800 (SGT)
+Message-ID: <1287046026.4cb6c38a2a179@discus.singnet.com.sg>
 Reply-To: lee188@singnet.com.sg
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,10 +9,9 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from comsmtp2.singnet.com.sg (comsmtp2.singnet.com.sg
 	[165.21.101.75])
-	by alsa0.perex.cz (Postfix) with ESMTP id B3976103B28
+	by alsa0.perex.cz (Postfix) with ESMTP id ADF0B103B29
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Oct 2010 10:46:51 +0200 (CEST)
-In-Reply-To: <2021c8d0-f183-4739-a65c-703f3dfc5073@email.android.com>
+	Thu, 14 Oct 2010 10:47:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
