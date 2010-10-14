@@ -1,16 +1,16 @@
 From: <vm.rod25@gmail.com>
-Subject: [PATCH v3 5/9] davinci: Audio support for
-	Omapl138-Hawkboard
-Date: Thu, 14 Oct 2010 12:22:52 -0500
-Message-ID: <1287076972-4458-1-git-send-email-vm.rod25@gmail.com>
+Subject: [PATCH v3 6/9] davinci: MMC/SD and USB-OHCI
+	configuration for Omapl138-Hawkboard
+Date: Thu, 14 Oct 2010 12:23:00 -0500
+Message-ID: <1287076980-4481-1-git-send-email-vm.rod25@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6C605103B96
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id D0E3D103BB1
 	for <alsa-devel@alsa-project.org>;
-	Thu, 14 Oct 2010 19:22:00 +0200 (CEST)
+	Thu, 14 Oct 2010 19:22:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,94 +26,44 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Victor Rodriguez <victor.rodriguez@sasken.com>
 
-This patch adds sound support for the Hawkboard-L138 system
+This patch defines Pin Mux configuration to enable MMC/SD
+and USB-OHCI on the Hawkboard-L138 system
 
 Signed-off-by: Victor Rodriguez <victor.rodriguez@sasken.com>
 ---
-Notes:
+ arch/arm/mach-davinci/da850.c            |    4 ++++
+ arch/arm/mach-davinci/include/mach/mux.h |    4 ++++
+ 2 files changed, 8 insertions(+), 0 deletions(-)
 
-This patch works with da8xx_omapl_defconfig
-
-In order to test ALSA utils select in menuconfig like insmodule:
-
-Sound card support  --->
-       Advanced Linux Sound Architecture  --->
-               ALSA for SoC audio support  --->
-               SoC Audio for the TI DAVINCI chip
-               SoC Audio support for DA850/OMAP-L138 EVM/Hawkboard
-
- arch/arm/mach-davinci/board-omapl138-hawk.c |   45 +++++++++++++++++++++++++++
- 1 files changed, 45 insertions(+), 0 deletions(-)
-
-diff --git a/arch/arm/mach-davinci/board-omapl138-hawk.c b/arch/arm/mach-davinci/board-omapl138-hawk.c
-index 358944b..c0a999a 100644
---- a/arch/arm/mach-davinci/board-omapl138-hawk.c
-+++ b/arch/arm/mach-davinci/board-omapl138-hawk.c
-@@ -13,6 +13,7 @@
- #include <linux/init.h>
- #include <linux/console.h>
- #include <linux/gpio.h>
-+#include <linux/i2c.h>
- 
- #include <asm/mach-types.h>
- #include <asm/mach/arch.h>
-@@ -116,6 +117,37 @@ static struct edma_rsv_info *da850_edma_rsv[2] = {
- 	&da850_edma_cc1_rsv,
+diff --git a/arch/arm/mach-davinci/da850.c b/arch/arm/mach-davinci/da850.c
+index f033a0a..646e8b2 100644
+--- a/arch/arm/mach-davinci/da850.c
++++ b/arch/arm/mach-davinci/da850.c
+@@ -548,6 +548,10 @@ static const struct mux_config da850_pins[] = {
+ 	MUX_CFG(DA850, GPIO2_15,	5,	0,	15,	8,	false)
+ 	MUX_CFG(DA850, GPIO4_0,		10,	28,	15,	8,	false)
+ 	MUX_CFG(DA850, GPIO4_1,		10,	24,	15,	8,	false)
++	MUX_CFG(DA850, GPIO3_12,	7,	12,	15,	8,	false)
++	MUX_CFG(DA850, GPIO3_13,	7,	8,	15,	8,	false)
++	MUX_CFG(DA850, GPIO2_4,		6,	12,	15,	8,	false)
++	MUX_CFG(DA850, GPIO6_13,	13,	8,	15,	8,	false)
+ 	MUX_CFG(DA850, RTC_ALARM,	0,	28,	15,	2,	false)
+ #endif
+ };
+diff --git a/arch/arm/mach-davinci/include/mach/mux.h b/arch/arm/mach-davinci/include/mach/mux.h
+index de11aac..f2c2117 100644
+--- a/arch/arm/mach-davinci/include/mach/mux.h
++++ b/arch/arm/mach-davinci/include/mach/mux.h
+@@ -913,6 +913,10 @@ enum davinci_da850_index {
+ 	DA850_GPIO2_15,
+ 	DA850_GPIO4_0,
+ 	DA850_GPIO4_1,
++	DA850_GPIO3_12,
++	DA850_GPIO3_13,
++	DA850_GPIO2_4,
++	DA850_GPIO6_13,
+ 	DA850_RTC_ALARM,
  };
  
-+static struct i2c_board_info __initdata omapl138_hawk_i2c_devices[] = {
-+	{
-+		I2C_BOARD_INFO("tlv320aic3x", 0x18),
-+	},
-+};
-+
-+static struct davinci_i2c_platform_data omapl138_hawk_i2c_0_pdata = {
-+	.bus_freq	= 100,	/* kHz */
-+	.bus_delay	= 0,	/* usec */
-+};
-+
-+/* davinci Hawkboard audio machine driver */
-+static u8 da850_iis_serializer_direction[] = {
-+	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
-+	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
-+	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
-+	INACTIVE_MODE,	TX_MODE,	RX_MODE,	INACTIVE_MODE,
-+};
-+
-+static struct snd_platform_data omapl138_hawk_snd_data = {
-+	.tx_dma_offset	= 0x2000,
-+	.rx_dma_offset	= 0x2000,
-+	.op_mode	= DAVINCI_MCASP_IIS_MODE,
-+	.num_serializer	= ARRAY_SIZE(da850_iis_serializer_direction),
-+	.tdm_slots	= 2,
-+	.serial_dir	= da850_iis_serializer_direction,
-+	.asp_chan_q	= EVENTQ_1,
-+	.version	= MCASP_VERSION_2,
-+	.txnumevt	= 1,
-+	.rxnumevt	= 1,
-+};
- 
- static struct davinci_uart_config omapl138_hawk_uart_config __initdata = {
- 	.enabled_uarts = 0x7,
-@@ -134,6 +166,19 @@ static __init void omapl138_hawk_init(void)
- 
- 	ret = omapl138_hawk_config_emac();
- 
-+	i2c_register_board_info(1, omapl138_hawk_i2c_devices,
-+			ARRAY_SIZE(omapl138_hawk_i2c_devices));
-+
-+	ret = da8xx_register_i2c(0, &omapl138_hawk_i2c_0_pdata);
-+	if (ret)
-+		pr_warning("%s: i2c0 registration failed: %d\n",
-+			__func__, ret);
-+
-+	ret = davinci_cfg_reg_list(da850_mcasp_pins);
-+	if (ret)
-+		pr_warning("%s: mcasp mux setup failed: %d\n", __func__, ret);
-+	da8xx_register_mcasp(0, &omapl138_hawk_snd_data);
-+
- 	ret = da8xx_register_watchdog();
- 	if (ret)
- 		pr_warning("omapl138_hawk_init: "
 -- 
 1.6.0.5
