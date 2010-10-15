@@ -1,20 +1,25 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 1/7] [RFC] OMAP: MCBSP: hwmod database for
-	2xxx devices
-Date: Fri, 15 Oct 2010 10:13:49 +0300
-Message-ID: <201010151013.49990.peter.ujfalusi@nokia.com>
-References: <1286296662-7639-1-git-send-email-kishon@ti.com>
-	<201010131131.49967.peter.ujfalusi@nokia.com>
-	<EAF47CD23C76F840A9E7FCE10091EFAB030D09A248@dbde02.ent.ti.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Need expert's advice - Fast Track Ultra (8R)
+ dropping samples
+Date: Fri, 15 Oct 2010 09:23:15 +0200
+Message-ID: <4CB80163.5060107@ladisch.de>
+References: <4CAAD212.9090805@ladisch.de> <4CAC804A.8040806@showlabor.de>
+	<4CAC89EA.8080207@ladisch.de> <4CACA471.2000504@showlabor.de>
+	<4CAD6AA2.4050205@ladisch.de>
+	<20101007081010.GZ7159@buzzloop.caiaq.de>
+	<4CADB077.3060907@showlabor.de> <4CAEB9AC.1060208@ladisch.de>
+	<20101012071831.GA7159@buzzloop.caiaq.de>
+	<4CB419D0.70808@showlabor.de>
+	<20101012102600.GB7159@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa01.nokia.com (smtp.nokia.com [147.243.1.47])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8BDE710388A
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 3A78C103BBA
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Oct 2010 09:13:54 +0200 (CEST)
-In-Reply-To: <EAF47CD23C76F840A9E7FCE10091EFAB030D09A248@dbde02.ent.ti.com>
+	Fri, 15 Oct 2010 09:21:55 +0200 (CEST)
+In-Reply-To: <20101012102600.GB7159@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,134 +29,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext Varadarajan, Charulatha" <charu@ti.com>
-Cc: "Girdwood, Liam" <x0135381@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Kamat, Nishant" <nskamat@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "ABRAHAM,
-	KISHON VIJAY" <kishon@ti.com>, "Basak, Partha" <p-basak2@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Datta, Shubhrajyoti" <shubhrajyoti@ti.com>
+To: Daniel Mack <daniel@caiaq.de>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Felix Homann <linuxaudio@showlabor.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 14 October 2010 17:51:15 ext Varadarajan, Charulatha wrote:
+Daniel Mack wrote:
+> > > I have an untested patch ready which should add support for implicit
+> > > feedback, but I'm uncertain about the condition when to activate this
+> > > mode.
 
-> > Yes, this need to be fixed, but it can be done later, it does
-> > not need to be
-> > part of the hwmod series.
-> =
+For UAC2 devices, when the descriptors say so.
+For UAC1 devices, never (because UAC1 does not have this mode).
+It looks as if all UAC1-like devices that need this are actually marked
+as vendor-specific, so we have quirks for them anyway.
 
-> Okay.
+> I attached a patch below, only compile-tested. Please also check the USB
+> ID again, as I'm not sure whether you sent the right lsusb dump (the
+> device name looks suspicious).
 
-This problem there for a long time, and so far no one complained, or fixed =
-it.
-Probably there are no users for pollread/write at all, but I would not remo=
-ve =
+The actual device name is correct; the "DFU" was taken by lsusb from the
+usb.ids file and is wrong.  (I've submitted the correct name.)
 
-the functionality. It is better to fix them later.
- =
+>  static int snd_usb_audio_next_packet_size(struct snd_usb_substream *subs)
+>  {
+> +		frames = min(capture->frame_count, subs->maxframesize);
+> +		capture->frame_count -= frames;
 
-> > > 2. DMA transfers would also not work as it requires a patch
-> > =
+This assumes that both streams are running continuously, and you have to
+make sure to start them at the same time to prevent the frame_count from
+overflowing or underflowing.  In my UA-101 driver, I ensure that the
+buffer fill level is the same for both streams by submitting each
+playback packet with the same frame count as the corresponding capture
+packet; but I'm not sure which algorithm is more robust in practice.
 
-> > similar to [y].
-> > =
+> +		/* if this stream is in implicit feedback mode, start the
+> +		 * capture stream now as the playback stream relies on the
+> +		 * amount of data we see on the capture IN endpoint.
+> +		 */
+> +		if (subs->stream->implicit_feedback && !capture->running) {
+> +			int ret;
+> +			capture->ops.retire = retire_paused_capture_urb;
 
-> > Well, this patch was sent in 2008. nowdays we moved the OMAP
-> > audio support to
-> > ASoC, and there are no 'legacy' ALSA arm/omap drivers anymore.
-> > In ASoC the cpu_dai and the platform drivers are separate things.
-> > This allows us to use the same platform driver (omap-pcm) for
-> > McBSp, McPDM (and
-> > in theory we could have OMAP2 EAC) cpu_dai drivers without
-> > duplicating code.
-> > As a note: most of the features this patch was trying to
-> > implement is already
-> > done for the ASoC implementation, but if there is need for
-> > new features, it has
-> > to be done using the ASoC framework.
-> =
+set_interface?
 
-> If we do this, would it not contradict the idea of keeping the door
-> open for others to use the McBSP ports?
+> +			ret = start_urbs(capture, runtime);
+> +			if (ret)
+> +				return ret;
+> +		}
+> +
+>  		return start_urbs(subs, runtime);
 
-Why? If you add support for different sample formats to ASoC, it will not c=
-hange =
+I think you have to wait for the first capture packet to be received
+before you can start submitting playback URBs.
 
-anything.
- =
 
-> If other users should be allowed to use McBSP ports, it is good to
-> have DMA support in plat-omap/mcbsp.c itself and modify the asoc
-> implementation to take advantage of the proposed new mcbsp
-> design. If agreed, this shall be addressed later. Please let
-> me know your thoughts on this.
-
-What I mean is that later we could add DMA transfer functionality if there =
-is a =
-
-need, but at the moment I don't see any reason to do that.
-Also moving the DMA functionality to plat-omap/mcbsp.c would require quite =
-a big =
-
-change in there, and as well in the ASoC code. On top of that we will broke=
- the =
-
-sound/soc/omap/omap-pcm.c to be McBSP independent, and that is one of the m=
-ain =
-
-points here. We are using omap-pcm.c with McBSP and McPDM dai drivers. That=
- has =
-
-to remain the same.
-In the future we can implement DMA transfer capabilities to mcbsp.
-I would not do this as part of hwmod either.
-I think such an extension to the current McBSP code is only needed if/when =
-we =
-
-have other users for McBSP than audio.
-
-> > > Coming back to the original question. Either we need to fix
-> > =
-
-> > the broken
-> > =
-
-> > > legacy mcbsp driver or move the omap-mcbsp driver completely to asoc
-> > > layer. What do you say?
-> > =
-
-> > I would keep the partitioning same as it is now.
-> =
-
-> Okay.
-> =
-
-> > If there is a reason we can add bus driver functionality to
-> > McBSP,
-> =
-
-> Can you elaborate? mcbsp driver is already following platform bus
-> device model.
-
-I meant adding DMA functionality to McBSP. I would not worry about this at =
-this =
-
-time.
-
-> =
-
-> > but at the
-> > moment there is no need for that.
-> =
-
-> For testing any changes in mcbsp driver (including hwmod), we are
-> relying on internal patches (dma/pollmode patches). Instead, if
-> mcbsp dma support is available in the driver itself, it would be
-> useful for bug fixing/development activities.
-
-You should use audio (ASoC) for verification, for example Beagle, or other =
-
-board. I would say that the audio support is solid on OMAP platforms, and t=
-hat =
-
-is the main thing which must work after hwmod conversion.
-
--- =
-
-P=E9ter
+Regards,
+Clemens
