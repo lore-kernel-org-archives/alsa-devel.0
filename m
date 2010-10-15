@@ -1,25 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] sound/soc/codecs/wm8994.c: Remove unused
-	vol
-Date: Fri, 15 Oct 2010 11:39:23 +0100
-Message-ID: <20101015103923.GE14782@rakim.wolfsonmicro.main>
-References: <B2150E1E4418E1438554A300EA5040E40D469C124D@ITSVLEX06.it.maxim-ic.internal>
-	<B2150E1E4418E1438554A300EA5040E40D469C124F@ITSVLEX06.it.maxim-ic.internal>
-	<1286934472.1117.129.camel@Joe-Laptop>
-	<20101013082414.GD6424@rakim.wolfsonmicro.main>
-	<1286971846.1117.191.camel@Joe-Laptop>
-	<20101013123301.GL6424@rakim.wolfsonmicro.main>
-	<1286983191.1117.338.camel@Joe-Laptop>
+Subject: Re: [PATCH v3 0/3] ASoC AC97 audio support for ep93xx
+Date: Fri, 15 Oct 2010 11:39:43 +0100
+Message-ID: <20101015103943.GF14782@rakim.wolfsonmicro.main>
+References: <cover.1287066937.git.mika.westerberg@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4313B103C43
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E1C4D103C3F
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Oct 2010 12:39:25 +0200 (CEST)
+	Fri, 15 Oct 2010 12:39:44 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1286983191.1117.338.camel@Joe-Laptop>
+In-Reply-To: <cover.1287066937.git.mika.westerberg@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,14 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joe Perches <joe@perches.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Peter Hsiang <Peter.Hsiang@maxim-ic.com>, Jesse Marroquin <Jesse.Marroquin@maxim-ic.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mika Westerberg <mika.westerberg@iki.fi>
+Cc: alsa-devel@alsa-project.org, martinwguy@gmail.com, hsweeten@visionengravers.com, ryan@bluewatersys.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 13, 2010 at 08:19:51AM -0700, Joe Perches wrote:
-> Remove unused vol from struct access_mask
+On Thu, Oct 14, 2010 at 05:49:05PM +0300, Mika Westerberg wrote:
 
-Applied, thanks.
+> This series adds AC97 audio support for Cirrus Logic EP93xx family SoCs. Example
+> machine driver is for Simplemachines Sim.One (which is the only hardware that I
+> have which has AC97 codec).
 
-Please try to use subject lines for your patches consistent with the
-rest of the subsystem.
+Applied all, thanks.
