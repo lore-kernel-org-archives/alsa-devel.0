@@ -1,15 +1,15 @@
 From: <vm.rod25@gmail.com>
-Subject: [PATCH v4 6/9] davinci: MMC/SD and USB-OHCI
-	configuration for Omapl138-Hawkboard
-Date: Thu, 14 Oct 2010 22:08:22 -0500
-Message-ID: <1287112105-11968-7-git-send-email-vm.rod25@gmail.com>
+Subject: [PATCH v4 3/9] davinci: ASoC support for
+	Omapl138-Hawkboard
+Date: Thu, 14 Oct 2010 22:08:19 -0500
+Message-ID: <1287112105-11968-4-git-send-email-vm.rod25@gmail.com>
 References: <1287112105-11968-1-git-send-email-vm.rod25@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 11401103BB0
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id CD4E81037F5
 	for <alsa-devel@alsa-project.org>;
 	Fri, 15 Oct 2010 05:07:40 +0200 (CEST)
 In-Reply-To: <1287112105-11968-1-git-send-email-vm.rod25@gmail.com>
@@ -28,54 +28,53 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Victor Rodriguez <victor.rodriguez@sasken.com>
 
-This patch defines Pin Mux configuration to enable MMC/SD
-and USB-OHCI on the Hawkboard-L138 system
+This patch adds ASoC support for the Hawkboard-L138 system
 
 Signed-off-by: Victor Rodriguez <victor.rodriguez@sasken.com>
 ---
- arch/arm/mach-davinci/da850.c            |    4 ++++
- arch/arm/mach-davinci/include/mach/mux.h |    4 ++++
- 2 files changed, 8 insertions(+), 0 deletions(-)
+ sound/soc/davinci/Kconfig       |    5 +++--
+ sound/soc/davinci/davinci-evm.c |    6 ++++--
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/mach-davinci/da850.c b/arch/arm/mach-davinci/da850.c
-index f033a0a..4458bff 100644
---- a/arch/arm/mach-davinci/da850.c
-+++ b/arch/arm/mach-davinci/da850.c
-@@ -543,11 +543,15 @@ static const struct mux_config da850_pins[] = {
- 	MUX_CFG(DA850, EMA_WAIT_1,	6,	24,	15,	1,	false)
- 	MUX_CFG(DA850, NEMA_CS_2,	7,	0,	15,	1,	false)
- 	/* GPIO function */
-+	MUX_CFG(DA850, GPIO2_4,		6,	12,	15,	8,	false)
- 	MUX_CFG(DA850, GPIO2_6,		6,	4,	15,	8,	false)
- 	MUX_CFG(DA850, GPIO2_8,		5,	28,	15,	8,	false)
- 	MUX_CFG(DA850, GPIO2_15,	5,	0,	15,	8,	false)
-+	MUX_CFG(DA850, GPIO3_12,	7,	12,	15,	8,	false)
-+	MUX_CFG(DA850, GPIO3_13,	7,	8,	15,	8,	false)
- 	MUX_CFG(DA850, GPIO4_0,		10,	28,	15,	8,	false)
- 	MUX_CFG(DA850, GPIO4_1,		10,	24,	15,	8,	false)
-+	MUX_CFG(DA850, GPIO6_13,	13,	8,	15,	8,	false)
- 	MUX_CFG(DA850, RTC_ALARM,	0,	28,	15,	2,	false)
- #endif
- };
-diff --git a/arch/arm/mach-davinci/include/mach/mux.h b/arch/arm/mach-davinci/include/mach/mux.h
-index de11aac..5d4e0fe 100644
---- a/arch/arm/mach-davinci/include/mach/mux.h
-+++ b/arch/arm/mach-davinci/include/mach/mux.h
-@@ -908,11 +908,15 @@ enum davinci_da850_index {
- 	DA850_NEMA_CS_2,
+diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+index 6bbf001..72c6752 100644
+--- a/sound/soc/davinci/Kconfig
++++ b/sound/soc/davinci/Kconfig
+@@ -76,8 +76,9 @@ config  SND_DA830_SOC_EVM
+ 	  DA830/OMAP-L137 EVM
  
- 	/* GPIO function */
-+	DA850_GPIO2_4,
- 	DA850_GPIO2_6,
- 	DA850_GPIO2_8,
- 	DA850_GPIO2_15,
-+	DA850_GPIO3_12,
-+	DA850_GPIO3_13,
- 	DA850_GPIO4_0,
- 	DA850_GPIO4_1,
-+	DA850_GPIO6_13,
- 	DA850_RTC_ALARM,
- };
+ config  SND_DA850_SOC_EVM
+-	tristate "SoC Audio support for DA850/OMAP-L138 EVM"
+-	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DA850_EVM
++	tristate "SoC Audio support for DA850/OMAP-L138 EVM/Hawkboard"
++	depends on SND_DAVINCI_SOC && (MACH_DAVINCI_DA850_EVM || \
++			MACH_OMAPL138_HAWKBOARD)
+ 	select SND_DAVINCI_SOC_MCASP
+ 	select SND_SOC_TLV320AIC3X
+ 	help
+diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
+index 97f74d6..73093eb 100644
+--- a/sound/soc/davinci/davinci-evm.c
++++ b/sound/soc/davinci/davinci-evm.c
+@@ -59,7 +59,8 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
+ 		sysclk = 12288000;
  
+ 	else if (machine_is_davinci_da830_evm() ||
+-				machine_is_davinci_da850_evm())
++				machine_is_davinci_da850_evm() ||
++				machine_is_omapl138_hawkboard())
+ 		sysclk = 24576000;
+ 
+ 	else
+@@ -311,7 +312,8 @@ static int __init evm_init(void)
+ 	} else if (machine_is_davinci_da830_evm()) {
+ 		evm_snd_dev_data = &da830_evm_snd_devdata;
+ 		index = 1;
+-	} else if (machine_is_davinci_da850_evm()) {
++	} else if (machine_is_davinci_da850_evm() ||
++			machine_is_omapl138_hawkboard()) {
+ 		evm_snd_dev_data = &da850_evm_snd_devdata;
+ 		index = 0;
+ 	} else
 -- 
 1.6.0.5
