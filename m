@@ -1,15 +1,15 @@
 From: <vm.rod25@gmail.com>
-Subject: [PATCH v4 3/9] davinci: ASoC support for
-	Omapl138-Hawkboard
-Date: Thu, 14 Oct 2010 22:08:19 -0500
-Message-ID: <1287112105-11968-4-git-send-email-vm.rod25@gmail.com>
+Subject: [PATCH v4 7/9] davinci: MMC/SD support for
+	Omapl138-Hawkboar
+Date: Thu, 14 Oct 2010 22:08:23 -0500
+Message-ID: <1287112105-11968-8-git-send-email-vm.rod25@gmail.com>
 References: <1287112105-11968-1-git-send-email-vm.rod25@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id CD4E81037F5
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 01EE9103893
 	for <alsa-devel@alsa-project.org>;
 	Fri, 15 Oct 2010 05:07:40 +0200 (CEST)
 In-Reply-To: <1287112105-11968-1-git-send-email-vm.rod25@gmail.com>
@@ -28,53 +28,97 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Victor Rodriguez <victor.rodriguez@sasken.com>
 
-This patch adds ASoC support for the Hawkboard-L138 system
+This patch adds MMC/SD support for the Hawkboard-L138 system
 
 Signed-off-by: Victor Rodriguez <victor.rodriguez@sasken.com>
 ---
- sound/soc/davinci/Kconfig       |    5 +++--
- sound/soc/davinci/davinci-evm.c |    6 ++++--
- 2 files changed, 7 insertions(+), 4 deletions(-)
+Notes:
 
-diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
-index 6bbf001..72c6752 100644
---- a/sound/soc/davinci/Kconfig
-+++ b/sound/soc/davinci/Kconfig
-@@ -76,8 +76,9 @@ config  SND_DA830_SOC_EVM
- 	  DA830/OMAP-L137 EVM
+This patch works with da8xx_omapl_defconfig
+In order to test it select in menuconfig like insmodule
+
+MMC/SD/SDIO card support  --->
+      MMC block device driver
+      Use bounce buffer for simple hosts
+      TI DAVINCI Multimedia Card Interface support
+
+ arch/arm/mach-davinci/board-omapl138-hawk.c |   50 +++++++++++++++++++++++++++
+ 1 files changed, 50 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-davinci/board-omapl138-hawk.c b/arch/arm/mach-davinci/board-omapl138-hawk.c
+index 6f76220..87dea28 100644
+--- a/arch/arm/mach-davinci/board-omapl138-hawk.c
++++ b/arch/arm/mach-davinci/board-omapl138-hawk.c
+@@ -23,6 +23,8 @@
+ #include <mach/mux.h>
  
- config  SND_DA850_SOC_EVM
--	tristate "SoC Audio support for DA850/OMAP-L138 EVM"
--	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DA850_EVM
-+	tristate "SoC Audio support for DA850/OMAP-L138 EVM/Hawkboard"
-+	depends on SND_DAVINCI_SOC && (MACH_DAVINCI_DA850_EVM || \
-+			MACH_OMAPL138_HAWKBOARD)
- 	select SND_DAVINCI_SOC_MCASP
- 	select SND_SOC_TLV320AIC3X
- 	help
-diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
-index 97f74d6..73093eb 100644
---- a/sound/soc/davinci/davinci-evm.c
-+++ b/sound/soc/davinci/davinci-evm.c
-@@ -59,7 +59,8 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
- 		sysclk = 12288000;
+ #define HAWKBOARD_PHY_ID		"0:07"
++#define DA850_HAWK_MMCSD_CD_PIN		GPIO_TO_PIN(3, 12)
++#define DA850_HAWK_MMCSD_WP_PIN		GPIO_TO_PIN(3, 13)
  
- 	else if (machine_is_davinci_da830_evm() ||
--				machine_is_davinci_da850_evm())
-+				machine_is_davinci_da850_evm() ||
-+				machine_is_omapl138_hawkboard())
- 		sysclk = 24576000;
+ static short omapl138_hawk_mii_pins[] __initdata = {
+ 	DA850_MII_TXEN, DA850_MII_TXCLK, DA850_MII_COL, DA850_MII_TXD_3,
+@@ -150,6 +152,32 @@ static struct snd_platform_data omapl138_hawk_snd_data = {
+ 	.rxnumevt	= 1,
+ };
  
- 	else
-@@ -311,7 +312,8 @@ static int __init evm_init(void)
- 	} else if (machine_is_davinci_da830_evm()) {
- 		evm_snd_dev_data = &da830_evm_snd_devdata;
- 		index = 1;
--	} else if (machine_is_davinci_da850_evm()) {
-+	} else if (machine_is_davinci_da850_evm() ||
-+			machine_is_omapl138_hawkboard()) {
- 		evm_snd_dev_data = &da850_evm_snd_devdata;
- 		index = 0;
- 	} else
++static const short hawk_mmcsd0_pins[] = {
++	DA850_MMCSD0_DAT_0, DA850_MMCSD0_DAT_1, DA850_MMCSD0_DAT_2,
++	DA850_MMCSD0_DAT_3, DA850_MMCSD0_CLK, DA850_MMCSD0_CMD,
++	DA850_GPIO3_12, DA850_GPIO3_13,
++	-1
++};
++
++static int da850_hawk_mmc_get_ro(int index)
++{
++	return gpio_get_value(DA850_HAWK_MMCSD_WP_PIN);
++}
++
++static int da850_hawk_mmc_get_cd(int index)
++{
++	return !gpio_get_value(DA850_HAWK_MMCSD_CD_PIN);
++}
++
++static struct davinci_mmc_config da850_mmc_config = {
++	.get_ro		= da850_hawk_mmc_get_ro,
++	.get_cd		= da850_hawk_mmc_get_cd,
++	.wires		= 4,
++	.max_freq	= 50000000,
++	.caps		= MMC_CAP_MMC_HIGHSPEED | MMC_CAP_SD_HIGHSPEED,
++	.version	= MMC_CTLR_VERSION_2,
++};
++
+ static struct davinci_uart_config omapl138_hawk_uart_config __initdata = {
+ 	.enabled_uarts = 0x7,
+ };
+@@ -180,6 +208,28 @@ static __init void omapl138_hawk_init(void)
+ 		pr_warning("%s: mcasp mux setup failed: %d\n", __func__, ret);
+ 	da8xx_register_mcasp(0, &omapl138_hawk_snd_data);
+ 
++	ret = davinci_cfg_reg_list(hawk_mmcsd0_pins);
++	if (ret)
++		pr_warning("%s: MMC/SD0 mux setup failed: %d\n",
++			__func__, ret);
++
++	ret = gpio_request(DA850_HAWK_MMCSD_CD_PIN, "MMC CD\n");
++	if (ret)
++		pr_warning("%s: can not open GPIO %d\n",
++			__func__, DA850_HAWK_MMCSD_CD_PIN);
++	gpio_direction_input(DA850_HAWK_MMCSD_CD_PIN);
++
++	ret = gpio_request(DA850_HAWK_MMCSD_WP_PIN, "MMC WP\n");
++	if (ret)
++		pr_warning("%s: can not open GPIO %d\n",
++			__func__, DA850_HAWK_MMCSD_WP_PIN);
++	gpio_direction_input(DA850_HAWK_MMCSD_WP_PIN);
++
++	ret = da8xx_register_mmcsd0(&da850_mmc_config);
++	if (ret)
++		pr_warning("%s: MMC/SD0 registration failed: %d\n",
++			__func__, ret);
++
+ 	ret = da8xx_register_watchdog();
+ 	if (ret)
+ 		pr_warning("omapl138_hawk_init: "
 -- 
 1.6.0.5
