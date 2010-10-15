@@ -1,19 +1,22 @@
-From: Julian Scheel <julian@jusst.de>
-Subject: Re: USB asynchronous mode feedback format
-Date: Fri, 15 Oct 2010 19:19:41 +0200
-Message-ID: <201010151919.41810.julian@jusst.de>
-References: <1287046026.4cb6c38a2a179@discus.singnet.com.sg>
-	<1287153698.3730.7.camel@laptop-alex>
-	<201010151916.26003.julian@jusst.de>
+From: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
+Subject: Re: [PATCH] ASoC: Add max98088 CODEC driver
+Date: Fri, 15 Oct 2010 10:23:14 -0700
+Message-ID: <B2150E1E4418E1438554A300EA5040E40D47140467@ITSVLEX06.it.maxim-ic.internal>
+References: <B2150E1E4418E1438554A300EA5040E40D469C124D@ITSVLEX06.it.maxim-ic.internal>
+	<B2150E1E4418E1438554A300EA5040E40D469C124F@ITSVLEX06.it.maxim-ic.internal>
+	<B2150E1E4418E1438554A300EA5040E40D469C1251@ITSVLEX06.it.maxim-ic.internal>
+	<20101015105527.GH14782@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2.work.de (smtp.work.de [212.12.45.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id C71CA1038C1
+Received: from antispam02.maxim-ic.com.maxim-ic.com (antispam02.maxim-ic.com
+	[205.153.101.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 49F37103C5C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 15 Oct 2010 19:19:43 +0200 (CEST)
-In-Reply-To: <201010151916.26003.julian@jusst.de>
+	Fri, 15 Oct 2010 19:22:54 +0200 (CEST)
+In-Reply-To: <20101015105527.GH14782@rakim.wolfsonmicro.main>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,54 +26,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Alex Lee <lee188@singnet.com.sg>, Daniel Mack <daniel@caiaq.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jesse@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Marroquin <Jesse.Marroquin@maxim-ic.com>, Liam@alsa-project.org, Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Am Freitag, 15. Oktober 2010, 19:16:25 schrieb Julian Scheel:
-> Am Freitag, 15. Oktober 2010, 16:41:38 schrieb Alex Lee:
-> > On Fri, 2010-10-15 at 16:24 +0200, Julian Scheel wrote:
-> > > Don't see any syncpipe related errors. Only thing I see is:
-> > > usb 1-1.3: new full speed USB device using ehci_hcd and address 11
-> > > 11:1:1: endpoint lacks sample rate attribute bit, cannot set.
-> > > 11:1:1: endpoint lacks sample rate attribute bit, cannot set.
-> > > 
-> > > Does not seem to be feedback related... Although it would be nice to
-> > > know, what's wrong there?
-> > 
-> > You probably need to fix that sample rate attribute bit for rate
-> > feedback to work.
-> > 
-> > It is in the bmAttribute of the
-> > 
-> > 	//Audio endpoint specific descriptor
-> > 
-> > #define AUDIO_EP_ATRIBUTES	UAC_EP_CS_ATTR_SAMPLE_RATE	 // sampling freq,
-> > no pitch, no pading
-> > 
-> > #define AUDIO_EP_DELAY_UNIT	0x00	 	// Unused
-> > #define AUDIO_EP_LOCK_DELAY	0x0000		// Unused
+On Friday, Oct 15, 2010, Mark Brown wrote:
+> On Wed, Oct 13, 2010 at 08:30:43PM -0700, Peter Hsiang wrote:
+> > This patch adds the MAX98088 CODEC driver.
+> >
+> > Signed-off-by: Peter Hsiang <peter.hsiang@maxim-ic.com>
 > 
-> You mean in the class specific endpoint descriptor for the audio streaming
-> endpoint?
-> Actually I added it there (bmAttributes = 0x01), but this stops alsa from
-> detecting the device at all. Attaches is the new lsusb out.
+> Applied, thanks.
 
-Correcting myself. It detects the card, but playback is not possible anymore:
-
-LC_ALL=en speaker-test -Dusb -c 2 -t sine -f 1000
-
-speaker-test 1.0.23
-
-Playback device is usb
-Stream parameters are 48000Hz, S16_LE, 2 channels
-Sine wave rate is 1000.0000Hz
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 96 to 262144
-Period size range from 48 to 131072
-Using max buffer size 262144
-Periods = 4
-Unable to set hw params for playback: Broken pipe
-Setting of hwparams failed: Broken pipe
-
-Is this a hint to not-working feedback? (c:
+Thanks!
