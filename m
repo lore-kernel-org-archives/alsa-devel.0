@@ -1,20 +1,29 @@
-From: Alex Lee <lee188@singnet.com.sg>
-Subject: Re: USB asynchronous mode feedback format
-Date: Sat, 16 Oct 2010 21:58:40 +0800
-Message-ID: <1287237520.2113.11.camel@laptop-alex>
-References: <1287046026.4cb6c38a2a179@discus.singnet.com.sg>
-	<201010151919.41810.julian@jusst.de>
-	<1287193974.2133.2.camel@desktop-alex>
-	<201010161225.39002.julian@jusst.de>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: alsactl adds volume controls?
+Date: Sat, 16 Oct 2010 16:49:21 +0100
+Message-ID: <4CB9C981.4050703@colin.guthr.ie>
+References: <s5hr5hczi06.wl%tiwai@suse.de>	<4C7F6D5D.7020101@canonical.com>	<alpine.LNX.2.00.1009021553460.10278@eeebox2.perex-int.cz>	<4C7FB2CF.5060505@ladisch.de>	<alpine.LNX.2.00.1009021721100.10278@eeebox2.perex-int.cz>	<4C7FC85B.4000009@ladisch.de>	<alpine.LNX.2.00.1009021926120.10278@eeebox2.perex-int.cz>	<i7viav$kjb$1@dough.gmane.org>	<4CA46E98.10402@ladisch.de>	<4CA4A844.7060403@colin.guthr.ie>	<20100930164753.GB9431@sirena.org.uk>	<s5hr5gb9k83.wl%tiwai@suse.de>	<4CA5834D.5030408@ladisch.de>	<4CA59976.2020306@colin.guthr.ie>	<4CA5A38A.7050006@ladisch.de>	<i8ce5u$fj3$1@dough.gmane.org>	<4CAD7F3D.3090205@ladisch.de>	<4CAF1AF2.3060907@colin.guthr.ie>	<4CAF1FA3.5000402@ladisch.de>	<4CAF2533.1060102@colin.guthr.ie>	<4CAF27B7.9080909@colin.guthr.ie>	<4CAF2DD1.5050306@ladisch.de>	<4CAF37D
+	E.8070205@colin.guthr.ie>	<4CAF38D7.6030901@colin.guthr.ie>	<4CAF3D97.8070209@colin.guthr.ie>	<4CB4218C.6070501@colin.guthr.ie>
+	<4CB8119D.7090505@ladisch.de> <i993vv$532$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp17.singnet.com.sg (smtp17.singnet.com.sg [165.21.6.27])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2075C103831
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id F3C702450C
 	for <alsa-devel@alsa-project.org>;
-	Sat, 16 Oct 2010 15:58:44 +0200 (CEST)
-In-Reply-To: <201010161225.39002.julian@jusst.de>
+	Sat, 16 Oct 2010 17:49:36 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1P790m-0004p3-Gy
+	for alsa-devel@alsa-project.org; Sat, 16 Oct 2010 17:49:32 +0200
+Received: from cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
+	([94.173.13.3]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sat, 16 Oct 2010 17:49:32 +0200
+Received: from gmane by cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
+	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sat, 16 Oct 2010 17:49:32 +0200
+In-Reply-To: <i993vv$532$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,41 +33,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Julian Scheel <julian@jusst.de>
-Cc: alsa-devel@alsa-project.org, Daniel Mack <daniel@caiaq.de>
+To: alsa-devel@alsa-project.org
+Cc: Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2010-10-16 at 12:25 +0200, Julian Scheel wrote:
+'Twas brillig, and Colin Guthrie at 15/10/10 09:39 did gyre and gimble:
+> 'Twas brillig, and Clemens Ladisch at 15/10/10 09:32 did gyre and gimble:
+>> Colin Guthrie wrote:
+>>> Clemens, are you able to commit the two patches here (my modification of
+>>> your alsa-lib patch and your kernel patch).
+>>
+>> I would be able to commit them, but I've rewritten them.
+>> Please test again.
+> 
+> Sure thanks. I should be able to take a look over the weekend.
 
-> Thanks, I implemented them the way same you did. So for get_min/max/cur I 
-> always return 48kHz and set_cur simply does nothing.
-> Now playback in general works again. But still the rate feedback seems to have 
-> no impact on the data-rate. Also the frequency value shown in proc-interface 
-> is unchanged. When rate feedback works, it would probably be slightly 
-> different than 48.000kHz?!
+Tested-by: Colin Guthrie <cguthrie@mandriva.org>
 
-Hi Julian,
+Tested and confirmed
 
-OK, you are getting close :-)
+Many thanks again.
 
-One debug technique we have been using is to do a USB wire dump, using
-something like wireshark.  This way you can see exactly what goes on
-between the PC host and the device.
+Col
 
-The other technique is to build a special debug kernel to have copious
-debug messages.
 
-You might want to double check on the EP limitations.  Is the feedback
-EP capable of ISO transfer?  Are you able to use 4 bytes as the max EP
-size?  Is the EP double buffered (required for ISO transfers)?  With the
-wireshark dump you will be able to see exactly what is transferred as
-the feedback rate.
+-- 
 
-Also, the Max EP size of the ISO OUT data EP should only be one sample
-frame (ie 4 bytes in your case - 16 bits x stereo) bigger than the
-"correct" frame size, ie 192 bytes ====> 196 bytes.
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
 
-I looked through your updated USB descriptors and they appear to be
-correct.
-
-Alex
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mageia Contributor [http://www.mageia.org/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
