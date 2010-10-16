@@ -1,15 +1,18 @@
-From: "Holly Foster" <holly@profsearchgroup.com>
-Subject: ALSA Architect Needed for Contract Assignment
-Date: Wed, 13 Oct 2010 10:21:44 -0400
-Message-ID: <5F596C13048C46F4A5FCF90A901C0FE4@hollylaptop>
+From: Julian Scheel <julian@jusst.de>
+Subject: Re: USB asynchronous mode feedback format
+Date: Sat, 16 Oct 2010 12:23:11 +0200
+Message-ID: <201010161223.11635.julian@jusst.de>
+References: <1287046026.4cb6c38a2a179@discus.singnet.com.sg>
+	<201010151624.46800.julian@jusst.de> <4CB86677.6050005@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail2.ia-nyc.com (unknown [209.43.22.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id D94DA24343
+Received: from smtp2.work.de (smtp.work.de [212.12.45.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id 91F3724738
 	for <alsa-devel@alsa-project.org>;
-	Wed, 13 Oct 2010 16:23:12 +0200 (CEST)
+	Sat, 16 Oct 2010 12:23:14 +0200 (CEST)
+In-Reply-To: <4CB86677.6050005@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,47 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Clemens Ladisch <clemens@ladisch.de>, Alex Lee <lee188@singnet.com.sg>, Daniel Mack <daniel@caiaq.de>
 List-Id: alsa-devel@alsa-project.org
 
-Work: Now through at least June 2, 2011.  Provide SW Architecture for Linux and audio subsystem, detailed task planning and estimating, Linux package management, integration and direction.   
+Am Freitag, 15. Oktober 2010, 16:34:31 schrieb Clemens Ladisch:
+> Julian Scheel wrote:
+> > 11:1:1: endpoint lacks sample rate attribute bit, cannot set.
+> > 
+> > Does not seem to be feedback related... Although it would be nice to
+> > know, what's wrong there?
+> 
+> What's wrong is
+> 1) that the driver complains about something that isn't wrong, and
+> 2) that you're using a driver more than three months old, which is when
+>    I killed that message.  ;-)
 
-Platform: System runs on an IMX51/53 class Freescale ARM Processor running Linux.  Architectures and packages must fit into an embedded uC system that has MIPS and Memory limitations.
+Ok, good to know (c:
 
-                MIPS     < 1600
+> > Is there any way to get some more verbosity out of alsa drivers? To check
+> > if it really receives the feedback information at all.
+> 
+> grep "Momentary freq" /proc/asounc/cardX/stream0
+> 
+> Or put a log message into retire_playback_sync_urb*().
 
-                Memory              < 1GB
-
-Test platform is X86 running Ubuntu.
-
-Tools: Eclipse IDE for Linux debug and development.  Enterprise Architect is used for Architecture documentation.  Additional CM tools are being defined at this point.
-
-Skills: The following documents the minimum skill-level/qualifications of the engineer:
-
-Experience with Linux development (Embedded Linux preferred),
-
-Linux Audio Package experience (ALSA source/sink, GStreamer architecture)
-
-Linux Kernel understanding
-
-Ability to reconfigure and rebuild kernel and kernel modules
-
-C++ Object Oriented design, analysis
-
-Linux Driver architecture understanding
-
-It is preferable that the person has contributed to Open Source development (FOSS project)
-
-CM experience required. Synergy experience preferred.
-
-If you are interested in this contract, please send your resume ASAP in Word format.  This project will begin on October 18th.
-
-Thank you in advance for your response.
-
-Sincerely,
-Holly Foster
-Professional Search Group, Inc.
-14317 Miracle Ct.
-Grabill, IN 46741
-(260) 627-8513 Office
-(954) 600-6841 Cell
-holly@profsearchgroup.com 
+Momemtary freq in stream0 always stays at 48000 (0x30). So feedback seems to 
+be ignored?
