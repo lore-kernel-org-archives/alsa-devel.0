@@ -1,19 +1,16 @@
-From: Julian Scheel <julian@jusst.de>
-Subject: Re: USB asynchronous mode feedback format
-Date: Sat, 16 Oct 2010 18:30:31 +0200
-Message-ID: <201010161830.31603.julian@jusst.de>
-References: <1287046026.4cb6c38a2a179@discus.singnet.com.sg>
-	<201010161225.39002.julian@jusst.de>
-	<1287237520.2113.11.camel@laptop-alex>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: [PATCH] ALSA: fix unused warnings with
+	snd_power_get_state
+Date: Sat, 16 Oct 2010 13:24:52 -0400
+Message-ID: <1287249892-27012-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2.work.de (smtp.work.de [212.12.45.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id DFB1C2417D
+Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id C020524436
 	for <alsa-devel@alsa-project.org>;
-	Sat, 16 Oct 2010 18:30:33 +0200 (CEST)
-In-Reply-To: <1287237520.2113.11.camel@laptop-alex>
+	Sat, 16 Oct 2010 19:25:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,60 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alex Lee <lee188@singnet.com.sg>
-Cc: alsa-devel@alsa-project.org, Daniel Mack <daniel@caiaq.de>
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Alex,
+If we compile the ASoC code with PM disabled, we hit stuff like:
+sound/soc/soc-dapm.c: In function 'snd_soc_dapm_suspend_check':
+sound/soc/soc-dapm.c:440: warning: unused variable 'codec'
 
-Am Samstag, 16. Oktober 2010, 15:58:40 schrieb Alex Lee:
-> On Sat, 2010-10-16 at 12:25 +0200, Julian Scheel wrote:
-> > Thanks, I implemented them the way same you did. So for get_min/max/cur I
-> > always return 48kHz and set_cur simply does nothing.
-> > Now playback in general works again. But still the rate feedback seems to
-> > have no impact on the data-rate. Also the frequency value shown in
-> > proc-interface is unchanged. When rate feedback works, it would probably
-> > be slightly different than 48.000kHz?!
->
-> OK, you are getting close :-)
+So tweak the stub macro to avoid these issues.
 
-I hope so (c:
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+ include/sound/core.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/include/sound/core.h b/include/sound/core.h
+index 89e0ac1..c129f08 100644
+--- a/include/sound/core.h
++++ b/include/sound/core.h
+@@ -179,7 +179,7 @@ int snd_power_wait(struct snd_card *card, unsigned int power_state);
+ #define snd_power_lock(card)		do { (void)(card); } while (0)
+ #define snd_power_unlock(card)		do { (void)(card); } while (0)
+ static inline int snd_power_wait(struct snd_card *card, unsigned int state) { return 0; }
+-#define snd_power_get_state(card)	SNDRV_CTL_POWER_D0
++#define snd_power_get_state(card)	({ (void)(card); SNDRV_CTL_POWER_D0; })
+ #define snd_power_change_state(card, state)	do { (void)(card); } while (0)
  
-> One debug technique we have been using is to do a USB wire dump, using
-> something like wireshark.  This way you can see exactly what goes on
-> between the PC host and the device.
-
-Yes, using wireshark is a good idea indeed. And it immediately turns out what 
-the problem is.
-The device sends ISOCHRONOUS out packets on the feedback endpoint (5, 
-respectively 0x85) - but when I try to send 4 byte, the URB length is always 
-0. If I only send 3 or less bytes the packets look fine.
-I thought it might be a bug regarding max packet size in the at91lib and 
-raised it to 5, but still only 3 bytes can be send. Any clues what might cause 
-such an error?
-
-> The other technique is to build a special debug kernel to have copious
-> debug messages.
-> 
-> You might want to double check on the EP limitations.  Is the feedback
-> EP capable of ISO transfer?  Are you able to use 4 bytes as the max EP
-> size?  Is the EP double buffered (required for ISO transfers)?  With the
-> wireshark dump you will be able to see exactly what is transferred as
-> the feedback rate.
-
-Yep, using endpoint 5, which is able to do ISO and has dual bank. It allows up 
-to 512byte packet size.
-
-> Also, the Max EP size of the ISO OUT data EP should only be one sample
-> frame (ie 4 bytes in your case - 16 bits x stereo) bigger than the
-> "correct" frame size, ie 192 bytes ====> 196 bytes.
-
-Ok, changed that.
-
-> I looked through your updated USB descriptors and they appear to be
-> correct.
-
-Fine, thanks (c:
-
-Regards,
-Julian
+ #endif /* CONFIG_PM */
+-- 
+1.7.3.1
