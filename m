@@ -1,35 +1,25 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: alsactl adds volume controls?
-Date: Sun, 17 Oct 2010 12:22:41 +0100
-Message-ID: <i9ema1$kdf$3@dough.gmane.org>
-References: <s5hr5hczi06.wl%tiwai@suse.de>
-	<4C7F6D5D.7020101@canonical.com>	<alpine.LNX.2.00.1009021553460.10278@eeebox2.perex-int.cz>	<4C7FB2CF.5060505@ladisch.de>	<alpine.LNX.2.00.1009021721100.10278@eeebox2.perex-int.cz>	<4C7FC85B.4000009@ladisch.de>	<alpine.LNX.2.00.1009021926120.10278@eeebox2.perex-int.cz>	<i7viav$kjb$1@dough.gmane.org>
-	<4CA46E98.10402@ladisch.de>	<4CA4A844.7060403@colin.guthr.ie>	<20100930164753.GB9431@sirena.org.uk>	<s5hr5gb9k83.wl%tiwai@suse.de>
-	<4CA5834D.5030408@ladisch.de>	<4CA59976.2020306@colin.guthr.ie>
-	<4CA5A38A.7050006@ladisch.de>	<i8ce5u$fj3$1@dough.gmane.org>
-	<4CAD7F3D.3090205@ladisch.de>	<4CAF1AF2.3060907@colin.guthr.ie>
-	<4CAF1FA3.5000402@ladisch.de>	<4CAF2533.1060102@colin.guthr.ie>
-	<4CAF27B7.9080909@colin.guthr.ie>	<4CAF2DD1.5050306@ladisch.de>
-	<s5htyklurs1.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] sst: Intel SST audio driver
+Date: Sun, 17 Oct 2010 17:18:08 +0100
+Message-ID: <20101017161808.GA4437@opensource.wolfsonmicro.com>
+References: <20100930162123.21348.86482.stgit@localhost.localdomain>
+	<20101002230610.GA21181@sirena.org.uk>
+	<20101003112244.488282fd@linux.intel.com>
+	<20101003201943.GA31764@opensource.wolfsonmicro.com>
+	<20101004100424.4e5cf40c@linux.intel.com>
+	<s5hr5fpur7u.wl%tiwai@suse.de>
+	<20101017103626.GB6311@opensource.wolfsonmicro.com>
+	<s5hk4lhul3j.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id BB4EB244FB
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AB9911037F3
 	for <alsa-devel@alsa-project.org>;
-	Sun, 17 Oct 2010 13:30:04 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1P7RRE-0005rC-IF
-	for alsa-devel@alsa-project.org; Sun, 17 Oct 2010 13:30:04 +0200
-Received: from cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
-	([94.173.13.3]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 17 Oct 2010 13:30:04 +0200
-Received: from gmane by cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
-	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 17 Oct 2010 13:30:04 +0200
-In-Reply-To: <s5htyklurs1.wl%tiwai@suse.de>
+	Sun, 17 Oct 2010 18:18:11 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hk4lhul3j.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -39,52 +29,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: greg@kroah.com, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Takashi Iwai at 17/10/10 09:50 did gyre and gimble:
-> At Sat, 16 Oct 2010 16:49:21 +0100,
-> Colin Guthrie wrote:
->>
->> 'Twas brillig, and Colin Guthrie at 15/10/10 09:39 did gyre and gimble:
->>> 'Twas brillig, and Clemens Ladisch at 15/10/10 09:32 did gyre and gimble:
->>>> Colin Guthrie wrote:
->>>>> Clemens, are you able to commit the two patches here (my modification of
->>>>> your alsa-lib patch and your kernel patch).
->>>>
->>>> I would be able to commit them, but I've rewritten them.
->>>> Please test again.
->>>
->>> Sure thanks. I should be able to take a look over the weekend.
->>
->> Tested-by: Colin Guthrie <cguthrie@mandriva.org>
->>
->> Tested and confirmed
-> 
-> Thanks for testing.
-> I applied Clemens' patch to sound git tree.
-> (And applied to alsa-lib, too.)
-> 
-> I guess there are still other codecs showing the same behavior.
-> I wonder whether other STAC/IDT codecs show the same behavior.
-> Will check some others in the next week.
+On Sun, Oct 17, 2010 at 01:14:56PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-Ahh fantastic. Thanks Takashi. Any help in fixing these volume range
-issues is very much appreciated.
+> > I'm really concerned about this idea.  Allowing embedded vendors to push
+> > drivers into mainline which don't work with the standard frameworks for
+> > what they're doing sets a bad precedent which makes it much harder to
+> > push back on other vendors who also want to push their own stacks.
 
-Thanks Clemens for kicking this off :)
+> We've had (and still have) many pre-ASoC drivers, but the
+> _maintenance_ cost of them were relatively small from the global
+> sound-tree POV.  As long as the driver is self-contained, there is no
+> big hustle for maintenance.
 
+You're only seeing what goes on upstream.  Outside of upstream you'll
+usually find a lot of people doing a lot of redundant work to get their
+boards working, code that never finds its way upstream and quite often
+gets done fairly reptitvely.  It's no hassle upstream because nobody
+ever bothers upstreaming anything much after the original driver but for
+system integrators trying to use the driver on their platform which
+differs from the vendor reference and distributors trying to support
+multiple machines it's a different kettle of fish. 
 
-Col
--- 
+> Of course, the further _development_ is a totally different question.
+> If the development diverges to too many different h/w components, a
+> certain framework would be certainly needed.  This is how ASoC was
+> introduced and developed by Liam and you.
 
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
+This is pretty much a given in the embedded marketplace if a CPU is at
+all successful - apart from anything else the embedded audio state of
+the art is on much quicker cycles than most components so the components
+which are leading edge today may not make quite so much sense in a year.
+The hardware is all constructed with standard interfaces between the
+parts (though there are no standards at all for the control of the
+devices) so these sorts of changes are very straightforward for the
+hardware guys to do, meaning that the software stack needs to be
+similarly modularised.
 
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mageia Contributor [http://www.mageia.org/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+> So, what I'm trying to say is:
+> - we can accept the present solution in a certain level, rather then
+>   just refusing it
+
+I think this is the wrong approach.  I think this says to embedded CPU
+vendors that they can go off and reinvent the wheel with their own
+embedded audio stacks.  If all the CPU vendors already in mainline were
+to have gone down this route we'd have sixteen different ways to add
+support for a new board right now, with lots of redundancy in the CODEC
+side between them and each with a different set of features and
+limitations in how you can customise for your board (especially if you
+want to get code upstream).  That wouldn't be terribly pleasant, it'd
+put Linux's audio support right back where all the other embedded OSs
+are.
+
+Please bear in mind that we've already seen similar stacks from other
+vendors (Marvell and TI being the main ones I've been aware of) getting
+replaced as part of mainlining, and a couple of others I'm aware of but
+NDAed with doing the same thing.  If you're saying you'll accept this
+approach and bypass the existing embedded audio stack then the pressure
+on vendors to do the right thing and move over to the Linux embedded
+audio stack is greatly reduced.
+
+> - it can be taken into the main sound tree as an EXPERIMENTAL one,
+>   instead of keeping it in staging tree forever
+
+I definitely think EXPERIMENTAL is too weak a pushback - I can't see
+that stopping anyone going out there and saying they have standard audio
+drivers in mainline which is the check box people are looking for.
+Even distributors routinely enable EXPERIMENTAL.
+
+Like I say, this is not just a concern for this driver it's also a big
+worry with other CPU vendors and with future Intel chips.
+
+> These don't mean that the current driver will be necessarily regarded
+> as the standard.  We might need to end up developing the new better
+> standard framework for similar devices.  It doesn't conflict with
+> merging the merge action.
+
+We already have an existing framework for embedded audio devices.  We
+may want to extend or improve it but I don't see a pressing need to
+develop a new one.  Whenever we end up with two different ways of doing
+the same thing it's not great, it just makes for confusion and
+redundancy.
