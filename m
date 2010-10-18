@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Status of UCM
-Date: Mon, 18 Oct 2010 16:22:42 -0700
-Message-ID: <20101018232242.GA25852@opensource.wolfsonmicro.com>
-References: <1287414540.15070.3.camel@razman.gruetest.com>
-	<1287424354.3303.221.camel@odin>
+Subject: Re: [PATCH 1/2] sound/soc/davinci/davinci-mcasp.c:
+ Return error code in failure
+Date: Mon, 18 Oct 2010 16:31:45 -0700
+Message-ID: <20101018233112.GA26745@opensource.wolfsonmicro.com>
+References: <1287411074-19825-1-git-send-email-julia@diku.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8CDB61038FD
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F0ACC10390A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Oct 2010 02:13:02 +0200 (CEST)
+	Tue, 19 Oct 2010 02:13:34 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1287424354.3303.221.camel@odin>
+In-Reply-To: <1287411074-19825-1-git-send-email-julia@diku.dk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: Julia Lawall <julia@diku.dk>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 18, 2010 at 06:52:34PM +0100, Liam Girdwood wrote:
+On Mon, Oct 18, 2010 at 04:11:13PM +0200, Julia Lawall wrote:
+> In this code, 0 is returned on failure, even though other
+> failures return -ENOMEM or other similar values.
 
-> Jaroslav, any update on this ?
-
-Yes, please.  I was working with a cellphone vendor the other week to
-deploy this and while it was solving real problems for them they had
-some entirely legitimate concerns about the stability of the foundations
-they were building on due to the ongoing review.
+Applied, thanks.
