@@ -1,18 +1,16 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCH 25/25] ASoC: Samsung: Rename from s3c24xx to
-	samsung
-Date: Tue, 19 Oct 2010 16:09:13 +0900
-Message-ID: <1287472153-31215-1-git-send-email-jassisinghbrar@gmail.com>
-References: <1P85Z9-0007a6-27>
+From: "Le Gall, Louis" <louis.le.gall@intel.com>
+Subject: PATCH[1/1] Add I2S common driver for Intel MID platform
+Date: Mon, 18 Oct 2010 12:39:56 +0100
+Message-ID: <2A84145621092446B6659B8A0F28E26F46FE77084A@irsmsx501.ger.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="_002_2A84145621092446B6659B8A0F28E26F46FE77084Airsmsx501gerc_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5543D103940
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id A683B10380C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Oct 2010 09:17:48 +0200 (CEST)
-In-Reply-To: <1P85Z9-0007a6-27>
+	Mon, 18 Oct 2010 13:41:03 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,20055 +20,3974 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: kgene.kim@samsung.com, Jassi Brar <jassi.brar@samsung.com>, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org, june.bae@samsung.com, lrg@slimlogic.co.uk, sw.youn@samsung.com
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jassi Brar <jassi.brar@samsung.com>
+--_002_2A84145621092446B6659B8A0F28E26F46FE77084Airsmsx501gerc_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Finally, move the 's3c24xx' directory to 'samsung'
+Hi,
+        This patch set is for new I2S SSP common driver that supports I2S a=
+udio on Intel MID platforms.
 
-Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+        It is used for sending/receving I2S audio samples on Intel MID plat=
+form.
+
+        This interface is mostly used on Intel MID platforms and provide th=
+e low level interface for some upper layer drivers such as Alsa sound card =
+driver for Bluetooth/FM peripherals, char device interfaces for modem (cmt_=
+speech),...
+        As this is used to transfer speech frames from/to cellular modem th=
+at have specific timing constraints (and modem also uses the I2S path to se=
+nd some side-info), the Alsa SoC interface cannot be used.
+        It is based on low level part of cmt_speech driver that can be foun=
+d in N900 (see http://lists.meego.com/pipermail/meego-kernel/2010-September=
+/000078.html ). The intel_mid_i2s have been separated from cmt_speech in or=
+der to be more generic and to be used on other ports (for instance, to prov=
+ide Alsa sound card driver for Bluetooth and FM).
+        Upper level drivers cmt_speech and Alsa sound card driver that uses=
+ intel_mid_i2s will be up-streamed in coming days and is planned to use the=
+ same folder path (sound/pci/intel_mid_i2s/). So once these files will be u=
+pstream, this will provides Alsa sound driver interface for Bluetooth and F=
+M for Intel Mid platform, and specific speech audio interface (char device)=
+ that is used by lib cmt speech data.
+
+        I will provide soon some draft version of example driver that uses =
+intel_mid_i2s so reviewers can have better understanding of how it is used =
+and how it fits together.
+
+Best Regards,
+Louis Le Gall
+
+
+Here is a simple diagram that explain where is the intel_mid_i2s in softwar=
+e architecture.
+
+             +-----------+
+             |           |
+             |Pulse Audio|
+             |           |
+             |           |
+             +-----------+
+                   |
+                   |
+      +------------+------------+
+      |                         |
+      |                         |
+      |                         |
++-----------+             +-----------+
+|           |             |Lib cmt    |
+|Alsa Lib   |------+      |speech     |------+
+|           |      |      |data       |      |
+|           |      |      |           |      |
++-----------+      |      +-----------+      |
+      |            |                         |
+      |            |                         |                          User
+......|............|.........................|.............................=
+....
+      |            |                         |                         Kern=
+el
+      |            |                         |
+      |            |                         |
+      |            |                         |
+      |            |                         |
+      |            |                         |
+      |            |                         |
+     \|/          \|/                       \|/
+      V            V                         V
++---------+  ++---------++             ++---------++
+|         |  ||Alsa snd ||             ||cmt      ||
+|Intel SST|  ||driver   ||             ||speech   ||
+| "MAD"   |  ||SSP      ||             ||driver   ||
+|         |  ||BT/FM    ||             ||         ||
++---------+  ++---------++             ++---------++
+      |            |                         |
+      |            |                         |
+      |            |                         |
+      |            |                         |
+     \|/           |                        \|/
+      V            |                         V
++-----------+      |                   ++---------++
+|           |      |                 \ ||intel mid||
+|LPE        |      +------------------>||i2s      ||
+|           |                        / ||unified  ||
+|           |                          ||driver   ||
++-----------+                          ++---------++
+      |                                      |
+      |                                      |                         Kern=
+el
+......|......................................|.............................=
+....
+      |                                      |                        Hardw=
+are
+     \|/                                    \|/
+      V                                      V
++--       --+                          +--       --+
+|           |                          |           |
+|MISC       |                          |SSP in I2S |
+|           |                          |config     |
+|           |                          |           |
++--       --+                          +--       --+
+
+
+
+>From 16da3ebffad026e44d74538b7773a51044254920 Mon Sep 17 00:00:00 2001
+From: Louis LE GALL <louis.le.gall@intel.com>
+Date: Fri, 15 Oct 2010 15:30:49 +0200
+Subject: [PATCH] New low level driver "Intel_mid_i2s" provide support for I=
+2S SSP device on Intel MID Platforms
+ Signed-off-by: Louis LE GALL <louis.le.gall@intel.com>
+
+Change-Id: I17052a3b464c5682d2ab17a9b6e0fad30137243f
+
+Signed-off-by: Louis LE GALL <louis.le.gall@intel.com>
 ---
- sound/soc/Kconfig                              |    2 +-
- sound/soc/Makefile                             |    2 +-
- sound/soc/s3c24xx/Kconfig                      |  154 ---
- sound/soc/s3c24xx/Makefile                     |   51 -
- sound/soc/s3c24xx/ac97.c                       |  520 ----------
- sound/soc/s3c24xx/ac97.h                       |   21 -
- sound/soc/s3c24xx/dma.c                        |  503 ----------
- sound/soc/s3c24xx/dma.h                        |   30 -
- sound/soc/s3c24xx/goni_wm8994.c                |  309 ------
- sound/soc/s3c24xx/i2s.c                        | 1251 ------------------------
- sound/soc/s3c24xx/i2s.h                        |   29 -
- sound/soc/s3c24xx/jive_wm8750.c                |  191 ----
- sound/soc/s3c24xx/lm4857.h                     |   32 -
- sound/soc/s3c24xx/ln2440sbc_alc650.c           |   78 --
- sound/soc/s3c24xx/neo1973_gta02_wm8753.c       |  504 ----------
- sound/soc/s3c24xx/neo1973_wm8753.c             |  704 -------------
- sound/soc/s3c24xx/pcm.c                        |  552 -----------
- sound/soc/s3c24xx/pcm.h                        |  124 ---
- sound/soc/s3c24xx/regs-i2s-v2.h                |  115 ---
- sound/soc/s3c24xx/rx1950_uda1380.c             |  333 -------
- sound/soc/s3c24xx/s3c-i2s-v2.c                 |  757 --------------
- sound/soc/s3c24xx/s3c-i2s-v2.h                 |  106 --
- sound/soc/s3c24xx/s3c2412-i2s.c                |  212 ----
- sound/soc/s3c24xx/s3c2412-i2s.h                |   27 -
- sound/soc/s3c24xx/s3c24xx-i2s.c                |  519 ----------
- sound/soc/s3c24xx/s3c24xx-i2s.h                |   35 -
- sound/soc/s3c24xx/s3c24xx_simtec.c             |  395 --------
- sound/soc/s3c24xx/s3c24xx_simtec.h             |   22 -
- sound/soc/s3c24xx/s3c24xx_simtec_hermes.c      |  146 ---
- sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c |  134 ---
- sound/soc/s3c24xx/s3c24xx_uda134x.c            |  368 -------
- sound/soc/s3c24xx/smartq_wm8987.c              |  287 ------
- sound/soc/s3c24xx/smdk2443_wm9710.c            |   74 --
- sound/soc/s3c24xx/smdk_spdif.c                 |  223 -----
- sound/soc/s3c24xx/smdk_wm8580.c                |  284 ------
- sound/soc/s3c24xx/smdk_wm9713.c                |  107 --
- sound/soc/s3c24xx/spdif.c                      |  501 ----------
- sound/soc/s3c24xx/spdif.h                      |   19 -
- sound/soc/samsung/Kconfig                      |  154 +++
- sound/soc/samsung/Makefile                     |   51 +
- sound/soc/samsung/ac97.c                       |  520 ++++++++++
- sound/soc/samsung/ac97.h                       |   21 +
- sound/soc/samsung/dma.c                        |  503 ++++++++++
- sound/soc/samsung/dma.h                        |   30 +
- sound/soc/samsung/goni_wm8994.c                |  309 ++++++
- sound/soc/samsung/i2s.c                        | 1251 ++++++++++++++++++++++++
- sound/soc/samsung/i2s.h                        |   29 +
- sound/soc/samsung/jive_wm8750.c                |  191 ++++
- sound/soc/samsung/lm4857.h                     |   32 +
- sound/soc/samsung/ln2440sbc_alc650.c           |   78 ++
- sound/soc/samsung/neo1973_gta02_wm8753.c       |  504 ++++++++++
- sound/soc/samsung/neo1973_wm8753.c             |  704 +++++++++++++
- sound/soc/samsung/pcm.c                        |  552 +++++++++++
- sound/soc/samsung/pcm.h                        |  124 +++
- sound/soc/samsung/regs-i2s-v2.h                |  115 +++
- sound/soc/samsung/rx1950_uda1380.c             |  333 +++++++
- sound/soc/samsung/s3c-i2s-v2.c                 |  757 ++++++++++++++
- sound/soc/samsung/s3c-i2s-v2.h                 |  106 ++
- sound/soc/samsung/s3c2412-i2s.c                |  212 ++++
- sound/soc/samsung/s3c2412-i2s.h                |   27 +
- sound/soc/samsung/s3c24xx-i2s.c                |  519 ++++++++++
- sound/soc/samsung/s3c24xx-i2s.h                |   35 +
- sound/soc/samsung/s3c24xx_simtec.c             |  395 ++++++++
- sound/soc/samsung/s3c24xx_simtec.h             |   22 +
- sound/soc/samsung/s3c24xx_simtec_hermes.c      |  146 +++
- sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c |  134 +++
- sound/soc/samsung/s3c24xx_uda134x.c            |  368 +++++++
- sound/soc/samsung/smartq_wm8987.c              |  287 ++++++
- sound/soc/samsung/smdk2443_wm9710.c            |   74 ++
- sound/soc/samsung/smdk_spdif.c                 |  223 +++++
- sound/soc/samsung/smdk_wm8580.c                |  284 ++++++
- sound/soc/samsung/smdk_wm9713.c                |  107 ++
- sound/soc/samsung/spdif.c                      |  501 ++++++++++
- sound/soc/samsung/spdif.h                      |   19 +
- 74 files changed, 9719 insertions(+), 9719 deletions(-)
- delete mode 100644 sound/soc/s3c24xx/Kconfig
- delete mode 100644 sound/soc/s3c24xx/Makefile
- delete mode 100644 sound/soc/s3c24xx/ac97.c
- delete mode 100644 sound/soc/s3c24xx/ac97.h
- delete mode 100644 sound/soc/s3c24xx/dma.c
- delete mode 100644 sound/soc/s3c24xx/dma.h
- delete mode 100644 sound/soc/s3c24xx/goni_wm8994.c
- delete mode 100644 sound/soc/s3c24xx/i2s.c
- delete mode 100644 sound/soc/s3c24xx/i2s.h
- delete mode 100644 sound/soc/s3c24xx/jive_wm8750.c
- delete mode 100644 sound/soc/s3c24xx/lm4857.h
- delete mode 100644 sound/soc/s3c24xx/ln2440sbc_alc650.c
- delete mode 100644 sound/soc/s3c24xx/neo1973_gta02_wm8753.c
- delete mode 100644 sound/soc/s3c24xx/neo1973_wm8753.c
- delete mode 100644 sound/soc/s3c24xx/pcm.c
- delete mode 100644 sound/soc/s3c24xx/pcm.h
- delete mode 100644 sound/soc/s3c24xx/regs-i2s-v2.h
- delete mode 100644 sound/soc/s3c24xx/rx1950_uda1380.c
- delete mode 100644 sound/soc/s3c24xx/s3c-i2s-v2.c
- delete mode 100644 sound/soc/s3c24xx/s3c-i2s-v2.h
- delete mode 100644 sound/soc/s3c24xx/s3c2412-i2s.c
- delete mode 100644 sound/soc/s3c24xx/s3c2412-i2s.h
- delete mode 100644 sound/soc/s3c24xx/s3c24xx-i2s.c
- delete mode 100644 sound/soc/s3c24xx/s3c24xx-i2s.h
- delete mode 100644 sound/soc/s3c24xx/s3c24xx_simtec.c
- delete mode 100644 sound/soc/s3c24xx/s3c24xx_simtec.h
- delete mode 100644 sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
- delete mode 100644 sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
- delete mode 100644 sound/soc/s3c24xx/s3c24xx_uda134x.c
- delete mode 100644 sound/soc/s3c24xx/smartq_wm8987.c
- delete mode 100644 sound/soc/s3c24xx/smdk2443_wm9710.c
- delete mode 100644 sound/soc/s3c24xx/smdk_spdif.c
- delete mode 100644 sound/soc/s3c24xx/smdk_wm8580.c
- delete mode 100644 sound/soc/s3c24xx/smdk_wm9713.c
- delete mode 100644 sound/soc/s3c24xx/spdif.c
- delete mode 100644 sound/soc/s3c24xx/spdif.h
- create mode 100644 sound/soc/samsung/Kconfig
- create mode 100644 sound/soc/samsung/Makefile
- create mode 100644 sound/soc/samsung/ac97.c
- create mode 100644 sound/soc/samsung/ac97.h
- create mode 100644 sound/soc/samsung/dma.c
- create mode 100644 sound/soc/samsung/dma.h
- create mode 100644 sound/soc/samsung/goni_wm8994.c
- create mode 100644 sound/soc/samsung/i2s.c
- create mode 100644 sound/soc/samsung/i2s.h
- create mode 100644 sound/soc/samsung/jive_wm8750.c
- create mode 100644 sound/soc/samsung/lm4857.h
- create mode 100644 sound/soc/samsung/ln2440sbc_alc650.c
- create mode 100644 sound/soc/samsung/neo1973_gta02_wm8753.c
- create mode 100644 sound/soc/samsung/neo1973_wm8753.c
- create mode 100644 sound/soc/samsung/pcm.c
- create mode 100644 sound/soc/samsung/pcm.h
- create mode 100644 sound/soc/samsung/regs-i2s-v2.h
- create mode 100644 sound/soc/samsung/rx1950_uda1380.c
- create mode 100644 sound/soc/samsung/s3c-i2s-v2.c
- create mode 100644 sound/soc/samsung/s3c-i2s-v2.h
- create mode 100644 sound/soc/samsung/s3c2412-i2s.c
- create mode 100644 sound/soc/samsung/s3c2412-i2s.h
- create mode 100644 sound/soc/samsung/s3c24xx-i2s.c
- create mode 100644 sound/soc/samsung/s3c24xx-i2s.h
- create mode 100644 sound/soc/samsung/s3c24xx_simtec.c
- create mode 100644 sound/soc/samsung/s3c24xx_simtec.h
- create mode 100644 sound/soc/samsung/s3c24xx_simtec_hermes.c
- create mode 100644 sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
- create mode 100644 sound/soc/samsung/s3c24xx_uda134x.c
- create mode 100644 sound/soc/samsung/smartq_wm8987.c
- create mode 100644 sound/soc/samsung/smdk2443_wm9710.c
- create mode 100644 sound/soc/samsung/smdk_spdif.c
- create mode 100644 sound/soc/samsung/smdk_wm8580.c
- create mode 100644 sound/soc/samsung/smdk_wm9713.c
- create mode 100644 sound/soc/samsung/spdif.c
- create mode 100644 sound/soc/samsung/spdif.h
+ include/linux/intel_mid_i2s_if.h        |  280 ++++++
+ sound/pci/Kconfig                       |   18 +
+ sound/pci/Makefile                      |    4 +-
+ sound/pci/intel_mid_i2s/Makefile        |   18 +
+ sound/pci/intel_mid_i2s/intel_mid_i2s.c | 1428 +++++++++++++++++++++++++++=
+++++
+ sound/pci/intel_mid_i2s/intel_mid_i2s.h |  500 +++++++++++
+ 6 files changed, 2247 insertions(+), 1 deletions(-)
+ create mode 100644 include/linux/intel_mid_i2s_if.h
+ create mode 100644 sound/pci/intel_mid_i2s/Makefile
+ create mode 100644 sound/pci/intel_mid_i2s/intel_mid_i2s.c
+ create mode 100644 sound/pci/intel_mid_i2s/intel_mid_i2s.h
 
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 3e598e7..2722b19 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -36,7 +36,7 @@ source "sound/soc/nuc900/Kconfig"
- source "sound/soc/omap/Kconfig"
- source "sound/soc/kirkwood/Kconfig"
- source "sound/soc/pxa/Kconfig"
--source "sound/soc/s3c24xx/Kconfig"
-+source "sound/soc/samsung/Kconfig"
- source "sound/soc/s6000/Kconfig"
- source "sound/soc/sh/Kconfig"
- source "sound/soc/txx9/Kconfig"
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index eb18344..ce913bf 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -14,7 +14,7 @@ obj-$(CONFIG_SND_SOC)	+= nuc900/
- obj-$(CONFIG_SND_SOC)	+= omap/
- obj-$(CONFIG_SND_SOC)	+= kirkwood/
- obj-$(CONFIG_SND_SOC)	+= pxa/
--obj-$(CONFIG_SND_SOC)	+= s3c24xx/
-+obj-$(CONFIG_SND_SOC)	+= samsung/
- obj-$(CONFIG_SND_SOC)	+= s6000/
- obj-$(CONFIG_SND_SOC)	+= sh/
- obj-$(CONFIG_SND_SOC)	+= txx9/
-diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
-deleted file mode 100644
-index 140095e..0000000
---- a/sound/soc/s3c24xx/Kconfig
-+++ /dev/null
-@@ -1,154 +0,0 @@
--config ASOC_SAMSUNG
--	tristate "ASoC support for Samsung"
--	depends on ARCH_S3C2410 || ARCH_S3C64XX || ARCH_S5PC100 || ARCH_S5PV210
--	select S3C64XX_DMA if ARCH_S3C64XX
--	help
--	  Say Y or M if you want to add support for codecs attached to
--	  the Samsung SoCs' Audio interfaces. You will also need to
--	  select the audio interfaces to support below.
--
--config SND_S3C24XX_I2S
--	tristate
--	select S3C2410_DMA
--
--config SND_S3C_I2SV2_SOC
--	tristate
--
--config SND_S3C2412_SOC_I2S
--	tristate
--	select SND_S3C_I2SV2_SOC
--	select S3C2410_DMA
--
--config SND_SAMSUNG_PCM
--	tristate
--
--config SND_SAMSUNG_AC97
--	tristate
--	select SND_SOC_AC97_BUS
--
--config SND_SAMSUNG_SPDIF
--	tristate
--	select SND_SOC_SPDIF
--
--config SND_SAMSUNG_I2S
--	tristate
--
--config ASOC_SAMSUNG_NEO1973_WM8753
--	tristate "SoC I2S Audio support for NEO1973 - WM8753"
--	depends on ASOC_SAMSUNG && MACH_NEO1973_GTA01
--	select SND_S3C24XX_I2S
--	select SND_SOC_WM8753
--	help
--	  Say Y if you want to add support for SoC audio on smdk2440
--	  with the WM8753.
--
--config ASOC_SAMSUNG_NEO1973_GTA02_WM8753
--	tristate "Audio support for the Openmoko Neo FreeRunner (GTA02)"
--	depends on ASOC_SAMSUNG && MACH_NEO1973_GTA02
--	select SND_S3C24XX_I2S
--	select SND_SOC_WM8753
--	help
--	  This driver provides audio support for the Openmoko Neo FreeRunner
--	  smartphone.
--	  
--config ASOC_SAMSUNG_JIVE_WM8750
--	tristate "SoC I2S Audio support for Jive"
--	depends on ASOC_SAMSUNG && MACH_JIVE
--	select SND_SOC_WM8750
--	select SND_S3C2412_SOC_I2S
--	help
--	  Sat Y if you want to add support for SoC audio on the Jive.
--
--config ASOC_SAMSUNG_SMDK_WM8580
--	tristate "SoC I2S Audio support for WM8580 on SMDK"
--	depends on ASOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100)
--	select SND_SOC_WM8580
--	select SND_SAMSUNG_I2S
--	help
--	  Say Y if you want to add support for SoC audio on the SMDKs.
--
--config ASOC_SAMSUNG_SMDK2443_WM9710
--	tristate "SoC AC97 Audio support for SMDK2443 - WM9710"
--	depends on ASOC_SAMSUNG && MACH_SMDK2443
--	select S3C2410_DMA
--	select AC97_BUS
--	select SND_SOC_AC97_CODEC
--	select SND_SAMSUNG_AC97
--	help
--	  Say Y if you want to add support for SoC audio on smdk2443
--	  with the WM9710.
--
--config ASOC_SAMSUNG_LN2440SBC_ALC650
--	tristate "SoC AC97 Audio support for LN2440SBC - ALC650"
--	depends on ASOC_SAMSUNG && ARCH_S3C2410
--	select S3C2410_DMA
--	select AC97_BUS
--	select SND_SOC_AC97_CODEC
--	select SND_SAMSUNG_AC97
--	help
--	  Say Y if you want to add support for SoC audio on ln2440sbc
--	  with the ALC650.
--
--config ASOC_SAMSUNG_S3C24XX_UDA134X
--	tristate "SoC I2S Audio support UDA134X wired to a S3C24XX"
--	depends on ASOC_SAMSUNG && ARCH_S3C2410
--	select SND_S3C24XX_I2S
--	select SND_SOC_L3
--	select SND_SOC_UDA134X
--
--config ASOC_SAMSUNG_SIMTEC
--	tristate
--	help
--	  Internal node for common S3C24XX/Simtec suppor
--
--config ASOC_SAMSUNG_SIMTEC_TLV320AIC23
--	tristate "SoC I2S Audio support for TLV320AIC23 on Simtec boards"
--	depends on ASOC_SAMSUNG && ARCH_S3C2410
--	select SND_S3C24XX_I2S
--	select SND_SOC_TLV320AIC23
--	select ASOC_SAMSUNG_SIMTEC
--
--config ASOC_SAMSUNG_SIMTEC_HERMES
--	tristate "SoC I2S Audio support for Simtec Hermes board"
--	depends on ASOC_SAMSUNG && ARCH_S3C2410
--	select SND_S3C24XX_I2S
--	select SND_SOC_TLV320AIC3X
--	select ASOC_SAMSUNG_SIMTEC
--
--config ASOC_SAMSUNG_RX1950_UDA1380
--	tristate "Audio support for the HP iPAQ RX1950"
--	depends on ASOC_SAMSUNG && MACH_RX1950
--	select SND_S3C24XX_I2S
--	select SND_SOC_UDA1380
--	help
--	  This driver provides audio support for HP iPAQ RX1950 PDA.
--
--config ASOC_SAMSUNG_SMDK_WM9713
--	tristate "SoC AC97 Audio support for SMDK with WM9713"
--	depends on ASOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110)
--	select SND_SOC_WM9713
--	select SND_SAMSUNG_AC97
--	help
--	  Sat Y if you want to add support for SoC audio on the SMDK.
--
--config ASOC_SMARTQ
--	tristate "SoC I2S Audio support for SmartQ board"
--	depends on ASOC_SAMSUNG && MACH_SMARTQ
--	select SND_SAMSUNG_I2S
--	select SND_SOC_WM8750
--
--config ASOC_GONI_AQUILA_WM8994
--	tristate "SoC I2S Audio support for AQUILA/GONI - WM8994"
--	depends on ASOC_SAMSUNG && (MACH_GONI || MACH_AQUILA)
--	select SND_SAMSUNG_I2S
--	select SND_SOC_WM8994
--	help
--	  Say Y if you want to add support for SoC audio on goni or aquila
--	  with the WM8994.
--
--config ASOC_SAMSUNG_SMDK_SPDIF
--	tristate "SoC S/PDIF Audio support for SMDK"
--	depends on SND_S3C24XX_SOC && (MACH_SMDKC100 || MACH_SMDKC110 || MACH_SMDKV210)
--	select SND_SAMSUNG_SPDIF
--	help
--	  Say Y if you want to add support for SoC S/PDIF audio on the SMDK.
-diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/s3c24xx/Makefile
-deleted file mode 100644
-index 0d24f95..0000000
---- a/sound/soc/s3c24xx/Makefile
-+++ /dev/null
-@@ -1,51 +0,0 @@
--# S3c24XX Platform Support
--snd-soc-s3c24xx-objs := dma.o
--snd-soc-s3c24xx-i2s-objs := s3c24xx-i2s.o
--snd-soc-s3c2412-i2s-objs := s3c2412-i2s.o
--snd-soc-ac97-objs := ac97.o
--snd-soc-s3c-i2s-v2-objs := s3c-i2s-v2.o
--snd-soc-samsung-spdif-objs := spdif.o
--snd-soc-pcm-objs := pcm.o
--snd-soc-i2s-objs := i2s.o
--
--obj-$(CONFIG_ASOC_SAMSUNG) += snd-soc-s3c24xx.o
--obj-$(CONFIG_SND_S3C24XX_I2S) += snd-soc-s3c24xx-i2s.o
--obj-$(CONFIG_SND_SAMSUNG_AC97) += snd-soc-ac97.o
--obj-$(CONFIG_SND_S3C2412_SOC_I2S) += snd-soc-s3c2412-i2s.o
--obj-$(CONFIG_SND_S3C_I2SV2_SOC) += snd-soc-s3c-i2s-v2.o
--obj-$(CONFIG_SND_SAMSUNG_SPDIF) += snd-soc-samsung-spdif.o
--obj-$(CONFIG_SND_SAMSUNG_PCM) += snd-soc-pcm.o
--obj-$(CONFIG_SND_SAMSUNG_I2S) += snd-soc-i2s.o
--
--# S3C24XX Machine Support
--snd-soc-jive-wm8750-objs := jive_wm8750.o
--snd-soc-neo1973-wm8753-objs := neo1973_wm8753.o
--snd-soc-neo1973-gta02-wm8753-objs := neo1973_gta02_wm8753.o
--snd-soc-smdk2443-wm9710-objs := smdk2443_wm9710.o
--snd-soc-ln2440sbc-alc650-objs := ln2440sbc_alc650.o
--snd-soc-s3c24xx-uda134x-objs := s3c24xx_uda134x.o
--snd-soc-s3c24xx-simtec-objs := s3c24xx_simtec.o
--snd-soc-s3c24xx-simtec-hermes-objs := s3c24xx_simtec_hermes.o
--snd-soc-s3c24xx-simtec-tlv320aic23-objs := s3c24xx_simtec_tlv320aic23.o
--snd-soc-rx1950-uda1380-objs := rx1950_uda1380.o
--snd-soc-smdk-wm8580-objs := smdk_wm8580.o
--snd-soc-smdk-wm9713-objs := smdk_wm9713.o
--snd-soc-s3c64xx-smartq-wm8987-objs := smartq_wm8987.o
--snd-soc-goni-wm8994-objs := goni_wm8994.o
--snd-soc-smdk-spdif-objs := smdk_spdif.o
--
--obj-$(CONFIG_ASOC_SAMSUNG_JIVE_WM8750) += snd-soc-jive-wm8750.o
--obj-$(CONFIG_ASOC_SAMSUNG_NEO1973_WM8753) += snd-soc-neo1973-wm8753.o
--obj-$(CONFIG_ASOC_SAMSUNG_NEO1973_GTA02_WM8753) += snd-soc-neo1973-gta02-wm8753.o
--obj-$(CONFIG_ASOC_SAMSUNG_SMDK2443_WM9710) += snd-soc-smdk2443-wm9710.o
--obj-$(CONFIG_ASOC_SAMSUNG_LN2440SBC_ALC650) += snd-soc-ln2440sbc-alc650.o
--obj-$(CONFIG_ASOC_SAMSUNG_S3C24XX_UDA134X) += snd-soc-s3c24xx-uda134x.o
--obj-$(CONFIG_ASOC_SAMSUNG_SIMTEC) += snd-soc-s3c24xx-simtec.o
--obj-$(CONFIG_ASOC_SAMSUNG_SIMTEC_HERMES) += snd-soc-s3c24xx-simtec-hermes.o
--obj-$(CONFIG_ASOC_SAMSUNG_SIMTEC_TLV320AIC23) += snd-soc-s3c24xx-simtec-tlv320aic23.o
--obj-$(CONFIG_ASOC_SAMSUNG_RX1950_UDA1380) += snd-soc-rx1950-uda1380.o
--obj-$(CONFIG_ASOC_SAMSUNG_SMDK_WM8580) += snd-soc-smdk-wm8580.o
--obj-$(CONFIG_ASOC_SAMSUNG_SMDK_WM9713) += snd-soc-smdk-wm9713.o
--obj-$(CONFIG_ASOC_SMARTQ) += snd-soc-s3c64xx-smartq-wm8987.o
--obj-$(CONFIG_ASOC_SAMSUNG_SMDK_SPDIF) += snd-soc-smdk-spdif.o
--obj-$(CONFIG_ASOC_GONI_AQUILA_WM8994) += snd-soc-goni-wm8994.o
-diff --git a/sound/soc/s3c24xx/ac97.c b/sound/soc/s3c24xx/ac97.c
-deleted file mode 100644
-index 4f999d1..0000000
---- a/sound/soc/s3c24xx/ac97.c
-+++ /dev/null
-@@ -1,520 +0,0 @@
--/* sound/soc/s3c24xx/ac97.c
-- *
-- * ALSA SoC Audio Layer - S3C AC97 Controller driver
-- * 	Evolved from s3c2443-ac97.c
-- *
-- * Copyright (c) 2010 Samsung Electronics Co. Ltd
-- * 	Author: Jaswinder Singh <jassi.brar@samsung.com>
-- * 	Credits: Graeme Gregory, Sean Choi
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--#include <linux/init.h>
--#include <linux/module.h>
--#include <linux/io.h>
--#include <linux/delay.h>
--#include <linux/clk.h>
--
--#include <sound/soc.h>
--
--#include <plat/regs-ac97.h>
--#include <mach/dma.h>
--#include <plat/audio.h>
--
--#include "dma.h"
--#include "ac97.h"
--
--#define AC_CMD_ADDR(x) (x << 16)
--#define AC_CMD_DATA(x) (x & 0xffff)
--
--struct s3c_ac97_info {
--	struct clk         *ac97_clk;
--	void __iomem	   *regs;
--	struct mutex       lock;
--	struct completion  done;
--};
--static struct s3c_ac97_info s3c_ac97;
--
--static struct s3c2410_dma_client s3c_dma_client_out = {
--	.name = "AC97 PCMOut"
--};
--
--static struct s3c2410_dma_client s3c_dma_client_in = {
--	.name = "AC97 PCMIn"
--};
--
--static struct s3c2410_dma_client s3c_dma_client_micin = {
--	.name = "AC97 MicIn"
--};
--
--static struct s3c_dma_params s3c_ac97_pcm_out = {
--	.client		= &s3c_dma_client_out,
--	.dma_size	= 4,
--};
--
--static struct s3c_dma_params s3c_ac97_pcm_in = {
--	.client		= &s3c_dma_client_in,
--	.dma_size	= 4,
--};
--
--static struct s3c_dma_params s3c_ac97_mic_in = {
--	.client		= &s3c_dma_client_micin,
--	.dma_size	= 4,
--};
--
--static void s3c_ac97_activate(struct snd_ac97 *ac97)
--{
--	u32 ac_glbctrl, stat;
--
--	stat = readl(s3c_ac97.regs + S3C_AC97_GLBSTAT) & 0x7;
--	if (stat == S3C_AC97_GLBSTAT_MAINSTATE_ACTIVE)
--		return; /* Return if already active */
--
--	INIT_COMPLETION(s3c_ac97.done);
--
--	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
--	ac_glbctrl = S3C_AC97_GLBCTRL_ACLINKON;
--	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
--	msleep(1);
--
--	ac_glbctrl |= S3C_AC97_GLBCTRL_TRANSFERDATAENABLE;
--	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
--	msleep(1);
--
--	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
--	ac_glbctrl |= S3C_AC97_GLBCTRL_CODECREADYIE;
--	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
--
--	if (!wait_for_completion_timeout(&s3c_ac97.done, HZ))
--		pr_err("AC97: Unable to activate!");
--}
--
--static unsigned short s3c_ac97_read(struct snd_ac97 *ac97,
--	unsigned short reg)
--{
--	u32 ac_glbctrl, ac_codec_cmd;
--	u32 stat, addr, data;
--
--	mutex_lock(&s3c_ac97.lock);
--
--	s3c_ac97_activate(ac97);
--
--	INIT_COMPLETION(s3c_ac97.done);
--
--	ac_codec_cmd = readl(s3c_ac97.regs + S3C_AC97_CODEC_CMD);
--	ac_codec_cmd = S3C_AC97_CODEC_CMD_READ | AC_CMD_ADDR(reg);
--	writel(ac_codec_cmd, s3c_ac97.regs + S3C_AC97_CODEC_CMD);
--
--	udelay(50);
--
--	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
--	ac_glbctrl |= S3C_AC97_GLBCTRL_CODECREADYIE;
--	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
--
--	if (!wait_for_completion_timeout(&s3c_ac97.done, HZ))
--		pr_err("AC97: Unable to read!");
--
--	stat = readl(s3c_ac97.regs + S3C_AC97_STAT);
--	addr = (stat >> 16) & 0x7f;
--	data = (stat & 0xffff);
--
--	if (addr != reg)
--		pr_err("ac97: req addr = %02x, rep addr = %02x\n",
--			reg, addr);
--
--	mutex_unlock(&s3c_ac97.lock);
--
--	return (unsigned short)data;
--}
--
--static void s3c_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
--	unsigned short val)
--{
--	u32 ac_glbctrl, ac_codec_cmd;
--
--	mutex_lock(&s3c_ac97.lock);
--
--	s3c_ac97_activate(ac97);
--
--	INIT_COMPLETION(s3c_ac97.done);
--
--	ac_codec_cmd = readl(s3c_ac97.regs + S3C_AC97_CODEC_CMD);
--	ac_codec_cmd = AC_CMD_ADDR(reg) | AC_CMD_DATA(val);
--	writel(ac_codec_cmd, s3c_ac97.regs + S3C_AC97_CODEC_CMD);
--
--	udelay(50);
--
--	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
--	ac_glbctrl |= S3C_AC97_GLBCTRL_CODECREADYIE;
--	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
--
--	if (!wait_for_completion_timeout(&s3c_ac97.done, HZ))
--		pr_err("AC97: Unable to write!");
--
--	ac_codec_cmd = readl(s3c_ac97.regs + S3C_AC97_CODEC_CMD);
--	ac_codec_cmd |= S3C_AC97_CODEC_CMD_READ;
--	writel(ac_codec_cmd, s3c_ac97.regs + S3C_AC97_CODEC_CMD);
--
--	mutex_unlock(&s3c_ac97.lock);
--}
--
--static void s3c_ac97_cold_reset(struct snd_ac97 *ac97)
--{
--	pr_debug("AC97: Cold reset\n");
--	writel(S3C_AC97_GLBCTRL_COLDRESET,
--			s3c_ac97.regs + S3C_AC97_GLBCTRL);
--	msleep(1);
--
--	writel(0, s3c_ac97.regs + S3C_AC97_GLBCTRL);
--	msleep(1);
--}
--
--static void s3c_ac97_warm_reset(struct snd_ac97 *ac97)
--{
--	u32 stat;
--
--	stat = readl(s3c_ac97.regs + S3C_AC97_GLBSTAT) & 0x7;
--	if (stat == S3C_AC97_GLBSTAT_MAINSTATE_ACTIVE)
--		return; /* Return if already active */
--
--	pr_debug("AC97: Warm reset\n");
--
--	writel(S3C_AC97_GLBCTRL_WARMRESET, s3c_ac97.regs + S3C_AC97_GLBCTRL);
--	msleep(1);
--
--	writel(0, s3c_ac97.regs + S3C_AC97_GLBCTRL);
--	msleep(1);
--
--	s3c_ac97_activate(ac97);
--}
--
--static irqreturn_t s3c_ac97_irq(int irq, void *dev_id)
--{
--	u32 ac_glbctrl, ac_glbstat;
--
--	ac_glbstat = readl(s3c_ac97.regs + S3C_AC97_GLBSTAT);
--
--	if (ac_glbstat & S3C_AC97_GLBSTAT_CODECREADY) {
--
--		ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
--		ac_glbctrl &= ~S3C_AC97_GLBCTRL_CODECREADYIE;
--		writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
--
--		complete(&s3c_ac97.done);
--	}
--
--	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
--	ac_glbctrl |= (1<<30); /* Clear interrupt */
--	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
--
--	return IRQ_HANDLED;
--}
--
--struct snd_ac97_bus_ops soc_ac97_ops = {
--	.read       = s3c_ac97_read,
--	.write      = s3c_ac97_write,
--	.warm_reset = s3c_ac97_warm_reset,
--	.reset      = s3c_ac97_cold_reset,
--};
--EXPORT_SYMBOL_GPL(soc_ac97_ops);
--
--static int s3c_ac97_hw_params(struct snd_pcm_substream *substream,
--				  struct snd_pcm_hw_params *params,
--				  struct snd_soc_dai *dai)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	struct s3c_dma_params *dma_data;
--
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		dma_data = &s3c_ac97_pcm_out;
--	else
--		dma_data = &s3c_ac97_pcm_in;
--
--	snd_soc_dai_set_dma_data(cpu_dai, substream, dma_data);
--
--	return 0;
--}
--
--static int s3c_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
--				struct snd_soc_dai *dai)
--{
--	u32 ac_glbctrl;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct s3c_dma_params *dma_data =
--		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
--
--	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
--	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
--		ac_glbctrl &= ~S3C_AC97_GLBCTRL_PCMINTM_MASK;
--	else
--		ac_glbctrl &= ~S3C_AC97_GLBCTRL_PCMOUTTM_MASK;
--
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
--	case SNDRV_PCM_TRIGGER_RESUME:
--	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
--			ac_glbctrl |= S3C_AC97_GLBCTRL_PCMINTM_DMA;
--		else
--			ac_glbctrl |= S3C_AC97_GLBCTRL_PCMOUTTM_DMA;
--		break;
--
--	case SNDRV_PCM_TRIGGER_STOP:
--	case SNDRV_PCM_TRIGGER_SUSPEND:
--	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		break;
--	}
--
--	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
--
--	s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
--
--	return 0;
--}
--
--static int s3c_ac97_hw_mic_params(struct snd_pcm_substream *substream,
--				      struct snd_pcm_hw_params *params,
--				      struct snd_soc_dai *dai)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		return -ENODEV;
--	else
--		snd_soc_dai_set_dma_data(cpu_dai, substream, &s3c_ac97_mic_in);
--
--	return 0;
--}
--
--static int s3c_ac97_mic_trigger(struct snd_pcm_substream *substream,
--				    int cmd, struct snd_soc_dai *dai)
--{
--	u32 ac_glbctrl;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct s3c_dma_params *dma_data =
--		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
--
--	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
--	ac_glbctrl &= ~S3C_AC97_GLBCTRL_MICINTM_MASK;
--
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
--	case SNDRV_PCM_TRIGGER_RESUME:
--	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		ac_glbctrl |= S3C_AC97_GLBCTRL_MICINTM_DMA;
--		break;
--
--	case SNDRV_PCM_TRIGGER_STOP:
--	case SNDRV_PCM_TRIGGER_SUSPEND:
--	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		break;
--	}
--
--	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
--
--	s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
--
--	return 0;
--}
--
--static struct snd_soc_dai_ops s3c_ac97_dai_ops = {
--	.hw_params	= s3c_ac97_hw_params,
--	.trigger	= s3c_ac97_trigger,
--};
--
--static struct snd_soc_dai_ops s3c_ac97_mic_dai_ops = {
--	.hw_params	= s3c_ac97_hw_mic_params,
--	.trigger	= s3c_ac97_mic_trigger,
--};
--
--static struct snd_soc_dai_driver s3c_ac97_dai[] = {
--	[S3C_AC97_DAI_PCM] = {
--		.name =	"samsung-ac97",
--		.ac97_control = 1,
--		.playback = {
--			.stream_name = "AC97 Playback",
--			.channels_min = 2,
--			.channels_max = 2,
--			.rates = SNDRV_PCM_RATE_8000_48000,
--			.formats = SNDRV_PCM_FMTBIT_S16_LE,},
--		.capture = {
--			.stream_name = "AC97 Capture",
--			.channels_min = 2,
--			.channels_max = 2,
--			.rates = SNDRV_PCM_RATE_8000_48000,
--			.formats = SNDRV_PCM_FMTBIT_S16_LE,},
--		.ops = &s3c_ac97_dai_ops,
--	},
--	[S3C_AC97_DAI_MIC] = {
--		.name = "samsung-ac97-mic",
--		.ac97_control = 1,
--		.capture = {
--			.stream_name = "AC97 Mic Capture",
--			.channels_min = 1,
--			.channels_max = 1,
--			.rates = SNDRV_PCM_RATE_8000_48000,
--			.formats = SNDRV_PCM_FMTBIT_S16_LE,},
--		.ops = &s3c_ac97_mic_dai_ops,
--	},
--};
--
--static __devinit int s3c_ac97_probe(struct platform_device *pdev)
--{
--	struct resource *mem_res, *dmatx_res, *dmarx_res, *dmamic_res, *irq_res;
--	struct s3c_audio_pdata *ac97_pdata;
--	int ret;
--
--	ac97_pdata = pdev->dev.platform_data;
--	if (!ac97_pdata || !ac97_pdata->cfg_gpio) {
--		dev_err(&pdev->dev, "cfg_gpio callback not provided!\n");
--		return -EINVAL;
--	}
--
--	/* Check for availability of necessary resource */
--	dmatx_res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
--	if (!dmatx_res) {
--		dev_err(&pdev->dev, "Unable to get AC97-TX dma resource\n");
--		return -ENXIO;
--	}
--
--	dmarx_res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
--	if (!dmarx_res) {
--		dev_err(&pdev->dev, "Unable to get AC97-RX dma resource\n");
--		return -ENXIO;
--	}
--
--	dmamic_res = platform_get_resource(pdev, IORESOURCE_DMA, 2);
--	if (!dmamic_res) {
--		dev_err(&pdev->dev, "Unable to get AC97-MIC dma resource\n");
--		return -ENXIO;
--	}
--
--	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!mem_res) {
--		dev_err(&pdev->dev, "Unable to get register resource\n");
--		return -ENXIO;
--	}
--
--	irq_res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
--	if (!irq_res) {
--		dev_err(&pdev->dev, "AC97 IRQ not provided!\n");
--		return -ENXIO;
--	}
--
--	if (!request_mem_region(mem_res->start,
--				resource_size(mem_res), "ac97")) {
--		dev_err(&pdev->dev, "Unable to request register region\n");
--		return -EBUSY;
--	}
--
--	s3c_ac97_pcm_out.channel = dmatx_res->start;
--	s3c_ac97_pcm_out.dma_addr = mem_res->start + S3C_AC97_PCM_DATA;
--	s3c_ac97_pcm_in.channel = dmarx_res->start;
--	s3c_ac97_pcm_in.dma_addr = mem_res->start + S3C_AC97_PCM_DATA;
--	s3c_ac97_mic_in.channel = dmamic_res->start;
--	s3c_ac97_mic_in.dma_addr = mem_res->start + S3C_AC97_MIC_DATA;
--
--	init_completion(&s3c_ac97.done);
--	mutex_init(&s3c_ac97.lock);
--
--	s3c_ac97.regs = ioremap(mem_res->start, resource_size(mem_res));
--	if (s3c_ac97.regs == NULL) {
--		dev_err(&pdev->dev, "Unable to ioremap register region\n");
--		ret = -ENXIO;
--		goto err1;
--	}
--
--	s3c_ac97.ac97_clk = clk_get(&pdev->dev, "ac97");
--	if (IS_ERR(s3c_ac97.ac97_clk)) {
--		dev_err(&pdev->dev, "ac97 failed to get ac97_clock\n");
--		ret = -ENODEV;
--		goto err2;
--	}
--	clk_enable(s3c_ac97.ac97_clk);
--
--	if (ac97_pdata->cfg_gpio(pdev)) {
--		dev_err(&pdev->dev, "Unable to configure gpio\n");
--		ret = -EINVAL;
--		goto err3;
--	}
--
--	ret = request_irq(irq_res->start, s3c_ac97_irq,
--					IRQF_DISABLED, "AC97", NULL);
--	if (ret < 0) {
--		dev_err(&pdev->dev, "ac97: interrupt request failed.\n");
--		goto err4;
--	}
--
--	ret = snd_soc_register_dais(&pdev->dev, s3c_ac97_dai,
--			ARRAY_SIZE(s3c_ac97_dai));
--	if (ret)
--		goto err5;
--
--	return 0;
--
--err5:
--	free_irq(irq_res->start, NULL);
--err4:
--err3:
--	clk_disable(s3c_ac97.ac97_clk);
--	clk_put(s3c_ac97.ac97_clk);
--err2:
--	iounmap(s3c_ac97.regs);
--err1:
--	release_mem_region(mem_res->start, resource_size(mem_res));
--
--	return ret;
--}
--
--static __devexit int s3c_ac97_remove(struct platform_device *pdev)
--{
--	struct resource *mem_res, *irq_res;
--
--	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(s3c_ac97_dai));
--
--	irq_res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
--	if (irq_res)
--		free_irq(irq_res->start, NULL);
--
--	clk_disable(s3c_ac97.ac97_clk);
--	clk_put(s3c_ac97.ac97_clk);
--
--	iounmap(s3c_ac97.regs);
--
--	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (mem_res)
--		release_mem_region(mem_res->start, resource_size(mem_res));
--
--	return 0;
--}
--
--static struct platform_driver s3c_ac97_driver = {
--	.probe  = s3c_ac97_probe,
--	.remove = s3c_ac97_remove,
--	.driver = {
--		.name = "samsung-ac97",
--		.owner = THIS_MODULE,
--	},
--};
--
--static int __init s3c_ac97_init(void)
--{
--	return platform_driver_register(&s3c_ac97_driver);
--}
--module_init(s3c_ac97_init);
--
--static void __exit s3c_ac97_exit(void)
--{
--	platform_driver_unregister(&s3c_ac97_driver);
--}
--module_exit(s3c_ac97_exit);
--
--MODULE_AUTHOR("Jaswinder Singh, <jassi.brar@samsung.com>");
--MODULE_DESCRIPTION("AC97 driver for the Samsung SoC");
--MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:samsung-ac97");
-diff --git a/sound/soc/s3c24xx/ac97.h b/sound/soc/s3c24xx/ac97.h
-deleted file mode 100644
-index a8f01b7..0000000
---- a/sound/soc/s3c24xx/ac97.h
-+++ /dev/null
-@@ -1,21 +0,0 @@
--/* sound/soc/s3c24xx/ac97.h
-- *
-- * ALSA SoC Audio Layer - S3C AC97 Controller driver
-- *	Evolved from s3c2443-ac97.h
-- *
-- * Copyright (c) 2010 Samsung Electronics Co. Ltd
-- *	Author: Jaswinder Singh <jassi.brar@samsung.com>
-- *	Credits: Graeme Gregory, Sean Choi
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--#ifndef __S3C_AC97_H_
--#define __S3C_AC97_H_
--
--#define S3C_AC97_DAI_PCM 0
--#define S3C_AC97_DAI_MIC 1
--
--#endif /* __S3C_AC97_H_ */
-diff --git a/sound/soc/s3c24xx/dma.c b/sound/soc/s3c24xx/dma.c
-deleted file mode 100644
-index 12622f3..0000000
---- a/sound/soc/s3c24xx/dma.c
-+++ /dev/null
-@@ -1,503 +0,0 @@
--/*
-- * dma.c  --  ALSA Soc Audio Layer
-- *
-- * (c) 2006 Wolfson Microelectronics PLC.
-- * Graeme Gregory graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-- *
-- * Copyright 2004-2005 Simtec Electronics
-- *	http://armlinux.simtec.co.uk/
-- *	Ben Dooks <ben@simtec.co.uk>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- */
--
--#include <linux/module.h>
--#include <linux/init.h>
--#include <linux/io.h>
--#include <linux/platform_device.h>
--#include <linux/slab.h>
--#include <linux/dma-mapping.h>
--
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/pcm_params.h>
--#include <sound/soc.h>
--
--#include <asm/dma.h>
--#include <mach/hardware.h>
--#include <mach/dma.h>
--
--#include "dma.h"
--
--static const struct snd_pcm_hardware dma_hardware = {
--	.info			= SNDRV_PCM_INFO_INTERLEAVED |
--				    SNDRV_PCM_INFO_BLOCK_TRANSFER |
--				    SNDRV_PCM_INFO_MMAP |
--				    SNDRV_PCM_INFO_MMAP_VALID |
--				    SNDRV_PCM_INFO_PAUSE |
--				    SNDRV_PCM_INFO_RESUME,
--	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
--				    SNDRV_PCM_FMTBIT_U16_LE |
--				    SNDRV_PCM_FMTBIT_U8 |
--				    SNDRV_PCM_FMTBIT_S8,
--	.channels_min		= 2,
--	.channels_max		= 2,
--	.buffer_bytes_max	= 128*1024,
--	.period_bytes_min	= PAGE_SIZE,
--	.period_bytes_max	= PAGE_SIZE*2,
--	.periods_min		= 2,
--	.periods_max		= 128,
--	.fifo_size		= 32,
--};
--
--struct runtime_data {
--	spinlock_t lock;
--	int state;
--	unsigned int dma_loaded;
--	unsigned int dma_limit;
--	unsigned int dma_period;
--	dma_addr_t dma_start;
--	dma_addr_t dma_pos;
--	dma_addr_t dma_end;
--	struct s3c_dma_params *params;
--};
--
--/* dma_enqueue
-- *
-- * place a dma buffer onto the queue for the dma system
-- * to handle.
--*/
--static void dma_enqueue(struct snd_pcm_substream *substream)
--{
--	struct runtime_data *prtd = substream->runtime->private_data;
--	dma_addr_t pos = prtd->dma_pos;
--	unsigned int limit;
--	int ret;
--
--	pr_debug("Entered %s\n", __func__);
--
--	if (s3c_dma_has_circular())
--		limit = (prtd->dma_end - prtd->dma_start) / prtd->dma_period;
--	else
--		limit = prtd->dma_limit;
--
--	pr_debug("%s: loaded %d, limit %d\n",
--				__func__, prtd->dma_loaded, limit);
--
--	while (prtd->dma_loaded < limit) {
--		unsigned long len = prtd->dma_period;
--
--		pr_debug("dma_loaded: %d\n", prtd->dma_loaded);
--
--		if ((pos + len) > prtd->dma_end) {
--			len  = prtd->dma_end - pos;
--			pr_debug(KERN_DEBUG "%s: corrected dma len %ld\n",
--			       __func__, len);
--		}
--
--		ret = s3c2410_dma_enqueue(prtd->params->channel,
--			substream, pos, len);
--
--		if (ret == 0) {
--			prtd->dma_loaded++;
--			pos += prtd->dma_period;
--			if (pos >= prtd->dma_end)
--				pos = prtd->dma_start;
--		} else
--			break;
--	}
--
--	prtd->dma_pos = pos;
--}
--
--static void audio_buffdone(struct s3c2410_dma_chan *channel,
--				void *dev_id, int size,
--				enum s3c2410_dma_buffresult result)
--{
--	struct snd_pcm_substream *substream = dev_id;
--	struct runtime_data *prtd;
--
--	pr_debug("Entered %s\n", __func__);
--
--	if (result == S3C2410_RES_ABORT || result == S3C2410_RES_ERR)
--		return;
--
--	prtd = substream->runtime->private_data;
--
--	if (substream)
--		snd_pcm_period_elapsed(substream);
--
--	spin_lock(&prtd->lock);
--	if (prtd->state & ST_RUNNING && !s3c_dma_has_circular()) {
--		prtd->dma_loaded--;
--		dma_enqueue(substream);
--	}
--
--	spin_unlock(&prtd->lock);
--}
--
--static int dma_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct runtime_data *prtd = runtime->private_data;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	unsigned long totbytes = params_buffer_bytes(params);
--	struct s3c_dma_params *dma =
--		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
--	int ret = 0;
--
--
--	pr_debug("Entered %s\n", __func__);
--
--	/* return if this is a bufferless transfer e.g.
--	 * codec <--> BT codec or GSM modem -- lg FIXME */
--	if (!dma)
--		return 0;
--
--	/* this may get called several times by oss emulation
--	 * with different params -HW */
--	if (prtd->params == NULL) {
--		/* prepare DMA */
--		prtd->params = dma;
--
--		pr_debug("params %p, client %p, channel %d\n", prtd->params,
--			prtd->params->client, prtd->params->channel);
--
--		ret = s3c2410_dma_request(prtd->params->channel,
--					  prtd->params->client, NULL);
--
--		if (ret < 0) {
--			printk(KERN_ERR "failed to get dma channel\n");
--			return ret;
--		}
--
--		/* use the circular buffering if we have it available. */
--		if (s3c_dma_has_circular())
--			s3c2410_dma_setflags(prtd->params->channel,
--					     S3C2410_DMAF_CIRCULAR);
--	}
--
--	s3c2410_dma_set_buffdone_fn(prtd->params->channel,
--				    audio_buffdone);
--
--	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
--
--	runtime->dma_bytes = totbytes;
--
--	spin_lock_irq(&prtd->lock);
--	prtd->dma_loaded = 0;
--	prtd->dma_limit = runtime->hw.periods_min;
--	prtd->dma_period = params_period_bytes(params);
--	prtd->dma_start = runtime->dma_addr;
--	prtd->dma_pos = prtd->dma_start;
--	prtd->dma_end = prtd->dma_start + totbytes;
--	spin_unlock_irq(&prtd->lock);
--
--	return 0;
--}
--
--static int dma_hw_free(struct snd_pcm_substream *substream)
--{
--	struct runtime_data *prtd = substream->runtime->private_data;
--
--	pr_debug("Entered %s\n", __func__);
--
--	/* TODO - do we need to ensure DMA flushed */
--	snd_pcm_set_runtime_buffer(substream, NULL);
--
--	if (prtd->params) {
--		s3c2410_dma_free(prtd->params->channel, prtd->params->client);
--		prtd->params = NULL;
--	}
--
--	return 0;
--}
--
--static int dma_prepare(struct snd_pcm_substream *substream)
--{
--	struct runtime_data *prtd = substream->runtime->private_data;
--	int ret = 0;
--
--	pr_debug("Entered %s\n", __func__);
--
--	/* return if this is a bufferless transfer e.g.
--	 * codec <--> BT codec or GSM modem -- lg FIXME */
--	if (!prtd->params)
--		return 0;
--
--	/* channel needs configuring for mem=>device, increment memory addr,
--	 * sync to pclk, half-word transfers to the IIS-FIFO. */
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		s3c2410_dma_devconfig(prtd->params->channel,
--				      S3C2410_DMASRC_MEM,
--				      prtd->params->dma_addr);
--	} else {
--		s3c2410_dma_devconfig(prtd->params->channel,
--				      S3C2410_DMASRC_HW,
--				      prtd->params->dma_addr);
--	}
--
--	s3c2410_dma_config(prtd->params->channel,
--			   prtd->params->dma_size);
--
--	/* flush the DMA channel */
--	s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_FLUSH);
--	prtd->dma_loaded = 0;
--	prtd->dma_pos = prtd->dma_start;
--
--	/* enqueue dma buffers */
--	dma_enqueue(substream);
--
--	return ret;
--}
--
--static int dma_trigger(struct snd_pcm_substream *substream, int cmd)
--{
--	struct runtime_data *prtd = substream->runtime->private_data;
--	int ret = 0;
--
--	pr_debug("Entered %s\n", __func__);
--
--	spin_lock(&prtd->lock);
--
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
--	case SNDRV_PCM_TRIGGER_RESUME:
--	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		prtd->state |= ST_RUNNING;
--		s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_START);
--		break;
--
--	case SNDRV_PCM_TRIGGER_STOP:
--	case SNDRV_PCM_TRIGGER_SUSPEND:
--	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		prtd->state &= ~ST_RUNNING;
--		s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_STOP);
--		break;
--
--	default:
--		ret = -EINVAL;
--		break;
--	}
--
--	spin_unlock(&prtd->lock);
--
--	return ret;
--}
--
--static snd_pcm_uframes_t
--dma_pointer(struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct runtime_data *prtd = runtime->private_data;
--	unsigned long res;
--	dma_addr_t src, dst;
--
--	pr_debug("Entered %s\n", __func__);
--
--	spin_lock(&prtd->lock);
--	s3c2410_dma_getposition(prtd->params->channel, &src, &dst);
--
--	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
--		res = dst - prtd->dma_start;
--	else
--		res = src - prtd->dma_start;
--
--	spin_unlock(&prtd->lock);
--
--	pr_debug("Pointer %x %x\n", src, dst);
--
--	/* we seem to be getting the odd error from the pcm library due
--	 * to out-of-bounds pointers. this is maybe due to the dma engine
--	 * not having loaded the new values for the channel before being
--	 * callled... (todo - fix )
--	 */
--
--	if (res >= snd_pcm_lib_buffer_bytes(substream)) {
--		if (res == snd_pcm_lib_buffer_bytes(substream))
--			res = 0;
--	}
--
--	return bytes_to_frames(substream->runtime, res);
--}
--
--static int dma_open(struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct runtime_data *prtd;
--
--	pr_debug("Entered %s\n", __func__);
--
--	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
--	snd_soc_set_runtime_hwparams(substream, &dma_hardware);
--
--	prtd = kzalloc(sizeof(struct runtime_data), GFP_KERNEL);
--	if (prtd == NULL)
--		return -ENOMEM;
--
--	spin_lock_init(&prtd->lock);
--
--	runtime->private_data = prtd;
--	return 0;
--}
--
--static int dma_close(struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct runtime_data *prtd = runtime->private_data;
--
--	pr_debug("Entered %s\n", __func__);
--
--	if (!prtd)
--		pr_debug("dma_close called with prtd == NULL\n");
--
--	kfree(prtd);
--
--	return 0;
--}
--
--static int dma_mmap(struct snd_pcm_substream *substream,
--	struct vm_area_struct *vma)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--
--	pr_debug("Entered %s\n", __func__);
--
--	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
--				     runtime->dma_area,
--				     runtime->dma_addr,
--				     runtime->dma_bytes);
--}
--
--static struct snd_pcm_ops dma_ops = {
--	.open		= dma_open,
--	.close		= dma_close,
--	.ioctl		= snd_pcm_lib_ioctl,
--	.hw_params	= dma_hw_params,
--	.hw_free	= dma_hw_free,
--	.prepare	= dma_prepare,
--	.trigger	= dma_trigger,
--	.pointer	= dma_pointer,
--	.mmap		= dma_mmap,
--};
--
--static int preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
--{
--	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
--	struct snd_dma_buffer *buf = &substream->dma_buffer;
--	size_t size = dma_hardware.buffer_bytes_max;
--
--	pr_debug("Entered %s\n", __func__);
--
--	buf->dev.type = SNDRV_DMA_TYPE_DEV;
--	buf->dev.dev = pcm->card->dev;
--	buf->private_data = NULL;
--	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
--					   &buf->addr, GFP_KERNEL);
--	if (!buf->area)
--		return -ENOMEM;
--	buf->bytes = size;
--	return 0;
--}
--
--static void dma_free_dma_buffers(struct snd_pcm *pcm)
--{
--	struct snd_pcm_substream *substream;
--	struct snd_dma_buffer *buf;
--	int stream;
--
--	pr_debug("Entered %s\n", __func__);
--
--	for (stream = 0; stream < 2; stream++) {
--		substream = pcm->streams[stream].substream;
--		if (!substream)
--			continue;
--
--		buf = &substream->dma_buffer;
--		if (!buf->area)
--			continue;
--
--		dma_free_writecombine(pcm->card->dev, buf->bytes,
--				      buf->area, buf->addr);
--		buf->area = NULL;
--	}
--}
--
--static u64 dma_mask = DMA_BIT_MASK(32);
--
--static int dma_new(struct snd_card *card,
--	struct snd_soc_dai *dai, struct snd_pcm *pcm)
--{
--	int ret = 0;
--
--	pr_debug("Entered %s\n", __func__);
--
--	if (!card->dev->dma_mask)
--		card->dev->dma_mask = &dma_mask;
--	if (!card->dev->coherent_dma_mask)
--		card->dev->coherent_dma_mask = 0xffffffff;
--
--	if (dai->driver->playback.channels_min) {
--		ret = preallocate_dma_buffer(pcm,
--			SNDRV_PCM_STREAM_PLAYBACK);
--		if (ret)
--			goto out;
--	}
--
--	if (dai->driver->capture.channels_min) {
--		ret = preallocate_dma_buffer(pcm,
--			SNDRV_PCM_STREAM_CAPTURE);
--		if (ret)
--			goto out;
--	}
--out:
--	return ret;
--}
--
--static struct snd_soc_platform_driver samsung_asoc_platform = {
--	.ops		= &dma_ops,
--	.pcm_new	= dma_new,
--	.pcm_free	= dma_free_dma_buffers,
--};
--
--static int __devinit samsung_asoc_platform_probe(struct platform_device *pdev)
--{
--	return snd_soc_register_platform(&pdev->dev, &samsung_asoc_platform);
--}
--
--static int __devexit samsung_asoc_platform_remove(struct platform_device *pdev)
--{
--	snd_soc_unregister_platform(&pdev->dev);
--	return 0;
--}
--
--static struct platform_driver asoc_dma_driver = {
--	.driver = {
--		.name = "samsung-audio",
--		.owner = THIS_MODULE,
--	},
--
--	.probe = samsung_asoc_platform_probe,
--	.remove = __devexit_p(samsung_asoc_platform_remove),
--};
--
--static int __init samsung_asoc_init(void)
--{
--	return platform_driver_register(&asoc_dma_driver);
--}
--module_init(samsung_asoc_init);
--
--static void __exit samsung_asoc_exit(void)
--{
--	platform_driver_unregister(&asoc_dma_driver);
--}
--module_exit(samsung_asoc_exit);
--
--MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
--MODULE_DESCRIPTION("Samsung ASoC DMA Driver");
--MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:samsung-audio");
-diff --git a/sound/soc/s3c24xx/dma.h b/sound/soc/s3c24xx/dma.h
-deleted file mode 100644
-index f8cd2b4..0000000
---- a/sound/soc/s3c24xx/dma.h
-+++ /dev/null
-@@ -1,30 +0,0 @@
--/*
-- *  dma.h --
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-- *  ALSA PCM interface for the Samsung S3C24xx CPU
-- */
--
--#ifndef _S3C_AUDIO_H
--#define _S3C_AUDIO_H
--
--#define ST_RUNNING		(1<<0)
--#define ST_OPENED		(1<<1)
--
--struct s3c_dma_params {
--	struct s3c2410_dma_client *client;	/* stream identifier */
--	int channel;				/* Channel ID */
--	dma_addr_t dma_addr;
--	int dma_size;			/* Size of the DMA transfer */
--};
--
--#define S3C24XX_DAI_I2S			0
--
--/* platform data */
--extern struct snd_ac97_bus_ops s3c24xx_ac97_ops;
--
--#endif
-diff --git a/sound/soc/s3c24xx/goni_wm8994.c b/sound/soc/s3c24xx/goni_wm8994.c
-deleted file mode 100644
-index dcaf7c3..0000000
---- a/sound/soc/s3c24xx/goni_wm8994.c
-+++ /dev/null
-@@ -1,309 +0,0 @@
--/*
-- * goni_wm8994.c
-- *
-- * Copyright (C) 2010 Samsung Electronics Co.Ltd
-- * Author: Chanwoo Choi <cw00.choi@samsung.com>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-- */
--
--#include <linux/module.h>
--#include <linux/moduleparam.h>
--#include <linux/io.h>
--#include <linux/platform_device.h>
--#include <sound/soc.h>
--#include <sound/soc-dapm.h>
--#include <sound/jack.h>
--#include <asm/mach-types.h>
--#include <mach/gpio.h>
--#include <mach/regs-clock.h>
--
--#include <linux/mfd/wm8994/core.h>
--#include <linux/mfd/wm8994/registers.h>
--#include "../codecs/wm8994.h"
--#include "dma.h"
--#include "i2s.h"
--
--#define MACHINE_NAME	0
--#define CPU_VOICE_DAI	1
--
--static const char *aquila_str[] = {
--	[MACHINE_NAME] = "aquila",
--	[CPU_VOICE_DAI] = "aquila-voice-dai",
--};
--
--static struct snd_soc_card goni;
--static struct platform_device *goni_snd_device;
--
--/* 3.5 pie jack */
--static struct snd_soc_jack jack;
--
--/* 3.5 pie jack detection DAPM pins */
--static struct snd_soc_jack_pin jack_pins[] = {
--	{
--		.pin = "Headset Mic",
--		.mask = SND_JACK_MICROPHONE,
--	}, {
--		.pin = "Headset Stereophone",
--		.mask = SND_JACK_HEADPHONE | SND_JACK_MECHANICAL |
--			SND_JACK_AVOUT,
--	},
--};
--
--/* 3.5 pie jack detection gpios */
--static struct snd_soc_jack_gpio jack_gpios[] = {
--	{
--		.gpio = S5PV210_GPH0(6),
--		.name = "DET_3.5",
--		.report = SND_JACK_HEADSET | SND_JACK_MECHANICAL |
--			SND_JACK_AVOUT,
--		.debounce_time = 200,
--	},
--};
--
--static const struct snd_soc_dapm_widget goni_dapm_widgets[] = {
--	SND_SOC_DAPM_SPK("Ext Left Spk", NULL),
--	SND_SOC_DAPM_SPK("Ext Right Spk", NULL),
--	SND_SOC_DAPM_SPK("Ext Rcv", NULL),
--	SND_SOC_DAPM_HP("Headset Stereophone", NULL),
--	SND_SOC_DAPM_MIC("Headset Mic", NULL),
--	SND_SOC_DAPM_MIC("Main Mic", NULL),
--	SND_SOC_DAPM_MIC("2nd Mic", NULL),
--	SND_SOC_DAPM_LINE("Radio In", NULL),
--};
--
--static const struct snd_soc_dapm_route goni_dapm_routes[] = {
--	{"Ext Left Spk", NULL, "SPKOUTLP"},
--	{"Ext Left Spk", NULL, "SPKOUTLN"},
--
--	{"Ext Right Spk", NULL, "SPKOUTRP"},
--	{"Ext Right Spk", NULL, "SPKOUTRN"},
--
--	{"Ext Rcv", NULL, "HPOUT2N"},
--	{"Ext Rcv", NULL, "HPOUT2P"},
--
--	{"Headset Stereophone", NULL, "HPOUT1L"},
--	{"Headset Stereophone", NULL, "HPOUT1R"},
--
--	{"IN1RN", NULL, "Headset Mic"},
--	{"IN1RP", NULL, "Headset Mic"},
--
--	{"IN1RN", NULL, "2nd Mic"},
--	{"IN1RP", NULL, "2nd Mic"},
--
--	{"IN1LN", NULL, "Main Mic"},
--	{"IN1LP", NULL, "Main Mic"},
--
--	{"IN2LN", NULL, "Radio In"},
--	{"IN2RN", NULL, "Radio In"},
--};
--
--static int goni_wm8994_init(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_codec *codec = rtd->codec;
--	int ret;
--
--	/* add goni specific widgets */
--	snd_soc_dapm_new_controls(codec, goni_dapm_widgets,
--			ARRAY_SIZE(goni_dapm_widgets));
--
--	/* set up goni specific audio routes */
--	snd_soc_dapm_add_routes(codec, goni_dapm_routes,
--			ARRAY_SIZE(goni_dapm_routes));
--
--	/* set endpoints to not connected */
--	snd_soc_dapm_nc_pin(codec, "IN2LP:VXRN");
--	snd_soc_dapm_nc_pin(codec, "IN2RP:VXRP");
--	snd_soc_dapm_nc_pin(codec, "LINEOUT1N");
--	snd_soc_dapm_nc_pin(codec, "LINEOUT1P");
--	snd_soc_dapm_nc_pin(codec, "LINEOUT2N");
--	snd_soc_dapm_nc_pin(codec, "LINEOUT2P");
--
--	if (machine_is_aquila()) {
--		snd_soc_dapm_nc_pin(codec, "SPKOUTRN");
--		snd_soc_dapm_nc_pin(codec, "SPKOUTRP");
--	}
--
--	snd_soc_dapm_sync(codec);
--
--	/* Headset jack detection */
--	ret = snd_soc_jack_new(&goni, "Headset Jack",
--			SND_JACK_HEADSET | SND_JACK_MECHANICAL | SND_JACK_AVOUT,
--			&jack);
--	if (ret)
--		return ret;
--
--	ret = snd_soc_jack_add_pins(&jack, ARRAY_SIZE(jack_pins), jack_pins);
--	if (ret)
--		return ret;
--
--	ret = snd_soc_jack_add_gpios(&jack, ARRAY_SIZE(jack_gpios), jack_gpios);
--	if (ret)
--		return ret;
--
--	return 0;
--}
--
--static int goni_hifi_hw_params(struct snd_pcm_substream *substream,
--		struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	unsigned int pll_out = 24000000;
--	int ret = 0;
--
--	/* set the cpu DAI configuration */
--	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
--			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	/* set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
--			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec FLL */
--	ret = snd_soc_dai_set_pll(codec_dai, WM8994_FLL1, 0, pll_out,
--			params_rate(params) * 256);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec system clock */
--	ret = snd_soc_dai_set_sysclk(codec_dai, WM8994_SYSCLK_FLL1,
--			params_rate(params) * 256, SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--static struct snd_soc_ops goni_hifi_ops = {
--	.hw_params = goni_hifi_hw_params,
--};
--
--static int goni_voice_hw_params(struct snd_pcm_substream *substream,
--		struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	unsigned int pll_out = 24000000;
--	int ret = 0;
--
--	if (params_rate(params) != 8000)
--		return -EINVAL;
--
--	/* set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_LEFT_J |
--			SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec FLL */
--	ret = snd_soc_dai_set_pll(codec_dai, WM8994_FLL2, 0, pll_out,
--			params_rate(params) * 256);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec system clock */
--	ret = snd_soc_dai_set_sysclk(codec_dai, WM8994_SYSCLK_FLL2,
--			params_rate(params) * 256, SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--static struct snd_soc_dai_driver voice_dai = {
--	.name = "goni-voice-dai",
--	.id = 0,
--	.playback = {
--		.channels_min = 1,
--		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_8000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
--	.capture = {
--		.channels_min = 1,
--		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_8000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
--};
--
--static struct snd_soc_ops goni_voice_ops = {
--	.hw_params = goni_voice_hw_params,
--};
--
--static struct snd_soc_dai_link goni_dai[] = {
--{
--	.name = "WM8994",
--	.stream_name = "WM8994 HiFi",
--	.cpu_dai_name = "samsung-i2s.0",
--	.codec_dai_name = "wm8994-hifi",
--	.platform_name = "samsung-audio",
--	.codec_name = "wm8994-codec.0-0x1a",
--	.init = goni_wm8994_init,
--	.ops = &goni_hifi_ops,
--}, {
--	.name = "WM8994 Voice",
--	.stream_name = "Voice",
--	.cpu_dai_name = "goni-voice-dai",
--	.codec_dai_name = "wm8994-voice",
--	.platform_name = "samsung-audio",
--	.codec_name = "wm8994-codec.0-0x1a",
--	.ops = &goni_voice_ops,
--},
--};
--
--static struct snd_soc_card goni = {
--	.name = "goni",
--	.dai_link = goni_dai,
--	.num_links = ARRAY_SIZE(goni_dai),
--};
--
--static int __init goni_init(void)
--{
--	int ret;
--
--	if (machine_is_aquila()) {
--		voice_dai.name = aquila_str[CPU_VOICE_DAI];
--		goni_dai[1].cpu_dai_name = aquila_str[CPU_VOICE_DAI];
--		goni.name = aquila_str[MACHINE_NAME];
--	} else if (!machine_is_goni())
--		return -ENODEV;
--
--	goni_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!goni_snd_device)
--		return -ENOMEM;
--
--	/* register voice DAI here */
--	ret = snd_soc_register_dai(&goni_snd_device->dev, &voice_dai);
--	if (ret)
--		return ret;
--
--	platform_set_drvdata(goni_snd_device, &goni);
--	ret = platform_device_add(goni_snd_device);
--
--	if (ret)
--		platform_device_put(goni_snd_device);
--
--	return ret;
--}
--
--static void __exit goni_exit(void)
--{
--	platform_device_unregister(goni_snd_device);
--}
--
--module_init(goni_init);
--module_exit(goni_exit);
--
--/* Module information */
--MODULE_DESCRIPTION("ALSA SoC WM8994 GONI(S5PV210)");
--MODULE_AUTHOR("Chanwoo Choi <cw00.choi@samsung.com>");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/i2s.c b/sound/soc/s3c24xx/i2s.c
-deleted file mode 100644
-index 6869f51..0000000
---- a/sound/soc/s3c24xx/i2s.c
-+++ /dev/null
-@@ -1,1251 +0,0 @@
--/* sound/soc/s3c24xx/i2s.c
-- *
-- * ALSA SoC Audio Layer - Samsung I2S Controller driver
-- *
-- * Copyright (c) 2010 Samsung Electronics Co. Ltd.
-- *	Jaswinder Singh <jassi.brar@samsung.com>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--#include <linux/delay.h>
--#include <linux/slab.h>
--#include <linux/clk.h>
--#include <linux/io.h>
--
--#include <sound/pcm.h>
--#include <sound/pcm_params.h>
--#include <sound/soc.h>
--
--#include <plat/audio.h>
--
--#include "dma.h"
--#include "i2s.h"
--
--#define I2SCON		0x0
--#define I2SMOD		0x4
--#define I2SFIC		0x8
--#define I2SPSR		0xc
--#define I2STXD		0x10
--#define I2SRXD		0x14
--#define I2SFICS		0x18
--#define I2STXDS		0x1c
--
--#define CON_RSTCLR		(1 << 31)
--#define CON_FRXOFSTATUS		(1 << 26)
--#define CON_FRXORINTEN		(1 << 25)
--#define CON_FTXSURSTAT		(1 << 24)
--#define CON_FTXSURINTEN		(1 << 23)
--#define CON_TXSDMA_PAUSE	(1 << 20)
--#define CON_TXSDMA_ACTIVE	(1 << 18)
--
--#define CON_FTXURSTATUS		(1 << 17)
--#define CON_FTXURINTEN		(1 << 16)
--#define CON_TXFIFO2_EMPTY	(1 << 15)
--#define CON_TXFIFO1_EMPTY	(1 << 14)
--#define CON_TXFIFO2_FULL	(1 << 13)
--#define CON_TXFIFO1_FULL	(1 << 12)
--
--#define CON_LRINDEX		(1 << 11)
--#define CON_TXFIFO_EMPTY	(1 << 10)
--#define CON_RXFIFO_EMPTY	(1 << 9)
--#define CON_TXFIFO_FULL		(1 << 8)
--#define CON_RXFIFO_FULL		(1 << 7)
--#define CON_TXDMA_PAUSE		(1 << 6)
--#define CON_RXDMA_PAUSE		(1 << 5)
--#define CON_TXCH_PAUSE		(1 << 4)
--#define CON_RXCH_PAUSE		(1 << 3)
--#define CON_TXDMA_ACTIVE	(1 << 2)
--#define CON_RXDMA_ACTIVE	(1 << 1)
--#define CON_ACTIVE		(1 << 0)
--
--#define MOD_OPCLK_CDCLK_OUT	(0 << 30)
--#define MOD_OPCLK_CDCLK_IN	(1 << 30)
--#define MOD_OPCLK_BCLK_OUT	(2 << 30)
--#define MOD_OPCLK_PCLK		(3 << 30)
--#define MOD_OPCLK_MASK		(3 << 30)
--#define MOD_TXS_IDMA		(1 << 28) /* Sec_TXFIFO use I-DMA */
--
--#define MOD_BLCS_SHIFT	26
--#define MOD_BLCS_16BIT	(0 << MOD_BLCS_SHIFT)
--#define MOD_BLCS_8BIT	(1 << MOD_BLCS_SHIFT)
--#define MOD_BLCS_24BIT	(2 << MOD_BLCS_SHIFT)
--#define MOD_BLCS_MASK	(3 << MOD_BLCS_SHIFT)
--#define MOD_BLCP_SHIFT	24
--#define MOD_BLCP_16BIT	(0 << MOD_BLCP_SHIFT)
--#define MOD_BLCP_8BIT	(1 << MOD_BLCP_SHIFT)
--#define MOD_BLCP_24BIT	(2 << MOD_BLCP_SHIFT)
--#define MOD_BLCP_MASK	(3 << MOD_BLCP_SHIFT)
--
--#define MOD_C2DD_HHALF		(1 << 21) /* Discard Higher-half */
--#define MOD_C2DD_LHALF		(1 << 20) /* Discard Lower-half */
--#define MOD_C1DD_HHALF		(1 << 19)
--#define MOD_C1DD_LHALF		(1 << 18)
--#define MOD_DC2_EN		(1 << 17)
--#define MOD_DC1_EN		(1 << 16)
--#define MOD_BLC_16BIT		(0 << 13)
--#define MOD_BLC_8BIT		(1 << 13)
--#define MOD_BLC_24BIT		(2 << 13)
--#define MOD_BLC_MASK		(3 << 13)
--
--#define MOD_IMS_SYSMUX		(1 << 10)
--#define MOD_SLAVE		(1 << 11)
--#define MOD_TXONLY		(0 << 8)
--#define MOD_RXONLY		(1 << 8)
--#define MOD_TXRX		(2 << 8)
--#define MOD_MASK		(3 << 8)
--#define MOD_LR_LLOW		(0 << 7)
--#define MOD_LR_RLOW		(1 << 7)
--#define MOD_SDF_IIS		(0 << 5)
--#define MOD_SDF_MSB		(1 << 5)
--#define MOD_SDF_LSB		(2 << 5)
--#define MOD_SDF_MASK		(3 << 5)
--#define MOD_RCLK_256FS		(0 << 3)
--#define MOD_RCLK_512FS		(1 << 3)
--#define MOD_RCLK_384FS		(2 << 3)
--#define MOD_RCLK_768FS		(3 << 3)
--#define MOD_RCLK_MASK		(3 << 3)
--#define MOD_BCLK_32FS		(0 << 1)
--#define MOD_BCLK_48FS		(1 << 1)
--#define MOD_BCLK_16FS		(2 << 1)
--#define MOD_BCLK_24FS		(3 << 1)
--#define MOD_BCLK_MASK		(3 << 1)
--#define MOD_8BIT		(1 << 0)
--
--#define MOD_CDCLKCON		(1 << 12)
--
--#define PSR_PSREN		(1 << 15)
--
--#define FIC_TX2COUNT(x)		(((x) >>  24) & 0xf)
--#define FIC_TX1COUNT(x)		(((x) >>  16) & 0xf)
--
--#define FIC_TXFLUSH		(1 << 15)
--#define FIC_RXFLUSH		(1 << 7)
--#define FIC_TXCOUNT(x)		(((x) >>  8) & 0xf)
--#define FIC_RXCOUNT(x)		(((x) >>  0) & 0xf)
--#define FICS_TXCOUNT(x)		(((x) >>  8) & 0x7f)
--
--#define msecs_to_loops(t) (loops_per_jiffy / 1000 * HZ * t)
--
--struct i2s_dai {
--	/* Platform device for this DAI */
--	struct platform_device *pdev;
--	/* IOREMAP'd SFRs */
--	void __iomem	*addr;
--	/* Physical base address of SFRs */
--	u32	base;
--	/* Rate of RCLK source clock */
--	unsigned long rclk_srcrate;
--	/* Frame Clock */
--	unsigned frmclk;
--	/*
--	 * Specifically requested RCLK,BCLK by MACHINE Driver.
--	 * 0 indicates CPU driver is free to choose any value.
--	 */
--	unsigned rfs, bfs;
--	/* I2S Controller's core clock */
--	struct clk *clk;
--	/* Clock for generating I2S signals */
--	struct clk *op_clk;
--	/* Array of clock names for op_clk */
--	const char **src_clk;
--	/* Pointer to the Primary_Fifo if this is Sec_Fifo, NULL otherwise */
--	struct i2s_dai *pri_dai;
--	/* Pointer to the Secondary_Fifo if it has one, NULL otherwise */
--	struct i2s_dai *sec_dai;
--#define DAI_OPENED	(1 << 0) /* Dai is opened */
--#define DAI_MANAGER	(1 << 1) /* Dai is the manager */
--	unsigned mode;
--	/* Driver for this DAI */
--	struct snd_soc_dai_driver s3c_i2s_drv;
--	/* DMA parameters */
--	struct s3c_dma_params dma_playback;
--	struct s3c_dma_params dma_capture;
--	u32	quirks;
--	u32	suspend_i2smod;
--	u32	suspend_i2scon;
--	u32	suspend_i2spsr;
--};
--
--/* Lock for cross i/f checks */
--static DEFINE_SPINLOCK(lock);
--
--/* If this is the 'overlay' stereo DAI */
--static inline bool is_secondary(struct i2s_dai *i2s)
--{
--	return i2s->pri_dai ? true : false;
--}
--
--/* If operating in SoC-Slave mode */
--static inline bool is_slave(struct i2s_dai *i2s)
--{
--	return (readl(i2s->addr + I2SMOD) & MOD_SLAVE) ? true : false;
--}
--
--/* If this interface of the controller is transmitting data */
--static inline bool tx_active(struct i2s_dai *i2s)
--{
--	u32 active;
--
--	if (!i2s)
--		return false;
--
--	active = readl(i2s->addr + I2SMOD);
--
--	if (is_secondary(i2s))
--		active &= CON_TXSDMA_ACTIVE;
--	else
--		active &= CON_TXDMA_ACTIVE;
--
--	return active ? true : false;
--}
--
--/* If the other interface of the controller is transmitting data */
--static inline bool other_tx_active(struct i2s_dai *i2s)
--{
--	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
--
--	return tx_active(other);
--}
--
--/* If any interface of the controller is transmitting data */
--static inline bool any_tx_active(struct i2s_dai *i2s)
--{
--	return tx_active(i2s) || other_tx_active(i2s);
--}
--
--/* If this interface of the controller is receiving data */
--static inline bool rx_active(struct i2s_dai *i2s)
--{
--	u32 active;
--
--	if (!i2s)
--		return false;
--
--	active = readl(i2s->addr + I2SMOD) & CON_RXDMA_ACTIVE;
--
--	return active ? true : false;
--}
--
--/* If the other interface of the controller is receiving data */
--static inline bool other_rx_active(struct i2s_dai *i2s)
--{
--	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
--
--	return rx_active(other);
--}
--
--/* If any interface of the controller is receiving data */
--static inline bool any_rx_active(struct i2s_dai *i2s)
--{
--	return rx_active(i2s) || other_rx_active(i2s);
--}
--
--/* If the other DAI is transmitting or receiving data */
--static inline bool other_active(struct i2s_dai *i2s)
--{
--	return other_rx_active(i2s) || other_tx_active(i2s);
--}
--
--/* If this DAI is transmitting or receiving data */
--static inline bool this_active(struct i2s_dai *i2s)
--{
--	return tx_active(i2s) || rx_active(i2s);
--}
--
--/* If the controller is active anyway */
--static inline bool any_active(struct i2s_dai *i2s)
--{
--	return this_active(i2s) || other_active(i2s);
--}
--
--static inline struct i2s_dai *to_info(struct snd_soc_dai *dai)
--{
--	return snd_soc_dai_get_drvdata(dai);
--}
--
--static inline bool is_opened(struct i2s_dai *i2s)
--{
--	if (i2s && (i2s->mode & DAI_OPENED))
--		return true;
--	else
--		return false;
--}
--
--static inline bool is_manager(struct i2s_dai *i2s)
--{
--	if (is_opened(i2s) && (i2s->mode & DAI_MANAGER))
--		return true;
--	else
--		return false;
--}
--
--/* Read RCLK of I2S (in multiples of LRCLK) */
--static inline unsigned get_rfs(struct i2s_dai *i2s)
--{
--	u32 rfs = (readl(i2s->addr + I2SMOD) >> 3) & 0x3;
--
--	switch (rfs) {
--	case 3:	return 768;
--	case 2: return 384;
--	case 1:	return 512;
--	default: return 256;
--	}
--}
--
--/* Write RCLK of I2S (in multiples of LRCLK) */
--static inline void set_rfs(struct i2s_dai *i2s, unsigned rfs)
--{
--	u32 mod = readl(i2s->addr + I2SMOD);
--
--	mod &= ~MOD_RCLK_MASK;
--
--	switch (rfs) {
--	case 768:
--		mod |= MOD_RCLK_768FS;
--		break;
--	case 512:
--		mod |= MOD_RCLK_512FS;
--		break;
--	case 384:
--		mod |= MOD_RCLK_384FS;
--		break;
--	default:
--		mod |= MOD_RCLK_256FS;
--		break;
--	}
--
--	writel(mod, i2s->addr + I2SMOD);
--}
--
--/* Read Bit-Clock of I2S (in multiples of LRCLK) */
--static inline unsigned get_bfs(struct i2s_dai *i2s)
--{
--	u32 bfs = (readl(i2s->addr + I2SMOD) >> 1) & 0x3;
--
--	switch (bfs) {
--	case 3: return 24;
--	case 2: return 16;
--	case 1:	return 48;
--	default: return 32;
--	}
--}
--
--/* Write Bit-Clock of I2S (in multiples of LRCLK) */
--static inline void set_bfs(struct i2s_dai *i2s, unsigned bfs)
--{
--	u32 mod = readl(i2s->addr + I2SMOD);
--
--	mod &= ~MOD_BCLK_MASK;
--
--	switch (bfs) {
--	case 48:
--		mod |= MOD_BCLK_48FS;
--		break;
--	case 32:
--		mod |= MOD_BCLK_32FS;
--		break;
--	case 24:
--		mod |= MOD_BCLK_24FS;
--		break;
--	default:
--		mod |= MOD_BCLK_16FS;
--		break;
--	}
--
--	writel(mod, i2s->addr + I2SMOD);
--}
--
--/* Sample-Size */
--static inline int get_blc(struct i2s_dai *i2s)
--{
--	int blc = readl(i2s->addr + I2SMOD);
--
--	blc = (blc >> 13) & 0x3;
--
--	switch (blc) {
--	case 2: return 24;
--	case 1:	return 8;
--	default: return 16;
--	}
--}
--
--/* TX Channel Control */
--static void s3c_i2sv2_txctrl(struct i2s_dai *i2s, int on)
--{
--	void __iomem *addr = i2s->addr;
--	u32 con = readl(addr + I2SCON);
--	u32 mod = readl(addr + I2SMOD) & ~MOD_MASK;
--
--	if (on) {
--		con |= CON_ACTIVE;
--		con &= ~CON_TXCH_PAUSE;
--
--		if (is_secondary(i2s)) {
--			con |= CON_TXSDMA_ACTIVE;
--			con &= ~CON_TXSDMA_PAUSE;
--		} else {
--			con |= CON_TXDMA_ACTIVE;
--			con &= ~CON_TXDMA_PAUSE;
--		}
--
--		if (any_rx_active(i2s))
--			mod |= MOD_TXRX;
--		else
--			mod |= MOD_TXONLY;
--	} else {
--		if (is_secondary(i2s)) {
--			con |=  CON_TXSDMA_PAUSE;
--			con &= ~CON_TXSDMA_ACTIVE;
--		} else {
--			con |=  CON_TXDMA_PAUSE;
--			con &= ~CON_TXDMA_ACTIVE;
--		}
--
--		if (other_tx_active(i2s)) {
--			writel(con, addr + I2SCON);
--			return;
--		}
--
--		con |=  CON_TXCH_PAUSE;
--
--		if (any_rx_active(i2s))
--			mod |= MOD_RXONLY;
--		else
--			con &= ~CON_ACTIVE;
--	}
--
--	writel(mod, addr + I2SMOD);
--	writel(con, addr + I2SCON);
--}
--
--/* RX Channel Control */
--static void s3c_i2sv2_rxctrl(struct i2s_dai *i2s, int on)
--{
--	void __iomem *addr = i2s->addr;
--	u32 con = readl(addr + I2SCON);
--	u32 mod = readl(addr + I2SMOD) & ~MOD_MASK;
--
--	if (on) {
--		con |= CON_RXDMA_ACTIVE | CON_ACTIVE;
--		con &= ~(CON_RXDMA_PAUSE | CON_RXCH_PAUSE);
--
--		if (any_tx_active(i2s))
--			mod |= MOD_TXRX;
--		else
--			mod |= MOD_RXONLY;
--	} else {
--		con |=  CON_RXDMA_PAUSE | CON_RXCH_PAUSE;
--		con &= ~CON_RXDMA_ACTIVE;
--
--		if (any_tx_active(i2s))
--			mod |= MOD_TXONLY;
--		else
--			con &= ~CON_ACTIVE;
--	}
--
--	writel(mod, addr + I2SMOD);
--	writel(con, addr + I2SCON);
--}
--
--/* Flush FIFO of an interface */
--static inline void s3c_i2sv2_fifo(struct i2s_dai *i2s, u32 flush)
--{
--	void __iomem *fic;
--	u32 val;
--
--	if (!i2s)
--		return;
--
--	if (is_secondary(i2s))
--		fic = i2s->addr + I2SFICS;
--	else
--		fic = i2s->addr + I2SFIC;
--
--	/* Flush the FIFO */
--	writel(readl(fic) | flush, fic);
--
--	/* Be patient */
--	val = msecs_to_loops(1) / 1000; /* 1 usec */
--	while (--val)
--		cpu_relax();
--
--	writel(readl(fic) & ~flush, fic);
--}
--
--static int s3c_i2sv2_set_sysclk(struct snd_soc_dai *dai,
--	  int clk_id, unsigned int rfs, int dir)
--{
--	struct i2s_dai *i2s = to_info(dai);
--	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
--	u32 mod = readl(i2s->addr + I2SMOD);
--
--	switch (clk_id) {
--	case SAMSUNG_I2S_CDCLK:
--		/* Shouldn't matter in GATING(CLOCK_IN) mode */
--		if (dir == SND_SOC_CLOCK_IN)
--			rfs = 0;
--
--		if ((rfs && other->rfs && (other->rfs != rfs)) ||
--				(any_active(i2s) &&
--				(((dir == SND_SOC_CLOCK_IN)
--					&& !(mod & MOD_CDCLKCON)) ||
--				((dir == SND_SOC_CLOCK_OUT)
--					&& (mod & MOD_CDCLKCON))))) {
--			dev_err(&i2s->pdev->dev,
--				"%s:%d Other DAI busy\n", __func__, __LINE__);
--			return -EAGAIN;
--		}
--
--		if (dir == SND_SOC_CLOCK_IN)
--			mod |= MOD_CDCLKCON;
--		else
--			mod &= ~MOD_CDCLKCON;
--
--		i2s->rfs = rfs;
--		break;
--
--	case SAMSUNG_I2S_RCLKSRC_0: /* clock corrsponding to IISMOD[10] := 0 */
--	case SAMSUNG_I2S_RCLKSRC_1: /* clock corrsponding to IISMOD[10] := 1 */
--		if ((i2s->quirks & QUIRK_NO_MUXPSR)
--				|| (clk_id == SAMSUNG_I2S_RCLKSRC_0))
--			clk_id = 0;
--		else
--			clk_id = 1;
--
--		if (!any_active(i2s)) {
--			if (i2s->op_clk) {
--				if ((clk_id && !(mod & MOD_IMS_SYSMUX)) ||
--					(!clk_id && (mod & MOD_IMS_SYSMUX))) {
--					clk_disable(i2s->op_clk);
--					clk_put(i2s->op_clk);
--				} else {
--					return 0;
--				}
--			}
--
--			i2s->op_clk = clk_get(&i2s->pdev->dev,
--						i2s->src_clk[clk_id]);
--			clk_enable(i2s->op_clk);
--			i2s->rclk_srcrate = clk_get_rate(i2s->op_clk);
--
--			/* Over-ride the other's */
--			if (other) {
--				other->op_clk = i2s->op_clk;
--				other->rclk_srcrate = i2s->rclk_srcrate;
--			}
--		} else if ((!clk_id && (mod & MOD_IMS_SYSMUX))
--				|| (clk_id && !(mod & MOD_IMS_SYSMUX))) {
--			dev_err(&i2s->pdev->dev,
--				"%s:%d Other DAI busy\n", __func__, __LINE__);
--			return -EAGAIN;
--		} else {
--			/* Call can't be on the active DAI */
--			i2s->op_clk = other->op_clk;
--			i2s->rclk_srcrate = other->rclk_srcrate;
--			return 0;
--		}
--
--		if (clk_id == 0)
--			mod &= ~MOD_IMS_SYSMUX;
--		else
--			mod |= MOD_IMS_SYSMUX;
--		break;
--
--	default:
--		dev_err(&i2s->pdev->dev, "We don't serve that!\n");
--		return -EINVAL;
--	}
--
--	writel(mod, i2s->addr + I2SMOD);
--
--	return 0;
--}
--
--static int i2sv2_i2s_set_fmt(struct snd_soc_dai *dai,
--	unsigned int fmt)
--{
--	struct i2s_dai *i2s = to_info(dai);
--	u32 mod = readl(i2s->addr + I2SMOD);
--	u32 tmp = 0;
--
--	/* Format is priority */
--	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
--	case SND_SOC_DAIFMT_RIGHT_J:
--		tmp |= MOD_LR_RLOW;
--		tmp |= MOD_SDF_MSB;
--		break;
--	case SND_SOC_DAIFMT_LEFT_J:
--		tmp |= MOD_LR_RLOW;
--		tmp |= MOD_SDF_LSB;
--		break;
--	case SND_SOC_DAIFMT_I2S:
--		tmp |= MOD_SDF_IIS;
--		break;
--	default:
--		dev_err(&i2s->pdev->dev, "Format not supported\n");
--		return -EINVAL;
--	}
--
--	/* Allow LRCLK-inverted version of the supported formats */
--	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
--	case SND_SOC_DAIFMT_NB_NF:
--		break;
--	case SND_SOC_DAIFMT_NB_IF:
--		if (tmp & MOD_LR_RLOW)
--			tmp &= ~MOD_LR_RLOW;
--		else
--			tmp |= MOD_LR_RLOW;
--		break;
--	default:
--		dev_err(&i2s->pdev->dev, "Polarity not supported\n");
--		return -EINVAL;
--	}
--
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBM_CFM:
--		tmp |= MOD_SLAVE;
--		break;
--	case SND_SOC_DAIFMT_CBS_CFS:
--		/* Set default source clock in Master mode */
--		if (i2s->rclk_srcrate == 0)
--			s3c_i2sv2_set_sysclk(dai, SAMSUNG_I2S_RCLKSRC_0,
--							0, SND_SOC_CLOCK_IN);
--		break;
--	default:
--		dev_err(&i2s->pdev->dev, "master/slave format not supported\n");
--		return -EINVAL;
--	}
--
--	if (any_active(i2s) &&
--			((mod & (MOD_SDF_MASK | MOD_LR_RLOW
--				| MOD_SLAVE)) != tmp)) {
--		dev_err(&i2s->pdev->dev,
--				"%s:%d Other DAI busy\n", __func__, __LINE__);
--		return -EAGAIN;
--	}
--
--	mod &= ~(MOD_SDF_MASK | MOD_LR_RLOW | MOD_SLAVE);
--	mod |= tmp;
--	writel(mod, i2s->addr + I2SMOD);
--
--	return 0;
--}
--
--static int s3c_i2sv2_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
--{
--	struct i2s_dai *i2s = to_info(dai);
--	u32 mod = readl(i2s->addr + I2SMOD);
--
--	if (!is_secondary(i2s))
--		mod &= ~(MOD_DC2_EN | MOD_DC1_EN);
--
--	switch (params_channels(params)) {
--	case 6:
--		mod |= MOD_DC2_EN;
--	case 4:
--		mod |= MOD_DC1_EN;
--		break;
--	case 2:
--		break;
--	default:
--		dev_err(&i2s->pdev->dev, "%d channels not supported\n",
--				params_channels(params));
--		return -EINVAL;
--	}
--
--	if (is_secondary(i2s))
--		mod &= ~MOD_BLCS_MASK;
--	else
--		mod &= ~MOD_BLCP_MASK;
--
--	if (is_manager(i2s))
--		mod &= ~MOD_BLC_MASK;
--
--	switch (params_format(params)) {
--	case SNDRV_PCM_FORMAT_S8:
--		if (is_secondary(i2s))
--			mod |= MOD_BLCS_8BIT;
--		else
--			mod |= MOD_BLCP_8BIT;
--		if (is_manager(i2s))
--			mod |= MOD_BLC_8BIT;
--		break;
--	case SNDRV_PCM_FORMAT_S16_LE:
--		if (is_secondary(i2s))
--			mod |= MOD_BLCS_16BIT;
--		else
--			mod |= MOD_BLCP_16BIT;
--		if (is_manager(i2s))
--			mod |= MOD_BLC_16BIT;
--		break;
--	case SNDRV_PCM_FORMAT_S24_LE:
--		if (is_secondary(i2s))
--			mod |= MOD_BLCS_24BIT;
--		else
--			mod |= MOD_BLCP_24BIT;
--		if (is_manager(i2s))
--			mod |= MOD_BLC_24BIT;
--		break;
--	default:
--		dev_err(&i2s->pdev->dev, "Format(%d) not supported\n",
--				params_format(params));
--		return -EINVAL;
--	}
--	writel(mod, i2s->addr + I2SMOD);
--
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		snd_soc_dai_set_dma_data(dai, substream,
--			(void *)&i2s->dma_playback);
--	else
--		snd_soc_dai_set_dma_data(dai, substream,
--			(void *)&i2s->dma_capture);
--
--	i2s->frmclk = params_rate(params);
--
--	return 0;
--}
--
--/* We set constraints on the substream acc to the version of I2S */
--static int s3c_i2sv2_startup(struct snd_pcm_substream *substream,
--	  struct snd_soc_dai *dai)
--{
--	struct i2s_dai *i2s = to_info(dai);
--	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
--	unsigned long flags;
--
--	spin_lock_irqsave(&lock, flags);
--
--	i2s->mode |= DAI_OPENED;
--
--	if (is_manager(other))
--		i2s->mode &= ~DAI_MANAGER;
--	else
--		i2s->mode |= DAI_MANAGER;
--
--	/* Enforce set_sysclk in Master mode */
--	i2s->rclk_srcrate = 0;
--
--	spin_unlock_irqrestore(&lock, flags);
--
--	return 0;
--}
--
--static void s3c_i2sv2_shutdown(struct snd_pcm_substream *substream,
--	struct snd_soc_dai *dai)
--{
--	struct i2s_dai *i2s = to_info(dai);
--	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
--	unsigned long flags;
--
--	spin_lock_irqsave(&lock, flags);
--
--	i2s->mode &= ~DAI_OPENED;
--	i2s->mode &= ~DAI_MANAGER;
--
--	if (is_opened(other))
--		other->mode |= DAI_MANAGER;
--
--	/* Reset any constraint on RFS and BFS */
--	i2s->rfs = 0;
--	i2s->bfs = 0;
--
--	spin_unlock_irqrestore(&lock, flags);
--
--	/* Gate CDCLK by default */
--	if (!is_opened(other))
--		s3c_i2sv2_set_sysclk(dai, SAMSUNG_I2S_CDCLK,
--				0, SND_SOC_CLOCK_IN);
--}
--
--static int config_setup(struct i2s_dai *i2s)
--{
--	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
--	unsigned rfs, bfs, blc;
--	u32 psr;
--
--	blc = get_blc(i2s);
--
--	bfs = i2s->bfs;
--
--	if (!bfs && other)
--		bfs = other->bfs;
--
--	/* Select least possible multiple(2) if no constraint set */
--	if (!bfs)
--		bfs = blc * 2;
--
--	rfs = i2s->rfs;
--
--	if (!rfs && other)
--		rfs = other->rfs;
--
--	if ((rfs == 256 || rfs == 512) && (blc == 24)) {
--		dev_err(&i2s->pdev->dev,
--			"%d-RFS not supported for 24-blc\n", rfs);
--		return -EINVAL;
--	}
--
--	if (!rfs) {
--		if (bfs == 16 || bfs == 32)
--			rfs = 256;
--		else
--			rfs = 384;
--	}
--
--	/* If already setup and running */
--	if (any_active(i2s) && (get_rfs(i2s) != rfs || get_bfs(i2s) != bfs)) {
--		dev_err(&i2s->pdev->dev,
--				"%s:%d Other DAI busy\n", __func__, __LINE__);
--		return -EAGAIN;
--	}
--
--	/* We don't care about BFS in Slave mode */
--	if (is_slave(i2s))
--		return 0;
--
--	set_bfs(i2s, bfs);
--	set_rfs(i2s, rfs);
--
--	if (!(i2s->quirks & QUIRK_NO_MUXPSR)) {
--		psr = i2s->rclk_srcrate / i2s->frmclk / rfs;
--		writel(((psr - 1) << 8) | PSR_PSREN, i2s->addr + I2SPSR);
--		dev_dbg(&i2s->pdev->dev,
--			"RCLK_SRC=%luHz PSR=%u, RCLK=%dfs, BCLK=%dfs\n",
--				i2s->rclk_srcrate, psr, rfs, bfs);
--	}
--
--	return 0;
--}
--
--static int i2sv2_i2s_trigger(struct snd_pcm_substream *substream,
--	int cmd, struct snd_soc_dai *dai)
--{
--	int capture = (substream->stream == SNDRV_PCM_STREAM_CAPTURE);
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct i2s_dai *i2s = to_info(rtd->cpu_dai);
--	unsigned long flags;
--
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
--	case SNDRV_PCM_TRIGGER_RESUME:
--	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		local_irq_save(flags);
--
--		if (capture)
--			s3c_i2sv2_fifo(i2s, FIC_RXFLUSH);
--		else
--			s3c_i2sv2_fifo(i2s, FIC_TXFLUSH);
--
--		if (config_setup(i2s)) {
--			local_irq_restore(flags);
--			return -EINVAL;
--		}
--
--		if (capture)
--			s3c_i2sv2_rxctrl(i2s, 1);
--		else
--			s3c_i2sv2_txctrl(i2s, 1);
--
--		local_irq_restore(flags);
--		break;
--	case SNDRV_PCM_TRIGGER_STOP:
--	case SNDRV_PCM_TRIGGER_SUSPEND:
--	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		local_irq_save(flags);
--
--		if (capture)
--			s3c_i2sv2_rxctrl(i2s, 0);
--		else
--			s3c_i2sv2_txctrl(i2s, 0);
--
--		local_irq_restore(flags);
--		break;
--	}
--
--	return 0;
--}
--
--static int i2sv2_i2s_set_clkdiv(struct snd_soc_dai *dai,
--	int div_id, int div)
--{
--	struct i2s_dai *i2s = to_info(dai);
--	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
--
--	if (div_id == SAMSUNG_I2S_DIV_BCLK) {
--		if ((any_active(i2s) && div && (get_bfs(i2s) != div))
--			|| (other && other->bfs && (other->bfs != div))) {
--			dev_err(&i2s->pdev->dev,
--				"%s:%d Other DAI busy\n", __func__, __LINE__);
--			return -EAGAIN;
--		}
--		i2s->bfs = div;
--	} else {
--		dev_err(&i2s->pdev->dev,
--			"Invalid clock divider(%d)\n", div_id);
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
--static snd_pcm_sframes_t
--i2sv2_i2s_delay(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
--{
--	struct i2s_dai *i2s = to_info(dai);
--	u32 reg = readl(i2s->addr + I2SFIC);
--	snd_pcm_sframes_t delay;
--
--	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
--		delay = FIC_RXCOUNT(reg);
--	else if (is_secondary(i2s))
--		delay = FICS_TXCOUNT(readl(i2s->addr + I2SFICS));
--	else
--		delay = FIC_TXCOUNT(reg);
--
--	return delay;
--}
--
--#ifdef CONFIG_PM
--static int i2sv2_i2s_suspend(struct snd_soc_dai *dai)
--{
--	struct i2s_dai *i2s = to_info(dai);
--
--	if (dai->active) {
--		i2s->suspend_i2smod = readl(i2s->addr + I2SMOD);
--		i2s->suspend_i2scon = readl(i2s->addr + I2SCON);
--		i2s->suspend_i2spsr = readl(i2s->addr + I2SPSR);
--	}
--
--	return 0;
--}
--
--static int i2sv2_i2s_resume(struct snd_soc_dai *dai)
--{
--	struct i2s_dai *i2s = to_info(dai);
--
--	if (dai->active) {
--		writel(i2s->suspend_i2scon, i2s->addr + I2SCON);
--		writel(i2s->suspend_i2smod, i2s->addr + I2SMOD);
--		writel(i2s->suspend_i2spsr, i2s->addr + I2SPSR);
--	}
--
--	return 0;
--}
--#else
--#define i2sv2_i2s_suspend NULL
--#define i2sv2_i2s_resume  NULL
--#endif
--
--static int samsung_i2s_dai_probe(struct snd_soc_dai *dai)
--{
--	struct i2s_dai *i2s = to_info(dai);
--	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
--
--	if (other && other->clk) /* If this is probe on secondary */
--		goto probe_exit;
--
--	i2s->addr = ioremap(i2s->base, 0x100);
--	if (i2s->addr == NULL) {
--		dev_err(&i2s->pdev->dev, "cannot ioremap registers\n");
--		return -ENXIO;
--	}
--
--	i2s->clk = clk_get(&i2s->pdev->dev, "iis");
--	if (IS_ERR(i2s->clk)) {
--		dev_err(&i2s->pdev->dev, "failed to get i2s_clock\n");
--		iounmap(i2s->addr);
--		return -ENOENT;
--	}
--	clk_enable(i2s->clk);
--
--	if (other) {
--		other->addr = i2s->addr;
--		other->clk = i2s->clk;
--	}
--
--	if (i2s->quirks & QUIRK_NEED_RSTCLR)
--		writel(CON_RSTCLR, i2s->addr + I2SCON);
--
--probe_exit:
--	/* Reset any constraint on RFS and BFS */
--	i2s->rfs = 0;
--	i2s->bfs = 0;
--	s3c_i2sv2_txctrl(i2s, 0);
--	s3c_i2sv2_rxctrl(i2s, 0);
--	s3c_i2sv2_fifo(i2s, FIC_TXFLUSH);
--	s3c_i2sv2_fifo(other, FIC_TXFLUSH);
--	s3c_i2sv2_fifo(i2s, FIC_RXFLUSH);
--
--	/* Gate CDCLK by default */
--	if (!is_opened(other))
--		s3c_i2sv2_set_sysclk(dai, SAMSUNG_I2S_CDCLK,
--				0, SND_SOC_CLOCK_IN);
--
--	return 0;
--}
--
--static int samsung_i2s_dai_remove(struct snd_soc_dai *dai)
--{
--	struct i2s_dai *i2s = snd_soc_dai_get_drvdata(dai);
--	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
--
--	if (!other || !other->clk) {
--
--		if (i2s->quirks & QUIRK_NEED_RSTCLR)
--			writel(0, i2s->addr + I2SCON);
--
--		clk_disable(i2s->clk);
--		clk_put(i2s->clk);
--
--		iounmap(i2s->addr);
--	}
--
--	i2s->clk = NULL;
--
--	return 0;
--}
--
--static struct snd_soc_dai_ops samsung_i2s_dai_ops = {
--	.trigger = i2sv2_i2s_trigger,
--	.hw_params = s3c_i2sv2_hw_params,
--	.set_fmt = i2sv2_i2s_set_fmt,
--	.set_clkdiv = i2sv2_i2s_set_clkdiv,
--	.set_sysclk = s3c_i2sv2_set_sysclk,
--	.startup = s3c_i2sv2_startup,
--	.shutdown = s3c_i2sv2_shutdown,
--	.delay = i2sv2_i2s_delay,
--};
--
--#define SAMSUNG_I2S_RATES \
--	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
--	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
--	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
--
--#define SAMSUNG_I2S_FMTS \
--	(SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |\
--	 SNDRV_PCM_FMTBIT_S24_LE)
--
--static __devinit
--struct i2s_dai *s3c_alloc_dai(struct platform_device *pdev, bool sec)
--{
--	struct i2s_dai *i2s;
--
--	i2s = kzalloc(sizeof(struct i2s_dai), GFP_KERNEL);
--	if (i2s == NULL)
--		return NULL;
--
--	i2s->pdev = pdev;
--	i2s->pri_dai = NULL;
--	i2s->sec_dai = NULL;
--	i2s->s3c_i2s_drv.symmetric_rates = 1;
--	i2s->s3c_i2s_drv.probe = samsung_i2s_dai_probe;
--	i2s->s3c_i2s_drv.remove = samsung_i2s_dai_remove;
--	i2s->s3c_i2s_drv.ops = &samsung_i2s_dai_ops;
--	i2s->s3c_i2s_drv.suspend = i2sv2_i2s_suspend;
--	i2s->s3c_i2s_drv.resume = i2sv2_i2s_resume;
--	i2s->s3c_i2s_drv.playback.channels_min = 2;
--	i2s->s3c_i2s_drv.playback.channels_max = 2;
--	i2s->s3c_i2s_drv.playback.rates = SAMSUNG_I2S_RATES;
--	i2s->s3c_i2s_drv.playback.formats = SAMSUNG_I2S_FMTS;
--
--	if (!sec) {
--		i2s->s3c_i2s_drv.capture.channels_min = 2;
--		i2s->s3c_i2s_drv.capture.channels_max = 2;
--		i2s->s3c_i2s_drv.capture.rates = SAMSUNG_I2S_RATES;
--		i2s->s3c_i2s_drv.capture.formats = SAMSUNG_I2S_FMTS;
--	} else {	/* Create a new platform_device for Secondary */
--		i2s->pdev = platform_device_register_resndata(NULL,
--				pdev->name, pdev->id + MAX_I2S,
--				NULL, 0, NULL, 0);
--		if (IS_ERR(i2s->pdev)) {
--			kfree(i2s);
--			return NULL;
--		}
--	}
--
--	/* Pre-assign snd_soc_dai_set_drvdata */
--	dev_set_drvdata(&i2s->pdev->dev, i2s);
--
--	return i2s;
--}
--
--static __devinit int samsung_i2s_probe(struct platform_device *pdev)
--{
--	u32 dma_pl_chan, dma_cp_chan, dma_pl_sec_chan;
--	struct i2s_dai *pri_dai, *sec_dai = NULL;
--	struct s3c_audio_pdata *i2s_pdata;
--	struct samsung_i2s *i2s_cfg;
--	struct resource *res;
--	u32 regs_base, quirks;
--	int ret = 0;
--
--	/* Call during Seconday interface registration */
--	if (pdev->id >= MAX_I2S) {
--		sec_dai = dev_get_drvdata(&pdev->dev);
--		snd_soc_register_dai(&sec_dai->pdev->dev,
--			&sec_dai->s3c_i2s_drv);
--		return 0;
--	}
--
--	i2s_pdata = pdev->dev.platform_data;
--	if (i2s_pdata == NULL) {
--		dev_err(&pdev->dev, "Can't work without s3c_audio_pdata\n");
--		return -EINVAL;
--	}
--
--	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
--	if (!res) {
--		dev_err(&pdev->dev, "Unable to get I2S-TX dma resource\n");
--		return -ENXIO;
--	}
--	dma_pl_chan = res->start;
--
--	res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
--	if (!res) {
--		dev_err(&pdev->dev, "Unable to get I2S-RX dma resource\n");
--		return -ENXIO;
--	}
--	dma_cp_chan = res->start;
--
--	res = platform_get_resource(pdev, IORESOURCE_DMA, 2);
--	if (res)
--		dma_pl_sec_chan = res->start;
--	else
--		dma_pl_sec_chan = 0;
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res) {
--		dev_err(&pdev->dev, "Unable to get I2S SFR address\n");
--		return -ENXIO;
--	}
--
--	if (!request_mem_region(res->start, resource_size(res),
--							"samsung-i2s")) {
--		dev_err(&pdev->dev, "Unable to request SFR region\n");
--		return -EBUSY;
--	}
--	regs_base = res->start;
--
--	i2s_cfg = &i2s_pdata->type.i2s;
--	quirks = i2s_cfg->quirks;
--
--	pri_dai = s3c_alloc_dai(pdev, false);
--	if (!pri_dai) {
--		dev_err(&pdev->dev, "Unable to alloc I2S_pri\n");
--		ret = -ENOMEM;
--		goto err1;
--	}
--
--	pri_dai->dma_playback.dma_addr = regs_base + I2STXD;
--	pri_dai->dma_capture.dma_addr = regs_base + I2SRXD;
--	pri_dai->dma_playback.client =
--		(struct s3c2410_dma_client *)&pri_dai->dma_playback;
--	pri_dai->dma_capture.client =
--		(struct s3c2410_dma_client *)&pri_dai->dma_capture;
--	pri_dai->dma_playback.channel = dma_pl_chan;
--	pri_dai->dma_capture.channel = dma_cp_chan;
--	pri_dai->src_clk = i2s_cfg->src_clk;
--	pri_dai->dma_playback.dma_size = 4;
--	pri_dai->dma_capture.dma_size = 4;
--	pri_dai->base = regs_base;
--	pri_dai->quirks = quirks;
--
--	if (quirks & QUIRK_PRI_6CHAN)
--		pri_dai->s3c_i2s_drv.playback.channels_max = 6;
--
--	if (quirks & QUIRK_SEC_DAI) {
--		sec_dai = s3c_alloc_dai(pdev, true);
--		if (!sec_dai) {
--			dev_err(&pdev->dev, "Unable to alloc I2S_sec\n");
--			ret = -ENOMEM;
--			goto err2;
--		}
--		sec_dai->dma_playback.dma_addr = regs_base + I2STXDS;
--		sec_dai->dma_playback.client =
--			(struct s3c2410_dma_client *)&sec_dai->dma_playback;
--		/* Use iDMA always if SysDMA not provided */
--		sec_dai->dma_playback.channel = dma_pl_sec_chan ? : -1;
--		sec_dai->src_clk = i2s_cfg->src_clk;
--		sec_dai->dma_playback.dma_size = 4;
--		sec_dai->base = regs_base;
--		sec_dai->quirks = quirks;
--		sec_dai->pri_dai = pri_dai;
--		pri_dai->sec_dai = sec_dai;
--	}
--
--	if (i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
--		dev_err(&pdev->dev, "Unable to configure gpio\n");
--		ret = -EINVAL;
--		goto err3;
--	}
--
--	snd_soc_register_dai(&pri_dai->pdev->dev, &pri_dai->s3c_i2s_drv);
--
--	return 0;
--err3:
--	kfree(sec_dai);
--err2:
--	kfree(pri_dai);
--err1:
--	release_mem_region(regs_base, resource_size(res));
--
--	return ret;
--}
--
--static __devexit int samsung_i2s_remove(struct platform_device *pdev)
--{
--	struct i2s_dai *i2s, *other;
--
--	i2s = dev_get_drvdata(&pdev->dev);
--	other = i2s->pri_dai ? : i2s->sec_dai;
--
--	if (other) {
--		other->pri_dai = NULL;
--		other->sec_dai = NULL;
--	} else {
--		struct resource *res;
--		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--		if (res)
--			release_mem_region(res->start, resource_size(res));
--	}
--
--	i2s->pri_dai = NULL;
--	i2s->sec_dai = NULL;
--
--	kfree(i2s);
--
--	snd_soc_unregister_dai(&pdev->dev);
--
--	return 0;
--}
--
--static struct platform_driver samsung_i2s_driver = {
--	.probe  = samsung_i2s_probe,
--	.remove = samsung_i2s_remove,
--	.driver = {
--		.name = "samsung-i2s",
--		.owner = THIS_MODULE,
--	},
--};
--
--static int __init samsung_i2s_init(void)
--{
--	return platform_driver_register(&samsung_i2s_driver);
--}
--module_init(samsung_i2s_init);
--
--static void __exit samsung_i2s_exit(void)
--{
--	platform_driver_unregister(&samsung_i2s_driver);
--}
--module_exit(samsung_i2s_exit);
--
--/* Module information */
--MODULE_AUTHOR("Jaswinder Singh, <jassi.brar@samsung.com>");
--MODULE_DESCRIPTION("Samsung I2S Interface");
--MODULE_ALIAS("platform:samsung-i2s");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/i2s.h b/sound/soc/s3c24xx/i2s.h
-deleted file mode 100644
-index 77b7965..0000000
---- a/sound/soc/s3c24xx/i2s.h
-+++ /dev/null
-@@ -1,29 +0,0 @@
--/* sound/soc/s3c24xx/i2s.h
-- *
-- * ALSA SoC Audio Layer - Samsung I2S Controller driver
-- *
-- * Copyright (c) 2010 Samsung Electronics Co. Ltd.
-- *	Jaswinder Singh <jassi.brar@samsung.com>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--#ifndef __SND_SOC_SAMSUNG_I2S_H
--#define __SND_SOC_SAMSUNG_I2S_H
--
--/*
-- * Maximum number of I2S blocks that any SoC can have.
-- * The secondary interface of a CPU dai(if there exists any),
-- * is indexed at [cpu-dai's ID + MAX_I2S]
-- */
--#define MAX_I2S	4
--
--#define SAMSUNG_I2S_DIV_BCLK	1
--
--#define SAMSUNG_I2S_RCLKSRC_0	0
--#define SAMSUNG_I2S_RCLKSRC_1	1
--#define SAMSUNG_I2S_CDCLK		2
--
--#endif /* __SND_SOC_SAMSUNG_I2S_H */
-diff --git a/sound/soc/s3c24xx/jive_wm8750.c b/sound/soc/s3c24xx/jive_wm8750.c
-deleted file mode 100644
-index 4e1b8ac..0000000
---- a/sound/soc/s3c24xx/jive_wm8750.c
-+++ /dev/null
-@@ -1,191 +0,0 @@
--/* sound/soc/s3c24xx/jive_wm8750.c
-- *
-- * Copyright 2007,2008 Simtec Electronics
-- *
-- * Based on sound/soc/pxa/spitz.c
-- *	Copyright 2005 Wolfson Microelectronics PLC.
-- *	Copyright 2005 Openedhand Ltd.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
--*/
--
--#include <linux/module.h>
--#include <linux/moduleparam.h>
--#include <linux/timer.h>
--#include <linux/interrupt.h>
--#include <linux/platform_device.h>
--#include <linux/clk.h>
--
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--#include <sound/soc-dapm.h>
--
--#include <asm/mach-types.h>
--
--#include "dma.h"
--#include "s3c2412-i2s.h"
--
--#include "../codecs/wm8750.h"
--
--static const struct snd_soc_dapm_route audio_map[] = {
--	{ "Headphone Jack", NULL, "LOUT1" },
--	{ "Headphone Jack", NULL, "ROUT1" },
--	{ "Internal Speaker", NULL, "LOUT2" },
--	{ "Internal Speaker", NULL, "ROUT2" },
--	{ "LINPUT1", NULL, "Line Input" },
--	{ "RINPUT1", NULL, "Line Input" },
--};
--
--static const struct snd_soc_dapm_widget wm8750_dapm_widgets[] = {
--	SND_SOC_DAPM_HP("Headphone Jack", NULL),
--	SND_SOC_DAPM_SPK("Internal Speaker", NULL),
--	SND_SOC_DAPM_LINE("Line In", NULL),
--};
--
--static int jive_hw_params(struct snd_pcm_substream *substream,
--			  struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	struct s3c_i2sv2_rate_calc div;
--	unsigned int clk = 0;
--	int ret = 0;
--
--	switch (params_rate(params)) {
--	case 8000:
--	case 16000:
--	case 48000:
--	case 96000:
--		clk = 12288000;
--		break;
--	case 11025:
--	case 22050:
--	case 44100:
--		clk = 11289600;
--		break;
--	}
--
--	s3c_i2sv2_iis_calc_rate(&div, NULL, params_rate(params),
--				s3c_i2sv2_get_clock(cpu_dai));
--
--	/* set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
--				  SND_SOC_DAIFMT_NB_NF |
--				  SND_SOC_DAIFMT_CBS_CFS);
--	if (ret < 0)
--		return ret;
--
--	/* set cpu DAI configuration */
--	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
--				  SND_SOC_DAIFMT_NB_NF |
--				  SND_SOC_DAIFMT_CBS_CFS);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec system clock for DAC and ADC */
--	ret = snd_soc_dai_set_sysclk(codec_dai, WM8750_SYSCLK, clk,
--				     SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C2412_DIV_RCLK, div.fs_div);
--	if (ret < 0)
--		return ret;
--
--	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C2412_DIV_PRESCALER,
--				     div.clk_div - 1);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--static struct snd_soc_ops jive_ops = {
--	.hw_params	= jive_hw_params,
--};
--
--static int jive_wm8750_init(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_codec *codec = rtd->codec;
--	int err;
--
--	/* These endpoints are not being used. */
--	snd_soc_dapm_nc_pin(codec, "LINPUT2");
--	snd_soc_dapm_nc_pin(codec, "RINPUT2");
--	snd_soc_dapm_nc_pin(codec, "LINPUT3");
--	snd_soc_dapm_nc_pin(codec, "RINPUT3");
--	snd_soc_dapm_nc_pin(codec, "OUT3");
--	snd_soc_dapm_nc_pin(codec, "MONO");
--
--	/* Add jive specific widgets */
--	err = snd_soc_dapm_new_controls(codec, wm8750_dapm_widgets,
--					ARRAY_SIZE(wm8750_dapm_widgets));
--	if (err) {
--		printk(KERN_ERR "%s: failed to add widgets (%d)\n",
--		       __func__, err);
--		return err;
--	}
--
--	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
--	snd_soc_dapm_sync(codec);
--
--	return 0;
--}
--
--static struct snd_soc_dai_link jive_dai = {
--	.name		= "wm8750",
--	.stream_name	= "WM8750",
--	.cpu_dai_name	= "s3c2412-i2s",
--	.codec_dai_name = "wm8750-hifi",
--	.platform_name	= "samsung-audio",
--	.codec_name	= "wm8750-codec.0-0x1a",
--	.init		= jive_wm8750_init,
--	.ops		= &jive_ops,
--};
--
--/* jive audio machine driver */
--static struct snd_soc_card snd_soc_machine_jive = {
--	.name		= "Jive",
--	.dai_link	= &jive_dai,
--	.num_links	= 1,
--};
--
--static struct platform_device *jive_snd_device;
--
--static int __init jive_init(void)
--{
--	int ret;
--
--	if (!machine_is_jive())
--		return 0;
--
--	printk("JIVE WM8750 Audio support\n");
--
--	jive_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!jive_snd_device)
--		return -ENOMEM;
--
--	platform_set_drvdata(jive_snd_device, &snd_soc_machine_jive);
--	ret = platform_device_add(jive_snd_device);
--
--	if (ret)
--		platform_device_put(jive_snd_device);
--
--	return ret;
--}
--
--static void __exit jive_exit(void)
--{
--	platform_device_unregister(jive_snd_device);
--}
--
--module_init(jive_init);
--module_exit(jive_exit);
--
--MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
--MODULE_DESCRIPTION("ALSA SoC Jive Audio support");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/lm4857.h b/sound/soc/s3c24xx/lm4857.h
-deleted file mode 100644
-index 0cf5b70..0000000
---- a/sound/soc/s3c24xx/lm4857.h
-+++ /dev/null
-@@ -1,32 +0,0 @@
--/*
-- * lm4857.h  --  ALSA Soc Audio Layer
-- *
-- * Copyright 2007 Wolfson Microelectronics PLC.
-- * Author: Graeme Gregory
-- *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-- *  Revision history
-- *    18th Jun 2007   Initial version.
-- */
--
--#ifndef LM4857_H_
--#define LM4857_H_
--
--/* The register offsets in the cache array */
--#define LM4857_MVOL 0
--#define LM4857_LVOL 1
--#define LM4857_RVOL 2
--#define LM4857_CTRL 3
--
--/* the shifts required to set these bits */
--#define LM4857_3D 5
--#define LM4857_WAKEUP 5
--#define LM4857_EPGAIN 4
--
--#endif /*LM4857_H_*/
--
-diff --git a/sound/soc/s3c24xx/ln2440sbc_alc650.c b/sound/soc/s3c24xx/ln2440sbc_alc650.c
-deleted file mode 100644
-index e507174..0000000
---- a/sound/soc/s3c24xx/ln2440sbc_alc650.c
-+++ /dev/null
-@@ -1,78 +0,0 @@
--/*
-- * SoC audio for ln2440sbc
-- *
-- * Copyright 2007 KonekTel, a.s.
-- * Author: Ivan Kuten
-- *         ivan.kuten@promwad.com
-- *
-- * Heavily based on smdk2443_wm9710.c
-- * Copyright 2007 Wolfson Microelectronics PLC.
-- * Author: Graeme Gregory
-- *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-- *
-- *  This program is free software; you can redistribute it and/or modify
-- *  it under the terms of the GNU General Public License version 2 as
-- *  published by the Free Software Foundation.
-- *
-- */
--
--#include <linux/module.h>
--#include <linux/device.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--#include <sound/soc-dapm.h>
--
--#include "dma.h"
--#include "ac97.h"
--
--static struct snd_soc_card ln2440sbc;
--
--static struct snd_soc_dai_link ln2440sbc_dai[] = {
--{
--	.name = "AC97",
--	.stream_name = "AC97 HiFi",
--	.cpu_dai_name = "samsung-ac97",
--	.codec_dai_name = "ac97-hifi",
--	.codec_name = "ac97-codec",
--	.platform_name = "samsung-audio",
--},
--};
--
--static struct snd_soc_card ln2440sbc = {
--	.name = "LN2440SBC",
--	.dai_link = ln2440sbc_dai,
--	.num_links = ARRAY_SIZE(ln2440sbc_dai),
--};
--
--static struct platform_device *ln2440sbc_snd_ac97_device;
--
--static int __init ln2440sbc_init(void)
--{
--	int ret;
--
--	ln2440sbc_snd_ac97_device = platform_device_alloc("soc-audio", -1);
--	if (!ln2440sbc_snd_ac97_device)
--		return -ENOMEM;
--
--	platform_set_drvdata(ln2440sbc_snd_ac97_device, &ln2440sbc);
--	ret = platform_device_add(ln2440sbc_snd_ac97_device);
--
--	if (ret)
--		platform_device_put(ln2440sbc_snd_ac97_device);
--
--	return ret;
--}
--
--static void __exit ln2440sbc_exit(void)
--{
--	platform_device_unregister(ln2440sbc_snd_ac97_device);
--}
--
--module_init(ln2440sbc_init);
--module_exit(ln2440sbc_exit);
--
--/* Module information */
--MODULE_AUTHOR("Ivan Kuten");
--MODULE_DESCRIPTION("ALSA SoC ALC650 LN2440SBC");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/neo1973_gta02_wm8753.c b/sound/soc/s3c24xx/neo1973_gta02_wm8753.c
-deleted file mode 100644
-index c4b2013..0000000
---- a/sound/soc/s3c24xx/neo1973_gta02_wm8753.c
-+++ /dev/null
-@@ -1,504 +0,0 @@
--/*
-- * neo1973_gta02_wm8753.c  --  SoC audio for Openmoko Freerunner(GTA02)
-- *
-- * Copyright 2007 Openmoko Inc
-- * Author: Graeme Gregory <graeme@openmoko.org>
-- * Copyright 2007 Wolfson Microelectronics PLC.
-- * Author: Graeme Gregory <linux@wolfsonmicro.com>
-- * Copyright 2009 Wolfson Microelectronics
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- */
--
--#include <linux/module.h>
--#include <linux/moduleparam.h>
--#include <linux/timer.h>
--#include <linux/interrupt.h>
--#include <linux/platform_device.h>
--#include <linux/gpio.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--#include <sound/soc-dapm.h>
--
--#include <asm/mach-types.h>
--
--#include <plat/regs-iis.h>
--
--#include <mach/regs-clock.h>
--#include <asm/io.h>
--#include <mach/gta02.h>
--#include "../codecs/wm8753.h"
--#include "dma.h"
--#include "s3c24xx-i2s.h"
--
--static struct snd_soc_card neo1973_gta02;
--
--static int neo1973_gta02_hifi_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	unsigned int pll_out = 0, bclk = 0;
--	int ret = 0;
--	unsigned long iis_clkrate;
--
--	iis_clkrate = s3c24xx_i2s_get_clockrate();
--
--	switch (params_rate(params)) {
--	case 8000:
--	case 16000:
--		pll_out = 12288000;
--		break;
--	case 48000:
--		bclk = WM8753_BCLK_DIV_4;
--		pll_out = 12288000;
--		break;
--	case 96000:
--		bclk = WM8753_BCLK_DIV_2;
--		pll_out = 12288000;
--		break;
--	case 11025:
--		bclk = WM8753_BCLK_DIV_16;
--		pll_out = 11289600;
--		break;
--	case 22050:
--		bclk = WM8753_BCLK_DIV_8;
--		pll_out = 11289600;
--		break;
--	case 44100:
--		bclk = WM8753_BCLK_DIV_4;
--		pll_out = 11289600;
--		break;
--	case 88200:
--		bclk = WM8753_BCLK_DIV_2;
--		pll_out = 11289600;
--		break;
--	}
--
--	/* set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai,
--		SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--		SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	/* set cpu DAI configuration */
--	ret = snd_soc_dai_set_fmt(cpu_dai,
--		SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--		SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec system clock for DAC and ADC */
--	ret = snd_soc_dai_set_sysclk(codec_dai, WM8753_MCLK, pll_out,
--		SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	/* set MCLK division for sample rate */
--	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_MCLK,
--		S3C2410_IISMOD_32FS);
--	if (ret < 0)
--		return ret;
--
--	/* set codec BCLK division for sample rate */
--	ret = snd_soc_dai_set_clkdiv(codec_dai,
--					WM8753_BCLKDIV, bclk);
--	if (ret < 0)
--		return ret;
--
--	/* set prescaler division for sample rate */
--	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_PRESCALER,
--		S3C24XX_PRESCALE(4, 4));
--	if (ret < 0)
--		return ret;
--
--	/* codec PLL input is PCLK/4 */
--	ret = snd_soc_dai_set_pll(codec_dai, WM8753_PLL1, 0,
--		iis_clkrate / 4, pll_out);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--static int neo1973_gta02_hifi_hw_free(struct snd_pcm_substream *substream)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--
--	/* disable the PLL */
--	return snd_soc_dai_set_pll(codec_dai, WM8753_PLL1, 0, 0, 0);
--}
--
--/*
-- * Neo1973 WM8753 HiFi DAI opserations.
-- */
--static struct snd_soc_ops neo1973_gta02_hifi_ops = {
--	.hw_params = neo1973_gta02_hifi_hw_params,
--	.hw_free = neo1973_gta02_hifi_hw_free,
--};
--
--static int neo1973_gta02_voice_hw_params(
--	struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	unsigned int pcmdiv = 0;
--	int ret = 0;
--	unsigned long iis_clkrate;
--
--	iis_clkrate = s3c24xx_i2s_get_clockrate();
--
--	if (params_rate(params) != 8000)
--		return -EINVAL;
--	if (params_channels(params) != 1)
--		return -EINVAL;
--
--	pcmdiv = WM8753_PCM_DIV_6; /* 2.048 MHz */
--
--	/* todo: gg check mode (DSP_B) against CSR datasheet */
--	/* set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_DSP_B |
--		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec system clock for DAC and ADC */
--	ret = snd_soc_dai_set_sysclk(codec_dai, WM8753_PCMCLK,
--		12288000, SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	/* set codec PCM division for sample rate */
--	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8753_PCMDIV,
--					pcmdiv);
--	if (ret < 0)
--		return ret;
--
--	/* configue and enable PLL for 12.288MHz output */
--	ret = snd_soc_dai_set_pll(codec_dai, WM8753_PLL2, 0,
--		iis_clkrate / 4, 12288000);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--static int neo1973_gta02_voice_hw_free(struct snd_pcm_substream *substream)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--
--	/* disable the PLL */
--	return snd_soc_dai_set_pll(codec_dai, WM8753_PLL2, 0, 0, 0);
--}
--
--static struct snd_soc_ops neo1973_gta02_voice_ops = {
--	.hw_params = neo1973_gta02_voice_hw_params,
--	.hw_free = neo1973_gta02_voice_hw_free,
--};
--
--#define LM4853_AMP 1
--#define LM4853_SPK 2
--
--static u8 lm4853_state;
--
--/* This has no effect, it exists only to maintain compatibility with
-- * existing ALSA state files.
-- */
--static int lm4853_set_state(struct snd_kcontrol *kcontrol,
--	struct snd_ctl_elem_value *ucontrol)
--{
--	int val = ucontrol->value.integer.value[0];
--
--	if (val)
--		lm4853_state |= LM4853_AMP;
--	else
--		lm4853_state &= ~LM4853_AMP;
--
--	return 0;
--}
--
--static int lm4853_get_state(struct snd_kcontrol *kcontrol,
--	struct snd_ctl_elem_value *ucontrol)
--{
--	ucontrol->value.integer.value[0] = lm4853_state & LM4853_AMP;
--
--	return 0;
--}
--
--static int lm4853_set_spk(struct snd_kcontrol *kcontrol,
--	struct snd_ctl_elem_value *ucontrol)
--{
--	int val = ucontrol->value.integer.value[0];
--
--	if (val) {
--		lm4853_state |= LM4853_SPK;
--		gpio_set_value(GTA02_GPIO_HP_IN, 0);
--	} else {
--		lm4853_state &= ~LM4853_SPK;
--		gpio_set_value(GTA02_GPIO_HP_IN, 1);
--	}
--
--	return 0;
--}
--
--static int lm4853_get_spk(struct snd_kcontrol *kcontrol,
--	struct snd_ctl_elem_value *ucontrol)
--{
--	ucontrol->value.integer.value[0] = (lm4853_state & LM4853_SPK) >> 1;
--
--	return 0;
--}
--
--static int lm4853_event(struct snd_soc_dapm_widget *w,
--			struct snd_kcontrol *k,
--			int event)
--{
--	gpio_set_value(GTA02_GPIO_AMP_SHUT, SND_SOC_DAPM_EVENT_OFF(event));
--
--	return 0;
--}
--
--static const struct snd_soc_dapm_widget wm8753_dapm_widgets[] = {
--	SND_SOC_DAPM_SPK("Stereo Out", lm4853_event),
--	SND_SOC_DAPM_LINE("GSM Line Out", NULL),
--	SND_SOC_DAPM_LINE("GSM Line In", NULL),
--	SND_SOC_DAPM_MIC("Headset Mic", NULL),
--	SND_SOC_DAPM_MIC("Handset Mic", NULL),
--	SND_SOC_DAPM_SPK("Handset Spk", NULL),
--};
--
--
--/* example machine audio_mapnections */
--static const struct snd_soc_dapm_route audio_map[] = {
--
--	/* Connections to the lm4853 amp */
--	{"Stereo Out", NULL, "LOUT1"},
--	{"Stereo Out", NULL, "ROUT1"},
--
--	/* Connections to the GSM Module */
--	{"GSM Line Out", NULL, "MONO1"},
--	{"GSM Line Out", NULL, "MONO2"},
--	{"RXP", NULL, "GSM Line In"},
--	{"RXN", NULL, "GSM Line In"},
--
--	/* Connections to Headset */
--	{"MIC1", NULL, "Mic Bias"},
--	{"Mic Bias", NULL, "Headset Mic"},
--
--	/* Call Mic */
--	{"MIC2", NULL, "Mic Bias"},
--	{"MIC2N", NULL, "Mic Bias"},
--	{"Mic Bias", NULL, "Handset Mic"},
--
--	/* Call Speaker */
--	{"Handset Spk", NULL, "LOUT2"},
--	{"Handset Spk", NULL, "ROUT2"},
--
--	/* Connect the ALC pins */
--	{"ACIN", NULL, "ACOP"},
--};
--
--static const struct snd_kcontrol_new wm8753_neo1973_gta02_controls[] = {
--	SOC_DAPM_PIN_SWITCH("Stereo Out"),
--	SOC_DAPM_PIN_SWITCH("GSM Line Out"),
--	SOC_DAPM_PIN_SWITCH("GSM Line In"),
--	SOC_DAPM_PIN_SWITCH("Headset Mic"),
--	SOC_DAPM_PIN_SWITCH("Handset Mic"),
--	SOC_DAPM_PIN_SWITCH("Handset Spk"),
--
--	/* This has no effect, it exists only to maintain compatibility with
--	 * existing ALSA state files.
--	 */
--	SOC_SINGLE_EXT("Amp State Switch", 6, 0, 1, 0,
--		lm4853_get_state,
--		lm4853_set_state),
--	SOC_SINGLE_EXT("Amp Spk Switch", 7, 0, 1, 0,
--		lm4853_get_spk,
--		lm4853_set_spk),
--};
--
--/*
-- * This is an example machine initialisation for a wm8753 connected to a
-- * neo1973 GTA02.
-- */
--static int neo1973_gta02_wm8753_init(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_codec *codec = rtd->codec;
--	int err;
--
--	/* set up NC codec pins */
--	snd_soc_dapm_nc_pin(codec, "OUT3");
--	snd_soc_dapm_nc_pin(codec, "OUT4");
--	snd_soc_dapm_nc_pin(codec, "LINE1");
--	snd_soc_dapm_nc_pin(codec, "LINE2");
--
--	/* Add neo1973 gta02 specific widgets */
--	snd_soc_dapm_new_controls(codec, wm8753_dapm_widgets,
--				  ARRAY_SIZE(wm8753_dapm_widgets));
--
--	/* add neo1973 gta02 specific controls */
--	err = snd_soc_add_controls(codec, wm8753_neo1973_gta02_controls,
--		ARRAY_SIZE(wm8753_neo1973_gta02_controls));
--
--	if (err < 0)
--		return err;
--
--	/* set up neo1973 gta02 specific audio path audio_map */
--	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
--
--	/* set endpoints to default off mode */
--	snd_soc_dapm_disable_pin(codec, "Stereo Out");
--	snd_soc_dapm_disable_pin(codec, "GSM Line Out");
--	snd_soc_dapm_disable_pin(codec, "GSM Line In");
--	snd_soc_dapm_disable_pin(codec, "Headset Mic");
--	snd_soc_dapm_disable_pin(codec, "Handset Mic");
--	snd_soc_dapm_disable_pin(codec, "Handset Spk");
--
--	/* allow audio paths from the GSM modem to run during suspend */
--	snd_soc_dapm_ignore_suspend(codec, "Stereo Out");
--	snd_soc_dapm_ignore_suspend(codec, "GSM Line Out");
--	snd_soc_dapm_ignore_suspend(codec, "GSM Line In");
--	snd_soc_dapm_ignore_suspend(codec, "Headset Mic");
--	snd_soc_dapm_ignore_suspend(codec, "Handset Mic");
--	snd_soc_dapm_ignore_suspend(codec, "Handset Spk");
--
--	snd_soc_dapm_sync(codec);
--
--	return 0;
--}
--
--/*
-- * BT Codec DAI
-- */
--static struct snd_soc_dai_driver bt_dai = {
--	.name = "bluetooth-dai",
--	.playback = {
--		.channels_min = 1,
--		.channels_max = 1,
--		.rates = SNDRV_PCM_RATE_8000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
--	.capture = {
--		.channels_min = 1,
--		.channels_max = 1,
--		.rates = SNDRV_PCM_RATE_8000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
--};
--
--static struct snd_soc_dai_link neo1973_gta02_dai[] = {
--{ /* Hifi Playback - for similatious use with voice below */
--	.name = "WM8753",
--	.stream_name = "WM8753 HiFi",
--	.cpu_dai_name = "s3c24xx-i2s",
--	.codec_dai_name = "wm8753-hifi",
--	.init = neo1973_gta02_wm8753_init,
--	.platform_name = "samsung-audio",
--	.codec_name = "wm8753-codec.0-0x1a",
--	.ops = &neo1973_gta02_hifi_ops,
--},
--{ /* Voice via BT */
--	.name = "Bluetooth",
--	.stream_name = "Voice",
--	.cpu_dai_name = "bluetooth-dai",
--	.codec_dai_name = "wm8753-voice",
--	.ops = &neo1973_gta02_voice_ops,
--	.codec_name = "wm8753-codec.0-0x1a",
--	.platform_name = "samsung-audio",
--},
--};
--
--static struct snd_soc_card neo1973_gta02 = {
--	.name = "neo1973-gta02",
--	.dai_link = neo1973_gta02_dai,
--	.num_links = ARRAY_SIZE(neo1973_gta02_dai),
--};
--
--static struct platform_device *neo1973_gta02_snd_device;
--
--static int __init neo1973_gta02_init(void)
--{
--	int ret;
--
--	if (!machine_is_neo1973_gta02()) {
--		printk(KERN_INFO
--		       "Only GTA02 is supported by this ASoC driver\n");
--		return -ENODEV;
--	}
--
--	neo1973_gta02_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!neo1973_gta02_snd_device)
--		return -ENOMEM;
--
--	/* register bluetooth DAI here */
--	ret = snd_soc_register_dai(&neo1973_gta02_snd_device->dev, -1, &bt_dai);
--	if (ret) {
--		platform_device_put(neo1973_gta02_snd_device);
--		return ret;
--	}
--
--	platform_set_drvdata(neo1973_gta02_snd_device, &neo1973_gta02);
--	ret = platform_device_add(neo1973_gta02_snd_device);
--
--	if (ret) {
--		platform_device_put(neo1973_gta02_snd_device);
--		return ret;
--	}
--
--	/* Initialise GPIOs used by amp */
--	ret = gpio_request(GTA02_GPIO_HP_IN, "GTA02_HP_IN");
--	if (ret) {
--		pr_err("gta02_wm8753: Failed to register GPIO %d\n", GTA02_GPIO_HP_IN);
--		goto err_unregister_device;
--	}
--
--	ret = gpio_direction_output(GTA02_GPIO_HP_IN, 1);
--	if (ret) {
--		pr_err("gta02_wm8753: Failed to configure GPIO %d\n", GTA02_GPIO_HP_IN);
--		goto err_free_gpio_hp_in;
--	}
--
--	ret = gpio_request(GTA02_GPIO_AMP_SHUT, "GTA02_AMP_SHUT");
--	if (ret) {
--		pr_err("gta02_wm8753: Failed to register GPIO %d\n", GTA02_GPIO_AMP_SHUT);
--		goto err_free_gpio_hp_in;
--	}
--
--	ret = gpio_direction_output(GTA02_GPIO_AMP_SHUT, 1);
--	if (ret) {
--		pr_err("gta02_wm8753: Failed to configure GPIO %d\n", GTA02_GPIO_AMP_SHUT);
--		goto err_free_gpio_amp_shut;
--	}
--
--	return 0;
--
--err_free_gpio_amp_shut:
--	gpio_free(GTA02_GPIO_AMP_SHUT);
--err_free_gpio_hp_in:
--	gpio_free(GTA02_GPIO_HP_IN);
--err_unregister_device:
--	platform_device_unregister(neo1973_gta02_snd_device);
--	return ret;
--}
--module_init(neo1973_gta02_init);
--
--static void __exit neo1973_gta02_exit(void)
--{
--	snd_soc_unregister_dai(&neo1973_gta02_snd_device->dev, -1);
--	platform_device_unregister(neo1973_gta02_snd_device);
--	gpio_free(GTA02_GPIO_HP_IN);
--	gpio_free(GTA02_GPIO_AMP_SHUT);
--}
--module_exit(neo1973_gta02_exit);
--
--/* Module information */
--MODULE_AUTHOR("Graeme Gregory, graeme@openmoko.org");
--MODULE_DESCRIPTION("ALSA SoC WM8753 Neo1973 GTA02");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
-deleted file mode 100644
-index 96dda57..0000000
---- a/sound/soc/s3c24xx/neo1973_wm8753.c
-+++ /dev/null
-@@ -1,704 +0,0 @@
--/*
-- * neo1973_wm8753.c  --  SoC audio for Neo1973
-- *
-- * Copyright 2007 Wolfson Microelectronics PLC.
-- * Author: Graeme Gregory
-- *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-- */
--
--#include <linux/module.h>
--#include <linux/moduleparam.h>
--#include <linux/timer.h>
--#include <linux/interrupt.h>
--#include <linux/platform_device.h>
--#include <linux/i2c.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--#include <sound/soc-dapm.h>
--#include <sound/tlv.h>
--
--#include <asm/mach-types.h>
--#include <asm/hardware/scoop.h>
--#include <mach/regs-clock.h>
--#include <mach/regs-gpio.h>
--#include <mach/hardware.h>
--#include <linux/io.h>
--#include <mach/spi-gpio.h>
--
--#include <plat/regs-iis.h>
--
--#include "../codecs/wm8753.h"
--#include "lm4857.h"
--#include "dma.h"
--#include "s3c24xx-i2s.h"
--
--/* define the scenarios */
--#define NEO_AUDIO_OFF			0
--#define NEO_GSM_CALL_AUDIO_HANDSET	1
--#define NEO_GSM_CALL_AUDIO_HEADSET	2
--#define NEO_GSM_CALL_AUDIO_BLUETOOTH	3
--#define NEO_STEREO_TO_SPEAKERS		4
--#define NEO_STEREO_TO_HEADPHONES	5
--#define NEO_CAPTURE_HANDSET		6
--#define NEO_CAPTURE_HEADSET		7
--#define NEO_CAPTURE_BLUETOOTH		8
--
--static struct snd_soc_card neo1973;
--static struct i2c_client *i2c;
--
--static int neo1973_hifi_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	unsigned int pll_out = 0, bclk = 0;
--	int ret = 0;
--	unsigned long iis_clkrate;
--
--	pr_debug("Entered %s\n", __func__);
--
--	iis_clkrate = s3c24xx_i2s_get_clockrate();
--
--	switch (params_rate(params)) {
--	case 8000:
--	case 16000:
--		pll_out = 12288000;
--		break;
--	case 48000:
--		bclk = WM8753_BCLK_DIV_4;
--		pll_out = 12288000;
--		break;
--	case 96000:
--		bclk = WM8753_BCLK_DIV_2;
--		pll_out = 12288000;
--		break;
--	case 11025:
--		bclk = WM8753_BCLK_DIV_16;
--		pll_out = 11289600;
--		break;
--	case 22050:
--		bclk = WM8753_BCLK_DIV_8;
--		pll_out = 11289600;
--		break;
--	case 44100:
--		bclk = WM8753_BCLK_DIV_4;
--		pll_out = 11289600;
--		break;
--	case 88200:
--		bclk = WM8753_BCLK_DIV_2;
--		pll_out = 11289600;
--		break;
--	}
--
--	/* set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai,
--		SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--		SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	/* set cpu DAI configuration */
--	ret = snd_soc_dai_set_fmt(cpu_dai,
--		SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
--		SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec system clock for DAC and ADC */
--	ret = snd_soc_dai_set_sysclk(codec_dai, WM8753_MCLK, pll_out,
--		SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	/* set MCLK division for sample rate */
--	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_MCLK,
--		S3C2410_IISMOD_32FS);
--	if (ret < 0)
--		return ret;
--
--	/* set codec BCLK division for sample rate */
--	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8753_BCLKDIV, bclk);
--	if (ret < 0)
--		return ret;
--
--	/* set prescaler division for sample rate */
--	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_PRESCALER,
--		S3C24XX_PRESCALE(4, 4));
--	if (ret < 0)
--		return ret;
--
--	/* codec PLL input is PCLK/4 */
--	ret = snd_soc_dai_set_pll(codec_dai, WM8753_PLL1, 0,
--		iis_clkrate / 4, pll_out);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--static int neo1973_hifi_hw_free(struct snd_pcm_substream *substream)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--
--	pr_debug("Entered %s\n", __func__);
--
--	/* disable the PLL */
--	return snd_soc_dai_set_pll(codec_dai, WM8753_PLL1, 0, 0, 0);
--}
--
--/*
-- * Neo1973 WM8753 HiFi DAI opserations.
-- */
--static struct snd_soc_ops neo1973_hifi_ops = {
--	.hw_params = neo1973_hifi_hw_params,
--	.hw_free = neo1973_hifi_hw_free,
--};
--
--static int neo1973_voice_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	unsigned int pcmdiv = 0;
--	int ret = 0;
--	unsigned long iis_clkrate;
--
--	pr_debug("Entered %s\n", __func__);
--
--	iis_clkrate = s3c24xx_i2s_get_clockrate();
--
--	if (params_rate(params) != 8000)
--		return -EINVAL;
--	if (params_channels(params) != 1)
--		return -EINVAL;
--
--	pcmdiv = WM8753_PCM_DIV_6; /* 2.048 MHz */
--
--	/* todo: gg check mode (DSP_B) against CSR datasheet */
--	/* set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_DSP_B |
--		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec system clock for DAC and ADC */
--	ret = snd_soc_dai_set_sysclk(codec_dai, WM8753_PCMCLK, 12288000,
--		SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	/* set codec PCM division for sample rate */
--	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8753_PCMDIV, pcmdiv);
--	if (ret < 0)
--		return ret;
--
--	/* configue and enable PLL for 12.288MHz output */
--	ret = snd_soc_dai_set_pll(codec_dai, WM8753_PLL2, 0,
--		iis_clkrate / 4, 12288000);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--static int neo1973_voice_hw_free(struct snd_pcm_substream *substream)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--
--	pr_debug("Entered %s\n", __func__);
--
--	/* disable the PLL */
--	return snd_soc_dai_set_pll(codec_dai, WM8753_PLL2, 0, 0, 0);
--}
--
--static struct snd_soc_ops neo1973_voice_ops = {
--	.hw_params = neo1973_voice_hw_params,
--	.hw_free = neo1973_voice_hw_free,
--};
--
--static int neo1973_scenario;
--
--static int neo1973_get_scenario(struct snd_kcontrol *kcontrol,
--	struct snd_ctl_elem_value *ucontrol)
--{
--	ucontrol->value.integer.value[0] = neo1973_scenario;
--	return 0;
--}
--
--static int set_scenario_endpoints(struct snd_soc_codec *codec, int scenario)
--{
--	pr_debug("Entered %s\n", __func__);
--
--	switch (neo1973_scenario) {
--	case NEO_AUDIO_OFF:
--		snd_soc_dapm_disable_pin(codec, "Audio Out");
--		snd_soc_dapm_disable_pin(codec, "GSM Line Out");
--		snd_soc_dapm_disable_pin(codec, "GSM Line In");
--		snd_soc_dapm_disable_pin(codec, "Headset Mic");
--		snd_soc_dapm_disable_pin(codec, "Call Mic");
--		break;
--	case NEO_GSM_CALL_AUDIO_HANDSET:
--		snd_soc_dapm_enable_pin(codec, "Audio Out");
--		snd_soc_dapm_enable_pin(codec, "GSM Line Out");
--		snd_soc_dapm_enable_pin(codec, "GSM Line In");
--		snd_soc_dapm_disable_pin(codec, "Headset Mic");
--		snd_soc_dapm_enable_pin(codec, "Call Mic");
--		break;
--	case NEO_GSM_CALL_AUDIO_HEADSET:
--		snd_soc_dapm_enable_pin(codec, "Audio Out");
--		snd_soc_dapm_enable_pin(codec, "GSM Line Out");
--		snd_soc_dapm_enable_pin(codec, "GSM Line In");
--		snd_soc_dapm_enable_pin(codec, "Headset Mic");
--		snd_soc_dapm_disable_pin(codec, "Call Mic");
--		break;
--	case NEO_GSM_CALL_AUDIO_BLUETOOTH:
--		snd_soc_dapm_disable_pin(codec, "Audio Out");
--		snd_soc_dapm_enable_pin(codec, "GSM Line Out");
--		snd_soc_dapm_enable_pin(codec, "GSM Line In");
--		snd_soc_dapm_disable_pin(codec, "Headset Mic");
--		snd_soc_dapm_disable_pin(codec, "Call Mic");
--		break;
--	case NEO_STEREO_TO_SPEAKERS:
--		snd_soc_dapm_enable_pin(codec, "Audio Out");
--		snd_soc_dapm_disable_pin(codec, "GSM Line Out");
--		snd_soc_dapm_disable_pin(codec, "GSM Line In");
--		snd_soc_dapm_disable_pin(codec, "Headset Mic");
--		snd_soc_dapm_disable_pin(codec, "Call Mic");
--		break;
--	case NEO_STEREO_TO_HEADPHONES:
--		snd_soc_dapm_enable_pin(codec, "Audio Out");
--		snd_soc_dapm_disable_pin(codec, "GSM Line Out");
--		snd_soc_dapm_disable_pin(codec, "GSM Line In");
--		snd_soc_dapm_disable_pin(codec, "Headset Mic");
--		snd_soc_dapm_disable_pin(codec, "Call Mic");
--		break;
--	case NEO_CAPTURE_HANDSET:
--		snd_soc_dapm_disable_pin(codec, "Audio Out");
--		snd_soc_dapm_disable_pin(codec, "GSM Line Out");
--		snd_soc_dapm_disable_pin(codec, "GSM Line In");
--		snd_soc_dapm_disable_pin(codec, "Headset Mic");
--		snd_soc_dapm_enable_pin(codec, "Call Mic");
--		break;
--	case NEO_CAPTURE_HEADSET:
--		snd_soc_dapm_disable_pin(codec, "Audio Out");
--		snd_soc_dapm_disable_pin(codec, "GSM Line Out");
--		snd_soc_dapm_disable_pin(codec, "GSM Line In");
--		snd_soc_dapm_enable_pin(codec, "Headset Mic");
--		snd_soc_dapm_disable_pin(codec, "Call Mic");
--		break;
--	case NEO_CAPTURE_BLUETOOTH:
--		snd_soc_dapm_disable_pin(codec, "Audio Out");
--		snd_soc_dapm_disable_pin(codec, "GSM Line Out");
--		snd_soc_dapm_disable_pin(codec, "GSM Line In");
--		snd_soc_dapm_disable_pin(codec, "Headset Mic");
--		snd_soc_dapm_disable_pin(codec, "Call Mic");
--		break;
--	default:
--		snd_soc_dapm_disable_pin(codec, "Audio Out");
--		snd_soc_dapm_disable_pin(codec, "GSM Line Out");
--		snd_soc_dapm_disable_pin(codec, "GSM Line In");
--		snd_soc_dapm_disable_pin(codec, "Headset Mic");
--		snd_soc_dapm_disable_pin(codec, "Call Mic");
--	}
--
--	snd_soc_dapm_sync(codec);
--
--	return 0;
--}
--
--static int neo1973_set_scenario(struct snd_kcontrol *kcontrol,
--	struct snd_ctl_elem_value *ucontrol)
--{
--	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
--
--	pr_debug("Entered %s\n", __func__);
--
--	if (neo1973_scenario == ucontrol->value.integer.value[0])
--		return 0;
--
--	neo1973_scenario = ucontrol->value.integer.value[0];
--	set_scenario_endpoints(codec, neo1973_scenario);
--	return 1;
--}
--
--static u8 lm4857_regs[4] = {0x00, 0x40, 0x80, 0xC0};
--
--static void lm4857_write_regs(void)
--{
--	pr_debug("Entered %s\n", __func__);
--
--	if (i2c_master_send(i2c, lm4857_regs, 4) != 4)
--		printk(KERN_ERR "lm4857: i2c write failed\n");
--}
--
--static int lm4857_get_reg(struct snd_kcontrol *kcontrol,
--	struct snd_ctl_elem_value *ucontrol)
--{
--	struct soc_mixer_control *mc =
--		(struct soc_mixer_control *)kcontrol->private_value;
--	int reg = mc->reg;
--	int shift = mc->shift;
--	int mask = mc->max;
--
--	pr_debug("Entered %s\n", __func__);
--
--	ucontrol->value.integer.value[0] = (lm4857_regs[reg] >> shift) & mask;
--	return 0;
--}
--
--static int lm4857_set_reg(struct snd_kcontrol *kcontrol,
--	struct snd_ctl_elem_value *ucontrol)
--{
--	struct soc_mixer_control *mc =
--		(struct soc_mixer_control *)kcontrol->private_value;
--	int reg = mc->reg;
--	int shift = mc->shift;
--	int mask = mc->max;
--
--	if (((lm4857_regs[reg] >> shift) & mask) ==
--		ucontrol->value.integer.value[0])
--		return 0;
--
--	lm4857_regs[reg] &= ~(mask << shift);
--	lm4857_regs[reg] |= ucontrol->value.integer.value[0] << shift;
--	lm4857_write_regs();
--	return 1;
--}
--
--static int lm4857_get_mode(struct snd_kcontrol *kcontrol,
--	struct snd_ctl_elem_value *ucontrol)
--{
--	u8 value = lm4857_regs[LM4857_CTRL] & 0x0F;
--
--	pr_debug("Entered %s\n", __func__);
--
--	if (value)
--		value -= 5;
--
--	ucontrol->value.integer.value[0] = value;
--	return 0;
--}
--
--static int lm4857_set_mode(struct snd_kcontrol *kcontrol,
--	struct snd_ctl_elem_value *ucontrol)
--{
--	u8 value = ucontrol->value.integer.value[0];
--
--	pr_debug("Entered %s\n", __func__);
--
--	if (value)
--		value += 5;
--
--	if ((lm4857_regs[LM4857_CTRL] & 0x0F) == value)
--		return 0;
--
--	lm4857_regs[LM4857_CTRL] &= 0xF0;
--	lm4857_regs[LM4857_CTRL] |= value;
--	lm4857_write_regs();
--	return 1;
--}
--
--static const struct snd_soc_dapm_widget wm8753_dapm_widgets[] = {
--	SND_SOC_DAPM_LINE("Audio Out", NULL),
--	SND_SOC_DAPM_LINE("GSM Line Out", NULL),
--	SND_SOC_DAPM_LINE("GSM Line In", NULL),
--	SND_SOC_DAPM_MIC("Headset Mic", NULL),
--	SND_SOC_DAPM_MIC("Call Mic", NULL),
--};
--
--
--static const struct snd_soc_dapm_route dapm_routes[] = {
--
--	/* Connections to the lm4857 amp */
--	{"Audio Out", NULL, "LOUT1"},
--	{"Audio Out", NULL, "ROUT1"},
--
--	/* Connections to the GSM Module */
--	{"GSM Line Out", NULL, "MONO1"},
--	{"GSM Line Out", NULL, "MONO2"},
--	{"RXP", NULL, "GSM Line In"},
--	{"RXN", NULL, "GSM Line In"},
--
--	/* Connections to Headset */
--	{"MIC1", NULL, "Mic Bias"},
--	{"Mic Bias", NULL, "Headset Mic"},
--
--	/* Call Mic */
--	{"MIC2", NULL, "Mic Bias"},
--	{"MIC2N", NULL, "Mic Bias"},
--	{"Mic Bias", NULL, "Call Mic"},
--
--	/* Connect the ALC pins */
--	{"ACIN", NULL, "ACOP"},
--};
--
--static const char *lm4857_mode[] = {
--	"Off",
--	"Call Speaker",
--	"Stereo Speakers",
--	"Stereo Speakers + Headphones",
--	"Headphones"
--};
--
--static const struct soc_enum lm4857_mode_enum[] = {
--	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(lm4857_mode), lm4857_mode),
--};
--
--static const char *neo_scenarios[] = {
--	"Off",
--	"GSM Handset",
--	"GSM Headset",
--	"GSM Bluetooth",
--	"Speakers",
--	"Headphones",
--	"Capture Handset",
--	"Capture Headset",
--	"Capture Bluetooth"
--};
--
--static const struct soc_enum neo_scenario_enum[] = {
--	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(neo_scenarios), neo_scenarios),
--};
--
--static const DECLARE_TLV_DB_SCALE(stereo_tlv, -4050, 150, 0);
--static const DECLARE_TLV_DB_SCALE(mono_tlv, -3450, 150, 0);
--
--static const struct snd_kcontrol_new wm8753_neo1973_controls[] = {
--	SOC_SINGLE_EXT_TLV("Amp Left Playback Volume", LM4857_LVOL, 0, 31, 0,
--		lm4857_get_reg, lm4857_set_reg, stereo_tlv),
--	SOC_SINGLE_EXT_TLV("Amp Right Playback Volume", LM4857_RVOL, 0, 31, 0,
--		lm4857_get_reg, lm4857_set_reg, stereo_tlv),
--	SOC_SINGLE_EXT_TLV("Amp Mono Playback Volume", LM4857_MVOL, 0, 31, 0,
--		lm4857_get_reg, lm4857_set_reg, mono_tlv),
--	SOC_ENUM_EXT("Amp Mode", lm4857_mode_enum[0],
--		lm4857_get_mode, lm4857_set_mode),
--	SOC_ENUM_EXT("Neo Mode", neo_scenario_enum[0],
--		neo1973_get_scenario, neo1973_set_scenario),
--	SOC_SINGLE_EXT("Amp Spk 3D Playback Switch", LM4857_LVOL, 5, 1, 0,
--		lm4857_get_reg, lm4857_set_reg),
--	SOC_SINGLE_EXT("Amp HP 3d Playback Switch", LM4857_RVOL, 5, 1, 0,
--		lm4857_get_reg, lm4857_set_reg),
--	SOC_SINGLE_EXT("Amp Fast Wakeup Playback Switch", LM4857_CTRL, 5, 1, 0,
--		lm4857_get_reg, lm4857_set_reg),
--	SOC_SINGLE_EXT("Amp Earpiece 6dB Playback Switch", LM4857_CTRL, 4, 1, 0,
--		lm4857_get_reg, lm4857_set_reg),
--};
--
--/*
-- * This is an example machine initialisation for a wm8753 connected to a
-- * neo1973 II. It is missing logic to detect hp/mic insertions and logic
-- * to re-route the audio in such an event.
-- */
--static int neo1973_wm8753_init(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_codec *codec = rtd->codec;
--	int err;
--
--	pr_debug("Entered %s\n", __func__);
--
--	/* set up NC codec pins */
--	snd_soc_dapm_nc_pin(codec, "LOUT2");
--	snd_soc_dapm_nc_pin(codec, "ROUT2");
--	snd_soc_dapm_nc_pin(codec, "OUT3");
--	snd_soc_dapm_nc_pin(codec, "OUT4");
--	snd_soc_dapm_nc_pin(codec, "LINE1");
--	snd_soc_dapm_nc_pin(codec, "LINE2");
--
--	/* Add neo1973 specific widgets */
--	snd_soc_dapm_new_controls(codec, wm8753_dapm_widgets,
--				  ARRAY_SIZE(wm8753_dapm_widgets));
--
--	/* set endpoints to default mode */
--	set_scenario_endpoints(codec, NEO_AUDIO_OFF);
--
--	/* add neo1973 specific controls */
--	err = snd_soc_add_controls(codec, wm8753_neo1973_controls,
--				ARRAY_SIZE(8753_neo1973_controls));
--	if (err < 0)
--		return err;
--
--	/* set up neo1973 specific audio routes */
--	err = snd_soc_dapm_add_routes(codec, dapm_routes,
--				      ARRAY_SIZE(dapm_routes));
--
--	snd_soc_dapm_sync(codec);
--	return 0;
--}
--
--/*
-- * BT Codec DAI
-- */
--static struct snd_soc_dai bt_dai = {
--	.name = "bluetooth-dai",
--	.playback = {
--		.channels_min = 1,
--		.channels_max = 1,
--		.rates = SNDRV_PCM_RATE_8000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
--	.capture = {
--		.channels_min = 1,
--		.channels_max = 1,
--		.rates = SNDRV_PCM_RATE_8000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
--};
--
--static struct snd_soc_dai_link neo1973_dai[] = {
--{ /* Hifi Playback - for similatious use with voice below */
--	.name = "WM8753",
--	.stream_name = "WM8753 HiFi",
--	.platform_name = "samsung-audio",
--	.cpu_dai_name = "s3c24xx-i2s",
--	.codec_dai_name = "wm8753-hifi",
--	.codec_name = "wm8753-codec.0-0x1a",
--	.init = neo1973_wm8753_init,
--	.ops = &neo1973_hifi_ops,
--},
--{ /* Voice via BT */
--	.name = "Bluetooth",
--	.stream_name = "Voice",
--	.platform_name = "samsung-audio",
--	.cpu_dai_name = "bluetooth-dai",
--	.codec_dai_name = "wm8753-voice",
--	.codec_name = "wm8753-codec.0-0x1a",
--	.ops = &neo1973_voice_ops,
--},
--};
--
--static struct snd_soc_card neo1973 = {
--	.name = "neo1973",
--	.dai_link = neo1973_dai,
--	.num_links = ARRAY_SIZE(neo1973_dai),
--};
--
--static int lm4857_i2c_probe(struct i2c_client *client,
--			    const struct i2c_device_id *id)
--{
--	pr_debug("Entered %s\n", __func__);
--
--	i2c = client;
--
--	lm4857_write_regs();
--	return 0;
--}
--
--static int lm4857_i2c_remove(struct i2c_client *client)
--{
--	pr_debug("Entered %s\n", __func__);
--
--	i2c = NULL;
--
--	return 0;
--}
--
--static u8 lm4857_state;
--
--static int lm4857_suspend(struct i2c_client *dev, pm_message_t state)
--{
--	pr_debug("Entered %s\n", __func__);
--
--	dev_dbg(&dev->dev, "lm4857_suspend\n");
--	lm4857_state = lm4857_regs[LM4857_CTRL] & 0xf;
--	if (lm4857_state) {
--		lm4857_regs[LM4857_CTRL] &= 0xf0;
--		lm4857_write_regs();
--	}
--	return 0;
--}
--
--static int lm4857_resume(struct i2c_client *dev)
--{
--	pr_debug("Entered %s\n", __func__);
--
--	if (lm4857_state) {
--		lm4857_regs[LM4857_CTRL] |= (lm4857_state & 0x0f);
--		lm4857_write_regs();
--	}
--	return 0;
--}
--
--static void lm4857_shutdown(struct i2c_client *dev)
--{
--	pr_debug("Entered %s\n", __func__);
--
--	dev_dbg(&dev->dev, "lm4857_shutdown\n");
--	lm4857_regs[LM4857_CTRL] &= 0xf0;
--	lm4857_write_regs();
--}
--
--static const struct i2c_device_id lm4857_i2c_id[] = {
--	{ "neo1973_lm4857", 0 },
--	{ }
--};
--
--static struct i2c_driver lm4857_i2c_driver = {
--	.driver = {
--		.name = "LM4857 I2C Amp",
--		.owner = THIS_MODULE,
--	},
--	.suspend =        lm4857_suspend,
--	.resume	=         lm4857_resume,
--	.shutdown =       lm4857_shutdown,
--	.probe =          lm4857_i2c_probe,
--	.remove =         lm4857_i2c_remove,
--	.id_table =       lm4857_i2c_id,
--};
--
--static struct platform_device *neo1973_snd_device;
--
--static int __init neo1973_init(void)
--{
--	int ret;
--
--	pr_debug("Entered %s\n", __func__);
--
--	if (!machine_is_neo1973_gta01()) {
--		printk(KERN_INFO
--			"Only GTA01 hardware supported by ASoC driver\n");
--		return -ENODEV;
--	}
--
--	neo1973_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!neo1973_snd_device)
--		return -ENOMEM;
--
--	platform_set_drvdata(neo1973_snd_device, &neo1973);
--	ret = platform_device_add(neo1973_snd_device);
--
--	if (ret) {
--		platform_device_put(neo1973_snd_device);
--		return ret;
--	}
--
--	ret = i2c_add_driver(&lm4857_i2c_driver);
--
--	if (ret != 0)
--		platform_device_unregister(neo1973_snd_device);
--
--	return ret;
--}
--
--static void __exit neo1973_exit(void)
--{
--	pr_debug("Entered %s\n", __func__);
--
--	i2c_del_driver(&lm4857_i2c_driver);
--	platform_device_unregister(neo1973_snd_device);
--}
--
--module_init(neo1973_init);
--module_exit(neo1973_exit);
--
--/* Module information */
--MODULE_AUTHOR("Graeme Gregory, graeme@openmoko.org, www.openmoko.org");
--MODULE_DESCRIPTION("ALSA SoC WM8753 Neo1973");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/pcm.c b/sound/soc/s3c24xx/pcm.c
-deleted file mode 100644
-index 4d0f6e4..0000000
---- a/sound/soc/s3c24xx/pcm.c
-+++ /dev/null
-@@ -1,552 +0,0 @@
--/* sound/soc/s3c24xx/pcm.c
-- *
-- * ALSA SoC Audio Layer - S3C PCM-Controller driver
-- *
-- * Copyright (c) 2009 Samsung Electronics Co. Ltd
-- * Author: Jaswinder Singh <jassi.brar@samsung.com>
-- * based upon I2S drivers by Ben Dooks.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--#include <linux/init.h>
--#include <linux/module.h>
--#include <linux/device.h>
--#include <linux/delay.h>
--#include <linux/clk.h>
--#include <linux/kernel.h>
--#include <linux/gpio.h>
--#include <linux/io.h>
--
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/pcm_params.h>
--#include <sound/initval.h>
--#include <sound/soc.h>
--
--#include <plat/audio.h>
--#include <plat/dma.h>
--
--#include "dma.h"
--#include "pcm.h"
--
--static struct s3c2410_dma_client s3c_pcm_dma_client_out = {
--	.name		= "PCM Stereo out"
--};
--
--static struct s3c2410_dma_client s3c_pcm_dma_client_in = {
--	.name		= "PCM Stereo in"
--};
--
--static struct s3c_dma_params s3c_pcm_stereo_out[] = {
--	[0] = {
--		.client		= &s3c_pcm_dma_client_out,
--		.dma_size	= 4,
--	},
--	[1] = {
--		.client		= &s3c_pcm_dma_client_out,
--		.dma_size	= 4,
--	},
--};
--
--static struct s3c_dma_params s3c_pcm_stereo_in[] = {
--	[0] = {
--		.client		= &s3c_pcm_dma_client_in,
--		.dma_size	= 4,
--	},
--	[1] = {
--		.client		= &s3c_pcm_dma_client_in,
--		.dma_size	= 4,
--	},
--};
--
--static struct s3c_pcm_info s3c_pcm[2];
--
--static void s3c_pcm_snd_txctrl(struct s3c_pcm_info *pcm, int on)
--{
--	void __iomem *regs = pcm->regs;
--	u32 ctl, clkctl;
--
--	clkctl = readl(regs + S3C_PCM_CLKCTL);
--	ctl = readl(regs + S3C_PCM_CTL);
--	ctl &= ~(S3C_PCM_CTL_TXDIPSTICK_MASK
--			 << S3C_PCM_CTL_TXDIPSTICK_SHIFT);
--
--	if (on) {
--		ctl |= S3C_PCM_CTL_TXDMA_EN;
--		ctl |= S3C_PCM_CTL_TXFIFO_EN;
--		ctl |= S3C_PCM_CTL_ENABLE;
--		ctl |= (0x4<<S3C_PCM_CTL_TXDIPSTICK_SHIFT);
--		clkctl |= S3C_PCM_CLKCTL_SERCLK_EN;
--	} else {
--		ctl &= ~S3C_PCM_CTL_TXDMA_EN;
--		ctl &= ~S3C_PCM_CTL_TXFIFO_EN;
--
--		if (!(ctl & S3C_PCM_CTL_RXFIFO_EN)) {
--			ctl &= ~S3C_PCM_CTL_ENABLE;
--			if (!pcm->idleclk)
--				clkctl |= S3C_PCM_CLKCTL_SERCLK_EN;
--		}
--	}
--
--	writel(clkctl, regs + S3C_PCM_CLKCTL);
--	writel(ctl, regs + S3C_PCM_CTL);
--}
--
--static void s3c_pcm_snd_rxctrl(struct s3c_pcm_info *pcm, int on)
--{
--	void __iomem *regs = pcm->regs;
--	u32 ctl, clkctl;
--
--	ctl = readl(regs + S3C_PCM_CTL);
--	clkctl = readl(regs + S3C_PCM_CLKCTL);
--	ctl &= ~(S3C_PCM_CTL_RXDIPSTICK_MASK
--			 << S3C_PCM_CTL_RXDIPSTICK_SHIFT);
--
--	if (on) {
--		ctl |= S3C_PCM_CTL_RXDMA_EN;
--		ctl |= S3C_PCM_CTL_RXFIFO_EN;
--		ctl |= S3C_PCM_CTL_ENABLE;
--		ctl |= (0x20<<S3C_PCM_CTL_RXDIPSTICK_SHIFT);
--		clkctl |= S3C_PCM_CLKCTL_SERCLK_EN;
--	} else {
--		ctl &= ~S3C_PCM_CTL_RXDMA_EN;
--		ctl &= ~S3C_PCM_CTL_RXFIFO_EN;
--
--		if (!(ctl & S3C_PCM_CTL_TXFIFO_EN)) {
--			ctl &= ~S3C_PCM_CTL_ENABLE;
--			if (!pcm->idleclk)
--				clkctl |= S3C_PCM_CLKCTL_SERCLK_EN;
--		}
--	}
--
--	writel(clkctl, regs + S3C_PCM_CLKCTL);
--	writel(ctl, regs + S3C_PCM_CTL);
--}
--
--static int s3c_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
--			       struct snd_soc_dai *dai)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct s3c_pcm_info *pcm = snd_soc_dai_get_drvdata(rtd->cpu_dai);
--	unsigned long flags;
--
--	dev_dbg(pcm->dev, "Entered %s\n", __func__);
--
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
--	case SNDRV_PCM_TRIGGER_RESUME:
--	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		spin_lock_irqsave(&pcm->lock, flags);
--
--		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
--			s3c_pcm_snd_rxctrl(pcm, 1);
--		else
--			s3c_pcm_snd_txctrl(pcm, 1);
--
--		spin_unlock_irqrestore(&pcm->lock, flags);
--		break;
--
--	case SNDRV_PCM_TRIGGER_STOP:
--	case SNDRV_PCM_TRIGGER_SUSPEND:
--	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		spin_lock_irqsave(&pcm->lock, flags);
--
--		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
--			s3c_pcm_snd_rxctrl(pcm, 0);
--		else
--			s3c_pcm_snd_txctrl(pcm, 0);
--
--		spin_unlock_irqrestore(&pcm->lock, flags);
--		break;
--
--	default:
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
--static int s3c_pcm_hw_params(struct snd_pcm_substream *substream,
--				 struct snd_pcm_hw_params *params,
--				 struct snd_soc_dai *socdai)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct s3c_pcm_info *pcm = snd_soc_dai_get_drvdata(rtd->cpu_dai);
--	struct s3c_dma_params *dma_data;
--	void __iomem *regs = pcm->regs;
--	struct clk *clk;
--	int sclk_div, sync_div;
--	unsigned long flags;
--	u32 clkctl;
--
--	dev_dbg(pcm->dev, "Entered %s\n", __func__);
--
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		dma_data = pcm->dma_playback;
--	else
--		dma_data = pcm->dma_capture;
--
--	snd_soc_dai_set_dma_data(rtd->cpu_dai, substream, dma_data);
--
--	/* Strictly check for sample size */
--	switch (params_format(params)) {
--	case SNDRV_PCM_FORMAT_S16_LE:
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	spin_lock_irqsave(&pcm->lock, flags);
--
--	/* Get hold of the PCMSOURCE_CLK */
--	clkctl = readl(regs + S3C_PCM_CLKCTL);
--	if (clkctl & S3C_PCM_CLKCTL_SERCLKSEL_PCLK)
--		clk = pcm->pclk;
--	else
--		clk = pcm->cclk;
--
--	/* Set the SCLK divider */
--	sclk_div = clk_get_rate(clk) / pcm->sclk_per_fs /
--					params_rate(params) / 2 - 1;
--
--	clkctl &= ~(S3C_PCM_CLKCTL_SCLKDIV_MASK
--			<< S3C_PCM_CLKCTL_SCLKDIV_SHIFT);
--	clkctl |= ((sclk_div & S3C_PCM_CLKCTL_SCLKDIV_MASK)
--			<< S3C_PCM_CLKCTL_SCLKDIV_SHIFT);
--
--	/* Set the SYNC divider */
--	sync_div = pcm->sclk_per_fs - 1;
--
--	clkctl &= ~(S3C_PCM_CLKCTL_SYNCDIV_MASK
--				<< S3C_PCM_CLKCTL_SYNCDIV_SHIFT);
--	clkctl |= ((sync_div & S3C_PCM_CLKCTL_SYNCDIV_MASK)
--				<< S3C_PCM_CLKCTL_SYNCDIV_SHIFT);
--
--	writel(clkctl, regs + S3C_PCM_CLKCTL);
--
--	spin_unlock_irqrestore(&pcm->lock, flags);
--
--	dev_dbg(pcm->dev, "PCMSOURCE_CLK-%lu SCLK=%ufs SCLK_DIV=%d SYNC_DIV=%d\n",
--				clk_get_rate(clk), pcm->sclk_per_fs,
--				sclk_div, sync_div);
--
--	return 0;
--}
--
--static int s3c_pcm_set_fmt(struct snd_soc_dai *cpu_dai,
--			       unsigned int fmt)
--{
--	struct s3c_pcm_info *pcm = snd_soc_dai_get_drvdata(cpu_dai);
--	void __iomem *regs = pcm->regs;
--	unsigned long flags;
--	int ret = 0;
--	u32 ctl;
--
--	dev_dbg(pcm->dev, "Entered %s\n", __func__);
--
--	spin_lock_irqsave(&pcm->lock, flags);
--
--	ctl = readl(regs + S3C_PCM_CTL);
--
--	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
--	case SND_SOC_DAIFMT_NB_NF:
--		/* Nothing to do, NB_NF by default */
--		break;
--	default:
--		dev_err(pcm->dev, "Unsupported clock inversion!\n");
--		ret = -EINVAL;
--		goto exit;
--	}
--
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBS_CFS:
--		/* Nothing to do, Master by default */
--		break;
--	default:
--		dev_err(pcm->dev, "Unsupported master/slave format!\n");
--		ret = -EINVAL;
--		goto exit;
--	}
--
--	switch (fmt & SND_SOC_DAIFMT_CLOCK_MASK) {
--	case SND_SOC_DAIFMT_CONT:
--		pcm->idleclk = 1;
--		break;
--	case SND_SOC_DAIFMT_GATED:
--		pcm->idleclk = 0;
--		break;
--	default:
--		dev_err(pcm->dev, "Invalid Clock gating request!\n");
--		ret = -EINVAL;
--		goto exit;
--	}
--
--	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
--	case SND_SOC_DAIFMT_DSP_A:
--		ctl |= S3C_PCM_CTL_TXMSB_AFTER_FSYNC;
--		ctl |= S3C_PCM_CTL_RXMSB_AFTER_FSYNC;
--		break;
--	case SND_SOC_DAIFMT_DSP_B:
--		ctl &= ~S3C_PCM_CTL_TXMSB_AFTER_FSYNC;
--		ctl &= ~S3C_PCM_CTL_RXMSB_AFTER_FSYNC;
--		break;
--	default:
--		dev_err(pcm->dev, "Unsupported data format!\n");
--		ret = -EINVAL;
--		goto exit;
--	}
--
--	writel(ctl, regs + S3C_PCM_CTL);
--
--exit:
--	spin_unlock_irqrestore(&pcm->lock, flags);
--
--	return ret;
--}
--
--static int s3c_pcm_set_clkdiv(struct snd_soc_dai *cpu_dai,
--						int div_id, int div)
--{
--	struct s3c_pcm_info *pcm = snd_soc_dai_get_drvdata(cpu_dai);
--
--	switch (div_id) {
--	case S3C_PCM_SCLK_PER_FS:
--		pcm->sclk_per_fs = div;
--		break;
--
--	default:
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
--static int s3c_pcm_set_sysclk(struct snd_soc_dai *cpu_dai,
--				  int clk_id, unsigned int freq, int dir)
--{
--	struct s3c_pcm_info *pcm = snd_soc_dai_get_drvdata(cpu_dai);
--	void __iomem *regs = pcm->regs;
--	u32 clkctl = readl(regs + S3C_PCM_CLKCTL);
--
--	switch (clk_id) {
--	case S3C_PCM_CLKSRC_PCLK:
--		clkctl |= S3C_PCM_CLKCTL_SERCLKSEL_PCLK;
--		break;
--
--	case S3C_PCM_CLKSRC_MUX:
--		clkctl &= ~S3C_PCM_CLKCTL_SERCLKSEL_PCLK;
--
--		if (clk_get_rate(pcm->cclk) != freq)
--			clk_set_rate(pcm->cclk, freq);
--
--		break;
--
--	default:
--		return -EINVAL;
--	}
--
--	writel(clkctl, regs + S3C_PCM_CLKCTL);
--
--	return 0;
--}
--
--static struct snd_soc_dai_ops s3c_pcm_dai_ops = {
--	.set_sysclk	= s3c_pcm_set_sysclk,
--	.set_clkdiv	= s3c_pcm_set_clkdiv,
--	.trigger	= s3c_pcm_trigger,
--	.hw_params	= s3c_pcm_hw_params,
--	.set_fmt	= s3c_pcm_set_fmt,
--};
--
--#define S3C_PCM_RATES  SNDRV_PCM_RATE_8000_96000
--
--#define S3C_PCM_DAI_DECLARE			\
--	.symmetric_rates = 1,					\
--	.ops = &s3c_pcm_dai_ops,				\
--	.playback = {						\
--		.channels_min	= 2,				\
--		.channels_max	= 2,				\
--		.rates		= S3C_PCM_RATES,		\
--		.formats	= SNDRV_PCM_FMTBIT_S16_LE,	\
--	},							\
--	.capture = {						\
--		.channels_min	= 2,				\
--		.channels_max	= 2,				\
--		.rates		= S3C_PCM_RATES,		\
--		.formats	= SNDRV_PCM_FMTBIT_S16_LE,	\
--	}
--
--struct snd_soc_dai_driver s3c_pcm_dai[] = {
--	[0] = {
--		.name	= "samsung-pcm.0",
--		S3C_PCM_DAI_DECLARE,
--	},
--	[1] = {
--		.name	= "samsung-pcm.1",
--		S3C_PCM_DAI_DECLARE,
--	},
--};
--EXPORT_SYMBOL_GPL(s3c_pcm_dai);
--
--static __devinit int s3c_pcm_dev_probe(struct platform_device *pdev)
--{
--	struct s3c_pcm_info *pcm;
--	struct resource *mem_res, *dmatx_res, *dmarx_res;
--	struct s3c_audio_pdata *pcm_pdata;
--	int ret;
--
--	/* Check for valid device index */
--	if ((pdev->id < 0) || pdev->id >= ARRAY_SIZE(s3c_pcm)) {
--		dev_err(&pdev->dev, "id %d out of range\n", pdev->id);
--		return -EINVAL;
--	}
--
--	pcm_pdata = pdev->dev.platform_data;
--
--	/* Check for availability of necessary resource */
--	dmatx_res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
--	if (!dmatx_res) {
--		dev_err(&pdev->dev, "Unable to get PCM-TX dma resource\n");
--		return -ENXIO;
--	}
--
--	dmarx_res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
--	if (!dmarx_res) {
--		dev_err(&pdev->dev, "Unable to get PCM-RX dma resource\n");
--		return -ENXIO;
--	}
--
--	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!mem_res) {
--		dev_err(&pdev->dev, "Unable to get register resource\n");
--		return -ENXIO;
--	}
--
--	if (pcm_pdata && pcm_pdata->cfg_gpio && pcm_pdata->cfg_gpio(pdev)) {
--		dev_err(&pdev->dev, "Unable to configure gpio\n");
--		return -EINVAL;
--	}
--
--	pcm = &s3c_pcm[pdev->id];
--	pcm->dev = &pdev->dev;
--
--	spin_lock_init(&pcm->lock);
--
--	/* Default is 128fs */
--	pcm->sclk_per_fs = 128;
--
--	pcm->cclk = clk_get(&pdev->dev, "audio-bus");
--	if (IS_ERR(pcm->cclk)) {
--		dev_err(&pdev->dev, "failed to get audio-bus\n");
--		ret = PTR_ERR(pcm->cclk);
--		goto err1;
--	}
--	clk_enable(pcm->cclk);
--
--	/* record our pcm structure for later use in the callbacks */
--	dev_set_drvdata(&pdev->dev, pcm);
--
--	if (!request_mem_region(mem_res->start,
--				resource_size(mem_res), "samsung-pcm")) {
--		dev_err(&pdev->dev, "Unable to request register region\n");
--		ret = -EBUSY;
--		goto err2;
--	}
--
--	pcm->regs = ioremap(mem_res->start, 0x100);
--	if (pcm->regs == NULL) {
--		dev_err(&pdev->dev, "cannot ioremap registers\n");
--		ret = -ENXIO;
--		goto err3;
--	}
--
--	pcm->pclk = clk_get(&pdev->dev, "pcm");
--	if (IS_ERR(pcm->pclk)) {
--		dev_err(&pdev->dev, "failed to get pcm_clock\n");
--		ret = -ENOENT;
--		goto err4;
--	}
--	clk_enable(pcm->pclk);
--
--	ret = snd_soc_register_dai(&pdev->dev, &s3c_pcm_dai[pdev->id]);
--	if (ret != 0) {
--		dev_err(&pdev->dev, "failed to get pcm_clock\n");
--		goto err5;
--	}
--
--	s3c_pcm_stereo_in[pdev->id].dma_addr = mem_res->start
--							+ S3C_PCM_RXFIFO;
--	s3c_pcm_stereo_out[pdev->id].dma_addr = mem_res->start
--							+ S3C_PCM_TXFIFO;
--
--	s3c_pcm_stereo_in[pdev->id].channel = dmarx_res->start;
--	s3c_pcm_stereo_out[pdev->id].channel = dmatx_res->start;
--
--	pcm->dma_capture = &s3c_pcm_stereo_in[pdev->id];
--	pcm->dma_playback = &s3c_pcm_stereo_out[pdev->id];
--
--	return 0;
--
--err5:
--	clk_disable(pcm->pclk);
--	clk_put(pcm->pclk);
--err4:
--	iounmap(pcm->regs);
--err3:
--	release_mem_region(mem_res->start, resource_size(mem_res));
--err2:
--	clk_disable(pcm->cclk);
--	clk_put(pcm->cclk);
--err1:
--	return ret;
--}
--
--static __devexit int s3c_pcm_dev_remove(struct platform_device *pdev)
--{
--	struct s3c_pcm_info *pcm = &s3c_pcm[pdev->id];
--	struct resource *mem_res;
--
--	snd_soc_unregister_dai(&pdev->dev);
--
--	iounmap(pcm->regs);
--
--	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	release_mem_region(mem_res->start, resource_size(mem_res));
--
--	clk_disable(pcm->cclk);
--	clk_disable(pcm->pclk);
--	clk_put(pcm->pclk);
--	clk_put(pcm->cclk);
--
--	return 0;
--}
--
--static struct platform_driver s3c_pcm_driver = {
--	.probe  = s3c_pcm_dev_probe,
--	.remove = s3c_pcm_dev_remove,
--	.driver = {
--		.name = "samsung-pcm",
--		.owner = THIS_MODULE,
--	},
--};
--
--static int __init s3c_pcm_init(void)
--{
--	return platform_driver_register(&s3c_pcm_driver);
--}
--module_init(s3c_pcm_init);
--
--static void __exit s3c_pcm_exit(void)
--{
--	platform_driver_unregister(&s3c_pcm_driver);
--}
--module_exit(s3c_pcm_exit);
--
--/* Module information */
--MODULE_AUTHOR("Jaswinder Singh, <jassi.brar@samsung.com>");
--MODULE_DESCRIPTION("S3C PCM Controller Driver");
--MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:samsung-pcm");
-diff --git a/sound/soc/s3c24xx/pcm.h b/sound/soc/s3c24xx/pcm.h
-deleted file mode 100644
-index 3775216..0000000
---- a/sound/soc/s3c24xx/pcm.h
-+++ /dev/null
-@@ -1,124 +0,0 @@
--/*  sound/soc/s3c24xx/pcm.h
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-- */
--
--#ifndef __S3C_PCM_H
--#define __S3C_PCM_H __FILE__
--
--/*Register Offsets */
--#define S3C_PCM_CTL	(0x00)
--#define S3C_PCM_CLKCTL	(0x04)
--#define S3C_PCM_TXFIFO	(0x08)
--#define S3C_PCM_RXFIFO	(0x0C)
--#define S3C_PCM_IRQCTL	(0x10)
--#define S3C_PCM_IRQSTAT	(0x14)
--#define S3C_PCM_FIFOSTAT	(0x18)
--#define S3C_PCM_CLRINT	(0x20)
--
--/* PCM_CTL Bit-Fields */
--#define S3C_PCM_CTL_TXDIPSTICK_MASK		(0x3f)
--#define S3C_PCM_CTL_TXDIPSTICK_SHIFT	(13)
--#define S3C_PCM_CTL_RXDIPSTICK_MASK		(0x3f)
--#define S3C_PCM_CTL_RXDIPSTICK_SHIFT	(7)
--#define S3C_PCM_CTL_TXDMA_EN		(0x1<<6)
--#define S3C_PCM_CTL_RXDMA_EN		(0x1<<5)
--#define S3C_PCM_CTL_TXMSB_AFTER_FSYNC	(0x1<<4)
--#define S3C_PCM_CTL_RXMSB_AFTER_FSYNC	(0x1<<3)
--#define S3C_PCM_CTL_TXFIFO_EN		(0x1<<2)
--#define S3C_PCM_CTL_RXFIFO_EN		(0x1<<1)
--#define S3C_PCM_CTL_ENABLE			(0x1<<0)
--
--/* PCM_CLKCTL Bit-Fields */
--#define S3C_PCM_CLKCTL_SERCLK_EN		(0x1<<19)
--#define S3C_PCM_CLKCTL_SERCLKSEL_PCLK	(0x1<<18)
--#define S3C_PCM_CLKCTL_SCLKDIV_MASK		(0x1ff)
--#define S3C_PCM_CLKCTL_SYNCDIV_MASK		(0x1ff)
--#define S3C_PCM_CLKCTL_SCLKDIV_SHIFT	(9)
--#define S3C_PCM_CLKCTL_SYNCDIV_SHIFT	(0)
--
--/* PCM_TXFIFO Bit-Fields */
--#define S3C_PCM_TXFIFO_DVALID	(0x1<<16)
--#define S3C_PCM_TXFIFO_DATA_MSK	(0xffff<<0)
--
--/* PCM_RXFIFO Bit-Fields */
--#define S3C_PCM_RXFIFO_DVALID	(0x1<<16)
--#define S3C_PCM_RXFIFO_DATA_MSK	(0xffff<<0)
--
--/* PCM_IRQCTL Bit-Fields */
--#define S3C_PCM_IRQCTL_IRQEN		(0x1<<14)
--#define S3C_PCM_IRQCTL_WRDEN		(0x1<<12)
--#define S3C_PCM_IRQCTL_TXEMPTYEN		(0x1<<11)
--#define S3C_PCM_IRQCTL_TXALMSTEMPTYEN	(0x1<<10)
--#define S3C_PCM_IRQCTL_TXFULLEN		(0x1<<9)
--#define S3C_PCM_IRQCTL_TXALMSTFULLEN	(0x1<<8)
--#define S3C_PCM_IRQCTL_TXSTARVEN		(0x1<<7)
--#define S3C_PCM_IRQCTL_TXERROVRFLEN		(0x1<<6)
--#define S3C_PCM_IRQCTL_RXEMPTEN		(0x1<<5)
--#define S3C_PCM_IRQCTL_RXALMSTEMPTEN	(0x1<<4)
--#define S3C_PCM_IRQCTL_RXFULLEN		(0x1<<3)
--#define S3C_PCM_IRQCTL_RXALMSTFULLEN	(0x1<<2)
--#define S3C_PCM_IRQCTL_RXSTARVEN		(0x1<<1)
--#define S3C_PCM_IRQCTL_RXERROVRFLEN		(0x1<<0)
--
--/* PCM_IRQSTAT Bit-Fields */
--#define S3C_PCM_IRQSTAT_IRQPND		(0x1<<13)
--#define S3C_PCM_IRQSTAT_WRD_XFER		(0x1<<12)
--#define S3C_PCM_IRQSTAT_TXEMPTY		(0x1<<11)
--#define S3C_PCM_IRQSTAT_TXALMSTEMPTY	(0x1<<10)
--#define S3C_PCM_IRQSTAT_TXFULL		(0x1<<9)
--#define S3C_PCM_IRQSTAT_TXALMSTFULL		(0x1<<8)
--#define S3C_PCM_IRQSTAT_TXSTARV		(0x1<<7)
--#define S3C_PCM_IRQSTAT_TXERROVRFL		(0x1<<6)
--#define S3C_PCM_IRQSTAT_RXEMPT		(0x1<<5)
--#define S3C_PCM_IRQSTAT_RXALMSTEMPT		(0x1<<4)
--#define S3C_PCM_IRQSTAT_RXFULL		(0x1<<3)
--#define S3C_PCM_IRQSTAT_RXALMSTFULL		(0x1<<2)
--#define S3C_PCM_IRQSTAT_RXSTARV		(0x1<<1)
--#define S3C_PCM_IRQSTAT_RXERROVRFL		(0x1<<0)
--
--/* PCM_FIFOSTAT Bit-Fields */
--#define S3C_PCM_FIFOSTAT_TXCNT_MSK		(0x3f<<14)
--#define S3C_PCM_FIFOSTAT_TXFIFOEMPTY	(0x1<<13)
--#define S3C_PCM_FIFOSTAT_TXFIFOALMSTEMPTY	(0x1<<12)
--#define S3C_PCM_FIFOSTAT_TXFIFOFULL		(0x1<<11)
--#define S3C_PCM_FIFOSTAT_TXFIFOALMSTFULL	(0x1<<10)
--#define S3C_PCM_FIFOSTAT_RXCNT_MSK		(0x3f<<4)
--#define S3C_PCM_FIFOSTAT_RXFIFOEMPTY	(0x1<<3)
--#define S3C_PCM_FIFOSTAT_RXFIFOALMSTEMPTY	(0x1<<2)
--#define S3C_PCM_FIFOSTAT_RXFIFOFULL		(0x1<<1)
--#define S3C_PCM_FIFOSTAT_RXFIFOALMSTFULL	(0x1<<0)
--
--#define S3C_PCM_CLKSRC_PCLK	0
--#define S3C_PCM_CLKSRC_MUX	1
--
--#define S3C_PCM_SCLK_PER_FS	0
--
--/**
-- * struct s3c_pcm_info - S3C PCM Controller information
-- * @dev: The parent device passed to use from the probe.
-- * @regs: The pointer to the device register block.
-- * @dma_playback: DMA information for playback channel.
-- * @dma_capture: DMA information for capture channel.
-- */
--struct s3c_pcm_info {
--	spinlock_t lock;
--	struct device	*dev;
--	void __iomem	*regs;
--
--	unsigned int sclk_per_fs;
--
--	/* Whether to keep PCMSCLK enabled even when idle(no active xfer) */
--	unsigned int idleclk;
--
--	struct clk	*pclk;
--	struct clk	*cclk;
--
--	struct s3c_dma_params	*dma_playback;
--	struct s3c_dma_params	*dma_capture;
--};
--
--#endif /* __S3C_PCM_H */
-diff --git a/sound/soc/s3c24xx/regs-i2s-v2.h b/sound/soc/s3c24xx/regs-i2s-v2.h
-deleted file mode 100644
-index 5e5e568..0000000
---- a/sound/soc/s3c24xx/regs-i2s-v2.h
-+++ /dev/null
-@@ -1,115 +0,0 @@
--/* linux/include/asm-arm/plat-s3c24xx/regs-s3c2412-iis.h
-- *
-- * Copyright 2007 Simtec Electronics <linux@simtec.co.uk>
-- *	http://armlinux.simtec.co.uk/
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-- * S3C2412 IIS register definition
--*/
--
--#ifndef __ASM_ARCH_REGS_S3C2412_IIS_H
--#define __ASM_ARCH_REGS_S3C2412_IIS_H
--
--#define S3C2412_IISCON			(0x00)
--#define S3C2412_IISMOD			(0x04)
--#define S3C2412_IISFIC			(0x08)
--#define S3C2412_IISPSR			(0x0C)
--#define S3C2412_IISTXD			(0x10)
--#define S3C2412_IISRXD			(0x14)
--
--#define S5PC1XX_IISFICS		0x18
--#define S5PC1XX_IISTXDS		0x1C
--
--#define S5PC1XX_IISCON_SW_RST		(1 << 31)
--#define S5PC1XX_IISCON_FRXOFSTATUS	(1 << 26)
--#define S5PC1XX_IISCON_FRXORINTEN	(1 << 25)
--#define S5PC1XX_IISCON_FTXSURSTAT	(1 << 24)
--#define S5PC1XX_IISCON_FTXSURINTEN	(1 << 23)
--#define S5PC1XX_IISCON_TXSDMAPAUSE	(1 << 20)
--#define S5PC1XX_IISCON_TXSDMACTIVE	(1 << 18)
--
--#define S3C64XX_IISCON_FTXURSTATUS	(1 << 17)
--#define S3C64XX_IISCON_FTXURINTEN	(1 << 16)
--#define S3C64XX_IISCON_TXFIFO2_EMPTY	(1 << 15)
--#define S3C64XX_IISCON_TXFIFO1_EMPTY	(1 << 14)
--#define S3C64XX_IISCON_TXFIFO2_FULL	(1 << 13)
--#define S3C64XX_IISCON_TXFIFO1_FULL	(1 << 12)
--
--#define S3C2412_IISCON_LRINDEX		(1 << 11)
--#define S3C2412_IISCON_TXFIFO_EMPTY	(1 << 10)
--#define S3C2412_IISCON_RXFIFO_EMPTY	(1 << 9)
--#define S3C2412_IISCON_TXFIFO_FULL	(1 << 8)
--#define S3C2412_IISCON_RXFIFO_FULL	(1 << 7)
--#define S3C2412_IISCON_TXDMA_PAUSE	(1 << 6)
--#define S3C2412_IISCON_RXDMA_PAUSE	(1 << 5)
--#define S3C2412_IISCON_TXCH_PAUSE	(1 << 4)
--#define S3C2412_IISCON_RXCH_PAUSE	(1 << 3)
--#define S3C2412_IISCON_TXDMA_ACTIVE	(1 << 2)
--#define S3C2412_IISCON_RXDMA_ACTIVE	(1 << 1)
--#define S3C2412_IISCON_IIS_ACTIVE	(1 << 0)
--
--#define S5PC1XX_IISMOD_OPCLK_CDCLK_OUT	(0 << 30)
--#define S5PC1XX_IISMOD_OPCLK_CDCLK_IN	(1 << 30)
--#define S5PC1XX_IISMOD_OPCLK_BCLK_OUT	(2 << 30)
--#define S5PC1XX_IISMOD_OPCLK_PCLK	(3 << 30)
--#define S5PC1XX_IISMOD_OPCLK_MASK	(3 << 30)
--#define S5PC1XX_IISMOD_TXS_IDMA		(1 << 28) /* Sec_TXFIFO use I-DMA */
--#define S5PC1XX_IISMOD_BLCS_MASK	0x3
--#define S5PC1XX_IISMOD_BLCS_SHIFT	26
--#define S5PC1XX_IISMOD_BLCP_MASK	0x3
--#define S5PC1XX_IISMOD_BLCP_SHIFT	24
--
--#define S3C64XX_IISMOD_C2DD_HHALF	(1 << 21) /* Discard Higher-half */
--#define S3C64XX_IISMOD_C2DD_LHALF	(1 << 20) /* Discard Lower-half */
--#define S3C64XX_IISMOD_C1DD_HHALF	(1 << 19)
--#define S3C64XX_IISMOD_C1DD_LHALF	(1 << 18)
--#define S3C64XX_IISMOD_DC2_EN		(1 << 17)
--#define S3C64XX_IISMOD_DC1_EN		(1 << 16)
--#define S3C64XX_IISMOD_BLC_16BIT	(0 << 13)
--#define S3C64XX_IISMOD_BLC_8BIT		(1 << 13)
--#define S3C64XX_IISMOD_BLC_24BIT	(2 << 13)
--#define S3C64XX_IISMOD_BLC_MASK		(3 << 13)
--
--#define S3C2412_IISMOD_IMS_SYSMUX	(1 << 10)
--#define S3C2412_IISMOD_SLAVE		(1 << 11)
--#define S3C2412_IISMOD_MODE_TXONLY	(0 << 8)
--#define S3C2412_IISMOD_MODE_RXONLY	(1 << 8)
--#define S3C2412_IISMOD_MODE_TXRX	(2 << 8)
--#define S3C2412_IISMOD_MODE_MASK	(3 << 8)
--#define S3C2412_IISMOD_LR_LLOW		(0 << 7)
--#define S3C2412_IISMOD_LR_RLOW		(1 << 7)
--#define S3C2412_IISMOD_SDF_IIS		(0 << 5)
--#define S3C2412_IISMOD_SDF_MSB		(1 << 5)
--#define S3C2412_IISMOD_SDF_LSB		(2 << 5)
--#define S3C2412_IISMOD_SDF_MASK		(3 << 5)
--#define S3C2412_IISMOD_RCLK_256FS	(0 << 3)
--#define S3C2412_IISMOD_RCLK_512FS	(1 << 3)
--#define S3C2412_IISMOD_RCLK_384FS	(2 << 3)
--#define S3C2412_IISMOD_RCLK_768FS	(3 << 3)
--#define S3C2412_IISMOD_RCLK_MASK 	(3 << 3)
--#define S3C2412_IISMOD_BCLK_32FS	(0 << 1)
--#define S3C2412_IISMOD_BCLK_48FS	(1 << 1)
--#define S3C2412_IISMOD_BCLK_16FS	(2 << 1)
--#define S3C2412_IISMOD_BCLK_24FS	(3 << 1)
--#define S3C2412_IISMOD_BCLK_MASK	(3 << 1)
--#define S3C2412_IISMOD_8BIT		(1 << 0)
--
--#define S3C64XX_IISMOD_CDCLKCON		(1 << 12)
--
--#define S3C2412_IISPSR_PSREN		(1 << 15)
--
--#define S3C64XX_IISFIC_TX2COUNT(x)	(((x) >>  24) & 0xf)
--#define S3C64XX_IISFIC_TX1COUNT(x)	(((x) >>  16) & 0xf)
--
--#define S3C2412_IISFIC_TXFLUSH		(1 << 15)
--#define S3C2412_IISFIC_RXFLUSH		(1 << 7)
--#define S3C2412_IISFIC_TXCOUNT(x)	(((x) >>  8) & 0xf)
--#define S3C2412_IISFIC_RXCOUNT(x)	(((x) >>  0) & 0xf)
--
--#define S5PC1XX_IISFICS_TXFLUSH		(1 << 15)
--#define S5PC1XX_IISFICS_TXCOUNT(x)	(((x) >>  8) & 0x7f)
--
--#endif /* __ASM_ARCH_REGS_S3C2412_IIS_H */
-diff --git a/sound/soc/s3c24xx/rx1950_uda1380.c b/sound/soc/s3c24xx/rx1950_uda1380.c
-deleted file mode 100644
-index 07197ee..0000000
---- a/sound/soc/s3c24xx/rx1950_uda1380.c
-+++ /dev/null
-@@ -1,333 +0,0 @@
--/*
-- * rx1950.c  --  ALSA Soc Audio Layer
-- *
-- * Copyright (c) 2010 Vasily Khoruzhick <anarsoul@gmail.com>
-- *
-- * Based on smdk2440.c and magician.c
-- *
-- * Authors: Graeme Gregory graeme.gregory@wolfsonmicro.com
-- *          Philipp Zabel <philipp.zabel@gmail.com>
-- *          Denis Grigoriev <dgreenday@gmail.com>
-- *          Vasily Khoruzhick <anarsoul@gmail.com>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-- */
--
--#include <linux/module.h>
--#include <linux/moduleparam.h>
--#include <linux/platform_device.h>
--#include <linux/i2c.h>
--#include <linux/gpio.h>
--#include <linux/clk.h>
--
--#include <sound/soc.h>
--#include <sound/soc-dapm.h>
--#include <sound/uda1380.h>
--#include <sound/jack.h>
--
--#include <plat/regs-iis.h>
--
--#include <mach/regs-clock.h>
--
--#include <asm/mach-types.h>
--
--#include "dma.h"
--#include "s3c24xx-i2s.h"
--#include "../codecs/uda1380.h"
--
--static int rx1950_uda1380_init(struct snd_soc_pcm_runtime *rtd);
--static int rx1950_startup(struct snd_pcm_substream *substream);
--static int rx1950_hw_params(struct snd_pcm_substream *substream,
--				struct snd_pcm_hw_params *params);
--static int rx1950_spk_power(struct snd_soc_dapm_widget *w,
--				struct snd_kcontrol *kcontrol, int event);
--
--static unsigned int rates[] = {
--	16000,
--	44100,
--	48000,
--	88200,
--};
--
--static struct snd_pcm_hw_constraint_list hw_rates = {
--	.count = ARRAY_SIZE(rates),
--	.list = rates,
--	.mask = 0,
--};
--
--static struct snd_soc_jack hp_jack;
--
--static struct snd_soc_jack_pin hp_jack_pins[] = {
--	{
--		.pin	= "Headphone Jack",
--		.mask	= SND_JACK_HEADPHONE,
--	},
--	{
--		.pin	= "Speaker",
--		.mask	= SND_JACK_HEADPHONE,
--		.invert	= 1,
--	},
--};
--
--static struct snd_soc_jack_gpio hp_jack_gpios[] = {
--	[0] = {
--		.gpio			= S3C2410_GPG(12),
--		.name			= "hp-gpio",
--		.report			= SND_JACK_HEADPHONE,
--		.invert			= 1,
--		.debounce_time		= 200,
--	},
--};
--
--static struct snd_soc_ops rx1950_ops = {
--	.startup	= rx1950_startup,
--	.hw_params	= rx1950_hw_params,
--};
--
--/* s3c24xx digital audio interface glue - connects codec <--> CPU */
--static struct snd_soc_dai_link rx1950_uda1380_dai[] = {
--	{
--		.name		= "uda1380",
--		.stream_name	= "UDA1380 Duplex",
--		.cpu_dai_name	= "s3c24xx-iis",
--		.codec_dai_name	= "uda1380-hifi",
--		.init		= rx1950_uda1380_init,
--		.platform_name	= "samsung-audio",
--		.codec_name	= "uda1380-codec.0-001a",
--		.ops		= &rx1950_ops,
--	},
--};
--
--static struct snd_soc_card rx1950_asoc = {
--	.name = "rx1950",
--	.dai_link = rx1950_uda1380_dai,
--	.num_links = ARRAY_SIZE(rx1950_uda1380_dai),
--};
--
--/* rx1950 machine dapm widgets */
--static const struct snd_soc_dapm_widget uda1380_dapm_widgets[] = {
--	SND_SOC_DAPM_HP("Headphone Jack", NULL),
--	SND_SOC_DAPM_MIC("Mic Jack", NULL),
--	SND_SOC_DAPM_SPK("Speaker", rx1950_spk_power),
--};
--
--/* rx1950 machine audio_map */
--static const struct snd_soc_dapm_route audio_map[] = {
--	/* headphone connected to VOUTLHP, VOUTRHP */
--	{"Headphone Jack", NULL, "VOUTLHP"},
--	{"Headphone Jack", NULL, "VOUTRHP"},
--
--	/* ext speaker connected to VOUTL, VOUTR  */
--	{"Speaker", NULL, "VOUTL"},
--	{"Speaker", NULL, "VOUTR"},
--
--	/* mic is connected to VINM */
--	{"VINM", NULL, "Mic Jack"},
--};
--
--static struct platform_device *s3c24xx_snd_device;
--static struct clk *xtal;
--
--static int rx1950_startup(struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--
--	runtime->hw.rate_min = hw_rates.list[0];
--	runtime->hw.rate_max = hw_rates.list[hw_rates.count - 1];
--	runtime->hw.rates = SNDRV_PCM_RATE_KNOT;
--
--	return snd_pcm_hw_constraint_list(runtime, 0,
--					SNDRV_PCM_HW_PARAM_RATE,
--					&hw_rates);
--}
--
--static int rx1950_spk_power(struct snd_soc_dapm_widget *w,
--				struct snd_kcontrol *kcontrol, int event)
--{
--	if (SND_SOC_DAPM_EVENT_ON(event))
--		gpio_set_value(S3C2410_GPA(1), 1);
--	else
--		gpio_set_value(S3C2410_GPA(1), 0);
--
--	return 0;
--}
--
--static int rx1950_hw_params(struct snd_pcm_substream *substream,
--				struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	int div;
--	int ret;
--	unsigned int rate = params_rate(params);
--	int clk_source, fs_mode;
--
--	switch (rate) {
--	case 16000:
--	case 48000:
--		clk_source = S3C24XX_CLKSRC_PCLK;
--		fs_mode = S3C2410_IISMOD_256FS;
--		div = s3c24xx_i2s_get_clockrate() / (256 * rate);
--		if (s3c24xx_i2s_get_clockrate() % (256 * rate) > (128 * rate))
--			div++;
--		break;
--	case 44100:
--	case 88200:
--		clk_source = S3C24XX_CLKSRC_MPLL;
--		fs_mode = S3C2410_IISMOD_256FS;
--		div = clk_get_rate(xtal) / (256 * rate);
--		if (clk_get_rate(xtal) % (256 * rate) > (128 * rate))
--			div++;
--		break;
--	default:
--		printk(KERN_ERR "%s: rate %d is not supported\n",
--			__func__, rate);
--		return -EINVAL;
--	}
--
--	/* set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
--		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
--	if (ret < 0)
--		return ret;
--
--	/* set cpu DAI configuration */
--	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
--		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
--	if (ret < 0)
--		return ret;
--
--	/* select clock source */
--	ret = snd_soc_dai_set_sysclk(cpu_dai, clk_source, rate,
--			SND_SOC_CLOCK_OUT);
--	if (ret < 0)
--		return ret;
--
--	/* set MCLK division for sample rate */
--	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_MCLK,
--		S3C2410_IISMOD_384FS);
--	if (ret < 0)
--		return ret;
--
--	/* set BCLK division for sample rate */
--	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_BCLK,
--		S3C2410_IISMOD_32FS);
--	if (ret < 0)
--		return ret;
--
--	/* set prescaler division for sample rate */
--	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_PRESCALER,
--		S3C24XX_PRESCALE(div, div));
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--static int rx1950_uda1380_init(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_codec *codec = rtd->codec;
--	int err;
--
--	/* Add rx1950 specific widgets */
--	err = snd_soc_dapm_new_controls(codec, uda1380_dapm_widgets,
--				  ARRAY_SIZE(uda1380_dapm_widgets));
--
--	if (err)
--		return err;
--
--	/* Set up rx1950 specific audio path audio_mapnects */
--	err = snd_soc_dapm_add_routes(codec, audio_map,
--				      ARRAY_SIZE(audio_map));
--
--	if (err)
--		return err;
--
--	snd_soc_dapm_enable_pin(codec, "Headphone Jack");
--	snd_soc_dapm_enable_pin(codec, "Speaker");
--
--	snd_soc_dapm_sync(codec);
--
--	snd_soc_jack_new(codec, "Headphone Jack", SND_JACK_HEADPHONE,
--		&hp_jack);
--
--	snd_soc_jack_add_pins(&hp_jack, ARRAY_SIZE(hp_jack_pins),
--		hp_jack_pins);
--
--	snd_soc_jack_add_gpios(&hp_jack, ARRAY_SIZE(hp_jack_gpios),
--		hp_jack_gpios);
--
--	return 0;
--}
--
--static int __init rx1950_init(void)
--{
--	int ret;
--
--	if (!machine_is_rx1950())
--		return -ENODEV;
--
--	/* configure some gpios */
--	ret = gpio_request(S3C2410_GPA(1), "speaker-power");
--	if (ret)
--		goto err_gpio;
--
--	ret = gpio_direction_output(S3C2410_GPA(1), 0);
--	if (ret)
--		goto err_gpio_conf;
--
--	s3c24xx_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!s3c24xx_snd_device) {
--		ret = -ENOMEM;
--		goto err_plat_alloc;
--	}
--
--	platform_set_drvdata(s3c24xx_snd_device, &rx1950_asoc);
--	ret = platform_device_add(s3c24xx_snd_device);
--
--	if (ret) {
--		platform_device_put(s3c24xx_snd_device);
--		goto err_plat_add;
--	}
--
--	xtal = clk_get(&s3c24xx_snd_device->dev, "xtal");
--
--	if (IS_ERR(xtal)) {
--		ret = PTR_ERR(xtal);
--		platform_device_unregister(s3c24xx_snd_device);
--		goto err_clk;
--	}
--
--	return 0;
--
--err_clk:
--err_plat_add:
--err_plat_alloc:
--err_gpio_conf:
--	gpio_free(S3C2410_GPA(1));
--
--err_gpio:
--	return ret;
--}
--
--static void __exit rx1950_exit(void)
--{
--	platform_device_unregister(s3c24xx_snd_device);
--	snd_soc_jack_free_gpios(&hp_jack, ARRAY_SIZE(hp_jack_gpios),
--		hp_jack_gpios);
--	clk_put(xtal);
--	gpio_free(S3C2410_GPA(1));
--}
--
--module_init(rx1950_init);
--module_exit(rx1950_exit);
--
--/* Module information */
--MODULE_AUTHOR("Vasily Khoruzhick");
--MODULE_DESCRIPTION("ALSA SoC RX1950");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/s3c24xx/s3c-i2s-v2.c
-deleted file mode 100644
-index c471431..0000000
---- a/sound/soc/s3c24xx/s3c-i2s-v2.c
-+++ /dev/null
-@@ -1,757 +0,0 @@
--/* sound/soc/s3c24xx/s3c-i2c-v2.c
-- *
-- * ALSA Soc Audio Layer - I2S core for newer Samsung SoCs.
-- *
-- * Copyright (c) 2006 Wolfson Microelectronics PLC.
-- *	Graeme Gregory graeme.gregory@wolfsonmicro.com
-- *	linux@wolfsonmicro.com
-- *
-- * Copyright (c) 2008, 2007, 2004-2005 Simtec Electronics
-- *	http://armlinux.simtec.co.uk/
-- *	Ben Dooks <ben@simtec.co.uk>
-- *
-- * This program is free software; you can redistribute  it and/or modify it
-- * under  the terms of  the GNU General  Public License as published by the
-- * Free Software Foundation;  either version 2 of the  License, or (at your
-- * option) any later version.
-- */
--
--#include <linux/delay.h>
--#include <linux/clk.h>
--#include <linux/io.h>
--
--#include <sound/pcm.h>
--#include <sound/pcm_params.h>
--#include <sound/soc.h>
--
--#include <mach/dma.h>
--
--#include "regs-i2s-v2.h"
--#include "s3c-i2s-v2.h"
--#include "dma.h"
--
--#undef S3C_IIS_V2_SUPPORTED
--
--#if defined(CONFIG_CPU_S3C2412) || defined(CONFIG_CPU_S3C2413) \
--	|| defined(CONFIG_CPU_S5PV210)
--#define S3C_IIS_V2_SUPPORTED
--#endif
--
--#ifdef CONFIG_PLAT_S3C64XX
--#define S3C_IIS_V2_SUPPORTED
--#endif
--
--#ifndef S3C_IIS_V2_SUPPORTED
--#error Unsupported CPU model
--#endif
--
--#define S3C2412_I2S_DEBUG_CON 0
--
--static inline struct s3c_i2sv2_info *to_info(struct snd_soc_dai *cpu_dai)
--{
--	return snd_soc_dai_get_drvdata(cpu_dai);
--}
--
--#define bit_set(v, b) (((v) & (b)) ? 1 : 0)
--
--#if S3C2412_I2S_DEBUG_CON
--static void dbg_showcon(const char *fn, u32 con)
--{
--	printk(KERN_DEBUG "%s: LRI=%d, TXFEMPT=%d, RXFEMPT=%d, TXFFULL=%d, RXFFULL=%d\n", fn,
--	       bit_set(con, S3C2412_IISCON_LRINDEX),
--	       bit_set(con, S3C2412_IISCON_TXFIFO_EMPTY),
--	       bit_set(con, S3C2412_IISCON_RXFIFO_EMPTY),
--	       bit_set(con, S3C2412_IISCON_TXFIFO_FULL),
--	       bit_set(con, S3C2412_IISCON_RXFIFO_FULL));
--
--	printk(KERN_DEBUG "%s: PAUSE: TXDMA=%d, RXDMA=%d, TXCH=%d, RXCH=%d\n",
--	       fn,
--	       bit_set(con, S3C2412_IISCON_TXDMA_PAUSE),
--	       bit_set(con, S3C2412_IISCON_RXDMA_PAUSE),
--	       bit_set(con, S3C2412_IISCON_TXCH_PAUSE),
--	       bit_set(con, S3C2412_IISCON_RXCH_PAUSE));
--	printk(KERN_DEBUG "%s: ACTIVE: TXDMA=%d, RXDMA=%d, IIS=%d\n", fn,
--	       bit_set(con, S3C2412_IISCON_TXDMA_ACTIVE),
--	       bit_set(con, S3C2412_IISCON_RXDMA_ACTIVE),
--	       bit_set(con, S3C2412_IISCON_IIS_ACTIVE));
--}
--#else
--static inline void dbg_showcon(const char *fn, u32 con)
--{
--}
--#endif
--
--
--/* Turn on or off the transmission path. */
--static void s3c2412_snd_txctrl(struct s3c_i2sv2_info *i2s, int on)
--{
--	void __iomem *regs = i2s->regs;
--	u32 fic, con, mod;
--
--	pr_debug("%s(%d)\n", __func__, on);
--
--	fic = readl(regs + S3C2412_IISFIC);
--	con = readl(regs + S3C2412_IISCON);
--	mod = readl(regs + S3C2412_IISMOD);
--
--	pr_debug("%s: IIS: CON=%x MOD=%x FIC=%x\n", __func__, con, mod, fic);
--
--	if (on) {
--		con |= S3C2412_IISCON_TXDMA_ACTIVE | S3C2412_IISCON_IIS_ACTIVE;
--		con &= ~S3C2412_IISCON_TXDMA_PAUSE;
--		con &= ~S3C2412_IISCON_TXCH_PAUSE;
--
--		switch (mod & S3C2412_IISMOD_MODE_MASK) {
--		case S3C2412_IISMOD_MODE_TXONLY:
--		case S3C2412_IISMOD_MODE_TXRX:
--			/* do nothing, we are in the right mode */
--			break;
--
--		case S3C2412_IISMOD_MODE_RXONLY:
--			mod &= ~S3C2412_IISMOD_MODE_MASK;
--			mod |= S3C2412_IISMOD_MODE_TXRX;
--			break;
--
--		default:
--			dev_err(i2s->dev, "TXEN: Invalid MODE %x in IISMOD\n",
--				mod & S3C2412_IISMOD_MODE_MASK);
--			break;
--		}
--
--		writel(con, regs + S3C2412_IISCON);
--		writel(mod, regs + S3C2412_IISMOD);
--	} else {
--		/* Note, we do not have any indication that the FIFO problems
--		 * tha the S3C2410/2440 had apply here, so we should be able
--		 * to disable the DMA and TX without resetting the FIFOS.
--		 */
--
--		con |=  S3C2412_IISCON_TXDMA_PAUSE;
--		con |=  S3C2412_IISCON_TXCH_PAUSE;
--		con &= ~S3C2412_IISCON_TXDMA_ACTIVE;
--
--		switch (mod & S3C2412_IISMOD_MODE_MASK) {
--		case S3C2412_IISMOD_MODE_TXRX:
--			mod &= ~S3C2412_IISMOD_MODE_MASK;
--			mod |= S3C2412_IISMOD_MODE_RXONLY;
--			break;
--
--		case S3C2412_IISMOD_MODE_TXONLY:
--			mod &= ~S3C2412_IISMOD_MODE_MASK;
--			con &= ~S3C2412_IISCON_IIS_ACTIVE;
--			break;
--
--		default:
--			dev_err(i2s->dev, "TXDIS: Invalid MODE %x in IISMOD\n",
--				mod & S3C2412_IISMOD_MODE_MASK);
--			break;
--		}
--
--		writel(mod, regs + S3C2412_IISMOD);
--		writel(con, regs + S3C2412_IISCON);
--	}
--
--	fic = readl(regs + S3C2412_IISFIC);
--	dbg_showcon(__func__, con);
--	pr_debug("%s: IIS: CON=%x MOD=%x FIC=%x\n", __func__, con, mod, fic);
--}
--
--static void s3c2412_snd_rxctrl(struct s3c_i2sv2_info *i2s, int on)
--{
--	void __iomem *regs = i2s->regs;
--	u32 fic, con, mod;
--
--	pr_debug("%s(%d)\n", __func__, on);
--
--	fic = readl(regs + S3C2412_IISFIC);
--	con = readl(regs + S3C2412_IISCON);
--	mod = readl(regs + S3C2412_IISMOD);
--
--	pr_debug("%s: IIS: CON=%x MOD=%x FIC=%x\n", __func__, con, mod, fic);
--
--	if (on) {
--		con |= S3C2412_IISCON_RXDMA_ACTIVE | S3C2412_IISCON_IIS_ACTIVE;
--		con &= ~S3C2412_IISCON_RXDMA_PAUSE;
--		con &= ~S3C2412_IISCON_RXCH_PAUSE;
--
--		switch (mod & S3C2412_IISMOD_MODE_MASK) {
--		case S3C2412_IISMOD_MODE_TXRX:
--		case S3C2412_IISMOD_MODE_RXONLY:
--			/* do nothing, we are in the right mode */
--			break;
--
--		case S3C2412_IISMOD_MODE_TXONLY:
--			mod &= ~S3C2412_IISMOD_MODE_MASK;
--			mod |= S3C2412_IISMOD_MODE_TXRX;
--			break;
--
--		default:
--			dev_err(i2s->dev, "RXEN: Invalid MODE %x in IISMOD\n",
--				mod & S3C2412_IISMOD_MODE_MASK);
--		}
--
--		writel(mod, regs + S3C2412_IISMOD);
--		writel(con, regs + S3C2412_IISCON);
--	} else {
--		/* See txctrl notes on FIFOs. */
--
--		con &= ~S3C2412_IISCON_RXDMA_ACTIVE;
--		con |=  S3C2412_IISCON_RXDMA_PAUSE;
--		con |=  S3C2412_IISCON_RXCH_PAUSE;
--
--		switch (mod & S3C2412_IISMOD_MODE_MASK) {
--		case S3C2412_IISMOD_MODE_RXONLY:
--			con &= ~S3C2412_IISCON_IIS_ACTIVE;
--			mod &= ~S3C2412_IISMOD_MODE_MASK;
--			break;
--
--		case S3C2412_IISMOD_MODE_TXRX:
--			mod &= ~S3C2412_IISMOD_MODE_MASK;
--			mod |= S3C2412_IISMOD_MODE_TXONLY;
--			break;
--
--		default:
--			dev_err(i2s->dev, "RXDIS: Invalid MODE %x in IISMOD\n",
--				mod & S3C2412_IISMOD_MODE_MASK);
--		}
--
--		writel(con, regs + S3C2412_IISCON);
--		writel(mod, regs + S3C2412_IISMOD);
--	}
--
--	fic = readl(regs + S3C2412_IISFIC);
--	pr_debug("%s: IIS: CON=%x MOD=%x FIC=%x\n", __func__, con, mod, fic);
--}
--
--#define msecs_to_loops(t) (loops_per_jiffy / 1000 * HZ * t)
--
--/*
-- * Wait for the LR signal to allow synchronisation to the L/R clock
-- * from the codec. May only be needed for slave mode.
-- */
--static int s3c2412_snd_lrsync(struct s3c_i2sv2_info *i2s)
--{
--	u32 iiscon;
--	unsigned long loops = msecs_to_loops(5);
--
--	pr_debug("Entered %s\n", __func__);
--
--	while (--loops) {
--		iiscon = readl(i2s->regs + S3C2412_IISCON);
--		if (iiscon & S3C2412_IISCON_LRINDEX)
--			break;
--
--		cpu_relax();
--	}
--
--	if (!loops) {
--		printk(KERN_ERR "%s: timeout\n", __func__);
--		return -ETIMEDOUT;
--	}
--
--	return 0;
--}
--
--/*
-- * Set S3C2412 I2S DAI format
-- */
--static int s3c2412_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
--			       unsigned int fmt)
--{
--	struct s3c_i2sv2_info *i2s = to_info(cpu_dai);
--	u32 iismod;
--
--	pr_debug("Entered %s\n", __func__);
--
--	iismod = readl(i2s->regs + S3C2412_IISMOD);
--	pr_debug("hw_params r: IISMOD: %x \n", iismod);
--
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBM_CFM:
--		i2s->master = 0;
--		iismod |= S3C2412_IISMOD_SLAVE;
--		break;
--	case SND_SOC_DAIFMT_CBS_CFS:
--		i2s->master = 1;
--		iismod &= ~S3C2412_IISMOD_SLAVE;
--		break;
--	default:
--		pr_err("unknwon master/slave format\n");
--		return -EINVAL;
--	}
--
--	iismod &= ~S3C2412_IISMOD_SDF_MASK;
--
--	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
--	case SND_SOC_DAIFMT_RIGHT_J:
--		iismod |= S3C2412_IISMOD_LR_RLOW;
--		iismod |= S3C2412_IISMOD_SDF_MSB;
--		break;
--	case SND_SOC_DAIFMT_LEFT_J:
--		iismod |= S3C2412_IISMOD_LR_RLOW;
--		iismod |= S3C2412_IISMOD_SDF_LSB;
--		break;
--	case SND_SOC_DAIFMT_I2S:
--		iismod &= ~S3C2412_IISMOD_LR_RLOW;
--		iismod |= S3C2412_IISMOD_SDF_IIS;
--		break;
--	default:
--		pr_err("Unknown data format\n");
--		return -EINVAL;
--	}
--
--	writel(iismod, i2s->regs + S3C2412_IISMOD);
--	pr_debug("hw_params w: IISMOD: %x \n", iismod);
--	return 0;
--}
--
--static int s3c_i2sv2_hw_params(struct snd_pcm_substream *substream,
--				 struct snd_pcm_hw_params *params,
--				 struct snd_soc_dai *dai)
--{
--	struct s3c_i2sv2_info *i2s = to_info(dai);
--	struct s3c_dma_params *dma_data;
--	u32 iismod;
--
--	pr_debug("Entered %s\n", __func__);
--
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		dma_data = i2s->dma_playback;
--	else
--		dma_data = i2s->dma_capture;
--
--	snd_soc_dai_set_dma_data(dai, substream, dma_data);
--
--	/* Working copies of register */
--	iismod = readl(i2s->regs + S3C2412_IISMOD);
--	pr_debug("%s: r: IISMOD: %x\n", __func__, iismod);
--
--	iismod &= ~S3C64XX_IISMOD_BLC_MASK;
--	/* Sample size */
--	switch (params_format(params)) {
--	case SNDRV_PCM_FORMAT_S8:
--		iismod |= S3C64XX_IISMOD_BLC_8BIT;
--		break;
--	case SNDRV_PCM_FORMAT_S16_LE:
--		break;
--	case SNDRV_PCM_FORMAT_S24_LE:
--		iismod |= S3C64XX_IISMOD_BLC_24BIT;
--		break;
--	}
--
--	writel(iismod, i2s->regs + S3C2412_IISMOD);
--	pr_debug("%s: w: IISMOD: %x\n", __func__, iismod);
--
--	return 0;
--}
--
--static int s3c_i2sv2_set_sysclk(struct snd_soc_dai *cpu_dai,
--				  int clk_id, unsigned int freq, int dir)
--{
--	struct s3c_i2sv2_info *i2s = to_info(cpu_dai);
--	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
--
--	pr_debug("Entered %s\n", __func__);
--	pr_debug("%s r: IISMOD: %x\n", __func__, iismod);
--
--	switch (clk_id) {
--	case S3C_I2SV2_CLKSRC_PCLK:
--		iismod &= ~S3C2412_IISMOD_IMS_SYSMUX;
--		break;
--
--	case S3C_I2SV2_CLKSRC_AUDIOBUS:
--		iismod |= S3C2412_IISMOD_IMS_SYSMUX;
--		break;
--
--	case S3C_I2SV2_CLKSRC_CDCLK:
--		/* Error if controller doesn't have the CDCLKCON bit */
--		if (!(i2s->feature & S3C_FEATURE_CDCLKCON))
--			return -EINVAL;
--
--		switch (dir) {
--		case SND_SOC_CLOCK_IN:
--			iismod |= S3C64XX_IISMOD_CDCLKCON;
--			break;
--		case SND_SOC_CLOCK_OUT:
--			iismod &= ~S3C64XX_IISMOD_CDCLKCON;
--			break;
--		default:
--			return -EINVAL;
--		}
--		break;
--
--	default:
--		return -EINVAL;
--	}
--
--	writel(iismod, i2s->regs + S3C2412_IISMOD);
--	pr_debug("%s w: IISMOD: %x\n", __func__, iismod);
--
--	return 0;
--}
--
--static int s3c2412_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
--			       struct snd_soc_dai *dai)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct s3c_i2sv2_info *i2s = to_info(rtd->cpu_dai);
--	int capture = (substream->stream == SNDRV_PCM_STREAM_CAPTURE);
--	unsigned long irqs;
--	int ret = 0;
--	struct s3c_dma_params *dma_data =
--		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
--
--	pr_debug("Entered %s\n", __func__);
--
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
--		/* On start, ensure that the FIFOs are cleared and reset. */
--
--		writel(capture ? S3C2412_IISFIC_RXFLUSH : S3C2412_IISFIC_TXFLUSH,
--		       i2s->regs + S3C2412_IISFIC);
--
--		/* clear again, just in case */
--		writel(0x0, i2s->regs + S3C2412_IISFIC);
--
--	case SNDRV_PCM_TRIGGER_RESUME:
--	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		if (!i2s->master) {
--			ret = s3c2412_snd_lrsync(i2s);
--			if (ret)
--				goto exit_err;
--		}
--
--		local_irq_save(irqs);
--
--		if (capture)
--			s3c2412_snd_rxctrl(i2s, 1);
--		else
--			s3c2412_snd_txctrl(i2s, 1);
--
--		local_irq_restore(irqs);
--
--		/*
--		 * Load the next buffer to DMA to meet the reqirement
--		 * of the auto reload mechanism of S3C24XX.
--		 * This call won't bother S3C64XX.
--		 */
--		s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
--
--		break;
--
--	case SNDRV_PCM_TRIGGER_STOP:
--	case SNDRV_PCM_TRIGGER_SUSPEND:
--	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		local_irq_save(irqs);
--
--		if (capture)
--			s3c2412_snd_rxctrl(i2s, 0);
--		else
--			s3c2412_snd_txctrl(i2s, 0);
--
--		local_irq_restore(irqs);
--		break;
--	default:
--		ret = -EINVAL;
--		break;
--	}
--
--exit_err:
--	return ret;
--}
--
--/*
-- * Set S3C2412 Clock dividers
-- */
--static int s3c2412_i2s_set_clkdiv(struct snd_soc_dai *cpu_dai,
--				  int div_id, int div)
--{
--	struct s3c_i2sv2_info *i2s = to_info(cpu_dai);
--	u32 reg;
--
--	pr_debug("%s(%p, %d, %d)\n", __func__, cpu_dai, div_id, div);
--
--	switch (div_id) {
--	case S3C_I2SV2_DIV_BCLK:
--		switch (div) {
--		case 16:
--			div = S3C2412_IISMOD_BCLK_16FS;
--			break;
--
--		case 32:
--			div = S3C2412_IISMOD_BCLK_32FS;
--			break;
--
--		case 24:
--			div = S3C2412_IISMOD_BCLK_24FS;
--			break;
--
--		case 48:
--			div = S3C2412_IISMOD_BCLK_48FS;
--			break;
--
--		default:
--			return -EINVAL;
--		}
--
--		reg = readl(i2s->regs + S3C2412_IISMOD);
--		reg &= ~S3C2412_IISMOD_BCLK_MASK;
--		writel(reg | div, i2s->regs + S3C2412_IISMOD);
--
--		pr_debug("%s: MOD=%08x\n", __func__, readl(i2s->regs + S3C2412_IISMOD));
--		break;
--
--	case S3C_I2SV2_DIV_RCLK:
--		switch (div) {
--		case 256:
--			div = S3C2412_IISMOD_RCLK_256FS;
--			break;
--
--		case 384:
--			div = S3C2412_IISMOD_RCLK_384FS;
--			break;
--
--		case 512:
--			div = S3C2412_IISMOD_RCLK_512FS;
--			break;
--
--		case 768:
--			div = S3C2412_IISMOD_RCLK_768FS;
--			break;
--
--		default:
--			return -EINVAL;
--		}
--
--		reg = readl(i2s->regs + S3C2412_IISMOD);
--		reg &= ~S3C2412_IISMOD_RCLK_MASK;
--		writel(reg | div, i2s->regs + S3C2412_IISMOD);
--		pr_debug("%s: MOD=%08x\n", __func__, readl(i2s->regs + S3C2412_IISMOD));
--		break;
--
--	case S3C_I2SV2_DIV_PRESCALER:
--		if (div >= 0) {
--			writel((div << 8) | S3C2412_IISPSR_PSREN,
--			       i2s->regs + S3C2412_IISPSR);
--		} else {
--			writel(0x0, i2s->regs + S3C2412_IISPSR);
--		}
--		pr_debug("%s: PSR=%08x\n", __func__, readl(i2s->regs + S3C2412_IISPSR));
--		break;
--
--	default:
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
--static snd_pcm_sframes_t s3c2412_i2s_delay(struct snd_pcm_substream *substream,
--					   struct snd_soc_dai *dai)
--{
--	struct s3c_i2sv2_info *i2s = to_info(dai);
--	u32 reg = readl(i2s->regs + S3C2412_IISFIC);
--	snd_pcm_sframes_t delay;
--
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		delay = S3C2412_IISFIC_TXCOUNT(reg);
--	else
--		delay = S3C2412_IISFIC_RXCOUNT(reg);
--
--	return delay;
--}
--
--struct clk *s3c_i2sv2_get_clock(struct snd_soc_dai *cpu_dai)
--{
--	struct s3c_i2sv2_info *i2s = to_info(cpu_dai);
--	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
--
--	if (iismod & S3C2412_IISMOD_IMS_SYSMUX)
--		return i2s->iis_cclk;
--	else
--		return i2s->iis_pclk;
--}
--EXPORT_SYMBOL_GPL(s3c_i2sv2_get_clock);
--
--/* default table of all avaialable root fs divisors */
--static unsigned int iis_fs_tab[] = { 256, 512, 384, 768 };
--
--int s3c_i2sv2_iis_calc_rate(struct s3c_i2sv2_rate_calc *info,
--			    unsigned int *fstab,
--			    unsigned int rate, struct clk *clk)
--{
--	unsigned long clkrate = clk_get_rate(clk);
--	unsigned int div;
--	unsigned int fsclk;
--	unsigned int actual;
--	unsigned int fs;
--	unsigned int fsdiv;
--	signed int deviation = 0;
--	unsigned int best_fs = 0;
--	unsigned int best_div = 0;
--	unsigned int best_rate = 0;
--	unsigned int best_deviation = INT_MAX;
--
--	pr_debug("Input clock rate %ldHz\n", clkrate);
--
--	if (fstab == NULL)
--		fstab = iis_fs_tab;
--
--	for (fs = 0; fs < ARRAY_SIZE(iis_fs_tab); fs++) {
--		fsdiv = iis_fs_tab[fs];
--
--		fsclk = clkrate / fsdiv;
--		div = fsclk / rate;
--
--		if ((fsclk % rate) > (rate / 2))
--			div++;
--
--		if (div <= 1)
--			continue;
--
--		actual = clkrate / (fsdiv * div);
--		deviation = actual - rate;
--
--		printk(KERN_DEBUG "%ufs: div %u => result %u, deviation %d\n",
--		       fsdiv, div, actual, deviation);
--
--		deviation = abs(deviation);
--
--		if (deviation < best_deviation) {
--			best_fs = fsdiv;
--			best_div = div;
--			best_rate = actual;
--			best_deviation = deviation;
--		}
--
--		if (deviation == 0)
--			break;
--	}
--
--	printk(KERN_DEBUG "best: fs=%u, div=%u, rate=%u\n",
--	       best_fs, best_div, best_rate);
--
--	info->fs_div = best_fs;
--	info->clk_div = best_div;
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(s3c_i2sv2_iis_calc_rate);
--
--int s3c_i2sv2_probe(struct snd_soc_dai *dai,
--		    struct s3c_i2sv2_info *i2s,
--		    unsigned long base)
--{
--	struct device *dev = dai->dev;
--	unsigned int iismod;
--
--	i2s->dev = dev;
--
--	/* record our i2s structure for later use in the callbacks */
--	snd_soc_dai_set_drvdata(dai, i2s);
--
--	i2s->regs = ioremap(base, 0x100);
--	if (i2s->regs == NULL) {
--		dev_err(dev, "cannot ioremap registers\n");
--		return -ENXIO;
--	}
--
--	i2s->iis_pclk = clk_get(dev, "iis");
--	if (IS_ERR(i2s->iis_pclk)) {
--		dev_err(dev, "failed to get iis_clock\n");
--		iounmap(i2s->regs);
--		return -ENOENT;
--	}
--
--	clk_enable(i2s->iis_pclk);
--
--	/* Mark ourselves as in TXRX mode so we can run through our cleanup
--	 * process without warnings. */
--	iismod = readl(i2s->regs + S3C2412_IISMOD);
--	iismod |= S3C2412_IISMOD_MODE_TXRX;
--	writel(iismod, i2s->regs + S3C2412_IISMOD);
--	s3c2412_snd_txctrl(i2s, 0);
--	s3c2412_snd_rxctrl(i2s, 0);
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(s3c_i2sv2_probe);
--
--#ifdef CONFIG_PM
--static int s3c2412_i2s_suspend(struct snd_soc_dai *dai)
--{
--	struct s3c_i2sv2_info *i2s = to_info(dai);
--	u32 iismod;
--
--	if (dai->active) {
--		i2s->suspend_iismod = readl(i2s->regs + S3C2412_IISMOD);
--		i2s->suspend_iiscon = readl(i2s->regs + S3C2412_IISCON);
--		i2s->suspend_iispsr = readl(i2s->regs + S3C2412_IISPSR);
--
--		/* some basic suspend checks */
--
--		iismod = readl(i2s->regs + S3C2412_IISMOD);
--
--		if (iismod & S3C2412_IISCON_RXDMA_ACTIVE)
--			pr_warning("%s: RXDMA active?\n", __func__);
--
--		if (iismod & S3C2412_IISCON_TXDMA_ACTIVE)
--			pr_warning("%s: TXDMA active?\n", __func__);
--
--		if (iismod & S3C2412_IISCON_IIS_ACTIVE)
--			pr_warning("%s: IIS active\n", __func__);
--	}
--
--	return 0;
--}
--
--static int s3c2412_i2s_resume(struct snd_soc_dai *dai)
--{
--	struct s3c_i2sv2_info *i2s = to_info(dai);
--
--	pr_info("dai_active %d, IISMOD %08x, IISCON %08x\n",
--		dai->active, i2s->suspend_iismod, i2s->suspend_iiscon);
--
--	if (dai->active) {
--		writel(i2s->suspend_iiscon, i2s->regs + S3C2412_IISCON);
--		writel(i2s->suspend_iismod, i2s->regs + S3C2412_IISMOD);
--		writel(i2s->suspend_iispsr, i2s->regs + S3C2412_IISPSR);
--
--		writel(S3C2412_IISFIC_RXFLUSH | S3C2412_IISFIC_TXFLUSH,
--		       i2s->regs + S3C2412_IISFIC);
--
--		ndelay(250);
--		writel(0x0, i2s->regs + S3C2412_IISFIC);
--	}
--
--	return 0;
--}
--#else
--#define s3c2412_i2s_suspend NULL
--#define s3c2412_i2s_resume  NULL
--#endif
--
--int s3c_i2sv2_register_dai(struct device *dev, int id,
--		struct snd_soc_dai_driver *drv)
--{
--	struct snd_soc_dai_ops *ops = drv->ops;
--
--	ops->trigger = s3c2412_i2s_trigger;
--	if (!ops->hw_params)
--		ops->hw_params = s3c_i2sv2_hw_params;
--	ops->set_fmt = s3c2412_i2s_set_fmt;
--	ops->set_clkdiv = s3c2412_i2s_set_clkdiv;
--	ops->set_sysclk = s3c_i2sv2_set_sysclk;
--
--	/* Allow overriding by (for example) IISv4 */
--	if (!ops->delay)
--		ops->delay = s3c2412_i2s_delay;
--
--	drv->suspend = s3c2412_i2s_suspend;
--	drv->resume = s3c2412_i2s_resume;
--
--	return snd_soc_register_dai(dev, drv);
--}
--EXPORT_SYMBOL_GPL(s3c_i2sv2_register_dai);
--
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.h b/sound/soc/s3c24xx/s3c-i2s-v2.h
-deleted file mode 100644
-index d458301..0000000
---- a/sound/soc/s3c24xx/s3c-i2s-v2.h
-+++ /dev/null
-@@ -1,106 +0,0 @@
--/* sound/soc/s3c24xx/s3c-i2s-v2.h
-- *
-- * ALSA Soc Audio Layer - S3C_I2SV2 I2S driver
-- *
-- * Copyright (c) 2007 Simtec Electronics
-- *	http://armlinux.simtec.co.uk/
-- *	Ben Dooks <ben@simtec.co.uk>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
--*/
--
--/* This code is the core support for the I2S block found in a number of
-- * Samsung SoC devices which is unofficially named I2S-V2. Currently the
-- * S3C2412 and the S3C64XX series use this block to provide 1 or 2 I2S
-- * channels via configurable GPIO.
-- */
--
--#ifndef __SND_SOC_S3C24XX_S3C_I2SV2_I2S_H
--#define __SND_SOC_S3C24XX_S3C_I2SV2_I2S_H __FILE__
--
--#define S3C_I2SV2_DIV_BCLK	(1)
--#define S3C_I2SV2_DIV_RCLK	(2)
--#define S3C_I2SV2_DIV_PRESCALER	(3)
--
--#define S3C_I2SV2_CLKSRC_PCLK		0
--#define S3C_I2SV2_CLKSRC_AUDIOBUS	1
--#define S3C_I2SV2_CLKSRC_CDCLK		2
--
--/* Set this flag for I2S controllers that have the bit IISMOD[12]
-- * bridge/break RCLK signal and external Xi2sCDCLK pin.
-- */
--#define S3C_FEATURE_CDCLKCON	(1 << 0)
--
--/**
-- * struct s3c_i2sv2_info - S3C I2S-V2 information
-- * @dev: The parent device passed to use from the probe.
-- * @regs: The pointer to the device registe block.
-- * @feature: Set of bit-flags indicating features of the controller.
-- * @master: True if the I2S core is the I2S bit clock master.
-- * @dma_playback: DMA information for playback channel.
-- * @dma_capture: DMA information for capture channel.
-- * @suspend_iismod: PM save for the IISMOD register.
-- * @suspend_iiscon: PM save for the IISCON register.
-- * @suspend_iispsr: PM save for the IISPSR register.
-- *
-- * This is the private codec state for the hardware associated with an
-- * I2S channel such as the register mappings and clock sources.
-- */
--struct s3c_i2sv2_info {
--	struct device	*dev;
--	void __iomem	*regs;
--
--	u32		feature;
--
--	struct clk	*iis_pclk;
--	struct clk	*iis_cclk;
--
--	unsigned char	 master;
--
--	struct s3c_dma_params	*dma_playback;
--	struct s3c_dma_params	*dma_capture;
--
--	u32		 suspend_iismod;
--	u32		 suspend_iiscon;
--	u32		 suspend_iispsr;
--
--	unsigned long	base;
--};
--
--extern struct clk *s3c_i2sv2_get_clock(struct snd_soc_dai *cpu_dai);
--
--struct s3c_i2sv2_rate_calc {
--	unsigned int	clk_div;	/* for prescaler */
--	unsigned int	fs_div;		/* for root frame clock */
--};
--
--extern int s3c_i2sv2_iis_calc_rate(struct s3c_i2sv2_rate_calc *info,
--				   unsigned int *fstab,
--				   unsigned int rate, struct clk *clk);
--
--/**
-- * s3c_i2sv2_probe - probe for i2s device helper
-- * @dai: The ASoC DAI structure supplied to the original probe.
-- * @i2s: Our local i2s structure to fill in.
-- * @base: The base address for the registers.
-- */
--extern int s3c_i2sv2_probe(struct snd_soc_dai *dai,
--			   struct s3c_i2sv2_info *i2s,
--			   unsigned long base);
--
--/**
-- * s3c_i2sv2_register_dai - register dai with soc core
-- * @dev: DAI device
-- * @id: DAI ID
-- * @drv: The driver structure to register
-- *
-- * Fill in any missing fields and then register the given dai with the
-- * soc core.
-- */
--extern int s3c_i2sv2_register_dai(struct device *dev, int id,
--		struct snd_soc_dai_driver *drv);
--
--#endif /* __SND_SOC_S3C24XX_S3C_I2SV2_I2S_H */
-diff --git a/sound/soc/s3c24xx/s3c2412-i2s.c b/sound/soc/s3c24xx/s3c2412-i2s.c
-deleted file mode 100644
-index d953ff4..0000000
---- a/sound/soc/s3c24xx/s3c2412-i2s.c
-+++ /dev/null
-@@ -1,212 +0,0 @@
--/* sound/soc/s3c24xx/s3c2412-i2s.c
-- *
-- * ALSA Soc Audio Layer - S3C2412 I2S driver
-- *
-- * Copyright (c) 2006 Wolfson Microelectronics PLC.
-- *	Graeme Gregory graeme.gregory@wolfsonmicro.com
-- *	linux@wolfsonmicro.com
-- *
-- * Copyright (c) 2007, 2004-2005 Simtec Electronics
-- *	http://armlinux.simtec.co.uk/
-- *	Ben Dooks <ben@simtec.co.uk>
-- *
-- * This program is free software; you can redistribute  it and/or modify it
-- * under  the terms of  the GNU General  Public License as published by the
-- * Free Software Foundation;  either version 2 of the  License, or (at your
-- * option) any later version.
-- */
--
--#include <linux/init.h>
--#include <linux/module.h>
--#include <linux/device.h>
--#include <linux/delay.h>
--#include <linux/gpio.h>
--#include <linux/clk.h>
--#include <linux/kernel.h>
--#include <linux/io.h>
--
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/pcm_params.h>
--#include <sound/initval.h>
--#include <sound/soc.h>
--#include <mach/hardware.h>
--
--#include <mach/regs-gpio.h>
--#include <mach/dma.h>
--
--#include "dma.h"
--#include "regs-i2s-v2.h"
--#include "s3c2412-i2s.h"
--
--#define S3C2412_I2S_DEBUG 0
--
--static struct s3c2410_dma_client s3c2412_dma_client_out = {
--	.name		= "I2S PCM Stereo out"
--};
--
--static struct s3c2410_dma_client s3c2412_dma_client_in = {
--	.name		= "I2S PCM Stereo in"
--};
--
--static struct s3c_dma_params s3c2412_i2s_pcm_stereo_out = {
--	.client		= &s3c2412_dma_client_out,
--	.channel	= DMACH_I2S_OUT,
--	.dma_addr	= S3C2410_PA_IIS + S3C2412_IISTXD,
--	.dma_size	= 4,
--};
--
--static struct s3c_dma_params s3c2412_i2s_pcm_stereo_in = {
--	.client		= &s3c2412_dma_client_in,
--	.channel	= DMACH_I2S_IN,
--	.dma_addr	= S3C2410_PA_IIS + S3C2412_IISRXD,
--	.dma_size	= 4,
--};
--
--static struct s3c_i2sv2_info s3c2412_i2s;
--
--static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
--{
--	int ret;
--
--	pr_debug("Entered %s\n", __func__);
--
--	ret = s3c_i2sv2_probe(dai, &s3c2412_i2s, S3C2410_PA_IIS);
--	if (ret)
--		return ret;
--
--	s3c2412_i2s.dma_capture = &s3c2412_i2s_pcm_stereo_in;
--	s3c2412_i2s.dma_playback = &s3c2412_i2s_pcm_stereo_out;
--
--	s3c2412_i2s.iis_cclk = clk_get(dai->dev, "i2sclk");
--	if (s3c2412_i2s.iis_cclk == NULL) {
--		pr_err("failed to get i2sclk clock\n");
--		iounmap(s3c2412_i2s.regs);
--		return -ENODEV;
--	}
--
--	/* Set MPLL as the source for IIS CLK */
--
--	clk_set_parent(s3c2412_i2s.iis_cclk, clk_get(NULL, "mpll"));
--	clk_enable(s3c2412_i2s.iis_cclk);
--
--	s3c2412_i2s.iis_cclk = s3c2412_i2s.iis_pclk;
--
--	/* Configure the I2S pins in correct mode */
--	s3c2410_gpio_cfgpin(S3C2410_GPE0, S3C2410_GPE0_I2SLRCK);
--	s3c2410_gpio_cfgpin(S3C2410_GPE1, S3C2410_GPE1_I2SSCLK);
--	s3c2410_gpio_cfgpin(S3C2410_GPE2, S3C2410_GPE2_CDCLK);
--	s3c2410_gpio_cfgpin(S3C2410_GPE3, S3C2410_GPE3_I2SSDI);
--	s3c2410_gpio_cfgpin(S3C2410_GPE4, S3C2410_GPE4_I2SSDO);
--
--	return 0;
--}
--
--static int s3c2412_i2s_remove(struct snd_soc_dai *dai)
--{
--	clk_disable(s3c2412_i2s.iis_cclk);
--	clk_put(s3c2412_i2s.iis_cclk);
--	iounmap(s3c2412_i2s.regs);
--
--	return 0;
--}
--
--static int s3c2412_i2s_hw_params(struct snd_pcm_substream *substream,
--				 struct snd_pcm_hw_params *params,
--				 struct snd_soc_dai *cpu_dai)
--{
--	struct s3c_i2sv2_info *i2s = snd_soc_dai_get_drvdata(cpu_dai);
--	struct s3c_dma_params *dma_data;
--	u32 iismod;
--
--	pr_debug("Entered %s\n", __func__);
--
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		dma_data = i2s->dma_playback;
--	else
--		dma_data = i2s->dma_capture;
--
--	snd_soc_dai_set_dma_data(cpu_dai, substream, dma_data);
--
--	iismod = readl(i2s->regs + S3C2412_IISMOD);
--	pr_debug("%s: r: IISMOD: %x\n", __func__, iismod);
--
--	switch (params_format(params)) {
--	case SNDRV_PCM_FORMAT_S8:
--		iismod |= S3C2412_IISMOD_8BIT;
--		break;
--	case SNDRV_PCM_FORMAT_S16_LE:
--		iismod &= ~S3C2412_IISMOD_8BIT;
--		break;
--	}
--
--	writel(iismod, i2s->regs + S3C2412_IISMOD);
--	pr_debug("%s: w: IISMOD: %x\n", __func__, iismod);
--
--	return 0;
--}
--
--#define S3C2412_I2S_RATES \
--	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
--	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
--	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
--
--static struct snd_soc_dai_ops s3c2412_i2s_dai_ops = {
--	.hw_params	= s3c2412_i2s_hw_params,
--};
--
--static struct snd_soc_dai_driver s3c2412_i2s_dai = {
--	.probe		= s3c2412_i2s_probe,
--	.remove	= s3c2412_i2s_remove,
--	.playback = {
--		.channels_min	= 2,
--		.channels_max	= 2,
--		.rates		= S3C2412_I2S_RATES,
--		.formats	= SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE,
--	},
--	.capture = {
--		.channels_min	= 2,
--		.channels_max	= 2,
--		.rates		= S3C2412_I2S_RATES,
--		.formats	= SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE,
--	},
--	.ops = &s3c2412_i2s_dai_ops,
--};
--
--static __devinit int s3c2412_iis_dev_probe(struct platform_device *pdev)
--{
--	return snd_soc_register_dai(&pdev->dev, &s3c2412_i2s_dai);
--}
--
--static __devexit int s3c2412_iis_dev_remove(struct platform_device *pdev)
--{
--	snd_soc_unregister_dai(&pdev->dev);
--	return 0;
--}
--
--static struct platform_driver s3c2412_iis_driver = {
--	.probe  = s3c2412_iis_dev_probe,
--	.remove = s3c2412_iis_dev_remove,
--	.driver = {
--		.name = "s3c2412-iis",
--		.owner = THIS_MODULE,
--	},
--};
--
--static int __init s3c2412_i2s_init(void)
--{
--	return platform_driver_register(&s3c2412_iis_driver);
--}
--module_init(s3c2412_i2s_init);
--
--static void __exit s3c2412_i2s_exit(void)
--{
--	platform_driver_unregister(&s3c2412_iis_driver);
--}
--module_exit(s3c2412_i2s_exit);
--
--/* Module information */
--MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
--MODULE_DESCRIPTION("S3C2412 I2S SoC Interface");
--MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:s3c2412-iis");
-diff --git a/sound/soc/s3c24xx/s3c2412-i2s.h b/sound/soc/s3c24xx/s3c2412-i2s.h
-deleted file mode 100644
-index 01a0471..0000000
---- a/sound/soc/s3c24xx/s3c2412-i2s.h
-+++ /dev/null
-@@ -1,27 +0,0 @@
--/* sound/soc/s3c24xx/s3c2412-i2s.c
-- *
-- * ALSA Soc Audio Layer - S3C2412 I2S driver
-- *
-- * Copyright (c) 2007 Simtec Electronics
-- *	http://armlinux.simtec.co.uk/
-- *	Ben Dooks <ben@simtec.co.uk>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
--*/
--
--#ifndef __SND_SOC_S3C24XX_S3C2412_I2S_H
--#define __SND_SOC_S3C24XX_S3C2412_I2S_H __FILE__
--
--#include "s3c-i2s-v2.h"
--
--#define S3C2412_DIV_BCLK	S3C_I2SV2_DIV_BCLK
--#define S3C2412_DIV_RCLK	S3C_I2SV2_DIV_RCLK
--#define S3C2412_DIV_PRESCALER	S3C_I2SV2_DIV_PRESCALER
--
--#define S3C2412_CLKSRC_PCLK	S3C_I2SV2_CLKSRC_PCLK
--#define S3C2412_CLKSRC_I2SCLK	S3C_I2SV2_CLKSRC_AUDIOBUS
--
--#endif /* __SND_SOC_S3C24XX_S3C2412_I2S_H */
-diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.c b/sound/soc/s3c24xx/s3c24xx-i2s.c
-deleted file mode 100644
-index 13e41ed..0000000
---- a/sound/soc/s3c24xx/s3c24xx-i2s.c
-+++ /dev/null
-@@ -1,519 +0,0 @@
--/*
-- * s3c24xx-i2s.c  --  ALSA Soc Audio Layer
-- *
-- * (c) 2006 Wolfson Microelectronics PLC.
-- * Graeme Gregory graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-- *
-- * Copyright 2004-2005 Simtec Electronics
-- *	http://armlinux.simtec.co.uk/
-- *	Ben Dooks <ben@simtec.co.uk>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- */
--
--#include <linux/init.h>
--#include <linux/module.h>
--#include <linux/device.h>
--#include <linux/delay.h>
--#include <linux/clk.h>
--#include <linux/jiffies.h>
--#include <linux/io.h>
--#include <linux/gpio.h>
--
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/pcm_params.h>
--#include <sound/initval.h>
--#include <sound/soc.h>
--
--#include <mach/hardware.h>
--#include <mach/regs-gpio.h>
--#include <mach/regs-clock.h>
--
--#include <asm/dma.h>
--#include <mach/dma.h>
--
--#include <plat/regs-iis.h>
--
--#include "dma.h"
--#include "s3c24xx-i2s.h"
--
--static struct s3c2410_dma_client s3c24xx_dma_client_out = {
--	.name = "I2S PCM Stereo out"
--};
--
--static struct s3c2410_dma_client s3c24xx_dma_client_in = {
--	.name = "I2S PCM Stereo in"
--};
--
--static struct s3c_dma_params s3c24xx_i2s_pcm_stereo_out = {
--	.client		= &s3c24xx_dma_client_out,
--	.channel	= DMACH_I2S_OUT,
--	.dma_addr	= S3C2410_PA_IIS + S3C2410_IISFIFO,
--	.dma_size	= 2,
--};
--
--static struct s3c_dma_params s3c24xx_i2s_pcm_stereo_in = {
--	.client		= &s3c24xx_dma_client_in,
--	.channel	= DMACH_I2S_IN,
--	.dma_addr	= S3C2410_PA_IIS + S3C2410_IISFIFO,
--	.dma_size	= 2,
--};
--
--struct s3c24xx_i2s_info {
--	void __iomem	*regs;
--	struct clk	*iis_clk;
--	u32		iiscon;
--	u32		iismod;
--	u32		iisfcon;
--	u32		iispsr;
--};
--static struct s3c24xx_i2s_info s3c24xx_i2s;
--
--static void s3c24xx_snd_txctrl(int on)
--{
--	u32 iisfcon;
--	u32 iiscon;
--	u32 iismod;
--
--	pr_debug("Entered %s\n", __func__);
--
--	iisfcon = readl(s3c24xx_i2s.regs + S3C2410_IISFCON);
--	iiscon  = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
--	iismod  = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
--
--	pr_debug("r: IISCON: %x IISMOD: %x IISFCON: %x\n", iiscon, iismod, iisfcon);
--
--	if (on) {
--		iisfcon |= S3C2410_IISFCON_TXDMA | S3C2410_IISFCON_TXENABLE;
--		iiscon  |= S3C2410_IISCON_TXDMAEN | S3C2410_IISCON_IISEN;
--		iiscon  &= ~S3C2410_IISCON_TXIDLE;
--		iismod  |= S3C2410_IISMOD_TXMODE;
--
--		writel(iismod,  s3c24xx_i2s.regs + S3C2410_IISMOD);
--		writel(iisfcon, s3c24xx_i2s.regs + S3C2410_IISFCON);
--		writel(iiscon,  s3c24xx_i2s.regs + S3C2410_IISCON);
--	} else {
--		/* note, we have to disable the FIFOs otherwise bad things
--		 * seem to happen when the DMA stops. According to the
--		 * Samsung supplied kernel, this should allow the DMA
--		 * engine and FIFOs to reset. If this isn't allowed, the
--		 * DMA engine will simply freeze randomly.
--		 */
--
--		iisfcon &= ~S3C2410_IISFCON_TXENABLE;
--		iisfcon &= ~S3C2410_IISFCON_TXDMA;
--		iiscon  |=  S3C2410_IISCON_TXIDLE;
--		iiscon  &= ~S3C2410_IISCON_TXDMAEN;
--		iismod  &= ~S3C2410_IISMOD_TXMODE;
--
--		writel(iiscon,  s3c24xx_i2s.regs + S3C2410_IISCON);
--		writel(iisfcon, s3c24xx_i2s.regs + S3C2410_IISFCON);
--		writel(iismod,  s3c24xx_i2s.regs + S3C2410_IISMOD);
--	}
--
--	pr_debug("w: IISCON: %x IISMOD: %x IISFCON: %x\n", iiscon, iismod, iisfcon);
--}
--
--static void s3c24xx_snd_rxctrl(int on)
--{
--	u32 iisfcon;
--	u32 iiscon;
--	u32 iismod;
--
--	pr_debug("Entered %s\n", __func__);
--
--	iisfcon = readl(s3c24xx_i2s.regs + S3C2410_IISFCON);
--	iiscon  = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
--	iismod  = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
--
--	pr_debug("r: IISCON: %x IISMOD: %x IISFCON: %x\n", iiscon, iismod, iisfcon);
--
--	if (on) {
--		iisfcon |= S3C2410_IISFCON_RXDMA | S3C2410_IISFCON_RXENABLE;
--		iiscon  |= S3C2410_IISCON_RXDMAEN | S3C2410_IISCON_IISEN;
--		iiscon  &= ~S3C2410_IISCON_RXIDLE;
--		iismod  |= S3C2410_IISMOD_RXMODE;
--
--		writel(iismod,  s3c24xx_i2s.regs + S3C2410_IISMOD);
--		writel(iisfcon, s3c24xx_i2s.regs + S3C2410_IISFCON);
--		writel(iiscon,  s3c24xx_i2s.regs + S3C2410_IISCON);
--	} else {
--		/* note, we have to disable the FIFOs otherwise bad things
--		 * seem to happen when the DMA stops. According to the
--		 * Samsung supplied kernel, this should allow the DMA
--		 * engine and FIFOs to reset. If this isn't allowed, the
--		 * DMA engine will simply freeze randomly.
--		 */
--
--		iisfcon &= ~S3C2410_IISFCON_RXENABLE;
--		iisfcon &= ~S3C2410_IISFCON_RXDMA;
--		iiscon  |= S3C2410_IISCON_RXIDLE;
--		iiscon  &= ~S3C2410_IISCON_RXDMAEN;
--		iismod  &= ~S3C2410_IISMOD_RXMODE;
--
--		writel(iisfcon, s3c24xx_i2s.regs + S3C2410_IISFCON);
--		writel(iiscon,  s3c24xx_i2s.regs + S3C2410_IISCON);
--		writel(iismod,  s3c24xx_i2s.regs + S3C2410_IISMOD);
--	}
--
--	pr_debug("w: IISCON: %x IISMOD: %x IISFCON: %x\n", iiscon, iismod, iisfcon);
--}
--
--/*
-- * Wait for the LR signal to allow synchronisation to the L/R clock
-- * from the codec. May only be needed for slave mode.
-- */
--static int s3c24xx_snd_lrsync(void)
--{
--	u32 iiscon;
--	int timeout = 50; /* 5ms */
--
--	pr_debug("Entered %s\n", __func__);
--
--	while (1) {
--		iiscon = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
--		if (iiscon & S3C2410_IISCON_LRINDEX)
--			break;
--
--		if (!timeout--)
--			return -ETIMEDOUT;
--		udelay(100);
--	}
--
--	return 0;
--}
--
--/*
-- * Check whether CPU is the master or slave
-- */
--static inline int s3c24xx_snd_is_clkmaster(void)
--{
--	pr_debug("Entered %s\n", __func__);
--
--	return (readl(s3c24xx_i2s.regs + S3C2410_IISMOD) & S3C2410_IISMOD_SLAVE) ? 0:1;
--}
--
--/*
-- * Set S3C24xx I2S DAI format
-- */
--static int s3c24xx_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
--		unsigned int fmt)
--{
--	u32 iismod;
--
--	pr_debug("Entered %s\n", __func__);
--
--	iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
--	pr_debug("hw_params r: IISMOD: %x \n", iismod);
--
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBM_CFM:
--		iismod |= S3C2410_IISMOD_SLAVE;
--		break;
--	case SND_SOC_DAIFMT_CBS_CFS:
--		iismod &= ~S3C2410_IISMOD_SLAVE;
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
--	case SND_SOC_DAIFMT_LEFT_J:
--		iismod |= S3C2410_IISMOD_MSB;
--		break;
--	case SND_SOC_DAIFMT_I2S:
--		iismod &= ~S3C2410_IISMOD_MSB;
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	writel(iismod, s3c24xx_i2s.regs + S3C2410_IISMOD);
--	pr_debug("hw_params w: IISMOD: %x \n", iismod);
--	return 0;
--}
--
--static int s3c24xx_i2s_hw_params(struct snd_pcm_substream *substream,
--				 struct snd_pcm_hw_params *params,
--				 struct snd_soc_dai *dai)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct s3c_dma_params *dma_data;
--	u32 iismod;
--
--	pr_debug("Entered %s\n", __func__);
--
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		dma_data = &s3c24xx_i2s_pcm_stereo_out;
--	else
--		dma_data = &s3c24xx_i2s_pcm_stereo_in;
--
--	snd_soc_dai_set_dma_data(rtd->cpu_dai, substream, dma_data);
--
--	/* Working copies of register */
--	iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
--	pr_debug("hw_params r: IISMOD: %x\n", iismod);
--
--	switch (params_format(params)) {
--	case SNDRV_PCM_FORMAT_S8:
--		iismod &= ~S3C2410_IISMOD_16BIT;
--		dma_data->dma_size = 1;
--		break;
--	case SNDRV_PCM_FORMAT_S16_LE:
--		iismod |= S3C2410_IISMOD_16BIT;
--		dma_data->dma_size = 2;
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	writel(iismod, s3c24xx_i2s.regs + S3C2410_IISMOD);
--	pr_debug("hw_params w: IISMOD: %x\n", iismod);
--	return 0;
--}
--
--static int s3c24xx_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
--			       struct snd_soc_dai *dai)
--{
--	int ret = 0;
--	struct s3c_dma_params *dma_data =
--		snd_soc_dai_get_dma_data(dai, substream);
--
--	pr_debug("Entered %s\n", __func__);
--
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
--	case SNDRV_PCM_TRIGGER_RESUME:
--	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		if (!s3c24xx_snd_is_clkmaster()) {
--			ret = s3c24xx_snd_lrsync();
--			if (ret)
--				goto exit_err;
--		}
--
--		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
--			s3c24xx_snd_rxctrl(1);
--		else
--			s3c24xx_snd_txctrl(1);
--
--		s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
--		break;
--	case SNDRV_PCM_TRIGGER_STOP:
--	case SNDRV_PCM_TRIGGER_SUSPEND:
--	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
--			s3c24xx_snd_rxctrl(0);
--		else
--			s3c24xx_snd_txctrl(0);
--		break;
--	default:
--		ret = -EINVAL;
--		break;
--	}
--
--exit_err:
--	return ret;
--}
--
--/*
-- * Set S3C24xx Clock source
-- */
--static int s3c24xx_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
--	int clk_id, unsigned int freq, int dir)
--{
--	u32 iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
--
--	pr_debug("Entered %s\n", __func__);
--
--	iismod &= ~S3C2440_IISMOD_MPLL;
--
--	switch (clk_id) {
--	case S3C24XX_CLKSRC_PCLK:
--		break;
--	case S3C24XX_CLKSRC_MPLL:
--		iismod |= S3C2440_IISMOD_MPLL;
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	writel(iismod, s3c24xx_i2s.regs + S3C2410_IISMOD);
--	return 0;
--}
--
--/*
-- * Set S3C24xx Clock dividers
-- */
--static int s3c24xx_i2s_set_clkdiv(struct snd_soc_dai *cpu_dai,
--	int div_id, int div)
--{
--	u32 reg;
--
--	pr_debug("Entered %s\n", __func__);
--
--	switch (div_id) {
--	case S3C24XX_DIV_BCLK:
--		reg = readl(s3c24xx_i2s.regs + S3C2410_IISMOD) & ~S3C2410_IISMOD_FS_MASK;
--		writel(reg | div, s3c24xx_i2s.regs + S3C2410_IISMOD);
--		break;
--	case S3C24XX_DIV_MCLK:
--		reg = readl(s3c24xx_i2s.regs + S3C2410_IISMOD) & ~(S3C2410_IISMOD_384FS);
--		writel(reg | div, s3c24xx_i2s.regs + S3C2410_IISMOD);
--		break;
--	case S3C24XX_DIV_PRESCALER:
--		writel(div, s3c24xx_i2s.regs + S3C2410_IISPSR);
--		reg = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
--		writel(reg | S3C2410_IISCON_PSCEN, s3c24xx_i2s.regs + S3C2410_IISCON);
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
--/*
-- * To avoid duplicating clock code, allow machine driver to
-- * get the clockrate from here.
-- */
--u32 s3c24xx_i2s_get_clockrate(void)
--{
--	return clk_get_rate(s3c24xx_i2s.iis_clk);
--}
--EXPORT_SYMBOL_GPL(s3c24xx_i2s_get_clockrate);
--
--static int s3c24xx_i2s_probe(struct snd_soc_dai *dai)
--{
--	pr_debug("Entered %s\n", __func__);
--
--	s3c24xx_i2s.regs = ioremap(S3C2410_PA_IIS, 0x100);
--	if (s3c24xx_i2s.regs == NULL)
--		return -ENXIO;
--
--	s3c24xx_i2s.iis_clk = clk_get(dai->dev, "iis");
--	if (s3c24xx_i2s.iis_clk == NULL) {
--		pr_err("failed to get iis_clock\n");
--		iounmap(s3c24xx_i2s.regs);
--		return -ENODEV;
--	}
--	clk_enable(s3c24xx_i2s.iis_clk);
--
--	/* Configure the I2S pins in correct mode */
--	s3c2410_gpio_cfgpin(S3C2410_GPE0, S3C2410_GPE0_I2SLRCK);
--	s3c2410_gpio_cfgpin(S3C2410_GPE1, S3C2410_GPE1_I2SSCLK);
--	s3c2410_gpio_cfgpin(S3C2410_GPE2, S3C2410_GPE2_CDCLK);
--	s3c2410_gpio_cfgpin(S3C2410_GPE3, S3C2410_GPE3_I2SSDI);
--	s3c2410_gpio_cfgpin(S3C2410_GPE4, S3C2410_GPE4_I2SSDO);
--
--	writel(S3C2410_IISCON_IISEN, s3c24xx_i2s.regs + S3C2410_IISCON);
--
--	s3c24xx_snd_txctrl(0);
--	s3c24xx_snd_rxctrl(0);
--
--	return 0;
--}
--
--#ifdef CONFIG_PM
--static int s3c24xx_i2s_suspend(struct snd_soc_dai *cpu_dai)
--{
--	pr_debug("Entered %s\n", __func__);
--
--	s3c24xx_i2s.iiscon = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
--	s3c24xx_i2s.iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
--	s3c24xx_i2s.iisfcon = readl(s3c24xx_i2s.regs + S3C2410_IISFCON);
--	s3c24xx_i2s.iispsr = readl(s3c24xx_i2s.regs + S3C2410_IISPSR);
--
--	clk_disable(s3c24xx_i2s.iis_clk);
--
--	return 0;
--}
--
--static int s3c24xx_i2s_resume(struct snd_soc_dai *cpu_dai)
--{
--	pr_debug("Entered %s\n", __func__);
--	clk_enable(s3c24xx_i2s.iis_clk);
--
--	writel(s3c24xx_i2s.iiscon, s3c24xx_i2s.regs + S3C2410_IISCON);
--	writel(s3c24xx_i2s.iismod, s3c24xx_i2s.regs + S3C2410_IISMOD);
--	writel(s3c24xx_i2s.iisfcon, s3c24xx_i2s.regs + S3C2410_IISFCON);
--	writel(s3c24xx_i2s.iispsr, s3c24xx_i2s.regs + S3C2410_IISPSR);
--
--	return 0;
--}
--#else
--#define s3c24xx_i2s_suspend NULL
--#define s3c24xx_i2s_resume NULL
--#endif
--
--
--#define S3C24XX_I2S_RATES \
--	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
--	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
--	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
--
--static struct snd_soc_dai_ops s3c24xx_i2s_dai_ops = {
--	.trigger	= s3c24xx_i2s_trigger,
--	.hw_params	= s3c24xx_i2s_hw_params,
--	.set_fmt	= s3c24xx_i2s_set_fmt,
--	.set_clkdiv	= s3c24xx_i2s_set_clkdiv,
--	.set_sysclk	= s3c24xx_i2s_set_sysclk,
--};
--
--static struct snd_soc_dai_driver s3c24xx_i2s_dai = {
--	.probe = s3c24xx_i2s_probe,
--	.suspend = s3c24xx_i2s_suspend,
--	.resume = s3c24xx_i2s_resume,
--	.playback = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.rates = S3C24XX_I2S_RATES,
--		.formats = SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE,},
--	.capture = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.rates = S3C24XX_I2S_RATES,
--		.formats = SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE,},
--	.ops = &s3c24xx_i2s_dai_ops,
--};
--
--static __devinit int s3c24xx_iis_dev_probe(struct platform_device *pdev)
--{
--	return snd_soc_register_dai(&pdev->dev, &s3c24xx_i2s_dai);
--}
--
--static __devexit int s3c24xx_iis_dev_remove(struct platform_device *pdev)
--{
--	snd_soc_unregister_dai(&pdev->dev);
--	return 0;
--}
--
--static struct platform_driver s3c24xx_iis_driver = {
--	.probe  = s3c24xx_iis_dev_probe,
--	.remove = s3c24xx_iis_dev_remove,
--	.driver = {
--		.name = "s3c24xx-iis",
--		.owner = THIS_MODULE,
--	},
--};
--
--static int __init s3c24xx_i2s_init(void)
--{
--	return platform_driver_register(&s3c24xx_iis_driver);
--}
--module_init(s3c24xx_i2s_init);
--
--static void __exit s3c24xx_i2s_exit(void)
--{
--	platform_driver_unregister(&s3c24xx_iis_driver);
--}
--module_exit(s3c24xx_i2s_exit);
--
--/* Module information */
--MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
--MODULE_DESCRIPTION("s3c24xx I2S SoC Interface");
--MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:s3c24xx-iis");
-diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.h b/sound/soc/s3c24xx/s3c24xx-i2s.h
-deleted file mode 100644
-index f9ca04e..0000000
---- a/sound/soc/s3c24xx/s3c24xx-i2s.h
-+++ /dev/null
-@@ -1,35 +0,0 @@
--/*
-- * s3c24xx-i2s.c  --  ALSA Soc Audio Layer
-- *
-- * Copyright 2005 Wolfson Microelectronics PLC.
-- * Author: Graeme Gregory
-- *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-- *  Revision history
-- *    10th Nov 2006   Initial version.
-- */
--
--#ifndef S3C24XXI2S_H_
--#define S3C24XXI2S_H_
--
--/* clock sources */
--#define S3C24XX_CLKSRC_PCLK 0
--#define S3C24XX_CLKSRC_MPLL 1
--
--/* Clock dividers */
--#define S3C24XX_DIV_MCLK	0
--#define S3C24XX_DIV_BCLK	1
--#define S3C24XX_DIV_PRESCALER	2
--
--/* prescaler */
--#define S3C24XX_PRESCALE(a,b) \
--	(((a - 1) << S3C2410_IISPSR_INTSHIFT) | ((b - 1) << S3C2410_IISPSR_EXTSHFIT))
--
--u32 s3c24xx_i2s_get_clockrate(void);
--
--#endif /*S3C24XXI2S_H_*/
-diff --git a/sound/soc/s3c24xx/s3c24xx_simtec.c b/sound/soc/s3c24xx/s3c24xx_simtec.c
-deleted file mode 100644
-index 3f052a5..0000000
---- a/sound/soc/s3c24xx/s3c24xx_simtec.c
-+++ /dev/null
-@@ -1,395 +0,0 @@
--/* sound/soc/s3c24xx/s3c24xx_simtec.c
-- *
-- * Copyright 2009 Simtec Electronics
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
--*/
--
--#include <linux/module.h>
--#include <linux/moduleparam.h>
--#include <linux/platform_device.h>
--#include <linux/gpio.h>
--#include <linux/clk.h>
--#include <linux/i2c.h>
--
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--#include <sound/soc-dapm.h>
--
--#include <plat/audio-simtec.h>
--
--#include "dma.h"
--#include "s3c24xx-i2s.h"
--#include "s3c24xx_simtec.h"
--
--static struct s3c24xx_audio_simtec_pdata *pdata;
--static struct clk *xtal_clk;
--
--static int spk_gain;
--static int spk_unmute;
--
--/**
-- * speaker_gain_get - read the speaker gain setting.
-- * @kcontrol: The control for the speaker gain.
-- * @ucontrol: The value that needs to be updated.
-- *
-- * Read the value for the AMP gain control.
-- */
--static int speaker_gain_get(struct snd_kcontrol *kcontrol,
--			    struct snd_ctl_elem_value *ucontrol)
--{
--	ucontrol->value.integer.value[0] = spk_gain;
--	return 0;
--}
--
--/**
-- * speaker_gain_set - set the value of the speaker amp gain
-- * @value: The value to write.
-- */
--static void speaker_gain_set(int value)
--{
--	gpio_set_value_cansleep(pdata->amp_gain[0], value & 1);
--	gpio_set_value_cansleep(pdata->amp_gain[1], value >> 1);
--}
--
--/**
-- * speaker_gain_put - set the speaker gain setting.
-- * @kcontrol: The control for the speaker gain.
-- * @ucontrol: The value that needs to be set.
-- *
-- * Set the value of the speaker gain from the specified
-- * @ucontrol setting.
-- *
-- * Note, if the speaker amp is muted, then we do not set a gain value
-- * as at-least one of the ICs that is fitted will try and power up even
-- * if the main control is set to off.
-- */
--static int speaker_gain_put(struct snd_kcontrol *kcontrol,
--			    struct snd_ctl_elem_value *ucontrol)
--{
--	int value = ucontrol->value.integer.value[0];
--
--	spk_gain = value;
--
--	if (!spk_unmute)
--		speaker_gain_set(value);
--
--	return 0;
--}
--
--static const struct snd_kcontrol_new amp_gain_controls[] = {
--	SOC_SINGLE_EXT("Speaker Gain", 0, 0, 3, 0,
--		       speaker_gain_get, speaker_gain_put),
--};
--
--/**
-- * spk_unmute_state - set the unmute state of the speaker
-- * @to: zero to unmute, non-zero to ununmute.
-- */
--static void spk_unmute_state(int to)
--{
--	pr_debug("%s: to=%d\n", __func__, to);
--
--	spk_unmute = to;
--	gpio_set_value(pdata->amp_gpio, to);
--
--	/* if we're umuting, also re-set the gain */
--	if (to && pdata->amp_gain[0] > 0)
--		speaker_gain_set(spk_gain);
--}
--
--/**
-- * speaker_unmute_get - read the speaker unmute setting.
-- * @kcontrol: The control for the speaker gain.
-- * @ucontrol: The value that needs to be updated.
-- *
-- * Read the value for the AMP gain control.
-- */
--static int speaker_unmute_get(struct snd_kcontrol *kcontrol,
--			    struct snd_ctl_elem_value *ucontrol)
--{
--	ucontrol->value.integer.value[0] = spk_unmute;
--	return 0;
--}
--
--/**
-- * speaker_unmute_put - set the speaker unmute setting.
-- * @kcontrol: The control for the speaker gain.
-- * @ucontrol: The value that needs to be set.
-- *
-- * Set the value of the speaker gain from the specified
-- * @ucontrol setting.
-- */
--static int speaker_unmute_put(struct snd_kcontrol *kcontrol,
--			    struct snd_ctl_elem_value *ucontrol)
--{
--	spk_unmute_state(ucontrol->value.integer.value[0]);
--	return 0;
--}
--
--/* This is added as a manual control as the speaker amps create clicks
-- * when their power state is changed, which are far more noticeable than
-- * anything produced by the CODEC itself.
-- */
--static const struct snd_kcontrol_new amp_unmute_controls[] = {
--	SOC_SINGLE_EXT("Speaker Switch", 0, 0, 1, 0,
--		       speaker_unmute_get, speaker_unmute_put),
--};
--
--void simtec_audio_init(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_codec *codec = rtd->codec;
--
--	if (pdata->amp_gpio > 0) {
--		pr_debug("%s: adding amp routes\n", __func__);
--
--		snd_soc_add_controls(codec, amp_unmute_controls,
--				     ARRAY_SIZE(amp_unmute_controls));
--	}
--
--	if (pdata->amp_gain[0] > 0) {
--		pr_debug("%s: adding amp controls\n", __func__);
--		snd_soc_add_controls(codec, amp_gain_controls,
--				     ARRAY_SIZE(amp_gain_controls));
--	}
--}
--EXPORT_SYMBOL_GPL(simtec_audio_init);
--
--#define CODEC_CLOCK 12000000
--
--/**
-- * simtec_hw_params - update hardware parameters
-- * @substream: The audio substream instance.
-- * @params: The parameters requested.
-- *
-- * Update the codec data routing and configuration  settings
-- * from the supplied data.
-- */
--static int simtec_hw_params(struct snd_pcm_substream *substream,
--			    struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	int ret;
--
--	/* Set the CODEC as the bus clock master, I2S */
--	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
--				  SND_SOC_DAIFMT_NB_NF |
--				  SND_SOC_DAIFMT_CBM_CFM);
--	if (ret) {
--		pr_err("%s: failed set cpu dai format\n", __func__);
--		return ret;
--	}
--
--	/* Set the CODEC as the bus clock master */
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
--				  SND_SOC_DAIFMT_NB_NF |
--				  SND_SOC_DAIFMT_CBM_CFM);
--	if (ret) {
--		pr_err("%s: failed set codec dai format\n", __func__);
--		return ret;
--	}
--
--	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
--				     CODEC_CLOCK, SND_SOC_CLOCK_IN);
--	if (ret) {
--		pr_err( "%s: failed setting codec sysclk\n", __func__);
--		return ret;
--	}
--
--	if (pdata->use_mpllin) {
--		ret = snd_soc_dai_set_sysclk(cpu_dai, S3C24XX_CLKSRC_MPLL,
--					     0, SND_SOC_CLOCK_OUT);
--
--		if (ret) {
--			pr_err("%s: failed to set MPLLin as clksrc\n",
--			       __func__);
--			return ret;
--		}
--	}
--
--	if (pdata->output_cdclk) {
--		int cdclk_scale;
--
--		cdclk_scale = clk_get_rate(xtal_clk) / CODEC_CLOCK;
--		cdclk_scale--;
--
--		ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_PRESCALER,
--					     cdclk_scale);
--	}
--
--	return 0;
--}
--
--static int simtec_call_startup(struct s3c24xx_audio_simtec_pdata *pd)
--{
--	/* call any board supplied startup code, this currently only
--	 * covers the bast/vr1000 which have a CPLD in the way of the
--	 * LRCLK */
--	if (pd->startup)
--		pd->startup();
--
--	return 0;
--}
--
--static struct snd_soc_ops simtec_snd_ops = {
--	.hw_params	= simtec_hw_params,
--};
--
--/**
-- * attach_gpio_amp - get and configure the necessary gpios
-- * @dev: The device we're probing.
-- * @pd: The platform data supplied by the board.
-- *
-- * If there is a GPIO based amplifier attached to the board, claim
-- * the necessary GPIO lines for it, and set default values.
-- */
--static int attach_gpio_amp(struct device *dev,
--			   struct s3c24xx_audio_simtec_pdata *pd)
--{
--	int ret;
--
--	/* attach gpio amp gain (if any) */
--	if (pdata->amp_gain[0] > 0) {
--		ret = gpio_request(pd->amp_gain[0], "gpio-amp-gain0");
--		if (ret) {
--			dev_err(dev, "cannot get amp gpio gain0\n");
--			return ret;
--		}
--
--		ret = gpio_request(pd->amp_gain[1], "gpio-amp-gain1");
--		if (ret) {
--			dev_err(dev, "cannot get amp gpio gain1\n");
--			gpio_free(pdata->amp_gain[0]);
--			return ret;
--		}
--
--		gpio_direction_output(pd->amp_gain[0], 0);
--		gpio_direction_output(pd->amp_gain[1], 0);
--	}
--
--	/* note, currently we assume GPA0 isn't valid amp */
--	if (pdata->amp_gpio > 0) {
--		ret = gpio_request(pd->amp_gpio, "gpio-amp");
--		if (ret) {
--			dev_err(dev, "cannot get amp gpio %d (%d)\n",
--				pd->amp_gpio, ret);
--			goto err_amp;
--		}
--
--		/* set the amp off at startup */
--		spk_unmute_state(0);
--	}
--
--	return 0;
--
--err_amp:
--	if (pd->amp_gain[0] > 0) {
--		gpio_free(pd->amp_gain[0]);
--		gpio_free(pd->amp_gain[1]);
--	}
--
--	return ret;
--}
--
--static void detach_gpio_amp(struct s3c24xx_audio_simtec_pdata *pd)
--{
--	if (pd->amp_gain[0] > 0) {
--		gpio_free(pd->amp_gain[0]);
--		gpio_free(pd->amp_gain[1]);
--	}
--
--	if (pd->amp_gpio > 0)
--		gpio_free(pd->amp_gpio);
--}
--
--#ifdef CONFIG_PM
--int simtec_audio_resume(struct device *dev)
--{
--	simtec_call_startup(pdata);
--	return 0;
--}
--
--const struct dev_pm_ops simtec_audio_pmops = {
--	.resume	= simtec_audio_resume,
--};
--EXPORT_SYMBOL_GPL(simtec_audio_pmops);
--#endif
--
--int __devinit simtec_audio_core_probe(struct platform_device *pdev,
--				      struct snd_soc_card *card)
--{
--	struct platform_device *snd_dev;
--	int ret;
--
--	card->dai_link->ops = &simtec_snd_ops;
--
--	pdata = pdev->dev.platform_data;
--	if (!pdata) {
--		dev_err(&pdev->dev, "no platform data supplied\n");
--		return -EINVAL;
--	}
--
--	simtec_call_startup(pdata);
--
--	xtal_clk = clk_get(&pdev->dev, "xtal");
--	if (IS_ERR(xtal_clk)) {
--		dev_err(&pdev->dev, "could not get clkout0\n");
--		return -EINVAL;
--	}
--
--	dev_info(&pdev->dev, "xtal rate is %ld\n", clk_get_rate(xtal_clk));
--
--	ret = attach_gpio_amp(&pdev->dev, pdata);
--	if (ret)
--		goto err_clk;
--
--	snd_dev = platform_device_alloc("soc-audio", -1);
--	if (!snd_dev) {
--		dev_err(&pdev->dev, "failed to alloc soc-audio devicec\n");
--		ret = -ENOMEM;
--		goto err_gpio;
--	}
--
--	platform_set_drvdata(snd_dev, card);
--
--	ret = platform_device_add(snd_dev);
--	if (ret) {
--		dev_err(&pdev->dev, "failed to add soc-audio dev\n");
--		goto err_pdev;
--	}
--
--	platform_set_drvdata(pdev, snd_dev);
--	return 0;
--
--err_pdev:
--	platform_device_put(snd_dev);
--
--err_gpio:
--	detach_gpio_amp(pdata);
--
--err_clk:
--	clk_put(xtal_clk);
--	return ret;
--}
--EXPORT_SYMBOL_GPL(simtec_audio_core_probe);
--
--int __devexit simtec_audio_remove(struct platform_device *pdev)
--{
--	struct platform_device *snd_dev = platform_get_drvdata(pdev);
--
--	platform_device_unregister(snd_dev);
--
--	detach_gpio_amp(pdata);
--	clk_put(xtal_clk);
--	return 0;
--}
--EXPORT_SYMBOL_GPL(simtec_audio_remove);
--
--MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
--MODULE_DESCRIPTION("ALSA SoC Simtec Audio common support");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/s3c24xx_simtec.h b/sound/soc/s3c24xx/s3c24xx_simtec.h
-deleted file mode 100644
-index e63d5ff..0000000
---- a/sound/soc/s3c24xx/s3c24xx_simtec.h
-+++ /dev/null
-@@ -1,22 +0,0 @@
--/* sound/soc/s3c24xx/s3c24xx_simtec.h
-- *
-- * Copyright 2009 Simtec Electronics
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
--*/
--
--extern void simtec_audio_init(struct snd_soc_pcm_runtime *rtd);
--
--extern int simtec_audio_core_probe(struct platform_device *pdev,
--				   struct snd_soc_card *card);
--
--extern int simtec_audio_remove(struct platform_device *pdev);
--
--#ifdef CONFIG_PM
--extern const struct dev_pm_ops simtec_audio_pmops;
--#define simtec_audio_pm &simtec_audio_pmops
--#else
--#define simtec_audio_pm NULL
--#endif
-diff --git a/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c b/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
-deleted file mode 100644
-index 8b246ab..0000000
---- a/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
-+++ /dev/null
-@@ -1,146 +0,0 @@
--/* sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
-- *
-- * Copyright 2009 Simtec Electronics
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
--*/
--
--#include <linux/module.h>
--#include <linux/clk.h>
--#include <linux/platform_device.h>
--
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--#include <sound/soc-dapm.h>
--
--#include <plat/audio-simtec.h>
--
--#include "dma.h"
--#include "s3c24xx-i2s.h"
--#include "s3c24xx_simtec.h"
--
--#include "../codecs/tlv320aic3x.h"
--
--static const struct snd_soc_dapm_widget dapm_widgets[] = {
--	SND_SOC_DAPM_LINE("GSM Out", NULL),
--	SND_SOC_DAPM_LINE("GSM In", NULL),
--	SND_SOC_DAPM_LINE("Line In", NULL),
--	SND_SOC_DAPM_LINE("Line Out", NULL),
--	SND_SOC_DAPM_LINE("ZV", NULL),
--	SND_SOC_DAPM_MIC("Mic Jack", NULL),
--	SND_SOC_DAPM_HP("Headphone Jack", NULL),
--};
--
--static const struct snd_soc_dapm_route base_map[] = {
--	/* Headphone connected to HP{L,R}OUT and HP{L,R}COM */
--
--	{ "Headphone Jack", NULL, "HPLOUT" },
--	{ "Headphone Jack", NULL, "HPLCOM" },
--	{ "Headphone Jack", NULL, "HPROUT" },
--	{ "Headphone Jack", NULL, "HPRCOM" },
--
--	/* ZV connected to Line1 */
--
--	{ "LINE1L", NULL, "ZV" },
--	{ "LINE1R", NULL, "ZV" },
--
--	/* Line In connected to Line2 */
--
--	{ "LINE2L", NULL, "Line In" },
--	{ "LINE2R", NULL, "Line In" },
--
--	/* Microphone connected to MIC3R and MIC_BIAS */
--
--	{ "MIC3L", NULL, "Mic Jack" },
--
--	/* GSM connected to MONO_LOUT and MIC3L (in) */
--
--	{ "GSM Out", NULL, "MONO_LOUT" },
--	{ "MIC3L", NULL, "GSM In" },
--
--	/* Speaker is connected to LINEOUT{LN,LP,RN,RP}, however we are
--	 * not using the DAPM to power it up and down as there it makes
--	 * a click when powering up. */
--};
--
--/**
-- * simtec_hermes_init - initialise and add controls
-- * @codec; The codec instance to attach to.
-- *
-- * Attach our controls and configure the necessary codec
-- * mappings for our sound card instance.
--*/
--static int simtec_hermes_init(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_codec *codec = rtd->codec;
--
--	snd_soc_dapm_new_controls(codec, dapm_widgets,
--				  ARRAY_SIZE(dapm_widgets));
--
--	snd_soc_dapm_add_routes(codec, base_map, ARRAY_SIZE(base_map));
--
--	snd_soc_dapm_enable_pin(codec, "Headphone Jack");
--	snd_soc_dapm_enable_pin(codec, "Line In");
--	snd_soc_dapm_enable_pin(codec, "Line Out");
--	snd_soc_dapm_enable_pin(codec, "Mic Jack");
--
--	simtec_audio_init(rtd);
--	snd_soc_dapm_sync(codec);
--
--	return 0;
--}
--
--static struct snd_soc_dai_link simtec_dai_aic33 = {
--	.name		= "tlv320aic33",
--	.stream_name	= "TLV320AIC33",
--	.codec_name	= "tlv320aic3x-codec.0-0x1a",
--	.cpu_dai_name	= "s3c24xx-i2s",
--	.codec_dai_name = "tlv320aic3x-hifi",
--	.platform_name	= "samsung-audio",
--	.init		= simtec_hermes_init,
--};
--
--/* simtec audio machine driver */
--static struct snd_soc_card snd_soc_machine_simtec_aic33 = {
--	.name		= "Simtec-Hermes",
--	.dai_link	= &simtec_dai_aic33,
--	.num_links	= 1,
--};
--
--static int __devinit simtec_audio_hermes_probe(struct platform_device *pd)
--{
--	dev_info(&pd->dev, "probing....\n");
--	return simtec_audio_core_probe(pd, &snd_soc_machine_simtec_aic33);
--}
--
--static struct platform_driver simtec_audio_hermes_platdrv = {
--	.driver	= {
--		.owner	= THIS_MODULE,
--		.name	= "s3c24xx-simtec-hermes-snd",
--		.pm	= simtec_audio_pm,
--	},
--	.probe	= simtec_audio_hermes_probe,
--	.remove	= __devexit_p(simtec_audio_remove),
--};
--
--MODULE_ALIAS("platform:s3c24xx-simtec-hermes-snd");
--
--static int __init simtec_hermes_modinit(void)
--{
--	return platform_driver_register(&simtec_audio_hermes_platdrv);
--}
--
--static void __exit simtec_hermes_modexit(void)
--{
--	platform_driver_unregister(&simtec_audio_hermes_platdrv);
--}
--
--module_init(simtec_hermes_modinit);
--module_exit(simtec_hermes_modexit);
--
--MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
--MODULE_DESCRIPTION("ALSA SoC Simtec Audio support");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c b/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
-deleted file mode 100644
-index a922e1e..0000000
---- a/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
-+++ /dev/null
-@@ -1,134 +0,0 @@
--/* sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
-- *
-- * Copyright 2009 Simtec Electronics
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
--*/
--
--#include <linux/module.h>
--#include <linux/clk.h>
--#include <linux/platform_device.h>
--
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--#include <sound/soc-dapm.h>
--
--#include <plat/audio-simtec.h>
--
--#include "dma.h"
--#include "s3c24xx-i2s.h"
--#include "s3c24xx_simtec.h"
--
--#include "../codecs/tlv320aic23.h"
--
--/* supported machines:
-- *
-- * Machine	Connections		AMP
-- * -------	-----------		---
-- * BAST		MIC, HPOUT, LOUT, LIN	TPA2001D1 (HPOUTL,R) (gain hardwired)
-- * VR1000	HPOUT, LIN		None
-- * VR2000	LIN, LOUT, MIC, HP	LM4871 (HPOUTL,R)
-- * DePicture	LIN, LOUT, MIC, HP	LM4871 (HPOUTL,R)
-- * Anubis	LIN, LOUT, MIC, HP	TPA2001D1 (HPOUTL,R)
-- */
--
--static const struct snd_soc_dapm_widget dapm_widgets[] = {
--	SND_SOC_DAPM_HP("Headphone Jack", NULL),
--	SND_SOC_DAPM_LINE("Line In", NULL),
--	SND_SOC_DAPM_LINE("Line Out", NULL),
--	SND_SOC_DAPM_MIC("Mic Jack", NULL),
--};
--
--static const struct snd_soc_dapm_route base_map[] = {
--	{ "Headphone Jack", NULL, "LHPOUT"},
--	{ "Headphone Jack", NULL, "RHPOUT"},
--
--	{ "Line Out", NULL, "LOUT" },
--	{ "Line Out", NULL, "ROUT" },
--
--	{ "LLINEIN", NULL, "Line In"},
--	{ "RLINEIN", NULL, "Line In"},
--
--	{ "MICIN", NULL, "Mic Jack"},
--};
--
--/**
-- * simtec_tlv320aic23_init - initialise and add controls
-- * @codec; The codec instance to attach to.
-- *
-- * Attach our controls and configure the necessary codec
-- * mappings for our sound card instance.
--*/
--static int simtec_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_codec *codec = rtd->codec;
--
--	snd_soc_dapm_new_controls(codec, dapm_widgets,
--				  ARRAY_SIZE(dapm_widgets));
--
--	snd_soc_dapm_add_routes(codec, base_map, ARRAY_SIZE(base_map));
--
--	snd_soc_dapm_enable_pin(codec, "Headphone Jack");
--	snd_soc_dapm_enable_pin(codec, "Line In");
--	snd_soc_dapm_enable_pin(codec, "Line Out");
--	snd_soc_dapm_enable_pin(codec, "Mic Jack");
--
--	simtec_audio_init(rtd);
--	snd_soc_dapm_sync(codec);
--
--	return 0;
--}
--
--static struct snd_soc_dai_link simtec_dai_aic23 = {
--	.name		= "tlv320aic23",
--	.stream_name	= "TLV320AIC23",
--	.codec_name	= "tlv320aic3x-codec.0-0x1a",
--	.cpu_dai_name	= "s3c24xx-i2s",
--	.codec_dai_name = "tlv320aic3x-hifi",
--	.platform_name	= "samsung-audio",
--	.init		= simtec_tlv320aic23_init,
--};
--
--/* simtec audio machine driver */
--static struct snd_soc_card snd_soc_machine_simtec_aic23 = {
--	.name		= "Simtec",
--	.dai_link	= &simtec_dai_aic23,
--	.num_links	= 1,
--};
--
--static int __devinit simtec_audio_tlv320aic23_probe(struct platform_device *pd)
--{
--	return simtec_audio_core_probe(pd, &snd_soc_machine_simtec_aic23);
--}
--
--static struct platform_driver simtec_audio_tlv320aic23_platdrv = {
--	.driver	= {
--		.owner	= THIS_MODULE,
--		.name	= "s3c24xx-simtec-tlv320aic23",
--		.pm	= simtec_audio_pm,
--	},
--	.probe	= simtec_audio_tlv320aic23_probe,
--	.remove	= __devexit_p(simtec_audio_remove),
--};
--
--MODULE_ALIAS("platform:s3c24xx-simtec-tlv320aic23");
--
--static int __init simtec_tlv320aic23_modinit(void)
--{
--	return platform_driver_register(&simtec_audio_tlv320aic23_platdrv);
--}
--
--static void __exit simtec_tlv320aic23_modexit(void)
--{
--	platform_driver_unregister(&simtec_audio_tlv320aic23_platdrv);
--}
--
--module_init(simtec_tlv320aic23_modinit);
--module_exit(simtec_tlv320aic23_modexit);
--
--MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
--MODULE_DESCRIPTION("ALSA SoC Simtec Audio support");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/s3c24xx_uda134x.c b/sound/soc/s3c24xx/s3c24xx_uda134x.c
-deleted file mode 100644
-index 87eeb46..0000000
---- a/sound/soc/s3c24xx/s3c24xx_uda134x.c
-+++ /dev/null
-@@ -1,368 +0,0 @@
--/*
-- * Modifications by Christian Pellegrin <chripell@evolware.org>
-- *
-- * s3c24xx_uda134x.c  --  S3C24XX_UDA134X ALSA SoC Audio board driver
-- *
-- * Copyright 2007 Dension Audio Systems Ltd.
-- * Author: Zoltan Devai
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--#include <linux/module.h>
--#include <linux/clk.h>
--#include <linux/mutex.h>
--#include <linux/gpio.h>
--#include <sound/pcm.h>
--#include <sound/pcm_params.h>
--#include <sound/soc.h>
--#include <sound/soc-dapm.h>
--#include <sound/s3c24xx_uda134x.h>
--#include <sound/uda134x.h>
--
--#include <plat/regs-iis.h>
--
--#include "dma.h"
--#include "s3c24xx-i2s.h"
--#include "../codecs/uda134x.h"
--
--
--/* #define ENFORCE_RATES 1 */
--/*
--  Unfortunately the S3C24XX in master mode has a limited capacity of
--  generating the clock for the codec. If you define this only rates
--  that are really available will be enforced. But be careful, most
--  user level application just want the usual sampling frequencies (8,
--  11.025, 22.050, 44.1 kHz) and anyway resampling is a costly
--  operation for embedded systems. So if you aren't very lucky or your
--  hardware engineer wasn't very forward-looking it's better to leave
--  this undefined. If you do so an approximate value for the requested
--  sampling rate in the range -/+ 5% will be chosen. If this in not
--  possible an error will be returned.
--*/
--
--static struct clk *xtal;
--static struct clk *pclk;
--/* this is need because we don't have a place where to keep the
-- * pointers to the clocks in each substream. We get the clocks only
-- * when we are actually using them so we don't block stuff like
-- * frequency change or oscillator power-off */
--static int clk_users;
--static DEFINE_MUTEX(clk_lock);
--
--static unsigned int rates[33 * 2];
--#ifdef ENFORCE_RATES
--static struct snd_pcm_hw_constraint_list hw_constraints_rates = {
--	.count	= ARRAY_SIZE(rates),
--	.list	= rates,
--	.mask	= 0,
--};
--#endif
--
--static struct platform_device *s3c24xx_uda134x_snd_device;
--
--static int s3c24xx_uda134x_startup(struct snd_pcm_substream *substream)
--{
--	int ret = 0;
--#ifdef ENFORCE_RATES
--	struct snd_pcm_runtime *runtime = substream->runtime;
--#endif
--
--	mutex_lock(&clk_lock);
--	pr_debug("%s %d\n", __func__, clk_users);
--	if (clk_users == 0) {
--		xtal = clk_get(&s3c24xx_uda134x_snd_device->dev, "xtal");
--		if (!xtal) {
--			printk(KERN_ERR "%s cannot get xtal\n", __func__);
--			ret = -EBUSY;
--		} else {
--			pclk = clk_get(&s3c24xx_uda134x_snd_device->dev,
--				       "pclk");
--			if (!pclk) {
--				printk(KERN_ERR "%s cannot get pclk\n",
--				       __func__);
--				clk_put(xtal);
--				ret = -EBUSY;
--			}
--		}
--		if (!ret) {
--			int i, j;
--
--			for (i = 0; i < 2; i++) {
--				int fs = i ? 256 : 384;
--
--				rates[i*33] = clk_get_rate(xtal) / fs;
--				for (j = 1; j < 33; j++)
--					rates[i*33 + j] = clk_get_rate(pclk) /
--						(j * fs);
--			}
--		}
--	}
--	clk_users += 1;
--	mutex_unlock(&clk_lock);
--	if (!ret) {
--#ifdef ENFORCE_RATES
--		ret = snd_pcm_hw_constraint_list(runtime, 0,
--						 SNDRV_PCM_HW_PARAM_RATE,
--						 &hw_constraints_rates);
--		if (ret < 0)
--			printk(KERN_ERR "%s cannot set constraints\n",
--			       __func__);
--#endif
--	}
--	return ret;
--}
--
--static void s3c24xx_uda134x_shutdown(struct snd_pcm_substream *substream)
--{
--	mutex_lock(&clk_lock);
--	pr_debug("%s %d\n", __func__, clk_users);
--	clk_users -= 1;
--	if (clk_users == 0) {
--		clk_put(xtal);
--		xtal = NULL;
--		clk_put(pclk);
--		pclk = NULL;
--	}
--	mutex_unlock(&clk_lock);
--}
--
--static int s3c24xx_uda134x_hw_params(struct snd_pcm_substream *substream,
--					struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	unsigned int clk = 0;
--	int ret = 0;
--	int clk_source, fs_mode;
--	unsigned long rate = params_rate(params);
--	long err, cerr;
--	unsigned int div;
--	int i, bi;
--
--	err = 999999;
--	bi = 0;
--	for (i = 0; i < 2*33; i++) {
--		cerr = rates[i] - rate;
--		if (cerr < 0)
--			cerr = -cerr;
--		if (cerr < err) {
--			err = cerr;
--			bi = i;
--		}
--	}
--	if (bi / 33 == 1)
--		fs_mode = S3C2410_IISMOD_256FS;
--	else
--		fs_mode = S3C2410_IISMOD_384FS;
--	if (bi % 33 == 0) {
--		clk_source = S3C24XX_CLKSRC_MPLL;
--		div = 1;
--	} else {
--		clk_source = S3C24XX_CLKSRC_PCLK;
--		div = bi % 33;
--	}
--	pr_debug("%s desired rate %lu, %d\n", __func__, rate, bi);
--
--	clk = (fs_mode == S3C2410_IISMOD_384FS ? 384 : 256) * rate;
--	pr_debug("%s will use: %s %s %d sysclk %d err %ld\n", __func__,
--		 fs_mode == S3C2410_IISMOD_384FS ? "384FS" : "256FS",
--		 clk_source == S3C24XX_CLKSRC_MPLL ? "MPLLin" : "PCLK",
--		 div, clk, err);
--
--	if ((err * 100 / rate) > 5) {
--		printk(KERN_ERR "S3C24XX_UDA134X: effective frequency "
--		       "too different from desired (%ld%%)\n",
--		       err * 100 / rate);
--		return -EINVAL;
--	}
--
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
--			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
--	if (ret < 0)
--		return ret;
--
--	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
--			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
--	if (ret < 0)
--		return ret;
--
--	ret = snd_soc_dai_set_sysclk(cpu_dai, clk_source , clk,
--			SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_MCLK, fs_mode);
--	if (ret < 0)
--		return ret;
--
--	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_BCLK,
--			S3C2410_IISMOD_32FS);
--	if (ret < 0)
--		return ret;
--
--	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_PRESCALER,
--			S3C24XX_PRESCALE(div, div));
--	if (ret < 0)
--		return ret;
--
--	/* set the codec system clock for DAC and ADC */
--	ret = snd_soc_dai_set_sysclk(codec_dai, 0, clk,
--			SND_SOC_CLOCK_OUT);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--static struct snd_soc_ops s3c24xx_uda134x_ops = {
--	.startup = s3c24xx_uda134x_startup,
--	.shutdown = s3c24xx_uda134x_shutdown,
--	.hw_params = s3c24xx_uda134x_hw_params,
--};
--
--static struct snd_soc_dai_link s3c24xx_uda134x_dai_link = {
--	.name = "UDA134X",
--	.stream_name = "UDA134X",
--	.codec_name = "uda134x-hifi",
--	.codec_dai_name = "uda134x-hifi",
--	.cpu_dai_name = "s3c24xx-i2s",
--	.ops = &s3c24xx_uda134x_ops,
--	.platform_name	= "samsung-audio",
--};
--
--static struct snd_soc_card snd_soc_s3c24xx_uda134x = {
--	.name = "S3C24XX_UDA134X",
--	.dai_link = &s3c24xx_uda134x_dai_link,
--	.num_links = 1,
--};
--
--static struct s3c24xx_uda134x_platform_data *s3c24xx_uda134x_l3_pins;
--
--static void setdat(int v)
--{
--	gpio_set_value(s3c24xx_uda134x_l3_pins->l3_data, v > 0);
--}
--
--static void setclk(int v)
--{
--	gpio_set_value(s3c24xx_uda134x_l3_pins->l3_clk, v > 0);
--}
--
--static void setmode(int v)
--{
--	gpio_set_value(s3c24xx_uda134x_l3_pins->l3_mode, v > 0);
--}
--
--/* FIXME - This must be codec platform data but in which board file ?? */
--static struct uda134x_platform_data s3c24xx_uda134x = {
--	.l3 = {
--		.setdat = setdat,
--		.setclk = setclk,
--		.setmode = setmode,
--		.data_hold = 1,
--		.data_setup = 1,
--		.clock_high = 1,
--		.mode_hold = 1,
--		.mode = 1,
--		.mode_setup = 1,
--	},
--};
--
--static int s3c24xx_uda134x_setup_pin(int pin, char *fun)
--{
--	if (gpio_request(pin, "s3c24xx_uda134x") < 0) {
--		printk(KERN_ERR "S3C24XX_UDA134X SoC Audio: "
--		       "l3 %s pin already in use", fun);
--		return -EBUSY;
--	}
--	gpio_direction_output(pin, 0);
--	return 0;
--}
--
--static int s3c24xx_uda134x_probe(struct platform_device *pdev)
--{
--	int ret;
--
--	printk(KERN_INFO "S3C24XX_UDA134X SoC Audio driver\n");
--
--	s3c24xx_uda134x_l3_pins = pdev->dev.platform_data;
--	if (s3c24xx_uda134x_l3_pins == NULL) {
--		printk(KERN_ERR "S3C24XX_UDA134X SoC Audio: "
--		       "unable to find platform data\n");
--		return -ENODEV;
--	}
--	s3c24xx_uda134x.power = s3c24xx_uda134x_l3_pins->power;
--	s3c24xx_uda134x.model = s3c24xx_uda134x_l3_pins->model;
--
--	if (s3c24xx_uda134x_setup_pin(s3c24xx_uda134x_l3_pins->l3_data,
--				      "data") < 0)
--		return -EBUSY;
--	if (s3c24xx_uda134x_setup_pin(s3c24xx_uda134x_l3_pins->l3_clk,
--				      "clk") < 0) {
--		gpio_free(s3c24xx_uda134x_l3_pins->l3_data);
--		return -EBUSY;
--	}
--	if (s3c24xx_uda134x_setup_pin(s3c24xx_uda134x_l3_pins->l3_mode,
--				      "mode") < 0) {
--		gpio_free(s3c24xx_uda134x_l3_pins->l3_data);
--		gpio_free(s3c24xx_uda134x_l3_pins->l3_clk);
--		return -EBUSY;
--	}
--
--	s3c24xx_uda134x_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!s3c24xx_uda134x_snd_device) {
--		printk(KERN_ERR "S3C24XX_UDA134X SoC Audio: "
--		       "Unable to register\n");
--		return -ENOMEM;
--	}
--
--	platform_set_drvdata(s3c24xx_uda134x_snd_device,
--			     &snd_soc_s3c24xx_uda134x);
--	ret = platform_device_add(s3c24xx_uda134x_snd_device);
--	if (ret) {
--		printk(KERN_ERR "S3C24XX_UDA134X SoC Audio: Unable to add\n");
--		platform_device_put(s3c24xx_uda134x_snd_device);
--	}
--
--	return ret;
--}
--
--static int s3c24xx_uda134x_remove(struct platform_device *pdev)
--{
--	platform_device_unregister(s3c24xx_uda134x_snd_device);
--	gpio_free(s3c24xx_uda134x_l3_pins->l3_data);
--	gpio_free(s3c24xx_uda134x_l3_pins->l3_clk);
--	gpio_free(s3c24xx_uda134x_l3_pins->l3_mode);
--	return 0;
--}
--
--static struct platform_driver s3c24xx_uda134x_driver = {
--	.probe  = s3c24xx_uda134x_probe,
--	.remove = s3c24xx_uda134x_remove,
--	.driver = {
--		.name = "s3c24xx_uda134x",
--		.owner = THIS_MODULE,
--	},
--};
--
--static int __init s3c24xx_uda134x_init(void)
--{
--	return platform_driver_register(&s3c24xx_uda134x_driver);
--}
--
--static void __exit s3c24xx_uda134x_exit(void)
--{
--	platform_driver_unregister(&s3c24xx_uda134x_driver);
--}
--
--
--module_init(s3c24xx_uda134x_init);
--module_exit(s3c24xx_uda134x_exit);
--
--MODULE_AUTHOR("Zoltan Devai, Christian Pellegrin <chripell@evolware.org>");
--MODULE_DESCRIPTION("S3C24XX_UDA134X ALSA SoC audio driver");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/smartq_wm8987.c b/sound/soc/s3c24xx/smartq_wm8987.c
-deleted file mode 100644
-index 5fcc420..0000000
---- a/sound/soc/s3c24xx/smartq_wm8987.c
-+++ /dev/null
-@@ -1,287 +0,0 @@
--/* sound/soc/s3c24xx/smartq_wm8987.c
-- *
-- * Copyright 2010 Maurus Cuelenaere <mcuelenaere@gmail.com>
-- *
-- * Based on smdk6410_wm8987.c
-- *     Copyright 2007 Wolfson Microelectronics PLC. - linux@wolfsonmicro.com
-- *     Graeme Gregory - graeme.gregory@wolfsonmicro.com
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-- */
--
--#include <linux/module.h>
--#include <linux/platform_device.h>
--#include <linux/gpio.h>
--
--#include <sound/pcm.h>
--#include <sound/pcm_params.h>
--#include <sound/soc-dapm.h>
--#include <sound/jack.h>
--
--#include <asm/mach-types.h>
--
--#include "dma.h"
--#include "i2s.h"
--
--#include "../codecs/wm8750.h"
--
--/*
-- * WM8987 is register compatible with WM8750, so using that as base driver.
-- */
--
--static struct snd_soc_card snd_soc_smartq;
--
--static int smartq_hifi_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
--	unsigned int clk = 0;
--	int ret;
--
--	switch (params_rate(params)) {
--	case 8000:
--	case 16000:
--	case 32000:
--	case 48000:
--	case 96000:
--		clk = 12288000;
--		break;
--	case 11025:
--	case 22050:
--	case 44100:
--	case 88200:
--		clk = 11289600;
--		break;
--	}
--
--	/* set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
--					     SND_SOC_DAIFMT_NB_NF |
--					     SND_SOC_DAIFMT_CBS_CFS);
--	if (ret < 0)
--		return ret;
--
--	/* set cpu DAI configuration */
--	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
--					   SND_SOC_DAIFMT_NB_NF |
--					   SND_SOC_DAIFMT_CBS_CFS);
--	if (ret < 0)
--		return ret;
--
--	/* Use PCLK for I2S signal generation */
--	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_RCLKSRC_0,
--					0, SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	/* Gate the RCLK output on PAD */
--	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_CDCLK,
--					0, SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec system clock for DAC and ADC */
--	ret = snd_soc_dai_set_sysclk(codec_dai, WM8750_SYSCLK, clk,
--				     SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--/*
-- * SmartQ WM8987 HiFi DAI operations.
-- */
--static struct snd_soc_ops smartq_hifi_ops = {
--	.hw_params = smartq_hifi_hw_params,
--};
--
--static struct snd_soc_jack smartq_jack;
--
--static struct snd_soc_jack_pin smartq_jack_pins[] = {
--	/* Disable speaker when headphone is plugged in */
--	{
--		.pin	= "Internal Speaker",
--		.mask	= SND_JACK_HEADPHONE,
--	},
--};
--
--static struct snd_soc_jack_gpio smartq_jack_gpios[] = {
--	{
--		.gpio		= S3C64XX_GPL(12),
--		.name		= "headphone detect",
--		.report		= SND_JACK_HEADPHONE,
--		.debounce_time	= 200,
--	},
--};
--
--static const struct snd_kcontrol_new wm8987_smartq_controls[] = {
--	SOC_DAPM_PIN_SWITCH("Internal Speaker"),
--	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
--	SOC_DAPM_PIN_SWITCH("Internal Mic"),
--};
--
--static int smartq_speaker_event(struct snd_soc_dapm_widget *w,
--				struct snd_kcontrol *k,
--				int event)
--{
--	gpio_set_value(S3C64XX_GPK(12), SND_SOC_DAPM_EVENT_OFF(event));
--
--	return 0;
--}
--
--static const struct snd_soc_dapm_widget wm8987_dapm_widgets[] = {
--	SND_SOC_DAPM_SPK("Internal Speaker", smartq_speaker_event),
--	SND_SOC_DAPM_HP("Headphone Jack", NULL),
--	SND_SOC_DAPM_MIC("Internal Mic", NULL),
--};
--
--static const struct snd_soc_dapm_route audio_map[] = {
--	{"Headphone Jack", NULL, "LOUT2"},
--	{"Headphone Jack", NULL, "ROUT2"},
--
--	{"Internal Speaker", NULL, "LOUT2"},
--	{"Internal Speaker", NULL, "ROUT2"},
--
--	{"Mic Bias", NULL, "Internal Mic"},
--	{"LINPUT2", NULL, "Mic Bias"},
--};
--
--static int smartq_wm8987_init(struct snd_soc_codec *codec)
--{
--	int err = 0;
--
--	/* Add SmartQ specific widgets */
--	snd_soc_dapm_new_controls(codec, wm8987_dapm_widgets,
--				  ARRAY_SIZE(wm8987_dapm_widgets));
--
--	/* add SmartQ specific controls */
--	err = snd_soc_add_controls(codec, wm8987_smartq_controls,
--				   ARRAY_SIZE(wm8987_smartq_controls));
--
--	if (err < 0)
--		return err;
--
--	/* setup SmartQ specific audio path */
--	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
--
--	/* set endpoints to not connected */
--	snd_soc_dapm_nc_pin(codec, "LINPUT1");
--	snd_soc_dapm_nc_pin(codec, "RINPUT1");
--	snd_soc_dapm_nc_pin(codec, "OUT3");
--	snd_soc_dapm_nc_pin(codec, "ROUT1");
--
--	/* set endpoints to default off mode */
--	snd_soc_dapm_enable_pin(codec, "Internal Speaker");
--	snd_soc_dapm_enable_pin(codec, "Internal Mic");
--	snd_soc_dapm_disable_pin(codec, "Headphone Jack");
--
--	err = snd_soc_dapm_sync(codec);
--	if (err)
--		return err;
--
--	/* Headphone jack detection */
--	err = snd_soc_jack_new(&snd_soc_smartq, "Headphone Jack",
--			       SND_JACK_HEADPHONE, &smartq_jack);
--	if (err)
--		return err;
--
--	err = snd_soc_jack_add_pins(&smartq_jack, ARRAY_SIZE(smartq_jack_pins),
--				    smartq_jack_pins);
--	if (err)
--		return err;
--
--	err = snd_soc_jack_add_gpios(&smartq_jack,
--				     ARRAY_SIZE(smartq_jack_gpios),
--				     smartq_jack_gpios);
--
--	return err;
--}
--
--static struct snd_soc_dai_link smartq_dai[] = {
--	{
--		.name		= "wm8987",
--		.stream_name	= "SmartQ Hi-Fi",
--		.cpu_dai_name	= "samsung-i2s.0",
--		.codec_dai_name	= "wm8750-hifi",
--		.platform_name	= "samsung-audio",
--		.codec_name	= "wm8750-codec.0-0x1a",
--		.init		= smartq_wm8987_init,
--		.ops		= &smartq_hifi_ops,
--	},
--};
--
--static struct snd_soc_card snd_soc_smartq = {
--	.name = "SmartQ",
--	.dai_link = smartq_dai,
--	.num_links = ARRAY_SIZE(smartq_dai),
--};
--
--static struct platform_device *smartq_snd_device;
--
--static int __init smartq_init(void)
--{
--	int ret;
--
--	if (!machine_is_smartq7() && !machine_is_smartq5()) {
--		pr_info("Only SmartQ is supported by this ASoC driver\n");
--		return -ENODEV;
--	}
--
--	smartq_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!smartq_snd_device)
--		return -ENOMEM;
--
--	platform_set_drvdata(smartq_snd_device, &snd_soc_smartq);
--
--	ret = platform_device_add(smartq_snd_device);
--	if (ret) {
--		platform_device_put(smartq_snd_device);
--		return ret;
--	}
--
--	/* Initialise GPIOs used by amplifiers */
--	ret = gpio_request(S3C64XX_GPK(12), "amplifiers shutdown");
--	if (ret) {
--		dev_err(&smartq_snd_device->dev, "Failed to register GPK12\n");
--		goto err_unregister_device;
--	}
--
--	/* Disable amplifiers */
--	ret = gpio_direction_output(S3C64XX_GPK(12), 1);
--	if (ret) {
--		dev_err(&smartq_snd_device->dev, "Failed to configure GPK12\n");
--		goto err_free_gpio_amp_shut;
--	}
--
--	return 0;
--
--err_free_gpio_amp_shut:
--	gpio_free(S3C64XX_GPK(12));
--err_unregister_device:
--	platform_device_unregister(smartq_snd_device);
--
--	return ret;
--}
--
--static void __exit smartq_exit(void)
--{
--	snd_soc_jack_free_gpios(&smartq_jack, ARRAY_SIZE(smartq_jack_gpios),
--				smartq_jack_gpios);
--
--	platform_device_unregister(smartq_snd_device);
--}
--
--module_init(smartq_init);
--module_exit(smartq_exit);
--
--/* Module information */
--MODULE_AUTHOR("Maurus Cuelenaere <mcuelenaere@gmail.com>");
--MODULE_DESCRIPTION("ALSA SoC SmartQ WM8987");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/smdk2443_wm9710.c b/sound/soc/s3c24xx/smdk2443_wm9710.c
-deleted file mode 100644
-index 5051699..0000000
---- a/sound/soc/s3c24xx/smdk2443_wm9710.c
-+++ /dev/null
-@@ -1,74 +0,0 @@
--/*
-- * smdk2443_wm9710.c  --  SoC audio for smdk2443
-- *
-- * Copyright 2007 Wolfson Microelectronics PLC.
-- * Author: Graeme Gregory
-- *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-- */
--
--#include <linux/module.h>
--#include <linux/device.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/soc.h>
--#include <sound/soc-dapm.h>
--
--#include "dma.h"
--#include "ac97.h"
--
--static struct snd_soc_card smdk2443;
--
--static struct snd_soc_dai_link smdk2443_dai[] = {
--{
--	.name = "AC97",
--	.stream_name = "AC97 HiFi",
--	.cpu_dai_name = "samsung-ac97",
--	.codec_dai_name = "ac97-hifi",
--	.codec_name = "ac97-codec",
--	.platform_name = "samsung-audio",
--},
--};
--
--static struct snd_soc_card smdk2443 = {
--	.name = "SMDK2443",
--	.dai_link = smdk2443_dai,
--	.num_links = ARRAY_SIZE(smdk2443_dai),
--};
--
--static struct platform_device *smdk2443_snd_ac97_device;
--
--static int __init smdk2443_init(void)
--{
--	int ret;
--
--	smdk2443_snd_ac97_device = platform_device_alloc("soc-audio", -1);
--	if (!smdk2443_snd_ac97_device)
--		return -ENOMEM;
--
--	platform_set_drvdata(smdk2443_snd_ac97_device, &smdk2443);
--	ret = platform_device_add(smdk2443_snd_ac97_device);
--
--	if (ret)
--		platform_device_put(smdk2443_snd_ac97_device);
--
--	return ret;
--}
--
--static void __exit smdk2443_exit(void)
--{
--	platform_device_unregister(smdk2443_snd_ac97_device);
--}
--
--module_init(smdk2443_init);
--module_exit(smdk2443_exit);
--
--/* Module information */
--MODULE_AUTHOR("Graeme Gregory, graeme.gregory@wolfsonmicro.com, www.wolfsonmicro.com");
--MODULE_DESCRIPTION("ALSA SoC WM9710 SMDK2443");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/smdk_spdif.c b/sound/soc/s3c24xx/smdk_spdif.c
-deleted file mode 100644
-index 4fc6a9f..0000000
---- a/sound/soc/s3c24xx/smdk_spdif.c
-+++ /dev/null
-@@ -1,223 +0,0 @@
--/*
-- * smdk_spdif.c  --  S/PDIF audio for SMDK
-- *
-- * Copyright 2010 Samsung Electronics Co. Ltd.
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License as
-- * published by the Free Software Foundation; either version 2 of the
-- * License, or (at your option) any later version.
-- *
-- */
--
--#include <linux/module.h>
--#include <linux/device.h>
--#include <linux/clk.h>
--
--#include <plat/devs.h>
--
--#include <sound/soc.h>
--
--#include "dma.h"
--#include "spdif.h"
--
--/* Audio clock settings are belonged to board specific part. Every
-- * board can set audio source clock setting which is matched with H/W
-- * like this function-'set_audio_clock_heirachy'.
-- */
--static int set_audio_clock_heirachy(struct platform_device *pdev)
--{
--	struct clk *fout_epll, *mout_epll, *sclk_audio0, *sclk_spdif;
--	int ret;
--
--	fout_epll = clk_get(NULL, "fout_epll");
--	if (IS_ERR(fout_epll)) {
--		printk(KERN_WARNING "%s: Cannot find fout_epll.\n",
--				__func__);
--		return -EINVAL;
--	}
--
--	mout_epll = clk_get(NULL, "mout_epll");
--	if (IS_ERR(fout_epll)) {
--		printk(KERN_WARNING "%s: Cannot find mout_epll.\n",
--				__func__);
--		ret = -EINVAL;
--		goto out1;
--	}
--
--	sclk_audio0 = clk_get(&pdev->dev, "sclk_audio");
--	if (IS_ERR(sclk_audio0)) {
--		printk(KERN_WARNING "%s: Cannot find sclk_audio.\n",
--				__func__);
--		ret = -EINVAL;
--		goto out2;
--	}
--
--	sclk_spdif = clk_get(NULL, "sclk_spdif");
--	if (IS_ERR(fout_epll)) {
--		printk(KERN_WARNING "%s: Cannot find sclk_spdif.\n",
--				__func__);
--		ret = -EINVAL;
--		goto out3;
--	}
--
--	/* Set audio clock heirachy for S/PDIF */
--	clk_set_parent(mout_epll, fout_epll);
--	clk_set_parent(sclk_audio0, mout_epll);
--	clk_set_parent(sclk_spdif, sclk_audio0);
--
--	clk_put(sclk_spdif);
--out3:
--	clk_put(sclk_audio0);
--out2:
--	clk_put(mout_epll);
--out1:
--	clk_put(fout_epll);
--
--	return ret;
--}
--
--/* We should haved to set clock directly on this part because of clock
-- * scheme of Samsudng SoCs did not support to set rates from abstrct
-- * clock of it's heirachy.
-- */
--static int set_audio_clock_rate(unsigned long epll_rate,
--				unsigned long audio_rate)
--{
--	struct clk *fout_epll, *sclk_spdif;
--
--	fout_epll = clk_get(NULL, "fout_epll");
--	if (IS_ERR(fout_epll)) {
--		printk(KERN_ERR "%s: failed to get fout_epll\n", __func__);
--		return -ENOENT;
--	}
--
--	clk_set_rate(fout_epll, epll_rate);
--	clk_put(fout_epll);
--
--	sclk_spdif = clk_get(NULL, "sclk_spdif");
--	if (IS_ERR(sclk_spdif)) {
--		printk(KERN_ERR "%s: failed to get sclk_spdif\n", __func__);
--		return -ENOENT;
--	}
--
--	clk_set_rate(sclk_spdif, audio_rate);
--	clk_put(sclk_spdif);
--
--	return 0;
--}
--
--static int smdk_hw_params(struct snd_pcm_substream *substream,
--		struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	unsigned long pll_out, rclk_rate;
--	int ret, ratio;
--
--	switch (params_rate(params)) {
--	case 44100:
--		pll_out = 45158400;
--		break;
--	case 32000:
--	case 48000:
--	case 96000:
--		pll_out = 49152000;
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	/* Setting ratio to 512fs helps to use S/PDIF with HDMI without
--	 * modify S/PDIF ASoC machine driver.
--	 */
--	ratio = 512;
--	rclk_rate = params_rate(params) * ratio;
--
--	/* Set audio source clock rates */
--	ret = set_audio_clock_rate(pll_out, rclk_rate);
--	if (ret < 0)
--		return ret;
--
--	/* Set S/PDIF uses internal source clock */
--	ret = snd_soc_dai_set_sysclk(cpu_dai, SND_SOC_SPDIF_INT_MCLK,
--					rclk_rate, SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	return ret;
--}
--
--static struct snd_soc_ops smdk_spdif_ops = {
--	.hw_params = smdk_hw_params,
--};
--
--static struct snd_soc_card smdk;
--
--static struct snd_soc_dai_link smdk_dai = {
--	.name = "S/PDIF",
--	.stream_name = "S/PDIF PCM Playback",
--	.platform_name = "samsung-audio",
--	.cpu_dai_name = "samsung-spdif",
--	.codec_dai_name = "dit-hifi",
--	.codec_name = "spdif-dit",
--	.ops = &smdk_spdif_ops,
--};
--
--static struct snd_soc_card smdk = {
--	.name = "SMDK-S/PDIF",
--	.dai_link = &smdk_dai,
--	.num_links = 1,
--};
--
--static struct platform_device *smdk_snd_spdif_dit_device;
--static struct platform_device *smdk_snd_spdif_device;
--
--static int __init smdk_init(void)
--{
--	int ret;
--
--	smdk_snd_spdif_dit_device = platform_device_alloc("spdif-dit", -1);
--	if (!smdk_snd_spdif_dit_device)
--		return -ENOMEM;
--
--	ret = platform_device_add(smdk_snd_spdif_dit_device);
--	if (ret)
--		goto err2;
--
--	smdk_snd_spdif_device = platform_device_alloc("soc-audio", -1);
--	if (!smdk_snd_spdif_device) {
--		ret = -ENOMEM;
--		goto err2;
--	}
--
--	platform_set_drvdata(smdk_snd_spdif_device, &smdk);
--
--	ret = platform_device_add(smdk_snd_spdif_device);
--	if (ret)
--		goto err1;
--
--	/* Set audio clock heirachy manually */
--	ret = set_audio_clock_heirachy(smdk_snd_spdif_device);
--	if (ret)
--		goto err1;
--
--	return 0;
--err1:
--	platform_device_put(smdk_snd_spdif_device);
--err2:
--	platform_device_put(smdk_snd_spdif_dit_device);
--	return ret;
--}
--
--static void __exit smdk_exit(void)
--{
--	platform_device_unregister(smdk_snd_spdif_device);
--}
--
--module_init(smdk_init);
--module_exit(smdk_exit);
--
--MODULE_AUTHOR("Seungwhan Youn, <sw.youn@samsung.com>");
--MODULE_DESCRIPTION("ALSA SoC SMDK+S/PDIF");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/smdk_wm8580.c b/sound/soc/s3c24xx/smdk_wm8580.c
-deleted file mode 100644
-index 46ab884..0000000
---- a/sound/soc/s3c24xx/smdk_wm8580.c
-+++ /dev/null
-@@ -1,284 +0,0 @@
--/*
-- *  smdk_wm8580.c
-- *
-- *  Copyright (c) 2009 Samsung Electronics Co. Ltd
-- *  Author: Jaswinder Singh <jassi.brar@samsung.com>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- */
--
--#include <linux/platform_device.h>
--#include <linux/clk.h>
--#include <sound/core.h>
--#include <sound/pcm.h>
--#include <sound/pcm_params.h>
--#include <sound/soc.h>
--#include <sound/soc-dapm.h>
--
--#include <asm/mach-types.h>
--
--#include "../codecs/wm8580.h"
--#include "dma.h"
--#include "i2s.h"
--
--/*
-- * Default CFG switch settings to use this driver:
-- *
-- *   SMDK6410: Set CFG1 1-3 Off, CFG2 1-4 On
-- */
--
--/* SMDK has a 12MHZ crystal attached to WM8580 */
--#define SMDK_WM8580_FREQ 12000000
--
--static int smdk_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	unsigned int pll_out;
--	int bfs, rfs, ret;
--
--	switch (params_format(params)) {
--	case SNDRV_PCM_FORMAT_U8:
--	case SNDRV_PCM_FORMAT_S8:
--		bfs = 16;
--		break;
--	case SNDRV_PCM_FORMAT_U16_LE:
--	case SNDRV_PCM_FORMAT_S16_LE:
--		bfs = 32;
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	/* The Fvco for WM8580 PLLs must fall within [90,100]MHz.
--	 * This criterion can't be met if we request PLL output
--	 * as {8000x256, 64000x256, 11025x256}Hz.
--	 * As a wayout, we rather change rfs to a minimum value that
--	 * results in (params_rate(params) * rfs), and itself, acceptable
--	 * to both - the CODEC and the CPU.
--	 */
--	switch (params_rate(params)) {
--	case 16000:
--	case 22050:
--	case 32000:
--	case 44100:
--	case 48000:
--	case 88200:
--	case 96000:
--		rfs = 256;
--		break;
--	case 64000:
--		rfs = 384;
--		break;
--	case 8000:
--	case 11025:
--		rfs = 512;
--		break;
--	default:
--		return -EINVAL;
--	}
--	pll_out = params_rate(params) * rfs;
--
--	/* Set the Codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S
--					 | SND_SOC_DAIFMT_NB_NF
--					 | SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	/* Set the AP DAI configuration */
--	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S
--					 | SND_SOC_DAIFMT_NB_NF
--					 | SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	/* Set WM8580 to drive MCLK from its PLLA */
--	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8580_MCLK,
--					WM8580_CLKSRC_PLLA);
--	if (ret < 0)
--		return ret;
--
--	ret = snd_soc_dai_set_pll(codec_dai, WM8580_PLLA, 0,
--					SMDK_WM8580_FREQ, pll_out);
--	if (ret < 0)
--		return ret;
--
--	ret = snd_soc_dai_set_sysclk(codec_dai, WM8580_CLKSRC_PLLA,
--				     pll_out, SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--/*
-- * SMDK WM8580 DAI operations.
-- */
--static struct snd_soc_ops smdk_ops = {
--	.hw_params = smdk_hw_params,
--};
--
--/* SMDK Playback widgets */
--static const struct snd_soc_dapm_widget wm8580_dapm_widgets_pbk[] = {
--	SND_SOC_DAPM_HP("Front", NULL),
--	SND_SOC_DAPM_HP("Center+Sub", NULL),
--	SND_SOC_DAPM_HP("Rear", NULL),
--};
--
--/* SMDK Capture widgets */
--static const struct snd_soc_dapm_widget wm8580_dapm_widgets_cpt[] = {
--	SND_SOC_DAPM_MIC("MicIn", NULL),
--	SND_SOC_DAPM_LINE("LineIn", NULL),
--};
--
--/* SMDK-PAIFTX connections */
--static const struct snd_soc_dapm_route audio_map_tx[] = {
--	/* MicIn feeds AINL */
--	{"AINL", NULL, "MicIn"},
--
--	/* LineIn feeds AINL/R */
--	{"AINL", NULL, "LineIn"},
--	{"AINR", NULL, "LineIn"},
--};
--
--/* SMDK-PAIFRX connections */
--static const struct snd_soc_dapm_route audio_map_rx[] = {
--	/* Front Left/Right are fed VOUT1L/R */
--	{"Front", NULL, "VOUT1L"},
--	{"Front", NULL, "VOUT1R"},
--
--	/* Center/Sub are fed VOUT2L/R */
--	{"Center+Sub", NULL, "VOUT2L"},
--	{"Center+Sub", NULL, "VOUT2R"},
--
--	/* Rear Left/Right are fed VOUT3L/R */
--	{"Rear", NULL, "VOUT3L"},
--	{"Rear", NULL, "VOUT3R"},
--};
--
--static int smdk_wm8580_init_paiftx(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_codec *codec = rtd->codec;
--
--	/* Add smdk specific Capture widgets */
--	snd_soc_dapm_new_controls(codec, wm8580_dapm_widgets_cpt,
--				  ARRAY_SIZE(wm8580_dapm_widgets_cpt));
--
--	/* Set up PAIFTX audio path */
--	snd_soc_dapm_add_routes(codec, audio_map_tx, ARRAY_SIZE(audio_map_tx));
--
--	/* Enabling the microphone requires the fitting of a 0R
--	 * resistor to connect the line from the microphone jack.
--	 */
--	snd_soc_dapm_disable_pin(codec, "MicIn");
--
--	/* signal a DAPM event */
--	snd_soc_dapm_sync(codec);
--
--	return 0;
--}
--
--static int smdk_wm8580_init_paifrx(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_codec *codec = rtd->codec;
--
--	/* Add smdk specific Playback widgets */
--	snd_soc_dapm_new_controls(codec, wm8580_dapm_widgets_pbk,
--				  ARRAY_SIZE(wm8580_dapm_widgets_pbk));
--
--	/* Set up PAIFRX audio path */
--	snd_soc_dapm_add_routes(codec, audio_map_rx, ARRAY_SIZE(audio_map_rx));
--
--	/* signal a DAPM event */
--	snd_soc_dapm_sync(codec);
--
--	return 0;
--}
--
--enum {
--	PRI_PLAYBACK = 0,
--	PRI_CAPTURE,
--	SEC_PLAYBACK,
--};
--
--static struct snd_soc_dai_link smdk_dai[] = {
--	[PRI_PLAYBACK] = { /* Primary Playback i/f */
--		.name = "WM8580 PAIF RX",
--		.stream_name = "Playback",
--		.cpu_dai_name = "samsung-i2s.2",
--		.codec_dai_name = "wm8580-hifi-playback",
--		.platform_name = "samsung-audio",
--		.codec_name = "wm8580-codec.0-001b",
--		.init = smdk_wm8580_init_paifrx,
--		.ops = &smdk_ops,
--	},
--	[PRI_CAPTURE] = { /* Primary Capture i/f */
--		.name = "WM8580 PAIF TX",
--		.stream_name = "Capture",
--		.cpu_dai_name = "samsung-i2s.2",
--		.codec_dai_name = "wm8580-hifi-capture",
--		.platform_name = "samsung-audio",
--		.codec_name = "wm8580-codec.0-001b",
--		.init = smdk_wm8580_init_paiftx,
--		.ops = &smdk_ops,
--	},
--	[SEC_PLAYBACK] = { /* Sec_Fifo Playback i/f */
--		.name = "Sec_FIFO TX",
--		.stream_name = "Playback",
--		.cpu_dai_name = "samsung-i2s.x",
--		.codec_dai_name = "wm8580-hifi-playback",
--		.platform_name = "samsung-audio",
--		.codec_name = "wm8580-codec.0-001b",
--		.init = smdk_wm8580_init_paifrx,
--		.ops = &smdk_ops,
--	},
--};
--
--static struct snd_soc_card smdk = {
--	.name = "SMDK-I2S",
--	.dai_link = smdk_dai,
--	.num_links = 2,
--};
--
--static struct platform_device *smdk_snd_device;
--
--static int __init smdk_audio_init(void)
--{
--	int ret;
--	char *str;
--
--	if (machine_is_smdkc100()) {
--		smdk.num_links = 3;
--		/* S5PC100 has I2S0 as v5 */
--		str = (char *)smdk_dai[PRI_PLAYBACK].cpu_dai_name;
--		str[strlen(str) - 1] = '0';
--		str = (char *)smdk_dai[PRI_CAPTURE].cpu_dai_name;
--		str[strlen(str) - 1] = '0';
--		/* Secondary is at offset MAX_I2S from Primary */
--		str = (char *)smdk_dai[SEC_PLAYBACK].cpu_dai_name;
--		str[strlen(str) - 1] = '0' + MAX_I2S;
--	}
--
--	smdk_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!smdk_snd_device)
--		return -ENOMEM;
--
--	platform_set_drvdata(smdk_snd_device, &smdk);
--	ret = platform_device_add(smdk_snd_device);
--
--	if (ret)
--		platform_device_put(smdk_snd_device);
--
--	return ret;
--}
--module_init(smdk_audio_init);
--
--MODULE_AUTHOR("Jaswinder Singh, jassi.brar@samsung.com");
--MODULE_DESCRIPTION("ALSA SoC SMDK WM8580");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/smdk_wm9713.c b/sound/soc/s3c24xx/smdk_wm9713.c
-deleted file mode 100644
-index 7ce2430..0000000
---- a/sound/soc/s3c24xx/smdk_wm9713.c
-+++ /dev/null
-@@ -1,107 +0,0 @@
--/*
-- * smdk_wm9713.c  --  SoC audio for SMDK
-- *
-- * Copyright 2010 Samsung Electronics Co. Ltd.
-- * Author: Jaswinder Singh Brar <jassi.brar@samsung.com>
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License as
-- * published by the Free Software Foundation; either version 2 of the
-- * License, or (at your option) any later version.
-- *
-- */
--
--#include <linux/module.h>
--#include <linux/device.h>
--#include <sound/soc.h>
--
--#include "dma.h"
--#include "ac97.h"
--
--static struct snd_soc_card smdk;
--
--/*
-- * Default CFG switch settings to use this driver:
-- *
-- *   SMDK6410: Set CFG1 1-3 On, CFG2 1-4 Off
-- *   SMDKC100: Set CFG6 1-3 On, CFG7 1   On
-- *   SMDKC110: Set CFGB10 1-2 Off, CFGB12 1-3 On
-- *   SMDKV210: Set CFGB10 1-2 Off, CFGB12 1-3 On
-- */
--
--/*
-- Playback (HeadPhone):-
--	$ amixer sset 'Headphone' unmute
--	$ amixer sset 'Right Headphone Out Mux' 'Headphone'
--	$ amixer sset 'Left Headphone Out Mux' 'Headphone'
--	$ amixer sset 'Right HP Mixer PCM' unmute
--	$ amixer sset 'Left HP Mixer PCM' unmute
--
-- Capture (LineIn):-
--	$ amixer sset 'Right Capture Source' 'Line'
--	$ amixer sset 'Left Capture Source' 'Line'
--*/
--
--static struct snd_soc_dai_link smdk_dai = {
--	.name = "AC97",
--	.stream_name = "AC97 PCM",
--	.platform_name = "samsung-audio",
--	.cpu_dai_name = "samsung-ac97",
--	.codec_dai_name = "wm9713-hifi",
--	.codec_name = "wm9713-codec",
--};
--
--static struct snd_soc_card smdk = {
--	.name = "SMDK WM9713",
--	.dai_link = &smdk_dai,
--	.num_links = 1,
--};
--
--static struct platform_device *smdk_snd_wm9713_device;
--static struct platform_device *smdk_snd_ac97_device;
--
--static int __init smdk_init(void)
--{
--	int ret;
--
--	smdk_snd_wm9713_device = platform_device_alloc("wm9713-codec", -1);
--	if (!smdk_snd_wm9713_device)
--		return -ENOMEM;
--
--	ret = platform_device_add(smdk_snd_wm9713_device);
--	if (ret)
--		goto err;
--
--	smdk_snd_ac97_device = platform_device_alloc("soc-audio", -1);
--	if (!smdk_snd_ac97_device) {
--		ret = -ENOMEM;
--		goto err;
--	}
--
--	platform_set_drvdata(smdk_snd_ac97_device, &smdk);
--
--	ret = platform_device_add(smdk_snd_ac97_device);
--	if (ret) {
--		platform_device_put(smdk_snd_ac97_device);
--		goto err;
--	}
--
--	return 0;
--err:
--	platform_device_put(smdk_snd_wm9713_device);
--	return ret;
--}
--
--static void __exit smdk_exit(void)
--{
--	platform_device_unregister(smdk_snd_ac97_device);
--	platform_device_unregister(smdk_snd_wm9713_device);
--}
--
--module_init(smdk_init);
--module_exit(smdk_exit);
--
--/* Module information */
--MODULE_AUTHOR("Jaswinder Singh Brar, jassi.brar@samsung.com");
--MODULE_DESCRIPTION("ALSA SoC SMDK+WM9713");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/spdif.c b/sound/soc/s3c24xx/spdif.c
-deleted file mode 100644
-index dc85df3..0000000
---- a/sound/soc/s3c24xx/spdif.c
-+++ /dev/null
-@@ -1,501 +0,0 @@
--/* sound/soc/s3c24xx/spdif.c
-- *
-- * ALSA SoC Audio Layer - Samsung S/PDIF Controller driver
-- *
-- * Copyright (c) 2010 Samsung Electronics Co. Ltd
-- *		http://www.samsung.com/
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--#include <linux/clk.h>
--#include <linux/io.h>
--
--#include <sound/pcm.h>
--#include <sound/pcm_params.h>
--#include <sound/soc.h>
--
--#include <plat/audio.h>
--#include <mach/dma.h>
--
--#include "dma.h"
--#include "spdif.h"
--
--/* Registers */
--#define CLKCON				0x00
--#define CON				0x04
--#define BSTAS				0x08
--#define CSTAS				0x0C
--#define DATA_OUTBUF			0x10
--#define DCNT				0x14
--#define BSTAS_S				0x18
--#define DCNT_S				0x1C
--
--#define CLKCTL_MASK			0x7
--#define CLKCTL_MCLK_EXT			(0x1 << 2)
--#define CLKCTL_PWR_ON			(0x1 << 0)
--
--#define CON_MASK			0x3ffffff
--#define CON_FIFO_TH_SHIFT		19
--#define CON_FIFO_TH_MASK		(0x7 << 19)
--#define CON_USERDATA_23RDBIT		(0x1 << 12)
--
--#define CON_SW_RESET			(0x1 << 5)
--
--#define CON_MCLKDIV_MASK		(0x3 << 3)
--#define CON_MCLKDIV_256FS		(0x0 << 3)
--#define CON_MCLKDIV_384FS		(0x1 << 3)
--#define CON_MCLKDIV_512FS		(0x2 << 3)
--
--#define CON_PCM_MASK			(0x3 << 1)
--#define CON_PCM_16BIT			(0x0 << 1)
--#define CON_PCM_20BIT			(0x1 << 1)
--#define CON_PCM_24BIT			(0x2 << 1)
--
--#define CON_PCM_DATA			(0x1 << 0)
--
--#define CSTAS_MASK			0x3fffffff
--#define CSTAS_SAMP_FREQ_MASK		(0xF << 24)
--#define CSTAS_SAMP_FREQ_44		(0x0 << 24)
--#define CSTAS_SAMP_FREQ_48		(0x2 << 24)
--#define CSTAS_SAMP_FREQ_32		(0x3 << 24)
--#define CSTAS_SAMP_FREQ_96		(0xA << 24)
--
--#define CSTAS_CATEGORY_MASK		(0xFF << 8)
--#define CSTAS_CATEGORY_CODE_CDP		(0x01 << 8)
--
--#define CSTAS_NO_COPYRIGHT		(0x1 << 2)
--
--/**
-- * struct samsung_spdif_info - Samsung S/PDIF Controller information
-- * @lock: Spin lock for S/PDIF.
-- * @dev: The parent device passed to use from the probe.
-- * @regs: The pointer to the device register block.
-- * @clk_rate: Current clock rate for calcurate ratio.
-- * @pclk: The peri-clock pointer for spdif master operation.
-- * @sclk: The source clock pointer for making sync signals.
-- * @save_clkcon: Backup clkcon reg. in suspend.
-- * @save_con: Backup con reg. in suspend.
-- * @save_cstas: Backup cstas reg. in suspend.
-- * @dma_playback: DMA information for playback channel.
-- */
--struct samsung_spdif_info {
--	spinlock_t	lock;
--	struct device	*dev;
--	void __iomem	*regs;
--	unsigned long	clk_rate;
--	struct clk	*pclk;
--	struct clk	*sclk;
--	u32		saved_clkcon;
--	u32		saved_con;
--	u32		saved_cstas;
--	struct s3c_dma_params	*dma_playback;
--};
--
--static struct s3c2410_dma_client spdif_dma_client_out = {
--	.name		= "S/PDIF Stereo out",
--};
--
--static struct s3c_dma_params spdif_stereo_out;
--static struct samsung_spdif_info spdif_info;
--
--static inline struct samsung_spdif_info *to_info(struct snd_soc_dai *cpu_dai)
--{
--	return snd_soc_dai_get_drvdata(cpu_dai);
--}
--
--static void spdif_snd_txctrl(struct samsung_spdif_info *spdif, int on)
--{
--	void __iomem *regs = spdif->regs;
--	u32 clkcon;
--
--	dev_dbg(spdif->dev, "Entered %s\n", __func__);
--
--	clkcon = readl(regs + CLKCON) & CLKCTL_MASK;
--	if (on)
--		writel(clkcon | CLKCTL_PWR_ON, regs + CLKCON);
--	else
--		writel(clkcon & ~CLKCTL_PWR_ON, regs + CLKCON);
--}
--
--static int spdif_set_sysclk(struct snd_soc_dai *cpu_dai,
--				int clk_id, unsigned int freq, int dir)
--{
--	struct samsung_spdif_info *spdif = to_info(cpu_dai);
--	u32 clkcon;
--
--	dev_dbg(spdif->dev, "Entered %s\n", __func__);
--
--	clkcon = readl(spdif->regs + CLKCON);
--
--	if (clk_id == SND_SOC_SPDIF_INT_MCLK)
--		clkcon &= ~CLKCTL_MCLK_EXT;
--	else
--		clkcon |= CLKCTL_MCLK_EXT;
--
--	writel(clkcon, spdif->regs + CLKCON);
--
--	spdif->clk_rate = freq;
--
--	return 0;
--}
--
--static int spdif_trigger(struct snd_pcm_substream *substream, int cmd,
--				struct snd_soc_dai *dai)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct samsung_spdif_info *spdif = to_info(rtd->cpu_dai);
--	unsigned long flags;
--
--	dev_dbg(spdif->dev, "Entered %s\n", __func__);
--
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
--	case SNDRV_PCM_TRIGGER_RESUME:
--	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		spin_lock_irqsave(&spdif->lock, flags);
--		spdif_snd_txctrl(spdif, 1);
--		spin_unlock_irqrestore(&spdif->lock, flags);
--		break;
--	case SNDRV_PCM_TRIGGER_STOP:
--	case SNDRV_PCM_TRIGGER_SUSPEND:
--	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		spin_lock_irqsave(&spdif->lock, flags);
--		spdif_snd_txctrl(spdif, 0);
--		spin_unlock_irqrestore(&spdif->lock, flags);
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	return 0;
--}
--
--static int spdif_sysclk_ratios[] = {
--	512, 384, 256,
--};
--
--static int spdif_hw_params(struct snd_pcm_substream *substream,
--				struct snd_pcm_hw_params *params,
--				struct snd_soc_dai *socdai)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct samsung_spdif_info *spdif = to_info(rtd->cpu_dai);
--	void __iomem *regs = spdif->regs;
--	struct s3c_dma_params *dma_data;
--	u32 con, clkcon, cstas;
--	unsigned long flags;
--	int i, ratio;
--
--	dev_dbg(spdif->dev, "Entered %s\n", __func__);
--
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		dma_data = spdif->dma_playback;
--	else {
--		dev_err(spdif->dev, "Capture is not supported\n");
--		return -EINVAL;
--	}
--
--	snd_soc_dai_set_dma_data(rtd->cpu_dai, substream, dma_data);
--
--	spin_lock_irqsave(&spdif->lock, flags);
--
--	con = readl(regs + CON) & CON_MASK;
--	cstas = readl(regs + CSTAS) & CSTAS_MASK;
--	clkcon = readl(regs + CLKCON) & CLKCTL_MASK;
--
--	con &= ~CON_FIFO_TH_MASK;
--	con |= (0x7 << CON_FIFO_TH_SHIFT);
--	con |= CON_USERDATA_23RDBIT;
--	con |= CON_PCM_DATA;
--
--	con &= ~CON_PCM_MASK;
--	switch (params_format(params)) {
--	case SNDRV_PCM_FORMAT_S16_LE:
--		con |= CON_PCM_16BIT;
--		break;
--	default:
--		dev_err(spdif->dev, "Unsupported data size.\n");
--		goto err;
--	}
--
--	ratio = spdif->clk_rate / params_rate(params);
--	for (i = 0; i < ARRAY_SIZE(spdif_sysclk_ratios); i++)
--		if (ratio == spdif_sysclk_ratios[i])
--			break;
--	if (i == ARRAY_SIZE(spdif_sysclk_ratios)) {
--		dev_err(spdif->dev, "Invalid clock ratio %ld/%d\n",
--				spdif->clk_rate, params_rate(params));
--		goto err;
--	}
--
--	con &= ~CON_MCLKDIV_MASK;
--	switch (ratio) {
--	case 256:
--		con |= CON_MCLKDIV_256FS;
--		break;
--	case 384:
--		con |= CON_MCLKDIV_384FS;
--		break;
--	case 512:
--		con |= CON_MCLKDIV_512FS;
--		break;
--	}
--
--	cstas &= ~CSTAS_SAMP_FREQ_MASK;
--	switch (params_rate(params)) {
--	case 44100:
--		cstas |= CSTAS_SAMP_FREQ_44;
--		break;
--	case 48000:
--		cstas |= CSTAS_SAMP_FREQ_48;
--		break;
--	case 32000:
--		cstas |= CSTAS_SAMP_FREQ_32;
--		break;
--	case 96000:
--		cstas |= CSTAS_SAMP_FREQ_96;
--		break;
--	default:
--		dev_err(spdif->dev, "Invalid sampling rate %d\n",
--				params_rate(params));
--		goto err;
--	}
--
--	cstas &= ~CSTAS_CATEGORY_MASK;
--	cstas |= CSTAS_CATEGORY_CODE_CDP;
--	cstas |= CSTAS_NO_COPYRIGHT;
--
--	writel(con, regs + CON);
--	writel(cstas, regs + CSTAS);
--	writel(clkcon, regs + CLKCON);
--
--	spin_unlock_irqrestore(&spdif->lock, flags);
--
--	return 0;
--err:
--	spin_unlock_irqrestore(&spdif->lock, flags);
--	return -EINVAL;
--}
--
--static void spdif_shutdown(struct snd_pcm_substream *substream,
--				struct snd_soc_dai *dai)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct samsung_spdif_info *spdif = to_info(rtd->cpu_dai);
--	void __iomem *regs = spdif->regs;
--	u32 con, clkcon;
--
--	dev_dbg(spdif->dev, "Entered %s\n", __func__);
--
--	con = readl(regs + CON) & CON_MASK;
--	clkcon = readl(regs + CLKCON) & CLKCTL_MASK;
--
--	writel(con | CON_SW_RESET, regs + CON);
--	cpu_relax();
--
--	writel(clkcon & ~CLKCTL_PWR_ON, regs + CLKCON);
--}
--
--#ifdef CONFIG_PM
--static int spdif_suspend(struct snd_soc_dai *cpu_dai)
--{
--	struct samsung_spdif_info *spdif = to_info(cpu_dai);
--	u32 con = spdif->saved_con;
--
--	dev_dbg(spdif->dev, "Entered %s\n", __func__);
--
--	spdif->saved_clkcon = readl(spdif->regs	+ CLKCON) & CLKCTL_MASK;
--	spdif->saved_con = readl(spdif->regs + CON) & CON_MASK;
--	spdif->saved_cstas = readl(spdif->regs + CSTAS) & CSTAS_MASK;
--
--	writel(con | CON_SW_RESET, spdif->regs + CON);
--	cpu_relax();
--
--	return 0;
--}
--
--static int spdif_resume(struct snd_soc_dai *cpu_dai)
--{
--	struct samsung_spdif_info *spdif = to_info(cpu_dai);
--
--	dev_dbg(spdif->dev, "Entered %s\n", __func__);
--
--	writel(spdif->saved_clkcon, spdif->regs	+ CLKCON);
--	writel(spdif->saved_con, spdif->regs + CON);
--	writel(spdif->saved_cstas, spdif->regs + CSTAS);
--
--	return 0;
--}
--#else
--#define spdif_suspend NULL
--#define spdif_resume NULL
--#endif
--
--static struct snd_soc_dai_ops spdif_dai_ops = {
--	.set_sysclk	= spdif_set_sysclk,
--	.trigger	= spdif_trigger,
--	.hw_params	= spdif_hw_params,
--	.shutdown	= spdif_shutdown,
--};
--
--struct snd_soc_dai_driver samsung_spdif_dai = {
--	.name = "samsung-spdif",
--	.playback = {
--		.stream_name = "S/PDIF Playback",
--		.channels_min = 2,
--		.channels_max = 2,
--		.rates = (SNDRV_PCM_RATE_32000 |
--				SNDRV_PCM_RATE_44100 |
--				SNDRV_PCM_RATE_48000 |
--				SNDRV_PCM_RATE_96000),
--		.formats = SNDRV_PCM_FMTBIT_S16_LE, },
--	.ops = &spdif_dai_ops,
--	.suspend = spdif_suspend,
--	.resume = spdif_resume,
--};
--
--static __devinit int spdif_probe(struct platform_device *pdev)
--{
--	struct s3c_audio_pdata *spdif_pdata;
--	struct resource *mem_res, *dma_res;
--	struct samsung_spdif_info *spdif;
--	int ret;
--
--	spdif_pdata = pdev->dev.platform_data;
--
--	dev_dbg(&pdev->dev, "Entered %s\n", __func__);
--
--	dma_res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
--	if (!dma_res) {
--		dev_err(&pdev->dev, "Unable to get dma resource.\n");
--		return -ENXIO;
--	}
--
--	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!mem_res) {
--		dev_err(&pdev->dev, "Unable to get register resource.\n");
--		return -ENXIO;
--	}
--
--	if (spdif_pdata && spdif_pdata->cfg_gpio
--			&& spdif_pdata->cfg_gpio(pdev)) {
--		dev_err(&pdev->dev, "Unable to configure GPIO pins\n");
--		return -EINVAL;
--	}
--
--	spdif = &spdif_info;
--	spdif->dev = &pdev->dev;
--
--	spin_lock_init(&spdif->lock);
--
--	spdif->pclk = clk_get(&pdev->dev, "spdif");
--	if (IS_ERR(spdif->pclk)) {
--		dev_err(&pdev->dev, "failed to get peri-clock\n");
--		ret = -ENOENT;
--		goto err0;
--	}
--	clk_enable(spdif->pclk);
--
--	spdif->sclk = clk_get(&pdev->dev, "sclk_spdif");
--	if (IS_ERR(spdif->sclk)) {
--		dev_err(&pdev->dev, "failed to get internal source clock\n");
--		ret = -ENOENT;
--		goto err1;
--	}
--	clk_enable(spdif->sclk);
--
--	/* Request S/PDIF Register's memory region */
--	if (!request_mem_region(mem_res->start,
--				resource_size(mem_res), "samsung-spdif")) {
--		dev_err(&pdev->dev, "Unable to request register region\n");
--		ret = -EBUSY;
--		goto err2;
--	}
--
--	spdif->regs = ioremap(mem_res->start, 0x100);
--	if (spdif->regs == NULL) {
--		dev_err(&pdev->dev, "Cannot ioremap registers\n");
--		ret = -ENXIO;
--		goto err3;
--	}
--
--	dev_set_drvdata(&pdev->dev, spdif);
--
--	ret = snd_soc_register_dai(&pdev->dev, &samsung_spdif_dai);
--	if (ret != 0) {
--		dev_err(&pdev->dev, "fail to register dai\n");
--		goto err4;
--	}
--
--	spdif_stereo_out.dma_size = 2;
--	spdif_stereo_out.client = &spdif_dma_client_out;
--	spdif_stereo_out.dma_addr = mem_res->start + DATA_OUTBUF;
--	spdif_stereo_out.channel = dma_res->start;
--
--	spdif->dma_playback = &spdif_stereo_out;
--
--	return 0;
--
--err4:
--	iounmap(spdif->regs);
--err3:
--	release_mem_region(mem_res->start, resource_size(mem_res));
--err2:
--	clk_disable(spdif->sclk);
--	clk_put(spdif->sclk);
--err1:
--	clk_disable(spdif->pclk);
--	clk_put(spdif->pclk);
--err0:
--	return ret;
--}
--
--static __devexit int spdif_remove(struct platform_device *pdev)
--{
--	struct samsung_spdif_info *spdif = &spdif_info;
--	struct resource *mem_res;
--
--	snd_soc_unregister_dai(&pdev->dev);
--
--	iounmap(spdif->regs);
--
--	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (mem_res)
--		release_mem_region(mem_res->start, resource_size(mem_res));
--
--	clk_disable(spdif->sclk);
--	clk_put(spdif->sclk);
--	clk_disable(spdif->pclk);
--	clk_put(spdif->pclk);
--
--	return 0;
--}
--
--static struct platform_driver samsung_spdif_driver = {
--	.probe	= spdif_probe,
--	.remove	= spdif_remove,
--	.driver	= {
--		.name	= "samsung-spdif",
--		.owner	= THIS_MODULE,
--	},
--};
--
--static int __init spdif_init(void)
--{
--	return platform_driver_register(&samsung_spdif_driver);
--}
--module_init(spdif_init);
--
--static void __exit spdif_exit(void)
--{
--	platform_driver_unregister(&samsung_spdif_driver);
--}
--module_exit(spdif_exit);
--
--MODULE_AUTHOR("Seungwhan Youn, <sw.youn@samsung.com>");
--MODULE_DESCRIPTION("Samsung S/PDIF Controller Driver");
--MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:samsung-spdif");
-diff --git a/sound/soc/s3c24xx/spdif.h b/sound/soc/s3c24xx/spdif.h
-deleted file mode 100644
-index 3ed5559..0000000
---- a/sound/soc/s3c24xx/spdif.h
-+++ /dev/null
-@@ -1,19 +0,0 @@
--/* sound/soc/s3c24xx/spdif.h
-- *
-- * ALSA SoC Audio Layer - Samsung S/PDIF Controller driver
-- *
-- * Copyright (c) 2010 Samsung Electronics Co. Ltd
-- *		http://www.samsung.com/
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--#ifndef __SND_SOC_SAMSUNG_SPDIF_H
--#define __SND_SOC_SAMSUNG_SPDIF_H	__FILE__
--
--#define SND_SOC_SPDIF_INT_MCLK		0
--#define SND_SOC_SPDIF_EXT_MCLK		1
--
--#endif	/* __SND_SOC_SAMSUNG_SPDIF_H */
-diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+diff --git a/include/linux/intel_mid_i2s_if.h b/include/linux/intel_mid_i2s=
+_if.h
 new file mode 100644
-index 0000000..140095e
+index 0000000..1563577
 --- /dev/null
-+++ b/sound/soc/samsung/Kconfig
-@@ -0,0 +1,154 @@
-+config ASOC_SAMSUNG
-+	tristate "ASoC support for Samsung"
-+	depends on ARCH_S3C2410 || ARCH_S3C64XX || ARCH_S5PC100 || ARCH_S5PV210
-+	select S3C64XX_DMA if ARCH_S3C64XX
-+	help
-+	  Say Y or M if you want to add support for codecs attached to
-+	  the Samsung SoCs' Audio interfaces. You will also need to
-+	  select the audio interfaces to support below.
-+
-+config SND_S3C24XX_I2S
-+	tristate
-+	select S3C2410_DMA
-+
-+config SND_S3C_I2SV2_SOC
-+	tristate
-+
-+config SND_S3C2412_SOC_I2S
-+	tristate
-+	select SND_S3C_I2SV2_SOC
-+	select S3C2410_DMA
-+
-+config SND_SAMSUNG_PCM
-+	tristate
-+
-+config SND_SAMSUNG_AC97
-+	tristate
-+	select SND_SOC_AC97_BUS
-+
-+config SND_SAMSUNG_SPDIF
-+	tristate
-+	select SND_SOC_SPDIF
-+
-+config SND_SAMSUNG_I2S
-+	tristate
-+
-+config ASOC_SAMSUNG_NEO1973_WM8753
-+	tristate "SoC I2S Audio support for NEO1973 - WM8753"
-+	depends on ASOC_SAMSUNG && MACH_NEO1973_GTA01
-+	select SND_S3C24XX_I2S
-+	select SND_SOC_WM8753
-+	help
-+	  Say Y if you want to add support for SoC audio on smdk2440
-+	  with the WM8753.
-+
-+config ASOC_SAMSUNG_NEO1973_GTA02_WM8753
-+	tristate "Audio support for the Openmoko Neo FreeRunner (GTA02)"
-+	depends on ASOC_SAMSUNG && MACH_NEO1973_GTA02
-+	select SND_S3C24XX_I2S
-+	select SND_SOC_WM8753
-+	help
-+	  This driver provides audio support for the Openmoko Neo FreeRunner
-+	  smartphone.
-+	  
-+config ASOC_SAMSUNG_JIVE_WM8750
-+	tristate "SoC I2S Audio support for Jive"
-+	depends on ASOC_SAMSUNG && MACH_JIVE
-+	select SND_SOC_WM8750
-+	select SND_S3C2412_SOC_I2S
-+	help
-+	  Sat Y if you want to add support for SoC audio on the Jive.
-+
-+config ASOC_SAMSUNG_SMDK_WM8580
-+	tristate "SoC I2S Audio support for WM8580 on SMDK"
-+	depends on ASOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100)
-+	select SND_SOC_WM8580
-+	select SND_SAMSUNG_I2S
-+	help
-+	  Say Y if you want to add support for SoC audio on the SMDKs.
-+
-+config ASOC_SAMSUNG_SMDK2443_WM9710
-+	tristate "SoC AC97 Audio support for SMDK2443 - WM9710"
-+	depends on ASOC_SAMSUNG && MACH_SMDK2443
-+	select S3C2410_DMA
-+	select AC97_BUS
-+	select SND_SOC_AC97_CODEC
-+	select SND_SAMSUNG_AC97
-+	help
-+	  Say Y if you want to add support for SoC audio on smdk2443
-+	  with the WM9710.
-+
-+config ASOC_SAMSUNG_LN2440SBC_ALC650
-+	tristate "SoC AC97 Audio support for LN2440SBC - ALC650"
-+	depends on ASOC_SAMSUNG && ARCH_S3C2410
-+	select S3C2410_DMA
-+	select AC97_BUS
-+	select SND_SOC_AC97_CODEC
-+	select SND_SAMSUNG_AC97
-+	help
-+	  Say Y if you want to add support for SoC audio on ln2440sbc
-+	  with the ALC650.
-+
-+config ASOC_SAMSUNG_S3C24XX_UDA134X
-+	tristate "SoC I2S Audio support UDA134X wired to a S3C24XX"
-+	depends on ASOC_SAMSUNG && ARCH_S3C2410
-+	select SND_S3C24XX_I2S
-+	select SND_SOC_L3
-+	select SND_SOC_UDA134X
-+
-+config ASOC_SAMSUNG_SIMTEC
-+	tristate
-+	help
-+	  Internal node for common S3C24XX/Simtec suppor
-+
-+config ASOC_SAMSUNG_SIMTEC_TLV320AIC23
-+	tristate "SoC I2S Audio support for TLV320AIC23 on Simtec boards"
-+	depends on ASOC_SAMSUNG && ARCH_S3C2410
-+	select SND_S3C24XX_I2S
-+	select SND_SOC_TLV320AIC23
-+	select ASOC_SAMSUNG_SIMTEC
-+
-+config ASOC_SAMSUNG_SIMTEC_HERMES
-+	tristate "SoC I2S Audio support for Simtec Hermes board"
-+	depends on ASOC_SAMSUNG && ARCH_S3C2410
-+	select SND_S3C24XX_I2S
-+	select SND_SOC_TLV320AIC3X
-+	select ASOC_SAMSUNG_SIMTEC
-+
-+config ASOC_SAMSUNG_RX1950_UDA1380
-+	tristate "Audio support for the HP iPAQ RX1950"
-+	depends on ASOC_SAMSUNG && MACH_RX1950
-+	select SND_S3C24XX_I2S
-+	select SND_SOC_UDA1380
-+	help
-+	  This driver provides audio support for HP iPAQ RX1950 PDA.
-+
-+config ASOC_SAMSUNG_SMDK_WM9713
-+	tristate "SoC AC97 Audio support for SMDK with WM9713"
-+	depends on ASOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDKV210 || MACH_SMDKC110)
-+	select SND_SOC_WM9713
-+	select SND_SAMSUNG_AC97
-+	help
-+	  Sat Y if you want to add support for SoC audio on the SMDK.
-+
-+config ASOC_SMARTQ
-+	tristate "SoC I2S Audio support for SmartQ board"
-+	depends on ASOC_SAMSUNG && MACH_SMARTQ
-+	select SND_SAMSUNG_I2S
-+	select SND_SOC_WM8750
-+
-+config ASOC_GONI_AQUILA_WM8994
-+	tristate "SoC I2S Audio support for AQUILA/GONI - WM8994"
-+	depends on ASOC_SAMSUNG && (MACH_GONI || MACH_AQUILA)
-+	select SND_SAMSUNG_I2S
-+	select SND_SOC_WM8994
-+	help
-+	  Say Y if you want to add support for SoC audio on goni or aquila
-+	  with the WM8994.
-+
-+config ASOC_SAMSUNG_SMDK_SPDIF
-+	tristate "SoC S/PDIF Audio support for SMDK"
-+	depends on SND_S3C24XX_SOC && (MACH_SMDKC100 || MACH_SMDKC110 || MACH_SMDKV210)
-+	select SND_SAMSUNG_SPDIF
-+	help
-+	  Say Y if you want to add support for SoC S/PDIF audio on the SMDK.
-diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
-new file mode 100644
-index 0000000..0d24f95
---- /dev/null
-+++ b/sound/soc/samsung/Makefile
-@@ -0,0 +1,51 @@
-+# S3c24XX Platform Support
-+snd-soc-s3c24xx-objs := dma.o
-+snd-soc-s3c24xx-i2s-objs := s3c24xx-i2s.o
-+snd-soc-s3c2412-i2s-objs := s3c2412-i2s.o
-+snd-soc-ac97-objs := ac97.o
-+snd-soc-s3c-i2s-v2-objs := s3c-i2s-v2.o
-+snd-soc-samsung-spdif-objs := spdif.o
-+snd-soc-pcm-objs := pcm.o
-+snd-soc-i2s-objs := i2s.o
-+
-+obj-$(CONFIG_ASOC_SAMSUNG) += snd-soc-s3c24xx.o
-+obj-$(CONFIG_SND_S3C24XX_I2S) += snd-soc-s3c24xx-i2s.o
-+obj-$(CONFIG_SND_SAMSUNG_AC97) += snd-soc-ac97.o
-+obj-$(CONFIG_SND_S3C2412_SOC_I2S) += snd-soc-s3c2412-i2s.o
-+obj-$(CONFIG_SND_S3C_I2SV2_SOC) += snd-soc-s3c-i2s-v2.o
-+obj-$(CONFIG_SND_SAMSUNG_SPDIF) += snd-soc-samsung-spdif.o
-+obj-$(CONFIG_SND_SAMSUNG_PCM) += snd-soc-pcm.o
-+obj-$(CONFIG_SND_SAMSUNG_I2S) += snd-soc-i2s.o
-+
-+# S3C24XX Machine Support
-+snd-soc-jive-wm8750-objs := jive_wm8750.o
-+snd-soc-neo1973-wm8753-objs := neo1973_wm8753.o
-+snd-soc-neo1973-gta02-wm8753-objs := neo1973_gta02_wm8753.o
-+snd-soc-smdk2443-wm9710-objs := smdk2443_wm9710.o
-+snd-soc-ln2440sbc-alc650-objs := ln2440sbc_alc650.o
-+snd-soc-s3c24xx-uda134x-objs := s3c24xx_uda134x.o
-+snd-soc-s3c24xx-simtec-objs := s3c24xx_simtec.o
-+snd-soc-s3c24xx-simtec-hermes-objs := s3c24xx_simtec_hermes.o
-+snd-soc-s3c24xx-simtec-tlv320aic23-objs := s3c24xx_simtec_tlv320aic23.o
-+snd-soc-rx1950-uda1380-objs := rx1950_uda1380.o
-+snd-soc-smdk-wm8580-objs := smdk_wm8580.o
-+snd-soc-smdk-wm9713-objs := smdk_wm9713.o
-+snd-soc-s3c64xx-smartq-wm8987-objs := smartq_wm8987.o
-+snd-soc-goni-wm8994-objs := goni_wm8994.o
-+snd-soc-smdk-spdif-objs := smdk_spdif.o
-+
-+obj-$(CONFIG_ASOC_SAMSUNG_JIVE_WM8750) += snd-soc-jive-wm8750.o
-+obj-$(CONFIG_ASOC_SAMSUNG_NEO1973_WM8753) += snd-soc-neo1973-wm8753.o
-+obj-$(CONFIG_ASOC_SAMSUNG_NEO1973_GTA02_WM8753) += snd-soc-neo1973-gta02-wm8753.o
-+obj-$(CONFIG_ASOC_SAMSUNG_SMDK2443_WM9710) += snd-soc-smdk2443-wm9710.o
-+obj-$(CONFIG_ASOC_SAMSUNG_LN2440SBC_ALC650) += snd-soc-ln2440sbc-alc650.o
-+obj-$(CONFIG_ASOC_SAMSUNG_S3C24XX_UDA134X) += snd-soc-s3c24xx-uda134x.o
-+obj-$(CONFIG_ASOC_SAMSUNG_SIMTEC) += snd-soc-s3c24xx-simtec.o
-+obj-$(CONFIG_ASOC_SAMSUNG_SIMTEC_HERMES) += snd-soc-s3c24xx-simtec-hermes.o
-+obj-$(CONFIG_ASOC_SAMSUNG_SIMTEC_TLV320AIC23) += snd-soc-s3c24xx-simtec-tlv320aic23.o
-+obj-$(CONFIG_ASOC_SAMSUNG_RX1950_UDA1380) += snd-soc-rx1950-uda1380.o
-+obj-$(CONFIG_ASOC_SAMSUNG_SMDK_WM8580) += snd-soc-smdk-wm8580.o
-+obj-$(CONFIG_ASOC_SAMSUNG_SMDK_WM9713) += snd-soc-smdk-wm9713.o
-+obj-$(CONFIG_ASOC_SMARTQ) += snd-soc-s3c64xx-smartq-wm8987.o
-+obj-$(CONFIG_ASOC_SAMSUNG_SMDK_SPDIF) += snd-soc-smdk-spdif.o
-+obj-$(CONFIG_ASOC_GONI_AQUILA_WM8994) += snd-soc-goni-wm8994.o
-diff --git a/sound/soc/samsung/ac97.c b/sound/soc/samsung/ac97.c
-new file mode 100644
-index 0000000..4770a95
---- /dev/null
-+++ b/sound/soc/samsung/ac97.c
-@@ -0,0 +1,520 @@
-+/* sound/soc/samsung/ac97.c
-+ *
-+ * ALSA SoC Audio Layer - S3C AC97 Controller driver
-+ * 	Evolved from s3c2443-ac97.c
-+ *
-+ * Copyright (c) 2010 Samsung Electronics Co. Ltd
-+ * 	Author: Jaswinder Singh <jassi.brar@samsung.com>
-+ * 	Credits: Graeme Gregory, Sean Choi
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/io.h>
-+#include <linux/delay.h>
-+#include <linux/clk.h>
-+
-+#include <sound/soc.h>
-+
-+#include <plat/regs-ac97.h>
-+#include <mach/dma.h>
-+#include <plat/audio.h>
-+
-+#include "dma.h"
-+#include "ac97.h"
-+
-+#define AC_CMD_ADDR(x) (x << 16)
-+#define AC_CMD_DATA(x) (x & 0xffff)
-+
-+struct s3c_ac97_info {
-+	struct clk         *ac97_clk;
-+	void __iomem	   *regs;
-+	struct mutex       lock;
-+	struct completion  done;
-+};
-+static struct s3c_ac97_info s3c_ac97;
-+
-+static struct s3c2410_dma_client s3c_dma_client_out = {
-+	.name = "AC97 PCMOut"
-+};
-+
-+static struct s3c2410_dma_client s3c_dma_client_in = {
-+	.name = "AC97 PCMIn"
-+};
-+
-+static struct s3c2410_dma_client s3c_dma_client_micin = {
-+	.name = "AC97 MicIn"
-+};
-+
-+static struct s3c_dma_params s3c_ac97_pcm_out = {
-+	.client		= &s3c_dma_client_out,
-+	.dma_size	= 4,
-+};
-+
-+static struct s3c_dma_params s3c_ac97_pcm_in = {
-+	.client		= &s3c_dma_client_in,
-+	.dma_size	= 4,
-+};
-+
-+static struct s3c_dma_params s3c_ac97_mic_in = {
-+	.client		= &s3c_dma_client_micin,
-+	.dma_size	= 4,
-+};
-+
-+static void s3c_ac97_activate(struct snd_ac97 *ac97)
-+{
-+	u32 ac_glbctrl, stat;
-+
-+	stat = readl(s3c_ac97.regs + S3C_AC97_GLBSTAT) & 0x7;
-+	if (stat == S3C_AC97_GLBSTAT_MAINSTATE_ACTIVE)
-+		return; /* Return if already active */
-+
-+	INIT_COMPLETION(s3c_ac97.done);
-+
-+	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+	ac_glbctrl = S3C_AC97_GLBCTRL_ACLINKON;
-+	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+	msleep(1);
-+
-+	ac_glbctrl |= S3C_AC97_GLBCTRL_TRANSFERDATAENABLE;
-+	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+	msleep(1);
-+
-+	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+	ac_glbctrl |= S3C_AC97_GLBCTRL_CODECREADYIE;
-+	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+
-+	if (!wait_for_completion_timeout(&s3c_ac97.done, HZ))
-+		pr_err("AC97: Unable to activate!");
-+}
-+
-+static unsigned short s3c_ac97_read(struct snd_ac97 *ac97,
-+	unsigned short reg)
-+{
-+	u32 ac_glbctrl, ac_codec_cmd;
-+	u32 stat, addr, data;
-+
-+	mutex_lock(&s3c_ac97.lock);
-+
-+	s3c_ac97_activate(ac97);
-+
-+	INIT_COMPLETION(s3c_ac97.done);
-+
-+	ac_codec_cmd = readl(s3c_ac97.regs + S3C_AC97_CODEC_CMD);
-+	ac_codec_cmd = S3C_AC97_CODEC_CMD_READ | AC_CMD_ADDR(reg);
-+	writel(ac_codec_cmd, s3c_ac97.regs + S3C_AC97_CODEC_CMD);
-+
-+	udelay(50);
-+
-+	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+	ac_glbctrl |= S3C_AC97_GLBCTRL_CODECREADYIE;
-+	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+
-+	if (!wait_for_completion_timeout(&s3c_ac97.done, HZ))
-+		pr_err("AC97: Unable to read!");
-+
-+	stat = readl(s3c_ac97.regs + S3C_AC97_STAT);
-+	addr = (stat >> 16) & 0x7f;
-+	data = (stat & 0xffff);
-+
-+	if (addr != reg)
-+		pr_err("ac97: req addr = %02x, rep addr = %02x\n",
-+			reg, addr);
-+
-+	mutex_unlock(&s3c_ac97.lock);
-+
-+	return (unsigned short)data;
-+}
-+
-+static void s3c_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
-+	unsigned short val)
-+{
-+	u32 ac_glbctrl, ac_codec_cmd;
-+
-+	mutex_lock(&s3c_ac97.lock);
-+
-+	s3c_ac97_activate(ac97);
-+
-+	INIT_COMPLETION(s3c_ac97.done);
-+
-+	ac_codec_cmd = readl(s3c_ac97.regs + S3C_AC97_CODEC_CMD);
-+	ac_codec_cmd = AC_CMD_ADDR(reg) | AC_CMD_DATA(val);
-+	writel(ac_codec_cmd, s3c_ac97.regs + S3C_AC97_CODEC_CMD);
-+
-+	udelay(50);
-+
-+	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+	ac_glbctrl |= S3C_AC97_GLBCTRL_CODECREADYIE;
-+	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+
-+	if (!wait_for_completion_timeout(&s3c_ac97.done, HZ))
-+		pr_err("AC97: Unable to write!");
-+
-+	ac_codec_cmd = readl(s3c_ac97.regs + S3C_AC97_CODEC_CMD);
-+	ac_codec_cmd |= S3C_AC97_CODEC_CMD_READ;
-+	writel(ac_codec_cmd, s3c_ac97.regs + S3C_AC97_CODEC_CMD);
-+
-+	mutex_unlock(&s3c_ac97.lock);
-+}
-+
-+static void s3c_ac97_cold_reset(struct snd_ac97 *ac97)
-+{
-+	pr_debug("AC97: Cold reset\n");
-+	writel(S3C_AC97_GLBCTRL_COLDRESET,
-+			s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+	msleep(1);
-+
-+	writel(0, s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+	msleep(1);
-+}
-+
-+static void s3c_ac97_warm_reset(struct snd_ac97 *ac97)
-+{
-+	u32 stat;
-+
-+	stat = readl(s3c_ac97.regs + S3C_AC97_GLBSTAT) & 0x7;
-+	if (stat == S3C_AC97_GLBSTAT_MAINSTATE_ACTIVE)
-+		return; /* Return if already active */
-+
-+	pr_debug("AC97: Warm reset\n");
-+
-+	writel(S3C_AC97_GLBCTRL_WARMRESET, s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+	msleep(1);
-+
-+	writel(0, s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+	msleep(1);
-+
-+	s3c_ac97_activate(ac97);
-+}
-+
-+static irqreturn_t s3c_ac97_irq(int irq, void *dev_id)
-+{
-+	u32 ac_glbctrl, ac_glbstat;
-+
-+	ac_glbstat = readl(s3c_ac97.regs + S3C_AC97_GLBSTAT);
-+
-+	if (ac_glbstat & S3C_AC97_GLBSTAT_CODECREADY) {
-+
-+		ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+		ac_glbctrl &= ~S3C_AC97_GLBCTRL_CODECREADYIE;
-+		writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+
-+		complete(&s3c_ac97.done);
-+	}
-+
-+	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+	ac_glbctrl |= (1<<30); /* Clear interrupt */
-+	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+struct snd_ac97_bus_ops soc_ac97_ops = {
-+	.read       = s3c_ac97_read,
-+	.write      = s3c_ac97_write,
-+	.warm_reset = s3c_ac97_warm_reset,
-+	.reset      = s3c_ac97_cold_reset,
-+};
-+EXPORT_SYMBOL_GPL(soc_ac97_ops);
-+
-+static int s3c_ac97_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params,
-+				  struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct s3c_dma_params *dma_data;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		dma_data = &s3c_ac97_pcm_out;
-+	else
-+		dma_data = &s3c_ac97_pcm_in;
-+
-+	snd_soc_dai_set_dma_data(cpu_dai, substream, dma_data);
-+
-+	return 0;
-+}
-+
-+static int s3c_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
-+				struct snd_soc_dai *dai)
-+{
-+	u32 ac_glbctrl;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct s3c_dma_params *dma_data =
-+		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+
-+	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		ac_glbctrl &= ~S3C_AC97_GLBCTRL_PCMINTM_MASK;
-+	else
-+		ac_glbctrl &= ~S3C_AC97_GLBCTRL_PCMOUTTM_MASK;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+			ac_glbctrl |= S3C_AC97_GLBCTRL_PCMINTM_DMA;
-+		else
-+			ac_glbctrl |= S3C_AC97_GLBCTRL_PCMOUTTM_DMA;
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		break;
-+	}
-+
-+	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+
-+	s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
-+
-+	return 0;
-+}
-+
-+static int s3c_ac97_hw_mic_params(struct snd_pcm_substream *substream,
-+				      struct snd_pcm_hw_params *params,
-+				      struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		return -ENODEV;
-+	else
-+		snd_soc_dai_set_dma_data(cpu_dai, substream, &s3c_ac97_mic_in);
-+
-+	return 0;
-+}
-+
-+static int s3c_ac97_mic_trigger(struct snd_pcm_substream *substream,
-+				    int cmd, struct snd_soc_dai *dai)
-+{
-+	u32 ac_glbctrl;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct s3c_dma_params *dma_data =
-+		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+
-+	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+	ac_glbctrl &= ~S3C_AC97_GLBCTRL_MICINTM_MASK;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		ac_glbctrl |= S3C_AC97_GLBCTRL_MICINTM_DMA;
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		break;
-+	}
-+
-+	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
-+
-+	s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_ops s3c_ac97_dai_ops = {
-+	.hw_params	= s3c_ac97_hw_params,
-+	.trigger	= s3c_ac97_trigger,
-+};
-+
-+static struct snd_soc_dai_ops s3c_ac97_mic_dai_ops = {
-+	.hw_params	= s3c_ac97_hw_mic_params,
-+	.trigger	= s3c_ac97_mic_trigger,
-+};
-+
-+static struct snd_soc_dai_driver s3c_ac97_dai[] = {
-+	[S3C_AC97_DAI_PCM] = {
-+		.name =	"samsung-ac97",
-+		.ac97_control = 1,
-+		.playback = {
-+			.stream_name = "AC97 Playback",
-+			.channels_min = 2,
-+			.channels_max = 2,
-+			.rates = SNDRV_PCM_RATE_8000_48000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+		.capture = {
-+			.stream_name = "AC97 Capture",
-+			.channels_min = 2,
-+			.channels_max = 2,
-+			.rates = SNDRV_PCM_RATE_8000_48000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+		.ops = &s3c_ac97_dai_ops,
-+	},
-+	[S3C_AC97_DAI_MIC] = {
-+		.name = "samsung-ac97-mic",
-+		.ac97_control = 1,
-+		.capture = {
-+			.stream_name = "AC97 Mic Capture",
-+			.channels_min = 1,
-+			.channels_max = 1,
-+			.rates = SNDRV_PCM_RATE_8000_48000,
-+			.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+		.ops = &s3c_ac97_mic_dai_ops,
-+	},
-+};
-+
-+static __devinit int s3c_ac97_probe(struct platform_device *pdev)
-+{
-+	struct resource *mem_res, *dmatx_res, *dmarx_res, *dmamic_res, *irq_res;
-+	struct s3c_audio_pdata *ac97_pdata;
-+	int ret;
-+
-+	ac97_pdata = pdev->dev.platform_data;
-+	if (!ac97_pdata || !ac97_pdata->cfg_gpio) {
-+		dev_err(&pdev->dev, "cfg_gpio callback not provided!\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Check for availability of necessary resource */
-+	dmatx_res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-+	if (!dmatx_res) {
-+		dev_err(&pdev->dev, "Unable to get AC97-TX dma resource\n");
-+		return -ENXIO;
-+	}
-+
-+	dmarx_res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
-+	if (!dmarx_res) {
-+		dev_err(&pdev->dev, "Unable to get AC97-RX dma resource\n");
-+		return -ENXIO;
-+	}
-+
-+	dmamic_res = platform_get_resource(pdev, IORESOURCE_DMA, 2);
-+	if (!dmamic_res) {
-+		dev_err(&pdev->dev, "Unable to get AC97-MIC dma resource\n");
-+		return -ENXIO;
-+	}
-+
-+	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!mem_res) {
-+		dev_err(&pdev->dev, "Unable to get register resource\n");
-+		return -ENXIO;
-+	}
-+
-+	irq_res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-+	if (!irq_res) {
-+		dev_err(&pdev->dev, "AC97 IRQ not provided!\n");
-+		return -ENXIO;
-+	}
-+
-+	if (!request_mem_region(mem_res->start,
-+				resource_size(mem_res), "ac97")) {
-+		dev_err(&pdev->dev, "Unable to request register region\n");
-+		return -EBUSY;
-+	}
-+
-+	s3c_ac97_pcm_out.channel = dmatx_res->start;
-+	s3c_ac97_pcm_out.dma_addr = mem_res->start + S3C_AC97_PCM_DATA;
-+	s3c_ac97_pcm_in.channel = dmarx_res->start;
-+	s3c_ac97_pcm_in.dma_addr = mem_res->start + S3C_AC97_PCM_DATA;
-+	s3c_ac97_mic_in.channel = dmamic_res->start;
-+	s3c_ac97_mic_in.dma_addr = mem_res->start + S3C_AC97_MIC_DATA;
-+
-+	init_completion(&s3c_ac97.done);
-+	mutex_init(&s3c_ac97.lock);
-+
-+	s3c_ac97.regs = ioremap(mem_res->start, resource_size(mem_res));
-+	if (s3c_ac97.regs == NULL) {
-+		dev_err(&pdev->dev, "Unable to ioremap register region\n");
-+		ret = -ENXIO;
-+		goto err1;
-+	}
-+
-+	s3c_ac97.ac97_clk = clk_get(&pdev->dev, "ac97");
-+	if (IS_ERR(s3c_ac97.ac97_clk)) {
-+		dev_err(&pdev->dev, "ac97 failed to get ac97_clock\n");
-+		ret = -ENODEV;
-+		goto err2;
-+	}
-+	clk_enable(s3c_ac97.ac97_clk);
-+
-+	if (ac97_pdata->cfg_gpio(pdev)) {
-+		dev_err(&pdev->dev, "Unable to configure gpio\n");
-+		ret = -EINVAL;
-+		goto err3;
-+	}
-+
-+	ret = request_irq(irq_res->start, s3c_ac97_irq,
-+					IRQF_DISABLED, "AC97", NULL);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "ac97: interrupt request failed.\n");
-+		goto err4;
-+	}
-+
-+	ret = snd_soc_register_dais(&pdev->dev, s3c_ac97_dai,
-+			ARRAY_SIZE(s3c_ac97_dai));
-+	if (ret)
-+		goto err5;
-+
-+	return 0;
-+
-+err5:
-+	free_irq(irq_res->start, NULL);
-+err4:
-+err3:
-+	clk_disable(s3c_ac97.ac97_clk);
-+	clk_put(s3c_ac97.ac97_clk);
-+err2:
-+	iounmap(s3c_ac97.regs);
-+err1:
-+	release_mem_region(mem_res->start, resource_size(mem_res));
-+
-+	return ret;
-+}
-+
-+static __devexit int s3c_ac97_remove(struct platform_device *pdev)
-+{
-+	struct resource *mem_res, *irq_res;
-+
-+	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(s3c_ac97_dai));
-+
-+	irq_res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-+	if (irq_res)
-+		free_irq(irq_res->start, NULL);
-+
-+	clk_disable(s3c_ac97.ac97_clk);
-+	clk_put(s3c_ac97.ac97_clk);
-+
-+	iounmap(s3c_ac97.regs);
-+
-+	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (mem_res)
-+		release_mem_region(mem_res->start, resource_size(mem_res));
-+
-+	return 0;
-+}
-+
-+static struct platform_driver s3c_ac97_driver = {
-+	.probe  = s3c_ac97_probe,
-+	.remove = s3c_ac97_remove,
-+	.driver = {
-+		.name = "samsung-ac97",
-+		.owner = THIS_MODULE,
-+	},
-+};
-+
-+static int __init s3c_ac97_init(void)
-+{
-+	return platform_driver_register(&s3c_ac97_driver);
-+}
-+module_init(s3c_ac97_init);
-+
-+static void __exit s3c_ac97_exit(void)
-+{
-+	platform_driver_unregister(&s3c_ac97_driver);
-+}
-+module_exit(s3c_ac97_exit);
-+
-+MODULE_AUTHOR("Jaswinder Singh, <jassi.brar@samsung.com>");
-+MODULE_DESCRIPTION("AC97 driver for the Samsung SoC");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:samsung-ac97");
-diff --git a/sound/soc/samsung/ac97.h b/sound/soc/samsung/ac97.h
-new file mode 100644
-index 0000000..0d0e1b5
---- /dev/null
-+++ b/sound/soc/samsung/ac97.h
-@@ -0,0 +1,21 @@
-+/* sound/soc/samsung/ac97.h
-+ *
-+ * ALSA SoC Audio Layer - S3C AC97 Controller driver
-+ *	Evolved from s3c2443-ac97.h
-+ *
-+ * Copyright (c) 2010 Samsung Electronics Co. Ltd
-+ *	Author: Jaswinder Singh <jassi.brar@samsung.com>
-+ *	Credits: Graeme Gregory, Sean Choi
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __S3C_AC97_H_
-+#define __S3C_AC97_H_
-+
-+#define S3C_AC97_DAI_PCM 0
-+#define S3C_AC97_DAI_MIC 1
-+
-+#endif /* __S3C_AC97_H_ */
-diff --git a/sound/soc/samsung/dma.c b/sound/soc/samsung/dma.c
-new file mode 100644
-index 0000000..12622f3
---- /dev/null
-+++ b/sound/soc/samsung/dma.c
-@@ -0,0 +1,503 @@
++++ b/include/linux/intel_mid_i2s_if.h
+@@ -0,0 +1,280 @@
 +/*
-+ * dma.c  --  ALSA Soc Audio Layer
-+ *
-+ * (c) 2006 Wolfson Microelectronics PLC.
-+ * Graeme Gregory graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-+ *
-+ * Copyright 2004-2005 Simtec Electronics
-+ *	http://armlinux.simtec.co.uk/
-+ *	Ben Dooks <ben@simtec.co.uk>
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ */
++  * <Driver for I2S protocol on SSP (Moorestown and Medfield hardware)>
++  * Copyright (c) 2010, Intel Corporation.
++  * Louis LE GALL <louis.le.gall intel.com>
++  *
++  * This program is free software; you can redistribute it and/or modify it
++  * under the terms and conditions of the GNU General Public License,
++  * version 2, as published by the Free Software Foundation.
++  *
++  * This program is distributed in the hope it will be useful, but WITHOUT
++  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License =
+for
++  * more details.
++  *
++  * You should have received a copy of the GNU General Public License alon=
+g with
++  * this program; if not, write to the Free Software Foundation, Inc.,
++  * 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
++  */
 +
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
++#ifndef MID_I2S_EXTERNAL_H_
++#define MID_I2S_EXTERNAL_H_
++
++#include <linux/pci.h>
 +#include <linux/dma-mapping.h>
++#include <linux/intel_mid_dma.h>
 +
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
++#include <linux/interrupt.h>
 +
-+#include <asm/dma.h>
-+#include <mach/hardware.h>
-+#include <mach/dma.h>
++/*
++ *     Structures Definition
++ */
 +
-+#include "dma.h"
 +
-+static const struct snd_pcm_hardware dma_hardware = {
-+	.info			= SNDRV_PCM_INFO_INTERLEAVED |
-+				    SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+				    SNDRV_PCM_INFO_MMAP |
-+				    SNDRV_PCM_INFO_MMAP_VALID |
-+				    SNDRV_PCM_INFO_PAUSE |
-+				    SNDRV_PCM_INFO_RESUME,
-+	.formats		= SNDRV_PCM_FMTBIT_S16_LE |
-+				    SNDRV_PCM_FMTBIT_U16_LE |
-+				    SNDRV_PCM_FMTBIT_U8 |
-+				    SNDRV_PCM_FMTBIT_S8,
-+	.channels_min		= 2,
-+	.channels_max		= 2,
-+	.buffer_bytes_max	= 128*1024,
-+	.period_bytes_min	= PAGE_SIZE,
-+	.period_bytes_max	= PAGE_SIZE*2,
-+	.periods_min		= 2,
-+	.periods_max		= 128,
-+	.fifo_size		= 32,
++/*
++ *     SSCR0 settings
++ */
++enum mrst_ssp_mode {
++       SSP_IN_NORMAL_MODE =3D 0x0,
++       SSP_IN_NETWORK_MODE
 +};
 +
-+struct runtime_data {
-+	spinlock_t lock;
-+	int state;
-+	unsigned int dma_loaded;
-+	unsigned int dma_limit;
-+	unsigned int dma_period;
-+	dma_addr_t dma_start;
-+	dma_addr_t dma_pos;
-+	dma_addr_t dma_end;
-+	struct s3c_dma_params *params;
++enum mrst_ssp_rx_fifo_over_run_int_mask {
++       SSP_RX_FIFO_OVER_INT_ENABLE =3D 0x0,
++       SSP_RX_FIFO_OVER_INT_DISABLE
 +};
 +
-+/* dma_enqueue
++enum mrst_ssp_tx_fifo_under_run_int_mask {
++       SSP_TX_FIFO_UNDER_INT_ENABLE =3D 0x0,
++       SSP_TX_FIFO_UNDER_INT_DISABLE
++};
++
++enum mrst_ssp_frame_format {
++       MOTOROLA_SPI_FORMAT =3D 0x0,
++       TI_SSP_FORMAT,
++       MICROWIRE_FORMAT,
++       PSP_FORMAT
++
++};
++
++enum mrst_ssp_master_mode_clock_selection {
++       SSP_ONCHIP_CLOCK =3D 0x0,
++       SSP_NETWORK_CLOCK,
++       SSP_EXTERNAL_CLOCK,
++       SSP_ONCHIP_AUDIO_CLOCK,
++       SSP_MASTER_CLOCK_UNDEFINED =3D 0xFF
++};
++
++/*
++ *     SSCR1 settings
++ */
++enum mrst_ssp_txd_tristate_last_phase {
++       TXD_TRISTATE_LAST_PHASE_OFF =3D  0x0,
++       TXD_TRISTATE_LAST_PHASE_ON
++};
++
++enum mrst_ssp_txd_tristate_enable {
++       TXD_TRISTATE_OFF =3D  0x0,
++       TXD_TRISTATE_ON
++};
++
++enum mrst_ssp_slave_sspclk_free_running {
++       SLAVE_SSPCLK_ON_ALWAYS =3D  0x0,
++       SLAVE_SSPCLK_ON_DURING_TRANSFER_ONLY
++};
++
++enum mrst_ssp_sspsclk_direction {
++       SSPSCLK_MASTER_MODE =3D 0x0,
++       SSPSCLK_SLAVE_MODE
++};
++
++enum mrst_ssp_sspsfrm_direction {
++       SSPSFRM_MASTER_MODE =3D 0x0,
++       SSPSFRM_SLAVE_MODE
++};
++
++enum mrst_ssp_rx_without_tx {
++       RX_AND_TX_MODE =3D 0x0,
++       RX_WITHOUT_TX_MODE
++};
++
++enum mrst_trailing_byte_mode {
++       SSP_TRAILING_BYTE_HDL_BY_IA =3D 0x0,
++       SSP_TRAILING_BYTE_HDL_BY_DMA
++};
++
++enum mrst_ssp_tx_dma_status {
++       SSP_TX_DMA_MASK =3D 0x0,
++       SSP_TX_DMA_ENABLE
++};
++
++enum mrst_ssp_rx_dma_status {
++       SSP_RX_DMA_MASK =3D 0x0,
++       SSP_RX_DMA_ENABLE
++};
++
++enum mrst_ssp_rx_timeout_int_status {
++       SSP_RX_TIMEOUT_INT_DISABLE =3D 0x0,
++       SSP_RX_TIMEOUT_INT_ENABLE
++};
++
++enum mrst_ssp_trailing_byte_int_status {
++       SSP_TRAILING_BYTE_INT_DISABLE =3D 0x0,
++       SSP_TRAILING_BYTE_INT_ENABLE
++};
++
++enum mrst_ssp_loopback_mode_status {
++       SSP_LOOPBACK_OFF =3D 0x0,
++       SSP_LOOPBACK_ON
++};
++
++
++/*
++ *     SSPSP settings: for PSP Format ONLY!!!!!!!!
++ */
++
++enum mrst_ssp_frame_sync_relative_timing_bit {
++       NEXT_FRMS_ASS_AFTER_END_OF_T4 =3D  0x0,
++       NEXT_FRMS_ASS_WITH_LSB_PREVIOUS_FRM
++};
++
++enum mrst_ssp_frame_sync_polarity_bit {
++       SSP_FRMS_ACTIVE_LOW =3D  0x0,
++       SSP_FRMS_ACTIVE_HIGH
++};
++
++enum mrst_ssp_end_of_transfer_data_state {
++       SSP_END_DATA_TRANSFER_STATE_LOW =3D 0x0,
++       SSP_END_DATA_TRANSFER_STATE_PEVIOUS_BIT
++};
++
++enum mrst_ssp_clk_mode {
++       SSP_CLK_MODE_0 =3D 0x0,
++       SSP_CLK_MODE_1,
++       SSP_CLK_MODE_2,
++       SSP_CLK_MODE_3
++};
++
++
++/*
++ *     list of differents types of SSP, value depends of adid entry of
++ *     capability ID of the PCI
++ */
++
++/*
 + *
-+ * place a dma buffer onto the queue for the dma system
-+ * to handle.
-+*/
-+static void dma_enqueue(struct snd_pcm_substream *substream)
-+{
-+	struct runtime_data *prtd = substream->runtime->private_data;
-+	dma_addr_t pos = prtd->dma_pos;
-+	unsigned int limit;
-+	int ret;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	if (s3c_dma_has_circular())
-+		limit = (prtd->dma_end - prtd->dma_start) / prtd->dma_period;
-+	else
-+		limit = prtd->dma_limit;
-+
-+	pr_debug("%s: loaded %d, limit %d\n",
-+				__func__, prtd->dma_loaded, limit);
-+
-+	while (prtd->dma_loaded < limit) {
-+		unsigned long len = prtd->dma_period;
-+
-+		pr_debug("dma_loaded: %d\n", prtd->dma_loaded);
-+
-+		if ((pos + len) > prtd->dma_end) {
-+			len  = prtd->dma_end - pos;
-+			pr_debug(KERN_DEBUG "%s: corrected dma len %ld\n",
-+			       __func__, len);
-+		}
-+
-+		ret = s3c2410_dma_enqueue(prtd->params->channel,
-+			substream, pos, len);
-+
-+		if (ret == 0) {
-+			prtd->dma_loaded++;
-+			pos += prtd->dma_period;
-+			if (pos >= prtd->dma_end)
-+				pos = prtd->dma_start;
-+		} else
-+			break;
-+	}
-+
-+	prtd->dma_pos = pos;
-+}
-+
-+static void audio_buffdone(struct s3c2410_dma_chan *channel,
-+				void *dev_id, int size,
-+				enum s3c2410_dma_buffresult result)
-+{
-+	struct snd_pcm_substream *substream = dev_id;
-+	struct runtime_data *prtd;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	if (result == S3C2410_RES_ABORT || result == S3C2410_RES_ERR)
-+		return;
-+
-+	prtd = substream->runtime->private_data;
-+
-+	if (substream)
-+		snd_pcm_period_elapsed(substream);
-+
-+	spin_lock(&prtd->lock);
-+	if (prtd->state & ST_RUNNING && !s3c_dma_has_circular()) {
-+		prtd->dma_loaded--;
-+		dma_enqueue(substream);
-+	}
-+
-+	spin_unlock(&prtd->lock);
-+}
-+
-+static int dma_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct runtime_data *prtd = runtime->private_data;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	unsigned long totbytes = params_buffer_bytes(params);
-+	struct s3c_dma_params *dma =
-+		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+	int ret = 0;
-+
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	/* return if this is a bufferless transfer e.g.
-+	 * codec <--> BT codec or GSM modem -- lg FIXME */
-+	if (!dma)
-+		return 0;
-+
-+	/* this may get called several times by oss emulation
-+	 * with different params -HW */
-+	if (prtd->params == NULL) {
-+		/* prepare DMA */
-+		prtd->params = dma;
-+
-+		pr_debug("params %p, client %p, channel %d\n", prtd->params,
-+			prtd->params->client, prtd->params->channel);
-+
-+		ret = s3c2410_dma_request(prtd->params->channel,
-+					  prtd->params->client, NULL);
-+
-+		if (ret < 0) {
-+			printk(KERN_ERR "failed to get dma channel\n");
-+			return ret;
-+		}
-+
-+		/* use the circular buffering if we have it available. */
-+		if (s3c_dma_has_circular())
-+			s3c2410_dma_setflags(prtd->params->channel,
-+					     S3C2410_DMAF_CIRCULAR);
-+	}
-+
-+	s3c2410_dma_set_buffdone_fn(prtd->params->channel,
-+				    audio_buffdone);
-+
-+	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
-+
-+	runtime->dma_bytes = totbytes;
-+
-+	spin_lock_irq(&prtd->lock);
-+	prtd->dma_loaded = 0;
-+	prtd->dma_limit = runtime->hw.periods_min;
-+	prtd->dma_period = params_period_bytes(params);
-+	prtd->dma_start = runtime->dma_addr;
-+	prtd->dma_pos = prtd->dma_start;
-+	prtd->dma_end = prtd->dma_start + totbytes;
-+	spin_unlock_irq(&prtd->lock);
-+
-+	return 0;
-+}
-+
-+static int dma_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct runtime_data *prtd = substream->runtime->private_data;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	/* TODO - do we need to ensure DMA flushed */
-+	snd_pcm_set_runtime_buffer(substream, NULL);
-+
-+	if (prtd->params) {
-+		s3c2410_dma_free(prtd->params->channel, prtd->params->client);
-+		prtd->params = NULL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int dma_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct runtime_data *prtd = substream->runtime->private_data;
-+	int ret = 0;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	/* return if this is a bufferless transfer e.g.
-+	 * codec <--> BT codec or GSM modem -- lg FIXME */
-+	if (!prtd->params)
-+		return 0;
-+
-+	/* channel needs configuring for mem=>device, increment memory addr,
-+	 * sync to pclk, half-word transfers to the IIS-FIFO. */
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-+		s3c2410_dma_devconfig(prtd->params->channel,
-+				      S3C2410_DMASRC_MEM,
-+				      prtd->params->dma_addr);
-+	} else {
-+		s3c2410_dma_devconfig(prtd->params->channel,
-+				      S3C2410_DMASRC_HW,
-+				      prtd->params->dma_addr);
-+	}
-+
-+	s3c2410_dma_config(prtd->params->channel,
-+			   prtd->params->dma_size);
-+
-+	/* flush the DMA channel */
-+	s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_FLUSH);
-+	prtd->dma_loaded = 0;
-+	prtd->dma_pos = prtd->dma_start;
-+
-+	/* enqueue dma buffers */
-+	dma_enqueue(substream);
-+
-+	return ret;
-+}
-+
-+static int dma_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct runtime_data *prtd = substream->runtime->private_data;
-+	int ret = 0;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	spin_lock(&prtd->lock);
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		prtd->state |= ST_RUNNING;
-+		s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_START);
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		prtd->state &= ~ST_RUNNING;
-+		s3c2410_dma_ctrl(prtd->params->channel, S3C2410_DMAOP_STOP);
-+		break;
-+
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	spin_unlock(&prtd->lock);
-+
-+	return ret;
-+}
-+
-+static snd_pcm_uframes_t
-+dma_pointer(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct runtime_data *prtd = runtime->private_data;
-+	unsigned long res;
-+	dma_addr_t src, dst;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	spin_lock(&prtd->lock);
-+	s3c2410_dma_getposition(prtd->params->channel, &src, &dst);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		res = dst - prtd->dma_start;
-+	else
-+		res = src - prtd->dma_start;
-+
-+	spin_unlock(&prtd->lock);
-+
-+	pr_debug("Pointer %x %x\n", src, dst);
-+
-+	/* we seem to be getting the odd error from the pcm library due
-+	 * to out-of-bounds pointers. this is maybe due to the dma engine
-+	 * not having loaded the new values for the channel before being
-+	 * callled... (todo - fix )
-+	 */
-+
-+	if (res >= snd_pcm_lib_buffer_bytes(substream)) {
-+		if (res == snd_pcm_lib_buffer_bytes(substream))
-+			res = 0;
-+	}
-+
-+	return bytes_to_frames(substream->runtime, res);
-+}
-+
-+static int dma_open(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct runtime_data *prtd;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
-+	snd_soc_set_runtime_hwparams(substream, &dma_hardware);
-+
-+	prtd = kzalloc(sizeof(struct runtime_data), GFP_KERNEL);
-+	if (prtd == NULL)
-+		return -ENOMEM;
-+
-+	spin_lock_init(&prtd->lock);
-+
-+	runtime->private_data = prtd;
-+	return 0;
-+}
-+
-+static int dma_close(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct runtime_data *prtd = runtime->private_data;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	if (!prtd)
-+		pr_debug("dma_close called with prtd == NULL\n");
-+
-+	kfree(prtd);
-+
-+	return 0;
-+}
-+
-+static int dma_mmap(struct snd_pcm_substream *substream,
-+	struct vm_area_struct *vma)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	return dma_mmap_writecombine(substream->pcm->card->dev, vma,
-+				     runtime->dma_area,
-+				     runtime->dma_addr,
-+				     runtime->dma_bytes);
-+}
-+
-+static struct snd_pcm_ops dma_ops = {
-+	.open		= dma_open,
-+	.close		= dma_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= dma_hw_params,
-+	.hw_free	= dma_hw_free,
-+	.prepare	= dma_prepare,
-+	.trigger	= dma_trigger,
-+	.pointer	= dma_pointer,
-+	.mmap		= dma_mmap,
++ * The PCI header associated to SSP devices now includes a configuration
++ * register. It provides information to a driver which is probed for the
++ * SSP, specifying in which way the SSP is supposed to be used. Here is
++ * the format of this byte register:
++ *
++ *     bits 2..0: Mode
++ *             000=3D0x0 : Invalid, the register should be ignored
++ *             001=3D0x1 : SSP to be used as SPI controller
++ *             010=3D0x2: SSP to be used in I2S/ISS mode
++ *             other: Reserved
++ *
++ *     bits 5..3: Configuration
++ *     In I2S/ISS mode:
++ *             000=3D0x0: Invalid
++ *             001=3D0x1: Bluetooth
++ *             010=3D0x2: Modem
++ *             other: Reserved
++ *     In SPI mode:
++ *             Value is the SPI bus number connected to the SSP.
++ *             To be used for registration to the Linux SPI
++ *             framework.
++ *     bit 6: SPI slave
++ *     Relevant in SPI mode only. If set, indicates the SPI clock
++ *     is not provided by the SSP: SPI slave mode.
++ *
++ *     bit 7: Reserved (0)
++ *
++ * This configuration register is implemented in the adid field of the
++ * Vendor Specific PCI capability associated to the SSP.
++ *
++ */
++
++#define PCI_ADID_SSP_MODE_SPI  (1)
++#define PCI_ADID_SSP_MODE_I2S  (2)
++
++#define PCI_ADID_SSP_CONF_BT_FM  (1<<3)
++#define PCI_ADID_SSP_CONF_MODEM  (2<<3)
++
++
++#define PCI_CAP_ADID_I2S_BT_FM  ((PCI_ADID_SSP_CONF_BT_FM) | (PCI_ADID_SSP=
+_MODE_I2S))
++#define PCI_CAP_ADID_I2S_MODEM  ((PCI_ADID_SSP_CONF_MODEM) | (PCI_ADID_SSP=
+_MODE_I2S))
++
++enum intel_mid_i2s_ssp_usage {
++       SSP_USAGE_UNASSIGNED =3D 0x00,
++       SSP_USAGE_BLUETOOTH_FM =3D 0x01,
++       SSP_USAGE_MODEM =3D 0x02
 +};
 +
-+static int preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
++/*
++ *     Structure used to configure the SSP Port
++ *     Please note that only the PSP format and the DMA transfer are suppo=
+rted
++ */
++
++struct intel_mid_i2s_settings {
++       enum mrst_ssp_mode                         mode;
++       enum mrst_ssp_rx_fifo_over_run_int_mask    rx_fifo_interrupt;
++       enum mrst_ssp_tx_fifo_under_run_int_mask   tx_fifo_interrupt;
++       enum mrst_ssp_frame_format                 frame_format;
++       enum mrst_ssp_master_mode_clock_selection  master_mode_clk_selectio=
+n;              /* for Master Mode Only */
++       u8                                         frame_rate_divider_contr=
+ol;
++       u16                                        master_mode_serial_clock=
+_rate;          /* for Master Mode Only */
++       u16                                        data_size;
++
++       enum mrst_ssp_txd_tristate_last_phase      tx_tristate_phase;
++       enum mrst_ssp_txd_tristate_enable          tx_tristate_enable;
++       enum mrst_ssp_slave_sspclk_free_running    slave_clk_free_running_s=
+tatus;
++       enum mrst_ssp_sspsclk_direction            sspslclk_direction;
++       enum mrst_ssp_sspsfrm_direction            sspsfrm_direction;
++       enum mrst_ssp_rx_without_tx                ssp_duplex_mode;
++       enum mrst_trailing_byte_mode               ssp_trailing_byte_mode;
++       enum mrst_ssp_tx_dma_status                ssp_tx_dma;
++       enum mrst_ssp_rx_dma_status                ssp_rx_dma;
++       enum mrst_ssp_rx_timeout_int_status        ssp_rx_timeout_interrupt=
+_status;
++       enum mrst_ssp_trailing_byte_int_status     ssp_trailing_byte_interr=
+upt_status;
++       enum mrst_ssp_loopback_mode_status         ssp_loopback_mode_status;
++       u8                                         ssp_rx_fifo_threshold;
++       u8                                         ssp_tx_fifo_threshold;
++
++
++       enum mrst_ssp_frame_sync_relative_timing_bit  ssp_frmsync_timing_bi=
+t;
++       enum mrst_ssp_frame_sync_polarity_bit      ssp_frmsync_pol_bit;
++       enum mrst_ssp_end_of_transfer_data_state   ssp_end_transfer_state;
++       enum mrst_ssp_clk_mode                     ssp_serial_clk_mode;
++       u8                                         ssp_psp_T1;
++       u8                                         ssp_psp_T2;
++       u8                                         ssp_psp_T4;   /* DMYSTOP=
+ */
++       u8                                         ssp_psp_T5;   /* SFRMDLY=
+ */
++       u8                                         ssp_psp_T6;   /* SFRMWDT=
+H */
++
++       u8                                         ssp_active_tx_slots_map;
++       u8                                         ssp_active_rx_slots_map;
++};
++
++/*
++ *     Provided Interface
++ */
++
++
++struct intel_mid_i2s_hdl *intel_mid_i2s_open(enum intel_mid_i2s_ssp_usage =
+usage, const struct intel_mid_i2s_settings *ps_settings);
++void  intel_mid_i2s_close(struct intel_mid_i2s_hdl *handle);
++
++int intel_mid_i2s_rd_req(struct intel_mid_i2s_hdl *handle, u32 *dst, size_=
+t len, void *param);
++int intel_mid_i2s_wr_req(struct intel_mid_i2s_hdl *handle, u32 *src, size_=
+t len, void *param);
++int intel_mid_i2s_enable_ssp(struct intel_mid_i2s_hdl *handle);
++
++
++int intel_mid_i2s_set_wr_cb(struct intel_mid_i2s_hdl *handle, int (*write_=
+callback)(void *param));
++int intel_mid_i2s_set_rd_cb(struct intel_mid_i2s_hdl *handle, int (*read_c=
+allback)(void *param));
++
++
++int intel_mid_i2s_get_tx_fifo_level(struct intel_mid_i2s_hdl *handle);
++int intel_mid_i2s_get_rx_fifo_level(struct intel_mid_i2s_hdl *handle);
++int intel_mid_i2s_flush(struct intel_mid_i2s_hdl *handle);
++
++#endif /*MID_I2S_EXTERNAL_H_*/
+diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
+index 12e3465..0b0a524 100644
+--- a/sound/pci/Kconfig
++++ b/sound/pci/Kconfig
+@@ -853,4 +853,22 @@ config SND_YMFPCI
+          To compile this driver as a module, choose M here: the module
+          will be called snd-ymfpci.
+
++config SND_INTEL_MID_I2S
++       tristate "Intel mid I2S hardware driver"
++       depends on EXPERIMENTAL && PCI && INTEL_MID_DMAC
++       default n
++       help
++         Say Y here if you want to build low level driver to support
++         sending/receving I2S audio samples on Intel MID SSP device.
++         This interface is mostly used on Intel MID platforms and provide
++         the low level interface for some upper layer drivers such as
++         Alsa SoC, char device interfaces... depending of peripheral conne=
+cted.
++         PCI Header should have ADID field set to I2S BT_FM or
++         I2S MODEM to be used by this driver (so it know connected periphe=
+ral).
++         Note this is a prototype driver and support for continuous
++         flow is still working-in-progress.
++         This driver can also be built as a module. If so, the module
++         will be called intel_mid_i2s.ko
++         If unsure, say N here.
++
+ endif  # SND_PCI
+diff --git a/sound/pci/Makefile b/sound/pci/Makefile
+index 9cf4348..46613a2 100644
+--- a/sound/pci/Makefile
++++ b/sound/pci/Makefile
+@@ -78,4 +78,6 @@ obj-$(CONFIG_SND) +=3D \
+        rme9652/ \
+        trident/ \
+        ymfpci/ \
+-       vx222/
++       vx222/ \
++       intel_mid_i2s/
++
+diff --git a/sound/pci/intel_mid_i2s/Makefile b/sound/pci/intel_mid_i2s/Mak=
+efile
+new file mode 100644
+index 0000000..bebac1c
+--- /dev/null
++++ b/sound/pci/intel_mid_i2s/Makefile
+@@ -0,0 +1,18 @@
++# SSP audio driver
++# Copyright (c) 2010, Intel Corporation.
++
++# This program is free software; you can redistribute it and/or modify it
++# under the terms and conditions of the GNU General Public License,
++# version 2, as published by the Free Software Foundation.
++
++# This program is distributed in the hope it will be useful, but WITHOUT
++# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++# more details.
++
++# You should have received a copy of the GNU General Public License along =
+with
++# this program; if not, write to the Free Software Foundation, Inc.,
++# 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
++
++obj-$(CONFIG_SND_INTEL_MID_I2S)    +=3D  intel_mid_i2s.o
++
+diff --git a/sound/pci/intel_mid_i2s/intel_mid_i2s.c b/sound/pci/intel_mid_=
+i2s/intel_mid_i2s.c
+new file mode 100644
+index 0000000..572abde
+--- /dev/null
++++ b/sound/pci/intel_mid_i2s/intel_mid_i2s.c
+@@ -0,0 +1,1428 @@
++/*
++  * <Driver for I2S protocol on SSP (Moorestown and Medfield hardware)>
++  * Copyright (c) 2010, Intel Corporation.
++  * Louis LE GALL <louis.le.gall intel.com>
++  *
++  * This program is free software; you can redistribute it and/or modify it
++  * under the terms and conditions of the GNU General Public License,
++  * version 2, as published by the Free Software Foundation.
++  *
++  * This program is distributed in the hope it will be useful, but WITHOUT
++  * ANY WARRANTY; without evenp the implied warranty of MERCHANTABILITY or
++  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License =
+for
++  * more details.
++  *
++  * You should have received a copy of the GNU General Public License alon=
+g with
++  * this program; if not, write to the Free Software Foundation, Inc.,
++  * 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
++  */
++#include <linux/pci.h>
++#include <linux/dma-mapping.h>
++#include <linux/interrupt.h>
++#include <linux/pm_runtime.h>
++#include <linux/pci_regs.h>
++#include <linux/wait.h>
++#include <linux/interrupt.h>
++#include <linux/sched.h>
++
++#include <linux/device.h>
++
++#include <linux/intel_mid_i2s_if.h>
++#include "intel_mid_i2s.h"
++
++MODULE_AUTHOR("Louis LE GALL <louis.le.gall intel.com>");
++MODULE_DESCRIPTION("Intel MID I2S/PCM SSP Driver");
++MODULE_LICENSE("GPL");
++MODULE_VERSION("1.0.0");
++
++
++/*
++ * structures for pci probing
++ */
++static const struct dev_pm_ops intel_mid_i2s_pm_ops =3D {
++       .runtime_suspend =3D intel_mid_i2s_runtime_suspend,
++       .runtime_resume =3D intel_mid_i2s_runtime_resume,
++};
++static DEFINE_PCI_DEVICE_TABLE(pci_ids) =3D {
++       { PCI_DEVICE(PCI_VENDOR_ID_INTEL, MFLD_SSP1_DEVICE_ID) },
++       { PCI_DEVICE(PCI_VENDOR_ID_INTEL, MFLD_SSP0_DEVICE_ID) },
++       { 0, }, /* terminate list */
++};
++static struct pci_driver intel_mid_i2s_driver =3D {
++       .driver =3D {
++               .pm =3D &intel_mid_i2s_pm_ops,
++       },
++       .name =3D DRIVER_NAME,
++       .id_table =3D pci_ids,
++       .probe =3D intel_mid_i2s_probe,
++       .remove =3D __devexit_p(intel_mid_i2s_remove),
++#ifdef CONFIG_PM
++       .suspend =3D intel_mid_i2s_driver_suspend,
++       .resume =3D intel_mid_i2s_driver_resume,
++#endif
++};
++
++
++/*
++ * POWER MANAGEMENT FUNCTIONS
++ */
++
++#ifdef CONFIG_PM
++/**
++ * intel_mid_i2s_driver_suspend - driver power management suspend activity
++ * @device_ptr : pointer of the device to resume
++ *
++ * Output parameters
++ *      error : 0 means no error
++ */
++static int  intel_mid_i2s_driver_suspend(struct pci_dev *dev, pm_message_t=
+ state)
 +{
-+	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
-+	struct snd_dma_buffer *buf = &substream->dma_buffer;
-+	size_t size = dma_hardware.buffer_bytes_max;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	buf->dev.type = SNDRV_DMA_TYPE_DEV;
-+	buf->dev.dev = pcm->card->dev;
-+	buf->private_data = NULL;
-+	buf->area = dma_alloc_writecombine(pcm->card->dev, size,
-+					   &buf->addr, GFP_KERNEL);
-+	if (!buf->area)
-+		return -ENOMEM;
-+	buf->bytes = size;
-+	return 0;
++       struct intel_mid_i2s_hdl *drv_data =3D pci_get_drvdata(dev);
++       WARN(!drv_data, "Driver data=3DNULL\n");
++       if (!drv_data)
++               return 0;
++       dev_dbg(&drv_data->pdev->dev, "SUSPEND SSP ID %d\n", drv_data->pdev=
+->device);
++       pci_save_state(dev);
++       pci_disable_device(dev);
++       pci_set_power_state(dev, PCI_D3hot);
++       return 0;
 +}
 +
-+static void dma_free_dma_buffers(struct snd_pcm *pcm)
++/**
++ * intel_mid_i2s_driver_resume - driver power management suspend activity
++ * @device_ptr : pointer of the device to resume
++ *
++ * Output parameters
++ *      error : 0 means no error
++ */
++static int intel_mid_i2s_driver_resume(struct pci_dev *dev)
 +{
-+	struct snd_pcm_substream *substream;
-+	struct snd_dma_buffer *buf;
-+	int stream;
++       int err;
++       int ret =3D 0;
++       struct intel_mid_i2s_hdl *drv_data =3D pci_get_drvdata(dev);
 +
-+	pr_debug("Entered %s\n", __func__);
++       WARN(!drv_data, "Driver data=3DNULL\n");
++       if (!drv_data)
++               return -EFAULT;
++       dev_dbg(&drv_data->pdev->dev, "RESUME SSP ID %d\n", drv_data->pdev-=
+>device);
 +
-+	for (stream = 0; stream < 2; stream++) {
-+		substream = pcm->streams[stream].substream;
-+		if (!substream)
-+			continue;
-+
-+		buf = &substream->dma_buffer;
-+		if (!buf->area)
-+			continue;
-+
-+		dma_free_writecombine(pcm->card->dev, buf->bytes,
-+				      buf->area, buf->addr);
-+		buf->area = NULL;
-+	}
++       err =3D pci_enable_device(dev);
++       if (err)
++               dev_err(&drv_data->pdev->dev, "Unable to re-enable device, =
+trying to continue.\n");
++       dev_dbg(&drv_data->pdev->dev, "resuming\n");
++       pci_set_power_state(dev, PCI_D0);
++       pci_restore_state(dev);
++       ret =3D pci_enable_device(dev);
++       if (ret)
++               dev_err(&drv_data->pdev->dev, "I2S: device can't be enabled=
+");
++       dev_dbg(&drv_data->pdev->dev, "resumed in D3\n");
++       return ret;
 +}
 +
-+static u64 dma_mask = DMA_BIT_MASK(32);
-+
-+static int dma_new(struct snd_card *card,
-+	struct snd_soc_dai *dai, struct snd_pcm *pcm)
++/**
++ * intel_mid_i2s_runtime_suspend - runtime power management suspend activi=
+ty
++ * @device_ptr : pointer of the device to resume
++ *
++ * Output parameters
++ *      error : 0 means no error
++ */
++static int intel_mid_i2s_runtime_suspend(struct device *device_ptr)
 +{
-+	int ret = 0;
++       struct pci_dev *pdev;
++       struct intel_mid_i2s_hdl *drv_data;
++       void __iomem *reg;
 +
-+	pr_debug("Entered %s\n", __func__);
++       pdev =3D to_pci_dev(device_ptr);
++       WARN(!pdev, "Pci dev=3DNULL\n");
++       if (!pdev)
++               return -EFAULT;
++       drv_data =3D (struct intel_mid_i2s_hdl *) pci_get_drvdata(pdev);
++       WARN(!drv_data, "Driver data=3DNULL\n");
++       if (!drv_data)
++               return -EFAULT;
++       if (test_bit(I2S_PORT_OPENED, &drv_data->flags)) {
++               dev_err(device_ptr, "Trying to suspend a device that is ope=
+ned\n");
++               return -ENODEV;
++       }
++       reg =3D drv_data->ioaddr;
++       dev_dbg(&drv_data->pdev->dev, "Suspend of SSP requested !!\n");
++       return intel_mid_i2s_driver_suspend(to_pci_dev(device_ptr), PMSG_SU=
+SPEND);
++}
++#endif
 +
-+	if (!card->dev->dma_mask)
-+		card->dev->dma_mask = &dma_mask;
-+	if (!card->dev->coherent_dma_mask)
-+		card->dev->coherent_dma_mask = 0xffffffff;
++/**
++ * intel_mid_i2s_runtime_resume - runtime power management resume activity
++ * @device_ptr : pointer of the device to resume
++ *
++ * Output parameters
++ *      error : 0 means no error
++ */
++static int intel_mid_i2s_runtime_resume(struct device *device_ptr)
++{
++       struct pci_dev *pdev;
++       struct intel_mid_i2s_hdl *drv_data;
++       pdev =3D to_pci_dev(device_ptr);
++       WARN(!pdev, "Pci dev=3DNULL\n");
++       if (!pdev)
++               return -EFAULT;
++       drv_data =3D (struct intel_mid_i2s_hdl *) pci_get_drvdata(pdev);
++       WARN(!drv_data, "Driver data=3DNULL\n");
++       if (!drv_data)
++               return -EFAULT;
++       dev_dbg(&drv_data->pdev->dev, "RT RESUME SSP ID\n");
++       return intel_mid_i2s_driver_resume(to_pci_dev(device_ptr));
++}
 +
-+	if (dai->driver->playback.channels_min) {
-+		ret = preallocate_dma_buffer(pcm,
-+			SNDRV_PCM_STREAM_PLAYBACK);
-+		if (ret)
-+			goto out;
-+	}
++/*
++ * INTERFACE FUNCTIONS
++ */
 +
-+	if (dai->driver->capture.channels_min) {
-+		ret = preallocate_dma_buffer(pcm,
-+			SNDRV_PCM_STREAM_CAPTURE);
-+		if (ret)
-+			goto out;
-+	}
++/**
++ * intel_mid_i2s_flush - This is the I2S flush request
++ * @drv_data : pointer on private i2s driver data (by i2s_open function)
++ *
++ * It will flush the TX FIFO
++ * WARNING: this function is used in a Burst Mode context where it is call=
+ed
++ * between Bursts i.e. when there is no FMSYNC, no transfer ongoing at
++ * that time
++ * If you need a flush while SSP configured in I2S is BUSY and FMSYNC are
++ * generated, you have to write another function
++ * (loop on BUSY bit and do not limit the flush to at most 16 samples)
++ *
++ * Output parameters
++ *      int : number of samples flushed
++ */
++int intel_mid_i2s_flush(struct intel_mid_i2s_hdl *drv_data)
++{
++       u32 sssr, data;
++       u32 num =3D 0;
++       void __iomem *reg;
++
++       WARN(!drv_data, "Driver data=3DNULL\n");
++       if (!drv_data)
++               return 0;
++       reg =3D drv_data->ioaddr;
++       sssr =3D read_SSSR(reg);
++       dev_dbg(&drv_data->pdev->dev, "in flush sssr=3D0x%08X\n", sssr);
++       /*
++        * Flush "by hand" was generating spurious DMA SERV REQUEST
++        * from SSP to DMA =3D> then buggy retrieval of data for next dma_r=
+eq
++        * Disable: RX Service Request from RX fifo to DMA
++        * as we will flush by hand
++        */
++       clear_SSCR1_reg(reg, RSRE);
++       /* i2s_flush is called in between 2 bursts
++        * =3D> no FMSYNC at that time (i.e. SSP not busy)
++        * =3D> at most 16 samples in the FIFO */
++       while ((read_SSSR(reg) & (SSSR_RNE_MASK<<SSSR_RNE_SHIFT))
++                       && (num < FIFO_SIZE)) {
++               data =3D read_SSDR(reg);
++               num++;
++               dev_warn(&drv_data->pdev->dev, "flush(%u)=3D%u\n", num, dat=
+a);
++       }
++       /* Enable: RX Service Request from RX fifo to DMA
++        * as flush by hand is done
++        */
++       set_SSCR1_reg(reg, RSRE);
++       sssr =3D read_SSSR(reg);
++       dev_dbg(&drv_data->pdev->dev, "out flush sssr=3D0x%08X\n", sssr);
++       return num;
++}
++EXPORT_SYMBOL_GPL(intel_mid_i2s_flush);
++
++/**
++ * intel_mid_i2s_get_rx_fifo_level - returns I2S rx fifo level
++ * @drv_data : pointer on private i2s driver data (by i2s_open function)
++ *
++ * Output parameters
++ *      int : Number of samples currently in the RX FIFO (negative =3D err=
+or)
++ */
++int intel_mid_i2s_get_rx_fifo_level(struct intel_mid_i2s_hdl *drv_data)
++{
++       u32 sssr;
++       u32 rne, rfl;
++       void __iomem *reg;
++
++       WARN(!drv_data, "Driver data=3DNULL\n");
++       if (!drv_data)
++               return -EFAULT;
++       reg =3D drv_data->ioaddr;
++       sssr =3D read_SSSR(reg);
++       rfl =3D GET_SSSR_val(sssr, RFL);
++       rne =3D GET_SSSR_val(sssr, RNE);
++       if (!rne)
++               return 0;
++       else
++               return rfl+1;
++}
++EXPORT_SYMBOL_GPL(intel_mid_i2s_get_rx_fifo_level);
++
++/**
++ * intel_mid_i2s_get_tx_fifo_level - returns I2S tx fifo level
++ * @drv_data : pointer on private i2s driver data (by i2s_open function)
++ *
++ * Output parameters
++ *      int : number of samples currently in the TX FIFO (negative =3D err=
+or)
++ */
++int intel_mid_i2s_get_tx_fifo_level(struct intel_mid_i2s_hdl *drv_data)
++{
++       u32 sssr;
++       u32 tnf, tfl;
++       void __iomem *reg;
++       WARN(!drv_data, "Driver data=3DNULL\n");
++       if (!drv_data)
++               return -EFAULT;
++       reg =3D drv_data->ioaddr;
++       sssr =3D read_SSSR(reg);
++       tfl =3D GET_SSSR_val(sssr, TFL);
++       tnf =3D GET_SSSR_val(sssr, TFN);
++       if (!tnf)
++               return 16;
++       else
++               return tfl;
++}
++EXPORT_SYMBOL_GPL(intel_mid_i2s_get_tx_fifo_level);
++
++/**
++ * intel_mid_i2s_set_rd_cb - set the callback function after read is done
++ * @drv_data : handle of corresponding ssp i2s (given by i2s_open function)
++ * @read_callback : pointer of callback function
++ *
++ * Output parameters
++ *      error : 0 means no error
++ */
++int intel_mid_i2s_set_rd_cb(struct intel_mid_i2s_hdl *drv_data, int (*read=
+_callback)(void *param))
++{
++       WARN(!drv_data, "Driver data=3DNULL\n");
++       if (!drv_data)
++               return -EFAULT;
++       mutex_lock(&drv_data->mutex);
++       if (!test_bit(I2S_PORT_OPENED, &drv_data->flags)) {
++               dev_WARN(&drv_data->pdev->dev, "set WR CB I2S_PORT NOT_OPEN=
+ED");
++               mutex_unlock(&drv_data->mutex);
++               return -EPERM;
++       }
++       /* Do not change read parameters in the middle of a READ request */
++       if (test_bit(I2S_PORT_READ_BUSY, &drv_data->flags)) {
++               dev_WARN(&drv_data->pdev->dev, "CB reject I2S_PORT_READ_BUS=
+Y");
++               mutex_unlock(&drv_data->mutex);
++               return -EBUSY;
++       }
++       drv_data->read_callback =3D read_callback;
++       drv_data->read_len =3D 0;
++       mutex_unlock(&drv_data->mutex);
++       return 0;
++
++}
++EXPORT_SYMBOL_GPL(intel_mid_i2s_set_rd_cb);
++
++/**
++ * intel_mid_i2s_set_wr_cb - set the callback function after write is done
++ * @drv_data : handle of corresponding ssp i2s (given by i2s_open  functio=
+n)
++ * @write_callback : pointer of callback function
++ *
++ * Output parameters
++ *      error : 0 means no error
++ */
++int intel_mid_i2s_set_wr_cb(struct intel_mid_i2s_hdl *drv_data, int (*writ=
+e_callback)(void *param))
++{
++       WARN(!drv_data, "Driver data=3DNULL\n");
++       if (!drv_data)
++               return -EFAULT;
++       mutex_lock(&drv_data->mutex);
++       if (!test_bit(I2S_PORT_OPENED, &drv_data->flags)) {
++               dev_warn(&drv_data->pdev->dev, "set WR CB I2S_PORT NOT_OPEN=
+ED");
++               mutex_unlock(&drv_data->mutex);
++               return -EPERM;
++       }
++       /* Do not change write parameters in the middle of a WRITE request =
+*/
++       if (test_bit(I2S_PORT_WRITE_BUSY, &drv_data->flags)) {
++               dev_warn(&drv_data->pdev->dev, "CB reject I2S_PORT_WRITE_BU=
+SY");
++               mutex_unlock(&drv_data->mutex);
++               return -EBUSY;
++       }
++       drv_data->write_callback =3D write_callback;
++       drv_data->write_len =3D 0;
++       mutex_unlock(&drv_data->mutex);
++       return 0;
++}
++EXPORT_SYMBOL_GPL(intel_mid_i2s_set_wr_cb);
++
++/**
++ * intel_mid_i2s_enable_ssp() : start the ssp right after the read/write r=
+eq
++ * @drv_data : handle of corresponding ssp i2s (given by i2s_open function)
++ *
++ * This enable the read/write to be started synchronously
++ *
++ * Output parameters
++ *      error : 0 means no error
++ */
++int intel_mid_i2s_enable_ssp(struct intel_mid_i2s_hdl *drv_data)
++{
++       void __iomem *reg =3D drv_data->ioaddr;
++       set_SSCR0_reg(reg, SSE);
++       return 0;
++}
++EXPORT_SYMBOL_GPL(intel_mid_i2s_enable_ssp);
++
++/**
++ * intel_mid_i2s_rd_req - request a read from i2s peripheral
++ * @drv_data : handle of corresponding ssp i2s (given by i2s_open function)
++ * @dst : destination buffer where the read sample should be put
++ * @len : number of sample to be read (160 samples only right now)
++ * @param : private context parameter to give back to read callback
++ *
++ * Output parameters
++ *      error : 0 means no error
++ */
++int intel_mid_i2s_rd_req(struct intel_mid_i2s_hdl *drv_data, u32 *destinat=
+ion, size_t len, void *param)
++{
++       struct dma_async_tx_descriptor *rxdesc =3D NULL;
++       struct dma_chan *rxchan =3D drv_data->rxchan;
++       enum dma_ctrl_flags flag;
++       dma_addr_t ssdr_addr;
++       dma_addr_t dst;
++       WARN(!drv_data, "Driver data=3DNULL\n");
++       if (!drv_data)
++               return -EFAULT;
++       mutex_lock(&drv_data->mutex);
++       if (!rxchan) {
++               dev_WARN(&(drv_data->pdev->dev), "rd_req FAILED no rxchan\n=
+");
++               mutex_unlock(&drv_data->mutex);
++               return -EINVAL;
++       }
++       if (!len) {
++               dev_WARN(&drv_data->pdev->dev, "rd req invalid len=3D0");
++               mutex_unlock(&drv_data->mutex);
++               return -EINVAL;
++       }
++       if (!test_bit(I2S_PORT_OPENED, &drv_data->flags)) {
++               dev_WARN(&drv_data->pdev->dev, "RD reject I2S_PORT NOT_OPEN=
+ED");
++               mutex_unlock(&drv_data->mutex);
++               return -EPERM;
++       }
++       if (test_bit(I2S_PORT_CLOSING, &drv_data->flags)) {
++               dev_WARN(&drv_data->pdev->dev, "RD reject I2S_PORT CLOSING"=
+);
++               mutex_unlock(&drv_data->mutex);
++               return -EPIPE;
++       }
++
++       dev_dbg(&drv_data->pdev->dev, "I2S_READ() dst=3D%p, len=3D%d, drv_d=
+ata=3D%p", destination, len, drv_data);
++       dst =3D dma_map_single(NULL, destination, len, DMA_FROM_DEVICE);
++       if (!dst) {
++               dev_WARN(&drv_data->pdev->dev, "can't map DMA address %p", =
+destination);
++               mutex_unlock(&drv_data->mutex);
++               return -ENOMEM;
++       }
++
++       drv_data->read_dst =3D dst;
++       drv_data->read_len =3D len;
++       /* get Data Read/Write address */
++       ssdr_addr =3D (drv_data->paddr + OFFSET_SSDR);
++       set_SSCR1_reg((drv_data->ioaddr), RSRE);
++       change_SSCR0_reg((drv_data->ioaddr), RIM,
++                        ((drv_data->current_settings).rx_fifo_interrupt));
++       flag =3D DMA_PREP_INTERRUPT | DMA_CTRL_ACK;
++       /* Start the RX dma transfer */
++       rxdesc =3D rxchan->device->device_prep_dma_memcpy(
++                       rxchan,         /* DMA Channel */
++                       dst,            /* DAR */
++                       ssdr_addr,      /* SAR */
++                       len,            /* Data Length */
++                       flag);          /* Flag */
++       if (!rxdesc) {
++               dev_WARN(&drv_data->pdev->dev, "can not prep dma memcpy");
++               mutex_unlock(&drv_data->mutex);
++               return -EFAULT;
++       }
++       /* Only 1 READ at a time allowed. do it at end to avoid clear&wakeu=
+p*/
++       if (test_and_set_bit(I2S_PORT_READ_BUSY, &drv_data->flags)) {
++               dma_unmap_single(NULL, dst, len, DMA_FROM_DEVICE);
++               dev_WARN(&drv_data->pdev->dev, "RD reject I2S_PORT READ_BUS=
+Y");
++               mutex_unlock(&drv_data->mutex);
++               return -EBUSY;
++       }
++       dev_dbg(&(drv_data->pdev->dev), "RD dma tx submit\n");
++       rxdesc->callback =3D i2s_read_done;
++       drv_data->read_param =3D param;
++       rxdesc->callback_param =3D drv_data;
++       rxdesc->tx_submit(rxdesc);
++       mutex_unlock(&drv_data->mutex);
++       return 0;
++}
++EXPORT_SYMBOL_GPL(intel_mid_i2s_rd_req);
++
++/**
++ * intel_mid_i2s_wr_req - request a write to i2s peripheral
++ * @drv_data : handle of corresponding ssp i2s (given by i2s_open function)
++ * @src : source buffer where the samples to wrote should be get
++ * @len : number of sample to be read (160 samples only right now)
++ * @param : private context parameter to give back to write callback
++ *
++ * Output parameters
++ *      error : 0 means no error
++ */
++int intel_mid_i2s_wr_req(struct intel_mid_i2s_hdl *drv_data, u32 *source, =
+size_t len, void *param)
++{
++       dma_addr_t ssdr_addr;
++       struct dma_async_tx_descriptor *txdesc =3D NULL;
++       struct dma_chan *txchan =3D drv_data->txchan;
++       enum dma_ctrl_flags flag;
++       dma_addr_t src;
++       WARN(!drv_data, "Driver data=3DNULL\n");
++       if (!drv_data)
++               return -EFAULT;
++       mutex_lock(&drv_data->mutex);
++       if (!txchan) {
++               dev_WARN(&(drv_data->pdev->dev), "wr_req but no txchan\n");
++               mutex_unlock(&drv_data->mutex);
++               return -EINVAL;
++       }
++       if (!len) {
++               dev_WARN(&drv_data->pdev->dev, "invalid len 0");
++               mutex_unlock(&drv_data->mutex);
++               return -EINVAL;
++       }
++       if (!test_bit(I2S_PORT_OPENED, &drv_data->flags)) {
++               dev_WARN(&drv_data->pdev->dev, "WR reject I2S_PORT NOT_OPEN=
+ED");
++               mutex_unlock(&drv_data->mutex);
++               return -EPERM;
++       }
++       if (test_bit(I2S_PORT_CLOSING, &drv_data->flags)) {
++               dev_WARN(&drv_data->pdev->dev, "WR reject I2S_PORT CLOSING"=
+);
++               mutex_unlock(&drv_data->mutex);
++               return -EPIPE;
++       }
++
++       dev_dbg(&drv_data->pdev->dev, "I2S_WRITE() src=3D%p, len=3D%d, drv_=
+data=3D%p", source, len, drv_data);
++
++       src =3D dma_map_single(NULL, source, len, DMA_TO_DEVICE);
++       if (!src) {
++               dev_WARN(&drv_data->pdev->dev, "can't map DMA address %p", =
+source);
++               mutex_unlock(&drv_data->mutex);
++               return -EFAULT;
++       }
++       drv_data->write_src =3D src;
++       drv_data->write_len =3D len;
++       /* get Data Read/Write address */
++       ssdr_addr =3D (dma_addr_t)(u32)(drv_data->paddr + OFFSET_SSDR);
++       set_SSCR1_reg((drv_data->ioaddr), TSRE);
++       change_SSCR0_reg((drv_data->ioaddr), TIM,
++                        ((drv_data->current_settings).tx_fifo_interrupt));
++       flag =3D DMA_PREP_INTERRUPT | DMA_CTRL_ACK;
++       txdesc =3D txchan->device->device_prep_dma_memcpy(
++                       txchan,         /* DMA Channel */
++                       ssdr_addr,      /* DAR */
++                       src,            /* SAR */
++                       len,            /* Data Length */
++                       flag);          /* Flag */
++       if (!txdesc) {
++               dev_WARN(&(drv_data->pdev->dev),
++                       "wr_req dma memcpy FAILED(src=3D%08x,len=3D%d,txcha=
+n=3D%p)\n",
++                       src, len, txchan);
++               mutex_unlock(&drv_data->mutex);
++               return -1;
++       }
++       dev_dbg(&(drv_data->pdev->dev), "WR dma tx summit\n");
++       /* Only 1 WRITE at a time allowed */
++       if (test_and_set_bit(I2S_PORT_WRITE_BUSY, &drv_data->flags)) {
++               dma_unmap_single(NULL, src, len, DMA_TO_DEVICE);
++               dev_WARN(&drv_data->pdev->dev, "WR reject I2S_PORT WRITE_BU=
+SY");
++               mutex_unlock(&drv_data->mutex);
++               return -EBUSY;
++       }
++       txdesc->callback =3D i2s_write_done;
++       drv_data->write_param =3D param;
++       txdesc->callback_param =3D drv_data;
++       txdesc->tx_submit(txdesc);
++       dev_dbg(&(drv_data->pdev->dev), "wr dma req programmed\n");
++       mutex_unlock(&drv_data->mutex);
++       return 0;
++}
++EXPORT_SYMBOL_GPL(intel_mid_i2s_wr_req);
++
++/**
++ * intel_mid_i2s_open - reserve and start a SSP depending of it's usage
++ * @usage : select which ssp i2s you need by giving usage (BT,MODEM...)
++ * @ps_settings : hardware settings to configure the SSP module
++ *
++ * May sleep (driver_find_device) : no lock permitted when called.
++ *
++ * Output parameters
++ *      handle : handle of the selected SSP, or NULL if not found
++ */
++struct intel_mid_i2s_hdl *intel_mid_i2s_open(enum intel_mid_i2s_ssp_usage =
+usage,
++                        const struct intel_mid_i2s_settings *ps_settings)
++{
++       struct pci_dev *pdev;
++       struct intel_mid_i2s_hdl *drv_data =3D NULL;
++       struct device *found_device =3D NULL;
++       pr_debug("%s : open called,searching for device with usage=3D%x !\n=
+", DRIVER_NAME, usage);
++       found_device =3D driver_find_device(&(intel_mid_i2s_driver.driver),=
+ NULL, &usage, check_device);
++       if (!found_device) {
++               pr_debug("%s : open can not found with usage=3D0x%02X\n", D=
+RIVER_NAME, (int)usage);
++               return NULL;
++       }
++       pdev =3D to_pci_dev(found_device);
++       drv_data =3D pci_get_drvdata(pdev);
++
++       if (!drv_data) {
++               dev_err(found_device, "no drv_data in open pdev=3D%p\n", pd=
+ev);
++               put_device(found_device);
++               return NULL;
++       }
++       mutex_lock(&drv_data->mutex);
++       dev_dbg(found_device, "Open found pdevice=3D0x%p\n", pdev);
++       /* pm_runtime */
++       pm_runtime_get_sync(&drv_data->pdev->dev);
++       /* dmac1 is already set during probe */
++       if (i2s_dma_start(drv_data) !=3D 0) {
++               dev_err(found_device, "Can not start DMA\n");
++               goto open_error;
++       }
++       /* if we restart after stop without suspend, we start ssp faster */
++       drv_data->current_settings =3D *ps_settings;
++       set_ssp_i2s_hw(drv_data, ps_settings);
++
++       drv_data->mask_sr =3D ((SSSR_BCE_MASK << SSSR_BCE_SHIFT) |
++                       (SSSR_EOC_MASK << SSSR_EOC_SHIFT) |
++                       (SSSR_ROR_MASK << SSSR_ROR_SHIFT) |
++                       (SSSR_TUR_MASK << SSSR_TUR_SHIFT) |
++                       (SSSR_TINT_MASK << SSSR_TINT_SHIFT) |
++                       (SSSR_PINT_MASK << SSSR_PINT_SHIFT));
++       if (test_bit(I2S_PORT_CLOSING, &drv_data->flags)) {
++               dev_err(&drv_data->pdev->dev, "Opening a closing I2S!");
++               goto open_error;
++       }
++       /* there is no need to "wake up" as we can not close an opening i2s=
+ */
++       clear_bit(I2S_PORT_WRITE_BUSY, &drv_data->flags);
++       clear_bit(I2S_PORT_READ_BUSY, &drv_data->flags);
++       mutex_unlock(&drv_data->mutex);
++       return drv_data;
++
++open_error:
++       put_device(found_device);
++       mutex_unlock(&drv_data->mutex);
++       return NULL;
++}
++EXPORT_SYMBOL_GPL(intel_mid_i2s_open);
++
++/**
++ * intel_mid_i2s_close - release and stop the SSP
++ * @drv_data : handle of corresponding ssp i2s (given by i2s_open function)
++ *
++ * WARNING: This is not -yet- allowed to call close from a read/write call=
+back !
++ *
++ * Output parameters
++ *      none
++ */
++void intel_mid_i2s_close(struct intel_mid_i2s_hdl *drv_data)
++{
++       void __iomem *reg;
++       WARN(!drv_data, "Driver data=3DNULL\n");
++       if (!drv_data)
++               return;
++       mutex_lock(&drv_data->mutex);
++       if (!test_bit(I2S_PORT_OPENED, &drv_data->flags)) {
++               dev_err(&drv_data->pdev->dev, "not opened but closing?");
++               mutex_unlock(&drv_data->mutex);
++               return;
++       }
++       /* to be modified to wait_event_interruptible_timeout */
++       set_bit(I2S_PORT_CLOSING, &drv_data->flags);
++       dev_dbg(&drv_data->pdev->dev, "Status bit pending write=3D%d read=
+=3D%d\n",
++                       test_bit(I2S_PORT_WRITE_BUSY, &drv_data->flags),
++                       test_bit(I2S_PORT_READ_BUSY, &drv_data->flags));
++       if (test_bit(I2S_PORT_WRITE_BUSY, &drv_data->flags) ||
++            test_bit(I2S_PORT_READ_BUSY, &drv_data->flags)) {
++               dev_dbg(&drv_data->pdev->dev, "Pending callback in close...=
+\n");
++       }
++
++       /* waiting below. To be replaced when "DMA_TERMINATE_ALL" fix avail=
+able */
++       wait_event(drv_data->wq_chan_closing,
++               ((!test_bit(I2S_PORT_WRITE_BUSY, &drv_data->flags)) &&
++                (!test_bit(I2S_PORT_READ_BUSY,  &drv_data->flags))));
++       /* release DMA Channel.. */
++       i2s_dma_stop(drv_data);
++       reg =3D drv_data->ioaddr;
++       dev_dbg(&drv_data->pdev->dev, "Stopping the SSP\n");
++       i2s_ssp_stop(drv_data);
++       put_device(&drv_data->pdev->dev);
++       write_SSCR0(0, reg);
++       /* pm runtime */
++       pm_runtime_put(&drv_data->pdev->dev);
++       dev_dbg(&(drv_data->pdev->dev), "SSP Stopped.\n");
++       clear_bit(I2S_PORT_CLOSING, &drv_data->flags);
++       clear_bit(I2S_PORT_OPENED, &drv_data->flags);
++       mutex_unlock(&drv_data->mutex);
++}
++EXPORT_SYMBOL_GPL(intel_mid_i2s_close);
++/*
++ * INTERNAL FUNCTIONS
++ */
++
++/**
++ * check_device -  return if the device is the usage we want (usage =3D*da=
+ta)
++ * @device_ptr : pointer on device struct
++ * @data : pointer pointer on usage we are looking for
++ *
++ * this is called for each device by find_device() from intel_mid_i2s_open=
+()
++ * Info : when found, the flag of driver is set to I2S_PORT_OPENED
++ *
++ * Output parameters
++ *      integer : return 0 means not the device or already started. go next
++ *               return !=3D 0 means stop the search and return this device
++ */
++static int
++check_device(struct device *device_ptr, void *data)
++{
++       struct pci_dev *pdev;
++       struct intel_mid_i2s_hdl *drv_data;
++       enum intel_mid_i2s_ssp_usage usage;
++       enum intel_mid_i2s_ssp_usage usage_to_find;
++
++       pdev =3D to_pci_dev(device_ptr);
++       WARN(!pdev, "Pci device=3DNULL\n");
++       if (!pdev)
++               return 0;
++       drv_data =3D (struct intel_mid_i2s_hdl *) pci_get_drvdata(pdev);
++       WARN(!drv_data, "Driver data=3DNULL\n");
++       if (!drv_data)
++               return 0;
++       dev_dbg(&(pdev->dev), "Check device pci_dev ptr =3D 0X%p\n", pdev);
++       usage_to_find =3D *((enum intel_mid_i2s_ssp_usage *) data);
++       usage =3D drv_data->usage;
++
++       /* Can be done in one "if" but separated in purpose : take care of
++        * test_and_set_bit that need to be done AFTER the check on usage.
++        */
++       if (usage =3D=3D usage_to_find) {
++               if (!test_and_set_bit(I2S_PORT_OPENED, &drv_data->flags))
++                       return 1;  /* Already opened, do not use this resul=
+t */
++       };
++       return 0; /* not usage we look for, or already opened */
++}
++
++/**
++ * i2s_read_done - callback from the _dma tasklet_ after read
++ * @arg : void pointer to that should be driver data (context)
++ *
++ * Output parameters
++ *      none
++ */
++static void i2s_read_done(void *arg)
++{
++       int status =3D 0;
++
++       struct intel_mid_i2s_hdl *drv_data =3D arg;
++       void *param_complete;
++       void __iomem *reg ;
++
++       WARN(!drv_data, "Driver data=3DNULL\n");
++       if (!drv_data)
++               return;
++       mutex_lock(&drv_data->mutex);
++       if (!test_bit(I2S_PORT_READ_BUSY, &drv_data->flags))
++               dev_WARN(&drv_data->pdev->dev, "spurious read dma complete"=
+);
++
++       dma_unmap_single(NULL, drv_data->read_dst,
++                        drv_data->read_len, DMA_FROM_DEVICE);
++       drv_data->read_len =3D 0;
++       reg =3D drv_data->ioaddr;
++       /* Rx fifo overrun Interrupt */
++       change_SSCR0_reg(reg, RIM, SSP_RX_FIFO_OVER_INT_DISABLE);
++       param_complete =3D drv_data->read_param;
++       /* Do not change order sequence:
++        * READ_BUSY clear, then test PORT_CLOSING
++        * wakeup for close() function
++        */
++       clear_bit(I2S_PORT_READ_BUSY, &drv_data->flags);
++       wake_up(&drv_data->wq_chan_closing);
++       if (test_bit(I2S_PORT_CLOSING, &drv_data->flags)) {
++               dev_dbg(&drv_data->pdev->dev, "read done waking up close");
++               mutex_unlock(&drv_data->mutex);
++               return;
++       }
++       mutex_unlock(&drv_data->mutex);
++       if (drv_data->read_callback !=3D NULL)
++               status =3D drv_data->read_callback(param_complete);
++       else
++               dev_warn(&drv_data->pdev->dev, "RD done but not callback se=
+t");
++
++}
++
++/**
++ * i2s_write_done() : callback from the _dma tasklet_ after write
++ * @arg : void pointer to that should be driver data (context)
++ *
++ * Output parameters
++ *      none
++ */
++static void i2s_write_done(void *arg)
++{
++       int status =3D 0;
++       void *param_complete;
++       struct intel_mid_i2s_hdl *drv_data =3D arg;
++       void __iomem *reg ;
++
++       WARN(!drv_data, "Driver data=3DNULL\n");
++       if (!drv_data)
++               return;
++       mutex_lock(&drv_data->mutex);
++       if (!test_bit(I2S_PORT_WRITE_BUSY, &drv_data->flags))
++               dev_warn(&drv_data->pdev->dev, "spurious write dma complete=
+");
++       dma_unmap_single(NULL, drv_data->read_dst,
++                        drv_data->read_len, DMA_TO_DEVICE);
++       drv_data->read_len =3D 0;
++       reg =3D drv_data->ioaddr;
++       change_SSCR0_reg(reg, TIM, SSP_TX_FIFO_UNDER_INT_DISABLE);
++       dev_dbg(&(drv_data->pdev->dev), "DMA channel disable..\n");
++       param_complete =3D drv_data->write_param;
++       /* Do not change order sequence:
++        * WRITE_BUSY clear, then test PORT_CLOSING
++        * wakeup for close() function
++        */
++       clear_bit(I2S_PORT_WRITE_BUSY, &drv_data->flags);
++       wake_up(&drv_data->wq_chan_closing);
++       if (test_bit(I2S_PORT_CLOSING, &drv_data->flags)) {
++               mutex_unlock(&drv_data->mutex);
++               dev_dbg(&drv_data->pdev->dev, "write done waking up close");
++               return;
++       }
++       mutex_unlock(&drv_data->mutex);
++       if (drv_data->write_callback !=3D NULL)
++               status =3D drv_data->write_callback(param_complete);
++       else
++               dev_warn(&drv_data->pdev->dev, "WR done but no callback set=
+");
++}
++
++static bool chan_filter(struct dma_chan *chan, void *param)
++{
++       struct intel_mid_i2s_hdl *drv_data =3D (struct intel_mid_i2s_hdl *)=
+param;
++       bool ret =3D false;
++
++       if (!drv_data->dmac1)
++               goto out;
++       if (chan->device->dev =3D=3D &drv_data->dmac1->dev)
++               ret =3D true;
 +out:
-+	return ret;
++       return ret;
 +}
 +
-+static struct snd_soc_platform_driver samsung_asoc_platform = {
-+	.ops		= &dma_ops,
-+	.pcm_new	= dma_new,
-+	.pcm_free	= dma_free_dma_buffers,
-+};
-+
-+static int __devinit samsung_asoc_platform_probe(struct platform_device *pdev)
-+{
-+	return snd_soc_register_platform(&pdev->dev, &samsung_asoc_platform);
-+}
-+
-+static int __devexit samsung_asoc_platform_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_platform(&pdev->dev);
-+	return 0;
-+}
-+
-+static struct platform_driver asoc_dma_driver = {
-+	.driver = {
-+		.name = "samsung-audio",
-+		.owner = THIS_MODULE,
-+	},
-+
-+	.probe = samsung_asoc_platform_probe,
-+	.remove = __devexit_p(samsung_asoc_platform_remove),
-+};
-+
-+static int __init samsung_asoc_init(void)
-+{
-+	return platform_driver_register(&asoc_dma_driver);
-+}
-+module_init(samsung_asoc_init);
-+
-+static void __exit samsung_asoc_exit(void)
-+{
-+	platform_driver_unregister(&asoc_dma_driver);
-+}
-+module_exit(samsung_asoc_exit);
-+
-+MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
-+MODULE_DESCRIPTION("Samsung ASoC DMA Driver");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:samsung-audio");
-diff --git a/sound/soc/samsung/dma.h b/sound/soc/samsung/dma.h
-new file mode 100644
-index 0000000..f8cd2b4
---- /dev/null
-+++ b/sound/soc/samsung/dma.h
-@@ -0,0 +1,30 @@
-+/*
-+ *  dma.h --
++/**
++ * i2s_dma_start - prepare and reserve dma channels
++ * @arg : intel_mid_i2s_hdl pointer to that should be driver data (context)
 + *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
++ * "ssp open" context and dmac1 should already be filled in drv_data
 + *
-+ *  ALSA PCM interface for the Samsung S3C24xx CPU
++ * Output parameters
++ *      int : should be zero, else it means error code
 + */
++static int i2s_dma_start(struct intel_mid_i2s_hdl *drv_data)
++{
++       struct intel_mid_dma_slave *rxs, *txs;
++       dma_cap_mask_t mask;
++       int retval =3D 0;
++       struct pci_dev *l_pdev;
 +
-+#ifndef _S3C_AUDIO_H
-+#define _S3C_AUDIO_H
++       dev_dbg(&drv_data->pdev->dev, "DMAC1 start\n");
++       drv_data->txchan =3D NULL;
++       drv_data->rxchan =3D NULL;
++       l_pdev =3D drv_data->pdev;
++       /* 1. init rx channel */
++       rxs =3D &drv_data->dmas_rx;
++       rxs->dirn =3D DMA_FROM_DEVICE;
++       rxs->hs_mode =3D LNW_DMA_HW_HS;
++       rxs->cfg_mode =3D LNW_DMA_PER_TO_MEM;
++       rxs->src_width =3D LNW_DMA_WIDTH_16BIT;
++       rxs->dst_width =3D LNW_DMA_WIDTH_32BIT;
++       rxs->src_msize =3D LNW_DMA_MSIZE_8;
++       rxs->dst_msize =3D LNW_DMA_MSIZE_8;
++       rxs->device_instance =3D drv_data->device_instance;
++       dma_cap_zero(mask);
++       dma_cap_set(DMA_MEMCPY, mask);
++       dma_cap_set(DMA_SLAVE, mask);
++       drv_data->rxchan =3D dma_request_channel(mask, chan_filter, drv_dat=
+a);
++       if (!drv_data->rxchan) {
++               dev_err(&(drv_data->pdev->dev),
++                       "Could not get Rx channel\n");
++               retval =3D -2;
++               goto err_exit;
++       }
++       drv_data->rxchan->private =3D rxs;
++       /* 2. init tx channel */
++       txs =3D &drv_data->dmas_tx;
++       txs->dirn =3D DMA_TO_DEVICE;
++       txs->hs_mode =3D LNW_DMA_HW_HS;
++       txs->cfg_mode =3D LNW_DMA_MEM_TO_PER;
++       txs->src_width =3D LNW_DMA_WIDTH_32BIT;
++       txs->dst_width =3D LNW_DMA_WIDTH_16BIT;
++       txs->src_msize =3D LNW_DMA_MSIZE_8;
++       txs->dst_msize =3D LNW_DMA_MSIZE_8;
++       txs->device_instance =3D drv_data->device_instance;
++       dma_cap_set(DMA_SLAVE, mask);
++       dma_cap_set(DMA_MEMCPY, mask);
++       drv_data->txchan =3D dma_request_channel(mask, chan_filter, drv_dat=
+a);
++       if (!drv_data->txchan) {
++               dev_err(&(drv_data->pdev->dev),
++                       "Could not get Tx channel\n");
++               retval =3D -3;
++               goto free_rxchan;
++       }
++       drv_data->txchan->private =3D txs;
++       return retval;
++free_rxchan:
++       dma_release_channel(drv_data->rxchan);
++err_exit:
++       return retval;
++}
 +
-+#define ST_RUNNING		(1<<0)
-+#define ST_OPENED		(1<<1)
++/**
++ * i2s_dma_stop - release dma channels
++ * @arg : struct intel_mid_i2s_hdl pointer to that should be driver data (=
+context)
++ *
++ * called by intel_mid_i2s_close() context
++ *
++ * Output parameters
++ *      none
++ */
++static void i2s_dma_stop(struct intel_mid_i2s_hdl *drv_data)
++{
++       dev_dbg(&drv_data->pdev->dev, "DMAC1 stop\n");
++       dma_release_channel(drv_data->txchan);
++       dma_release_channel(drv_data->rxchan);
++}
 +
-+struct s3c_dma_params {
-+	struct s3c2410_dma_client *client;	/* stream identifier */
-+	int channel;				/* Channel ID */
-+	dma_addr_t dma_addr;
-+	int dma_size;			/* Size of the DMA transfer */
-+};
++static void i2s_ssp_stop(struct intel_mid_i2s_hdl *drv_data)
++{
++       void __iomem *reg =3D drv_data->ioaddr;
++       dev_dbg(&drv_data->pdev->dev, "Stop SSP\n");
++       clear_SSCR0_reg(reg, SSE);
++}
 +
-+#define S3C24XX_DAI_I2S			0
++static void ssp1_dump_registers(struct intel_mid_i2s_hdl *drv_data)
++{
++       u32 irq_status;
++       void __iomem *reg =3D drv_data->ioaddr;
++       struct device *ddbg =3D &(drv_data->pdev->dev);
++       u32 status;
++       irq_status =3D read_SSSR(reg);
++       dev_dbg(ddbg, "dump SSSR=3D0x%08X\n", irq_status);
++       status =3D read_SSCR0(reg);
++       dev_dbg(ddbg, "dump SSCR0=3D0x%08X\n", status);
++       status =3D read_SSCR1(reg);
++       dev_dbg(ddbg, "dump SSCR1=3D0x%08X\n", status);
++       status =3D read_SSPSP(reg);
++       dev_dbg(ddbg, "dump SSPSP=3D0x%08X\n", status);
++       status =3D read_SSTSA(reg);
++       dev_dbg(ddbg, "dump SSTSA=3D0x%08X\n", status);
++       status =3D read_SSRSA(reg);
++       dev_dbg(ddbg, "dump SSRSA=3D0x%08X\n", status);
++       status =3D read_SSTO(reg);
++       dev_dbg(ddbg, "dump SSTO=3D0x%08X\n", status);
++       status =3D read_SSITR(reg);
++       dev_dbg(ddbg, "dump SSITR=3D0x%08X\n", status);
++       status =3D read_SSTSS(reg);
++       dev_dbg(ddbg, "dump SSTSS=3D0x%08X\n", status);
++       status =3D read_SSACD(reg);
++       dev_dbg(ddbg, "dump SSACD=3D0x%08X\n", status);
++}
 +
-+/* platform data */
-+extern struct snd_ac97_bus_ops s3c24xx_ac97_ops;
++/**
++ * i2s_int(): function that handles the SSP Interrupts (errors)
++ * @irq : IRQ Number
++ * @dev_id : structure that contains driver information
++ *
++ * This interrupts do nothing but warnings in case there is some problems
++ * in I2S connection (underruns, overruns...). This may be reported by add=
+ing a
++ * new interface to the driver, but not yet requested by "users" of this d=
+river
++ *
++ * Output parameters
++ *      NA
++ */
++static irqreturn_t i2s_int(int irq, void *dev_id)
++{
++       struct intel_mid_i2s_hdl *drv_data =3D dev_id;
++       void __iomem *reg;
++       u32 irq_status =3D 0;
++       u32 mask_status =3D 0;
++       struct device *ddbg =3D &(drv_data->pdev->dev);
++       reg =3D drv_data->ioaddr;
++       irq_status =3D read_SSSR(reg);
 +
++       if (!(irq_status & (drv_data->mask_sr))) {
++               return IRQ_NONE;
++       } else {
++               /* may be improved by using a tasklet to send the error
++                * (underrun,...) to client by using callback
++                */
++               if (irq_status & (SSSR_ROR_MASK << SSSR_ROR_SHIFT)) {
++                       dev_warn(ddbg,
++                               "ssp_int RX FIFO OVER RUN SSSR=3D0x%08X\n",
++                               irq_status);
++                       mask_status |=3D (SSSR_ROR_MASK << SSSR_ROR_SHIFT);
++
++               }
++               if (irq_status & (SSSR_TUR_MASK << SSSR_TUR_SHIFT)) {
++                       dev_warn(ddbg,
++                               "ssp_int TX FIFO UNDER RUN SSSR=3D0x%08X\n",
++                               irq_status);
++                       mask_status |=3D (SSSR_TUR_MASK << SSSR_TUR_SHIFT);
++
++               }
++               if (irq_status & (SSSR_TINT_MASK << SSSR_TINT_SHIFT)) {
++                       dev_warn(ddbg,
++                               "ssp_int RX TIME OUT SSSR=3D0x%08X\n",
++                               irq_status);
++                       mask_status |=3D (SSSR_TINT_MASK << SSSR_TINT_SHIFT=
+);
++
++               }
++               if (irq_status & (SSSR_PINT_MASK << SSSR_PINT_SHIFT)) {
++                       dev_warn(ddbg,
++                               "ssp_int TRAILING BYTE SSSR=3D0x%08X\n",
++                               irq_status);
++                       mask_status |=3D (SSSR_PINT_MASK << SSSR_PINT_SHIFT=
+);
++               }
++               if (irq_status & (SSSR_EOC_MASK << SSSR_EOC_SHIFT)) {
++                       dev_warn(ddbg,
++                               "ssp_int END OF CHAIN SSSR=3D0x%08X\n",
++                               irq_status);
++                       mask_status |=3D (SSSR_EOC_MASK << SSSR_EOC_SHIFT);
++               }
++               /* clear sticky bits */
++               write_SSSR((irq_status & mask_status), reg);
++       }
++       return IRQ_HANDLED;
++}
++
++/**
++ * calculate_sspsp_psp - separate function that calculate sspsp register
++ * @ps_settings : pointer of the settings struct
++ *
++ * this function is to simplify/clarify set_ssp_i2s_hw function
++ *
++ *
++ * Output parameters
++ *      u32 : calculated SSPSP register
++ */
++u32 calculate_sspsp_psp(const struct intel_mid_i2s_settings *ps_settings)
++{
++       u32 sspsp;
++       sspsp =3D SSPSP_reg(FSRT, ps_settings->ssp_frmsync_timing_bit)
++               |SSPSP_reg(ETDS,        ps_settings->ssp_end_transfer_state)
++               |SSPSP_reg(SCMODE,      ps_settings->ssp_serial_clk_mode)
++               |SSPSP_reg(DMYSTOP,     ps_settings->ssp_psp_T4)
++               |SSPSP_reg(SFRMDLY,     ps_settings->ssp_psp_T5)
++               |SSPSP_reg(SFRMWDTH,    ps_settings->ssp_psp_T6)
++               |SSPSP_reg(SFRMP,       ps_settings->ssp_frmsync_pol_bit);
++       return sspsp;
++}
++
++/*
++ * calculate_sscr0_psp: separate function that calculate sscr0 register
++ * @ps_settings : pointer of the settings struct
++ *
++ * this function is to simplify/clarify set_ssp_i2s_hw function
++ *
++ * Output parameters
++ *      u32 : calculated SSCR0 register
++ */
++u32 calculate_sscr0_psp(const struct intel_mid_i2s_settings *ps_settings)
++{
++       u16 l_ssp_data_size =3D ps_settings->data_size;
++       u32 sscr0;
++       if (l_ssp_data_size > 16) {
++               sscr0 =3D   SSCR0_reg(DSS, SSCR0_DataSize(l_ssp_data_size -=
+ 16))
++                       | SSCR0_reg(EDSS, 1);
++       } else {
++               sscr0 =3D   SSCR0_reg(DSS, SSCR0_DataSize(l_ssp_data_size))
++                       | SSCR0_reg(EDSS, 0);
++       }
++/*
++Can be replaced by code below :
++sscr0 =3D SSCR0_reg(DSS, (l_ssp_data_size - 1) & 0x0F)
++| SSCR0_reg(EDSS, ((l_ssp_data_size - 1) & 0x10) >> 8);
++*/
++       sscr0 |=3D SSCR0_reg(MOD, ps_settings->mode)
++               |SSCR0_reg(FRF, ps_settings->frame_format)
++               |SSCR0_reg(RIM, SSP_RX_FIFO_OVER_INT_DISABLE)
++               |SSCR0_reg(TIM, SSP_TX_FIFO_UNDER_INT_DISABLE);
++       return sscr0;
++}
++
++/**
++ * calculate_sscr1_psp - separate function that calculate sscr1 register
++ * @ps_settings : pointer of the settings struct
++ *
++ * this function is to simplify/clarify set_ssp_i2s_hw function
++ *
++ * Output parameters
++ *      u32 : calculated SSCR1 register
++ */
++u32 calculate_sscr1_psp(const struct intel_mid_i2s_settings *ps_settings)
++{
++       u32 sscr1;
++       sscr1 =3D SSCR1_reg(SFRMDIR,      ps_settings->sspsfrm_direction)
++               |SSCR1_reg(SCLKDIR,     ps_settings->sspslclk_direction)
++               |SSCR1_reg(TTELP,       ps_settings->tx_tristate_phase)
++               |SSCR1_reg(TTE, ps_settings->tx_tristate_enable)
++               |SSCR1_reg(TRAIL,       ps_settings->ssp_trailing_byte_mode)
++               |SSCR1_reg(TINTE,       ps_settings->ssp_rx_timeout_interru=
+pt_status)
++               |SSCR1_reg(PINTE,       ps_settings->ssp_trailing_byte_inte=
+rrupt_status)
++               |SSCR1_reg(LBM, ps_settings->ssp_loopback_mode_status)
++               |SSCR1_reg(RWOT,        ps_settings->ssp_duplex_mode)
++               |SSCR1_reg(RFT, SSCR1_RxTresh(ps_settings->ssp_rx_fifo_thre=
+shold))
++               |SSCR1_reg(TFT, SSCR1_TxTresh(ps_settings->ssp_tx_fifo_thre=
+shold));
++       return sscr1;
++}
++
++/**
++ * set_ssp_i2s_hw - configure the SSP driver according to the ps_settings
++ * @drv_data : structure that contains all details about the SSP Driver
++ * @ps_settings : structure that contains SSP Hardware settings
++ *
++ * it also store ps_settings the drv_data
++ *
++ * Output parameters
++ *      NA
++ */
++static void set_ssp_i2s_hw(struct intel_mid_i2s_hdl *drv_data,
++                       const struct intel_mid_i2s_settings *ps_settings)
++{
++       u32 sscr0 =3D 0;
++       u32 sscr1 =3D 0;
++       u32 sstsa =3D 0;
++       u32 ssrsa =3D 0;
++       u32 sspsp =3D 0;
++       u32 sssr =3D 0;
++       /* Get the SSP Settings */
++       u16 l_ssp_clk_frm_mode =3D 0xFF;
++       void __iomem *reg =3D drv_data->ioaddr;
++       struct device *ddbg =3D &(drv_data->pdev->dev);
++       dev_dbg(ddbg,
++               "setup SSP I2S PCM1 configuration\n");
++       if ((ps_settings->sspsfrm_direction =3D=3D SSPSFRM_MASTER_MODE)
++          && (ps_settings->sspslclk_direction =3D=3D SSPSCLK_MASTER_MODE))=
+ {
++               l_ssp_clk_frm_mode =3D SSP_IN_MASTER_MODE;
++       } else if ((ps_settings->sspsfrm_direction =3D=3D SSPSFRM_SLAVE_MOD=
+E)
++          && (ps_settings->sspslclk_direction =3D=3D SSPSCLK_SLAVE_MODE)) {
++               l_ssp_clk_frm_mode =3D SSP_IN_SLAVE_MODE;
++       } else {
++               dev_err(ddbg, "Unsupported I2S PCM1 configuration\n");
++               goto leave;
++       }
++       dev_dbg(ddbg, "SSPSFRM_DIRECTION:%d:\n",
++               ps_settings->sspsfrm_direction);
++       dev_dbg(ddbg, "SSPSCLK_DIRECTION:%d:\n",
++               ps_settings->sspslclk_direction);
++       if (ps_settings->frame_format !=3D PSP_FORMAT) {
++               dev_err(ddbg, "UNSUPPORTED FRAME FORMAT:%d:\n", ps_settings=
+->frame_format);
++               goto leave;
++       }
++       if ((ps_settings->ssp_tx_dma !=3D SSP_TX_DMA_ENABLE)
++       || (ps_settings->ssp_rx_dma !=3D SSP_RX_DMA_ENABLE)) {
++               dev_err(ddbg, "ONLY DMA MODE IS SUPPORTED");
++               goto leave;
++       }
++       /*********** DMA Transfer Mode ***********/
++       dev_dbg(ddbg, "FORMAT :%d:\n", ps_settings->frame_format);
++       sscr0 =3D calculate_sscr0_psp(ps_settings);
++       dev_dbg(ddbg, " sscr0 :0x%08X\n", sscr0);
++       sscr1 =3D calculate_sscr1_psp(ps_settings);
++       dev_dbg(ddbg, " sscr1 :0x%08X\n", sscr1);
++       if (ps_settings->mode =3D=3D SSP_IN_NETWORK_MODE) {
++               dev_dbg(ddbg, "MODE :%d:\n", ps_settings->mode);
++               sscr0 |=3D SSCR0_reg(FRDC, SSCR0_SlotsPerFrm(ps_settings->f=
+rame_rate_divider_control));
++               dev_dbg(ddbg, "sscr0 :0x%08X\n", sscr0);
++               sspsp =3D calculate_sspsp_psp(ps_settings);
++               dev_dbg(ddbg, "sspsp :0x%08X\n", sspsp);
++               /* set the active TX time slot (bitmap) */
++               sstsa =3D SSTSA_reg(TTSA, ps_settings->ssp_active_tx_slots_=
+map);
++               /* set the active RX time slot (bitmap) */
++               ssrsa =3D SSRSA_reg(RTSA, ps_settings->ssp_active_rx_slots_=
+map);
++               if (l_ssp_clk_frm_mode =3D=3D SSP_IN_MASTER_MODE) {
++                       switch (ps_settings->master_mode_clk_selection) {
++                       case SSP_ONCHIP_CLOCK:
++                               break;
++                       case SSP_NETWORK_CLOCK:
++                               sscr0 |=3D SSCR0_reg(NCS, 1);
++                               break;
++                       case SSP_EXTERNAL_CLOCK:
++                               sscr0 |=3D SSCR0_reg(ECS, 1);
++                               break;
++                       case SSP_ONCHIP_AUDIO_CLOCK:
++                               sscr0 |=3D SSCR0_reg(ACS, 1);
++                               break;
++                       default:
++                               dev_err(ddbg, "Master Mode clk selection UN=
+KNOWN");
++                               break;
++                       }
++                       sspsp |=3D SSPSP_reg(STRTDLY, ps_settings->ssp_psp_=
+T1)
++                               |SSPSP_reg(DMYSTRT, ps_settings->ssp_psp_T2=
+);
++               } else {        /* Set the Slave Clock Free Running Status =
+*/
++                       sscr1 |=3D SSCR1_reg(SCFR, ps_settings->slave_clk_f=
+ree_running_status);
++               }
++       } else {  /* SSP_IN_NORMAL_MODE */
++               dev_err(ddbg, "UNSUPPORTED MODE");
++               goto leave;
++       }
++
++       /* Clear status */
++       sssr =3D (SSSR_BCE_MASK << SSSR_BCE_SHIFT)
++            | (SSSR_TUR_MASK << SSSR_TUR_SHIFT)
++            | (SSSR_TINT_MASK << SSSR_TINT_SHIFT)
++            | (SSSR_PINT_MASK << SSSR_PINT_SHIFT)
++            | (SSSR_ROR_MASK << SSSR_ROR_SHIFT);
++       /* disable SSP */
++       clear_SSCR0_reg(reg, SSE);
++       dev_dbg(ddbg, "WRITE SSCR0 DISABLE\n");
++       /* Clear status */
++       write_SSSR(sssr, reg);
++       dev_dbg(ddbg, "WRITE SSSR: 0x%08X\n", sssr);
++       write_SSCR0(sscr0, reg);
++       dev_dbg(ddbg, "WRITE SSCR0\n");
++       /* first set CR1 without interrupt and service enables */
++       write_SSCR1(sscr1, reg);
++       write_SSPSP(sspsp, reg);
++       write_SSTSA(sstsa, reg);
++       write_SSRSA(ssrsa, reg);
++       /* set the time out for the reception */
++       write_SSTO(0, reg);
++       ssp1_dump_registers(drv_data);
++leave:
++       return;
++}
++
++static int
++intel_mid_i2s_find_usage(struct pci_dev *pdev,
++                        struct intel_mid_i2s_hdl *drv_data,
++                        enum intel_mid_i2s_ssp_usage *usage)
++{
++       int pos;
++       u8  adid;
++       int status =3D 0;
++
++       *usage =3D SSP_USAGE_UNASSIGNED;
++       pos =3D pci_find_capability(pdev, PCI_CAP_ID_VNDR);
++       dev_info((&pdev->dev),
++               "Probe/find capability (VNDR %d pos=3D0x%x)\n",
++               PCI_CAP_ID_VNDR, pos);
++       if (pos > 0) {
++               pos +=3D PCI_CAP_OFFSET_ADID;
++               pci_read_config_byte(pdev, pos, &adid);
++               dev_info(&(pdev->dev), "Vendor capability adid =3D 0x%x\n",=
+ adid);
++               if (adid =3D=3D PCI_CAP_ADID_I2S_BT_FM)
++                       *usage  =3D SSP_USAGE_BLUETOOTH_FM;
++               else if (adid =3D=3D PCI_CAP_ADID_I2S_MODEM)
++                       *usage  =3D SSP_USAGE_MODEM;
++               else
++                       *usage  =3D SSP_USAGE_UNASSIGNED;
++       }
++       /* If there is no capability, check with old PCI_ID */
++#ifdef BYPASS_ADID
++       if (*usage =3D=3D SSP_USAGE_UNASSIGNED) {
++               dev_warn(&(pdev->dev), "Vendor capability not present/inval=
+id\n");
++               switch (pdev->device) {
++               case MFLD_SSP1_DEVICE_ID:
++                       *usage  =3D SSP_USAGE_BLUETOOTH_FM;
++                       break;
++               case MFLD_SSP0_DEVICE_ID:
++                       *usage  =3D SSP_USAGE_MODEM;
++                       break;
++               }
++       }
 +#endif
-diff --git a/sound/soc/samsung/goni_wm8994.c b/sound/soc/samsung/goni_wm8994.c
++       if (*usage =3D=3D SSP_USAGE_UNASSIGNED) {
++               dev_info((&pdev->dev),
++                       "No probe for I2S PCI-ID: %04x:%04x, ADID(0x%x)=3D0=
+x%x\n",
++                       pdev->vendor, pdev->device, pos, adid);
++               status =3D -ENODEV;
++               goto err_find_usage;
++       }
++       dev_dbg(&(pdev->dev),
++               "Detected PCI SSP (ID: %04x:%04x) usage =3D%x\n",
++               pdev->vendor, pdev->device, *usage);
++       dev_dbg(&(pdev->dev),
++               " found PCI SSP controller(ID: %04x:%04x)\n",
++               pdev->vendor, pdev->device);
++       /* Init the driver data structure fields*/
++       switch (pdev->device) {
++       case MFLD_SSP1_DEVICE_ID:
++               drv_data->device_instance =3D DMA1C_DEVICE_INSTANCE_SSP1;
++               break;
++       case MFLD_SSP0_DEVICE_ID:
++               drv_data->device_instance =3D DMA1C_DEVICE_INSTANCE_SSP0;
++               break;
++       default:
++               dev_err(&(pdev->dev),
++                       "Can not determine dma device instance (PCI ID:%04x=
+)\n",
++                       pdev->device);
++               status =3D -ENODEV;
++               goto err_find_usage;
++       }
++       status =3D pci_enable_device(pdev);
++       if (status)
++               dev_err((&pdev->dev), "Can not enable device.Err=3D%d\n", s=
+tatus);
++err_find_usage:
++       return status;
++}
++
++/**
++ * intel_mid_i2s_probe - probing function for the pci selected
++ * @pdev : pci_dev pointer that is probed
++ * @ent : pci_device_id
++ *
++ * Output parameters
++ *      NA
++ */
++static int intel_mid_i2s_probe(struct pci_dev *pdev,
++                               const struct pci_device_id *ent)
++{
++       struct intel_mid_i2s_hdl *drv_data;
++       int status =3D 0;
++       enum intel_mid_i2s_ssp_usage usage;
++
++       drv_data =3D kzalloc(sizeof(struct intel_mid_i2s_hdl), GFP_KERNEL);
++       dev_dbg(&(pdev->dev), "%s Probe, drv_data =3D%p\n", DRIVER_NAME, dr=
+v_data);
++       if (!drv_data) {
++               dev_err((&pdev->dev), "Can't alloc driver data in probe\n");
++               status =3D -ENOMEM;
++               goto leave;
++       }
++       dev_info((&pdev->dev), "Detected PCI SSP (ID: %04x:%04x)\n", pdev->=
+vendor, pdev->device);
++       status =3D intel_mid_i2s_find_usage(pdev, drv_data, &usage);
++       if (status)
++               goto err_i2s_probe0;
++       mutex_init(&drv_data->mutex);
++       drv_data->pdev =3D pdev;
++       drv_data->usage =3D usage;
++       /*
++        * Get basic io resource and map it for SSP1 [BAR=3D0]
++        */
++       if ((pdev->device =3D=3D MFLD_SSP1_DEVICE_ID) ||
++           (pdev->device =3D=3D MFLD_SSP0_DEVICE_ID)) {
++               drv_data->paddr =3D pci_resource_start(pdev, MRST_SSP_BAR);
++               drv_data->iolen =3D pci_resource_len(pdev, MRST_SSP_BAR);
++               status =3D pci_request_region(pdev, MRST_SSP_BAR, dev_name(=
+&pdev->dev));
++               /* map bus memory into CPU space */
++               drv_data->ioaddr =3D pci_ioremap_bar(pdev, MRST_SSP_BAR);
++       } else {
++               dev_err(&pdev->dev,
++                       "Don't know which BAR to usefor this SSP PCDID=3D%x=
+\n",
++                       pdev->device);
++               status =3D -ENODEV;
++               goto err_i2s_probe1;
++       }
++       dev_dbg(&(pdev->dev), "paddr =3D : %x\n", drv_data->paddr);
++       dev_dbg(&(pdev->dev), "iolen =3D : %d\n", drv_data->iolen);
++       if (status) {
++               dev_err((&pdev->dev), "Can't request region. err=3D%d\n", s=
+tatus);
++               goto err_i2s_probe1;
++       }
++       if (!drv_data->ioaddr) {
++               dev_err((&pdev->dev), "ioremap_nocache error\n");
++               status =3D -ENOMEM;
++               goto err_i2s_probe2;
++       }
++       dev_dbg(&(pdev->dev), "ioaddr =3D : %p\n", drv_data->ioaddr);
++       /* prepare for DMA channel allocation */
++       /* get the pci_dev structure pointer */
++       /* Check the SSP, if SSP3, then another DMA is used (GPDMA..) */
++       if ((pdev->device =3D=3D MFLD_SSP1_DEVICE_ID) ||
++           (pdev->device =3D=3D MFLD_SSP0_DEVICE_ID)) {
++               drv_data->dmac1 =3D pci_get_device(PCI_VENDOR_ID_INTEL,
++                                                MFLD_LPE_DMA_DEVICE_ID,
++                                                NULL);
++       } else {
++               dev_err(&pdev->dev,
++                       "Don't know dma device ID for this SSP PCDID=3D%x\n=
+",
++                       pdev->device);
++               goto err_i2s_probe3;
++       }
++       /* in case the stop dma have to wait for end of callbacks   */
++       /* This will be removed when TERMINATE_ALL available in DMA */
++       init_waitqueue_head(&drv_data->wq_chan_closing);
++       if (!drv_data->dmac1) {
++               dev_err(&(drv_data->pdev->dev), "Can't find DMAC1, dma init=
+ failed\n");
++               status =3D -ENODEV;
++               goto err_i2s_probe3;
++       }
++       /* increment ref count of pci device structure already done by */
++       /* pci_get_device. will do a pci_dev_put when exiting the module */
++       pci_set_drvdata(pdev, drv_data);
++       /* set SSP FrameSync and CLK direction in INPUT mode in order
++        * to avoid disturbing peripherals
++        */
++       write_SSCR1((SSCR1_SFRMDIR_MASK<<SSCR1_SFRMDIR_SHIFT)
++                 | (SSCR1_SCLKDIR_MASK<<SSCR1_SCLKDIR_SHIFT),
++       drv_data->ioaddr);
++       /* Attach to IRQ */
++       drv_data->irq =3D pdev->irq;
++       dev_dbg(&(pdev->dev), "attaching to IRQ: %04x\n", pdev->irq);
++       status =3D request_irq(drv_data->irq, i2s_int, IRQF_SHARED, "i2s ss=
+p", drv_data);
++       if (status < 0) {
++               dev_err(&pdev->dev, "can not get IRQ. status err=3D%d\n", s=
+tatus);
++               goto err_i2s_probe3;
++       }
++       pm_runtime_enable(&(drv_data->pdev->dev));
++       goto leave;
++err_i2s_probe3:
++       iounmap(drv_data->ioaddr);
++err_i2s_probe2:
++       pci_release_region(pdev, MRST_SSP_BAR);
++err_i2s_probe1:
++       pci_disable_device(pdev);
++err_i2s_probe0:
++       kfree(drv_data);
++leave:
++       return status;
++}
++
++static void __devexit intel_mid_i2s_remove(struct pci_dev *pdev)
++{
++       struct intel_mid_i2s_hdl *drv_data;
++
++       drv_data =3D pci_get_drvdata(pdev);
++       if (!drv_data) {
++               dev_err(&pdev->dev, "no drv_data in pci device to remove!\n=
+");
++               goto leave;
++       }
++       if (test_bit(I2S_PORT_OPENED, &drv_data->flags)) {
++               dev_warn(&pdev->dev, "Not closed before removing pci_dev!\n=
+");
++               intel_mid_i2s_close(drv_data);
++       }
++       pci_set_drvdata(pdev, NULL);
++       /* Stop DMA is already done during close()  */
++       pci_dev_put(drv_data->dmac1);
++       /* Disable the SSP at the peripheral and SOC level */
++       write_SSCR0(0, drv_data->ioaddr);
++       free_irq(drv_data->irq, drv_data);
++       iounmap(drv_data->ioaddr);
++       pci_release_region(pdev, MRST_SSP_BAR);
++       pci_release_region(pdev, MRST_LPE_BAR);
++       pci_disable_device(pdev);
++       kfree(drv_data);
++leave:
++       return;
++}
++
++/**
++ * intel_mid_i2s_init - register pci driver
++ *
++ */
++static int __init intel_mid_i2s_init(void)
++{
++       return pci_register_driver(&intel_mid_i2s_driver);
++}
++
++static void __exit intel_mid_i2s_exit(void)
++{
++       pci_unregister_driver(&intel_mid_i2s_driver);
++}
++
++
++module_init(intel_mid_i2s_init);
++module_exit(intel_mid_i2s_exit);
++
++
++
+diff --git a/sound/pci/intel_mid_i2s/intel_mid_i2s.h b/sound/pci/intel_mid_=
+i2s/intel_mid_i2s.h
 new file mode 100644
-index 0000000..dcaf7c3
+index 0000000..ef29ce7
 --- /dev/null
-+++ b/sound/soc/samsung/goni_wm8994.c
-@@ -0,0 +1,309 @@
++++ b/sound/pci/intel_mid_i2s/intel_mid_i2s.h
+@@ -0,0 +1,500 @@
 +/*
-+ * goni_wm8994.c
-+ *
-+ * Copyright (C) 2010 Samsung Electronics Co.Ltd
-+ * Author: Chanwoo Choi <cw00.choi@samsung.com>
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
++  * <Driver for I2S protocol on SSP (Moorestown and Medfield hardware)>
++  * Copyright (c) 2010, Intel Corporation.
++  * Louis LE GALL <louis.le.gall intel.com>
++  *
++  * This program is free software; you can redistribute it and/or modify it
++  * under the terms and conditions of the GNU General Public License,
++  * version 2, as published by the Free Software Foundation.
++  *
++  * This program is distributed in the hope it will be useful, but WITHOUT
++  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License =
+for
++  * more details.
++  *
++  * You should have received a copy of the GNU General Public License alon=
+g with
++  * this program; if not, write to the Free Software Foundation, Inc.,
++  * 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
++  */
++#define DRIVER_NAME "I2S SSP Driver"
++/*
++ * Defines
++ */
++#define MFLD_SSP1_DEVICE_ID 0x0825     /* FOR MFLD */
++#define MRST_SSP0_DEVICE_ID 0x0815     /* FOR MRST */
++#define MFLD_SSP0_DEVICE_ID 0x0832     /* FOR MFLD */
++
++#define MRST_LPE_DMA_DEVICE_ID 0x0814
++#define MFLD_LPE_DMA_DEVICE_ID 0x0830
++
++/* SSP1 PCI device Base Address Register */
++#define MRST_SSP_BAR   0
++#define MRST_LPE_BAR   1
++#define DMA1C_DEVICE_INSTANCE_SSP0 0
++#define DMA1C_DEVICE_INSTANCE_SSP1 1
++#define OFFSET_SSCR0   0x00
++#define OFFSET_SSCR1   0x04
++#define OFFSET_SSSR            0x08
++#define OFFSET_SSITR   0x0c
++#define OFFSET_SSDR            0x10
++#define OFFSET_SSTO            0x28
++#define OFFSET_SSPSP   0x2c
++#define OFFSET_SSTSA   0x30    /* SSP Tx Timeslot Active */
++#define OFFSET_SSRSA   0x34    /* SSP Rx Timeslot Active */
++/* SST register map */
++#define OFFSET_LPE_CSR                 0x00
++#define OFFSET_LPE_PISR                        0x08
++#define OFFSET_LPE_PIMR                        0x10
++#define OFFSET_LPE_ISRX                        0x18
++#define OFFSET_LPE_IMRX                        0x28
++#define OFFSET_LPE_IPCX                        0x38    /* IPC IA-SST */
++#define OFFSET_LPE_IPCD                        0x40    /* IPC SST-IA */
++#define OFFSET_LPE_ISRD                        0x20    /* dummy register f=
+or*/
++                                               /* shim workaround   */
++#define OFFSET_LPE_SHIM_SIZE   0X44
++
++#define SSP_IN_MASTER_MODE             0x0
++#define SSP_IN_SLAVE_MODE              0x1
++
++/*
++ *     Macros
++ */
++#define DEFINE_SSP_REG(reg, off) \
++static inline u32 read_##reg(void *p) { return __raw_readl(p + (off)); } \
++static inline void write_##reg(u32 v, void *p) { __raw_writel(v, p + (off)=
+); }
++DEFINE_SSP_REG(SSCR0, 0x00)
++DEFINE_SSP_REG(SSCR1, 0x04)
++DEFINE_SSP_REG(SSSR, 0x08)
++DEFINE_SSP_REG(SSITR, 0x0c)
++DEFINE_SSP_REG(SSDR, 0x10)
++DEFINE_SSP_REG(SSTO, 0x28)
++DEFINE_SSP_REG(SSPSP, 0x2c)
++DEFINE_SSP_REG(SSTSA, 0x30)
++DEFINE_SSP_REG(SSRSA, 0x34)
++DEFINE_SSP_REG(SSTSS, 0x38)
++DEFINE_SSP_REG(SSACD, 0x3C)
++DEFINE_SSP_REG(I2CCTRL, 0x00);
++DEFINE_SSP_REG(I2CDATA, 0x04);
++/*
++ * Langwell SSP serial port register definitions
++ */
++#define SSCR0_DSS_MASK   0x0F  /* Data Size Select [4..16] */
++#define SSCR0_DSS_SHIFT  0
++#define SSCR0_FRF_MASK   0x03  /* FRame Format */
++#define SSCR0_FRF_SHIFT  4
++#define SSCR0_ECS_MASK   0x01  /* External clock select */
++#define SSCR0_ECS_SHIFT  6
++#define SSCR0_SSE_MASK   0x01  /* Synchronous Serial Port Enable */
++#define SSCR0_SSE_SHIFT  7
++#define SSCR0_SCR_MASK   0xFFF /* Not implemented */
++#define SSCR0_SCR_SHIFT  8
++#define SSCR0_EDSS_MASK  0x1   /* Extended data size select */
++#define SSCR0_EDSS_SHIFT 20
++#define SSCR0_NCS_MASK   0x1   /* Network clock select */
++#define SSCR0_NCS_SHIFT  21
++#define SSCR0_RIM_MASK   0x1   /* Receive FIFO overrrun int mask */
++#define SSCR0_RIM_SHIFT  22
++#define SSCR0_TIM_MASK   0x1   /* Transmit FIFO underrun int mask */
++#define SSCR0_TIM_SHIFT  23
++#define SSCR0_FRDC_MASK  0x7   /* Frame Rate Divider Control */
++#define SSCR0_FRDC_SHIFT 24
++#define SSCR0_ACS_MASK   0x1   /* Audio clock select */
++#define SSCR0_ACS_SHIFT  30
++#define SSCR0_MOD_MASK   0x1   /* Mode (normal or network) */
++#define SSCR0_MOD_SHIFT  31
++
++#define SSCR0_DataSize(x)     ((x) - 1)        /* Data Size Select [4..16]=
+ */
++#define SSCR0_SlotsPerFrm(x)  ((x) - 1)        /* Time slots per frame */
++#define SSCR0_SerClkDiv(x)    ((x) - 1)        /* Divisor [1..4096],... */
++                                        /*...not implemented on Langwell */
++#define SSCR1_TTELP_MASK     0x1       /* TXD Tristate Enable on Last Phas=
+e */
++#define SSCR1_TTELP_SHIFT    31
++#define SSCR1_TTE_MASK      0x1        /* TXD Tristate Enable */
++#define SSCR1_TTE_SHIFT      30
++#define SSCR1_EBCEI_MASK     0x1       /* Enable Bit Count Error Interrupt=
+ */
++#define SSCR1_EBCEI_SHIFT    29
++#define SSCR1_SCFR_MASK      0x1       /* Slave Clock Running */
++#define SSCR1_SCFR_SHIFT     28
++#define SSCR1_ECRA_MASK      0x1       /* Enable Clock Request A */
++#define SSCR1_ECRA_SHIFT     27
++#define SSCR1_ECRB_MASK      0x1       /* Enable Clock Request B */
++#define SSCR1_ECRB_SHIFT     26
++#define SSCR1_SCLKDIR_MASK   0x1       /* SSPCLK Direction */
++#define SSCR1_SCLKDIR_SHIFT  25
++#define SSCR1_SFRMDIR_MASK   0x1       /* SSPFRM Direction */
++#define SSCR1_SFRMDIR_SHIFT  24
++#define SSCR1_RWOT_MASK      0x1       /* Receive without Transmit */
++#define SSCR1_RWOT_SHIFT     23
++#define SSCR1_TRAIL_MASK     0x1       /* Trailing Byte */
++#define SSCR1_TRAIL_SHIFT    22
++#define SSCR1_TSRE_MASK      0x1       /* DMA Transmit Service Request Ena=
+ble*/
++#define SSCR1_TSRE_SHIFT     21
++#define SSCR1_RSRE_MASK      0x1       /* DMA Receive Service Request Enab=
+le */
++#define SSCR1_RSRE_SHIFT     20
++#define SSCR1_TINTE_MASK     0x1       /* Receiver Time-out Interrupt Enab=
+le */
++#define SSCR1_TINTE_SHIFT    19
++#define SSCR1_PINTE_MASK     0x1       /* Periph. Trailing Byte Int. Enabl=
+e */
++#define SSCR1_PINTE_SHIFT    18
++#define SSCR1_IFS_MASK       0x1       /* Invert Frame Signal */
++#define SSCR1_IFS_SHIFT      16
++#define SSCR1_STFR_MASK      0x1       /* Select FIFO for EFWR: test mode =
+*/
++#define SSCR1_STFR_SHIFT     15
++#define SSCR1_EFWR_MASK      0x1       /* Enable FIFO Write/Read: test mod=
+e */
++#define SSCR1_EFWR_SHIFT     14
++#define SSCR1_RFT_MASK       0xF       /* Receive FIFO Trigger Threshold */
++#define SSCR1_RFT_SHIFT      10
++#define SSCR1_TFT_MASK       0xF       /* Transmit FIFO Trigger Threshold =
+*/
++#define SSCR1_TFT_SHIFT      6
++#define SSCR1_MWDS_MASK      0x1       /* Microwire Transmit Data Size */
++#define SSCR1_MWDS_SHIFT     5
++#define SSCR1_SPH_MASK       0x1       /* Motorola SPI SSPSCLK phase setti=
+ng */
++#define SSCR1_SPH_SHIFT      4
++#define SSCR1_SPO_MASK       0x1       /* Motorola SPI SSPSCLK polarity */
++#define SSCR1_SPO_SHIFT      3
++#define SSCR1_LBM_MASK       0x1       /* Loopback mode: test mode */
++#define SSCR1_LBM_SHIFT      2
++#define SSCR1_TIE_MASK       0x1       /* Transmit FIFO Interrupt Enable */
++#define SSCR1_TIE_SHIFT      1
++#define SSCR1_RIE_MASK       0x1       /* Receive FIFO Interrupt Enable */
++#define SSCR1_RIE_SHIFT      0
++
++#define SSCR1_RxTresh(x) ((x) - 1)     /* level [1..16] */
++#define SSCR1_TxTresh(x) ((x) - 1)     /* level [1..16] */
++
++#define SSPSP_FSRT_MASK      0x1       /* Frame Sync Relative Timing Bit */
++#define SSPSP_FSRT_SHIFT     25
++#define SSPSP_DMYSTOP_MASK   0x3       /* Dummy Stop in Number of SSPSCLKs=
+:T4*/
++#define SSPSP_DMYSTOP_SHIFT  23
++#define SSPSP_SFRMWDTH_MASK  0x3F      /* Serial Frame width : T6 */
++#define SSPSP_SFRMWDTH_SHIFT 16
++#define SSPSP_SFRMDLY_MASK   0x7F      /* Serial Fr. Delay in 1/2SSPSCLKs:=
+T5 */
++#define SSPSP_SFRMDLY_SHIFT  9
++#define SSPSP_DMYSTRT_MASK   0x3       /* Dummy Start in Number of SSPSCLK=
+s..*/
++#define SSPSP_DMYSTRT_SHIFT  7     /*...after STRTDLY, T2 (master mode onl=
+y) */
++#define SSPSP_STRTDLY_MASK   0x7       /* Start Delay, T1 (master mode onl=
+y) */
++#define SSPSP_STRTDLY_SHIFT  4
++#define SSPSP_ETDS_MASK      0x1       /* End of Transfer Data State */
++#define SSPSP_ETDS_SHIFT     3
++#define SSPSP_SFRMP_MASK     0x1       /* Serial Frame Polarity */
++#define SSPSP_SFRMP_SHIFT    2
++#define SSPSP_SCMODE_MASK    0x3       /* Serial bit-rate Clock Mode */
++#define SSPSP_SCMODE_SHIFT   0
++
++#define SSTSA_TTSA_MASK      0xFF
++#define SSTSA_TTSA_SHIFT     0
++
++#define SSRSA_RTSA_MASK      0xFF
++#define SSRSA_RTSA_SHIFT     0
++
++#define SSSR_BCE_MASK   0x1    /* Bit Count Error: Read/Write 1 to Clear */
++#define SSSR_BCE_SHIFT  23
++#define SSSR_CSS_MASK   0x1    /* Clock Synchronization Status */
++#define SSSR_CSS_SHIFT  22
++#define SSSR_TUR_MASK   0x1    /* Transmit FIFO UnderRun: Rd/Wr 1 to Clear=
+ */
++#define SSSR_TUR_SHIFT  21
++#define SSSR_EOC_MASK   0x1    /* End Of Chain: Read/Write 1 to Clear */
++#define SSSR_EOC_SHIFT  20
++#define SSSR_TINT_MASK  0x1    /* Receiver Time-out Interrupt:... */
++#define SSSR_TINT_SHIFT 19     /* ...Read/Write 1 to Clear */
++#define SSSR_PINT_MASK  0x1    /* Peripheral Trailing Byte Interrupt:... */
++#define SSSR_PINT_SHIFT 18     /* ...Read/Write 1 to Clear */
++#define SSSR_RFL_MASK   0xF    /* Receive FIFO Level */
++#define SSSR_RFL_SHIFT  12
++#define SSSR_TFL_MASK   0xF    /* Transmit FIFO Level */
++#define SSSR_TFL_SHIFT  8
++#define SSSR_ROR_MASK   0x1    /* Receive FIFO Overrun: Read/Write 1 to Cl=
+ear*/
++#define SSSR_ROR_SHIFT  7
++#define SSSR_RFS_MASK   0x1    /* Receive FIFO Service Request */
++#define SSSR_RFS_SHIFT  6
++#define SSSR_TFS_MASK   0x1    /* Transmit FIFO Service Request */
++#define SSSR_TFS_SHIFT  5
++#define SSSR_BSY_MASK   0x1    /* SSP Busy */
++#define SSSR_BSY_SHIFT  4
++#define SSSR_RNE_MASK   0x1    /* Receive FIFO not empty */
++#define SSSR_RNE_SHIFT  3
++#define SSSR_TFN_MASK   0x1    /* Transmit FIFO not Full */
++#define SSSR_TFN_SHIFT  2
++
++
++#define SSP_OFF 0
++#define SSP_ON  1
++
++/* bit I2S_PORT_OPENED lock for open/close
++ * bit I2S_PORT_READ_BUSY lock for read requests (serialized)
++ * bit I2S_PORT_WRITE_BUSY lock for write requests (serialized)
++ * bit I2S_PORT_CLOSING means close on going, waiting for pending callback=
+s.
 + */
 +
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/io.h>
-+#include <linux/platform_device.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/jack.h>
-+#include <asm/mach-types.h>
-+#include <mach/gpio.h>
-+#include <mach/regs-clock.h>
-+
-+#include <linux/mfd/wm8994/core.h>
-+#include <linux/mfd/wm8994/registers.h>
-+#include "../codecs/wm8994.h"
-+#include "dma.h"
-+#include "i2s.h"
-+
-+#define MACHINE_NAME	0
-+#define CPU_VOICE_DAI	1
-+
-+static const char *aquila_str[] = {
-+	[MACHINE_NAME] = "aquila",
-+	[CPU_VOICE_DAI] = "aquila-voice-dai",
++enum i2s_flags {
++       I2S_PORT_OPENED,
++       I2S_PORT_WRITE_BUSY,
++       I2S_PORT_READ_BUSY,
++       I2S_PORT_CLOSING
 +};
 +
-+static struct snd_soc_card goni;
-+static struct platform_device *goni_snd_device;
-+
-+/* 3.5 pie jack */
-+static struct snd_soc_jack jack;
-+
-+/* 3.5 pie jack detection DAPM pins */
-+static struct snd_soc_jack_pin jack_pins[] = {
-+	{
-+		.pin = "Headset Mic",
-+		.mask = SND_JACK_MICROPHONE,
-+	}, {
-+		.pin = "Headset Stereophone",
-+		.mask = SND_JACK_HEADPHONE | SND_JACK_MECHANICAL |
-+			SND_JACK_AVOUT,
-+	},
-+};
-+
-+/* 3.5 pie jack detection gpios */
-+static struct snd_soc_jack_gpio jack_gpios[] = {
-+	{
-+		.gpio = S5PV210_GPH0(6),
-+		.name = "DET_3.5",
-+		.report = SND_JACK_HEADSET | SND_JACK_MECHANICAL |
-+			SND_JACK_AVOUT,
-+		.debounce_time = 200,
-+	},
-+};
-+
-+static const struct snd_soc_dapm_widget goni_dapm_widgets[] = {
-+	SND_SOC_DAPM_SPK("Ext Left Spk", NULL),
-+	SND_SOC_DAPM_SPK("Ext Right Spk", NULL),
-+	SND_SOC_DAPM_SPK("Ext Rcv", NULL),
-+	SND_SOC_DAPM_HP("Headset Stereophone", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_MIC("Main Mic", NULL),
-+	SND_SOC_DAPM_MIC("2nd Mic", NULL),
-+	SND_SOC_DAPM_LINE("Radio In", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route goni_dapm_routes[] = {
-+	{"Ext Left Spk", NULL, "SPKOUTLP"},
-+	{"Ext Left Spk", NULL, "SPKOUTLN"},
-+
-+	{"Ext Right Spk", NULL, "SPKOUTRP"},
-+	{"Ext Right Spk", NULL, "SPKOUTRN"},
-+
-+	{"Ext Rcv", NULL, "HPOUT2N"},
-+	{"Ext Rcv", NULL, "HPOUT2P"},
-+
-+	{"Headset Stereophone", NULL, "HPOUT1L"},
-+	{"Headset Stereophone", NULL, "HPOUT1R"},
-+
-+	{"IN1RN", NULL, "Headset Mic"},
-+	{"IN1RP", NULL, "Headset Mic"},
-+
-+	{"IN1RN", NULL, "2nd Mic"},
-+	{"IN1RP", NULL, "2nd Mic"},
-+
-+	{"IN1LN", NULL, "Main Mic"},
-+	{"IN1LP", NULL, "Main Mic"},
-+
-+	{"IN2LN", NULL, "Radio In"},
-+	{"IN2RN", NULL, "Radio In"},
-+};
-+
-+static int goni_wm8994_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+	int ret;
-+
-+	/* add goni specific widgets */
-+	snd_soc_dapm_new_controls(codec, goni_dapm_widgets,
-+			ARRAY_SIZE(goni_dapm_widgets));
-+
-+	/* set up goni specific audio routes */
-+	snd_soc_dapm_add_routes(codec, goni_dapm_routes,
-+			ARRAY_SIZE(goni_dapm_routes));
-+
-+	/* set endpoints to not connected */
-+	snd_soc_dapm_nc_pin(codec, "IN2LP:VXRN");
-+	snd_soc_dapm_nc_pin(codec, "IN2RP:VXRP");
-+	snd_soc_dapm_nc_pin(codec, "LINEOUT1N");
-+	snd_soc_dapm_nc_pin(codec, "LINEOUT1P");
-+	snd_soc_dapm_nc_pin(codec, "LINEOUT2N");
-+	snd_soc_dapm_nc_pin(codec, "LINEOUT2P");
-+
-+	if (machine_is_aquila()) {
-+		snd_soc_dapm_nc_pin(codec, "SPKOUTRN");
-+		snd_soc_dapm_nc_pin(codec, "SPKOUTRP");
-+	}
-+
-+	snd_soc_dapm_sync(codec);
-+
-+	/* Headset jack detection */
-+	ret = snd_soc_jack_new(&goni, "Headset Jack",
-+			SND_JACK_HEADSET | SND_JACK_MECHANICAL | SND_JACK_AVOUT,
-+			&jack);
-+	if (ret)
-+		return ret;
-+
-+	ret = snd_soc_jack_add_pins(&jack, ARRAY_SIZE(jack_pins), jack_pins);
-+	if (ret)
-+		return ret;
-+
-+	ret = snd_soc_jack_add_gpios(&jack, ARRAY_SIZE(jack_gpios), jack_gpios);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int goni_hifi_hw_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	unsigned int pll_out = 24000000;
-+	int ret = 0;
-+
-+	/* set the cpu DAI configuration */
-+	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
-+			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-+			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the codec FLL */
-+	ret = snd_soc_dai_set_pll(codec_dai, WM8994_FLL1, 0, pll_out,
-+			params_rate(params) * 256);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the codec system clock */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, WM8994_SYSCLK_FLL1,
-+			params_rate(params) * 256, SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops goni_hifi_ops = {
-+	.hw_params = goni_hifi_hw_params,
-+};
-+
-+static int goni_voice_hw_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	unsigned int pll_out = 24000000;
-+	int ret = 0;
-+
-+	if (params_rate(params) != 8000)
-+		return -EINVAL;
-+
-+	/* set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_LEFT_J |
-+			SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the codec FLL */
-+	ret = snd_soc_dai_set_pll(codec_dai, WM8994_FLL2, 0, pll_out,
-+			params_rate(params) * 256);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the codec system clock */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, WM8994_SYSCLK_FLL2,
-+			params_rate(params) * 256, SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_driver voice_dai = {
-+	.name = "goni-voice-dai",
-+	.id = 0,
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_8000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_8000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+};
-+
-+static struct snd_soc_ops goni_voice_ops = {
-+	.hw_params = goni_voice_hw_params,
-+};
-+
-+static struct snd_soc_dai_link goni_dai[] = {
-+{
-+	.name = "WM8994",
-+	.stream_name = "WM8994 HiFi",
-+	.cpu_dai_name = "samsung-i2s.0",
-+	.codec_dai_name = "wm8994-hifi",
-+	.platform_name = "samsung-audio",
-+	.codec_name = "wm8994-codec.0-0x1a",
-+	.init = goni_wm8994_init,
-+	.ops = &goni_hifi_ops,
-+}, {
-+	.name = "WM8994 Voice",
-+	.stream_name = "Voice",
-+	.cpu_dai_name = "goni-voice-dai",
-+	.codec_dai_name = "wm8994-voice",
-+	.platform_name = "samsung-audio",
-+	.codec_name = "wm8994-codec.0-0x1a",
-+	.ops = &goni_voice_ops,
-+},
-+};
-+
-+static struct snd_soc_card goni = {
-+	.name = "goni",
-+	.dai_link = goni_dai,
-+	.num_links = ARRAY_SIZE(goni_dai),
-+};
-+
-+static int __init goni_init(void)
-+{
-+	int ret;
-+
-+	if (machine_is_aquila()) {
-+		voice_dai.name = aquila_str[CPU_VOICE_DAI];
-+		goni_dai[1].cpu_dai_name = aquila_str[CPU_VOICE_DAI];
-+		goni.name = aquila_str[MACHINE_NAME];
-+	} else if (!machine_is_goni())
-+		return -ENODEV;
-+
-+	goni_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!goni_snd_device)
-+		return -ENOMEM;
-+
-+	/* register voice DAI here */
-+	ret = snd_soc_register_dai(&goni_snd_device->dev, &voice_dai);
-+	if (ret)
-+		return ret;
-+
-+	platform_set_drvdata(goni_snd_device, &goni);
-+	ret = platform_device_add(goni_snd_device);
-+
-+	if (ret)
-+		platform_device_put(goni_snd_device);
-+
-+	return ret;
-+}
-+
-+static void __exit goni_exit(void)
-+{
-+	platform_device_unregister(goni_snd_device);
-+}
-+
-+module_init(goni_init);
-+module_exit(goni_exit);
-+
-+/* Module information */
-+MODULE_DESCRIPTION("ALSA SoC WM8994 GONI(S5PV210)");
-+MODULE_AUTHOR("Chanwoo Choi <cw00.choi@samsung.com>");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-new file mode 100644
-index 0000000..d5d8975
---- /dev/null
-+++ b/sound/soc/samsung/i2s.c
-@@ -0,0 +1,1251 @@
-+/* sound/soc/samsung/i2s.c
-+ *
-+ * ALSA SoC Audio Layer - Samsung I2S Controller driver
-+ *
-+ * Copyright (c) 2010 Samsung Electronics Co. Ltd.
-+ *	Jaswinder Singh <jassi.brar@samsung.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
++#define FIFO_SIZE 16
++/*
++ *     Structures Definition
 + */
 +
-+#include <linux/delay.h>
-+#include <linux/slab.h>
-+#include <linux/clk.h>
-+#include <linux/io.h>
++/**
++ * struct intel_mid_i2s_data - context struct to keep SSP I2S data
++ * @pdev: pci dev pointer corresponding to context
++ * @paddr:
++ * @ioaddr:
++ * @iolen:
++ * @irq:
++ * @clear_sr:
++ * @mask_sr:
++ * @dmac1:
++ * @dmas_tx: dma slave structure for transmit
++ * @dmas_rx: dma slave structure for receive
++ * @txchan: Dma channel for transmit
++ * @rxchan: Dma channel for receive
++ *
++ * @read_done:
++ * @read_dst:
++ * @read_len:
++ *
++ * @write_done:
++ * @write_src:
++ * @write_len:
++ *
++ * @mutex:  a mutex to make sure we have once-at-time critical functions.
++ *
++ * Longer description
++ */
 +
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
++/* Locking rules:
++ *
++ * All the fields, not listed below, are set during probe, and then read o=
+nly
++ * So they do not require locking
++ *
++ * The fields that require locking are related to the I2S read and write
++ * requests.
++ *
++ * We allow only 1 read at a time, and 1 write at a time.
++ * We allow read in parallel of write but use separate variables.
++ * We allow only 1 user per SSP/I2S port.
++ * Typically this user will be a dedicated PulseAudio RT thread communicat=
+ing
++ * with cmt-speech driver which in turns communicates with intel_mid_ssp
++ * driver.
++ * PCM mixing is done before access to kernel drivers;typically within
++ * PulseAudio or after; typically within the modem.
++ * So no concurrent users, per I2S channel, to this driver are allowed
++ * The read & write are triggered from a USER context
++ * The read & write callbacks are called from a BH context
++ * You should have not callback pending before calling close, close will w=
+ait
++ * for remaining callback calls.
++ * It is not allowed to call close function from read/write callback threa=
+ds.
++ *
++ * Locking is handled via drv_data->flags & atomic bitwise operations
++ *
++ * I2S0 is dedicated for PCM transfer to/from the modem module
++ * I2S1 is dedicated for PCM transfer to/from the Bluetooth or FM module
++ *
++ * read_done:
++ * read_len:
++ * read_dst:
++ *
++ * write_done:
++ * write_src:
++ * write_len:
++ *
++ * mutex:  a mutex to make sure we have once-at-time critical functions.
++ *             once-at-a-time actions functions are:
++ *                     -intel_mid_i2s_open
++ *                     -intel_mid_i2s_close
++ *                     -intel_mid_i2s_rd_req
++ *                     -intel_mid_i2s_wr_req
++ *                     -intel_mid_i2s_set_rd_cb
++ *                     -intel_mid_i2s_set_wr_cb
++ * These functions should not be called during a lock() neither in interru=
+pt.
++ */
 +
-+#include <plat/audio.h>
++struct intel_mid_i2s_hdl {
++       /* Driver model hookup */
++       struct pci_dev *pdev;
++       /* register addresses */
++       dma_addr_t paddr;
++       void __iomem *ioaddr;
++       u32 iolen;
++       int irq;
 +
-+#include "dma.h"
-+#include "i2s.h"
++       /* SSP masks */
++       u32 clear_sr;
++       u32 mask_sr;
 +
-+#define I2SCON		0x0
-+#define I2SMOD		0x4
-+#define I2SFIC		0x8
-+#define I2SPSR		0xc
-+#define I2STXD		0x10
-+#define I2SRXD		0x14
-+#define I2SFICS		0x18
-+#define I2STXDS		0x1c
++       /* SSP Configuration */
++       /* DMA info */
++       struct pci_dev *dmac1;
++       wait_queue_head_t wq_chan_closing;
 +
-+#define CON_RSTCLR		(1 << 31)
-+#define CON_FRXOFSTATUS		(1 << 26)
-+#define CON_FRXORINTEN		(1 << 25)
-+#define CON_FTXSURSTAT		(1 << 24)
-+#define CON_FTXSURINTEN		(1 << 23)
-+#define CON_TXSDMA_PAUSE	(1 << 20)
-+#define CON_TXSDMA_ACTIVE	(1 << 18)
++       struct intel_mid_dma_slave dmas_tx;
++       struct intel_mid_dma_slave dmas_rx;
++       struct dma_chan *txchan;
++       struct dma_chan *rxchan;
 +
-+#define CON_FTXURSTATUS		(1 << 17)
-+#define CON_FTXURINTEN		(1 << 16)
-+#define CON_TXFIFO2_EMPTY	(1 << 15)
-+#define CON_TXFIFO1_EMPTY	(1 << 14)
-+#define CON_TXFIFO2_FULL	(1 << 13)
-+#define CON_TXFIFO1_FULL	(1 << 12)
++       unsigned int device_instance;
++       /* Call back functions */
++       int (*read_callback)(void *param);
++       dma_addr_t read_dst;
++       size_t read_len;     /* read_len > 0 <=3D> read_dma_running */
++       void *read_param;        /* context param for callback */
++       int (*write_callback)(void *param);
++       dma_addr_t write_src;
++       size_t write_len;       /* write_len > 0 <=3D> read_dma_running */
++       void *write_param;      /* context param for callback */
 +
-+#define CON_LRINDEX		(1 << 11)
-+#define CON_TXFIFO_EMPTY	(1 << 10)
-+#define CON_RXFIFO_EMPTY	(1 << 9)
-+#define CON_TXFIFO_FULL		(1 << 8)
-+#define CON_RXFIFO_FULL		(1 << 7)
-+#define CON_TXDMA_PAUSE		(1 << 6)
-+#define CON_RXDMA_PAUSE		(1 << 5)
-+#define CON_TXCH_PAUSE		(1 << 4)
-+#define CON_RXCH_PAUSE		(1 << 3)
-+#define CON_TXDMA_ACTIVE	(1 << 2)
-+#define CON_RXDMA_ACTIVE	(1 << 1)
-+#define CON_ACTIVE		(1 << 0)
++       unsigned long flags;
++       struct mutex mutex;
++       enum intel_mid_i2s_ssp_usage usage;
 +
-+#define MOD_OPCLK_CDCLK_OUT	(0 << 30)
-+#define MOD_OPCLK_CDCLK_IN	(1 << 30)
-+#define MOD_OPCLK_BCLK_OUT	(2 << 30)
-+#define MOD_OPCLK_PCLK		(3 << 30)
-+#define MOD_OPCLK_MASK		(3 << 30)
-+#define MOD_TXS_IDMA		(1 << 28) /* Sec_TXFIFO use I-DMA */
++       struct intel_mid_i2s_settings current_settings;
 +
-+#define MOD_BLCS_SHIFT	26
-+#define MOD_BLCS_16BIT	(0 << MOD_BLCS_SHIFT)
-+#define MOD_BLCS_8BIT	(1 << MOD_BLCS_SHIFT)
-+#define MOD_BLCS_24BIT	(2 << MOD_BLCS_SHIFT)
-+#define MOD_BLCS_MASK	(3 << MOD_BLCS_SHIFT)
-+#define MOD_BLCP_SHIFT	24
-+#define MOD_BLCP_16BIT	(0 << MOD_BLCP_SHIFT)
-+#define MOD_BLCP_8BIT	(1 << MOD_BLCP_SHIFT)
-+#define MOD_BLCP_24BIT	(2 << MOD_BLCP_SHIFT)
-+#define MOD_BLCP_MASK	(3 << MOD_BLCP_SHIFT)
-+
-+#define MOD_C2DD_HHALF		(1 << 21) /* Discard Higher-half */
-+#define MOD_C2DD_LHALF		(1 << 20) /* Discard Lower-half */
-+#define MOD_C1DD_HHALF		(1 << 19)
-+#define MOD_C1DD_LHALF		(1 << 18)
-+#define MOD_DC2_EN		(1 << 17)
-+#define MOD_DC1_EN		(1 << 16)
-+#define MOD_BLC_16BIT		(0 << 13)
-+#define MOD_BLC_8BIT		(1 << 13)
-+#define MOD_BLC_24BIT		(2 << 13)
-+#define MOD_BLC_MASK		(3 << 13)
-+
-+#define MOD_IMS_SYSMUX		(1 << 10)
-+#define MOD_SLAVE		(1 << 11)
-+#define MOD_TXONLY		(0 << 8)
-+#define MOD_RXONLY		(1 << 8)
-+#define MOD_TXRX		(2 << 8)
-+#define MOD_MASK		(3 << 8)
-+#define MOD_LR_LLOW		(0 << 7)
-+#define MOD_LR_RLOW		(1 << 7)
-+#define MOD_SDF_IIS		(0 << 5)
-+#define MOD_SDF_MSB		(1 << 5)
-+#define MOD_SDF_LSB		(2 << 5)
-+#define MOD_SDF_MASK		(3 << 5)
-+#define MOD_RCLK_256FS		(0 << 3)
-+#define MOD_RCLK_512FS		(1 << 3)
-+#define MOD_RCLK_384FS		(2 << 3)
-+#define MOD_RCLK_768FS		(3 << 3)
-+#define MOD_RCLK_MASK		(3 << 3)
-+#define MOD_BCLK_32FS		(0 << 1)
-+#define MOD_BCLK_48FS		(1 << 1)
-+#define MOD_BCLK_16FS		(2 << 1)
-+#define MOD_BCLK_24FS		(3 << 1)
-+#define MOD_BCLK_MASK		(3 << 1)
-+#define MOD_8BIT		(1 << 0)
-+
-+#define MOD_CDCLKCON		(1 << 12)
-+
-+#define PSR_PSREN		(1 << 15)
-+
-+#define FIC_TX2COUNT(x)		(((x) >>  24) & 0xf)
-+#define FIC_TX1COUNT(x)		(((x) >>  16) & 0xf)
-+
-+#define FIC_TXFLUSH		(1 << 15)
-+#define FIC_RXFLUSH		(1 << 7)
-+#define FIC_TXCOUNT(x)		(((x) >>  8) & 0xf)
-+#define FIC_RXCOUNT(x)		(((x) >>  0) & 0xf)
-+#define FICS_TXCOUNT(x)		(((x) >>  8) & 0x7f)
-+
-+#define msecs_to_loops(t) (loops_per_jiffy / 1000 * HZ * t)
-+
-+struct i2s_dai {
-+	/* Platform device for this DAI */
-+	struct platform_device *pdev;
-+	/* IOREMAP'd SFRs */
-+	void __iomem	*addr;
-+	/* Physical base address of SFRs */
-+	u32	base;
-+	/* Rate of RCLK source clock */
-+	unsigned long rclk_srcrate;
-+	/* Frame Clock */
-+	unsigned frmclk;
-+	/*
-+	 * Specifically requested RCLK,BCLK by MACHINE Driver.
-+	 * 0 indicates CPU driver is free to choose any value.
-+	 */
-+	unsigned rfs, bfs;
-+	/* I2S Controller's core clock */
-+	struct clk *clk;
-+	/* Clock for generating I2S signals */
-+	struct clk *op_clk;
-+	/* Array of clock names for op_clk */
-+	const char **src_clk;
-+	/* Pointer to the Primary_Fifo if this is Sec_Fifo, NULL otherwise */
-+	struct i2s_dai *pri_dai;
-+	/* Pointer to the Secondary_Fifo if it has one, NULL otherwise */
-+	struct i2s_dai *sec_dai;
-+#define DAI_OPENED	(1 << 0) /* Dai is opened */
-+#define DAI_MANAGER	(1 << 1) /* Dai is the manager */
-+	unsigned mode;
-+	/* Driver for this DAI */
-+	struct snd_soc_dai_driver s3c_i2s_drv;
-+	/* DMA parameters */
-+	struct s3c_dma_params dma_playback;
-+	struct s3c_dma_params dma_capture;
-+	u32	quirks;
-+	u32	suspend_i2smod;
-+	u32	suspend_i2scon;
-+	u32	suspend_i2spsr;
 +};
 +
-+/* Lock for cross i/f checks */
-+static DEFINE_SPINLOCK(lock);
++static void i2s_read_done(void *arg);
++static void i2s_write_done(void *arg);
++static bool chan_filter(struct dma_chan *chan, void *param);
++static void i2s_dma_stop(struct intel_mid_i2s_hdl *drv_data);
++static int i2s_dma_start(struct intel_mid_i2s_hdl *drv_data);
++static void ssp1_dump_registers(struct intel_mid_i2s_hdl *);
++static irqreturn_t i2s_int(int irq, void *dev_id);
++static void set_ssp_i2s_hw(struct intel_mid_i2s_hdl *drv_data,
++               const struct intel_mid_i2s_settings *ps_settings);
++static int check_device(struct device *device_ptr, void *data);
++static int intel_mid_i2s_runtime_resume(struct device *device_ptr);
++static int intel_mid_i2s_runtime_suspend(struct device *device_ptr);
++static int intel_mid_i2s_probe(struct pci_dev *pdev,
++               const struct pci_device_id *ent);
++static void intel_mid_i2s_remove(struct pci_dev *pdev);
++static void i2s_ssp_stop(struct intel_mid_i2s_hdl *drv_data);
++/*static int bt_pcm_dma_init(struct intel_mid_i2s_hdl *drv_data);*/
 +
-+/* If this is the 'overlay' stereo DAI */
-+static inline bool is_secondary(struct i2s_dai *i2s)
-+{
-+	return i2s->pri_dai ? true : false;
-+}
-+
-+/* If operating in SoC-Slave mode */
-+static inline bool is_slave(struct i2s_dai *i2s)
-+{
-+	return (readl(i2s->addr + I2SMOD) & MOD_SLAVE) ? true : false;
-+}
-+
-+/* If this interface of the controller is transmitting data */
-+static inline bool tx_active(struct i2s_dai *i2s)
-+{
-+	u32 active;
-+
-+	if (!i2s)
-+		return false;
-+
-+	active = readl(i2s->addr + I2SMOD);
-+
-+	if (is_secondary(i2s))
-+		active &= CON_TXSDMA_ACTIVE;
-+	else
-+		active &= CON_TXDMA_ACTIVE;
-+
-+	return active ? true : false;
-+}
-+
-+/* If the other interface of the controller is transmitting data */
-+static inline bool other_tx_active(struct i2s_dai *i2s)
-+{
-+	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
-+
-+	return tx_active(other);
-+}
-+
-+/* If any interface of the controller is transmitting data */
-+static inline bool any_tx_active(struct i2s_dai *i2s)
-+{
-+	return tx_active(i2s) || other_tx_active(i2s);
-+}
-+
-+/* If this interface of the controller is receiving data */
-+static inline bool rx_active(struct i2s_dai *i2s)
-+{
-+	u32 active;
-+
-+	if (!i2s)
-+		return false;
-+
-+	active = readl(i2s->addr + I2SMOD) & CON_RXDMA_ACTIVE;
-+
-+	return active ? true : false;
-+}
-+
-+/* If the other interface of the controller is receiving data */
-+static inline bool other_rx_active(struct i2s_dai *i2s)
-+{
-+	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
-+
-+	return rx_active(other);
-+}
-+
-+/* If any interface of the controller is receiving data */
-+static inline bool any_rx_active(struct i2s_dai *i2s)
-+{
-+	return rx_active(i2s) || other_rx_active(i2s);
-+}
-+
-+/* If the other DAI is transmitting or receiving data */
-+static inline bool other_active(struct i2s_dai *i2s)
-+{
-+	return other_rx_active(i2s) || other_tx_active(i2s);
-+}
-+
-+/* If this DAI is transmitting or receiving data */
-+static inline bool this_active(struct i2s_dai *i2s)
-+{
-+	return tx_active(i2s) || rx_active(i2s);
-+}
-+
-+/* If the controller is active anyway */
-+static inline bool any_active(struct i2s_dai *i2s)
-+{
-+	return this_active(i2s) || other_active(i2s);
-+}
-+
-+static inline struct i2s_dai *to_info(struct snd_soc_dai *dai)
-+{
-+	return snd_soc_dai_get_drvdata(dai);
-+}
-+
-+static inline bool is_opened(struct i2s_dai *i2s)
-+{
-+	if (i2s && (i2s->mode & DAI_OPENED))
-+		return true;
-+	else
-+		return false;
-+}
-+
-+static inline bool is_manager(struct i2s_dai *i2s)
-+{
-+	if (is_opened(i2s) && (i2s->mode & DAI_MANAGER))
-+		return true;
-+	else
-+		return false;
-+}
-+
-+/* Read RCLK of I2S (in multiples of LRCLK) */
-+static inline unsigned get_rfs(struct i2s_dai *i2s)
-+{
-+	u32 rfs = (readl(i2s->addr + I2SMOD) >> 3) & 0x3;
-+
-+	switch (rfs) {
-+	case 3:	return 768;
-+	case 2: return 384;
-+	case 1:	return 512;
-+	default: return 256;
-+	}
-+}
-+
-+/* Write RCLK of I2S (in multiples of LRCLK) */
-+static inline void set_rfs(struct i2s_dai *i2s, unsigned rfs)
-+{
-+	u32 mod = readl(i2s->addr + I2SMOD);
-+
-+	mod &= ~MOD_RCLK_MASK;
-+
-+	switch (rfs) {
-+	case 768:
-+		mod |= MOD_RCLK_768FS;
-+		break;
-+	case 512:
-+		mod |= MOD_RCLK_512FS;
-+		break;
-+	case 384:
-+		mod |= MOD_RCLK_384FS;
-+		break;
-+	default:
-+		mod |= MOD_RCLK_256FS;
-+		break;
-+	}
-+
-+	writel(mod, i2s->addr + I2SMOD);
-+}
-+
-+/* Read Bit-Clock of I2S (in multiples of LRCLK) */
-+static inline unsigned get_bfs(struct i2s_dai *i2s)
-+{
-+	u32 bfs = (readl(i2s->addr + I2SMOD) >> 1) & 0x3;
-+
-+	switch (bfs) {
-+	case 3: return 24;
-+	case 2: return 16;
-+	case 1:	return 48;
-+	default: return 32;
-+	}
-+}
-+
-+/* Write Bit-Clock of I2S (in multiples of LRCLK) */
-+static inline void set_bfs(struct i2s_dai *i2s, unsigned bfs)
-+{
-+	u32 mod = readl(i2s->addr + I2SMOD);
-+
-+	mod &= ~MOD_BCLK_MASK;
-+
-+	switch (bfs) {
-+	case 48:
-+		mod |= MOD_BCLK_48FS;
-+		break;
-+	case 32:
-+		mod |= MOD_BCLK_32FS;
-+		break;
-+	case 24:
-+		mod |= MOD_BCLK_24FS;
-+		break;
-+	default:
-+		mod |= MOD_BCLK_16FS;
-+		break;
-+	}
-+
-+	writel(mod, i2s->addr + I2SMOD);
-+}
-+
-+/* Sample-Size */
-+static inline int get_blc(struct i2s_dai *i2s)
-+{
-+	int blc = readl(i2s->addr + I2SMOD);
-+
-+	blc = (blc >> 13) & 0x3;
-+
-+	switch (blc) {
-+	case 2: return 24;
-+	case 1:	return 8;
-+	default: return 16;
-+	}
-+}
-+
-+/* TX Channel Control */
-+static void s3c_i2sv2_txctrl(struct i2s_dai *i2s, int on)
-+{
-+	void __iomem *addr = i2s->addr;
-+	u32 con = readl(addr + I2SCON);
-+	u32 mod = readl(addr + I2SMOD) & ~MOD_MASK;
-+
-+	if (on) {
-+		con |= CON_ACTIVE;
-+		con &= ~CON_TXCH_PAUSE;
-+
-+		if (is_secondary(i2s)) {
-+			con |= CON_TXSDMA_ACTIVE;
-+			con &= ~CON_TXSDMA_PAUSE;
-+		} else {
-+			con |= CON_TXDMA_ACTIVE;
-+			con &= ~CON_TXDMA_PAUSE;
-+		}
-+
-+		if (any_rx_active(i2s))
-+			mod |= MOD_TXRX;
-+		else
-+			mod |= MOD_TXONLY;
-+	} else {
-+		if (is_secondary(i2s)) {
-+			con |=  CON_TXSDMA_PAUSE;
-+			con &= ~CON_TXSDMA_ACTIVE;
-+		} else {
-+			con |=  CON_TXDMA_PAUSE;
-+			con &= ~CON_TXDMA_ACTIVE;
-+		}
-+
-+		if (other_tx_active(i2s)) {
-+			writel(con, addr + I2SCON);
-+			return;
-+		}
-+
-+		con |=  CON_TXCH_PAUSE;
-+
-+		if (any_rx_active(i2s))
-+			mod |= MOD_RXONLY;
-+		else
-+			con &= ~CON_ACTIVE;
-+	}
-+
-+	writel(mod, addr + I2SMOD);
-+	writel(con, addr + I2SCON);
-+}
-+
-+/* RX Channel Control */
-+static void s3c_i2sv2_rxctrl(struct i2s_dai *i2s, int on)
-+{
-+	void __iomem *addr = i2s->addr;
-+	u32 con = readl(addr + I2SCON);
-+	u32 mod = readl(addr + I2SMOD) & ~MOD_MASK;
-+
-+	if (on) {
-+		con |= CON_RXDMA_ACTIVE | CON_ACTIVE;
-+		con &= ~(CON_RXDMA_PAUSE | CON_RXCH_PAUSE);
-+
-+		if (any_tx_active(i2s))
-+			mod |= MOD_TXRX;
-+		else
-+			mod |= MOD_RXONLY;
-+	} else {
-+		con |=  CON_RXDMA_PAUSE | CON_RXCH_PAUSE;
-+		con &= ~CON_RXDMA_ACTIVE;
-+
-+		if (any_tx_active(i2s))
-+			mod |= MOD_TXONLY;
-+		else
-+			con &= ~CON_ACTIVE;
-+	}
-+
-+	writel(mod, addr + I2SMOD);
-+	writel(con, addr + I2SCON);
-+}
-+
-+/* Flush FIFO of an interface */
-+static inline void s3c_i2sv2_fifo(struct i2s_dai *i2s, u32 flush)
-+{
-+	void __iomem *fic;
-+	u32 val;
-+
-+	if (!i2s)
-+		return;
-+
-+	if (is_secondary(i2s))
-+		fic = i2s->addr + I2SFICS;
-+	else
-+		fic = i2s->addr + I2SFIC;
-+
-+	/* Flush the FIFO */
-+	writel(readl(fic) | flush, fic);
-+
-+	/* Be patient */
-+	val = msecs_to_loops(1) / 1000; /* 1 usec */
-+	while (--val)
-+		cpu_relax();
-+
-+	writel(readl(fic) & ~flush, fic);
-+}
-+
-+static int s3c_i2sv2_set_sysclk(struct snd_soc_dai *dai,
-+	  int clk_id, unsigned int rfs, int dir)
-+{
-+	struct i2s_dai *i2s = to_info(dai);
-+	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
-+	u32 mod = readl(i2s->addr + I2SMOD);
-+
-+	switch (clk_id) {
-+	case SAMSUNG_I2S_CDCLK:
-+		/* Shouldn't matter in GATING(CLOCK_IN) mode */
-+		if (dir == SND_SOC_CLOCK_IN)
-+			rfs = 0;
-+
-+		if ((rfs && other->rfs && (other->rfs != rfs)) ||
-+				(any_active(i2s) &&
-+				(((dir == SND_SOC_CLOCK_IN)
-+					&& !(mod & MOD_CDCLKCON)) ||
-+				((dir == SND_SOC_CLOCK_OUT)
-+					&& (mod & MOD_CDCLKCON))))) {
-+			dev_err(&i2s->pdev->dev,
-+				"%s:%d Other DAI busy\n", __func__, __LINE__);
-+			return -EAGAIN;
-+		}
-+
-+		if (dir == SND_SOC_CLOCK_IN)
-+			mod |= MOD_CDCLKCON;
-+		else
-+			mod &= ~MOD_CDCLKCON;
-+
-+		i2s->rfs = rfs;
-+		break;
-+
-+	case SAMSUNG_I2S_RCLKSRC_0: /* clock corrsponding to IISMOD[10] := 0 */
-+	case SAMSUNG_I2S_RCLKSRC_1: /* clock corrsponding to IISMOD[10] := 1 */
-+		if ((i2s->quirks & QUIRK_NO_MUXPSR)
-+				|| (clk_id == SAMSUNG_I2S_RCLKSRC_0))
-+			clk_id = 0;
-+		else
-+			clk_id = 1;
-+
-+		if (!any_active(i2s)) {
-+			if (i2s->op_clk) {
-+				if ((clk_id && !(mod & MOD_IMS_SYSMUX)) ||
-+					(!clk_id && (mod & MOD_IMS_SYSMUX))) {
-+					clk_disable(i2s->op_clk);
-+					clk_put(i2s->op_clk);
-+				} else {
-+					return 0;
-+				}
-+			}
-+
-+			i2s->op_clk = clk_get(&i2s->pdev->dev,
-+						i2s->src_clk[clk_id]);
-+			clk_enable(i2s->op_clk);
-+			i2s->rclk_srcrate = clk_get_rate(i2s->op_clk);
-+
-+			/* Over-ride the other's */
-+			if (other) {
-+				other->op_clk = i2s->op_clk;
-+				other->rclk_srcrate = i2s->rclk_srcrate;
-+			}
-+		} else if ((!clk_id && (mod & MOD_IMS_SYSMUX))
-+				|| (clk_id && !(mod & MOD_IMS_SYSMUX))) {
-+			dev_err(&i2s->pdev->dev,
-+				"%s:%d Other DAI busy\n", __func__, __LINE__);
-+			return -EAGAIN;
-+		} else {
-+			/* Call can't be on the active DAI */
-+			i2s->op_clk = other->op_clk;
-+			i2s->rclk_srcrate = other->rclk_srcrate;
-+			return 0;
-+		}
-+
-+		if (clk_id == 0)
-+			mod &= ~MOD_IMS_SYSMUX;
-+		else
-+			mod |= MOD_IMS_SYSMUX;
-+		break;
-+
-+	default:
-+		dev_err(&i2s->pdev->dev, "We don't serve that!\n");
-+		return -EINVAL;
-+	}
-+
-+	writel(mod, i2s->addr + I2SMOD);
-+
-+	return 0;
-+}
-+
-+static int i2sv2_i2s_set_fmt(struct snd_soc_dai *dai,
-+	unsigned int fmt)
-+{
-+	struct i2s_dai *i2s = to_info(dai);
-+	u32 mod = readl(i2s->addr + I2SMOD);
-+	u32 tmp = 0;
-+
-+	/* Format is priority */
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		tmp |= MOD_LR_RLOW;
-+		tmp |= MOD_SDF_MSB;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		tmp |= MOD_LR_RLOW;
-+		tmp |= MOD_SDF_LSB;
-+		break;
-+	case SND_SOC_DAIFMT_I2S:
-+		tmp |= MOD_SDF_IIS;
-+		break;
-+	default:
-+		dev_err(&i2s->pdev->dev, "Format not supported\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Allow LRCLK-inverted version of the supported formats */
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		break;
-+	case SND_SOC_DAIFMT_NB_IF:
-+		if (tmp & MOD_LR_RLOW)
-+			tmp &= ~MOD_LR_RLOW;
-+		else
-+			tmp |= MOD_LR_RLOW;
-+		break;
-+	default:
-+		dev_err(&i2s->pdev->dev, "Polarity not supported\n");
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		tmp |= MOD_SLAVE;
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		/* Set default source clock in Master mode */
-+		if (i2s->rclk_srcrate == 0)
-+			s3c_i2sv2_set_sysclk(dai, SAMSUNG_I2S_RCLKSRC_0,
-+							0, SND_SOC_CLOCK_IN);
-+		break;
-+	default:
-+		dev_err(&i2s->pdev->dev, "master/slave format not supported\n");
-+		return -EINVAL;
-+	}
-+
-+	if (any_active(i2s) &&
-+			((mod & (MOD_SDF_MASK | MOD_LR_RLOW
-+				| MOD_SLAVE)) != tmp)) {
-+		dev_err(&i2s->pdev->dev,
-+				"%s:%d Other DAI busy\n", __func__, __LINE__);
-+		return -EAGAIN;
-+	}
-+
-+	mod &= ~(MOD_SDF_MASK | MOD_LR_RLOW | MOD_SLAVE);
-+	mod |= tmp;
-+	writel(mod, i2s->addr + I2SMOD);
-+
-+	return 0;
-+}
-+
-+static int s3c_i2sv2_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
-+{
-+	struct i2s_dai *i2s = to_info(dai);
-+	u32 mod = readl(i2s->addr + I2SMOD);
-+
-+	if (!is_secondary(i2s))
-+		mod &= ~(MOD_DC2_EN | MOD_DC1_EN);
-+
-+	switch (params_channels(params)) {
-+	case 6:
-+		mod |= MOD_DC2_EN;
-+	case 4:
-+		mod |= MOD_DC1_EN;
-+		break;
-+	case 2:
-+		break;
-+	default:
-+		dev_err(&i2s->pdev->dev, "%d channels not supported\n",
-+				params_channels(params));
-+		return -EINVAL;
-+	}
-+
-+	if (is_secondary(i2s))
-+		mod &= ~MOD_BLCS_MASK;
-+	else
-+		mod &= ~MOD_BLCP_MASK;
-+
-+	if (is_manager(i2s))
-+		mod &= ~MOD_BLC_MASK;
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S8:
-+		if (is_secondary(i2s))
-+			mod |= MOD_BLCS_8BIT;
-+		else
-+			mod |= MOD_BLCP_8BIT;
-+		if (is_manager(i2s))
-+			mod |= MOD_BLC_8BIT;
-+		break;
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		if (is_secondary(i2s))
-+			mod |= MOD_BLCS_16BIT;
-+		else
-+			mod |= MOD_BLCP_16BIT;
-+		if (is_manager(i2s))
-+			mod |= MOD_BLC_16BIT;
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		if (is_secondary(i2s))
-+			mod |= MOD_BLCS_24BIT;
-+		else
-+			mod |= MOD_BLCP_24BIT;
-+		if (is_manager(i2s))
-+			mod |= MOD_BLC_24BIT;
-+		break;
-+	default:
-+		dev_err(&i2s->pdev->dev, "Format(%d) not supported\n",
-+				params_format(params));
-+		return -EINVAL;
-+	}
-+	writel(mod, i2s->addr + I2SMOD);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		snd_soc_dai_set_dma_data(dai, substream,
-+			(void *)&i2s->dma_playback);
-+	else
-+		snd_soc_dai_set_dma_data(dai, substream,
-+			(void *)&i2s->dma_capture);
-+
-+	i2s->frmclk = params_rate(params);
-+
-+	return 0;
-+}
-+
-+/* We set constraints on the substream acc to the version of I2S */
-+static int s3c_i2sv2_startup(struct snd_pcm_substream *substream,
-+	  struct snd_soc_dai *dai)
-+{
-+	struct i2s_dai *i2s = to_info(dai);
-+	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&lock, flags);
-+
-+	i2s->mode |= DAI_OPENED;
-+
-+	if (is_manager(other))
-+		i2s->mode &= ~DAI_MANAGER;
-+	else
-+		i2s->mode |= DAI_MANAGER;
-+
-+	/* Enforce set_sysclk in Master mode */
-+	i2s->rclk_srcrate = 0;
-+
-+	spin_unlock_irqrestore(&lock, flags);
-+
-+	return 0;
-+}
-+
-+static void s3c_i2sv2_shutdown(struct snd_pcm_substream *substream,
-+	struct snd_soc_dai *dai)
-+{
-+	struct i2s_dai *i2s = to_info(dai);
-+	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&lock, flags);
-+
-+	i2s->mode &= ~DAI_OPENED;
-+	i2s->mode &= ~DAI_MANAGER;
-+
-+	if (is_opened(other))
-+		other->mode |= DAI_MANAGER;
-+
-+	/* Reset any constraint on RFS and BFS */
-+	i2s->rfs = 0;
-+	i2s->bfs = 0;
-+
-+	spin_unlock_irqrestore(&lock, flags);
-+
-+	/* Gate CDCLK by default */
-+	if (!is_opened(other))
-+		s3c_i2sv2_set_sysclk(dai, SAMSUNG_I2S_CDCLK,
-+				0, SND_SOC_CLOCK_IN);
-+}
-+
-+static int config_setup(struct i2s_dai *i2s)
-+{
-+	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
-+	unsigned rfs, bfs, blc;
-+	u32 psr;
-+
-+	blc = get_blc(i2s);
-+
-+	bfs = i2s->bfs;
-+
-+	if (!bfs && other)
-+		bfs = other->bfs;
-+
-+	/* Select least possible multiple(2) if no constraint set */
-+	if (!bfs)
-+		bfs = blc * 2;
-+
-+	rfs = i2s->rfs;
-+
-+	if (!rfs && other)
-+		rfs = other->rfs;
-+
-+	if ((rfs == 256 || rfs == 512) && (blc == 24)) {
-+		dev_err(&i2s->pdev->dev,
-+			"%d-RFS not supported for 24-blc\n", rfs);
-+		return -EINVAL;
-+	}
-+
-+	if (!rfs) {
-+		if (bfs == 16 || bfs == 32)
-+			rfs = 256;
-+		else
-+			rfs = 384;
-+	}
-+
-+	/* If already setup and running */
-+	if (any_active(i2s) && (get_rfs(i2s) != rfs || get_bfs(i2s) != bfs)) {
-+		dev_err(&i2s->pdev->dev,
-+				"%s:%d Other DAI busy\n", __func__, __LINE__);
-+		return -EAGAIN;
-+	}
-+
-+	/* We don't care about BFS in Slave mode */
-+	if (is_slave(i2s))
-+		return 0;
-+
-+	set_bfs(i2s, bfs);
-+	set_rfs(i2s, rfs);
-+
-+	if (!(i2s->quirks & QUIRK_NO_MUXPSR)) {
-+		psr = i2s->rclk_srcrate / i2s->frmclk / rfs;
-+		writel(((psr - 1) << 8) | PSR_PSREN, i2s->addr + I2SPSR);
-+		dev_dbg(&i2s->pdev->dev,
-+			"RCLK_SRC=%luHz PSR=%u, RCLK=%dfs, BCLK=%dfs\n",
-+				i2s->rclk_srcrate, psr, rfs, bfs);
-+	}
-+
-+	return 0;
-+}
-+
-+static int i2sv2_i2s_trigger(struct snd_pcm_substream *substream,
-+	int cmd, struct snd_soc_dai *dai)
-+{
-+	int capture = (substream->stream == SNDRV_PCM_STREAM_CAPTURE);
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct i2s_dai *i2s = to_info(rtd->cpu_dai);
-+	unsigned long flags;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		local_irq_save(flags);
-+
-+		if (capture)
-+			s3c_i2sv2_fifo(i2s, FIC_RXFLUSH);
-+		else
-+			s3c_i2sv2_fifo(i2s, FIC_TXFLUSH);
-+
-+		if (config_setup(i2s)) {
-+			local_irq_restore(flags);
-+			return -EINVAL;
-+		}
-+
-+		if (capture)
-+			s3c_i2sv2_rxctrl(i2s, 1);
-+		else
-+			s3c_i2sv2_txctrl(i2s, 1);
-+
-+		local_irq_restore(flags);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		local_irq_save(flags);
-+
-+		if (capture)
-+			s3c_i2sv2_rxctrl(i2s, 0);
-+		else
-+			s3c_i2sv2_txctrl(i2s, 0);
-+
-+		local_irq_restore(flags);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int i2sv2_i2s_set_clkdiv(struct snd_soc_dai *dai,
-+	int div_id, int div)
-+{
-+	struct i2s_dai *i2s = to_info(dai);
-+	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
-+
-+	if (div_id == SAMSUNG_I2S_DIV_BCLK) {
-+		if ((any_active(i2s) && div && (get_bfs(i2s) != div))
-+			|| (other && other->bfs && (other->bfs != div))) {
-+			dev_err(&i2s->pdev->dev,
-+				"%s:%d Other DAI busy\n", __func__, __LINE__);
-+			return -EAGAIN;
-+		}
-+		i2s->bfs = div;
-+	} else {
-+		dev_err(&i2s->pdev->dev,
-+			"Invalid clock divider(%d)\n", div_id);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static snd_pcm_sframes_t
-+i2sv2_i2s_delay(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
-+{
-+	struct i2s_dai *i2s = to_info(dai);
-+	u32 reg = readl(i2s->addr + I2SFIC);
-+	snd_pcm_sframes_t delay;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		delay = FIC_RXCOUNT(reg);
-+	else if (is_secondary(i2s))
-+		delay = FICS_TXCOUNT(readl(i2s->addr + I2SFICS));
-+	else
-+		delay = FIC_TXCOUNT(reg);
-+
-+	return delay;
-+}
 +
 +#ifdef CONFIG_PM
-+static int i2sv2_i2s_suspend(struct snd_soc_dai *dai)
-+{
-+	struct i2s_dai *i2s = to_info(dai);
-+
-+	if (dai->active) {
-+		i2s->suspend_i2smod = readl(i2s->addr + I2SMOD);
-+		i2s->suspend_i2scon = readl(i2s->addr + I2SCON);
-+		i2s->suspend_i2spsr = readl(i2s->addr + I2SPSR);
-+	}
-+
-+	return 0;
-+}
-+
-+static int i2sv2_i2s_resume(struct snd_soc_dai *dai)
-+{
-+	struct i2s_dai *i2s = to_info(dai);
-+
-+	if (dai->active) {
-+		writel(i2s->suspend_i2scon, i2s->addr + I2SCON);
-+		writel(i2s->suspend_i2smod, i2s->addr + I2SMOD);
-+		writel(i2s->suspend_i2spsr, i2s->addr + I2SPSR);
-+	}
-+
-+	return 0;
-+}
-+#else
-+#define i2sv2_i2s_suspend NULL
-+#define i2sv2_i2s_resume  NULL
++static int  intel_mid_i2s_driver_suspend(struct pci_dev *dev,
++                                         pm_message_t state);
++static int intel_mid_i2s_driver_resume(struct pci_dev *dev);
 +#endif
 +
-+static int samsung_i2s_dai_probe(struct snd_soc_dai *dai)
-+{
-+	struct i2s_dai *i2s = to_info(dai);
-+	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
-+
-+	if (other && other->clk) /* If this is probe on secondary */
-+		goto probe_exit;
-+
-+	i2s->addr = ioremap(i2s->base, 0x100);
-+	if (i2s->addr == NULL) {
-+		dev_err(&i2s->pdev->dev, "cannot ioremap registers\n");
-+		return -ENXIO;
-+	}
-+
-+	i2s->clk = clk_get(&i2s->pdev->dev, "iis");
-+	if (IS_ERR(i2s->clk)) {
-+		dev_err(&i2s->pdev->dev, "failed to get i2s_clock\n");
-+		iounmap(i2s->addr);
-+		return -ENOENT;
-+	}
-+	clk_enable(i2s->clk);
-+
-+	if (other) {
-+		other->addr = i2s->addr;
-+		other->clk = i2s->clk;
-+	}
-+
-+	if (i2s->quirks & QUIRK_NEED_RSTCLR)
-+		writel(CON_RSTCLR, i2s->addr + I2SCON);
-+
-+probe_exit:
-+	/* Reset any constraint on RFS and BFS */
-+	i2s->rfs = 0;
-+	i2s->bfs = 0;
-+	s3c_i2sv2_txctrl(i2s, 0);
-+	s3c_i2sv2_rxctrl(i2s, 0);
-+	s3c_i2sv2_fifo(i2s, FIC_TXFLUSH);
-+	s3c_i2sv2_fifo(other, FIC_TXFLUSH);
-+	s3c_i2sv2_fifo(i2s, FIC_RXFLUSH);
-+
-+	/* Gate CDCLK by default */
-+	if (!is_opened(other))
-+		s3c_i2sv2_set_sysclk(dai, SAMSUNG_I2S_CDCLK,
-+				0, SND_SOC_CLOCK_IN);
-+
-+	return 0;
-+}
-+
-+static int samsung_i2s_dai_remove(struct snd_soc_dai *dai)
-+{
-+	struct i2s_dai *i2s = snd_soc_dai_get_drvdata(dai);
-+	struct i2s_dai *other = i2s->pri_dai ? : i2s->sec_dai;
-+
-+	if (!other || !other->clk) {
-+
-+		if (i2s->quirks & QUIRK_NEED_RSTCLR)
-+			writel(0, i2s->addr + I2SCON);
-+
-+		clk_disable(i2s->clk);
-+		clk_put(i2s->clk);
-+
-+		iounmap(i2s->addr);
-+	}
-+
-+	i2s->clk = NULL;
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_ops samsung_i2s_dai_ops = {
-+	.trigger = i2sv2_i2s_trigger,
-+	.hw_params = s3c_i2sv2_hw_params,
-+	.set_fmt = i2sv2_i2s_set_fmt,
-+	.set_clkdiv = i2sv2_i2s_set_clkdiv,
-+	.set_sysclk = s3c_i2sv2_set_sysclk,
-+	.startup = s3c_i2sv2_startup,
-+	.shutdown = s3c_i2sv2_shutdown,
-+	.delay = i2sv2_i2s_delay,
-+};
-+
-+#define SAMSUNG_I2S_RATES \
-+	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
-+	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
-+	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
-+
-+#define SAMSUNG_I2S_FMTS \
-+	(SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |\
-+	 SNDRV_PCM_FMTBIT_S24_LE)
-+
-+static __devinit
-+struct i2s_dai *s3c_alloc_dai(struct platform_device *pdev, bool sec)
-+{
-+	struct i2s_dai *i2s;
-+
-+	i2s = kzalloc(sizeof(struct i2s_dai), GFP_KERNEL);
-+	if (i2s == NULL)
-+		return NULL;
-+
-+	i2s->pdev = pdev;
-+	i2s->pri_dai = NULL;
-+	i2s->sec_dai = NULL;
-+	i2s->s3c_i2s_drv.symmetric_rates = 1;
-+	i2s->s3c_i2s_drv.probe = samsung_i2s_dai_probe;
-+	i2s->s3c_i2s_drv.remove = samsung_i2s_dai_remove;
-+	i2s->s3c_i2s_drv.ops = &samsung_i2s_dai_ops;
-+	i2s->s3c_i2s_drv.suspend = i2sv2_i2s_suspend;
-+	i2s->s3c_i2s_drv.resume = i2sv2_i2s_resume;
-+	i2s->s3c_i2s_drv.playback.channels_min = 2;
-+	i2s->s3c_i2s_drv.playback.channels_max = 2;
-+	i2s->s3c_i2s_drv.playback.rates = SAMSUNG_I2S_RATES;
-+	i2s->s3c_i2s_drv.playback.formats = SAMSUNG_I2S_FMTS;
-+
-+	if (!sec) {
-+		i2s->s3c_i2s_drv.capture.channels_min = 2;
-+		i2s->s3c_i2s_drv.capture.channels_max = 2;
-+		i2s->s3c_i2s_drv.capture.rates = SAMSUNG_I2S_RATES;
-+		i2s->s3c_i2s_drv.capture.formats = SAMSUNG_I2S_FMTS;
-+	} else {	/* Create a new platform_device for Secondary */
-+		i2s->pdev = platform_device_register_resndata(NULL,
-+				pdev->name, pdev->id + MAX_I2S,
-+				NULL, 0, NULL, 0);
-+		if (IS_ERR(i2s->pdev)) {
-+			kfree(i2s);
-+			return NULL;
-+		}
-+	}
-+
-+	/* Pre-assign snd_soc_dai_set_drvdata */
-+	dev_set_drvdata(&i2s->pdev->dev, i2s);
-+
-+	return i2s;
-+}
-+
-+static __devinit int samsung_i2s_probe(struct platform_device *pdev)
-+{
-+	u32 dma_pl_chan, dma_cp_chan, dma_pl_sec_chan;
-+	struct i2s_dai *pri_dai, *sec_dai = NULL;
-+	struct s3c_audio_pdata *i2s_pdata;
-+	struct samsung_i2s *i2s_cfg;
-+	struct resource *res;
-+	u32 regs_base, quirks;
-+	int ret = 0;
-+
-+	/* Call during Seconday interface registration */
-+	if (pdev->id >= MAX_I2S) {
-+		sec_dai = dev_get_drvdata(&pdev->dev);
-+		snd_soc_register_dai(&sec_dai->pdev->dev,
-+			&sec_dai->s3c_i2s_drv);
-+		return 0;
-+	}
-+
-+	i2s_pdata = pdev->dev.platform_data;
-+	if (i2s_pdata == NULL) {
-+		dev_err(&pdev->dev, "Can't work without s3c_audio_pdata\n");
-+		return -EINVAL;
-+	}
-+
-+	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-+	if (!res) {
-+		dev_err(&pdev->dev, "Unable to get I2S-TX dma resource\n");
-+		return -ENXIO;
-+	}
-+	dma_pl_chan = res->start;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
-+	if (!res) {
-+		dev_err(&pdev->dev, "Unable to get I2S-RX dma resource\n");
-+		return -ENXIO;
-+	}
-+	dma_cp_chan = res->start;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_DMA, 2);
-+	if (res)
-+		dma_pl_sec_chan = res->start;
-+	else
-+		dma_pl_sec_chan = 0;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res) {
-+		dev_err(&pdev->dev, "Unable to get I2S SFR address\n");
-+		return -ENXIO;
-+	}
-+
-+	if (!request_mem_region(res->start, resource_size(res),
-+							"samsung-i2s")) {
-+		dev_err(&pdev->dev, "Unable to request SFR region\n");
-+		return -EBUSY;
-+	}
-+	regs_base = res->start;
-+
-+	i2s_cfg = &i2s_pdata->type.i2s;
-+	quirks = i2s_cfg->quirks;
-+
-+	pri_dai = s3c_alloc_dai(pdev, false);
-+	if (!pri_dai) {
-+		dev_err(&pdev->dev, "Unable to alloc I2S_pri\n");
-+		ret = -ENOMEM;
-+		goto err1;
-+	}
-+
-+	pri_dai->dma_playback.dma_addr = regs_base + I2STXD;
-+	pri_dai->dma_capture.dma_addr = regs_base + I2SRXD;
-+	pri_dai->dma_playback.client =
-+		(struct s3c2410_dma_client *)&pri_dai->dma_playback;
-+	pri_dai->dma_capture.client =
-+		(struct s3c2410_dma_client *)&pri_dai->dma_capture;
-+	pri_dai->dma_playback.channel = dma_pl_chan;
-+	pri_dai->dma_capture.channel = dma_cp_chan;
-+	pri_dai->src_clk = i2s_cfg->src_clk;
-+	pri_dai->dma_playback.dma_size = 4;
-+	pri_dai->dma_capture.dma_size = 4;
-+	pri_dai->base = regs_base;
-+	pri_dai->quirks = quirks;
-+
-+	if (quirks & QUIRK_PRI_6CHAN)
-+		pri_dai->s3c_i2s_drv.playback.channels_max = 6;
-+
-+	if (quirks & QUIRK_SEC_DAI) {
-+		sec_dai = s3c_alloc_dai(pdev, true);
-+		if (!sec_dai) {
-+			dev_err(&pdev->dev, "Unable to alloc I2S_sec\n");
-+			ret = -ENOMEM;
-+			goto err2;
-+		}
-+		sec_dai->dma_playback.dma_addr = regs_base + I2STXDS;
-+		sec_dai->dma_playback.client =
-+			(struct s3c2410_dma_client *)&sec_dai->dma_playback;
-+		/* Use iDMA always if SysDMA not provided */
-+		sec_dai->dma_playback.channel = dma_pl_sec_chan ? : -1;
-+		sec_dai->src_clk = i2s_cfg->src_clk;
-+		sec_dai->dma_playback.dma_size = 4;
-+		sec_dai->base = regs_base;
-+		sec_dai->quirks = quirks;
-+		sec_dai->pri_dai = pri_dai;
-+		pri_dai->sec_dai = sec_dai;
-+	}
-+
-+	if (i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
-+		dev_err(&pdev->dev, "Unable to configure gpio\n");
-+		ret = -EINVAL;
-+		goto err3;
-+	}
-+
-+	snd_soc_register_dai(&pri_dai->pdev->dev, &pri_dai->s3c_i2s_drv);
-+
-+	return 0;
-+err3:
-+	kfree(sec_dai);
-+err2:
-+	kfree(pri_dai);
-+err1:
-+	release_mem_region(regs_base, resource_size(res));
-+
-+	return ret;
-+}
-+
-+static __devexit int samsung_i2s_remove(struct platform_device *pdev)
-+{
-+	struct i2s_dai *i2s, *other;
-+
-+	i2s = dev_get_drvdata(&pdev->dev);
-+	other = i2s->pri_dai ? : i2s->sec_dai;
-+
-+	if (other) {
-+		other->pri_dai = NULL;
-+		other->sec_dai = NULL;
-+	} else {
-+		struct resource *res;
-+		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+		if (res)
-+			release_mem_region(res->start, resource_size(res));
-+	}
-+
-+	i2s->pri_dai = NULL;
-+	i2s->sec_dai = NULL;
-+
-+	kfree(i2s);
-+
-+	snd_soc_unregister_dai(&pdev->dev);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver samsung_i2s_driver = {
-+	.probe  = samsung_i2s_probe,
-+	.remove = samsung_i2s_remove,
-+	.driver = {
-+		.name = "samsung-i2s",
-+		.owner = THIS_MODULE,
-+	},
-+};
-+
-+static int __init samsung_i2s_init(void)
-+{
-+	return platform_driver_register(&samsung_i2s_driver);
-+}
-+module_init(samsung_i2s_init);
-+
-+static void __exit samsung_i2s_exit(void)
-+{
-+	platform_driver_unregister(&samsung_i2s_driver);
-+}
-+module_exit(samsung_i2s_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Jaswinder Singh, <jassi.brar@samsung.com>");
-+MODULE_DESCRIPTION("Samsung I2S Interface");
-+MODULE_ALIAS("platform:samsung-i2s");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/i2s.h b/sound/soc/samsung/i2s.h
-new file mode 100644
-index 0000000..73a71cd
---- /dev/null
-+++ b/sound/soc/samsung/i2s.h
-@@ -0,0 +1,29 @@
-+/* sound/soc/samsung/i2s.h
-+ *
-+ * ALSA SoC Audio Layer - Samsung I2S Controller driver
-+ *
-+ * Copyright (c) 2010 Samsung Electronics Co. Ltd.
-+ *	Jaswinder Singh <jassi.brar@samsung.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
++/*
++ * These define will clarify source code when accessing SSCRx registers
 + */
 +
-+#ifndef __SND_SOC_SAMSUNG_I2S_H
-+#define __SND_SOC_SAMSUNG_I2S_H
++#define SSCR0_reg(regbit, value)                                       \
++       (((value) & SSCR0_##regbit##_MASK) << SSCR0_##regbit##_SHIFT)
++
++#define SSCR1_reg(regbit, value)                                       \
++       (((value) & SSCR1_##regbit##_MASK) << SSCR1_##regbit##_SHIFT)
++
++#define SSPSP_reg(regbit, value)                                       \
++       (((value) & SSPSP_##regbit##_MASK) << SSPSP_##regbit##_SHIFT)
++
++#define SSRSA_reg(regbit, value)                                       \
++       (((value) & SSRSA_##regbit##_MASK) << SSRSA_##regbit##_SHIFT)
++#define SSTSA_reg(regbit, value)                                       \
++       (((value) & SSTSA_##regbit##_MASK) << SSTSA_##regbit##_SHIFT)
++
++
++#define change_SSCR0_reg(reg_pointer, regbit, value)                     \
++       write_SSCR0((read_SSCR0(reg_pointer)                              \
++       & (~((SSCR0_##regbit##_MASK << SSCR0_##regbit##_SHIFT))))         \
++       | (((value) & SSCR0_##regbit##_MASK) << SSCR0_##regbit##_SHIFT),  \
++       reg_pointer);
++
++#define set_SSCR0_reg(reg_pointer, regbit)                               \
++       write_SSCR0(read_SSCR0(reg_pointer)                               \
++       | (SSCR0_##regbit##_MASK << SSCR0_##regbit##_SHIFT),            \
++       reg_pointer);
++
++#define clear_SSCR0_reg(reg_pointer, regbit)                             \
++       write_SSCR0((read_SSCR0(reg_pointer)                              \
++       & (~((SSCR0_##regbit##_MASK << SSCR0_##regbit##_SHIFT)))),        \
++       reg_pointer);
++
++#define change_SSCR1_reg(reg_pointer, regbit, value)                     \
++       write_SSCR1((read_SSCR1(reg_pointer)                              \
++       & (~((SSCR1_##regbit##_MASK << SSCR1_##regbit##_SHIFT))))         \
++       | (((value) & SSCR1_##regbit##_MASK) << SSCR1_##regbit##_SHIFT),  \
++       reg_pointer);
++
++#define set_SSCR1_reg(reg_pointer, regbit)                               \
++       write_SSCR1(read_SSCR1(reg_pointer)                               \
++       | (SSCR1_##regbit##_MASK << SSCR1_##regbit##_SHIFT),              \
++       reg_pointer);
++
++#define clear_SSCR1_reg(reg_pointer, regbit)                             \
++       write_SSCR1((read_SSCR1(reg_pointer)                              \
++       & (~((SSCR1_##regbit##_MASK << SSCR1_##regbit##_SHIFT)))),        \
++       reg_pointer);
++
++/* RX FIFO level */
++#define GET_SSSR_val(x, regb)                                            \
++       ((x & (SSSR_##regb##_MASK<<SSSR_##regb##_SHIFT))>>SSSR_##regb##_SHI=
+FT)
++
 +
 +/*
-+ * Maximum number of I2S blocks that any SoC can have.
-+ * The secondary interface of a CPU dai(if there exists any),
-+ * is indexed at [cpu-dai's ID + MAX_I2S]
++ * SSP hardware can be configured as I2S, PCM, SPI...
++ * In order to allow flexibility without modifying the software driver, the
++ * PCI header uses the configuration register 'adid':
++ *
++ * The PCI header associated to SSP devices includes a configuration regis=
+ter.
++ * It provides information to a driver which is probed for the SSP, specif=
+ying
++ * in which way the SSP is supposed to be used.
++ * Here is the format of this configuration register (8 bits):
++ *
++ *   bits 2..0: Mode
++ *       000: Invalid, the register should be ignored
++ *       001: SSP to be used as SPI controller
++ *       010: SSP to be used in I2S/ISS mode
++ *       other: Reserved
++ *
++ *   bits 5..3: Configuration
++ *       In I2S/ISS mode:
++ *               000: Invalid
++ *               001: Bluetooth
++ *               010: Modem
++ *               other: Reserved
++ *       In SPI mode:
++ *               Value is the SPI bus number connected to the SSP.
++ *               To be used for registration to the Linux SPI
++ *               framework.
++ *
++ *   bit 6: SPI slave
++ *       Relevant in SPI mode only. If set, indicates the SPI clock
++ *       is not provided by the SSP: SPI slave mode.
++ *
++ *   bit 7: Reserved (0)
++ *
++ *   This configuration register is implemented in the adid field of the
++ *   Vendor Specific PCI capability associated to the SSP. The format of
++ *   this capability is:
++ *
++ *   uint8_t     capId;              < Capability ID (vendor-specific)
++ *   uint8_t     nextCap;            < Next Item Ptr
++ *   uint8_t     length;             < Size of this capability (7)
++ *   uint8_t     version;            < Version of this capability (1)
++ *   uint8_t     lss;                < Logical subsystem info
++ *                                         Bit 7 =3D PMU (0 =3D NC, 1 =3D =
+SC)
++ *                                         Bits 6:0 =3D LSS ID
++ *   uint8_t     apmc;               < Additional PM capabilities
++ *                                         Bit 7 =3D Rsvd
++ *                                         Bit 6 =3D Wake capable
++ *                                         Bit 5 =3D D3 support
++ *                                         Bit 4 =3D D2 support
++ *                                         Bit 3 =3D D1 support
++ *                                         Bit 2 =3D D0i3 support
++ *                                         Bit 1 =3D D0i2 support
++ *                                         Bit 0 =3D D0i1 support
++ *   uint8_t     adid;               < Additional device ID (dev-specific)
++ *   uint8_t     rsvd;               < Reserved for future use
++ *
++ *   The capability data are in the PCI configuration space and the
++ *   adid field can be modified using BMP tool.
 + */
-+#define MAX_I2S	4
-+
-+#define SAMSUNG_I2S_DIV_BCLK	1
-+
-+#define SAMSUNG_I2S_RCLKSRC_0	0
-+#define SAMSUNG_I2S_RCLKSRC_1	1
-+#define SAMSUNG_I2S_CDCLK		2
-+
-+#endif /* __SND_SOC_SAMSUNG_I2S_H */
-diff --git a/sound/soc/samsung/jive_wm8750.c b/sound/soc/samsung/jive_wm8750.c
-new file mode 100644
-index 0000000..fe1649e
---- /dev/null
-+++ b/sound/soc/samsung/jive_wm8750.c
-@@ -0,0 +1,191 @@
-+/* sound/soc/samsung/jive_wm8750.c
-+ *
-+ * Copyright 2007,2008 Simtec Electronics
-+ *
-+ * Based on sound/soc/pxa/spitz.c
-+ *	Copyright 2005 Wolfson Microelectronics PLC.
-+ *	Copyright 2005 Openedhand Ltd.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+*/
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/timer.h>
-+#include <linux/interrupt.h>
-+#include <linux/platform_device.h>
-+#include <linux/clk.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include <asm/mach-types.h>
-+
-+#include "dma.h"
-+#include "s3c2412-i2s.h"
-+
-+#include "../codecs/wm8750.h"
-+
-+static const struct snd_soc_dapm_route audio_map[] = {
-+	{ "Headphone Jack", NULL, "LOUT1" },
-+	{ "Headphone Jack", NULL, "ROUT1" },
-+	{ "Internal Speaker", NULL, "LOUT2" },
-+	{ "Internal Speaker", NULL, "ROUT2" },
-+	{ "LINPUT1", NULL, "Line Input" },
-+	{ "RINPUT1", NULL, "Line Input" },
-+};
-+
-+static const struct snd_soc_dapm_widget wm8750_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_SPK("Internal Speaker", NULL),
-+	SND_SOC_DAPM_LINE("Line In", NULL),
-+};
-+
-+static int jive_hw_params(struct snd_pcm_substream *substream,
-+			  struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct s3c_i2sv2_rate_calc div;
-+	unsigned int clk = 0;
-+	int ret = 0;
-+
-+	switch (params_rate(params)) {
-+	case 8000:
-+	case 16000:
-+	case 48000:
-+	case 96000:
-+		clk = 12288000;
-+		break;
-+	case 11025:
-+	case 22050:
-+	case 44100:
-+		clk = 11289600;
-+		break;
-+	}
-+
-+	s3c_i2sv2_iis_calc_rate(&div, NULL, params_rate(params),
-+				s3c_i2sv2_get_clock(cpu_dai));
-+
-+	/* set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-+				  SND_SOC_DAIFMT_NB_NF |
-+				  SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set cpu DAI configuration */
-+	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
-+				  SND_SOC_DAIFMT_NB_NF |
-+				  SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the codec system clock for DAC and ADC */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, WM8750_SYSCLK, clk,
-+				     SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C2412_DIV_RCLK, div.fs_div);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C2412_DIV_PRESCALER,
-+				     div.clk_div - 1);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops jive_ops = {
-+	.hw_params	= jive_hw_params,
-+};
-+
-+static int jive_wm8750_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+	int err;
-+
-+	/* These endpoints are not being used. */
-+	snd_soc_dapm_nc_pin(codec, "LINPUT2");
-+	snd_soc_dapm_nc_pin(codec, "RINPUT2");
-+	snd_soc_dapm_nc_pin(codec, "LINPUT3");
-+	snd_soc_dapm_nc_pin(codec, "RINPUT3");
-+	snd_soc_dapm_nc_pin(codec, "OUT3");
-+	snd_soc_dapm_nc_pin(codec, "MONO");
-+
-+	/* Add jive specific widgets */
-+	err = snd_soc_dapm_new_controls(codec, wm8750_dapm_widgets,
-+					ARRAY_SIZE(wm8750_dapm_widgets));
-+	if (err) {
-+		printk(KERN_ERR "%s: failed to add widgets (%d)\n",
-+		       __func__, err);
-+		return err;
-+	}
-+
-+	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
-+	snd_soc_dapm_sync(codec);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_link jive_dai = {
-+	.name		= "wm8750",
-+	.stream_name	= "WM8750",
-+	.cpu_dai_name	= "s3c2412-i2s",
-+	.codec_dai_name = "wm8750-hifi",
-+	.platform_name	= "samsung-audio",
-+	.codec_name	= "wm8750-codec.0-0x1a",
-+	.init		= jive_wm8750_init,
-+	.ops		= &jive_ops,
-+};
-+
-+/* jive audio machine driver */
-+static struct snd_soc_card snd_soc_machine_jive = {
-+	.name		= "Jive",
-+	.dai_link	= &jive_dai,
-+	.num_links	= 1,
-+};
-+
-+static struct platform_device *jive_snd_device;
-+
-+static int __init jive_init(void)
-+{
-+	int ret;
-+
-+	if (!machine_is_jive())
-+		return 0;
-+
-+	printk("JIVE WM8750 Audio support\n");
-+
-+	jive_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!jive_snd_device)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(jive_snd_device, &snd_soc_machine_jive);
-+	ret = platform_device_add(jive_snd_device);
-+
-+	if (ret)
-+		platform_device_put(jive_snd_device);
-+
-+	return ret;
-+}
-+
-+static void __exit jive_exit(void)
-+{
-+	platform_device_unregister(jive_snd_device);
-+}
-+
-+module_init(jive_init);
-+module_exit(jive_exit);
-+
-+MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
-+MODULE_DESCRIPTION("ALSA SoC Jive Audio support");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/lm4857.h b/sound/soc/samsung/lm4857.h
-new file mode 100644
-index 0000000..0cf5b70
---- /dev/null
-+++ b/sound/soc/samsung/lm4857.h
-@@ -0,0 +1,32 @@
-+/*
-+ * lm4857.h  --  ALSA Soc Audio Layer
-+ *
-+ * Copyright 2007 Wolfson Microelectronics PLC.
-+ * Author: Graeme Gregory
-+ *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
-+ *  Revision history
-+ *    18th Jun 2007   Initial version.
-+ */
-+
-+#ifndef LM4857_H_
-+#define LM4857_H_
-+
-+/* The register offsets in the cache array */
-+#define LM4857_MVOL 0
-+#define LM4857_LVOL 1
-+#define LM4857_RVOL 2
-+#define LM4857_CTRL 3
-+
-+/* the shifts required to set these bits */
-+#define LM4857_3D 5
-+#define LM4857_WAKEUP 5
-+#define LM4857_EPGAIN 4
-+
-+#endif /*LM4857_H_*/
-+
-diff --git a/sound/soc/samsung/ln2440sbc_alc650.c b/sound/soc/samsung/ln2440sbc_alc650.c
-new file mode 100644
-index 0000000..e507174
---- /dev/null
-+++ b/sound/soc/samsung/ln2440sbc_alc650.c
-@@ -0,0 +1,78 @@
-+/*
-+ * SoC audio for ln2440sbc
-+ *
-+ * Copyright 2007 KonekTel, a.s.
-+ * Author: Ivan Kuten
-+ *         ivan.kuten@promwad.com
-+ *
-+ * Heavily based on smdk2443_wm9710.c
-+ * Copyright 2007 Wolfson Microelectronics PLC.
-+ * Author: Graeme Gregory
-+ *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-+ *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License version 2 as
-+ *  published by the Free Software Foundation.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include "dma.h"
-+#include "ac97.h"
-+
-+static struct snd_soc_card ln2440sbc;
-+
-+static struct snd_soc_dai_link ln2440sbc_dai[] = {
-+{
-+	.name = "AC97",
-+	.stream_name = "AC97 HiFi",
-+	.cpu_dai_name = "samsung-ac97",
-+	.codec_dai_name = "ac97-hifi",
-+	.codec_name = "ac97-codec",
-+	.platform_name = "samsung-audio",
-+},
-+};
-+
-+static struct snd_soc_card ln2440sbc = {
-+	.name = "LN2440SBC",
-+	.dai_link = ln2440sbc_dai,
-+	.num_links = ARRAY_SIZE(ln2440sbc_dai),
-+};
-+
-+static struct platform_device *ln2440sbc_snd_ac97_device;
-+
-+static int __init ln2440sbc_init(void)
-+{
-+	int ret;
-+
-+	ln2440sbc_snd_ac97_device = platform_device_alloc("soc-audio", -1);
-+	if (!ln2440sbc_snd_ac97_device)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(ln2440sbc_snd_ac97_device, &ln2440sbc);
-+	ret = platform_device_add(ln2440sbc_snd_ac97_device);
-+
-+	if (ret)
-+		platform_device_put(ln2440sbc_snd_ac97_device);
-+
-+	return ret;
-+}
-+
-+static void __exit ln2440sbc_exit(void)
-+{
-+	platform_device_unregister(ln2440sbc_snd_ac97_device);
-+}
-+
-+module_init(ln2440sbc_init);
-+module_exit(ln2440sbc_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Ivan Kuten");
-+MODULE_DESCRIPTION("ALSA SoC ALC650 LN2440SBC");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/neo1973_gta02_wm8753.c b/sound/soc/samsung/neo1973_gta02_wm8753.c
-new file mode 100644
-index 0000000..c4b2013
---- /dev/null
-+++ b/sound/soc/samsung/neo1973_gta02_wm8753.c
-@@ -0,0 +1,504 @@
-+/*
-+ * neo1973_gta02_wm8753.c  --  SoC audio for Openmoko Freerunner(GTA02)
-+ *
-+ * Copyright 2007 Openmoko Inc
-+ * Author: Graeme Gregory <graeme@openmoko.org>
-+ * Copyright 2007 Wolfson Microelectronics PLC.
-+ * Author: Graeme Gregory <linux@wolfsonmicro.com>
-+ * Copyright 2009 Wolfson Microelectronics
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/timer.h>
-+#include <linux/interrupt.h>
-+#include <linux/platform_device.h>
-+#include <linux/gpio.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include <asm/mach-types.h>
-+
-+#include <plat/regs-iis.h>
-+
-+#include <mach/regs-clock.h>
-+#include <asm/io.h>
-+#include <mach/gta02.h>
-+#include "../codecs/wm8753.h"
-+#include "dma.h"
-+#include "s3c24xx-i2s.h"
-+
-+static struct snd_soc_card neo1973_gta02;
-+
-+static int neo1973_gta02_hifi_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	unsigned int pll_out = 0, bclk = 0;
-+	int ret = 0;
-+	unsigned long iis_clkrate;
-+
-+	iis_clkrate = s3c24xx_i2s_get_clockrate();
-+
-+	switch (params_rate(params)) {
-+	case 8000:
-+	case 16000:
-+		pll_out = 12288000;
-+		break;
-+	case 48000:
-+		bclk = WM8753_BCLK_DIV_4;
-+		pll_out = 12288000;
-+		break;
-+	case 96000:
-+		bclk = WM8753_BCLK_DIV_2;
-+		pll_out = 12288000;
-+		break;
-+	case 11025:
-+		bclk = WM8753_BCLK_DIV_16;
-+		pll_out = 11289600;
-+		break;
-+	case 22050:
-+		bclk = WM8753_BCLK_DIV_8;
-+		pll_out = 11289600;
-+		break;
-+	case 44100:
-+		bclk = WM8753_BCLK_DIV_4;
-+		pll_out = 11289600;
-+		break;
-+	case 88200:
-+		bclk = WM8753_BCLK_DIV_2;
-+		pll_out = 11289600;
-+		break;
-+	}
-+
-+	/* set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai,
-+		SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+		SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set cpu DAI configuration */
-+	ret = snd_soc_dai_set_fmt(cpu_dai,
-+		SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+		SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the codec system clock for DAC and ADC */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, WM8753_MCLK, pll_out,
-+		SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set MCLK division for sample rate */
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_MCLK,
-+		S3C2410_IISMOD_32FS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set codec BCLK division for sample rate */
-+	ret = snd_soc_dai_set_clkdiv(codec_dai,
-+					WM8753_BCLKDIV, bclk);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set prescaler division for sample rate */
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_PRESCALER,
-+		S3C24XX_PRESCALE(4, 4));
-+	if (ret < 0)
-+		return ret;
-+
-+	/* codec PLL input is PCLK/4 */
-+	ret = snd_soc_dai_set_pll(codec_dai, WM8753_PLL1, 0,
-+		iis_clkrate / 4, pll_out);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int neo1973_gta02_hifi_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+
-+	/* disable the PLL */
-+	return snd_soc_dai_set_pll(codec_dai, WM8753_PLL1, 0, 0, 0);
-+}
-+
-+/*
-+ * Neo1973 WM8753 HiFi DAI opserations.
-+ */
-+static struct snd_soc_ops neo1973_gta02_hifi_ops = {
-+	.hw_params = neo1973_gta02_hifi_hw_params,
-+	.hw_free = neo1973_gta02_hifi_hw_free,
-+};
-+
-+static int neo1973_gta02_voice_hw_params(
-+	struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	unsigned int pcmdiv = 0;
-+	int ret = 0;
-+	unsigned long iis_clkrate;
-+
-+	iis_clkrate = s3c24xx_i2s_get_clockrate();
-+
-+	if (params_rate(params) != 8000)
-+		return -EINVAL;
-+	if (params_channels(params) != 1)
-+		return -EINVAL;
-+
-+	pcmdiv = WM8753_PCM_DIV_6; /* 2.048 MHz */
-+
-+	/* todo: gg check mode (DSP_B) against CSR datasheet */
-+	/* set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_DSP_B |
-+		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the codec system clock for DAC and ADC */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, WM8753_PCMCLK,
-+		12288000, SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set codec PCM division for sample rate */
-+	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8753_PCMDIV,
-+					pcmdiv);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* configue and enable PLL for 12.288MHz output */
-+	ret = snd_soc_dai_set_pll(codec_dai, WM8753_PLL2, 0,
-+		iis_clkrate / 4, 12288000);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int neo1973_gta02_voice_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+
-+	/* disable the PLL */
-+	return snd_soc_dai_set_pll(codec_dai, WM8753_PLL2, 0, 0, 0);
-+}
-+
-+static struct snd_soc_ops neo1973_gta02_voice_ops = {
-+	.hw_params = neo1973_gta02_voice_hw_params,
-+	.hw_free = neo1973_gta02_voice_hw_free,
-+};
-+
-+#define LM4853_AMP 1
-+#define LM4853_SPK 2
-+
-+static u8 lm4853_state;
-+
-+/* This has no effect, it exists only to maintain compatibility with
-+ * existing ALSA state files.
-+ */
-+static int lm4853_set_state(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	int val = ucontrol->value.integer.value[0];
-+
-+	if (val)
-+		lm4853_state |= LM4853_AMP;
-+	else
-+		lm4853_state &= ~LM4853_AMP;
-+
-+	return 0;
-+}
-+
-+static int lm4853_get_state(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	ucontrol->value.integer.value[0] = lm4853_state & LM4853_AMP;
-+
-+	return 0;
-+}
-+
-+static int lm4853_set_spk(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	int val = ucontrol->value.integer.value[0];
-+
-+	if (val) {
-+		lm4853_state |= LM4853_SPK;
-+		gpio_set_value(GTA02_GPIO_HP_IN, 0);
-+	} else {
-+		lm4853_state &= ~LM4853_SPK;
-+		gpio_set_value(GTA02_GPIO_HP_IN, 1);
-+	}
-+
-+	return 0;
-+}
-+
-+static int lm4853_get_spk(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	ucontrol->value.integer.value[0] = (lm4853_state & LM4853_SPK) >> 1;
-+
-+	return 0;
-+}
-+
-+static int lm4853_event(struct snd_soc_dapm_widget *w,
-+			struct snd_kcontrol *k,
-+			int event)
-+{
-+	gpio_set_value(GTA02_GPIO_AMP_SHUT, SND_SOC_DAPM_EVENT_OFF(event));
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget wm8753_dapm_widgets[] = {
-+	SND_SOC_DAPM_SPK("Stereo Out", lm4853_event),
-+	SND_SOC_DAPM_LINE("GSM Line Out", NULL),
-+	SND_SOC_DAPM_LINE("GSM Line In", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_MIC("Handset Mic", NULL),
-+	SND_SOC_DAPM_SPK("Handset Spk", NULL),
-+};
-+
-+
-+/* example machine audio_mapnections */
-+static const struct snd_soc_dapm_route audio_map[] = {
-+
-+	/* Connections to the lm4853 amp */
-+	{"Stereo Out", NULL, "LOUT1"},
-+	{"Stereo Out", NULL, "ROUT1"},
-+
-+	/* Connections to the GSM Module */
-+	{"GSM Line Out", NULL, "MONO1"},
-+	{"GSM Line Out", NULL, "MONO2"},
-+	{"RXP", NULL, "GSM Line In"},
-+	{"RXN", NULL, "GSM Line In"},
-+
-+	/* Connections to Headset */
-+	{"MIC1", NULL, "Mic Bias"},
-+	{"Mic Bias", NULL, "Headset Mic"},
-+
-+	/* Call Mic */
-+	{"MIC2", NULL, "Mic Bias"},
-+	{"MIC2N", NULL, "Mic Bias"},
-+	{"Mic Bias", NULL, "Handset Mic"},
-+
-+	/* Call Speaker */
-+	{"Handset Spk", NULL, "LOUT2"},
-+	{"Handset Spk", NULL, "ROUT2"},
-+
-+	/* Connect the ALC pins */
-+	{"ACIN", NULL, "ACOP"},
-+};
-+
-+static const struct snd_kcontrol_new wm8753_neo1973_gta02_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Stereo Out"),
-+	SOC_DAPM_PIN_SWITCH("GSM Line Out"),
-+	SOC_DAPM_PIN_SWITCH("GSM Line In"),
-+	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+	SOC_DAPM_PIN_SWITCH("Handset Mic"),
-+	SOC_DAPM_PIN_SWITCH("Handset Spk"),
-+
-+	/* This has no effect, it exists only to maintain compatibility with
-+	 * existing ALSA state files.
-+	 */
-+	SOC_SINGLE_EXT("Amp State Switch", 6, 0, 1, 0,
-+		lm4853_get_state,
-+		lm4853_set_state),
-+	SOC_SINGLE_EXT("Amp Spk Switch", 7, 0, 1, 0,
-+		lm4853_get_spk,
-+		lm4853_set_spk),
-+};
-+
-+/*
-+ * This is an example machine initialisation for a wm8753 connected to a
-+ * neo1973 GTA02.
-+ */
-+static int neo1973_gta02_wm8753_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+	int err;
-+
-+	/* set up NC codec pins */
-+	snd_soc_dapm_nc_pin(codec, "OUT3");
-+	snd_soc_dapm_nc_pin(codec, "OUT4");
-+	snd_soc_dapm_nc_pin(codec, "LINE1");
-+	snd_soc_dapm_nc_pin(codec, "LINE2");
-+
-+	/* Add neo1973 gta02 specific widgets */
-+	snd_soc_dapm_new_controls(codec, wm8753_dapm_widgets,
-+				  ARRAY_SIZE(wm8753_dapm_widgets));
-+
-+	/* add neo1973 gta02 specific controls */
-+	err = snd_soc_add_controls(codec, wm8753_neo1973_gta02_controls,
-+		ARRAY_SIZE(wm8753_neo1973_gta02_controls));
-+
-+	if (err < 0)
-+		return err;
-+
-+	/* set up neo1973 gta02 specific audio path audio_map */
-+	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
-+
-+	/* set endpoints to default off mode */
-+	snd_soc_dapm_disable_pin(codec, "Stereo Out");
-+	snd_soc_dapm_disable_pin(codec, "GSM Line Out");
-+	snd_soc_dapm_disable_pin(codec, "GSM Line In");
-+	snd_soc_dapm_disable_pin(codec, "Headset Mic");
-+	snd_soc_dapm_disable_pin(codec, "Handset Mic");
-+	snd_soc_dapm_disable_pin(codec, "Handset Spk");
-+
-+	/* allow audio paths from the GSM modem to run during suspend */
-+	snd_soc_dapm_ignore_suspend(codec, "Stereo Out");
-+	snd_soc_dapm_ignore_suspend(codec, "GSM Line Out");
-+	snd_soc_dapm_ignore_suspend(codec, "GSM Line In");
-+	snd_soc_dapm_ignore_suspend(codec, "Headset Mic");
-+	snd_soc_dapm_ignore_suspend(codec, "Handset Mic");
-+	snd_soc_dapm_ignore_suspend(codec, "Handset Spk");
-+
-+	snd_soc_dapm_sync(codec);
-+
-+	return 0;
-+}
-+
-+/*
-+ * BT Codec DAI
-+ */
-+static struct snd_soc_dai_driver bt_dai = {
-+	.name = "bluetooth-dai",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 1,
-+		.rates = SNDRV_PCM_RATE_8000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 1,
-+		.rates = SNDRV_PCM_RATE_8000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+};
-+
-+static struct snd_soc_dai_link neo1973_gta02_dai[] = {
-+{ /* Hifi Playback - for similatious use with voice below */
-+	.name = "WM8753",
-+	.stream_name = "WM8753 HiFi",
-+	.cpu_dai_name = "s3c24xx-i2s",
-+	.codec_dai_name = "wm8753-hifi",
-+	.init = neo1973_gta02_wm8753_init,
-+	.platform_name = "samsung-audio",
-+	.codec_name = "wm8753-codec.0-0x1a",
-+	.ops = &neo1973_gta02_hifi_ops,
-+},
-+{ /* Voice via BT */
-+	.name = "Bluetooth",
-+	.stream_name = "Voice",
-+	.cpu_dai_name = "bluetooth-dai",
-+	.codec_dai_name = "wm8753-voice",
-+	.ops = &neo1973_gta02_voice_ops,
-+	.codec_name = "wm8753-codec.0-0x1a",
-+	.platform_name = "samsung-audio",
-+},
-+};
-+
-+static struct snd_soc_card neo1973_gta02 = {
-+	.name = "neo1973-gta02",
-+	.dai_link = neo1973_gta02_dai,
-+	.num_links = ARRAY_SIZE(neo1973_gta02_dai),
-+};
-+
-+static struct platform_device *neo1973_gta02_snd_device;
-+
-+static int __init neo1973_gta02_init(void)
-+{
-+	int ret;
-+
-+	if (!machine_is_neo1973_gta02()) {
-+		printk(KERN_INFO
-+		       "Only GTA02 is supported by this ASoC driver\n");
-+		return -ENODEV;
-+	}
-+
-+	neo1973_gta02_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!neo1973_gta02_snd_device)
-+		return -ENOMEM;
-+
-+	/* register bluetooth DAI here */
-+	ret = snd_soc_register_dai(&neo1973_gta02_snd_device->dev, -1, &bt_dai);
-+	if (ret) {
-+		platform_device_put(neo1973_gta02_snd_device);
-+		return ret;
-+	}
-+
-+	platform_set_drvdata(neo1973_gta02_snd_device, &neo1973_gta02);
-+	ret = platform_device_add(neo1973_gta02_snd_device);
-+
-+	if (ret) {
-+		platform_device_put(neo1973_gta02_snd_device);
-+		return ret;
-+	}
-+
-+	/* Initialise GPIOs used by amp */
-+	ret = gpio_request(GTA02_GPIO_HP_IN, "GTA02_HP_IN");
-+	if (ret) {
-+		pr_err("gta02_wm8753: Failed to register GPIO %d\n", GTA02_GPIO_HP_IN);
-+		goto err_unregister_device;
-+	}
-+
-+	ret = gpio_direction_output(GTA02_GPIO_HP_IN, 1);
-+	if (ret) {
-+		pr_err("gta02_wm8753: Failed to configure GPIO %d\n", GTA02_GPIO_HP_IN);
-+		goto err_free_gpio_hp_in;
-+	}
-+
-+	ret = gpio_request(GTA02_GPIO_AMP_SHUT, "GTA02_AMP_SHUT");
-+	if (ret) {
-+		pr_err("gta02_wm8753: Failed to register GPIO %d\n", GTA02_GPIO_AMP_SHUT);
-+		goto err_free_gpio_hp_in;
-+	}
-+
-+	ret = gpio_direction_output(GTA02_GPIO_AMP_SHUT, 1);
-+	if (ret) {
-+		pr_err("gta02_wm8753: Failed to configure GPIO %d\n", GTA02_GPIO_AMP_SHUT);
-+		goto err_free_gpio_amp_shut;
-+	}
-+
-+	return 0;
-+
-+err_free_gpio_amp_shut:
-+	gpio_free(GTA02_GPIO_AMP_SHUT);
-+err_free_gpio_hp_in:
-+	gpio_free(GTA02_GPIO_HP_IN);
-+err_unregister_device:
-+	platform_device_unregister(neo1973_gta02_snd_device);
-+	return ret;
-+}
-+module_init(neo1973_gta02_init);
-+
-+static void __exit neo1973_gta02_exit(void)
-+{
-+	snd_soc_unregister_dai(&neo1973_gta02_snd_device->dev, -1);
-+	platform_device_unregister(neo1973_gta02_snd_device);
-+	gpio_free(GTA02_GPIO_HP_IN);
-+	gpio_free(GTA02_GPIO_AMP_SHUT);
-+}
-+module_exit(neo1973_gta02_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Graeme Gregory, graeme@openmoko.org");
-+MODULE_DESCRIPTION("ALSA SoC WM8753 Neo1973 GTA02");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/neo1973_wm8753.c b/sound/soc/samsung/neo1973_wm8753.c
-new file mode 100644
-index 0000000..96dda57
---- /dev/null
-+++ b/sound/soc/samsung/neo1973_wm8753.c
-@@ -0,0 +1,704 @@
-+/*
-+ * neo1973_wm8753.c  --  SoC audio for Neo1973
-+ *
-+ * Copyright 2007 Wolfson Microelectronics PLC.
-+ * Author: Graeme Gregory
-+ *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/timer.h>
-+#include <linux/interrupt.h>
-+#include <linux/platform_device.h>
-+#include <linux/i2c.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/tlv.h>
-+
-+#include <asm/mach-types.h>
-+#include <asm/hardware/scoop.h>
-+#include <mach/regs-clock.h>
-+#include <mach/regs-gpio.h>
-+#include <mach/hardware.h>
-+#include <linux/io.h>
-+#include <mach/spi-gpio.h>
-+
-+#include <plat/regs-iis.h>
-+
-+#include "../codecs/wm8753.h"
-+#include "lm4857.h"
-+#include "dma.h"
-+#include "s3c24xx-i2s.h"
-+
-+/* define the scenarios */
-+#define NEO_AUDIO_OFF			0
-+#define NEO_GSM_CALL_AUDIO_HANDSET	1
-+#define NEO_GSM_CALL_AUDIO_HEADSET	2
-+#define NEO_GSM_CALL_AUDIO_BLUETOOTH	3
-+#define NEO_STEREO_TO_SPEAKERS		4
-+#define NEO_STEREO_TO_HEADPHONES	5
-+#define NEO_CAPTURE_HANDSET		6
-+#define NEO_CAPTURE_HEADSET		7
-+#define NEO_CAPTURE_BLUETOOTH		8
-+
-+static struct snd_soc_card neo1973;
-+static struct i2c_client *i2c;
-+
-+static int neo1973_hifi_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	unsigned int pll_out = 0, bclk = 0;
-+	int ret = 0;
-+	unsigned long iis_clkrate;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	iis_clkrate = s3c24xx_i2s_get_clockrate();
-+
-+	switch (params_rate(params)) {
-+	case 8000:
-+	case 16000:
-+		pll_out = 12288000;
-+		break;
-+	case 48000:
-+		bclk = WM8753_BCLK_DIV_4;
-+		pll_out = 12288000;
-+		break;
-+	case 96000:
-+		bclk = WM8753_BCLK_DIV_2;
-+		pll_out = 12288000;
-+		break;
-+	case 11025:
-+		bclk = WM8753_BCLK_DIV_16;
-+		pll_out = 11289600;
-+		break;
-+	case 22050:
-+		bclk = WM8753_BCLK_DIV_8;
-+		pll_out = 11289600;
-+		break;
-+	case 44100:
-+		bclk = WM8753_BCLK_DIV_4;
-+		pll_out = 11289600;
-+		break;
-+	case 88200:
-+		bclk = WM8753_BCLK_DIV_2;
-+		pll_out = 11289600;
-+		break;
-+	}
-+
-+	/* set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai,
-+		SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+		SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set cpu DAI configuration */
-+	ret = snd_soc_dai_set_fmt(cpu_dai,
-+		SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+		SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the codec system clock for DAC and ADC */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, WM8753_MCLK, pll_out,
-+		SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set MCLK division for sample rate */
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_MCLK,
-+		S3C2410_IISMOD_32FS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set codec BCLK division for sample rate */
-+	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8753_BCLKDIV, bclk);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set prescaler division for sample rate */
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_PRESCALER,
-+		S3C24XX_PRESCALE(4, 4));
-+	if (ret < 0)
-+		return ret;
-+
-+	/* codec PLL input is PCLK/4 */
-+	ret = snd_soc_dai_set_pll(codec_dai, WM8753_PLL1, 0,
-+		iis_clkrate / 4, pll_out);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int neo1973_hifi_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	/* disable the PLL */
-+	return snd_soc_dai_set_pll(codec_dai, WM8753_PLL1, 0, 0, 0);
-+}
-+
-+/*
-+ * Neo1973 WM8753 HiFi DAI opserations.
-+ */
-+static struct snd_soc_ops neo1973_hifi_ops = {
-+	.hw_params = neo1973_hifi_hw_params,
-+	.hw_free = neo1973_hifi_hw_free,
-+};
-+
-+static int neo1973_voice_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	unsigned int pcmdiv = 0;
-+	int ret = 0;
-+	unsigned long iis_clkrate;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	iis_clkrate = s3c24xx_i2s_get_clockrate();
-+
-+	if (params_rate(params) != 8000)
-+		return -EINVAL;
-+	if (params_channels(params) != 1)
-+		return -EINVAL;
-+
-+	pcmdiv = WM8753_PCM_DIV_6; /* 2.048 MHz */
-+
-+	/* todo: gg check mode (DSP_B) against CSR datasheet */
-+	/* set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_DSP_B |
-+		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the codec system clock for DAC and ADC */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, WM8753_PCMCLK, 12288000,
-+		SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set codec PCM division for sample rate */
-+	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8753_PCMDIV, pcmdiv);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* configue and enable PLL for 12.288MHz output */
-+	ret = snd_soc_dai_set_pll(codec_dai, WM8753_PLL2, 0,
-+		iis_clkrate / 4, 12288000);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int neo1973_voice_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	/* disable the PLL */
-+	return snd_soc_dai_set_pll(codec_dai, WM8753_PLL2, 0, 0, 0);
-+}
-+
-+static struct snd_soc_ops neo1973_voice_ops = {
-+	.hw_params = neo1973_voice_hw_params,
-+	.hw_free = neo1973_voice_hw_free,
-+};
-+
-+static int neo1973_scenario;
-+
-+static int neo1973_get_scenario(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	ucontrol->value.integer.value[0] = neo1973_scenario;
-+	return 0;
-+}
-+
-+static int set_scenario_endpoints(struct snd_soc_codec *codec, int scenario)
-+{
-+	pr_debug("Entered %s\n", __func__);
-+
-+	switch (neo1973_scenario) {
-+	case NEO_AUDIO_OFF:
-+		snd_soc_dapm_disable_pin(codec, "Audio Out");
-+		snd_soc_dapm_disable_pin(codec, "GSM Line Out");
-+		snd_soc_dapm_disable_pin(codec, "GSM Line In");
-+		snd_soc_dapm_disable_pin(codec, "Headset Mic");
-+		snd_soc_dapm_disable_pin(codec, "Call Mic");
-+		break;
-+	case NEO_GSM_CALL_AUDIO_HANDSET:
-+		snd_soc_dapm_enable_pin(codec, "Audio Out");
-+		snd_soc_dapm_enable_pin(codec, "GSM Line Out");
-+		snd_soc_dapm_enable_pin(codec, "GSM Line In");
-+		snd_soc_dapm_disable_pin(codec, "Headset Mic");
-+		snd_soc_dapm_enable_pin(codec, "Call Mic");
-+		break;
-+	case NEO_GSM_CALL_AUDIO_HEADSET:
-+		snd_soc_dapm_enable_pin(codec, "Audio Out");
-+		snd_soc_dapm_enable_pin(codec, "GSM Line Out");
-+		snd_soc_dapm_enable_pin(codec, "GSM Line In");
-+		snd_soc_dapm_enable_pin(codec, "Headset Mic");
-+		snd_soc_dapm_disable_pin(codec, "Call Mic");
-+		break;
-+	case NEO_GSM_CALL_AUDIO_BLUETOOTH:
-+		snd_soc_dapm_disable_pin(codec, "Audio Out");
-+		snd_soc_dapm_enable_pin(codec, "GSM Line Out");
-+		snd_soc_dapm_enable_pin(codec, "GSM Line In");
-+		snd_soc_dapm_disable_pin(codec, "Headset Mic");
-+		snd_soc_dapm_disable_pin(codec, "Call Mic");
-+		break;
-+	case NEO_STEREO_TO_SPEAKERS:
-+		snd_soc_dapm_enable_pin(codec, "Audio Out");
-+		snd_soc_dapm_disable_pin(codec, "GSM Line Out");
-+		snd_soc_dapm_disable_pin(codec, "GSM Line In");
-+		snd_soc_dapm_disable_pin(codec, "Headset Mic");
-+		snd_soc_dapm_disable_pin(codec, "Call Mic");
-+		break;
-+	case NEO_STEREO_TO_HEADPHONES:
-+		snd_soc_dapm_enable_pin(codec, "Audio Out");
-+		snd_soc_dapm_disable_pin(codec, "GSM Line Out");
-+		snd_soc_dapm_disable_pin(codec, "GSM Line In");
-+		snd_soc_dapm_disable_pin(codec, "Headset Mic");
-+		snd_soc_dapm_disable_pin(codec, "Call Mic");
-+		break;
-+	case NEO_CAPTURE_HANDSET:
-+		snd_soc_dapm_disable_pin(codec, "Audio Out");
-+		snd_soc_dapm_disable_pin(codec, "GSM Line Out");
-+		snd_soc_dapm_disable_pin(codec, "GSM Line In");
-+		snd_soc_dapm_disable_pin(codec, "Headset Mic");
-+		snd_soc_dapm_enable_pin(codec, "Call Mic");
-+		break;
-+	case NEO_CAPTURE_HEADSET:
-+		snd_soc_dapm_disable_pin(codec, "Audio Out");
-+		snd_soc_dapm_disable_pin(codec, "GSM Line Out");
-+		snd_soc_dapm_disable_pin(codec, "GSM Line In");
-+		snd_soc_dapm_enable_pin(codec, "Headset Mic");
-+		snd_soc_dapm_disable_pin(codec, "Call Mic");
-+		break;
-+	case NEO_CAPTURE_BLUETOOTH:
-+		snd_soc_dapm_disable_pin(codec, "Audio Out");
-+		snd_soc_dapm_disable_pin(codec, "GSM Line Out");
-+		snd_soc_dapm_disable_pin(codec, "GSM Line In");
-+		snd_soc_dapm_disable_pin(codec, "Headset Mic");
-+		snd_soc_dapm_disable_pin(codec, "Call Mic");
-+		break;
-+	default:
-+		snd_soc_dapm_disable_pin(codec, "Audio Out");
-+		snd_soc_dapm_disable_pin(codec, "GSM Line Out");
-+		snd_soc_dapm_disable_pin(codec, "GSM Line In");
-+		snd_soc_dapm_disable_pin(codec, "Headset Mic");
-+		snd_soc_dapm_disable_pin(codec, "Call Mic");
-+	}
-+
-+	snd_soc_dapm_sync(codec);
-+
-+	return 0;
-+}
-+
-+static int neo1973_set_scenario(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	if (neo1973_scenario == ucontrol->value.integer.value[0])
-+		return 0;
-+
-+	neo1973_scenario = ucontrol->value.integer.value[0];
-+	set_scenario_endpoints(codec, neo1973_scenario);
-+	return 1;
-+}
-+
-+static u8 lm4857_regs[4] = {0x00, 0x40, 0x80, 0xC0};
-+
-+static void lm4857_write_regs(void)
-+{
-+	pr_debug("Entered %s\n", __func__);
-+
-+	if (i2c_master_send(i2c, lm4857_regs, 4) != 4)
-+		printk(KERN_ERR "lm4857: i2c write failed\n");
-+}
-+
-+static int lm4857_get_reg(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	int reg = mc->reg;
-+	int shift = mc->shift;
-+	int mask = mc->max;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	ucontrol->value.integer.value[0] = (lm4857_regs[reg] >> shift) & mask;
-+	return 0;
-+}
-+
-+static int lm4857_set_reg(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	int reg = mc->reg;
-+	int shift = mc->shift;
-+	int mask = mc->max;
-+
-+	if (((lm4857_regs[reg] >> shift) & mask) ==
-+		ucontrol->value.integer.value[0])
-+		return 0;
-+
-+	lm4857_regs[reg] &= ~(mask << shift);
-+	lm4857_regs[reg] |= ucontrol->value.integer.value[0] << shift;
-+	lm4857_write_regs();
-+	return 1;
-+}
-+
-+static int lm4857_get_mode(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	u8 value = lm4857_regs[LM4857_CTRL] & 0x0F;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	if (value)
-+		value -= 5;
-+
-+	ucontrol->value.integer.value[0] = value;
-+	return 0;
-+}
-+
-+static int lm4857_set_mode(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	u8 value = ucontrol->value.integer.value[0];
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	if (value)
-+		value += 5;
-+
-+	if ((lm4857_regs[LM4857_CTRL] & 0x0F) == value)
-+		return 0;
-+
-+	lm4857_regs[LM4857_CTRL] &= 0xF0;
-+	lm4857_regs[LM4857_CTRL] |= value;
-+	lm4857_write_regs();
-+	return 1;
-+}
-+
-+static const struct snd_soc_dapm_widget wm8753_dapm_widgets[] = {
-+	SND_SOC_DAPM_LINE("Audio Out", NULL),
-+	SND_SOC_DAPM_LINE("GSM Line Out", NULL),
-+	SND_SOC_DAPM_LINE("GSM Line In", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_MIC("Call Mic", NULL),
-+};
-+
-+
-+static const struct snd_soc_dapm_route dapm_routes[] = {
-+
-+	/* Connections to the lm4857 amp */
-+	{"Audio Out", NULL, "LOUT1"},
-+	{"Audio Out", NULL, "ROUT1"},
-+
-+	/* Connections to the GSM Module */
-+	{"GSM Line Out", NULL, "MONO1"},
-+	{"GSM Line Out", NULL, "MONO2"},
-+	{"RXP", NULL, "GSM Line In"},
-+	{"RXN", NULL, "GSM Line In"},
-+
-+	/* Connections to Headset */
-+	{"MIC1", NULL, "Mic Bias"},
-+	{"Mic Bias", NULL, "Headset Mic"},
-+
-+	/* Call Mic */
-+	{"MIC2", NULL, "Mic Bias"},
-+	{"MIC2N", NULL, "Mic Bias"},
-+	{"Mic Bias", NULL, "Call Mic"},
-+
-+	/* Connect the ALC pins */
-+	{"ACIN", NULL, "ACOP"},
-+};
-+
-+static const char *lm4857_mode[] = {
-+	"Off",
-+	"Call Speaker",
-+	"Stereo Speakers",
-+	"Stereo Speakers + Headphones",
-+	"Headphones"
-+};
-+
-+static const struct soc_enum lm4857_mode_enum[] = {
-+	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(lm4857_mode), lm4857_mode),
-+};
-+
-+static const char *neo_scenarios[] = {
-+	"Off",
-+	"GSM Handset",
-+	"GSM Headset",
-+	"GSM Bluetooth",
-+	"Speakers",
-+	"Headphones",
-+	"Capture Handset",
-+	"Capture Headset",
-+	"Capture Bluetooth"
-+};
-+
-+static const struct soc_enum neo_scenario_enum[] = {
-+	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(neo_scenarios), neo_scenarios),
-+};
-+
-+static const DECLARE_TLV_DB_SCALE(stereo_tlv, -4050, 150, 0);
-+static const DECLARE_TLV_DB_SCALE(mono_tlv, -3450, 150, 0);
-+
-+static const struct snd_kcontrol_new wm8753_neo1973_controls[] = {
-+	SOC_SINGLE_EXT_TLV("Amp Left Playback Volume", LM4857_LVOL, 0, 31, 0,
-+		lm4857_get_reg, lm4857_set_reg, stereo_tlv),
-+	SOC_SINGLE_EXT_TLV("Amp Right Playback Volume", LM4857_RVOL, 0, 31, 0,
-+		lm4857_get_reg, lm4857_set_reg, stereo_tlv),
-+	SOC_SINGLE_EXT_TLV("Amp Mono Playback Volume", LM4857_MVOL, 0, 31, 0,
-+		lm4857_get_reg, lm4857_set_reg, mono_tlv),
-+	SOC_ENUM_EXT("Amp Mode", lm4857_mode_enum[0],
-+		lm4857_get_mode, lm4857_set_mode),
-+	SOC_ENUM_EXT("Neo Mode", neo_scenario_enum[0],
-+		neo1973_get_scenario, neo1973_set_scenario),
-+	SOC_SINGLE_EXT("Amp Spk 3D Playback Switch", LM4857_LVOL, 5, 1, 0,
-+		lm4857_get_reg, lm4857_set_reg),
-+	SOC_SINGLE_EXT("Amp HP 3d Playback Switch", LM4857_RVOL, 5, 1, 0,
-+		lm4857_get_reg, lm4857_set_reg),
-+	SOC_SINGLE_EXT("Amp Fast Wakeup Playback Switch", LM4857_CTRL, 5, 1, 0,
-+		lm4857_get_reg, lm4857_set_reg),
-+	SOC_SINGLE_EXT("Amp Earpiece 6dB Playback Switch", LM4857_CTRL, 4, 1, 0,
-+		lm4857_get_reg, lm4857_set_reg),
-+};
-+
-+/*
-+ * This is an example machine initialisation for a wm8753 connected to a
-+ * neo1973 II. It is missing logic to detect hp/mic insertions and logic
-+ * to re-route the audio in such an event.
-+ */
-+static int neo1973_wm8753_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+	int err;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	/* set up NC codec pins */
-+	snd_soc_dapm_nc_pin(codec, "LOUT2");
-+	snd_soc_dapm_nc_pin(codec, "ROUT2");
-+	snd_soc_dapm_nc_pin(codec, "OUT3");
-+	snd_soc_dapm_nc_pin(codec, "OUT4");
-+	snd_soc_dapm_nc_pin(codec, "LINE1");
-+	snd_soc_dapm_nc_pin(codec, "LINE2");
-+
-+	/* Add neo1973 specific widgets */
-+	snd_soc_dapm_new_controls(codec, wm8753_dapm_widgets,
-+				  ARRAY_SIZE(wm8753_dapm_widgets));
-+
-+	/* set endpoints to default mode */
-+	set_scenario_endpoints(codec, NEO_AUDIO_OFF);
-+
-+	/* add neo1973 specific controls */
-+	err = snd_soc_add_controls(codec, wm8753_neo1973_controls,
-+				ARRAY_SIZE(8753_neo1973_controls));
-+	if (err < 0)
-+		return err;
-+
-+	/* set up neo1973 specific audio routes */
-+	err = snd_soc_dapm_add_routes(codec, dapm_routes,
-+				      ARRAY_SIZE(dapm_routes));
-+
-+	snd_soc_dapm_sync(codec);
-+	return 0;
-+}
-+
-+/*
-+ * BT Codec DAI
-+ */
-+static struct snd_soc_dai bt_dai = {
-+	.name = "bluetooth-dai",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 1,
-+		.rates = SNDRV_PCM_RATE_8000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 1,
-+		.rates = SNDRV_PCM_RATE_8000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+};
-+
-+static struct snd_soc_dai_link neo1973_dai[] = {
-+{ /* Hifi Playback - for similatious use with voice below */
-+	.name = "WM8753",
-+	.stream_name = "WM8753 HiFi",
-+	.platform_name = "samsung-audio",
-+	.cpu_dai_name = "s3c24xx-i2s",
-+	.codec_dai_name = "wm8753-hifi",
-+	.codec_name = "wm8753-codec.0-0x1a",
-+	.init = neo1973_wm8753_init,
-+	.ops = &neo1973_hifi_ops,
-+},
-+{ /* Voice via BT */
-+	.name = "Bluetooth",
-+	.stream_name = "Voice",
-+	.platform_name = "samsung-audio",
-+	.cpu_dai_name = "bluetooth-dai",
-+	.codec_dai_name = "wm8753-voice",
-+	.codec_name = "wm8753-codec.0-0x1a",
-+	.ops = &neo1973_voice_ops,
-+},
-+};
-+
-+static struct snd_soc_card neo1973 = {
-+	.name = "neo1973",
-+	.dai_link = neo1973_dai,
-+	.num_links = ARRAY_SIZE(neo1973_dai),
-+};
-+
-+static int lm4857_i2c_probe(struct i2c_client *client,
-+			    const struct i2c_device_id *id)
-+{
-+	pr_debug("Entered %s\n", __func__);
-+
-+	i2c = client;
-+
-+	lm4857_write_regs();
-+	return 0;
-+}
-+
-+static int lm4857_i2c_remove(struct i2c_client *client)
-+{
-+	pr_debug("Entered %s\n", __func__);
-+
-+	i2c = NULL;
-+
-+	return 0;
-+}
-+
-+static u8 lm4857_state;
-+
-+static int lm4857_suspend(struct i2c_client *dev, pm_message_t state)
-+{
-+	pr_debug("Entered %s\n", __func__);
-+
-+	dev_dbg(&dev->dev, "lm4857_suspend\n");
-+	lm4857_state = lm4857_regs[LM4857_CTRL] & 0xf;
-+	if (lm4857_state) {
-+		lm4857_regs[LM4857_CTRL] &= 0xf0;
-+		lm4857_write_regs();
-+	}
-+	return 0;
-+}
-+
-+static int lm4857_resume(struct i2c_client *dev)
-+{
-+	pr_debug("Entered %s\n", __func__);
-+
-+	if (lm4857_state) {
-+		lm4857_regs[LM4857_CTRL] |= (lm4857_state & 0x0f);
-+		lm4857_write_regs();
-+	}
-+	return 0;
-+}
-+
-+static void lm4857_shutdown(struct i2c_client *dev)
-+{
-+	pr_debug("Entered %s\n", __func__);
-+
-+	dev_dbg(&dev->dev, "lm4857_shutdown\n");
-+	lm4857_regs[LM4857_CTRL] &= 0xf0;
-+	lm4857_write_regs();
-+}
-+
-+static const struct i2c_device_id lm4857_i2c_id[] = {
-+	{ "neo1973_lm4857", 0 },
-+	{ }
-+};
-+
-+static struct i2c_driver lm4857_i2c_driver = {
-+	.driver = {
-+		.name = "LM4857 I2C Amp",
-+		.owner = THIS_MODULE,
-+	},
-+	.suspend =        lm4857_suspend,
-+	.resume	=         lm4857_resume,
-+	.shutdown =       lm4857_shutdown,
-+	.probe =          lm4857_i2c_probe,
-+	.remove =         lm4857_i2c_remove,
-+	.id_table =       lm4857_i2c_id,
-+};
-+
-+static struct platform_device *neo1973_snd_device;
-+
-+static int __init neo1973_init(void)
-+{
-+	int ret;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	if (!machine_is_neo1973_gta01()) {
-+		printk(KERN_INFO
-+			"Only GTA01 hardware supported by ASoC driver\n");
-+		return -ENODEV;
-+	}
-+
-+	neo1973_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!neo1973_snd_device)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(neo1973_snd_device, &neo1973);
-+	ret = platform_device_add(neo1973_snd_device);
-+
-+	if (ret) {
-+		platform_device_put(neo1973_snd_device);
-+		return ret;
-+	}
-+
-+	ret = i2c_add_driver(&lm4857_i2c_driver);
-+
-+	if (ret != 0)
-+		platform_device_unregister(neo1973_snd_device);
-+
-+	return ret;
-+}
-+
-+static void __exit neo1973_exit(void)
-+{
-+	pr_debug("Entered %s\n", __func__);
-+
-+	i2c_del_driver(&lm4857_i2c_driver);
-+	platform_device_unregister(neo1973_snd_device);
-+}
-+
-+module_init(neo1973_init);
-+module_exit(neo1973_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Graeme Gregory, graeme@openmoko.org, www.openmoko.org");
-+MODULE_DESCRIPTION("ALSA SoC WM8753 Neo1973");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
-new file mode 100644
-index 0000000..48d0b75
---- /dev/null
-+++ b/sound/soc/samsung/pcm.c
-@@ -0,0 +1,552 @@
-+/* sound/soc/samsung/pcm.c
-+ *
-+ * ALSA SoC Audio Layer - S3C PCM-Controller driver
-+ *
-+ * Copyright (c) 2009 Samsung Electronics Co. Ltd
-+ * Author: Jaswinder Singh <jassi.brar@samsung.com>
-+ * based upon I2S drivers by Ben Dooks.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/delay.h>
-+#include <linux/clk.h>
-+#include <linux/kernel.h>
-+#include <linux/gpio.h>
-+#include <linux/io.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/initval.h>
-+#include <sound/soc.h>
-+
-+#include <plat/audio.h>
-+#include <plat/dma.h>
-+
-+#include "dma.h"
-+#include "pcm.h"
-+
-+static struct s3c2410_dma_client s3c_pcm_dma_client_out = {
-+	.name		= "PCM Stereo out"
-+};
-+
-+static struct s3c2410_dma_client s3c_pcm_dma_client_in = {
-+	.name		= "PCM Stereo in"
-+};
-+
-+static struct s3c_dma_params s3c_pcm_stereo_out[] = {
-+	[0] = {
-+		.client		= &s3c_pcm_dma_client_out,
-+		.dma_size	= 4,
-+	},
-+	[1] = {
-+		.client		= &s3c_pcm_dma_client_out,
-+		.dma_size	= 4,
-+	},
-+};
-+
-+static struct s3c_dma_params s3c_pcm_stereo_in[] = {
-+	[0] = {
-+		.client		= &s3c_pcm_dma_client_in,
-+		.dma_size	= 4,
-+	},
-+	[1] = {
-+		.client		= &s3c_pcm_dma_client_in,
-+		.dma_size	= 4,
-+	},
-+};
-+
-+static struct s3c_pcm_info s3c_pcm[2];
-+
-+static void s3c_pcm_snd_txctrl(struct s3c_pcm_info *pcm, int on)
-+{
-+	void __iomem *regs = pcm->regs;
-+	u32 ctl, clkctl;
-+
-+	clkctl = readl(regs + S3C_PCM_CLKCTL);
-+	ctl = readl(regs + S3C_PCM_CTL);
-+	ctl &= ~(S3C_PCM_CTL_TXDIPSTICK_MASK
-+			 << S3C_PCM_CTL_TXDIPSTICK_SHIFT);
-+
-+	if (on) {
-+		ctl |= S3C_PCM_CTL_TXDMA_EN;
-+		ctl |= S3C_PCM_CTL_TXFIFO_EN;
-+		ctl |= S3C_PCM_CTL_ENABLE;
-+		ctl |= (0x4<<S3C_PCM_CTL_TXDIPSTICK_SHIFT);
-+		clkctl |= S3C_PCM_CLKCTL_SERCLK_EN;
-+	} else {
-+		ctl &= ~S3C_PCM_CTL_TXDMA_EN;
-+		ctl &= ~S3C_PCM_CTL_TXFIFO_EN;
-+
-+		if (!(ctl & S3C_PCM_CTL_RXFIFO_EN)) {
-+			ctl &= ~S3C_PCM_CTL_ENABLE;
-+			if (!pcm->idleclk)
-+				clkctl |= S3C_PCM_CLKCTL_SERCLK_EN;
-+		}
-+	}
-+
-+	writel(clkctl, regs + S3C_PCM_CLKCTL);
-+	writel(ctl, regs + S3C_PCM_CTL);
-+}
-+
-+static void s3c_pcm_snd_rxctrl(struct s3c_pcm_info *pcm, int on)
-+{
-+	void __iomem *regs = pcm->regs;
-+	u32 ctl, clkctl;
-+
-+	ctl = readl(regs + S3C_PCM_CTL);
-+	clkctl = readl(regs + S3C_PCM_CLKCTL);
-+	ctl &= ~(S3C_PCM_CTL_RXDIPSTICK_MASK
-+			 << S3C_PCM_CTL_RXDIPSTICK_SHIFT);
-+
-+	if (on) {
-+		ctl |= S3C_PCM_CTL_RXDMA_EN;
-+		ctl |= S3C_PCM_CTL_RXFIFO_EN;
-+		ctl |= S3C_PCM_CTL_ENABLE;
-+		ctl |= (0x20<<S3C_PCM_CTL_RXDIPSTICK_SHIFT);
-+		clkctl |= S3C_PCM_CLKCTL_SERCLK_EN;
-+	} else {
-+		ctl &= ~S3C_PCM_CTL_RXDMA_EN;
-+		ctl &= ~S3C_PCM_CTL_RXFIFO_EN;
-+
-+		if (!(ctl & S3C_PCM_CTL_TXFIFO_EN)) {
-+			ctl &= ~S3C_PCM_CTL_ENABLE;
-+			if (!pcm->idleclk)
-+				clkctl |= S3C_PCM_CLKCTL_SERCLK_EN;
-+		}
-+	}
-+
-+	writel(clkctl, regs + S3C_PCM_CLKCTL);
-+	writel(ctl, regs + S3C_PCM_CTL);
-+}
-+
-+static int s3c_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
-+			       struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct s3c_pcm_info *pcm = snd_soc_dai_get_drvdata(rtd->cpu_dai);
-+	unsigned long flags;
-+
-+	dev_dbg(pcm->dev, "Entered %s\n", __func__);
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		spin_lock_irqsave(&pcm->lock, flags);
-+
-+		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+			s3c_pcm_snd_rxctrl(pcm, 1);
-+		else
-+			s3c_pcm_snd_txctrl(pcm, 1);
-+
-+		spin_unlock_irqrestore(&pcm->lock, flags);
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		spin_lock_irqsave(&pcm->lock, flags);
-+
-+		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+			s3c_pcm_snd_rxctrl(pcm, 0);
-+		else
-+			s3c_pcm_snd_txctrl(pcm, 0);
-+
-+		spin_unlock_irqrestore(&pcm->lock, flags);
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int s3c_pcm_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params,
-+				 struct snd_soc_dai *socdai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct s3c_pcm_info *pcm = snd_soc_dai_get_drvdata(rtd->cpu_dai);
-+	struct s3c_dma_params *dma_data;
-+	void __iomem *regs = pcm->regs;
-+	struct clk *clk;
-+	int sclk_div, sync_div;
-+	unsigned long flags;
-+	u32 clkctl;
-+
-+	dev_dbg(pcm->dev, "Entered %s\n", __func__);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		dma_data = pcm->dma_playback;
-+	else
-+		dma_data = pcm->dma_capture;
-+
-+	snd_soc_dai_set_dma_data(rtd->cpu_dai, substream, dma_data);
-+
-+	/* Strictly check for sample size */
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	spin_lock_irqsave(&pcm->lock, flags);
-+
-+	/* Get hold of the PCMSOURCE_CLK */
-+	clkctl = readl(regs + S3C_PCM_CLKCTL);
-+	if (clkctl & S3C_PCM_CLKCTL_SERCLKSEL_PCLK)
-+		clk = pcm->pclk;
-+	else
-+		clk = pcm->cclk;
-+
-+	/* Set the SCLK divider */
-+	sclk_div = clk_get_rate(clk) / pcm->sclk_per_fs /
-+					params_rate(params) / 2 - 1;
-+
-+	clkctl &= ~(S3C_PCM_CLKCTL_SCLKDIV_MASK
-+			<< S3C_PCM_CLKCTL_SCLKDIV_SHIFT);
-+	clkctl |= ((sclk_div & S3C_PCM_CLKCTL_SCLKDIV_MASK)
-+			<< S3C_PCM_CLKCTL_SCLKDIV_SHIFT);
-+
-+	/* Set the SYNC divider */
-+	sync_div = pcm->sclk_per_fs - 1;
-+
-+	clkctl &= ~(S3C_PCM_CLKCTL_SYNCDIV_MASK
-+				<< S3C_PCM_CLKCTL_SYNCDIV_SHIFT);
-+	clkctl |= ((sync_div & S3C_PCM_CLKCTL_SYNCDIV_MASK)
-+				<< S3C_PCM_CLKCTL_SYNCDIV_SHIFT);
-+
-+	writel(clkctl, regs + S3C_PCM_CLKCTL);
-+
-+	spin_unlock_irqrestore(&pcm->lock, flags);
-+
-+	dev_dbg(pcm->dev, "PCMSOURCE_CLK-%lu SCLK=%ufs SCLK_DIV=%d SYNC_DIV=%d\n",
-+				clk_get_rate(clk), pcm->sclk_per_fs,
-+				sclk_div, sync_div);
-+
-+	return 0;
-+}
-+
-+static int s3c_pcm_set_fmt(struct snd_soc_dai *cpu_dai,
-+			       unsigned int fmt)
-+{
-+	struct s3c_pcm_info *pcm = snd_soc_dai_get_drvdata(cpu_dai);
-+	void __iomem *regs = pcm->regs;
-+	unsigned long flags;
-+	int ret = 0;
-+	u32 ctl;
-+
-+	dev_dbg(pcm->dev, "Entered %s\n", __func__);
-+
-+	spin_lock_irqsave(&pcm->lock, flags);
-+
-+	ctl = readl(regs + S3C_PCM_CTL);
-+
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		/* Nothing to do, NB_NF by default */
-+		break;
-+	default:
-+		dev_err(pcm->dev, "Unsupported clock inversion!\n");
-+		ret = -EINVAL;
-+		goto exit;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		/* Nothing to do, Master by default */
-+		break;
-+	default:
-+		dev_err(pcm->dev, "Unsupported master/slave format!\n");
-+		ret = -EINVAL;
-+		goto exit;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_MASK) {
-+	case SND_SOC_DAIFMT_CONT:
-+		pcm->idleclk = 1;
-+		break;
-+	case SND_SOC_DAIFMT_GATED:
-+		pcm->idleclk = 0;
-+		break;
-+	default:
-+		dev_err(pcm->dev, "Invalid Clock gating request!\n");
-+		ret = -EINVAL;
-+		goto exit;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_DSP_A:
-+		ctl |= S3C_PCM_CTL_TXMSB_AFTER_FSYNC;
-+		ctl |= S3C_PCM_CTL_RXMSB_AFTER_FSYNC;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		ctl &= ~S3C_PCM_CTL_TXMSB_AFTER_FSYNC;
-+		ctl &= ~S3C_PCM_CTL_RXMSB_AFTER_FSYNC;
-+		break;
-+	default:
-+		dev_err(pcm->dev, "Unsupported data format!\n");
-+		ret = -EINVAL;
-+		goto exit;
-+	}
-+
-+	writel(ctl, regs + S3C_PCM_CTL);
-+
-+exit:
-+	spin_unlock_irqrestore(&pcm->lock, flags);
-+
-+	return ret;
-+}
-+
-+static int s3c_pcm_set_clkdiv(struct snd_soc_dai *cpu_dai,
-+						int div_id, int div)
-+{
-+	struct s3c_pcm_info *pcm = snd_soc_dai_get_drvdata(cpu_dai);
-+
-+	switch (div_id) {
-+	case S3C_PCM_SCLK_PER_FS:
-+		pcm->sclk_per_fs = div;
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int s3c_pcm_set_sysclk(struct snd_soc_dai *cpu_dai,
-+				  int clk_id, unsigned int freq, int dir)
-+{
-+	struct s3c_pcm_info *pcm = snd_soc_dai_get_drvdata(cpu_dai);
-+	void __iomem *regs = pcm->regs;
-+	u32 clkctl = readl(regs + S3C_PCM_CLKCTL);
-+
-+	switch (clk_id) {
-+	case S3C_PCM_CLKSRC_PCLK:
-+		clkctl |= S3C_PCM_CLKCTL_SERCLKSEL_PCLK;
-+		break;
-+
-+	case S3C_PCM_CLKSRC_MUX:
-+		clkctl &= ~S3C_PCM_CLKCTL_SERCLKSEL_PCLK;
-+
-+		if (clk_get_rate(pcm->cclk) != freq)
-+			clk_set_rate(pcm->cclk, freq);
-+
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	writel(clkctl, regs + S3C_PCM_CLKCTL);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_ops s3c_pcm_dai_ops = {
-+	.set_sysclk	= s3c_pcm_set_sysclk,
-+	.set_clkdiv	= s3c_pcm_set_clkdiv,
-+	.trigger	= s3c_pcm_trigger,
-+	.hw_params	= s3c_pcm_hw_params,
-+	.set_fmt	= s3c_pcm_set_fmt,
-+};
-+
-+#define S3C_PCM_RATES  SNDRV_PCM_RATE_8000_96000
-+
-+#define S3C_PCM_DAI_DECLARE			\
-+	.symmetric_rates = 1,					\
-+	.ops = &s3c_pcm_dai_ops,				\
-+	.playback = {						\
-+		.channels_min	= 2,				\
-+		.channels_max	= 2,				\
-+		.rates		= S3C_PCM_RATES,		\
-+		.formats	= SNDRV_PCM_FMTBIT_S16_LE,	\
-+	},							\
-+	.capture = {						\
-+		.channels_min	= 2,				\
-+		.channels_max	= 2,				\
-+		.rates		= S3C_PCM_RATES,		\
-+		.formats	= SNDRV_PCM_FMTBIT_S16_LE,	\
-+	}
-+
-+struct snd_soc_dai_driver s3c_pcm_dai[] = {
-+	[0] = {
-+		.name	= "samsung-pcm.0",
-+		S3C_PCM_DAI_DECLARE,
-+	},
-+	[1] = {
-+		.name	= "samsung-pcm.1",
-+		S3C_PCM_DAI_DECLARE,
-+	},
-+};
-+EXPORT_SYMBOL_GPL(s3c_pcm_dai);
-+
-+static __devinit int s3c_pcm_dev_probe(struct platform_device *pdev)
-+{
-+	struct s3c_pcm_info *pcm;
-+	struct resource *mem_res, *dmatx_res, *dmarx_res;
-+	struct s3c_audio_pdata *pcm_pdata;
-+	int ret;
-+
-+	/* Check for valid device index */
-+	if ((pdev->id < 0) || pdev->id >= ARRAY_SIZE(s3c_pcm)) {
-+		dev_err(&pdev->dev, "id %d out of range\n", pdev->id);
-+		return -EINVAL;
-+	}
-+
-+	pcm_pdata = pdev->dev.platform_data;
-+
-+	/* Check for availability of necessary resource */
-+	dmatx_res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-+	if (!dmatx_res) {
-+		dev_err(&pdev->dev, "Unable to get PCM-TX dma resource\n");
-+		return -ENXIO;
-+	}
-+
-+	dmarx_res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
-+	if (!dmarx_res) {
-+		dev_err(&pdev->dev, "Unable to get PCM-RX dma resource\n");
-+		return -ENXIO;
-+	}
-+
-+	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!mem_res) {
-+		dev_err(&pdev->dev, "Unable to get register resource\n");
-+		return -ENXIO;
-+	}
-+
-+	if (pcm_pdata && pcm_pdata->cfg_gpio && pcm_pdata->cfg_gpio(pdev)) {
-+		dev_err(&pdev->dev, "Unable to configure gpio\n");
-+		return -EINVAL;
-+	}
-+
-+	pcm = &s3c_pcm[pdev->id];
-+	pcm->dev = &pdev->dev;
-+
-+	spin_lock_init(&pcm->lock);
-+
-+	/* Default is 128fs */
-+	pcm->sclk_per_fs = 128;
-+
-+	pcm->cclk = clk_get(&pdev->dev, "audio-bus");
-+	if (IS_ERR(pcm->cclk)) {
-+		dev_err(&pdev->dev, "failed to get audio-bus\n");
-+		ret = PTR_ERR(pcm->cclk);
-+		goto err1;
-+	}
-+	clk_enable(pcm->cclk);
-+
-+	/* record our pcm structure for later use in the callbacks */
-+	dev_set_drvdata(&pdev->dev, pcm);
-+
-+	if (!request_mem_region(mem_res->start,
-+				resource_size(mem_res), "samsung-pcm")) {
-+		dev_err(&pdev->dev, "Unable to request register region\n");
-+		ret = -EBUSY;
-+		goto err2;
-+	}
-+
-+	pcm->regs = ioremap(mem_res->start, 0x100);
-+	if (pcm->regs == NULL) {
-+		dev_err(&pdev->dev, "cannot ioremap registers\n");
-+		ret = -ENXIO;
-+		goto err3;
-+	}
-+
-+	pcm->pclk = clk_get(&pdev->dev, "pcm");
-+	if (IS_ERR(pcm->pclk)) {
-+		dev_err(&pdev->dev, "failed to get pcm_clock\n");
-+		ret = -ENOENT;
-+		goto err4;
-+	}
-+	clk_enable(pcm->pclk);
-+
-+	ret = snd_soc_register_dai(&pdev->dev, &s3c_pcm_dai[pdev->id]);
-+	if (ret != 0) {
-+		dev_err(&pdev->dev, "failed to get pcm_clock\n");
-+		goto err5;
-+	}
-+
-+	s3c_pcm_stereo_in[pdev->id].dma_addr = mem_res->start
-+							+ S3C_PCM_RXFIFO;
-+	s3c_pcm_stereo_out[pdev->id].dma_addr = mem_res->start
-+							+ S3C_PCM_TXFIFO;
-+
-+	s3c_pcm_stereo_in[pdev->id].channel = dmarx_res->start;
-+	s3c_pcm_stereo_out[pdev->id].channel = dmatx_res->start;
-+
-+	pcm->dma_capture = &s3c_pcm_stereo_in[pdev->id];
-+	pcm->dma_playback = &s3c_pcm_stereo_out[pdev->id];
-+
-+	return 0;
-+
-+err5:
-+	clk_disable(pcm->pclk);
-+	clk_put(pcm->pclk);
-+err4:
-+	iounmap(pcm->regs);
-+err3:
-+	release_mem_region(mem_res->start, resource_size(mem_res));
-+err2:
-+	clk_disable(pcm->cclk);
-+	clk_put(pcm->cclk);
-+err1:
-+	return ret;
-+}
-+
-+static __devexit int s3c_pcm_dev_remove(struct platform_device *pdev)
-+{
-+	struct s3c_pcm_info *pcm = &s3c_pcm[pdev->id];
-+	struct resource *mem_res;
-+
-+	snd_soc_unregister_dai(&pdev->dev);
-+
-+	iounmap(pcm->regs);
-+
-+	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	release_mem_region(mem_res->start, resource_size(mem_res));
-+
-+	clk_disable(pcm->cclk);
-+	clk_disable(pcm->pclk);
-+	clk_put(pcm->pclk);
-+	clk_put(pcm->cclk);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver s3c_pcm_driver = {
-+	.probe  = s3c_pcm_dev_probe,
-+	.remove = s3c_pcm_dev_remove,
-+	.driver = {
-+		.name = "samsung-pcm",
-+		.owner = THIS_MODULE,
-+	},
-+};
-+
-+static int __init s3c_pcm_init(void)
-+{
-+	return platform_driver_register(&s3c_pcm_driver);
-+}
-+module_init(s3c_pcm_init);
-+
-+static void __exit s3c_pcm_exit(void)
-+{
-+	platform_driver_unregister(&s3c_pcm_driver);
-+}
-+module_exit(s3c_pcm_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Jaswinder Singh, <jassi.brar@samsung.com>");
-+MODULE_DESCRIPTION("S3C PCM Controller Driver");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:samsung-pcm");
-diff --git a/sound/soc/samsung/pcm.h b/sound/soc/samsung/pcm.h
-new file mode 100644
-index 0000000..03393dc
---- /dev/null
-+++ b/sound/soc/samsung/pcm.h
-@@ -0,0 +1,124 @@
-+/*  sound/soc/samsung/pcm.h
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
-+
-+#ifndef __S3C_PCM_H
-+#define __S3C_PCM_H __FILE__
-+
-+/*Register Offsets */
-+#define S3C_PCM_CTL	(0x00)
-+#define S3C_PCM_CLKCTL	(0x04)
-+#define S3C_PCM_TXFIFO	(0x08)
-+#define S3C_PCM_RXFIFO	(0x0C)
-+#define S3C_PCM_IRQCTL	(0x10)
-+#define S3C_PCM_IRQSTAT	(0x14)
-+#define S3C_PCM_FIFOSTAT	(0x18)
-+#define S3C_PCM_CLRINT	(0x20)
-+
-+/* PCM_CTL Bit-Fields */
-+#define S3C_PCM_CTL_TXDIPSTICK_MASK		(0x3f)
-+#define S3C_PCM_CTL_TXDIPSTICK_SHIFT	(13)
-+#define S3C_PCM_CTL_RXDIPSTICK_MASK		(0x3f)
-+#define S3C_PCM_CTL_RXDIPSTICK_SHIFT	(7)
-+#define S3C_PCM_CTL_TXDMA_EN		(0x1<<6)
-+#define S3C_PCM_CTL_RXDMA_EN		(0x1<<5)
-+#define S3C_PCM_CTL_TXMSB_AFTER_FSYNC	(0x1<<4)
-+#define S3C_PCM_CTL_RXMSB_AFTER_FSYNC	(0x1<<3)
-+#define S3C_PCM_CTL_TXFIFO_EN		(0x1<<2)
-+#define S3C_PCM_CTL_RXFIFO_EN		(0x1<<1)
-+#define S3C_PCM_CTL_ENABLE			(0x1<<0)
-+
-+/* PCM_CLKCTL Bit-Fields */
-+#define S3C_PCM_CLKCTL_SERCLK_EN		(0x1<<19)
-+#define S3C_PCM_CLKCTL_SERCLKSEL_PCLK	(0x1<<18)
-+#define S3C_PCM_CLKCTL_SCLKDIV_MASK		(0x1ff)
-+#define S3C_PCM_CLKCTL_SYNCDIV_MASK		(0x1ff)
-+#define S3C_PCM_CLKCTL_SCLKDIV_SHIFT	(9)
-+#define S3C_PCM_CLKCTL_SYNCDIV_SHIFT	(0)
-+
-+/* PCM_TXFIFO Bit-Fields */
-+#define S3C_PCM_TXFIFO_DVALID	(0x1<<16)
-+#define S3C_PCM_TXFIFO_DATA_MSK	(0xffff<<0)
-+
-+/* PCM_RXFIFO Bit-Fields */
-+#define S3C_PCM_RXFIFO_DVALID	(0x1<<16)
-+#define S3C_PCM_RXFIFO_DATA_MSK	(0xffff<<0)
-+
-+/* PCM_IRQCTL Bit-Fields */
-+#define S3C_PCM_IRQCTL_IRQEN		(0x1<<14)
-+#define S3C_PCM_IRQCTL_WRDEN		(0x1<<12)
-+#define S3C_PCM_IRQCTL_TXEMPTYEN		(0x1<<11)
-+#define S3C_PCM_IRQCTL_TXALMSTEMPTYEN	(0x1<<10)
-+#define S3C_PCM_IRQCTL_TXFULLEN		(0x1<<9)
-+#define S3C_PCM_IRQCTL_TXALMSTFULLEN	(0x1<<8)
-+#define S3C_PCM_IRQCTL_TXSTARVEN		(0x1<<7)
-+#define S3C_PCM_IRQCTL_TXERROVRFLEN		(0x1<<6)
-+#define S3C_PCM_IRQCTL_RXEMPTEN		(0x1<<5)
-+#define S3C_PCM_IRQCTL_RXALMSTEMPTEN	(0x1<<4)
-+#define S3C_PCM_IRQCTL_RXFULLEN		(0x1<<3)
-+#define S3C_PCM_IRQCTL_RXALMSTFULLEN	(0x1<<2)
-+#define S3C_PCM_IRQCTL_RXSTARVEN		(0x1<<1)
-+#define S3C_PCM_IRQCTL_RXERROVRFLEN		(0x1<<0)
-+
-+/* PCM_IRQSTAT Bit-Fields */
-+#define S3C_PCM_IRQSTAT_IRQPND		(0x1<<13)
-+#define S3C_PCM_IRQSTAT_WRD_XFER		(0x1<<12)
-+#define S3C_PCM_IRQSTAT_TXEMPTY		(0x1<<11)
-+#define S3C_PCM_IRQSTAT_TXALMSTEMPTY	(0x1<<10)
-+#define S3C_PCM_IRQSTAT_TXFULL		(0x1<<9)
-+#define S3C_PCM_IRQSTAT_TXALMSTFULL		(0x1<<8)
-+#define S3C_PCM_IRQSTAT_TXSTARV		(0x1<<7)
-+#define S3C_PCM_IRQSTAT_TXERROVRFL		(0x1<<6)
-+#define S3C_PCM_IRQSTAT_RXEMPT		(0x1<<5)
-+#define S3C_PCM_IRQSTAT_RXALMSTEMPT		(0x1<<4)
-+#define S3C_PCM_IRQSTAT_RXFULL		(0x1<<3)
-+#define S3C_PCM_IRQSTAT_RXALMSTFULL		(0x1<<2)
-+#define S3C_PCM_IRQSTAT_RXSTARV		(0x1<<1)
-+#define S3C_PCM_IRQSTAT_RXERROVRFL		(0x1<<0)
-+
-+/* PCM_FIFOSTAT Bit-Fields */
-+#define S3C_PCM_FIFOSTAT_TXCNT_MSK		(0x3f<<14)
-+#define S3C_PCM_FIFOSTAT_TXFIFOEMPTY	(0x1<<13)
-+#define S3C_PCM_FIFOSTAT_TXFIFOALMSTEMPTY	(0x1<<12)
-+#define S3C_PCM_FIFOSTAT_TXFIFOFULL		(0x1<<11)
-+#define S3C_PCM_FIFOSTAT_TXFIFOALMSTFULL	(0x1<<10)
-+#define S3C_PCM_FIFOSTAT_RXCNT_MSK		(0x3f<<4)
-+#define S3C_PCM_FIFOSTAT_RXFIFOEMPTY	(0x1<<3)
-+#define S3C_PCM_FIFOSTAT_RXFIFOALMSTEMPTY	(0x1<<2)
-+#define S3C_PCM_FIFOSTAT_RXFIFOFULL		(0x1<<1)
-+#define S3C_PCM_FIFOSTAT_RXFIFOALMSTFULL	(0x1<<0)
-+
-+#define S3C_PCM_CLKSRC_PCLK	0
-+#define S3C_PCM_CLKSRC_MUX	1
-+
-+#define S3C_PCM_SCLK_PER_FS	0
-+
-+/**
-+ * struct s3c_pcm_info - S3C PCM Controller information
-+ * @dev: The parent device passed to use from the probe.
-+ * @regs: The pointer to the device register block.
-+ * @dma_playback: DMA information for playback channel.
-+ * @dma_capture: DMA information for capture channel.
-+ */
-+struct s3c_pcm_info {
-+	spinlock_t lock;
-+	struct device	*dev;
-+	void __iomem	*regs;
-+
-+	unsigned int sclk_per_fs;
-+
-+	/* Whether to keep PCMSCLK enabled even when idle(no active xfer) */
-+	unsigned int idleclk;
-+
-+	struct clk	*pclk;
-+	struct clk	*cclk;
-+
-+	struct s3c_dma_params	*dma_playback;
-+	struct s3c_dma_params	*dma_capture;
-+};
-+
-+#endif /* __S3C_PCM_H */
-diff --git a/sound/soc/samsung/regs-i2s-v2.h b/sound/soc/samsung/regs-i2s-v2.h
-new file mode 100644
-index 0000000..5e5e568
---- /dev/null
-+++ b/sound/soc/samsung/regs-i2s-v2.h
-@@ -0,0 +1,115 @@
-+/* linux/include/asm-arm/plat-s3c24xx/regs-s3c2412-iis.h
-+ *
-+ * Copyright 2007 Simtec Electronics <linux@simtec.co.uk>
-+ *	http://armlinux.simtec.co.uk/
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * S3C2412 IIS register definition
-+*/
-+
-+#ifndef __ASM_ARCH_REGS_S3C2412_IIS_H
-+#define __ASM_ARCH_REGS_S3C2412_IIS_H
-+
-+#define S3C2412_IISCON			(0x00)
-+#define S3C2412_IISMOD			(0x04)
-+#define S3C2412_IISFIC			(0x08)
-+#define S3C2412_IISPSR			(0x0C)
-+#define S3C2412_IISTXD			(0x10)
-+#define S3C2412_IISRXD			(0x14)
-+
-+#define S5PC1XX_IISFICS		0x18
-+#define S5PC1XX_IISTXDS		0x1C
-+
-+#define S5PC1XX_IISCON_SW_RST		(1 << 31)
-+#define S5PC1XX_IISCON_FRXOFSTATUS	(1 << 26)
-+#define S5PC1XX_IISCON_FRXORINTEN	(1 << 25)
-+#define S5PC1XX_IISCON_FTXSURSTAT	(1 << 24)
-+#define S5PC1XX_IISCON_FTXSURINTEN	(1 << 23)
-+#define S5PC1XX_IISCON_TXSDMAPAUSE	(1 << 20)
-+#define S5PC1XX_IISCON_TXSDMACTIVE	(1 << 18)
-+
-+#define S3C64XX_IISCON_FTXURSTATUS	(1 << 17)
-+#define S3C64XX_IISCON_FTXURINTEN	(1 << 16)
-+#define S3C64XX_IISCON_TXFIFO2_EMPTY	(1 << 15)
-+#define S3C64XX_IISCON_TXFIFO1_EMPTY	(1 << 14)
-+#define S3C64XX_IISCON_TXFIFO2_FULL	(1 << 13)
-+#define S3C64XX_IISCON_TXFIFO1_FULL	(1 << 12)
-+
-+#define S3C2412_IISCON_LRINDEX		(1 << 11)
-+#define S3C2412_IISCON_TXFIFO_EMPTY	(1 << 10)
-+#define S3C2412_IISCON_RXFIFO_EMPTY	(1 << 9)
-+#define S3C2412_IISCON_TXFIFO_FULL	(1 << 8)
-+#define S3C2412_IISCON_RXFIFO_FULL	(1 << 7)
-+#define S3C2412_IISCON_TXDMA_PAUSE	(1 << 6)
-+#define S3C2412_IISCON_RXDMA_PAUSE	(1 << 5)
-+#define S3C2412_IISCON_TXCH_PAUSE	(1 << 4)
-+#define S3C2412_IISCON_RXCH_PAUSE	(1 << 3)
-+#define S3C2412_IISCON_TXDMA_ACTIVE	(1 << 2)
-+#define S3C2412_IISCON_RXDMA_ACTIVE	(1 << 1)
-+#define S3C2412_IISCON_IIS_ACTIVE	(1 << 0)
-+
-+#define S5PC1XX_IISMOD_OPCLK_CDCLK_OUT	(0 << 30)
-+#define S5PC1XX_IISMOD_OPCLK_CDCLK_IN	(1 << 30)
-+#define S5PC1XX_IISMOD_OPCLK_BCLK_OUT	(2 << 30)
-+#define S5PC1XX_IISMOD_OPCLK_PCLK	(3 << 30)
-+#define S5PC1XX_IISMOD_OPCLK_MASK	(3 << 30)
-+#define S5PC1XX_IISMOD_TXS_IDMA		(1 << 28) /* Sec_TXFIFO use I-DMA */
-+#define S5PC1XX_IISMOD_BLCS_MASK	0x3
-+#define S5PC1XX_IISMOD_BLCS_SHIFT	26
-+#define S5PC1XX_IISMOD_BLCP_MASK	0x3
-+#define S5PC1XX_IISMOD_BLCP_SHIFT	24
-+
-+#define S3C64XX_IISMOD_C2DD_HHALF	(1 << 21) /* Discard Higher-half */
-+#define S3C64XX_IISMOD_C2DD_LHALF	(1 << 20) /* Discard Lower-half */
-+#define S3C64XX_IISMOD_C1DD_HHALF	(1 << 19)
-+#define S3C64XX_IISMOD_C1DD_LHALF	(1 << 18)
-+#define S3C64XX_IISMOD_DC2_EN		(1 << 17)
-+#define S3C64XX_IISMOD_DC1_EN		(1 << 16)
-+#define S3C64XX_IISMOD_BLC_16BIT	(0 << 13)
-+#define S3C64XX_IISMOD_BLC_8BIT		(1 << 13)
-+#define S3C64XX_IISMOD_BLC_24BIT	(2 << 13)
-+#define S3C64XX_IISMOD_BLC_MASK		(3 << 13)
-+
-+#define S3C2412_IISMOD_IMS_SYSMUX	(1 << 10)
-+#define S3C2412_IISMOD_SLAVE		(1 << 11)
-+#define S3C2412_IISMOD_MODE_TXONLY	(0 << 8)
-+#define S3C2412_IISMOD_MODE_RXONLY	(1 << 8)
-+#define S3C2412_IISMOD_MODE_TXRX	(2 << 8)
-+#define S3C2412_IISMOD_MODE_MASK	(3 << 8)
-+#define S3C2412_IISMOD_LR_LLOW		(0 << 7)
-+#define S3C2412_IISMOD_LR_RLOW		(1 << 7)
-+#define S3C2412_IISMOD_SDF_IIS		(0 << 5)
-+#define S3C2412_IISMOD_SDF_MSB		(1 << 5)
-+#define S3C2412_IISMOD_SDF_LSB		(2 << 5)
-+#define S3C2412_IISMOD_SDF_MASK		(3 << 5)
-+#define S3C2412_IISMOD_RCLK_256FS	(0 << 3)
-+#define S3C2412_IISMOD_RCLK_512FS	(1 << 3)
-+#define S3C2412_IISMOD_RCLK_384FS	(2 << 3)
-+#define S3C2412_IISMOD_RCLK_768FS	(3 << 3)
-+#define S3C2412_IISMOD_RCLK_MASK 	(3 << 3)
-+#define S3C2412_IISMOD_BCLK_32FS	(0 << 1)
-+#define S3C2412_IISMOD_BCLK_48FS	(1 << 1)
-+#define S3C2412_IISMOD_BCLK_16FS	(2 << 1)
-+#define S3C2412_IISMOD_BCLK_24FS	(3 << 1)
-+#define S3C2412_IISMOD_BCLK_MASK	(3 << 1)
-+#define S3C2412_IISMOD_8BIT		(1 << 0)
-+
-+#define S3C64XX_IISMOD_CDCLKCON		(1 << 12)
-+
-+#define S3C2412_IISPSR_PSREN		(1 << 15)
-+
-+#define S3C64XX_IISFIC_TX2COUNT(x)	(((x) >>  24) & 0xf)
-+#define S3C64XX_IISFIC_TX1COUNT(x)	(((x) >>  16) & 0xf)
-+
-+#define S3C2412_IISFIC_TXFLUSH		(1 << 15)
-+#define S3C2412_IISFIC_RXFLUSH		(1 << 7)
-+#define S3C2412_IISFIC_TXCOUNT(x)	(((x) >>  8) & 0xf)
-+#define S3C2412_IISFIC_RXCOUNT(x)	(((x) >>  0) & 0xf)
-+
-+#define S5PC1XX_IISFICS_TXFLUSH		(1 << 15)
-+#define S5PC1XX_IISFICS_TXCOUNT(x)	(((x) >>  8) & 0x7f)
-+
-+#endif /* __ASM_ARCH_REGS_S3C2412_IIS_H */
-diff --git a/sound/soc/samsung/rx1950_uda1380.c b/sound/soc/samsung/rx1950_uda1380.c
-new file mode 100644
-index 0000000..07197ee
---- /dev/null
-+++ b/sound/soc/samsung/rx1950_uda1380.c
-@@ -0,0 +1,333 @@
-+/*
-+ * rx1950.c  --  ALSA Soc Audio Layer
-+ *
-+ * Copyright (c) 2010 Vasily Khoruzhick <anarsoul@gmail.com>
-+ *
-+ * Based on smdk2440.c and magician.c
-+ *
-+ * Authors: Graeme Gregory graeme.gregory@wolfsonmicro.com
-+ *          Philipp Zabel <philipp.zabel@gmail.com>
-+ *          Denis Grigoriev <dgreenday@gmail.com>
-+ *          Vasily Khoruzhick <anarsoul@gmail.com>
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/platform_device.h>
-+#include <linux/i2c.h>
-+#include <linux/gpio.h>
-+#include <linux/clk.h>
-+
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/uda1380.h>
-+#include <sound/jack.h>
-+
-+#include <plat/regs-iis.h>
-+
-+#include <mach/regs-clock.h>
-+
-+#include <asm/mach-types.h>
-+
-+#include "dma.h"
-+#include "s3c24xx-i2s.h"
-+#include "../codecs/uda1380.h"
-+
-+static int rx1950_uda1380_init(struct snd_soc_pcm_runtime *rtd);
-+static int rx1950_startup(struct snd_pcm_substream *substream);
-+static int rx1950_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params);
-+static int rx1950_spk_power(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *kcontrol, int event);
-+
-+static unsigned int rates[] = {
-+	16000,
-+	44100,
-+	48000,
-+	88200,
-+};
-+
-+static struct snd_pcm_hw_constraint_list hw_rates = {
-+	.count = ARRAY_SIZE(rates),
-+	.list = rates,
-+	.mask = 0,
-+};
-+
-+static struct snd_soc_jack hp_jack;
-+
-+static struct snd_soc_jack_pin hp_jack_pins[] = {
-+	{
-+		.pin	= "Headphone Jack",
-+		.mask	= SND_JACK_HEADPHONE,
-+	},
-+	{
-+		.pin	= "Speaker",
-+		.mask	= SND_JACK_HEADPHONE,
-+		.invert	= 1,
-+	},
-+};
-+
-+static struct snd_soc_jack_gpio hp_jack_gpios[] = {
-+	[0] = {
-+		.gpio			= S3C2410_GPG(12),
-+		.name			= "hp-gpio",
-+		.report			= SND_JACK_HEADPHONE,
-+		.invert			= 1,
-+		.debounce_time		= 200,
-+	},
-+};
-+
-+static struct snd_soc_ops rx1950_ops = {
-+	.startup	= rx1950_startup,
-+	.hw_params	= rx1950_hw_params,
-+};
-+
-+/* s3c24xx digital audio interface glue - connects codec <--> CPU */
-+static struct snd_soc_dai_link rx1950_uda1380_dai[] = {
-+	{
-+		.name		= "uda1380",
-+		.stream_name	= "UDA1380 Duplex",
-+		.cpu_dai_name	= "s3c24xx-iis",
-+		.codec_dai_name	= "uda1380-hifi",
-+		.init		= rx1950_uda1380_init,
-+		.platform_name	= "samsung-audio",
-+		.codec_name	= "uda1380-codec.0-001a",
-+		.ops		= &rx1950_ops,
-+	},
-+};
-+
-+static struct snd_soc_card rx1950_asoc = {
-+	.name = "rx1950",
-+	.dai_link = rx1950_uda1380_dai,
-+	.num_links = ARRAY_SIZE(rx1950_uda1380_dai),
-+};
-+
-+/* rx1950 machine dapm widgets */
-+static const struct snd_soc_dapm_widget uda1380_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Mic Jack", NULL),
-+	SND_SOC_DAPM_SPK("Speaker", rx1950_spk_power),
-+};
-+
-+/* rx1950 machine audio_map */
-+static const struct snd_soc_dapm_route audio_map[] = {
-+	/* headphone connected to VOUTLHP, VOUTRHP */
-+	{"Headphone Jack", NULL, "VOUTLHP"},
-+	{"Headphone Jack", NULL, "VOUTRHP"},
-+
-+	/* ext speaker connected to VOUTL, VOUTR  */
-+	{"Speaker", NULL, "VOUTL"},
-+	{"Speaker", NULL, "VOUTR"},
-+
-+	/* mic is connected to VINM */
-+	{"VINM", NULL, "Mic Jack"},
-+};
-+
-+static struct platform_device *s3c24xx_snd_device;
-+static struct clk *xtal;
-+
-+static int rx1950_startup(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+	runtime->hw.rate_min = hw_rates.list[0];
-+	runtime->hw.rate_max = hw_rates.list[hw_rates.count - 1];
-+	runtime->hw.rates = SNDRV_PCM_RATE_KNOT;
-+
-+	return snd_pcm_hw_constraint_list(runtime, 0,
-+					SNDRV_PCM_HW_PARAM_RATE,
-+					&hw_rates);
-+}
-+
-+static int rx1950_spk_power(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *kcontrol, int event)
-+{
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		gpio_set_value(S3C2410_GPA(1), 1);
-+	else
-+		gpio_set_value(S3C2410_GPA(1), 0);
-+
-+	return 0;
-+}
-+
-+static int rx1950_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	int div;
-+	int ret;
-+	unsigned int rate = params_rate(params);
-+	int clk_source, fs_mode;
-+
-+	switch (rate) {
-+	case 16000:
-+	case 48000:
-+		clk_source = S3C24XX_CLKSRC_PCLK;
-+		fs_mode = S3C2410_IISMOD_256FS;
-+		div = s3c24xx_i2s_get_clockrate() / (256 * rate);
-+		if (s3c24xx_i2s_get_clockrate() % (256 * rate) > (128 * rate))
-+			div++;
-+		break;
-+	case 44100:
-+	case 88200:
-+		clk_source = S3C24XX_CLKSRC_MPLL;
-+		fs_mode = S3C2410_IISMOD_256FS;
-+		div = clk_get_rate(xtal) / (256 * rate);
-+		if (clk_get_rate(xtal) % (256 * rate) > (128 * rate))
-+			div++;
-+		break;
-+	default:
-+		printk(KERN_ERR "%s: rate %d is not supported\n",
-+			__func__, rate);
-+		return -EINVAL;
-+	}
-+
-+	/* set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-+		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set cpu DAI configuration */
-+	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
-+		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* select clock source */
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, clk_source, rate,
-+			SND_SOC_CLOCK_OUT);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set MCLK division for sample rate */
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_MCLK,
-+		S3C2410_IISMOD_384FS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set BCLK division for sample rate */
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_BCLK,
-+		S3C2410_IISMOD_32FS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set prescaler division for sample rate */
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_PRESCALER,
-+		S3C24XX_PRESCALE(div, div));
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int rx1950_uda1380_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+	int err;
-+
-+	/* Add rx1950 specific widgets */
-+	err = snd_soc_dapm_new_controls(codec, uda1380_dapm_widgets,
-+				  ARRAY_SIZE(uda1380_dapm_widgets));
-+
-+	if (err)
-+		return err;
-+
-+	/* Set up rx1950 specific audio path audio_mapnects */
-+	err = snd_soc_dapm_add_routes(codec, audio_map,
-+				      ARRAY_SIZE(audio_map));
-+
-+	if (err)
-+		return err;
-+
-+	snd_soc_dapm_enable_pin(codec, "Headphone Jack");
-+	snd_soc_dapm_enable_pin(codec, "Speaker");
-+
-+	snd_soc_dapm_sync(codec);
-+
-+	snd_soc_jack_new(codec, "Headphone Jack", SND_JACK_HEADPHONE,
-+		&hp_jack);
-+
-+	snd_soc_jack_add_pins(&hp_jack, ARRAY_SIZE(hp_jack_pins),
-+		hp_jack_pins);
-+
-+	snd_soc_jack_add_gpios(&hp_jack, ARRAY_SIZE(hp_jack_gpios),
-+		hp_jack_gpios);
-+
-+	return 0;
-+}
-+
-+static int __init rx1950_init(void)
-+{
-+	int ret;
-+
-+	if (!machine_is_rx1950())
-+		return -ENODEV;
-+
-+	/* configure some gpios */
-+	ret = gpio_request(S3C2410_GPA(1), "speaker-power");
-+	if (ret)
-+		goto err_gpio;
-+
-+	ret = gpio_direction_output(S3C2410_GPA(1), 0);
-+	if (ret)
-+		goto err_gpio_conf;
-+
-+	s3c24xx_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!s3c24xx_snd_device) {
-+		ret = -ENOMEM;
-+		goto err_plat_alloc;
-+	}
-+
-+	platform_set_drvdata(s3c24xx_snd_device, &rx1950_asoc);
-+	ret = platform_device_add(s3c24xx_snd_device);
-+
-+	if (ret) {
-+		platform_device_put(s3c24xx_snd_device);
-+		goto err_plat_add;
-+	}
-+
-+	xtal = clk_get(&s3c24xx_snd_device->dev, "xtal");
-+
-+	if (IS_ERR(xtal)) {
-+		ret = PTR_ERR(xtal);
-+		platform_device_unregister(s3c24xx_snd_device);
-+		goto err_clk;
-+	}
-+
-+	return 0;
-+
-+err_clk:
-+err_plat_add:
-+err_plat_alloc:
-+err_gpio_conf:
-+	gpio_free(S3C2410_GPA(1));
-+
-+err_gpio:
-+	return ret;
-+}
-+
-+static void __exit rx1950_exit(void)
-+{
-+	platform_device_unregister(s3c24xx_snd_device);
-+	snd_soc_jack_free_gpios(&hp_jack, ARRAY_SIZE(hp_jack_gpios),
-+		hp_jack_gpios);
-+	clk_put(xtal);
-+	gpio_free(S3C2410_GPA(1));
-+}
-+
-+module_init(rx1950_init);
-+module_exit(rx1950_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Vasily Khoruzhick");
-+MODULE_DESCRIPTION("ALSA SoC RX1950");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
-new file mode 100644
-index 0000000..094f36e
---- /dev/null
-+++ b/sound/soc/samsung/s3c-i2s-v2.c
-@@ -0,0 +1,757 @@
-+/* sound/soc/samsung/s3c-i2c-v2.c
-+ *
-+ * ALSA Soc Audio Layer - I2S core for newer Samsung SoCs.
-+ *
-+ * Copyright (c) 2006 Wolfson Microelectronics PLC.
-+ *	Graeme Gregory graeme.gregory@wolfsonmicro.com
-+ *	linux@wolfsonmicro.com
-+ *
-+ * Copyright (c) 2008, 2007, 2004-2005 Simtec Electronics
-+ *	http://armlinux.simtec.co.uk/
-+ *	Ben Dooks <ben@simtec.co.uk>
-+ *
-+ * This program is free software; you can redistribute  it and/or modify it
-+ * under  the terms of  the GNU General  Public License as published by the
-+ * Free Software Foundation;  either version 2 of the  License, or (at your
-+ * option) any later version.
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/clk.h>
-+#include <linux/io.h>
-+
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+
-+#include <mach/dma.h>
-+
-+#include "regs-i2s-v2.h"
-+#include "s3c-i2s-v2.h"
-+#include "dma.h"
-+
-+#undef S3C_IIS_V2_SUPPORTED
-+
-+#if defined(CONFIG_CPU_S3C2412) || defined(CONFIG_CPU_S3C2413) \
-+	|| defined(CONFIG_CPU_S5PV210)
-+#define S3C_IIS_V2_SUPPORTED
-+#endif
-+
-+#ifdef CONFIG_PLAT_S3C64XX
-+#define S3C_IIS_V2_SUPPORTED
-+#endif
-+
-+#ifndef S3C_IIS_V2_SUPPORTED
-+#error Unsupported CPU model
-+#endif
-+
-+#define S3C2412_I2S_DEBUG_CON 0
-+
-+static inline struct s3c_i2sv2_info *to_info(struct snd_soc_dai *cpu_dai)
-+{
-+	return snd_soc_dai_get_drvdata(cpu_dai);
-+}
-+
-+#define bit_set(v, b) (((v) & (b)) ? 1 : 0)
-+
-+#if S3C2412_I2S_DEBUG_CON
-+static void dbg_showcon(const char *fn, u32 con)
-+{
-+	printk(KERN_DEBUG "%s: LRI=%d, TXFEMPT=%d, RXFEMPT=%d, TXFFULL=%d, RXFFULL=%d\n", fn,
-+	       bit_set(con, S3C2412_IISCON_LRINDEX),
-+	       bit_set(con, S3C2412_IISCON_TXFIFO_EMPTY),
-+	       bit_set(con, S3C2412_IISCON_RXFIFO_EMPTY),
-+	       bit_set(con, S3C2412_IISCON_TXFIFO_FULL),
-+	       bit_set(con, S3C2412_IISCON_RXFIFO_FULL));
-+
-+	printk(KERN_DEBUG "%s: PAUSE: TXDMA=%d, RXDMA=%d, TXCH=%d, RXCH=%d\n",
-+	       fn,
-+	       bit_set(con, S3C2412_IISCON_TXDMA_PAUSE),
-+	       bit_set(con, S3C2412_IISCON_RXDMA_PAUSE),
-+	       bit_set(con, S3C2412_IISCON_TXCH_PAUSE),
-+	       bit_set(con, S3C2412_IISCON_RXCH_PAUSE));
-+	printk(KERN_DEBUG "%s: ACTIVE: TXDMA=%d, RXDMA=%d, IIS=%d\n", fn,
-+	       bit_set(con, S3C2412_IISCON_TXDMA_ACTIVE),
-+	       bit_set(con, S3C2412_IISCON_RXDMA_ACTIVE),
-+	       bit_set(con, S3C2412_IISCON_IIS_ACTIVE));
-+}
-+#else
-+static inline void dbg_showcon(const char *fn, u32 con)
-+{
-+}
-+#endif
-+
-+
-+/* Turn on or off the transmission path. */
-+static void s3c2412_snd_txctrl(struct s3c_i2sv2_info *i2s, int on)
-+{
-+	void __iomem *regs = i2s->regs;
-+	u32 fic, con, mod;
-+
-+	pr_debug("%s(%d)\n", __func__, on);
-+
-+	fic = readl(regs + S3C2412_IISFIC);
-+	con = readl(regs + S3C2412_IISCON);
-+	mod = readl(regs + S3C2412_IISMOD);
-+
-+	pr_debug("%s: IIS: CON=%x MOD=%x FIC=%x\n", __func__, con, mod, fic);
-+
-+	if (on) {
-+		con |= S3C2412_IISCON_TXDMA_ACTIVE | S3C2412_IISCON_IIS_ACTIVE;
-+		con &= ~S3C2412_IISCON_TXDMA_PAUSE;
-+		con &= ~S3C2412_IISCON_TXCH_PAUSE;
-+
-+		switch (mod & S3C2412_IISMOD_MODE_MASK) {
-+		case S3C2412_IISMOD_MODE_TXONLY:
-+		case S3C2412_IISMOD_MODE_TXRX:
-+			/* do nothing, we are in the right mode */
-+			break;
-+
-+		case S3C2412_IISMOD_MODE_RXONLY:
-+			mod &= ~S3C2412_IISMOD_MODE_MASK;
-+			mod |= S3C2412_IISMOD_MODE_TXRX;
-+			break;
-+
-+		default:
-+			dev_err(i2s->dev, "TXEN: Invalid MODE %x in IISMOD\n",
-+				mod & S3C2412_IISMOD_MODE_MASK);
-+			break;
-+		}
-+
-+		writel(con, regs + S3C2412_IISCON);
-+		writel(mod, regs + S3C2412_IISMOD);
-+	} else {
-+		/* Note, we do not have any indication that the FIFO problems
-+		 * tha the S3C2410/2440 had apply here, so we should be able
-+		 * to disable the DMA and TX without resetting the FIFOS.
-+		 */
-+
-+		con |=  S3C2412_IISCON_TXDMA_PAUSE;
-+		con |=  S3C2412_IISCON_TXCH_PAUSE;
-+		con &= ~S3C2412_IISCON_TXDMA_ACTIVE;
-+
-+		switch (mod & S3C2412_IISMOD_MODE_MASK) {
-+		case S3C2412_IISMOD_MODE_TXRX:
-+			mod &= ~S3C2412_IISMOD_MODE_MASK;
-+			mod |= S3C2412_IISMOD_MODE_RXONLY;
-+			break;
-+
-+		case S3C2412_IISMOD_MODE_TXONLY:
-+			mod &= ~S3C2412_IISMOD_MODE_MASK;
-+			con &= ~S3C2412_IISCON_IIS_ACTIVE;
-+			break;
-+
-+		default:
-+			dev_err(i2s->dev, "TXDIS: Invalid MODE %x in IISMOD\n",
-+				mod & S3C2412_IISMOD_MODE_MASK);
-+			break;
-+		}
-+
-+		writel(mod, regs + S3C2412_IISMOD);
-+		writel(con, regs + S3C2412_IISCON);
-+	}
-+
-+	fic = readl(regs + S3C2412_IISFIC);
-+	dbg_showcon(__func__, con);
-+	pr_debug("%s: IIS: CON=%x MOD=%x FIC=%x\n", __func__, con, mod, fic);
-+}
-+
-+static void s3c2412_snd_rxctrl(struct s3c_i2sv2_info *i2s, int on)
-+{
-+	void __iomem *regs = i2s->regs;
-+	u32 fic, con, mod;
-+
-+	pr_debug("%s(%d)\n", __func__, on);
-+
-+	fic = readl(regs + S3C2412_IISFIC);
-+	con = readl(regs + S3C2412_IISCON);
-+	mod = readl(regs + S3C2412_IISMOD);
-+
-+	pr_debug("%s: IIS: CON=%x MOD=%x FIC=%x\n", __func__, con, mod, fic);
-+
-+	if (on) {
-+		con |= S3C2412_IISCON_RXDMA_ACTIVE | S3C2412_IISCON_IIS_ACTIVE;
-+		con &= ~S3C2412_IISCON_RXDMA_PAUSE;
-+		con &= ~S3C2412_IISCON_RXCH_PAUSE;
-+
-+		switch (mod & S3C2412_IISMOD_MODE_MASK) {
-+		case S3C2412_IISMOD_MODE_TXRX:
-+		case S3C2412_IISMOD_MODE_RXONLY:
-+			/* do nothing, we are in the right mode */
-+			break;
-+
-+		case S3C2412_IISMOD_MODE_TXONLY:
-+			mod &= ~S3C2412_IISMOD_MODE_MASK;
-+			mod |= S3C2412_IISMOD_MODE_TXRX;
-+			break;
-+
-+		default:
-+			dev_err(i2s->dev, "RXEN: Invalid MODE %x in IISMOD\n",
-+				mod & S3C2412_IISMOD_MODE_MASK);
-+		}
-+
-+		writel(mod, regs + S3C2412_IISMOD);
-+		writel(con, regs + S3C2412_IISCON);
-+	} else {
-+		/* See txctrl notes on FIFOs. */
-+
-+		con &= ~S3C2412_IISCON_RXDMA_ACTIVE;
-+		con |=  S3C2412_IISCON_RXDMA_PAUSE;
-+		con |=  S3C2412_IISCON_RXCH_PAUSE;
-+
-+		switch (mod & S3C2412_IISMOD_MODE_MASK) {
-+		case S3C2412_IISMOD_MODE_RXONLY:
-+			con &= ~S3C2412_IISCON_IIS_ACTIVE;
-+			mod &= ~S3C2412_IISMOD_MODE_MASK;
-+			break;
-+
-+		case S3C2412_IISMOD_MODE_TXRX:
-+			mod &= ~S3C2412_IISMOD_MODE_MASK;
-+			mod |= S3C2412_IISMOD_MODE_TXONLY;
-+			break;
-+
-+		default:
-+			dev_err(i2s->dev, "RXDIS: Invalid MODE %x in IISMOD\n",
-+				mod & S3C2412_IISMOD_MODE_MASK);
-+		}
-+
-+		writel(con, regs + S3C2412_IISCON);
-+		writel(mod, regs + S3C2412_IISMOD);
-+	}
-+
-+	fic = readl(regs + S3C2412_IISFIC);
-+	pr_debug("%s: IIS: CON=%x MOD=%x FIC=%x\n", __func__, con, mod, fic);
-+}
-+
-+#define msecs_to_loops(t) (loops_per_jiffy / 1000 * HZ * t)
-+
-+/*
-+ * Wait for the LR signal to allow synchronisation to the L/R clock
-+ * from the codec. May only be needed for slave mode.
-+ */
-+static int s3c2412_snd_lrsync(struct s3c_i2sv2_info *i2s)
-+{
-+	u32 iiscon;
-+	unsigned long loops = msecs_to_loops(5);
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	while (--loops) {
-+		iiscon = readl(i2s->regs + S3C2412_IISCON);
-+		if (iiscon & S3C2412_IISCON_LRINDEX)
-+			break;
-+
-+		cpu_relax();
-+	}
-+
-+	if (!loops) {
-+		printk(KERN_ERR "%s: timeout\n", __func__);
-+		return -ETIMEDOUT;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * Set S3C2412 I2S DAI format
-+ */
-+static int s3c2412_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
-+			       unsigned int fmt)
-+{
-+	struct s3c_i2sv2_info *i2s = to_info(cpu_dai);
-+	u32 iismod;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	iismod = readl(i2s->regs + S3C2412_IISMOD);
-+	pr_debug("hw_params r: IISMOD: %x \n", iismod);
-+
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		i2s->master = 0;
-+		iismod |= S3C2412_IISMOD_SLAVE;
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		i2s->master = 1;
-+		iismod &= ~S3C2412_IISMOD_SLAVE;
-+		break;
-+	default:
-+		pr_err("unknwon master/slave format\n");
-+		return -EINVAL;
-+	}
-+
-+	iismod &= ~S3C2412_IISMOD_SDF_MASK;
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		iismod |= S3C2412_IISMOD_LR_RLOW;
-+		iismod |= S3C2412_IISMOD_SDF_MSB;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		iismod |= S3C2412_IISMOD_LR_RLOW;
-+		iismod |= S3C2412_IISMOD_SDF_LSB;
-+		break;
-+	case SND_SOC_DAIFMT_I2S:
-+		iismod &= ~S3C2412_IISMOD_LR_RLOW;
-+		iismod |= S3C2412_IISMOD_SDF_IIS;
-+		break;
-+	default:
-+		pr_err("Unknown data format\n");
-+		return -EINVAL;
-+	}
-+
-+	writel(iismod, i2s->regs + S3C2412_IISMOD);
-+	pr_debug("hw_params w: IISMOD: %x \n", iismod);
-+	return 0;
-+}
-+
-+static int s3c_i2sv2_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params,
-+				 struct snd_soc_dai *dai)
-+{
-+	struct s3c_i2sv2_info *i2s = to_info(dai);
-+	struct s3c_dma_params *dma_data;
-+	u32 iismod;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		dma_data = i2s->dma_playback;
-+	else
-+		dma_data = i2s->dma_capture;
-+
-+	snd_soc_dai_set_dma_data(dai, substream, dma_data);
-+
-+	/* Working copies of register */
-+	iismod = readl(i2s->regs + S3C2412_IISMOD);
-+	pr_debug("%s: r: IISMOD: %x\n", __func__, iismod);
-+
-+	iismod &= ~S3C64XX_IISMOD_BLC_MASK;
-+	/* Sample size */
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S8:
-+		iismod |= S3C64XX_IISMOD_BLC_8BIT;
-+		break;
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		iismod |= S3C64XX_IISMOD_BLC_24BIT;
-+		break;
-+	}
-+
-+	writel(iismod, i2s->regs + S3C2412_IISMOD);
-+	pr_debug("%s: w: IISMOD: %x\n", __func__, iismod);
-+
-+	return 0;
-+}
-+
-+static int s3c_i2sv2_set_sysclk(struct snd_soc_dai *cpu_dai,
-+				  int clk_id, unsigned int freq, int dir)
-+{
-+	struct s3c_i2sv2_info *i2s = to_info(cpu_dai);
-+	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
-+
-+	pr_debug("Entered %s\n", __func__);
-+	pr_debug("%s r: IISMOD: %x\n", __func__, iismod);
-+
-+	switch (clk_id) {
-+	case S3C_I2SV2_CLKSRC_PCLK:
-+		iismod &= ~S3C2412_IISMOD_IMS_SYSMUX;
-+		break;
-+
-+	case S3C_I2SV2_CLKSRC_AUDIOBUS:
-+		iismod |= S3C2412_IISMOD_IMS_SYSMUX;
-+		break;
-+
-+	case S3C_I2SV2_CLKSRC_CDCLK:
-+		/* Error if controller doesn't have the CDCLKCON bit */
-+		if (!(i2s->feature & S3C_FEATURE_CDCLKCON))
-+			return -EINVAL;
-+
-+		switch (dir) {
-+		case SND_SOC_CLOCK_IN:
-+			iismod |= S3C64XX_IISMOD_CDCLKCON;
-+			break;
-+		case SND_SOC_CLOCK_OUT:
-+			iismod &= ~S3C64XX_IISMOD_CDCLKCON;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	writel(iismod, i2s->regs + S3C2412_IISMOD);
-+	pr_debug("%s w: IISMOD: %x\n", __func__, iismod);
-+
-+	return 0;
-+}
-+
-+static int s3c2412_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
-+			       struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct s3c_i2sv2_info *i2s = to_info(rtd->cpu_dai);
-+	int capture = (substream->stream == SNDRV_PCM_STREAM_CAPTURE);
-+	unsigned long irqs;
-+	int ret = 0;
-+	struct s3c_dma_params *dma_data =
-+		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		/* On start, ensure that the FIFOs are cleared and reset. */
-+
-+		writel(capture ? S3C2412_IISFIC_RXFLUSH : S3C2412_IISFIC_TXFLUSH,
-+		       i2s->regs + S3C2412_IISFIC);
-+
-+		/* clear again, just in case */
-+		writel(0x0, i2s->regs + S3C2412_IISFIC);
-+
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		if (!i2s->master) {
-+			ret = s3c2412_snd_lrsync(i2s);
-+			if (ret)
-+				goto exit_err;
-+		}
-+
-+		local_irq_save(irqs);
-+
-+		if (capture)
-+			s3c2412_snd_rxctrl(i2s, 1);
-+		else
-+			s3c2412_snd_txctrl(i2s, 1);
-+
-+		local_irq_restore(irqs);
-+
-+		/*
-+		 * Load the next buffer to DMA to meet the reqirement
-+		 * of the auto reload mechanism of S3C24XX.
-+		 * This call won't bother S3C64XX.
-+		 */
-+		s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
-+
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		local_irq_save(irqs);
-+
-+		if (capture)
-+			s3c2412_snd_rxctrl(i2s, 0);
-+		else
-+			s3c2412_snd_txctrl(i2s, 0);
-+
-+		local_irq_restore(irqs);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+exit_err:
-+	return ret;
-+}
-+
-+/*
-+ * Set S3C2412 Clock dividers
-+ */
-+static int s3c2412_i2s_set_clkdiv(struct snd_soc_dai *cpu_dai,
-+				  int div_id, int div)
-+{
-+	struct s3c_i2sv2_info *i2s = to_info(cpu_dai);
-+	u32 reg;
-+
-+	pr_debug("%s(%p, %d, %d)\n", __func__, cpu_dai, div_id, div);
-+
-+	switch (div_id) {
-+	case S3C_I2SV2_DIV_BCLK:
-+		switch (div) {
-+		case 16:
-+			div = S3C2412_IISMOD_BCLK_16FS;
-+			break;
-+
-+		case 32:
-+			div = S3C2412_IISMOD_BCLK_32FS;
-+			break;
-+
-+		case 24:
-+			div = S3C2412_IISMOD_BCLK_24FS;
-+			break;
-+
-+		case 48:
-+			div = S3C2412_IISMOD_BCLK_48FS;
-+			break;
-+
-+		default:
-+			return -EINVAL;
-+		}
-+
-+		reg = readl(i2s->regs + S3C2412_IISMOD);
-+		reg &= ~S3C2412_IISMOD_BCLK_MASK;
-+		writel(reg | div, i2s->regs + S3C2412_IISMOD);
-+
-+		pr_debug("%s: MOD=%08x\n", __func__, readl(i2s->regs + S3C2412_IISMOD));
-+		break;
-+
-+	case S3C_I2SV2_DIV_RCLK:
-+		switch (div) {
-+		case 256:
-+			div = S3C2412_IISMOD_RCLK_256FS;
-+			break;
-+
-+		case 384:
-+			div = S3C2412_IISMOD_RCLK_384FS;
-+			break;
-+
-+		case 512:
-+			div = S3C2412_IISMOD_RCLK_512FS;
-+			break;
-+
-+		case 768:
-+			div = S3C2412_IISMOD_RCLK_768FS;
-+			break;
-+
-+		default:
-+			return -EINVAL;
-+		}
-+
-+		reg = readl(i2s->regs + S3C2412_IISMOD);
-+		reg &= ~S3C2412_IISMOD_RCLK_MASK;
-+		writel(reg | div, i2s->regs + S3C2412_IISMOD);
-+		pr_debug("%s: MOD=%08x\n", __func__, readl(i2s->regs + S3C2412_IISMOD));
-+		break;
-+
-+	case S3C_I2SV2_DIV_PRESCALER:
-+		if (div >= 0) {
-+			writel((div << 8) | S3C2412_IISPSR_PSREN,
-+			       i2s->regs + S3C2412_IISPSR);
-+		} else {
-+			writel(0x0, i2s->regs + S3C2412_IISPSR);
-+		}
-+		pr_debug("%s: PSR=%08x\n", __func__, readl(i2s->regs + S3C2412_IISPSR));
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static snd_pcm_sframes_t s3c2412_i2s_delay(struct snd_pcm_substream *substream,
-+					   struct snd_soc_dai *dai)
-+{
-+	struct s3c_i2sv2_info *i2s = to_info(dai);
-+	u32 reg = readl(i2s->regs + S3C2412_IISFIC);
-+	snd_pcm_sframes_t delay;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		delay = S3C2412_IISFIC_TXCOUNT(reg);
-+	else
-+		delay = S3C2412_IISFIC_RXCOUNT(reg);
-+
-+	return delay;
-+}
-+
-+struct clk *s3c_i2sv2_get_clock(struct snd_soc_dai *cpu_dai)
-+{
-+	struct s3c_i2sv2_info *i2s = to_info(cpu_dai);
-+	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
-+
-+	if (iismod & S3C2412_IISMOD_IMS_SYSMUX)
-+		return i2s->iis_cclk;
-+	else
-+		return i2s->iis_pclk;
-+}
-+EXPORT_SYMBOL_GPL(s3c_i2sv2_get_clock);
-+
-+/* default table of all avaialable root fs divisors */
-+static unsigned int iis_fs_tab[] = { 256, 512, 384, 768 };
-+
-+int s3c_i2sv2_iis_calc_rate(struct s3c_i2sv2_rate_calc *info,
-+			    unsigned int *fstab,
-+			    unsigned int rate, struct clk *clk)
-+{
-+	unsigned long clkrate = clk_get_rate(clk);
-+	unsigned int div;
-+	unsigned int fsclk;
-+	unsigned int actual;
-+	unsigned int fs;
-+	unsigned int fsdiv;
-+	signed int deviation = 0;
-+	unsigned int best_fs = 0;
-+	unsigned int best_div = 0;
-+	unsigned int best_rate = 0;
-+	unsigned int best_deviation = INT_MAX;
-+
-+	pr_debug("Input clock rate %ldHz\n", clkrate);
-+
-+	if (fstab == NULL)
-+		fstab = iis_fs_tab;
-+
-+	for (fs = 0; fs < ARRAY_SIZE(iis_fs_tab); fs++) {
-+		fsdiv = iis_fs_tab[fs];
-+
-+		fsclk = clkrate / fsdiv;
-+		div = fsclk / rate;
-+
-+		if ((fsclk % rate) > (rate / 2))
-+			div++;
-+
-+		if (div <= 1)
-+			continue;
-+
-+		actual = clkrate / (fsdiv * div);
-+		deviation = actual - rate;
-+
-+		printk(KERN_DEBUG "%ufs: div %u => result %u, deviation %d\n",
-+		       fsdiv, div, actual, deviation);
-+
-+		deviation = abs(deviation);
-+
-+		if (deviation < best_deviation) {
-+			best_fs = fsdiv;
-+			best_div = div;
-+			best_rate = actual;
-+			best_deviation = deviation;
-+		}
-+
-+		if (deviation == 0)
-+			break;
-+	}
-+
-+	printk(KERN_DEBUG "best: fs=%u, div=%u, rate=%u\n",
-+	       best_fs, best_div, best_rate);
-+
-+	info->fs_div = best_fs;
-+	info->clk_div = best_div;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(s3c_i2sv2_iis_calc_rate);
-+
-+int s3c_i2sv2_probe(struct snd_soc_dai *dai,
-+		    struct s3c_i2sv2_info *i2s,
-+		    unsigned long base)
-+{
-+	struct device *dev = dai->dev;
-+	unsigned int iismod;
-+
-+	i2s->dev = dev;
-+
-+	/* record our i2s structure for later use in the callbacks */
-+	snd_soc_dai_set_drvdata(dai, i2s);
-+
-+	i2s->regs = ioremap(base, 0x100);
-+	if (i2s->regs == NULL) {
-+		dev_err(dev, "cannot ioremap registers\n");
-+		return -ENXIO;
-+	}
-+
-+	i2s->iis_pclk = clk_get(dev, "iis");
-+	if (IS_ERR(i2s->iis_pclk)) {
-+		dev_err(dev, "failed to get iis_clock\n");
-+		iounmap(i2s->regs);
-+		return -ENOENT;
-+	}
-+
-+	clk_enable(i2s->iis_pclk);
-+
-+	/* Mark ourselves as in TXRX mode so we can run through our cleanup
-+	 * process without warnings. */
-+	iismod = readl(i2s->regs + S3C2412_IISMOD);
-+	iismod |= S3C2412_IISMOD_MODE_TXRX;
-+	writel(iismod, i2s->regs + S3C2412_IISMOD);
-+	s3c2412_snd_txctrl(i2s, 0);
-+	s3c2412_snd_rxctrl(i2s, 0);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(s3c_i2sv2_probe);
-+
-+#ifdef CONFIG_PM
-+static int s3c2412_i2s_suspend(struct snd_soc_dai *dai)
-+{
-+	struct s3c_i2sv2_info *i2s = to_info(dai);
-+	u32 iismod;
-+
-+	if (dai->active) {
-+		i2s->suspend_iismod = readl(i2s->regs + S3C2412_IISMOD);
-+		i2s->suspend_iiscon = readl(i2s->regs + S3C2412_IISCON);
-+		i2s->suspend_iispsr = readl(i2s->regs + S3C2412_IISPSR);
-+
-+		/* some basic suspend checks */
-+
-+		iismod = readl(i2s->regs + S3C2412_IISMOD);
-+
-+		if (iismod & S3C2412_IISCON_RXDMA_ACTIVE)
-+			pr_warning("%s: RXDMA active?\n", __func__);
-+
-+		if (iismod & S3C2412_IISCON_TXDMA_ACTIVE)
-+			pr_warning("%s: TXDMA active?\n", __func__);
-+
-+		if (iismod & S3C2412_IISCON_IIS_ACTIVE)
-+			pr_warning("%s: IIS active\n", __func__);
-+	}
-+
-+	return 0;
-+}
-+
-+static int s3c2412_i2s_resume(struct snd_soc_dai *dai)
-+{
-+	struct s3c_i2sv2_info *i2s = to_info(dai);
-+
-+	pr_info("dai_active %d, IISMOD %08x, IISCON %08x\n",
-+		dai->active, i2s->suspend_iismod, i2s->suspend_iiscon);
-+
-+	if (dai->active) {
-+		writel(i2s->suspend_iiscon, i2s->regs + S3C2412_IISCON);
-+		writel(i2s->suspend_iismod, i2s->regs + S3C2412_IISMOD);
-+		writel(i2s->suspend_iispsr, i2s->regs + S3C2412_IISPSR);
-+
-+		writel(S3C2412_IISFIC_RXFLUSH | S3C2412_IISFIC_TXFLUSH,
-+		       i2s->regs + S3C2412_IISFIC);
-+
-+		ndelay(250);
-+		writel(0x0, i2s->regs + S3C2412_IISFIC);
-+	}
-+
-+	return 0;
-+}
-+#else
-+#define s3c2412_i2s_suspend NULL
-+#define s3c2412_i2s_resume  NULL
-+#endif
-+
-+int s3c_i2sv2_register_dai(struct device *dev, int id,
-+		struct snd_soc_dai_driver *drv)
-+{
-+	struct snd_soc_dai_ops *ops = drv->ops;
-+
-+	ops->trigger = s3c2412_i2s_trigger;
-+	if (!ops->hw_params)
-+		ops->hw_params = s3c_i2sv2_hw_params;
-+	ops->set_fmt = s3c2412_i2s_set_fmt;
-+	ops->set_clkdiv = s3c2412_i2s_set_clkdiv;
-+	ops->set_sysclk = s3c_i2sv2_set_sysclk;
-+
-+	/* Allow overriding by (for example) IISv4 */
-+	if (!ops->delay)
-+		ops->delay = s3c2412_i2s_delay;
-+
-+	drv->suspend = s3c2412_i2s_suspend;
-+	drv->resume = s3c2412_i2s_resume;
-+
-+	return snd_soc_register_dai(dev, drv);
-+}
-+EXPORT_SYMBOL_GPL(s3c_i2sv2_register_dai);
-+
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/s3c-i2s-v2.h b/sound/soc/samsung/s3c-i2s-v2.h
-new file mode 100644
-index 0000000..f8297d9
---- /dev/null
-+++ b/sound/soc/samsung/s3c-i2s-v2.h
-@@ -0,0 +1,106 @@
-+/* sound/soc/samsung/s3c-i2s-v2.h
-+ *
-+ * ALSA Soc Audio Layer - S3C_I2SV2 I2S driver
-+ *
-+ * Copyright (c) 2007 Simtec Electronics
-+ *	http://armlinux.simtec.co.uk/
-+ *	Ben Dooks <ben@simtec.co.uk>
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+*/
-+
-+/* This code is the core support for the I2S block found in a number of
-+ * Samsung SoC devices which is unofficially named I2S-V2. Currently the
-+ * S3C2412 and the S3C64XX series use this block to provide 1 or 2 I2S
-+ * channels via configurable GPIO.
-+ */
-+
-+#ifndef __SND_SOC_S3C24XX_S3C_I2SV2_I2S_H
-+#define __SND_SOC_S3C24XX_S3C_I2SV2_I2S_H __FILE__
-+
-+#define S3C_I2SV2_DIV_BCLK	(1)
-+#define S3C_I2SV2_DIV_RCLK	(2)
-+#define S3C_I2SV2_DIV_PRESCALER	(3)
-+
-+#define S3C_I2SV2_CLKSRC_PCLK		0
-+#define S3C_I2SV2_CLKSRC_AUDIOBUS	1
-+#define S3C_I2SV2_CLKSRC_CDCLK		2
-+
-+/* Set this flag for I2S controllers that have the bit IISMOD[12]
-+ * bridge/break RCLK signal and external Xi2sCDCLK pin.
-+ */
-+#define S3C_FEATURE_CDCLKCON	(1 << 0)
-+
-+/**
-+ * struct s3c_i2sv2_info - S3C I2S-V2 information
-+ * @dev: The parent device passed to use from the probe.
-+ * @regs: The pointer to the device registe block.
-+ * @feature: Set of bit-flags indicating features of the controller.
-+ * @master: True if the I2S core is the I2S bit clock master.
-+ * @dma_playback: DMA information for playback channel.
-+ * @dma_capture: DMA information for capture channel.
-+ * @suspend_iismod: PM save for the IISMOD register.
-+ * @suspend_iiscon: PM save for the IISCON register.
-+ * @suspend_iispsr: PM save for the IISPSR register.
-+ *
-+ * This is the private codec state for the hardware associated with an
-+ * I2S channel such as the register mappings and clock sources.
-+ */
-+struct s3c_i2sv2_info {
-+	struct device	*dev;
-+	void __iomem	*regs;
-+
-+	u32		feature;
-+
-+	struct clk	*iis_pclk;
-+	struct clk	*iis_cclk;
-+
-+	unsigned char	 master;
-+
-+	struct s3c_dma_params	*dma_playback;
-+	struct s3c_dma_params	*dma_capture;
-+
-+	u32		 suspend_iismod;
-+	u32		 suspend_iiscon;
-+	u32		 suspend_iispsr;
-+
-+	unsigned long	base;
-+};
-+
-+extern struct clk *s3c_i2sv2_get_clock(struct snd_soc_dai *cpu_dai);
-+
-+struct s3c_i2sv2_rate_calc {
-+	unsigned int	clk_div;	/* for prescaler */
-+	unsigned int	fs_div;		/* for root frame clock */
-+};
-+
-+extern int s3c_i2sv2_iis_calc_rate(struct s3c_i2sv2_rate_calc *info,
-+				   unsigned int *fstab,
-+				   unsigned int rate, struct clk *clk);
-+
-+/**
-+ * s3c_i2sv2_probe - probe for i2s device helper
-+ * @dai: The ASoC DAI structure supplied to the original probe.
-+ * @i2s: Our local i2s structure to fill in.
-+ * @base: The base address for the registers.
-+ */
-+extern int s3c_i2sv2_probe(struct snd_soc_dai *dai,
-+			   struct s3c_i2sv2_info *i2s,
-+			   unsigned long base);
-+
-+/**
-+ * s3c_i2sv2_register_dai - register dai with soc core
-+ * @dev: DAI device
-+ * @id: DAI ID
-+ * @drv: The driver structure to register
-+ *
-+ * Fill in any missing fields and then register the given dai with the
-+ * soc core.
-+ */
-+extern int s3c_i2sv2_register_dai(struct device *dev, int id,
-+		struct snd_soc_dai_driver *drv);
-+
-+#endif /* __SND_SOC_S3C24XX_S3C_I2SV2_I2S_H */
-diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
-new file mode 100644
-index 0000000..7ea8378
---- /dev/null
-+++ b/sound/soc/samsung/s3c2412-i2s.c
-@@ -0,0 +1,212 @@
-+/* sound/soc/samsung/s3c2412-i2s.c
-+ *
-+ * ALSA Soc Audio Layer - S3C2412 I2S driver
-+ *
-+ * Copyright (c) 2006 Wolfson Microelectronics PLC.
-+ *	Graeme Gregory graeme.gregory@wolfsonmicro.com
-+ *	linux@wolfsonmicro.com
-+ *
-+ * Copyright (c) 2007, 2004-2005 Simtec Electronics
-+ *	http://armlinux.simtec.co.uk/
-+ *	Ben Dooks <ben@simtec.co.uk>
-+ *
-+ * This program is free software; you can redistribute  it and/or modify it
-+ * under  the terms of  the GNU General  Public License as published by the
-+ * Free Software Foundation;  either version 2 of the  License, or (at your
-+ * option) any later version.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/delay.h>
-+#include <linux/gpio.h>
-+#include <linux/clk.h>
-+#include <linux/kernel.h>
-+#include <linux/io.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/initval.h>
-+#include <sound/soc.h>
-+#include <mach/hardware.h>
-+
-+#include <mach/regs-gpio.h>
-+#include <mach/dma.h>
-+
-+#include "dma.h"
-+#include "regs-i2s-v2.h"
-+#include "s3c2412-i2s.h"
-+
-+#define S3C2412_I2S_DEBUG 0
-+
-+static struct s3c2410_dma_client s3c2412_dma_client_out = {
-+	.name		= "I2S PCM Stereo out"
-+};
-+
-+static struct s3c2410_dma_client s3c2412_dma_client_in = {
-+	.name		= "I2S PCM Stereo in"
-+};
-+
-+static struct s3c_dma_params s3c2412_i2s_pcm_stereo_out = {
-+	.client		= &s3c2412_dma_client_out,
-+	.channel	= DMACH_I2S_OUT,
-+	.dma_addr	= S3C2410_PA_IIS + S3C2412_IISTXD,
-+	.dma_size	= 4,
-+};
-+
-+static struct s3c_dma_params s3c2412_i2s_pcm_stereo_in = {
-+	.client		= &s3c2412_dma_client_in,
-+	.channel	= DMACH_I2S_IN,
-+	.dma_addr	= S3C2410_PA_IIS + S3C2412_IISRXD,
-+	.dma_size	= 4,
-+};
-+
-+static struct s3c_i2sv2_info s3c2412_i2s;
-+
-+static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
-+{
-+	int ret;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	ret = s3c_i2sv2_probe(dai, &s3c2412_i2s, S3C2410_PA_IIS);
-+	if (ret)
-+		return ret;
-+
-+	s3c2412_i2s.dma_capture = &s3c2412_i2s_pcm_stereo_in;
-+	s3c2412_i2s.dma_playback = &s3c2412_i2s_pcm_stereo_out;
-+
-+	s3c2412_i2s.iis_cclk = clk_get(dai->dev, "i2sclk");
-+	if (s3c2412_i2s.iis_cclk == NULL) {
-+		pr_err("failed to get i2sclk clock\n");
-+		iounmap(s3c2412_i2s.regs);
-+		return -ENODEV;
-+	}
-+
-+	/* Set MPLL as the source for IIS CLK */
-+
-+	clk_set_parent(s3c2412_i2s.iis_cclk, clk_get(NULL, "mpll"));
-+	clk_enable(s3c2412_i2s.iis_cclk);
-+
-+	s3c2412_i2s.iis_cclk = s3c2412_i2s.iis_pclk;
-+
-+	/* Configure the I2S pins in correct mode */
-+	s3c2410_gpio_cfgpin(S3C2410_GPE0, S3C2410_GPE0_I2SLRCK);
-+	s3c2410_gpio_cfgpin(S3C2410_GPE1, S3C2410_GPE1_I2SSCLK);
-+	s3c2410_gpio_cfgpin(S3C2410_GPE2, S3C2410_GPE2_CDCLK);
-+	s3c2410_gpio_cfgpin(S3C2410_GPE3, S3C2410_GPE3_I2SSDI);
-+	s3c2410_gpio_cfgpin(S3C2410_GPE4, S3C2410_GPE4_I2SSDO);
-+
-+	return 0;
-+}
-+
-+static int s3c2412_i2s_remove(struct snd_soc_dai *dai)
-+{
-+	clk_disable(s3c2412_i2s.iis_cclk);
-+	clk_put(s3c2412_i2s.iis_cclk);
-+	iounmap(s3c2412_i2s.regs);
-+
-+	return 0;
-+}
-+
-+static int s3c2412_i2s_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params,
-+				 struct snd_soc_dai *cpu_dai)
-+{
-+	struct s3c_i2sv2_info *i2s = snd_soc_dai_get_drvdata(cpu_dai);
-+	struct s3c_dma_params *dma_data;
-+	u32 iismod;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		dma_data = i2s->dma_playback;
-+	else
-+		dma_data = i2s->dma_capture;
-+
-+	snd_soc_dai_set_dma_data(cpu_dai, substream, dma_data);
-+
-+	iismod = readl(i2s->regs + S3C2412_IISMOD);
-+	pr_debug("%s: r: IISMOD: %x\n", __func__, iismod);
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S8:
-+		iismod |= S3C2412_IISMOD_8BIT;
-+		break;
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		iismod &= ~S3C2412_IISMOD_8BIT;
-+		break;
-+	}
-+
-+	writel(iismod, i2s->regs + S3C2412_IISMOD);
-+	pr_debug("%s: w: IISMOD: %x\n", __func__, iismod);
-+
-+	return 0;
-+}
-+
-+#define S3C2412_I2S_RATES \
-+	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
-+	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
-+	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
-+
-+static struct snd_soc_dai_ops s3c2412_i2s_dai_ops = {
-+	.hw_params	= s3c2412_i2s_hw_params,
-+};
-+
-+static struct snd_soc_dai_driver s3c2412_i2s_dai = {
-+	.probe		= s3c2412_i2s_probe,
-+	.remove	= s3c2412_i2s_remove,
-+	.playback = {
-+		.channels_min	= 2,
-+		.channels_max	= 2,
-+		.rates		= S3C2412_I2S_RATES,
-+		.formats	= SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.capture = {
-+		.channels_min	= 2,
-+		.channels_max	= 2,
-+		.rates		= S3C2412_I2S_RATES,
-+		.formats	= SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+	.ops = &s3c2412_i2s_dai_ops,
-+};
-+
-+static __devinit int s3c2412_iis_dev_probe(struct platform_device *pdev)
-+{
-+	return snd_soc_register_dai(&pdev->dev, &s3c2412_i2s_dai);
-+}
-+
-+static __devexit int s3c2412_iis_dev_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_dai(&pdev->dev);
-+	return 0;
-+}
-+
-+static struct platform_driver s3c2412_iis_driver = {
-+	.probe  = s3c2412_iis_dev_probe,
-+	.remove = s3c2412_iis_dev_remove,
-+	.driver = {
-+		.name = "s3c2412-iis",
-+		.owner = THIS_MODULE,
-+	},
-+};
-+
-+static int __init s3c2412_i2s_init(void)
-+{
-+	return platform_driver_register(&s3c2412_iis_driver);
-+}
-+module_init(s3c2412_i2s_init);
-+
-+static void __exit s3c2412_i2s_exit(void)
-+{
-+	platform_driver_unregister(&s3c2412_iis_driver);
-+}
-+module_exit(s3c2412_i2s_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
-+MODULE_DESCRIPTION("S3C2412 I2S SoC Interface");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:s3c2412-iis");
-diff --git a/sound/soc/samsung/s3c2412-i2s.h b/sound/soc/samsung/s3c2412-i2s.h
-new file mode 100644
-index 0000000..02ad579
---- /dev/null
-+++ b/sound/soc/samsung/s3c2412-i2s.h
-@@ -0,0 +1,27 @@
-+/* sound/soc/samsung/s3c2412-i2s.c
-+ *
-+ * ALSA Soc Audio Layer - S3C2412 I2S driver
-+ *
-+ * Copyright (c) 2007 Simtec Electronics
-+ *	http://armlinux.simtec.co.uk/
-+ *	Ben Dooks <ben@simtec.co.uk>
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+*/
-+
-+#ifndef __SND_SOC_S3C24XX_S3C2412_I2S_H
-+#define __SND_SOC_S3C24XX_S3C2412_I2S_H __FILE__
-+
-+#include "s3c-i2s-v2.h"
-+
-+#define S3C2412_DIV_BCLK	S3C_I2SV2_DIV_BCLK
-+#define S3C2412_DIV_RCLK	S3C_I2SV2_DIV_RCLK
-+#define S3C2412_DIV_PRESCALER	S3C_I2SV2_DIV_PRESCALER
-+
-+#define S3C2412_CLKSRC_PCLK	S3C_I2SV2_CLKSRC_PCLK
-+#define S3C2412_CLKSRC_I2SCLK	S3C_I2SV2_CLKSRC_AUDIOBUS
-+
-+#endif /* __SND_SOC_S3C24XX_S3C2412_I2S_H */
-diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
-new file mode 100644
-index 0000000..13e41ed
---- /dev/null
-+++ b/sound/soc/samsung/s3c24xx-i2s.c
-@@ -0,0 +1,519 @@
-+/*
-+ * s3c24xx-i2s.c  --  ALSA Soc Audio Layer
-+ *
-+ * (c) 2006 Wolfson Microelectronics PLC.
-+ * Graeme Gregory graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-+ *
-+ * Copyright 2004-2005 Simtec Electronics
-+ *	http://armlinux.simtec.co.uk/
-+ *	Ben Dooks <ben@simtec.co.uk>
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/delay.h>
-+#include <linux/clk.h>
-+#include <linux/jiffies.h>
-+#include <linux/io.h>
-+#include <linux/gpio.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/initval.h>
-+#include <sound/soc.h>
-+
-+#include <mach/hardware.h>
-+#include <mach/regs-gpio.h>
-+#include <mach/regs-clock.h>
-+
-+#include <asm/dma.h>
-+#include <mach/dma.h>
-+
-+#include <plat/regs-iis.h>
-+
-+#include "dma.h"
-+#include "s3c24xx-i2s.h"
-+
-+static struct s3c2410_dma_client s3c24xx_dma_client_out = {
-+	.name = "I2S PCM Stereo out"
-+};
-+
-+static struct s3c2410_dma_client s3c24xx_dma_client_in = {
-+	.name = "I2S PCM Stereo in"
-+};
-+
-+static struct s3c_dma_params s3c24xx_i2s_pcm_stereo_out = {
-+	.client		= &s3c24xx_dma_client_out,
-+	.channel	= DMACH_I2S_OUT,
-+	.dma_addr	= S3C2410_PA_IIS + S3C2410_IISFIFO,
-+	.dma_size	= 2,
-+};
-+
-+static struct s3c_dma_params s3c24xx_i2s_pcm_stereo_in = {
-+	.client		= &s3c24xx_dma_client_in,
-+	.channel	= DMACH_I2S_IN,
-+	.dma_addr	= S3C2410_PA_IIS + S3C2410_IISFIFO,
-+	.dma_size	= 2,
-+};
-+
-+struct s3c24xx_i2s_info {
-+	void __iomem	*regs;
-+	struct clk	*iis_clk;
-+	u32		iiscon;
-+	u32		iismod;
-+	u32		iisfcon;
-+	u32		iispsr;
-+};
-+static struct s3c24xx_i2s_info s3c24xx_i2s;
-+
-+static void s3c24xx_snd_txctrl(int on)
-+{
-+	u32 iisfcon;
-+	u32 iiscon;
-+	u32 iismod;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	iisfcon = readl(s3c24xx_i2s.regs + S3C2410_IISFCON);
-+	iiscon  = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
-+	iismod  = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
-+
-+	pr_debug("r: IISCON: %x IISMOD: %x IISFCON: %x\n", iiscon, iismod, iisfcon);
-+
-+	if (on) {
-+		iisfcon |= S3C2410_IISFCON_TXDMA | S3C2410_IISFCON_TXENABLE;
-+		iiscon  |= S3C2410_IISCON_TXDMAEN | S3C2410_IISCON_IISEN;
-+		iiscon  &= ~S3C2410_IISCON_TXIDLE;
-+		iismod  |= S3C2410_IISMOD_TXMODE;
-+
-+		writel(iismod,  s3c24xx_i2s.regs + S3C2410_IISMOD);
-+		writel(iisfcon, s3c24xx_i2s.regs + S3C2410_IISFCON);
-+		writel(iiscon,  s3c24xx_i2s.regs + S3C2410_IISCON);
-+	} else {
-+		/* note, we have to disable the FIFOs otherwise bad things
-+		 * seem to happen when the DMA stops. According to the
-+		 * Samsung supplied kernel, this should allow the DMA
-+		 * engine and FIFOs to reset. If this isn't allowed, the
-+		 * DMA engine will simply freeze randomly.
-+		 */
-+
-+		iisfcon &= ~S3C2410_IISFCON_TXENABLE;
-+		iisfcon &= ~S3C2410_IISFCON_TXDMA;
-+		iiscon  |=  S3C2410_IISCON_TXIDLE;
-+		iiscon  &= ~S3C2410_IISCON_TXDMAEN;
-+		iismod  &= ~S3C2410_IISMOD_TXMODE;
-+
-+		writel(iiscon,  s3c24xx_i2s.regs + S3C2410_IISCON);
-+		writel(iisfcon, s3c24xx_i2s.regs + S3C2410_IISFCON);
-+		writel(iismod,  s3c24xx_i2s.regs + S3C2410_IISMOD);
-+	}
-+
-+	pr_debug("w: IISCON: %x IISMOD: %x IISFCON: %x\n", iiscon, iismod, iisfcon);
-+}
-+
-+static void s3c24xx_snd_rxctrl(int on)
-+{
-+	u32 iisfcon;
-+	u32 iiscon;
-+	u32 iismod;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	iisfcon = readl(s3c24xx_i2s.regs + S3C2410_IISFCON);
-+	iiscon  = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
-+	iismod  = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
-+
-+	pr_debug("r: IISCON: %x IISMOD: %x IISFCON: %x\n", iiscon, iismod, iisfcon);
-+
-+	if (on) {
-+		iisfcon |= S3C2410_IISFCON_RXDMA | S3C2410_IISFCON_RXENABLE;
-+		iiscon  |= S3C2410_IISCON_RXDMAEN | S3C2410_IISCON_IISEN;
-+		iiscon  &= ~S3C2410_IISCON_RXIDLE;
-+		iismod  |= S3C2410_IISMOD_RXMODE;
-+
-+		writel(iismod,  s3c24xx_i2s.regs + S3C2410_IISMOD);
-+		writel(iisfcon, s3c24xx_i2s.regs + S3C2410_IISFCON);
-+		writel(iiscon,  s3c24xx_i2s.regs + S3C2410_IISCON);
-+	} else {
-+		/* note, we have to disable the FIFOs otherwise bad things
-+		 * seem to happen when the DMA stops. According to the
-+		 * Samsung supplied kernel, this should allow the DMA
-+		 * engine and FIFOs to reset. If this isn't allowed, the
-+		 * DMA engine will simply freeze randomly.
-+		 */
-+
-+		iisfcon &= ~S3C2410_IISFCON_RXENABLE;
-+		iisfcon &= ~S3C2410_IISFCON_RXDMA;
-+		iiscon  |= S3C2410_IISCON_RXIDLE;
-+		iiscon  &= ~S3C2410_IISCON_RXDMAEN;
-+		iismod  &= ~S3C2410_IISMOD_RXMODE;
-+
-+		writel(iisfcon, s3c24xx_i2s.regs + S3C2410_IISFCON);
-+		writel(iiscon,  s3c24xx_i2s.regs + S3C2410_IISCON);
-+		writel(iismod,  s3c24xx_i2s.regs + S3C2410_IISMOD);
-+	}
-+
-+	pr_debug("w: IISCON: %x IISMOD: %x IISFCON: %x\n", iiscon, iismod, iisfcon);
-+}
-+
-+/*
-+ * Wait for the LR signal to allow synchronisation to the L/R clock
-+ * from the codec. May only be needed for slave mode.
-+ */
-+static int s3c24xx_snd_lrsync(void)
-+{
-+	u32 iiscon;
-+	int timeout = 50; /* 5ms */
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	while (1) {
-+		iiscon = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
-+		if (iiscon & S3C2410_IISCON_LRINDEX)
-+			break;
-+
-+		if (!timeout--)
-+			return -ETIMEDOUT;
-+		udelay(100);
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * Check whether CPU is the master or slave
-+ */
-+static inline int s3c24xx_snd_is_clkmaster(void)
-+{
-+	pr_debug("Entered %s\n", __func__);
-+
-+	return (readl(s3c24xx_i2s.regs + S3C2410_IISMOD) & S3C2410_IISMOD_SLAVE) ? 0:1;
-+}
-+
-+/*
-+ * Set S3C24xx I2S DAI format
-+ */
-+static int s3c24xx_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
-+		unsigned int fmt)
-+{
-+	u32 iismod;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
-+	pr_debug("hw_params r: IISMOD: %x \n", iismod);
-+
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		iismod |= S3C2410_IISMOD_SLAVE;
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		iismod &= ~S3C2410_IISMOD_SLAVE;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		iismod |= S3C2410_IISMOD_MSB;
-+		break;
-+	case SND_SOC_DAIFMT_I2S:
-+		iismod &= ~S3C2410_IISMOD_MSB;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	writel(iismod, s3c24xx_i2s.regs + S3C2410_IISMOD);
-+	pr_debug("hw_params w: IISMOD: %x \n", iismod);
-+	return 0;
-+}
-+
-+static int s3c24xx_i2s_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params,
-+				 struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct s3c_dma_params *dma_data;
-+	u32 iismod;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		dma_data = &s3c24xx_i2s_pcm_stereo_out;
-+	else
-+		dma_data = &s3c24xx_i2s_pcm_stereo_in;
-+
-+	snd_soc_dai_set_dma_data(rtd->cpu_dai, substream, dma_data);
-+
-+	/* Working copies of register */
-+	iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
-+	pr_debug("hw_params r: IISMOD: %x\n", iismod);
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S8:
-+		iismod &= ~S3C2410_IISMOD_16BIT;
-+		dma_data->dma_size = 1;
-+		break;
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		iismod |= S3C2410_IISMOD_16BIT;
-+		dma_data->dma_size = 2;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	writel(iismod, s3c24xx_i2s.regs + S3C2410_IISMOD);
-+	pr_debug("hw_params w: IISMOD: %x\n", iismod);
-+	return 0;
-+}
-+
-+static int s3c24xx_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
-+			       struct snd_soc_dai *dai)
-+{
-+	int ret = 0;
-+	struct s3c_dma_params *dma_data =
-+		snd_soc_dai_get_dma_data(dai, substream);
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		if (!s3c24xx_snd_is_clkmaster()) {
-+			ret = s3c24xx_snd_lrsync();
-+			if (ret)
-+				goto exit_err;
-+		}
-+
-+		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+			s3c24xx_snd_rxctrl(1);
-+		else
-+			s3c24xx_snd_txctrl(1);
-+
-+		s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+			s3c24xx_snd_rxctrl(0);
-+		else
-+			s3c24xx_snd_txctrl(0);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+exit_err:
-+	return ret;
-+}
-+
-+/*
-+ * Set S3C24xx Clock source
-+ */
-+static int s3c24xx_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
-+	int clk_id, unsigned int freq, int dir)
-+{
-+	u32 iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	iismod &= ~S3C2440_IISMOD_MPLL;
-+
-+	switch (clk_id) {
-+	case S3C24XX_CLKSRC_PCLK:
-+		break;
-+	case S3C24XX_CLKSRC_MPLL:
-+		iismod |= S3C2440_IISMOD_MPLL;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	writel(iismod, s3c24xx_i2s.regs + S3C2410_IISMOD);
-+	return 0;
-+}
-+
-+/*
-+ * Set S3C24xx Clock dividers
-+ */
-+static int s3c24xx_i2s_set_clkdiv(struct snd_soc_dai *cpu_dai,
-+	int div_id, int div)
-+{
-+	u32 reg;
-+
-+	pr_debug("Entered %s\n", __func__);
-+
-+	switch (div_id) {
-+	case S3C24XX_DIV_BCLK:
-+		reg = readl(s3c24xx_i2s.regs + S3C2410_IISMOD) & ~S3C2410_IISMOD_FS_MASK;
-+		writel(reg | div, s3c24xx_i2s.regs + S3C2410_IISMOD);
-+		break;
-+	case S3C24XX_DIV_MCLK:
-+		reg = readl(s3c24xx_i2s.regs + S3C2410_IISMOD) & ~(S3C2410_IISMOD_384FS);
-+		writel(reg | div, s3c24xx_i2s.regs + S3C2410_IISMOD);
-+		break;
-+	case S3C24XX_DIV_PRESCALER:
-+		writel(div, s3c24xx_i2s.regs + S3C2410_IISPSR);
-+		reg = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
-+		writel(reg | S3C2410_IISCON_PSCEN, s3c24xx_i2s.regs + S3C2410_IISCON);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * To avoid duplicating clock code, allow machine driver to
-+ * get the clockrate from here.
-+ */
-+u32 s3c24xx_i2s_get_clockrate(void)
-+{
-+	return clk_get_rate(s3c24xx_i2s.iis_clk);
-+}
-+EXPORT_SYMBOL_GPL(s3c24xx_i2s_get_clockrate);
-+
-+static int s3c24xx_i2s_probe(struct snd_soc_dai *dai)
-+{
-+	pr_debug("Entered %s\n", __func__);
-+
-+	s3c24xx_i2s.regs = ioremap(S3C2410_PA_IIS, 0x100);
-+	if (s3c24xx_i2s.regs == NULL)
-+		return -ENXIO;
-+
-+	s3c24xx_i2s.iis_clk = clk_get(dai->dev, "iis");
-+	if (s3c24xx_i2s.iis_clk == NULL) {
-+		pr_err("failed to get iis_clock\n");
-+		iounmap(s3c24xx_i2s.regs);
-+		return -ENODEV;
-+	}
-+	clk_enable(s3c24xx_i2s.iis_clk);
-+
-+	/* Configure the I2S pins in correct mode */
-+	s3c2410_gpio_cfgpin(S3C2410_GPE0, S3C2410_GPE0_I2SLRCK);
-+	s3c2410_gpio_cfgpin(S3C2410_GPE1, S3C2410_GPE1_I2SSCLK);
-+	s3c2410_gpio_cfgpin(S3C2410_GPE2, S3C2410_GPE2_CDCLK);
-+	s3c2410_gpio_cfgpin(S3C2410_GPE3, S3C2410_GPE3_I2SSDI);
-+	s3c2410_gpio_cfgpin(S3C2410_GPE4, S3C2410_GPE4_I2SSDO);
-+
-+	writel(S3C2410_IISCON_IISEN, s3c24xx_i2s.regs + S3C2410_IISCON);
-+
-+	s3c24xx_snd_txctrl(0);
-+	s3c24xx_snd_rxctrl(0);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+static int s3c24xx_i2s_suspend(struct snd_soc_dai *cpu_dai)
-+{
-+	pr_debug("Entered %s\n", __func__);
-+
-+	s3c24xx_i2s.iiscon = readl(s3c24xx_i2s.regs + S3C2410_IISCON);
-+	s3c24xx_i2s.iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
-+	s3c24xx_i2s.iisfcon = readl(s3c24xx_i2s.regs + S3C2410_IISFCON);
-+	s3c24xx_i2s.iispsr = readl(s3c24xx_i2s.regs + S3C2410_IISPSR);
-+
-+	clk_disable(s3c24xx_i2s.iis_clk);
-+
-+	return 0;
-+}
-+
-+static int s3c24xx_i2s_resume(struct snd_soc_dai *cpu_dai)
-+{
-+	pr_debug("Entered %s\n", __func__);
-+	clk_enable(s3c24xx_i2s.iis_clk);
-+
-+	writel(s3c24xx_i2s.iiscon, s3c24xx_i2s.regs + S3C2410_IISCON);
-+	writel(s3c24xx_i2s.iismod, s3c24xx_i2s.regs + S3C2410_IISMOD);
-+	writel(s3c24xx_i2s.iisfcon, s3c24xx_i2s.regs + S3C2410_IISFCON);
-+	writel(s3c24xx_i2s.iispsr, s3c24xx_i2s.regs + S3C2410_IISPSR);
-+
-+	return 0;
-+}
-+#else
-+#define s3c24xx_i2s_suspend NULL
-+#define s3c24xx_i2s_resume NULL
-+#endif
-+
-+
-+#define S3C24XX_I2S_RATES \
-+	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
-+	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
-+	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
-+
-+static struct snd_soc_dai_ops s3c24xx_i2s_dai_ops = {
-+	.trigger	= s3c24xx_i2s_trigger,
-+	.hw_params	= s3c24xx_i2s_hw_params,
-+	.set_fmt	= s3c24xx_i2s_set_fmt,
-+	.set_clkdiv	= s3c24xx_i2s_set_clkdiv,
-+	.set_sysclk	= s3c24xx_i2s_set_sysclk,
-+};
-+
-+static struct snd_soc_dai_driver s3c24xx_i2s_dai = {
-+	.probe = s3c24xx_i2s_probe,
-+	.suspend = s3c24xx_i2s_suspend,
-+	.resume = s3c24xx_i2s_resume,
-+	.playback = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = S3C24XX_I2S_RATES,
-+		.formats = SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE,},
-+	.capture = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = S3C24XX_I2S_RATES,
-+		.formats = SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE,},
-+	.ops = &s3c24xx_i2s_dai_ops,
-+};
-+
-+static __devinit int s3c24xx_iis_dev_probe(struct platform_device *pdev)
-+{
-+	return snd_soc_register_dai(&pdev->dev, &s3c24xx_i2s_dai);
-+}
-+
-+static __devexit int s3c24xx_iis_dev_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_dai(&pdev->dev);
-+	return 0;
-+}
-+
-+static struct platform_driver s3c24xx_iis_driver = {
-+	.probe  = s3c24xx_iis_dev_probe,
-+	.remove = s3c24xx_iis_dev_remove,
-+	.driver = {
-+		.name = "s3c24xx-iis",
-+		.owner = THIS_MODULE,
-+	},
-+};
-+
-+static int __init s3c24xx_i2s_init(void)
-+{
-+	return platform_driver_register(&s3c24xx_iis_driver);
-+}
-+module_init(s3c24xx_i2s_init);
-+
-+static void __exit s3c24xx_i2s_exit(void)
-+{
-+	platform_driver_unregister(&s3c24xx_iis_driver);
-+}
-+module_exit(s3c24xx_i2s_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
-+MODULE_DESCRIPTION("s3c24xx I2S SoC Interface");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:s3c24xx-iis");
-diff --git a/sound/soc/samsung/s3c24xx-i2s.h b/sound/soc/samsung/s3c24xx-i2s.h
-new file mode 100644
-index 0000000..f9ca04e
---- /dev/null
-+++ b/sound/soc/samsung/s3c24xx-i2s.h
-@@ -0,0 +1,35 @@
-+/*
-+ * s3c24xx-i2s.c  --  ALSA Soc Audio Layer
-+ *
-+ * Copyright 2005 Wolfson Microelectronics PLC.
-+ * Author: Graeme Gregory
-+ *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
-+ *  Revision history
-+ *    10th Nov 2006   Initial version.
-+ */
-+
-+#ifndef S3C24XXI2S_H_
-+#define S3C24XXI2S_H_
-+
-+/* clock sources */
-+#define S3C24XX_CLKSRC_PCLK 0
-+#define S3C24XX_CLKSRC_MPLL 1
-+
-+/* Clock dividers */
-+#define S3C24XX_DIV_MCLK	0
-+#define S3C24XX_DIV_BCLK	1
-+#define S3C24XX_DIV_PRESCALER	2
-+
-+/* prescaler */
-+#define S3C24XX_PRESCALE(a,b) \
-+	(((a - 1) << S3C2410_IISPSR_INTSHIFT) | ((b - 1) << S3C2410_IISPSR_EXTSHFIT))
-+
-+u32 s3c24xx_i2s_get_clockrate(void);
-+
-+#endif /*S3C24XXI2S_H_*/
-diff --git a/sound/soc/samsung/s3c24xx_simtec.c b/sound/soc/samsung/s3c24xx_simtec.c
-new file mode 100644
-index 0000000..4a1b002
---- /dev/null
-+++ b/sound/soc/samsung/s3c24xx_simtec.c
-@@ -0,0 +1,395 @@
-+/* sound/soc/samsung/s3c24xx_simtec.c
-+ *
-+ * Copyright 2009 Simtec Electronics
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+*/
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/platform_device.h>
-+#include <linux/gpio.h>
-+#include <linux/clk.h>
-+#include <linux/i2c.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include <plat/audio-simtec.h>
-+
-+#include "dma.h"
-+#include "s3c24xx-i2s.h"
-+#include "s3c24xx_simtec.h"
-+
-+static struct s3c24xx_audio_simtec_pdata *pdata;
-+static struct clk *xtal_clk;
-+
-+static int spk_gain;
-+static int spk_unmute;
-+
-+/**
-+ * speaker_gain_get - read the speaker gain setting.
-+ * @kcontrol: The control for the speaker gain.
-+ * @ucontrol: The value that needs to be updated.
-+ *
-+ * Read the value for the AMP gain control.
-+ */
-+static int speaker_gain_get(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	ucontrol->value.integer.value[0] = spk_gain;
-+	return 0;
-+}
-+
-+/**
-+ * speaker_gain_set - set the value of the speaker amp gain
-+ * @value: The value to write.
-+ */
-+static void speaker_gain_set(int value)
-+{
-+	gpio_set_value_cansleep(pdata->amp_gain[0], value & 1);
-+	gpio_set_value_cansleep(pdata->amp_gain[1], value >> 1);
-+}
-+
-+/**
-+ * speaker_gain_put - set the speaker gain setting.
-+ * @kcontrol: The control for the speaker gain.
-+ * @ucontrol: The value that needs to be set.
-+ *
-+ * Set the value of the speaker gain from the specified
-+ * @ucontrol setting.
-+ *
-+ * Note, if the speaker amp is muted, then we do not set a gain value
-+ * as at-least one of the ICs that is fitted will try and power up even
-+ * if the main control is set to off.
-+ */
-+static int speaker_gain_put(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	int value = ucontrol->value.integer.value[0];
-+
-+	spk_gain = value;
-+
-+	if (!spk_unmute)
-+		speaker_gain_set(value);
-+
-+	return 0;
-+}
-+
-+static const struct snd_kcontrol_new amp_gain_controls[] = {
-+	SOC_SINGLE_EXT("Speaker Gain", 0, 0, 3, 0,
-+		       speaker_gain_get, speaker_gain_put),
-+};
-+
-+/**
-+ * spk_unmute_state - set the unmute state of the speaker
-+ * @to: zero to unmute, non-zero to ununmute.
-+ */
-+static void spk_unmute_state(int to)
-+{
-+	pr_debug("%s: to=%d\n", __func__, to);
-+
-+	spk_unmute = to;
-+	gpio_set_value(pdata->amp_gpio, to);
-+
-+	/* if we're umuting, also re-set the gain */
-+	if (to && pdata->amp_gain[0] > 0)
-+		speaker_gain_set(spk_gain);
-+}
-+
-+/**
-+ * speaker_unmute_get - read the speaker unmute setting.
-+ * @kcontrol: The control for the speaker gain.
-+ * @ucontrol: The value that needs to be updated.
-+ *
-+ * Read the value for the AMP gain control.
-+ */
-+static int speaker_unmute_get(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	ucontrol->value.integer.value[0] = spk_unmute;
-+	return 0;
-+}
-+
-+/**
-+ * speaker_unmute_put - set the speaker unmute setting.
-+ * @kcontrol: The control for the speaker gain.
-+ * @ucontrol: The value that needs to be set.
-+ *
-+ * Set the value of the speaker gain from the specified
-+ * @ucontrol setting.
-+ */
-+static int speaker_unmute_put(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	spk_unmute_state(ucontrol->value.integer.value[0]);
-+	return 0;
-+}
-+
-+/* This is added as a manual control as the speaker amps create clicks
-+ * when their power state is changed, which are far more noticeable than
-+ * anything produced by the CODEC itself.
-+ */
-+static const struct snd_kcontrol_new amp_unmute_controls[] = {
-+	SOC_SINGLE_EXT("Speaker Switch", 0, 0, 1, 0,
-+		       speaker_unmute_get, speaker_unmute_put),
-+};
-+
-+void simtec_audio_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+
-+	if (pdata->amp_gpio > 0) {
-+		pr_debug("%s: adding amp routes\n", __func__);
-+
-+		snd_soc_add_controls(codec, amp_unmute_controls,
-+				     ARRAY_SIZE(amp_unmute_controls));
-+	}
-+
-+	if (pdata->amp_gain[0] > 0) {
-+		pr_debug("%s: adding amp controls\n", __func__);
-+		snd_soc_add_controls(codec, amp_gain_controls,
-+				     ARRAY_SIZE(amp_gain_controls));
-+	}
-+}
-+EXPORT_SYMBOL_GPL(simtec_audio_init);
-+
-+#define CODEC_CLOCK 12000000
-+
-+/**
-+ * simtec_hw_params - update hardware parameters
-+ * @substream: The audio substream instance.
-+ * @params: The parameters requested.
-+ *
-+ * Update the codec data routing and configuration  settings
-+ * from the supplied data.
-+ */
-+static int simtec_hw_params(struct snd_pcm_substream *substream,
-+			    struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	int ret;
-+
-+	/* Set the CODEC as the bus clock master, I2S */
-+	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
-+				  SND_SOC_DAIFMT_NB_NF |
-+				  SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret) {
-+		pr_err("%s: failed set cpu dai format\n", __func__);
-+		return ret;
-+	}
-+
-+	/* Set the CODEC as the bus clock master */
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-+				  SND_SOC_DAIFMT_NB_NF |
-+				  SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret) {
-+		pr_err("%s: failed set codec dai format\n", __func__);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
-+				     CODEC_CLOCK, SND_SOC_CLOCK_IN);
-+	if (ret) {
-+		pr_err( "%s: failed setting codec sysclk\n", __func__);
-+		return ret;
-+	}
-+
-+	if (pdata->use_mpllin) {
-+		ret = snd_soc_dai_set_sysclk(cpu_dai, S3C24XX_CLKSRC_MPLL,
-+					     0, SND_SOC_CLOCK_OUT);
-+
-+		if (ret) {
-+			pr_err("%s: failed to set MPLLin as clksrc\n",
-+			       __func__);
-+			return ret;
-+		}
-+	}
-+
-+	if (pdata->output_cdclk) {
-+		int cdclk_scale;
-+
-+		cdclk_scale = clk_get_rate(xtal_clk) / CODEC_CLOCK;
-+		cdclk_scale--;
-+
-+		ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_PRESCALER,
-+					     cdclk_scale);
-+	}
-+
-+	return 0;
-+}
-+
-+static int simtec_call_startup(struct s3c24xx_audio_simtec_pdata *pd)
-+{
-+	/* call any board supplied startup code, this currently only
-+	 * covers the bast/vr1000 which have a CPLD in the way of the
-+	 * LRCLK */
-+	if (pd->startup)
-+		pd->startup();
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops simtec_snd_ops = {
-+	.hw_params	= simtec_hw_params,
-+};
-+
-+/**
-+ * attach_gpio_amp - get and configure the necessary gpios
-+ * @dev: The device we're probing.
-+ * @pd: The platform data supplied by the board.
-+ *
-+ * If there is a GPIO based amplifier attached to the board, claim
-+ * the necessary GPIO lines for it, and set default values.
-+ */
-+static int attach_gpio_amp(struct device *dev,
-+			   struct s3c24xx_audio_simtec_pdata *pd)
-+{
-+	int ret;
-+
-+	/* attach gpio amp gain (if any) */
-+	if (pdata->amp_gain[0] > 0) {
-+		ret = gpio_request(pd->amp_gain[0], "gpio-amp-gain0");
-+		if (ret) {
-+			dev_err(dev, "cannot get amp gpio gain0\n");
-+			return ret;
-+		}
-+
-+		ret = gpio_request(pd->amp_gain[1], "gpio-amp-gain1");
-+		if (ret) {
-+			dev_err(dev, "cannot get amp gpio gain1\n");
-+			gpio_free(pdata->amp_gain[0]);
-+			return ret;
-+		}
-+
-+		gpio_direction_output(pd->amp_gain[0], 0);
-+		gpio_direction_output(pd->amp_gain[1], 0);
-+	}
-+
-+	/* note, currently we assume GPA0 isn't valid amp */
-+	if (pdata->amp_gpio > 0) {
-+		ret = gpio_request(pd->amp_gpio, "gpio-amp");
-+		if (ret) {
-+			dev_err(dev, "cannot get amp gpio %d (%d)\n",
-+				pd->amp_gpio, ret);
-+			goto err_amp;
-+		}
-+
-+		/* set the amp off at startup */
-+		spk_unmute_state(0);
-+	}
-+
-+	return 0;
-+
-+err_amp:
-+	if (pd->amp_gain[0] > 0) {
-+		gpio_free(pd->amp_gain[0]);
-+		gpio_free(pd->amp_gain[1]);
-+	}
-+
-+	return ret;
-+}
-+
-+static void detach_gpio_amp(struct s3c24xx_audio_simtec_pdata *pd)
-+{
-+	if (pd->amp_gain[0] > 0) {
-+		gpio_free(pd->amp_gain[0]);
-+		gpio_free(pd->amp_gain[1]);
-+	}
-+
-+	if (pd->amp_gpio > 0)
-+		gpio_free(pd->amp_gpio);
-+}
-+
-+#ifdef CONFIG_PM
-+int simtec_audio_resume(struct device *dev)
-+{
-+	simtec_call_startup(pdata);
-+	return 0;
-+}
-+
-+const struct dev_pm_ops simtec_audio_pmops = {
-+	.resume	= simtec_audio_resume,
-+};
-+EXPORT_SYMBOL_GPL(simtec_audio_pmops);
-+#endif
-+
-+int __devinit simtec_audio_core_probe(struct platform_device *pdev,
-+				      struct snd_soc_card *card)
-+{
-+	struct platform_device *snd_dev;
-+	int ret;
-+
-+	card->dai_link->ops = &simtec_snd_ops;
-+
-+	pdata = pdev->dev.platform_data;
-+	if (!pdata) {
-+		dev_err(&pdev->dev, "no platform data supplied\n");
-+		return -EINVAL;
-+	}
-+
-+	simtec_call_startup(pdata);
-+
-+	xtal_clk = clk_get(&pdev->dev, "xtal");
-+	if (IS_ERR(xtal_clk)) {
-+		dev_err(&pdev->dev, "could not get clkout0\n");
-+		return -EINVAL;
-+	}
-+
-+	dev_info(&pdev->dev, "xtal rate is %ld\n", clk_get_rate(xtal_clk));
-+
-+	ret = attach_gpio_amp(&pdev->dev, pdata);
-+	if (ret)
-+		goto err_clk;
-+
-+	snd_dev = platform_device_alloc("soc-audio", -1);
-+	if (!snd_dev) {
-+		dev_err(&pdev->dev, "failed to alloc soc-audio devicec\n");
-+		ret = -ENOMEM;
-+		goto err_gpio;
-+	}
-+
-+	platform_set_drvdata(snd_dev, card);
-+
-+	ret = platform_device_add(snd_dev);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to add soc-audio dev\n");
-+		goto err_pdev;
-+	}
-+
-+	platform_set_drvdata(pdev, snd_dev);
-+	return 0;
-+
-+err_pdev:
-+	platform_device_put(snd_dev);
-+
-+err_gpio:
-+	detach_gpio_amp(pdata);
-+
-+err_clk:
-+	clk_put(xtal_clk);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(simtec_audio_core_probe);
-+
-+int __devexit simtec_audio_remove(struct platform_device *pdev)
-+{
-+	struct platform_device *snd_dev = platform_get_drvdata(pdev);
-+
-+	platform_device_unregister(snd_dev);
-+
-+	detach_gpio_amp(pdata);
-+	clk_put(xtal_clk);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(simtec_audio_remove);
-+
-+MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
-+MODULE_DESCRIPTION("ALSA SoC Simtec Audio common support");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/s3c24xx_simtec.h b/sound/soc/samsung/s3c24xx_simtec.h
-new file mode 100644
-index 0000000..8270748
---- /dev/null
-+++ b/sound/soc/samsung/s3c24xx_simtec.h
-@@ -0,0 +1,22 @@
-+/* sound/soc/samsung/s3c24xx_simtec.h
-+ *
-+ * Copyright 2009 Simtec Electronics
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+*/
-+
-+extern void simtec_audio_init(struct snd_soc_pcm_runtime *rtd);
-+
-+extern int simtec_audio_core_probe(struct platform_device *pdev,
-+				   struct snd_soc_card *card);
-+
-+extern int simtec_audio_remove(struct platform_device *pdev);
-+
-+#ifdef CONFIG_PM
-+extern const struct dev_pm_ops simtec_audio_pmops;
-+#define simtec_audio_pm &simtec_audio_pmops
-+#else
-+#define simtec_audio_pm NULL
-+#endif
-diff --git a/sound/soc/samsung/s3c24xx_simtec_hermes.c b/sound/soc/samsung/s3c24xx_simtec_hermes.c
-new file mode 100644
-index 0000000..fec4cac
---- /dev/null
-+++ b/sound/soc/samsung/s3c24xx_simtec_hermes.c
-@@ -0,0 +1,146 @@
-+/* sound/soc/samsung/s3c24xx_simtec_hermes.c
-+ *
-+ * Copyright 2009 Simtec Electronics
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+*/
-+
-+#include <linux/module.h>
-+#include <linux/clk.h>
-+#include <linux/platform_device.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include <plat/audio-simtec.h>
-+
-+#include "dma.h"
-+#include "s3c24xx-i2s.h"
-+#include "s3c24xx_simtec.h"
-+
-+#include "../codecs/tlv320aic3x.h"
-+
-+static const struct snd_soc_dapm_widget dapm_widgets[] = {
-+	SND_SOC_DAPM_LINE("GSM Out", NULL),
-+	SND_SOC_DAPM_LINE("GSM In", NULL),
-+	SND_SOC_DAPM_LINE("Line In", NULL),
-+	SND_SOC_DAPM_LINE("Line Out", NULL),
-+	SND_SOC_DAPM_LINE("ZV", NULL),
-+	SND_SOC_DAPM_MIC("Mic Jack", NULL),
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route base_map[] = {
-+	/* Headphone connected to HP{L,R}OUT and HP{L,R}COM */
-+
-+	{ "Headphone Jack", NULL, "HPLOUT" },
-+	{ "Headphone Jack", NULL, "HPLCOM" },
-+	{ "Headphone Jack", NULL, "HPROUT" },
-+	{ "Headphone Jack", NULL, "HPRCOM" },
-+
-+	/* ZV connected to Line1 */
-+
-+	{ "LINE1L", NULL, "ZV" },
-+	{ "LINE1R", NULL, "ZV" },
-+
-+	/* Line In connected to Line2 */
-+
-+	{ "LINE2L", NULL, "Line In" },
-+	{ "LINE2R", NULL, "Line In" },
-+
-+	/* Microphone connected to MIC3R and MIC_BIAS */
-+
-+	{ "MIC3L", NULL, "Mic Jack" },
-+
-+	/* GSM connected to MONO_LOUT and MIC3L (in) */
-+
-+	{ "GSM Out", NULL, "MONO_LOUT" },
-+	{ "MIC3L", NULL, "GSM In" },
-+
-+	/* Speaker is connected to LINEOUT{LN,LP,RN,RP}, however we are
-+	 * not using the DAPM to power it up and down as there it makes
-+	 * a click when powering up. */
-+};
-+
-+/**
-+ * simtec_hermes_init - initialise and add controls
-+ * @codec; The codec instance to attach to.
-+ *
-+ * Attach our controls and configure the necessary codec
-+ * mappings for our sound card instance.
-+*/
-+static int simtec_hermes_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+
-+	snd_soc_dapm_new_controls(codec, dapm_widgets,
-+				  ARRAY_SIZE(dapm_widgets));
-+
-+	snd_soc_dapm_add_routes(codec, base_map, ARRAY_SIZE(base_map));
-+
-+	snd_soc_dapm_enable_pin(codec, "Headphone Jack");
-+	snd_soc_dapm_enable_pin(codec, "Line In");
-+	snd_soc_dapm_enable_pin(codec, "Line Out");
-+	snd_soc_dapm_enable_pin(codec, "Mic Jack");
-+
-+	simtec_audio_init(rtd);
-+	snd_soc_dapm_sync(codec);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_link simtec_dai_aic33 = {
-+	.name		= "tlv320aic33",
-+	.stream_name	= "TLV320AIC33",
-+	.codec_name	= "tlv320aic3x-codec.0-0x1a",
-+	.cpu_dai_name	= "s3c24xx-i2s",
-+	.codec_dai_name = "tlv320aic3x-hifi",
-+	.platform_name	= "samsung-audio",
-+	.init		= simtec_hermes_init,
-+};
-+
-+/* simtec audio machine driver */
-+static struct snd_soc_card snd_soc_machine_simtec_aic33 = {
-+	.name		= "Simtec-Hermes",
-+	.dai_link	= &simtec_dai_aic33,
-+	.num_links	= 1,
-+};
-+
-+static int __devinit simtec_audio_hermes_probe(struct platform_device *pd)
-+{
-+	dev_info(&pd->dev, "probing....\n");
-+	return simtec_audio_core_probe(pd, &snd_soc_machine_simtec_aic33);
-+}
-+
-+static struct platform_driver simtec_audio_hermes_platdrv = {
-+	.driver	= {
-+		.owner	= THIS_MODULE,
-+		.name	= "s3c24xx-simtec-hermes-snd",
-+		.pm	= simtec_audio_pm,
-+	},
-+	.probe	= simtec_audio_hermes_probe,
-+	.remove	= __devexit_p(simtec_audio_remove),
-+};
-+
-+MODULE_ALIAS("platform:s3c24xx-simtec-hermes-snd");
-+
-+static int __init simtec_hermes_modinit(void)
-+{
-+	return platform_driver_register(&simtec_audio_hermes_platdrv);
-+}
-+
-+static void __exit simtec_hermes_modexit(void)
-+{
-+	platform_driver_unregister(&simtec_audio_hermes_platdrv);
-+}
-+
-+module_init(simtec_hermes_modinit);
-+module_exit(simtec_hermes_modexit);
-+
-+MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
-+MODULE_DESCRIPTION("ALSA SoC Simtec Audio support");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c b/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
-new file mode 100644
-index 0000000..7915e02
---- /dev/null
-+++ b/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
-@@ -0,0 +1,134 @@
-+/* sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
-+ *
-+ * Copyright 2009 Simtec Electronics
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+*/
-+
-+#include <linux/module.h>
-+#include <linux/clk.h>
-+#include <linux/platform_device.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include <plat/audio-simtec.h>
-+
-+#include "dma.h"
-+#include "s3c24xx-i2s.h"
-+#include "s3c24xx_simtec.h"
-+
-+#include "../codecs/tlv320aic23.h"
-+
-+/* supported machines:
-+ *
-+ * Machine	Connections		AMP
-+ * -------	-----------		---
-+ * BAST		MIC, HPOUT, LOUT, LIN	TPA2001D1 (HPOUTL,R) (gain hardwired)
-+ * VR1000	HPOUT, LIN		None
-+ * VR2000	LIN, LOUT, MIC, HP	LM4871 (HPOUTL,R)
-+ * DePicture	LIN, LOUT, MIC, HP	LM4871 (HPOUTL,R)
-+ * Anubis	LIN, LOUT, MIC, HP	TPA2001D1 (HPOUTL,R)
-+ */
-+
-+static const struct snd_soc_dapm_widget dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_LINE("Line In", NULL),
-+	SND_SOC_DAPM_LINE("Line Out", NULL),
-+	SND_SOC_DAPM_MIC("Mic Jack", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route base_map[] = {
-+	{ "Headphone Jack", NULL, "LHPOUT"},
-+	{ "Headphone Jack", NULL, "RHPOUT"},
-+
-+	{ "Line Out", NULL, "LOUT" },
-+	{ "Line Out", NULL, "ROUT" },
-+
-+	{ "LLINEIN", NULL, "Line In"},
-+	{ "RLINEIN", NULL, "Line In"},
-+
-+	{ "MICIN", NULL, "Mic Jack"},
-+};
-+
-+/**
-+ * simtec_tlv320aic23_init - initialise and add controls
-+ * @codec; The codec instance to attach to.
-+ *
-+ * Attach our controls and configure the necessary codec
-+ * mappings for our sound card instance.
-+*/
-+static int simtec_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+
-+	snd_soc_dapm_new_controls(codec, dapm_widgets,
-+				  ARRAY_SIZE(dapm_widgets));
-+
-+	snd_soc_dapm_add_routes(codec, base_map, ARRAY_SIZE(base_map));
-+
-+	snd_soc_dapm_enable_pin(codec, "Headphone Jack");
-+	snd_soc_dapm_enable_pin(codec, "Line In");
-+	snd_soc_dapm_enable_pin(codec, "Line Out");
-+	snd_soc_dapm_enable_pin(codec, "Mic Jack");
-+
-+	simtec_audio_init(rtd);
-+	snd_soc_dapm_sync(codec);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_link simtec_dai_aic23 = {
-+	.name		= "tlv320aic23",
-+	.stream_name	= "TLV320AIC23",
-+	.codec_name	= "tlv320aic3x-codec.0-0x1a",
-+	.cpu_dai_name	= "s3c24xx-i2s",
-+	.codec_dai_name = "tlv320aic3x-hifi",
-+	.platform_name	= "samsung-audio",
-+	.init		= simtec_tlv320aic23_init,
-+};
-+
-+/* simtec audio machine driver */
-+static struct snd_soc_card snd_soc_machine_simtec_aic23 = {
-+	.name		= "Simtec",
-+	.dai_link	= &simtec_dai_aic23,
-+	.num_links	= 1,
-+};
-+
-+static int __devinit simtec_audio_tlv320aic23_probe(struct platform_device *pd)
-+{
-+	return simtec_audio_core_probe(pd, &snd_soc_machine_simtec_aic23);
-+}
-+
-+static struct platform_driver simtec_audio_tlv320aic23_platdrv = {
-+	.driver	= {
-+		.owner	= THIS_MODULE,
-+		.name	= "s3c24xx-simtec-tlv320aic23",
-+		.pm	= simtec_audio_pm,
-+	},
-+	.probe	= simtec_audio_tlv320aic23_probe,
-+	.remove	= __devexit_p(simtec_audio_remove),
-+};
-+
-+MODULE_ALIAS("platform:s3c24xx-simtec-tlv320aic23");
-+
-+static int __init simtec_tlv320aic23_modinit(void)
-+{
-+	return platform_driver_register(&simtec_audio_tlv320aic23_platdrv);
-+}
-+
-+static void __exit simtec_tlv320aic23_modexit(void)
-+{
-+	platform_driver_unregister(&simtec_audio_tlv320aic23_platdrv);
-+}
-+
-+module_init(simtec_tlv320aic23_modinit);
-+module_exit(simtec_tlv320aic23_modexit);
-+
-+MODULE_AUTHOR("Ben Dooks <ben@simtec.co.uk>");
-+MODULE_DESCRIPTION("ALSA SoC Simtec Audio support");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/s3c24xx_uda134x.c b/sound/soc/samsung/s3c24xx_uda134x.c
-new file mode 100644
-index 0000000..87eeb46
---- /dev/null
-+++ b/sound/soc/samsung/s3c24xx_uda134x.c
-@@ -0,0 +1,368 @@
-+/*
-+ * Modifications by Christian Pellegrin <chripell@evolware.org>
-+ *
-+ * s3c24xx_uda134x.c  --  S3C24XX_UDA134X ALSA SoC Audio board driver
-+ *
-+ * Copyright 2007 Dension Audio Systems Ltd.
-+ * Author: Zoltan Devai
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/clk.h>
-+#include <linux/mutex.h>
-+#include <linux/gpio.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/s3c24xx_uda134x.h>
-+#include <sound/uda134x.h>
-+
-+#include <plat/regs-iis.h>
-+
-+#include "dma.h"
-+#include "s3c24xx-i2s.h"
-+#include "../codecs/uda134x.h"
-+
-+
-+/* #define ENFORCE_RATES 1 */
-+/*
-+  Unfortunately the S3C24XX in master mode has a limited capacity of
-+  generating the clock for the codec. If you define this only rates
-+  that are really available will be enforced. But be careful, most
-+  user level application just want the usual sampling frequencies (8,
-+  11.025, 22.050, 44.1 kHz) and anyway resampling is a costly
-+  operation for embedded systems. So if you aren't very lucky or your
-+  hardware engineer wasn't very forward-looking it's better to leave
-+  this undefined. If you do so an approximate value for the requested
-+  sampling rate in the range -/+ 5% will be chosen. If this in not
-+  possible an error will be returned.
-+*/
-+
-+static struct clk *xtal;
-+static struct clk *pclk;
-+/* this is need because we don't have a place where to keep the
-+ * pointers to the clocks in each substream. We get the clocks only
-+ * when we are actually using them so we don't block stuff like
-+ * frequency change or oscillator power-off */
-+static int clk_users;
-+static DEFINE_MUTEX(clk_lock);
-+
-+static unsigned int rates[33 * 2];
-+#ifdef ENFORCE_RATES
-+static struct snd_pcm_hw_constraint_list hw_constraints_rates = {
-+	.count	= ARRAY_SIZE(rates),
-+	.list	= rates,
-+	.mask	= 0,
-+};
-+#endif
-+
-+static struct platform_device *s3c24xx_uda134x_snd_device;
-+
-+static int s3c24xx_uda134x_startup(struct snd_pcm_substream *substream)
-+{
-+	int ret = 0;
-+#ifdef ENFORCE_RATES
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+#endif
-+
-+	mutex_lock(&clk_lock);
-+	pr_debug("%s %d\n", __func__, clk_users);
-+	if (clk_users == 0) {
-+		xtal = clk_get(&s3c24xx_uda134x_snd_device->dev, "xtal");
-+		if (!xtal) {
-+			printk(KERN_ERR "%s cannot get xtal\n", __func__);
-+			ret = -EBUSY;
-+		} else {
-+			pclk = clk_get(&s3c24xx_uda134x_snd_device->dev,
-+				       "pclk");
-+			if (!pclk) {
-+				printk(KERN_ERR "%s cannot get pclk\n",
-+				       __func__);
-+				clk_put(xtal);
-+				ret = -EBUSY;
-+			}
-+		}
-+		if (!ret) {
-+			int i, j;
-+
-+			for (i = 0; i < 2; i++) {
-+				int fs = i ? 256 : 384;
-+
-+				rates[i*33] = clk_get_rate(xtal) / fs;
-+				for (j = 1; j < 33; j++)
-+					rates[i*33 + j] = clk_get_rate(pclk) /
-+						(j * fs);
-+			}
-+		}
-+	}
-+	clk_users += 1;
-+	mutex_unlock(&clk_lock);
-+	if (!ret) {
-+#ifdef ENFORCE_RATES
-+		ret = snd_pcm_hw_constraint_list(runtime, 0,
-+						 SNDRV_PCM_HW_PARAM_RATE,
-+						 &hw_constraints_rates);
-+		if (ret < 0)
-+			printk(KERN_ERR "%s cannot set constraints\n",
-+			       __func__);
-+#endif
-+	}
-+	return ret;
-+}
-+
-+static void s3c24xx_uda134x_shutdown(struct snd_pcm_substream *substream)
-+{
-+	mutex_lock(&clk_lock);
-+	pr_debug("%s %d\n", __func__, clk_users);
-+	clk_users -= 1;
-+	if (clk_users == 0) {
-+		clk_put(xtal);
-+		xtal = NULL;
-+		clk_put(pclk);
-+		pclk = NULL;
-+	}
-+	mutex_unlock(&clk_lock);
-+}
-+
-+static int s3c24xx_uda134x_hw_params(struct snd_pcm_substream *substream,
-+					struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	unsigned int clk = 0;
-+	int ret = 0;
-+	int clk_source, fs_mode;
-+	unsigned long rate = params_rate(params);
-+	long err, cerr;
-+	unsigned int div;
-+	int i, bi;
-+
-+	err = 999999;
-+	bi = 0;
-+	for (i = 0; i < 2*33; i++) {
-+		cerr = rates[i] - rate;
-+		if (cerr < 0)
-+			cerr = -cerr;
-+		if (cerr < err) {
-+			err = cerr;
-+			bi = i;
-+		}
-+	}
-+	if (bi / 33 == 1)
-+		fs_mode = S3C2410_IISMOD_256FS;
-+	else
-+		fs_mode = S3C2410_IISMOD_384FS;
-+	if (bi % 33 == 0) {
-+		clk_source = S3C24XX_CLKSRC_MPLL;
-+		div = 1;
-+	} else {
-+		clk_source = S3C24XX_CLKSRC_PCLK;
-+		div = bi % 33;
-+	}
-+	pr_debug("%s desired rate %lu, %d\n", __func__, rate, bi);
-+
-+	clk = (fs_mode == S3C2410_IISMOD_384FS ? 384 : 256) * rate;
-+	pr_debug("%s will use: %s %s %d sysclk %d err %ld\n", __func__,
-+		 fs_mode == S3C2410_IISMOD_384FS ? "384FS" : "256FS",
-+		 clk_source == S3C24XX_CLKSRC_MPLL ? "MPLLin" : "PCLK",
-+		 div, clk, err);
-+
-+	if ((err * 100 / rate) > 5) {
-+		printk(KERN_ERR "S3C24XX_UDA134X: effective frequency "
-+		       "too different from desired (%ld%%)\n",
-+		       err * 100 / rate);
-+		return -EINVAL;
-+	}
-+
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-+			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
-+			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, clk_source , clk,
-+			SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_MCLK, fs_mode);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_BCLK,
-+			S3C2410_IISMOD_32FS);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_PRESCALER,
-+			S3C24XX_PRESCALE(div, div));
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the codec system clock for DAC and ADC */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, 0, clk,
-+			SND_SOC_CLOCK_OUT);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops s3c24xx_uda134x_ops = {
-+	.startup = s3c24xx_uda134x_startup,
-+	.shutdown = s3c24xx_uda134x_shutdown,
-+	.hw_params = s3c24xx_uda134x_hw_params,
-+};
-+
-+static struct snd_soc_dai_link s3c24xx_uda134x_dai_link = {
-+	.name = "UDA134X",
-+	.stream_name = "UDA134X",
-+	.codec_name = "uda134x-hifi",
-+	.codec_dai_name = "uda134x-hifi",
-+	.cpu_dai_name = "s3c24xx-i2s",
-+	.ops = &s3c24xx_uda134x_ops,
-+	.platform_name	= "samsung-audio",
-+};
-+
-+static struct snd_soc_card snd_soc_s3c24xx_uda134x = {
-+	.name = "S3C24XX_UDA134X",
-+	.dai_link = &s3c24xx_uda134x_dai_link,
-+	.num_links = 1,
-+};
-+
-+static struct s3c24xx_uda134x_platform_data *s3c24xx_uda134x_l3_pins;
-+
-+static void setdat(int v)
-+{
-+	gpio_set_value(s3c24xx_uda134x_l3_pins->l3_data, v > 0);
-+}
-+
-+static void setclk(int v)
-+{
-+	gpio_set_value(s3c24xx_uda134x_l3_pins->l3_clk, v > 0);
-+}
-+
-+static void setmode(int v)
-+{
-+	gpio_set_value(s3c24xx_uda134x_l3_pins->l3_mode, v > 0);
-+}
-+
-+/* FIXME - This must be codec platform data but in which board file ?? */
-+static struct uda134x_platform_data s3c24xx_uda134x = {
-+	.l3 = {
-+		.setdat = setdat,
-+		.setclk = setclk,
-+		.setmode = setmode,
-+		.data_hold = 1,
-+		.data_setup = 1,
-+		.clock_high = 1,
-+		.mode_hold = 1,
-+		.mode = 1,
-+		.mode_setup = 1,
-+	},
-+};
-+
-+static int s3c24xx_uda134x_setup_pin(int pin, char *fun)
-+{
-+	if (gpio_request(pin, "s3c24xx_uda134x") < 0) {
-+		printk(KERN_ERR "S3C24XX_UDA134X SoC Audio: "
-+		       "l3 %s pin already in use", fun);
-+		return -EBUSY;
-+	}
-+	gpio_direction_output(pin, 0);
-+	return 0;
-+}
-+
-+static int s3c24xx_uda134x_probe(struct platform_device *pdev)
-+{
-+	int ret;
-+
-+	printk(KERN_INFO "S3C24XX_UDA134X SoC Audio driver\n");
-+
-+	s3c24xx_uda134x_l3_pins = pdev->dev.platform_data;
-+	if (s3c24xx_uda134x_l3_pins == NULL) {
-+		printk(KERN_ERR "S3C24XX_UDA134X SoC Audio: "
-+		       "unable to find platform data\n");
-+		return -ENODEV;
-+	}
-+	s3c24xx_uda134x.power = s3c24xx_uda134x_l3_pins->power;
-+	s3c24xx_uda134x.model = s3c24xx_uda134x_l3_pins->model;
-+
-+	if (s3c24xx_uda134x_setup_pin(s3c24xx_uda134x_l3_pins->l3_data,
-+				      "data") < 0)
-+		return -EBUSY;
-+	if (s3c24xx_uda134x_setup_pin(s3c24xx_uda134x_l3_pins->l3_clk,
-+				      "clk") < 0) {
-+		gpio_free(s3c24xx_uda134x_l3_pins->l3_data);
-+		return -EBUSY;
-+	}
-+	if (s3c24xx_uda134x_setup_pin(s3c24xx_uda134x_l3_pins->l3_mode,
-+				      "mode") < 0) {
-+		gpio_free(s3c24xx_uda134x_l3_pins->l3_data);
-+		gpio_free(s3c24xx_uda134x_l3_pins->l3_clk);
-+		return -EBUSY;
-+	}
-+
-+	s3c24xx_uda134x_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!s3c24xx_uda134x_snd_device) {
-+		printk(KERN_ERR "S3C24XX_UDA134X SoC Audio: "
-+		       "Unable to register\n");
-+		return -ENOMEM;
-+	}
-+
-+	platform_set_drvdata(s3c24xx_uda134x_snd_device,
-+			     &snd_soc_s3c24xx_uda134x);
-+	ret = platform_device_add(s3c24xx_uda134x_snd_device);
-+	if (ret) {
-+		printk(KERN_ERR "S3C24XX_UDA134X SoC Audio: Unable to add\n");
-+		platform_device_put(s3c24xx_uda134x_snd_device);
-+	}
-+
-+	return ret;
-+}
-+
-+static int s3c24xx_uda134x_remove(struct platform_device *pdev)
-+{
-+	platform_device_unregister(s3c24xx_uda134x_snd_device);
-+	gpio_free(s3c24xx_uda134x_l3_pins->l3_data);
-+	gpio_free(s3c24xx_uda134x_l3_pins->l3_clk);
-+	gpio_free(s3c24xx_uda134x_l3_pins->l3_mode);
-+	return 0;
-+}
-+
-+static struct platform_driver s3c24xx_uda134x_driver = {
-+	.probe  = s3c24xx_uda134x_probe,
-+	.remove = s3c24xx_uda134x_remove,
-+	.driver = {
-+		.name = "s3c24xx_uda134x",
-+		.owner = THIS_MODULE,
-+	},
-+};
-+
-+static int __init s3c24xx_uda134x_init(void)
-+{
-+	return platform_driver_register(&s3c24xx_uda134x_driver);
-+}
-+
-+static void __exit s3c24xx_uda134x_exit(void)
-+{
-+	platform_driver_unregister(&s3c24xx_uda134x_driver);
-+}
-+
-+
-+module_init(s3c24xx_uda134x_init);
-+module_exit(s3c24xx_uda134x_exit);
-+
-+MODULE_AUTHOR("Zoltan Devai, Christian Pellegrin <chripell@evolware.org>");
-+MODULE_DESCRIPTION("S3C24XX_UDA134X ALSA SoC audio driver");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/smartq_wm8987.c b/sound/soc/samsung/smartq_wm8987.c
-new file mode 100644
-index 0000000..3564e00
---- /dev/null
-+++ b/sound/soc/samsung/smartq_wm8987.c
-@@ -0,0 +1,287 @@
-+/* sound/soc/samsung/smartq_wm8987.c
-+ *
-+ * Copyright 2010 Maurus Cuelenaere <mcuelenaere@gmail.com>
-+ *
-+ * Based on smdk6410_wm8987.c
-+ *     Copyright 2007 Wolfson Microelectronics PLC. - linux@wolfsonmicro.com
-+ *     Graeme Gregory - graeme.gregory@wolfsonmicro.com
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/gpio.h>
-+
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/jack.h>
-+
-+#include <asm/mach-types.h>
-+
-+#include "dma.h"
-+#include "i2s.h"
-+
-+#include "../codecs/wm8750.h"
-+
-+/*
-+ * WM8987 is register compatible with WM8750, so using that as base driver.
-+ */
-+
-+static struct snd_soc_card snd_soc_smartq;
-+
-+static int smartq_hifi_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	unsigned int clk = 0;
-+	int ret;
-+
-+	switch (params_rate(params)) {
-+	case 8000:
-+	case 16000:
-+	case 32000:
-+	case 48000:
-+	case 96000:
-+		clk = 12288000;
-+		break;
-+	case 11025:
-+	case 22050:
-+	case 44100:
-+	case 88200:
-+		clk = 11289600;
-+		break;
-+	}
-+
-+	/* set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-+					     SND_SOC_DAIFMT_NB_NF |
-+					     SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set cpu DAI configuration */
-+	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
-+					   SND_SOC_DAIFMT_NB_NF |
-+					   SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Use PCLK for I2S signal generation */
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_RCLKSRC_0,
-+					0, SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Gate the RCLK output on PAD */
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_CDCLK,
-+					0, SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the codec system clock for DAC and ADC */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, WM8750_SYSCLK, clk,
-+				     SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+/*
-+ * SmartQ WM8987 HiFi DAI operations.
-+ */
-+static struct snd_soc_ops smartq_hifi_ops = {
-+	.hw_params = smartq_hifi_hw_params,
-+};
-+
-+static struct snd_soc_jack smartq_jack;
-+
-+static struct snd_soc_jack_pin smartq_jack_pins[] = {
-+	/* Disable speaker when headphone is plugged in */
-+	{
-+		.pin	= "Internal Speaker",
-+		.mask	= SND_JACK_HEADPHONE,
-+	},
-+};
-+
-+static struct snd_soc_jack_gpio smartq_jack_gpios[] = {
-+	{
-+		.gpio		= S3C64XX_GPL(12),
-+		.name		= "headphone detect",
-+		.report		= SND_JACK_HEADPHONE,
-+		.debounce_time	= 200,
-+	},
-+};
-+
-+static const struct snd_kcontrol_new wm8987_smartq_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Internal Speaker"),
-+	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
-+	SOC_DAPM_PIN_SWITCH("Internal Mic"),
-+};
-+
-+static int smartq_speaker_event(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *k,
-+				int event)
-+{
-+	gpio_set_value(S3C64XX_GPK(12), SND_SOC_DAPM_EVENT_OFF(event));
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget wm8987_dapm_widgets[] = {
-+	SND_SOC_DAPM_SPK("Internal Speaker", smartq_speaker_event),
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Internal Mic", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route audio_map[] = {
-+	{"Headphone Jack", NULL, "LOUT2"},
-+	{"Headphone Jack", NULL, "ROUT2"},
-+
-+	{"Internal Speaker", NULL, "LOUT2"},
-+	{"Internal Speaker", NULL, "ROUT2"},
-+
-+	{"Mic Bias", NULL, "Internal Mic"},
-+	{"LINPUT2", NULL, "Mic Bias"},
-+};
-+
-+static int smartq_wm8987_init(struct snd_soc_codec *codec)
-+{
-+	int err = 0;
-+
-+	/* Add SmartQ specific widgets */
-+	snd_soc_dapm_new_controls(codec, wm8987_dapm_widgets,
-+				  ARRAY_SIZE(wm8987_dapm_widgets));
-+
-+	/* add SmartQ specific controls */
-+	err = snd_soc_add_controls(codec, wm8987_smartq_controls,
-+				   ARRAY_SIZE(wm8987_smartq_controls));
-+
-+	if (err < 0)
-+		return err;
-+
-+	/* setup SmartQ specific audio path */
-+	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
-+
-+	/* set endpoints to not connected */
-+	snd_soc_dapm_nc_pin(codec, "LINPUT1");
-+	snd_soc_dapm_nc_pin(codec, "RINPUT1");
-+	snd_soc_dapm_nc_pin(codec, "OUT3");
-+	snd_soc_dapm_nc_pin(codec, "ROUT1");
-+
-+	/* set endpoints to default off mode */
-+	snd_soc_dapm_enable_pin(codec, "Internal Speaker");
-+	snd_soc_dapm_enable_pin(codec, "Internal Mic");
-+	snd_soc_dapm_disable_pin(codec, "Headphone Jack");
-+
-+	err = snd_soc_dapm_sync(codec);
-+	if (err)
-+		return err;
-+
-+	/* Headphone jack detection */
-+	err = snd_soc_jack_new(&snd_soc_smartq, "Headphone Jack",
-+			       SND_JACK_HEADPHONE, &smartq_jack);
-+	if (err)
-+		return err;
-+
-+	err = snd_soc_jack_add_pins(&smartq_jack, ARRAY_SIZE(smartq_jack_pins),
-+				    smartq_jack_pins);
-+	if (err)
-+		return err;
-+
-+	err = snd_soc_jack_add_gpios(&smartq_jack,
-+				     ARRAY_SIZE(smartq_jack_gpios),
-+				     smartq_jack_gpios);
-+
-+	return err;
-+}
-+
-+static struct snd_soc_dai_link smartq_dai[] = {
-+	{
-+		.name		= "wm8987",
-+		.stream_name	= "SmartQ Hi-Fi",
-+		.cpu_dai_name	= "samsung-i2s.0",
-+		.codec_dai_name	= "wm8750-hifi",
-+		.platform_name	= "samsung-audio",
-+		.codec_name	= "wm8750-codec.0-0x1a",
-+		.init		= smartq_wm8987_init,
-+		.ops		= &smartq_hifi_ops,
-+	},
-+};
-+
-+static struct snd_soc_card snd_soc_smartq = {
-+	.name = "SmartQ",
-+	.dai_link = smartq_dai,
-+	.num_links = ARRAY_SIZE(smartq_dai),
-+};
-+
-+static struct platform_device *smartq_snd_device;
-+
-+static int __init smartq_init(void)
-+{
-+	int ret;
-+
-+	if (!machine_is_smartq7() && !machine_is_smartq5()) {
-+		pr_info("Only SmartQ is supported by this ASoC driver\n");
-+		return -ENODEV;
-+	}
-+
-+	smartq_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!smartq_snd_device)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(smartq_snd_device, &snd_soc_smartq);
-+
-+	ret = platform_device_add(smartq_snd_device);
-+	if (ret) {
-+		platform_device_put(smartq_snd_device);
-+		return ret;
-+	}
-+
-+	/* Initialise GPIOs used by amplifiers */
-+	ret = gpio_request(S3C64XX_GPK(12), "amplifiers shutdown");
-+	if (ret) {
-+		dev_err(&smartq_snd_device->dev, "Failed to register GPK12\n");
-+		goto err_unregister_device;
-+	}
-+
-+	/* Disable amplifiers */
-+	ret = gpio_direction_output(S3C64XX_GPK(12), 1);
-+	if (ret) {
-+		dev_err(&smartq_snd_device->dev, "Failed to configure GPK12\n");
-+		goto err_free_gpio_amp_shut;
-+	}
-+
-+	return 0;
-+
-+err_free_gpio_amp_shut:
-+	gpio_free(S3C64XX_GPK(12));
-+err_unregister_device:
-+	platform_device_unregister(smartq_snd_device);
-+
-+	return ret;
-+}
-+
-+static void __exit smartq_exit(void)
-+{
-+	snd_soc_jack_free_gpios(&smartq_jack, ARRAY_SIZE(smartq_jack_gpios),
-+				smartq_jack_gpios);
-+
-+	platform_device_unregister(smartq_snd_device);
-+}
-+
-+module_init(smartq_init);
-+module_exit(smartq_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Maurus Cuelenaere <mcuelenaere@gmail.com>");
-+MODULE_DESCRIPTION("ALSA SoC SmartQ WM8987");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/smdk2443_wm9710.c b/sound/soc/samsung/smdk2443_wm9710.c
-new file mode 100644
-index 0000000..5051699
---- /dev/null
-+++ b/sound/soc/samsung/smdk2443_wm9710.c
-@@ -0,0 +1,74 @@
-+/*
-+ * smdk2443_wm9710.c  --  SoC audio for smdk2443
-+ *
-+ * Copyright 2007 Wolfson Microelectronics PLC.
-+ * Author: Graeme Gregory
-+ *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include "dma.h"
-+#include "ac97.h"
-+
-+static struct snd_soc_card smdk2443;
-+
-+static struct snd_soc_dai_link smdk2443_dai[] = {
-+{
-+	.name = "AC97",
-+	.stream_name = "AC97 HiFi",
-+	.cpu_dai_name = "samsung-ac97",
-+	.codec_dai_name = "ac97-hifi",
-+	.codec_name = "ac97-codec",
-+	.platform_name = "samsung-audio",
-+},
-+};
-+
-+static struct snd_soc_card smdk2443 = {
-+	.name = "SMDK2443",
-+	.dai_link = smdk2443_dai,
-+	.num_links = ARRAY_SIZE(smdk2443_dai),
-+};
-+
-+static struct platform_device *smdk2443_snd_ac97_device;
-+
-+static int __init smdk2443_init(void)
-+{
-+	int ret;
-+
-+	smdk2443_snd_ac97_device = platform_device_alloc("soc-audio", -1);
-+	if (!smdk2443_snd_ac97_device)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(smdk2443_snd_ac97_device, &smdk2443);
-+	ret = platform_device_add(smdk2443_snd_ac97_device);
-+
-+	if (ret)
-+		platform_device_put(smdk2443_snd_ac97_device);
-+
-+	return ret;
-+}
-+
-+static void __exit smdk2443_exit(void)
-+{
-+	platform_device_unregister(smdk2443_snd_ac97_device);
-+}
-+
-+module_init(smdk2443_init);
-+module_exit(smdk2443_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Graeme Gregory, graeme.gregory@wolfsonmicro.com, www.wolfsonmicro.com");
-+MODULE_DESCRIPTION("ALSA SoC WM9710 SMDK2443");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/smdk_spdif.c b/sound/soc/samsung/smdk_spdif.c
-new file mode 100644
-index 0000000..4fc6a9f
---- /dev/null
-+++ b/sound/soc/samsung/smdk_spdif.c
-@@ -0,0 +1,223 @@
-+/*
-+ * smdk_spdif.c  --  S/PDIF audio for SMDK
-+ *
-+ * Copyright 2010 Samsung Electronics Co. Ltd.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of the
-+ * License, or (at your option) any later version.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/clk.h>
-+
-+#include <plat/devs.h>
-+
-+#include <sound/soc.h>
-+
-+#include "dma.h"
-+#include "spdif.h"
-+
-+/* Audio clock settings are belonged to board specific part. Every
-+ * board can set audio source clock setting which is matched with H/W
-+ * like this function-'set_audio_clock_heirachy'.
-+ */
-+static int set_audio_clock_heirachy(struct platform_device *pdev)
-+{
-+	struct clk *fout_epll, *mout_epll, *sclk_audio0, *sclk_spdif;
-+	int ret;
-+
-+	fout_epll = clk_get(NULL, "fout_epll");
-+	if (IS_ERR(fout_epll)) {
-+		printk(KERN_WARNING "%s: Cannot find fout_epll.\n",
-+				__func__);
-+		return -EINVAL;
-+	}
-+
-+	mout_epll = clk_get(NULL, "mout_epll");
-+	if (IS_ERR(fout_epll)) {
-+		printk(KERN_WARNING "%s: Cannot find mout_epll.\n",
-+				__func__);
-+		ret = -EINVAL;
-+		goto out1;
-+	}
-+
-+	sclk_audio0 = clk_get(&pdev->dev, "sclk_audio");
-+	if (IS_ERR(sclk_audio0)) {
-+		printk(KERN_WARNING "%s: Cannot find sclk_audio.\n",
-+				__func__);
-+		ret = -EINVAL;
-+		goto out2;
-+	}
-+
-+	sclk_spdif = clk_get(NULL, "sclk_spdif");
-+	if (IS_ERR(fout_epll)) {
-+		printk(KERN_WARNING "%s: Cannot find sclk_spdif.\n",
-+				__func__);
-+		ret = -EINVAL;
-+		goto out3;
-+	}
-+
-+	/* Set audio clock heirachy for S/PDIF */
-+	clk_set_parent(mout_epll, fout_epll);
-+	clk_set_parent(sclk_audio0, mout_epll);
-+	clk_set_parent(sclk_spdif, sclk_audio0);
-+
-+	clk_put(sclk_spdif);
-+out3:
-+	clk_put(sclk_audio0);
-+out2:
-+	clk_put(mout_epll);
-+out1:
-+	clk_put(fout_epll);
-+
-+	return ret;
-+}
-+
-+/* We should haved to set clock directly on this part because of clock
-+ * scheme of Samsudng SoCs did not support to set rates from abstrct
-+ * clock of it's heirachy.
-+ */
-+static int set_audio_clock_rate(unsigned long epll_rate,
-+				unsigned long audio_rate)
-+{
-+	struct clk *fout_epll, *sclk_spdif;
-+
-+	fout_epll = clk_get(NULL, "fout_epll");
-+	if (IS_ERR(fout_epll)) {
-+		printk(KERN_ERR "%s: failed to get fout_epll\n", __func__);
-+		return -ENOENT;
-+	}
-+
-+	clk_set_rate(fout_epll, epll_rate);
-+	clk_put(fout_epll);
-+
-+	sclk_spdif = clk_get(NULL, "sclk_spdif");
-+	if (IS_ERR(sclk_spdif)) {
-+		printk(KERN_ERR "%s: failed to get sclk_spdif\n", __func__);
-+		return -ENOENT;
-+	}
-+
-+	clk_set_rate(sclk_spdif, audio_rate);
-+	clk_put(sclk_spdif);
-+
-+	return 0;
-+}
-+
-+static int smdk_hw_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	unsigned long pll_out, rclk_rate;
-+	int ret, ratio;
-+
-+	switch (params_rate(params)) {
-+	case 44100:
-+		pll_out = 45158400;
-+		break;
-+	case 32000:
-+	case 48000:
-+	case 96000:
-+		pll_out = 49152000;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* Setting ratio to 512fs helps to use S/PDIF with HDMI without
-+	 * modify S/PDIF ASoC machine driver.
-+	 */
-+	ratio = 512;
-+	rclk_rate = params_rate(params) * ratio;
-+
-+	/* Set audio source clock rates */
-+	ret = set_audio_clock_rate(pll_out, rclk_rate);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Set S/PDIF uses internal source clock */
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, SND_SOC_SPDIF_INT_MCLK,
-+					rclk_rate, SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	return ret;
-+}
-+
-+static struct snd_soc_ops smdk_spdif_ops = {
-+	.hw_params = smdk_hw_params,
-+};
-+
-+static struct snd_soc_card smdk;
-+
-+static struct snd_soc_dai_link smdk_dai = {
-+	.name = "S/PDIF",
-+	.stream_name = "S/PDIF PCM Playback",
-+	.platform_name = "samsung-audio",
-+	.cpu_dai_name = "samsung-spdif",
-+	.codec_dai_name = "dit-hifi",
-+	.codec_name = "spdif-dit",
-+	.ops = &smdk_spdif_ops,
-+};
-+
-+static struct snd_soc_card smdk = {
-+	.name = "SMDK-S/PDIF",
-+	.dai_link = &smdk_dai,
-+	.num_links = 1,
-+};
-+
-+static struct platform_device *smdk_snd_spdif_dit_device;
-+static struct platform_device *smdk_snd_spdif_device;
-+
-+static int __init smdk_init(void)
-+{
-+	int ret;
-+
-+	smdk_snd_spdif_dit_device = platform_device_alloc("spdif-dit", -1);
-+	if (!smdk_snd_spdif_dit_device)
-+		return -ENOMEM;
-+
-+	ret = platform_device_add(smdk_snd_spdif_dit_device);
-+	if (ret)
-+		goto err2;
-+
-+	smdk_snd_spdif_device = platform_device_alloc("soc-audio", -1);
-+	if (!smdk_snd_spdif_device) {
-+		ret = -ENOMEM;
-+		goto err2;
-+	}
-+
-+	platform_set_drvdata(smdk_snd_spdif_device, &smdk);
-+
-+	ret = platform_device_add(smdk_snd_spdif_device);
-+	if (ret)
-+		goto err1;
-+
-+	/* Set audio clock heirachy manually */
-+	ret = set_audio_clock_heirachy(smdk_snd_spdif_device);
-+	if (ret)
-+		goto err1;
-+
-+	return 0;
-+err1:
-+	platform_device_put(smdk_snd_spdif_device);
-+err2:
-+	platform_device_put(smdk_snd_spdif_dit_device);
-+	return ret;
-+}
-+
-+static void __exit smdk_exit(void)
-+{
-+	platform_device_unregister(smdk_snd_spdif_device);
-+}
-+
-+module_init(smdk_init);
-+module_exit(smdk_exit);
-+
-+MODULE_AUTHOR("Seungwhan Youn, <sw.youn@samsung.com>");
-+MODULE_DESCRIPTION("ALSA SoC SMDK+S/PDIF");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/smdk_wm8580.c b/sound/soc/samsung/smdk_wm8580.c
-new file mode 100644
-index 0000000..46ab884
---- /dev/null
-+++ b/sound/soc/samsung/smdk_wm8580.c
-@@ -0,0 +1,284 @@
-+/*
-+ *  smdk_wm8580.c
-+ *
-+ *  Copyright (c) 2009 Samsung Electronics Co. Ltd
-+ *  Author: Jaswinder Singh <jassi.brar@samsung.com>
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ */
-+
-+#include <linux/platform_device.h>
-+#include <linux/clk.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include <asm/mach-types.h>
-+
-+#include "../codecs/wm8580.h"
-+#include "dma.h"
-+#include "i2s.h"
-+
-+/*
-+ * Default CFG switch settings to use this driver:
-+ *
-+ *   SMDK6410: Set CFG1 1-3 Off, CFG2 1-4 On
-+ */
-+
-+/* SMDK has a 12MHZ crystal attached to WM8580 */
-+#define SMDK_WM8580_FREQ 12000000
-+
-+static int smdk_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	unsigned int pll_out;
-+	int bfs, rfs, ret;
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_U8:
-+	case SNDRV_PCM_FORMAT_S8:
-+		bfs = 16;
-+		break;
-+	case SNDRV_PCM_FORMAT_U16_LE:
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		bfs = 32;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* The Fvco for WM8580 PLLs must fall within [90,100]MHz.
-+	 * This criterion can't be met if we request PLL output
-+	 * as {8000x256, 64000x256, 11025x256}Hz.
-+	 * As a wayout, we rather change rfs to a minimum value that
-+	 * results in (params_rate(params) * rfs), and itself, acceptable
-+	 * to both - the CODEC and the CPU.
-+	 */
-+	switch (params_rate(params)) {
-+	case 16000:
-+	case 22050:
-+	case 32000:
-+	case 44100:
-+	case 48000:
-+	case 88200:
-+	case 96000:
-+		rfs = 256;
-+		break;
-+	case 64000:
-+		rfs = 384;
-+		break;
-+	case 8000:
-+	case 11025:
-+		rfs = 512;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	pll_out = params_rate(params) * rfs;
-+
-+	/* Set the Codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S
-+					 | SND_SOC_DAIFMT_NB_NF
-+					 | SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Set the AP DAI configuration */
-+	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S
-+					 | SND_SOC_DAIFMT_NB_NF
-+					 | SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Set WM8580 to drive MCLK from its PLLA */
-+	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8580_MCLK,
-+					WM8580_CLKSRC_PLLA);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_pll(codec_dai, WM8580_PLLA, 0,
-+					SMDK_WM8580_FREQ, pll_out);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, WM8580_CLKSRC_PLLA,
-+				     pll_out, SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+/*
-+ * SMDK WM8580 DAI operations.
-+ */
-+static struct snd_soc_ops smdk_ops = {
-+	.hw_params = smdk_hw_params,
-+};
-+
-+/* SMDK Playback widgets */
-+static const struct snd_soc_dapm_widget wm8580_dapm_widgets_pbk[] = {
-+	SND_SOC_DAPM_HP("Front", NULL),
-+	SND_SOC_DAPM_HP("Center+Sub", NULL),
-+	SND_SOC_DAPM_HP("Rear", NULL),
-+};
-+
-+/* SMDK Capture widgets */
-+static const struct snd_soc_dapm_widget wm8580_dapm_widgets_cpt[] = {
-+	SND_SOC_DAPM_MIC("MicIn", NULL),
-+	SND_SOC_DAPM_LINE("LineIn", NULL),
-+};
-+
-+/* SMDK-PAIFTX connections */
-+static const struct snd_soc_dapm_route audio_map_tx[] = {
-+	/* MicIn feeds AINL */
-+	{"AINL", NULL, "MicIn"},
-+
-+	/* LineIn feeds AINL/R */
-+	{"AINL", NULL, "LineIn"},
-+	{"AINR", NULL, "LineIn"},
-+};
-+
-+/* SMDK-PAIFRX connections */
-+static const struct snd_soc_dapm_route audio_map_rx[] = {
-+	/* Front Left/Right are fed VOUT1L/R */
-+	{"Front", NULL, "VOUT1L"},
-+	{"Front", NULL, "VOUT1R"},
-+
-+	/* Center/Sub are fed VOUT2L/R */
-+	{"Center+Sub", NULL, "VOUT2L"},
-+	{"Center+Sub", NULL, "VOUT2R"},
-+
-+	/* Rear Left/Right are fed VOUT3L/R */
-+	{"Rear", NULL, "VOUT3L"},
-+	{"Rear", NULL, "VOUT3R"},
-+};
-+
-+static int smdk_wm8580_init_paiftx(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+
-+	/* Add smdk specific Capture widgets */
-+	snd_soc_dapm_new_controls(codec, wm8580_dapm_widgets_cpt,
-+				  ARRAY_SIZE(wm8580_dapm_widgets_cpt));
-+
-+	/* Set up PAIFTX audio path */
-+	snd_soc_dapm_add_routes(codec, audio_map_tx, ARRAY_SIZE(audio_map_tx));
-+
-+	/* Enabling the microphone requires the fitting of a 0R
-+	 * resistor to connect the line from the microphone jack.
-+	 */
-+	snd_soc_dapm_disable_pin(codec, "MicIn");
-+
-+	/* signal a DAPM event */
-+	snd_soc_dapm_sync(codec);
-+
-+	return 0;
-+}
-+
-+static int smdk_wm8580_init_paifrx(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_codec *codec = rtd->codec;
-+
-+	/* Add smdk specific Playback widgets */
-+	snd_soc_dapm_new_controls(codec, wm8580_dapm_widgets_pbk,
-+				  ARRAY_SIZE(wm8580_dapm_widgets_pbk));
-+
-+	/* Set up PAIFRX audio path */
-+	snd_soc_dapm_add_routes(codec, audio_map_rx, ARRAY_SIZE(audio_map_rx));
-+
-+	/* signal a DAPM event */
-+	snd_soc_dapm_sync(codec);
-+
-+	return 0;
-+}
-+
-+enum {
-+	PRI_PLAYBACK = 0,
-+	PRI_CAPTURE,
-+	SEC_PLAYBACK,
-+};
-+
-+static struct snd_soc_dai_link smdk_dai[] = {
-+	[PRI_PLAYBACK] = { /* Primary Playback i/f */
-+		.name = "WM8580 PAIF RX",
-+		.stream_name = "Playback",
-+		.cpu_dai_name = "samsung-i2s.2",
-+		.codec_dai_name = "wm8580-hifi-playback",
-+		.platform_name = "samsung-audio",
-+		.codec_name = "wm8580-codec.0-001b",
-+		.init = smdk_wm8580_init_paifrx,
-+		.ops = &smdk_ops,
-+	},
-+	[PRI_CAPTURE] = { /* Primary Capture i/f */
-+		.name = "WM8580 PAIF TX",
-+		.stream_name = "Capture",
-+		.cpu_dai_name = "samsung-i2s.2",
-+		.codec_dai_name = "wm8580-hifi-capture",
-+		.platform_name = "samsung-audio",
-+		.codec_name = "wm8580-codec.0-001b",
-+		.init = smdk_wm8580_init_paiftx,
-+		.ops = &smdk_ops,
-+	},
-+	[SEC_PLAYBACK] = { /* Sec_Fifo Playback i/f */
-+		.name = "Sec_FIFO TX",
-+		.stream_name = "Playback",
-+		.cpu_dai_name = "samsung-i2s.x",
-+		.codec_dai_name = "wm8580-hifi-playback",
-+		.platform_name = "samsung-audio",
-+		.codec_name = "wm8580-codec.0-001b",
-+		.init = smdk_wm8580_init_paifrx,
-+		.ops = &smdk_ops,
-+	},
-+};
-+
-+static struct snd_soc_card smdk = {
-+	.name = "SMDK-I2S",
-+	.dai_link = smdk_dai,
-+	.num_links = 2,
-+};
-+
-+static struct platform_device *smdk_snd_device;
-+
-+static int __init smdk_audio_init(void)
-+{
-+	int ret;
-+	char *str;
-+
-+	if (machine_is_smdkc100()) {
-+		smdk.num_links = 3;
-+		/* S5PC100 has I2S0 as v5 */
-+		str = (char *)smdk_dai[PRI_PLAYBACK].cpu_dai_name;
-+		str[strlen(str) - 1] = '0';
-+		str = (char *)smdk_dai[PRI_CAPTURE].cpu_dai_name;
-+		str[strlen(str) - 1] = '0';
-+		/* Secondary is at offset MAX_I2S from Primary */
-+		str = (char *)smdk_dai[SEC_PLAYBACK].cpu_dai_name;
-+		str[strlen(str) - 1] = '0' + MAX_I2S;
-+	}
-+
-+	smdk_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!smdk_snd_device)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(smdk_snd_device, &smdk);
-+	ret = platform_device_add(smdk_snd_device);
-+
-+	if (ret)
-+		platform_device_put(smdk_snd_device);
-+
-+	return ret;
-+}
-+module_init(smdk_audio_init);
-+
-+MODULE_AUTHOR("Jaswinder Singh, jassi.brar@samsung.com");
-+MODULE_DESCRIPTION("ALSA SoC SMDK WM8580");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/smdk_wm9713.c b/sound/soc/samsung/smdk_wm9713.c
-new file mode 100644
-index 0000000..7ce2430
---- /dev/null
-+++ b/sound/soc/samsung/smdk_wm9713.c
-@@ -0,0 +1,107 @@
-+/*
-+ * smdk_wm9713.c  --  SoC audio for SMDK
-+ *
-+ * Copyright 2010 Samsung Electronics Co. Ltd.
-+ * Author: Jaswinder Singh Brar <jassi.brar@samsung.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of the
-+ * License, or (at your option) any later version.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <sound/soc.h>
-+
-+#include "dma.h"
-+#include "ac97.h"
-+
-+static struct snd_soc_card smdk;
-+
-+/*
-+ * Default CFG switch settings to use this driver:
-+ *
-+ *   SMDK6410: Set CFG1 1-3 On, CFG2 1-4 Off
-+ *   SMDKC100: Set CFG6 1-3 On, CFG7 1   On
-+ *   SMDKC110: Set CFGB10 1-2 Off, CFGB12 1-3 On
-+ *   SMDKV210: Set CFGB10 1-2 Off, CFGB12 1-3 On
-+ */
-+
-+/*
-+ Playback (HeadPhone):-
-+	$ amixer sset 'Headphone' unmute
-+	$ amixer sset 'Right Headphone Out Mux' 'Headphone'
-+	$ amixer sset 'Left Headphone Out Mux' 'Headphone'
-+	$ amixer sset 'Right HP Mixer PCM' unmute
-+	$ amixer sset 'Left HP Mixer PCM' unmute
-+
-+ Capture (LineIn):-
-+	$ amixer sset 'Right Capture Source' 'Line'
-+	$ amixer sset 'Left Capture Source' 'Line'
-+*/
-+
-+static struct snd_soc_dai_link smdk_dai = {
-+	.name = "AC97",
-+	.stream_name = "AC97 PCM",
-+	.platform_name = "samsung-audio",
-+	.cpu_dai_name = "samsung-ac97",
-+	.codec_dai_name = "wm9713-hifi",
-+	.codec_name = "wm9713-codec",
-+};
-+
-+static struct snd_soc_card smdk = {
-+	.name = "SMDK WM9713",
-+	.dai_link = &smdk_dai,
-+	.num_links = 1,
-+};
-+
-+static struct platform_device *smdk_snd_wm9713_device;
-+static struct platform_device *smdk_snd_ac97_device;
-+
-+static int __init smdk_init(void)
-+{
-+	int ret;
-+
-+	smdk_snd_wm9713_device = platform_device_alloc("wm9713-codec", -1);
-+	if (!smdk_snd_wm9713_device)
-+		return -ENOMEM;
-+
-+	ret = platform_device_add(smdk_snd_wm9713_device);
-+	if (ret)
-+		goto err;
-+
-+	smdk_snd_ac97_device = platform_device_alloc("soc-audio", -1);
-+	if (!smdk_snd_ac97_device) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
-+
-+	platform_set_drvdata(smdk_snd_ac97_device, &smdk);
-+
-+	ret = platform_device_add(smdk_snd_ac97_device);
-+	if (ret) {
-+		platform_device_put(smdk_snd_ac97_device);
-+		goto err;
-+	}
-+
-+	return 0;
-+err:
-+	platform_device_put(smdk_snd_wm9713_device);
-+	return ret;
-+}
-+
-+static void __exit smdk_exit(void)
-+{
-+	platform_device_unregister(smdk_snd_ac97_device);
-+	platform_device_unregister(smdk_snd_wm9713_device);
-+}
-+
-+module_init(smdk_init);
-+module_exit(smdk_exit);
-+
-+/* Module information */
-+MODULE_AUTHOR("Jaswinder Singh Brar, jassi.brar@samsung.com");
-+MODULE_DESCRIPTION("ALSA SoC SMDK+WM9713");
-+MODULE_LICENSE("GPL");
-diff --git a/sound/soc/samsung/spdif.c b/sound/soc/samsung/spdif.c
-new file mode 100644
-index 0000000..f081640
---- /dev/null
-+++ b/sound/soc/samsung/spdif.c
-@@ -0,0 +1,501 @@
-+/* sound/soc/samsung/spdif.c
-+ *
-+ * ALSA SoC Audio Layer - Samsung S/PDIF Controller driver
-+ *
-+ * Copyright (c) 2010 Samsung Electronics Co. Ltd
-+ *		http://www.samsung.com/
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/io.h>
-+
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+
-+#include <plat/audio.h>
-+#include <mach/dma.h>
-+
-+#include "dma.h"
-+#include "spdif.h"
-+
-+/* Registers */
-+#define CLKCON				0x00
-+#define CON				0x04
-+#define BSTAS				0x08
-+#define CSTAS				0x0C
-+#define DATA_OUTBUF			0x10
-+#define DCNT				0x14
-+#define BSTAS_S				0x18
-+#define DCNT_S				0x1C
-+
-+#define CLKCTL_MASK			0x7
-+#define CLKCTL_MCLK_EXT			(0x1 << 2)
-+#define CLKCTL_PWR_ON			(0x1 << 0)
-+
-+#define CON_MASK			0x3ffffff
-+#define CON_FIFO_TH_SHIFT		19
-+#define CON_FIFO_TH_MASK		(0x7 << 19)
-+#define CON_USERDATA_23RDBIT		(0x1 << 12)
-+
-+#define CON_SW_RESET			(0x1 << 5)
-+
-+#define CON_MCLKDIV_MASK		(0x3 << 3)
-+#define CON_MCLKDIV_256FS		(0x0 << 3)
-+#define CON_MCLKDIV_384FS		(0x1 << 3)
-+#define CON_MCLKDIV_512FS		(0x2 << 3)
-+
-+#define CON_PCM_MASK			(0x3 << 1)
-+#define CON_PCM_16BIT			(0x0 << 1)
-+#define CON_PCM_20BIT			(0x1 << 1)
-+#define CON_PCM_24BIT			(0x2 << 1)
-+
-+#define CON_PCM_DATA			(0x1 << 0)
-+
-+#define CSTAS_MASK			0x3fffffff
-+#define CSTAS_SAMP_FREQ_MASK		(0xF << 24)
-+#define CSTAS_SAMP_FREQ_44		(0x0 << 24)
-+#define CSTAS_SAMP_FREQ_48		(0x2 << 24)
-+#define CSTAS_SAMP_FREQ_32		(0x3 << 24)
-+#define CSTAS_SAMP_FREQ_96		(0xA << 24)
-+
-+#define CSTAS_CATEGORY_MASK		(0xFF << 8)
-+#define CSTAS_CATEGORY_CODE_CDP		(0x01 << 8)
-+
-+#define CSTAS_NO_COPYRIGHT		(0x1 << 2)
-+
-+/**
-+ * struct samsung_spdif_info - Samsung S/PDIF Controller information
-+ * @lock: Spin lock for S/PDIF.
-+ * @dev: The parent device passed to use from the probe.
-+ * @regs: The pointer to the device register block.
-+ * @clk_rate: Current clock rate for calcurate ratio.
-+ * @pclk: The peri-clock pointer for spdif master operation.
-+ * @sclk: The source clock pointer for making sync signals.
-+ * @save_clkcon: Backup clkcon reg. in suspend.
-+ * @save_con: Backup con reg. in suspend.
-+ * @save_cstas: Backup cstas reg. in suspend.
-+ * @dma_playback: DMA information for playback channel.
-+ */
-+struct samsung_spdif_info {
-+	spinlock_t	lock;
-+	struct device	*dev;
-+	void __iomem	*regs;
-+	unsigned long	clk_rate;
-+	struct clk	*pclk;
-+	struct clk	*sclk;
-+	u32		saved_clkcon;
-+	u32		saved_con;
-+	u32		saved_cstas;
-+	struct s3c_dma_params	*dma_playback;
-+};
-+
-+static struct s3c2410_dma_client spdif_dma_client_out = {
-+	.name		= "S/PDIF Stereo out",
-+};
-+
-+static struct s3c_dma_params spdif_stereo_out;
-+static struct samsung_spdif_info spdif_info;
-+
-+static inline struct samsung_spdif_info *to_info(struct snd_soc_dai *cpu_dai)
-+{
-+	return snd_soc_dai_get_drvdata(cpu_dai);
-+}
-+
-+static void spdif_snd_txctrl(struct samsung_spdif_info *spdif, int on)
-+{
-+	void __iomem *regs = spdif->regs;
-+	u32 clkcon;
-+
-+	dev_dbg(spdif->dev, "Entered %s\n", __func__);
-+
-+	clkcon = readl(regs + CLKCON) & CLKCTL_MASK;
-+	if (on)
-+		writel(clkcon | CLKCTL_PWR_ON, regs + CLKCON);
-+	else
-+		writel(clkcon & ~CLKCTL_PWR_ON, regs + CLKCON);
-+}
-+
-+static int spdif_set_sysclk(struct snd_soc_dai *cpu_dai,
-+				int clk_id, unsigned int freq, int dir)
-+{
-+	struct samsung_spdif_info *spdif = to_info(cpu_dai);
-+	u32 clkcon;
-+
-+	dev_dbg(spdif->dev, "Entered %s\n", __func__);
-+
-+	clkcon = readl(spdif->regs + CLKCON);
-+
-+	if (clk_id == SND_SOC_SPDIF_INT_MCLK)
-+		clkcon &= ~CLKCTL_MCLK_EXT;
-+	else
-+		clkcon |= CLKCTL_MCLK_EXT;
-+
-+	writel(clkcon, spdif->regs + CLKCON);
-+
-+	spdif->clk_rate = freq;
-+
-+	return 0;
-+}
-+
-+static int spdif_trigger(struct snd_pcm_substream *substream, int cmd,
-+				struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct samsung_spdif_info *spdif = to_info(rtd->cpu_dai);
-+	unsigned long flags;
-+
-+	dev_dbg(spdif->dev, "Entered %s\n", __func__);
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		spin_lock_irqsave(&spdif->lock, flags);
-+		spdif_snd_txctrl(spdif, 1);
-+		spin_unlock_irqrestore(&spdif->lock, flags);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		spin_lock_irqsave(&spdif->lock, flags);
-+		spdif_snd_txctrl(spdif, 0);
-+		spin_unlock_irqrestore(&spdif->lock, flags);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int spdif_sysclk_ratios[] = {
-+	512, 384, 256,
-+};
-+
-+static int spdif_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params,
-+				struct snd_soc_dai *socdai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct samsung_spdif_info *spdif = to_info(rtd->cpu_dai);
-+	void __iomem *regs = spdif->regs;
-+	struct s3c_dma_params *dma_data;
-+	u32 con, clkcon, cstas;
-+	unsigned long flags;
-+	int i, ratio;
-+
-+	dev_dbg(spdif->dev, "Entered %s\n", __func__);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		dma_data = spdif->dma_playback;
-+	else {
-+		dev_err(spdif->dev, "Capture is not supported\n");
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_dai_set_dma_data(rtd->cpu_dai, substream, dma_data);
-+
-+	spin_lock_irqsave(&spdif->lock, flags);
-+
-+	con = readl(regs + CON) & CON_MASK;
-+	cstas = readl(regs + CSTAS) & CSTAS_MASK;
-+	clkcon = readl(regs + CLKCON) & CLKCTL_MASK;
-+
-+	con &= ~CON_FIFO_TH_MASK;
-+	con |= (0x7 << CON_FIFO_TH_SHIFT);
-+	con |= CON_USERDATA_23RDBIT;
-+	con |= CON_PCM_DATA;
-+
-+	con &= ~CON_PCM_MASK;
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		con |= CON_PCM_16BIT;
-+		break;
-+	default:
-+		dev_err(spdif->dev, "Unsupported data size.\n");
-+		goto err;
-+	}
-+
-+	ratio = spdif->clk_rate / params_rate(params);
-+	for (i = 0; i < ARRAY_SIZE(spdif_sysclk_ratios); i++)
-+		if (ratio == spdif_sysclk_ratios[i])
-+			break;
-+	if (i == ARRAY_SIZE(spdif_sysclk_ratios)) {
-+		dev_err(spdif->dev, "Invalid clock ratio %ld/%d\n",
-+				spdif->clk_rate, params_rate(params));
-+		goto err;
-+	}
-+
-+	con &= ~CON_MCLKDIV_MASK;
-+	switch (ratio) {
-+	case 256:
-+		con |= CON_MCLKDIV_256FS;
-+		break;
-+	case 384:
-+		con |= CON_MCLKDIV_384FS;
-+		break;
-+	case 512:
-+		con |= CON_MCLKDIV_512FS;
-+		break;
-+	}
-+
-+	cstas &= ~CSTAS_SAMP_FREQ_MASK;
-+	switch (params_rate(params)) {
-+	case 44100:
-+		cstas |= CSTAS_SAMP_FREQ_44;
-+		break;
-+	case 48000:
-+		cstas |= CSTAS_SAMP_FREQ_48;
-+		break;
-+	case 32000:
-+		cstas |= CSTAS_SAMP_FREQ_32;
-+		break;
-+	case 96000:
-+		cstas |= CSTAS_SAMP_FREQ_96;
-+		break;
-+	default:
-+		dev_err(spdif->dev, "Invalid sampling rate %d\n",
-+				params_rate(params));
-+		goto err;
-+	}
-+
-+	cstas &= ~CSTAS_CATEGORY_MASK;
-+	cstas |= CSTAS_CATEGORY_CODE_CDP;
-+	cstas |= CSTAS_NO_COPYRIGHT;
-+
-+	writel(con, regs + CON);
-+	writel(cstas, regs + CSTAS);
-+	writel(clkcon, regs + CLKCON);
-+
-+	spin_unlock_irqrestore(&spdif->lock, flags);
-+
-+	return 0;
-+err:
-+	spin_unlock_irqrestore(&spdif->lock, flags);
-+	return -EINVAL;
-+}
-+
-+static void spdif_shutdown(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct samsung_spdif_info *spdif = to_info(rtd->cpu_dai);
-+	void __iomem *regs = spdif->regs;
-+	u32 con, clkcon;
-+
-+	dev_dbg(spdif->dev, "Entered %s\n", __func__);
-+
-+	con = readl(regs + CON) & CON_MASK;
-+	clkcon = readl(regs + CLKCON) & CLKCTL_MASK;
-+
-+	writel(con | CON_SW_RESET, regs + CON);
-+	cpu_relax();
-+
-+	writel(clkcon & ~CLKCTL_PWR_ON, regs + CLKCON);
-+}
-+
-+#ifdef CONFIG_PM
-+static int spdif_suspend(struct snd_soc_dai *cpu_dai)
-+{
-+	struct samsung_spdif_info *spdif = to_info(cpu_dai);
-+	u32 con = spdif->saved_con;
-+
-+	dev_dbg(spdif->dev, "Entered %s\n", __func__);
-+
-+	spdif->saved_clkcon = readl(spdif->regs	+ CLKCON) & CLKCTL_MASK;
-+	spdif->saved_con = readl(spdif->regs + CON) & CON_MASK;
-+	spdif->saved_cstas = readl(spdif->regs + CSTAS) & CSTAS_MASK;
-+
-+	writel(con | CON_SW_RESET, spdif->regs + CON);
-+	cpu_relax();
-+
-+	return 0;
-+}
-+
-+static int spdif_resume(struct snd_soc_dai *cpu_dai)
-+{
-+	struct samsung_spdif_info *spdif = to_info(cpu_dai);
-+
-+	dev_dbg(spdif->dev, "Entered %s\n", __func__);
-+
-+	writel(spdif->saved_clkcon, spdif->regs	+ CLKCON);
-+	writel(spdif->saved_con, spdif->regs + CON);
-+	writel(spdif->saved_cstas, spdif->regs + CSTAS);
-+
-+	return 0;
-+}
-+#else
-+#define spdif_suspend NULL
-+#define spdif_resume NULL
-+#endif
-+
-+static struct snd_soc_dai_ops spdif_dai_ops = {
-+	.set_sysclk	= spdif_set_sysclk,
-+	.trigger	= spdif_trigger,
-+	.hw_params	= spdif_hw_params,
-+	.shutdown	= spdif_shutdown,
-+};
-+
-+struct snd_soc_dai_driver samsung_spdif_dai = {
-+	.name = "samsung-spdif",
-+	.playback = {
-+		.stream_name = "S/PDIF Playback",
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = (SNDRV_PCM_RATE_32000 |
-+				SNDRV_PCM_RATE_44100 |
-+				SNDRV_PCM_RATE_48000 |
-+				SNDRV_PCM_RATE_96000),
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE, },
-+	.ops = &spdif_dai_ops,
-+	.suspend = spdif_suspend,
-+	.resume = spdif_resume,
-+};
-+
-+static __devinit int spdif_probe(struct platform_device *pdev)
-+{
-+	struct s3c_audio_pdata *spdif_pdata;
-+	struct resource *mem_res, *dma_res;
-+	struct samsung_spdif_info *spdif;
-+	int ret;
-+
-+	spdif_pdata = pdev->dev.platform_data;
-+
-+	dev_dbg(&pdev->dev, "Entered %s\n", __func__);
-+
-+	dma_res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-+	if (!dma_res) {
-+		dev_err(&pdev->dev, "Unable to get dma resource.\n");
-+		return -ENXIO;
-+	}
-+
-+	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!mem_res) {
-+		dev_err(&pdev->dev, "Unable to get register resource.\n");
-+		return -ENXIO;
-+	}
-+
-+	if (spdif_pdata && spdif_pdata->cfg_gpio
-+			&& spdif_pdata->cfg_gpio(pdev)) {
-+		dev_err(&pdev->dev, "Unable to configure GPIO pins\n");
-+		return -EINVAL;
-+	}
-+
-+	spdif = &spdif_info;
-+	spdif->dev = &pdev->dev;
-+
-+	spin_lock_init(&spdif->lock);
-+
-+	spdif->pclk = clk_get(&pdev->dev, "spdif");
-+	if (IS_ERR(spdif->pclk)) {
-+		dev_err(&pdev->dev, "failed to get peri-clock\n");
-+		ret = -ENOENT;
-+		goto err0;
-+	}
-+	clk_enable(spdif->pclk);
-+
-+	spdif->sclk = clk_get(&pdev->dev, "sclk_spdif");
-+	if (IS_ERR(spdif->sclk)) {
-+		dev_err(&pdev->dev, "failed to get internal source clock\n");
-+		ret = -ENOENT;
-+		goto err1;
-+	}
-+	clk_enable(spdif->sclk);
-+
-+	/* Request S/PDIF Register's memory region */
-+	if (!request_mem_region(mem_res->start,
-+				resource_size(mem_res), "samsung-spdif")) {
-+		dev_err(&pdev->dev, "Unable to request register region\n");
-+		ret = -EBUSY;
-+		goto err2;
-+	}
-+
-+	spdif->regs = ioremap(mem_res->start, 0x100);
-+	if (spdif->regs == NULL) {
-+		dev_err(&pdev->dev, "Cannot ioremap registers\n");
-+		ret = -ENXIO;
-+		goto err3;
-+	}
-+
-+	dev_set_drvdata(&pdev->dev, spdif);
-+
-+	ret = snd_soc_register_dai(&pdev->dev, &samsung_spdif_dai);
-+	if (ret != 0) {
-+		dev_err(&pdev->dev, "fail to register dai\n");
-+		goto err4;
-+	}
-+
-+	spdif_stereo_out.dma_size = 2;
-+	spdif_stereo_out.client = &spdif_dma_client_out;
-+	spdif_stereo_out.dma_addr = mem_res->start + DATA_OUTBUF;
-+	spdif_stereo_out.channel = dma_res->start;
-+
-+	spdif->dma_playback = &spdif_stereo_out;
-+
-+	return 0;
-+
-+err4:
-+	iounmap(spdif->regs);
-+err3:
-+	release_mem_region(mem_res->start, resource_size(mem_res));
-+err2:
-+	clk_disable(spdif->sclk);
-+	clk_put(spdif->sclk);
-+err1:
-+	clk_disable(spdif->pclk);
-+	clk_put(spdif->pclk);
-+err0:
-+	return ret;
-+}
-+
-+static __devexit int spdif_remove(struct platform_device *pdev)
-+{
-+	struct samsung_spdif_info *spdif = &spdif_info;
-+	struct resource *mem_res;
-+
-+	snd_soc_unregister_dai(&pdev->dev);
-+
-+	iounmap(spdif->regs);
-+
-+	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (mem_res)
-+		release_mem_region(mem_res->start, resource_size(mem_res));
-+
-+	clk_disable(spdif->sclk);
-+	clk_put(spdif->sclk);
-+	clk_disable(spdif->pclk);
-+	clk_put(spdif->pclk);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver samsung_spdif_driver = {
-+	.probe	= spdif_probe,
-+	.remove	= spdif_remove,
-+	.driver	= {
-+		.name	= "samsung-spdif",
-+		.owner	= THIS_MODULE,
-+	},
-+};
-+
-+static int __init spdif_init(void)
-+{
-+	return platform_driver_register(&samsung_spdif_driver);
-+}
-+module_init(spdif_init);
-+
-+static void __exit spdif_exit(void)
-+{
-+	platform_driver_unregister(&samsung_spdif_driver);
-+}
-+module_exit(spdif_exit);
-+
-+MODULE_AUTHOR("Seungwhan Youn, <sw.youn@samsung.com>");
-+MODULE_DESCRIPTION("Samsung S/PDIF Controller Driver");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:samsung-spdif");
-diff --git a/sound/soc/samsung/spdif.h b/sound/soc/samsung/spdif.h
-new file mode 100644
-index 0000000..4f72cb4
---- /dev/null
-+++ b/sound/soc/samsung/spdif.h
-@@ -0,0 +1,19 @@
-+/* sound/soc/samsung/spdif.h
-+ *
-+ * ALSA SoC Audio Layer - Samsung S/PDIF Controller driver
-+ *
-+ * Copyright (c) 2010 Samsung Electronics Co. Ltd
-+ *		http://www.samsung.com/
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef __SND_SOC_SAMSUNG_SPDIF_H
-+#define __SND_SOC_SAMSUNG_SPDIF_H	__FILE__
-+
-+#define SND_SOC_SPDIF_INT_MCLK		0
-+#define SND_SOC_SPDIF_EXT_MCLK		1
-+
-+#endif	/* __SND_SOC_SAMSUNG_SPDIF_H */
--- 
-1.6.2.5
++/* ADDID =3D Additional Device ID */
++#define PCI_CAP_OFFSET_ADID 6
++
++
+--
+1.6.6.1
+
+---------------------------------------------------------------------
+Intel Corporation SAS (French simplified joint stock company)
+Registered headquarters: "Les Montalets"- 2, rue de Paris,=20
+92196 Meudon Cedex, France
+Registration Number:  302 456 199 R.C.S. NANTERRE
+Capital: 4,572,000 Euros
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
+
+--_002_2A84145621092446B6659B8A0F28E26F46FE77084Airsmsx501gerc_
+Content-Type: application/octet-stream;
+	name="0001-New-low-level-driver-Intel_mid_i2s-provide-support-alsa.patch"
+Content-Description: 0001-New-low-level-driver-Intel_mid_i2s-provide-support-alsa.patch
+Content-Disposition: attachment; filename=
+	"0001-New-low-level-driver-Intel_mid_i2s-provide-support-alsa.patch";
+	size=77099; creation-date="Fri, 15 Oct 2010 16:02:59 GMT";
+	modification-date="Fri, 15 Oct 2010 14:45:31 GMT"
+Content-Transfer-Encoding: base64
+
+RnJvbSAxNmRhM2ViZmZhZDAyNmU0NGQ3NDUzOGI3NzczYTUxMDQ0MjU0OTIwIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBMb3VpcyBMRSBHQUxMIDxsb3Vpcy5sZS5nYWxsQGludGVsLmNv
+bT4KRGF0ZTogRnJpLCAxNSBPY3QgMjAxMCAxNTozMDo0OSArMDIwMApTdWJqZWN0OiBbUEFUQ0hd
+IE5ldyBsb3cgbGV2ZWwgZHJpdmVyICJJbnRlbF9taWRfaTJzIiBwcm92aWRlIHN1cHBvcnQgZm9y
+IEkyUyBTU1AgZGV2aWNlIG9uIEludGVsIE1JRCBQbGF0Zm9ybXMKIFNpZ25lZC1vZmYtYnk6IExv
+dWlzIExFIEdBTEwgPGxvdWlzLmxlLmdhbGxAaW50ZWwuY29tPgoKQ2hhbmdlLUlkOiBJMTcwNTJh
+M2I0NjRjNTY4MmQyYWIxN2E5YjZlMGZhZDMwMTM3MjQzZgoKU2lnbmVkLW9mZi1ieTogTG91aXMg
+TEUgR0FMTCA8bG91aXMubGUuZ2FsbEBpbnRlbC5jb20+Ci0tLQogaW5jbHVkZS9saW51eC9pbnRl
+bF9taWRfaTJzX2lmLmggICAgICAgIHwgIDI4MCArKysrKysKIHNvdW5kL3BjaS9LY29uZmlnICAg
+ICAgICAgICAgICAgICAgICAgICB8ICAgMTggKwogc291bmQvcGNpL01ha2VmaWxlICAgICAgICAg
+ICAgICAgICAgICAgIHwgICAgNCArLQogc291bmQvcGNpL2ludGVsX21pZF9pMnMvTWFrZWZpbGUg
+ICAgICAgIHwgICAxOCArCiBzb3VuZC9wY2kvaW50ZWxfbWlkX2kycy9pbnRlbF9taWRfaTJzLmMg
+fCAxNDI4ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKIHNvdW5kL3BjaS9pbnRlbF9t
+aWRfaTJzL2ludGVsX21pZF9pMnMuaCB8ICA1MDAgKysrKysrKysrKysKIDYgZmlsZXMgY2hhbmdl
+ZCwgMjI0NyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQogY3JlYXRlIG1vZGUgMTAwNjQ0
+IGluY2x1ZGUvbGludXgvaW50ZWxfbWlkX2kyc19pZi5oCiBjcmVhdGUgbW9kZSAxMDA2NDQgc291
+bmQvcGNpL2ludGVsX21pZF9pMnMvTWFrZWZpbGUKIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9w
+Y2kvaW50ZWxfbWlkX2kycy9pbnRlbF9taWRfaTJzLmMKIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3Vu
+ZC9wY2kvaW50ZWxfbWlkX2kycy9pbnRlbF9taWRfaTJzLmgKCmRpZmYgLS1naXQgYS9pbmNsdWRl
+L2xpbnV4L2ludGVsX21pZF9pMnNfaWYuaCBiL2luY2x1ZGUvbGludXgvaW50ZWxfbWlkX2kyc19p
+Zi5oCm5ldyBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAuLjE1NjM1NzcKLS0tIC9kZXYv
+bnVsbAorKysgYi9pbmNsdWRlL2xpbnV4L2ludGVsX21pZF9pMnNfaWYuaApAQCAtMCwwICsxLDI4
+MCBAQAorLyoKKyAgKiA8RHJpdmVyIGZvciBJMlMgcHJvdG9jb2wgb24gU1NQIChNb29yZXN0b3du
+IGFuZCBNZWRmaWVsZCBoYXJkd2FyZSk+CisgICogQ29weXJpZ2h0IChjKSAyMDEwLCBJbnRlbCBD
+b3Jwb3JhdGlvbi4KKyAgKiBMb3VpcyBMRSBHQUxMIDxsb3Vpcy5sZS5nYWxsIGludGVsLmNvbT4K
+KyAgKgorICAqIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJp
+YnV0ZSBpdCBhbmQvb3IgbW9kaWZ5IGl0CisgICogdW5kZXIgdGhlIHRlcm1zIGFuZCBjb25kaXRp
+b25zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSwKKyAgKiB2ZXJzaW9uIDIsIGFz
+IHB1Ymxpc2hlZCBieSB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLgorICAqCisgICogVGhp
+cyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIGl0IHdpbGwgYmUgdXNlZnVsLCBi
+dXQgV0lUSE9VVAorICAqIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdh
+cnJhbnR5IG9mIE1FUkNIQU5UQUJJTElUWSBvcgorICAqIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxB
+UiBQVVJQT1NFLiAgU2VlIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IKKyAgKiBt
+b3JlIGRldGFpbHMuCisgICoKKyAgKiBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9m
+IHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhbG9uZyB3aXRoCisgICogdGhpcyBwcm9n
+cmFtOyBpZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIEluYy4s
+CisgICogNTEgRnJhbmtsaW4gU3QgLSBGaWZ0aCBGbG9vciwgQm9zdG9uLCBNQSAwMjExMC0xMzAx
+IFVTQS4KKyAgKi8KKworI2lmbmRlZiBNSURfSTJTX0VYVEVSTkFMX0hfCisjZGVmaW5lIE1JRF9J
+MlNfRVhURVJOQUxfSF8KKworI2luY2x1ZGUgPGxpbnV4L3BjaS5oPgorI2luY2x1ZGUgPGxpbnV4
+L2RtYS1tYXBwaW5nLmg+CisjaW5jbHVkZSA8bGludXgvaW50ZWxfbWlkX2RtYS5oPgorCisjaW5j
+bHVkZSA8bGludXgvaW50ZXJydXB0Lmg+CisKKy8qCisgKglTdHJ1Y3R1cmVzIERlZmluaXRpb24K
+KyAqLworCisKKy8qCisgKglTU0NSMCBzZXR0aW5ncworICovCitlbnVtIG1yc3Rfc3NwX21vZGUg
+eworCVNTUF9JTl9OT1JNQUxfTU9ERSA9IDB4MCwKKwlTU1BfSU5fTkVUV09SS19NT0RFCit9Owor
+CitlbnVtIG1yc3Rfc3NwX3J4X2ZpZm9fb3Zlcl9ydW5faW50X21hc2sgeworCVNTUF9SWF9GSUZP
+X09WRVJfSU5UX0VOQUJMRSA9IDB4MCwKKwlTU1BfUlhfRklGT19PVkVSX0lOVF9ESVNBQkxFCit9
+OworCitlbnVtIG1yc3Rfc3NwX3R4X2ZpZm9fdW5kZXJfcnVuX2ludF9tYXNrIHsKKwlTU1BfVFhf
+RklGT19VTkRFUl9JTlRfRU5BQkxFID0gMHgwLAorCVNTUF9UWF9GSUZPX1VOREVSX0lOVF9ESVNB
+QkxFCit9OworCitlbnVtIG1yc3Rfc3NwX2ZyYW1lX2Zvcm1hdCB7CisJTU9UT1JPTEFfU1BJX0ZP
+Uk1BVCA9IDB4MCwKKwlUSV9TU1BfRk9STUFULAorCU1JQ1JPV0lSRV9GT1JNQVQsCisJUFNQX0ZP
+Uk1BVAorCit9OworCitlbnVtIG1yc3Rfc3NwX21hc3Rlcl9tb2RlX2Nsb2NrX3NlbGVjdGlvbiB7
+CisJU1NQX09OQ0hJUF9DTE9DSyA9IDB4MCwKKwlTU1BfTkVUV09SS19DTE9DSywKKwlTU1BfRVhU
+RVJOQUxfQ0xPQ0ssCisJU1NQX09OQ0hJUF9BVURJT19DTE9DSywKKwlTU1BfTUFTVEVSX0NMT0NL
+X1VOREVGSU5FRCA9IDB4RkYKK307CisKKy8qCisgKglTU0NSMSBzZXR0aW5ncworICovCitlbnVt
+IG1yc3Rfc3NwX3R4ZF90cmlzdGF0ZV9sYXN0X3BoYXNlIHsKKwlUWERfVFJJU1RBVEVfTEFTVF9Q
+SEFTRV9PRkYgPSAgMHgwLAorCVRYRF9UUklTVEFURV9MQVNUX1BIQVNFX09OCit9OworCitlbnVt
+IG1yc3Rfc3NwX3R4ZF90cmlzdGF0ZV9lbmFibGUgeworCVRYRF9UUklTVEFURV9PRkYgPSAgMHgw
+LAorCVRYRF9UUklTVEFURV9PTgorfTsKKworZW51bSBtcnN0X3NzcF9zbGF2ZV9zc3BjbGtfZnJl
+ZV9ydW5uaW5nIHsKKwlTTEFWRV9TU1BDTEtfT05fQUxXQVlTID0gIDB4MCwKKwlTTEFWRV9TU1BD
+TEtfT05fRFVSSU5HX1RSQU5TRkVSX09OTFkKK307CisKK2VudW0gbXJzdF9zc3Bfc3Nwc2Nsa19k
+aXJlY3Rpb24geworCVNTUFNDTEtfTUFTVEVSX01PREUgPSAweDAsCisJU1NQU0NMS19TTEFWRV9N
+T0RFCit9OworCitlbnVtIG1yc3Rfc3NwX3NzcHNmcm1fZGlyZWN0aW9uIHsKKwlTU1BTRlJNX01B
+U1RFUl9NT0RFID0gMHgwLAorCVNTUFNGUk1fU0xBVkVfTU9ERQorfTsKKworZW51bSBtcnN0X3Nz
+cF9yeF93aXRob3V0X3R4IHsKKwlSWF9BTkRfVFhfTU9ERSA9IDB4MCwKKwlSWF9XSVRIT1VUX1RY
+X01PREUKK307CisKK2VudW0gbXJzdF90cmFpbGluZ19ieXRlX21vZGUgeworCVNTUF9UUkFJTElO
+R19CWVRFX0hETF9CWV9JQSA9IDB4MCwKKwlTU1BfVFJBSUxJTkdfQllURV9IRExfQllfRE1BCit9
+OworCitlbnVtIG1yc3Rfc3NwX3R4X2RtYV9zdGF0dXMgeworCVNTUF9UWF9ETUFfTUFTSyA9IDB4
+MCwKKwlTU1BfVFhfRE1BX0VOQUJMRQorfTsKKworZW51bSBtcnN0X3NzcF9yeF9kbWFfc3RhdHVz
+IHsKKwlTU1BfUlhfRE1BX01BU0sgPSAweDAsCisJU1NQX1JYX0RNQV9FTkFCTEUKK307CisKK2Vu
+dW0gbXJzdF9zc3BfcnhfdGltZW91dF9pbnRfc3RhdHVzIHsKKwlTU1BfUlhfVElNRU9VVF9JTlRf
+RElTQUJMRSA9IDB4MCwKKwlTU1BfUlhfVElNRU9VVF9JTlRfRU5BQkxFCit9OworCitlbnVtIG1y
+c3Rfc3NwX3RyYWlsaW5nX2J5dGVfaW50X3N0YXR1cyB7CisJU1NQX1RSQUlMSU5HX0JZVEVfSU5U
+X0RJU0FCTEUgPSAweDAsCisJU1NQX1RSQUlMSU5HX0JZVEVfSU5UX0VOQUJMRQorfTsKKworZW51
+bSBtcnN0X3NzcF9sb29wYmFja19tb2RlX3N0YXR1cyB7CisJU1NQX0xPT1BCQUNLX09GRiA9IDB4
+MCwKKwlTU1BfTE9PUEJBQ0tfT04KK307CisKKworLyoKKyAqCVNTUFNQIHNldHRpbmdzOiBmb3Ig
+UFNQIEZvcm1hdCBPTkxZISEhISEhISEKKyAqLworCitlbnVtIG1yc3Rfc3NwX2ZyYW1lX3N5bmNf
+cmVsYXRpdmVfdGltaW5nX2JpdCB7CisJTkVYVF9GUk1TX0FTU19BRlRFUl9FTkRfT0ZfVDQgPSAg
+MHgwLAorCU5FWFRfRlJNU19BU1NfV0lUSF9MU0JfUFJFVklPVVNfRlJNCit9OworCitlbnVtIG1y
+c3Rfc3NwX2ZyYW1lX3N5bmNfcG9sYXJpdHlfYml0IHsKKwlTU1BfRlJNU19BQ1RJVkVfTE9XID0g
+IDB4MCwKKwlTU1BfRlJNU19BQ1RJVkVfSElHSAorfTsKKworZW51bSBtcnN0X3NzcF9lbmRfb2Zf
+dHJhbnNmZXJfZGF0YV9zdGF0ZSB7CisJU1NQX0VORF9EQVRBX1RSQU5TRkVSX1NUQVRFX0xPVyA9
+IDB4MCwKKwlTU1BfRU5EX0RBVEFfVFJBTlNGRVJfU1RBVEVfUEVWSU9VU19CSVQKK307CisKK2Vu
+dW0gbXJzdF9zc3BfY2xrX21vZGUgeworCVNTUF9DTEtfTU9ERV8wID0gMHgwLAorCVNTUF9DTEtf
+TU9ERV8xLAorCVNTUF9DTEtfTU9ERV8yLAorCVNTUF9DTEtfTU9ERV8zCit9OworCisKKy8qCisg
+KglsaXN0IG9mIGRpZmZlcmVudHMgdHlwZXMgb2YgU1NQLCB2YWx1ZSBkZXBlbmRzIG9mIGFkaWQg
+ZW50cnkgb2YKKyAqCWNhcGFiaWxpdHkgSUQgb2YgdGhlIFBDSQorICovCisKKy8qCisgKgorICog
+VGhlIFBDSSBoZWFkZXIgYXNzb2NpYXRlZCB0byBTU1AgZGV2aWNlcyBub3cgaW5jbHVkZXMgYSBj
+b25maWd1cmF0aW9uCisgKiByZWdpc3Rlci4gSXQgcHJvdmlkZXMgaW5mb3JtYXRpb24gdG8gYSBk
+cml2ZXIgd2hpY2ggaXMgcHJvYmVkIGZvciB0aGUKKyAqIFNTUCwgc3BlY2lmeWluZyBpbiB3aGlj
+aCB3YXkgdGhlIFNTUCBpcyBzdXBwb3NlZCB0byBiZSB1c2VkLiBIZXJlIGlzCisgKiB0aGUgZm9y
+bWF0IG9mIHRoaXMgYnl0ZSByZWdpc3RlcjoKKyAqCisgKgliaXRzIDIuLjA6IE1vZGUKKyAqCQkw
+MDA9MHgwIDogSW52YWxpZCwgdGhlIHJlZ2lzdGVyIHNob3VsZCBiZSBpZ25vcmVkCisgKgkJMDAx
+PTB4MSA6IFNTUCB0byBiZSB1c2VkIGFzIFNQSSBjb250cm9sbGVyCisgKgkJMDEwPTB4MjogU1NQ
+IHRvIGJlIHVzZWQgaW4gSTJTL0lTUyBtb2RlCisgKgkJb3RoZXI6IFJlc2VydmVkCisgKgorICoJ
+Yml0cyA1Li4zOiBDb25maWd1cmF0aW9uCisgKglJbiBJMlMvSVNTIG1vZGU6CisgKgkJMDAwPTB4
+MDogSW52YWxpZAorICoJCTAwMT0weDE6IEJsdWV0b290aAorICoJCTAxMD0weDI6IE1vZGVtCisg
+KgkJb3RoZXI6IFJlc2VydmVkCisgKglJbiBTUEkgbW9kZToKKyAqCQlWYWx1ZSBpcyB0aGUgU1BJ
+IGJ1cyBudW1iZXIgY29ubmVjdGVkIHRvIHRoZSBTU1AuCisgKgkJVG8gYmUgdXNlZCBmb3IgcmVn
+aXN0cmF0aW9uIHRvIHRoZSBMaW51eCBTUEkKKyAqCQlmcmFtZXdvcmsuCisgKgliaXQgNjogU1BJ
+IHNsYXZlCisgKglSZWxldmFudCBpbiBTUEkgbW9kZSBvbmx5LiBJZiBzZXQsIGluZGljYXRlcyB0
+aGUgU1BJIGNsb2NrCisgKglpcyBub3QgcHJvdmlkZWQgYnkgdGhlIFNTUDogU1BJIHNsYXZlIG1v
+ZGUuCisgKgorICoJYml0IDc6IFJlc2VydmVkICgwKQorICoKKyAqIFRoaXMgY29uZmlndXJhdGlv
+biByZWdpc3RlciBpcyBpbXBsZW1lbnRlZCBpbiB0aGUgYWRpZCBmaWVsZCBvZiB0aGUKKyAqIFZl
+bmRvciBTcGVjaWZpYyBQQ0kgY2FwYWJpbGl0eSBhc3NvY2lhdGVkIHRvIHRoZSBTU1AuCisgKgor
+ICovCisKKyNkZWZpbmUgUENJX0FESURfU1NQX01PREVfU1BJICAoMSkKKyNkZWZpbmUgUENJX0FE
+SURfU1NQX01PREVfSTJTICAoMikKKworI2RlZmluZSBQQ0lfQURJRF9TU1BfQ09ORl9CVF9GTSAg
+KDE8PDMpCisjZGVmaW5lIFBDSV9BRElEX1NTUF9DT05GX01PREVNICAoMjw8MykKKworCisjZGVm
+aW5lIFBDSV9DQVBfQURJRF9JMlNfQlRfRk0gICgoUENJX0FESURfU1NQX0NPTkZfQlRfRk0pIHwg
+KFBDSV9BRElEX1NTUF9NT0RFX0kyUykpCisjZGVmaW5lIFBDSV9DQVBfQURJRF9JMlNfTU9ERU0g
+ICgoUENJX0FESURfU1NQX0NPTkZfTU9ERU0pIHwgKFBDSV9BRElEX1NTUF9NT0RFX0kyUykpCisK
+K2VudW0gaW50ZWxfbWlkX2kyc19zc3BfdXNhZ2UgeworCVNTUF9VU0FHRV9VTkFTU0lHTkVEID0g
+MHgwMCwKKwlTU1BfVVNBR0VfQkxVRVRPT1RIX0ZNID0gMHgwMSwKKwlTU1BfVVNBR0VfTU9ERU0g
+PSAweDAyCit9OworCisvKgorICoJU3RydWN0dXJlIHVzZWQgdG8gY29uZmlndXJlIHRoZSBTU1Ag
+UG9ydAorICoJUGxlYXNlIG5vdGUgdGhhdCBvbmx5IHRoZSBQU1AgZm9ybWF0IGFuZCB0aGUgRE1B
+IHRyYW5zZmVyIGFyZSBzdXBwb3J0ZWQKKyAqLworCitzdHJ1Y3QgaW50ZWxfbWlkX2kyc19zZXR0
+aW5ncyB7CisJZW51bSBtcnN0X3NzcF9tb2RlICAgICAgICAgICAgICAgICAgICAgICAgIG1vZGU7
+CisJZW51bSBtcnN0X3NzcF9yeF9maWZvX292ZXJfcnVuX2ludF9tYXNrICAgIHJ4X2ZpZm9faW50
+ZXJydXB0OworCWVudW0gbXJzdF9zc3BfdHhfZmlmb191bmRlcl9ydW5faW50X21hc2sgICB0eF9m
+aWZvX2ludGVycnVwdDsKKwllbnVtIG1yc3Rfc3NwX2ZyYW1lX2Zvcm1hdCAgICAgICAgICAgICAg
+ICAgZnJhbWVfZm9ybWF0OworCWVudW0gbXJzdF9zc3BfbWFzdGVyX21vZGVfY2xvY2tfc2VsZWN0
+aW9uICBtYXN0ZXJfbW9kZV9jbGtfc2VsZWN0aW9uOyAgICAgICAgICAgICAgLyogZm9yIE1hc3Rl
+ciBNb2RlIE9ubHkgKi8KKwl1OCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgZnJhbWVfcmF0ZV9kaXZpZGVyX2NvbnRyb2w7CisJdTE2ICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIG1hc3Rlcl9tb2RlX3NlcmlhbF9jbG9ja19yYXRlOyAgICAgICAg
+ICAvKiBmb3IgTWFzdGVyIE1vZGUgT25seSAqLworCXUxNiAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICBkYXRhX3NpemU7CisKKwllbnVtIG1yc3Rfc3NwX3R4ZF90cmlzdGF0
+ZV9sYXN0X3BoYXNlICAgICAgdHhfdHJpc3RhdGVfcGhhc2U7CisJZW51bSBtcnN0X3NzcF90eGRf
+dHJpc3RhdGVfZW5hYmxlICAgICAgICAgIHR4X3RyaXN0YXRlX2VuYWJsZTsKKwllbnVtIG1yc3Rf
+c3NwX3NsYXZlX3NzcGNsa19mcmVlX3J1bm5pbmcgICAgc2xhdmVfY2xrX2ZyZWVfcnVubmluZ19z
+dGF0dXM7CisJZW51bSBtcnN0X3NzcF9zc3BzY2xrX2RpcmVjdGlvbiAgICAgICAgICAgIHNzcHNs
+Y2xrX2RpcmVjdGlvbjsKKwllbnVtIG1yc3Rfc3NwX3NzcHNmcm1fZGlyZWN0aW9uICAgICAgICAg
+ICAgc3Nwc2ZybV9kaXJlY3Rpb247CisJZW51bSBtcnN0X3NzcF9yeF93aXRob3V0X3R4ICAgICAg
+ICAgICAgICAgIHNzcF9kdXBsZXhfbW9kZTsKKwllbnVtIG1yc3RfdHJhaWxpbmdfYnl0ZV9tb2Rl
+ICAgICAgICAgICAgICAgc3NwX3RyYWlsaW5nX2J5dGVfbW9kZTsKKwllbnVtIG1yc3Rfc3NwX3R4
+X2RtYV9zdGF0dXMgICAgICAgICAgICAgICAgc3NwX3R4X2RtYTsKKwllbnVtIG1yc3Rfc3NwX3J4
+X2RtYV9zdGF0dXMgICAgICAgICAgICAgICAgc3NwX3J4X2RtYTsKKwllbnVtIG1yc3Rfc3NwX3J4
+X3RpbWVvdXRfaW50X3N0YXR1cyAgICAgICAgc3NwX3J4X3RpbWVvdXRfaW50ZXJydXB0X3N0YXR1
+czsKKwllbnVtIG1yc3Rfc3NwX3RyYWlsaW5nX2J5dGVfaW50X3N0YXR1cyAgICAgc3NwX3RyYWls
+aW5nX2J5dGVfaW50ZXJydXB0X3N0YXR1czsKKwllbnVtIG1yc3Rfc3NwX2xvb3BiYWNrX21vZGVf
+c3RhdHVzICAgICAgICAgc3NwX2xvb3BiYWNrX21vZGVfc3RhdHVzOworCXU4ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzc3BfcnhfZmlmb190aHJlc2hvbGQ7CisJdTgg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNzcF90eF9maWZvX3RocmVz
+aG9sZDsKKworCisJZW51bSBtcnN0X3NzcF9mcmFtZV9zeW5jX3JlbGF0aXZlX3RpbWluZ19iaXQg
+IHNzcF9mcm1zeW5jX3RpbWluZ19iaXQ7CisJZW51bSBtcnN0X3NzcF9mcmFtZV9zeW5jX3BvbGFy
+aXR5X2JpdCAgICAgIHNzcF9mcm1zeW5jX3BvbF9iaXQ7CisJZW51bSBtcnN0X3NzcF9lbmRfb2Zf
+dHJhbnNmZXJfZGF0YV9zdGF0ZSAgIHNzcF9lbmRfdHJhbnNmZXJfc3RhdGU7CisJZW51bSBtcnN0
+X3NzcF9jbGtfbW9kZSAgICAgICAgICAgICAgICAgICAgIHNzcF9zZXJpYWxfY2xrX21vZGU7CisJ
+dTggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNzcF9wc3BfVDE7CisJ
+dTggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNzcF9wc3BfVDI7CisJ
+dTggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNzcF9wc3BfVDQ7ICAg
+LyogRE1ZU1RPUCAqLworCXU4ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBzc3BfcHNwX1Q1OyAgIC8qIFNGUk1ETFkgKi8KKwl1OCAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgc3NwX3BzcF9UNjsgICAvKiBTRlJNV0RUSCAqLworCisJdTggICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNzcF9hY3RpdmVfdHhfc2xvdHNf
+bWFwOworCXU4ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzc3BfYWN0
+aXZlX3J4X3Nsb3RzX21hcDsKK307CisKKy8qCisgKglQcm92aWRlZCBJbnRlcmZhY2UKKyAqLwor
+CisKK3N0cnVjdCBpbnRlbF9taWRfaTJzX2hkbCAqaW50ZWxfbWlkX2kyc19vcGVuKGVudW0gaW50
+ZWxfbWlkX2kyc19zc3BfdXNhZ2UgdXNhZ2UsIGNvbnN0IHN0cnVjdCBpbnRlbF9taWRfaTJzX3Nl
+dHRpbmdzICpwc19zZXR0aW5ncyk7Cit2b2lkICBpbnRlbF9taWRfaTJzX2Nsb3NlKHN0cnVjdCBp
+bnRlbF9taWRfaTJzX2hkbCAqaGFuZGxlKTsKKworaW50IGludGVsX21pZF9pMnNfcmRfcmVxKHN0
+cnVjdCBpbnRlbF9taWRfaTJzX2hkbCAqaGFuZGxlLCB1MzIgKmRzdCwgc2l6ZV90IGxlbiwgdm9p
+ZCAqcGFyYW0pOworaW50IGludGVsX21pZF9pMnNfd3JfcmVxKHN0cnVjdCBpbnRlbF9taWRfaTJz
+X2hkbCAqaGFuZGxlLCB1MzIgKnNyYywgc2l6ZV90IGxlbiwgdm9pZCAqcGFyYW0pOworaW50IGlu
+dGVsX21pZF9pMnNfZW5hYmxlX3NzcChzdHJ1Y3QgaW50ZWxfbWlkX2kyc19oZGwgKmhhbmRsZSk7
+CisKKworaW50IGludGVsX21pZF9pMnNfc2V0X3dyX2NiKHN0cnVjdCBpbnRlbF9taWRfaTJzX2hk
+bCAqaGFuZGxlLCBpbnQgKCp3cml0ZV9jYWxsYmFjaykodm9pZCAqcGFyYW0pKTsKK2ludCBpbnRl
+bF9taWRfaTJzX3NldF9yZF9jYihzdHJ1Y3QgaW50ZWxfbWlkX2kyc19oZGwgKmhhbmRsZSwgaW50
+ICgqcmVhZF9jYWxsYmFjaykodm9pZCAqcGFyYW0pKTsKKworCitpbnQgaW50ZWxfbWlkX2kyc19n
+ZXRfdHhfZmlmb19sZXZlbChzdHJ1Y3QgaW50ZWxfbWlkX2kyc19oZGwgKmhhbmRsZSk7CitpbnQg
+aW50ZWxfbWlkX2kyc19nZXRfcnhfZmlmb19sZXZlbChzdHJ1Y3QgaW50ZWxfbWlkX2kyc19oZGwg
+KmhhbmRsZSk7CitpbnQgaW50ZWxfbWlkX2kyc19mbHVzaChzdHJ1Y3QgaW50ZWxfbWlkX2kyc19o
+ZGwgKmhhbmRsZSk7CisKKyNlbmRpZiAvKk1JRF9JMlNfRVhURVJOQUxfSF8qLwpkaWZmIC0tZ2l0
+IGEvc291bmQvcGNpL0tjb25maWcgYi9zb3VuZC9wY2kvS2NvbmZpZwppbmRleCAxMmUzNDY1Li4w
+YjBhNTI0IDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvS2NvbmZpZworKysgYi9zb3VuZC9wY2kvS2Nv
+bmZpZwpAQCAtODUzLDQgKzg1MywyMiBAQCBjb25maWcgU05EX1lNRlBDSQogCSAgVG8gY29tcGls
+ZSB0aGlzIGRyaXZlciBhcyBhIG1vZHVsZSwgY2hvb3NlIE0gaGVyZTogdGhlIG1vZHVsZQogCSAg
+d2lsbCBiZSBjYWxsZWQgc25kLXltZnBjaS4KIAorY29uZmlnIFNORF9JTlRFTF9NSURfSTJTCisJ
+dHJpc3RhdGUgIkludGVsIG1pZCBJMlMgaGFyZHdhcmUgZHJpdmVyIgorCWRlcGVuZHMgb24gRVhQ
+RVJJTUVOVEFMICYmIFBDSSAmJiBJTlRFTF9NSURfRE1BQworCWRlZmF1bHQgbgorCWhlbHAKKwkg
+IFNheSBZIGhlcmUgaWYgeW91IHdhbnQgdG8gYnVpbGQgbG93IGxldmVsIGRyaXZlciB0byBzdXBw
+b3J0CisJICBzZW5kaW5nL3JlY2V2aW5nIEkyUyBhdWRpbyBzYW1wbGVzIG9uIEludGVsIE1JRCBT
+U1AgZGV2aWNlLgorCSAgVGhpcyBpbnRlcmZhY2UgaXMgbW9zdGx5IHVzZWQgb24gSW50ZWwgTUlE
+IHBsYXRmb3JtcyBhbmQgcHJvdmlkZQorCSAgdGhlIGxvdyBsZXZlbCBpbnRlcmZhY2UgZm9yIHNv
+bWUgdXBwZXIgbGF5ZXIgZHJpdmVycyBzdWNoIGFzCisJICBBbHNhIFNvQywgY2hhciBkZXZpY2Ug
+aW50ZXJmYWNlcy4uLiBkZXBlbmRpbmcgb2YgcGVyaXBoZXJhbCBjb25uZWN0ZWQuCisJICBQQ0kg
+SGVhZGVyIHNob3VsZCBoYXZlIEFESUQgZmllbGQgc2V0IHRvIEkyUyBCVF9GTSBvciAKKwkgIEky
+UyBNT0RFTSB0byBiZSB1c2VkIGJ5IHRoaXMgZHJpdmVyIChzbyBpdCBrbm93IGNvbm5lY3RlZCBw
+ZXJpcGhlcmFsKS4KKwkgIE5vdGUgdGhpcyBpcyBhIHByb3RvdHlwZSBkcml2ZXIgYW5kIHN1cHBv
+cnQgZm9yIGNvbnRpbnVvdXMKKwkgIGZsb3cgaXMgc3RpbGwgd29ya2luZy1pbi1wcm9ncmVzcy4K
+KwkgIFRoaXMgZHJpdmVyIGNhbiBhbHNvIGJlIGJ1aWx0IGFzIGEgbW9kdWxlLiBJZiBzbywgdGhl
+IG1vZHVsZQorCSAgd2lsbCBiZSBjYWxsZWQgaW50ZWxfbWlkX2kycy5rbworCSAgSWYgdW5zdXJl
+LCBzYXkgTiBoZXJlLgorCiBlbmRpZgkjIFNORF9QQ0kKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9N
+YWtlZmlsZSBiL3NvdW5kL3BjaS9NYWtlZmlsZQppbmRleCA5Y2Y0MzQ4Li40NjYxM2EyIDEwMDY0
+NAotLS0gYS9zb3VuZC9wY2kvTWFrZWZpbGUKKysrIGIvc291bmQvcGNpL01ha2VmaWxlCkBAIC03
+OCw0ICs3OCw2IEBAIG9iai0kKENPTkZJR19TTkQpICs9IFwKIAlybWU5NjUyLyBcCiAJdHJpZGVu
+dC8gXAogCXltZnBjaS8gXAotCXZ4MjIyLworCXZ4MjIyLyBcCisJaW50ZWxfbWlkX2kycy8KKwpk
+aWZmIC0tZ2l0IGEvc291bmQvcGNpL2ludGVsX21pZF9pMnMvTWFrZWZpbGUgYi9zb3VuZC9wY2kv
+aW50ZWxfbWlkX2kycy9NYWtlZmlsZQpuZXcgZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAwMDAw
+Li5iZWJhYzFjCi0tLSAvZGV2L251bGwKKysrIGIvc291bmQvcGNpL2ludGVsX21pZF9pMnMvTWFr
+ZWZpbGUKQEAgLTAsMCArMSwxOCBAQAorIyBTU1AgYXVkaW8gZHJpdmVyCisjIENvcHlyaWdodCAo
+YykgMjAxMCwgSW50ZWwgQ29ycG9yYXRpb24uCisKKyMgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29m
+dHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkgaXQKKyMgdW5kZXIg
+dGhlIHRlcm1zIGFuZCBjb25kaXRpb25zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5z
+ZSwKKyMgdmVyc2lvbiAyLCBhcyBwdWJsaXNoZWQgYnkgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRh
+dGlvbi4KKworIyBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgaXQgd2ls
+bCBiZSB1c2VmdWwsIGJ1dCBXSVRIT1VUCisjIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRo
+ZSBpbXBsaWVkIHdhcnJhbnR5IG9mIE1FUkNIQU5UQUJJTElUWSBvcgorIyBGSVRORVNTIEZPUiBB
+IFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2Ug
+Zm9yCisjIG1vcmUgZGV0YWlscy4KKworIyBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5
+IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhbG9uZyB3aXRoCisjIHRoaXMgcHJv
+Z3JhbTsgaWYgbm90LCB3cml0ZSB0byB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLCBJbmMu
+LAorIyA1MSBGcmFua2xpbiBTdCAtIEZpZnRoIEZsb29yLCBCb3N0b24sIE1BIDAyMTEwLTEzMDEg
+VVNBLgorCitvYmotJChDT05GSUdfU05EX0lOVEVMX01JRF9JMlMpICAgICs9ICBpbnRlbF9taWRf
+aTJzLm8KKwpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2ludGVsX21pZF9pMnMvaW50ZWxfbWlkX2ky
+cy5jIGIvc291bmQvcGNpL2ludGVsX21pZF9pMnMvaW50ZWxfbWlkX2kycy5jCm5ldyBmaWxlIG1v
+ZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAuLjU3MmFiZGUKLS0tIC9kZXYvbnVsbAorKysgYi9zb3Vu
+ZC9wY2kvaW50ZWxfbWlkX2kycy9pbnRlbF9taWRfaTJzLmMKQEAgLTAsMCArMSwxNDI4IEBACisv
+KgorICAqIDxEcml2ZXIgZm9yIEkyUyBwcm90b2NvbCBvbiBTU1AgKE1vb3Jlc3Rvd24gYW5kIE1l
+ZGZpZWxkIGhhcmR3YXJlKT4KKyAgKiBDb3B5cmlnaHQgKGMpIDIwMTAsIEludGVsIENvcnBvcmF0
+aW9uLgorICAqIExvdWlzIExFIEdBTEwgPGxvdWlzLmxlLmdhbGwgaW50ZWwuY29tPgorICAqCisg
+ICogVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0
+IGFuZC9vciBtb2RpZnkgaXQKKyAgKiB1bmRlciB0aGUgdGVybXMgYW5kIGNvbmRpdGlvbnMgb2Yg
+dGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlLAorICAqIHZlcnNpb24gMiwgYXMgcHVibGlz
+aGVkIGJ5IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24uCisgICoKKyAgKiBUaGlzIHByb2dy
+YW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgaXQgd2lsbCBiZSB1c2VmdWwsIGJ1dCBXSVRI
+T1VUCisgICogQU5ZIFdBUlJBTlRZOyB3aXRob3V0IGV2ZW5wIHRoZSBpbXBsaWVkIHdhcnJhbnR5
+IG9mIE1FUkNIQU5UQUJJTElUWSBvcgorICAqIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQ
+T1NFLiAgU2VlIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IKKyAgKiBtb3JlIGRl
+dGFpbHMuCisgICoKKyAgKiBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBH
+TlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhbG9uZyB3aXRoCisgICogdGhpcyBwcm9ncmFtOyBp
+ZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIEluYy4sCisgICog
+NTEgRnJhbmtsaW4gU3QgLSBGaWZ0aCBGbG9vciwgQm9zdG9uLCBNQSAwMjExMC0xMzAxIFVTQS4K
+KyAgKi8KKyNpbmNsdWRlIDxsaW51eC9wY2kuaD4KKyNpbmNsdWRlIDxsaW51eC9kbWEtbWFwcGlu
+Zy5oPgorI2luY2x1ZGUgPGxpbnV4L2ludGVycnVwdC5oPgorI2luY2x1ZGUgPGxpbnV4L3BtX3J1
+bnRpbWUuaD4KKyNpbmNsdWRlIDxsaW51eC9wY2lfcmVncy5oPgorI2luY2x1ZGUgPGxpbnV4L3dh
+aXQuaD4KKyNpbmNsdWRlIDxsaW51eC9pbnRlcnJ1cHQuaD4KKyNpbmNsdWRlIDxsaW51eC9zY2hl
+ZC5oPgorCisjaW5jbHVkZSA8bGludXgvZGV2aWNlLmg+CisKKyNpbmNsdWRlIDxsaW51eC9pbnRl
+bF9taWRfaTJzX2lmLmg+CisjaW5jbHVkZSAiaW50ZWxfbWlkX2kycy5oIgorCitNT0RVTEVfQVVU
+SE9SKCJMb3VpcyBMRSBHQUxMIDxsb3Vpcy5sZS5nYWxsIGludGVsLmNvbT4iKTsKK01PRFVMRV9E
+RVNDUklQVElPTigiSW50ZWwgTUlEIEkyUy9QQ00gU1NQIERyaXZlciIpOworTU9EVUxFX0xJQ0VO
+U0UoIkdQTCIpOworTU9EVUxFX1ZFUlNJT04oIjEuMC4wIik7CisKKworLyoKKyAqIHN0cnVjdHVy
+ZXMgZm9yIHBjaSBwcm9iaW5nCisgKi8KK3N0YXRpYyBjb25zdCBzdHJ1Y3QgZGV2X3BtX29wcyBp
+bnRlbF9taWRfaTJzX3BtX29wcyA9IHsKKwkucnVudGltZV9zdXNwZW5kID0gaW50ZWxfbWlkX2ky
+c19ydW50aW1lX3N1c3BlbmQsCisJLnJ1bnRpbWVfcmVzdW1lID0gaW50ZWxfbWlkX2kyc19ydW50
+aW1lX3Jlc3VtZSwKK307CitzdGF0aWMgREVGSU5FX1BDSV9ERVZJQ0VfVEFCTEUocGNpX2lkcykg
+PSB7CisJeyBQQ0lfREVWSUNFKFBDSV9WRU5ET1JfSURfSU5URUwsIE1GTERfU1NQMV9ERVZJQ0Vf
+SUQpIH0sCisJeyBQQ0lfREVWSUNFKFBDSV9WRU5ET1JfSURfSU5URUwsIE1GTERfU1NQMF9ERVZJ
+Q0VfSUQpIH0sCisJeyAwLCB9LCAvKiB0ZXJtaW5hdGUgbGlzdCAqLworfTsKK3N0YXRpYyBzdHJ1
+Y3QgcGNpX2RyaXZlciBpbnRlbF9taWRfaTJzX2RyaXZlciA9IHsKKwkuZHJpdmVyID0geworCQku
+cG0gPSAmaW50ZWxfbWlkX2kyc19wbV9vcHMsCisJfSwKKwkubmFtZSA9IERSSVZFUl9OQU1FLAor
+CS5pZF90YWJsZSA9IHBjaV9pZHMsCisJLnByb2JlID0gaW50ZWxfbWlkX2kyc19wcm9iZSwKKwku
+cmVtb3ZlID0gX19kZXZleGl0X3AoaW50ZWxfbWlkX2kyc19yZW1vdmUpLAorI2lmZGVmIENPTkZJ
+R19QTQorCS5zdXNwZW5kID0gaW50ZWxfbWlkX2kyc19kcml2ZXJfc3VzcGVuZCwKKwkucmVzdW1l
+ID0gaW50ZWxfbWlkX2kyc19kcml2ZXJfcmVzdW1lLAorI2VuZGlmCit9OworCisKKy8qCisgKiBQ
+T1dFUiBNQU5BR0VNRU5UIEZVTkNUSU9OUworICovCisKKyNpZmRlZiBDT05GSUdfUE0KKy8qKgor
+ICogaW50ZWxfbWlkX2kyc19kcml2ZXJfc3VzcGVuZCAtIGRyaXZlciBwb3dlciBtYW5hZ2VtZW50
+IHN1c3BlbmQgYWN0aXZpdHkKKyAqIEBkZXZpY2VfcHRyIDogcG9pbnRlciBvZiB0aGUgZGV2aWNl
+IHRvIHJlc3VtZQorICoKKyAqIE91dHB1dCBwYXJhbWV0ZXJzCisgKiAgICAgIGVycm9yIDogMCBt
+ZWFucyBubyBlcnJvcgorICovCitzdGF0aWMgaW50ICBpbnRlbF9taWRfaTJzX2RyaXZlcl9zdXNw
+ZW5kKHN0cnVjdCBwY2lfZGV2ICpkZXYsIHBtX21lc3NhZ2VfdCBzdGF0ZSkKK3sKKwlzdHJ1Y3Qg
+aW50ZWxfbWlkX2kyc19oZGwgKmRydl9kYXRhID0gcGNpX2dldF9kcnZkYXRhKGRldik7CisJV0FS
+TighZHJ2X2RhdGEsICJEcml2ZXIgZGF0YT1OVUxMXG4iKTsKKwlpZiAoIWRydl9kYXRhKQorCQly
+ZXR1cm4gMDsKKwlkZXZfZGJnKCZkcnZfZGF0YS0+cGRldi0+ZGV2LCAiU1VTUEVORCBTU1AgSUQg
+JWRcbiIsIGRydl9kYXRhLT5wZGV2LT5kZXZpY2UpOworCXBjaV9zYXZlX3N0YXRlKGRldik7CisJ
+cGNpX2Rpc2FibGVfZGV2aWNlKGRldik7CisJcGNpX3NldF9wb3dlcl9zdGF0ZShkZXYsIFBDSV9E
+M2hvdCk7CisJcmV0dXJuIDA7Cit9CisKKy8qKgorICogaW50ZWxfbWlkX2kyc19kcml2ZXJfcmVz
+dW1lIC0gZHJpdmVyIHBvd2VyIG1hbmFnZW1lbnQgc3VzcGVuZCBhY3Rpdml0eQorICogQGRldmlj
+ZV9wdHIgOiBwb2ludGVyIG9mIHRoZSBkZXZpY2UgdG8gcmVzdW1lCisgKgorICogT3V0cHV0IHBh
+cmFtZXRlcnMKKyAqICAgICAgZXJyb3IgOiAwIG1lYW5zIG5vIGVycm9yCisgKi8KK3N0YXRpYyBp
+bnQgaW50ZWxfbWlkX2kyc19kcml2ZXJfcmVzdW1lKHN0cnVjdCBwY2lfZGV2ICpkZXYpCit7CisJ
+aW50IGVycjsKKwlpbnQgcmV0ID0gMDsKKwlzdHJ1Y3QgaW50ZWxfbWlkX2kyc19oZGwgKmRydl9k
+YXRhID0gcGNpX2dldF9kcnZkYXRhKGRldik7CisKKwlXQVJOKCFkcnZfZGF0YSwgIkRyaXZlciBk
+YXRhPU5VTExcbiIpOworCWlmICghZHJ2X2RhdGEpCisJCXJldHVybiAtRUZBVUxUOworCWRldl9k
+YmcoJmRydl9kYXRhLT5wZGV2LT5kZXYsICJSRVNVTUUgU1NQIElEICVkXG4iLCBkcnZfZGF0YS0+
+cGRldi0+ZGV2aWNlKTsKKworCWVyciA9IHBjaV9lbmFibGVfZGV2aWNlKGRldik7CisJaWYgKGVy
+cikKKwkJZGV2X2VycigmZHJ2X2RhdGEtPnBkZXYtPmRldiwgIlVuYWJsZSB0byByZS1lbmFibGUg
+ZGV2aWNlLCB0cnlpbmcgdG8gY29udGludWUuXG4iKTsKKwlkZXZfZGJnKCZkcnZfZGF0YS0+cGRl
+di0+ZGV2LCAicmVzdW1pbmdcbiIpOworCXBjaV9zZXRfcG93ZXJfc3RhdGUoZGV2LCBQQ0lfRDAp
+OworCXBjaV9yZXN0b3JlX3N0YXRlKGRldik7CisJcmV0ID0gcGNpX2VuYWJsZV9kZXZpY2UoZGV2
+KTsKKwlpZiAocmV0KQorCQlkZXZfZXJyKCZkcnZfZGF0YS0+cGRldi0+ZGV2LCAiSTJTOiBkZXZp
+Y2UgY2FuJ3QgYmUgZW5hYmxlZCIpOworCWRldl9kYmcoJmRydl9kYXRhLT5wZGV2LT5kZXYsICJy
+ZXN1bWVkIGluIEQzXG4iKTsKKwlyZXR1cm4gcmV0OworfQorCisvKioKKyAqIGludGVsX21pZF9p
+MnNfcnVudGltZV9zdXNwZW5kIC0gcnVudGltZSBwb3dlciBtYW5hZ2VtZW50IHN1c3BlbmQgYWN0
+aXZpdHkKKyAqIEBkZXZpY2VfcHRyIDogcG9pbnRlciBvZiB0aGUgZGV2aWNlIHRvIHJlc3VtZQor
+ICoKKyAqIE91dHB1dCBwYXJhbWV0ZXJzCisgKiAgICAgIGVycm9yIDogMCBtZWFucyBubyBlcnJv
+cgorICovCitzdGF0aWMgaW50IGludGVsX21pZF9pMnNfcnVudGltZV9zdXNwZW5kKHN0cnVjdCBk
+ZXZpY2UgKmRldmljZV9wdHIpCit7CisJc3RydWN0IHBjaV9kZXYgKnBkZXY7CisJc3RydWN0IGlu
+dGVsX21pZF9pMnNfaGRsICpkcnZfZGF0YTsKKwl2b2lkIF9faW9tZW0gKnJlZzsKKworCXBkZXYg
+PSB0b19wY2lfZGV2KGRldmljZV9wdHIpOworCVdBUk4oIXBkZXYsICJQY2kgZGV2PU5VTExcbiIp
+OworCWlmICghcGRldikKKwkJcmV0dXJuIC1FRkFVTFQ7CisJZHJ2X2RhdGEgPSAoc3RydWN0IGlu
+dGVsX21pZF9pMnNfaGRsICopIHBjaV9nZXRfZHJ2ZGF0YShwZGV2KTsKKwlXQVJOKCFkcnZfZGF0
+YSwgIkRyaXZlciBkYXRhPU5VTExcbiIpOworCWlmICghZHJ2X2RhdGEpCisJCXJldHVybiAtRUZB
+VUxUOworCWlmICh0ZXN0X2JpdChJMlNfUE9SVF9PUEVORUQsICZkcnZfZGF0YS0+ZmxhZ3MpKSB7
+CisJCWRldl9lcnIoZGV2aWNlX3B0ciwgIlRyeWluZyB0byBzdXNwZW5kIGEgZGV2aWNlIHRoYXQg
+aXMgb3BlbmVkXG4iKTsKKwkJcmV0dXJuIC1FTk9ERVY7CisJfQorCXJlZyA9IGRydl9kYXRhLT5p
+b2FkZHI7CisJZGV2X2RiZygmZHJ2X2RhdGEtPnBkZXYtPmRldiwgIlN1c3BlbmQgb2YgU1NQIHJl
+cXVlc3RlZCAhIVxuIik7CisJcmV0dXJuIGludGVsX21pZF9pMnNfZHJpdmVyX3N1c3BlbmQodG9f
+cGNpX2RldihkZXZpY2VfcHRyKSwgUE1TR19TVVNQRU5EKTsKK30KKyNlbmRpZgorCisvKioKKyAq
+IGludGVsX21pZF9pMnNfcnVudGltZV9yZXN1bWUgLSBydW50aW1lIHBvd2VyIG1hbmFnZW1lbnQg
+cmVzdW1lIGFjdGl2aXR5CisgKiBAZGV2aWNlX3B0ciA6IHBvaW50ZXIgb2YgdGhlIGRldmljZSB0
+byByZXN1bWUKKyAqCisgKiBPdXRwdXQgcGFyYW1ldGVycworICogICAgICBlcnJvciA6IDAgbWVh
+bnMgbm8gZXJyb3IKKyAqLworc3RhdGljIGludCBpbnRlbF9taWRfaTJzX3J1bnRpbWVfcmVzdW1l
+KHN0cnVjdCBkZXZpY2UgKmRldmljZV9wdHIpCit7CisJc3RydWN0IHBjaV9kZXYgKnBkZXY7CisJ
+c3RydWN0IGludGVsX21pZF9pMnNfaGRsICpkcnZfZGF0YTsKKwlwZGV2ID0gdG9fcGNpX2Rldihk
+ZXZpY2VfcHRyKTsKKwlXQVJOKCFwZGV2LCAiUGNpIGRldj1OVUxMXG4iKTsKKwlpZiAoIXBkZXYp
+CisJCXJldHVybiAtRUZBVUxUOworCWRydl9kYXRhID0gKHN0cnVjdCBpbnRlbF9taWRfaTJzX2hk
+bCAqKSBwY2lfZ2V0X2RydmRhdGEocGRldik7CisJV0FSTighZHJ2X2RhdGEsICJEcml2ZXIgZGF0
+YT1OVUxMXG4iKTsKKwlpZiAoIWRydl9kYXRhKQorCQlyZXR1cm4gLUVGQVVMVDsKKwlkZXZfZGJn
+KCZkcnZfZGF0YS0+cGRldi0+ZGV2LCAiUlQgUkVTVU1FIFNTUCBJRFxuIik7CisJcmV0dXJuIGlu
+dGVsX21pZF9pMnNfZHJpdmVyX3Jlc3VtZSh0b19wY2lfZGV2KGRldmljZV9wdHIpKTsKK30KKwor
+LyoKKyAqIElOVEVSRkFDRSBGVU5DVElPTlMKKyAqLworCisvKioKKyAqIGludGVsX21pZF9pMnNf
+Zmx1c2ggLSBUaGlzIGlzIHRoZSBJMlMgZmx1c2ggcmVxdWVzdAorICogQGRydl9kYXRhIDogcG9p
+bnRlciBvbiBwcml2YXRlIGkycyBkcml2ZXIgZGF0YSAoYnkgaTJzX29wZW4gZnVuY3Rpb24pCisg
+KgorICogSXQgd2lsbCBmbHVzaCB0aGUgVFggRklGTworICogV0FSTklORzogdGhpcyBmdW5jdGlv
+biBpcyB1c2VkIGluIGEgQnVyc3QgTW9kZSBjb250ZXh0IHdoZXJlIGl0IGlzIGNhbGxlZAorICog
+YmV0d2VlbiBCdXJzdHMgaS5lLiB3aGVuIHRoZXJlIGlzIG5vIEZNU1lOQywgbm8gdHJhbnNmZXIg
+b25nb2luZyBhdAorICogdGhhdCB0aW1lCisgKiBJZiB5b3UgbmVlZCBhIGZsdXNoIHdoaWxlIFNT
+UCBjb25maWd1cmVkIGluIEkyUyBpcyBCVVNZIGFuZCBGTVNZTkMgYXJlCisgKiBnZW5lcmF0ZWQs
+IHlvdSBoYXZlIHRvIHdyaXRlIGFub3RoZXIgZnVuY3Rpb24KKyAqIChsb29wIG9uIEJVU1kgYml0
+IGFuZCBkbyBub3QgbGltaXQgdGhlIGZsdXNoIHRvIGF0IG1vc3QgMTYgc2FtcGxlcykKKyAqCisg
+KiBPdXRwdXQgcGFyYW1ldGVycworICogICAgICBpbnQgOiBudW1iZXIgb2Ygc2FtcGxlcyBmbHVz
+aGVkCisgKi8KK2ludCBpbnRlbF9taWRfaTJzX2ZsdXNoKHN0cnVjdCBpbnRlbF9taWRfaTJzX2hk
+bCAqZHJ2X2RhdGEpCit7CisJdTMyIHNzc3IsIGRhdGE7CisJdTMyIG51bSA9IDA7CisJdm9pZCBf
+X2lvbWVtICpyZWc7CisKKwlXQVJOKCFkcnZfZGF0YSwgIkRyaXZlciBkYXRhPU5VTExcbiIpOwor
+CWlmICghZHJ2X2RhdGEpCisJCXJldHVybiAwOworCXJlZyA9IGRydl9kYXRhLT5pb2FkZHI7CisJ
+c3NzciA9IHJlYWRfU1NTUihyZWcpOworCWRldl9kYmcoJmRydl9kYXRhLT5wZGV2LT5kZXYsICJp
+biBmbHVzaCBzc3NyPTB4JTA4WFxuIiwgc3Nzcik7CisJLyoKKwkgKiBGbHVzaCAiYnkgaGFuZCIg
+d2FzIGdlbmVyYXRpbmcgc3B1cmlvdXMgRE1BIFNFUlYgUkVRVUVTVAorCSAqIGZyb20gU1NQIHRv
+IERNQSA9PiB0aGVuIGJ1Z2d5IHJldHJpZXZhbCBvZiBkYXRhIGZvciBuZXh0IGRtYV9yZXEKKwkg
+KiBEaXNhYmxlOiBSWCBTZXJ2aWNlIFJlcXVlc3QgZnJvbSBSWCBmaWZvIHRvIERNQQorCSAqIGFz
+IHdlIHdpbGwgZmx1c2ggYnkgaGFuZAorCSAqLworCWNsZWFyX1NTQ1IxX3JlZyhyZWcsIFJTUkUp
+OworCS8qIGkyc19mbHVzaCBpcyBjYWxsZWQgaW4gYmV0d2VlbiAyIGJ1cnN0cworCSAqID0+IG5v
+IEZNU1lOQyBhdCB0aGF0IHRpbWUgKGkuZS4gU1NQIG5vdCBidXN5KQorCSAqID0+IGF0IG1vc3Qg
+MTYgc2FtcGxlcyBpbiB0aGUgRklGTyAqLworCXdoaWxlICgocmVhZF9TU1NSKHJlZykgJiAoU1NT
+Ul9STkVfTUFTSzw8U1NTUl9STkVfU0hJRlQpKQorCQkJJiYgKG51bSA8IEZJRk9fU0laRSkpIHsK
+KwkJZGF0YSA9IHJlYWRfU1NEUihyZWcpOworCQludW0rKzsKKwkJZGV2X3dhcm4oJmRydl9kYXRh
+LT5wZGV2LT5kZXYsICJmbHVzaCgldSk9JXVcbiIsIG51bSwgZGF0YSk7CisJfQorCS8qIEVuYWJs
+ZTogUlggU2VydmljZSBSZXF1ZXN0IGZyb20gUlggZmlmbyB0byBETUEKKwkgKiBhcyBmbHVzaCBi
+eSBoYW5kIGlzIGRvbmUKKwkgKi8KKwlzZXRfU1NDUjFfcmVnKHJlZywgUlNSRSk7CisJc3NzciA9
+IHJlYWRfU1NTUihyZWcpOworCWRldl9kYmcoJmRydl9kYXRhLT5wZGV2LT5kZXYsICJvdXQgZmx1
+c2ggc3Nzcj0weCUwOFhcbiIsIHNzc3IpOworCXJldHVybiBudW07Cit9CitFWFBPUlRfU1lNQk9M
+X0dQTChpbnRlbF9taWRfaTJzX2ZsdXNoKTsKKworLyoqCisgKiBpbnRlbF9taWRfaTJzX2dldF9y
+eF9maWZvX2xldmVsIC0gcmV0dXJucyBJMlMgcnggZmlmbyBsZXZlbAorICogQGRydl9kYXRhIDog
+cG9pbnRlciBvbiBwcml2YXRlIGkycyBkcml2ZXIgZGF0YSAoYnkgaTJzX29wZW4gZnVuY3Rpb24p
+CisgKgorICogT3V0cHV0IHBhcmFtZXRlcnMKKyAqICAgICAgaW50IDogTnVtYmVyIG9mIHNhbXBs
+ZXMgY3VycmVudGx5IGluIHRoZSBSWCBGSUZPIChuZWdhdGl2ZSA9IGVycm9yKQorICovCitpbnQg
+aW50ZWxfbWlkX2kyc19nZXRfcnhfZmlmb19sZXZlbChzdHJ1Y3QgaW50ZWxfbWlkX2kyc19oZGwg
+KmRydl9kYXRhKQoreworCXUzMiBzc3NyOworCXUzMiBybmUsIHJmbDsKKwl2b2lkIF9faW9tZW0g
+KnJlZzsKKworCVdBUk4oIWRydl9kYXRhLCAiRHJpdmVyIGRhdGE9TlVMTFxuIik7CisJaWYgKCFk
+cnZfZGF0YSkKKwkJcmV0dXJuIC1FRkFVTFQ7CisJcmVnID0gZHJ2X2RhdGEtPmlvYWRkcjsKKwlz
+c3NyID0gcmVhZF9TU1NSKHJlZyk7CisJcmZsID0gR0VUX1NTU1JfdmFsKHNzc3IsIFJGTCk7CisJ
+cm5lID0gR0VUX1NTU1JfdmFsKHNzc3IsIFJORSk7CisJaWYgKCFybmUpCisJCXJldHVybiAwOwor
+CWVsc2UKKwkJcmV0dXJuIHJmbCsxOworfQorRVhQT1JUX1NZTUJPTF9HUEwoaW50ZWxfbWlkX2ky
+c19nZXRfcnhfZmlmb19sZXZlbCk7CisKKy8qKgorICogaW50ZWxfbWlkX2kyc19nZXRfdHhfZmlm
+b19sZXZlbCAtIHJldHVybnMgSTJTIHR4IGZpZm8gbGV2ZWwKKyAqIEBkcnZfZGF0YSA6IHBvaW50
+ZXIgb24gcHJpdmF0ZSBpMnMgZHJpdmVyIGRhdGEgKGJ5IGkyc19vcGVuIGZ1bmN0aW9uKQorICoK
+KyAqIE91dHB1dCBwYXJhbWV0ZXJzCisgKiAgICAgIGludCA6IG51bWJlciBvZiBzYW1wbGVzIGN1
+cnJlbnRseSBpbiB0aGUgVFggRklGTyAobmVnYXRpdmUgPSBlcnJvcikKKyAqLworaW50IGludGVs
+X21pZF9pMnNfZ2V0X3R4X2ZpZm9fbGV2ZWwoc3RydWN0IGludGVsX21pZF9pMnNfaGRsICpkcnZf
+ZGF0YSkKK3sKKwl1MzIgc3NzcjsKKwl1MzIgdG5mLCB0Zmw7CisJdm9pZCBfX2lvbWVtICpyZWc7
+CisJV0FSTighZHJ2X2RhdGEsICJEcml2ZXIgZGF0YT1OVUxMXG4iKTsKKwlpZiAoIWRydl9kYXRh
+KQorCQlyZXR1cm4gLUVGQVVMVDsKKwlyZWcgPSBkcnZfZGF0YS0+aW9hZGRyOworCXNzc3IgPSBy
+ZWFkX1NTU1IocmVnKTsKKwl0ZmwgPSBHRVRfU1NTUl92YWwoc3NzciwgVEZMKTsKKwl0bmYgPSBH
+RVRfU1NTUl92YWwoc3NzciwgVEZOKTsKKwlpZiAoIXRuZikKKwkJcmV0dXJuIDE2OworCWVsc2UK
+KwkJcmV0dXJuIHRmbDsKK30KK0VYUE9SVF9TWU1CT0xfR1BMKGludGVsX21pZF9pMnNfZ2V0X3R4
+X2ZpZm9fbGV2ZWwpOworCisvKioKKyAqIGludGVsX21pZF9pMnNfc2V0X3JkX2NiIC0gc2V0IHRo
+ZSBjYWxsYmFjayBmdW5jdGlvbiBhZnRlciByZWFkIGlzIGRvbmUKKyAqIEBkcnZfZGF0YSA6IGhh
+bmRsZSBvZiBjb3JyZXNwb25kaW5nIHNzcCBpMnMgKGdpdmVuIGJ5IGkyc19vcGVuIGZ1bmN0aW9u
+KQorICogQHJlYWRfY2FsbGJhY2sgOiBwb2ludGVyIG9mIGNhbGxiYWNrIGZ1bmN0aW9uCisgKgor
+ICogT3V0cHV0IHBhcmFtZXRlcnMKKyAqICAgICAgZXJyb3IgOiAwIG1lYW5zIG5vIGVycm9yCisg
+Ki8KK2ludCBpbnRlbF9taWRfaTJzX3NldF9yZF9jYihzdHJ1Y3QgaW50ZWxfbWlkX2kyc19oZGwg
+KmRydl9kYXRhLCBpbnQgKCpyZWFkX2NhbGxiYWNrKSh2b2lkICpwYXJhbSkpCit7CisJV0FSTigh
+ZHJ2X2RhdGEsICJEcml2ZXIgZGF0YT1OVUxMXG4iKTsKKwlpZiAoIWRydl9kYXRhKQorCQlyZXR1
+cm4gLUVGQVVMVDsKKwltdXRleF9sb2NrKCZkcnZfZGF0YS0+bXV0ZXgpOworCWlmICghdGVzdF9i
+aXQoSTJTX1BPUlRfT1BFTkVELCAmZHJ2X2RhdGEtPmZsYWdzKSkgeworCQlkZXZfV0FSTigmZHJ2
+X2RhdGEtPnBkZXYtPmRldiwgInNldCBXUiBDQiBJMlNfUE9SVCBOT1RfT1BFTkVEIik7CisJCW11
+dGV4X3VubG9jaygmZHJ2X2RhdGEtPm11dGV4KTsKKwkJcmV0dXJuIC1FUEVSTTsKKwl9CisJLyog
+RG8gbm90IGNoYW5nZSByZWFkIHBhcmFtZXRlcnMgaW4gdGhlIG1pZGRsZSBvZiBhIFJFQUQgcmVx
+dWVzdCAqLworCWlmICh0ZXN0X2JpdChJMlNfUE9SVF9SRUFEX0JVU1ksICZkcnZfZGF0YS0+Zmxh
+Z3MpKSB7CisJCWRldl9XQVJOKCZkcnZfZGF0YS0+cGRldi0+ZGV2LCAiQ0IgcmVqZWN0IEkyU19Q
+T1JUX1JFQURfQlVTWSIpOworCQltdXRleF91bmxvY2soJmRydl9kYXRhLT5tdXRleCk7CisJCXJl
+dHVybiAtRUJVU1k7CisJfQorCWRydl9kYXRhLT5yZWFkX2NhbGxiYWNrID0gcmVhZF9jYWxsYmFj
+azsKKwlkcnZfZGF0YS0+cmVhZF9sZW4gPSAwOworCW11dGV4X3VubG9jaygmZHJ2X2RhdGEtPm11
+dGV4KTsKKwlyZXR1cm4gMDsKKworfQorRVhQT1JUX1NZTUJPTF9HUEwoaW50ZWxfbWlkX2kyc19z
+ZXRfcmRfY2IpOworCisvKioKKyAqIGludGVsX21pZF9pMnNfc2V0X3dyX2NiIC0gc2V0IHRoZSBj
+YWxsYmFjayBmdW5jdGlvbiBhZnRlciB3cml0ZSBpcyBkb25lCisgKiBAZHJ2X2RhdGEgOiBoYW5k
+bGUgb2YgY29ycmVzcG9uZGluZyBzc3AgaTJzIChnaXZlbiBieSBpMnNfb3BlbiAgZnVuY3Rpb24p
+CisgKiBAd3JpdGVfY2FsbGJhY2sgOiBwb2ludGVyIG9mIGNhbGxiYWNrIGZ1bmN0aW9uCisgKgor
+ICogT3V0cHV0IHBhcmFtZXRlcnMKKyAqICAgICAgZXJyb3IgOiAwIG1lYW5zIG5vIGVycm9yCisg
+Ki8KK2ludCBpbnRlbF9taWRfaTJzX3NldF93cl9jYihzdHJ1Y3QgaW50ZWxfbWlkX2kyc19oZGwg
+KmRydl9kYXRhLCBpbnQgKCp3cml0ZV9jYWxsYmFjaykodm9pZCAqcGFyYW0pKQoreworCVdBUk4o
+IWRydl9kYXRhLCAiRHJpdmVyIGRhdGE9TlVMTFxuIik7CisJaWYgKCFkcnZfZGF0YSkKKwkJcmV0
+dXJuIC1FRkFVTFQ7CisJbXV0ZXhfbG9jaygmZHJ2X2RhdGEtPm11dGV4KTsKKwlpZiAoIXRlc3Rf
+Yml0KEkyU19QT1JUX09QRU5FRCwgJmRydl9kYXRhLT5mbGFncykpIHsKKwkJZGV2X3dhcm4oJmRy
+dl9kYXRhLT5wZGV2LT5kZXYsICJzZXQgV1IgQ0IgSTJTX1BPUlQgTk9UX09QRU5FRCIpOworCQlt
+dXRleF91bmxvY2soJmRydl9kYXRhLT5tdXRleCk7CisJCXJldHVybiAtRVBFUk07CisJfQorCS8q
+IERvIG5vdCBjaGFuZ2Ugd3JpdGUgcGFyYW1ldGVycyBpbiB0aGUgbWlkZGxlIG9mIGEgV1JJVEUg
+cmVxdWVzdCAqLworCWlmICh0ZXN0X2JpdChJMlNfUE9SVF9XUklURV9CVVNZLCAmZHJ2X2RhdGEt
+PmZsYWdzKSkgeworCQlkZXZfd2FybigmZHJ2X2RhdGEtPnBkZXYtPmRldiwgIkNCIHJlamVjdCBJ
+MlNfUE9SVF9XUklURV9CVVNZIik7CisJCW11dGV4X3VubG9jaygmZHJ2X2RhdGEtPm11dGV4KTsK
+KwkJcmV0dXJuIC1FQlVTWTsKKwl9CisJZHJ2X2RhdGEtPndyaXRlX2NhbGxiYWNrID0gd3JpdGVf
+Y2FsbGJhY2s7CisJZHJ2X2RhdGEtPndyaXRlX2xlbiA9IDA7CisJbXV0ZXhfdW5sb2NrKCZkcnZf
+ZGF0YS0+bXV0ZXgpOworCXJldHVybiAwOworfQorRVhQT1JUX1NZTUJPTF9HUEwoaW50ZWxfbWlk
+X2kyc19zZXRfd3JfY2IpOworCisvKioKKyAqIGludGVsX21pZF9pMnNfZW5hYmxlX3NzcCgpIDog
+c3RhcnQgdGhlIHNzcCByaWdodCBhZnRlciB0aGUgcmVhZC93cml0ZSByZXEKKyAqIEBkcnZfZGF0
+YSA6IGhhbmRsZSBvZiBjb3JyZXNwb25kaW5nIHNzcCBpMnMgKGdpdmVuIGJ5IGkyc19vcGVuIGZ1
+bmN0aW9uKQorICoKKyAqIFRoaXMgZW5hYmxlIHRoZSByZWFkL3dyaXRlIHRvIGJlIHN0YXJ0ZWQg
+c3luY2hyb25vdXNseQorICoKKyAqIE91dHB1dCBwYXJhbWV0ZXJzCisgKiAgICAgIGVycm9yIDog
+MCBtZWFucyBubyBlcnJvcgorICovCitpbnQgaW50ZWxfbWlkX2kyc19lbmFibGVfc3NwKHN0cnVj
+dCBpbnRlbF9taWRfaTJzX2hkbCAqZHJ2X2RhdGEpCit7CisJdm9pZCBfX2lvbWVtICpyZWcgPSBk
+cnZfZGF0YS0+aW9hZGRyOworCXNldF9TU0NSMF9yZWcocmVnLCBTU0UpOworCXJldHVybiAwOwor
+fQorRVhQT1JUX1NZTUJPTF9HUEwoaW50ZWxfbWlkX2kyc19lbmFibGVfc3NwKTsKKworLyoqCisg
+KiBpbnRlbF9taWRfaTJzX3JkX3JlcSAtIHJlcXVlc3QgYSByZWFkIGZyb20gaTJzIHBlcmlwaGVy
+YWwKKyAqIEBkcnZfZGF0YSA6IGhhbmRsZSBvZiBjb3JyZXNwb25kaW5nIHNzcCBpMnMgKGdpdmVu
+IGJ5IGkyc19vcGVuIGZ1bmN0aW9uKQorICogQGRzdCA6IGRlc3RpbmF0aW9uIGJ1ZmZlciB3aGVy
+ZSB0aGUgcmVhZCBzYW1wbGUgc2hvdWxkIGJlIHB1dAorICogQGxlbiA6IG51bWJlciBvZiBzYW1w
+bGUgdG8gYmUgcmVhZCAoMTYwIHNhbXBsZXMgb25seSByaWdodCBub3cpCisgKiBAcGFyYW0gOiBw
+cml2YXRlIGNvbnRleHQgcGFyYW1ldGVyIHRvIGdpdmUgYmFjayB0byByZWFkIGNhbGxiYWNrCisg
+KgorICogT3V0cHV0IHBhcmFtZXRlcnMKKyAqICAgICAgZXJyb3IgOiAwIG1lYW5zIG5vIGVycm9y
+CisgKi8KK2ludCBpbnRlbF9taWRfaTJzX3JkX3JlcShzdHJ1Y3QgaW50ZWxfbWlkX2kyc19oZGwg
+KmRydl9kYXRhLCB1MzIgKmRlc3RpbmF0aW9uLCBzaXplX3QgbGVuLCB2b2lkICpwYXJhbSkKK3sK
+KwlzdHJ1Y3QgZG1hX2FzeW5jX3R4X2Rlc2NyaXB0b3IgKnJ4ZGVzYyA9IE5VTEw7CisJc3RydWN0
+IGRtYV9jaGFuICpyeGNoYW4gPSBkcnZfZGF0YS0+cnhjaGFuOworCWVudW0gZG1hX2N0cmxfZmxh
+Z3MgZmxhZzsKKwlkbWFfYWRkcl90IHNzZHJfYWRkcjsKKwlkbWFfYWRkcl90IGRzdDsKKwlXQVJO
+KCFkcnZfZGF0YSwgIkRyaXZlciBkYXRhPU5VTExcbiIpOworCWlmICghZHJ2X2RhdGEpCisJCXJl
+dHVybiAtRUZBVUxUOworCW11dGV4X2xvY2soJmRydl9kYXRhLT5tdXRleCk7CisJaWYgKCFyeGNo
+YW4pIHsKKwkJZGV2X1dBUk4oJihkcnZfZGF0YS0+cGRldi0+ZGV2KSwgInJkX3JlcSBGQUlMRUQg
+bm8gcnhjaGFuXG4iKTsKKwkJbXV0ZXhfdW5sb2NrKCZkcnZfZGF0YS0+bXV0ZXgpOworCQlyZXR1
+cm4gLUVJTlZBTDsKKwl9CisJaWYgKCFsZW4pIHsKKwkJZGV2X1dBUk4oJmRydl9kYXRhLT5wZGV2
+LT5kZXYsICJyZCByZXEgaW52YWxpZCBsZW49MCIpOworCQltdXRleF91bmxvY2soJmRydl9kYXRh
+LT5tdXRleCk7CisJCXJldHVybiAtRUlOVkFMOworCX0KKwlpZiAoIXRlc3RfYml0KEkyU19QT1JU
+X09QRU5FRCwgJmRydl9kYXRhLT5mbGFncykpIHsKKwkJZGV2X1dBUk4oJmRydl9kYXRhLT5wZGV2
+LT5kZXYsICJSRCByZWplY3QgSTJTX1BPUlQgTk9UX09QRU5FRCIpOworCQltdXRleF91bmxvY2so
+JmRydl9kYXRhLT5tdXRleCk7CisJCXJldHVybiAtRVBFUk07CisJfQorCWlmICh0ZXN0X2JpdChJ
+MlNfUE9SVF9DTE9TSU5HLCAmZHJ2X2RhdGEtPmZsYWdzKSkgeworCQlkZXZfV0FSTigmZHJ2X2Rh
+dGEtPnBkZXYtPmRldiwgIlJEIHJlamVjdCBJMlNfUE9SVCBDTE9TSU5HIik7CisJCW11dGV4X3Vu
+bG9jaygmZHJ2X2RhdGEtPm11dGV4KTsKKwkJcmV0dXJuIC1FUElQRTsKKwl9CisKKwlkZXZfZGJn
+KCZkcnZfZGF0YS0+cGRldi0+ZGV2LCAiSTJTX1JFQUQoKSBkc3Q9JXAsIGxlbj0lZCwgZHJ2X2Rh
+dGE9JXAiLAlkZXN0aW5hdGlvbiwgbGVuLCBkcnZfZGF0YSk7CisJZHN0ID0gZG1hX21hcF9zaW5n
+bGUoTlVMTCwgZGVzdGluYXRpb24sIGxlbiwgRE1BX0ZST01fREVWSUNFKTsKKwlpZiAoIWRzdCkg
+eworCQlkZXZfV0FSTigmZHJ2X2RhdGEtPnBkZXYtPmRldiwgImNhbid0IG1hcCBETUEgYWRkcmVz
+cyAlcCIsIGRlc3RpbmF0aW9uKTsKKwkJbXV0ZXhfdW5sb2NrKCZkcnZfZGF0YS0+bXV0ZXgpOwor
+CQlyZXR1cm4gLUVOT01FTTsKKwl9CisKKwlkcnZfZGF0YS0+cmVhZF9kc3QgPSBkc3Q7CisJZHJ2
+X2RhdGEtPnJlYWRfbGVuID0gbGVuOworCS8qIGdldCBEYXRhIFJlYWQvV3JpdGUgYWRkcmVzcyAq
+LworCXNzZHJfYWRkciA9IChkcnZfZGF0YS0+cGFkZHIgKyBPRkZTRVRfU1NEUik7CisJc2V0X1NT
+Q1IxX3JlZygoZHJ2X2RhdGEtPmlvYWRkciksIFJTUkUpOworCWNoYW5nZV9TU0NSMF9yZWcoKGRy
+dl9kYXRhLT5pb2FkZHIpLCBSSU0sCisJCQkgKChkcnZfZGF0YS0+Y3VycmVudF9zZXR0aW5ncyku
+cnhfZmlmb19pbnRlcnJ1cHQpKTsKKwlmbGFnID0gRE1BX1BSRVBfSU5URVJSVVBUIHwgRE1BX0NU
+UkxfQUNLOworCS8qIFN0YXJ0IHRoZSBSWCBkbWEgdHJhbnNmZXIgKi8KKwlyeGRlc2MgPSByeGNo
+YW4tPmRldmljZS0+ZGV2aWNlX3ByZXBfZG1hX21lbWNweSgKKwkJCXJ4Y2hhbiwJCS8qIERNQSBD
+aGFubmVsICovCisJCQlkc3QsCQkvKiBEQVIgKi8KKwkJCXNzZHJfYWRkciwJLyogU0FSICovCisJ
+CQlsZW4sCQkvKiBEYXRhIExlbmd0aCAqLworCQkJZmxhZyk7CQkvKiBGbGFnICovCisJaWYgKCFy
+eGRlc2MpIHsKKwkJZGV2X1dBUk4oJmRydl9kYXRhLT5wZGV2LT5kZXYsICJjYW4gbm90IHByZXAg
+ZG1hIG1lbWNweSIpOworCQltdXRleF91bmxvY2soJmRydl9kYXRhLT5tdXRleCk7CisJCXJldHVy
+biAtRUZBVUxUOworCX0KKwkvKiBPbmx5IDEgUkVBRCBhdCBhIHRpbWUgYWxsb3dlZC4gZG8gaXQg
+YXQgZW5kIHRvIGF2b2lkIGNsZWFyJndha2V1cCovCisJaWYgKHRlc3RfYW5kX3NldF9iaXQoSTJT
+X1BPUlRfUkVBRF9CVVNZLCAmZHJ2X2RhdGEtPmZsYWdzKSkgeworCQlkbWFfdW5tYXBfc2luZ2xl
+KE5VTEwsIGRzdCwgbGVuLCBETUFfRlJPTV9ERVZJQ0UpOworCQlkZXZfV0FSTigmZHJ2X2RhdGEt
+PnBkZXYtPmRldiwgIlJEIHJlamVjdCBJMlNfUE9SVCBSRUFEX0JVU1kiKTsKKwkJbXV0ZXhfdW5s
+b2NrKCZkcnZfZGF0YS0+bXV0ZXgpOworCQlyZXR1cm4gLUVCVVNZOworCX0KKwlkZXZfZGJnKCYo
+ZHJ2X2RhdGEtPnBkZXYtPmRldiksICJSRCBkbWEgdHggc3VibWl0XG4iKTsKKwlyeGRlc2MtPmNh
+bGxiYWNrID0gaTJzX3JlYWRfZG9uZTsKKwlkcnZfZGF0YS0+cmVhZF9wYXJhbSA9IHBhcmFtOwor
+CXJ4ZGVzYy0+Y2FsbGJhY2tfcGFyYW0gPSBkcnZfZGF0YTsKKwlyeGRlc2MtPnR4X3N1Ym1pdChy
+eGRlc2MpOworCW11dGV4X3VubG9jaygmZHJ2X2RhdGEtPm11dGV4KTsKKwlyZXR1cm4gMDsKK30K
+K0VYUE9SVF9TWU1CT0xfR1BMKGludGVsX21pZF9pMnNfcmRfcmVxKTsKKworLyoqCisgKiBpbnRl
+bF9taWRfaTJzX3dyX3JlcSAtIHJlcXVlc3QgYSB3cml0ZSB0byBpMnMgcGVyaXBoZXJhbAorICog
+QGRydl9kYXRhIDogaGFuZGxlIG9mIGNvcnJlc3BvbmRpbmcgc3NwIGkycyAoZ2l2ZW4gYnkgaTJz
+X29wZW4gZnVuY3Rpb24pCisgKiBAc3JjIDogc291cmNlIGJ1ZmZlciB3aGVyZSB0aGUgc2FtcGxl
+cyB0byB3cm90ZSBzaG91bGQgYmUgZ2V0CisgKiBAbGVuIDogbnVtYmVyIG9mIHNhbXBsZSB0byBi
+ZSByZWFkICgxNjAgc2FtcGxlcyBvbmx5IHJpZ2h0IG5vdykKKyAqIEBwYXJhbSA6IHByaXZhdGUg
+Y29udGV4dCBwYXJhbWV0ZXIgdG8gZ2l2ZSBiYWNrIHRvIHdyaXRlIGNhbGxiYWNrCisgKgorICog
+T3V0cHV0IHBhcmFtZXRlcnMKKyAqICAgICAgZXJyb3IgOiAwIG1lYW5zIG5vIGVycm9yCisgKi8K
+K2ludCBpbnRlbF9taWRfaTJzX3dyX3JlcShzdHJ1Y3QgaW50ZWxfbWlkX2kyc19oZGwgKmRydl9k
+YXRhLCB1MzIgKnNvdXJjZSwgc2l6ZV90IGxlbiwgdm9pZCAqcGFyYW0pCit7CisJZG1hX2FkZHJf
+dCBzc2RyX2FkZHI7CisJc3RydWN0IGRtYV9hc3luY190eF9kZXNjcmlwdG9yICp0eGRlc2MgPSBO
+VUxMOworCXN0cnVjdCBkbWFfY2hhbiAqdHhjaGFuID0gZHJ2X2RhdGEtPnR4Y2hhbjsKKwllbnVt
+IGRtYV9jdHJsX2ZsYWdzIGZsYWc7CisJZG1hX2FkZHJfdCBzcmM7CisJV0FSTighZHJ2X2RhdGEs
+ICJEcml2ZXIgZGF0YT1OVUxMXG4iKTsKKwlpZiAoIWRydl9kYXRhKQorCQlyZXR1cm4gLUVGQVVM
+VDsKKwltdXRleF9sb2NrKCZkcnZfZGF0YS0+bXV0ZXgpOworCWlmICghdHhjaGFuKSB7CisJCWRl
+dl9XQVJOKCYoZHJ2X2RhdGEtPnBkZXYtPmRldiksICJ3cl9yZXEgYnV0IG5vIHR4Y2hhblxuIik7
+CisJCW11dGV4X3VubG9jaygmZHJ2X2RhdGEtPm11dGV4KTsKKwkJcmV0dXJuIC1FSU5WQUw7CisJ
+fQorCWlmICghbGVuKSB7CisJCWRldl9XQVJOKCZkcnZfZGF0YS0+cGRldi0+ZGV2LCAiaW52YWxp
+ZCBsZW4gMCIpOworCQltdXRleF91bmxvY2soJmRydl9kYXRhLT5tdXRleCk7CisJCXJldHVybiAt
+RUlOVkFMOworCX0KKwlpZiAoIXRlc3RfYml0KEkyU19QT1JUX09QRU5FRCwgJmRydl9kYXRhLT5m
+bGFncykpIHsKKwkJZGV2X1dBUk4oJmRydl9kYXRhLT5wZGV2LT5kZXYsICJXUiByZWplY3QgSTJT
+X1BPUlQgTk9UX09QRU5FRCIpOworCQltdXRleF91bmxvY2soJmRydl9kYXRhLT5tdXRleCk7CisJ
+CXJldHVybiAtRVBFUk07CisJfQorCWlmICh0ZXN0X2JpdChJMlNfUE9SVF9DTE9TSU5HLCAmZHJ2
+X2RhdGEtPmZsYWdzKSkgeworCQlkZXZfV0FSTigmZHJ2X2RhdGEtPnBkZXYtPmRldiwgIldSIHJl
+amVjdCBJMlNfUE9SVCBDTE9TSU5HIik7CisJCW11dGV4X3VubG9jaygmZHJ2X2RhdGEtPm11dGV4
+KTsKKwkJcmV0dXJuIC1FUElQRTsKKwl9CisKKwlkZXZfZGJnKCZkcnZfZGF0YS0+cGRldi0+ZGV2
+LCAiSTJTX1dSSVRFKCkgc3JjPSVwLCBsZW49JWQsIGRydl9kYXRhPSVwIiwgc291cmNlLCBsZW4s
+IGRydl9kYXRhKTsKKworCXNyYyA9IGRtYV9tYXBfc2luZ2xlKE5VTEwsIHNvdXJjZSwgbGVuLCBE
+TUFfVE9fREVWSUNFKTsKKwlpZiAoIXNyYykgeworCQlkZXZfV0FSTigmZHJ2X2RhdGEtPnBkZXYt
+PmRldiwgImNhbid0IG1hcCBETUEgYWRkcmVzcyAlcCIsIHNvdXJjZSk7CisJCW11dGV4X3VubG9j
+aygmZHJ2X2RhdGEtPm11dGV4KTsKKwkJcmV0dXJuIC1FRkFVTFQ7CisJfQorCWRydl9kYXRhLT53
+cml0ZV9zcmMgPSBzcmM7CisJZHJ2X2RhdGEtPndyaXRlX2xlbiA9IGxlbjsKKwkvKiBnZXQgRGF0
+YSBSZWFkL1dyaXRlIGFkZHJlc3MgKi8KKwlzc2RyX2FkZHIgPSAoZG1hX2FkZHJfdCkodTMyKShk
+cnZfZGF0YS0+cGFkZHIgKyBPRkZTRVRfU1NEUik7CisJc2V0X1NTQ1IxX3JlZygoZHJ2X2RhdGEt
+PmlvYWRkciksIFRTUkUpOworCWNoYW5nZV9TU0NSMF9yZWcoKGRydl9kYXRhLT5pb2FkZHIpLCBU
+SU0sCisJCQkgKChkcnZfZGF0YS0+Y3VycmVudF9zZXR0aW5ncykudHhfZmlmb19pbnRlcnJ1cHQp
+KTsKKwlmbGFnID0gRE1BX1BSRVBfSU5URVJSVVBUIHwgRE1BX0NUUkxfQUNLOworCXR4ZGVzYyA9
+IHR4Y2hhbi0+ZGV2aWNlLT5kZXZpY2VfcHJlcF9kbWFfbWVtY3B5KAorCQkJdHhjaGFuLAkJLyog
+RE1BIENoYW5uZWwgKi8KKwkJCXNzZHJfYWRkciwJLyogREFSICovCisJCQlzcmMsCQkvKiBTQVIg
+Ki8KKwkJCWxlbiwJCS8qIERhdGEgTGVuZ3RoICovCisJCQlmbGFnKTsJCS8qIEZsYWcgKi8KKwlp
+ZiAoIXR4ZGVzYykgeworCQlkZXZfV0FSTigmKGRydl9kYXRhLT5wZGV2LT5kZXYpLAorCQkJIndy
+X3JlcSBkbWEgbWVtY3B5IEZBSUxFRChzcmM9JTA4eCxsZW49JWQsdHhjaGFuPSVwKVxuIiwKKwkJ
+CXNyYywgbGVuLCB0eGNoYW4pOworCQltdXRleF91bmxvY2soJmRydl9kYXRhLT5tdXRleCk7CisJ
+CXJldHVybiAtMTsKKwl9CisJZGV2X2RiZygmKGRydl9kYXRhLT5wZGV2LT5kZXYpLCAiV1IgZG1h
+IHR4IHN1bW1pdFxuIik7CisJLyogT25seSAxIFdSSVRFIGF0IGEgdGltZSBhbGxvd2VkICovCisJ
+aWYgKHRlc3RfYW5kX3NldF9iaXQoSTJTX1BPUlRfV1JJVEVfQlVTWSwgJmRydl9kYXRhLT5mbGFn
+cykpIHsKKwkJZG1hX3VubWFwX3NpbmdsZShOVUxMLCBzcmMsIGxlbiwgRE1BX1RPX0RFVklDRSk7
+CisJCWRldl9XQVJOKCZkcnZfZGF0YS0+cGRldi0+ZGV2LCAiV1IgcmVqZWN0IEkyU19QT1JUIFdS
+SVRFX0JVU1kiKTsKKwkJbXV0ZXhfdW5sb2NrKCZkcnZfZGF0YS0+bXV0ZXgpOworCQlyZXR1cm4g
+LUVCVVNZOworCX0KKwl0eGRlc2MtPmNhbGxiYWNrID0gaTJzX3dyaXRlX2RvbmU7CisJZHJ2X2Rh
+dGEtPndyaXRlX3BhcmFtID0gcGFyYW07CisJdHhkZXNjLT5jYWxsYmFja19wYXJhbSA9IGRydl9k
+YXRhOworCXR4ZGVzYy0+dHhfc3VibWl0KHR4ZGVzYyk7CisJZGV2X2RiZygmKGRydl9kYXRhLT5w
+ZGV2LT5kZXYpLCAid3IgZG1hIHJlcSBwcm9ncmFtbWVkXG4iKTsKKwltdXRleF91bmxvY2soJmRy
+dl9kYXRhLT5tdXRleCk7CisJcmV0dXJuIDA7Cit9CitFWFBPUlRfU1lNQk9MX0dQTChpbnRlbF9t
+aWRfaTJzX3dyX3JlcSk7CisKKy8qKgorICogaW50ZWxfbWlkX2kyc19vcGVuIC0gcmVzZXJ2ZSBh
+bmQgc3RhcnQgYSBTU1AgZGVwZW5kaW5nIG9mIGl0J3MgdXNhZ2UKKyAqIEB1c2FnZSA6IHNlbGVj
+dCB3aGljaCBzc3AgaTJzIHlvdSBuZWVkIGJ5IGdpdmluZyB1c2FnZSAoQlQsTU9ERU0uLi4pCisg
+KiBAcHNfc2V0dGluZ3MgOiBoYXJkd2FyZSBzZXR0aW5ncyB0byBjb25maWd1cmUgdGhlIFNTUCBt
+b2R1bGUKKyAqCisgKiBNYXkgc2xlZXAgKGRyaXZlcl9maW5kX2RldmljZSkgOiBubyBsb2NrIHBl
+cm1pdHRlZCB3aGVuIGNhbGxlZC4KKyAqCisgKiBPdXRwdXQgcGFyYW1ldGVycworICogICAgICBo
+YW5kbGUgOiBoYW5kbGUgb2YgdGhlIHNlbGVjdGVkIFNTUCwgb3IgTlVMTCBpZiBub3QgZm91bmQK
+KyAqLworc3RydWN0IGludGVsX21pZF9pMnNfaGRsICppbnRlbF9taWRfaTJzX29wZW4oZW51bSBp
+bnRlbF9taWRfaTJzX3NzcF91c2FnZSB1c2FnZSwKKwkJCSBjb25zdCBzdHJ1Y3QgaW50ZWxfbWlk
+X2kyc19zZXR0aW5ncyAqcHNfc2V0dGluZ3MpCit7CisJc3RydWN0IHBjaV9kZXYgKnBkZXY7CisJ
+c3RydWN0IGludGVsX21pZF9pMnNfaGRsICpkcnZfZGF0YSA9IE5VTEw7CisJc3RydWN0IGRldmlj
+ZSAqZm91bmRfZGV2aWNlID0gTlVMTDsKKwlwcl9kZWJ1ZygiJXMgOiBvcGVuIGNhbGxlZCxzZWFy
+Y2hpbmcgZm9yIGRldmljZSB3aXRoIHVzYWdlPSV4ICFcbiIsIERSSVZFUl9OQU1FLCB1c2FnZSk7
+CisJZm91bmRfZGV2aWNlID0gZHJpdmVyX2ZpbmRfZGV2aWNlKCYoaW50ZWxfbWlkX2kyc19kcml2
+ZXIuZHJpdmVyKSwgTlVMTCwgJnVzYWdlLCBjaGVja19kZXZpY2UpOworCWlmICghZm91bmRfZGV2
+aWNlKSB7CisJCXByX2RlYnVnKCIlcyA6IG9wZW4gY2FuIG5vdCBmb3VuZCB3aXRoIHVzYWdlPTB4
+JTAyWFxuIiwgRFJJVkVSX05BTUUsIChpbnQpdXNhZ2UpOworCQlyZXR1cm4gTlVMTDsKKwl9CisJ
+cGRldiA9IHRvX3BjaV9kZXYoZm91bmRfZGV2aWNlKTsKKwlkcnZfZGF0YSA9IHBjaV9nZXRfZHJ2
+ZGF0YShwZGV2KTsKKworCWlmICghZHJ2X2RhdGEpIHsKKwkJZGV2X2Vycihmb3VuZF9kZXZpY2Us
+ICJubyBkcnZfZGF0YSBpbiBvcGVuIHBkZXY9JXBcbiIsIHBkZXYpOworCQlwdXRfZGV2aWNlKGZv
+dW5kX2RldmljZSk7CisJCXJldHVybiBOVUxMOworCX0KKwltdXRleF9sb2NrKCZkcnZfZGF0YS0+
+bXV0ZXgpOworCWRldl9kYmcoZm91bmRfZGV2aWNlLCAiT3BlbiBmb3VuZCBwZGV2aWNlPTB4JXBc
+biIsIHBkZXYpOworCS8qIHBtX3J1bnRpbWUgKi8KKwlwbV9ydW50aW1lX2dldF9zeW5jKCZkcnZf
+ZGF0YS0+cGRldi0+ZGV2KTsKKwkvKiBkbWFjMSBpcyBhbHJlYWR5IHNldCBkdXJpbmcgcHJvYmUg
+Ki8KKwlpZiAoaTJzX2RtYV9zdGFydChkcnZfZGF0YSkgIT0gMCkgeworCQlkZXZfZXJyKGZvdW5k
+X2RldmljZSwgIkNhbiBub3Qgc3RhcnQgRE1BXG4iKTsKKwkJZ290byBvcGVuX2Vycm9yOworCX0K
+KwkvKiBpZiB3ZSByZXN0YXJ0IGFmdGVyIHN0b3Agd2l0aG91dCBzdXNwZW5kLCB3ZSBzdGFydCBz
+c3AgZmFzdGVyICovCisJZHJ2X2RhdGEtPmN1cnJlbnRfc2V0dGluZ3MgPSAqcHNfc2V0dGluZ3M7
+CisJc2V0X3NzcF9pMnNfaHcoZHJ2X2RhdGEsIHBzX3NldHRpbmdzKTsKKworCWRydl9kYXRhLT5t
+YXNrX3NyID0gKChTU1NSX0JDRV9NQVNLIDw8IFNTU1JfQkNFX1NISUZUKSB8CisJCQkoU1NTUl9F
+T0NfTUFTSyA8PCBTU1NSX0VPQ19TSElGVCkgfAorCQkJKFNTU1JfUk9SX01BU0sgPDwgU1NTUl9S
+T1JfU0hJRlQpIHwKKwkJCShTU1NSX1RVUl9NQVNLIDw8IFNTU1JfVFVSX1NISUZUKSB8CisJCQko
+U1NTUl9USU5UX01BU0sgPDwgU1NTUl9USU5UX1NISUZUKSB8CisJCQkoU1NTUl9QSU5UX01BU0sg
+PDwgU1NTUl9QSU5UX1NISUZUKSk7CisJaWYgKHRlc3RfYml0KEkyU19QT1JUX0NMT1NJTkcsICZk
+cnZfZGF0YS0+ZmxhZ3MpKSB7CisJCWRldl9lcnIoJmRydl9kYXRhLT5wZGV2LT5kZXYsICJPcGVu
+aW5nIGEgY2xvc2luZyBJMlMhIik7CisJCWdvdG8gb3Blbl9lcnJvcjsKKwl9CisJLyogdGhlcmUg
+aXMgbm8gbmVlZCB0byAid2FrZSB1cCIgYXMgd2UgY2FuIG5vdCBjbG9zZSBhbiBvcGVuaW5nIGky
+cyAqLworCWNsZWFyX2JpdChJMlNfUE9SVF9XUklURV9CVVNZLCAmZHJ2X2RhdGEtPmZsYWdzKTsK
+KwljbGVhcl9iaXQoSTJTX1BPUlRfUkVBRF9CVVNZLCAmZHJ2X2RhdGEtPmZsYWdzKTsKKwltdXRl
+eF91bmxvY2soJmRydl9kYXRhLT5tdXRleCk7CisJcmV0dXJuIGRydl9kYXRhOworCitvcGVuX2Vy
+cm9yOgorCXB1dF9kZXZpY2UoZm91bmRfZGV2aWNlKTsKKwltdXRleF91bmxvY2soJmRydl9kYXRh
+LT5tdXRleCk7CisJcmV0dXJuIE5VTEw7Cit9CitFWFBPUlRfU1lNQk9MX0dQTChpbnRlbF9taWRf
+aTJzX29wZW4pOworCisvKioKKyAqIGludGVsX21pZF9pMnNfY2xvc2UgLSByZWxlYXNlIGFuZCBz
+dG9wIHRoZSBTU1AKKyAqIEBkcnZfZGF0YSA6IGhhbmRsZSBvZiBjb3JyZXNwb25kaW5nIHNzcCBp
+MnMgKGdpdmVuIGJ5IGkyc19vcGVuIGZ1bmN0aW9uKQorICoKKyAqIFdBUk5JTkc6IFRoaXMgaXMg
+bm90IC15ZXQtIGFsbG93ZWQgdG8gY2FsbCBjbG9zZSBmcm9tIGEgcmVhZC93cml0ZSBjYWxsYmFj
+ayAhCisgKgorICogT3V0cHV0IHBhcmFtZXRlcnMKKyAqICAgICAgbm9uZQorICovCit2b2lkIGlu
+dGVsX21pZF9pMnNfY2xvc2Uoc3RydWN0IGludGVsX21pZF9pMnNfaGRsICpkcnZfZGF0YSkKK3sK
+Kwl2b2lkIF9faW9tZW0gKnJlZzsKKwlXQVJOKCFkcnZfZGF0YSwgIkRyaXZlciBkYXRhPU5VTExc
+biIpOworCWlmICghZHJ2X2RhdGEpCisJCXJldHVybjsKKwltdXRleF9sb2NrKCZkcnZfZGF0YS0+
+bXV0ZXgpOworCWlmICghdGVzdF9iaXQoSTJTX1BPUlRfT1BFTkVELCAmZHJ2X2RhdGEtPmZsYWdz
+KSkgeworCQlkZXZfZXJyKCZkcnZfZGF0YS0+cGRldi0+ZGV2LCAibm90IG9wZW5lZCBidXQgY2xv
+c2luZz8iKTsKKwkJbXV0ZXhfdW5sb2NrKCZkcnZfZGF0YS0+bXV0ZXgpOworCQlyZXR1cm47CisJ
+fQorCS8qIHRvIGJlIG1vZGlmaWVkIHRvIHdhaXRfZXZlbnRfaW50ZXJydXB0aWJsZV90aW1lb3V0
+ICovCisJc2V0X2JpdChJMlNfUE9SVF9DTE9TSU5HLCAmZHJ2X2RhdGEtPmZsYWdzKTsKKwlkZXZf
+ZGJnKCZkcnZfZGF0YS0+cGRldi0+ZGV2LCAiU3RhdHVzIGJpdCBwZW5kaW5nIHdyaXRlPSVkIHJl
+YWQ9JWRcbiIsCisJCQl0ZXN0X2JpdChJMlNfUE9SVF9XUklURV9CVVNZLCAmZHJ2X2RhdGEtPmZs
+YWdzKSwKKwkJCXRlc3RfYml0KEkyU19QT1JUX1JFQURfQlVTWSwgJmRydl9kYXRhLT5mbGFncykp
+OworCWlmICh0ZXN0X2JpdChJMlNfUE9SVF9XUklURV9CVVNZLCAmZHJ2X2RhdGEtPmZsYWdzKSB8
+fAorCSAgICAgdGVzdF9iaXQoSTJTX1BPUlRfUkVBRF9CVVNZLCAmZHJ2X2RhdGEtPmZsYWdzKSkg
+eworCQlkZXZfZGJnKCZkcnZfZGF0YS0+cGRldi0+ZGV2LCAiUGVuZGluZyBjYWxsYmFjayBpbiBj
+bG9zZS4uLlxuIik7CisJfQorCisJLyogd2FpdGluZyBiZWxvdy4gVG8gYmUgcmVwbGFjZWQgd2hl
+biAiRE1BX1RFUk1JTkFURV9BTEwiIGZpeCBhdmFpbGFibGUgKi8KKwl3YWl0X2V2ZW50KGRydl9k
+YXRhLT53cV9jaGFuX2Nsb3NpbmcsCisJCSgoIXRlc3RfYml0KEkyU19QT1JUX1dSSVRFX0JVU1ks
+ICZkcnZfZGF0YS0+ZmxhZ3MpKSAmJgorCQkgKCF0ZXN0X2JpdChJMlNfUE9SVF9SRUFEX0JVU1ks
+ICAmZHJ2X2RhdGEtPmZsYWdzKSkpKTsKKwkvKiByZWxlYXNlIERNQSBDaGFubmVsLi4gKi8KKwlp
+MnNfZG1hX3N0b3AoZHJ2X2RhdGEpOworCXJlZyA9IGRydl9kYXRhLT5pb2FkZHI7CisJZGV2X2Ri
+ZygmZHJ2X2RhdGEtPnBkZXYtPmRldiwgIlN0b3BwaW5nIHRoZSBTU1BcbiIpOworCWkyc19zc3Bf
+c3RvcChkcnZfZGF0YSk7CisJcHV0X2RldmljZSgmZHJ2X2RhdGEtPnBkZXYtPmRldik7CisJd3Jp
+dGVfU1NDUjAoMCwgcmVnKTsKKwkvKiBwbSBydW50aW1lICovCisJcG1fcnVudGltZV9wdXQoJmRy
+dl9kYXRhLT5wZGV2LT5kZXYpOworCWRldl9kYmcoJihkcnZfZGF0YS0+cGRldi0+ZGV2KSwgIlNT
+UCBTdG9wcGVkLlxuIik7CisJY2xlYXJfYml0KEkyU19QT1JUX0NMT1NJTkcsICZkcnZfZGF0YS0+
+ZmxhZ3MpOworCWNsZWFyX2JpdChJMlNfUE9SVF9PUEVORUQsICZkcnZfZGF0YS0+ZmxhZ3MpOwor
+CW11dGV4X3VubG9jaygmZHJ2X2RhdGEtPm11dGV4KTsKK30KK0VYUE9SVF9TWU1CT0xfR1BMKGlu
+dGVsX21pZF9pMnNfY2xvc2UpOworLyoKKyAqIElOVEVSTkFMIEZVTkNUSU9OUworICovCisKKy8q
+KgorICogY2hlY2tfZGV2aWNlIC0gIHJldHVybiBpZiB0aGUgZGV2aWNlIGlzIHRoZSB1c2FnZSB3
+ZSB3YW50ICh1c2FnZSA9KmRhdGEpCisgKiBAZGV2aWNlX3B0ciA6IHBvaW50ZXIgb24gZGV2aWNl
+IHN0cnVjdAorICogQGRhdGEgOiBwb2ludGVyIHBvaW50ZXIgb24gdXNhZ2Ugd2UgYXJlIGxvb2tp
+bmcgZm9yCisgKgorICogdGhpcyBpcyBjYWxsZWQgZm9yIGVhY2ggZGV2aWNlIGJ5IGZpbmRfZGV2
+aWNlKCkgZnJvbSBpbnRlbF9taWRfaTJzX29wZW4oKQorICogSW5mbyA6IHdoZW4gZm91bmQsIHRo
+ZSBmbGFnIG9mIGRyaXZlciBpcyBzZXQgdG8gSTJTX1BPUlRfT1BFTkVECisgKgorICogT3V0cHV0
+IHBhcmFtZXRlcnMKKyAqICAgICAgaW50ZWdlciA6IHJldHVybiAwIG1lYW5zIG5vdCB0aGUgZGV2
+aWNlIG9yIGFscmVhZHkgc3RhcnRlZC4gZ28gbmV4dAorICoJCSAgcmV0dXJuICE9IDAgbWVhbnMg
+c3RvcCB0aGUgc2VhcmNoIGFuZCByZXR1cm4gdGhpcyBkZXZpY2UKKyAqLworc3RhdGljIGludAor
+Y2hlY2tfZGV2aWNlKHN0cnVjdCBkZXZpY2UgKmRldmljZV9wdHIsIHZvaWQgKmRhdGEpCit7CisJ
+c3RydWN0IHBjaV9kZXYgKnBkZXY7CisJc3RydWN0IGludGVsX21pZF9pMnNfaGRsICpkcnZfZGF0
+YTsKKwllbnVtIGludGVsX21pZF9pMnNfc3NwX3VzYWdlIHVzYWdlOworCWVudW0gaW50ZWxfbWlk
+X2kyc19zc3BfdXNhZ2UgdXNhZ2VfdG9fZmluZDsKKworCXBkZXYgPSB0b19wY2lfZGV2KGRldmlj
+ZV9wdHIpOworCVdBUk4oIXBkZXYsICJQY2kgZGV2aWNlPU5VTExcbiIpOworCWlmICghcGRldikK
+KwkJcmV0dXJuIDA7CisJZHJ2X2RhdGEgPSAoc3RydWN0IGludGVsX21pZF9pMnNfaGRsICopIHBj
+aV9nZXRfZHJ2ZGF0YShwZGV2KTsKKwlXQVJOKCFkcnZfZGF0YSwgIkRyaXZlciBkYXRhPU5VTExc
+biIpOworCWlmICghZHJ2X2RhdGEpCisJCXJldHVybiAwOworCWRldl9kYmcoJihwZGV2LT5kZXYp
+LCAiQ2hlY2sgZGV2aWNlIHBjaV9kZXYgcHRyID0gMFglcFxuIiwgcGRldik7CisJdXNhZ2VfdG9f
+ZmluZCA9ICooKGVudW0gaW50ZWxfbWlkX2kyc19zc3BfdXNhZ2UgKikgZGF0YSk7CisJdXNhZ2Ug
+PSBkcnZfZGF0YS0+dXNhZ2U7CisKKwkvKiBDYW4gYmUgZG9uZSBpbiBvbmUgImlmIiBidXQgc2Vw
+YXJhdGVkIGluIHB1cnBvc2UgOiB0YWtlIGNhcmUgb2YKKwkgKiB0ZXN0X2FuZF9zZXRfYml0IHRo
+YXQgbmVlZCB0byBiZSBkb25lIEFGVEVSIHRoZSBjaGVjayBvbiB1c2FnZS4KKwkgKi8KKwlpZiAo
+dXNhZ2UgPT0gdXNhZ2VfdG9fZmluZCkgeworCQlpZiAoIXRlc3RfYW5kX3NldF9iaXQoSTJTX1BP
+UlRfT1BFTkVELCAmZHJ2X2RhdGEtPmZsYWdzKSkKKwkJCXJldHVybiAxOyAgLyogQWxyZWFkeSBv
+cGVuZWQsIGRvIG5vdCB1c2UgdGhpcyByZXN1bHQgKi8KKwl9OworCXJldHVybiAwOyAvKiBub3Qg
+dXNhZ2Ugd2UgbG9vayBmb3IsIG9yIGFscmVhZHkgb3BlbmVkICovCit9CisKKy8qKgorICogaTJz
+X3JlYWRfZG9uZSAtIGNhbGxiYWNrIGZyb20gdGhlIF9kbWEgdGFza2xldF8gYWZ0ZXIgcmVhZAor
+ICogQGFyZyA6IHZvaWQgcG9pbnRlciB0byB0aGF0IHNob3VsZCBiZSBkcml2ZXIgZGF0YSAoY29u
+dGV4dCkKKyAqCisgKiBPdXRwdXQgcGFyYW1ldGVycworICogICAgICBub25lCisgKi8KK3N0YXRp
+YyB2b2lkIGkyc19yZWFkX2RvbmUodm9pZCAqYXJnKQoreworCWludCBzdGF0dXMgPSAwOworCisJ
+c3RydWN0IGludGVsX21pZF9pMnNfaGRsICpkcnZfZGF0YSA9IGFyZzsKKwl2b2lkICpwYXJhbV9j
+b21wbGV0ZTsKKwl2b2lkIF9faW9tZW0gKnJlZyA7CisKKwlXQVJOKCFkcnZfZGF0YSwgIkRyaXZl
+ciBkYXRhPU5VTExcbiIpOworCWlmICghZHJ2X2RhdGEpCisJCXJldHVybjsKKwltdXRleF9sb2Nr
+KCZkcnZfZGF0YS0+bXV0ZXgpOworCWlmICghdGVzdF9iaXQoSTJTX1BPUlRfUkVBRF9CVVNZLCAm
+ZHJ2X2RhdGEtPmZsYWdzKSkKKwkJZGV2X1dBUk4oJmRydl9kYXRhLT5wZGV2LT5kZXYsICJzcHVy
+aW91cyByZWFkIGRtYSBjb21wbGV0ZSIpOworCisJZG1hX3VubWFwX3NpbmdsZShOVUxMLCBkcnZf
+ZGF0YS0+cmVhZF9kc3QsCisJCQkgZHJ2X2RhdGEtPnJlYWRfbGVuLCBETUFfRlJPTV9ERVZJQ0Up
+OworCWRydl9kYXRhLT5yZWFkX2xlbiA9IDA7CisJcmVnID0gZHJ2X2RhdGEtPmlvYWRkcjsKKwkv
+KiBSeCBmaWZvIG92ZXJydW4gSW50ZXJydXB0ICovCisJY2hhbmdlX1NTQ1IwX3JlZyhyZWcsIFJJ
+TSwgU1NQX1JYX0ZJRk9fT1ZFUl9JTlRfRElTQUJMRSk7CisJcGFyYW1fY29tcGxldGUgPSBkcnZf
+ZGF0YS0+cmVhZF9wYXJhbTsKKwkvKiBEbyBub3QgY2hhbmdlIG9yZGVyIHNlcXVlbmNlOgorCSAq
+IFJFQURfQlVTWSBjbGVhciwgdGhlbiB0ZXN0IFBPUlRfQ0xPU0lORworCSAqIHdha2V1cCBmb3Ig
+Y2xvc2UoKSBmdW5jdGlvbgorCSAqLworCWNsZWFyX2JpdChJMlNfUE9SVF9SRUFEX0JVU1ksICZk
+cnZfZGF0YS0+ZmxhZ3MpOworCXdha2VfdXAoJmRydl9kYXRhLT53cV9jaGFuX2Nsb3NpbmcpOwor
+CWlmICh0ZXN0X2JpdChJMlNfUE9SVF9DTE9TSU5HLCAmZHJ2X2RhdGEtPmZsYWdzKSkgeworCQlk
+ZXZfZGJnKCZkcnZfZGF0YS0+cGRldi0+ZGV2LCAicmVhZCBkb25lIHdha2luZyB1cCBjbG9zZSIp
+OworCQltdXRleF91bmxvY2soJmRydl9kYXRhLT5tdXRleCk7CisJCXJldHVybjsKKwl9CisJbXV0
+ZXhfdW5sb2NrKCZkcnZfZGF0YS0+bXV0ZXgpOworCWlmIChkcnZfZGF0YS0+cmVhZF9jYWxsYmFj
+ayAhPSBOVUxMKQorCQlzdGF0dXMgPSBkcnZfZGF0YS0+cmVhZF9jYWxsYmFjayhwYXJhbV9jb21w
+bGV0ZSk7CisJZWxzZQorCQlkZXZfd2FybigmZHJ2X2RhdGEtPnBkZXYtPmRldiwgIlJEIGRvbmUg
+YnV0IG5vdCBjYWxsYmFjayBzZXQiKTsKKworfQorCisvKioKKyAqIGkyc193cml0ZV9kb25lKCkg
+OiBjYWxsYmFjayBmcm9tIHRoZSBfZG1hIHRhc2tsZXRfIGFmdGVyIHdyaXRlCisgKiBAYXJnIDog
+dm9pZCBwb2ludGVyIHRvIHRoYXQgc2hvdWxkIGJlIGRyaXZlciBkYXRhIChjb250ZXh0KQorICoK
+KyAqIE91dHB1dCBwYXJhbWV0ZXJzCisgKiAgICAgIG5vbmUKKyAqLworc3RhdGljIHZvaWQgaTJz
+X3dyaXRlX2RvbmUodm9pZCAqYXJnKQoreworCWludCBzdGF0dXMgPSAwOworCXZvaWQgKnBhcmFt
+X2NvbXBsZXRlOworCXN0cnVjdCBpbnRlbF9taWRfaTJzX2hkbCAqZHJ2X2RhdGEgPSBhcmc7CisJ
+dm9pZCBfX2lvbWVtICpyZWcgOworCisJV0FSTighZHJ2X2RhdGEsICJEcml2ZXIgZGF0YT1OVUxM
+XG4iKTsKKwlpZiAoIWRydl9kYXRhKQorCQlyZXR1cm47CisJbXV0ZXhfbG9jaygmZHJ2X2RhdGEt
+Pm11dGV4KTsKKwlpZiAoIXRlc3RfYml0KEkyU19QT1JUX1dSSVRFX0JVU1ksICZkcnZfZGF0YS0+
+ZmxhZ3MpKQorCQlkZXZfd2FybigmZHJ2X2RhdGEtPnBkZXYtPmRldiwgInNwdXJpb3VzIHdyaXRl
+IGRtYSBjb21wbGV0ZSIpOworCWRtYV91bm1hcF9zaW5nbGUoTlVMTCwgZHJ2X2RhdGEtPnJlYWRf
+ZHN0LAorCQkJIGRydl9kYXRhLT5yZWFkX2xlbiwgRE1BX1RPX0RFVklDRSk7CisJZHJ2X2RhdGEt
+PnJlYWRfbGVuID0gMDsKKwlyZWcgPSBkcnZfZGF0YS0+aW9hZGRyOworCWNoYW5nZV9TU0NSMF9y
+ZWcocmVnLCBUSU0sIFNTUF9UWF9GSUZPX1VOREVSX0lOVF9ESVNBQkxFKTsKKwlkZXZfZGJnKCYo
+ZHJ2X2RhdGEtPnBkZXYtPmRldiksICJETUEgY2hhbm5lbCBkaXNhYmxlLi5cbiIpOworCXBhcmFt
+X2NvbXBsZXRlID0gZHJ2X2RhdGEtPndyaXRlX3BhcmFtOworCS8qIERvIG5vdCBjaGFuZ2Ugb3Jk
+ZXIgc2VxdWVuY2U6CisJICogV1JJVEVfQlVTWSBjbGVhciwgdGhlbiB0ZXN0IFBPUlRfQ0xPU0lO
+RworCSAqIHdha2V1cCBmb3IgY2xvc2UoKSBmdW5jdGlvbgorCSAqLworCWNsZWFyX2JpdChJMlNf
+UE9SVF9XUklURV9CVVNZLCAmZHJ2X2RhdGEtPmZsYWdzKTsKKwl3YWtlX3VwKCZkcnZfZGF0YS0+
+d3FfY2hhbl9jbG9zaW5nKTsKKwlpZiAodGVzdF9iaXQoSTJTX1BPUlRfQ0xPU0lORywgJmRydl9k
+YXRhLT5mbGFncykpIHsKKwkJbXV0ZXhfdW5sb2NrKCZkcnZfZGF0YS0+bXV0ZXgpOworCQlkZXZf
+ZGJnKCZkcnZfZGF0YS0+cGRldi0+ZGV2LCAid3JpdGUgZG9uZSB3YWtpbmcgdXAgY2xvc2UiKTsK
+KwkJcmV0dXJuOworCX0KKwltdXRleF91bmxvY2soJmRydl9kYXRhLT5tdXRleCk7CisJaWYgKGRy
+dl9kYXRhLT53cml0ZV9jYWxsYmFjayAhPSBOVUxMKQorCQlzdGF0dXMgPSBkcnZfZGF0YS0+d3Jp
+dGVfY2FsbGJhY2socGFyYW1fY29tcGxldGUpOworCWVsc2UKKwkJZGV2X3dhcm4oJmRydl9kYXRh
+LT5wZGV2LT5kZXYsICJXUiBkb25lIGJ1dCBubyBjYWxsYmFjayBzZXQiKTsKK30KKworc3RhdGlj
+IGJvb2wgY2hhbl9maWx0ZXIoc3RydWN0IGRtYV9jaGFuICpjaGFuLCB2b2lkICpwYXJhbSkKK3sK
+KwlzdHJ1Y3QgaW50ZWxfbWlkX2kyc19oZGwgKmRydl9kYXRhID0gKHN0cnVjdCBpbnRlbF9taWRf
+aTJzX2hkbCAqKXBhcmFtOworCWJvb2wgcmV0ID0gZmFsc2U7CisKKwlpZiAoIWRydl9kYXRhLT5k
+bWFjMSkKKwkJZ290byBvdXQ7CisJaWYgKGNoYW4tPmRldmljZS0+ZGV2ID09ICZkcnZfZGF0YS0+
+ZG1hYzEtPmRldikKKwkJcmV0ID0gdHJ1ZTsKK291dDoKKwlyZXR1cm4gcmV0OworfQorCisvKioK
+KyAqIGkyc19kbWFfc3RhcnQgLSBwcmVwYXJlIGFuZCByZXNlcnZlIGRtYSBjaGFubmVscworICog
+QGFyZyA6IGludGVsX21pZF9pMnNfaGRsIHBvaW50ZXIgdG8gdGhhdCBzaG91bGQgYmUgZHJpdmVy
+IGRhdGEgKGNvbnRleHQpCisgKgorICogInNzcCBvcGVuIiBjb250ZXh0IGFuZCBkbWFjMSBzaG91
+bGQgYWxyZWFkeSBiZSBmaWxsZWQgaW4gZHJ2X2RhdGEKKyAqCisgKiBPdXRwdXQgcGFyYW1ldGVy
+cworICogICAgICBpbnQgOiBzaG91bGQgYmUgemVybywgZWxzZSBpdCBtZWFucyBlcnJvciBjb2Rl
+CisgKi8KK3N0YXRpYyBpbnQgaTJzX2RtYV9zdGFydChzdHJ1Y3QgaW50ZWxfbWlkX2kyc19oZGwg
+KmRydl9kYXRhKQoreworCXN0cnVjdCBpbnRlbF9taWRfZG1hX3NsYXZlICpyeHMsICp0eHM7CisJ
+ZG1hX2NhcF9tYXNrX3QgbWFzazsKKwlpbnQgcmV0dmFsID0gMDsKKwlzdHJ1Y3QgcGNpX2RldiAq
+bF9wZGV2OworCisJZGV2X2RiZygmZHJ2X2RhdGEtPnBkZXYtPmRldiwgIkRNQUMxIHN0YXJ0XG4i
+KTsKKwlkcnZfZGF0YS0+dHhjaGFuID0gTlVMTDsKKwlkcnZfZGF0YS0+cnhjaGFuID0gTlVMTDsK
+KwlsX3BkZXYgPSBkcnZfZGF0YS0+cGRldjsKKwkvKiAxLiBpbml0IHJ4IGNoYW5uZWwgKi8KKwly
+eHMgPSAmZHJ2X2RhdGEtPmRtYXNfcng7CisJcnhzLT5kaXJuID0gRE1BX0ZST01fREVWSUNFOwor
+CXJ4cy0+aHNfbW9kZSA9IExOV19ETUFfSFdfSFM7CisJcnhzLT5jZmdfbW9kZSA9IExOV19ETUFf
+UEVSX1RPX01FTTsKKwlyeHMtPnNyY193aWR0aCA9IExOV19ETUFfV0lEVEhfMTZCSVQ7CisJcnhz
+LT5kc3Rfd2lkdGggPSBMTldfRE1BX1dJRFRIXzMyQklUOworCXJ4cy0+c3JjX21zaXplID0gTE5X
+X0RNQV9NU0laRV84OworCXJ4cy0+ZHN0X21zaXplID0gTE5XX0RNQV9NU0laRV84OworCXJ4cy0+
+ZGV2aWNlX2luc3RhbmNlID0gZHJ2X2RhdGEtPmRldmljZV9pbnN0YW5jZTsKKwlkbWFfY2FwX3pl
+cm8obWFzayk7CisJZG1hX2NhcF9zZXQoRE1BX01FTUNQWSwgbWFzayk7CisJZG1hX2NhcF9zZXQo
+RE1BX1NMQVZFLCBtYXNrKTsKKwlkcnZfZGF0YS0+cnhjaGFuID0gZG1hX3JlcXVlc3RfY2hhbm5l
+bChtYXNrLCBjaGFuX2ZpbHRlciwgZHJ2X2RhdGEpOworCWlmICghZHJ2X2RhdGEtPnJ4Y2hhbikg
+eworCQlkZXZfZXJyKCYoZHJ2X2RhdGEtPnBkZXYtPmRldiksCisJCQkiQ291bGQgbm90IGdldCBS
+eCBjaGFubmVsXG4iKTsKKwkJcmV0dmFsID0gLTI7CisJCWdvdG8gZXJyX2V4aXQ7CisJfQorCWRy
+dl9kYXRhLT5yeGNoYW4tPnByaXZhdGUgPSByeHM7CisJLyogMi4gaW5pdCB0eCBjaGFubmVsICov
+CisJdHhzID0gJmRydl9kYXRhLT5kbWFzX3R4OworCXR4cy0+ZGlybiA9IERNQV9UT19ERVZJQ0U7
+CisJdHhzLT5oc19tb2RlID0gTE5XX0RNQV9IV19IUzsKKwl0eHMtPmNmZ19tb2RlID0gTE5XX0RN
+QV9NRU1fVE9fUEVSOworCXR4cy0+c3JjX3dpZHRoID0gTE5XX0RNQV9XSURUSF8zMkJJVDsKKwl0
+eHMtPmRzdF93aWR0aCA9IExOV19ETUFfV0lEVEhfMTZCSVQ7CisJdHhzLT5zcmNfbXNpemUgPSBM
+TldfRE1BX01TSVpFXzg7CisJdHhzLT5kc3RfbXNpemUgPSBMTldfRE1BX01TSVpFXzg7CisJdHhz
+LT5kZXZpY2VfaW5zdGFuY2UgPSBkcnZfZGF0YS0+ZGV2aWNlX2luc3RhbmNlOworCWRtYV9jYXBf
+c2V0KERNQV9TTEFWRSwgbWFzayk7CisJZG1hX2NhcF9zZXQoRE1BX01FTUNQWSwgbWFzayk7CisJ
+ZHJ2X2RhdGEtPnR4Y2hhbiA9IGRtYV9yZXF1ZXN0X2NoYW5uZWwobWFzaywgY2hhbl9maWx0ZXIs
+IGRydl9kYXRhKTsKKwlpZiAoIWRydl9kYXRhLT50eGNoYW4pIHsKKwkJZGV2X2VycigmKGRydl9k
+YXRhLT5wZGV2LT5kZXYpLAorCQkJIkNvdWxkIG5vdCBnZXQgVHggY2hhbm5lbFxuIik7CisJCXJl
+dHZhbCA9IC0zOworCQlnb3RvIGZyZWVfcnhjaGFuOworCX0KKwlkcnZfZGF0YS0+dHhjaGFuLT5w
+cml2YXRlID0gdHhzOworCXJldHVybiByZXR2YWw7CitmcmVlX3J4Y2hhbjoKKwlkbWFfcmVsZWFz
+ZV9jaGFubmVsKGRydl9kYXRhLT5yeGNoYW4pOworZXJyX2V4aXQ6CisJcmV0dXJuIHJldHZhbDsK
+K30KKworLyoqCisgKiBpMnNfZG1hX3N0b3AgLSByZWxlYXNlIGRtYSBjaGFubmVscworICogQGFy
+ZyA6IHN0cnVjdCBpbnRlbF9taWRfaTJzX2hkbCBwb2ludGVyIHRvIHRoYXQgc2hvdWxkIGJlIGRy
+aXZlciBkYXRhIChjb250ZXh0KQorICoKKyAqIGNhbGxlZCBieSBpbnRlbF9taWRfaTJzX2Nsb3Nl
+KCkgY29udGV4dAorICoKKyAqIE91dHB1dCBwYXJhbWV0ZXJzCisgKiAgICAgIG5vbmUKKyAqLwor
+c3RhdGljIHZvaWQgaTJzX2RtYV9zdG9wKHN0cnVjdCBpbnRlbF9taWRfaTJzX2hkbCAqZHJ2X2Rh
+dGEpCit7CisJZGV2X2RiZygmZHJ2X2RhdGEtPnBkZXYtPmRldiwgIkRNQUMxIHN0b3BcbiIpOwor
+CWRtYV9yZWxlYXNlX2NoYW5uZWwoZHJ2X2RhdGEtPnR4Y2hhbik7CisJZG1hX3JlbGVhc2VfY2hh
+bm5lbChkcnZfZGF0YS0+cnhjaGFuKTsKK30KKworc3RhdGljIHZvaWQgaTJzX3NzcF9zdG9wKHN0
+cnVjdCBpbnRlbF9taWRfaTJzX2hkbCAqZHJ2X2RhdGEpCit7CisJdm9pZCBfX2lvbWVtICpyZWcg
+PSBkcnZfZGF0YS0+aW9hZGRyOworCWRldl9kYmcoJmRydl9kYXRhLT5wZGV2LT5kZXYsICJTdG9w
+IFNTUFxuIik7CisJY2xlYXJfU1NDUjBfcmVnKHJlZywgU1NFKTsKK30KKworc3RhdGljIHZvaWQg
+c3NwMV9kdW1wX3JlZ2lzdGVycyhzdHJ1Y3QgaW50ZWxfbWlkX2kyc19oZGwgKmRydl9kYXRhKQor
+eworCXUzMiBpcnFfc3RhdHVzOworCXZvaWQgX19pb21lbSAqcmVnID0gZHJ2X2RhdGEtPmlvYWRk
+cjsKKwlzdHJ1Y3QgZGV2aWNlICpkZGJnID0gJihkcnZfZGF0YS0+cGRldi0+ZGV2KTsKKwl1MzIg
+c3RhdHVzOworCWlycV9zdGF0dXMgPSByZWFkX1NTU1IocmVnKTsKKwlkZXZfZGJnKGRkYmcsICJk
+dW1wIFNTU1I9MHglMDhYXG4iLCBpcnFfc3RhdHVzKTsKKwlzdGF0dXMgPSByZWFkX1NTQ1IwKHJl
+Zyk7CisJZGV2X2RiZyhkZGJnLCAiZHVtcCBTU0NSMD0weCUwOFhcbiIsIHN0YXR1cyk7CisJc3Rh
+dHVzID0gcmVhZF9TU0NSMShyZWcpOworCWRldl9kYmcoZGRiZywgImR1bXAgU1NDUjE9MHglMDhY
+XG4iLCBzdGF0dXMpOworCXN0YXR1cyA9IHJlYWRfU1NQU1AocmVnKTsKKwlkZXZfZGJnKGRkYmcs
+ICJkdW1wIFNTUFNQPTB4JTA4WFxuIiwgc3RhdHVzKTsKKwlzdGF0dXMgPSByZWFkX1NTVFNBKHJl
+Zyk7CisJZGV2X2RiZyhkZGJnLCAiZHVtcCBTU1RTQT0weCUwOFhcbiIsIHN0YXR1cyk7CisJc3Rh
+dHVzID0gcmVhZF9TU1JTQShyZWcpOworCWRldl9kYmcoZGRiZywgImR1bXAgU1NSU0E9MHglMDhY
+XG4iLCBzdGF0dXMpOworCXN0YXR1cyA9IHJlYWRfU1NUTyhyZWcpOworCWRldl9kYmcoZGRiZywg
+ImR1bXAgU1NUTz0weCUwOFhcbiIsIHN0YXR1cyk7CisJc3RhdHVzID0gcmVhZF9TU0lUUihyZWcp
+OworCWRldl9kYmcoZGRiZywgImR1bXAgU1NJVFI9MHglMDhYXG4iLCBzdGF0dXMpOworCXN0YXR1
+cyA9IHJlYWRfU1NUU1MocmVnKTsKKwlkZXZfZGJnKGRkYmcsICJkdW1wIFNTVFNTPTB4JTA4WFxu
+Iiwgc3RhdHVzKTsKKwlzdGF0dXMgPSByZWFkX1NTQUNEKHJlZyk7CisJZGV2X2RiZyhkZGJnLCAi
+ZHVtcCBTU0FDRD0weCUwOFhcbiIsIHN0YXR1cyk7Cit9CisKKy8qKgorICogaTJzX2ludCgpOiBm
+dW5jdGlvbiB0aGF0IGhhbmRsZXMgdGhlIFNTUCBJbnRlcnJ1cHRzIChlcnJvcnMpCisgKiBAaXJx
+IDogSVJRIE51bWJlcgorICogQGRldl9pZCA6IHN0cnVjdHVyZSB0aGF0IGNvbnRhaW5zIGRyaXZl
+ciBpbmZvcm1hdGlvbgorICoKKyAqIFRoaXMgaW50ZXJydXB0cyBkbyBub3RoaW5nIGJ1dCB3YXJu
+aW5ncyBpbiBjYXNlIHRoZXJlIGlzIHNvbWUgcHJvYmxlbXMKKyAqIGluIEkyUyBjb25uZWN0aW9u
+ICh1bmRlcnJ1bnMsIG92ZXJydW5zLi4uKS4gVGhpcyBtYXkgYmUgcmVwb3J0ZWQgYnkgYWRkaW5n
+IGEKKyAqIG5ldyBpbnRlcmZhY2UgdG8gdGhlIGRyaXZlciwgYnV0IG5vdCB5ZXQgcmVxdWVzdGVk
+IGJ5ICJ1c2VycyIgb2YgdGhpcyBkcml2ZXIKKyAqCisgKiBPdXRwdXQgcGFyYW1ldGVycworICog
+ICAgICBOQQorICovCitzdGF0aWMgaXJxcmV0dXJuX3QgaTJzX2ludChpbnQgaXJxLCB2b2lkICpk
+ZXZfaWQpCit7CisJc3RydWN0IGludGVsX21pZF9pMnNfaGRsICpkcnZfZGF0YSA9IGRldl9pZDsK
+Kwl2b2lkIF9faW9tZW0gKnJlZzsKKwl1MzIgaXJxX3N0YXR1cyA9IDA7CisJdTMyIG1hc2tfc3Rh
+dHVzID0gMDsKKwlzdHJ1Y3QgZGV2aWNlICpkZGJnID0gJihkcnZfZGF0YS0+cGRldi0+ZGV2KTsK
+KwlyZWcgPSBkcnZfZGF0YS0+aW9hZGRyOworCWlycV9zdGF0dXMgPSByZWFkX1NTU1IocmVnKTsK
+KworCWlmICghKGlycV9zdGF0dXMgJiAoZHJ2X2RhdGEtPm1hc2tfc3IpKSkgeworCQlyZXR1cm4g
+SVJRX05PTkU7CisJfSBlbHNlIHsKKwkJLyogbWF5IGJlIGltcHJvdmVkIGJ5IHVzaW5nIGEgdGFz
+a2xldCB0byBzZW5kIHRoZSBlcnJvcgorCQkgKiAodW5kZXJydW4sLi4uKSB0byBjbGllbnQgYnkg
+dXNpbmcgY2FsbGJhY2sKKwkJICovCisJCWlmIChpcnFfc3RhdHVzICYgKFNTU1JfUk9SX01BU0sg
+PDwgU1NTUl9ST1JfU0hJRlQpKSB7CisJCQlkZXZfd2FybihkZGJnLAorCQkJCSJzc3BfaW50IFJY
+IEZJRk8gT1ZFUiBSVU4gU1NTUj0weCUwOFhcbiIsCisJCQkJaXJxX3N0YXR1cyk7CisJCQltYXNr
+X3N0YXR1cyB8PSAoU1NTUl9ST1JfTUFTSyA8PCBTU1NSX1JPUl9TSElGVCk7CisKKwkJfQorCQlp
+ZiAoaXJxX3N0YXR1cyAmIChTU1NSX1RVUl9NQVNLIDw8IFNTU1JfVFVSX1NISUZUKSkgeworCQkJ
+ZGV2X3dhcm4oZGRiZywKKwkJCQkic3NwX2ludCBUWCBGSUZPIFVOREVSIFJVTiBTU1NSPTB4JTA4
+WFxuIiwKKwkJCQlpcnFfc3RhdHVzKTsKKwkJCW1hc2tfc3RhdHVzIHw9IChTU1NSX1RVUl9NQVNL
+IDw8IFNTU1JfVFVSX1NISUZUKTsKKworCQl9CisJCWlmIChpcnFfc3RhdHVzICYgKFNTU1JfVElO
+VF9NQVNLIDw8IFNTU1JfVElOVF9TSElGVCkpIHsKKwkJCWRldl93YXJuKGRkYmcsCisJCQkJInNz
+cF9pbnQgUlggVElNRSBPVVQgU1NTUj0weCUwOFhcbiIsCisJCQkJaXJxX3N0YXR1cyk7CisJCQlt
+YXNrX3N0YXR1cyB8PSAoU1NTUl9USU5UX01BU0sgPDwgU1NTUl9USU5UX1NISUZUKTsKKworCQl9
+CisJCWlmIChpcnFfc3RhdHVzICYgKFNTU1JfUElOVF9NQVNLIDw8IFNTU1JfUElOVF9TSElGVCkp
+IHsKKwkJCWRldl93YXJuKGRkYmcsCisJCQkJInNzcF9pbnQgVFJBSUxJTkcgQllURSBTU1NSPTB4
+JTA4WFxuIiwKKwkJCQlpcnFfc3RhdHVzKTsKKwkJCW1hc2tfc3RhdHVzIHw9IChTU1NSX1BJTlRf
+TUFTSyA8PCBTU1NSX1BJTlRfU0hJRlQpOworCQl9CisJCWlmIChpcnFfc3RhdHVzICYgKFNTU1Jf
+RU9DX01BU0sgPDwgU1NTUl9FT0NfU0hJRlQpKSB7CisJCQlkZXZfd2FybihkZGJnLAorCQkJCSJz
+c3BfaW50IEVORCBPRiBDSEFJTiBTU1NSPTB4JTA4WFxuIiwKKwkJCQlpcnFfc3RhdHVzKTsKKwkJ
+CW1hc2tfc3RhdHVzIHw9IChTU1NSX0VPQ19NQVNLIDw8IFNTU1JfRU9DX1NISUZUKTsKKwkJfQor
+CQkvKiBjbGVhciBzdGlja3kgYml0cyAqLworCQl3cml0ZV9TU1NSKChpcnFfc3RhdHVzICYgbWFz
+a19zdGF0dXMpLCByZWcpOworCX0KKwlyZXR1cm4gSVJRX0hBTkRMRUQ7Cit9CisKKy8qKgorICog
+Y2FsY3VsYXRlX3NzcHNwX3BzcCAtIHNlcGFyYXRlIGZ1bmN0aW9uIHRoYXQgY2FsY3VsYXRlIHNz
+cHNwIHJlZ2lzdGVyCisgKiBAcHNfc2V0dGluZ3MgOiBwb2ludGVyIG9mIHRoZSBzZXR0aW5ncyBz
+dHJ1Y3QKKyAqCisgKiB0aGlzIGZ1bmN0aW9uIGlzIHRvIHNpbXBsaWZ5L2NsYXJpZnkgc2V0X3Nz
+cF9pMnNfaHcgZnVuY3Rpb24KKyAqCisgKgorICogT3V0cHV0IHBhcmFtZXRlcnMKKyAqICAgICAg
+dTMyIDogY2FsY3VsYXRlZCBTU1BTUCByZWdpc3RlcgorICovCit1MzIgY2FsY3VsYXRlX3NzcHNw
+X3BzcChjb25zdCBzdHJ1Y3QgaW50ZWxfbWlkX2kyc19zZXR0aW5ncyAqcHNfc2V0dGluZ3MpCit7
+CisJdTMyIHNzcHNwOworCXNzcHNwID0gU1NQU1BfcmVnKEZTUlQsCXBzX3NldHRpbmdzLT5zc3Bf
+ZnJtc3luY190aW1pbmdfYml0KQorCQl8U1NQU1BfcmVnKEVURFMsCXBzX3NldHRpbmdzLT5zc3Bf
+ZW5kX3RyYW5zZmVyX3N0YXRlKQorCQl8U1NQU1BfcmVnKFNDTU9ERSwJcHNfc2V0dGluZ3MtPnNz
+cF9zZXJpYWxfY2xrX21vZGUpCisJCXxTU1BTUF9yZWcoRE1ZU1RPUCwJcHNfc2V0dGluZ3MtPnNz
+cF9wc3BfVDQpCisJCXxTU1BTUF9yZWcoU0ZSTURMWSwJcHNfc2V0dGluZ3MtPnNzcF9wc3BfVDUp
+CisJCXxTU1BTUF9yZWcoU0ZSTVdEVEgsCXBzX3NldHRpbmdzLT5zc3BfcHNwX1Q2KQorCQl8U1NQ
+U1BfcmVnKFNGUk1QLAlwc19zZXR0aW5ncy0+c3NwX2ZybXN5bmNfcG9sX2JpdCk7CisJcmV0dXJu
+IHNzcHNwOworfQorCisvKgorICogY2FsY3VsYXRlX3NzY3IwX3BzcDogc2VwYXJhdGUgZnVuY3Rp
+b24gdGhhdCBjYWxjdWxhdGUgc3NjcjAgcmVnaXN0ZXIKKyAqIEBwc19zZXR0aW5ncyA6IHBvaW50
+ZXIgb2YgdGhlIHNldHRpbmdzIHN0cnVjdAorICoKKyAqIHRoaXMgZnVuY3Rpb24gaXMgdG8gc2lt
+cGxpZnkvY2xhcmlmeSBzZXRfc3NwX2kyc19odyBmdW5jdGlvbgorICoKKyAqIE91dHB1dCBwYXJh
+bWV0ZXJzCisgKiAgICAgIHUzMiA6IGNhbGN1bGF0ZWQgU1NDUjAgcmVnaXN0ZXIKKyAqLwordTMy
+IGNhbGN1bGF0ZV9zc2NyMF9wc3AoY29uc3Qgc3RydWN0IGludGVsX21pZF9pMnNfc2V0dGluZ3Mg
+KnBzX3NldHRpbmdzKQoreworCXUxNiBsX3NzcF9kYXRhX3NpemUgPSBwc19zZXR0aW5ncy0+ZGF0
+YV9zaXplOworCXUzMiBzc2NyMDsKKwlpZiAobF9zc3BfZGF0YV9zaXplID4gMTYpIHsKKwkJc3Nj
+cjAgPSAgIFNTQ1IwX3JlZyhEU1MsIFNTQ1IwX0RhdGFTaXplKGxfc3NwX2RhdGFfc2l6ZSAtIDE2
+KSkKKwkJCXwgU1NDUjBfcmVnKEVEU1MsIDEpOworCX0gZWxzZSB7CisJCXNzY3IwID0gICBTU0NS
+MF9yZWcoRFNTLCBTU0NSMF9EYXRhU2l6ZShsX3NzcF9kYXRhX3NpemUpKQorCQkJfCBTU0NSMF9y
+ZWcoRURTUywgMCk7CisJfQorLyoKK0NhbiBiZSByZXBsYWNlZCBieSBjb2RlIGJlbG93IDoKK3Nz
+Y3IwID0gU1NDUjBfcmVnKERTUywgKGxfc3NwX2RhdGFfc2l6ZSAtIDEpICYgMHgwRikKK3wgU1ND
+UjBfcmVnKEVEU1MsICgobF9zc3BfZGF0YV9zaXplIC0gMSkgJiAweDEwKSA+PiA4KTsKKyovCisJ
+c3NjcjAgfD0gU1NDUjBfcmVnKE1PRCwJcHNfc2V0dGluZ3MtPm1vZGUpCisJCXxTU0NSMF9yZWco
+RlJGLAlwc19zZXR0aW5ncy0+ZnJhbWVfZm9ybWF0KQorCQl8U1NDUjBfcmVnKFJJTSwJU1NQX1JY
+X0ZJRk9fT1ZFUl9JTlRfRElTQUJMRSkKKwkJfFNTQ1IwX3JlZyhUSU0sCVNTUF9UWF9GSUZPX1VO
+REVSX0lOVF9ESVNBQkxFKTsKKwlyZXR1cm4gc3NjcjA7Cit9CisKKy8qKgorICogY2FsY3VsYXRl
+X3NzY3IxX3BzcCAtIHNlcGFyYXRlIGZ1bmN0aW9uIHRoYXQgY2FsY3VsYXRlIHNzY3IxIHJlZ2lz
+dGVyCisgKiBAcHNfc2V0dGluZ3MgOiBwb2ludGVyIG9mIHRoZSBzZXR0aW5ncyBzdHJ1Y3QKKyAq
+CisgKiB0aGlzIGZ1bmN0aW9uIGlzIHRvIHNpbXBsaWZ5L2NsYXJpZnkgc2V0X3NzcF9pMnNfaHcg
+ZnVuY3Rpb24KKyAqCisgKiBPdXRwdXQgcGFyYW1ldGVycworICogICAgICB1MzIgOiBjYWxjdWxh
+dGVkIFNTQ1IxIHJlZ2lzdGVyCisgKi8KK3UzMiBjYWxjdWxhdGVfc3NjcjFfcHNwKGNvbnN0IHN0
+cnVjdCBpbnRlbF9taWRfaTJzX3NldHRpbmdzICpwc19zZXR0aW5ncykKK3sKKwl1MzIgc3NjcjE7
+CisJc3NjcjEgPSBTU0NSMV9yZWcoU0ZSTURJUiwJcHNfc2V0dGluZ3MtPnNzcHNmcm1fZGlyZWN0
+aW9uKQorCQl8U1NDUjFfcmVnKFNDTEtESVIsCXBzX3NldHRpbmdzLT5zc3BzbGNsa19kaXJlY3Rp
+b24pCisJCXxTU0NSMV9yZWcoVFRFTFAsCXBzX3NldHRpbmdzLT50eF90cmlzdGF0ZV9waGFzZSkK
+KwkJfFNTQ1IxX3JlZyhUVEUsCXBzX3NldHRpbmdzLT50eF90cmlzdGF0ZV9lbmFibGUpCisJCXxT
+U0NSMV9yZWcoVFJBSUwsCXBzX3NldHRpbmdzLT5zc3BfdHJhaWxpbmdfYnl0ZV9tb2RlKQorCQl8
+U1NDUjFfcmVnKFRJTlRFLAlwc19zZXR0aW5ncy0+c3NwX3J4X3RpbWVvdXRfaW50ZXJydXB0X3N0
+YXR1cykKKwkJfFNTQ1IxX3JlZyhQSU5URSwJcHNfc2V0dGluZ3MtPnNzcF90cmFpbGluZ19ieXRl
+X2ludGVycnVwdF9zdGF0dXMpCisJCXxTU0NSMV9yZWcoTEJNLAlwc19zZXR0aW5ncy0+c3NwX2xv
+b3BiYWNrX21vZGVfc3RhdHVzKQorCQl8U1NDUjFfcmVnKFJXT1QsCXBzX3NldHRpbmdzLT5zc3Bf
+ZHVwbGV4X21vZGUpCisJCXxTU0NSMV9yZWcoUkZULAlTU0NSMV9SeFRyZXNoKHBzX3NldHRpbmdz
+LT5zc3BfcnhfZmlmb190aHJlc2hvbGQpKQorCQl8U1NDUjFfcmVnKFRGVCwJU1NDUjFfVHhUcmVz
+aChwc19zZXR0aW5ncy0+c3NwX3R4X2ZpZm9fdGhyZXNob2xkKSk7CisJcmV0dXJuIHNzY3IxOwor
+fQorCisvKioKKyAqIHNldF9zc3BfaTJzX2h3IC0gY29uZmlndXJlIHRoZSBTU1AgZHJpdmVyIGFj
+Y29yZGluZyB0byB0aGUgcHNfc2V0dGluZ3MKKyAqIEBkcnZfZGF0YSA6IHN0cnVjdHVyZSB0aGF0
+IGNvbnRhaW5zIGFsbCBkZXRhaWxzIGFib3V0IHRoZSBTU1AgRHJpdmVyCisgKiBAcHNfc2V0dGlu
+Z3MgOiBzdHJ1Y3R1cmUgdGhhdCBjb250YWlucyBTU1AgSGFyZHdhcmUgc2V0dGluZ3MKKyAqCisg
+KiBpdCBhbHNvIHN0b3JlIHBzX3NldHRpbmdzIHRoZSBkcnZfZGF0YQorICoKKyAqIE91dHB1dCBw
+YXJhbWV0ZXJzCisgKiAgICAgIE5BCisgKi8KK3N0YXRpYyB2b2lkIHNldF9zc3BfaTJzX2h3KHN0
+cnVjdCBpbnRlbF9taWRfaTJzX2hkbCAqZHJ2X2RhdGEsCisJCQljb25zdCBzdHJ1Y3QgaW50ZWxf
+bWlkX2kyc19zZXR0aW5ncyAqcHNfc2V0dGluZ3MpCit7CisJdTMyIHNzY3IwID0gMDsKKwl1MzIg
+c3NjcjEgPSAwOworCXUzMiBzc3RzYSA9IDA7CisJdTMyIHNzcnNhID0gMDsKKwl1MzIgc3Nwc3Ag
+PSAwOworCXUzMiBzc3NyID0gMDsKKwkvKiBHZXQgdGhlIFNTUCBTZXR0aW5ncyAqLworCXUxNiBs
+X3NzcF9jbGtfZnJtX21vZGUgPSAweEZGOworCXZvaWQgX19pb21lbSAqcmVnID0gZHJ2X2RhdGEt
+PmlvYWRkcjsKKwlzdHJ1Y3QgZGV2aWNlICpkZGJnID0gJihkcnZfZGF0YS0+cGRldi0+ZGV2KTsK
+KwlkZXZfZGJnKGRkYmcsCisJCSJzZXR1cCBTU1AgSTJTIFBDTTEgY29uZmlndXJhdGlvblxuIik7
+CisJaWYgKChwc19zZXR0aW5ncy0+c3Nwc2ZybV9kaXJlY3Rpb24gPT0gU1NQU0ZSTV9NQVNURVJf
+TU9ERSkKKwkgICAmJiAocHNfc2V0dGluZ3MtPnNzcHNsY2xrX2RpcmVjdGlvbiA9PSBTU1BTQ0xL
+X01BU1RFUl9NT0RFKSkgeworCQlsX3NzcF9jbGtfZnJtX21vZGUgPSBTU1BfSU5fTUFTVEVSX01P
+REU7CisJfSBlbHNlIGlmICgocHNfc2V0dGluZ3MtPnNzcHNmcm1fZGlyZWN0aW9uID09IFNTUFNG
+Uk1fU0xBVkVfTU9ERSkKKwkgICAmJiAocHNfc2V0dGluZ3MtPnNzcHNsY2xrX2RpcmVjdGlvbiA9
+PSBTU1BTQ0xLX1NMQVZFX01PREUpKSB7CisJCWxfc3NwX2Nsa19mcm1fbW9kZSA9IFNTUF9JTl9T
+TEFWRV9NT0RFOworCX0gZWxzZSB7CisJCWRldl9lcnIoZGRiZywgIlVuc3VwcG9ydGVkIEkyUyBQ
+Q00xIGNvbmZpZ3VyYXRpb25cbiIpOworCQlnb3RvIGxlYXZlOworCX0KKwlkZXZfZGJnKGRkYmcs
+ICJTU1BTRlJNX0RJUkVDVElPTjolZDpcbiIsCisJCXBzX3NldHRpbmdzLT5zc3BzZnJtX2RpcmVj
+dGlvbik7CisJZGV2X2RiZyhkZGJnLCAiU1NQU0NMS19ESVJFQ1RJT046JWQ6XG4iLAorCQlwc19z
+ZXR0aW5ncy0+c3Nwc2xjbGtfZGlyZWN0aW9uKTsKKwlpZiAocHNfc2V0dGluZ3MtPmZyYW1lX2Zv
+cm1hdCAhPSBQU1BfRk9STUFUKSB7CisJCWRldl9lcnIoZGRiZywgIlVOU1VQUE9SVEVEIEZSQU1F
+IEZPUk1BVDolZDpcbiIsIHBzX3NldHRpbmdzLT5mcmFtZV9mb3JtYXQpOworCQlnb3RvIGxlYXZl
+OworCX0KKwlpZiAoKHBzX3NldHRpbmdzLT5zc3BfdHhfZG1hICE9IFNTUF9UWF9ETUFfRU5BQkxF
+KQorCXx8IChwc19zZXR0aW5ncy0+c3NwX3J4X2RtYSAhPSBTU1BfUlhfRE1BX0VOQUJMRSkpIHsK
+KwkJZGV2X2VycihkZGJnLCAiT05MWSBETUEgTU9ERSBJUyBTVVBQT1JURUQiKTsKKwkJZ290byBs
+ZWF2ZTsKKwl9CisJLyoqKioqKioqKioqIERNQSBUcmFuc2ZlciBNb2RlICoqKioqKioqKioqLwor
+CWRldl9kYmcoZGRiZywgIkZPUk1BVCA6JWQ6XG4iLCBwc19zZXR0aW5ncy0+ZnJhbWVfZm9ybWF0
+KTsKKwlzc2NyMCA9IGNhbGN1bGF0ZV9zc2NyMF9wc3AocHNfc2V0dGluZ3MpOworCWRldl9kYmco
+ZGRiZywgIiBzc2NyMCA6MHglMDhYXG4iLCBzc2NyMCk7CisJc3NjcjEgPSBjYWxjdWxhdGVfc3Nj
+cjFfcHNwKHBzX3NldHRpbmdzKTsKKwlkZXZfZGJnKGRkYmcsICIgc3NjcjEgOjB4JTA4WFxuIiwg
+c3NjcjEpOworCWlmIChwc19zZXR0aW5ncy0+bW9kZSA9PSBTU1BfSU5fTkVUV09SS19NT0RFKSB7
+CisJCWRldl9kYmcoZGRiZywgIk1PREUgOiVkOlxuIiwgcHNfc2V0dGluZ3MtPm1vZGUpOworCQlz
+c2NyMCB8PSBTU0NSMF9yZWcoRlJEQywgU1NDUjBfU2xvdHNQZXJGcm0ocHNfc2V0dGluZ3MtPmZy
+YW1lX3JhdGVfZGl2aWRlcl9jb250cm9sKSk7CisJCWRldl9kYmcoZGRiZywgInNzY3IwIDoweCUw
+OFhcbiIsIHNzY3IwKTsKKwkJc3Nwc3AgPSBjYWxjdWxhdGVfc3Nwc3BfcHNwKHBzX3NldHRpbmdz
+KTsKKwkJZGV2X2RiZyhkZGJnLCAic3Nwc3AgOjB4JTA4WFxuIiwgc3Nwc3ApOworCQkvKiBzZXQg
+dGhlIGFjdGl2ZSBUWCB0aW1lIHNsb3QgKGJpdG1hcCkgKi8KKwkJc3N0c2EgPSBTU1RTQV9yZWco
+VFRTQSwgcHNfc2V0dGluZ3MtPnNzcF9hY3RpdmVfdHhfc2xvdHNfbWFwKTsKKwkJLyogc2V0IHRo
+ZSBhY3RpdmUgUlggdGltZSBzbG90IChiaXRtYXApICovCisJCXNzcnNhID0gU1NSU0FfcmVnKFJU
+U0EsIHBzX3NldHRpbmdzLT5zc3BfYWN0aXZlX3J4X3Nsb3RzX21hcCk7CisJCWlmIChsX3NzcF9j
+bGtfZnJtX21vZGUgPT0gU1NQX0lOX01BU1RFUl9NT0RFKSB7CisJCQlzd2l0Y2ggKHBzX3NldHRp
+bmdzLT5tYXN0ZXJfbW9kZV9jbGtfc2VsZWN0aW9uKSB7CisJCQljYXNlIFNTUF9PTkNISVBfQ0xP
+Q0s6CisJCQkJYnJlYWs7CisJCQljYXNlIFNTUF9ORVRXT1JLX0NMT0NLOgorCQkJCXNzY3IwIHw9
+IFNTQ1IwX3JlZyhOQ1MsIDEpOworCQkJCWJyZWFrOworCQkJY2FzZSBTU1BfRVhURVJOQUxfQ0xP
+Q0s6CisJCQkJc3NjcjAgfD0gU1NDUjBfcmVnKEVDUywgMSk7CisJCQkJYnJlYWs7CisJCQljYXNl
+IFNTUF9PTkNISVBfQVVESU9fQ0xPQ0s6CisJCQkJc3NjcjAgfD0gU1NDUjBfcmVnKEFDUywgMSk7
+CisJCQkJYnJlYWs7CisJCQlkZWZhdWx0OgorCQkJCWRldl9lcnIoZGRiZywgIk1hc3RlciBNb2Rl
+IGNsayBzZWxlY3Rpb24gVU5LTk9XTiIpOworCQkJCWJyZWFrOworCQkJfQorCQkJc3Nwc3AgfD0g
+U1NQU1BfcmVnKFNUUlRETFksIHBzX3NldHRpbmdzLT5zc3BfcHNwX1QxKQorCQkJCXxTU1BTUF9y
+ZWcoRE1ZU1RSVCwgcHNfc2V0dGluZ3MtPnNzcF9wc3BfVDIpOworCQl9IGVsc2UgewkvKiBTZXQg
+dGhlIFNsYXZlIENsb2NrIEZyZWUgUnVubmluZyBTdGF0dXMgKi8KKwkJCXNzY3IxIHw9IFNTQ1Ix
+X3JlZyhTQ0ZSLCBwc19zZXR0aW5ncy0+c2xhdmVfY2xrX2ZyZWVfcnVubmluZ19zdGF0dXMpOwor
+CQl9CisJfSBlbHNlIHsgIC8qIFNTUF9JTl9OT1JNQUxfTU9ERSAqLworCQlkZXZfZXJyKGRkYmcs
+ICJVTlNVUFBPUlRFRCBNT0RFIik7CisJCWdvdG8gbGVhdmU7CisJfQorCisJLyogQ2xlYXIgc3Rh
+dHVzICovCisJc3NzciA9IChTU1NSX0JDRV9NQVNLIDw8IFNTU1JfQkNFX1NISUZUKQorCSAgICAg
+fCAoU1NTUl9UVVJfTUFTSyA8PCBTU1NSX1RVUl9TSElGVCkKKwkgICAgIHwgKFNTU1JfVElOVF9N
+QVNLIDw8IFNTU1JfVElOVF9TSElGVCkKKwkgICAgIHwgKFNTU1JfUElOVF9NQVNLIDw8IFNTU1Jf
+UElOVF9TSElGVCkKKwkgICAgIHwgKFNTU1JfUk9SX01BU0sgPDwgU1NTUl9ST1JfU0hJRlQpOwor
+CS8qIGRpc2FibGUgU1NQICovCisJY2xlYXJfU1NDUjBfcmVnKHJlZywgU1NFKTsKKwlkZXZfZGJn
+KGRkYmcsICJXUklURSBTU0NSMCBESVNBQkxFXG4iKTsKKwkvKiBDbGVhciBzdGF0dXMgKi8KKwl3
+cml0ZV9TU1NSKHNzc3IsIHJlZyk7CisJZGV2X2RiZyhkZGJnLCAiV1JJVEUgU1NTUjogMHglMDhY
+XG4iLCBzc3NyKTsKKwl3cml0ZV9TU0NSMChzc2NyMCwgcmVnKTsKKwlkZXZfZGJnKGRkYmcsICJX
+UklURSBTU0NSMFxuIik7CisJLyogZmlyc3Qgc2V0IENSMSB3aXRob3V0IGludGVycnVwdCBhbmQg
+c2VydmljZSBlbmFibGVzICovCisJd3JpdGVfU1NDUjEoc3NjcjEsIHJlZyk7CisJd3JpdGVfU1NQ
+U1Aoc3Nwc3AsIHJlZyk7CisJd3JpdGVfU1NUU0Eoc3N0c2EsIHJlZyk7CisJd3JpdGVfU1NSU0Eo
+c3Nyc2EsIHJlZyk7CisJLyogc2V0IHRoZSB0aW1lIG91dCBmb3IgdGhlIHJlY2VwdGlvbiAqLwor
+CXdyaXRlX1NTVE8oMCwgcmVnKTsKKwlzc3AxX2R1bXBfcmVnaXN0ZXJzKGRydl9kYXRhKTsKK2xl
+YXZlOgorCXJldHVybjsKK30KKworc3RhdGljIGludAoraW50ZWxfbWlkX2kyc19maW5kX3VzYWdl
+KHN0cnVjdCBwY2lfZGV2ICpwZGV2LAorCQkJIHN0cnVjdCBpbnRlbF9taWRfaTJzX2hkbCAqZHJ2
+X2RhdGEsCisJCQkgZW51bSBpbnRlbF9taWRfaTJzX3NzcF91c2FnZSAqdXNhZ2UpCit7CisJaW50
+IHBvczsKKwl1OCAgYWRpZDsKKwlpbnQgc3RhdHVzID0gMDsKKworCSp1c2FnZSA9IFNTUF9VU0FH
+RV9VTkFTU0lHTkVEOworCXBvcyA9IHBjaV9maW5kX2NhcGFiaWxpdHkocGRldiwgUENJX0NBUF9J
+RF9WTkRSKTsKKwlkZXZfaW5mbygoJnBkZXYtPmRldiksCisJCSJQcm9iZS9maW5kIGNhcGFiaWxp
+dHkgKFZORFIgJWQgcG9zPTB4JXgpXG4iLAorCQlQQ0lfQ0FQX0lEX1ZORFIsIHBvcyk7CisJaWYg
+KHBvcyA+IDApIHsKKwkJcG9zICs9IFBDSV9DQVBfT0ZGU0VUX0FESUQ7CisJCXBjaV9yZWFkX2Nv
+bmZpZ19ieXRlKHBkZXYsIHBvcywgJmFkaWQpOworCQlkZXZfaW5mbygmKHBkZXYtPmRldiksICJW
+ZW5kb3IgY2FwYWJpbGl0eSBhZGlkID0gMHgleFxuIiwgYWRpZCk7CisJCWlmIChhZGlkID09IFBD
+SV9DQVBfQURJRF9JMlNfQlRfRk0pCisJCQkqdXNhZ2UJPSBTU1BfVVNBR0VfQkxVRVRPT1RIX0ZN
+OworCQllbHNlIGlmIChhZGlkID09IFBDSV9DQVBfQURJRF9JMlNfTU9ERU0pCisJCQkqdXNhZ2UJ
+PSBTU1BfVVNBR0VfTU9ERU07CisJCWVsc2UKKwkJCSp1c2FnZQk9IFNTUF9VU0FHRV9VTkFTU0lH
+TkVEOworCX0KKwkvKiBJZiB0aGVyZSBpcyBubyBjYXBhYmlsaXR5LCBjaGVjayB3aXRoIG9sZCBQ
+Q0lfSUQgKi8KKyNpZmRlZiBCWVBBU1NfQURJRAorCWlmICgqdXNhZ2UgPT0gU1NQX1VTQUdFX1VO
+QVNTSUdORUQpIHsKKwkJZGV2X3dhcm4oJihwZGV2LT5kZXYpLCAiVmVuZG9yIGNhcGFiaWxpdHkg
+bm90IHByZXNlbnQvaW52YWxpZFxuIik7CisJCXN3aXRjaCAocGRldi0+ZGV2aWNlKSB7CisJCWNh
+c2UgTUZMRF9TU1AxX0RFVklDRV9JRDoKKwkJCSp1c2FnZQk9IFNTUF9VU0FHRV9CTFVFVE9PVEhf
+Rk07CisJCQlicmVhazsKKwkJY2FzZSBNRkxEX1NTUDBfREVWSUNFX0lEOgorCQkJKnVzYWdlCT0g
+U1NQX1VTQUdFX01PREVNOworCQkJYnJlYWs7CisJCX0KKwl9CisjZW5kaWYKKwlpZiAoKnVzYWdl
+ID09IFNTUF9VU0FHRV9VTkFTU0lHTkVEKSB7CisJCWRldl9pbmZvKCgmcGRldi0+ZGV2KSwKKwkJ
+CSJObyBwcm9iZSBmb3IgSTJTIFBDSS1JRDogJTA0eDolMDR4LCBBRElEKDB4JXgpPTB4JXhcbiIs
+CisJCQlwZGV2LT52ZW5kb3IsIHBkZXYtPmRldmljZSwgcG9zLCBhZGlkKTsKKwkJc3RhdHVzID0g
+LUVOT0RFVjsKKwkJZ290byBlcnJfZmluZF91c2FnZTsKKwl9CisJZGV2X2RiZygmKHBkZXYtPmRl
+diksCisJCSJEZXRlY3RlZCBQQ0kgU1NQIChJRDogJTA0eDolMDR4KSB1c2FnZSA9JXhcbiIsCisJ
+CXBkZXYtPnZlbmRvciwgcGRldi0+ZGV2aWNlLCAqdXNhZ2UpOworCWRldl9kYmcoJihwZGV2LT5k
+ZXYpLAorCQkiIGZvdW5kIFBDSSBTU1AgY29udHJvbGxlcihJRDogJTA0eDolMDR4KVxuIiwKKwkJ
+cGRldi0+dmVuZG9yLCBwZGV2LT5kZXZpY2UpOworCS8qIEluaXQgdGhlIGRyaXZlciBkYXRhIHN0
+cnVjdHVyZSBmaWVsZHMqLworCXN3aXRjaCAocGRldi0+ZGV2aWNlKSB7CisJY2FzZSBNRkxEX1NT
+UDFfREVWSUNFX0lEOgorCQlkcnZfZGF0YS0+ZGV2aWNlX2luc3RhbmNlID0gRE1BMUNfREVWSUNF
+X0lOU1RBTkNFX1NTUDE7CisJCWJyZWFrOworCWNhc2UgTUZMRF9TU1AwX0RFVklDRV9JRDoKKwkJ
+ZHJ2X2RhdGEtPmRldmljZV9pbnN0YW5jZSA9IERNQTFDX0RFVklDRV9JTlNUQU5DRV9TU1AwOwor
+CQlicmVhazsKKwlkZWZhdWx0OgorCQlkZXZfZXJyKCYocGRldi0+ZGV2KSwKKwkJCSJDYW4gbm90
+IGRldGVybWluZSBkbWEgZGV2aWNlIGluc3RhbmNlIChQQ0kgSUQ6JTA0eClcbiIsCisJCQlwZGV2
+LT5kZXZpY2UpOworCQlzdGF0dXMgPSAtRU5PREVWOworCQlnb3RvIGVycl9maW5kX3VzYWdlOwor
+CX0KKwlzdGF0dXMgPSBwY2lfZW5hYmxlX2RldmljZShwZGV2KTsKKwlpZiAoc3RhdHVzKQorCQlk
+ZXZfZXJyKCgmcGRldi0+ZGV2KSwgIkNhbiBub3QgZW5hYmxlIGRldmljZS5FcnI9JWRcbiIsIHN0
+YXR1cyk7CitlcnJfZmluZF91c2FnZToKKwlyZXR1cm4gc3RhdHVzOworfQorCisvKioKKyAqIGlu
+dGVsX21pZF9pMnNfcHJvYmUgLSBwcm9iaW5nIGZ1bmN0aW9uIGZvciB0aGUgcGNpIHNlbGVjdGVk
+CisgKiBAcGRldiA6IHBjaV9kZXYgcG9pbnRlciB0aGF0IGlzIHByb2JlZAorICogQGVudCA6IHBj
+aV9kZXZpY2VfaWQKKyAqCisgKiBPdXRwdXQgcGFyYW1ldGVycworICogICAgICBOQQorICovCitz
+dGF0aWMgaW50IGludGVsX21pZF9pMnNfcHJvYmUoc3RydWN0IHBjaV9kZXYgKnBkZXYsCisJCQkJ
+Y29uc3Qgc3RydWN0IHBjaV9kZXZpY2VfaWQgKmVudCkKK3sKKwlzdHJ1Y3QgaW50ZWxfbWlkX2ky
+c19oZGwgKmRydl9kYXRhOworCWludCBzdGF0dXMgPSAwOworCWVudW0gaW50ZWxfbWlkX2kyc19z
+c3BfdXNhZ2UgdXNhZ2U7CisKKwlkcnZfZGF0YSA9IGt6YWxsb2Moc2l6ZW9mKHN0cnVjdCBpbnRl
+bF9taWRfaTJzX2hkbCksIEdGUF9LRVJORUwpOworCWRldl9kYmcoJihwZGV2LT5kZXYpLCAiJXMg
+UHJvYmUsIGRydl9kYXRhID0lcFxuIiwgRFJJVkVSX05BTUUsIGRydl9kYXRhKTsKKwlpZiAoIWRy
+dl9kYXRhKSB7CisJCWRldl9lcnIoKCZwZGV2LT5kZXYpLCAiQ2FuJ3QgYWxsb2MgZHJpdmVyIGRh
+dGEgaW4gcHJvYmVcbiIpOworCQlzdGF0dXMgPSAtRU5PTUVNOworCQlnb3RvIGxlYXZlOworCX0K
+KwlkZXZfaW5mbygoJnBkZXYtPmRldiksICJEZXRlY3RlZCBQQ0kgU1NQIChJRDogJTA0eDolMDR4
+KVxuIiwgcGRldi0+dmVuZG9yLCBwZGV2LT5kZXZpY2UpOworCXN0YXR1cyA9IGludGVsX21pZF9p
+MnNfZmluZF91c2FnZShwZGV2LCBkcnZfZGF0YSwgJnVzYWdlKTsKKwlpZiAoc3RhdHVzKQorCQln
+b3RvIGVycl9pMnNfcHJvYmUwOworCW11dGV4X2luaXQoJmRydl9kYXRhLT5tdXRleCk7CisJZHJ2
+X2RhdGEtPnBkZXYgPSBwZGV2OworCWRydl9kYXRhLT51c2FnZSA9IHVzYWdlOworCS8qCisJICog
+R2V0IGJhc2ljIGlvIHJlc291cmNlIGFuZCBtYXAgaXQgZm9yIFNTUDEgW0JBUj0wXQorCSAqLwor
+CWlmICgocGRldi0+ZGV2aWNlID09IE1GTERfU1NQMV9ERVZJQ0VfSUQpIHx8CisJICAgIChwZGV2
+LT5kZXZpY2UgPT0gTUZMRF9TU1AwX0RFVklDRV9JRCkpIHsKKwkJZHJ2X2RhdGEtPnBhZGRyID0g
+cGNpX3Jlc291cmNlX3N0YXJ0KHBkZXYsIE1SU1RfU1NQX0JBUik7CisJCWRydl9kYXRhLT5pb2xl
+biA9IHBjaV9yZXNvdXJjZV9sZW4ocGRldiwgTVJTVF9TU1BfQkFSKTsKKwkJc3RhdHVzID0gcGNp
+X3JlcXVlc3RfcmVnaW9uKHBkZXYsIE1SU1RfU1NQX0JBUiwgZGV2X25hbWUoJnBkZXYtPmRldikp
+OworCQkvKiBtYXAgYnVzIG1lbW9yeSBpbnRvIENQVSBzcGFjZSAqLworCQlkcnZfZGF0YS0+aW9h
+ZGRyID0gcGNpX2lvcmVtYXBfYmFyKHBkZXYsIE1SU1RfU1NQX0JBUik7CisJfSBlbHNlIHsKKwkJ
+ZGV2X2VycigmcGRldi0+ZGV2LAorCQkJIkRvbid0IGtub3cgd2hpY2ggQkFSIHRvIHVzZWZvciB0
+aGlzIFNTUCBQQ0RJRD0leFxuIiwKKwkJCXBkZXYtPmRldmljZSk7CisJCXN0YXR1cyA9IC1FTk9E
+RVY7CisJCWdvdG8gZXJyX2kyc19wcm9iZTE7CisJfQorCWRldl9kYmcoJihwZGV2LT5kZXYpLCAi
+cGFkZHIgPSA6ICV4XG4iLCBkcnZfZGF0YS0+cGFkZHIpOworCWRldl9kYmcoJihwZGV2LT5kZXYp
+LCAiaW9sZW4gPSA6ICVkXG4iLCBkcnZfZGF0YS0+aW9sZW4pOworCWlmIChzdGF0dXMpIHsKKwkJ
+ZGV2X2VycigoJnBkZXYtPmRldiksICJDYW4ndCByZXF1ZXN0IHJlZ2lvbi4gZXJyPSVkXG4iLCBz
+dGF0dXMpOworCQlnb3RvIGVycl9pMnNfcHJvYmUxOworCX0KKwlpZiAoIWRydl9kYXRhLT5pb2Fk
+ZHIpIHsKKwkJZGV2X2VycigoJnBkZXYtPmRldiksICJpb3JlbWFwX25vY2FjaGUgZXJyb3JcbiIp
+OworCQlzdGF0dXMgPSAtRU5PTUVNOworCQlnb3RvIGVycl9pMnNfcHJvYmUyOworCX0KKwlkZXZf
+ZGJnKCYocGRldi0+ZGV2KSwgImlvYWRkciA9IDogJXBcbiIsIGRydl9kYXRhLT5pb2FkZHIpOwor
+CS8qIHByZXBhcmUgZm9yIERNQSBjaGFubmVsIGFsbG9jYXRpb24gKi8KKwkvKiBnZXQgdGhlIHBj
+aV9kZXYgc3RydWN0dXJlIHBvaW50ZXIgKi8KKwkvKiBDaGVjayB0aGUgU1NQLCBpZiBTU1AzLCB0
+aGVuIGFub3RoZXIgRE1BIGlzIHVzZWQgKEdQRE1BLi4pICovCisJaWYgKChwZGV2LT5kZXZpY2Ug
+PT0gTUZMRF9TU1AxX0RFVklDRV9JRCkgfHwKKwkgICAgKHBkZXYtPmRldmljZSA9PSBNRkxEX1NT
+UDBfREVWSUNFX0lEKSkgeworCQlkcnZfZGF0YS0+ZG1hYzEgPSBwY2lfZ2V0X2RldmljZShQQ0lf
+VkVORE9SX0lEX0lOVEVMLAorCQkJCQkJIE1GTERfTFBFX0RNQV9ERVZJQ0VfSUQsCisJCQkJCQkg
+TlVMTCk7CisJfSBlbHNlIHsKKwkJZGV2X2VycigmcGRldi0+ZGV2LAorCQkJIkRvbid0IGtub3cg
+ZG1hIGRldmljZSBJRCBmb3IgdGhpcyBTU1AgUENESUQ9JXhcbiIsCisJCQlwZGV2LT5kZXZpY2Up
+OworCQlnb3RvIGVycl9pMnNfcHJvYmUzOworCX0KKwkvKiBpbiBjYXNlIHRoZSBzdG9wIGRtYSBo
+YXZlIHRvIHdhaXQgZm9yIGVuZCBvZiBjYWxsYmFja3MgICAqLworCS8qIFRoaXMgd2lsbCBiZSBy
+ZW1vdmVkIHdoZW4gVEVSTUlOQVRFX0FMTCBhdmFpbGFibGUgaW4gRE1BICovCisJaW5pdF93YWl0
+cXVldWVfaGVhZCgmZHJ2X2RhdGEtPndxX2NoYW5fY2xvc2luZyk7CisJaWYgKCFkcnZfZGF0YS0+
+ZG1hYzEpIHsKKwkJZGV2X2VycigmKGRydl9kYXRhLT5wZGV2LT5kZXYpLCAiQ2FuJ3QgZmluZCBE
+TUFDMSwgZG1hIGluaXQgZmFpbGVkXG4iKTsKKwkJc3RhdHVzID0gLUVOT0RFVjsKKwkJZ290byBl
+cnJfaTJzX3Byb2JlMzsKKwl9CisJLyogaW5jcmVtZW50IHJlZiBjb3VudCBvZiBwY2kgZGV2aWNl
+IHN0cnVjdHVyZSBhbHJlYWR5IGRvbmUgYnkgKi8KKwkvKiBwY2lfZ2V0X2RldmljZS4gd2lsbCBk
+byBhIHBjaV9kZXZfcHV0IHdoZW4gZXhpdGluZyB0aGUgbW9kdWxlICovCisJcGNpX3NldF9kcnZk
+YXRhKHBkZXYsIGRydl9kYXRhKTsKKwkvKiBzZXQgU1NQIEZyYW1lU3luYyBhbmQgQ0xLIGRpcmVj
+dGlvbiBpbiBJTlBVVCBtb2RlIGluIG9yZGVyCisJICogdG8gYXZvaWQgZGlzdHVyYmluZyBwZXJp
+cGhlcmFscworCSAqLworCXdyaXRlX1NTQ1IxKChTU0NSMV9TRlJNRElSX01BU0s8PFNTQ1IxX1NG
+Uk1ESVJfU0hJRlQpCisJCSAgfCAoU1NDUjFfU0NMS0RJUl9NQVNLPDxTU0NSMV9TQ0xLRElSX1NI
+SUZUKSwKKwlkcnZfZGF0YS0+aW9hZGRyKTsKKwkvKiBBdHRhY2ggdG8gSVJRICovCisJZHJ2X2Rh
+dGEtPmlycSA9IHBkZXYtPmlycTsKKwlkZXZfZGJnKCYocGRldi0+ZGV2KSwgImF0dGFjaGluZyB0
+byBJUlE6ICUwNHhcbiIsIHBkZXYtPmlycSk7CisJc3RhdHVzID0gcmVxdWVzdF9pcnEoZHJ2X2Rh
+dGEtPmlycSwgaTJzX2ludCwgSVJRRl9TSEFSRUQsICJpMnMgc3NwIiwgZHJ2X2RhdGEpOworCWlm
+IChzdGF0dXMgPCAwKQl7CisJCWRldl9lcnIoJnBkZXYtPmRldiwgImNhbiBub3QgZ2V0IElSUS4g
+c3RhdHVzIGVycj0lZFxuIiwgc3RhdHVzKTsKKwkJZ290byBlcnJfaTJzX3Byb2JlMzsKKwl9CisJ
+cG1fcnVudGltZV9lbmFibGUoJihkcnZfZGF0YS0+cGRldi0+ZGV2KSk7CisJZ290byBsZWF2ZTsK
+K2Vycl9pMnNfcHJvYmUzOgorCWlvdW5tYXAoZHJ2X2RhdGEtPmlvYWRkcik7CitlcnJfaTJzX3By
+b2JlMjoKKwlwY2lfcmVsZWFzZV9yZWdpb24ocGRldiwgTVJTVF9TU1BfQkFSKTsKK2Vycl9pMnNf
+cHJvYmUxOgorCXBjaV9kaXNhYmxlX2RldmljZShwZGV2KTsKK2Vycl9pMnNfcHJvYmUwOgorCWtm
+cmVlKGRydl9kYXRhKTsKK2xlYXZlOgorCXJldHVybiBzdGF0dXM7Cit9CisKK3N0YXRpYyB2b2lk
+IF9fZGV2ZXhpdCBpbnRlbF9taWRfaTJzX3JlbW92ZShzdHJ1Y3QgcGNpX2RldiAqcGRldikKK3sK
+KwlzdHJ1Y3QgaW50ZWxfbWlkX2kyc19oZGwgKmRydl9kYXRhOworCisJZHJ2X2RhdGEgPSBwY2lf
+Z2V0X2RydmRhdGEocGRldik7CisJaWYgKCFkcnZfZGF0YSkgeworCQlkZXZfZXJyKCZwZGV2LT5k
+ZXYsICJubyBkcnZfZGF0YSBpbiBwY2kgZGV2aWNlIHRvIHJlbW92ZSFcbiIpOworCQlnb3RvIGxl
+YXZlOworCX0KKwlpZiAodGVzdF9iaXQoSTJTX1BPUlRfT1BFTkVELCAmZHJ2X2RhdGEtPmZsYWdz
+KSkgeworCQlkZXZfd2FybigmcGRldi0+ZGV2LCAiTm90IGNsb3NlZCBiZWZvcmUgcmVtb3Zpbmcg
+cGNpX2RldiFcbiIpOworCQlpbnRlbF9taWRfaTJzX2Nsb3NlKGRydl9kYXRhKTsKKwl9CisJcGNp
+X3NldF9kcnZkYXRhKHBkZXYsIE5VTEwpOworCS8qIFN0b3AgRE1BIGlzIGFscmVhZHkgZG9uZSBk
+dXJpbmcgY2xvc2UoKSAgKi8KKwlwY2lfZGV2X3B1dChkcnZfZGF0YS0+ZG1hYzEpOworCS8qIERp
+c2FibGUgdGhlIFNTUCBhdCB0aGUgcGVyaXBoZXJhbCBhbmQgU09DIGxldmVsICovCisJd3JpdGVf
+U1NDUjAoMCwgZHJ2X2RhdGEtPmlvYWRkcik7CisJZnJlZV9pcnEoZHJ2X2RhdGEtPmlycSwgZHJ2
+X2RhdGEpOworCWlvdW5tYXAoZHJ2X2RhdGEtPmlvYWRkcik7CisJcGNpX3JlbGVhc2VfcmVnaW9u
+KHBkZXYsIE1SU1RfU1NQX0JBUik7CisJcGNpX3JlbGVhc2VfcmVnaW9uKHBkZXYsIE1SU1RfTFBF
+X0JBUik7CisJcGNpX2Rpc2FibGVfZGV2aWNlKHBkZXYpOworCWtmcmVlKGRydl9kYXRhKTsKK2xl
+YXZlOgorCXJldHVybjsKK30KKworLyoqCisgKiBpbnRlbF9taWRfaTJzX2luaXQgLSByZWdpc3Rl
+ciBwY2kgZHJpdmVyCisgKgorICovCitzdGF0aWMgaW50IF9faW5pdCBpbnRlbF9taWRfaTJzX2lu
+aXQodm9pZCkKK3sKKwlyZXR1cm4gcGNpX3JlZ2lzdGVyX2RyaXZlcigmaW50ZWxfbWlkX2kyc19k
+cml2ZXIpOworfQorCitzdGF0aWMgdm9pZCBfX2V4aXQgaW50ZWxfbWlkX2kyc19leGl0KHZvaWQp
+Cit7CisJcGNpX3VucmVnaXN0ZXJfZHJpdmVyKCZpbnRlbF9taWRfaTJzX2RyaXZlcik7Cit9CisK
+KworbW9kdWxlX2luaXQoaW50ZWxfbWlkX2kyc19pbml0KTsKK21vZHVsZV9leGl0KGludGVsX21p
+ZF9pMnNfZXhpdCk7CisKKworCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaW50ZWxfbWlkX2kycy9p
+bnRlbF9taWRfaTJzLmggYi9zb3VuZC9wY2kvaW50ZWxfbWlkX2kycy9pbnRlbF9taWRfaTJzLmgK
+bmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAwMDAwMC4uZWYyOWNlNwotLS0gL2Rldi9udWxs
+CisrKyBiL3NvdW5kL3BjaS9pbnRlbF9taWRfaTJzL2ludGVsX21pZF9pMnMuaApAQCAtMCwwICsx
+LDUwMCBAQAorLyoKKyAgKiA8RHJpdmVyIGZvciBJMlMgcHJvdG9jb2wgb24gU1NQIChNb29yZXN0
+b3duIGFuZCBNZWRmaWVsZCBoYXJkd2FyZSk+CisgICogQ29weXJpZ2h0IChjKSAyMDEwLCBJbnRl
+bCBDb3Jwb3JhdGlvbi4KKyAgKiBMb3VpcyBMRSBHQUxMIDxsb3Vpcy5sZS5nYWxsIGludGVsLmNv
+bT4KKyAgKgorICAqIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlz
+dHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5IGl0CisgICogdW5kZXIgdGhlIHRlcm1zIGFuZCBjb25k
+aXRpb25zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSwKKyAgKiB2ZXJzaW9uIDIs
+IGFzIHB1Ymxpc2hlZCBieSB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uLgorICAqCisgICog
+VGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIGl0IHdpbGwgYmUgdXNlZnVs
+LCBidXQgV0lUSE9VVAorICAqIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVk
+IHdhcnJhbnR5IG9mIE1FUkNIQU5UQUJJTElUWSBvcgorICAqIEZJVE5FU1MgRk9SIEEgUEFSVElD
+VUxBUiBQVVJQT1NFLiAgU2VlIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IKKyAg
+KiBtb3JlIGRldGFpbHMuCisgICoKKyAgKiBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5
+IG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhbG9uZyB3aXRoCisgICogdGhpcyBw
+cm9ncmFtOyBpZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIElu
+Yy4sCisgICogNTEgRnJhbmtsaW4gU3QgLSBGaWZ0aCBGbG9vciwgQm9zdG9uLCBNQSAwMjExMC0x
+MzAxIFVTQS4KKyAgKi8KKyNkZWZpbmUgRFJJVkVSX05BTUUgIkkyUyBTU1AgRHJpdmVyIgorLyoK
+KyAqIERlZmluZXMKKyAqLworI2RlZmluZSBNRkxEX1NTUDFfREVWSUNFX0lEIDB4MDgyNQkvKiBG
+T1IgTUZMRCAqLworI2RlZmluZSBNUlNUX1NTUDBfREVWSUNFX0lEIDB4MDgxNQkvKiBGT1IgTVJT
+VCAqLworI2RlZmluZSBNRkxEX1NTUDBfREVWSUNFX0lEIDB4MDgzMgkvKiBGT1IgTUZMRCAqLwor
+CisjZGVmaW5lIE1SU1RfTFBFX0RNQV9ERVZJQ0VfSUQgMHgwODE0CisjZGVmaW5lIE1GTERfTFBF
+X0RNQV9ERVZJQ0VfSUQgMHgwODMwCisKKy8qIFNTUDEgUENJIGRldmljZSBCYXNlIEFkZHJlc3Mg
+UmVnaXN0ZXIgKi8KKyNkZWZpbmUgTVJTVF9TU1BfQkFSCTAKKyNkZWZpbmUgTVJTVF9MUEVfQkFS
+CTEKKyNkZWZpbmUgRE1BMUNfREVWSUNFX0lOU1RBTkNFX1NTUDAgMAorI2RlZmluZSBETUExQ19E
+RVZJQ0VfSU5TVEFOQ0VfU1NQMSAxCisjZGVmaW5lIE9GRlNFVF9TU0NSMAkweDAwCisjZGVmaW5l
+IE9GRlNFVF9TU0NSMQkweDA0CisjZGVmaW5lIE9GRlNFVF9TU1NSCQkweDA4CisjZGVmaW5lIE9G
+RlNFVF9TU0lUUgkweDBjCisjZGVmaW5lIE9GRlNFVF9TU0RSCQkweDEwCisjZGVmaW5lIE9GRlNF
+VF9TU1RPCQkweDI4CisjZGVmaW5lIE9GRlNFVF9TU1BTUAkweDJjCisjZGVmaW5lIE9GRlNFVF9T
+U1RTQQkweDMwCS8qIFNTUCBUeCBUaW1lc2xvdCBBY3RpdmUgKi8KKyNkZWZpbmUgT0ZGU0VUX1NT
+UlNBCTB4MzQJLyogU1NQIFJ4IFRpbWVzbG90IEFjdGl2ZSAqLworLyogU1NUIHJlZ2lzdGVyIG1h
+cCAqLworI2RlZmluZSBPRkZTRVRfTFBFX0NTUgkJCTB4MDAKKyNkZWZpbmUgT0ZGU0VUX0xQRV9Q
+SVNSCQkJMHgwOAorI2RlZmluZSBPRkZTRVRfTFBFX1BJTVIJCQkweDEwCisjZGVmaW5lIE9GRlNF
+VF9MUEVfSVNSWAkJCTB4MTgKKyNkZWZpbmUgT0ZGU0VUX0xQRV9JTVJYCQkJMHgyOAorI2RlZmlu
+ZSBPRkZTRVRfTFBFX0lQQ1gJCQkweDM4CS8qIElQQyBJQS1TU1QgKi8KKyNkZWZpbmUgT0ZGU0VU
+X0xQRV9JUENECQkJMHg0MAkvKiBJUEMgU1NULUlBICovCisjZGVmaW5lIE9GRlNFVF9MUEVfSVNS
+RAkJCTB4MjAJLyogZHVtbXkgcmVnaXN0ZXIgZm9yKi8KKwkJCQkJCS8qIHNoaW0gd29ya2Fyb3Vu
+ZCAgICovCisjZGVmaW5lIE9GRlNFVF9MUEVfU0hJTV9TSVpFCTBYNDQKKworI2RlZmluZSBTU1Bf
+SU5fTUFTVEVSX01PREUJCTB4MAorI2RlZmluZSBTU1BfSU5fU0xBVkVfTU9ERQkJMHgxCisKKy8q
+CisgKglNYWNyb3MKKyAqLworI2RlZmluZSBERUZJTkVfU1NQX1JFRyhyZWcsIG9mZikgXAorc3Rh
+dGljIGlubGluZSB1MzIgcmVhZF8jI3JlZyh2b2lkICpwKSB7IHJldHVybiBfX3Jhd19yZWFkbChw
+ICsgKG9mZikpOyB9IFwKK3N0YXRpYyBpbmxpbmUgdm9pZCB3cml0ZV8jI3JlZyh1MzIgdiwgdm9p
+ZCAqcCkgeyBfX3Jhd193cml0ZWwodiwgcCArIChvZmYpKTsgfQorREVGSU5FX1NTUF9SRUcoU1ND
+UjAsIDB4MDApCitERUZJTkVfU1NQX1JFRyhTU0NSMSwgMHgwNCkKK0RFRklORV9TU1BfUkVHKFNT
+U1IsIDB4MDgpCitERUZJTkVfU1NQX1JFRyhTU0lUUiwgMHgwYykKK0RFRklORV9TU1BfUkVHKFNT
+RFIsIDB4MTApCitERUZJTkVfU1NQX1JFRyhTU1RPLCAweDI4KQorREVGSU5FX1NTUF9SRUcoU1NQ
+U1AsIDB4MmMpCitERUZJTkVfU1NQX1JFRyhTU1RTQSwgMHgzMCkKK0RFRklORV9TU1BfUkVHKFNT
+UlNBLCAweDM0KQorREVGSU5FX1NTUF9SRUcoU1NUU1MsIDB4MzgpCitERUZJTkVfU1NQX1JFRyhT
+U0FDRCwgMHgzQykKK0RFRklORV9TU1BfUkVHKEkyQ0NUUkwsIDB4MDApOworREVGSU5FX1NTUF9S
+RUcoSTJDREFUQSwgMHgwNCk7CisvKgorICogTGFuZ3dlbGwgU1NQIHNlcmlhbCBwb3J0IHJlZ2lz
+dGVyIGRlZmluaXRpb25zCisgKi8KKyNkZWZpbmUgU1NDUjBfRFNTX01BU0sgICAweDBGCS8qIERh
+dGEgU2l6ZSBTZWxlY3QgWzQuLjE2XSAqLworI2RlZmluZSBTU0NSMF9EU1NfU0hJRlQgIDAKKyNk
+ZWZpbmUgU1NDUjBfRlJGX01BU0sgICAweDAzCS8qIEZSYW1lIEZvcm1hdCAqLworI2RlZmluZSBT
+U0NSMF9GUkZfU0hJRlQgIDQKKyNkZWZpbmUgU1NDUjBfRUNTX01BU0sgICAweDAxCS8qIEV4dGVy
+bmFsIGNsb2NrIHNlbGVjdCAqLworI2RlZmluZSBTU0NSMF9FQ1NfU0hJRlQgIDYKKyNkZWZpbmUg
+U1NDUjBfU1NFX01BU0sgICAweDAxCS8qIFN5bmNocm9ub3VzIFNlcmlhbCBQb3J0IEVuYWJsZSAq
+LworI2RlZmluZSBTU0NSMF9TU0VfU0hJRlQgIDcKKyNkZWZpbmUgU1NDUjBfU0NSX01BU0sgICAw
+eEZGRgkvKiBOb3QgaW1wbGVtZW50ZWQgKi8KKyNkZWZpbmUgU1NDUjBfU0NSX1NISUZUICA4Cisj
+ZGVmaW5lIFNTQ1IwX0VEU1NfTUFTSyAgMHgxCS8qIEV4dGVuZGVkIGRhdGEgc2l6ZSBzZWxlY3Qg
+Ki8KKyNkZWZpbmUgU1NDUjBfRURTU19TSElGVCAyMAorI2RlZmluZSBTU0NSMF9OQ1NfTUFTSyAg
+IDB4MQkvKiBOZXR3b3JrIGNsb2NrIHNlbGVjdCAqLworI2RlZmluZSBTU0NSMF9OQ1NfU0hJRlQg
+IDIxCisjZGVmaW5lIFNTQ1IwX1JJTV9NQVNLICAgMHgxCS8qIFJlY2VpdmUgRklGTyBvdmVycnJ1
+biBpbnQgbWFzayAqLworI2RlZmluZSBTU0NSMF9SSU1fU0hJRlQgIDIyCisjZGVmaW5lIFNTQ1Iw
+X1RJTV9NQVNLICAgMHgxCS8qIFRyYW5zbWl0IEZJRk8gdW5kZXJydW4gaW50IG1hc2sgKi8KKyNk
+ZWZpbmUgU1NDUjBfVElNX1NISUZUICAyMworI2RlZmluZSBTU0NSMF9GUkRDX01BU0sgIDB4Nwkv
+KiBGcmFtZSBSYXRlIERpdmlkZXIgQ29udHJvbCAqLworI2RlZmluZSBTU0NSMF9GUkRDX1NISUZU
+IDI0CisjZGVmaW5lIFNTQ1IwX0FDU19NQVNLICAgMHgxCS8qIEF1ZGlvIGNsb2NrIHNlbGVjdCAq
+LworI2RlZmluZSBTU0NSMF9BQ1NfU0hJRlQgIDMwCisjZGVmaW5lIFNTQ1IwX01PRF9NQVNLICAg
+MHgxCS8qIE1vZGUgKG5vcm1hbCBvciBuZXR3b3JrKSAqLworI2RlZmluZSBTU0NSMF9NT0RfU0hJ
+RlQgIDMxCisKKyNkZWZpbmUgU1NDUjBfRGF0YVNpemUoeCkgICAgICgoeCkgLSAxKQkvKiBEYXRh
+IFNpemUgU2VsZWN0IFs0Li4xNl0gKi8KKyNkZWZpbmUgU1NDUjBfU2xvdHNQZXJGcm0oeCkgICgo
+eCkgLSAxKQkvKiBUaW1lIHNsb3RzIHBlciBmcmFtZSAqLworI2RlZmluZSBTU0NSMF9TZXJDbGtE
+aXYoeCkgICAgKCh4KSAtIDEpCS8qIERpdmlzb3IgWzEuLjQwOTZdLC4uLiAqLworCQkJCQkgLyou
+Li5ub3QgaW1wbGVtZW50ZWQgb24gTGFuZ3dlbGwgKi8KKyNkZWZpbmUgU1NDUjFfVFRFTFBfTUFT
+SyAgICAgMHgxCS8qIFRYRCBUcmlzdGF0ZSBFbmFibGUgb24gTGFzdCBQaGFzZSAqLworI2RlZmlu
+ZSBTU0NSMV9UVEVMUF9TSElGVCAgICAzMQorI2RlZmluZSBTU0NSMV9UVEVfTUFTSwkgICAgIDB4
+MQkvKiBUWEQgVHJpc3RhdGUgRW5hYmxlICovCisjZGVmaW5lIFNTQ1IxX1RURV9TSElGVCAgICAg
+IDMwCisjZGVmaW5lIFNTQ1IxX0VCQ0VJX01BU0sgICAgIDB4MQkvKiBFbmFibGUgQml0IENvdW50
+IEVycm9yIEludGVycnVwdCAqLworI2RlZmluZSBTU0NSMV9FQkNFSV9TSElGVCAgICAyOQorI2Rl
+ZmluZSBTU0NSMV9TQ0ZSX01BU0sgICAgICAweDEJLyogU2xhdmUgQ2xvY2sgUnVubmluZyAqLwor
+I2RlZmluZSBTU0NSMV9TQ0ZSX1NISUZUICAgICAyOAorI2RlZmluZSBTU0NSMV9FQ1JBX01BU0sg
+ICAgICAweDEJLyogRW5hYmxlIENsb2NrIFJlcXVlc3QgQSAqLworI2RlZmluZSBTU0NSMV9FQ1JB
+X1NISUZUICAgICAyNworI2RlZmluZSBTU0NSMV9FQ1JCX01BU0sgICAgICAweDEJLyogRW5hYmxl
+IENsb2NrIFJlcXVlc3QgQiAqLworI2RlZmluZSBTU0NSMV9FQ1JCX1NISUZUICAgICAyNgorI2Rl
+ZmluZSBTU0NSMV9TQ0xLRElSX01BU0sgICAweDEJLyogU1NQQ0xLIERpcmVjdGlvbiAqLworI2Rl
+ZmluZSBTU0NSMV9TQ0xLRElSX1NISUZUICAyNQorI2RlZmluZSBTU0NSMV9TRlJNRElSX01BU0sg
+ICAweDEJLyogU1NQRlJNIERpcmVjdGlvbiAqLworI2RlZmluZSBTU0NSMV9TRlJNRElSX1NISUZU
+ICAyNAorI2RlZmluZSBTU0NSMV9SV09UX01BU0sgICAgICAweDEJLyogUmVjZWl2ZSB3aXRob3V0
+IFRyYW5zbWl0ICovCisjZGVmaW5lIFNTQ1IxX1JXT1RfU0hJRlQgICAgIDIzCisjZGVmaW5lIFNT
+Q1IxX1RSQUlMX01BU0sgICAgIDB4MQkvKiBUcmFpbGluZyBCeXRlICovCisjZGVmaW5lIFNTQ1Ix
+X1RSQUlMX1NISUZUICAgIDIyCisjZGVmaW5lIFNTQ1IxX1RTUkVfTUFTSyAgICAgIDB4MQkvKiBE
+TUEgVHJhbnNtaXQgU2VydmljZSBSZXF1ZXN0IEVuYWJsZSovCisjZGVmaW5lIFNTQ1IxX1RTUkVf
+U0hJRlQgICAgIDIxCisjZGVmaW5lIFNTQ1IxX1JTUkVfTUFTSyAgICAgIDB4MQkvKiBETUEgUmVj
+ZWl2ZSBTZXJ2aWNlIFJlcXVlc3QgRW5hYmxlICovCisjZGVmaW5lIFNTQ1IxX1JTUkVfU0hJRlQg
+ICAgIDIwCisjZGVmaW5lIFNTQ1IxX1RJTlRFX01BU0sgICAgIDB4MQkvKiBSZWNlaXZlciBUaW1l
+LW91dCBJbnRlcnJ1cHQgRW5hYmxlICovCisjZGVmaW5lIFNTQ1IxX1RJTlRFX1NISUZUICAgIDE5
+CisjZGVmaW5lIFNTQ1IxX1BJTlRFX01BU0sgICAgIDB4MQkvKiBQZXJpcGguIFRyYWlsaW5nIEJ5
+dGUgSW50LiBFbmFibGUgKi8KKyNkZWZpbmUgU1NDUjFfUElOVEVfU0hJRlQgICAgMTgKKyNkZWZp
+bmUgU1NDUjFfSUZTX01BU0sgICAgICAgMHgxCS8qIEludmVydCBGcmFtZSBTaWduYWwgKi8KKyNk
+ZWZpbmUgU1NDUjFfSUZTX1NISUZUICAgICAgMTYKKyNkZWZpbmUgU1NDUjFfU1RGUl9NQVNLICAg
+ICAgMHgxCS8qIFNlbGVjdCBGSUZPIGZvciBFRldSOiB0ZXN0IG1vZGUgKi8KKyNkZWZpbmUgU1ND
+UjFfU1RGUl9TSElGVCAgICAgMTUKKyNkZWZpbmUgU1NDUjFfRUZXUl9NQVNLICAgICAgMHgxCS8q
+IEVuYWJsZSBGSUZPIFdyaXRlL1JlYWQ6IHRlc3QgbW9kZSAqLworI2RlZmluZSBTU0NSMV9FRldS
+X1NISUZUICAgICAxNAorI2RlZmluZSBTU0NSMV9SRlRfTUFTSyAgICAgICAweEYJLyogUmVjZWl2
+ZSBGSUZPIFRyaWdnZXIgVGhyZXNob2xkICovCisjZGVmaW5lIFNTQ1IxX1JGVF9TSElGVCAgICAg
+IDEwCisjZGVmaW5lIFNTQ1IxX1RGVF9NQVNLICAgICAgIDB4RgkvKiBUcmFuc21pdCBGSUZPIFRy
+aWdnZXIgVGhyZXNob2xkICovCisjZGVmaW5lIFNTQ1IxX1RGVF9TSElGVCAgICAgIDYKKyNkZWZp
+bmUgU1NDUjFfTVdEU19NQVNLICAgICAgMHgxCS8qIE1pY3Jvd2lyZSBUcmFuc21pdCBEYXRhIFNp
+emUgKi8KKyNkZWZpbmUgU1NDUjFfTVdEU19TSElGVCAgICAgNQorI2RlZmluZSBTU0NSMV9TUEhf
+TUFTSyAgICAgICAweDEJLyogTW90b3JvbGEgU1BJIFNTUFNDTEsgcGhhc2Ugc2V0dGluZyAqLwor
+I2RlZmluZSBTU0NSMV9TUEhfU0hJRlQgICAgICA0CisjZGVmaW5lIFNTQ1IxX1NQT19NQVNLICAg
+ICAgIDB4MQkvKiBNb3Rvcm9sYSBTUEkgU1NQU0NMSyBwb2xhcml0eSAqLworI2RlZmluZSBTU0NS
+MV9TUE9fU0hJRlQgICAgICAzCisjZGVmaW5lIFNTQ1IxX0xCTV9NQVNLICAgICAgIDB4MQkvKiBM
+b29wYmFjayBtb2RlOiB0ZXN0IG1vZGUgKi8KKyNkZWZpbmUgU1NDUjFfTEJNX1NISUZUICAgICAg
+MgorI2RlZmluZSBTU0NSMV9USUVfTUFTSyAgICAgICAweDEJLyogVHJhbnNtaXQgRklGTyBJbnRl
+cnJ1cHQgRW5hYmxlICovCisjZGVmaW5lIFNTQ1IxX1RJRV9TSElGVCAgICAgIDEKKyNkZWZpbmUg
+U1NDUjFfUklFX01BU0sgICAgICAgMHgxCS8qIFJlY2VpdmUgRklGTyBJbnRlcnJ1cHQgRW5hYmxl
+ICovCisjZGVmaW5lIFNTQ1IxX1JJRV9TSElGVCAgICAgIDAKKworI2RlZmluZSBTU0NSMV9SeFRy
+ZXNoKHgpICgoeCkgLSAxKQkvKiBsZXZlbCBbMS4uMTZdICovCisjZGVmaW5lIFNTQ1IxX1R4VHJl
+c2goeCkgKCh4KSAtIDEpCS8qIGxldmVsIFsxLi4xNl0gKi8KKworI2RlZmluZSBTU1BTUF9GU1JU
+X01BU0sgICAgICAweDEJLyogRnJhbWUgU3luYyBSZWxhdGl2ZSBUaW1pbmcgQml0ICovCisjZGVm
+aW5lIFNTUFNQX0ZTUlRfU0hJRlQgICAgIDI1CisjZGVmaW5lIFNTUFNQX0RNWVNUT1BfTUFTSyAg
+IDB4MwkvKiBEdW1teSBTdG9wIGluIE51bWJlciBvZiBTU1BTQ0xLczpUNCovCisjZGVmaW5lIFNT
+UFNQX0RNWVNUT1BfU0hJRlQgIDIzCisjZGVmaW5lIFNTUFNQX1NGUk1XRFRIX01BU0sgIDB4M0YJ
+LyogU2VyaWFsIEZyYW1lIHdpZHRoIDogVDYgKi8KKyNkZWZpbmUgU1NQU1BfU0ZSTVdEVEhfU0hJ
+RlQgMTYKKyNkZWZpbmUgU1NQU1BfU0ZSTURMWV9NQVNLICAgMHg3RgkvKiBTZXJpYWwgRnIuIERl
+bGF5IGluIDEvMlNTUFNDTEtzOlQ1ICovCisjZGVmaW5lIFNTUFNQX1NGUk1ETFlfU0hJRlQgIDkK
+KyNkZWZpbmUgU1NQU1BfRE1ZU1RSVF9NQVNLICAgMHgzCS8qIER1bW15IFN0YXJ0IGluIE51bWJl
+ciBvZiBTU1BTQ0xLcy4uKi8KKyNkZWZpbmUgU1NQU1BfRE1ZU1RSVF9TSElGVCAgNwkgICAgLyou
+Li5hZnRlciBTVFJURExZLCBUMiAobWFzdGVyIG1vZGUgb25seSkgKi8KKyNkZWZpbmUgU1NQU1Bf
+U1RSVERMWV9NQVNLICAgMHg3CS8qIFN0YXJ0IERlbGF5LCBUMSAobWFzdGVyIG1vZGUgb25seSkg
+Ki8KKyNkZWZpbmUgU1NQU1BfU1RSVERMWV9TSElGVCAgNAorI2RlZmluZSBTU1BTUF9FVERTX01B
+U0sgICAgICAweDEJLyogRW5kIG9mIFRyYW5zZmVyIERhdGEgU3RhdGUgKi8KKyNkZWZpbmUgU1NQ
+U1BfRVREU19TSElGVCAgICAgMworI2RlZmluZSBTU1BTUF9TRlJNUF9NQVNLICAgICAweDEJLyog
+U2VyaWFsIEZyYW1lIFBvbGFyaXR5ICovCisjZGVmaW5lIFNTUFNQX1NGUk1QX1NISUZUICAgIDIK
+KyNkZWZpbmUgU1NQU1BfU0NNT0RFX01BU0sgICAgMHgzCS8qIFNlcmlhbCBiaXQtcmF0ZSBDbG9j
+ayBNb2RlICovCisjZGVmaW5lIFNTUFNQX1NDTU9ERV9TSElGVCAgIDAKKworI2RlZmluZSBTU1RT
+QV9UVFNBX01BU0sgICAgICAweEZGCisjZGVmaW5lIFNTVFNBX1RUU0FfU0hJRlQgICAgIDAKKwor
+I2RlZmluZSBTU1JTQV9SVFNBX01BU0sgICAgICAweEZGCisjZGVmaW5lIFNTUlNBX1JUU0FfU0hJ
+RlQgICAgIDAKKworI2RlZmluZSBTU1NSX0JDRV9NQVNLICAgMHgxCS8qIEJpdCBDb3VudCBFcnJv
+cjogUmVhZC9Xcml0ZSAxIHRvIENsZWFyICovCisjZGVmaW5lIFNTU1JfQkNFX1NISUZUICAyMwor
+I2RlZmluZSBTU1NSX0NTU19NQVNLICAgMHgxCS8qIENsb2NrIFN5bmNocm9uaXphdGlvbiBTdGF0
+dXMgKi8KKyNkZWZpbmUgU1NTUl9DU1NfU0hJRlQgIDIyCisjZGVmaW5lIFNTU1JfVFVSX01BU0sg
+ICAweDEJLyogVHJhbnNtaXQgRklGTyBVbmRlclJ1bjogUmQvV3IgMSB0byBDbGVhciAqLworI2Rl
+ZmluZSBTU1NSX1RVUl9TSElGVCAgMjEKKyNkZWZpbmUgU1NTUl9FT0NfTUFTSyAgIDB4MQkvKiBF
+bmQgT2YgQ2hhaW46IFJlYWQvV3JpdGUgMSB0byBDbGVhciAqLworI2RlZmluZSBTU1NSX0VPQ19T
+SElGVCAgMjAKKyNkZWZpbmUgU1NTUl9USU5UX01BU0sgIDB4MQkvKiBSZWNlaXZlciBUaW1lLW91
+dCBJbnRlcnJ1cHQ6Li4uICovCisjZGVmaW5lIFNTU1JfVElOVF9TSElGVCAxOQkvKiAuLi5SZWFk
+L1dyaXRlIDEgdG8gQ2xlYXIgKi8KKyNkZWZpbmUgU1NTUl9QSU5UX01BU0sgIDB4MQkvKiBQZXJp
+cGhlcmFsIFRyYWlsaW5nIEJ5dGUgSW50ZXJydXB0Oi4uLiAqLworI2RlZmluZSBTU1NSX1BJTlRf
+U0hJRlQgMTgJLyogLi4uUmVhZC9Xcml0ZSAxIHRvIENsZWFyICovCisjZGVmaW5lIFNTU1JfUkZM
+X01BU0sgICAweEYJLyogUmVjZWl2ZSBGSUZPIExldmVsICovCisjZGVmaW5lIFNTU1JfUkZMX1NI
+SUZUICAxMgorI2RlZmluZSBTU1NSX1RGTF9NQVNLICAgMHhGCS8qIFRyYW5zbWl0IEZJRk8gTGV2
+ZWwgKi8KKyNkZWZpbmUgU1NTUl9URkxfU0hJRlQgIDgKKyNkZWZpbmUgU1NTUl9ST1JfTUFTSyAg
+IDB4MQkvKiBSZWNlaXZlIEZJRk8gT3ZlcnJ1bjogUmVhZC9Xcml0ZSAxIHRvIENsZWFyKi8KKyNk
+ZWZpbmUgU1NTUl9ST1JfU0hJRlQgIDcKKyNkZWZpbmUgU1NTUl9SRlNfTUFTSyAgIDB4MQkvKiBS
+ZWNlaXZlIEZJRk8gU2VydmljZSBSZXF1ZXN0ICovCisjZGVmaW5lIFNTU1JfUkZTX1NISUZUICA2
+CisjZGVmaW5lIFNTU1JfVEZTX01BU0sgICAweDEJLyogVHJhbnNtaXQgRklGTyBTZXJ2aWNlIFJl
+cXVlc3QgKi8KKyNkZWZpbmUgU1NTUl9URlNfU0hJRlQgIDUKKyNkZWZpbmUgU1NTUl9CU1lfTUFT
+SyAgIDB4MQkvKiBTU1AgQnVzeSAqLworI2RlZmluZSBTU1NSX0JTWV9TSElGVCAgNAorI2RlZmlu
+ZSBTU1NSX1JORV9NQVNLICAgMHgxCS8qIFJlY2VpdmUgRklGTyBub3QgZW1wdHkgKi8KKyNkZWZp
+bmUgU1NTUl9STkVfU0hJRlQgIDMKKyNkZWZpbmUgU1NTUl9URk5fTUFTSyAgIDB4MQkvKiBUcmFu
+c21pdCBGSUZPIG5vdCBGdWxsICovCisjZGVmaW5lIFNTU1JfVEZOX1NISUZUICAyCisKKworI2Rl
+ZmluZSBTU1BfT0ZGIDAKKyNkZWZpbmUgU1NQX09OICAxCisKKy8qIGJpdCBJMlNfUE9SVF9PUEVO
+RUQgbG9jayBmb3Igb3Blbi9jbG9zZQorICogYml0IEkyU19QT1JUX1JFQURfQlVTWSBsb2NrIGZv
+ciByZWFkIHJlcXVlc3RzIChzZXJpYWxpemVkKQorICogYml0IEkyU19QT1JUX1dSSVRFX0JVU1kg
+bG9jayBmb3Igd3JpdGUgcmVxdWVzdHMgKHNlcmlhbGl6ZWQpCisgKiBiaXQgSTJTX1BPUlRfQ0xP
+U0lORyBtZWFucyBjbG9zZSBvbiBnb2luZywgd2FpdGluZyBmb3IgcGVuZGluZyBjYWxsYmFja3Mu
+CisgKi8KKworZW51bSBpMnNfZmxhZ3MgeworCUkyU19QT1JUX09QRU5FRCwKKwlJMlNfUE9SVF9X
+UklURV9CVVNZLAorCUkyU19QT1JUX1JFQURfQlVTWSwKKwlJMlNfUE9SVF9DTE9TSU5HCit9Owor
+CisjZGVmaW5lIEZJRk9fU0laRSAxNgorLyoKKyAqCVN0cnVjdHVyZXMgRGVmaW5pdGlvbgorICov
+CisKKy8qKgorICogc3RydWN0IGludGVsX21pZF9pMnNfZGF0YSAtIGNvbnRleHQgc3RydWN0IHRv
+IGtlZXAgU1NQIEkyUyBkYXRhCisgKiBAcGRldjogcGNpIGRldiBwb2ludGVyIGNvcnJlc3BvbmRp
+bmcgdG8gY29udGV4dAorICogQHBhZGRyOgorICogQGlvYWRkcjoKKyAqIEBpb2xlbjoKKyAqIEBp
+cnE6CisgKiBAY2xlYXJfc3I6CisgKiBAbWFza19zcjoKKyAqIEBkbWFjMToKKyAqIEBkbWFzX3R4
+OiBkbWEgc2xhdmUgc3RydWN0dXJlIGZvciB0cmFuc21pdAorICogQGRtYXNfcng6IGRtYSBzbGF2
+ZSBzdHJ1Y3R1cmUgZm9yIHJlY2VpdmUKKyAqIEB0eGNoYW46IERtYSBjaGFubmVsIGZvciB0cmFu
+c21pdAorICogQHJ4Y2hhbjogRG1hIGNoYW5uZWwgZm9yIHJlY2VpdmUKKyAqCisgKiBAcmVhZF9k
+b25lOgorICogQHJlYWRfZHN0OgorICogQHJlYWRfbGVuOgorICoKKyAqIEB3cml0ZV9kb25lOgor
+ICogQHdyaXRlX3NyYzoKKyAqIEB3cml0ZV9sZW46CisgKgorICogQG11dGV4OiAgYSBtdXRleCB0
+byBtYWtlIHN1cmUgd2UgaGF2ZSBvbmNlLWF0LXRpbWUgY3JpdGljYWwgZnVuY3Rpb25zLgorICoK
+KyAqIExvbmdlciBkZXNjcmlwdGlvbgorICovCisKKy8qIExvY2tpbmcgcnVsZXM6CisgKgorICog
+QWxsIHRoZSBmaWVsZHMsIG5vdCBsaXN0ZWQgYmVsb3csIGFyZSBzZXQgZHVyaW5nIHByb2JlLCBh
+bmQgdGhlbiByZWFkIG9ubHkKKyAqIFNvIHRoZXkgZG8gbm90IHJlcXVpcmUgbG9ja2luZworICoK
+KyAqIFRoZSBmaWVsZHMgdGhhdCByZXF1aXJlIGxvY2tpbmcgYXJlIHJlbGF0ZWQgdG8gdGhlIEky
+UyByZWFkIGFuZCB3cml0ZQorICogcmVxdWVzdHMuCisgKgorICogV2UgYWxsb3cgb25seSAxIHJl
+YWQgYXQgYSB0aW1lLCBhbmQgMSB3cml0ZSBhdCBhIHRpbWUuCisgKiBXZSBhbGxvdyByZWFkIGlu
+IHBhcmFsbGVsIG9mIHdyaXRlIGJ1dCB1c2Ugc2VwYXJhdGUgdmFyaWFibGVzLgorICogV2UgYWxs
+b3cgb25seSAxIHVzZXIgcGVyIFNTUC9JMlMgcG9ydC4KKyAqIFR5cGljYWxseSB0aGlzIHVzZXIg
+d2lsbCBiZSBhIGRlZGljYXRlZCBQdWxzZUF1ZGlvIFJUIHRocmVhZCBjb21tdW5pY2F0aW5nCisg
+KiB3aXRoIGNtdC1zcGVlY2ggZHJpdmVyIHdoaWNoIGluIHR1cm5zIGNvbW11bmljYXRlcyB3aXRo
+IGludGVsX21pZF9zc3AKKyAqIGRyaXZlci4KKyAqIFBDTSBtaXhpbmcgaXMgZG9uZSBiZWZvcmUg
+YWNjZXNzIHRvIGtlcm5lbCBkcml2ZXJzO3R5cGljYWxseSB3aXRoaW4KKyAqIFB1bHNlQXVkaW8g
+b3IgYWZ0ZXI7IHR5cGljYWxseSB3aXRoaW4gdGhlIG1vZGVtLgorICogU28gbm8gY29uY3VycmVu
+dCB1c2VycywgcGVyIEkyUyBjaGFubmVsLCB0byB0aGlzIGRyaXZlciBhcmUgYWxsb3dlZAorICog
+VGhlIHJlYWQgJiB3cml0ZSBhcmUgdHJpZ2dlcmVkIGZyb20gYSBVU0VSIGNvbnRleHQKKyAqIFRo
+ZSByZWFkICYgd3JpdGUgY2FsbGJhY2tzIGFyZSBjYWxsZWQgZnJvbSBhIEJIIGNvbnRleHQKKyAq
+IFlvdSBzaG91bGQgaGF2ZSBub3QgY2FsbGJhY2sgcGVuZGluZyBiZWZvcmUgY2FsbGluZyBjbG9z
+ZSwgY2xvc2Ugd2lsbCB3YWl0CisgKiBmb3IgcmVtYWluaW5nIGNhbGxiYWNrIGNhbGxzLgorICog
+SXQgaXMgbm90IGFsbG93ZWQgdG8gY2FsbCBjbG9zZSBmdW5jdGlvbiBmcm9tIHJlYWQvd3JpdGUg
+Y2FsbGJhY2sgdGhyZWFkcy4KKyAqCisgKiBMb2NraW5nIGlzIGhhbmRsZWQgdmlhIGRydl9kYXRh
+LT5mbGFncyAmIGF0b21pYyBiaXR3aXNlIG9wZXJhdGlvbnMKKyAqCisgKiBJMlMwIGlzIGRlZGlj
+YXRlZCBmb3IgUENNIHRyYW5zZmVyIHRvL2Zyb20gdGhlIG1vZGVtIG1vZHVsZQorICogSTJTMSBp
+cyBkZWRpY2F0ZWQgZm9yIFBDTSB0cmFuc2ZlciB0by9mcm9tIHRoZSBCbHVldG9vdGggb3IgRk0g
+bW9kdWxlCisgKgorICogcmVhZF9kb25lOgorICogcmVhZF9sZW46CisgKiByZWFkX2RzdDoKKyAq
+CisgKiB3cml0ZV9kb25lOgorICogd3JpdGVfc3JjOgorICogd3JpdGVfbGVuOgorICoKKyAqIG11
+dGV4OiAgYSBtdXRleCB0byBtYWtlIHN1cmUgd2UgaGF2ZSBvbmNlLWF0LXRpbWUgY3JpdGljYWwg
+ZnVuY3Rpb25zLgorICoJCW9uY2UtYXQtYS10aW1lIGFjdGlvbnMgZnVuY3Rpb25zIGFyZToKKyAq
+CQkJLWludGVsX21pZF9pMnNfb3BlbgorICoJCQktaW50ZWxfbWlkX2kyc19jbG9zZQorICoJCQkt
+aW50ZWxfbWlkX2kyc19yZF9yZXEKKyAqCQkJLWludGVsX21pZF9pMnNfd3JfcmVxCisgKgkJCS1p
+bnRlbF9taWRfaTJzX3NldF9yZF9jYgorICoJCQktaW50ZWxfbWlkX2kyc19zZXRfd3JfY2IKKyAq
+IFRoZXNlIGZ1bmN0aW9ucyBzaG91bGQgbm90IGJlIGNhbGxlZCBkdXJpbmcgYSBsb2NrKCkgbmVp
+dGhlciBpbiBpbnRlcnJ1cHQuCisgKi8KKworc3RydWN0IGludGVsX21pZF9pMnNfaGRsIHsKKwkv
+KiBEcml2ZXIgbW9kZWwgaG9va3VwICovCisJc3RydWN0IHBjaV9kZXYgKnBkZXY7CisJLyogcmVn
+aXN0ZXIgYWRkcmVzc2VzICovCisJZG1hX2FkZHJfdCBwYWRkcjsKKwl2b2lkIF9faW9tZW0gKmlv
+YWRkcjsKKwl1MzIgaW9sZW47CisJaW50IGlycTsKKworCS8qIFNTUCBtYXNrcyAqLworCXUzMiBj
+bGVhcl9zcjsKKwl1MzIgbWFza19zcjsKKworCS8qIFNTUCBDb25maWd1cmF0aW9uICovCisJLyog
+RE1BIGluZm8gKi8KKwlzdHJ1Y3QgcGNpX2RldiAqZG1hYzE7CisJd2FpdF9xdWV1ZV9oZWFkX3Qg
+d3FfY2hhbl9jbG9zaW5nOworCisJc3RydWN0IGludGVsX21pZF9kbWFfc2xhdmUgZG1hc190eDsK
+KwlzdHJ1Y3QgaW50ZWxfbWlkX2RtYV9zbGF2ZSBkbWFzX3J4OworCXN0cnVjdCBkbWFfY2hhbiAq
+dHhjaGFuOworCXN0cnVjdCBkbWFfY2hhbiAqcnhjaGFuOworCisJdW5zaWduZWQgaW50IGRldmlj
+ZV9pbnN0YW5jZTsKKwkvKiBDYWxsIGJhY2sgZnVuY3Rpb25zICovCisJaW50ICgqcmVhZF9jYWxs
+YmFjaykodm9pZCAqcGFyYW0pOworCWRtYV9hZGRyX3QgcmVhZF9kc3Q7CisJc2l6ZV90IHJlYWRf
+bGVuOyAgICAgLyogcmVhZF9sZW4gPiAwIDw9PiByZWFkX2RtYV9ydW5uaW5nICovCisJdm9pZCAq
+cmVhZF9wYXJhbTsJIC8qIGNvbnRleHQgcGFyYW0gZm9yIGNhbGxiYWNrICovCisJaW50ICgqd3Jp
+dGVfY2FsbGJhY2spKHZvaWQgKnBhcmFtKTsKKwlkbWFfYWRkcl90IHdyaXRlX3NyYzsKKwlzaXpl
+X3Qgd3JpdGVfbGVuOwkvKiB3cml0ZV9sZW4gPiAwIDw9PiByZWFkX2RtYV9ydW5uaW5nICovCisJ
+dm9pZCAqd3JpdGVfcGFyYW07CS8qIGNvbnRleHQgcGFyYW0gZm9yIGNhbGxiYWNrICovCisKKwl1
+bnNpZ25lZCBsb25nIGZsYWdzOworCXN0cnVjdCBtdXRleCBtdXRleDsKKwllbnVtIGludGVsX21p
+ZF9pMnNfc3NwX3VzYWdlIHVzYWdlOworCisJc3RydWN0IGludGVsX21pZF9pMnNfc2V0dGluZ3Mg
+Y3VycmVudF9zZXR0aW5nczsKKworfTsKKworc3RhdGljIHZvaWQgaTJzX3JlYWRfZG9uZSh2b2lk
+ICphcmcpOworc3RhdGljIHZvaWQgaTJzX3dyaXRlX2RvbmUodm9pZCAqYXJnKTsKK3N0YXRpYyBi
+b29sIGNoYW5fZmlsdGVyKHN0cnVjdCBkbWFfY2hhbiAqY2hhbiwgdm9pZCAqcGFyYW0pOworc3Rh
+dGljIHZvaWQgaTJzX2RtYV9zdG9wKHN0cnVjdCBpbnRlbF9taWRfaTJzX2hkbCAqZHJ2X2RhdGEp
+Oworc3RhdGljIGludCBpMnNfZG1hX3N0YXJ0KHN0cnVjdCBpbnRlbF9taWRfaTJzX2hkbCAqZHJ2
+X2RhdGEpOworc3RhdGljIHZvaWQgc3NwMV9kdW1wX3JlZ2lzdGVycyhzdHJ1Y3QgaW50ZWxfbWlk
+X2kyc19oZGwgKik7CitzdGF0aWMgaXJxcmV0dXJuX3QgaTJzX2ludChpbnQgaXJxLCB2b2lkICpk
+ZXZfaWQpOworc3RhdGljIHZvaWQgc2V0X3NzcF9pMnNfaHcoc3RydWN0IGludGVsX21pZF9pMnNf
+aGRsICpkcnZfZGF0YSwKKwkJY29uc3Qgc3RydWN0IGludGVsX21pZF9pMnNfc2V0dGluZ3MgKnBz
+X3NldHRpbmdzKTsKK3N0YXRpYyBpbnQgY2hlY2tfZGV2aWNlKHN0cnVjdCBkZXZpY2UgKmRldmlj
+ZV9wdHIsIHZvaWQgKmRhdGEpOworc3RhdGljIGludCBpbnRlbF9taWRfaTJzX3J1bnRpbWVfcmVz
+dW1lKHN0cnVjdCBkZXZpY2UgKmRldmljZV9wdHIpOworc3RhdGljIGludCBpbnRlbF9taWRfaTJz
+X3J1bnRpbWVfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXZpY2VfcHRyKTsKK3N0YXRpYyBpbnQg
+aW50ZWxfbWlkX2kyc19wcm9iZShzdHJ1Y3QgcGNpX2RldiAqcGRldiwKKwkJY29uc3Qgc3RydWN0
+IHBjaV9kZXZpY2VfaWQgKmVudCk7CitzdGF0aWMgdm9pZCBpbnRlbF9taWRfaTJzX3JlbW92ZShz
+dHJ1Y3QgcGNpX2RldiAqcGRldik7CitzdGF0aWMgdm9pZCBpMnNfc3NwX3N0b3Aoc3RydWN0IGlu
+dGVsX21pZF9pMnNfaGRsICpkcnZfZGF0YSk7CisvKnN0YXRpYyBpbnQgYnRfcGNtX2RtYV9pbml0
+KHN0cnVjdCBpbnRlbF9taWRfaTJzX2hkbCAqZHJ2X2RhdGEpOyovCisKKworI2lmZGVmIENPTkZJ
+R19QTQorc3RhdGljIGludCAgaW50ZWxfbWlkX2kyc19kcml2ZXJfc3VzcGVuZChzdHJ1Y3QgcGNp
+X2RldiAqZGV2LAorCQkJCQkgIHBtX21lc3NhZ2VfdCBzdGF0ZSk7CitzdGF0aWMgaW50IGludGVs
+X21pZF9pMnNfZHJpdmVyX3Jlc3VtZShzdHJ1Y3QgcGNpX2RldiAqZGV2KTsKKyNlbmRpZgorCisv
+KgorICogVGhlc2UgZGVmaW5lIHdpbGwgY2xhcmlmeSBzb3VyY2UgY29kZSB3aGVuIGFjY2Vzc2lu
+ZyBTU0NSeCByZWdpc3RlcnMKKyAqLworCisjZGVmaW5lIFNTQ1IwX3JlZyhyZWdiaXQsIHZhbHVl
+KQkJCQkJXAorCSgoKHZhbHVlKSAmIFNTQ1IwXyMjcmVnYml0IyNfTUFTSykgPDwgU1NDUjBfIyNy
+ZWdiaXQjI19TSElGVCkKKworI2RlZmluZSBTU0NSMV9yZWcocmVnYml0LCB2YWx1ZSkJCQkJCVwK
+KwkoKCh2YWx1ZSkgJiBTU0NSMV8jI3JlZ2JpdCMjX01BU0spIDw8IFNTQ1IxXyMjcmVnYml0IyNf
+U0hJRlQpCisKKyNkZWZpbmUgU1NQU1BfcmVnKHJlZ2JpdCwgdmFsdWUpCQkJCQlcCisJKCgodmFs
+dWUpICYgU1NQU1BfIyNyZWdiaXQjI19NQVNLKSA8PCBTU1BTUF8jI3JlZ2JpdCMjX1NISUZUKQor
+CisjZGVmaW5lIFNTUlNBX3JlZyhyZWdiaXQsIHZhbHVlKQkJCQkJXAorCSgoKHZhbHVlKSAmIFNT
+UlNBXyMjcmVnYml0IyNfTUFTSykgPDwgU1NSU0FfIyNyZWdiaXQjI19TSElGVCkKKyNkZWZpbmUg
+U1NUU0FfcmVnKHJlZ2JpdCwgdmFsdWUpCQkJCQlcCisJKCgodmFsdWUpICYgU1NUU0FfIyNyZWdi
+aXQjI19NQVNLKSA8PCBTU1RTQV8jI3JlZ2JpdCMjX1NISUZUKQorCisKKyNkZWZpbmUgY2hhbmdl
+X1NTQ1IwX3JlZyhyZWdfcG9pbnRlciwgcmVnYml0LCB2YWx1ZSkJCQkgIFwKKwl3cml0ZV9TU0NS
+MCgocmVhZF9TU0NSMChyZWdfcG9pbnRlcikJCQkJICBcCisJJiAofigoU1NDUjBfIyNyZWdiaXQj
+I19NQVNLIDw8IFNTQ1IwXyMjcmVnYml0IyNfU0hJRlQpKSkpCSAgXAorCXwgKCgodmFsdWUpICYg
+U1NDUjBfIyNyZWdiaXQjI19NQVNLKSA8PCBTU0NSMF8jI3JlZ2JpdCMjX1NISUZUKSwgIFwKKwly
+ZWdfcG9pbnRlcik7CisKKyNkZWZpbmUgc2V0X1NTQ1IwX3JlZyhyZWdfcG9pbnRlciwgcmVnYml0
+KQkJCQkgIFwKKwl3cml0ZV9TU0NSMChyZWFkX1NTQ1IwKHJlZ19wb2ludGVyKQkJCQkgIFwKKwl8
+IChTU0NSMF8jI3JlZ2JpdCMjX01BU0sgPDwgU1NDUjBfIyNyZWdiaXQjI19TSElGVCksCQlcCisJ
+cmVnX3BvaW50ZXIpOworCisjZGVmaW5lIGNsZWFyX1NTQ1IwX3JlZyhyZWdfcG9pbnRlciwgcmVn
+Yml0KQkJCQkgIFwKKwl3cml0ZV9TU0NSMCgocmVhZF9TU0NSMChyZWdfcG9pbnRlcikJCQkJICBc
+CisJJiAofigoU1NDUjBfIyNyZWdiaXQjI19NQVNLIDw8IFNTQ1IwXyMjcmVnYml0IyNfU0hJRlQp
+KSkpLAkgIFwKKwlyZWdfcG9pbnRlcik7CisKKyNkZWZpbmUgY2hhbmdlX1NTQ1IxX3JlZyhyZWdf
+cG9pbnRlciwgcmVnYml0LCB2YWx1ZSkJCQkgIFwKKwl3cml0ZV9TU0NSMSgocmVhZF9TU0NSMShy
+ZWdfcG9pbnRlcikJCQkJICBcCisJJiAofigoU1NDUjFfIyNyZWdiaXQjI19NQVNLIDw8IFNTQ1Ix
+XyMjcmVnYml0IyNfU0hJRlQpKSkpCSAgXAorCXwgKCgodmFsdWUpICYgU1NDUjFfIyNyZWdiaXQj
+I19NQVNLKSA8PCBTU0NSMV8jI3JlZ2JpdCMjX1NISUZUKSwgIFwKKwlyZWdfcG9pbnRlcik7CisK
+KyNkZWZpbmUgc2V0X1NTQ1IxX3JlZyhyZWdfcG9pbnRlciwgcmVnYml0KQkJCQkgIFwKKwl3cml0
+ZV9TU0NSMShyZWFkX1NTQ1IxKHJlZ19wb2ludGVyKQkJCQkgIFwKKwl8IChTU0NSMV8jI3JlZ2Jp
+dCMjX01BU0sgPDwgU1NDUjFfIyNyZWdiaXQjI19TSElGVCksCQkgIFwKKwlyZWdfcG9pbnRlcik7
+CisKKyNkZWZpbmUgY2xlYXJfU1NDUjFfcmVnKHJlZ19wb2ludGVyLCByZWdiaXQpCQkJCSAgXAor
+CXdyaXRlX1NTQ1IxKChyZWFkX1NTQ1IxKHJlZ19wb2ludGVyKQkJCQkgIFwKKwkmICh+KChTU0NS
+MV8jI3JlZ2JpdCMjX01BU0sgPDwgU1NDUjFfIyNyZWdiaXQjI19TSElGVCkpKSksCSAgXAorCXJl
+Z19wb2ludGVyKTsKKworLyogUlggRklGTyBsZXZlbCAqLworI2RlZmluZSBHRVRfU1NTUl92YWwo
+eCwgcmVnYikJCQkJCQkgIFwKKwkoKHggJiAoU1NTUl8jI3JlZ2IjI19NQVNLPDxTU1NSXyMjcmVn
+YiMjX1NISUZUKSk+PlNTU1JfIyNyZWdiIyNfU0hJRlQpCisKKworLyoKKyAqIFNTUCBoYXJkd2Fy
+ZSBjYW4gYmUgY29uZmlndXJlZCBhcyBJMlMsIFBDTSwgU1BJLi4uCisgKiBJbiBvcmRlciB0byBh
+bGxvdyBmbGV4aWJpbGl0eSB3aXRob3V0IG1vZGlmeWluZyB0aGUgc29mdHdhcmUgZHJpdmVyLCB0
+aGUKKyAqIFBDSSBoZWFkZXIgdXNlcyB0aGUgY29uZmlndXJhdGlvbiByZWdpc3RlciAnYWRpZCc6
+CisgKgorICogVGhlIFBDSSBoZWFkZXIgYXNzb2NpYXRlZCB0byBTU1AgZGV2aWNlcyBpbmNsdWRl
+cyBhIGNvbmZpZ3VyYXRpb24gcmVnaXN0ZXIuCisgKiBJdCBwcm92aWRlcyBpbmZvcm1hdGlvbiB0
+byBhIGRyaXZlciB3aGljaCBpcyBwcm9iZWQgZm9yIHRoZSBTU1AsIHNwZWNpZnlpbmcKKyAqIGlu
+IHdoaWNoIHdheSB0aGUgU1NQIGlzIHN1cHBvc2VkIHRvIGJlIHVzZWQuCisgKiBIZXJlIGlzIHRo
+ZSBmb3JtYXQgb2YgdGhpcyBjb25maWd1cmF0aW9uIHJlZ2lzdGVyICg4IGJpdHMpOgorICoKKyAq
+ICAgYml0cyAyLi4wOiBNb2RlCisgKiAgICAgICAwMDA6IEludmFsaWQsIHRoZSByZWdpc3RlciBz
+aG91bGQgYmUgaWdub3JlZAorICogICAgICAgMDAxOiBTU1AgdG8gYmUgdXNlZCBhcyBTUEkgY29u
+dHJvbGxlcgorICogICAgICAgMDEwOiBTU1AgdG8gYmUgdXNlZCBpbiBJMlMvSVNTIG1vZGUKKyAq
+ICAgICAgIG90aGVyOiBSZXNlcnZlZAorICoKKyAqICAgYml0cyA1Li4zOiBDb25maWd1cmF0aW9u
+CisgKiAgICAgICBJbiBJMlMvSVNTIG1vZGU6CisgKiAgICAgICAgICAgICAgIDAwMDogSW52YWxp
+ZAorICogICAgICAgICAgICAgICAwMDE6IEJsdWV0b290aAorICogICAgICAgICAgICAgICAwMTA6
+IE1vZGVtCisgKiAgICAgICAgICAgICAgIG90aGVyOiBSZXNlcnZlZAorICogICAgICAgSW4gU1BJ
+IG1vZGU6CisgKiAgICAgICAgICAgICAgIFZhbHVlIGlzIHRoZSBTUEkgYnVzIG51bWJlciBjb25u
+ZWN0ZWQgdG8gdGhlIFNTUC4KKyAqICAgICAgICAgICAgICAgVG8gYmUgdXNlZCBmb3IgcmVnaXN0
+cmF0aW9uIHRvIHRoZSBMaW51eCBTUEkKKyAqICAgICAgICAgICAgICAgZnJhbWV3b3JrLgorICoK
+KyAqICAgYml0IDY6IFNQSSBzbGF2ZQorICogICAgICAgUmVsZXZhbnQgaW4gU1BJIG1vZGUgb25s
+eS4gSWYgc2V0LCBpbmRpY2F0ZXMgdGhlIFNQSSBjbG9jaworICogICAgICAgaXMgbm90IHByb3Zp
+ZGVkIGJ5IHRoZSBTU1A6IFNQSSBzbGF2ZSBtb2RlLgorICoKKyAqICAgYml0IDc6IFJlc2VydmVk
+ICgwKQorICoKKyAqICAgVGhpcyBjb25maWd1cmF0aW9uIHJlZ2lzdGVyIGlzIGltcGxlbWVudGVk
+IGluIHRoZSBhZGlkIGZpZWxkIG9mIHRoZQorICogICBWZW5kb3IgU3BlY2lmaWMgUENJIGNhcGFi
+aWxpdHkgYXNzb2NpYXRlZCB0byB0aGUgU1NQLiBUaGUgZm9ybWF0IG9mCisgKiAgIHRoaXMgY2Fw
+YWJpbGl0eSBpczoKKyAqCisgKiAgIHVpbnQ4X3QgICAgIGNhcElkOyAgICAgICAgICAgICAgPCBD
+YXBhYmlsaXR5IElEICh2ZW5kb3Itc3BlY2lmaWMpCisgKiAgIHVpbnQ4X3QgICAgIG5leHRDYXA7
+ICAgICAgICAgICAgPCBOZXh0IEl0ZW0gUHRyCisgKiAgIHVpbnQ4X3QgICAgIGxlbmd0aDsgICAg
+ICAgICAgICAgPCBTaXplIG9mIHRoaXMgY2FwYWJpbGl0eSAoNykKKyAqICAgdWludDhfdCAgICAg
+dmVyc2lvbjsgICAgICAgICAgICA8IFZlcnNpb24gb2YgdGhpcyBjYXBhYmlsaXR5ICgxKQorICog
+ICB1aW50OF90ICAgICBsc3M7ICAgICAgICAgICAgICAgIDwgTG9naWNhbCBzdWJzeXN0ZW0gaW5m
+bworICogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEJpdCA3ID0gUE1V
+ICgwID0gTkMsIDEgPSBTQykKKyAqICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBCaXRzIDY6MCA9IExTUyBJRAorICogICB1aW50OF90ICAgICBhcG1jOyAgICAgICAgICAg
+ICAgIDwgQWRkaXRpb25hbCBQTSBjYXBhYmlsaXRpZXMKKyAqICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBCaXQgNyA9IFJzdmQKKyAqICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBCaXQgNiA9IFdha2UgY2FwYWJsZQorICogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIEJpdCA1ID0gRDMgc3VwcG9ydAorICogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEJpdCA0ID0gRDIgc3VwcG9ydAorICog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEJpdCAzID0gRDEgc3VwcG9y
+dAorICogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEJpdCAyID0gRDBp
+MyBzdXBwb3J0CisgKiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgQml0
+IDEgPSBEMGkyIHN1cHBvcnQKKyAqICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBCaXQgMCA9IEQwaTEgc3VwcG9ydAorICogICB1aW50OF90ICAgICBhZGlkOyAgICAgICAg
+ICAgICAgIDwgQWRkaXRpb25hbCBkZXZpY2UgSUQgKGRldi1zcGVjaWZpYykKKyAqICAgdWludDhf
+dCAgICAgcnN2ZDsgICAgICAgICAgICAgICA8IFJlc2VydmVkIGZvciBmdXR1cmUgdXNlCisgKgor
+ICogICBUaGUgY2FwYWJpbGl0eSBkYXRhIGFyZSBpbiB0aGUgUENJIGNvbmZpZ3VyYXRpb24gc3Bh
+Y2UgYW5kIHRoZQorICogICBhZGlkIGZpZWxkIGNhbiBiZSBtb2RpZmllZCB1c2luZyBCTVAgdG9v
+bC4KKyAqLworLyogQURESUQgPSBBZGRpdGlvbmFsIERldmljZSBJRCAqLworI2RlZmluZSBQQ0lf
+Q0FQX09GRlNFVF9BRElEIDYKKworCi0tIAoxLjYuNi4xCgo=
+
+--_002_2A84145621092446B6659B8A0F28E26F46FE77084Airsmsx501gerc_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--_002_2A84145621092446B6659B8A0F28E26F46FE77084Airsmsx501gerc_--
