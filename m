@@ -1,30 +1,29 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] sst: Intel SST audio driver
-Date: Mon, 18 Oct 2010 12:07:09 +0100
-Message-ID: <1287400029.3303.49.camel@odin>
-References: <20101003112244.488282fd@linux.intel.com>
-	<20101003201943.GA31764@opensource.wolfsonmicro.com>
-	<20101004100424.4e5cf40c@linux.intel.com>
-	<s5hr5fpur7u.wl%tiwai@suse.de>
-	<20101017103626.GB6311@opensource.wolfsonmicro.com>
-	<s5hk4lhul3j.wl%tiwai@suse.de>
-	<20101017161808.GA4437@opensource.wolfsonmicro.com>
-	<s5h39s4v6wi.wl%tiwai@suse.de>
-	<20101017221126.GA11666@opensource.wolfsonmicro.com>
-	<s5hwrpgt4cn.wl%tiwai@suse.de>
-	<20101018072017.GA25031@opensource.wolfsonmicro.com>
-	<s5heibnudjb.wl%tiwai@suse.de>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: [PATCH] Per Application Volume Control plugin for
+	ALSA
+Date: Mon, 18 Oct 2010 13:14:44 +0100
+Message-ID: <i9hdnk$k10$1@dough.gmane.org>
+References: <AANLkTikq=9HHQgsdK6CJfNfdOnX5xkBgcLTLrS_Y7Fv8@mail.gmail.com>
+	<AANLkTimZgTBaGyK=g5UTkHQ--e=Q5ZpONrrB-7wk8pOp@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 685E32436F
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9ADE610380C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Oct 2010 13:07:13 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so1134168wyb.38
-	for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2010 04:07:11 -0700 (PDT)
-In-Reply-To: <s5heibnudjb.wl%tiwai@suse.de>
+	Mon, 18 Oct 2010 14:15:00 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1P7ocB-0000xx-SR
+	for alsa-devel@alsa-project.org; Mon, 18 Oct 2010 14:14:55 +0200
+Received: from brent.tribalogic.net ([78.86.109.144])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2010 14:14:55 +0200
+Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2010 14:14:55 +0200
+In-Reply-To: <AANLkTimZgTBaGyK=g5UTkHQ--e=Q5ZpONrrB-7wk8pOp@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,152 +33,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: greg@kroah.com, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Alan Cox <alan@linux.intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-10-18 at 10:10 +0200, Takashi Iwai wrote:
-> At Mon, 18 Oct 2010 08:20:17 +0100,
-> Mark Brown wrote:
-> > 
-> > On Mon, Oct 18, 2010 at 08:14:16AM +0200, Takashi Iwai wrote:
-> > > Mark Brown wrote:
-> > 
-> > > > I do have some qualms about staging but given Greg's active policing of
-> > > > it and work to push things into the actual trees the warnings about its
-> > > > quality and general mainlineness are much more meaningful than those for
-> > > > experimental.  There's also the tainting of kernels, which is really
-> > > > useful.
-> > 
-> > > But who of the end user would care about it?  It's distributor and
-> > > developer who care.
-> > 
-> > End users I'm not so worried about in the immediate instance, it's
-> > mostly developers and in the embedded space there's way more of them
-> > than end users.  A lot of the time end users don't get sufficent access
-> > to the hardware to worry about kernels (though in this case that's less
-> > likely to be the case).
-> > 
-> > > And, is the code quality is in question, which is supposed to be
-> > > fixable there?  Your argument against this driver doesn't sound like
-> > > fixable.
-> > 
-> > What makes you think these problems are unfixable?  It should be fairly
-> > straightforward to pull out the CODEC and board parts of the driver and
-> > factor them out - as I said last night the ASoC CPU side support is a
-> > very thin wrapper around vanilla ALSA.  The code and board sections of
-> > the code look fairly basic and straightforward to redo within the ASoC
-> > APIs.  I don't think this is an unreasonably difficult thing to do and
-> > it's certainly nowhere near starting from scratch.
-> > 
-> > > So then why you do you think keeping that stuff in staging tree is OK
-> > > while sound tree is not?  It's a question to be or not to be.
-> > > End-users never hesitate using the staging if it works.  They don't
-> > > notice the difference; they don't notice kernel taint either.
-> > 
-> > Like I say, I have some qualms about staging but they're pretty minor.
-> > The idea of accepting embedded drivers which don't use ASoC seems like a
-> > massive step back compared to where what we've got right now, and is
-> > going down the path of accepting drivers that don't even sit within
-> > ALSA.
-> > 
-> > Currently with Linux we're able to say that if a CPU is supported and a
-> > CODEC is supported then we can use the two together.  That's great, and
-> > it's good for all concerned.  If we're going to start accepting vendor
-> > specific audio stacks we'll no longer be in a position to say that.  We
-> > will be back to having to talk about specific combinations of devices
-> > working together.
-> > 
-> > > The staging driver is also in upstream; distribution enables it almost
-> > > always, no matter how the quality of each driver is.  For developers,
-> > > the distinction is clear, of course.  But for the rest, it's not.
-> > 
-> > The biggest issues here surround developers.
-> > 
-> > > So, if you really don't want this style of implementation, you'll have
-> > > to take an action for getting rid of the driver from staging tree.
-> > > Otherwise others will submit the similar drivers, and they'll land
-> > > there, too.  Then we can keep the stuff in sound or other git tree
-> > > in another branch until the things gets sorted out.
-> > 
-> > One of the nice things about staging (indeed the key thing from my point
-> > of view) is that Greg does from time to time remove drivers from staging
-> > which look like they're not making any progress towards leaving staging.
-> > In contrast drivers in the main tree generally sit there indefinitely
-> > with minimal impetus to improve them.
-> > 
-> > > > I'm sorry I don't really understand what you're saying here.  The
-> > > > encoder offload stuff is all totally orthogonal to the issue of using
-> > > > the ASoC APIs.  On the CPU side the ASoC API is mostly a thin wrapper
-> > > > around the standard ALSA API so anything that works in ALSA should slot
-> > > > fairly readily into ASoC.  What I'd expect to see happen is that the
-> > > > CODEC and board stuff would get pulled out and everything else would
-> > > > stay pretty much as-is, including the DSP.
-> > 
-> > > > CPUs like OMAP (which are obviously already in the ASoC framework) also
-> > > > support this sort of stuff, the issues with mainline for them have been
-> > > > around the API to the DSP, though it looks like the TI stuff in staging
-> > > > is getting sorted out now.
-> > 
-> > > Well, what I don't understand in your argument is why we must stop it
-> > > being deployed.
-> > 
-> > Because it's not using the relevant framework at all, it's gone and
-> > reinvented the wheel without a pressing reason to do so and this will
-> > be very likely to create problems if the part is at all successful.  It
-> > will also set a really bad precedent for other vendors which is even
-> > more worrying than the specific driver.
-> > 
-> > Throughout the kernel we regularly have to push back on embedded vendors
-> > (not just CPU vendors) who produce drivers outside the standard
-> > frameworks and get them converted to the standard frameworks so that
-> > they can be deployed without having to go into driver specific APIs all
-> > the time.  Due to the fact that everything gets merged into one mainline
-> > tree Linux has much higher standards all round with this sort of thing
-> > than most other OSs but it takes work to enforce that.
-> > 
-> > This does include a bunch of the recently posted Intel drivers,
-> > including this one, but there's nothing particularly unusual here.
-> > 
-> > >                  Because it doesn't match with the current design of
-> > > the framework?  If so, a straight question must come next: can't the
-> > > framework itself be extended to suit with such hardware?
-> > 
-> > As I wrote several times I can see no problem supporting this hardware
-> > with current ASoC.  I'm not sure how I can be any clearer on this point.
-> > 
-> > > > I'm saying I see nothing about this hardware which should prevent it
-> > > > working with ASoC right now.  As I have said in terms of the overall
-> > > > structure of the device it's not really doing anything that hasn't been
-> > > > done elsewhere.  There's stuff we'd have to bodge in the short term, but
-> > > > only fairly small bits that can be handled fairly straightforwardly.
-> > 
-> > > OK, then we should fix this first.
-> > 
-> > This is all driver specific stuff, there's nothing that needs doing
-> > here immediately outside of the driver that I can spot right now.
+'Twas brillig, and James Huk at 17/10/10 22:54 did gyre and gimble:
+> Thanks for the answers, everyone.
 > 
-> ... so the whole messages can be reduced to a sentense:
->   "Rewrite the driver based on ASoC!"
+> @Colin Guthrie:
 > 
-> Then it's a question to Intel guys.  If they would like to support for
-> it, we can happily wait for it before merging.  If they don't want but
-> keep as is, then questions are:
->  - whether to keep it in upstream or not
->  - where to keep it, in staging or in sound tree
+>> Is there a specific use case targeted with this patch or is it really
+>> just a "proof of concept" demonstration that alsa can do this sans PA?
 > 
+> Before I written this plugin I tried to use PulseAudio -
+> unfortunately, applications I use didn't worked to well with it so I
+> had to get rid of it, however I liked the idea of PAVC. Then I tried
+> OSS4 but again - unfortunately it doesn't support my ALC1200 too well
+> (interesting info for those out there who says "Get rid of ALSA, get
+> rid of PA, install OSS4 because it just works" well, not always guys -
+> this time ALSA is the winner - this is not intended as a flame-war
+> starter, just as information). Finally I found "copy" plugin for ALSA,
+> started to tamper with it a bit, and found out that writing PAVC
+> plugin wouldn't be, all that hard. I created this because I liked this
+> feature on PA and OSS4 and ALSA lacked it - nothing more to this, than
+> that.
 
-I've just had a look at the code and my fear is here that this will be
-dumped in it's current state and forgotten about when Intel moves onto
-their next big thing(tm). I hope I'm wrong though....
+No worries, seems like a reasonable reason to have a go at this
+implementation.
 
-I also have to echo Mark and Pavel's concerns here that re-inventing the
-wheel in some areas is both unnecessary and divisive. Subsystem
-frameworks are one of the kernels key strengths and this lessens that to
-a degree.
+As a PA hacker, I'd be interested to know what apps were causing you
+problems when you used PA so that we could help make them better for
+other users who do want to use PA. If you could provide any details or
+debug info, that would be great.
 
-Liam
+> Sorry for my English.
+
+No need to apologise for that, I think it was fine :)
+
+Col
+
+
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mageia Contributor [http://www.mageia.org/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
