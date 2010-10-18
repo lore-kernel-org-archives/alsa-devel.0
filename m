@@ -1,22 +1,16 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH] Per Application Volume Control plugin for
-	ALSA
-Date: Mon, 18 Oct 2010 09:48:12 +0800
-Message-ID: <AANLkTinhR6c0bF1T1or1t7SRZZsoj50ZJrWDDEAp-TMS@mail.gmail.com>
-References: <AANLkTikq=9HHQgsdK6CJfNfdOnX5xkBgcLTLrS_Y7Fv8@mail.gmail.com>
-	<AANLkTimZgTBaGyK=g5UTkHQ--e=Q5ZpONrrB-7wk8pOp@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC update for 2.6.37
+Date: Mon, 18 Oct 2010 06:13:33 +0100
+Message-ID: <20101018051333.GA24467@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id ED1B71037F3
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EB8E8103840
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Oct 2010 03:48:15 +0200 (CEST)
-Received: by ewy9 with SMTP id 9so289210ewy.38
-	for <alsa-devel@alsa-project.org>; Sun, 17 Oct 2010 18:48:14 -0700 (PDT)
-In-Reply-To: <AANLkTimZgTBaGyK=g5UTkHQ--e=Q5ZpONrrB-7wk8pOp@mail.gmail.com>
+	Mon, 18 Oct 2010 07:13:19 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,24 +20,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-2010/10/18 James Huk <huk256@gmail.com>
+The following changes since commit 630f2d445f922c9dcf1bb54ffde78685e2c63072:
 
-> Thanks for the answers, everyone.
-> .
->
-> @Raymond Yau:
->
-> > does dmix allow an application open at least 16 voices ?
->
-> I think dmix allows much more than that, if your PC can handle it.
->
->
-Those hardware mixing sound implement the per voice volume control ( 16-64
-voices by hardware ) using IFACE_PCM instead of IFACE_MIXER
+  fbdev: sh_mobile_hdmi: fix compilation without SOUND enabled (2010-10-15 11:56:46 +0100)
 
-http://git.alsa-project.org/?p=alsa-tools.git;a=blob;f=hwmixvolume/README
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.37
 
-How dmix prevent clipping occur when it mix several voices ?
+Mark Brown (1):
+      Revert "ASoC: Add max98088 CODEC driver"
+
+ sound/soc/codecs/Kconfig    |    4 -
+ sound/soc/codecs/Makefile   |    2 -
+ sound/soc/codecs/max98088.c | 2097 -------------------------------------------
+ sound/soc/codecs/max98088.h |  193 ----
+ 4 files changed, 0 insertions(+), 2296 deletions(-)
+ delete mode 100644 sound/soc/codecs/max98088.c
+ delete mode 100644 sound/soc/codecs/max98088.h
