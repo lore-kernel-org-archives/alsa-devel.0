@@ -1,22 +1,18 @@
-From: Victor Rodriguez <vm.rod25@gmail.com>
-Subject: Re: [PATCH v4 7/9] davinci: MMC/SD support for
-	Omapl138-Hawkboar
-Date: Mon, 18 Oct 2010 11:00:19 -0500
-Message-ID: <AANLkTin-DH9eU9wSPLROVBbMj=gfxjRH=Jz=b4yUuHfi@mail.gmail.com>
-References: <1287112105-11968-1-git-send-email-vm.rod25@gmail.com>
-	<1287112105-11968-8-git-send-email-vm.rod25@gmail.com>
-	<4CB88078.7050504@mvista.com>
+From: Julian Scheel <julian@jusst.de>
+Subject: Re: USB asynchronous mode feedback format
+Date: Mon, 18 Oct 2010 18:53:49 +0200
+Message-ID: <201010181853.49360.julian@jusst.de>
+References: <1287046026.4cb6c38a2a179@discus.singnet.com.sg>
+	<201010151059.32746.julian@jusst.de> <20101015090321.GB25380@wok>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9DED82447A
+Received: from smtp2.work.de (smtp.work.de [212.12.45.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id 85D64244CE
 	for <alsa-devel@alsa-project.org>;
-	Mon, 18 Oct 2010 18:00:20 +0200 (CEST)
-Received: by gwaa20 with SMTP id a20so604903gwa.38
-	for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2010 09:00:19 -0700 (PDT)
-In-Reply-To: <4CB88078.7050504@mvista.com>
+	Mon, 18 Oct 2010 18:53:51 +0200 (CEST)
+In-Reply-To: <20101015090321.GB25380@wok>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,140 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sergei Shtylyov <sshtylyov@mvista.com>
-Cc: nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, khasim@ti.com, alsa-devel@alsa-project.org, caglarakyuz@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: lee188@singnet.com.sg, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 15, 2010 at 11:25 AM, Sergei Shtylyov <sshtylyov@mvista.com> wr=
-ote:
-> Hello.
->
-> On 10/15/10 07:08, vm.rod25@gmail.com wrote:
->
->> From: Victor Rodriguez<victor.rodriguez@sasken.com>
->
->> This patch adds MMC/SD support for the Hawkboard-L138 system
->
->> Signed-off-by: Victor Rodriguez<victor.rodriguez@sasken.com>
->
-> [...]
->
->> diff --git a/arch/arm/mach-davinci/board-omapl138-hawk.c
->> b/arch/arm/mach-davinci/board-omapl138-hawk.c
->> index 6f76220..87dea28 100644
->> --- a/arch/arm/mach-davinci/board-omapl138-hawk.c
->> +++ b/arch/arm/mach-davinci/board-omapl138-hawk.c
->
-> [...]
->>
->> @@ -180,6 +208,28 @@ static __init void omapl138_hawk_init(void)
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0pr_warning("%s: mcasp mux setup failed: %=
-d\n", __func__,
->> ret);
->> =A0 =A0 =A0 =A0da8xx_register_mcasp(0,&omapl138_hawk_snd_data);
->
-> =A0 I'd put all the following into a sperate function.
+Am Freitag, 15. Oktober 2010, 11:03:21 schrieb Daniel Mack:
+> On Fri, Oct 15, 2010 at 10:59:32AM +0200, Julian Scheel wrote:
+> > Am Donnerstag, 14. Oktober 2010, 17:39:13 schrieb Daniel Mack:
+> > > Well, even if it was, you should hear some sound. It might be
+> > > distorted, but if you don't get any output, the reason is somewhere
+> > > else.
+> > > 
+> > > Did you check the schematics of your board in comparison to the
+> > > reference diagrams in the codec's datasheet? Are there any other things
+> > > to be considered maybe?
+> > > 
+> > > What about the voltage levels? Are they within the specs? I had a quick
+> > > look and it seems that Vdd on the codec has to be within 3.0 .. 3.6V,
+> > > while the signals you provide rather seem to be in the range of 5V? The
+> > > absolute maximum ratings say that Vdd must not be greater than 4.0V.
+> > 
+> > Sorry for one more off-topic mail, but I rechecked it. Digital Input
+> > Voltage is -0.3V to 6.5V, so my 5V clock voltage should be fine imho.
+> > Vdd is 3.0V on my board...
+> > Do you maybe have any other thoughts what might be wrong here?
+> 
+> No, sorry. I think you're doing the right thing by analyzing the digital
+> stream carefully and checking the electrical components around the
+> codec. There's usually a ton of things to consider, but it's hard to
+> tell what to look for without having the same hardware.
+> 
+> Still, let me know what you find :)
 
-Thanks for the feedback Sergei I will fix that in a void function
-similar to omapl138_hawk_usb_init on the 9/9 patch
+Just figured out what went wrong. The PCM1794A requires the I2S signal to 
+contain 24 bit. So when running in 16 bit mode one has to fill up with 8 zero 
+bits. Now I doubled the BCLK so that I would be able to send 32 bit to the 
+DAC. Still am fighting a bit with the AT91's SSC controller to send only one 
+package per L/R frame, but in general I am seeing a proper signal behind the 
+DAC now!
 
->> + =A0 =A0 =A0 ret =3D davinci_cfg_reg_list(hawk_mmcsd0_pins);
->> + =A0 =A0 =A0 if (ret)
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 pr_warning("%s: MMC/SD0 mux setup failed: =
-%d\n",
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 __func__, ret);
->> +
->> + =A0 =A0 =A0 ret =3D gpio_request(DA850_HAWK_MMCSD_CD_PIN, "MMC CD\n");
->> + =A0 =A0 =A0 if (ret)
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 pr_warning("%s: can not open GPIO %d\n",
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 __func__, DA850_HAWK_MMCSD=
-_CD_PIN);
->> + =A0 =A0 =A0 gpio_direction_input(DA850_HAWK_MMCSD_CD_PIN);
->
-> =A0 You cannot call that if gpio_request{} failed.
-
-
-
-I think that is the idea. I am really confused here I have found in
-Documentation/gpio.txt that
-
-[...]
-
-Using GPIOs
------------
-The first thing a system should do with a GPIO is allocate it, using
-the gpio_request() call; see later.
-
-One of the next things to do with a GPIO, often in board setup code when
-setting up a platform_device using the GPIO, is mark its direction:
-
-	/* set as input or output, returning 0 or negative errno */
-	int gpio_direction_input(unsigned gpio);
-	int gpio_direction_output(unsigned gpio, int value);
-
-( =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D This is what I tried to implement =3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D )
-
-The return value is zero for success, else a negative errno.  It should
-be checked, since the get/set calls don't have error returns and since
-misconfiguration is possible.  You should normally issue these calls from
-a task context.  However, for spinlock-safe GPIOs it's OK to use them
-before tasking is enabled, as part of early board setup.
-
-[...]
-
-GPIO access that may sleep
-
-
-  ** IN ADDITION ** calls to setup and configure such GPIOs must be made
-from contexts which may sleep, since they may need to access the GPIO
-controller chip too:  (These setup calls are usually made from board
-setup or driver probe/teardown code, so this is an easy constraint.)
-
-	gpio_direction_input()
-	gpio_direction_output()
-	gpio_request()
-
-( =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D Here is my confusion it is a different ord=
-er
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D )
-
-## 	gpio_request_one()
-##	gpio_request_array()
-## 	gpio_free_array()
-
-	gpio_free()
-	gpio_set_debounce()
-
-
-I think that you mean that I should not call gpio_direction_input if
-gpio_request failed am I right ?
-
-Regards
-
-Victor Rodriguez
-
-
-
-
->> + =A0 =A0 =A0 ret =3D gpio_request(DA850_HAWK_MMCSD_WP_PIN, "MMC WP\n");
->> + =A0 =A0 =A0 if (ret)
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 pr_warning("%s: can not open GPIO %d\n",
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 __func__, DA850_HAWK_MMCSD=
-_WP_PIN);
->> + =A0 =A0 =A0 gpio_direction_input(DA850_HAWK_MMCSD_WP_PIN);
->
-> =A0 You cannot call that if gpio_request{} failed.
->
->> + =A0 =A0 =A0 ret =3D da8xx_register_mmcsd0(&da850_mmc_config);
->> + =A0 =A0 =A0 if (ret)
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 pr_warning("%s: MMC/SD0 registration faile=
-d: %d\n",
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 __func__, ret);
->> +
->> =A0 =A0 =A0 =A0ret =3D da8xx_register_watchdog();
->> =A0 =A0 =A0 =A0if (ret)
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0pr_warning("omapl138_hawk_init: "
->
-> WBR, Sergei
->
+Regards,
+Julian
