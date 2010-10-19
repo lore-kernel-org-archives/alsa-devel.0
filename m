@@ -1,67 +1,75 @@
-From: Jon Povey <Jon.Povey-Ean/AyPsLtfkYMGBc/C6ZA@public.gmane.org>
-Subject: RE: [PATCH v4 7/9] davinci: MMC/SD support for Omapl138-Hawkboar
-Date: Tue, 19 Oct 2010 02:54:13 +0100
-Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093EEAB44F@Cloud.RL.local>
-References: <AANLkTint2jQ3NpNWk09Y+Tm-mqAaUHpteZ+wrRA_3CDA@mail.gmail.com>
+From: Eliot Blennerhassett <ewblen+alsadevel@gmail.com>
+Subject: emachines em350 quirk
+Date: Tue, 19 Oct 2010 18:44:06 +1300
+Message-ID: <AANLkTin-VeC0KqH9ndHM-EPyTi1vZTZcPtFMfhAtQvRm@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-Content-Class: urn:content-classes:message
-In-Reply-To: <AANLkTint2jQ3NpNWk09Y+Tm-mqAaUHpteZ+wrRA_3CDA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Content-Language: en-US
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: Victor Rodriguez <vm.rod25-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id AD3FB103803
+	for <alsa-devel@alsa-project.org>;
+	Tue, 19 Oct 2010 07:44:08 +0200 (CEST)
+Received: by wwb34 with SMTP id 34so1150619wwb.20
+	for <alsa-devel@alsa-project.org>; Mon, 18 Oct 2010 22:44:06 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Victor Rodriguez wrote:
-> On Mon, Oct 18, 2010 at 8:16 PM, Jon Povey
-> <Jon.Povey-Ean/AyPsLtfkYMGBc/C6ZA@public.gmane.org> wrote:
->> davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org wrote:
->>> I think that you mean that I should not call gpio_direction_input if
->>> gpio_request failed am I right ?
->>
->> Yes, if gpio_request() fails that means you have not claimed that
->> gpio, something else is using it already or it's not available due
->> to other misconfiguration.
->>
->> So you shouldn't be trying to set its direction or anything like
->> that.
+Greetings,
 
-> Yes you are right and as I understand gpio_request will give a 0 if it
-> success and because of that the warning never will appear, if there is
-> a problem there will be a -1 and the warning will be printed. I could
-> fix this with a return that breaks the code like this
->
->        ret = gpio_request(DA850_HAWK_MMCSD_CD_PIN, "MMC CD\n");
->                if (ret) { pr_warning("%s: can not open GPIO %d\n",
->                        __func__, DA850_HAWK_MMCSD_CD_PIN);
->        return; }
->        gpio_direction_input(DA850_HAWK_MMCSD_CD_PIN);
->
-> Is this ok ?
+I have this emachines em350 notebook, which is equipped with ALC272X
+codec (a personal project this time...)
+By default the internal mic does not work.
+(See also https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/639846)
 
-I haven't seen the rest of your code to tell if that is OK, but
-not calling any other gpio_* functions if the request fails is
-the right idea.
+Using hda_analyzer, The internal mic appears to be a digital mic on NID 12
+This change enables it:
 
-You may need to do more cleanup to gracefuly handle the failure,
-like returning an error value at least.
+Diff for codec 0/0 (0x10ec0272):
+---
++++
+@@ -312,12 +312,12 @@
+      0x0c 0x0d* 0x0e
+ Node 0x22 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-In vals: [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80
+0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x00 0x00]
+   Connection: 10
+      0x18 0x19 0x1a 0x1b 0x1d 0x14 0x15 0x16 0x0b 0x12
+ Node 0x23 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+-  Amp-In vals: [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80
+0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
++  Amp-In vals: [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80
+0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+   Connection: 10
+      0x18 0x19 0x1a 0x1b 0x1d 0x14 0x15 0x16 0x0b 0x13
 
---
-Jon Povey
-jon.povey-Ean/AyPsLtfkYMGBc/C6ZA@public.gmane.org
+According to the ALC272 datasheet, there is no feedthrough path from
+DMIC to analog out.
+Also no
 
-Racelogic is a limited company registered in England. Registered number 2743719 .
-Registered Office Unit 10, Swan Business Centre, Osier Way, Buckingham, Bucks, MK18 1TB .
+Some of the other controls for this netbook are also superfluous.
+It only has (as far as I can make out)
+Internal speaker on NID 0x14 (LOUT1 PORT-D)
+Internal mic: DMIC on NID 0x12 (DMIC-1/2)
+External headphone on NID 0x21 (HP-OUT PORT-I)
+External mic on NID 0x18 (MIC1 PORT-B)
 
-The information contained in this electronic mail transmission is intended by Racelogic Ltd for the use of the named individual or entity to which it is directed and may contain information that is confidential or privileged. If you have received this electronic mail transmission in error, please delete it from your system without copying or forwarding it, and notify the sender of the error by reply email so that the sender's address records can be corrected. The views expressed by the sender of this communication do not necessarily represent those of Racelogic Ltd. Please note that Racelogic reserves the right to monitor e-mail communications passing through its network
+
+
+So, I'm looking for either an existing model=X to use with this
+machine, or how to create a new one?
+
+regards
+
+Eliot
