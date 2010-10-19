@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 00/25] ASoC: Overhaul Samsung drivers
-Date: Tue, 19 Oct 2010 01:52:52 -0700
-Message-ID: <20101019085252.GB10381@opensource.wolfsonmicro.com>
+Date: Tue, 19 Oct 2010 02:56:02 -0700
+Message-ID: <20101019095602.GA12173@opensource.wolfsonmicro.com>
 References: <1287471805-17952-1-git-send-email-jassisinghbrar@gmail.com>
-	<053901cb6f5f$76b9dea0$642d9be0$%kim@samsung.com>
-	<20101019110015.49dcb79b@anarsoul-laptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EF36F10387D
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2943C10387D
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Oct 2010 11:54:03 +0200 (CEST)
+	Tue, 19 Oct 2010 11:56:33 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20101019110015.49dcb79b@anarsoul-laptop>
+In-Reply-To: <1287471805-17952-1-git-send-email-jassisinghbrar@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,30 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vasily khoruzhick <anarsoul@gmail.com>
-Cc: alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, 'Jassi Brar' <jassi.brar@samsung.com>, 'Jassi Brar' <jassisinghbrar@gmail.com>, ben-linux@fluff.org, june.bae@samsung.com, sw.youn@samsung.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: Jassi Brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, june.bae@samsung.com, lrg@slimlogic.co.uk, sw.youn@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 19, 2010 at 11:00:15AM +0300, Vasily khoruzhick wrote:
-> Kukjin Kim <kgene.kim@samsung.com> wrote:
+On Tue, Oct 19, 2010 at 04:03:25PM +0900, Jassi Brar wrote:
 
-> > > I suggest the patches 13,14,16 & 17 go via Kgene's Tree, and the rest via
-> > > ASoC
-> > > tree due to tight dependencies.
+>   Simple testing of 5.1 channel and hardware mixing seems to work (though
+> there seems to be some issue with symmetric_rates in soc-core.c which
+> would be tried to fix later as saperate issue).
 
-> > Hmm...in my opinion, it would be better to me if could send arch/arm/ stuff
-> > to upstream via my tree even though there are dependencies.
-> > Mark, how do you think?
-
-> As for me, that's not a good idea. We'll get massive breakage during
-> 2.6.37 merge window then. Here's example: my sound-related changes to
-> machine files are merged through Ben's tree, but these changes aren't
-> in asoc tree, so Jassi is no aware of them, but now these changes are
-> outdated a bit due to device renaming. And this introduce compile
-> breakage.
-
-Since my primary development platforms are Samsung reference boards I'm
-especially unenthusiastic about anything which creates cross-tree
-issues.  My stock answer to things like this is that if we can't split
-things up so that dependencies are avoided then we should create a
-branch which can be pulled into both trees.
+symmetric_rates can only cope with straight through DAIs.  It'd need a
+substantial overhaul to be able to be told about multiple DAIs all
+needing to share the same link.  We need to do something about this
+anyway for multi-drop DAI links, provide some way of saying that
+multiple DAI links share clocks and need to have their configurations
+kept in lockstep.
