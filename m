@@ -1,17 +1,16 @@
 From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCH 04/25] ARM: Samsung: Define common audio-dma
-	device
-Date: Tue, 19 Oct 2010 16:05:40 +0900
-Message-ID: <1287471940-27598-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: [PATCH 18/25] ASoC: SMARTQ: Move to use new I2S driver
+Date: Tue, 19 Oct 2010 16:07:59 +0900
+Message-ID: <1287472079-30982-1-git-send-email-jassisinghbrar@gmail.com>
 References: <1P85Z9-0007a6-27>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3491103934
+	by alsa0.perex.cz (Postfix) with ESMTP id 47CDD103933
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Oct 2010 09:12:40 +0200 (CEST)
+	Tue, 19 Oct 2010 09:17:48 +0200 (CEST)
 In-Reply-To: <1P85Z9-0007a6-27>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,134 +27,92 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jassi Brar <jassi.brar@samsung.com>
 
-The ASoC uses common DMA driver for Audio devices. So it makes
-sense to a common audio-dma device shared across all platforms.
+Modify the smartq_wm8987.c to use new i2s controller driver.
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- arch/arm/mach-s3c64xx/dev-audio.c         |   13 -------------
- arch/arm/mach-s3c64xx/mach-smdk6410.c     |    2 +-
- arch/arm/plat-s3c24xx/devs.c              |   15 ---------------
- arch/arm/plat-samsung/Makefile            |    1 +
- arch/arm/plat-samsung/dev-asocdma.c       |   24 ++++++++++++++++++++++++
- arch/arm/plat-samsung/include/plat/devs.h |    2 +-
- 6 files changed, 27 insertions(+), 30 deletions(-)
- create mode 100644 arch/arm/plat-samsung/dev-asocdma.c
+ sound/soc/s3c24xx/Kconfig         |    2 +-
+ sound/soc/s3c24xx/smartq_wm8987.c |   25 +++++++++++--------------
+ 2 files changed, 12 insertions(+), 15 deletions(-)
 
-diff --git a/arch/arm/mach-s3c64xx/dev-audio.c b/arch/arm/mach-s3c64xx/dev-audio.c
-index c45cc37..c730dd2 100644
---- a/arch/arm/mach-s3c64xx/dev-audio.c
-+++ b/arch/arm/mach-s3c64xx/dev-audio.c
-@@ -336,16 +336,3 @@ void __init s3c64xx_ac97_setup_gpio(int num)
- 	else
- 		s3c_ac97_pdata.cfg_gpio = s3c64xx_ac97_cfg_gpe;
- }
--
--static u64 s3c_device_audio_dmamask = 0xffffffffUL;
--
--struct platform_device s3c_device_pcm = {
--	.name		  = "samsung-audio",
--	.id		  = -1,
--	.dev              = {
--		.dma_mask = &s3c_device_audio_dmamask,
--		.coherent_dma_mask = 0xffffffffUL
--	}
--};
--EXPORT_SYMBOL(s3c_device_pcm);
--
-diff --git a/arch/arm/mach-s3c64xx/mach-smdk6410.c b/arch/arm/mach-s3c64xx/mach-smdk6410.c
-index ecbddd3..e2b18b8 100644
---- a/arch/arm/mach-s3c64xx/mach-smdk6410.c
-+++ b/arch/arm/mach-s3c64xx/mach-smdk6410.c
-@@ -283,7 +283,7 @@ static struct platform_device *smdk6410_devices[] __initdata = {
- 	&s3c_device_fb,
- 	&s3c_device_ohci,
- 	&s3c_device_usb_hsotg,
--	&s3c_device_pcm,
-+	&samsung_asoc_dma,
- 	&s3c64xx_device_iisv4,
- 	&samsung_device_keypad,
+diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
+index 20fe288..e7fad53 100644
+--- a/sound/soc/s3c24xx/Kconfig
++++ b/sound/soc/s3c24xx/Kconfig
+@@ -144,7 +144,7 @@ config SND_SOC_SMDK_WM9713
+ config SND_S3C64XX_SOC_SMARTQ
+ 	tristate "SoC I2S Audio support for SmartQ board"
+ 	depends on SND_S3C24XX_SOC && MACH_SMARTQ
+-	select SND_S3C64XX_SOC_I2S
++	select SND_SAMSUNG_I2S
+ 	select SND_SOC_WM8750
  
-diff --git a/arch/arm/plat-s3c24xx/devs.c b/arch/arm/plat-s3c24xx/devs.c
-index 4bf0b39..d8fb4e6 100644
---- a/arch/arm/plat-s3c24xx/devs.c
-+++ b/arch/arm/plat-s3c24xx/devs.c
-@@ -259,21 +259,6 @@ struct platform_device s3c_device_iis = {
+ config SND_SOC_GONI_AQUILA_WM8994
+diff --git a/sound/soc/s3c24xx/smartq_wm8987.c b/sound/soc/s3c24xx/smartq_wm8987.c
+index 1d55312..5fcc420 100644
+--- a/sound/soc/s3c24xx/smartq_wm8987.c
++++ b/sound/soc/s3c24xx/smartq_wm8987.c
+@@ -25,7 +25,7 @@
+ #include <asm/mach-types.h>
  
- EXPORT_SYMBOL(s3c_device_iis);
+ #include "dma.h"
+-#include "s3c64xx-i2s.h"
++#include "i2s.h"
  
--/* ASoC PCM DMA */
+ #include "../codecs/wm8750.h"
+ 
+@@ -41,13 +41,9 @@ static int smartq_hifi_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+ 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+-	struct s3c_i2sv2_rate_calc div;
+ 	unsigned int clk = 0;
+ 	int ret;
+ 
+-	s3c_i2sv2_iis_calc_rate(&div, NULL, params_rate(params),
+-				s3c_i2sv2_get_clock(cpu_dai));
 -
--static u64 s3c_device_audio_dmamask = 0xffffffffUL;
--
--struct platform_device s3c_device_pcm = {
--	.name		  = "samsung-audio",
--	.id		  = -1,
--	.dev              = {
--		.dma_mask = &s3c_device_audio_dmamask,
--		.coherent_dma_mask = 0xffffffffUL
--	}
--};
--
--EXPORT_SYMBOL(s3c_device_pcm);
--
- /* RTC */
+ 	switch (params_rate(params)) {
+ 	case 8000:
+ 	case 16000:
+@@ -78,20 +74,21 @@ static int smartq_hifi_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret < 0)
+ 		return ret;
  
- static struct resource s3c_rtc_resource[] = {
-diff --git a/arch/arm/plat-samsung/Makefile b/arch/arm/plat-samsung/Makefile
-index 4d8ff92..b97623a 100644
---- a/arch/arm/plat-samsung/Makefile
-+++ b/arch/arm/plat-samsung/Makefile
-@@ -17,6 +17,7 @@ obj-y				+= clock.o
- obj-y				+= pwm-clock.o
- obj-y				+= gpio.o
- obj-y				+= gpio-config.o
-+obj-y				+= dev-asocdma.o
+-	/* set the codec system clock for DAC and ADC */
+-	ret = snd_soc_dai_set_sysclk(codec_dai, WM8750_SYSCLK, clk,
+-				     SND_SOC_CLOCK_IN);
++	/* Use PCLK for I2S signal generation */
++	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_RCLKSRC_0,
++					0, SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+ 		return ret;
  
- obj-$(CONFIG_SAMSUNG_GPIOLIB_4BIT)	+= gpiolib.o
- obj-$(CONFIG_SAMSUNG_CLKSRC)	+= clock-clksrc.o
-diff --git a/arch/arm/plat-samsung/dev-asocdma.c b/arch/arm/plat-samsung/dev-asocdma.c
-new file mode 100644
-index 0000000..b7b1fca
---- /dev/null
-+++ b/arch/arm/plat-samsung/dev-asocdma.c
-@@ -0,0 +1,24 @@
-+/* linux/arch/arm/plat-samsung/dev-asocdma.c
-+ *
-+ * Copyright (c) 2010 Samsung Electronics Co. Ltd
-+ *	Jaswinder Singh <jassi.brar@samsung.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/platform_device.h>
-+#include <linux/dma-mapping.h>
-+
-+static u64 audio_dmamask = DMA_BIT_MASK(32);
-+
-+struct platform_device samsung_asoc_dma = {
-+	.name		  = "samsung-audio",
-+	.id		  = -1,
-+	.dev              = {
-+		.dma_mask = &audio_dmamask,
-+		.coherent_dma_mask = DMA_BIT_MASK(32),
-+	}
-+};
-+EXPORT_SYMBOL(samsung_asoc_dma);
-diff --git a/arch/arm/plat-samsung/include/plat/devs.h b/arch/arm/plat-samsung/include/plat/devs.h
-index a9fecd6..21dfa68 100644
---- a/arch/arm/plat-samsung/include/plat/devs.h
-+++ b/arch/arm/plat-samsung/include/plat/devs.h
-@@ -32,7 +32,7 @@ extern struct platform_device s3c64xx_device_iisv4;
- extern struct platform_device s3c64xx_device_spi0;
- extern struct platform_device s3c64xx_device_spi1;
+-	/* set MCLK division for sample rate */
+-	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C_I2SV2_DIV_RCLK, div.fs_div);
++	/* Gate the RCLK output on PAD */
++	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_CDCLK,
++					0, SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+ 		return ret;
  
--extern struct platform_device s3c_device_pcm;
-+extern struct platform_device samsung_asoc_dma;
+-	/* set prescaler division for sample rate */
+-	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C_I2SV2_DIV_PRESCALER,
+-				     div.clk_div - 1);
++	/* set the codec system clock for DAC and ADC */
++	ret = snd_soc_dai_set_sysclk(codec_dai, WM8750_SYSCLK, clk,
++				     SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+ 		return ret;
  
- extern struct platform_device s3c64xx_device_pcm0;
- extern struct platform_device s3c64xx_device_pcm1;
+@@ -211,7 +208,7 @@ static struct snd_soc_dai_link smartq_dai[] = {
+ 	{
+ 		.name		= "wm8987",
+ 		.stream_name	= "SmartQ Hi-Fi",
+-		.cpu_dai_name	= "s3c64xx-i2s.0",
++		.cpu_dai_name	= "samsung-i2s.0",
+ 		.codec_dai_name	= "wm8750-hifi",
+ 		.platform_name	= "samsung-audio",
+ 		.codec_name	= "wm8750-codec.0-0x1a",
 -- 
 1.6.2.5
