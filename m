@@ -1,18 +1,18 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: sst: Intel SST audio driver
-Date: Tue, 19 Oct 2010 12:05:38 +0530
-Message-ID: <438BB0150E931F4B9CE701519A44630104BE811785@bgsmsx502.gar.corp.intel.com>
-References: <mailman.1.1287396001.20373.alsa-devel@alsa-project.org>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: [PATCH 14/25] ARM: S5P6442: I2S: Upgrade platform
+	device
+Date: Tue, 19 Oct 2010 16:07:28 +0900
+Message-ID: <1287472048-29255-1-git-send-email-jassisinghbrar@gmail.com>
+References: <1P85Z9-0007a6-27>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2FCD7103860
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id DDAE0103882
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Oct 2010 08:36:19 +0200 (CEST)
-In-Reply-To: <mailman.1.1287396001.20373.alsa-devel@alsa-project.org>
-Content-Language: en-US
+	Tue, 19 Oct 2010 09:12:35 +0200 (CEST)
+In-Reply-To: <1P85Z9-0007a6-27>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +22,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "Harsha, Priya" <priya.harsha@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Greg Kroah-Hartman <gregkh@suse.de>, Alan Cox <alan@linux.intel.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: kgene.kim@samsung.com, Jassi Brar <jassi.brar@samsung.com>, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org, june.bae@samsung.com, lrg@slimlogic.co.uk, sw.youn@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Jassi Brar <jassi.brar@samsung.com>
+
+Add more information to I2S platform_devices in order
+to prepare them for new controller driver.
+
+Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+---
+ arch/arm/mach-s5p6442/dev-audio.c |   44 ++++++++++++++++++++++++++++++------
+ 1 files changed, 36 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm/mach-s5p6442/dev-audio.c b/arch/arm/mach-s5p6442/dev-audio.c
+index 1419442..b91463e 100644
+--- a/arch/arm/mach-s5p6442/dev-audio.c
++++ b/arch/arm/mach-s5p6442/dev-audio.c
+@@ -30,15 +30,13 @@ static int s5p6442_cfg_i2s(struct platform_device *pdev)
+ 		s3c_gpio_cfgpin(S5P6442_GPC1(3), S3C_GPIO_SFN(2));
+ 		s3c_gpio_cfgpin(S5P6442_GPC1(4), S3C_GPIO_SFN(2));
+ 		break;
+-
+-	case -1:
++	case 0:
+ 		s3c_gpio_cfgpin(S5P6442_GPC0(0), S3C_GPIO_SFN(2));
+ 		s3c_gpio_cfgpin(S5P6442_GPC0(1), S3C_GPIO_SFN(2));
+ 		s3c_gpio_cfgpin(S5P6442_GPC0(2), S3C_GPIO_SFN(2));
+ 		s3c_gpio_cfgpin(S5P6442_GPC0(3), S3C_GPIO_SFN(2));
+ 		s3c_gpio_cfgpin(S5P6442_GPC0(4), S3C_GPIO_SFN(2));
+ 		break;
+-
+ 	default:
+ 		printk(KERN_ERR "Invalid Device %d\n", pdev->id);
+ 		return -EINVAL;
+@@ -47,8 +45,19 @@ static int s5p6442_cfg_i2s(struct platform_device *pdev)
+ 	return 0;
+ }
  
-> ... so the whole messages can be reduced to a sentense:
->   "Rewrite the driver based on ASoC!"
-> 
-> Then it's a question to Intel guys.  If they would like to support for
-> it, we can happily wait for it before merging.  If they don't want but
-> keep as is, then questions are:
->  - whether to keep it in upstream or not
->  - where to keep it, in staging or in sound tree
-> 
-> and, the latter question is nothing but a bikeshedding; in anyway it's
-> a second choice, after all.  We should spend time for more useful
-> things :)
-
-Yes Intel is planning to rewrite the sound card driver for ASoC.
-I will take us little time for that :-)
-
-Meanwhile IMO it would be great to have this driver in staging or in sound 
-whichever you guys agree to
-
-~Vinod
+-static struct s3c_audio_pdata s3c_i2s_pdata = {
++static const char *rclksrc_v35[] = {
++	[0] = "busclk",
++	[1] = "i2sclk",
++};
++
++static struct s3c_audio_pdata i2sv35_pdata = {
+ 	.cfg_gpio = s5p6442_cfg_i2s,
++	.type = {
++		.i2s = {
++			.quirks = QUIRK_SEC_DAI | QUIRK_NEED_RSTCLR,
++			.src_clk = rclksrc_v35,
++		},
++	},
+ };
+ 
+ static struct resource s5p6442_iis0_resource[] = {
+@@ -67,15 +76,34 @@ static struct resource s5p6442_iis0_resource[] = {
+ 		.end   = DMACH_I2S0_RX,
+ 		.flags = IORESOURCE_DMA,
+ 	},
++	[3] = {
++		.start = DMACH_I2S0S_TX,
++		.end   = DMACH_I2S0S_TX,
++		.flags = IORESOURCE_DMA,
++	},
+ };
+ 
+ struct platform_device s5p6442_device_iis0 = {
+-	.name		  = "samsung-i2s-v4",
+-	.id		  = -1,
++	.name		  = "samsung-i2s",
++	.id		  = 0,
+ 	.num_resources	  = ARRAY_SIZE(s5p6442_iis0_resource),
+ 	.resource	  = s5p6442_iis0_resource,
+ 	.dev = {
+-		.platform_data = &s3c_i2s_pdata,
++		.platform_data = &i2sv35_pdata,
++	},
++};
++
++static const char *rclksrc_v3[] = {
++	[0] = "iis",
++	[1] = "sclk_audio",
++};
++
++static struct s3c_audio_pdata i2sv3_pdata = {
++	.cfg_gpio = s5p6442_cfg_i2s,
++	.type = {
++		.i2s = {
++			.src_clk = rclksrc_v3,
++		},
+ 	},
+ };
+ 
+@@ -103,7 +131,7 @@ struct platform_device s5p6442_device_iis1 = {
+ 	.num_resources	  = ARRAY_SIZE(s5p6442_iis1_resource),
+ 	.resource	  = s5p6442_iis1_resource,
+ 	.dev = {
+-		.platform_data = &s3c_i2s_pdata,
++		.platform_data = &i2sv3_pdata,
+ 	},
+ };
+ 
+-- 
+1.6.2.5
