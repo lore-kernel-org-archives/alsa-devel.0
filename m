@@ -1,99 +1,81 @@
-From: <vm.rod25-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH v5 1/9] davinci: EMAC support for Omapl138-Hawkboard
-Date: Tue, 19 Oct 2010 13:06:19 -0500
-Message-ID: <1287511587-22216-2-git-send-email-vm.rod25@gmail.com>
+From: <vm.rod25@gmail.com>
+Subject: [PATCH v5 6/9] davinci: MMC/SD and USB-OHCI
+	configuration for Omapl138-Hawkboard
+Date: Tue, 19 Oct 2010 13:06:24 -0500
+Message-ID: <1287511587-22216-7-git-send-email-vm.rod25@gmail.com>
 References: <1287511587-22216-1-git-send-email-vm.rod25@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <1287511587-22216-1-git-send-email-vm.rod25-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, sshtylyov-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id EF02A243A3
+	for <alsa-devel@alsa-project.org>;
+	Tue, 19 Oct 2010 20:05:39 +0200 (CEST)
+In-Reply-To: <1287511587-22216-1-git-send-email-vm.rod25@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: davinci-linux-open-source@linux.davincidsp.com
+Cc: nsekhar@ti.com, alsa-devel@alsa-project.org, khasim@ti.com, caglarakyuz@gmail.com, sshtylyov@mvista.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Victor Rodriguez <victor.rodriguez-Ut8ZLSGP1ULQT0dZR+AlfA@public.gmane.org>
+From: Victor Rodriguez <victor.rodriguez@sasken.com>
 
-This patch adds EMAC support for the Hawkboard-L138 system
+This patch defines Pin Mux configuration to enable MMC/SD
+and USB-OHCI on the Hawkboard-L138 system
 
-Signed-off-by: Victor Rodriguez <victor.rodriguez-Ut8ZLSGP1ULQT0dZR+AlfA@public.gmane.org>
+Signed-off-by: Victor Rodriguez <victor.rodriguez@sasken.com>
 ---
- arch/arm/mach-davinci/board-omapl138-hawk.c |   47 +++++++++++++++++++++++++++
- 1 files changed, 47 insertions(+), 0 deletions(-)
+ arch/arm/mach-davinci/da850.c            |    4 ++++
+ arch/arm/mach-davinci/include/mach/mux.h |    4 ++++
+ 2 files changed, 8 insertions(+), 0 deletions(-)
 
-diff --git a/arch/arm/mach-davinci/board-omapl138-hawk.c b/arch/arm/mach-davinci/board-omapl138-hawk.c
-index c472dd8..8633245 100644
---- a/arch/arm/mach-davinci/board-omapl138-hawk.c
-+++ b/arch/arm/mach-davinci/board-omapl138-hawk.c
-@@ -19,6 +19,51 @@
+diff --git a/arch/arm/mach-davinci/da850.c b/arch/arm/mach-davinci/da850.c
+index f033a0a..4458bff 100644
+--- a/arch/arm/mach-davinci/da850.c
++++ b/arch/arm/mach-davinci/da850.c
+@@ -543,11 +543,15 @@ static const struct mux_config da850_pins[] = {
+ 	MUX_CFG(DA850, EMA_WAIT_1,	6,	24,	15,	1,	false)
+ 	MUX_CFG(DA850, NEMA_CS_2,	7,	0,	15,	1,	false)
+ 	/* GPIO function */
++	MUX_CFG(DA850, GPIO2_4,		6,	12,	15,	8,	false)
+ 	MUX_CFG(DA850, GPIO2_6,		6,	4,	15,	8,	false)
+ 	MUX_CFG(DA850, GPIO2_8,		5,	28,	15,	8,	false)
+ 	MUX_CFG(DA850, GPIO2_15,	5,	0,	15,	8,	false)
++	MUX_CFG(DA850, GPIO3_12,	7,	12,	15,	8,	false)
++	MUX_CFG(DA850, GPIO3_13,	7,	8,	15,	8,	false)
+ 	MUX_CFG(DA850, GPIO4_0,		10,	28,	15,	8,	false)
+ 	MUX_CFG(DA850, GPIO4_1,		10,	24,	15,	8,	false)
++	MUX_CFG(DA850, GPIO6_13,	13,	8,	15,	8,	false)
+ 	MUX_CFG(DA850, RTC_ALARM,	0,	28,	15,	2,	false)
+ #endif
+ };
+diff --git a/arch/arm/mach-davinci/include/mach/mux.h b/arch/arm/mach-davinci/include/mach/mux.h
+index de11aac..5d4e0fe 100644
+--- a/arch/arm/mach-davinci/include/mach/mux.h
++++ b/arch/arm/mach-davinci/include/mach/mux.h
+@@ -908,11 +908,15 @@ enum davinci_da850_index {
+ 	DA850_NEMA_CS_2,
  
- #include <mach/cp_intc.h>
- #include <mach/da8xx.h>
-+#include <mach/mux.h>
-+
-+#define HAWKBOARD_PHY_ID		"0:07"
-+
-+static short omapl138_hawk_mii_pins[] __initdata = {
-+	DA850_MII_TXEN, DA850_MII_TXCLK, DA850_MII_COL, DA850_MII_TXD_3,
-+	DA850_MII_TXD_2, DA850_MII_TXD_1, DA850_MII_TXD_0, DA850_MII_RXER,
-+	DA850_MII_CRS, DA850_MII_RXCLK, DA850_MII_RXDV, DA850_MII_RXD_3,
-+	DA850_MII_RXD_2, DA850_MII_RXD_1, DA850_MII_RXD_0, DA850_MDIO_CLK,
-+	DA850_MDIO_D,
-+	-1
-+};
-+
-+static __init void omapl138_hawk_config_emac(void)
-+{
-+	void __iomem *cfgchip3 = DA8XX_SYSCFG0_VIRT(DA8XX_CFGCHIP3_REG);
-+	int ret;
-+	u32 val;
-+	struct davinci_soc_info *soc_info = &davinci_soc_info;
-+
-+	if (!machine_is_omapl138_hawkboard())
-+		return;
-+
-+	val = __raw_readl(cfgchip3);
-+
-+	val &= ~BIT(8);
-+	ret = davinci_cfg_reg_list(omapl138_hawk_mii_pins);
-+	if (ret) {
-+		pr_warning("%s: cpgmac/mii mux setup failed: %d\n",
-+			__func__, ret);
-+		return;
-+	}
-+
-+	/* configure the CFGCHIP3 register for MII */
-+	__raw_writel(val, cfgchip3);
-+	pr_info("EMAC: MII PHY configured\n");
-+
-+	soc_info->emac_pdata->phy_id = HAWKBOARD_PHY_ID;
-+
-+	ret = da8xx_register_emac();
-+	if (ret)
-+		pr_warning("%s: emac registration failed: %d\n",
-+			__func__, ret);
-+}
-+
+ 	/* GPIO function */
++	DA850_GPIO2_4,
+ 	DA850_GPIO2_6,
+ 	DA850_GPIO2_8,
+ 	DA850_GPIO2_15,
++	DA850_GPIO3_12,
++	DA850_GPIO3_13,
+ 	DA850_GPIO4_0,
+ 	DA850_GPIO4_1,
++	DA850_GPIO6_13,
+ 	DA850_RTC_ALARM,
+ };
  
- static struct davinci_uart_config omapl138_hawk_uart_config __initdata = {
- 	.enabled_uarts = 0x7,
-@@ -30,6 +75,8 @@ static __init void omapl138_hawk_init(void)
- 
- 	davinci_serial_init(&omapl138_hawk_uart_config);
- 
-+	omapl138_hawk_config_emac();
-+
- 	ret = da8xx_register_watchdog();
- 	if (ret)
- 		pr_warning("omapl138_hawk_init: "
 -- 
 1.6.0.5
