@@ -1,15 +1,18 @@
 From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCH 00/25] ASoC: Overhaul Samsung drivers
-Date: Tue, 19 Oct 2010 16:03:25 +0900
-Message-ID: <1287471805-17952-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: [PATCH 15/25] ARM: S5PC100: I2S: Upgrade platform
+	device
+Date: Tue, 19 Oct 2010 16:07:34 +0900
+Message-ID: <1287472054-29548-1-git-send-email-jassisinghbrar@gmail.com>
+References: <1P85Z9-0007a6-27>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id E3FA110388C
+	by alsa0.perex.cz (Postfix) with ESMTP id ECC18103920
 	for <alsa-devel@alsa-project.org>;
 	Tue, 19 Oct 2010 09:12:35 +0200 (CEST)
+In-Reply-To: <1P85Z9-0007a6-27>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,61 +28,123 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jassi Brar <jassi.brar@samsung.com>
 
-Hi,
+Add more information to I2S platform_devices in order to
+prepare them for new controller driver.
 
-Here come patches overhauling the Samsung ASoC support.
+Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+---
+ arch/arm/mach-s5pc100/dev-audio.c |   50 ++++++++++++++++++++++++++++--------
+ 1 files changed, 39 insertions(+), 11 deletions(-)
 
-The AC97, PCM, SPDIF and ASoC-DMA related code has merely undergone
-cosmetic changes - symbol, device & driver renaming and file moving.
-
-A new I2S controller driver has been added to manage Samsung SoCs since
-S3C64XX. Older driver has been changed only as is necessary.
-Regarding I2S, I have left the s3c24xx series untouched because the
-controllers are too different to run by a common driver. S3C2412's I2S
-does have some similarities, but not important enough to warrant impact
-on new driver design.
-The new I2S driver has been designed around the notion of features/quirks.
-The newer SoCs have revised version of I2S_0(usually) than previous ones.
-So, I2S block is 'specified' in the platform code and the driver works on
-that configuration.
-For now, Secondary I2S DAI works only with System-DMAC. I2S-Internal DMA
-and SRAM will be enabled later.
-
-Testing:-
-  Simple testing of 5.1 channel and hardware mixing seems to work (though
-there seems to be some issue with symmetric_rates in soc-core.c which
-would be tried to fix later as saperate issue).
- I would appreciate any test-results for GONI and SMARTQ.
-
-I suggest the patches 13,14,16 & 17 go via Kgene's Tree, and the rest via ASoC
-tree due to tight dependencies.
-
-1). ASoC: WM8580: Remove useless assignment
-2). ASoC: Samsung: Remove redundant AQUILA driver
-3). ASoC: Samsung: Rename DMA device
-4). ARM: Samsung: Define common audio-dma device
-5). ASoC: Samsung: Rename ASoC DMA driver
-6). ASoC: Samsung: Rename AC97 platform device
-7). ASoC: Samsung: Rename AC97 driver
-8). ASoC: Samsung: Rename PCM driver
-9). ASoC: Samsung: Generalize DMA driver namespace
-10). ASoC: Samsung: Rename s3c64xx I2S device
-11). ASoC: Samsung: Add common I2S driver
-12). ARM: S3C64XX: I2S: Upgrade platform device
-13). ARM: S5P6440: I2S: Upgrade platform device
-14). ARM: S5P6442: I2S: Upgrade platform device
-15). ARM: S5PC100: I2S: Upgrade platform device
-16). ARM: S5PV210: I2S: Upgrade platform device
-17). ARM: S5PV310: Add audio platform devices
-18). ASoC: SMARTQ: Move to use new I2S driver
-19). ASoC: GONI: Move to use new I2S driver
-20). ASoC: SMDK64XX: Move to use new I2S driver
-21). ASoC: S3C64XX: Remove obsoleted I2S drivers
-22). ASoC: SMDK64XX: Rename for other platforms
-23). ASoC: SMDK_WM8580: Enable for SMDKC100
-24). ASoC: Samsung: Generalize Kconfig symbols
-25). ASoC: Samsung: Rename from s3c24xx to samsung
-
-
-Thanks,
-Jassi
+diff --git a/arch/arm/mach-s5pc100/dev-audio.c b/arch/arm/mach-s5pc100/dev-audio.c
+index 3cf22ff..e14137b 100644
+--- a/arch/arm/mach-s5pc100/dev-audio.c
++++ b/arch/arm/mach-s5pc100/dev-audio.c
+@@ -23,6 +23,8 @@ static int s5pc100_cfg_i2s(struct platform_device *pdev)
+ {
+ 	/* configure GPIO for i2s port */
+ 	switch (pdev->id) {
++	case 0: /* Dedicated pins */
++		break;
+ 	case 1:
+ 		s3c_gpio_cfgpin(S5PC100_GPC(0), S3C_GPIO_SFN(2));
+ 		s3c_gpio_cfgpin(S5PC100_GPC(1), S3C_GPIO_SFN(2));
+@@ -30,7 +32,6 @@ static int s5pc100_cfg_i2s(struct platform_device *pdev)
+ 		s3c_gpio_cfgpin(S5PC100_GPC(3), S3C_GPIO_SFN(2));
+ 		s3c_gpio_cfgpin(S5PC100_GPC(4), S3C_GPIO_SFN(2));
+ 		break;
+-
+ 	case 2:
+ 		s3c_gpio_cfgpin(S5PC100_GPG3(0), S3C_GPIO_SFN(4));
+ 		s3c_gpio_cfgpin(S5PC100_GPG3(1), S3C_GPIO_SFN(4));
+@@ -38,10 +39,6 @@ static int s5pc100_cfg_i2s(struct platform_device *pdev)
+ 		s3c_gpio_cfgpin(S5PC100_GPG3(3), S3C_GPIO_SFN(4));
+ 		s3c_gpio_cfgpin(S5PC100_GPG3(4), S3C_GPIO_SFN(4));
+ 		break;
+-
+-	case -1: /* Dedicated pins */
+-		break;
+-
+ 	default:
+ 		printk(KERN_ERR "Invalid Device %d\n", pdev->id);
+ 		return -EINVAL;
+@@ -50,8 +47,20 @@ static int s5pc100_cfg_i2s(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct s3c_audio_pdata s3c_i2s_pdata = {
++static const char *rclksrc_v5[] = {
++	[0] = "iis",
++	[1] = "i2sclkd2",
++};
++
++static struct s3c_audio_pdata i2sv5_pdata = {
+ 	.cfg_gpio = s5pc100_cfg_i2s,
++	.type = {
++		.i2s = {
++			.quirks = QUIRK_PRI_6CHAN | QUIRK_SEC_DAI
++					 | QUIRK_NEED_RSTCLR,
++			.src_clk = rclksrc_v5,
++		},
++	},
+ };
+ 
+ static struct resource s5pc100_iis0_resource[] = {
+@@ -70,15 +79,34 @@ static struct resource s5pc100_iis0_resource[] = {
+ 		.end   = DMACH_I2S0_RX,
+ 		.flags = IORESOURCE_DMA,
+ 	},
++	[3] = {
++		.start = DMACH_I2S0S_TX,
++		.end   = DMACH_I2S0S_TX,
++		.flags = IORESOURCE_DMA,
++	},
+ };
+ 
+ struct platform_device s5pc100_device_iis0 = {
+-	.name		  = "samsung-i2s-v4",
+-	.id		  = -1,
++	.name		  = "samsung-i2s",
++	.id		  = 0,
+ 	.num_resources	  = ARRAY_SIZE(s5pc100_iis0_resource),
+ 	.resource	  = s5pc100_iis0_resource,
+ 	.dev = {
+-		.platform_data = &s3c_i2s_pdata,
++		.platform_data = &i2sv5_pdata,
++	},
++};
++
++static const char *rclksrc_v3[] = {
++	[0] = "iis",
++	[1] = "sclk_audio",
++};
++
++static struct s3c_audio_pdata i2sv3_pdata = {
++	.cfg_gpio = s5pc100_cfg_i2s,
++	.type = {
++		.i2s = {
++			.src_clk = rclksrc_v3,
++		},
+ 	},
+ };
+ 
+@@ -106,7 +134,7 @@ struct platform_device s5pc100_device_iis1 = {
+ 	.num_resources	  = ARRAY_SIZE(s5pc100_iis1_resource),
+ 	.resource	  = s5pc100_iis1_resource,
+ 	.dev = {
+-		.platform_data = &s3c_i2s_pdata,
++		.platform_data = &i2sv3_pdata,
+ 	},
+ };
+ 
+@@ -134,7 +162,7 @@ struct platform_device s5pc100_device_iis2 = {
+ 	.num_resources	  = ARRAY_SIZE(s5pc100_iis2_resource),
+ 	.resource	  = s5pc100_iis2_resource,
+ 	.dev = {
+-		.platform_data = &s3c_i2s_pdata,
++		.platform_data = &i2sv3_pdata,
+ 	},
+ };
+ 
+-- 
+1.6.2.5
