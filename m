@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 00/25] ASoC: Overhaul Samsung drivers
-Date: Tue, 19 Oct 2010 02:56:02 -0700
-Message-ID: <20101019095602.GA12173@opensource.wolfsonmicro.com>
-References: <1287471805-17952-1-git-send-email-jassisinghbrar@gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Fix I2C component device id number
+ creation
+Date: Tue, 19 Oct 2010 11:02:08 +0100
+Message-ID: <1287482528.3272.56.camel@odin>
+References: <1287475845-16230-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2943C10387D
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2804510387D
 	for <alsa-devel@alsa-project.org>;
-	Tue, 19 Oct 2010 11:56:33 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1287471805-17952-1-git-send-email-jassisinghbrar@gmail.com>
+	Tue, 19 Oct 2010 12:02:12 +0200 (CEST)
+Received: by wwb34 with SMTP id 34so1349226wwb.20
+	for <alsa-devel@alsa-project.org>; Tue, 19 Oct 2010 03:02:11 -0700 (PDT)
+In-Reply-To: <1287475845-16230-1-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,19 +24,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, june.bae@samsung.com, lrg@slimlogic.co.uk, sw.youn@samsung.com
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 19, 2010 at 04:03:25PM +0900, Jassi Brar wrote:
+On Tue, 2010-10-19 at 11:10 +0300, Jarkko Nikula wrote:
+> Use bitwise AND instead of logical AND when masking.
+> 
+> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+> ---
+> Random note, not known to cause any problems at the moment as id field of
+> codec seems to be unused.
+> ---
+>  sound/soc/soc-core.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 8751efd..fe9f20b 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -2892,7 +2892,7 @@ static inline char *fmt_single_name(struct device *dev, int *id)
+>  			char tmp[NAME_SIZE];
+>  
+>  			/* create unique ID number from I2C addr and bus */
+> -			*id = ((id1 && 0xffff) << 16) + id2;
+> +			*id = ((id1 & 0xffff) << 16) + id2;
+>  
+>  			/* sanitize component name for DAI link creation */
+>  			snprintf(tmp, NAME_SIZE, "%s.%s", dev->driver->name, name);
 
->   Simple testing of 5.1 channel and hardware mixing seems to work (though
-> there seems to be some issue with symmetric_rates in soc-core.c which
-> would be tried to fix later as saperate issue).
-
-symmetric_rates can only cope with straight through DAIs.  It'd need a
-substantial overhaul to be able to be told about multiple DAIs all
-needing to share the same link.  We need to do something about this
-anyway for multi-drop DAI links, provide some way of saying that
-multiple DAI links share clocks and need to have their configurations
-kept in lockstep.
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
