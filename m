@@ -1,21 +1,20 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 11/25] ASoC: Samsung: Add common I2S driver
-Date: Wed, 20 Oct 2010 11:22:26 +0900
-Message-ID: <AANLkTimaQ=7Ejgb1jZW4=VGj2-ZV-2wcX6esZwUXsC4a@mail.gmail.com>
+Date: Tue, 19 Oct 2010 20:13:34 -0700
+Message-ID: <20101020031333.GH3803@opensource.wolfsonmicro.com>
 References: <1287472025-27898-1-git-send-email-jassisinghbrar@gmail.com>
 	<20101019093550.GA11371@opensource.wolfsonmicro.com>
+	<AANLkTimaQ=7Ejgb1jZW4=VGj2-ZV-2wcX6esZwUXsC4a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8DC32103879
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 84E41103879
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Oct 2010 04:22:26 +0200 (CEST)
-Received: by bwz18 with SMTP id 18so2466112bwz.38
-	for <alsa-devel@alsa-project.org>; Tue, 19 Oct 2010 19:22:26 -0700 (PDT)
-In-Reply-To: <20101019093550.GA11371@opensource.wolfsonmicro.com>
+	Wed, 20 Oct 2010 05:13:28 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTimaQ=7Ejgb1jZW4=VGj2-ZV-2wcX6esZwUXsC4a@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,88 +24,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Jassi Brar <jassisinghbrar@gmail.com>
 Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, june.bae@samsung.com, lrg@slimlogic.co.uk, sw.youn@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBPY3QgMTksIDIwMTAgYXQgNjozNSBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFR1ZSwgT2N0IDE5LCAyMDEwIGF0
-IDA0OjA3OjA1UE0gKzA5MDAsIEphc3NpIEJyYXIgd3JvdGU6Cj4KPiBUaGlzIGxvb2tzIGdvb2Qg
-LSB0aGVyZSdzIGEgZmV3IGNvbW1lbnRzIGJlbG93IGJ1dCB0aGV5J3JlIHByZXR0eSBzbWFsbAo+
-IHRoaW5ncy4KPgo+PiDCoC8qKgo+PiDCoCAqIHN0cnVjdCBzM2NfYXVkaW9fcGRhdGEgLSBjb21t
-b24gcGxhdGZvcm0gZGF0YSBmb3IgYXVkaW8gZGV2aWNlIGRyaXZlcnMKPj4gwqAgKiBAY2ZnX2dw
-aW86IENhbGxiYWNrIGZ1bmN0aW9uIHRvIHNldHVwIG11eCdlZCBwaW5zIGluIEkyUy9QQ00vQUM5
-NyBtb2RlCj4+IMKgICovCj4+IMKgc3RydWN0IHMzY19hdWRpb19wZGF0YSB7Cj4+IMKgIMKgIMKg
-IGludCAoKmNmZ19ncGlvKShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICopOwo+PiArIMKgIMKgIHVu
-aW9uIHsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBzdHJ1Y3Qgc2Ftc3VuZ19pMnMgaTJzOwo+PiAr
-IMKgIMKgIH0gdHlwZTsKPgo+IE1pZ2h0IGJlIGFzIGVhc3kganVzdCB0byBlbWJlZCBhIHN0cnVj
-dCBzM2NfYXVkaW9fcGRhdGEgd2l0aGluIHRoZQo+IHN0cnVjdCBzYW1zdW5nX2kycz8KCnN0cnVj
-dCBzM2NfYXVkaW9fcGRhdGEgaXMgc2hhcmVkIGFtb25nIEkyUywgQUM5NywgU1BESUYgYW5kIFBD
-TS4KSGVyZSB0aGUgaWRlYSBpcyB0aGF0IGNvbnRyb2xsZXIgZHJpdmVycyBhZGQgc3BlY2lmaWMg
-c3RydWN0dXJlcyB0byB0aGUgdW5pb24KYXMgYW5kIHdoZW4gdGhleSBuZWVkIGl0LgoKCj4+ICsg
-wqAgwqAgc3dpdGNoIChiZnMpIHsKPj4gKyDCoCDCoCBjYXNlIDQ4Ogo+PiArIMKgIMKgIMKgIMKg
-IMKgIMKgIG1vZCB8PSBNT0RfQkNMS180OEZTOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIGJyZWFr
-Owo+PiArIMKgIMKgIGNhc2UgMzI6Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgbW9kIHw9IE1PRF9C
-Q0xLXzMyRlM7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgYnJlYWs7Cj4+ICsgwqAgwqAgY2FzZSAy
-NDoKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBtb2QgfD0gTU9EX0JDTEtfMjRGUzsKPj4gKyDCoCDC
-oCDCoCDCoCDCoCDCoCBicmVhazsKPj4gKyDCoCDCoCBkZWZhdWx0Ogo+PiArIMKgIMKgIMKgIMKg
-IMKgIMKgIG1vZCB8PSBNT0RfQkNMS18xNkZTOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIGJyZWFr
-Owo+Cj4gRXNwZWNpYWxseSBvbiB0aGUgd3JpdGUgc2lkZSBJJ2QgYmUgYSBiaXQgbW9yZSBjb21m
-b3J0YWJsZSBpZiB0aGVzZQo+IGZ1bmN0aW9ucyBkaWRuJ3Qgc2lsZW50bHkgY29udmVydCBhbiB1
-bnNwZWNpZmllZCBzZXR0aW5nIGludG8gYSBkZWZhdWx0Cj4gc28gdGhhdCB3ZSBrbm93IHRoYXQg
-dXNlcnMgYXJlIGdldHRpbmcgdGhlIHNldHRpbmcgdGhleSBhc2tlZCBmb3IuCgpPay4gSSdsbCBh
-ZGQgYSBjYXNlIGZvciAxNiBhbmQgcHJpbnQgZXJyb3IgaW4gZGVmYXVsdC4KCgoKPj4gKyDCoCDC
-oCDCoCDCoCDCoCDCoCBpZiAoaXNfc2Vjb25kYXJ5KGkycykpIHsKPj4gKyDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCBjb24gfD0gQ09OX1RYU0RNQV9BQ1RJVkU7Cj4+ICsgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgY29uICY9IH5DT05fVFhTRE1BX1BBVVNFOwo+PiArIMKgIMKg
-IMKgIMKgIMKgIMKgIH0gZWxzZSB7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-Y29uIHw9IENPTl9UWERNQV9BQ1RJVkU7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgY29uICY9IH5DT05fVFhETUFfUEFVU0U7Cj4KPiBDYW4gd2UgZG8gdGhpcyBzdHVmZiB3aXRo
-IGEgdmFyaWFibGUgc3RvcmluZyB0aGUgbWFzayB0byB1c2U/IMKgSXQgbWlnaHQKPiBjb21wcmVz
-cyB0aGUgY29kZSBhIGxvdCBidXQgSSd2ZSBub3QgbG9va2VkIGF0IHdoYXQgdGhlIGJpdHMgYWN0
-dWFsbHkKPiBhcmUuCgpzb3JyeSwgSSBhbSB1bmFibGUgdG8gdW5kZXJzdGFuZCB3aGF0IHlvdSBz
-dWdnZXN0Cgo+Cj4+ICsgwqAgwqAgLyogQWxsb3cgTFJDTEstaW52ZXJ0ZWQgdmVyc2lvbiBvZiB0
-aGUgc3VwcG9ydGVkIGZvcm1hdHMgKi8KPj4gKyDCoCDCoCBzd2l0Y2ggKGZtdCAmIFNORF9TT0Nf
-REFJRk1UX0lOVl9NQVNLKSB7Cj4+ICsgwqAgwqAgY2FzZSBTTkRfU09DX0RBSUZNVF9OQl9ORjoK
-Pj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBicmVhazsKPj4gKyDCoCDCoCBjYXNlIFNORF9TT0NfREFJ
-Rk1UX05CX0lGOgo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIGlmICh0bXAgJiBNT0RfTFJfUkxPVykK
-Pj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCB0bXAgJj0gfk1PRF9MUl9STE9XOwo+
-PiArIMKgIMKgIMKgIMKgIMKgIMKgIGVsc2UKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCB0bXAgfD0gTU9EX0xSX1JMT1c7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgYnJlYWs7Cj4K
-PiBUaGlzIGxvb2tzIGEgYml0IG9kZCAtIGl0J2xsIGZsaXAgTU9EX0xSX0ZMT1cgaWYgdGhlIGZy
-YW1lIGlzIGludmVydGVkLAo+IEknZCBleHBlY3QgaXQgdG8gd2FudCB0byBzZXQgYSBzcGVjaWZp
-YyB2YWx1ZT8KClRoZSBmcmFtZSBwb2xhcml0eSBpcyBzcGVjaWZpZWQgYnkgdGhlIEZvcm1hdChJ
-MlMsIExTQiwgTVNCKSwgc28gd2UKc2V0L2NsZWFyIE1PRF9MUl9STE9XIGFjYyB0byB0aGUgRm9y
-bWF0IHJlcXVlc3RlZC4KVGhlIEludmVyc2lvbiByZXF1ZXN0IHdvcmtzIHJlbGF0aXZlIHRvIHRo
-ZSBGb3JtYXQgLS0gaWYgRnJhbWUgaW52ZXJzaW9uCmlzIHJlcXVlc3RlZCwgd2Ugc2ltcGx5IGZs
-aXAgaXQgZnJvbSB0aGUgdmFsdWUgc2V0IGR1cmluZyBGb3JtYXQgc2V0dGluZy4KCgo+PiArIMKg
-IMKgIC8qIFdlIGRvbid0IGNhcmUgYWJvdXQgQkZTIGluIFNsYXZlIG1vZGUgKi8KPj4gKyDCoCDC
-oCBpZiAoaXNfc2xhdmUoaTJzKSkKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gMDsKPgo+
-IFlvdSdyZSBza2lwcGluZyBtb3JlIHRoYW4ganVzdCByZnMgc2V0dGluZyBoZXJlLiDCoFByb2Jh
-Ymx5IGp1c3QgYSBjYXNlCj4gb2YgdXBkYXRpbmcgdGhlIGNvbW1lbnQuCgpZZXMsIEkgbmVlZCB0
-byB1cGRhdGUgdGhlIGNvbW1lbnQuCgoKPj4gK3N0YXRpYyBpbnQgaTJzdjJfaTJzX3NldF9jbGtk
-aXYoc3RydWN0IHNuZF9zb2NfZGFpICpkYWksCj4+ICsgwqAgwqAgaW50IGRpdl9pZCwgaW50IGRp
-dikKPj4gK3sKPj4gKyDCoCDCoCBzdHJ1Y3QgaTJzX2RhaSAqaTJzID0gdG9faW5mbyhkYWkpOwo+
-PiArIMKgIMKgIHN0cnVjdCBpMnNfZGFpICpvdGhlciA9IGkycy0+cHJpX2RhaSA/IDogaTJzLT5z
-ZWNfZGFpOwo+PiArCj4+ICsgwqAgwqAgaWYgKGRpdl9pZCA9PSBTQU1TVU5HX0kyU19ESVZfQkNM
-Sykgewo+Cj4gc3dpdGNoIHN0YXRlbWVudCBwbGVhc2UuCgpTd2l0Y2ggZGlkbid0IGxvb2sgdmVy
-eSBwcmV0dHkgd2l0aCBqdXN0IG9uZSBjYXNlLCBzbyBJIG1hZGUgaXQgaWYtZWxzZQpBbnl3YXlz
-LCBJJ2xsIGNoYW5nZSBpdCB0byBzd2l0Y2guCgoKPj4gKyNkZWZpbmUgU0FNU1VOR19JMlNfUkFU
-RVMgXAo+PiArIMKgIMKgIChTTkRSVl9QQ01fUkFURV84MDAwIHwgU05EUlZfUENNX1JBVEVfMTEw
-MjUgfCBTTkRSVl9QQ01fUkFURV8xNjAwMCB8IFwKPj4gKyDCoCDCoCBTTkRSVl9QQ01fUkFURV8y
-MjA1MCB8IFNORFJWX1BDTV9SQVRFXzMyMDAwIHwgU05EUlZfUENNX1JBVEVfNDQxMDAgfCBcCj4+
-ICsgwqAgwqAgU05EUlZfUENNX1JBVEVfNDgwMDAgfCBTTkRSVl9QQ01fUkFURV84ODIwMCB8IFNO
-RFJWX1BDTV9SQVRFXzk2MDAwKQo+Cj4gU05EUlZfUENNX1JBVEVfODAwMF85NjAwMC4KCm9mIGNv
-dXJzZSAhCgo+PiArLyoKPj4gKyAqIE1heGltdW0gbnVtYmVyIG9mIEkyUyBibG9ja3MgdGhhdCBh
-bnkgU29DIGNhbiBoYXZlLgo+PiArICogVGhlIHNlY29uZGFyeSBpbnRlcmZhY2Ugb2YgYSBDUFUg
-ZGFpKGlmIHRoZXJlIGV4aXN0cyBhbnkpLAo+PiArICogaXMgaW5kZXhlZCBhdCBbY3B1LWRhaSdz
-IElEICsgTUFYX0kyU10KPj4gKyAqLwo+PiArI2RlZmluZSBNQVhfSTJTIMKgIMKgIMKgNAo+Cj4g
-Q2FuIHRoaXMgYmUga2VwdCBpbnRlcm5hbCB0byB0aGUgZHJpdmVyPyDCoElmIG5vdCBpdCBzaG91
-bGQgYmUKPiBuYW1lc3BhY2VkLgoKQVNvQyBtYWNoaW5lIGRyaXZlcnMgbmVlZCB0byBpbmRleCB0
-aGUgc2Vjb25kYXJ5IGRhaSB0aGF0IGlzCmF1dG9tYXRpY2FsbHkgY3JlYXRlZCBhbmQgcmVnaXN0
-ZXJlZCBieSB0aGUgY3B1IGRyaXZlci4KU28sIGl0IG5lZWRzIHRvIGJlIGF2YWlsYWJsZSBvdXRz
-aWRlLgpJJ2xsIG1ha2UgaXQgU0FNU1VOR19JMlNfU0VDT0ZGIC0tIHNlY29uZGFyeSBvZmZzZXQg
-b2YgSTJTKD8pCgpUaGFua3MuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+On Wed, Oct 20, 2010 at 11:22:26AM +0900, Jassi Brar wrote:
+> On Tue, Oct 19, 2010 at 6:35 PM, Mark Brown
+
+> > Might be as easy just to embed a struct s3c_audio_pdata within the
+> > struct samsung_i2s?
+
+> struct s3c_audio_pdata is shared among I2S, AC97, SPDIF and PCM.
+> Here the idea is that controller drivers add specific structures to the u=
+nion
+> as and when they need it.
+
+Right, what I'm saying is that it'd seem more natural to do things the
+other way around and embed the common structure within a device specific
+pdata structure instead of having the union.
+
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 if (is_secondary(i2s)) {
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 con |=3D CON_TXSDMA_ACTIVE;
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 con &=3D ~CON_TXSDMA_PAUSE;
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 } else {
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 con |=3D CON_TXDMA_ACTIVE;
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 con &=3D ~CON_TXDMA_PAUSE;
+
+> > Can we do this stuff with a variable storing the mask to use? =A0It mig=
+ht
+> > compress the code a lot but I've not looked at what the bits actually
+> > are.
+
+> sorry, I am unable to understand what you suggest
+
+If we have something in the driver data struct specifying the masks to
+use then set these at probe time rather than having the if statements -
+probably the same mask can be used for playback & record if the
+bitfields are lined up similarly.  This would then be:
+
+	con |=3D data->active_mask;
+	con &=3D ~data->pause_mask;
+
+or similar, possibly with some shifts.
+
+> >> + =A0 =A0 /* Allow LRCLK-inverted version of the supported formats */
+> >> + =A0 =A0 switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+> >> + =A0 =A0 case SND_SOC_DAIFMT_NB_NF:
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 break;
+> >> + =A0 =A0 case SND_SOC_DAIFMT_NB_IF:
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 if (tmp & MOD_LR_RLOW)
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tmp &=3D ~MOD_LR_RLOW;
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 else
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tmp |=3D MOD_LR_RLOW;
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 break;
+
+> > This looks a bit odd - it'll flip MOD_LR_FLOW if the frame is inverted,
+> > I'd expect it to want to set a specific value?
+
+> The frame polarity is specified by the Format(I2S, LSB, MSB), so we
+> set/clear MOD_LR_RLOW acc to the Format requested.
+> The Inversion request works relative to the Format -- if Frame inversion
+> is requested, we simply flip it from the value set during Format setting.
+
+Please add a comment explaining that you're inverting the orientation
+you set previously - it's really surprising when reading the code.
+
+> >> +static int i2sv2_i2s_set_clkdiv(struct snd_soc_dai *dai,
+> >> + =A0 =A0 int div_id, int div)
+> >> +{
+> >> + =A0 =A0 struct i2s_dai *i2s =3D to_info(dai);
+> >> + =A0 =A0 struct i2s_dai *other =3D i2s->pri_dai ? : i2s->sec_dai;
+> >> +
+> >> + =A0 =A0 if (div_id =3D=3D SAMSUNG_I2S_DIV_BCLK) {
+
+> > switch statement please.
+
+> Switch didn't look very pretty with just one case, so I made it if-else
+> Anyways, I'll change it to switch.
+
+It helps make the code correspond to the expected patterns for selecting
+one of many clocks which is especially helpful when doing a big picture
+scan.
+
+> >> +/*
+> >> + * Maximum number of I2S blocks that any SoC can have.
+> >> + * The secondary interface of a CPU dai(if there exists any),
+> >> + * is indexed at [cpu-dai's ID + MAX_I2S]
+> >> + */
+> >> +#define MAX_I2S =A0 =A0 =A04
+
+> > Can this be kept internal to the driver? =A0If not it should be
+> > namespaced.
+
+> ASoC machine drivers need to index the secondary dai that is
+> automatically created and registered by the cpu driver.
+> So, it needs to be available outside.
+> I'll make it SAMSUNG_I2S_SECOFF -- secondary offset of I2S(?)
+
+How would the index be used with multi-component?
