@@ -1,22 +1,29 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 11/25] ASoC: Samsung: Add common I2S driver
-Date: Tue, 19 Oct 2010 21:01:42 -0700
-Message-ID: <20101020040141.GA22078@opensource.wolfsonmicro.com>
-References: <1287472025-27898-1-git-send-email-jassisinghbrar@gmail.com>
-	<20101019093550.GA11371@opensource.wolfsonmicro.com>
-	<AANLkTimaQ=7Ejgb1jZW4=VGj2-ZV-2wcX6esZwUXsC4a@mail.gmail.com>
-	<20101020031333.GH3803@opensource.wolfsonmicro.com>
-	<AANLkTi=5i=51=-m3ZhbTOWyQKz8H3oam6V=QfjL1DxhM@mail.gmail.com>
+From: =?UTF-8?B?UmFwaGHDq2wgRG91cnNlbmF1ZA==?= <rdoursenaud@free.fr>
+Subject: snd-usb-audio for Radikal Technologies SAC-2K
+Date: Wed, 20 Oct 2010 10:04:53 +0200
+Message-ID: <4CBEA2A5.7070902@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="------------070803050907090109070404"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 987322451A
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net
+	[217.70.183.194])
+	by alsa0.perex.cz (Postfix) with ESMTP id B9E2E2433B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 20 Oct 2010 06:01:31 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <AANLkTi=5i=51=-m3ZhbTOWyQKz8H3oam6V=QfjL1DxhM@mail.gmail.com>
+	Wed, 20 Oct 2010 10:07:31 +0200 (CEST)
+Received: from mfilter2-d.gandi.net (mfilter2-d.gandi.net [217.70.178.42])
+	by relay2-d.mail.gandi.net (Postfix) with ESMTP id 1C9CA225143
+	for <alsa-devel@alsa-project.org>;
+	Wed, 20 Oct 2010 10:07:31 +0200 (CEST)
+Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+	by mfilter2-d.gandi.net (mfilter2-d.gandi.net [217.70.178.42])
+	(amavisd-new, port 10024)
+	with ESMTP id 7+2ztyVH3-27 for <alsa-devel@alsa-project.org>;
+	Wed, 20 Oct 2010 10:07:28 +0200 (CEST)
+Received: from [192.168.1.3] (unknown [93.31.131.93])
+	(Authenticated sender: contact@ematech.fr)
+	by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 4713E225141
+	for <alsa-devel@alsa-project.org>;
+	Wed, 20 Oct 2010 10:07:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,48 +33,217 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, june.bae@samsung.com, lrg@slimlogic.co.uk, sw.youn@samsung.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 20, 2010 at 12:27:43PM +0900, Jassi Brar wrote:
-> On Wed, Oct 20, 2010 at 12:13 PM, Mark Brown
+This is a multi-part message in MIME format.
+--------------070803050907090109070404
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> > If we have something in the driver data struct specifying the masks to
-> > use then set these at probe time rather than having the if statements -
-> > probably the same mask can be used for playback & record if the
-> > bitfields are lined up similarly. =A0This would then be:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> > =A0 =A0 =A0 =A0con |=3D data->active_mask;
-> > =A0 =A0 =A0 =A0con &=3D ~data->pause_mask;
+Hi,
 
-> > or similar, possibly with some shifts.
+I'm working on getting the usb part of this very nice control surface to
+work with alsa. I sniffed the usb traffic of the windows driver then
+browsed the snd-usb-audio source code for clues.
 
-> Let me see if the space saved is worth the complication.
+I managed to get it partially working using a modified QUIRK_MIDI_EMAGIC
+since the protocols are fairly similar (at least the 0xF5 port switching
+part).
 
-I was thinking it should make something similar by making it clear that
-we're just doing the same thing to a different location rather than lots
-of conditional code to follow.
+Please find attached the patch I came up to.
 
-> > Please add a comment explaining that you're inverting the orientation
-> > you set previously - it's really surprising when reading the code.
+I have a few problems and dark areas I hope you'll be able to light up a
+little :
 
-> Ok, I'll add a comment.
-> Btw, isn't it the standard way? Don't other I2S CPU drivers do the same t=
-hing ?
+First, I more or less get the picture of what the code is doing but
+there's one part I fiddled with that I don't understand fully. What are
+the .out_cables and .in_cables bitmasks doing besides defining the
+number of ports ?
 
-Not commonly - normally people don't implement anything except plain I2S
-mode, or have explict mode and inversion bits (so the mode sets the
-expected polarity and then the inversion bit swaps that).
+Next, the input part seem to work flawlessly on all ports, but I have
+what seems to be a buffer overflow on the device when outputting midi
+data. Comparing the windows and linux usb traffic, something obvious
+shows up : the windows driver seem to be waiting for the device's
+acknowledgment after each sent byte before sending the next one while
+the snd-usb-audio module sends a bunch of bytes at once that ends up
+confusing the device _and_ module. How can I make it behave like the
+windows driver ?
 
-> > How would the index be used with multi-component?
+I have traffic and error logs available if needed.
 
-> For example, please look at [Patch 23/25]
+Thanks.
+- --=20
+Rapha=C3=ABl Doursenaud
+http://raphael.doursenaud.fr
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.16 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-> +               /* Secondary is at offset MAX_I2S from Primary */
-> +               str =3D (char *)smdk_dai[SEC_PLAYBACK].cpu_dai_name;
-> +               str[strlen(str) - 1] =3D '0' + MAX_I2S;
+iEYEARECAAYFAky+oqQACgkQaZKmNAdXaVUopgCgifnK+eSsCNpR5rx21iUqmXBQ
+wJIAoJlt4h7Tp8tYYSbg9ZfLekE1QQfL
+=3Dd7vi
+-----END PGP SIGNATURE-----
 
-Hrm, slightly fiddly.  Perhaps we want a function people can call which
-will generate the secondary DAI name for you?  Might be more directly
-what people want.
+--------------070803050907090109070404
+Content-Type: text/plain;
+ name="sac-2K.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="sac-2K.patch"
+
+ZGlmZiAtTnVycCBsaW51eC0yLjYuMzYtcmM2L3NvdW5kL3VzYi9taWRpLmMgbGludXgtMi42
+LjM2LXJjNi5wYXRjaGVkL3NvdW5kL3VzYi9taWRpLmMKLS0tIGxpbnV4LTIuNi4zNi1yYzYv
+c291bmQvdXNiL21pZGkuYwkyMDEwLTA5LTI5IDAzOjAxOjIyLjAwMDAwMDAwMCArMDIwMAor
+KysgbGludXgtMi42LjM2LXJjNi5wYXRjaGVkL3NvdW5kL3VzYi9taWRpLmMJMjAxMC0xMC0x
+OCAwMDoxNjo0My4xNDYwMDAwOTEgKzAyMDAKQEAgLTU5LDcgKzU5LDcgQEAKIC8qCiAgKiBk
+ZWZpbmUgdGhpcyB0byBsb2cgYWxsIFVTQiBwYWNrZXRzCiAgKi8KLS8qICNkZWZpbmUgRFVN
+UF9QQUNLRVRTICovCisjZGVmaW5lIERVTVBfUEFDS0VUUwogCiAvKgogICogaG93IGxvbmcg
+dG8gd2FpdCBhZnRlciBzb21lIFVTQiBlcnJvcnMsIHNvIHRoYXQga2h1YmQgY2FuIGRpc2Nv
+bm5lY3QoKSB1cwpAQCAtOTg3LDYgKzk4NywxMDggQEAgc3RhdGljIHN0cnVjdCB1c2JfcHJv
+dG9jb2xfb3BzIHNuZF91c2JtaQogCS5maW5pc2hfb3V0X2VuZHBvaW50ID0gc25kX3VzYm1p
+ZGlfZW1hZ2ljX2ZpbmlzaF9vdXQsCiB9OwogCisvKgorICogUmFkaWthbCBVU0IgTUlESSBw
+cm90b2NvbDogcmF3IE1JREkgd2l0aCAiRjUgeHgiIHBvcnQgc3dpdGNoaW5nIGFuZCAiRkYi
+IHBhZGRlZCBkYXRhLgorICovCisKK3N0YXRpYyB2b2lkIHNuZF91c2JtaWRpX3JhZGlrYWxf
+aW5wdXQoc3RydWN0IHNuZF91c2JfbWlkaV9pbl9lbmRwb2ludCogZXAsCisJCQkJICAgICB1
+aW50OF90KiBidWZmZXIsIGludCBidWZmZXJfbGVuZ3RoKQoreworCWludCBpOworCisJLyog
+MHhGRiBpbmRpY2F0ZXMgZW5kIG9mIHZhbGlkIGRhdGEgKi8KKwlmb3IgKGkgPSAwOyBpIDwg
+YnVmZmVyX2xlbmd0aDsgKytpKQorCQlpZiAoYnVmZmVyW2ldID09IDB4ZmYpIHsKKwkJCWJ1
+ZmZlcl9sZW5ndGggPSBpOworCQkJYnJlYWs7CisJCX0KKworCS8qIGhhbmRsZSAweEY1IGF0
+IGVuZCBvZiBsYXN0IGJ1ZmZlciAqLworCWlmIChlcC0+c2Vlbl9mNSkKKwkJZ290byBzd2l0
+Y2hfcG9ydDsKKworCXdoaWxlIChidWZmZXJfbGVuZ3RoID4gMCkgeworCQkvKiBkZXRlcm1p
+bmUgc2l6ZSBvZiBkYXRhIHVudGlsIG5leHQgMHhGNSAqLworCQlmb3IgKGkgPSAwOyBpIDwg
+YnVmZmVyX2xlbmd0aDsgKytpKQorCQkJaWYgKGJ1ZmZlcltpXSA9PSAweGY1KQorCQkJCWJy
+ZWFrOworCQlzbmRfdXNibWlkaV9pbnB1dF9kYXRhKGVwLCBlcC0+Y3VycmVudF9wb3J0LCBi
+dWZmZXIsIGkpOworCQlidWZmZXIgKz0gaTsKKwkJYnVmZmVyX2xlbmd0aCAtPSBpOworCisJ
+CWlmIChidWZmZXJfbGVuZ3RoIDw9IDApCisJCQlicmVhazsKKwkJZXAtPnNlZW5fZjUgPSAx
+OworCQkrK2J1ZmZlcjsKKwkJLS1idWZmZXJfbGVuZ3RoOworCisJc3dpdGNoX3BvcnQ6CisJ
+CWlmIChidWZmZXJfbGVuZ3RoIDw9IDApCisJCQlicmVhazsKKwkJaWYgKGJ1ZmZlclswXSA8
+IDB4ODApIHsKKwkJCWVwLT5jdXJyZW50X3BvcnQgPSAoYnVmZmVyWzBdIC0gMSkgJiAxNTsK
+KwkJCSsrYnVmZmVyOworCQkJLS1idWZmZXJfbGVuZ3RoOworCQl9CisJCWVwLT5zZWVuX2Y1
+ID0gMDsKKwl9Cit9CisKK3N0YXRpYyB2b2lkIHNuZF91c2JtaWRpX3JhZGlrYWxfb3V0cHV0
+KHN0cnVjdCBzbmRfdXNiX21pZGlfb3V0X2VuZHBvaW50KiBlcCwKKwkJCQkgICAgICBzdHJ1
+Y3QgdXJiICp1cmIpCit7CisJaW50IHBvcnQwID0gZXAtPmN1cnJlbnRfcG9ydDsKKwl1aW50
+OF90KiBidWYgPSB1cmItPnRyYW5zZmVyX2J1ZmZlcjsKKwlpbnQgYnVmX2ZyZWUgPSBlcC0+
+bWF4X3RyYW5zZmVyOworCWludCBsZW5ndGgsIGk7CisKKwlmb3IgKGkgPSAwOyBpIDwgMHgx
+MDsgKytpKSB7CisJCS8qIHJvdW5kLXJvYmluLCBzdGFydGluZyBhdCB0aGUgbGFzdCBjdXJy
+ZW50IHBvcnQgKi8KKwkJaW50IHBvcnRudW0gPSAocG9ydDAgKyBpKSAmIDE1OworCQlzdHJ1
+Y3QgdXNibWlkaV9vdXRfcG9ydCogcG9ydCA9ICZlcC0+cG9ydHNbcG9ydG51bV07CisKKwkJ
+aWYgKCFwb3J0LT5hY3RpdmUpCisJCQljb250aW51ZTsKKwkJaWYgKHNuZF9yYXdtaWRpX3Ry
+YW5zbWl0X3BlZWsocG9ydC0+c3Vic3RyZWFtLCBidWYsIDEpICE9IDEpIHsKKwkJCXBvcnQt
+PmFjdGl2ZSA9IDA7CisJCQljb250aW51ZTsKKwkJfQorCisJCWlmIChwb3J0bnVtICE9IGVw
+LT5jdXJyZW50X3BvcnQpIHsKKwkJCWlmIChidWZfZnJlZSA8IDIpCisJCQkJYnJlYWs7CisJ
+CQllcC0+Y3VycmVudF9wb3J0ID0gcG9ydG51bTsKKwkJCWJ1ZlswXSA9IDB4ZjU7CisJCQli
+dWZbMV0gPSAocG9ydG51bSArIDEpICYgMTU7CisJCQlidWYgKz0gMjsKKwkJCWJ1Zl9mcmVl
+IC09IDI7CisJCX0KKworCQlpZiAoYnVmX2ZyZWUgPCAxKQorCQkJYnJlYWs7CisJCWxlbmd0
+aCA9IHNuZF9yYXdtaWRpX3RyYW5zbWl0KHBvcnQtPnN1YnN0cmVhbSwgYnVmLCBidWZfZnJl
+ZSk7CisJCWlmIChsZW5ndGggPiAwKSB7CisJCQlidWYgKz0gbGVuZ3RoOworCQkJYnVmX2Zy
+ZWUgLT0gbGVuZ3RoOworCQkJaWYgKGJ1Zl9mcmVlIDwgMSkKKwkJCQlicmVhazsKKwkJfQor
+CX0KKworCS8qIHBhZCByZW1haW5pbmcgYnl0ZXMgd2l0aCAweEZGICovCisJd2hpbGUgKGJ1
+Zl9mcmVlIDwgZXAtPm1heF90cmFuc2ZlciAmJiBidWZfZnJlZSA+IDApIHsKKwkJKmJ1ZiA9
+IDB4ZmY7CisJCSsrYnVmOworCQktLWJ1Zl9mcmVlOworCX0KKwl1cmItPnRyYW5zZmVyX2J1
+ZmZlcl9sZW5ndGggPSBlcC0+bWF4X3RyYW5zZmVyIC0gYnVmX2ZyZWU7Cit9CisKK3N0YXRp
+YyBzdHJ1Y3QgdXNiX3Byb3RvY29sX29wcyBzbmRfdXNibWlkaV9yYWRpa2FsX29wcyA9IHsK
+KwkuaW5wdXQgPSBzbmRfdXNibWlkaV9yYWRpa2FsX2lucHV0LAorCS5vdXRwdXQgPSBzbmRf
+dXNibWlkaV9yYWRpa2FsX291dHB1dCwKK307CisKIAogc3RhdGljIHZvaWQgdXBkYXRlX3Jv
+bGFuZF9hbHRzZXR0aW5nKHN0cnVjdCBzbmRfdXNiX21pZGkqIHVtaWRpKQogewpAQCAtMTUz
+Myw2ICsxNjM1LDEzIEBAIHN0YXRpYyBzdHJ1Y3QgcG9ydF9pbmZvIHsKIAlFWFRFUk5BTF9Q
+T1JUKDB4MDg2YSwgMHgwMDAxLCA4LCAiJXMgQnJvYWRjYXN0IiksCiAJRVhURVJOQUxfUE9S
+VCgweDA4NmEsIDB4MDAwMiwgOCwgIiVzIEJyb2FkY2FzdCIpLAogCUVYVEVSTkFMX1BPUlQo
+MHgwODZhLCAweDAwMDMsIDQsICIlcyBCcm9hZGNhc3QiKSwKKwkvKiBSYWRpa2FsIFRlY2hu
+b2xvZ2llcyAqLworCUNPTlRST0xfUE9SVCgweDBhMzUsIDB4MDAyYSwgMCwgIiVzIENvbnRy
+b2wiKSwKKwlFWFRFUk5BTF9QT1JUKDB4MGEzNSwgMHgwMDJhLCAxLCAiJXMgTUlESSIpLAor
+CUNPTlRST0xfUE9SVCgweDBhMzUsIDB4MDAyYSwgMiwgIiVzIEluc3RydW1lbnQgMyIpLAor
+CUNPTlRST0xfUE9SVCgweDBhMzUsIDB4MDAyYSwgMywgIiVzIEluc3RydW1lbnQgNCIpLAor
+CUNPTlRST0xfUE9SVCgweDBhMzUsIDB4MDAyYSwgNCwgIiVzIEluc3RydW1lbnQgNSIpLAor
+CUNPTlRST0xfUE9SVCgweDBhMzUsIDB4MDAyYSwgNSwgIiVzIENvbmZpZyIpLAogCS8qIEFr
+YWkgTVBEMTYgKi8KIAlDT05UUk9MX1BPUlQoMHgwOWU4LCAweDAwNjIsIDAsICIlcyBDb250
+cm9sIiksCiAJUE9SVF9JTkZPKDB4MDllOCwgMHgwMDYyLCAxLCAiJXMgTUlESSIsIDAsCkBA
+IC0yMTM0LDYgKzIyNDMsMTIgQEAgaW50IHNuZF91c2JtaWRpX2NyZWF0ZShzdHJ1Y3Qgc25k
+X2NhcmQgKgogCQltZW1jcHkoJmVuZHBvaW50c1swXSwgcXVpcmstPmRhdGEsCiAJCSAgICAg
+ICBzaXplb2Yoc3RydWN0IHNuZF91c2JfbWlkaV9lbmRwb2ludF9pbmZvKSk7CiAJCWVyciA9
+IHNuZF91c2JtaWRpX2RldGVjdF9lbmRwb2ludHModW1pZGksICZlbmRwb2ludHNbMF0sIDEp
+OworCQlicmVhazsKKwljYXNlIFFVSVJLX01JRElfUkFESUtBTDoKKwkJdW1pZGktPnVzYl9w
+cm90b2NvbF9vcHMgPSAmc25kX3VzYm1pZGlfcmFkaWthbF9vcHM7CisJCW1lbWNweSgmZW5k
+cG9pbnRzWzBdLCBxdWlyay0+ZGF0YSwKKwkJICAgICAgIHNpemVvZihzdHJ1Y3Qgc25kX3Vz
+Yl9taWRpX2VuZHBvaW50X2luZm8pKTsKKwkJZXJyID0gc25kX3VzYm1pZGlfZGV0ZWN0X2Vu
+ZHBvaW50cyh1bWlkaSwgJmVuZHBvaW50c1swXSwgMSk7CiAJCWJyZWFrOwogCWNhc2UgUVVJ
+UktfTUlESV9DTUU6CiAJCXVtaWRpLT51c2JfcHJvdG9jb2xfb3BzID0gJnNuZF91c2JtaWRp
+X2NtZV9vcHM7CmRpZmYgLU51cnAgbGludXgtMi42LjM2LXJjNi9zb3VuZC91c2IvbWlkaS5o
+IGxpbnV4LTIuNi4zNi1yYzYucGF0Y2hlZC9zb3VuZC91c2IvbWlkaS5oCi0tLSBsaW51eC0y
+LjYuMzYtcmM2L3NvdW5kL3VzYi9taWRpLmgJMjAxMC0wOS0yOSAwMzowMToyMi4wMDAwMDAw
+MDAgKzAyMDAKKysrIGxpbnV4LTIuNi4zNi1yYzYucGF0Y2hlZC9zb3VuZC91c2IvbWlkaS5o
+CTIwMTAtMTAtMTcgMDM6NTQ6MjUuMDY2MDAwMDM0ICswMjAwCkBAIC0zNSw2ICszNSw5IEBA
+IHN0cnVjdCBzbmRfdXNiX21pZGlfZW5kcG9pbnRfaW5mbyB7CiAvKiBmb3IgUVVJUktfTUlE
+SV9FTUFHSUMsIGRhdGEgcG9pbnRzIHRvIGEgc25kX3VzYl9taWRpX2VuZHBvaW50X2luZm8K
+ICAqIHN0cnVjdHVyZSAob3V0X2NhYmxlcyBhbmQgaW5fY2FibGVzIG9ubHkpICovCiAKKy8q
+IGZvciBRVUlSS19NSURJX1JBRElLQUwsIGRhdGEgcG9pbnRzIHRvIGEgc25kX3VzYl9taWRp
+X2VuZHBvaW50X2luZm8KKyAqIHN0cnVjdHVyZSAob3V0X2NhYmxlcyBhbmQgaW5fY2FibGVz
+IG9ubHkpICovCisKIC8qIGZvciBRVUlSS19NSURJX0NNRSwgZGF0YSBpcyBOVUxMICovCiAK
+IC8qIGZvciBRVUlSS19NSURJX0FLQUksIGRhdGEgaXMgTlVMTCAqLwpkaWZmIC1OdXJwIGxp
+bnV4LTIuNi4zNi1yYzYvc291bmQvdXNiL3F1aXJrcy10YWJsZS5oIGxpbnV4LTIuNi4zNi1y
+YzYucGF0Y2hlZC9zb3VuZC91c2IvcXVpcmtzLXRhYmxlLmgKLS0tIGxpbnV4LTIuNi4zNi1y
+YzYvc291bmQvdXNiL3F1aXJrcy10YWJsZS5oCTIwMTAtMDktMjkgMDM6MDE6MjIuMDAwMDAw
+MDAwICswMjAwCisrKyBsaW51eC0yLjYuMzYtcmM2LnBhdGNoZWQvc291bmQvdXNiL3F1aXJr
+cy10YWJsZS5oCTIwMTAtMTAtMTcgMDQ6Mzk6NDkuNTA5MDAwMDM0ICswMjAwCkBAIC0xOTcy
+LDYgKzE5NzIsMzcgQEAgWUFNQUhBX0RFVklDRSgweDcwMTAsICJVQjk5IiksCiAJCX0KIAl9
+CiB9LAorLyogUmFkaWthbCBUZWNobm9sb2dpZXMgZGV2aWNlcyAqLworeworCVVTQl9ERVZJ
+Q0UoMHgwYTM1LCAweDAwMmEpLAorCS5kcml2ZXJfaW5mbyA9ICh1bnNpZ25lZCBsb25nKSAm
+IChjb25zdCBzdHJ1Y3Qgc25kX3VzYl9hdWRpb19xdWlyaykgeworCQkudmVuZG9yX25hbWUg
+PSAiUmFkaWthbCBUZWNobm9sb2dpZXMiLAorCQkucHJvZHVjdF9uYW1lID0gIlNBQy0ySyIs
+CisJCS5pZm51bSA9IFFVSVJLX0FOWV9JTlRFUkZBQ0UsCisJCS50eXBlID0gUVVJUktfQ09N
+UE9TSVRFLAorCQkuZGF0YSA9IChjb25zdCBzdHJ1Y3Qgc25kX3VzYl9hdWRpb19xdWlya1td
+KSB7CisJCQl7CisJCQkJLmlmbnVtID0gMCwKKwkJCQkudHlwZSA9IFFVSVJLX0lHTk9SRV9J
+TlRFUkZBQ0UKKwkJCX0sCisJCQl7CisJCQkJLmlmbnVtID0gMSwKKwkJCQkudHlwZSA9IFFV
+SVJLX0lHTk9SRV9JTlRFUkZBQ0UKKwkJCX0sCisJCQl7CisJCQkJLmlmbnVtID0gMiwKKwkJ
+CQkudHlwZSA9IFFVSVJLX01JRElfUkFESUtBTCwKKwkJCQkuZGF0YSA9ICYgKGNvbnN0IHN0
+cnVjdCBzbmRfdXNiX21pZGlfZW5kcG9pbnRfaW5mbykgeworCQkJCQkub3V0X2NhYmxlcyA9
+IDB4ODAxZiwKKwkJCQkJLmluX2NhYmxlcyAgPSAweDgwMWYKKwkJCQl9CisJCQl9LAorCQkJ
+eworCQkJCS5pZm51bSA9IC0xCisJCQl9CisJCX0KKwl9Cit9LAogCiAvKiBBS0FJIGRldmlj
+ZXMgKi8KIHsKZGlmZiAtTnVycCBsaW51eC0yLjYuMzYtcmM2L3NvdW5kL3VzYi9xdWlya3Mu
+YyBsaW51eC0yLjYuMzYtcmM2LnBhdGNoZWQvc291bmQvdXNiL3F1aXJrcy5jCi0tLSBsaW51
+eC0yLjYuMzYtcmM2L3NvdW5kL3VzYi9xdWlya3MuYwkyMDEwLTA5LTI5IDAzOjAxOjIyLjAw
+MDAwMDAwMCArMDIwMAorKysgbGludXgtMi42LjM2LXJjNi5wYXRjaGVkL3NvdW5kL3VzYi9x
+dWlya3MuYwkyMDEwLTEwLTE3IDAzOjU0OjI4LjIwMjAwMDAzNCArMDIwMApAQCAtMjg5LDYg
+KzI4OSw3IEBAIGludCBzbmRfdXNiX2NyZWF0ZV9xdWlyayhzdHJ1Y3Qgc25kX3VzYl8KIAkJ
+W1FVSVJLX01JRElfTk9WQVRJT05dID0gY3JlYXRlX2FueV9taWRpX3F1aXJrLAogCQlbUVVJ
+UktfTUlESV9GQVNUTEFORV0gPSBjcmVhdGVfYW55X21pZGlfcXVpcmssCiAJCVtRVUlSS19N
+SURJX0VNQUdJQ10gPSBjcmVhdGVfYW55X21pZGlfcXVpcmssCisJCVtRVUlSS19NSURJX1JB
+RElLQUxdID0gY3JlYXRlX2FueV9taWRpX3F1aXJrLAogCQlbUVVJUktfTUlESV9DTUVdID0g
+Y3JlYXRlX2FueV9taWRpX3F1aXJrLAogCQlbUVVJUktfTUlESV9BS0FJXSA9IGNyZWF0ZV9h
+bnlfbWlkaV9xdWlyaywKIAkJW1FVSVJLX0FVRElPX1NUQU5EQVJEX0lOVEVSRkFDRV0gPSBj
+cmVhdGVfc3RhbmRhcmRfYXVkaW9fcXVpcmssCmRpZmYgLU51cnAgbGludXgtMi42LjM2LXJj
+Ni9zb3VuZC91c2IvdXNiYXVkaW8uaCBsaW51eC0yLjYuMzYtcmM2LnBhdGNoZWQvc291bmQv
+dXNiL3VzYmF1ZGlvLmgKLS0tIGxpbnV4LTIuNi4zNi1yYzYvc291bmQvdXNiL3VzYmF1ZGlv
+LmgJMjAxMC0wOS0yOSAwMzowMToyMi4wMDAwMDAwMDAgKzAyMDAKKysrIGxpbnV4LTIuNi4z
+Ni1yYzYucGF0Y2hlZC9zb3VuZC91c2IvdXNiYXVkaW8uaAkyMDEwLTEwLTE3IDAzOjU0OjM3
+LjIxMDAwMDAzNCArMDIwMApAQCAtNzIsNiArNzIsNyBAQCBlbnVtIHF1aXJrX3R5cGUgewog
+CVFVSVJLX01JRElfTk9WQVRJT04sCiAJUVVJUktfTUlESV9GQVNUTEFORSwKIAlRVUlSS19N
+SURJX0VNQUdJQywKKwlRVUlSS19NSURJX1JBRElLQUwsCiAJUVVJUktfTUlESV9DTUUsCiAJ
+UVVJUktfTUlESV9BS0FJLAogCVFVSVJLX01JRElfVVMxMjJMLAo=
+--------------070803050907090109070404
+Content-Type: text/x-vcard; charset=utf-8;
+ name="rdoursenaud.vcf"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="rdoursenaud.vcf"
+
+YmVnaW46dmNhcmQNCmZuO3F1b3RlZC1wcmludGFibGU6UmFwaGE9QzM9QUJsIERvdXJzZW5h
+dWQNCm47cXVvdGVkLXByaW50YWJsZTpEb3Vyc2VuYXVkO1JhcGhhPUMzPUFCbA0KZW1haWw7
+aW50ZXJuZXQ6cmFwaGFlbEBkb3Vyc2VuYXVkLmZyDQp1cmw6aHR0cDovL3JhcGhhZWwuZG91
+cnNlbmF1ZC5mcg0KdmVyc2lvbjoyLjENCmVuZDp2Y2FyZA0KDQo=
+--------------070803050907090109070404
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------070803050907090109070404--
