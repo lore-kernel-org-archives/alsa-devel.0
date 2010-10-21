@@ -1,26 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Alsamixertest
-Date: Thu, 21 Oct 2010 12:36:59 +0800
-Message-ID: <AANLkTinJnCQvQmQL16-pWBhmaZjW1_nUayHVa-yaC3FO@mail.gmail.com>
-References: <4C9F6409.6010400@aknet.ru> <20100927005858.GD21247@sirena.org.uk>
-	<4CA0221D.6030208@aknet.ru> <i7qltg$bph$1@dough.gmane.org>
-	<AANLkTi=9gcs0A6s55wSS-RP4NucvUqkxCoYynezdF+5g@mail.gmail.com>
-	<4CA306CB.1090305@canonical.com>
-	<AANLkTi=h+ZKXNdhmC1BtTbBaGF6_V+uD2ZO7sx4WMJMW@mail.gmail.com>
-	<4CA9877F.7060009@canonical.com> <4CA9C22A.2010104@ladisch.de>
-	<4CA9C7BE.7020804@canonical.com>
+From: Jiri Slaby <jirislaby@gmail.com>
+Subject: HDA: no sound [was: mmotm 2010-10-20-15-01 uploaded]
+Date: Thu, 21 Oct 2010 09:41:08 +0200
+Message-ID: <4CBFEE94.7020103@gmail.com>
+References: <201010202233.o9KMXNoL008303@imap1.linux-foundation.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 769FF1037FF
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id BBF4610380E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Oct 2010 06:37:05 +0200 (CEST)
-Received: by eyz10 with SMTP id 10so1108863eyz.38
-	for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2010 21:37:01 -0700 (PDT)
-In-Reply-To: <4CA9C7BE.7020804@canonical.com>
+	Thu, 21 Oct 2010 09:41:15 +0200 (CEST)
+Received: by fxm14 with SMTP id 14so3590239fxm.38
+	for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2010 00:41:15 -0700 (PDT)
+In-Reply-To: <201010202233.o9KMXNoL008303@imap1.linux-foundation.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,38 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, mm-commits@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, akpm@linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/10/4 David Henningsson <david.henningsson@canonical.com>
+On 10/21/2010 12:01 AM, akpm@linux-foundation.org wrote:
+> The mm-of-the-moment snapshot 2010-10-20-15-01 has been uploaded to
 
->
->
-> Exactly, this is a test tool that checks whether the mixer control names
-> and dB information live up to PulseAudio's expectations. That's the
-> tool's purpose.
->
-> What's PulseAudio' s expectation ?
+Hi, I've lost sound with my intel hda (sigmatel) in this release
+(regression against mmotm 2010-10-13-17-13).
 
-PA 's developer seem expect max_dB of all HDA codec are 0dB
+All outputs were silented at level 0 after reboot, but even after
+setting them non-zero in alsamixer -D hw, no sound can be heard by:
+mplayer -ao alsa:device=hw /usr/share/sounds/alsa/Front_Center.wav
 
-Your alsamixertest program does not test any dB range above 0dB
-
-How does PA handle the mixer control when the dB range of the "Master
-Front"  volume control is -34.5dB to +12dB (e.g. vt1708b HDA codec ) is not
-live up to PA 's expectation
-
-e.g. No Master Volume Control
-
-http://launchpadlibrarian.net/54333151/Card0.Codecs.codec.0.txt
+I don't knwo if it's related, but aplay complains like (even if I pass
+-c 2):
+aplay -D hw /usr/share/sounds/alsa/Front_Center.wav
+Playing WAVE '/usr/share/sounds/alsa/Front_Center.wav' : Signed 16 bit
+Little Endian, Rate 48000 Hz, Mono
+aplay: set_params:1065: Channels count non available
 
 
-http://launchpadlibrarian.net/37147347/Card0.Codecs.codec.0.txt
+alsa-info:
+http://www.alsa-project.org/db/?f=a7a09703bcc8c43386c87a984e513ce35fc91ca4
 
-Node 0x16 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00
-0x00] [0x9f 0x9f] [0x97 0x97]
-  Power: setting=D0, actual=D0
-  Connection: 7
-     0x10 0x1f 0x1a 0x1b 0x1e 0x1d 0x25
+regards,
+-- 
+js
