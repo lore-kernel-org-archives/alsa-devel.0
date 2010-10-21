@@ -1,30 +1,22 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Alsamixertest
-Date: Thu, 21 Oct 2010 09:50:19 +0200
-Message-ID: <4CBFF0BB.5060900@canonical.com>
-References: <4C9F6409.6010400@aknet.ru>
-	<20100927005858.GD21247@sirena.org.uk>	<4CA0221D.6030208@aknet.ru>
-	<i7qltg$bph$1@dough.gmane.org>	<AANLkTi=9gcs0A6s55wSS-RP4NucvUqkxCoYynezdF+5g@mail.gmail.com>	<4CA306CB.1090305@canonical.com>	<AANLkTi=h+ZKXNdhmC1BtTbBaGF6_V+uD2ZO7sx4WMJMW@mail.gmail.com>	<4CA9877F.7060009@canonical.com>
-	<4CA9C22A.2010104@ladisch.de>	<4CA9C7BE.7020804@canonical.com>
-	<AANLkTinJnCQvQmQL16-pWBhmaZjW1_nUayHVa-yaC3FO@mail.gmail.com>
+From: Jiri Slaby <jirislaby@gmail.com>
+Subject: Re: HDA: no sound [was: mmotm 2010-10-20-15-01
+	uploaded]
+Date: Thu, 21 Oct 2010 09:57:16 +0200
+Message-ID: <4CBFF25C.2080908@gmail.com>
+References: <201010202233.o9KMXNoL008303@imap1.linux-foundation.org>	<4CBFEE94.7020103@gmail.com>
+	<s5hlj5sc7do.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id C0E7D103816
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E23A4103804
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Oct 2010 09:50:25 +0200 (CEST)
-Received: from hutte.canonical.com ([91.189.90.181])
-	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
-	id 1P8pum-0007Im-Vb
-	for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2010 08:50:21 +0100
-Received: from c-83-233-18-148.cust.bredband2.com ([83.233.18.148]
-	helo=[192.168.8.102]) by hutte.canonical.com with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
-	(envelope-from <david.henningsson@canonical.com>) id 1P8pum-0005Um-SW
-	for alsa-devel@alsa-project.org; Thu, 21 Oct 2010 08:50:20 +0100
-In-Reply-To: <AANLkTinJnCQvQmQL16-pWBhmaZjW1_nUayHVa-yaC3FO@mail.gmail.com>
+	Thu, 21 Oct 2010 09:57:19 +0200 (CEST)
+Received: by fxm14 with SMTP id 14so3599316fxm.38
+	for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2010 00:57:19 -0700 (PDT)
+In-Reply-To: <s5hlj5sc7do.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,36 +26,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, mm-commits@vger.kernel.org, clemens@ladisch.de, linux-kernel@vger.kernel.org, akpm@linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2010-10-21 06:36, Raymond Yau wrote:
-> 2010/10/4 David Henningsson<david.henningsson@canonical.com>
->
->>
->>
->> Exactly, this is a test tool that checks whether the mixer control names
->> and dB information live up to PulseAudio's expectations. That's the
->> tool's purpose.
->>
->> What's PulseAudio' s expectation ?
->
-> PA 's developer seem expect max_dB of all HDA codec are 0dB
->
-> Your alsamixertest program does not test any dB range above 0dB
+On 10/21/2010 09:49 AM, Takashi Iwai wrote:
+> At Thu, 21 Oct 2010 09:41:08 +0200,
+> Jiri Slaby wrote:
+>> alsa-info:
+>> http://www.alsa-project.org/db/?f=a7a09703bcc8c43386c87a984e513ce35fc91ca4
+> 
+> I see the Front volume is set to zero.  Try to raise it.
 
-That's correct, I don't really know how to deal with that, and I'm not 
-sure how PA deals with that either. I assume it goes above 0 dB on one 
-of the volume controls when a user wants it to.
+I set all the values to ~ 70 and then tried with pure alsa. It basically
+works.
 
-But from alsamixertest's perspective, the question is: if you do, should 
-detected distortion cause an error or not?
+BUT, when I run pulse and it suspends the device (or whatever), all the
+levels get down to 0 back again. When I raise it and run mplayer, it
+gets to 0 immediately. If I raise it gets to 0 when mplayer finishes and
+pulse writes 'protocol-native.c: Connection died.'. It never raises
+automatically. And if I raise it during playback, nothing plays at all.
 
-Also alsamixertest could be expanded to trust playback and test 
-recording, and then I assume this question will be even more important 
-as most mic boost controls go from 0 dB to +20 dB or so (if they even 
-provide dB information).
-
+regards,
 -- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+js
