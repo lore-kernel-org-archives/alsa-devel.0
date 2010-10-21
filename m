@@ -1,17 +1,19 @@
-From: Florian Faber <faber@faberman.de>
-Subject: Re: RME MADIface 192 kHz problem
-Date: Thu, 21 Oct 2010 16:10:58 +0200
-Message-ID: <4CC049F2.1050707@faberman.de>
-References: <4CC03A21.2050406@ifi.uio.no>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: [patch 3/3] Staging: sst: fixups in
+	SNDRV_SST_STREAM_DECODE
+Date: Thu, 21 Oct 2010 19:46:34 +0530
+Message-ID: <438BB0150E931F4B9CE701519A44630104BE8125B7@bgsmsx502.gar.corp.intel.com>
+References: <20101019055748.GE5839@bicker>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from india820.server4you.de (india820.server4you.de [85.25.152.101])
-	by alsa0.perex.cz (Postfix) with ESMTP id 328C12446E
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id D8E692447B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Oct 2010 16:10:27 +0200 (CEST)
-In-Reply-To: <4CC03A21.2050406@ifi.uio.no>
+	Thu, 21 Oct 2010 16:16:44 +0200 (CEST)
+In-Reply-To: <20101019055748.GE5839@bicker>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,30 +23,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Dan Carpenter <error27@gmail.com>, Greg Kroah-Hartman <gregkh@suse.de>
+Cc: "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Harsha, Priya" <priya.harsha@intel.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, Alan Cox <alan@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fredrik,
-
-> I have a problem running the RME MADIface card at 192 kHz. At that
-> speed the number of channels for the card is reduced to 16. I can set
-> the sampling rate to 192 kHz using:
-
-The MADIface does not run properly with the stock hdspm driver. Most of
-the controls are wrong and the FPGA is using a wrong base frequency.
-
-> What is needed to get this card running at 192 kHz?
-
-A working driver :)
-
-http://wiki.linuxproaudio.org/index.php/Driver:hdspe
-
-There you can also find a version of hdspmixer that works with 64 channels:
-
-http://wiki.linuxproaudio.org/index.php/App:hdspmixer_64
-
-
-Flo
--- 
-Machines can do the work, so people have time to think.
-public key DA43FEF4          x-hkp://wwwkeys.eu.pgp.net
+> This is another patch about copying data to the kernel before using it.
+> 
+> SNDRV_SST_STREAM_DECODE is sort of tricky because we need to do a
+> copy_from_user() that gives us another two pointers and we have copy
+> those.  Those again give us some more pointers that we have to copy.
+> 
+> Besides those problems, the code had a stack overflow:
+> -	struct snd_sst_buff_entry ibuf_temp[param->ibufs->entries],
+> -		obuf_temp[param->obufs->entries];
+> param->ibufs->entries comes from the user.
+> 
+> Signed-off-by: Dan Carpenter <error27@gmail.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
