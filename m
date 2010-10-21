@@ -1,110 +1,67 @@
-From: "Juliano F. Ravasi" <ml@juliano.info>
-Subject: hda-intel (ALC889) - sound loops/repeats continuously,
- and general brokenness
-Date: Wed, 20 Oct 2010 17:40:48 -0200
-Message-ID: <4CBF45C0.5060903@juliano.info>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Alsamixertest
+Date: Thu, 21 Oct 2010 12:36:59 +0800
+Message-ID: <AANLkTinJnCQvQmQL16-pWBhmaZjW1_nUayHVa-yaC3FO@mail.gmail.com>
+References: <4C9F6409.6010400@aknet.ru> <20100927005858.GD21247@sirena.org.uk>
+	<4CA0221D.6030208@aknet.ru> <i7qltg$bph$1@dough.gmane.org>
+	<AANLkTi=9gcs0A6s55wSS-RP4NucvUqkxCoYynezdF+5g@mail.gmail.com>
+	<4CA306CB.1090305@canonical.com>
+	<AANLkTi=h+ZKXNdhmC1BtTbBaGF6_V+uD2ZO7sx4WMJMW@mail.gmail.com>
+	<4CA9877F.7060009@canonical.com> <4CA9C22A.2010104@ladisch.de>
+	<4CA9C7BE.7020804@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: alsa-user@lists.sourceforge.net
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 769FF1037FF
+	for <alsa-devel@alsa-project.org>;
+	Thu, 21 Oct 2010 06:37:05 +0200 (CEST)
+Received: by eyz10 with SMTP id 10so1108863eyz.38
+	for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2010 21:37:01 -0700 (PDT)
+In-Reply-To: <4CA9C7BE.7020804@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
- Hello ALSA devs,
+2010/10/4 David Henningsson <david.henningsson@canonical.com>
 
-(Cc'ing alsa-devel since looks like it can be a driver problem/bug, but
-still unsure. Need some expert advice.)
+>
+>
+> Exactly, this is a test tool that checks whether the mixer control names
+> and dB information live up to PulseAudio's expectations. That's the
+> tool's purpose.
+>
+> What's PulseAudio' s expectation ?
 
-I'm experiencing a lot of problems reproducing audio with an HD Audio
-"card" integrated on an Intel DX58SO mainboard. It happens only on this
-card, everything is Ok with another (USB) card.
+PA 's developer seem expect max_dB of all HDA codec are 0dB
 
-The most visible problem is that `aplay` plays only a small fragment of
-audio (less than one second), then hangs and the card keeps reproducing
-that fragment continuously in a loop, until killed with Ctrl-C. `aplay
--N` progresses, but each fragment repeats 3 times.
+Your alsamixertest program does not test any dB range above 0dB
 
-Doing an strace on `aplay`, it hangs here while repeating the audio
-fragment:
+How does PA handle the mixer control when the dB range of the "Master
+Front"  volume control is -34.5dB to +12dB (e.g. vt1708b HDA codec ) is not
+live up to PA 's expectation
 
-...
-semop(294912, {{0, 0, 0}, {0, 1, SEM_UNDO}}, 2) =3D 0
-semop(294912, {{0, -1, SEM_UNDO|IPC_NOWAIT}}, 1) =3D 0
-ioctl(4, 0x4122, 0x3)                   =3D 0
-ioctl(4, 0x4122, 0)                     =3D 0
-ioctl(4, 0x4122, 0xe4)                  =3D 0
-poll([{fd=3D3, events=3DPOLLIN|POLLERR|POLLNVAL}], 1, -1) =3D 1 ([{fd=3D3,
-revents=3DPOLLIN}])
-ioctl(4, 0x4122, 0x3)                   =3D 0
-ioctl(4, 0x4122, 0xe4)                  =3D 0
-ioctl(4, 0x4122, 0x1)                   =3D 0
-read(3,
-"\6\0\0\0\1\210\377\377\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\1\210\377\3=
-77"...,
-128) =3D 64
-read(3, 0x7fff890f6810, 128)            =3D -1 EAGAIN (Resource
-temporarily unavailable)
-poll([{fd=3D3, events=3DPOLLIN|POLLERR|POLLNVAL}], 1, -1^C <unfinished ...>
+e.g. No Master Volume Control
 
-Descriptor 3 is /dev/snd/timer ... Perhaps time stops progressing for
-the driver? `aplay -N` continues a little here because this poll() call
-timeouts after 1000ms, but this still repeats each fragment 3 times.
-
-Other audio software (mplayer, amarok) can play audio almost normally,
-except when you pause. When paused, the same behavior happens: the last
-fragment of sound before pausing keeps repeating continuously until
-unpaused.
-
-When the song finishes, the application (tested with mplayer) also
-hangs, the last fragment keeps repeating while the process is blocked here:
-
-ioctl(0, SNDCTL_TMR_TIMEBASE or TCGETS, {B38400 opost isig -icanon -echo
-...}) =3D 0
-ioctl(0, SNDCTL_TMR_START or TCSETS, {B38400 opost isig icanon echo
-...}) =3D 0
-ioctl(0, SNDCTL_TMR_TIMEBASE or TCGETS, {B38400 opost isig icanon echo
-...}) =3D 0
-ioctl(6, 0x4144^C <unfinished ...>
-
-Descriptor 6 is /dev/snd/pcmC0D0p , and 0x4144 is SNDRV_PCM_IOCTL_DRAIN
-ioctl in sound/asound.h. Sometimes mplayer timeouts and reports:
-
-[AO_ALSA] alsa-lib: pcm_hw.c:616:(snd_pcm_hw_drain)
-SNDRV_PCM_IOCTL_DRAIN failed (-5): Input/output error
-
-I'm at a loss here. I have already read the sound/alsa/HD-Audio.txt and
-tried many of the tweaks described there, but with no luck.
-
-Any help is greatly appreciated.
+http://launchpadlibrarian.net/54333151/Card0.Codecs.codec.0.txt
 
 
-System information:
-http://www.alsa-project.org/db/?f=3D4ab249b0f301ff20260d7388432e624aa65092d6
+http://launchpadlibrarian.net/37147347/Card0.Codecs.codec.0.txt
 
-
-Best regards,
-Juliano.
-
--- =
-
-Juliano F. Ravasi =B7=B7 http://juliano.info/
-5105 46CC B2B7 F0CD 5F47 E740 72CA 54F4 DF37 9E96
-
-
----------------------------------------------------------------------------=
----
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
-
-http://p.sf.net/sfu/nokia-dev2dev
+Node 0x16 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00
+0x00] [0x9f 0x9f] [0x97 0x97]
+  Power: setting=D0, actual=D0
+  Connection: 7
+     0x10 0x1f 0x1a 0x1b 0x1e 0x1d 0x25
