@@ -1,8 +1,8 @@
 From: Takashi Iwai <tiwai@suse.de>
 Subject: Re: HDA: no sound [was: mmotm 2010-10-20-15-01
 	uploaded]
-Date: Thu, 21 Oct 2010 21:22:39 +0200
-Message-ID: <s5hd3r3xse8.wl%tiwai@suse.de>
+Date: Thu, 21 Oct 2010 21:40:08 +0200
+Message-ID: <s5h8w1rxrl3.wl%tiwai@suse.de>
 References: <201010202233.o9KMXNoL008303@imap1.linux-foundation.org>
 	<4CBFEE94.7020103@gmail.com> <s5hlj5sc7do.wl%tiwai@suse.de>
 	<4CBFF25C.2080908@gmail.com> <s5hfww0c6oj.wl%tiwai@suse.de>
@@ -13,9 +13,9 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (cantor.suse.de [195.135.220.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5BF0D103A4C
+	by alsa0.perex.cz (Postfix) with ESMTP id 596CB103A4C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Oct 2010 21:22:39 +0200 (CEST)
+	Thu, 21 Oct 2010 21:40:09 +0200 (CEST)
 In-Reply-To: <4CC092BC.9060504@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -61,7 +61,14 @@ Jiri Slaby wrote:
 > 
 > Yeah. Otherwise I would write it to the former :).
 
-Yeah, I'm just be careful now ;)
+This might be a user-space issue, then.
 
+Could you try once the latest alsa-lib?  If you are using SUSE packages,
+the snapshot rpms are available on OBS multimedia:audio:snapshot/alsa
+repo.  (The version number of the package is still 1.0.22, but don't
+care; I just forgot to change the spec file.)
+
+
+thanks,
 
 Takashi
