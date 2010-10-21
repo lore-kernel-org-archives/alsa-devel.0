@@ -1,80 +1,103 @@
-From: =?UTF-8?q?Diego=20Elio=20Petten=C3=B2?= <flameeyes@gmail.com>
-Subject: [PATCH] ALSA: HDA: Enable internal mic on Dell E6410 and Dell E6510
-Date: Thu, 21 Oct 2010 17:09:49 +0200
-Message-ID: <1287673789-13915-1-git-send-email-flameeyes@gmail.com>
-References: <1285726141-26448-2-git-send-email-flameeyes@gmail.com>
+From: Valdis.Kletnieks@vt.edu
+Subject: Re: HDA: no sound [was: mmotm 2010-10-20-15-01
+	uploaded]
+Date: Thu, 21 Oct 2010 11:22:49 -0400
+Message-ID: <13987.1287674569@localhost>
+References: <201010202233.o9KMXNoL008303@imap1.linux-foundation.org>
+	<4CBFEE94.7020103@gmail.com> <s5hlj5sc7do.wl%tiwai@suse.de>
+	<4CBFF25C.2080908@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1285726141-26448-2-git-send-email-flameeyes@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: David Henningsson <david.henningsson@canonical.com>
+Content-Type: multipart/mixed; boundary="===============4232708713515313802=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from turing-police.cc.vt.edu (turing-police.cc.vt.edu
+	[128.173.14.107])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0FB9110381F
+	for <alsa-devel@alsa-project.org>;
+	Thu, 21 Oct 2010 17:22:50 +0200 (CEST)
+In-Reply-To: Your message of "Thu, 21 Oct 2010 09:57:16 +0200."
+	<4CBFF25C.2080908@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jiri Slaby <jirislaby@gmail.com>
+Cc: alsa-devel@alsa-project.org, mm-commits@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, linux-kernel@vger.kernel.org, akpm@linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
-=46rom: David Henningsson <david.henningsson@canonical.com>
+--===============4232708713515313802==
+Content-Type: multipart/signed; boundary="==_Exmh_1287674569_10867P";
+	 micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
 
-(Ported on top of 2.6.36)
+--==_Exmh_1287674569_10867P
+Content-Type: text/plain; charset=us-ascii
 
-BugLink: http://launchpad.net/bugs/628961
-BugLink: http://launchpad.net/bugs/605047
+On Thu, 21 Oct 2010 09:57:16 +0200, Jiri Slaby said:
+> On 10/21/2010 09:49 AM, Takashi Iwai wrote:
+> > At Thu, 21 Oct 2010 09:41:08 +0200,
+> > Jiri Slaby wrote:
+> >> alsa-info:
+> >> http://www.alsa-project.org/db/?f=a7a09703bcc8c43386c87a984e513ce35fc91ca4
+> > 
+> > I see the Front volume is set to zero.  Try to raise it.
+> 
+> I set all the values to ~ 70 and then tried with pure alsa. It basically
+> works.
+> 
+> BUT, when I run pulse and it suspends the device (or whatever), all the
+> levels get down to 0 back again. When I raise it and run mplayer, it
+> gets to 0 immediately. If I raise it gets to 0 when mplayer finishes and
+> pulse writes 'protocol-native.c: Connection died.'. It never raises
+> automatically. And if I raise it during playback, nothing plays at all.
 
-CC: Diego Elio Petten=C3=B2 <flameeyes@gmail.com>
----
- sound/pci/hda/patch_sigmatel.c |   13 +++++++++++++
- 1 files changed, 13 insertions(+), 0 deletions(-)
+Seeing the same thing on a Dell Latitude E6500, so Jiri isn't hallucinating.
 
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigma=
-tel.c
-index c16c5ba..be79c3c 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -1633,6 +1633,13 @@ static unsigned int dell_s14_pin_configs[10] =3D=
- {
- 	0x40f000f0, 0x40f000f0,
- };
-=20
-+/* Deliberately turn off 0x0f (Dock Mic) to make it choose Int Mic ins=
-tead */
-+static unsigned int dell_e6410_pin_configs[10] =3D {
-+	0x04a11020, 0x0421101f, 0x400000f0, 0x90170110,
-+	0x23011050, 0x40f000f0, 0x400000f0, 0x90a60130,
-+	0x40f000f0, 0x40f000f0,
-+};
-+
- static unsigned int hp_dv7_4000_pin_configs[10] =3D {
- 	0x03a12050, 0x0321201f, 0x40f000f0, 0x90170110,
- 	0x40f000f0, 0x40f000f0, 0x90170110, 0xd5a30140,
-@@ -1643,6 +1650,7 @@ static unsigned int *stac92hd83xxx_brd_tbl[STAC_9=
-2HD83XXX_MODELS] =3D {
- 	[STAC_92HD83XXX_REF] =3D ref92hd83xxx_pin_configs,
- 	[STAC_92HD83XXX_PWR_REF] =3D ref92hd83xxx_pin_configs,
- 	[STAC_DELL_S14] =3D dell_s14_pin_configs,
-+	[STAC_DELL_E6410] =3D dell_e6410_pin_configs,
- 	[STAC_HP_DV7_4000] =3D hp_dv7_4000_pin_configs,
- };
-=20
-@@ -1651,6 +1659,7 @@ static const char *stac92hd83xxx_models[STAC_92HD=
-83XXX_MODELS] =3D {
- 	[STAC_92HD83XXX_REF] =3D "ref",
- 	[STAC_92HD83XXX_PWR_REF] =3D "mic-ref",
- 	[STAC_DELL_S14] =3D "dell-s14",
-+	[STAC_DELL_E6410] =3D "dell-e6410",
- 	[STAC_92HD83XXX_HP] =3D "hp",
- 	[STAC_HP_DV7_4000] =3D "hp-dv7-4000",
- };
-@@ -1663,6 +1672,10 @@ static struct snd_pci_quirk stac92hd83xxx_cfg_tb=
-l[] =3D {
- 		      "DFI LanParty", STAC_92HD83XXX_REF),
- 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x02ba,
- 		      "unknown Dell", STAC_DELL_S14),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x040a,
-+		      "Dell E6410", STAC_DELL_E6410),
-+	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x040b,
-+		      "Dell E6510", STAC_DELL_E6410),
- 	SND_PCI_QUIRK_MASK(PCI_VENDOR_ID_HP, 0xff00, 0x3600,
- 		      "HP", STAC_92HD83XXX_HP),
- 	{} /* terminator */
---=20
-1.7.3.1
+Didn't we have some flustercluck a while back that gave pulseaudio
+similar indigestion?  Oh, here it is, it was an fsnotify botch, of all things.
+
+commit 2069601b3f0ea38170d4b509b89f3ca0a373bdc1
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu Aug 12 14:23:04 2010 -0700
+
+    Revert "fsnotify: store struct file not struct path"
+    
+    This reverts commit 3bcf3860a4ff9bbc522820b4b765e65e4deceb3e (and the
+    accompanying commit c1e5c954020e "vfs/fsnotify: fsnotify_close can delay
+    the final work in fput" that was a horribly ugly hack to make it work at
+    all).
+
+
+Did we manage to revert the revert, or re-break this code? I haven't looked at
+this at all in detail.
+
+--==_Exmh_1287674569_10867P
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Exmh version 2.5 07/13/2001
+
+iD8DBQFMwFrJcC3lWbTT17ARAod6AKDdnOPUFFu7YO13PEH3QG6sI6SptQCdElzQ
+pUkLCMhqAACJywfXHKKx3wk=
+=i9Xc
+-----END PGP SIGNATURE-----
+
+--==_Exmh_1287674569_10867P--
+
+--===============4232708713515313802==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============4232708713515313802==--
