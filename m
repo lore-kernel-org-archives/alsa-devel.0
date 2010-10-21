@@ -1,19 +1,20 @@
-From: =?ISO-8859-1?Q?Eric_B=E9nard?= <eric@eukrea.com>
-Subject: Re: [PATCH] wm1133-ev1: fix init for
-	multimachine	kernel
-Date: Fri, 22 Oct 2010 00:19:31 +0200
-Message-ID: <4CC0BC73.8070709@eukrea.com>
-References: <1287696915-10392-1-git-send-email-eric@eukrea.com>
-	<20101021215840.GF30466@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v5 3/9] davinci: ASoC support
+	for	Omapl138-Hawkboard
+Date: Thu, 21 Oct 2010 23:28:28 +0100
+Message-ID: <20101021222828.GC9346@sirena.org.uk>
+References: <1287511587-22216-1-git-send-email-vm.rod25@gmail.com>
+	<1287511587-22216-4-git-send-email-vm.rod25@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from 63.mail-out.ovh.net (63.mail-out.ovh.net [91.121.185.56])
-	by alsa0.perex.cz (Postfix) with SMTP id 9212F103AB3
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0FBE6103AB3
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Oct 2010 00:19:33 +0200 (CEST)
-In-Reply-To: <20101021215840.GF30466@opensource.wolfsonmicro.com>
+	Fri, 22 Oct 2010 00:28:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1287511587-22216-4-git-send-email-vm.rod25@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,29 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: vm.rod25@gmail.com
+Cc: davinci-linux-open-source@linux.davincidsp.com, sshtylyov@mvista.com, nsekhar@ti.com, alsa-devel@alsa-project.org, khasim@ti.com, caglarakyuz@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+On Tue, Oct 19, 2010 at 01:06:21PM -0500, vm.rod25@gmail.com wrote:
+> From: Victor Rodriguez <victor.rodriguez@sasken.com>
+> 
+> This patch adds ASoC support for the Hawkboard-L138 system
+> 
+> Signed-off-by: Victor Rodriguez <victor.rodriguez@sasken.com>
 
-Le 21/10/2010 23:58, Mark Brown a =E9crit :
-> On Thu, Oct 21, 2010 at 11:35:15PM +0200, Eric B=E9nard wrote:
->
->> +	if (!machine_is_mx31ads())
->> +		/* return happy. We might run on a totally different machine */
->> +		return 0;
->> +
->
-> This is not a sufficient check, we may be running on an mx31ads with a
-> different PMIC module.
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-in which case the current code would also fail ;-)
-
-I don't have such a board but actual code triggers the error log when runni=
-ng =
-
-the kernel on my board so I'm open to your suggestion for a better fix.
-
-Thanks,
-Eric
+Please do remember to CC maintainers on patches so they see them.
