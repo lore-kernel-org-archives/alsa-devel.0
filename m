@@ -1,15 +1,15 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: max98088: Staticise m98088_eq_band
-Date: Thu, 21 Oct 2010 12:15:56 +0100
-Message-ID: <1287659756-20123-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Xavi Alexis <xamalek@yahoo.com>
+Subject: ALSA Questions - MUTE and PLAYBACK RATE
+Date: Thu, 21 Oct 2010 04:16:37 -0700 (PDT)
+Message-ID: <102125.36145.qm@web120512.mail.ne1.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 173BB24142
+Received: from web120512.mail.ne1.yahoo.com (web120512.mail.ne1.yahoo.com
+	[98.138.85.239]) by alsa0.perex.cz (Postfix) with SMTP id BE81E2414B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Oct 2010 13:15:59 +0200 (CEST)
+	Thu, 21 Oct 2010 13:16:38 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,30 +19,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Hsiang <Peter.Hsiang@maxim-ic.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This function is not exported and it does not seem to be called from
-anywhere else therefore it should be static.
+Hello ALSA people,
 
-Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/max98088.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+How do you use the ALSA API to mute the MICROPHONE?
 
-diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-index 4186b27..e7a40d1 100644
---- a/sound/soc/codecs/max98088.c
-+++ b/sound/soc/codecs/max98088.c
-@@ -613,7 +613,7 @@ static int max98088_volatile_register(unsigned int reg)
- /*
-  * Load equalizer DSP coefficient configurations registers
-  */
--void m98088_eq_band(struct snd_soc_codec *codec, unsigned int dai,
-+static void m98088_eq_band(struct snd_soc_codec *codec, unsigned int dai,
-                    unsigned int band, u16 *coefs)
- {
-        unsigned int eq_reg;
--- 
-1.7.3.1
+How do you use the ALSA API to mute the SPEAKER?
+
+How do you reduce the playback latency or delay? I am reading my audio and I 
+notice that there is a delay ... or some kind of latency. I want the audio 
+played as soon as it is read or something close to that.
+
+Thanks,
+X
