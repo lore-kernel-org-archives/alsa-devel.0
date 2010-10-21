@@ -1,62 +1,80 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Constraining the number of frames per period
-Date: Thu, 21 Oct 2010 16:50:56 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1010211649160.29422@eeebox2.perex-int.cz>
-References: <AANLkTi=v2DKXfptubtwEPfH_4eZJ-vwLqVHAkmf3iE2D@mail.gmail.com>
+From: =?UTF-8?q?Diego=20Elio=20Petten=C3=B2?= <flameeyes@gmail.com>
+Subject: [PATCH] ALSA: HDA: Enable internal mic on Dell E6410 and Dell E6510
+Date: Thu, 21 Oct 2010 17:09:49 +0200
+Message-ID: <1287673789-13915-1-git-send-email-flameeyes@gmail.com>
+References: <1285726141-26448-2-git-send-email-flameeyes@gmail.com>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-1816069276-1287672656=:29422"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 428DF103824
-	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Oct 2010 16:50:57 +0200 (CEST)
-In-Reply-To: <AANLkTi=v2DKXfptubtwEPfH_4eZJ-vwLqVHAkmf3iE2D@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Adam Rosenberg <adam@alcorn.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1285726141-26448-2-git-send-email-flameeyes@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: David Henningsson <david.henningsson@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+=46rom: David Henningsson <david.henningsson@canonical.com>
 
---8323584-1816069276-1287672656=:29422
-Content-Type: TEXT/PLAIN; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+(Ported on top of 2.6.36)
 
-On Thu, 21 Oct 2010, Adam Rosenberg wrote:
+BugLink: http://launchpad.net/bugs/628961
+BugLink: http://launchpad.net/bugs/605047
 
-> I would like to make sure that all programs that use the sound driver
-> I wrote are required to use 512 frames per period.=C2=A0 Is there a
-> snd_pcm_hw_constraint function that will allow me to do this?
+CC: Diego Elio Petten=C3=B2 <flameeyes@gmail.com>
+---
+ sound/pci/hda/patch_sigmatel.c |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
 
-Just use periods_min and period_max =3D 512 in the hw structure. But why=20
-this constraint? It's better to use different ways in the driver=20
-(timers, etc) to leave reasonable range of the configuration space.
-
- =09=09=09=09=09=09Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
-
---8323584-1816069276-1287672656=:29422
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---8323584-1816069276-1287672656=:29422--
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigma=
+tel.c
+index c16c5ba..be79c3c 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -1633,6 +1633,13 @@ static unsigned int dell_s14_pin_configs[10] =3D=
+ {
+ 	0x40f000f0, 0x40f000f0,
+ };
+=20
++/* Deliberately turn off 0x0f (Dock Mic) to make it choose Int Mic ins=
+tead */
++static unsigned int dell_e6410_pin_configs[10] =3D {
++	0x04a11020, 0x0421101f, 0x400000f0, 0x90170110,
++	0x23011050, 0x40f000f0, 0x400000f0, 0x90a60130,
++	0x40f000f0, 0x40f000f0,
++};
++
+ static unsigned int hp_dv7_4000_pin_configs[10] =3D {
+ 	0x03a12050, 0x0321201f, 0x40f000f0, 0x90170110,
+ 	0x40f000f0, 0x40f000f0, 0x90170110, 0xd5a30140,
+@@ -1643,6 +1650,7 @@ static unsigned int *stac92hd83xxx_brd_tbl[STAC_9=
+2HD83XXX_MODELS] =3D {
+ 	[STAC_92HD83XXX_REF] =3D ref92hd83xxx_pin_configs,
+ 	[STAC_92HD83XXX_PWR_REF] =3D ref92hd83xxx_pin_configs,
+ 	[STAC_DELL_S14] =3D dell_s14_pin_configs,
++	[STAC_DELL_E6410] =3D dell_e6410_pin_configs,
+ 	[STAC_HP_DV7_4000] =3D hp_dv7_4000_pin_configs,
+ };
+=20
+@@ -1651,6 +1659,7 @@ static const char *stac92hd83xxx_models[STAC_92HD=
+83XXX_MODELS] =3D {
+ 	[STAC_92HD83XXX_REF] =3D "ref",
+ 	[STAC_92HD83XXX_PWR_REF] =3D "mic-ref",
+ 	[STAC_DELL_S14] =3D "dell-s14",
++	[STAC_DELL_E6410] =3D "dell-e6410",
+ 	[STAC_92HD83XXX_HP] =3D "hp",
+ 	[STAC_HP_DV7_4000] =3D "hp-dv7-4000",
+ };
+@@ -1663,6 +1672,10 @@ static struct snd_pci_quirk stac92hd83xxx_cfg_tb=
+l[] =3D {
+ 		      "DFI LanParty", STAC_92HD83XXX_REF),
+ 	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x02ba,
+ 		      "unknown Dell", STAC_DELL_S14),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x040a,
++		      "Dell E6410", STAC_DELL_E6410),
++	SND_PCI_QUIRK(PCI_VENDOR_ID_DELL, 0x040b,
++		      "Dell E6510", STAC_DELL_E6410),
+ 	SND_PCI_QUIRK_MASK(PCI_VENDOR_ID_HP, 0xff00, 0x3600,
+ 		      "HP", STAC_92HD83XXX_HP),
+ 	{} /* terminator */
+--=20
+1.7.3.1
