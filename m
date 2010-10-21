@@ -1,18 +1,19 @@
-From: "Soeren D. Schulze" <soeren.d.schulze@gmx.de>
-Subject: Re: hda-intel (ALC889) - sound loops/repeats
- continuously, and general brokenness
-Date: Thu, 21 Oct 2010 17:33:49 +0200
-Message-ID: <4CC05D5D.7000206@gmx.de>
-References: <4CBF45C0.5060903@juliano.info>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: tpa6130a2: Error handling for broken
+	chip
+Date: Thu, 21 Oct 2010 08:39:28 -0700
+Message-ID: <20101021153918.GB9447@opensource.wolfsonmicro.com>
+References: <1287662583-17809-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mailout-de.gmx.net [213.165.64.22])
-	by alsa0.perex.cz (Postfix) with SMTP id BE4291038A9
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 898881038B7
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Oct 2010 17:33:54 +0200 (CEST)
-In-Reply-To: <4CBF45C0.5060903@juliano.info>
+	Thu, 21 Oct 2010 17:39:48 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1287662583-17809-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,38 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Juliano F. Ravasi" <ml@juliano.info>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 20.10.2010 21:40, Juliano F. Ravasi wrote:
->  Hello ALSA devs,
-> =
+On Thu, Oct 21, 2010 at 03:03:03PM +0300, Peter Ujfalusi wrote:
+> Correct/Implement handling of broken chip.
+> Fail the i2c_prope if the communication with the chip
+> fails.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 
-> (Cc'ing alsa-devel since looks like it can be a driver problem/bug, but
-> still unsure. Need some expert advice.)
-> =
-
-> I'm experiencing a lot of problems reproducing audio with an HD Audio
-> "card" integrated on an Intel DX58SO mainboard. It happens only on this
-> card, everything is Ok with another (USB) card.
-> =
-
-> The most visible problem is that `aplay` plays only a small fragment of
-> audio (less than one second), then hangs and the card keeps reproducing
-> that fragment continuously in a loop, until killed with Ctrl-C. `aplay
-> -N` progresses, but each fragment repeats 3 times.
-
-[...]
-
-As a matter of accident, I reported a similar bug to the Ubuntu
-bugtracker just 30 minutes afterwards:
-
-http://bugs.launchpad.net/ubuntu/+source/linux/+bug/664138
-
-The error is not as bad for me, but it might be related.
-
-
-Thanks,
-
-S=F6ren
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
