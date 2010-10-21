@@ -1,22 +1,24 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: Status of UCM
-Date: Thu, 21 Oct 2010 22:20:32 +0100
-Message-ID: <1287696032.3205.79.camel@odin>
-References: <1287414540.15070.3.camel@razman.gruetest.com>
-	<1287424354.3303.221.camel@odin>
-	<20101018232242.GA25852@opensource.wolfsonmicro.com>
+From: Valdis.Kletnieks@vt.edu
+Subject: Re: HDA: no sound [was: mmotm 2010-10-20-15-01
+	uploaded]
+Date: Thu, 21 Oct 2010 17:24:24 -0400
+Message-ID: <8089.1287696264@localhost>
+References: <201010202233.o9KMXNoL008303@imap1.linux-foundation.org>
+	<4CBFEE94.7020103@gmail.com> <s5hlj5sc7do.wl%tiwai@suse.de>
+	<4CBFF25C.2080908@gmail.com> <s5hfww0c6oj.wl%tiwai@suse.de>
+	<4CC085F5.9070905@gmail.com> <s5heibjxsi4.wl%tiwai@suse.de>
+	<4CC092BC.9060504@gmail.com> <s5h8w1rxrl3.wl%tiwai@suse.de>
+	<5220.1287692957@localhost> <s5h39rzclx3.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7635452260022664261=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 810C7103AA3
+Received: from turing-police.cc.vt.edu (turing-police.cc.vt.edu
+	[128.173.14.107])
+	by alsa0.perex.cz (Postfix) with ESMTP id 25473103ABD
 	for <alsa-devel@alsa-project.org>;
-	Thu, 21 Oct 2010 23:20:31 +0200 (CEST)
-Received: by wye20 with SMTP id 20so65721wye.38
-	for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2010 14:20:31 -0700 (PDT)
-In-Reply-To: <20101018232242.GA25852@opensource.wolfsonmicro.com>
+	Thu, 21 Oct 2010 23:24:25 +0200 (CEST)
+In-Reply-To: Your message of "Thu, 21 Oct 2010 22:48:08 +0200."
+	<s5h39rzclx3.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,28 +28,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, mm-commits@vger.kernel.org, Jiri Slaby <jirislaby@gmail.com>, Colin Guthrie <gmane@colin.guthr.ie>, clemens@ladisch.de, linux-kernel@vger.kernel.org, akpm@linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-10-18 at 16:22 -0700, Mark Brown wrote:
-> On Mon, Oct 18, 2010 at 06:52:34PM +0100, Liam Girdwood wrote:
-> 
-> > Jaroslav, any update on this ?
-> 
-> Yes, please.  I was working with a cellphone vendor the other week to
-> deploy this and while it was solving real problems for them they had
-> some entirely legitimate concerns about the stability of the foundations
-> they were building on due to the ongoing review.
+--===============7635452260022664261==
+Content-Type: multipart/signed; boundary="==_Exmh_1287696264_4908P";
+	 micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
 
-Ping.
+--==_Exmh_1287696264_4908P
+Content-Type: text/plain; charset=us-ascii
 
-Anything I can help with here ?
+On Thu, 21 Oct 2010 22:48:08 +0200, Takashi Iwai said:
 
-Thanks
+> Yeah, if this is really the culprit, we should think of reverting the
+> commit, at least until the use-space fix is more populated.
 
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Am I allowed to NAK this commit till we get it sorted out? :)
+
+> Well, this doesn't tell much...
+> The fix patch for alsa-lib is pretty recent.  Attached below.
+
+> commit 2f6206da0c1ff88235e6eca0077343f22a4b43ee
+> Author: Clemens Ladisch <clemens@ladisch.de>
+> Date:   Fri Oct 15 10:33:20 2010 +0200
+
+That looks like a pretty self-contained patch, I should be able to build a
+local test alsa-lib with that one added and see if it works with both old and
+new kernels.  If I don't get a chance to do it tonight, won't be till Monday
+I suspect, am booked solid with other stuff till then...
+
+
+--==_Exmh_1287696264_4908P
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Exmh version 2.5 07/13/2001
+
+iD8DBQFMwK+IcC3lWbTT17ARAgb/AJ9ImcrwMIbvtx2gJsQIJbCrbuA2ogCgi1aP
+cuReq3Cijck0PyiOcdlPPl4=
+=Ug3S
+-----END PGP SIGNATURE-----
+
+--==_Exmh_1287696264_4908P--
+
+--===============7635452260022664261==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============7635452260022664261==--
