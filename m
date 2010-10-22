@@ -1,14 +1,15 @@
 From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCH 17/24] ASoC: SMARTQ: Move to use new I2S driver
-Date: Fri, 22 Oct 2010 17:38:21 +0900
-Message-ID: <1287736701-12425-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: [PATCH 14/24] ARM: S5PC100: I2S: Upgrade platform
+	device
+Date: Fri, 22 Oct 2010 17:37:11 +0900
+Message-ID: <1287736631-12327-1-git-send-email-jassisinghbrar@gmail.com>
 References: <1287736238-11846-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id B6A2A103B12
+	by alsa0.perex.cz (Postfix) with ESMTP id BB141103B17
 	for <alsa-devel@alsa-project.org>;
 	Fri, 22 Oct 2010 10:43:10 +0200 (CEST)
 In-Reply-To: <1287736238-11846-1-git-send-email-jassisinghbrar@gmail.com>
@@ -22,97 +23,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: kgene.kim@samsung.com, Jassi Brar <jassi.brar@samsung.com>, broonie@opensource.wolfsonmicro.com, mcuelenaere@gmail.com, ben-linux@fluff.org, june.bae@samsung.com, lrg@slimlogic.co.uk, sw.youn@samsung.com
+Cc: kgene.kim@samsung.com, Jassi Brar <jassi.brar@samsung.com>, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org, june.bae@samsung.com, lrg@slimlogic.co.uk, sw.youn@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
 From: Jassi Brar <jassi.brar@samsung.com>
 
-Modify the smartq_wm8987.c to use new i2s controller driver.
+Add more information to I2S platform_devices in order to
+prepare them for new controller driver.
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- sound/soc/s3c24xx/Kconfig         |    2 +-
- sound/soc/s3c24xx/smartq_wm8987.c |   25 +++++++++++--------------
- 2 files changed, 12 insertions(+), 15 deletions(-)
+ arch/arm/mach-s5pc100/dev-audio.c |   50 ++++++++++++++++++++++++++++--------
+ 1 files changed, 39 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
-index 20fe288..e7fad53 100644
---- a/sound/soc/s3c24xx/Kconfig
-+++ b/sound/soc/s3c24xx/Kconfig
-@@ -144,7 +144,7 @@ config SND_SOC_SMDK_WM9713
- config SND_S3C64XX_SOC_SMARTQ
- 	tristate "SoC I2S Audio support for SmartQ board"
- 	depends on SND_S3C24XX_SOC && MACH_SMARTQ
--	select SND_S3C64XX_SOC_I2S
-+	select SND_SAMSUNG_I2S
- 	select SND_SOC_WM8750
- 
- config SND_SOC_GONI_AQUILA_WM8994
-diff --git a/sound/soc/s3c24xx/smartq_wm8987.c b/sound/soc/s3c24xx/smartq_wm8987.c
-index 1d55312..5fcc420 100644
---- a/sound/soc/s3c24xx/smartq_wm8987.c
-+++ b/sound/soc/s3c24xx/smartq_wm8987.c
-@@ -25,7 +25,7 @@
- #include <asm/mach-types.h>
- 
- #include "dma.h"
--#include "s3c64xx-i2s.h"
-+#include "i2s.h"
- 
- #include "../codecs/wm8750.h"
- 
-@@ -41,13 +41,9 @@ static int smartq_hifi_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
- 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
--	struct s3c_i2sv2_rate_calc div;
- 	unsigned int clk = 0;
- 	int ret;
- 
--	s3c_i2sv2_iis_calc_rate(&div, NULL, params_rate(params),
--				s3c_i2sv2_get_clock(cpu_dai));
+diff --git a/arch/arm/mach-s5pc100/dev-audio.c b/arch/arm/mach-s5pc100/dev-audio.c
+index 564e195..d9ac852 100644
+--- a/arch/arm/mach-s5pc100/dev-audio.c
++++ b/arch/arm/mach-s5pc100/dev-audio.c
+@@ -23,17 +23,14 @@ static int s5pc100_cfg_i2s(struct platform_device *pdev)
+ {
+ 	/* configure GPIO for i2s port */
+ 	switch (pdev->id) {
++	case 0: /* Dedicated pins */
++		break;
+ 	case 1:
+ 		s3c_gpio_cfgpin_range(S5PC100_GPC(0), 5, S3C_GPIO_SFN(2));
+ 		break;
 -
- 	switch (params_rate(params)) {
- 	case 8000:
- 	case 16000:
-@@ -78,20 +74,21 @@ static int smartq_hifi_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		return ret;
+ 	case 2:
+ 		s3c_gpio_cfgpin_range(S5PC100_GPG3(0), 5, S3C_GPIO_SFN(4));
+ 		break;
+-
+-	case -1: /* Dedicated pins */
+-		break;
+-
+ 	default:
+ 		printk(KERN_ERR "Invalid Device %d\n", pdev->id);
+ 		return -EINVAL;
+@@ -42,8 +39,20 @@ static int s5pc100_cfg_i2s(struct platform_device *pdev)
+ 	return 0;
+ }
  
--	/* set the codec system clock for DAC and ADC */
--	ret = snd_soc_dai_set_sysclk(codec_dai, WM8750_SYSCLK, clk,
--				     SND_SOC_CLOCK_IN);
-+	/* Use PCLK for I2S signal generation */
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_RCLKSRC_0,
-+					0, SND_SOC_CLOCK_IN);
- 	if (ret < 0)
- 		return ret;
+-static struct s3c_audio_pdata s3c_i2s_pdata = {
++static const char *rclksrc_v5[] = {
++	[0] = "iis",
++	[1] = "i2sclkd2",
++};
++
++static struct s3c_audio_pdata i2sv5_pdata = {
+ 	.cfg_gpio = s5pc100_cfg_i2s,
++	.type = {
++		.i2s = {
++			.quirks = QUIRK_PRI_6CHAN | QUIRK_SEC_DAI
++					 | QUIRK_NEED_RSTCLR,
++			.src_clk = rclksrc_v5,
++		},
++	},
+ };
  
--	/* set MCLK division for sample rate */
--	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C_I2SV2_DIV_RCLK, div.fs_div);
-+	/* Gate the RCLK output on PAD */
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, SAMSUNG_I2S_CDCLK,
-+					0, SND_SOC_CLOCK_IN);
- 	if (ret < 0)
- 		return ret;
+ static struct resource s5pc100_iis0_resource[] = {
+@@ -62,15 +71,34 @@ static struct resource s5pc100_iis0_resource[] = {
+ 		.end   = DMACH_I2S0_RX,
+ 		.flags = IORESOURCE_DMA,
+ 	},
++	[3] = {
++		.start = DMACH_I2S0S_TX,
++		.end   = DMACH_I2S0S_TX,
++		.flags = IORESOURCE_DMA,
++	},
+ };
  
--	/* set prescaler division for sample rate */
--	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C_I2SV2_DIV_PRESCALER,
--				     div.clk_div - 1);
-+	/* set the codec system clock for DAC and ADC */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, WM8750_SYSCLK, clk,
-+				     SND_SOC_CLOCK_IN);
- 	if (ret < 0)
- 		return ret;
+ struct platform_device s5pc100_device_iis0 = {
+-	.name		  = "s3c64xx-iis-v4",
+-	.id		  = -1,
++	.name		  = "samsung-i2s",
++	.id		  = 0,
+ 	.num_resources	  = ARRAY_SIZE(s5pc100_iis0_resource),
+ 	.resource	  = s5pc100_iis0_resource,
+ 	.dev = {
+-		.platform_data = &s3c_i2s_pdata,
++		.platform_data = &i2sv5_pdata,
++	},
++};
++
++static const char *rclksrc_v3[] = {
++	[0] = "iis",
++	[1] = "sclk_audio",
++};
++
++static struct s3c_audio_pdata i2sv3_pdata = {
++	.cfg_gpio = s5pc100_cfg_i2s,
++	.type = {
++		.i2s = {
++			.src_clk = rclksrc_v3,
++		},
+ 	},
+ };
  
-@@ -211,7 +208,7 @@ static struct snd_soc_dai_link smartq_dai[] = {
- 	{
- 		.name		= "wm8987",
- 		.stream_name	= "SmartQ Hi-Fi",
--		.cpu_dai_name	= "s3c64xx-i2s.0",
-+		.cpu_dai_name	= "samsung-i2s.0",
- 		.codec_dai_name	= "wm8750-hifi",
- 		.platform_name	= "samsung-audio",
- 		.codec_name	= "wm8750-codec.0-0x1a",
+@@ -98,7 +126,7 @@ struct platform_device s5pc100_device_iis1 = {
+ 	.num_resources	  = ARRAY_SIZE(s5pc100_iis1_resource),
+ 	.resource	  = s5pc100_iis1_resource,
+ 	.dev = {
+-		.platform_data = &s3c_i2s_pdata,
++		.platform_data = &i2sv3_pdata,
+ 	},
+ };
+ 
+@@ -126,7 +154,7 @@ struct platform_device s5pc100_device_iis2 = {
+ 	.num_resources	  = ARRAY_SIZE(s5pc100_iis2_resource),
+ 	.resource	  = s5pc100_iis2_resource,
+ 	.dev = {
+-		.platform_data = &s3c_i2s_pdata,
++		.platform_data = &i2sv3_pdata,
+ 	},
+ };
+ 
 -- 
 1.6.2.5
