@@ -1,17 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: SoC Atmel SSC stereo problem
-Date: Fri, 22 Oct 2010 18:11:57 +0200
-Message-ID: <4CC1B7CD.3030703@ladisch.de>
-References: <4CC1AB01.3020603@fh-kl.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/4] ASoC: soc-cache: Add support for LZO
+ based register caching
+Date: Fri, 22 Oct 2010 09:18:51 -0700
+Message-ID: <20101022161850.GF16521@opensource.wolfsonmicro.com>
+References: <1287757702-9573-5-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 99A19103863
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8A0D21038A2
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Oct 2010 18:10:07 +0200 (CEST)
-In-Reply-To: <4CC1AB01.3020603@fh-kl.de>
+	Fri, 22 Oct 2010 18:19:28 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1287757702-9573-5-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,35 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Patrick Ziegler <patrick.ziegler@fh-kl.de>
-Cc: alsa-devel@alsa-project.org
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Ziegler wrote:
-> I have some trouble with stereo audio through the atmal ssc interface
-> based on at91-ssc.c.
+On Fri, Oct 22, 2010 at 03:28:22PM +0100, Dimitris Papastamos wrote:
 
-(Merged into atmel_ssc_dai.c since about one year ago.)
+> This patch adds support for LZO compression when storing the register
+> cache.  The initial register defaults cache is marked as __devinitconst
+> and the only change required for a driver to use LZO compression is
 
-> Unfortunately left and right channels were swapped periodically.
-> 
-> In my environment the codec supplies the BLCK and LRC clocks and
-> the SSC is configured to transmit one sample on both edges of the LRC clock.
-> But I guess the audio frames will always start with a frame of the left channel
-> while the LRC clock is in an undefined state.
+This looks good, though the changelog could use a bit more discussion as
+to the tradeoffs involved - clearly we're trading CPU consumption for
+memory consumption here, but things like numbers about the sorts of
+compression you can get and the amount of CPU time burned relative to
+the actual I/O operations would help people understand when and how to
+use this.
 
-Indeed.
+Actually, now that I think about it debug data either via debugfs or via
+dev_dbg() showing the before and after memory sizes would be very useful
+for people trying to decide if their register map compresses down well
+enough to really benefit from compression.
 
-> How does normally the audio driver detect when a left and when a right channel
-> frame should be send and with which it should start ?
+It looks like this patch also needs to add selects for LZO_COMPRESS and
+LZO_DECOMPRESS to Kconfig, otherwise we'll fail to build if nothing else
+has enabled them.
 
-The driver cannot do anything about this; the hardware must be told
-to start transmitting at the falling edge.
+> to set the compress_type member in codec->driver to
+> SND_SOC_LZO_COMPRESSION.
 
-If possible.
+It would be good if machine drivers were able to override this, 
 
-Is there a reason why the codec supplies LRC?
+> +static int snd_soc_compress_cache_block(struct snd_soc_codec *codec,
+> +					struct snd_soc_lzo_ctx *lzo_ctx)
+> +{
 
-
-Regards,
-Clemens
+This is all rather assuming that LZO is the only compression method we
+can use?  It doesn't really matter, though, as this is all internal to
+the cache code so we can deal with adding new compression types as and
+when we want them.
