@@ -1,23 +1,17 @@
-From: Adam Rosenberg <adam@alcorn.com>
-Subject: Re: Constraining the number of frames per period
-Date: Fri, 22 Oct 2010 16:45:27 -0400
-Message-ID: <AANLkTikr0ttrWCOiJEO-7GLvfLLUfRMA8Bii6wSD7qV6@mail.gmail.com>
-References: <AANLkTi=v2DKXfptubtwEPfH_4eZJ-vwLqVHAkmf3iE2D@mail.gmail.com>
-	<alpine.LNX.2.00.1010211649160.29422@eeebox2.perex-int.cz>
-	<AANLkTikAf+o7e-=hosi+dwEywK-Mt5UTvJtqzT=i_5Fz@mail.gmail.com>
-	<4CC13153.7040002@ladisch.de>
+From: Patrick Ziegler <patrick.ziegler@fh-kl.de>
+Subject: Re: SoC Atmel SSC stereo problem
+Date: Fri, 22 Oct 2010 23:39:01 +0200
+Message-ID: <4CC20475.3020900@fh-kl.de>
+References: <4CC1AB01.3020603@fh-kl.de> <4CC1B7CD.3030703@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id B3711103863
+Received: from post.fh-kl.de (post.fh-kl.de [143.93.17.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id EE2F1103863
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Oct 2010 22:45:52 +0200 (CEST)
-Received: by wye20 with SMTP id 20so1313974wye.38
-	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2010 13:45:47 -0700 (PDT)
-In-Reply-To: <4CC13153.7040002@ladisch.de>
+	Fri, 22 Oct 2010 23:39:04 +0200 (CEST)
+In-Reply-To: <4CC1B7CD.3030703@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,81 +25,36 @@ To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> > I am trying to constrain the number of frames per period (not the numbe=
-r of
-> > periods). =A0The DMA transfer creates an interrupt every 512 frames (1 =
-frame =3D
-> > 16 channels with 32bits per channel) . =A0I am having a difficult time
-> > understanding how to properly write the ALSA driver so that it will work
-> > with many different formats and between 1 and 2 channels.
+
+>> I have some trouble with stereo audio through the atmal ssc interface
+>> based on at91-ssc.c.
+> (Merged into atmel_ssc_dai.c since about one year ago.)
+>> Unfortunately left and right channels were swapped periodically.
+>>
+>> In my environment the codec supplies the BLCK and LRC clocks and
+>> the SSC is configured to transmit one sample on both edges of the LRC clock.
+>> But I guess the audio frames will always start with a frame of the left channel
+>> while the LRC clock is in an undefined state.
+> Indeed.
 >
-> Using period_bytes_min/max doesn't work for this situation; these fields
-> are intended for hardware that has constraints on the number of bytes.
+>> How does normally the audio driver detect when a left and when a right channel
+>> frame should be send and with which it should start ?
+> The driver cannot do anything about this; the hardware must be told
+> to start transmitting at the falling edge.
 >
-> Set the snd_pcm_hardware fields so that all sample formats are supported.
-
-
-I do not understand why I need to add all of the sample formats, but I
-went ahead and changed snd_pcm_hardware to:
-.formats =3D (SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S8 |
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0=A0=A0=A0 SNDRV_PCM_FMTBIT_U16_LE | SNDRV_PCM_=
-FMTBIT_S16_LE |
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0=A0=A0=A0 SNDRV_PCM_FMTBIT_U16_BE | SNDRV_PCM_=
-FMTBIT_S16_BE |
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0=A0=A0=A0 SNDRV_PCM_FMTBIT_U24_LE | SNDRV_PCM_=
-FMTBIT_S24_LE |
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0=A0=A0=A0 SNDRV_PCM_FMTBIT_U24_BE | SNDRV_PCM_=
-FMTBIT_S24_BE |
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0=A0=A0=A0 SNDRV_PCM_FMTBIT_U24_3LE | SNDRV_PCM=
-_FMTBIT_S24_3LE |
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0=A0=A0=A0 SNDRV_PCM_FMTBIT_U24_3BE | SNDRV_PCM=
-_FMTBIT_S24_3BE |
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0=A0=A0=A0 SNDRV_PCM_FMTBIT_U32_LE | SNDRV_PCM_=
-FMTBIT_S32_LE |
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0=A0=A0=A0 SNDRV_PCM_FMTBIT_U32_BE | SNDRV_PCM_=
-FMTBIT_S32_BE),
-
-
-> In the PCM device's open callback, add another constraint by calling
-> snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 512=
-, 512);
-
-
-Thank you!  This worked as you described and the applications now
-select a period of 512 frames.
-
-
->> =A0 =A0 // the max number of bytes in one PCM stream
->> =A0 =A0 // must allow for a minimum of 4 periods with
->> =A0 =A0 // 512 frames per period and up to 2 channels of
->> =A0 =A0 // 32 bit data per frame
->> =A0 =A0 .buffer_bytes_max =3D 32768, =A0// this value allows 8 periods o=
-f the max frame size
-
-> Are the minimum 4 and maximum 8 periods actual hardware constraints?
-
-Not really.  Mark Brown of WolfsonMicro helped me discover that I
-needed at least 3 periods so that there would always be one playing in
-the DMA buffer, one ready to play, and one able to be written to.  I
-selected 4 periods as a minimum because it made it easier for me to
-figure out good sizes for the DMA buffer.  There is no true hardware
-constraint on the max number of periods but I do need to keep my DMA
-period buffer size smaller than 64kb because the 2d transfer mode that
-is implemented by the blackfin BF537 sport driver (bf5xx-sport.c)
-doesn't seem to work properly.  If I stay below 64kb it doesn't need
-to use 2d DMA mode.
-
-I have had much better results after these changes but am still not
-100% happy with the driver.  There is still some choppiness when
-playing a wav file using aplay.  It seems like there are some xrun
-conditions that occur just at the start of playback and then work
-themselves out.  I am not sure if I have latest aplay because it came
-with the Blackfin distribution of uClinux. I'll look into it further.
-I also have some problems with the OSS emulation not working properly
-every time.  I do not plan to use OSS in my actual application so I
-can ignore that for now.
-
-Thank you Clemens and Jaroslav for your help.  I will email again if I
-have any more questions.
-
--Adam
+> If possible.
+If there is only one channel to transfer, I set the start of 
+transmission on the rising edge (left justified format). But if I do 
+this for two channels, both channels will be transmit on the left 
+channel, this is what I would expect. Is there way to tell the hardware 
+(Atmel SSC on at91rm9200) that 2 Frames shall be send after a rising 
+edge with an indication that the second frame shall be send after the 
+falling edge ? This is the way it should work, but of course I don't 
+know if it's even possible.
+> Is there a reason why the codec supplies LRC?
+>
+The SSC is connected to a FPGA that assigns the bus to different devices 
+depending on the application. And for all applications the FPGA 
+generates the clocks. Maybe this is not the best solution but I will try 
+to deal with this limitation first before I try to persuade other people 
+to change it.
