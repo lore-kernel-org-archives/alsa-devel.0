@@ -1,28 +1,20 @@
-From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: Re: [PATCH 00/25] ASoC: Overhaul Samsung drivers
-Date: Fri, 22 Oct 2010 14:13:48 +0900
-Message-ID: <002a01cb71a7$ead3d760$c07b8620$%kim@samsung.com>
-References: <1287471805-17952-1-git-send-email-jassisinghbrar@gmail.com>
-	<20101022045927.GA16016@opensource.wolfsonmicro.com>
+From: Mandar Joshi <emailmandar@gmail.com>
+Subject: Re: S51 usb support
+Date: Fri, 22 Oct 2010 05:14:00 +0000
+Message-ID: <AANLkTinLd+XqGBL6UP8_jZw+6qa6FdzfCqWq7_5m7Sc8@mail.gmail.com>
+References: <AANLkTin0_BibT7_+n-ipC8S8q14tfdfj7LTGqHpNweCP@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id 88677103833
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id EB6511038D1
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Oct 2010 07:13:33 +0200 (CEST)
-Received: from epmmp1 (mailout2.samsung.com [203.254.224.25])
-	by mailout2.samsung.com
-	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
-	2010)) with ESMTP id <0LAO00KJBEIGHX00@mailout2.samsung.com> for
-	alsa-devel@alsa-project.org; Fri, 22 Oct 2010 14:13:29 +0900 (KST)
-Received: from DOKGENEKIM02 ([12.23.103.104])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0LAO009PKEIGKO@mmp1.samsung.com> for
-	alsa-devel@alsa-project.org; Fri, 22 Oct 2010 14:13:28 +0900 (KST)
-In-reply-to: <20101022045927.GA16016@opensource.wolfsonmicro.com>
-Content-language: ko
+	Fri, 22 Oct 2010 07:14:27 +0200 (CEST)
+Received: by gxk21 with SMTP id 21so351226gxk.38
+	for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2010 22:14:27 -0700 (PDT)
+In-Reply-To: <AANLkTin0_BibT7_+n-ipC8S8q14tfdfj7LTGqHpNweCP@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,30 +24,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>, 'Jassi Brar' <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, 'Jassi Brar' <jassi.brar@samsung.com>, ben-linux@fluff.org, june.bae@samsung.com, lrg@slimlogic.co.uk, sw.youn@samsung.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> 
-> On Tue, Oct 19, 2010 at 04:03:25PM +0900, Jassi Brar wrote:
-> 
-> > Here come patches overhauling the Samsung ASoC support.
-> 
-> So, this all looks sensible enough to me - I've nothing extra apart
-> from what I mailed out before.  I guess we'll need a revision 2 of the
-> series but I think that's likely to be something that can be merged if
-> Liam and Kukjin don't have any big issues.
+On Wed, Oct 20, 2010 at 8:30 PM, Mandar Joshi <emailmandar@gmail.com> wrote:
 
-Jassi's patches look ok to me :-)
-but yes...need to update them...
+> This is how it works.
+> The volume knob sends an interrupt via endpoint 0x83 containing 0xC0
+> 0x00 whenever it is
+> rotated clockwise,anti-clockwise or pressed.
+> After this a control message is sent to the device to retrieve which
+> of the 3 actions it was.
+> The control packet sent is 0xa1 0x85 0x00 0x00 0x00 0x00 0x04 0x00
+> We get a 1 byte response.
+> 0x0F for anti-clockwise rotation. 0x0D for press and 0x10 for
+> clockwise rotation.
+>
 
-I know, Jassi is updating them, then will be submitted.
 
-Thanks.
+Seems the functionality to handle the endpoint and retrieve the action
+is already present in snd-usb-audio
+Just had to add an entry specific to USB X-Fi to mixer_quirks.c
+I tested this with alsa-driver 1.0.23. Compiled it with debug. You can
+see the received code in /var/log/messages
+0x0F for anticlockwise rotation. 0x0D for press and 0x10 for clockwise rotation
 
-Best regards,
-Kgene.
---
-Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
-SW Solution Development Team, Samsung Electronics Co., Ltd.
+Of course since there is no hardware mixer, the volume won't change.
+This received code needs to be communicated to userspace. Any Suggestions?
+
+Here is the addition I've tested
+
+diff -rupN alsa-driver-1.0.23.orig/alsa-kernel/usb/mixer_quirks.c
+alsa-driver-1.0.23/alsa-kernel/usb/mixer_quirks.c
+--- alsa-driver-1.0.23.orig/alsa-kernel/usb/mixer_quirks.c	2010-04-16
+11:10:10.000000000 +0000
++++ alsa-driver-1.0.23/alsa-kernel/usb/mixer_quirks.c	2010-10-22
+10:45:22.000000000 +0000
+@@ -61,6 +61,7 @@ static const struct rc_config {
+ 	{ USB_ID(0x041e, 0x3020), 2, 1, 6, 6,  18, 0x0013 }, /* Audigy 2 NX  */
+ 	{ USB_ID(0x041e, 0x3040), 2, 2, 6, 6,  2,  0x6e91 }, /* Live! 24-bit */
+ 	{ USB_ID(0x041e, 0x3048), 2, 2, 6, 6,  2,  0x6e91 }, /* Toshiba SB0500 */
++	{ USB_ID(0x041e, 0x3042), 0, 1, 1, 1,  1,  0x000d }, /* Usb X-Fi */
+ };
+
+ static void snd_usb_soundblaster_remote_complete(struct urb *urb)
+@@ -75,7 +76,7 @@ static void snd_usb_soundblaster_remote_
+ 	code = mixer->rc_buffer[rc->offset];
+ 	if (rc->length == 2)
+ 		code |= mixer->rc_buffer[rc->offset + 1] << 8;
+-
++	snd_printd(KERN_DEBUG "remote code: %02X\n",code);
+ 	/* the Mute button actually changes the mixer control */
+ 	if (code == rc->mute_code)
+ 		snd_usb_mixer_notify_id(mixer, rc->mute_mixer_id);
