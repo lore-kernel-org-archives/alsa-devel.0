@@ -1,77 +1,51 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: HDA: no sound [was: mmotm 2010-10-20-15-01 uploaded]
-Date: Fri, 22 Oct 2010 09:46:06 +0100
-Message-ID: <4CC14F4E.4090509@colin.guthr.ie>
-References: <201010202233.o9KMXNoL008303@imap1.linux-foundation.org>	<4CBFEE94.7020103@gmail.com>	<s5hlj5sc7do.wl%tiwai@suse.de>	<4CBFF25C.2080908@gmail.com>	<s5hfww0c6oj.wl%tiwai@suse.de>	<4CC085F5.9070905@gmail.com>	<s5heibjxsi4.wl%tiwai@suse.de>	<4CC092BC.9060504@gmail.com>	<s5h8w1rxrl3.wl%tiwai@suse.de>	<5220.1287692957@localhost>	<s5h39rzclx3.wl%tiwai@suse.de>	<8089.1287696264@localhost> <s5hsjzzb5cf.wl%tiwai@suse.de> <4CC0B3C1.9010106@gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Question regarding snd_pcm_control_ioctl
+Date: Fri, 22 Oct 2010 10:56:34 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1010221053520.29422@eeebox2.perex-int.cz>
+References: <2A84145621092446B6659B8A0F28E26F46FE8E4B5B@irsmsx501.ger.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4CC0B3C1.9010106@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jiri Slaby <jirislaby@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Valdis.Kletnieks@vt.edu, linux-kernel@vger.kernel.org, akpm@linux-foundation.org, mm-commits@vger.kernel.org, clemens@ladisch.de, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id AFA122433A
+	for <alsa-devel@alsa-project.org>;
+	Fri, 22 Oct 2010 10:56:36 +0200 (CEST)
+In-Reply-To: <2A84145621092446B6659B8A0F28E26F46FE8E4B5B@irsmsx501.ger.corp.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "Bensaid, Selma" <selma.bensaid@intel.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Jiri Slaby at 21/10/10 22:42 did gyre and gimble:
-> On 10/21/2010 11:31 PM, Takashi Iwai wrote:
->> OK.  Maybe someone else can check it meanwhile.
-> 
-> Someone else rebooted the 13th time today and checked :):
-> $ rpm -q `rpmqpack |egrep 'alsa|asound'|sort`
-> alsa-1.0.22.git20101018-1.1.x86_64
-> alsa-firmware-1.0.23-3.7.noarch
-> alsa-oss-1.0.17-31.4.x86_64
-> alsa-plugins-1.0.23-4.5.x86_64
-> alsa-plugins-pulse-1.0.23-4.5.x86_64
-> alsa-plugins-pulse-32bit-1.0.23-4.5.x86_64
-> alsa-plugins-32bit-1.0.23-4.5.x86_64
-> alsa-utils-1.0.23-4.5.x86_64
-> libasound2-1.0.22.git20101018-1.1.x86_64
-> libasound2-32bit-1.0.23-6.5.x86_64
-> 
-> No success. I still need the revert.
-> 
-> regards,
+On Fri, 22 Oct 2010, Bensaid, Selma wrote:
 
-Just tested the latest kernel patch in a "proper" (i.e. patched in
-kernel) build (as opposed to my previous out-of-tree builds).
+> Hi,
+>
+> I have question concerning ALSA Core snd_pcm_control_ioctl function.
+>
+> I have noticed that the IOCTL fails if it's called for a device with 
+> substream_count = 0, since I'm implementing a PCM device that supports 
+> Record and does not support Playback, the IOCTL fails when called for 
+> the Playback stream. I would propose, in such case, to return that the 
+> stream has 0 playback substreams instead of failing.
 
-It's working great for me (stac9200)
+You mean probably that the SNDRV_CTL_IOCTL_PCM_INFO ioctl returns -ENOENT 
+when an invalid direction is accessed. It looks correct to me. If 
+a direction does not exist, it makes no sense to gather info for it. And 
+-ENOENT response clearly shows that this direction is not available, so 
+the user space tools can distict if it's an unexpected error or this one.
 
-I tried without the userspace patch and things still work fine for me
-under this setup - it's just that PAs flat volumes do not properly
-control the Master+PCM pipeline (they both go to mute when master hits 0).
+ 						Jaroslav
 
-But it doesn't seem to cause any other problems for me.
-
-I'm no expert at the kernel side, but can't see much in the code that
-would cause this.
-
-However, from Jiri's alsa-info, this looks a bit suspicious:
-
-Simple mixer control 'Master',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined penum
-  Playback channels: Mono
-  Limits: Playback 0 - 64
-  Mono: Playback 40 [62%] [1620.40dB] [on]
-
-1620.40dB?? Really?
-
-Is perhaps the TLV fix for min-is-mute conflicting with a db range fix?
-
-Col
-
-
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mageia Contributor [http://www.mageia.org/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
