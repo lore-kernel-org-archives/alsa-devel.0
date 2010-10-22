@@ -1,14 +1,14 @@
 From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCH 04/24] ASoC: Samsung: Rename ASoC DMA driver
-Date: Fri, 22 Oct 2010 17:34:33 +0900
-Message-ID: <1287736473-11995-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: [PATCH 06/24] ASoC: Samsung: Rename AC97 driver
+Date: Fri, 22 Oct 2010 17:35:00 +0900
+Message-ID: <1287736500-12066-1-git-send-email-jassisinghbrar@gmail.com>
 References: <1287736238-11846-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id A63F5103B0E
+	by alsa0.perex.cz (Postfix) with ESMTP id 897C224339
 	for <alsa-devel@alsa-project.org>;
 	Fri, 22 Oct 2010 10:43:10 +0200 (CEST)
 In-Reply-To: <1287736238-11846-1-git-send-email-jassisinghbrar@gmail.com>
@@ -27,396 +27,180 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jassi Brar <jassi.brar@samsung.com>
 
-Rename Samsung ASoC DMA driver
-	s3c-dma.[c/h] -> dma.[c/h]
+Rename Samsung AC97 driver
+	s3c-ac97.[c/h] -> ac97.[c/h]
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- sound/soc/s3c24xx/Makefile                     |    2 +-
- sound/soc/s3c24xx/{s3c-dma.c => dma.c}         |    6 +++---
- sound/soc/s3c24xx/{s3c-dma.h => dma.h}         |    2 +-
- sound/soc/s3c24xx/goni_wm8994.c                |    2 +-
- sound/soc/s3c24xx/jive_wm8750.c                |    2 +-
- sound/soc/s3c24xx/ln2440sbc_alc650.c           |    2 +-
- sound/soc/s3c24xx/neo1973_gta02_wm8753.c       |    2 +-
- sound/soc/s3c24xx/neo1973_wm8753.c             |    2 +-
- sound/soc/s3c24xx/rx1950_uda1380.c             |    2 +-
- sound/soc/s3c24xx/s3c-ac97.c                   |    2 +-
- sound/soc/s3c24xx/s3c-i2s-v2.c                 |    2 +-
- sound/soc/s3c24xx/s3c-pcm.c                    |    2 +-
- sound/soc/s3c24xx/s3c2412-i2s.c                |    2 +-
- sound/soc/s3c24xx/s3c24xx-i2s.c                |    2 +-
- sound/soc/s3c24xx/s3c24xx_simtec.c             |    2 +-
- sound/soc/s3c24xx/s3c24xx_simtec_hermes.c      |    2 +-
- sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c |    2 +-
- sound/soc/s3c24xx/s3c24xx_uda134x.c            |    2 +-
- sound/soc/s3c24xx/s3c64xx-i2s-v4.c             |    2 +-
- sound/soc/s3c24xx/s3c64xx-i2s.c                |    2 +-
- sound/soc/s3c24xx/smartq_wm8987.c              |    2 +-
- sound/soc/s3c24xx/smdk2443_wm9710.c            |    2 +-
- sound/soc/s3c24xx/smdk64xx_wm8580.c            |    2 +-
- sound/soc/s3c24xx/smdk_spdif.c                 |    2 +-
- sound/soc/s3c24xx/smdk_wm9713.c                |    2 +-
- sound/soc/s3c24xx/spdif.c                      |    2 +-
- 26 files changed, 28 insertions(+), 28 deletions(-)
- rename sound/soc/s3c24xx/{s3c-dma.c => dma.c} (99%)
- rename sound/soc/s3c24xx/{s3c-dma.h => dma.h} (97%)
+ sound/soc/s3c24xx/Makefile               |    4 ++--
+ sound/soc/s3c24xx/{s3c-ac97.c => ac97.c} |   16 ++++++++--------
+ sound/soc/s3c24xx/{s3c-ac97.h => ac97.h} |    8 ++++----
+ sound/soc/s3c24xx/ln2440sbc_alc650.c     |    2 +-
+ sound/soc/s3c24xx/smdk2443_wm9710.c      |    2 +-
+ sound/soc/s3c24xx/smdk_wm9713.c          |    2 +-
+ 6 files changed, 17 insertions(+), 17 deletions(-)
+ rename sound/soc/s3c24xx/{s3c-ac97.c => ac97.c} (97%)
+ rename sound/soc/s3c24xx/{s3c-ac97.h => ac97.h} (73%)
 
 diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/s3c24xx/Makefile
-index 4e232f1..20aac45 100644
+index 20aac45..551a63d 100644
 --- a/sound/soc/s3c24xx/Makefile
 +++ b/sound/soc/s3c24xx/Makefile
-@@ -1,5 +1,5 @@
- # S3c24XX Platform Support
--snd-soc-s3c24xx-objs := s3c-dma.o
-+snd-soc-s3c24xx-objs := dma.o
+@@ -3,7 +3,7 @@ snd-soc-s3c24xx-objs := dma.o
  snd-soc-s3c24xx-i2s-objs := s3c24xx-i2s.o
  snd-soc-s3c2412-i2s-objs := s3c2412-i2s.o
  snd-soc-s3c64xx-i2s-objs := s3c64xx-i2s.o
-diff --git a/sound/soc/s3c24xx/s3c-dma.c b/sound/soc/s3c24xx/dma.c
-similarity index 99%
-rename from sound/soc/s3c24xx/s3c-dma.c
-rename to sound/soc/s3c24xx/dma.c
-index 0c1cd6c..b4c7c85 100644
---- a/sound/soc/s3c24xx/s3c-dma.c
-+++ b/sound/soc/s3c24xx/dma.c
-@@ -1,5 +1,5 @@
- /*
-- * s3c-dma.c  --  ALSA Soc Audio Layer
-+ * dma.c  --  ALSA Soc Audio Layer
-  *
-  * (c) 2006 Wolfson Microelectronics PLC.
-  * Graeme Gregory graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-@@ -30,7 +30,7 @@
- #include <mach/hardware.h>
- #include <mach/dma.h>
+-snd-soc-s3c-ac97-objs := s3c-ac97.o
++snd-soc-ac97-objs := ac97.o
+ snd-soc-s3c64xx-i2s-v4-objs := s3c64xx-i2s-v4.o
+ snd-soc-s3c-i2s-v2-objs := s3c-i2s-v2.o
+ snd-soc-s3c-pcm-objs := s3c-pcm.o
+@@ -11,7 +11,7 @@ snd-soc-samsung-spdif-objs := spdif.o
  
--#include "s3c-dma.h"
-+#include "dma.h"
- 
- static const struct snd_pcm_hardware s3c_dma_hardware = {
- 	.info			= SNDRV_PCM_INFO_INTERLEAVED |
-@@ -454,7 +454,7 @@ static int s3c_dma_new(struct snd_card *card,
- 		if (ret)
- 			goto out;
- 	}
-- out:
-+out:
- 	return ret;
- }
- 
-diff --git a/sound/soc/s3c24xx/s3c-dma.h b/sound/soc/s3c24xx/dma.h
+ obj-$(CONFIG_SND_S3C24XX_SOC) += snd-soc-s3c24xx.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_I2S) += snd-soc-s3c24xx-i2s.o
+-obj-$(CONFIG_SND_S3C_SOC_AC97) += snd-soc-s3c-ac97.o
++obj-$(CONFIG_SND_S3C_SOC_AC97) += snd-soc-ac97.o
+ obj-$(CONFIG_SND_S3C2412_SOC_I2S) += snd-soc-s3c2412-i2s.o
+ obj-$(CONFIG_SND_S3C64XX_SOC_I2S) += snd-soc-s3c64xx-i2s.o
+ obj-$(CONFIG_SND_S3C64XX_SOC_I2S_V4) += snd-soc-s3c64xx-i2s-v4.o
+diff --git a/sound/soc/s3c24xx/s3c-ac97.c b/sound/soc/s3c24xx/ac97.c
 similarity index 97%
-rename from sound/soc/s3c24xx/s3c-dma.h
-rename to sound/soc/s3c24xx/dma.h
-index 748c07d..f8cd2b4 100644
---- a/sound/soc/s3c24xx/s3c-dma.h
-+++ b/sound/soc/s3c24xx/dma.h
-@@ -1,5 +1,5 @@
- /*
-- *  s3c-dma.h --
-+ *  dma.h --
-  *
-  *  This program is free software; you can redistribute  it and/or modify it
-  *  under  the terms of  the GNU General  Public License as published by the
-diff --git a/sound/soc/s3c24xx/goni_wm8994.c b/sound/soc/s3c24xx/goni_wm8994.c
-index c568f69..201056c 100644
---- a/sound/soc/s3c24xx/goni_wm8994.c
-+++ b/sound/soc/s3c24xx/goni_wm8994.c
-@@ -25,7 +25,7 @@
- #include <linux/mfd/wm8994/core.h>
- #include <linux/mfd/wm8994/registers.h>
- #include "../codecs/wm8994.h"
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "s3c64xx-i2s.h"
- 
- #define MACHINE_NAME	0
-diff --git a/sound/soc/s3c24xx/jive_wm8750.c b/sound/soc/s3c24xx/jive_wm8750.c
-index 7a6b0fa..4e1b8ac 100644
---- a/sound/soc/s3c24xx/jive_wm8750.c
-+++ b/sound/soc/s3c24xx/jive_wm8750.c
-@@ -25,7 +25,7 @@
- 
- #include <asm/mach-types.h>
- 
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "s3c2412-i2s.h"
- 
- #include "../codecs/wm8750.h"
-diff --git a/sound/soc/s3c24xx/ln2440sbc_alc650.c b/sound/soc/s3c24xx/ln2440sbc_alc650.c
-index 6b7bb38..36e7e85 100644
---- a/sound/soc/s3c24xx/ln2440sbc_alc650.c
-+++ b/sound/soc/s3c24xx/ln2440sbc_alc650.c
-@@ -23,7 +23,7 @@
- #include <sound/soc.h>
- #include <sound/soc-dapm.h>
- 
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "s3c-ac97.h"
- 
- static struct snd_soc_card ln2440sbc;
-diff --git a/sound/soc/s3c24xx/neo1973_gta02_wm8753.c b/sound/soc/s3c24xx/neo1973_gta02_wm8753.c
-index a9a4bbb..c4b2013 100644
---- a/sound/soc/s3c24xx/neo1973_gta02_wm8753.c
-+++ b/sound/soc/s3c24xx/neo1973_gta02_wm8753.c
-@@ -32,7 +32,7 @@
- #include <asm/io.h>
- #include <mach/gta02.h>
- #include "../codecs/wm8753.h"
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "s3c24xx-i2s.h"
- 
- static struct snd_soc_card neo1973_gta02;
-diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
-index d5e4148..96dda57 100644
---- a/sound/soc/s3c24xx/neo1973_wm8753.c
-+++ b/sound/soc/s3c24xx/neo1973_wm8753.c
-@@ -36,7 +36,7 @@
- 
- #include "../codecs/wm8753.h"
- #include "lm4857.h"
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "s3c24xx-i2s.h"
- 
- /* define the scenarios */
-diff --git a/sound/soc/s3c24xx/rx1950_uda1380.c b/sound/soc/s3c24xx/rx1950_uda1380.c
-index 99bb86e..07197ee 100644
---- a/sound/soc/s3c24xx/rx1950_uda1380.c
-+++ b/sound/soc/s3c24xx/rx1950_uda1380.c
-@@ -35,7 +35,7 @@
- 
- #include <asm/mach-types.h>
- 
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "s3c24xx-i2s.h"
- #include "../codecs/uda1380.h"
- 
-diff --git a/sound/soc/s3c24xx/s3c-ac97.c b/sound/soc/s3c24xx/s3c-ac97.c
-index f891eb7..408f9c9 100644
+rename from sound/soc/s3c24xx/s3c-ac97.c
+rename to sound/soc/s3c24xx/ac97.c
+index 5352cac..4f999d1 100644
 --- a/sound/soc/s3c24xx/s3c-ac97.c
-+++ b/sound/soc/s3c24xx/s3c-ac97.c
-@@ -24,7 +24,7 @@
- #include <mach/dma.h>
++++ b/sound/soc/s3c24xx/ac97.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c-ac97.c
++/* sound/soc/s3c24xx/ac97.c
+  *
+  * ALSA SoC Audio Layer - S3C AC97 Controller driver
+  * 	Evolved from s3c2443-ac97.c
+@@ -25,7 +25,7 @@
  #include <plat/audio.h>
  
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "s3c-ac97.h"
+ #include "dma.h"
+-#include "s3c-ac97.h"
++#include "ac97.h"
  
  #define AC_CMD_ADDR(x) (x << 16)
-diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/s3c24xx/s3c-i2s-v2.c
-index b3866d5..c471431 100644
---- a/sound/soc/s3c24xx/s3c-i2s-v2.c
-+++ b/sound/soc/s3c24xx/s3c-i2s-v2.c
-@@ -28,7 +28,7 @@
+ #define AC_CMD_DATA(x) (x & 0xffff)
+@@ -122,7 +122,7 @@ static unsigned short s3c_ac97_read(struct snd_ac97 *ac97,
+ 	data = (stat & 0xffff);
  
- #include "regs-i2s-v2.h"
- #include "s3c-i2s-v2.h"
--#include "s3c-dma.h"
-+#include "dma.h"
+ 	if (addr != reg)
+-		pr_err("s3c-ac97: req addr = %02x, rep addr = %02x\n",
++		pr_err("ac97: req addr = %02x, rep addr = %02x\n",
+ 			reg, addr);
  
- #undef S3C_IIS_V2_SUPPORTED
+ 	mutex_unlock(&s3c_ac97.lock);
+@@ -334,7 +334,7 @@ static struct snd_soc_dai_ops s3c_ac97_mic_dai_ops = {
  
-diff --git a/sound/soc/s3c24xx/s3c-pcm.c b/sound/soc/s3c24xx/s3c-pcm.c
-index 2e020e1..e111d23 100644
---- a/sound/soc/s3c24xx/s3c-pcm.c
-+++ b/sound/soc/s3c24xx/s3c-pcm.c
-@@ -29,7 +29,7 @@
- #include <plat/audio.h>
- #include <plat/dma.h>
+ static struct snd_soc_dai_driver s3c_ac97_dai[] = {
+ 	[S3C_AC97_DAI_PCM] = {
+-		.name =	"s3c-ac97",
++		.name =	"samsung-ac97",
+ 		.ac97_control = 1,
+ 		.playback = {
+ 			.stream_name = "AC97 Playback",
+@@ -351,7 +351,7 @@ static struct snd_soc_dai_driver s3c_ac97_dai[] = {
+ 		.ops = &s3c_ac97_dai_ops,
+ 	},
+ 	[S3C_AC97_DAI_MIC] = {
+-		.name = "s3c-ac97-mic",
++		.name = "samsung-ac97-mic",
+ 		.ac97_control = 1,
+ 		.capture = {
+ 			.stream_name = "AC97 Mic Capture",
+@@ -407,7 +407,7 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
+ 	}
  
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "s3c-pcm.h"
+ 	if (!request_mem_region(mem_res->start,
+-				resource_size(mem_res), "s3c-ac97")) {
++				resource_size(mem_res), "ac97")) {
+ 		dev_err(&pdev->dev, "Unable to request register region\n");
+ 		return -EBUSY;
+ 	}
+@@ -431,7 +431,7 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
  
- static struct s3c2410_dma_client s3c_pcm_dma_client_out = {
-diff --git a/sound/soc/s3c24xx/s3c2412-i2s.c b/sound/soc/s3c24xx/s3c2412-i2s.c
-index 4a861cf..d953ff4 100644
---- a/sound/soc/s3c24xx/s3c2412-i2s.c
-+++ b/sound/soc/s3c24xx/s3c2412-i2s.c
-@@ -35,7 +35,7 @@
- #include <mach/regs-gpio.h>
- #include <mach/dma.h>
+ 	s3c_ac97.ac97_clk = clk_get(&pdev->dev, "ac97");
+ 	if (IS_ERR(s3c_ac97.ac97_clk)) {
+-		dev_err(&pdev->dev, "s3c-ac97 failed to get ac97_clock\n");
++		dev_err(&pdev->dev, "ac97 failed to get ac97_clock\n");
+ 		ret = -ENODEV;
+ 		goto err2;
+ 	}
+@@ -446,7 +446,7 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
+ 	ret = request_irq(irq_res->start, s3c_ac97_irq,
+ 					IRQF_DISABLED, "AC97", NULL);
+ 	if (ret < 0) {
+-		dev_err(&pdev->dev, "s3c-ac97: interrupt request failed.\n");
++		dev_err(&pdev->dev, "ac97: interrupt request failed.\n");
+ 		goto err4;
+ 	}
  
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "regs-i2s-v2.h"
- #include "s3c2412-i2s.h"
- 
-diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.c b/sound/soc/s3c24xx/s3c24xx-i2s.c
-index e060daa..13e41ed 100644
---- a/sound/soc/s3c24xx/s3c24xx-i2s.c
-+++ b/sound/soc/s3c24xx/s3c24xx-i2s.c
-@@ -38,7 +38,7 @@
- 
- #include <plat/regs-iis.h>
- 
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "s3c24xx-i2s.h"
- 
- static struct s3c2410_dma_client s3c24xx_dma_client_out = {
-diff --git a/sound/soc/s3c24xx/s3c24xx_simtec.c b/sound/soc/s3c24xx/s3c24xx_simtec.c
-index c4c1114..3f052a5 100644
---- a/sound/soc/s3c24xx/s3c24xx_simtec.c
-+++ b/sound/soc/s3c24xx/s3c24xx_simtec.c
-@@ -21,7 +21,7 @@
- 
- #include <plat/audio-simtec.h>
- 
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "s3c24xx-i2s.h"
- #include "s3c24xx_simtec.h"
- 
-diff --git a/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c b/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
-index 5180c2a..8b246ab 100644
---- a/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
-+++ b/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
-@@ -18,7 +18,7 @@
- 
- #include <plat/audio-simtec.h>
- 
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "s3c24xx-i2s.h"
- #include "s3c24xx_simtec.h"
- 
-diff --git a/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c b/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
-index 7a7bb53..a922e1e 100644
---- a/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
-+++ b/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
-@@ -18,7 +18,7 @@
- 
- #include <plat/audio-simtec.h>
- 
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "s3c24xx-i2s.h"
- #include "s3c24xx_simtec.h"
- 
-diff --git a/sound/soc/s3c24xx/s3c24xx_uda134x.c b/sound/soc/s3c24xx/s3c24xx_uda134x.c
-index 50d44fa..87eeb46 100644
---- a/sound/soc/s3c24xx/s3c24xx_uda134x.c
-+++ b/sound/soc/s3c24xx/s3c24xx_uda134x.c
+diff --git a/sound/soc/s3c24xx/s3c-ac97.h b/sound/soc/s3c24xx/ac97.h
+similarity index 73%
+rename from sound/soc/s3c24xx/s3c-ac97.h
+rename to sound/soc/s3c24xx/ac97.h
+index 5dcedd0..a8f01b7 100644
+--- a/sound/soc/s3c24xx/s3c-ac97.h
++++ b/sound/soc/s3c24xx/ac97.h
+@@ -1,11 +1,11 @@
+-/* sound/soc/s3c24xx/s3c-ac97.h
++/* sound/soc/s3c24xx/ac97.h
+  *
+  * ALSA SoC Audio Layer - S3C AC97 Controller driver
+- * 	Evolved from s3c2443-ac97.h
++ *	Evolved from s3c2443-ac97.h
+  *
+  * Copyright (c) 2010 Samsung Electronics Co. Ltd
+- * 	Author: Jaswinder Singh <jassi.brar@samsung.com>
+- * 	Credits: Graeme Gregory, Sean Choi
++ *	Author: Jaswinder Singh <jassi.brar@samsung.com>
++ *	Credits: Graeme Gregory, Sean Choi
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+diff --git a/sound/soc/s3c24xx/ln2440sbc_alc650.c b/sound/soc/s3c24xx/ln2440sbc_alc650.c
+index dda11ac..e507174 100644
+--- a/sound/soc/s3c24xx/ln2440sbc_alc650.c
++++ b/sound/soc/s3c24xx/ln2440sbc_alc650.c
 @@ -24,7 +24,7 @@
+ #include <sound/soc-dapm.h>
  
- #include <plat/regs-iis.h>
+ #include "dma.h"
+-#include "s3c-ac97.h"
++#include "ac97.h"
  
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "s3c24xx-i2s.h"
- #include "../codecs/uda134x.h"
+ static struct snd_soc_card ln2440sbc;
  
-diff --git a/sound/soc/s3c24xx/s3c64xx-i2s-v4.c b/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
-index a962847..46b65d7 100644
---- a/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
-+++ b/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
-@@ -21,7 +21,7 @@
- #include <mach/map.h>
- #include <mach/dma.h>
- 
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "regs-i2s-v2.h"
- #include "s3c64xx-i2s.h"
- 
-diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.c b/sound/soc/s3c24xx/s3c64xx-i2s.c
-index ae7acb6..0288d4e 100644
---- a/sound/soc/s3c24xx/s3c64xx-i2s.c
-+++ b/sound/soc/s3c24xx/s3c64xx-i2s.c
-@@ -25,7 +25,7 @@
- #include <mach/map.h>
- #include <mach/dma.h>
- 
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "regs-i2s-v2.h"
- #include "s3c64xx-i2s.h"
- 
-diff --git a/sound/soc/s3c24xx/smartq_wm8987.c b/sound/soc/s3c24xx/smartq_wm8987.c
-index 863631a..1d55312 100644
---- a/sound/soc/s3c24xx/smartq_wm8987.c
-+++ b/sound/soc/s3c24xx/smartq_wm8987.c
-@@ -24,7 +24,7 @@
- 
- #include <asm/mach-types.h>
- 
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "s3c64xx-i2s.h"
- 
- #include "../codecs/wm8750.h"
 diff --git a/sound/soc/s3c24xx/smdk2443_wm9710.c b/sound/soc/s3c24xx/smdk2443_wm9710.c
-index 911bb60..c50d19c 100644
+index 0205138..5051699 100644
 --- a/sound/soc/s3c24xx/smdk2443_wm9710.c
 +++ b/sound/soc/s3c24xx/smdk2443_wm9710.c
-@@ -19,7 +19,7 @@
- #include <sound/soc.h>
+@@ -20,7 +20,7 @@
  #include <sound/soc-dapm.h>
  
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "s3c-ac97.h"
+ #include "dma.h"
+-#include "s3c-ac97.h"
++#include "ac97.h"
  
  static struct snd_soc_card smdk2443;
-diff --git a/sound/soc/s3c24xx/smdk64xx_wm8580.c b/sound/soc/s3c24xx/smdk64xx_wm8580.c
-index 7e75c8d..9ddc964 100644
---- a/sound/soc/s3c24xx/smdk64xx_wm8580.c
-+++ b/sound/soc/s3c24xx/smdk64xx_wm8580.c
-@@ -19,7 +19,7 @@
- #include <sound/soc-dapm.h>
  
- #include "../codecs/wm8580.h"
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "s3c64xx-i2s.h"
- 
- /*
-diff --git a/sound/soc/s3c24xx/smdk_spdif.c b/sound/soc/s3c24xx/smdk_spdif.c
-index 082b88d..4fc6a9f 100644
---- a/sound/soc/s3c24xx/smdk_spdif.c
-+++ b/sound/soc/s3c24xx/smdk_spdif.c
-@@ -18,7 +18,7 @@
- 
- #include <sound/soc.h>
- 
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "spdif.h"
- 
- /* Audio clock settings are belonged to board specific part. Every
 diff --git a/sound/soc/s3c24xx/smdk_wm9713.c b/sound/soc/s3c24xx/smdk_wm9713.c
-index ea96a51..80f2aef 100644
+index 56b448d..7ce2430 100644
 --- a/sound/soc/s3c24xx/smdk_wm9713.c
 +++ b/sound/soc/s3c24xx/smdk_wm9713.c
-@@ -15,7 +15,7 @@
- #include <linux/device.h>
+@@ -16,7 +16,7 @@
  #include <sound/soc.h>
  
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "s3c-ac97.h"
+ #include "dma.h"
+-#include "s3c-ac97.h"
++#include "ac97.h"
  
  static struct snd_soc_card smdk;
-diff --git a/sound/soc/s3c24xx/spdif.c b/sound/soc/s3c24xx/spdif.c
-index ce554e9..dc85df3 100644
---- a/sound/soc/s3c24xx/spdif.c
-+++ b/sound/soc/s3c24xx/spdif.c
-@@ -20,7 +20,7 @@
- #include <plat/audio.h>
- #include <mach/dma.h>
  
--#include "s3c-dma.h"
-+#include "dma.h"
- #include "spdif.h"
- 
- /* Registers */
 -- 
 1.6.2.5
