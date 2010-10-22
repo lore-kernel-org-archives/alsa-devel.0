@@ -1,22 +1,19 @@
-From: Jiri Slaby <jirislaby@gmail.com>
-Subject: Re: HDA: no sound [was: mmotm 2010-10-20-15-01
-	uploaded]
-Date: Fri, 22 Oct 2010 11:45:36 +0200
-Message-ID: <4CC15D40.9070606@gmail.com>
-References: <201010202233.o9KMXNoL008303@imap1.linux-foundation.org>	<4CBFEE94.7020103@gmail.com>	<s5hlj5sc7do.wl%tiwai@suse.de>	<4CBFF25C.2080908@gmail.com>	<s5hfww0c6oj.wl%tiwai@suse.de>	<4CC085F5.9070905@gmail.com>	<s5heibjxsi4.wl%tiwai@suse.de>	<4CC092BC.9060504@gmail.com>	<s5h8w1rxrl3.wl%tiwai@suse.de>	<5220.1287692957@localhost>	<s5h39rzclx3.wl%tiwai@suse.de>	<8089.1287696264@localhost>	<s5hsjzzb5cf.wl%tiwai@suse.de>	<4CC0B3C1.9010106@gmail.com>	<4CC14F4E.4090509@colin.guthr.ie>	<s5hmxq6bnwj.wl%tiwai@suse.de>	<4CC156ED.8000104@gmail.com>
-	<s5hiq0ubm5e.wl%tiwai@suse.de>
+From: Florian Faber <faber@faberman.de>
+Subject: Re: RME MADIface 192 kHz problem
+Date: Fri, 22 Oct 2010 11:54:36 +0200
+Message-ID: <4CC15F5C.3010400@faberman.de>
+References: <4CC03A21.2050406@ifi.uio.no>
+	<4CC049F2.1050707@faberman.de>	<s5h1v7jclqd.wl%tiwai@suse.de>
+	<4CC11C86.6090204@faberman.de> <s5hlj5qbngq.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8C6532437F
+Received: from india820.server4you.de (india820.server4you.de [85.25.152.101])
+	by alsa0.perex.cz (Postfix) with ESMTP id C8FCD243C1
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Oct 2010 11:45:41 +0200 (CEST)
-Received: by eyg24 with SMTP id 24so233644eyg.38
-	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2010 02:45:40 -0700 (PDT)
-In-Reply-To: <s5hiq0ubm5e.wl%tiwai@suse.de>
+	Fri, 22 Oct 2010 11:53:52 +0200 (CEST)
+In-Reply-To: <s5hlj5qbngq.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,22 +23,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, mm-commits@vger.kernel.org, Colin Guthrie <gmane@colin.guthr.ie>, clemens@ladisch.de, linux-kernel@vger.kernel.org, Valdis.Kletnieks@vt.edu, akpm@linux-foundation.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 10/22/2010 11:40 AM, Takashi Iwai wrote:
-> Hrm, is it with alsa.rpm and libasound2.rpm from OBS
-> multimedia:audio:snapshot repo?
+Takashi,
 
-Aha, I dupped in the meantime and it vanished.
+>>>>> What is needed to get this card running at 192 kHz?
+>>>> A working driver :)
+>>>>
+>>>> http://wiki.linuxproaudio.org/index.php/Driver:hdspe
+>>> How about posting the patches? :)
+>>
+>> It would be dozens/hundreds of single patches against the hdspm driver.
+> 
+> I don't mind any number of patches if they are written logically and
+> well readable.
+> 
+>> I'd rather replace it with the version above.
+> 
+> If it's more or less compatible with the current driver, it's fine.
+> But, one bulk patch is bad.  Even if you replace the driver code,
+> split in a logical order, at best.
 
-With the revert:
-http://www.alsa-project.org/db/?f=7b9b41e9494674b1e5a8ec0b5dd250058ecff887
+There are changes everywhere since the old driver inherited a lot of
+code from the hdsp driver which in turn inherited a lot of code from
+previous drivers. The code was never properly suited to support a
+broader range of hardware.
 
-Without the revert:
-http://www.alsa-project.org/db/?f=dc92721d4587f8f6289dfb25eb0ac523a2704f21
+I don't have the time to split up all the changes in all the different
+places and if I had the time, I would rather do a complete rewrite (or
+better: Finish the rewrite I started a while ago).
 
-regards,
+>> And I changed one ioctl
+>> which would break compatibility - although I doubt anybody used the
+>> levelmeter ioctl besides me. The version above is a 'public beta'.
+> If it's a new ioctl, it's OK.  We can drop the old (very likely)
+> unused ioctl eventually.  But using the same ioctl for different
+> behavior is no go.
+
+Ok, dropping the old one in favour of the new one.
+
+>> If the support for the AIO/RayDAT finally works - sure. But for that I
+>> still need to tell ALSA somehow that there are n buffers to use, n>2,
+>> with n IRQs per buffer cycle.
+> Well, actually I forget what your questions are.  Please continue it
+> on ML here.
+> 
+> All other sound drivers work fine with more than two periods, so I
+> don't think there is any restriction in the API side.
+
+Ok, the problem was that the AIO/RayDAT have two modes of operation, a
+'windows' mode and a 'mac' mode. In the 'windows' mode the full 16k
+sample buffer is utilized and the card produces 16k/period_size IRQs
+while running through the buffer. I'd need a way to tell ALSA this.
+In 'mac' mode it uses a double buffering scheme but only produces one
+IRQ per each double buffer walkthru. I understand that ALSA does not
+support this mode of operation.
+
+
+Flo
 -- 
-js
+Machines can do the work, so people have time to think.
+public key DA43FEF4          x-hkp://wwwkeys.eu.pgp.net
