@@ -1,15 +1,14 @@
 From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCH 01/24] ASoC: Samsung: Remove redundant AQUILA
-	driver
-Date: Fri, 22 Oct 2010 17:31:22 +0900
-Message-ID: <1287736282-11883-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: [PATCH 02/24] ASoC: Samsung: Rename DMA device
+Date: Fri, 22 Oct 2010 17:32:45 +0900
+Message-ID: <1287736365-11921-1-git-send-email-jassisinghbrar@gmail.com>
 References: <1287736238-11846-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 86E8124333
+	by alsa0.perex.cz (Postfix) with ESMTP id 9538B1038D0
 	for <alsa-devel@alsa-project.org>;
 	Fri, 22 Oct 2010 10:38:08 +0200 (CEST)
 In-Reply-To: <1287736238-11846-1-git-send-email-jassisinghbrar@gmail.com>
@@ -23,422 +22,299 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: kgene.kim@samsung.com, Jassi Brar <jassi.brar@samsung.com>, broonie@opensource.wolfsonmicro.com, cw00.choi@samsung.com, ben-linux@fluff.org, june.bae@samsung.com, lrg@slimlogic.co.uk, sw.youn@samsung.com
+Cc: kgene.kim@samsung.com, Jassi Brar <jassi.brar@samsung.com>, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org, june.bae@samsung.com, lrg@slimlogic.co.uk, sw.youn@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
 From: Jassi Brar <jassi.brar@samsung.com>
 
-AQUILA and GONI are essentially the same h/w w.r.t ASoC.
-They only differ by the fact that GONI has stereo speaker-out
-whereas AQUILA has mono.
-
-The difference can easily be handled in the same MACHINE driver
-by making machine-specific runtime changes.
+Some Samsung SoCs have a PCM(DSP) controller. So the name
+s3c24xx-pcm-audio for DMA driver is not very appropraite.
+This patch moves :-
+	s3c24xx-pcm-audio -> samsung-audio
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- sound/soc/s3c24xx/Kconfig         |   17 +--
- sound/soc/s3c24xx/Makefile        |    4 +-
- sound/soc/s3c24xx/aquila_wm8994.c |  295 -------------------------------------
- sound/soc/s3c24xx/goni_wm8994.c   |   19 +++-
- 4 files changed, 23 insertions(+), 312 deletions(-)
- delete mode 100644 sound/soc/s3c24xx/aquila_wm8994.c
+ arch/arm/mach-s3c64xx/dev-audio.c              |    2 +-
+ arch/arm/plat-s3c24xx/devs.c                   |    2 +-
+ sound/soc/s3c24xx/goni_wm8994.c                |    4 ++--
+ sound/soc/s3c24xx/jive_wm8750.c                |    2 +-
+ sound/soc/s3c24xx/ln2440sbc_alc650.c           |    2 +-
+ sound/soc/s3c24xx/neo1973_gta02_wm8753.c       |    4 ++--
+ sound/soc/s3c24xx/neo1973_wm8753.c             |    4 ++--
+ sound/soc/s3c24xx/rx1950_uda1380.c             |    2 +-
+ sound/soc/s3c24xx/s3c-dma.c                    |    4 ++--
+ sound/soc/s3c24xx/s3c24xx_simtec_hermes.c      |    2 +-
+ sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c |    2 +-
+ sound/soc/s3c24xx/s3c24xx_uda134x.c            |    2 +-
+ sound/soc/s3c24xx/smartq_wm8987.c              |    2 +-
+ sound/soc/s3c24xx/smdk2443_wm9710.c            |    2 +-
+ sound/soc/s3c24xx/smdk64xx_wm8580.c            |    4 ++--
+ sound/soc/s3c24xx/smdk_spdif.c                 |    2 +-
+ sound/soc/s3c24xx/smdk_wm9713.c                |    2 +-
+ 17 files changed, 22 insertions(+), 22 deletions(-)
 
-diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
-index 8a6b53c..6efdf65 100644
---- a/sound/soc/s3c24xx/Kconfig
-+++ b/sound/soc/s3c24xx/Kconfig
-@@ -144,22 +144,13 @@ config SND_S3C64XX_SOC_SMARTQ
- 	select SND_S3C64XX_SOC_I2S
- 	select SND_SOC_WM8750
+diff --git a/arch/arm/mach-s3c64xx/dev-audio.c b/arch/arm/mach-s3c64xx/dev-audio.c
+index 3838335..c45cc37 100644
+--- a/arch/arm/mach-s3c64xx/dev-audio.c
++++ b/arch/arm/mach-s3c64xx/dev-audio.c
+@@ -340,7 +340,7 @@ void __init s3c64xx_ac97_setup_gpio(int num)
+ static u64 s3c_device_audio_dmamask = 0xffffffffUL;
  
--config SND_S5PC110_SOC_AQUILA_WM8994
--	tristate "SoC I2S Audio support for AQUILA - WM8994"
--	depends on SND_S3C24XX_SOC && MACH_AQUILA
-+config SND_SOC_GONI_AQUILA_WM8994
-+	tristate "SoC I2S Audio support for AQUILA/GONI - WM8994"
-+	depends on SND_S3C24XX_SOC && (MACH_GONI || MACH_AQUILA)
- 	select SND_S3C64XX_SOC_I2S_V4
- 	select SND_SOC_WM8994
- 	help
--	  Say Y if you want to add support for SoC audio on aquila
--	  with the WM8994.
--
--config SND_S5PV210_SOC_GONI_WM8994
--	tristate "SoC I2S Audio support for GONI - WM8994"
--	depends on SND_S3C24XX_SOC && MACH_GONI
--	select SND_S3C64XX_SOC_I2S_V4
--	select SND_SOC_WM8994
--	help
--	  Say Y if you want to add support for SoC audio on goni
-+	  Say Y if you want to add support for SoC audio on goni or aquila
- 	  with the WM8994.
+ struct platform_device s3c_device_pcm = {
+-	.name		  = "s3c24xx-pcm-audio",
++	.name		  = "samsung-audio",
+ 	.id		  = -1,
+ 	.dev              = {
+ 		.dma_mask = &s3c_device_audio_dmamask,
+diff --git a/arch/arm/plat-s3c24xx/devs.c b/arch/arm/plat-s3c24xx/devs.c
+index 2f91057..4bf0b39 100644
+--- a/arch/arm/plat-s3c24xx/devs.c
++++ b/arch/arm/plat-s3c24xx/devs.c
+@@ -264,7 +264,7 @@ EXPORT_SYMBOL(s3c_device_iis);
+ static u64 s3c_device_audio_dmamask = 0xffffffffUL;
  
- config SND_SOC_SMDK_SPDIF
-diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/s3c24xx/Makefile
-index ee8f41d..4e232f1 100644
---- a/sound/soc/s3c24xx/Makefile
-+++ b/sound/soc/s3c24xx/Makefile
-@@ -33,7 +33,6 @@ snd-soc-rx1950-uda1380-objs := rx1950_uda1380.o
- snd-soc-smdk64xx-wm8580-objs := smdk64xx_wm8580.o
- snd-soc-smdk-wm9713-objs := smdk_wm9713.o
- snd-soc-s3c64xx-smartq-wm8987-objs := smartq_wm8987.o
--snd-soc-aquila-wm8994-objs := aquila_wm8994.o
- snd-soc-goni-wm8994-objs := goni_wm8994.o
- snd-soc-smdk-spdif-objs := smdk_spdif.o
- 
-@@ -50,6 +49,5 @@ obj-$(CONFIG_SND_S3C24XX_SOC_RX1950_UDA1380) += snd-soc-rx1950-uda1380.o
- obj-$(CONFIG_SND_S3C64XX_SOC_WM8580) += snd-soc-smdk64xx-wm8580.o
- obj-$(CONFIG_SND_SOC_SMDK_WM9713) += snd-soc-smdk-wm9713.o
- obj-$(CONFIG_SND_S3C64XX_SOC_SMARTQ) += snd-soc-s3c64xx-smartq-wm8987.o
--obj-$(CONFIG_SND_S5PC110_SOC_AQUILA_WM8994) += snd-soc-aquila-wm8994.o
--obj-$(CONFIG_SND_S5PV210_SOC_GONI_WM8994) += snd-soc-goni-wm8994.o
- obj-$(CONFIG_SND_SOC_SMDK_SPDIF) += snd-soc-smdk-spdif.o
-+obj-$(CONFIG_SND_SOC_GONI_AQUILA_WM8994) += snd-soc-goni-wm8994.o
-diff --git a/sound/soc/s3c24xx/aquila_wm8994.c b/sound/soc/s3c24xx/aquila_wm8994.c
-deleted file mode 100644
-index 235d197..0000000
---- a/sound/soc/s3c24xx/aquila_wm8994.c
-+++ /dev/null
-@@ -1,295 +0,0 @@
--/*
-- * aquila_wm8994.c
-- *
-- * Copyright (C) 2010 Samsung Electronics Co.Ltd
-- * Author: Chanwoo Choi <cw00.choi@samsung.com>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-- */
--
--#include <linux/module.h>
--#include <linux/moduleparam.h>
--#include <linux/io.h>
--#include <linux/platform_device.h>
--#include <sound/soc.h>
--#include <sound/soc-dapm.h>
--#include <sound/jack.h>
--#include <asm/mach-types.h>
--#include <mach/gpio.h>
--#include <mach/regs-clock.h>
--
--#include <linux/mfd/wm8994/core.h>
--#include <linux/mfd/wm8994/registers.h>
--#include "../codecs/wm8994.h"
--#include "s3c-dma.h"
--#include "s3c64xx-i2s.h"
--
--static struct snd_soc_card aquila;
--static struct platform_device *aquila_snd_device;
--
--/* 3.5 pie jack */
--static struct snd_soc_jack jack;
--
--/* 3.5 pie jack detection DAPM pins */
--static struct snd_soc_jack_pin jack_pins[] = {
--	{
--		.pin = "Headset Mic",
--		.mask = SND_JACK_MICROPHONE,
--	}, {
--		.pin = "Headset Stereophone",
--		.mask = SND_JACK_HEADPHONE | SND_JACK_MECHANICAL |
--			SND_JACK_AVOUT,
--	},
--};
--
--/* 3.5 pie jack detection gpios */
--static struct snd_soc_jack_gpio jack_gpios[] = {
--	{
--		.gpio = S5PV210_GPH0(6),
--		.name = "DET_3.5",
--		.report = SND_JACK_HEADSET | SND_JACK_MECHANICAL |
--			SND_JACK_AVOUT,
--		.debounce_time = 200,
--	},
--};
--
--static const struct snd_soc_dapm_widget aquila_dapm_widgets[] = {
--	SND_SOC_DAPM_SPK("Ext Spk", NULL),
--	SND_SOC_DAPM_SPK("Ext Rcv", NULL),
--	SND_SOC_DAPM_HP("Headset Stereophone", NULL),
--	SND_SOC_DAPM_MIC("Headset Mic", NULL),
--	SND_SOC_DAPM_MIC("Main Mic", NULL),
--	SND_SOC_DAPM_MIC("2nd Mic", NULL),
--	SND_SOC_DAPM_LINE("Radio In", NULL),
--};
--
--static const struct snd_soc_dapm_route aquila_dapm_routes[] = {
--	{"Ext Spk", NULL, "SPKOUTLP"},
--	{"Ext Spk", NULL, "SPKOUTLN"},
--
--	{"Ext Rcv", NULL, "HPOUT2N"},
--	{"Ext Rcv", NULL, "HPOUT2P"},
--
--	{"Headset Stereophone", NULL, "HPOUT1L"},
--	{"Headset Stereophone", NULL, "HPOUT1R"},
--
--	{"IN1RN", NULL, "Headset Mic"},
--	{"IN1RP", NULL, "Headset Mic"},
--
--	{"IN1RN", NULL, "2nd Mic"},
--	{"IN1RP", NULL, "2nd Mic"},
--
--	{"IN1LN", NULL, "Main Mic"},
--	{"IN1LP", NULL, "Main Mic"},
--
--	{"IN2LN", NULL, "Radio In"},
--	{"IN2RN", NULL, "Radio In"},
--};
--
--static int aquila_wm8994_init(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_codec *codec = rtd->codec;
--	int ret;
--
--	/* add aquila specific widgets */
--	snd_soc_dapm_new_controls(codec, aquila_dapm_widgets,
--			ARRAY_SIZE(aquila_dapm_widgets));
--
--	/* set up aquila specific audio routes */
--	snd_soc_dapm_add_routes(codec, aquila_dapm_routes,
--			ARRAY_SIZE(aquila_dapm_routes));
--
--	/* set endpoints to not connected */
--	snd_soc_dapm_nc_pin(codec, "IN2LP:VXRN");
--	snd_soc_dapm_nc_pin(codec, "IN2RP:VXRP");
--	snd_soc_dapm_nc_pin(codec, "LINEOUT1N");
--	snd_soc_dapm_nc_pin(codec, "LINEOUT1P");
--	snd_soc_dapm_nc_pin(codec, "LINEOUT2N");
--	snd_soc_dapm_nc_pin(codec, "LINEOUT2P");
--	snd_soc_dapm_nc_pin(codec, "SPKOUTRN");
--	snd_soc_dapm_nc_pin(codec, "SPKOUTRP");
--
--	snd_soc_dapm_sync(codec);
--
--	/* Headset jack detection */
--	ret = snd_soc_jack_new(&aquila, "Headset Jack",
--			SND_JACK_HEADSET | SND_JACK_MECHANICAL | SND_JACK_AVOUT,
--			&jack);
--	if (ret)
--		return ret;
--
--	ret = snd_soc_jack_add_pins(&jack, ARRAY_SIZE(jack_pins), jack_pins);
--	if (ret)
--		return ret;
--
--	ret = snd_soc_jack_add_gpios(&jack, ARRAY_SIZE(jack_gpios), jack_gpios);
--	if (ret)
--		return ret;
--
--	return 0;
--}
--
--static int aquila_hifi_hw_params(struct snd_pcm_substream *substream,
--		struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	unsigned int pll_out = 24000000;
--	int ret = 0;
--
--	/* set the cpu DAI configuration */
--	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
--			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	/* set the cpu system clock */
--	ret = snd_soc_dai_set_sysclk(cpu_dai, S3C64XX_CLKSRC_PCLK,
--			0, SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	/* set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
--			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec FLL */
--	ret = snd_soc_dai_set_pll(codec_dai, WM8994_FLL1, 0, pll_out,
--			params_rate(params) * 256);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec system clock */
--	ret = snd_soc_dai_set_sysclk(codec_dai, WM8994_SYSCLK_FLL1,
--			params_rate(params) * 256, SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--static struct snd_soc_ops aquila_hifi_ops = {
--	.hw_params = aquila_hifi_hw_params,
--};
--
--static int aquila_voice_hw_params(struct snd_pcm_substream *substream,
--		struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	unsigned int pll_out = 24000000;
--	int ret = 0;
--
--	if (params_rate(params) != 8000)
--		return -EINVAL;
--
--	/* set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_LEFT_J |
--			SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec FLL */
--	ret = snd_soc_dai_set_pll(codec_dai, WM8994_FLL2, 0, pll_out,
--			params_rate(params) * 256);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec system clock */
--	ret = snd_soc_dai_set_sysclk(codec_dai, WM8994_SYSCLK_FLL2,
--			params_rate(params) * 256, SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--static struct snd_soc_dai_driver voice_dai = {
--	.name = "aquila-voice-dai",
--	.playback = {
--		.channels_min = 1,
--		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_8000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
--	.capture = {
--		.channels_min = 1,
--		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_8000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
--};
--
--static struct snd_soc_ops aquila_voice_ops = {
--	.hw_params = aquila_voice_hw_params,
--};
--
--static struct snd_soc_dai_link aquila_dai[] = {
--{
--	.name = "WM8994",
--	.stream_name = "WM8994 HiFi",
--	.cpu_dai_name = "s3c64xx-i2s-v4",
--	.codec_dai_name = "wm8994-hifi",
--	.platform_name = "s3c24xx-pcm-audio",
--	.codec_name = "wm8994-codec.0-0x1a",
--	.init = aquila_wm8994_init,
--	.ops = &aquila_hifi_ops,
--}, {
--	.name = "WM8994 Voice",
--	.stream_name = "Voice",
--	.cpu_dai_name = "aquila-voice-dai",
--	.codec_dai_name = "wm8994-voice",
--	.platform_name = "s3c24xx-pcm-audio",
--	.codec_name = "wm8994-codec.0-0x1a",
--	.ops = &aquila_voice_ops,
--},
--};
--
--static struct snd_soc_card aquila = {
--	.name = "aquila",
--	.dai_link = aquila_dai,
--	.num_links = ARRAY_SIZE(aquila_dai),
--};
--
--static int __init aquila_init(void)
--{
--	int ret;
--
--	if (!machine_is_aquila())
--		return -ENODEV;
--
--	aquila_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!aquila_snd_device)
--		return -ENOMEM;
--
--	/* register voice DAI here */
--	ret = snd_soc_register_dai(&aquila_snd_device->dev, &voice_dai);
--	if (ret)
--		return ret;
--
--	platform_set_drvdata(aquila_snd_device, &aquila);
--	ret = platform_device_add(aquila_snd_device);
--
--	if (ret)
--		platform_device_put(aquila_snd_device);
--
--	return ret;
--}
--
--static void __exit aquila_exit(void)
--{
--	platform_device_unregister(aquila_snd_device);
--}
--
--module_init(aquila_init);
--module_exit(aquila_exit);
--
--/* Module information */
--MODULE_DESCRIPTION("ALSA SoC WM8994 Aquila(S5PC110)");
--MODULE_AUTHOR("Chanwoo Choi <cw00.choi@samsung.com>");
--MODULE_LICENSE("GPL");
+ struct platform_device s3c_device_pcm = {
+-	.name		  = "s3c24xx-pcm-audio",
++	.name		  = "samsung-audio",
+ 	.id		  = -1,
+ 	.dev              = {
+ 		.dma_mask = &s3c_device_audio_dmamask,
 diff --git a/sound/soc/s3c24xx/goni_wm8994.c b/sound/soc/s3c24xx/goni_wm8994.c
-index 694f702..ef22f14 100644
+index ef22f14..c568f69 100644
 --- a/sound/soc/s3c24xx/goni_wm8994.c
 +++ b/sound/soc/s3c24xx/goni_wm8994.c
-@@ -28,6 +28,14 @@
- #include "s3c-dma.h"
- #include "s3c64xx-i2s.h"
+@@ -251,7 +251,7 @@ static struct snd_soc_dai_link goni_dai[] = {
+ 	.stream_name = "WM8994 HiFi",
+ 	.cpu_dai_name = "s3c64xx-i2s-v4",
+ 	.codec_dai_name = "wm8994-hifi",
+-	.platform_name = "s3c24xx-pcm-audio",
++	.platform_name = "samsung-audio",
+ 	.codec_name = "wm8994-codec.0-0x1a",
+ 	.init = goni_wm8994_init,
+ 	.ops = &goni_hifi_ops,
+@@ -260,7 +260,7 @@ static struct snd_soc_dai_link goni_dai[] = {
+ 	.stream_name = "Voice",
+ 	.cpu_dai_name = "goni-voice-dai",
+ 	.codec_dai_name = "wm8994-voice",
+-	.platform_name = "s3c24xx-pcm-audio",
++	.platform_name = "samsung-audio",
+ 	.codec_name = "wm8994-codec.0-0x1a",
+ 	.ops = &goni_voice_ops,
+ },
+diff --git a/sound/soc/s3c24xx/jive_wm8750.c b/sound/soc/s3c24xx/jive_wm8750.c
+index 49605cd..7a6b0fa 100644
+--- a/sound/soc/s3c24xx/jive_wm8750.c
++++ b/sound/soc/s3c24xx/jive_wm8750.c
+@@ -141,7 +141,7 @@ static struct snd_soc_dai_link jive_dai = {
+ 	.stream_name	= "WM8750",
+ 	.cpu_dai_name	= "s3c2412-i2s",
+ 	.codec_dai_name = "wm8750-hifi",
+-	.platform_name	= "s3c24xx-pcm-audio",
++	.platform_name	= "samsung-audio",
+ 	.codec_name	= "wm8750-codec.0-0x1a",
+ 	.init		= jive_wm8750_init,
+ 	.ops		= &jive_ops,
+diff --git a/sound/soc/s3c24xx/ln2440sbc_alc650.c b/sound/soc/s3c24xx/ln2440sbc_alc650.c
+index abe64ab..6b7bb38 100644
+--- a/sound/soc/s3c24xx/ln2440sbc_alc650.c
++++ b/sound/soc/s3c24xx/ln2440sbc_alc650.c
+@@ -35,7 +35,7 @@ static struct snd_soc_dai_link ln2440sbc_dai[] = {
+ 	.cpu_dai_name = "s3c-ac97",
+ 	.codec_dai_name = "ac97-hifi",
+ 	.codec_name = "ac97-codec",
+-	.platform_name = "s3c24xx-pcm-audio",
++	.platform_name = "samsung-audio",
+ },
+ };
  
-+#define MACHINE_NAME	0
-+#define CPU_VOICE_DAI	1
-+
-+static const char *aquila_str[] = {
-+	[MACHINE_NAME] = "aquila",
-+	[CPU_VOICE_DAI] = "aquila-voice-dai",
-+};
-+
- static struct snd_soc_card goni;
- static struct platform_device *goni_snd_device;
+diff --git a/sound/soc/s3c24xx/neo1973_gta02_wm8753.c b/sound/soc/s3c24xx/neo1973_gta02_wm8753.c
+index c457bfd..a9a4bbb 100644
+--- a/sound/soc/s3c24xx/neo1973_gta02_wm8753.c
++++ b/sound/soc/s3c24xx/neo1973_gta02_wm8753.c
+@@ -400,7 +400,7 @@ static struct snd_soc_dai_link neo1973_gta02_dai[] = {
+ 	.cpu_dai_name = "s3c24xx-i2s",
+ 	.codec_dai_name = "wm8753-hifi",
+ 	.init = neo1973_gta02_wm8753_init,
+-	.platform_name = "s3c24xx-pcm-audio",
++	.platform_name = "samsung-audio",
+ 	.codec_name = "wm8753-codec.0-0x1a",
+ 	.ops = &neo1973_gta02_hifi_ops,
+ },
+@@ -411,7 +411,7 @@ static struct snd_soc_dai_link neo1973_gta02_dai[] = {
+ 	.codec_dai_name = "wm8753-voice",
+ 	.ops = &neo1973_gta02_voice_ops,
+ 	.codec_name = "wm8753-codec.0-0x1a",
+-	.platform_name = "s3c24xx-pcm-audio",
++	.platform_name = "samsung-audio",
+ },
+ };
  
-@@ -115,6 +123,11 @@ static int goni_wm8994_init(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_dapm_nc_pin(codec, "LINEOUT2N");
- 	snd_soc_dapm_nc_pin(codec, "LINEOUT2P");
+diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
+index d7a39a0..d5e4148 100644
+--- a/sound/soc/s3c24xx/neo1973_wm8753.c
++++ b/sound/soc/s3c24xx/neo1973_wm8753.c
+@@ -556,7 +556,7 @@ static struct snd_soc_dai_link neo1973_dai[] = {
+ { /* Hifi Playback - for similatious use with voice below */
+ 	.name = "WM8753",
+ 	.stream_name = "WM8753 HiFi",
+-	.platform_name = "s3c24xx-pcm-audio",
++	.platform_name = "samsung-audio",
+ 	.cpu_dai_name = "s3c24xx-i2s",
+ 	.codec_dai_name = "wm8753-hifi",
+ 	.codec_name = "wm8753-codec.0-0x1a",
+@@ -566,7 +566,7 @@ static struct snd_soc_dai_link neo1973_dai[] = {
+ { /* Voice via BT */
+ 	.name = "Bluetooth",
+ 	.stream_name = "Voice",
+-	.platform_name = "s3c24xx-pcm-audio",
++	.platform_name = "samsung-audio",
+ 	.cpu_dai_name = "bluetooth-dai",
+ 	.codec_dai_name = "wm8753-voice",
+ 	.codec_name = "wm8753-codec.0-0x1a",
+diff --git a/sound/soc/s3c24xx/rx1950_uda1380.c b/sound/soc/s3c24xx/rx1950_uda1380.c
+index ffd5cf2..99bb86e 100644
+--- a/sound/soc/s3c24xx/rx1950_uda1380.c
++++ b/sound/soc/s3c24xx/rx1950_uda1380.c
+@@ -96,7 +96,7 @@ static struct snd_soc_dai_link rx1950_uda1380_dai[] = {
+ 		.cpu_dai_name	= "s3c24xx-iis",
+ 		.codec_dai_name	= "uda1380-hifi",
+ 		.init		= rx1950_uda1380_init,
+-		.platform_name	= "s3c24xx-pcm-audio",
++		.platform_name	= "samsung-audio",
+ 		.codec_name	= "uda1380-codec.0-001a",
+ 		.ops		= &rx1950_ops,
+ 	},
+diff --git a/sound/soc/s3c24xx/s3c-dma.c b/sound/soc/s3c24xx/s3c-dma.c
+index 54bff83..0c1cd6c 100644
+--- a/sound/soc/s3c24xx/s3c-dma.c
++++ b/sound/soc/s3c24xx/s3c-dma.c
+@@ -477,7 +477,7 @@ static int __devexit s3c24xx_soc_platform_remove(struct platform_device *pdev)
  
-+	if (machine_is_aquila()) {
-+		snd_soc_dapm_nc_pin(codec, "SPKOUTRN");
-+		snd_soc_dapm_nc_pin(codec, "SPKOUTRP");
-+	}
-+
- 	snd_soc_dapm_sync(codec);
+ static struct platform_driver s3c24xx_pcm_driver = {
+ 	.driver = {
+-		.name = "s3c24xx-pcm-audio",
++		.name = "samsung-audio",
+ 		.owner = THIS_MODULE,
+ 	},
  
- 	/* Headset jack detection */
-@@ -263,7 +276,11 @@ static int __init goni_init(void)
- {
- 	int ret;
+@@ -500,4 +500,4 @@ module_exit(snd_s3c24xx_pcm_exit);
+ MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
+ MODULE_DESCRIPTION("Samsung S3C Audio DMA module");
+ MODULE_LICENSE("GPL");
+-MODULE_ALIAS("platform:s3c24xx-pcm-audio");
++MODULE_ALIAS("platform:samsung-audio");
+diff --git a/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c b/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
+index f884537..5180c2a 100644
+--- a/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
++++ b/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
+@@ -99,7 +99,7 @@ static struct snd_soc_dai_link simtec_dai_aic33 = {
+ 	.codec_name	= "tlv320aic3x-codec.0-0x1a",
+ 	.cpu_dai_name	= "s3c24xx-i2s",
+ 	.codec_dai_name = "tlv320aic3x-hifi",
+-	.platform_name	= "s3c24xx-pcm-audio",
++	.platform_name	= "samsung-audio",
+ 	.init		= simtec_hermes_init,
+ };
  
--	if (!machine_is_goni())
-+	if (machine_is_aquila()) {
-+		voice_dai.name = aquila_str[CPU_VOICE_DAI];
-+		goni_dai[1].cpu_dai_name = aquila_str[CPU_VOICE_DAI];
-+		goni.name = aquila_str[MACHINE_NAME];
-+	} else if (!machine_is_goni())
- 		return -ENODEV;
+diff --git a/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c b/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
+index c096759..7a7bb53 100644
+--- a/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
++++ b/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
+@@ -88,7 +88,7 @@ static struct snd_soc_dai_link simtec_dai_aic23 = {
+ 	.codec_name	= "tlv320aic3x-codec.0-0x1a",
+ 	.cpu_dai_name	= "s3c24xx-i2s",
+ 	.codec_dai_name = "tlv320aic3x-hifi",
+-	.platform_name	= "s3c24xx-pcm-audio",
++	.platform_name	= "samsung-audio",
+ 	.init		= simtec_tlv320aic23_init,
+ };
  
- 	goni_snd_device = platform_device_alloc("soc-audio", -1);
+diff --git a/sound/soc/s3c24xx/s3c24xx_uda134x.c b/sound/soc/s3c24xx/s3c24xx_uda134x.c
+index bd48ffb..50d44fa 100644
+--- a/sound/soc/s3c24xx/s3c24xx_uda134x.c
++++ b/sound/soc/s3c24xx/s3c24xx_uda134x.c
+@@ -231,7 +231,7 @@ static struct snd_soc_dai_link s3c24xx_uda134x_dai_link = {
+ 	.codec_dai_name = "uda134x-hifi",
+ 	.cpu_dai_name = "s3c24xx-i2s",
+ 	.ops = &s3c24xx_uda134x_ops,
+-	.platform_name	= "s3c24xx-pcm-audio",
++	.platform_name	= "samsung-audio",
+ };
+ 
+ static struct snd_soc_card snd_soc_s3c24xx_uda134x = {
+diff --git a/sound/soc/s3c24xx/smartq_wm8987.c b/sound/soc/s3c24xx/smartq_wm8987.c
+index dd20ca7..863631a 100644
+--- a/sound/soc/s3c24xx/smartq_wm8987.c
++++ b/sound/soc/s3c24xx/smartq_wm8987.c
+@@ -213,7 +213,7 @@ static struct snd_soc_dai_link smartq_dai[] = {
+ 		.stream_name	= "SmartQ Hi-Fi",
+ 		.cpu_dai_name	= "s3c64xx-i2s.0",
+ 		.codec_dai_name	= "wm8750-hifi",
+-		.platform_name	= "s3c24xx-pcm-audio",
++		.platform_name	= "samsung-audio",
+ 		.codec_name	= "wm8750-codec.0-0x1a",
+ 		.init		= smartq_wm8987_init,
+ 		.ops		= &smartq_hifi_ops,
+diff --git a/sound/soc/s3c24xx/smdk2443_wm9710.c b/sound/soc/s3c24xx/smdk2443_wm9710.c
+index 4613288..911bb60 100644
+--- a/sound/soc/s3c24xx/smdk2443_wm9710.c
++++ b/sound/soc/s3c24xx/smdk2443_wm9710.c
+@@ -31,7 +31,7 @@ static struct snd_soc_dai_link smdk2443_dai[] = {
+ 	.cpu_dai_name = "s3c-ac97",
+ 	.codec_dai_name = "ac97-hifi",
+ 	.codec_name = "ac97-codec",
+-	.platform_name = "s3c24xx-pcm-audio",
++	.platform_name = "samsung-audio",
+ },
+ };
+ 
+diff --git a/sound/soc/s3c24xx/smdk64xx_wm8580.c b/sound/soc/s3c24xx/smdk64xx_wm8580.c
+index 052e499..7e75c8d 100644
+--- a/sound/soc/s3c24xx/smdk64xx_wm8580.c
++++ b/sound/soc/s3c24xx/smdk64xx_wm8580.c
+@@ -224,7 +224,7 @@ static struct snd_soc_dai_link smdk64xx_dai[] = {
+ 	.stream_name = "Playback",
+ 	.cpu_dai_name = "s3c64xx-iis-v4",
+ 	.codec_dai_name = "wm8580-hifi-playback",
+-	.platform_name = "s3c24xx-pcm-audio",
++	.platform_name = "samsung-audio",
+ 	.codec_name = "wm8580-codec.0-001b",
+ 	.init = smdk64xx_wm8580_init_paifrx,
+ 	.ops = &smdk64xx_ops,
+@@ -234,7 +234,7 @@ static struct snd_soc_dai_link smdk64xx_dai[] = {
+ 	.stream_name = "Capture",
+ 	.cpu_dai_name = "s3c64xx-iis-v4",
+ 	.codec_dai_name = "wm8580-hifi-capture",
+-	.platform_name = "s3c24xx-pcm-audio",
++	.platform_name = "samsung-audio",
+ 	.codec_name = "wm8580-codec.0-001b",
+ 	.init = smdk64xx_wm8580_init_paiftx,
+ 	.ops = &smdk64xx_ops,
+diff --git a/sound/soc/s3c24xx/smdk_spdif.c b/sound/soc/s3c24xx/smdk_spdif.c
+index f31d22a..082b88d 100644
+--- a/sound/soc/s3c24xx/smdk_spdif.c
++++ b/sound/soc/s3c24xx/smdk_spdif.c
+@@ -157,7 +157,7 @@ static struct snd_soc_card smdk;
+ static struct snd_soc_dai_link smdk_dai = {
+ 	.name = "S/PDIF",
+ 	.stream_name = "S/PDIF PCM Playback",
+-	.platform_name = "s3c24xx-pcm-audio",
++	.platform_name = "samsung-audio",
+ 	.cpu_dai_name = "samsung-spdif",
+ 	.codec_dai_name = "dit-hifi",
+ 	.codec_name = "spdif-dit",
+diff --git a/sound/soc/s3c24xx/smdk_wm9713.c b/sound/soc/s3c24xx/smdk_wm9713.c
+index 33ba8fd..ea96a51 100644
+--- a/sound/soc/s3c24xx/smdk_wm9713.c
++++ b/sound/soc/s3c24xx/smdk_wm9713.c
+@@ -45,7 +45,7 @@ static struct snd_soc_card smdk;
+ static struct snd_soc_dai_link smdk_dai = {
+ 	.name = "AC97",
+ 	.stream_name = "AC97 PCM",
+-	.platform_name = "s3c24xx-pcm-audio",
++	.platform_name = "samsung-audio",
+ 	.cpu_dai_name = "s3c-ac97",
+ 	.codec_dai_name = "wm9713-hifi",
+ 	.codec_name = "wm9713-codec",
 -- 
 1.6.2.5
