@@ -1,20 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] ASoC: soc-cache: Add support for
- standard register caching
-Date: Fri, 22 Oct 2010 09:03:51 -0700
-Message-ID: <20101022160351.GE16521@opensource.wolfsonmicro.com>
-References: <1287757702-9573-1-git-send-email-dp@opensource.wolfsonmicro.com>
-	<1287757702-9573-3-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: SoC Atmel SSC stereo problem
+Date: Fri, 22 Oct 2010 18:11:57 +0200
+Message-ID: <4CC1B7CD.3030703@ladisch.de>
+References: <4CC1AB01.3020603@fh-kl.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 21F98103863
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 99A19103863
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Oct 2010 18:04:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1287757702-9573-3-git-send-email-dp@opensource.wolfsonmicro.com>
+	Fri, 22 Oct 2010 18:10:07 +0200 (CEST)
+In-Reply-To: <4CC1AB01.3020603@fh-kl.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,39 +21,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Patrick Ziegler <patrick.ziegler@fh-kl.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 22, 2010 at 03:28:20PM +0100, Dimitris Papastamos wrote:
+Patrick Ziegler wrote:
+> I have some trouble with stereo audio through the atmal ssc interface
+> based on at91-ssc.c.
 
-> +static int snd_soc_cache_default_sync(struct snd_soc_codec *codec)
-> +{
-> +       const u8 *cache;
-> +       struct snd_soc_codec_driver *codec_drv;
-> +       unsigned int val;
+(Merged into atmel_ssc_dai.c since about one year ago.)
+
+> Unfortunately left and right channels were swapped periodically.
 > 
-> +	codec_drv = codec->driver;
-> +	for (n = 0; n < codec_drv->reg_cache_size; ++n) {
+> In my environment the codec supplies the BLCK and LRC clocks and
+> the SSC is configured to transmit one sample on both edges of the LRC clock.
+> But I guess the audio frames will always start with a frame of the left channel
+> while the LRC clock is in an undefined state.
 
-Please use i as an array index unless using something meaningful.
+Indeed.
 
-> +                       if (!memcmp(&val, cache, codec_drv->reg_word_size))
-> +                               continue;
+> How does normally the audio driver detect when a left and when a right channel
+> frame should be send and with which it should start ?
 
-This memcmp() looks very suspicious - we're copying from an unsigned int
-into a variable of another type.  That seems to have a bit of an
-endianness assumption, doesn't it?  It certainly needs comments
-explaining how it works; a similar thing applies to the other memcpy()
-and memcmp() operations in the code.
+The driver cannot do anything about this; the hardware must be told
+to start transmitting at the falling edge.
 
-> +static int snd_soc_cache_default_deinit(struct snd_soc_codec *codec)
-> +{
+If possible.
 
-_exit or _free would be traditional.
+Is there a reason why the codec supplies LRC?
 
-> +	kfree(codec->reg_cache);
-> +	return 0;
-> +};
 
-Extra ; (I'm surprised nothing warns).
+Regards,
+Clemens
