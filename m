@@ -1,20 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v5 3/9] davinci: ASoC support
-	for	Omapl138-Hawkboard
-Date: Thu, 21 Oct 2010 23:28:28 +0100
-Message-ID: <20101021222828.GC9346@sirena.org.uk>
-References: <1287511587-22216-1-git-send-email-vm.rod25@gmail.com>
-	<1287511587-22216-4-git-send-email-vm.rod25@gmail.com>
+Subject: Re: [PATCH] wm1133-ev1: fix init for multimachine
+ kernel
+Date: Thu, 21 Oct 2010 18:17:57 -0700
+Message-ID: <20101022011757.GC28350@opensource.wolfsonmicro.com>
+References: <1287696915-10392-1-git-send-email-eric@eukrea.com>
+	<20101021215840.GF30466@opensource.wolfsonmicro.com>
+	<4CC0BC73.8070709@eukrea.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0FBE6103AB3
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F34F7103AB8
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Oct 2010 00:28:31 +0200 (CEST)
+	Fri, 22 Oct 2010 03:17:51 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1287511587-22216-4-git-send-email-vm.rod25@gmail.com>
+In-Reply-To: <4CC0BC73.8070709@eukrea.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,17 +25,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: vm.rod25@gmail.com
-Cc: davinci-linux-open-source@linux.davincidsp.com, sshtylyov@mvista.com, nsekhar@ti.com, alsa-devel@alsa-project.org, khasim@ti.com, caglarakyuz@gmail.com
+To: Eric =?iso-8859-1?Q?B=E9nard?= <eric@eukrea.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 19, 2010 at 01:06:21PM -0500, vm.rod25@gmail.com wrote:
-> From: Victor Rodriguez <victor.rodriguez@sasken.com>
-> 
-> This patch adds ASoC support for the Hawkboard-L138 system
-> 
-> Signed-off-by: Victor Rodriguez <victor.rodriguez@sasken.com>
+On Fri, Oct 22, 2010 at 12:19:31AM +0200, Eric B=E9nard wrote:
+> Le 21/10/2010 23:58, Mark Brown a =E9crit :
+> >On Thu, Oct 21, 2010 at 11:35:15PM +0200, Eric B=E9nard wrote:
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> >This is not a sufficient check, we may be running on an mx31ads with a
+> >different PMIC module.
 
-Please do remember to CC maintainers on patches so they see them.
+> in which case the current code would also fail ;-)
+
+> I don't have such a board but actual code triggers the error log
+> when running the kernel on my board so I'm open to your suggestion
+> for a better fix.
+
+Without adding machine fit checks it's always going to fail; machine
+type isn't quite enough.  What we should be doing here is using the
+multi-component work to allow us to replace soc-audio devices with
+devices named for the machine driver (which is all round better anyway).
+I'll try to look at this for .38.
