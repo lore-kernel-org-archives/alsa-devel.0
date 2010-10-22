@@ -1,67 +1,108 @@
-From: "Juliano F. Ravasi" <ml@juliano.info>
-Subject: Re: [alsa-devel] hda-intel (ALC889) - sound
- loops/repeats continuously, and general brokenness
-Date: Fri, 22 Oct 2010 11:55:10 -0200
-Message-ID: <4CC197BE.2000706@juliano.info>
-References: <4CBF45C0.5060903@juliano.info> <4CC05F15.4000101@ladisch.de>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/4] ASoC: soc.h: Add new caching API
+	prototypes and hooks
+Date: Fri, 22 Oct 2010 15:28:19 +0100
+Message-ID: <1287757702-9573-2-git-send-email-dp@opensource.wolfsonmicro.com>
+References: <1287757702-9573-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-In-Reply-To: <4CC05F15.4000101@ladisch.de>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A12A5103810
+	for <alsa-devel@alsa-project.org>;
+	Fri, 22 Oct 2010 16:28:25 +0200 (CEST)
+In-Reply-To: <1287757702-9573-1-git-send-email-dp@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On 10/21/2010 01:41 PM, Clemens Ladisch wrote:
-> Please check in /proc/interrupts whether that interrupt actually
-> works.
-
-There is no interrupt at all being assigned to hda_intel.
-
-Yesterday, all of a sudden, the problem fixed itself and everything
-about this driver started working as expected. I restarted the driver to
-be sure and all problems returned. Then I noticed these two lines in the
-log at the time when the problem fixed itself:
-
-hda-intel: No response from codec, disabling MSI: last cmd=3D0x20cb2001
-hda_intel: azx_get_response timeout, switching to single_cmd mode: last
-cmd=3D0x20cb2001
-
-So, I added to my modprobe.conf:
-
-	options snd-hda-intel enable_msi=3D0 single_cmd=3D1
-
-And now everything works fine and there is an hda_intel line in
-/proc/interrupts. I don't know what are the implications of these
-parameters. Particularly single_cmd seems to flag an incorrect operation
-of the driver. Perhaps the driver should detect and blacklist this card
-from MSI?
-
-Thank you very much for your help!
-
-Regards,
-Juliano.
-
-
--- =
-
-Juliano F. Ravasi =B7=B7 http://juliano.info/
-5105 46CC B2B7 F0CD 5F47 E740 72CA 54F4 DF37 9E96
-
----------------------------------------------------------------------------=
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 ---
-Nokia and AT&T present the 2010 Calling All Innovators-North America contest
-Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
-$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
-Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
+ include/sound/soc.h |   27 +++++++++++++++++++++++++++
+ 1 files changed, 27 insertions(+), 0 deletions(-)
 
-http://p.sf.net/sfu/nokia-dev2dev
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 5c3bce8..29b4aef 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -238,6 +238,7 @@ struct soc_enum;
+ struct snd_soc_ac97_ops;
+ struct snd_soc_jack;
+ struct snd_soc_jack_pin;
++struct snd_soc_cache_ops;
+ 
+ #ifdef CONFIG_GPIOLIB
+ struct snd_soc_jack_gpio;
+@@ -253,6 +254,11 @@ enum snd_soc_control_type {
+ 	SND_SOC_SPI,
+ };
+ 
++enum snd_soc_compress_type {
++	SND_SOC_NO_COMPRESSION,
++	SND_SOC_LZO_COMPRESSION
++};
++
+ int snd_soc_register_platform(struct device *dev,
+ 		struct snd_soc_platform_driver *platform_drv);
+ void snd_soc_unregister_platform(struct device *dev);
+@@ -264,6 +270,13 @@ int snd_soc_codec_volatile_register(struct snd_soc_codec *codec, int reg);
+ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
+ 			       int addr_bits, int data_bits,
+ 			       enum snd_soc_control_type control);
++int snd_soc_cache_sync(struct snd_soc_codec *codec);
++int snd_soc_cache_init(struct snd_soc_codec *codec);
++int snd_soc_cache_deinit(struct snd_soc_codec *codec);
++int snd_soc_cache_write(struct snd_soc_codec *codec,
++			unsigned int reg, unsigned int value);
++int snd_soc_cache_read(struct snd_soc_codec *codec,
++		       unsigned int reg, unsigned int *value);
+ 
+ /* Utility functions to get clock rates from various things */
+ int snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
+@@ -420,6 +433,18 @@ struct snd_soc_ops {
+ 	int (*trigger)(struct snd_pcm_substream *, int);
+ };
+ 
++/* SoC cache ops */
++struct snd_soc_cache_ops {
++	int id; /* corresponds to snd_soc_compress_type */
++	int (*init)(struct snd_soc_codec *codec);
++	int (*deinit)(struct snd_soc_codec *codec);
++	int (*read)(struct snd_soc_codec *codec, unsigned int reg,
++		unsigned int *value);
++	int (*write)(struct snd_soc_codec *codec, unsigned int reg,
++		unsigned int value);
++	int (*sync)(struct snd_soc_codec *codec);
++};
++
+ /* SoC Audio Codec device */
+ struct snd_soc_codec {
+ 	const char *name;
+@@ -450,6 +475,7 @@ struct snd_soc_codec {
+ 	hw_write_t hw_write;
+ 	unsigned int (*hw_read)(struct snd_soc_codec *, unsigned int);
+ 	void *reg_cache;
++	const struct snd_soc_cache_ops *cache_ops;
+ 
+ 	/* dapm */
+ 	u32 pop_time;
+@@ -488,6 +514,7 @@ struct snd_soc_codec_driver {
+ 	short reg_cache_step;
+ 	short reg_word_size;
+ 	const void *reg_cache_default;
++	enum snd_soc_compress_type compress_type;
+ 
+ 	/* codec bias level */
+ 	int (*set_bias_level)(struct snd_soc_codec *,
+-- 
+1.7.3.1
