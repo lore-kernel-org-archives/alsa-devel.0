@@ -1,250 +1,67 @@
-From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: Re: [PATCHv2] ASoC: Overhaul Samsung drivers
-Date: Fri, 22 Oct 2010 23:08:35 +0900
-Message-ID: <006f01cb71f2$a0136100$e03a2300$%kim@samsung.com>
-References: <1287736238-11846-1-git-send-email-jassisinghbrar@gmail.com>
+From: "Juliano F. Ravasi" <ml@juliano.info>
+Subject: Re: [alsa-devel] hda-intel (ALC889) - sound
+ loops/repeats continuously, and general brokenness
+Date: Fri, 22 Oct 2010 11:55:10 -0200
+Message-ID: <4CC197BE.2000706@juliano.info>
+References: <4CBF45C0.5060903@juliano.info> <4CC05F15.4000101@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id A353E103810
-	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Oct 2010 16:08:19 +0200 (CEST)
-Received: from epmmp2 (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
-	2010)) with ESMTP id <0LAP009BA39RVLD0@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Fri, 22 Oct 2010 23:08:15 +0900 (KST)
-Received: from DOKGENEKIM02 ([12.23.103.104])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0LAP00C5O39RGY@mmp2.samsung.com> for
-	alsa-devel@alsa-project.org; Fri, 22 Oct 2010 23:08:16 +0900 (KST)
-In-reply-to: <1287736238-11846-1-git-send-email-jassisinghbrar@gmail.com>
-Content-language: ko
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Jassi Brar' <jassisinghbrar@gmail.com>, alsa-devel@alsa-project.org
-Cc: 'Jassi Brar' <jassi.brar@samsung.com>, broonie@opensource.wolfsonmicro.com, mcuelenaere@gmail.com, cw00.choi@samsung.com, ben-linux@fluff.org, june.bae@samsung.com, lrg@slimlogic.co.uk, sw.youn@samsung.com
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
+In-Reply-To: <4CC05F15.4000101@ladisch.de>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jassi Brar wrote:
-> 
-> From: Jassi Brar <jassi.brar@samsung.com>
-> 
-> Hi,
-> 
-Hi,
+On 10/21/2010 01:41 PM, Clemens Ladisch wrote:
+> Please check in /proc/interrupts whether that interrupt actually
+> works.
 
-> Submitting revised patch series.
-> 
-> Patches 11 through 16 apply to Kgene's tree, rest apply to
-> Mark Brown's.
-> 
-Hmm...
+There is no interrupt at all being assigned to hda_intel.
 
-I faced with following build error after applying above 6 patches into my
-tree.
-It means can't make clean tree with only arch/arm patches?...
-NO...just need to update arch/arm/plat-samsung/include/plat/audio.h of your
-10/24 patch.
-Please separate 10/24...there is no reason that to change plat/audio.h
-belong to 10/24(Add common I2S driver)
+Yesterday, all of a sudden, the problem fixed itself and everything
+about this driver started working as expected. I restarted the driver to
+be sure and all problems returned. Then I noticed these two lines in the
+log at the time when the problem fixed itself:
 
-arch/arm/mach-s3c64xx/dev-audio.c:77: error: unknown field 'type' specified
-in initializer
-arch/arm/mach-s3c64xx/dev-audio.c:77: error: extra brace group at end of
-initializer
-arch/arm/mach-s3c64xx/dev-audio.c:77: error: (near initialization for
-'i2sv3_pdata')
-arch/arm/mach-s3c64xx/dev-audio.c:78: error: extra brace group at end of
-initializer
-arch/arm/mach-s3c64xx/dev-audio.c:78: error: (near initialization for
-'i2sv3_pdata')
-arch/arm/mach-s3c64xx/dev-audio.c:81: warning: excess elements in struct
-initializer
-arch/arm/mach-s3c64xx/dev-audio.c:81: warning: (near initialization for
-'i2sv3_pdata')
-arch/arm/mach-s3c64xx/dev-audio.c:144: error: unknown field 'type' specified
-in initializer
-arch/arm/mach-s3c64xx/dev-audio.c:144: error: extra brace group at end of
-initializer
-arch/arm/mach-s3c64xx/dev-audio.c:144: error: (near initialization for
-'i2sv4_pdata')
-arch/arm/mach-s3c64xx/dev-audio.c:145: error: extra brace group at end of
-initializer
-arch/arm/mach-s3c64xx/dev-audio.c:145: error: (near initialization for
-'i2sv4_pdata')
-arch/arm/mach-s3c64xx/dev-audio.c:146: error: 'QUIRK_PRI_6CHAN' undeclared
-here (not in a function)
-arch/arm/mach-s3c64xx/dev-audio.c:149: warning: excess elements in struct
-initializer
-arch/arm/mach-s3c64xx/dev-audio.c:149: warning: (near initialization for
-'i2sv4_pdata')
-arch/arm/mach-s3c64xx/dev-audio.c:151: error: expected expression before
-'struct'
-arch/arm/mach-s3c64xx/dev-audio.c:151: warning: excess elements in struct
-initializer
-arch/arm/mach-s3c64xx/dev-audio.c:151: warning: (near initialization for
-'i2sv4_pdata')
+hda-intel: No response from codec, disabling MSI: last cmd=3D0x20cb2001
+hda_intel: azx_get_response timeout, switching to single_cmd mode: last
+cmd=3D0x20cb2001
 
-arch/arm/mach-s5p6442/dev-audio.c:52: error: unknown field 'type' specified
-in initializer
-arch/arm/mach-s5p6442/dev-audio.c:52: error: extra brace group at end of
-initializer
-arch/arm/mach-s5p6442/dev-audio.c:52: error: (near initialization for
-'i2sv35_pdata')
-arch/arm/mach-s5p6442/dev-audio.c:53: error: extra brace group at end of
-initializer
-arch/arm/mach-s5p6442/dev-audio.c:53: error: (near initialization for
-'i2sv35_pdata')
-arch/arm/mach-s5p6442/dev-audio.c:54: error: 'QUIRK_SEC_DAI' undeclared here
-(not in a function)
-arch/arm/mach-s5p6442/dev-audio.c:54: error: 'QUIRK_NEED_RSTCLR' undeclared
-here (not in a function)
-arch/arm/mach-s5p6442/dev-audio.c:57: warning: excess elements in struct
-initializer
-arch/arm/mach-s5p6442/dev-audio.c:57: warning: (near initialization for
-'i2sv35_pdata')
-arch/arm/mach-s5p6442/dev-audio.c:100: error: unknown field 'type' specified
-in initializer
-arch/arm/mach-s5p6442/dev-audio.c:100: error: extra brace group at end of
-initializer
-arch/arm/mach-s5p6442/dev-audio.c:100: error: (near initialization for
-'i2sv3_pdata')
-arch/arm/mach-s5p6442/dev-audio.c:101: error: extra brace group at end of
-initializer
-arch/arm/mach-s5p6442/dev-audio.c:101: error: (near initialization for
-'i2sv3_pdata')
-arch/arm/mach-s5p6442/dev-audio.c:104: warning: excess elements in struct
-initializer
-arch/arm/mach-s5p6442/dev-audio.c:104: warning: (near initialization for
-'i2sv3_pdata')
+So, I added to my modprobe.conf:
 
-arch/arm/mach-s5p64x0/dev-audio.c:45: error: unknown field 'type' specified
-in initializer
-arch/arm/mach-s5p64x0/dev-audio.c:45: error: extra brace group at end of
-initializer
-arch/arm/mach-s5p64x0/dev-audio.c:45: error: (near initialization for
-'s5p64x0_i2s_pdata')
-arch/arm/mach-s5p64x0/dev-audio.c:46: error: extra brace group at end of
-initializer
-arch/arm/mach-s5p64x0/dev-audio.c:46: error: (near initialization for
-'s5p64x0_i2s_pdata')
-arch/arm/mach-s5p64x0/dev-audio.c:47: error: 'QUIRK_PRI_6CHAN' undeclared
-here (not in a function)
-arch/arm/mach-s5p64x0/dev-audio.c:50: warning: excess elements in struct
-initializer
-arch/arm/mach-s5p64x0/dev-audio.c:50: warning: (near initialization for
-'s5p64x0_i2s_pdata')
+	options snd-hda-intel enable_msi=3D0 single_cmd=3D1
 
-arch/arm/mach-s5pc100/dev-audio.c:49: error: unknown field 'type' specified
-in initializer
-arch/arm/mach-s5pc100/dev-audio.c:49: error: extra brace group at end of
-initializer
-arch/arm/mach-s5pc100/dev-audio.c:49: error: (near initialization for
-'i2sv5_pdata')
-arch/arm/mach-s5pc100/dev-audio.c:50: error: extra brace group at end of
-initializer
-arch/arm/mach-s5pc100/dev-audio.c:50: error: (near initialization for
-'i2sv5_pdata')
-arch/arm/mach-s5pc100/dev-audio.c:51: error: 'QUIRK_PRI_6CHAN' undeclared
-here (not in a function)
-arch/arm/mach-s5pc100/dev-audio.c:51: error: 'QUIRK_SEC_DAI' undeclared here
-(not in a function)
-arch/arm/mach-s5pc100/dev-audio.c:52: error: 'QUIRK_NEED_RSTCLR' undeclared
-here (not in a function)
-arch/arm/mach-s5pc100/dev-audio.c:55: warning: excess elements in struct
-initializer
-arch/arm/mach-s5pc100/dev-audio.c:55: warning: (near initialization for
-'i2sv5_pdata')
-arch/arm/mach-s5pc100/dev-audio.c:98: error: unknown field 'type' specified
-in initializer
-arch/arm/mach-s5pc100/dev-audio.c:98: error: extra brace group at end of
-initializer
-arch/arm/mach-s5pc100/dev-audio.c:98: error: (near initialization for
-'i2sv3_pdata')
-arch/arm/mach-s5pc100/dev-audio.c:99: error: extra brace group at end of
-initializer
-arch/arm/mach-s5pc100/dev-audio.c:99: error: (near initialization for
-'i2sv3_pdata')
-arch/arm/mach-s5pc100/dev-audio.c:102: warning: excess elements in struct
-initializer
-arch/arm/mach-s5pc100/dev-audio.c:102: warning: (near initialization for
-'i2sv3_pdata')
+And now everything works fine and there is an hda_intel line in
+/proc/interrupts. I don't know what are the implications of these
+parameters. Particularly single_cmd seems to flag an incorrect operation
+of the driver. Perhaps the driver should detect and blacklist this card
+from MSI?
 
-arch/arm/mach-s5pv210/dev-audio.c:50: error: unknown field 'type' specified
-in initializer
-arch/arm/mach-s5pv210/dev-audio.c:50: error: extra brace group at end of
-initializer
-arch/arm/mach-s5pv210/dev-audio.c:50: error: (near initialization for
-'i2sv5_pdata')
-arch/arm/mach-s5pv210/dev-audio.c:51: error: extra brace group at end of
-initializer
-arch/arm/mach-s5pv210/dev-audio.c:51: error: (near initialization for
-'i2sv5_pdata')
-arch/arm/mach-s5pv210/dev-audio.c:52: error: 'QUIRK_PRI_6CHAN' undeclared
-here (not in a function)
-arch/arm/mach-s5pv210/dev-audio.c:52: error: 'QUIRK_SEC_DAI' undeclared here
-(not in a function)
-arch/arm/mach-s5pv210/dev-audio.c:53: error: 'QUIRK_NEED_RSTCLR' undeclared
-here (not in a function)
-arch/arm/mach-s5pv210/dev-audio.c:56: warning: excess elements in struct
-initializer
-arch/arm/mach-s5pv210/dev-audio.c:56: warning: (near initialization for
-'i2sv5_pdata')
-arch/arm/mach-s5pv210/dev-audio.c:99: error: unknown field 'type' specified
-in initializer
-arch/arm/mach-s5pv210/dev-audio.c:99: error: extra brace group at end of
-initializer
-arch/arm/mach-s5pv210/dev-audio.c:99: error: (near initialization for
-'i2sv3_pdata')
-arch/arm/mach-s5pv210/dev-audio.c:100: error: extra brace group at end of
-initializer
-arch/arm/mach-s5pv210/dev-audio.c:100: error: (near initialization for
-'i2sv3_pdata')
-arch/arm/mach-s5pv210/dev-audio.c:103: warning: excess elements in struct
-initializer
-arch/arm/mach-s5pv210/dev-audio.c:103: warning: (near initialization for
-'i2sv3_pdata')
+Thank you very much for your help!
 
-Unfortunately, not yet cleaned after applying to change plat/audio.h...
+Regards,
+Juliano.
 
-arch/arm/mach-s3c64xx/dev-audio.c:151: error: expected expression before
-'struct'
-arch/arm/mach-s3c64xx/dev-audio.c:151: warning: excess elements in struct
-initializer
-arch/arm/mach-s3c64xx/dev-audio.c:151: warning: (near initialization for
-'i2sv4_pdata')
 
--> missing brace :-(
+-- =
 
-arch/arm/mach-s5pv210/dev-audio.c:52: error: unknown field 'quriks'
-specified in initializer
+Juliano F. Ravasi =B7=B7 http://juliano.info/
+5105 46CC B2B7 F0CD 5F47 E740 72CA 54F4 DF37 9E96
 
--> typo?...quirks...
+---------------------------------------------------------------------------=
+---
+Nokia and AT&T present the 2010 Calling All Innovators-North America contest
+Create new apps & games for the Nokia N8 for consumers in  U.S. and Canada
+$10 million total in prizes - $4M cash, 500 devices, nearly $6M in marketing
+Develop with Nokia Qt SDK, Web Runtime, or Java and Publish to Ovi Store =
 
-Please add plat/audio.h patch and update them.
-
-> Since v1:
-> a) Use case 16 in set_bfs and default for error
-> b) Better code comments.
-> c) Use switch case in i2sv2_i2s_set_clkdiv
-> d) Use SNDRV_PCM_RATE_8000_96000
-> e) MAX_I2S -> SAMSUNG_I2S_SECOFF
-> f) Local namespace cleanup with i2s driver.
-
-Thanks.
-
-Best regards,
-Kgene.
---
-Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
-SW Solution Development Team, Samsung Electronics Co., Ltd.
+http://p.sf.net/sfu/nokia-dev2dev
