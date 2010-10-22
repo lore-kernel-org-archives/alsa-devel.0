@@ -1,14 +1,14 @@
 From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCH 06/24] ASoC: Samsung: Rename AC97 driver
-Date: Fri, 22 Oct 2010 17:35:00 +0900
-Message-ID: <1287736500-12066-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: [PATCH 09/24] ASoC: Samsung: Rename s3c64xx I2S device
+Date: Fri, 22 Oct 2010 17:35:40 +0900
+Message-ID: <1287736540-12164-1-git-send-email-jassisinghbrar@gmail.com>
 References: <1287736238-11846-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 897C224339
+	by alsa0.perex.cz (Postfix) with ESMTP id B93BC103B16
 	for <alsa-devel@alsa-project.org>;
 	Fri, 22 Oct 2010 10:43:10 +0200 (CEST)
 In-Reply-To: <1287736238-11846-1-git-send-email-jassisinghbrar@gmail.com>
@@ -27,180 +27,209 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jassi Brar <jassi.brar@samsung.com>
 
-Rename Samsung AC97 driver
-	s3c-ac97.[c/h] -> ac97.[c/h]
+Since the I2S of S3C64XX and newer SoCs are incremental
+versions of each other with changes managable in a single
+driver, rename the 's3c64xx-iis' -> 'samsung-i2s'
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- sound/soc/s3c24xx/Makefile               |    4 ++--
- sound/soc/s3c24xx/{s3c-ac97.c => ac97.c} |   16 ++++++++--------
- sound/soc/s3c24xx/{s3c-ac97.h => ac97.h} |    8 ++++----
- sound/soc/s3c24xx/ln2440sbc_alc650.c     |    2 +-
- sound/soc/s3c24xx/smdk2443_wm9710.c      |    2 +-
- sound/soc/s3c24xx/smdk_wm9713.c          |    2 +-
- 6 files changed, 17 insertions(+), 17 deletions(-)
- rename sound/soc/s3c24xx/{s3c-ac97.c => ac97.c} (97%)
- rename sound/soc/s3c24xx/{s3c-ac97.h => ac97.h} (73%)
+ arch/arm/mach-s3c64xx/dev-audio.c   |    6 +++---
+ arch/arm/mach-s5p6440/dev-audio.c   |    2 +-
+ arch/arm/mach-s5p6442/dev-audio.c   |    4 ++--
+ arch/arm/mach-s5pc100/dev-audio.c   |    6 +++---
+ arch/arm/mach-s5pv210/dev-audio.c   |    6 +++---
+ sound/soc/s3c24xx/s3c64xx-i2s-v4.c  |    4 ++--
+ sound/soc/s3c24xx/s3c64xx-i2s.c     |    4 ++--
+ sound/soc/s3c24xx/smdk64xx_wm8580.c |    4 ++--
+ 8 files changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/s3c24xx/Makefile
-index 20aac45..551a63d 100644
---- a/sound/soc/s3c24xx/Makefile
-+++ b/sound/soc/s3c24xx/Makefile
-@@ -3,7 +3,7 @@ snd-soc-s3c24xx-objs := dma.o
- snd-soc-s3c24xx-i2s-objs := s3c24xx-i2s.o
- snd-soc-s3c2412-i2s-objs := s3c2412-i2s.o
- snd-soc-s3c64xx-i2s-objs := s3c64xx-i2s.o
--snd-soc-s3c-ac97-objs := s3c-ac97.o
-+snd-soc-ac97-objs := ac97.o
- snd-soc-s3c64xx-i2s-v4-objs := s3c64xx-i2s-v4.o
- snd-soc-s3c-i2s-v2-objs := s3c-i2s-v2.o
- snd-soc-s3c-pcm-objs := s3c-pcm.o
-@@ -11,7 +11,7 @@ snd-soc-samsung-spdif-objs := spdif.o
+diff --git a/arch/arm/mach-s3c64xx/dev-audio.c b/arch/arm/mach-s3c64xx/dev-audio.c
+index 1615c94..01dda91 100644
+--- a/arch/arm/mach-s3c64xx/dev-audio.c
++++ b/arch/arm/mach-s3c64xx/dev-audio.c
+@@ -89,7 +89,7 @@ static struct s3c_audio_pdata s3c_i2s0_pdata = {
+ };
  
- obj-$(CONFIG_SND_S3C24XX_SOC) += snd-soc-s3c24xx.o
- obj-$(CONFIG_SND_S3C24XX_SOC_I2S) += snd-soc-s3c24xx-i2s.o
--obj-$(CONFIG_SND_S3C_SOC_AC97) += snd-soc-s3c-ac97.o
-+obj-$(CONFIG_SND_S3C_SOC_AC97) += snd-soc-ac97.o
- obj-$(CONFIG_SND_S3C2412_SOC_I2S) += snd-soc-s3c2412-i2s.o
- obj-$(CONFIG_SND_S3C64XX_SOC_I2S) += snd-soc-s3c64xx-i2s.o
- obj-$(CONFIG_SND_S3C64XX_SOC_I2S_V4) += snd-soc-s3c64xx-i2s-v4.o
-diff --git a/sound/soc/s3c24xx/s3c-ac97.c b/sound/soc/s3c24xx/ac97.c
-similarity index 97%
-rename from sound/soc/s3c24xx/s3c-ac97.c
-rename to sound/soc/s3c24xx/ac97.c
-index 5352cac..4f999d1 100644
---- a/sound/soc/s3c24xx/s3c-ac97.c
-+++ b/sound/soc/s3c24xx/ac97.c
-@@ -1,4 +1,4 @@
--/* sound/soc/s3c24xx/s3c-ac97.c
-+/* sound/soc/s3c24xx/ac97.c
-  *
-  * ALSA SoC Audio Layer - S3C AC97 Controller driver
-  * 	Evolved from s3c2443-ac97.c
-@@ -25,7 +25,7 @@
- #include <plat/audio.h>
+ struct platform_device s3c64xx_device_iis0 = {
+-	.name		  = "s3c64xx-iis",
++	.name		  = "samsung-i2s",
+ 	.id		  = 0,
+ 	.num_resources	  = ARRAY_SIZE(s3c64xx_iis0_resource),
+ 	.resource	  = s3c64xx_iis0_resource,
+@@ -122,7 +122,7 @@ static struct s3c_audio_pdata s3c_i2s1_pdata = {
+ };
  
- #include "dma.h"
--#include "s3c-ac97.h"
-+#include "ac97.h"
+ struct platform_device s3c64xx_device_iis1 = {
+-	.name		  = "s3c64xx-iis",
++	.name		  = "samsung-i2s",
+ 	.id		  = 1,
+ 	.num_resources	  = ARRAY_SIZE(s3c64xx_iis1_resource),
+ 	.resource	  = s3c64xx_iis1_resource,
+@@ -155,7 +155,7 @@ static struct s3c_audio_pdata s3c_i2sv4_pdata = {
+ };
  
- #define AC_CMD_ADDR(x) (x << 16)
- #define AC_CMD_DATA(x) (x & 0xffff)
-@@ -122,7 +122,7 @@ static unsigned short s3c_ac97_read(struct snd_ac97 *ac97,
- 	data = (stat & 0xffff);
+ struct platform_device s3c64xx_device_iisv4 = {
+-	.name		  = "s3c64xx-iis-v4",
++	.name		  = "samsung-i2s-v4",
+ 	.id		  = -1,
+ 	.num_resources	  = ARRAY_SIZE(s3c64xx_iisv4_resource),
+ 	.resource	  = s3c64xx_iisv4_resource,
+diff --git a/arch/arm/mach-s5p6440/dev-audio.c b/arch/arm/mach-s5p6440/dev-audio.c
+index 3ca0d2b..5d98629 100644
+--- a/arch/arm/mach-s5p6440/dev-audio.c
++++ b/arch/arm/mach-s5p6440/dev-audio.c
+@@ -64,7 +64,7 @@ static struct resource s5p6440_iis0_resource[] = {
+ };
  
- 	if (addr != reg)
--		pr_err("s3c-ac97: req addr = %02x, rep addr = %02x\n",
-+		pr_err("ac97: req addr = %02x, rep addr = %02x\n",
- 			reg, addr);
+ struct platform_device s5p6440_device_iis = {
+-	.name		  = "s3c64xx-iis-v4",
++	.name		  = "samsung-i2s-v4",
+ 	.id		  = -1,
+ 	.num_resources	  = ARRAY_SIZE(s5p6440_iis0_resource),
+ 	.resource	  = s5p6440_iis0_resource,
+diff --git a/arch/arm/mach-s5p6442/dev-audio.c b/arch/arm/mach-s5p6442/dev-audio.c
+index 7a4e347..1419442 100644
+--- a/arch/arm/mach-s5p6442/dev-audio.c
++++ b/arch/arm/mach-s5p6442/dev-audio.c
+@@ -70,7 +70,7 @@ static struct resource s5p6442_iis0_resource[] = {
+ };
  
- 	mutex_unlock(&s3c_ac97.lock);
-@@ -334,7 +334,7 @@ static struct snd_soc_dai_ops s3c_ac97_mic_dai_ops = {
+ struct platform_device s5p6442_device_iis0 = {
+-	.name		  = "s3c64xx-iis-v4",
++	.name		  = "samsung-i2s-v4",
+ 	.id		  = -1,
+ 	.num_resources	  = ARRAY_SIZE(s5p6442_iis0_resource),
+ 	.resource	  = s5p6442_iis0_resource,
+@@ -98,7 +98,7 @@ static struct resource s5p6442_iis1_resource[] = {
+ };
  
- static struct snd_soc_dai_driver s3c_ac97_dai[] = {
- 	[S3C_AC97_DAI_PCM] = {
--		.name =	"s3c-ac97",
-+		.name =	"samsung-ac97",
- 		.ac97_control = 1,
- 		.playback = {
- 			.stream_name = "AC97 Playback",
-@@ -351,7 +351,7 @@ static struct snd_soc_dai_driver s3c_ac97_dai[] = {
- 		.ops = &s3c_ac97_dai_ops,
+ struct platform_device s5p6442_device_iis1 = {
+-	.name		  = "s3c64xx-iis",
++	.name		  = "samsung-i2s",
+ 	.id		  = 1,
+ 	.num_resources	  = ARRAY_SIZE(s5p6442_iis1_resource),
+ 	.resource	  = s5p6442_iis1_resource,
+diff --git a/arch/arm/mach-s5pc100/dev-audio.c b/arch/arm/mach-s5pc100/dev-audio.c
+index 4207511..3cf22ff 100644
+--- a/arch/arm/mach-s5pc100/dev-audio.c
++++ b/arch/arm/mach-s5pc100/dev-audio.c
+@@ -73,7 +73,7 @@ static struct resource s5pc100_iis0_resource[] = {
+ };
+ 
+ struct platform_device s5pc100_device_iis0 = {
+-	.name		  = "s3c64xx-iis-v4",
++	.name		  = "samsung-i2s-v4",
+ 	.id		  = -1,
+ 	.num_resources	  = ARRAY_SIZE(s5pc100_iis0_resource),
+ 	.resource	  = s5pc100_iis0_resource,
+@@ -101,7 +101,7 @@ static struct resource s5pc100_iis1_resource[] = {
+ };
+ 
+ struct platform_device s5pc100_device_iis1 = {
+-	.name		  = "s3c64xx-iis",
++	.name		  = "samsung-i2s",
+ 	.id		  = 1,
+ 	.num_resources	  = ARRAY_SIZE(s5pc100_iis1_resource),
+ 	.resource	  = s5pc100_iis1_resource,
+@@ -129,7 +129,7 @@ static struct resource s5pc100_iis2_resource[] = {
+ };
+ 
+ struct platform_device s5pc100_device_iis2 = {
+-	.name		  = "s3c64xx-iis",
++	.name		  = "samsung-i2s",
+ 	.id		  = 2,
+ 	.num_resources	  = ARRAY_SIZE(s5pc100_iis2_resource),
+ 	.resource	  = s5pc100_iis2_resource,
+diff --git a/arch/arm/mach-s5pv210/dev-audio.c b/arch/arm/mach-s5pv210/dev-audio.c
+index e6db957..6e60041 100644
+--- a/arch/arm/mach-s5pv210/dev-audio.c
++++ b/arch/arm/mach-s5pv210/dev-audio.c
+@@ -80,7 +80,7 @@ static struct resource s5pv210_iis0_resource[] = {
+ };
+ 
+ struct platform_device s5pv210_device_iis0 = {
+-	.name		  = "s3c64xx-iis-v4",
++	.name		  = "samsung-i2s-v4",
+ 	.id		  = -1,
+ 	.num_resources	  = ARRAY_SIZE(s5pv210_iis0_resource),
+ 	.resource	  = s5pv210_iis0_resource,
+@@ -108,7 +108,7 @@ static struct resource s5pv210_iis1_resource[] = {
+ };
+ 
+ struct platform_device s5pv210_device_iis1 = {
+-	.name		  = "s3c64xx-iis",
++	.name		  = "samsung-i2s",
+ 	.id		  = 1,
+ 	.num_resources	  = ARRAY_SIZE(s5pv210_iis1_resource),
+ 	.resource	  = s5pv210_iis1_resource,
+@@ -136,7 +136,7 @@ static struct resource s5pv210_iis2_resource[] = {
+ };
+ 
+ struct platform_device s5pv210_device_iis2 = {
+-	.name		  = "s3c64xx-iis",
++	.name		  = "samsung-i2s",
+ 	.id		  = 2,
+ 	.num_resources	  = ARRAY_SIZE(s5pv210_iis2_resource),
+ 	.resource	  = s5pv210_iis2_resource,
+diff --git a/sound/soc/s3c24xx/s3c64xx-i2s-v4.c b/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
+index 46b65d7..8a08041 100644
+--- a/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
++++ b/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
+@@ -206,7 +206,7 @@ static struct platform_driver s3c64xx_i2sv4_driver = {
+ 	.probe  = s3c64xx_i2sv4_dev_probe,
+ 	.remove = s3c64xx_i2sv4_dev_remove,
+ 	.driver = {
+-		.name = "s3c64xx-iis-v4",
++		.name = "samsung-i2s-v4",
+ 		.owner = THIS_MODULE,
  	},
- 	[S3C_AC97_DAI_MIC] = {
--		.name = "s3c-ac97-mic",
-+		.name = "samsung-ac97-mic",
- 		.ac97_control = 1,
- 		.capture = {
- 			.stream_name = "AC97 Mic Capture",
-@@ -407,7 +407,7 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
- 	}
- 
- 	if (!request_mem_region(mem_res->start,
--				resource_size(mem_res), "s3c-ac97")) {
-+				resource_size(mem_res), "ac97")) {
- 		dev_err(&pdev->dev, "Unable to request register region\n");
- 		return -EBUSY;
- 	}
-@@ -431,7 +431,7 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
- 
- 	s3c_ac97.ac97_clk = clk_get(&pdev->dev, "ac97");
- 	if (IS_ERR(s3c_ac97.ac97_clk)) {
--		dev_err(&pdev->dev, "s3c-ac97 failed to get ac97_clock\n");
-+		dev_err(&pdev->dev, "ac97 failed to get ac97_clock\n");
- 		ret = -ENODEV;
- 		goto err2;
- 	}
-@@ -446,7 +446,7 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
- 	ret = request_irq(irq_res->start, s3c_ac97_irq,
- 					IRQF_DISABLED, "AC97", NULL);
- 	if (ret < 0) {
--		dev_err(&pdev->dev, "s3c-ac97: interrupt request failed.\n");
-+		dev_err(&pdev->dev, "ac97: interrupt request failed.\n");
- 		goto err4;
- 	}
- 
-diff --git a/sound/soc/s3c24xx/s3c-ac97.h b/sound/soc/s3c24xx/ac97.h
-similarity index 73%
-rename from sound/soc/s3c24xx/s3c-ac97.h
-rename to sound/soc/s3c24xx/ac97.h
-index 5dcedd0..a8f01b7 100644
---- a/sound/soc/s3c24xx/s3c-ac97.h
-+++ b/sound/soc/s3c24xx/ac97.h
-@@ -1,11 +1,11 @@
--/* sound/soc/s3c24xx/s3c-ac97.h
-+/* sound/soc/s3c24xx/ac97.h
-  *
-  * ALSA SoC Audio Layer - S3C AC97 Controller driver
-- * 	Evolved from s3c2443-ac97.h
-+ *	Evolved from s3c2443-ac97.h
-  *
-  * Copyright (c) 2010 Samsung Electronics Co. Ltd
-- * 	Author: Jaswinder Singh <jassi.brar@samsung.com>
-- * 	Credits: Graeme Gregory, Sean Choi
-+ *	Author: Jaswinder Singh <jassi.brar@samsung.com>
-+ *	Credits: Graeme Gregory, Sean Choi
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License version 2 as
-diff --git a/sound/soc/s3c24xx/ln2440sbc_alc650.c b/sound/soc/s3c24xx/ln2440sbc_alc650.c
-index dda11ac..e507174 100644
---- a/sound/soc/s3c24xx/ln2440sbc_alc650.c
-+++ b/sound/soc/s3c24xx/ln2440sbc_alc650.c
-@@ -24,7 +24,7 @@
- #include <sound/soc-dapm.h>
- 
- #include "dma.h"
--#include "s3c-ac97.h"
-+#include "ac97.h"
- 
- static struct snd_soc_card ln2440sbc;
- 
-diff --git a/sound/soc/s3c24xx/smdk2443_wm9710.c b/sound/soc/s3c24xx/smdk2443_wm9710.c
-index 0205138..5051699 100644
---- a/sound/soc/s3c24xx/smdk2443_wm9710.c
-+++ b/sound/soc/s3c24xx/smdk2443_wm9710.c
-@@ -20,7 +20,7 @@
- #include <sound/soc-dapm.h>
- 
- #include "dma.h"
--#include "s3c-ac97.h"
-+#include "ac97.h"
- 
- static struct snd_soc_card smdk2443;
- 
-diff --git a/sound/soc/s3c24xx/smdk_wm9713.c b/sound/soc/s3c24xx/smdk_wm9713.c
-index 56b448d..7ce2430 100644
---- a/sound/soc/s3c24xx/smdk_wm9713.c
-+++ b/sound/soc/s3c24xx/smdk_wm9713.c
-@@ -16,7 +16,7 @@
- #include <sound/soc.h>
- 
- #include "dma.h"
--#include "s3c-ac97.h"
-+#include "ac97.h"
- 
- static struct snd_soc_card smdk;
- 
+ };
+@@ -227,4 +227,4 @@ module_exit(s3c64xx_i2sv4_exit);
+ MODULE_AUTHOR("Jaswinder Singh, <jassi.brar@samsung.com>");
+ MODULE_DESCRIPTION("S3C64XX I2Sv4 SoC Interface");
+ MODULE_LICENSE("GPL");
+-MODULE_ALIAS("platform:s3c64xx-iis-v4");
++MODULE_ALIAS("platform:samsung-i2s-v4");
+diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.c b/sound/soc/s3c24xx/s3c64xx-i2s.c
+index 0288d4e..0fefbb5 100644
+--- a/sound/soc/s3c24xx/s3c64xx-i2s.c
++++ b/sound/soc/s3c24xx/s3c64xx-i2s.c
+@@ -218,7 +218,7 @@ static struct platform_driver s3c64xx_iis_driver = {
+ 	.probe  = s3c64xx_iis_dev_probe,
+ 	.remove = s3c64xx_iis_dev_remove,
+ 	.driver = {
+-		.name = "s3c64xx-iis",
++		.name = "samsung-i2s",
+ 		.owner = THIS_MODULE,
+ 	},
+ };
+@@ -239,4 +239,4 @@ module_exit(s3c64xx_i2s_exit);
+ MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
+ MODULE_DESCRIPTION("S3C64XX I2S SoC Interface");
+ MODULE_LICENSE("GPL");
+-MODULE_ALIAS("platform:s3c64xx-iis");
++MODULE_ALIAS("platform:samsung-i2s");
+diff --git a/sound/soc/s3c24xx/smdk64xx_wm8580.c b/sound/soc/s3c24xx/smdk64xx_wm8580.c
+index 9ddc964..1d59317 100644
+--- a/sound/soc/s3c24xx/smdk64xx_wm8580.c
++++ b/sound/soc/s3c24xx/smdk64xx_wm8580.c
+@@ -222,7 +222,7 @@ static struct snd_soc_dai_link smdk64xx_dai[] = {
+ { /* Primary Playback i/f */
+ 	.name = "WM8580 PAIF RX",
+ 	.stream_name = "Playback",
+-	.cpu_dai_name = "s3c64xx-iis-v4",
++	.cpu_dai_name = "samsung-i2s-v4",
+ 	.codec_dai_name = "wm8580-hifi-playback",
+ 	.platform_name = "samsung-audio",
+ 	.codec_name = "wm8580-codec.0-001b",
+@@ -232,7 +232,7 @@ static struct snd_soc_dai_link smdk64xx_dai[] = {
+ { /* Primary Capture i/f */
+ 	.name = "WM8580 PAIF TX",
+ 	.stream_name = "Capture",
+-	.cpu_dai_name = "s3c64xx-iis-v4",
++	.cpu_dai_name = "samsung-i2s-v4",
+ 	.codec_dai_name = "wm8580-hifi-capture",
+ 	.platform_name = "samsung-audio",
+ 	.codec_name = "wm8580-codec.0-001b",
 -- 
 1.6.2.5
