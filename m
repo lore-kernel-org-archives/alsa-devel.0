@@ -1,19 +1,16 @@
-From: Greg KH <greg@kroah.com>
-Subject: Re: [stable] [PATCH] ALSA: HDA: Correctly apply
- position_fix quirks for ATI and VIA controllers
-Date: Fri, 22 Oct 2010 09:00:42 -0700
-Message-ID: <20101022160042.GC18595@kroah.com>
-References: <4CA9A951.2010604@canonical.com> <4CA9BC8C.4030809@canonical.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.37
+Date: Fri, 22 Oct 2010 10:32:52 -0700
+Message-ID: <20101022173252.GB17881@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from coco.kroah.org (kroah.org [198.145.64.141])
-	by alsa0.perex.cz (Postfix) with ESMTP id D60B3103838
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B6C08103838
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Oct 2010 19:00:07 +0200 (CEST)
+	Fri, 22 Oct 2010 19:32:44 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4CA9BC8C.4030809@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,28 +20,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, stable@kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 04, 2010 at 01:37:48PM +0200, David Henningsson wrote:
-> On 2010-10-04 12:15, David Henningsson wrote:
-> >Position_fix quirks for specific machines now override the default
-> >position_fix behavior for all HDA controllers.
-> >
-> >BugLink: http://launchpad.net/bugs/465942
-> >BugLink: http://launchpad.net/bugs/580749
-> >BugLink: http://launchpad.net/bugs/587546
-> >
-> >Signed-off-by: David Henningsson <david.henningsson@canonical.com>
-> 
-> ...and here's the version for 2.6.35 and 2.6.32 stable trees.
+The following changes since commit c429ffbe038a649d121e6cecba5cf66777f39370:
 
-Ok, but what's the corrisponding fix in Linus's tree?  What is the git
-id of the patch there?
+  ASoC: WM8580: Remove useless assignment (2010-10-19 03:07:10 -0700)
 
-Please resend your version with that information in it.
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.37
 
-thanks,
+Dimitris Papastamos (2):
+      ASoC: soc-core: Fix codec->name memory leak
+      ASoC: max98088: Staticise m98088_eq_band
 
-greg k-h
+ sound/soc/codecs/max98088.c |    2 +-
+ sound/soc/soc-core.c        |    1 +
+ 2 files changed, 2 insertions(+), 1 deletions(-)
