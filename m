@@ -1,15 +1,15 @@
 From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCH 12/24] ARM: S5P64X0: I2S: Upgrade platform
+Subject: [PATCH 03/24] ARM: Samsung: Define common audio-dma
 	device
-Date: Fri, 22 Oct 2010 17:36:23 +0900
-Message-ID: <1287736583-12260-1-git-send-email-jassisinghbrar@gmail.com>
+Date: Fri, 22 Oct 2010 17:34:18 +0900
+Message-ID: <1287736458-11963-1-git-send-email-jassisinghbrar@gmail.com>
 References: <1287736238-11846-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8700924337
+	by alsa0.perex.cz (Postfix) with ESMTP id 7186924333
 	for <alsa-devel@alsa-project.org>;
 	Fri, 22 Oct 2010 10:43:10 +0200 (CEST)
 In-Reply-To: <1287736238-11846-1-git-send-email-jassisinghbrar@gmail.com>
@@ -28,138 +28,134 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jassi Brar <jassi.brar@samsung.com>
 
-Add more information to I2S platform_devices in order
-to prepare them for new controller driver.
-Also, discard duplicated gpio-cfg.
+The ASoC uses common DMA driver for Audio devices. So it makes
+sense to a common audio-dma device shared across all platforms.
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- arch/arm/mach-s5p64x0/clock-s5p6440.c |    2 +-
- arch/arm/mach-s5p64x0/clock-s5p6450.c |    2 +-
- arch/arm/mach-s5p64x0/dev-audio.c     |   55 ++++++++++++--------------------
- 3 files changed, 23 insertions(+), 36 deletions(-)
+ arch/arm/mach-s3c64xx/dev-audio.c         |   13 -------------
+ arch/arm/mach-s3c64xx/mach-smdk6410.c     |    2 +-
+ arch/arm/plat-s3c24xx/devs.c              |   15 ---------------
+ arch/arm/plat-samsung/Makefile            |    1 +
+ arch/arm/plat-samsung/dev-asocdma.c       |   24 ++++++++++++++++++++++++
+ arch/arm/plat-samsung/include/plat/devs.h |    2 +-
+ 6 files changed, 27 insertions(+), 30 deletions(-)
+ create mode 100644 arch/arm/plat-samsung/dev-asocdma.c
 
-diff --git a/arch/arm/mach-s5p64x0/clock-s5p6440.c b/arch/arm/mach-s5p64x0/clock-s5p6440.c
-index e4883dc..409c5fc 100644
---- a/arch/arm/mach-s5p64x0/clock-s5p6440.c
-+++ b/arch/arm/mach-s5p64x0/clock-s5p6440.c
-@@ -261,7 +261,7 @@ static struct clk init_clocks_disable[] = {
- 		.enable		= s5p64x0_pclk_ctrl,
- 		.ctrlbit	= (1 << 25),
- 	}, {
--		.name		= "i2s_v40",
-+		.name		= "iis",
- 		.id		= 0,
- 		.parent		= &clk_pclk_low.clk,
- 		.enable		= s5p64x0_pclk_ctrl,
-diff --git a/arch/arm/mach-s5p64x0/clock-s5p6450.c b/arch/arm/mach-s5p64x0/clock-s5p6450.c
-index 7dbf3c9..7fc6abd 100644
---- a/arch/arm/mach-s5p64x0/clock-s5p6450.c
-+++ b/arch/arm/mach-s5p64x0/clock-s5p6450.c
-@@ -256,7 +256,7 @@ static struct clk init_clocks_disable[] = {
- 		.ctrlbit	= (1 << 22),
- 	}, {
- 		.name		= "iis",
--		.id		= -1,
-+		.id		= 0,
- 		.parent		= &clk_pclk_low.clk,
- 		.enable		= s5p64x0_pclk_ctrl,
- 		.ctrlbit	= (1 << 26),
-diff --git a/arch/arm/mach-s5p64x0/dev-audio.c b/arch/arm/mach-s5p64x0/dev-audio.c
-index 396bacc..14f89e7 100644
---- a/arch/arm/mach-s5p64x0/dev-audio.c
-+++ b/arch/arm/mach-s5p64x0/dev-audio.c
-@@ -19,15 +19,19 @@
- #include <mach/dma.h>
- #include <mach/irqs.h>
- 
--static int s5p6440_cfg_i2s(struct platform_device *pdev)
-+static const char *rclksrc[] = {
-+	[0] = "iis",
-+	[1] = "sclk_audio2",
-+};
-+
-+static int s5p64x0_cfg_i2s(struct platform_device *pdev)
- {
- 	/* configure GPIO for i2s port */
- 	switch (pdev->id) {
--	case -1:
-+	case 0:
- 		s3c_gpio_cfgpin_range(S5P6440_GPR(4), 5, S3C_GPIO_SFN(5));
- 		s3c_gpio_cfgpin_range(S5P6440_GPR(13), 2, S3C_GPIO_SFN(5));
- 		break;
--
- 	default:
- 		printk(KERN_ERR "Invalid Device %d\n", pdev->id);
- 		return -EINVAL;
-@@ -36,31 +40,14 @@ static int s5p6440_cfg_i2s(struct platform_device *pdev)
- 	return 0;
+diff --git a/arch/arm/mach-s3c64xx/dev-audio.c b/arch/arm/mach-s3c64xx/dev-audio.c
+index c45cc37..c730dd2 100644
+--- a/arch/arm/mach-s3c64xx/dev-audio.c
++++ b/arch/arm/mach-s3c64xx/dev-audio.c
+@@ -336,16 +336,3 @@ void __init s3c64xx_ac97_setup_gpio(int num)
+ 	else
+ 		s3c_ac97_pdata.cfg_gpio = s3c64xx_ac97_cfg_gpe;
  }
- 
--static int s5p6450_cfg_i2s(struct platform_device *pdev)
--{
--	/* configure GPIO for i2s port */
--	switch (pdev->id) {
--	case -1:
--		s3c_gpio_cfgpin(S5P6450_GPB(4), S3C_GPIO_SFN(5));
--		s3c_gpio_cfgpin_range(S5P6450_GPR(4), 5, S3C_GPIO_SFN(5));
--		s3c_gpio_cfgpin_range(S5P6450_GPR(13), 2, S3C_GPIO_SFN(5));
 -
--		break;
+-static u64 s3c_device_audio_dmamask = 0xffffffffUL;
 -
--	default:
--		printk(KERN_ERR "Invalid Device %d\n", pdev->id);
--		return -EINVAL;
+-struct platform_device s3c_device_pcm = {
+-	.name		  = "samsung-audio",
+-	.id		  = -1,
+-	.dev              = {
+-		.dma_mask = &s3c_device_audio_dmamask,
+-		.coherent_dma_mask = 0xffffffffUL
 -	}
+-};
+-EXPORT_SYMBOL(s3c_device_pcm);
 -
--	return 0;
--}
+diff --git a/arch/arm/mach-s3c64xx/mach-smdk6410.c b/arch/arm/mach-s3c64xx/mach-smdk6410.c
+index ecbddd3..e2b18b8 100644
+--- a/arch/arm/mach-s3c64xx/mach-smdk6410.c
++++ b/arch/arm/mach-s3c64xx/mach-smdk6410.c
+@@ -283,7 +283,7 @@ static struct platform_device *smdk6410_devices[] __initdata = {
+ 	&s3c_device_fb,
+ 	&s3c_device_ohci,
+ 	&s3c_device_usb_hsotg,
+-	&s3c_device_pcm,
++	&samsung_asoc_dma,
+ 	&s3c64xx_device_iisv4,
+ 	&samsung_device_keypad,
+ 
+diff --git a/arch/arm/plat-s3c24xx/devs.c b/arch/arm/plat-s3c24xx/devs.c
+index 4bf0b39..d8fb4e6 100644
+--- a/arch/arm/plat-s3c24xx/devs.c
++++ b/arch/arm/plat-s3c24xx/devs.c
+@@ -259,21 +259,6 @@ struct platform_device s3c_device_iis = {
+ 
+ EXPORT_SYMBOL(s3c_device_iis);
+ 
+-/* ASoC PCM DMA */
 -
--static struct s3c_audio_pdata s5p6440_i2s_pdata = {
--	.cfg_gpio = s5p6440_cfg_i2s,
+-static u64 s3c_device_audio_dmamask = 0xffffffffUL;
+-
+-struct platform_device s3c_device_pcm = {
+-	.name		  = "samsung-audio",
+-	.id		  = -1,
+-	.dev              = {
+-		.dma_mask = &s3c_device_audio_dmamask,
+-		.coherent_dma_mask = 0xffffffffUL
+-	}
 -};
 -
--static struct s3c_audio_pdata s5p6450_i2s_pdata = {
--	.cfg_gpio = s5p6450_cfg_i2s,
-+static struct s3c_audio_pdata s5p64x0_i2s_pdata = {
-+	.cfg_gpio = s5p64x0_cfg_i2s,
-+	.type = {
-+		.i2s = {
-+			.quirks = QUIRK_PRI_6CHAN,
-+			.src_clk = rclksrc,
-+		},
-+	},
- };
+-EXPORT_SYMBOL(s3c_device_pcm);
+-
+ /* RTC */
  
- static struct resource s5p64x0_iis0_resource[] = {
-@@ -82,22 +69,22 @@ static struct resource s5p64x0_iis0_resource[] = {
- };
+ static struct resource s3c_rtc_resource[] = {
+diff --git a/arch/arm/plat-samsung/Makefile b/arch/arm/plat-samsung/Makefile
+index 4d8ff92..b97623a 100644
+--- a/arch/arm/plat-samsung/Makefile
++++ b/arch/arm/plat-samsung/Makefile
+@@ -17,6 +17,7 @@ obj-y				+= clock.o
+ obj-y				+= pwm-clock.o
+ obj-y				+= gpio.o
+ obj-y				+= gpio-config.o
++obj-y				+= dev-asocdma.o
  
- struct platform_device s5p6440_device_iis = {
--	.name		= "s3c64xx-iis-v4",
--	.id		= -1,
-+	.name		= "samsung-i2s",
-+	.id		= 0,
- 	.num_resources	= ARRAY_SIZE(s5p64x0_iis0_resource),
- 	.resource	= s5p64x0_iis0_resource,
- 	.dev = {
--		.platform_data = &s5p6440_i2s_pdata,
-+		.platform_data = &s5p64x0_i2s_pdata,
- 	},
- };
+ obj-$(CONFIG_SAMSUNG_GPIOLIB_4BIT)	+= gpiolib.o
+ obj-$(CONFIG_SAMSUNG_CLKSRC)	+= clock-clksrc.o
+diff --git a/arch/arm/plat-samsung/dev-asocdma.c b/arch/arm/plat-samsung/dev-asocdma.c
+new file mode 100644
+index 0000000..b7b1fca
+--- /dev/null
++++ b/arch/arm/plat-samsung/dev-asocdma.c
+@@ -0,0 +1,24 @@
++/* linux/arch/arm/plat-samsung/dev-asocdma.c
++ *
++ * Copyright (c) 2010 Samsung Electronics Co. Ltd
++ *	Jaswinder Singh <jassi.brar@samsung.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/platform_device.h>
++#include <linux/dma-mapping.h>
++
++static u64 audio_dmamask = DMA_BIT_MASK(32);
++
++struct platform_device samsung_asoc_dma = {
++	.name		  = "samsung-audio",
++	.id		  = -1,
++	.dev              = {
++		.dma_mask = &audio_dmamask,
++		.coherent_dma_mask = DMA_BIT_MASK(32),
++	}
++};
++EXPORT_SYMBOL(samsung_asoc_dma);
+diff --git a/arch/arm/plat-samsung/include/plat/devs.h b/arch/arm/plat-samsung/include/plat/devs.h
+index a9fecd6..21dfa68 100644
+--- a/arch/arm/plat-samsung/include/plat/devs.h
++++ b/arch/arm/plat-samsung/include/plat/devs.h
+@@ -32,7 +32,7 @@ extern struct platform_device s3c64xx_device_iisv4;
+ extern struct platform_device s3c64xx_device_spi0;
+ extern struct platform_device s3c64xx_device_spi1;
  
- struct platform_device s5p6450_device_iis0 = {
--	.name		= "s3c64xx-iis-v4",
--	.id		= -1,
-+	.name		= "samsung-i2s",
-+	.id		= 0,
- 	.num_resources	= ARRAY_SIZE(s5p64x0_iis0_resource),
- 	.resource	= s5p64x0_iis0_resource,
- 	.dev = {
--		.platform_data = &s5p6450_i2s_pdata,
-+		.platform_data = &s5p64x0_i2s_pdata,
- 	},
- };
+-extern struct platform_device s3c_device_pcm;
++extern struct platform_device samsung_asoc_dma;
  
+ extern struct platform_device s3c64xx_device_pcm0;
+ extern struct platform_device s3c64xx_device_pcm1;
 -- 
 1.6.2.5
