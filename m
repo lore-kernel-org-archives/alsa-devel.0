@@ -1,17 +1,17 @@
 From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCH 08/24] ASoC: Samsung: Generalize DMA driver
-	namespace
-Date: Fri, 22 Oct 2010 17:35:24 +0900
-Message-ID: <1287736524-12132-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: [PATCH 21/24] ASoC: SMDK64XX: Rename for other
+	platforms
+Date: Fri, 22 Oct 2010 17:39:48 +0900
+Message-ID: <1287736788-12557-1-git-send-email-jassisinghbrar@gmail.com>
 References: <1287736238-11846-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id A8160103B0F
+	by alsa0.perex.cz (Postfix) with ESMTP id 15B6324333
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Oct 2010 10:43:10 +0200 (CEST)
+	Fri, 22 Oct 2010 10:48:06 +0200 (CEST)
 In-Reply-To: <1287736238-11846-1-git-send-email-jassisinghbrar@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,351 +28,224 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jassi Brar <jassi.brar@samsung.com>
 
-Remove S3C,s3c from static defines.
-	s3c_dma_ -> dma_
-	s3c24xx_runtime_ -> runtime_
-	s3c24xx_audio_ -> audio_
-	s3c_preallocate_ -> preallocate_
-	s3c24xx_soc_platform -> samsung_asoc_platform
-	s3c24xx_pcm_driver -> asoc_dma_driver
-	snd_s3c24xx_pcm_ -> samsung_asoc_
+We plan to use the same ASoC Machine driver for most of
+latest SMDK platforms. So rename the 64XX specific driver
+to generic named.
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- sound/soc/s3c24xx/dma.c |  124 +++++++++++++++++++++++-----------------------
- 1 files changed, 62 insertions(+), 62 deletions(-)
+ sound/soc/s3c24xx/Kconfig                          |    6 +-
+ sound/soc/s3c24xx/Makefile                         |    4 +-
+ .../s3c24xx/{smdk64xx_wm8580.c => smdk_wm8580.c}   |   64 ++++++++++----------
+ 3 files changed, 37 insertions(+), 37 deletions(-)
+ rename sound/soc/s3c24xx/{smdk64xx_wm8580.c => smdk_wm8580.c} (78%)
 
-diff --git a/sound/soc/s3c24xx/dma.c b/sound/soc/s3c24xx/dma.c
-index b4c7c85..12622f3 100644
---- a/sound/soc/s3c24xx/dma.c
-+++ b/sound/soc/s3c24xx/dma.c
-@@ -32,7 +32,7 @@
+diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
+index 32f1877..95bdd0d 100644
+--- a/sound/soc/s3c24xx/Kconfig
++++ b/sound/soc/s3c24xx/Kconfig
+@@ -59,13 +59,13 @@ config SND_S3C24XX_SOC_JIVE_WM8750
+ 	help
+ 	  Sat Y if you want to add support for SoC audio on the Jive.
  
- #include "dma.h"
+-config SND_S3C64XX_SOC_WM8580
+-	tristate "SoC I2S Audio support for WM8580 on SMDK64XX"
++config SND_SOC_SMDK_WM8580
++	tristate "SoC I2S Audio support for WM8580 on SMDK"
+ 	depends on SND_S3C24XX_SOC && MACH_SMDK6410
+ 	select SND_SOC_WM8580
+ 	select SND_SAMSUNG_I2S
+ 	help
+-	  Say Y if you want to add support for SoC audio on the SMDK6410.
++	  Say Y if you want to add support for SoC audio on the SMDKs.
  
--static const struct snd_pcm_hardware s3c_dma_hardware = {
-+static const struct snd_pcm_hardware dma_hardware = {
- 	.info			= SNDRV_PCM_INFO_INTERLEAVED |
- 				    SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 				    SNDRV_PCM_INFO_MMAP |
-@@ -53,7 +53,7 @@ static const struct snd_pcm_hardware s3c_dma_hardware = {
- 	.fifo_size		= 32,
- };
- 
--struct s3c24xx_runtime_data {
-+struct runtime_data {
- 	spinlock_t lock;
- 	int state;
- 	unsigned int dma_loaded;
-@@ -65,14 +65,14 @@ struct s3c24xx_runtime_data {
- 	struct s3c_dma_params *params;
- };
- 
--/* s3c_dma_enqueue
-+/* dma_enqueue
+ config SND_S3C24XX_SOC_SMDK2443_WM9710
+ 	tristate "SoC AC97 Audio support for SMDK2443 - WM9710"
+diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/s3c24xx/Makefile
+index dac41ee..7eee57f 100644
+--- a/sound/soc/s3c24xx/Makefile
++++ b/sound/soc/s3c24xx/Makefile
+@@ -28,7 +28,7 @@ snd-soc-s3c24xx-simtec-objs := s3c24xx_simtec.o
+ snd-soc-s3c24xx-simtec-hermes-objs := s3c24xx_simtec_hermes.o
+ snd-soc-s3c24xx-simtec-tlv320aic23-objs := s3c24xx_simtec_tlv320aic23.o
+ snd-soc-rx1950-uda1380-objs := rx1950_uda1380.o
+-snd-soc-smdk64xx-wm8580-objs := smdk64xx_wm8580.o
++snd-soc-smdk-wm8580-objs := smdk_wm8580.o
+ snd-soc-smdk-wm9713-objs := smdk_wm9713.o
+ snd-soc-s3c64xx-smartq-wm8987-objs := smartq_wm8987.o
+ snd-soc-goni-wm8994-objs := goni_wm8994.o
+@@ -44,7 +44,7 @@ obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC) += snd-soc-s3c24xx-simtec.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC_HERMES) += snd-soc-s3c24xx-simtec-hermes.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC_TLV320AIC23) += snd-soc-s3c24xx-simtec-tlv320aic23.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_RX1950_UDA1380) += snd-soc-rx1950-uda1380.o
+-obj-$(CONFIG_SND_S3C64XX_SOC_WM8580) += snd-soc-smdk64xx-wm8580.o
++obj-$(CONFIG_SND_SOC_SMDK_WM8580) += snd-soc-smdk-wm8580.o
+ obj-$(CONFIG_SND_SOC_SMDK_WM9713) += snd-soc-smdk-wm9713.o
+ obj-$(CONFIG_SND_S3C64XX_SOC_SMARTQ) += snd-soc-s3c64xx-smartq-wm8987.o
+ obj-$(CONFIG_SND_SOC_SMDK_SPDIF) += snd-soc-smdk-spdif.o
+diff --git a/sound/soc/s3c24xx/smdk64xx_wm8580.c b/sound/soc/s3c24xx/smdk_wm8580.c
+similarity index 78%
+rename from sound/soc/s3c24xx/smdk64xx_wm8580.c
+rename to sound/soc/s3c24xx/smdk_wm8580.c
+index 5f51db0..bbd6c97 100644
+--- a/sound/soc/s3c24xx/smdk64xx_wm8580.c
++++ b/sound/soc/s3c24xx/smdk_wm8580.c
+@@ -1,5 +1,5 @@
+ /*
+- *  smdk64xx_wm8580.c
++ *  smdk_wm8580.c
   *
-  * place a dma buffer onto the queue for the dma system
-  * to handle.
- */
--static void s3c_dma_enqueue(struct snd_pcm_substream *substream)
-+static void dma_enqueue(struct snd_pcm_substream *substream)
- {
--	struct s3c24xx_runtime_data *prtd = substream->runtime->private_data;
-+	struct runtime_data *prtd = substream->runtime->private_data;
- 	dma_addr_t pos = prtd->dma_pos;
- 	unsigned int limit;
- 	int ret;
-@@ -113,12 +113,12 @@ static void s3c_dma_enqueue(struct snd_pcm_substream *substream)
- 	prtd->dma_pos = pos;
- }
+  *  Copyright (c) 2009 Samsung Electronics Co. Ltd
+  *  Author: Jaswinder Singh <jassi.brar@samsung.com>
+@@ -28,10 +28,10 @@
+  *   SMDK6410: Set CFG1 1-3 Off, CFG2 1-4 On
+  */
  
--static void s3c24xx_audio_buffdone(struct s3c2410_dma_chan *channel,
-+static void audio_buffdone(struct s3c2410_dma_chan *channel,
- 				void *dev_id, int size,
- 				enum s3c2410_dma_buffresult result)
- {
- 	struct snd_pcm_substream *substream = dev_id;
--	struct s3c24xx_runtime_data *prtd;
-+	struct runtime_data *prtd;
+-/* SMDK64XX has a 12MHZ crystal attached to WM8580 */
+-#define SMDK64XX_WM8580_FREQ 12000000
++/* SMDK has a 12MHZ crystal attached to WM8580 */
++#define SMDK_WM8580_FREQ 12000000
  
- 	pr_debug("Entered %s\n", __func__);
- 
-@@ -133,17 +133,17 @@ static void s3c24xx_audio_buffdone(struct s3c2410_dma_chan *channel,
- 	spin_lock(&prtd->lock);
- 	if (prtd->state & ST_RUNNING && !s3c_dma_has_circular()) {
- 		prtd->dma_loaded--;
--		s3c_dma_enqueue(substream);
-+		dma_enqueue(substream);
- 	}
- 
- 	spin_unlock(&prtd->lock);
- }
- 
--static int s3c_dma_hw_params(struct snd_pcm_substream *substream,
-+static int dma_hw_params(struct snd_pcm_substream *substream,
+-static int smdk64xx_hw_params(struct snd_pcm_substream *substream,
++static int smdk_hw_params(struct snd_pcm_substream *substream,
  	struct snd_pcm_hw_params *params)
  {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct s3c24xx_runtime_data *prtd = runtime->private_data;
-+	struct runtime_data *prtd = runtime->private_data;
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	unsigned long totbytes = params_buffer_bytes(params);
- 	struct s3c_dma_params *dma =
-@@ -182,7 +182,7 @@ static int s3c_dma_hw_params(struct snd_pcm_substream *substream,
- 	}
+@@ -103,7 +103,7 @@ static int smdk64xx_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
  
- 	s3c2410_dma_set_buffdone_fn(prtd->params->channel,
--				    s3c24xx_audio_buffdone);
-+				    audio_buffdone);
+ 	ret = snd_soc_dai_set_pll(codec_dai, WM8580_PLLA, 0,
+-					SMDK64XX_WM8580_FREQ, pll_out);
++					SMDK_WM8580_FREQ, pll_out);
+ 	if (ret < 0)
+ 		return ret;
  
- 	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
+@@ -116,20 +116,20 @@ static int smdk64xx_hw_params(struct snd_pcm_substream *substream,
+ }
  
-@@ -200,9 +200,9 @@ static int s3c_dma_hw_params(struct snd_pcm_substream *substream,
+ /*
+- * SMDK64XX WM8580 DAI operations.
++ * SMDK WM8580 DAI operations.
+  */
+-static struct snd_soc_ops smdk64xx_ops = {
+-	.hw_params = smdk64xx_hw_params,
++static struct snd_soc_ops smdk_ops = {
++	.hw_params = smdk_hw_params,
+ };
+ 
+-/* SMDK64xx Playback widgets */
++/* SMDK Playback widgets */
+ static const struct snd_soc_dapm_widget wm8580_dapm_widgets_pbk[] = {
+ 	SND_SOC_DAPM_HP("Front", NULL),
+ 	SND_SOC_DAPM_HP("Center+Sub", NULL),
+ 	SND_SOC_DAPM_HP("Rear", NULL),
+ };
+ 
+-/* SMDK64xx Capture widgets */
++/* SMDK Capture widgets */
+ static const struct snd_soc_dapm_widget wm8580_dapm_widgets_cpt[] = {
+ 	SND_SOC_DAPM_MIC("MicIn", NULL),
+ 	SND_SOC_DAPM_LINE("LineIn", NULL),
+@@ -160,11 +160,11 @@ static const struct snd_soc_dapm_route audio_map_rx[] = {
+ 	{"Rear", NULL, "VOUT3R"},
+ };
+ 
+-static int smdk64xx_wm8580_init_paiftx(struct snd_soc_pcm_runtime *rtd)
++static int smdk_wm8580_init_paiftx(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_codec *codec = rtd->codec;
+ 
+-	/* Add smdk64xx specific Capture widgets */
++	/* Add smdk specific Capture widgets */
+ 	snd_soc_dapm_new_controls(codec, wm8580_dapm_widgets_cpt,
+ 				  ARRAY_SIZE(wm8580_dapm_widgets_cpt));
+ 
+@@ -182,11 +182,11 @@ static int smdk64xx_wm8580_init_paiftx(struct snd_soc_pcm_runtime *rtd)
  	return 0;
  }
  
--static int s3c_dma_hw_free(struct snd_pcm_substream *substream)
-+static int dma_hw_free(struct snd_pcm_substream *substream)
+-static int smdk64xx_wm8580_init_paifrx(struct snd_soc_pcm_runtime *rtd)
++static int smdk_wm8580_init_paifrx(struct snd_soc_pcm_runtime *rtd)
  {
--	struct s3c24xx_runtime_data *prtd = substream->runtime->private_data;
-+	struct runtime_data *prtd = substream->runtime->private_data;
+ 	struct snd_soc_codec *codec = rtd->codec;
  
- 	pr_debug("Entered %s\n", __func__);
+-	/* Add smdk64xx specific Playback widgets */
++	/* Add smdk specific Playback widgets */
+ 	snd_soc_dapm_new_controls(codec, wm8580_dapm_widgets_pbk,
+ 				  ARRAY_SIZE(wm8580_dapm_widgets_pbk));
  
-@@ -217,9 +217,9 @@ static int s3c_dma_hw_free(struct snd_pcm_substream *substream)
+@@ -199,7 +199,7 @@ static int smdk64xx_wm8580_init_paifrx(struct snd_soc_pcm_runtime *rtd)
  	return 0;
  }
  
--static int s3c_dma_prepare(struct snd_pcm_substream *substream)
-+static int dma_prepare(struct snd_pcm_substream *substream)
+-static struct snd_soc_dai_link smdk64xx_dai[] = {
++static struct snd_soc_dai_link smdk_dai[] = {
+ { /* Primary Playback i/f */
+ 	.name = "WM8580 PAIF RX",
+ 	.stream_name = "Playback",
+@@ -207,8 +207,8 @@ static struct snd_soc_dai_link smdk64xx_dai[] = {
+ 	.codec_dai_name = "wm8580-hifi-playback",
+ 	.platform_name = "samsung-audio",
+ 	.codec_name = "wm8580-codec.0-001b",
+-	.init = smdk64xx_wm8580_init_paifrx,
+-	.ops = &smdk64xx_ops,
++	.init = smdk_wm8580_init_paifrx,
++	.ops = &smdk_ops,
+ },
+ { /* Primary Capture i/f */
+ 	.name = "WM8580 PAIF TX",
+@@ -217,37 +217,37 @@ static struct snd_soc_dai_link smdk64xx_dai[] = {
+ 	.codec_dai_name = "wm8580-hifi-capture",
+ 	.platform_name = "samsung-audio",
+ 	.codec_name = "wm8580-codec.0-001b",
+-	.init = smdk64xx_wm8580_init_paiftx,
+-	.ops = &smdk64xx_ops,
++	.init = smdk_wm8580_init_paiftx,
++	.ops = &smdk_ops,
+ },
+ };
+ 
+-static struct snd_soc_card smdk64xx = {
+-	.name = "SMDK64xx 5.1",
+-	.dai_link = smdk64xx_dai,
+-	.num_links = ARRAY_SIZE(smdk64xx_dai),
++static struct snd_soc_card smdk = {
++	.name = "SMDK-I2S",
++	.dai_link = smdk_dai,
++	.num_links = ARRAY_SIZE(smdk_dai),
+ };
+ 
+-static struct platform_device *smdk64xx_snd_device;
++static struct platform_device *smdk_snd_device;
+ 
+-static int __init smdk64xx_audio_init(void)
++static int __init smdk_audio_init(void)
  {
--	struct s3c24xx_runtime_data *prtd = substream->runtime->private_data;
-+	struct runtime_data *prtd = substream->runtime->private_data;
- 	int ret = 0;
+ 	int ret;
  
- 	pr_debug("Entered %s\n", __func__);
-@@ -250,14 +250,14 @@ static int s3c_dma_prepare(struct snd_pcm_substream *substream)
- 	prtd->dma_pos = prtd->dma_start;
- 
- 	/* enqueue dma buffers */
--	s3c_dma_enqueue(substream);
-+	dma_enqueue(substream);
- 
- 	return ret;
- }
- 
--static int s3c_dma_trigger(struct snd_pcm_substream *substream, int cmd)
-+static int dma_trigger(struct snd_pcm_substream *substream, int cmd)
- {
--	struct s3c24xx_runtime_data *prtd = substream->runtime->private_data;
-+	struct runtime_data *prtd = substream->runtime->private_data;
- 	int ret = 0;
- 
- 	pr_debug("Entered %s\n", __func__);
-@@ -290,10 +290,10 @@ static int s3c_dma_trigger(struct snd_pcm_substream *substream, int cmd)
- }
- 
- static snd_pcm_uframes_t
--s3c_dma_pointer(struct snd_pcm_substream *substream)
-+dma_pointer(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct s3c24xx_runtime_data *prtd = runtime->private_data;
-+	struct runtime_data *prtd = runtime->private_data;
- 	unsigned long res;
- 	dma_addr_t src, dst;
- 
-@@ -325,17 +325,17 @@ s3c_dma_pointer(struct snd_pcm_substream *substream)
- 	return bytes_to_frames(substream->runtime, res);
- }
- 
--static int s3c_dma_open(struct snd_pcm_substream *substream)
-+static int dma_open(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct s3c24xx_runtime_data *prtd;
-+	struct runtime_data *prtd;
- 
- 	pr_debug("Entered %s\n", __func__);
- 
- 	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
--	snd_soc_set_runtime_hwparams(substream, &s3c_dma_hardware);
-+	snd_soc_set_runtime_hwparams(substream, &dma_hardware);
- 
--	prtd = kzalloc(sizeof(struct s3c24xx_runtime_data), GFP_KERNEL);
-+	prtd = kzalloc(sizeof(struct runtime_data), GFP_KERNEL);
- 	if (prtd == NULL)
+-	smdk64xx_snd_device = platform_device_alloc("soc-audio", -1);
+-	if (!smdk64xx_snd_device)
++	smdk_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!smdk_snd_device)
  		return -ENOMEM;
  
-@@ -345,22 +345,22 @@ static int s3c_dma_open(struct snd_pcm_substream *substream)
- 	return 0;
- }
+-	platform_set_drvdata(smdk64xx_snd_device, &smdk64xx);
+-	ret = platform_device_add(smdk64xx_snd_device);
++	platform_set_drvdata(smdk_snd_device, &smdk);
++	ret = platform_device_add(smdk_snd_device);
  
--static int s3c_dma_close(struct snd_pcm_substream *substream)
-+static int dma_close(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct s3c24xx_runtime_data *prtd = runtime->private_data;
-+	struct runtime_data *prtd = runtime->private_data;
+ 	if (ret)
+-		platform_device_put(smdk64xx_snd_device);
++		platform_device_put(smdk_snd_device);
  
- 	pr_debug("Entered %s\n", __func__);
- 
- 	if (!prtd)
--		pr_debug("s3c_dma_close called with prtd == NULL\n");
-+		pr_debug("dma_close called with prtd == NULL\n");
- 
- 	kfree(prtd);
- 
- 	return 0;
- }
- 
--static int s3c_dma_mmap(struct snd_pcm_substream *substream,
-+static int dma_mmap(struct snd_pcm_substream *substream,
- 	struct vm_area_struct *vma)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -373,23 +373,23 @@ static int s3c_dma_mmap(struct snd_pcm_substream *substream,
- 				     runtime->dma_bytes);
- }
- 
--static struct snd_pcm_ops s3c_dma_ops = {
--	.open		= s3c_dma_open,
--	.close		= s3c_dma_close,
-+static struct snd_pcm_ops dma_ops = {
-+	.open		= dma_open,
-+	.close		= dma_close,
- 	.ioctl		= snd_pcm_lib_ioctl,
--	.hw_params	= s3c_dma_hw_params,
--	.hw_free	= s3c_dma_hw_free,
--	.prepare	= s3c_dma_prepare,
--	.trigger	= s3c_dma_trigger,
--	.pointer	= s3c_dma_pointer,
--	.mmap		= s3c_dma_mmap,
-+	.hw_params	= dma_hw_params,
-+	.hw_free	= dma_hw_free,
-+	.prepare	= dma_prepare,
-+	.trigger	= dma_trigger,
-+	.pointer	= dma_pointer,
-+	.mmap		= dma_mmap,
- };
- 
--static int s3c_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
-+static int preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
- {
- 	struct snd_pcm_substream *substream = pcm->streams[stream].substream;
- 	struct snd_dma_buffer *buf = &substream->dma_buffer;
--	size_t size = s3c_dma_hardware.buffer_bytes_max;
-+	size_t size = dma_hardware.buffer_bytes_max;
- 
- 	pr_debug("Entered %s\n", __func__);
- 
-@@ -404,7 +404,7 @@ static int s3c_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
- 	return 0;
- }
- 
--static void s3c_dma_free_dma_buffers(struct snd_pcm *pcm)
-+static void dma_free_dma_buffers(struct snd_pcm *pcm)
- {
- 	struct snd_pcm_substream *substream;
- 	struct snd_dma_buffer *buf;
-@@ -427,9 +427,9 @@ static void s3c_dma_free_dma_buffers(struct snd_pcm *pcm)
- 	}
- }
- 
--static u64 s3c_dma_mask = DMA_BIT_MASK(32);
-+static u64 dma_mask = DMA_BIT_MASK(32);
- 
--static int s3c_dma_new(struct snd_card *card,
-+static int dma_new(struct snd_card *card,
- 	struct snd_soc_dai *dai, struct snd_pcm *pcm)
- {
- 	int ret = 0;
-@@ -437,19 +437,19 @@ static int s3c_dma_new(struct snd_card *card,
- 	pr_debug("Entered %s\n", __func__);
- 
- 	if (!card->dev->dma_mask)
--		card->dev->dma_mask = &s3c_dma_mask;
-+		card->dev->dma_mask = &dma_mask;
- 	if (!card->dev->coherent_dma_mask)
- 		card->dev->coherent_dma_mask = 0xffffffff;
- 
- 	if (dai->driver->playback.channels_min) {
--		ret = s3c_preallocate_dma_buffer(pcm,
-+		ret = preallocate_dma_buffer(pcm,
- 			SNDRV_PCM_STREAM_PLAYBACK);
- 		if (ret)
- 			goto out;
- 	}
- 
- 	if (dai->driver->capture.channels_min) {
--		ret = s3c_preallocate_dma_buffer(pcm,
-+		ret = preallocate_dma_buffer(pcm,
- 			SNDRV_PCM_STREAM_CAPTURE);
- 		if (ret)
- 			goto out;
-@@ -458,46 +458,46 @@ out:
  	return ret;
  }
+-module_init(smdk64xx_audio_init);
++module_init(smdk_audio_init);
  
--static struct snd_soc_platform_driver s3c24xx_soc_platform = {
--	.ops		= &s3c_dma_ops,
--	.pcm_new	= s3c_dma_new,
--	.pcm_free	= s3c_dma_free_dma_buffers,
-+static struct snd_soc_platform_driver samsung_asoc_platform = {
-+	.ops		= &dma_ops,
-+	.pcm_new	= dma_new,
-+	.pcm_free	= dma_free_dma_buffers,
- };
- 
--static int __devinit s3c24xx_soc_platform_probe(struct platform_device *pdev)
-+static int __devinit samsung_asoc_platform_probe(struct platform_device *pdev)
- {
--	return snd_soc_register_platform(&pdev->dev, &s3c24xx_soc_platform);
-+	return snd_soc_register_platform(&pdev->dev, &samsung_asoc_platform);
- }
- 
--static int __devexit s3c24xx_soc_platform_remove(struct platform_device *pdev)
-+static int __devexit samsung_asoc_platform_remove(struct platform_device *pdev)
- {
- 	snd_soc_unregister_platform(&pdev->dev);
- 	return 0;
- }
- 
--static struct platform_driver s3c24xx_pcm_driver = {
-+static struct platform_driver asoc_dma_driver = {
- 	.driver = {
- 		.name = "samsung-audio",
- 		.owner = THIS_MODULE,
- 	},
- 
--	.probe = s3c24xx_soc_platform_probe,
--	.remove = __devexit_p(s3c24xx_soc_platform_remove),
-+	.probe = samsung_asoc_platform_probe,
-+	.remove = __devexit_p(samsung_asoc_platform_remove),
- };
- 
--static int __init snd_s3c24xx_pcm_init(void)
-+static int __init samsung_asoc_init(void)
- {
--	return platform_driver_register(&s3c24xx_pcm_driver);
-+	return platform_driver_register(&asoc_dma_driver);
- }
--module_init(snd_s3c24xx_pcm_init);
-+module_init(samsung_asoc_init);
- 
--static void __exit snd_s3c24xx_pcm_exit(void)
-+static void __exit samsung_asoc_exit(void)
- {
--	platform_driver_unregister(&s3c24xx_pcm_driver);
-+	platform_driver_unregister(&asoc_dma_driver);
- }
--module_exit(snd_s3c24xx_pcm_exit);
-+module_exit(samsung_asoc_exit);
- 
- MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
--MODULE_DESCRIPTION("Samsung S3C Audio DMA module");
-+MODULE_DESCRIPTION("Samsung ASoC DMA Driver");
+ MODULE_AUTHOR("Jaswinder Singh, jassi.brar@samsung.com");
+-MODULE_DESCRIPTION("ALSA SoC SMDK64XX WM8580");
++MODULE_DESCRIPTION("ALSA SoC SMDK WM8580");
  MODULE_LICENSE("GPL");
- MODULE_ALIAS("platform:samsung-audio");
 -- 
 1.6.2.5
