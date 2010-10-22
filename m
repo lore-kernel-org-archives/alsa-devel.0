@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 00/25] ASoC: Overhaul Samsung drivers
-Date: Thu, 21 Oct 2010 21:59:28 -0700
-Message-ID: <20101022045927.GA16016@opensource.wolfsonmicro.com>
-References: <1287471805-17952-1-git-send-email-jassisinghbrar@gmail.com>
+From: Florian Faber <faber@faberman.de>
+Subject: Re: RME MADIface 192 kHz problem
+Date: Fri, 22 Oct 2010 07:09:26 +0200
+Message-ID: <4CC11C86.6090204@faberman.de>
+References: <4CC03A21.2050406@ifi.uio.no>	<4CC049F2.1050707@faberman.de>
+	<s5h1v7jclqd.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4CBAD10381D
+Received: from india820.server4you.de (india820.server4you.de [85.25.152.101])
+	by alsa0.perex.cz (Postfix) with ESMTP id 83AA9103833
 	for <alsa-devel@alsa-project.org>;
-	Fri, 22 Oct 2010 06:59:24 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1287471805-17952-1-git-send-email-jassisinghbrar@gmail.com>
+	Fri, 22 Oct 2010 07:09:32 +0200 (CEST)
+In-Reply-To: <s5h1v7jclqd.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, june.bae@samsung.com, lrg@slimlogic.co.uk, sw.youn@samsung.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 19, 2010 at 04:03:25PM +0900, Jassi Brar wrote:
+Takashi,
 
-> Here come patches overhauling the Samsung ASoC support.
+>>> What is needed to get this card running at 192 kHz?
+>> A working driver :)
+>>
+>> http://wiki.linuxproaudio.org/index.php/Driver:hdspe
+> How about posting the patches? :)
 
-So, this all looks sensible enough to me - I've nothing extra apart
-from what I mailed out before.  I guess we'll need a revision 2 of the
-series but I think that's likely to be something that can be merged if
-Liam and Kukjin don't have any big issues.
+It would be dozens/hundreds of single patches against the hdspm driver.
+I'd rather replace it with the version above. And I changed one ioctl
+which would break compatibility - although I doubt anybody used the
+levelmeter ioctl besides me. The version above is a 'public beta'.
+
+If the support for the AIO/RayDAT finally works - sure. But for that I
+still need to tell ALSA somehow that there are n buffers to use, n>2,
+with n IRQs per buffer cycle.
+
+
+Flo
+-- 
+Machines can do the work, so people have time to think.
+public key DA43FEF4          x-hkp://wwwkeys.eu.pgp.net
