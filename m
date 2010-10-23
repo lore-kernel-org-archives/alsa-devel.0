@@ -1,21 +1,27 @@
-From: Kyungmin Park <kmpark@infradead.org>
-Subject: Re: [PATCH 23/24] ASoC: Samsung: Generalize Kconfig
-	symbols
-Date: Sat, 23 Oct 2010 10:43:03 +0900
-Message-ID: <AANLkTinf6NsKGXniVtqqfTYWugwmCT1Rs6gi=Tg19s4K@mail.gmail.com>
-References: <1287736238-11846-1-git-send-email-jassisinghbrar@gmail.com>
-	<1287736812-12621-1-git-send-email-jassisinghbrar@gmail.com>
+From: Alex <lee188@singnet.com.sg>
+Subject: Re: SoC Atmel SSC stereo problem
+Date: Sat, 23 Oct 2010 04:10:22 +0000 (UTC)
+Message-ID: <loom.20101023T054800-433@post.gmane.org>
+References: <4CC1AB01.3020603@fh-kl.de> <4CC1B7CD.3030703@ladisch.de>
+	<4CC20475.3020900@fh-kl.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3936710380B
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7177A1037F3
 	for <alsa-devel@alsa-project.org>;
-	Sat, 23 Oct 2010 03:43:06 +0200 (CEST)
-Received: by wwb18 with SMTP id 18so1481783wwb.20
-	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2010 18:43:05 -0700 (PDT)
-In-Reply-To: <1287736812-12621-1-git-send-email-jassisinghbrar@gmail.com>
+	Sat, 23 Oct 2010 06:10:34 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1P9VRB-0002gS-JG
+	for alsa-devel@alsa-project.org; Sat, 23 Oct 2010 06:10:33 +0200
+Received: from 220.255.7.137 ([220.255.7.137])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2010 06:10:33 +0200
+Received: from lee188 by 220.255.7.137 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2010 06:10:33 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,309 +31,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, Jassi Brar <jassi.brar@samsung.com>, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org, june.bae@samsung.com, sw.youn@samsung.com, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-How about change the depends as PLAT_SAMSUNG also?
-On Oct 22, 2010 5:49 PM, "Jassi Brar" <jassisinghbrar@gmail.com> wrote:
-> From: Jassi Brar <jassi.brar@samsung.com>
->
-> Move prefixes to repesent the nature of Samsung ASoC suitably.
-> SND_S3C24XX_SOC -> ASOC_SAMSUNG
-> SND_S3C_SOC_PCM -> SND_SAMSUNG_PCM
-> SND_S3C_SOC_AC97 -> SND_SAMSUNG_AC97
-> SND_S5P_SOC_SPDIF -> SND_SAMSUNG_SPDIF
-> SND_S3C24XX_SOC_I2S -> SND_S3C24XX_I2S
-> SND_S3C64XX_SOC_SMARTQ -> ASOC_SMARTQ
-> SND_SOC_SMDK_SPDIF -> ASOC_SAMSUNG_SMDK_SPDIF
-> SND_SOC_SMDK_WM8580 -> ASOC_SAMSUNG_SMDK_WM8580
-> SND_SOC_SMDK_WM9713 -> ASOC_SAMSUNG_SMDK_WM9713
-> SND_SOC_GONI_AQUILA_WM8994 -> ASOC_GONI_AQUILA_WM8994
->
-> Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
-> ---
-> sound/soc/s3c24xx/Kconfig | 96
-++++++++++++++++++++++----------------------
-> sound/soc/s3c24xx/Makefile | 40 +++++++++---------
-> 2 files changed, 68 insertions(+), 68 deletions(-)
->
-> diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
-> index 4fabd62..140095e 100644
-> --- a/sound/soc/s3c24xx/Kconfig
-> +++ b/sound/soc/s3c24xx/Kconfig
-> @@ -1,13 +1,13 @@
-> -config SND_S3C24XX_SOC
-> - tristate "SoC Audio for the Samsung S3CXXXX chips"
-> +config ASOC_SAMSUNG
-> + tristate "ASoC support for Samsung"
-> depends on ARCH_S3C2410 || ARCH_S3C64XX || ARCH_S5PC100 || ARCH_S5PV210
-> select S3C64XX_DMA if ARCH_S3C64XX
-> help
-> Say Y or M if you want to add support for codecs attached to
-> - the S3C24XX AC97 or I2S interfaces. You will also need to
-> + the Samsung SoCs' Audio interfaces. You will also need to
-> select the audio interfaces to support below.
->
-> -config SND_S3C24XX_SOC_I2S
-> +config SND_S3C24XX_I2S
-> tristate
-> select S3C2410_DMA
->
-> @@ -19,136 +19,136 @@ config SND_S3C2412_SOC_I2S
-> select SND_S3C_I2SV2_SOC
-> select S3C2410_DMA
->
-> -config SND_S3C_SOC_PCM
-> +config SND_SAMSUNG_PCM
-> tristate
->
-> -config SND_S3C_SOC_AC97
-> +config SND_SAMSUNG_AC97
-> tristate
-> select SND_SOC_AC97_BUS
->
-> -config SND_S5P_SOC_SPDIF
-> +config SND_SAMSUNG_SPDIF
-> tristate
-> select SND_SOC_SPDIF
->
-> config SND_SAMSUNG_I2S
-> tristate
->
-> -config SND_S3C24XX_SOC_NEO1973_WM8753
-> +config ASOC_SAMSUNG_NEO1973_WM8753
-> tristate "SoC I2S Audio support for NEO1973 - WM8753"
-> - depends on SND_S3C24XX_SOC && MACH_NEO1973_GTA01
-> - select SND_S3C24XX_SOC_I2S
-> + depends on ASOC_SAMSUNG && MACH_NEO1973_GTA01
-> + select SND_S3C24XX_I2S
-> select SND_SOC_WM8753
-> help
-> Say Y if you want to add support for SoC audio on smdk2440
-> with the WM8753.
->
-> -config SND_S3C24XX_SOC_NEO1973_GTA02_WM8753
-> +config ASOC_SAMSUNG_NEO1973_GTA02_WM8753
-> tristate "Audio support for the Openmoko Neo FreeRunner (GTA02)"
-> - depends on SND_S3C24XX_SOC && MACH_NEO1973_GTA02
-> - select SND_S3C24XX_SOC_I2S
-> + depends on ASOC_SAMSUNG && MACH_NEO1973_GTA02
-> + select SND_S3C24XX_I2S
-> select SND_SOC_WM8753
-> help
-> This driver provides audio support for the Openmoko Neo FreeRunner
-> smartphone.
->
-> -config SND_S3C24XX_SOC_JIVE_WM8750
-> +config ASOC_SAMSUNG_JIVE_WM8750
-> tristate "SoC I2S Audio support for Jive"
-> - depends on SND_S3C24XX_SOC && MACH_JIVE
-> + depends on ASOC_SAMSUNG && MACH_JIVE
-> select SND_SOC_WM8750
-> select SND_S3C2412_SOC_I2S
-> help
-> Sat Y if you want to add support for SoC audio on the Jive.
->
-> -config SND_SOC_SMDK_WM8580
-> +config ASOC_SAMSUNG_SMDK_WM8580
-> tristate "SoC I2S Audio support for WM8580 on SMDK"
-> - depends on SND_S3C24XX_SOC && (MACH_SMDK6410 || MACH_SMDKC100)
-> + depends on ASOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100)
-> select SND_SOC_WM8580
-> select SND_SAMSUNG_I2S
-> help
-> Say Y if you want to add support for SoC audio on the SMDKs.
->
-> -config SND_S3C24XX_SOC_SMDK2443_WM9710
-> +config ASOC_SAMSUNG_SMDK2443_WM9710
-> tristate "SoC AC97 Audio support for SMDK2443 - WM9710"
-> - depends on SND_S3C24XX_SOC && MACH_SMDK2443
-> + depends on ASOC_SAMSUNG && MACH_SMDK2443
-> select S3C2410_DMA
-> select AC97_BUS
-> select SND_SOC_AC97_CODEC
-> - select SND_S3C_SOC_AC97
-> + select SND_SAMSUNG_AC97
-> help
-> Say Y if you want to add support for SoC audio on smdk2443
-> with the WM9710.
->
-> -config SND_S3C24XX_SOC_LN2440SBC_ALC650
-> +config ASOC_SAMSUNG_LN2440SBC_ALC650
-> tristate "SoC AC97 Audio support for LN2440SBC - ALC650"
-> - depends on SND_S3C24XX_SOC && ARCH_S3C2410
-> + depends on ASOC_SAMSUNG && ARCH_S3C2410
-> select S3C2410_DMA
-> select AC97_BUS
-> select SND_SOC_AC97_CODEC
-> - select SND_S3C_SOC_AC97
-> + select SND_SAMSUNG_AC97
-> help
-> Say Y if you want to add support for SoC audio on ln2440sbc
-> with the ALC650.
->
-> -config SND_S3C24XX_SOC_S3C24XX_UDA134X
-> +config ASOC_SAMSUNG_S3C24XX_UDA134X
-> tristate "SoC I2S Audio support UDA134X wired to a S3C24XX"
-> - depends on SND_S3C24XX_SOC && ARCH_S3C2410
-> - select SND_S3C24XX_SOC_I2S
-> + depends on ASOC_SAMSUNG && ARCH_S3C2410
-> + select SND_S3C24XX_I2S
-> select SND_SOC_L3
-> - select SND_SOC_UDA134X
-> + select SND_SOC_UDA134X
->
-> -config SND_S3C24XX_SOC_SIMTEC
-> +config ASOC_SAMSUNG_SIMTEC
-> tristate
-> help
-> Internal node for common S3C24XX/Simtec suppor
->
-> -config SND_S3C24XX_SOC_SIMTEC_TLV320AIC23
-> +config ASOC_SAMSUNG_SIMTEC_TLV320AIC23
-> tristate "SoC I2S Audio support for TLV320AIC23 on Simtec boards"
-> - depends on SND_S3C24XX_SOC && ARCH_S3C2410
-> - select SND_S3C24XX_SOC_I2S
-> + depends on ASOC_SAMSUNG && ARCH_S3C2410
-> + select SND_S3C24XX_I2S
-> select SND_SOC_TLV320AIC23
-> - select SND_S3C24XX_SOC_SIMTEC
-> + select ASOC_SAMSUNG_SIMTEC
->
-> -config SND_S3C24XX_SOC_SIMTEC_HERMES
-> +config ASOC_SAMSUNG_SIMTEC_HERMES
-> tristate "SoC I2S Audio support for Simtec Hermes board"
-> - depends on SND_S3C24XX_SOC && ARCH_S3C2410
-> - select SND_S3C24XX_SOC_I2S
-> + depends on ASOC_SAMSUNG && ARCH_S3C2410
-> + select SND_S3C24XX_I2S
-> select SND_SOC_TLV320AIC3X
-> - select SND_S3C24XX_SOC_SIMTEC
-> + select ASOC_SAMSUNG_SIMTEC
->
-> -config SND_S3C24XX_SOC_RX1950_UDA1380
-> +config ASOC_SAMSUNG_RX1950_UDA1380
-> tristate "Audio support for the HP iPAQ RX1950"
-> - depends on SND_S3C24XX_SOC && MACH_RX1950
-> - select SND_S3C24XX_SOC_I2S
-> + depends on ASOC_SAMSUNG && MACH_RX1950
-> + select SND_S3C24XX_I2S
-> select SND_SOC_UDA1380
-> help
-> This driver provides audio support for HP iPAQ RX1950 PDA.
->
-> -config SND_SOC_SMDK_WM9713
-> +config ASOC_SAMSUNG_SMDK_WM9713
-> tristate "SoC AC97 Audio support for SMDK with WM9713"
-> - depends on SND_S3C24XX_SOC && (MACH_SMDK6410 || MACH_SMDKC100 ||
-MACH_SMDKV210 || MACH_SMDKC110)
-> + depends on ASOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 ||
-MACH_SMDKV210 || MACH_SMDKC110)
-> select SND_SOC_WM9713
-> - select SND_S3C_SOC_AC97
-> + select SND_SAMSUNG_AC97
-> help
-> Sat Y if you want to add support for SoC audio on the SMDK.
->
-> -config SND_S3C64XX_SOC_SMARTQ
-> +config ASOC_SMARTQ
-> tristate "SoC I2S Audio support for SmartQ board"
-> - depends on SND_S3C24XX_SOC && MACH_SMARTQ
-> + depends on ASOC_SAMSUNG && MACH_SMARTQ
-> select SND_SAMSUNG_I2S
-> select SND_SOC_WM8750
->
-> -config SND_SOC_GONI_AQUILA_WM8994
-> +config ASOC_GONI_AQUILA_WM8994
-> tristate "SoC I2S Audio support for AQUILA/GONI - WM8994"
-> - depends on SND_S3C24XX_SOC && (MACH_GONI || MACH_AQUILA)
-> + depends on ASOC_SAMSUNG && (MACH_GONI || MACH_AQUILA)
-> select SND_SAMSUNG_I2S
-> select SND_SOC_WM8994
-> help
-> Say Y if you want to add support for SoC audio on goni or aquila
-> with the WM8994.
->
-> -config SND_SOC_SMDK_SPDIF
-> +config ASOC_SAMSUNG_SMDK_SPDIF
-> tristate "SoC S/PDIF Audio support for SMDK"
-> depends on SND_S3C24XX_SOC && (MACH_SMDKC100 || MACH_SMDKC110 ||
-MACH_SMDKV210)
-> - select SND_S5P_SOC_SPDIF
-> + select SND_SAMSUNG_SPDIF
-> help
-> Say Y if you want to add support for SoC S/PDIF audio on the SMDK.
-> diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/s3c24xx/Makefile
-> index 7eee57f..0d24f95 100644
-> --- a/sound/soc/s3c24xx/Makefile
-> +++ b/sound/soc/s3c24xx/Makefile
-> @@ -8,13 +8,13 @@ snd-soc-samsung-spdif-objs := spdif.o
-> snd-soc-pcm-objs := pcm.o
-> snd-soc-i2s-objs := i2s.o
->
-> -obj-$(CONFIG_SND_S3C24XX_SOC) += snd-soc-s3c24xx.o
-> -obj-$(CONFIG_SND_S3C24XX_SOC_I2S) += snd-soc-s3c24xx-i2s.o
-> -obj-$(CONFIG_SND_S3C_SOC_AC97) += snd-soc-ac97.o
-> +obj-$(CONFIG_ASOC_SAMSUNG) += snd-soc-s3c24xx.o
-> +obj-$(CONFIG_SND_S3C24XX_I2S) += snd-soc-s3c24xx-i2s.o
-> +obj-$(CONFIG_SND_SAMSUNG_AC97) += snd-soc-ac97.o
-> obj-$(CONFIG_SND_S3C2412_SOC_I2S) += snd-soc-s3c2412-i2s.o
-> obj-$(CONFIG_SND_S3C_I2SV2_SOC) += snd-soc-s3c-i2s-v2.o
-> -obj-$(CONFIG_SND_S5P_SOC_SPDIF) += snd-soc-samsung-spdif.o
-> -obj-$(CONFIG_SND_S3C_SOC_PCM) += snd-soc-pcm.o
-> +obj-$(CONFIG_SND_SAMSUNG_SPDIF) += snd-soc-samsung-spdif.o
-> +obj-$(CONFIG_SND_SAMSUNG_PCM) += snd-soc-pcm.o
-> obj-$(CONFIG_SND_SAMSUNG_I2S) += snd-soc-i2s.o
->
-> # S3C24XX Machine Support
-> @@ -34,18 +34,18 @@ snd-soc-s3c64xx-smartq-wm8987-objs := smartq_wm8987.o
-> snd-soc-goni-wm8994-objs := goni_wm8994.o
-> snd-soc-smdk-spdif-objs := smdk_spdif.o
->
-> -obj-$(CONFIG_SND_S3C24XX_SOC_JIVE_WM8750) += snd-soc-jive-wm8750.o
-> -obj-$(CONFIG_SND_S3C24XX_SOC_NEO1973_WM8753) += snd-soc-neo1973-wm8753.o
-> -obj-$(CONFIG_SND_S3C24XX_SOC_NEO1973_GTA02_WM8753) +=
-snd-soc-neo1973-gta02-wm8753.o
-> -obj-$(CONFIG_SND_S3C24XX_SOC_SMDK2443_WM9710) +=
-snd-soc-smdk2443-wm9710.o
-> -obj-$(CONFIG_SND_S3C24XX_SOC_LN2440SBC_ALC650) +=
-snd-soc-ln2440sbc-alc650.o
-> -obj-$(CONFIG_SND_S3C24XX_SOC_S3C24XX_UDA134X) +=
-snd-soc-s3c24xx-uda134x.o
-> -obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC) += snd-soc-s3c24xx-simtec.o
-> -obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC_HERMES) +=
-snd-soc-s3c24xx-simtec-hermes.o
-> -obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC_TLV320AIC23) +=
-snd-soc-s3c24xx-simtec-tlv320aic23.o
-> -obj-$(CONFIG_SND_S3C24XX_SOC_RX1950_UDA1380) += snd-soc-rx1950-uda1380.o
-> -obj-$(CONFIG_SND_SOC_SMDK_WM8580) += snd-soc-smdk-wm8580.o
-> -obj-$(CONFIG_SND_SOC_SMDK_WM9713) += snd-soc-smdk-wm9713.o
-> -obj-$(CONFIG_SND_S3C64XX_SOC_SMARTQ) += snd-soc-s3c64xx-smartq-wm8987.o
-> -obj-$(CONFIG_SND_SOC_SMDK_SPDIF) += snd-soc-smdk-spdif.o
-> -obj-$(CONFIG_SND_SOC_GONI_AQUILA_WM8994) += snd-soc-goni-wm8994.o
-> +obj-$(CONFIG_ASOC_SAMSUNG_JIVE_WM8750) += snd-soc-jive-wm8750.o
-> +obj-$(CONFIG_ASOC_SAMSUNG_NEO1973_WM8753) += snd-soc-neo1973-wm8753.o
-> +obj-$(CONFIG_ASOC_SAMSUNG_NEO1973_GTA02_WM8753) +=
-snd-soc-neo1973-gta02-wm8753.o
-> +obj-$(CONFIG_ASOC_SAMSUNG_SMDK2443_WM9710) += snd-soc-smdk2443-wm9710.o
-> +obj-$(CONFIG_ASOC_SAMSUNG_LN2440SBC_ALC650) += snd-soc-ln2440sbc-alc650.o
-> +obj-$(CONFIG_ASOC_SAMSUNG_S3C24XX_UDA134X) += snd-soc-s3c24xx-uda134x.o
-> +obj-$(CONFIG_ASOC_SAMSUNG_SIMTEC) += snd-soc-s3c24xx-simtec.o
-> +obj-$(CONFIG_ASOC_SAMSUNG_SIMTEC_HERMES) +=
-snd-soc-s3c24xx-simtec-hermes.o
-> +obj-$(CONFIG_ASOC_SAMSUNG_SIMTEC_TLV320AIC23) +=
-snd-soc-s3c24xx-simtec-tlv320aic23.o
-> +obj-$(CONFIG_ASOC_SAMSUNG_RX1950_UDA1380) += snd-soc-rx1950-uda1380.o
-> +obj-$(CONFIG_ASOC_SAMSUNG_SMDK_WM8580) += snd-soc-smdk-wm8580.o
-> +obj-$(CONFIG_ASOC_SAMSUNG_SMDK_WM9713) += snd-soc-smdk-wm9713.o
-> +obj-$(CONFIG_ASOC_SMARTQ) += snd-soc-s3c64xx-smartq-wm8987.o
-> +obj-$(CONFIG_ASOC_SAMSUNG_SMDK_SPDIF) += snd-soc-smdk-spdif.o
-> +obj-$(CONFIG_ASOC_GONI_AQUILA_WM8994) += snd-soc-goni-wm8994.o
-> --
-> 1.6.2.5
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Patrick Ziegler <patrick.ziegler <at> fh-kl.de> writes:
+
+> The SSC is connected to a FPGA that assigns the bus to different devices 
+> depending on the application. And for all applications the FPGA 
+> generates the clocks. Maybe this is not the best solution but I will try 
+> to deal with this limitation first before I try to persuade other people 
+> to change it.
+> 
+
+Hi Patrick,
+
+It looks like you are running the SSC TX in slave mode, with both the SCLK (the 
+i2S clock) and LRCK provided by your FPGA.  It is trickier to prevent channel 
+inversion in this mode.
+
+One possible approach is to:
+
+(1)  test for the LRCK level with a gpio pin connected to the LRCK.  This should 
+normally be the same pin assigned to TX_FRAME_SYNC.  After any USB set interface 
+to the alternate setting for playback of your active device, or after any 
+sampling rate change etc., you re-sync the transfer to the correct LRCK edge:
+
+        pdca_disable(PDCA_CHANNEL_SSC_TX);
+
+        // reset the audio buffer pointers to the start of the LEFT channel etc
+        // if required
+
+    	// re-sync SSC to LRCK
+        // Wait for the next frame synchronization event
+        // to avoid channel inversion.  Start with left channel - FS goes low
+
+	while (!gpio_get_pin_value(_LRCK));
+	while (gpio_get_pin_value(LRCK));	
+        // exit when FS goes low
+
+        // Enable now the transfer.
+        pdca_enable(PDCA_CHANNEL_SSC_TX);
+
+(2)  start clocking data out at any LRCK edge after a suitable delay (of 1 
+SCLK).  You may need to use LRCK level change rather than any edge depending on 
+the hardware timing.  The delay may also need to be adjusted depending on 
+hardware timing.
+
+(3)  clock out one sample (either left or right) per LRCK edge (or level).
+
+Of course, if you are running the SSC in master mode, there are easier ways to 
+ensure channel synchronization :-)
+
+The above suggestion is extrapolated from my project using the AT32UC3A3 which 
+has a similar (more capable) SSC as the AT91.  So it may or may not work for 
+you.
+
+Alex
