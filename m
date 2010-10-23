@@ -1,22 +1,17 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/2] ASoC: tlv320dac33: Use usleep_range
-	for delays
-Date: Sat, 23 Oct 2010 14:43:57 +0100
-Message-ID: <1287841437.7486.0.camel@odin>
-References: <1287749481-12203-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1287749481-12203-2-git-send-email-peter.ujfalusi@nokia.com>
-	<20101022153225.GC16521@opensource.wolfsonmicro.com>
+Subject: [GIT PULL] ASoC updates for-2.6.37
+Date: Sat, 23 Oct 2010 15:42:43 +0100
+Message-ID: <1287844963.7486.51.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id BE15424460
+Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id EEB1724499
 	for <alsa-devel@alsa-project.org>;
-	Sat, 23 Oct 2010 15:44:02 +0200 (CEST)
-Received: by wye20 with SMTP id 20so1876683wye.38
-	for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2010 06:44:02 -0700 (PDT)
-In-Reply-To: <20101022153225.GC16521@opensource.wolfsonmicro.com>
+	Sat, 23 Oct 2010 16:42:46 +0200 (CEST)
+Received: by wwi14 with SMTP id 14so644051wwi.2
+	for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2010 07:42:45 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,27 +21,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-10-22 at 08:32 -0700, Mark Brown wrote:
-> On Fri, Oct 22, 2010 at 03:11:20PM +0300, Peter Ujfalusi wrote:
-> > Switch to use the more precise usleep_range instead of
-> > msleep().
-> > Replace the udelay with usleep_range to remove the busy loop
-> > waiting.
-> > 
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> 
-> Acked-by: Mark Borwn <broonie@opensource.wolfsonmicro.com>
-
-Applied.
+Some final updates prior to the ALSA pull request.
 
 Thanks
 
 Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+
+---
+
+
+The following changes since commit ad5e4655f9a920b1cc13972e0389eaf9e0ba10b3:
+
+  ASoC: remove duplicated include for nuc900 (2010-10-05 19:26:00 -0700)
+
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.37
+
+Jarkko Nikula (1):
+      ASoC: omap: Remove needless prints from machine drivers
+
+Peter Ujfalusi (3):
+      ASoC: tlv320dac33: Control for line output gain
+      ASoC: tpa6130a2: Error handling for broken chip
+      ASoC: tlv320dac33: Use usleep_range for delays
+
+ sound/soc/codecs/tlv320dac33.c |   28 ++++++++++++++++++++++++----
+ sound/soc/codecs/tpa6130a2.c   |   28 ++++++++++++++++++++++------
+ sound/soc/omap/am3517evm.c     |    4 +---
+ sound/soc/omap/igep0020.c      |    4 +---
+ sound/soc/omap/omap2evm.c      |    4 +---
+ sound/soc/omap/omap3beagle.c   |    4 +---
+ sound/soc/omap/omap3evm.c      |    4 +---
+ sound/soc/omap/sdp3430.c       |    4 +---
+ sound/soc/omap/sdp4430.c       |    4 +---
+ sound/soc/omap/zoom2.c         |    4 +---
+ 10 files changed, 54 insertions(+), 34 deletions(-)
