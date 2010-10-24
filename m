@@ -1,16 +1,23 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: snd-hda-intel + ad198x is broken with 2.6.36
-Date: Sun, 24 Oct 2010 20:45:45 +0300
-Message-ID: <201010242045.49003.anarsoul@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/4] ASoC: soc-cache: Add support for
+ standard register caching
+Date: Sun, 24 Oct 2010 14:35:26 -0700
+Message-ID: <20101024213525.GA14256@opensource.wolfsonmicro.com>
+References: <1287757702-9573-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	<1287757702-9573-3-git-send-email-dp@opensource.wolfsonmicro.com>
+	<20101022160351.GE16521@opensource.wolfsonmicro.com>
+	<1287858254.9010.7.camel@dplaptop>
+	<AANLkTi=eWCO71FTj38rS4dehjo+DoLvSGQa6fXgqaaJq@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3719487632569165782=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id D87EC24407
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6D586244B6
 	for <alsa-devel@alsa-project.org>;
-	Sun, 24 Oct 2010 19:46:01 +0200 (CEST)
-Received: by ewy22 with SMTP id 22so1208197ewy.38
-	for <alsa-devel@alsa-project.org>; Sun, 24 Oct 2010 10:45:59 -0700 (PDT)
+	Sun, 24 Oct 2010 23:35:56 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=eWCO71FTj38rS4dehjo+DoLvSGQa6fXgqaaJq@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,62 +27,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
---===============3719487632569165782==
-Content-Type: multipart/signed;
-  boundary="nextPart80501060.9CyhGNmyVn";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+On Sun, Oct 24, 2010 at 08:18:59AM -0500, Timur Tabi wrote:
+> On Sat, Oct 23, 2010 at 1:24 PM, Dimitris Papastamos
 
---nextPart80501060.9CyhGNmyVn
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+> > The only problem I see with the above code, is when
+> > codec_drv->reg_word_size > sizeof (unsigned int) but that can't really
+> > happen in practice.
 
-Hi,
+Plus if it did happen the rest of the code would fall over fairly badly
+since we've got that assumption embedded in the register read and write
+APIs.
 
-it seems something in 2.6.36 broke sound for snd-hda-intel with ad198x code=
-cs=20
-(reproducible with Lenovo 3000 N100 laptop, AD1986A codec and with HP Compa=
-q=20
-6910p, AD1981 codec). I have no problems with 2.6.35 kernel.
+> I'm going to have to agree with Mark that this code is suspect.  I
+> understand everything you said, but it makes me nervous.  Unless this
+> code is in some kind of fast-path, I would prefer to see it rewritten
+> to avoid any assumption about the sizes of the types involved.
 
-Sound works right after power on, but after reboot or even driver reload it=
-=20
-does not work until power cycle, of course controls are unmuted. Under "doe=
-s=20
-not work" I mean that aplay plays nothing, but gives no errors. What info=20
-would be usefull to debug this issue?
-
-Regards
-Vasily
-
---nextPart80501060.9CyhGNmyVn
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.16 (GNU/Linux)
-
-iEYEABECAAYFAkzEcMwACgkQRM6pQpltKE4JYgCg4D4NJIcuQ36mJLQsO6pqJNar
-swAAoNp62NAJRIsMJnD/V3/J17C/6nFJ
-=AuK9
------END PGP SIGNATURE-----
-
---nextPart80501060.9CyhGNmyVn--
-
---===============3719487632569165782==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============3719487632569165782==--
+I think the important thing here is that the code is clear - from a
+maintainability so long as it's clear how and why the code works things
+should be fine, otherwise we'll have people scratching their heads over
+it every time someone looks at the code which is going to be painful.
+This could be done with documentation as well as with code changes,
+though code changes should definitely be considered.
