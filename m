@@ -1,12 +1,19 @@
-From: emailmandar@gmail.com
-Subject: [PATCH - snd-usb-audio 1/1] Creative USB X-Fi volume
-	knob support
-Date: Sun, 24 Oct 2010 04:07:00 +0000
-Message-ID: <1287893220-13048-1-git-send-email-emailmandar@gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: HDA: Enable internal mic on Dell
+ E6410 and Dell E6510
+Date: Sun, 24 Oct 2010 03:56:37 +0200
+Message-ID: <4CC39255.203@canonical.com>
+References: <1285726141-26448-2-git-send-email-flameeyes@gmail.com>	<1287673789-13915-1-git-send-email-flameeyes@gmail.com>
+	<s5htykfb5ho.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 01860103834
+	for <alsa-devel@alsa-project.org>;
+	Sun, 24 Oct 2010 03:56:31 +0200 (CEST)
+In-Reply-To: <s5htykfb5ho.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -16,28 +23,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Mandar Joshi <emailmandar@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, =?UTF-8?B?RGllZ28gRWxpbyBQZXR0ZW7Dsg==?= <flameeyes@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mandar Joshi <emailmandar@gmail.com>
-
-Adds an entry for Creative USB X-Fi to the rc_config array in mixer_quirks.c to allow use of volume knob on the device.
-The action of the volume knob is received by lirc when its using the alsa_usb driver.
-
-Signed-off-by: Mandar Joshi <emailmandar@gmail.com>
-
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index e7df1e5..53ce1d2 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -61,6 +61,7 @@ static const struct rc_config {
- 	{ USB_ID(0x041e, 0x3020), 2, 1, 6, 6,  18, 0x0013 }, /* Audigy 2 NX  */
- 	{ USB_ID(0x041e, 0x3040), 2, 2, 6, 6,  2,  0x6e91 }, /* Live! 24-bit */
- 	{ USB_ID(0x041e, 0x3048), 2, 2, 6, 6,  2,  0x6e91 }, /* Toshiba SB0500 */
-+	{ USB_ID(0x041e, 0x3042), 0, 1, 1, 1,  1,  0x000d }, /* Usb X-Fi */
- };
- 
- static void snd_usb_soundblaster_remote_complete(struct urb *urb)
--- 
-1.7.1
+T24gMjAxMC0xMC0yMSAyMzoyOCwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFRodSwgMjEgT2N0
+IDIwMTAgMTc6MDk6NDkgKzAyMDAsCj4gRGllZ28gRWxpbyBQZXR0ZW7DsiB3cm90ZToKPj4KPj4g
+RnJvbTogRGF2aWQgSGVubmluZ3Nzb248ZGF2aWQuaGVubmluZ3Nzb25AY2Fub25pY2FsLmNvbT4K
+Pj4KPj4gKFBvcnRlZCBvbiB0b3Agb2YgMi42LjM2KQo+Pgo+PiBCdWdMaW5rOiBodHRwOi8vbGF1
+bmNocGFkLm5ldC9idWdzLzYyODk2MQo+PiBCdWdMaW5rOiBodHRwOi8vbGF1bmNocGFkLm5ldC9i
+dWdzLzYwNTA0Nwo+Pgo+PiBDQzogRGllZ28gRWxpbyBQZXR0ZW7DsjxmbGFtZWV5ZXNAZ21haWwu
+Y29tPgo+Cj4gSSdkIG5lZWQgc2lnbi1vZmZzIG9mIHlvdSBhbmQgRGF2aWQuCj4gQ291bGQgeW91
+IGd1eXMgZ2l2ZSB0aGVtPwoKU2lnbmVkLW9mZi1ieTogRGF2aWQgSGVubmluZ3Nzb24gPGRhdmlk
+Lmhlbm5pbmdzc29uQGNhbm9uaWNhbC5jb20+CgpQbGVhc2Ugbm90ZSB0aGF0CjEpIFRoaXMgd2ls
+bCBlbmFibGUgdGhlIGludGVybmFsIG1pYywgYnV0IGRpc2FibGUgdGhlIGRvY2sgbWljIChpZiBh
+bnkpIAphdCB0aGUgc2FtZSB0aW1lCjIpIHNvdW5kLTIuNiBoYXMgYSBtb3JlIHN0YWJsZSBzb2x1
+dGlvbiBhcyBpdCBhbGxvd3MgbW9yZSB0aGFuIG9uZSBtaWMgCnBlciBwb3NpdGlvbiBpbiB0aGUg
+YXJyYXksIHNvIHRoaXMgc2hvdWxkIG5vdCBnbyBpbnRvIHNvdW5kLTIuNi4KClRoZXNlIHdlcmUg
+dGhlIHJlYXNvbnMgSSBkaWQgbm90IHNlbmQgaXQgaGVyZSBvcmlnaW5hbGx5LCBhcyBteSBndWVz
+cyAKd2FzIHRoYXQgeW91IHdvdWxkbid0IGFjY2VwdCBpdC4gQnV0IGZlZWwgZnJlZSB0byBhZGQg
+aXQgaW50byAyLjYuMzYgaWYgCnlvdSBsaWtlLgoKPgo+Cj4gVGFrYXNoaQo+Cj4+IC0tLQo+PiAg
+IHNvdW5kL3BjaS9oZGEvcGF0Y2hfc2lnbWF0ZWwuYyB8ICAgMTMgKysrKysrKysrKysrKwo+PiAg
+IDEgZmlsZXMgY2hhbmdlZCwgMTMgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkKPj4KPj4g
+ZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfc2lnbWF0ZWwuYyBiL3NvdW5kL3BjaS9o
+ZGEvcGF0Y2hfc2lnbWF0ZWwuYwo+PiBpbmRleCBjMTZjNWJhLi5iZTc5YzNjIDEwMDY0NAo+PiAt
+LS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3NpZ21hdGVsLmMKPj4gKysrIGIvc291bmQvcGNpL2hk
+YS9wYXRjaF9zaWdtYXRlbC5jCj4+IEBAIC0xNjMzLDYgKzE2MzMsMTMgQEAgc3RhdGljIHVuc2ln
+bmVkIGludCBkZWxsX3MxNF9waW5fY29uZmlnc1sxMF0gPSB7Cj4+ICAgCTB4NDBmMDAwZjAsIDB4
+NDBmMDAwZjAsCj4+ICAgfTsKPj4KPj4gKy8qIERlbGliZXJhdGVseSB0dXJuIG9mZiAweDBmIChE
+b2NrIE1pYykgdG8gbWFrZSBpdCBjaG9vc2UgSW50IE1pYyBpbnN0ZWFkICovCj4+ICtzdGF0aWMg
+dW5zaWduZWQgaW50IGRlbGxfZTY0MTBfcGluX2NvbmZpZ3NbMTBdID0gewo+PiArCTB4MDRhMTEw
+MjAsIDB4MDQyMTEwMWYsIDB4NDAwMDAwZjAsIDB4OTAxNzAxMTAsCj4+ICsJMHgyMzAxMTA1MCwg
+MHg0MGYwMDBmMCwgMHg0MDAwMDBmMCwgMHg5MGE2MDEzMCwKPj4gKwkweDQwZjAwMGYwLCAweDQw
+ZjAwMGYwLAo+PiArfTsKPj4gKwo+PiAgIHN0YXRpYyB1bnNpZ25lZCBpbnQgaHBfZHY3XzQwMDBf
+cGluX2NvbmZpZ3NbMTBdID0gewo+PiAgIAkweDAzYTEyMDUwLCAweDAzMjEyMDFmLCAweDQwZjAw
+MGYwLCAweDkwMTcwMTEwLAo+PiAgIAkweDQwZjAwMGYwLCAweDQwZjAwMGYwLCAweDkwMTcwMTEw
+LCAweGQ1YTMwMTQwLAo+PiBAQCAtMTY0Myw2ICsxNjUwLDcgQEAgc3RhdGljIHVuc2lnbmVkIGlu
+dCAqc3RhYzkyaGQ4M3h4eF9icmRfdGJsW1NUQUNfOTJIRDgzWFhYX01PREVMU10gPSB7Cj4+ICAg
+CVtTVEFDXzkySEQ4M1hYWF9SRUZdID0gcmVmOTJoZDgzeHh4X3Bpbl9jb25maWdzLAo+PiAgIAlb
+U1RBQ185MkhEODNYWFhfUFdSX1JFRl0gPSByZWY5MmhkODN4eHhfcGluX2NvbmZpZ3MsCj4+ICAg
+CVtTVEFDX0RFTExfUzE0XSA9IGRlbGxfczE0X3Bpbl9jb25maWdzLAo+PiArCVtTVEFDX0RFTExf
+RTY0MTBdID0gZGVsbF9lNjQxMF9waW5fY29uZmlncywKPj4gICAJW1NUQUNfSFBfRFY3XzQwMDBd
+ID0gaHBfZHY3XzQwMDBfcGluX2NvbmZpZ3MsCj4+ICAgfTsKPj4KPj4gQEAgLTE2NTEsNiArMTY1
+OSw3IEBAIHN0YXRpYyBjb25zdCBjaGFyICpzdGFjOTJoZDgzeHh4X21vZGVsc1tTVEFDXzkySEQ4
+M1hYWF9NT0RFTFNdID0gewo+PiAgIAlbU1RBQ185MkhEODNYWFhfUkVGXSA9ICJyZWYiLAo+PiAg
+IAlbU1RBQ185MkhEODNYWFhfUFdSX1JFRl0gPSAibWljLXJlZiIsCj4+ICAgCVtTVEFDX0RFTExf
+UzE0XSA9ICJkZWxsLXMxNCIsCj4+ICsJW1NUQUNfREVMTF9FNjQxMF0gPSAiZGVsbC1lNjQxMCIs
+Cj4+ICAgCVtTVEFDXzkySEQ4M1hYWF9IUF0gPSAiaHAiLAo+PiAgIAlbU1RBQ19IUF9EVjdfNDAw
+MF0gPSAiaHAtZHY3LTQwMDAiLAo+PiAgIH07Cj4+IEBAIC0xNjYzLDYgKzE2NzIsMTAgQEAgc3Rh
+dGljIHN0cnVjdCBzbmRfcGNpX3F1aXJrIHN0YWM5MmhkODN4eHhfY2ZnX3RibFtdID0gewo+PiAg
+IAkJICAgICAgIkRGSSBMYW5QYXJ0eSIsIFNUQUNfOTJIRDgzWFhYX1JFRiksCj4+ICAgCVNORF9Q
+Q0lfUVVJUksoUENJX1ZFTkRPUl9JRF9ERUxMLCAweDAyYmEsCj4+ICAgCQkgICAgICAidW5rbm93
+biBEZWxsIiwgU1RBQ19ERUxMX1MxNCksCj4+ICsJU05EX1BDSV9RVUlSSyhQQ0lfVkVORE9SX0lE
+X0RFTEwsIDB4MDQwYSwKPj4gKwkJICAgICAgIkRlbGwgRTY0MTAiLCBTVEFDX0RFTExfRTY0MTAp
+LAo+PiArCVNORF9QQ0lfUVVJUksoUENJX1ZFTkRPUl9JRF9ERUxMLCAweDA0MGIsCj4+ICsJCSAg
+ICAgICJEZWxsIEU2NTEwIiwgU1RBQ19ERUxMX0U2NDEwKSwKPj4gICAJU05EX1BDSV9RVUlSS19N
+QVNLKFBDSV9WRU5ET1JfSURfSFAsIDB4ZmYwMCwgMHgzNjAwLAo+PiAgIAkJICAgICAgIkhQIiwg
+U1RBQ185MkhEODNYWFhfSFApLAo+PiAgIAl7fSAvKiB0ZXJtaW5hdG9yICovCj4+IC0tCj4+IDEu
+Ny4zLjEKPj4KPj4gLS0KPj4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhl
+IGxpbmUgInVuc3Vic2NyaWJlIGxpbnV4LWtlcm5lbCIgaW4KPj4gdGhlIGJvZHkgb2YgYSBtZXNz
+YWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5vcmcKPj4gTW9yZSBtYWpvcmRvbW8gaW5mbyBh
+dCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRvbW8taW5mby5odG1sCj4+IFBsZWFzZSBy
+ZWFkIHRoZSBGQVEgYXQgIGh0dHA6Ly93d3cudHV4Lm9yZy9sa21sLwo+Pgo+CgoKLS0gCkRhdmlk
+IEhlbm5pbmdzc29uLCBDYW5vbmljYWwgTHRkLgpodHRwOi8vbGF1bmNocGFkLm5ldC9+ZGl3aWMK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
