@@ -1,21 +1,23 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Constraining the number of frames per period
-Date: Mon, 25 Oct 2010 09:48:02 +0200
-Message-ID: <4CC53632.3080008@ladisch.de>
-References: <AANLkTi=v2DKXfptubtwEPfH_4eZJ-vwLqVHAkmf3iE2D@mail.gmail.com>
-	<alpine.LNX.2.00.1010211649160.29422@eeebox2.perex-int.cz>
-	<AANLkTikAf+o7e-=hosi+dwEywK-Mt5UTvJtqzT=i_5Fz@mail.gmail.com>
-	<4CC13153.7040002@ladisch.de>
-	<AANLkTikr0ttrWCOiJEO-7GLvfLLUfRMA8Bii6wSD7qV6@mail.gmail.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/4] ASoC: soc-cache: Add support for
+ standard register caching
+Date: Mon, 25 Oct 2010 09:09:40 +0100
+Message-ID: <1287994180.9010.13.camel@dplaptop>
+References: <1287757702-9573-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	<1287757702-9573-3-git-send-email-dp@opensource.wolfsonmicro.com>
+	<20101022160351.GE16521@opensource.wolfsonmicro.com>
+	<1287858254.9010.7.camel@dplaptop>
+	<AANLkTi=eWCO71FTj38rS4dehjo+DoLvSGQa6fXgqaaJq@mail.gmail.com>
+	<20101024213525.GA14256@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id E1F4F1037F9
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 31845103884
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 Oct 2010 09:46:19 +0200 (CEST)
-In-Reply-To: <AANLkTikr0ttrWCOiJEO-7GLvfLLUfRMA8Bii6wSD7qV6@mail.gmail.com>
+	Mon, 25 Oct 2010 10:09:42 +0200 (CEST)
+In-Reply-To: <20101024213525.GA14256@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,24 +27,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Adam Rosenberg <adam@alcorn.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Adam Rosenberg wrote:
->> Set the snd_pcm_hardware fields so that all sample formats are supported.
+On Sun, 2010-10-24 at 14:35 -0700, Mark Brown wrote:
+> On Sun, Oct 24, 2010 at 08:18:59AM -0500, Timur Tabi wrote:
+> > On Sat, Oct 23, 2010 at 1:24 PM, Dimitris Papastamos
 > 
-> I do not understand why I need to add all of the sample formats,
+> > > The only problem I see with the above code, is when
+> > > codec_drv->reg_word_size > sizeof (unsigned int) but that can't really
+> > > happen in practice.
+> 
+> Plus if it did happen the rest of the code would fall over fairly badly
+> since we've got that assumption embedded in the register read and write
+> APIs.
+> 
+> > I'm going to have to agree with Mark that this code is suspect.  I
+> > understand everything you said, but it makes me nervous.  Unless this
+> > code is in some kind of fast-path, I would prefer to see it rewritten
+> > to avoid any assumption about the sizes of the types involved.
+> 
+> I think the important thing here is that the code is clear - from a
+> maintainability so long as it's clear how and why the code works things
+> should be fine, otherwise we'll have people scratching their heads over
+> it every time someone looks at the code which is going to be painful.
+> This could be done with documentation as well as with code changes,
+> though code changes should definitely be considered.
 
-Sorry, I actually meant to say "all of the sample formats supported
-by your hardware", where "formats" includes all the field of the
-snd_pcm_hardware structure.
+Yes that makes sense.  The reason why I did this in the first place was
+to make it work with 8/16-byte reads/writes without using branching.  I
+will change this to explicitly dereference a u8/u16 pointer.
 
-The idea is to set the snd_pcm_hardware fields so that anything
-supported by the hardware is allowed by these settings.  Then, if there
-is any combination of settings that is allowed by these fields but not
-supported by the hardware, add more constraints in the open callback.
-
-
-Regards,
-Clemens
+Thanks,
+Dimitrios
