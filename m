@@ -1,19 +1,22 @@
-From: Patrick Ziegler <patrick.ziegler@fh-kl.de>
-Subject: Re: SoC Atmel SSC stereo problem
-Date: Mon, 25 Oct 2010 11:16:36 +0200
-Message-ID: <4CC54AF4.9050808@fh-kl.de>
-References: <4CC1AB01.3020603@fh-kl.de>
-	<4CC1B7CD.3030703@ladisch.de>	<4CC20475.3020900@fh-kl.de>
-	<loom.20101023T054800-433@post.gmane.org>
+From: Nick Lloyd <ultrageek.lloyd@gmail.com>
+Subject: Re: MIDI support for hda-intel
+Date: Mon, 25 Oct 2010 16:48:21 +0000
+Message-ID: <AANLkTi=OVKN54kVW1wXk+82u1g6EqQV8k8NsNxFi=Jo4@mail.gmail.com>
+References: <AANLkTin9i1y_yAwq748Hcf4Y9Kf+rUohTqgq5XFSQwCN@mail.gmail.com>
+	<s5hbp6janh1.wl%tiwai@suse.de>
+	<AANLkTikvm3MtgOoMY8egP5LJR+PGa7NUXS5kYAW3ZtyD@mail.gmail.com>
+	<s5h62wqalpl.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from post.fh-kl.de (post.fh-kl.de [143.93.17.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id D61F31038F2
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id D6D4A24156
 	for <alsa-devel@alsa-project.org>;
-	Mon, 25 Oct 2010 11:16:39 +0200 (CEST)
-In-Reply-To: <loom.20101023T054800-433@post.gmane.org>
+	Mon, 25 Oct 2010 18:48:23 +0200 (CEST)
+Received: by wye20 with SMTP id 20so3705293wye.38
+	for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2010 09:48:22 -0700 (PDT)
+In-Reply-To: <s5h62wqalpl.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,85 +26,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Alex <lee188@singnet.com.sg>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-Hi Alex,
-
->> The SSC is connected to a FPGA that assigns the bus to different devices
->> depending on the application. And for all applications the FPGA
->> generates the clocks. Maybe this is not the best solution but I will try
->> to deal with this limitation first before I try to persuade other people
->> to change it.
->>
->>      
-> Hi Patrick,
->
-> It looks like you are running the SSC TX in slave mode, with both the SCLK (the
-> i2S clock) and LRCK provided by your FPGA.  It is trickier to prevent channel
-> inversion in this mode.
->
-> One possible  is to:
->
-> (1)  test for the LRCK level with a gpio pin connected to the LRCK.  This should
-> normally be the same pin assigned to TX_FRAME_SYNC.  After any USB set interface
-> to the alternate setting for playback of your active device, or after any
-> sampling rate change etc., you re-sync the transfer to the correct LRCK edge:
->
->          pdca_disable(PDCA_CHANNEL_SSC_TX);
->
->          // reset the audio buffer pointers to the start of the LEFT channel etc
->          // if required
->
->      	// re-sync SSC to LRCK
->          // Wait for the next frame synchronization event
->          // to avoid channel inversion.  Start with left channel - FS goes low
->
-> 	while (!gpio_get_pin_value(_LRCK));
-> 	while (gpio_get_pin_value(LRCK));	
->          // exit when FS goes low
->
->          // Enable now the transfer.
->          pdca_enable(PDCA_CHANNEL_SSC_TX);
->
-> (2)  start clocking data out at any LRCK edge after a suitable delay (of 1
-> SCLK).  You may need to use LRCK level change rather than any edge depending on
-> the hardware timing.  The delay may also need to be adjusted depending on
-> hardware timing.
->
-> (3)  clock out one sample (either left or right) per LRCK edge (or level).
->
-> Of course, if you are running the SSC in master mode, there are easier ways to
-> ensure channel synchronization :-)
->
-> The above suggestion is extrapolated from my project using the AT32UC3A3 which
-> has a similar (more capable) SSC as the AT91.  So it may or may not work for
-> you.
->
->    
-
-Thank you for your suggestion, I will try to adept this approach for our 
-needs.
-
-Best regards
-
-Patrick
-
--- 
-
-Dipl.-Inf. (FH) Patrick Ziegler
-
-University Of Applied Sciences
-Kaiserslautern
-
-Amerikastrasse 1
-D-66482 Zweibruecken
-Germany
-
-Phone:	+49 631 3724 5526
-Mail:	patrick.ziegler@fh-kl.de
-
-http://www.fh-kl.de
-http://www.fh-kl.de/fachbereiche/imst/iuk-knowhow.html
+VGhhbmtzIHRvIGJvdGggb2YgeW91LCB0aGF0J3MgZXhhY3RseSB3aGF0IEkgd2FzIGxvb2tpbmcg
+Zm9yLgoKTmljawoKT24gTW9uLCBPY3QgMjUsIDIwMTAgYXQgNToyNCBBTSwgVGFrYXNoaSBJd2Fp
+IDx0aXdhaUBzdXNlLmRlPiB3cm90ZToKPiBBdCBTdW4sIDI0IE9jdCAyMDEwIDE5OjM3OjUxIC0w
+NDAwLAo+IE5pY2sgTGxveWQgd3JvdGU6Cj4+Cj4+IE9uIFN1biwgT2N0IDI0LCAyMDEwIGF0IDY6
+MzQgQU0sIFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4gd3JvdGU6Cj4+ID4gQXQgU2F0LCAy
+MyBPY3QgMjAxMCAxMzoxMDozNSAtMDQwMCwKPj4gPiBOaWNrIExsb3lkIHdyb3RlOgo+PiA+Pgo+
+PiA+PiBIaSwgcXVpY2sgcXVlc3Rpb24gZm9yIHRoZSBsaXN0LiDCoEhhcyBNSURJIHN1cHBvcnQg
+YmVlbiBpbXBsZW1lbnRlZAo+PiA+PiBmb3IgdGhlIGhkYS1pbnRlbCBjb2RlYywgc3BlY2lmaWNh
+bGx5IHRoZSBzaWdtYXRlbCBjb2RlYy4gwqBJIHRyaWVkCj4+ID4+IHBsYXlpbmcgYSBNSURJIGZp
+bGUgdGhlIG90aGVyIGRheSwgYW5kIGNvdWxkIHNlZSB0aGUgbGV2ZWxzIGJvdW5jaW5nCj4+ID4+
+IGFyb3VuZCwgYnV0IG5vIHNvdW5kIHdoYXRzb2V2ZXIuIMKgQmFzaWNhbGx5LCBkb2VzIHRoZSBk
+cml2ZXIgbm90Cj4+ID4+IHN1cHBvcnQgaXQsIG9yIGFtIEkgZG9pbmcgc29tZXRoaW5nIHdyb25n
+Pwo+PiA+Cj4+ID4gVGhlIEhELWF1ZGlvIGRvZXNuJ3Qgc3VwcG9ydCB0aGUgTUlESSBwbGF5YmFj
+ayBpbiBoYXJkd2FyZS4KPj4gPiBFdmVyeXRoaW5nIGlzIHNvZnR3YXJlIHJlbmRlcmluZy4KPj4g
+Pgo+PiA+Cj4+ID4gVGFrYXNoaQo+PiA+Cj4+Cj4+IFRoYW5rcyBUYWthc2hpLiDCoFNvIHRvIGNs
+YXJpZnksIHRoZSBIREEgZHJpdmVyIHN1cHBvcnRzIE1JREksIGJ1dCBub3QKPj4gdGhyb3VnaCB0
+aGUgaGFyZHdhcmU/Cj4KPiBObyBhbmQgbm8uIMKgSXQncyBubyBqb2Igb2YgYSBkcml2ZXIgYnV0
+IGEgdXNlci1zcGFjZSBhcHBsaWNhdGlvbgo+IHdobyByZW5kZXJzIHRoZSBNSURJIGRhdGEgdG8g
+UENNLgo+Cj4+IMKgU28gaWYgSSBwbGF5IGEgTUlESSBmaWxlLCBpdCBzaG91bGQgaW4gZmFjdAo+
+PiB3b3JrPwo+Cj4gVXNlIGFuIGFwcGxpY2F0aW9uIChvciBhIHNvdW5kIHN1YnN5c3RlbSkgc3Vw
+cG9ydGluZyBzb2Z0d2FyZQo+IE1JREkgcmVuZGVyaW5nLiDCoGZsdWlkc3ludGgsIHRpbWlkaXR5
+LCB3aGF0ZXZlci4KPgo+Cj4gVGFrYXNoaQo+CgoKCi0tIAoiTGlmZSBpcyBub3QgbWVhc3VyZWQg
+YnkgdGhlIG51bWJlciBvZiBicmVhdGhzIHdlIHRha2UsIGJ1dCBieSB0aGUKbW9tZW50cyB0aGF0
+IHRha2Ugb3VyIGJyZWF0aCBhd2F5LiIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
