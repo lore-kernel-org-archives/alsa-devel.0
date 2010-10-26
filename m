@@ -1,17 +1,15 @@
 From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCH 12/18] ASoC: GONI: Move to use new I2S driver
-Date: Tue, 26 Oct 2010 10:33:41 +0900
-Message-ID: <1288056821-25128-1-git-send-email-jassisinghbrar@gmail.com>
-References: <1288056632-24673-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: [PATCHv3] ASoC: Overhaul Samsung drivers
+Date: Tue, 26 Oct 2010 10:30:32 +0900
+Message-ID: <1288056632-24673-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 445B0103912
+	by alsa0.perex.cz (Postfix) with ESMTP id 2FC181037FC
 	for <alsa-devel@alsa-project.org>;
 	Tue, 26 Oct 2010 03:39:07 +0200 (CEST)
-In-Reply-To: <1288056632-24673-1-git-send-email-jassisinghbrar@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,61 +25,120 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jassi Brar <jassi.brar@samsung.com>
 
-Modify the goni_wm8994.c to use new i2s controller driver.
+Hi,
 
-Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
----
- sound/soc/s3c24xx/Kconfig       |    2 +-
- sound/soc/s3c24xx/goni_wm8994.c |   10 ++--------
- 2 files changed, 3 insertions(+), 9 deletions(-)
+Submitting revised patch series.
 
-diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
-index e7fad53..f12e7c8 100644
---- a/sound/soc/s3c24xx/Kconfig
-+++ b/sound/soc/s3c24xx/Kconfig
-@@ -150,7 +150,7 @@ config SND_S3C64XX_SOC_SMARTQ
- config SND_SOC_GONI_AQUILA_WM8994
- 	tristate "SoC I2S Audio support for AQUILA/GONI - WM8994"
- 	depends on SND_S3C24XX_SOC && (MACH_GONI || MACH_AQUILA)
--	select SND_S3C64XX_SOC_I2S_V4
-+	select SND_SAMSUNG_I2S
- 	select SND_SOC_WM8994
- 	help
- 	  Say Y if you want to add support for SoC audio on goni or aquila
-diff --git a/sound/soc/s3c24xx/goni_wm8994.c b/sound/soc/s3c24xx/goni_wm8994.c
-index 201056c..dcaf7c3 100644
---- a/sound/soc/s3c24xx/goni_wm8994.c
-+++ b/sound/soc/s3c24xx/goni_wm8994.c
-@@ -26,7 +26,7 @@
- #include <linux/mfd/wm8994/registers.h>
- #include "../codecs/wm8994.h"
- #include "dma.h"
--#include "s3c64xx-i2s.h"
-+#include "i2s.h"
- 
- #define MACHINE_NAME	0
- #define CPU_VOICE_DAI	1
-@@ -163,12 +163,6 @@ static int goni_hifi_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		return ret;
- 
--	/* set the cpu system clock */
--	ret = snd_soc_dai_set_sysclk(cpu_dai, S3C64XX_CLKSRC_PCLK,
--			0, SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
- 	/* set codec DAI configuration */
- 	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
- 			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
-@@ -249,7 +243,7 @@ static struct snd_soc_dai_link goni_dai[] = {
- {
- 	.name = "WM8994",
- 	.stream_name = "WM8994 HiFi",
--	.cpu_dai_name = "s3c64xx-i2s-v4",
-+	.cpu_dai_name = "samsung-i2s.0",
- 	.codec_dai_name = "wm8994-hifi",
- 	.platform_name = "samsung-audio",
- 	.codec_name = "wm8994-codec.0-0x1a",
--- 
-1.6.2.5
+Since v2:
+a) Divided 'ASoC Samsung Add common I2S driver' into two.
+b) 'ARM Samsung Rename s3c64xx I2S platform device' based on plat tree
+
+As Kgene agreed to prepare a branch for Mark, platform related
+changes are based on his tree wherever possible.
+
+Patches for Kgene will be posted on Arm-Linux ml and those
+for Mark Brown, on ALSA ml, now that people have already
+'seen' two versions of the patch series with same code but
+different segregation.
+
+Here is overview of patches:-
+
+For Kgene:-
+************
+   S5PV310: DMA: Add platform devices for PL330 DMACs
+   ARM: Samsung: Rename s3c64xx I2S platform device
+   ARM: Samsung: Prepare audio header for new I2S driver
+   ARM: S3C64XX: I2S: Upgrade platform device
+   ARM: S5P64X0: I2S: Upgrade platform device
+   ARM: S5P6442: I2S: Upgrade platform device
+   ARM: S5PC100: I2S: Upgrade platform device
+   ARM: S5PV210: I2S: Upgrade platform device
+   ARM: S5PV310: Add audio platform devices
+
+
+For Mark :-
+***********
+   ASoC: Samsung: Remove redundant AQUILA driver
+   ASoC: Samsung: Rename DMA device
+   ARM: Samsung: Define common audio-dma device
+   ASoC: Samsung: Rename ASoC DMA driver
+   ASoC: Samsung: Rename AC97 platform device
+   ASoC: Samsung: Rename AC97 driver
+   ASoC: Samsung: Rename PCM driver
+   ASoC: Samsung: Generalize DMA driver namespace
+   ASoC: Samsung: Rename s3c64xx I2S device
+   ASoC: Samsung: Add common I2S driver
+   ASoC: SMARTQ: Move to use new I2S driver
+   ASoC: GONI: Move to use new I2S driver
+   ASoC: SMDK64XX: Move to use new I2S driver
+   ASoC: S3C64XX: Remove obsoleted I2S drivers
+   ASoC: SMDK64XX: Rename for other platforms
+   ASoC: SMDK_WM8580: Enable for SMDKC100
+   ASoC: Samsung: Generalize Kconfig symbols
+   ASoC: Samsung: Rename from s3c24xx to samsung
+
+
+Thanks.
+
+*************************************************
+
+Since v1:
+a) Use case 16 in set_bfs and default for error
+b) Better code comments.
+c) Use switch case in i2sv2_i2s_set_clkdiv
+d) Use SNDRV_PCM_RATE_8000_96000
+e) MAX_I2S -> SAMSUNG_I2S_SECOFF
+f) Local namespace cleanup with i2s driver.
+------------
+
+Here come patches overhauling the Samsung ASoC support.
+
+The AC97, PCM, SPDIF and ASoC-DMA related code has merely undergone
+cosmetic changes - symbol, device & driver renaming and file moving.
+
+A new I2S controller driver has been added to manage Samsung SoCs since
+S3C64XX. Older driver has been changed only as is necessary.
+Regarding I2S, I have left the s3c24xx series untouched because the
+controllers are too different to run by a common driver. S3C2412's I2S
+does have some similarities, but not important enough to warrant impact
+on new driver design.
+The new I2S driver has been designed around the notion of features/quirks.
+The newer SoCs have revised version of I2S_0(usually) than previous ones.
+So, I2S block is 'specified' in the platform code and the driver works on
+that configuration.
+For now, Secondary I2S DAI works only with System-DMAC. I2S-Internal DMA
+and SRAM will be enabled later.
+
+Testing:-
+  Simple testing of 5.1 channel and hardware mixing seems to work (though
+there seems to be some issue with symmetric_rates in soc-core.c which
+would be tried to fix later as saperate issue).
+ I would appreciate any test-results for GONI and SMARTQ.
+
+I suggest the patches 13,14,16 & 17 go via Kgene's Tree, and the rest via ASoC
+tree due to tight dependencies.
+
+1). ASoC: Samsung: Remove redundant AQUILA driver
+2). ASoC: Samsung: Rename DMA device
+3). ARM: Samsung: Define common audio-dma device
+4). ASoC: Samsung: Rename ASoC DMA driver
+5). ASoC: Samsung: Rename AC97 platform device
+6). ASoC: Samsung: Rename AC97 driver
+7). ASoC: Samsung: Rename PCM driver
+8). ASoC: Samsung: Generalize DMA driver namespace
+9). ASoC: Samsung: Rename s3c64xx I2S device
+10). ASoC: Samsung: Add common I2S driver
+11). ARM: S3C64XX: I2S: Upgrade platform device
+12). ARM: S5P6440: I2S: Upgrade platform device
+13). ARM: S5P6442: I2S: Upgrade platform device
+14). ARM: S5PC100: I2S: Upgrade platform device
+15). ARM: S5PV210: I2S: Upgrade platform device
+16). ARM: S5PV310: Add audio platform devices
+17). ASoC: SMARTQ: Move to use new I2S driver
+18). ASoC: GONI: Move to use new I2S driver
+19). ASoC: SMDK64XX: Move to use new I2S driver
+20). ASoC: S3C64XX: Remove obsoleted I2S drivers
+21). ASoC: SMDK64XX: Rename for other platforms
+22). ASoC: SMDK_WM8580: Enable for SMDKC100
+23). ASoC: Samsung: Generalize Kconfig symbols
+24). ASoC: Samsung: Rename from s3c24xx to samsung
