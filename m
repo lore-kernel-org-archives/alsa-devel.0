@@ -1,28 +1,28 @@
 From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: snd-hda-intel (Cirrus Logic CS4206): MacBookPro6,
- 2 : No S/PDIF with Linux 2.6.36C
-Date: Tue, 26 Oct 2010 14:02:24 +0100
-Message-ID: <4CC6D160.3090008@colin.guthr.ie>
-References: <loom.20101026T061309-466@post.gmane.org>
+Subject: Re: Weird sound issue on 2.6.36
+Date: Tue, 26 Oct 2010 14:04:07 +0100
+Message-ID: <ia6jk7$6l2$2@dough.gmane.org>
+References: <AANLkTimd_ukkeT1Y7w5p-T20Y+yPwFD6uH1_Tmuubnbw__13989.8699046627$1288072993$gmane$org@mail.gmail.com>	<4CC685FE.1010706@colin.guthr.ie>
+	<AANLkTin=swMiebs9MzEONHfS9R8LXGnm8poD7aHhzeX=@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6A53E2442F
+	by alsa0.perex.cz (Postfix) with ESMTP id 2A76A2442E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Oct 2010 15:02:39 +0200 (CEST)
+	Tue, 26 Oct 2010 15:05:04 +0200 (CEST)
 Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1PAjAf-0001vt-61
-	for alsa-devel@alsa-project.org; Tue, 26 Oct 2010 15:02:33 +0200
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1PAjD5-00031r-LP
+	for alsa-devel@alsa-project.org; Tue, 26 Oct 2010 15:05:03 +0200
 Received: from brent.tribalogic.net ([78.86.109.144])
 	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2010 15:02:33 +0200
+	for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2010 15:05:03 +0200
 Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2010 15:02:33 +0200
-In-Reply-To: <loom.20101026T061309-466@post.gmane.org>
+	for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2010 15:05:03 +0200
+In-Reply-To: <AANLkTin=swMiebs9MzEONHfS9R8LXGnm8poD7aHhzeX=@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,34 +35,40 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Mohammad Bahathir Hashim at 26/10/10 06:08 did gyre
-and gimble:
-> Hi,
-> I want to use MacBook Pro (6,2) Mid-2010 15" with GNU/Linux all the time.
-> IMHO, GNU/Linux provides me the best performance and flexibility for
-> audio and video. 
+'Twas brillig, and Felipe Contreras at 26/10/10 12:15 did gyre and gimble:
+> On Tue, Oct 26, 2010 at 10:40 AM, Colin Guthrie <gmane@colin.guthr.ie> wrote:
+>> 'Twas brillig, and Felipe Contreras at 24/10/10 23:07 did gyre and gimble:
+>>> Hi,
+>>>
+>>> I suddenly noticed that sound is not working on 2.6.36; there's no
+>>> error, or warning, everything seems to be working, but there's no
+>>> sound coming out.
+>>>
+>>> I tried the rc's and AFAICR it was working fine, maybe I changed the
+>>> config, but everything seems to be ok. I went back to the rc's and
+>>> still couldn't get them to work. 2.6.35.7 works though.
+>>>
+>>> I'm attaching the config.
+>>
+>> Mentioning what sound chip you have would probably be a good start :p
 > 
-> Problem 1:
-> No SPDIF when using Linux 2.6.36, but it working fine with 2.6.35
+> Ok, I thought the config would show that.
+
+alsa-info.sh output would but not (necessarily) a kernel config.
+
 > 
-> Problem  2 ? :
-> xFront Speaker -> controls the woofer sound level
-> Surround -> controls the left and right channel speakers' sound level.
+>> There is a regression with Intel HDA - Analog Devices (adNNNN) chips in
+>> .36, so first random guess would be that.
+>>
+>> See the "snd-hda-intel + ad198x is broken with 2.6.36" if this applies
+>> to you.
 > 
-> Both kernels 2.6.3[56] show the same problem/feature :). 
+> Right, that fixes the issues. Thanks.
 
-
-My guess at the fix:
-
-ALSA: hda - Fix wrong SPDIF NID assignment for CA0110
-
-http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=commit;h=24b55c69b66eb2a122842820ec14ab215fc8572f
-
-(the base64 encoding of your alsa-info attachment didn't come through in
-a friendly way so I didn't bother decoding it, and hence this is just a
-guess)
+Great. Lucky guess for me then! :)
 
 Col
+
 
 -- 
 
