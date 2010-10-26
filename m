@@ -1,15 +1,14 @@
 From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCH 14/18] ASoC: S3C64XX: Remove obsoleted I2S
-	drivers
-Date: Tue, 26 Oct 2010 10:33:42 +0900
-Message-ID: <1288056822-25192-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: [PATCH 06/18] ASoC: Samsung: Rename AC97 driver
+Date: Tue, 26 Oct 2010 10:33:39 +0900
+Message-ID: <1288056819-24936-1-git-send-email-jassisinghbrar@gmail.com>
 References: <1288056632-24673-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3FD58103910
+	by alsa0.perex.cz (Postfix) with ESMTP id 47F9310391B
 	for <alsa-devel@alsa-project.org>;
 	Tue, 26 Oct 2010 03:39:07 +0200 (CEST)
 In-Reply-To: <1288056632-24673-1-git-send-email-jassisinghbrar@gmail.com>
@@ -28,595 +27,180 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jassi Brar <jassi.brar@samsung.com>
 
-Now that we have better I2S CPU drivers and no need for the old
-ones, discard them.
+Rename Samsung AC97 driver
+	s3c-ac97.[c/h] -> ac97.[c/h]
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- sound/soc/s3c24xx/Kconfig          |   10 --
- sound/soc/s3c24xx/Makefile         |    4 -
- sound/soc/s3c24xx/s3c64xx-i2s-v4.c |  230 ----------------------------------
- sound/soc/s3c24xx/s3c64xx-i2s.c    |  242 ------------------------------------
- sound/soc/s3c24xx/s3c64xx-i2s.h    |   41 ------
- 5 files changed, 0 insertions(+), 527 deletions(-)
- delete mode 100644 sound/soc/s3c24xx/s3c64xx-i2s-v4.c
- delete mode 100644 sound/soc/s3c24xx/s3c64xx-i2s.c
- delete mode 100644 sound/soc/s3c24xx/s3c64xx-i2s.h
+ sound/soc/s3c24xx/Makefile               |    4 ++--
+ sound/soc/s3c24xx/{s3c-ac97.c => ac97.c} |   16 ++++++++--------
+ sound/soc/s3c24xx/{s3c-ac97.h => ac97.h} |    8 ++++----
+ sound/soc/s3c24xx/ln2440sbc_alc650.c     |    2 +-
+ sound/soc/s3c24xx/smdk2443_wm9710.c      |    2 +-
+ sound/soc/s3c24xx/smdk_wm9713.c          |    2 +-
+ 6 files changed, 17 insertions(+), 17 deletions(-)
+ rename sound/soc/s3c24xx/{s3c-ac97.c => ac97.c} (97%)
+ rename sound/soc/s3c24xx/{s3c-ac97.h => ac97.h} (73%)
 
-diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
-index 085a7b0..32f1877 100644
---- a/sound/soc/s3c24xx/Kconfig
-+++ b/sound/soc/s3c24xx/Kconfig
-@@ -19,16 +19,6 @@ config SND_S3C2412_SOC_I2S
- 	select SND_S3C_I2SV2_SOC
- 	select S3C2410_DMA
- 
--config SND_S3C64XX_SOC_I2S
--	tristate
--	select SND_S3C_I2SV2_SOC
--	select S3C64XX_DMA
--
--config SND_S3C64XX_SOC_I2S_V4
--	tristate
--	select SND_S3C_I2SV2_SOC
--	select S3C64XX_DMA
--
- config SND_S3C_SOC_PCM
- 	tristate
- 
 diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/s3c24xx/Makefile
-index 1d6fc07..dac41ee 100644
+index 20aac45..551a63d 100644
 --- a/sound/soc/s3c24xx/Makefile
 +++ b/sound/soc/s3c24xx/Makefile
-@@ -2,9 +2,7 @@
- snd-soc-s3c24xx-objs := dma.o
+@@ -3,7 +3,7 @@ snd-soc-s3c24xx-objs := dma.o
  snd-soc-s3c24xx-i2s-objs := s3c24xx-i2s.o
  snd-soc-s3c2412-i2s-objs := s3c2412-i2s.o
--snd-soc-s3c64xx-i2s-objs := s3c64xx-i2s.o
- snd-soc-ac97-objs := ac97.o
--snd-soc-s3c64xx-i2s-v4-objs := s3c64xx-i2s-v4.o
+ snd-soc-s3c64xx-i2s-objs := s3c64xx-i2s.o
+-snd-soc-s3c-ac97-objs := s3c-ac97.o
++snd-soc-ac97-objs := ac97.o
+ snd-soc-s3c64xx-i2s-v4-objs := s3c64xx-i2s-v4.o
  snd-soc-s3c-i2s-v2-objs := s3c-i2s-v2.o
- snd-soc-samsung-spdif-objs := spdif.o
- snd-soc-pcm-objs := pcm.o
-@@ -14,8 +12,6 @@ obj-$(CONFIG_SND_S3C24XX_SOC) += snd-soc-s3c24xx.o
+ snd-soc-s3c-pcm-objs := s3c-pcm.o
+@@ -11,7 +11,7 @@ snd-soc-samsung-spdif-objs := spdif.o
+ 
+ obj-$(CONFIG_SND_S3C24XX_SOC) += snd-soc-s3c24xx.o
  obj-$(CONFIG_SND_S3C24XX_SOC_I2S) += snd-soc-s3c24xx-i2s.o
- obj-$(CONFIG_SND_S3C_SOC_AC97) += snd-soc-ac97.o
+-obj-$(CONFIG_SND_S3C_SOC_AC97) += snd-soc-s3c-ac97.o
++obj-$(CONFIG_SND_S3C_SOC_AC97) += snd-soc-ac97.o
  obj-$(CONFIG_SND_S3C2412_SOC_I2S) += snd-soc-s3c2412-i2s.o
--obj-$(CONFIG_SND_S3C64XX_SOC_I2S) += snd-soc-s3c64xx-i2s.o
--obj-$(CONFIG_SND_S3C64XX_SOC_I2S_V4) += snd-soc-s3c64xx-i2s-v4.o
- obj-$(CONFIG_SND_S3C_I2SV2_SOC) += snd-soc-s3c-i2s-v2.o
- obj-$(CONFIG_SND_S5P_SOC_SPDIF) += snd-soc-samsung-spdif.o
- obj-$(CONFIG_SND_S3C_SOC_PCM) += snd-soc-pcm.o
-diff --git a/sound/soc/s3c24xx/s3c64xx-i2s-v4.c b/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
-deleted file mode 100644
-index 8a08041..0000000
---- a/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
-+++ /dev/null
-@@ -1,230 +0,0 @@
--/* sound/soc/s3c24xx/s3c64xx-i2s-v4.c
-- *
-- * ALSA SoC Audio Layer - S3C64XX I2Sv4 driver
-- * Copyright (c) 2010 Samsung Electronics Co. Ltd
+ obj-$(CONFIG_SND_S3C64XX_SOC_I2S) += snd-soc-s3c64xx-i2s.o
+ obj-$(CONFIG_SND_S3C64XX_SOC_I2S_V4) += snd-soc-s3c64xx-i2s-v4.o
+diff --git a/sound/soc/s3c24xx/s3c-ac97.c b/sound/soc/s3c24xx/ac97.c
+similarity index 97%
+rename from sound/soc/s3c24xx/s3c-ac97.c
+rename to sound/soc/s3c24xx/ac97.c
+index 5352cac..4f999d1 100644
+--- a/sound/soc/s3c24xx/s3c-ac97.c
++++ b/sound/soc/s3c24xx/ac97.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c-ac97.c
++/* sound/soc/s3c24xx/ac97.c
+  *
+  * ALSA SoC Audio Layer - S3C AC97 Controller driver
+  * 	Evolved from s3c2443-ac97.c
+@@ -25,7 +25,7 @@
+ #include <plat/audio.h>
+ 
+ #include "dma.h"
+-#include "s3c-ac97.h"
++#include "ac97.h"
+ 
+ #define AC_CMD_ADDR(x) (x << 16)
+ #define AC_CMD_DATA(x) (x & 0xffff)
+@@ -122,7 +122,7 @@ static unsigned short s3c_ac97_read(struct snd_ac97 *ac97,
+ 	data = (stat & 0xffff);
+ 
+ 	if (addr != reg)
+-		pr_err("s3c-ac97: req addr = %02x, rep addr = %02x\n",
++		pr_err("ac97: req addr = %02x, rep addr = %02x\n",
+ 			reg, addr);
+ 
+ 	mutex_unlock(&s3c_ac97.lock);
+@@ -334,7 +334,7 @@ static struct snd_soc_dai_ops s3c_ac97_mic_dai_ops = {
+ 
+ static struct snd_soc_dai_driver s3c_ac97_dai[] = {
+ 	[S3C_AC97_DAI_PCM] = {
+-		.name =	"s3c-ac97",
++		.name =	"samsung-ac97",
+ 		.ac97_control = 1,
+ 		.playback = {
+ 			.stream_name = "AC97 Playback",
+@@ -351,7 +351,7 @@ static struct snd_soc_dai_driver s3c_ac97_dai[] = {
+ 		.ops = &s3c_ac97_dai_ops,
+ 	},
+ 	[S3C_AC97_DAI_MIC] = {
+-		.name = "s3c-ac97-mic",
++		.name = "samsung-ac97-mic",
+ 		.ac97_control = 1,
+ 		.capture = {
+ 			.stream_name = "AC97 Mic Capture",
+@@ -407,7 +407,7 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (!request_mem_region(mem_res->start,
+-				resource_size(mem_res), "s3c-ac97")) {
++				resource_size(mem_res), "ac97")) {
+ 		dev_err(&pdev->dev, "Unable to request register region\n");
+ 		return -EBUSY;
+ 	}
+@@ -431,7 +431,7 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
+ 
+ 	s3c_ac97.ac97_clk = clk_get(&pdev->dev, "ac97");
+ 	if (IS_ERR(s3c_ac97.ac97_clk)) {
+-		dev_err(&pdev->dev, "s3c-ac97 failed to get ac97_clock\n");
++		dev_err(&pdev->dev, "ac97 failed to get ac97_clock\n");
+ 		ret = -ENODEV;
+ 		goto err2;
+ 	}
+@@ -446,7 +446,7 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
+ 	ret = request_irq(irq_res->start, s3c_ac97_irq,
+ 					IRQF_DISABLED, "AC97", NULL);
+ 	if (ret < 0) {
+-		dev_err(&pdev->dev, "s3c-ac97: interrupt request failed.\n");
++		dev_err(&pdev->dev, "ac97: interrupt request failed.\n");
+ 		goto err4;
+ 	}
+ 
+diff --git a/sound/soc/s3c24xx/s3c-ac97.h b/sound/soc/s3c24xx/ac97.h
+similarity index 73%
+rename from sound/soc/s3c24xx/s3c-ac97.h
+rename to sound/soc/s3c24xx/ac97.h
+index 5dcedd0..a8f01b7 100644
+--- a/sound/soc/s3c24xx/s3c-ac97.h
++++ b/sound/soc/s3c24xx/ac97.h
+@@ -1,11 +1,11 @@
+-/* sound/soc/s3c24xx/s3c-ac97.h
++/* sound/soc/s3c24xx/ac97.h
+  *
+  * ALSA SoC Audio Layer - S3C AC97 Controller driver
+- * 	Evolved from s3c2443-ac97.h
++ *	Evolved from s3c2443-ac97.h
+  *
+  * Copyright (c) 2010 Samsung Electronics Co. Ltd
 - * 	Author: Jaswinder Singh <jassi.brar@samsung.com>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--#include <linux/clk.h>
--#include <linux/gpio.h>
--#include <linux/io.h>
--
--#include <sound/soc.h>
--#include <sound/pcm_params.h>
--
--#include <plat/audio.h>
--
--#include <mach/map.h>
--#include <mach/dma.h>
--
--#include "dma.h"
--#include "regs-i2s-v2.h"
--#include "s3c64xx-i2s.h"
--
--static struct s3c2410_dma_client s3c64xx_dma_client_out = {
--	.name		= "I2Sv4 PCM Stereo out"
--};
--
--static struct s3c2410_dma_client s3c64xx_dma_client_in = {
--	.name		= "I2Sv4 PCM Stereo in"
--};
--
--static struct s3c_dma_params s3c64xx_i2sv4_pcm_stereo_out;
--static struct s3c_dma_params s3c64xx_i2sv4_pcm_stereo_in;
--static struct s3c_i2sv2_info s3c64xx_i2sv4;
--
--static int s3c64xx_i2sv4_probe(struct snd_soc_dai *dai)
--{
--	struct s3c_i2sv2_info *i2s = &s3c64xx_i2sv4;
--	int ret = 0;
--
--	snd_soc_dai_set_drvdata(dai, i2s);
--
--	ret = s3c_i2sv2_probe(dai, i2s, i2s->base);
--
--	return ret;
--}
--
--static int s3c_i2sv4_hw_params(struct snd_pcm_substream *substream,
--				 struct snd_pcm_hw_params *params,
--				 struct snd_soc_dai *cpu_dai)
--{
--	struct s3c_i2sv2_info *i2s = snd_soc_dai_get_drvdata(cpu_dai);
--	struct s3c_dma_params *dma_data;
--	u32 iismod;
--
--	dev_dbg(cpu_dai->dev, "Entered %s\n", __func__);
--
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		dma_data = i2s->dma_playback;
--	else
--		dma_data = i2s->dma_capture;
--
--	snd_soc_dai_set_dma_data(cpu_dai, substream, dma_data);
--
--	iismod = readl(i2s->regs + S3C2412_IISMOD);
--	dev_dbg(cpu_dai->dev, "%s: r: IISMOD: %x\n", __func__, iismod);
--
--	iismod &= ~S3C64XX_IISMOD_BLC_MASK;
--	switch (params_format(params)) {
--	case SNDRV_PCM_FORMAT_S8:
--		iismod |= S3C64XX_IISMOD_BLC_8BIT;
--		break;
--	case SNDRV_PCM_FORMAT_S16_LE:
--		break;
--	case SNDRV_PCM_FORMAT_S24_LE:
--		iismod |= S3C64XX_IISMOD_BLC_24BIT;
--		break;
--	}
--
--	writel(iismod, i2s->regs + S3C2412_IISMOD);
--	dev_dbg(cpu_dai->dev, "%s: w: IISMOD: %x\n", __func__, iismod);
--
--	return 0;
--}
--
--static struct snd_soc_dai_ops s3c64xx_i2sv4_dai_ops = {
--	.hw_params	= s3c_i2sv4_hw_params,
--};
--
--static struct snd_soc_dai_driver s3c64xx_i2s_v4_dai = {
--	.symmetric_rates = 1,
--	.playback = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.rates = S3C64XX_I2S_RATES,
--		.formats = S3C64XX_I2S_FMTS,
--	},
--	.capture = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.rates = S3C64XX_I2S_RATES,
--		.formats = S3C64XX_I2S_FMTS,
--	},
--	.probe = s3c64xx_i2sv4_probe,
--	.ops = &s3c64xx_i2sv4_dai_ops,
--};
--
--static __devinit int s3c64xx_i2sv4_dev_probe(struct platform_device *pdev)
--{
--	struct s3c_audio_pdata *i2s_pdata;
--	struct s3c_i2sv2_info *i2s;
--	struct resource *res;
--	int ret;
--
--	i2s = &s3c64xx_i2sv4;
--
--	i2s->feature |= S3C_FEATURE_CDCLKCON;
--
--	i2s->dma_capture = &s3c64xx_i2sv4_pcm_stereo_in;
--	i2s->dma_playback = &s3c64xx_i2sv4_pcm_stereo_out;
--
--	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
--	if (!res) {
--		dev_err(&pdev->dev, "Unable to get I2S-TX dma resource\n");
--		return -ENXIO;
--	}
--	i2s->dma_playback->channel = res->start;
--
--	res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
--	if (!res) {
--		dev_err(&pdev->dev, "Unable to get I2S-RX dma resource\n");
--		return -ENXIO;
--	}
--	i2s->dma_capture->channel = res->start;
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res) {
--		dev_err(&pdev->dev, "Unable to get I2S SFR address\n");
--		return -ENXIO;
--	}
--
--	if (!request_mem_region(res->start, resource_size(res),
--				"s3c64xx-i2s-v4")) {
--		dev_err(&pdev->dev, "Unable to request SFR region\n");
--		return -EBUSY;
--	}
--	i2s->dma_capture->dma_addr = res->start + S3C2412_IISRXD;
--	i2s->dma_playback->dma_addr = res->start + S3C2412_IISTXD;
--
--	i2s->dma_capture->client = &s3c64xx_dma_client_in;
--	i2s->dma_capture->dma_size = 4;
--	i2s->dma_playback->client = &s3c64xx_dma_client_out;
--	i2s->dma_playback->dma_size = 4;
--
--	i2s->base = res->start;
--
--	i2s_pdata = pdev->dev.platform_data;
--	if (i2s_pdata && i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
--		dev_err(&pdev->dev, "Unable to configure gpio\n");
--		return -EINVAL;
--	}
--
--	i2s->iis_cclk = clk_get(&pdev->dev, "audio-bus");
--	if (IS_ERR(i2s->iis_cclk)) {
--		dev_err(&pdev->dev, "failed to get audio-bus\n");
--		ret = PTR_ERR(i2s->iis_cclk);
--		goto err;
--	}
--
--	clk_enable(i2s->iis_cclk);
--
--	ret = s3c_i2sv2_register_dai(&pdev->dev, pdev->id, &s3c64xx_i2s_v4_dai);
--	if (ret != 0)
--		goto err_i2sv2;
--
--	return 0;
--
--err_i2sv2:
--	clk_put(i2s->iis_cclk);
--err:
--	return ret;
--}
--
--static __devexit int s3c64xx_i2sv4_dev_remove(struct platform_device *pdev)
--{
--	struct s3c_i2sv2_info *i2s = &s3c64xx_i2sv4;
--	struct resource *res;
--
--	snd_soc_unregister_dai(&pdev->dev);
--	clk_put(i2s->iis_cclk);
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (res)
--		release_mem_region(res->start, resource_size(res));
--	else
--		dev_warn(&pdev->dev, "Unable to get I2S SFR address\n");
--		
--	return 0;
--}
--
--static struct platform_driver s3c64xx_i2sv4_driver = {
--	.probe  = s3c64xx_i2sv4_dev_probe,
--	.remove = s3c64xx_i2sv4_dev_remove,
--	.driver = {
--		.name = "samsung-i2s-v4",
--		.owner = THIS_MODULE,
--	},
--};
--
--static int __init s3c64xx_i2sv4_init(void)
--{
--	return platform_driver_register(&s3c64xx_i2sv4_driver);
--}
--module_init(s3c64xx_i2sv4_init);
--
--static void __exit s3c64xx_i2sv4_exit(void)
--{
--	platform_driver_unregister(&s3c64xx_i2sv4_driver);
--}
--module_exit(s3c64xx_i2sv4_exit);
--
--/* Module information */
--MODULE_AUTHOR("Jaswinder Singh, <jassi.brar@samsung.com>");
--MODULE_DESCRIPTION("S3C64XX I2Sv4 SoC Interface");
--MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:samsung-i2s-v4");
-diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.c b/sound/soc/s3c24xx/s3c64xx-i2s.c
-deleted file mode 100644
-index 0fefbb5..0000000
---- a/sound/soc/s3c24xx/s3c64xx-i2s.c
-+++ /dev/null
-@@ -1,242 +0,0 @@
--/* sound/soc/s3c24xx/s3c64xx-i2s.c
-- *
-- * ALSA SoC Audio Layer - S3C64XX I2S driver
-- *
-- * Copyright 2008 Openmoko, Inc.
-- * Copyright 2008 Simtec Electronics
-- *      Ben Dooks <ben@simtec.co.uk>
-- *      http://armlinux.simtec.co.uk/
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--#include <linux/module.h>
--#include <linux/clk.h>
--#include <linux/gpio.h>
--#include <linux/io.h>
--#include <linux/slab.h>
--
--#include <sound/soc.h>
--
--#include <plat/audio.h>
--
--#include <mach/map.h>
--#include <mach/dma.h>
--
--#include "dma.h"
--#include "regs-i2s-v2.h"
--#include "s3c64xx-i2s.h"
--
--/* The value should be set to maximum of the total number
-- * of I2Sv3 controllers that any supported SoC has.
-- */
--#define MAX_I2SV3	2
--
--static struct s3c2410_dma_client s3c64xx_dma_client_out = {
--	.name		= "I2S PCM Stereo out"
--};
--
--static struct s3c2410_dma_client s3c64xx_dma_client_in = {
--	.name		= "I2S PCM Stereo in"
--};
--
--static struct s3c_dma_params s3c64xx_i2s_pcm_stereo_out[MAX_I2SV3];
--static struct s3c_dma_params s3c64xx_i2s_pcm_stereo_in[MAX_I2SV3];
--static struct s3c_i2sv2_info s3c64xx_i2s[MAX_I2SV3];
--
--struct clk *s3c64xx_i2s_get_clock(struct snd_soc_dai *dai)
--{
--	struct s3c_i2sv2_info *i2s = snd_soc_dai_get_drvdata(dai);
--	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
--
--	if (iismod & S3C2412_IISMOD_IMS_SYSMUX)
--		return i2s->iis_cclk;
--	else
--		return i2s->iis_pclk;
--}
--EXPORT_SYMBOL_GPL(s3c64xx_i2s_get_clock);
--
--static int s3c64xx_i2s_probe(struct snd_soc_dai *dai)
--{
--	struct s3c_i2sv2_info *i2s;
--	int ret;
--
--	if (dai->id >= MAX_I2SV3) {
--		dev_err(dai->dev, "id %d out of range\n", dai->id);
--		return -EINVAL;
--	}
--
--	i2s = &s3c64xx_i2s[dai->id];
--	snd_soc_dai_set_drvdata(dai, i2s);
--
--	i2s->iis_cclk = clk_get(dai->dev, "audio-bus");
--	if (IS_ERR(i2s->iis_cclk)) {
--		dev_err(dai->dev, "failed to get audio-bus\n");
--		ret = PTR_ERR(i2s->iis_cclk);
--		goto err;
--	}
--
--	clk_enable(i2s->iis_cclk);
--
--	ret = s3c_i2sv2_probe(dai, i2s, i2s->base);
--	if (ret)
--		goto err_clk;
--
--	return 0;
--
--err_clk:
--	clk_disable(i2s->iis_cclk);
--	clk_put(i2s->iis_cclk);
--err:
--	kfree(i2s);
--	return ret;
--}
--
--static int s3c64xx_i2s_remove(struct snd_soc_dai *dai)
--{
--	struct s3c_i2sv2_info *i2s = snd_soc_dai_get_drvdata(dai);
--
--	clk_disable(i2s->iis_cclk);
--	clk_put(i2s->iis_cclk);
--	kfree(i2s);
--	return 0;
--}
--
--static struct snd_soc_dai_ops s3c64xx_i2s_dai_ops;
--
--static struct snd_soc_dai_driver s3c64xx_i2s_dai[MAX_I2SV3] = {
--{
--	.name = "s3c64xx-i2s-0",
--	.probe = s3c64xx_i2s_probe,
--	.remove = s3c64xx_i2s_remove,
--	.playback = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.rates = S3C64XX_I2S_RATES,
--		.formats = S3C64XX_I2S_FMTS,},
--	.capture = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.rates = S3C64XX_I2S_RATES,
--		.formats = S3C64XX_I2S_FMTS,},
--	.ops = &s3c64xx_i2s_dai_ops,
--	.symmetric_rates = 1,
--}, {
--	.name = "s3c64xx-i2s-1",
--	.probe = s3c64xx_i2s_probe,
--	.remove = s3c64xx_i2s_remove,
--	.playback = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.rates = S3C64XX_I2S_RATES,
--		.formats = S3C64XX_I2S_FMTS,},
--	.capture = {
--		.channels_min = 2,
--		.channels_max = 2,
--		.rates = S3C64XX_I2S_RATES,
--		.formats = S3C64XX_I2S_FMTS,},
--	.ops = &s3c64xx_i2s_dai_ops,
--	.symmetric_rates = 1,
--},};
--
--static __devinit int s3c64xx_iis_dev_probe(struct platform_device *pdev)
--{
--	struct s3c_audio_pdata *i2s_pdata;
--	struct s3c_i2sv2_info *i2s;
--	struct resource *res;
--	int i, ret;
--
--	if (pdev->id >= MAX_I2SV3) {
--		dev_err(&pdev->dev, "id %d out of range\n", pdev->id);
--		return -EINVAL;
--	}
--
--	i2s = &s3c64xx_i2s[pdev->id];
--
--	i2s->dma_capture = &s3c64xx_i2s_pcm_stereo_in[pdev->id];
--	i2s->dma_playback = &s3c64xx_i2s_pcm_stereo_out[pdev->id];
--
--	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
--	if (!res) {
--		dev_err(&pdev->dev, "Unable to get I2S-TX dma resource\n");
--		return -ENXIO;
--	}
--	i2s->dma_playback->channel = res->start;
--
--	res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
--	if (!res) {
--		dev_err(&pdev->dev, "Unable to get I2S-RX dma resource\n");
--		return -ENXIO;
--	}
--	i2s->dma_capture->channel = res->start;
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (!res) {
--		dev_err(&pdev->dev, "Unable to get I2S SFR address\n");
--		return -ENXIO;
--	}
--
--	if (!request_mem_region(res->start, resource_size(res),
--				"s3c64xx-i2s")) {
--		dev_err(&pdev->dev, "Unable to request SFR region\n");
--		return -EBUSY;
--	}
--	i2s->base = res->start;
--
--	i2s_pdata = pdev->dev.platform_data;
--	if (i2s_pdata && i2s_pdata->cfg_gpio && i2s_pdata->cfg_gpio(pdev)) {
--		dev_err(&pdev->dev, "Unable to configure gpio\n");
--		return -EINVAL;
--	}
--	i2s->dma_capture->dma_addr = res->start + S3C2412_IISRXD;
--	i2s->dma_playback->dma_addr = res->start + S3C2412_IISTXD;
--
--	i2s->dma_capture->client = &s3c64xx_dma_client_in;
--	i2s->dma_capture->dma_size = 4;
--	i2s->dma_playback->client = &s3c64xx_dma_client_out;
--	i2s->dma_playback->dma_size = 4;
--
--	for (i = 0; i < ARRAY_SIZE(s3c64xx_i2s_dai); i++) {
--		ret = s3c_i2sv2_register_dai(&pdev->dev, i,
--						&s3c64xx_i2s_dai[i]);
--		if (ret != 0)
--			return ret;
--	}
--
--	return 0;
--}
--
--static __devexit int s3c64xx_iis_dev_remove(struct platform_device *pdev)
--{
--	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(s3c64xx_i2s_dai));
--	return 0;
--}
--
--static struct platform_driver s3c64xx_iis_driver = {
--	.probe  = s3c64xx_iis_dev_probe,
--	.remove = s3c64xx_iis_dev_remove,
--	.driver = {
--		.name = "samsung-i2s",
--		.owner = THIS_MODULE,
--	},
--};
--
--static int __init s3c64xx_i2s_init(void)
--{
--	return platform_driver_register(&s3c64xx_iis_driver);
--}
--module_init(s3c64xx_i2s_init);
--
--static void __exit s3c64xx_i2s_exit(void)
--{
--	platform_driver_unregister(&s3c64xx_iis_driver);
--}
--module_exit(s3c64xx_i2s_exit);
--
--/* Module information */
--MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
--MODULE_DESCRIPTION("S3C64XX I2S SoC Interface");
--MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:samsung-i2s");
-diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.h b/sound/soc/s3c24xx/s3c64xx-i2s.h
-deleted file mode 100644
-index de4075d..0000000
---- a/sound/soc/s3c24xx/s3c64xx-i2s.h
-+++ /dev/null
-@@ -1,41 +0,0 @@
--/* sound/soc/s3c24xx/s3c64xx-i2s.h
-- *
-- * ALSA SoC Audio Layer - S3C64XX I2S driver
-- *
-- * Copyright 2008 Openmoko, Inc.
-- * Copyright 2008 Simtec Electronics
-- *      Ben Dooks <ben@simtec.co.uk>
-- *      http://armlinux.simtec.co.uk/
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--#ifndef __SND_SOC_S3C24XX_S3C64XX_I2S_H
--#define __SND_SOC_S3C24XX_S3C64XX_I2S_H __FILE__
--
--struct clk;
--
--#include "s3c-i2s-v2.h"
--
--#define S3C64XX_DIV_BCLK	S3C_I2SV2_DIV_BCLK
--#define S3C64XX_DIV_RCLK	S3C_I2SV2_DIV_RCLK
--#define S3C64XX_DIV_PRESCALER	S3C_I2SV2_DIV_PRESCALER
--
--#define S3C64XX_CLKSRC_PCLK	S3C_I2SV2_CLKSRC_PCLK
--#define S3C64XX_CLKSRC_MUX	S3C_I2SV2_CLKSRC_AUDIOBUS
--#define S3C64XX_CLKSRC_CDCLK    S3C_I2SV2_CLKSRC_CDCLK
--
--#define S3C64XX_I2S_RATES \
--	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
--	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
--	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
--
--#define S3C64XX_I2S_FMTS \
--	(SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |\
--	 SNDRV_PCM_FMTBIT_S24_LE)
--
--struct clk *s3c64xx_i2s_get_clock(struct snd_soc_dai *dai);
--
--#endif /* __SND_SOC_S3C24XX_S3C64XX_I2S_H */
+- * 	Credits: Graeme Gregory, Sean Choi
++ *	Author: Jaswinder Singh <jassi.brar@samsung.com>
++ *	Credits: Graeme Gregory, Sean Choi
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+diff --git a/sound/soc/s3c24xx/ln2440sbc_alc650.c b/sound/soc/s3c24xx/ln2440sbc_alc650.c
+index dda11ac..e507174 100644
+--- a/sound/soc/s3c24xx/ln2440sbc_alc650.c
++++ b/sound/soc/s3c24xx/ln2440sbc_alc650.c
+@@ -24,7 +24,7 @@
+ #include <sound/soc-dapm.h>
+ 
+ #include "dma.h"
+-#include "s3c-ac97.h"
++#include "ac97.h"
+ 
+ static struct snd_soc_card ln2440sbc;
+ 
+diff --git a/sound/soc/s3c24xx/smdk2443_wm9710.c b/sound/soc/s3c24xx/smdk2443_wm9710.c
+index 0205138..5051699 100644
+--- a/sound/soc/s3c24xx/smdk2443_wm9710.c
++++ b/sound/soc/s3c24xx/smdk2443_wm9710.c
+@@ -20,7 +20,7 @@
+ #include <sound/soc-dapm.h>
+ 
+ #include "dma.h"
+-#include "s3c-ac97.h"
++#include "ac97.h"
+ 
+ static struct snd_soc_card smdk2443;
+ 
+diff --git a/sound/soc/s3c24xx/smdk_wm9713.c b/sound/soc/s3c24xx/smdk_wm9713.c
+index 56b448d..7ce2430 100644
+--- a/sound/soc/s3c24xx/smdk_wm9713.c
++++ b/sound/soc/s3c24xx/smdk_wm9713.c
+@@ -16,7 +16,7 @@
+ #include <sound/soc.h>
+ 
+ #include "dma.h"
+-#include "s3c-ac97.h"
++#include "ac97.h"
+ 
+ static struct snd_soc_card smdk;
+ 
 -- 
 1.6.2.5
