@@ -1,22 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v2] ASoC: TWL4030: Use usleep_range when
- appropriate
-Date: Tue, 26 Oct 2010 11:11:11 +0100
-Message-ID: <1288087871.3301.8.camel@odin>
-References: <1287995663-12395-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20101025182228.GF16246@opensource.wolfsonmicro.com>
+From: Julia Lawall <julia@diku.dk>
+Subject: [PATCH 9/14] sound/oss/sb_ess.c: delete double
+	assignment
+Date: Tue, 26 Oct 2010 12:25:38 +0200
+Message-ID: <1288088743-3725-10-git-send-email-julia@diku.dk>
+References: <1288088743-3725-1-git-send-email-julia@diku.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id B9E2610380F
+Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3BC66103801
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Oct 2010 12:11:21 +0200 (CEST)
-Received: by wye20 with SMTP id 20so4529927wye.38
-	for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2010 03:11:19 -0700 (PDT)
-In-Reply-To: <20101025182228.GF16246@opensource.wolfsonmicro.com>
+	Tue, 26 Oct 2010 12:18:22 +0200 (CEST)
+In-Reply-To: <1288088743-3725-1-git-send-email-julia@diku.dk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,25 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-10-25 at 11:22 -0700, Mark Brown wrote:
-> On Mon, Oct 25, 2010 at 11:34:23AM +0300, Peter Ujfalusi wrote:
-> > Change the busy loop delays with usleep_range or msleep calls.
-> > 
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> 
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> _______________________________________________
+From: Julia Lawall <julia@diku.dk>
 
-Applied.
+Delete successive assignments to the same location.
 
-Thanks
+A simplified version of the semantic match that finds this problem is as
+follows: (http://coccinelle.lip6.fr/)
 
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+// <smpl>
+@@
+expression i;
+@@
+
+*i = ...;
+ i = ...;
+// </smpl>
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
+
+---
+ sound/oss/sb_ess.c |    1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/oss/sb_ess.c b/sound/oss/sb_ess.c
+index 51a3d38..9890cf2 100644
+--- a/sound/oss/sb_ess.c
++++ b/sound/oss/sb_ess.c
+@@ -1722,7 +1722,6 @@ printk (KERN_INFO "FKS: es_rec_set_recmask mask = %x\n", mask);
+ 				right = (value & 0x0000ff00) >> 8;
+ 			} else {				/* Turn it off (3)  */
+ 				left  = 0;
+-				left  = 0;
+ 				right = 0;
+ 			}
+ 			sb_common_mixer_set(devc, i + ES_REC_MIXER_RECDIFF, left, right);
