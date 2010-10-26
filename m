@@ -1,17 +1,17 @@
 From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCH 01/18] ASoC: Samsung: Remove redundant AQUILA
-	driver
-Date: Tue, 26 Oct 2010 10:31:51 +0900
-Message-ID: <1288056711-24769-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: [PATCH 18/18] ASoC: Samsung: Rename from s3c24xx to
+	samsung
+Date: Tue, 26 Oct 2010 10:33:43 +0900
+Message-ID: <1288056823-25321-1-git-send-email-jassisinghbrar@gmail.com>
 References: <1288056632-24673-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3ACC810388A
+	by alsa0.perex.cz (Postfix) with ESMTP id 40F2E10392D
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Oct 2010 03:39:07 +0200 (CEST)
+	Tue, 26 Oct 2010 03:39:10 +0200 (CEST)
 In-Reply-To: <1288056632-24673-1-git-send-email-jassisinghbrar@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,417 +28,417 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jassi Brar <jassi.brar@samsung.com>
 
-AQUILA and GONI are essentially the same h/w w.r.t ASoC.
-They only differ by the fact that GONI has stereo speaker-out
-whereas AQUILA has mono.
-
-The difference can easily be handled in the same MACHINE driver
-by making machine-specific runtime changes.
+Finally, move the 's3c24xx' directory to 'samsung'
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- sound/soc/s3c24xx/Kconfig         |   17 +--
- sound/soc/s3c24xx/Makefile        |    4 +-
- sound/soc/s3c24xx/aquila_wm8994.c |  295 -------------------------------------
- sound/soc/s3c24xx/goni_wm8994.c   |   19 +++-
- 4 files changed, 23 insertions(+), 312 deletions(-)
- delete mode 100644 sound/soc/s3c24xx/aquila_wm8994.c
+ sound/soc/Kconfig                                  |    2 +-
+ sound/soc/Makefile                                 |    2 +-
+ sound/soc/{s3c24xx => samsung}/Kconfig             |    0
+ sound/soc/{s3c24xx => samsung}/Makefile            |    0
+ sound/soc/{s3c24xx => samsung}/ac97.c              |    2 +-
+ sound/soc/{s3c24xx => samsung}/ac97.h              |    2 +-
+ sound/soc/{s3c24xx => samsung}/dma.c               |    0
+ sound/soc/{s3c24xx => samsung}/dma.h               |    0
+ sound/soc/{s3c24xx => samsung}/goni_wm8994.c       |    0
+ sound/soc/{s3c24xx => samsung}/i2s.c               |    2 +-
+ sound/soc/{s3c24xx => samsung}/i2s.h               |    2 +-
+ sound/soc/{s3c24xx => samsung}/jive_wm8750.c       |    2 +-
+ sound/soc/{s3c24xx => samsung}/lm4857.h            |    0
+ sound/soc/{s3c24xx => samsung}/ln2440sbc_alc650.c  |    0
+ .../{s3c24xx => samsung}/neo1973_gta02_wm8753.c    |    0
+ sound/soc/{s3c24xx => samsung}/neo1973_wm8753.c    |    0
+ sound/soc/{s3c24xx => samsung}/pcm.c               |    2 +-
+ sound/soc/{s3c24xx => samsung}/pcm.h               |    2 +-
+ sound/soc/{s3c24xx => samsung}/regs-i2s-v2.h       |    0
+ sound/soc/{s3c24xx => samsung}/rx1950_uda1380.c    |    0
+ sound/soc/{s3c24xx => samsung}/s3c-i2s-v2.c        |    2 +-
+ sound/soc/{s3c24xx => samsung}/s3c-i2s-v2.h        |    2 +-
+ sound/soc/{s3c24xx => samsung}/s3c2412-i2s.c       |    2 +-
+ sound/soc/{s3c24xx => samsung}/s3c2412-i2s.h       |    2 +-
+ sound/soc/{s3c24xx => samsung}/s3c24xx-i2s.c       |    0
+ sound/soc/{s3c24xx => samsung}/s3c24xx-i2s.h       |    0
+ sound/soc/{s3c24xx => samsung}/s3c24xx_simtec.c    |    2 +-
+ sound/soc/{s3c24xx => samsung}/s3c24xx_simtec.h    |    2 +-
+ .../{s3c24xx => samsung}/s3c24xx_simtec_hermes.c   |    2 +-
+ .../s3c24xx_simtec_tlv320aic23.c                   |    2 +-
+ sound/soc/{s3c24xx => samsung}/s3c24xx_uda134x.c   |    0
+ sound/soc/{s3c24xx => samsung}/smartq_wm8987.c     |    2 +-
+ sound/soc/{s3c24xx => samsung}/smdk2443_wm9710.c   |    0
+ sound/soc/{s3c24xx => samsung}/smdk_spdif.c        |    0
+ sound/soc/{s3c24xx => samsung}/smdk_wm8580.c       |    0
+ sound/soc/{s3c24xx => samsung}/smdk_wm9713.c       |    0
+ sound/soc/{s3c24xx => samsung}/spdif.c             |    2 +-
+ sound/soc/{s3c24xx => samsung}/spdif.h             |    2 +-
+ 38 files changed, 20 insertions(+), 20 deletions(-)
+ rename sound/soc/{s3c24xx => samsung}/Kconfig (100%)
+ rename sound/soc/{s3c24xx => samsung}/Makefile (100%)
+ rename sound/soc/{s3c24xx => samsung}/ac97.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/ac97.h (95%)
+ rename sound/soc/{s3c24xx => samsung}/dma.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/dma.h (100%)
+ rename sound/soc/{s3c24xx => samsung}/goni_wm8994.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/i2s.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/i2s.h (96%)
+ rename sound/soc/{s3c24xx => samsung}/jive_wm8750.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/lm4857.h (100%)
+ rename sound/soc/{s3c24xx => samsung}/ln2440sbc_alc650.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/neo1973_gta02_wm8753.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/neo1973_wm8753.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/pcm.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/pcm.h (99%)
+ rename sound/soc/{s3c24xx => samsung}/regs-i2s-v2.h (100%)
+ rename sound/soc/{s3c24xx => samsung}/rx1950_uda1380.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/s3c-i2s-v2.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/s3c-i2s-v2.h (98%)
+ rename sound/soc/{s3c24xx => samsung}/s3c2412-i2s.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/s3c2412-i2s.h (95%)
+ rename sound/soc/{s3c24xx => samsung}/s3c24xx-i2s.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/s3c24xx-i2s.h (100%)
+ rename sound/soc/{s3c24xx => samsung}/s3c24xx_simtec.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/s3c24xx_simtec.h (94%)
+ rename sound/soc/{s3c24xx => samsung}/s3c24xx_simtec_hermes.c (98%)
+ rename sound/soc/{s3c24xx => samsung}/s3c24xx_simtec_tlv320aic23.c (98%)
+ rename sound/soc/{s3c24xx => samsung}/s3c24xx_uda134x.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/smartq_wm8987.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/smdk2443_wm9710.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/smdk_spdif.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/smdk_wm8580.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/smdk_wm9713.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/spdif.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/spdif.h (94%)
 
-diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
-index 8a6b53c..6efdf65 100644
---- a/sound/soc/s3c24xx/Kconfig
-+++ b/sound/soc/s3c24xx/Kconfig
-@@ -144,22 +144,13 @@ config SND_S3C64XX_SOC_SMARTQ
- 	select SND_S3C64XX_SOC_I2S
- 	select SND_SOC_WM8750
- 
--config SND_S5PC110_SOC_AQUILA_WM8994
--	tristate "SoC I2S Audio support for AQUILA - WM8994"
--	depends on SND_S3C24XX_SOC && MACH_AQUILA
-+config SND_SOC_GONI_AQUILA_WM8994
-+	tristate "SoC I2S Audio support for AQUILA/GONI - WM8994"
-+	depends on SND_S3C24XX_SOC && (MACH_GONI || MACH_AQUILA)
- 	select SND_S3C64XX_SOC_I2S_V4
- 	select SND_SOC_WM8994
- 	help
--	  Say Y if you want to add support for SoC audio on aquila
--	  with the WM8994.
--
--config SND_S5PV210_SOC_GONI_WM8994
--	tristate "SoC I2S Audio support for GONI - WM8994"
--	depends on SND_S3C24XX_SOC && MACH_GONI
--	select SND_S3C64XX_SOC_I2S_V4
--	select SND_SOC_WM8994
--	help
--	  Say Y if you want to add support for SoC audio on goni
-+	  Say Y if you want to add support for SoC audio on goni or aquila
- 	  with the WM8994.
- 
- config SND_SOC_SMDK_SPDIF
-diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/s3c24xx/Makefile
-index ee8f41d..4e232f1 100644
---- a/sound/soc/s3c24xx/Makefile
-+++ b/sound/soc/s3c24xx/Makefile
-@@ -33,7 +33,6 @@ snd-soc-rx1950-uda1380-objs := rx1950_uda1380.o
- snd-soc-smdk64xx-wm8580-objs := smdk64xx_wm8580.o
- snd-soc-smdk-wm9713-objs := smdk_wm9713.o
- snd-soc-s3c64xx-smartq-wm8987-objs := smartq_wm8987.o
--snd-soc-aquila-wm8994-objs := aquila_wm8994.o
- snd-soc-goni-wm8994-objs := goni_wm8994.o
- snd-soc-smdk-spdif-objs := smdk_spdif.o
- 
-@@ -50,6 +49,5 @@ obj-$(CONFIG_SND_S3C24XX_SOC_RX1950_UDA1380) += snd-soc-rx1950-uda1380.o
- obj-$(CONFIG_SND_S3C64XX_SOC_WM8580) += snd-soc-smdk64xx-wm8580.o
- obj-$(CONFIG_SND_SOC_SMDK_WM9713) += snd-soc-smdk-wm9713.o
- obj-$(CONFIG_SND_S3C64XX_SOC_SMARTQ) += snd-soc-s3c64xx-smartq-wm8987.o
--obj-$(CONFIG_SND_S5PC110_SOC_AQUILA_WM8994) += snd-soc-aquila-wm8994.o
--obj-$(CONFIG_SND_S5PV210_SOC_GONI_WM8994) += snd-soc-goni-wm8994.o
- obj-$(CONFIG_SND_SOC_SMDK_SPDIF) += snd-soc-smdk-spdif.o
-+obj-$(CONFIG_SND_SOC_GONI_AQUILA_WM8994) += snd-soc-goni-wm8994.o
-diff --git a/sound/soc/s3c24xx/aquila_wm8994.c b/sound/soc/s3c24xx/aquila_wm8994.c
-deleted file mode 100644
-index 235d197..0000000
---- a/sound/soc/s3c24xx/aquila_wm8994.c
-+++ /dev/null
-@@ -1,295 +0,0 @@
--/*
-- * aquila_wm8994.c
-- *
-- * Copyright (C) 2010 Samsung Electronics Co.Ltd
-- * Author: Chanwoo Choi <cw00.choi@samsung.com>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-- */
--
--#include <linux/module.h>
--#include <linux/moduleparam.h>
--#include <linux/io.h>
--#include <linux/platform_device.h>
--#include <sound/soc.h>
--#include <sound/soc-dapm.h>
--#include <sound/jack.h>
--#include <asm/mach-types.h>
--#include <mach/gpio.h>
--#include <mach/regs-clock.h>
--
--#include <linux/mfd/wm8994/core.h>
--#include <linux/mfd/wm8994/registers.h>
--#include "../codecs/wm8994.h"
--#include "s3c-dma.h"
--#include "s3c64xx-i2s.h"
--
--static struct snd_soc_card aquila;
--static struct platform_device *aquila_snd_device;
--
--/* 3.5 pie jack */
--static struct snd_soc_jack jack;
--
--/* 3.5 pie jack detection DAPM pins */
--static struct snd_soc_jack_pin jack_pins[] = {
--	{
--		.pin = "Headset Mic",
--		.mask = SND_JACK_MICROPHONE,
--	}, {
--		.pin = "Headset Stereophone",
--		.mask = SND_JACK_HEADPHONE | SND_JACK_MECHANICAL |
--			SND_JACK_AVOUT,
--	},
--};
--
--/* 3.5 pie jack detection gpios */
--static struct snd_soc_jack_gpio jack_gpios[] = {
--	{
--		.gpio = S5PV210_GPH0(6),
--		.name = "DET_3.5",
--		.report = SND_JACK_HEADSET | SND_JACK_MECHANICAL |
--			SND_JACK_AVOUT,
--		.debounce_time = 200,
--	},
--};
--
--static const struct snd_soc_dapm_widget aquila_dapm_widgets[] = {
--	SND_SOC_DAPM_SPK("Ext Spk", NULL),
--	SND_SOC_DAPM_SPK("Ext Rcv", NULL),
--	SND_SOC_DAPM_HP("Headset Stereophone", NULL),
--	SND_SOC_DAPM_MIC("Headset Mic", NULL),
--	SND_SOC_DAPM_MIC("Main Mic", NULL),
--	SND_SOC_DAPM_MIC("2nd Mic", NULL),
--	SND_SOC_DAPM_LINE("Radio In", NULL),
--};
--
--static const struct snd_soc_dapm_route aquila_dapm_routes[] = {
--	{"Ext Spk", NULL, "SPKOUTLP"},
--	{"Ext Spk", NULL, "SPKOUTLN"},
--
--	{"Ext Rcv", NULL, "HPOUT2N"},
--	{"Ext Rcv", NULL, "HPOUT2P"},
--
--	{"Headset Stereophone", NULL, "HPOUT1L"},
--	{"Headset Stereophone", NULL, "HPOUT1R"},
--
--	{"IN1RN", NULL, "Headset Mic"},
--	{"IN1RP", NULL, "Headset Mic"},
--
--	{"IN1RN", NULL, "2nd Mic"},
--	{"IN1RP", NULL, "2nd Mic"},
--
--	{"IN1LN", NULL, "Main Mic"},
--	{"IN1LP", NULL, "Main Mic"},
--
--	{"IN2LN", NULL, "Radio In"},
--	{"IN2RN", NULL, "Radio In"},
--};
--
--static int aquila_wm8994_init(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_codec *codec = rtd->codec;
--	int ret;
--
--	/* add aquila specific widgets */
--	snd_soc_dapm_new_controls(codec, aquila_dapm_widgets,
--			ARRAY_SIZE(aquila_dapm_widgets));
--
--	/* set up aquila specific audio routes */
--	snd_soc_dapm_add_routes(codec, aquila_dapm_routes,
--			ARRAY_SIZE(aquila_dapm_routes));
--
--	/* set endpoints to not connected */
--	snd_soc_dapm_nc_pin(codec, "IN2LP:VXRN");
--	snd_soc_dapm_nc_pin(codec, "IN2RP:VXRP");
--	snd_soc_dapm_nc_pin(codec, "LINEOUT1N");
--	snd_soc_dapm_nc_pin(codec, "LINEOUT1P");
--	snd_soc_dapm_nc_pin(codec, "LINEOUT2N");
--	snd_soc_dapm_nc_pin(codec, "LINEOUT2P");
--	snd_soc_dapm_nc_pin(codec, "SPKOUTRN");
--	snd_soc_dapm_nc_pin(codec, "SPKOUTRP");
--
--	snd_soc_dapm_sync(codec);
--
--	/* Headset jack detection */
--	ret = snd_soc_jack_new(&aquila, "Headset Jack",
--			SND_JACK_HEADSET | SND_JACK_MECHANICAL | SND_JACK_AVOUT,
--			&jack);
--	if (ret)
--		return ret;
--
--	ret = snd_soc_jack_add_pins(&jack, ARRAY_SIZE(jack_pins), jack_pins);
--	if (ret)
--		return ret;
--
--	ret = snd_soc_jack_add_gpios(&jack, ARRAY_SIZE(jack_gpios), jack_gpios);
--	if (ret)
--		return ret;
--
--	return 0;
--}
--
--static int aquila_hifi_hw_params(struct snd_pcm_substream *substream,
--		struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	unsigned int pll_out = 24000000;
--	int ret = 0;
--
--	/* set the cpu DAI configuration */
--	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
--			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	/* set the cpu system clock */
--	ret = snd_soc_dai_set_sysclk(cpu_dai, S3C64XX_CLKSRC_PCLK,
--			0, SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	/* set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
--			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec FLL */
--	ret = snd_soc_dai_set_pll(codec_dai, WM8994_FLL1, 0, pll_out,
--			params_rate(params) * 256);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec system clock */
--	ret = snd_soc_dai_set_sysclk(codec_dai, WM8994_SYSCLK_FLL1,
--			params_rate(params) * 256, SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--static struct snd_soc_ops aquila_hifi_ops = {
--	.hw_params = aquila_hifi_hw_params,
--};
--
--static int aquila_voice_hw_params(struct snd_pcm_substream *substream,
--		struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	unsigned int pll_out = 24000000;
--	int ret = 0;
--
--	if (params_rate(params) != 8000)
--		return -EINVAL;
--
--	/* set codec DAI configuration */
--	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_LEFT_J |
--			SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_CBM_CFM);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec FLL */
--	ret = snd_soc_dai_set_pll(codec_dai, WM8994_FLL2, 0, pll_out,
--			params_rate(params) * 256);
--	if (ret < 0)
--		return ret;
--
--	/* set the codec system clock */
--	ret = snd_soc_dai_set_sysclk(codec_dai, WM8994_SYSCLK_FLL2,
--			params_rate(params) * 256, SND_SOC_CLOCK_IN);
--	if (ret < 0)
--		return ret;
--
--	return 0;
--}
--
--static struct snd_soc_dai_driver voice_dai = {
--	.name = "aquila-voice-dai",
--	.playback = {
--		.channels_min = 1,
--		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_8000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
--	.capture = {
--		.channels_min = 1,
--		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_8000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
--};
--
--static struct snd_soc_ops aquila_voice_ops = {
--	.hw_params = aquila_voice_hw_params,
--};
--
--static struct snd_soc_dai_link aquila_dai[] = {
--{
--	.name = "WM8994",
--	.stream_name = "WM8994 HiFi",
--	.cpu_dai_name = "s3c64xx-i2s-v4",
--	.codec_dai_name = "wm8994-hifi",
--	.platform_name = "s3c24xx-pcm-audio",
--	.codec_name = "wm8994-codec.0-0x1a",
--	.init = aquila_wm8994_init,
--	.ops = &aquila_hifi_ops,
--}, {
--	.name = "WM8994 Voice",
--	.stream_name = "Voice",
--	.cpu_dai_name = "aquila-voice-dai",
--	.codec_dai_name = "wm8994-voice",
--	.platform_name = "s3c24xx-pcm-audio",
--	.codec_name = "wm8994-codec.0-0x1a",
--	.ops = &aquila_voice_ops,
--},
--};
--
--static struct snd_soc_card aquila = {
--	.name = "aquila",
--	.dai_link = aquila_dai,
--	.num_links = ARRAY_SIZE(aquila_dai),
--};
--
--static int __init aquila_init(void)
--{
--	int ret;
--
--	if (!machine_is_aquila())
--		return -ENODEV;
--
--	aquila_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!aquila_snd_device)
--		return -ENOMEM;
--
--	/* register voice DAI here */
--	ret = snd_soc_register_dai(&aquila_snd_device->dev, &voice_dai);
--	if (ret)
--		return ret;
--
--	platform_set_drvdata(aquila_snd_device, &aquila);
--	ret = platform_device_add(aquila_snd_device);
--
--	if (ret)
--		platform_device_put(aquila_snd_device);
--
--	return ret;
--}
--
--static void __exit aquila_exit(void)
--{
--	platform_device_unregister(aquila_snd_device);
--}
--
--module_init(aquila_init);
--module_exit(aquila_exit);
--
--/* Module information */
--MODULE_DESCRIPTION("ALSA SoC WM8994 Aquila(S5PC110)");
--MODULE_AUTHOR("Chanwoo Choi <cw00.choi@samsung.com>");
--MODULE_LICENSE("GPL");
-diff --git a/sound/soc/s3c24xx/goni_wm8994.c b/sound/soc/s3c24xx/goni_wm8994.c
-index 694f702..ef22f14 100644
---- a/sound/soc/s3c24xx/goni_wm8994.c
-+++ b/sound/soc/s3c24xx/goni_wm8994.c
-@@ -28,6 +28,14 @@
- #include "s3c-dma.h"
- #include "s3c64xx-i2s.h"
- 
-+#define MACHINE_NAME	0
-+#define CPU_VOICE_DAI	1
-+
-+static const char *aquila_str[] = {
-+	[MACHINE_NAME] = "aquila",
-+	[CPU_VOICE_DAI] = "aquila-voice-dai",
-+};
-+
- static struct snd_soc_card goni;
- static struct platform_device *goni_snd_device;
- 
-@@ -115,6 +123,11 @@ static int goni_wm8994_init(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_dapm_nc_pin(codec, "LINEOUT2N");
- 	snd_soc_dapm_nc_pin(codec, "LINEOUT2P");
- 
-+	if (machine_is_aquila()) {
-+		snd_soc_dapm_nc_pin(codec, "SPKOUTRN");
-+		snd_soc_dapm_nc_pin(codec, "SPKOUTRP");
-+	}
-+
- 	snd_soc_dapm_sync(codec);
- 
- 	/* Headset jack detection */
-@@ -263,7 +276,11 @@ static int __init goni_init(void)
- {
- 	int ret;
- 
--	if (!machine_is_goni())
-+	if (machine_is_aquila()) {
-+		voice_dai.name = aquila_str[CPU_VOICE_DAI];
-+		goni_dai[1].cpu_dai_name = aquila_str[CPU_VOICE_DAI];
-+		goni.name = aquila_str[MACHINE_NAME];
-+	} else if (!machine_is_goni())
- 		return -ENODEV;
- 
- 	goni_snd_device = platform_device_alloc("soc-audio", -1);
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 3e598e7..2722b19 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -36,7 +36,7 @@ source "sound/soc/nuc900/Kconfig"
+ source "sound/soc/omap/Kconfig"
+ source "sound/soc/kirkwood/Kconfig"
+ source "sound/soc/pxa/Kconfig"
+-source "sound/soc/s3c24xx/Kconfig"
++source "sound/soc/samsung/Kconfig"
+ source "sound/soc/s6000/Kconfig"
+ source "sound/soc/sh/Kconfig"
+ source "sound/soc/txx9/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index eb18344..ce913bf 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -14,7 +14,7 @@ obj-$(CONFIG_SND_SOC)	+= nuc900/
+ obj-$(CONFIG_SND_SOC)	+= omap/
+ obj-$(CONFIG_SND_SOC)	+= kirkwood/
+ obj-$(CONFIG_SND_SOC)	+= pxa/
+-obj-$(CONFIG_SND_SOC)	+= s3c24xx/
++obj-$(CONFIG_SND_SOC)	+= samsung/
+ obj-$(CONFIG_SND_SOC)	+= s6000/
+ obj-$(CONFIG_SND_SOC)	+= sh/
+ obj-$(CONFIG_SND_SOC)	+= txx9/
+diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/samsung/Kconfig
+similarity index 100%
+rename from sound/soc/s3c24xx/Kconfig
+rename to sound/soc/samsung/Kconfig
+diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/samsung/Makefile
+similarity index 100%
+rename from sound/soc/s3c24xx/Makefile
+rename to sound/soc/samsung/Makefile
+diff --git a/sound/soc/s3c24xx/ac97.c b/sound/soc/samsung/ac97.c
+similarity index 99%
+rename from sound/soc/s3c24xx/ac97.c
+rename to sound/soc/samsung/ac97.c
+index 4f999d1..4770a95 100644
+--- a/sound/soc/s3c24xx/ac97.c
++++ b/sound/soc/samsung/ac97.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/ac97.c
++/* sound/soc/samsung/ac97.c
+  *
+  * ALSA SoC Audio Layer - S3C AC97 Controller driver
+  * 	Evolved from s3c2443-ac97.c
+diff --git a/sound/soc/s3c24xx/ac97.h b/sound/soc/samsung/ac97.h
+similarity index 95%
+rename from sound/soc/s3c24xx/ac97.h
+rename to sound/soc/samsung/ac97.h
+index a8f01b7..0d0e1b5 100644
+--- a/sound/soc/s3c24xx/ac97.h
++++ b/sound/soc/samsung/ac97.h
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/ac97.h
++/* sound/soc/samsung/ac97.h
+  *
+  * ALSA SoC Audio Layer - S3C AC97 Controller driver
+  *	Evolved from s3c2443-ac97.h
+diff --git a/sound/soc/s3c24xx/dma.c b/sound/soc/samsung/dma.c
+similarity index 100%
+rename from sound/soc/s3c24xx/dma.c
+rename to sound/soc/samsung/dma.c
+diff --git a/sound/soc/s3c24xx/dma.h b/sound/soc/samsung/dma.h
+similarity index 100%
+rename from sound/soc/s3c24xx/dma.h
+rename to sound/soc/samsung/dma.h
+diff --git a/sound/soc/s3c24xx/goni_wm8994.c b/sound/soc/samsung/goni_wm8994.c
+similarity index 100%
+rename from sound/soc/s3c24xx/goni_wm8994.c
+rename to sound/soc/samsung/goni_wm8994.c
+diff --git a/sound/soc/s3c24xx/i2s.c b/sound/soc/samsung/i2s.c
+similarity index 99%
+rename from sound/soc/s3c24xx/i2s.c
+rename to sound/soc/samsung/i2s.c
+index 7e6ddfa..d6de3f0 100644
+--- a/sound/soc/s3c24xx/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/i2s.c
++/* sound/soc/samsung/i2s.c
+  *
+  * ALSA SoC Audio Layer - Samsung I2S Controller driver
+  *
+diff --git a/sound/soc/s3c24xx/i2s.h b/sound/soc/samsung/i2s.h
+similarity index 96%
+rename from sound/soc/s3c24xx/i2s.h
+rename to sound/soc/samsung/i2s.h
+index d3180b3..8e15f6a 100644
+--- a/sound/soc/s3c24xx/i2s.h
++++ b/sound/soc/samsung/i2s.h
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/i2s.h
++/* sound/soc/samsung/i2s.h
+  *
+  * ALSA SoC Audio Layer - Samsung I2S Controller driver
+  *
+diff --git a/sound/soc/s3c24xx/jive_wm8750.c b/sound/soc/samsung/jive_wm8750.c
+similarity index 99%
+rename from sound/soc/s3c24xx/jive_wm8750.c
+rename to sound/soc/samsung/jive_wm8750.c
+index 4e1b8ac..fe1649e 100644
+--- a/sound/soc/s3c24xx/jive_wm8750.c
++++ b/sound/soc/samsung/jive_wm8750.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/jive_wm8750.c
++/* sound/soc/samsung/jive_wm8750.c
+  *
+  * Copyright 2007,2008 Simtec Electronics
+  *
+diff --git a/sound/soc/s3c24xx/lm4857.h b/sound/soc/samsung/lm4857.h
+similarity index 100%
+rename from sound/soc/s3c24xx/lm4857.h
+rename to sound/soc/samsung/lm4857.h
+diff --git a/sound/soc/s3c24xx/ln2440sbc_alc650.c b/sound/soc/samsung/ln2440sbc_alc650.c
+similarity index 100%
+rename from sound/soc/s3c24xx/ln2440sbc_alc650.c
+rename to sound/soc/samsung/ln2440sbc_alc650.c
+diff --git a/sound/soc/s3c24xx/neo1973_gta02_wm8753.c b/sound/soc/samsung/neo1973_gta02_wm8753.c
+similarity index 100%
+rename from sound/soc/s3c24xx/neo1973_gta02_wm8753.c
+rename to sound/soc/samsung/neo1973_gta02_wm8753.c
+diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/samsung/neo1973_wm8753.c
+similarity index 100%
+rename from sound/soc/s3c24xx/neo1973_wm8753.c
+rename to sound/soc/samsung/neo1973_wm8753.c
+diff --git a/sound/soc/s3c24xx/pcm.c b/sound/soc/samsung/pcm.c
+similarity index 99%
+rename from sound/soc/s3c24xx/pcm.c
+rename to sound/soc/samsung/pcm.c
+index 4d0f6e4..48d0b75 100644
+--- a/sound/soc/s3c24xx/pcm.c
++++ b/sound/soc/samsung/pcm.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/pcm.c
++/* sound/soc/samsung/pcm.c
+  *
+  * ALSA SoC Audio Layer - S3C PCM-Controller driver
+  *
+diff --git a/sound/soc/s3c24xx/pcm.h b/sound/soc/samsung/pcm.h
+similarity index 99%
+rename from sound/soc/s3c24xx/pcm.h
+rename to sound/soc/samsung/pcm.h
+index 3775216..03393dc 100644
+--- a/sound/soc/s3c24xx/pcm.h
++++ b/sound/soc/samsung/pcm.h
+@@ -1,4 +1,4 @@
+-/*  sound/soc/s3c24xx/pcm.h
++/*  sound/soc/samsung/pcm.h
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+diff --git a/sound/soc/s3c24xx/regs-i2s-v2.h b/sound/soc/samsung/regs-i2s-v2.h
+similarity index 100%
+rename from sound/soc/s3c24xx/regs-i2s-v2.h
+rename to sound/soc/samsung/regs-i2s-v2.h
+diff --git a/sound/soc/s3c24xx/rx1950_uda1380.c b/sound/soc/samsung/rx1950_uda1380.c
+similarity index 100%
+rename from sound/soc/s3c24xx/rx1950_uda1380.c
+rename to sound/soc/samsung/rx1950_uda1380.c
+diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
+similarity index 99%
+rename from sound/soc/s3c24xx/s3c-i2s-v2.c
+rename to sound/soc/samsung/s3c-i2s-v2.c
+index c471431..094f36e 100644
+--- a/sound/soc/s3c24xx/s3c-i2s-v2.c
++++ b/sound/soc/samsung/s3c-i2s-v2.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c-i2c-v2.c
++/* sound/soc/samsung/s3c-i2c-v2.c
+  *
+  * ALSA Soc Audio Layer - I2S core for newer Samsung SoCs.
+  *
+diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.h b/sound/soc/samsung/s3c-i2s-v2.h
+similarity index 98%
+rename from sound/soc/s3c24xx/s3c-i2s-v2.h
+rename to sound/soc/samsung/s3c-i2s-v2.h
+index d458301..f8297d9 100644
+--- a/sound/soc/s3c24xx/s3c-i2s-v2.h
++++ b/sound/soc/samsung/s3c-i2s-v2.h
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c-i2s-v2.h
++/* sound/soc/samsung/s3c-i2s-v2.h
+  *
+  * ALSA Soc Audio Layer - S3C_I2SV2 I2S driver
+  *
+diff --git a/sound/soc/s3c24xx/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
+similarity index 99%
+rename from sound/soc/s3c24xx/s3c2412-i2s.c
+rename to sound/soc/samsung/s3c2412-i2s.c
+index d953ff4..7ea8378 100644
+--- a/sound/soc/s3c24xx/s3c2412-i2s.c
++++ b/sound/soc/samsung/s3c2412-i2s.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c2412-i2s.c
++/* sound/soc/samsung/s3c2412-i2s.c
+  *
+  * ALSA Soc Audio Layer - S3C2412 I2S driver
+  *
+diff --git a/sound/soc/s3c24xx/s3c2412-i2s.h b/sound/soc/samsung/s3c2412-i2s.h
+similarity index 95%
+rename from sound/soc/s3c24xx/s3c2412-i2s.h
+rename to sound/soc/samsung/s3c2412-i2s.h
+index 01a0471..02ad579 100644
+--- a/sound/soc/s3c24xx/s3c2412-i2s.h
++++ b/sound/soc/samsung/s3c2412-i2s.h
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c2412-i2s.c
++/* sound/soc/samsung/s3c2412-i2s.c
+  *
+  * ALSA Soc Audio Layer - S3C2412 I2S driver
+  *
+diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
+similarity index 100%
+rename from sound/soc/s3c24xx/s3c24xx-i2s.c
+rename to sound/soc/samsung/s3c24xx-i2s.c
+diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.h b/sound/soc/samsung/s3c24xx-i2s.h
+similarity index 100%
+rename from sound/soc/s3c24xx/s3c24xx-i2s.h
+rename to sound/soc/samsung/s3c24xx-i2s.h
+diff --git a/sound/soc/s3c24xx/s3c24xx_simtec.c b/sound/soc/samsung/s3c24xx_simtec.c
+similarity index 99%
+rename from sound/soc/s3c24xx/s3c24xx_simtec.c
+rename to sound/soc/samsung/s3c24xx_simtec.c
+index 3f052a5..4a1b002 100644
+--- a/sound/soc/s3c24xx/s3c24xx_simtec.c
++++ b/sound/soc/samsung/s3c24xx_simtec.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c24xx_simtec.c
++/* sound/soc/samsung/s3c24xx_simtec.c
+  *
+  * Copyright 2009 Simtec Electronics
+  *
+diff --git a/sound/soc/s3c24xx/s3c24xx_simtec.h b/sound/soc/samsung/s3c24xx_simtec.h
+similarity index 94%
+rename from sound/soc/s3c24xx/s3c24xx_simtec.h
+rename to sound/soc/samsung/s3c24xx_simtec.h
+index e63d5ff..8270748 100644
+--- a/sound/soc/s3c24xx/s3c24xx_simtec.h
++++ b/sound/soc/samsung/s3c24xx_simtec.h
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c24xx_simtec.h
++/* sound/soc/samsung/s3c24xx_simtec.h
+  *
+  * Copyright 2009 Simtec Electronics
+  *
+diff --git a/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c b/sound/soc/samsung/s3c24xx_simtec_hermes.c
+similarity index 98%
+rename from sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
+rename to sound/soc/samsung/s3c24xx_simtec_hermes.c
+index 8b246ab..fec4cac 100644
+--- a/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
++++ b/sound/soc/samsung/s3c24xx_simtec_hermes.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
++/* sound/soc/samsung/s3c24xx_simtec_hermes.c
+  *
+  * Copyright 2009 Simtec Electronics
+  *
+diff --git a/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c b/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
+similarity index 98%
+rename from sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
+rename to sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
+index a922e1e..7915e02 100644
+--- a/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
++++ b/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
++/* sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
+  *
+  * Copyright 2009 Simtec Electronics
+  *
+diff --git a/sound/soc/s3c24xx/s3c24xx_uda134x.c b/sound/soc/samsung/s3c24xx_uda134x.c
+similarity index 100%
+rename from sound/soc/s3c24xx/s3c24xx_uda134x.c
+rename to sound/soc/samsung/s3c24xx_uda134x.c
+diff --git a/sound/soc/s3c24xx/smartq_wm8987.c b/sound/soc/samsung/smartq_wm8987.c
+similarity index 99%
+rename from sound/soc/s3c24xx/smartq_wm8987.c
+rename to sound/soc/samsung/smartq_wm8987.c
+index 5fcc420..3564e00 100644
+--- a/sound/soc/s3c24xx/smartq_wm8987.c
++++ b/sound/soc/samsung/smartq_wm8987.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/smartq_wm8987.c
++/* sound/soc/samsung/smartq_wm8987.c
+  *
+  * Copyright 2010 Maurus Cuelenaere <mcuelenaere@gmail.com>
+  *
+diff --git a/sound/soc/s3c24xx/smdk2443_wm9710.c b/sound/soc/samsung/smdk2443_wm9710.c
+similarity index 100%
+rename from sound/soc/s3c24xx/smdk2443_wm9710.c
+rename to sound/soc/samsung/smdk2443_wm9710.c
+diff --git a/sound/soc/s3c24xx/smdk_spdif.c b/sound/soc/samsung/smdk_spdif.c
+similarity index 100%
+rename from sound/soc/s3c24xx/smdk_spdif.c
+rename to sound/soc/samsung/smdk_spdif.c
+diff --git a/sound/soc/s3c24xx/smdk_wm8580.c b/sound/soc/samsung/smdk_wm8580.c
+similarity index 100%
+rename from sound/soc/s3c24xx/smdk_wm8580.c
+rename to sound/soc/samsung/smdk_wm8580.c
+diff --git a/sound/soc/s3c24xx/smdk_wm9713.c b/sound/soc/samsung/smdk_wm9713.c
+similarity index 100%
+rename from sound/soc/s3c24xx/smdk_wm9713.c
+rename to sound/soc/samsung/smdk_wm9713.c
+diff --git a/sound/soc/s3c24xx/spdif.c b/sound/soc/samsung/spdif.c
+similarity index 99%
+rename from sound/soc/s3c24xx/spdif.c
+rename to sound/soc/samsung/spdif.c
+index dc85df3..f081640 100644
+--- a/sound/soc/s3c24xx/spdif.c
++++ b/sound/soc/samsung/spdif.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/spdif.c
++/* sound/soc/samsung/spdif.c
+  *
+  * ALSA SoC Audio Layer - Samsung S/PDIF Controller driver
+  *
+diff --git a/sound/soc/s3c24xx/spdif.h b/sound/soc/samsung/spdif.h
+similarity index 94%
+rename from sound/soc/s3c24xx/spdif.h
+rename to sound/soc/samsung/spdif.h
+index 3ed5559..4f72cb4 100644
+--- a/sound/soc/s3c24xx/spdif.h
++++ b/sound/soc/samsung/spdif.h
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/spdif.h
++/* sound/soc/samsung/spdif.h
+  *
+  * ALSA SoC Audio Layer - Samsung S/PDIF Controller driver
+  *
 -- 
 1.6.2.5
