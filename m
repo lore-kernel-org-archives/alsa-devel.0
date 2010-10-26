@@ -1,15 +1,17 @@
 From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCHv3] ASoC: Overhaul Samsung drivers
-Date: Tue, 26 Oct 2010 10:30:32 +0900
-Message-ID: <1288056632-24673-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: [PATCH 07/18] ASoC: Samsung: Rename PCM driver
+Date: Tue, 26 Oct 2010 10:33:40 +0900
+Message-ID: <1288056820-24968-1-git-send-email-jassisinghbrar@gmail.com>
+References: <1288056632-24673-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2FC181037FC
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C736103923
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Oct 2010 03:39:07 +0200 (CEST)
+	Tue, 26 Oct 2010 03:39:10 +0200 (CEST)
+In-Reply-To: <1288056632-24673-1-git-send-email-jassisinghbrar@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,120 +27,76 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jassi Brar <jassi.brar@samsung.com>
 
-Hi,
+Rename Samsung PCM Controller driver
+	s3c-pcm.[c/h] -> pcm.[c/h]
 
-Submitting revised patch series.
+Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+---
+ sound/soc/s3c24xx/Makefile             |    4 ++--
+ sound/soc/s3c24xx/{s3c-pcm.c => pcm.c} |    4 ++--
+ sound/soc/s3c24xx/{s3c-pcm.h => pcm.h} |    2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+ rename sound/soc/s3c24xx/{s3c-pcm.c => pcm.c} (99%)
+ rename sound/soc/s3c24xx/{s3c-pcm.h => pcm.h} (99%)
 
-Since v2:
-a) Divided 'ASoC Samsung Add common I2S driver' into two.
-b) 'ARM Samsung Rename s3c64xx I2S platform device' based on plat tree
-
-As Kgene agreed to prepare a branch for Mark, platform related
-changes are based on his tree wherever possible.
-
-Patches for Kgene will be posted on Arm-Linux ml and those
-for Mark Brown, on ALSA ml, now that people have already
-'seen' two versions of the patch series with same code but
-different segregation.
-
-Here is overview of patches:-
-
-For Kgene:-
-************
-   S5PV310: DMA: Add platform devices for PL330 DMACs
-   ARM: Samsung: Rename s3c64xx I2S platform device
-   ARM: Samsung: Prepare audio header for new I2S driver
-   ARM: S3C64XX: I2S: Upgrade platform device
-   ARM: S5P64X0: I2S: Upgrade platform device
-   ARM: S5P6442: I2S: Upgrade platform device
-   ARM: S5PC100: I2S: Upgrade platform device
-   ARM: S5PV210: I2S: Upgrade platform device
-   ARM: S5PV310: Add audio platform devices
-
-
-For Mark :-
-***********
-   ASoC: Samsung: Remove redundant AQUILA driver
-   ASoC: Samsung: Rename DMA device
-   ARM: Samsung: Define common audio-dma device
-   ASoC: Samsung: Rename ASoC DMA driver
-   ASoC: Samsung: Rename AC97 platform device
-   ASoC: Samsung: Rename AC97 driver
-   ASoC: Samsung: Rename PCM driver
-   ASoC: Samsung: Generalize DMA driver namespace
-   ASoC: Samsung: Rename s3c64xx I2S device
-   ASoC: Samsung: Add common I2S driver
-   ASoC: SMARTQ: Move to use new I2S driver
-   ASoC: GONI: Move to use new I2S driver
-   ASoC: SMDK64XX: Move to use new I2S driver
-   ASoC: S3C64XX: Remove obsoleted I2S drivers
-   ASoC: SMDK64XX: Rename for other platforms
-   ASoC: SMDK_WM8580: Enable for SMDKC100
-   ASoC: Samsung: Generalize Kconfig symbols
-   ASoC: Samsung: Rename from s3c24xx to samsung
-
-
-Thanks.
-
-*************************************************
-
-Since v1:
-a) Use case 16 in set_bfs and default for error
-b) Better code comments.
-c) Use switch case in i2sv2_i2s_set_clkdiv
-d) Use SNDRV_PCM_RATE_8000_96000
-e) MAX_I2S -> SAMSUNG_I2S_SECOFF
-f) Local namespace cleanup with i2s driver.
-------------
-
-Here come patches overhauling the Samsung ASoC support.
-
-The AC97, PCM, SPDIF and ASoC-DMA related code has merely undergone
-cosmetic changes - symbol, device & driver renaming and file moving.
-
-A new I2S controller driver has been added to manage Samsung SoCs since
-S3C64XX. Older driver has been changed only as is necessary.
-Regarding I2S, I have left the s3c24xx series untouched because the
-controllers are too different to run by a common driver. S3C2412's I2S
-does have some similarities, but not important enough to warrant impact
-on new driver design.
-The new I2S driver has been designed around the notion of features/quirks.
-The newer SoCs have revised version of I2S_0(usually) than previous ones.
-So, I2S block is 'specified' in the platform code and the driver works on
-that configuration.
-For now, Secondary I2S DAI works only with System-DMAC. I2S-Internal DMA
-and SRAM will be enabled later.
-
-Testing:-
-  Simple testing of 5.1 channel and hardware mixing seems to work (though
-there seems to be some issue with symmetric_rates in soc-core.c which
-would be tried to fix later as saperate issue).
- I would appreciate any test-results for GONI and SMARTQ.
-
-I suggest the patches 13,14,16 & 17 go via Kgene's Tree, and the rest via ASoC
-tree due to tight dependencies.
-
-1). ASoC: Samsung: Remove redundant AQUILA driver
-2). ASoC: Samsung: Rename DMA device
-3). ARM: Samsung: Define common audio-dma device
-4). ASoC: Samsung: Rename ASoC DMA driver
-5). ASoC: Samsung: Rename AC97 platform device
-6). ASoC: Samsung: Rename AC97 driver
-7). ASoC: Samsung: Rename PCM driver
-8). ASoC: Samsung: Generalize DMA driver namespace
-9). ASoC: Samsung: Rename s3c64xx I2S device
-10). ASoC: Samsung: Add common I2S driver
-11). ARM: S3C64XX: I2S: Upgrade platform device
-12). ARM: S5P6440: I2S: Upgrade platform device
-13). ARM: S5P6442: I2S: Upgrade platform device
-14). ARM: S5PC100: I2S: Upgrade platform device
-15). ARM: S5PV210: I2S: Upgrade platform device
-16). ARM: S5PV310: Add audio platform devices
-17). ASoC: SMARTQ: Move to use new I2S driver
-18). ASoC: GONI: Move to use new I2S driver
-19). ASoC: SMDK64XX: Move to use new I2S driver
-20). ASoC: S3C64XX: Remove obsoleted I2S drivers
-21). ASoC: SMDK64XX: Rename for other platforms
-22). ASoC: SMDK_WM8580: Enable for SMDKC100
-23). ASoC: Samsung: Generalize Kconfig symbols
-24). ASoC: Samsung: Rename from s3c24xx to samsung
+diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/s3c24xx/Makefile
+index 551a63d..93de2a0 100644
+--- a/sound/soc/s3c24xx/Makefile
++++ b/sound/soc/s3c24xx/Makefile
+@@ -6,8 +6,8 @@ snd-soc-s3c64xx-i2s-objs := s3c64xx-i2s.o
+ snd-soc-ac97-objs := ac97.o
+ snd-soc-s3c64xx-i2s-v4-objs := s3c64xx-i2s-v4.o
+ snd-soc-s3c-i2s-v2-objs := s3c-i2s-v2.o
+-snd-soc-s3c-pcm-objs := s3c-pcm.o
+ snd-soc-samsung-spdif-objs := spdif.o
++snd-soc-pcm-objs := pcm.o
+ 
+ obj-$(CONFIG_SND_S3C24XX_SOC) += snd-soc-s3c24xx.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_I2S) += snd-soc-s3c24xx-i2s.o
+@@ -16,8 +16,8 @@ obj-$(CONFIG_SND_S3C2412_SOC_I2S) += snd-soc-s3c2412-i2s.o
+ obj-$(CONFIG_SND_S3C64XX_SOC_I2S) += snd-soc-s3c64xx-i2s.o
+ obj-$(CONFIG_SND_S3C64XX_SOC_I2S_V4) += snd-soc-s3c64xx-i2s-v4.o
+ obj-$(CONFIG_SND_S3C_I2SV2_SOC) += snd-soc-s3c-i2s-v2.o
+-obj-$(CONFIG_SND_S3C_SOC_PCM) += snd-soc-s3c-pcm.o
+ obj-$(CONFIG_SND_S5P_SOC_SPDIF) += snd-soc-samsung-spdif.o
++obj-$(CONFIG_SND_S3C_SOC_PCM) += snd-soc-pcm.o
+ 
+ # S3C24XX Machine Support
+ snd-soc-jive-wm8750-objs := jive_wm8750.o
+diff --git a/sound/soc/s3c24xx/s3c-pcm.c b/sound/soc/s3c24xx/pcm.c
+similarity index 99%
+rename from sound/soc/s3c24xx/s3c-pcm.c
+rename to sound/soc/s3c24xx/pcm.c
+index e111d23..4d0f6e4 100644
+--- a/sound/soc/s3c24xx/s3c-pcm.c
++++ b/sound/soc/s3c24xx/pcm.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c-pcm.c
++/* sound/soc/s3c24xx/pcm.c
+  *
+  * ALSA SoC Audio Layer - S3C PCM-Controller driver
+  *
+@@ -30,7 +30,7 @@
+ #include <plat/dma.h>
+ 
+ #include "dma.h"
+-#include "s3c-pcm.h"
++#include "pcm.h"
+ 
+ static struct s3c2410_dma_client s3c_pcm_dma_client_out = {
+ 	.name		= "PCM Stereo out"
+diff --git a/sound/soc/s3c24xx/s3c-pcm.h b/sound/soc/s3c24xx/pcm.h
+similarity index 99%
+rename from sound/soc/s3c24xx/s3c-pcm.h
+rename to sound/soc/s3c24xx/pcm.h
+index f60baa1..3775216 100644
+--- a/sound/soc/s3c24xx/s3c-pcm.h
++++ b/sound/soc/s3c24xx/pcm.h
+@@ -1,4 +1,4 @@
+-/*  sound/soc/s3c24xx/s3c-pcm.h
++/*  sound/soc/s3c24xx/pcm.h
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+-- 
+1.6.2.5
