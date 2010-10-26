@@ -1,18 +1,28 @@
-From: Julia Lawall <julia@diku.dk>
-Subject: [PATCH 9/14] sound/oss/sb_ess.c: delete double
-	assignment
-Date: Tue, 26 Oct 2010 12:25:38 +0200
-Message-ID: <1288088743-3725-10-git-send-email-julia@diku.dk>
-References: <1288088743-3725-1-git-send-email-julia@diku.dk>
+From: Luke Yelavich <themuso@ubuntu.com>
+Subject: Re: snd-hda-intel (Cirrus Logic CS4206): MacBookPro6,
+ 2 : No S/PDIF with Linux 2.6.36C
+Date: Tue, 26 Oct 2010 08:07:04 -0400
+Message-ID: <20101026120704.GB4674@barbiton>
+References: <loom.20101026T061309-466@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3BC66103801
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id BBEA8243C1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 26 Oct 2010 12:18:22 +0200 (CEST)
-In-Reply-To: <1288088743-3725-1-git-send-email-julia@diku.dk>
+	Tue, 26 Oct 2010 14:07:07 +0200 (CEST)
+Received: from hutte.canonical.com ([91.189.90.181])
+	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
+	id 1PAiJ0-0003NP-TU
+	for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2010 13:07:07 +0100
+Received: from [71.16.235.2] (helo=localhost)
+	by hutte.canonical.com with esmtpsa
+	(TLS-1.0:DHE_RSA_AES_128_CBC_SHA1:16) (Exim 4.69)
+	(envelope-from <themuso@ubuntu.com>) id 1PAiJ0-0001gI-Km
+	for alsa-devel@alsa-project.org; Tue, 26 Oct 2010 13:07:06 +0100
+Content-Disposition: inline
+In-Reply-To: <loom.20101026T061309-466@post.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,41 +32,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <julia@diku.dk>
+On Tue, Oct 26, 2010 at 01:08:33AM EDT, Mohammad Bahathir Hashim wrote:
+> Hi,
+> I want to use MacBook Pro (6,2) Mid-2010 15" with GNU/Linux all the time.
+> IMHO, GNU/Linux provides me the best performance and flexibility for
+> audio and video. 
+> 
+> Problem 1:
+> No SPDIF when using Linux 2.6.36, but it working fine with 2.6.35
+> 
+> Problem  2 ? :
+> xFront Speaker -> controls the woofer sound level
+> Surround -> controls the left and right channel speakers' sound level.
+> 
+> Both kernels 2.6.3[56] show the same problem/feature :). 
 
-Delete successive assignments to the same location.
+Could you please download http://www.alsa-project.org/alsa-info.sh and either upload the results, and reply back with the URL to the results, or attach the resulting text file to your reply? We need a bit more information about your hardware before we can help you any further.
 
-A simplified version of the semantic match that finds this problem is as
-follows: (http://coccinelle.lip6.fr/)
-
-// <smpl>
-@@
-expression i;
-@@
-
-*i = ...;
- i = ...;
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
----
- sound/oss/sb_ess.c |    1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/oss/sb_ess.c b/sound/oss/sb_ess.c
-index 51a3d38..9890cf2 100644
---- a/sound/oss/sb_ess.c
-+++ b/sound/oss/sb_ess.c
-@@ -1722,7 +1722,6 @@ printk (KERN_INFO "FKS: es_rec_set_recmask mask = %x\n", mask);
- 				right = (value & 0x0000ff00) >> 8;
- 			} else {				/* Turn it off (3)  */
- 				left  = 0;
--				left  = 0;
- 				right = 0;
- 			}
- 			sb_common_mixer_set(devc, i + ES_REC_MIXER_RECDIFF, left, right);
+Luke
