@@ -1,82 +1,65 @@
-From: Alexander <subaparts@yandex.ru>
-Subject: Re: New SoC layer codec registration problem
-Date: Thu, 28 Oct 2010 19:51:50 +0400
-Message-ID: <1288281110.2098.47.camel@r60e>
-References: <1288257140.2098.41.camel@r60e>
-	<AANLkTi=wCBkw7v7xMwbcf7F_qQSyD6zb=HTnqeD+EGHM@mail.gmail.com>
+From: Sergei Shtylyov <sshtylyov-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH v5 1/9] davinci: EMAC support for Omapl138-Hawkboard
+Date: Thu, 28 Oct 2010 19:54:01 +0400
+Message-ID: <4CC99C99.5010207@mvista.com>
+References: <1287511587-22216-1-git-send-email-vm.rod25@gmail.com>
+	<1287511587-22216-2-git-send-email-vm.rod25@gmail.com>
+	<B85A65D85D7EB246BE421B3FB0FBB593023475E6EE@dbde02.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward19.mail.yandex.net (forward19.mail.yandex.net
-	[95.108.253.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5DF982451D
-	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Oct 2010 17:52:00 +0200 (CEST)
-In-Reply-To: <AANLkTi=wCBkw7v7xMwbcf7F_qQSyD6zb=HTnqeD+EGHM@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Victor Rodriguez <vm.rod25@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB593023475E6EE-/tLxBxkBPtCIQmiDNMet8wC/G2K4zDHf@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: "Nori, Sekhar" <nsekhar-l0cyMroinI0@public.gmane.org>
+Cc: "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hello.
 
+On 28-10-2010 18:04, Nori, Sekhar wrote:
 
-On Thu, 2010-10-28 at 09:07 -0500, Victor Rodriguez wrote:
-> O        ret = snd_soc_register_codec(&spi->dev, &soc_codec_dev_cs4271,
-> >                                     &cs4271_dai, 1);
-> 
-> Sorry for this maybe I am wrong but shouldn't this bee with {}
-> >        if (ret < 0) {
-> >                kfree(cs4271);
-> >                return ret;
->           }
-> Thanks
-> 
-> Victor Rodriguez
+> Sorry for jumping late on this. Some comments below:
 
-Oh, no, this part is correct, I'm sure.
-The question is why fmt_single_name() picks up "spi0.0" instead of
-"cs4271-codec", I've added some debug output. And this function relies
-on dev_name() instead of dev->driver->name, this works in 2 of 3 cases
-(where one string equals another):
----
-Jan  1 00:00:04 miniCio user.debug kernel: cs4271-codec spi0.0: codec
-register spi0.0
-Jan  1 00:00:04 miniCio user.info kernel: dev_name=spi0.0
-Jan  1 00:00:04 miniCio user.info kernel: dev->driver->name=cs4271-codec
-Jan  1 00:00:04 miniCio user.debug kernel: cs4271-codec spi0.0: dai
-register spi0.0 #1
-Jan  1 00:00:04 miniCio user.debug kernel: Registered DAI 'cs4271-hifi'
-Jan  1 00:00:04 miniCio user.debug kernel: Registered codec 'spi0.0'
-Jan  1 00:00:04 miniCio user.info kernel: Codec driver for CS4271
-registered
-Jan  1 00:00:04 miniCio user.debug kernel: ep93xx-pcm-audio
-ep93xx-pcm-audio: platform register ep93xx-pcm-audio
-Jan  1 00:00:04 miniCio user.info kernel: dev_name=ep93xx-pcm-audio
-Jan  1 00:00:04 miniCio user.info kernel:
-dev->driver->name=ep93xx-pcm-audio
-Jan  1 00:00:04 miniCio user.debug kernel: Registered platform
-'ep93xx-pcm-audio'
-Jan  1 00:00:04 miniCio user.debug kernel: ep93xx-i2s ep93xx-i2s: dai
-register ep93xx-i2s
-Jan  1 00:00:04 miniCio user.info kernel: dev_name=ep93xx-i2s
-Jan  1 00:00:04 miniCio user.info kernel: dev->driver->name=ep93xx-i2s
-Jan  1 00:00:04 miniCio user.debug kernel: Registered DAI 'ep93xx-i2s'
-Jan  1 00:00:04 miniCio user.debug kernel: soc-audio soc-audio: binding
-CS4271 at idx 0
-Jan  1 00:00:04 miniCio user.debug kernel: soc-audio soc-audio: CODEC
-cs4271-codec not registered
-Jan  1 00:00:04 miniCio user.debug kernel: soc-audio soc-audio:
-Registered card 'EDB93XX'
-Jan  1 00:00:04 miniCio user.info kernel: EDB93xx Machine ALSA Driver
-Jan  1 00:00:04 miniCio user.info kernel: ALSA device list:
-Jan  1 00:00:04 miniCio user.info kernel:   No soundcards found.
----
+>> From: Victor Rodriguez<victor.rodriguez-Ut8ZLSGP1ULQT0dZR+AlfA@public.gmane.org>
+
+>> This patch adds EMAC support for the Hawkboard-L138 system
+
+>> Signed-off-by: Victor Rodriguez<victor.rodriguez-Ut8ZLSGP1ULQT0dZR+AlfA@public.gmane.org>
+>> ---
+>>   arch/arm/mach-davinci/board-omapl138-hawk.c |   47 +++++++++++++++++++++++++++
+>>   1 files changed, 47 insertions(+), 0 deletions(-)
+
+>> diff --git a/arch/arm/mach-davinci/board-omapl138-hawk.c b/arch/arm/mach-davinci/board-omapl138-hawk.c
+>> index c472dd8..8633245 100644
+>> --- a/arch/arm/mach-davinci/board-omapl138-hawk.c
+>> +++ b/arch/arm/mach-davinci/board-omapl138-hawk.c
+>> @@ -19,6 +19,51 @@
+>>
+>>   #include<mach/cp_intc.h>
+>>   #include<mach/da8xx.h>
+>> +#include<mach/mux.h>
+>> +
+>> +#define HAWKBOARD_PHY_ID             "0:07"
+>> +
+>> +static short omapl138_hawk_mii_pins[] __initdata = {
+>> +     DA850_MII_TXEN, DA850_MII_TXCLK, DA850_MII_COL, DA850_MII_TXD_3,
+>> +     DA850_MII_TXD_2, DA850_MII_TXD_1, DA850_MII_TXD_0, DA850_MII_RXER,
+>> +     DA850_MII_CRS, DA850_MII_RXCLK, DA850_MII_RXDV, DA850_MII_RXD_3,
+>> +     DA850_MII_RXD_2, DA850_MII_RXD_1, DA850_MII_RXD_0, DA850_MDIO_CLK,
+>> +     DA850_MDIO_D,
+>> +     -1
+
+> -1 need not be a new line. In any case, please include a ',' after it.
+
+    Why is that? It's always a last entry in the array.
+
+WBR, Sergei
