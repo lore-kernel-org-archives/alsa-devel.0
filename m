@@ -1,8 +1,8 @@
 From: Victor Rodriguez <vm.rod25@gmail.com>
 Subject: Re: [PATCH v5 1/9] davinci: EMAC support for
 	Omapl138-Hawkboard
-Date: Thu, 28 Oct 2010 13:34:40 -0500
-Message-ID: <AANLkTi=RMHMCTue-eg2Yz0MC4QnnMELF=ns=LErrE7iB@mail.gmail.com>
+Date: Thu, 28 Oct 2010 13:54:29 -0500
+Message-ID: <AANLkTin_kJcfb0+=pzb6gLk+eZXR5DJXR0s2ZoqGVwaf@mail.gmail.com>
 References: <1287511587-22216-1-git-send-email-vm.rod25@gmail.com>
 	<1287511587-22216-2-git-send-email-vm.rod25@gmail.com>
 	<B85A65D85D7EB246BE421B3FB0FBB593023475E6EE@dbde02.ent.ti.com>
@@ -11,13 +11,13 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id EDF5510380B
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 521B32456D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 28 Oct 2010 20:34:42 +0200 (CEST)
-Received: by yxs7 with SMTP id 7so1699863yxs.38
-	for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2010 11:34:42 -0700 (PDT)
+	Thu, 28 Oct 2010 20:54:30 +0200 (CEST)
+Received: by gyg8 with SMTP id 8so1705671gyg.38
+	for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2010 11:54:29 -0700 (PDT)
 In-Reply-To: <4CC99C99.5010207@mvista.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -83,9 +83,14 @@ _CLK,
 > WBR, Sergei
 >
 
-Sergei Nori Sekhar explained that in the last comment. he said that
-there is no change on ti
+Hey Sergei these patches have been tested by Rene Gonzales and ack by
+Liam and Mark Brown , I am going to send the patches V6 because of
+this change. I have been rechecking the code and seems that there is
+no problem on it, do you have any other comment before i send the
+series of patches v6 ?
 
-Regards
+Thanks a lot for your comments
+
+Really appreciated
 
 Victor Rodriguez
