@@ -1,42 +1,57 @@
-From: "Sebastian H." <vand2@gmx.de>
-Subject: Alsamixer-Qt4 0.6.0 released
-Date: Tue, 02 Nov 2010 14:38:53 +0100
-Message-ID: <4CD0146D.8020203@gmx.de>
+From: Victor Rodriguez <vm.rod25-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH v5 1/9] davinci: EMAC support for Omapl138-Hawkboard
+Date: Thu, 28 Oct 2010 11:18:49 -0500
+Message-ID: <AANLkTin9bbBQ=QSh3EePXkkBwxr+vVMiv=-nZYS_X8L5@mail.gmail.com>
+References: <1287511587-22216-1-git-send-email-vm.rod25@gmail.com>
+	<1287511587-22216-2-git-send-email-vm.rod25@gmail.com>
+	<B85A65D85D7EB246BE421B3FB0FBB593023475E6EE@dbde02.ent.ti.com>
+	<B85A65D85D7EB246BE421B3FB0FBB593023475E702@dbde02.ent.ti.com>
+	<AANLkTi=NNVieBNmSAfuebZQGAFMxXkpirZXeRSHLb2OA@mail.gmail.com>
+	<B85A65D85D7EB246BE421B3FB0FBB593023475E71A@dbde02.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mailout-de.gmx.net [213.165.64.22])
-	by alsa0.perex.cz (Postfix) with SMTP id E50B010391D
-	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2010 14:41:41 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB593023475E71A-/tLxBxkBPtCIQmiDNMet8wC/G2K4zDHf@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: "Nori, Sekhar" <nsekhar-l0cyMroinI0@public.gmane.org>
+Cc: "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "sshtylyov-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org" <sshtylyov-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello ALSA users
+On Thu, Oct 28, 2010 at 9:34 AM, Nori, Sekhar <nsekhar-l0cyMroinI0@public.gmane.org> wrote:
+> On Thu, Oct 28, 2010 at 19:51:28, Victor Rodriguez wrote:
+>
+>> Ok so let me see if I understand The only change that I should do is to =
+remove
+>>
+>> > + =A0 =A0 if (!machine_is_omapl138_hawkboard())
+>> > + =A0 =A0 =A0 =A0 =A0 =A0 return;
+>>
+>> right ?
+>>
+>
+> Yes.
+>
+> Thanks,
+> Sekhar
+>
 
-The new Alsamixer-Qt4 0.6.0 is now available at
+The change is ready and running but I have  a question if the new
+patch apply fine and any other patches of the series has been changed
+should i send all the patches again like patchv6 ? or should i send
+this EMAC patch like resend patch ?
 
-http://xwmw.org/alsamixer-qt4/
-http://sourceforge.net/projects/alsamixer-qt4/files/
-
-
-Changes (from the CHANGELOG):
-  * New support for string localization (i18n)
-  * German string translations (l10n)
-  * Reintroduced some aspects of the old (0.5.1) widget style
-  * Slight color and contrast enhancements
-  * ToolTips hold playback/capture informations
-  * Requires Qt version 4.6 at minimum (4.4 before)
+I do not thick so but if it is necessary I will do it
 
 
-Regards,
-Sebastian Holtermann
+Thanks and regards
+
+Victor Rodriguez
