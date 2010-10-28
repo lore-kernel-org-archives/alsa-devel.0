@@ -1,78 +1,125 @@
-From: "Nori, Sekhar" <nsekhar-l0cyMroinI0@public.gmane.org>
-Subject: RE: [PATCH v5 1/9] davinci: EMAC support for Omapl138-Hawkboard
-Date: Thu, 28 Oct 2010 19:34:10 +0530
-Message-ID: <B85A65D85D7EB246BE421B3FB0FBB593023475E6EE@dbde02.ent.ti.com>
-References: <1287511587-22216-1-git-send-email-vm.rod25@gmail.com>
-	<1287511587-22216-2-git-send-email-vm.rod25@gmail.com>
+From: Victor Rodriguez <vm.rod25@gmail.com>
+Subject: Re: New SoC layer codec registration problem
+Date: Thu, 28 Oct 2010 09:07:01 -0500
+Message-ID: <AANLkTi=wCBkw7v7xMwbcf7F_qQSyD6zb=HTnqeD+EGHM@mail.gmail.com>
+References: <1288257140.2098.41.camel@r60e>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <1287511587-22216-2-git-send-email-vm.rod25-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Content-Language: en-US
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: "vm.rod25-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <vm.rod25-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "sshtylyov-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org" <sshtylyov-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 70692244C9
+	for <alsa-devel@alsa-project.org>;
+	Thu, 28 Oct 2010 16:07:05 +0200 (CEST)
+Received: by gyg8 with SMTP id 8so1413495gyg.38
+	for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2010 07:07:02 -0700 (PDT)
+In-Reply-To: <1288257140.2098.41.camel@r60e>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Alexander <subaparts@yandex.ru>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Victor,
-
-Sorry for jumping late on this. Some comments below:
-
-On Tue, Oct 19, 2010 at 23:36:19, vm.rod25-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
-> From: Victor Rodriguez <victor.rodriguez-Ut8ZLSGP1ULQT0dZR+AlfA@public.gmane.org>
+On Thu, Oct 28, 2010 at 4:12 AM, Alexander <subaparts@yandex.ru> wrote:
+> I'm trying to implement new SoC codec in linux-next-20101025 kernel.
 >
-> This patch adds EMAC support for the Hawkboard-L138 system
->
-> Signed-off-by: Victor Rodriguez <victor.rodriguez-Ut8ZLSGP1ULQT0dZR+AlfA@public.gmane.org>
+> Part of the code:
 > ---
->  arch/arm/mach-davinci/board-omapl138-hawk.c |   47 +++++++++++++++++++++++++++
->  1 files changed, 47 insertions(+), 0 deletions(-)
+> #if defined(CONFIG_SPI_MASTER)
+> static int __devinit cs4271_spi_probe(struct spi_device *spi)
+> {
+> =A0 =A0 =A0 =A0struct cs4271_private *cs4271;
+> =A0 =A0 =A0 =A0int ret;
 >
-> diff --git a/arch/arm/mach-davinci/board-omapl138-hawk.c b/arch/arm/mach-davinci/board-omapl138-hawk.c
-> index c472dd8..8633245 100644
-> --- a/arch/arm/mach-davinci/board-omapl138-hawk.c
-> +++ b/arch/arm/mach-davinci/board-omapl138-hawk.c
-> @@ -19,6 +19,51 @@
+> =A0 =A0 =A0 =A0cs4271 =3D kzalloc(sizeof *cs4271, GFP_KERNEL);
+> =A0 =A0 =A0 =A0if (!cs4271)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return -ENOMEM;
 >
->  #include <mach/cp_intc.h>
->  #include <mach/da8xx.h>
-> +#include <mach/mux.h>
-> +
-> +#define HAWKBOARD_PHY_ID             "0:07"
-> +
-> +static short omapl138_hawk_mii_pins[] __initdata = {
-> +     DA850_MII_TXEN, DA850_MII_TXCLK, DA850_MII_COL, DA850_MII_TXD_3,
-> +     DA850_MII_TXD_2, DA850_MII_TXD_1, DA850_MII_TXD_0, DA850_MII_RXER,
-> +     DA850_MII_CRS, DA850_MII_RXCLK, DA850_MII_RXDV, DA850_MII_RXD_3,
-> +     DA850_MII_RXD_2, DA850_MII_RXD_1, DA850_MII_RXD_0, DA850_MDIO_CLK,
-> +     DA850_MDIO_D,
-> +     -1
+> =A0 =A0 =A0 =A0spi_set_drvdata(spi, cs4271);
+> =A0 =A0 =A0 =A0cs4271->control_data =3D spi;
+> =A0 =A0 =A0 =A0cs4271->bus_type =3D SND_SOC_SPI;
+>
+> =A0 =A0 =A0 =A0ret =3D snd_soc_register_codec(&spi->dev, &soc_codec_dev_c=
+s4271,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 &=
+cs4271_dai, 1);
 
--1 need not be a new line. In any case, please include a ',' after it.
+Sorry for this maybe I am wrong but shouldn't this bee with {}
+> =A0 =A0 =A0 =A0if (ret < 0) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0kfree(cs4271);
+> =A0 =A0 =A0 =A0        return ret;
+          }
+Thanks
 
-> +};
-> +
-> +static __init void omapl138_hawk_config_emac(void)
-> +{
-> +     void __iomem *cfgchip3 = DA8XX_SYSCFG0_VIRT(DA8XX_CFGCHIP3_REG);
-> +     int ret;
-> +     u32 val;
-> +     struct davinci_soc_info *soc_info = &davinci_soc_info;
-> +
-> +     if (!machine_is_omapl138_hawkboard())
-> +             return;
+Victor Rodriguez
 
-This is not required since this function is called only on
-a hawkboard.
-
-Thanks,
-Sekhar
+> }
+>
+> static int __devexit cs4271_spi_remove(struct spi_device *spi)
+> {
+> =A0 =A0 =A0 =A0snd_soc_unregister_codec(&spi->dev);
+> =A0 =A0 =A0 =A0kfree(spi_get_drvdata(spi));
+> =A0 =A0 =A0 =A0return 0;
+> }
+>
+> static struct spi_driver cs4271_spi_driver =3D {
+> =A0 =A0 =A0 =A0.driver =3D {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.name =A0 =3D "cs4271-codec",
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0.owner =A0=3D THIS_MODULE,
+> =A0 =A0 =A0 =A0},
+> =A0 =A0 =A0 =A0.probe =A0 =A0 =A0 =A0 =A0=3D cs4271_spi_probe,
+> =A0 =A0 =A0 =A0.remove =A0 =A0 =A0 =A0 =3D __devexit_p(cs4271_spi_remove),
+> };
+> #endif /* defined(CONFIG_SPI_MASTER) */
+> ---
+>
+> So, codec name I expect is "cs4271-codec", but codec registered with
+> name "spi0.0"
+>
+> Here is boot log:
+> ---
+> Jan =A01 00:00:04 miniCio user.debug kernel: cs4271-codec spi0.0: codec
+> register spi0.0
+> Jan =A01 00:00:04 miniCio user.debug kernel: cs4271-codec spi0.0: dai
+> register spi0.0 #1
+> Jan =A01 00:00:04 miniCio user.debug kernel: Registered DAI 'cs4271-hifi'
+> Jan =A01 00:00:04 miniCio user.debug kernel: Registered codec 'spi0.0'
+> Jan =A01 00:00:04 miniCio user.info kernel: Codec driver for CS4271
+> registered
+> Jan =A01 00:00:04 miniCio user.debug kernel: ep93xx-pcm-audio
+> ep93xx-pcm-audio: platform register ep93xx-pcm-audio
+> Jan =A01 00:00:04 miniCio user.debug kernel: Registered platform
+> 'ep93xx-pcm-audio'
+> Jan =A01 00:00:04 miniCio user.debug kernel: ep93xx-i2s ep93xx-i2s: dai
+> register ep93xx-i2s
+> Jan =A01 00:00:04 miniCio user.debug kernel: Registered DAI 'ep93xx-i2s'
+> Jan =A01 00:00:04 miniCio user.debug kernel: soc-audio soc-audio: binding
+> CS4271 at idx 0
+> Jan =A01 00:00:04 miniCio user.debug kernel: soc-audio soc-audio: CODEC
+> cs4271-codec not registered
+> Jan =A01 00:00:04 miniCio user.debug kernel: soc-audio soc-audio:
+> Registered card 'EDB93XX'
+> Jan =A01 00:00:04 miniCio user.info kernel: EDB93xx Machine ALSA Driver
+> Jan =A01 00:00:04 miniCio user.info kernel: ALSA device list:
+> Jan =A01 00:00:04 miniCio user.info kernel: =A0 No soundcards found.
+> ---
+>
+> What am I doing wrong?
+>
+> Alexander.
+>
+>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
