@@ -1,75 +1,118 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC_ii/iv 3/3] ASoC: Extend DAPM to handle power
- changes on cross-device paths
-Date: Fri, 29 Oct 2010 14:03:10 -0700
-Message-ID: <20101029210309.GI3921@opensource.wolfsonmicro.com>
-References: <1288353742-22005-1-git-send-email-jhnikula@gmail.com>
-	<1288353742-22005-3-git-send-email-jhnikula@gmail.com>
+From: Jesper Juhl <jj@chaosbits.net>
+Subject: [PATCH] cs46xx memory management fixes for cs46xx_dsp_spos_create()
+ - make sure we free and don't do pointless work.
+Date: Fri, 29 Oct 2010 22:54:45 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1010292242080.24561@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 73A3110386B
-	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Oct 2010 23:03:03 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1288353742-22005-3-git-send-email-jhnikula@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Benny Sjostrand <benny@hostmobility.com>
+Cc: linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 29, 2010 at 03:02:22PM +0300, Jarkko Nikula wrote:
+Hi,
 
-> Functions dapm_seq_run and dapm_seq_run_coalesced are modified so that a new
-> write is issued when the sequence extends to an another device and DAPM
-> context of a widget instead of originating DAPM context is used when doing
-> pop waits and register writes.
+When reading through sound/pci/cs46xx/dsp_spos.c I noticed a couple of 
+things in cs46xx_dsp_spos_create().
 
-I'm having a hard time parsing this bit of the changelog, I'm afraid.
-What I'd expect is that the comparison operation used for coalescing
-would be extended to compare based on the CODEC/DAPM context too and the
-split per device should naturally fall out of that.  I didn't notice the
-comparison being updated?
+It seems to me that we don't always free the various memory buffers we 
+allocate and we also do some work (structure member assignment) early, 
+that is completely pointless if some of the memory allocations fail and 
+we end up just aborting the whole thing.
 
-Otherwise this looks pretty good, these are stylistic things:
+I don't have hardware to test, so the patch below is compile tested only, 
+but it makes the following changes:
 
->  		/* power down pre event */
->  		if (!w->power && w->event &&
->  		    (w->event_flags & SND_SOC_DAPM_PRE_PMD)) {
-> -			pop_dbg(dapm->pop_time, "pop test : %s PRE_PMD\n",
-> +			pop_dbg(w->dapm->pop_time, "pop test : %s PRE_PMD\n",
->  				w->name);
+- Make sure we always free all allocated memory on failures.
+- Don't do pointless work assigning to structure members before we know 
+  all memory allocations, that may abort progress, have completed 
+  successfully.
+- Remove some trailing whitespace.
 
-We probably need to start putting the dev_names in these.
+If it looks ok, please merge, otherwise I'd be interested in knowing 
+what's wrong so I can improve it.
 
->  			if (power)
-> -				sys_power = 1;
-> +				w->dapm->sys_power = 1;
 
-sys_power needs to be renamed - probably dev_power or something.
+Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+---
+ dsp_spos.c |   33 +++++++++++----------------------
+ 1 file changed, 11 insertions(+), 22 deletions(-)
 
-> -	/* If we're changing to all on or all off then prepare */
-> -	if ((sys_power && dapm->bias_level == SND_SOC_BIAS_STANDBY) ||
-> -	    (!sys_power && dapm->bias_level == SND_SOC_BIAS_ON)) {
-> -		ret = snd_soc_dapm_set_bias_level(card, dapm, SND_SOC_BIAS_PREPARE);
-> -		if (ret != 0)
-> -			pr_err("Failed to prepare bias: %d\n", ret);
-> +		/* If we're changing to all on or all off then prepare */
-> +		if ((d->sys_power && d->bias_level == SND_SOC_BIAS_STANDBY) ||
-> +		    (!d->sys_power && d->bias_level == SND_SOC_BIAS_ON)) {
-> +			ret = snd_soc_dapm_set_bias_level(card, d, SND_SOC_BIAS_PREPARE);
-> +			if (ret != 0)
-> +				pr_err("Failed to prepare bias: %d\n", ret);
-> +		}
+diff --git a/sound/pci/cs46xx/dsp_spos.c b/sound/pci/cs46xx/dsp_spos.c
+index 3e5ca8f..e377287 100644
+--- a/sound/pci/cs46xx/dsp_spos.c
++++ b/sound/pci/cs46xx/dsp_spos.c
+@@ -225,39 +225,25 @@ struct dsp_spos_instance *cs46xx_dsp_spos_create (struct snd_cs46xx * chip)
+ {
+ 	struct dsp_spos_instance * ins = kzalloc(sizeof(struct dsp_spos_instance), GFP_KERNEL);
+ 
+-	if (ins == NULL) 
++	if (ins == NULL)
+ 		return NULL;
+ 
+ 	/* better to use vmalloc for this big table */
+-	ins->symbol_table.nsymbols = 0;
+ 	ins->symbol_table.symbols = vmalloc(sizeof(struct dsp_symbol_entry) *
+ 					    DSP_MAX_SYMBOLS);
+-	ins->symbol_table.highest_frag_index = 0;
+-
+-	if (ins->symbol_table.symbols == NULL) {
++	ins->code.data = kmalloc(DSP_CODE_BYTE_SIZE, GFP_KERNEL);
++	ins->modules = kmalloc(sizeof(struct dsp_module_desc) * DSP_MAX_MODULES, GFP_KERNEL);
++	if (!ins->symbol_table.symbols || !ins->code.data || !ins->modules) {
+ 		cs46xx_dsp_spos_destroy(chip);
+ 		goto error;
+ 	}
+-
++	ins->symbol_table.nsymbols = 0;
++	ins->symbol_table.highest_frag_index = 0;
+ 	ins->code.offset = 0;
+ 	ins->code.size = 0;
+-	ins->code.data = kmalloc(DSP_CODE_BYTE_SIZE, GFP_KERNEL);
+-
+-	if (ins->code.data == NULL) {
+-		cs46xx_dsp_spos_destroy(chip);
+-		goto error;
+-	}
+-
+ 	ins->nscb = 0;
+ 	ins->ntask = 0;
+-
+ 	ins->nmodules = 0;
+-	ins->modules = kmalloc(sizeof(struct dsp_module_desc) * DSP_MAX_MODULES, GFP_KERNEL);
+-
+-	if (ins->modules == NULL) {
+-		cs46xx_dsp_spos_destroy(chip);
+-		goto error;
+-	}
+ 
+ 	/* default SPDIF input sample rate
+ 	   to 48000 khz */
+@@ -271,8 +257,8 @@ struct dsp_spos_instance *cs46xx_dsp_spos_create (struct snd_cs46xx * chip)
+ 
+ 	/* set left and right validity bits and
+ 	   default channel status */
+-	ins->spdif_csuv_default = 
+-		ins->spdif_csuv_stream =  
++	ins->spdif_csuv_default =
++		ins->spdif_csuv_stream =
+ 	 /* byte 0 */  ((unsigned int)_wrap_all_bits(  (SNDRV_PCM_DEFAULT_CON_SPDIF        & 0xff)) << 24) |
+ 	 /* byte 1 */  ((unsigned int)_wrap_all_bits( ((SNDRV_PCM_DEFAULT_CON_SPDIF >> 8) & 0xff)) << 16) |
+ 	 /* byte 3 */   (unsigned int)_wrap_all_bits(  (SNDRV_PCM_DEFAULT_CON_SPDIF >> 24) & 0xff) |
+@@ -281,6 +267,9 @@ struct dsp_spos_instance *cs46xx_dsp_spos_create (struct snd_cs46xx * chip)
+ 	return ins;
+ 
+ error:
++	kfree(ins->modules);
++	kfree(ins->code.data);
++	vfree(ins->symbol_table.symbols);
+ 	kfree(ins);
+ 	return NULL;
+ }
 
-We can switch these over to dev_ prints now, I think.
+
+-- 
+Jesper Juhl <jj@chaosbits.net>             http://www.chaosbits.net/
+Plain text mails only, please      http://www.expita.com/nomime.html
+Don't top-post  http://www.catb.org/~esr/jargon/html/T/top-post.html
