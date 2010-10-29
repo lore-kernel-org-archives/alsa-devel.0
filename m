@@ -1,17 +1,17 @@
 From: <vm.rod25@gmail.com>
-Subject: [PATCH v6 1/9] davinci: EMAC support for
+Subject: [PATCH v6 5/9] davinci: Audio support for
 	Omapl138-Hawkboard
-Date: Fri, 29 Oct 2010 10:10:37 -0500
-Message-ID: <1288365045-2709-2-git-send-email-vm.rod25@gmail.com>
+Date: Fri, 29 Oct 2010 10:10:41 -0500
+Message-ID: <1288365045-2709-6-git-send-email-vm.rod25@gmail.com>
 References: <1288365045-2709-1-git-send-email-vm.rod25@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from victor-desktop (unknown [200.52.114.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id A0E302448F
+	by alsa0.perex.cz (Postfix) with ESMTP id A306F24493
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Oct 2010 17:10:48 +0200 (CEST)
+	Fri, 29 Oct 2010 17:10:49 +0200 (CEST)
 In-Reply-To: <1288365045-2709-1-git-send-email-vm.rod25@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,70 +28,92 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Victor Rodriguez <victor.rodriguez@sasken.com>
 
-This patch adds EMAC support for the Hawkboard-L138 system
+This patch adds sound support for the Hawkboard-L138 system
 
 Signed-off-by: Victor Rodriguez <victor.rodriguez@sasken.com>
 ---
- arch/arm/mach-davinci/board-omapl138-hawk.c |   43 +++++++++++++++++++++++++++
- 1 files changed, 43 insertions(+), 0 deletions(-)
+Notes:
+
+This patch works with da8xx_omapl_defconfig
+
+In order to test ALSA utils select in menuconfig like insmodule:
+
+Sound card support  --->
+      Advanced Linux Sound Architecture  --->
+              ALSA for SoC audio support  --->
+              SoC Audio for the TI DAVINCI chip
+              SoC Audio support for DA850/OMAP-L138 EVM/Hawkboard
+
+ arch/arm/mach-davinci/board-omapl138-hawk.c |   46 +++++++++++++++++++++++++++
+ 1 files changed, 46 insertions(+), 0 deletions(-)
 
 diff --git a/arch/arm/mach-davinci/board-omapl138-hawk.c b/arch/arm/mach-davinci/board-omapl138-hawk.c
-index c472dd8..62d35f0 100644
+index 114fc9b..115dac0 100644
 --- a/arch/arm/mach-davinci/board-omapl138-hawk.c
 +++ b/arch/arm/mach-davinci/board-omapl138-hawk.c
-@@ -19,6 +19,47 @@
+@@ -13,6 +13,7 @@
+ #include <linux/init.h>
+ #include <linux/console.h>
+ #include <linux/gpio.h>
++#include <linux/i2c.h>
  
- #include <mach/cp_intc.h>
- #include <mach/da8xx.h>
-+#include <mach/mux.h>
-+
-+#define HAWKBOARD_PHY_ID		"0:07"
-+
-+static short omapl138_hawk_mii_pins[] __initdata = {
-+	DA850_MII_TXEN, DA850_MII_TXCLK, DA850_MII_COL, DA850_MII_TXD_3,
-+	DA850_MII_TXD_2, DA850_MII_TXD_1, DA850_MII_TXD_0, DA850_MII_RXER,
-+	DA850_MII_CRS, DA850_MII_RXCLK, DA850_MII_RXDV, DA850_MII_RXD_3,
-+	DA850_MII_RXD_2, DA850_MII_RXD_1, DA850_MII_RXD_0, DA850_MDIO_CLK,
-+	DA850_MDIO_D,
-+	-1
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+@@ -110,6 +111,38 @@ static struct edma_rsv_info *da850_edma_rsv[2] = {
+ 	&da850_edma_cc1_rsv,
+ };
+ 
++static struct i2c_board_info __initdata omapl138_hawk_i2c_devices[] = {
++	{
++		I2C_BOARD_INFO("tlv320aic3x", 0x18),
++	},
 +};
 +
-+static __init void omapl138_hawk_config_emac(void)
-+{
-+	void __iomem *cfgchip3 = DA8XX_SYSCFG0_VIRT(DA8XX_CFGCHIP3_REG);
-+	int ret;
-+	u32 val;
-+	struct davinci_soc_info *soc_info = &davinci_soc_info;
++static struct davinci_i2c_platform_data omapl138_hawk_i2c_0_pdata = {
++	.bus_freq	= 100,	/* kHz */
++	.bus_delay	= 0,	/* usec */
++};
 +
-+	val = __raw_readl(cfgchip3);
-+	val &= ~BIT(8);
-+	ret = davinci_cfg_reg_list(omapl138_hawk_mii_pins);
-+	if (ret) {
-+		pr_warning("%s: cpgmac/mii mux setup failed: %d\n",
-+			__func__, ret);
-+		return;
-+	}
++/* davinci Hawkboard audio machine driver */
++static u8 da850_iis_serializer_direction[] = {
++	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
++	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
++	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
++	INACTIVE_MODE,	TX_MODE,	RX_MODE,	INACTIVE_MODE,
++};
 +
-+	/* configure the CFGCHIP3 register for MII */
-+	__raw_writel(val, cfgchip3);
-+	pr_info("EMAC: MII PHY configured\n");
++static struct snd_platform_data omapl138_hawk_snd_data = {
++	.tx_dma_offset	= 0x2000,
++	.rx_dma_offset	= 0x2000,
++	.op_mode	= DAVINCI_MCASP_IIS_MODE,
++	.num_serializer	= ARRAY_SIZE(da850_iis_serializer_direction),
++	.tdm_slots	= 2,
++	.serial_dir	= da850_iis_serializer_direction,
++	.asp_chan_q	= EVENTQ_1,
++	.version	= MCASP_VERSION_2,
++	.txnumevt	= 1,
++	.rxnumevt	= 1,
++};
 +
-+	soc_info->emac_pdata->phy_id = HAWKBOARD_PHY_ID;
-+
-+	ret = da8xx_register_emac();
-+	if (ret)
-+		pr_warning("%s: emac registration failed: %d\n",
-+			__func__, ret);
-+}
-+
- 
  static struct davinci_uart_config omapl138_hawk_uart_config __initdata = {
  	.enabled_uarts = 0x7,
-@@ -30,6 +71,8 @@ static __init void omapl138_hawk_init(void)
+ };
+@@ -127,6 +160,19 @@ static __init void omapl138_hawk_init(void)
+ 		pr_warning("%s: EDMA registration failed: %d\n",
+ 			__func__, ret);
  
- 	davinci_serial_init(&omapl138_hawk_uart_config);
- 
-+	omapl138_hawk_config_emac();
++	i2c_register_board_info(1, omapl138_hawk_i2c_devices,
++			ARRAY_SIZE(omapl138_hawk_i2c_devices));
++
++	ret = da8xx_register_i2c(0, &omapl138_hawk_i2c_0_pdata);
++	if (ret)
++		pr_warning("%s: i2c0 registration failed: %d\n",
++			__func__, ret);
++
++	ret = davinci_cfg_reg_list(da850_mcasp_pins);
++	if (ret)
++		pr_warning("%s: mcasp mux setup failed: %d\n", __func__, ret);
++	da8xx_register_mcasp(0, &omapl138_hawk_snd_data);
 +
  	ret = da8xx_register_watchdog();
  	if (ret)
