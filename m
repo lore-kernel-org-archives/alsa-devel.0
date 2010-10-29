@@ -1,19 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC_iv/iv 1/1] ASoC: Add optional name_prefix to
- struct snd_soc_dev_map
-Date: Fri, 29 Oct 2010 14:42:45 -0700
-Message-ID: <20101029214244.GK3921@opensource.wolfsonmicro.com>
-References: <1288353823-22075-1-git-send-email-jhnikula@gmail.com>
+From: "Sebastian H." <vand2@gmx.de>
+Subject: Alsamixer-Qt4 0.5.2 released
+Date: Fri, 29 Oct 2010 23:43:53 +0200
+Message-ID: <4CCB4019.5020601@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 945E9244D4
+Received: from mail.gmx.net (mailout-de.gmx.net [213.165.64.22])
+	by alsa0.perex.cz (Postfix) with SMTP id 03F1D10388C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Oct 2010 23:42:38 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1288353823-22075-1-git-send-email-jhnikula@gmail.com>
+	Fri, 29 Oct 2010 23:46:38 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +19,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 29, 2010 at 03:03:43PM +0300, Jarkko Nikula wrote:
+Hello lists
 
-> @@ -547,6 +548,9 @@ struct snd_soc_dev_map {
->  
->  	/* machine stream operations */
->  	struct snd_soc_ops *ops;
-> +
-> +	/* optional name prefix for kcontrols and widgets */
-> +	const char *name_prefix;
+A new version Alsamixer-Qt4 (0.5.2) is available at
 
-This is another issue with using the DAI links to map these things - as
-previously discussed we want to be able to support CODEC<->CODEC DAI
-links, and we don't have a way to associate controls with specific DAI
-links on multi-DAI devices.
+http://xwmw.org/alsamixer-qt4/
+http://sourceforge.net/projects/alsamixer-qt4/files/
+
+The only but quite drastic change is a new lighter slider widget style.
+This makes sliders better distinguishable when there are a lot of them
+(IMO).
+
+Cheers,
+Sebastian Holtermann
