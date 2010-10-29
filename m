@@ -1,19 +1,21 @@
 From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [RFC_iv/iv 1/1] ASoC: Add optional name_prefix to
-	struct snd_soc_dev_map
-Date: Fri, 29 Oct 2010 15:03:43 +0300
-Message-ID: <1288353823-22075-1-git-send-email-jhnikula@gmail.com>
+Subject: Re: [RFC_i/iv 2/3] ASoC: Decouple DAPM from CODECs.
+ Part codecs (will be squashed)
+Date: Fri, 29 Oct 2010 16:45:58 +0300
+Message-ID: <20101029164558.fb708d2a.jhnikula@gmail.com>
+References: <1288353618-21753-1-git-send-email-jhnikula@gmail.com>
+	<1288353618-21753-3-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9CB4410385D
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id DD80824443
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Oct 2010 14:02:31 +0200 (CEST)
-Received: by ewy22 with SMTP id 22so1625642ewy.38
-	for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2010 05:02:31 -0700 (PDT)
+	Fri, 29 Oct 2010 15:44:42 +0200 (CEST)
+Received: by ewy22 with SMTP id 22so1675649ewy.38
+	for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2010 06:44:42 -0700 (PDT)
+In-Reply-To: <1288353618-21753-3-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,193 +29,142 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-There is a need to prefix codec kcontrol, widget and internal route names in
-an ASoC machine that has multiple codecs with conflicting names. The name
-collision would occur when codec drivers try to registering kcontrols with
-the same name or when building the audio paths between codecs.
+On Fri, 29 Oct 2010 15:00:17 +0300
+Jarkko Nikula <jhnikula@gmail.com> wrote:
 
-This patch solves the issue by introducing optional name_prefix field to
-struct snd_soc_dev_map that machine drivers can specify. ASoC core then uses
-that prefix for prefixing names for codec kcontrols, widgets and codec
-internal routes.
+> Core implementation:
+> Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> 
+> [jhnikula@gmail.com: Fixes and conversions to 88pm860x-codec.c, alc5623,
+> max98088.c, twl4060.c, uda1380.c, wm8731.c, wm8741.c, wm8753.c, wm8804,
+> wm8904.c, wm8962.c, wm8971.c and wm8985.c.
+> Field idle_bias_off removed from struct snd_soc_codec. Affected codecs fixed
+> to use dapm->idle_bias_off]
+> 
+> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+> ---
+Hmm.. have to squash a patch below for cx20442.c, stac9766.c, wm8350.c
+and wm8994.c too into next version.
 
-Following example illustrates how two same codec instances are registered in
-a machine driver. The name collision is avoided by specifying a name prefix
-for the second codec. That prefix is then used in audio map that connects
-output of first codec to the input of second and output of second codec to
-a machine widget.
 
-static const struct snd_soc_dapm_route map0[] = {
-	{"Spk", NULL, "MONO"},
-};
-
-static const struct snd_soc_dapm_route map1[] = {
-	{"foo LINEIN", NULL, "MONO"},
-	{"Vibra", NULL, "foo MONO"},
-};
-
-static struct snd_soc_dev_map bar_dev[] = {
-	{
-		...
-		.codec_name = "simple-codec.0",
-		.init = bar_codec0_init,
-		...
-	},
-	{
-		...
-		.codec_name = "simple-codec.1",
-		.init = bar_codec1_init,
-		.name_prefix = "foo",
-		...
-	},
-};
-
-Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+-- 
+Jarkko
 ---
- include/sound/soc.h  |    4 ++++
- sound/soc/soc-core.c |   16 ++++++++++++++--
- sound/soc/soc-dapm.c |   34 ++++++++++++++++++++++++++++++++--
- 3 files changed, 50 insertions(+), 4 deletions(-)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 17f985c..18de502 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -424,6 +424,7 @@ struct snd_soc_ops {
- /* SoC Audio Codec device */
- struct snd_soc_codec {
- 	const char *name;
-+	const char *name_prefix;
- 	int id;
- 	struct device *dev;
- 	struct snd_soc_codec_driver *driver;
-@@ -547,6 +548,9 @@ struct snd_soc_dev_map {
+diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
+index 524a09f..6f121c3 100644
+--- a/sound/soc/codecs/cx20442.c
++++ b/sound/soc/codecs/cx20442.c
+@@ -263,7 +263,7 @@ static void v253_close(struct tty_struct *tty)
+ 	/* Prevent the codec driver from further accessing the modem */
+ 	codec->hw_write = NULL;
+ 	cx20442->control_data = NULL;
+-	codec->pop_time = 0;
++	codec->dapm->pop_time = 0;
+ }
  
- 	/* machine stream operations */
- 	struct snd_soc_ops *ops;
-+
-+	/* optional name prefix for kcontrols and widgets */
-+	const char *name_prefix;
- };
- 
- /* SoC card */
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index b904a20..2c9b6ef 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1416,6 +1416,7 @@ static int soc_probe_dev_map(struct snd_soc_card *card, int num)
- 	/* probe the CODEC */
- 	if (!codec->probed) {
- 		codec->dapm->card = card;
-+		codec->name_prefix = dev_map->name_prefix;
- 		if (codec->driver->probe) {
- 			ret = codec->driver->probe(codec);
- 			if (ret < 0) {
-@@ -1469,11 +1470,14 @@ static int soc_probe_dev_map(struct snd_soc_card *card, int num)
- 
- 	/* now that all clients have probed, initialise the DAI link */
- 	if (dev_map->init) {
-+		/* machine controls, routes and widgets are not prefixed */
-+		rtd->codec->name_prefix = NULL;
- 		ret = dev_map->init(rtd);
- 		if (ret < 0) {
- 			printk(KERN_ERR "asoc: failed to init %s\n", dev_map->stream_name);
- 			return ret;
- 		}
-+		rtd->codec->name_prefix = dev_map->name_prefix;
- 	}
- 
- 	/* Make sure all DAPM widgets are instantiated */
-@@ -2030,14 +2034,22 @@ int snd_soc_add_controls(struct snd_soc_codec *codec,
- 	const struct snd_kcontrol_new *controls, int num_controls)
- {
- 	struct snd_card *card = codec->card->snd_card;
-+	char prefixed_name[44], *name;
- 	int err, i;
- 
- 	for (i = 0; i < num_controls; i++) {
- 		const struct snd_kcontrol_new *control = &controls[i];
--		err = snd_ctl_add(card, snd_soc_cnew(control, codec, NULL));
-+		if (codec->name_prefix) {
-+			snprintf(prefixed_name, sizeof(prefixed_name), "%s %s",
-+				 codec->name_prefix, control->name);
-+			name = prefixed_name;
-+		} else {
-+			name = control->name;
-+		}
-+		err = snd_ctl_add(card, snd_soc_cnew(control, codec, name));
- 		if (err < 0) {
- 			dev_err(codec->dev, "%s: Failed to add %s: %d\n",
--				codec->name, control->name, err);
-+				codec->name, name, err);
- 			return err;
- 		}
- 	}
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 2bccc9d..34bc7a8 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1291,6 +1291,7 @@ static void dapm_free_widgets(struct snd_soc_dapm_context *dapm)
- 			kfree(p->long_name);
- 			kfree(p);
- 		}
-+		kfree(w->name);
- 		kfree(w);
+ /* Line discipline .hangup() */
+@@ -291,7 +291,7 @@ static void v253_receive(struct tty_struct *tty,
+ 		/* Set up codec driver access to modem controls */
+ 		cx20442->control_data = tty;
+ 		codec->hw_write = (hw_write_t)tty->ops->write;
+-		codec->pop_time = 1;
++		codec->dapm->pop_time = 1;
  	}
  }
-@@ -1339,11 +1340,25 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
- 	struct snd_soc_dapm_path *path;
- 	struct snd_soc_dapm_widget *wsource = NULL, *wsink = NULL, *w;
- 	struct snd_soc_dapm_widget *wtsource = NULL, *wtsink = NULL;
--	const char *sink = route->sink;
-+	const char *sink;
- 	const char *control = route->control;
--	const char *source = route->source;
-+	const char *source;
-+	char prefixed_sink[80];
-+	char prefixed_source[80];
- 	int ret = 0;
  
-+	if (dapm->codec->name_prefix) {
-+		snprintf(prefixed_sink, sizeof(prefixed_sink), "%s %s",
-+			 dapm->codec->name_prefix, route->sink);
-+		sink = prefixed_sink;
-+		snprintf(prefixed_source, sizeof(prefixed_source), "%s %s",
-+			 dapm->codec->name_prefix, route->source);
-+		source = prefixed_source;
-+	} else {
-+		sink = route->sink;
-+		source = route->source;
-+	}
-+
- 	/*
- 	 * find src and dest widgets over all widgets but favor a widget from
- 	 * current DAPM context
-@@ -1983,10 +1998,25 @@ int snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
- 	const struct snd_soc_dapm_widget *widget)
+@@ -348,7 +348,7 @@ static int cx20442_codec_probe(struct snd_soc_codec *codec)
+ 
+ 	cx20442->control_data = NULL;
+ 	codec->hw_write = NULL;
+-	codec->pop_time = 0;
++	codec->dapm->pop_time = 0;
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/stac9766.c b/sound/soc/codecs/stac9766.c
+index 0065789..519999b 100644
+--- a/sound/soc/codecs/stac9766.c
++++ b/sound/soc/codecs/stac9766.c
+@@ -24,6 +24,7 @@
+ #include <sound/initval.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
++#include <sound/soc-dapm.h>
+ #include <sound/tlv.h>
+ 
+ #include "stac9766.h"
+diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
+index bb1b470..4c2259e 100644
+--- a/sound/soc/codecs/wm8350.c
++++ b/sound/soc/codecs/wm8350.c
+@@ -230,8 +230,9 @@ static inline int wm8350_out2_ramp_step(struct snd_soc_codec *codec)
+  */
+ static void wm8350_pga_work(struct work_struct *work)
  {
- 	struct snd_soc_dapm_widget *w;
-+	size_t name_len;
+-	struct snd_soc_codec *codec =
+-	    container_of(work, struct snd_soc_codec, delayed_work.work);
++	struct snd_soc_dapm_context *dapm =
++	    container_of(work, struct snd_soc_dapm_context, delayed_work.work);
++	struct snd_soc_codec *codec = dapm->codec;
+ 	struct wm8350_data *wm8350_data = snd_soc_codec_get_drvdata(codec);
+ 	struct wm8350_output *out1 = &wm8350_data->out1,
+ 	    *out2 = &wm8350_data->out2;
+@@ -302,8 +303,8 @@ static int pga_event(struct snd_soc_dapm_widget *w,
+ 		out->ramp = WM8350_RAMP_UP;
+ 		out->active = 1;
  
- 	if ((w = dapm_cnew_widget(widget)) == NULL)
- 		return -ENOMEM;
+-		if (!delayed_work_pending(&codec->delayed_work))
+-			schedule_delayed_work(&codec->delayed_work,
++		if (!delayed_work_pending(&codec->dapm->delayed_work))
++			schedule_delayed_work(&codec->dapm->delayed_work,
+ 					      msecs_to_jiffies(1));
+ 		break;
  
-+	name_len = strlen(widget->name) + 1;
-+	if (dapm->codec->name_prefix)
-+		name_len += 1 + strlen(dapm->codec->name_prefix);
-+	w->name = kmalloc(name_len, GFP_KERNEL);
-+	if (w->name == NULL) {
-+		kfree(w);
-+		return -ENOMEM;
-+	}
-+	if (dapm->codec->name_prefix)
-+		snprintf(w->name, name_len, "%s %s",
-+			dapm->codec->name_prefix, widget->name);
-+	else
-+		snprintf(w->name, name_len, "%s", widget->name);
-+
- 	dapm->n_widgets++;
- 	w->dapm = dapm;
- 	w->codec = dapm->codec;
--- 
-1.7.2.3
+@@ -311,8 +312,8 @@ static int pga_event(struct snd_soc_dapm_widget *w,
+ 		out->ramp = WM8350_RAMP_DOWN;
+ 		out->active = 0;
+ 
+-		if (!delayed_work_pending(&codec->delayed_work))
+-			schedule_delayed_work(&codec->delayed_work,
++		if (!delayed_work_pending(&codec->dapm->delayed_work))
++			schedule_delayed_work(&codec->dapm->delayed_work,
+ 					      msecs_to_jiffies(1));
+ 		break;
+ 	}
+@@ -1550,7 +1551,7 @@ static  int wm8350_codec_probe(struct snd_soc_codec *codec)
+ 	/* Put the codec into reset if it wasn't already */
+ 	wm8350_clear_bits(wm8350, WM8350_POWER_MGMT_5, WM8350_CODEC_ENA);
+ 
+-	INIT_DELAYED_WORK(&codec->delayed_work, wm8350_pga_work);
++	INIT_DELAYED_WORK(&codec->dapm->delayed_work, wm8350_pga_work);
+ 
+ 	/* Enable the codec */
+ 	wm8350_set_bits(wm8350, WM8350_POWER_MGMT_5, WM8350_CODEC_ENA);
+@@ -1635,12 +1636,12 @@ static int  wm8350_codec_remove(struct snd_soc_codec *codec)
+ 	priv->mic.jack = NULL;
+ 
+ 	/* cancel any work waiting to be queued. */
+-	ret = cancel_delayed_work(&codec->delayed_work);
++	ret = cancel_delayed_work(&codec->dapm->delayed_work);
+ 
+ 	/* if there was any work waiting then we run it now and
+ 	 * wait for its completion */
+ 	if (ret) {
+-		schedule_delayed_work(&codec->delayed_work, 0);
++		schedule_delayed_work(&codec->dapm->delayed_work, 0);
+ 		flush_scheduled_work();
+ 	}
+ 
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 57ba0b1..dc4aa89 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -1837,7 +1837,7 @@ static int configure_clock(struct snd_soc_codec *codec)
+ 
+ 	snd_soc_update_bits(codec, WM8994_CLOCKING_1, WM8994_SYSCLK_SRC, new);
+ 
+-	snd_soc_dapm_sync(codec);
++	snd_soc_dapm_sync(codec->dapm);
+ 
+ 	return 0;
+ }
