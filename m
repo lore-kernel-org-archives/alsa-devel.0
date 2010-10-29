@@ -1,18 +1,17 @@
-From: <vm.rod25@gmail.com>
-Subject: [PATCH v6 7/9] davinci: MMC/SD support for
-	Omapl138-Hawkboar
-Date: Fri, 29 Oct 2010 10:10:43 -0500
-Message-ID: <1288365045-2709-8-git-send-email-vm.rod25@gmail.com>
-References: <1288365045-2709-1-git-send-email-vm.rod25@gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Retrieving original timestamps in dsnoop.
+Date: Fri, 29 Oct 2010 17:41:49 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1010291710060.29422@eeebox2.perex-int.cz>
+References: <A612847CFE53224C91B23E3A5B48BAC749BEFE4D78@xmail3.se.axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from victor-desktop (unknown [200.52.114.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id A5CFA24496
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1216D244A5
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Oct 2010 17:10:49 +0200 (CEST)
-In-Reply-To: <1288365045-2709-1-git-send-email-vm.rod25@gmail.com>
+	Fri, 29 Oct 2010 17:41:50 +0200 (CEST)
+In-Reply-To: <A612847CFE53224C91B23E3A5B48BAC749BEFE4D78@xmail3.se.axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,116 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: davinci-linux-open-source@linux.davincidsp.com
-Cc: alsa-devel@alsa-project.org, sshtylyov@mvista.com, khilman@deeprootsystems.com, broonie@opensource.wolfsonmicro.com, nsekhar@ti.com, khasim@ti.com, caglarakyuz@gmail.com, lrg@slimlogic.co.uk
+To: Pontus Oldberg <pontus.oldberg@axis.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Victor Rodriguez <victor.rodriguez@sasken.com>
+On Fri, 29 Oct 2010, Pontus Oldberg wrote:
 
-This patch adds MMC/SD support for the Hawkboard-L138 system
+> Hello, I am working in a gstreamer based project where we are using 
+> alsasrc to feed the audio pipeline. On of the things that we need to be 
+> able to do is to get the monotonic timestamp from the alsalib in order 
+> for our video and audio to be perfectly synchronized. This worked fine 
+> until we introduced the dsnoop plug-in which creates its own timestamp 
+> reference. I have played around with the dsnoop plugin and created a 
+> preliminary fix that gives us the result that we want.
+>
+> I'd like to know if this looks like the way to go or if this can be 
+> obtained in any other way. We are using dsnoop in order to be able to 
+> create two separate audio pipelines, we don't care about stereo, just 
+> simple mono streams.
 
-Signed-off-by: Victor Rodriguez <victor.rodriguez@sasken.com>
----
-Notes:
+Your version is a bit tricky. Could you try my version at:
 
-This patch works with da8xx_omapl_defconfig
-In order to test it select in menuconfig like insmodule
+http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=13b5d972d2e7a5f0e6f3c066684dbb01fafd5121
 
-MMC/SD/SDIO card support  --->
-      MMC block device driver
-      Use bounce buffer for simple hosts
-      TI DAVINCI Multimedia Card Interface support
+ 					Thank you,
+ 						Jaroslav
 
- arch/arm/mach-davinci/board-omapl138-hawk.c |   63 +++++++++++++++++++++++++++
- 1 files changed, 63 insertions(+), 0 deletions(-)
-
-diff --git a/arch/arm/mach-davinci/board-omapl138-hawk.c b/arch/arm/mach-davinci/board-omapl138-hawk.c
-index 115dac0..02e54fa 100644
---- a/arch/arm/mach-davinci/board-omapl138-hawk.c
-+++ b/arch/arm/mach-davinci/board-omapl138-hawk.c
-@@ -23,6 +23,8 @@
- #include <mach/mux.h>
- 
- #define HAWKBOARD_PHY_ID		"0:07"
-+#define DA850_HAWK_MMCSD_CD_PIN		GPIO_TO_PIN(3, 12)
-+#define DA850_HAWK_MMCSD_WP_PIN		GPIO_TO_PIN(3, 13)
- 
- static short omapl138_hawk_mii_pins[] __initdata = {
- 	DA850_MII_TXEN, DA850_MII_TXCLK, DA850_MII_COL, DA850_MII_TXD_3,
-@@ -143,6 +145,65 @@ static struct snd_platform_data omapl138_hawk_snd_data = {
- 	.rxnumevt	= 1,
- };
- 
-+static const short hawk_mmcsd0_pins[] = {
-+	DA850_MMCSD0_DAT_0, DA850_MMCSD0_DAT_1, DA850_MMCSD0_DAT_2,
-+	DA850_MMCSD0_DAT_3, DA850_MMCSD0_CLK, DA850_MMCSD0_CMD,
-+	DA850_GPIO3_12, DA850_GPIO3_13,
-+	-1
-+};
-+
-+static int da850_hawk_mmc_get_ro(int index)
-+{
-+	return gpio_get_value(DA850_HAWK_MMCSD_WP_PIN);
-+}
-+
-+static int da850_hawk_mmc_get_cd(int index)
-+{
-+	return !gpio_get_value(DA850_HAWK_MMCSD_CD_PIN);
-+}
-+
-+static struct davinci_mmc_config da850_mmc_config = {
-+	.get_ro		= da850_hawk_mmc_get_ro,
-+	.get_cd		= da850_hawk_mmc_get_cd,
-+	.wires		= 4,
-+	.max_freq	= 50000000,
-+	.caps		= MMC_CAP_MMC_HIGHSPEED | MMC_CAP_SD_HIGHSPEED,
-+	.version	= MMC_CTLR_VERSION_2,
-+};
-+
-+static __init void omapl138_hawk_mmc_init(void)
-+{
-+	int ret;
-+
-+	ret = davinci_cfg_reg_list(hawk_mmcsd0_pins);
-+	if (ret) {
-+		pr_warning("%s: MMC/SD0 mux setup failed: %d\n",
-+			__func__, ret);
-+		return;
-+	}
-+
-+	ret = gpio_request_one(DA850_HAWK_MMCSD_CD_PIN,
-+			GPIOF_DIR_IN, "MMC CD");
-+	if (ret < 0) {
-+		pr_warning("%s: can not open GPIO %d\n",
-+			__func__, DA850_HAWK_MMCSD_CD_PIN);
-+		return;
-+	}
-+
-+	ret = gpio_request_one(DA850_HAWK_MMCSD_WP_PIN,
-+			GPIOF_DIR_IN, "MMC WP");
-+	if (ret < 0) {
-+		pr_warning("%s: can not open GPIO %d\n",
-+			__func__, DA850_HAWK_MMCSD_WP_PIN);
-+		return;
-+	}
-+
-+	ret = da8xx_register_mmcsd0(&da850_mmc_config);
-+	if (ret)
-+		pr_warning("%s: MMC/SD0 registration failed: %d\n",
-+			__func__, ret);
-+}
-+
- static struct davinci_uart_config omapl138_hawk_uart_config __initdata = {
- 	.enabled_uarts = 0x7,
- };
-@@ -173,6 +234,8 @@ static __init void omapl138_hawk_init(void)
- 		pr_warning("%s: mcasp mux setup failed: %d\n", __func__, ret);
- 	da8xx_register_mcasp(0, &omapl138_hawk_snd_data);
- 
-+	omapl138_hawk_mmc_init();
-+
- 	ret = da8xx_register_watchdog();
- 	if (ret)
- 		pr_warning("omapl138_hawk_init: "
--- 
-1.7.0.4
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
