@@ -1,21 +1,19 @@
 From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [RFC_iii/iv 2/2] ASoC: Allow register dailess codecs
-	in machine driver
-Date: Fri, 29 Oct 2010 15:03:00 +0300
-Message-ID: <1288353780-22041-2-git-send-email-jhnikula@gmail.com>
-References: <1288353780-22041-1-git-send-email-jhnikula@gmail.com>
+Subject: [RFC_iv/iv 1/1] ASoC: Add optional name_prefix to
+	struct snd_soc_dev_map
+Date: Fri, 29 Oct 2010 15:03:43 +0300
+Message-ID: <1288353823-22075-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5C5EB103891
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9CB4410385D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 29 Oct 2010 14:01:54 +0200 (CEST)
-Received: by mail-ey0-f179.google.com with SMTP id 24so1790696eyg.38
-	for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2010 05:01:54 -0700 (PDT)
-In-Reply-To: <1288353780-22041-1-git-send-email-jhnikula@gmail.com>
+	Fri, 29 Oct 2010 14:02:31 +0200 (CEST)
+Received: by ewy22 with SMTP id 22so1625642ewy.38
+	for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2010 05:02:31 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,133 +27,193 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-This makes possible to register dailess codecs in a machine driver. Term
-dailess is used here for amplifiers and codecs without DAI or DAI being
-unused.
+There is a need to prefix codec kcontrol, widget and internal route names in
+an ASoC machine that has multiple codecs with conflicting names. The name
+collision would occur when codec drivers try to registering kcontrols with
+the same name or when building the audio paths between codecs.
 
-Dailess codecs are registered by letting cpu_dai_name, codec_dai_name and
-platform_name to be NULL in struct snd_soc_dev_map. Other fields remain the
-same so machine driver can setup paths and widgets for dailess codecs as
-usual. Only difference is that the PCM is not created.
+This patch solves the issue by introducing optional name_prefix field to
+struct snd_soc_dev_map that machine drivers can specify. ASoC core then uses
+that prefix for prefixing names for codec kcontrols, widgets and codec
+internal routes.
+
+Following example illustrates how two same codec instances are registered in
+a machine driver. The name collision is avoided by specifying a name prefix
+for the second codec. That prefix is then used in audio map that connects
+output of first codec to the input of second and output of second codec to
+a machine widget.
+
+static const struct snd_soc_dapm_route map0[] = {
+	{"Spk", NULL, "MONO"},
+};
+
+static const struct snd_soc_dapm_route map1[] = {
+	{"foo LINEIN", NULL, "MONO"},
+	{"Vibra", NULL, "foo MONO"},
+};
+
+static struct snd_soc_dev_map bar_dev[] = {
+	{
+		...
+		.codec_name = "simple-codec.0",
+		.init = bar_codec0_init,
+		...
+	},
+	{
+		...
+		.codec_name = "simple-codec.1",
+		.init = bar_codec1_init,
+		.name_prefix = "foo",
+		...
+	},
+};
 
 Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
 ---
- include/sound/soc.h  |    1 +
- sound/soc/soc-core.c |   32 ++++++++++++++++++++++----------
- 2 files changed, 23 insertions(+), 10 deletions(-)
+ include/sound/soc.h  |    4 ++++
+ sound/soc/soc-core.c |   16 ++++++++++++++--
+ sound/soc/soc-dapm.c |   34 ++++++++++++++++++++++++++++++++--
+ 3 files changed, 50 insertions(+), 4 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 49e48f0..17f985c 100644
+index 17f985c..18de502 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -603,6 +603,7 @@ struct snd_soc_pcm_runtime  {
+@@ -424,6 +424,7 @@ struct snd_soc_ops {
+ /* SoC Audio Codec device */
+ struct snd_soc_codec {
+ 	const char *name;
++	const char *name_prefix;
+ 	int id;
+ 	struct device *dev;
+ 	struct snd_soc_codec_driver *driver;
+@@ -547,6 +548,9 @@ struct snd_soc_dev_map {
  
- 	unsigned int complete:1;
- 	unsigned int dev_registered:1;
-+	unsigned int dailess:1;
+ 	/* machine stream operations */
+ 	struct snd_soc_ops *ops;
++
++	/* optional name prefix for kcontrols and widgets */
++	const char *name_prefix;
+ };
  
- 	/* Symmetry data - only valid if symmetry is being enforced */
- 	unsigned int rate;
+ /* SoC card */
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index fa05fa8..b904a20 100644
+index b904a20..2c9b6ef 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1217,7 +1217,7 @@ static int soc_bind_dev_map(struct snd_soc_card *card, int num)
- 	dev_dbg(card->dev, "binding %s at idx %d\n", dev_map->name, num);
+@@ -1416,6 +1416,7 @@ static int soc_probe_dev_map(struct snd_soc_card *card, int num)
+ 	/* probe the CODEC */
+ 	if (!codec->probed) {
+ 		codec->dapm->card = card;
++		codec->name_prefix = dev_map->name_prefix;
+ 		if (codec->driver->probe) {
+ 			ret = codec->driver->probe(codec);
+ 			if (ret < 0) {
+@@ -1469,11 +1470,14 @@ static int soc_probe_dev_map(struct snd_soc_card *card, int num)
  
- 	/* do we already have the CPU DAI for this link ? */
--	if (rtd->cpu_dai) {
-+	if (rtd->cpu_dai  || !dev_map->cpu_dai_name) {
- 		goto find_codec;
+ 	/* now that all clients have probed, initialise the DAI link */
+ 	if (dev_map->init) {
++		/* machine controls, routes and widgets are not prefixed */
++		rtd->codec->name_prefix = NULL;
+ 		ret = dev_map->init(rtd);
+ 		if (ret < 0) {
+ 			printk(KERN_ERR "asoc: failed to init %s\n", dev_map->stream_name);
+ 			return ret;
+ 		}
++		rtd->codec->name_prefix = dev_map->name_prefix;
  	}
- 	/* no, then find CPU DAI from registered DAIs*/
-@@ -1248,6 +1248,9 @@ find_codec:
- 			if (!try_module_get(codec->dev->driver->owner))
- 				return -ENODEV;
  
-+			if (!dev_map->codec_dai_name)
-+				goto find_platform;
-+
- 			/* CODEC found, so find CODEC DAI from registered DAIs from this CODEC*/
- 			list_for_each_entry(codec_dai, &dai_list, list) {
- 				if (codec->dev == codec_dai->dev &&
-@@ -1267,7 +1270,7 @@ find_codec:
+ 	/* Make sure all DAPM widgets are instantiated */
+@@ -2030,14 +2034,22 @@ int snd_soc_add_controls(struct snd_soc_codec *codec,
+ 	const struct snd_kcontrol_new *controls, int num_controls)
+ {
+ 	struct snd_card *card = codec->card->snd_card;
++	char prefixed_name[44], *name;
+ 	int err, i;
  
- find_platform:
- 	/* do we already have the CODEC DAI for this link ? */
--	if (rtd->platform) {
-+	if (rtd->platform || !dev_map->platform_name) {
- 		goto out;
+ 	for (i = 0; i < num_controls; i++) {
+ 		const struct snd_kcontrol_new *control = &controls[i];
+-		err = snd_ctl_add(card, snd_soc_cnew(control, codec, NULL));
++		if (codec->name_prefix) {
++			snprintf(prefixed_name, sizeof(prefixed_name), "%s %s",
++				 codec->name_prefix, control->name);
++			name = prefixed_name;
++		} else {
++			name = control->name;
++		}
++		err = snd_ctl_add(card, snd_soc_cnew(control, codec, name));
+ 		if (err < 0) {
+ 			dev_err(codec->dev, "%s: Failed to add %s: %d\n",
+-				codec->name, control->name, err);
++				codec->name, name, err);
+ 			return err;
+ 		}
  	}
- 	/* no, then find CPU DAI from registered DAIs*/
-@@ -1287,8 +1290,12 @@ find_platform:
- 	return 0;
- 
- out:
-+	rtd->dailess = (!dev_map->platform_name && !dev_map->cpu_dai_name &&
-+			!dev_map->codec_dai_name);
- 	/* mark rtd as complete if we found all 4 of our client devices */
--	if (rtd->codec && rtd->codec_dai && rtd->platform && rtd->cpu_dai) {
-+	if (rtd->codec &&
-+	    ((rtd->codec_dai && rtd->platform && rtd->cpu_dai) ||
-+	     rtd->dailess)) {
- 		rtd->complete = 1;
- 		card->num_rtd++;
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 2bccc9d..34bc7a8 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1291,6 +1291,7 @@ static void dapm_free_widgets(struct snd_soc_dapm_context *dapm)
+ 			kfree(p->long_name);
+ 			kfree(p);
+ 		}
++		kfree(w->name);
+ 		kfree(w);
  	}
-@@ -1378,19 +1385,21 @@ static int soc_probe_dev_map(struct snd_soc_card *card, int num)
- 	dev_dbg(card->dev, "probe %s dai link %d\n", card->name, num);
+ }
+@@ -1339,11 +1340,25 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
+ 	struct snd_soc_dapm_path *path;
+ 	struct snd_soc_dapm_widget *wsource = NULL, *wsink = NULL, *w;
+ 	struct snd_soc_dapm_widget *wtsource = NULL, *wtsink = NULL;
+-	const char *sink = route->sink;
++	const char *sink;
+ 	const char *control = route->control;
+-	const char *source = route->source;
++	const char *source;
++	char prefixed_sink[80];
++	char prefixed_source[80];
+ 	int ret = 0;
  
- 	/* config components */
--	codec_dai->codec = codec;
- 	codec->card = card;
--	cpu_dai->platform = platform;
- 	rtd->card = card;
- 	rtd->dev.parent = card->dev;
--	codec_dai->card = card;
--	cpu_dai->card = card;
-+	if (!rtd->dailess) {
-+		codec_dai->codec = codec;
-+		codec_dai->card = card;
-+		cpu_dai->platform = platform;
-+		cpu_dai->card = card;
++	if (dapm->codec->name_prefix) {
++		snprintf(prefixed_sink, sizeof(prefixed_sink), "%s %s",
++			 dapm->codec->name_prefix, route->sink);
++		sink = prefixed_sink;
++		snprintf(prefixed_source, sizeof(prefixed_source), "%s %s",
++			 dapm->codec->name_prefix, route->source);
++		source = prefixed_source;
++	} else {
++		sink = route->sink;
++		source = route->source;
 +	}
- 
- 	/* set default power off timeout */
- 	rtd->pmdown_time = pmdown_time;
- 
- 	/* probe the cpu_dai */
--	if (!cpu_dai->probed) {
-+	if (cpu_dai && !cpu_dai->probed) {
- 		if (cpu_dai->driver->probe) {
- 			ret = cpu_dai->driver->probe(cpu_dai);
- 			if (ret < 0) {
-@@ -1425,7 +1434,7 @@ static int soc_probe_dev_map(struct snd_soc_card *card, int num)
- 	}
- 
- 	/* probe the platform */
--	if (!platform->probed) {
-+	if (platform && !platform->probed) {
- 		if (platform->driver->probe) {
- 			ret = platform->driver->probe(platform);
- 			if (ret < 0) {
-@@ -1440,7 +1449,7 @@ static int soc_probe_dev_map(struct snd_soc_card *card, int num)
- 	}
- 
- 	/* probe the CODEC DAI */
--	if (!codec_dai->probed) {
-+	if (codec_dai && !codec_dai->probed) {
- 		if (codec_dai->driver->probe) {
- 			ret = codec_dai->driver->probe(codec_dai);
- 			if (ret < 0) {
-@@ -1495,6 +1504,9 @@ static int soc_probe_dev_map(struct snd_soc_card *card, int num)
- 	if (ret < 0)
- 		printk(KERN_WARNING "asoc: failed to add codec sysfs files\n");
- 
-+	if (rtd->dailess)
-+		return 0;
 +
- 	/* create the pcm */
- 	ret = soc_new_pcm(rtd, num);
- 	if (ret < 0) {
+ 	/*
+ 	 * find src and dest widgets over all widgets but favor a widget from
+ 	 * current DAPM context
+@@ -1983,10 +1998,25 @@ int snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
+ 	const struct snd_soc_dapm_widget *widget)
+ {
+ 	struct snd_soc_dapm_widget *w;
++	size_t name_len;
+ 
+ 	if ((w = dapm_cnew_widget(widget)) == NULL)
+ 		return -ENOMEM;
+ 
++	name_len = strlen(widget->name) + 1;
++	if (dapm->codec->name_prefix)
++		name_len += 1 + strlen(dapm->codec->name_prefix);
++	w->name = kmalloc(name_len, GFP_KERNEL);
++	if (w->name == NULL) {
++		kfree(w);
++		return -ENOMEM;
++	}
++	if (dapm->codec->name_prefix)
++		snprintf(w->name, name_len, "%s %s",
++			dapm->codec->name_prefix, widget->name);
++	else
++		snprintf(w->name, name_len, "%s", widget->name);
++
+ 	dapm->n_widgets++;
+ 	w->dapm = dapm;
+ 	w->codec = dapm->codec;
 -- 
 1.7.2.3
