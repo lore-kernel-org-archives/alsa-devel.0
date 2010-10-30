@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Remove volatility from WM8900 POWER1
-	register
-Date: Fri, 29 Oct 2010 16:08:36 -0700
-Message-ID: <1288393716-19903-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Alban Peignier <alban@tryphon.eu>
+Subject: Looking for ideas to solve ruby alsa duplex problem
+Date: Sat, 30 Oct 2010 12:19:33 +0200
+Message-ID: <4CCBF135.9030507@tryphon.eu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E30E6103885
+Received: from mail.tryphon.org (potamus.tryphon.org [88.191.95.142])
+	by alsa0.perex.cz (Postfix) with ESMTP id 90F6E1037F5
 	for <alsa-devel@alsa-project.org>;
-	Sat, 30 Oct 2010 01:08:33 +0200 (CEST)
+	Sat, 30 Oct 2010 12:19:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,45 +19,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Not all bits can be read back from POWER1 so avoid corruption when using
-a read/modify/write cycle by marking it non-volatile - the only thing we
-read back from it is the chip revision which has diagnostic value only.
-We can re-add later but that's a more invasive change than is suitable
-for a bugfix.
+Hi alsa guys,
 
-Change-Id: I846ac8bba474275dcbda5ff82fc006554a06d21e
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8900.c |    6 ------
- 1 files changed, 0 insertions(+), 6 deletions(-)
+We're working on a ruby binding for alsa :
+http://projects.tryphon.eu/ruby-alsa/. PCM Playback and Capture are
+supported for a long time (and used in production for several months).
+Ruby developers can find the gem on http://rubygems.org/gems/ruby-alsa.
 
-diff --git a/sound/soc/codecs/wm8900.c b/sound/soc/codecs/wm8900.c
-index b4f1172..aca4b1e 100644
---- a/sound/soc/codecs/wm8900.c
-+++ b/sound/soc/codecs/wm8900.c
-@@ -186,7 +186,6 @@ static int wm8900_volatile_register(unsigned int reg)
- {
- 	switch (reg) {
- 	case WM8900_REG_ID:
--	case WM8900_REG_POWER1:
- 		return 1;
- 	default:
- 		return 0;
-@@ -1200,11 +1199,6 @@ static int wm8900_probe(struct snd_soc_codec *codec)
- 		return -ENODEV;
- 	}
- 
--	/* Read back from the chip */
--	reg = snd_soc_read(codec, WM8900_REG_POWER1);
--	reg = (reg >> 12) & 0xf;
--	dev_info(codec->dev, "WM8900 revision %d\n", reg);
--
- 	wm8900_reset(codec);
- 
- 	/* Turn the chip on */
+But we're trying to investigate a problem with "duplex mode" :
+http://projects.tryphon.eu/ruby-alsa/ticket/4. We can't find a way to
+record and playback simple stereo streams in the same process without
+dummy hackings :-/ We don't need an extreme latency, just a simple
+process to add/receive streams on network (our LinkStream/LinkBox project).
+
+I hopes it's only a misusage of the ALSA API or a mistake in
+hardware/software configurations. But after several weeks on this
+problem, we need fresh ideas :)
+
+Even if you have no idea about ruby, the Playback [0] and Capture [1]
+are very simple wrappers around the native ALSA API [2] (mapped with
+ruby ffi [3]). The alsa device is opened and configured using a shared
+open method in Stream [4]. Very few code in fact.
+
+I hope an expert eye will find a beginning of solution ;)
+
+Kind regards,
+
+0. http://projects.tryphon.eu/ruby-alsa/browser/lib/alsa/pcm/playback.rb
+1. http://projects.tryphon.eu/ruby-alsa/browser/lib/alsa/pcm/capture.rb
+2. http://projects.tryphon.eu/ruby-alsa/browser/lib/alsa/pcm/native.rb
+3. http://github.com/ffi/ffi
+4. http://projects.tryphon.eu/ruby-alsa/browser/lib/alsa/pcm/stream.rb
 -- 
-1.7.1
+
+Alban Peignier - alban@tryphon.eu
+
+Tryphon : Radio, Web and Free Software
+http://www.tryphon.eu
