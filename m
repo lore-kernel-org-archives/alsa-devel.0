@@ -1,22 +1,20 @@
-From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
-Subject: Re: [PATCH] AudioScience HPI driver: Unsafe memory
- management when allocating control cache
-Date: Tue, 02 Nov 2010 11:19:36 +1300
-Message-ID: <4CCF3CF8.7060300@audioscience.com>
-References: <alpine.LNX.2.00.1010292124180.24561@swampdragon.chaosbits.net>
-Mime-Version: 1.0
+From: Benjamin BERTRAND <beenje@xboxmediacenter.com>
+Subject: Sound over HDMI on AppleTV (1st gen) with nvidia
+	drivers
+Date: Sat, 30 Oct 2010 18:24:37 +0200
+Message-ID: <16FFC10F-AFA2-415E-BAE6-1A3CD274DADA@xboxmediacenter.com>
+Reply-To: beenje@xbmc.org
+Mime-Version: 1.0 (Apple Message framework v1081)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 42187103814
-	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2010 23:19:42 +0100 (CET)
-Received: from [192.168.36.2]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp3.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0LB8009F48OPQV20@smtp3.clear.net.nz> for
-	alsa-devel@alsa-project.org; Tue, 02 Nov 2010 11:19:38 +1300 (NZDT)
-In-reply-to: <alpine.LNX.2.00.1010292124180.24561@swampdragon.chaosbits.net>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id B61DD2446C
+	for <alsa-devel@alsa-project.org>;
+	Sat, 30 Oct 2010 18:24:41 +0200 (CEST)
+Received: by eyg24 with SMTP id 24so2445120eyg.38
+	for <alsa-devel@alsa-project.org>; Sat, 30 Oct 2010 09:24:41 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,21 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jesper Juhl <jj@chaosbits.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 30/10/10 08:35, Jesper Juhl wrote:
-> I noticed that sound/pci/asihpi/hpicmn.c::hpi_alloc_control_cache() does 
-> not check the return value from kmalloc(), which may fail.
-> If kmalloc() fails we'll dereference a null pointer and things will go bad 
-> fast.
-> There are two memory allocations in that function and there's also the 
-> problem that the first may succeed and the second may fail and nothing is 
-> done about that either which will also go wrong down the line.
+Hi,
 
-Thanks Jesper,
+Currently to get sound over HDMI on AppleTV (1st generation) (with linux of course), NVIDIA 100.14.19 drivers are required (and they compile only on Ubuntu 8.04).
+It doesn't work with newer drivers.
 
-your changes look fine.
+I made a few tests with Ubuntu 9.10 + kernel 2.6.32 + alsa-driver 1.0.23 + NVIDIA drivers 256.35
+atv uses a SiI1390 chip for HDMI output (and NVidia GeForce Go 7300 / G72 pci-express chipset).
+In current alsa-driver, SiI1390 uses the ATI HDMI codec which hasn't been updated in a while.
+So I patched alsa-driver to use the INTEL HDMI codec instead.
 
-Acked-by: Eliot Blennerhassett <linux@audioscience.com>
+After boot, and before starting X, I have sound (tested with aplay).
+See alsa-info log here: http://pastebin.com/dsaqnDKb
+
+As soon as I start X, no more sound. alsa-info log here: http://pastebin.com/fHqyJw6Q
+
+Trying to mute - unmute with alsamixer (it puts the digital output back to enable) or reloading the driver doesn't help. Can't get any sound with X.
+
+One thing I noticed is that the function hdmi_intrinsic_event is never called. I never get any "HDMI hot plug event". So monitor_present and eld_valid are never set. Not sure this is really relevant, but that's where I got stuck so far.
+Is the HDMI output disabled because alsa doesn't give the right information?
+
+Any advice? 
+What more could I test?
+
+Thanks
+
+Benjamin
