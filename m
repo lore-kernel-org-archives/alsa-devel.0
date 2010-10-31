@@ -1,59 +1,47 @@
-From: Florian Mickler <florian@mickler.org>
-Subject: Re: [REGRESSION] no sound on T60 laptop (HDA Intel)
-Date: Sun, 31 Oct 2010 12:04:52 +0100
-Message-ID: <20101031120452.31836af2@schatten.dmk.lab>
-References: <E1P33mT-0003qa-Fv@pomaz-ex.szeredi.hu>
-	<s5hwrpxnf41.wl%tiwai@suse.de>
-	<E1P3EES-0005SV-Sr@pomaz-ex.szeredi.hu>
-	<s5h8w2b6f9c.wl%tiwai@suse.de>
-	<E1P3PKg-0006RB-KV@pomaz-ex.szeredi.hu>
+From: Ondrej Zary <linux@rainbow-software.org>
+Subject: Re: [PATCH] cs46xx memory management fixes for
+	cs46xx_dsp_spos_create() - make sure we free and don't do
+	pointless work.
+Date: Sun, 31 Oct 2010 18:29:10 +0100
+Message-ID: <201010311829.13924.linux@rainbow-software.org>
+References: <alpine.LNX.2.00.1010292242080.24561@swampdragon.chaosbits.net>
+	<201010301406.12961.linux@rainbow-software.org>
+	<alpine.LNX.2.00.1010302143530.1572@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <E1P3PKg-0006RB-KV@pomaz-ex.szeredi.hu>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.atlantis.sk (mail1-out1.atlantis.sk [80.94.52.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id CB79B1037F8
+	for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2010 18:29:25 +0100 (CET)
+In-Reply-To: <alpine.LNX.2.00.1010302143530.1572@swampdragon.chaosbits.net>
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jesper Juhl <jj@chaosbits.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Benny =?utf-8?q?Sj=C3=B6strand?= <benny@hostmobility.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 06 Oct 2010 10:26:38 +0200
-Miklos Szeredi <miklos@szeredi.hu> wrote:
-
-> On Wed, 06 Oct 2010, Takashi Iwai wrote:
-> > At Tue, 05 Oct 2010 22:35:28 +0200,
-> > Miklos Szeredi wrote:
-> > > 
-> > > On Tue, 05 Oct 2010, Takashi Iwai wrote:
-> > > > In anyway, if this is reproducible, get alsa-info.sh output before and
-> > > > after suspend.  It'll give more information of HD-audio and sound
-> > > > driver status.
-> > > 
-> > > No significant difference before and after the suspend
-> > 
-> > The important thing is to get the alsa-info output at the moment
-> > you don't get sound and you get sound.  Just after the suspend is
-> > still in the power-saving mode, thus all the setup might be inactive.
-> > 
-> > Anyway, could you attach alsa-info.sh output so that I can analyze?
-> 
-> Attaching the files.
-> 
-> > > ...
-> > > 
-> > > Bisected it to commit 3f50ac6a0e "ALSA: hda - Fix stream and
-> > > channel-ids codec-bus wide"
-> > > 
-> > > Reverting this on latest git fixes the sound.
-> > 
-> > Could you get alsa-info.sh output before and after reverting this, too?
-> > (i.e. non-working and working states)
-> 
-> Hmm, now there's no sound even with the revert.  I guess reproducing
-> this is not completely reliable so the bisect gave a false result.  Oh
-> well.
-> 
-> Thanks,
-> Miklos
-> 
-Did you get to the bottom of this?
+T24gU2F0dXJkYXkgMzAgT2N0b2JlciAyMDEwIDIxOjQ0OjMzIEplc3BlciBKdWhsIHdyb3RlOgo+
+IE9uIFNhdCwgMzAgT2N0IDIwMTAsIE9uZHJlaiBaYXJ5IHdyb3RlOgo+ID4gT24gU2F0dXJkYXkg
+MzAgT2N0b2JlciAyMDEwIDAwOjE4OjU3IEJlbm55IFNqw7ZzdHJhbmQgd3JvdGU6Cj4gPiA+IEhl
+bGxvIGFnYWluIQo+ID4gPgo+ID4gPiBKdXN0IGRvaW5nIGEgcmVwbHktYWxsLgo+ID4gPiBJdCdz
+IGhhcyBiZWVuIG1hbnkgeWVhcnMgc2luY2UgSSBkaWQgYW55dGhpbmcgdG8gdGhlIGNzNDZ4eCBk
+cml2ZXIsIHNvCj4gPiA+IEknbSB3b25kZXJpbmcKPiA+ID4gaWYgdGhlcmUncyBhbnlvbmUgb3V0
+IHRoZXJlIHN0aWxsIHVzaW5nIGEgY3M0Nnh4IHNvdW5kIGNhcmQ/Cj4gPiA+IEkgdGhpbmsgdGhl
+IGNoYW5nZXMgbG9vaydzIGNvcnJlY3QsIGJ1dCBJIGNhbid0IHRlc3QgaXQsIEkgZG8gbm90IGhh
+dmUKPiA+ID4gYSBjczQ2eHggaGFyZHdhcmUgYW55bW9yZS4KPiA+Cj4gPiBTdXJlLCB0aGVyZSBh
+cmUgbWFueSBvZiB0aGVzZSBjYXJkcyAib3V0IHRoZXJlIi4gSSBqdXN0IGdvdCBhICJuZXciCj4g
+PiBUZXJyYXRlYyBETVggWGZpcmUgMTAyNCAoQ1M0NjI0KS4gSSdsbCB0ZXN0IHRoZSBwYXRjaC4K
+Pgo+IFRoYW5rcyBhIGxvdC4gTGV0IG1lIGtub3cgaG93IHRoZSB0ZXN0IGdvZXMgOi0pCgpJdCB3
+b3JrcyBmaW5lLiBQbGF5aW5nIG11c2ljIHJpZ2h0IG5vdy4KCi0tIApPbmRyZWogWmFyeQpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
