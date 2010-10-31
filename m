@@ -1,34 +1,59 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 39/39] sound/soc/codecs/wm_hubs.c: Update WARN uses
-Date: Sat, 30 Oct 2010 14:08:56 -0700
-Message-ID: <777b4b32cf9bcd1fcb78d7d5c26e8c9a0c17aa3e.1288471898.git.joe@perches.com>
-References: <cover.1288471897.git.joe@perches.com>
+From: Florian Mickler <florian@mickler.org>
+Subject: Re: [REGRESSION] no sound on T60 laptop (HDA Intel)
+Date: Sun, 31 Oct 2010 12:04:52 +0100
+Message-ID: <20101031120452.31836af2@schatten.dmk.lab>
+References: <E1P33mT-0003qa-Fv@pomaz-ex.szeredi.hu>
+	<s5hwrpxnf41.wl%tiwai@suse.de>
+	<E1P3EES-0005SV-Sr@pomaz-ex.szeredi.hu>
+	<s5h8w2b6f9c.wl%tiwai@suse.de>
+	<E1P3PKg-0006RB-KV@pomaz-ex.szeredi.hu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1288471897.git.joe@perches.com>
+In-Reply-To: <E1P3PKg-0006RB-KV@pomaz-ex.szeredi.hu>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jiri Kosina <trivial@kernel.org>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add missing newlines.
+On Wed, 06 Oct 2010 10:26:38 +0200
+Miklos Szeredi <miklos@szeredi.hu> wrote:
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- sound/soc/codecs/wm_hubs.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-index 2cb8153..19ca782 100644
---- a/sound/soc/codecs/wm_hubs.c
-+++ b/sound/soc/codecs/wm_hubs.c
-@@ -123,7 +123,7 @@ static void calibrate_dc_servo(struct snd_soc_codec *codec)
- 			reg_r = reg & WM8993_DCS_DAC_WR_VAL_0_MASK;
- 			break;
- 		default:
--			WARN(1, "Unknown DCS readback method");
-+			WARN(1, "Unknown DCS readback method\n");
- 			break;
- 		}
- 
--- 
-1.7.3.1.g432b3.dirty
+> On Wed, 06 Oct 2010, Takashi Iwai wrote:
+> > At Tue, 05 Oct 2010 22:35:28 +0200,
+> > Miklos Szeredi wrote:
+> > > 
+> > > On Tue, 05 Oct 2010, Takashi Iwai wrote:
+> > > > In anyway, if this is reproducible, get alsa-info.sh output before and
+> > > > after suspend.  It'll give more information of HD-audio and sound
+> > > > driver status.
+> > > 
+> > > No significant difference before and after the suspend
+> > 
+> > The important thing is to get the alsa-info output at the moment
+> > you don't get sound and you get sound.  Just after the suspend is
+> > still in the power-saving mode, thus all the setup might be inactive.
+> > 
+> > Anyway, could you attach alsa-info.sh output so that I can analyze?
+> 
+> Attaching the files.
+> 
+> > > ...
+> > > 
+> > > Bisected it to commit 3f50ac6a0e "ALSA: hda - Fix stream and
+> > > channel-ids codec-bus wide"
+> > > 
+> > > Reverting this on latest git fixes the sound.
+> > 
+> > Could you get alsa-info.sh output before and after reverting this, too?
+> > (i.e. non-working and working states)
+> 
+> Hmm, now there's no sound even with the revert.  I guess reproducing
+> this is not completely reliable so the bisect gave a false result.  Oh
+> well.
+> 
+> Thanks,
+> Miklos
+> 
+Did you get to the bottom of this?
