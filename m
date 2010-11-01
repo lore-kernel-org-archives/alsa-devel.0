@@ -1,16 +1,15 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: iec958 and 24-bit audio
-Date: Mon, 1 Nov 2010 20:18:43 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1011012017270.29422@eeebox2.perex-int.cz>
-References: <AANLkTi=U5k+mYy-kSCn4699LwFF6J2gxYQKePSNayDth@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Push snd_soc_write() and snd_soc_read()
+	into the source file
+Date: Mon,  1 Nov 2010 15:44:31 -0400
+Message-ID: <1288640671-13554-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id B1EDF24381
-	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2010 20:18:43 +0100 (CET)
-In-Reply-To: <AANLkTi=U5k+mYy-kSCn4699LwFF6J2gxYQKePSNayDth@mail.gmail.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A1428243B1
+	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2010 20:44:26 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,29 +19,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pl bossart <bossart.nospam@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 1 Nov 2010, pl bossart wrote:
+Facilitating adding trace type stuff. For a first pass add some dev_dbg()
+statements into them.
 
-> When I try playing 24-bit audio files on my SPDIF output, I get this
->
-> [alsa-lib]$ aplay -Diec958 file24bits.wav
-> aplay: set_params:1059: Sample format non available
-> Available formats:
-> - S16_LE
-> - S32_LE
->
-> Is there an built-in assumption that the iec958 device can only take
-> as input what the slave hardware device supports?
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ include/sound/soc.h  |   14 +++-----------
+ sound/soc/soc-core.c |   19 +++++++++++++++++++
+ 2 files changed, 22 insertions(+), 11 deletions(-)
 
-Use 'plug:iec958' device if you want to do the format conversion (from 
-24-bit to 32-bit format).
-
- 					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 5c3bce8..aaf34d7 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -639,17 +639,9 @@ struct soc_enum {
+ };
+ 
+ /* codec IO */
+-static inline unsigned int snd_soc_read(struct snd_soc_codec *codec,
+-					unsigned int reg)
+-{
+-	return codec->driver->read(codec, reg);
+-}
+-
+-static inline unsigned int snd_soc_write(struct snd_soc_codec *codec,
+-					 unsigned int reg, unsigned int val)
+-{
+-	return codec->driver->write(codec, reg, val);
+-}
++unsigned int snd_soc_read(struct snd_soc_codec *codec, unsigned int reg);
++unsigned int snd_soc_write(struct snd_soc_codec *codec,
++			   unsigned int reg, unsigned int val);
+ 
+ /* device driver data */
+ 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 805343f..6d93d44 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1876,6 +1876,25 @@ void snd_soc_free_ac97_codec(struct snd_soc_codec *codec)
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_free_ac97_codec);
+ 
++unsigned int snd_soc_read(struct snd_soc_codec *codec, unsigned int reg)
++{
++	unsigned int ret;
++
++	ret = codec->driver->read(codec, reg);
++	dev_dbg(codec->dev, "read %x => %x\n", reg, ret);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(snd_soc_read);
++
++unsigned int snd_soc_write(struct snd_soc_codec *codec,
++			   unsigned int reg, unsigned int val)
++{
++	dev_dbg(codec->dev, "write %x = %x\n", reg, val);
++	return codec->driver->write(codec, reg, val);
++}
++EXPORT_SYMBOL_GPL(snd_soc_write);
++
+ /**
+  * snd_soc_update_bits - update codec register bits
+  * @codec: audio codec
+-- 
+1.7.1
