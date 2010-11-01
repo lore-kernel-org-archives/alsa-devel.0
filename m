@@ -1,18 +1,17 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: iec958 and 24-bit audio
-Date: Mon, 1 Nov 2010 21:24:42 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1011012117450.29422@eeebox2.perex-int.cz>
-References: <AANLkTi=U5k+mYy-kSCn4699LwFF6J2gxYQKePSNayDth@mail.gmail.com>
-	<alpine.LNX.2.00.1011012017270.29422@eeebox2.perex-int.cz>
-	<AANLkTinHgiCuusw9HJn_X1CH4YvA98VPtojNXAu58Gm=@mail.gmail.com>
+From: Pierre-Louis Bossart <bossart.nospam@gmail.com>
+Subject: [PATCH] ALSA: add support for disabling period irq
+Date: Mon,  1 Nov 2010 17:12:53 -0500
+Message-ID: <1288649573-31545-1-git-send-email-pierre-louis.bossart@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 791F4243EC
-	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2010 21:24:43 +0100 (CET)
-In-Reply-To: <AANLkTinHgiCuusw9HJn_X1CH4YvA98VPtojNXAu58Gm=@mail.gmail.com>
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id E8543103814
+	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2010 23:13:15 +0100 (CET)
+Received: by yxs7 with SMTP id 7so4177629yxs.38
+	for <alsa-devel@alsa-project.org>; Mon, 01 Nov 2010 15:13:15 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,45 +21,208 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pl bossart <bossart.nospam@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 1 Nov 2010, pl bossart wrote:
+Merged and cleaned patch based on earlier patches posted
+on alsa-devel by Clemens Ladisch <clemens@ladisch.de> and
+Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
 
->>> [alsa-lib]$ aplay -Diec958 file24bits.wav
->>> aplay: set_params:1059: Sample format non available
->>> Available formats:
->>> - S16_LE
->>> - S32_LE
->>>
->>> Is there an built-in assumption that the iec958 device can only take
->>> as input what the slave hardware device supports?
->>
->> Use 'plug:iec958' device if you want to do the format conversion (from
->> 24-bit to 32-bit format).
->
-> That seems to work, but what I was asking is if there's a direct path
-> without conversion? With plug:iec958 there's a conversion to 32-bits
-> and then you drop the lsb.
+This patch disables period interrupts which are not
+needed when the application relies on a system timer
+to wake-up and refill the ring buffer. The behavior of
+the driver is left unchanged, and interrupts are only
+disabled if the application requests this configuration.
+The behavior in case of underruns is slightly different,
+instead of being detected during the period interrupts the
+underruns are detected when the application calls
+snd_pcm_update_avail, which in turns forces a refresh of the
+hw pointer and shows the buffer is empty.
 
-Almost all sound bridge chips works with 16-bit or 32-bit samples because 
-it's more compatible with analog converters and the handling is more 
-simple than for 3-byte formats. The conversion from the 32-bit format to 
-the 32-bit S/PDIF frame is done inside hw (dropping the LSB, add S/PDIF 
-frame status bits). Some hardware also supports raw S/PDIF frames 
-directly.
+More specifically this patch makes a lot of sense when
+PulseAudio relies on timer-based scheduling to access audio
+devices such as HDAudio or Intel SST. Disabling interrupts
+removes two unwanted wake-ups due to period elapsed events
+in low-power playback modes. It also simplifies PulseAudio
+voice modules used for speech calls.
 
-> Also PulseAudio seems to rely on iec958 and when it doesn't work it
-> tries with plug:iec958. What's the recommended way of using this
-> device? Should we always open plug:iec958?
+To quote Lennart "This patch looks very interesting and
+desirable. This is something have long been waiting for."
 
-You can detect which formats are supported (like aplay does) and use the 
-appropriate format to avoid using the plug layer in alsa-lib.
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
+---
+ core/pcm_lib.c          |    8 ++++++--
+ core/pcm_native.c       |    6 ++++++
+ include/asound.h        |    4 ++++
+ include/pcm.h           |    1 +
+ pci/hda/hda_intel.c     |    9 ++++++---
+ pci/oxygen/oxygen_pcm.c |   14 ++++++++++----
+ 6 files changed, 33 insertions(+), 9 deletions(-)
 
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+diff --git a/core/pcm_lib.c b/core/pcm_lib.c
+index a1707cc..4963d8f 100644
+--- a/core/pcm_lib.c
++++ b/core/pcm_lib.c
+@@ -374,7 +374,8 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 			   (unsigned long)runtime->hw_ptr_base);
+ 	}
+ 	/* something must be really wrong */
+-	if (delta >= runtime->buffer_size + runtime->period_size) {
++	if (delta >= runtime->buffer_size + runtime->period_size &&
++            !runtime->no_period_irq) {
+ 		hw_ptr_error(substream,
+ 			       "Unexpected hw_pointer value %s"
+ 			       "(stream=%i, pos=%ld, new_hw_ptr=%ld, "
+@@ -395,6 +396,8 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 	 */
+ 	if (runtime->hw.info & SNDRV_PCM_INFO_BATCH)
+ 		goto no_jiffies_check;
++        if (runtime->no_period_irq)
++                goto no_jiffies_check;
+ 	hdelta = delta;
+ 	if (hdelta < runtime->delay)
+ 		goto no_jiffies_check;
+@@ -431,7 +434,8 @@ static int snd_pcm_update_hw_ptr0(struct snd_pcm_substream *substream,
+ 		hw_base = new_hw_ptr - (new_hw_ptr % runtime->buffer_size);
+ 	}
+  no_jiffies_check:
+-	if (delta > runtime->period_size + runtime->period_size / 2) {
++	if (delta > runtime->period_size + runtime->period_size / 2 &&
++            !runtime->no_period_irq) {
+ 		hw_ptr_error(substream,
+ 			     "Lost interrupts? %s"
+ 			     "(stream=%i, delta=%ld, new_hw_ptr=%ld, "
+diff --git a/core/pcm_native.c b/core/pcm_native.c
+index 8bc7cb3..92c8c59 100644
+--- a/core/pcm_native.c
++++ b/core/pcm_native.c
+@@ -412,6 +412,12 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+ 			goto _error;
+ 	}
+ 
++        if (params->info & SNDRV_PCM_INFO_NO_PERIOD_IRQ) 
++                runtime->no_period_irq = !!(params->flags &
++                                            SNDRV_PCM_HW_PARAMS_NO_PERIOD_IRQ);
++        else
++                runtime->no_period_irq = 0;
++        
+ 	runtime->access = params_access(params);
+ 	runtime->format = params_format(params);
+ 	runtime->subformat = params_subformat(params);
+diff --git a/include/asound.h b/include/asound.h
+index a1803ec..d4b5f2d 100644
+--- a/include/asound.h
++++ b/include/asound.h
+@@ -259,6 +259,7 @@ typedef int __bitwise snd_pcm_subformat_t;
+ #define SNDRV_PCM_INFO_HALF_DUPLEX	0x00100000	/* only half duplex */
+ #define SNDRV_PCM_INFO_JOINT_DUPLEX	0x00200000	/* playback and capture stream are somewhat correlated */
+ #define SNDRV_PCM_INFO_SYNC_START	0x00400000	/* pcm support some kind of sync go */
++#define SNDRV_PCM_INFO_NO_PERIOD_IRQ    0x00800000      /* period interrupt can be disabled */
+ #define SNDRV_PCM_INFO_FIFO_IN_FRAMES	0x80000000	/* internal kernel flag - FIFO size is in frames */
+ 
+ typedef int __bitwise snd_pcm_state_t;
+@@ -334,6 +335,9 @@ typedef int snd_pcm_hw_param_t;
+ #define	SNDRV_PCM_HW_PARAM_LAST_INTERVAL	SNDRV_PCM_HW_PARAM_TICK_TIME
+ 
+ #define SNDRV_PCM_HW_PARAMS_NORESAMPLE	(1<<0)	/* avoid rate resampling */
++#define SNDRV_PCM_HW_PARAMS_EXPORT_BUFFER      (1<<1)  /* export buffer */
++#define SNDRV_PCM_HW_PARAMS_NO_PERIOD_IRQ      (1<<2)  /* disable period
++                                                          interrupts */
+ 
+ struct snd_interval {
+ 	unsigned int min, max;
+diff --git a/include/pcm.h b/include/pcm.h
+index dfd9b76..9abb4aa 100644
+--- a/include/pcm.h
++++ b/include/pcm.h
+@@ -297,6 +297,7 @@ struct snd_pcm_runtime {
+ 	unsigned int info;
+ 	unsigned int rate_num;
+ 	unsigned int rate_den;
++        bool no_period_irq;
+ 
+ 	/* -- SW params -- */
+ 	int tstamp_mode;		/* mmap timestamp is updated */
+diff --git a/pci/hda/hda_intel.c b/pci/hda/hda_intel.c
+index 38b063e..9f456a8 100644
+--- a/pci/hda/hda_intel.c
++++ b/pci/hda/hda_intel.c
+@@ -1227,7 +1227,8 @@ static int azx_setup_periods(struct azx *chip,
+ 			pos_adj = 0;
+ 		} else {
+ 			ofs = setup_bdle(substream, azx_dev,
+-					 &bdl, ofs, pos_adj, 1);
++					 &bdl, ofs, pos_adj,
++                                         !substream->runtime->no_period_irq);
+ 			if (ofs < 0)
+ 				goto error;
+ 		}
+@@ -1239,7 +1240,8 @@ static int azx_setup_periods(struct azx *chip,
+ 					 period_bytes - pos_adj, 0);
+ 		else
+ 			ofs = setup_bdle(substream, azx_dev, &bdl, ofs,
+-					 period_bytes, 1);
++					 period_bytes,
++                                         !substream->runtime->no_period_irq);
+ 		if (ofs < 0)
+ 			goto error;
+ 	}
+@@ -1507,7 +1509,8 @@ static struct snd_pcm_hardware azx_pcm_hw = {
+ 				 /* No full-resume yet implemented */
+ 				 /* SNDRV_PCM_INFO_RESUME |*/
+ 				 SNDRV_PCM_INFO_PAUSE |
+-				 SNDRV_PCM_INFO_SYNC_START),
++				 SNDRV_PCM_INFO_SYNC_START |
++                                 SNDRV_PCM_INFO_NO_PERIOD_IRQ),
+ 	.formats =		SNDRV_PCM_FMTBIT_S16_LE,
+ 	.rates =		SNDRV_PCM_RATE_48000,
+ 	.rate_min =		48000,
+diff --git a/pci/oxygen/oxygen_pcm.c b/pci/oxygen/oxygen_pcm.c
+index 8146674..a32ee97 100644
+--- a/pci/oxygen/oxygen_pcm.c
++++ b/pci/oxygen/oxygen_pcm.c
+@@ -39,7 +39,8 @@ static const struct snd_pcm_hardware oxygen_stereo_hardware = {
+ 		SNDRV_PCM_INFO_MMAP_VALID |
+ 		SNDRV_PCM_INFO_INTERLEAVED |
+ 		SNDRV_PCM_INFO_PAUSE |
+-		SNDRV_PCM_INFO_SYNC_START,
++		SNDRV_PCM_INFO_SYNC_START |
++                SNDRV_PCM_INFO_NO_PERIOD_IRQ,
+ 	.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 		   SNDRV_PCM_FMTBIT_S32_LE,
+ 	.rates = SNDRV_PCM_RATE_32000 |
+@@ -65,7 +66,8 @@ static const struct snd_pcm_hardware oxygen_multichannel_hardware = {
+ 		SNDRV_PCM_INFO_MMAP_VALID |
+ 		SNDRV_PCM_INFO_INTERLEAVED |
+ 		SNDRV_PCM_INFO_PAUSE |
+-		SNDRV_PCM_INFO_SYNC_START,
++		SNDRV_PCM_INFO_SYNC_START |
++                SNDRV_PCM_INFO_NO_PERIOD_IRQ,
+ 	.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 		   SNDRV_PCM_FMTBIT_S32_LE,
+ 	.rates = SNDRV_PCM_RATE_32000 |
+@@ -91,7 +93,8 @@ static const struct snd_pcm_hardware oxygen_ac97_hardware = {
+ 		SNDRV_PCM_INFO_MMAP_VALID |
+ 		SNDRV_PCM_INFO_INTERLEAVED |
+ 		SNDRV_PCM_INFO_PAUSE |
+-		SNDRV_PCM_INFO_SYNC_START,
++		SNDRV_PCM_INFO_SYNC_START |
++                SNDRV_PCM_INFO_NO_PERIOD_IRQ,
+ 	.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	.rates = SNDRV_PCM_RATE_48000,
+ 	.rate_min = 48000,
+@@ -530,7 +533,10 @@ static int oxygen_prepare(struct snd_pcm_substream *substream)
+ 	oxygen_set_bits8(chip, OXYGEN_DMA_FLUSH, channel_mask);
+ 	oxygen_clear_bits8(chip, OXYGEN_DMA_FLUSH, channel_mask);
+ 
+-	chip->interrupt_mask |= channel_mask;
++        if (substream->runtime->no_period_irq)
++               chip->interrupt_mask &= ~channel_mask;
++        else
++                chip->interrupt_mask |= channel_mask;
+ 	oxygen_write16(chip, OXYGEN_INTERRUPT_MASK, chip->interrupt_mask);
+ 	spin_unlock_irq(&chip->reg_lock);
+ 	return 0;
+-- 
+1.7.2.3
