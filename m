@@ -1,19 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: tlv320aic3x: Add support to
- shared common reset line
-Date: Mon, 1 Nov 2010 09:08:04 -0400
-Message-ID: <20101101130804.GB22639@opensource.wolfsonmicro.com>
-References: <1288613036-13169-1-git-send-email-jhnikula@gmail.com>
-	<1288613036-13169-2-git-send-email-jhnikula@gmail.com>
+Subject: Re: [RFC_i/iv 1/3] ASoC: Decouple DAPM from CODECs.
+ Part core (will be squashed)
+Date: Mon, 1 Nov 2010 09:13:23 -0400
+Message-ID: <20101101131322.GC22639@opensource.wolfsonmicro.com>
+References: <1288353618-21753-1-git-send-email-jhnikula@gmail.com>
+	<1288353618-21753-2-git-send-email-jhnikula@gmail.com>
+	<20101029200428.GD3921@opensource.wolfsonmicro.com>
+	<1288461714.3286.143.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1C717103800
-	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2010 14:07:57 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 25106103806
+	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2010 14:13:16 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1288613036-13169-2-git-send-email-jhnikula@gmail.com>
+In-Reply-To: <1288461714.3286.143.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 01, 2010 at 02:03:56PM +0200, Jarkko Nikula wrote:
-> This is aimed to configurations where multiple aic3x codecs share the same
-> reset line and are powered from same supply voltages.
-> 
-> Currently aic3x_probe will fail if trying to request already requested
-> gpio_reset and passing -1 to another aic3x instances cause that those
-> instances cannot release reset in aic3x_set_power. That is, another
-> instances can work only if primary aic3x instance is powered and reset is
-> released.
-> 
-> Solve this by implementing a list of probed instances that is used for
-> checking if other instance shares the same gpio_reset number. If a shared
-> reset line exists, then only first instance tries to request and configure
-> it and the last instance releases it.
+On Sat, Oct 30, 2010 at 07:01:54PM +0100, Liam Girdwood wrote:
+> On Fri, 2010-10-29 at 13:04 -0700, Mark Brown wrote:
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> > >  		run_delayed_work(&card->rtd[i].delayed_work);
+> > > -		card->rtd[i].codec->suspend_bias_level = card->rtd[i].codec->bias_level;
+> > > +		card->rtd[i].codec->dapm->suspend_bias_level = card->rtd[i].codec->dapm->bias_level;
+
+> Btw, not sure what you mean by this 1 line change being run multiple
+> times being different to the old line.
+
+It's not different, a lot of the stuff here is things that we need to do
+in the series that are thrown up by the series as a result of it
+touching all relevant places.  I tried to mention this in the places I
+noted it, but some of them I will have forgotten.
+
+> > I'd be more inclined to just embed the struct in the objects that need
+> > it rather than individually allocating them - it saves error checking
+> > and deallocation, and I can't see any cases where we'd want to
+> > optionally have a DAPM object.
+
+> Yeah, the reason for this is because it was unclear at the time whether
+> we will need to share a context between DAI backend and frontends. So
+> this can be embedded now.
+
+Jarkko, with this change I think this first patch is good to go - I
+think we should try to get the early bits in while we're iterating on
+the rest.
