@@ -1,57 +1,273 @@
-From: Jesper Juhl <jj@chaosbits.net>
-Subject: Re: [PATCH] cs46xx memory management fixes for cs46xx_dsp_spos_create()
- - make sure we free and don't do pointless work.
-Date: Mon, 1 Nov 2010 19:23:32 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1011011922460.9616@swampdragon.chaosbits.net>
-References: <alpine.LNX.2.00.1010292242080.24561@swampdragon.chaosbits.net> <201010301406.12961.linux@rainbow-software.org> <alpine.LNX.2.00.1010302143530.1572@swampdragon.chaosbits.net> <201010311829.13924.linux@rainbow-software.org>
- <s5h39rl2xjm.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] mfd: Add initial WM8958 support
+Date: Mon,  1 Nov 2010 14:20:11 -0400
+Message-ID: <1288635611-25560-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323328-2090847303-1288635812=:9616"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h39rl2xjm.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Ondrej Zary <linux@rainbow-software.org>, =?ISO-8859-15?Q?Benny_Sj=F6strand?= <benny@hostmobility.com>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C79062433E
+	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2010 19:38:04 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+The WM8958 is a derivative of the WM8994 which is register compatible
+with the addition of some extra features, mostly in the CODEC side.
+The major change visible at the MFD level is that rather than a single
+DBVDD supply we now have three separate DBVDDs so we must request and
+enable a different set of supplies.
 
---8323328-2090847303-1288635812=:9616
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
 
-On Mon, 1 Nov 2010, Takashi Iwai wrote:
+Since subsequent CODEC patches will depend on this I'd like to merge via
+ASoC if possible.
 
-> At Sun, 31 Oct 2010 18:29:10 +0100,
-> Ondrej Zary wrote:
-> > 
-> > On Saturday 30 October 2010 21:44:33 Jesper Juhl wrote:
-> > > On Sat, 30 Oct 2010, Ondrej Zary wrote:
-> > > > On Saturday 30 October 2010 00:18:57 Benny Sjöstrand wrote:
-> > > > > Hello again!
-> > > > >
-> > > > > Just doing a reply-all.
-> > > > > It's has been many years since I did anything to the cs46xx driver, so
-> > > > > I'm wondering
-> > > > > if there's anyone out there still using a cs46xx sound card?
-> > > > > I think the changes look's correct, but I can't test it, I do not have
-> > > > > a cs46xx hardware anymore.
-> > > >
-> > > > Sure, there are many of these cards "out there". I just got a "new"
-> > > > Terratec DMX Xfire 1024 (CS4624). I'll test the patch.
-> > >
-> > > Thanks a lot. Let me know how the test goes :-)
-> > 
-> > It works fine. Playing music right now.
-> 
-> Great.  I applied the patch now.
-> 
-Thanks Takashi and thank you for testing Ondrej :-)
+ drivers/mfd/wm8994-core.c       |   93 +++++++++++++++++++++++++++++++--------
+ include/linux/mfd/wm8994/core.h |    8 +++
+ 2 files changed, 82 insertions(+), 19 deletions(-)
 
+diff --git a/drivers/mfd/wm8994-core.c b/drivers/mfd/wm8994-core.c
+index b3b2aaf..8d221ba 100644
+--- a/drivers/mfd/wm8994-core.c
++++ b/drivers/mfd/wm8994-core.c
+@@ -218,6 +218,18 @@ static const char *wm8994_main_supplies[] = {
+ 	"SPKVDD2",
+ };
+ 
++static const char *wm8958_main_supplies[] = {
++	"DBVDD1",
++	"DBVDD2",
++	"DBVDD3",
++	"DCVDD",
++	"AVDD1",
++	"AVDD2",
++	"CPVDD",
++	"SPKVDD1",
++	"SPKVDD2",
++};
++
+ #ifdef CONFIG_PM
+ static int wm8994_device_suspend(struct device *dev)
+ {
+@@ -239,7 +251,7 @@ static int wm8994_device_suspend(struct device *dev)
+ 	if (ret < 0)
+ 		dev_err(dev, "Failed to save LDO registers: %d\n", ret);
+ 
+-	ret = regulator_bulk_disable(ARRAY_SIZE(wm8994_main_supplies),
++	ret = regulator_bulk_disable(wm8994->num_supplies,
+ 				     wm8994->supplies);
+ 	if (ret != 0) {
+ 		dev_err(dev, "Failed to disable supplies: %d\n", ret);
+@@ -254,7 +266,7 @@ static int wm8994_device_resume(struct device *dev)
+ 	struct wm8994 *wm8994 = dev_get_drvdata(dev);
+ 	int ret;
+ 
+-	ret = regulator_bulk_enable(ARRAY_SIZE(wm8994_main_supplies),
++	ret = regulator_bulk_enable(wm8994->num_supplies,
+ 				    wm8994->supplies);
+ 	if (ret != 0) {
+ 		dev_err(dev, "Failed to enable supplies: %d\n", ret);
+@@ -305,9 +317,10 @@ static int wm8994_ldo_in_use(struct wm8994_pdata *pdata, int ldo)
+ /*
+  * Instantiate the generic non-control parts of the device.
+  */
+-static int wm8994_device_init(struct wm8994 *wm8994, unsigned long id, int irq)
++static int wm8994_device_init(struct wm8994 *wm8994, int irq)
+ {
+ 	struct wm8994_pdata *pdata = wm8994->dev->platform_data;
++	const char *devname;
+ 	int ret, i;
+ 
+ 	mutex_init(&wm8994->io_lock);
+@@ -323,25 +336,48 @@ static int wm8994_device_init(struct wm8994 *wm8994, unsigned long id, int irq)
+ 		goto err;
+ 	}
+ 
++	switch (wm8994->type) {
++	case WM8994:
++		wm8994->num_supplies = ARRAY_SIZE(wm8994_main_supplies);
++		break;
++	case WM8958:
++		wm8994->num_supplies = ARRAY_SIZE(wm8958_main_supplies);
++		break;
++	default:
++		BUG();
++		return -EINVAL;
++	}
++
+ 	wm8994->supplies = kzalloc(sizeof(struct regulator_bulk_data) *
+-				   ARRAY_SIZE(wm8994_main_supplies),
++				   wm8994->num_supplies,
+ 				   GFP_KERNEL);
+ 	if (!wm8994->supplies) {
+ 		ret = -ENOMEM;
+ 		goto err;
+ 	}
+ 
+-	for (i = 0; i < ARRAY_SIZE(wm8994_main_supplies); i++)
+-		wm8994->supplies[i].supply = wm8994_main_supplies[i];
+-
+-	ret = regulator_bulk_get(wm8994->dev, ARRAY_SIZE(wm8994_main_supplies),
++	switch (wm8994->type) {
++	case WM8994:
++		for (i = 0; i < ARRAY_SIZE(wm8994_main_supplies); i++)
++			wm8994->supplies[i].supply = wm8994_main_supplies[i];
++		break;
++	case WM8958:
++		for (i = 0; i < ARRAY_SIZE(wm8958_main_supplies); i++)
++			wm8994->supplies[i].supply = wm8958_main_supplies[i];
++		break;
++	default:
++		BUG();
++		return -EINVAL;
++	}
++		
++	ret = regulator_bulk_get(wm8994->dev, wm8994->num_supplies,
+ 				 wm8994->supplies);
+ 	if (ret != 0) {
+ 		dev_err(wm8994->dev, "Failed to get supplies: %d\n", ret);
+ 		goto err_supplies;
+ 	}
+ 
+-	ret = regulator_bulk_enable(ARRAY_SIZE(wm8994_main_supplies),
++	ret = regulator_bulk_enable(wm8994->num_supplies,
+ 				    wm8994->supplies);
+ 	if (ret != 0) {
+ 		dev_err(wm8994->dev, "Failed to enable supplies: %d\n", ret);
+@@ -353,7 +389,22 @@ static int wm8994_device_init(struct wm8994 *wm8994, unsigned long id, int irq)
+ 		dev_err(wm8994->dev, "Failed to read ID register\n");
+ 		goto err_enable;
+ 	}
+-	if (ret != 0x8994) {
++	switch (ret) {
++	case 0x8994:
++		devname = "WM8994";
++		if (wm8994->type != WM8994)
++			dev_warn(wm8994->dev, "Device registered as type %d\n",
++				 wm8994->type);
++		wm8994->type = WM8994;
++		break;
++	case 0x8958:
++		devname = "WM8958";
++		if (wm8994->type != WM8958)
++			dev_warn(wm8994->dev, "Device registered as type %d\n",
++				 wm8994->type);
++		wm8994->type = WM8958;
++		break;
++	default:
+ 		dev_err(wm8994->dev, "Device is not a WM8994, ID is %x\n",
+ 			ret);
+ 		ret = -EINVAL;
+@@ -370,14 +421,16 @@ static int wm8994_device_init(struct wm8994 *wm8994, unsigned long id, int irq)
+ 	switch (ret) {
+ 	case 0:
+ 	case 1:
+-		dev_warn(wm8994->dev, "revision %c not fully supported\n",
+-			'A' + ret);
++		if (wm8994->type == WM8994)
++			dev_warn(wm8994->dev,
++				 "revision %c not fully supported\n",
++				 'A' + ret);
+ 		break;
+ 	default:
+-		dev_info(wm8994->dev, "revision %c\n", 'A' + ret);
+ 		break;
+ 	}
+ 
++	dev_info(wm8994->dev, "%s revision %c\n", devname, 'A' + ret);
+ 
+ 	if (pdata) {
+ 		wm8994->irq_base = pdata->irq_base;
+@@ -423,10 +476,10 @@ static int wm8994_device_init(struct wm8994 *wm8994, unsigned long id, int irq)
+ err_irq:
+ 	wm8994_irq_exit(wm8994);
+ err_enable:
+-	regulator_bulk_disable(ARRAY_SIZE(wm8994_main_supplies),
++	regulator_bulk_disable(wm8994->num_supplies,
+ 			       wm8994->supplies);
+ err_get:
+-	regulator_bulk_free(ARRAY_SIZE(wm8994_main_supplies), wm8994->supplies);
++	regulator_bulk_free(wm8994->num_supplies, wm8994->supplies);
+ err_supplies:
+ 	kfree(wm8994->supplies);
+ err:
+@@ -439,9 +492,9 @@ static void wm8994_device_exit(struct wm8994 *wm8994)
+ {
+ 	mfd_remove_devices(wm8994->dev);
+ 	wm8994_irq_exit(wm8994);
+-	regulator_bulk_disable(ARRAY_SIZE(wm8994_main_supplies),
++	regulator_bulk_disable(wm8994->num_supplies,
+ 			       wm8994->supplies);
+-	regulator_bulk_free(ARRAY_SIZE(wm8994_main_supplies), wm8994->supplies);
++	regulator_bulk_free(wm8994->num_supplies, wm8994->supplies);
+ 	kfree(wm8994->supplies);
+ 	kfree(wm8994);
+ }
+@@ -506,8 +559,9 @@ static int wm8994_i2c_probe(struct i2c_client *i2c,
+ 	wm8994->read_dev = wm8994_i2c_read_device;
+ 	wm8994->write_dev = wm8994_i2c_write_device;
+ 	wm8994->irq = i2c->irq;
++	wm8994->type = id->driver_data;
+ 
+-	return wm8994_device_init(wm8994, id->driver_data, i2c->irq);
++	return wm8994_device_init(wm8994, i2c->irq);
+ }
+ 
+ static int wm8994_i2c_remove(struct i2c_client *i2c)
+@@ -535,7 +589,8 @@ static int wm8994_i2c_resume(struct i2c_client *i2c)
+ #endif
+ 
+ static const struct i2c_device_id wm8994_i2c_id[] = {
+-	{ "wm8994", 0 },
++	{ "wm8994", WM8994 },
++	{ "wm8958", WM8958 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, wm8994_i2c_id);
+diff --git a/include/linux/mfd/wm8994/core.h b/include/linux/mfd/wm8994/core.h
+index de79bae..3fd3684 100644
+--- a/include/linux/mfd/wm8994/core.h
++++ b/include/linux/mfd/wm8994/core.h
+@@ -17,6 +17,11 @@
+ 
+ #include <linux/interrupt.h>
+ 
++enum wm8994_type {
++	WM8994 = 0,
++	WM8958 = 1,
++};
++
+ struct regulator_dev;
+ struct regulator_bulk_data;
+ 
+@@ -48,6 +53,8 @@ struct wm8994 {
+ 	struct mutex io_lock;
+ 	struct mutex irq_lock;
+ 
++	enum wm8994_type type;
++
+ 	struct device *dev;
+ 	int (*read_dev)(struct wm8994 *wm8994, unsigned short reg,
+ 			int bytes, void *dest);
+@@ -68,6 +75,7 @@ struct wm8994 {
+ 	u16 gpio_regs[WM8994_NUM_GPIO_REGS];
+ 
+ 	struct regulator_dev *dbvdd;
++	int num_supplies;
+ 	struct regulator_bulk_data *supplies;
+ };
+ 
 -- 
-Jesper Juhl <jj@chaosbits.net>             http://www.chaosbits.net/
-Plain text mails only, please      http://www.expita.com/nomime.html
-Don't top-post  http://www.catb.org/~esr/jargon/html/T/top-post.html
-
---8323328-2090847303-1288635812=:9616--
+1.7.1
