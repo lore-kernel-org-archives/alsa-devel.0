@@ -1,20 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: Fix SND_SOC_ALL_CODECS typos for
- alc5623 and jz4740
-Date: Mon, 1 Nov 2010 09:46:56 -0400
-Message-ID: <20101101134656.GA24374@opensource.wolfsonmicro.com>
-References: <1288360065-9793-1-git-send-email-jhnikula@gmail.com>
-	<20101101132253.GA23423@opensource.wolfsonmicro.com>
-	<20101101153112.13a01f28.jhnikula@gmail.com>
+From: BlackEnvil <blackenvil@gmail.com>
+Subject: pcm_jack.c jack_client_new() to jack_client_open()
+Date: Mon, 1 Nov 2010 16:15:06 +0100
+Message-ID: <AANLkTimgCdHbZVUKaYa6pw-SZ3dj_GcRwUFFMVM_w_9W@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=0015177fd0243092920493ff4709
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 58A12103821
-	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2010 14:46:48 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20101101153112.13a01f28.jhnikula@gmail.com>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id DA0EA10381C
+	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2010 16:15:27 +0100 (CET)
+Received: by eyg24 with SMTP id 24so2952695eyg.38
+	for <alsa-devel@alsa-project.org>; Mon, 01 Nov 2010 08:15:27 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,18 +20,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 01, 2010 at 03:31:12PM +0200, Jarkko Nikula wrote:
-> Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+--0015177fd0243092920493ff4709
+Content-Type: text/plain; charset=UTF-8
 
-> > This patch doesn't apply as-is since this CODEC isn't in mainline.  I've
-> > dropped it from the patch and applied together with the second patch.
+Hi.
+pcm_jack.c uses jack_client_new() to open a client session with jack server.
 
-> Ah, I forgot to point these were for 2.6.38 and thus alc5623 were
-> here. I thought SND_SOC_ALL_CODECS is useful only to ASoC developers
-> and didn't consider .37 at all :-)
+in agreement with jack documentation:
+"THIS FUNCTION IS DEPRECATED AND SHOULD NOT BE USED IN NEW JACK
+CLIENTS"    http://jackaudio.org/files/docs/html/group__ClientFunctions.html#ga97482adad8116b76635a63f646a2d2f5
 
-Ah, please resubmit the separate patch fo 2.6.38.
+This patch simply replace it with jack_client_open(): it's only a
+working draft, need to add jack status checking and so other, for
+eventually using jack_client_open() capabilities.
+Works well with jack2 too.
+
+--0015177fd0243092920493ff4709
+Content-Type: text/x-patch; charset=US-ASCII; name="jack_client_open.patch"
+Content-Disposition: attachment; filename="jack_client_open.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gfzjszfr0
+
+LS0tIG9yL3BjbV9qYWNrLmMJMjAxMC0wNC0xNiAxMzoxMToxMC4wMDAwMDAwMDAgKzAyMDAKKysr
+IHBjbV9qYWNrLmMJMjAxMC0xMS0wMSAxNjoxNTowNS4wMDAwMDAwMDAgKzAxMDAKQEAgLTMxNyw2
+ICszMTcsOCBAQAogCWludCBmZFsyXTsKIAlzdGF0aWMgdW5zaWduZWQgaW50IG51bSA9IDA7CiAJ
+Y2hhciBqYWNrX2NsaWVudF9uYW1lWzMyXTsKKwlqYWNrX3N0YXR1c190IGphY2tfc3RhdHVzOwor
+CWphY2tfb3B0aW9uc190ICBqYWNrX29wdGlvbnMgPSBKYWNrTnVsbE9wdGlvbjsKIAkKIAlhc3Nl
+cnQocGNtcCk7CiAJamFjayA9IGNhbGxvYygxLCBzaXplb2YoKmphY2spKTsKQEAgLTM0OCw3ICsz
+NTAsNyBAQAogCQkJX19mdW5jX18sIGphY2tfY2xpZW50X25hbWUsIChpbnQpc3RybGVuKGphY2tf
+Y2xpZW50X25hbWUpKTsKIAl9CiAKLQlqYWNrLT5jbGllbnQgPSBqYWNrX2NsaWVudF9uZXcoamFj
+a19jbGllbnRfbmFtZSk7CisJamFjay0+Y2xpZW50ID0gamFja19jbGllbnRfb3BlbihqYWNrX2Ns
+aWVudF9uYW1lLCBqYWNrX29wdGlvbnMsICZqYWNrX3N0YXR1cyk7CiAKIAlpZiAoamFjay0+Y2xp
+ZW50ID09IDApIHsKIAkJc25kX3BjbV9qYWNrX2ZyZWUoamFjayk7Cg==
+--0015177fd0243092920493ff4709
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--0015177fd0243092920493ff4709--
