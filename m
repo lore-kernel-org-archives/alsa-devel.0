@@ -1,37 +1,57 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC_iv/iv 1/1] ASoC: Add optional name_prefix to
- struct snd_soc_dev_map
-Date: Mon, 1 Nov 2010 13:51:44 -0400
-Message-ID: <20101101175144.GF24814@opensource.wolfsonmicro.com>
-References: <1288353823-22075-1-git-send-email-jhnikula@gmail.com>
-	<20101029214244.GK3921@opensource.wolfsonmicro.com>
-	<20101031201243.3ef62461.jhnikula@gmail.com>
+From: Jesper Juhl <jj@chaosbits.net>
+Subject: Re: [PATCH] cs46xx memory management fixes for cs46xx_dsp_spos_create()
+ - make sure we free and don't do pointless work.
+Date: Mon, 1 Nov 2010 19:23:32 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1011011922460.9616@swampdragon.chaosbits.net>
+References: <alpine.LNX.2.00.1010292242080.24561@swampdragon.chaosbits.net> <201010301406.12961.linux@rainbow-software.org> <alpine.LNX.2.00.1010302143530.1572@swampdragon.chaosbits.net> <201010311829.13924.linux@rainbow-software.org>
+ <s5h39rl2xjm.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 82D6210385E
-	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2010 18:51:39 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20101031201243.3ef62461.jhnikula@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323328-2090847303-1288635812=:9616"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5h39rl2xjm.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Ondrej Zary <linux@rainbow-software.org>, =?ISO-8859-15?Q?Benny_Sj=F6strand?= <benny@hostmobility.com>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Oct 31, 2010 at 08:12:43PM +0200, Jarkko Nikula wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> associating a prefix with codec name. Compile tested diff below.
+--8323328-2090847303-1288635812=:9616
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Oh, didn't spot this first time round due to sig sep - that diff looks a
-lot better at first glance.  We need a way to get the data into the card
-I guess.
+On Mon, 1 Nov 2010, Takashi Iwai wrote:
+
+> At Sun, 31 Oct 2010 18:29:10 +0100,
+> Ondrej Zary wrote:
+> > 
+> > On Saturday 30 October 2010 21:44:33 Jesper Juhl wrote:
+> > > On Sat, 30 Oct 2010, Ondrej Zary wrote:
+> > > > On Saturday 30 October 2010 00:18:57 Benny Sjöstrand wrote:
+> > > > > Hello again!
+> > > > >
+> > > > > Just doing a reply-all.
+> > > > > It's has been many years since I did anything to the cs46xx driver, so
+> > > > > I'm wondering
+> > > > > if there's anyone out there still using a cs46xx sound card?
+> > > > > I think the changes look's correct, but I can't test it, I do not have
+> > > > > a cs46xx hardware anymore.
+> > > >
+> > > > Sure, there are many of these cards "out there". I just got a "new"
+> > > > Terratec DMX Xfire 1024 (CS4624). I'll test the patch.
+> > >
+> > > Thanks a lot. Let me know how the test goes :-)
+> > 
+> > It works fine. Playing music right now.
+> 
+> Great.  I applied the patch now.
+> 
+Thanks Takashi and thank you for testing Ondrej :-)
+
+-- 
+Jesper Juhl <jj@chaosbits.net>             http://www.chaosbits.net/
+Plain text mails only, please      http://www.expita.com/nomime.html
+Don't top-post  http://www.catb.org/~esr/jargon/html/T/top-post.html
+
+--8323328-2090847303-1288635812=:9616--
