@@ -1,16 +1,17 @@
-From: BlackEnvil <blackenvil@gmail.com>
-Subject: pcm_jack.c jack_client_new() to jack_client_open()
-Date: Mon, 1 Nov 2010 16:15:06 +0100
-Message-ID: <AANLkTimgCdHbZVUKaYa6pw-SZ3dj_GcRwUFFMVM_w_9W@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Balanced output support for Xonar: Patches for
+ Virtuoso driver to add mixer option for balanced mono output (PCM179x dacs)
+Date: Mon, 01 Nov 2010 16:59:54 +0100
+Message-ID: <4CCEE3FA.8040706@ladisch.de>
+References: <AANLkTimODNVWg7qgfcnmZ_CDYr4t5QvMenDknO1O8YhX@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=0015177fd0243092920493ff4709
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id DA0EA10381C
-	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2010 16:15:27 +0100 (CET)
-Received: by eyg24 with SMTP id 24so2952695eyg.38
-	for <alsa-devel@alsa-project.org>; Mon, 01 Nov 2010 08:15:27 -0700 (PDT)
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 2BA2610381D
+	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2010 16:58:01 +0100 (CET)
+In-Reply-To: <AANLkTimODNVWg7qgfcnmZ_CDYr4t5QvMenDknO1O8YhX@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,50 +21,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Christian Wisner-Carlson <christian@freedomofknowledge.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---0015177fd0243092920493ff4709
-Content-Type: text/plain; charset=UTF-8
+Christian Wisner-Carlson wrote:
+> I tested this thoroughly with an Asus Xonar Essence ST, although it
+> should also work with the HDAV, Essence STX, and probably other cards.
 
-Hi.
-pcm_jack.c uses jack_client_new() to open a client session with jack server.
+D2/D2X, Xense.
 
-in agreement with jack documentation:
-"THIS FUNCTION IS DEPRECATED AND SHOULD NOT BE USED IN NEW JACK
-CLIENTS"    http://jackaudio.org/files/docs/html/group__ClientFunctions.html#ga97482adad8116b76635a63f646a2d2f5
+> The patches that I am posting only give one control regardless of
+> whether or not more than one DAC is connected. I have another patchset
+> that gives individual control of all 4 dacs in the Xonar Essence ST+H6
+> and HDAV+H6 setups (H6 is an optional daughterboard for surround sound).
 
-This patch simply replace it with jack_client_open(): it's only a
-working draft, need to add jack status checking and so other, for
-eventually using jack_client_open() capabilities.
-Works well with jack2 too.
+BTW: any new information about the H6 problem?
 
---0015177fd0243092920493ff4709
-Content-Type: text/x-patch; charset=US-ASCII; name="jack_client_open.patch"
-Content-Disposition: attachment; filename="jack_client_open.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gfzjszfr0
+> It allows for 4 balanced outputs, 8 unbalanced outputs, or any
+> combination of balanced and unbalanced outputs. HOWEVER, it adds 4
+> mixer controls and the code isn't very pretty.
 
-LS0tIG9yL3BjbV9qYWNrLmMJMjAxMC0wNC0xNiAxMzoxMToxMC4wMDAwMDAwMDAgKzAyMDAKKysr
-IHBjbV9qYWNrLmMJMjAxMC0xMS0wMSAxNjoxNTowNS4wMDAwMDAwMDAgKzAxMDAKQEAgLTMxNyw2
-ICszMTcsOCBAQAogCWludCBmZFsyXTsKIAlzdGF0aWMgdW5zaWduZWQgaW50IG51bSA9IDA7CiAJ
-Y2hhciBqYWNrX2NsaWVudF9uYW1lWzMyXTsKKwlqYWNrX3N0YXR1c190IGphY2tfc3RhdHVzOwor
-CWphY2tfb3B0aW9uc190ICBqYWNrX29wdGlvbnMgPSBKYWNrTnVsbE9wdGlvbjsKIAkKIAlhc3Nl
-cnQocGNtcCk7CiAJamFjayA9IGNhbGxvYygxLCBzaXplb2YoKmphY2spKTsKQEAgLTM0OCw3ICsz
-NTAsNyBAQAogCQkJX19mdW5jX18sIGphY2tfY2xpZW50X25hbWUsIChpbnQpc3RybGVuKGphY2tf
-Y2xpZW50X25hbWUpKTsKIAl9CiAKLQlqYWNrLT5jbGllbnQgPSBqYWNrX2NsaWVudF9uZXcoamFj
-a19jbGllbnRfbmFtZSk7CisJamFjay0+Y2xpZW50ID0gamFja19jbGllbnRfb3BlbihqYWNrX2Ns
-aWVudF9uYW1lLCBqYWNrX29wdGlvbnMsICZqYWNrX3N0YXR1cyk7CiAKIAlpZiAoamFjay0+Y2xp
-ZW50ID09IDApIHsKIAkJc25kX3BjbV9qYWNrX2ZyZWUoamFjayk7Cg==
---0015177fd0243092920493ff4709
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+The controller can route any stereo pair to each DAC, so it would be a
+good idea to have one global control that also affects this routing so
+that, e.g., configuring the card for 4 outputs works correctly when
+playing 4-channel data.
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Alternatively, having low-level controls for each detail of the hardware
+is workable when somebody (i.e., you :-) writes a special graphical tool
+to configure the Xonar outputs (any the other settings).
 
---0015177fd0243092920493ff4709--
+The Xense has one PCM1796 for the front channels and a CS4362A for the
+other channels.  Like the stereo-only cards, this would result in an odd
+number of channels in balanced mode, which is somewhat counterintuitive
+because the controller would need to be fed an extra unused channel.
+
+> Please tell me if this is not the correct way to post a patch, and
+> tell me if it seems like a candidate to be merged.
+
+Your mailer wrapped lines; see Documentation/email-clients.txt.
+Also see Documentation/SubmittingPatches.
+
+Overall, this patch looks good.  But I wouldn't want to apply it without
+the followup patch that handles the D2's four DACs.
+
+> @@ -532,6 +534,13 @@
+>  		reg = PCM1796_OS_64;
+>  	else
+>  		reg = PCM1796_OS_32;
+> +	
+> +	if (data->monomode)
+> +	        reg = reg | PCM1796_MONO;
+> +	
+> +	if (data->rightmono)
+> +	        reg = reg | PCM1796_CHSL_RIGHT;
+> +	
+>  	for (i = 0; i < data->dacs; ++i)
+>  		pcm1796_write_cached(chip, i, 20, reg);
+>  }
+
+This function's purpose is no longer to _only_ update the oversampling
+setting; please rename it to, e.g., update_reg20.
+
+
+Regards,
+Clemens
