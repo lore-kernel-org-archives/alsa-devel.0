@@ -1,15 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.37
-Date: Mon, 1 Nov 2010 15:50:05 -0400
-Message-ID: <20101101195004.GC13509@opensource.wolfsonmicro.com>
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: Re: iec958 and 24-bit audio
+Date: Mon, 1 Nov 2010 15:03:31 -0500
+Message-ID: <AANLkTinHgiCuusw9HJn_X1CH4YvA98VPtojNXAu58Gm=@mail.gmail.com>
+References: <AANLkTi=U5k+mYy-kSCn4699LwFF6J2gxYQKePSNayDth@mail.gmail.com>
+	<alpine.LNX.2.00.1011012017270.29422@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 894F8243B9
-	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2010 20:50:00 +0100 (CET)
-Content-Disposition: inline
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 093A8243D8
+	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2010 21:03:31 +0100 (CET)
+Received: by vws20 with SMTP id 20so4643402vws.38
+	for <alsa-devel@alsa-project.org>; Mon, 01 Nov 2010 13:03:31 -0700 (PDT)
+In-Reply-To: <alpine.LNX.2.00.1011012017270.29422@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,34 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 89e1e66d6be8a520cdcd26043cda2cc870a34015:
+>> [alsa-lib]$ aplay -Diec958 file24bits.wav
+>> aplay: set_params:1059: Sample format non available
+>> Available formats:
+>> - S16_LE
+>> - S32_LE
+>>
+>> Is there an built-in assumption that the iec958 device can only take
+>> as input what the slave hardware device supports?
+>
+> Use 'plug:iec958' device if you want to do the format conversion (from
+> 24-bit to 32-bit format).
 
-  ALSA: usb-audio: automatically detect feedback format (2010-10-27 09:17:41 +0200)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.37
-
-All minor and localised fixes with the exception of the patches from
-Jarkko which improve build test coverage.
-
-Jarkko Nikula (2):
-      ASoC: Fix SND_SOC_ALL_CODECS typo for jz4740
-      ASoC: Include cx20442 to SND_SOC_ALL_CODECS
-
-Joe Perches (1):
-      ASoC: Update WARN uses in wm_hubs
-
-Mark Brown (2):
-      ASoC: Check return value of struct_strtoul() in pmdown_time_set()
-      ASoC: Remove volatility from WM8900 POWER1 register
-
- sound/soc/codecs/Kconfig   |    3 ++-
- sound/soc/codecs/wm8900.c  |    6 ------
- sound/soc/codecs/wm_hubs.c |    2 +-
- sound/soc/soc-core.c       |    5 ++++-
- 4 files changed, 7 insertions(+), 9 deletions(-)
+That seems to work, but what I was asking is if there's a direct path
+without conversion? With plug:iec958 there's a conversion to 32-bits
+and then you drop the lsb.
+Also PulseAudio seems to rely on iec958 and when it doesn't work it
+tries with plug:iec958. What's the recommended way of using this
+device? Should we always open plug:iec958?
+Thanks
+-Pierre
