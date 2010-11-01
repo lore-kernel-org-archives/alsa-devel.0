@@ -1,23 +1,19 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [RFC_i/iv 1/3] ASoC: Decouple DAPM from CODECs.
- Part core (will be squashed)
-Date: Sun, 31 Oct 2010 20:13:16 +0200
-Message-ID: <20101031201316.3d46d472.jhnikula@gmail.com>
-References: <1288353618-21753-1-git-send-email-jhnikula@gmail.com>
-	<1288353618-21753-2-git-send-email-jhnikula@gmail.com>
-	<20101029200428.GD3921@opensource.wolfsonmicro.com>
-	<1288461714.3286.143.camel@odin>
+From: Matthew Gregan <kinetik@flim.org>
+Subject: Hang in snd_pcm_writei with alsa-pulse plugin
+Date: Mon, 1 Nov 2010 14:38:19 +1300
+Message-ID: <20101101013819.GA22823@flim.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="sdtB3X0nJg68CQEu"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 00CD110387E
-	for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2010 19:11:53 +0100 (CET)
-Received: by ewy22 with SMTP id 22so2430527ewy.38
-	for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2010 11:11:53 -0700 (PDT)
-In-Reply-To: <1288461714.3286.143.camel@odin>
+Received: from flim.org (flim.org [65.99.223.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id 95935243B4
+	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2010 02:38:26 +0100 (CET)
+Received: from brak (unknown [121.98.132.55])
+	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by flim.org (Postfix) with ESMTPSA id A1E2214397
+	for <alsa-devel@alsa-project.org>; Mon,  1 Nov 2010 01:37:36 +0000 (UTC)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,54 +23,189 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 30 Oct 2010 19:01:54 +0100
-Liam Girdwood <lrg@slimlogic.co.uk> wrote:
 
-> On Fri, 2010-10-29 at 13:04 -0700, Mark Brown wrote:
-> > On Fri, Oct 29, 2010 at 03:00:16PM +0300, Jarkko Nikula wrote:
-> > 
-> > >  	codec->debugfs_pop_time = debugfs_create_u32("dapm_pop_time", 0644,
-> > >  						     codec->debugfs_codec_root,
-> > > -						     &codec->pop_time);
-> > > +						     &codec->dapm->pop_time);
-> > 
-> > The pop time feels like it should have an effect over the full card
-> > rather than over individual CODECs - the power sequencing is obviously
-> > going to be done over the entire card rather than individual devices so
-> > it's a little unclear how competing values for different devices would
-> > be applied.  This is a simple code motion patch and this is only debugfs
-> > but perhaps it's worth first doing this as a split which moves the pop
-> > time onto the card.
-> > 
-True. Looks like worth to add a patch doing pop decoupling in this set.
+--sdtB3X0nJg68CQEu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Ah, I think we may be missing a later patch here that did add a DAPM
-> context to card and platform.
-> 
-Yeah, I simplified a bit Liam's code and not added DAPM to other than
-codecs since there is no yet use for it in these series.
+Hi,
 
-> > >  	/* If we're changing to all on or all off then prepare */
-> > > -	if ((sys_power && codec->bias_level == SND_SOC_BIAS_STANDBY) ||
-> > > -	    (!sys_power && codec->bias_level == SND_SOC_BIAS_ON)) {
-> > > -		ret = snd_soc_dapm_set_bias_level(card, codec, SND_SOC_BIAS_PREPARE);
-> > > +	if ((sys_power && dapm->bias_level == SND_SOC_BIAS_STANDBY) ||
-> > > +	    (!sys_power && dapm->bias_level == SND_SOC_BIAS_ON)) {
-> > > +		ret = snd_soc_dapm_set_bias_level(card, dapm, SND_SOC_BIAS_PREPARE);
-> > 
-> > So, this is all going to be run per DAPM object from the looks of
-> > things.  That's really not what we want - we want to be doing the
-> > sequencing over all DAPM objects in the card, rather than per DAPM
-> > object.  It'll need to be fixed at some point later in the series...
-> 
-Reason is that here is no need to touch other DAPM contexts until
-RFC_ii/iv 3/3 since DAPM decoupling doesn't change yet how things work
-currently.
+I think I'm seeing a bug in the alsa-pulse plugin where the buffer
+management ends up corrupt and results in a deadlock waiting for free buffer
+space.  This occurs when resuming from pause using snd_pcm_pause.  After
+resuming, my application tries to write a fixed block of data, expecting
+snd_pcm_writei to block if the data is larger than the available buffer size
+(the result of snd_pcm_avail_update).
 
+I originally observed this in the wild in Firefox, which pauses and resumes
+the sound device whenever network buffering occurs.  I'm planning to include
+the workaround mentioned below in the next Firefox release (Mozilla bug
+573924).
 
+What happens is that, after resuming with snd_pcm_pause, a call to
+snd_pcm_writei never returns.  This happens on the write call that would
+have exceeded the available buffer size, which I would expect to block only
+until sufficient buffer space became available.
+
+It's possible to get into a similar situation using SND_PCM_NONBLOCK and
+waiting on the sound device if it returns EAGAIN, except that snd_pcm_writei
+always returns EAGAIN and snd_pcm_wait returns 1 immediately, resulting in a
+tight loop in the calling code.
+
+I discovered that I can reliably workaround the problem by ensuring the
+first writes after resuming from pause are never larger than what
+snd_pcm_avail_update returns.  After writing enough to fill (but not exceed)
+the available buffer size, the code returns to the fixed buffer size per
+write strategy and continues as normal.
+
+The problem occurs with the following stack:
+
+#0  __poll (fds=<value optimized out>, 
+    nfds=<value optimized out>, timeout=<value optimized out>)
+    at ../sysdeps/unix/sysv/linux/poll.c:87
+#1  snd1_pcm_wait_nocheck (pcm=0x1b9a780, timeout=-1)
+    at pcm.c:2367
+#2  snd1_pcm_write_areas (pcm=0x1b9a780, 
+    areas=0x7fff4ce9b890, offset=<value optimized out>, size=30000, 
+    func=0x339ba91d10 <ioplug_priv_transfer_areas>) at pcm.c:6655
+#3  snd_pcm_ioplug_writei (pcm=0x1b9a780, 
+    buffer=<value optimized out>, size=30000) at pcm_ioplug.c:561
+#4  bwrite (pcm=0x1b9a780, towrite=30000) at
+    atest2.c:29
+#5  main (argc=1, argv=0x7fff4ce9ba68) at atest2.c:86
+
+I'm Fedora 13 x86_64 with all updates from updates-testing.  ALSA is
+1.0.22-1, PulseAudio is 0.9.21-6, and the kernel is 2.6.34.7-61.  I've also
+tested against the current git versions of alsa-libs and alsa-plugins and
+can still reproduce the problem.
+
+I've attached a simple test program that reproduces this problem reliably on
+my machine.  It writes a period sized buffer in a loop, waiting half a
+period until the next attempt.  Every few iterations, it pauses the sound
+device for half a period and then resumes it.  It usually hangs within 2-3
+pause/resume cycles.  Running the test with "-r" enables the recovery code I
+mentioned above.  It never hangs when tested using the hardware ALSA backend
+with alsa-pulse disabled, but my sound hardware doesn't seem to support
+snd_pcm_pause.
+
+Cheers,
+-mjg
 -- 
-Jarkko
+Matthew Gregan                     |/
+                                  /|                    kinetik@flim.org
+
+--sdtB3X0nJg68CQEu
+Content-Type: text/x-csrc; charset=us-ascii
+Content-Disposition: attachment; filename="atest2.c"
+
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <alsa/asoundlib.h>
+
+#define RATE 48000
+
+snd_pcm_uframes_t setup(snd_pcm_t ** pcm)
+{
+  snd_pcm_uframes_t bsize, psize;
+
+  assert(snd_pcm_open(pcm, "default", SND_PCM_STREAM_PLAYBACK, 0) == 0);
+  assert(snd_pcm_set_params(*pcm, SND_PCM_FORMAT_S16_LE,
+                            SND_PCM_ACCESS_RW_INTERLEAVED,
+                            1, RATE, 1, 250000) == 0);
+  assert(snd_pcm_get_params(*pcm, &bsize, &psize) == 0);
+  assert(bsize / psize >= 4);
+
+  return psize;
+}
+
+void bwrite(snd_pcm_t * pcm, snd_pcm_sframes_t towrite)
+{
+  int r;
+  char * garbage;
+
+  garbage = calloc(1, towrite);
+  r = snd_pcm_writei(pcm, garbage, towrite);
+  free(garbage);
+
+  if (r < 0) {
+    fprintf(stderr, "bwrite error recovery\n");
+    snd_pcm_recover(pcm, r, 1);
+  }
+}
+
+snd_pcm_sframes_t fill(snd_pcm_t * pcm)
+{
+  snd_pcm_sframes_t avail;
+
+  avail = snd_pcm_avail_update(pcm);
+  if (avail < 0) {
+    fprintf(stderr, "fill error recovery\n");
+    snd_pcm_recover(pcm, avail, 1);
+    avail = snd_pcm_avail_update(pcm);
+  }
+  if (avail) {
+    bwrite(pcm, avail);
+  }
+
+  return avail;
+}
+
+int main(int argc, char * argv[])
+{
+  snd_pcm_t * pcm;
+  snd_pcm_uframes_t psize;
+  int pause = 0, count = 0, recovery = 0;
+
+  if (argc == 2 && argv[1][0] == '-' && argv[1][1] == 'r') {
+    recovery = 1;
+  }
+
+  /* set up a mono output device at RATE Hz with at least 4 periods */
+  psize = setup(&pcm);
+
+  /* prefill sound buffers and begin playback */
+  fill(pcm);
+
+  while (++count) {
+    if (pause || count % 7 == 0) {
+      fprintf(stderr, pause ? "resuming playback\n" : "pausing playback\n");
+      pause = !pause;
+      snd_pcm_pause(pcm, pause);
+
+      /* if resuming playback and recovery enabled, fill sound buffers */
+      if (recovery && !pause) {
+        fprintf(stderr, "recovery, wrote %d frames\n", (int) fill(pcm));
+      }
+    }
+
+    /* if not paused, write a period of sound data */
+    if (!pause) {
+      snd_pcm_sframes_t avail = snd_pcm_avail_update(pcm);
+      bwrite(pcm, psize);
+      fprintf(stderr, "playback, wrote %u frames (needed %d)\n", (unsigned int) psize, (int) avail);
+    }
+
+    /* sleep for half a period */
+    usleep(psize * 1000000 / RATE / 2);
+  }
+
+  return 0;
+}
+
+--sdtB3X0nJg68CQEu
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--sdtB3X0nJg68CQEu--
