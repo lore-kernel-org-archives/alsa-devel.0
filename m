@@ -1,41 +1,36 @@
-From: Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: [REGRESSION] no sound on T60 laptop (HDA Intel)
-Date: Tue, 02 Nov 2010 15:16:23 +0100
-Message-ID: <E1PDHex-0001Gd-3L@pomaz-ex.szeredi.hu>
-References: <E1P33mT-0003qa-Fv@pomaz-ex.szeredi.hu>
-	<s5hwrpxnf41.wl%tiwai@suse.de>
-	<E1P3EES-0005SV-Sr@pomaz-ex.szeredi.hu>
-	<s5h8w2b6f9c.wl%tiwai@suse.de>
-	<E1P3PKg-0006RB-KV@pomaz-ex.szeredi.hu>
-	<20101031120452.31836af2@schatten.dmk.lab>
-	<E1PDDGc-0000pM-83@pomaz-ex.szeredi.hu> <s5h62wguj5q.wl%tiwai@suse.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <s5h62wguj5q.wl%tiwai@suse.de> (message from Takashi Iwai on Tue,
-	02 Nov 2010 11:14:25 +0100)
-Sender: linux-kernel-owner@vger.kernel.org
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.37
+Date: Tue, 2 Nov 2010 10:50:44 -0400
+Message-ID: <20101102145044.GI21476@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 357A3103810
+	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2010 15:50:38 +0100 (CET)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: miklos@szeredi.hu, florian@mickler.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 02 Nov 2010, Takashi Iwai wrote:
-> At Tue, 02 Nov 2010 10:34:58 +0100,
-> Miklos Szeredi wrote:
-> > 
-> > On Sun, 31 Oct 2010, Florian Mickler wrote:
-> > > > Hmm, now there's no sound even with the revert.  I guess reproducing
-> > > > this is not completely reliable so the bisect gave a false result.  Oh
-> > > > well.
-> > > > 
-> > 
-> > > Did you get to the bottom of this?
-> > 
-> > No, the regression is still there in 2.6.36-final.
-> 
-> This should be fixed by the commit
-> 0e7adbe263f89ea2ef15b5af5e80a812b2a85025.
-> Give it a try.
+The following changes since commit c8ddb2713c624f432fa5fe3c7ecffcdda46ea0d4:
 
-Yes, it fixes it.  Cool.
+  Linux 2.6.37-rc1 (2010-11-01 07:54:12 -0400)
 
-Thanks,
-Miklos
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.37
+
+Mark Brown (3):
+      Merge commit 'v2.6.37-rc1' into for-2.6.37
+
+For obvious reasons I'll omit the diffstat :)
