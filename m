@@ -1,18 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] mfd: Add initial WM8958 support
-Date: Tue, 2 Nov 2010 09:13:49 -0400
-Message-ID: <20101102131348.GB21476@opensource.wolfsonmicro.com>
-References: <1288635611-25560-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<AANLkTikzEdgUqVU0N=y7Vy+fnqKyskVp6p0zMpdYmenk@mail.gmail.com>
+Subject: ASoC update for 2.6.37
+Date: Tue, 2 Nov 2010 09:31:54 -0400
+Message-ID: <20101102133153.GE21476@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3973510380E
-	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2010 14:13:43 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9CCCD103913
+	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2010 14:31:45 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <AANLkTikzEdgUqVU0N=y7Vy+fnqKyskVp6p0zMpdYmenk@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +19,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Thiago Farina <tfransosi@gmail.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 01, 2010 at 11:52:04PM -0200, Thiago Farina wrote:
-> On Mon, Nov 1, 2010 at 4:20 PM, Mark Brown
+The following changes since commit 5a0b07433ddd808ecbb5f4287b61be6fa7af1b57:
 
-> > +enum wm8994_type {
-> > + =A0 =A0 =A0 WM8994 =3D 0,
-> > + =A0 =A0 =A0 WM8958 =3D 1,
-> > +};
+  ASoC: Update WARN uses in wm_hubs (2010-11-01 15:44:57 -0400)
 
-> Don't need to initialize with =3D 0 and with =3D 1. This is done by defau=
-lt.
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.37
 
-There is no runtime cost to doing this and so where the values are
-important I feel the clarity from documenting the actual values is
-useful, it saves anyone having to figure out if they are what is
-expected.
+Eric Miao (1):
+      ASoC: fix the building issue of missing codec field in 'struct snd_soc_card'
+
+This is a clearly focused build fix.  I'll do a merge up of 2.6.37-rc1
+once this is pulled if that's OK?
+
+ sound/soc/pxa/tosa.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
