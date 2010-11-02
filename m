@@ -1,78 +1,32 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.38
-Date: Tue, 2 Nov 2010 10:54:57 -0400
-Message-ID: <20101102145456.GJ21476@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2.6.37-rc1] ASoC: OMAP: fix OMAP1 compilation problem
+Date: Tue, 2 Nov 2010 10:56:18 -0400
+Message-ID: <20101102145617.GK21476@opensource.wolfsonmicro.com>
+References: <201011021550.34885.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4CEE8103839
-	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2010 15:54:49 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+In-Reply-To: <201011021550.34885.jkrzyszt@tis.icnet.pl>
+Sender: linux-omap-owner@vger.kernel.org
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: Jarkko Nikula <jhnikula@gmail.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Paul Walmsley <paul@pwsan.com>, alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, e3-hacking@earth.li
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit c8ddb2713c624f432fa5fe3c7ecffcdda46ea0d4:
+On Tue, Nov 02, 2010 at 03:50:32PM +0100, Janusz Krzysztofik wrote:
+> In the new code introduced with commit cf4c87abe238ec17cd0255b4e21abd949d7f811e,
+> "OMAP: McBSP: implement McBSP CLKR and FSR signal muxing via mach-omap2/mcbsp.c",
+> the way omap1 build is supposed to bypass omap2 specific functionality doesn't 
+> optimize out all omap2 specific stuff. This breaks linking phase for omap1 
+> machines, giving "undefined reference to `omap2_mcbsp1_mux_clkr_src'" 
+> and "undefined reference to `omap2_mcbsp1_mux_fsr_src'" errors. Fix it.
 
-  Linux 2.6.37-rc1 (2010-11-01 07:54:12 -0400)
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.38
+>  	case OMAP_MCBSP_CLKR_SRC_CLKR:
+> +		if (cpu_class_is_omap1())
+> +			break;
+>  		omap2_mcbsp1_mux_clkr_src(CLKR_SRC_CLKR);
 
-The only big change here is the addition of the ALC CODECs and the HP
-thin client machine drivers that depend on them.
-
-Arnaud Patard (2):
-      ASoC: add support for alc562[123] codecs
-      ASoC: kirkwood: Add audio support to hp t5325 thin clients
-
-Eric Miao (1):
-      ASoC: fix the building issue of missing codec field in 'struct snd_soc_card'
-
-Jarkko Nikula (3):
-      ASoC: Fix SND_SOC_ALL_CODECS typo for jz4740
-      ASoC: Include cx20442 to SND_SOC_ALL_CODECS
-      ASoC: Fix SND_SOC_ALL_CODECS typo for alc5623
-
-Joe Perches (1):
-      ASoC: Update WARN uses in wm_hubs
-
-Mark Brown (6):
-      ASoC: Check return value of struct_strtoul() in pmdown_time_set()
-      ASoC: Store DC offset correction for wm_hubs devices in class W mode
-      ASoC: Remove volatility from WM8900 POWER1 register
-      Merge branch 'for-2.6.37' into for-2.6.38
-      Merge commit 'v2.6.37-rc1' into for-2.6.37
-      Merge branch 'for-2.6.37' into HEAD
-
- include/sound/alc5623.h             |   15 +
- sound/soc/codecs/Kconfig            |    8 +-
- sound/soc/codecs/Makefile           |    2 +
- sound/soc/codecs/alc5623.c          | 1118 +++++++++++++++++++++++++++++++++++
- sound/soc/codecs/alc5623.h          |  161 +++++
- sound/soc/codecs/wm8900.c           |    6 -
- sound/soc/codecs/wm8993.c           |    2 +
- sound/soc/codecs/wm8994.c           |    3 +
- sound/soc/codecs/wm_hubs.c          |   69 ++-
- sound/soc/codecs/wm_hubs.h          |    3 +
- sound/soc/kirkwood/Kconfig          |    9 +
- sound/soc/kirkwood/Makefile         |    2 +
- sound/soc/kirkwood/kirkwood-t5325.c |  141 +++++
- sound/soc/pxa/tosa.c                |    2 +-
- sound/soc/soc-core.c                |    5 +-
- 15 files changed, 1514 insertions(+), 32 deletions(-)
- create mode 100644 include/sound/alc5623.h
- create mode 100644 sound/soc/codecs/alc5623.c
- create mode 100644 sound/soc/codecs/alc5623.h
- create mode 100644 sound/soc/kirkwood/kirkwood-t5325.c
+I guess this will still fail with optimisation diabled, but I'm not sure
+anyone ever builds the kernel like that.
