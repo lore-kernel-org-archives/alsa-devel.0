@@ -1,58 +1,41 @@
-From: Victor Rodriguez <vm.rod25-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v5 1/9] davinci: EMAC support for Omapl138-Hawkboard
-Date: Thu, 28 Oct 2010 11:20:55 -0500
-Message-ID: <AANLkTikn7-=TM=KSrK-QXTE1sTyjKhfOyhZKY3g7rFtu@mail.gmail.com>
-References: <1287511587-22216-1-git-send-email-vm.rod25@gmail.com>
-	<1287511587-22216-2-git-send-email-vm.rod25@gmail.com>
-	<B85A65D85D7EB246BE421B3FB0FBB593023475E6EE@dbde02.ent.ti.com>
-	<B85A65D85D7EB246BE421B3FB0FBB593023475E702@dbde02.ent.ti.com>
-	<AANLkTi=NNVieBNmSAfuebZQGAFMxXkpirZXeRSHLb2OA@mail.gmail.com>
-	<B85A65D85D7EB246BE421B3FB0FBB593023475E71A@dbde02.ent.ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB593023475E71A-/tLxBxkBPtCIQmiDNMet8wC/G2K4zDHf@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: "Nori, Sekhar" <nsekhar-l0cyMroinI0@public.gmane.org>
-Cc: "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "sshtylyov-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org" <sshtylyov-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Subject: Re: [REGRESSION] no sound on T60 laptop (HDA Intel)
+Date: Tue, 02 Nov 2010 15:16:23 +0100
+Message-ID: <E1PDHex-0001Gd-3L@pomaz-ex.szeredi.hu>
+References: <E1P33mT-0003qa-Fv@pomaz-ex.szeredi.hu>
+	<s5hwrpxnf41.wl%tiwai@suse.de>
+	<E1P3EES-0005SV-Sr@pomaz-ex.szeredi.hu>
+	<s5h8w2b6f9c.wl%tiwai@suse.de>
+	<E1P3PKg-0006RB-KV@pomaz-ex.szeredi.hu>
+	<20101031120452.31836af2@schatten.dmk.lab>
+	<E1PDDGc-0000pM-83@pomaz-ex.szeredi.hu> <s5h62wguj5q.wl%tiwai@suse.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <s5h62wguj5q.wl%tiwai@suse.de> (message from Takashi Iwai on Tue,
+	02 Nov 2010 11:14:25 +0100)
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: miklos@szeredi.hu, florian@mickler.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 28, 2010 at 9:34 AM, Nori, Sekhar <nsekhar-l0cyMroinI0@public.gmane.org> wrote:
-> On Thu, Oct 28, 2010 at 19:51:28, Victor Rodriguez wrote:
->
->> Ok so let me see if I understand The only change that I should do is to =
-remove
->>
->> > + =A0 =A0 if (!machine_is_omapl138_hawkboard())
->> > + =A0 =A0 =A0 =A0 =A0 =A0 return;
->>
->> right ?
->>
->
-> Yes.
->
-> Thanks,
-> Sekhar
->
->
+On Tue, 02 Nov 2010, Takashi Iwai wrote:
+> At Tue, 02 Nov 2010 10:34:58 +0100,
+> Miklos Szeredi wrote:
+> > 
+> > On Sun, 31 Oct 2010, Florian Mickler wrote:
+> > > > Hmm, now there's no sound even with the revert.  I guess reproducing
+> > > > this is not completely reliable so the bisect gave a false result.  Oh
+> > > > well.
+> > > > 
+> > 
+> > > Did you get to the bottom of this?
+> > 
+> > No, the regression is still there in 2.6.36-final.
+> 
+> This should be fixed by the commit
+> 0e7adbe263f89ea2ef15b5af5e80a812b2a85025.
+> Give it a try.
 
-The change is ready and running but I have  a question if the new
-patch apply fine and any other patches of the series has been changed
-should i send all the patches again like patchv6 ? or should i send
-this EMAC patch like resend patch ?
+Yes, it fixes it.  Cool.
 
-I do not thick so but if it is necessary I will do it
-
-
-Thanks and regards
-
-Victor Rodriguez
+Thanks,
+Miklos
