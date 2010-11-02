@@ -1,123 +1,52 @@
-From: "Nori, Sekhar" <nsekhar-l0cyMroinI0@public.gmane.org>
-Subject: RE: [PATCH v6 9/9] davinci: USB1.1 support for Omapl138-Hawkboard
-Date: Tue, 2 Nov 2010 23:50:19 +0530
-Message-ID: <B85A65D85D7EB246BE421B3FB0FBB5930234821A8C@dbde02.ent.ti.com>
-References: <1288365045-2709-1-git-send-email-vm.rod25@gmail.com>
-	<1288365045-2709-10-git-send-email-vm.rod25@gmail.com>
-Mime-Version: 1.0
+From: Benjamin BERTRAND <beenje@xboxmediacenter.com>
+Subject: sound over HDMI on AppleTV (1G) with nvidia drivers
+Date: Tue, 2 Nov 2010 19:25:29 +0100
+Message-ID: <A882A934-20C3-40A3-AEAF-6FC07CE05FEE@xboxmediacenter.com>
+Reply-To: beenje@xbmc.org
+Mime-Version: 1.0 (Apple Message framework v1081)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <1288365045-2709-10-git-send-email-vm.rod25-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Content-Language: en-US
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: "vm.rod25-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <vm.rod25-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "sshtylyov-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org" <sshtylyov-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org>, "broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org" <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org" <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id AFBB4243E4
+	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2010 19:25:35 +0100 (CET)
+Received: by ewy22 with SMTP id 22so3541342ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 02 Nov 2010 11:25:32 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Victor,
+Hi,
 
-On Fri, Oct 29, 2010 at 20:40:45, vm.rod25-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
-> From: Victor Rodriguez <victor.rodriguez-Ut8ZLSGP1ULQT0dZR+AlfA@public.gmane.org>
->
-> This patch adds USB1.1 support for the Hawkboard-L138 system
->
-> Signed-off-by: Victor Rodriguez <victor.rodriguez-Ut8ZLSGP1ULQT0dZR+AlfA@public.gmane.org>
-> ---
+Currently to get sound over HDMI on AppleTV (1st generation) (with linux of course), NVIDIA 100.14.19 drivers are required (and they compile only on Ubuntu 8.04).
+It doesn't work with newer drivers.
 
-> +static int hawk_usb_ocic_notify(da8xx_ocic_handler_t handler)
-> +{
-> +     int irq         = gpio_to_irq(DA850_USB1_OC_PIN);
-> +     int error       = 0;
-> +
-> +     if (handler != NULL) {
-> +             hawk_usb_ocic_handler = handler;
-> +
-> +             error = request_irq(irq, omapl138_hawk_usb_ocic_irq,
-> +                                     IRQF_DISABLED | IRQF_TRIGGER_RISING |
-> +                                     IRQF_TRIGGER_FALLING,
-> +                                     "OHCI over-current indicator", NULL);
-> +             if (error)
-> +                     pr_err(KERN_ERR "%s: could not request IRQ to watch "
-> +                             "over-current indicator changes\n", __func__);
-> +     } else
-> +             free_irq(irq, NULL);
+I made a few tests with Ubuntu 9.10 + kernel 2.6.32 + alsa-driver 1.0.23 + NVIDIA drivers 256.35
+atv uses a SiI1390 chip for HDMI output (and NVidia GeForce Go 7300 / G72 pci-express chipset).
+In current alsa-driver, SiI1390 uses the ATI HDMI codec which hasn't been updated in a while.
+So I patched alsa-driver to use the INTEL HDMI codec instead.
 
-Per Documentation/CodingStyle, else should have braces too.
+After boot, and before starting X, I have sound (tested with aplay).
+See alsa-info log here: http://pastebin.com/dsaqnDKb
 
-> +static struct da8xx_ohci_root_hub omapl138_hawk_usb11_pdata = {
-> +     .set_power      = hawk_usb_set_power,
-> +     .get_power      = hawk_usb_get_power,
-> +     .get_oci        = hawk_usb_get_oci,
-> +     .ocic_notify    = hawk_usb_ocic_notify,
-> +     /* TPS2087 switch @ 5V */
+As soon as I start X, no more sound. alsa-info log here: http://pastebin.com/fHqyJw6Q
 
-Do we have this part on the hawkboard as well?
+Trying to mute - unmute with alsamixer (it puts the digital output back to enable) or reloading the driver doesn't help. Can't get any sound with X.
 
-[...]
+One thing I noticed is that the function hdmi_intrinsic_event is never called. I never get any "HDMI hot plug event". So monitor_present and eld_valid are never set. Not sure this is really relevant, but that's where I got stuck so far.
+Is the HDMI output disabled because alsa doesn't give the right information?
 
-> +static __init void omapl138_hawk_usb_init(void)
-> +{
-> +     int ret;
-> +     u32 cfgchip2;
-> +
-> +     ret = davinci_cfg_reg_list(da850_hawk_usb11_pins);
-> +     if (ret) {
-> +             pr_warning("%s: USB 1.1 PinMux setup failed: %d\n",
-> +                     __func__, ret);
-> +             return;
-> +     }
-> +
-> +     /*
-> +      * Setup the Ref. clock frequency for the HAWK at 24 MHz.
-> +      */
+Any advice? 
+What more could I test?
 
-No need of multi-line comment style here.
+Thanks
 
-Sorry about the piecemeal review (you really generated new versions quickly).
-That is all I have on this series.
-
-Also, you are CCing a whole lot of folks on each patch. Instead, you can
-automate CCing the relevant folks using --cc-cmd=<command> option  of
-git-send-email
-
-Use --cc-cmd="scripts/get_maintainer.pl --pattern-depth=2 -s" to generate
-list of relevant CCs.
-
-Example:
-
-scripts/get_maintainer.pl -f arch/arm/mach-davinci/board-omapl138-hawk.c --pattern-depth=2 -s
-
-gives:
-
-Kevin Hilman <khilman-1D3HCaltpLuhEniVeURVKkEOCMrvLtNR@public.gmane.org>
-Russell King <linux-lFZ/pmaqli7XmaaqVzeoHQ@public.gmane.org>
-davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-
-Recently Kevin requested all patches to CC Linux ARM Kernel mailing list so this
-should be OK.
-
-scripts/get_maintainer.pl -f sound/soc/davinci/davinci-evm.c --pattern-depth=2 -s
-
-gives:
-
-Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
-Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-
-This is as per what Liam and Mark have been asking for.
-
-Also, use --dry-run with git-send-email before sending actual emails to make
-sure the To and CC lists look good.
-
-Thanks,
-Sekhar
+Benjamin
