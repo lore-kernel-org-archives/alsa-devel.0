@@ -1,21 +1,14 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: add support for disabling period irq
-Date: Tue, 2 Nov 2010 10:02:49 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1011020957590.29422@eeebox2.perex-int.cz>
-References: <1288649573-31545-1-git-send-email-pierre-louis.bossart@intel.com>
-	<s5h8w1c18no.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.1011020850550.29422@eeebox2.perex-int.cz>
-	<s5h4oc016eq.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.1011020923430.29422@eeebox2.perex-int.cz>
-	<s5h1v7415ih.wl%tiwai@suse.de>
+From: emailmandar@gmail.com
+Subject: [PATCH - snd-usb-audio 1/1] Support for Power/Status
+	LED on Creative USB X-Fi S51
+Date: Tue,  2 Nov 2010 14:43:19 +0000
+Message-ID: <4ccfd3f9.08c08e0a.6411.4671@mx.google.com>
+References: <AANLkTimSV=kLdWxWqhQ=vsptZBiyG2JJJ9t9eVQj9vTQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id ED95A1038E5
-	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2010 10:02:49 +0100 (CET)
-In-Reply-To: <s5h1v7415ih.wl%tiwai@suse.de>
+In-Reply-To: <AANLkTimSV=kLdWxWqhQ=vsptZBiyG2JJJ9t9eVQj9vTQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,88 +18,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Pierre-Louis Bossart <bossart.nospam@gmail.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mandar Joshi <emailmandar@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2 Nov 2010, Takashi Iwai wrote:
+From: Mandar Joshi <emailmandar@gmail.com>
 
-> At Tue, 2 Nov 2010 09:26:48 +0100 (CET),
-> Jaroslav Kysela wrote:
->>
->> On Tue, 2 Nov 2010, Takashi Iwai wrote:
->>
->>> At Tue, 2 Nov 2010 09:17:33 +0100 (CET),
->>> Jaroslav Kysela wrote:
->>>>
->>>> On Tue, 2 Nov 2010, Takashi Iwai wrote:
->>>>
->>>>> At Mon,  1 Nov 2010 17:12:53 -0500,
->>>>> Pierre-Louis Bossart wrote:
->>>>>>
->>>>>> Merged and cleaned patch based on earlier patches posted
->>>>>> on alsa-devel by Clemens Ladisch <clemens@ladisch.de> and
->>>>>> Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
->>>>>>
->>>>>> This patch disables period interrupts which are not
->>>>>> needed when the application relies on a system timer
->>>>>> to wake-up and refill the ring buffer. The behavior of
->>>>>> the driver is left unchanged, and interrupts are only
->>>>>> disabled if the application requests this configuration.
->>>>>> The behavior in case of underruns is slightly different,
->>>>>> instead of being detected during the period interrupts the
->>>>>> underruns are detected when the application calls
->>>>>> snd_pcm_update_avail, which in turns forces a refresh of the
->>>>>> hw pointer and shows the buffer is empty.
->>>>>
->>>>> So, this silently assumes that the applications do call
->>>>> snd_pcm_update_avail() appropriately at the right timing?
->>>>> If so, any sense to check XRUN in the driver at all...?
->>>>>
->>>>> And, even more, any sense to report the incremental position by this
->>>>> approach?  The only reliable information in this case is the offset in
->>>>> the ring buffer.  The linear position as the current ALSA API provides
->>>>> isn't guaranteed without the period irq.
->>>>
->>>> We can detect the buffer size crossing using jiffies, but I agree, it's
->>>> something which should be added to the patch to not break hw_ptr in
->>>> case when the application does not call the update function in time.
->>>> We have both values in runtime->hw_ptr_jiffies and
->>>> runtime->hw_ptr_buffer_jiffies.
->>>
->>> But I thought this patch also disabled the jiffies check?
->>
->> These values are not related only to the debug jiffies check. I'm using
->> these values also to detect the double irq acks which were discovered
->> recently.
->
-> Ah, OK, I overlooked it.
->
->>> I feel that some bottom-line check is needed if we keep the linear
->>> position over the buffer size even without the period irq.
->>> If the app doesn't care, OK fine, the driver shouldn't care, too.
->>> But then it doesn't make sense to keep the linear position, either.
->>
->> But if we can keep the linear position using the light-weight jiffies
->> check, it's probably OK to keep it rather than changing the hw_ptr
->> behaviour.
->
-> Well, but the point of the patch is to avoid wakeups as much as
-> possible.  The jiffies-check adds an unconditional wakeup for each
-> buffer size, thus it's against the purpose of the patch.
+ Sending patch for sound-2.6 tree
+ This patch adds support for Power/Status LED on Creative USB X-Fi S51.
+ There is just one LED on the device. The LED can either be On or it can be set to Blink. There doesn't
+ seem to be a way to switch it off.
+ The control message to change LED status is similar to that of audigy2nx except that the index is to be
+ set to 0 and value is 1 for Blink and 0 for On.
+ The 'Power LED' control in alsamixer when muted will cause the LED to Blink continuously. When unmuted
+ the LED will stay On. The Creative driver under Windows sets the LED to blink whenever audio is muted.
+ This LED can be treated as the CMSS LED but I figured since there is just one LED, it should be treated
+ as the Power LED. Is that alright?
+ I've also changed the comment "Usb X-Fi" to "Usb X-Fi S51" as there are other external X-Fi devices from
+ Creative like Usb X-Fi Go and Xmod. The volume knob and LED support patch doesn't apply to them.
 
-I don't see any wakeup. It's just about to compare the current jiffies 
-with last hw_ptr update jiffies. The multiple buffer size crossing can be 
-detected.
 
-> So, basically we need to decide whether
-> - to check via jiffies as a bottom-line; then no big merit over period=1
+Signed-off-by: Mandar Joshi <emailmandar@gmail.com>
 
-No, the difference is that no interrupts are really required.
-
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 7dae05d..8ed0194 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -60,7 +60,7 @@ static const struct rc_config {
+ 	{ USB_ID(0x041e, 0x3000), 0, 1, 2, 1,  18, 0x0013 }, /* Extigy       */
+ 	{ USB_ID(0x041e, 0x3020), 2, 1, 6, 6,  18, 0x0013 }, /* Audigy 2 NX  */
+ 	{ USB_ID(0x041e, 0x3040), 2, 2, 6, 6,  2,  0x6e91 }, /* Live! 24-bit */
+-	{ USB_ID(0x041e, 0x3042), 0, 1, 1, 1,  1,  0x000d }, /* Usb X-Fi */
++	{ USB_ID(0x041e, 0x3042), 0, 1, 1, 1,  1,  0x000d }, /* Usb X-Fi S51 */
+ 	{ USB_ID(0x041e, 0x3048), 2, 2, 6, 6,  2,  0x6e91 }, /* Toshiba SB0500 */
+ };
+ 
+@@ -183,7 +183,13 @@ static int snd_audigy2nx_led_put(struct snd_kcontrol *kcontrol, struct snd_ctl_e
+ 	if (value > 1)
+ 		return -EINVAL;
+ 	changed = value != mixer->audigy2nx_leds[index];
+-	err = snd_usb_ctl_msg(mixer->chip->dev,
++	if (mixer->chip->usb_id == USB_ID(0x041e,0x3042))
++		err = snd_usb_ctl_msg(mixer->chip->dev,
++			      usb_sndctrlpipe(mixer->chip->dev, 0), 0x24,
++			      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
++			      !value, 0, NULL, 0, 100);
++	else
++		err = snd_usb_ctl_msg(mixer->chip->dev,
+ 			      usb_sndctrlpipe(mixer->chip->dev, 0), 0x24,
+ 			      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
+ 			      value, index + 2, NULL, 0, 100);
+@@ -225,8 +231,12 @@ static int snd_audigy2nx_controls_create(struct usb_mixer_interface *mixer)
+ 	int i, err;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(snd_audigy2nx_controls); ++i) {
++		/* USB X-Fi S51 doesn't have a CMSS LED */
++		if ((mixer->chip->usb_id == USB_ID(0x041e, 0x3042)) && i == 0)
++			continue;
+ 		if (i > 1 && /* Live24ext has 2 LEDs only */
+ 			(mixer->chip->usb_id == USB_ID(0x041e, 0x3040) ||
++			 mixer->chip->usb_id == USB_ID(0x041e, 0x3042) ||
+ 			 mixer->chip->usb_id == USB_ID(0x041e, 0x3048)))
+ 			break; 
+ 		err = snd_ctl_add(mixer->chip->card,
+@@ -365,6 +375,7 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ 
+ 	if (mixer->chip->usb_id == USB_ID(0x041e, 0x3020) ||
+ 	    mixer->chip->usb_id == USB_ID(0x041e, 0x3040) ||
++	    mixer->chip->usb_id == USB_ID(0x041e, 0x3042) ||
+ 	    mixer->chip->usb_id == USB_ID(0x041e, 0x3048)) {
+ 		if ((err = snd_audigy2nx_controls_create(mixer)) < 0)
+ 			return err;
+-- 
+1.7.1
