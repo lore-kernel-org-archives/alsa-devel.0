@@ -1,23 +1,12 @@
-From: Matthew Gregan <kinetik@flim.org>
-Subject: Re: Hang in snd_pcm_writei with alsa-pulse plugin
-Date: Tue, 2 Nov 2010 17:44:21 +1300
-Message-ID: <20101102044421.GA2588@flim.org>
-References: <20101101013819.GA22823@flim.org> <4CCEF918.90807@colin.guthr.ie>
-	<AANLkTikxDrqXGVwk=-dGokWWxbHyeLKNEZzM3pvH2QKv@mail.gmail.com>
+From: emailmandar@gmail.com
+Subject: [PATCH - snd-usb-audio 1/1] Support for Power/Status
+	LED on Creative USB X-Fi S51
+Date: Tue,  2 Nov 2010 12:02:23 +0000
+Message-ID: <4ccfae79.091fe70a.391a.0e23@mx.google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from flim.org (flim.org [65.99.223.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1FDB11037EC
-	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2010 05:44:28 +0100 (CET)
-Received: from brak (unknown [121.98.132.55])
-	(using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by flim.org (Postfix) with ESMTPSA id CF26B1438F
-	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2010 04:43:35 +0000 (UTC)
-Content-Disposition: inline
-In-Reply-To: <AANLkTikxDrqXGVwk=-dGokWWxbHyeLKNEZzM3pvH2QKv@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,40 +16,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Mandar Joshi <emailmandar@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-At 2010-11-02T10:43:54+0800, Raymond Yau wrote:
-> No much response because there are bugs in atest2.c
-> 
->   /* prefill sound buffers and begin playback */
->   fill(pcm);
-> 
->   while (++count) {
-> 
-> The program had filled the buffer but the output does not indicate those
-> write
+From: Mandar Joshi <emailmandar@gmail.com>
 
-This doesn't affect the result of the testcase.  count is only used to pause
-and resume less frequently than every iteration of the write loop.
+ This patch adds support for Power/Status LED on Creative USB X-Fi S51.
+ There is just one LED on the device. The LED can either be On or it can be set to Blink. There doesn't
+ seem to be a way to switch it off.
+ The control message to change LED status is similar to that of audigy2nx except that the index is to be
+ set to 0 and value is 1 for Blink and 0 for On.
+ The 'Power LED' control in alsamixer when muted will cause the LED to Blink continuously. When unmuted
+ the LED will stay On. The Creative driver under Windows sets the LED to blink whenever audio is muted.
+ This LED can be treated as the CMSS LED but I figured since there is just one LED, it should be treated
+ as the Power LED. Is that alright?
+ I've also changed the comment "Usb X-Fi" to "Usb X-Fi S51" as there are other external X-Fi devices from
+ Creative like Usb X-Fi Go and Xmod. The volume knob and LED support patch doesn't apply to them.
 
-> I can confirm that the program seem hang after a few pause/unpause when
-> using alsa-pulse plugin
-> 
-> However it assert when using hw device
-> 
->   assert(bsize / psize >= 4);
 
-The assert is present because I've only tested on systems where this
-assertion holds true.  It's likely that the loop timing would need to be
-changed to work correctly in other cases.
+Signed-off-by: Mandar Joshi <emailmandar@gmail.com>
 
-Thanks for confirming that you can reproduce the problem.  I've since
-discovered that it's possible to produce the same problem with the
-PulseAudio API directly, so I'll take this up on pulseaudio-discuss@.
-
-Cheers,
--mjg
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index e7df1e5..aea92d6 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -60,6 +60,7 @@ static const struct rc_config {
+ 	{ USB_ID(0x041e, 0x3000), 0, 1, 2, 1,  18, 0x0013 }, /* Extigy       */
+ 	{ USB_ID(0x041e, 0x3020), 2, 1, 6, 6,  18, 0x0013 }, /* Audigy 2 NX  */
+ 	{ USB_ID(0x041e, 0x3040), 2, 2, 6, 6,  2,  0x6e91 }, /* Live! 24-bit */
++	{ USB_ID(0x041e, 0x3042), 0, 1, 1, 1,  1,  0x000d }, /* Usb X-Fi S51 */
+ 	{ USB_ID(0x041e, 0x3048), 2, 2, 6, 6,  2,  0x6e91 }, /* Toshiba SB0500 */
+ };
+ 
+@@ -182,10 +183,16 @@ static int snd_audigy2nx_led_put(struct snd_kcontrol *kcontrol, struct snd_ctl_e
+ 	if (value > 1)
+ 		return -EINVAL;
+ 	changed = value != mixer->audigy2nx_leds[index];
+-	err = snd_usb_ctl_msg(mixer->chip->dev,
+-			      usb_sndctrlpipe(mixer->chip->dev, 0), 0x24,
+-			      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
+-			      value, index + 2, NULL, 0, 100);
++	if (mixer->chip->usb_id == USB_ID(0x041e, 0x3042))
++		err = snd_usb_ctl_msg(mixer->chip->dev,
++				usb_sndctrlpipe(mixer->chip->dev, 0), 0x24,
++				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
++				!value, 0, NULL, 0, 100);
++	else
++		err = snd_usb_ctl_msg(mixer->chip->dev,
++				usb_sndctrlpipe(mixer->chip->dev, 0), 0x24,
++				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
++				value, index + 2, NULL, 0, 100);
+ 	if (err < 0)
+ 		return err;
+ 	mixer->audigy2nx_leds[index] = value;
+@@ -224,8 +231,12 @@ static int snd_audigy2nx_controls_create(struct usb_mixer_interface *mixer)
+ 	int i, err;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(snd_audigy2nx_controls); ++i) {
++		/* USB X-Fi S51 doesn't have a CMSS LED */
++		if ((mixer->chip->usb_id == USB_ID(0x041e, 0x3042)) && i == 0)
++			continue;
+ 		if (i > 1 && /* Live24ext has 2 LEDs only */
+ 			(mixer->chip->usb_id == USB_ID(0x041e, 0x3040) ||
++			 mixer->chip->usb_id == USB_ID(0x041e, 0x3042) ||
+ 			 mixer->chip->usb_id == USB_ID(0x041e, 0x3048)))
+ 			break; 
+ 		err = snd_ctl_add(mixer->chip->card,
+@@ -364,6 +375,7 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ 
+ 	if (mixer->chip->usb_id == USB_ID(0x041e, 0x3020) ||
+ 	    mixer->chip->usb_id == USB_ID(0x041e, 0x3040) ||
++	    mixer->chip->usb_id == USB_ID(0x041e, 0x3042) ||
+ 	    mixer->chip->usb_id == USB_ID(0x041e, 0x3048)) {
+ 		if ((err = snd_audigy2nx_controls_create(mixer)) < 0)
+ 			return err;
 -- 
-Matthew Gregan                     |/
-                                  /|                    kinetik@flim.org
+1.7.1
