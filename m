@@ -1,18 +1,20 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Balanced output support for Xonar: Patches for
- Virtuoso driver to add mixer option for balanced mono output (PCM179x dacs)
-Date: Tue, 02 Nov 2010 09:56:36 +0100
-Message-ID: <4CCFD244.5060507@ladisch.de>
-References: <AANLkTimODNVWg7qgfcnmZ_CDYr4t5QvMenDknO1O8YhX@mail.gmail.com>	<4CCEE3FA.8040706@ladisch.de>
-	<AANLkTimtEefan3_5P4aTcD4sxW5Y_R_tZW=tz8jw=MMS@mail.gmail.com>
+Subject: Re: [PATCH 2/2] add API to allow disabling period
+	interrupt
+Date: Tue, 02 Nov 2010 10:04:15 +0100
+Message-ID: <4CCFD40F.1010407@ladisch.de>
+References: <1288649614-31581-1-git-send-email-pierre-louis.bossart@intel.com>
+	<1288649614-31581-2-git-send-email-pierre-louis.bossart@intel.com>
+	<4CCFCA6A.8010803@ladisch.de>
+	<alpine.LNX.2.00.1011020935550.29422@eeebox2.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 6A0FA1038BC
-	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2010 09:54:44 +0100 (CET)
-In-Reply-To: <AANLkTimtEefan3_5P4aTcD4sxW5Y_R_tZW=tz8jw=MMS@mail.gmail.com>
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 286F01038E3
+	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2010 10:02:24 +0100 (CET)
+In-Reply-To: <alpine.LNX.2.00.1011020935550.29422@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,52 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Christian Wisner-Carlson <christian@freedomofknowledge.org>
-Cc: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Pierre-Louis Bossart <bossart.nospam@gmail.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Q2hyaXN0aWFuIFdpc25lci1DYXJsc29uIHdyb3RlOgo+IEkgaGF2ZSB0aGUgIEg2IHdvcmtpbmcg
-c29tZXdoYXQuIEkgYWRkZWQgYSBsb3Qgb2YgSTJDIHJlc2V0cyAoYW5kIGEKPiBsb29wIHRvIG1h
-a2Ugc3VyZSB0aGUgYnVzIGlzIGZyZWUgYmVmb3JlIHRyeWluZyB0byB3cml0ZSB0byBpdCkuCgpD
-YW4geW91IGZpbmQgb3V0IHdoZW4gZXhhY3RseSB0aGUgScKyQyBidXMgZ2V0cyB3ZWRnZWQ/ICAo
-SSdkIGd1ZXNzIGF0CnRoZSBmaXJzdCBhY2Nlc3MgdG8gYW4gb2ZmLWJvYXJkIERBQy4pCgpEbyBh
-bnkgb2YgdGhlIEnCskMgd3JpdGVzIHRvIHRoZSBINiBhY3R1YWxseSBnZXQgdGhyb3VnaCAoaS5l
-LiwgZG8KYWxsIGVpZ2h0IHZvbHVtZSBjb250cm9scyB3b3JrPykKCihUaGUgZmlyc3QgRDIgV2lu
-ZG93cyBkcml2ZXIgdmVyc2lvbnMgaGFkIGEgYnVnLCB0YWtlbiBvdmVyIGZyb20gdGhlCkFLNDM5
-NiBtb2RlbHMsIHdoZXJlIGl0IHVzZWQgdGhlIHdyb25nIFNQSSBvdXRwdXQgZm9yIHRoZSBmb3Vy
-dGggREFDLApzbyB0aGF0IHRoYXQgY2hpcCB3b3VsZCBuZXZlciBnZXQgYW55IHJlZ2lzdGVyIHdy
-aXRlLiAgTm9ib2R5IG5vdGljZWQuKQoKPiBIT1dFVkVSLCB3aGVuIHRoZSBINiBpcyBjb25uZWN0
-ZWQsIGFuZCBpIHN3aXRjaCBmcm9tIDEyOHggT1MsCgoidG8iPwoKPiB0aGUgc291bmQgc3RvcHMg
-YW5kIGJlY29tZXMgYSBoaWdoIHBpdGNoZWQgd2hpbmUgb3Igb3RoZXIgbm9pc2UsIG9yCj4ganVz
-dCBzdG9wcywgYXMgaWYgdGhlIERBQ3MgbG9zdCBsb2NrIG9uIHRoZSBNQ0xLIHNpZ25hbC4gVGhl
-IHNhbWUKPiB0aGluZyBoYXBwZW5zIHdoZW4gaSBwbGF5IEFOWVRISU5HIGF0IDk2a2h6IG9yIDE5
-MmtoeiBzYW1wbGluZyByYXRlLgo+IEhvd2V2ZXIsIDg4LjJraHogc3RpbGwgcGxheXMgYXQgNjR4
-IE9TLiBHaXZlbiB0aGF0IGEgMjQuNTc2TUh6Cj4gc2luZ2xlLWVuZGVkIHNpZ25hbGlzIGJlaW5n
-IHNlbnQgVU5CVUZGRVJFRCBvdmVyIGFuIFVOU0hJRUxERUQgIHJpYmJvbgo+IGNhYmxlLCB0aGlz
-IGRvZXMgbm90IHN1cnByaXNlIG1lLiBJIGFtIGd1ZXNzaW5nIHRoYXQgdGhlIEFzdXMgZHJpdmVy
-cwo+IHByb2JhYmx5IHVzZSBhIGxvd2VyIE1DTEsgcmF0ZS4gQW55IGlkZWFzPwoKQXMgZmFyIGFz
-IEkgY2FuIHRlbGwgKHdpdGhvdXQgcnVubmluZyB0aGUgV2luZG93cyBkcml2ZXIpLCBpdCB1c2Vz
-IHRoZQpzdGFuZGFyZCAyNTZ4LzEyOHggTUNMSyByYXRlcyBmb3IgdGhlIHN0YW5kYXJkIEnCslMg
-b3V0cHV0LCBidXQgdGhlCkNTMjAwMCAoY29ubmVjdGVkIHRvIHRoZSAiQURDMSIgScKyUyBNQ0xL
-KSBpcyBhbHdheXMgY29uZmlndXJlZCBmb3IgaGFsZgp0aGF0IHJhdGUgYWx0aG91Z2ggdGhlIFBD
-TTE3OXggcmVnaXN0ZXJzIGFyZSBzdGlsbCBjb25maWd1cmVkIGZvciB0aGUKJ2Z1bGwnIHJhdGUu
-CgpDYW4geW91IGZpbmQgb3V0IHdoaWNoIG9mIHRoZSBJwrJTIE1DTEsgb3V0cHV0cyBpcyB1c2Vk
-IGZvciB0aGUgb25ib2FyZApEQUMgYW5kIGZvciB0aGUgSDY/ICBJJ2QgY29uY2x1ZGUgZnJvbSB0
-aGUgYWJvdmUgdGhhdCB0aGUgQ1MyMDAwIG1pZ2h0CmJlIHVzZWQgZm9yIGFsbCBvZiB0aGVtLCBi
-dXQgdGhlbiBJIGRvbid0IGtub3cgaG93IHRoZSBIREFWIHdvdWxkIHdvcmsKd2l0aCB0aGUgSDYg
-YXQgaGlnaCBjbG9jayByYXRlcy4KCkRvZXMgdGhlIFdpbmRvd3MgZHJpdmVyIGFsbG93IDE5MiBr
-SHogd2l0aCB0aGUgSDY/ICAoVGhpcyBpcyB1c2luZyAxMjh4CmluIGJvdGggZHJpdmVycy4pCgo+
-IE15IG9sZCBBdWRpZ3kgMiBidWZmZXJlZCB0aGUgTUNMSyAoMjQuNTc2TWh6KSB3aXRoIGEgNzRG
-MTI1LCBhbHRob3VnaAo+IEkgYW0gcmVsdWN0YW50IHRvIGRvIHRoaXMuIFBlcmhhcHMgSSB3aWxs
-IHRyeSByZXBsYWNpbmcgdGhlIHJlbGV2ZW50Cj4gcGFydCBvZiB0aGUgcmliYm9uIGNhYmxlIHdp
-dGggYSBzaGllbGRlZCBjYWJsZS4gSXMgdGhpcyB3b3J0aCB0cnlpbmc/CgpCZXR0ZXIgdHJ5IGNo
-YW5naW5nIG1jbGtfZnJvbV9yYXRlKCkgdG8gYWx3YXlzIHVzZSB0aGUgc21hbGxlc3QgcG9zc2li
-bGUKTUNMSyByYXRlOyB1cGRhdGVfcGNtMTc5Nl9vdmVyc2FtcGxpbmcoKSB0aGVuIG5lZWRzIHRv
-IGJlIGNoYW5nZWQgdG9vLgpBY2NvcmRpbmcgdG8gdGhlIFBDTTE3OXggZGF0YXNoZWV0cywgdXAg
-dG8gNDgga0h6IHJlcXVpcmVzIGF0IGxlYXN0CjI1NngsIHdoaWxlIDk2LTE5MiBrSHogY2FuIHJ1
-biBhdCAxMjh4LiAgKFdlIGFsd2F5cyB1c2UgScKyQyBmYXN0IG1vZGUsCmV2ZW4gd2l0aCBjb2Rl
-Y3MgdGhhdCBhcmUgbm90IGRvY3VtZW50ZWQgdG8gc3VwcG9ydCBpdDsgdGhlIENNSTg3ODgKc2Vl
-bXMgdG8gYmUgYnVnZ3kgYXQgdGhlIHN0YW5kYXJkIEnCskMgc3BlZWQuKQoKClJlZ2FyZHMsCkNs
-ZW1lbnMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Jaroslav Kysela wrote:
+> On Tue, 2 Nov 2010, Clemens Ladisch wrote:
+>>> + * It is not allowed to call this function when given configuration is not exactly one.
+>>> ...
+>>> +int snd_pcm_hw_params_can_disable_period_irq(const snd_pcm_hw_params_t *params)
+>>
+>> This function is useless because it cannot be called before
+>> snd_pcm_hw_params_set_period_irq().
+> 
+> I don't think so. The info bits from the driver are used in this check 
+> which are read-only.
+
+All the snd_pcm_hw_params_can_* functions that read the info bits
+are documented to require a completed configuration.  So they actually
+don't, and there will never be a flag that depends on the configuration?
+
+
+Regards,
+Clemens
