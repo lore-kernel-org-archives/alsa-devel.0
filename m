@@ -1,47 +1,46 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Remove register write trace from WM8994
-Date: Wed,  3 Nov 2010 13:50:54 -0400
-Message-ID: <1288806654-29936-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: <vm.rod25-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH v6 0/9] Add Omapl138-Hawkboard support
+Date: Wed,  3 Nov 2010 12:04:37 -0600
+Message-ID: <1288807477-31563-1-git-send-email-vm.rod25@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A2D542444B
-	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2010 18:50:48 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org
+Return-path: <davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+Errors-To: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Victor Rodriguez <victor.rodriguez-Ut8ZLSGP1ULQT0dZR+AlfA@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-We now have trace in the ASoC core so we don't need to our own trace in
-the driver.
+From: Victor Rodriguez <victor.rodriguez-Ut8ZLSGP1ULQT0dZR+AlfA@public.gmane.org>
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
+This patch adds
+EMAC, EDMA, ASoC, SOUND, MMC/SD and USB OHCI
+support for the Hawkboard-L138 system
+It is under the machine name "omapl138_hawkboard".
+This system is based on the da850 davinci CPU architecture.
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 3f70dee..d81cac5 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -1730,8 +1730,6 @@ static int wm8994_write(struct snd_soc_codec *codec, unsigned int reg,
- 	if (!wm8994_volatile(reg))
- 		wm8994->reg_cache[reg] = value;
- 
--	dev_dbg(codec->dev, "0x%x = 0x%x\n", reg, value);
--
- 	return wm8994_reg_write(codec->control_data, reg, value);
- }
- 
--- 
-1.7.1
+Victor Rodriguez (9):
+  davinci: EMAC support for Omapl138-Hawkboard
+  davinci: EDMA support for Omapl138-Hawkboard
+  davinci: ASoC support for Omapl138-Hawkboard
+  davinci: McASP configuration for Omapl138-Hawkboard
+  davinci: Audio support for Omapl138-Hawkboard
+  davinci: MMC/SD and USB-OHCI configuration for Omapl138-Hawkboard
+  davinci: MMC/SD support for Omapl138-Hawkboar
+  davinci: USB clocks for Omapl138-Hawkboard
+  davinci: USB1.1 support for Omapl138-Hawkboard
+
+ arch/arm/mach-davinci/board-omapl138-hawk.c |  312 +++++++++++++++++++++++++++
+ arch/arm/mach-davinci/da850.c               |   22 ++-
+ arch/arm/mach-davinci/include/mach/mux.h    |    4 +
+ sound/soc/davinci/Kconfig                   |    5 +-
+ sound/soc/davinci/davinci-evm.c             |    6 +-
+ 5 files changed, 344 insertions(+), 5 deletions(-)
