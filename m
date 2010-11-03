@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Convert soc-jack code to use
-	request_any_context_irq()
-Date: Wed,  3 Nov 2010 09:36:08 -0400
-Message-ID: <1288791368-22772-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Check return value of strict_strtoul()
+	in WM8962
+Date: Wed,  3 Nov 2010 09:39:02 -0400
+Message-ID: <1288791543-25249-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EC9F624347
-	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2010 14:36:02 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2225424348
+	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2010 14:39:36 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,36 +23,29 @@ To: Liam Girdwood <lrg@slimlogic.co.uk>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Allow the standard soc-jack GPIO based jack handling to handle the use of
-GPIOs which may sleep (such as those on GPIO expanders) by converting the
-code to use request_any_context_irq().
+strict_strtoul() has been made __must_check so do so.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-jack.c |   11 ++++++-----
- 1 files changed, 6 insertions(+), 5 deletions(-)
+ sound/soc/codecs/wm8962.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index 8a0a920..9f07551 100644
---- a/sound/soc/soc-jack.c
-+++ b/sound/soc/soc-jack.c
-@@ -263,11 +263,12 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
- 		INIT_DELAYED_WORK(&gpios[i].work, gpio_work);
- 		gpios[i].jack = jack;
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 894d0cd..e809274 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -3500,8 +3500,11 @@ static ssize_t wm8962_beep_set(struct device *dev,
+ {
+ 	struct wm8962_priv *wm8962 = dev_get_drvdata(dev);
+ 	long int time;
++	int ret;
  
--		ret = request_irq(gpio_to_irq(gpios[i].gpio),
--				gpio_handler,
--				IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
--				jack->codec->dev->driver->name,
--				&gpios[i]);
-+		ret = request_any_context_irq(gpio_to_irq(gpios[i].gpio),
-+					      gpio_handler,
-+					      IRQF_TRIGGER_RISING |
-+					      IRQF_TRIGGER_FALLING,
-+					      jack->codec->dev->driver->name,
-+					      &gpios[i]);
- 		if (ret)
- 			goto err;
+-	strict_strtol(buf, 10, &time);
++	ret = strict_strtol(buf, 10, &time);
++	if (ret != 0)
++		return ret;
+ 
+ 	input_event(wm8962->beep, EV_SND, SND_TONE, time);
  
 -- 
 1.7.1
