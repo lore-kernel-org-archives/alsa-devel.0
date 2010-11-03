@@ -1,21 +1,16 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH 2.6.37-rc1] ASoC: OMAP: fix OMAP1
-	compilation problem
-Date: Wed, 3 Nov 2010 10:20:28 +0200
-Message-ID: <20101103102028.8ff19cac.jhnikula@gmail.com>
-References: <201011021550.34885.jkrzyszt@tis.icnet.pl>
-	<alpine.DEB.2.00.1011021058380.22589@utopia.booyaka.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: [GIT PULL] ASoC fixes for 2.6.37
+Date: Wed, 03 Nov 2010 10:07:36 +0000
+Message-ID: <1288778856.3277.13.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id D413E10380C
-	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2010 09:20:21 +0100 (CET)
-Received: by ewy22 with SMTP id 22so119535ewy.38
-	for <alsa-devel@alsa-project.org>; Wed, 03 Nov 2010 01:20:21 -0700 (PDT)
-In-Reply-To: <alpine.DEB.2.00.1011021058380.22589@utopia.booyaka.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id D370A24382
+	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2010 11:07:39 +0100 (CET)
+Received: by wwi17 with SMTP id 17so589133wwi.20
+	for <alsa-devel@alsa-project.org>; Wed, 03 Nov 2010 03:07:39 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,30 +20,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Paul Walmsley <paul@pwsan.com>
-Cc: alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, e3-hacking@earth.li, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2 Nov 2010 10:58:59 -0600 (MDT)
-Paul Walmsley <paul@pwsan.com> wrote:
+Hi Takashi,
 
-> On Tue, 2 Nov 2010, Janusz Krzysztofik wrote:
-> 
-> > In the new code introduced with commit cf4c87abe238ec17cd0255b4e21abd949d7f811e,
-> > "OMAP: McBSP: implement McBSP CLKR and FSR signal muxing via mach-omap2/mcbsp.c",
-> > the way omap1 build is supposed to bypass omap2 specific functionality doesn't 
-> > optimize out all omap2 specific stuff. This breaks linking phase for omap1 
-> > machines, giving "undefined reference to `omap2_mcbsp1_mux_clkr_src'" 
-> > and "undefined reference to `omap2_mcbsp1_mux_fsr_src'" errors. Fix it.
-> > 
-> > Created and tested against linux-2.6.37-rc1.
-> > 
-> > Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-> 
-> Acked-by: Paul Walmsley <paul@pwsan.com>
-> 
-> Thanks Janusz.
-> 
-Yep, this must go to 2.6.37.
+Some fixes for 2.6.37 before I pull in rc1.
 
-Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+The following changes since commit 911a0f0bfc01750590e8ac6e7f9f4921f470b0d1:
+
+  ASoC: tlv320dac33: Error handling for broken chip (2010-10-30 17:33:38 +0100)
+
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.37
+
+Jarkko Nikula (1):
+      ASoC: tpa6130a2: Fix unbalanced regulator disables
+
+Peter Ujfalusi (2):
+      ASoC: tlv320dac33: Limit the US_TO_SAMPLES macro
+      ASoC: tlv320dac33: Mode1 FIFO auto configuration fix
+
+ sound/soc/codecs/tlv320dac33.c |   10 +++++++---
+ sound/soc/codecs/tpa6130a2.c   |    4 ++--
+ 2 files changed, 9 insertions(+), 5 deletions(-)
