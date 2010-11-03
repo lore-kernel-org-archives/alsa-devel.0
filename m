@@ -1,15 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Check return value of strict_strtoul()
-	in WM8962
-Date: Wed,  3 Nov 2010 09:39:02 -0400
-Message-ID: <1288791543-25249-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Convert soc-jack code to use
+ request_any_context_irq()
+Date: Wed, 03 Nov 2010 13:50:53 +0000
+Message-ID: <1288792253.3277.48.camel@odin>
+References: <1288791368-22772-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2225424348
-	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2010 14:39:36 +0100 (CET)
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6AA9024366
+	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2010 14:50:58 +0100 (CET)
+Received: by eyg24 with SMTP id 24so230038eyg.38
+	for <alsa-devel@alsa-project.org>; Wed, 03 Nov 2010 06:50:58 -0700 (PDT)
+In-Reply-To: <1288791368-22772-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,33 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-strict_strtoul() has been made __must_check so do so.
+On Wed, 2010-11-03 at 09:36 -0400, Mark Brown wrote:
+> Allow the standard soc-jack GPIO based jack handling to handle the use of
+> GPIOs which may sleep (such as those on GPIO expanders) by converting the
+> code to use request_any_context_irq().
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8962.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+Both 
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 894d0cd..e809274 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3500,8 +3500,11 @@ static ssize_t wm8962_beep_set(struct device *dev,
- {
- 	struct wm8962_priv *wm8962 = dev_get_drvdata(dev);
- 	long int time;
-+	int ret;
- 
--	strict_strtol(buf, 10, &time);
-+	ret = strict_strtol(buf, 10, &time);
-+	if (ret != 0)
-+		return ret;
- 
- 	input_event(wm8962->beep, EV_SND, SND_TONE, time);
- 
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
-1.7.1
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
