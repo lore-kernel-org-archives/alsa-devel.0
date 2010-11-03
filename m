@@ -1,17 +1,14 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Push snd_soc_write() and
- snd_soc_read() into the source file
-Date: Wed, 03 Nov 2010 13:51:48 +0000
-Message-ID: <1288792308.6871.3.camel@dplaptop>
-References: <1288640671-13554-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Ozan =?utf-8?q?=C3=87a=C4=9Flayan?= <ozan@pardus.org.tr>
+Subject: 20101103 alsa-driver snapshot build failure
+Date: Wed, 3 Nov 2010 15:53:44 +0200
+Message-ID: <201011031553.44811.ozan@pardus.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A946B24366
-	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2010 14:51:49 +0100 (CET)
-In-Reply-To: <1288640671-13554-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from lider.pardus.org.tr (lider.pardus.org.tr [193.140.100.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id BA8162436A
+	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2010 14:55:18 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,22 +18,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-11-01 at 15:44 -0400, Mark Brown wrote:
-> +unsigned int snd_soc_write(struct snd_soc_codec *codec,
-> +			   unsigned int reg, unsigned int val)
-> +{
-> +	dev_dbg(codec->dev, "write %x = %x\n", reg, val);
-> +	return codec->driver->write(codec, reg, val);
-> +}
-> +EXPORT_SYMBOL_GPL(snd_soc_write);
-
-This sort of debugging output is already present in soc-cache.c.  I
-guess it should be removed from soc-cache.c since it is duplicated
-across all different write() I/O types.
-
-Thanks,
-Dimitrios
+VGhpcyBpcyBvbiBsaW51eCBrZXJuZWwgMi42LjM2OgoKbWFrZSAtQyAvbGliL21vZHVsZXMvMi42
+LjM2LTE0NS9idWlsZCBTVUJESVJTPS92YXIvcGlzaS9tb2R1bGUtYWxzYS1kcml2ZXItMS4wLjIz
+XzIwMTAxMTAzLTY0L3dvcmsvYWxzYS1kcml2ZXIgIENQUD0ieDg2XzY0LXBjLWxpbnV4LWdudS1n
+Y2MgLUUiIENDPSJ4ODZfNjQtcGMtbGludXgtZ251LWdjYyIgCm1vZHVsZXMKbWFrZVsxXTogRW50
+ZXJpbmcgZGlyZWN0b3J5IGAvdXNyL3NyYy9saW51eC1oZWFkZXJzLTIuNi4zNi0xNDUnCiAgQ0Mg
+W01dICAvdmFyL3Bpc2kvbW9kdWxlLWFsc2EtZHJpdmVyLTEuMC4yM18yMDEwMTEwMy02NC93b3Jr
+L2Fsc2EtZHJpdmVyL3BjbWNpYS9wZGF1ZGlvY2YvcGRhdWRpb2NmLm8KSW4gZmlsZSBpbmNsdWRl
+ZCBmcm9tIC92YXIvcGlzaS9tb2R1bGUtYWxzYS1kcml2ZXItMS4wLjIzXzIwMTAxMTAzLTY0L3dv
+cmsvYWxzYS1kcml2ZXIvcGNtY2lhL3BkYXVkaW9jZi9wZGF1ZGlvY2YuYzoxNDowOgovdmFyL3Bp
+c2kvbW9kdWxlLWFsc2EtZHJpdmVyLTEuMC4yM18yMDEwMTEwMy02NC93b3JrL2Fsc2EtZHJpdmVy
+L3BjbWNpYS9wZGF1ZGlvY2YvLi4vLi4vYWxzYS1rZXJuZWwvcGNtY2lhL3BkYXVkaW9jZi9wZGF1
+ZGlvY2YuYzogSW4gZnVuY3Rpb24gJ3NuZF9wZGFjZl9wcm9iZSc6Ci92YXIvcGlzaS9tb2R1bGUt
+YWxzYS1kcml2ZXItMS4wLjIzXzIwMTAxMTAzLTY0L3dvcmsvYWxzYS1kcml2ZXIvcGNtY2lhL3Bk
+YXVkaW9jZi8uLi8uLi9hbHNhLWtlcm5lbC9wY21jaWEvcGRhdWRpb2NmL3BkYXVkaW9jZi5jOjE0
+NTo2OiBlcnJvcjogJ3N0cnVjdCBwY21jaWFfZGV2aWNlJyBoYXMgbm8gCm1lbWJlciBuYW1lZCAn
+Y29uZmlnX2ZsYWdzJwovdmFyL3Bpc2kvbW9kdWxlLWFsc2EtZHJpdmVyLTEuMC4yM18yMDEwMTEw
+My02NC93b3JrL2Fsc2EtZHJpdmVyL3BjbWNpYS9wZGF1ZGlvY2YvLi4vLi4vYWxzYS1rZXJuZWwv
+cGNtY2lhL3BkYXVkaW9jZi9wZGF1ZGlvY2YuYzoxNDY6NjogZXJyb3I6ICdzdHJ1Y3QgcGNtY2lh
+X2RldmljZScgaGFzIG5vIAptZW1iZXIgbmFtZWQgJ2NvbmZpZ19pbmRleCcKL3Zhci9waXNpL21v
+ZHVsZS1hbHNhLWRyaXZlci0xLjAuMjNfMjAxMDExMDMtNjQvd29yay9hbHNhLWRyaXZlci9wY21j
+aWEvcGRhdWRpb2NmLy4uLy4uL2Fsc2Eta2VybmVsL3BjbWNpYS9wZGF1ZGlvY2YvcGRhdWRpb2Nm
+LmM6MTQ3OjY6IGVycm9yOiAnc3RydWN0IHBjbWNpYV9kZXZpY2UnIGhhcyBubyAKbWVtYmVyIG5h
+bWVkICdjb25maWdfcmVncycKL3Zhci9waXNpL21vZHVsZS1hbHNhLWRyaXZlci0xLjAuMjNfMjAx
+MDExMDMtNjQvd29yay9hbHNhLWRyaXZlci9wY21jaWEvcGRhdWRpb2NmLy4uLy4uL2Fsc2Eta2Vy
+bmVsL3BjbWNpYS9wZGF1ZGlvY2YvcGRhdWRpb2NmLmM6IEluIGZ1bmN0aW9uICdwZGFjZl9jb25m
+aWcnOgovdmFyL3Bpc2kvbW9kdWxlLWFsc2EtZHJpdmVyLTEuMC4yM18yMDEwMTEwMy02NC93b3Jr
+L2Fsc2EtZHJpdmVyL3BjbWNpYS9wZGF1ZGlvY2YvLi4vLi4vYWxzYS1rZXJuZWwvcGNtY2lhL3Bk
+YXVkaW9jZi9wZGF1ZGlvY2YuYzoyMTk6NjogZXJyb3I6ICdzdHJ1Y3QgcGNtY2lhX2RldmljZScg
+aGFzIG5vIAptZW1iZXIgbmFtZWQgJ2NvbmZpZ19pbmRleCcKL3Zhci9waXNpL21vZHVsZS1hbHNh
+LWRyaXZlci0xLjAuMjNfMjAxMDExMDMtNjQvd29yay9hbHNhLWRyaXZlci9wY21jaWEvcGRhdWRp
+b2NmLy4uLy4uL2Fsc2Eta2VybmVsL3BjbWNpYS9wZGF1ZGlvY2YvcGRhdWRpb2NmLmM6MjIwOjY6
+IGVycm9yOiAnc3RydWN0IHBjbWNpYV9kZXZpY2UnIGhhcyBubyAKbWVtYmVyIG5hbWVkICdjb25m
+aWdfZmxhZ3MnCi92YXIvcGlzaS9tb2R1bGUtYWxzYS1kcml2ZXItMS4wLjIzXzIwMTAxMTAzLTY0
+L3dvcmsvYWxzYS1kcml2ZXIvcGNtY2lhL3BkYXVkaW9jZi8uLi8uLi9hbHNhLWtlcm5lbC9wY21j
+aWEvcGRhdWRpb2NmL3BkYXVkaW9jZi5jOjIzMDoyOiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRp
+b24gb2YgZnVuY3Rpb24gCidwY21jaWFfZW5hYmxlX2RldmljZScKL3Zhci9waXNpL21vZHVsZS1h
+bHNhLWRyaXZlci0xLjAuMjNfMjAxMDExMDMtNjQvd29yay9hbHNhLWRyaXZlci9wY21jaWEvcGRh
+dWRpb2NmLy4uLy4uL2Fsc2Eta2VybmVsL3BjbWNpYS9wZGF1ZGlvY2YvcGRhdWRpb2NmLmM6IEF0
+IHRvcCBsZXZlbDoKL3Zhci9waXNpL21vZHVsZS1hbHNhLWRyaXZlci0xLjAuMjNfMjAxMDExMDMt
+NjQvd29yay9hbHNhLWRyaXZlci9wY21jaWEvcGRhdWRpb2NmLy4uLy4uL2Fsc2Eta2VybmVsL3Bj
+bWNpYS9wZGF1ZGlvY2YvcGRhdWRpb2NmLmM6MjkwOjI6IGVycm9yOiB1bmtub3duIGZpZWxkICdu
+YW1lJyBzcGVjaWZpZWQgaW4gCmluaXRpYWxpemVyCi92YXIvcGlzaS9tb2R1bGUtYWxzYS1kcml2
+ZXItMS4wLjIzXzIwMTAxMTAzLTY0L3dvcmsvYWxzYS1kcml2ZXIvcGNtY2lhL3BkYXVkaW9jZi8u
+Li8uLi9hbHNhLWtlcm5lbC9wY21jaWEvcGRhdWRpb2NmL3BkYXVkaW9jZi5jOjI5MDoyOiB3YXJu
+aW5nOiBpbml0aWFsaXphdGlvbiBmcm9tIAppbmNvbXBhdGlibGUgcG9pbnRlciB0eXBlCgoqKiog
+NyBlcnJvcnMsIDEgd2FybmluZ3MKbWFrZVs0XTogKioqIFsvdmFyL3Bpc2kvbW9kdWxlLWFsc2Et
+ZHJpdmVyLTEuMC4yM18yMDEwMTEwMy02NC93b3JrL2Fsc2EtZHJpdmVyL3BjbWNpYS9wZGF1ZGlv
+Y2YvcGRhdWRpb2NmLm9dIEhhdGEgMQptYWtlWzNdOiAqKiogWy92YXIvcGlzaS9tb2R1bGUtYWxz
+YS1kcml2ZXItMS4wLjIzXzIwMTAxMTAzLTY0L3dvcmsvYWxzYS1kcml2ZXIvcGNtY2lhL3BkYXVk
+aW9jZl0gSGF0YSAyCm1ha2VbMl06ICoqKiBbL3Zhci9waXNpL21vZHVsZS1hbHNhLWRyaXZlci0x
+LjAuMjNfMjAxMDExMDMtNjQvd29yay9hbHNhLWRyaXZlci9wY21jaWFdIEhhdGEgMgptYWtlWzFd
+OiAqKiogW19tb2R1bGVfL3Zhci9waXNpL21vZHVsZS1hbHNhLWRyaXZlci0xLjAuMjNfMjAxMDEx
+MDMtNjQvd29yay9hbHNhLWRyaXZlcl0gRXJyb3IgMgptYWtlWzFdOiBMZWF2aW5nIGRpcmVjdG9y
+eSBgL3Vzci9zcmMvbGludXgtaGVhZGVycy0yLjYuMzYtMTQ1JwptYWtlOiAqKiogW2NvbXBpbGVd
+IEVycm9yIDIKCi0tLQpPemFuIMOHYcSfbGF5YW4KVFVCSVRBSy9VRUtBRSAtIFBhcmR1cyBMaW51
+eApodHRwOi8vd3d3LnBhcmR1cy5vcmcudHIvZW5nCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
