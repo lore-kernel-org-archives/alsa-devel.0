@@ -1,48 +1,42 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [alsa-devel] [PATCH 2.6.37-rc1] ASoC: OMAP: fix OMAP1
- compilation problem
-Date: Wed, 03 Nov 2010 14:16:32 +0000
-Message-ID: <1288793792.3277.51.camel@odin>
-References: <201011021550.34885.jkrzyszt@tis.icnet.pl>
-	 <alpine.DEB.2.00.1011021058380.22589@utopia.booyaka.com>
-	 <20101103102028.8ff19cac.jhnikula@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: tlv320aic3x: Use gpio_is_valid
+ in checking for valid gpio_reset
+Date: Wed, 03 Nov 2010 14:21:01 +0000
+Message-ID: <1288794061.3277.53.camel@odin>
+References: <1288613036-13169-1-git-send-email-jhnikula@gmail.com>
+	<20101101130717.GA22639@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20101103102028.8ff19cac.jhnikula@gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Paul Walmsley <paul@pwsan.com>, alsa-devel@alsa-project.org, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, e3-hacking@earth.li, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7734C243B9
+	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2010 15:21:05 +0100 (CET)
+Received: by wwi17 with SMTP id 17so824058wwi.20
+	for <alsa-devel@alsa-project.org>; Wed, 03 Nov 2010 07:21:05 -0700 (PDT)
+In-Reply-To: <20101101130717.GA22639@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-11-03 at 10:20 +0200, Jarkko Nikula wrote:
-> On Tue, 2 Nov 2010 10:58:59 -0600 (MDT)
-> Paul Walmsley <paul@pwsan.com> wrote:
+On Mon, 2010-11-01 at 09:07 -0400, Mark Brown wrote:
+> On Mon, Nov 01, 2010 at 02:03:55PM +0200, Jarkko Nikula wrote:
+> > I promised to convert this at some point.
+> > 
+> > Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
 > 
-> > On Tue, 2 Nov 2010, Janusz Krzysztofik wrote:
-> > 
-> > > In the new code introduced with commit cf4c87abe238ec17cd0255b4e21abd949d7f811e,
-> > > "OMAP: McBSP: implement McBSP CLKR and FSR signal muxing via mach-omap2/mcbsp.c",
-> > > the way omap1 build is supposed to bypass omap2 specific functionality doesn't 
-> > > optimize out all omap2 specific stuff. This breaks linking phase for omap1 
-> > > machines, giving "undefined reference to `omap2_mcbsp1_mux_clkr_src'" 
-> > > and "undefined reference to `omap2_mcbsp1_mux_fsr_src'" errors. Fix it.
-> > > 
-> > > Created and tested against linux-2.6.37-rc1.
-> > > 
-> > > Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-> > 
-> > Acked-by: Paul Walmsley <paul@pwsan.com>
-> > 
-> > Thanks Janusz.
-> > 
-> Yep, this must go to 2.6.37.
-> 
-> Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-
-Applied.
+Both applied.
 
 Thanks
 
@@ -51,4 +45,3 @@ Liam
 Freelance Developer, SlimLogic Ltd
 ASoC and Voltage Regulator Maintainer.
 http://www.slimlogic.co.uk
-
