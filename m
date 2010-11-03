@@ -1,19 +1,14 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: soc-cache: Remove unnecessary
- debugging info
-Date: Wed, 03 Nov 2010 17:37:43 +0000
-Message-ID: <1288805863.3277.55.camel@odin>
-References: <1288803036-26982-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Remove register write trace from WM8994
+Date: Wed,  3 Nov 2010 13:50:54 -0400
+Message-ID: <1288806654-29936-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 5837B24448
-	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2010 18:37:46 +0100 (CET)
-Received: by wye20 with SMTP id 20so929384wye.38
-	for <alsa-devel@alsa-project.org>; Wed, 03 Nov 2010 10:37:46 -0700 (PDT)
-In-Reply-To: <1288803036-26982-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A2D542444B
+	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2010 18:50:48 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,18 +18,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-11-03 at 16:50 +0000, Dimitris Papastamos wrote:
-> No need to print the register-value pair again, as we've already hooked
-> snd_soc_write() for that matter.
-> 
-> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+We now have trace in the ASoC core so we don't need to our own trace in
+the driver.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 3f70dee..d81cac5 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -1730,8 +1730,6 @@ static int wm8994_write(struct snd_soc_codec *codec, unsigned int reg,
+ 	if (!wm8994_volatile(reg))
+ 		wm8994->reg_cache[reg] = value;
+ 
+-	dev_dbg(codec->dev, "0x%x = 0x%x\n", reg, value);
+-
+ 	return wm8994_reg_write(codec->control_data, reg, value);
+ }
+ 
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+1.7.1
