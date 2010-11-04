@@ -1,16 +1,19 @@
-From: abraham duenas <aduejazz@gmail.com>
-Subject: ALSA UCM
-Date: Wed, 3 Nov 2010 14:38:15 -0600
-Message-ID: <AANLkTimFdKg=_KDv8fbSJry6XTEsZqyQz7GhzaPxXDYP@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Hang in snd_pcm_writei with alsa-pulse plugin
+Date: Thu, 4 Nov 2010 11:29:39 +0800
+Message-ID: <AANLkTinxDcSmpRfvp560AzzG3a-5BX9RdVfiG2qLzqiD@mail.gmail.com>
+References: <20101101013819.GA22823@flim.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=0016364c7e7d55736104942c0556
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0D48B103844
-	for <alsa-devel@alsa-project.org>; Wed,  3 Nov 2010 21:38:17 +0100 (CET)
-Received: by wye20 with SMTP id 20so1097434wye.38
-	for <alsa-devel@alsa-project.org>; Wed, 03 Nov 2010 13:38:15 -0700 (PDT)
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0C663103834
+	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2010 04:29:42 +0100 (CET)
+Received: by ewy22 with SMTP id 22so876463ewy.38
+	for <alsa-devel@alsa-project.org>; Wed, 03 Nov 2010 20:29:39 -0700 (PDT)
+In-Reply-To: <20101101013819.GA22823@flim.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,131 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
---0016364c7e7d55736104942c0556
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+2010/11/1 Matthew Gregan <kinetik@flim.org>
 
-Hello,
+> Hi,
+>
+>
+> I've attached a simple test program that reproduces this problem reliably
+> on
+> my machine.  It writes a period sized buffer in a loop, waiting half a
+> period until the next attempt.  Every few iterations, it pauses the sound
+> device for half a period and then resumes it.  It usually hangs within 2-3
+> pause/resume cycles.  Running the test with "-r" enables the recovery code
+> I
+> mentioned above.  It never hangs when tested using the hardware ALSA
+> backend
+> with alsa-pulse disabled, but my sound hardware doesn't seem to support
+> snd_pcm_pause.
+>
+>
+when increase the sleep time from half period to one period, the hang occur
+after around 50 pause/resume cycles.
 
-I recently cloned:
-git clone git://git.alsa-project.org/alsa-lib.git alsa-lib
-git clone git://git.alsa-project.org/alsa-utils.git alsa-utils
-and switched to the "ucm" branch to give it try. I have a panda board
-(pandaboard.org it is just a TI OMAP4 platform).
+did PA server  stop sending data to the sound card immediately when your
+program pause ?
 
-I created some configuration files for my card. My conf file is
-'SDP4430.conf' and my verb is on 'hifi'.
-I came with a simple program to set my verb and configure it for a
-simple device. I'm calling this sequence:
-1. open it.... snd_use_case_mgr_open(&uc_mgr,"SDP4430")
-2. reset it ....snd_use_case_mgr_reset(uc_mgr)
-3. query for my verb....=A0snd_use_case_get_list(uc_mgr,"_verbs",&mylist)
-4. set my verb ... snd_use_case_set(uc_mgr,"_verb",*mylist)
-5. set my created device...=A0snd_use_case_set(uc_mgr,"_enadev","Headset.0"=
-)
-6. close it...=A0snd_use_case_mgr_close(uc_mgr)
+But cannot reproduce your problem using the "pause" function of aplay
 
-Seems to work ok (without any errors) but I can't see any of my amixer
-controls set/changed accordingly to my verb/device.
-Is this a right sequence to follow? may be my files are not well written?
-
-Thanks for your help!
-Abraham
-
---0016364c7e7d55736104942c0556
-Content-Type: application/octet-stream; name=hifi
-Content-Disposition: attachment; filename=hifi
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gg2o609q0
-
-IyBVc2UgY2FzZSBDb25maWd1cmF0aW9uIGZvciBUSSBTRFA0NDMwIEhpRmkgTXVzaWMKIyBCeSBM
-aWFtIEdpcmR3b29kIDxscmdAc2xpbWxvZ2ljLmNvLnVrPgoKU2VjdGlvblZlcmIgewogIAlFbmFi
-bGVTZXF1ZW5jZSBbCgkJY3NldCAibmFtZT0nREwxIE1lZGlhIFBsYXliYWNrIFZvbHVtZScsaW5k
-ZXg9MSA5MCIKCQljc2V0ICJuYW1lLSdETDIgTWVkaWEgUGxheWJhY2sgVm9sdW1lJyxpbmRleD0x
-IDkwIgoJXQoKCURpc2FibGVTZXF1ZW5jZSBbCgkJY3NldCAibmFtZT0nREwxIE1lZGlhIFBsYXli
-YWNrIFZvbHVtZScsaW5kZXg9MSAwIgoJCWNzZXQgIm5hbWU9J0RMMiBNZWRpYSBQbGF5YmFjayBW
-b2x1bWUnLGluZGV4PTEgMCIKCV0KCgkjIFFvUyBhbmQgQUxTQSBQQ01zCglWYWx1ZSB7CgkgICAg
-ICBUUSBIaUZpCgkgICAgICBDYXB0dXJlUENNICJodzowIgoJICAgICAgUGxheWJhY2tQQ00gImh3
-OjAiCgl9Cn0KClNlY3Rpb25EZXZpY2UuIkhlYWRzZXQiLjAgewoJQ29tbWVudCAiU0RQNDQzMCAz
-LjVtbSBIZWFkc2V0IgoJCglFbmFibGVTZXF1ZW5jZSBbCgkJY3NldCAibmFtZT0nREwxIE1peGVy
-IE11bHRpbWVkaWEnLGluZGV4PTAgMCIKCQljc2V0ICJuYW1lPSdTaWRldG9uZSBNaXhlciBQbGF5
-YmFjaycsaW5kZXg9MSAxIgoJCWNzZXQgIm5hbWU9J0hTIFJpZ2h0IFBsYXliYWNrJyxpbmRleD0x
-IDAiCgkJY3NldCAibmFtZT0nSFMgTGVmdCBQbGF5YmFjaycsaW5kZXg9MSAwIgoJCWNzZXQgIm5h
-bWU9J01VWF9VTDExJyxpbmRleD0xIDkiCgkJY3NldCAibmFtZT0nTVVYX1VMMTAnLGluZGV4PTEg
-MTAiCgldCgoJRGlzYWJsZVNlcXVlbmNlIFsKCQljc2V0ICJuYW1lPSdETDEgTWl4ZXIgTXVsdGlt
-ZWRpYScsaW5kZXg9MSAwIgoJCWNzZXQgIm5hbWU9J01VWF9VTDExJyxpbmRleD0xIDAiCgkJY3Nl
-dCAibmFtZT0nTVVYX1VMMTAnLGluZGV4PTEgMCIKCQljc2V0ICJuYW1lPSdIUyBSaWdodCBQbGF5
-YmFjaycsaW5kZXg9MSAwIgoJCWNzZXQgIm5hbWU9J0hTIExlZnQgUGxheWJhY2snLGluZGV4PTEg
-MCIKCQljc2V0ICJuYW1lPSdTaWRldG9uZSBNaXhlciBQbGF5YmFjaycsaW5kZXg9MSAwIgoJXQoK
-CVZhbHVlIHsKCSAgICAgIE1hc3RlclBsYXliYWNrVm9sdW1lICJuYW1lPSdIZWFkc2V0IFBsYXli
-YWNrIFZvbHVtZScgMSIKCSAgICAgIE1hc3RlckNhcHR1cmVWb2x1bWUgIm5hbWU9J0NhcHR1cmUg
-Vm9sdW1lJyAxIgoJfQp9Cg==
---0016364c7e7d55736104942c0556
-Content-Type: application/octet-stream; name="SDP4430.conf"
-Content-Disposition: attachment; filename="SDP4430.conf"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gg2o67xr1
-
-IyBVQ00gY29uZmlndXJhdGlvbiBmb3IgU0RQNDQzMApTZWN0aW9uVXNlQ2FzZS4iSGlGaSIgewog
-CQlGaWxlICJoaWZpIgogCQlDb21tZW50ICJQbGF5IGFuZCByZWNvcmQgSGlGaSBxdWFsaXR5IE11
-c2ljLiIKfQoKU2VjdGlvbkRlZmF1bHRzIFsKCQljc2V0ICJuYW1lPSdDYXB0dXJlIFByZWFtcGxp
-ZmllciBWb2x1bWUnLGluZGV4PTIgMCwwIgoJCWV4ZWMgImVjaG8gSW0gc2V0dGluZyBkZWZhdWx0
-cyIKCQljc2V0ICJuYW1lPSdDYXB0dXJlIFZvbHVtZScsaW5kZXg9MiAwLDAiCgkJY3NldCAibmFt
-ZT0nQXV4IEZNIFZvbHVtZScsaW5kZXg9MiAwLDAiCgkJY3NldCAibmFtZT0nSGVhZHNldCBQbGF5
-YmFjayBWb2x1bWUnLGluZGV4PTIgMCwwIgoJCWNzZXQgIm5hbWU9J0hhbmRzZnJlZSBQbGF5YmFj
-ayBWb2x1bWUnLGluZGV4PTIgMCwwIgoJCWNzZXQgIm5hbWU9J0VhcnBob25lIFBsYXliYWNrIFZv
-bHVtZScsaW5kZXg9MSAwIgoJCWNzZXQgIm5hbWU9J0VhcnBob25lIERyaXZlciBTd2l0Y2gnLGlu
-ZGV4PTEgMCIKCQljc2V0ICJuYW1lPSdIUyBSaWdodCBQbGF5YmFjaycsaW5kZXg9MSAwIgoJCWNz
-ZXQgIm5hbWU9J0hTIExlZnQgUGxheWJhY2snLGluZGV4PTEgMCIKCQljc2V0ICJuYW1lPSdIRiBS
-aWdodCBQbGF5YmFjaycsaW5kZXg9MSAwIgoJCWNzZXQgIm5hbWU9J0hGIExlZnQgUGxheWJhY2sn
-LGluZGV4PTEgMCIKCQljc2V0ICJuYW1lPSdBbmFsb2cgUmlnaHQgQ2FwdHVyZSBSb3V0ZScsaW5k
-ZXg9MSAzIgoJCWNzZXQgIm5hbWU9J0FuYWxvZyBMZWZ0IENhcHR1cmUgUm91dGUnLGluZGV4PTEg
-MyIKCQljc2V0ICJuYW1lPSdETDEgTWVkaWEgUGxheWJhY2sgVm9sdW1lJyxpbmRleD0xIDAiCgkJ
-Y3NldCAibmFtZT0nREwxIFRvbmVzIFBsYXliYWNrIFZvbHVtZScsaW5kZXg9MSAwIgoJCWNzZXQg
-Im5hbWU9J0RMMSBWb2ljZSBQbGF5YmFjayBWb2x1bWUnLGluZGV4PTEgMCIKCQljc2V0ICJuYW1l
-PSdETDEgQ2FwdHVyZSBQbGF5YmFjayBWb2x1bWUnLGluZGV4PTEgMCIKCQljc2V0ICJuYW1lPSdE
-TDIgTWVkaWEgUGxheWJhY2sgVm9sdW1lJyxpbmRleD0xIDAiCgkJY3NldCAibmFtZT0nREwyIFRv
-bmVzIFBsYXliYWNrIFZvbHVtZScsaW5kZXg9MSAwIgoJCWNzZXQgIm5hbWU9J0RMMiBWb2ljZSBQ
-bGF5YmFjayBWb2x1bWUnLGluZGV4PTEgMCIKCQljc2V0ICJuYW1lPSdETDIgQ2FwdHVyZSBQbGF5
-YmFjayBWb2x1bWUnLGluZGV4PTEgMCIKCQljc2V0ICJuYW1lPSdNTV9FWFRfVUwgQ2FwdHVyZSBT
-d2l0Y2gnLGluZGV4PTEgMCIKCQljc2V0ICJuYW1lPSdNTV9FWFRfREwgUGxheWJhY2sgU3dpdGNo
-JyxpbmRleD0xIDAiCgkJY3NldCAibmFtZT0nQlRfVlhfREwgUGxheWJhY2sgU3dpdGNoJyxpbmRl
-eD0xIDAiCgkJY3NldCAibmFtZT0nUERNX0RMIFBsYXliYWNrIFN3aXRjaCcsaW5kZXg9MSAwIgoJ
-CWNzZXQgIm5hbWU9J1NpZGV0b25lIE1peGVyIENhcHR1cmUnLGluZGV4PTEgMCIKCQljc2V0ICJu
-YW1lPSdTaWRldG9uZSBNaXhlciBQbGF5YmFjaycsaW5kZXg9MSAwIgoJCWNzZXQgIm5hbWU9J0Nh
-cHR1cmUgTWl4ZXIgVG9uZXMnLGluZGV4PTEgMCIKCQljc2V0ICJuYW1lPSdDYXB0dXJlIE1peGVy
-IFZvaWNlIFBsYXliYWNrJyxpbmRleD0xIDAiCgkJY3NldCAibmFtZT0nQ2FwdHVyZSBNaXhlciBW
-b2ljZSBDYXB0dXJlJyxpbmRleD0xIDAiCgkJY3NldCAibmFtZT0nQ2FwdHVyZSBNaXhlciBNZWRp
-YSBQbGF5YmFjaycsaW5kZXg9MSAwIgoJCWNzZXQgIm5hbWU9J1ZvaWNlIENhcHR1cmUgTWl4ZXIg
-VG9uZXMgUGxheWJhY2snLGluZGV4PTEgMCIKCQljc2V0ICJuYW1lPSdWb2ljZSBDYXB0dXJlIE1p
-eGVyIE1lZGlhIFBsYXliYWNrJyxpbmRleD0xIDAiCgkJY3NldCAibmFtZT0nVm9pY2UgQ2FwdHVy
-ZSBNaXhlciBDYXB0dXJlJyxpbmRleD0xIDAiCgkJY3NldCAibmFtZT0nREwyIE1peGVyIFRvbmVz
-JyxpbmRleD0xIDAiCgkJY3NldCAibmFtZT0nREwyIE1peGVyIFZvaWNlJyxpbmRleD0xIDAiCgkJ
-Y3NldCAibmFtZT0nREwyIE1peGVyIENhcHR1cmUnLGluZGV4PTEgMCIKCQljc2V0ICJuYW1lPSdE
-TDIgTWl4ZXIgTXVsdGltZWRpYScsaW5kZXg9MSAwIgoJCWNzZXQgIm5hbWU9J0RMMSBNaXhlciBU
-b25lcycsaW5kZXg9MSAwIgoJCWNzZXQgIm5hbWU9J0RMMSBNaXhlciBWb2ljZScsaW5kZXg9MSAw
-IgoJCWNzZXQgIm5hbWU9J0RMMSBNaXhlciBDYXB0dXJlJyxpbmRleD0xIDAiCgkJY3NldCAibmFt
-ZT0nREwxIE1peGVyIE11bHRpbWVkaWEnLGluZGV4PTEgMCIKCQljc2V0ICJuYW1lPSdNVVhfVlgx
-JyxpbmRleD0xIDAiCgkJY3NldCAibmFtZT0nTVVYX1ZYMCcsaW5kZXg9MSAwIgoJCWNzZXQgIm5h
-bWU9J01VWF9VTDExJyxpbmRleD0xIDAiCgkJY3NldCAibmFtZT0nTVVYX1VMMTAnLGluZGV4PTEg
-MCIKCQljc2V0ICJuYW1lPSdNVVhfVUwwNycsaW5kZXg9MSAwIgoJCWNzZXQgIm5hbWU9J01VWF9V
-TDA2JyxpbmRleD0xIDAiCgkJY3NldCAibmFtZT0nTVVYX1VMMDUnLGluZGV4PTEgMCIKCQljc2V0
-ICJuYW1lPSdNVVhfVUwwNCcsaW5kZXg9MSAwIgoJCWNzZXQgIm5hbWU9J01VWF9VTDAzJyxpbmRl
-eD0xIDAiCgkJY3NldCAibmFtZT0nTVVYX1VMMDInLGluZGV4PTEgMCIKCQljc2V0ICJuYW1lPSdN
-VVhfVUwwMScsaW5kZXg9MSAwIgoJCWNzZXQgIm5hbWU9J01VWF9VTDAwJyxpbmRleD0xIDAiCgkJ
-Y3NldCAibmFtZT0nVFdMNjA0MCBQb3dlciBNb2RlJyxpbmRleD0xIDAiCl0K
---0016364c7e7d55736104942c0556
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---0016364c7e7d55736104942c0556--
+which sound card are you using and did you change the pulseaudlo daemon.conf
+?
