@@ -1,25 +1,17 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: ALSA UCM
-Date: Thu, 04 Nov 2010 19:07:08 +0000
-Message-ID: <1288897628.3277.99.camel@odin>
-References: <AANLkTimFdKg=_KDv8fbSJry6XTEsZqyQz7GhzaPxXDYP@mail.gmail.com>
-	<1288865349.3277.14.camel@odin>
-	<AANLkTim1Aopc2ALEXoWorPjzua0gGoSef8CpH+At4_cp@mail.gmail.com>
-	<1288890598.3277.81.camel@odin>
-	<alpine.LNX.2.00.1011041932410.29422@eeebox2.perex-int.cz>
-	<1288896461.3277.98.camel@odin>
-	<alpine.LNX.2.00.1011041949180.29422@eeebox2.perex-int.cz>
+From: Radivoje Jovanovic <radivojejovanovic@gmail.com>
+Subject: Buffer memory does not get allocated?
+Date: Thu, 4 Nov 2010 14:12:33 -0700
+Message-ID: <AANLkTindxGLPbsk9hWWqf6U89ZnzgbNf3qt96JVQm5rT@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE9442442A
-	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2010 20:07:11 +0100 (CET)
-Received: by eyg24 with SMTP id 24so1224948eyg.38
-	for <alsa-devel@alsa-project.org>; Thu, 04 Nov 2010 12:07:11 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.1011041949180.29422@eeebox2.perex-int.cz>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id AF44310386B
+	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2010 22:12:34 +0100 (CET)
+Received: by wyb33 with SMTP id 33so412647wyb.38
+	for <alsa-devel@alsa-project.org>; Thu, 04 Nov 2010 14:12:33 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,44 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, abraham duenas <aduejazz@gmail.com>, broonie@opensource.wolfsonmicro.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-11-04 at 19:52 +0100, Jaroslav Kysela wrote:
-> On Thu, 4 Nov 2010, Liam Girdwood wrote:
-> 
-> > On Thu, 2010-11-04 at 19:34 +0100, Jaroslav Kysela wrote:
-> >> On Thu, 4 Nov 2010, Liam Girdwood wrote:
-> >>
-> >>>> 	Value {
-> >>>> 	      MasterPlaybackVolume "name='Headset Playback Volume' 1"
-> >>>> 	      MasterCaptureVolume "name='Capture Volume' 1"
-> >>
-> >> What does mean '1'? If you like to define element id index, use:
-> >>
-> >
-> > Ah, that looks a conversion bug from Abrahams old file format to his new
-> > format. I guess it caught out the parser too here.
-> >
-> > Abraham, could you check over your configuration files and send a patch
-> > for the parser that spits an error out here.
-> >
-> >> MasterPlaybackVolume "name='Headset Playback Volume',index=1"
-> >
-> > My preference is not to use the ID since it can sometimes change with
-> > driver updates. The names are pretty constant though.
-> 
-> You probably mean unique numid for each control? Index is just an index 
-> for the ASCII name to distinguish controls with same name (I think that 
-> you had a syntax name:index in the original code).
+I am allocating memory for the buffers in my init call by doing:
+snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
+snd_dma_continuous_data(GFP_KERNEL), 256*1024, 256*1024);
 
-I do indeed :)
+in my hw_params call I have:
+ret= snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
 
-Thanks
+here is the output from my hw_params call:
 
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+called snd_pcm_lib_malloc_pages return=1
+params_buffer_bytes(hw_params)=32768
+
+Size of DMA area=32768
+
+Buffer size in bytes=262144
+
+Buffer virt address=9dc00000
+
+Buffer phys address=0
+
+
+Now I am not sure why is my buffer size bigger than my DMA area. I assume
+that memory is not linear because of that and that is why I do not have phys
+address to the buffer. How do I fix this?
+
+Thanx
+Ogi
