@@ -1,14 +1,15 @@
 From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 6/7] phycore-ac97: add ac97 to cardname
-Date: Thu,  4 Nov 2010 17:05:44 +0100
-Message-ID: <1288886745-25977-7-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH 2/7] ASoC i.MX eukrea tlv320: Fix for
+	multicomponent
+Date: Thu,  4 Nov 2010 17:05:40 +0100
+Message-ID: <1288886745-25977-3-git-send-email-s.hauer@pengutronix.de>
 References: <1288886745-25977-1-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id CE0951038A1
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id D09BC1038AE
 	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2010 17:05:48 +0100 (CET)
 In-Reply-To: <1288886745-25977-1-git-send-email-s.hauer@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -21,30 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, =?UTF-8?q?Eric=20B=C3=A9nard?= <eric@eukrea.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-We have different codecs on the pcm038 (ac97 wm9712 and mc13783).
-To make alsactl restore work correctly these should have different
-names.
-
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- sound/soc/imx/phycore-ac97.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/imx/phycore-ac97.c b/sound/soc/imx/phycore-ac97.c
-index cf46a17..39f2373 100644
---- a/sound/soc/imx/phycore-ac97.c
-+++ b/sound/soc/imx/phycore-ac97.c
-@@ -38,7 +38,7 @@ static struct snd_soc_dai_link imx_phycore_dai_ac97[] = {
- };
- 
- static struct snd_soc_card imx_phycore = {
--	.name		= "PhyCORE-audio",
-+	.name		= "PhyCORE-ac97-audio",
- 	.dai_link	= imx_phycore_dai_ac97,
- 	.num_links	= ARRAY_SIZE(imx_phycore_dai_ac97),
- };
--- 
-1.7.2.3
+U2lnbmVkLW9mZi1ieTogU2FzY2hhIEhhdWVyIDxzLmhhdWVyQHBlbmd1dHJvbml4LmRlPgpDYzog
+RXJpYyBCw6luYXJkIDxlcmljQGV1a3JlYS5jb20+Ci0tLQogc291bmQvc29jL2lteC9ldWtyZWEt
+dGx2MzIwLmMgfCAgICA4ICsrKystLS0tCiAxIGZpbGVzIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygr
+KSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW14L2V1a3JlYS10bHYz
+MjAuYyBiL3NvdW5kL3NvYy9pbXgvZXVrcmVhLXRsdjMyMC5jCmluZGV4IGI1OTY3NTIuLmRkNGZm
+ZmQgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9pbXgvZXVrcmVhLXRsdjMyMC5jCisrKyBiL3NvdW5k
+L3NvYy9pbXgvZXVrcmVhLXRsdjMyMC5jCkBAIC0zNCw4ICszNCw4IEBAIHN0YXRpYyBpbnQgZXVr
+cmVhX3RsdjMyMF9od19wYXJhbXMoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0s
+CiAJCQkgICAgc3RydWN0IHNuZF9wY21faHdfcGFyYW1zICpwYXJhbXMpCiB7CiAJc3RydWN0IHNu
+ZF9zb2NfcGNtX3J1bnRpbWUgKnJ0ZCA9IHN1YnN0cmVhbS0+cHJpdmF0ZV9kYXRhOwotCXN0cnVj
+dCBzbmRfc29jX2RhaSAqY29kZWNfZGFpID0gcnRkLT5kYWktPmNvZGVjX2RhaTsKLQlzdHJ1Y3Qg
+c25kX3NvY19kYWkgKmNwdV9kYWkgPSBydGQtPmRhaS0+Y3B1X2RhaTsKKwlzdHJ1Y3Qgc25kX3Nv
+Y19kYWkgKmNvZGVjX2RhaSA9IHJ0ZC0+Y29kZWNfZGFpOworCXN0cnVjdCBzbmRfc29jX2RhaSAq
+Y3B1X2RhaSA9IHJ0ZC0+Y3B1X2RhaTsKIAlpbnQgcmV0OwogCiAJcmV0ID0gc25kX3NvY19kYWlf
+c2V0X2ZtdChjcHVfZGFpLCBTTkRfU09DX0RBSUZNVF9JMlMgfApAQCAtNzksMTAgKzc5LDEwIEBA
+IHN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19vcHMgZXVrcmVhX3RsdjMyMF9zbmRfb3BzID0gewogc3Rh
+dGljIHN0cnVjdCBzbmRfc29jX2RhaV9saW5rIGV1a3JlYV90bHYzMjBfZGFpID0gewogCS5uYW1l
+CQk9ICJ0bHYzMjBhaWMyMyIsCiAJLnN0cmVhbV9uYW1lCT0gIlRMVjMyMEFJQzIzIiwKLQkuY29k
+ZWNfZGFpCT0gInRsdjMyMGFpYzIzLWhpZmkiLAorCS5jb2RlY19kYWlfbmFtZQk9ICJ0bHYzMjBh
+aWMyMy1oaWZpIiwKIAkucGxhdGZvcm1fbmFtZQk9ICJpbXgtcGNtLWF1ZGlvLjAiLAogCS5jb2Rl
+Y19uYW1lCT0gInRsdjMyMGFpYzIzLWNvZGVjLjAtMDAxYSIsCi0JLmNwdV9kYWkgPSAiaW14LXNz
+aS4wIiwKKwkuY3B1X2RhaV9uYW1lCT0gImlteC1zc2kuMCIsCiAJLm9wcwkJPSAmZXVrcmVhX3Rs
+djMyMF9zbmRfb3BzLAogfTsKIAotLSAKMS43LjIuMwoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
