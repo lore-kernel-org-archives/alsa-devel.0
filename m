@@ -1,18 +1,18 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: core: Fix race in dapm_power_widgets
-Date: Thu, 04 Nov 2010 09:51:02 +0000
-Message-ID: <1288864262.3277.10.camel@odin>
-References: <1288858605-8388-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: Re: ALSA UCM
+Date: Thu, 04 Nov 2010 10:09:09 +0000
+Message-ID: <1288865349.3277.14.camel@odin>
+References: <AANLkTimFdKg=_KDv8fbSJry6XTEsZqyQz7GhzaPxXDYP@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2955A103844
-	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2010 10:51:07 +0100 (CET)
-Received: by wwi18 with SMTP id 18so174470wwi.2
-	for <alsa-devel@alsa-project.org>; Thu, 04 Nov 2010 02:51:05 -0700 (PDT)
-In-Reply-To: <1288858605-8388-1-git-send-email-peter.ujfalusi@nokia.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id BD7D510384D
+	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2010 11:09:15 +0100 (CET)
+Received: by wwi17 with SMTP id 17so1843050wwi.20
+	for <alsa-devel@alsa-project.org>; Thu, 04 Nov 2010 03:09:14 -0700 (PDT)
+In-Reply-To: <AANLkTimFdKg=_KDv8fbSJry6XTEsZqyQz7GhzaPxXDYP@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,39 +22,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: abraham duenas <aduejazz@gmail.com>
 Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-11-04 at 10:16 +0200, Peter Ujfalusi wrote:
-> dapm_power_widgets can be called from different context.
-> When two calls are happening at the same time both will
-> try to change states/lists. This can lead to kernel crash.
+On Wed, 2010-11-03 at 14:38 -0600, abraham duenas wrote:
+> Hello,
 > 
-> A simple way to reproduce the problem:
+> I recently cloned:
+> git clone git://git.alsa-project.org/alsa-lib.git alsa-lib
+> git clone git://git.alsa-project.org/alsa-utils.git alsa-utils
+> and switched to the "ucm" branch to give it try. I have a panda board
+> (pandaboard.org it is just a TI OMAP4 platform).
 > 
-> while [ "1" = "1" ] ; do
-> amixer sset -Dhw:0 -q 'Mixer for loopback' on
-> amixer sset -Dhw:0 -q 'Mixer for loopback' off
-> done &
-> 
-> while [ "1" = "1" ] ; do
-> aplay -Dplughw:0 -fdat -d 3 /dev/urandom
-> echo "Playback finished"
-> sleep 6
-> done &
-> 
-> Add new card level mutex (dpw_mutex) to protect the
-> dapm_power_widgets from race.
-> The exisiting card->mutex can not be used for this purpose,
-> since it has been taken in probe time in the
-> snd_soc_instantiate_card function. Through probe calls from
-> this function eventually dapm_power_widgets will be called,
-> which will lead to dead lock.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+Ok, this is the correct repository.
+
+> I created some configuration files for my card. My conf file is
+> 'SDP4430.conf' and my verb is on 'hifi'.
+> I came with a simple program to set my verb and configure it for a
+> simple device. I'm calling this sequence:
+> 1. open it.... snd_use_case_mgr_open(&uc_mgr,"SDP4430")
+> 2. reset it ....snd_use_case_mgr_reset(uc_mgr)
+> 3. query for my verb.... snd_use_case_get_list(uc_mgr,"_verbs",&mylist)
+> 4. set my verb ... snd_use_case_set(uc_mgr,"_verb",*mylist)
+> 5. set my created device... snd_use_case_set(uc_mgr,"_enadev","Headset.0")
+> 6. close it... snd_use_case_mgr_close(uc_mgr)
+> 
+> Seems to work ok (without any errors) but I can't see any of my amixer
+> controls set/changed accordingly to my verb/device.
+> Is this a right sequence to follow? may be my files are not well written?
+> 
+
+This sequence looks correct. Can you share with us the relevant parts of
+your configuration files. 
+
+Jaroslav did make some changes to the config file format so maybe we
+have a formatting problem here.
+
+Liam 
+
 -- 
 Freelance Developer, SlimLogic Ltd
 ASoC and Voltage Regulator Maintainer.
