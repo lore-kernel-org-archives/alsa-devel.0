@@ -1,19 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: ALSA UCM
-Date: Thu, 4 Nov 2010 19:31:26 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1011041926390.29422@eeebox2.perex-int.cz>
-References: <AANLkTimFdKg=_KDv8fbSJry6XTEsZqyQz7GhzaPxXDYP@mail.gmail.com>
-	<1288865349.3277.14.camel@odin>
-	<AANLkTim1Aopc2ALEXoWorPjzua0gGoSef8CpH+At4_cp@mail.gmail.com>
-	<1288890598.3277.81.camel@odin>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/4] ASoC: soc-cache: Add support for flat
+ register caching
+Date: Thu, 4 Nov 2010 14:31:40 -0400
+Message-ID: <20101104183140.GD6088@opensource.wolfsonmicro.com>
+References: <1288880564-31957-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	<1288880564-31957-3-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7F79824403
-	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2010 19:31:27 +0100 (CET)
-In-Reply-To: <1288890598.3277.81.camel@odin>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 23CE524407
+	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2010 19:31:32 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1288880564-31957-3-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,31 +23,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, abraham duenas <aduejazz@gmail.com>, broonie@opensource.wolfsonmicro.com
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 4 Nov 2010, Liam Girdwood wrote:
+On Thu, Nov 04, 2010 at 02:22:42PM +0000, Dimitris Papastamos wrote:
 
->>> Jaroslav did make some changes to the config file format so maybe we
->>> have a formatting problem here.
->>>
->
-> Jaroslav, any ideas ?
+> This patch introduces the new caching API and migrates the
+> old caching interface into the new one.  The flat register caching
+> technique does not use compression at all and it is equivalent to
 
-The cset command is not implemented yet. I'm actually porting the parsing 
-routines from amixer to alsa-lib.
+Looks good - probably the main thing I'm asking for with the single
+patches is to do stuff like squashing the first patch into this.
 
-The actual implementation should print error messages something like:
+> @@ -680,6 +722,8 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
+>  		return -EINVAL;
+>  	}
+>  
+> +	mutex_init(&cache_rw_mutex);
+> +
 
-cset not yet implemented
+I'd kind of expect this to be with the other cache setup?  I'd also
+expect the lock to be a member variable next to the cache, rather than a
+global.  Probably not a big deal but still nicer.
 
-If these messages are not printed, I think that there is an issue with 
-the parser. I'm sorry, but I fight with free time to finish this API.
+> +			switch (codec_drv->reg_word_size) {
 
- 					Jaroslav
+...
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+> +			default:
+> +				return -EINVAL;
+> +			}
+
+I'd kind of expect these to be BUG() so we don't silently fall back to
+direct I/O if the cache support isn't implemented at all.
+
+> +static int snd_soc_flat_cache_init(struct snd_soc_codec *codec)
+> +{
+> +	struct snd_soc_codec_driver *codec_drv;
+> +	size_t reg_size;
+> +
+> +	codec_drv = codec->driver;
+> +	reg_size = codec_drv->reg_cache_size * codec_drv->reg_word_size;
+> +
+> +	if (codec_drv->reg_cache_default)
+> +		codec->reg_cache = kmemdup(codec_drv->reg_cache_default,
+> +					   reg_size, GFP_KERNEL);
+> +	else
+> +		codec->reg_cache = kzalloc(reg_size, GFP_KERNEL);
+> +	if (!codec->reg_cache)
+> +		return -EINVAL;
+
+-ENOMEM.
+
+> +int snd_soc_cache_init(struct snd_soc_codec *codec)
+> +{
+
+> +EXPORT_SYMBOL_GPL(snd_soc_cache_init);
+
+Does this need to be exported?  Right now the only caller is in the
+core.
+
+> @@ -3261,6 +3244,16 @@ int snd_soc_register_codec(struct device *dev,
+>  	INIT_LIST_HEAD(&codec->dapm_widgets);
+>  	INIT_LIST_HEAD(&codec->dapm_paths);
+>  
+> +	/* allocate CODEC register cache */
+> +	if (codec_drv->reg_cache_size && codec_drv->reg_word_size) {
+> +		ret = snd_soc_cache_init(codec);
+> +		if (ret < 0) {
+> +			dev_err(codec->dev, "Failed to set cache compression type: %d\n",
+> +				ret);
+> +			goto error_cache;
+> +		}
+> +	}
+
+Are you sure that all the CODECs that rely on the existing shared
+register cache are going to call this?
