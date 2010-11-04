@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4] ASoC: soc.h: Add new caching API
- prototypes and hooks
-Date: Thu, 4 Nov 2010 14:20:19 -0400
-Message-ID: <20101104182019.GC6088@opensource.wolfsonmicro.com>
-References: <1288880564-31957-1-git-send-email-dp@opensource.wolfsonmicro.com>
-	<1288880564-31957-2-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: ALSA UCM
+Date: Thu, 4 Nov 2010 19:31:26 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1011041926390.29422@eeebox2.perex-int.cz>
+References: <AANLkTimFdKg=_KDv8fbSJry6XTEsZqyQz7GhzaPxXDYP@mail.gmail.com>
+	<1288865349.3277.14.camel@odin>
+	<AANLkTim1Aopc2ALEXoWorPjzua0gGoSef8CpH+At4_cp@mail.gmail.com>
+	<1288890598.3277.81.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5CFEC243F5
-	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2010 19:20:11 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1288880564-31957-2-git-send-email-dp@opensource.wolfsonmicro.com>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7F79824403
+	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2010 19:31:27 +0100 (CET)
+In-Reply-To: <1288890598.3277.81.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,33 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, abraham duenas <aduejazz@gmail.com>, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 04, 2010 at 02:22:41PM +0000, Dimitris Papastamos wrote:
+On Thu, 4 Nov 2010, Liam Girdwood wrote:
 
-> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+>>> Jaroslav did make some changes to the config file format so maybe we
+>>> have a formatting problem here.
+>>>
+>
+> Jaroslav, any ideas ?
 
-As previously mentioned please split this series up into patches which
-individually add some useful functiionality 
+The cset command is not implemented yet. I'm actually porting the parsing 
+routines from amixer to alsa-lib.
 
-> +/* SoC cache ops */
-> +struct snd_soc_cache_ops {
-> +	int id; /* corresponds to snd_soc_compress_type */
+The actual implementation should print error messages something like:
 
-Shouldn't this be using the enum then?
+cset not yet implemented
 
-> --- a/sound/soc/Kconfig
-> +++ b/sound/soc/Kconfig
-> @@ -4,6 +4,8 @@
->  
->  menuconfig SND_SOC
->  	tristate "ALSA for SoC audio support"
-> +	select LZO_COMPRESS
-> +	select LZO_DECOMPRESS
->  	select SND_PCM
->  	select AC97_BUS if SND_SOC_AC97_BUS
->  	select SND_JACK if INPUT=y || INPUT=SND
+If these messages are not printed, I think that there is an issue with 
+the parser. I'm sorry, but I fight with free time to finish this API.
 
-This definitely looks like it should be in a separate patch.
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
