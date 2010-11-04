@@ -1,16 +1,16 @@
 From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/4] ASoC: soc-cache: Add support for LZO
-	register caching
-Date: Thu,  4 Nov 2010 14:22:43 +0000
-Message-ID: <1288880564-31957-4-git-send-email-dp@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/4] ASoC: soc-cache: Add support for rbtree
+	based register caching
+Date: Thu,  4 Nov 2010 14:22:44 +0000
+Message-ID: <1288880564-31957-5-git-send-email-dp@opensource.wolfsonmicro.com>
 References: <1288880564-31957-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 177CC10389F
-	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2010 15:22:56 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B1F3D10389D
+	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2010 15:22:57 +0100 (CET)
 In-Reply-To: <1288880564-31957-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,474 +25,307 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlog
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds support for LZO compression when storing the register
-cache.  The initial register defaults cache is marked as __devinitconst
-and the only change required for a driver to use LZO compression is
-to set the compress_type member in codec->driver to SND_SOC_LZO_COMPRESSION.
+This patch adds support for rbtree compression when storing the
+register cache.  It does this by not adding any uninitialized registers
+(those whose value is 0).  If any of those registers is written
+with a nonzero value they get added into the rbtree.
 
-For a typical device whose register map would normally occupy 25kB or 50kB
-by using the LZO compression technique, one can get down to ~3-5kB.  There
-might be a performance penalty associated with each individual read/write
-due to decompressing/compressing the underlying cache, however that should not
-be noticeable.  The memory benefits depend on whether the target architecture
-can get rid of the memory occupied by the original register defaults cache
-which is marked as __devinitconst.
+Consider a sample device with a large sparse register map.  The
+register indices are between [0, 0x31ff].  An array of 12800 registers
+is thus created each of which is 2 bytes.  This results in a 25kB
+region.  This array normally lives outside soc-core, normally in the
+driver itself.  The original soc-core code would kmemdup this region
+resulting in 50kB total memory.  When using the rbtree compression
+technique and __devinitconst on the original array the figures are
+as follows.  For this typical device, you might have 100 initialized
+registers, that is registers that are nonzero by default.  We build
+an rbtree with 100 nodes, each of which is 21 bytes.  This results
+in ~2kB of memory.  Assuming that the target arch can freeup the
+memory used by the initial __devinitconst array, we end up using
+about ~2kB bytes of actual memory.  The memory footprint will increase
+as uninitialized registers get written and thus new nodes created in
+the rbtree.  In practice, most of those registers are never changed.
+If the target arch can't freeup the __devinitconst array, we end up
+using a total of ~27kB.  The difference between the rbtree and the LZO
+caching techniques, is that if using the LZO technique the size of
+the cache will increase slower as more uninitialized registers get
+changed.
 
 Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 ---
  include/sound/soc.h   |    3 +-
- sound/soc/soc-cache.c |  413 +++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 415 insertions(+), 1 deletions(-)
+ sound/soc/soc-cache.c |  233 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 235 insertions(+), 1 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 90a9b60..8135b3c 100644
+index 8135b3c..6e9f511 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -255,7 +255,8 @@ enum snd_soc_control_type {
- };
+@@ -256,7 +256,8 @@ enum snd_soc_control_type {
  
  enum snd_soc_compress_type {
--	SND_SOC_NO_COMPRESSION
-+	SND_SOC_NO_COMPRESSION,
-+	SND_SOC_LZO_COMPRESSION
+ 	SND_SOC_NO_COMPRESSION,
+-	SND_SOC_LZO_COMPRESSION
++	SND_SOC_LZO_COMPRESSION,
++	SND_SOC_RBTREE_COMPRESSION
  };
  
  int snd_soc_register_platform(struct device *dev,
 diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index c5d05b8..63b7fe9 100644
+index 63b7fe9..3d85ac0 100644
 --- a/sound/soc/soc-cache.c
 +++ b/sound/soc/soc-cache.c
-@@ -14,6 +14,8 @@
- #include <linux/i2c.h>
- #include <linux/spi/spi.h>
+@@ -16,6 +16,7 @@
  #include <sound/soc.h>
-+#include <linux/lzo.h>
-+#include <linux/bitmap.h>
+ #include <linux/lzo.h>
+ #include <linux/bitmap.h>
++#include <linux/rbtree.h>
  
  /* serialize access to *cache_read() and *cache_write() */
  static DEFINE_MUTEX(cache_rw_mutex);
-@@ -757,6 +759,409 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
+@@ -759,6 +760,230 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
  }
  EXPORT_SYMBOL_GPL(snd_soc_codec_set_cache_io);
  
-+struct snd_soc_lzo_ctx {
-+	void *wmem;
-+	void *dst;
-+	const void *src;
-+	size_t src_len;
-+	size_t dst_len;
-+	size_t decompressed_size;
-+	unsigned long *sync_bmp;
-+	int sync_bmp_nbits;
++struct snd_soc_rbtree_node {
++	struct rb_node node;
++	unsigned int dirty:1;
++	unsigned int reg;
++	unsigned int value;
++} __attribute__ ((packed));
++
++struct snd_soc_rbtree_ctx {
++	struct rb_root root;
 +};
 +
-+#define LZO_BLOCK_NUM 8
-+static int snd_soc_lzo_block_count(void)
++static struct snd_soc_rbtree_node *snd_soc_rbtree_lookup(
++	struct rb_root *root, unsigned int reg)
 +{
-+	return LZO_BLOCK_NUM;
-+}
++	struct rb_node *node;
++	struct snd_soc_rbtree_node *rbnode;
 +
-+static int snd_soc_lzo_prepare(struct snd_soc_lzo_ctx *lzo_ctx)
-+{
-+	lzo_ctx->wmem = kmalloc(LZO1X_MEM_COMPRESS, GFP_KERNEL);
-+	if (!lzo_ctx->wmem)
-+		return -ENOMEM;
-+	return 0;
-+}
-+
-+static int snd_soc_lzo_compress(struct snd_soc_lzo_ctx *lzo_ctx)
-+{
-+	size_t compress_size;
-+	int ret;
-+
-+	ret = lzo1x_1_compress(lzo_ctx->src, lzo_ctx->src_len,
-+			       lzo_ctx->dst, &compress_size, lzo_ctx->wmem);
-+	if (ret != LZO_E_OK || compress_size > lzo_ctx->dst_len)
-+		return -EINVAL;
-+	lzo_ctx->dst_len = compress_size;
-+	return 0;
-+}
-+
-+static int snd_soc_lzo_decompress(struct snd_soc_lzo_ctx *lzo_ctx)
-+{
-+	size_t dst_len;
-+	int ret;
-+
-+	dst_len = lzo_ctx->dst_len;
-+	ret = lzo1x_decompress_safe(lzo_ctx->src, lzo_ctx->src_len,
-+				    lzo_ctx->dst, &dst_len);
-+	if (ret != LZO_E_OK || dst_len != lzo_ctx->dst_len)
-+		return -EINVAL;
-+	return 0;
-+}
-+
-+static int snd_soc_lzo_compress_cache_block(struct snd_soc_codec *codec,
-+					struct snd_soc_lzo_ctx *lzo_ctx)
-+{
-+	int ret;
-+
-+	lzo_ctx->dst_len = lzo1x_worst_compress(PAGE_SIZE);
-+	lzo_ctx->dst = kmalloc(lzo_ctx->dst_len, GFP_KERNEL);
-+	if (!lzo_ctx->dst) {
-+		lzo_ctx->dst_len = 0;
-+		return -ENOMEM;
++	node = root->rb_node;
++	while (node) {
++		rbnode = container_of(node, struct snd_soc_rbtree_node, node);
++		if (rbnode->reg < reg)
++			node = node->rb_left;
++		else if (rbnode->reg > reg)
++			node = node->rb_right;
++		else
++			return rbnode;
 +	}
 +
-+	ret = snd_soc_lzo_compress(lzo_ctx);
-+	if (ret < 0)
-+		return ret;
-+	return 0;
++	return NULL;
 +}
 +
-+static int snd_soc_lzo_decompress_cache_block(struct snd_soc_codec *codec,
-+		struct snd_soc_lzo_ctx *lzo_ctx)
-+{
-+	int ret;
 +
-+	lzo_ctx->dst_len = lzo_ctx->decompressed_size;
-+	lzo_ctx->dst = kmalloc(lzo_ctx->dst_len, GFP_KERNEL);
-+	if (!lzo_ctx->dst) {
-+		lzo_ctx->dst_len = 0;
-+		return -ENOMEM;
++static int snd_soc_rbtree_insert(struct rb_root *root,
++				 struct snd_soc_rbtree_node *rbnode)
++{
++	struct rb_node **new, *parent;
++	struct snd_soc_rbtree_node *rbnode_tmp;
++
++	parent = NULL;
++	new = &root->rb_node;
++	while (*new) {
++		rbnode_tmp = container_of(*new, struct snd_soc_rbtree_node,
++					  node);
++		parent = *new;
++		if (rbnode_tmp->reg < rbnode->reg)
++			new = &((*new)->rb_left);
++		else if (rbnode_tmp->reg > rbnode->reg)
++			new = &((*new)->rb_right);
++		else
++			return 0;
 +	}
 +
-+	ret = snd_soc_lzo_decompress(lzo_ctx);
-+	if (ret < 0)
-+		return ret;
-+	return 0;
++	/* insert the node into the rbtree */
++	rb_link_node(&rbnode->node, parent, new);
++	rb_insert_color(&rbnode->node, root);
++
++	return 1;
 +}
 +
-+static inline int snd_soc_lzo_get_blkindex(struct snd_soc_codec *codec,
-+		unsigned int reg)
++static int snd_soc_rbtree_cache_sync(struct snd_soc_codec *codec)
 +{
-+	struct snd_soc_codec_driver *codec_drv;
-+	size_t reg_size;
-+
-+	codec_drv = codec->driver;
-+	reg_size = codec_drv->reg_cache_size * codec_drv->reg_word_size;
-+	return (reg * codec_drv->reg_word_size) /
-+	       DIV_ROUND_UP(reg_size, snd_soc_lzo_block_count());
-+}
-+
-+static inline int snd_soc_lzo_get_blkpos(struct snd_soc_codec *codec,
-+		unsigned int reg)
-+{
-+	struct snd_soc_codec_driver *codec_drv;
-+	size_t reg_size;
-+
-+	codec_drv = codec->driver;
-+	reg_size = codec_drv->reg_cache_size * codec_drv->reg_word_size;
-+	return reg % (DIV_ROUND_UP(reg_size, snd_soc_lzo_block_count()) /
-+		      codec_drv->reg_word_size);
-+}
-+
-+static inline int snd_soc_lzo_get_blksize(struct snd_soc_codec *codec)
-+{
-+	struct snd_soc_codec_driver *codec_drv;
-+	size_t reg_size;
-+
-+	codec_drv = codec->driver;
-+	reg_size = codec_drv->reg_cache_size * codec_drv->reg_word_size;
-+	return DIV_ROUND_UP(reg_size, snd_soc_lzo_block_count());
-+}
-+
-+static int snd_soc_lzo_cache_sync(struct snd_soc_codec *codec)
-+{
-+	struct snd_soc_lzo_ctx **lzo_blocks;
++	struct snd_soc_rbtree_ctx *rbtree_ctx;
++	struct rb_node *node;
++	struct snd_soc_rbtree_node *rbnode;
 +	unsigned int val;
-+	int i;
 +
-+	lzo_blocks = codec->reg_cache;
-+	for_each_set_bit(i, lzo_blocks[0]->sync_bmp, lzo_blocks[0]->sync_bmp_nbits) {
-+		snd_soc_cache_read(codec, i, &val);
-+		snd_soc_write(codec, i, val);
++	rbtree_ctx = codec->reg_cache;
++	for (node = rb_first(&rbtree_ctx->root); node; node = rb_next(node)) {
++		rbnode = rb_entry(node, struct snd_soc_rbtree_node, node);
++		if (!rbnode->dirty)
++			continue;
++		snd_soc_cache_read(codec, rbnode->reg, &val);
++		snd_soc_write(codec, rbnode->reg, val);
 +		dev_dbg(codec->dev, "Synced register %#x, value = %#x\n",
-+			i, val);
++			rbnode->reg, val);
 +	}
 +
 +	return 0;
 +}
 +
-+static int snd_soc_lzo_cache_write(struct snd_soc_codec *codec,
-+				   unsigned int reg, unsigned int value)
++static int snd_soc_rbtree_cache_write(struct snd_soc_codec *codec,
++				      unsigned int reg, unsigned int value)
 +{
-+	struct snd_soc_lzo_ctx *lzo_block, **lzo_blocks;
-+	int ret, blkindex, blkpos;
-+	size_t blksize, tmp_dst_len;
-+	void *tmp_dst;
++	struct snd_soc_rbtree_ctx *rbtree_ctx;
++	struct snd_soc_rbtree_node *rbnode;
 +
-+	/* index of the compressed lzo block */
-+	blkindex = snd_soc_lzo_get_blkindex(codec, reg);
-+	/* register index within the decompressed block */
-+	blkpos = snd_soc_lzo_get_blkpos(codec, reg);
-+	/* size of the compressed block */
-+	blksize = snd_soc_lzo_get_blksize(codec);
-+	lzo_blocks = codec->reg_cache;
-+	lzo_block = lzo_blocks[blkindex];
++	rbtree_ctx = codec->reg_cache;
++	rbnode = snd_soc_rbtree_lookup(&rbtree_ctx->root, reg);
++	if (rbnode) {
++		if (rbnode->value == value)
++			return 0;
++		rbnode->value = value;
++	} else {
++		/* bail out early, no need to create the rbnode yet */
++		if (!value)
++			return 0;
++		/*
++		 * for uninitialized registers whose value is changed
++		 * from the default zero, create an rbnode and insert
++		 * it into the tree.
++		 */
++		rbnode = kzalloc(sizeof *rbnode, GFP_KERNEL);
++		if (!rbnode)
++			return -ENOMEM;
++		rbnode->reg = reg;
++		rbnode->value = value;
++		snd_soc_rbtree_insert(&rbtree_ctx->root, rbnode);
++	}
++	/* remember that we have to sync this register */
++	rbnode->dirty = 1;
 +
-+	/* save the pointer and length of the compressed block */
-+	tmp_dst = lzo_block->dst;
-+	tmp_dst_len = lzo_block->dst_len;
++	return 0;
++}
 +
-+	/* prepare the source to be the compressed block */
-+	lzo_block->src = lzo_block->dst;
-+	lzo_block->src_len = lzo_block->dst_len;
++static int snd_soc_rbtree_cache_read(struct snd_soc_codec *codec,
++				     unsigned int reg, unsigned int *value)
++{
++	struct snd_soc_rbtree_ctx *rbtree_ctx;
++	struct snd_soc_rbtree_node *rbnode;
 +
-+	/* decompress the block */
-+	ret = snd_soc_lzo_decompress_cache_block(codec, lzo_block);
-+	if (ret < 0) {
-+		kfree(lzo_block->dst);
-+		goto out;
++	rbtree_ctx = codec->reg_cache;
++	rbnode = snd_soc_rbtree_lookup(&rbtree_ctx->root, reg);
++	if (rbnode) {
++		*value = rbnode->value;
++	} else {
++		/* uninitialized registers default to 0 */
++		*value = 0;
 +	}
 +
-+	/* write the new value to the cache */
++	return 0;
++}
++
++static int snd_soc_rbtree_cache_exit(struct snd_soc_codec *codec)
++{
++	struct rb_node *next;
++	struct snd_soc_rbtree_ctx *rbtree_ctx;
++	struct snd_soc_rbtree_node *rbtree_node;
++
++	/* if we've already been called then just return */
++	rbtree_ctx = codec->reg_cache;
++	if (!rbtree_ctx)
++		return 0;
++
++	/* free up the rbtree */
++	next = rb_first(&rbtree_ctx->root);
++	while (next) {
++		rbtree_node = rb_entry(next, struct snd_soc_rbtree_node, node);
++		next = rb_next(&rbtree_node->node);
++		rb_erase(&rbtree_node->node, &rbtree_ctx->root);
++		kfree(rbtree_node);
++	}
++
++	/* release the resources */
++	kfree(codec->reg_cache);
++	codec->reg_cache = NULL;
++
++	return 0;
++}
++
++static int snd_soc_rbtree_cache_init(struct snd_soc_codec *codec)
++{
++	struct snd_soc_rbtree_ctx *rbtree_ctx;
++
++	codec->reg_cache = kmalloc(sizeof *rbtree_ctx, GFP_KERNEL);
++	if (!codec->reg_cache)
++		return -ENOMEM;
++
++	rbtree_ctx = codec->reg_cache;
++	rbtree_ctx->root = RB_ROOT;
++
++	if (!codec->driver->reg_cache_default)
++		return 0;
++
++/*
++ * populate the rbtree with the initialized registers.  All other
++ * registers will be inserted into the tree when they are first written.
++ *
++ * The reasoning behind this, is that we need to step through and
++ * dereference the cache in u8/u16 increments without sacrificing
++ * portability.  This could also be done using memcpy() but that would
++ * be slightly more cryptic.
++ */
++#define snd_soc_rbtree_populate(cache)					\
++({									\
++	int ret, i;							\
++	struct snd_soc_rbtree_node *rbtree_node;			\
++									\
++	ret = 0;							\
++	cache = codec->driver->reg_cache_default;			\
++	for (i = 0; i < codec->driver->reg_cache_size; ++i) {		\
++		if (!cache[i])						\
++			continue;					\
++		rbtree_node = kzalloc(sizeof *rbtree_node, GFP_KERNEL);	\
++		if (!rbtree_node) {					\
++			ret = -ENOMEM;					\
++			snd_soc_cache_exit(codec);			\
++			break;						\
++		}							\
++		rbtree_node->reg = i;					\
++		rbtree_node->value = cache[i];				\
++		snd_soc_rbtree_insert(&rbtree_ctx->root,		\
++				      rbtree_node);			\
++	}								\
++	ret;								\
++})
++
 +	switch (codec->driver->reg_word_size) {
 +	case 1: {
-+		u8 *cache;
-+		cache = lzo_block->dst;
-+		if (cache[blkpos] == value) {
-+			kfree(lzo_block->dst);
-+			goto out;
-+		}
-+		cache[blkpos] = value;
++		const u8 *cache;
++
++		return snd_soc_rbtree_populate(cache);
 +	}
-+		break;
 +	case 2: {
-+		u16 *cache;
-+		cache = lzo_block->dst;
-+		if (cache[blkpos] == value) {
-+			kfree(lzo_block->dst);
-+			goto out;
-+		}
-+		cache[blkpos] = value;
++		const u16 *cache;
++
++		return snd_soc_rbtree_populate(cache);
 +	}
-+		break;
 +	default:
 +		return -EINVAL;
 +	}
 +
-+	/* prepare the source to be the decompressed block */
-+	lzo_block->src = lzo_block->dst;
-+	lzo_block->src_len = lzo_block->dst_len;
-+
-+	/* compress the block */
-+	ret = snd_soc_lzo_compress_cache_block(codec, lzo_block);
-+	if (ret < 0) {
-+		kfree(lzo_block->dst);
-+		kfree(lzo_block->src);
-+		goto out;
-+	}
-+
-+	/* set the bit so we know we have to sync this register */
-+	set_bit(reg, lzo_block->sync_bmp);
-+	kfree(tmp_dst);
-+	kfree(lzo_block->src);
-+	return 0;
-+out:
-+	lzo_block->dst = tmp_dst;
-+	lzo_block->dst_len = tmp_dst_len;
-+	return ret;
-+}
-+
-+static int snd_soc_lzo_cache_read(struct snd_soc_codec *codec,
-+				  unsigned int reg, unsigned int *value)
-+{
-+	struct snd_soc_lzo_ctx *lzo_block, **lzo_blocks;
-+	int ret, blkindex, blkpos;
-+	size_t blksize, tmp_dst_len;
-+	void *tmp_dst;
-+
-+	*value = 0;
-+	/* index of the compressed lzo block */
-+	blkindex = snd_soc_lzo_get_blkindex(codec, reg);
-+	/* register index within the decompressed block */
-+	blkpos = snd_soc_lzo_get_blkpos(codec, reg);
-+	/* size of the compressed block */
-+	blksize = snd_soc_lzo_get_blksize(codec);
-+	lzo_blocks = codec->reg_cache;
-+	lzo_block = lzo_blocks[blkindex];
-+
-+	/* save the pointer and length of the compressed block */
-+	tmp_dst = lzo_block->dst;
-+	tmp_dst_len = lzo_block->dst_len;
-+
-+	/* prepare the source to be the compressed block */
-+	lzo_block->src = lzo_block->dst;
-+	lzo_block->src_len = lzo_block->dst_len;
-+
-+	/* decompress the block */
-+	ret = snd_soc_lzo_decompress_cache_block(codec, lzo_block);
-+	if (ret >= 0) {
-+		/* fetch the value from the cache */
-+		switch (codec->driver->reg_word_size) {
-+		case 1: {
-+			u8 *cache;
-+			cache = lzo_block->dst;
-+			*value = cache[blkpos];
-+		}
-+			break;
-+		case 2: {
-+			u16 *cache;
-+			cache = lzo_block->dst;
-+			*value = cache[blkpos];
-+		}
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	}
-+
-+	kfree(lzo_block->dst);
-+	/* restore the pointer and length of the compressed block */
-+	lzo_block->dst = tmp_dst;
-+	lzo_block->dst_len = tmp_dst_len;
 +	return 0;
 +}
 +
-+static int snd_soc_lzo_cache_exit(struct snd_soc_codec *codec)
-+{
-+	struct snd_soc_lzo_ctx **lzo_blocks;
-+	int i, blkcount;
-+
-+	lzo_blocks = codec->reg_cache;
-+	if (!lzo_blocks)
-+		return 0;
-+
-+	blkcount = snd_soc_lzo_block_count();
-+	/*
-+	 * the pointer to the bitmap used for syncing the cache
-+	 * is shared amongst all lzo_blocks.  Ensure it is freed
-+	 * only once.
-+	 */
-+	if (lzo_blocks[0])
-+		kfree(lzo_blocks[0]->sync_bmp);
-+	for (i = 0; i < blkcount; ++i) {
-+		if (lzo_blocks[i]) {
-+			kfree(lzo_blocks[i]->wmem);
-+			kfree(lzo_blocks[i]->dst);
-+		}
-+		/* each lzo_block is a pointer returned by kmalloc or NULL */
-+		kfree(lzo_blocks[i]);
-+	}
-+	kfree(lzo_blocks);
-+	codec->reg_cache = NULL;
-+	return 0;
-+}
-+
-+static int snd_soc_lzo_cache_init(struct snd_soc_codec *codec)
-+{
-+	struct snd_soc_lzo_ctx **lzo_blocks;
-+	size_t reg_size, bmp_size;
-+	struct snd_soc_codec_driver *codec_drv;
-+	int ret, tofree, i, blksize, blkcount;
-+	const char *p, *end;
-+	unsigned long *sync_bmp;
-+
-+	ret = 0;
-+	codec_drv = codec->driver;
-+	reg_size = codec_drv->reg_cache_size * codec_drv->reg_word_size;
-+
-+	/*
-+	 * If we have not been given a default register cache
-+	 * then allocate a dummy zero-ed out region, compress it
-+	 * and remember to free it afterwards.
-+	 */
-+	tofree = 0;
-+	if (!codec_drv->reg_cache_default)
-+		tofree = 1;
-+
-+	if (!codec_drv->reg_cache_default) {
-+		codec_drv->reg_cache_default = kzalloc(reg_size,
-+						       GFP_KERNEL);
-+		if (!codec_drv->reg_cache_default)
-+			return -ENOMEM;
-+	}
-+
-+	blkcount = snd_soc_lzo_block_count();
-+	codec->reg_cache = kzalloc(blkcount * sizeof(*lzo_blocks),
-+				   GFP_KERNEL);
-+	if (!codec->reg_cache) {
-+		ret = -ENOMEM;
-+		goto err_tofree;
-+	}
-+	lzo_blocks = codec->reg_cache;
-+
-+	/*
-+	 * allocate a bitmap to be used when syncing the cache with
-+	 * the hardware.  Each time a register is modified, the corresponding
-+	 * bit is set in the bitmap, so we know that we have to sync
-+	 * that register.
-+	 */
-+	bmp_size = codec_drv->reg_cache_size;
-+	sync_bmp = kmalloc(BITS_TO_LONGS(bmp_size) * sizeof(unsigned long),
-+			   GFP_KERNEL);
-+	if (!sync_bmp) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
-+	bitmap_zero(sync_bmp, reg_size);
-+
-+	/* allocate the lzo blocks and initialize them */
-+	for (i = 0; i < blkcount; ++i) {
-+		lzo_blocks[i] = kzalloc(sizeof **lzo_blocks,
-+					GFP_KERNEL);
-+		if (!lzo_blocks[i]) {
-+			kfree(sync_bmp);
-+			ret = -ENOMEM;
-+			goto err;
-+		}
-+		lzo_blocks[i]->sync_bmp = sync_bmp;
-+		lzo_blocks[i]->sync_bmp_nbits = reg_size;
-+		/* alloc the working space for the compressed block */
-+		ret = snd_soc_lzo_prepare(lzo_blocks[i]);
-+		if (ret < 0)
-+			goto err;
-+	}
-+
-+	blksize = snd_soc_lzo_get_blksize(codec);
-+	p = codec_drv->reg_cache_default;
-+	end = codec_drv->reg_cache_default + reg_size;
-+	/* compress the register map and fill the lzo blocks */
-+	for (i = 0; i < blkcount; ++i, p += blksize) {
-+		lzo_blocks[i]->src = p;
-+		if (p + blksize > end)
-+			lzo_blocks[i]->src_len = end - p;
-+		else
-+			lzo_blocks[i]->src_len = blksize;
-+		ret = snd_soc_lzo_compress_cache_block(codec,
-+						   lzo_blocks[i]);
-+		if (ret < 0)
-+			goto err;
-+		lzo_blocks[i]->decompressed_size =
-+			lzo_blocks[i]->src_len;
-+	}
-+
-+	if (tofree)
-+		kfree(codec_drv->reg_cache_default);
-+	return 0;
-+err:
-+	snd_soc_cache_exit(codec);
-+err_tofree:
-+	if (tofree)
-+		kfree(codec_drv->reg_cache_default);
-+	return ret;
-+}
-+
- static int snd_soc_flat_cache_sync(struct snd_soc_codec *codec)
- {
- 	int i;
-@@ -879,6 +1284,14 @@ static const struct snd_soc_cache_ops cache_types[] = {
- 		.read = snd_soc_flat_cache_read,
- 		.write = snd_soc_flat_cache_write,
- 		.sync = snd_soc_flat_cache_sync
+ struct snd_soc_lzo_ctx {
+ 	void *wmem;
+ 	void *dst;
+@@ -1292,6 +1517,14 @@ static const struct snd_soc_cache_ops cache_types[] = {
+ 		.read = snd_soc_lzo_cache_read,
+ 		.write = snd_soc_lzo_cache_write,
+ 		.sync = snd_soc_lzo_cache_sync
 +	},
 +	{
-+		.id = SND_SOC_LZO_COMPRESSION,
-+		.init = snd_soc_lzo_cache_init,
-+		.exit = snd_soc_lzo_cache_exit,
-+		.read = snd_soc_lzo_cache_read,
-+		.write = snd_soc_lzo_cache_write,
-+		.sync = snd_soc_lzo_cache_sync
++		.id = SND_SOC_RBTREE_COMPRESSION,
++		.init = snd_soc_rbtree_cache_init,
++		.exit = snd_soc_rbtree_cache_exit,
++		.read = snd_soc_rbtree_cache_read,
++		.write = snd_soc_rbtree_cache_write,
++		.sync = snd_soc_rbtree_cache_sync
  	}
  };
  
