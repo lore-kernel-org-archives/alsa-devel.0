@@ -1,20 +1,23 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: Adam Rosenberg <adam@alcorn.com>
 Subject: Re: ALSA processor usage is too high
-Date: Fri, 05 Nov 2010 20:10:38 +0100
-Message-ID: <4CD456AE.7090302@ladisch.de>
+Date: Fri, 5 Nov 2010 15:27:01 -0400
+Message-ID: <AANLkTi=7pEPATKneHvZ-U-v7RUe90X-YSR-fqhF3bNx6@mail.gmail.com>
 References: <AANLkTik-sb1OihaDhNgptH44gQ4__E+ozxhSKpA9GdSK@mail.gmail.com>
 	<4CD41528.1060600@ladisch.de>
 	<AANLkTinXm2G1y477xRTc_QjXuEZ_nyAqGWuSkq32KGe2@mail.gmail.com>
 	<4CD445BD.3020501@ladisch.de>
 	<AANLkTi=kMF=_1u40yTtvA=oSpyyQn=nEF_JHY_NskiAw@mail.gmail.com>
+	<4CD456AE.7090302@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id BEDA31038AD
-	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 20:08:51 +0100 (CET)
-In-Reply-To: <AANLkTi=kMF=_1u40yTtvA=oSpyyQn=nEF_JHY_NskiAw@mail.gmail.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 789021037EE
+	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 20:27:22 +0100 (CET)
+Received: by wwi17 with SMTP id 17so1448372wwi.20
+	for <alsa-devel@alsa-project.org>; Fri, 05 Nov 2010 12:27:22 -0700 (PDT)
+In-Reply-To: <4CD456AE.7090302@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,54 +27,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Adam Rosenberg <adam@alcorn.com>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Adam Rosenberg wrote:
-> I am not sure how to interpret this, but I told aplay to play for 3
-> minutes from /dev/zero and here are the results:
-> root:/> time aplay -d 180 -D hw -t raw -f dat /dev/zero
-> Playing raw data '/dev/zero' : Signed 16 bit Little Endian, Rate 48000
-> Hz, Stereo
-> real    3m 0.10s
-> user    0m 0.22s
-> sys     0m 8.48s
+On Fri, Nov 5, 2010 at 3:10 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> When the program is looping and waiting for some free space to become
+> available in any of the eight buffers, it doesn't actually process
+> audio data. =A0(And you should use poll() with all eight handles so that
+> you don't eat CPU while waiting.)
 
-9s / 180s = 5%
+I can't use poll because the application has to perform many other
+tasks in a deterministic manner (meaning I can only use threads and
+other processes to notify the main loop to perform some task).  I
+tried using the async callback method so that I could set a flag when
+it was time to copy more audio data to the stream but that didn't seem
+to work well with multiple streams.  I found that polling using
+avail_update was the only reliable method.  Could you provide an
+alternative example that is known to work with multiple streams in the
+same application?
 
-> > And what does your program do when avail_update returns 0 frames?
-> 
-> If it returns 0 then I do not write any frames.  I then check the next
-> stream.  This continues in an infinite loop.
+>
+> The aplay experiment above tells me that your program spent 95% of
+> its time calling snd_pcm_avail_update. =A0In that time, you could
+> decode instead.
 
-When the program is looping and waiting for some free space to become
-available in any of the eight buffers, it doesn't actually process
-audio data.  (And you should use poll() with all eight handles so that
-you don't eat CPU while waiting.)
+Sorry for the confusion, the main loop of my application basically does thi=
+s:
+while(1)
+{
+  processNextAlsaStream();
+  processMp3Decoder();
+  processLCD();
+  processInputs();
+  processSerial();
+}
 
-The aplay experiment above tells me that your program spent 95% of
-its time calling snd_pcm_avail_update.  In that time, you could
-decode instead.
+so the processNextAlsaStream() function just calls avail_update for
+the next stream in my list of 8 streams and then handles the result
+before allowing the loop to process the next task.
 
-> > You cannot write data faster than it's playing; the audio ring buffer
-> > has a finite size.
-> >
-> > You would have a problem if the processing and/or the driver would
-> > make everything so slow that you wouldn't be able to write new data
-> > to the device fast enough, which would result in an buffer underrun.
-> > Does this actually happen?
-> 
-> I am currently writing the decoded mp3 data to a buffer in RAM so that
-> the program is decoding the mp3 data as fast as it can.  I then run
-> the audio process separately and just play silence.  I am doing this
-> so that I can tell how much time is being spent decoding mp3 data and
-> processing audio data so that I know how much time remains for other
-> tasks.
+>
+> Playing silence is not any faster than playing anything else, because
+> the sound card _cannot_ run faster than the configured sample rate.
+>
 
-Playing silence is not any faster than playing anything else, because
-the sound card _cannot_ run faster than the configured sample rate.
+I agree.  I only mentioned it was silence so that it was understood I
+have a static buffer that I am copying audio frames from so there is
+no other processing needed (no reading from a file, etc).
 
+Thank you for your help, I am happy to be discussing this with you all
+as it makes me feel as though I am not totally lost.  Please let me
+know if you have an example of a program that can efficiently handle
+multiple PCM streams.
 
-Regards,
-Clemens
+Thanks!
+Adam
