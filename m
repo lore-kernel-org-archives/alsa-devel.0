@@ -1,17 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH for -rc] i.MX updates
-Date: Fri, 5 Nov 2010 09:17:37 -0400
-Message-ID: <20101105131737.GB13709@opensource.wolfsonmicro.com>
-References: <1288886745-25977-1-git-send-email-s.hauer@pengutronix.de>
+Subject: Re: [PATCH 2/4] ASoC: soc-cache: Add support for flat
+ register caching
+Date: Fri, 5 Nov 2010 09:31:44 -0400
+Message-ID: <20101105133143.GH13709@opensource.wolfsonmicro.com>
+References: <1288880564-31957-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	<1288880564-31957-3-git-send-email-dp@opensource.wolfsonmicro.com>
+	<20101104183140.GD6088@opensource.wolfsonmicro.com>
+	<1288949677.8256.14.camel@dplaptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 95729103959
-	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 14:17:30 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 396BD103943
+	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 14:31:37 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1288886745-25977-1-git-send-email-s.hauer@pengutronix.de>
+In-Reply-To: <1288949677.8256.14.camel@dplaptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,20 +25,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 04, 2010 at 05:05:38PM +0100, Sascha Hauer wrote:
+On Fri, Nov 05, 2010 at 09:34:37AM +0000, Dimitris Papastamos wrote:
+> On Thu, 2010-11-04 at 14:31 -0400, Mark Brown wrote:
 
->       ASoC i.MX eukrea tlv320: Fix for multicomponent
->       ASoC i.MX phycore ac97: remove unnecessary includes
->       ASoC i.MX: register dma audio device
->       ASoC i.MX: switch to new DMA api
->       phycore-ac97: add ac97 to cardname
+> > > +	mutex_init(&cache_rw_mutex);
+> > > +
 
-Applied these for 2.6.37.
+> > I'd kind of expect this to be with the other cache setup?
 
->       ASoC: i.MX: we can do mono
+> Do you mean that the mutex should also be used with the other caching
+> techniques?  That is not needed because we currently lock at a higher
+> level, in the function that delegates the calls to the implementation
+> functions.
 
-And this for 2.6.38, thanks!
+I'd expect this to be with the rest of the initialisation for the
+structure that it's embedded in - having this be initialised in this
+place separately to anything else feels wrong.  Of course at the minute
+it's not in a structure (which I raised as an issue as well IIRC) which
+means that we'll have an issue with multiple initialisation if two
+devices are registered.
+
+> > Are you sure that all the CODECs that rely on the existing shared
+> > register cache are going to call this?
+
+> What do you mean by 'shared register cache'?  Each codec gets its own
+> copy of their register cache.
+
+The shared register cache support code.
+
+> Any CODEC driver that calls snd_soc_register_codec() and has provided
+> reg_cache_size and reg_word_size will have soc-core setting up its cache
+> accordingly.  By default the provided snd_soc_codec_driver is zero-ed
+> out, so its compress_type will default to the flat compression type.
+
+Are you absolutely positive that every user of the code is using a
+register cache initialised using that method?
