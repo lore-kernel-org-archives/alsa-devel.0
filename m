@@ -1,18 +1,20 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH for -rc] i.MX updates
-Date: Fri, 05 Nov 2010 08:28:08 +0000
-Message-ID: <1288945689.2807.1.camel@vega>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH 1/7] ASoC: i.MX31ads: initialize only on
+	correct machine
+Date: Fri, 5 Nov 2010 10:16:24 +0100
+Message-ID: <20101105091624.GS6017@pengutronix.de>
 References: <1288886745-25977-1-git-send-email-s.hauer@pengutronix.de>
+	<1288886745-25977-2-git-send-email-s.hauer@pengutronix.de>
+	<20101104185136.GG6088@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2FCD3103934
-	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 09:28:13 +0100 (CET)
-Received: by wwi18 with SMTP id 18so1374010wwi.2
-	for <alsa-devel@alsa-project.org>; Fri, 05 Nov 2010 01:28:12 -0700 (PDT)
-In-Reply-To: <1288886745-25977-1-git-send-email-s.hauer@pengutronix.de>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id B81FD2433C
+	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 10:16:24 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20101104185136.GG6088@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,24 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-11-04 at 17:05 +0100, Sascha Hauer wrote:
-> Hi,
+On Thu, Nov 04, 2010 at 02:51:36PM -0400, Mark Brown wrote:
+> On Thu, Nov 04, 2010 at 05:05:39PM +0100, Sascha Hauer wrote:
 > 
-> The following series has some multicomponent fixes for i.MX. Also, since
-> the SDMA driver is merged, we also switch the i.MX DMA driver to the new API.
+> > +	if (!machine_is_mx31ads())
+> > +		return 0;
+> > +
 > 
-> Sascha
-> 
+> As previously discussed we need a better check than this - most of these
+> machines won't have a 1133-EV1 PMIC module on them.  Better to convert
+> the driver to instantiate from a platform device...
 
-I'm fine with this too after Mark's comments have been addressed. 
+This does not solve the problem as we do not know when to register the
+platform_device. I think what we need is a kernel parameter which can be
+used to select the correct path in arch/arm/mach-mx3/mach-mx31ads.c
+aswell. I will look into it. For now, can we just take this patch? It
+at least fixes all other i.MX31 boards and leaves only the mx31ads to
+work on.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+Sascha
 
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
