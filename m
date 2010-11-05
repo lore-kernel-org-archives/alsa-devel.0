@@ -1,18 +1,23 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Decouple DAPM from CODECs
-Date: Fri, 5 Nov 2010 10:02:27 -0400
-Message-ID: <20101105140226.GB15977@opensource.wolfsonmicro.com>
-References: <20101105133817.GJ13709@opensource.wolfsonmicro.com>
-	<1288965226-23692-1-git-send-email-jhnikula@gmail.com>
+Subject: Re: [PATCH 2/4] ASoC: soc-cache: Add support for flat
+ register caching
+Date: Fri, 5 Nov 2010 10:07:58 -0400
+Message-ID: <20101105140757.GC15977@opensource.wolfsonmicro.com>
+References: <1288880564-31957-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	<1288880564-31957-3-git-send-email-dp@opensource.wolfsonmicro.com>
+	<20101104183140.GD6088@opensource.wolfsonmicro.com>
+	<1288949677.8256.14.camel@dplaptop>
+	<20101105133143.GH13709@opensource.wolfsonmicro.com>
+	<1288965591.8256.40.camel@dplaptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B4189103965
-	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 15:02:23 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AA7FE103959
+	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 15:07:50 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1288965226-23692-1-git-send-email-jhnikula@gmail.com>
+In-Reply-To: <1288965591.8256.40.camel@dplaptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +27,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Cliff Cai <cliff.cai@analog.com>, Lars-Peter Clausen <lars@metafoo.de>, Eric Miao <eric.y.miao@gmail.com>, Wan ZongShun <mcuos.com@gmail.com>, Mike Frysinger <vapier.adi@gmail.com>, Kevin Hilman <khilman@deeprootsystems.com>, Sascha Hauer <s.hauer@pengutronix.de>, Nicolas Ferre <nicolas.ferre@atmel.com>, alsa-devel@alsa-project.org, Daniel Gloeckner <dg@emlix.com>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Manuel Lauss <manuel.lauss@googlemail.com>, Jassi Brar <jassi.brar@samsung.com>, Ryan Mallon <ryan@bluewatersys.com>, Timur Tabi <timur@freescale.com>, "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 05, 2010 at 03:53:46PM +0200, Jarkko Nikula wrote:
-> From: Liam Girdwood <lrg@slimlogic.co.uk>
-> 
-> Decoupling Dynamic Audio Power Management (DAPM) from codec devices is
-> required when developing ASoC further. Such as for other ASoC components to
-> have DAPM widgets or when extending DAPM to handle cross-device paths.
+On Fri, Nov 05, 2010 at 01:59:51PM +0000, Dimitris Papastamos wrote:
+> On Fri, 2010-11-05 at 09:31 -0400, Mark Brown wrote:
 
-Applied, thanks.
+> > Are you absolutely positive that every user of the code is using a
+> > register cache initialised using that method?
+
+> If people don't want to use our caching API, then if they need so they
+> will have to manage that locally somewhere in the driver code.  In that
+> scenario, they will not call snd_soc_codec_set_cache_io() and they will
+> have to set the codec->read() and codec->write() to point to their own
+> implementation.  They should also not set reg_cache_size and
+> reg_word_size.
+
+My concern is that since nothing stops people mix'n'matching currently
+someone may be using one bit and not the other - we need to audit all
+the current drivers to make sure that nothing is going to explode.
+> 
+> The previous caching code had the same issue.  If someone called
+> snd_soc_codec_set_cache_io() and they had not provided a valid
+> reg_cache_size and reg_word_size (both of them were zero), the
+> underlying codec->reg_cache would have been NULL and therefore any
+> read()/write() operations going through soc-cache.c would result
+> in an invalid access.
+
+They could be setting these up later, or otherwise initialising.  It's
+likely that nobody is but it's ringing an alarm bell that we need to
+audit in case there's something that's going to bite us later on.
