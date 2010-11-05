@@ -1,20 +1,19 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 1/7] ASoC: i.MX31ads: initialize only on
-	correct machine
-Date: Fri, 5 Nov 2010 10:16:24 +0100
-Message-ID: <20101105091624.GS6017@pengutronix.de>
-References: <1288886745-25977-1-git-send-email-s.hauer@pengutronix.de>
-	<1288886745-25977-2-git-send-email-s.hauer@pengutronix.de>
-	<20101104185136.GG6088@opensource.wolfsonmicro.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/4] ASoC: soc-cache: Add support for flat
+ register caching
+Date: Fri, 05 Nov 2010 09:34:37 +0000
+Message-ID: <1288949677.8256.14.camel@dplaptop>
+References: <1288880564-31957-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	<1288880564-31957-3-git-send-email-dp@opensource.wolfsonmicro.com>
+	<20101104183140.GD6088@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id B81FD2433C
-	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 10:16:24 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20101104185136.GG6088@opensource.wolfsonmicro.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 03ECF24368
+	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 10:34:40 +0100 (CET)
+In-Reply-To: <20101104183140.GD6088@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,31 +24,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 04, 2010 at 02:51:36PM -0400, Mark Brown wrote:
-> On Thu, Nov 04, 2010 at 05:05:39PM +0100, Sascha Hauer wrote:
-> 
-> > +	if (!machine_is_mx31ads())
-> > +		return 0;
+On Thu, 2010-11-04 at 14:31 -0400, Mark Brown wrote:
+
+> > @@ -680,6 +722,8 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
+> >  		return -EINVAL;
+> >  	}
+> >  
+> > +	mutex_init(&cache_rw_mutex);
 > > +
 > 
-> As previously discussed we need a better check than this - most of these
-> machines won't have a 1133-EV1 PMIC module on them.  Better to convert
-> the driver to instantiate from a platform device...
+> I'd kind of expect this to be with the other cache setup?
 
-This does not solve the problem as we do not know when to register the
-platform_device. I think what we need is a kernel parameter which can be
-used to select the correct path in arch/arm/mach-mx3/mach-mx31ads.c
-aswell. I will look into it. For now, can we just take this patch? It
-at least fixes all other i.MX31 boards and leaves only the mx31ads to
-work on.
+Do you mean that the mutex should also be used with the other caching
+techniques?  That is not needed because we currently lock at a higher
+level, in the function that delegates the calls to the implementation
+functions.
 
-Sascha
+> > @@ -3261,6 +3244,16 @@ int snd_soc_register_codec(struct device *dev,
+> >  	INIT_LIST_HEAD(&codec->dapm_widgets);
+> >  	INIT_LIST_HEAD(&codec->dapm_paths);
+> >  
+> > +	/* allocate CODEC register cache */
+> > +	if (codec_drv->reg_cache_size && codec_drv->reg_word_size) {
+> > +		ret = snd_soc_cache_init(codec);
+> > +		if (ret < 0) {
+> > +			dev_err(codec->dev, "Failed to set cache compression type: %d\n",
+> > +				ret);
+> > +			goto error_cache;
+> > +		}
+> > +	}
+> 
+> Are you sure that all the CODECs that rely on the existing shared
+> register cache are going to call this?
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+What do you mean by 'shared register cache'?  Each codec gets its own
+copy of their register cache.
+
+Any CODEC driver that calls snd_soc_register_codec() and has provided
+reg_cache_size and reg_word_size will have soc-core setting up its cache
+accordingly.  By default the provided snd_soc_codec_driver is zero-ed
+out, so its compress_type will default to the flat compression type.
+
+Thanks,
+Dimitrios
