@@ -1,23 +1,17 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] ASoC: soc-cache: Add support for flat
- register caching
-Date: Fri, 05 Nov 2010 14:12:00 +0000
-Message-ID: <1288966320.8256.42.camel@dplaptop>
-References: <1288880564-31957-1-git-send-email-dp@opensource.wolfsonmicro.com>
-	<1288880564-31957-3-git-send-email-dp@opensource.wolfsonmicro.com>
-	<20101104183140.GD6088@opensource.wolfsonmicro.com>
-	<1288949677.8256.14.camel@dplaptop>
-	<20101105133143.GH13709@opensource.wolfsonmicro.com>
-	<1288965591.8256.40.camel@dplaptop>
-	<20101105140757.GC15977@opensource.wolfsonmicro.com>
+From: Adam Rosenberg <adam@alcorn.com>
+Subject: ALSA processor usage is too high
+Date: Fri, 5 Nov 2010 10:12:16 -0400
+Message-ID: <AANLkTik-sb1OihaDhNgptH44gQ4__E+ozxhSKpA9GdSK@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E9CC8103965
-	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 15:12:01 +0100 (CET)
-In-Reply-To: <20101105140757.GC15977@opensource.wolfsonmicro.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9BD31103975
+	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 15:12:38 +0100 (CET)
+Received: by wyb33 with SMTP id 33so1164139wyb.38
+	for <alsa-devel@alsa-project.org>; Fri, 05 Nov 2010 07:12:38 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,41 +21,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-11-05 at 10:07 -0400, Mark Brown wrote:
-> On Fri, Nov 05, 2010 at 01:59:51PM +0000, Dimitris Papastamos wrote:
-> > On Fri, 2010-11-05 at 09:31 -0400, Mark Brown wrote:
-> 
-> > > Are you absolutely positive that every user of the code is using a
-> > > register cache initialised using that method?
-> 
-> > If people don't want to use our caching API, then if they need so they
-> > will have to manage that locally somewhere in the driver code.  In that
-> > scenario, they will not call snd_soc_codec_set_cache_io() and they will
-> > have to set the codec->read() and codec->write() to point to their own
-> > implementation.  They should also not set reg_cache_size and
-> > reg_word_size.
-> 
-> My concern is that since nothing stops people mix'n'matching currently
-> someone may be using one bit and not the other - we need to audit all
-> the current drivers to make sure that nothing is going to explode.
-> > 
-> > The previous caching code had the same issue.  If someone called
-> > snd_soc_codec_set_cache_io() and they had not provided a valid
-> > reg_cache_size and reg_word_size (both of them were zero), the
-> > underlying codec->reg_cache would have been NULL and therefore any
-> > read()/write() operations going through soc-cache.c would result
-> > in an invalid access.
-> 
-> They could be setting these up later, or otherwise initialising.  It's
-> likely that nobody is but it's ringing an alarm bell that we need to
-> audit in case there's something that's going to bite us later on.
+I am trying to decode 8 MP3 files simultaneously.  Each file is 3
+minutes 11 seconds long.=A0 When I just decode the files and copy the
+PCM data to memory it takes 2 minutes 36 seconds.=A0 When I do the same
+test after opening 8 ALSA PCM streams and while writing data to them
+it takes 4 minutes 37 seconds.=A0 This is much too slow for what should
+be a simple copy operation.
 
-Yup sure, it'd be wise to audit the codecs for any invalid use of the
-caching API.
+I need to have 8 MP3 files decoding and playing on our custom board.
+I have taken the driver as far as I can on my own.  I am seeking
+expert help to get this working as soon as possible.  I am sorry if
+this was not the appropriate place to post such a request.  Please
+contact me directly if you are interested in working on this project.
 
-Thanks,
-Dimitrios
+The custom board is setup as follows:
+
+Analog Devices BF537 processor running uClinux from
+svn://blackfin.uclinux.org/uclinux-dist/trunk uclinux-dist
+Using alsa-lib-1.0.23 from http://www.alsa-project.org
+Two Cirrus Logic CS42448 CODECs connected to BF537 SPORT0 Primary and
+Secondary data lines in Multichannel mode
+CS42448 configured for TDM (32 bits per channel * 8 channels =3D 256
+bits per frame)
+ICS661 Audio Clock at (256*48000Hz) connected to BF537 SPORT0 and Both
+CS42448 CODECs for bit clocking
+You can find the driver here:
+http://www.alcorn.com/ftp/swap/sound_cs42448.zip
+
+Thank you,
+Adam
+
+Adam Rosenberg
+Software Engineer
+
+Alcorn McBride Inc.
+3300 South Hiawassee
+Building 105
+Orlando, FL 32835
+
+(407) 296 - 5800 ext. 5490
