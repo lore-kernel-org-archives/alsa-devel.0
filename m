@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Decouple DAPM from CODECs
-Date: Fri, 5 Nov 2010 09:38:17 -0400
-Message-ID: <20101105133817.GJ13709@opensource.wolfsonmicro.com>
-References: <20101101131322.GC22639@opensource.wolfsonmicro.com>
-	<1288874285-16569-1-git-send-email-jhnikula@gmail.com>
-	<20101105032919.GA12228@opensource.wolfsonmicro.com>
-	<20101105092008.388e67de.jhnikula@gmail.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/4] ASoC: soc-cache: Add support for flat
+ register caching
+Date: Fri, 05 Nov 2010 13:59:51 +0000
+Message-ID: <1288965591.8256.40.camel@dplaptop>
+References: <1288880564-31957-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	<1288880564-31957-3-git-send-email-dp@opensource.wolfsonmicro.com>
+	<20101104183140.GD6088@opensource.wolfsonmicro.com>
+	<1288949677.8256.14.camel@dplaptop>
+	<20101105133143.GH13709@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6A132103968
-	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 14:38:11 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20101105092008.388e67de.jhnikula@gmail.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 250AF103969
+	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 14:59:53 +0100 (CET)
+In-Reply-To: <20101105133143.GH13709@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,21 +25,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Cliff Cai <cliff.cai@analog.com>, Lars-Peter Clausen <lars@metafoo.de>, Eric Miao <eric.y.miao@gmail.com>, Wan ZongShun <mcuos.com@gmail.com>, Mike Frysinger <vapier.adi@gmail.com>, Kevin Hilman <khilman@deeprootsystems.com>, Sascha Hauer <s.hauer@pengutronix.de>, Nicolas Ferre <nicolas.ferre@atmel.com>, alsa-devel@alsa-project.org, Daniel Gloeckner <dg@emlix.com>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Manuel Lauss <manuel.lauss@googlemail.com>, Jassi Brar <jassi.brar@samsung.com>, Ryan Mallon <ryan@bluewatersys.com>, Timur Tabi <timur@freescale.com>, "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 05, 2010 at 09:20:08AM +0200, Jarkko Nikula wrote:
+On Fri, 2010-11-05 at 09:31 -0400, Mark Brown wrote:
 
-> Lets not take honor from Peter Ujfalusi who find the locking issue
-> in DAPM :-)
+> On Fri, Nov 05, 2010 at 09:34:37AM +0000, Dimitris Papastamos wrote:
+> > On Thu, 2010-11-04 at 14:31 -0400, Mark Brown wrote:
+> 
+> > > > +	mutex_init(&cache_rw_mutex);
+> > > > +
+> 
+> > > I'd kind of expect this to be with the other cache setup?
+> 
+> > Do you mean that the mutex should also be used with the other caching
+> > techniques?  That is not needed because we currently lock at a higher
+> > level, in the function that delegates the calls to the implementation
+> > functions.
+> 
+> I'd expect this to be with the rest of the initialisation for the
+> structure that it's embedded in - having this be initialised in this
+> place separately to anything else feels wrong.  Of course at the minute
+> it's not in a structure (which I raised as an issue as well IIRC) which
+> means that we'll have an issue with multiple initialisation if two
+> devices are registered.
 
-Remember that From: can be added when you send the patch.
+Aw yes, I've made the mutex to be per codec, so its initialized in
+snd_soc_cache_init() for each codec that's registered.
 
-> As this patch is huge, a small fixup below to those conflicting
-> lines (and only those) of patch file. That makes the patch to apply on
-> top of for-2.6.38 branch.
+> 
+> > Any CODEC driver that calls snd_soc_register_codec() and has provided
+> > reg_cache_size and reg_word_size will have soc-core setting up its cache
+> > accordingly.  By default the provided snd_soc_codec_driver is zero-ed
+> > out, so its compress_type will default to the flat compression type.
+> 
+> Are you absolutely positive that every user of the code is using a
+> register cache initialised using that method?
 
-Please resend something I can apply directly.  It's difficult to apply
-this fixup since the patch it's fixing up won't apply in the first
-place.
+If people don't want to use our caching API, then if they need so they
+will have to manage that locally somewhere in the driver code.  In that
+scenario, they will not call snd_soc_codec_set_cache_io() and they will
+have to set the codec->read() and codec->write() to point to their own
+implementation.  They should also not set reg_cache_size and
+reg_word_size.
+
+The previous caching code had the same issue.  If someone called
+snd_soc_codec_set_cache_io() and they had not provided a valid
+reg_cache_size and reg_word_size (both of them were zero), the
+underlying codec->reg_cache would have been NULL and therefore any
+read()/write() operations going through soc-cache.c would result
+in an invalid access.
+
+Thanks,
+Dimitrios
