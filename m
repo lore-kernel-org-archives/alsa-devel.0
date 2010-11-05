@@ -1,14 +1,14 @@
 From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 Subject: [PATCH] ASoC: WM8770: Initial driver
-Date: Fri,  5 Nov 2010 15:28:14 +0000
-Message-ID: <1288970894-5018-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Date: Fri,  5 Nov 2010 15:31:45 +0000
+Message-ID: <1288971105-11297-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E70B5103970
-	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 16:28:15 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E8181103970
+	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 16:31:46 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -81,7 +81,7 @@ index 0dcaed3..42f185d 100644
  obj-$(CONFIG_SND_SOC_WM8900)	+= snd-soc-wm8900.o
 diff --git a/sound/soc/codecs/wm8770.c b/sound/soc/codecs/wm8770.c
 new file mode 100644
-index 0000000..b4ad855
+index 0000000..d714fdc
 --- /dev/null
 +++ b/sound/soc/codecs/wm8770.c
 @@ -0,0 +1,745 @@
@@ -144,7 +144,7 @@ index 0000000..b4ad855
 +
 +static int vout12mixer_event(struct snd_soc_dapm_widget *w,
 +	struct snd_kcontrol *kcontrol, int event);
-+static int vout23mixer_event(struct snd_soc_dapm_widget *w,
++static int vout34mixer_event(struct snd_soc_dapm_widget *w,
 +	struct snd_kcontrol *kcontrol, int event);
 +
 +/*
@@ -310,10 +310,10 @@ index 0000000..b4ad855
 +		vout12mixer_event, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
 +	SND_SOC_DAPM_MIXER_E("VOUT3 Mixer", SND_SOC_NOPM, 0, 0,
 +		vout3_mix_controls, ARRAY_SIZE(vout3_mix_controls),
-+		vout23mixer_event, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
++		vout34mixer_event, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
 +	SND_SOC_DAPM_MIXER_E("VOUT4 Mixer", SND_SOC_NOPM, 0, 0,
 +		vout4_mix_controls, ARRAY_SIZE(vout4_mix_controls),
-+		vout23mixer_event, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
++		vout34mixer_event, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
 +
 +	SND_SOC_DAPM_OUTPUT("VOUT1"),
 +	SND_SOC_DAPM_OUTPUT("VOUT2"),
@@ -373,7 +373,7 @@ index 0000000..b4ad855
 +	return 0;
 +}
 +
-+static int vout23mixer_event(struct snd_soc_dapm_widget *w,
++static int vout34mixer_event(struct snd_soc_dapm_widget *w,
 +	struct snd_kcontrol *kcontrol, int event)
 +{
 +	struct snd_soc_codec *codec;
