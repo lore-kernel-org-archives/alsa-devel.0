@@ -1,21 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/7] ASoC: i.MX31ads: initialize only on
-	correct machine
-Date: Fri, 5 Nov 2010 09:09:42 -0400
-Message-ID: <20101105130941.GA13709@opensource.wolfsonmicro.com>
-References: <1288886745-25977-1-git-send-email-s.hauer@pengutronix.de>
-	<1288886745-25977-2-git-send-email-s.hauer@pengutronix.de>
-	<20101104185136.GG6088@opensource.wolfsonmicro.com>
-	<20101105091624.GS6017@pengutronix.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Balanced output support for Xonar: Patches for
+ Virtuoso driver to add mixer option for balanced mono output (PCM179x dacs)
+Date: Fri, 05 Nov 2010 14:17:43 +0100
+Message-ID: <4CD403F7.40004@ladisch.de>
+References: <AANLkTimODNVWg7qgfcnmZ_CDYr4t5QvMenDknO1O8YhX@mail.gmail.com>	<4CCEE3FA.8040706@ladisch.de>
+	<AANLkTinEWKjLX2eVABVVTXP=mZyb_hphh8N0OzoHETyD@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 800D5103946
-	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 14:09:37 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20101105091624.GS6017@pengutronix.de>
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 1E8A6103959
+	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 14:15:56 +0100 (CET)
+In-Reply-To: <AANLkTinEWKjLX2eVABVVTXP=mZyb_hphh8N0OzoHETyD@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,28 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Christian Wisner-Carlson <christian@freedomofknowledge.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 05, 2010 at 10:16:24AM +0100, Sascha Hauer wrote:
-> On Thu, Nov 04, 2010 at 02:51:36PM -0400, Mark Brown wrote:
+Christian Wisner-Carlson wrote:
+>>> It allows for 4 balanced outputs, 8 unbalanced outputs, or any
+>>> combination of balanced and unbalanced outputs. HOWEVER, it adds 4
+>>> mixer controls and the code isn't very pretty.
+>>
+>> The controller can route any stereo pair to each DAC, so it would be a
+>> good idea to have one global control that also affects this routing so
+>> that, e.g., configuring the card for 4 outputs works correctly when
+>> playing 4-channel data.
+> 
+> Currently, routing is set up by void oxygen_update_dac_routing(struct
+> oxygen *chip) in oxygen_mixer.c.
+> However,  it only allows for five different routing configurations,
+> which it statically defines internally as int reg_values[5].
+> Do you mind (ie, would you mind merging/using it) if I defined a new struct:
+> struct oxygen_routing_table = {
+> 	u8 channels;
+> 	unsigned int dac0;
+> 	unsigned int dac1;
+> 	unsigned int dac2;
+> 	unsigned int dac3;
+> }
+> that would be passed to oxygen_update_dac_routing() as a new field of
+> struct oxygen? This would allow for
+> arbitrary routing configurations for the dacs (needed to implement 4
+> channel balanced output) and would
+> not require many changes to the driver as a whole.
 
-> > As previously discussed we need a better check than this - most of these
-> > machines won't have a 1133-EV1 PMIC module on them.  Better to convert
-> > the driver to instantiate from a platform device...
+This would move the responsibility for the actual routing decisions from
+this function into its callers.  However, both the stereo-upmixing and
+the balanced-output controls affect the routing, so some code has to
+handle the interdependencies.  At the moment, this function sets the
+routing depending on the current channel count and the upmixing setting;
+I think that the balanced-output setting is just a third such parameter.
 
-> This does not solve the problem as we do not know when to register the
-> platform_device. I think what we need is a kernel parameter which can be
-> used to select the correct path in arch/arm/mach-mx3/mach-mx31ads.c
+Anyway, I'm just concerned about how the controls looks to the user, not
+so much about its implementation, which can be changed later (if I
+wanted to, and if I had the time).
 
-It can be registered in the callback that's called immmediately after
-the WM835x is probed on the machine driver.
+I'd be happy to merge any code that handles four DACs.  Separate
+controls for each DAC are OK too if, eventually, there are additional
+controls for the routing, and if there is a userspace tool to manage
+these settings together.
 
-> aswell. I will look into it. For now, can we just take this patch? It
-> at least fixes all other i.MX31 boards and leaves only the mx31ads to
-> work on.
+> Where should I define this struct? (ie, in what file?)
 
-I'd much rather get it fixed properly - it's not so urgent since it
-really only only affects allyesconfig or allmodconfig type stuff with
-people explicitly loading the driver.
+As an interface between the core driver and module-specific drivers,
+oxygen.h.
+
+
+Regards,
+Clemens
