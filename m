@@ -1,21 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/3] sound card dir under debugfs
-Date: Fri, 5 Nov 2010 14:46:03 -0400
-Message-ID: <20101105184603.GC9139@opensource.wolfsonmicro.com>
-References: <1288982121-22201-1-git-send-email-jhnikula@gmail.com>
-	<20101105183616.GB9139@opensource.wolfsonmicro.com>
-	<20101105203907.006fef26.jhnikula@gmail.com>
-	<20101105183936.GA29680@sirena.org.uk>
-	<20101105204146.387fc095.jhnikula@gmail.com>
+From: Adam Rosenberg <adam@alcorn.com>
+Subject: Re: ALSA processor usage is too high
+Date: Fri, 5 Nov 2010 14:45:41 -0400
+Message-ID: <AANLkTi=kMF=_1u40yTtvA=oSpyyQn=nEF_JHY_NskiAw@mail.gmail.com>
+References: <AANLkTik-sb1OihaDhNgptH44gQ4__E+ozxhSKpA9GdSK@mail.gmail.com>
+	<4CD41528.1060600@ladisch.de>
+	<AANLkTinXm2G1y477xRTc_QjXuEZ_nyAqGWuSkq32KGe2@mail.gmail.com>
+	<4CD445BD.3020501@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 21A4524406
-	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 19:45:59 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20101105204146.387fc095.jhnikula@gmail.com>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1EF91103988
+	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 19:46:03 +0100 (CET)
+Received: by ewy22 with SMTP id 22so2108323ewy.38
+	for <alsa-devel@alsa-project.org>; Fri, 05 Nov 2010 11:46:02 -0700 (PDT)
+In-Reply-To: <4CD445BD.3020501@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,20 +26,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 05, 2010 at 08:41:46PM +0200, Jarkko Nikula wrote:
-> Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+On Fri, Nov 5, 2010 at 1:58 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Adam Rosenberg wrote:
+>> On Fri, Nov 5, 2010 at 10:31 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+>> > How much CPU does "aplay -D hw -t raw -f dat /dev/zero" use?
+>>
+>> I do not know how to calculate CPU usage for a given process.
+>
+> The time utility (if you have it) measures both elapsed and actually
+> used CPU time.
 
-> > Please resubmit the stuff you're depending on.
+I am not sure how to interpret this, but I told aplay to play for 3
+minutes from /dev/zero and here are the results:
+root:/> time aplay -d 180 -D hw -t raw -f dat /dev/zero
+Playing raw data '/dev/zero' : Signed 16 bit Little Endian, Rate 48000
+Hz, Stereo
+real    3m 0.10s
+user    0m 0.22s
+sys     0m 8.48s
 
-> Only dependency is this which got applied as far as I got it:
+>
+>> For the audio playback I am polling the streams using
+>> snd_pcm_avail_update() and then writing the number of frames available
+>> using snd_pcm_writei().
+>
+> And what does your program do when avail_update returns 0 frames?
 
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2010-November/033419.html
+If it returns 0 then I do not write any frames.  I then check the next
+stream.  This continues in an infinite loop.
 
-Oh, in which case there's no need to note the dependency since it's
-already in the tree :)  Saying something like "recently merged" helps
-here - otherwise I'll tend to read a message like that as saying that
-the patch can't currently be applied due to other outstanding work.
+> You cannot write data faster than it's playing; the audio ring buffer
+> has a finite size.
+>
+> You would have a problem if the processing and/or the driver would
+> make everything so slow that you wouldn't be able to write new data
+> to the device fast enough, which would result in an buffer underrun.
+> Does this actually happen?
+
+I am currently writing the decoded mp3 data to a buffer in RAM so that
+the program is decoding the mp3 data as fast as it can.  I then run
+the audio process separately and just play silence.  I am doing this
+so that I can tell how much time is being spent decoding mp3 data and
+processing audio data so that I know how much time remains for other
+tasks.  From the times I have calculated I can tell that a buffer
+underrun would occur frequently if I was actually writing the decoded
+mp3 data to the pcm streams.
+
+-Adam
