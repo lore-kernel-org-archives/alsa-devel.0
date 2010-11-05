@@ -1,20 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: core: Fix race in dapm_power_widgets
-Date: Fri, 5 Nov 2010 10:38:09 -0400
-Message-ID: <20101105143809.GD15977@opensource.wolfsonmicro.com>
-References: <1288858605-8388-1-git-send-email-peter.ujfalusi@nokia.com>
-	<201011041618.07655.peter.ujfalusi@nokia.com>
-	<20101104180858.GA6088@opensource.wolfsonmicro.com>
-	<201011050953.35854.peter.ujfalusi@nokia.com>
+From: Adam Rosenberg <adam@alcorn.com>
+Subject: Re: ALSA processor usage is too high
+Date: Fri, 5 Nov 2010 11:19:53 -0400
+Message-ID: <AANLkTinXm2G1y477xRTc_QjXuEZ_nyAqGWuSkq32KGe2@mail.gmail.com>
+References: <AANLkTik-sb1OihaDhNgptH44gQ4__E+ozxhSKpA9GdSK@mail.gmail.com>
+	<4CD41528.1060600@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D7474103964
-	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 15:38:02 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <201011050953.35854.peter.ujfalusi@nokia.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8C4D6103965
+	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2010 16:20:14 +0100 (CET)
+Received: by wwi17 with SMTP id 17so1215265wwi.20
+	for <alsa-devel@alsa-project.org>; Fri, 05 Nov 2010 08:20:13 -0700 (PDT)
+In-Reply-To: <4CD41528.1060600@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,34 +23,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 05, 2010 at 09:53:35AM +0200, Peter Ujfalusi wrote:
+On Fri, Nov 5, 2010 at 10:31 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Adam Rosenberg wrote:
+>> I am trying to decode 8 MP3 files simultaneously. =A0Each file is 3
+>> minutes 11 seconds long. =A0When I just decode the files and copy the
+>> PCM data to memory it takes 2 minutes 36 seconds. =A0When I do the same
+>> test after opening 8 ALSA PCM streams and while writing data to them
+>> it takes 4 minutes 37 seconds. =A0This is much too slow for what should
+>> be a simple copy operation.
+>
+> Are you using the "hw" device? =A0Otherwise, it's not a simple copy op.
 
-> Well, I think if we want to have one place to use a lock, this is the highest we 
-> can go.
+I am using the hw device for each stream.
 
-This assumes that we've figured out the correct thing to lock and where
-we need to hold it - if you want to lock the DAPM algorithm then that's
-one thing, but it's not clear to me that this is the only thing we need
-to lock or if we need to ensure that the users of DAPM are handled and
-therefore this level of stuff becomes redundant.
+>
+> How much CPU does "aplay -D hw -t raw -f dat /dev/zero" use?
+>
 
-> All other places, when dapm_power_widgets called are protected by codec->mutex 
-> so those paths are safe.
-> By replacing the custom kcontrol/callbacks with SOC_DAPM_PIN_SWITCH() the 
-> problem is gone.
-> So it seams that my case can be solved easily with the SOC_DAPM_PIN_SWITCH(), 
-> but the race remains, and other setups might fail under some rare scenario
+I do not know how to calculate CPU usage for a given process.
 
-This is all smelling like we should be doing something to ensure that
-all the controls take the CODEC lock.  We're relying pretty heavily on
-that throughout the code so there's going to be other smoking guns
-there.
+All of my calculations have just been done by running the application
+I wrote (which has to do a number of other things while decoding mp3
+data and playing audio).  I time the application from start to finish
+to determine if it is handling all of the tasks in an acceptable
+amount of time.
 
-> It might be a good idea to go through the machine drivers, and check for 
-> snd_soc_dapm_sync usage.
+For the audio playback I am polling the streams using
+snd_pcm_avail_update() and then writing the number of frames available
+using snd_pcm_writei().  I am trying to squish this whole project into
+2mb of flash so I will not be able to include aplay in the final os
+image.
 
-I think so; probably any DAPM function has this issue.
+I am able to add aplay for testing so I used your command to open the
+8 streams, removed the audio processing from my application, and ran
+the test again.  The result was 4 minutes and 35 seconds, which is
+basically the same as the result from the test within my application
+and much too slow.
+
+Thanks,
+Adam
