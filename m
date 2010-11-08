@@ -1,19 +1,15 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: s3c24xx: Fix compilation problem.
-Date: Mon, 08 Nov 2010 13:47:59 +0000
-Message-ID: <1289224079.3288.121.camel@odin>
-References: <1289218491-17700-1-git-send-email-marek.belisko@gmail.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: soc-cache: Use BUG_ON() for unsupported
+	hw_read() calls
+Date: Mon,  8 Nov 2010 15:37:07 +0000
+Message-ID: <1289230627-15353-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7744124392
-	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2010 14:48:03 +0100 (CET)
-Received: by eyg24 with SMTP id 24so2682914eyg.38
-	for <alsa-devel@alsa-project.org>; Mon, 08 Nov 2010 05:48:03 -0800 (PST)
-In-Reply-To: <1289218491-17700-1-git-send-email-marek.belisko@gmail.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5B787243FA
+	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2010 16:37:11 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +19,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Belisko <marek.belisko@gmail.com>
-Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-11-08 at 13:14 +0100, Marek Belisko wrote:
-> When make mini2440_defconfig compilation end with undefined
-> references to DMA functions. There was missing selection
-> for S3C2410_DMA when compile ASoC audio for S3C24xx CPU.
-> Tested on mini2440 board.
-> 
-> Signed-off-by: Marek Belisko <marek.belisko@gmail.com>
+Instead of dereferencing a NULL function pointer and falling apart
+use BUG_ON() for any unimplemented hw_read() calls.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-cache.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
+index 8785a0c..e747998 100644
+--- a/sound/soc/soc-cache.c
++++ b/sound/soc/soc-cache.c
+@@ -25,6 +25,7 @@ static unsigned int snd_soc_4_12_read(struct snd_soc_codec *codec,
+ 			if (codec->cache_only)
+ 				return -1;
+ 
++			BUG_ON(!codec->hw_read);
+ 			return codec->hw_read(codec, reg);
+ 	}
+ 
+@@ -99,6 +100,7 @@ static unsigned int snd_soc_7_9_read(struct snd_soc_codec *codec,
+ 			if (codec->cache_only)
+ 				return -1;
+ 
++			BUG_ON(!codec->hw_read);
+ 			return codec->hw_read(codec, reg);
+ 	}
+ 
+@@ -199,6 +201,7 @@ static unsigned int snd_soc_8_8_read(struct snd_soc_codec *codec,
+ 			if (codec->cache_only)
+ 				return -1;
+ 
++			BUG_ON(!codec->hw_read);
+ 			return codec->hw_read(codec, reg);
+ 	}
+ 
+@@ -270,6 +273,7 @@ static unsigned int snd_soc_8_16_read(struct snd_soc_codec *codec,
+ 		if (codec->cache_only)
+ 			return -1;
+ 
++		BUG_ON(!codec->hw_read);
+ 		return codec->hw_read(codec, reg);
+ 	} else {
+ 		return cache[reg];
+@@ -420,6 +424,7 @@ static unsigned int snd_soc_16_8_read(struct snd_soc_codec *codec,
+ 			if (codec->cache_only)
+ 				return -1;
+ 
++			BUG_ON(!codec->hw_read);
+ 			return codec->hw_read(codec, reg);
+ 	}
+ 
+@@ -531,6 +536,7 @@ static unsigned int snd_soc_16_16_read(struct snd_soc_codec *codec,
+ 		if (codec->cache_only)
+ 			return -1;
+ 
++		BUG_ON(!codec->hw_read);
+ 		return codec->hw_read(codec, reg);
+ 	}
+ 
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+1.7.3.2
