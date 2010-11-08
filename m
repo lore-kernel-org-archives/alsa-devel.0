@@ -1,60 +1,109 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: Re: [PATCH] ALSA: add support for disabling period irq
-Date: Mon, 8 Nov 2010 15:43:15 -0600
-Message-ID: <AANLkTikCQ_2S8FCVJOVA7Dop22kcsso6+M3+cACTdbz2@mail.gmail.com>
-References: <1288649573-31545-1-git-send-email-pierre-louis.bossart@intel.com>
-	<s5h8w1c18no.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.1011020850550.29422@eeebox2.perex-int.cz>
-	<s5h4oc016eq.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.1011020923430.29422@eeebox2.perex-int.cz>
-	<s5h1v7415ih.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.1011020957590.29422@eeebox2.perex-int.cz>
-	<s5hy69cytmn.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.1011021020550.29422@eeebox2.perex-int.cz>
-	<AANLkTimCOOpV7fe1sbaWqY3ZpWQ3eZOkOi6pxyJVFo55@mail.gmail.com>
-	<alpine.LNX.2.00.1011082203330.29422@eeebox2.perex-int.cz>
+From: Jesper Juhl <jj@chaosbits.net>
+Subject: [PATCH 17/17][trivial] Sound, OSS:  Remove unnecessary casts of void
+ ptr returning alloc function return values
+Date: Tue, 9 Nov 2010 00:11:03 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1011090003530.23697@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 2F48F2441B
-	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2010 22:43:17 +0100 (CET)
-Received: by yws5 with SMTP id 5so4373130yws.38
-	for <alsa-devel@alsa-project.org>; Mon, 08 Nov 2010 13:43:16 -0800 (PST)
-In-Reply-To: <alpine.LNX.2.00.1011082203330.29422@eeebox2.perex-int.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: trivial@kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Roel Kluin <roel.kluin@gmail.com>, Dan Carpenter <error27@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-done from the avail_update call invoked from an application.
->>
->> ok, so I re-implemented all the points found in the reviews except for
->> this thread. There's already some code to see if we go beyond the
->> buffer boundaries, so I am not sure what the 'linear position' means.
->
-> Linear means that new hw_ptr must be always behind the previous hw_ptr.
+Hi,
 
-I got that. But there are already some checks in pcm_lib.c,
+The [vk][cmz]alloc(_node) family of functions return void pointers which
+it's completely unnecessary/pointless to cast to other pointer types since
+that happens implicitly.
 
-	/* new_hw_ptr might be lower than old_hw_ptr in case when */
-	/* pointer crosses the end of the ring buffer */
-	if (new_hw_ptr < old_hw_ptr) {
-		hw_base += runtime->buffer_size;
-		if (hw_base >= runtime->boundary)
-			hw_base = 0;
-		new_hw_ptr = hw_base + pos;
-	}
+This patch removes such casts from sound/oss/
 
-So do I need to add any additional checks? Or did I miss something in
-your discussion with Takashi?
--Pierre
+
+Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+---
+ midibuf.c   |    4 ++--
+ pss.c       |    6 +++---
+ sequencer.c |    4 ++--
+ 3 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/sound/oss/midibuf.c b/sound/oss/midibuf.c
+index 782b3b8..ceedb1e 100644
+--- a/sound/oss/midibuf.c
++++ b/sound/oss/midibuf.c
+@@ -178,7 +178,7 @@ int MIDIbuf_open(int dev, struct file *file)
+ 		return err;
+ 
+ 	parms[dev].prech_timeout = MAX_SCHEDULE_TIMEOUT;
+-	midi_in_buf[dev] = (struct midi_buf *) vmalloc(sizeof(struct midi_buf));
++	midi_in_buf[dev] = vmalloc(sizeof(struct midi_buf));
+ 
+ 	if (midi_in_buf[dev] == NULL)
+ 	{
+@@ -188,7 +188,7 @@ int MIDIbuf_open(int dev, struct file *file)
+ 	}
+ 	midi_in_buf[dev]->len = midi_in_buf[dev]->head = midi_in_buf[dev]->tail = 0;
+ 
+-	midi_out_buf[dev] = (struct midi_buf *) vmalloc(sizeof(struct midi_buf));
++	midi_out_buf[dev] = vmalloc(sizeof(struct midi_buf));
+ 
+ 	if (midi_out_buf[dev] == NULL)
+ 	{
+diff --git a/sound/oss/pss.c b/sound/oss/pss.c
+index e19dd5d..9b800ce 100644
+--- a/sound/oss/pss.c
++++ b/sound/oss/pss.c
+@@ -859,7 +859,7 @@ static int pss_coproc_ioctl(void *dev_info, unsigned int cmd, void __user *arg,
+ 			return 0;
+ 
+ 		case SNDCTL_COPR_LOAD:
+-			buf = (copr_buffer *) vmalloc(sizeof(copr_buffer));
++			buf = vmalloc(sizeof(copr_buffer));
+ 			if (buf == NULL)
+ 				return -ENOSPC;
+ 			if (copy_from_user(buf, arg, sizeof(copr_buffer))) {
+@@ -871,7 +871,7 @@ static int pss_coproc_ioctl(void *dev_info, unsigned int cmd, void __user *arg,
+ 			return err;
+ 		
+ 		case SNDCTL_COPR_SENDMSG:
+-			mbuf = (copr_msg *)vmalloc(sizeof(copr_msg));
++			mbuf = vmalloc(sizeof(copr_msg));
+ 			if (mbuf == NULL)
+ 				return -ENOSPC;
+ 			if (copy_from_user(mbuf, arg, sizeof(copr_msg))) {
+@@ -895,7 +895,7 @@ static int pss_coproc_ioctl(void *dev_info, unsigned int cmd, void __user *arg,
+ 
+ 		case SNDCTL_COPR_RCVMSG:
+ 			err = 0;
+-			mbuf = (copr_msg *)vmalloc(sizeof(copr_msg));
++			mbuf = vmalloc(sizeof(copr_msg));
+ 			if (mbuf == NULL)
+ 				return -ENOSPC;
+ 			data = (unsigned short *)mbuf->data;
+diff --git a/sound/oss/sequencer.c b/sound/oss/sequencer.c
+index e85789e..5ea1098 100644
+--- a/sound/oss/sequencer.c
++++ b/sound/oss/sequencer.c
+@@ -1646,13 +1646,13 @@ void sequencer_init(void)
+ {
+ 	if (sequencer_ok)
+ 		return;
+-	queue = (unsigned char *)vmalloc(SEQ_MAX_QUEUE * EV_SZ);
++	queue = vmalloc(SEQ_MAX_QUEUE * EV_SZ);
+ 	if (queue == NULL)
+ 	{
+ 		printk(KERN_ERR "sequencer: Can't allocate memory for sequencer output queue\n");
+ 		return;
+ 	}
+-	iqueue = (unsigned char *)vmalloc(SEQ_MAX_QUEUE * IEV_SZ);
++	iqueue = vmalloc(SEQ_MAX_QUEUE * IEV_SZ);
+ 	if (iqueue == NULL)
+ 	{
+ 		printk(KERN_ERR "sequencer: Can't allocate memory for sequencer input queue\n");
+
+
+
+-- 
+Jesper Juhl <jj@chaosbits.net>             http://www.chaosbits.net/
+Don't top-post  http://www.catb.org/~esr/jargon/html/T/top-post.html
+Plain text mails only, please.
