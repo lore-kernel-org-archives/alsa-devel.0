@@ -1,34 +1,39 @@
-From: Marek Belisko <marek.belisko@gmail.com>
-Subject: [PATCH] ASoC: s3c24xx: Fix compilation problem.
-Date: Mon,  8 Nov 2010 13:14:51 +0100
-Message-ID: <1289218491-17700-1-git-send-email-marek.belisko@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jassi Brar <jassi.brar@samsung.com>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Marek Belisko <marek.belisko@gmail.com>
+From: James Courtier-Dutton <james.dutton@gmail.com>
+Subject: Re: SoundBlaster 16 PnP CT2950 Technical Specification
+Date: Mon, 8 Nov 2010 13:37:01 +0000
+Message-ID: <AANLkTi=_8HtWbh5P_oHYS3x+QQj_VFjhyqw8gg4d-1h_@mail.gmail.com>
+References: <AANLkTikKbfR3=fhhQam0nVJ6GgEmPzBO+-4H+yBJF0w_@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2A46A24369
+	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2010 14:37:06 +0100 (CET)
+Received: by gyg8 with SMTP id 8so3918934gyg.38
+	for <alsa-devel@alsa-project.org>; Mon, 08 Nov 2010 05:37:04 -0800 (PST)
+In-Reply-To: <AANLkTikKbfR3=fhhQam0nVJ6GgEmPzBO+-4H+yBJF0w_@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Florian Scholz <florian90@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-When make mini2440_defconfig compilation end with undefined
-references to DMA functions. There was missing selection
-for S3C2410_DMA when compile ASoC audio for S3C24xx CPU.
-Tested on mini2440 board.
+On 6 November 2010 17:07, Florian Scholz <florian90@gmail.com> wrote:
+> Good evening.
+>
+> I need the technical specification for the sound card sb16 ct2950 for
+> academic purpose. Thank you
+>
+> Florian Scholz
 
-Signed-off-by: Marek Belisko <marek.belisko@gmail.com>
----
- sound/soc/s3c24xx/Kconfig |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
-index 8a6b53c..d85bf8a 100644
---- a/sound/soc/s3c24xx/Kconfig
-+++ b/sound/soc/s3c24xx/Kconfig
-@@ -2,6 +2,7 @@ config SND_S3C24XX_SOC
- 	tristate "SoC Audio for the Samsung S3CXXXX chips"
- 	depends on ARCH_S3C2410 || ARCH_S3C64XX || ARCH_S5PC100 || ARCH_S5PV210
- 	select S3C64XX_DMA if ARCH_S3C64XX
-+	select S3C2410_DMA if ARCH_S3C2410
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the S3C24XX AC97 or I2S interfaces. You will also need to
--- 
-1.7.1
+None exist.
+Try contacting Creative direct.
