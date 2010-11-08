@@ -1,19 +1,19 @@
-From: James Courtier-Dutton <james.dutton@gmail.com>
-Subject: Re: SoundBlaster 16 PnP CT2950 Technical Specification
-Date: Mon, 8 Nov 2010 13:37:01 +0000
-Message-ID: <AANLkTi=_8HtWbh5P_oHYS3x+QQj_VFjhyqw8gg4d-1h_@mail.gmail.com>
-References: <AANLkTikKbfR3=fhhQam0nVJ6GgEmPzBO+-4H+yBJF0w_@mail.gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Remove unneeded use of address-of
+ operator
+Date: Mon, 08 Nov 2010 13:47:37 +0000
+Message-ID: <1289224057.3288.120.camel@odin>
+References: <1289212913-13824-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2A46A24369
-	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2010 14:37:06 +0100 (CET)
-Received: by gyg8 with SMTP id 8so3918934gyg.38
-	for <alsa-devel@alsa-project.org>; Mon, 08 Nov 2010 05:37:04 -0800 (PST)
-In-Reply-To: <AANLkTikKbfR3=fhhQam0nVJ6GgEmPzBO+-4H+yBJF0w_@mail.gmail.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id CF9B124382
+	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2010 14:47:40 +0100 (CET)
+Received: by wyb33 with SMTP id 33so3577432wyb.38
+	for <alsa-devel@alsa-project.org>; Mon, 08 Nov 2010 05:47:40 -0800 (PST)
+In-Reply-To: <1289212913-13824-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,17 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Florian Scholz <florian90@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On 6 November 2010 17:07, Florian Scholz <florian90@gmail.com> wrote:
-> Good evening.
->
-> I need the technical specification for the sound card sb16 ct2950 for
-> academic purpose. Thank you
->
-> Florian Scholz
-
-None exist.
-Try contacting Creative direct.
+On Mon, 2010-11-08 at 10:41 +0000, Dimitris Papastamos wrote:
+> There is no need to use '&' in this case.  Either way, if a is an array
+> of some type, then a == &a == &a[0].
+> 
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+ 
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
