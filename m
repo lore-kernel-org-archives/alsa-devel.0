@@ -1,14 +1,18 @@
-From: Julia Lawall <julia@diku.dk>
-Subject: question about sound/pci/ctxfi/ctpcm.c
-Date: Mon, 8 Nov 2010 17:58:10 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.1011081753110.21375@pc-004.diku.dk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Remove unneeded use of address-of
+	operator
+Date: Mon, 8 Nov 2010 17:19:11 +0000
+Message-ID: <20101108171911.GC12581@opensource.wolfsonmicro.com>
+References: <1289212913-13824-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8943524457
-	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2010 17:58:13 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 72D952438A
+	for <alsa-devel@alsa-project.org>; Mon,  8 Nov 2010 18:19:05 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1289212913-13824-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,25 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz, tiwai@suse.de, tj@kernel.org, alsa-devel@alsa-project.org
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The file sound/pci/ctxfi/ctpcm.c contains the functions 
-ct_pcm_playback_open and ct_pcm_capture_open that contain the following 
-pattern of code:
+On Mon, Nov 08, 2010 at 10:41:53AM +0000, Dimitris Papastamos wrote:
+> There is no need to use '&' in this case.  Either way, if a is an array
+> of some type, then a == &a == &a[0].
+> 
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
-        runtime->private_data = apcm;
-	...
-	if (err < 0) {
-                kfree(apcm);
-                return err;
-        }
-
-I wonder if this leaves a dangling pointer to apcm in runtime?
-The function ct_atc_pcm_free_substream on the other hand does set the 
-private_data field to NULL after freeing apcm.  But perhaps there is 
-something in the calling context of open that ensures that if the open 
-function fails, the private_data field of runtime will never be used?  
-
-thanks,
-julia
+Applied, thanks.
