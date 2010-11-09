@@ -1,20 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Ensure sane WM835x AIF configuration
- by default
-Date: Tue, 09 Nov 2010 21:27:10 +0000
-Message-ID: <1289338030.3290.40.camel@odin>
-References: <1289329080-2631-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: tpa6130a2: Revisit power-up sequence
+Date: Tue, 09 Nov 2010 21:39:54 +0000
+Message-ID: <1289338794.3290.43.camel@odin>
+References: <1289206677-11886-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
 	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 09FAF10384D
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2010 22:27:13 +0100 (CET)
-Received: by wyb33 with SMTP id 33so5345161wyb.38
-	for <alsa-devel@alsa-project.org>; Tue, 09 Nov 2010 13:27:13 -0800 (PST)
-In-Reply-To: <1289329080-2631-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 15C59103849
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2010 22:40:04 +0100 (CET)
+Received: by wyb33 with SMTP id 33so5356809wyb.38
+	for <alsa-devel@alsa-project.org>; Tue, 09 Nov 2010 13:40:03 -0800 (PST)
+In-Reply-To: <1289206677-11886-1-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,23 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2010-11-09 at 18:58 +0000, Mark Brown wrote:
-> Ensure that whatever ran before us leaves the WM835x with a sane default
-> audio interface configuration as we do not override the companding,
-> loopback or tristate settings and do not reset the chip at startup (as it
-> is a PMIC).
+On Mon, 2010-11-08 at 10:57 +0200, Jarkko Nikula wrote:
+> There are no known problems with current power-up sequence which first sets
+> the /shutdown pin high and then enables the supply. However, swap the order
+> so that the device is kept in shutdown/reset mode during the supply voltage
+> transition since slowly rising voltages can usually cause problems if the
+> device is not kept in reset.
 > 
-> Reported-by: Keiji Mitsuhisa <Keiji.Mitsuhisa@wolfsonmicro.com>
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+> Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 > ---
->  sound/soc/codecs/wm8350.c |    7 +++++++
->  1 files changed, 7 insertions(+), 0 deletions(-)
+>  sound/soc/codecs/tpa6130a2.c |    7 +++----
+>  1 files changed, 3 insertions(+), 4 deletions(-)
 > 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+
+Applied.
+
+Thanks
+
+Liam
 -- 
 Freelance Developer, SlimLogic Ltd
 ASoC and Voltage Regulator Maintainer.
