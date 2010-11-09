@@ -1,109 +1,62 @@
-From: Jesper Juhl <jj@chaosbits.net>
-Subject: [PATCH 17/17][trivial] Sound, OSS:  Remove unnecessary casts of void
- ptr returning alloc function return values
-Date: Tue, 9 Nov 2010 00:11:03 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1011090003530.23697@swampdragon.chaosbits.net>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: question about sound/pci/ctxfi/ctpcm.c
+Date: Tue, 09 Nov 2010 09:07:41 +0100
+Message-ID: <4CD9014D.20800@ladisch.de>
+References: <Pine.LNX.4.64.1011081753110.21375@pc-004.diku.dk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: trivial@kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Roel Kluin <roel.kluin@gmail.com>, Dan Carpenter <error27@gmail.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 4A5C910382A
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2010 09:06:04 +0100 (CET)
+In-Reply-To: <Pine.LNX.4.64.1011081753110.21375@pc-004.diku.dk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Julia Lawall <julia@diku.dk>
+Cc: tiwai@suse.de, tj@kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Julia Lawall wrote:
+> The file sound/pci/ctxfi/ctpcm.c contains the functions 
+> ct_pcm_playback_open and ct_pcm_capture_open that contain the following 
+> pattern of code:
+> 
+>         runtime->private_data = apcm;
+> 	...
+> 	if (err < 0) {
+>                 kfree(apcm);
+>                 return err;
+>         }
+> 
+> I wonder if this leaves a dangling pointer to apcm in runtime?
 
-The [vk][cmz]alloc(_node) family of functions return void pointers which
-it's completely unnecessary/pointless to cast to other pointer types since
-that happens implicitly.
+The runtime structure contains data that is valid only while the
+substream is open; it is allocated by the ALSA framework before
+calling the open callback, and deallocated after calling the close
+callback (or if the open callback fails).
 
-This patch removes such casts from sound/oss/
+> The function ct_atc_pcm_free_substream on the other hand does set the 
+> private_data field to NULL after freeing apcm.
 
+This is superfluous.
 
-Signed-off-by: Jesper Juhl <jj@chaosbits.net>
----
- midibuf.c   |    4 ++--
- pss.c       |    6 +++---
- sequencer.c |    4 ++--
- 3 files changed, 7 insertions(+), 7 deletions(-)
+> But perhaps there is something in the calling context of open that
+> ensures that if the open function fails, the private_data field of
+> runtime will never be used?
 
-diff --git a/sound/oss/midibuf.c b/sound/oss/midibuf.c
-index 782b3b8..ceedb1e 100644
---- a/sound/oss/midibuf.c
-+++ b/sound/oss/midibuf.c
-@@ -178,7 +178,7 @@ int MIDIbuf_open(int dev, struct file *file)
- 		return err;
- 
- 	parms[dev].prech_timeout = MAX_SCHEDULE_TIMEOUT;
--	midi_in_buf[dev] = (struct midi_buf *) vmalloc(sizeof(struct midi_buf));
-+	midi_in_buf[dev] = vmalloc(sizeof(struct midi_buf));
- 
- 	if (midi_in_buf[dev] == NULL)
- 	{
-@@ -188,7 +188,7 @@ int MIDIbuf_open(int dev, struct file *file)
- 	}
- 	midi_in_buf[dev]->len = midi_in_buf[dev]->head = midi_in_buf[dev]->tail = 0;
- 
--	midi_out_buf[dev] = (struct midi_buf *) vmalloc(sizeof(struct midi_buf));
-+	midi_out_buf[dev] = vmalloc(sizeof(struct midi_buf));
- 
- 	if (midi_out_buf[dev] == NULL)
- 	{
-diff --git a/sound/oss/pss.c b/sound/oss/pss.c
-index e19dd5d..9b800ce 100644
---- a/sound/oss/pss.c
-+++ b/sound/oss/pss.c
-@@ -859,7 +859,7 @@ static int pss_coproc_ioctl(void *dev_info, unsigned int cmd, void __user *arg,
- 			return 0;
- 
- 		case SNDCTL_COPR_LOAD:
--			buf = (copr_buffer *) vmalloc(sizeof(copr_buffer));
-+			buf = vmalloc(sizeof(copr_buffer));
- 			if (buf == NULL)
- 				return -ENOSPC;
- 			if (copy_from_user(buf, arg, sizeof(copr_buffer))) {
-@@ -871,7 +871,7 @@ static int pss_coproc_ioctl(void *dev_info, unsigned int cmd, void __user *arg,
- 			return err;
- 		
- 		case SNDCTL_COPR_SENDMSG:
--			mbuf = (copr_msg *)vmalloc(sizeof(copr_msg));
-+			mbuf = vmalloc(sizeof(copr_msg));
- 			if (mbuf == NULL)
- 				return -ENOSPC;
- 			if (copy_from_user(mbuf, arg, sizeof(copr_msg))) {
-@@ -895,7 +895,7 @@ static int pss_coproc_ioctl(void *dev_info, unsigned int cmd, void __user *arg,
- 
- 		case SNDCTL_COPR_RCVMSG:
- 			err = 0;
--			mbuf = (copr_msg *)vmalloc(sizeof(copr_msg));
-+			mbuf = vmalloc(sizeof(copr_msg));
- 			if (mbuf == NULL)
- 				return -ENOSPC;
- 			data = (unsigned short *)mbuf->data;
-diff --git a/sound/oss/sequencer.c b/sound/oss/sequencer.c
-index e85789e..5ea1098 100644
---- a/sound/oss/sequencer.c
-+++ b/sound/oss/sequencer.c
-@@ -1646,13 +1646,13 @@ void sequencer_init(void)
- {
- 	if (sequencer_ok)
- 		return;
--	queue = (unsigned char *)vmalloc(SEQ_MAX_QUEUE * EV_SZ);
-+	queue = vmalloc(SEQ_MAX_QUEUE * EV_SZ);
- 	if (queue == NULL)
- 	{
- 		printk(KERN_ERR "sequencer: Can't allocate memory for sequencer output queue\n");
- 		return;
- 	}
--	iqueue = (unsigned char *)vmalloc(SEQ_MAX_QUEUE * IEV_SZ);
-+	iqueue = vmalloc(SEQ_MAX_QUEUE * IEV_SZ);
- 	if (iqueue == NULL)
- 	{
- 		printk(KERN_ERR "sequencer: Can't allocate memory for sequencer input queue\n");
+If the open callback fails, the close callback will not be called.
+However, the runtime->private_free callback, if set, will be called.
+
+So there is indeed a dangling pointer.
 
 
-
--- 
-Jesper Juhl <jj@chaosbits.net>             http://www.chaosbits.net/
-Don't top-post  http://www.catb.org/~esr/jargon/html/T/top-post.html
-Plain text mails only, please.
+Regards,
+Clemens
