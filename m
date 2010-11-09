@@ -1,17 +1,13 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: HDMI on HDA device=3
-Date: Tue, 09 Nov 2010 16:16:41 +0100
-Message-ID: <4CD965D9.2050502@canonical.com>
-References: <4CD95DD9.2070102@canonical.com>
-	<alpine.LNX.2.00.1011091550450.29422@eeebox2.perex-int.cz>
+Subject: [PATCH] ALSA: HDA: Enable digital mic on IDT 92HD87B
+Date: Tue, 09 Nov 2010 17:10:25 +0100
+Message-ID: <4CD97271.6040709@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------060701030507010507040605"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7B1A52446A
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2010 16:16:43 +0100 (CET)
-In-Reply-To: <alpine.LNX.2.00.1011091550450.29422@eeebox2.perex-int.cz>
+	by alsa0.perex.cz (Postfix) with ESMTP id 0DCD1244A4
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2010 17:10:24 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,65 +17,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 2010-11-09 15:58, Jaroslav Kysela wrote:
-> On Tue, 9 Nov 2010, David Henningsson wrote:
->
->> I have seen a few HDMIs which share the HDA controller with the onboard
->> sound card, but the codecs are different, e g the onboard one is at
->> address #0 and the HDMI is at address #3 - or even #3, #7, #8 and #9 in
->> some cases.
->>
->> Now, if the user specifies the device string hdmi:x (where x is card
->> name/number), I'd like it to kind of autodetect this and use DEV=3
->> instead of DEV=0, and without breaking the cards where the hdmi is a
->> separate card with a codec at address #0. However, it still seems like
->> the device is at DEV=3 somehow.
->>
->> Now, looking at /usr/share/alsa/cards/HDA-Intel.conf, I notice that
->> there are entries HDA-Intel.pcm.hdmi.0 which sets DEV=3, so it seems
->> like someone already thought of this. However, just using "hdmi:x" does
->> not trigger "DEV=3". I'm still not grepping all of the alsa lisp
->> architecture stuff, so could someone explain to me how the
->> HDA-Intel.pcm.hdmi.0 entry relates to the "hdmi:x" alsa device string?
->
-> It's not about a lisp (this portion of code is not used at all). It's
-> about the (partly) dynamic alsa-lib configuration.
+This is a multi-part message in MIME format.
+--------------060701030507010507040605
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Ok, thanks for the clarification.
+BugLink: http://launchpad.net/bugs/673075
 
-> Use always indexes from 0.. (hdmi:0,0 etc..) Fist number is card number,
-> second number is device number (which is logical device number mapped to
-> different physical device number in case when HDA card contains both
-> analog and HDMI sections).
->
-> If you read HDA-Intel.conf, you'll get this device mapping (logical,
-> physical):
->
-> 0 -> 3
-> 1 -> 7
-> 2 -> 8
-> 3 -> 9
->
-> Perhaps, something does not work correctly?
+According to the datasheet of 92HD87B, there is a digital mic
+at nid 0x11, so enable it in order to be able to use the mic.
 
-Hmm, this is a little confusing. Do all these mean the same thing, and 
-do they all correspond to the logical device number?
-
-hdmi:x,y
-hdmi:CARD=x,y
-hdmi:CARD=x,DEV=y
-hdmi:CARD=x,DEVICE=y
-
-And would hdmi:x and hdmi:x,0 be the same thing?
-
-And if all these correspond to the logical device number, is there any 
-way you can specify the physical device number directly in the connect 
-string?
+Cc: stable@kernel.org
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 
 -- 
 David Henningsson, Canonical Ltd.
 http://launchpad.net/~diwic
+
+--------------060701030507010507040605
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Enable-digital-mic-on-IDT-92HD87B.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Enable-digital-mic-on-IDT-92HD87B.patch"
+
+>From e6e70a42ef60fd81f8dcd1a87479ce9d6f6a0846 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Wed, 13 Oct 2010 15:48:24 +0200
+Subject: [PATCH] ALSA: HDA: Enable digital mic on IDT 92HD87B
+
+BugLink: http://launchpad.net/bugs/673075
+
+According to the datasheet of 92HD87B, there is a digital mic
+at nid 0x11, so enable it in order to be able to use the mic.
+
+Cc: stable@kernel.org
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ hda/patch_sigmatel.c |   14 ++++++++++++--
+ 1 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/hda/patch_sigmatel.c b/hda/patch_sigmatel.c
+index 0144519..6764100 100644
+--- a/hda/patch_sigmatel.c
++++ b/hda/patch_sigmatel.c
+@@ -388,6 +388,11 @@ static hda_nid_t stac92hd83xxx_dmic_nids[STAC92HD83XXX_NUM_DMICS + 1] = {
+ 	0x11, 0x20, 0
+ };
+ 
++#define STAC92HD87B_NUM_DMICS	 1
++static hda_nid_t stac92hd87b_dmic_nids[STAC92HD87B_NUM_DMICS + 1] = {
++	0x11, 0
++};
++
+ #define STAC92HD83XXX_NUM_CAPS	2
+ static unsigned long stac92hd83xxx_capvols[] = {
+ 	HDA_COMPOSE_AMP_VAL(0x17, 3, 0, HDA_OUTPUT),
+@@ -5370,12 +5375,17 @@ again:
+ 				stac92hd83xxx_brd_tbl[spec->board_config]);
+ 
+ 	switch (codec->vendor_id) {
++	case 0x111d76d1:
++	case 0x111d76d9:
++		spec->dmic_nids = stac92hd87b_dmic_nids;
++		spec->num_dmics = stac92xx_connected_ports(codec,
++				stac92hd87b_dmic_nids,
++				STAC92HD87B_NUM_DMICS);		
++		/* Fall through */
+ 	case 0x111d7666:
+ 	case 0x111d7667:
+ 	case 0x111d7668:
+ 	case 0x111d7669:
+-	case 0x111d76d1:
+-	case 0x111d76d9:
+ 		spec->num_pins = ARRAY_SIZE(stac92hd88xxx_pin_nids);
+ 		spec->pin_nids = stac92hd88xxx_pin_nids;
+ 		spec->mono_nid = 0;
+-- 
+1.7.1
+
+
+--------------060701030507010507040605
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------060701030507010507040605--
