@@ -1,19 +1,23 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCH 2/2] ASoC: Convert pop_dbg to use dev_info
-Date: Tue,  9 Nov 2010 14:40:28 +0200
-Message-ID: <1289306428-1067-2-git-send-email-jhnikula@gmail.com>
-References: <1289306428-1067-1-git-send-email-jhnikula@gmail.com>
+From: Manu Abraham <abraham.manu@gmail.com>
+Subject: Re: mapping externally allocated Scatter Gather DMA
+	buffers
+Date: Tue, 9 Nov 2010 18:13:50 +0530
+Message-ID: <AANLkTikzXbnnPBNS+51zFvrYVqOTw8bz1=qWq_h--y35@mail.gmail.com>
+References: <AANLkTik4VQmsvBiXyoj-wEu5jgjpPVRP0bF7gkp9GJ-E@mail.gmail.com>
+	<alpine.LNX.2.00.1010260923070.29422@eeebox2.perex-int.cz>
+	<AANLkTin58toyQJ0f3M3abszE0zgV+t9R29rsFKin74vk@mail.gmail.com>
+	<alpine.LNX.2.00.1011091300130.29422@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
 	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7E8ED10386C
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2010 13:40:08 +0100 (CET)
-Received: by mail-ew0-f51.google.com with SMTP id 26so681797ewy.38
-	for <alsa-devel@alsa-project.org>; Tue, 09 Nov 2010 04:40:08 -0800 (PST)
-In-Reply-To: <1289306428-1067-1-git-send-email-jhnikula@gmail.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id E143E10384A
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2010 13:43:51 +0100 (CET)
+Received: by ewy26 with SMTP id 26so683738ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 09 Nov 2010 04:43:51 -0800 (PST)
+In-Reply-To: <alpine.LNX.2.00.1011091300130.29422@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,133 +27,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Prints from pop_dbg are enabled when dapm_pop_time != 0. Convert it to
-use dev_info so that parent device of DAPM context is printed.
+On Tue, Nov 9, 2010 at 5:31 PM, Jaroslav Kysela <perex@perex.cz> wrote:
+> On Tue, 9 Nov 2010, Manu Abraham wrote:
+>
+>> testbox ~ # arecord -Dhw:2,0
+>> Recording WAVE 'stdin' : Unsigned 8 bit, Rate 8000 Hz, Mono
+>
+>> Any idea, why saa7231_hw_params is not getting invoked ?
+>
+> Your hw probably does not support directly 8-bit sample at 8000Hz, one
+> channel. Use 'plughw:2,0' device instead 'hw:2,0' to let alsa-lib do all
+> stream format conversions.
 
-Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
----
- sound/soc/soc-dapm.c |   44 ++++++++++++++++++++++++++------------------
- 1 files changed, 26 insertions(+), 18 deletions(-)
+That didn't make any difference at all.
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index e8997bb..450307c 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -91,17 +91,24 @@ static void pop_wait(u32 pop_time)
- 		schedule_timeout_uninterruptible(msecs_to_jiffies(pop_time));
- }
- 
--static void pop_dbg(u32 pop_time, const char *fmt, ...)
-+static void pop_dbg(struct device *dev, u32 pop_time, const char *fmt, ...)
- {
- 	va_list args;
-+	char *buf;
- 
--	va_start(args, fmt);
-+	if (!pop_time)
-+		return;
- 
--	if (pop_time) {
--		vprintk(fmt, args);
--	}
-+	buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
-+	if (buf == NULL)
-+		return;
- 
-+	va_start(args, fmt);
-+	vsnprintf(buf, PAGE_SIZE, fmt, args);
-+	dev_info(dev, buf);
- 	va_end(args);
-+
-+	kfree(buf);
- }
- 
- /* create a new dapm widget */
-@@ -313,7 +320,8 @@ static int dapm_update_bits(struct snd_soc_dapm_widget *widget)
- 
- 	change = old != new;
- 	if (change) {
--		pop_dbg(card->pop_time, "pop test %s : %s in %d ms\n",
-+		pop_dbg(dapm->dev, card->pop_time,
-+			"pop test %s : %s in %d ms\n",
- 			widget->name, widget->power ? "on" : "off",
- 			card->pop_time);
- 		pop_wait(card->pop_time);
-@@ -745,15 +753,15 @@ static void dapm_seq_run_coalesced(struct snd_soc_dapm_context *dapm,
- 		if (power)
- 			value |= cur_mask;
- 
--		pop_dbg(card->pop_time,
-+		pop_dbg(dapm->dev, card->pop_time,
- 			"pop test : Queue %s: reg=0x%x, 0x%x/0x%x\n",
- 			w->name, reg, value, mask);
- 
- 		/* power up pre event */
- 		if (w->power && w->event &&
- 		    (w->event_flags & SND_SOC_DAPM_PRE_PMU)) {
--			pop_dbg(card->pop_time, "pop test : %s PRE_PMU\n",
--				w->name);
-+			pop_dbg(dapm->dev, card->pop_time,
-+				"pop test : %s PRE_PMU\n", w->name);
- 			ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMU);
- 			if (ret < 0)
- 				dev_err(dapm->dev,
-@@ -764,8 +772,8 @@ static void dapm_seq_run_coalesced(struct snd_soc_dapm_context *dapm,
- 		/* power down pre event */
- 		if (!w->power && w->event &&
- 		    (w->event_flags & SND_SOC_DAPM_PRE_PMD)) {
--			pop_dbg(card->pop_time, "pop test : %s PRE_PMD\n",
--				w->name);
-+			pop_dbg(dapm->dev, card->pop_time,
-+				"pop test : %s PRE_PMD\n", w->name);
- 			ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMD);
- 			if (ret < 0)
- 				dev_err(dapm->dev,
-@@ -775,7 +783,7 @@ static void dapm_seq_run_coalesced(struct snd_soc_dapm_context *dapm,
- 	}
- 
- 	if (reg >= 0) {
--		pop_dbg(card->pop_time,
-+		pop_dbg(dapm->dev, card->pop_time,
- 			"pop test : Applying 0x%x/0x%x to %x in %dms\n",
- 			value, mask, reg, card->pop_time);
- 		pop_wait(card->pop_time);
-@@ -786,8 +794,8 @@ static void dapm_seq_run_coalesced(struct snd_soc_dapm_context *dapm,
- 		/* power up post event */
- 		if (w->power && w->event &&
- 		    (w->event_flags & SND_SOC_DAPM_POST_PMU)) {
--			pop_dbg(card->pop_time, "pop test : %s POST_PMU\n",
--				w->name);
-+			pop_dbg(dapm->dev, card->pop_time,
-+				"pop test : %s POST_PMU\n", w->name);
- 			ret = w->event(w,
- 				       NULL, SND_SOC_DAPM_POST_PMU);
- 			if (ret < 0)
-@@ -799,8 +807,8 @@ static void dapm_seq_run_coalesced(struct snd_soc_dapm_context *dapm,
- 		/* power down post event */
- 		if (!w->power && w->event &&
- 		    (w->event_flags & SND_SOC_DAPM_POST_PMD)) {
--			pop_dbg(card->pop_time, "pop test : %s POST_PMD\n",
--				w->name);
-+			pop_dbg(dapm->dev, card->pop_time,
-+				"pop test : %s POST_PMD\n", w->name);
- 			ret = w->event(w, NULL, SND_SOC_DAPM_POST_PMD);
- 			if (ret < 0)
- 				dev_err(dapm->dev,
-@@ -1025,8 +1033,8 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
- 				"Failed to apply active bias: %d\n", ret);
- 	}
- 
--	pop_dbg(card->pop_time, "DAPM sequencing finished, waiting %dms\n",
--		card->pop_time);
-+	pop_dbg(dapm->dev, card->pop_time,
-+		"DAPM sequencing finished, waiting %dms\n", card->pop_time);
- 	pop_wait(card->pop_time);
- 
- 	return 0;
--- 
-1.7.2.3
+I just tried that, I get something like this :
+
+testbox ~ # arecord -Dplughw:2,0
+Recording WAVE 'stdin' : Unsigned 8 bit, Rate 8000 Hz, Mono
+ALSA lib pcm_params.c:2150:(snd1_pcm_hw_refine_slave) Slave PCM not usable
+arecord: set_params:957: Broken configuration for this PCM: no
+configurations available
+
+
+[  719.292194] saa7231_capture_open (0): ()
+[  719.292390] saa7231_hw_free (0): DEBUG: Removing IRQ event ..
+[  719.292393] saa7231_remove_irqevent (0): Removing IRQ Event:43 ......
+[  719.292395] saa7231_hw_free (0): DEBUG: Stream exiting ..
+[  719.292397] saa7231_hw_free (0): DEBUG: Freeing ptable ...
+[  719.292398] saa7231_capture_close (0): DEBUG: Closing stream
+[  777.191250] saa7231_capture_open (0): ()
+[  777.191441] saa7231_hw_free (0): DEBUG: Removing IRQ event ..
+[  777.191444] saa7231_remove_irqevent (0): Removing IRQ Event:43 ......
+[  777.191446] saa7231_hw_free (0): DEBUG: Stream exiting ..
+[  777.191448] saa7231_hw_free (0): DEBUG: Freeing ptable ...
+[  777.191450] saa7231_capture_close (0): DEBUG: Closing stream
+[ 6928.076343] saa7231_capture_open (0): ()
+[ 6928.076559] saa7231_hw_free (0): DEBUG: Removing IRQ event ..
+[ 6928.076562] saa7231_remove_irqevent (0): Removing IRQ Event:43 ......
+[ 6928.076565] saa7231_hw_free (0): DEBUG: Stream exiting ..
+[ 6928.076567] saa7231_hw_free (0): DEBUG: Freeing ptable ...
+[ 6928.076568] saa7231_capture_close (0): DEBUG: Closing stream
+
+Best Regards,
+Manu
