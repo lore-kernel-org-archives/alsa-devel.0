@@ -1,18 +1,14 @@
-From: Geoffrey Wossum <geoffrey@pager.net>
-Subject: Re: [PATCH] Fix Atmel soc audio boards Kconfig
-	dependency
-Date: Wed, 10 Nov 2010 17:09:55 -0600
-Message-ID: <201011101709.56106.geoffrey@pager.net>
-References: <4CDAFA56.2050504@bluewatersys.com> <1289423099.3284.52.camel@odin>
-	<4CDB1480.3080109@bluewatersys.com>
+From: Ryan Mallon <ryan@bluewatersys.com>
+Subject: Channel swapping problem on Atmel SSC audio
+Date: Thu, 11 Nov 2010 11:49:34 +1300
+Message-ID: <4CDB217E.2030906@bluewatersys.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from barracuda.pager.net (mail.pager.net [206.205.156.13])
-	by alsa0.perex.cz (Postfix) with SMTP id 956FC1037FC
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 23:09:47 +0100 (CET)
-In-Reply-To: <4CDB1480.3080109@bluewatersys.com>
+Received: from hayes.bluewaternz.com (mail.bluewatersys.com [202.124.120.130])
+	by alsa0.perex.cz (Postfix) with ESMTP id 39BFF1037FC
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 23:48:32 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,36 +18,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ryan Mallon <ryan@bluewatersys.com>
-Cc: Sedji Gaouaou <sedji.gaouaou@atmel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "gwossum@acm.org" <gwossum@acm.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 10 November 2010 3:54:08 pm Ryan Mallon wrote:
-> On 11/11/2010 10:04 AM, Liam Girdwood wrote:
-> > On Thu, 2010-11-11 at 09:02 +1300, Ryan Mallon wrote:
-> >> Add Kconfig dependency on AT91_PROGRAMMABLE_CLOCKS for the Atmel SoC
-> >> audio SAM9G20-EK and PlayPaq boards. Fixes link errors on missing
-> >> clk_set_parent and clk_set_rate when building without
-> >> AT91_PROGRAMMABLE_CLOCKS.
-> >> 
-> >> Signed-off-by: Ryan Mallon <ryan@bluewatersys.com>
-> > 
-> > Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
-> 
-> Just realised that the PlayPaq board only appears in the sound/soc/atmel
-> directory. I cannot find a board file for it under either
-> arch/arm/mach-at91 or arch/avr32/. The updated patch below only changes
-> the dependency for the SAM9G20-EK board since I think the PlayPaq is
-> actually AVR32, and therefore should not depend on
-> AT91_PROGRAMMABLE_CLOCKS. This patch replaces my previous one.
+Hi all,
 
-PlayPaq is an AT32AP7000 board, so the new patch is correct.
+I'm working on a custom board using the AT91SAM9G45 processor and a
+TLV320AIC26 SPI attached audio codec using I2S format audio. When doing
+audio playback on the board the left and right channels are occasionally
+flipped.
 
-> ---
-> Add Kconfig dependency on AT91_PROGRAMMABLE_CLOCKS for the Atmel SoC
-> audio  SAM9G20-EK board. Fixes link errors on missing clk_set_parent and
-> clk_set_rate when building without AT91_PROGRAMMABLE_CLOCKS.
-> 
-> Signed-off-by: Ryan Mallon <ryan@bluewatersys.com>
+I have verified this by generating a custom wav file which has constant
+data on one channel and an incrementing counter on the other channel.
+The digitial out from the CPU shows that no data is being lost, but
+around 1/5 times the audio channels will be flipped. The problem appears
+to be that the DMA is starting on the wrong edge of the LRCLK.
 
-Acked-by: Geoffrey Wossum <gwossum@acm.org>
+I have using both SND_SOC_DAIFMT_CBM_CFM (Codec provides clocks) and
+SND_SOC_DAIFMT_CBS_CFS (CPU provides clocks) but the problem occurs in
+both situations. I have also tried changing TCMR:CKO to SSC_CKO_TRANSFER
+and TCMR:START to SSC_START_LOW_RF, but the problem still occurs. I have
+looked through the PCM/SSC DMA code and cannot find any obvious bugs.
+
+I have checked the errata for the At91SAM9G45 processor (our chip
+marking is CU-1004-A), but can't find anything which relates directly to
+the problem we are seeing.
+
+Has anybody else had this problem, or does anybody have any AT91/Atmel
+hardware that they could test to see if it occurs on other hardware also?
+
+Thanks,
+~Ryan
+
+-- 
+Bluewater Systems Ltd - ARM Technology Solution Centre
+
+Ryan Mallon         		5 Amuri Park, 404 Barbadoes St
+ryan@bluewatersys.com         	PO Box 13 889, Christchurch 8013
+http://www.bluewatersys.com	New Zealand
+Phone: +64 3 3779127		Freecall: Australia 1800 148 751 
+Fax:   +64 3 3779135			  USA 1800 261 2934
