@@ -1,8 +1,8 @@
-From: Jaroslav Kysela <perex@perex.cz>
+From: Manu Abraham <abraham.manu@gmail.com>
 Subject: Re: mapping externally allocated Scatter Gather DMA
- buffers
-Date: Wed, 10 Nov 2010 19:05:19 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1011101859010.29422@eeebox2.perex-int.cz>
+	buffers
+Date: Thu, 11 Nov 2010 00:00:49 +0530
+Message-ID: <AANLkTinypyaDPkL-rBU5UsPp1UKbAhNz66nH9kHNnqNS@mail.gmail.com>
 References: <AANLkTik4VQmsvBiXyoj-wEu5jgjpPVRP0bF7gkp9GJ-E@mail.gmail.com>
 	<alpine.LNX.2.00.1010260923070.29422@eeebox2.perex-int.cz>
 	<AANLkTin58toyQJ0f3M3abszE0zgV+t9R29rsFKin74vk@mail.gmail.com>
@@ -18,13 +18,17 @@ References: <AANLkTik4VQmsvBiXyoj-wEu5jgjpPVRP0bF7gkp9GJ-E@mail.gmail.com>
 	<AANLkTim=NT4cPQV+c3Y7eZF81Pv6R--vRgT_jGj7xZQJ@mail.gmail.com>
 	<alpine.LNX.2.00.1011101515420.29422@eeebox2.perex-int.cz>
 	<AANLkTi=gjN1xfnMZ4R29Sq_=fxYAfJwOQmD_+6beLYSp@mail.gmail.com>
+	<alpine.LNX.2.00.1011101859010.29422@eeebox2.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-1153100156-1289412319=:29422"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6309224414
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 19:05:20 +0100 (CET)
-In-Reply-To: <AANLkTi=gjN1xfnMZ4R29Sq_=fxYAfJwOQmD_+6beLYSp@mail.gmail.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4D7FF2417D
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 19:31:01 +0100 (CET)
+Received: by wwd20 with SMTP id 20so1031547wwd.20
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 10:30:51 -0800 (PST)
+In-Reply-To: <alpine.LNX.2.00.1011101859010.29422@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,90 +38,142 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Manu Abraham <abraham.manu@gmail.com>
+To: Jaroslav Kysela <perex@perex.cz>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323584-1153100156-1289412319=:29422
-Content-Type: TEXT/PLAIN; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-
-On Wed, 10 Nov 2010, Manu Abraham wrote:
-
-> On Wed, Nov 10, 2010 at 8:35 PM, Jaroslav Kysela <perex@perex.cz> wrote:
->> On Wed, 10 Nov 2010, Manu Abraham wrote:
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0/* enable stream */
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0/* initializing 8 buffer with "pages" pages =
-each .. */
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0stream =3D saa7231_stream_init(saa7231, AUDI=
-O_CAPTURE, ADAPTER_INT,
->>> 0, pages);
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (!stream) {
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0dprintk(SAA7231_=
-ERROR, 1, "ERROR: Registering stream");
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return -ENOMEM;
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0}
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0audio->stream =3D stream;
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0buffer =3D stream->dmabuf;
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0saa7231_add_irqevent(saa7231, 43, SAA7231_ED=
-GE_RISING,
->>> saa7231_audio_evhandler, "AS2D_AVIS");
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0dprintk(SAA7231_DEBUG, 1, "Mapping %d buffer=
-s with %d pages each",
->>> XS2D_BUFFERS, pages);
->>
->> Unfortunately, I don't understand the role of XS2D_BUFFERS. The ALSA buf=
-size
->> is the whole DMA area (you should use params_buffer_bytes() to get this
->> value instead of calculating this using periods * period_size).
->>
->> It means: Just allocate number of pages required for buffer_bytes. Don't
->> play with periods (except the interrupts).
+On Wed, Nov 10, 2010 at 11:35 PM, Jaroslav Kysela <perex@perex.cz> wrote:
+> On Wed, 10 Nov 2010, Manu Abraham wrote:
 >
+>> On Wed, Nov 10, 2010 at 8:35 PM, Jaroslav Kysela <perex@perex.cz> wrote:
+>>>
+>>> On Wed, 10 Nov 2010, Manu Abraham wrote:
+>>>>
+>>>> =A0 =A0 =A0 =A0/* enable stream */
+>>>> =A0 =A0 =A0 =A0/* initializing 8 buffer with "pages" pages each .. */
+>>>> =A0 =A0 =A0 =A0stream =3D saa7231_stream_init(saa7231, AUDIO_CAPTURE, =
+ADAPTER_INT,
+>>>> 0, pages);
+>>>> =A0 =A0 =A0 =A0if (!stream) {
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0dprintk(SAA7231_ERROR, 1, "ERROR: Regis=
+tering stream");
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return -ENOMEM;
+>>>> =A0 =A0 =A0 =A0}
+>>>> =A0 =A0 =A0 =A0audio->stream =3D stream;
+>>>> =A0 =A0 =A0 =A0buffer =3D stream->dmabuf;
+>>>> =A0 =A0 =A0 =A0saa7231_add_irqevent(saa7231, 43, SAA7231_EDGE_RISING,
+>>>> saa7231_audio_evhandler, "AS2D_AVIS");
+>>>> =A0 =A0 =A0 =A0dprintk(SAA7231_DEBUG, 1, "Mapping %d buffers with %d p=
+ages
+>>>> each",
+>>>> XS2D_BUFFERS, pages);
+>>>
+>>> Unfortunately, I don't understand the role of XS2D_BUFFERS. The ALSA
+>>> bufsize
+>>> is the whole DMA area (you should use params_buffer_bytes() to get this
+>>> value instead of calculating this using periods * period_size).
+>>>
+>>> It means: Just allocate number of pages required for buffer_bytes. Don't
+>>> play with periods (except the interrupts).
+>>
+>>
+>> There are 8 SG buffers for the hardware; the maximum size of each
+>> buffer can be 512 pages,
+>> the minimum can be a single page.
 >
-> There are 8 SG buffers for the hardware; the maximum size of each
-> buffer can be 512 pages,
-> the minimum can be a single page.
+> Could you describe more the whole DMA layout, including IRQ acks?
+>
+> It seems to me:
+>
+> SG PAGE 1 points to 1 - 512 data pages (4096 bytes long)
+> SG PAGE 2 .....
+> =A0 =A0....
+> SG PAGE 8 .....
 
-Could you describe more the whole DMA layout, including IRQ acks?
 
-It seems to me:
+Yes, correct.
 
-SG PAGE 1 points to 1 - 512 data pages (4096 bytes long)
-SG PAGE 2 .....
-     ....
-SG PAGE 8 .....
+My initial thoughts and concepts were thus:
+ - A particular buffer size is requested by ALSA
+ - this buffer size is set for all the 8 SG buffers
+ - A virtual area is created from these 8 SG buffers
+ - This virtual area is mmap()'d
+ - SG Buffer 0 gets filled
+ - Interrupt occurs
+ - Driver reads from offset 0 of virtual area
+ - SG Buffer 1 gets filled
+ - Interrupt occurs
+ - Driver reads from offset "buffer size" of virtual area
 
-How you can program interrupts? Only when the whole page is finished or=20
-the interrupt does not depend on the DMA buffer position, but a hw clock=20
-timer?
+and so on, the cycle repeats.
 
-Could you limit how much data (samples) are fetched from the one data page=
-=20
-or the hw operates with whole pages only?
+Little did I realize at that point of time that buffer size for ALSA
+meant the total length of the
+buffers.
 
-Note that the stream processing rate is usually independent from the DMA=20
-layout in most hw.
 
- =09=09=09=09=09=09Jaroslav
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+> How you can program interrupts? Only when the whole page is finished or t=
+he
+> interrupt does not depend on the DMA buffer position, but a hw clock time=
+r?
 
---8323584-1153100156-1289412319=:29422
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+All 8 SG heads are placed on the MMU. The MMU can be programmed to
+generate an IRQ
+when "size" buffer is full. Suppose that an SG buffer which is 8 pages
+long, but I did program
+the MMU to generate an IRQ when eg: 192 bytes of data is filled into
+SG buffer. Now, as data
+is being digitized and grabbed, I get an interrupt when 192 bytes is
+filled in the SG buffer.
 
---8323584-1153100156-1289412319=:29422--
+When the interrupt occurs, the driver needs to check from hardware
+registers, which of the
+8 SG buffers has been filled upto say 192 bytes. Now, since I know
+that SG buffer 'x' is filled,
+I can ask the application to read from the buffer area. This length is
+called "stride" by the chip.
+
+Normally, I could say the interrupts would be following a certain
+order, SGBUF1, SGBUF2,
+but It is indeed necessary to read the buffer index first and then
+deduce which SGBUF to read.
+
+Putting it short, even though a whole page is setup for DMA, an
+interrupt can be invoked,
+depending on setting up the "stride" length, the maximum of which is
+the buffer length setup
+on the MMU.
+
+There is no hardware clock timer involved in this process. but there
+is a hardware feature
+where the buffers can be time stamped for reason such as
+synchronization with a video stream
+for example.
+
+
+> Could you limit how much data (samples) are fetched from the one data page
+> or the hw operates with whole pages only?
+
+You need to setup a whole PAGE on to the MMU, even if you need to
+transfer only a byte.
+
+Yes, you can set any number of bytes (stride) to be read from the
+whole SG buffer. ie, even
+if the SG buffer is 512 pages long, it could contain just contain 4
+bytes of data alone
+(depending on stride), If I set up the hardware to generate an
+interrupt when 4 bytes is filled up.
+
+
+> Note that the stream processing rate is usually independent from the DMA
+> layout in most hw.
+
+
+Yes. I need to set the number of bytes that will be filled up for a
+buffer that causes an interrupt.
+
+
+Regards,
+Manu
