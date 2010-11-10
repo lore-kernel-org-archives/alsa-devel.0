@@ -1,20 +1,27 @@
-From: torbenh <torbenh@gmx.de>
-Subject: Re: alsa jack plugin
-Date: Wed, 10 Nov 2010 11:18:46 +0100
-Message-ID: <20101110101846.GD4238@siel.b>
-References: <20101108092647.GS4410@siel.b>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: mapping externally allocated Scatter Gather DMA
+ buffers
+Date: Wed, 10 Nov 2010 12:30:53 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1011101228061.29422@eeebox2.perex-int.cz>
+References: <AANLkTik4VQmsvBiXyoj-wEu5jgjpPVRP0bF7gkp9GJ-E@mail.gmail.com>
+	<alpine.LNX.2.00.1010260923070.29422@eeebox2.perex-int.cz>
+	<AANLkTin58toyQJ0f3M3abszE0zgV+t9R29rsFKin74vk@mail.gmail.com>
+	<alpine.LNX.2.00.1011091300130.29422@eeebox2.perex-int.cz>
+	<AANLkTikzXbnnPBNS+51zFvrYVqOTw8bz1=qWq_h--y35@mail.gmail.com>
+	<alpine.LNX.2.00.1011091347020.29422@eeebox2.perex-int.cz>
+	<AANLkTikHL5-6nuf6_sbkAX+y_vUo57tF-SW_j75ijEPJ@mail.gmail.com>
+	<alpine.LNX.2.00.1011091530230.29422@eeebox2.perex-int.cz>
+	<AANLkTimTrFLv911vVm-eH9EqDyXEwg-y4uFkqbUyVB7v@mail.gmail.com>
+	<alpine.LNX.2.00.1011100755560.29422@eeebox2.perex-int.cz>
+	<AANLkTi=2pO+x=Okt8RXPJe2TqGexEX70oMCFAtBAkm2U@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mailout-de.gmx.net [213.165.64.23])
-	by alsa0.perex.cz (Postfix) with SMTP id 595BC2457B
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 11:18:49 +0100 (CET)
-Received: from torbenh by siel.b with local (Exim 4.72)
-	(envelope-from <torbenh@gmx.de>) id 1PG7lO-0002IM-H2
-	for alsa-devel@alsa-project.org; Wed, 10 Nov 2010 11:18:46 +0100
-Content-Disposition: inline
-In-Reply-To: <20101108092647.GS4410@siel.b>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7C6CB2436C
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 12:30:54 +0100 (CET)
+In-Reply-To: <AANLkTi=2pO+x=Okt8RXPJe2TqGexEX70oMCFAtBAkm2U@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,41 +31,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Manu Abraham <abraham.manu@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 08, 2010 at 10:26:47AM +0100, torbenh wrote:
-> 
-> the alsa jack plugin has quite some problems:
-> a) does not work correctly with mplayers alsa output. (and quite a few
->    others)
-> b) it includes the pid in its clientname.
-> c) it requires port connections.
-> d) jack client is deactivated when alsa stream is not active.
-> e) no way to set the jack clientname
-> 
-> the master branch on git://hochstrom.endofinternet.org/alsa-plugins
-> carries fixes for a, b and e.
-> 
-> c and d have their own branches.
-> 
-> i have seen a few problems with making the write end of the fd
-> non-blocking. would it be possible to use eventfd(2) for this ?
+On Wed, 10 Nov 2010, Manu Abraham wrote:
 
-did anybody see this mail ?
-do you prefer patches in a different form ? 
-looks like you want git send-email
+> Ok, so period should be the interval at which an IRQ is expected.
+> ie, if i set a buffer size for 40mS, the period should be 40, I guess.
+>
+> That said, what should be a recommended value for period ? If hardware
+> needs to generate an IRQ at the end of each period ?
 
-or is there another ML for the plugins ?
+It's good to allow the lowledevel driver to pass all possible period 
+sizes to the user space. The application does decision how many wakeups 
+expects.
 
-> 
-> 
-> -- 
-> torben Hohn
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+ 					Jaroslav
 
--- 
-torben Hohn
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
