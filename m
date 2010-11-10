@@ -1,19 +1,29 @@
-From: abraham duenas <aduejazz@gmail.com>
-Subject: Re: [PATCH] add missing comparison to strcmp call
-Date: Wed, 10 Nov 2010 08:59:44 -0600
-Message-ID: <AANLkTi=3qaVqW+jtG9Pf56Fp_pyNjak5L3gD9gU4P4Ev@mail.gmail.com>
-References: <AANLkTi=Chhzawwe=84Z6K11TFi4hpe2d+zW4zNy49DLw@mail.gmail.com>
-	<1289394784.3284.35.camel@odin>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: mapping externally allocated Scatter Gather DMA
+ buffers
+Date: Wed, 10 Nov 2010 16:05:55 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1011101515420.29422@eeebox2.perex-int.cz>
+References: <AANLkTik4VQmsvBiXyoj-wEu5jgjpPVRP0bF7gkp9GJ-E@mail.gmail.com>
+	<alpine.LNX.2.00.1010260923070.29422@eeebox2.perex-int.cz>
+	<AANLkTin58toyQJ0f3M3abszE0zgV+t9R29rsFKin74vk@mail.gmail.com>
+	<alpine.LNX.2.00.1011091300130.29422@eeebox2.perex-int.cz>
+	<AANLkTikzXbnnPBNS+51zFvrYVqOTw8bz1=qWq_h--y35@mail.gmail.com>
+	<alpine.LNX.2.00.1011091347020.29422@eeebox2.perex-int.cz>
+	<AANLkTikHL5-6nuf6_sbkAX+y_vUo57tF-SW_j75ijEPJ@mail.gmail.com>
+	<alpine.LNX.2.00.1011091530230.29422@eeebox2.perex-int.cz>
+	<AANLkTimTrFLv911vVm-eH9EqDyXEwg-y4uFkqbUyVB7v@mail.gmail.com>
+	<alpine.LNX.2.00.1011100755560.29422@eeebox2.perex-int.cz>
+	<AANLkTi=2pO+x=Okt8RXPJe2TqGexEX70oMCFAtBAkm2U@mail.gmail.com>
+	<alpine.LNX.2.00.1011101228061.29422@eeebox2.perex-int.cz>
+	<AANLkTim=NT4cPQV+c3Y7eZF81Pv6R--vRgT_jGj7xZQJ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id A6298244B7
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 15:59:47 +0100 (CET)
-Received: by wyb33 with SMTP id 33so795241wyb.38
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 06:59:45 -0800 (PST)
-In-Reply-To: <1289394784.3284.35.camel@odin>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 00354244C4
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 16:05:56 +0100 (CET)
+In-Reply-To: <AANLkTim=NT4cPQV+c3Y7eZF81Pv6R--vRgT_jGj7xZQJ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,62 +33,233 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: Manu Abraham <abraham.manu@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 10, 2010 at 7:13 AM, Liam Girdwood <lrg@slimlogic.co.uk> wrote:
-> On Tue, 2010-11-09 at 15:43 -0600, abraham duenas wrote:
->> >From f796e5f464d3454761b618912e5b4d14716c2bfc Mon Sep 17 00:00:00 2001
->> From: abraham duenas <abraham.duenas@ti.com>
->> Date: Tue, 9 Nov 2010 15:31:16 -0600
->> Subject: [PATCH] add missing comparison to strcmp call
->>
->
-> Could do with a little more description here.
->
->>
->> Signed-off-by: abraham duenas <abraham.duenas@ti.com>
->> ---
->> =A0src/ucm/main.c | =A0 =A04 ++--
->> =A01 files changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/src/ucm/main.c b/src/ucm/main.c
->> index e233f41..a73595d 100644
->> --- a/src/ucm/main.c
->> +++ b/src/ucm/main.c
->> @@ -774,9 +774,9 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
->> =A0 =A0 =A0 =A0 pthread_mutex_lock(&uc_mgr->mutex);
->> =A0 =A0 =A0 =A0 if (strcmp(identifier, "_verbs") =3D=3D 0)
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 err =3D get_verb_list(uc_mgr, list);
->> - =A0 =A0 =A0 =A0else if (strcmp(identifier, "_enadevs"))
->> + =A0 =A0 =A0 =A0else if (strcmp(identifier, "_enadevs") =3D=3D 0)
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 err =3D get_enabled_device_list(uc_mgr, =
-list);
->> - =A0 =A0 =A0 =A0else if (strcmp(identifier, "_enamods"))
->> + =A0 =A0 =A0 =A0else if (strcmp(identifier, "_enamods") =3D=3D 0)
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0err =3D get_enabled_modifier_list(uc_=
-mgr, list);
->> =A0 =A0 =A0 =A0 =A0else {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0str1 =3D strchr(identifier, '/');
->
-> Looks fine to me, did this solve all your parsing issues ?
->
-> Thanks
->
-> Liam
-> --
-> Freelance Developer, SlimLogic Ltd
-> ASoC and Voltage Regulator Maintainer.
-> http://www.slimlogic.co.uk
->
->
+On Wed, 10 Nov 2010, Manu Abraham wrote:
 
-Not completely... I'm getting the "cset not yet implemented..."
-warning for the last element in the row. This is, for this sequence:
-cset "name=3D'Master Playback Switch' 1,1"
-cset "name=3D'Master Playback Volume' 25,25"
-cset "name=3D'Master Mono Playback' 0"
+> On Wed, Nov 10, 2010 at 5:00 PM, Jaroslav Kysela <perex@perex.cz> wrote:
+>> On Wed, 10 Nov 2010, Manu Abraham wrote:
+>>
+>>> Ok, so period should be the interval at which an IRQ is expected.
+>>> ie, if i set a buffer size for 40mS, the period should be 40, I guess.
+>>>
+>>> That said, what should be a recommended value for period ? If hardware
+>>> needs to generate an IRQ at the end of each period ?
+>>
+>> It's good to allow the lowledevel driver to pass all possible period sizes
+>> to the user space. The application does decision how many wakeups expects.
+>
+>
+> Ok, I adapted it to look thus,
+>
+> static struct snd_pcm_hardware saa7231_capture_info = {
+> 	.info			= (SNDRV_PCM_INFO_MMAP		|
+> 				  SNDRV_PCM_INFO_INTERLEAVED	|
+> 				  SNDRV_PCM_INFO_BLOCK_TRANSFER	|
+> 				  SNDRV_PCM_INFO_MMAP_VALID),
+>
+> 	.formats		= (SNDRV_PCM_FMTBIT_S16_LE	|
+> 				  SNDRV_PCM_FMTBIT_S16_BE	|
+> 				  SNDRV_PCM_FMTBIT_S8		|
+> 				  SNDRV_PCM_FMTBIT_U8		|
+> 				  SNDRV_PCM_FMTBIT_U16_LE	|
+> 				  SNDRV_PCM_FMTBIT_U16_BE),
+>
+> 	.rates			= SNDRV_PCM_RATE_32000,
+>
+> 	.rate_min		= 32000,
+> 	.rate_max		= 48000,
+>
+> 	.channels_min		= 2,
+> 	.channels_max		= 2,
+>
+> 	.buffer_bytes_max	= 512 * 4096,
+> #if 0
+> 	.period_bytes_min	= 192,
+> 	.period_bytes_max	= 1536,
+> 	.periods_min		= 2,
+> 	.periods_max		= 1024,
+> #endif
+> 	.period_bytes_min	= 1920,    /* 10mS @ 48khz */
+> 	.period_bytes_max	= 768000,  /* 4S   @ 48kHz */
+>
+> 	.periods_min		= 10,      /* 10mS */
+> 	.periods_max		= 4000000, /* 4S */
 
-I only get the warning for the last cset call:
-"cset not yet implemented: 'name=3D'Master Mono Playback' 0'
+??? 10 (period_bytes_min) * 10 (periods_min) = 100mS . Note that 
+period_bytes_* limits periods size, but periods_* count of periods per the 
+whole audio DMA ring buffer. Define smallest number of periods (it's 
+usually value one or two for periods_min).
+
+> };
+>
+> /*
+> * 10mS Buffer lengths
+> * @48kHz	1920 bytes
+> * @44.1kHz	1764 bytes
+> * @32kHz	1280 bytes
+> *
+> *
+> * period min = 10mS @48k:  1920 bytes @44.1k:  1764 bytes @32k:  1280 bytes
+> * period max = 1S   @48k:192000 bytes @44.1k:176400 bytes @32k:128000 bytes
+> * period     = 4S   @48k:768000 bytes @44.1k:705600 bytes @32k:512000 bytes
+> */
+> static int saa7231_capture_open(struct snd_pcm_substream *pcm)
+> {
+>        struct saa7231_audio *audio	= snd_pcm_substream_chip(pcm);
+>        struct snd_pcm_runtime *rt	= pcm->runtime;
+> 	struct saa7231_dev *saa7231	= audio->saa7231;
+>        int err;
+>
+> 	dprintk(SAA7231_DEBUG, 1, "()");
+> 	rt->hw = saa7231_capture_info;
+> 	snd_pcm_hw_constraint_list(rt, 0, SNDRV_PCM_HW_PARAM_RATE,
+> &hw_constraint_rates);
+> 	err = snd_pcm_hw_constraint_integer(rt, SNDRV_PCM_HW_PARAM_PERIODS);
+>        if (err < 0) {
+> 		dprintk(SAA7231_ERROR, 1, "snd_pcm_hw_constraint_integer() failed.
+> ret=%d", err);
+>                return err;
+> 	}
+
+> 	err = snd_pcm_hw_constraint_minmax(rt,
+> SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 10, 4000000);
+> 	if (err < 0) {
+> 		dprintk(SAA7231_ERROR, 1, "snd_pcm_hw_constraint_minmax() failed.
+> ret=%d", err);
+> 		return err;
+> 	}
+> 	err = snd_pcm_hw_constraint_minmax(rt,
+> SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 1920, 768000);
+> 	if (err < 0) {
+> 		dprintk(SAA7231_ERROR, 1, "snd_pcm_hw_constraint_minmax() failed.
+> ret=%d", err);
+> 		return err;
+> 	}
+
+Remove these minmax contrains. You already do limiting in hw->ops.
+
+>        return 0;
+> }
+>
+> /*
+> * saa7231_hw_params()
+> *
+> * This callback is called when the hardware parameter (hw_params) is setup
+> * by the application, ie., once when the buffer size, the period size,
+> * the format etc are defined for the PCM substream.
+> */
+> static int saa7231_hw_params(struct snd_pcm_substream *pcm, struct
+> snd_pcm_hw_params *params)
+> {
+> 	struct saa7231_audio *audio	= snd_pcm_substream_chip(pcm);
+> 	struct saa7231_dev *saa7231	= audio->saa7231;
+> 	struct snd_pcm_runtime *rt	= pcm->runtime;
+>
+> 	struct saa7231_dmabuf *buffer;
+> 	struct saa7231_stream *stream;
+> 	struct saa7231_dmabuf *dmabuf;
+>
+> 	struct page **ptable;
+>
+> 	void *mem;
+> 	void *dma_area;
+>
+> 	int i, j, pages, bytes, periods, bufsiz, pt_size;
+>
+> 	dprintk(SAA7231_DEBUG, 1, "DEBUG: ()");
+> 	periods = params_periods(params);
+> 	bytes = params_period_bytes(params);
+>
+> 	bufsiz = periods * bytes;
+> 	dprintk(SAA7231_DEBUG, 1, "bufsiz=%d periods=%d bytes=%d",
+> 		bufsiz,
+> 		periods,
+> 		bytes);
+>
+> 	pages = bufsiz / PAGE_SIZE;
+
+This is wrong. It should be 'pages = (bufsize + PAGE_SIZE - 1) / PAGE_SIZE'.
+
+> 	/* enable stream */
+> 	/* initializing 8 buffer with "pages" pages each .. */
+> 	stream = saa7231_stream_init(saa7231, AUDIO_CAPTURE, ADAPTER_INT, 0, pages);
+> 	if (!stream) {
+> 		dprintk(SAA7231_ERROR, 1, "ERROR: Registering stream");
+> 		return -ENOMEM;
+> 	}
+> 	audio->stream = stream;
+> 	buffer = stream->dmabuf;
+> 	saa7231_add_irqevent(saa7231, 43, SAA7231_EDGE_RISING,
+> saa7231_audio_evhandler, "AS2D_AVIS");
+> 	dprintk(SAA7231_DEBUG, 1, "Mapping %d buffers with %d pages each",
+> XS2D_BUFFERS, pages);
+
+Unfortunately, I don't understand the role of XS2D_BUFFERS. The ALSA 
+bufsize is the whole DMA area (you should use params_buffer_bytes() to 
+get this value instead of calculating this using periods * period_size).
+
+It means: Just allocate number of pages required for buffer_bytes. Don't 
+play with periods (except the interrupts).
+
+> 	/*
+> 	 * For a single DMA buffer:
+> 	 * each page takes a u64 size in a page table
+> 	 * number of entries a single page can hold = PAGE_SIZE / entry size
+> 	 * ie entries.max = PAGE_SIZE / 8 => 4096/8 = 512
+> 	 * Now, we have entries.req = 7 ("pages") per buffer
+> 	 *
+> 	 * For all in XS2D_BUFFERS:
+> 	 * page table should be large enough to hold all the pages in each DMA buffer
+> 	 * total number of pages = pages * XS2D_BUFFERS
+> 	 * max buffers that we need to consider = 512 * 8, this needs 8 pages
+> for a page table
+> 	 *
+> 	 * On a general note, we can calculate pages for page table as
+> 	 * page_table_size = total_pages / 512, with a minimum of a single page
+> 	 */
+>
+> #define MAX_ENTRIES_PER_PAGE		 (PAGE_SIZE / 8)
+>
+> 	pt_size = (pages * XS2D_BUFFERS) / MAX_ENTRIES_PER_PAGE;
+> 	/* minimum 1 page required for the table */
+> 	if (pt_size < 1)
+> 		pt_size = 1;
+>
+> 	dprintk(SAA7231_DEBUG, 1, "Page Table array size=%d", pt_size);
+> 	ptable = kzalloc((sizeof (struct page) * pt_size), GFP_KERNEL);
+> 	if (!ptable) {
+> 		dprintk(SAA7231_ERROR, 1, "ERROR: No memory to allocate virtual map");
+> 		return -ENOMEM;
+> 	}
+> 	audio->ptable = ptable;
+>
+> 	for (i = 0; i < XS2D_BUFFERS; i ++) {
+> 		dmabuf = &buffer[i];
+> 		mem = dmabuf->vmalloc;
+> 		for (j = 0; j < pages; j++)
+> 			ptable[j] = virt_to_page(mem);
+> 	}
+
+This looks broken. ptable is overwritten for each XS2D_BUFFERS iteration.
+
+> #if 0
+> 	dma_area = vmap(ptable, (pages * XS2D_BUFFERS), VM_MAP, PAGE_KERNEL);
+> 	rt->dma_area	= dma_area;
+> 	rt->dma_bytes	= XS2D_BUFFERS * pages * SAA7231_PAGE_SIZE;
+> 	rt->dma_addr	= 0;
+> #endif
+> 	return 0;
+> }
+
+I think that the second argument is number of linux mem pages. Your value 
+seems strange.
+
+ 							Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
