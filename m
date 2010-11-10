@@ -1,20 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/2] ASoC: Add trace events for ASoC
- register read/write
-Date: Wed, 10 Nov 2010 21:04:34 +0000
-Message-ID: <1289423074.3284.51.camel@odin>
-References: <1289407146-20250-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] Fix Atmel soc audio boards Kconfig
+ dependency
+Date: Wed, 10 Nov 2010 21:04:59 +0000
+Message-ID: <1289423099.3284.52.camel@odin>
+References: <4CDAFA56.2050504@bluewatersys.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id C9C0E1038AC
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 22:04:38 +0100 (CET)
-Received: by wye20 with SMTP id 20so240471wye.38
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 13:04:38 -0800 (PST)
-In-Reply-To: <1289407146-20250-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id DBEAD24429
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 22:05:03 +0100 (CET)
+Received: by eyg24 with SMTP id 24so660526eyg.38
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 13:05:03 -0800 (PST)
+In-Reply-To: <4CDAFA56.2050504@bluewatersys.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,20 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Ryan Mallon <ryan@bluewatersys.com>
+Cc: gwossum@acm.org, Gaouaou <sedji.gaouaou@atmel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sedji@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-11-10 at 16:39 +0000, Mark Brown wrote:
-> The trace subsystem provides a convenient way of instrumenting the kernel
-> which can be left on all the time with extremely low impact on the system
-> unlike prints to the kernel log which can be very spammy. Begin adding
-> support for instrumenting ASoC via this interface by adding trace for the
-> register access primitives.
+On Thu, 2010-11-11 at 09:02 +1300, Ryan Mallon wrote:
+> Add Kconfig dependency on AT91_PROGRAMMABLE_CLOCKS for the Atmel SoC
+> audio SAM9G20-EK and PlayPaq boards. Fixes link errors on missing
+> clk_set_parent and clk_set_rate when building without
+> AT91_PROGRAMMABLE_CLOCKS.
 > 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-
-Both
+> Signed-off-by: Ryan Mallon <ryan@bluewatersys.com>
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
