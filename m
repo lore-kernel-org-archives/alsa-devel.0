@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Factor out boiler plate for DAPM event
-	generation
-Date: Wed, 10 Nov 2010 16:32:19 +0000
-Message-ID: <1289406739-19608-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ASoC: Add trace events for ASoC register
+	read/write
+Date: Wed, 10 Nov 2010 16:39:05 +0000
+Message-ID: <1289407146-20250-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5B4402454D
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 17:33:13 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 25CDE2455C
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 17:39:08 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,145 +20,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Make the DAPM sequence execution look a bit nicer by factoring out the
-code to invoke an event into a single function since it's all the same
-pretty much.
+The trace subsystem provides a convenient way of instrumenting the kernel
+which can be left on all the time with extremely low impact on the system
+unlike prints to the kernel log which can be very spammy. Begin adding
+support for instrumenting ASoC via this interface by adding trace for the
+register access primitives.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-dapm.c |   98 +++++++++++++++++++++++++-------------------------
- 1 files changed, 49 insertions(+), 49 deletions(-)
+ include/trace/events/asoc.h |   64 +++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/soc-core.c        |    5 +++
+ 2 files changed, 69 insertions(+), 0 deletions(-)
+ create mode 100644 include/trace/events/asoc.h
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 450307c..5a5db3f 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -726,13 +726,55 @@ static void dapm_seq_insert(struct snd_soc_dapm_widget *new_widget,
- 	list_add_tail(&new_widget->power_list, list);
- }
+diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
+new file mode 100644
+index 0000000..93c3371
+--- /dev/null
++++ b/include/trace/events/asoc.h
+@@ -0,0 +1,64 @@
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM asoc
++
++#if !defined(_TRACE_ASOC_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_ASOC_H
++
++#include <linux/ktime.h>
++#include <linux/tracepoint.h>
++
++struct snd_soc_codec;
++
++/*
++ * Log register events
++ */
++DECLARE_EVENT_CLASS(snd_soc_reg,
++
++	TP_PROTO(struct snd_soc_codec *codec, unsigned int reg,
++		 unsigned int val),
++
++	TP_ARGS(codec, reg, val),
++
++	TP_STRUCT__entry(
++		__string(	name,		codec->name	)
++		__field(	int,		id		)
++		__field(	unsigned int,	reg		)
++		__field(	unsigned int,	val		)
++	),
++
++	TP_fast_assign(
++		__assign_str(name, codec->name);
++		__entry->id = codec->id;
++		__entry->reg = reg;
++		__entry->val = val;
++	),
++
++	TP_printk("codec=%s.%d reg=%x val=%x", __get_str(name),
++		  (int)__entry->id, (unsigned int)__entry->reg,
++		  (unsigned int)__entry->val)
++);
++
++DEFINE_EVENT(snd_soc_reg, snd_soc_reg_write,
++
++	TP_PROTO(struct snd_soc_codec *codec, unsigned int reg,
++		 unsigned int val),
++
++	TP_ARGS(codec, reg, val)
++
++);
++
++DEFINE_EVENT(snd_soc_reg, snd_soc_reg_read,
++
++	TP_PROTO(struct snd_soc_codec *codec, unsigned int reg,
++		 unsigned int val),
++
++	TP_ARGS(codec, reg, val)
++
++);
++
++
++
++#endif /* _TRACE_ASOC_H */
++
++/* This part must be outside protection */
++#include <trace/define_trace.h>
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index c18ce1d..700a6d5 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -39,6 +39,9 @@
+ #include <sound/soc-dapm.h>
+ #include <sound/initval.h>
  
-+static void dapm_seq_check_event(struct snd_soc_dapm_context *dapm,
-+				 struct snd_soc_dapm_widget *w, int event)
-+{
-+	struct snd_soc_card *card = dapm->card;
-+	const char *ev_name;
-+	int power, ret;
++#define CREATE_TRACE_POINTS
++#include <trace/events/asoc.h>
 +
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		ev_name = "PRE_PMU";
-+		power = 1;
-+		break;
-+	case SND_SOC_DAPM_POST_PMU:
-+		ev_name = "POST_PMU";
-+		power = 1;
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		ev_name = "PRE_PMD";
-+		power = 0;
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		ev_name = "POST_PMD";
-+		power = 0;
-+		break;
-+	default:
-+		BUG();
-+		return;
-+	}
-+
-+	if (w->power != power)
-+		return;
-+
-+	if (w->event && (w->event_flags & event)) {
-+		pop_dbg(dapm->dev, card->pop_time, "pop test : %s %s\n",
-+			w->name, ev_name);
-+		ret = w->event(w, NULL, event);
-+		if (ret < 0)
-+			pr_err("%s: %s event failed: %d\n",
-+			       ev_name, w->name, ret);
-+	}
-+}
-+
- /* Apply the coalesced changes from a DAPM sequence */
- static void dapm_seq_run_coalesced(struct snd_soc_dapm_context *dapm,
- 				   struct list_head *pending)
+ #define NAME_SIZE	32
+ 
+ static DEFINE_MUTEX(pcm_mutex);
+@@ -1914,6 +1917,7 @@ unsigned int snd_soc_read(struct snd_soc_codec *codec, unsigned int reg)
+ 
+ 	ret = codec->driver->read(codec, reg);
+ 	dev_dbg(codec->dev, "read %x => %x\n", reg, ret);
++	trace_snd_soc_reg_read(codec, reg, ret);
+ 
+ 	return ret;
+ }
+@@ -1923,6 +1927,7 @@ unsigned int snd_soc_write(struct snd_soc_codec *codec,
+ 			   unsigned int reg, unsigned int val)
  {
--	struct snd_soc_dapm_widget *w;
- 	struct snd_soc_card *card = dapm->card;
--	int reg, power, ret;
-+	struct snd_soc_dapm_widget *w;
-+	int reg, power;
- 	unsigned int value = 0;
- 	unsigned int mask = 0;
- 	unsigned int cur_mask;
-@@ -757,29 +799,9 @@ static void dapm_seq_run_coalesced(struct snd_soc_dapm_context *dapm,
- 			"pop test : Queue %s: reg=0x%x, 0x%x/0x%x\n",
- 			w->name, reg, value, mask);
- 
--		/* power up pre event */
--		if (w->power && w->event &&
--		    (w->event_flags & SND_SOC_DAPM_PRE_PMU)) {
--			pop_dbg(dapm->dev, card->pop_time,
--				"pop test : %s PRE_PMU\n", w->name);
--			ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMU);
--			if (ret < 0)
--				dev_err(dapm->dev,
--					"%s: pre event failed: %d\n",
--					w->name, ret);
--		}
--
--		/* power down pre event */
--		if (!w->power && w->event &&
--		    (w->event_flags & SND_SOC_DAPM_PRE_PMD)) {
--			pop_dbg(dapm->dev, card->pop_time,
--				"pop test : %s PRE_PMD\n", w->name);
--			ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMD);
--			if (ret < 0)
--				dev_err(dapm->dev,
--					"%s: pre event failed: %d\n",
--					w->name, ret);
--		}
-+		/* Check for events */
-+		dapm_seq_check_event(dapm, w, SND_SOC_DAPM_PRE_PMU);
-+		dapm_seq_check_event(dapm, w, SND_SOC_DAPM_PRE_PMD);
- 	}
- 
- 	if (reg >= 0) {
-@@ -791,30 +813,8 @@ static void dapm_seq_run_coalesced(struct snd_soc_dapm_context *dapm,
- 	}
- 
- 	list_for_each_entry(w, pending, power_list) {
--		/* power up post event */
--		if (w->power && w->event &&
--		    (w->event_flags & SND_SOC_DAPM_POST_PMU)) {
--			pop_dbg(dapm->dev, card->pop_time,
--				"pop test : %s POST_PMU\n", w->name);
--			ret = w->event(w,
--				       NULL, SND_SOC_DAPM_POST_PMU);
--			if (ret < 0)
--				dev_err(dapm->dev,
--					"%s: post event failed: %d\n",
--					w->name, ret);
--		}
--
--		/* power down post event */
--		if (!w->power && w->event &&
--		    (w->event_flags & SND_SOC_DAPM_POST_PMD)) {
--			pop_dbg(dapm->dev, card->pop_time,
--				"pop test : %s POST_PMD\n", w->name);
--			ret = w->event(w, NULL, SND_SOC_DAPM_POST_PMD);
--			if (ret < 0)
--				dev_err(dapm->dev,
--					"%s: post event failed: %d\n",
--					w->name, ret);
--		}
-+		dapm_seq_check_event(dapm, w, SND_SOC_DAPM_POST_PMU);
-+		dapm_seq_check_event(dapm, w, SND_SOC_DAPM_POST_PMD);
- 	}
+ 	dev_dbg(codec->dev, "write %x = %x\n", reg, val);
++	trace_snd_soc_reg_write(codec, reg, val);
+ 	return codec->driver->write(codec, reg, val);
  }
- 
+ EXPORT_SYMBOL_GPL(snd_soc_write);
 -- 
 1.7.1
