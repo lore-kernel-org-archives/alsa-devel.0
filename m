@@ -1,32 +1,15 @@
-From: Manu Abraham <abraham.manu@gmail.com>
-Subject: Re: mapping externally allocated Scatter Gather DMA
-	buffers
-Date: Wed, 10 Nov 2010 21:56:40 +0530
-Message-ID: <AANLkTi=gjN1xfnMZ4R29Sq_=fxYAfJwOQmD_+6beLYSp@mail.gmail.com>
-References: <AANLkTik4VQmsvBiXyoj-wEu5jgjpPVRP0bF7gkp9GJ-E@mail.gmail.com>
-	<alpine.LNX.2.00.1010260923070.29422@eeebox2.perex-int.cz>
-	<AANLkTin58toyQJ0f3M3abszE0zgV+t9R29rsFKin74vk@mail.gmail.com>
-	<alpine.LNX.2.00.1011091300130.29422@eeebox2.perex-int.cz>
-	<AANLkTikzXbnnPBNS+51zFvrYVqOTw8bz1=qWq_h--y35@mail.gmail.com>
-	<alpine.LNX.2.00.1011091347020.29422@eeebox2.perex-int.cz>
-	<AANLkTikHL5-6nuf6_sbkAX+y_vUo57tF-SW_j75ijEPJ@mail.gmail.com>
-	<alpine.LNX.2.00.1011091530230.29422@eeebox2.perex-int.cz>
-	<AANLkTimTrFLv911vVm-eH9EqDyXEwg-y4uFkqbUyVB7v@mail.gmail.com>
-	<alpine.LNX.2.00.1011100755560.29422@eeebox2.perex-int.cz>
-	<AANLkTi=2pO+x=Okt8RXPJe2TqGexEX70oMCFAtBAkm2U@mail.gmail.com>
-	<alpine.LNX.2.00.1011101228061.29422@eeebox2.perex-int.cz>
-	<AANLkTim=NT4cPQV+c3Y7eZF81Pv6R--vRgT_jGj7xZQJ@mail.gmail.com>
-	<alpine.LNX.2.00.1011101515420.29422@eeebox2.perex-int.cz>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Factor out boiler plate for DAPM event
+	generation
+Date: Wed, 10 Nov 2010 16:32:19 +0000
+Message-ID: <1289406739-19608-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 79B9B24546
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 17:26:41 +0100 (CET)
-Received: by fxm14 with SMTP id 14so90269fxm.38
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 08:26:41 -0800 (PST)
-In-Reply-To: <alpine.LNX.2.00.1011101515420.29422@eeebox2.perex-int.cz>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5B4402454D
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 17:33:13 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,52 +19,146 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 10, 2010 at 8:35 PM, Jaroslav Kysela <perex@perex.cz> wrote:
-> On Wed, 10 Nov 2010, Manu Abraham wrote:
->> =A0 =A0 =A0 =A0/* enable stream */
->> =A0 =A0 =A0 =A0/* initializing 8 buffer with "pages" pages each .. */
->> =A0 =A0 =A0 =A0stream =3D saa7231_stream_init(saa7231, AUDIO_CAPTURE, AD=
-APTER_INT,
->> 0, pages);
->> =A0 =A0 =A0 =A0if (!stream) {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0dprintk(SAA7231_ERROR, 1, "ERROR: Registe=
-ring stream");
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return -ENOMEM;
->> =A0 =A0 =A0 =A0}
->> =A0 =A0 =A0 =A0audio->stream =3D stream;
->> =A0 =A0 =A0 =A0buffer =3D stream->dmabuf;
->> =A0 =A0 =A0 =A0saa7231_add_irqevent(saa7231, 43, SAA7231_EDGE_RISING,
->> saa7231_audio_evhandler, "AS2D_AVIS");
->> =A0 =A0 =A0 =A0dprintk(SAA7231_DEBUG, 1, "Mapping %d buffers with %d pag=
-es each",
->> XS2D_BUFFERS, pages);
->
-> Unfortunately, I don't understand the role of XS2D_BUFFERS. The ALSA bufs=
-ize
-> is the whole DMA area (you should use params_buffer_bytes() to get this
-> value instead of calculating this using periods * period_size).
->
-> It means: Just allocate number of pages required for buffer_bytes. Don't
-> play with periods (except the interrupts).
+Make the DAPM sequence execution look a bit nicer by factoring out the
+code to invoke an event into a single function since it's all the same
+pretty much.
 
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-dapm.c |   98 +++++++++++++++++++++++++-------------------------
+ 1 files changed, 49 insertions(+), 49 deletions(-)
 
-There are 8 SG buffers for the hardware; the maximum size of each
-buffer can be 512 pages,
-the minimum can be a single page.
-
-Since each of the 8 buffers, the minimum buffer size of each buffer is
-4096 bytes, the total
-minimum ALSA buffer size would be 8 * 4096 bytes =3D 32768 bytes,
-and a maximum of 8 * 512 * 4096 =3D 16777216 bytes
-
-So, I should calculate the periods and period bytes based on the
-buffer size involved ?
-ie: it could turn out to be hard to get exact values for each of the
-sampling rates involved ?
-
-Regards,
-Manu
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 450307c..5a5db3f 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -726,13 +726,55 @@ static void dapm_seq_insert(struct snd_soc_dapm_widget *new_widget,
+ 	list_add_tail(&new_widget->power_list, list);
+ }
+ 
++static void dapm_seq_check_event(struct snd_soc_dapm_context *dapm,
++				 struct snd_soc_dapm_widget *w, int event)
++{
++	struct snd_soc_card *card = dapm->card;
++	const char *ev_name;
++	int power, ret;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		ev_name = "PRE_PMU";
++		power = 1;
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		ev_name = "POST_PMU";
++		power = 1;
++		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		ev_name = "PRE_PMD";
++		power = 0;
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		ev_name = "POST_PMD";
++		power = 0;
++		break;
++	default:
++		BUG();
++		return;
++	}
++
++	if (w->power != power)
++		return;
++
++	if (w->event && (w->event_flags & event)) {
++		pop_dbg(dapm->dev, card->pop_time, "pop test : %s %s\n",
++			w->name, ev_name);
++		ret = w->event(w, NULL, event);
++		if (ret < 0)
++			pr_err("%s: %s event failed: %d\n",
++			       ev_name, w->name, ret);
++	}
++}
++
+ /* Apply the coalesced changes from a DAPM sequence */
+ static void dapm_seq_run_coalesced(struct snd_soc_dapm_context *dapm,
+ 				   struct list_head *pending)
+ {
+-	struct snd_soc_dapm_widget *w;
+ 	struct snd_soc_card *card = dapm->card;
+-	int reg, power, ret;
++	struct snd_soc_dapm_widget *w;
++	int reg, power;
+ 	unsigned int value = 0;
+ 	unsigned int mask = 0;
+ 	unsigned int cur_mask;
+@@ -757,29 +799,9 @@ static void dapm_seq_run_coalesced(struct snd_soc_dapm_context *dapm,
+ 			"pop test : Queue %s: reg=0x%x, 0x%x/0x%x\n",
+ 			w->name, reg, value, mask);
+ 
+-		/* power up pre event */
+-		if (w->power && w->event &&
+-		    (w->event_flags & SND_SOC_DAPM_PRE_PMU)) {
+-			pop_dbg(dapm->dev, card->pop_time,
+-				"pop test : %s PRE_PMU\n", w->name);
+-			ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMU);
+-			if (ret < 0)
+-				dev_err(dapm->dev,
+-					"%s: pre event failed: %d\n",
+-					w->name, ret);
+-		}
+-
+-		/* power down pre event */
+-		if (!w->power && w->event &&
+-		    (w->event_flags & SND_SOC_DAPM_PRE_PMD)) {
+-			pop_dbg(dapm->dev, card->pop_time,
+-				"pop test : %s PRE_PMD\n", w->name);
+-			ret = w->event(w, NULL, SND_SOC_DAPM_PRE_PMD);
+-			if (ret < 0)
+-				dev_err(dapm->dev,
+-					"%s: pre event failed: %d\n",
+-					w->name, ret);
+-		}
++		/* Check for events */
++		dapm_seq_check_event(dapm, w, SND_SOC_DAPM_PRE_PMU);
++		dapm_seq_check_event(dapm, w, SND_SOC_DAPM_PRE_PMD);
+ 	}
+ 
+ 	if (reg >= 0) {
+@@ -791,30 +813,8 @@ static void dapm_seq_run_coalesced(struct snd_soc_dapm_context *dapm,
+ 	}
+ 
+ 	list_for_each_entry(w, pending, power_list) {
+-		/* power up post event */
+-		if (w->power && w->event &&
+-		    (w->event_flags & SND_SOC_DAPM_POST_PMU)) {
+-			pop_dbg(dapm->dev, card->pop_time,
+-				"pop test : %s POST_PMU\n", w->name);
+-			ret = w->event(w,
+-				       NULL, SND_SOC_DAPM_POST_PMU);
+-			if (ret < 0)
+-				dev_err(dapm->dev,
+-					"%s: post event failed: %d\n",
+-					w->name, ret);
+-		}
+-
+-		/* power down post event */
+-		if (!w->power && w->event &&
+-		    (w->event_flags & SND_SOC_DAPM_POST_PMD)) {
+-			pop_dbg(dapm->dev, card->pop_time,
+-				"pop test : %s POST_PMD\n", w->name);
+-			ret = w->event(w, NULL, SND_SOC_DAPM_POST_PMD);
+-			if (ret < 0)
+-				dev_err(dapm->dev,
+-					"%s: post event failed: %d\n",
+-					w->name, ret);
+-		}
++		dapm_seq_check_event(dapm, w, SND_SOC_DAPM_POST_PMU);
++		dapm_seq_check_event(dapm, w, SND_SOC_DAPM_POST_PMD);
+ 	}
+ }
+ 
+-- 
+1.7.1
