@@ -1,15 +1,29 @@
-From: Julia Lawall <julia@diku.dk>
-Subject: [PATCH] sound/pci/ctxfi/ctpcm.c: Remove potential for
-	use after free
-Date: Tue,  9 Nov 2010 23:00:41 +0100
-Message-ID: <1289340041-15433-1-git-send-email-julia@diku.dk>
+From: Mohammad Bahathir Hashim <bahathir@gmail.com>
+Subject: Re: HDMI on HDA device=3
+Date: Wed, 10 Nov 2010 03:12:42 +0000 (UTC)
+Message-ID: <ibd2j9$8he$1@dough.gmane.org>
+References: <4CD95DD9.2070102@canonical.com> <ibbsj9$o50$1@dough.gmane.org>
+	<alpine.LNX.2.00.1011091739060.29422@eeebox2.perex-int.cz>
+	<ibbuuc$4ar$1@dough.gmane.org>
+	<alpine.LNX.2.00.1011091853230.29422@eeebox2.perex-int.cz>
+Reply-To: Mohammad Bahathir Hashim <bahathir@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id C9071103872
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2010 22:51:21 +0100 (CET)
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id DB9C0244C0
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 04:12:58 +0100 (CET)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1PG17H-0000XS-Jw
+	for alsa-devel@alsa-project.org; Wed, 10 Nov 2010 04:12:55 +0100
+Received: from 203.106.17.237 ([203.106.17.237])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 04:12:55 +0100
+Received: from bahathir by 203.106.17.237 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 04:12:55 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,103 +33,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, clemens@ladisch.de, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In each function, the value apcm is stored in the private_data field of
-runtime.  At the same time the function ct_atc_pcm_free_substream is stored
-in the private_free field of the same structure.  ct_atc_pcm_free_substream
-dereferences and ultimately frees the value in the private_data field.  But
-each function can exit in an error case with apcm having been freed, in
-which case a subsequent call to the private_free function would perform a
-dereference after free.  On the other hand, if the private_free field is
-not initialized, it is NULL, and not invoked (see snd_pcm_detach_substream
-in sound/core/pcm.c).  To avoid the introduction of a dangling pointer, the
-initializations of the private_data and private_free fields are moved to
-the end of the function, past any possible free of apcm.  This is safe
-because the previous calls to snd_pcm_hw_constraint_integer and
-snd_pcm_hw_constraint_minmax, which take runtime as an argument, do not
-refer to either of these fields.
+On 2010-11-09, Jaroslav Kysela <perex@perex.cz> wrote:
+> On Tue, 9 Nov 2010, Mohammad Bahathir Hashim wrote:
+>
+>> On 2010-11-09, Jaroslav Kysela <perex@perex.cz> wrote:
+>>> On Tue, 9 Nov 2010, Mohammad Bahathir Hashim wrote:
+>>>
+>>>> On 2010-11-09, David Henningsson <david.henningsson@canonical.com> wrote:
+>>>>> I have seen a few HDMIs which share the HDA controller with the onboard
+>>>>> sound card, but the codecs are different, e g the onboard one is at
+>>>>> address #0 and the HDMI is at address #3 - or even #3, #7, #8 and #9 in
+>>>>> some cases.
+>>>>>
+>>>>> Now, if the user specifies the device string hdmi:x (where x is card
+>>>>> name/number), I'd like it to kind of autodetect this and use DEV=3
+>>>>> instead of DEV=0, and without breaking the cards where the hdmi is a
+>>>>> separate card with a codec at address #0. However, it still seems like
+>>>>> the device is at DEV=3 somehow.
+>>>>>
+>>>>> Now, looking at /usr/share/alsa/cards/HDA-Intel.conf, I notice that
+>>>>> there are entries HDA-Intel.pcm.hdmi.0 which sets DEV=3, so it seems
+>>>>> like someone already thought of this. However, just using "hdmi:x" does
+>>>>> not trigger "DEV=3". I'm still not grepping all of the alsa lisp
+>>>>> architecture stuff, so could someone explain to me how the
+>>>>> HDA-Intel.pcm.hdmi.0 entry relates to the "hdmi:x" alsa device string?
+>>>>>
+>>>>
+>>>> I am not sure about Intel HDMI, but, in my case with MacbookPro 6,2
+>>>> (15" Mid 2010); the HDMI audio stream via NVIDIA HDMI can only be
+>>>> started if I use hw:1,7 (or Mplayer's -ao alsa:device=hw=1.7). No
+>>>
+>>> This should be equal to '-ao alsa:device=hdmi=1.1' (hdmi:1,1 in ALSA
+>>> naming).
+>>>
+>>>  						Jaroslav
+>>>
+>>> -----
+>>> Jaroslav Kysela <perex@perex.cz>
+>>> Linux Kernel Sound Maintainer
+>>> ALSA Project, Red Hat, Inc.
+>>
+>>
+>> Ok, I tried the -ao alsa:device=hdmi=1.7 ... but, MPlayer complains;
+>
+> No, 1.7 but 1.1 (hw device 7 is logical device 1 - aka second device - for 
+> hdmi).
+>
+>  						Jaroslav
+>
+> -----
+> Jaroslav Kysela <perex@perex.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, Red Hat, Inc.
 
-In each function, there is one error case where apcm needs to be freed, and
-a call to kfree is added.
+Yup, I tried both -ao alsa:device=hdmi=1.1 and -ao alsa:device=1.7,
+but, I got same or similar errors.
 
-The sematic match that finds this problem is as follows:
-(http://coccinelle.lip6.fr/)
-
-// <smpl>
-@@
-expression e,e1,e2,e3;
-identifier f,free1,free2;
-expression a;
-@@
-
-*e->f = a
-... when != e->f = e1
-    when any
-if (...) {
-  ... when != free1(...,e,...)
-      when != e->f = e2
-* kfree(a)
-  ... when != free2(...,e,...)
-      when != e->f = e3
-}
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
----
- sound/pci/ctxfi/ctpcm.c |   16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
-
-diff --git a/sound/pci/ctxfi/ctpcm.c b/sound/pci/ctxfi/ctpcm.c
-index 85ab43e..457d211 100644
---- a/sound/pci/ctxfi/ctpcm.c
-+++ b/sound/pci/ctxfi/ctpcm.c
-@@ -129,8 +129,6 @@ static int ct_pcm_playback_open(struct snd_pcm_substream *substream)
- 
- 	apcm->substream = substream;
- 	apcm->interrupt = ct_atc_pcm_interrupt;
--	runtime->private_data = apcm;
--	runtime->private_free = ct_atc_pcm_free_substream;
- 	if (IEC958 == substream->pcm->device) {
- 		runtime->hw = ct_spdif_passthru_playback_hw;
- 		atc->spdif_out_passthru(atc, 1);
-@@ -155,8 +153,12 @@ static int ct_pcm_playback_open(struct snd_pcm_substream *substream)
- 	}
- 
- 	apcm->timer = ct_timer_instance_new(atc->timer, apcm);
--	if (!apcm->timer)
-+	if (!apcm->timer) {
-+		kfree(apcm);
- 		return -ENOMEM;
-+	}
-+	runtime->private_data = apcm;
-+	runtime->private_free = ct_atc_pcm_free_substream;
- 
- 	return 0;
- }
-@@ -278,8 +280,6 @@ static int ct_pcm_capture_open(struct snd_pcm_substream *substream)
- 	apcm->started = 0;
- 	apcm->substream = substream;
- 	apcm->interrupt = ct_atc_pcm_interrupt;
--	runtime->private_data = apcm;
--	runtime->private_free = ct_atc_pcm_free_substream;
- 	runtime->hw = ct_pcm_capture_hw;
- 	runtime->hw.rate_max = atc->rsr * atc->msr;
- 
-@@ -298,8 +298,12 @@ static int ct_pcm_capture_open(struct snd_pcm_substream *substream)
- 	}
- 
- 	apcm->timer = ct_timer_instance_new(atc->timer, apcm);
--	if (!apcm->timer)
-+	if (!apcm->timer) {
-+		kfree(apcm);
- 		return -ENOMEM;
-+	}
-+	runtime->private_data = apcm;
-+	runtime->private_free = ct_atc_pcm_free_substream;
- 
- 	return 0;
- }
+Thanks :)
