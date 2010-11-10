@@ -1,29 +1,26 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: mapping externally allocated Scatter Gather DMA
- buffers
-Date: Wed, 10 Nov 2010 16:05:55 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1011101515420.29422@eeebox2.perex-int.cz>
-References: <AANLkTik4VQmsvBiXyoj-wEu5jgjpPVRP0bF7gkp9GJ-E@mail.gmail.com>
-	<alpine.LNX.2.00.1010260923070.29422@eeebox2.perex-int.cz>
-	<AANLkTin58toyQJ0f3M3abszE0zgV+t9R29rsFKin74vk@mail.gmail.com>
-	<alpine.LNX.2.00.1011091300130.29422@eeebox2.perex-int.cz>
-	<AANLkTikzXbnnPBNS+51zFvrYVqOTw8bz1=qWq_h--y35@mail.gmail.com>
-	<alpine.LNX.2.00.1011091347020.29422@eeebox2.perex-int.cz>
-	<AANLkTikHL5-6nuf6_sbkAX+y_vUo57tF-SW_j75ijEPJ@mail.gmail.com>
-	<alpine.LNX.2.00.1011091530230.29422@eeebox2.perex-int.cz>
-	<AANLkTimTrFLv911vVm-eH9EqDyXEwg-y4uFkqbUyVB7v@mail.gmail.com>
-	<alpine.LNX.2.00.1011100755560.29422@eeebox2.perex-int.cz>
-	<AANLkTi=2pO+x=Okt8RXPJe2TqGexEX70oMCFAtBAkm2U@mail.gmail.com>
-	<alpine.LNX.2.00.1011101228061.29422@eeebox2.perex-int.cz>
-	<AANLkTim=NT4cPQV+c3Y7eZF81Pv6R--vRgT_jGj7xZQJ@mail.gmail.com>
+Subject: Re: ALSA UCM
+Date: Wed, 10 Nov 2010 16:11:02 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1011101608250.29422@eeebox2.perex-int.cz>
+References: <AANLkTimFdKg=_KDv8fbSJry6XTEsZqyQz7GhzaPxXDYP@mail.gmail.com>
+	<1288865349.3277.14.camel@odin>
+	<AANLkTim1Aopc2ALEXoWorPjzua0gGoSef8CpH+At4_cp@mail.gmail.com>
+	<1288890598.3277.81.camel@odin>
+	<alpine.LNX.2.00.1011041932410.29422@eeebox2.perex-int.cz>
+	<1288896461.3277.98.camel@odin>
+	<alpine.LNX.2.00.1011041949180.29422@eeebox2.perex-int.cz>
+	<1288897628.3277.99.camel@odin>
+	<AANLkTikn6Q+6KUpZaDGXuX=bGHrbV_9s91C6u+rS5e22@mail.gmail.com>
+	<1289046396.3318.53.camel@odin>
+	<AANLkTina11GuK4jqP=DtD-OEjTiRtNa_yG0QKy7XDuxs@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 00354244C4
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 16:05:56 +0100 (CET)
-In-Reply-To: <AANLkTim=NT4cPQV+c3Y7eZF81Pv6R--vRgT_jGj7xZQJ@mail.gmail.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id BF6BA244CA
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2010 16:11:02 +0100 (CET)
+In-Reply-To: <AANLkTina11GuK4jqP=DtD-OEjTiRtNa_yG0QKy7XDuxs@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,231 +30,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Manu Abraham <abraham.manu@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: abraham duenas <aduejazz@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 10 Nov 2010, Manu Abraham wrote:
+On Tue, 9 Nov 2010, abraham duenas wrote:
 
-> On Wed, Nov 10, 2010 at 5:00 PM, Jaroslav Kysela <perex@perex.cz> wrote:
->> On Wed, 10 Nov 2010, Manu Abraham wrote:
->>
->>> Ok, so period should be the interval at which an IRQ is expected.
->>> ie, if i set a buffer size for 40mS, the period should be 40, I guess.
->>>
->>> That said, what should be a recommended value for period ? If hardware
->>> needs to generate an IRQ at the end of each period ?
->>
->> It's good to allow the lowledevel driver to pass all possible period sizes
->> to the user space. The application does decision how many wakeups expects.
+> Hello, I think this is missing:
 >
->
-> Ok, I adapted it to look thus,
->
-> static struct snd_pcm_hardware saa7231_capture_info = {
-> 	.info			= (SNDRV_PCM_INFO_MMAP		|
-> 				  SNDRV_PCM_INFO_INTERLEAVED	|
-> 				  SNDRV_PCM_INFO_BLOCK_TRANSFER	|
-> 				  SNDRV_PCM_INFO_MMAP_VALID),
->
-> 	.formats		= (SNDRV_PCM_FMTBIT_S16_LE	|
-> 				  SNDRV_PCM_FMTBIT_S16_BE	|
-> 				  SNDRV_PCM_FMTBIT_S8		|
-> 				  SNDRV_PCM_FMTBIT_U8		|
-> 				  SNDRV_PCM_FMTBIT_U16_LE	|
-> 				  SNDRV_PCM_FMTBIT_U16_BE),
->
-> 	.rates			= SNDRV_PCM_RATE_32000,
->
-> 	.rate_min		= 32000,
-> 	.rate_max		= 48000,
->
-> 	.channels_min		= 2,
-> 	.channels_max		= 2,
->
-> 	.buffer_bytes_max	= 512 * 4096,
-> #if 0
-> 	.period_bytes_min	= 192,
-> 	.period_bytes_max	= 1536,
-> 	.periods_min		= 2,
-> 	.periods_max		= 1024,
-> #endif
-> 	.period_bytes_min	= 1920,    /* 10mS @ 48khz */
-> 	.period_bytes_max	= 768000,  /* 4S   @ 48kHz */
->
-> 	.periods_min		= 10,      /* 10mS */
-> 	.periods_max		= 4000000, /* 4S */
+> diff --git a/src/ucm/main.c b/src/ucm/main.c
+> index e233f41..a73595d 100644
+> --- a/src/ucm/main.c
+> +++ b/src/ucm/main.c
+> @@ -774,9 +774,9 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
+>        pthread_mutex_lock(&uc_mgr->mutex);
+>        if (strcmp(identifier, "_verbs") == 0)
+>                err = get_verb_list(uc_mgr, list);
+> -        else if (strcmp(identifier, "_enadevs"))
+> +        else if (strcmp(identifier, "_enadevs") == 0)
+>                err = get_enabled_device_list(uc_mgr, list);
+> -        else if (strcmp(identifier, "_enamods"))
+> +        else if (strcmp(identifier, "_enamods") == 0)
+>                err = get_enabled_modifier_list(uc_mgr, list);
+>         else {
+>                 str1 = strchr(identifier, '/');
 
-??? 10 (period_bytes_min) * 10 (periods_min) = 100mS . Note that 
-period_bytes_* limits periods size, but periods_* count of periods per the 
-whole audio DMA ring buffer. Define smallest number of periods (it's 
-usually value one or two for periods_min).
+I added this fix to my ucm tree. Thaks.
 
-> };
+> And changing the "[" for a "{" in the SectionVerb and SectionDevice like this:
+> SectionVerb {
+>        EnableSequence {
+>                cset "name='DL1 Media Playback Volume' 90"
+>                cset "name='DL2 Media Playback Volume' 90"
+>        }
+> ..........
+> SectionDevice."Headset".0 {
+>        Comment "SDP4430 3.5mm Headset"
 >
-> /*
-> * 10mS Buffer lengths
-> * @48kHz	1920 bytes
-> * @44.1kHz	1764 bytes
-> * @32kHz	1280 bytes
-> *
-> *
-> * period min = 10mS @48k:  1920 bytes @44.1k:  1764 bytes @32k:  1280 bytes
-> * period max = 1S   @48k:192000 bytes @44.1k:176400 bytes @32k:128000 bytes
-> * period     = 4S   @48k:768000 bytes @44.1k:705600 bytes @32k:512000 bytes
-> */
-> static int saa7231_capture_open(struct snd_pcm_substream *pcm)
-> {
->        struct saa7231_audio *audio	= snd_pcm_substream_chip(pcm);
->        struct snd_pcm_runtime *rt	= pcm->runtime;
-> 	struct saa7231_dev *saa7231	= audio->saa7231;
->        int err;
+>        EnableSequence {
+>                cset "name='DL1 Mixer Multimedia' 0"
+>                cset "name='Sidetone Mixer Playback' 1"
+>                cset "name='HS Right Playback' 0"
+>                cset "name='HS Left Playback' 0"
+>                cset "name='MUX_UL11' 9"
+>                cset "name='MUX_UL10' 10"
+>        }
+> ...........
 >
-> 	dprintk(SAA7231_DEBUG, 1, "()");
-> 	rt->hw = saa7231_capture_info;
-> 	snd_pcm_hw_constraint_list(rt, 0, SNDRV_PCM_HW_PARAM_RATE,
-> &hw_constraint_rates);
-> 	err = snd_pcm_hw_constraint_integer(rt, SNDRV_PCM_HW_PARAM_PERIODS);
->        if (err < 0) {
-> 		dprintk(SAA7231_ERROR, 1, "snd_pcm_hw_constraint_integer() failed.
-> ret=%d", err);
->                return err;
-> 	}
+> I'm getting the expected error ONLY for the last element: listed in
+> the EnableSequence field:
+> e.g:
+> ALSA lib main.c:137:(execute_sequence) cset not yet implemented:
+> 'name='DL2 Media Playback Volume' 90'
+> ALSA lib main.c:137:(execute_sequence) cset not yet implemented:
+> 'name='MUX_UL10' 10'
+>
+> i'll keep on digging as time permits :)
 
-> 	err = snd_pcm_hw_constraint_minmax(rt,
-> SNDRV_PCM_HW_PARAM_PERIOD_SIZE, 10, 4000000);
-> 	if (err < 0) {
-> 		dprintk(SAA7231_ERROR, 1, "snd_pcm_hw_constraint_minmax() failed.
-> ret=%d", err);
-> 		return err;
-> 	}
-> 	err = snd_pcm_hw_constraint_minmax(rt,
-> SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 1920, 768000);
-> 	if (err < 0) {
-> 		dprintk(SAA7231_ERROR, 1, "snd_pcm_hw_constraint_minmax() failed.
-> ret=%d", err);
-> 		return err;
-> 	}
+I fixed the sequence parser. It should work now ok. So the only missing 
+part is to add the 'snd_ctl_*' backend for cset commands. The parsing 
+functions for ctl strings are available in my ucm branch now:
 
-Remove these minmax contrains. You already do limiting in hw->ops.
+char *snd_ctl_ascii_elem_id_get(snd_ctl_elem_id_t *id);
+int snd_ctl_ascii_elem_id_parse(snd_ctl_elem_id_t *dst, const char *str);
+int snd_ctl_ascii_value_parse(snd_ctl_t *handle,
+                               snd_ctl_elem_value_t *dst,
+                               snd_ctl_elem_info_t *info,
+                               const char *value);
 
->        return 0;
-> }
->
-> /*
-> * saa7231_hw_params()
-> *
-> * This callback is called when the hardware parameter (hw_params) is setup
-> * by the application, ie., once when the buffer size, the period size,
-> * the format etc are defined for the PCM substream.
-> */
-> static int saa7231_hw_params(struct snd_pcm_substream *pcm, struct
-> snd_pcm_hw_params *params)
-> {
-> 	struct saa7231_audio *audio	= snd_pcm_substream_chip(pcm);
-> 	struct saa7231_dev *saa7231	= audio->saa7231;
-> 	struct snd_pcm_runtime *rt	= pcm->runtime;
->
-> 	struct saa7231_dmabuf *buffer;
-> 	struct saa7231_stream *stream;
-> 	struct saa7231_dmabuf *dmabuf;
->
-> 	struct page **ptable;
->
-> 	void *mem;
-> 	void *dma_area;
->
-> 	int i, j, pages, bytes, periods, bufsiz, pt_size;
->
-> 	dprintk(SAA7231_DEBUG, 1, "DEBUG: ()");
-> 	periods = params_periods(params);
-> 	bytes = params_period_bytes(params);
->
-> 	bufsiz = periods * bytes;
-> 	dprintk(SAA7231_DEBUG, 1, "bufsiz=%d periods=%d bytes=%d",
-> 		bufsiz,
-> 		periods,
-> 		bytes);
->
-> 	pages = bufsiz / PAGE_SIZE;
-
-This is wrong. It should be 'pages = (bufsize + PAGE_SIZE - 1) / PAGE_SIZE'.
-
-> 	/* enable stream */
-> 	/* initializing 8 buffer with "pages" pages each .. */
-> 	stream = saa7231_stream_init(saa7231, AUDIO_CAPTURE, ADAPTER_INT, 0, pages);
-> 	if (!stream) {
-> 		dprintk(SAA7231_ERROR, 1, "ERROR: Registering stream");
-> 		return -ENOMEM;
-> 	}
-> 	audio->stream = stream;
-> 	buffer = stream->dmabuf;
-> 	saa7231_add_irqevent(saa7231, 43, SAA7231_EDGE_RISING,
-> saa7231_audio_evhandler, "AS2D_AVIS");
-> 	dprintk(SAA7231_DEBUG, 1, "Mapping %d buffers with %d pages each",
-> XS2D_BUFFERS, pages);
-
-Unfortunately, I don't understand the role of XS2D_BUFFERS. The ALSA 
-bufsize is the whole DMA area (you should use params_buffer_bytes() to 
-get this value instead of calculating this using periods * period_size).
-
-It means: Just allocate number of pages required for buffer_bytes. Don't 
-play with periods (except the interrupts).
-
-> 	/*
-> 	 * For a single DMA buffer:
-> 	 * each page takes a u64 size in a page table
-> 	 * number of entries a single page can hold = PAGE_SIZE / entry size
-> 	 * ie entries.max = PAGE_SIZE / 8 => 4096/8 = 512
-> 	 * Now, we have entries.req = 7 ("pages") per buffer
-> 	 *
-> 	 * For all in XS2D_BUFFERS:
-> 	 * page table should be large enough to hold all the pages in each DMA buffer
-> 	 * total number of pages = pages * XS2D_BUFFERS
-> 	 * max buffers that we need to consider = 512 * 8, this needs 8 pages
-> for a page table
-> 	 *
-> 	 * On a general note, we can calculate pages for page table as
-> 	 * page_table_size = total_pages / 512, with a minimum of a single page
-> 	 */
->
-> #define MAX_ENTRIES_PER_PAGE		 (PAGE_SIZE / 8)
->
-> 	pt_size = (pages * XS2D_BUFFERS) / MAX_ENTRIES_PER_PAGE;
-> 	/* minimum 1 page required for the table */
-> 	if (pt_size < 1)
-> 		pt_size = 1;
->
-> 	dprintk(SAA7231_DEBUG, 1, "Page Table array size=%d", pt_size);
-> 	ptable = kzalloc((sizeof (struct page) * pt_size), GFP_KERNEL);
-> 	if (!ptable) {
-> 		dprintk(SAA7231_ERROR, 1, "ERROR: No memory to allocate virtual map");
-> 		return -ENOMEM;
-> 	}
-> 	audio->ptable = ptable;
->
-> 	for (i = 0; i < XS2D_BUFFERS; i ++) {
-> 		dmabuf = &buffer[i];
-> 		mem = dmabuf->vmalloc;
-> 		for (j = 0; j < pages; j++)
-> 			ptable[j] = virt_to_page(mem);
-> 	}
-
-This looks broken. ptable is overwritten for each XS2D_BUFFERS iteration.
-
-> #if 0
-> 	dma_area = vmap(ptable, (pages * XS2D_BUFFERS), VM_MAP, PAGE_KERNEL);
-> 	rt->dma_area	= dma_area;
-> 	rt->dma_bytes	= XS2D_BUFFERS * pages * SAA7231_PAGE_SIZE;
-> 	rt->dma_addr	= 0;
-> #endif
-> 	return 0;
-> }
-
-I think that the second argument is number of linux mem pages. Your value 
-seems strange.
-
- 							Jaroslav
+ 						Jaroslav
 
 -----
 Jaroslav Kysela <perex@perex.cz>
