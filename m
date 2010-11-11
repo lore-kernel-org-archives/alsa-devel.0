@@ -1,21 +1,14 @@
-From: PgmHelmi <pgmhelmi@tele2.at>
-Subject: Re: Different returns from snd_pcm_readi() in differen
- versions from ALSA driver
-Date: Thu, 11 Nov 2010 09:33:04 +0100
-Message-ID: <4CDBAA40.3060603@tele2.at>
-References: <4CD81FEB.3090100@tele2.at>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: ac97: Apply quirk for Dell Latitude D610
+ binding Master and Headphone controls
+Date: Thu, 11 Nov 2010 09:38:18 +0100
+Message-ID: <4CDBAB7A.4020504@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------010602030009000700070906"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from swip.net (mailfe07.tele2.at [212.247.154.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 81B321037EE
-	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2010 09:33:25 +0100 (CET)
-Received: from [86.33.9.184] (account cxu-94p-73t@tele2.at HELO [192.168.1.3])
-	by mailfe07.swip.net (CommuniGate Pro SMTP 5.2.19)
-	with ESMTPA id 47511027 for alsa-devel@alsa-project.org;
-	Thu, 11 Nov 2010 09:33:24 +0100
-In-Reply-To: <4CD81FEB.3090100@tele2.at>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0221610389F
+	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2010 09:38:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,43 +18,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+Cc: crimsun@ubuntu.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+This is a multi-part message in MIME format.
+--------------010602030009000700070906
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Has at least somebody a hint for us, where we can find a solution for 
-our problem? We searched already in mailing list and internet but could 
-not found something fitting. And the list of release changes is very 
-long and descriptions are not always very clear.
+BugLink: https://launchpad.net/bugs/669279
 
-Kind regards
+The original reporter states: "The Master mixer does not change the
+volume from the headphone output (which is affected by the headphone
+mixer). Instead it only seems to control the on-board speaker volume.
+This confuses PulseAudio greatly as the Master channel is merged into
+the volume mix."
+
+Fix this symptom by applying the hp_only quirk for the reporter's SSID.
+The fix is applicable to all stable kernels.
+
+Reported-and-tested-by: Ben Gamari <bgamari@gmail.com>
+Cc: <stable@kernel.org> [2.6.32+]
+Signed-off-by: Daniel T Chen <crimsun@ubuntu.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
+
+--------------010602030009000700070906
+Content-Type: text/x-patch;
+ name="0001-ALSA-ac97-Apply-quirk-for-Dell-Latitude-D610-binding.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-ac97-Apply-quirk-for-Dell-Latitude-D610-binding.pa";
+ filename*1="tch"
+
+>From a2908e28990953d6b1310b15bc935307a1156d6c Mon Sep 17 00:00:00 2001
+From: Daniel T Chen <crimsun@ubuntu.com>
+Date: Mon, 1 Nov 2010 01:14:51 -0400
+Subject: [PATCH] ALSA: ac97: Apply quirk for Dell Latitude D610 binding Master and Headphone controls
+
+BugLink: https://launchpad.net/bugs/669279
+
+The original reporter states: "The Master mixer does not change the
+volume from the headphone output (which is affected by the headphone
+mixer). Instead it only seems to control the on-board speaker volume.
+This confuses PulseAudio greatly as the Master channel is merged into
+the volume mix."
+
+Fix this symptom by applying the hp_only quirk for the reporter's SSID.
+The fix is applicable to all stable kernels.
+
+Reported-and-tested-by: Ben Gamari <bgamari@gmail.com>
+Cc: <stable@kernel.org> [2.6.32+]
+Signed-off-by: Daniel T Chen <crimsun@ubuntu.com>
+---
+ sound/pci/intel8x0.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
+index 4677492..ebfa1f8 100644
+--- a/sound/pci/intel8x0.c
++++ b/sound/pci/intel8x0.c
+@@ -1866,6 +1866,12 @@ static struct ac97_quirk ac97_quirks[] __devinitdata = {
+ 	},
+ 	{
+ 		.subvendor = 0x1028,
++		.subdevice = 0x0182,
++		.name = "Dell Latitude D610",	/* STAC9750/51 */
++		.type = AC97_TUNE_HP_ONLY
++	},
++	{
++		.subvendor = 0x1028,
+ 		.subdevice = 0x0186,
+ 		.name = "Dell Latitude D810", /* cf. Malone #41015 */
+ 		.type = AC97_TUNE_HP_MUTE_LED
+-- 
+1.7.1
 
 
-PgmHelmi schrieb:
-> Hi!
-> 
-> We had to write a driver for audio playing and recording on Linux thin 
-> clients. We are using ALSA driver + libs for it, but we are
-> depending on the versions which are installed on them.
-> 
-> We have a certain buffer size for this and set the corresponding 
-> hardware and software parameters and call for capture
-> snd_pcm_readi(). The function returns the read buffer frames. In most 
-> versions this is equal to the number of wanted passed frames, but
-> not in all. We have ALSA driver version 1.0.15 and 1.0.22.1 where the 
-> returned number is the same. But we have also version 1.0.21
-> where the returned number is the period size or a multiple of it.
-> 
-> So conclusion is, that something was changed between 1.0.15 and 1.0.21 
-> and changed back till 1.0.22.1. As we are dependent on the
-> behaviour of the former and newer version, my question is, if there is a 
-> possibility to get the same behaviour in version 1.0.21?
-> 
-> Thank you for your answer in advance!
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+--------------010602030009000700070906
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------010602030009000700070906--
