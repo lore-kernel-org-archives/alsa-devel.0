@@ -1,18 +1,21 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v2 0/3] ASoC: Introduce the new caching API
-Date: Thu, 11 Nov 2010 11:39:29 +0000
-Message-ID: <1289475569.3273.7.camel@odin>
-References: <1289469899-5787-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] Fix Atmel soc audio boards Kconfig
+ dependency
+Date: Thu, 11 Nov 2010 11:42:56 +0000
+Message-ID: <1289475776.3273.8.camel@odin>
+References: <4CDAFA56.2050504@bluewatersys.com>
+	<1289423099.3284.52.camel@odin> <4CDB1480.3080109@bluewatersys.com>
+	<201011101709.56106.geoffrey@pager.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 202D024350
-	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2010 12:39:33 +0100 (CET)
-Received: by wyb34 with SMTP id 34so90390wyb.38
-	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2010 03:39:32 -0800 (PST)
-In-Reply-To: <1289469899-5787-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id D1B151037EE
+	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2010 12:43:00 +0100 (CET)
+Received: by wwb34 with SMTP id 34so17389wwb.20
+	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2010 03:43:00 -0800 (PST)
+In-Reply-To: <201011101709.56106.geoffrey@pager.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,34 +25,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
+To: Geoffrey Wossum <geoffrey@pager.net>
+Cc: "gwossum@acm.org" <gwossum@acm.org>, Sedji Gaouaou <sedji.gaouaou@atmel.com>, Ryan Mallon <ryan@bluewatersys.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-11-11 at 10:04 +0000, Dimitris Papastamos wrote:
-> This patch series introduces the new caching API.  The idea behind this
-> caching interface is that we can provide different means of organizing
-> and accessing the register cache.  This is useful for large and sparse
-> register maps, where one can use some kind of compression algorithm to
-> reduce the memory footprint.  The caching API is designed in such way to
-> eliminate the need for modifying any existing drivers.
+On Wed, 2010-11-10 at 17:09 -0600, Geoffrey Wossum wrote:
+> On Wednesday 10 November 2010 3:54:08 pm Ryan Mallon wrote:
+> > On 11/11/2010 10:04 AM, Liam Girdwood wrote:
+> > > On Thu, 2010-11-11 at 09:02 +1300, Ryan Mallon wrote:
+> > >> Add Kconfig dependency on AT91_PROGRAMMABLE_CLOCKS for the Atmel SoC
+> > >> audio SAM9G20-EK and PlayPaq boards. Fixes link errors on missing
+> > >> clk_set_parent and clk_set_rate when building without
+> > >> AT91_PROGRAMMABLE_CLOCKS.
+> > >> 
+> > >> Signed-off-by: Ryan Mallon <ryan@bluewatersys.com>
+> > > 
+> > > Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> > 
+> > Just realised that the PlayPaq board only appears in the sound/soc/atmel
+> > directory. I cannot find a board file for it under either
+> > arch/arm/mach-at91 or arch/avr32/. The updated patch below only changes
+> > the dependency for the SAM9G20-EK board since I think the PlayPaq is
+> > actually AVR32, and therefore should not depend on
+> > AT91_PROGRAMMABLE_CLOCKS. This patch replaces my previous one.
 > 
-> TODO:
->  - Memory usage statistics, to make it easier to select the proper caching
->  technique.
->  - Support for bulk reads/writes.
->  - Overridable caching behaviour from the machine driver.
->  - Optimize certain CPU intensive paths.
->  - Ensure proper locking in init()/exit()/sync().
+> PlayPaq is an AT32AP7000 board, so the new patch is correct.
 > 
-> Dimitris Papastamos (3):
->   ASoC: soc-cache: Add support for flat register caching
->   ASoC: soc-cache: Add support for LZO register caching
->   ASoC: soc-cache: Add support for rbtree based register caching
+> > ---
+> > Add Kconfig dependency on AT91_PROGRAMMABLE_CLOCKS for the Atmel SoC
+> > audio  SAM9G20-EK board. Fixes link errors on missing clk_set_parent and
+> > clk_set_rate when building without AT91_PROGRAMMABLE_CLOCKS.
+> > 
+> > Signed-off-by: Ryan Mallon <ryan@bluewatersys.com>
 > 
+> Acked-by: Geoffrey Wossum <gwossum@acm.org>
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
-
 -- 
 Freelance Developer, SlimLogic Ltd
 ASoC and Voltage Regulator Maintainer.
