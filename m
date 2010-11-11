@@ -1,16 +1,16 @@
 From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/3] ASoC: soc-cache: Add support for flat
+Subject: [PATCH 2/3] ASoC: soc-cache: Add support for LZO
 	register caching
-Date: Thu, 11 Nov 2010 10:04:57 +0000
-Message-ID: <1289469899-5787-2-git-send-email-dp@opensource.wolfsonmicro.com>
+Date: Thu, 11 Nov 2010 10:04:58 +0000
+Message-ID: <1289469899-5787-3-git-send-email-dp@opensource.wolfsonmicro.com>
 References: <1289469899-5787-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ADDB11038BD
-	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2010 11:05:07 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D17181038D1
+	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2010 11:05:09 +0100 (CET)
 In-Reply-To: <1289469899-5787-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,679 +25,492 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlog
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch introduces the new caching API and migrates the
-old caching interface into the new one.  The flat register caching
-technique does not use compression at all and it is equivalent to
-the old caching technique.  One can still access codec->reg_cache
-directly but this is not advised as that will not be portable
-across different caching strategies.
+This patch adds support for LZO compression when storing the register
+cache.  The initial register defaults cache is marked as __devinitconst
+and the only change required for a driver to use LZO compression is
+to set the compress_type member in codec->driver to SND_SOC_LZO_COMPRESSION.
 
-None of the existing drivers need to be changed to adapt to this
-caching technique.  There should be no noticeable overhead associated
-with using the new caching API.
+For a typical device whose register map would normally occupy 25kB or 50kB
+by using the LZO compression technique, one can get down to ~5-7kB.  There
+might be a performance penalty associated with each individual read/write
+due to decompressing/compressing the underlying cache, however that should not
+be noticeable.  These memory benefits depend on whether the target architecture
+can get rid of the memory occupied by the original register defaults cache
+which is marked as __devinitconst.  Nevertheless there will be some memory
+gain even if the target architecture can't get rid of the original register
+map, this should be around ~30-32kB instead of 50kB.
 
 Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 ---
- include/sound/soc.h   |   27 ++++
- sound/soc/soc-cache.c |  339 ++++++++++++++++++++++++++++++++++++++++++++-----
- sound/soc/soc-core.c  |   37 ++----
- 3 files changed, 349 insertions(+), 54 deletions(-)
+ include/sound/soc.h   |    3 +-
+ sound/soc/Kconfig     |    2 +
+ sound/soc/soc-cache.c |  413 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 417 insertions(+), 1 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 5d39547..275e411 100644
+index 275e411..10f5932 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -238,6 +238,7 @@ struct soc_enum;
- struct snd_soc_ac97_ops;
- struct snd_soc_jack;
- struct snd_soc_jack_pin;
-+struct snd_soc_cache_ops;
- #include <sound/soc-dapm.h>
- 
- #ifdef CONFIG_GPIOLIB
-@@ -254,6 +255,10 @@ enum snd_soc_control_type {
- 	SND_SOC_SPI,
+@@ -256,7 +256,8 @@ enum snd_soc_control_type {
  };
  
-+enum snd_soc_compress_type {
-+	SND_SOC_NO_COMPRESSION
-+};
-+
+ enum snd_soc_compress_type {
+-	SND_SOC_NO_COMPRESSION
++	SND_SOC_NO_COMPRESSION,
++	SND_SOC_LZO_COMPRESSION
+ };
+ 
  int snd_soc_register_platform(struct device *dev,
- 		struct snd_soc_platform_driver *platform_drv);
- void snd_soc_unregister_platform(struct device *dev);
-@@ -265,6 +270,13 @@ int snd_soc_codec_volatile_register(struct snd_soc_codec *codec, int reg);
- int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
- 			       int addr_bits, int data_bits,
- 			       enum snd_soc_control_type control);
-+int snd_soc_cache_sync(struct snd_soc_codec *codec);
-+int snd_soc_cache_init(struct snd_soc_codec *codec);
-+int snd_soc_cache_exit(struct snd_soc_codec *codec);
-+int snd_soc_cache_write(struct snd_soc_codec *codec,
-+			unsigned int reg, unsigned int value);
-+int snd_soc_cache_read(struct snd_soc_codec *codec,
-+		       unsigned int reg, unsigned int *value);
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 3e598e7..4562c89 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -4,6 +4,8 @@
  
- /* Utility functions to get clock rates from various things */
- int snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
-@@ -421,6 +433,18 @@ struct snd_soc_ops {
- 	int (*trigger)(struct snd_pcm_substream *, int);
- };
- 
-+/* SoC cache ops */
-+struct snd_soc_cache_ops {
-+	enum snd_soc_compress_type id;
-+	int (*init)(struct snd_soc_codec *codec);
-+	int (*exit)(struct snd_soc_codec *codec);
-+	int (*read)(struct snd_soc_codec *codec, unsigned int reg,
-+		unsigned int *value);
-+	int (*write)(struct snd_soc_codec *codec, unsigned int reg,
-+		unsigned int value);
-+	int (*sync)(struct snd_soc_codec *codec);
-+};
-+
- /* SoC Audio Codec device */
- struct snd_soc_codec {
- 	const char *name;
-@@ -450,6 +474,8 @@ struct snd_soc_codec {
- 	hw_write_t hw_write;
- 	unsigned int (*hw_read)(struct snd_soc_codec *, unsigned int);
- 	void *reg_cache;
-+	const struct snd_soc_cache_ops *cache_ops;
-+	struct mutex cache_rw_mutex;
- 
- 	/* dapm */
- 	struct snd_soc_dapm_context dapm;
-@@ -482,6 +508,7 @@ struct snd_soc_codec_driver {
- 	short reg_cache_step;
- 	short reg_word_size;
- 	const void *reg_cache_default;
-+	enum snd_soc_compress_type compress_type;
- 
- 	/* codec bias level */
- 	int (*set_bias_level)(struct snd_soc_codec *,
+ menuconfig SND_SOC
+ 	tristate "ALSA for SoC audio support"
++	select LZO_COMPRESS
++	select LZO_DECOMPRESS
+ 	select SND_PCM
+ 	select AC97_BUS if SND_SOC_AC97_BUS
+ 	select SND_JACK if INPUT=y || INPUT=SND
 diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index e747998..cbf9694 100644
+index cbf9694..4581bf1 100644
 --- a/sound/soc/soc-cache.c
 +++ b/sound/soc/soc-cache.c
-@@ -18,7 +18,8 @@
+@@ -14,6 +14,8 @@
+ #include <linux/i2c.h>
+ #include <linux/spi/spi.h>
+ #include <sound/soc.h>
++#include <linux/lzo.h>
++#include <linux/bitmap.h>
+ 
  static unsigned int snd_soc_4_12_read(struct snd_soc_codec *codec,
  				     unsigned int reg)
- {
--	u16 *cache = codec->reg_cache;
-+	int ret;
-+	unsigned int val;
- 
- 	if (reg >= codec->driver->reg_cache_size ||
- 		snd_soc_codec_volatile_register(codec, reg)) {
-@@ -29,13 +30,15 @@ static unsigned int snd_soc_4_12_read(struct snd_soc_codec *codec,
- 			return codec->hw_read(codec, reg);
- 	}
- 
--	return cache[reg];
-+	ret = snd_soc_cache_read(codec, reg, &val);
-+	if (ret < 0)
-+		return -1;
-+	return val;
- }
- 
- static int snd_soc_4_12_write(struct snd_soc_codec *codec, unsigned int reg,
- 			     unsigned int value)
- {
--	u16 *cache = codec->reg_cache;
- 	u8 data[2];
- 	int ret;
- 
-@@ -43,8 +46,11 @@ static int snd_soc_4_12_write(struct snd_soc_codec *codec, unsigned int reg,
- 	data[1] = value & 0x00ff;
- 
- 	if (!snd_soc_codec_volatile_register(codec, reg) &&
--		reg < codec->driver->reg_cache_size)
--			cache[reg] = value;
-+		reg < codec->driver->reg_cache_size) {
-+		ret = snd_soc_cache_write(codec, reg, value);
-+		if (ret < 0)
-+			return -1;
-+	}
- 
- 	if (codec->cache_only) {
- 		codec->cache_sync = 1;
-@@ -93,7 +99,8 @@ static int snd_soc_4_12_spi_write(void *control_data, const char *data,
- static unsigned int snd_soc_7_9_read(struct snd_soc_codec *codec,
- 				     unsigned int reg)
- {
--	u16 *cache = codec->reg_cache;
-+	int ret;
-+	unsigned int val;
- 
- 	if (reg >= codec->driver->reg_cache_size ||
- 		snd_soc_codec_volatile_register(codec, reg)) {
-@@ -104,13 +111,15 @@ static unsigned int snd_soc_7_9_read(struct snd_soc_codec *codec,
- 			return codec->hw_read(codec, reg);
- 	}
- 
--	return cache[reg];
-+	ret = snd_soc_cache_read(codec, reg, &val);
-+	if (ret < 0)
-+		return -1;
-+	return val;
- }
- 
- static int snd_soc_7_9_write(struct snd_soc_codec *codec, unsigned int reg,
- 			     unsigned int value)
- {
--	u16 *cache = codec->reg_cache;
- 	u8 data[2];
- 	int ret;
- 
-@@ -118,8 +127,11 @@ static int snd_soc_7_9_write(struct snd_soc_codec *codec, unsigned int reg,
- 	data[1] = value & 0x00ff;
- 
- 	if (!snd_soc_codec_volatile_register(codec, reg) &&
--		reg < codec->driver->reg_cache_size)
--			cache[reg] = value;
-+		reg < codec->driver->reg_cache_size) {
-+		ret = snd_soc_cache_write(codec, reg, value);
-+		if (ret < 0)
-+			return -1;
-+	}
- 
- 	if (codec->cache_only) {
- 		codec->cache_sync = 1;
-@@ -168,16 +180,19 @@ static int snd_soc_7_9_spi_write(void *control_data, const char *data,
- static int snd_soc_8_8_write(struct snd_soc_codec *codec, unsigned int reg,
- 			     unsigned int value)
- {
--	u8 *cache = codec->reg_cache;
- 	u8 data[2];
-+	int ret;
- 
- 	reg &= 0xff;
- 	data[0] = reg;
- 	data[1] = value & 0xff;
- 
- 	if (!snd_soc_codec_volatile_register(codec, reg) &&
--		reg < codec->driver->reg_cache_size)
--			cache[reg] = value;
-+		reg < codec->driver->reg_cache_size) {
-+		ret = snd_soc_cache_write(codec, reg, value);
-+		if (ret < 0)
-+			return -1;
-+	}
- 
- 	if (codec->cache_only) {
- 		codec->cache_sync = 1;
-@@ -193,7 +208,8 @@ static int snd_soc_8_8_write(struct snd_soc_codec *codec, unsigned int reg,
- static unsigned int snd_soc_8_8_read(struct snd_soc_codec *codec,
- 				     unsigned int reg)
- {
--	u8 *cache = codec->reg_cache;
-+	int ret;
-+	unsigned int val;
- 
- 	reg &= 0xff;
- 	if (reg >= codec->driver->reg_cache_size ||
-@@ -205,7 +221,10 @@ static unsigned int snd_soc_8_8_read(struct snd_soc_codec *codec,
- 			return codec->hw_read(codec, reg);
- 	}
- 
--	return cache[reg];
-+	ret = snd_soc_cache_read(codec, reg, &val);
-+	if (ret < 0)
-+		return -1;
-+	return val;
- }
- 
- #if defined(CONFIG_SPI_MASTER)
-@@ -241,16 +260,19 @@ static int snd_soc_8_8_spi_write(void *control_data, const char *data,
- static int snd_soc_8_16_write(struct snd_soc_codec *codec, unsigned int reg,
- 			      unsigned int value)
- {
--	u16 *reg_cache = codec->reg_cache;
- 	u8 data[3];
-+	int ret;
- 
- 	data[0] = reg;
- 	data[1] = (value >> 8) & 0xff;
- 	data[2] = value & 0xff;
- 
- 	if (!snd_soc_codec_volatile_register(codec, reg) &&
--	    reg < codec->driver->reg_cache_size)
--		reg_cache[reg] = value;
-+		reg < codec->driver->reg_cache_size) {
-+		ret = snd_soc_cache_write(codec, reg, value);
-+		if (ret < 0)
-+			return -1;
-+	}
- 
- 	if (codec->cache_only) {
- 		codec->cache_sync = 1;
-@@ -266,7 +288,8 @@ static int snd_soc_8_16_write(struct snd_soc_codec *codec, unsigned int reg,
- static unsigned int snd_soc_8_16_read(struct snd_soc_codec *codec,
- 				      unsigned int reg)
- {
--	u16 *cache = codec->reg_cache;
-+	int ret;
-+	unsigned int val;
- 
- 	if (reg >= codec->driver->reg_cache_size ||
- 	    snd_soc_codec_volatile_register(codec, reg)) {
-@@ -275,9 +298,12 @@ static unsigned int snd_soc_8_16_read(struct snd_soc_codec *codec,
- 
- 		BUG_ON(!codec->hw_read);
- 		return codec->hw_read(codec, reg);
--	} else {
--		return cache[reg];
- 	}
-+
-+	ret = snd_soc_cache_read(codec, reg, &val);
-+	if (ret < 0)
-+		return -1;
-+	return val;
- }
- 
- #if defined(CONFIG_SPI_MASTER)
-@@ -416,7 +442,8 @@ static unsigned int snd_soc_16_8_read_i2c(struct snd_soc_codec *codec,
- static unsigned int snd_soc_16_8_read(struct snd_soc_codec *codec,
- 				     unsigned int reg)
- {
--	u8 *cache = codec->reg_cache;
-+	int ret;
-+	unsigned int val;
- 
- 	reg &= 0xff;
- 	if (reg >= codec->driver->reg_cache_size ||
-@@ -428,13 +455,15 @@ static unsigned int snd_soc_16_8_read(struct snd_soc_codec *codec,
- 			return codec->hw_read(codec, reg);
- 	}
- 
--	return cache[reg];
-+	ret = snd_soc_cache_read(codec, reg, &val);
-+	if (ret < 0)
-+		return -1;
-+	return val;
- }
- 
- static int snd_soc_16_8_write(struct snd_soc_codec *codec, unsigned int reg,
- 			     unsigned int value)
- {
--	u8 *cache = codec->reg_cache;
- 	u8 data[3];
- 	int ret;
- 
-@@ -444,8 +473,11 @@ static int snd_soc_16_8_write(struct snd_soc_codec *codec, unsigned int reg,
- 
- 	reg &= 0xff;
- 	if (!snd_soc_codec_volatile_register(codec, reg) &&
--		reg < codec->driver->reg_cache_size)
--			cache[reg] = value;
-+		reg < codec->driver->reg_cache_size) {
-+		ret = snd_soc_cache_write(codec, reg, value);
-+		if (ret < 0)
-+			return -1;
-+	}
- 
- 	if (codec->cache_only) {
- 		codec->cache_sync = 1;
-@@ -529,7 +561,8 @@ static unsigned int snd_soc_16_16_read_i2c(struct snd_soc_codec *codec,
- static unsigned int snd_soc_16_16_read(struct snd_soc_codec *codec,
- 				       unsigned int reg)
- {
--	u16 *cache = codec->reg_cache;
-+	int ret;
-+	unsigned int val;
- 
- 	if (reg >= codec->driver->reg_cache_size ||
- 	    snd_soc_codec_volatile_register(codec, reg)) {
-@@ -540,13 +573,16 @@ static unsigned int snd_soc_16_16_read(struct snd_soc_codec *codec,
- 		return codec->hw_read(codec, reg);
- 	}
- 
--	return cache[reg];
-+	ret = snd_soc_cache_read(codec, reg, &val);
-+	if (ret < 0)
-+		return -1;
-+
-+	return val;
- }
- 
- static int snd_soc_16_16_write(struct snd_soc_codec *codec, unsigned int reg,
- 			       unsigned int value)
- {
--	u16 *cache = codec->reg_cache;
- 	u8 data[4];
- 	int ret;
- 
-@@ -556,8 +592,11 @@ static int snd_soc_16_16_write(struct snd_soc_codec *codec, unsigned int reg,
- 	data[3] = value & 0xff;
- 
- 	if (!snd_soc_codec_volatile_register(codec, reg) &&
--		reg < codec->driver->reg_cache_size)
--			cache[reg] = value;
-+		reg < codec->driver->reg_cache_size) {
-+		ret = snd_soc_cache_write(codec, reg, value);
-+		if (ret < 0)
-+			return -1;
-+	}
- 
- 	if (codec->cache_only) {
- 		codec->cache_sync = 1;
-@@ -718,3 +757,241 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
- 	return 0;
+@@ -758,6 +760,409 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
  }
  EXPORT_SYMBOL_GPL(snd_soc_codec_set_cache_io);
+ 
++struct snd_soc_lzo_ctx {
++	void *wmem;
++	void *dst;
++	const void *src;
++	size_t src_len;
++	size_t dst_len;
++	size_t decompressed_size;
++	unsigned long *sync_bmp;
++	int sync_bmp_nbits;
++};
 +
-+static int snd_soc_flat_cache_sync(struct snd_soc_codec *codec)
++#define LZO_BLOCK_NUM 8
++static int snd_soc_lzo_block_count(void)
 +{
-+	int i;
-+	struct snd_soc_codec_driver *codec_drv;
-+	unsigned int val;
++	return LZO_BLOCK_NUM;
++}
 +
-+	codec_drv = codec->driver;
-+	for (i = 0; i < codec_drv->reg_cache_size; ++i) {
-+		snd_soc_cache_read(codec, i, &val);
-+		if (codec_drv->reg_cache_default) {
-+			switch (codec_drv->reg_word_size) {
-+			case 1: {
-+				const u8 *cache;
-+
-+				cache = codec_drv->reg_cache_default;
-+				if (cache[i] == val)
-+					continue;
-+			}
-+			break;
-+			case 2: {
-+				const u16 *cache;
-+
-+				cache = codec_drv->reg_cache_default;
-+				if (cache[i] == val)
-+					continue;
-+			}
-+			break;
-+			default:
-+				BUG();
-+			}
-+		}
-+		snd_soc_write(codec, i, val);
-+		dev_dbg(codec->dev, "Synced register %#x, value = %#x\n",
-+			i, val);
-+	}
++static int snd_soc_lzo_prepare(struct snd_soc_lzo_ctx *lzo_ctx)
++{
++	lzo_ctx->wmem = kmalloc(LZO1X_MEM_COMPRESS, GFP_KERNEL);
++	if (!lzo_ctx->wmem)
++		return -ENOMEM;
 +	return 0;
 +}
 +
-+static int snd_soc_flat_cache_write(struct snd_soc_codec *codec,
-+				    unsigned int reg, unsigned int value)
++static int snd_soc_lzo_compress(struct snd_soc_lzo_ctx *lzo_ctx)
 +{
-+	switch (codec->driver->reg_word_size) {
-+	case 1: {
-+		u8 *cache;
++	size_t compress_size;
++	int ret;
 +
-+		cache = codec->reg_cache;
-+		cache[reg] = value;
-+	}
-+	break;
-+	case 2: {
-+		u16 *cache;
-+
-+		cache = codec->reg_cache;
-+		cache[reg] = value;
-+	}
-+	break;
-+	default:
-+		BUG();
-+	}
-+
++	ret = lzo1x_1_compress(lzo_ctx->src, lzo_ctx->src_len,
++			       lzo_ctx->dst, &compress_size, lzo_ctx->wmem);
++	if (ret != LZO_E_OK || compress_size > lzo_ctx->dst_len)
++		return -EINVAL;
++	lzo_ctx->dst_len = compress_size;
 +	return 0;
 +}
 +
-+static int snd_soc_flat_cache_read(struct snd_soc_codec *codec,
-+				   unsigned int reg, unsigned int *value)
++static int snd_soc_lzo_decompress(struct snd_soc_lzo_ctx *lzo_ctx)
 +{
-+	switch (codec->driver->reg_word_size) {
-+	case 1: {
-+		u8 *cache;
++	size_t dst_len;
++	int ret;
 +
-+		cache = codec->reg_cache;
-+		*value = cache[reg];
-+	}
-+	break;
-+	case 2: {
-+		u16 *cache;
-+
-+		cache = codec->reg_cache;
-+		*value = cache[reg];
-+	}
-+	break;
-+	default:
-+		BUG();
-+	}
-+
++	dst_len = lzo_ctx->dst_len;
++	ret = lzo1x_decompress_safe(lzo_ctx->src, lzo_ctx->src_len,
++				    lzo_ctx->dst, &dst_len);
++	if (ret != LZO_E_OK || dst_len != lzo_ctx->dst_len)
++		return -EINVAL;
 +	return 0;
 +}
 +
-+static int snd_soc_flat_cache_exit(struct snd_soc_codec *codec)
++static int snd_soc_lzo_compress_cache_block(struct snd_soc_codec *codec,
++		struct snd_soc_lzo_ctx *lzo_ctx)
 +{
-+	if (!codec->reg_cache)
-+		return 0;
-+	kfree(codec->reg_cache);
-+	codec->reg_cache = NULL;
++	int ret;
++
++	lzo_ctx->dst_len = lzo1x_worst_compress(PAGE_SIZE);
++	lzo_ctx->dst = kmalloc(lzo_ctx->dst_len, GFP_KERNEL);
++	if (!lzo_ctx->dst) {
++		lzo_ctx->dst_len = 0;
++		return -ENOMEM;
++	}
++
++	ret = snd_soc_lzo_compress(lzo_ctx);
++	if (ret < 0)
++		return ret;
 +	return 0;
 +}
 +
-+static int snd_soc_flat_cache_init(struct snd_soc_codec *codec)
++static int snd_soc_lzo_decompress_cache_block(struct snd_soc_codec *codec,
++		struct snd_soc_lzo_ctx *lzo_ctx)
++{
++	int ret;
++
++	lzo_ctx->dst_len = lzo_ctx->decompressed_size;
++	lzo_ctx->dst = kmalloc(lzo_ctx->dst_len, GFP_KERNEL);
++	if (!lzo_ctx->dst) {
++		lzo_ctx->dst_len = 0;
++		return -ENOMEM;
++	}
++
++	ret = snd_soc_lzo_decompress(lzo_ctx);
++	if (ret < 0)
++		return ret;
++	return 0;
++}
++
++static inline int snd_soc_lzo_get_blkindex(struct snd_soc_codec *codec,
++		unsigned int reg)
 +{
 +	struct snd_soc_codec_driver *codec_drv;
 +	size_t reg_size;
 +
 +	codec_drv = codec->driver;
 +	reg_size = codec_drv->reg_cache_size * codec_drv->reg_word_size;
++	return (reg * codec_drv->reg_word_size) /
++	       DIV_ROUND_UP(reg_size, snd_soc_lzo_block_count());
++}
 +
-+	if (codec_drv->reg_cache_default)
-+		codec->reg_cache = kmemdup(codec_drv->reg_cache_default,
-+					   reg_size, GFP_KERNEL);
-+	else
-+		codec->reg_cache = kzalloc(reg_size, GFP_KERNEL);
-+	if (!codec->reg_cache)
-+		return -ENOMEM;
++static inline int snd_soc_lzo_get_blkpos(struct snd_soc_codec *codec,
++		unsigned int reg)
++{
++	struct snd_soc_codec_driver *codec_drv;
++	size_t reg_size;
++
++	codec_drv = codec->driver;
++	reg_size = codec_drv->reg_cache_size * codec_drv->reg_word_size;
++	return reg % (DIV_ROUND_UP(reg_size, snd_soc_lzo_block_count()) /
++		      codec_drv->reg_word_size);
++}
++
++static inline int snd_soc_lzo_get_blksize(struct snd_soc_codec *codec)
++{
++	struct snd_soc_codec_driver *codec_drv;
++	size_t reg_size;
++
++	codec_drv = codec->driver;
++	reg_size = codec_drv->reg_cache_size * codec_drv->reg_word_size;
++	return DIV_ROUND_UP(reg_size, snd_soc_lzo_block_count());
++}
++
++static int snd_soc_lzo_cache_sync(struct snd_soc_codec *codec)
++{
++	struct snd_soc_lzo_ctx **lzo_blocks;
++	unsigned int val;
++	int i;
++
++	lzo_blocks = codec->reg_cache;
++	for_each_set_bit(i, lzo_blocks[0]->sync_bmp, lzo_blocks[0]->sync_bmp_nbits) {
++		snd_soc_cache_read(codec, i, &val);
++		snd_soc_write(codec, i, val);
++		dev_dbg(codec->dev, "Synced register %#x, value = %#x\n",
++			i, val);
++	}
 +
 +	return 0;
 +}
 +
-+/* an array of all supported compression types */
-+static const struct snd_soc_cache_ops cache_types[] = {
-+	{
-+		.id = SND_SOC_NO_COMPRESSION,
-+		.init = snd_soc_flat_cache_init,
-+		.exit = snd_soc_flat_cache_exit,
-+		.read = snd_soc_flat_cache_read,
-+		.write = snd_soc_flat_cache_write,
-+		.sync = snd_soc_flat_cache_sync
-+	}
-+};
-+
-+int snd_soc_cache_init(struct snd_soc_codec *codec)
++static int snd_soc_lzo_cache_write(struct snd_soc_codec *codec,
++				   unsigned int reg, unsigned int value)
 +{
-+	int i;
++	struct snd_soc_lzo_ctx *lzo_block, **lzo_blocks;
++	int ret, blkindex, blkpos;
++	size_t blksize, tmp_dst_len;
++	void *tmp_dst;
 +
-+	for (i = 0; i < ARRAY_SIZE(cache_types); ++i)
-+		if (cache_types[i].id == codec->driver->compress_type)
-+			break;
-+	if (i == ARRAY_SIZE(cache_types)) {
-+		dev_err(codec->dev, "Could not match compress type: %d\n",
-+			codec->driver->compress_type);
-+		return -EINVAL;
-+	}
++	/* index of the compressed lzo block */
++	blkindex = snd_soc_lzo_get_blkindex(codec, reg);
++	/* register index within the decompressed block */
++	blkpos = snd_soc_lzo_get_blkpos(codec, reg);
++	/* size of the compressed block */
++	blksize = snd_soc_lzo_get_blksize(codec);
++	lzo_blocks = codec->reg_cache;
++	lzo_block = lzo_blocks[blkindex];
 +
-+	mutex_init(&codec->cache_rw_mutex);
-+	codec->cache_ops = &cache_types[i];
++	/* save the pointer and length of the compressed block */
++	tmp_dst = lzo_block->dst;
++	tmp_dst_len = lzo_block->dst_len;
 +
-+	if (codec->cache_ops->init)
-+		return codec->cache_ops->init(codec);
-+	return -EINVAL;
-+}
++	/* prepare the source to be the compressed block */
++	lzo_block->src = lzo_block->dst;
++	lzo_block->src_len = lzo_block->dst_len;
 +
-+/*
-+ * NOTE: keep in mind that this function might be called
-+ * multiple times.
-+ */
-+int snd_soc_cache_exit(struct snd_soc_codec *codec)
-+{
-+	if (codec->cache_ops && codec->cache_ops->exit)
-+		return codec->cache_ops->exit(codec);
-+	return -EINVAL;
-+}
-+
-+/**
-+ * snd_soc_cache_read: Fetch the value of a given register from the cache.
-+ *
-+ * @codec: CODEC to configure.
-+ * @reg: The register index.
-+ * @value: The value to be returned.
-+ */
-+int snd_soc_cache_read(struct snd_soc_codec *codec,
-+		       unsigned int reg, unsigned int *value)
-+{
-+	int ret;
-+
-+	mutex_lock(&codec->cache_rw_mutex);
-+
-+	if (value && codec->cache_ops && codec->cache_ops->read) {
-+		ret = codec->cache_ops->read(codec, reg, value);
-+		mutex_unlock(&codec->cache_rw_mutex);
-+		return ret;
++	/* decompress the block */
++	ret = snd_soc_lzo_decompress_cache_block(codec, lzo_block);
++	if (ret < 0) {
++		kfree(lzo_block->dst);
++		goto out;
 +	}
 +
-+	mutex_unlock(&codec->cache_rw_mutex);
-+	return -EINVAL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_cache_read);
-+
-+/**
-+ * snd_soc_cache_write: Set the value of a given register in the cache.
-+ *
-+ * @codec: CODEC to configure.
-+ * @reg: The register index.
-+ * @value: The new register value.
-+ */
-+int snd_soc_cache_write(struct snd_soc_codec *codec,
-+			unsigned int reg, unsigned int value)
-+{
-+	int ret;
-+
-+	mutex_lock(&codec->cache_rw_mutex);
-+
-+	if (codec->cache_ops && codec->cache_ops->write) {
-+		ret = codec->cache_ops->write(codec, reg, value);
-+		mutex_unlock(&codec->cache_rw_mutex);
-+		return ret;
++	/* write the new value to the cache */
++	switch (codec->driver->reg_word_size) {
++	case 1: {
++		u8 *cache;
++		cache = lzo_block->dst;
++		if (cache[blkpos] == value) {
++			kfree(lzo_block->dst);
++			goto out;
++		}
++		cache[blkpos] = value;
++	}
++	break;
++	case 2: {
++		u16 *cache;
++		cache = lzo_block->dst;
++		if (cache[blkpos] == value) {
++			kfree(lzo_block->dst);
++			goto out;
++		}
++		cache[blkpos] = value;
++	}
++	break;
++	default:
++		BUG();
 +	}
 +
-+	mutex_unlock(&codec->cache_rw_mutex);
-+	return -EINVAL;
++	/* prepare the source to be the decompressed block */
++	lzo_block->src = lzo_block->dst;
++	lzo_block->src_len = lzo_block->dst_len;
++
++	/* compress the block */
++	ret = snd_soc_lzo_compress_cache_block(codec, lzo_block);
++	if (ret < 0) {
++		kfree(lzo_block->dst);
++		kfree(lzo_block->src);
++		goto out;
++	}
++
++	/* set the bit so we know we have to sync this register */
++	set_bit(reg, lzo_block->sync_bmp);
++	kfree(tmp_dst);
++	kfree(lzo_block->src);
++	return 0;
++out:
++	lzo_block->dst = tmp_dst;
++	lzo_block->dst_len = tmp_dst_len;
++	return ret;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_cache_write);
 +
-+/**
-+ * snd_soc_cache_sync: Sync the register cache with the hardware.
-+ *
-+ * @codec: CODEC to configure.
-+ *
-+ * Any registers that should not be synced should be marked as
-+ * volatile.  In general drivers can choose not to use the provided
-+ * syncing functionality if they so require.
-+ */
-+int snd_soc_cache_sync(struct snd_soc_codec *codec)
++static int snd_soc_lzo_cache_read(struct snd_soc_codec *codec,
++				  unsigned int reg, unsigned int *value)
 +{
-+	int ret;
++	struct snd_soc_lzo_ctx *lzo_block, **lzo_blocks;
++	int ret, blkindex, blkpos;
++	size_t blksize, tmp_dst_len;
++	void *tmp_dst;
 +
-+	if (!codec->cache_sync) {
++	*value = 0;
++	/* index of the compressed lzo block */
++	blkindex = snd_soc_lzo_get_blkindex(codec, reg);
++	/* register index within the decompressed block */
++	blkpos = snd_soc_lzo_get_blkpos(codec, reg);
++	/* size of the compressed block */
++	blksize = snd_soc_lzo_get_blksize(codec);
++	lzo_blocks = codec->reg_cache;
++	lzo_block = lzo_blocks[blkindex];
++
++	/* save the pointer and length of the compressed block */
++	tmp_dst = lzo_block->dst;
++	tmp_dst_len = lzo_block->dst_len;
++
++	/* prepare the source to be the compressed block */
++	lzo_block->src = lzo_block->dst;
++	lzo_block->src_len = lzo_block->dst_len;
++
++	/* decompress the block */
++	ret = snd_soc_lzo_decompress_cache_block(codec, lzo_block);
++	if (ret >= 0) {
++		/* fetch the value from the cache */
++		switch (codec->driver->reg_word_size) {
++		case 1: {
++			u8 *cache;
++			cache = lzo_block->dst;
++			*value = cache[blkpos];
++		}
++		break;
++		case 2: {
++			u16 *cache;
++			cache = lzo_block->dst;
++			*value = cache[blkpos];
++		}
++		break;
++		default:
++			BUG();
++		}
++	}
++
++	kfree(lzo_block->dst);
++	/* restore the pointer and length of the compressed block */
++	lzo_block->dst = tmp_dst;
++	lzo_block->dst_len = tmp_dst_len;
++	return 0;
++}
++
++static int snd_soc_lzo_cache_exit(struct snd_soc_codec *codec)
++{
++	struct snd_soc_lzo_ctx **lzo_blocks;
++	int i, blkcount;
++
++	lzo_blocks = codec->reg_cache;
++	if (!lzo_blocks)
 +		return 0;
-+	}
 +
-+	if (codec->cache_ops && codec->cache_ops->sync) {
-+		ret = codec->cache_ops->sync(codec);
-+		if (!ret)
-+			codec->cache_sync = 0;
-+		return ret;
++	blkcount = snd_soc_lzo_block_count();
++	/*
++	 * the pointer to the bitmap used for syncing the cache
++	 * is shared amongst all lzo_blocks.  Ensure it is freed
++	 * only once.
++	 */
++	if (lzo_blocks[0])
++		kfree(lzo_blocks[0]->sync_bmp);
++	for (i = 0; i < blkcount; ++i) {
++		if (lzo_blocks[i]) {
++			kfree(lzo_blocks[i]->wmem);
++			kfree(lzo_blocks[i]->dst);
++		}
++		/* each lzo_block is a pointer returned by kmalloc or NULL */
++		kfree(lzo_blocks[i]);
 +	}
-+
-+	return -EINVAL;
++	kfree(lzo_blocks);
++	codec->reg_cache = NULL;
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_cache_sync);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c18ce1d..f9f5f07 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3274,29 +3274,21 @@ int snd_soc_register_codec(struct device *dev,
- 	codec->dapm.bias_level = SND_SOC_BIAS_OFF;
- 	codec->dapm.dev = dev;
- 	codec->dapm.codec = codec;
-+	codec->dev = dev;
-+	codec->driver = codec_drv;
-+	codec->num_dai = num_dai;
-+	mutex_init(&codec->mutex);
- 
- 	/* allocate CODEC register cache */
- 	if (codec_drv->reg_cache_size && codec_drv->reg_word_size) {
--
--		if (codec_drv->reg_cache_default)
--			codec->reg_cache = kmemdup(codec_drv->reg_cache_default,
--				codec_drv->reg_cache_size * codec_drv->reg_word_size, GFP_KERNEL);
--		else
--			codec->reg_cache = kzalloc(codec_drv->reg_cache_size *
--				codec_drv->reg_word_size, GFP_KERNEL);
--
--		if (codec->reg_cache == NULL) {
--			kfree(codec->name);
--			kfree(codec);
--			return -ENOMEM;
-+		ret = snd_soc_cache_init(codec);
-+		if (ret < 0) {
-+			dev_err(codec->dev, "Failed to set cache compression type: %d\n",
-+				ret);
-+			goto error_cache;
- 		}
- 	}
- 
--	codec->dev = dev;
--	codec->driver = codec_drv;
--	codec->num_dai = num_dai;
--	mutex_init(&codec->mutex);
--
- 	for (i = 0; i < num_dai; i++) {
- 		fixup_codec_formats(&dai_drv[i].playback);
- 		fixup_codec_formats(&dai_drv[i].capture);
-@@ -3306,7 +3298,7 @@ int snd_soc_register_codec(struct device *dev,
- 	if (num_dai) {
- 		ret = snd_soc_register_dais(dev, dai_drv, num_dai);
- 		if (ret < 0)
--			goto error;
-+			goto error_dais;
- 	}
- 
- 	mutex_lock(&client_mutex);
-@@ -3317,9 +3309,9 @@ int snd_soc_register_codec(struct device *dev,
- 	pr_debug("Registered codec '%s'\n", codec->name);
- 	return 0;
- 
--error:
--	if (codec->reg_cache)
--		kfree(codec->reg_cache);
-+error_dais:
++
++static int snd_soc_lzo_cache_init(struct snd_soc_codec *codec)
++{
++	struct snd_soc_lzo_ctx **lzo_blocks;
++	size_t reg_size, bmp_size;
++	struct snd_soc_codec_driver *codec_drv;
++	int ret, tofree, i, blksize, blkcount;
++	const char *p, *end;
++	unsigned long *sync_bmp;
++
++	ret = 0;
++	codec_drv = codec->driver;
++	reg_size = codec_drv->reg_cache_size * codec_drv->reg_word_size;
++
++	/*
++	 * If we have not been given a default register cache
++	 * then allocate a dummy zero-ed out region, compress it
++	 * and remember to free it afterwards.
++	 */
++	tofree = 0;
++	if (!codec_drv->reg_cache_default)
++		tofree = 1;
++
++	if (!codec_drv->reg_cache_default) {
++		codec_drv->reg_cache_default = kzalloc(reg_size,
++						       GFP_KERNEL);
++		if (!codec_drv->reg_cache_default)
++			return -ENOMEM;
++	}
++
++	blkcount = snd_soc_lzo_block_count();
++	codec->reg_cache = kzalloc(blkcount * sizeof *lzo_blocks,
++				   GFP_KERNEL);
++	if (!codec->reg_cache) {
++		ret = -ENOMEM;
++		goto err_tofree;
++	}
++	lzo_blocks = codec->reg_cache;
++
++	/*
++	 * allocate a bitmap to be used when syncing the cache with
++	 * the hardware.  Each time a register is modified, the corresponding
++	 * bit is set in the bitmap, so we know that we have to sync
++	 * that register.
++	 */
++	bmp_size = codec_drv->reg_cache_size;
++	sync_bmp = kmalloc(BITS_TO_LONGS(bmp_size) * sizeof (long),
++			   GFP_KERNEL);
++	if (!sync_bmp) {
++		ret = -ENOMEM;
++		goto err;
++	}
++	bitmap_zero(sync_bmp, reg_size);
++
++	/* allocate the lzo blocks and initialize them */
++	for (i = 0; i < blkcount; ++i) {
++		lzo_blocks[i] = kzalloc(sizeof **lzo_blocks,
++					GFP_KERNEL);
++		if (!lzo_blocks[i]) {
++			kfree(sync_bmp);
++			ret = -ENOMEM;
++			goto err;
++		}
++		lzo_blocks[i]->sync_bmp = sync_bmp;
++		lzo_blocks[i]->sync_bmp_nbits = reg_size;
++		/* alloc the working space for the compressed block */
++		ret = snd_soc_lzo_prepare(lzo_blocks[i]);
++		if (ret < 0)
++			goto err;
++	}
++
++	blksize = snd_soc_lzo_get_blksize(codec);
++	p = codec_drv->reg_cache_default;
++	end = codec_drv->reg_cache_default + reg_size;
++	/* compress the register map and fill the lzo blocks */
++	for (i = 0; i < blkcount; ++i, p += blksize) {
++		lzo_blocks[i]->src = p;
++		if (p + blksize > end)
++			lzo_blocks[i]->src_len = end - p;
++		else
++			lzo_blocks[i]->src_len = blksize;
++		ret = snd_soc_lzo_compress_cache_block(codec,
++						       lzo_blocks[i]);
++		if (ret < 0)
++			goto err;
++		lzo_blocks[i]->decompressed_size =
++			lzo_blocks[i]->src_len;
++	}
++
++	if (tofree)
++		kfree(codec_drv->reg_cache_default);
++	return 0;
++err:
 +	snd_soc_cache_exit(codec);
-+error_cache:
- 	kfree(codec->name);
- 	kfree(codec);
- 	return ret;
-@@ -3353,8 +3345,7 @@ found:
++err_tofree:
++	if (tofree)
++		kfree(codec_drv->reg_cache_default);
++	return ret;
++}
++
+ static int snd_soc_flat_cache_sync(struct snd_soc_codec *codec)
+ {
+ 	int i;
+@@ -883,6 +1288,14 @@ static const struct snd_soc_cache_ops cache_types[] = {
+ 		.read = snd_soc_flat_cache_read,
+ 		.write = snd_soc_flat_cache_write,
+ 		.sync = snd_soc_flat_cache_sync
++	},
++	{
++		.id = SND_SOC_LZO_COMPRESSION,
++		.init = snd_soc_lzo_cache_init,
++		.exit = snd_soc_lzo_cache_exit,
++		.read = snd_soc_lzo_cache_read,
++		.write = snd_soc_lzo_cache_write,
++		.sync = snd_soc_lzo_cache_sync
+ 	}
+ };
  
- 	pr_debug("Unregistered codec '%s'\n", codec->name);
- 
--	if (codec->reg_cache)
--		kfree(codec->reg_cache);
-+	snd_soc_cache_exit(codec);
- 	kfree(codec->name);
- 	kfree(codec);
- }
 -- 
 1.7.3.2
