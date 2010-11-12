@@ -1,30 +1,17 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: mapping externally allocated Scatter Gather DMA
- buffers
-Date: Fri, 12 Nov 2010 09:05:26 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1011120902590.29422@eeebox2.perex-int.cz>
-References: <AANLkTik4VQmsvBiXyoj-wEu5jgjpPVRP0bF7gkp9GJ-E@mail.gmail.com>
-	<AANLkTikHL5-6nuf6_sbkAX+y_vUo57tF-SW_j75ijEPJ@mail.gmail.com>
-	<alpine.LNX.2.00.1011091530230.29422@eeebox2.perex-int.cz>
-	<AANLkTimTrFLv911vVm-eH9EqDyXEwg-y4uFkqbUyVB7v@mail.gmail.com>
-	<alpine.LNX.2.00.1011100755560.29422@eeebox2.perex-int.cz>
-	<AANLkTi=2pO+x=Okt8RXPJe2TqGexEX70oMCFAtBAkm2U@mail.gmail.com>
-	<alpine.LNX.2.00.1011101228061.29422@eeebox2.perex-int.cz>
-	<AANLkTim=NT4cPQV+c3Y7eZF81Pv6R--vRgT_jGj7xZQJ@mail.gmail.com>
-	<alpine.LNX.2.00.1011101515420.29422@eeebox2.perex-int.cz>
-	<AANLkTi=gjN1xfnMZ4R29Sq_=fxYAfJwOQmD_+6beLYSp@mail.gmail.com>
-	<alpine.LNX.2.00.1011101859010.29422@eeebox2.perex-int.cz>
-	<AANLkTimXTdWRrdA8+ToQp-gPofKohaSJ_Ss5x4S42uo5@mail.gmail.com>
-	<alpine.LNX.2.00.1011111113030.29422@eeebox2.perex-int.cz>
-	<AANLkTi=g5LR=wm8B7jKy6kHFUjZHzt3NdZD8s3reVMbJ@mail.gmail.com>
-	<AANLkTinRzLNTxZCO6eaAxN-=NATnVSHn1jamr2n8EFDT@mail.gmail.com>
+From: Patrick Ziegler <patrick.ziegler@fh-kl.de>
+Subject: Re: Channel swapping problem on Atmel SSC audio
+Date: Fri, 12 Nov 2010 09:06:10 +0100
+Message-ID: <4CDCF572.9050808@fh-kl.de>
+References: <4CDB217E.2030906@bluewatersys.com>
+	<201011111227.09633.gineera@aspect135.co.uk>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-1783002930-1289549126=:29422"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 36880103815
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 09:05:27 +0100 (CET)
-In-Reply-To: <AANLkTinRzLNTxZCO6eaAxN-=NATnVSHn1jamr2n8EFDT@mail.gmail.com>
+Received: from post.fh-kl.de (post.fh-kl.de [143.93.17.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2E4891038DF
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 09:06:17 +0100 (CET)
+In-Reply-To: <201011111227.09633.gineera@aspect135.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,117 +21,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Manu Abraham <abraham.manu@gmail.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Ryan Mallon <ryan@bluewatersys.com>
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323584-1783002930-1289549126=:29422
-Content-Type: TEXT/PLAIN; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-On Fri, 12 Nov 2010, Manu Abraham wrote:
-
-> On Thu, Nov 11, 2010 at 6:04 PM, Manu Abraham <abraham.manu@gmail.com> wr=
-ote:
->> On Thu, Nov 11, 2010 at 4:00 PM, Jaroslav Kysela <perex@perex.cz> wrote:
->>> On Thu, 11 Nov 2010, Manu Abraham wrote:
->>>
->>>> On Wed, Nov 10, 2010 at 11:35 PM, Jaroslav Kysela <perex@perex.cz> wro=
-te:
->>
->>>>
->>>> I adapted the whole thing to make the buffersize divided amongst the
->>>> XS2D_BUFFERS (8):
->>>
->>> Probably yes.
->>>
->>>> I hope the mapping of the buffers is okay ? It looks thus, now ..
->>>
->>> From information you sent me about hw privately, I think that the
->>> period_bytes must be 4096 or multiple of this value with minumum count =
-of
->>> periods 8 (or multiple of 8). Otherwise you get a non-continuous memory=
- area
->>> (the hw uses only portion of system memory page, thus there'll be gaps)=
-=2E The
->>> problem is that we have MMAP_COMPLEX mode, but no application can handl=
-e
->>> (does not implement) this mmap mode and I'm not sure, if we can even
->>> describe the DMA buffer size layout for this case for your specific hw.
->>>
->>> I would use:
->>>
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0snd_pcm_hw_constraint_step(runtime, 0,
->>> SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A04096);
->>>
->>>
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0snd_pcm_hw_constraint_step(runtime, 0, SNDRV=
-_PCM_HW_PARAM_PERIODS,
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 8);
->>>
->>> And define periods_min =3D 8 (max to multiple 8 - choose your max limit=
-) and
->>> period_bytes_min to 4096 (max to multiple 4096 - choose your max limit)=
-=2E
->>>
->>> Note that -EIO means that your driver does not called
->>> snd_pcm_period_elapsed() and/or the pointer callback returns wrong posi=
-tion
->>> to the audio ring buffer.
->>
->>
->>
->> Ok, modified it, also added in code to acquire the stream, It's a bit
->> more complete now.
->> The crazy part that I do see now, is that I see an inconsistent lock
->> state with the hda_intel
->> driver which is the soundcard on my system. But I don't understand why
->> the locking on it
->> has to become inconsistent on loading this driver.
+Am 11.11.2010 13:27, schrieb Alan Horstmann:
+> On Wednesday 10 November 2010 22:49, Ryan Mallon wrote:
+>    
+>> I'm working on a custom board using the AT91SAM9G45 processor and a
+>> TLV320AIC26 SPI attached audio codec using I2S format audio. When doing
+>> audio playback on the board the left and right channels are occasionally
+>> flipped.
+>>      
+> <snip>
 >
+>    
+>> Has anybody else had this problem, or does anybody have any AT91/Atmel
+>> hardware that they could test to see if it occurs on other hardware also?
+>>      
+> I have worked with the AT91SAM9260 on a project which is currently suspended
+> (other priorities), where we had a simiar problem, with a codec on SPI.
+> Every time audio was started (capture or playback) the channels could be
+> swapped.  Solving that issue remains TODO when we restart.
 >
-> Ok, I found the reason: I was passing a single page for the
-> page_table, which I guess corrupted the whole stack !!
+> There was a thread on alsa-devel last month 'Soc Atmel SSC stereo problem'
+> with some suggestions.
 >
-> Eventually, I fixed the same. but ran into another issue ? Should
-> trigger not sleep or something that way ?
-> Currently, I see the issue as follows in the log, but if the
-> ops->run() callback is commented out I don't get that
-> weird message/error about lock states.
->
-> Now, ops->run(), ie xs2dtl_run() is called with other other streams,
-> such as an MPEG stream, where it doesn't
-> show any issues.
->
-> Any idea, why uncommenting ops->run() produces that message ? Should
-> trigger not sleep ? Confused ...
+>    
+In the thread mentioned, Alan proposed me amongst other things to test 
+the LRCK level before starting the SSC. This works well for me. Maybe it 
+should be implemented in a more generic way but the following 
+modification does the trick for me.
 
-Trigger must be fast without any sleeping. Only fast spinlocks are=20
-allowed. If you need sleep, just activate a tasklet and do the start job=20
-in the tasklet or a thread.
+in function  atmel_pcm_trigger inside file sound/soc/atmel/atmel-pcm.c :
 
- =09=09=09=09=09=09Jaroslav
+case SNDRV_PCM_TRIGGER_START:
++while(!at91_get_gpio_value(AT91_PIN_PB12));
++while(at91_get_gpio_value(AT91_PIN_PB12));
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+case SNDRV_PCM_TRIGGER_RESUME:
++while(!at91_get_gpio_value(AT91_PIN_PB12));
++while(at91_get_gpio_value(AT91_PIN_PB12));
 
---8323584-1783002930-1289549126=:29422
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Patrick
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+-- 
 
---8323584-1783002930-1289549126=:29422--
+Dipl.-Inf. (FH) Patrick Ziegler
+
+University Of Applied Sciences
+Kaiserslautern
+
+Amerikastrasse 1
+D-66482 Zweibruecken
+Germany
+
+Phone:	+49 631 3724 5526
+Mail:	patrick.ziegler@fh-kl.de
+
+http://www.fh-kl.de
+http://www.fh-kl.de/fachbereiche/imst/iuk-knowhow.html
