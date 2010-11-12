@@ -1,24 +1,17 @@
-From: Kevin Hilman <khilman@deeprootsystems.com>
-Subject: Re: [PATCH v7 3/9] davinci: ASoC support for
-	Omapl138-Hawkboard
-Date: Fri, 12 Nov 2010 08:45:36 -0800
-Message-ID: <87oc9uqymn.fsf@deeprootsystems.com>
-References: <1288808115-2661-1-git-send-email-vm.rod25@gmail.com>
-	<1288808115-2661-3-git-send-email-vm.rod25@gmail.com>
-	<87tyjmqznr.fsf@deeprootsystems.com>
-	<AANLkTinDNTOyO3sRc8zYqEnrNY5G_Y_YLW7rX9-dB9+R@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ALSA-SOC support for OpenRD Client/Ultimate
+Date: Fri, 12 Nov 2010 16:51:05 +0000
+Message-ID: <20101112165105.GE28804@sirena.org.uk>
+References: <4CDB9122.20706@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 53B582412E
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 17:46:23 +0100 (CET)
-Received: by gyg8 with SMTP id 8so2247104gyg.38
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 08:46:21 -0800 (PST)
-In-Reply-To: <AANLkTinDNTOyO3sRc8zYqEnrNY5G_Y_YLW7rX9-dB9+R@mail.gmail.com>
-	(Victor Rodriguez's message of "Fri, 12 Nov 2010 10:39:40 -0600")
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8BC3E103970
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 17:51:06 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4CDB9122.20706@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,39 +21,206 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Victor Rodriguez <vm.rod25@gmail.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Victor Rodriguez <victor.rodriguez@sasken.com>, Miguel Aguilar <miguel.aguilar@ridgerun.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "Robas, Teodor" <teodor.robas@gmail.com>
+Cc: alsa-devel@alsa-project.org, Arnaud Patard <arnaud.patard@rtp-net.org>
 List-Id: alsa-devel@alsa-project.org
 
-Victor Rodriguez <vm.rod25@gmail.com> writes:
+On Thu, Nov 11, 2010 at 08:45:54AM +0200, Robas, Teodor wrote:
 
-> On Fri, Nov 12, 2010 at 10:23 AM, Kevin Hilman
-> <khilman@deeprootsystems.com> wrote:
->> <vm.rod25@gmail.com> writes:
->>
->>> From: Victor Rodriguez <victor.rodriguez@sasken.com>
->>>
->>> This patch adds ASoC support for the Hawkboard-L138 system
->>>
->>> Signed-off-by: Victor Rodriguez <victor.rodriguez@sasken.com>
->>
->> I believe Mark Brown ack'd and earlier version of this patch.
->>
->> When you repost the series, you should collect any acks, sign-offs,
->> tested-by etc. tags that others have reported.
->>
->> Mark, I assume you're OK with me merging this ASoC change via the
->> davinci tree?
->>
->> Kevin
->
->
-> Sorry for that Would you like that I resend the patches again with all
-> the acks , sign offs and tested by tags ?
->
+> I am writing to this list in the hope that somebody can clear me out
+> if this platform is supported and I am doing something wrong, or if
+> it is still work in progress.
 
-Yes please.
+> The drivers that I think should work with my hardware (OpenRD ultimate)
+> are located in sound/soc/kirkwood/*.
 
-Thanks,
+Please remember to always CC maintainers on posts to Linux lists.  I've
+added a CC to Arnaud and not cut any text for his benefit.
 
-Kevin
+> Sound on this device worked (partially) with the default software
+> it came but not with the latest about 10 kernels I have tried.
+> 
+> I added bellow the output of alsa-info.sh script. If needed I can look
+> for more or try to fix it (with some help).
+> 
+> 
+> Best Regards,
+> Teodor
+> 
+> 
+> 
+> !!################################
+> !!ALSA Information Script v 0.4.59
+> !!################################
+> 
+> !!Script ran on: Thu Nov 11 06:27:39 UTC 2010
+> 
+> 
+> !!Linux Distribution
+> !!------------------
+> 
+> Debian GNU/Linux squeeze/sid \n \l
+> 
+> 
+> !!DMI Information
+> !!---------------
+> 
+> Manufacturer:
+> Product Name:
+> 
+> 
+> !!Kernel Information
+> !!------------------
+> 
+> Kernel release:    2.6.37-rc1
+> Operating System:  GNU/Linux
+> Architecture:      armv5tel
+> Processor:         unknown
+> SMP Enabled:       No
+> 
+> 
+> !!ALSA Version
+> !!------------
+> 
+> Driver version:     1.0.23
+> Library version:    1.0.23
+> Utilities version:  1.0.23
+> 
+> 
+> !!Loaded ALSA modules
+> !!-------------------
+> 
+> 
+> 
+> !!Sound Servers on this system
+> !!----------------------------
+> 
+> No sound servers found.
+> 
+> 
+> !!Soundcards recognised by ALSA
+> !!-----------------------------
+> 
+> --- no soundcards ---
+> 
+> 
+> !!PCI Soundcards installed in the system
+> !!--------------------------------------
+> 
+> 
+> 
+> !!Advanced information - PCI Vendor/Device/Susbsystem ID's
+> !!--------------------------------------------------------
+> 
+> 
+> 
+> !!Modprobe options (Sound related)
+> !!--------------------------------
+> 
+> snd-atiixp-modem: index=-2
+> snd-intel8x0m: index=-2
+> snd-via82xx-modem: index=-2
+> snd-pcsp: index=-2
+> snd-usb-audio: index=-2
+> 
+> 
+> !!Loaded sound module options
+> !!--------------------------
+> 
+> 
+> !!ALSA Device nodes
+> !!-----------------
+> 
+> crw-rw---- 1 root audio 116, 33 Nov 11 08:23 /dev/snd/timer
+> 
+> 
+> !!Aplay/Arecord output
+> !!------------
+> 
+> APLAY
+> 
+> aplay: device_list:235: no soundcards found...
+> 
+> ARECORD
+> 
+> arecord: device_list:235: no soundcards found...
+> 
+> !!Amixer output
+> !!-------------
+> 
+> 
+> !!Alsactl output
+> !!-------------
+> 
+> --startcollapse--
+> --endcollapse--
+> 
+> 
+> !!All Loaded Modules
+> !!------------------
+> 
+> Module
+> snd_soc_kirkwood
+> snd_soc_core
+> snd_pcm
+> snd_timer
+> snd
+> snd_page_alloc
+> bridge
+> stp
+> llc
+> nfsd
+> lockd
+> nfs_acl
+> auth_rpcgss
+> sunrpc
+> exportfs
+> loop
+> xgifb
+> fb
+> cfbcopyarea
+> mv_cesa
+> cfbimgblt
+> aes_generic
+> cfbfillrect
+> sd_mod
+> crc_t10dif
+> usb_storage
+> sata_mv
+> libata
+> ehci_hcd
+> scsi_mod
+> usbcore
+> mv643xx_eth
+> libphy
+> nls_base
+> 
+> 
+> !!ALSA/HDA dmesg
+> !!------------------
+> 
+> 
+> PS: please note that none of the snd* modules are loaded by default.
+> 
+> PPS: Somewhere in the code (sound/soc/kirkwood/kirkwood-openrd.c)
+> there is a check: machine_is_openrd_client() but in my case it should
+> be machine_is_openrd_ultimate(). I removed this check anyway.
+> 
+> 
+> -- 
+>   _
+> ( )   ascii ribbon campaign - against html e-mail
+>   X    www.asciiribbon.org   - against proprietary attachments
+> / \
+> 
+> 
+> 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
+
+-- 
+"You grabbed my hand and we fell into it, like a daydream - or a fever."
