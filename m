@@ -1,22 +1,21 @@
-From: Rajul Kumar <rajul.manit1@gmail.com>
+From: Irfan Shaikh <irfan.shaikh@sasken.com>
 Subject: Re: ALSA error : frame 0 active: -75
-Date: Fri, 12 Nov 2010 15:40:22 +0530
-Message-ID: <AANLkTi=-2gdXf-JJjVFdkmGbdNq_zN+NJezCgYudx6W4@mail.gmail.com>
+Date: Fri, 12 Nov 2010 16:12:45 +0530
+Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE333@EXGMBX01.sasken.com>
 References: <AANLkTin2wz0U-nociG9qMFP5R8ZhgVdDQASdXsezgzEh@mail.gmail.com>
 	<4CDCFEF9.6060700@ladisch.de>
 	<AANLkTikfSDSttXDdaukMHNk+-AeZ6cByCxtmJgFRpCq_@mail.gmail.com>
-	<16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE332@EXGMBX01.sasken.com>
+	<16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE332@EXGMBX01.sasken.com>,
+	<AANLkTi=-2gdXf-JJjVFdkmGbdNq_zN+NJezCgYudx6W4@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
-	[209.85.216.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 62836103920
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 11:10:24 +0100 (CET)
-Received: by qwj8 with SMTP id 8so21715qwj.38
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 02:10:23 -0800 (PST)
-In-Reply-To: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE332@EXGMBX01.sasken.com>
+Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
+	by alsa0.perex.cz (Postfix) with ESMTP id 10E34103932
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 11:44:13 +0100 (CET)
+In-Reply-To: <AANLkTi=-2gdXf-JJjVFdkmGbdNq_zN+NJezCgYudx6W4@mail.gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,9 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Irfan Shaikh <irfan.shaikh@sasken.com>
+To: Rajul Kumar <rajul.manit1@gmail.com>
 Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
+
+usb audio class device itself should be your capture device.
+i guess you should be opening same audio usb device at time of snd_pcm_open
+________________________________________
+From: Rajul Kumar [rajul.manit1@gmail.com]
+Sent: Friday, November 12, 2010 3:40 PM
+To: Irfan Shaikh
+Cc: Clemens Ladisch; tiwai@suse.de; alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] ALSA error : frame 0 active: -75
 
 Hi ,
 
@@ -41,14 +49,11 @@ we are doing usb audio streaming on usb host side .
 Thanx & Regards
 Rajul
 
-On Fri, Nov 12, 2010 at 3:30 PM, Irfan Shaikh <irfan.shaikh@sasken.com> wro=
-te:
-> Increase the size of your Capture Buffer in capture device (USB audio cla=
-ss)
+On Fri, Nov 12, 2010 at 3:30 PM, Irfan Shaikh <irfan.shaikh@sasken.com> wrote:
+> Increase the size of your Capture Buffer in capture device (USB audio class)
 > I guess this would help you in solving the Overrun problem
 > ________________________________________
-> From: alsa-devel-bounces@alsa-project.org [alsa-devel-bounces@alsa-projec=
-t.org] On Behalf Of Rajul Kumar [rajul.manit1@gmail.com]
+> From: alsa-devel-bounces@alsa-project.org [alsa-devel-bounces@alsa-project.org] On Behalf Of Rajul Kumar [rajul.manit1@gmail.com]
 > Sent: Friday, November 12, 2010 2:32 PM
 > To: Clemens Ladisch
 > Cc: tiwai@suse.de; alsa-devel@alsa-project.org
@@ -61,21 +66,20 @@ t.org] On Behalf Of Rajul Kumar [rajul.manit1@gmail.com]
 >
 > 1)
 > is it possible to have some software solution from audio class driver
-> for =A0-EOVERFLOW condition ?
+> for  -EOVERFLOW condition ?
 >
 > 2)
 > As depicted from error-codes.txt , -EOVERFLOW can be indicative of
 > hardware problem also .
 >
-> Can we be suggested how we can make sure that problem lies in the hardwar=
-e only
+> Can we be suggested how we can make sure that problem lies in the hardware only
 > ( i mean via some code in usb stack or anything else ) .
 >
 > 3)
 >
-> Are there some mandatory H/W requirements for =A0 iso transfer usb signal
-> which may not be =A0required for bulk or other transfers ,
-> without which iso transfers can report H/W errors =A0anytime ?
+> Are there some mandatory H/W requirements for   iso transfer usb signal
+> which may not be  required for bulk or other transfers ,
+> without which iso transfers can report H/W errors  anytime ?
 >
 > how can usb signal be improved so as to perfectly support iso transfers ?
 >
@@ -86,42 +90,34 @@ e only
 >
 >
 >
-> On Fri, Nov 12, 2010 at 2:16 PM, Clemens Ladisch <clemens@ladisch.de> wro=
-te:
+> On Fri, Nov 12, 2010 at 2:16 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
 >> Rajul Kumar wrote:
 >>> ALSA sound/usb/usbaudio.c:354: frame 0 active: -75
 >>
->> -75 =3D -EOVERFLOW
+>> -75 = -EOVERFLOW
 >>
 >>> which is followed by coninous loop of below messages :
 >>>
 >>> ALSA sound/usb/usbaudio.c:354: frame 0 active: -71
 >>
->> -71 =3D -EPROTO
+>> -71 = -EPROTO
 >>
 >>> ALSA sound/usb/usbaudio.c:354: frame 0 active: -18
 >>
->> -18 =3D -EXDEV
+>> -18 = -EXDEV
 >>
 >> Documentation/usb/error-codes.txt says:
->> | -EOVERFLOW (*) =A0 =A0 =A0 =A0 =A0The amount of data returned by the e=
-ndpoint was
->> | =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 greater than either th=
-e max packet size of the
->> | =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 endpoint or the remain=
-ing buffer size. =A0"Babble".
+>> | -EOVERFLOW (*)          The amount of data returned by the endpoint was
+>> |                         greater than either the max packet size of the
+>> |                         endpoint or the remaining buffer size.  "Babble".
 >>
->> | -EPROTO (*, **) =A0 =A0 =A0 =A0 a) bitstuff error
->> | =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 b) no response packet =
-received within the
->> | =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0prescribed bus =
-turn-around time
->> | =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 c) unknown USB error
+>> | -EPROTO (*, **)         a) bitstuff error
+>> |                         b) no response packet received within the
+>> |                            prescribed bus turn-around time
+>> |                         c) unknown USB error
 >>
->> | -EXDEV =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ISO transfer only partially =
-completed
->> | =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 look at individual fra=
-me status for details
+>> | -EXDEV                  ISO transfer only partially completed
+>> |                         look at individual frame status for details
 >>
 >> | (*) Error codes like -EPROTO, -EILSEQ and -EOVERFLOW normally indicate
 >> | hardware problems such as bad devices (including firmware) or cables.
@@ -135,17 +131,7 @@ me status for details
 > Alsa-devel@alsa-project.org
 > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
-> SASKEN BUSINESS DISCLAIMER: This message may contain confidential, propri=
-etary or legally privileged information. In case you are not the original i=
-ntended Recipient of the message, you must not, directly or indirectly, use=
-, disclose, distribute, print, or copy any part of this message and you are=
- requested to delete it and inform the sender. Any views expressed in this =
-message are those of the individual sender unless otherwise stated. Nothing=
- contained in this message shall be construed as an offer or acceptance of =
-any offer by Sasken Communication Technologies Limited ("Sasken") unless se=
-nt with that express intent and with due authority of Sasken. Sasken has ta=
-ken enough precautions to prevent the spread of viruses. However the compan=
-y accepts no liability for any damage caused by any virus transmitted by th=
-is email.
+> SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by an
+ y virus transmitted by this email.
 > Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
 >
