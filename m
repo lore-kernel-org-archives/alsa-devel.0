@@ -1,30 +1,14 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: ALSA UCM
-Date: Fri, 12 Nov 2010 15:41:20 +0000
-Message-ID: <1289576480.3480.101.camel@odin>
-References: <AANLkTimFdKg=_KDv8fbSJry6XTEsZqyQz7GhzaPxXDYP@mail.gmail.com>
-	<1288865349.3277.14.camel@odin>
-	<AANLkTim1Aopc2ALEXoWorPjzua0gGoSef8CpH+At4_cp@mail.gmail.com>
-	<1288890598.3277.81.camel@odin>
-	<alpine.LNX.2.00.1011041932410.29422@eeebox2.perex-int.cz>
-	<1288896461.3277.98.camel@odin>
-	<alpine.LNX.2.00.1011041949180.29422@eeebox2.perex-int.cz>
-	<1288897628.3277.99.camel@odin>
-	<AANLkTikn6Q+6KUpZaDGXuX=bGHrbV_9s91C6u+rS5e22@mail.gmail.com>
-	<1289046396.3318.53.camel@odin>
-	<AANLkTina11GuK4jqP=DtD-OEjTiRtNa_yG0QKy7XDuxs@mail.gmail.com>
-	<alpine.LNX.2.00.1011101608250.29422@eeebox2.perex-int.cz>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Remove unconnected PCM devices for
+	Intel HDMI
+Date: Fri, 12 Nov 2010 16:46:34 +0100
+Message-ID: <4CDD615A.7000807@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------060402030308080303040300"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id C4907103964
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 16:41:26 +0100 (CET)
-Received: by ewy26 with SMTP id 26so1830453ewy.38
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 07:41:26 -0800 (PST)
-In-Reply-To: <alpine.LNX.2.00.1011101608250.29422@eeebox2.perex-int.cz>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id EF9F310395F
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 16:46:31 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,35 +18,158 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, abraham duenas <aduejazz@gmail.com>, broonie@opensource.wolfsonmicro.com
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+Cc: wfg@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-11-10 at 16:11 +0100, Jaroslav Kysela wrote:
-> On Tue, 9 Nov 2010, abraham duenas wrote:
-> 
+This is a multi-part message in MIME format.
+--------------060402030308080303040300
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> > I'm getting the expected error ONLY for the last element: listed in
-> > the EnableSequence field:
-> > e.g:
-> > ALSA lib main.c:137:(execute_sequence) cset not yet implemented:
-> > 'name='DL2 Media Playback Volume' 90'
-> > ALSA lib main.c:137:(execute_sequence) cset not yet implemented:
-> > 'name='MUX_UL10' 10'
-> >
-> > i'll keep on digging as time permits :)
-> 
-> I fixed the sequence parser. It should work now ok. So the only missing 
-> part is to add the 'snd_ctl_*' backend for cset commands. The parsing 
-> functions for ctl strings are available in my ucm branch now:
+Since I'm a little new in HDMI land and the patch is non-trivial, I 
+wouldn't mind some comments on this one. Also thanks to Jaroslav who 
+cleared a few things out about the logical and physical devices which 
+helped me figure out what I should do about it :-)
 
-Is it the intention to reuse the cset functionality from amixer here ?
+Anyway, here's the patch.
 
-Thanks
+Some newer chips have more than one HDMI output, but usually not
+all of them are exposed as physical jacks. Removing the unused
+PCM devices (as indicated by BIOS in the pin config default) will
+reduce user confusion as they currently have to choose between
+several HDMI devices, some of them not working anyway.
 
-Liam
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
+
+--------------060402030308080303040300
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Remove-unconnected-PCM-devices-for-Intel-HD.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Remove-unconnected-PCM-devices-for-Intel-HD.pa";
+ filename*1="tch"
+
+>From db7911afdd02648b1faf6e2e7c8024da20d88257 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Thu, 11 Nov 2010 16:27:37 +0100
+Subject: [PATCH] ALSA: HDA: Remove unconnected PCM devices for Intel HDMI
+
+Some newer chips have more than one HDMI output, but usually not
+all of them are exposed as physical jacks. Removing the unused
+PCM devices (as indicated by BIOS in the pin config default) will
+reduce user confusion as they currently have to choose between
+several HDMI devices, some of them not working anyway.
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ hda/patch_hdmi.c |   37 ++++++++++++++++++++++++++++---------
+ 1 files changed, 28 insertions(+), 9 deletions(-)
+
+diff --git a/hda/patch_hdmi.c b/hda/patch_hdmi.c
+index d3e49aa..6d964f4 100644
+--- a/hda/patch_hdmi.c
++++ b/hda/patch_hdmi.c
+@@ -905,22 +905,22 @@ static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
+ 	spec->pin[spec->num_pins] = pin_nid;
+ 	spec->num_pins++;
+ 
+-	/*
+-	 * It is assumed that converter nodes come first in the node list and
+-	 * hence have been registered and usable now.
+-	 */
+ 	return hdmi_read_pin_conn(codec, pin_nid);
+ }
+ 
+ static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t nid)
+ {
++	int i;
+ 	struct hdmi_spec *spec = codec->spec;
+ 
+-	if (spec->num_cvts >= MAX_HDMI_CVTS) {
+-		snd_printk(KERN_WARNING
+-			   "HDMI: no space for converter %d\n", nid);
++	for (i = 0; spec->pin_cvt[i] != nid; i++) 
++		if (!spec->pin[i]) {
++			snd_printd("HDMI: Skipping node %d (no connection)\n", nid);
++			return -EINVAL;
++		}
++
++	if (snd_BUG_ON(spec->num_cvts >= MAX_HDMI_CVTS))
+ 		return -E2BIG;
+-	}
+ 
+ 	spec->cvt[spec->num_cvts] = nid;
+ 	spec->num_cvts++;
+@@ -932,6 +932,8 @@ static int hdmi_parse_codec(struct hda_codec *codec)
+ {
+ 	hda_nid_t nid;
+ 	int i, nodes;
++	int num_tmp_cvts = 0;
++	hda_nid_t tmp_cvt[MAX_HDMI_CVTS];
+ 
+ 	nodes = snd_hda_get_sub_nodes(codec, codec->afg, &nid);
+ 	if (!nid || nodes < 0) {
+@@ -942,6 +944,7 @@ static int hdmi_parse_codec(struct hda_codec *codec)
+ 	for (i = 0; i < nodes; i++, nid++) {
+ 		unsigned int caps;
+ 		unsigned int type;
++		unsigned int config;
+ 
+ 		caps = snd_hda_param_read(codec, nid, AC_PAR_AUDIO_WIDGET_CAP);
+ 		type = get_wcaps_type(caps);
+@@ -951,17 +954,33 @@ static int hdmi_parse_codec(struct hda_codec *codec)
+ 
+ 		switch (type) {
+ 		case AC_WID_AUD_OUT:
+-			hdmi_add_cvt(codec, nid);
++			if (num_tmp_cvts >= MAX_HDMI_CVTS) {
++				snd_printk(KERN_WARNING
++					   "HDMI: no space for converter %d\n", nid);
++				continue;
++			}
++			tmp_cvt[num_tmp_cvts] = nid;
++			num_tmp_cvts++;
+ 			break;
+ 		case AC_WID_PIN:
+ 			caps = snd_hda_param_read(codec, nid, AC_PAR_PIN_CAP);
+ 			if (!(caps & (AC_PINCAP_HDMI | AC_PINCAP_DP)))
+ 				continue;
++
++			config = snd_hda_codec_read(codec, nid, 0, 
++					     AC_VERB_GET_CONFIG_DEFAULT, 0);
++			if (((config & AC_DEFCFG_PORT_CONN) >> 
++			    AC_DEFCFG_PORT_CONN_SHIFT) == AC_JACK_PORT_NONE)
++				continue;
++
+ 			hdmi_add_pin(codec, nid);
+ 			break;
+ 		}
+ 	}
+ 
++	for (i = 0; i < num_tmp_cvts; i++) 
++		hdmi_add_cvt(codec, tmp_cvt[i]);
++
+ 	/*
+ 	 * G45/IbexPeak don't support EPSS: the unsolicited pin hot plug event
+ 	 * can be lost and presence sense verb will become inaccurate if the
+-- 
+1.7.1
+
+
+--------------060402030308080303040300
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------060402030308080303040300--
