@@ -1,19 +1,18 @@
 From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCHv2 1/3] ASoC: Move DAPM paths from DAPM context
-	to snd_soc_card
-Date: Fri, 12 Nov 2010 11:23:24 +0200
-Message-ID: <1289553806-28625-2-git-send-email-jhnikula@gmail.com>
+Subject: [PATCHv2 2/3] ASoC: Move widgets from DAPM context to
+	snd_soc_card
+Date: Fri, 12 Nov 2010 11:23:25 +0200
+Message-ID: <1289553806-28625-3-git-send-email-jhnikula@gmail.com>
 References: <1289553806-28625-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id B1CFE103921
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 10:22:57 +0100 (CET)
-Received: by eyg24 with SMTP id 24so1651626eyg.38
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 01:22:57 -0800 (PST)
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id C64D12414C
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 10:23:03 +0100 (CET)
+Received: by mail-ew0-f51.google.com with SMTP id 26so1644949ewy.38
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 01:23:03 -0800 (PST)
 In-Reply-To: <1289553806-28625-1-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,188 +27,283 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Decoupling DAPM paths from DAPM context is a first prerequisite when
-extending ASoC core to cross-device paths. This patch is almost a nullop and
-does not allow to construct cross-device setup but the path clean-up part in
-dapm_free_widgets is prepared to remove cross-device paths between a device
-being removed and others.
+Decoupling widgets from DAPM context is required when extending the ASoC
+core to cross-device paths. Even the list of widgets are now kept in
+struct snd_soc_card, the widget listing in sysfs and debugs remain sorted
+per device.
+
+This patch makes possible to build cross-device paths but does not extend
+yet the DAPM to handle codec bias and widget power changes of an another
+device.
+
+Cross-device paths are registered by listing the widgets from device A in
+a map for device B. An example below shows a path that connects MONO out of
+A into Line In of B:
+
+static const struct snd_soc_dapm_route mapA[] = {
+	{"MONO", NULL, "DAC"},
+};
+
+static const struct snd_soc_dapm_route mapB[] = {
+	{"Line In", NULL, "MONO"},
+};
 
 Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
 ---
- include/sound/soc-dapm.h       |    1 -
- include/sound/soc.h            |    2 +
- sound/soc/codecs/tlv320aic3x.c |    2 +-
- sound/soc/soc-core.c           |    2 +-
- sound/soc/soc-dapm.c           |   41 ++++++++++++++++++++++++++-------------
- 5 files changed, 31 insertions(+), 17 deletions(-)
+ include/sound/soc-dapm.h  |    2 +-
+ include/sound/soc.h       |    1 +
+ sound/soc/codecs/wm8960.c |    4 ++-
+ sound/soc/soc-core.c      |    2 +-
+ sound/soc/soc-dapm.c      |   69 ++++++++++++++++++++++++++++++++-------------
+ 5 files changed, 55 insertions(+), 23 deletions(-)
 
 diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 78d3560..c674c91 100644
+index c674c91..6714fc8 100644
 --- a/include/sound/soc-dapm.h
 +++ b/include/sound/soc-dapm.h
-@@ -470,7 +470,6 @@ struct snd_soc_dapm_widget {
+@@ -469,7 +469,7 @@ struct snd_soc_dapm_widget {
+ 
  /* DAPM context */
  struct snd_soc_dapm_context {
- 	struct list_head widgets;
--	struct list_head paths;
+-	struct list_head widgets;
++	int n_widgets; /* number of widgets in this context */
  	enum snd_soc_bias_level bias_level;
  	enum snd_soc_bias_level suspend_bias_level;
  	struct delayed_work delayed_work;
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index af23f42..835087d 100644
+index 835087d..77be6b3 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -618,6 +618,8 @@ struct snd_soc_card {
+@@ -618,6 +618,7 @@ struct snd_soc_card {
  	struct list_head platform_dev_list;
  	struct list_head dai_dev_list;
  
-+	struct list_head paths;
-+
++	struct list_head widgets;
+ 	struct list_head paths;
+ 
  #ifdef CONFIG_DEBUG_FS
- 	struct dentry *debugfs_card_root;
- 	struct dentry *debugfs_pop_time;
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 6173c2b..0082cc3 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -183,7 +183,7 @@ static int snd_soc_dapm_put_volsw_aic3x(struct snd_kcontrol *kcontrol,
- 
- 	if (snd_soc_test_bits(widget->codec, reg, val_mask, val)) {
- 		/* find dapm widget path assoc with kcontrol */
--		list_for_each_entry(path, &widget->dapm->paths, list) {
-+		list_for_each_entry(path, &widget->dapm->card->paths, list) {
- 			if (path->kcontrol != kcontrol)
- 				continue;
- 
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 0ea5788..b06c567 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -418,7 +418,9 @@ static int wm8960_add_widgets(struct snd_soc_codec *codec)
+ 	 * list each time to find the desired power state do so now
+ 	 * and save the result.
+ 	 */
+-	list_for_each_entry(w, &codec->dapm.widgets, list) {
++	list_for_each_entry(w, &codec->card->widgets, list) {
++		if (w->dapm != &codec->dapm)
++			continue;
+ 		if (strcmp(w->name, "LOUT1 PGA") == 0)
+ 			wm8960->lout1 = w;
+ 		if (strcmp(w->name, "ROUT1 PGA") == 0)
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 3d70ce5..d4800c8 100644
+index d4800c8..e761a47 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
 @@ -1696,6 +1696,7 @@ static int soc_probe(struct platform_device *pdev)
  	INIT_LIST_HEAD(&card->dai_dev_list);
  	INIT_LIST_HEAD(&card->codec_dev_list);
  	INIT_LIST_HEAD(&card->platform_dev_list);
-+	INIT_LIST_HEAD(&card->paths);
++	INIT_LIST_HEAD(&card->widgets);
+ 	INIT_LIST_HEAD(&card->paths);
  
  	soc_init_card_debugfs(card);
- 
 @@ -3275,7 +3276,6 @@ int snd_soc_register_codec(struct device *dev,
+ 		return -ENOMEM;
  	}
  
- 	INIT_LIST_HEAD(&codec->dapm.widgets);
--	INIT_LIST_HEAD(&codec->dapm.paths);
+-	INIT_LIST_HEAD(&codec->dapm.widgets);
  	codec->dapm.bias_level = SND_SOC_BIAS_OFF;
  	codec->dapm.dev = dev;
  	codec->dapm.codec = codec;
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 8352430..fb2d3ce 100644
+index fb2d3ce..52ff087 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -266,7 +266,7 @@ static int dapm_connect_mux(struct snd_soc_dapm_context *dapm,
+@@ -934,7 +934,9 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
+ 	/* Check which widgets we need to power and store them in
+ 	 * lists indicating if they should be powered up or down.
+ 	 */
+-	list_for_each_entry(w, &dapm->widgets, list) {
++	list_for_each_entry(w, &card->widgets, list) {
++		if (w->dapm != dapm)
++			continue;
+ 		switch (w->id) {
+ 		case snd_soc_dapm_pre:
+ 			dapm_seq_insert(w, &down_list, dapm_down_seq);
+@@ -972,7 +974,7 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
+ 	/* If there are no DAPM widgets then try to figure out power from the
+ 	 * event type.
+ 	 */
+-	if (list_empty(&dapm->widgets)) {
++	if (!dapm->n_widgets) {
+ 		switch (event) {
+ 		case SND_SOC_DAPM_STREAM_START:
+ 		case SND_SOC_DAPM_STREAM_RESUME:
+@@ -1136,8 +1138,8 @@ void snd_soc_dapm_debugfs_init(struct snd_soc_dapm_context *dapm)
+ 	if (!dapm->debugfs_dapm)
+ 		return;
  
- 	for (i = 0; i < e->max; i++) {
- 		if (!(strcmp(control_name, e->texts[i]))) {
--			list_add(&path->list, &dapm->paths);
-+			list_add(&path->list, &dapm->card->paths);
- 			list_add(&path->list_sink, &dest->sources);
- 			list_add(&path->list_source, &src->sinks);
- 			path->name = (char*)e->texts[i];
-@@ -288,7 +288,7 @@ static int dapm_connect_mixer(struct snd_soc_dapm_context *dapm,
- 	/* search for mixer kcontrol */
- 	for (i = 0; i < dest->num_kcontrols; i++) {
- 		if (!strcmp(control_name, dest->kcontrols[i].name)) {
--			list_add(&path->list, &dapm->paths);
-+			list_add(&path->list, &dapm->card->paths);
- 			list_add(&path->list_sink, &dest->sources);
- 			list_add(&path->list_source, &src->sinks);
- 			path->name = dest->kcontrols[i].name;
-@@ -447,7 +447,7 @@ static inline void dapm_clear_walk(struct snd_soc_dapm_context *dapm)
- {
- 	struct snd_soc_dapm_path *p;
- 
--	list_for_each_entry(p, &dapm->paths, list)
-+	list_for_each_entry(p, &dapm->card->paths, list)
- 		p->walked = 0;
- }
- 
-@@ -1171,7 +1171,7 @@ static int dapm_mux_update_power(struct snd_soc_dapm_widget *widget,
- 		return 0;
- 
- 	/* find dapm widget path assoc with kcontrol */
--	list_for_each_entry(path, &widget->dapm->paths, list) {
-+	list_for_each_entry(path, &widget->dapm->card->paths, list) {
- 		if (path->kcontrol != kcontrol)
+-	list_for_each_entry(w, &dapm->widgets, list) {
+-		if (!w->name)
++	list_for_each_entry(w, &dapm->card->widgets, list) {
++		if (!w->name || w->dapm != dapm)
  			continue;
  
-@@ -1205,7 +1205,7 @@ static int dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
- 		return -ENODEV;
+ 		d = debugfs_create_file(w->name, 0444,
+@@ -1232,7 +1234,9 @@ static ssize_t dapm_widget_show(struct device *dev,
+ 	int count = 0;
+ 	char *state = "not set";
  
- 	/* find dapm widget path assoc with kcontrol */
--	list_for_each_entry(path, &widget->dapm->paths, list) {
-+	list_for_each_entry(path, &widget->dapm->card->paths, list) {
- 		if (path->kcontrol != kcontrol)
- 			continue;
+-	list_for_each_entry(w, &codec->dapm.widgets, list) {
++	list_for_each_entry(w, &codec->card->widgets, list) {
++		if (w->dapm != &codec->dapm)
++			continue;
  
-@@ -1295,14 +1295,27 @@ static void dapm_free_widgets(struct snd_soc_dapm_context *dapm)
+ 		/* only display widgets that burnm power */
+ 		switch (w->id) {
+@@ -1293,7 +1297,9 @@ static void dapm_free_widgets(struct snd_soc_dapm_context *dapm)
+ 	struct snd_soc_dapm_widget *w, *next_w;
+ 	struct snd_soc_dapm_path *p, *next_p;
  
- 	list_for_each_entry_safe(w, next_w, &dapm->widgets, list) {
+-	list_for_each_entry_safe(w, next_w, &dapm->widgets, list) {
++	list_for_each_entry_safe(w, next_w, &dapm->card->widgets, list) {
++		if (w->dapm != dapm)
++			continue;
  		list_del(&w->list);
-+		/*
-+		 * remove source and sink paths associated to this widget.
-+		 * While removing the path, remove reference to it from both
-+		 * source and sink widgets so that path is removed only once.
-+		 */
-+		list_for_each_entry_safe(p, next_p, &w->sources, list_sink) {
-+			list_del(&p->list_sink);
-+			list_del(&p->list_source);
-+			list_del(&p->list);
-+			kfree(p->long_name);
-+			kfree(p);
-+		}
-+		list_for_each_entry_safe(p, next_p, &w->sinks, list_source) {
-+			list_del(&p->list_sink);
-+			list_del(&p->list_source);
-+			list_del(&p->list);
-+			kfree(p->long_name);
-+			kfree(p);
-+		}
- 		kfree(w);
- 	}
+ 		/*
+ 		 * remove source and sink paths associated to this widget.
+@@ -1323,7 +1329,9 @@ static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
+ {
+ 	struct snd_soc_dapm_widget *w;
+ 
+-	list_for_each_entry(w, &dapm->widgets, list) {
++	list_for_each_entry(w, &dapm->card->widgets, list) {
++		if (w->dapm != dapm)
++			continue;
+ 		if (!strcmp(w->name, pin)) {
+ 			dev_dbg(w->dapm->dev, "dapm: pin %s = %d\n",
+ 				pin, status);
+@@ -1359,22 +1367,34 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
+ {
+ 	struct snd_soc_dapm_path *path;
+ 	struct snd_soc_dapm_widget *wsource = NULL, *wsink = NULL, *w;
++	struct snd_soc_dapm_widget *wtsource = NULL, *wtsink = NULL;
+ 	const char *sink = route->sink;
+ 	const char *control = route->control;
+ 	const char *source = route->source;
+ 	int ret = 0;
+ 
+-	/* find src and dest widgets */
+-	list_for_each_entry(w, &dapm->widgets, list) {
 -
--	list_for_each_entry_safe(p, next_p, &dapm->paths, list) {
--		list_del(&p->list);
--		kfree(p->long_name);
--		kfree(p);
--	}
- }
++	/*
++	 * find src and dest widgets over all widgets but favor a widget from
++	 * current DAPM context
++	 */
++	list_for_each_entry(w, &dapm->card->widgets, list) {
+ 		if (!wsink && !(strcmp(w->name, sink))) {
+-			wsink = w;
++			wtsink = w;
++			if (w->dapm == dapm)
++				wsink = w;
+ 			continue;
+ 		}
+ 		if (!wsource && !(strcmp(w->name, source))) {
+-			wsource = w;
++			wtsource = w;
++			if (w->dapm == dapm)
++				wsource = w;
+ 		}
+ 	}
++	/* use widget from another DAPM context if not found from this */
++	if (!wsink)
++		wsink = wtsink;
++	if (!wsource)
++		wsource = wtsource;
  
- static int snd_soc_dapm_set_pin(struct snd_soc_dapm_context *dapm,
-@@ -1395,7 +1408,7 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
+ 	if (wsource == NULL || wsink == NULL)
+ 		return -ENODEV;
+@@ -1511,7 +1531,7 @@ int snd_soc_dapm_new_widgets(struct snd_soc_dapm_context *dapm)
+ {
+ 	struct snd_soc_dapm_widget *w;
  
- 	/* connect static paths */
- 	if (control == NULL) {
--		list_add(&path->list, &dapm->paths);
-+		list_add(&path->list, &dapm->card->paths);
- 		list_add(&path->list_sink, &wsink->sources);
- 		list_add(&path->list_source, &wsource->sinks);
- 		path->connect = 1;
-@@ -1416,7 +1429,7 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
- 	case snd_soc_dapm_supply:
- 	case snd_soc_dapm_aif_in:
- 	case snd_soc_dapm_aif_out:
--		list_add(&path->list, &dapm->paths);
-+		list_add(&path->list, &dapm->card->paths);
- 		list_add(&path->list_sink, &wsink->sources);
- 		list_add(&path->list_source, &wsource->sinks);
- 		path->connect = 1;
-@@ -1439,7 +1452,7 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
- 	case snd_soc_dapm_mic:
- 	case snd_soc_dapm_line:
- 	case snd_soc_dapm_spk:
--		list_add(&path->list, &dapm->paths);
-+		list_add(&path->list, &dapm->card->paths);
- 		list_add(&path->list_sink, &wsink->sources);
- 		list_add(&path->list_source, &wsource->sinks);
- 		path->connect = 0;
+-	list_for_each_entry(w, &dapm->widgets, list)
++	list_for_each_entry(w, &dapm->card->widgets, list)
+ 	{
+ 		if (w->new)
+ 			continue;
+@@ -1995,12 +2015,13 @@ int snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
+ 	if ((w = dapm_cnew_widget(widget)) == NULL)
+ 		return -ENOMEM;
+ 
++	dapm->n_widgets++;
+ 	w->dapm = dapm;
+ 	w->codec = dapm->codec;
+ 	INIT_LIST_HEAD(&w->sources);
+ 	INIT_LIST_HEAD(&w->sinks);
+ 	INIT_LIST_HEAD(&w->list);
+-	list_add(&w->list, &dapm->widgets);
++	list_add(&w->list, &dapm->card->widgets);
+ 
+ 	/* machine layer set ups unconnected pins and insertions */
+ 	w->connected = 1;
+@@ -2043,9 +2064,9 @@ static void soc_dapm_stream_event(struct snd_soc_dapm_context *dapm,
+ {
+ 	struct snd_soc_dapm_widget *w;
+ 
+-	list_for_each_entry(w, &dapm->widgets, list)
++	list_for_each_entry(w, &dapm->card->widgets, list)
+ 	{
+-		if (!w->sname)
++		if (!w->sname || w->dapm != dapm)
+ 			continue;
+ 		dev_dbg(w->dapm->dev, "widget %s\n %s stream %s event %d\n",
+ 			w->name, w->sname, stream, event);
+@@ -2128,7 +2149,9 @@ int snd_soc_dapm_force_enable_pin(struct snd_soc_dapm_context *dapm,
+ {
+ 	struct snd_soc_dapm_widget *w;
+ 
+-	list_for_each_entry(w, &dapm->widgets, list) {
++	list_for_each_entry(w, &dapm->card->widgets, list) {
++		if (w->dapm != dapm)
++			continue;
+ 		if (!strcmp(w->name, pin)) {
+ 			dev_dbg(w->dapm->dev,
+ 				"dapm: force enable pin %s\n", pin);
+@@ -2193,7 +2216,9 @@ int snd_soc_dapm_get_pin_status(struct snd_soc_dapm_context *dapm,
+ {
+ 	struct snd_soc_dapm_widget *w;
+ 
+-	list_for_each_entry(w, &dapm->widgets, list) {
++	list_for_each_entry(w, &dapm->card->widgets, list) {
++		if (w->dapm != dapm)
++			continue;
+ 		if (!strcmp(w->name, pin))
+ 			return w->connected;
+ 	}
+@@ -2218,7 +2243,9 @@ int snd_soc_dapm_ignore_suspend(struct snd_soc_dapm_context *dapm,
+ {
+ 	struct snd_soc_dapm_widget *w;
+ 
+-	list_for_each_entry(w, &dapm->widgets, list) {
++	list_for_each_entry(w, &dapm->card->widgets, list) {
++		if (w->dapm != dapm)
++			continue;
+ 		if (!strcmp(w->name, pin)) {
+ 			w->ignore_suspend = 1;
+ 			return 0;
+@@ -2249,7 +2276,9 @@ static void soc_dapm_shutdown_codec(struct snd_soc_dapm_context *dapm)
+ 	LIST_HEAD(down_list);
+ 	int powerdown = 0;
+ 
+-	list_for_each_entry(w, &dapm->widgets, list) {
++	list_for_each_entry(w, &dapm->card->widgets, list) {
++		if (w->dapm != dapm)
++			continue;
+ 		if (w->power) {
+ 			dapm_seq_insert(w, &down_list, dapm_down_seq);
+ 			w->power = 0;
 -- 
 1.7.2.3
