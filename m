@@ -1,18 +1,18 @@
 From: Irfan Shaikh <irfan.shaikh@sasken.com>
-Subject: Re: Channel swapping problem on Atmel SSC audio
-Date: Fri, 12 Nov 2010 15:22:00 +0530
-Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE331@EXGMBX01.sasken.com>
-References: <4CDB217E.2030906@bluewatersys.com>
-	<201011111227.09633.gineera@aspect135.co.uk>,
-	<4CDCF572.9050808@fh-kl.de>
+Subject: Re: ALSA error : frame 0 active: -75
+Date: Fri, 12 Nov 2010 15:30:59 +0530
+Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE332@EXGMBX01.sasken.com>
+References: <AANLkTin2wz0U-nociG9qMFP5R8ZhgVdDQASdXsezgzEh@mail.gmail.com>
+	<4CDCFEF9.6060700@ladisch.de>,
+	<AANLkTikfSDSttXDdaukMHNk+-AeZ6cByCxtmJgFRpCq_@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id 36D3810392B
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 10:52:14 +0100 (CET)
-In-Reply-To: <4CDCF572.9050808@fh-kl.de>
+	by alsa0.perex.cz (Postfix) with ESMTP id 7C45710392C
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 11:02:37 +0100 (CET)
+In-Reply-To: <AANLkTikfSDSttXDdaukMHNk+-AeZ6cByCxtmJgFRpCq_@mail.gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,77 +23,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Patrick Ziegler <patrick.ziegler@fh-kl.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Ryan Mallon <ryan@bluewatersys.com>
+To: Rajul Kumar <rajul.manit1@gmail.com>, Clemens Ladisch <clemens@ladisch.de>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I had faced the similar issue on IMx31. The cause there was reversal of LRCK clock {180 degree phase shift}.
-probing the LRCK clock may help you to find the problem
-
+Increase the size of your Capture Buffer in capture device (USB audio class)
+I guess this would help you in solving the Overrun problem
 ________________________________________
-From: alsa-devel-bounces@alsa-project.org [alsa-devel-bounces@alsa-project.org] On Behalf Of Patrick Ziegler [patrick.ziegler@fh-kl.de]
-Sent: Friday, November 12, 2010 1:36 PM
-To: alsa-devel@alsa-project.org
-Cc: Ryan Mallon
-Subject: Re: [alsa-devel] Channel swapping problem on Atmel SSC audio
+From: alsa-devel-bounces@alsa-project.org [alsa-devel-bounces@alsa-project.org] On Behalf Of Rajul Kumar [rajul.manit1@gmail.com]
+Sent: Friday, November 12, 2010 2:32 PM
+To: Clemens Ladisch
+Cc: tiwai@suse.de; alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] ALSA error : frame 0 active: -75
 
-Am 11.11.2010 13:27, schrieb Alan Horstmann:
-> On Wednesday 10 November 2010 22:49, Ryan Mallon wrote:
+Hi ,
+
+Thanx for the reply .
+i have a few more queries . please find time to guide regarding these .
+
+1)
+is it possible to have some software solution from audio class driver
+for  -EOVERFLOW condition ?
+
+2)
+As depicted from error-codes.txt , -EOVERFLOW can be indicative of
+hardware problem also .
+
+Can we be suggested how we can make sure that problem lies in the hardware only
+( i mean via some code in usb stack or anything else ) .
+
+3)
+
+Are there some mandatory H/W requirements for   iso transfer usb signal
+which may not be  required for bulk or other transfers ,
+without which iso transfers can report H/W errors  anytime ?
+
+how can usb signal be improved so as to perfectly support iso transfers ?
+
+
+Thanx & Regards
+Rajul
+
+
+
+
+On Fri, Nov 12, 2010 at 2:16 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Rajul Kumar wrote:
+>> ALSA sound/usb/usbaudio.c:354: frame 0 active: -75
 >
->> I'm working on a custom board using the AT91SAM9G45 processor and a
->> TLV320AIC26 SPI attached audio codec using I2S format audio. When doing
->> audio playback on the board the left and right channels are occasionally
->> flipped.
+> -75 = -EOVERFLOW
+>
+>> which is followed by coninous loop of below messages :
 >>
-> <snip>
+>> ALSA sound/usb/usbaudio.c:354: frame 0 active: -71
+>
+> -71 = -EPROTO
+>
+>> ALSA sound/usb/usbaudio.c:354: frame 0 active: -18
+>
+> -18 = -EXDEV
+>
+> Documentation/usb/error-codes.txt says:
+> | -EOVERFLOW (*)          The amount of data returned by the endpoint was
+> |                         greater than either the max packet size of the
+> |                         endpoint or the remaining buffer size.  "Babble".
+>
+> | -EPROTO (*, **)         a) bitstuff error
+> |                         b) no response packet received within the
+> |                            prescribed bus turn-around time
+> |                         c) unknown USB error
+>
+> | -EXDEV                  ISO transfer only partially completed
+> |                         look at individual frame status for details
+>
+> | (*) Error codes like -EPROTO, -EILSEQ and -EOVERFLOW normally indicate
+> | hardware problems such as bad devices (including firmware) or cables.
 >
 >
->> Has anybody else had this problem, or does anybody have any AT91/Atmel
->> hardware that they could test to see if it occurs on other hardware also?
->>
-> I have worked with the AT91SAM9260 on a project which is currently suspended
-> (other priorities), where we had a simiar problem, with a codec on SPI.
-> Every time audio was started (capture or playback) the channels could be
-> swapped.  Solving that issue remains TODO when we restart.
+> Regards,
+> Clemens
 >
-> There was a thread on alsa-devel last month 'Soc Atmel SSC stereo problem'
-> with some suggestions.
->
->
-In the thread mentioned, Alan proposed me amongst other things to test
-the LRCK level before starting the SSC. This works well for me. Maybe it
-should be implemented in a more generic way but the following
-modification does the trick for me.
-
-in function  atmel_pcm_trigger inside file sound/soc/atmel/atmel-pcm.c :
-
-case SNDRV_PCM_TRIGGER_START:
-+while(!at91_get_gpio_value(AT91_PIN_PB12));
-+while(at91_get_gpio_value(AT91_PIN_PB12));
-
-case SNDRV_PCM_TRIGGER_RESUME:
-+while(!at91_get_gpio_value(AT91_PIN_PB12));
-+while(at91_get_gpio_value(AT91_PIN_PB12));
-
-Patrick
-
---
-
-Dipl.-Inf. (FH) Patrick Ziegler
-
-University Of Applied Sciences
-Kaiserslautern
-
-Amerikastrasse 1
-D-66482 Zweibruecken
-Germany
-
-Phone:  +49 631 3724 5526
-Mail:   patrick.ziegler@fh-kl.de
-
-http://www.fh-kl.de
-http://www.fh-kl.de/fachbereiche/imst/iuk-knowhow.html
-
 _______________________________________________
 Alsa-devel mailing list
 Alsa-devel@alsa-project.org
