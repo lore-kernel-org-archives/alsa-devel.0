@@ -1,20 +1,35 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCHv2 3/3] ASoC: Extend DAPM to handle power
-	changes on cross-device paths
-Date: Fri, 12 Nov 2010 11:23:26 +0200
-Message-ID: <1289553806-28625-4-git-send-email-jhnikula@gmail.com>
-References: <1289553806-28625-1-git-send-email-jhnikula@gmail.com>
+From: Manu Abraham <abraham.manu@gmail.com>
+Subject: Re: mapping externally allocated Scatter Gather DMA
+	buffers
+Date: Fri, 12 Nov 2010 14:59:50 +0530
+Message-ID: <AANLkTinrbx97u+gRsnsqfwsPkf5z7env1sNtY5zin8TA@mail.gmail.com>
+References: <AANLkTik4VQmsvBiXyoj-wEu5jgjpPVRP0bF7gkp9GJ-E@mail.gmail.com>
+	<AANLkTikHL5-6nuf6_sbkAX+y_vUo57tF-SW_j75ijEPJ@mail.gmail.com>
+	<alpine.LNX.2.00.1011091530230.29422@eeebox2.perex-int.cz>
+	<AANLkTimTrFLv911vVm-eH9EqDyXEwg-y4uFkqbUyVB7v@mail.gmail.com>
+	<alpine.LNX.2.00.1011100755560.29422@eeebox2.perex-int.cz>
+	<AANLkTi=2pO+x=Okt8RXPJe2TqGexEX70oMCFAtBAkm2U@mail.gmail.com>
+	<alpine.LNX.2.00.1011101228061.29422@eeebox2.perex-int.cz>
+	<AANLkTim=NT4cPQV+c3Y7eZF81Pv6R--vRgT_jGj7xZQJ@mail.gmail.com>
+	<alpine.LNX.2.00.1011101515420.29422@eeebox2.perex-int.cz>
+	<AANLkTi=gjN1xfnMZ4R29Sq_=fxYAfJwOQmD_+6beLYSp@mail.gmail.com>
+	<alpine.LNX.2.00.1011101859010.29422@eeebox2.perex-int.cz>
+	<AANLkTimXTdWRrdA8+ToQp-gPofKohaSJ_Ss5x4S42uo5@mail.gmail.com>
+	<alpine.LNX.2.00.1011111113030.29422@eeebox2.perex-int.cz>
+	<AANLkTi=g5LR=wm8B7jKy6kHFUjZHzt3NdZD8s3reVMbJ@mail.gmail.com>
+	<AANLkTinRzLNTxZCO6eaAxN-=NATnVSHn1jamr2n8EFDT@mail.gmail.com>
+	<alpine.LNX.2.00.1011120902590.29422@eeebox2.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4A922103929
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 10:23:10 +0100 (CET)
-Received: by mail-ew0-f51.google.com with SMTP id 26so1644949ewy.38
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 01:23:10 -0800 (PST)
-In-Reply-To: <1289553806-28625-1-git-send-email-jhnikula@gmail.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 57F6D1038F9
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 10:29:52 +0100 (CET)
+Received: by wyg36 with SMTP id 36so809482wyg.38
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 01:29:52 -0800 (PST)
+In-Reply-To: <alpine.LNX.2.00.1011120902590.29422@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,279 +39,191 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Power change event like stream start/stop or kcontrol change in a
-cross-device path originates from one device but codec bias and widget power
-changes must be populated to another devices on that path as well.
-
-This patch modifies the dapm_power_widgets so that all the widgets on a
-sound card are checked for a power change, not just those that are specific
-to originating device. Also bias management is extended to check all the
-devices. Only exception in bias management are widgetless codecs whose bias
-state is changed only if power change is originating from that context.
-
-DAPM context test is added to dapm_seq_run to take care of if power sequence
-extends to an another device which requires separate register writes.
-
-Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
----
- include/sound/soc-dapm.h |    5 ++
- include/sound/soc.h      |    1 +
- sound/soc/soc-core.c     |    2 +
- sound/soc/soc-dapm.c     |  107 ++++++++++++++++++++++++++-------------------
- 4 files changed, 70 insertions(+), 45 deletions(-)
-
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 6714fc8..6af5f66 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -478,6 +478,11 @@ struct snd_soc_dapm_context {
- 	struct device *dev; /* from parent - for debug */
- 	struct snd_soc_codec *codec; /* parent codec */
- 	struct snd_soc_card *card; /* parent card */
-+
-+	/* used during DAPM updates */
-+	int dev_power;
-+	struct list_head list;
-+
- #ifdef CONFIG_DEBUG_FS
- 	struct dentry *debugfs_dapm;
- #endif
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 77be6b3..8470059 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -620,6 +620,7 @@ struct snd_soc_card {
- 
- 	struct list_head widgets;
- 	struct list_head paths;
-+	struct list_head dapm_list;
- 
- #ifdef CONFIG_DEBUG_FS
- 	struct dentry *debugfs_card_root;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e761a47..3a16096 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1454,6 +1454,7 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num)
- 		/* mark codec as probed and add to card codec list */
- 		codec->probed = 1;
- 		list_add(&codec->card_list, &card->codec_dev_list);
-+		list_add(&codec->dapm.list, &card->dapm_list);
- 	}
- 
- 	/* probe the platform */
-@@ -1698,6 +1699,7 @@ static int soc_probe(struct platform_device *pdev)
- 	INIT_LIST_HEAD(&card->platform_dev_list);
- 	INIT_LIST_HEAD(&card->widgets);
- 	INIT_LIST_HEAD(&card->paths);
-+	INIT_LIST_HEAD(&card->dapm_list);
- 
- 	soc_init_card_debugfs(card);
- 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 52ff087..1ec43f9 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -841,19 +841,22 @@ static void dapm_seq_run(struct snd_soc_dapm_context *dapm,
- 	LIST_HEAD(pending);
- 	int cur_sort = -1;
- 	int cur_reg = SND_SOC_NOPM;
-+	struct snd_soc_dapm_context *cur_dapm = NULL;
- 	int ret;
- 
- 	list_for_each_entry_safe(w, n, list, power_list) {
- 		ret = 0;
- 
- 		/* Do we need to apply any queued changes? */
--		if (sort[w->id] != cur_sort || w->reg != cur_reg) {
-+		if (sort[w->id] != cur_sort || w->reg != cur_reg ||
-+		    w->dapm != cur_dapm) {
- 			if (!list_empty(&pending))
--				dapm_seq_run_coalesced(dapm, &pending);
-+				dapm_seq_run_coalesced(cur_dapm, &pending);
- 
- 			INIT_LIST_HEAD(&pending);
- 			cur_sort = -1;
- 			cur_reg = SND_SOC_NOPM;
-+			cur_dapm = NULL;
- 		}
- 
- 		switch (w->id) {
-@@ -897,6 +900,7 @@ static void dapm_seq_run(struct snd_soc_dapm_context *dapm,
- 			/* Queue it up for application */
- 			cur_sort = sort[w->id];
- 			cur_reg = w->reg;
-+			cur_dapm = w->dapm;
- 			list_move(&w->power_list, &pending);
- 			break;
- 		}
-@@ -923,20 +927,22 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
- {
- 	struct snd_soc_card *card = dapm->codec->card;
- 	struct snd_soc_dapm_widget *w;
-+	struct snd_soc_dapm_context *d;
- 	LIST_HEAD(up_list);
- 	LIST_HEAD(down_list);
- 	int ret = 0;
- 	int power;
--	int sys_power = 0;
- 
- 	trace_snd_soc_dapm_start(card);
- 
-+	list_for_each_entry(d, &card->dapm_list, list)
-+		if (d->n_widgets)
-+			d->dev_power = 0;
-+
- 	/* Check which widgets we need to power and store them in
- 	 * lists indicating if they should be powered up or down.
- 	 */
- 	list_for_each_entry(w, &card->widgets, list) {
--		if (w->dapm != dapm)
--			continue;
- 		switch (w->id) {
- 		case snd_soc_dapm_pre:
- 			dapm_seq_insert(w, &down_list, dapm_down_seq);
-@@ -954,7 +960,7 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
- 			else
- 				power = 1;
- 			if (power)
--				sys_power = 1;
-+				w->dapm->dev_power = 1;
- 
- 			if (w->power == power)
- 				continue;
-@@ -978,19 +984,19 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
- 		switch (event) {
- 		case SND_SOC_DAPM_STREAM_START:
- 		case SND_SOC_DAPM_STREAM_RESUME:
--			sys_power = 1;
-+			dapm->dev_power = 1;
- 			break;
- 		case SND_SOC_DAPM_STREAM_SUSPEND:
--			sys_power = 0;
-+			dapm->dev_power = 0;
- 			break;
- 		case SND_SOC_DAPM_STREAM_NOP:
- 			switch (dapm->bias_level) {
- 				case SND_SOC_BIAS_STANDBY:
- 				case SND_SOC_BIAS_OFF:
--					sys_power = 0;
-+					dapm->dev_power = 0;
- 					break;
- 				default:
--					sys_power = 1;
-+					dapm->dev_power = 1;
- 					break;
- 			}
- 			break;
-@@ -999,21 +1005,24 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
- 		}
- 	}
- 
--	if (sys_power && dapm->bias_level == SND_SOC_BIAS_OFF) {
--		ret = snd_soc_dapm_set_bias_level(card, dapm,
--						  SND_SOC_BIAS_STANDBY);
--		if (ret != 0)
--			dev_err(dapm->dev,
--				"Failed to turn on bias: %d\n", ret);
--	}
-+	list_for_each_entry(d, &dapm->card->dapm_list, list) {
-+		if (d->dev_power && d->bias_level == SND_SOC_BIAS_OFF) {
-+			ret = snd_soc_dapm_set_bias_level(card, d,
-+							  SND_SOC_BIAS_STANDBY);
-+			if (ret != 0)
-+				dev_err(d->dev,
-+					"Failed to turn on bias: %d\n", ret);
-+		}
- 
--	/* If we're changing to all on or all off then prepare */
--	if ((sys_power && dapm->bias_level == SND_SOC_BIAS_STANDBY) ||
--	    (!sys_power && dapm->bias_level == SND_SOC_BIAS_ON)) {
--		ret = snd_soc_dapm_set_bias_level(card, dapm, SND_SOC_BIAS_PREPARE);
--		if (ret != 0)
--			dev_err(dapm->dev,
--				"Failed to prepare bias: %d\n", ret);
-+		/* If we're changing to all on or all off then prepare */
-+		if ((d->dev_power && d->bias_level == SND_SOC_BIAS_STANDBY) ||
-+		    (!d->dev_power && d->bias_level == SND_SOC_BIAS_ON)) {
-+			ret = snd_soc_dapm_set_bias_level(card, d,
-+							  SND_SOC_BIAS_PREPARE);
-+			if (ret != 0)
-+				dev_err(d->dev,
-+					"Failed to prepare bias: %d\n", ret);
-+		}
- 	}
- 
- 	/* Power down widgets first; try to avoid amplifying pops. */
-@@ -1022,29 +1031,36 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
- 	/* Now power up. */
- 	dapm_seq_run(dapm, &up_list, event, dapm_up_seq);
- 
--	/* If we just powered the last thing off drop to standby bias */
--	if (dapm->bias_level == SND_SOC_BIAS_PREPARE && !sys_power) {
--		ret = snd_soc_dapm_set_bias_level(card, dapm, SND_SOC_BIAS_STANDBY);
--		if (ret != 0)
--			dev_err(dapm->dev,
--				"Failed to apply standby bias: %d\n", ret);
--	}
-+	list_for_each_entry(d, &dapm->card->dapm_list, list) {
-+		/* If we just powered the last thing off drop to standby bias */
-+		if (d->bias_level == SND_SOC_BIAS_PREPARE && !d->dev_power) {
-+			ret = snd_soc_dapm_set_bias_level(card, d,
-+							  SND_SOC_BIAS_STANDBY);
-+			if (ret != 0)
-+				dev_err(d->dev,
-+					"Failed to apply standby bias: %d\n",
-+					ret);
-+		}
- 
--	/* If we're in standby and can support bias off then do that */
--	if (dapm->bias_level == SND_SOC_BIAS_STANDBY &&
--	    dapm->idle_bias_off) {
--		ret = snd_soc_dapm_set_bias_level(card, dapm, SND_SOC_BIAS_OFF);
--		if (ret != 0)
--			dev_err(dapm->dev,
--				"Failed to turn off bias: %d\n", ret);
--	}
-+		/* If we're in standby and can support bias off then do that */
-+		if (d->bias_level == SND_SOC_BIAS_STANDBY &&
-+		    d->idle_bias_off) {
-+			ret = snd_soc_dapm_set_bias_level(card, d,
-+							  SND_SOC_BIAS_OFF);
-+			if (ret != 0)
-+				dev_err(d->dev,
-+					"Failed to turn off bias: %d\n", ret);
-+		}
- 
--	/* If we just powered up then move to active bias */
--	if (dapm->bias_level == SND_SOC_BIAS_PREPARE && sys_power) {
--		ret = snd_soc_dapm_set_bias_level(card, dapm, SND_SOC_BIAS_ON);
--		if (ret != 0)
--			dev_err(dapm->dev,
--				"Failed to apply active bias: %d\n", ret);
-+		/* If we just powered up then move to active bias */
-+		if (d->bias_level == SND_SOC_BIAS_PREPARE && d->dev_power) {
-+			ret = snd_soc_dapm_set_bias_level(card, d,
-+							  SND_SOC_BIAS_ON);
-+			if (ret != 0)
-+				dev_err(d->dev,
-+					"Failed to apply active bias: %d\n",
-+					ret);
-+		}
- 	}
- 
- 	pop_dbg(dapm->dev, card->pop_time,
-@@ -2267,6 +2283,7 @@ void snd_soc_dapm_free(struct snd_soc_dapm_context *dapm)
- {
- 	snd_soc_dapm_sys_remove(dapm->dev);
- 	dapm_free_widgets(dapm);
-+	list_del(&dapm->list);
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_free);
- 
--- 
-1.7.2.3
+T24gRnJpLCBOb3YgMTIsIDIwMTAgYXQgMTozNSBQTSwgSmFyb3NsYXYgS3lzZWxhIDxwZXJleEBw
+ZXJleC5jej4gd3JvdGU6Cj4gT24gRnJpLCAxMiBOb3YgMjAxMCwgTWFudSBBYnJhaGFtIHdyb3Rl
+Ogo+Cj4+IE9uIFRodSwgTm92IDExLCAyMDEwIGF0IDY6MDQgUE0sIE1hbnUgQWJyYWhhbSA8YWJy
+YWhhbS5tYW51QGdtYWlsLmNvbT4KPj4gd3JvdGU6Cj4+Pgo+Pj4gT24gVGh1LCBOb3YgMTEsIDIw
+MTAgYXQgNDowMCBQTSwgSmFyb3NsYXYgS3lzZWxhIDxwZXJleEBwZXJleC5jej4gd3JvdGU6Cj4+
+Pj4KPj4+PiBPbiBUaHUsIDExIE5vdiAyMDEwLCBNYW51IEFicmFoYW0gd3JvdGU6Cj4+Pj4KPj4+
+Pj4gT24gV2VkLCBOb3YgMTAsIDIwMTAgYXQgMTE6MzUgUE0sIEphcm9zbGF2IEt5c2VsYSA8cGVy
+ZXhAcGVyZXguY3o+Cj4+Pj4+IHdyb3RlOgo+Pj4KPj4+Pj4KPj4+Pj4gSSBhZGFwdGVkIHRoZSB3
+aG9sZSB0aGluZyB0byBtYWtlIHRoZSBidWZmZXJzaXplIGRpdmlkZWQgYW1vbmdzdCB0aGUKPj4+
+Pj4gWFMyRF9CVUZGRVJTICg4KToKPj4+Pgo+Pj4+IFByb2JhYmx5IHllcy4KPj4+Pgo+Pj4+PiBJ
+IGhvcGUgdGhlIG1hcHBpbmcgb2YgdGhlIGJ1ZmZlcnMgaXMgb2theSA/IEl0IGxvb2tzIHRodXMs
+IG5vdyAuLgo+Pj4+Cj4+Pj4gRnJvbSBpbmZvcm1hdGlvbiB5b3Ugc2VudCBtZSBhYm91dCBodyBw
+cml2YXRlbHksIEkgdGhpbmsgdGhhdCB0aGUKPj4+PiBwZXJpb2RfYnl0ZXMgbXVzdCBiZSA0MDk2
+IG9yIG11bHRpcGxlIG9mIHRoaXMgdmFsdWUgd2l0aCBtaW51bXVtIGNvdW50Cj4+Pj4gb2YKPj4+
+PiBwZXJpb2RzIDggKG9yIG11bHRpcGxlIG9mIDgpLiBPdGhlcndpc2UgeW91IGdldCBhIG5vbi1j
+b250aW51b3VzIG1lbW9yeQo+Pj4+IGFyZWEKPj4+PiAodGhlIGh3IHVzZXMgb25seSBwb3J0aW9u
+IG9mIHN5c3RlbSBtZW1vcnkgcGFnZSwgdGh1cyB0aGVyZSdsbCBiZSBnYXBzKS4KPj4+PiBUaGUK
+Pj4+PiBwcm9ibGVtIGlzIHRoYXQgd2UgaGF2ZSBNTUFQX0NPTVBMRVggbW9kZSwgYnV0IG5vIGFw
+cGxpY2F0aW9uIGNhbiBoYW5kbGUKPj4+PiAoZG9lcyBub3QgaW1wbGVtZW50KSB0aGlzIG1tYXAg
+bW9kZSBhbmQgSSdtIG5vdCBzdXJlLCBpZiB3ZSBjYW4gZXZlbgo+Pj4+IGRlc2NyaWJlIHRoZSBE
+TUEgYnVmZmVyIHNpemUgbGF5b3V0IGZvciB0aGlzIGNhc2UgZm9yIHlvdXIgc3BlY2lmaWMgaHcu
+Cj4+Pj4KPj4+PiBJIHdvdWxkIHVzZToKPj4+Pgo+Pj4+IMKgIMKgIMKgIMKgc25kX3BjbV9od19j
+b25zdHJhaW50X3N0ZXAocnVudGltZSwgMCwKPj4+PiBTTkRSVl9QQ01fSFdfUEFSQU1fUEVSSU9E
+X0JZVEVTLAo+Pj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgNDA5Nik7Cj4+Pj4KPj4+Pgo+Pj4+IMKgIMKgIMKgIMKgc25kX3BjbV9od19jb25zdHJh
+aW50X3N0ZXAocnVudGltZSwgMCwKPj4+PiBTTkRSVl9QQ01fSFdfUEFSQU1fUEVSSU9EUywKPj4+
+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCA4KTsK
+Pj4+Pgo+Pj4+IEFuZCBkZWZpbmUgcGVyaW9kc19taW4gPSA4IChtYXggdG8gbXVsdGlwbGUgOCAt
+IGNob29zZSB5b3VyIG1heCBsaW1pdCkKPj4+PiBhbmQKPj4+PiBwZXJpb2RfYnl0ZXNfbWluIHRv
+IDQwOTYgKG1heCB0byBtdWx0aXBsZSA0MDk2IC0gY2hvb3NlIHlvdXIgbWF4IGxpbWl0KS4KPj4+
+Pgo+Pj4+IE5vdGUgdGhhdCAtRUlPIG1lYW5zIHRoYXQgeW91ciBkcml2ZXIgZG9lcyBub3QgY2Fs
+bGVkCj4+Pj4gc25kX3BjbV9wZXJpb2RfZWxhcHNlZCgpIGFuZC9vciB0aGUgcG9pbnRlciBjYWxs
+YmFjayByZXR1cm5zIHdyb25nCj4+Pj4gcG9zaXRpb24KPj4+PiB0byB0aGUgYXVkaW8gcmluZyBi
+dWZmZXIuCj4+Pgo+Pj4KPj4+Cj4+PiBPaywgbW9kaWZpZWQgaXQsIGFsc28gYWRkZWQgaW4gY29k
+ZSB0byBhY3F1aXJlIHRoZSBzdHJlYW0sIEl0J3MgYSBiaXQKPj4+IG1vcmUgY29tcGxldGUgbm93
+Lgo+Pj4gVGhlIGNyYXp5IHBhcnQgdGhhdCBJIGRvIHNlZSBub3csIGlzIHRoYXQgSSBzZWUgYW4g
+aW5jb25zaXN0ZW50IGxvY2sKPj4+IHN0YXRlIHdpdGggdGhlIGhkYV9pbnRlbAo+Pj4gZHJpdmVy
+IHdoaWNoIGlzIHRoZSBzb3VuZGNhcmQgb24gbXkgc3lzdGVtLiBCdXQgSSBkb24ndCB1bmRlcnN0
+YW5kIHdoeQo+Pj4gdGhlIGxvY2tpbmcgb24gaXQKPj4+IGhhcyB0byBiZWNvbWUgaW5jb25zaXN0
+ZW50IG9uIGxvYWRpbmcgdGhpcyBkcml2ZXIuCj4+Cj4+Cj4+IE9rLCBJIGZvdW5kIHRoZSByZWFz
+b246IEkgd2FzIHBhc3NpbmcgYSBzaW5nbGUgcGFnZSBmb3IgdGhlCj4+IHBhZ2VfdGFibGUsIHdo
+aWNoIEkgZ3Vlc3MgY29ycnVwdGVkIHRoZSB3aG9sZSBzdGFjayAhIQo+Pgo+PiBFdmVudHVhbGx5
+LCBJIGZpeGVkIHRoZSBzYW1lLiBidXQgcmFuIGludG8gYW5vdGhlciBpc3N1ZSA/IFNob3VsZAo+
+PiB0cmlnZ2VyIG5vdCBzbGVlcCBvciBzb21ldGhpbmcgdGhhdCB3YXkgPwo+PiBDdXJyZW50bHks
+IEkgc2VlIHRoZSBpc3N1ZSBhcyBmb2xsb3dzIGluIHRoZSBsb2csIGJ1dCBpZiB0aGUKPj4gb3Bz
+LT5ydW4oKSBjYWxsYmFjayBpcyBjb21tZW50ZWQgb3V0IEkgZG9uJ3QgZ2V0IHRoYXQKPj4gd2Vp
+cmQgbWVzc2FnZS9lcnJvciBhYm91dCBsb2NrIHN0YXRlcy4KPj4KPj4gTm93LCBvcHMtPnJ1bigp
+LCBpZSB4czJkdGxfcnVuKCkgaXMgY2FsbGVkIHdpdGggb3RoZXIgb3RoZXIgc3RyZWFtcywKPj4g
+c3VjaCBhcyBhbiBNUEVHIHN0cmVhbSwgd2hlcmUgaXQgZG9lc24ndAo+PiBzaG93IGFueSBpc3N1
+ZXMuCj4+Cj4+IEFueSBpZGVhLCB3aHkgdW5jb21tZW50aW5nIG9wcy0+cnVuKCkgcHJvZHVjZXMg
+dGhhdCBtZXNzYWdlID8gU2hvdWxkCj4+IHRyaWdnZXIgbm90IHNsZWVwID8gQ29uZnVzZWQgLi4u
+Cj4KPiBUcmlnZ2VyIG11c3QgYmUgZmFzdCB3aXRob3V0IGFueSBzbGVlcGluZy4gT25seSBmYXN0
+IHNwaW5sb2NrcyBhcmUgYWxsb3dlZC4KPiBJZiB5b3UgbmVlZCBzbGVlcCwganVzdCBhY3RpdmF0
+ZSBhIHRhc2tsZXQgYW5kIGRvIHRoZSBzdGFydCBqb2IgaW4gdGhlCj4gdGFza2xldCBvciBhIHRo
+cmVhZC4KCgpPaywgSSBoYXZlIG5vdyBhIHRhc2tsZXQgdG8gaGFuZGxlIHRoZSBjb21tYW5kcy4g
+QnV0IHN0aWxsIEkgZG8gaGF2ZQp0aGUgc2FtZSBpc3N1ZS4KaWYgaSBjb21tZW50IG91dCBvcHMt
+PnJ1bigpIHRoaW5ncyBkbyBsb29rIHNhbmUuIEJ1dCB3aXRoIHRoZSB0YXNrbGV0LAphbHNvIGFk
+ZGVkIGluLApJIGNhbiBzZWUgdGhlIHNhbWUgZXJyb3IsIGJ1dCBhbG1vc3QgaW1tZWRpYXRlbHks
+IHRoZSBtYWNoaW5lIGZyZWV6ZXMKY29tcGxldGVseS4KSSBzZWUgcXVpdGUgYSBsb3Qgb2YganVu
+ayBpbiB0aGUgc3lzbG9nLCBsb29rcyBsaWtlIHRoZXJlIGhhcyBiZWVuCm1lbW9yeSBjb3JydXB0
+aW9uLgpBbnkgaWRlYSwgd2hhdCBjb3VsZCBiZSBnb2luZyB3cm9uZyA/CgoKc3RhdGljIGludCBz
+YWE3MjMxX2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnBjbSwgc3RydWN0CnNu
+ZF9wY21faHdfcGFyYW1zICpwYXJhbXMpCnsKCXN0cnVjdCBzYWE3MjMxX2F1ZGlvICphdWRpbwk9
+IHNuZF9wY21fc3Vic3RyZWFtX2NoaXAocGNtKTsKCXN0cnVjdCBzYWE3MjMxX2RldiAqc2FhNzIz
+MQk9IGF1ZGlvLT5zYWE3MjMxOwoJc3RydWN0IHNuZF9wY21fcnVudGltZSAqcnQJPSBwY20tPnJ1
+bnRpbWU7CgoJc3RydWN0IHNhYTcyMzFfZG1hYnVmICpidWZmZXI7CglzdHJ1Y3Qgc2FhNzIzMV9z
+dHJlYW0gKnN0cmVhbTsKCXN0cnVjdCBzYWE3MjMxX2RtYWJ1ZiAqZG1hYnVmOwoKCXN0cnVjdCBw
+YWdlICoqcHRhYmxlOwoKCXZvaWQgKm1lbTsKCXZvaWQgKmRtYV9hcmVhOwoKCWludCBpLCBqLCBw
+YWdlcywgYnl0ZXMsIHBlcmlvZHMsIGJ1ZnNpeiwgaWR4OwoKI2RlZmluZSBNQVhfRU5UUklFU19Q
+RVJfUEFHRQkJKFBBR0VfU0laRSAvIDgpCiNkZWZpbmUgUEFHRVNfUEVSX1hTMkQoX19wYWdlcykJ
+CShfX3BhZ2VzIC8gWFMyRF9CVUZGRVJTKQojZGVmaW5lIEJVRlNJWkVfUEVSX1hTMkQoX19zaXpl
+KQkoX19zaXplIC8gWFMyRF9CVUZGRVJTKQoKCWRwcmludGsoU0FBNzIzMV9ERUJVRywgMSwgIkRF
+QlVHOiAoKSIpOwoKCXBlcmlvZHMgPSBwYXJhbXNfcGVyaW9kcyhwYXJhbXMpOwoJYnl0ZXMgICA9
+IHBhcmFtc19wZXJpb2RfYnl0ZXMocGFyYW1zKTsKCWJ1ZnNpeiAgPSBwYXJhbXNfYnVmZmVyX2J5
+dGVzKHBhcmFtcyk7CglwYWdlcwk9IHNuZF9zZ2J1Zl9hbGlnbmVkX3BhZ2VzKGJ1ZnNpeik7CgoJ
+YXVkaW8tPmJ1ZnNpemUgPSBidWZzaXo7CgoJZHByaW50ayhTQUE3MjMxX0RFQlVHLCAxLCAiYnVm
+c2l6PSVkIHBlcmlvZHM9JWQgYnl0ZXM9JWQgcGFnZXM9JWQiLAoJCWJ1ZnNpeiwKCQlwZXJpb2Rz
+LAoJCWJ5dGVzLAoJCXBhZ2VzKTsKCgkvKiBlbmFibGUgc3RyZWFtICovCgkvKiBpbml0aWFsaXpp
+bmcgOCBidWZmZXIgd2l0aCAicGFnZXMiIHBhZ2VzIGVhY2ggLi4gKi8KCXN0cmVhbSA9IHNhYTcy
+MzFfc3RyZWFtX2luaXQoc2FhNzIzMSwgQVVESU9fQ0FQVFVSRSwgQURBUFRFUl9JTlQsIDAsCihw
+YWdlcyAvIFhTMkRfQlVGRkVSUykpOwoJaWYgKCFzdHJlYW0pIHsKCQlkcHJpbnRrKFNBQTcyMzFf
+RVJST1IsIDEsICJFUlJPUjogUmVnaXN0ZXJpbmcgc3RyZWFtIik7CgkJcmV0dXJuIC1FTk9NRU07
+Cgl9CglhdWRpby0+c3RyZWFtID0gc3RyZWFtOwoJYnVmZmVyID0gc3RyZWFtLT5kbWFidWY7Cglz
+YWE3MjMxX2FkZF9pcnFldmVudChzYWE3MjMxLCA0MywgU0FBNzIzMV9FREdFX1JJU0lORywKc2Fh
+NzIzMV9hdWRpb19ldmhhbmRsZXIsICJBUzJEX0FWSVMiKTsKCWRwcmludGsoU0FBNzIzMV9ERUJV
+RywgMSwgIk1hcHBpbmcgJWQgYnVmZmVycyB3aXRoICVkIHBhZ2VzIGVhY2giLApYUzJEX0JVRkZF
+UlMsIFBBR0VTX1BFUl9YUzJEKHBhZ2VzKSk7CgoJZHByaW50ayhTQUE3MjMxX0RFQlVHLCAxLCAi
+UGFnZSBUYWJsZSBhcnJheSBzaXplPSVkIiwgcGFnZXMpOwoJcHRhYmxlID0ga3phbGxvYygoc2l6
+ZW9mIChzdHJ1Y3QgcGFnZSkgKiBwYWdlcyksIEdGUF9LRVJORUwpOwoJaWYgKCFwdGFibGUpIHsK
+CQlkcHJpbnRrKFNBQTcyMzFfRVJST1IsIDEsICJFUlJPUjogTm8gbWVtb3J5IHRvIGFsbG9jYXRl
+IHZpcnR1YWwgbWFwIik7CgkJcmV0dXJuIC1FTk9NRU07Cgl9CglhdWRpby0+cHRhYmxlID0gcHRh
+YmxlOwoJaWR4ID0gMDsKCglmb3IgKGkgPSAwOyBpIDwgWFMyRF9CVUZGRVJTOyBpICsrKSB7CgkJ
+ZG1hYnVmID0gJmJ1ZmZlcltpXTsKCQltZW0gPSBkbWFidWYtPnZtYWxsb2M7CgkJZm9yIChqID0g
+MDsgaiA8IFBBR0VTX1BFUl9YUzJEKHBhZ2VzKTsgaisrKSB7CgkJCUJVR19PTihpZHggPiBwYWdl
+cyk7CgkJCWRwcmludGsoU0FBNzIzMV9ERUJVRywgMSwgIk1hcHBpbmcgUGFnZTolZCBmcm9tIFhT
+MkRfQlVGRkVSOiVkIHRvClBUQSBPZmZzZXQ6JWQiLCBqLCBpLCBpZHgpOwoJCQlwdGFibGVbaWR4
+XSA9IHZpcnRfdG9fcGFnZShtZW0pOwoJCQltZW0gKz0gUEFHRV9TSVpFOwoJCQlpZHggKz0gMTsK
+CQl9Cgl9CgoJZG1hX2FyZWEgPSB2bWFwKHB0YWJsZSwgcGFnZXMsIFZNX01BUCwgUEFHRV9LRVJO
+RUwpOwoJcnQtPmRtYV9hcmVhCT0gZG1hX2FyZWE7CglydC0+ZG1hX2J5dGVzCT0gcGFnZXMgKiBQ
+QUdFX1NJWkU7CglydC0+ZG1hX2FkZHIJPSAwOwoKCXJldHVybiAwOwp9CgpzdGF0aWMgdm9pZCBz
+YWE3MjMxX2NtZF90YXNrbGV0KHVuc2lnbmVkIGxvbmcgZGF0YSkKewoJc3RydWN0IHNhYTcyMzFf
+YXVkaW8gKmF1ZGlvCT0gKHN0cnVjdCBzYWE3MjMxX2F1ZGlvICopIGRhdGE7CglzdHJ1Y3Qgc2Fh
+NzIzMV9kZXYgKnNhYTcyMzEJPSBhdWRpby0+c2FhNzIzMTsKCXN0cnVjdCBzYWE3MjMxX3N0cmVh
+bSAqc3RyZWFtCT0gYXVkaW8tPnN0cmVhbTsKCXN0cnVjdCBzdHJlYW1fb3BzICpvcHMJCT0gJnN0
+cmVhbS0+b3BzOwoJaW50IGNtZAkJCQk9IGF1ZGlvLT5jbWQ7CgoJaW50IGVyciA9IDA7CgoJc3dp
+dGNoIChjbWQpIHsKICAgICAgICBjYXNlIFNORFJWX1BDTV9UUklHR0VSX1NUQVJUOgoJCWRwcmlu
+dGsoU0FBNzIzMV9ERUJVRywgMSwgIlRyeWluZyB0byBTVEFSVCBzdHJlYW0sIGNtZD0lZCIsIGNt
+ZCk7CgkJaWYgKG9wcy0+cnVuKSB7CgkJCWVyciA9IG9wcy0+cnVuKHN0cmVhbSk7CgkJCWlmIChl
+cnIpIHsKCQkJCWRwcmludGsoU0FBNzIzMV9FUlJPUiwgMSwgIkVSUk9SOiBzdGFydGluZyBzdHJl
+YW0sIGVycj0lZCIsIGVycik7Ci8vCQkJCXJldHVybiAtRUlPOwoJCQl9CgkJfQoJCWJyZWFrOwog
+ICAgICAgIGNhc2UgU05EUlZfUENNX1RSSUdHRVJfU1RPUDoKCQlkcHJpbnRrKFNBQTcyMzFfREVC
+VUcsIDEsICJUcnlpbmcgdG8gU1RPUCBzdHJlYW0sIGNtZD0lZCIsIGNtZCk7CgkJaWYgKG9wcy0+
+c3RvcCkgewoJCQllcnIgPSBvcHMtPnN0b3Aoc3RyZWFtKTsKCQkJaWYgKGVycikgewoJCQkJZHBy
+aW50ayhTQUE3MjMxX0VSUk9SLCAxLCAiRVJST1I6IHN0b3BwaW5nIHN0cmVhbSwgZXJyPSVkIiwg
+ZXJyKTsKLy8JCQkJcmV0dXJuIC1FSU87CgkJCX0KCQl9CgkJYnJlYWs7CiAgICAgICAgY2FzZSBT
+TkRSVl9QQ01fVFJJR0dFUl9QQVVTRV9QVVNIOgogICAgICAgIGNhc2UgU05EUlZfUENNX1RSSUdH
+RVJfUEFVU0VfUkVMRUFTRToKICAgICAgICBjYXNlIFNORFJWX1BDTV9UUklHR0VSX1NVU1BFTkQ6
+CgkJZHByaW50ayhTQUE3MjMxX0RFQlVHLCAxLCAiVHJ5aW5nIHRvIFBBVVNFIHN0cmVhbSwgY21k
+PSVkIiwgY21kKTsKCQlpZiAob3BzLT5wYXVzZSkgewoJCQllcnIgPSBvcHMtPnBhdXNlKHN0cmVh
+bSk7CgkJCWlmIChlcnIpIHsKCQkJCWRwcmludGsoU0FBNzIzMV9FUlJPUiwgMSwgIkVSUk9SOiBw
+YXVzaW5nIHN0cmVhbSwgZXJyPSVkIiwgZXJyKTsKLy8JCQkJcmV0dXJuIC1FSU87CgkJCX0KCQl9
+CgkJYnJlYWs7CglkZWZhdWx0OgoJCWRwcmludGsoU0FBNzIzMV9ERUJVRywgMSwgIlVua25vd24g
+Y29tbWFuZCwgY21kPSVkIiwgY21kKTsKCQlzbmRfQlVHKCk7Ci8vCQlyZXR1cm4gLUVJTlZBTDsK
+CX0KfQoKLyoKICogc2FhNzIzMV9jYXB0dXJlX3RyaWdnZXIoKQogKgogKiBUaGlzIGNhbGxiYWNr
+IGlzIGNhbGxlZCB3aGVuIHRoZSBQQ00gaXMgc3RhcnRlZCwgc3RvcHBwZWQgb3IgcGF1c2VkLgog
+Ki8Kc3RhdGljIGludCBzYWE3MjMxX2NhcHR1cmVfdHJpZ2dlcihzdHJ1Y3Qgc25kX3BjbV9zdWJz
+dHJlYW0gKnBjbSwgaW50IGNtZCkKewoJc3RydWN0IHNhYTcyMzFfYXVkaW8gKmF1ZGlvCT0gc25k
+X3BjbV9zdWJzdHJlYW1fY2hpcChwY20pOwoJc3RydWN0IHNhYTcyMzFfZGV2ICpzYWE3MjMxCT0g
+YXVkaW8tPnNhYTcyMzE7CgoJZHByaW50ayhTQUE3MjMxX0RFQlVHLCAxLCAiU2NoZWR1bGluZyBj
+bWQgdGFza2xldCB3aXRoIGNtZD0lZCIsIGNtZCk7CglhdWRpby0+Y21kID0gY21kOwoJdGFza2xl
+dF9zY2hlZHVsZSgmYXVkaW8tPmNtZF90YXNrbGV0KTsKCXJldHVybiAwOwp9CgpzdGF0aWMgc25k
+X3BjbV91ZnJhbWVzX3Qgc2FhNzIzMV9jYXB0dXJlX3BvaW50ZXIoc3RydWN0IHNuZF9wY21fc3Vi
+c3RyZWFtICpwY20pCnsKCXN0cnVjdCBzYWE3MjMxX2F1ZGlvICphdWRpbwk9IHNuZF9wY21fc3Vi
+c3RyZWFtX2NoaXAocGNtKTsKCXN0cnVjdCBzYWE3MjMxX2RldiAqc2FhNzIzMQk9IGF1ZGlvLT5z
+YWE3MjMxOwoKCWRwcmludGsoU0FBNzIzMV9ERUJVRywgMSwgIkRFQlVHOigpIik7CgoJcmV0dXJu
+IDA7IC8vYnl0ZXNfdG9fZnJhbWVzKHJ0LCBwbGF5ZWQpOwp9CgppbnQgc2FhNzIzMV9hbHNhX2lu
+aXQoc3RydWN0IHNhYTcyMzFfZGV2ICpzYWE3MjMxKQp7CglpbnQgZXJyOwoJc3RydWN0IHNuZF9j
+YXJkICpjYXJkOwoJc3RydWN0IHNhYTcyMzFfYXVkaW8gKmF1ZGlvOwoKCXN0cnVjdCBzYWE3MjMx
+X2NvbmZpZyAqY29uZmlnCT0gc2FhNzIzMS0+Y29uZmlnOwoJc3RydWN0IGNhcmRfZGVzYyAqZGVz
+YwkJPSBjb25maWctPmRlc2M7CgoJZHByaW50ayhTQUE3MjMxX0RFQlVHLCAxLCAiSW5pdGlhbGl6
+aW5nIEF1ZGlvIC4uIik7CgoJYXVkaW8gPSBremFsbG9jKHNpemVvZiAoc3RydWN0IHNhYTcyMzFf
+YXVkaW8pLCBHRlBfS0VSTkVMKTsKCWlmICghYXVkaW8pIHsKCQlkcHJpbnRrKFNBQTcyMzFfRVJS
+T1IsIDEsICJFUlJPUjogT3V0IG9mIG1lbW9yeSwgYXVkaW89TlVMTCIpOwoJCXJldHVybiAtRU5P
+TUVNOwoJfQoKCWVyciA9IHNuZF9jYXJkX2NyZWF0ZShpbmRleFtzYWE3MjMxLT5udW1dLCBpZFtz
+YWE3MjMxLT5udW1dLApUSElTX01PRFVMRSwgMCwgJmNhcmQpOwoJaWYgKGVyciA8IDApIHsKCQlk
+cHJpbnRrKFNBQTcyMzFfRVJST1IsIDEsICJzbmRfY2FyZF9jcmVhdGUoKSBmYWlsZWQsIGVycj0l
+ZCIsIGVycik7CgkJcmV0dXJuIGVycjsKCX0KCXNhYTcyMzEtPmF1ZGlvCT0gYXVkaW87CglhdWRp
+by0+c2FhNzIzMQk9IHNhYTcyMzE7CglhdWRpby0+Y2FyZAk9IGNhcmQ7CgoJZXJyID0gc25kX3Nh
+YTcyMzFfcGNtX2luaXQoYXVkaW8pOwoJaWYgKGVycikgewoJCWRwcmludGsoU0FBNzIzMV9FUlJP
+UiwgMSwgIlBDTSBJbml0aWFsaXphdGlvbiBmYWlsZWQsIGVycj0lZCIsIGVycik7CgkJcmV0dXJu
+IGVycjsKCX0KCWVyciA9IHNuZF9zYWE3MjMxX21peGVyX2luaXQoYXVkaW8pOwoJaWYgKGVycikg
+ewoJCWRwcmludGsoU0FBNzIzMV9FUlJPUiwgMSwgIk1peGVyIGluaXRpYWxpemF0aW9uIGZhaWxl
+ZCwgZXJyPSVkIiwgZXJyKTsKCQlyZXR1cm4gZXJyOwoJfQoKCXNuZF9jYXJkX3NldF9kZXYoY2Fy
+ZCwgJnNhYTcyMzEtPnBkZXYtPmRldik7CglzdHJjcHkoY2FyZC0+ZHJpdmVyLCAiU0FBNzIzMSIp
+OwoJc3ByaW50ZihjYXJkLT5zaG9ydG5hbWUsICIlcy0lZCIsIGRlc2MtPnByb2R1Y3QsIHNhYTcy
+MzEtPm51bSk7CglzcHJpbnRmKGNhcmQtPm1peGVybmFtZSwgIiVzIiwgc2FhNzIzMS0+bmFtZSk7
+CglzcHJpbnRmKGNhcmQtPmxvbmduYW1lLCAiJXMgJXMgKCVzKSBAIDB4JXAsIGlycSAlaSIsCgkJ
+ZGVzYy0+dmVuZG9yLAoJCWRlc2MtPnByb2R1Y3QsCgkJY2FyZC0+c2hvcnRuYW1lLAoJCXNhYTcy
+MzEtPm1taW8xLAoJCXNhYTcyMzEtPnBkZXYtPmlycSk7CgoJZXJyID0gc25kX2NhcmRfcmVnaXN0
+ZXIoY2FyZCk7CglpZiAoZXJyKSB7CgkJZHByaW50ayhTQUE3MjMxX0VSUk9SLCAxLCAiU291bmQg
+Q2FyZCByZWdpc3RyYXRpb24gZmFpbGVkLCBlcnI9JWQiLCBlcnIpOwoJCXJldHVybiBlcnI7Cgl9
+Cgl0YXNrbGV0X2luaXQoJmF1ZGlvLT5jbWRfdGFza2xldCwgc2FhNzIzMV9jbWRfdGFza2xldCwg
+KHVuc2lnbmVkIGxvbmcpIGF1ZGlvKTsKCXJldHVybiAwOwp9CgoKdGVzdGJveCB+ICMgY2F0IC92
+YXIvbG9nL21lc3NhZ2VzCmdpbkluZm8tQWxsb3dFbXB0eVNldHRpbmdzLlgtS0RFLVBsdWdpbklu
+Zm8tQXV0aG9yCjJYLUtERS1QbHVnaW5JbmZvLUNhdGVnb3J5CjBYLUtERS1QbHVnaW5JbmZvLURl
+cGVuZHMKICAgICAgICAgICAgICAgICAgICAgICAgICxYLUtERS1QbHVnaW5JbmZvLUVtYWlsCkJY
+LUtERS1QbHVnaW5JbmZvLUVuYWJsZWRCeURlZmF1bHQ0WC1LREUtUGx1Z2luSW5mby1JbW11dGFi
+bGUwWC1LREUtUGx1Z2luSW5mby1MaWNlbnNlCipYLUtERS1QbHVnaW5JbmZvLU5hbWUKMFgtS0RF
+LVBsdWdpbkluZm8tVmVyc2lvbgowWC1LREUtUGx1Z2luSW5mby1XZWJzaXRlClgtS0RFLVByaW9y
+aXR5WC1LREUtUHJvdG9jb2wKWC1LREUtUHJvdG9jb2xzCiAgICAgICAgICAgICAgIFgtS0RFLVJl
+YWQoWC1LREUtUmVzb3VyY2VGYW1pbHkKJFgtS0RFLVJlc291cmNlVHlwZQo8WC1LREUtU29saWRC
+YWNrZW5kSW5mby1WZXJzaW9uCiZYLUtERS1TdGFydHVwTm90aWZ5JlgtS0RFLVN1YnN0aXR1dGVV
+SUQ8WC1LREUtU3lzdGVtLVNldHRpbmdzLUNhdGVnb3J5CkpYLUtERS1TeXN0ZW0tU2V0dGluZ3Mt
+UGFyZW50LUNhdGVnb3J5ClgtS0RFLVR5cGUKLFgtS0RFLVVBLURZTkFNSUMtRU5UUlnilpJYLUtE
+RS1VQS1GVUxMCuKWklgtS0RFLVVBLU5BTUUKIFgtS0RFLVVBLVNZU05BTUUKJlgtS0RFLVVBLVNZ
+U1JFTEVBU0UK4paSWC1LREUtVUEtVEFHCiBYLUtERS1VQS1WRVJTSU9OClgtS0RFLVVzZXJuYW1l
+CuKWklgtS0RFLVZlcnNpb27ilpJYLUtERS1XTUNsYXNzCuKWklgtS0RFLVdlaWdodFgtS0RFLVdy
+aXRlLFgtS0RFLW9rdWxhckFQSVZlcnNpb24+WC1LREUtb2t1bGFySGFzSW50ZXJuYWxTZXR0aW5n
+c1gtS0lQSS1JZAoiWC1LSVBJLUludGVyZmFjZXMKICAgICAgICAgICAgICAgICAgIFgtS0lQSS1N
+aW1ldHlwZXMKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAkWC1LSVBJLVJlcUZl
+YXR1cmVzCgooWC1LYXRlLU1ham9yUHJvZmlsZXMKCgpUaGFua3MsCk1hbnUKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
