@@ -1,16 +1,25 @@
-From: Denis Kup <dener.kup@gmail.com>
-Subject: [PATCH] Acer 7730G support update.
-Date: Fri, 12 Nov 2010 15:50:18 +0300
-Message-ID: <AANLkTikd1PrYQPAgmaw3Z2uJv0OYEv0L=upQKTYc_4ow@mail.gmail.com>
+From: Dan Christensen <jdc@uwo.ca>
+Subject: Re: wrong channel mappings for HDMI audio
+Date: Fri, 12 Nov 2010 08:16:02 -0500
+Message-ID: <8762w2of71.fsf@uwo.ca>
+References: <87fwv8puuo.fsf@uwo.ca> <4CDB941A.7020606@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=20cf304344945d06e10494da88c0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id C97551037EC
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 13:50:19 +0100 (CET)
-Received: by fxm14 with SMTP id 14so1813295fxm.38
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 04:50:19 -0800 (PST)
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 147E7103932
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 14:16:15 +0100 (CET)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1PGtUD-0008JD-Pv
+	for alsa-devel@alsa-project.org; Fri, 12 Nov 2010 14:16:13 +0100
+Received: from bas3-london14-1096778080.dsl.bell.ca ([65.95.129.96])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 14:16:13 +0100
+Received: from jdc by bas3-london14-1096778080.dsl.bell.ca with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 14:16:13 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,99 +29,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa Developers Maillist <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---20cf304344945d06e10494da88c0
-Content-Type: text/plain; charset=ISO-8859-1
+Clemens Ladisch <clemens@ladisch.de> writes:
 
-Hello!
+> Dan Christensen wrote:
+>> When I try to use 5.1 audio over HDMI, the front left and front right
+>> channels are correct, but the others are wrong:
+>> ...
+>> asound.conf:
+>> 
+>> pcm.!default {
+>> type hw
+>> card 0
+>> device 3
+>> }
+>
+> With this definition, you are disabling ALSA's channel mapping.
+...
+> or just tell you applications to use the device "hdmi".
 
-I want to commit patch that fix no-sound on acer 7730G laptop. All
-work history you can see here
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5123 .
-This patch for the latest snapshot, where this changes have been made:
-http://www.kerneltrap.com/mailarchive/git-commits-head/2010/5/20/35023
-.
+I get exactly the same problem if I do
 
-Acer 7730G support patch.
+  speaker-test -c6 -twav -Dhdmi
 
-Changes:
-1) Fixes automatic EAPD configuration on Acer 7730G laptop.
+Any other suggestions?
 
-Denis Kuplyakov <dener.kup@gmail.com>
-8.11.10 00:00:50
-
---20cf304344945d06e10494da88c0
-Content-Type: application/octet-stream; name=patch
-Content-Disposition: attachment; filename=patch
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_ggf2f5ca0
-
-ZGVuZXJARGVuZXJOb3RlYm9vazp+PiBkaWZmIC11cCAuL2EvYWxzYS1kcml2ZXIvYWxzYS1rZXJu
-ZWwvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgLi9iL2Fsc2EtZHJpdmVyL2Fsc2Eta2VybmVsL3Bj
-aS9oZGEvcGF0Y2hfcmVhbHRlay5jIAotLS0gLi9hL2Fsc2EtZHJpdmVyL2Fsc2Eta2VybmVsL3Bj
-aS9oZGEvcGF0Y2hfcmVhbHRlay5jIDIwMTAtMTEtMDQgMDI6MDU6MTcuMDAwMDAwMDAwICswMzAw
-CisrKyAuL2IvYWxzYS1kcml2ZXIvYWxzYS1rZXJuZWwvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMg
-MjAxMC0xMS0wNyAwMTozNjoxOS44ODUzMTYwNTggKzAzMDAKQEAgLTIwMTQsNiArMjAxNCwzNiBA
-QCBzdGF0aWMgc3RydWN0IGhkYV92ZXJiIGFsYzg4OF9hY2VyX2FzcGlyCiB9OwogCiAvKgorICpB
-TEM4ODggQWNlciBBc3BpcmUgNzczMEcgbW9kZWwKKyAqLworCitzdGF0aWMgc3RydWN0IGhkYV92
-ZXJiIGFsYzg4OF9hY2VyX2FzcGlyZV83NzMwR192ZXJic1tdID0geworLyogQmlhcyB2b2x0YWdl
-IG9uIGZvciBleHRlcm5hbCBtaWMgcG9ydCAqLworICAgICAgIHsweDE4LCBBQ19WRVJCX1NFVF9Q
-SU5fV0lER0VUX0NPTlRST0wsIFBJTl9JTiB8IFBJTl9WUkVGODB9LAorLyogRnJvbnQgTWljOiBz
-ZXQgdG8gUElOX0lOIChlbXB0eSBieSBkZWZhdWx0KSAqLworICAgICAgIHsweDEyLCBBQ19WRVJC
-X1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9JTn0sCisvKiBVbnNlbGVjdCBGcm9udCBNaWMg
-YnkgZGVmYXVsdCBpbiBpbnB1dCBtaXhlciAzICovCisgICAgICAgezB4MjIsIEFDX1ZFUkJfU0VU
-X0FNUF9HQUlOX01VVEUsIEFNUF9JTl9NVVRFKDB4Yil9LAorLyogRW5hYmxlIHVuc29saWNpdGVk
-IGV2ZW50IGZvciBIUCBqYWNrICovCisgICAgICAgezB4MTUsIEFDX1ZFUkJfU0VUX1VOU09MSUNJ
-VEVEX0VOQUJMRSwgQUxDODgwX0hQX0VWRU5UIHwgQUNfVVNSU1BfRU59LAorLyogRW5hYmxlIHNw
-ZWFrZXIgb3V0cHV0ICovCisgICAgICAgezB4MTQsIEFDX1ZFUkJfU0VUX1BJTl9XSURHRVRfQ09O
-VFJPTCwgUElOX09VVH0sCisgICAgICAgezB4MTQsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUs
-IEFNUF9PVVRfVU5NVVRFfSwKKyAgICAgICB7MHgxNCwgQUNfVkVSQl9TRVRfRUFQRF9CVExFTkFC
-TEUsIDJ9LAorLyogRW5hYmxlIGhlYWRwaG9uZSBvdXRwdXQgKi8KKyAgICAgICB7MHgxNSwgQUNf
-VkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9MLCBQSU5fT1VUIHwgUElOX0hQfSwKKyAgICAgICB7
-MHgxNSwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX09VVF9VTk1VVEV9LAorICAgICAg
-IHsweDE1LCBBQ19WRVJCX1NFVF9DT05ORUNUX1NFTCwgMHgwMH0sCisgICAgICAgezB4MTUsIEFD
-X1ZFUkJfU0VUX0VBUERfQlRMRU5BQkxFLCAyfSwKKy8qRW5hYmxlIGludGVybmFsIHN1Yndvb2Zl
-ciAqLworICAgICAgIHsweDE3LCBBQ19WRVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9P
-VVR9LAorICAgICAgIHsweDE3LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfT1VUX1VO
-TVVURX0sCisgICAgICAgezB4MTcsIEFDX1ZFUkJfU0VUX0NPTk5FQ1RfU0VMLCAweDAyfSwKKyAg
-ICAgICB7MHgxNywgQUNfVkVSQl9TRVRfRUFQRF9CVExFTkFCTEUsIDJ9LAorICAgICAgIHsgfQor
-fTsKKworLyoKICAqIEFMQzg4OSBBY2VyIEFzcGlyZSA4OTMwRyBtb2RlbAogICovCiAKQEAgLTIy
-MDAsNiArMjIzMCwxNiBAQCBzdGF0aWMgdm9pZCBhbGM4ODhfYWNlcl9hc3BpcmVfNjUzMGdfc2V0
-CiAgICAgICAgc3BlYy0+YXV0b2NmZy5zcGVha2VyX3BpbnNbMl0gPSAweDE3OwogfQogCitzdGF0
-aWMgdm9pZCBhbGM4ODhfYWNlcl9hc3BpcmVfNzczMGdfc2V0dXAoc3RydWN0IGhkYV9jb2RlYyAq
-Y29kZWMpCit7CisgICAgICAgc3RydWN0IGFsY19zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7CisK
-KyAgICAgICBzcGVjLT5hdXRvY2ZnLmhwX3BpbnNbMF0gPSAweDE1OworICAgICAgIHNwZWMtPmF1
-dG9jZmcuc3BlYWtlcl9waW5zWzBdID0gMHgxNDsKKyAgICAgICBzcGVjLT5hdXRvY2ZnLnNwZWFr
-ZXJfcGluc1sxXSA9IDB4MTY7CisgICAgICAgc3BlYy0+YXV0b2NmZy5zcGVha2VyX3BpbnNbMl0g
-PSAweDE3OworfQorCiBzdGF0aWMgdm9pZCBhbGM4ODlfYWNlcl9hc3BpcmVfODkzMGdfc2V0dXAo
-c3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiB7CiAgICAgICAgc3RydWN0IGFsY19zcGVjICpzcGVj
-ID0gY29kZWMtPnNwZWM7CkBAIC05NTI0LDEzICs5NTY0LDYgQEAgc3RhdGljIHN0cnVjdCBoZGFf
-dmVyYiBhbGM4ODNfYWNlcl9lYXBkXwogICAgICAgIHsgfQogfTsKIAotc3RhdGljIHN0cnVjdCBo
-ZGFfdmVyYiBhbGM4ODhfYWNlcl9hc3BpcmVfNzczMEdfdmVyYnNbXSA9IHsKLSAgICAgICB7MHgx
-NSwgQUNfVkVSQl9TRVRfQ09OTkVDVF9TRUwsIDB4MDB9LAotICAgICAgIHsweDE3LCBBQ19WRVJC
-X1NFVF9DT05ORUNUX1NFTCwgMHgwMn0sCi0gICAgICAgezB4MTUsIEFDX1ZFUkJfU0VUX1VOU09M
-SUNJVEVEX0VOQUJMRSwgQUxDODgwX0hQX0VWRU5UIHwgQUNfVVNSU1BfRU59LAotICAgICAgIHsg
-fSAvKiBlbmQgKi8KLX07Ci0KIHN0YXRpYyB2b2lkIGFsYzg4OF82c3RfZGVsbF9zZXR1cChzdHJ1
-Y3QgaGRhX2NvZGVjICpjb2RlYykKIHsKICAgICAgICBzdHJ1Y3QgYWxjX3NwZWMgKnNwZWMgPSBj
-b2RlYy0+c3BlYzsKQEAgLTEwMzI4LDcgKzEwMzYxLDcgQEAgc3RhdGljIHN0cnVjdCBhbGNfY29u
-ZmlnX3ByZXNldCBhbGM4ODJfcAogICAgICAgICAgICAgICAgLmNvbnN0X2NoYW5uZWxfY291bnQg
-PSA2LAogICAgICAgICAgICAgICAgLmlucHV0X211eCA9ICZhbGM4ODNfY2FwdHVyZV9zb3VyY2Us
-CiAgICAgICAgICAgICAgICAudW5zb2xfZXZlbnQgPSBhbGNfYXV0b211dGVfYW1wX3Vuc29sX2V2
-ZW50LAotICAgICAgICAgICAgICAgLnNldHVwID0gYWxjODg4X2FjZXJfYXNwaXJlXzY1MzBnX3Nl
-dHVwLAorICAgICAgICAgICAgICAgLnNldHVwID0gYWxjODg4X2FjZXJfYXNwaXJlXzc3MzBnX3Nl
-dHVwLAogICAgICAgICAgICAgICAgLmluaXRfaG9vayA9IGFsY19hdXRvbXV0ZV9hbXAsCiAgICAg
-ICAgfSwKICAgICAgICBbQUxDODgzX01FRElPTl0gPSB7Cg==
---20cf304344945d06e10494da88c0
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---20cf304344945d06e10494da88c0--
+Dan
