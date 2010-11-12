@@ -1,21 +1,19 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: Use DAPM context rather than
- CODEC when constructing sequences
-Date: Fri, 12 Nov 2010 21:06:43 +0200
-Message-ID: <20101112210643.bb39d54a.jhnikula@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2.6.37 1/2] ASoC: Fix dapm_seq_compare()
+ for multi-component
+Date: Fri, 12 Nov 2010 19:10:45 +0000
+Message-ID: <20101112191045.GH17283@rakim.wolfsonmicro.main>
 References: <1289577671-13837-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1289577671-13837-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<20101112210637.0ec2d25c.jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1D07210398F
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 20:06:58 +0100 (CET)
-Received: by eyg24 with SMTP id 24so2031165eyg.38
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 11:06:57 -0800 (PST)
-In-Reply-To: <1289577671-13837-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7EADB10396B
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 20:10:48 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20101112210637.0ec2d25c.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,34 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Jarkko Nikula <jhnikula@gmail.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 12 Nov 2010 16:01:11 +0000
-Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+On Fri, Nov 12, 2010 at 09:06:37PM +0200, Jarkko Nikula wrote:
 
-> DAPM widgets may be associated with non-CODEC devices so compare based
-> on the DAPM context rather than the CODEC pointer.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/soc-dapm.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-> index bc2ec06..5ee93a5 100644
-> --- a/sound/soc/soc-dapm.c
-> +++ b/sound/soc/soc-dapm.c
-> @@ -710,8 +710,8 @@ static int dapm_seq_compare(struct snd_soc_dapm_widget *a,
->  		return sort[a->id] - sort[b->id];
->  	if (a->reg != b->reg)
->  		return a->reg - b->reg;
-> -	if (a->codec != b->codec)
-> -		return (unsigned long)a->codec - (unsigned long)b->codec;
-> +	if (a->dapm != b->dapm)
-> +		return (unsigned long)a->dapm - (unsigned long)b->dapm;
->  
-Definitely, this conversion was missing from DAPM decoupling patch.
+> This sounds feasible change. What I was thinking are there any
+> benefit which one, the register or codec is compared first but I don't
+> think there's any practical difference.
 
-Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+> A1, B1, A2, B2 (now)
+> or
+> A1, A2, B1, B2 (codec comparison before register)
+
+If you've got two identical CODECs it will *probably* sound smoother to
+alternate between the two rather than enabling one then the other -
+there will be less time difference between any audible issues in each
+path.  Probably a very small chance of that having an effect but it
+seemed more likely to do something useful than any other scenario.
