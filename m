@@ -1,20 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v7 3/9] davinci: ASoC support for
-	Omapl138-Hawkboard
-Date: Fri, 12 Nov 2010 16:25:16 +0000
-Message-ID: <20101112162516.GG17283@rakim.wolfsonmicro.main>
-References: <1288808115-2661-1-git-send-email-vm.rod25@gmail.com>
-	<1288808115-2661-3-git-send-email-vm.rod25@gmail.com>
-	<87tyjmqznr.fsf@deeprootsystems.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: ALSA UCM
+Date: Fri, 12 Nov 2010 17:25:22 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1011121722090.29422@eeebox2.perex-int.cz>
+References: <AANLkTimFdKg=_KDv8fbSJry6XTEsZqyQz7GhzaPxXDYP@mail.gmail.com>
+	<1288865349.3277.14.camel@odin>
+	<AANLkTim1Aopc2ALEXoWorPjzua0gGoSef8CpH+At4_cp@mail.gmail.com>
+	<1288890598.3277.81.camel@odin>
+	<alpine.LNX.2.00.1011041932410.29422@eeebox2.perex-int.cz>
+	<1288896461.3277.98.camel@odin>
+	<alpine.LNX.2.00.1011041949180.29422@eeebox2.perex-int.cz>
+	<1288897628.3277.99.camel@odin>
+	<AANLkTikn6Q+6KUpZaDGXuX=bGHrbV_9s91C6u+rS5e22@mail.gmail.com>
+	<1289046396.3318.53.camel@odin>
+	<AANLkTina11GuK4jqP=DtD-OEjTiRtNa_yG0QKy7XDuxs@mail.gmail.com>
+	<alpine.LNX.2.00.1011101608250.29422@eeebox2.perex-int.cz>
+	<1289576480.3480.101.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9D2BF10395F
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 17:25:17 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <87tyjmqznr.fsf@deeprootsystems.com>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id EAFD210398C
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 17:25:22 +0100 (CET)
+In-Reply-To: <1289576480.3480.101.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,13 +32,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kevin Hilman <khilman@deeprootsystems.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org, Victor Rodriguez <victor.rodriguez@sasken.com>, vm.rod25@gmail.com, Miguel Aguilar <miguel.aguilar@ridgerun.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, abraham duenas <aduejazz@gmail.com>, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 12, 2010 at 08:23:20AM -0800, Kevin Hilman wrote:
+On Fri, 12 Nov 2010, Liam Girdwood wrote:
 
-> Mark, I assume you're OK with me merging this ASoC change via the
-> davinci tree?
+> On Wed, 2010-11-10 at 16:11 +0100, Jaroslav Kysela wrote:
+>> On Tue, 9 Nov 2010, abraham duenas wrote:
+>>
+>
+>>> I'm getting the expected error ONLY for the last element: listed in
+>>> the EnableSequence field:
+>>> e.g:
+>>> ALSA lib main.c:137:(execute_sequence) cset not yet implemented:
+>>> 'name='DL2 Media Playback Volume' 90'
+>>> ALSA lib main.c:137:(execute_sequence) cset not yet implemented:
+>>> 'name='MUX_UL10' 10'
+>>>
+>>> i'll keep on digging as time permits :)
+>>
+>> I fixed the sequence parser. It should work now ok. So the only missing
+>> part is to add the 'snd_ctl_*' backend for cset commands. The parsing
+>> functions for ctl strings are available in my ucm branch now:
+>
+> Is it the intention to reuse the cset functionality from amixer here ?
 
-Yes.
+Yes, basically to avoid double ASCII syntax for same thing. I expect that 
+the amixer will be recoded to use parser functions implemented in 
+alsa-lib.
+
+ 						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
