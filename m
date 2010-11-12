@@ -1,55 +1,70 @@
-From: Florian Fainelli <florian@openwrt.org>
-Subject: Re: [PATCH] sound/mixart: avoid redefining {readl,write}_{le,be} accessors
-Date: Fri, 12 Nov 2010 18:29:11 +0100
-Message-ID: <201011121829.11914.florian@openwrt.org>
-References: <201011091829.08664.florian@openwrt.org>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH 2.6.37 1/2] ASoC: Fix dapm_seq_compare()
+ for multi-component
+Date: Fri, 12 Nov 2010 21:06:37 +0200
+Message-ID: <20101112210637.0ec2d25c.jhnikula@gmail.com>
+References: <1289577671-13837-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <201011091829.08664.florian@openwrt.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D881103935
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 20:06:52 +0100 (CET)
+Received: by ewy2 with SMTP id 2so72385ewy.38
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 11:06:52 -0800 (PST)
+In-Reply-To: <1289577671-13837-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 09 November 2010 18:29:08 Florian Fainelli wrote:
-> From: Florian Fainelli <florian@openwrt.org>
+On Fri, 12 Nov 2010 16:01:10 +0000
+Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
 
-Takashi, do you have any comments on this patch?
-
-Thanks!
-
+> Ensure that we keep all widget powerups in DAPM sequence by making
+> the CODEC the last thing we compare on rather than the first thing.
+> Also fix the fact that we're currently comparing the widget pointers
+> rather than the CODEC pointers when we do the substraction so we
+> won't get stable results.
 > 
-> If the platform already provides a definition for these accessors
-> do not redefine them. The warning was caught on MIPS.
-> 
-> Signed-off-by: Florian Fainelli <florian@openwrt.org>
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 > ---
-> diff --git a/sound/pci/mixart/mixart_hwdep.h
-> b/sound/pci/mixart/mixart_hwdep.h index a46f508..812e288 100644
-> --- a/sound/pci/mixart/mixart_hwdep.h
-> +++ b/sound/pci/mixart/mixart_hwdep.h
-> @@ -25,11 +25,21 @@
+>  sound/soc/soc-dapm.c |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
 > 
->  #include <sound/hwdep.h>
-> 
-> +#ifndef readl_be
->  #define readl_be(x) be32_to_cpu(__raw_readl(x))
-> +#endif
-> +
-> +#ifndef writel_be
->  #define writel_be(data,addr) __raw_writel(cpu_to_be32(data),addr)
-> +#endif
-> 
-> +#ifndef readl_le
->  #define readl_le(x) le32_to_cpu(__raw_readl(x))
-> +#endif
-> +
-> +#ifndef writel_le
->  #define writel_le(data,addr) __raw_writel(cpu_to_le32(data),addr)
-> +#endif
-> 
->  #define MIXART_MEM(mgr,x)	((mgr)->mem[0].virt + (x))
->  #define MIXART_REG(mgr,x)	((mgr)->mem[1].virt + (x))
+> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> index 8352430..bc2ec06 100644
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -706,12 +706,12 @@ static int dapm_seq_compare(struct snd_soc_dapm_widget *a,
+>  			    struct snd_soc_dapm_widget *b,
+>  			    int sort[])
+>  {
+> -	if (a->codec != b->codec)
+> -		return (unsigned long)a - (unsigned long)b;
+>  	if (sort[a->id] != sort[b->id])
+>  		return sort[a->id] - sort[b->id];
+>  	if (a->reg != b->reg)
+>  		return a->reg - b->reg;
+> +	if (a->codec != b->codec)
+> +		return (unsigned long)a->codec - (unsigned long)b->codec;
+>  
+This sounds feasible change. What I was thinking are there any
+benefit which one, the register or codec is compared first but I don't
+think there's any practical difference.
+
+A1, B1, A2, B2 (now)
+or
+A1, A2, B1, B2 (codec comparison before register)
+
+Acked-by: Jarkko Nikula <jhnikula@gmail.com>
