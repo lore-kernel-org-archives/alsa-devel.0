@@ -1,17 +1,30 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ALSA-SOC support for OpenRD Client/Ultimate
-Date: Fri, 12 Nov 2010 16:51:05 +0000
-Message-ID: <20101112165105.GE28804@sirena.org.uk>
-References: <4CDB9122.20706@gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: ALSA UCM
+Date: Fri, 12 Nov 2010 17:55:50 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1011121743180.29422@eeebox2.perex-int.cz>
+References: <AANLkTimFdKg=_KDv8fbSJry6XTEsZqyQz7GhzaPxXDYP@mail.gmail.com>
+	<1288865349.3277.14.camel@odin>
+	<AANLkTim1Aopc2ALEXoWorPjzua0gGoSef8CpH+At4_cp@mail.gmail.com>
+	<1288890598.3277.81.camel@odin>
+	<alpine.LNX.2.00.1011041932410.29422@eeebox2.perex-int.cz>
+	<1288896461.3277.98.camel@odin>
+	<alpine.LNX.2.00.1011041949180.29422@eeebox2.perex-int.cz>
+	<1288897628.3277.99.camel@odin>
+	<AANLkTikn6Q+6KUpZaDGXuX=bGHrbV_9s91C6u+rS5e22@mail.gmail.com>
+	<1289046396.3318.53.camel@odin>
+	<AANLkTina11GuK4jqP=DtD-OEjTiRtNa_yG0QKy7XDuxs@mail.gmail.com>
+	<alpine.LNX.2.00.1011101608250.29422@eeebox2.perex-int.cz>
+	<1289576480.3480.101.camel@odin>
+	<alpine.LNX.2.00.1011121722090.29422@eeebox2.perex-int.cz>
+	<1289580140.3480.117.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8BC3E103970
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 17:51:06 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4CDB9122.20706@gmail.com>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 66B7E103939
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 17:55:51 +0100 (CET)
+In-Reply-To: <1289580140.3480.117.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,206 +34,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Robas, Teodor" <teodor.robas@gmail.com>
-Cc: alsa-devel@alsa-project.org, Arnaud Patard <arnaud.patard@rtp-net.org>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, abraham duenas <aduejazz@gmail.com>, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 11, 2010 at 08:45:54AM +0200, Robas, Teodor wrote:
+On Fri, 12 Nov 2010, Liam Girdwood wrote:
 
-> I am writing to this list in the hope that somebody can clear me out
-> if this platform is supported and I am doing something wrong, or if
-> it is still work in progress.
+> On Fri, 2010-11-12 at 17:25 +0100, Jaroslav Kysela wrote:
+>> On Fri, 12 Nov 2010, Liam Girdwood wrote:
+>>
+>>> On Wed, 2010-11-10 at 16:11 +0100, Jaroslav Kysela wrote:
+>>>> On Tue, 9 Nov 2010, abraham duenas wrote:
+>>>>
+>>>
+>>>>> I'm getting the expected error ONLY for the last element: listed in
+>>>>> the EnableSequence field:
+>>>>> e.g:
+>>>>> ALSA lib main.c:137:(execute_sequence) cset not yet implemented:
+>>>>> 'name='DL2 Media Playback Volume' 90'
+>>>>> ALSA lib main.c:137:(execute_sequence) cset not yet implemented:
+>>>>> 'name='MUX_UL10' 10'
+>>>>>
+>>>>> i'll keep on digging as time permits :)
+>>>>
+>>>> I fixed the sequence parser. It should work now ok. So the only missing
+>>>> part is to add the 'snd_ctl_*' backend for cset commands. The parsing
+>>>> functions for ctl strings are available in my ucm branch now:
+>>>
+>>> Is it the intention to reuse the cset functionality from amixer here ?
+>>
+>> Yes, basically to avoid double ASCII syntax for same thing. I expect that
+>> the amixer will be recoded to use parser functions implemented in
+>> alsa-lib.
+>
+> Ok, so with any luck this will mostly involve copy and pasting the cset
+> code from amixer and alsa-lib.
 
-> The drivers that I think should work with my hardware (OpenRD ultimate)
-> are located in sound/soc/kirkwood/*.
+It's done :-) The only missing part is the integration of this code to 
+UCM. Note that my UCM implementation does not assume that only one 
+soundcard can be touched, so we probably need additional command to select 
+the ctl device for which will be cset commands applied. Also, Mark said 
+something that your code used some transformations for controls to specify 
+how the controls will be changed, but not-specified controls will be set 
+from previous (probably default) state, something like this:
 
-Please remember to always CC maintainers on posts to Linux lists.  I've
-added a CC to Arnaud and not cut any text for his benefit.
+1) default initalization - grab actual control values from driver and
+    overwrite with specified values from the configuration file (it can be
+    just subset of all controls provided from the driver)
+2) setting verb/mod etc.. - specify just changes for the default state
 
-> Sound on this device worked (partially) with the default software
-> it came but not with the latest about 10 kernels I have tried.
-> 
-> I added bellow the output of alsa-info.sh script. If needed I can look
-> for more or try to fix it (with some help).
-> 
-> 
-> Best Regards,
-> Teodor
-> 
-> 
-> 
-> !!################################
-> !!ALSA Information Script v 0.4.59
-> !!################################
-> 
-> !!Script ran on: Thu Nov 11 06:27:39 UTC 2010
-> 
-> 
-> !!Linux Distribution
-> !!------------------
-> 
-> Debian GNU/Linux squeeze/sid \n \l
-> 
-> 
-> !!DMI Information
-> !!---------------
-> 
-> Manufacturer:
-> Product Name:
-> 
-> 
-> !!Kernel Information
-> !!------------------
-> 
-> Kernel release:    2.6.37-rc1
-> Operating System:  GNU/Linux
-> Architecture:      armv5tel
-> Processor:         unknown
-> SMP Enabled:       No
-> 
-> 
-> !!ALSA Version
-> !!------------
-> 
-> Driver version:     1.0.23
-> Library version:    1.0.23
-> Utilities version:  1.0.23
-> 
-> 
-> !!Loaded ALSA modules
-> !!-------------------
-> 
-> 
-> 
-> !!Sound Servers on this system
-> !!----------------------------
-> 
-> No sound servers found.
-> 
-> 
-> !!Soundcards recognised by ALSA
-> !!-----------------------------
-> 
-> --- no soundcards ---
-> 
-> 
-> !!PCI Soundcards installed in the system
-> !!--------------------------------------
-> 
-> 
-> 
-> !!Advanced information - PCI Vendor/Device/Susbsystem ID's
-> !!--------------------------------------------------------
-> 
-> 
-> 
-> !!Modprobe options (Sound related)
-> !!--------------------------------
-> 
-> snd-atiixp-modem: index=-2
-> snd-intel8x0m: index=-2
-> snd-via82xx-modem: index=-2
-> snd-pcsp: index=-2
-> snd-usb-audio: index=-2
-> 
-> 
-> !!Loaded sound module options
-> !!--------------------------
-> 
-> 
-> !!ALSA Device nodes
-> !!-----------------
-> 
-> crw-rw---- 1 root audio 116, 33 Nov 11 08:23 /dev/snd/timer
-> 
-> 
-> !!Aplay/Arecord output
-> !!------------
-> 
-> APLAY
-> 
-> aplay: device_list:235: no soundcards found...
-> 
-> ARECORD
-> 
-> arecord: device_list:235: no soundcards found...
-> 
-> !!Amixer output
-> !!-------------
-> 
-> 
-> !!Alsactl output
-> !!-------------
-> 
-> --startcollapse--
-> --endcollapse--
-> 
-> 
-> !!All Loaded Modules
-> !!------------------
-> 
-> Module
-> snd_soc_kirkwood
-> snd_soc_core
-> snd_pcm
-> snd_timer
-> snd
-> snd_page_alloc
-> bridge
-> stp
-> llc
-> nfsd
-> lockd
-> nfs_acl
-> auth_rpcgss
-> sunrpc
-> exportfs
-> loop
-> xgifb
-> fb
-> cfbcopyarea
-> mv_cesa
-> cfbimgblt
-> aes_generic
-> cfbfillrect
-> sd_mod
-> crc_t10dif
-> usb_storage
-> sata_mv
-> libata
-> ehci_hcd
-> scsi_mod
-> usbcore
-> mv643xx_eth
-> libphy
-> nls_base
-> 
-> 
-> !!ALSA/HDA dmesg
-> !!------------------
-> 
-> 
-> PS: please note that none of the snd* modules are loaded by default.
-> 
-> PPS: Somewhere in the code (sound/soc/kirkwood/kirkwood-openrd.c)
-> there is a check: machine_is_openrd_client() but in my case it should
-> be machine_is_openrd_ultimate(). I removed this check anyway.
-> 
-> 
-> -- 
->   _
-> ( )   ascii ribbon campaign - against html e-mail
->   X    www.asciiribbon.org   - against proprietary attachments
-> / \
-> 
-> 
-> 
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+I think that we can do this with some named control sets and adding 
+commands like:
 
--- 
-"You grabbed my hand and we fell into it, like a daydream - or a fever."
+create_cset (optional filter - which values should be handled or all if
+ 	     not specified)
+handle_cset - operate with initial or current values (maybe we can have
+               two commands to distincts this behaviour)
+  ... all new cset commands to change the named cset ...
+apply_cset - push (write) whole cset to the driver
+
+Eventually commands like copy_cset etc. might be implemented. There are 
+plenty of possibilities. My point is that the UCM behaviour should be 
+specified in the configuration files without any hardcoded things.
+
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
