@@ -1,17 +1,20 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: wrong channel mappings for HDMI audio
-Date: Sat, 13 Nov 2010 00:07:08 +0200
-Message-ID: <4CDDBA8C.30600@iki.fi>
-References: <87fwv8puuo.fsf@uwo.ca>
+From: <vm.rod25@gmail.com>
+Subject: [PATCH v8 3/9] davinci: ASoC support for
+	Omapl138-Hawkboard
+Date: Fri, 12 Nov 2010 16:38:49 -0600
+Message-ID: <1289601535-6746-4-git-send-email-vm.rod25@gmail.com>
+References: <1289601535-6746-1-git-send-email-vm.rod25@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sirokuusama.dnainternet.net (sirokuusama.dnainternet.net
-	[83.102.40.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5AFFB103943
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 23:07:12 +0100 (CET)
-In-Reply-To: <87fwv8puuo.fsf@uwo.ca>
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id E2EBA103952
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 23:39:32 +0100 (CET)
+Received: by gyg8 with SMTP id 8so2475626gyg.38
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 14:39:31 -0800 (PST)
+In-Reply-To: <1289601535-6746-1-git-send-email-vm.rod25@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,64 +24,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dan Christensen <jdc@uwo.ca>
-Cc: alsa-devel@alsa-project.org
+To: davinci-linux-open-source@linux.davincidsp.com
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Victor Rodriguez <victor.rodriguez@sasken.com>, Chaithrika U S <chaithrika@ti.com>, Miguel Aguilar <miguel.aguilar@ridgerun.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 11.11.2010 02:27, Dan Christensen wrote:
-> [System specs at end.]
-> 
-> When I try to use 5.1 audio over HDMI, the front left and front right
-> channels are correct, but the others are wrong:
-> 
-> - surround (rear) left and center are swapped
-> - surround (rear) right and LFE are swapped
-[...]
-> James Courtier-Dutton suggested that I report this here, in the hopes
-> that ALSA can be taught the correct mapping for my sound card.
-> 
-> I'm also interested in the best way to work around this in the meantime.
-> 
-> Thanks for any help!
-> 
-> Dan
-> 
-> System specs:
-> 
-> Motherboard: Gigabyte GA-E7AUM-DS2H
->   http://gigabyte.com/products/product-page.aspx?pid=2946#ov
-[...]
+From: Victor Rodriguez <victor.rodriguez@sasken.com>
 
-This is a known issue, the NVIDIA MCP79/7A HDMI hardware has incorrect
-channel mapping.
+This patch adds ASoC support for the Hawkboard-L138 system
 
-I reported this several months ago as "Wrong channel order with
-multichannel HDMI on MCP7A":
-http://www.spinics.net/lists/alsa-devel/msg35948.html
-(there are some earlier reports from 2009 as well)
+Signed-off-by: Victor Rodriguez <victor.rodriguez@sasken.com>
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+Tested-by: Rene Gonzalez <renegs.2378@gmail.com>
+---
+ sound/soc/davinci/Kconfig       |    5 +++--
+ sound/soc/davinci/davinci-evm.c |    6 ++++--
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
-I'm using this workaround at the moment:
- pcm.!hdmi {
-     type             route
-     slave.pcm
-"cards.HDA-Intel.pcm.hdmi.0:CARD=NVidia,AES0=0x4,AES1=0x82,AES2=0x0,AES3=0x2"
-     ttable.0.0 1
-     ttable.1.1 1
-     ttable.2.4 1
-     ttable.3.5 1
-     ttable.4.2 1
-     ttable.5.3 1
-     ttable.6.6 1
-     ttable.7.7 1
- }
-
-(not a perfect workaround as I'm hardcoding AESx instead of using the
-ones provided as arguments, but at least you get the idea)
-
-As for the preferred solution to this problem, as far as I understand,
-that would be for the driver to have some ioctl that would provide
-alsa-lib information about the unusual channel mapping, and alsa-lib
-could then remap the channels using a channel remapping plugin.
-
+diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+index 6bbf001..72c6752 100644
+--- a/sound/soc/davinci/Kconfig
++++ b/sound/soc/davinci/Kconfig
+@@ -76,8 +76,9 @@ config  SND_DA830_SOC_EVM
+ 	  DA830/OMAP-L137 EVM
+ 
+ config  SND_DA850_SOC_EVM
+-	tristate "SoC Audio support for DA850/OMAP-L138 EVM"
+-	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DA850_EVM
++	tristate "SoC Audio support for DA850/OMAP-L138 EVM/Hawkboard"
++	depends on SND_DAVINCI_SOC && (MACH_DAVINCI_DA850_EVM || \
++			MACH_OMAPL138_HAWKBOARD)
+ 	select SND_DAVINCI_SOC_MCASP
+ 	select SND_SOC_TLV320AIC3X
+ 	help
+diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
+index 97f74d6..73093eb 100644
+--- a/sound/soc/davinci/davinci-evm.c
++++ b/sound/soc/davinci/davinci-evm.c
+@@ -59,7 +59,8 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
+ 		sysclk = 12288000;
+ 
+ 	else if (machine_is_davinci_da830_evm() ||
+-				machine_is_davinci_da850_evm())
++				machine_is_davinci_da850_evm() ||
++				machine_is_omapl138_hawkboard())
+ 		sysclk = 24576000;
+ 
+ 	else
+@@ -311,7 +312,8 @@ static int __init evm_init(void)
+ 	} else if (machine_is_davinci_da830_evm()) {
+ 		evm_snd_dev_data = &da830_evm_snd_devdata;
+ 		index = 1;
+-	} else if (machine_is_davinci_da850_evm()) {
++	} else if (machine_is_davinci_da850_evm() ||
++			machine_is_omapl138_hawkboard()) {
+ 		evm_snd_dev_data = &da850_evm_snd_devdata;
+ 		index = 0;
+ 	} else
 -- 
-Anssi Hannula
+1.7.0.4
