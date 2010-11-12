@@ -1,17 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: Use DAPM context rather than CODEC
-	when constructing sequences
-Date: Fri, 12 Nov 2010 16:01:11 +0000
-Message-ID: <1289577671-13837-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1289577671-13837-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Kevin Hilman <khilman@deeprootsystems.com>
+Subject: Re: [PATCH v7 3/9] davinci: ASoC support for
+	Omapl138-Hawkboard
+Date: Fri, 12 Nov 2010 08:23:20 -0800
+Message-ID: <87tyjmqznr.fsf@deeprootsystems.com>
+References: <1288808115-2661-1-git-send-email-vm.rod25@gmail.com>
+	<1288808115-2661-3-git-send-email-vm.rod25@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B74D8103978
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 17:01:17 +0100 (CET)
-In-Reply-To: <1289577671-13837-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 182B310395F
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 17:23:26 +0100 (CET)
+Received: by yws5 with SMTP id 5so2239028yws.38
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 08:23:26 -0800 (PST)
+In-Reply-To: <1288808115-2661-3-git-send-email-vm.rod25@gmail.com> (vm's
+	message of "Wed, 3 Nov 2010 12:15:08 -0600")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,32 +26,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: vm.rod25@gmail.com
+Cc: davinci-linux-open-source@linux.davincidsp.com, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Victor Rodriguez <victor.rodriguez@sasken.com>, Miguel Aguilar <miguel.aguilar@ridgerun.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-DAPM widgets may be associated with non-CODEC devices so compare based
-on the DAPM context rather than the CODEC pointer.
+<vm.rod25@gmail.com> writes:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-dapm.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+> From: Victor Rodriguez <victor.rodriguez@sasken.com>
+>
+> This patch adds ASoC support for the Hawkboard-L138 system
+>
+> Signed-off-by: Victor Rodriguez <victor.rodriguez@sasken.com>
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index bc2ec06..5ee93a5 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -710,8 +710,8 @@ static int dapm_seq_compare(struct snd_soc_dapm_widget *a,
- 		return sort[a->id] - sort[b->id];
- 	if (a->reg != b->reg)
- 		return a->reg - b->reg;
--	if (a->codec != b->codec)
--		return (unsigned long)a->codec - (unsigned long)b->codec;
-+	if (a->dapm != b->dapm)
-+		return (unsigned long)a->dapm - (unsigned long)b->dapm;
- 
- 	return 0;
- }
--- 
-1.7.1
+I believe Mark Brown ack'd and earlier version of this patch.
+
+When you repost the series, you should collect any acks, sign-offs,
+tested-by etc. tags that others have reported.
+
+Mark, I assume you're OK with me merging this ASoC change via the
+davinci tree?
+
+Kevin
+
+> ---
+>  sound/soc/davinci/Kconfig       |    5 +++--
+>  sound/soc/davinci/davinci-evm.c |    6 ++++--
+>  2 files changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+> index 6bbf001..72c6752 100644
+> --- a/sound/soc/davinci/Kconfig
+> +++ b/sound/soc/davinci/Kconfig
+> @@ -76,8 +76,9 @@ config  SND_DA830_SOC_EVM
+>  	  DA830/OMAP-L137 EVM
+>  
+>  config  SND_DA850_SOC_EVM
+> -	tristate "SoC Audio support for DA850/OMAP-L138 EVM"
+> -	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DA850_EVM
+> +	tristate "SoC Audio support for DA850/OMAP-L138 EVM/Hawkboard"
+> +	depends on SND_DAVINCI_SOC && (MACH_DAVINCI_DA850_EVM || \
+> +			MACH_OMAPL138_HAWKBOARD)
+>  	select SND_DAVINCI_SOC_MCASP
+>  	select SND_SOC_TLV320AIC3X
+>  	help
+> diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
+> index 97f74d6..73093eb 100644
+> --- a/sound/soc/davinci/davinci-evm.c
+> +++ b/sound/soc/davinci/davinci-evm.c
+> @@ -59,7 +59,8 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
+>  		sysclk = 12288000;
+>  
+>  	else if (machine_is_davinci_da830_evm() ||
+> -				machine_is_davinci_da850_evm())
+> +				machine_is_davinci_da850_evm() ||
+> +				machine_is_omapl138_hawkboard())
+>  		sysclk = 24576000;
+>  
+>  	else
+> @@ -311,7 +312,8 @@ static int __init evm_init(void)
+>  	} else if (machine_is_davinci_da830_evm()) {
+>  		evm_snd_dev_data = &da830_evm_snd_devdata;
+>  		index = 1;
+> -	} else if (machine_is_davinci_da850_evm()) {
+> +	} else if (machine_is_davinci_da850_evm() ||
+> +			machine_is_omapl138_hawkboard()) {
+>  		evm_snd_dev_data = &da850_evm_snd_devdata;
+>  		index = 0;
+>  	} else
