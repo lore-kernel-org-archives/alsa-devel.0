@@ -1,21 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv2 2/3] ASoC: Move widgets from DAPM context
- to snd_soc_card
-Date: Fri, 12 Nov 2010 14:40:04 +0000
-Message-ID: <20101112144003.GE17283@rakim.wolfsonmicro.main>
+Subject: Re: [PATCHv2 3/3] ASoC: Extend DAPM to handle power
+ changes on cross-device paths
+Date: Fri, 12 Nov 2010 15:13:32 +0000
+Message-ID: <20101112151332.GF17283@rakim.wolfsonmicro.main>
 References: <1289553806-28625-1-git-send-email-jhnikula@gmail.com>
-	<1289553806-28625-3-git-send-email-jhnikula@gmail.com>
-	<20101112131840.GB17283@rakim.wolfsonmicro.main>
-	<20101112155756.bd8a95be.jhnikula@gmail.com>
+	<1289553806-28625-4-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 415FE10395C
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 15:40:05 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 23CB5103964
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 16:13:34 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20101112155756.bd8a95be.jhnikula@gmail.com>
+In-Reply-To: <1289553806-28625-4-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,16 +27,24 @@ To: Jarkko Nikula <jhnikula@gmail.com>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 12, 2010 at 03:57:56PM +0200, Jarkko Nikula wrote:
-> Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+On Fri, Nov 12, 2010 at 11:23:26AM +0200, Jarkko Nikula wrote:
 
-> > If we keep moving stuff into the card it's questionable what the context
-> > is buying us...
+>  	list_for_each_entry_safe(w, n, list, power_list) {
+>  		ret = 0;
+>  
+>  		/* Do we need to apply any queued changes? */
+> -		if (sort[w->id] != cur_sort || w->reg != cur_reg) {
+> +		if (sort[w->id] != cur_sort || w->reg != cur_reg ||
+> +		    w->dapm != cur_dapm) {
+>  			if (!list_empty(&pending))
+> -				dapm_seq_run_coalesced(dapm, &pending);
+> +				dapm_seq_run_coalesced(cur_dapm, &pending);
+>  
+>  			INIT_LIST_HEAD(&pending);
+>  			cur_sort = -1;
+>  			cur_reg = SND_SOC_NOPM;
 
-> DAPM context represent the parent device (codecs currently and other
-> devices in someday) and its state so I don't see we'll be removing it in
-> near future even now the widgets and paths are moved to card.
-
-Yeah, but as we keep reducing the amount of per-device state we hold
-that could eventually go down to zero - we keep on looking at things
-and deciding they're better managed over the whole card.
+We need a corresponding change in dapm_seq_compare() to ensure that the
+widgets for a given card are grouped together.  I'll send out some
+patches to do that shortly since I just noticed there's an oversight
+there anyway.
