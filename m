@@ -1,47 +1,55 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ALSA UCM
-Date: Fri, 12 Nov 2010 17:28:12 +0000
-Message-ID: <20101112172812.GF28804@sirena.org.uk>
-References: <alpine.LNX.2.00.1011041949180.29422@eeebox2.perex-int.cz>
-	<1288897628.3277.99.camel@odin>
-	<AANLkTikn6Q+6KUpZaDGXuX=bGHrbV_9s91C6u+rS5e22@mail.gmail.com>
-	<1289046396.3318.53.camel@odin>
-	<AANLkTina11GuK4jqP=DtD-OEjTiRtNa_yG0QKy7XDuxs@mail.gmail.com>
-	<alpine.LNX.2.00.1011101608250.29422@eeebox2.perex-int.cz>
-	<1289576480.3480.101.camel@odin>
-	<alpine.LNX.2.00.1011121722090.29422@eeebox2.perex-int.cz>
-	<1289580140.3480.117.camel@odin>
-	<alpine.LNX.2.00.1011121743180.29422@eeebox2.perex-int.cz>
+From: Florian Fainelli <florian@openwrt.org>
+Subject: Re: [PATCH] sound/mixart: avoid redefining {readl,write}_{le,be} accessors
+Date: Fri, 12 Nov 2010 18:29:11 +0100
+Message-ID: <201011121829.11914.florian@openwrt.org>
+References: <201011091829.08664.florian@openwrt.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 61B5A103976
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 18:28:13 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.00.1011121743180.29422@eeebox2.perex-int.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, abraham duenas <aduejazz@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <201011091829.08664.florian@openwrt.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 12, 2010 at 05:55:50PM +0100, Jaroslav Kysela wrote:
+On Tuesday 09 November 2010 18:29:08 Florian Fainelli wrote:
+> From: Florian Fainelli <florian@openwrt.org>
 
-> the ctl device for which will be cset commands applied. Also, Mark said 
-> something that your code used some transformations for controls to specify 
-> how the controls will be changed, but not-specified controls will be set 
-> from previous (probably default) state, something like this:
+Takashi, do you have any comments on this patch?
 
-I'm having a hard time parsing this but I *think* this is the ability to
-look up a control by virtual function and have it mapped onto an actual
-physical control (so for example master volume could change depending on
-output).
+Thanks!
+
+> 
+> If the platform already provides a definition for these accessors
+> do not redefine them. The warning was caught on MIPS.
+> 
+> Signed-off-by: Florian Fainelli <florian@openwrt.org>
+> ---
+> diff --git a/sound/pci/mixart/mixart_hwdep.h
+> b/sound/pci/mixart/mixart_hwdep.h index a46f508..812e288 100644
+> --- a/sound/pci/mixart/mixart_hwdep.h
+> +++ b/sound/pci/mixart/mixart_hwdep.h
+> @@ -25,11 +25,21 @@
+> 
+>  #include <sound/hwdep.h>
+> 
+> +#ifndef readl_be
+>  #define readl_be(x) be32_to_cpu(__raw_readl(x))
+> +#endif
+> +
+> +#ifndef writel_be
+>  #define writel_be(data,addr) __raw_writel(cpu_to_be32(data),addr)
+> +#endif
+> 
+> +#ifndef readl_le
+>  #define readl_le(x) le32_to_cpu(__raw_readl(x))
+> +#endif
+> +
+> +#ifndef writel_le
+>  #define writel_le(data,addr) __raw_writel(cpu_to_le32(data),addr)
+> +#endif
+> 
+>  #define MIXART_MEM(mgr,x)	((mgr)->mem[0].virt + (x))
+>  #define MIXART_REG(mgr,x)	((mgr)->mem[1].virt + (x))
