@@ -1,17 +1,16 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCHv2] ASoC: Add optional name_prefix for codec
-	kcontrol, widget and route names
-Date: Fri, 12 Nov 2010 14:38:45 +0200
-Message-ID: <1289565525-30231-1-git-send-email-jhnikula@gmail.com>
+From: Denis Kup <dener.kup@gmail.com>
+Subject: [PATCH] Acer 7730G support update.
+Date: Fri, 12 Nov 2010 15:50:18 +0300
+Message-ID: <AANLkTikd1PrYQPAgmaw3Z2uJv0OYEv0L=upQKTYc_4ow@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=20cf304344945d06e10494da88c0
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id C9891243B4
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 13:39:10 +0100 (CET)
-Received: by ewy26 with SMTP id 26so1702076ewy.38
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 04:39:08 -0800 (PST)
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id C97551037EC
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 13:50:19 +0100 (CET)
+Received: by fxm14 with SMTP id 14so1813295fxm.38
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 04:50:19 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,251 +20,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Alsa Developers Maillist <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-There is a need to prefix codec kcontrol, widget and internal route names in
-an ASoC machine that has multiple codecs with conflicting names. The name
-collision would occur when codec drivers try to registering kcontrols with
-the same name or when building audio paths.
+--20cf304344945d06e10494da88c0
+Content-Type: text/plain; charset=ISO-8859-1
 
-This patch introduces optional prefix_map into struct snd_soc_card. With it
-machine drivers can specify a unique name prefix to each codec that have
-conflicting names with anothers. Prefix to codec is matched with codec
-name.
+Hello!
 
-Following example illustrates a machine that has two same codec instances.
-Name collision from kcontrol registration is avoided by specifying a name
-prefix "foo" for the second codec. As the codec widget names are prefixed
-then second audio map for that codec shows a prefixed widget name.
+I want to commit patch that fix no-sound on acer 7730G laptop. All
+work history you can see here
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5123 .
+This patch for the latest snapshot, where this changes have been made:
+http://www.kerneltrap.com/mailarchive/git-commits-head/2010/5/20/35023
+.
 
-static const struct snd_soc_dapm_route map0[] = {
-	{"Spk", NULL, "MONO"},
-};
+Acer 7730G support patch.
 
-static const struct snd_soc_dapm_route map1[] = {
-	{"Vibra", NULL, "foo MONO"},
-};
+Changes:
+1) Fixes automatic EAPD configuration on Acer 7730G laptop.
 
-static struct snd_soc_prefix_map codec_prefix[] = {
-	{
-		.dev_name = "codec.2",
-		.name_prefix = "foo",
-	},
-};
+Denis Kuplyakov <dener.kup@gmail.com>
+8.11.10 00:00:50
 
-static struct snd_soc_card card = {
-	...
-	.prefix_map = codec_prefix,
-	.num_prefixes = ARRAY_SIZE(codec_prefix),
-};
+--20cf304344945d06e10494da88c0
+Content-Type: application/octet-stream; name=patch
+Content-Disposition: attachment; filename=patch
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_ggf2f5ca0
 
-Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
----
-This goes on top of "ASoC: Extend DAPM to handle cross-device paths" set:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2010-November/033583.html
+ZGVuZXJARGVuZXJOb3RlYm9vazp+PiBkaWZmIC11cCAuL2EvYWxzYS1kcml2ZXIvYWxzYS1rZXJu
+ZWwvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgLi9iL2Fsc2EtZHJpdmVyL2Fsc2Eta2VybmVsL3Bj
+aS9oZGEvcGF0Y2hfcmVhbHRlay5jIAotLS0gLi9hL2Fsc2EtZHJpdmVyL2Fsc2Eta2VybmVsL3Bj
+aS9oZGEvcGF0Y2hfcmVhbHRlay5jIDIwMTAtMTEtMDQgMDI6MDU6MTcuMDAwMDAwMDAwICswMzAw
+CisrKyAuL2IvYWxzYS1kcml2ZXIvYWxzYS1rZXJuZWwvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMg
+MjAxMC0xMS0wNyAwMTozNjoxOS44ODUzMTYwNTggKzAzMDAKQEAgLTIwMTQsNiArMjAxNCwzNiBA
+QCBzdGF0aWMgc3RydWN0IGhkYV92ZXJiIGFsYzg4OF9hY2VyX2FzcGlyCiB9OwogCiAvKgorICpB
+TEM4ODggQWNlciBBc3BpcmUgNzczMEcgbW9kZWwKKyAqLworCitzdGF0aWMgc3RydWN0IGhkYV92
+ZXJiIGFsYzg4OF9hY2VyX2FzcGlyZV83NzMwR192ZXJic1tdID0geworLyogQmlhcyB2b2x0YWdl
+IG9uIGZvciBleHRlcm5hbCBtaWMgcG9ydCAqLworICAgICAgIHsweDE4LCBBQ19WRVJCX1NFVF9Q
+SU5fV0lER0VUX0NPTlRST0wsIFBJTl9JTiB8IFBJTl9WUkVGODB9LAorLyogRnJvbnQgTWljOiBz
+ZXQgdG8gUElOX0lOIChlbXB0eSBieSBkZWZhdWx0KSAqLworICAgICAgIHsweDEyLCBBQ19WRVJC
+X1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9JTn0sCisvKiBVbnNlbGVjdCBGcm9udCBNaWMg
+YnkgZGVmYXVsdCBpbiBpbnB1dCBtaXhlciAzICovCisgICAgICAgezB4MjIsIEFDX1ZFUkJfU0VU
+X0FNUF9HQUlOX01VVEUsIEFNUF9JTl9NVVRFKDB4Yil9LAorLyogRW5hYmxlIHVuc29saWNpdGVk
+IGV2ZW50IGZvciBIUCBqYWNrICovCisgICAgICAgezB4MTUsIEFDX1ZFUkJfU0VUX1VOU09MSUNJ
+VEVEX0VOQUJMRSwgQUxDODgwX0hQX0VWRU5UIHwgQUNfVVNSU1BfRU59LAorLyogRW5hYmxlIHNw
+ZWFrZXIgb3V0cHV0ICovCisgICAgICAgezB4MTQsIEFDX1ZFUkJfU0VUX1BJTl9XSURHRVRfQ09O
+VFJPTCwgUElOX09VVH0sCisgICAgICAgezB4MTQsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUs
+IEFNUF9PVVRfVU5NVVRFfSwKKyAgICAgICB7MHgxNCwgQUNfVkVSQl9TRVRfRUFQRF9CVExFTkFC
+TEUsIDJ9LAorLyogRW5hYmxlIGhlYWRwaG9uZSBvdXRwdXQgKi8KKyAgICAgICB7MHgxNSwgQUNf
+VkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9MLCBQSU5fT1VUIHwgUElOX0hQfSwKKyAgICAgICB7
+MHgxNSwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX09VVF9VTk1VVEV9LAorICAgICAg
+IHsweDE1LCBBQ19WRVJCX1NFVF9DT05ORUNUX1NFTCwgMHgwMH0sCisgICAgICAgezB4MTUsIEFD
+X1ZFUkJfU0VUX0VBUERfQlRMRU5BQkxFLCAyfSwKKy8qRW5hYmxlIGludGVybmFsIHN1Yndvb2Zl
+ciAqLworICAgICAgIHsweDE3LCBBQ19WRVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9P
+VVR9LAorICAgICAgIHsweDE3LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfT1VUX1VO
+TVVURX0sCisgICAgICAgezB4MTcsIEFDX1ZFUkJfU0VUX0NPTk5FQ1RfU0VMLCAweDAyfSwKKyAg
+ICAgICB7MHgxNywgQUNfVkVSQl9TRVRfRUFQRF9CVExFTkFCTEUsIDJ9LAorICAgICAgIHsgfQor
+fTsKKworLyoKICAqIEFMQzg4OSBBY2VyIEFzcGlyZSA4OTMwRyBtb2RlbAogICovCiAKQEAgLTIy
+MDAsNiArMjIzMCwxNiBAQCBzdGF0aWMgdm9pZCBhbGM4ODhfYWNlcl9hc3BpcmVfNjUzMGdfc2V0
+CiAgICAgICAgc3BlYy0+YXV0b2NmZy5zcGVha2VyX3BpbnNbMl0gPSAweDE3OwogfQogCitzdGF0
+aWMgdm9pZCBhbGM4ODhfYWNlcl9hc3BpcmVfNzczMGdfc2V0dXAoc3RydWN0IGhkYV9jb2RlYyAq
+Y29kZWMpCit7CisgICAgICAgc3RydWN0IGFsY19zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7CisK
+KyAgICAgICBzcGVjLT5hdXRvY2ZnLmhwX3BpbnNbMF0gPSAweDE1OworICAgICAgIHNwZWMtPmF1
+dG9jZmcuc3BlYWtlcl9waW5zWzBdID0gMHgxNDsKKyAgICAgICBzcGVjLT5hdXRvY2ZnLnNwZWFr
+ZXJfcGluc1sxXSA9IDB4MTY7CisgICAgICAgc3BlYy0+YXV0b2NmZy5zcGVha2VyX3BpbnNbMl0g
+PSAweDE3OworfQorCiBzdGF0aWMgdm9pZCBhbGM4ODlfYWNlcl9hc3BpcmVfODkzMGdfc2V0dXAo
+c3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiB7CiAgICAgICAgc3RydWN0IGFsY19zcGVjICpzcGVj
+ID0gY29kZWMtPnNwZWM7CkBAIC05NTI0LDEzICs5NTY0LDYgQEAgc3RhdGljIHN0cnVjdCBoZGFf
+dmVyYiBhbGM4ODNfYWNlcl9lYXBkXwogICAgICAgIHsgfQogfTsKIAotc3RhdGljIHN0cnVjdCBo
+ZGFfdmVyYiBhbGM4ODhfYWNlcl9hc3BpcmVfNzczMEdfdmVyYnNbXSA9IHsKLSAgICAgICB7MHgx
+NSwgQUNfVkVSQl9TRVRfQ09OTkVDVF9TRUwsIDB4MDB9LAotICAgICAgIHsweDE3LCBBQ19WRVJC
+X1NFVF9DT05ORUNUX1NFTCwgMHgwMn0sCi0gICAgICAgezB4MTUsIEFDX1ZFUkJfU0VUX1VOU09M
+SUNJVEVEX0VOQUJMRSwgQUxDODgwX0hQX0VWRU5UIHwgQUNfVVNSU1BfRU59LAotICAgICAgIHsg
+fSAvKiBlbmQgKi8KLX07Ci0KIHN0YXRpYyB2b2lkIGFsYzg4OF82c3RfZGVsbF9zZXR1cChzdHJ1
+Y3QgaGRhX2NvZGVjICpjb2RlYykKIHsKICAgICAgICBzdHJ1Y3QgYWxjX3NwZWMgKnNwZWMgPSBj
+b2RlYy0+c3BlYzsKQEAgLTEwMzI4LDcgKzEwMzYxLDcgQEAgc3RhdGljIHN0cnVjdCBhbGNfY29u
+ZmlnX3ByZXNldCBhbGM4ODJfcAogICAgICAgICAgICAgICAgLmNvbnN0X2NoYW5uZWxfY291bnQg
+PSA2LAogICAgICAgICAgICAgICAgLmlucHV0X211eCA9ICZhbGM4ODNfY2FwdHVyZV9zb3VyY2Us
+CiAgICAgICAgICAgICAgICAudW5zb2xfZXZlbnQgPSBhbGNfYXV0b211dGVfYW1wX3Vuc29sX2V2
+ZW50LAotICAgICAgICAgICAgICAgLnNldHVwID0gYWxjODg4X2FjZXJfYXNwaXJlXzY1MzBnX3Nl
+dHVwLAorICAgICAgICAgICAgICAgLnNldHVwID0gYWxjODg4X2FjZXJfYXNwaXJlXzc3MzBnX3Nl
+dHVwLAogICAgICAgICAgICAgICAgLmluaXRfaG9vayA9IGFsY19hdXRvbXV0ZV9hbXAsCiAgICAg
+ICAgfSwKICAgICAgICBbQUxDODgzX01FRElPTl0gPSB7Cg==
+--20cf304344945d06e10494da88c0
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Basically updated prefix_map to snd_soc_card idea in RFC_iv/iv:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2010-October/033240.html
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Now prefix is not tied to snd_soc_dai_link and registration of dailess
-codecs will come after this. Otherwise the same but codec_name in
-snd_soc_prefix_map changed to dev_name.
----
- include/sound/soc.h  |   13 +++++++++++++
- sound/soc/soc-core.c |   35 +++++++++++++++++++++++++++++++++--
- sound/soc/soc-dapm.c |   34 ++++++++++++++++++++++++++++++++--
- 3 files changed, 78 insertions(+), 4 deletions(-)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 8470059..346c59e 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -450,6 +450,7 @@ struct snd_soc_cache_ops {
- /* SoC Audio Codec device */
- struct snd_soc_codec {
- 	const char *name;
-+	const char *name_prefix;
- 	int id;
- 	struct device *dev;
- 	struct snd_soc_codec_driver *driver;
-@@ -577,6 +578,11 @@ struct snd_soc_dai_link {
- 	struct snd_soc_ops *ops;
- };
- 
-+struct snd_soc_prefix_map {
-+	const char *dev_name;
-+	const char *name_prefix;
-+};
-+
- /* SoC card */
- struct snd_soc_card {
- 	const char *name;
-@@ -611,6 +617,13 @@ struct snd_soc_card {
- 	struct snd_soc_pcm_runtime *rtd;
- 	int num_rtd;
- 
-+	/*
-+	 * optional map of kcontrol, widget and path name prefixes that are
-+	 * associated per device
-+	 */
-+	struct snd_soc_prefix_map *prefix_map;
-+	int num_prefixes;
-+
- 	struct work_struct deferred_resume_work;
- 
- 	/* lists of probed devices belonging to this card */
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 3a16096..9c0b2c7 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1397,6 +1397,23 @@ static void soc_remove_dai_link(struct snd_soc_card *card, int num)
- 	}
- }
- 
-+static void soc_set_name_prefix(struct snd_soc_card *card,
-+				struct snd_soc_codec *codec)
-+{
-+	int i;
-+
-+	if (card->prefix_map == NULL)
-+		return;
-+
-+	for (i = 0; i < card->num_prefixes; i++) {
-+		struct snd_soc_prefix_map *map = &card->prefix_map[i];
-+		if (map->dev_name && !strcmp(codec->name, map->dev_name)) {
-+			codec->name_prefix = map->name_prefix;
-+			break;
-+		}
-+	}
-+}
-+
- static void rtd_release(struct device *dev) {}
- 
- static int soc_probe_dai_link(struct snd_soc_card *card, int num)
-@@ -1406,6 +1423,7 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num)
- 	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_platform *platform = rtd->platform;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai, *cpu_dai = rtd->cpu_dai;
-+	const char *temp;
- 	int ret;
- 
- 	dev_dbg(card->dev, "probe %s dai link %d\n", card->name, num);
-@@ -1440,6 +1458,7 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num)
- 	/* probe the CODEC */
- 	if (!codec->probed) {
- 		codec->dapm.card = card;
-+		soc_set_name_prefix(card, codec);
- 		if (codec->driver->probe) {
- 			ret = codec->driver->probe(codec);
- 			if (ret < 0) {
-@@ -1493,11 +1512,15 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num)
- 
- 	/* now that all clients have probed, initialise the DAI link */
- 	if (dai_link->init) {
-+		/* machine controls, routes and widgets are not prefixed */
-+		temp = rtd->codec->name_prefix;
-+		rtd->codec->name_prefix = NULL;
- 		ret = dai_link->init(rtd);
- 		if (ret < 0) {
- 			printk(KERN_ERR "asoc: failed to init %s\n", dai_link->stream_name);
- 			return ret;
- 		}
-+		rtd->codec->name_prefix = temp;
- 	}
- 
- 	/* Make sure all DAPM widgets are instantiated */
-@@ -2076,14 +2099,22 @@ int snd_soc_add_controls(struct snd_soc_codec *codec,
- 	const struct snd_kcontrol_new *controls, int num_controls)
- {
- 	struct snd_card *card = codec->card->snd_card;
-+	char prefixed_name[44], *name;
- 	int err, i;
- 
- 	for (i = 0; i < num_controls; i++) {
- 		const struct snd_kcontrol_new *control = &controls[i];
--		err = snd_ctl_add(card, snd_soc_cnew(control, codec, NULL));
-+		if (codec->name_prefix) {
-+			snprintf(prefixed_name, sizeof(prefixed_name), "%s %s",
-+				 codec->name_prefix, control->name);
-+			name = prefixed_name;
-+		} else {
-+			name = control->name;
-+		}
-+		err = snd_ctl_add(card, snd_soc_cnew(control, codec, name));
- 		if (err < 0) {
- 			dev_err(codec->dev, "%s: Failed to add %s: %d\n",
--				codec->name, control->name, err);
-+				codec->name, name, err);
- 			return err;
- 		}
- 	}
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 1ec43f9..27e3f41 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1336,6 +1336,7 @@ static void dapm_free_widgets(struct snd_soc_dapm_context *dapm)
- 			kfree(p->long_name);
- 			kfree(p);
- 		}
-+		kfree(w->name);
- 		kfree(w);
- 	}
- }
-@@ -1384,11 +1385,25 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
- 	struct snd_soc_dapm_path *path;
- 	struct snd_soc_dapm_widget *wsource = NULL, *wsink = NULL, *w;
- 	struct snd_soc_dapm_widget *wtsource = NULL, *wtsink = NULL;
--	const char *sink = route->sink;
-+	const char *sink;
- 	const char *control = route->control;
--	const char *source = route->source;
-+	const char *source;
-+	char prefixed_sink[80];
-+	char prefixed_source[80];
- 	int ret = 0;
- 
-+	if (dapm->codec->name_prefix) {
-+		snprintf(prefixed_sink, sizeof(prefixed_sink), "%s %s",
-+			 dapm->codec->name_prefix, route->sink);
-+		sink = prefixed_sink;
-+		snprintf(prefixed_source, sizeof(prefixed_source), "%s %s",
-+			 dapm->codec->name_prefix, route->source);
-+		source = prefixed_source;
-+	} else {
-+		sink = route->sink;
-+		source = route->source;
-+	}
-+
- 	/*
- 	 * find src and dest widgets over all widgets but favor a widget from
- 	 * current DAPM context
-@@ -2027,10 +2042,25 @@ int snd_soc_dapm_new_control(struct snd_soc_dapm_context *dapm,
- 	const struct snd_soc_dapm_widget *widget)
- {
- 	struct snd_soc_dapm_widget *w;
-+	size_t name_len;
- 
- 	if ((w = dapm_cnew_widget(widget)) == NULL)
- 		return -ENOMEM;
- 
-+	name_len = strlen(widget->name) + 1;
-+	if (dapm->codec->name_prefix)
-+		name_len += 1 + strlen(dapm->codec->name_prefix);
-+	w->name = kmalloc(name_len, GFP_KERNEL);
-+	if (w->name == NULL) {
-+		kfree(w);
-+		return -ENOMEM;
-+	}
-+	if (dapm->codec->name_prefix)
-+		snprintf(w->name, name_len, "%s %s",
-+			dapm->codec->name_prefix, widget->name);
-+	else
-+		snprintf(w->name, name_len, "%s", widget->name);
-+
- 	dapm->n_widgets++;
- 	w->dapm = dapm;
- 	w->codec = dapm->codec;
--- 
-1.7.2.3
+--20cf304344945d06e10494da88c0--
