@@ -1,44 +1,58 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2.6.37 1/2] ASoC: Fix dapm_seq_compare()
- for multi-component
-Date: Fri, 12 Nov 2010 19:10:45 +0000
-Message-ID: <20101112191045.GH17283@rakim.wolfsonmicro.main>
-References: <1289577671-13837-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<20101112210637.0ec2d25c.jhnikula@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7EADB10396B
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2010 20:10:48 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20101112210637.0ec2d25c.jhnikula@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+From: Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>
+Subject: [PATCH 00/14] Use printf extension %pR for struct resource
+Date: Fri, 12 Nov 2010 13:37:50 -0800
+Message-ID: <cover.1289597644.git.joe@perches.com>
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jiri Kosina <trivial-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org, linuxppc-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, linux-rdma-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 12, 2010 at 09:06:37PM +0200, Jarkko Nikula wrote:
+Yet more trivia...
 
-> This sounds feasible change. What I was thinking are there any
-> benefit which one, the register or codec is compared first but I don't
-> think there's any practical difference.
+Joe Perches (14):
+  arch/frv: Use printf extension %pR for struct resource
+  arch/mips: Use printf extension %pR for struct resource
+  arch/powerpc: Use printf extension %pR for struct resource
+  drivers/dma/ppc4xx: Use printf extension %pR for struct resource
+  drivers/infiniband: Use printf extension %pR for struct resource
+  drivers/mfd: Use printf extension %pR for struct resource
+  drivers/mtd/maps: Use printf extension %pR for struct resource
+  drivers/mtd/nand: Use printf extension %pR for struct resource
+  drivers/net/can/sja1000: Use printf extension %pR for struct resource
+  drivers/parisc: Use printf extension %pR for struct resource
+  drivers/rapidio: Use printf extension %pR for struct resource
+  drivers/uwb: Use printf extension %pR for struct resource
+  drivers/video: Use printf extension %pR for struct resource
+  sound/ppc: Use printf extension %pR for struct resource
 
-> A1, B1, A2, B2 (now)
-> or
-> A1, A2, B1, B2 (codec comparison before register)
+ arch/frv/mb93090-mb00/pci-vdk.c               |    8 ++------
+ arch/mips/txx9/generic/pci.c                  |    7 ++-----
+ arch/powerpc/kernel/pci_64.c                  |    3 +--
+ arch/powerpc/sysdev/tsi108_dev.c              |    8 ++++----
+ drivers/dma/ppc4xx/adma.c                     |    5 ++---
+ drivers/infiniband/hw/ipath/ipath_driver.c    |    5 ++---
+ drivers/mfd/sm501.c                           |    7 ++-----
+ drivers/mtd/maps/amd76xrom.c                  |    7 ++-----
+ drivers/mtd/maps/ck804xrom.c                  |    7 ++-----
+ drivers/mtd/maps/esb2rom.c                    |    9 +++------
+ drivers/mtd/maps/ichxrom.c                    |    9 +++------
+ drivers/mtd/maps/physmap_of.c                 |    4 +---
+ drivers/mtd/maps/scx200_docflash.c            |    5 ++---
+ drivers/mtd/nand/pasemi_nand.c                |    2 +-
+ drivers/net/can/sja1000/sja1000_of_platform.c |    8 ++------
+ drivers/parisc/dino.c                         |   13 +++++--------
+ drivers/parisc/hppb.c                         |    6 ++----
+ drivers/rapidio/rio.c                         |    4 ++--
+ drivers/uwb/umc-dev.c                         |    7 ++-----
+ drivers/video/platinumfb.c                    |    8 ++------
+ sound/ppc/pmac.c                              |   12 ++++--------
+ 21 files changed, 48 insertions(+), 96 deletions(-)
 
-If you've got two identical CODECs it will *probably* sound smoother to
-alternate between the two rather than enabling one then the other -
-there will be less time difference between any audible issues in each
-path.  Probably a very small chance of that having an effect but it
-seemed more likely to do something useful than any other scenario.
+-- 
+1.7.3.1.g432b3.dirty
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
