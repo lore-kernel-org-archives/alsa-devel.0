@@ -1,21 +1,15 @@
-From: "Robas, Teodor" <teodor.robas@gmail.com>
-Subject: Re: ALSA-SOC support for OpenRD Client/Ultimate
-Date: Sat, 13 Nov 2010 14:05:21 +0200
-Message-ID: <4CDE7F01.7060700@gmail.com>
-References: <4CDB9122.20706@gmail.com>
-	<20101112165105.GE28804@sirena.org.uk>	<877hgi31o0.fsf@lechat.rtp-net.org>
-	<4CDE41B5.8050505@gmail.com> <8739r53au7.fsf@lechat.rtp-net.org>
-Reply-To: teodor.robas@gmail.com
+From: Vaclav Peroutka <vaclavpe@gmail.com>
+Subject: snd-soc - platform_device_add failed
+Date: Sat, 13 Nov 2010 13:38:08 +0100
+Message-ID: <AANLkTintAspB92oretSTx0dbyf_d4c2nOa29QHhrNjGE@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=0016364ef7deb4c32a0494ee7a5c
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 525EA24417
-	for <alsa-devel@alsa-project.org>; Sat, 13 Nov 2010 13:05:28 +0100 (CET)
-Received: by bwz8 with SMTP id 8so3926911bwz.38
-	for <alsa-devel@alsa-project.org>; Sat, 13 Nov 2010 04:05:26 -0800 (PST)
-In-Reply-To: <8739r53au7.fsf@lechat.rtp-net.org>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 1FB282443C
+	for <alsa-devel@alsa-project.org>; Sat, 13 Nov 2010 13:38:09 +0100 (CET)
+Received: by wyg36 with SMTP id 36so2009811wyg.38
+	for <alsa-devel@alsa-project.org>; Sat, 13 Nov 2010 04:38:08 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,26 +19,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Arnaud Patard (Rtp)" <arnaud.patard@rtp-net.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/13/2010 10:08 AM, Arnaud Patard (Rtp) wrote:
-> "Robas, Teodor"<teodor.robas@gmail.com>  writes:
->
->
-> Just to be sure I understand what you meant, you applied my patch and
-> all things are working now, right ?
+--0016364ef7deb4c32a0494ee7a5c
+Content-Type: text/plain; charset=ISO-8859-1
 
-Yes, that is correct.
+Hello,
 
->
-> Arnaud
->
+I am trying to create alsa driver for MAX9880 which is connected to
+S3C6410. I "copied" the initialization code from other examples in
+sound/soc/ but during initialization I am getting "platform_device_add
+failed". I attached the code for kernel 2.6.29, ALSA 1.0.18a. For me
+it does not have anything which can fail. But I never wrote drivers
+for ALSA.
 
+I have another question. In the kernel code sound/soc/s3c_64xx/, there
+is a plenty of s3c_i2s files. Different versions but no description,
+which version should I use. Does anybody know, which one is the right
+version ?
 
--- 
-  _
-( )   ascii ribbon campaign - against html e-mail
-  X    www.asciiribbon.org   - against proprietary attachments
-/ \
+Thank you in advance,
+Vaclav
+
+--0016364ef7deb4c32a0494ee7a5c
+Content-Type: text/x-csrc; charset=US-ASCII; name="s3c6410-max9880.c"
+Content-Disposition: attachment; filename="s3c6410-max9880.c"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_ggghaphy0
+
+LyoNCiAqIFNhbXN1bmcgUzgwMDAgSmV0IEF1ZGlvIFN1YnN5c3RlbQ0KICoNCiAqIChjKSAyMDEw
+IFZhY2xhdiBQZXJvdXRrYSAtIHZhY2xhdnBlQGdtYWlsLmNvbQ0KICoNCiAqIExpY2Vuc2VkIHVu
+ZGVyIHRoZSBHUEx2Mi4NCiAqDQogKiAgUmV2aXNpb24gaGlzdG9yeQ0KICogICAgMjAxMC8xMS8x
+MSAgIEluaXRpYWwgdmVyc2lvbg0KICoNCiAqLw0KDQojaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+
+DQojaW5jbHVkZSA8bGludXgvbW9kdWxlcGFyYW0uaD4NCiNpbmNsdWRlIDxsaW51eC90aW1lci5o
+Pg0KI2luY2x1ZGUgPGxpbnV4L2ludGVycnVwdC5oPg0KI2luY2x1ZGUgPGxpbnV4L3BsYXRmb3Jt
+X2RldmljZS5oPg0KI2luY2x1ZGUgPGxpbnV4L2kyYy5oPg0KI2luY2x1ZGUgPGxpbnV4L2RlbGF5
+Lmg+DQojaW5jbHVkZSA8c291bmQvY29yZS5oPg0KI2luY2x1ZGUgPHNvdW5kL3BjbS5oPg0KI2lu
+Y2x1ZGUgPHNvdW5kL3NvYy5oPg0KI2luY2x1ZGUgPHNvdW5kL3NvYy1kYXBtLmg+DQoNCiNpbmNs
+dWRlIDxhc20vbWFjaC10eXBlcy5oPg0KI2luY2x1ZGUgPGFzbS9oYXJkd2FyZS9zY29vcC5oPg0K
+I2luY2x1ZGUgPGFzbS9pby5oPg0KDQojaW5jbHVkZSA8bWFjaC9oYXJkd2FyZS5oPg0KI2luY2x1
+ZGUgPG1hY2gvYXVkaW8uaD4NCiNpbmNsdWRlIDxtYWNoL21hcC5oPg0KDQojaW5jbHVkZSA8cGxh
+dC9ncGlvLWNmZy5oPg0KI2luY2x1ZGUgPHBsYXQvcmVncy1ncGlvLmg+DQojaW5jbHVkZSA8cGxh
+dC9yZWdzLWlpYy5oPg0KI2luY2x1ZGUgPHBsYXQvcmVncy1jbG9jay5oPg0KI2luY2x1ZGUgPHBs
+YXQvcmVncy1paXMuaD4NCg0KI2luY2x1ZGUgInMzYy1wY20uaCINCiNpbmNsdWRlICJzM2M2NDEw
+LWkycy5oIg0KI2luY2x1ZGUgIi4uL2NvZGVjcy9tYXg5ODgwLmgiDQoNCiNkZWZpbmUgU1VCSkVD
+VCAiSmV0X21heDk4ODAiDQoNCnN0YXRpYyBzdHJ1Y3QgbWF4OTg4MF9zZXR1cF9kYXRhIG1heDk4
+ODBfc2V0dXAgPSB7DQogICAuaTJjX2FkZHJlc3MgPSAoMHgyMCA+PiAxKSwNCn07DQoNCnN0YXRp
+YyBzdHJ1Y3Qgc25kX3NvY19kYWlfbGluayBzM2M2NDEwX21heDk4ODBfZGFpID0gew0KICAgLm5h
+bWUgPSAiTUFYOTg4MCIsDQogICAuc3RyZWFtX25hbWUgPSAiTUFYOTg4MCBDb2RlYyIsDQogICAu
+Y3B1X2RhaSA9ICZzM2NfaTJzX2RhaSwNCiAgIC5jb2RlY19kYWkgPSAmbWF4OTg4MF9kYWksDQog
+ICAuaW5pdCA9IE5VTEwsDQogICAub3BzID0gTlVMTCwNCn07DQoNCnN0YXRpYyBzdHJ1Y3Qgc25k
+X3NvY19jYXJkIHMzYzY0MTBfbWF4OTg4MF9zb2NfY2FyZCAgPSB7DQogICAubmFtZSA9ICJTM0M2
+NDEwIE1BWDk4ODAiLA0KICAgLnBsYXRmb3JtID0gJnMzYzI0eHhfc29jX3BsYXRmb3JtLA0KICAg
+LmRhaV9saW5rID0gJnMzYzY0MTBfbWF4OTg4MF9kYWksDQogICAubnVtX2xpbmtzID0gMSwNCn07
+DQoNCnN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kZXZpY2UgczNjNjQxMF9tYXg5ODgwX3NuZF9kZXZk
+YXRhID0gew0KICAgLmNhcmQgPSAmczNjNjQxMF9tYXg5ODgwX3NvY19jYXJkLA0KICAgLmNvZGVj
+X2RldiA9ICZzb2NfY29kZWNfZGV2X21heDk4ODAsDQogICAuY29kZWNfZGF0YSA9ICZtYXg5ODgw
+X3NldHVwLA0KfTsNCg0Kc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnMzYzY0MTBfbWF4
+OTg4MF9zbmRfZGV2aWNlOw0KDQpzdGF0aWMgaW50IF9faW5pdCBzM2M2NDEwX21heDk4ODBfaW5p
+dCh2b2lkKQ0Kew0KICAgaW50IHJldDsNCg0KICAgcHJpbnRrKCJbJXNdIiwgX19GVU5DVElPTl9f
+KTsNCg0KICAgczNjNjQxMF9tYXg5ODgwX3NuZF9kZXZpY2UgPSBwbGF0Zm9ybV9kZXZpY2VfYWxs
+b2MoInNvYy1hdWRpbyIsIC0xKTsNCiAgIGlmICghczNjNjQxMF9tYXg5ODgwX3NuZF9kZXZpY2Up
+DQogICB7ICAgDQogICAgICBwcmludGsoIiAtIHNvYy1hdWRpbyBjcmVhdGUgZmFpbCBcbiIpOw0K
+ICAgICAgcmV0dXJuIC1FTk9NRU07DQogICB9DQoNCiAgIHByaW50aygiWyVzXSBwbGF0Zm9ybV9z
+ZXRfZHJ2ZGF0YSBcbiIsX19GVU5DVElPTl9fKTsNCiAgIHBsYXRmb3JtX3NldF9kcnZkYXRhKCBz
+M2M2NDEwX21heDk4ODBfc25kX2RldmljZSwgJnMzYzY0MTBfbWF4OTg4MF9zbmRfZGV2ZGF0YSk7
+DQoNCiAgIHMzYzY0MTBfbWF4OTg4MF9zbmRfZGV2ZGF0YS5kZXYgPSAmczNjNjQxMF9tYXg5ODgw
+X3NuZF9kZXZpY2UtPmRldjsNCg0KICAgcmV0ID0gcGxhdGZvcm1fZGV2aWNlX2FkZCggczNjNjQx
+MF9tYXg5ODgwX3NuZF9kZXZpY2UpOw0KICAgaWYgKHJldCkgew0KICAgICAgcGxhdGZvcm1fZGV2
+aWNlX3B1dCggczNjNjQxMF9tYXg5ODgwX3NuZF9kZXZpY2UpOw0KICAgICAgcHJpbnRrKCJbczNj
+NjQxMF9tYXg5ODgwXSBpbml0IHBhc3NlZCBcbiIpOw0KICAgfSBlbHNlIHsNCiAgICAgIHByaW50
+aygiW3MzYzY0MTBfbWF4OTg4MF0gcGxhdGZvcm1fZGV2aWNlX2FkZCBmYWlsIFxuIik7DQogICB9
+DQoNCiAgIHJldHVybiByZXQ7DQp9DQoNCnN0YXRpYyB2b2lkIF9fZXhpdCBzM2M2NDEwX21heDk4
+ODBfZXhpdCh2b2lkKQ0Kew0KICAgcGxhdGZvcm1fZGV2aWNlX3VucmVnaXN0ZXIoczNjNjQxMF9t
+YXg5ODgwX3NuZF9kZXZpY2UpOw0KfQ0KDQptb2R1bGVfaW5pdChzM2M2NDEwX21heDk4ODBfaW5p
+dCk7DQptb2R1bGVfZXhpdChzM2M2NDEwX21heDk4ODBfZXhpdCk7DQoNCk1PRFVMRV9MSUNFTlNF
+KCJHUEwiKTsNCk1PRFVMRV9ERVNDUklQVElPTigiU2Ftc3VuZyBTODAwMCBKZXQgQXVkaW8gU3Vi
+c3lzdGVtIik7DQpNT0RVTEVfQVVUSE9SKCJWYWNsYXYgUGVyb3V0a2EgPHZhY2xhdnBlQGdtYWls
+LmNvbT4iKTsNCg==
+--0016364ef7deb4c32a0494ee7a5c
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--0016364ef7deb4c32a0494ee7a5c--
