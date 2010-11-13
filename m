@@ -1,15 +1,16 @@
-From: Vaclav Peroutka <vaclavpe@gmail.com>
-Subject: snd-soc - platform_device_add failed
-Date: Sat, 13 Nov 2010 13:38:08 +0100
-Message-ID: <AANLkTintAspB92oretSTx0dbyf_d4c2nOa29QHhrNjGE@mail.gmail.com>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: [PATCH] ASoC: RX1950: Fix hw_params function
+Date: Sat, 13 Nov 2010 14:53:41 +0200
+Message-ID: <1289652821-5435-1-git-send-email-anarsoul@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=0016364ef7deb4c32a0494ee7a5c
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 1FB282443C
-	for <alsa-devel@alsa-project.org>; Sat, 13 Nov 2010 13:38:09 +0100 (CET)
-Received: by wyg36 with SMTP id 36so2009811wyg.38
-	for <alsa-devel@alsa-project.org>; Sat, 13 Nov 2010 04:38:08 -0800 (PST)
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 98FEB2443E
+	for <alsa-devel@alsa-project.org>; Sat, 13 Nov 2010 13:54:35 +0100 (CET)
+Received: by ewy2 with SMTP id 2so340211ewy.38
+	for <alsa-devel@alsa-project.org>; Sat, 13 Nov 2010 04:54:35 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,94 +20,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Vasily Khoruzhick <anarsoul@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
---0016364ef7deb4c32a0494ee7a5c
-Content-Type: text/plain; charset=ISO-8859-1
+Unfortunatelly, I misunderstood datasheet, and on s3c244x-iis
+when MPLLin source for master clock is selected, prescaler has
+no effect. Remove dividor calculation for 44100 rate; remove 88200
+rate at all, rx1950 can't do it.
 
-Hello,
+Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+---
+ sound/soc/s3c24xx/rx1950_uda1380.c |   20 +++-----------------
+ 1 files changed, 3 insertions(+), 17 deletions(-)
 
-I am trying to create alsa driver for MAX9880 which is connected to
-S3C6410. I "copied" the initialization code from other examples in
-sound/soc/ but during initialization I am getting "platform_device_add
-failed". I attached the code for kernel 2.6.29, ALSA 1.0.18a. For me
-it does not have anything which can fail. But I never wrote drivers
-for ALSA.
-
-I have another question. In the kernel code sound/soc/s3c_64xx/, there
-is a plenty of s3c_i2s files. Different versions but no description,
-which version should I use. Does anybody know, which one is the right
-version ?
-
-Thank you in advance,
-Vaclav
-
---0016364ef7deb4c32a0494ee7a5c
-Content-Type: text/x-csrc; charset=US-ASCII; name="s3c6410-max9880.c"
-Content-Disposition: attachment; filename="s3c6410-max9880.c"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_ggghaphy0
-
-LyoNCiAqIFNhbXN1bmcgUzgwMDAgSmV0IEF1ZGlvIFN1YnN5c3RlbQ0KICoNCiAqIChjKSAyMDEw
-IFZhY2xhdiBQZXJvdXRrYSAtIHZhY2xhdnBlQGdtYWlsLmNvbQ0KICoNCiAqIExpY2Vuc2VkIHVu
-ZGVyIHRoZSBHUEx2Mi4NCiAqDQogKiAgUmV2aXNpb24gaGlzdG9yeQ0KICogICAgMjAxMC8xMS8x
-MSAgIEluaXRpYWwgdmVyc2lvbg0KICoNCiAqLw0KDQojaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+
-DQojaW5jbHVkZSA8bGludXgvbW9kdWxlcGFyYW0uaD4NCiNpbmNsdWRlIDxsaW51eC90aW1lci5o
-Pg0KI2luY2x1ZGUgPGxpbnV4L2ludGVycnVwdC5oPg0KI2luY2x1ZGUgPGxpbnV4L3BsYXRmb3Jt
-X2RldmljZS5oPg0KI2luY2x1ZGUgPGxpbnV4L2kyYy5oPg0KI2luY2x1ZGUgPGxpbnV4L2RlbGF5
-Lmg+DQojaW5jbHVkZSA8c291bmQvY29yZS5oPg0KI2luY2x1ZGUgPHNvdW5kL3BjbS5oPg0KI2lu
-Y2x1ZGUgPHNvdW5kL3NvYy5oPg0KI2luY2x1ZGUgPHNvdW5kL3NvYy1kYXBtLmg+DQoNCiNpbmNs
-dWRlIDxhc20vbWFjaC10eXBlcy5oPg0KI2luY2x1ZGUgPGFzbS9oYXJkd2FyZS9zY29vcC5oPg0K
-I2luY2x1ZGUgPGFzbS9pby5oPg0KDQojaW5jbHVkZSA8bWFjaC9oYXJkd2FyZS5oPg0KI2luY2x1
-ZGUgPG1hY2gvYXVkaW8uaD4NCiNpbmNsdWRlIDxtYWNoL21hcC5oPg0KDQojaW5jbHVkZSA8cGxh
-dC9ncGlvLWNmZy5oPg0KI2luY2x1ZGUgPHBsYXQvcmVncy1ncGlvLmg+DQojaW5jbHVkZSA8cGxh
-dC9yZWdzLWlpYy5oPg0KI2luY2x1ZGUgPHBsYXQvcmVncy1jbG9jay5oPg0KI2luY2x1ZGUgPHBs
-YXQvcmVncy1paXMuaD4NCg0KI2luY2x1ZGUgInMzYy1wY20uaCINCiNpbmNsdWRlICJzM2M2NDEw
-LWkycy5oIg0KI2luY2x1ZGUgIi4uL2NvZGVjcy9tYXg5ODgwLmgiDQoNCiNkZWZpbmUgU1VCSkVD
-VCAiSmV0X21heDk4ODAiDQoNCnN0YXRpYyBzdHJ1Y3QgbWF4OTg4MF9zZXR1cF9kYXRhIG1heDk4
-ODBfc2V0dXAgPSB7DQogICAuaTJjX2FkZHJlc3MgPSAoMHgyMCA+PiAxKSwNCn07DQoNCnN0YXRp
-YyBzdHJ1Y3Qgc25kX3NvY19kYWlfbGluayBzM2M2NDEwX21heDk4ODBfZGFpID0gew0KICAgLm5h
-bWUgPSAiTUFYOTg4MCIsDQogICAuc3RyZWFtX25hbWUgPSAiTUFYOTg4MCBDb2RlYyIsDQogICAu
-Y3B1X2RhaSA9ICZzM2NfaTJzX2RhaSwNCiAgIC5jb2RlY19kYWkgPSAmbWF4OTg4MF9kYWksDQog
-ICAuaW5pdCA9IE5VTEwsDQogICAub3BzID0gTlVMTCwNCn07DQoNCnN0YXRpYyBzdHJ1Y3Qgc25k
-X3NvY19jYXJkIHMzYzY0MTBfbWF4OTg4MF9zb2NfY2FyZCAgPSB7DQogICAubmFtZSA9ICJTM0M2
-NDEwIE1BWDk4ODAiLA0KICAgLnBsYXRmb3JtID0gJnMzYzI0eHhfc29jX3BsYXRmb3JtLA0KICAg
-LmRhaV9saW5rID0gJnMzYzY0MTBfbWF4OTg4MF9kYWksDQogICAubnVtX2xpbmtzID0gMSwNCn07
-DQoNCnN0YXRpYyBzdHJ1Y3Qgc25kX3NvY19kZXZpY2UgczNjNjQxMF9tYXg5ODgwX3NuZF9kZXZk
-YXRhID0gew0KICAgLmNhcmQgPSAmczNjNjQxMF9tYXg5ODgwX3NvY19jYXJkLA0KICAgLmNvZGVj
-X2RldiA9ICZzb2NfY29kZWNfZGV2X21heDk4ODAsDQogICAuY29kZWNfZGF0YSA9ICZtYXg5ODgw
-X3NldHVwLA0KfTsNCg0Kc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnMzYzY0MTBfbWF4
-OTg4MF9zbmRfZGV2aWNlOw0KDQpzdGF0aWMgaW50IF9faW5pdCBzM2M2NDEwX21heDk4ODBfaW5p
-dCh2b2lkKQ0Kew0KICAgaW50IHJldDsNCg0KICAgcHJpbnRrKCJbJXNdIiwgX19GVU5DVElPTl9f
-KTsNCg0KICAgczNjNjQxMF9tYXg5ODgwX3NuZF9kZXZpY2UgPSBwbGF0Zm9ybV9kZXZpY2VfYWxs
-b2MoInNvYy1hdWRpbyIsIC0xKTsNCiAgIGlmICghczNjNjQxMF9tYXg5ODgwX3NuZF9kZXZpY2Up
-DQogICB7ICAgDQogICAgICBwcmludGsoIiAtIHNvYy1hdWRpbyBjcmVhdGUgZmFpbCBcbiIpOw0K
-ICAgICAgcmV0dXJuIC1FTk9NRU07DQogICB9DQoNCiAgIHByaW50aygiWyVzXSBwbGF0Zm9ybV9z
-ZXRfZHJ2ZGF0YSBcbiIsX19GVU5DVElPTl9fKTsNCiAgIHBsYXRmb3JtX3NldF9kcnZkYXRhKCBz
-M2M2NDEwX21heDk4ODBfc25kX2RldmljZSwgJnMzYzY0MTBfbWF4OTg4MF9zbmRfZGV2ZGF0YSk7
-DQoNCiAgIHMzYzY0MTBfbWF4OTg4MF9zbmRfZGV2ZGF0YS5kZXYgPSAmczNjNjQxMF9tYXg5ODgw
-X3NuZF9kZXZpY2UtPmRldjsNCg0KICAgcmV0ID0gcGxhdGZvcm1fZGV2aWNlX2FkZCggczNjNjQx
-MF9tYXg5ODgwX3NuZF9kZXZpY2UpOw0KICAgaWYgKHJldCkgew0KICAgICAgcGxhdGZvcm1fZGV2
-aWNlX3B1dCggczNjNjQxMF9tYXg5ODgwX3NuZF9kZXZpY2UpOw0KICAgICAgcHJpbnRrKCJbczNj
-NjQxMF9tYXg5ODgwXSBpbml0IHBhc3NlZCBcbiIpOw0KICAgfSBlbHNlIHsNCiAgICAgIHByaW50
-aygiW3MzYzY0MTBfbWF4OTg4MF0gcGxhdGZvcm1fZGV2aWNlX2FkZCBmYWlsIFxuIik7DQogICB9
-DQoNCiAgIHJldHVybiByZXQ7DQp9DQoNCnN0YXRpYyB2b2lkIF9fZXhpdCBzM2M2NDEwX21heDk4
-ODBfZXhpdCh2b2lkKQ0Kew0KICAgcGxhdGZvcm1fZGV2aWNlX3VucmVnaXN0ZXIoczNjNjQxMF9t
-YXg5ODgwX3NuZF9kZXZpY2UpOw0KfQ0KDQptb2R1bGVfaW5pdChzM2M2NDEwX21heDk4ODBfaW5p
-dCk7DQptb2R1bGVfZXhpdChzM2M2NDEwX21heDk4ODBfZXhpdCk7DQoNCk1PRFVMRV9MSUNFTlNF
-KCJHUEwiKTsNCk1PRFVMRV9ERVNDUklQVElPTigiU2Ftc3VuZyBTODAwMCBKZXQgQXVkaW8gU3Vi
-c3lzdGVtIik7DQpNT0RVTEVfQVVUSE9SKCJWYWNsYXYgUGVyb3V0a2EgPHZhY2xhdnBlQGdtYWls
-LmNvbT4iKTsNCg==
---0016364ef7deb4c32a0494ee7a5c
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---0016364ef7deb4c32a0494ee7a5c--
+diff --git a/sound/soc/s3c24xx/rx1950_uda1380.c b/sound/soc/s3c24xx/rx1950_uda1380.c
+index ffd5cf2..468cc11 100644
+--- a/sound/soc/s3c24xx/rx1950_uda1380.c
++++ b/sound/soc/s3c24xx/rx1950_uda1380.c
+@@ -50,7 +50,6 @@ static unsigned int rates[] = {
+ 	16000,
+ 	44100,
+ 	48000,
+-	88200,
+ };
+ 
+ static struct snd_pcm_hw_constraint_list hw_rates = {
+@@ -130,7 +129,6 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ };
+ 
+ static struct platform_device *s3c24xx_snd_device;
+-static struct clk *xtal;
+ 
+ static int rx1950_startup(struct snd_pcm_substream *substream)
+ {
+@@ -179,10 +177,8 @@ static int rx1950_hw_params(struct snd_pcm_substream *substream,
+ 	case 44100:
+ 	case 88200:
+ 		clk_source = S3C24XX_CLKSRC_MPLL;
+-		fs_mode = S3C2410_IISMOD_256FS;
+-		div = clk_get_rate(xtal) / (256 * rate);
+-		if (clk_get_rate(xtal) % (256 * rate) > (128 * rate))
+-			div++;
++		fs_mode = S3C2410_IISMOD_384FS;
++		div = 1;
+ 		break;
+ 	default:
+ 		printk(KERN_ERR "%s: rate %d is not supported\n",
+@@ -210,7 +206,7 @@ static int rx1950_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	/* set MCLK division for sample rate */
+ 	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_MCLK,
+-		S3C2410_IISMOD_384FS);
++		fs_mode);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -295,17 +291,8 @@ static int __init rx1950_init(void)
+ 		goto err_plat_add;
+ 	}
+ 
+-	xtal = clk_get(&s3c24xx_snd_device->dev, "xtal");
+-
+-	if (IS_ERR(xtal)) {
+-		ret = PTR_ERR(xtal);
+-		platform_device_unregister(s3c24xx_snd_device);
+-		goto err_clk;
+-	}
+-
+ 	return 0;
+ 
+-err_clk:
+ err_plat_add:
+ err_plat_alloc:
+ err_gpio_conf:
+@@ -320,7 +307,6 @@ static void __exit rx1950_exit(void)
+ 	platform_device_unregister(s3c24xx_snd_device);
+ 	snd_soc_jack_free_gpios(&hp_jack, ARRAY_SIZE(hp_jack_gpios),
+ 		hp_jack_gpios);
+-	clk_put(xtal);
+ 	gpio_free(S3C2410_GPA(1));
+ }
+ 
+-- 
+1.7.3.2
