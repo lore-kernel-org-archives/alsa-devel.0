@@ -1,18 +1,27 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
+From: Colin Guthrie <gmane@colin.guthr.ie>
 Subject: Re: Expected behaviour for two mic jacks
-Date: Sun, 14 Nov 2010 09:01:27 +0800
-Message-ID: <AANLkTikJR7D-4X2ivznG0-RgQDJXA8yx_RHMkc5nBens@mail.gmail.com>
+Date: Sun, 14 Nov 2010 16:14:21 +0000
+Message-ID: <ibp1sr$nvs$2@dough.gmane.org>
 References: <4CDD0DDB.9020509@canonical.com>
+	<AANLkTikJR7D-4X2ivznG0-RgQDJXA8yx_RHMkc5nBens@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 336F2243DB
-	for <alsa-devel@alsa-project.org>; Sun, 14 Nov 2010 02:01:28 +0100 (CET)
-Received: by ewy2 with SMTP id 2so460230ewy.38
-	for <alsa-devel@alsa-project.org>; Sat, 13 Nov 2010 17:01:27 -0800 (PST)
-In-Reply-To: <4CDD0DDB.9020509@canonical.com>
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB2671037EA
+	for <alsa-devel@alsa-project.org>; Sun, 14 Nov 2010 17:14:39 +0100 (CET)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1PHfDy-0004xM-MF
+	for alsa-devel@alsa-project.org; Sun, 14 Nov 2010 17:14:38 +0100
+Received: from cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
+	([94.173.13.3]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 14 Nov 2010 17:14:38 +0100
+Received: from gmane by cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
+	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 14 Nov 2010 17:14:38 +0100
+In-Reply-To: <AANLkTikJR7D-4X2ivznG0-RgQDJXA8yx_RHMkc5nBens@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,82 +31,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/11/12 David Henningsson <david.henningsson@canonical.com>
+'Twas brillig, and Raymond Yau at 14/11/10 01:01 did gyre and gimble:
+> The main point is pulseaudio does not support more than 2 sources on one
+> sound card
 
-> Hi,
->
-> A while ago I asked for the default/expected behaviour for auto-mute.
-> Here's the same question for mics:
->
-> If there are two mic jacks, e g one on the front and one on the back, is
-> the standard/default behaviour that we should:
->
->
-Most desktops have blue jack in in addition to front mic and rear mic, they
-may also has other input source CD , Video and , Aux
+Sure it does, it's just not something that is probed for by default. All
+you need to do is write an appropriate mixer profile (see
+/usr/share/pulse/alsa-mixer/
 
-Only notebooks has internal mic and external mic
+-- 
 
-For  HDA which support multi stream capturing , the controls are "Input
-Source"
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
 
-otherwise  the control is "Capture Source"
-
-Therefore application is quite easy to know whether the sound card support
-multi stream capture
-
-
-
-> 1) Show one mic only and add auto-switch functionality, and if so, what
-> should determine which mic takes precedence?
-
-
-It seem that the HDA driver is not able to select the specific input source
-for all HDA codec when the driver is loaded
-
-User also should able to save/restore their selected Input source instead of
-default mic
-
-For Live CD , "alsactl init" is supposed to select internal mic instead of
-external mic for laptop
-
-For desktop there is only front mic and rear mic so user should able to
-save/restore the selected input source on a fully installed system
-
-
-
-The main problem is those line in playback volume , mic playback volume ,
-aux is no longer accessible in gnome-media/kmix because they are not used by
-pulseaudio
-
-It become the responsibilty of sound preference to allow user to
-change/unmute them since the Line playback volume control is important for
-those  user who connected their TV card to the line in
-
-especially CD profile is not implemented by pulseaudio where some user want
-to use connect their TV tuner card output to the CD input socket
-
-
-> 2) Show both mics and let the user choose between them?
->
-
-User should able to use pink jack and  green jack at front panel by one
-application and the other application can use pink jack and green jack at
-rear panel
-
-
-
->
-> 3) Show both mics, two volume control and let the user mix both signals
-> together (when possible)?
->
->
-I have doubt about the usefullness of mixing mic signal , if you have two
-mic and sound card support multi stream capture , allow each mic used by
-different application to acheive low latency is better
-
-The main point is pulseaudio does not support more than 2 sources on one
-sound card
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mageia Contributor [http://www.mageia.org/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
