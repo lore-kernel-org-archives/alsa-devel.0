@@ -1,15 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Prevent system suspend while debouncing
-	wakeup capable GPIO jacks
-Date: Sun, 14 Nov 2010 19:26:13 +0000
-Message-ID: <1289762773-19239-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Ryan Mallon <ryan@bluewatersys.com>
+Subject: Re: Channel swapping problem on Atmel SSC audio
+Date: Mon, 15 Nov 2010 09:37:24 +1300
+Message-ID: <4CE04884.2080504@bluewatersys.com>
+References: <4CDB217E.2030906@bluewatersys.com>	<201011111227.09633.gineera@aspect135.co.uk>,
+	<4CDCF572.9050808@fh-kl.de>
+	<16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE331@EXGMBX01.sasken.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7ED502446E
-	for <alsa-devel@alsa-project.org>; Sun, 14 Nov 2010 20:26:13 +0100 (CET)
+Received: from hayes.bluewaternz.com (mail.bluewatersys.com [202.124.120.130])
+	by alsa0.perex.cz (Postfix) with ESMTP id 748691037F3
+	for <alsa-devel@alsa-project.org>; Sun, 14 Nov 2010 21:36:29 +0100 (CET)
+In-Reply-To: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE331@EXGMBX01.sasken.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,37 +22,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwoo <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Irfan Shaikh <irfan.shaikh@sasken.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Patrick Ziegler <patrick.ziegler@fh-kl.de>
 List-Id: alsa-devel@alsa-project.org
 
-If the device associated with a GPIO jack is wakeup capable then disable
-suspend while we're debouncing the jack so that we skip suspends that race
-with the jack.
+On 11/12/2010 10:52 PM, Irfan Shaikh wrote:
+> I had faced the similar issue on IMx31. The cause there was reversal of LRCK clock {180 degree phase shift}.
+> probing the LRCK clock may help you to find the problem
+> 
+> ________________________________________
+> From: alsa-devel-bounces@alsa-project.org [alsa-devel-bounces@alsa-project.org] On Behalf Of Patrick Ziegler [patrick.ziegler@fh-kl.de]
+> Sent: Friday, November 12, 2010 1:36 PM
+> To: alsa-devel@alsa-project.org
+> Cc: Ryan Mallon
+> Subject: Re: [alsa-devel] Channel swapping problem on Atmel SSC audio
+> 
+> Am 11.11.2010 13:27, schrieb Alan Horstmann:
+>> On Wednesday 10 November 2010 22:49, Ryan Mallon wrote:
+>>
+>>> I'm working on a custom board using the AT91SAM9G45 processor and a
+>>> TLV320AIC26 SPI attached audio codec using I2S format audio. When doing
+>>> audio playback on the board the left and right channels are occasionally
+>>> flipped.
+>>>
+>> <snip>
+>>
+>>
+>>> Has anybody else had this problem, or does anybody have any AT91/Atmel
+>>> hardware that they could test to see if it occurs on other hardware also?
+>>>
+>> I have worked with the AT91SAM9260 on a project which is currently suspended
+>> (other priorities), where we had a simiar problem, with a codec on SPI.
+>> Every time audio was started (capture or playback) the channels could be
+>> swapped.  Solving that issue remains TODO when we restart.
+>>
+>> There was a thread on alsa-devel last month 'Soc Atmel SSC stereo problem'
+>> with some suggestions.
 
-Note that currently the GPIO based jack has a CODEC associated with it
-which we're using right now. These jacks should be reparented against the
-card itself and this code adjusted.
+Okay, so it's not just me.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-jack.c |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
+>>
+> In the thread mentioned, Alan proposed me amongst other things to test
+> the LRCK level before starting the SSC. This works well for me. Maybe it
+> should be implemented in a more generic way but the following
+> modification does the trick for me.
+> 
+> in function  atmel_pcm_trigger inside file sound/soc/atmel/atmel-pcm.c :
+> 
+> case SNDRV_PCM_TRIGGER_START:
+> +while(!at91_get_gpio_value(AT91_PIN_PB12));
+> +while(at91_get_gpio_value(AT91_PIN_PB12));
+> 
+> case SNDRV_PCM_TRIGGER_RESUME:
+> +while(!at91_get_gpio_value(AT91_PIN_PB12));
+> +while(at91_get_gpio_value(AT91_PIN_PB12));
 
-diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index 4d95abb..619061d 100644
---- a/sound/soc/soc-jack.c
-+++ b/sound/soc/soc-jack.c
-@@ -209,6 +209,10 @@ static void snd_soc_jack_gpio_detect(struct snd_soc_jack_gpio *gpio)
- static irqreturn_t gpio_handler(int irq, void *data)
- {
- 	struct snd_soc_jack_gpio *gpio = data;
-+	struct device *dev = gpio->jack->codec->card->dev;
-+
-+	if (device_may_wakeup(dev))
-+		pm_wakeup_event(dev, gpio->debounce_time + 50);
- 
- 	schedule_delayed_work(&gpio->work,
- 			      msecs_to_jiffies(gpio->debounce_time));
+This appears to work, or at least makes the problem much more rare. I'm
+trying to understand if the problem is a silicon bug in the AT91
+hardware, or if the DMA start code in the Atmel SoC driver is buggy.
+
+I'm running with the CPU as the master (generating LRCLK and BCLK) and
+testing with playback (so CPU is clocking the data out). The TCMR
+register has the CKS field set to 0x4 (start on falling edge of LRCLK),
+so the above loops should not be necessary. I suspect that the above fix
+only makes the problem occur much less frequently, rather than fixing it
+correctly?
+
+~Ryan
+
 -- 
-1.7.2.3
+Bluewater Systems Ltd - ARM Technology Solution Centre
+
+Ryan Mallon         		5 Amuri Park, 404 Barbadoes St
+ryan@bluewatersys.com         	PO Box 13 889, Christchurch 8013
+http://www.bluewatersys.com	New Zealand
+Phone: +64 3 3779127		Freecall: Australia 1800 148 751
+Fax:   +64 3 3779135			  USA 1800 261 2934
