@@ -1,27 +1,15 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: Expected behaviour for two mic jacks
-Date: Sun, 14 Nov 2010 16:14:21 +0000
-Message-ID: <ibp1sr$nvs$2@dough.gmane.org>
-References: <4CDD0DDB.9020509@canonical.com>
-	<AANLkTikJR7D-4X2ivznG0-RgQDJXA8yx_RHMkc5nBens@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Prevent system suspend while debouncing
+	wakeup capable GPIO jacks
+Date: Sun, 14 Nov 2010 19:26:13 +0000
+Message-ID: <1289762773-19239-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id BB2671037EA
-	for <alsa-devel@alsa-project.org>; Sun, 14 Nov 2010 17:14:39 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1PHfDy-0004xM-MF
-	for alsa-devel@alsa-project.org; Sun, 14 Nov 2010 17:14:38 +0100
-Received: from cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
-	([94.173.13.3]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 14 Nov 2010 17:14:38 +0100
-Received: from gmane by cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
-	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 14 Nov 2010 17:14:38 +0100
-In-Reply-To: <AANLkTikJR7D-4X2ivznG0-RgQDJXA8yx_RHMkc5nBens@mail.gmail.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7ED502446E
+	for <alsa-devel@alsa-project.org>; Sun, 14 Nov 2010 20:26:13 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,26 +19,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwoo <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Raymond Yau at 14/11/10 01:01 did gyre and gimble:
-> The main point is pulseaudio does not support more than 2 sources on one
-> sound card
+If the device associated with a GPIO jack is wakeup capable then disable
+suspend while we're debouncing the jack so that we skip suspends that race
+with the jack.
 
-Sure it does, it's just not something that is probed for by default. All
-you need to do is write an appropriate mixer profile (see
-/usr/share/pulse/alsa-mixer/
+Note that currently the GPIO based jack has a CODEC associated with it
+which we're using right now. These jacks should be reparented against the
+card itself and this code adjusted.
 
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-jack.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
+index 4d95abb..619061d 100644
+--- a/sound/soc/soc-jack.c
++++ b/sound/soc/soc-jack.c
+@@ -209,6 +209,10 @@ static void snd_soc_jack_gpio_detect(struct snd_soc_jack_gpio *gpio)
+ static irqreturn_t gpio_handler(int irq, void *data)
+ {
+ 	struct snd_soc_jack_gpio *gpio = data;
++	struct device *dev = gpio->jack->codec->card->dev;
++
++	if (device_may_wakeup(dev))
++		pm_wakeup_event(dev, gpio->debounce_time + 50);
+ 
+ 	schedule_delayed_work(&gpio->work,
+ 			      msecs_to_jiffies(gpio->debounce_time));
 -- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mageia Contributor [http://www.mageia.org/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+1.7.2.3
