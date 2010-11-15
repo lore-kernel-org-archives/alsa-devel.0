@@ -1,30 +1,43 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 44/44] sound/soc/codecs: Remove unnecessary semicolons
-Date: Mon, 15 Nov 2010 11:14:18 -0800
-Message-ID: <1289848458.16461.150.camel@Joe-Laptop>
-References: <cover.1289789604.git.joe@perches.com>
-	 <97fd199b7dac50613f6843156687223928cce44a.1289789605.git.joe@perches.com>
-	 <20101115134939.GC12986@rakim.wolfsonmicro.main>
-	 <1289840957.16461.138.camel@Joe-Laptop>
-	 <20101115173031.GI12986@rakim.wolfsonmicro.main>
-	 <1289842444.16461.140.camel@Joe-Laptop>
-	 <20101115182708.GJ12986@rakim.wolfsonmicro.main>
-	 <1289845830.16461.149.camel@Joe-Laptop>
-	 <20101115190738.GF3338@sirena.org.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ALSA: AT73C213: Rectify
+	misleading	comments.
+Date: Mon, 15 Nov 2010 19:16:42 +0000
+Message-ID: <20101115191642.GG3338@sirena.org.uk>
+References: <1289820546-2078-1-git-send-email-peda@axentia.se>
+	<1289832634.18691.1.camel@hcegtvedt>
+	<4CE1816F.6080000@lysator.liu.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20101115190738.GF3338@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Jiri Kosina <trivial@kernel.org>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A4BF24545
+	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2010 20:16:44 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4CE1816F.6080000@lysator.liu.se>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Peter Rosin <peda@lysator.liu.se>
+Cc: alsa-devel@alsa-project.org, Hans-Christian Egtvedt <hcegtvedt@atmel.com>, Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>, Peter Rosin <peda@axentia.se>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-11-15 at 19:07 +0000, Mark Brown wrote:
-> I'd suggest using pattern matching to look up the
-> rules for generating the prefixes (it's pretty much entirely prefixes)
-> in the same way you're handling figuring out who to mail - that'd
-> probably cover it in an automatable fashion.
+On Mon, Nov 15, 2010 at 07:52:31PM +0100, Peter Rosin wrote:
+> Den 2010-11-15 15:50 skrev Hans-Christian Egtvedt:
 
-Publish a tool that works and I'll use it.
+> > IIRC the bitrate is controlled by a generic clock, and it has a power of
+> > two divider possibility. Hence the comment about power of two.
+
+> My point is that the "ssc_div must be a power of 2" comment is
+> misleading in that this is an external (to the driver) constraint that
+> has nothing to do with the driver code.  This constraint is also not
+> universally true, and the comment just makes it harder to follow what
+> the driver code is doing.
+
+This code probably ought to be converted to ASoC anyway :)
