@@ -1,73 +1,37 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 44/44] sound/soc/codecs: Remove unnecessary semicolons
-Date: Sun, 14 Nov 2010 19:05:03 -0800
-Message-ID: <97fd199b7dac50613f6843156687223928cce44a.1289789605.git.joe@perches.com>
-References: <cover.1289789604.git.joe@perches.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1289789604.git.joe@perches.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jiri Kosina <trivial@kernel.org>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] disable period wakeups
+Date: Mon, 15 Nov 2010 10:58:18 +0100
+Message-ID: <4CE1043A.6010607@ladisch.de>
+References: <AANLkTimLAuzn+rSEGTv2oV_yPErbBHdRdij-61Ya2JcE@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 7C3D61037F8
+	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2010 10:56:33 +0100 (CET)
+In-Reply-To: <AANLkTimLAuzn+rSEGTv2oV_yPErbBHdRdij-61Ya2JcE@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: pl bossart <bossart.nospam@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- sound/soc/codecs/wm8904.c  |    2 +-
- sound/soc/codecs/wm8940.c  |    1 -
- sound/soc/codecs/wm8993.c  |    2 +-
- sound/soc/codecs/wm_hubs.c |    2 +-
- 4 files changed, 3 insertions(+), 4 deletions(-)
+pl bossart wrote:
+> Here's the second set of patches based on feedback from Takashi,
+> Jaroslav and Clemens. Hope this is fine now.
 
-diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-index 33be84e..99ae66d 100644
---- a/sound/soc/codecs/wm8904.c
-+++ b/sound/soc/codecs/wm8904.c
-@@ -1590,7 +1590,7 @@ static int wm8904_hw_params(struct snd_pcm_substream *substream,
- 		       - wm8904->fs);
- 	for (i = 1; i < ARRAY_SIZE(clk_sys_rates); i++) {
- 		cur_val = abs((wm8904->sysclk_rate /
--			       clk_sys_rates[i].ratio) - wm8904->fs);;
-+			       clk_sys_rates[i].ratio) - wm8904->fs);
- 		if (cur_val < best_val) {
- 			best = i;
- 			best_val = cur_val;
-diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
-index 2cb16f8..e3f3572 100644
---- a/sound/soc/codecs/wm8940.c
-+++ b/sound/soc/codecs/wm8940.c
-@@ -735,7 +735,6 @@ static int wm8940_probe(struct snd_soc_codec *codec)
- 		return ret;
- 
- 	return ret;
--;
- }
- 
- static int wm8940_remove(struct snd_soc_codec *codec)
-diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
-index 589e3fa..74af9c5 100644
---- a/sound/soc/codecs/wm8993.c
-+++ b/sound/soc/codecs/wm8993.c
-@@ -1225,7 +1225,7 @@ static int wm8993_hw_params(struct snd_pcm_substream *substream,
- 		       - wm8993->fs);
- 	for (i = 1; i < ARRAY_SIZE(clk_sys_rates); i++) {
- 		cur_val = abs((wm8993->sysclk_rate /
--			       clk_sys_rates[i].ratio) - wm8993->fs);;
-+			       clk_sys_rates[i].ratio) - wm8993->fs);
- 		if (cur_val < best_val) {
- 			best = i;
- 			best_val = cur_val;
-diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-index 19ca782..2afbc7a 100644
---- a/sound/soc/codecs/wm_hubs.c
-+++ b/sound/soc/codecs/wm_hubs.c
-@@ -112,7 +112,7 @@ static void calibrate_dc_servo(struct snd_soc_codec *codec)
- 		switch (hubs->dcs_readback_mode) {
- 		case 0:
- 			reg_l = snd_soc_read(codec, WM8993_DC_SERVO_READBACK_1)
--				& WM8993_DCS_INTEG_CHAN_0_MASK;;
-+				& WM8993_DCS_INTEG_CHAN_0_MASK;
- 			reg_r = snd_soc_read(codec, WM8993_DC_SERVO_READBACK_2)
- 				& WM8993_DCS_INTEG_CHAN_1_MASK;
- 			break;
--- 
-1.7.3.1.g432b3.dirty
+Committed, with fixed whitespace (your mailer or editor replaced tabs
+with spaces in all new lines), added back
+snd_pcm_hw_params_can_disable_period_wakeup(), and small changes.
+
+
+Regards,
+Clemens
