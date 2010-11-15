@@ -1,32 +1,73 @@
 From: Joe Perches <joe@perches.com>
-Subject: [PATCH 43/44] sound/core/pcm_lib.c: Remove unnecessary semicolons
-Date: Sun, 14 Nov 2010 19:05:02 -0800
-Message-ID: <9fa8e193ce125ef4fd19a952792629c5ee84953f.1289789605.git.joe@perches.com>
+Subject: [PATCH 44/44] sound/soc/codecs: Remove unnecessary semicolons
+Date: Sun, 14 Nov 2010 19:05:03 -0800
+Message-ID: <97fd199b7dac50613f6843156687223928cce44a.1289789605.git.joe@perches.com>
 References: <cover.1289789604.git.joe@perches.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <cover.1289789604.git.joe@perches.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jiri Kosina <trivial@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Joe Perches <joe@perches.com>
 ---
- sound/core/pcm_lib.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/soc/codecs/wm8904.c  |    2 +-
+ sound/soc/codecs/wm8940.c  |    1 -
+ sound/soc/codecs/wm8993.c  |    2 +-
+ sound/soc/codecs/wm_hubs.c |    2 +-
+ 4 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index a1707cc..b75db8e 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -223,7 +223,7 @@ static void xrun_log(struct snd_pcm_substream *substream,
- 	entry->jiffies = jiffies;
- 	entry->pos = pos;
- 	entry->period_size = runtime->period_size;
--	entry->buffer_size = runtime->buffer_size;;
-+	entry->buffer_size = runtime->buffer_size;
- 	entry->old_hw_ptr = runtime->status->hw_ptr;
- 	entry->hw_ptr_base = runtime->hw_ptr_base;
- 	log->idx = (log->idx + 1) % XRUN_LOG_CNT;
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index 33be84e..99ae66d 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -1590,7 +1590,7 @@ static int wm8904_hw_params(struct snd_pcm_substream *substream,
+ 		       - wm8904->fs);
+ 	for (i = 1; i < ARRAY_SIZE(clk_sys_rates); i++) {
+ 		cur_val = abs((wm8904->sysclk_rate /
+-			       clk_sys_rates[i].ratio) - wm8904->fs);;
++			       clk_sys_rates[i].ratio) - wm8904->fs);
+ 		if (cur_val < best_val) {
+ 			best = i;
+ 			best_val = cur_val;
+diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
+index 2cb16f8..e3f3572 100644
+--- a/sound/soc/codecs/wm8940.c
++++ b/sound/soc/codecs/wm8940.c
+@@ -735,7 +735,6 @@ static int wm8940_probe(struct snd_soc_codec *codec)
+ 		return ret;
+ 
+ 	return ret;
+-;
+ }
+ 
+ static int wm8940_remove(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
+index 589e3fa..74af9c5 100644
+--- a/sound/soc/codecs/wm8993.c
++++ b/sound/soc/codecs/wm8993.c
+@@ -1225,7 +1225,7 @@ static int wm8993_hw_params(struct snd_pcm_substream *substream,
+ 		       - wm8993->fs);
+ 	for (i = 1; i < ARRAY_SIZE(clk_sys_rates); i++) {
+ 		cur_val = abs((wm8993->sysclk_rate /
+-			       clk_sys_rates[i].ratio) - wm8993->fs);;
++			       clk_sys_rates[i].ratio) - wm8993->fs);
+ 		if (cur_val < best_val) {
+ 			best = i;
+ 			best_val = cur_val;
+diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+index 19ca782..2afbc7a 100644
+--- a/sound/soc/codecs/wm_hubs.c
++++ b/sound/soc/codecs/wm_hubs.c
+@@ -112,7 +112,7 @@ static void calibrate_dc_servo(struct snd_soc_codec *codec)
+ 		switch (hubs->dcs_readback_mode) {
+ 		case 0:
+ 			reg_l = snd_soc_read(codec, WM8993_DC_SERVO_READBACK_1)
+-				& WM8993_DCS_INTEG_CHAN_0_MASK;;
++				& WM8993_DCS_INTEG_CHAN_0_MASK;
+ 			reg_r = snd_soc_read(codec, WM8993_DC_SERVO_READBACK_2)
+ 				& WM8993_DCS_INTEG_CHAN_1_MASK;
+ 			break;
 -- 
 1.7.3.1.g432b3.dirty
