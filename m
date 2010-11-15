@@ -1,25 +1,17 @@
-From: Halim Sahin <halim.sahin@freenet.de>
-Subject: netbook: pcspeaker doesn't work since 2.6.35 see
- attached alsa-info-files
-Date: Mon, 15 Nov 2010 14:37:10 +0100
-Message-ID: <20101115133710.GA18124@gentoo.local>
+From: Grzegorz Daniluk <g.daniluk@elproma.com.pl>
+Subject: Re: ASoC: WM8804: fsi-wm8804
+Date: Mon, 15 Nov 2010 14:46:55 +0100
+Message-ID: <4CE139CF.4070400@elproma.com.pl>
+References: <4CE126FD.7000407@elproma.com.pl>
+	<20101115123351.GB3338@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="8t9RHnE3ZwKMSgU+"
+Content-Type: multipart/mixed; boundary="------------040508050604040905010407"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8FF36244A6
-	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2010 14:37:15 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1PHzFB-0004Nx-AF
-	for alsa-devel@alsa-project.org; Mon, 15 Nov 2010 14:37:13 +0100
-Received: from p4fc8673b.dip.t-dialin.net ([79.200.103.59])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2010 14:37:13 +0100
-Received: from halim.sahin by p4fc8673b.dip.t-dialin.net with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2010 14:37:13 +0100
-Content-Disposition: inline
+Received: from mailmxout.mailmx.agnat.pl (mailmxout.mailmx.agnat.pl
+	[193.239.44.238])
+	by alsa0.perex.cz (Postfix) with ESMTP id 19054103847
+	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2010 14:47:07 +0100 (CET)
+In-Reply-To: <20101115123351.GB3338@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,1472 +21,241 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---8t9RHnE3ZwKMSgU+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi,
-The subject sais it :-(.
-In alsamixer I can't umute or set any pc speaker related settings since
-2.6.35.
-The control for pc speaker is gone :-(.
-Now I started the last working kernel 2.6.34, run alsa-info.
-Then repeated same with 2.6.36.
-
-can you please help to solve this?
-For accessibility software a working pc-speaker is really useful :-).
-Regards
-Halim
-
-
---8t9RHnE3ZwKMSgU+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="alsa-info-old.txt"
-
-upload=true&script=true&cardinfo=
-!!################################
-!!ALSA Information Script v 0.4.59
-!!################################
-
-!!Script ran on: Mon Nov 15 13:20:25 UTC 2010
-
-
-!!Linux Distribution
-!!------------------
-
-Gentoo Base System release 1.12.14
-
-
-!!DMI Information
-!!---------------
-
-Manufacturer:      SAMSUNG ELECTRONICS CO., LTD.
-Product Name:      N140                       
-
-
-!!Kernel Information
-!!------------------
-
-Kernel release:    2.6.34-gentoo
-Operating System:  GNU/Linux
-Architecture:      i686
-Processor:         Intel(R) Atom(TM) CPU N270 @ 1.60GHz
-SMP Enabled:       Yes
-
-
-!!ALSA Version
-!!------------
-
-Driver version:     1.0.22.1
-Library version:    1.0.23
-Utilities version:  1.0.23
-
-
-!!Loaded ALSA modules
-!!-------------------
-
-
-
-!!Sound Servers on this system
-!!----------------------------
-
-No sound servers found.
-
-
-!!Soundcards recognised by ALSA
-!!-----------------------------
-
- 0 [Intel          ]: HDA-Intel - HDA Intel
-                      HDA Intel at 0xf0440000 irq 27
- 1 [pcsp           ]: PC-Speaker - pcsp
-                      Internal PC-Speaker at port 0x61
-
-
-!!PCI Soundcards installed in the system
-!!--------------------------------------
-
-00:1b.0 Audio device: Intel Corporation N10/ICH 7 Family High Definition Audio Controller (rev 02)
-
-
-!!Advanced information - PCI Vendor/Device/Susbsystem ID's
-!!--------------------------------------------------------
-
-00:1b.0 0403: 8086:27d8 (rev 02)
-	Subsystem: 144d:c062
---
-	Prefetchable memory behind bridge: 0000000040000000-00000000401fffff
-	Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- <SERR- <PERR-
-
-
-!!Loaded sound module options
-!!--------------------------
-
-
-!!HDA-Intel Codec information
-!!---------------------------
---startcollapse--
-
-Codec: Realtek ALC269
-Address: 0
-Function Id: 0x1
-Vendor Id: 0x10ec0269
-Subsystem Id: 0x144dc062
-Revision Id: 0x100004
-No Modem Function Group found
-Default PCM:
-    rates [0x5f0]: 32000 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-GPIO: io=2, o=0, i=0, unsolicited=1, wake=1
-  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-Node 0x02 [Audio Output] wcaps 0x1d: Stereo Amp-Out
-  Control: name="Speaker Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Device: name="ALC269 Analog", type="Audio", device=0
-  Amp-Out caps: ofs=0x3f, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals:  [0x34 0x34]
-  Converter: stream=5, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x03 [Audio Output] wcaps 0x1d: Stereo Amp-Out
-  Control: name="Headphone Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x3f, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals:  [0x35 0x35]
-  Converter: stream=5, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x04 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x05 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x5f0]: 32000 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x07 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Amp-In caps: ofs=0x11, nsteps=0x2e, stepsize=0x03, mute=1
-  Amp-In vals:  [0x90 0x90]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Connection: 1
-     0x24
-Node 0x08 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Control: name="Capture Switch", index=0, device=0
-  Control: name="Capture Volume", index=0, device=0
-  Device: name="ALC269 Analog", type="Audio", device=0
-  Amp-In caps: ofs=0x11, nsteps=0x2e, stepsize=0x03, mute=1
-  Amp-In vals:  [0x2e 0x2e]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Connection: 1
-     0x23
-Node 0x09 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0a [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Control: name="Beep Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=4, ofs=0
-  Control: name="Beep Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=4, ofs=0
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x14 0x14]
-  Connection: 5
-     0x18 0x19 0x1a 0x1b 0x1d
-Node 0x0c [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Connection: 2
-     0x02 0x0b
-Node 0x0d [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Connection: 2
-     0x03 0x0b
-Node 0x0e [Audio Mixer] wcaps 0x20010a: Mono Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00] [0x00]
-  Connection: 2
-     0x0c 0x0d
-Node 0x0f [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x10 [Audio Output] wcaps 0x211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x5f0]: 32000 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x11 [Pin Complex] wcaps 0x400380: Mono Digital
-  Pincap 0x00000014: OUT Detect
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x10
-Node 0x12 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x00000020: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x14 [Pin Complex] wcaps 0x40010d: Stereo Amp-Out
-  Control: name="Speaker Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x00010050: OUT EAPD Balanced
-  EAPD 0x2: EAPD
-  Pin Default 0x99130110: [Fixed] Speaker at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Connection: 2
-     0x0c* 0x0d
-Node 0x15 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Control: name="Headphone Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0001001c: OUT HP EAPD Detect
-  EAPD 0x2: EAPD
-  Pin Default 0x0121101f: [Jack] HP Out at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x1, Sequence = 0xf
-  Pin-ctls: 0xc0: OUT HP
-  Unsolicited: tag=04, enabled=1
-  Connection: 2
-     0x0c 0x0d*
-Node 0x16 [Pin Complex] wcaps 0x40010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80]
-  Pincap 0x00000010: OUT
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0e
-Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Control: name="Mic Boost", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x03 0x03]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x00003734: IN OUT Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x01a11820: [Jack] Mic at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x2, Sequence = 0x0
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=08, enabled=1
-  Connection: 2
-     0x0c* 0x0d
-Node 0x19 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Control: name="Front Mic Boost", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x02 0x02]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x00003734: IN OUT Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x99a3092f: [Fixed] Mic at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-    DefAssociation = 0x2, Sequence = 0xf
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=00, enabled=0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000373c: IN OUT HP Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x1b [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x00003734: IN OUT Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x1c [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1d [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x00000020: IN
-  Pin Default 0x40038205: [N/A] Line Out at Ext N/A
-    Conn = ATAPI, Color = Purple
-    DefAssociation = 0x0, Sequence = 0x5
-  Pin-ctls: 0x20: IN
-Node 0x1e [Pin Complex] wcaps 0x400380: Mono Digital
-  Pincap 0x00000014: OUT Detect
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x06
-Node 0x1f [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
-  Processing caps: benign=0, ncoeff=33
-Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x23 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 7
-     0x18 0x19* 0x1a 0x1b 0x1d 0x12 0x0b
-Node 0x24 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 6
-     0x18 0x19 0x1a 0x1b 0x1d 0x0b
---endcollapse--
-
-
-!!ALSA Device nodes
-!!-----------------
-
-crw-rw----+ 1 root audio 116, 7 Nov 15  2010 /dev/snd/controlC0
-crw-rw----+ 1 root audio 116, 9 Nov 15  2010 /dev/snd/controlC1
-crw-rw----+ 1 root audio 116, 6 Nov 15  2010 /dev/snd/hwC0D0
-crw-rw----+ 1 root audio 116, 5 Nov 15 14:18 /dev/snd/pcmC0D0c
-crw-rw----+ 1 root audio 116, 4 Nov 15 14:18 /dev/snd/pcmC0D0p
-crw-rw----+ 1 root audio 116, 8 Nov 15 13:58 /dev/snd/pcmC1D0p
-crw-rw----+ 1 root audio 116, 3 Nov 15  2010 /dev/snd/seq
-crw-rw----+ 1 root audio 116, 2 Nov 15  2010 /dev/snd/timer
-
-/dev/snd/by-path:
-total 0
-drwxr-xr-x 2 root root  80 Nov 15  2010 .
-drwxr-xr-x 3 root root 220 Nov 15  2010 ..
-lrwxrwxrwx 1 root root  12 Nov 15  2010 pci-0000:00:1b.0 -> ../controlC0
-lrwxrwxrwx 1 root root  12 Nov 15  2010 platform-pcspkr -> ../controlC1
-
-
-!!Aplay/Arecord output
-!!------------
-
-APLAY
-
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC269 Analog [ALC269 Analog]
-  Subdevices: 0/1
-  Subdevice #0: subdevice #0
-card 1: pcsp [pcsp], device 0: pcspeaker [pcsp]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-ARECORD
-
-**** List of CAPTURE Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC269 Analog [ALC269 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-!!Amixer output
-!!-------------
-
-!!-------Mixer controls for card 0 [Intel]
-
-Card hw:0 'Intel'/'HDA Intel at 0xf0440000 irq 27'
-  Mixer name	: 'Realtek ALC269'
-  Components	: 'HDA:10ec0269,144dc062,00100004'
-  Controls      : 14
-  Simple ctrls  : 9
-Simple mixer control 'Master',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined penum
-  Playback channels: Mono
-  Limits: Playback 0 - 64
-  Mono: Playback 53 [83%] [-11.00dB] [on]
-Simple mixer control 'Headphone',0
-  Capabilities: pvolume pswitch penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 64
-  Mono:
-  Front Left: Playback 64 [100%] [1.00dB] [on]
-  Front Right: Playback 64 [100%] [1.00dB] [on]
-Simple mixer control 'Speaker',0
-  Capabilities: pvolume pswitch penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 64
-  Mono:
-  Front Left: Playback 63 [98%] [0.00dB] [on]
-  Front Right: Playback 63 [98%] [0.00dB] [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 255 [100%] [0.00dB]
-  Front Right: Playback 255 [100%] [0.00dB]
-Simple mixer control 'Front Mic Boost',0
-  Capabilities: volume penum
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 3
-  Front Left: 2 [67%]
-  Front Right: 2 [67%]
-Simple mixer control 'Mic Boost',0
-  Capabilities: volume penum
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 3
-  Front Left: 3 [100%]
-  Front Right: 3 [100%]
-Simple mixer control 'Beep',0
-  Capabilities: pvolume pswitch penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 31
-  Mono:
-  Front Left: Playback 20 [65%] [-4.50dB] [on]
-  Front Right: Playback 20 [65%] [-4.50dB] [on]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch penum
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 46
-  Front Left: Capture 46 [100%] [29.00dB] [on]
-  Front Right: Capture 46 [100%] [29.00dB] [on]
-Simple mixer control 'Digital',0
-  Capabilities: cvolume penum
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 120
-  Front Left: Capture 4 [3%] [-28.00dB]
-  Front Right: Capture 4 [3%] [-28.00dB]
-
-!!-------Mixer controls for card 1 [pcsp]
-
-Card hw:1 'pcsp'/'Internal PC-Speaker at port 0x61'
-  Mixer name	: 'PC-Speaker'
-  Components	: ''
-  Controls      : 4
-  Simple ctrls  : 3
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 85 [33%] [0.65dB] [on]
-  Front Right: Playback 85 [33%] [0.65dB] [on]
-Simple mixer control 'Beep',0
-  Capabilities: pswitch pswitch-joined penum
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'BaseFRQ',0
-  Capabilities: penum
-  Items: '18643' '37286'
-  Item0: '18643'
-
-
-!!Alsactl output
-!!-------------
-
---startcollapse--
-state.Intel {
-	control.1 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 64'
-		comment.dbmin -6300
-		comment.dbmax 100
-		iface MIXER
-		name 'Speaker Playback Volume'
-		value.0 63
-		value.1 63
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Speaker Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 64'
-		comment.dbmin -6300
-		comment.dbmax 100
-		iface MIXER
-		name 'Headphone Playback Volume'
-		value.0 64
-		value.1 64
-	}
-	control.4 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Headphone Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.5 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 3'
-		comment.dbmin 0
-		comment.dbmax 3000
-		iface MIXER
-		name 'Mic Boost'
-		value.0 3
-		value.1 3
-	}
-	control.6 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 3'
-		comment.dbmin 0
-		comment.dbmax 3000
-		iface MIXER
-		name 'Front Mic Boost'
-		value.0 2
-		value.1 2
-	}
-	control.7 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Capture Switch'
-		value.0 true
-		value.1 true
-	}
-	control.8 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 46'
-		comment.dbmin -1700
-		comment.dbmax 2900
-		iface MIXER
-		name 'Capture Volume'
-		value.0 46
-		value.1 46
-	}
-	control.9 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 31'
-		comment.dbmin -3450
-		comment.dbmax 1200
-		iface MIXER
-		name 'Beep Playback Volume'
-		value.0 20
-		value.1 20
-	}
-	control.10 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Beep Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.11 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 1
-		comment.range '0 - 64'
-		comment.dbmin -6400
-		comment.dbmax 0
-		iface MIXER
-		name 'Master Playback Volume'
-		value 53
-	}
-	control.12 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Master Playback Switch'
-		value true
-	}
-	control.13 {
-		comment.access 'read write user'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 255'
-		comment.tlv '0000000100000008ffffec1400000014'
-		comment.dbmin -5100
-		comment.dbmax 0
-		iface MIXER
-		name 'PCM Playback Volume'
-		value.0 255
-		value.1 255
-	}
-	control.14 {
-		comment.access 'read write user'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 120'
-		comment.tlv '0000000100000008fffff44800000032'
-		comment.dbmin -3000
-		comment.dbmax 3000
-		iface MIXER
-		name 'Digital Capture Volume'
-		value.0 4
-		value.1 4
-	}
-}
-state.pcsp {
-	control.1 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Master Playback Switch'
-		value true
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.count 1
-		comment.item.0 '18643'
-		comment.item.1 '37286'
-		iface MIXER
-		name 'BaseFRQ Playback Volume'
-		value '18643'
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Beep Playback Switch'
-		value true
-	}
-	control.4 {
-		comment.access 'read write user'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 255'
-		comment.tlv '0000000100000008fffffc180000000b'
-		comment.dbmin -1000
-		comment.dbmax 1805
-		iface MIXER
-		name 'Master Playback Volume'
-		value.0 85
-		value.1 85
-	}
-}
---endcollapse--
-
-
-!!All Loaded Modules
-!!------------------
-
-Module
-sco
-bnep
-rfcomm
-l2cap
-uvcvideo
-ath9k
-ath9k_common
-videodev
-ath9k_hw
-ath
-btusb
-snd_pcsp
-v4l1_compat
-
-
-!!ALSA/HDA dmesg
-!!------------------
-
-[    1.826901]   alloc kstat_irqs on node -1
-[    1.826921] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 22 (level, low) -> IRQ 22
-[    1.827011]   alloc irq_desc for 27 on node -1
-[    1.827017]   alloc kstat_irqs on node -1
-[    1.827038] HDA Intel 0000:00:1b.0: irq 27 for MSI/MSI-X
-[    1.827095] HDA Intel 0000:00:1b.0: setting latency timer to 64
-[    1.864243] hda_codec: ALC269: BIOS auto-probing.
-[    1.868869] input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input6
-[    1.875736] usbcore: registered new interface driver snd-usb-audio
-[    1.879124] ALSA device list:
-[    1.881057] usb 1-1: new high speed USB device using ehci_hcd and address 2
-[    1.885826]   #0: HDA Intel at 0xf0440000 irq 27
-[    1.889214] Netfilter messages via NETLINK v0.30.
-
-
-
---8t9RHnE3ZwKMSgU+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="alsa-info-new.txt"
-
-upload=true&script=true&cardinfo=
-!!################################
-!!ALSA Information Script v 0.4.59
-!!################################
-
-!!Script ran on: Mon Nov 15 13:29:07 UTC 2010
-
-
-!!Linux Distribution
-!!------------------
-
-Gentoo Base System release 1.12.14
-
-
-!!DMI Information
-!!---------------
-
-Manufacturer:      SAMSUNG ELECTRONICS CO., LTD.
-Product Name:      N140                       
-
-
-!!Kernel Information
-!!------------------
-
-Kernel release:    2.6.36-gentoo
-Operating System:  GNU/Linux
-Architecture:      i686
-Processor:         Intel(R) Atom(TM) CPU N270 @ 1.60GHz
-SMP Enabled:       Yes
-
-
-!!ALSA Version
-!!------------
-
-Driver version:     1.0.23
-Library version:    1.0.23
-Utilities version:  1.0.23
-
-
-!!Loaded ALSA modules
-!!-------------------
-
-
-
-!!Sound Servers on this system
-!!----------------------------
-
-No sound servers found.
-
-
-!!Soundcards recognised by ALSA
-!!-----------------------------
-
- 0 [Intel          ]: HDA-Intel - HDA Intel
-                      HDA Intel at 0xf0440000 irq 41
- 1 [pcsp           ]: PC-Speaker - pcsp
-                      Internal PC-Speaker at port 0x61
-
-
-!!PCI Soundcards installed in the system
-!!--------------------------------------
-
-00:1b.0 Audio device: Intel Corporation N10/ICH 7 Family High Definition Audio Controller (rev 02)
-
-
-!!Advanced information - PCI Vendor/Device/Susbsystem ID's
-!!--------------------------------------------------------
-
-00:1b.0 0403: 8086:27d8 (rev 02)
-	Subsystem: 144d:c062
---
-	Prefetchable memory behind bridge: 0000000040000000-00000000401fffff
-	Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- <SERR- <PERR-
-
-
-!!Loaded sound module options
-!!--------------------------
-
-
-!!HDA-Intel Codec information
-!!---------------------------
---startcollapse--
-
-Codec: Realtek ALC269
-Address: 0
-AFG Function Id: 0x1 (unsol 1)
-Vendor Id: 0x10ec0269
-Subsystem Id: 0x144dc062
-Revision Id: 0x100004
-No Modem Function Group found
-Default PCM:
-    rates [0x5f0]: 32000 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-GPIO: io=2, o=0, i=0, unsolicited=1, wake=1
-  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-Node 0x02 [Audio Output] wcaps 0x1d: Stereo Amp-Out
-  Control: name="Speaker Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Device: name="ALC269 Analog", type="Audio", device=0
-  Amp-Out caps: ofs=0x3f, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals:  [0x34 0x34]
-  Converter: stream=5, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x03 [Audio Output] wcaps 0x1d: Stereo Amp-Out
-  Control: name="Headphone Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x3f, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals:  [0x35 0x35]
-  Converter: stream=5, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x04 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x05 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x5f0]: 32000 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x07 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Control: name="Capture Switch", index=1, device=0
-  Control: name="Capture Volume", index=1, device=0
-  Amp-In caps: ofs=0x11, nsteps=0x2e, stepsize=0x03, mute=1
-  Amp-In vals:  [0x90 0x90]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Connection: 1
-     0x24
-Node 0x08 [Audio Input] wcaps 0x10011b: Stereo Amp-In
-  Control: name="Capture Switch", index=0, device=0
-  Control: name="Capture Volume", index=0, device=0
-  Device: name="ALC269 Analog", type="Audio", device=0
-  Amp-In caps: ofs=0x11, nsteps=0x2e, stepsize=0x03, mute=1
-  Amp-In vals:  [0x2e 0x2e]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Connection: 1
-     0x23
-Node 0x09 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0a [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x97 0x97]
-  Connection: 5
-     0x18 0x19 0x1a 0x1b 0x1d
-Node 0x0c [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Connection: 2
-     0x02 0x0b
-Node 0x0d [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00]
-  Connection: 2
-     0x03 0x0b
-Node 0x0e [Audio Mixer] wcaps 0x20010a: Mono Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00] [0x00]
-  Connection: 2
-     0x0c 0x0d
-Node 0x0f [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x10 [Audio Output] wcaps 0x211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x5f0]: 32000 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x11 [Pin Complex] wcaps 0x400380: Mono Digital
-  Pincap 0x00000014: OUT Detect
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x10
-Node 0x12 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x00000020: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x14 [Pin Complex] wcaps 0x40010d: Stereo Amp-Out
-  Control: name="Speaker Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x00010050: OUT EAPD Balanced
-  EAPD 0x2: EAPD
-  Pin Default 0x99130110: [Fixed] Speaker at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Connection: 2
-     0x0c* 0x0d
-Node 0x15 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Control: name="Headphone Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0001001c: OUT HP EAPD Detect
-  EAPD 0x2: EAPD
-  Pin Default 0x0121101f: [Jack] HP Out at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x1, Sequence = 0xf
-  Pin-ctls: 0xc0: OUT HP
-  Unsolicited: tag=04, enabled=1
-  Connection: 2
-     0x0c 0x0d*
-Node 0x16 [Pin Complex] wcaps 0x40010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80]
-  Pincap 0x00000010: OUT
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0e
-Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Control: name="Mic Boost", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x03 0x03]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x00003734: IN OUT Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x01a11820: [Jack] Mic at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x2, Sequence = 0x0
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=08, enabled=1
-  Connection: 2
-     0x0c* 0x0d
-Node 0x19 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Control: name="Front Mic Boost", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=0, ofs=0
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x02 0x02]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x00003734: IN OUT Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x99a3092f: [Fixed] Mic at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-    DefAssociation = 0x2, Sequence = 0xf
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=00, enabled=0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000373c: IN OUT HP Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x1b [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x00003734: IN OUT Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-  Connection: 2
-     0x0c* 0x0d
-Node 0x1c [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1d [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x00000020: IN
-  Pin Default 0x40038205: [N/A] Line Out at Ext N/A
-    Conn = ATAPI, Color = Purple
-    DefAssociation = 0x0, Sequence = 0x5
-  Pin-ctls: 0x20: IN
-Node 0x1e [Pin Complex] wcaps 0x400380: Mono Digital
-  Pincap 0x00000014: OUT Detect
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x06
-Node 0x1f [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
-  Processing caps: benign=0, ncoeff=33
-Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x23 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 7
-     0x18 0x19* 0x1a 0x1b 0x1d 0x12 0x0b
-Node 0x24 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
-  Connection: 6
-     0x18 0x19 0x1a 0x1b 0x1d 0x0b
---endcollapse--
-
-
-!!ALSA Device nodes
-!!-----------------
-
-crw-rw---- 1 root audio 116, 7 Nov 15  2010 /dev/snd/controlC0
-crw-rw---- 1 root audio 116, 9 Nov 15  2010 /dev/snd/controlC1
-crw-rw---- 1 root audio 116, 6 Nov 15  2010 /dev/snd/hwC0D0
-crw-rw---- 1 root audio 116, 5 Nov 15  2010 /dev/snd/pcmC0D0c
-crw-rw---- 1 root audio 116, 4 Nov 15 14:28 /dev/snd/pcmC0D0p
-crw-rw---- 1 root audio 116, 8 Nov 15  2010 /dev/snd/pcmC1D0p
-crw-rw---- 1 root audio 116, 3 Nov 15  2010 /dev/snd/seq
-crw-rw---- 1 root audio 116, 2 Nov 15  2010 /dev/snd/timer
-
-/dev/snd/by-path:
-total 0
-drwxr-xr-x 2 root root  80 Nov 15  2010 .
-drwxr-xr-x 3 root root 220 Nov 15  2010 ..
-lrwxrwxrwx 1 root root  12 Nov 15  2010 pci-0000:00:1b.0 -> ../controlC0
-lrwxrwxrwx 1 root root  12 Nov 15  2010 platform-pcspkr -> ../controlC1
-
-
-!!Aplay/Arecord output
-!!------------
-
-APLAY
-
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC269 Analog [ALC269 Analog]
-  Subdevices: 0/1
-  Subdevice #0: subdevice #0
-card 1: pcsp [pcsp], device 0: pcspeaker [pcsp]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-ARECORD
-
-**** List of CAPTURE Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: ALC269 Analog [ALC269 Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-!!Amixer output
-!!-------------
-
-!!-------Mixer controls for card 0 [Intel]
-
-Card hw:0 'Intel'/'HDA Intel at 0xf0440000 irq 41'
-  Mixer name	: 'Realtek ALC269'
-  Components	: 'HDA:10ec0269,144dc062,00100004'
-  Controls      : 14
-  Simple ctrls  : 9
-Simple mixer control 'Master',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined penum
-  Playback channels: Mono
-  Limits: Playback 0 - 64
-  Mono: Playback 53 [83%] [-11.00dB] [on]
-Simple mixer control 'Headphone',0
-  Capabilities: pvolume pswitch penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 64
-  Mono:
-  Front Left: Playback 64 [100%] [1.00dB] [on]
-  Front Right: Playback 64 [100%] [1.00dB] [on]
-Simple mixer control 'Speaker',0
-  Capabilities: pvolume pswitch penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 64
-  Mono:
-  Front Left: Playback 63 [98%] [0.00dB] [on]
-  Front Right: Playback 63 [98%] [0.00dB] [on]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 255 [100%] [0.00dB]
-  Front Right: Playback 255 [100%] [0.00dB]
-Simple mixer control 'Front Mic Boost',0
-  Capabilities: volume penum
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 3
-  Front Left: 2 [67%]
-  Front Right: 2 [67%]
-Simple mixer control 'Mic Boost',0
-  Capabilities: volume penum
-  Playback channels: Front Left - Front Right
-  Capture channels: Front Left - Front Right
-  Limits: 0 - 3
-  Front Left: 3 [100%]
-  Front Right: 3 [100%]
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch penum
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 46
-  Front Left: Capture 46 [100%] [29.00dB] [on]
-  Front Right: Capture 46 [100%] [29.00dB] [on]
-Simple mixer control 'Capture',1
-  Capabilities: cvolume cswitch penum
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 46
-  Front Left: Capture 16 [35%] [-1.00dB] [off]
-  Front Right: Capture 16 [35%] [-1.00dB] [off]
-Simple mixer control 'Digital',0
-  Capabilities: cvolume penum
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 120
-  Front Left: Capture 4 [3%] [-28.00dB]
-  Front Right: Capture 4 [3%] [-28.00dB]
-
-!!-------Mixer controls for card 1 [pcsp]
-
-Card hw:1 'pcsp'/'Internal PC-Speaker at port 0x61'
-  Mixer name	: 'PC-Speaker'
-  Components	: ''
-  Controls      : 4
-  Simple ctrls  : 3
-Simple mixer control 'Master',0
-  Capabilities: pvolume pswitch pswitch-joined penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 85 [33%] [0.65dB] [on]
-  Front Right: Playback 85 [33%] [0.65dB] [on]
-Simple mixer control 'Beep',0
-  Capabilities: pswitch pswitch-joined penum
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'BaseFRQ',0
-  Capabilities: penum
-  Items: '18643' '37286'
-  Item0: '18643'
-
-
-!!Alsactl output
-!!-------------
-
---startcollapse--
-state.Intel {
-	control.1 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 64'
-		comment.dbmin -6300
-		comment.dbmax 100
-		iface MIXER
-		name 'Speaker Playback Volume'
-		value.0 63
-		value.1 63
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Speaker Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 64'
-		comment.dbmin -6300
-		comment.dbmax 100
-		iface MIXER
-		name 'Headphone Playback Volume'
-		value.0 64
-		value.1 64
-	}
-	control.4 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Headphone Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.5 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 3'
-		comment.dbmin 0
-		comment.dbmax 3000
-		iface MIXER
-		name 'Mic Boost'
-		value.0 3
-		value.1 3
-	}
-	control.6 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 3'
-		comment.dbmin 0
-		comment.dbmax 3000
-		iface MIXER
-		name 'Front Mic Boost'
-		value.0 2
-		value.1 2
-	}
-	control.7 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Capture Switch'
-		value.0 true
-		value.1 true
-	}
-	control.8 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Capture Switch'
-		index 1
-		value.0 false
-		value.1 false
-	}
-	control.9 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 46'
-		comment.dbmin -1700
-		comment.dbmax 2900
-		iface MIXER
-		name 'Capture Volume'
-		value.0 46
-		value.1 46
-	}
-	control.10 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 46'
-		comment.dbmin -1700
-		comment.dbmax 2900
-		iface MIXER
-		name 'Capture Volume'
-		index 1
-		value.0 16
-		value.1 16
-	}
-	control.11 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 1
-		comment.range '0 - 64'
-		comment.dbmin -6400
-		comment.dbmax 0
-		iface MIXER
-		name 'Master Playback Volume'
-		value 53
-	}
-	control.12 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Master Playback Switch'
-		value true
-	}
-	control.13 {
-		comment.access 'read write user'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 255'
-		comment.tlv '0000000100000008ffffec1400000014'
-		comment.dbmin -5100
-		comment.dbmax 0
-		iface MIXER
-		name 'PCM Playback Volume'
-		value.0 255
-		value.1 255
-	}
-	control.14 {
-		comment.access 'read write user'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 120'
-		comment.tlv '0000000100000008fffff44800000032'
-		comment.dbmin -3000
-		comment.dbmax 3000
-		iface MIXER
-		name 'Digital Capture Volume'
-		value.0 4
-		value.1 4
-	}
-}
-state.pcsp {
-	control.1 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Master Playback Switch'
-		value true
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.count 1
-		comment.item.0 '18643'
-		comment.item.1 '37286'
-		iface MIXER
-		name 'BaseFRQ Playback Volume'
-		value '18643'
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Beep Playback Switch'
-		value true
-	}
-	control.4 {
-		comment.access 'read write user'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 255'
-		comment.tlv '0000000100000008fffffc180000000b'
-		comment.dbmin -1000
-		comment.dbmax 1805
-		iface MIXER
-		name 'Master Playback Volume'
-		value.0 85
-		value.1 85
-	}
-}
---endcollapse--
-
-
-!!All Loaded Modules
-!!------------------
-
-Module
-sco
-bnep
-rfcomm
-l2cap
-uvcvideo
-ath9k
-videodev
-ath9k_common
-ath9k_hw
-snd_pcsp
-btusb
-ath
-
-
-!!ALSA/HDA dmesg
-!!------------------
-
-[    1.652428]   alloc kstat_irqs on node -1
-[    1.652449] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 22 (level, low) -> IRQ 22
-[    1.652542]   alloc irq_desc for 41 on node -1
-[    1.652548]   alloc kstat_irqs on node -1
-[    1.652569] HDA Intel 0000:00:1b.0: irq 41 for MSI/MSI-X
-[    1.652633] HDA Intel 0000:00:1b.0: setting latency timer to 64
-[    1.676782] input: AT Translated Set 2 keyboard as /devices/platform/i8042/serio0/input/input5
-[    1.692216] hda_codec: ALC269: BIOS auto-probing.
-[    1.696369] usbcore: registered new interface driver snd-usb-audio
-[    1.696376] ALSA device list:
-[    1.696381]   #0: HDA Intel at 0xf0440000 irq 41
-[    1.696469] Netfilter messages via NETLINK v0.30.
-
-
-
---8t9RHnE3ZwKMSgU+
+This is a multi-part message in MIME format.
+--------------040508050604040905010407
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Mark Brown wrote:
+> Did you register the I2C device for the CODEC with the I2C subsystem?
+>   
+I believe that is done in wm8804 codec driver (i2c_add_driver() call in 
+wm8804_modinit() function).
+> If that's not the issue could you please provide a kernel log with
+> #define DEBUG at the top of soc-core.c?
+>   
+I'm sending the full kern.log as an attachment to this email.
+>   
+>>     if(substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+>>     {
+>>         snd_soc_dai_set_pll(dai, 0, 0, 12000000, 94310400);
+>>     }
+>>     else if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+>>     {
+>>         snd_soc_dai_set_pll(dai, 0, 0, 12000000, 98304000);
+>>     }
+>>     
+>
+> This is going to prevent simultaneous playback and record; this may not
+> be an issue in your system but I wanted to be sure you were aware of it.
+>
+>   
+Yes, I'm aware of that. However, in my system it is not going to be a 
+problem.
+
+Thank you for your help.
+
+best regards,
+Greg
+
+--------------040508050604040905010407
+Content-Type: text/x-log;
+ name="kern.log"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="kern.log"
+
+Nov 15 13:37:51 ecovec kernel: klogd 1.5.0#6, log source = /proc/kmsg started.
+Nov 15 13:37:51 ecovec kernel: Linux version 2.6.37-rc1 (root@rakieta2) (gcc version 4.3.4 (Debian 4.3.4-1) ) #13 PREEMPT Mon Nov 15 13:35:32 UTC 2010
+Nov 15 13:37:51 ecovec kernel: Boot params:
+Nov 15 13:37:51 ecovec kernel: ... MOUNT_ROOT_RDONLY - 00000000
+Nov 15 13:37:51 ecovec kernel: ... RAMDISK_FLAGS     - 00000000
+Nov 15 13:37:51 ecovec kernel: ... ORIG_ROOT_DEV     - 00000000
+Nov 15 13:37:51 ecovec kernel: ... LOADER_TYPE       - 00000000
+Nov 15 13:37:51 ecovec kernel: ... INITRD_START      - 00000000
+Nov 15 13:37:51 ecovec kernel: ... INITRD_SIZE       - 00000000
+Nov 15 13:37:51 ecovec kernel: Memory limited to 248MB
+Nov 15 13:37:51 ecovec kernel: Booting machvec: R0P7724 (EcoVec)
+Nov 15 13:37:51 ecovec kernel: Node 0: start_pfn = 0x8000, low = 0x17800
+Nov 15 13:37:51 ecovec kernel: Zone PFN ranges:
+Nov 15 13:37:51 ecovec kernel:   Normal   0x00008000 -> 0x00017800
+Nov 15 13:37:51 ecovec kernel: Movable zone start PFN for each node
+Nov 15 13:37:51 ecovec kernel: early_node_map[1] active PFN ranges
+Nov 15 13:37:51 ecovec kernel:     0: 0x00008000 -> 0x00017800
+Nov 15 13:37:51 ecovec kernel: On node 0 totalpages: 63488
+Nov 15 13:37:51 ecovec kernel: free_area_init_node: node 0, pgdat 883c43a8, node_mem_map 883ff000
+Nov 15 13:37:51 ecovec kernel:   Normal zone: 496 pages used for memmap
+Nov 15 13:37:51 ecovec kernel:   Normal zone: 0 pages reserved
+Nov 15 13:37:51 ecovec kernel:   Normal zone: 62992 pages, LIFO batch:15
+Nov 15 13:37:51 ecovec kernel: pcpu-alloc: s0 r0 d32768 u32768 alloc=1*32768
+Nov 15 13:37:51 ecovec kernel: pcpu-alloc: [0] 0 
+Nov 15 13:37:51 ecovec kernel: Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 62992
+Nov 15 13:37:51 ecovec kernel: Kernel command line: console=tty0, console=ttySC0,115200 root=/dev/mmcblk0p1 rootdelay=5 mem=248M memchunk.vpu=8m memchunk.veu0=4m
+Nov 15 13:37:51 ecovec kernel: PID hash table entries: 1024 (order: 0, 4096 bytes)
+Nov 15 13:37:51 ecovec kernel: Dentry cache hash table entries: 32768 (order: 5, 131072 bytes)
+Nov 15 13:37:51 ecovec kernel: Inode-cache hash table entries: 16384 (order: 4, 65536 bytes)
+Nov 15 13:37:51 ecovec kernel: PVR=10300b00 CVR=7144040d PRR=00002200
+Nov 15 13:37:51 ecovec kernel: I-cache : n_ways=4 n_sets=256 way_incr=8192
+Nov 15 13:37:51 ecovec kernel: I-cache : entry_mask=0x00001fe0 alias_mask=0x00001000 n_aliases=2
+Nov 15 13:37:51 ecovec kernel: D-cache : n_ways=4 n_sets=256 way_incr=8192
+Nov 15 13:37:51 ecovec kernel: D-cache : entry_mask=0x00001fe0 alias_mask=0x00001000 n_aliases=2
+Nov 15 13:37:51 ecovec kernel: S-cache : n_ways=4 n_sets=2048 way_incr=65536
+Nov 15 13:37:51 ecovec kernel: S-cache : entry_mask=0x0000ffe0 alias_mask=0x0000f000 n_aliases=16
+Nov 15 13:37:51 ecovec kernel: Memory: 247632k/253952k available (2678k kernel code, 1176k data, 116k init)
+Nov 15 13:37:51 ecovec kernel: virtual kernel memory layout:
+Nov 15 13:37:51 ecovec kernel:     fixmap  : 0xdffd7000 - 0xdffff000   ( 160 kB)
+Nov 15 13:37:51 ecovec kernel:     vmalloc : 0xc0000000 - 0xdffd5000   ( 511 MB)
+Nov 15 13:37:51 ecovec kernel:     lowmem  : 0x88000000 - 0x97800000   ( 248 MB) (cached)
+Nov 15 13:37:51 ecovec kernel:             : 0xa0000000 - 0xc0000000   ( 512 MB) (uncached)
+Nov 15 13:37:51 ecovec kernel:       .init : 0x883c5000 - 0x883e2000   ( 116 kB)
+Nov 15 13:37:51 ecovec kernel:       .data : 0x8829e974 - 0x883c4aa0   (1176 kB)
+Nov 15 13:37:51 ecovec kernel:       .text : 0x88001000 - 0x8829e974   (2678 kB)
+Nov 15 13:37:51 ecovec kernel: Preemptable hierarchical RCU implementation.
+Nov 15 13:37:51 ecovec kernel: ^IRCU-based detection of stalled CPUs is disabled.
+Nov 15 13:37:51 ecovec kernel: ^IVerbose stalled-CPUs detection is disabled.
+Nov 15 13:37:51 ecovec kernel: NR_IRQS:512 nr_irqs:512 8
+Nov 15 13:37:51 ecovec kernel: intc: Registered controller 'sh7724' with 83 IRQs
+Nov 15 13:37:51 ecovec kernel: Console: colour dummy device 80x25
+Nov 15 13:37:51 ecovec kernel: console [tty0] enabled
+Nov 15 13:37:51 ecovec kernel:  sh_tmu.0: used for clock events
+Nov 15 13:37:51 ecovec kernel:  sh_tmu.0: used for periodic clock events
+Nov 15 13:37:51 ecovec kernel:  sh_tmu.1: used as clock source
+Nov 15 13:37:51 ecovec kernel: Calibrating delay loop (skipped)... 499.99 BogoMIPS PRESET (lpj=999999)
+Nov 15 13:37:51 ecovec kernel: pid_max: default: 32768 minimum: 301
+Nov 15 13:37:51 ecovec kernel: Mount-cache hash table entries: 512
+Nov 15 13:37:51 ecovec kernel: CPU: SH7724
+Nov 15 13:37:51 ecovec kernel: NET: Registered protocol family 16
+Nov 15 13:37:51 ecovec kernel: vpu: forcing memory chunk size to 0x00800000
+Nov 15 13:37:51 ecovec kernel: veu0: forcing memory chunk size to 0x00400000
+Nov 15 13:37:51 ecovec kernel: pfc: sh7724_pfc handling gpio 0 -> 486
+Nov 15 13:37:51 ecovec kernel: Performance Events: sh4a support registered
+Nov 15 13:37:51 ecovec kernel: HW Breakpoints: SH-4A UBC support registered
+Nov 15 13:37:51 ecovec kernel: USB1 host is selected
+Nov 15 13:37:51 ecovec kernel: bio: create slab <bio-0> at 0
+Nov 15 13:37:51 ecovec kernel: SCSI subsystem initialized
+Nov 15 13:37:51 ecovec kernel: usbcore: registered new interface driver usbfs
+Nov 15 13:37:51 ecovec kernel: usbcore: registered new interface driver hub
+Nov 15 13:37:51 ecovec kernel: usbcore: registered new device driver usb
+Nov 15 13:37:51 ecovec kernel: Advanced Linux Sound Architecture Driver Version 1.0.23.
+Nov 15 13:37:51 ecovec kernel: Switching to clocksource sh_tmu.1
+Nov 15 13:37:51 ecovec kernel: NET: Registered protocol family 2
+Nov 15 13:37:51 ecovec kernel: IP route cache hash table entries: 2048 (order: 1, 8192 bytes)
+Nov 15 13:37:51 ecovec kernel: TCP established hash table entries: 8192 (order: 4, 65536 bytes)
+Nov 15 13:37:51 ecovec kernel: TCP bind hash table entries: 8192 (order: 3, 32768 bytes)
+Nov 15 13:37:51 ecovec kernel: TCP: Hash tables configured (established 8192 bind 8192)
+Nov 15 13:37:51 ecovec kernel: TCP reno registered
+Nov 15 13:37:51 ecovec kernel: UDP hash table entries: 256 (order: 0, 4096 bytes)
+Nov 15 13:37:51 ecovec kernel: UDP-Lite hash table entries: 256 (order: 0, 4096 bytes)
+Nov 15 13:37:51 ecovec kernel: NET: Registered protocol family 1
+Nov 15 13:37:51 ecovec kernel: RPC: Registered udp transport module.
+Nov 15 13:37:51 ecovec kernel: RPC: Registered tcp transport module.
+Nov 15 13:37:51 ecovec kernel: RPC: Registered tcp NFSv4.1 backchannel transport module.
+Nov 15 13:37:51 ecovec kernel: Installing knfsd (copyright (C) 1996 okir@monad.swb.de).
+Nov 15 13:37:51 ecovec kernel: fuse init (API version 7.15)
+Nov 15 13:37:51 ecovec kernel: msgmni has been set to 483
+Nov 15 13:37:51 ecovec kernel: io scheduler noop registered
+Nov 15 13:37:51 ecovec kernel: io scheduler deadline registered
+Nov 15 13:37:51 ecovec kernel: io scheduler cfq registered (default)
+Nov 15 13:37:51 ecovec kernel: Console: switching to colour frame buffer device 160x45
+Nov 15 13:37:51 ecovec kernel: graphics fb0: registered sh_mobile_lcdc_fb/mainlcd as 1280x720 16bpp.
+Nov 15 13:37:51 ecovec kernel: SuperH SCI(F) driver initialized
+Nov 15 13:37:51 ecovec kernel: sh-sci.0: ttySC0 at MMIO 0xffe00000 (irq = 80) is a scif
+Nov 15 13:37:51 ecovec kernel: console [ttySC0] enabled
+Nov 15 13:37:51 ecovec kernel: sh-sci.1: ttySC1 at MMIO 0xffe10000 (irq = 81) is a scif
+Nov 15 13:37:51 ecovec kernel: sh-sci.2: ttySC2 at MMIO 0xffe20000 (irq = 82) is a scif
+Nov 15 13:37:51 ecovec kernel: sh-sci.3: ttySC3 at MMIO 0xa4e30000 (irq = 56) is a scifa
+Nov 15 13:37:51 ecovec kernel: sh-sci.4: ttySC4 at MMIO 0xa4e40000 (irq = 88) is a scifa
+Nov 15 13:37:51 ecovec kernel: sh-sci.5: ttySC5 at MMIO 0xa4e50000 (irq = 109) is a scifa
+Nov 15 13:37:51 ecovec kernel: brd: module loaded
+Nov 15 13:37:51 ecovec kernel: physmap platform flash device: 04000000 at 00000000
+Nov 15 13:37:51 ecovec kernel: physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank. Manufacturer ID 0x00007f Chip ID 0x0022c9
+Nov 15 13:37:51 ecovec kernel: physmap-flash.0: Found an alias at 0x800000 for the chip at 0x0
+Nov 15 13:37:51 ecovec kernel: physmap-flash.0: Found an alias at 0x1000000 for the chip at 0x0
+Nov 15 13:37:51 ecovec kernel: physmap-flash.0: Found an alias at 0x1800000 for the chip at 0x0
+Nov 15 13:37:51 ecovec kernel: physmap-flash.0: Found an alias at 0x2000000 for the chip at 0x0
+Nov 15 13:37:51 ecovec kernel: physmap-flash.0: Found an alias at 0x2800000 for the chip at 0x0
+Nov 15 13:37:51 ecovec kernel: physmap-flash.0: Found an alias at 0x3000000 for the chip at 0x0
+Nov 15 13:37:51 ecovec kernel: physmap-flash.0: Found an alias at 0x3800000 for the chip at 0x0
+Nov 15 13:37:51 ecovec kernel: Amd/Fujitsu Extended Query Table at 0x0040
+Nov 15 13:37:51 ecovec kernel:   Amd/Fujitsu Extended Query version 1.1.
+Nov 15 13:37:51 ecovec kernel: physmap-flash.0: Swapping erase regions for top-boot CFI table.
+Nov 15 13:37:51 ecovec kernel: number of CFI chips: 1
+Nov 15 13:37:51 ecovec kernel: RedBoot partition parsing not available
+Nov 15 13:37:51 ecovec kernel: Using physmap partition information
+Nov 15 13:37:51 ecovec kernel: Creating 2 MTD partitions on "physmap-flash.0":
+Nov 15 13:37:51 ecovec kernel: 0x000000000000-0x000000500000 : "boot loader"
+Nov 15 13:37:51 ecovec kernel: 0x000000500000-0x000000800000 : "free-area"
+Nov 15 13:37:51 ecovec kernel: sh_mii: probed
+Nov 15 13:37:51 ecovec kernel: Base address at 0xa4600000, 00:00:87:11:22:33, IRQ 91.
+Nov 15 13:37:51 ecovec kernel: PPP generic driver version 2.4.2
+Nov 15 13:37:51 ecovec kernel: PPP Deflate Compression module registered
+Nov 15 13:37:51 ecovec kernel: PPP BSD Compression module registered
+Nov 15 13:37:51 ecovec kernel: r8a66597_hcd: driver r8a66597_hcd, 2009-05-26
+Nov 15 13:37:51 ecovec kernel: r8a66597_hcd r8a66597_hcd.0: USB Host Controller
+Nov 15 13:37:51 ecovec kernel: r8a66597_hcd r8a66597_hcd.0: new USB bus registered, assigned bus number 1
+Nov 15 13:37:51 ecovec kernel: r8a66597_hcd r8a66597_hcd.0: irq 65, io base 0xa4d80000
+Nov 15 13:37:51 ecovec kernel: hub 1-0:1.0: USB hub found
+Nov 15 13:37:51 ecovec kernel: hub 1-0:1.0: 1 port detected
+Nov 15 13:37:51 ecovec kernel: r8a66597_hcd r8a66597_hcd.1: USB Host Controller
+Nov 15 13:37:51 ecovec kernel: r8a66597_hcd r8a66597_hcd.1: new USB bus registered, assigned bus number 2
+Nov 15 13:37:51 ecovec kernel: r8a66597_hcd r8a66597_hcd.1: irq 66, io base 0xa4d90000
+Nov 15 13:37:51 ecovec kernel: hub 2-0:1.0: USB hub found
+Nov 15 13:37:51 ecovec kernel: hub 2-0:1.0: 1 port detected
+Nov 15 13:37:51 ecovec kernel: usbcore: registered new interface driver cdc_acm
+Nov 15 13:37:51 ecovec kernel: cdc_acm: v0.26:USB Abstract Control Model driver for USB modems and ISDN adapters
+Nov 15 13:37:51 ecovec kernel: Initializing USB Mass Storage driver...
+Nov 15 13:37:51 ecovec kernel: usbcore: registered new interface driver usb-storage
+Nov 15 13:37:51 ecovec kernel: USB Mass Storage support registered.
+Nov 15 13:37:51 ecovec kernel: usbcore: registered new interface driver usbserial
+Nov 15 13:37:51 ecovec kernel: USB Serial support registered for generic
+Nov 15 13:37:51 ecovec kernel: usbcore: registered new interface driver usbserial_generic
+Nov 15 13:37:51 ecovec kernel: usbserial: USB Serial Driver core
+Nov 15 13:37:51 ecovec kernel: USB Serial support registered for ch341-uart
+Nov 15 13:37:51 ecovec kernel: usbcore: registered new interface driver ch341
+Nov 15 13:37:51 ecovec kernel: rtc-ds1307 1-0068: rtc core: registered ds1338 as rtc0
+Nov 15 13:37:51 ecovec kernel: rtc-ds1307 1-0068: 56 bytes nvram
+Nov 15 13:37:51 ecovec kernel: i2c /dev entries driver
+Nov 15 13:37:51 ecovec kernel: sdhci: Secure Digital Host Controller Interface driver
+Nov 15 13:37:51 ecovec kernel: sdhci: Copyright(c) Pierre Ossman
+Nov 15 13:37:51 ecovec kernel: mmc0 at 0xa4ce0000 irq 100
+Nov 15 13:37:51 ecovec kernel: mmc1 at 0xa4cf0000 irq 23
+Nov 15 13:37:51 ecovec kernel: sh_tmu sh_tmu.0: kept as earlytimer
+Nov 15 13:37:51 ecovec kernel: sh_tmu sh_tmu.1: kept as earlytimer
+Nov 15 13:37:51 ecovec kernel: usbcore: registered new interface driver usbhid
+Nov 15 13:37:51 ecovec kernel: usbhid: USB HID core driver
+Nov 15 13:37:51 ecovec kernel: usbcore: registered new interface driver snd-usb-audio
+Nov 15 13:37:51 ecovec kernel: Asahi Kasei AK4104 ALSA SoC Codec Driver
+Nov 15 13:37:51 ecovec kernel: Cirrus Logic CS4270 ALSA SoC Codec Driver
+Nov 15 13:37:51 ecovec kernel: mmc0: host does not support reading read-only switch. assuming write-enable.
+Nov 15 13:37:51 ecovec kernel: mmc0: new SD card at address ea28
+Nov 15 13:37:51 ecovec kernel: mmcblk0: mmc0:ea28 SU02G 1.84 GiB 
+Nov 15 13:37:51 ecovec kernel:  mmcblk0: p1
+Nov 15 13:37:51 ecovec kernel: fsi_wm8804_sound_init
+Nov 15 13:37:51 ecovec kernel: ALSA device list:
+Nov 15 13:37:51 ecovec kernel:   No soundcards found.
+Nov 15 13:37:51 ecovec kernel: heartbeat: version 0.1.2 loaded
+Nov 15 13:37:51 ecovec kernel: heartbeat: leds register status: 0
+Nov 15 13:37:51 ecovec kernel: TCP cubic registered
+Nov 15 13:37:51 ecovec kernel: NET: Registered protocol family 17
+Nov 15 13:37:51 ecovec kernel: rtc-ds1307 1-0068: setting system clock to 2010-11-15 13:37:23 UTC (1289828243)
+Nov 15 13:37:51 ecovec kernel: Waiting 5sec before mounting root device...
+Nov 15 13:37:51 ecovec kernel: EXT3-fs: barriers not enabled
+Nov 15 13:37:51 ecovec kernel: kjournald starting.  Commit interval 5 seconds
+Nov 15 13:37:51 ecovec kernel: EXT3-fs (mmcblk0p1): using internal journal
+Nov 15 13:37:51 ecovec kernel: EXT3-fs (mmcblk0p1): recovery complete
+Nov 15 13:37:51 ecovec kernel: EXT3-fs (mmcblk0p1): mounted filesystem with writeback data mode
+Nov 15 13:37:51 ecovec kernel: VFS: Mounted root (ext3 filesystem) on device 179:1.
+Nov 15 13:37:51 ecovec kernel: Freeing unused kernel memory: 116k freed
+Nov 15 13:37:51 ecovec kernel: udevd (526): /proc/526/oom_adj is deprecated, please use /proc/526/oom_score_adj instead.
+Nov 15 13:37:51 ecovec kernel: EXT3-fs (mmcblk0p1): using internal journal
+Nov 15 13:37:51 ecovec kernel: net eth0: attached phy 0 to driver Davicom DM9161E
+Nov 15 13:37:51 ecovec kernel: PHY: 0:00 - Link is Up - 100/Full
+
+--------------040508050604040905010407
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -1505,4 +266,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---8t9RHnE3ZwKMSgU+--
+--------------040508050604040905010407--
