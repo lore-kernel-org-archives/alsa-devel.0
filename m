@@ -1,21 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: WM8804: fsi-wm8804
-Date: Mon, 15 Nov 2010 14:06:05 +0000
-Message-ID: <20101115140604.GD12986@rakim.wolfsonmicro.main>
-References: <4CE126FD.7000407@elproma.com.pl>
-	<20101115123351.GB3338@sirena.org.uk>
-	<4CE139CF.4070400@elproma.com.pl>
-	<20101115135053.GC3338@sirena.org.uk>
-	<4CE13DC8.30007@elproma.com.pl>
+From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+Subject: Re: [PATCH] ALSA: AT73C213: Rectify misleading
+	comments.
+Date: Mon, 15 Nov 2010 15:50:34 +0100
+Message-ID: <1289832634.18691.1.camel@hcegtvedt>
+References: <1289820546-2078-1-git-send-email-peda@axentia.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 634A510385A
-	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2010 15:06:06 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4CE13DC8.30007@elproma.com.pl>
+Received: from bagnes.atmel.com (smtpeu1.atmel.com [195.65.72.27])
+	by alsa0.perex.cz (Postfix) with ESMTP id AF219103836
+	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2010 15:50:41 +0100 (CET)
+In-Reply-To: <1289820546-2078-1-git-send-email-peda@axentia.se>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,36 +21,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grzegorz Daniluk <g.daniluk@elproma.com.pl>
-Cc: alsa-devel@alsa-project.org
+To: Peter Rosin <peda@axentia.se>
+Cc: alsa-devel@alsa-project.org, Hans-Christian Egtvedt <hcegtvedt@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 15, 2010 at 03:03:52PM +0100, Grzegorz Daniluk wrote:
-> Mark Brown wrote:
+On Mon, 2010-11-15 at 12:29 +0100, Peter Rosin wrote: 
+> The Atmel SSC can divide by even numbers, not only powers of two and
+> the given values are binary, not hexadecimal.
 
-> >Could you please verify that you have enabled the debug logging
-> >requested?  I cannot see any of the additional logging that would be
-> >generated if this was enabled.
+IIRC the divide by power of two is more related to the generic clocks in
+the device thatn the SSC module itself.
 
-> If I understood correctly my sound/soc/soc-core.c looks as following
-> (added #define ...):
-> ....
-> #include <sound/pcm.h>
-> #include <sound/pcm_params.h>
-> #include <sound/soc.h>
-> #include <sound/soc-dapm.h>
-> #include <sound/initval.h>
+> Signed-off-by: Peter Rosin <peda@axentia.se>
+> ---
+>  sound/spi/at73c213.c |    6 +++---
+>  1 files changed, 3 insertions(+), 3 deletions(-)
 > 
-> #define NAME_SIZE       32
+> I'm working on a driver based on AT73C213 and have had to look up
+> if the below nits were code problems or comment problems.  The Atmel
+> specs tells me that the comments are wrong and this patch fixes
+> those comments.
 > 
-> /*my code*/
-> #define CONFIG_DEBUG_FS
+> Cheers and thanks,
+> Peter
+> 
+> diff --git a/sound/spi/at73c213.c b/sound/spi/at73c213.c
+> index 1bc56b2..548e17a 100644
+> --- a/sound/spi/at73c213.c
+> +++ b/sound/spi/at73c213.c
+> @@ -155,7 +155,7 @@ static int snd_at73c213_set_bitrate(struct snd_at73c213 *chip)
+>  	if (max_tries < 1)
+>  		max_tries = 1;
+>  
+> -	/* ssc_div must be a power of 2. */
+> +	/* ssc_div must be even. */
 
-This should be selected via Kconfig; doing this here is going to be
-actively harmful.
+IIRC the bitrate is controlled by a generic clock, and it has a power of
+two divider possibility. Hence the comment about power of two.
 
-> #define DEBUG
-> /*end of my code*/
+<snipp other two changes that looked fine>
 
-You need to enable this at the *top* of the file rather than part way
-through it - in particular, it needs to be before any #includes.
+-- 
+Hans-Christian Egtvedt
