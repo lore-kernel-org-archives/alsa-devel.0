@@ -1,19 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Grzegorz Daniluk <g.daniluk@elproma.com.pl>
 Subject: Re: ASoC: WM8804: fsi-wm8804
-Date: Mon, 15 Nov 2010 13:50:53 +0000
-Message-ID: <20101115135053.GC3338@sirena.org.uk>
+Date: Mon, 15 Nov 2010 15:03:52 +0100
+Message-ID: <4CE13DC8.30007@elproma.com.pl>
 References: <4CE126FD.7000407@elproma.com.pl>
 	<20101115123351.GB3338@sirena.org.uk>
 	<4CE139CF.4070400@elproma.com.pl>
+	<20101115135053.GC3338@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 874BB103855
-	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2010 14:50:53 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4CE139CF.4070400@elproma.com.pl>
+Received: from mailmxout.mailmx.agnat.pl (mailmxout.mailmx.agnat.pl
+	[193.239.44.238])
+	by alsa0.perex.cz (Postfix) with ESMTP id AEAB4103856
+	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2010 15:04:11 +0100 (CET)
+In-Reply-To: <20101115135053.GC3338@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,26 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grzegorz Daniluk <g.daniluk@elproma.com.pl>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 15, 2010 at 02:46:55PM +0100, Grzegorz Daniluk wrote:
-> Mark Brown wrote:
->> Did you register the I2C device for the CODEC with the I2C subsystem?
+Mark Brown wrote:
+> You need to register both -
+> the device will generally be registered by your arch/ file for the
+> board.
+>
+>   
+Yes, I have done this too.
+> Could you please verify that you have enabled the debug logging
+> requested?  I cannot see any of the additional logging that would be
+> generated if this was enabled.
+>   
+If I understood correctly my sound/soc/soc-core.c looks as following 
+(added #define ...):
+....
+#include <sound/pcm.h>
+#include <sound/pcm_params.h>
+#include <sound/soc.h>
+#include <sound/soc-dapm.h>
+#include <sound/initval.h>
 
-> I believe that is done in wm8804 codec driver (i2c_add_driver() call in  
-> wm8804_modinit() function).
+#define NAME_SIZE       32
 
-This is adding the driver not the device.  You need to register both -
-the device will generally be registered by your arch/ file for the
-board.
+/*my code*/
+#define CONFIG_DEBUG_FS
+#define DEBUG
+/*end of my code*/
 
->> If that's not the issue could you please provide a kernel log with
->> #define DEBUG at the top of soc-core.c?
+static DEFINE_MUTEX(pcm_mutex);
+static DECLARE_WAIT_QUEUE_HEAD(soc_pm_waitq);
 
-> I'm sending the full kern.log as an attachment to this email.
+#ifdef CONFIG_DEBUG_FS
+static struct dentry *debugfs_root;
+#endif
 
-Could you please verify that you have enabled the debug logging
-requested?  I cannot see any of the additional logging that would be
-generated if this was enabled.
+static DEFINE_MUTEX(client_mutex);
+static LIST_HEAD(card_list);
+....
+
+best regards,
+Greg
