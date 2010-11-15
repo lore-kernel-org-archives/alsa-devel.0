@@ -1,36 +1,78 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv2.1] ASoC: Add optional name_prefix for
- codec kcontrol, widget and route names
-Date: Mon, 15 Nov 2010 15:24:18 +0000
-Message-ID: <20101115152417.GF12986@rakim.wolfsonmicro.main>
-References: <1289565525-30231-1-git-send-email-jhnikula@gmail.com>
-	<1289673644-2493-1-git-send-email-jhnikula@gmail.com>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH 44/44] sound/soc/codecs: Remove unnecessary semicolons
+Date: Mon, 15 Nov 2010 09:09:17 -0800
+Message-ID: <1289840957.16461.138.camel@Joe-Laptop>
+References: <cover.1289789604.git.joe@perches.com>
+	 <97fd199b7dac50613f6843156687223928cce44a.1289789605.git.joe@perches.com>
+	 <20101115134939.GC12986@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6FB2B244B0
-	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2010 16:24:19 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1289673644-2493-1-git-send-email-jhnikula@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20101115134939.GC12986@rakim.wolfsonmicro.main>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Jiri Kosina <trivial@kernel.org>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Nov 13, 2010 at 08:40:44PM +0200, Jarkko Nikula wrote:
-> There is a need to prefix codec kcontrol, widget and internal route names in
-> an ASoC machine that has multiple codecs with conflicting names. The name
-> collision would occur when codec drivers try to registering kcontrols with
-> the same name or when building audio paths.
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+V2: against -next
 
-Applied, thanks.
+ sound/soc/codecs/wm8904.c  |    2 +-
+ sound/soc/codecs/wm8940.c  |    1 -
+ sound/soc/codecs/wm8993.c  |    2 +-
+ sound/soc/codecs/wm_hubs.c |    2 +-
+ 4 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index be90399..5e57bd2 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -1591,7 +1591,7 @@ static int wm8904_hw_params(struct snd_pcm_substream *substream,
+ 		       - wm8904->fs);
+ 	for (i = 1; i < ARRAY_SIZE(clk_sys_rates); i++) {
+ 		cur_val = abs((wm8904->sysclk_rate /
+-			       clk_sys_rates[i].ratio) - wm8904->fs);;
++			       clk_sys_rates[i].ratio) - wm8904->fs);
+ 		if (cur_val < best_val) {
+ 			best = i;
+ 			best_val = cur_val;
+diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
+index c2def1b..caed084 100644
+--- a/sound/soc/codecs/wm8940.c
++++ b/sound/soc/codecs/wm8940.c
+@@ -736,7 +736,6 @@ static int wm8940_probe(struct snd_soc_codec *codec)
+ 		return ret;
+ 
+ 	return ret;
+-;
+ }
+ 
+ static int wm8940_remove(struct snd_soc_codec *codec)
+diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
+index bcc54be..991d90c 100644
+--- a/sound/soc/codecs/wm8993.c
++++ b/sound/soc/codecs/wm8993.c
+@@ -1227,7 +1227,7 @@ static int wm8993_hw_params(struct snd_pcm_substream *substream,
+ 		       - wm8993->fs);
+ 	for (i = 1; i < ARRAY_SIZE(clk_sys_rates); i++) {
+ 		cur_val = abs((wm8993->sysclk_rate /
+-			       clk_sys_rates[i].ratio) - wm8993->fs);;
++			       clk_sys_rates[i].ratio) - wm8993->fs);
+ 		if (cur_val < best_val) {
+ 			best = i;
+ 			best_val = cur_val;
+diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+index 8aff0ef..422c7fb 100644
+--- a/sound/soc/codecs/wm_hubs.c
++++ b/sound/soc/codecs/wm_hubs.c
+@@ -119,7 +119,7 @@ static void calibrate_dc_servo(struct snd_soc_codec *codec)
+ 	switch (hubs->dcs_readback_mode) {
+ 	case 0:
+ 		reg_l = snd_soc_read(codec, WM8993_DC_SERVO_READBACK_1)
+-			& WM8993_DCS_INTEG_CHAN_0_MASK;;
++			& WM8993_DCS_INTEG_CHAN_0_MASK;
+ 		reg_r = snd_soc_read(codec, WM8993_DC_SERVO_READBACK_2)
+ 			& WM8993_DCS_INTEG_CHAN_1_MASK;
+ 		break;
