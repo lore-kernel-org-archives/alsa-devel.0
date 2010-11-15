@@ -1,21 +1,14 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 44/44] sound/soc/codecs: Remove unnecessary
-	semicolons
-Date: Mon, 15 Nov 2010 11:09:20 +0000
-Message-ID: <1289819360.3377.15.camel@odin>
-References: <cover.1289789604.git.joe@perches.com>
-	<97fd199b7dac50613f6843156687223928cce44a.1289789605.git.joe@perches.com>
+From: Peter Rosin <peda@axentia.se>
+Subject: [PATCH] ALSA: AT73C213: Rectify misleading comments.
+Date: Mon, 15 Nov 2010 12:29:06 +0100
+Message-ID: <1289820546-2078-1-git-send-email-peda@axentia.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8FD12103849
-	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2010 12:09:26 +0100 (CET)
-Received: by mail-wy0-f179.google.com with SMTP id 36so3482678wyg.38
-	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2010 03:09:26 -0800 (PST)
-In-Reply-To: <97fd199b7dac50613f6843156687223928cce44a.1289789605.git.joe@perches.com>
+Received: from mail.lysator.liu.se (mail.lysator.liu.se [130.236.254.3])
+	by alsa0.perex.cz (Postfix) with ESMTP id D536D24152
+	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2010 12:29:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,21 +18,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joe Perches <joe@perches.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Jiri Kosina <trivial@kernel.org>, Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Takashi@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
+Cc: Peter Rosin <peda@axentia.se>, Hans-Christian Egtvedt <hcegtvedt@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2010-11-14 at 19:05 -0800, Joe Perches wrote:
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
->  sound/soc/codecs/wm8904.c  |    2 +-
->  sound/soc/codecs/wm8940.c  |    1 -
->  sound/soc/codecs/wm8993.c  |    2 +-
->  sound/soc/codecs/wm_hubs.c |    2 +-
->  4 files changed, 3 insertions(+), 4 deletions(-)
+The Atmel SSC can divide by even numbers, not only powers of two and
+the given values are binary, not hexadecimal.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+Signed-off-by: Peter Rosin <peda@axentia.se>
+---
+ sound/spi/at73c213.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+I'm working on a driver based on AT73C213 and have had to look up
+if the below nits were code problems or comment problems.  The Atmel
+specs tells me that the comments are wrong and this patch fixes
+those comments.
+
+Cheers and thanks,
+Peter
+
+diff --git a/sound/spi/at73c213.c b/sound/spi/at73c213.c
+index 1bc56b2..548e17a 100644
+--- a/sound/spi/at73c213.c
++++ b/sound/spi/at73c213.c
+@@ -155,7 +155,7 @@ static int snd_at73c213_set_bitrate(struct snd_at73c213 *chip)
+ 	if (max_tries < 1)
+ 		max_tries = 1;
+ 
+-	/* ssc_div must be a power of 2. */
++	/* ssc_div must be even. */
+ 	ssc_div = (ssc_div + 1) & ~1UL;
+ 
+ 	if ((ssc_rate / (ssc_div * 2 * 16)) < BITRATE_MIN) {
+@@ -621,7 +621,7 @@ static int snd_at73c213_line_capture_volume_info(
+ {
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+ 	uinfo->count = 2;
+-	/* When inverted will give values 0x10001 => 0. */
++	/* When inverted will give values 10001b => 0. */
+ 	uinfo->value.integer.min = 14;
+ 	uinfo->value.integer.max = 31;
+ 
+@@ -634,7 +634,7 @@ static int snd_at73c213_aux_capture_volume_info(
+ {
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+ 	uinfo->count = 1;
+-	/* When inverted will give values 0x10001 => 0. */
++	/* When inverted will give values 10001b => 0. */
+ 	uinfo->value.integer.min = 14;
+ 	uinfo->value.integer.max = 31;
+ 
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+1.7.2.3
