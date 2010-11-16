@@ -1,11 +1,9 @@
-From: Randy Dunlap <rdunlap@xenotime.net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: rfc: rewrite commit subject line for subsystem
  maintainer preference tool
-Date: Tue, 16 Nov 2010 12:46:09 -0800
-Message-ID: <20101116124609.382e42fb.rdunlap@xenotime.net>
-References: <1289845830.16461.149.camel@Joe-Laptop>
-	<20101115190738.GF3338@sirena.org.uk>
-	<1289848458.16461.150.camel@Joe-Laptop>
+Date: Tue, 16 Nov 2010 23:01:26 +0000
+Message-ID: <20101116230126.GB24623@opensource.wolfsonmicro.com>
+References: <1289848458.16461.150.camel@Joe-Laptop>
 	<20101115193407.GK12986@rakim.wolfsonmicro.main>
 	<1289850773.16461.166.camel@Joe-Laptop>
 	<20101116104921.GL12986@rakim.wolfsonmicro.main>
@@ -15,17 +13,15 @@ References: <1289845830.16461.149.camel@Joe-Laptop>
 	<20101116203522.65240b18@schatten.dmk.lab>
 	<20101116195530.GA7523@rakim.wolfsonmicro.main>
 	<20101116122102.86e7e0b9.rdunlap@xenotime.net>
-	<1289940156.28741.207.camel@Joe-Laptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from xenotime.net (xenotime.net [72.52.115.56])
-	by alsa0.perex.cz (Postfix) with SMTP id 4F17D2438C
-	for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2010 21:46:15 +0100 (CET)
-Received: from chimera.site ([173.50.240.230]) by xenotime.net for
-	<alsa-devel@alsa-project.org>; Tue, 16 Nov 2010 12:46:10 -0800
-In-Reply-To: <1289940156.28741.207.camel@Joe-Laptop>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F24201037E3
+	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2010 00:01:20 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20101116122102.86e7e0b9.rdunlap@xenotime.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,71 +31,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joe Perches <joe@perches.com>
-Cc: alsa-devel@alsa-project.org, Jiri Kosina <trivial@kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Florian Mickler <florian@mickler.org>, Andrew Morton <akpm@linux-foundation.org>
+To: Randy Dunlap <rdunlap@xenotime.net>
+Cc: alsa-devel@alsa-project.org, Jiri Kosina <trivial@kernel.org>, linux-kernel@vger.kernel.org, Florian Mickler <florian@mickler.org>, Joe Perches <joe@perches.com>, Andrew Morton <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 16 Nov 2010 12:42:36 -0800 Joe Perches wrote:
+On Tue, Nov 16, 2010 at 12:21:02PM -0800, Randy Dunlap wrote:
 
-> On Tue, 2010-11-16 at 12:21 -0800, Randy Dunlap wrote:
-> > On Tue, 16 Nov 2010 19:55:31 +0000 Mark Brown wrote:
-> > I don't know what you asked Joe to change, but asking someone to use
-> > the documented canonical patch format:
-> > <quote>
-> > The canonical patch subject line is:
-> >     Subject: [PATCH 001/123] subsystem: summary phrase
-> > </quote>
-> > should be fine.  And there is no need for printf-ish templates
-> > for this in MAINTAINERS either.
-> 
-> I've never read that before.  Learn something new etc...
-> It seems path prefixes aren't good nor even commonly used.
-> 
-> A review of kernel patch subjects:
-> 
-> $ git log --no-merges --pretty=oneline | \
-> 	cut -f2- -d" " | cut -f1 -d: | sort | uniq -c | sort -rn
-> 
-> is interesting.  Here's the head:
->    5007 x86
->    3943 Staging
->    3220 USB
->    2790 sh
->    2707 KVM
->    2624 ARM
->    2449 ALSA
->    1571 Input
->    1549 ASoC
->    1470 iwlwifi
->    1423 ACPI
->    1397 mac80211
->    1384 V4L/DVB
->    1226 sched
->    1200 Btrfs
->    1184 powerpc
->    1106 [NETFILTER]
->    1080 MIPS
->    1049 net
->    1047 ide
->    1014 drm/i915
->     993 staging
->     921 ath9k
+> I don't know what you asked Joe to change, but asking someone to use
+> the documented canonical patch format:
 
-$ARCH is a commonly accepted substitute for subsystem.
+> <quote>
+> The canonical patch subject line is:
 
-And yes, lots of people use <drivername> there as well.
+>     Subject: [PATCH 001/123] subsystem: summary phrase
+> </quote>
 
+> should be fine.  And there is no need for printf-ish templates
+> for this in MAINTAINERS either.
 
-> Some subsystem maintainers like upper case, some mixed, some lower.
-> Some aren't consistent.  (Staging/staging)
+That's exactly what I asked him to do.  He said he's not willing to use
+anything for "subsystem" which can't be automatically generated.
 
-Case usually doesn't matter to most of us.
-
-> It doesn't seem a rule can be pregenerated so maybe adding these
-> "C:" lines to MAINTAINERS has some value.
-
-Hopefully it won't go that far.
-
----
-~Randy
-*** Remember to use Documentation/SubmitChecklist when testing your code ***
+The formats I mentioned because some subsystems have their own things
+within this format like "subsystem: driver:" or whatever.  While it's
+probably not an issue for the sort of patch Joe generates if we do have
+a tool for this I'd expect it'll go the same way that checkpatch does
+and get used by people doing more specific work.  It'd be good to try to
+head off the friction that may cause by at least having an idea how we
+might cope with that.
