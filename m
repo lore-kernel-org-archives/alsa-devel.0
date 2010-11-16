@@ -1,17 +1,16 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: bug in alsa-lib/snd_pcm_plugin_delay for capture?
-Date: Tue, 16 Nov 2010 12:38:42 +0530
-Message-ID: <AANLkTi=in6g2YxRKwkCi7H_v0jmJ9tOouc2FK-Rg8iDt@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Direct write (using mmap_bigin and commit)
+Date: Tue, 16 Nov 2010 08:10:53 +0100
+Message-ID: <4CE22E7D.7010808@canonical.com>
+References: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE339@EXGMBX01.sasken.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9D08A24437
-	for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2010 08:08:43 +0100 (CET)
-Received: by iwn2 with SMTP id 2so466136iwn.38
-	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2010 23:08:42 -0800 (PST)
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id D6A4E24439
+	for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2010 08:10:59 +0100 (CET)
+In-Reply-To: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE339@EXGMBX01.sasken.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,26 +20,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: wim.taymans@collabora.co.uk
+To: Irfan Shaikh <irfan.shaikh@sasken.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Since the PulseAudio commit 29acfd0e0413a9bd126782763ee2dcf10357546 I
-am seeing errors messages telling me that the information reported by
-snd_pcm_avail_delay is not accurate on the capture path, more
-specifically the delay is lower than the available samples.
-I spent a little bit of time to find the root cause, and I believe
-this is a problem with alsa-lib plugins. I never see any errors when
-using hw devices. Conversely I always have these errors when using the
-front: plugin (the pulseaudio default).
-When I looked at the code, I saw that snd_pcm_plugin_delay and
-snd_pcm_plugin_avail_update don't really match. There is additional
-code in snd_pcm_plugin_avail_update for the capture case that is not
-present when in the delay code, and that causes the delta between the
-values reported.
-Since I don't understand this code that has all kinds of
-mmap_commit/forward/undos, I have to ask higher powers for advice.
-Jaroslav, could you take a look at the code and let me know if my
-analysis is correct?
-Thanks,
--Pierre
+On 2010-11-15 13:24, Irfan Shaikh wrote:
+>                          err = snd_pcm_mmap_begin(handle,&my_areas,&offset,&frames);
+>                          mybuffer=(char *)malloc(frames*2);
+>                          result = fread (mybuffer,1,(frames*2),pFile);
+>                          my_areas.addr=mybuffer;           // IS THIS CORRECT ? WILL THIS WORK ? How can i write my audio file data here in areas?
+>                          commitres = snd_pcm_mmap_commit(handle, offset, frames);
+
+No, fread should write directly into the buffer given by 
+snd_pcm_mmap_begin, you don't need "mybuffer" at all.
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
