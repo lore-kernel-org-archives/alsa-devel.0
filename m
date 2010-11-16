@@ -1,26 +1,22 @@
-From: Chris Paulson-Ellis <chris@edesix.com>
+From: Chris Paulson-Ellis <chris-Tc38MJj1weLQT0dZR+AlfA@public.gmane.org>
 Subject: [PATCH] ASoC: davinci: fixes for multi-component
 Date: Tue, 16 Nov 2010 12:27:09 +0000
-Message-ID: <1289910429-29347-1-git-send-email-chris@edesix.com>
+Message-ID: <1289910429-29347-1-git-send-email-chris__9991.38328847966$1289910506$gmane$org@edesix.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from douglas.edesix.com (93-97-174-104.zone5.bethere.co.uk
-	[93.97.174.104])
-	by alsa0.perex.cz (Postfix) with ESMTP id AD7E91037E3
-	for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2010 13:27:30 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.orgalsa-devel@alsa-project.org
-Cc: vbarinov@embeddedalley.com, davinci-linux-open-source@linux.davincidsp.com, broonie@opensource.wolfsonmicro.com, nsekhar@ti.com, Chris Paulson-Ellis <chris@edesix.com>, miguel.aguilar@ridgerun.com, lrg@slimlogic.co.uk
+Return-path: <davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+Errors-To: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: vbarinov-L1vi/lXTdtvkgf6YlCu6wwC/G2K4zDHf@public.gmane.org, davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, miguel.aguilar-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org, lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 Multi-component commit f0fba2ad broke a few things which this patch should
@@ -76,7 +72,7 @@ files. I have only checked and fixed the details of the names used for the
 McBSP based platforms. Someone with a McASP based platform (eg DA8xx) should
 check the others.
 
-Signed-off-by: Chris Paulson-Ellis <chris@edesix.com>
+Signed-off-by: Chris Paulson-Ellis <chris-Tc38MJj1weLQT0dZR+AlfA@public.gmane.org>
 ---
  arch/arm/mach-davinci/dm355.c      |    6 ++--
  arch/arm/mach-davinci/dm365.c      |    6 ++--
