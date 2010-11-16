@@ -1,18 +1,18 @@
-From: Irfan Shaikh <irfan.shaikh@sasken.com>
-Subject: Re: SEGFAULT : snd_pcm_mmap_begin/commit
-Date: Tue, 16 Nov 2010 14:48:37 +0530
-Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE340@EXGMBX01.sasken.com>
-References: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE33F@EXGMBX01.sasken.com>,
-	<4CE247DD.7010303@canonical.com>
+From: David Shirley <tephra@gmail.com>
+Subject: nvidia initial sound being skipped
+Date: Tue, 16 Nov 2010 21:05:23 +1100
+Message-ID: <AANLkTikvSS+=SwVHOzr9sGmkJC6xuWFUHqnVH9_z-u7J@mail.gmail.com>
+References: <AANLkTikH529TdvgfZX7bYvQVEHuj+1zTJS2YwjKc1yp_@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2345D24369
-	for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2010 10:23:16 +0100 (CET)
-In-Reply-To: <4CE247DD.7010303@canonical.com>
-Content-Language: en-US
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 5228F243A6
+	for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2010 11:05:24 +0100 (CET)
+Received: by bwz8 with SMTP id 8so452082bwz.38
+	for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2010 02:05:24 -0800 (PST)
+In-Reply-To: <AANLkTikH529TdvgfZX7bYvQVEHuj+1zTJS2YwjKc1yp_@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,84 +22,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for your observation.
+Hi Developers,
 
->Well, the only pointer dereference is to area, so area has an invalid
->pointer. Please check the return value of snd_pcm_mmap_begin to see why.
+I am using an nvidia MCP78 to connect to a Denon 1910 AVR via HDMI.
 
-Return value is negative. (-77). How do i resolve it   (Using Sleep ??  / snd_pcm_wait() ??)
+I was using Kernel 2.6.32.21 and noticed that the initial few seconds
+of my songs was being chopped off.
 
->Hmm, I've haven't used snd_pcm_mmap_* in a long time, but shouldn't the
->memcpy be above snd_pcm_mmap_commit? Second, if you're using memcpy, why
->don't settle with snd_pcm_writei in the first place?
+After seeing http://www.spinics.net/lists/alsa-devel/msg29408.html I
+upgraded to 2.6.35.8 (which has that fix in it) and the problem was
+been reduced considerably.
 
-i am actually unable to use _commit properly so was judt experimenting using memcpy().
-My requirement is to use _begin and _commit.
+But it is still occurring to some extent.
 
-I will experiment by using memcpy above _commit.
+So to see if the HDMI was the problem I changed it to coax spdif - no
+change/same problem.
 
-Thanks
+Now I think it could be mplayer, so I try audacious - no change/same proble=
+m.
 
-________________________________________
-From: David Henningsson [david.henningsson@canonical.com]
-Sent: Tuesday, November 16, 2010 2:29 PM
-To: Irfan Shaikh
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] SEGFAULT : snd_pcm_mmap_begin/commit
+Now I think it could be the flac file/decoding, so I decode the flac
+to wav and use aplay - no change/same problem.
 
-On 2010-11-16 09:44, Irfan Shaikh wrote:
-> Hello All,
->
-> I have been facing dificulty in using snd_pcm_mmap_begin and snd_pcm_mmap_commit.
-> Shows Seg fault as pointed by comment in code below.
-> Please tell me what wrong i am doing and how do i correct.
->
-> /###################################################################################/
->          unsigned int count = (alsaParams->frames/(((alsaParams->bit_per_sample)*(alsaParams->num_channel)) / 8));
->          unsigned char *data = alsaParams->data;https://owa.sasken.com/owa/?ae=Item&t=IPM.Note&a=New#
->          snd_pcm_sframes_t frames_available, frames_transmit;
->          const snd_pcm_channel_area_t *area;
->          snd_pcm_uframes_t offset;
->          char *outbuffer;
->          int result;
->
->          /*available space in audio-buffer to write to*/
->          frames_available = snd_pcm_avail_update(alsaParams->pcm_handle);
->
->          /*
->           * prepare the areas
->           * and get back area, offset and frames_transmit
->           * frames_transmit gives back the REAL value of available frames which could be written to in the mmaped-area
->           * frames_transmit are less than frames_available
->           */
->          frames_transmit = frames_available;
->
->          snd_pcm_mmap_begin(alsaParams->pcm_handle,&area,&offset,&frames_transmit);
->
->          /*calculates the mmaped-buffer which could be written to*/
->          outbuffer = ((char *) area->addr + (area->first + area->step * offset)/ 8);    // ****** SEGFAULT *******
+The ONLY way I can get the first 0.5seconds of the file to play is by
+using audacious and then MANUALLY rewinding (by dragging the scroll
+bar thingy) back to the start... then it will play (on either flac or
+wav)
 
-Well, the only pointer dereference is to area, so area has an invalid
-pointer. Please check the return value of snd_pcm_mmap_begin to see why.
+Co-incidentally when I do this I get the following error message
+dumped to console:
+alsa: snd_pcm_prepare failed: Device or resource busy.
 
->
->          /*gives back the virtually written (writable) frames which should be always == frames_transmit*/
->          result = snd_pcm_mmap_commit(alsaParams->pcm_handle, offset, frames_transmit);
->
->          memcpy(outbuffer, data, count);  //data is actual data
+I hope someone can help :)
 
-Hmm, I've haven't used snd_pcm_mmap_* in a long time, but shouldn't the
-memcpy be above snd_pcm_mmap_commit? Second, if you're using memcpy, why
-don't settle with snd_pcm_writei in the first place?
+I am happy to get debug or whatever - just let me know what you need!
 
---
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+mythtv@crystal:~$ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: NVidia [HDA NVidia], device 0: ALC1200 Analog [ALC1200 Analog]
+=A0Subdevices: 1/1
+=A0Subdevice #0: subdevice #0
+card 0: NVidia [HDA NVidia], device 1: ALC1200 Digital [ALC1200 Digital]
+=A0Subdevices: 1/1
+=A0Subdevice #0: subdevice #0
+card 0: NVidia [HDA NVidia], device 3: NVIDIA HDMI [NVIDIA HDMI]
+=A0Subdevices: 1/1
+=A0Subdevice #0: subdevice #0
 
-SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any 
- virus transmitted by this email.
-Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
+lspci -vvvv
+00:07.0 Audio device: nVidia Corporation MCP72XE/MCP72P/MCP78U/MCP78S
+High Definition Audio (rev a1)
+=A0 =A0 =A0 =A0Subsystem: ASUSTeK Computer Inc. M3N72-D
+=A0 =A0 =A0 =A0Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B- DisINTx-
+=A0 =A0 =A0 =A0Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=3Dfast >TAb=
+ort-
+<TAbort- <MAbort- >SERR- <PERR- INTx-
+=A0 =A0 =A0 =A0Latency: 0 (500ns min, 1250ns max)
+=A0 =A0 =A0 =A0Interrupt: pin A routed to IRQ 11
+=A0 =A0 =A0 =A0Region 0: Memory at fe020000 (32-bit, non-prefetchable) [siz=
+e=3D16K]
+=A0 =A0 =A0 =A0Capabilities: [44] Power Management version 2
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Flags: PMEClk- DSI- D1- D2- AuxCurrent=3D0mA
+PME(D0-,D1-,D2-,D3hot+,D3cold+)
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Status: D0 NoSoftRst- PME-Enable- DSel=3D0 D=
+Scale=3D0 PME-
+=A0 =A0 =A0 =A0Kernel driver in use: HDA Intel
+
+Cheers
+David
