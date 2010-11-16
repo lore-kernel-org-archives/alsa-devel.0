@@ -1,32 +1,49 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 11/11] sound/pci/asihpi/hpioctl.c: Remove unnecessary casts of pci_get_drvdata
-Date: Mon, 15 Nov 2010 12:14:02 -0800
-Message-ID: <1741bc5f7050b5ebb7014b8d93fdb70490ec7f06.1289851770.git.joe@perches.com>
-References: <cover.1289851770.git.joe@perches.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1289851770.git.joe@perches.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jiri Kosina <trivial@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Expected behaviour for two mic jacks
+Date: Tue, 16 Nov 2010 09:52:26 +0800
+Message-ID: <AANLkTimySCfhsvscfAyogiH8jW1AM-2z8ZrVWUX2-+xH@mail.gmail.com>
+References: <4CDD0DDB.9020509@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1989824580
+	for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2010 02:52:33 +0100 (CET)
+Received: by eyg24 with SMTP id 24so56147eyg.38
+	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2010 17:52:26 -0800 (PST)
+In-Reply-To: <4CDD0DDB.9020509@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- sound/pci/asihpi/hpioctl.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+2010/11/12 David Henningsson <david.henningsson@canonical.com>
 
-diff --git a/sound/pci/asihpi/hpioctl.c b/sound/pci/asihpi/hpioctl.c
-index 62895a7..22dbd91 100644
---- a/sound/pci/asihpi/hpioctl.c
-+++ b/sound/pci/asihpi/hpioctl.c
-@@ -435,7 +435,7 @@ void __devexit asihpi_adapter_remove(struct pci_dev *pci_dev)
- 	struct hpi_message hm;
- 	struct hpi_response hr;
- 	struct hpi_adapter *pa;
--	pa = (struct hpi_adapter *)pci_get_drvdata(pci_dev);
-+	pa = pci_get_drvdata(pci_dev);
- 
- 	hpi_init_message_response(&hm, &hr, HPI_OBJ_SUBSYSTEM,
- 		HPI_SUBSYS_DELETE_ADAPTER);
--- 
-1.7.3.1.g432b3.dirty
+> Hi,
+>
+> A while ago I asked for the default/expected behaviour for auto-mute.
+> Here's the same question for mics:
+>
+> If there are two mic jacks, e g one on the front and one on the back, is
+> the standard/default behaviour that we should:
+>
+
+The main problem is the "pink jack" and "blue jack" at rear panel can be
+retasked as output pin for those motherboard with 3 audio jack at rear panel
+(e.g. those VIA codec has "Smart51" switch
+
+Some realtek codec has "Line/Mic jack mode" or "Mic Jack Mode" controls
+
+How about those laptop docked into a docking station ?
+
+Did pulseaudio changed the profile from "Internal Mic" or "External Mic" to
+"Dock Mic" automatically
