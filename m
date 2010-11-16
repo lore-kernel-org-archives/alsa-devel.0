@@ -1,76 +1,105 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: rfc: rewrite commit subject line for subsystem maintainer
- preference tool
-Date: Tue, 16 Nov 2010 12:42:36 -0800
-Message-ID: <1289940156.28741.207.camel@Joe-Laptop>
+From: Randy Dunlap <rdunlap@xenotime.net>
+Subject: Re: rfc: rewrite commit subject line for subsystem
+ maintainer preference tool
+Date: Tue, 16 Nov 2010 12:46:09 -0800
+Message-ID: <20101116124609.382e42fb.rdunlap@xenotime.net>
 References: <1289845830.16461.149.camel@Joe-Laptop>
-	 <20101115190738.GF3338@sirena.org.uk>
-	 <1289848458.16461.150.camel@Joe-Laptop>
-	 <20101115193407.GK12986@rakim.wolfsonmicro.main>
-	 <1289850773.16461.166.camel@Joe-Laptop>
-	 <20101116104921.GL12986@rakim.wolfsonmicro.main>
-	 <1289919077.28741.50.camel@Joe-Laptop>
-	 <20101116183707.179964dd@schatten.dmk.lab>
-	 <20101116181226.GB26239@rakim.wolfsonmicro.main>
-	 <20101116203522.65240b18@schatten.dmk.lab>
-	 <20101116195530.GA7523@rakim.wolfsonmicro.main>
-	 <20101116122102.86e7e0b9.rdunlap@xenotime.net>
+	<20101115190738.GF3338@sirena.org.uk>
+	<1289848458.16461.150.camel@Joe-Laptop>
+	<20101115193407.GK12986@rakim.wolfsonmicro.main>
+	<1289850773.16461.166.camel@Joe-Laptop>
+	<20101116104921.GL12986@rakim.wolfsonmicro.main>
+	<1289919077.28741.50.camel@Joe-Laptop>
+	<20101116183707.179964dd@schatten.dmk.lab>
+	<20101116181226.GB26239@rakim.wolfsonmicro.main>
+	<20101116203522.65240b18@schatten.dmk.lab>
+	<20101116195530.GA7523@rakim.wolfsonmicro.main>
+	<20101116122102.86e7e0b9.rdunlap@xenotime.net>
+	<1289940156.28741.207.camel@Joe-Laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20101116122102.86e7e0b9.rdunlap@xenotime.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Randy Dunlap <rdunlap@xenotime.net>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Florian Mickler <florian@mickler.org>, Jiri Kosina <trivial@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from xenotime.net (xenotime.net [72.52.115.56])
+	by alsa0.perex.cz (Postfix) with SMTP id 4F17D2438C
+	for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2010 21:46:15 +0100 (CET)
+Received: from chimera.site ([173.50.240.230]) by xenotime.net for
+	<alsa-devel@alsa-project.org>; Tue, 16 Nov 2010 12:46:10 -0800
+In-Reply-To: <1289940156.28741.207.camel@Joe-Laptop>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Joe Perches <joe@perches.com>
+Cc: alsa-devel@alsa-project.org, Jiri Kosina <trivial@kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Florian Mickler <florian@mickler.org>, Andrew Morton <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2010-11-16 at 12:21 -0800, Randy Dunlap wrote:
-> On Tue, 16 Nov 2010 19:55:31 +0000 Mark Brown wrote:
-> I don't know what you asked Joe to change, but asking someone to use
-> the documented canonical patch format:
-> <quote>
-> The canonical patch subject line is:
->     Subject: [PATCH 001/123] subsystem: summary phrase
-> </quote>
-> should be fine.  And there is no need for printf-ish templates
-> for this in MAINTAINERS either.
+On Tue, 16 Nov 2010 12:42:36 -0800 Joe Perches wrote:
 
-I've never read that before.  Learn something new etc...
-It seems path prefixes aren't good nor even commonly used.
+> On Tue, 2010-11-16 at 12:21 -0800, Randy Dunlap wrote:
+> > On Tue, 16 Nov 2010 19:55:31 +0000 Mark Brown wrote:
+> > I don't know what you asked Joe to change, but asking someone to use
+> > the documented canonical patch format:
+> > <quote>
+> > The canonical patch subject line is:
+> >     Subject: [PATCH 001/123] subsystem: summary phrase
+> > </quote>
+> > should be fine.  And there is no need for printf-ish templates
+> > for this in MAINTAINERS either.
+> 
+> I've never read that before.  Learn something new etc...
+> It seems path prefixes aren't good nor even commonly used.
+> 
+> A review of kernel patch subjects:
+> 
+> $ git log --no-merges --pretty=oneline | \
+> 	cut -f2- -d" " | cut -f1 -d: | sort | uniq -c | sort -rn
+> 
+> is interesting.  Here's the head:
+>    5007 x86
+>    3943 Staging
+>    3220 USB
+>    2790 sh
+>    2707 KVM
+>    2624 ARM
+>    2449 ALSA
+>    1571 Input
+>    1549 ASoC
+>    1470 iwlwifi
+>    1423 ACPI
+>    1397 mac80211
+>    1384 V4L/DVB
+>    1226 sched
+>    1200 Btrfs
+>    1184 powerpc
+>    1106 [NETFILTER]
+>    1080 MIPS
+>    1049 net
+>    1047 ide
+>    1014 drm/i915
+>     993 staging
+>     921 ath9k
 
-A review of kernel patch subjects:
+$ARCH is a commonly accepted substitute for subsystem.
 
-$ git log --no-merges --pretty=oneline | \
-	cut -f2- -d" " | cut -f1 -d: | sort | uniq -c | sort -rn
+And yes, lots of people use <drivername> there as well.
 
-is interesting.  Here's the head:
-   5007 x86
-   3943 Staging
-   3220 USB
-   2790 sh
-   2707 KVM
-   2624 ARM
-   2449 ALSA
-   1571 Input
-   1549 ASoC
-   1470 iwlwifi
-   1423 ACPI
-   1397 mac80211
-   1384 V4L/DVB
-   1226 sched
-   1200 Btrfs
-   1184 powerpc
-   1106 [NETFILTER]
-   1080 MIPS
-   1049 net
-   1047 ide
-   1014 drm/i915
-    993 staging
-    921 ath9k
 
-Some subsystem maintainers like upper case, some mixed, some lower.
-Some aren't consistent.  (Staging/staging)
+> Some subsystem maintainers like upper case, some mixed, some lower.
+> Some aren't consistent.  (Staging/staging)
 
-It doesn't seem a rule can be pregenerated so maybe adding these
-"C:" lines to MAINTAINERS has some value.
+Case usually doesn't matter to most of us.
+
+> It doesn't seem a rule can be pregenerated so maybe adding these
+> "C:" lines to MAINTAINERS has some value.
+
+Hopefully it won't go that far.
+
+---
+~Randy
+*** Remember to use Documentation/SubmitChecklist when testing your code ***
