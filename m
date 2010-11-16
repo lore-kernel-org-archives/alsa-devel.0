@@ -1,9 +1,11 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: rfc: rewrite commit subject line for subsystem
- maintainer preference tool
-Date: Tue, 16 Nov 2010 15:04:51 +0000
-Message-ID: <20101116150451.GA26239@rakim.wolfsonmicro.main>
-References: <20101115173031.GI12986@rakim.wolfsonmicro.main>
+From: Florian Mickler <florian@mickler.org>
+Subject: Re: rfc: rewrite commit subject line for subsystem maintainer
+ preference tool
+Date: Tue, 16 Nov 2010 18:37:07 +0100
+Message-ID: <20101116183707.179964dd@schatten.dmk.lab>
+References: <20101115134939.GC12986@rakim.wolfsonmicro.main>
+	<1289840957.16461.138.camel@Joe-Laptop>
+	<20101115173031.GI12986@rakim.wolfsonmicro.main>
 	<1289842444.16461.140.camel@Joe-Laptop>
 	<20101115182708.GJ12986@rakim.wolfsonmicro.main>
 	<1289845830.16461.149.camel@Joe-Laptop>
@@ -14,39 +16,70 @@ References: <20101115173031.GI12986@rakim.wolfsonmicro.main>
 	<20101116104921.GL12986@rakim.wolfsonmicro.main>
 	<1289919077.28741.50.camel@Joe-Laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CED8D243CD
-	for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2010 16:04:54 +0100 (CET)
-Content-Disposition: inline
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1289919077.28741.50.camel@Joe-Laptop>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Joe Perches <joe@perches.com>
-Cc: Florian Mickler <florian@mickler.org>, Andrew Morton <akpm@linux-foundation.org>, Jiri Kosina <trivial@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Jiri Kosina <trivial@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 16, 2010 at 06:51:17AM -0800, Joe Perches wrote:
+On Tue, 16 Nov 2010 06:51:17 -0800
+Joe Perches <joe@perches.com> wrote:
 
+> On Tue, 2010-11-16 at 10:49 +0000, Mark Brown wrote:
+> > On Mon, Nov 15, 2010 at 11:52:53AM -0800, Joe Perches wrote:
+> > > On Mon, 2010-11-15 at 19:34 +0000, Mark Brown wrote:
+> > > > It appears your scripts are already hooked into get_maintainers.pl which
+> > > > would seem the obvious place to do this?  Sadly I don't do perl, though
+> > > > it looks like you're doing pretty much all the work on that anyway.
+> > > Sadly, no it's not the right place.
+> > To query MAINTAINERS?  I'd assume that's where you'd want to put that
+> > stuff?
+> 
+> I trimmed cc's and added Andrew Morton and Florian Mickler.
+> First thread link for them: http://lkml.org/lkml/2010/11/15/262
+> 
+> I use get_maintainer to find email addresses with
+> "git send-email --cc-cmd=" but sure it could be extended
+> to find some other new information in the MAINTAINERS file.
+> 
+> Anyway, I think that get_maintainers isn't the proper tool
+> to rewrite commit subject lines, though it could certainly
+> do the lookup of a key in the MAINTAINERS file.
+> 
 > Maybe add a new MAINTAINERS section line something like:
 > 	"C:	CommitSubjectGrammarStyle"
 > where CommitSubjectGrammarStyle is something more
 > information rich than "style 1", "style 2".
-
-Something printfish would seem reasonable?
-
+> 
+> Perhaps you'll propose a grammar to convert path to header
+> and go through and add these "C:" style entries to the
+> sections you maintain.
+> 
 > Also, what would you expect the output to be when a single
 > patch modified files from 2 subsystems that use different
 > styles?
+> 
+> cheers, Joe
+> 
 
-The traditional thing is "ThingX/ThingY: blah" but as with anything else
-you need to be sensible.
+My first reaction to this is, it's silly. Certainly a
+subsystem-maintainer is capable of hacking something together that
+suits his needs or may just use a good editor to get the job done.
+After all, he might want to edit the commit message anyway. Also he has
+to have his act together for all non-conforming submitters anyway,
+because shurely, telling people to re-edit their patches subject line
+is not what one would consider "welcoming to newbies",  or whatever it
+is kernel subsystem maintainers have to be nowadays *g*... 
+
+On second thought, if that facility existed, i think nobody would mind
+it either. So, why not. I don't see a way to specify what to do with
+cross-subsystem patches though. 
+
+(MAINTAINERS seems to be the logical place to put this
+information.)
+
+Regards,
+Flo
