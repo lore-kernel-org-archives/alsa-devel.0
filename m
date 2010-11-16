@@ -1,85 +1,51 @@
-From: Florian Mickler <florian@mickler.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: rfc: rewrite commit subject line for subsystem maintainer
  preference tool
-Date: Tue, 16 Nov 2010 18:37:07 +0100
-Message-ID: <20101116183707.179964dd@schatten.dmk.lab>
-References: <20101115134939.GC12986@rakim.wolfsonmicro.main>
-	<1289840957.16461.138.camel@Joe-Laptop>
-	<20101115173031.GI12986@rakim.wolfsonmicro.main>
-	<1289842444.16461.140.camel@Joe-Laptop>
-	<20101115182708.GJ12986@rakim.wolfsonmicro.main>
-	<1289845830.16461.149.camel@Joe-Laptop>
-	<20101115190738.GF3338@sirena.org.uk>
-	<1289848458.16461.150.camel@Joe-Laptop>
-	<20101115193407.GK12986@rakim.wolfsonmicro.main>
-	<1289850773.16461.166.camel@Joe-Laptop>
-	<20101116104921.GL12986@rakim.wolfsonmicro.main>
-	<1289919077.28741.50.camel@Joe-Laptop>
+Date: Tue, 16 Nov 2010 18:12:27 +0000
+Message-ID: <20101116181226.GB26239@rakim.wolfsonmicro.main>
+References: <1289842444.16461.140.camel@Joe-Laptop>
+ <20101115182708.GJ12986@rakim.wolfsonmicro.main>
+ <1289845830.16461.149.camel@Joe-Laptop>
+ <20101115190738.GF3338@sirena.org.uk>
+ <1289848458.16461.150.camel@Joe-Laptop>
+ <20101115193407.GK12986@rakim.wolfsonmicro.main>
+ <1289850773.16461.166.camel@Joe-Laptop>
+ <20101116104921.GL12986@rakim.wolfsonmicro.main>
+ <1289919077.28741.50.camel@Joe-Laptop>
+ <20101116183707.179964dd@schatten.dmk.lab>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1289919077.28741.50.camel@Joe-Laptop>
+Content-Disposition: inline
+In-Reply-To: <20101116183707.179964dd@schatten.dmk.lab>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Joe Perches <joe@perches.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Jiri Kosina <trivial@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Florian Mickler <florian@mickler.org>
+Cc: Joe Perches <joe@perches.com>, Jiri Kosina <trivial@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 16 Nov 2010 06:51:17 -0800
-Joe Perches <joe@perches.com> wrote:
+On Tue, Nov 16, 2010 at 06:37:07PM +0100, Florian Mickler wrote:
 
-> On Tue, 2010-11-16 at 10:49 +0000, Mark Brown wrote:
-> > On Mon, Nov 15, 2010 at 11:52:53AM -0800, Joe Perches wrote:
-> > > On Mon, 2010-11-15 at 19:34 +0000, Mark Brown wrote:
-> > > > It appears your scripts are already hooked into get_maintainers.pl which
-> > > > would seem the obvious place to do this?  Sadly I don't do perl, though
-> > > > it looks like you're doing pretty much all the work on that anyway.
-> > > Sadly, no it's not the right place.
-> > To query MAINTAINERS?  I'd assume that's where you'd want to put that
-> > stuff?
-> 
-> I trimmed cc's and added Andrew Morton and Florian Mickler.
-> First thread link for them: http://lkml.org/lkml/2010/11/15/262
-> 
-> I use get_maintainer to find email addresses with
-> "git send-email --cc-cmd=" but sure it could be extended
-> to find some other new information in the MAINTAINERS file.
-> 
-> Anyway, I think that get_maintainers isn't the proper tool
-> to rewrite commit subject lines, though it could certainly
-> do the lookup of a key in the MAINTAINERS file.
-> 
-> Maybe add a new MAINTAINERS section line something like:
-> 	"C:	CommitSubjectGrammarStyle"
-> where CommitSubjectGrammarStyle is something more
-> information rich than "style 1", "style 2".
-> 
-> Perhaps you'll propose a grammar to convert path to header
-> and go through and add these "C:" style entries to the
-> sections you maintain.
-> 
-> Also, what would you expect the output to be when a single
-> patch modified files from 2 subsystems that use different
-> styles?
-> 
-> cheers, Joe
-> 
+> My first reaction to this is, it's silly. Certainly a
+> subsystem-maintainer is capable of hacking something together that
+> suits his needs or may just use a good editor to get the job done.
+> After all, he might want to edit the commit message anyway. Also he has
+> to have his act together for all non-conforming submitters anyway,
+> because shurely, telling people to re-edit their patches subject line
+> is not what one would consider "welcoming to newbies",  or whatever it
+> is kernel subsystem maintainers have to be nowadays *g*... 
 
-My first reaction to this is, it's silly. Certainly a
-subsystem-maintainer is capable of hacking something together that
-suits his needs or may just use a good editor to get the job done.
-After all, he might want to edit the commit message anyway. Also he has
-to have his act together for all non-conforming submitters anyway,
-because shurely, telling people to re-edit their patches subject line
-is not what one would consider "welcoming to newbies",  or whatever it
-is kernel subsystem maintainers have to be nowadays *g*... 
+So, my general policy on this is that I tend to push back on patches
+which don't just work with the toolset (subject lines are just one part
+of it) to a variable extent depending on who's submitting and what
+they're submitting.  One of the factors is that the more patches are
+coming from someone the easier I expect their patches to be to work
+with.
 
-On second thought, if that facility existed, i think nobody would mind
-it either. So, why not. I don't see a way to specify what to do with
-cross-subsystem patches though. 
+The reason this came up is that this is one of the issues with Joe's
+patches (which are rather frequent) but he is only willing to do things
+that he can automate.
 
-(MAINTAINERS seems to be the logical place to put this
-information.)
+> (MAINTAINERS seems to be the logical place to put this
+> information.)
 
-Regards,
-Flo
+Indeed.
