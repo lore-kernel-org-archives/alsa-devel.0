@@ -1,50 +1,60 @@
-From: Adrian Pardini <pardo.bsso@gmail.com>
-Subject: Re: [PATCH] cm6206: turn off de-emphasis in s/pdif
-Date: Tue, 16 Nov 2010 21:43:53 -0300
-Message-ID: <AANLkTik6-V2Gv5JCWeSmv_qxETgjpn7nL75UZz74dvJ2@mail.gmail.com>
-References: <Pine.LNX.4.61.1011161859260.551@kermit.ultrawaves>
+From: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Subject: Re: rfc: rewrite commit subject line for subsystem maintainer
+ preference tool
+Date: Wed, 17 Nov 2010 01:44:27 +0100
+Message-ID: <20101117014427.41d85b13@stein>
+References: <1289848458.16461.150.camel@Joe-Laptop>
+	<20101115193407.GK12986@rakim.wolfsonmicro.main>
+	<1289850773.16461.166.camel@Joe-Laptop>
+	<20101116104921.GL12986@rakim.wolfsonmicro.main>
+	<1289919077.28741.50.camel@Joe-Laptop>
+	<20101116183707.179964dd@schatten.dmk.lab>
+	<20101116181226.GB26239@rakim.wolfsonmicro.main>
+	<20101116203522.65240b18@schatten.dmk.lab>
+	<20101116195530.GA7523@rakim.wolfsonmicro.main>
+	<20101116122102.86e7e0b9.rdunlap@xenotime.net>
+	<20101116230126.GB24623@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 3881E24378
-	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2010 01:43:54 +0100 (CET)
-Received: by ewy2 with SMTP id 2so834457ewy.38
-	for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2010 16:43:53 -0800 (PST)
-In-Reply-To: <Pine.LNX.4.61.1011161859260.551@kermit.ultrawaves>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric Lammerts <alsa-devel@lists.lammerts.org>
-Cc: Dan Allongo <gongo2k1@gmail.com>, alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20101116230126.GB24623@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Randy Dunlap <rdunlap@xenotime.net>, Florian Mickler <florian@mickler.org>, Joe Perches <joe@perches.com>, Jiri Kosina <trivial@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 16/11/2010, Eric Lammerts <alsa-devel@lists.lammerts.org> wrote:
->
-> Hi,
-> I just bought a device with a CM6206. Thank you for the quirk that
-> made it work out-of-the-box! I noticed on my DAC that the de-emphasis
-> LED was on. Is this by accident? Below is a patch (based on the info
-> in the CM6206+datasheet+1.7.pdf that I found somewhere) that turns it
-> off.
->
+On Nov 16 Mark Brown wrote:
+> On Tue, Nov 16, 2010 at 12:21:02PM -0800, Randy Dunlap wrote:
+> 
+> > I don't know what you asked Joe to change, but asking someone to use
+> > the documented canonical patch format:
+> 
+> > <quote>
+> > The canonical patch subject line is:
+> 
+> >     Subject: [PATCH 001/123] subsystem: summary phrase
+> > </quote>
+> 
+> > should be fine.  And there is no need for printf-ish templates
+> > for this in MAINTAINERS either.
+> 
+> That's exactly what I asked him to do.  He said he's not willing to use
+> anything for "subsystem" which can't be automatically generated.
 
-Hi all, I have to resubmit some patches for the same chip related to
-headphone support. Will you find it useful if I added the de-emphasis
-control as a mixer switch?
+Why should we codify our conventions in MAINTAINERS to accommodate the
+specific problem of virtually a _single_ patch author?
 
+Conventions are living and are being adjusted all the time, as code
+organization changes, people join and go, projects start and cease.
 
-cheers.
-
-
+Said author please looks the conventions up in the git history.  If he
+finds that this decelerates his patch generation rate, he can surely
+code a script that looks into git for him and suggests plausible
+prefixes for his patch titles to him.  Or he can collect a kind of
+database (a config file) locally for his own use in which he records
+conventional prefixes on the go.
 -- 
-Adrian.
-http://ovejafm.com
-http://elesquinazotango.com.ar
+Stefan Richter
+-=====-==-=- =-== =---=
+http://arcgraph.de/sr/
