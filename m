@@ -1,15 +1,27 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: ASoC: Cyclic dependency between soc.h and soc-dapm.h
-Date: Wed, 17 Nov 2010 15:33:18 +0100
-Message-ID: <4CE3E7AE.7040308@metafoo.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: rfc: rewrite commit subject line for subsystem
+ maintainer preference tool
+Date: Wed, 17 Nov 2010 17:07:47 +0000
+Message-ID: <20101117170746.GB19488@rakim.wolfsonmicro.main>
+References: <20101116104921.GL12986@rakim.wolfsonmicro.main>
+	<1289919077.28741.50.camel@Joe-Laptop>
+	<20101116183707.179964dd@schatten.dmk.lab>
+	<20101116181226.GB26239@rakim.wolfsonmicro.main>
+	<20101116203522.65240b18@schatten.dmk.lab>
+	<20101116195530.GA7523@rakim.wolfsonmicro.main>
+	<20101116122102.86e7e0b9.rdunlap@xenotime.net>
+	<20101116230126.GB24623@opensource.wolfsonmicro.com>
+	<20101117014427.41d85b13@stein>
+	<alpine.LNX.2.00.1011170150060.7420@pobox.suse.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
-	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id 015E02458D
-	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2010 15:33:42 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A8A16245CE
+	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2010 18:07:50 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <alpine.LNX.2.00.1011170150060.7420@pobox.suse.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,24 +31,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Jiri Kosina <jkosina@suse.cz>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Florian Mickler <florian@mickler.org>, Randy Dunlap <rdunlap@xenotime.net>, Stefan Richter <stefanr@s5r6.in-berlin.de>, Joe Perches <joe@perches.com>, Andrew Morton <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-The commit "ASoC: Decouple DAPM from CODECs" introduced a cyclic dependency between
-soc.h and soc-dapm.h which leads to the following compile error, if a driver includes
-soc-dapm.h without having included soc.h before:
+On Wed, Nov 17, 2010 at 01:53:35AM +0100, Jiri Kosina wrote:
+> On Wed, 17 Nov 2010, Stefan Richter wrote:
 
-	In file included from include/sound/soc-dapm.h:19,
-	                 from sound/soc/codecs/jz4740.c:25:
-	include/sound/soc.h:484: error: field 'dapm' has incomplete type
+> > Why should we codify our conventions in MAINTAINERS to accommodate the
+> > specific problem of virtually a _single_ patch author?
 
-If soc.h has been included before the error does not happen, but then soc-dapm.h
-already got included trough soc.h, so the driver does not really have to include it
-again.
-So I wonder if soc-dapm.h should be made completely internal and not be included
-anywhere else but soc.h anymore?
-Or if the cyclic dependency should be broken somehow, maybe by introducing a third
-header file?
+It seems to be the way we're heading in general - look at all the recent
+work on MAINTAINERS and get_maintainer.pl.  There seems to be a genral
+push to make all this stuff automatable.
 
-- Lars
+> Either the maintainer wants the patch. Then he is certainly able to apply 
+> it no matter the subject line (I personally am getting a lot of patches 
+> which don't follow the format I am using in my tree ... converting 
+> Subject: lines is so trivial that I have never felt like bothering anyone 
+> about it ... it's basically single condition in a shellscript). Or the 
+
+It's slightly more than that if you're dealing with more than one area,
+and I also find this sort of stuff is a good flag for scrubbing the
+patch in greater detail - when patches stand out from a 1000ft visual
+overview there's a fair chance that there's other issues so if people
+regularly submit good patches that have only cosmetic issues I find it's
+worth guiding them away from that.
+
+> maintainer doesn't feel like the patch is worth it, and then the 
+> subject-line format really doesn't matter.
+
+In this case if I don't apply it it's likely to end up going in via your
+tree and then I'll still have to deal with the merge conflicts which are
+more annoying.
