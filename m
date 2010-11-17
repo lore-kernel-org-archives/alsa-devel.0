@@ -1,18 +1,16 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: davinci: fixes for multi-component
-Date: Wed, 17 Nov 2010 09:57:23 +0000
-Message-ID: <1289987843.3288.0.camel@odin>
-References: <1289910429-29347-1-git-send-email-chris@edesix.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Sound card OpenSuse 11.3
+Date: Wed, 17 Nov 2010 13:54:40 +0100
+Message-ID: <4CE3D090.8020005@ladisch.de>
+References: <9BFE47707BADC348BC9A3BD7E8B512992A4C363B@NEMES664.nemes2k3.locale>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f44.google.com (mail-ww0-f44.google.com [74.125.82.44])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9394024516
-	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2010 10:57:29 +0100 (CET)
-Received: by wwa36 with SMTP id 36so1839904wwa.25
-	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2010 01:57:29 -0800 (PST)
-In-Reply-To: <1289910429-29347-1-git-send-email-chris@edesix.com>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id C039224575
+	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2010 13:52:58 +0100 (CET)
+In-Reply-To: <9BFE47707BADC348BC9A3BD7E8B512992A4C363B@NEMES664.nemes2k3.locale>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,19 +20,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Chris Paulson-Ellis <chris@edesix.com>
-Cc: vbarinov@embeddedalley.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, miguel.aguilar@ridgerun.com
+To: Luca Samiolo <luca.samiolo@nemes.it>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2010-11-16 at 12:27 +0000, Chris Paulson-Ellis wrote:
-> Multi-component commit f0fba2ad broke a few things which this patch should
-> fix. Tested on the DM355 EVM. I've been as careful as I can, but it would be
-> good if those with access to other Davinci boards could test.
-> 
-> --
-
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+THVjYSBTYW1pb2xvIHdyb3RlOgo+IGNhbiBJIGdldCBhIGxpc3Qgb2Ygc291bmQgY2FyZHMgY29t
+cGF0aWJsZSB3aXRoIE9wZW5TdXNlIDEwLjM/CgpBc3N1bWluZyB0aGF0ICJjYXJkcyIgbWVhbnMg
+ImNhcmRzIiBhbmQgbm90ICJVU0IgZGV2aWNlcyIsIHRoZSBvbmx5IFBDSQpjaGlwc2V0cyBjb21w
+YXRpYmxlIHdpdGggTGludXggYW5kIGN1cnJlbnRseSBiZWluZyBzb2xkIGFyZSBWSUEgRW52eTI0
+CmFuZCBDLU1lZGlhIENNSTg3eHgvQVZ4eHguCgpodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcv
+bWFpbi9pbmRleC5waHAvTWF0cml4OlZlbmRvci1Bc3VzCmh0dHA6Ly93d3cuYWxzYS1wcm9qZWN0
+Lm9yZy9tYWluL2luZGV4LnBocC9NYXRyaXg6VmVuZG9yLUF1emVuVGVjaApodHRwOi8vd3d3LmFs
+c2EtcHJvamVjdC5vcmcvbWFpbi9pbmRleC5waHAvTWF0cml4OlZlbmRvci1IVF9PbWVnYQpodHRw
+Oi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvbWFpbi9pbmRleC5waHAvTWF0cml4OlZlbmRvci1UZW1w
+b1RlYwpodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvbWFpbi9pbmRleC5waHAvTWF0cml4OlZl
+bmRvci1UZXJyYXRlYwpodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvbWFpbi9pbmRleC5waHAv
+TWF0cml4OlZlbmRvci3njoTkurrlv5flkJEKCllvdSBkaWRuJ3QgdGVsbCB1cyB3aGF0IGZlYXR1
+cmVzIHlvdSBuZWVkLCBidXQgZm9yIGEgdHlwY2lhbCBkZXNrdG9wCnNvdW5kIGNhcmQsIEknZCBy
+ZWNvbW1lbmQgdGhlIEFzdXMgWG9uYXIgRFMvRDEvRFguCgo+IFRoZSBpbmZvcm1hdGlvbiB0cmFu
+c21pdHRlZCBpcyBpbnRlbmRlZCBvbmx5IGZvciBibGFoIGJsYWggYmxhaCAuLi4KClRoaXMgZS1t
+YWlsIGNvbnRhaW5zIHB1YmxpYyBpbmZvcm1hdGlvbiBpbnRlbmRlZCBmb3IgYW55IHN1YnNjcmli
+ZXIgb2YKdGhpcyBtYWlsaW5nIGxpc3QgYW5kIGZvciBhbnlib2R5IGVsc2Ugd2hvIGJvdGhlcnMg
+dG8gcmVhZCBpdDsgaXQgd2lsbApiZSBjb3BpZWQsIGRpc2Nsb3NlZCBhbmQgZGlzdHJpYnV0ZWQg
+dG8gdGhlIHB1YmxpYy4gIElmIHlvdSB0aGluayB5b3UKYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVj
+aXBpZW50LCBwbGVhc2UgY29tbWl0IHN1aWNpZGUgaW1tZWRpYXRlbHkuClRoZXNlIHRlcm1zIGFw
+cGx5IGFsc28gdG8gYW55IGUtbWFpbHMgcXVvdGVkIGluLCByZWZlcmVuY2VkIGZyb20sIG9yCmFu
+c3dlcmluZyB0aGlzIGUtbWFpbCwgYW5kIHN1cGVyc2VkZSBhbnkgY29uZmlkZW50aWFsaXR5IG5v
+dGljZXMgaW4KdGhvc2UgZS1tYWlscy4gIEFkZGl0aW9uYWxseSwgY29uZmlkZW50aWFsaXR5IG5v
+dGljZXMgaW4gdGhvc2UgZS1tYWlscwp3aWxsIGluY3VyIGxlZ2FsIHByb2Nlc3NpbmcgZmVlcyBv
+ZiAkNDIgcGVyIGxpbmU7IHlvdSBoYXZlIGFncmVlZCB0bwp0aGlzIGJ5IHJlYWRpbmcgdGhpcyBj
+b25maWRlbnRpYWxpdHkgbm90aWNlLgoKClJlZ2FyZHMsCkNsZW1lbnMKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
