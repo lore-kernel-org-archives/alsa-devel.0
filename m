@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: davinci: fixes for multi-component
-Date: Wed, 17 Nov 2010 18:42:16 +0000
-Message-ID: <20101117184216.GD19488@rakim.wolfsonmicro.main>
-References: <1289910429-29347-1-git-send-email-chris@edesix.com>
+Subject: Re: ASoC: Cyclic dependency between soc.h and
+	soc-dapm.h
+Date: Wed, 17 Nov 2010 18:44:11 +0000
+Message-ID: <20101117184411.GE19488@rakim.wolfsonmicro.main>
+References: <4CE3E7AE.7040308@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3900D1037EC
-	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2010 19:42:23 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D7BF7103894
+	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2010 19:44:12 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1289910429-29347-1-git-send-email-chris@edesix.com>
+In-Reply-To: <4CE3E7AE.7040308@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,15 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Chris Paulson-Ellis <chris@edesix.com>
-Cc: vbarinov@embeddedalley.com, alsa-devel@alsa-project.org, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com, miguel.aguilar@ridgerun.com, lrg@slimlogic.co.uk
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 16, 2010 at 12:27:09PM +0000, Chris Paulson-Ellis wrote:
-> Multi-component commit f0fba2ad broke a few things which this patch should
-> fix. Tested on the DM355 EVM. I've been as careful as I can, but it would be
-> good if those with access to other Davinci boards could test.
+On Wed, Nov 17, 2010 at 03:33:18PM +0100, Lars-Peter Clausen wrote:
 
-Applied on the basis that we can always do further fixups and it looks
-sane on review - if people encounter issues in test could you please
-submit incremental patches?  Thanks!
+[Reflowed into 80 columns, please look into your MUA configuration.]
+
+> So I wonder if soc-dapm.h should be made completely internal and not
+> be included anywhere else but soc.h anymore?
+
+I think this is the simplest approach - the separation is useful for
+code legibility but I don't think it's going to make a meanigful
+difference if you always end up with both at compile time.
