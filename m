@@ -1,18 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: Cyclic dependency between soc.h and
-	soc-dapm.h
-Date: Wed, 17 Nov 2010 18:44:11 +0000
-Message-ID: <20101117184411.GE19488@rakim.wolfsonmicro.main>
-References: <4CE3E7AE.7040308@metafoo.de>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH 44/44] sound/soc/codecs: Remove unnecessary
+	semicolons
+Date: Wed, 17 Nov 2010 20:32:56 +0100
+Message-ID: <20101117193256.GA28010@ucw.cz>
+References: <cover.1289789604.git.joe@perches.com>
+	<97fd199b7dac50613f6843156687223928cce44a.1289789605.git.joe@perches.com>
+	<20101115134939.GC12986@rakim.wolfsonmicro.main>
+	<1289840957.16461.138.camel@Joe-Laptop>
+	<20101115173031.GI12986@rakim.wolfsonmicro.main>
+	<1289842444.16461.140.camel@Joe-Laptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D7BF7103894
-	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2010 19:44:12 +0100 (CET)
+Received: from atrey.karlin.mff.cuni.cz (ksp.mff.cuni.cz [195.113.26.206])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9E5621038BA
+	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2010 20:33:05 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <4CE3E7AE.7040308@metafoo.de>
+In-Reply-To: <1289842444.16461.140.camel@Joe-Laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +27,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Joe Perches <joe@perches.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Jiri Kosina <trivial@kernel.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Lartey <ian@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 17, 2010 at 03:33:18PM +0100, Lars-Peter Clausen wrote:
+On Mon 2010-11-15 09:34:04, Joe Perches wrote:
+> On Mon, 2010-11-15 at 17:30 +0000, Mark Brown wrote:
+> > On Mon, Nov 15, 2010 at 09:09:17AM -0800, Joe Perches wrote:
+> > > Signed-off-by: Joe Perches <joe@perches.com>
+> > Applied, thanks.
+> > Please try to use changelog formats consistent with the code you're
+> > modifying.
+> 
+> I think it's more important to use consistent changelogs
+> for a patch series.
 
-[Reflowed into 80 columns, please look into your MUA configuration.]
+And I agree here. Having to learn code-style quirks for patches is
+bad, having to learn new changelog style for each subsystem is very
+bad.
+								Pavel
 
-> So I wonder if soc-dapm.h should be made completely internal and not
-> be included anywhere else but soc.h anymore?
-
-I think this is the simplest approach - the separation is useful for
-code legibility but I don't think it's going to make a meanigful
-difference if you always end up with both at compile time.
+-- 
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
