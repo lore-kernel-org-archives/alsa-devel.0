@@ -1,100 +1,40 @@
-From: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: rfc: rewrite commit subject line for subsystem maintainer
- preference tool
-Date: Wed, 17 Nov 2010 22:07:37 +0100
-Message-ID: <20101117220737.2d3d7356@stein>
-References: <20101116104921.GL12986@rakim.wolfsonmicro.main>
-	<1289919077.28741.50.camel@Joe-Laptop>
-	<20101116183707.179964dd@schatten.dmk.lab>
-	<20101116181226.GB26239@rakim.wolfsonmicro.main>
-	<20101116203522.65240b18@schatten.dmk.lab>
-	<20101116195530.GA7523@rakim.wolfsonmicro.main>
-	<20101116122102.86e7e0b9.rdunlap@xenotime.net>
-	<20101116230126.GB24623@opensource.wolfsonmicro.com>
-	<20101117014427.41d85b13@stein>
-	<alpine.LNX.2.00.1011170150060.7420@pobox.suse.cz>
-	<20101117170746.GB19488@rakim.wolfsonmicro.main>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Add support for MAX98089 CODEC
+Date: Wed, 17 Nov 2010 22:29:34 +0000
+Message-ID: <1290032974.3288.381.camel@odin>
+References: <4CE43A80.4050209@maxim-ic.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20101117170746.GB19488@rakim.wolfsonmicro.main>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Jiri Kosina <jkosina@suse.cz>, Randy Dunlap <rdunlap@xenotime.net>, Florian Mickler <florian@mickler.org>, Joe Perches <joe@perches.com>, Andrew Morton <akpm@linux-foundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 302B01038CF
+	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2010 23:29:41 +0100 (CET)
+Received: by ewy2 with SMTP id 2so1626122ewy.38
+	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2010 14:29:39 -0800 (PST)
+In-Reply-To: <4CE43A80.4050209@maxim-ic.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jesse Marroquin <jesse.marroquin@maxim-ic.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Brown <broonie@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark@alsa-project.org, Peter Hsiang <Peter.Hsiang@maxim-ic.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Nov 17 Mark Brown wrote:
-> On Wed, Nov 17, 2010 at 01:53:35AM +0100, Jiri Kosina wrote:
-> > On Wed, 17 Nov 2010, Stefan Richter wrote:
+On Wed, 2010-11-17 at 14:26 -0600, Jesse Marroquin wrote:
+> This patch adds initial support for the MAX98089 CODEC.
 > 
-> > > Why should we codify our conventions in MAINTAINERS to accommodate the
-> > > specific problem of virtually a _single_ patch author?
-> 
-> It seems to be the way we're heading in general - look at all the recent
-> work on MAINTAINERS and get_maintainer.pl.  There seems to be a genral
-> push to make all this stuff automatable.
+> Signed-off-by: Jesse Marroquin <jesse.marroquin@maxim-ic.com>
+> ---
 
-get_maintainer.pl, used with judgment and together with "gitk
-the/patched/source.c" is nice not only for people like Joe who
-regularly work tree-wide but also for ones like me who only rarely want
-to submit a bug report or patch for a subsystem with they are
-unfamiliar with.
-
-But the thought of a database of "how to start a good patch title" is
-far-fetched.  Really, as a patch author, just look how other people
-write patch titles and judge whether this is good for your work too or
-not.
-
-> > Either the maintainer wants the patch. Then he is certainly able to apply 
-> > it no matter the subject line (I personally am getting a lot of patches 
-> > which don't follow the format I am using in my tree ... converting 
-> > Subject: lines is so trivial that I have never felt like bothering anyone 
-> > about it ... it's basically single condition in a shellscript). Or the 
-> 
-> It's slightly more than that if you're dealing with more than one area,
-> and I also find this sort of stuff is a good flag for scrubbing the
-> patch in greater detail - when patches stand out from a 1000ft visual
-> overview there's a fair chance that there's other issues so if people
-> regularly submit good patches that have only cosmetic issues I find it's
-> worth guiding them away from that.
-
-On one hand Jiri is right that maintainers can adjust title prefixes ad
-hoc.  (Downside:  Weaker connection to mailinglist archives.)  On the
-other hand, in the case of long-term prolific authors like Joe it is
-more optimal if there is a good patch title right from the outset.
-
-So, if this boring thread does at least yield the conclusion that
-${path}/${filename}: is a bad title prefix, at least something was
-won. :-)
-
-Another thought:  Whether a typical part of a mass conversion, e.g. to
-use a new helper macro without change of functionality, is named
-
-	[PATCH] [subsystem] driver: use foo_bar helper
-or
-	[PATCH] use foo_bar helper in subsystem, driver
-
-does not really matter, does it?  This change is more about the helper
-than about the driver.  It is really a different kind of changeset than
-a functional change that we want to be called
-
-	[PATCH] [subsystem] driver: fix crash at disconnection
-
-or so.  This is something that those who look for release notes of
-that driver or subsystem want to grep in the changelog.
-
-Or in other words:  If you as patch author wonder what would be a good
-title for your patch, then ask yourself:  How should this change show up
-in kernel release notes that are constructed from the git shortlog?
-Sometimes the answer to this question includes among else a prefix with
-a canonical subsystem name (even case sensitive, with brackets or
-colon), whereas other times such formalities are utterly pointless.
-
-[Sorry for the spent electrons.  But OTOH, issues like (1.) optimum
-use of reviewer bandwidth, (2.) kernel changelog alias release
-notes /do/ matter.]
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
-Stefan Richter
--=====-==-=- =-== =---=
-http://arcgraph.de/sr/
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
