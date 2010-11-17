@@ -1,76 +1,100 @@
-From: Jesse Marroquin <jesse.marroquin@maxim-ic.com>
-Subject: [PATCH] ASoC: Add support for MAX98089 CODEC
-Date: Wed, 17 Nov 2010 14:26:40 -0600
-Message-ID: <4CE43A80.4050209__47387.4788768173$1290025623$gmane$org@maxim-ic.com>
+From: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Subject: Re: rfc: rewrite commit subject line for subsystem maintainer
+ preference tool
+Date: Wed, 17 Nov 2010 22:07:37 +0100
+Message-ID: <20101117220737.2d3d7356@stein>
+References: <20101116104921.GL12986@rakim.wolfsonmicro.main>
+	<1289919077.28741.50.camel@Joe-Laptop>
+	<20101116183707.179964dd@schatten.dmk.lab>
+	<20101116181226.GB26239@rakim.wolfsonmicro.main>
+	<20101116203522.65240b18@schatten.dmk.lab>
+	<20101116195530.GA7523@rakim.wolfsonmicro.main>
+	<20101116122102.86e7e0b9.rdunlap@xenotime.net>
+	<20101116230126.GB24623@opensource.wolfsonmicro.com>
+	<20101117014427.41d85b13@stein>
+	<alpine.LNX.2.00.1011170150060.7420@pobox.suse.cz>
+	<20101117170746.GB19488@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from antispam01.maxim-ic.com (antispam01.maxim-ic.com
-	[205.153.101.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id AFAE51038C8
-	for <alsa-devel@alsa-project.org>; Wed, 17 Nov 2010 21:26:44 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Hsiang <Peter.Hsiang@maxim>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20101117170746.GB19488@rakim.wolfsonmicro.main>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Jiri Kosina <jkosina@suse.cz>, Randy Dunlap <rdunlap@xenotime.net>, Florian Mickler <florian@mickler.org>, Joe Perches <joe@perches.com>, Andrew Morton <akpm@linux-foundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds initial support for the MAX98089 CODEC.
+On Nov 17 Mark Brown wrote:
+> On Wed, Nov 17, 2010 at 01:53:35AM +0100, Jiri Kosina wrote:
+> > On Wed, 17 Nov 2010, Stefan Richter wrote:
+> 
+> > > Why should we codify our conventions in MAINTAINERS to accommodate the
+> > > specific problem of virtually a _single_ patch author?
+> 
+> It seems to be the way we're heading in general - look at all the recent
+> work on MAINTAINERS and get_maintainer.pl.  There seems to be a genral
+> push to make all this stuff automatable.
 
-Signed-off-by: Jesse Marroquin <jesse.marroquin@maxim-ic.com>
----
- sound/soc/codecs/max98088.c |   11 ++++++++++-
- 1 files changed, 10 insertions(+), 1 deletions(-)
+get_maintainer.pl, used with judgment and together with "gitk
+the/patched/source.c" is nice not only for people like Joe who
+regularly work tree-wide but also for ones like me who only rarely want
+to submit a bug report or patch for a subsystem with they are
+unfamiliar with.
 
-diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-index ef06007..9c32237 100644
---- a/sound/soc/codecs/max98088.c
-+++ b/sound/soc/codecs/max98088.c
-@@ -28,6 +28,11 @@
- #include <sound/max98088.h>
- #include "max98088.h"
- 
-+enum max98088_type {
-+       MAX98088,
-+       MAX98089,
-+};
-+
- struct max98088_cdata {
-        unsigned int rate;
-        unsigned int fmt;
-@@ -36,6 +41,7 @@ struct max98088_cdata {
- 
- struct max98088_priv {
-        u8 reg_cache[M98088_REG_CNT];
-+       enum max98088_type devtype;
-        void *control_data;
-        struct max98088_pdata *pdata;
-        unsigned int sysclk;
-@@ -2042,6 +2048,8 @@ static int max98088_i2c_probe(struct i2c_client *i2c,
-        if (max98088 == NULL)
-                return -ENOMEM;
- 
-+       max98088->devtype = id->driver_data;
-+
-        i2c_set_clientdata(i2c, max98088);
-        max98088->control_data = i2c;
-        max98088->pdata = i2c->dev.platform_data;
-@@ -2061,7 +2069,8 @@ static int __devexit max98088_i2c_remove(struct i2c_client *client)
- }
- 
- static const struct i2c_device_id max98088_i2c_id[] = {
--       { "max98088", 0 },
-+       { "max98088", MAX98088 },
-+       { "max98089", MAX98089 },
-        { }
- };
- MODULE_DEVICE_TABLE(i2c, max98088_i2c_id);
+But the thought of a database of "how to start a good patch title" is
+far-fetched.  Really, as a patch author, just look how other people
+write patch titles and judge whether this is good for your work too or
+not.
+
+> > Either the maintainer wants the patch. Then he is certainly able to apply 
+> > it no matter the subject line (I personally am getting a lot of patches 
+> > which don't follow the format I am using in my tree ... converting 
+> > Subject: lines is so trivial that I have never felt like bothering anyone 
+> > about it ... it's basically single condition in a shellscript). Or the 
+> 
+> It's slightly more than that if you're dealing with more than one area,
+> and I also find this sort of stuff is a good flag for scrubbing the
+> patch in greater detail - when patches stand out from a 1000ft visual
+> overview there's a fair chance that there's other issues so if people
+> regularly submit good patches that have only cosmetic issues I find it's
+> worth guiding them away from that.
+
+On one hand Jiri is right that maintainers can adjust title prefixes ad
+hoc.  (Downside:  Weaker connection to mailinglist archives.)  On the
+other hand, in the case of long-term prolific authors like Joe it is
+more optimal if there is a good patch title right from the outset.
+
+So, if this boring thread does at least yield the conclusion that
+${path}/${filename}: is a bad title prefix, at least something was
+won. :-)
+
+Another thought:  Whether a typical part of a mass conversion, e.g. to
+use a new helper macro without change of functionality, is named
+
+	[PATCH] [subsystem] driver: use foo_bar helper
+or
+	[PATCH] use foo_bar helper in subsystem, driver
+
+does not really matter, does it?  This change is more about the helper
+than about the driver.  It is really a different kind of changeset than
+a functional change that we want to be called
+
+	[PATCH] [subsystem] driver: fix crash at disconnection
+
+or so.  This is something that those who look for release notes of
+that driver or subsystem want to grep in the changelog.
+
+Or in other words:  If you as patch author wonder what would be a good
+title for your patch, then ask yourself:  How should this change show up
+in kernel release notes that are constructed from the git shortlog?
+Sometimes the answer to this question includes among else a prefix with
+a canonical subsystem name (even case sensitive, with brackets or
+colon), whereas other times such formalities are utterly pointless.
+
+[Sorry for the spent electrons.  But OTOH, issues like (1.) optimum
+use of reviewer bandwidth, (2.) kernel changelog alias release
+notes /do/ matter.]
 -- 
-1.5.6.5
+Stefan Richter
+-=====-==-=- =-== =---=
+http://arcgraph.de/sr/
