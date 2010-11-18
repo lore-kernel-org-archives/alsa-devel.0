@@ -1,17 +1,20 @@
-From: Radivoje Jovanovic <radivojejovanovic@gmail.com>
-Subject: trigger_stop and buffer overrun
-Date: Thu, 18 Nov 2010 08:59:07 -0800
-Message-ID: <AANLkTi=vVFDbeLgoy-wRWtzOQanmBTLDLkoaxrUciJj9@mail.gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Move WM8994 read/write access data
+ into separate file
+Date: Thu, 18 Nov 2010 17:40:41 +0000
+Message-ID: <1290102041.3328.8.camel@odin>
+References: <1290086669-27279-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
-	[209.85.213.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id C19AF1037F2
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2010 17:59:10 +0100 (CET)
-Received: by yws5 with SMTP id 5so2228359yws.38
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2010 08:59:09 -0800 (PST)
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3041E10381C
+	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2010 18:40:48 +0100 (CET)
+Received: by wyg36 with SMTP id 36so3429832wyg.38
+	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2010 09:40:47 -0800 (PST)
+In-Reply-To: <1290086669-27279-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,18 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Is there anu way to tell what is the last position in the buffer filled by
-ALSA during the trigger stop callback? The hardware I have is playing sound
-but if I turn the DMA off when trigger_stop is executed I will not hear the
-end of the file at all. It seems to me that I would have to setup the
-hardware to stop playing at the specific address.
-On the other hand if I play longer sounds or a song I notice that the song
-is skipping a lot and 1 minute sample is over in 20 seconds so it seems to
-me that the buffer is overflowing. the pointer callback reads correctly the
-current DMA position from the hardware so I am confused how the overflow
-happens. Is there any other way ALSA tracks the position where to write the
-data?
-cheers
+On Thu, 2010-11-18 at 13:24 +0000, Mark Brown wrote:
+> Makes the WM8994 driver file itself substantially smaller.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/wm8994-tables.c | 1575
+> +++++++++++++++++++++++++++++++++++++
+>  sound/soc/codecs/wm8994.c        | 1582
+> +-------------------------------------
+>  sound/soc/codecs/wm8994.h        |    9 +
+>  3 files changed, 1587 insertions(+), 1579 deletions(-)
+>  create mode 100644 sound/soc/codecs/wm8994-tables.c
+> 
+> 
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
