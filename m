@@ -1,43 +1,49 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Provide ADC left/right channel
- source selection on WM8994
-Date: Thu, 18 Nov 2010 17:40:52 +0000
-Message-ID: <1290102052.3328.9.camel@odin>
-References: <1290095431-2774-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Manoj Iyer <manoj.iyer@canonical.com>
+Subject: [PATCH] Enable jack sense for Thinkpad Edge 11
+Date: Thu, 18 Nov 2010 15:35:51 -0600
+Message-ID: <AANLkTin2zKWLLxsRn+T+U+NpAmbQiOTM_vrg_Z-8JZd-@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
-	[209.85.161.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2480D10392B
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2010 18:41:00 +0100 (CET)
-Received: by gxk5 with SMTP id 5so309867gxk.38
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2010 09:40:57 -0800 (PST)
-In-Reply-To: <1290095431-2774-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-11-18 at 15:50 +0000, Mark Brown wrote:
-> Allow the application to choose if the ADC data presented on the left
-> and right channels is sourced from the internal left or right channel.
-> This allows a mono recording to be presented as stereo on the external
-> bus.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+This patch enables audio play back from external headphones on Thinkpad Edge 11.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+The following changes since commit 0c1c062266ecfeaebadadb780020a422f829284f:
+  Manoj Iyer (1):
+        Enable jack sense for Thinkpad Edge 11
+
+are available in the git repository at:
+
+  git://kernel.ubuntu.com/git/manjo/linux-2.6.git thinpad11
+
+>From 89796b0608f0c36cbd05d0426e95386766ff20b9 Mon Sep 17 00:00:00 2001
+From: Manoj Iyer <manoj.iyer@canonical.com>
+Date: Thu, 18 Nov 2010 21:24:42 +0000
+Subject: [PATCH] Enable jack sense for Thinkpad Edge 11
+
+Signed-off-by: Manoj Iyer <manoj.iyer@canonical.com>
+---
+ sound/pci/hda/patch_conexant.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index 6361f75..b8d6554 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -3108,6 +3108,7 @@ static struct snd_pci_quirk cxt5066_cfg_tbl[] = {
+        SND_PCI_QUIRK(0x152d, 0x0833, "OLPC XO-1.5", CXT5066_OLPC_XO_1_5),
+        SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo T400s", CXT5066_THINKPAD),
+        SND_PCI_QUIRK(0x17aa, 0x21b2, "Thinkpad X100e", CXT5066_IDEAPAD),
++       SND_PCI_QUIRK(0x17aa, 0x21c8, "Thinkpad Edge 11", CXT5066_THINKPAD),
+        SND_PCI_QUIRK(0x17aa, 0x21b3, "Thinkpad Edge 13 (197)",
+CXT5066_IDEAPAD),
+        SND_PCI_QUIRK(0x17aa, 0x21b4, "Thinkpad Edge", CXT5066_IDEAPAD),
+        SND_PCI_QUIRK(0x17aa, 0x215e, "Lenovo Thinkpad", CXT5066_THINKPAD),
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+1.7.0.4
+
+---
+Manoj Iyer
