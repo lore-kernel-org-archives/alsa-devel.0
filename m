@@ -1,23 +1,15 @@
-From: Alexander <subaparts@yandex.ru>
-Subject: Does anyone really have success experience with SPI
- codecs with new name-based SOC API?
-Date: Thu, 18 Nov 2010 14:31:06 +0300
-Message-ID: <1290079866.1496.55.camel@r60e>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Provide ADC left/right channel source
+	selection on WM8994
+Date: Thu, 18 Nov 2010 15:50:31 +0000
+Message-ID: <1290095431-2774-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward19.mail.yandex.net (forward19.mail.yandex.net
-	[95.108.253.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id 68886103914
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2010 12:31:11 +0100 (CET)
-Received: from smtp18.mail.yandex.net (smtp18.mail.yandex.net [95.108.252.18])
-	by forward19.mail.yandex.net (Yandex) with ESMTP id 978EE3440368
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2010 14:31:07 +0300 (MSK)
-Received: from [192.168.1.202] (ppp91-78-231-64.pppoe.mtu-net.ru
-	[91.78.231.64])
-	by smtp18.mail.yandex.net (Yandex) with ESMTPA id 602FA36780C2
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2010 14:31:07 +0300 (MSK)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C6D481037F2
+	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2010 16:50:46 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,36 +19,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Does anyone really have success experience with SPI codecs with new
-name-based SOC API?
-There are really few SPI codecs in ASoC subsystem, so I wonder if only I
-cannot bind my SPI codec to machine driver.
+Allow the application to choose if the ADC data presented on the left
+and right channels is sourced from the internal left or right channel.
+This allows a mono recording to be presented as stereo on the external
+bus.
 
-The codec is registered with name spi0.0 it's the behavior of SPI
-subsystem, I suppose. So the form is %s%d.%d and not %s.%d as supposed
-in fmt_single_name() in soc_core.c
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |   27 ++++++++++++++++++++++-----
+ 1 files changed, 22 insertions(+), 5 deletions(-)
 
-For me
-dev_name(dev)==spi0.0
-dev->driver->name==cs4271-codec
-
-Is this really working code?
------
-	strncpy(name, dev_name(dev), NAME_SIZE);
-
-	/* are we a "%s.%d" name (platform and SPI components) */
-	found = strstr(name, dev->driver->name);
-	if (found) {
-		/* get ID */
-		if (sscanf(&found[strlen(dev->driver->name)], ".%d", id) == 1) {
-
-			/* discard ID from name if ID == -1 */
-			if (*id == -1)
-				found[strlen(dev->driver->name)] = '\0';
-		}
-
-	} else {
------
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 3ca734d..3c4d178 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -503,21 +503,33 @@ static int wm8994_get_retune_mobile_enum(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
+-static const char *aifdac_src_text[] = {
++static const char *aif_chan_src_text[] = {
+ 	"Left", "Right"
+ };
+ 
++static const struct soc_enum aif1adcl_src =
++	SOC_ENUM_SINGLE(WM8994_AIF1_CONTROL_1, 15, 2, aif_chan_src_text);
++
++static const struct soc_enum aif1adcr_src =
++	SOC_ENUM_SINGLE(WM8994_AIF1_CONTROL_1, 14, 2, aif_chan_src_text);
++
++static const struct soc_enum aif2adcl_src =
++	SOC_ENUM_SINGLE(WM8994_AIF2_CONTROL_1, 15, 2, aif_chan_src_text);
++
++static const struct soc_enum aif2adcr_src =
++	SOC_ENUM_SINGLE(WM8994_AIF2_CONTROL_1, 14, 2, aif_chan_src_text);
++
+ static const struct soc_enum aif1dacl_src =
+-	SOC_ENUM_SINGLE(WM8994_AIF1_CONTROL_2, 15, 2, aifdac_src_text);
++	SOC_ENUM_SINGLE(WM8994_AIF1_CONTROL_2, 15, 2, aif_chan_src_text);
+ 
+ static const struct soc_enum aif1dacr_src =
+-	SOC_ENUM_SINGLE(WM8994_AIF1_CONTROL_2, 14, 2, aifdac_src_text);
++	SOC_ENUM_SINGLE(WM8994_AIF1_CONTROL_2, 14, 2, aif_chan_src_text);
+ 
+ static const struct soc_enum aif2dacl_src =
+-	SOC_ENUM_SINGLE(WM8994_AIF2_CONTROL_2, 15, 2, aifdac_src_text);
++	SOC_ENUM_SINGLE(WM8994_AIF2_CONTROL_2, 15, 2, aif_chan_src_text);
+ 
+ static const struct soc_enum aif2dacr_src =
+-	SOC_ENUM_SINGLE(WM8994_AIF2_CONTROL_2, 14, 2, aifdac_src_text);
++	SOC_ENUM_SINGLE(WM8994_AIF2_CONTROL_2, 14, 2, aif_chan_src_text);
+ 
+ static void wm8958_mbc_apply(struct snd_soc_codec *codec, int mbc, int start)
+ {
+@@ -692,6 +704,11 @@ SOC_DOUBLE_R_TLV("AIF2ADC Volume", WM8994_AIF2_ADC_LEFT_VOLUME,
+ 		 WM8994_AIF2_ADC_RIGHT_VOLUME,
+ 		 1, 119, 0, digital_tlv),
+ 
++SOC_ENUM("AIF1ADCL Source", aif1adcl_src),
++SOC_ENUM("AIF1ADCR Source", aif1adcr_src),
++SOC_ENUM("AIF2ADCL Source", aif1adcl_src),
++SOC_ENUM("AIF2ADCR Source", aif1adcr_src),
++
+ SOC_ENUM("AIF1DACL Source", aif1dacl_src),
+ SOC_ENUM("AIF1DACR Source", aif1dacr_src),
+ SOC_ENUM("AIF2DACL Source", aif1dacl_src),
+-- 
+1.7.1
