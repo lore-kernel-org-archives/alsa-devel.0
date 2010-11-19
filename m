@@ -1,17 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd_pcm_writei VS snd_pcm_mmap_writei
-Date: Fri, 19 Nov 2010 09:21:30 +0100
-Message-ID: <4CE6338A.3090405@ladisch.de>
-References: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE370@EXGMBX01.sasken.com>
-	<alpine.LNX.2.00.1011190808080.21207@eeebox2.perex-int.cz>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH 1/3] ALSA: HDA: Create mixers on ALC887
+Date: Fri, 19 Nov 2010 10:28:35 +0100
+Message-ID: <4CE64343.70807@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------090900090009040602080601"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 99E0E24390
-	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2010 09:19:53 +0100 (CET)
-In-Reply-To: <alpine.LNX.2.00.1011190808080.21207@eeebox2.perex-int.cz>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 071D3243E9
+	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2010 10:28:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,35 +17,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Irfan Shaikh <irfan.shaikh@sasken.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Fri, 19 Nov 2010, Irfan Shaikh wrote:
-> >         Please tell me
-> >         a) Difference between working of snd_pcm_mmap_writei and snd_pcm_writei ?
-> 
-> The mmap functions does not require user space / kernel context switches.
-> 
-> >         b) Performance wise which is better ?
-> > 
-> >         When i use gettimeofday almost profile time comes almost same for both of them.
-> 
-> With current hw power, there are no major differences.
+This is a multi-part message in MIME format.
+--------------090900090009040602080601
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Yes, the context switches have no noticeable impact on latency or
-throughput.
+BugLink: http://launchpad.net/bugs/669092
 
-The only case where using the mmap functions makes sense is when the
-program generates the samples on the fly and can write them directly
-into the device's buffer.  If, however, the samples are already in some
-other buffer and are to be copied into the device's buffer, then this is
-_exactly_ the same situation as snd_pcm_writei.
+ALC887 does not have any volume control ability on the mixer NIDs,
+so put the volume controls on the dac NIDs instead. Without this
+patch, ALC887 users cannot use alsamixer at all.
 
-If your algorithm requires that you always use snd_pcm_mmap_writei,
-then you shouldn't have used mmap in the first place.
+Cc: stable@kernel.org
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
+
+--------------090900090009040602080601
+Content-Type: text/x-patch;
+ name="0001-Create-mixers-on-ALC887.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0001-Create-mixers-on-ALC887.patch"
+
+>From 2418add610811b5763d96f8811ad5d303516bfa3 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Tue, 9 Nov 2010 14:35:30 +0100
+Subject: [PATCH 1/3] ALSA: HDA: Create mixers on ALC887
+
+BugLink: http://launchpad.net/bugs/669092
+
+ALC887 does not have any volume control ability on the mixer NIDs, 
+so put the volume controls on the dac NIDs instead. Without this 
+patch, ALC887 users cannot use alsamixer at all.
+
+Cc: stable@kernel.org
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 788ac4b..ce4017e 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -10816,6 +10816,9 @@ static int alc_auto_add_mic_boost(struct hda_codec *codec)
+ 	return 0;
+ }
+ 
++static int alc861vd_auto_create_multi_out_ctls(struct alc_spec *spec,
++					     const struct auto_pin_cfg *cfg);
++
+ /* almost identical with ALC880 parser... */
+ static int alc882_parse_auto_config(struct hda_codec *codec)
+ {
+@@ -10833,7 +10836,10 @@ static int alc882_parse_auto_config(struct hda_codec *codec)
+ 	err = alc880_auto_fill_dac_nids(spec, &spec->autocfg);
+ 	if (err < 0)
+ 		return err;
+-	err = alc880_auto_create_multi_out_ctls(spec, &spec->autocfg);
++	if (codec->vendor_id == 0x10ec0887)
++		err = alc861vd_auto_create_multi_out_ctls(spec, &spec->autocfg);
++	else
++		err = alc880_auto_create_multi_out_ctls(spec, &spec->autocfg);
+ 	if (err < 0)
+ 		return err;
+ 	err = alc880_auto_create_extra_out(spec, spec->autocfg.hp_pins[0],
+@@ -16955,7 +16961,7 @@ static void alc861vd_auto_init_analog_input(struct hda_codec *codec)
+ #define alc861vd_idx_to_mixer_switch(nid)	((nid) + 0x0c)
+ 
+ /* add playback controls from the parsed DAC table */
+-/* Based on ALC880 version. But ALC861VD has separate,
++/* Based on ALC880 version. But ALC861VD and ALC887 have separate,
+  * different NIDs for mute/unmute switch and volume control */
+ static int alc861vd_auto_create_multi_out_ctls(struct alc_spec *spec,
+ 					     const struct auto_pin_cfg *cfg)
+-- 
+1.7.1
 
 
-Regards,
-Clemens
+--------------090900090009040602080601
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------090900090009040602080601--
