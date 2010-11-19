@@ -1,19 +1,16 @@
-From: David Shirley <tephra@gmail.com>
-Subject: Re: nvidia initial sound being skipped
-Date: Fri, 19 Nov 2010 18:18:53 +1100
-Message-ID: <AANLkTikOc5uwbn4OsKqpvrHUkBzg4k5Wf6YVLNwGm6wH@mail.gmail.com>
-References: <AANLkTikH529TdvgfZX7bYvQVEHuj+1zTJS2YwjKc1yp_@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: snd_pcm_mmap_commit
+Date: Fri, 19 Nov 2010 08:11:03 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1011190810081.21207@eeebox2.perex-int.cz>
+References: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE36E@EXGMBX01.sasken.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 70812103965
-	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2010 08:18:55 +0100 (CET)
-Received: by bwz8 with SMTP id 8so3672846bwz.38
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2010 23:18:55 -0800 (PST)
-In-Reply-To: <AANLkTikH529TdvgfZX7bYvQVEHuj+1zTJS2YwjKc1yp_@mail.gmail.com>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3D2AE103938
+	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2010 08:11:04 +0100 (CET)
+In-Reply-To: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE36E@EXGMBX01.sasken.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,96 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Irfan Shaikh <irfan.shaikh@sasken.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
+On Fri, 19 Nov 2010, Irfan Shaikh wrote:
 
-I just want to say I upgraded to kernel 2.6.36 today and still miss
-the first 0.5seconds or so of the sound output.
+> /*************************************************************/
+> Code below O/p results runs in a while loop till end of PCM data.
+> 1) First time O/p is
+>          Farames available : 1024                                                /*Return VALUE of snd_pcm_avail_update*/
+>          >>>>>>>>>>>>>>>>>>>>>>>>>Begin result : 0      /*Return VALUE of snd_pcm_mmap_begin*/
+>          Address outbuffer : 0xcff88
+>          >>>>>>>>>>>>>>>>>>>>>>Comit result : 1024       /*SUCESSFUL - Return VALUE of  snd_pcm_mmap_commi*/
+>
+> 2) Second time onwards ALWAYS O/p is
+>          Farames available : 0                                                      /*Return VALUE of snd_pcm_avail_update*/
+>          >>>>>>>>>>>>>>>>>>>>>>>>>Begin result : 0      /*Return VALUE of snd_pcm_mmap_begin*/
+>          Address outbuffer : 0xcff88
+>          >>>>>>>>>>>>>>>>>>>>>>Comit result : 0             /*FAILURE - Return VALUE of  snd_pcm_mmap_commit*/
 
-Again I have ruled out player - mplayer, aplay and audacious all do it
+You have to use poll()/select() or snd_pcm_wait() to wait for a room in 
+the playback buffer. The direct mmap I/O is always non-blocked.
 
-I have ruled out source format - both flac and the wav decoded version
-have the same problem.
+ 						Jaroslav
 
-I have also ruled out physical connection to the AVR, both HDMI and
-SPDIF exhibit the same problem.
-
-Any ideas?
-
-Cheers
-Dave
-
-On 16 November 2010 20:57, David Shirley <tephra@gmail.com> wrote:
-> Hi Developers,
->
-> I am using an nvidia MCP78 to connect to a Denon 1910 AVR via HDMI.
->
-> I was using Kernel 2.6.32.21 and noticed that the initial few seconds
-> of my songs was being chopped off.
->
-> After seeing http://www.spinics.net/lists/alsa-devel/msg29408.html I
-> upgraded to 2.6.35.8 (which has that fix in it) and the problem was
-> been reduced considerably.
->
-> But it is still occurring to some extent.
->
-> So to see if the HDMI was the problem I changed it to coax spdif - no
-> change/same problem.
->
-> Now I think it could be mplayer, so I try audacious - no change/same prob=
-lem.
->
-> Now I think it could be the flac file/decoding, so I decode the flac
-> to wav and use aplay - no change/same problem.
->
-> The ONLY way I can get the first 0.5seconds of the file to play is by
-> using audacious and then MANUALLY rewinding (by dragging the scroll
-> bar thingy) back to the start... then it will play (on either flac or
-> wav)
->
-> Co-incidentally when I do this I get the following error message
-> dumped to console:
-> alsa: snd_pcm_prepare failed: Device or resource busy.
->
-> I hope someone can help :)
->
-> I am happy to get debug or whatever - just let me know what you need!
->
-> mythtv@crystal:~$ aplay -l
-> **** List of PLAYBACK Hardware Devices ****
-> card 0: NVidia [HDA NVidia], device 0: ALC1200 Analog [ALC1200 Analog]
-> =A0Subdevices: 1/1
-> =A0Subdevice #0: subdevice #0
-> card 0: NVidia [HDA NVidia], device 1: ALC1200 Digital [ALC1200 Digital]
-> =A0Subdevices: 1/1
-> =A0Subdevice #0: subdevice #0
-> card 0: NVidia [HDA NVidia], device 3: NVIDIA HDMI [NVIDIA HDMI]
-> =A0Subdevices: 1/1
-> =A0Subdevice #0: subdevice #0
->
-> lspci -vvvv
-> 00:07.0 Audio device: nVidia Corporation MCP72XE/MCP72P/MCP78U/MCP78S
-> High Definition Audio (rev a1)
-> =A0 =A0 =A0 =A0Subsystem: ASUSTeK Computer Inc. M3N72-D
-> =A0 =A0 =A0 =A0Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-> ParErr- Stepping- SERR- FastB2B- DisINTx-
-> =A0 =A0 =A0 =A0Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=3Dfast >T=
-Abort-
-> <TAbort- <MAbort- >SERR- <PERR- INTx-
-> =A0 =A0 =A0 =A0Latency: 0 (500ns min, 1250ns max)
-> =A0 =A0 =A0 =A0Interrupt: pin A routed to IRQ 11
-> =A0 =A0 =A0 =A0Region 0: Memory at fe020000 (32-bit, non-prefetchable) [s=
-ize=3D16K]
-> =A0 =A0 =A0 =A0Capabilities: [44] Power Management version 2
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Flags: PMEClk- DSI- D1- D2- AuxCurrent=3D0=
-mA
-> PME(D0-,D1-,D2-,D3hot+,D3cold+)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Status: D0 NoSoftRst- PME-Enable- DSel=3D0=
- DScale=3D0 PME-
-> =A0 =A0 =A0 =A0Kernel driver in use: HDA Intel
->
-> Cheers
-> David
->
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
