@@ -1,13 +1,14 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 1/3] ALSA: HDA: Create mixers on ALC887
-Date: Fri, 19 Nov 2010 10:28:35 +0100
-Message-ID: <4CE64343.70807@canonical.com>
+Subject: [PATCH 2/3] ALSA: HDA: Rename "Front" to "Master
+ Front" on ALC861VD and ALC887
+Date: Fri, 19 Nov 2010 10:29:37 +0100
+Message-ID: <4CE64381.4070003@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------090900090009040602080601"
+Content-Type: multipart/mixed; boundary="------------040808030805090205070405"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 071D3243E9
-	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2010 10:28:35 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 6B044243E9
+	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2010 10:29:37 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,87 +22,60 @@ To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <t
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------090900090009040602080601
+--------------040808030805090205070405
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 
-BugLink: http://launchpad.net/bugs/669092
+Since "Front" controls headphones as well on these two codecs,
+they should be labeled "Master Front" in order to be handled correct
+by PulseAudio.
 
-ALC887 does not have any volume control ability on the mixer NIDs,
-so put the volume controls on the dac NIDs instead. Without this
-patch, ALC887 users cannot use alsamixer at all.
-
-Cc: stable@kernel.org
 Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 
 -- 
 David Henningsson, Canonical Ltd.
 http://launchpad.net/~diwic
 
---------------090900090009040602080601
+--------------040808030805090205070405
 Content-Type: text/x-patch;
- name="0001-Create-mixers-on-ALC887.patch"
+ name="0002-ALSA-HDA-Rename-Front-to-Master-Front-on-ALC861VD-an.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
- filename="0001-Create-mixers-on-ALC887.patch"
+ filename*0="0002-ALSA-HDA-Rename-Front-to-Master-Front-on-ALC861VD-an.pa";
+ filename*1="tch"
 
->From 2418add610811b5763d96f8811ad5d303516bfa3 Mon Sep 17 00:00:00 2001
+>From daf075d2301e9d2105ab3a5a6517ad72dbba7c7f Mon Sep 17 00:00:00 2001
 From: David Henningsson <david.henningsson@canonical.com>
-Date: Tue, 9 Nov 2010 14:35:30 +0100
-Subject: [PATCH 1/3] ALSA: HDA: Create mixers on ALC887
+Date: Tue, 16 Nov 2010 09:32:53 +0100
+Subject: [PATCH 2/3] ALSA: HDA: Rename "Front" to "Master Front" on ALC861VD and ALC887
 
-BugLink: http://launchpad.net/bugs/669092
+Since "Front" controls headphones as well on these two codecs,
+they should be labeled "Master Front" in order to be handled correct
+by PulseAudio.
 
-ALC887 does not have any volume control ability on the mixer NIDs, 
-so put the volume controls on the dac NIDs instead. Without this 
-patch, ALC887 users cannot use alsamixer at all.
-
-Cc: stable@kernel.org
 Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/pci/hda/patch_realtek.c |   10 ++++++++--
- 1 files changed, 8 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_realtek.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 788ac4b..ce4017e 100644
+index ce4017e..4cc7bb2 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -10816,6 +10816,9 @@ static int alc_auto_add_mic_boost(struct hda_codec *codec)
- 	return 0;
- }
- 
-+static int alc861vd_auto_create_multi_out_ctls(struct alc_spec *spec,
-+					     const struct auto_pin_cfg *cfg);
-+
- /* almost identical with ALC880 parser... */
- static int alc882_parse_auto_config(struct hda_codec *codec)
- {
-@@ -10833,7 +10836,10 @@ static int alc882_parse_auto_config(struct hda_codec *codec)
- 	err = alc880_auto_fill_dac_nids(spec, &spec->autocfg);
- 	if (err < 0)
- 		return err;
--	err = alc880_auto_create_multi_out_ctls(spec, &spec->autocfg);
-+	if (codec->vendor_id == 0x10ec0887)
-+		err = alc861vd_auto_create_multi_out_ctls(spec, &spec->autocfg);
-+	else
-+		err = alc880_auto_create_multi_out_ctls(spec, &spec->autocfg);
- 	if (err < 0)
- 		return err;
- 	err = alc880_auto_create_extra_out(spec, spec->autocfg.hp_pins[0],
-@@ -16955,7 +16961,7 @@ static void alc861vd_auto_init_analog_input(struct hda_codec *codec)
- #define alc861vd_idx_to_mixer_switch(nid)	((nid) + 0x0c)
- 
- /* add playback controls from the parsed DAC table */
--/* Based on ALC880 version. But ALC861VD has separate,
-+/* Based on ALC880 version. But ALC861VD and ALC887 have separate,
-  * different NIDs for mute/unmute switch and volume control */
+@@ -16966,7 +16966,7 @@ static void alc861vd_auto_init_analog_input(struct hda_codec *codec)
  static int alc861vd_auto_create_multi_out_ctls(struct alc_spec *spec,
  					     const struct auto_pin_cfg *cfg)
+ {
+-	static const char *chname[4] = {"Front", "Surround", "CLFE", "Side"};
++	static const char *chname[4] = {"Master Front", "Surround", "CLFE", "Side"};
+ 	hda_nid_t nid_v, nid_s;
+ 	int i, err;
+ 
 -- 
 1.7.1
 
 
---------------090900090009040602080601
+--------------040808030805090205070405
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -112,4 +86,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---------------090900090009040602080601--
+--------------040808030805090205070405--
