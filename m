@@ -1,14 +1,14 @@
 From: Irfan Shaikh <irfan.shaikh@sasken.com>
-Subject: snd_pcm_mmap_commit
-Date: Fri, 19 Nov 2010 11:13:05 +0530
-Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE36E@EXGMBX01.sasken.com>
+Subject: snd_pcm_writei VS snd_pcm_mmap_writei
+Date: Fri, 19 Nov 2010 12:22:51 +0530
+Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE370@EXGMBX01.sasken.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id DB3EE244B1
-	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2010 06:43:10 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 8954724534
+	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2010 07:52:58 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,81 +22,18 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-/*************************************************************/
-Code below O/p results runs in a while loop till end of PCM data.
-1) First time O/p is
-          Farames available : 1024                                                /*Return VALUE of snd_pcm_avail_update*/
-          >>>>>>>>>>>>>>>>>>>>>>>>>Begin result : 0      /*Return VALUE of snd_pcm_mmap_begin*/
-          Address outbuffer : 0xcff88
-          >>>>>>>>>>>>>>>>>>>>>>Comit result : 1024       /*SUCESSFUL - Return VALUE of  snd_pcm_mmap_commi*/
+Hello,
 
-2) Second time onwards ALWAYS O/p is
-          Farames available : 0                                                      /*Return VALUE of snd_pcm_avail_update*/
-          >>>>>>>>>>>>>>>>>>>>>>>>>Begin result : 0      /*Return VALUE of snd_pcm_mmap_begin*/
-          Address outbuffer : 0xcff88
-          >>>>>>>>>>>>>>>>>>>>>>Comit result : 0             /*FAILURE - Return VALUE of  snd_pcm_mmap_commit*/
-.
-.
-.
-.
-.
-.
-N) Nth time
-          Farames available : 0                                                      /*Return VALUE of snd_pcm_avail_update*/
-           >>>>>>>>>>>>>>>>>>>>>>>>>Begin result : 0      /*Return VALUE of snd_pcm_mmap_begin*/
-          Address outbuffer : 0xcff88
-          >>>>>>>>>>>>>>>>>>>>>>Comit result : 0              /*FAILURE - Return VALUE of  snd_pcm_mmap_commit*/
-.
-/*************************************************************/
-+++++++++++++++
- Why  second time onwards I get the above behavious what am i missing ? Please HELP  !
-+++++++++++++++
+         Please tell me
+         a) Difference between working of snd_pcm_mmap_writei and snd_pcm_writei ?
+         b) Performance wise which is better ?
 
-############ MY CODE #############
+         When i use gettimeofday almost profile time comes almost same for both of them.
 
-#ifdef DIRECT
-        snd_pcm_sframes_t frames_available, frames_transmit;
-        const snd_pcm_channel_area_t *area;
-        snd_pcm_uframes_t offset;
-        unsigned char *outbuffer;
-        int result,i;
 
-        /*available space in audio-buffer to write to*/
-        frames_available = snd_pcm_avail_update(alsaParams->pcm_handle);
-        printf("Farames available : %d\n", frames_available);
+Thanks and Regards,
+Irfan
 
-        /*
-         * prepare the areas
-         * and get back area, offset and frames_transmit
-         * frames_transmit gives back the REAL value of available frames which could be written to in the mmaped-area
-         * frames_transmit are less than frames_available
-         */
-        frames_transmit = frames_available;
-
-        if( 0 > ( result = snd_pcm_mmap_begin(alsaParams->pcm_handle, &area, &offset, &frames_transmit)))
-        {
-            printf("===========================>>>>>>>>>>>>>>>>>>>>>snd_pcm_mmap_begin_error\n");
-            xrun_recovery(alsaParams->pcm_handle, pcmreturn);
-            return;
-            //return xrun_recovery();
-        }
-
-        printf(">>>>>>>>>>>>>>>>>>>>>>>>>Begin result : %d\n", result);
-        utbuffer = ((char *) area->addr + (area->first + area->step * offset)/ 8);
-        printf("Address outbuffer : %p\n", outbuffer);
-
-        memcpy(outbuffer, data, count);  //data is actual data
-
-        /*gives back the virtually written (writable) frames which should be always == frames_transmit*/
-        if( 0 > ( result = snd_pcm_mmap_commit(alsaParams->pcm_handle, offset, frames_transmit)))
-        {
-            printf("==============================>>>>>>>>>>>>>>>>>>>>>>>>snd_pcm_mmap_commit error\n");
-            xrun_recovery(alsaParams->pcm_handle, pcmreturn);
-            return;
-            //return xrun_recovery();
-        }
-        printf(">>>>>>>>>>>>>>>>>>>>>>Comit result : %d\n", result);
-#endif
 
 SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any 
  virus transmitted by this email.
