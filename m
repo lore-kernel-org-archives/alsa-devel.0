@@ -1,13 +1,21 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 3/3] ALSA: HDA: Add Front control for ALC887
-Date: Fri, 19 Nov 2010 10:31:20 +0100
-Message-ID: <4CE643E8.1090208@canonical.com>
+From: David Shirley <tephra@gmail.com>
+Subject: Re: nvidia initial sound being skipped
+Date: Fri, 19 Nov 2010 20:53:36 +1100
+Message-ID: <AANLkTiktzi1j6_XjXAU_8g0OP+VOrx13kDuqz+8E592w@mail.gmail.com>
+References: <AANLkTikH529TdvgfZX7bYvQVEHuj+1zTJS2YwjKc1yp_@mail.gmail.com>
+	<AANLkTikOc5uwbn4OsKqpvrHUkBzg4k5Wf6YVLNwGm6wH@mail.gmail.com>
+	<4CE630BC.6030402@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050400000103080707060807"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4ADE5243EC
-	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2010 10:31:20 +0100 (CET)
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id A451610382C
+	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2010 10:53:38 +0100 (CET)
+Received: by bwz8 with SMTP id 8so3766468bwz.38
+	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2010 01:53:36 -0800 (PST)
+In-Reply-To: <4CE630BC.6030402@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,76 +25,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050400000103080707060807
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Yeah it could be that. How would u setup a dmix to play silence?
 
-HP and Line out share DAC, so we need a switch to turn line out off.
-
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
-
---------------050400000103080707060807
-Content-Type: text/x-patch;
- name="0003-ALSA-HDA-Add-Front-control-for-ALC887.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0003-ALSA-HDA-Add-Front-control-for-ALC887.patch"
-
->From 955438a1e0f21218d207196456d8e46295f5feec Mon Sep 17 00:00:00 2001
-From: David Henningsson <david.henningsson@canonical.com>
-Date: Wed, 17 Nov 2010 15:06:15 +0100
-Subject: [PATCH 3/3] ALSA: HDA: Add Front control for ALC887
-
-HP and Line out share DAC, so we need a switch to turn line out off.
-
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/patch_realtek.c |   10 +++++++++-
- 1 files changed, 9 insertions(+), 1 deletions(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 4cc7bb2..86df37c 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -10836,8 +10836,16 @@ static int alc882_parse_auto_config(struct hda_codec *codec)
- 	err = alc880_auto_fill_dac_nids(spec, &spec->autocfg);
- 	if (err < 0)
- 		return err;
--	if (codec->vendor_id == 0x10ec0887)
-+	if (codec->vendor_id == 0x10ec0887) {
- 		err = alc861vd_auto_create_multi_out_ctls(spec, &spec->autocfg);
-+		if (err < 0)
-+			return err;
-+		/* We need something to switch that doesn't affect headphones */
-+		if (spec->autocfg.line_out_pins[0])
-+			err = add_pb_sw_ctrl(spec, ALC_CTL_WIDGET_MUTE, "Front",
-+				  HDA_COMPOSE_AMP_VAL(spec->autocfg.line_out_pins[0], 3, 0, HDA_OUTPUT));
-+
-+        }
- 	else
- 		err = alc880_auto_create_multi_out_ctls(spec, &spec->autocfg);
- 	if (err < 0)
--- 
-1.7.1
-
-
---------------050400000103080707060807
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------050400000103080707060807--
+Thanks
+D.
+On 19/11/2010 7:07 PM, "Clemens Ladisch" <clemens@ladisch.de> wrote:
+> David Shirley wrote:
+>> > I am using an nvidia MCP78 to connect to a Denon 1910 AVR via HDMI.
+>> >
+>> > I was using Kernel 2.6.32.21 and noticed that the initial few seconds
+>> > of my songs was being chopped off.
+>>
+>> I just want to say I upgraded to kernel 2.6.36 today and still miss
+>> the first 0.5seconds or so of the sound output.
+>> ...
+>> both HDMI and SPDIF exhibit the same problem.
+>
+> Apparently, your receiver needs even more time to detect that some
+> sound is playing; there's nothing that the computer could do about it.
+>
+> Try playing some silence before starting playing music. (This requires
+> a software mixer like dmix or PulseAudio.)
+>
+>
+> Regards,
+> Clemens
