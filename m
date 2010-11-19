@@ -1,16 +1,17 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: snd_pcm_mmap_commit
-Date: Fri, 19 Nov 2010 08:11:03 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1011190810081.21207@eeebox2.perex-int.cz>
-References: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE36E@EXGMBX01.sasken.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: nvidia initial sound being skipped
+Date: Fri, 19 Nov 2010 09:09:32 +0100
+Message-ID: <4CE630BC.6030402@ladisch.de>
+References: <AANLkTikH529TdvgfZX7bYvQVEHuj+1zTJS2YwjKc1yp_@mail.gmail.com>
+	<AANLkTikOc5uwbn4OsKqpvrHUkBzg4k5Wf6YVLNwGm6wH@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3D2AE103938
-	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2010 08:11:04 +0100 (CET)
-In-Reply-To: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE36E@EXGMBX01.sasken.com>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 4542F2433F
+	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2010 09:07:51 +0100 (CET)
+In-Reply-To: <AANLkTikOc5uwbn4OsKqpvrHUkBzg4k5Wf6YVLNwGm6wH@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,32 +21,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Irfan Shaikh <irfan.shaikh@sasken.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: David Shirley <tephra@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 19 Nov 2010, Irfan Shaikh wrote:
+David Shirley wrote:
+> > I am using an nvidia MCP78 to connect to a Denon 1910 AVR via HDMI.
+> >
+> > I was using Kernel 2.6.32.21 and noticed that the initial few seconds
+> > of my songs was being chopped off.
+> 
+> I just want to say I upgraded to kernel 2.6.36 today and still miss
+> the first 0.5seconds or so of the sound output.
+> ...
+> both HDMI and SPDIF exhibit the same problem.
 
-> /*************************************************************/
-> Code below O/p results runs in a while loop till end of PCM data.
-> 1) First time O/p is
->          Farames available : 1024                                                /*Return VALUE of snd_pcm_avail_update*/
->          >>>>>>>>>>>>>>>>>>>>>>>>>Begin result : 0      /*Return VALUE of snd_pcm_mmap_begin*/
->          Address outbuffer : 0xcff88
->          >>>>>>>>>>>>>>>>>>>>>>Comit result : 1024       /*SUCESSFUL - Return VALUE of  snd_pcm_mmap_commi*/
->
-> 2) Second time onwards ALWAYS O/p is
->          Farames available : 0                                                      /*Return VALUE of snd_pcm_avail_update*/
->          >>>>>>>>>>>>>>>>>>>>>>>>>Begin result : 0      /*Return VALUE of snd_pcm_mmap_begin*/
->          Address outbuffer : 0xcff88
->          >>>>>>>>>>>>>>>>>>>>>>Comit result : 0             /*FAILURE - Return VALUE of  snd_pcm_mmap_commit*/
+Apparently, your receiver needs even more time to detect that some
+sound is playing; there's nothing that the computer could do about it.
 
-You have to use poll()/select() or snd_pcm_wait() to wait for a room in 
-the playback buffer. The direct mmap I/O is always non-blocked.
+Try playing some silence before starting playing music.  (This requires
+a software mixer like dmix or PulseAudio.)
 
- 						Jaroslav
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Regards,
+Clemens
