@@ -1,118 +1,28 @@
-From: Andreas Mohr <andi@lisas.de>
-Subject: [PATCH] azt3328: period bug fix (PulseAudio testing),
- add missing ACK on stop timer
-Date: Sun, 21 Nov 2010 12:09:32 +0100
-Message-ID: <20101121110932.GA18502@rhlx01.hs-esslingen.de>
+From: Harald Welte <laforge@gnumonks.org>
+Subject: Re: [PATCH 0/3] ASoC: add support for audio on iPaq hx4700
+Date: Sat, 20 Nov 2010 18:44:10 +0100
+Message-ID: <20101120174410.GU17373@prithivi.gnumonks.org>
+References: <1290257964-17435-1-git-send-email-mad_soft@inbox.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6ACBE244F1
-	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2010 12:09:35 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <1290257964-17435-1-git-send-email-mad_soft@inbox.ru>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Dmitry Artamonow <mad_soft@inbox.ru>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-ChangeLog:
+Dmitry,
 
-. Fix PulseAudio "ALSA driver bug" issue
-  (if we have two alternated areas within a 64k DMA buffer, then max period size
-   should obviously be 32k only).
-  Back references:
-   http://pulseaudio.org/wiki/AlsaIssues
-   http://fedoraproject.org/wiki/Features/GlitchFreeAudio
-. In stop timer function, need to supply ACK in the timer control byte.
-. Minor log output correction
+great to see that the code I once wrote still has some useful purpose.
 
-When I did my first PA testing recently, the period size bug resulted
-in quite precisely observeable half-period-based playback distortion.
+I'm happy to see Philipp picking it up and you submitting it mainline.
 
+Maybe, one of these days, I will also submit the gnufiish stuff ;)
 
-PA-based operation is quite a bit more underrun-prone (despite its
-zero-copy optimizations etc.) than raw ALSA with this rather spartan
-sound hardware implementation on my puny Athlon.
-
-Note that even with this patch, azt3328 still doesn't work for both cases yet,
-PA tsched=0 and tsched
-(on tsched=0 it will playback tiny fragments of periods, leading to tiny
-stuttering sounds with some pauses in between, whereas with
-timer-scheduled operation playback works fine - minus some quite increased
-underrun trouble on PA vs. ALSA, that is).
-
-Patch runtime-tested on 2.6.36-rc8 git (and run through checkpatch.pl).
-Since 2.6 git log doesn't show patch activity it should still apply easily.
-
-I'd suggest handling this patch whichever way you want.
-If you already have a couple other -rc fixes, then perhaps simply include it,
-and I'm quite ambivalent about -stable handling as well.
-
-Thanks!
-
-Signed-off-by: Andreas Mohr <andi@lisas.de>
-
-
-diff --git a/sound/pci/azt3328.c b/sound/pci/azt3328.c
-index 4679ed8..2f3cacb 100644
---- a/sound/pci/azt3328.c
-+++ b/sound/pci/azt3328.c
-@@ -1129,10 +1129,11 @@ snd_azf3328_codec_setdmaa(struct snd_azf3328 *chip,
- 
- 		count_areas = size/2;
- 		addr_area2 = addr+count_areas;
--		count_areas--; /* max. index */
- 		snd_azf3328_dbgcodec("setdma: buffers %08lx[%u] / %08lx[%u]\n",
- 				addr, count_areas, addr_area2, count_areas);
- 
-+		count_areas--; /* max. index */
-+
- 		/* build combined I/O buffer length word */
- 		lengths = (count_areas << 16) | (count_areas);
- 		spin_lock_irqsave(&chip->reg_lock, flags);
-@@ -1740,11 +1741,15 @@ static const struct snd_pcm_hardware snd_azf3328_hardware =
- 	.rate_max =		AZF_FREQ_66200,
- 	.channels_min =		1,
- 	.channels_max =		2,
--	.buffer_bytes_max =	65536,
--	.period_bytes_min =	64,
--	.period_bytes_max =	65536,
--	.periods_min =		1,
--	.periods_max =		1024,
-+	.buffer_bytes_max =	(64*1024),
-+	.period_bytes_min =	1024,
-+	.period_bytes_max =	(32*1024),
-+	/* We simply have two DMA areas (instead of a list of descriptors
-+	   such as other cards); I believe that this is a fixed hardware
-+	   attribute and there isn't much driver magic to be done to expand it.
-+	   Thus indicate that we have at least and at most 2 periods. */
-+	.periods_min =		2,
-+	.periods_max =		2,
- 	/* FIXME: maybe that card actually has a FIFO?
- 	 * Hmm, it seems newer revisions do have one, but we still don't know
- 	 * its size... */
-@@ -1980,8 +1985,13 @@ snd_azf3328_timer_stop(struct snd_timer *timer)
- 	chip = snd_timer_chip(timer);
- 	spin_lock_irqsave(&chip->reg_lock, flags);
- 	/* disable timer countdown and interrupt */
--	/* FIXME: should we write TIMER_IRQ_ACK here? */
--	snd_azf3328_ctrl_outb(chip, IDX_IO_TIMER_VALUE + 3, 0);
-+	/* Hmm, should we write TIMER_IRQ_ACK here?
-+	   YES indeed, otherwise a rogue timer operation - which prompts
-+	   ALSA(?) to call repeated stop() in vain, but NOT start() -
-+	   will never end (value 0x03 is kept shown in control byte).
-+	   Simply manually poking 0x04 _once_ immediately successfully stops
-+	   the hardware/ALSA interrupt activity. */
-+	snd_azf3328_ctrl_outb(chip, IDX_IO_TIMER_VALUE + 3, 0x04);
- 	spin_unlock_irqrestore(&chip->reg_lock, flags);
- 	snd_azf3328_dbgcallleave();
- 	return 0;
+-- 
+- Harald Welte <laforge@gnumonks.org>           http://laforge.gnumonks.org/
+============================================================================
+"Privacy in residential applications is a desirable marketing option."
+                                                  (ETSI EN 300 175-7 Ch. A6)
