@@ -1,26 +1,16 @@
-From: "Alexander E. Patrakov" <patrakov@gmail.com>
-Subject: Re: [PATCH] jack: use eventfd which never blocks.
-Date: Sun, 21 Nov 2010 15:15:40 +0500
-Message-ID: <4CE8F14C.4040003@gmail.com>
-References: <1290176549-31258-1-git-send-email-torbenh@gmx.de>
+From: Andreas Mohr <andi@lisas.de>
+Subject: [PATCH] azt3328: period bug fix (PulseAudio testing),
+ add missing ACK on stop timer
+Date: Sun, 21 Nov 2010 12:09:32 +0100
+Message-ID: <20101121110932.GA18502@rhlx01.hs-esslingen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id C7C542436F
-	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2010 11:15:52 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1PK6xc-0001GY-DJ
-	for alsa-devel@alsa-project.org; Sun, 21 Nov 2010 11:15:52 +0100
-Received: from 188.16.198.194 ([188.16.198.194])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2010 11:15:52 +0100
-Received: from patrakov by 188.16.198.194 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2010 11:15:52 +0100
-In-Reply-To: <1290176549-31258-1-git-send-email-torbenh@gmx.de>
+Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6ACBE244F1
+	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2010 12:09:35 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,148 +20,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-19.11.2010 19:22, Torben Hohn wrote:
-> the use of the socketpair for synchronisation is not correct.
-> jack does not allow blocking calls in the process_callback,
-> the socket buffers are quite small, and seem to overflow under some
-> conditions.
+ChangeLog:
 
-Some remarks.
+. Fix PulseAudio "ALSA driver bug" issue
+  (if we have two alternated areas within a 64k DMA buffer, then max period size
+   should obviously be 32k only).
+  Back references:
+   http://pulseaudio.org/wiki/AlsaIssues
+   http://fedoraproject.org/wiki/Features/GlitchFreeAudio
+. In stop timer function, need to supply ACK in the timer control byte.
+. Minor log output correction
 
-First, your patch preserves the incorrect code for the case when eventfd 
-is not available. While this is not a regression, I think you can do 
-better (possibly in a separate patch).
+When I did my first PA testing recently, the period size bug resulted
+in quite precisely observeable half-period-based playback distortion.
 
-Second, I disagree that socketpair()-based synchronization cannot be 
-made correct and thus that eventfd is needed for correctness. It might 
-be needed for efficiency, though.
 
-> the result was write(2) blocking, and jack kicking the client.
+PA-based operation is quite a bit more underrun-prone (despite its
+zero-copy optimizations etc.) than raw ALSA with this rather spartan
+sound hardware implementation on my puny Athlon.
 
-So why not just make the file descriptor non-blocking? This way, instead 
-of blocking the write(2), the socket pair would lose data when it gets 
-too many writes. No problem - the reader will still see its file 
-descriptor as active, eat a byte from the socket in 
-snd_pcm_jack_poll_revents() and presumably do something to fill the 
-audio buffer.
+Note that even with this patch, azt3328 still doesn't work for both cases yet,
+PA tsched=0 and tsched
+(on tsched=0 it will playback tiny fragments of periods, leading to tiny
+stuttering sounds with some pauses in between, whereas with
+timer-scheduled operation playback works fine - minus some quite increased
+underrun trouble on PA vs. ALSA, that is).
 
-> (jack needs to be running in RT mode, with a pretty low period size (<=128)
-> but this really is the normal usecase)
->
-> this patch uses eventfd(2) when its available to mitigate the problem.
->
-> Signed-off-by: Torben Hohn<torbenh@gmx.de>
-> ---
->   configure.in    |    5 +++++
->   jack/pcm_jack.c |   30 +++++++++++++++++++++++++++---
->   2 files changed, 32 insertions(+), 3 deletions(-)
->
-> diff --git a/configure.in b/configure.in
-> index 5d71cae..9fa7f27 100644
-> --- a/configure.in
-> +++ b/configure.in
-> @@ -21,6 +21,11 @@ AC_CHECK_LIB(asound, snd_pcm_ioplug_create,,
->   AC_ARG_ENABLE([jack],
->         AS_HELP_STRING([--disable-jack], [Disable building of JACK plugin]))
->
-> +AC_CHECK_HEADER([sys/eventfd.h], [HAVE_EVENTFD=yes], [HAVE_EVENTFD=no])
-> +if test "$HAVE_EVENTFD" = "yes"; then
-> +	AC_DEFINE(HAVE_EVENTFD, 1,"eventfd is available")
-> +fi
-> +
->   if test "x$enable_jack" != "xno"; then
->     PKG_CHECK_MODULES(JACK, jack>= 0.98, [HAVE_JACK=yes], [HAVE_JACK=no])
->   fi
-> diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
-> index 3370a26..83ac56a 100644
-> --- a/jack/pcm_jack.c
-> +++ b/jack/pcm_jack.c
-> @@ -20,6 +20,8 @@
->    *
->    */
->
-> +#include "config.h"
-> +
->   #include<byteswap.h>
->   #include<sys/shm.h>
->   #include<sys/types.h>
-> @@ -28,6 +30,10 @@
->   #include<alsa/asoundlib.h>
->   #include<alsa/pcm_external.h>
->
-> +#ifdef HAVE_EVENTFD
-> +#include<sys/eventfd.h>
-> +#endif
-> +
->   typedef enum _jack_format {
->   	SND_PCM_JACK_FORMAT_RAW
->   } snd_pcm_jack_format_t;
-> @@ -63,8 +69,10 @@ static void snd_pcm_jack_free(snd_pcm_jack_t *jack)
->   		}
->   		if (jack->fd>= 0)
->   			close(jack->fd);
-> +#ifndef HAVE_EVENTFD
->   		if (jack->io.poll_fd>= 0)
->   			close(jack->io.poll_fd);
-> +#endif
->   		free(jack->areas);
->   		free(jack);
->   	}
-> @@ -81,11 +89,19 @@ static int snd_pcm_jack_poll_revents(snd_pcm_ioplug_t *io ATTRIBUTE_UNUSED,
->   				     struct pollfd *pfds, unsigned int nfds,
->   				     unsigned short *revents)
->   {
-> +#ifdef HAVE_EVENTFD
-> +	eventfd_t buf[1];
-> +#else
->   	static char buf[1];
-> -	
-> +#endif
-> +
->   	assert(pfds&&  nfds == 1&&  revents);
->
-> -	read(pfds[0].fd, buf, 1);
-> +	read(pfds[0].fd, buf, sizeof(buf));
-> +#ifdef HAVE_EVENTFD
-> +	buf[0] -= 1;
-> +	write(pfds[0].fd, buf, sizeof(buf));
-> +#endif
->
->   	*revents = pfds[0].revents;
->   	return 0;
-> @@ -103,7 +119,11 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
->   	snd_pcm_jack_t *jack = io->private_data;
->   	const snd_pcm_channel_area_t *areas;
->   	snd_pcm_uframes_t xfer = 0;
-> +#ifdef HAVE_EVENTFD
-> +	static eventfd_t buf[1] = { 0x00000001 };
-> +#else
->   	static char buf[1];
-> +#endif
->   	unsigned int channel;
->   	
->   	for (channel = 0; channel<  io->channels; channel++) {
-> @@ -143,7 +163,7 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
->   		xfer += frames;
->   	}
->
-> -	write(jack->fd, buf, 1); /* for polling */
-> +	write(jack->fd, buf, sizeof(buf)); /* for polling */
->
->   	return 0;
->   }
-> @@ -361,7 +381,11 @@ static int snd_pcm_jack_open(snd_pcm_t **pcmp, const char *name,
->   		return -ENOMEM;
->   	}
->
-> +#ifdef HAVE_EVENTFD
-> +	fd[0] = fd[1] = eventfd(0, 0);
-> +#else
->   	socketpair(AF_LOCAL, SOCK_STREAM, 0, fd);
-> +#endif
->   	
->   	jack->fd = fd[0];
->
+Patch runtime-tested on 2.6.36-rc8 git (and run through checkpatch.pl).
+Since 2.6 git log doesn't show patch activity it should still apply easily.
+
+I'd suggest handling this patch whichever way you want.
+If you already have a couple other -rc fixes, then perhaps simply include it,
+and I'm quite ambivalent about -stable handling as well.
+
+Thanks!
+
+Signed-off-by: Andreas Mohr <andi@lisas.de>
+
+
+diff --git a/sound/pci/azt3328.c b/sound/pci/azt3328.c
+index 4679ed8..2f3cacb 100644
+--- a/sound/pci/azt3328.c
++++ b/sound/pci/azt3328.c
+@@ -1129,10 +1129,11 @@ snd_azf3328_codec_setdmaa(struct snd_azf3328 *chip,
+ 
+ 		count_areas = size/2;
+ 		addr_area2 = addr+count_areas;
+-		count_areas--; /* max. index */
+ 		snd_azf3328_dbgcodec("setdma: buffers %08lx[%u] / %08lx[%u]\n",
+ 				addr, count_areas, addr_area2, count_areas);
+ 
++		count_areas--; /* max. index */
++
+ 		/* build combined I/O buffer length word */
+ 		lengths = (count_areas << 16) | (count_areas);
+ 		spin_lock_irqsave(&chip->reg_lock, flags);
+@@ -1740,11 +1741,15 @@ static const struct snd_pcm_hardware snd_azf3328_hardware =
+ 	.rate_max =		AZF_FREQ_66200,
+ 	.channels_min =		1,
+ 	.channels_max =		2,
+-	.buffer_bytes_max =	65536,
+-	.period_bytes_min =	64,
+-	.period_bytes_max =	65536,
+-	.periods_min =		1,
+-	.periods_max =		1024,
++	.buffer_bytes_max =	(64*1024),
++	.period_bytes_min =	1024,
++	.period_bytes_max =	(32*1024),
++	/* We simply have two DMA areas (instead of a list of descriptors
++	   such as other cards); I believe that this is a fixed hardware
++	   attribute and there isn't much driver magic to be done to expand it.
++	   Thus indicate that we have at least and at most 2 periods. */
++	.periods_min =		2,
++	.periods_max =		2,
+ 	/* FIXME: maybe that card actually has a FIFO?
+ 	 * Hmm, it seems newer revisions do have one, but we still don't know
+ 	 * its size... */
+@@ -1980,8 +1985,13 @@ snd_azf3328_timer_stop(struct snd_timer *timer)
+ 	chip = snd_timer_chip(timer);
+ 	spin_lock_irqsave(&chip->reg_lock, flags);
+ 	/* disable timer countdown and interrupt */
+-	/* FIXME: should we write TIMER_IRQ_ACK here? */
+-	snd_azf3328_ctrl_outb(chip, IDX_IO_TIMER_VALUE + 3, 0);
++	/* Hmm, should we write TIMER_IRQ_ACK here?
++	   YES indeed, otherwise a rogue timer operation - which prompts
++	   ALSA(?) to call repeated stop() in vain, but NOT start() -
++	   will never end (value 0x03 is kept shown in control byte).
++	   Simply manually poking 0x04 _once_ immediately successfully stops
++	   the hardware/ALSA interrupt activity. */
++	snd_azf3328_ctrl_outb(chip, IDX_IO_TIMER_VALUE + 3, 0x04);
+ 	spin_unlock_irqrestore(&chip->reg_lock, flags);
+ 	snd_azf3328_dbgcallleave();
+ 	return 0;
