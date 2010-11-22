@@ -1,29 +1,19 @@
-From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: Re: [PATCHv4 16/18] ASoC: SMDK_WM8580: Enable for
-	SMDKC100
-Date: Mon, 22 Nov 2010 16:13:09 +0900
-Message-ID: <001901cb8a14$ba4a1f70$2ede5e50$%kim@samsung.com>
-References: <1290407690-28917-1-git-send-email-jassisinghbrar@gmail.com>
-	<1290407839-29559-1-git-send-email-jassisinghbrar@gmail.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH] ASoC: atmel: test wrong variable
+Date: Mon, 22 Nov 2010 09:43:53 +0200
+Message-ID: <20101122094353.f76830b5.jhnikula@gmail.com>
+References: <1290361216-15166-1-git-send-email-segoon@openwall.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id E1D121039FB
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2010 08:12:48 +0100 (CET)
-Received: from epmmp2 (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
-	Sep 7
-	2010)) with ESMTP id <0LC90069KYP9NA40@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Mon, 22 Nov 2010 16:12:45 +0900 (KST)
-Received: from DOKGENEKIM02 ([12.23.103.104])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0LC900A4WYP9ZW@mmp2.samsung.com> for
-	alsa-devel@alsa-project.org; Mon, 22 Nov 2010 16:12:45 +0900 (KST)
-In-reply-to: <1290407839-29559-1-git-send-email-jassisinghbrar@gmail.com>
-Content-language: ko
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 738FE103885
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2010 08:43:57 +0100 (CET)
+Received: by ewy2 with SMTP id 2so3631524ewy.38
+	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2010 23:43:57 -0800 (PST)
+In-Reply-To: <1290361216-15166-1-git-send-email-segoon@openwall.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,177 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Jassi Brar' <jassisinghbrar@gmail.com>, alsa-devel@alsa-project.org
-Cc: sw.youn@samsung.com, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, 'Jassi Brar' <jassi.brar@samsung.com>, june.bae@samsung.com
+To: Vasiliy Kulikov <segoon@openwall.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Jassi Brar wrote:
+On Sun, 21 Nov 2010 20:40:14 +0300
+Vasiliy Kulikov <segoon@openwall.com> wrote:
+
+> After clk_get() mclk is checked second time instead of pllb check.
 > 
-> From: Jassi Brar <jassi.brar@samsung.com>
-> 
-> Enable the ASoC Machine driver to run on SMDKC100 as well.
-> 
-> Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
-
-Acked-by: Kukjin Kim <kgene.kim@samsung.com>
-
-Thanks.
-
-Best regards,
-Kgene.
---
-Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
-SW Solution Development Team, Samsung Electronics Co., Ltd.
-
+> Signed-off-by: Vasiliy Kulikov <segoon@openwall.com>
 > ---
->  arch/arm/mach-s5pc100/mach-smdkc100.c |    2 +
->  sound/soc/s3c24xx/Kconfig             |    2 +-
->  sound/soc/s3c24xx/smdk_wm8580.c       |   73
-+++++++++++++++++++++++--------
-> -
->  3 files changed, 55 insertions(+), 22 deletions(-)
+>  Cannot compile this driver, so it is not tested.
 > 
-> diff --git a/arch/arm/mach-s5pc100/mach-smdkc100.c b/arch/arm/mach-
-> s5pc100/mach-smdkc100.c
-> index 18b405d..dd192a2 100644
-> --- a/arch/arm/mach-s5pc100/mach-smdkc100.c
-> +++ b/arch/arm/mach-s5pc100/mach-smdkc100.c
-> @@ -96,6 +96,7 @@ static struct s3c2410_uartcfg smdkc100_uartcfgs[]
-> __initdata = {
+>  sound/soc/atmel/sam9g20_wm8731.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 > 
->  /* I2C0 */
->  static struct i2c_board_info i2c_devs0[] __initdata = {
-> +	{I2C_BOARD_INFO("wm8580", 0x1b),},
->  };
-> 
->  /* I2C1 */
-> @@ -190,6 +191,7 @@ static struct platform_device *smdkc100_devices[]
-> __initdata = {
->  	&s3c_device_ts,
->  	&s3c_device_wdt,
->  	&smdkc100_lcd_powerdev,
-> +	&samsung_asoc_dma,
->  	&s5pc100_device_iis0,
->  	&samsung_device_keypad,
->  	&s5pc100_device_ac97,
-> diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
-> index 396f678..4989fad 100644
-> --- a/sound/soc/s3c24xx/Kconfig
-> +++ b/sound/soc/s3c24xx/Kconfig
-> @@ -62,7 +62,7 @@ config SND_S3C24XX_SOC_JIVE_WM8750
-> 
->  config SND_SOC_SMDK_WM8580
->  	tristate "SoC I2S Audio support for WM8580 on SMDK"
-> -	depends on SND_S3C24XX_SOC && MACH_SMDK6410
-> +	depends on SND_S3C24XX_SOC && (MACH_SMDK6410 || MACH_SMDKC100)
->  	select SND_SOC_WM8580
->  	select SND_SAMSUNG_I2S
->  	help
-> diff --git a/sound/soc/s3c24xx/smdk_wm8580.c
-> b/sound/soc/s3c24xx/smdk_wm8580.c
-> index 4176252..9061268 100644
-> --- a/sound/soc/s3c24xx/smdk_wm8580.c
-> +++ b/sound/soc/s3c24xx/smdk_wm8580.c
-> @@ -18,6 +18,8 @@
->  #include <sound/soc.h>
->  #include <sound/soc-dapm.h>
-> 
-> +#include <asm/mach-types.h>
-> +
->  #include "../codecs/wm8580.h"
->  #include "dma.h"
->  #include "i2s.h"
-> @@ -201,33 +203,49 @@ static int smdk_wm8580_init_paifrx(struct
-> snd_soc_pcm_runtime *rtd)
->  	return 0;
->  }
-> 
-> +enum {
-> +	PRI_PLAYBACK = 0,
-> +	PRI_CAPTURE,
-> +	SEC_PLAYBACK,
-> +};
-> +
->  static struct snd_soc_dai_link smdk_dai[] = {
-> -{ /* Primary Playback i/f */
-> -	.name = "WM8580 PAIF RX",
-> -	.stream_name = "Playback",
-> -	.cpu_dai_name = "samsung-i2s.2",
-> -	.codec_dai_name = "wm8580-hifi-playback",
-> -	.platform_name = "samsung-audio",
-> -	.codec_name = "wm8580-codec.0-001b",
-> -	.init = smdk_wm8580_init_paifrx,
-> -	.ops = &smdk_ops,
-> -},
-> -{ /* Primary Capture i/f */
-> -	.name = "WM8580 PAIF TX",
-> -	.stream_name = "Capture",
-> -	.cpu_dai_name = "samsung-i2s.2",
-> -	.codec_dai_name = "wm8580-hifi-capture",
-> -	.platform_name = "samsung-audio",
-> -	.codec_name = "wm8580-codec.0-001b",
-> -	.init = smdk_wm8580_init_paiftx,
-> -	.ops = &smdk_ops,
-> -},
-> +	[PRI_PLAYBACK] = { /* Primary Playback i/f */
-> +		.name = "WM8580 PAIF RX",
-> +		.stream_name = "Playback",
-> +		.cpu_dai_name = "samsung-i2s.2",
-> +		.codec_dai_name = "wm8580-hifi-playback",
-> +		.platform_name = "samsung-audio",
-> +		.codec_name = "wm8580-codec.0-001b",
-> +		.init = smdk_wm8580_init_paifrx,
-> +		.ops = &smdk_ops,
-> +	},
-> +	[PRI_CAPTURE] = { /* Primary Capture i/f */
-> +		.name = "WM8580 PAIF TX",
-> +		.stream_name = "Capture",
-> +		.cpu_dai_name = "samsung-i2s.2",
-> +		.codec_dai_name = "wm8580-hifi-capture",
-> +		.platform_name = "samsung-audio",
-> +		.codec_name = "wm8580-codec.0-001b",
-> +		.init = smdk_wm8580_init_paiftx,
-> +		.ops = &smdk_ops,
-> +	},
-> +	[SEC_PLAYBACK] = { /* Sec_Fifo Playback i/f */
-> +		.name = "Sec_FIFO TX",
-> +		.stream_name = "Playback",
-> +		.cpu_dai_name = "samsung-i2s.x",
-> +		.codec_dai_name = "wm8580-hifi-playback",
-> +		.platform_name = "samsung-audio",
-> +		.codec_name = "wm8580-codec.0-001b",
-> +		.init = smdk_wm8580_init_paifrx,
-> +		.ops = &smdk_ops,
-> +	},
->  };
-> 
->  static struct snd_soc_card smdk = {
->  	.name = "SMDK-I2S",
->  	.dai_link = smdk_dai,
-> -	.num_links = ARRAY_SIZE(smdk_dai),
-> +	.num_links = 2,
->  };
-> 
->  static struct platform_device *smdk_snd_device;
-> @@ -235,6 +253,19 @@ static struct platform_device *smdk_snd_device;
->  static int __init smdk_audio_init(void)
->  {
->  	int ret;
-> +	char *str;
-> +
-> +	if (machine_is_smdkc100()) {
-> +		smdk.num_links = 3;
-> +		/* S5PC100 has I2S0 as v5 */
-> +		str = (char *)smdk_dai[PRI_PLAYBACK].cpu_dai_name;
-> +		str[strlen(str) - 1] = '0';
-> +		str = (char *)smdk_dai[PRI_CAPTURE].cpu_dai_name;
-> +		str[strlen(str) - 1] = '0';
-> +		/* Secondary is at offset SAMSUNG_I2S_SECOFF from Primary */
-> +		str = (char *)smdk_dai[SEC_PLAYBACK].cpu_dai_name;
-> +		str[strlen(str) - 1] = '0' + SAMSUNG_I2S_SECOFF;
-> +	}
-> 
->  	smdk_snd_device = platform_device_alloc("soc-audio", -1);
->  	if (!smdk_snd_device)
-> --
-> 1.6.2.5
+> diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
+> index da9c303..68072a2 100644
+> --- a/sound/soc/atmel/sam9g20_wm8731.c
+> +++ b/sound/soc/atmel/sam9g20_wm8731.c
+> @@ -223,7 +223,7 @@ static int __init at91sam9g20ek_init(void)
+>  	}
+>  
+>  	pllb = clk_get(NULL, "pllb");
+> -	if (IS_ERR(mclk)) {
+> +	if (IS_ERR(pllb)) {
+>  		printk(KERN_ERR "ASoC: Failed to get PLLB\n");
+>  		ret = PTR_ERR(mclk);
+
+Update also PTR_ERR as otherwise we don't return any error code
+(mclk is ok at this point but pllb has an error).
+
+-- 
+Jarkko
