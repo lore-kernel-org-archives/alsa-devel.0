@@ -1,16 +1,19 @@
-From: ramesh.babu@intel.com
-Subject: [PATCH 5/5] [RFC]intel_hdmi_audio: Kconfig and Makefile
-Date: Mon, 22 Nov 2010 19:09:46 +0530
-Message-ID: <1290433186-31628-5-git-send-email-ramesh.babu@intel.com>
-References: <1290433186-31628-1-git-send-email-ramesh.babu@intel.com>
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: Re: bug in alsa-lib/snd_pcm_plugin_delay for capture?
+Date: Mon, 22 Nov 2010 07:35:39 -0600
+Message-ID: <AANLkTikihnQxQa-1RednpZSpx5Rn5XEcZYJfcShh6HW7@mail.gmail.com>
+References: <AANLkTi=in6g2YxRKwkCi7H_v0jmJ9tOouc2FK-Rg8iDt@mail.gmail.com>
+	<alpine.LNX.2.00.1011180927310.21207@eeebox2.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=000325574d66fd5d430495a4543e
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 42748103A06
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2010 14:34:30 +0100 (CET)
-In-Reply-To: <1290433186-31628-1-git-send-email-ramesh.babu@intel.com>
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0F8071039C3
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2010 14:35:42 +0100 (CET)
+Received: by yxp4 with SMTP id 4so1525588yxp.38
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2010 05:35:42 -0800 (PST)
+In-Reply-To: <alpine.LNX.2.00.1011180927310.21207@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,60 +23,161 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Sailaja Bandarupalli <sailaja.bandarupalli@intel.com>, Ramesh Babu K V <ramesh.babu@intel.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, wim.taymans@collabora.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-From: Ramesh Babu K V <ramesh.babu@intel.com>
+--000325574d66fd5d430495a4543e
+Content-Type: text/plain; charset=ISO-8859-1
 
-This patch adds Kconfig and Makefile.  For compilation, this
-driver is dependent on client driver (platform display driver).
+>> Since the PulseAudio commit 29acfd0e0413a9bd126782763ee2dcf10357546 I
+>> am seeing errors messages telling me that the information reported by
+>> snd_pcm_avail_delay is not accurate on the capture path, more
+>> specifically the delay is lower than the available samples.
+>
+> Could you test patch bellow?
+>
+> http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=ba9332e9192814a5431a3a2505d25d74a9232124
 
-Change-Id: I786b82b7a8cd9136e81a21e076e394199572cd66
-Signed-off-by: Ramesh Babu K V <ramesh.babu@intel.com>
-Signed-off-by: Sailaja Bandarupalli <sailaja.bandarupalli@intel.com>
----
- sound/drivers/Kconfig                 |   10 ++++++++++
- sound/drivers/Makefile                |    1 +
- sound/drivers/intel_mid_hdmi/Makefile |    2 ++
- 3 files changed, 13 insertions(+), 0 deletions(-)
- create mode 100644 sound/drivers/intel_mid_hdmi/Makefile
+Nah, no luck. PulseAudio still reports an error and if I add
+assert(*delayp >= *availp) the code bombs out.
+Here is one way to solve the problem. I don't claim it's the right
+one, but it's compatible with the way the availp value is computed,
+and it makes the error message go away in PulseAudio.
 
-diff --git a/sound/drivers/Kconfig b/sound/drivers/Kconfig
-index 84714a6..e11a607 100644
---- a/sound/drivers/Kconfig
-+++ b/sound/drivers/Kconfig
-@@ -182,4 +182,14 @@ config SND_AC97_POWER_SAVE_DEFAULT
- 	  The default time-out value in seconds for AC97 automatic
- 	  power-save mode.  0 means to disable the power-save mode.
- 
-+config SND_INTELMID_HDMI_AUDIO
-+	tristate "Intel MID based HDMI AUDIO driver"
-+	depends on MDFD_HDMI
-+	default n
-+	help
-+	   Intel MID HDMI Audio Driver (HAD) enables audio playback through
-+	   HDMI interface on Intel Medfield MID platform.  This is an ALSA
-+	   driver.  This driver programs HDMI audio sub-system registers
-+	   according to the HDMI 13.a spec.
-+
- endif	# SND_DRIVERS
-diff --git a/sound/drivers/Makefile b/sound/drivers/Makefile
-index d4a07f9..fdf9add 100644
---- a/sound/drivers/Makefile
-+++ b/sound/drivers/Makefile
-@@ -21,3 +21,4 @@ obj-$(CONFIG_SND_PORTMAN2X4) += snd-portman2x4.o
- obj-$(CONFIG_SND_ML403_AC97CR) += snd-ml403-ac97cr.o
- 
- obj-$(CONFIG_SND) += opl3/ opl4/ mpu401/ vx/ pcsp/
-+obj-$(CONFIG_SND_INTELMID_HDMI_AUDIO) 	+= intel_mid_hdmi/
-diff --git a/sound/drivers/intel_mid_hdmi/Makefile b/sound/drivers/intel_mid_hdmi/Makefile
-new file mode 100644
-index 0000000..a53e4f0
---- /dev/null
-+++ b/sound/drivers/intel_mid_hdmi/Makefile
-@@ -0,0 +1,2 @@
-+obj-$(CONFIG_SND_INTELMID_HDMI_AUDIO)	+= intel_mid_had.o
-+intel_mid_had-objs := intel_mid_hdmi_audio.o intel_mid_hdmi_audio_if.o
--- 
-1.6.2.5
+While I was at it I also removed the .client_frames and .slave_frames
+methods that no one seems to use. This seems to be dead code that
+hasn't been touched in years.
+-Pierre
+
+--000325574d66fd5d430495a4543e
+Content-Type: application/octet-stream;
+	name="0001-remove-unused-client_frames-and-slave_frames-routine.patch"
+Content-Disposition: attachment;
+	filename="0001-remove-unused-client_frames-and-slave_frames-routine.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_ggtebn430
+
+RnJvbSA2NzBjN2EzMmFkMjEyMzlmNDliNzhlNTE3NmFjMDk1YzM0NWMzYWMzIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJv
+c3NhcnRAaW50ZWwuY29tPgpEYXRlOiBGcmksIDE5IE5vdiAyMDEwIDEwOjM1OjMxIC0wNjAwClN1
+YmplY3Q6IFtQQVRDSCAxLzJdIHJlbW92ZSB1bnVzZWQgY2xpZW50X2ZyYW1lcyBhbmQgc2xhdmVf
+ZnJhbWVzIHJvdXRpbmVzCgpwbHVnLT5jbGllbnRfZnJhbWVzIGFuZCBwbHVnLT5zbGF2ZV9mcmFt
+ZXMgYXJlIG5vdCB1c2VkIGJ5CmFueSBwbHVnaW4sIHJlbW92ZSBkZWFkIGNvZGUuCgpTaWduZWQt
+b2ZmLWJ5OiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJvc3NhcnRAaW50ZWwu
+Y29tPgotLS0KIHNyYy9wY20vcGNtX3BsdWdpbi5jIHwgICAzMyArKysrLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0KIHNyYy9wY20vcGNtX3BsdWdpbi5oIHwgICAgMiAtLQogMiBmaWxlcyBj
+aGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDMxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Ny
+Yy9wY20vcGNtX3BsdWdpbi5jIGIvc3JjL3BjbS9wY21fcGx1Z2luLmMKaW5kZXggMGVmMzk0YS4u
+MTlkMGRlZSAxMDA2NDQKLS0tIGEvc3JjL3BjbS9wY21fcGx1Z2luLmMKKysrIGIvc3JjL3BjbS9w
+Y21fcGx1Z2luLmMKQEAgLTE0NCw4ICsxNDQsNiBAQCBzdGF0aWMgaW50IHNuZF9wY21fcGx1Z2lu
+X2RlbGF5KHNuZF9wY21fdCAqcGNtLCBzbmRfcGNtX3NmcmFtZXNfdCAqZGVsYXlwKQogCWludCBl
+cnIgPSBzbmRfcGNtX2RlbGF5KHBsdWdpbi0+Z2VuLnNsYXZlLCAmc2QpOwogCWlmIChlcnIgPCAw
+KQogCQlyZXR1cm4gZXJyOwotCWlmIChwbHVnaW4tPmNsaWVudF9mcmFtZXMpCi0JCXNkID0gcGx1
+Z2luLT5jbGllbnRfZnJhbWVzKHBjbSwgc2QpOwogCSpkZWxheXAgPSBzZDsKIAlyZXR1cm4gMDsK
+IH0KQEAgLTIwOCwxOCArMjA2LDEzIEBAIHN0YXRpYyBzbmRfcGNtX3NmcmFtZXNfdCBzbmRfcGNt
+X3BsdWdpbl9yZXdpbmQoc25kX3BjbV90ICpwY20sIHNuZF9wY21fdWZyYW1lc190CiAJaWYgKGZy
+YW1lcyA9PSAwKQogCQlyZXR1cm4gMDsKIAkKLQlpZiAocGx1Z2luLT5zbGF2ZV9mcmFtZXMpCi0J
+CXNmcmFtZXMgPSBwbHVnaW4tPnNsYXZlX2ZyYW1lcyhwY20sIChzbmRfcGNtX3NmcmFtZXNfdCkg
+ZnJhbWVzKTsKLQllbHNlCi0JCXNmcmFtZXMgPSBmcmFtZXM7CisgICAgICAgIHNmcmFtZXMgPSBm
+cmFtZXM7CiAJc25kX2F0b21pY193cml0ZV9iZWdpbigmcGx1Z2luLT53YXRvbSk7CiAJc2ZyYW1l
+cyA9IHNuZF9wY21fcmV3aW5kKHBsdWdpbi0+Z2VuLnNsYXZlLCBzZnJhbWVzKTsKIAlpZiAoc2Zy
+YW1lcyA8IDApIHsKIAkJc25kX2F0b21pY193cml0ZV9lbmQoJnBsdWdpbi0+d2F0b20pOwogCQly
+ZXR1cm4gc2ZyYW1lczsKIAl9Ci0JaWYgKHBsdWdpbi0+Y2xpZW50X2ZyYW1lcykKLQkJZnJhbWVz
+ID0gcGx1Z2luLT5jbGllbnRfZnJhbWVzKHBjbSwgc2ZyYW1lcyk7CiAJc25kX3BjbV9tbWFwX2Fw
+cGxfYmFja3dhcmQocGNtLCAoc25kX3BjbV91ZnJhbWVzX3QpIGZyYW1lcyk7CiAJc25kX2F0b21p
+Y193cml0ZV9lbmQoJnBsdWdpbi0+d2F0b20pOwogCXJldHVybiAoc25kX3BjbV9zZnJhbWVzX3Qp
+IGZyYW1lczsKQEAgLTI0MSwxOCArMjM0LDEzIEBAIHN0YXRpYyBzbmRfcGNtX3NmcmFtZXNfdCBz
+bmRfcGNtX3BsdWdpbl9mb3J3YXJkKHNuZF9wY21fdCAqcGNtLCBzbmRfcGNtX3VmcmFtZXNfCiAJ
+aWYgKGZyYW1lcyA9PSAwKQogCQlyZXR1cm4gMDsKIAkKLQlpZiAocGx1Z2luLT5zbGF2ZV9mcmFt
+ZXMpCi0JCXNmcmFtZXMgPSBwbHVnaW4tPnNsYXZlX2ZyYW1lcyhwY20sIChzbmRfcGNtX3NmcmFt
+ZXNfdCkgZnJhbWVzKTsKLQllbHNlCi0JCXNmcmFtZXMgPSBmcmFtZXM7CisgICAgICAgIHNmcmFt
+ZXMgPSBmcmFtZXM7CiAJc25kX2F0b21pY193cml0ZV9iZWdpbigmcGx1Z2luLT53YXRvbSk7CiAJ
+c2ZyYW1lcyA9IElOVEVSTkFMKHNuZF9wY21fZm9yd2FyZCkocGx1Z2luLT5nZW4uc2xhdmUsIHNm
+cmFtZXMpOwogCWlmIChzZnJhbWVzIDwgMCkgewogCQlzbmRfYXRvbWljX3dyaXRlX2VuZCgmcGx1
+Z2luLT53YXRvbSk7CiAJCXJldHVybiBzZnJhbWVzOwogCX0KLQlpZiAocGx1Z2luLT5jbGllbnRf
+ZnJhbWVzKQotCQlmcmFtZXMgPSBwbHVnaW4tPmNsaWVudF9mcmFtZXMocGNtLCBzZnJhbWVzKTsK
+IAlzbmRfcGNtX21tYXBfYXBwbF9mb3J3YXJkKHBjbSwgKHNuZF9wY21fdWZyYW1lc190KSBmcmFt
+ZXMpOwogCXNuZF9hdG9taWNfd3JpdGVfZW5kKCZwbHVnaW4tPndhdG9tKTsKIAlyZXR1cm4gKHNu
+ZF9wY21fc2ZyYW1lc190KSBmcmFtZXM7CkBAIC00NjksMTUgKzQ1Nyw4IEBAIHN0YXRpYyBzbmRf
+cGNtX3NmcmFtZXNfdCBzbmRfcGNtX3BsdWdpbl9hdmFpbF91cGRhdGUoc25kX3BjbV90ICpwY20p
+CiAJICAgIHBjbS0+YWNjZXNzICE9IFNORF9QQ01fQUNDRVNTX1JXX0lOVEVSTEVBVkVEICYmCiAJ
+ICAgIHBjbS0+YWNjZXNzICE9IFNORF9QQ01fQUNDRVNTX1JXX05PTklOVEVSTEVBVkVEKQogCQln
+b3RvIF9jYXB0dXJlOwotCWlmIChwbHVnaW4tPmNsaWVudF9mcmFtZXMpIHsKLQkJKnBjbS0+aHcu
+cHRyID0gcGx1Z2luLT5jbGllbnRfZnJhbWVzKHBjbSwgKnNsYXZlLT5ody5wdHIpOwotCQlpZiAo
+c2xhdmVfc2l6ZSA8PSAwKQotCQkJcmV0dXJuIHNsYXZlX3NpemU7Ci0JCXJldHVybiBwbHVnaW4t
+PmNsaWVudF9mcmFtZXMocGNtLCBzbGF2ZV9zaXplKTsKLQl9IGVsc2UgewotCQkqcGNtLT5ody5w
+dHIgPSAqc2xhdmUtPmh3LnB0cjsKLQkJcmV0dXJuIHNsYXZlX3NpemU7Ci0JfQorICAgICAgICAq
+cGNtLT5ody5wdHIgPSAqc2xhdmUtPmh3LnB0cjsKKyAgICAgICAgcmV0dXJuIHNsYXZlX3NpemU7
+CiAgX2NhcHR1cmU6CiAgCXsKIAkJY29uc3Qgc25kX3BjbV9jaGFubmVsX2FyZWFfdCAqYXJlYXM7
+CkBAIC01NDcsMTYgKzUyOCwxMCBAQCBzdGF0aWMgaW50IHNuZF9wY21fcGx1Z2luX3N0YXR1cyhz
+bmRfcGNtX3QgKnBjbSwgc25kX3BjbV9zdGF0dXNfdCAqIHN0YXR1cykKIAl9CiAJc3RhdHVzLT5h
+cHBsX3B0ciA9ICpwY20tPmFwcGwucHRyOwogCXN0YXR1cy0+aHdfcHRyID0gKnBjbS0+aHcucHRy
+OwotCWlmIChwbHVnaW4tPmNsaWVudF9mcmFtZXMpIHsKLQkJc3RhdHVzLT5kZWxheSA9IHBsdWdp
+bi0+Y2xpZW50X2ZyYW1lcyhwY20sIHN0YXR1cy0+ZGVsYXkpOwotCQlzdGF0dXMtPmF2YWlsID0g
+cGx1Z2luLT5jbGllbnRfZnJhbWVzKHBjbSwgc3RhdHVzLT5hdmFpbCk7Ci0JfQogCWlmICghc25k
+X2F0b21pY19yZWFkX29rKCZyYXRvbSkpIHsKIAkJc25kX2F0b21pY19yZWFkX3dhaXQoJnJhdG9t
+KTsKIAkJZ290byBfYWdhaW47CiAJfQotCWlmIChwbHVnaW4tPmNsaWVudF9mcmFtZXMpCi0JCXN0
+YXR1cy0+YXZhaWxfbWF4ID0gcGx1Z2luLT5jbGllbnRfZnJhbWVzKHBjbSwgKHNuZF9wY21fc2Zy
+YW1lc190KSBzdGF0dXMtPmF2YWlsX21heCk7CiAJcmV0dXJuIDA7CiB9CiAKZGlmZiAtLWdpdCBh
+L3NyYy9wY20vcGNtX3BsdWdpbi5oIGIvc3JjL3BjbS9wY21fcGx1Z2luLmgKaW5kZXggZGZjZjZk
+ZS4uN2VlN2M3ZiAxMDA2NDQKLS0tIGEvc3JjL3BjbS9wY21fcGx1Z2luLmgKKysrIGIvc3JjL3Bj
+bS9wY21fcGx1Z2luLmgKQEAgLTQ0LDggKzQ0LDYgQEAgdHlwZWRlZiBzdHJ1Y3QgewogCXNuZF9w
+Y21fc2xhdmVfeGZlcl9hcmVhc19mdW5jX3Qgd3JpdGU7CiAJc25kX3BjbV9zbGF2ZV94ZmVyX2Fy
+ZWFzX3VuZG9fZnVuY190IHVuZG9fcmVhZDsKIAlzbmRfcGNtX3NsYXZlX3hmZXJfYXJlYXNfdW5k
+b19mdW5jX3QgdW5kb193cml0ZTsKLQlzbmRfcGNtX3NmcmFtZXNfdCAoKmNsaWVudF9mcmFtZXMp
+KHNuZF9wY21fdCAqcGNtLCBzbmRfcGNtX3NmcmFtZXNfdCBmcmFtZXMpOwotCXNuZF9wY21fc2Zy
+YW1lc190ICgqc2xhdmVfZnJhbWVzKShzbmRfcGNtX3QgKnBjbSwgc25kX3BjbV9zZnJhbWVzX3Qg
+ZnJhbWVzKTsKIAlpbnQgKCppbml0KShzbmRfcGNtX3QgKnBjbSk7CiAJc25kX3BjbV91ZnJhbWVz
+X3QgYXBwbF9wdHIsIGh3X3B0cjsKIAlzbmRfYXRvbWljX3dyaXRlX3Qgd2F0b207Ci0tIAoxLjcu
+Mi4zCgo=
+--000325574d66fd5d430495a4543e
+Content-Type: application/octet-stream;
+	name="0002-pcm_plugin-fix-capture-delay.patch"
+Content-Disposition: attachment;
+	filename="0002-pcm_plugin-fix-capture-delay.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_ggtebxhe1
+
+RnJvbSBjODI4OGFiZGU1OGFhNDZmZjAxMzc3MjM2NWQ2ZGJlOTgzOWFlODhkIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJv
+c3NhcnRAaW50ZWwuY29tPgpEYXRlOiBGcmksIDE5IE5vdiAyMDEwIDExOjI4OjQwIC0wNjAwClN1
+YmplY3Q6IFtQQVRDSCAyLzJdIHBjbV9wbHVnaW46IGZpeCBjYXB0dXJlIGRlbGF5CgpUaGUgZXhp
+c3RpbmcgY29kZSBvbmx5IHJlcG9ydGVkIHRoZSBzbGF2ZSBkZWxheS4gQWRkIGFkZGl0aW9uYWwK
+YnVmZmVyaW5nIGRvbmUgYXQgdGhlIHBsdWdpbiBsZXZlbC4KVGhpcyBtYWtlcyBzdXJlIGRlbGF5
+ID49IGF2YWlsLCBvdGhlcndpc2UgdGhlIHZhbHVlcyByZXBvcnRlZApieSBzbmRfcGNtX2F2YWls
+X2RlbGF5IGRvbid0IG1ha2UgYW55IHNlbnNlLgoKU2lnbmVkLW9mZi1ieTogUGllcnJlLUxvdWlz
+IEJvc3NhcnQgPHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGludGVsLmNvbT4KLS0tCiBzcmMvcGNtL3Bj
+bV9wbHVnaW4uYyB8ICAgMTQgKysrKysrKysrKysrKy0KIDEgZmlsZXMgY2hhbmdlZCwgMTMgaW5z
+ZXJ0aW9ucygrKSwgMSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zcmMvcGNtL3BjbV9wbHVn
+aW4uYyBiL3NyYy9wY20vcGNtX3BsdWdpbi5jCmluZGV4IDE5ZDBkZWUuLjJhNzkzNGIgMTAwNjQ0
+Ci0tLSBhL3NyYy9wY20vcGNtX3BsdWdpbi5jCisrKyBiL3NyYy9wY20vcGNtX3BsdWdpbi5jCkBA
+IC0xNDEsMTEgKzE0MSwyMyBAQCBzdGF0aWMgaW50IHNuZF9wY21fcGx1Z2luX2RlbGF5KHNuZF9w
+Y21fdCAqcGNtLCBzbmRfcGNtX3NmcmFtZXNfdCAqZGVsYXlwKQogewogCXNuZF9wY21fcGx1Z2lu
+X3QgKnBsdWdpbiA9IHBjbS0+cHJpdmF0ZV9kYXRhOwogCXNuZF9wY21fc2ZyYW1lc190IHNkOwot
+CWludCBlcnIgPSBzbmRfcGNtX2RlbGF5KHBsdWdpbi0+Z2VuLnNsYXZlLCAmc2QpOworICAgICAg
+ICBzbmRfcGNtX3NmcmFtZXNfdCBzbGF2ZV9hdmFpbDsKKyAgICAgICAgc25kX3BjbV9zZnJhbWVz
+X3QgcGx1Z2luX2F2YWlsOworICAgICAgICBpbnQgZXJyID0gc25kX3BjbV9kZWxheShwbHVnaW4t
+Pmdlbi5zbGF2ZSwgJnNkKTsKIAlpZiAoZXJyIDwgMCkKIAkJcmV0dXJuIGVycjsKKyAgICAgICAg
+aWYgKHBjbS0+c3RyZWFtID09IFNORF9QQ01fU1RSRUFNX0NBUFRVUkUgJiYKKwkgICAgcGNtLT5h
+Y2Nlc3MgIT0gU05EX1BDTV9BQ0NFU1NfUldfSU5URVJMRUFWRUQgJiYKKwkgICAgcGNtLT5hY2Nl
+c3MgIT0gU05EX1BDTV9BQ0NFU1NfUldfTk9OSU5URVJMRUFWRUQpCisJCWdvdG8gX2NhcHR1cmU7
+CiAJKmRlbGF5cCA9IHNkOwogCXJldHVybiAwOworIF9jYXB0dXJlOgorICAgICAgICBzbGF2ZV9h
+dmFpbCA9IHNuZF9wY21fYXZhaWxfdXBkYXRlKHBsdWdpbi0+Z2VuLnNsYXZlKTsKKyAgICAgICAg
+cGx1Z2luX2F2YWlsID0gc25kX3BjbV9hdmFpbF91cGRhdGUocGNtKTsKKyAgICAgICAgYXNzZXJ0
+KCBwbHVnaW5fYXZhaWwgPj0gc2xhdmVfYXZhaWwpOworICAgICAgICAqZGVsYXlwID0gc2QgKyAo
+cGx1Z2luX2F2YWlsIC0gc2xhdmVfYXZhaWwpOworICAgICAgICByZXR1cm4gMDsKIH0KIAogc3Rh
+dGljIGludCBzbmRfcGNtX3BsdWdpbl9wcmVwYXJlKHNuZF9wY21fdCAqcGNtKQotLSAKMS43LjIu
+MwoK
+--000325574d66fd5d430495a4543e
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--000325574d66fd5d430495a4543e--
