@@ -1,44 +1,42 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] cm6206: turn off de-emphasis in s/pdif
-Date: Mon, 22 Nov 2010 16:42:38 +0100
-Message-ID: <4CEA8F6E.6040703@ladisch.de>
-References: <Pine.LNX.4.61.1011161859260.551@kermit.ultrawaves>	<4CE4EDAF.4010200@ladisch.de>
-	<s5hoc9httbe.wl%tiwai@suse.de>
+From: Vasiliy Kulikov <segoon@openwall.com>
+Subject: [PATCH v2] ASoC: atmel: test wrong variable
+Date: Mon, 22 Nov 2010 18:59:13 +0300
+Message-ID: <20101122155913.GA9089@albatros>
+References: <1290361216-15166-1-git-send-email-segoon@openwall.com>
+ <20101122094353.f76830b5.jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id E71F8244C9
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2010 16:40:21 +0100 (CET)
-In-Reply-To: <s5hoc9httbe.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Eric Lammerts <alsa-devel@lists.lammerts.org>, alsa-devel@alsa-project.org, Dan Allongo <gongo2k1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20101122094353.f76830b5.jhnikula@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Timur Tabi <timur@freescale.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org, Jarkko Nikula <jhnikula@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Clemens Ladisch wrote:
-> > Eric Lammerts wrote:
-> > > I noticed on my DAC that the de-emphasis LED was on. Is this by
-> > > accident?
-> > 
-> > Probably.  The mechanism to set the S/PDIF status bits should be added
-> > to the driver, but as long as we do not have that, setting this bit by
-> > default is silly.
-> 
-> Clemens, would you implement this?
+After clk_get() mclk is checked second time instead of pllb check.
+In patch v1 Jarkko Nikula noticed that PTR_ERR() is also has wrong argument.
 
-Yes, it's on my TODO list.
+Signed-off-by: Vasiliy Kulikov <segoon@openwall.com>
+---
+ sound/soc/atmel/sam9g20_wm8731.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-
-Regards,
-Clemens
+diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
+index da9c303..f16e00c 100644
+--- a/sound/soc/atmel/sam9g20_wm8731.c
++++ b/sound/soc/atmel/sam9g20_wm8731.c
+@@ -223,9 +223,9 @@ static int __init at91sam9g20ek_init(void)
+ 	}
+ 
+ 	pllb = clk_get(NULL, "pllb");
+-	if (IS_ERR(mclk)) {
++	if (IS_ERR(pllb)) {
+ 		printk(KERN_ERR "ASoC: Failed to get PLLB\n");
+-		ret = PTR_ERR(mclk);
++		ret = PTR_ERR(pllb);
+ 		goto err_mclk;
+ 	}
+ 	ret = clk_set_parent(mclk, pllb);
+-- 
+1.7.0.4
