@@ -1,15 +1,15 @@
 From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCHv4 15/18] ASoC: SMDK64XX: Rename for other
-	platforms
-Date: Mon, 22 Nov 2010 15:37:16 +0900
-Message-ID: <1290407836-29527-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: [PATCHv4 18/18] ASoC: Samsung: Rename from s3c24xx to
+	samsung
+Date: Mon, 22 Nov 2010 15:37:25 +0900
+Message-ID: <1290407845-29623-1-git-send-email-jassisinghbrar@gmail.com>
 References: <1290407690-28917-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9B602103883
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D33110387E
 	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2010 07:51:02 +0100 (CET)
 In-Reply-To: <1290407690-28917-1-git-send-email-jassisinghbrar@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -27,226 +27,417 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jassi Brar <jassi.brar@samsung.com>
 
-We plan to use the same ASoC Machine driver for most of
-latest SMDK platforms. So rename the 64XX specific driver
-to generic named.
+Finally, move the 's3c24xx' directory to 'samsung'
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- sound/soc/s3c24xx/Kconfig                          |    6 +-
- sound/soc/s3c24xx/Makefile                         |    4 +-
- .../s3c24xx/{smdk64xx_wm8580.c => smdk_wm8580.c}   |   64 ++++++++++----------
- 3 files changed, 37 insertions(+), 37 deletions(-)
- rename sound/soc/s3c24xx/{smdk64xx_wm8580.c => smdk_wm8580.c} (78%)
+ sound/soc/Kconfig                                  |    2 +-
+ sound/soc/Makefile                                 |    2 +-
+ sound/soc/{s3c24xx => samsung}/Kconfig             |    0
+ sound/soc/{s3c24xx => samsung}/Makefile            |    0
+ sound/soc/{s3c24xx => samsung}/ac97.c              |    2 +-
+ sound/soc/{s3c24xx => samsung}/ac97.h              |    2 +-
+ sound/soc/{s3c24xx => samsung}/dma.c               |    0
+ sound/soc/{s3c24xx => samsung}/dma.h               |    0
+ sound/soc/{s3c24xx => samsung}/goni_wm8994.c       |    0
+ sound/soc/{s3c24xx => samsung}/i2s.c               |    2 +-
+ sound/soc/{s3c24xx => samsung}/i2s.h               |    2 +-
+ sound/soc/{s3c24xx => samsung}/jive_wm8750.c       |    2 +-
+ sound/soc/{s3c24xx => samsung}/lm4857.h            |    0
+ sound/soc/{s3c24xx => samsung}/ln2440sbc_alc650.c  |    0
+ .../{s3c24xx => samsung}/neo1973_gta02_wm8753.c    |    0
+ sound/soc/{s3c24xx => samsung}/neo1973_wm8753.c    |    0
+ sound/soc/{s3c24xx => samsung}/pcm.c               |    2 +-
+ sound/soc/{s3c24xx => samsung}/pcm.h               |    2 +-
+ sound/soc/{s3c24xx => samsung}/regs-i2s-v2.h       |    0
+ sound/soc/{s3c24xx => samsung}/rx1950_uda1380.c    |    0
+ sound/soc/{s3c24xx => samsung}/s3c-i2s-v2.c        |    2 +-
+ sound/soc/{s3c24xx => samsung}/s3c-i2s-v2.h        |    2 +-
+ sound/soc/{s3c24xx => samsung}/s3c2412-i2s.c       |    2 +-
+ sound/soc/{s3c24xx => samsung}/s3c2412-i2s.h       |    2 +-
+ sound/soc/{s3c24xx => samsung}/s3c24xx-i2s.c       |    0
+ sound/soc/{s3c24xx => samsung}/s3c24xx-i2s.h       |    0
+ sound/soc/{s3c24xx => samsung}/s3c24xx_simtec.c    |    2 +-
+ sound/soc/{s3c24xx => samsung}/s3c24xx_simtec.h    |    2 +-
+ .../{s3c24xx => samsung}/s3c24xx_simtec_hermes.c   |    2 +-
+ .../s3c24xx_simtec_tlv320aic23.c                   |    2 +-
+ sound/soc/{s3c24xx => samsung}/s3c24xx_uda134x.c   |    0
+ sound/soc/{s3c24xx => samsung}/smartq_wm8987.c     |    2 +-
+ sound/soc/{s3c24xx => samsung}/smdk2443_wm9710.c   |    0
+ sound/soc/{s3c24xx => samsung}/smdk_spdif.c        |    0
+ sound/soc/{s3c24xx => samsung}/smdk_wm8580.c       |    0
+ sound/soc/{s3c24xx => samsung}/smdk_wm9713.c       |    0
+ sound/soc/{s3c24xx => samsung}/spdif.c             |    2 +-
+ sound/soc/{s3c24xx => samsung}/spdif.h             |    2 +-
+ 38 files changed, 20 insertions(+), 20 deletions(-)
+ rename sound/soc/{s3c24xx => samsung}/Kconfig (100%)
+ rename sound/soc/{s3c24xx => samsung}/Makefile (100%)
+ rename sound/soc/{s3c24xx => samsung}/ac97.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/ac97.h (95%)
+ rename sound/soc/{s3c24xx => samsung}/dma.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/dma.h (100%)
+ rename sound/soc/{s3c24xx => samsung}/goni_wm8994.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/i2s.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/i2s.h (96%)
+ rename sound/soc/{s3c24xx => samsung}/jive_wm8750.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/lm4857.h (100%)
+ rename sound/soc/{s3c24xx => samsung}/ln2440sbc_alc650.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/neo1973_gta02_wm8753.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/neo1973_wm8753.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/pcm.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/pcm.h (99%)
+ rename sound/soc/{s3c24xx => samsung}/regs-i2s-v2.h (100%)
+ rename sound/soc/{s3c24xx => samsung}/rx1950_uda1380.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/s3c-i2s-v2.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/s3c-i2s-v2.h (98%)
+ rename sound/soc/{s3c24xx => samsung}/s3c2412-i2s.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/s3c2412-i2s.h (95%)
+ rename sound/soc/{s3c24xx => samsung}/s3c24xx-i2s.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/s3c24xx-i2s.h (100%)
+ rename sound/soc/{s3c24xx => samsung}/s3c24xx_simtec.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/s3c24xx_simtec.h (94%)
+ rename sound/soc/{s3c24xx => samsung}/s3c24xx_simtec_hermes.c (98%)
+ rename sound/soc/{s3c24xx => samsung}/s3c24xx_simtec_tlv320aic23.c (98%)
+ rename sound/soc/{s3c24xx => samsung}/s3c24xx_uda134x.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/smartq_wm8987.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/smdk2443_wm9710.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/smdk_spdif.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/smdk_wm8580.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/smdk_wm9713.c (100%)
+ rename sound/soc/{s3c24xx => samsung}/spdif.c (99%)
+ rename sound/soc/{s3c24xx => samsung}/spdif.h (94%)
 
-diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
-index 15f5f91..396f678 100644
---- a/sound/soc/s3c24xx/Kconfig
-+++ b/sound/soc/s3c24xx/Kconfig
-@@ -60,13 +60,13 @@ config SND_S3C24XX_SOC_JIVE_WM8750
- 	help
- 	  Sat Y if you want to add support for SoC audio on the Jive.
- 
--config SND_S3C64XX_SOC_WM8580
--	tristate "SoC I2S Audio support for WM8580 on SMDK64XX"
-+config SND_SOC_SMDK_WM8580
-+	tristate "SoC I2S Audio support for WM8580 on SMDK"
- 	depends on SND_S3C24XX_SOC && MACH_SMDK6410
- 	select SND_SOC_WM8580
- 	select SND_SAMSUNG_I2S
- 	help
--	  Say Y if you want to add support for SoC audio on the SMDK6410.
-+	  Say Y if you want to add support for SoC audio on the SMDKs.
- 
- config SND_S3C24XX_SOC_SMDK2443_WM9710
- 	tristate "SoC AC97 Audio support for SMDK2443 - WM9710"
-diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/s3c24xx/Makefile
-index dac41ee..7eee57f 100644
---- a/sound/soc/s3c24xx/Makefile
-+++ b/sound/soc/s3c24xx/Makefile
-@@ -28,7 +28,7 @@ snd-soc-s3c24xx-simtec-objs := s3c24xx_simtec.o
- snd-soc-s3c24xx-simtec-hermes-objs := s3c24xx_simtec_hermes.o
- snd-soc-s3c24xx-simtec-tlv320aic23-objs := s3c24xx_simtec_tlv320aic23.o
- snd-soc-rx1950-uda1380-objs := rx1950_uda1380.o
--snd-soc-smdk64xx-wm8580-objs := smdk64xx_wm8580.o
-+snd-soc-smdk-wm8580-objs := smdk_wm8580.o
- snd-soc-smdk-wm9713-objs := smdk_wm9713.o
- snd-soc-s3c64xx-smartq-wm8987-objs := smartq_wm8987.o
- snd-soc-goni-wm8994-objs := goni_wm8994.o
-@@ -44,7 +44,7 @@ obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC) += snd-soc-s3c24xx-simtec.o
- obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC_HERMES) += snd-soc-s3c24xx-simtec-hermes.o
- obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC_TLV320AIC23) += snd-soc-s3c24xx-simtec-tlv320aic23.o
- obj-$(CONFIG_SND_S3C24XX_SOC_RX1950_UDA1380) += snd-soc-rx1950-uda1380.o
--obj-$(CONFIG_SND_S3C64XX_SOC_WM8580) += snd-soc-smdk64xx-wm8580.o
-+obj-$(CONFIG_SND_SOC_SMDK_WM8580) += snd-soc-smdk-wm8580.o
- obj-$(CONFIG_SND_SOC_SMDK_WM9713) += snd-soc-smdk-wm9713.o
- obj-$(CONFIG_SND_S3C64XX_SOC_SMARTQ) += snd-soc-s3c64xx-smartq-wm8987.o
- obj-$(CONFIG_SND_SOC_SMDK_SPDIF) += snd-soc-smdk-spdif.o
-diff --git a/sound/soc/s3c24xx/smdk64xx_wm8580.c b/sound/soc/s3c24xx/smdk_wm8580.c
-similarity index 78%
-rename from sound/soc/s3c24xx/smdk64xx_wm8580.c
-rename to sound/soc/s3c24xx/smdk_wm8580.c
-index 7cef5d3..4176252 100644
---- a/sound/soc/s3c24xx/smdk64xx_wm8580.c
-+++ b/sound/soc/s3c24xx/smdk_wm8580.c
-@@ -1,5 +1,5 @@
- /*
-- *  smdk64xx_wm8580.c
-+ *  smdk_wm8580.c
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 4562c89..21a5465 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -38,7 +38,7 @@ source "sound/soc/nuc900/Kconfig"
+ source "sound/soc/omap/Kconfig"
+ source "sound/soc/kirkwood/Kconfig"
+ source "sound/soc/pxa/Kconfig"
+-source "sound/soc/s3c24xx/Kconfig"
++source "sound/soc/samsung/Kconfig"
+ source "sound/soc/s6000/Kconfig"
+ source "sound/soc/sh/Kconfig"
+ source "sound/soc/txx9/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index eb18344..ce913bf 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -14,7 +14,7 @@ obj-$(CONFIG_SND_SOC)	+= nuc900/
+ obj-$(CONFIG_SND_SOC)	+= omap/
+ obj-$(CONFIG_SND_SOC)	+= kirkwood/
+ obj-$(CONFIG_SND_SOC)	+= pxa/
+-obj-$(CONFIG_SND_SOC)	+= s3c24xx/
++obj-$(CONFIG_SND_SOC)	+= samsung/
+ obj-$(CONFIG_SND_SOC)	+= s6000/
+ obj-$(CONFIG_SND_SOC)	+= sh/
+ obj-$(CONFIG_SND_SOC)	+= txx9/
+diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/samsung/Kconfig
+similarity index 100%
+rename from sound/soc/s3c24xx/Kconfig
+rename to sound/soc/samsung/Kconfig
+diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/samsung/Makefile
+similarity index 100%
+rename from sound/soc/s3c24xx/Makefile
+rename to sound/soc/samsung/Makefile
+diff --git a/sound/soc/s3c24xx/ac97.c b/sound/soc/samsung/ac97.c
+similarity index 99%
+rename from sound/soc/s3c24xx/ac97.c
+rename to sound/soc/samsung/ac97.c
+index 4f999d1..4770a95 100644
+--- a/sound/soc/s3c24xx/ac97.c
++++ b/sound/soc/samsung/ac97.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/ac97.c
++/* sound/soc/samsung/ac97.c
   *
-  *  Copyright (c) 2009 Samsung Electronics Co. Ltd
-  *  Author: Jaswinder Singh <jassi.brar@samsung.com>
-@@ -28,10 +28,10 @@
-  *   SMDK6410: Set CFG1 1-3 Off, CFG2 1-4 On
-  */
- 
--/* SMDK64XX has a 12MHZ crystal attached to WM8580 */
--#define SMDK64XX_WM8580_FREQ 12000000
-+/* SMDK has a 12MHZ crystal attached to WM8580 */
-+#define SMDK_WM8580_FREQ 12000000
- 
--static int smdk64xx_hw_params(struct snd_pcm_substream *substream,
-+static int smdk_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-@@ -103,7 +103,7 @@ static int smdk64xx_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 
- 	ret = snd_soc_dai_set_pll(codec_dai, WM8580_PLLA, 0,
--					SMDK64XX_WM8580_FREQ, pll_out);
-+					SMDK_WM8580_FREQ, pll_out);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -116,20 +116,20 @@ static int smdk64xx_hw_params(struct snd_pcm_substream *substream,
- }
- 
- /*
-- * SMDK64XX WM8580 DAI operations.
-+ * SMDK WM8580 DAI operations.
-  */
--static struct snd_soc_ops smdk64xx_ops = {
--	.hw_params = smdk64xx_hw_params,
-+static struct snd_soc_ops smdk_ops = {
-+	.hw_params = smdk_hw_params,
- };
- 
--/* SMDK64xx Playback widgets */
-+/* SMDK Playback widgets */
- static const struct snd_soc_dapm_widget wm8580_dapm_widgets_pbk[] = {
- 	SND_SOC_DAPM_HP("Front", NULL),
- 	SND_SOC_DAPM_HP("Center+Sub", NULL),
- 	SND_SOC_DAPM_HP("Rear", NULL),
- };
- 
--/* SMDK64xx Capture widgets */
-+/* SMDK Capture widgets */
- static const struct snd_soc_dapm_widget wm8580_dapm_widgets_cpt[] = {
- 	SND_SOC_DAPM_MIC("MicIn", NULL),
- 	SND_SOC_DAPM_LINE("LineIn", NULL),
-@@ -160,12 +160,12 @@ static const struct snd_soc_dapm_route audio_map_rx[] = {
- 	{"Rear", NULL, "VOUT3R"},
- };
- 
--static int smdk64xx_wm8580_init_paiftx(struct snd_soc_pcm_runtime *rtd)
-+static int smdk_wm8580_init_paiftx(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 
--	/* Add smdk64xx specific Capture widgets */
-+	/* Add smdk specific Capture widgets */
- 	snd_soc_dapm_new_controls(dapm, wm8580_dapm_widgets_cpt,
- 				  ARRAY_SIZE(wm8580_dapm_widgets_cpt));
- 
-@@ -183,12 +183,12 @@ static int smdk64xx_wm8580_init_paiftx(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
- 
--static int smdk64xx_wm8580_init_paifrx(struct snd_soc_pcm_runtime *rtd)
-+static int smdk_wm8580_init_paifrx(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 
--	/* Add smdk64xx specific Playback widgets */
-+	/* Add smdk specific Playback widgets */
- 	snd_soc_dapm_new_controls(dapm, wm8580_dapm_widgets_pbk,
- 				  ARRAY_SIZE(wm8580_dapm_widgets_pbk));
- 
-@@ -201,7 +201,7 @@ static int smdk64xx_wm8580_init_paifrx(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
- 
--static struct snd_soc_dai_link smdk64xx_dai[] = {
-+static struct snd_soc_dai_link smdk_dai[] = {
- { /* Primary Playback i/f */
- 	.name = "WM8580 PAIF RX",
- 	.stream_name = "Playback",
-@@ -209,8 +209,8 @@ static struct snd_soc_dai_link smdk64xx_dai[] = {
- 	.codec_dai_name = "wm8580-hifi-playback",
- 	.platform_name = "samsung-audio",
- 	.codec_name = "wm8580-codec.0-001b",
--	.init = smdk64xx_wm8580_init_paifrx,
--	.ops = &smdk64xx_ops,
-+	.init = smdk_wm8580_init_paifrx,
-+	.ops = &smdk_ops,
- },
- { /* Primary Capture i/f */
- 	.name = "WM8580 PAIF TX",
-@@ -219,37 +219,37 @@ static struct snd_soc_dai_link smdk64xx_dai[] = {
- 	.codec_dai_name = "wm8580-hifi-capture",
- 	.platform_name = "samsung-audio",
- 	.codec_name = "wm8580-codec.0-001b",
--	.init = smdk64xx_wm8580_init_paiftx,
--	.ops = &smdk64xx_ops,
-+	.init = smdk_wm8580_init_paiftx,
-+	.ops = &smdk_ops,
- },
- };
- 
--static struct snd_soc_card smdk64xx = {
--	.name = "SMDK64xx 5.1",
--	.dai_link = smdk64xx_dai,
--	.num_links = ARRAY_SIZE(smdk64xx_dai),
-+static struct snd_soc_card smdk = {
-+	.name = "SMDK-I2S",
-+	.dai_link = smdk_dai,
-+	.num_links = ARRAY_SIZE(smdk_dai),
- };
- 
--static struct platform_device *smdk64xx_snd_device;
-+static struct platform_device *smdk_snd_device;
- 
--static int __init smdk64xx_audio_init(void)
-+static int __init smdk_audio_init(void)
- {
- 	int ret;
- 
--	smdk64xx_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!smdk64xx_snd_device)
-+	smdk_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!smdk_snd_device)
- 		return -ENOMEM;
- 
--	platform_set_drvdata(smdk64xx_snd_device, &smdk64xx);
--	ret = platform_device_add(smdk64xx_snd_device);
-+	platform_set_drvdata(smdk_snd_device, &smdk);
-+	ret = platform_device_add(smdk_snd_device);
- 
- 	if (ret)
--		platform_device_put(smdk64xx_snd_device);
-+		platform_device_put(smdk_snd_device);
- 
- 	return ret;
- }
--module_init(smdk64xx_audio_init);
-+module_init(smdk_audio_init);
- 
- MODULE_AUTHOR("Jaswinder Singh, jassi.brar@samsung.com");
--MODULE_DESCRIPTION("ALSA SoC SMDK64XX WM8580");
-+MODULE_DESCRIPTION("ALSA SoC SMDK WM8580");
- MODULE_LICENSE("GPL");
+  * ALSA SoC Audio Layer - S3C AC97 Controller driver
+  * 	Evolved from s3c2443-ac97.c
+diff --git a/sound/soc/s3c24xx/ac97.h b/sound/soc/samsung/ac97.h
+similarity index 95%
+rename from sound/soc/s3c24xx/ac97.h
+rename to sound/soc/samsung/ac97.h
+index a8f01b7..0d0e1b5 100644
+--- a/sound/soc/s3c24xx/ac97.h
++++ b/sound/soc/samsung/ac97.h
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/ac97.h
++/* sound/soc/samsung/ac97.h
+  *
+  * ALSA SoC Audio Layer - S3C AC97 Controller driver
+  *	Evolved from s3c2443-ac97.h
+diff --git a/sound/soc/s3c24xx/dma.c b/sound/soc/samsung/dma.c
+similarity index 100%
+rename from sound/soc/s3c24xx/dma.c
+rename to sound/soc/samsung/dma.c
+diff --git a/sound/soc/s3c24xx/dma.h b/sound/soc/samsung/dma.h
+similarity index 100%
+rename from sound/soc/s3c24xx/dma.h
+rename to sound/soc/samsung/dma.h
+diff --git a/sound/soc/s3c24xx/goni_wm8994.c b/sound/soc/samsung/goni_wm8994.c
+similarity index 100%
+rename from sound/soc/s3c24xx/goni_wm8994.c
+rename to sound/soc/samsung/goni_wm8994.c
+diff --git a/sound/soc/s3c24xx/i2s.c b/sound/soc/samsung/i2s.c
+similarity index 99%
+rename from sound/soc/s3c24xx/i2s.c
+rename to sound/soc/samsung/i2s.c
+index 7e6ddfa..d6de3f0 100644
+--- a/sound/soc/s3c24xx/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/i2s.c
++/* sound/soc/samsung/i2s.c
+  *
+  * ALSA SoC Audio Layer - Samsung I2S Controller driver
+  *
+diff --git a/sound/soc/s3c24xx/i2s.h b/sound/soc/samsung/i2s.h
+similarity index 96%
+rename from sound/soc/s3c24xx/i2s.h
+rename to sound/soc/samsung/i2s.h
+index d3180b3..8e15f6a 100644
+--- a/sound/soc/s3c24xx/i2s.h
++++ b/sound/soc/samsung/i2s.h
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/i2s.h
++/* sound/soc/samsung/i2s.h
+  *
+  * ALSA SoC Audio Layer - Samsung I2S Controller driver
+  *
+diff --git a/sound/soc/s3c24xx/jive_wm8750.c b/sound/soc/samsung/jive_wm8750.c
+similarity index 99%
+rename from sound/soc/s3c24xx/jive_wm8750.c
+rename to sound/soc/samsung/jive_wm8750.c
+index ab30642..4f18a39 100644
+--- a/sound/soc/s3c24xx/jive_wm8750.c
++++ b/sound/soc/samsung/jive_wm8750.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/jive_wm8750.c
++/* sound/soc/samsung/jive_wm8750.c
+  *
+  * Copyright 2007,2008 Simtec Electronics
+  *
+diff --git a/sound/soc/s3c24xx/lm4857.h b/sound/soc/samsung/lm4857.h
+similarity index 100%
+rename from sound/soc/s3c24xx/lm4857.h
+rename to sound/soc/samsung/lm4857.h
+diff --git a/sound/soc/s3c24xx/ln2440sbc_alc650.c b/sound/soc/samsung/ln2440sbc_alc650.c
+similarity index 100%
+rename from sound/soc/s3c24xx/ln2440sbc_alc650.c
+rename to sound/soc/samsung/ln2440sbc_alc650.c
+diff --git a/sound/soc/s3c24xx/neo1973_gta02_wm8753.c b/sound/soc/samsung/neo1973_gta02_wm8753.c
+similarity index 100%
+rename from sound/soc/s3c24xx/neo1973_gta02_wm8753.c
+rename to sound/soc/samsung/neo1973_gta02_wm8753.c
+diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/samsung/neo1973_wm8753.c
+similarity index 100%
+rename from sound/soc/s3c24xx/neo1973_wm8753.c
+rename to sound/soc/samsung/neo1973_wm8753.c
+diff --git a/sound/soc/s3c24xx/pcm.c b/sound/soc/samsung/pcm.c
+similarity index 99%
+rename from sound/soc/s3c24xx/pcm.c
+rename to sound/soc/samsung/pcm.c
+index 4d0f6e4..48d0b75 100644
+--- a/sound/soc/s3c24xx/pcm.c
++++ b/sound/soc/samsung/pcm.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/pcm.c
++/* sound/soc/samsung/pcm.c
+  *
+  * ALSA SoC Audio Layer - S3C PCM-Controller driver
+  *
+diff --git a/sound/soc/s3c24xx/pcm.h b/sound/soc/samsung/pcm.h
+similarity index 99%
+rename from sound/soc/s3c24xx/pcm.h
+rename to sound/soc/samsung/pcm.h
+index 3775216..03393dc 100644
+--- a/sound/soc/s3c24xx/pcm.h
++++ b/sound/soc/samsung/pcm.h
+@@ -1,4 +1,4 @@
+-/*  sound/soc/s3c24xx/pcm.h
++/*  sound/soc/samsung/pcm.h
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+diff --git a/sound/soc/s3c24xx/regs-i2s-v2.h b/sound/soc/samsung/regs-i2s-v2.h
+similarity index 100%
+rename from sound/soc/s3c24xx/regs-i2s-v2.h
+rename to sound/soc/samsung/regs-i2s-v2.h
+diff --git a/sound/soc/s3c24xx/rx1950_uda1380.c b/sound/soc/samsung/rx1950_uda1380.c
+similarity index 100%
+rename from sound/soc/s3c24xx/rx1950_uda1380.c
+rename to sound/soc/samsung/rx1950_uda1380.c
+diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
+similarity index 99%
+rename from sound/soc/s3c24xx/s3c-i2s-v2.c
+rename to sound/soc/samsung/s3c-i2s-v2.c
+index c471431..094f36e 100644
+--- a/sound/soc/s3c24xx/s3c-i2s-v2.c
++++ b/sound/soc/samsung/s3c-i2s-v2.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c-i2c-v2.c
++/* sound/soc/samsung/s3c-i2c-v2.c
+  *
+  * ALSA Soc Audio Layer - I2S core for newer Samsung SoCs.
+  *
+diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.h b/sound/soc/samsung/s3c-i2s-v2.h
+similarity index 98%
+rename from sound/soc/s3c24xx/s3c-i2s-v2.h
+rename to sound/soc/samsung/s3c-i2s-v2.h
+index d458301..f8297d9 100644
+--- a/sound/soc/s3c24xx/s3c-i2s-v2.h
++++ b/sound/soc/samsung/s3c-i2s-v2.h
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c-i2s-v2.h
++/* sound/soc/samsung/s3c-i2s-v2.h
+  *
+  * ALSA Soc Audio Layer - S3C_I2SV2 I2S driver
+  *
+diff --git a/sound/soc/s3c24xx/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
+similarity index 99%
+rename from sound/soc/s3c24xx/s3c2412-i2s.c
+rename to sound/soc/samsung/s3c2412-i2s.c
+index d953ff4..7ea8378 100644
+--- a/sound/soc/s3c24xx/s3c2412-i2s.c
++++ b/sound/soc/samsung/s3c2412-i2s.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c2412-i2s.c
++/* sound/soc/samsung/s3c2412-i2s.c
+  *
+  * ALSA Soc Audio Layer - S3C2412 I2S driver
+  *
+diff --git a/sound/soc/s3c24xx/s3c2412-i2s.h b/sound/soc/samsung/s3c2412-i2s.h
+similarity index 95%
+rename from sound/soc/s3c24xx/s3c2412-i2s.h
+rename to sound/soc/samsung/s3c2412-i2s.h
+index 01a0471..02ad579 100644
+--- a/sound/soc/s3c24xx/s3c2412-i2s.h
++++ b/sound/soc/samsung/s3c2412-i2s.h
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c2412-i2s.c
++/* sound/soc/samsung/s3c2412-i2s.c
+  *
+  * ALSA Soc Audio Layer - S3C2412 I2S driver
+  *
+diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
+similarity index 100%
+rename from sound/soc/s3c24xx/s3c24xx-i2s.c
+rename to sound/soc/samsung/s3c24xx-i2s.c
+diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.h b/sound/soc/samsung/s3c24xx-i2s.h
+similarity index 100%
+rename from sound/soc/s3c24xx/s3c24xx-i2s.h
+rename to sound/soc/samsung/s3c24xx-i2s.h
+diff --git a/sound/soc/s3c24xx/s3c24xx_simtec.c b/sound/soc/samsung/s3c24xx_simtec.c
+similarity index 99%
+rename from sound/soc/s3c24xx/s3c24xx_simtec.c
+rename to sound/soc/samsung/s3c24xx_simtec.c
+index 3f052a5..4a1b002 100644
+--- a/sound/soc/s3c24xx/s3c24xx_simtec.c
++++ b/sound/soc/samsung/s3c24xx_simtec.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c24xx_simtec.c
++/* sound/soc/samsung/s3c24xx_simtec.c
+  *
+  * Copyright 2009 Simtec Electronics
+  *
+diff --git a/sound/soc/s3c24xx/s3c24xx_simtec.h b/sound/soc/samsung/s3c24xx_simtec.h
+similarity index 94%
+rename from sound/soc/s3c24xx/s3c24xx_simtec.h
+rename to sound/soc/samsung/s3c24xx_simtec.h
+index e63d5ff..8270748 100644
+--- a/sound/soc/s3c24xx/s3c24xx_simtec.h
++++ b/sound/soc/samsung/s3c24xx_simtec.h
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c24xx_simtec.h
++/* sound/soc/samsung/s3c24xx_simtec.h
+  *
+  * Copyright 2009 Simtec Electronics
+  *
+diff --git a/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c b/sound/soc/samsung/s3c24xx_simtec_hermes.c
+similarity index 98%
+rename from sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
+rename to sound/soc/samsung/s3c24xx_simtec_hermes.c
+index 7301ed1..0bb27ce 100644
+--- a/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
++++ b/sound/soc/samsung/s3c24xx_simtec_hermes.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
++/* sound/soc/samsung/s3c24xx_simtec_hermes.c
+  *
+  * Copyright 2009 Simtec Electronics
+  *
+diff --git a/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c b/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
+similarity index 98%
+rename from sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
+rename to sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
+index 39175a3..81dcd43 100644
+--- a/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
++++ b/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
++/* sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
+  *
+  * Copyright 2009 Simtec Electronics
+  *
+diff --git a/sound/soc/s3c24xx/s3c24xx_uda134x.c b/sound/soc/samsung/s3c24xx_uda134x.c
+similarity index 100%
+rename from sound/soc/s3c24xx/s3c24xx_uda134x.c
+rename to sound/soc/samsung/s3c24xx_uda134x.c
+diff --git a/sound/soc/s3c24xx/smartq_wm8987.c b/sound/soc/samsung/smartq_wm8987.c
+similarity index 99%
+rename from sound/soc/s3c24xx/smartq_wm8987.c
+rename to sound/soc/samsung/smartq_wm8987.c
+index dde914a..a7f492f 100644
+--- a/sound/soc/s3c24xx/smartq_wm8987.c
++++ b/sound/soc/samsung/smartq_wm8987.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/smartq_wm8987.c
++/* sound/soc/samsung/smartq_wm8987.c
+  *
+  * Copyright 2010 Maurus Cuelenaere <mcuelenaere@gmail.com>
+  *
+diff --git a/sound/soc/s3c24xx/smdk2443_wm9710.c b/sound/soc/samsung/smdk2443_wm9710.c
+similarity index 100%
+rename from sound/soc/s3c24xx/smdk2443_wm9710.c
+rename to sound/soc/samsung/smdk2443_wm9710.c
+diff --git a/sound/soc/s3c24xx/smdk_spdif.c b/sound/soc/samsung/smdk_spdif.c
+similarity index 100%
+rename from sound/soc/s3c24xx/smdk_spdif.c
+rename to sound/soc/samsung/smdk_spdif.c
+diff --git a/sound/soc/s3c24xx/smdk_wm8580.c b/sound/soc/samsung/smdk_wm8580.c
+similarity index 100%
+rename from sound/soc/s3c24xx/smdk_wm8580.c
+rename to sound/soc/samsung/smdk_wm8580.c
+diff --git a/sound/soc/s3c24xx/smdk_wm9713.c b/sound/soc/samsung/smdk_wm9713.c
+similarity index 100%
+rename from sound/soc/s3c24xx/smdk_wm9713.c
+rename to sound/soc/samsung/smdk_wm9713.c
+diff --git a/sound/soc/s3c24xx/spdif.c b/sound/soc/samsung/spdif.c
+similarity index 99%
+rename from sound/soc/s3c24xx/spdif.c
+rename to sound/soc/samsung/spdif.c
+index dc85df3..f081640 100644
+--- a/sound/soc/s3c24xx/spdif.c
++++ b/sound/soc/samsung/spdif.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/spdif.c
++/* sound/soc/samsung/spdif.c
+  *
+  * ALSA SoC Audio Layer - Samsung S/PDIF Controller driver
+  *
+diff --git a/sound/soc/s3c24xx/spdif.h b/sound/soc/samsung/spdif.h
+similarity index 94%
+rename from sound/soc/s3c24xx/spdif.h
+rename to sound/soc/samsung/spdif.h
+index 3ed5559..4f72cb4 100644
+--- a/sound/soc/s3c24xx/spdif.h
++++ b/sound/soc/samsung/spdif.h
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/spdif.h
++/* sound/soc/samsung/spdif.h
+  *
+  * ALSA SoC Audio Layer - Samsung S/PDIF Controller driver
+  *
 -- 
 1.6.2.5
