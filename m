@@ -1,20 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/4] ASoC: Fix compile breakage in jz4740.c
- and smartq_wm8987.c
-Date: Mon, 22 Nov 2010 13:42:15 +0000
-Message-ID: <1290433335.3309.19.camel@odin>
-References: <1290361727-25162-1-git-send-email-jhnikula@gmail.com>
+Subject: Re: [PATCH] ASoC: s3c24xx: test wrong variable
+Date: Mon, 22 Nov 2010 13:46:17 +0000
+Message-ID: <1290433577.3309.21.camel@odin>
+References: <1290361223-15211-1-git-send-email-segoon@openwall.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
 	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id ED16E1039CE
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2010 14:42:22 +0100 (CET)
-Received: by wyg36 with SMTP id 36so7042745wyg.38
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2010 05:42:22 -0800 (PST)
-In-Reply-To: <1290361727-25162-1-git-send-email-jhnikula@gmail.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id ED19A1038A1
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2010 14:46:23 +0100 (CET)
+Received: by wyg36 with SMTP id 36so7046919wyg.38
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2010 05:46:23 -0800 (PST)
+In-Reply-To: <1290361223-15211-1-git-send-email-segoon@openwall.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,19 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Vasiliy Kulikov <segoon@openwall.com>
+Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2010-11-21 at 19:48 +0200, Jarkko Nikula wrote:
-> Commit ce6120c require that soc-dapm.h cannot be included before soc.h but
-> these two drivers were not checked. Fix them by including only soc.h as it
-> includes soc-dapm.h.
+On Sun, 2010-11-21 at 20:40 +0300, Vasiliy Kulikov wrote:
+> After clk_get() mclk is checked three times instead of mout_epll
+> and sclk_spdif checks.
 > 
-> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-
-All
-
+> Signed-off-by: Vasiliy Kulikov <segoon@openwall.com>
+> ---
+>  Cannot compile this driver, so it is not tested.
+> 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
 Freelance Developer, SlimLogic Ltd
