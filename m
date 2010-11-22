@@ -1,21 +1,15 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: [PATCH] ASoC: RX1950: Fix hw_params function
-Date: Mon, 22 Nov 2010 15:19:26 +0200
-Message-ID: <201011221519.26895.anarsoul@gmail.com>
-References: <1289652821-5435-1-git-send-email-anarsoul@gmail.com>
-	<201011221515.46603.anarsoul@gmail.com>
-	<20101122131649.GA18960@rakim.wolfsonmicro.main>
+From: "Babu, Ramesh" <ramesh.babu@intel.com>
+Subject: [PATCH 0/5] [RFC]intel_hdmi_audio driver
+Date: Mon, 22 Nov 2010 19:03:25 +0530
+Message-ID: <12D0C12AF19E15409D57F22566E88EF505ADE562D2@bgsmsx501.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 177501038FF
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2010 14:19:35 +0100 (CET)
-Received: by eyg24 with SMTP id 24so3763263eyg.38
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2010 05:19:34 -0800 (PST)
-In-Reply-To: <20101122131649.GA18960@rakim.wolfsonmicro.main>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id D5F4C103976
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2010 14:33:31 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,20 +19,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "Bandarupalli, Sailaja" <sailaja.bandarupalli@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 22 November 2010 15:16:50 Mark Brown wrote:
-> On Mon, Nov 22, 2010 at 03:15:46PM +0200, Vasily Khoruzhick wrote:
-> > On Monday 15 November 2010 14:27:36 Mark Brown wrote:
-> > > Applied, thanks.
-> > 
-> > Mark, is it possible to merge this patch into for-2.6.37?
-> 
-> That's where I already applied it.
+Hi
 
-Oh, sorry for noice, I didn't notice
+Following emails are series of 5 patches for Intel MID HDMI audio driver. This
+driver is for the HDMI audio controller in upcoming Mobile Internet Devices
+(MID) platform from Intel.
+HDMI Audio Driver supports HDMI audio playback through ALSA interfaces. It
+interacts with the display driver to program the HDMI audio subsystem in the
+HDMI controller and receive hot plug/unplug events and DMA completion
+interrupts. HDMI audio driver is dependent on platform display driver.
 
-Regards
-Vasily
+The dependant drivers for the platform are not yet available in the upstream.
+So please consider these patches only for RFC and provide your comments/suggestions.
+
+The patches are compiled with 0 warnings and checkpatch.pl 
+
+The rest of the patches that follow have a brief description about the contents.
+
+Thanks
+Ramesh and Sailaja
