@@ -1,15 +1,14 @@
 From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: [PATCHv4 05/18] ASoC: Samsung: Rename AC97 platform
-	device
-Date: Mon, 22 Nov 2010 15:36:00 +0900
-Message-ID: <1290407760-29158-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: [PATCHv4 07/18] ASoC: Samsung: Rename PCM driver
+Date: Mon, 22 Nov 2010 15:36:44 +0900
+Message-ID: <1290407804-29268-1-git-send-email-jassisinghbrar@gmail.com>
 References: <1290407690-28917-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7D8B2103874
+	by alsa0.perex.cz (Postfix) with ESMTP id A482A103886
 	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2010 07:51:02 +0100 (CET)
 In-Reply-To: <1290407690-28917-1-git-send-email-jassisinghbrar@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -27,130 +26,76 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jassi Brar <jassi.brar@samsung.com>
 
-Call the AC97 controller devices found in S3C, S5P and newer
-SoCs as 'samsung-ac97' rather than 's3c-ac97'.
+Rename Samsung PCM Controller driver
+	s3c-pcm.[c/h] -> pcm.[c/h]
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- arch/arm/mach-s3c64xx/dev-audio.c    |    2 +-
- arch/arm/mach-s5pc100/dev-audio.c    |    2 +-
- arch/arm/mach-s5pv210/dev-audio.c    |    2 +-
- arch/arm/plat-s3c24xx/devs.c         |    2 +-
- sound/soc/s3c24xx/ln2440sbc_alc650.c |    2 +-
- sound/soc/s3c24xx/s3c-ac97.c         |    4 ++--
- sound/soc/s3c24xx/smdk2443_wm9710.c  |    2 +-
- sound/soc/s3c24xx/smdk_wm9713.c      |    2 +-
- 8 files changed, 9 insertions(+), 9 deletions(-)
+ sound/soc/s3c24xx/Makefile             |    4 ++--
+ sound/soc/s3c24xx/{s3c-pcm.c => pcm.c} |    4 ++--
+ sound/soc/s3c24xx/{s3c-pcm.h => pcm.h} |    2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+ rename sound/soc/s3c24xx/{s3c-pcm.c => pcm.c} (99%)
+ rename sound/soc/s3c24xx/{s3c-pcm.h => pcm.h} (99%)
 
-diff --git a/arch/arm/mach-s3c64xx/dev-audio.c b/arch/arm/mach-s3c64xx/dev-audio.c
-index 4a4b8a5..cad6702 100644
---- a/arch/arm/mach-s3c64xx/dev-audio.c
-+++ b/arch/arm/mach-s3c64xx/dev-audio.c
-@@ -296,7 +296,7 @@ static struct s3c_audio_pdata s3c_ac97_pdata;
- static u64 s3c64xx_ac97_dmamask = DMA_BIT_MASK(32);
+diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/s3c24xx/Makefile
+index 551a63d..93de2a0 100644
+--- a/sound/soc/s3c24xx/Makefile
++++ b/sound/soc/s3c24xx/Makefile
+@@ -6,8 +6,8 @@ snd-soc-s3c64xx-i2s-objs := s3c64xx-i2s.o
+ snd-soc-ac97-objs := ac97.o
+ snd-soc-s3c64xx-i2s-v4-objs := s3c64xx-i2s-v4.o
+ snd-soc-s3c-i2s-v2-objs := s3c-i2s-v2.o
+-snd-soc-s3c-pcm-objs := s3c-pcm.o
+ snd-soc-samsung-spdif-objs := spdif.o
++snd-soc-pcm-objs := pcm.o
  
- struct platform_device s3c64xx_device_ac97 = {
--	.name		  = "s3c-ac97",
-+	.name		  = "samsung-ac97",
- 	.id		  = -1,
- 	.num_resources	  = ARRAY_SIZE(s3c64xx_ac97_resource),
- 	.resource	  = s3c64xx_ac97_resource,
-diff --git a/arch/arm/mach-s5pc100/dev-audio.c b/arch/arm/mach-s5pc100/dev-audio.c
-index 10ab275..ab2d271 100644
---- a/arch/arm/mach-s5pc100/dev-audio.c
-+++ b/arch/arm/mach-s5pc100/dev-audio.c
-@@ -281,7 +281,7 @@ static struct s3c_audio_pdata s3c_ac97_pdata = {
- static u64 s5pc100_ac97_dmamask = DMA_BIT_MASK(32);
+ obj-$(CONFIG_SND_S3C24XX_SOC) += snd-soc-s3c24xx.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_I2S) += snd-soc-s3c24xx-i2s.o
+@@ -16,8 +16,8 @@ obj-$(CONFIG_SND_S3C2412_SOC_I2S) += snd-soc-s3c2412-i2s.o
+ obj-$(CONFIG_SND_S3C64XX_SOC_I2S) += snd-soc-s3c64xx-i2s.o
+ obj-$(CONFIG_SND_S3C64XX_SOC_I2S_V4) += snd-soc-s3c64xx-i2s-v4.o
+ obj-$(CONFIG_SND_S3C_I2SV2_SOC) += snd-soc-s3c-i2s-v2.o
+-obj-$(CONFIG_SND_S3C_SOC_PCM) += snd-soc-s3c-pcm.o
+ obj-$(CONFIG_SND_S5P_SOC_SPDIF) += snd-soc-samsung-spdif.o
++obj-$(CONFIG_SND_S3C_SOC_PCM) += snd-soc-pcm.o
  
- struct platform_device s5pc100_device_ac97 = {
--	.name		  = "s3c-ac97",
-+	.name		  = "samsung-ac97",
- 	.id		  = -1,
- 	.num_resources	  = ARRAY_SIZE(s5pc100_ac97_resource),
- 	.resource	  = s5pc100_ac97_resource,
-diff --git a/arch/arm/mach-s5pv210/dev-audio.c b/arch/arm/mach-s5pv210/dev-audio.c
-index ddd2704..8d58f19 100644
---- a/arch/arm/mach-s5pv210/dev-audio.c
-+++ b/arch/arm/mach-s5pv210/dev-audio.c
-@@ -311,7 +311,7 @@ static struct s3c_audio_pdata s3c_ac97_pdata = {
- static u64 s5pv210_ac97_dmamask = DMA_BIT_MASK(32);
+ # S3C24XX Machine Support
+ snd-soc-jive-wm8750-objs := jive_wm8750.o
+diff --git a/sound/soc/s3c24xx/s3c-pcm.c b/sound/soc/s3c24xx/pcm.c
+similarity index 99%
+rename from sound/soc/s3c24xx/s3c-pcm.c
+rename to sound/soc/s3c24xx/pcm.c
+index e111d23..4d0f6e4 100644
+--- a/sound/soc/s3c24xx/s3c-pcm.c
++++ b/sound/soc/s3c24xx/pcm.c
+@@ -1,4 +1,4 @@
+-/* sound/soc/s3c24xx/s3c-pcm.c
++/* sound/soc/s3c24xx/pcm.c
+  *
+  * ALSA SoC Audio Layer - S3C PCM-Controller driver
+  *
+@@ -30,7 +30,7 @@
+ #include <plat/dma.h>
  
- struct platform_device s5pv210_device_ac97 = {
--	.name		  = "s3c-ac97",
-+	.name		  = "samsung-ac97",
- 	.id		  = -1,
- 	.num_resources	  = ARRAY_SIZE(s5pv210_ac97_resource),
- 	.resource	  = s5pv210_ac97_resource,
-diff --git a/arch/arm/plat-s3c24xx/devs.c b/arch/arm/plat-s3c24xx/devs.c
-index 5987f94..8a42bc4 100644
---- a/arch/arm/plat-s3c24xx/devs.c
-+++ b/arch/arm/plat-s3c24xx/devs.c
-@@ -484,7 +484,7 @@ static struct resource s3c_ac97_resource[] = {
- static u64 s3c_device_audio_dmamask = 0xffffffffUL;
+ #include "dma.h"
+-#include "s3c-pcm.h"
++#include "pcm.h"
  
- struct platform_device s3c_device_ac97 = {
--	.name		  = "s3c-ac97",
-+	.name		  = "samsung-ac97",
- 	.id		  = -1,
- 	.num_resources	  = ARRAY_SIZE(s3c_ac97_resource),
- 	.resource	  = s3c_ac97_resource,
-diff --git a/sound/soc/s3c24xx/ln2440sbc_alc650.c b/sound/soc/s3c24xx/ln2440sbc_alc650.c
-index 36e7e85..dda11ac 100644
---- a/sound/soc/s3c24xx/ln2440sbc_alc650.c
-+++ b/sound/soc/s3c24xx/ln2440sbc_alc650.c
-@@ -32,7 +32,7 @@ static struct snd_soc_dai_link ln2440sbc_dai[] = {
- {
- 	.name = "AC97",
- 	.stream_name = "AC97 HiFi",
--	.cpu_dai_name = "s3c-ac97",
-+	.cpu_dai_name = "samsung-ac97",
- 	.codec_dai_name = "ac97-hifi",
- 	.codec_name = "ac97-codec",
- 	.platform_name = "samsung-audio",
-diff --git a/sound/soc/s3c24xx/s3c-ac97.c b/sound/soc/s3c24xx/s3c-ac97.c
-index 408f9c9..5352cac 100644
---- a/sound/soc/s3c24xx/s3c-ac97.c
-+++ b/sound/soc/s3c24xx/s3c-ac97.c
-@@ -497,7 +497,7 @@ static struct platform_driver s3c_ac97_driver = {
- 	.probe  = s3c_ac97_probe,
- 	.remove = s3c_ac97_remove,
- 	.driver = {
--		.name = "s3c-ac97",
-+		.name = "samsung-ac97",
- 		.owner = THIS_MODULE,
- 	},
- };
-@@ -517,4 +517,4 @@ module_exit(s3c_ac97_exit);
- MODULE_AUTHOR("Jaswinder Singh, <jassi.brar@samsung.com>");
- MODULE_DESCRIPTION("AC97 driver for the Samsung SoC");
- MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:s3c-ac97");
-+MODULE_ALIAS("platform:samsung-ac97");
-diff --git a/sound/soc/s3c24xx/smdk2443_wm9710.c b/sound/soc/s3c24xx/smdk2443_wm9710.c
-index c50d19c..0205138 100644
---- a/sound/soc/s3c24xx/smdk2443_wm9710.c
-+++ b/sound/soc/s3c24xx/smdk2443_wm9710.c
-@@ -28,7 +28,7 @@ static struct snd_soc_dai_link smdk2443_dai[] = {
- {
- 	.name = "AC97",
- 	.stream_name = "AC97 HiFi",
--	.cpu_dai_name = "s3c-ac97",
-+	.cpu_dai_name = "samsung-ac97",
- 	.codec_dai_name = "ac97-hifi",
- 	.codec_name = "ac97-codec",
- 	.platform_name = "samsung-audio",
-diff --git a/sound/soc/s3c24xx/smdk_wm9713.c b/sound/soc/s3c24xx/smdk_wm9713.c
-index 80f2aef..56b448d 100644
---- a/sound/soc/s3c24xx/smdk_wm9713.c
-+++ b/sound/soc/s3c24xx/smdk_wm9713.c
-@@ -46,7 +46,7 @@ static struct snd_soc_dai_link smdk_dai = {
- 	.name = "AC97",
- 	.stream_name = "AC97 PCM",
- 	.platform_name = "samsung-audio",
--	.cpu_dai_name = "s3c-ac97",
-+	.cpu_dai_name = "samsung-ac97",
- 	.codec_dai_name = "wm9713-hifi",
- 	.codec_name = "wm9713-codec",
- };
+ static struct s3c2410_dma_client s3c_pcm_dma_client_out = {
+ 	.name		= "PCM Stereo out"
+diff --git a/sound/soc/s3c24xx/s3c-pcm.h b/sound/soc/s3c24xx/pcm.h
+similarity index 99%
+rename from sound/soc/s3c24xx/s3c-pcm.h
+rename to sound/soc/s3c24xx/pcm.h
+index f60baa1..3775216 100644
+--- a/sound/soc/s3c24xx/s3c-pcm.h
++++ b/sound/soc/s3c24xx/pcm.h
+@@ -1,4 +1,4 @@
+-/*  sound/soc/s3c24xx/s3c-pcm.h
++/*  sound/soc/s3c24xx/pcm.h
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
 -- 
 1.6.2.5
