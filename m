@@ -1,19 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: s3c24xx: test wrong variable
-Date: Tue, 23 Nov 2010 17:45:16 +0000
-Message-ID: <20101123174514.GF15156@sirena.org.uk>
-References: <1290361223-15211-1-git-send-email-segoon@openwall.com>
-	<20101122140002.GB18960@rakim.wolfsonmicro.main>
-	<AANLkTimXOk8FXK5NqbuW9qa6HUt5_4Fgvc+7h8OrJO_j@mail.gmail.com>
+From: Radivoje Jovanovic <radivojejovanovic@gmail.com>
+Subject: Re: ALSA throwing buffers away?
+Date: Tue, 23 Nov 2010 09:51:06 -0800
+Message-ID: <AANLkTim58RMb8Q_N_WDCatN8BM9UV6pAKR3sdNRjh+xu@mail.gmail.com>
+References: <AANLkTikppY6oP0Ha7_Hej9uNBubbOUs87cp85yq3SS-X@mail.gmail.com>
+	<4CEBF3C5.2050108@ladisch.de>
+	<AANLkTinShg1ZAnew63WL8h0BRZszsh5W0f4owp_OAkMA@mail.gmail.com>
+	<4CEBFC76.80109@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5FABD103928
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 18:45:19 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <AANLkTimXOk8FXK5NqbuW9qa6HUt5_4Fgvc+7h8OrJO_j@mail.gmail.com>
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id BE7A210392A
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 18:51:07 +0100 (CET)
+Received: by bwz8 with SMTP id 8so7549980bwz.38
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 09:51:07 -0800 (PST)
+In-Reply-To: <4CEBFC76.80109@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +26,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Vasiliy Kulikov <segoon@openwall.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 23, 2010 at 06:53:58AM +0900, Jassi Brar wrote:
+I have changed the pointer callback as you suggest.
+Unfortunately, the result is still the same. Still the buffer filling is
+skipping to fill all the data correctly. I am using Advanced Linux Sound
+Architecture Driver Version 1.0.21.
+~cheers,
+Ogi
 
-> Wierd, it is CC to me as well but I didn't receive it.
-> Though the change is ok.
+On Tue, Nov 23, 2010 at 9:40 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
 
-Could be greylisting - don't recall if the Samsung mail system does that
-or not but I've seen issues with that causing random delays before.
-Either that or the anti-spam system eating it.
+> Radivoje Jovanovic wrote:
+> > > Radivoje Jovanovic wrote:
+> > > > I am developing driver for a really simple hardware. Hardware has
+> codec that
+> > > > supports mono/stereo and the amplifier that supports only one speaker
+> so the
+> > > > driver has to be mono driver and the codec is setup to manage mono
+> data. I
+> > > > have setup ALSA with following parameters:
+> > > >
+> > > > .info =            (SNDRV_PCM_INFO_NONINTERLEAVED |
+> > >
+> > > Better use SNDRV_PCM_INFO_INTERLEAVED; this is the format used by
+> almost
+> > > all (stereo) sound cards, and so it is expected even for mono files
+> > > (where there actually isn't any difference).
+> >
+> > I am worried about this approach since if I want to play stereo sound  I
+> > would have to increase .channels_max = 2,
+>
+> No, ALSA can automatically convert the sample format.
+>
+> > Here is my pointer callback:
+> >
+> > offset=READ_REG16(AUDIO_CONFIG_DMA_CUR_ADDR_HIGH))<<16) |
+> READ_REG16(AUDIO_CONFIG_DMA_CUR_ADDR_LOW);
+> >
+> > offset = offset - substream->runtime->dma_addr;
+>
+> This offset looks as if it is in bytes, but you have to return a value
+> measured in frames.  Use bytes_to_frames().
+>
+> >     if (offset >= runtime->buffer_size)
+> >         offset = 0;
+>
+> Remove this check; the ALSA framework already checks this and outputs
+> debugging info if this happens.
+>
+>
+> Regards,
+> Clemens
+>
