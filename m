@@ -1,18 +1,17 @@
-From: Dan Carpenter <error27@gmail.com>
-Subject: [patch] pcm: add MMAP_EMUL to type names
-Date: Tue, 23 Nov 2010 14:03:37 +0300
-Message-ID: <20101123110337.GK1522@bicker>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: [GIT PULL] ASoC Fixes for 2.6.37
+Date: Tue, 23 Nov 2010 11:06:21 +0000
+Message-ID: <1290510381.3449.49.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
 	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id EAE1F1038B0
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 12:03:53 +0100 (CET)
-Received: by wyg36 with SMTP id 36so8158333wyg.38
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 03:03:53 -0800 (PST)
-Content-Disposition: inline
+	by alsa0.perex.cz (Postfix) with ESMTP id D7D251038F1
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 12:06:24 +0100 (CET)
+Received: by wyg36 with SMTP id 36so8160308wyg.38
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 03:06:24 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, perex@perex.cz
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-If we try to print this then it causes a read past the end of the array
-in snd_pcm_type_name().
+Hi Takashi,
 
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index 7409943..906b502 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -1633,6 +1633,7 @@ static const char *const snd_pcm_type_names[] = {
- 	PCMTYPE(SOFTVOL),
-         PCMTYPE(IOPLUG),
-         PCMTYPE(EXTPLUG),
-+	PCMTYPE(MMAP_EMUL),
- };
- 
- static const char *const snd_pcm_subformat_names[] = {
+One fix for 2.6.37 now that you are back from vacation.
+
+Thanks
+
+Liam
+
+---
+
+The following changes since commit 8f987768eb99631374f4ab0bb19cd062baf1397d:
+
+  Merge commit 'v2.6.37-rc1' into for-2.6.37 (2010-11-03 14:11:27 +0000)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.37
+
+Janusz Krzysztofik (1):
+      ASoC: OMAP: fix OMAP1 compilation problem
+
+ sound/soc/omap/omap-mcbsp.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
