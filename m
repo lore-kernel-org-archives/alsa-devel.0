@@ -1,23 +1,20 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: Re: bug in alsa-lib/snd_pcm_plugin_delay for capture?
-Date: Tue, 23 Nov 2010 08:55:07 -0600
-Message-ID: <AANLkTikOfbwCpeJprOOsNNSnLzZmv__EujTeTKoM8nPz@mail.gmail.com>
-References: <AANLkTi=in6g2YxRKwkCi7H_v0jmJ9tOouc2FK-Rg8iDt@mail.gmail.com>
-	<alpine.LNX.2.00.1011180927310.21207@eeebox2.perex-int.cz>
-	<AANLkTikihnQxQa-1RednpZSpx5Rn5XEcZYJfcShh6HW7@mail.gmail.com>
-	<alpine.LNX.2.00.1011221451250.8433@eeebox2.perex-int.cz>
-	<AANLkTimuizeF+p23wrBg9CQFouhRHj2x6g7tD3bQ8g4=@mail.gmail.com>
-	<alpine.LNX.2.00.1011231119271.8433@eeebox2.perex-int.cz>
+From: Wu Fengguang <wfg@linux.intel.com>
+Subject: Re: [PATCH] ALSA: HDA: Remove unconnected PCM devices
+ for	Intel HDMI
+Date: Tue, 23 Nov 2010 22:58:18 +0800
+Message-ID: <20101123145818.GA26749@localhost>
+References: <4CDD615A.7000807@canonical.com> <s5hy68kpl6s.wl%tiwai@suse.de>
+	<4CEB8968.5090205@canonical.com> <20101123110639.GA15688@localhost>
+	<s5hlj4krvv0.wl%tiwai@suse.de> <4CEBCD8E.9020101@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=00221534d663fdbb360495b98e14
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id C2EB6103A86
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 15:55:08 +0100 (CET)
-Received: by iwn2 with SMTP id 2so9897222iwn.38
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 06:55:07 -0800 (PST)
-In-Reply-To: <alpine.LNX.2.00.1011231119271.8433@eeebox2.perex-int.cz>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0265C103A86
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 15:58:21 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4CEBCD8E.9020101@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,68 +24,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, wim.taymans@collabora.co.uk
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---00221534d663fdbb360495b98e14
-Content-Type: text/plain; charset=ISO-8859-1
+On Tue, Nov 23, 2010 at 03:19:58PM +0100, David Henningsson wrote:
+> On 2010-11-23 14:51, Takashi Iwai wrote:
+> >At Tue, 23 Nov 2010 19:06:39 +0800,
+> >Wu Fengguang wrote:
+> >>
+> >>On Tue, Nov 23, 2010 at 10:29:12AM +0100, David Henningsson wrote:
+> >>>On 2010-11-23 08:12, Takashi Iwai wrote:
+> >>>>At Fri, 12 Nov 2010 16:46:34 +0100,
+> >>>>David Henningsson wrote:
+> >>>>>
+> >>>>>Since I'm a little new in HDMI land and the patch is non-trivial, I
+> >>>>>wouldn't mind some comments on this one. Also thanks to Jaroslav who
+> >>>>>cleared a few things out about the logical and physical devices which
+> >>>>>helped me figure out what I should do about it :-)
+> >>>>>
+> >>>>>Anyway, here's the patch.
+> >>>>>
+> >>>>>Some newer chips have more than one HDMI output, but usually not
+> >>>>>all of them are exposed as physical jacks. Removing the unused
+> >>>>>PCM devices (as indicated by BIOS in the pin config default) will
+> >>>>>reduce user confusion as they currently have to choose between
+> >>>>>several HDMI devices, some of them not working anyway.
+> >>>>>
+> >>>>>Signed-off-by: David Henningsson<david.henningsson@canonical.com>
+> >>>>
+> >>>>The patch looks mostly OK.
+> >>>>But this gives a few errors and warnings via checkpatch.pl.
+> >>>>Could you fix errors, at least?
+> >>>>
+> >>>>Also some review comments:
+> >>>>
+> >>>>>  static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t nid)
+> >>>>>  {
+> >>>>>+	int i;
+> >>>>>  	struct hdmi_spec *spec = codec->spec;
+> >>>>>
+> >>>>>-	if (spec->num_cvts>= MAX_HDMI_CVTS) {
+> >>>>>-		snd_printk(KERN_WARNING
+> >>>>>-			   "HDMI: no space for converter %d\n", nid);
+> >>>>>+	for (i = 0; spec->pin_cvt[i] != nid; i++)
+> >>>>
+> >>>>I'd write with a normal loop like for (i = 0; i<   spec->num_pins; i++)
+> >>>>This is easier to read.
+> >>>>
+> >>>>>+		if (!spec->pin[i]) {
+> >>>>>+			snd_printd("HDMI: Skipping node %d (no connection)\n", nid);
+> >>>>
+> >>>>Better to use snd_printdd().  snd_printd() is enabled on many distros,
+> >>>>and such an unnecessary kernel message may make user worry.
+> >>>>
+> >>>>>@@ -951,17 +954,33 @@ static int hdmi_parse_codec(struct hda_codec *codec)
+> >>>>...
+> >>>>>  		case AC_WID_PIN:
+> >>>>>  			caps = snd_hda_param_read(codec, nid, AC_PAR_PIN_CAP);
+> >>>>>  			if (!(caps&   (AC_PINCAP_HDMI | AC_PINCAP_DP)))
+> >>>>>  				continue;
+> >>>>>+
+> >>>>>+			config = snd_hda_codec_read(codec, nid, 0,
+> >>>>>+					     AC_VERB_GET_CONFIG_DEFAULT, 0);
+> >>>>>+			if (((config&   AC_DEFCFG_PORT_CONN)>>
+> >>>>>+			    AC_DEFCFG_PORT_CONN_SHIFT) == AC_JACK_PORT_NONE)
+> >>>>
+> >>>>You can use get_defcfg_connect() here.
+> >>>
+> >>>Thanks for the review, Takashi! I usually run checkpatch.pl these
+> >>>days but this one must have slipped. What do you think of this patch
+> >>>(untested)?
+> >>
+> >>Thanks for the patch, I'll help test it out :)
+> >>
+> >>I didn't do such feature because I'm not sure if the BIOS provided
+> >>info can be trusted,
+> 
+> Perhaps Wu knows what Intel's default is, would that be all outputs
+> configured as Jacks, or as N/A? I'm thinking that if it is Jacks,
+> then BIOS changing that to N/A probably knows what it's doing. If it
+> is the other way around - perhaps we should add something saying
+> that if it's all N/A, ignore the extra check and enable all outputs.
+> 
+> Anyway it's overridable through user_pin_configs / driver_pin_configs.
 
-> After rethinking, I believe that the right fix should be to add the
-> 'snd_pcm_mmap_capture_avail(pcm)' to the sd variable - delay(slave) - for
-> the capture direction. You should not bother with avail_update or the slave
-> avail values. The avail_update() capture loop just copied samples from the
-> producer (slave) to the consumer (pcm). It means that the avail becomes
-> lower for the producer (slave) and is increased for the consumer (pcm). The
-> delay(slave) already contains the avail(slave) value.
->
-> So, the result should be 'delay(slave) + mmap_capture_avail(pcm)'.
+Right. Some time ago I have to do a hacking patch to override the
+(alpha-)BIOS pin connections to get HDMI audio. But your patch makes
+sense for the normal cases.
 
-The attached patch implements your recoomendation and makes error
-messages go away in PulseAudio.
-It'd good to know if it improves the perfomance of echo cancellation.
-Wim, can you try it out?
+> >>or if that's merely the default configuration
+> >>that may be changed runtime on user request (eg. switching from
+> >>A+A view to A+B view etc.).
+> 
+> Ah, interesting. But if A+B view is possible, wouldn't BIOS then
+> configure both HDMI outputs as Jacks?
+
+Sounds reasonable.
+
+> >Well, whether this BIOS setup is really reliable is still an open
+> >question.  David, do you know (or have) the case whether your patch
+> >works on a real machine, right?
+> 
+> Yes; although this latest version of the patch has not been tested
+> on that machine yet.
+
+What's your codec# file? I have saved copies for Intel eaglelake,
+ibexpeak, sandybridge codecs, and all of their pins show up as
+
+  Pin Default 0x185600*0: [Jack] Digital Out at Int HDMI
+  
+The highest two bits are AC_JACK_PORT_COMPLEX=0. So your patch should
+not make any difference for them.
+
 Thanks,
--Pierre
-
---00221534d663fdbb360495b98e14
-Content-Type: application/octet-stream;
-	name="0001-pcm_plugin-fix-delay.patch"
-Content-Disposition: attachment; filename="0001-pcm_plugin-fix-delay.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gguwnstv0
-
-RnJvbSA2Y2IwNThlZDM1MDNmMWM2MWE4N2ZjNzIzNzg3Y2Y5OTJjMmI2NjUwIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJv
-c3NhcnRAaW50ZWwuY29tPgpEYXRlOiBUdWUsIDIzIE5vdiAyMDEwIDA4OjQ3OjA4IC0wNjAwClN1
-YmplY3Q6IFtQQVRDSF0gcGNtX3BsdWdpbjogZml4IGRlbGF5CgpQdWxzZUF1ZGlvIEFMU0EgbW9k
-dWxlcyByZXBvcnQgZXJyb3JzIGFmdGVyIGNhbGxpbmcKc25kX3BjbV9hdmFpbF9kZWxheSgpLCB3
-aXRoIGEgZGVsYXkgbG93ZXIgdGhhbiB0aGUgbnVtYmVyIG9mIHNhbXBsZXMKYXZhaWxhYmxlLgoK
-Q29ycmVjdCBkZWxheSB1c2luZyBKYXJvc2xhdidzIHJlY29tbWVuZGF0aW9uOgoidGhlIHJlc3Vs
-dCBzaG91bGQgYmUgJ2RlbGF5KHNsYXZlKSArIG1tYXBfY2FwdHVyZV9hdmFpbChwY20pIgoKU2ln
-bmVkLW9mZi1ieTogUGllcnJlLUxvdWlzIEJvc3NhcnQgPHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGlu
-dGVsLmNvbT4KLS0tCiBzcmMvcGNtL3BjbV9wbHVnaW4uYyB8ICAgIDYgKysrKysrCiAxIGZpbGVz
-IGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9z
-cmMvcGNtL3BjbV9wbHVnaW4uYyBiL3NyYy9wY20vcGNtX3BsdWdpbi5jCmluZGV4IDE5ZDBkZWUu
-LmQ4OGUxMTcgMTAwNjQ0Ci0tLSBhL3NyYy9wY20vcGNtX3BsdWdpbi5jCisrKyBiL3NyYy9wY20v
-cGNtX3BsdWdpbi5jCkBAIC0xNDQsNiArMTQ0LDEyIEBAIHN0YXRpYyBpbnQgc25kX3BjbV9wbHVn
-aW5fZGVsYXkoc25kX3BjbV90ICpwY20sIHNuZF9wY21fc2ZyYW1lc190ICpkZWxheXApCiAJaW50
-IGVyciA9IHNuZF9wY21fZGVsYXkocGx1Z2luLT5nZW4uc2xhdmUsICZzZCk7CiAJaWYgKGVyciA8
-IDApCiAJCXJldHVybiBlcnI7CisgICAgICAgIGlmIChwY20tPnN0cmVhbSA9PSBTTkRfUENNX1NU
-UkVBTV9DQVBUVVJFICYmCisJICAgIHBjbS0+YWNjZXNzICE9IFNORF9QQ01fQUNDRVNTX1JXX0lO
-VEVSTEVBVkVEICYmCisJICAgIHBjbS0+YWNjZXNzICE9IFNORF9QQ01fQUNDRVNTX1JXX05PTklO
-VEVSTEVBVkVEKSB7CisgICAgICAgICAgICAgICAgc2QgKz0gc25kX3BjbV9tbWFwX2NhcHR1cmVf
-YXZhaWwocGNtKTsKKyAgICAgICAgfSAgICAgICAgCisKIAkqZGVsYXlwID0gc2Q7CiAJcmV0dXJu
-IDA7CiB9Ci0tIAoxLjcuMi4zCgo=
---00221534d663fdbb360495b98e14
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---00221534d663fdbb360495b98e14--
+Fengguang
