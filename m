@@ -1,19 +1,17 @@
-From: Wu Fengguang <wfg@linux.intel.com>
+From: David Henningsson <david.henningsson@canonical.com>
 Subject: Re: [PATCH] ALSA: HDA: Remove unconnected PCM devices
  for	Intel HDMI
-Date: Tue, 23 Nov 2010 23:15:36 +0800
-Message-ID: <20101123151536.GB26749@localhost>
+Date: Tue, 23 Nov 2010 16:40:49 +0100
+Message-ID: <4CEBE081.10705@canonical.com>
 References: <4CDD615A.7000807@canonical.com> <s5hy68kpl6s.wl%tiwai@suse.de>
-	<4CEB8968.5090205@canonical.com>
+	<4CEB8968.5090205@canonical.com> <20101123151536.GB26749@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------050902000709040609040600"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id B33E3103A90
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 16:15:43 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4CEB8968.5090205@canonical.com>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2D113103A90
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 16:40:56 +0100 (CET)
+In-Reply-To: <20101123151536.GB26749@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,86 +21,224 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
+To: Wu Fengguang <wfg@linux.intel.com>
 Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> >From ca84aa8edbfb66e46266677249b141b5419d6e0a Mon Sep 17 00:00:00 2001
-> From: David Henningsson <david.henningsson@canonical.com>
-> Date: Tue, 23 Nov 2010 10:23:40 +0100
-> Subject: [PATCH] ALSA: HDA: Remove unconnected PCM devices for Intel HDMI
-> 
-> Some newer chips have more than one HDMI output, but usually not
+This is a multi-part message in MIME format.
+--------------050902000709040609040600
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Please point out the model name here (where this patch actually makes
-a difference)?
+On 2010-11-23 16:15, Wu Fengguang wrote:
+>> > From ca84aa8edbfb66e46266677249b141b5419d6e0a Mon Sep 17 00:00:00 2001
+>> From: David Henningsson<david.henningsson@canonical.com>
+>> Date: Tue, 23 Nov 2010 10:23:40 +0100
+>> Subject: [PATCH] ALSA: HDA: Remove unconnected PCM devices for Intel HDMI
+>>
+>> Some newer chips have more than one HDMI output, but usually not
+>
+> Please point out the model name here (where this patch actually makes
+> a difference)?
 
-> all of them are exposed as physical jacks. Removing the unused
-> PCM devices (as indicated by BIOS in the pin config default) will
-> reduce user confusion as they currently have to choose between
-> several HDMI devices, some of them not working anyway.
-> 
-> Signed-off-by: David Henningsson <david.henningsson@canonical.com>
-> ---
->  sound/pci/hda/patch_hdmi.c |   41 ++++++++++++++++++++++++++++++++---------
->  1 files changed, 32 insertions(+), 9 deletions(-)
-> 
-> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-> index d3e49aa..14a1087 100644
-> --- a/sound/pci/hda/patch_hdmi.c
-> +++ b/sound/pci/hda/patch_hdmi.c
-> @@ -905,23 +905,28 @@ static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
->  	spec->pin[spec->num_pins] = pin_nid;
->  	spec->num_pins++;
->  
-> -	/*
-> -	 * It is assumed that converter nodes come first in the node list and
-> -	 * hence have been registered and usable now.
-> -	 */
->  	return hdmi_read_pin_conn(codec, pin_nid);
->  }
->  
->  static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t nid)
->  {
-> +	int i, found_pin = 0;
->  	struct hdmi_spec *spec = codec->spec;
->  
-> -	if (spec->num_cvts >= MAX_HDMI_CVTS) {
-> -		snd_printk(KERN_WARNING
-> -			   "HDMI: no space for converter %d\n", nid);
-> -		return -E2BIG;
+I'm attaching the codec-proc file for the relevant machine, which lists 
+as "Intel Cougarpoint HDMI".
 
-> +	for (i = 0; i < spec->num_pins; i++)
-> +		if (nid == spec->pin_cvt[i]) {
-> +			found_pin = 1;
-> +			break;
-> +		}
-> +
-> +	if (!found_pin) {
+>> all of them are exposed as physical jacks. Removing the unused
+>> PCM devices (as indicated by BIOS in the pin config default) will
+>> reduce user confusion as they currently have to choose between
+>> several HDMI devices, some of them not working anyway.
+>>
+>> Signed-off-by: David Henningsson<david.henningsson@canonical.com>
+>> ---
+>>   sound/pci/hda/patch_hdmi.c |   41 ++++++++++++++++++++++++++++++++---------
+>>   1 files changed, 32 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+>> index d3e49aa..14a1087 100644
+>> --- a/sound/pci/hda/patch_hdmi.c
+>> +++ b/sound/pci/hda/patch_hdmi.c
+>> @@ -905,23 +905,28 @@ static int hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
+>>   	spec->pin[spec->num_pins] = pin_nid;
+>>   	spec->num_pins++;
+>>
+>> -	/*
+>> -	 * It is assumed that converter nodes come first in the node list and
+>> -	 * hence have been registered and usable now.
+>> -	 */
+>>   	return hdmi_read_pin_conn(codec, pin_nid);
+>>   }
+>>
+>>   static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t nid)
+>>   {
+>> +	int i, found_pin = 0;
+>>   	struct hdmi_spec *spec = codec->spec;
+>>
+>> -	if (spec->num_cvts>= MAX_HDMI_CVTS) {
+>> -		snd_printk(KERN_WARNING
+>> -			   "HDMI: no space for converter %d\n", nid);
+>> -		return -E2BIG;
+>
+>> +	for (i = 0; i<  spec->num_pins; i++)
+>> +		if (nid == spec->pin_cvt[i]) {
+>> +			found_pin = 1;
+>> +			break;
+>> +		}
+>> +
+>> +	if (!found_pin) {
+>
+> Can test this instead:
+>
+>          if (hda_node_index(spec->pin_cvt, nid)<  0) {
 
-Can test this instead:
+Yes, that would probably be simpler.
 
-        if (hda_node_index(spec->pin_cvt, nid) < 0) {
+>> +		snd_printdd("HDMI: Skipping node %d (no connection)\n", nid);
+>> +		return -EINVAL;
+>>   	}
+>
+> The above return actually will hide the device for cvt 3:
+>
+>                 +---- pin 4
+>                /
+>          cvt 2 ------ pin 5
+>                \
+>                 +---- pin 6
+>
+>          cvt 3
+>
+> Which is the default connection for Intel ibexpeak/sandybridge codecs.
+> It might be a problem when the user uses dual displays (which may be
+> configured at runtime). I have no such a setup, so cannot assure
+> things will work or not work..
+
+Hmm, is this really relevant? Looking at the current patch_hdmi.c, I 
+can't see that it ever tries to change pin <-> cvt connections, but I 
+might be missing something.
+In fact, I have yet to see an HDMI codec where you can actually perform 
+that change, perhaps you can post such a codec-proc file?
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
+
+--------------050902000709040609040600
+Content-Type: text/plain;
+ name="hdmi-codec.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="hdmi-codec.txt"
+
+Codec: Intel CougarPoint HDMI
+Address: 3
+Function Id: 0x1
+Vendor Id: 0x80862805
+Subsystem Id: 0x80862805
+Revision Id: 0x100000
+No Modem Function Group found
+Default PCM:
+    rates [0x0]:
+    bits [0x0]:
+    formats [0x0]:
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
+Node 0x02 [Audio Output] wcaps 0x6611: 8-Channels Digital
+  Control: name="IEC958 Playback Con Mask", index=1, device=0
+  Control: name="IEC958 Playback Pro Mask", index=1, device=0
+  Control: name="IEC958 Playback Default", index=1, device=0
+  Control: name="IEC958 Playback Switch", index=1, device=0
+  Device: name="INTEL HDMI 0", type="HDMI", device=3
+  Converter: stream=8, channel=0
+  Digital: Enabled
+  Digital category: 0x0
+  PCM:
+    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
+    bits [0x1e]: 16 20 24 32
+    formats [0x5]: PCM AC3
+  Power states:  D0 D3 EPSS
+  Power: setting=D0, actual=D0
+Node 0x03 [Audio Output] wcaps 0x6611: 8-Channels Digital
+  Control: name="IEC958 Playback Con Mask", index=2, device=0
+  Control: name="IEC958 Playback Pro Mask", index=2, device=0
+  Control: name="IEC958 Playback Default", index=2, device=0
+  Control: name="IEC958 Playback Switch", index=2, device=0
+  Device: name="INTEL HDMI 1", type="HDMI", device=7
+  Converter: stream=0, channel=0
+  Digital: Enabled
+  Digital category: 0x0
+  PCM:
+    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
+    bits [0x1e]: 16 20 24 32
+    formats [0x5]: PCM AC3
+  Power states:  D0 D3 EPSS
+  Power: setting=D0, actual=D0
+Node 0x04 [Audio Output] wcaps 0x6611: 8-Channels Digital
+  Control: name="IEC958 Playback Con Mask", index=3, device=0
+  Control: name="IEC958 Playback Pro Mask", index=3, device=0
+  Control: name="IEC958 Playback Default", index=3, device=0
+  Control: name="IEC958 Playback Switch", index=3, device=0
+  Device: name="INTEL HDMI 2", type="HDMI", device=8
+  Converter: stream=0, channel=0
+  Digital: Enabled
+  Digital category: 0x0
+  PCM:
+    rates [0x7f0]: 32000 44100 48000 88200 96000 176400 192000
+    bits [0x1e]: 16 20 24 32
+    formats [0x5]: PCM AC3
+  Power states:  D0 D3 EPSS
+  Power: setting=D0, actual=D0
+Node 0x05 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x09000094: OUT Detect HBR HDMI DP
+  Pin Default 0x58560010: [N/A] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=05, enabled=1
+  Power states:  D0 D3 EPSS
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x02
+Node 0x06 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x09000094: OUT Detect HBR HDMI DP
+  Pin Default 0x58560020: [N/A] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0x2, Sequence = 0x0
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=06, enabled=1
+  Power states:  D0 D3 EPSS
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x03
+Node 0x07 [Pin Complex] wcaps 0x40778d: 8-Channels Digital Amp-Out CP
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x09000094: OUT Detect HBR HDMI DP
+  Pin Default 0x18560030: [Jack] Digital Out at Int HDMI
+    Conn = Digital, Color = Unknown
+    DefAssociation = 0x3, Sequence = 0x0
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=07, enabled=1
+  Power states:  D0 D3 EPSS
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x04
+Node 0x08 [Vendor Defined Widget] wcaps 0xf00000: Mono
 
 
-> +		snd_printdd("HDMI: Skipping node %d (no connection)\n", nid);
-> +		return -EINVAL;
->  	}
+--------------050902000709040609040600
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-The above return actually will hide the device for cvt 3:
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-               +---- pin 4
-              /     
-        cvt 2 ------ pin 5
-              \
-               +---- pin 6
-
-        cvt 3
-
-Which is the default connection for Intel ibexpeak/sandybridge codecs.
-It might be a problem when the user uses dual displays (which may be
-configured at runtime). I have no such a setup, so cannot assure
-things will work or not work..
-
-Thanks,
-Fengguang
+--------------050902000709040609040600--
