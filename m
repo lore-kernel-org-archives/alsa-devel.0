@@ -1,16 +1,17 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [patch] pcm: add MMAP_EMUL to type names
-Date: Tue, 23 Nov 2010 13:41:16 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1011231341030.8433@eeebox2.perex-int.cz>
-References: <20101123110337.GK1522@bicker>
+From: Ramya Desai <ramya.desai@gmail.com>
+Subject: Writing a driver for Sound Card
+Date: Tue, 23 Nov 2010 18:17:10 +0530
+Message-ID: <AANLkTins58fB33LiFbNpbgAwKWDBtKs71=9ae3D+i+V4@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id A64AF103905
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 13:41:16 +0100 (CET)
-In-Reply-To: <20101123110337.GK1522@bicker>
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id C5C8A103919
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 13:47:12 +0100 (CET)
+Received: by iwn2 with SMTP id 2so9770188iwn.38
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 04:47:12 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,35 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <error27@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 23 Nov 2010, Dan Carpenter wrote:
+Dear All,
 
-> If we try to print this then it causes a read past the end of the array
-> in snd_pcm_type_name().
+I am new to this Advanced Linux Sound Architecture (ALSA) driver. I developed a
+few drivers in Linux kernel environment for PCI based devices which
+are of type character and block. I am going through the following link
+for writing a driver for my custom sound card.
 
-Applied. Thanks.
+http://www.kernel.org/pub/linux/kernel/people/tiwai/docs/writing-an-alsa-driver.pdf
 
- 					Jaroslav
+I have a doubt about the Linux sound driver architecture. I need to
+develop the driver with mixer, player, recorder, MIDI etc. components.
+Do I need to develop these components in single driver OR Do I need to
+develop as a individual component (one driver for one component).
 
->
-> diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-> index 7409943..906b502 100644
-> --- a/src/pcm/pcm.c
-> +++ b/src/pcm/pcm.c
-> @@ -1633,6 +1633,7 @@ static const char *const snd_pcm_type_names[] = {
-> 	PCMTYPE(SOFTVOL),
->         PCMTYPE(IOPLUG),
->         PCMTYPE(EXTPLUG),
-> +	PCMTYPE(MMAP_EMUL),
-> };
->
-> static const char *const snd_pcm_subformat_names[] = {
->
+I looked into the /usr/src/linux-2.6.35/sound directory. I did not
+understand it completely. Is there any driver (sample) which I can go
+through?
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Please let me know.
+
+Any help greatly appreciated and helpful to me.
+
+Thanks and Regards,
+Srinivas G
