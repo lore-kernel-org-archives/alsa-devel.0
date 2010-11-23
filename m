@@ -1,17 +1,20 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCHES] Integrate minimal systemd support in
- alsa-utils
-Date: Tue, 23 Nov 2010 10:44:26 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1011231035270.8433@eeebox2.perex-int.cz>
-References: <20101123021657.GA17275@tango.0pointer.de>
+Subject: Re: bug in alsa-lib/snd_pcm_plugin_delay for capture?
+Date: Tue, 23 Nov 2010 11:25:02 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1011231119271.8433@eeebox2.perex-int.cz>
+References: <AANLkTi=in6g2YxRKwkCi7H_v0jmJ9tOouc2FK-Rg8iDt@mail.gmail.com>
+	<alpine.LNX.2.00.1011180927310.21207@eeebox2.perex-int.cz>
+	<AANLkTikihnQxQa-1RednpZSpx5Rn5XEcZYJfcShh6HW7@mail.gmail.com>
+	<alpine.LNX.2.00.1011221451250.8433@eeebox2.perex-int.cz>
+	<AANLkTimuizeF+p23wrBg9CQFouhRHj2x6g7tD3bQ8g4=@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1C64D24476
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 10:44:27 +0100 (CET)
-In-Reply-To: <20101123021657.GA17275@tango.0pointer.de>
+	by alsa0.perex.cz (Postfix) with ESMTP id 7FF58244AB
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 11:25:03 +0100 (CET)
+In-Reply-To: <AANLkTimuizeF+p23wrBg9CQFouhRHj2x6g7tD3bQ8g4=@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,40 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lennart Poettering <mznyfn@0pointer.de>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kay Sievers <kay.sievers@vrfy.org>, jkysela@redhat.com
+To: pl bossart <bossart.nospam@gmail.com>
+Cc: alsa-devel@alsa-project.org, wim.taymans@collabora.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 23 Nov 2010, Lennart Poettering wrote:
+On Mon, 22 Nov 2010, pl bossart wrote:
 
-> Heya,
+>>>> Could you test patch bellow?
+>>>>
+>>>>
+>>>> http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=ba9332e9192814a5431a3a2505d25d74a9232124
+>>>
+>>> Nah, no luck. PulseAudio still reports an error and if I add
+>>> assert(*delayp >= *availp) the code bombs out.
+>>> Here is one way to solve the problem. I don't claim it's the right
+>>> one, but it's compatible with the way the availp value is computed,
+>>> and it makes the error message go away in PulseAudio.
+>>
+>> The double avail_update() calling seems too expensive to me. Could you test
+>> to use snd_pcm_mmap_capture_avail() instead snd_pcm_avail_update() calls (to
+>> assign both slave_avail and plugin_avail local variables)?
 >
-> Up to this point most distributions have been using different init
-> scripts/udev rules files to save/restore mixer settings at
-> boot/hotplug/shutdown. Please see my two attached patches for alsa-utils
-> which add standardized, simplified support for this.
->
-> The first patch is stolen from Debian/Ubuntu, which moves asound.state
-> to /var/lib, which is a more appropriate place, since /etc might be
-> read-only.
+> Nope, it still does not work if you use mmap_capture_avail. The root
+> cause of the problem is the while loop in snd_pcm_plugin_avail_update
+> (copied for reference below), it's called only in the capture case and
+> the value returned by the xfer variable causes the delay to be
+> eventually lower than the avail samples.
 
-This will break users which upgrade the package manually from sources and
-/var/lib/alsa directory is not created. I think that the 'make 
-install' rules should create this directory and also alsaconf should 
-check/create this directory if it does not exists.
+After rethinking, I believe that the right fix should be to add the 
+'snd_pcm_mmap_capture_avail(pcm)' to the sd variable - delay(slave) - for 
+the capture direction. You should not bother with avail_update or the 
+slave avail values. The avail_update() capture loop just copied samples 
+from the producer (slave) to the consumer (pcm). It means that the avail 
+becomes lower for the producer (slave) and is increased for the consumer 
+(pcm). The delay(slave) already contains the avail(slave) value.
 
-> The second patch includes a minimal udev rule (executed synchronously,
-> enabled on all systems, regardless of systemd is used or not) and two
-> systemd service files (executed asynchronously at boot/shutdown, only
-> enabled if built with systemd support).
->
-> Given that most big distributions are moving to adopt systemd sooner or
-> later it would be great to have support for this in the upstream package
-> to avoid further balkanization how things are done here.
+So, the result should be 'delay(slave) + mmap_capture_avail(pcm)'.
 
-I applied this second patch to the alsa-utils repo.
-
- 					Jaroslav
+ 						Jaroslav
 
 -----
 Jaroslav Kysela <perex@perex.cz>
