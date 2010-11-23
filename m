@@ -1,16 +1,19 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [GIT PULL] ASoC updates for 2.6.38
-Date: Tue, 23 Nov 2010 11:06:47 +0000
-Message-ID: <1290510407.3449.50.camel@odin>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: [PATCHES] Integrate minimal systemd support
+	in	alsa-utils
+Date: Tue, 23 Nov 2010 12:42:23 +0100
+Message-ID: <20101123114222.GA24729@tango.0pointer.de>
+References: <20101123021657.GA17275@tango.0pointer.de>
+	<4CEB685C.1030501@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5CA6410390B
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 12:06:51 +0100 (CET)
-Received: by wwe15 with SMTP id 15so1139494wwe.20
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 03:06:51 -0800 (PST)
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id BE83E103903
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 12:42:43 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4CEB685C.1030501@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,30 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Kay Sievers <kay.sievers@vrfy.org>, jkysela@redhat.com
 List-Id: alsa-devel@alsa-project.org
 
-Some updates for 2.6.38 too :-
+On Tue, 23.11.10 08:08, David Henningsson (david.henningsson@canonical.com) wrote:
 
+> >The second patch includes a minimal udev rule (executed synchronously,
+> >enabled on all systems, regardless of systemd is used or not) and two
+> >systemd service files (executed asynchronously at boot/shutdown, only
+> >enabled if built with systemd support).
+> 
+> Lennart,
+> 
+> Could you clarify how this affects/changes behaviour for distros not
+> running systemd?
 
-The following changes since commit 33ee617f4dad370bee016e4462e69481257453b0:
+As I wrote above it won't even be installed if systemd is not around.
 
-  Merge remote branch 'tiwai/topic/asoc' into for-2.6.38 (2010-11-03 14:18:42 +0000)
+> Also, I personally don't like the idea of saving the mixer state at
+> shutdown. (Although I know Ubuntu has that as well.) Too many times
+> I have cranked up the volume for some reason, then turned the
+> computer off, only to find the login sound at maximum volume.
 
-are available in the git repository at:
+Then disable it. And since you don't run systemd you won't even have to
+do that explicitly.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.38
+> >Given that most big distributions are moving to adopt systemd sooner or
+> >later
+> 
+> That assumption is not necessarily true at this point. AFAIK, it
+> remains to be seen. That said, I don't mind a systemd patch into
+> alsa-utils, as long as it doesn't break or bloat anything for
+> non-systemd distros.
 
-Axel Lin (1):
-      ASoC: Move kfree(twl4030) to twl4030_soc_remove()
+Well, this thing is far less "bloaty" then what Ubuntu is currently
+doing. i.e. Ubuntu duplicates the mixer init database in an init script
+/sbin/alsa-utils which is moved there for weird reasons. I can only
+encourage you to drop that "bloat" and rely on the mixer init database
+that comes with alsa, like everybody else.
 
-Jarkko Nikula (3):
-      ASoC: tlv320aic3x: Use gpio_is_valid in checking for valid gpio_reset
-      ASoC: tlv320aic3x: Add support to shared common reset line
-      ASoC: tpa6130a2: Revisit power-up sequence
+(Sorry, the word "bloat" just sets me off)
 
- sound/soc/codecs/tlv320aic3x.c |   32 +++++++++++++++++++++++++++-----
- sound/soc/codecs/tpa6130a2.c   |    6 +++---
- sound/soc/codecs/twl4030.c     |    6 +++---
- 3 files changed, 33 insertions(+), 11 deletions(-)
+But anyway, if you don't have systemd, you won't even see these
+files. Nothing changes for you.
+
+(Also note that Ubuntu is currently asynchronously executing said init
+script from an udev rule. That means that by the time a device added
+event reaches PA the mixer has not been configured properly yet, which
+can confused PA quite a bit. Hence please make sure to drop the
+execution of said init script from the udev rule, either by simply
+adopting the code this patch includes, or by making your current rule
+synchronous. Thanks.)
+
+Lennart
+
+-- 
+Lennart Poettering - Red Hat, Inc.
