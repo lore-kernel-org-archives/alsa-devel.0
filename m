@@ -1,17 +1,19 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [GIT PULL] ASoC Fixes for 2.6.37
-Date: Tue, 23 Nov 2010 11:06:21 +0000
-Message-ID: <1290510381.3449.49.camel@odin>
+From: Wu Fengguang <wfg@linux.intel.com>
+Subject: Re: [PATCH] ALSA: HDA: Remove unconnected PCM devices
+ for	Intel HDMI
+Date: Tue, 23 Nov 2010 19:06:39 +0800
+Message-ID: <20101123110639.GA15688@localhost>
+References: <4CDD615A.7000807@canonical.com> <s5hy68kpl6s.wl%tiwai@suse.de>
+	<4CEB8968.5090205@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id D7D251038F1
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 12:06:24 +0100 (CET)
-Received: by wyg36 with SMTP id 36so8160308wyg.38
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 03:06:24 -0800 (PST)
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 855FE103903
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 12:06:43 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4CEB8968.5090205@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,30 +23,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On Tue, Nov 23, 2010 at 10:29:12AM +0100, David Henningsson wrote:
+> On 2010-11-23 08:12, Takashi Iwai wrote:
+> >At Fri, 12 Nov 2010 16:46:34 +0100,
+> >David Henningsson wrote:
+> >>
+> >>Since I'm a little new in HDMI land and the patch is non-trivial, I
+> >>wouldn't mind some comments on this one. Also thanks to Jaroslav who
+> >>cleared a few things out about the logical and physical devices which
+> >>helped me figure out what I should do about it :-)
+> >>
+> >>Anyway, here's the patch.
+> >>
+> >>Some newer chips have more than one HDMI output, but usually not
+> >>all of them are exposed as physical jacks. Removing the unused
+> >>PCM devices (as indicated by BIOS in the pin config default) will
+> >>reduce user confusion as they currently have to choose between
+> >>several HDMI devices, some of them not working anyway.
+> >>
+> >>Signed-off-by: David Henningsson<david.henningsson@canonical.com>
+> >
+> >The patch looks mostly OK.
+> >But this gives a few errors and warnings via checkpatch.pl.
+> >Could you fix errors, at least?
+> >
+> >Also some review comments:
+> >
+> >>  static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t nid)
+> >>  {
+> >>+	int i;
+> >>  	struct hdmi_spec *spec = codec->spec;
+> >>
+> >>-	if (spec->num_cvts>= MAX_HDMI_CVTS) {
+> >>-		snd_printk(KERN_WARNING
+> >>-			   "HDMI: no space for converter %d\n", nid);
+> >>+	for (i = 0; spec->pin_cvt[i] != nid; i++)
+> >
+> >I'd write with a normal loop like for (i = 0; i<  spec->num_pins; i++)
+> >This is easier to read.
+> >
+> >>+		if (!spec->pin[i]) {
+> >>+			snd_printd("HDMI: Skipping node %d (no connection)\n", nid);
+> >
+> >Better to use snd_printdd().  snd_printd() is enabled on many distros,
+> >and such an unnecessary kernel message may make user worry.
+> >
+> >>@@ -951,17 +954,33 @@ static int hdmi_parse_codec(struct hda_codec *codec)
+> >...
+> >>  		case AC_WID_PIN:
+> >>  			caps = snd_hda_param_read(codec, nid, AC_PAR_PIN_CAP);
+> >>  			if (!(caps&  (AC_PINCAP_HDMI | AC_PINCAP_DP)))
+> >>  				continue;
+> >>+
+> >>+			config = snd_hda_codec_read(codec, nid, 0,
+> >>+					     AC_VERB_GET_CONFIG_DEFAULT, 0);
+> >>+			if (((config&  AC_DEFCFG_PORT_CONN)>>
+> >>+			    AC_DEFCFG_PORT_CONN_SHIFT) == AC_JACK_PORT_NONE)
+> >
+> >You can use get_defcfg_connect() here.
+> 
+> Thanks for the review, Takashi! I usually run checkpatch.pl these
+> days but this one must have slipped. What do you think of this patch
+> (untested)?
 
-One fix for 2.6.37 now that you are back from vacation.
+Thanks for the patch, I'll help test it out :)
 
-Thanks
+I didn't do such feature because I'm not sure if the BIOS provided
+info can be trusted, or if that's merely the default configuration
+that may be changed runtime on user request (eg. switching from 
+A+A view to A+B view etc.).
 
-Liam
-
----
-
-The following changes since commit 8f987768eb99631374f4ab0bb19cd062baf1397d:
-
-  Merge commit 'v2.6.37-rc1' into for-2.6.37 (2010-11-03 14:11:27 +0000)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.37
-
-Janusz Krzysztofik (1):
-      ASoC: OMAP: fix OMAP1 compilation problem
-
- sound/soc/omap/omap-mcbsp.c |    8 ++++++++
- 1 files changed, 8 insertions(+), 0 deletions(-)
+Thanks,
+Fengguang
