@@ -1,34 +1,55 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH 2.6.37-rc1] ASoC: OMAP: fix OMAP1 compilation problem
-Date: Tue, 23 Nov 2010 09:38:43 +0200
-Message-ID: <20101123093843.23e4d579.jhnikula@gmail.com>
-References: <201011021550.34885.jkrzyszt@tis.icnet.pl>
-	<alpine.DEB.2.00.1011221748410.20215@utopia.booyaka.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH] ASoC: Do not update the cache if write to
+	hardware failed
+Date: Tue, 23 Nov 2010 09:39:16 +0200
+Message-ID: <201011230939.17080.peter.ujfalusi@nokia.com>
+References: <1290492847.7286.1.camel@mola>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1011221748410.20215@utopia.booyaka.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Paul Walmsley <paul@pwsan.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, e3-hacking@earth.li, tony@atomide.com, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-sa02.nokia.com (smtp.nokia.com [147.243.1.48])
+	by alsa0.perex.cz (Postfix) with ESMTP id 821642437D
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 08:40:50 +0100 (CET)
+In-Reply-To: <1290492847.7286.1.camel@mola>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ext Axel Lin <axel.lin@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 22 Nov 2010 17:50:54 -0700 (MST)
-Paul Walmsley <paul@pwsan.com> wrote:
-
+On Tuesday 23 November 2010 08:14:07 ext Axel Lin wrote:
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+> ---
+>  sound/soc/codecs/tpa6130a2.c |    4 +++-
+>  1 files changed, 3 insertions(+), 1 deletions(-)
 > 
-> By the way, ASoC and OMAP audio-hackers, I deeply regret how much trouble 
-> that SCM cleanup series has caused.  It does not meet my personal 
-> standards for a patch-series...
+> diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+> index bfef3da..2d64502 100644
+> --- a/sound/soc/codecs/tpa6130a2.c
+> +++ b/sound/soc/codecs/tpa6130a2.c
+> @@ -77,8 +77,10 @@ static int tpa6130a2_i2c_write(int reg, u8 value)
 > 
-Hey, small compile breaks happens to everyone and word trouble doesn't
-come to my mind when speaking about your set.
+>  	if (data->power_state) {
+>  		val = i2c_smbus_write_byte_data(tpa6130a2_client, reg, value);
+> -		if (val < 0)
+> +		if (val < 0) {
+>  			dev_err(&tpa6130a2_client->dev, "Write failed\n");
+> +			return val;
+> +		}
+>  	}
+> 
+>  	/* Either powered on or off, we save the context */
 
-Your set actually did one major step forward with ASoC OMAP drivers -
-now it's possible to have modular build with them so your work has lot
-of benefits to developers and distro builders.
+Nice catch, thank you!
 
+CC-ing alsa-devel
 
--- 
-Jarkko
+Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
