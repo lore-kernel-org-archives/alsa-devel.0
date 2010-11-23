@@ -1,18 +1,16 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] alsa: support module on-demand loading for
- seq and timer
-Date: Tue, 23 Nov 2010 17:56:29 +0100
-Message-ID: <4CEBF23D.6020801@ladisch.de>
-References: <1290508964.1164.3.camel@yio> <4CEBE1B1.4070906@ladisch.de>
-	<AANLkTi=j4XA5r4DSBdZKxLJNvoAQzR+daXu0UzjcvLo4@mail.gmail.com>
+Subject: Re: ALSA throwing buffers away?
+Date: Tue, 23 Nov 2010 18:03:01 +0100
+Message-ID: <4CEBF3C5.2050108@ladisch.de>
+References: <AANLkTikppY6oP0Ha7_Hej9uNBubbOUs87cp85yq3SS-X@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 5A00C103806
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 17:54:13 +0100 (CET)
-In-Reply-To: <AANLkTi=j4XA5r4DSBdZKxLJNvoAQzR+daXu0UzjcvLo4@mail.gmail.com>
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id B697F10392C
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2010 18:00:45 +0100 (CET)
+In-Reply-To: <AANLkTikppY6oP0Ha7_Hej9uNBubbOUs87cp85yq3SS-X@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,46 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kay Sievers <kay.sievers@vrfy.org>
-Cc: tiwai@suse.de, ALSA Development Mailing List <alsa-devel@alsa-project.org>, jkysela@redhat.com
+To: Radivoje Jovanovic <radivojejovanovic@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Kay Sievers wrote:
-> On Tue, Nov 23, 2010 at 16:45, Clemens Ladisch <clemens@ladisch.de> wrote:
->> Kay Sievers wrote:
->>> +MODULE_ALIAS("devname:snd/seq");
->>
->> The device name that alsa-lib tries to use for autoloading is actually
->> /dev/aloadSEQ.
+Radivoje Jovanovic wrote:
+> I am developing driver for a really simple hardware. Hardware has codec that
+> supports mono/stereo and the amplifier that supports only one speaker so the
+> driver has to be mono driver and the codec is setup to manage mono data. I
+> have setup ALSA with following parameters:
 > 
-> That might need to be changed then, if something depends on that, but
-> nothing ever tries to open /dev/snd/seq.
+> .info =            (SNDRV_PCM_INFO_NONINTERLEAVED |
 
-No, alsa-lib pokes /dev/aloadSEQ only if opening /dev/snd/seq has
-failed.  (Something historical, I believe.)
+Better use SNDRV_PCM_INFO_INTERLEAVED; this is the format used by almost
+all (stereo) sound cards, and so it is expected even for mono files
+(where there actually isn't any difference).
 
->> So you're going to add the entries for card driver autoloading
->> (/dev/aloadC*), too?
-> 
-> No, we only ever handle single-instance devices with a single fixed
-> dev_t, not ones with an arbitrary number of device instances.
-> 
-> Card drivers are loaded by hardware matches today, not on-demand, and
-> not by an card number.
+> after each buffer iteration ALSA skips the buffer length of the data?!
 
-There are card drivers without matching hardware (such as MIDI over
-a serial port, or virtual devices).
+This might be a problem with the reporting of the DMA pointer.
 
-> There are no configured numbered module aliases for sound cards
-> anymore, that can't work with today's setups.
+Please explain (or show) how your DMA works and how the pointer callback
+is implemented.
 
-Just that it cannot work with systemd doesn't imply that nobody still
-uses it or that it could be dropped without regards for backward
-compatibility.
+> I have tried SNDRV_PCM_INFO_INTERLEAVED with the same results (in this
+> case ALSA will not even try to play stereo files using my mono driver).
 
-
-Anyway, this patch is independent of ALSA's old autoload code.
-Applied.
+When using the "default" or "plughw" device, alsa-lib will automatically
+convert the sample format.
 
 
 Regards,
