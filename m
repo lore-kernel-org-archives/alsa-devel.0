@@ -1,75 +1,82 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 2/2 RESEND] ASoC: Fix resource reclaim for osk5912
-Date: Wed, 24 Nov 2010 22:24:01 +0800
-Message-ID: <1290608641.2235.5.camel@phoenix>
+From: Bill Unruh <unruh@physics.ubc.ca>
+Subject: Re: [Alsa-user] Creative Sound Blaster Audigy SE Mic
+	problem
+Date: Wed, 24 Nov 2010 06:35:38 -0800 (PST)
+Message-ID: <Pine.LNX.4.64.1011240630300.17550@info.physics.ubc.ca>
+References: <28016_1290605977_1290605977_4CED1571.8090507@guest.arnes.si>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Charulatha <charu@ti.com>, Jarkko Nikula <jhnikula@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from info.physics.ubc.ca (info.physics.ubc.ca [142.103.234.23])
+	by alsa0.perex.cz (Postfix) with ESMTP id A008424141
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2010 15:35:41 +0100 (CET)
+In-Reply-To: <28016_1290605977_1290605977_4CED1571.8090507@guest.arnes.si>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Grega Fajdiga <Gregor.Fajdiga@guest.arnes.si>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In current implementation, there are resources leak in the error path.
-This patch properly reclaims the allocated resources in the error path.
+On Wed, 24 Nov 2010, Grega Fajdiga wrote:
 
-Also adds a missing clk_put in osk_soc_exit.
+> Hello,
+>
+> I am using Ubuntu 10.10 with a Creative Sound Blaster Audigy SE.
+>
+> The snd_ca0106 module is loaded.
+>
+> I have a Y-connector plugged in the green front left/right jack
+> so that I can listen at the sound through speakers and the
+> headphones at the same time. The microphone is plugged into the
+> blue jack, consistent with the sound card specs:
+>
+> http://pdfguides.com/creative-labs-sound-blaster-audigy-se-features-specifications.html
+>
+> I go the sound working after getting a tip that both the digital
+> and analog mixer might be turned on. After turning the digital
+> control off, sound started to work.
+>
+> However, mic still isn't working in Linux, although it works just
+> fine in Win 7.
+>
+> There are 7 input mixers available in alsamixer:
+>
+> -Line-in: set at 81/81 volume
+> -Mic: 100/100
+> -Phone 81/81
+> -Aux: 0/0
+> -Analog Source: set to Mic (no VU meter)
+> -Digital Source: set to AC97 in (cannot seem to be muted)
+> -Shared Mic/Line in  set to Line in
+>
+> If I set both Analog Source and Shared Mic/Line in to Mic, I get
+> screeching sounds from speakers and headphones. If I set one of
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
-Acked-by: Jarkko Nikula <jhnikula@gmail.com>
----
- sound/soc/omap/osk5912.c |   11 ++++++++---
- 1 files changed, 8 insertions(+), 3 deletions(-)
+That is probably what is called feedback.i It says yor microphone works.
+  Unplug your headphones/speakers. 
+Ie, turn off all output. So set both to Mic. 
+Now record. Once you have recorded Turn off the inputs. and see if there is
+some recording. Or use something like audacity and look at the input meter.
 
-diff --git a/sound/soc/omap/osk5912.c b/sound/soc/omap/osk5912.c
-index 18d053d..7e75e77 100644
---- a/sound/soc/omap/osk5912.c
-+++ b/sound/soc/omap/osk5912.c
-@@ -177,7 +177,8 @@ static int __init osk_soc_init(void)
- 	tlv320aic23_mclk = clk_get(dev, "mclk");
- 	if (IS_ERR(tlv320aic23_mclk)) {
- 		printk(KERN_ERR "Could not get mclk clock\n");
--		return -ENODEV;
-+		err = PTR_ERR(tlv320aic23_mclk);
-+		goto err2;
- 	}
- 
- 	/*
-@@ -188,7 +189,7 @@ static int __init osk_soc_init(void)
- 		if (clk_set_rate(tlv320aic23_mclk, CODEC_CLOCK)) {
- 			printk(KERN_ERR "Cannot set MCLK for AIC23 CODEC\n");
- 			err = -ECANCELED;
--			goto err1;
-+			goto err3;
- 		}
- 	}
- 
-@@ -196,9 +197,12 @@ static int __init osk_soc_init(void)
- 	       (uint) clk_get_rate(tlv320aic23_mclk), CODEC_CLOCK);
- 
- 	return 0;
--err1:
-+
-+err3:
- 	clk_put(tlv320aic23_mclk);
-+err2:
- 	platform_device_del(osk_snd_device);
-+err1:
- 	platform_device_put(osk_snd_device);
- 
- 	return err;
-@@ -207,6 +211,7 @@ err1:
- 
- static void __exit osk_soc_exit(void)
- {
-+	clk_put(tlv320aic23_mclk);
- 	platform_device_unregister(osk_snd_device);
- }
- 
+
+> them to Line in and one to Mic no sound is played back after I
+> record some sound.
+>
+> Can anyone help?
+>
+> Thanks,
+>
+
 -- 
-1.7.2
-
-
-
-
+William G. Unruh   |  Canadian Institute for|     Tel: +1(604)822-3273
+Physics&Astronomy  |     Advanced Research  |     Fax: +1(604)822-5324
+UBC, Vancouver,BC  |   Program in Cosmology |     unruh@physics.ubc.ca
+Canada V6T 1Z1     |      and Gravity       |  www.theory.physics.ubc.ca/
