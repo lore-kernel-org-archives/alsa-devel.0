@@ -1,14 +1,29 @@
-From: Dmitry Artamonow <mad_soft@inbox.ru>
-Subject: [PATCH] ASoC: fix SND_PXA2XX_LIB Kconfig warning
-Date: Thu, 25 Nov 2010 00:46:15 +0300
-Message-ID: <1290635175-30501-1-git-send-email-mad_soft@inbox.ru>
+From: John Ettedgui <john.ettedgui@gmail.com>
+Subject: Re: ALSA Multichannel through HDMI
+Date: Wed, 24 Nov 2010 15:26:08 -0800
+Message-ID: <AANLkTim8zHRTc0F2CcfoXtxDkH2kpYajCuheo7GoQ4zW@mail.gmail.com>
+References: <20100112045102.GA29735@localhost>
+	<eb9000ab1001112311o4bcf98dp2b616d1afffec9e0@mail.gmail.com>
+	<20100112132140.GA7647@localhost>
+	<eb9000ab1001120828l6829c6b1g30916b872a0467f7@mail.gmail.com>
+	<20100113010942.GA6435@localhost>
+	<eb9000ab1001121732y4212e6m9596f68e24d6c226@mail.gmail.com>
+	<20100113014550.GA10184@localhost>
+	<eb9000ab1001122048s1ac0d9c3n130692ba83dd53d1@mail.gmail.com>
+	<20100113045238.GB26275@localhost>
+	<eb9000ab1001122055s54bc6697t6103def1e8ae64ae@mail.gmail.com>
+	<20100113050254.GA28475@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp13.mail.ru (smtp13.mail.ru [94.100.176.90])
-	by alsa0.perex.cz (Postfix) with ESMTP id EEC74103B56
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2010 22:48:15 +0100 (CET)
+Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
+	[209.85.216.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id CA1BD103B45
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 00:26:09 +0100 (CET)
+Received: by qwe5 with SMTP id 5so294693qwe.38
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2010 15:26:09 -0800 (PST)
+In-Reply-To: <20100113050254.GA28475@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,36 +33,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Wu Fengguang <fengguang.wu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fix following warning observed when SND_PXA2XX_SOC is set and SND_ARM isn't:
-
-warning: (SND_PXA2XX_AC97 && SOUND && !M68K && SND && SND_ARM && ARCH_PXA ||
-SND_PXA2XX_SOC && SOUND && !M68K && SND && SND_SOC && ARCH_PXA) selects
-SND_PXA2XX_LIB which has unmet direct dependencies (SOUND && !M68K && SND &&
-SND_ARM)
-
-Signed-off-by: Dmitry Artamonow <mad_soft@inbox.ru>
----
-
-This is fix for 2.6.37-rc3
-
- sound/soc/pxa/Kconfig |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 37f191b..580f485 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -1,6 +1,7 @@
- config SND_PXA2XX_SOC
- 	tristate "SoC Audio for the Intel PXA2xx chip"
- 	depends on ARCH_PXA
-+	select SND_ARM
- 	select SND_PXA2XX_LIB
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
--- 
-1.7.0.4
+T24gVHVlLCBKYW4gMTIsIDIwMTAgYXQgOTowMiBQTSwgV3UgRmVuZ2d1YW5nIDxmZW5nZ3Vhbmcu
+d3VAaW50ZWwuY29tPiB3cm90ZToKPiBPbiBXZWQsIEphbiAxMywgMjAxMCBhdCAxMjo1NTowOVBN
+ICswODAwLCBKb2huIEV0dGVkZ3VpIHdyb3RlOgo+PiBPbiBUdWUsIEphbiAxMiwgMjAxMCBhdCA4
+OjUyIFBNLCBXdSBGZW5nZ3VhbmcgPGZlbmdndWFuZy53dUBpbnRlbC5jb20+IHdyb3RlOgo+PiA+
+IE9uIFdlZCwgSmFuIDEzLCAyMDEwIGF0IDEyOjQ4OjEzUE0gKzA4MDAsIEpvaG4gRXR0ZWRndWkg
+d3JvdGU6Cj4+ID4+IE9uIFR1ZSwgSmFuIDEyLCAyMDEwIGF0IDU6NDUgUE0sIFd1IEZlbmdndWFu
+ZyA8ZmVuZ2d1YW5nLnd1QGludGVsLmNvbT4gd3JvdGU6Cj4+ID4+ID4gT24gV2VkLCBKYW4gMTMs
+IDIwMTAgYXQgMDk6MzI6MDRBTSArMDgwMCwgSm9obiBFdHRlZGd1aSB3cm90ZToKPj4gPj4gPj4g
+T24gVHVlLCBKYW4gMTIsIDIwMTAgYXQgNTowOSBQTSwgV3UgRmVuZ2d1YW5nIDxmZW5nZ3Vhbmcu
+d3VAaW50ZWwuY29tPiB3cm90ZToKPj4gPj4gPgo+PiA+PiA+PiA+PiA+IFlvdSBjYW4gcGxheSBh
+IDUuMSB0cmFjayBhbmQgZmluZCBzb21ldGhpbmcgbGlrZSB0aGlzIGluIGRtZXNnOgo+PiA+PiA+
+PiA+PiA+Cj4+ID4+ID4+ID4+ID4gwqAgwqAgwqAgwqBIRE1JOiBBU1AgY2hhbm5lbCAlZCA9PiBz
+bG90ICVkCj4+ID4+ID4+ID4+ID4gwqAgwqAgwqAgwqBIRE1JOiBBU1AgY2hhbm5lbCAlZCA9PiBz
+bG90ICVkCj4+ID4+ID4+ID4+ID4gwqAgwqAgwqAgwqBIRE1JOiBBU1AgY2hhbm5lbCAlZCA9PiBz
+bG90ICVkCj4+ID4+ID4+ID4+ID4gwqAgwqAgwqAgwqBIRE1JOiBBU1AgY2hhbm5lbCAlZCA9PiBz
+bG90ICVkCj4+ID4+ID4+ID4+ID4gwqAgwqAgwqAgwqBIRE1JOiBBU1AgY2hhbm5lbCAlZCA9PiBz
+bG90ICVkCj4+ID4+ID4+ID4+ID4gwqAgwqAgwqAgwqBIRE1JOiBBU1AgY2hhbm5lbCAlZCA9PiBz
+bG90ICVkCj4+ID4+ID4+ID4+ID4gwqAgwqAgwqAgwqBIRE1JOiBBU1AgY2hhbm5lbCAlZCA9PiBz
+bG90ICVkCj4+ID4+ID4+ID4+ID4gwqAgwqAgwqAgwqBIRE1JOiBBU1AgY2hhbm5lbCAlZCA9PiBz
+bG90ICVkCj4+ID4+ID4+ID4+ID4KPj4gPj4gPj4gPj4gQWZ0ZXIgdHJ5aW5nIHNwZWFrZXItdGVz
+dCAtYzYsIEkgY291bGQgbm90IGZpbmQgYW55dGhpbmcgbGlrZSB0aGF0Lgo+PiA+PiA+PiA+PiBJ
+ZiBJIHRyeSBtcGxheWVyIC1jaGFubmVsIDYsIGl0IGp1c3QgZG9lcyBub3Qgb3V0cHV0IGFueSBz
+b3VuZC4KPj4gPj4gPj4gPgo+PiA+PiA+PiA+IERpZCB5b3UgZW5hYmxlIENPTkZJR19TTkRfREVC
+VUdfVkVSQk9TRT8KPj4gPj4gPj4gPgo+PiA+PiA+Pgo+PiA+PiA+PiBZZXMuCj4+ID4+ID4KPj4g
+Pj4gPiBUaGVuIHdlIG5lZWQgbW9yZSBkZWJ1Z2dpbmcuLgo+PiA+PiA+Cj4+ID4+ID4gQ2FuIHlv
+dSBzZW5kIG1lIHRoZSBmaWxlIC9wcm9jL2Fzb3VuZC9jYXJkKi9lbGQqPwo+PiA+PiBBdHRhY2hl
+ZCB0byB0aGlzIGVtYWlsCj4+ID4+ID4gQW5kIHRoZSBhbHNhaW5mbyBvdXRwdXQ6Cj4+ID4+ID4g
+wqAgwqAgwqAgwqBodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvYWxzYS1pbmZvLnNoCj4+ID4+
+IGFuZCB0aGlzIG9uZSBpcyBhdAo+PiA+PiBodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIv
+P2Y9NTk3NzNmOTExN2Y2NTNmM2QyMGQyMWI5MGRjMjEwNGVlYjVkMWVjZAo+PiA+Cj4+ID4gSm9o
+biwgcGxlYXNlIHRyeSB0aGlzIGFuZCB0aGVuIHJlZG8gc3BlYWtlci10ZXN0IGFuZCBjaGVjayBk
+bWVzZzoKPj4gPgo+PiA+IMKgIMKgIMKgIMKgIyBlY2hvIG1vbml0b3JfcHJlc2VudCAxID4gL3By
+b2MvYXNvdW5kL2NhcmQqL2VsZCoKPj4gPgo+PiA+IFRoYW5rcywKPj4gPiBGZW5nZ3VhbmcKPj4g
+Pgo+PiBBbHJpZ2h0LCBJIGd1ZXNzIHRoaXMgaXMgdGhlIG91dHB1dCB3ZSBhcmUgbG9va2luZyBm
+b3I6Cj4+Cj4+Cj4+IEFMU0Egc291bmQvcGNpL2hkYS9wYXRjaF9pbnRlbGhkbWkuYzo4NDI6IGhk
+bWlfc2V0dXBfc3RyZWFtOiBOSUQ9MHgyLAo+PiBzdHJlYW09MHgxLCBuZXctZm9ybWF0PTB4MTEK
+Pj4gQUxTQSBzb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jOjE2NDE6IGF6eF9wY21fcHJlcGFyZTog
+YnVmc2l6ZT0weDEwMDAwLAo+PiBmb3JtYXQ9MHgxMQo+PiBIRE1JOiBBU1AgY2hhbm5lbCAwID0+
+IHNsb3QgMAo+PiBIRE1JOiBBU1AgY2hhbm5lbCAwID0+IHNsb3QgMAo+PiBIRE1JOiBBU1AgY2hh
+bm5lbCAwID0+IHNsb3QgMAo+PiBIRE1JOiBBU1AgY2hhbm5lbCAwID0+IHNsb3QgMAo+PiBIRE1J
+OiBBU1AgY2hhbm5lbCAwID0+IHNsb3QgMAo+PiBIRE1JOiBBU1AgY2hhbm5lbCAwID0+IHNsb3Qg
+MAo+PiBIRE1JOiBBU1AgY2hhbm5lbCAwID0+IHNsb3QgMAo+PiBIRE1JOiBBU1AgY2hhbm5lbCAw
+ID0+IHNsb3QgMAo+Cj4gT2ggd2VsbCwgSSBndWVzcyB5b3VyIGhhcmR3YXJlIGRvZXNuJ3Qgc3Vw
+cG9ydCBjaGFubmVsIG1hcHBpbmcuLgo+Cj4gWW91IGNhbiBzdGlsbCBkbyBpdCBpbiB1c2VyIHNw
+YWNlOgo+IMKgIMKgIMKgIMKgaHR0cDovL2FydGljbGUuZ21hbmUub3JnL2dtYW5lLmxpbnV4LmFs
+c2EudXNlci8zMzM5Mwo+Cj4gVGhhbmtzLAo+IEZlbmdndWFuZwo+CgpJIGFtIHNvcnJ5IHRvIHJl
+c3VycmVjdCB0aGlzIHRocmVhZCBhZnRlciBzbyBsb25nLCBidXQgSSBzdGlsbCBoYXZlCm5vdCBi
+ZWVuIGFibGUgdG8gZ2V0IGFueXdoZXJlLgpBbHNvIGl0IGp1c3QgY2FtZSB0byBteSBhdHRlbnRp
+b24gdGhhdCBpZiBteSByZWNlaXZlciBhbHdheXMgc2VlcyB0aGUKaGRtaSBjb25uZWN0aW9uIGFz
+IHN0ZXJlbyAoYXBhcnQgZnJvbSB3aGVuIHVzaW5nIGFjMy9kdHMgcGFzc3Rocm91Z2gpCmNoYW5u
+ZWwgcmVtYXBwaW5nIGlzIG5vdCB0aGUgc29sdXRpb24sIGJ1dCBzb21laG93IHNvbWV0aGluZyBl
+bHNlIGlzCm1lc3NlZCB1cC4KCkkgdGhpbmsgSSBzaG91bGQgdHJ5IHNvbWUgb3B0aW9ucyBpbiBt
+b2Rwcm9iZS5jb25mIGZvciBzbmQtaGRhLWludGVsCmJ1dCBJIGFtIG5vdCBzdXJlIHdoaWNoIG9u
+ZXMsIGFuZCBmcm9tIGFsbCB0aGUgZXhhbXBsZXMgSSBjYW4gZmluZCBvbgp0aGUgd2ViLCBpdCBz
+ZWVtcyBub25lIG9mIHRoZW0gYXJlIHRhbGtpbmcgYWJvdXQgYSByYWRlb24gaGRtaQpjb25uZWN0
+aW9uLi4uCgpTbyBJJ20gYXNraW5nIGZvciBhZHZpY2UgaGVyZSBhZ2FpbiA6KQoKVGhhbmtzIQpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
