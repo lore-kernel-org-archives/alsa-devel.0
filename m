@@ -1,30 +1,14 @@
-From: Oliver Bestmann <7bestman@informatik.uni-hamburg.de>
-Subject: no support for docking station with acl259?
-Date: Wed, 24 Nov 2010 17:13:40 +0100
-Message-ID: <20101124171340.e9926e33.7bestman@informatik.uni-hamburg.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Make SMDK WM8580 driver unloadable
+Date: Wed, 24 Nov 2010 17:20:03 +0000
+Message-ID: <1290619203-27875-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
-	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE182243FF
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2010 17:13:50 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by mailhost.informatik.uni-hamburg.de (Postfix) with ESMTP id A4AC882D
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2010 17:13:50 +0100 (CET)
-Received: from mailhost.informatik.uni-hamburg.de ([127.0.0.1])
-	by localhost (mailhost.informatik.uni-hamburg.de [127.0.0.1])
-	(amavisd-new, port 10024)
-	with LMTP id jWyDDpBb0mu8 for <alsa-devel@alsa-project.org>;
-	Wed, 24 Nov 2010 17:13:50 +0100 (CET)
-Received: from laptop (port-12030.pppoe.wtnet.de [84.46.47.45])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client did not present a certificate)
-	(Authenticated sender: 7bestman)
-	by mailhost.informatik.uni-hamburg.de (Postfix) with ESMTPSA id
-	EC82882C
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2010 17:13:49 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CB9492441D
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2010 18:20:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,21 +18,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>, Jassi Brar <jassi.brar@samsung.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-hey,
+Supply a module exit function so that the driver can be unloaded.
 
-i have an hda-intel card with an acl259 chipset. everything works fine
-except the in and output jacks on the docking station. they arent
-recognized by alsa and the dont show up in alsamixer. i'm jusing the
-drivers from the current kernel 2.6.37-rc3.
-i'd like to provide every necassary information to help someone to fix
-this problem or, if someone could tell me how, i'd try fixing it myself.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/samsung/smdk_wm8580.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
 
-cheers,
-olli
-
-
+diff --git a/sound/soc/samsung/smdk_wm8580.c b/sound/soc/samsung/smdk_wm8580.c
+index 0ae3d57..e2d56b9 100644
+--- a/sound/soc/samsung/smdk_wm8580.c
++++ b/sound/soc/samsung/smdk_wm8580.c
+@@ -280,6 +280,12 @@ static int __init smdk_audio_init(void)
+ }
+ module_init(smdk_audio_init);
+ 
++static void __exit smdk_audio_exit(void)
++{
++	platform_device_unregister(smdk_snd_device);
++}
++module_exit(smdk_audio_exit);
++
+ MODULE_AUTHOR("Jaswinder Singh, jassi.brar@samsung.com");
+ MODULE_DESCRIPTION("ALSA SoC SMDK WM8580");
+ MODULE_LICENSE("GPL");
 -- 
-Oliver Bestmann <7bestman@informatik.uni-hamburg.de>
+1.7.1
