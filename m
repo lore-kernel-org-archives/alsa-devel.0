@@ -1,20 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/5] [RFC]intel_hdmi_audio: interface module
-Date: Wed, 24 Nov 2010 10:11:00 +0000
-Message-ID: <20101124101100.GC5139@opensource.wolfsonmicro.com>
-References: <1290433186-31628-1-git-send-email-ramesh.babu@intel.com>
-	<1290433186-31628-2-git-send-email-ramesh.babu@intel.com>
-	<20101122135812.GD15156@sirena.org.uk>
-	<s5h8w0jnlby.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Add initial WM8737 driver
+Date: Wed, 24 Nov 2010 10:47:56 +0000
+Message-ID: <1290595676.3332.3.camel@odin>
+References: <1290540740-309-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 969C3103809
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2010 11:10:54 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5h8w0jnlby.wl%tiwai@suse.de>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 396B6243EA
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2010 11:48:01 +0100 (CET)
+Received: by ewy19 with SMTP id 19so949934ewy.38
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2010 02:48:00 -0800 (PST)
+In-Reply-To: <1290540740-309-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,24 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Sailaja Bandarupalli <sailaja.bandarupalli@intel.com>, ramesh.babu@intel.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 24, 2010 at 10:05:05AM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
-> > On Mon, Nov 22, 2010 at 07:09:43PM +0530, ramesh.babu@intel.com wrote:
+On Tue, 2010-11-23 at 19:32 +0000, Mark Brown wrote:
+> The WM8737 is a low power, flexible stereo ADC designed for portable
+> applications. This driver supports most of the functionality of the
+> WM8737, though some features such as the ALC are not yet implemented.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-> > > +	intelhaddata = device->device_data;
-
-> > This function doesn't appear to do anything like what either the
-> > description or name would suggest?  I'd expect to see some deallocation
-> > going on...
-
-> Reading through the code, the construct doesn't seem to allocate any
-> private stuff but only standard components, so this callback doesn't
-> have to do anything much, I suppose.
-
-To be honest half the issue was the above quoted line - if the function
-had been empty I'd have been less concerned (and probably just said to
-remove it).
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
