@@ -1,18 +1,30 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: tlv320aic3x - fix variable may be
- used uninitialized warning
-Date: Wed, 24 Nov 2010 14:44:35 +0000
-Message-ID: <20101124144434.GI24970@rakim.wolfsonmicro.main>
-References: <1290609659.2749.2.camel@phoenix>
+From: Oliver Bestmann <7bestman@informatik.uni-hamburg.de>
+Subject: no support for docking station with acl259?
+Date: Wed, 24 Nov 2010 17:13:40 +0100
+Message-ID: <20101124171340.e9926e33.7bestman@informatik.uni-hamburg.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1D0332417E
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2010 15:44:37 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1290609659.2749.2.camel@phoenix>
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id CE182243FF
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2010 17:13:50 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by mailhost.informatik.uni-hamburg.de (Postfix) with ESMTP id A4AC882D
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2010 17:13:50 +0100 (CET)
+Received: from mailhost.informatik.uni-hamburg.de ([127.0.0.1])
+	by localhost (mailhost.informatik.uni-hamburg.de [127.0.0.1])
+	(amavisd-new, port 10024)
+	with LMTP id jWyDDpBb0mu8 for <alsa-devel@alsa-project.org>;
+	Wed, 24 Nov 2010 17:13:50 +0100 (CET)
+Received: from laptop (port-12030.pppoe.wtnet.de [84.46.47.45])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client did not present a certificate)
+	(Authenticated sender: 7bestman)
+	by mailhost.informatik.uni-hamburg.de (Postfix) with ESMTPSA id
+	EC82882C
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2010 17:13:49 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,26 +34,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: vbarinov@embeddedalley.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 24, 2010 at 10:40:59PM +0800, Axel Lin wrote:
-> If aic3x_read failed , val is used uninitialized.
-> Fix it by initializing val to 0.
-> 
-> This patch fixes below compile warning:
-> sound/soc/codecs/tlv320aic3x.c: In function 'aic3x_get_gpio':
-> sound/soc/codecs/tlv320aic3x.c:1183: warning: 'val' may be used uninitialized in this function
-> sound/soc/codecs/tlv320aic3x.c: In function 'aic3x_headset_detected':
-> sound/soc/codecs/tlv320aic3x.c:1211: warning: 'val' may be used uninitialized in this function
-> sound/soc/codecs/tlv320aic3x.c: In function 'aic3x_button_pressed':
-> sound/soc/codecs/tlv320aic3x.c:1219: warning: 'val' may be used uninitialized in this function
+hey,
 
-This does rather look like a compiler bug.  I'm generally against this
-sort of change as it just tramples over the warning in cases where it
-may be valid, though given the trivially small functions here it's hard
-to care.
+i have an hda-intel card with an acl259 chipset. everything works fine
+except the in and output jacks on the docking station. they arent
+recognized by alsa and the dont show up in alsamixer. i'm jusing the
+drivers from the current kernel 2.6.37-rc3.
+i'd like to provide every necassary information to help someone to fix
+this problem or, if someone could tell me how, i'd try fixing it myself.
 
-Really this stuff should all be written to use the standard jack and
-GPIO APIs anyway.
+cheers,
+olli
+
+
+-- 
+Oliver Bestmann <7bestman@informatik.uni-hamburg.de>
