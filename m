@@ -1,21 +1,22 @@
-From: Ramya Desai <ramya.desai@gmail.com>
-Subject: Re: Linux USB audio driver - sample code / link /
-	documentation
-Date: Fri, 26 Nov 2010 14:42:53 +0530
-Message-ID: <AANLkTime7fy8UQe55A0w_ESF0yrwpDGiXMkaee1JFpo5@mail.gmail.com>
-References: <AANLkTi=R_2dPhOGCB+5Dv_KUG3PrESg+Z+x1A_bhiTjr@mail.gmail.com>
-	<4CEEC5B3.3040506@gmail.com>
+From: Wim Taymans <wim.taymans@collabora.co.uk>
+Subject: Re: bug in alsa-lib/snd_pcm_plugin_delay for capture?
+Date: Thu, 25 Nov 2010 19:20:06 +0100
+Message-ID: <1290709206.3813.20.camel@meany>
+References: <AANLkTi=in6g2YxRKwkCi7H_v0jmJ9tOouc2FK-Rg8iDt@mail.gmail.com>
+	<alpine.LNX.2.00.1011180927310.21207@eeebox2.perex-int.cz>
+	<AANLkTikihnQxQa-1RednpZSpx5Rn5XEcZYJfcShh6HW7@mail.gmail.com>
+	<alpine.LNX.2.00.1011221451250.8433@eeebox2.perex-int.cz>
+	<AANLkTimuizeF+p23wrBg9CQFouhRHj2x6g7tD3bQ8g4=@mail.gmail.com>
+	<alpine.LNX.2.00.1011231119271.8433@eeebox2.perex-int.cz>
+	<AANLkTikOfbwCpeJprOOsNNSnLzZmv__EujTeTKoM8nPz@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5CE0F103CF4
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 10:12:55 +0100 (CET)
-Received: by gyg8 with SMTP id 8so961745gyg.38
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 01:12:54 -0800 (PST)
-In-Reply-To: <4CEEC5B3.3040506@gmail.com>
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [93.93.128.226])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4DD39103817
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 19:20:08 +0100 (CET)
+In-Reply-To: <AANLkTikOfbwCpeJprOOsNNSnLzZmv__EujTeTKoM8nPz@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,28 +26,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <zonque@gmail.com>
+To: pl bossart <bossart.nospam@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 26, 2010 at 1:53 AM, Daniel Mack <zonque@gmail.com> wrote:
-> On 11/25/2010 01:51 AM, Ramya Desai wrote:
->> I did not find a document for writing a USB audio driver under Linux
->> environment. Please let me know any sample driver / link / document
->> which describes about the USB audio driver under Linux environment.
->
-> As Clemens wrote, examining existing drivers in the kernel repository
-> (under sound/usb) might help you most. Just have a look how they
-> communicate with the hardware and how they set up the ALSA components
-> inside the kernel.
+On Tue, 2010-11-23 at 08:55 -0600, pl bossart wrote:
+> > After rethinking, I believe that the right fix should be to add the
+> > 'snd_pcm_mmap_capture_avail(pcm)' to the sd variable - delay(slave) - for
+> > the capture direction. You should not bother with avail_update or the slave
+> > avail values. The avail_update() capture loop just copied samples from the
+> > producer (slave) to the consumer (pcm). It means that the avail becomes
+> > lower for the producer (slave) and is increased for the consumer (pcm). The
+> > delay(slave) already contains the avail(slave) value.
+> >
+> > So, the result should be 'delay(slave) + mmap_capture_avail(pcm)'.
+> 
+> The attached patch implements your recoomendation and makes error
+> messages go away in PulseAudio.
+> It'd good to know if it improves the perfomance of echo cancellation.
+> Wim, can you try it out?
 
-Thank you very much for your reply.
+I asked Arun to try it, will let you know if it actually improves things
+enough to celebrate. The current next plan to improve AEC between
+different devices is to first do further smoothing of the rate
+estimation in pa_smoother. and then make the sink (or source) do
+resampling to compensate (when we manage to get a stable resampling
+factor).
 
-I have gone through the sound/usb/* sources. However, I have also gone
-through the sound/soc/* sources. There is a documentation about the
-SOC implementation like platform driver, machine driver etc. The
-documentation is available in Documentation/sound/alsa/soc. Is there
-any documentation, like soc, for USB implementation?
+Wim
 
-Thanks and Regards,
-Ramya.
+> Thanks,
+> -Pierre
