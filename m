@@ -1,19 +1,13 @@
-From: Daniel Mack <zonque@gmail.com>
-Subject: Re: Linux USB audio driver - sample code / link /
-	documentation
-Date: Thu, 25 Nov 2010 12:23:15 -0800
-Message-ID: <4CEEC5B3.3040506@gmail.com>
-References: <AANLkTi=R_2dPhOGCB+5Dv_KUG3PrESg+Z+x1A_bhiTjr@mail.gmail.com>
+From: Andrey Rahmatullin <wrar@wrar.name>
+Subject: [BISECTED] 2.6.36 regression for ALC892
+Date: Fri, 26 Nov 2010 02:18:03 +0500
+Message-ID: <20101125211803.GA4236@belkar.wrar.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7784965840126915246=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8D10910397A
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 21:23:20 +0100 (CET)
-Received: by gwaa20 with SMTP id a20so719841gwa.38
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 12:23:19 -0800 (PST)
-In-Reply-To: <AANLkTi=R_2dPhOGCB+5Dv_KUG3PrESg+Z+x1A_bhiTjr@mail.gmail.com>
+Received: from haley.wrar.name (wrar.name [109.74.195.39])
+	by alsa0.perex.cz (Postfix) with ESMTP id E857310397A
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 22:18:13 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,22 +18,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/25/2010 01:51 AM, Ramya Desai wrote:
-> I did not find a document for writing a USB audio driver under Linux
-> environment. Please let me know any sample driver / link / document
-> which describes about the USB audio driver under Linux environment.
 
-As Clemens wrote, examining existing drivers in the kernel repository
-(under sound/usb) might help you most. Just have a look how they
-communicate with the hardware and how they set up the ALSA components
-inside the kernel.
-
-Is there any documentation for the chip you're writing the driver for,
-about the USB protocol it uses etc? Are you sure it does not follow the
-USB audio class specifications? Posting the output of 'lsusb -v' might
-also help.
+--===============7784965840126915246==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
+Content-Disposition: inline
 
 
-Daniel
+--FCuugMFkClbJLl1L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello. I have an Intel H55 motherboard (ASUS P7H55-M PRO) with ALC892
+sound codec and a 3.5" front panel which doesn't support newer HDA pinout.
+So the panel is connected in "AC97" mode and this mode is set in the BIOS
+setup. In 2.6.35 and earlier the panel's headphones jack was working. Now
+it isn't. I've bisected this down to
+ce503f38bdb59c9175a9076215a3ba579fad4e64 (which is present in 2.6.36),
+reverting it helps. I've got "Too many connections" messages without this
+commit, indeed, but I had no problems (though I use only a pair of
+speakers connected to the rear panel and headphones in the front panel).
+
+--=20
+WBR, wRAR
+
+--FCuugMFkClbJLl1L
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iQEcBAEBCAAGBQJM7tKDAAoJEOih81koZvPBMOMH/1gyvCfqG4XOv6OR0DXtTSaS
+UA5q87SKRKYrWaPNB8VtutQ6feAwO//tBxHos0grtuD1OTKcDyktMZcmSWdeT17h
+TE33Nom/ynQeZ1OLMiJKV9j0/3MGsH6wDnTClVqUHL5hVaIjDSMCFHGWDxBW0voE
+Kylpa1PBouykl8x03fPCZ8+uX748L/+ZkmNYpW2Yx1h4YExmaIsSPKs3jkq+l8+X
+suMmS6GZnKRMOT03Qe3eA03WHNPO89CJMvdl1YZctvDxPPW3gBF3vK0eSKhnO1i3
+y9/Zb+4C0aYpxvkj5glguLWYlcAPYxfDXpt5Z+VzTgyiy/UGUlO8SDLF5mo/REU=
+=+vo2
+-----END PGP SIGNATURE-----
+
+--FCuugMFkClbJLl1L--
+
+--===============7784965840126915246==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============7784965840126915246==--
