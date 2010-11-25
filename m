@@ -1,13 +1,19 @@
-From: Andrey Rahmatullin <wrar@wrar.name>
-Subject: [BISECTED] 2.6.36 regression for ALC892
-Date: Fri, 26 Nov 2010 02:18:03 +0500
-Message-ID: <20101125211803.GA4236@belkar.wrar.name>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC don't apply] ASoC: Add support for optional
+ auxiliary dailess codecs
+Date: Thu, 25 Nov 2010 21:32:54 +0000
+Message-ID: <20101125213145.GB25162@opensource.wolfsonmicro.com>
+References: <1290700058-9270-1-git-send-email-jhnikula@gmail.com>
+	<1290712703.3302.41.camel@odin>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7784965840126915246=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from haley.wrar.name (wrar.name [109.74.195.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id E857310397A
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 22:18:13 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3D8D4103988
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 22:32:46 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1290712703.3302.41.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,62 +23,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Nov 25, 2010 at 07:18:23PM +0000, Liam Girdwood wrote:
+> On Thu, 2010-11-25 at 17:47 +0200, Jarkko Nikula wrote:
 
---===============7784965840126915246==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
-Content-Disposition: inline
+> > +	struct snd_soc_aux_dev *aux_dev;
+> > +	int num_aux_devs;
+> > +	struct snd_soc_pcm_runtime *rtd_aux;
+> > +	int num_aux_rtd;
 
+> Could we not just make this a new component type and have a list of aux
+> devices ?
 
---FCuugMFkClbJLl1L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'd certainly rather we didn't have to deal with the PCM runtime data
+since obviously the main feature of these things is that there's no PCM
+involved.  Need to review this properly to remind myself why we're doing
+this...
 
-Hello. I have an Intel H55 motherboard (ASUS P7H55-M PRO) with ALC892
-sound codec and a 3.5" front panel which doesn't support newer HDA pinout.
-So the panel is connected in "AC97" mode and this mode is set in the BIOS
-setup. In 2.6.35 and earlier the panel's headphones jack was working. Now
-it isn't. I've bisected this down to
-ce503f38bdb59c9175a9076215a3ba579fad4e64 (which is present in 2.6.36),
-reverting it helps. I've got "Too many connections" messages without this
-commit, indeed, but I had no problems (though I use only a pair of
-speakers connected to the rear panel and headphones in the front panel).
+> > +	/* find CODEC from registered CODECs*/
+> > +	list_for_each_entry(codec, &codec_list, list) {
+> > +		if (!strcmp(codec->name, aux_dev->codec_name)) {
+> > +			if (codec->probed) {
+> > +				dev_err(codec->dev,
+> > +					"asoc: codec already probed");
+> > +				ret = -EBUSY;
+> > +				goto out;
+> > +			}
+> > +			break;
+> > +		}
+> > +	}
 
---=20
-WBR, wRAR
+> Why do aux devices need to be coupled with CODECs here ? 
 
---FCuugMFkClbJLl1L
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+The way we've got things set up currently the CODEC isn't really just a
+CODEC, it's got a bunch of other random services which are more generic
+chip services associated with it like the register cache and the bias
+management.  There's so much overlap between the devices that I'm not
+sure that it's really worth splitting the types up too much at the root
+level (CODEC is pretty much a superclass that has everything on it but
+DMA).
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iQEcBAEBCAAGBQJM7tKDAAoJEOih81koZvPBMOMH/1gyvCfqG4XOv6OR0DXtTSaS
-UA5q87SKRKYrWaPNB8VtutQ6feAwO//tBxHos0grtuD1OTKcDyktMZcmSWdeT17h
-TE33Nom/ynQeZ1OLMiJKV9j0/3MGsH6wDnTClVqUHL5hVaIjDSMCFHGWDxBW0voE
-Kylpa1PBouykl8x03fPCZ8+uX748L/+ZkmNYpW2Yx1h4YExmaIsSPKs3jkq+l8+X
-suMmS6GZnKRMOT03Qe3eA03WHNPO89CJMvdl1YZctvDxPPW3gBF3vK0eSKhnO1i3
-y9/Zb+4C0aYpxvkj5glguLWYlcAPYxfDXpt5Z+VzTgyiy/UGUlO8SDLF5mo/REU=
-=+vo2
------END PGP SIGNATURE-----
-
---FCuugMFkClbJLl1L--
-
---===============7784965840126915246==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============7784965840126915246==--
+Given how widely used snd_soc_codec is I'm not sure it's worth fixing
+the naming thing here, especially since 99% of the time the device is
+actually a CODEC.
