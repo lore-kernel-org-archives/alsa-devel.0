@@ -1,44 +1,66 @@
-From: Paul Walmsley <paul@pwsan.com>
-Subject: Re: [PATCH 2.6.37-rc1] ASoC: OMAP: fix OMAP1 compilation problem
-Date: Thu, 25 Nov 2010 10:45:19 -0700 (MST)
-Message-ID: <alpine.DEB.2.00.1011251043400.20215@utopia.booyaka.com>
-References: <201011021550.34885.jkrzyszt@tis.icnet.pl> <20101124235342.GC31536@atomide.com> <20101125090201.256972a4.jhnikula@gmail.com> <201011251347.44912.jkrzyszt@tis.icnet.pl>
+From: Kyle McMartin <kyle@mcmartin.ca>
+Subject: [PATCH] ALSA: patch_realtek: handle unset external amp bits
+Date: Thu, 25 Nov 2010 13:57:30 -0500
+Message-ID: <20101125185730.GK22651@bombadil.infradead.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <201011251347.44912.jkrzyszt@tis.icnet.pl>
-Sender: linux-omap-owner@vger.kernel.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: Jarkko Nikula <jhnikula@gmail.com>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 25 Nov 2010, Janusz Krzysztofik wrote:
+From: Kyle McMartin <kyle@redhat.com>
 
-> Thursday 25 November 2010 08:02:01 Jarkko Nikula wrote:
-> > On Wed, 24 Nov 2010 15:53:42 -0800
-> >
-> > Tony Lindgren <tony@atomide.com> wrote:
-> > > * Tony Lindgren <tony@atomide.com> [101124 15:25]:
-> > > > Anyways, Paul's patch should be merged during the -rc cycle
-> > > > because it is currently blocking Amstrad delta being built:
-> > > >
-> > > > http://armlinux.simtec.co.uk/kautobuild/
-> > >
-> > > Turns out I'm several hours behind.. The build is
-> > > working with Janusz commit 233538501f707b0176f09af7039fec1e3fcac6e7
-> > > now in mainline.
-> > >
-> > > I guess no need to merge Paul's fix then?
-> >
-> > Not necessary I think if compilers are happy with Janusz's fix. If not,
-> > then very strong reasong to start looking for platform data solution
-> > as soon as possible :-)
-> 
-> Fine with me if you prefere reverting my changes and using Paul's fix as a 
-> better short term solution instead.
+Commit ef5dbbcc removes the default initialization of init_amp to
+ALC_INIT_DEFAULT, with the justification that it should be set by
+alc_subsystem_id, which contains a switch case:
 
-And I'm fine with Janusz's patch.  My patch was written in response to 
-Mark's comments about compilers...
+        tmp = (ass & 0x38) >> 3;        /* external Amp control */
+        switch (tmp) {
+        case 1:
+	...
+	case 5:
+	}
 
+Which handles values 1,3,7 for GPIOs, or 5 to set _DEFAULT.
 
-- Paul
+But... what if it's 0? :)
+
+I got a bug report this morning from a user whose sound had broken
+between 2.6.34 and 2.6.35, and I bisected it down to this commit.
+
+[ 32.366183] ALSA sound/pci/hda/patch_realtek.c:1374: realtek: Enabling
+init ASM_ID=0x8a05 CODEC_ID=10ec0888
+
+(0x8a05 & 0x38) >> 3 = 0;
+
+But otherwise the SKU looks fine (since if I revert that commit, it
+seems to work correctly.)
+
+I think the best thing to do would be to either restore the 'redundant'
+default initialization, or quirk it.
+
+https://bugzilla.redhat.com/show_bug.cgi?id=657388
+
+Signed-off-by: Kyle McMartin <kyle@redhat.com>
+---
+    Revert "ALSA: hda - Remove superfluous external amp setup for ALC888"
+    
+    This reverts commit ef5dbbccbbfa7d2211fa8efcc095a9f4a7912dda.
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 76c4968..b6ba1d5 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -10604,6 +10604,9 @@ static int patch_alc882(struct hda_codec *codec)
+ 	spec->stream_digital_playback = &alc882_pcm_digital_playback;
+ 	spec->stream_digital_capture = &alc882_pcm_digital_capture;
+ 
++	if (codec->vendor_id == 0x10ec0888)
++		spec->init_amp = ALC_INIT_DEFAULT; /* always initialize */
++
+ 	if (!spec->adc_nids && spec->input_mux) {
+ 		int i, j;
+ 		spec->num_adc_nids = 0;
