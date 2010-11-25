@@ -1,42 +1,37 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH 2.6.37-rc1] ASoC: OMAP: fix OMAP1 compilation problem
-Date: Thu, 25 Nov 2010 09:02:01 +0200
-Message-ID: <20101125090201.256972a4.jhnikula@gmail.com>
-References: <201011021550.34885.jkrzyszt@tis.icnet.pl>
-	<alpine.DEB.2.00.1011221745490.20215@utopia.booyaka.com>
-	<20101123092630.7267a7ab.jhnikula@gmail.com>
-	<20101124233511.GZ31536@atomide.com>
-	<20101124235342.GC31536@atomide.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH 1/8] ASoC: efika-audio-fabric: fix resource leak in
+	efika_fabric_init error path
+Date: Thu, 25 Nov 2010 15:07:25 +0800
+Message-ID: <1290668845.30158.8.camel@mola>
+References: <1290668785.30158.7.camel@mola>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20101124235342.GC31536@atomide.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: Paul Walmsley <paul@pwsan.com>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, e3-hacking@earth.li
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1290668785.30158.7.camel@mola>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel <linux-kernel@vger.kernel.org>
+Cc: Jon Smirl <jonsmirl@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 24 Nov 2010 15:53:42 -0800
-Tony Lindgren <tony@atomide.com> wrote:
+Add missing platform_device_put() if platform_device_add() failed.
 
-> * Tony Lindgren <tony@atomide.com> [101124 15:25]:
-> > 
-> > Anyways, Paul's patch should be merged during the -rc cycle
-> > because it is currently blocking Amstrad delta being built:
-> > 
-> > http://armlinux.simtec.co.uk/kautobuild/
-> 
-> Turns out I'm several hours behind.. The build is
-> working with Janusz commit 233538501f707b0176f09af7039fec1e3fcac6e7
-> now in mainline.
-> 
-> I guess no need to merge Paul's fix then?
-> 
-Not necessary I think if compilers are happy with Janusz's fix. If not,
-then very strong reasong to start looking for platform data solution
-as soon as possible :-)
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/fsl/efika-audio-fabric.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-
+diff --git a/sound/soc/fsl/efika-audio-fabric.c b/sound/soc/fsl/efika-audio-fabric.c
+index 53251e6..108b5d8 100644
+--- a/sound/soc/fsl/efika-audio-fabric.c
++++ b/sound/soc/fsl/efika-audio-fabric.c
+@@ -76,6 +76,7 @@ static __init int efika_fabric_init(void)
+ 	rc = platform_device_add(pdev);
+ 	if (rc) {
+ 		pr_err("efika_fabric_init: platform_device_add() failed\n");
++		platform_device_put(pdev);
+ 		return -ENODEV;
+ 	}
+ 	return 0;
 -- 
-Jarkko
+1.7.2
