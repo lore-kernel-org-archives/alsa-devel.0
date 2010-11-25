@@ -1,41 +1,42 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 0/8] ASoC: fix resource leak in error paths
-Date: Thu, 25 Nov 2010 15:06:25 +0800
-Message-ID: <1290668785.30158.7.camel@mola>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH 2.6.37-rc1] ASoC: OMAP: fix OMAP1 compilation problem
+Date: Thu, 25 Nov 2010 09:02:01 +0200
+Message-ID: <20101125090201.256972a4.jhnikula@gmail.com>
+References: <201011021550.34885.jkrzyszt@tis.icnet.pl>
+	<alpine.DEB.2.00.1011221745490.20215@utopia.booyaka.com>
+	<20101123092630.7267a7ab.jhnikula@gmail.com>
+	<20101124233511.GZ31536@atomide.com>
+	<20101124235342.GC31536@atomide.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel <linux-kernel@vger.kernel.org>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Jon Smirl <jonsmirl@gmail.com>, Sergey Lapin <slapin@ossfans.org>, Sedji Gaouaou <sedji.gaouaou@atmel.com>, Jaswinder Singh Brar <jassi.brar@samsung.com>, Mika Westerberg <mika.westerberg@iki.fi>, Sascha Hauer <s.hauer@pengutronix.de>
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20101124235342.GC31536@atomide.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: Paul Walmsley <paul@pwsan.com>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, e3-hacking@earth.li
 List-Id: alsa-devel@alsa-project.org
 
-This serial of patches fix resource leak in error paths.
+On Wed, 24 Nov 2010 15:53:42 -0800
+Tony Lindgren <tony@atomide.com> wrote:
 
-Axel Lin (8):
-  ASoC: efika-audio-fabric: fix resource leak in efika_fabric_init
-    error path
-  ASoC: pcm030-audio-fabric: fix resource leak in pcm030_fabric_init
-    error path
-  ASoC: snd-soc-afeb9260: remove unneeded platform_device_del in error
-    path
-  ASoC: sam9g20_wm8731: fix resource leak in at91sam9g20ek_init error
-    path
-  ASoC: smdk_wm9713: fix resource leak in smdk_init error path
-  ASoC: simone: fix resource leak in simone_init error path
-  ASoC: imx-ssi: fix resource leak
-  ASoC: phycore-ac97: fix resource leak
+> * Tony Lindgren <tony@atomide.com> [101124 15:25]:
+> > 
+> > Anyways, Paul's patch should be merged during the -rc cycle
+> > because it is currently blocking Amstrad delta being built:
+> > 
+> > http://armlinux.simtec.co.uk/kautobuild/
+> 
+> Turns out I'm several hours behind.. The build is
+> working with Janusz commit 233538501f707b0176f09af7039fec1e3fcac6e7
+> now in mainline.
+> 
+> I guess no need to merge Paul's fix then?
+> 
+Not necessary I think if compilers are happy with Janusz's fix. If not,
+then very strong reasong to start looking for platform data solution
+as soon as possible :-)
 
- sound/soc/atmel/sam9g20_wm8731.c    |    5 ++++-
- sound/soc/atmel/snd-soc-afeb9260.c  |    1 -
- sound/soc/ep93xx/simone.c           |   18 ++++++++++--------
- sound/soc/fsl/efika-audio-fabric.c  |    1 +
- sound/soc/fsl/pcm030-audio-fabric.c |    1 +
- sound/soc/imx/imx-ssi.c             |   15 +++++++++++----
- sound/soc/imx/phycore-ac97.c        |   28 +++++++++++++++++++++-------
- sound/soc/samsung/smdk_wm9713.c     |   17 ++++++++++-------
- 8 files changed, 58 insertions(+), 28 deletions(-)
 
 -- 
-1.7.2
+Jarkko
