@@ -1,87 +1,41 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 8/8] ASoC: phycore-ac97: fix resource leak
-Date: Thu, 25 Nov 2010 15:14:03 +0800
-Message-ID: <1290669243.30158.22.camel@mola>
-References: <1290668785.30158.7.camel@mola>
+From: =?UTF-8?q?Ozan=20=C3=87a=C4=9Flayan?= <ozan@pardus.org.tr>
+Subject: [PATCH] configure.in: Fix variable name
+Date: Thu, 25 Nov 2010 09:36:37 +0200
+Message-ID: <1290670597-25453-1-git-send-email-ozan@pardus.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1290668785.30158.7.camel@mola>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel <linux-kernel@vger.kernel.org>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lider.pardus.org.tr (lider.pardus.org.tr [193.140.100.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 55CA2103B9D
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 08:40:52 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fix imx_phycore_init() error path and imx_phycore_exit() to properly free
-allocated resources.
-
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/imx/phycore-ac97.c |   28 +++++++++++++++++++++-------
- 1 files changed, 21 insertions(+), 7 deletions(-)
-
-diff --git a/sound/soc/imx/phycore-ac97.c b/sound/soc/imx/phycore-ac97.c
-index db157f7..a7deb5c 100644
---- a/sound/soc/imx/phycore-ac97.c
-+++ b/sound/soc/imx/phycore-ac97.c
-@@ -42,6 +42,7 @@ static struct snd_soc_card imx_phycore = {
- 	.num_links	= ARRAY_SIZE(imx_phycore_dai_ac97),
- };
- 
-+static struct platform_device *imx_phycore_snd_ac97_device;
- static struct platform_device *imx_phycore_snd_device;
- 
- static int __init imx_phycore_init(void)
-@@ -52,29 +53,42 @@ static int __init imx_phycore_init(void)
- 		/* return happy. We might run on a totally different machine */
- 		return 0;
- 
--	imx_phycore_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!imx_phycore_snd_device)
-+	imx_phycore_snd_ac97_device = platform_device_alloc("soc-audio", -1);
-+	if (!imx_phycore_snd_ac97_device)
- 		return -ENOMEM;
- 
--	platform_set_drvdata(imx_phycore_snd_device, &imx_phycore);
--	ret = platform_device_add(imx_phycore_snd_device);
-+	platform_set_drvdata(imx_phycore_snd_ac97_device, &imx_phycore);
-+	ret = platform_device_add(imx_phycore_snd_ac97_device);
-+	if (ret)
-+		goto fail1;
- 
- 	imx_phycore_snd_device = platform_device_alloc("wm9712-codec", -1);
--	if (!imx_phycore_snd_device)
--		return -ENOMEM;
-+	if (!imx_phycore_snd_device) {
-+		ret = -ENOMEM;
-+		goto fail2;
-+	}
- 	ret = platform_device_add(imx_phycore_snd_device);
- 
- 	if (ret) {
- 		printk(KERN_ERR "ASoC: Platform device allocation failed\n");
--		platform_device_put(imx_phycore_snd_device);
-+		goto fail3;
- 	}
- 
-+	return 0;
-+
-+fail3:
-+	platform_device_put(imx_phycore_snd_device);
-+fail2:
-+	platform_device_del(imx_phycore_snd_ac97_device);
-+fail1:
-+	platform_device_put(imx_phycore_snd_ac97_device);
- 	return ret;
- }
- 
- static void __exit imx_phycore_exit(void)
- {
- 	platform_device_unregister(imx_phycore_snd_device);
-+	platform_device_unregister(imx_phycore_snd_ac97_device);
- }
- 
- late_initcall(imx_phycore_init);
--- 
-1.7.2
+Rml4IHZhcmlhYmxlIG5hbWUgZm9yIC0td2l0aC1hc291bmQtc3RhdGUtZGlyIGFzIGN1cnJlbnRs
+eSB3ZSBoYXZlCnRvIHBhc3MgLS13aXRoLUFTT1VORF9TVEFURV9ESVI9IHdoaWNoIGlzIHdyb25n
+IGFuZCBpbmNvbnNpc3RlbnQgd2l0aAp0aGUgb3RoZXIgc3dpdGNoZXMuCgpTaWduZWQtb2ZmLWJ5
+OiBPemFuIMOHYcSfbGF5YW4gPG96YW5AcGFyZHVzLm9yZy50cj4KLS0tCiBjb25maWd1cmUuaW4g
+fCAgICAyICstCiAxIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbnMo
+LSkKCmRpZmYgLS1naXQgYS9jb25maWd1cmUuaW4gYi9jb25maWd1cmUuaW4KaW5kZXggOTRhMmIx
+Ny4uNzc3NzhkYSAxMDA2NDQKLS0tIGEvY29uZmlndXJlLmluCisrKyBiL2NvbmZpZ3VyZS5pbgpA
+QCAtMjg5LDcgKzI4OSw3IEBAIGlmIHRlc3QgIngkd2l0aF9zeXN0ZW1kc3lzdGVtdW5pdGRpciIg
+IT0geG5vOyB0aGVuCiBmaQogQU1fQ09ORElUSU9OQUwoSEFWRV9TWVNURU1ELCBbdGVzdCAtbiAi
+JHdpdGhfc3lzdGVtZHN5c3RlbXVuaXRkaXIiIC1hICJ4JHdpdGhfc3lzdGVtZHN5c3RlbXVuaXRk
+aXIiICE9IHhubyBdKQogCi1BQ19BUkdfV0lUSChBU09VTkRfU1RBVEVfRElSLAorQUNfQVJHX1dJ
+VEgoW2Fzb3VuZC1zdGF0ZS1kaXJdLAogICAgICAgICBBU19IRUxQX1NUUklORyhbLS13aXRoLWFz
+b3VuZC1zdGF0ZS1kaXI9RElSXSwgW0RpcmVjdG9yeSB0byBwbGFjZSBhc291bmQuc3RhdGUgZmls
+ZSBpbl0pLAogICAgICAgICBbQVNPVU5EX1NUQVRFX0RJUj0iJHdpdGh2YWwiXSwKICAgICAgICAg
+W0FTT1VORF9TVEFURV9ESVI9Ii92YXIvbGliL2Fsc2EiXSkKLS0gCjEuNy4yLjEKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
