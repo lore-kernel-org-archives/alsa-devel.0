@@ -1,18 +1,39 @@
-From: "Bandarupalli, Sailaja" <sailaja.bandarupalli@intel.com>
-Subject: Re: [PATCH 1/5] [RFC]intel_hdmi_audio:include header
-Date: Thu, 25 Nov 2010 10:36:49 +0530
-Message-ID: <4F93CB265C2E2E42A19CD9E994A1FA5D060B039E7E@bgsmsx501.gar.corp.intel.com>
-References: <1290433186-31628-1-git-send-email-ramesh.babu@intel.com>
-	<s5h62vnnkly.wl%tiwai@suse.de>
+From: Mohammad Bahathir Hashim <bahathir@gmail.com>
+Subject: Re: ALSA Multichannel through HDMI
+Date: Thu, 25 Nov 2010 05:10:34 +0000 (UTC)
+Message-ID: <ickr4a$2vl$1@dough.gmane.org>
+References: <20100112045102.GA29735@localhost>
+	<eb9000ab1001112311o4bcf98dp2b616d1afffec9e0@mail.gmail.com>
+	<20100112132140.GA7647@localhost>
+	<eb9000ab1001120828l6829c6b1g30916b872a0467f7@mail.gmail.com>
+	<20100113010942.GA6435@localhost>
+	<eb9000ab1001121732y4212e6m9596f68e24d6c226@mail.gmail.com>
+	<20100113014550.GA10184@localhost>
+	<eb9000ab1001122048s1ac0d9c3n130692ba83dd53d1@mail.gmail.com>
+	<20100113045238.GB26275@localhost>
+	<eb9000ab1001122055s54bc6697t6103def1e8ae64ae@mail.gmail.com>
+	<20100113050254.GA28475@localhost>
+	<AANLkTim8zHRTc0F2CcfoXtxDkH2kpYajCuheo7GoQ4zW@mail.gmail.com>
+	<ickmvo$kkf$1@dough.gmane.org>
+	<AANLkTi=d7RHy4KgSS7yB+deAq=JnFabbA9qfwH8WQCG2@mail.gmail.com>
+Reply-To: Mohammad Bahathir Hashim <bahathir@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 085E21037EA
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 06:07:30 +0100 (CET)
-In-Reply-To: <s5h62vnnkly.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 141B71037EA
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 06:10:48 +0100 (CET)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1PLU6Z-0004NV-Oq
+	for alsa-devel@alsa-project.org; Thu, 25 Nov 2010 06:10:47 +0100
+Received: from 203.106.17.237 ([203.106.17.237])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 06:10:47 +0100
+Received: from bahathir by 203.106.17.237 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 06:10:47 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,60 +43,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "Wu, Fengguang" <fengguang.wu@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Babu,
-	Ramesh" <ramesh.babu@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-> > +#include <linux/types.h>
-> > +#include <sound/initval.h>
-> 
-> Usually this header isn't needed in the global header file.
-> 
-
-We will remove un necessary global header files.
-
-> > +#include "../../../drivers/staging/mrst/drv/mdfld_hdmi_audio_if.h"
-> > +#include "../../../drivers/staging/mrst/drv/psb_intel_hdmi.h"
-> 
-> This is bad...  If these files are really used over several
-> subsystems, they should be put somewhere in a better public place.
+On 2010-11-25, John Ettedgui <john.ettedgui@gmail.com> wrote:
+> On Wed, Nov 24, 2010 at 7:59 PM, Mohammad Bahathir Hashim
+><bahathir@gmail.com> wrote:
+>> On 2010-11-24, John Ettedgui <john.ettedgui@gmail.com> wrote:
+>>> On Tue, Jan 12, 2010 at 9:02 PM, Wu Fengguang <fengguang.wu@intel.com> wrote:
+>>> I am sorry to resurrect this thread after so long, but I still have
+>>> not been able to get anywhere.
+>>> Also it just came to my attention that if my receiver always sees the
+>>> hdmi connection as stereo (apart from when using ac3/dts passthrough)
+>>> channel remapping is not the solution, but somehow something else is
+>>> messed up.
+>>>
+>>> I think I should try some options in modprobe.conf for snd-hda-intel
+>>> but I am not sure which ones, and from all the examples I can find on
+>>> the web, it seems none of them are talking about a radeon hdmi
+>>> connection...
+>>>
+>>> So I'm asking for advice here again :)
+>>>
+>>> Thanks!
+>>> _______________________________________________
+>>> Alsa-devel mailing list
+>>> Alsa-devel@alsa-project.org
+>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>>
+>>
+>> Hi, I think there are developments in ffmpeg projects, to support
+>> multichannel passthrough through HDMI, ALSO only provides infra and
+>> interface to the HDMI. The passthrough decoding is handled by apps.
+>>
+>>
+>> Here is the snippet from the ffmpeg's 'svn log'
+>> ------------------------------------------------------------------------
+>> r25760 | cehoyos | 2010-11-17 20:22:59 +0800 (Wed, 17 Nov 2010) | 6 lines
+>>
+>> Add support for IEC 61937 ("SPDIF") encapsulation for E-AC-3.
+>> Only works via HDMI.
+>>
+>> Patch by Anssi Hannula (anssi d hannula a iki d fi), based on some work
+>> by myself.
+>> ------------------------------------------------------------------------
+>>
+>> You can search in ffmpeg's development's mailing list for more information.
+>>
+>> Thank you.
+>>
+> Hey Mohammad,
 >
+> I'm actually trying to get a 5.1 setup working without passthrough, if
+> I use mplayer with passthrough my receiver behaves just fine, but I am
+> trying to send the 6 channels from the computer.
+>
+> I was actually told that the current ALSA driver for radeon's hdmi
+> does not support more than 2 channels, and that would explain why I'm
+> getting this behavior. Is that true though?
+>
+>
+> Thanks!
+> John
 
-Currently display driver code is in the staging area. Can we move
-header files to include folder?
 
-> 
-> > +/**
-> > + * union aud_cfg - Audio configuration offset - 69000
-> > + *
-> > + * @cfg_regx: individual register bits
-> > + * @cfg_regval: full register value
-> > + *
-> > + * */
-> > +union aud_cfg {
-> > +	struct {
-> > +		u32 aud_en:1;
-> > +		u32 layout:1;
-> > +		u32 fmt:2;
-> > +		u32 num_ch:2;
-> > +		u32 rsvd0:1;
-> > +		u32 set:1;
-> > +		u32 flat:1;
-> > +		u32 val_bit:1;
-> > +		u32 user_bit:1;
-> > +		u32 underrun:1;
-> > +		u32 rsvd1:20;
-> > +	} cfg_regx;
-> > +	u32 cfg_regval;
-> > +};
-> 
-> In general, better to avoid bit fields if it's used for the data
-> transfer.  The bit-fields are never portable.
-> 
-These bit fields are used for programming the HDMI controller subsystem.
+Currently, I don't have HT AVR with HDMI, but for normal SPDIF through
+TOSLINK will stream any standard 5.1 DTS/AC3 raw bitstream to my cheap
+AVR (Yamaha RX-V361) without any problem.
 
-Thanks,
-Sailaja and Ramesh.
+$ mplayer -ao alsa:device=spdif -ac hwdts,hwac3, foo.mkv
+
+It is not about how many channels that HDMI can support, but how to
+pass the bitstream correctly to the receiver.  As we can see in this
+thread, the support for higher bandwidth/format of the DTS/AC3 format
+is currently being developed by Anssi Hannula. 
+
+http://article.gmane.org/gmane.comp.video.ffmpeg.devel/121073/
+
+Eventually it will be incorprated in MPlayer-svn.
+
+Thank you.
