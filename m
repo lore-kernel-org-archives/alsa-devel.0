@@ -1,43 +1,40 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: neo1973_gta02_wm8753: fix wrong parameter for
-	snd_soc_register_dai and snd_soc_unregister_dai
-Date: Thu, 25 Nov 2010 16:50:56 +0800
-Message-ID: <1290675056.1928.1.camel@mola>
+Subject: [PATCH] ASoC: Call snd_soc_unregister_dais instead of
+	snd_soc_unregister_dai in sh4_soc_dai_remove
+Date: Thu, 25 Nov 2010 17:23:55 +0800
+Message-ID: <1290677035.1928.3.camel@mola>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel <linux-kernel@vger.kernel.org>
-Cc: Graeme Gregory <graeme@openmoko.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Cc: Manuel Lauss <mano@roarinelk.homelinux.net>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
+
+We call snd_soc_register_dais() in sh4_soc_dai_probe(),
+thus we should call snd_soc_unregister_dais() in sh4_soc_dai_remove().
+
+Otherwise, we got "too many arguments to function 'snd_soc_unregister_dai'"
+error message.
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/samsung/neo1973_gta02_wm8753.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sh/ssi.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/samsung/neo1973_gta02_wm8753.c b/sound/soc/samsung/neo1973_gta02_wm8753.c
-index 920e8d1..8c65b63 100644
---- a/sound/soc/samsung/neo1973_gta02_wm8753.c
-+++ b/sound/soc/samsung/neo1973_gta02_wm8753.c
-@@ -438,7 +438,7 @@ static int __init neo1973_gta02_init(void)
- 		return -ENOMEM;
+diff --git a/sound/soc/sh/ssi.c b/sound/soc/sh/ssi.c
+index 40bbdf1..05192d9 100644
+--- a/sound/soc/sh/ssi.c
++++ b/sound/soc/sh/ssi.c
+@@ -387,7 +387,7 @@ static int __devinit sh4_soc_dai_probe(struct platform_device *pdev)
  
- 	/* register bluetooth DAI here */
--	ret = snd_soc_register_dai(&neo1973_gta02_snd_device->dev, -1, &bt_dai);
-+	ret = snd_soc_register_dai(&neo1973_gta02_snd_device->dev, &bt_dai);
- 	if (ret) {
- 		platform_device_put(neo1973_gta02_snd_device);
- 		return ret;
-@@ -491,7 +491,7 @@ module_init(neo1973_gta02_init);
- 
- static void __exit neo1973_gta02_exit(void)
+ static int __devexit sh4_soc_dai_remove(struct platform_device *pdev)
  {
--	snd_soc_unregister_dai(&neo1973_gta02_snd_device->dev, -1);
-+	snd_soc_unregister_dai(&neo1973_gta02_snd_device->dev);
- 	platform_device_unregister(neo1973_gta02_snd_device);
- 	gpio_free(GTA02_GPIO_HP_IN);
- 	gpio_free(GTA02_GPIO_AMP_SHUT);
+-	snd_soc_unregister_dai(&pdev->dev, ARRAY_SIZE(sh4_ssi_dai));
++	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(sh4_ssi_dai));
+ 	return 0;
+ }
+ 
 -- 
 1.7.2
