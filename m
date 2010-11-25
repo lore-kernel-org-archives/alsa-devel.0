@@ -1,18 +1,19 @@
 From: "Bandarupalli, Sailaja" <sailaja.bandarupalli@intel.com>
-Subject: Re: [PATCH 2/5] [RFC]intel_hdmi_audio: interface	module
-Date: Thu, 25 Nov 2010 11:24:37 +0530
-Message-ID: <4F93CB265C2E2E42A19CD9E994A1FA5D060B039F0A@bgsmsx501.gar.corp.intel.com>
+Subject: Re: [PATCH 1/5] [RFC]intel_hdmi_audio:include header
+Date: Thu, 25 Nov 2010 11:37:58 +0530
+Message-ID: <4F93CB265C2E2E42A19CD9E994A1FA5D060B039F28@bgsmsx501.gar.corp.intel.com>
 References: <1290433186-31628-1-git-send-email-ramesh.babu@intel.com>
-	<1290433186-31628-2-git-send-email-ramesh.babu@intel.com>
-	<20101122135812.GD15156@sirena.org.uk> <s5h8w0jnlby.wl%tiwai@suse.de>
+	<s5h62vnnkly.wl%tiwai@suse.de>
+	<4F93CB265C2E2E42A19CD9E994A1FA5D060B039E7E@bgsmsx501.gar.corp.intel.com>
+	<s5hwro2lzvp.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id D9C7A103B8A
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 06:55:19 +0100 (CET)
-In-Reply-To: <s5h8w0jnlby.wl%tiwai@suse.de>
+	by alsa0.perex.cz (Postfix) with ESMTP id 4DD34103B96
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 07:08:33 +0100 (CET)
+In-Reply-To: <s5hwro2lzvp.wl%tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,37 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "Wu, Fengguang" <fengguang.wu@intel.com>, "Babu,
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Wu, Fengguang" <fengguang.wu@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Babu,
 	Ramesh" <ramesh.babu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
- 
-> > > +/**
-> > > + * had_hot_plug - to create sound card instance for HDMI audio
-> playabck
-> > > + *
-> > > + *
-> > > + * This function is called when the hdmi cable is plugged in. This
-> function
-> > > + * creates and registers the sound card with ALSA
-> > > + */
-> > > +static int had_hot_plug(void)
-> > > +{
-> >
-> > It would seem more natural for the HDMI device to be created and
-> > instatiated via the normal Linux device model - when a HDMI
-> connection
-> > is detected the thing doing the detection creates and registers a new
-> > device of some kind which the driver core then binds to a separate
-> > driver.
-> 
-> Yeah, the driver structure here is somehow wacky, although it's not
-> to hard to trace.
-> 
-> 
 
-Agree, we will work on this and revert back to you.
-
-Thanks,
-Sailaja & Ramesh.
+> > > > +/**
+> > > > + * union aud_cfg - Audio configuration offset - 69000
+> > > > + *
+> > > > + * @cfg_regx: individual register bits
+> > > > + * @cfg_regval: full register value
+> > > > + *
+> > > > + * */
+> > > > +union aud_cfg {
+> > > > +	struct {
+> > > > +		u32 aud_en:1;
+> > > > +		u32 layout:1;
+> > > > +		u32 fmt:2;
+> > > > +		u32 num_ch:2;
+> > > > +		u32 rsvd0:1;
+> > > > +		u32 set:1;
+> > > > +		u32 flat:1;
+> > > > +		u32 val_bit:1;
+> > > > +		u32 user_bit:1;
+> > > > +		u32 underrun:1;
+> > > > +		u32 rsvd1:20;
+> > > > +	} cfg_regx;
+> > > > +	u32 cfg_regval;
+> > > > +};
+> > >
+> > > In general, better to avoid bit fields if it's used for the data
+> > > transfer.  The bit-fields are never portable.
+> > >
+> > These bit fields are used for programming the HDMI controller
+> subsystem.
+> 
+> So, these bit-fields data aren't exposed to the hardware as is, but
+> used only between the hdmi audio and the controller drivers?
+> (But then, why these have to be defined in here?)
+> 
+> 
+These bits  fields are used between HDMI audio driver and hardware.
+They are exposed by the hardware as is, and we need to write to 
+specific bits to enable HDMI audio.
