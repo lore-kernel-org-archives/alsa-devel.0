@@ -1,113 +1,70 @@
-From: John Ettedgui <john.ettedgui@gmail.com>
-Subject: Re: ALSA Multichannel through HDMI
-Date: Wed, 24 Nov 2010 21:36:56 -0800
-Message-ID: <AANLkTikVJSnoJMAA2og1aJ2g-_bBxE7c+xVcMAoYtejE@mail.gmail.com>
-References: <20100112045102.GA29735@localhost>
-	<eb9000ab1001112311o4bcf98dp2b616d1afffec9e0@mail.gmail.com>
-	<20100112132140.GA7647@localhost>
-	<eb9000ab1001120828l6829c6b1g30916b872a0467f7@mail.gmail.com>
-	<20100113010942.GA6435@localhost>
-	<eb9000ab1001121732y4212e6m9596f68e24d6c226@mail.gmail.com>
-	<20100113014550.GA10184@localhost>
-	<eb9000ab1001122048s1ac0d9c3n130692ba83dd53d1@mail.gmail.com>
-	<20100113045238.GB26275@localhost>
-	<eb9000ab1001122055s54bc6697t6103def1e8ae64ae@mail.gmail.com>
-	<20100113050254.GA28475@localhost>
-	<AANLkTim8zHRTc0F2CcfoXtxDkH2kpYajCuheo7GoQ4zW@mail.gmail.com>
-	<ickmvo$kkf$1@dough.gmane.org>
-	<AANLkTi=d7RHy4KgSS7yB+deAq=JnFabbA9qfwH8WQCG2@mail.gmail.com>
-	<ickr4a$2vl$1@dough.gmane.org>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: Fix compile error for smartq_wm8987.c
+Date: Thu, 25 Nov 2010 13:43:49 +0800
+Message-ID: <1290663829.30158.5.camel@mola>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
-	[209.85.216.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1272E1037EA
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 06:36:57 +0100 (CET)
-Received: by qyk11 with SMTP id 11so576404qyk.17
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2010 21:36:57 -0800 (PST)
-In-Reply-To: <ickr4a$2vl$1@dough.gmane.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mohammad Bahathir Hashim <bahathir@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel <linux-kernel@vger.kernel.org>
+Cc: Maurus Cuelenaere <mcuelenaere@gmail.com>, Jarkko Nikula <jhnikula@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jassi Brar <jassi.brar@samsung.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBOb3YgMjQsIDIwMTAgYXQgOToxMCBQTSwgTW9oYW1tYWQgQmFoYXRoaXIgSGFzaGlt
-CjxiYWhhdGhpckBnbWFpbC5jb20+IHdyb3RlOgo+IE9uIDIwMTAtMTEtMjUsIEpvaG4gRXR0ZWRn
-dWkgPGpvaG4uZXR0ZWRndWlAZ21haWwuY29tPiB3cm90ZToKPj4gT24gV2VkLCBOb3YgMjQsIDIw
-MTAgYXQgNzo1OSBQTSwgTW9oYW1tYWQgQmFoYXRoaXIgSGFzaGltCj4+PGJhaGF0aGlyQGdtYWls
-LmNvbT4gd3JvdGU6Cj4+PiBPbiAyMDEwLTExLTI0LCBKb2huIEV0dGVkZ3VpIDxqb2huLmV0dGVk
-Z3VpQGdtYWlsLmNvbT4gd3JvdGU6Cj4+Pj4gT24gVHVlLCBKYW4gMTIsIDIwMTAgYXQgOTowMiBQ
-TSwgV3UgRmVuZ2d1YW5nIDxmZW5nZ3Vhbmcud3VAaW50ZWwuY29tPiB3cm90ZToKPj4+PiBJIGFt
-IHNvcnJ5IHRvIHJlc3VycmVjdCB0aGlzIHRocmVhZCBhZnRlciBzbyBsb25nLCBidXQgSSBzdGls
-bCBoYXZlCj4+Pj4gbm90IGJlZW4gYWJsZSB0byBnZXQgYW55d2hlcmUuCj4+Pj4gQWxzbyBpdCBq
-dXN0IGNhbWUgdG8gbXkgYXR0ZW50aW9uIHRoYXQgaWYgbXkgcmVjZWl2ZXIgYWx3YXlzIHNlZXMg
-dGhlCj4+Pj4gaGRtaSBjb25uZWN0aW9uIGFzIHN0ZXJlbyAoYXBhcnQgZnJvbSB3aGVuIHVzaW5n
-IGFjMy9kdHMgcGFzc3Rocm91Z2gpCj4+Pj4gY2hhbm5lbCByZW1hcHBpbmcgaXMgbm90IHRoZSBz
-b2x1dGlvbiwgYnV0IHNvbWVob3cgc29tZXRoaW5nIGVsc2UgaXMKPj4+PiBtZXNzZWQgdXAuCj4+
-Pj4KPj4+PiBJIHRoaW5rIEkgc2hvdWxkIHRyeSBzb21lIG9wdGlvbnMgaW4gbW9kcHJvYmUuY29u
-ZiBmb3Igc25kLWhkYS1pbnRlbAo+Pj4+IGJ1dCBJIGFtIG5vdCBzdXJlIHdoaWNoIG9uZXMsIGFu
-ZCBmcm9tIGFsbCB0aGUgZXhhbXBsZXMgSSBjYW4gZmluZCBvbgo+Pj4+IHRoZSB3ZWIsIGl0IHNl
-ZW1zIG5vbmUgb2YgdGhlbSBhcmUgdGFsa2luZyBhYm91dCBhIHJhZGVvbiBoZG1pCj4+Pj4gY29u
-bmVjdGlvbi4uLgo+Pj4+Cj4+Pj4gU28gSSdtIGFza2luZyBmb3IgYWR2aWNlIGhlcmUgYWdhaW4g
-OikKPj4+Pgo+Pj4+IFRoYW5rcyEKPj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwo+Pj4+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4+Pj4gQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCj4+Pj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPj4+Cj4+Pgo+Pj4KPj4+IEhpLCBJIHRoaW5r
-IHRoZXJlIGFyZSBkZXZlbG9wbWVudHMgaW4gZmZtcGVnIHByb2plY3RzLCB0byBzdXBwb3J0Cj4+
-PiBtdWx0aWNoYW5uZWwgcGFzc3Rocm91Z2ggdGhyb3VnaCBIRE1JLCBBTFNPIG9ubHkgcHJvdmlk
-ZXMgaW5mcmEgYW5kCj4+PiBpbnRlcmZhY2UgdG8gdGhlIEhETUkuIFRoZSBwYXNzdGhyb3VnaCBk
-ZWNvZGluZyBpcyBoYW5kbGVkIGJ5IGFwcHMuCj4+Pgo+Pj4KPj4+IEhlcmUgaXMgdGhlIHNuaXBw
-ZXQgZnJvbSB0aGUgZmZtcGVnJ3MgJ3N2biBsb2cnCj4+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4+IHIy
-NTc2MCB8IGNlaG95b3MgfCAyMDEwLTExLTE3IDIwOjIyOjU5ICswODAwIChXZWQsIDE3IE5vdiAy
-MDEwKSB8IDYgbGluZXMKPj4+Cj4+PiBBZGQgc3VwcG9ydCBmb3IgSUVDIDYxOTM3ICgiU1BESUYi
-KSBlbmNhcHN1bGF0aW9uIGZvciBFLUFDLTMuCj4+PiBPbmx5IHdvcmtzIHZpYSBIRE1JLgo+Pj4K
-Pj4+IFBhdGNoIGJ5IEFuc3NpIEhhbm51bGEgKGFuc3NpIGQgaGFubnVsYSBhIGlraSBkIGZpKSwg
-YmFzZWQgb24gc29tZSB3b3JrCj4+PiBieSBteXNlbGYuCj4+PiAtLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4+
-Cj4+PiBZb3UgY2FuIHNlYXJjaCBpbiBmZm1wZWcncyBkZXZlbG9wbWVudCdzIG1haWxpbmcgbGlz
-dCBmb3IgbW9yZSBpbmZvcm1hdGlvbi4KPj4+Cj4+PiBUaGFuayB5b3UuCj4+Pgo+PiBIZXkgTW9o
-YW1tYWQsCj4+Cj4+IEknbSBhY3R1YWxseSB0cnlpbmcgdG8gZ2V0IGEgNS4xIHNldHVwIHdvcmtp
-bmcgd2l0aG91dCBwYXNzdGhyb3VnaCwgaWYKPj4gSSB1c2UgbXBsYXllciB3aXRoIHBhc3N0aHJv
-dWdoIG15IHJlY2VpdmVyIGJlaGF2ZXMganVzdCBmaW5lLCBidXQgSSBhbQo+PiB0cnlpbmcgdG8g
-c2VuZCB0aGUgNiBjaGFubmVscyBmcm9tIHRoZSBjb21wdXRlci4KPj4KPj4gSSB3YXMgYWN0dWFs
-bHkgdG9sZCB0aGF0IHRoZSBjdXJyZW50IEFMU0EgZHJpdmVyIGZvciByYWRlb24ncyBoZG1pCj4+
-IGRvZXMgbm90IHN1cHBvcnQgbW9yZSB0aGFuIDIgY2hhbm5lbHMsIGFuZCB0aGF0IHdvdWxkIGV4
-cGxhaW4gd2h5IEknbQo+PiBnZXR0aW5nIHRoaXMgYmVoYXZpb3IuIElzIHRoYXQgdHJ1ZSB0aG91
-Z2g/Cj4+Cj4+Cj4+IFRoYW5rcyEKPj4gSm9obgo+Cj4KPiBDdXJyZW50bHksIEkgZG9uJ3QgaGF2
-ZSBIVCBBVlIgd2l0aCBIRE1JLCBidXQgZm9yIG5vcm1hbCBTUERJRiB0aHJvdWdoCj4gVE9TTElO
-SyB3aWxsIHN0cmVhbSBhbnkgc3RhbmRhcmQgNS4xIERUUy9BQzMgcmF3IGJpdHN0cmVhbSB0byBt
-eSBjaGVhcAo+IEFWUiAoWWFtYWhhIFJYLVYzNjEpIHdpdGhvdXQgYW55IHByb2JsZW0uCj4KPiAk
-IG1wbGF5ZXIgLWFvIGFsc2E6ZGV2aWNlPXNwZGlmIC1hYyBod2R0cyxod2FjMywgZm9vLm1rdgo+
-Cj4gSXQgaXMgbm90IGFib3V0IGhvdyBtYW55IGNoYW5uZWxzIHRoYXQgSERNSSBjYW4gc3VwcG9y
-dCwgYnV0IGhvdyB0bwo+IHBhc3MgdGhlIGJpdHN0cmVhbSBjb3JyZWN0bHkgdG8gdGhlIHJlY2Vp
-dmVyLiDCoEFzIHdlIGNhbiBzZWUgaW4gdGhpcwo+IHRocmVhZCwgdGhlIHN1cHBvcnQgZm9yIGhp
-Z2hlciBiYW5kd2lkdGgvZm9ybWF0IG9mIHRoZSBEVFMvQUMzIGZvcm1hdAo+IGlzIGN1cnJlbnRs
-eSBiZWluZyBkZXZlbG9wZWQgYnkgQW5zc2kgSGFubnVsYS4KPgo+IGh0dHA6Ly9hcnRpY2xlLmdt
-YW5lLm9yZy9nbWFuZS5jb21wLnZpZGVvLmZmbXBlZy5kZXZlbC8xMjEwNzMvCj4KPiBFdmVudHVh
-bGx5IGl0IHdpbGwgYmUgaW5jb3JwcmF0ZWQgaW4gTVBsYXllci1zdm4uCj4KPiBUaGFuayB5b3Uu
-Cj4KCkJ1dCB0aGF0IG9ubHkgYXBwbGllcyB0byBzdHJlYW1zIHRoYXQgSSB3b3VsZCB3YW50IHRv
-IHBhc3N0aHJvdWdoIGZyb20KbXkgc3lzdGVtIHRvIG15IHJlY2VpdmVyLgoKSSBhbHJlYWR5IGhh
-dmUgdmlkZW9zIHdpdGggYXVkaW8gc3RyZWFtcyB0aGF0IG15IHJlY2VpdmVyIGNhbm5vdApkZWNv
-ZGUgYnV0IG15IGNvbXB1dGVyIGNhbi4KVGhlcmUgaXMgbm90IG11Y2ggSSBjYW4gZG8gYWJvdXQg
-dGhlIHJlY2VpdmVyLi4uIHNvIGJlaW5nIGFibGUgdG8gc2VuZAp0aGUgYWxyZWFkeSBkZWNvZGVk
-IHN0cmVhbSAobm90IHVzaW5nIHRoZSBwYXNzdGhyb3VnaCBhYmlsaXR5KSBpcyB2ZXJ5CnVzZWZ1
-bC4gKFRoZXNlIHN0cmVhbXMgYXJlIGVuY29kZWQgaW4gVHJ1ZUhELCB0aGF0IGlzIG1lbnRpb25l
-ZCBpbiB0aGUKbGluayB5b3UgZ2F2ZSwgYnV0IGV2ZW4gaWYgSSBjYW4gc2VuZCB0aGVtIHRvIG15
-IHJlY2VpdmVyIHdpdGggdGhlc2UKcGF0Y2hlcywgaXQgd291bGQgZG8gbWUgbm8gZ29vZCBhcyB0
-aGUgcmVjZWl2ZXIgY2Fubm90IGRvIGFueXRoaW5nCndpdGggdGhlbSkuCgpJIGNhbiBhbHJlYWR5
-IGRvIHdoYXQgSSB3YW50IHRvZGF5IHVzaW5nIGphY2svcmNhIGNhYmxlcywgYnV0IGl0J2QgYmUK
-bmljZXIgdG8gZG8gc28gdXNpbmcgdGhlIGhkbWkgY2FibGUgOikKClRoYW5rcywKSm9obgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
-YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Fix below compile error:
+
+  CC      sound/soc/samsung/smartq_wm8987.o
+sound/soc/samsung/smartq_wm8987.c: In function 'smartq_hifi_hw_params':
+sound/soc/samsung/smartq_wm8987.c:42: error: 'struct snd_soc_pcm_runtime' has no member named 'dai'
+sound/soc/samsung/smartq_wm8987.c:43: error: 'struct snd_soc_pcm_runtime' has no member named 'dai'
+sound/soc/samsung/smartq_wm8987.c: In function 'smartq_wm8987_init':
+sound/soc/samsung/smartq_wm8987.c:192: warning: passing argument 1 of 'snd_soc_jack_new' from incompatible pointer type
+sound/soc/samsung/smartq_wm8987.c: At top level:
+sound/soc/samsung/smartq_wm8987.c:216: warning: initialization from incompatible pointer type
+make[3]: *** [sound/soc/samsung/smartq_wm8987.o] Error 1
+make[2]: *** [sound/soc/samsung] Error 2
+make[1]: *** [sound/soc] Error 2
+make: *** [sound] Error 2
+
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/samsung/smartq_wm8987.c |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/samsung/smartq_wm8987.c b/sound/soc/samsung/smartq_wm8987.c
+index d6a340b8..0a46fa8 100644
+--- a/sound/soc/samsung/smartq_wm8987.c
++++ b/sound/soc/samsung/smartq_wm8987.c
+@@ -39,8 +39,8 @@ static int smartq_hifi_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	unsigned int clk = 0;
+ 	int ret;
+ 
+@@ -153,8 +153,9 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"LINPUT2", NULL, "Mic Bias"},
+ };
+ 
+-static int smartq_wm8987_init(struct snd_soc_codec *codec)
++static int smartq_wm8987_init(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct snd_soc_codec *codec = rtd->codec;
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 	int err = 0;
+ 
+@@ -188,7 +189,7 @@ static int smartq_wm8987_init(struct snd_soc_codec *codec)
+ 		return err;
+ 
+ 	/* Headphone jack detection */
+-	err = snd_soc_jack_new(&snd_soc_smartq, "Headphone Jack",
++	err = snd_soc_jack_new(codec, "Headphone Jack",
+ 			       SND_JACK_HEADPHONE, &smartq_jack);
+ 	if (err)
+ 		return err;
+-- 
+1.7.2
