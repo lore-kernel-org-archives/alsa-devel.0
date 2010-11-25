@@ -1,20 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Update MAINTAINERS for Samsung
-	driver move
-Date: Thu, 25 Nov 2010 10:25:58 +0000
-Message-ID: <1290680758.3302.4.camel@odin>
-References: <1290619338-28007-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: fix SND_PXA2XX_LIB Kconfig warning
+Date: Thu, 25 Nov 2010 10:28:41 +0000
+Message-ID: <1290680921.3302.7.camel@odin>
+References: <1290635175-30501-1-git-send-email-mad_soft@inbox.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id BD6FA103BD7
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 11:26:02 +0100 (CET)
-Received: by eyg24 with SMTP id 24so345624eyg.38
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 02:26:02 -0800 (PST)
-In-Reply-To: <1290619338-28007-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3F79D103BD7
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 11:28:45 +0100 (CET)
+Received: by wyi11 with SMTP id 11so731354wyi.38
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 02:28:45 -0800 (PST)
+In-Reply-To: <1290635175-30501-1-git-send-email-mad_soft@inbox.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,29 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>
+To: Dmitry Artamonow <mad_soft@inbox.ru>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-11-24 at 17:22 +0000, Mark Brown wrote:
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  MAINTAINERS |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
+On Thu, 2010-11-25 at 00:46 +0300, Dmitry Artamonow wrote:
+> Fix following warning observed when SND_PXA2XX_SOC is set and SND_ARM isn't:
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 33a4091..e585c6a 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5133,7 +5133,7 @@ SAMSUNG AUDIO (ASoC) DRIVERS
->  M:	Jassi Brar <jassi.brar@samsung.com>
->  L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
->  S:	Supported
-> -F:	sound/soc/s3c24xx
-> +F:	sound/soc/samsung
->  
->  TLG2300 VIDEO4LINUX-2 DRIVER
->  M:	Huang Shijie <shijie8@gmail.com>
+> warning: (SND_PXA2XX_AC97 && SOUND && !M68K && SND && SND_ARM && ARCH_PXA ||
+> SND_PXA2XX_SOC && SOUND && !M68K && SND && SND_SOC && ARCH_PXA) selects
+> SND_PXA2XX_LIB which has unmet direct dependencies (SOUND && !M68K && SND &&
+> SND_ARM)
+> 
+> Signed-off-by: Dmitry Artamonow <mad_soft@inbox.ru>
+> ---
+> 
+> This is fix for 2.6.37-rc3
+> 
+>  sound/soc/pxa/Kconfig |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+> index 37f191b..580f485 100644
+> --- a/sound/soc/pxa/Kconfig
+> +++ b/sound/soc/pxa/Kconfig
+> @@ -1,6 +1,7 @@
+>  config SND_PXA2XX_SOC
+>  	tristate "SoC Audio for the Intel PXA2xx chip"
+>  	depends on ARCH_PXA
+> +	select SND_ARM
+>  	select SND_PXA2XX_LIB
+>  	help
+>  	  Say Y or M if you want to add support for codecs attached to
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
