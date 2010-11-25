@@ -1,14 +1,21 @@
-From: =?UTF-8?q?Ozan=20=C3=87a=C4=9Flayan?= <ozan@pardus.org.tr>
-Subject: [PATCH] configure.in: Fix variable name
-Date: Thu, 25 Nov 2010 09:36:37 +0200
-Message-ID: <1290670597-25453-1-git-send-email-ozan@pardus.org.tr>
+From: Mika Westerberg <mika.westerberg@iki.fi>
+Subject: Re: [PATCH 6/8] ASoC: simone: fix resource leak in
+	simone_init	error path
+Date: Thu, 25 Nov 2010 10:06:04 +0200
+Message-ID: <20101125080604.GL14080@gw.healthdatacare.com>
+References: <1290668785.30158.7.camel@mola> <1290669150.30158.18.camel@mola>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lider.pardus.org.tr (lider.pardus.org.tr [193.140.100.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 55CA2103B9D
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 08:40:52 +0100 (CET)
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 36D3B103BA5
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 09:06:09 +0100 (CET)
+Received: by fxm10 with SMTP id 10so523426fxm.38
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 00:06:09 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <1290669150.30158.18.camel@mola>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,24 +25,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Rml4IHZhcmlhYmxlIG5hbWUgZm9yIC0td2l0aC1hc291bmQtc3RhdGUtZGlyIGFzIGN1cnJlbnRs
-eSB3ZSBoYXZlCnRvIHBhc3MgLS13aXRoLUFTT1VORF9TVEFURV9ESVI9IHdoaWNoIGlzIHdyb25n
-IGFuZCBpbmNvbnNpc3RlbnQgd2l0aAp0aGUgb3RoZXIgc3dpdGNoZXMuCgpTaWduZWQtb2ZmLWJ5
-OiBPemFuIMOHYcSfbGF5YW4gPG96YW5AcGFyZHVzLm9yZy50cj4KLS0tCiBjb25maWd1cmUuaW4g
-fCAgICAyICstCiAxIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbnMo
-LSkKCmRpZmYgLS1naXQgYS9jb25maWd1cmUuaW4gYi9jb25maWd1cmUuaW4KaW5kZXggOTRhMmIx
-Ny4uNzc3NzhkYSAxMDA2NDQKLS0tIGEvY29uZmlndXJlLmluCisrKyBiL2NvbmZpZ3VyZS5pbgpA
-QCAtMjg5LDcgKzI4OSw3IEBAIGlmIHRlc3QgIngkd2l0aF9zeXN0ZW1kc3lzdGVtdW5pdGRpciIg
-IT0geG5vOyB0aGVuCiBmaQogQU1fQ09ORElUSU9OQUwoSEFWRV9TWVNURU1ELCBbdGVzdCAtbiAi
-JHdpdGhfc3lzdGVtZHN5c3RlbXVuaXRkaXIiIC1hICJ4JHdpdGhfc3lzdGVtZHN5c3RlbXVuaXRk
-aXIiICE9IHhubyBdKQogCi1BQ19BUkdfV0lUSChBU09VTkRfU1RBVEVfRElSLAorQUNfQVJHX1dJ
-VEgoW2Fzb3VuZC1zdGF0ZS1kaXJdLAogICAgICAgICBBU19IRUxQX1NUUklORyhbLS13aXRoLWFz
-b3VuZC1zdGF0ZS1kaXI9RElSXSwgW0RpcmVjdG9yeSB0byBwbGFjZSBhc291bmQuc3RhdGUgZmls
-ZSBpbl0pLAogICAgICAgICBbQVNPVU5EX1NUQVRFX0RJUj0iJHdpdGh2YWwiXSwKICAgICAgICAg
-W0FTT1VORF9TVEFURV9ESVI9Ii92YXIvbGliL2Fsc2EiXSkKLS0gCjEuNy4yLjEKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Thu, Nov 25, 2010 at 03:12:30PM +0800, Axel Lin wrote:
+> Fix the error path to properly free allocated resources.
+> 
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+
+Acked-by: Mika Westerberg <mika.westerberg@iki.fi>
+
+Thanks for catching this.
+
+> ---
+>  sound/soc/ep93xx/simone.c |   18 ++++++++++--------
+>  1 files changed, 10 insertions(+), 8 deletions(-)
+> 
+> diff --git a/sound/soc/ep93xx/simone.c b/sound/soc/ep93xx/simone.c
+> index 4b0d199..2868179 100644
+> --- a/sound/soc/ep93xx/simone.c
+> +++ b/sound/soc/ep93xx/simone.c
+> @@ -54,24 +54,26 @@ static int __init simone_init(void)
+>  
+>  	ret = platform_device_add(simone_snd_ac97_device);
+>  	if (ret)
+> -		goto fail;
+> +		goto fail1;
+>  
+>  	simone_snd_device = platform_device_alloc("soc-audio", -1);
+>  	if (!simone_snd_device) {
+>  		ret = -ENOMEM;
+> -		goto fail;
+> +		goto fail2;
+>  	}
+>  
+>  	platform_set_drvdata(simone_snd_device, &snd_soc_simone);
+>  	ret = platform_device_add(simone_snd_device);
+> -	if (ret) {
+> -		platform_device_put(simone_snd_device);
+> -		goto fail;
+> -	}
+> +	if (ret)
+> +		goto fail3;
+>  
+> -	return ret;
+> +	return 0;
+>  
+> -fail:
+> +fail3:
+> +	platform_device_put(simone_snd_device);
+> +fail2:
+> +	platform_device_del(simone_snd_ac97_device);
+> +fail1:
+>  	platform_device_put(simone_snd_ac97_device);
+>  	return ret;
+>  }
+> -- 
+> 1.7.2
+> 
+> 
