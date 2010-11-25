@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Call snd_soc_unregister_dais instead
- of snd_soc_unregister_dai in sh4_soc_dai_remove
-Date: Thu, 25 Nov 2010 11:11:23 +0000
-Message-ID: <20101125111122.GA22298@rakim.wolfsonmicro.main>
-References: <1290677035.1928.3.camel@mola>
+Subject: Re: [PATCH] ASoC: davinci-vcif - fix a memory leak
+Date: Thu, 25 Nov 2010 11:12:58 +0000
+Message-ID: <20101125111258.GB22298@rakim.wolfsonmicro.main>
+References: <1290655994.30158.1.camel@mola>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 054A6103C31
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 12:11:25 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B73791037F3
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 12:12:59 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1290677035.1928.3.camel@mola>
+In-Reply-To: <1290655994.30158.1.camel@mola>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,11 +22,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Axel Lin <axel.lin@gmail.com>
-Cc: Manuel Lauss <mano@roarinelk.homelinux.net>, linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>, Miguel Aguilar <miguel.aguilar@ridgerun.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 25, 2010 at 05:23:55PM +0800, Axel Lin wrote:
-> We call snd_soc_register_dais() in sh4_soc_dai_probe(),
-> thus we should call snd_soc_unregister_dais() in sh4_soc_dai_remove().
+On Thu, Nov 25, 2010 at 11:33:14AM +0800, Axel Lin wrote:
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
 
 Applied, thanks.
