@@ -1,20 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [RFC don't apply] ASoC: Add support for optional
- auxiliary dailess codecs
-Date: Thu, 25 Nov 2010 19:18:23 +0000
-Message-ID: <1290712703.3302.41.camel@odin>
-References: <1290700058-9270-1-git-send-email-jhnikula@gmail.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: ALSA Multichannel through HDMI
+Date: Thu, 25 Nov 2010 21:19:59 +0200
+Message-ID: <4CEEB6DF.2060905@iki.fi>
+References: <20100112045102.GA29735@localhost>	<eb9000ab1001112311o4bcf98dp2b616d1afffec9e0@mail.gmail.com>	<20100112132140.GA7647@localhost>	<eb9000ab1001120828l6829c6b1g30916b872a0467f7@mail.gmail.com>	<20100113010942.GA6435@localhost>	<eb9000ab1001121732y4212e6m9596f68e24d6c226@mail.gmail.com>	<20100113014550.GA10184@localhost>	<eb9000ab1001122048s1ac0d9c3n130692ba83dd53d1@mail.gmail.com>	<20100113045238.GB26275@localhost>	<eb9000ab1001122055s54bc6697t6103def1e8ae64ae@mail.gmail.com>	<20100113050254.GA28475@localhost>	<AANLkTim8zHRTc0F2CcfoXtxDkH2kpYajCuheo7GoQ4zW@mail.gmail.com>	<ickmvo$kkf$1@dough.gmane.org>	<AANLkTi=d7RHy4KgSS7yB+deAq=JnFabbA9qfwH8WQCG2@mail.gmail.com>	<4CEE3F1E.4010405@iki.fi>	<AANLkTikYpKak6C5Oz=c0OxiG8FaD2qqzn7siW0kMJgzs@mail.gmail.com>	<4CEE4B29.5090808@iki.fi>
+	<AANLkTi=9SMLG1vYjDAPUjQJaBwzOJSMchbE+oUVGcgRN@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id AE86F103817
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 20:18:26 +0100 (CET)
-Received: by wyi11 with SMTP id 11so1189710wyi.38
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 11:18:26 -0800 (PST)
-In-Reply-To: <1290700058-9270-1-git-send-email-jhnikula@gmail.com>
+Received: from tulikuusama.dnainternet.net (tulikuusama.dnainternet.net
+	[83.102.40.132])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D14D103817
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 20:20:03 +0100 (CET)
+In-Reply-To: <AANLkTi=9SMLG1vYjDAPUjQJaBwzOJSMchbE+oUVGcgRN@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,172 +22,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: John Ettedgui <john.ettedgui@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jarkko,
+On 25.11.2010 14:21, John Ettedgui wrote:
+> On Thu, Nov 25, 2010 at 3:40 AM, Anssi Hannula <anssi.hannula@iki.fi> wrote:
+>> On 25.11.2010 13:09, John Ettedgui wrote:
+>>> On Thu, Nov 25, 2010 at 2:49 AM, Anssi Hannula <anssi.hannula@iki.fi> wrote:
+>>>> On 25.11.2010 06:12, John Ettedgui wrote:
+>>>>> I'm actually trying to get a 5.1 setup working without passthrough, if
+>>>>> I use mplayer with passthrough my receiver behaves just fine, but I am
+>>>>> trying to send the 6 channels from the computer.
+>>>>>
+>>>>> I was actually told that the current ALSA driver for radeon's hdmi
+>>>>> does not support more than 2 channels, and that would explain why I'm
+>>>>> getting this behavior. Is that true though?
+>>>>
+>>>> Yes.
+>>>>
+>>>>
+>>>> However, strangely your log output seems to show the intel's hdmi parser
+>>>> being used instead:
+>>>>
+>>>>> ALSA sound/pci/hda/patch_intelhdmi.c:842: hdmi_setup_stream: NID=0x2,
+>>>>> stream=0x1, new-format=0x11
+>>>>
+>>>> Were you just trying some patch at the time?
+>>>
+>>> yes Wu gave me a patch to try against the kernel, I'm guessing this is
+>>> the reason you see something unexpected.
+>>
+>> Did 6 channels work with that patch? (possibly with a wrong channel order)
+> Not any better as far as I remember.
 
-Sorry, didn't get a chance to discuss on IRC but I have some comments
-below :-
+OK. Did 2 channel audio continue to work with it?
 
-On Thu, 2010-11-25 at 17:47 +0200, Jarkko Nikula wrote:
-> This makes possible to register auxiliary dailess codecs in a machine
-> driver. Term dailess is used here for amplifiers and codecs without DAI or
-> DAI being unused.
-> 
-> Dailess auxiliary codecs are kept in struct snd_soc_aux_dev and those codecs
-> are probed after initializing the DAI links. There are no major differences
-> between DAI link codecs and dailess codecs in ASoC core point of view. DAPM
-> handles them equally and sysfs and debugfs directories for dailess codecs
-> are similar except the pmdown_time node is not created.
-> 
-> Only suspend and resume functions are modified to traverse all probed codecs
-> instead of DAI link codecs.
-> 
-> Example below shows a dailess codec registration.
-> 
-> struct snd_soc_aux_dev foo_aux_dev[] = {
-> 	{
-> 		.name = "Amp",
-> 		.codec_name = "codec.2",
-> 		.init = foo_init2,
-> 	},
-> };
-> 
-> static struct snd_soc_card card = {
-> 	...
-> 	.aux_dev = foo_aux_dev,
-> 	.num_aux_devs = ARRAY_SIZE(foo_aux_dev),
-> };
-> 
-> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-> ---
-> Idea sharing version, not to be applied. Needs at least cross-device DAPM
-> to be usuful and e.g. soc_probe_dai_link and soc_probe_aux_dev share a lot
-> of same code.
-> 
-> I'm not entirely sure of reusing struct snd_soc_pcm_runtime but having some
-> common struct on top of it for registering the sysfs nodes and passing to
-> snd_soc_dapm_sys_add didn't sound clear either.
-> Anyway suspend/resume is working with this version and doesn't need any other
-> modifications to soc_suspend/soc_resume than traversing through the registered
-> codecs instead of doing bunch of rtd->dailess etc hacks there.
-> ---
->  include/sound/soc.h  |   17 ++++++
->  sound/soc/soc-core.c |  155 ++++++++++++++++++++++++++++++++++++++++++++++++--
->  2 files changed, 166 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/sound/soc.h b/include/sound/soc.h
-> index 346c59e..c62225e 100644
-> --- a/include/sound/soc.h
-> +++ b/include/sound/soc.h
-> @@ -583,6 +583,14 @@ struct snd_soc_prefix_map {
->  	const char *name_prefix;
->  };
->  
-> +struct snd_soc_aux_dev {
-> +	const char *name;		/* Codec name */
-> +	const char *codec_name;		/* for multi-codec */
-> +
-> +	/* codec/machine specific init - e.g. add machine controls */
-> +	int (*init)(struct snd_soc_dapm_context *dapm);
-> +};
-> +
->  /* SoC card */
->  struct snd_soc_card {
->  	const char *name;
-> @@ -624,6 +632,15 @@ struct snd_soc_card {
->  	struct snd_soc_prefix_map *prefix_map;
->  	int num_prefixes;
->  
-> +	/*
-> +	 * optional auxiliary devices such as amplifiers or codecs with DAI
-> +	 * link unused
-> +	 */
-> +	struct snd_soc_aux_dev *aux_dev;
-> +	int num_aux_devs;
-> +	struct snd_soc_pcm_runtime *rtd_aux;
-> +	int num_aux_rtd;
-> +
+If you are not sure, here's the patch doing the same thing against
+current alsa driver:
+http://stuff.onse.fi/0001-ALSA-hda-Use-generic-HDMI-code-for-ATI-HDMI-codecs.patch
 
-Could we not just make this a new component type and have a list of aux
-devices ?
+Confirming that would help (it would allow to switch the ATI chip to use
+the generic parser instead of the ATI-specific one), though not with the
+multichannel issue (see below).
 
->  
->  	/* lists of probed devices belonging to this card */
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index b0e1aea..d7fc3a6 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -986,6 +986,7 @@ static int soc_suspend(struct device *dev)
->  {
->  	struct platform_device *pdev = to_platform_device(dev);
->  	struct snd_soc_card *card = platform_get_drvdata(pdev);
-> +	struct snd_soc_codec *codec;
->  	int i;
->  
->  	/* If the initialization of this soc device failed, there is no codec
-> @@ -1064,8 +1065,7 @@ static int soc_suspend(struct device *dev)
->  	}
->  
->  	/* suspend all CODECs */
-> -	for (i = 0; i < card->num_rtd; i++) {
-> -		struct snd_soc_codec *codec = card->rtd[i].codec;
-> +	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
->  		/* If there are paths active then the CODEC will be held with
->  		 * bias _ON and should not be suspended. */
->  		if (!codec->suspended && codec->driver->suspend) {
-> @@ -1106,6 +1106,7 @@ static void soc_resume_deferred(struct work_struct *work)
->  	struct snd_soc_card *card =
->  			container_of(work, struct snd_soc_card, deferred_resume_work);
->  	struct platform_device *pdev = to_platform_device(card->dev);
-> +	struct snd_soc_codec *codec;
->  	int i;
->  
->  	/* our power state is still SNDRV_CTL_POWER_D3hot from suspend time,
-> @@ -1131,8 +1132,7 @@ static void soc_resume_deferred(struct work_struct *work)
->  			cpu_dai->driver->resume(cpu_dai);
->  	}
->  
-> -	for (i = 0; i < card->num_rtd; i++) {
-> -		struct snd_soc_codec *codec = card->rtd[i].codec;
-> +	list_for_each_entry(codec, &card->codec_dev_list, card_list) {
->  		/* If the CODEC was idle over suspend then it will have been
->  		 * left with bias OFF or STANDBY and suspended so we must now
->  		 * resume.  Otherwise the suspend was suppressed.
-> @@ -1604,6 +1604,130 @@ static void soc_unregister_ac97_dai_link(struct snd_soc_codec *codec)
->  }
->  #endif
->  
-> +static int soc_probe_aux_dev(struct snd_soc_card *card, int num)
-> +{
-> +	struct snd_soc_aux_dev *aux_dev = &card->aux_dev[num];
-> +	struct snd_soc_pcm_runtime *rtd = &card->rtd_aux[num];
-> +	struct snd_soc_codec *codec;
-> +	const char *temp;
-> +	int ret = 0;
-> +
-> +	/* find CODEC from registered CODECs*/
-> +	list_for_each_entry(codec, &codec_list, list) {
-> +		if (!strcmp(codec->name, aux_dev->codec_name)) {
-> +			if (codec->probed) {
-> +				dev_err(codec->dev,
-> +					"asoc: codec already probed");
-> +				ret = -EBUSY;
-> +				goto out;
-> +			}
-> +			break;
-> +		}
-> +	}
-> +
+[...]
 
-Why do aux devices need to be coupled with CODECs here ? 
+>>> Since I just moved to jack/rca cables I'm in no hurry anymore, but is
+>>> there any reason why the driver cannot work with more than 2 channels?
+>>
+>> I don't really know (it is simply not implemented).
+> Alright.
+>>
+>>> Anything I could do to help with that?
+>>
+>> Possibly. But see above, so that we won't try the same things you
+>> already tried :)
+>>
+> Sure :)
 
-Thanks
+Looking again at the the alsa info output you provided, I don't think I
+have any great ideas. It looks like the chip simply reports that it
+supports a maximum of 2 channels.
 
-Liam
+One option could be hardcoding "chans = 8;" in generic_hdmi_build_pcms()
+in sound/pci/hda/patch_hdmi.c (assuming you have the above patch and 2
+channel audio works with it). However, I find it rather unlikely that it
+would make any difference.
+
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Anssi Hannula
