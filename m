@@ -1,20 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: neo1973_gta02_wm8753: fix wrong
- parameter for snd_soc_register_dai and snd_soc_unregister_dai
-Date: Thu, 25 Nov 2010 10:48:05 +0000
-Message-ID: <1290682085.3302.15.camel@odin>
-References: <1290675056.1928.1.camel@mola>
+Subject: Re: [PATCH] ASoC: Call snd_soc_unregister_dais instead
+ of snd_soc_unregister_dai in sh4_soc_dai_remove
+Date: Thu, 25 Nov 2010 10:48:23 +0000
+Message-ID: <1290682103.3302.16.camel@odin>
+References: <1290677035.1928.3.camel@mola>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 94F92103C13
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 11:48:08 +0100 (CET)
-Received: by wyi11 with SMTP id 11so748184wyi.38
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 02:48:08 -0800 (PST)
-In-Reply-To: <1290675056.1928.1.camel@mola>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 605B3103C1C
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 11:48:27 +0100 (CET)
+Received: by wwe15 with SMTP id 15so776904wwe.20
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 02:48:27 -0800 (PST)
+In-Reply-To: <1290677035.1928.3.camel@mola>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,37 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Axel Lin <axel.lin@gmail.com>
-Cc: Graeme Gregory <graeme@openmoko.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel <linux-kernel@vger.kernel.org>
+Cc: Manuel Lauss <mano@roarinelk.homelinux.net>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-11-25 at 16:50 +0800, Axel Lin wrote:
+On Thu, 2010-11-25 at 17:23 +0800, Axel Lin wrote:
+> We call snd_soc_register_dais() in sh4_soc_dai_probe(),
+> thus we should call snd_soc_unregister_dais() in sh4_soc_dai_remove().
+> 
+> Otherwise, we got "too many arguments to function 'snd_soc_unregister_dai'"
+> error message.
+> 
 > Signed-off-by: Axel Lin <axel.lin@gmail.com>
 > ---
->  sound/soc/samsung/neo1973_gta02_wm8753.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
+>  sound/soc/sh/ssi.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 > 
-> diff --git a/sound/soc/samsung/neo1973_gta02_wm8753.c b/sound/soc/samsung/neo1973_gta02_wm8753.c
-> index 920e8d1..8c65b63 100644
-> --- a/sound/soc/samsung/neo1973_gta02_wm8753.c
-> +++ b/sound/soc/samsung/neo1973_gta02_wm8753.c
-> @@ -438,7 +438,7 @@ static int __init neo1973_gta02_init(void)
->  		return -ENOMEM;
+> diff --git a/sound/soc/sh/ssi.c b/sound/soc/sh/ssi.c
+> index 40bbdf1..05192d9 100644
+> --- a/sound/soc/sh/ssi.c
+> +++ b/sound/soc/sh/ssi.c
+> @@ -387,7 +387,7 @@ static int __devinit sh4_soc_dai_probe(struct platform_device *pdev)
 >  
->  	/* register bluetooth DAI here */
-> -	ret = snd_soc_register_dai(&neo1973_gta02_snd_device->dev, -1, &bt_dai);
-> +	ret = snd_soc_register_dai(&neo1973_gta02_snd_device->dev, &bt_dai);
->  	if (ret) {
->  		platform_device_put(neo1973_gta02_snd_device);
->  		return ret;
-> @@ -491,7 +491,7 @@ module_init(neo1973_gta02_init);
->  
->  static void __exit neo1973_gta02_exit(void)
+>  static int __devexit sh4_soc_dai_remove(struct platform_device *pdev)
 >  {
-> -	snd_soc_unregister_dai(&neo1973_gta02_snd_device->dev, -1);
-> +	snd_soc_unregister_dai(&neo1973_gta02_snd_device->dev);
->  	platform_device_unregister(neo1973_gta02_snd_device);
->  	gpio_free(GTA02_GPIO_HP_IN);
->  	gpio_free(GTA02_GPIO_AMP_SHUT);
+> -	snd_soc_unregister_dai(&pdev->dev, ARRAY_SIZE(sh4_ssi_dai));
+> +	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(sh4_ssi_dai));
+>  	return 0;
+>  }
+>  
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
