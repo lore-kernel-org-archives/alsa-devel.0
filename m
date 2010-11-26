@@ -1,33 +1,29 @@
-From: Ozan =?utf-8?q?=C3=87a=C4=9Flayan?= <ozan@pardus.org.tr>
-Subject: Re: No sound with Sony VAIO VPCZ11 (ALC889)
-Date: Fri, 26 Nov 2010 08:33:51 +0200
-Message-ID: <201011260833.51364.ozan@pardus.org.tr>
-References: <201011241530.11106.ozan@pardus.org.tr>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH 0/4] Fixes resource leaks for Samsung SoCs
+Date: Fri, 26 Nov 2010 14:50:45 +0800
+Message-ID: <1290754245.25125.1.camel@mola>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lider.pardus.org.tr (lider.pardus.org.tr [193.140.100.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7DAE6103C9D
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 07:38:13 +0100 (CET)
-In-Reply-To: <201011241530.11106.ozan@pardus.org.tr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel <linux-kernel@vger.kernel.org>
+Cc: Chanwoo Choi <cw00.choi@samsung.com>, Graeme Gregory <graeme@openmoko.org>, Maurus Cuelenaere <mcuelenaere@gmail.com>, Seungwhan Youn <sw.youn@samsung.com>, Jassi Brar <jassi.brar@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-w4dhcsWfYW1iYSAyNCBLYXPEsW0gMjAxMCBnw7xuw7wgKHNhYXQgMTU6MzA6MTApIE96YW4gw4dh
-xJ9sYXlhbiDFn3VubGFyxLEgeWF6bcSxxZ90xLE6Cj4gSGksCj4gCgpEaWQgeW91IGhhdmUgdGlt
-ZSB0byBsb29rIGF0IHRoaXM/CgpUaGFua3MKCi0tLQpPemFuIMOHYcSfbGF5YW4KVFVCSVRBSy9V
-RUtBRSAtIFBhcmR1cyBMaW51eApodHRwOi8vd3d3LnBhcmR1cy5vcmcudHIvZW5nCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This serial of patches fixes resource leaks for Samsung SoCs.
+
+Axel Lin (4):
+  ASoC: Fix resource leask in goni_wm8994.c
+  ASoC: Fix resource leask in neo1973_gta02_init() error path
+  ASoC: Add missing gpio_free(S3C64XX_GPK(12)) in smartq_exit()
+  ASoC: Fix resource leask in smdk_spdif.c
+
+ sound/soc/samsung/goni_wm8994.c          |    9 +++++++--
+ sound/soc/samsung/neo1973_gta02_wm8753.c |   22 +++++++++++-----------
+ sound/soc/samsung/smartq_wm8987.c        |    1 +
+ sound/soc/samsung/smdk_spdif.c           |   13 +++++++++----
+ 4 files changed, 28 insertions(+), 17 deletions(-)
+
+-- 
+1.7.2
