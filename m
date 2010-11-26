@@ -1,23 +1,17 @@
-From: Kay Sievers <kay.sievers@vrfy.org>
-Subject: Re: [PATCHES] Integrate minimal systemd support in
-	alsa-utils
-Date: Fri, 26 Nov 2010 12:50:00 +0100
-Message-ID: <AANLkTin4PujJwr0qQR0r+KgCJ4jjxgdhLJQ-j-83Piwh@mail.gmail.com>
-References: <20101123021657.GA17275@tango.0pointer.de>
-	<s5h4ob8r2dz.wl%tiwai@suse.de>
-	<AANLkTikbP_yRSDWD1DL0EKza=EpRdnDHLpUMhoXVnDiE@mail.gmail.com>
-	<s5hmxowqy69.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: usage of SOC_ENUM_SINGLE
+Date: Fri, 26 Nov 2010 11:52:20 +0000
+Message-ID: <20101126115220.GB30360@rakim.wolfsonmicro.main>
+References: <438BB0150E931F4B9CE701519A44630104BED485E4@bgsmsx502.gar.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9B7B6244C2
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 12:50:17 +0100 (CET)
-Received: by gyg8 with SMTP id 8so1026367gyg.38
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 03:50:15 -0800 (PST)
-In-Reply-To: <s5hmxowqy69.wl%tiwai@suse.de>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0D19410381F
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 12:52:22 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <438BB0150E931F4B9CE701519A44630104BED485E4@bgsmsx502.gar.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,43 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, jkysela@redhat.com, Lennart Poettering <mznyfn@0pointer.de>
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Harsha,
+	Priya" <priya.harsha@intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBOb3YgMjYsIDIwMTAgYXQgMDk6MzYsIFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5k
-ZT4gd3JvdGU6Cj4gQXQgVHVlLCAyMyBOb3YgMjAxMCAxODowNTowMCArMDEwMCwKPiBLYXkgU2ll
-dmVycyB3cm90ZToKPj4KPj4gT24gVHVlLCBOb3YgMjMsIDIwMTAgYXQgMDc6MTYsIFRha2FzaGkg
-SXdhaSA8dGl3YWlAc3VzZS5kZT4gd3JvdGU6Cj4+Cj4+ID4gVGhlIHNlY29uZCBwYXRjaCBsb29r
-cyBnb29kIHRvIG1lLiDCoEl0IGRvZXNuJ3QgYnJlYWssIGF0IGxlYXN0Lgo+PiA+IEknbSBnb2lu
-ZyB0byBhcHBseSBpdCB1bmxlc3MgYW55b25lIGVsc2UgaGFzIHNwZWNpZmljIG9iamVjdGlvbi4K
-Pj4KPj4gTm93IHRoYXQgYm90aCBpcyBtZXJnZWQsIG1pbmQgcHV0dGluZyB0aGF0IGluIG9wZW5T
-VVNFIEZhY3Rvcnk/Cj4+Cj4+IFdlIG5lZWQgdG8gZW5hYmxlIHN5c3RlbWQgc2VydmljZXMgd2l0
-aDoKPj4gwqAgLS13aXRoLXN5c3RlbWRzeXN0ZW11bml0ZGlyPS9saWIvc3lzdGVtZC9zeXN0ZW0K
-Pj4KPj4gbGlzdCB0aGUgZmlsZXMvZGlycyBpbjoKPj4gwqAgL2xpYi9zeXN0ZW1kL3N5c3RlbS8q
-LnNlcnZpY2UKPj4gwqAgL2xpYi91ZGV2L3J1bGVzLmQvKi5ydWxlcwo+Pgo+PiBEcm9wIHRoZSBj
-dXJyZW50IGN1c3RvbSB1ZGV2IHJ1bGU6Cj4+IMKgIC9ldGMvdWRldi9ydWxlcy5kLzQwLWFsc2Eu
-cnVsZXMKPj4gYW5kIHVzZSBvbmx5IHRoZSBzeXN0ZW1kIG9uZSBpbiAvbGliL3VkZXYvLiBJdCBz
-aG91bGQgd29yayBhbHNvIGZvcgo+PiBub24tc3lzdGVtZCBzZXR1cHMuCj4+Cj4+IEFsbCB0aGUg
-bmFtaW5nIHJ1bGVzIGZvciB0aGUgc25kLyBzdWJkaXIgY2FuIGJlIHJlbW92ZWQgb24gYWxsIHJl
-Y2VudAo+PiBzeXN0ZW1zLCBvbmx5IHRoZSBHUk9VUD0iYXVkaW8iIGlzIG5lZWRlZC4KPj4KPj4g
-Tm8gcnVsZXMgZmlsZXMgc2hvdWxkIGJlIGluc3RhbGxlZCBpbiAvZXRjLCBhbGwgZmlsZXMgZnJv
-bSBwYWNrYWdlcwo+PiBiZWxvbmcgaW50byAvbGliLgo+Cj4gTm93IEkgZml4ZWQgYWxsIHRoZXNl
-IG9uIE9CUyBtdWx0aW1lZGlhOmxpYnMgcHJvamVjdC4KPiBUaGUgb25seSBxdWVzdGlvbiBpcyB0
-aGUgYmVsb3cgb25lOgo+Cj4+IFRoZSBvbGQgU1lTViBpbml0IHNjcmlwdDoKPj4gwqAgL2V0Yy9p
-bml0LmQvYWxzYXNvdW5kCj4+IHNob3VsZCBiZSBsaW5rZWQgdG86Cj4+IMKgIC9saWIvc3lzdGVt
-ZC9zeXN0ZW0vYWxzYXNvdW5kLnNlcnZpY2UgLT4gYWxzYS1yZXN0b3JlLnNlcnZpY2UKPj4gc28g
-dGhhdCB0aGUgaW5pdCBzY3JpcHQgd2lsbCBub3QgYmUgZXhlY3V0ZWQgb24gc3lzdGVtZCBib290
-dXBzLgo+Cj4gRG8geW91IG1lYW4gdG8gY3JlYXRlIGEgc3ltbGluawo+Cj4gIC9saWIvc3lzdGVt
-ZC9zeXN0ZW0vYWxzYXNvdW5kLnNlcnZpY2UgLT4gYWxzYS1yZXN0b3JlLnNlcnZpY2UKPgoKWWVz
-LCBzbzoKICBzeXN0ZW1jdGwgc3RhcnQgYWxzYXNvdW5kLnNlcnZpY2UKd29ya3MsIGFuZCB0aGUg
-b2xkIGluaXQgc2NyaXB0IGlzIG5vdCBzdGFydGVkIGFueW1vcmUgYnkgdGhlIFNWU1YgY29tcGF0
-IGNvZGUuCgo+IGNvcnJlc3BvbmRpbmcgdG8gL2V0Yy9pbml0LmQvYWxzYXNvdW5kLCB3aGlsZSBr
-ZWVwaW5nCj4gL2V0Yy9pbml0LmQvYWxzYXNvdW5kIGFzIGlzPwoKWWVzLCBmb3Igbm9uLXN5c3Rl
-bWQgYm9vdHMuCgo+IElmIHNvLCB0aGlzIHdpbGwgYWxzbyBiZWxvbmcgdG8gYWxzYS11dGlscy5y
-cG0sIEkgc3VwcG9zZS4gwqBPdGhlcndpc2UKPiB3ZSdsbCBnZXQgYSBjaXJjdWxhciBkZXBlbmRl
-bmN5LgoKU3VyZSwgaXQgZG9lcyBub3QgbWF0dGVyIGFzIGxvbmcgYXMgdGhlIGxpbmsgaXMgdGhl
-cmUuIDopCgpUaGFua3MgYSBsb3QsCktheQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+On Fri, Nov 26, 2010 at 03:48:49PM +0530, Koul, Vinod wrote:
+
+> static const struct snd_kcontrol_new intel_msic_snd_controls[] = {	
+> SOC_ENUM_SINGLE(OUTEN, 0x43, 0x40, headset_switch_text),
+> };
+
+> Would this be the right thing, I am interpreting that 0x40 will be written for 
+> earpiece in above and 0x3 for headset
+
+No, that will cause you to have an enumeration with 0x40 elements
+starting at bit 0x43 in the register.  You're looking for a
+SOC_VALUE_ENUM, not a SOC_ENUM - SOC_ENUM covers contiguous ranges of
+values in the enumeration.
+
+Note also that you should namespace the #defines for your register
+names.
