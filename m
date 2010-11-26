@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/4] ASoC: Add WM8958 Multi-band compressor
+Subject: [PATCH 4/4] ASoC: Add WM8958 microphone detection
 	support
-Date: Fri, 26 Nov 2010 15:21:08 +0000
-Message-ID: <1290784869-22204-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+Date: Fri, 26 Nov 2010 15:21:09 +0000
+Message-ID: <1290784869-22204-4-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1290784869-22204-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8DDF024503
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 16:23:29 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 07455103D81
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 16:23:32 +0100 (CET)
 In-Reply-To: <1290784869-22204-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,404 +25,293 @@ To: Liam Girdwood <lrg@slimlogic.co.uk>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The WM8958 features a multi-band compressor which can be enabled on
-any of the AIF inputs. The MBC allows different gains to be applied to
-differnt audio bands, providing an improvement in perceived loudness
-of the signal by avoiding overdriving the output transducers. This
-patch enables support for the MBC.
+The WM8958 contains an advanced accessory detection feature which allows
+detection of up to seven different impedence levels on the microphone
+bias output, including detection of video outputs. Since some of the
+more involved accessory interfaces may involve noticable interactions
+with external components a simple detection scheme is provided by
+default with the option to provide custom handling of accessory detect.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/linux/mfd/wm8994/registers.h |  115 ++++++++++++++++++++
- sound/soc/codecs/wm8994.c            |  198 +++++++++++++++++++++++++++++++--
- 2 files changed, 301 insertions(+), 12 deletions(-)
+ include/linux/mfd/wm8994/registers.h |   43 ++++++++++
+ sound/soc/codecs/wm8994.c            |  150 ++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/wm8994.h            |    4 +
+ 3 files changed, 197 insertions(+), 0 deletions(-)
 
 diff --git a/include/linux/mfd/wm8994/registers.h b/include/linux/mfd/wm8994/registers.h
-index 3eb70a4..423b2b5 100644
+index 423b2b5..a610c87 100644
 --- a/include/linux/mfd/wm8994/registers.h
 +++ b/include/linux/mfd/wm8994/registers.h
-@@ -246,6 +246,15 @@
- #define WM8994_INTERRUPT_STATUS_2_MASK          0x739
- #define WM8994_INTERRUPT_CONTROL                0x740
- #define WM8994_IRQ_DEBOUNCE                     0x748
-+#define WM8958_DSP2_PROGRAM                     0x900
-+#define WM8958_DSP2_CONFIG                      0x901
-+#define WM8958_DSP2_MAGICNUM                    0xA00
-+#define WM8958_DSP2_RELEASEYEAR                 0xA01
-+#define WM8958_DSP2_RELEASEMONTHDAY             0xA02
-+#define WM8958_DSP2_RELEASETIME                 0xA03
-+#define WM8958_DSP2_VERMAJMIN                   0xA04
-+#define WM8958_DSP2_VERBUILD                    0xA05
-+#define WM8958_DSP2_EXECCONTROL                 0xA0D
- #define WM8994_WRITE_SEQUENCER_0                0x3000
- #define WM8994_WRITE_SEQUENCER_1                0x3001
- #define WM8994_WRITE_SEQUENCER_2                0x3002
-@@ -2079,6 +2088,14 @@
- /*
-  * R520 (0x208) - Clocking (1)
-  */
-+#define WM8958_DSP2CLK_ENA                      0x4000  /* DSP2CLK_ENA */
-+#define WM8958_DSP2CLK_ENA_MASK                 0x4000  /* DSP2CLK_ENA */
-+#define WM8958_DSP2CLK_ENA_SHIFT                    14  /* DSP2CLK_ENA */
-+#define WM8958_DSP2CLK_ENA_WIDTH                     1  /* DSP2CLK_ENA */
-+#define WM8958_DSP2CLK_SRC                      0x1000  /* DSP2CLK_SRC */
-+#define WM8958_DSP2CLK_SRC_MASK                 0x1000  /* DSP2CLK_SRC */
-+#define WM8958_DSP2CLK_SRC_SHIFT                    12  /* DSP2CLK_SRC */
-+#define WM8958_DSP2CLK_SRC_WIDTH                     1  /* DSP2CLK_SRC */
- #define WM8994_TOCLK_ENA                        0x0010  /* TOCLK_ENA */
- #define WM8994_TOCLK_ENA_MASK                   0x0010  /* TOCLK_ENA */
- #define WM8994_TOCLK_ENA_SHIFT                       4  /* TOCLK_ENA */
-@@ -4356,4 +4373,102 @@
- #define WM8994_TEMP_SHUT_DB_SHIFT                    0  /* TEMP_SHUT_DB */
- #define WM8994_TEMP_SHUT_DB_WIDTH                    1  /* TEMP_SHUT_DB */
+@@ -70,6 +70,9 @@
+ #define WM8994_DC_SERVO_4                       0x57
+ #define WM8994_DC_SERVO_READBACK                0x58
+ #define WM8994_ANALOGUE_HP_1                    0x60
++#define WM8958_MIC_DETECT_1                     0xD0
++#define WM8958_MIC_DETECT_2                     0xD1
++#define WM8958_MIC_DETECT_3                     0xD2
+ #define WM8994_CHIP_REVISION                    0x100
+ #define WM8994_CONTROL_INTERFACE                0x101
+ #define WM8994_WRITE_SEQUENCER_CTRL_1           0x110
+@@ -1971,6 +1974,46 @@
+ #define WM8994_HPOUT1R_DLY_WIDTH                     1  /* HPOUT1R_DLY */
  
-+/*
-+ * R2304 (0x900) - DSP2_Program
+ /*
++ * R208 (0xD0) - Mic Detect 1
 + */
-+#define WM8958_DSP2_ENA                         0x0001  /* DSP2_ENA */
-+#define WM8958_DSP2_ENA_MASK                    0x0001  /* DSP2_ENA */
-+#define WM8958_DSP2_ENA_SHIFT                        0  /* DSP2_ENA */
-+#define WM8958_DSP2_ENA_WIDTH                        1  /* DSP2_ENA */
++#define WM8958_MICD_BIAS_STARTTIME_MASK         0xF000  /* MICD_BIAS_STARTTIME - [15:12] */
++#define WM8958_MICD_BIAS_STARTTIME_SHIFT            12  /* MICD_BIAS_STARTTIME - [15:12] */
++#define WM8958_MICD_BIAS_STARTTIME_WIDTH             4  /* MICD_BIAS_STARTTIME - [15:12] */
++#define WM8958_MICD_RATE_MASK                   0x0F00  /* MICD_RATE - [11:8] */
++#define WM8958_MICD_RATE_SHIFT                       8  /* MICD_RATE - [11:8] */
++#define WM8958_MICD_RATE_WIDTH                       4  /* MICD_RATE - [11:8] */
++#define WM8958_MICD_DBTIME                      0x0002  /* MICD_DBTIME */
++#define WM8958_MICD_DBTIME_MASK                 0x0002  /* MICD_DBTIME */
++#define WM8958_MICD_DBTIME_SHIFT                     1  /* MICD_DBTIME */
++#define WM8958_MICD_DBTIME_WIDTH                     1  /* MICD_DBTIME */
++#define WM8958_MICD_ENA                         0x0001  /* MICD_ENA */
++#define WM8958_MICD_ENA_MASK                    0x0001  /* MICD_ENA */
++#define WM8958_MICD_ENA_SHIFT                        0  /* MICD_ENA */
++#define WM8958_MICD_ENA_WIDTH                        1  /* MICD_ENA */
 +
 +/*
-+ * R2305 (0x901) - DSP2_Config
++ * R209 (0xD1) - Mic Detect 2
 + */
-+#define WM8958_MBC_SEL_MASK                     0x0030  /* MBC_SEL - [5:4] */
-+#define WM8958_MBC_SEL_SHIFT                         4  /* MBC_SEL - [5:4] */
-+#define WM8958_MBC_SEL_WIDTH                         2  /* MBC_SEL - [5:4] */
-+#define WM8958_MBC_ENA                          0x0001  /* MBC_ENA */
-+#define WM8958_MBC_ENA_MASK                     0x0001  /* MBC_ENA */
-+#define WM8958_MBC_ENA_SHIFT                         0  /* MBC_ENA */
-+#define WM8958_MBC_ENA_WIDTH                         1  /* MBC_ENA */
++#define WM8958_MICD_LVL_SEL_MASK                0x00FF  /* MICD_LVL_SEL - [7:0] */
++#define WM8958_MICD_LVL_SEL_SHIFT                    0  /* MICD_LVL_SEL - [7:0] */
++#define WM8958_MICD_LVL_SEL_WIDTH                    8  /* MICD_LVL_SEL - [7:0] */
 +
 +/*
-+ * R2560 (0xA00) - DSP2_MagicNum
++ * R210 (0xD2) - Mic Detect 3
 + */
-+#define WM8958_DSP2_MAGIC_NUM_MASK              0xFFFF  /* DSP2_MAGIC_NUM - [15:0] */
-+#define WM8958_DSP2_MAGIC_NUM_SHIFT                  0  /* DSP2_MAGIC_NUM - [15:0] */
-+#define WM8958_DSP2_MAGIC_NUM_WIDTH                 16  /* DSP2_MAGIC_NUM - [15:0] */
++#define WM8958_MICD_LVL_MASK                    0x07FC  /* MICD_LVL - [10:2] */
++#define WM8958_MICD_LVL_SHIFT                        2  /* MICD_LVL - [10:2] */
++#define WM8958_MICD_LVL_WIDTH                        9  /* MICD_LVL - [10:2] */
++#define WM8958_MICD_VALID                       0x0002  /* MICD_VALID */
++#define WM8958_MICD_VALID_MASK                  0x0002  /* MICD_VALID */
++#define WM8958_MICD_VALID_SHIFT                      1  /* MICD_VALID */
++#define WM8958_MICD_VALID_WIDTH                      1  /* MICD_VALID */
++#define WM8958_MICD_STS                         0x0001  /* MICD_STS */
++#define WM8958_MICD_STS_MASK                    0x0001  /* MICD_STS */
++#define WM8958_MICD_STS_SHIFT                        0  /* MICD_STS */
++#define WM8958_MICD_STS_WIDTH                        1  /* MICD_STS */
 +
 +/*
-+ * R2561 (0xA01) - DSP2_ReleaseYear
-+ */
-+#define WM8958_DSP2_RELEASE_YEAR_MASK           0xFFFF  /* DSP2_RELEASE_YEAR - [15:0] */
-+#define WM8958_DSP2_RELEASE_YEAR_SHIFT               0  /* DSP2_RELEASE_YEAR - [15:0] */
-+#define WM8958_DSP2_RELEASE_YEAR_WIDTH              16  /* DSP2_RELEASE_YEAR - [15:0] */
-+
-+/*
-+ * R2562 (0xA02) - DSP2_ReleaseMonthDay
-+ */
-+#define WM8958_DSP2_RELEASE_MONTH_MASK          0xFF00  /* DSP2_RELEASE_MONTH - [15:8] */
-+#define WM8958_DSP2_RELEASE_MONTH_SHIFT              8  /* DSP2_RELEASE_MONTH - [15:8] */
-+#define WM8958_DSP2_RELEASE_MONTH_WIDTH              8  /* DSP2_RELEASE_MONTH - [15:8] */
-+#define WM8958_DSP2_RELEASE_DAY_MASK            0x00FF  /* DSP2_RELEASE_DAY - [7:0] */
-+#define WM8958_DSP2_RELEASE_DAY_SHIFT                0  /* DSP2_RELEASE_DAY - [7:0] */
-+#define WM8958_DSP2_RELEASE_DAY_WIDTH                8  /* DSP2_RELEASE_DAY - [7:0] */
-+
-+/*
-+ * R2563 (0xA03) - DSP2_ReleaseTime
-+ */
-+#define WM8958_DSP2_RELEASE_HOURS_MASK          0xFF00  /* DSP2_RELEASE_HOURS - [15:8] */
-+#define WM8958_DSP2_RELEASE_HOURS_SHIFT              8  /* DSP2_RELEASE_HOURS - [15:8] */
-+#define WM8958_DSP2_RELEASE_HOURS_WIDTH              8  /* DSP2_RELEASE_HOURS - [15:8] */
-+#define WM8958_DSP2_RELEASE_MINS_MASK           0x00FF  /* DSP2_RELEASE_MINS - [7:0] */
-+#define WM8958_DSP2_RELEASE_MINS_SHIFT               0  /* DSP2_RELEASE_MINS - [7:0] */
-+#define WM8958_DSP2_RELEASE_MINS_WIDTH               8  /* DSP2_RELEASE_MINS - [7:0] */
-+
-+/*
-+ * R2564 (0xA04) - DSP2_VerMajMin
-+ */
-+#define WM8958_DSP2_MAJOR_VER_MASK              0xFF00  /* DSP2_MAJOR_VER - [15:8] */
-+#define WM8958_DSP2_MAJOR_VER_SHIFT                  8  /* DSP2_MAJOR_VER - [15:8] */
-+#define WM8958_DSP2_MAJOR_VER_WIDTH                  8  /* DSP2_MAJOR_VER - [15:8] */
-+#define WM8958_DSP2_MINOR_VER_MASK              0x00FF  /* DSP2_MINOR_VER - [7:0] */
-+#define WM8958_DSP2_MINOR_VER_SHIFT                  0  /* DSP2_MINOR_VER - [7:0] */
-+#define WM8958_DSP2_MINOR_VER_WIDTH                  8  /* DSP2_MINOR_VER - [7:0] */
-+
-+/*
-+ * R2565 (0xA05) - DSP2_VerBuild
-+ */
-+#define WM8958_DSP2_BUILD_VER_MASK              0xFFFF  /* DSP2_BUILD_VER - [15:0] */
-+#define WM8958_DSP2_BUILD_VER_SHIFT                  0  /* DSP2_BUILD_VER - [15:0] */
-+#define WM8958_DSP2_BUILD_VER_WIDTH                 16  /* DSP2_BUILD_VER - [15:0] */
-+
-+/*
-+ * R2573 (0xA0D) - DSP2_ExecControl
-+ */
-+#define WM8958_DSP2_STOPC                       0x0020  /* DSP2_STOPC */
-+#define WM8958_DSP2_STOPC_MASK                  0x0020  /* DSP2_STOPC */
-+#define WM8958_DSP2_STOPC_SHIFT                      5  /* DSP2_STOPC */
-+#define WM8958_DSP2_STOPC_WIDTH                      1  /* DSP2_STOPC */
-+#define WM8958_DSP2_STOPS                       0x0010  /* DSP2_STOPS */
-+#define WM8958_DSP2_STOPS_MASK                  0x0010  /* DSP2_STOPS */
-+#define WM8958_DSP2_STOPS_SHIFT                      4  /* DSP2_STOPS */
-+#define WM8958_DSP2_STOPS_WIDTH                      1  /* DSP2_STOPS */
-+#define WM8958_DSP2_STOPI                       0x0008  /* DSP2_STOPI */
-+#define WM8958_DSP2_STOPI_MASK                  0x0008  /* DSP2_STOPI */
-+#define WM8958_DSP2_STOPI_SHIFT                      3  /* DSP2_STOPI */
-+#define WM8958_DSP2_STOPI_WIDTH                      1  /* DSP2_STOPI */
-+#define WM8958_DSP2_STOP                        0x0004  /* DSP2_STOP */
-+#define WM8958_DSP2_STOP_MASK                   0x0004  /* DSP2_STOP */
-+#define WM8958_DSP2_STOP_SHIFT                       2  /* DSP2_STOP */
-+#define WM8958_DSP2_STOP_WIDTH                       1  /* DSP2_STOP */
-+#define WM8958_DSP2_RUNR                        0x0002  /* DSP2_RUNR */
-+#define WM8958_DSP2_RUNR_MASK                   0x0002  /* DSP2_RUNR */
-+#define WM8958_DSP2_RUNR_SHIFT                       1  /* DSP2_RUNR */
-+#define WM8958_DSP2_RUNR_WIDTH                       1  /* DSP2_RUNR */
-+#define WM8958_DSP2_RUN                         0x0001  /* DSP2_RUN */
-+#define WM8958_DSP2_RUN_MASK                    0x0001  /* DSP2_RUN */
-+#define WM8958_DSP2_RUN_SHIFT                        0  /* DSP2_RUN */
-+#define WM8958_DSP2_RUN_WIDTH                        1  /* DSP2_RUN */
-+
- #endif
+  * R256 (0x100) - Chip Revision
+  */
+ #define WM8994_CHIP_REV_MASK                    0x000F  /* CHIP_REV - [3:0] */
 diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index fb06093..b30b2dd 100644
+index b30b2dd..948677b 100644
 --- a/sound/soc/codecs/wm8994.c
 +++ b/sound/soc/codecs/wm8994.c
-@@ -80,6 +80,8 @@ struct wm8994_priv {
- 	int dac_rates[2];
- 	int lrclk_shared[2];
+@@ -21,6 +21,7 @@
+ #include <linux/regulator/consumer.h>
+ #include <linux/slab.h>
+ #include <sound/core.h>
++#include <sound/jack.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -95,6 +96,11 @@ struct wm8994_priv {
  
-+	int mbc_ena[3];
+ 	struct wm8994_micdet micdet[2];
+ 
++	wm8958_micdet_cb jack_cb;
++	void *jack_cb_data;
++	bool jack_is_mic;
++	bool jack_is_video;
 +
- 	/* Platform dependant DRC configuration */
- 	const char **drc_texts;
- 	int drc_cfg[WM8994_NUM_DRC];
-@@ -137,6 +139,7 @@ static int wm8994_volatile(unsigned int reg)
- 	case WM8994_RATE_STATUS:
+ 	int revision;
+ 	struct wm8994_pdata *pdata;
+ };
+@@ -140,6 +146,7 @@ static int wm8994_volatile(unsigned int reg)
  	case WM8994_LDO_1:
  	case WM8994_LDO_2:
-+	case WM8958_DSP2_EXECCONTROL:
+ 	case WM8958_DSP2_EXECCONTROL:
++	case WM8958_MIC_DETECT_3:
  		return 1;
  	default:
  		return 0;
-@@ -520,6 +523,168 @@ static const struct soc_enum aif2dacl_src =
- static const struct soc_enum aif2dacr_src =
- 	SOC_ENUM_SINGLE(WM8994_AIF2_CONTROL_2, 14, 2, aif_chan_src_text);
+@@ -2633,6 +2640,133 @@ static irqreturn_t wm8994_mic_irq(int irq, void *data)
+ 	return IRQ_HANDLED;
+ }
  
-+static void wm8958_mbc_apply(struct snd_soc_codec *codec, int mbc, int start)
++/* Default microphone detection handler for WM8958 - the user can
++ * override this if they wish.
++ */
++static void wm8958_default_micdet(u16 status, void *data)
++{
++	struct snd_soc_codec *codec = data;
++	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
++	int report = 0;
++
++	/* If nothing present then clear our statuses */
++	if (!(status & WM8958_MICD_STS)) {
++		wm8994->jack_is_video = false;
++		wm8994->jack_is_mic = false;
++		goto done;
++	}
++
++	/* Assume anything over 475 ohms is a microphone and remember
++	 * that we've seen one (since buttons override it) */
++	if (status & 0x600)
++		wm8994->jack_is_mic = true;
++	if (wm8994->jack_is_mic)
++		report |= SND_JACK_MICROPHONE;
++
++	/* Video has an impedence of approximately 75 ohms; assume
++	 * this isn't used as a button and remember it since buttons
++	 * override it. */
++	if (status & 0x40)
++		wm8994->jack_is_video = true;
++	if (wm8994->jack_is_video)
++		report |= SND_JACK_VIDEOOUT;
++
++	/* Everything else is buttons; just assign slots */
++	if (status & 0x4)
++		report |= SND_JACK_BTN_0;
++	if (status & 0x8)
++		report |= SND_JACK_BTN_1;
++	if (status & 0x10)
++		report |= SND_JACK_BTN_2;
++	if (status & 0x20)
++		report |= SND_JACK_BTN_3;
++	if (status & 0x80)
++		report |= SND_JACK_BTN_4;
++	if (status & 0x100)
++		report |= SND_JACK_BTN_5;
++
++done:
++	snd_soc_jack_report(wm8994->micdet[0].jack,
++			    SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_BTN_2 |
++			    SND_JACK_BTN_3 | SND_JACK_BTN_4 | SND_JACK_BTN_5 |
++			    SND_JACK_MICROPHONE | SND_JACK_VIDEOOUT,
++			    report);
++}
++
++/**
++ * wm8958_mic_detect - Enable microphone detection via the WM8958 IRQ
++ *
++ * @codec:   WM8958 codec
++ * @jack:    jack to report detection events on
++ *
++ * Enable microphone detection functionality for the WM8958.  By
++ * default simple detection which supports the detection of up to 6
++ * buttons plus video and microphone functionality is supported.
++ *
++ * The WM8958 has an advanced jack detection facility which is able to
++ * support complex accessory detection, especially when used in
++ * conjunction with external circuitry.  In order to provide maximum
++ * flexiblity a callback is provided which allows a completely custom
++ * detection algorithm.
++ */
++int wm8958_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack,
++		      wm8958_micdet_cb cb, void *cb_data)
 +{
 +	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-+	int pwr_reg = snd_soc_read(codec, WM8994_POWER_MANAGEMENT_5);
-+	int ena, reg, aif;
++	struct wm8994 *control = codec->control_data;
 +
-+	switch (mbc) {
-+	case 0:
-+		pwr_reg &= (WM8994_AIF1DAC1L_ENA | WM8994_AIF1DAC1R_ENA);
-+		aif = 0;
-+		break;
-+	case 1:
-+		pwr_reg &= (WM8994_AIF1DAC2L_ENA | WM8994_AIF1DAC2R_ENA);
-+		aif = 0;
-+		break;
-+	case 2:
-+		pwr_reg &= (WM8994_AIF2DACL_ENA | WM8994_AIF2DACR_ENA);
-+		aif = 1;
-+		break;
-+	default:
-+		BUG();
-+		return;
-+	}
-+
-+	/* We can only enable the MBC if the AIF is enabled and we
-+	 * want it to be enabled. */
-+	ena = pwr_reg && wm8994->mbc_ena[mbc];
-+
-+	reg = snd_soc_read(codec, WM8958_DSP2_PROGRAM);
-+
-+	dev_dbg(codec->dev, "MBC %d startup: %d, power: %x, DSP: %x\n",
-+		mbc, start, pwr_reg, reg);
-+
-+	if (start && ena) {
-+		/* If the DSP is already running then noop */
-+		if (reg & WM8958_DSP2_ENA)
-+			return;
-+
-+		/* Switch the clock over to the appropriate AIF */
-+		snd_soc_update_bits(codec, WM8994_CLOCKING_1,
-+				    WM8958_DSP2CLK_SRC | WM8958_DSP2CLK_ENA,
-+				    aif << WM8958_DSP2CLK_SRC_SHIFT |
-+				    WM8958_DSP2CLK_ENA);
-+
-+		snd_soc_update_bits(codec, WM8958_DSP2_PROGRAM,
-+				    WM8958_DSP2_ENA, WM8958_DSP2_ENA);
-+
-+		/* TODO: Apply any user specified MBC settings */
-+
-+		/* Run the DSP */
-+		snd_soc_write(codec, WM8958_DSP2_EXECCONTROL,
-+			      WM8958_DSP2_RUNR);
-+
-+		/* And we're off! */
-+		snd_soc_update_bits(codec, WM8958_DSP2_CONFIG,
-+				    WM8958_MBC_ENA | WM8958_MBC_SEL_MASK,
-+				    mbc << WM8958_MBC_SEL_SHIFT |
-+				    WM8958_MBC_ENA);
-+	} else {
-+		/* If the DSP is already stopped then noop */
-+		if (!(reg & WM8958_DSP2_ENA))
-+			return;
-+
-+		snd_soc_update_bits(codec, WM8958_DSP2_CONFIG,
-+				    WM8958_MBC_ENA, 0);	
-+		snd_soc_update_bits(codec, WM8958_DSP2_PROGRAM,
-+				    WM8958_DSP2_ENA, 0);
-+		snd_soc_update_bits(codec, WM8994_CLOCKING_1,
-+				    WM8958_DSP2CLK_ENA, 0);
-+	}
-+}
-+
-+static int wm8958_aif_ev(struct snd_soc_dapm_widget *w,
-+		    struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = w->codec;
-+	int mbc;
-+
-+	switch (w->shift) {
-+	case 13:
-+	case 12:
-+		mbc = 2;
-+		break;
-+	case 11:
-+	case 10:
-+		mbc = 1;
-+		break;
-+	case 9:
-+	case 8:
-+		mbc = 0;
-+		break;
-+	default:
-+		BUG();
-+		return -EINVAL;
-+	}
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		wm8958_mbc_apply(codec, mbc, 1);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		wm8958_mbc_apply(codec, mbc, 0);
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int wm8958_mbc_info(struct snd_kcontrol *kcontrol,
-+			   struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = 1;
-+	return 0;
-+}
-+
-+static int wm8958_mbc_get(struct snd_kcontrol *kcontrol,
-+			  struct snd_ctl_elem_value *ucontrol)
-+{
-+	int mbc = kcontrol->private_value;
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-+
-+	ucontrol->value.integer.value[0] = wm8994->mbc_ena[mbc];
-+
-+	return 0;
-+}
-+
-+static int wm8958_mbc_put(struct snd_kcontrol *kcontrol,
-+			  struct snd_ctl_elem_value *ucontrol)
-+{
-+	int mbc = kcontrol->private_value;
-+	int i;
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-+
-+	if (ucontrol->value.integer.value[0] > 1)
++	if (control->type != WM8958)
 +		return -EINVAL;
 +
-+	for (i = 0; i < ARRAY_SIZE(wm8994->mbc_ena); i++) {
-+		if (mbc != i && wm8994->mbc_ena[i]) {
-+			dev_dbg(codec->dev, "MBC %d active already\n", mbc);
-+			return -EBUSY;
++	if (jack) {
++		if (!cb) {
++			dev_dbg(codec->dev, "Using default micdet callback\n");
++			cb = wm8958_default_micdet;
++			cb_data = codec;
 +		}
++
++		wm8994->micdet[0].jack = jack;
++		wm8994->jack_cb = cb;
++		wm8994->jack_cb_data = cb_data;
++
++		snd_soc_update_bits(codec, WM8958_MIC_DETECT_1,
++				    WM8958_MICD_ENA, WM8958_MICD_ENA);
++	} else {
++		snd_soc_update_bits(codec, WM8958_MIC_DETECT_1,
++				    WM8958_MICD_ENA, 0);
 +	}
-+
-+	wm8994->mbc_ena[mbc] = ucontrol->value.integer.value[0];
-+
-+	wm8958_mbc_apply(codec, mbc, wm8994->mbc_ena[mbc]);
 +
 +	return 0;
 +}
++EXPORT_SYMBOL_GPL(wm8958_mic_detect);
 +
-+#define WM8958_MBC_SWITCH(xname, xval) {\
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE,\
-+	.info = wm8958_mbc_info, \
-+	.get = wm8958_mbc_get, .put = wm8958_mbc_put, \
-+	.private_value = xval }
++static irqreturn_t wm8958_mic_irq(int irq, void *data)
++{
++	struct wm8994_priv *wm8994 = data;
++	struct snd_soc_codec *codec = wm8994->codec;
++	int reg;
 +
- static const struct snd_kcontrol_new wm8994_snd_controls[] = {
- SOC_DOUBLE_R_TLV("AIF1ADC1 Volume", WM8994_AIF1_ADC1_LEFT_VOLUME,
- 		 WM8994_AIF1_ADC1_RIGHT_VOLUME,
-@@ -649,6 +814,9 @@ SOC_SINGLE_TLV("AIF2 EQ5 Volume", WM8994_AIF2_EQ_GAINS_2, 6, 31, 0,
++	reg = snd_soc_read(codec, WM8958_MIC_DETECT_3);
++	if (reg < 0) {
++		dev_err(codec->dev, "Failed to read mic detect status: %d\n",
++			reg);
++		return IRQ_NONE;
++	}
++
++	if (!(reg & WM8958_MICD_VALID)) {
++		dev_dbg(codec->dev, "Mic detect data not valid\n");
++		goto out;
++	}
++
++	if (wm8994->jack_cb)
++		wm8994->jack_cb(reg, wm8994->jack_cb_data);
++	else
++		dev_warn(codec->dev, "Accessory detection with no callback\n");
++
++out:
++	return IRQ_HANDLED;
++}
++
+ static int wm8994_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct wm8994 *control;
+@@ -2732,6 +2866,17 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
+ 				 "Failed to request Mic2 short IRQ: %d\n",
+ 				 ret);
+ 		break;
++
++	case WM8958:
++		ret = wm8994_request_irq(codec->control_data,
++					 WM8994_IRQ_MIC1_DET,
++					 wm8958_mic_irq, "Mic detect",
++					 wm8994);
++		if (ret != 0)
++			dev_warn(codec->dev,
++				 "Failed to request Mic detect IRQ: %d\n",
++				 ret);
++		break;
+ 	}
  
- static const struct snd_kcontrol_new wm8958_snd_controls[] = {
- SOC_SINGLE_TLV("AIF3 Boost Volume", WM8958_AIF3_CONTROL_2, 10, 3, 0, aif_tlv),
-+WM8958_MBC_SWITCH("AIF1DAC1 MBC Switch", 0),
-+WM8958_MBC_SWITCH("AIF1DAC2 MBC Switch", 1),
-+WM8958_MBC_SWITCH("AIF2DAC MBC Switch", 2),
- };
+ 	/* Remember if AIFnLRCLK is configured as a GPIO.  This should be
+@@ -2866,6 +3011,11 @@ static int  wm8994_codec_remove(struct snd_soc_codec *codec)
+ 		wm8994_free_irq(codec->control_data, WM8994_IRQ_MIC1_DET,
+ 				wm8994);
+ 		break;
++
++	case WM8958:
++		wm8994_free_irq(codec->control_data, WM8994_IRQ_MIC1_DET,
++				wm8994);
++		break;
+ 	}
+ 	kfree(wm8994->retune_mobile_texts);
+ 	kfree(wm8994->drc_texts);
+diff --git a/sound/soc/codecs/wm8994.h b/sound/soc/codecs/wm8994.h
+index b8b3166..455cae6 100644
+--- a/sound/soc/codecs/wm8994.h
++++ b/sound/soc/codecs/wm8994.h
+@@ -28,8 +28,12 @@
+ #define WM8994_FLL_SRC_LRCLK  3
+ #define WM8994_FLL_SRC_BCLK   4
  
- static int clk_sys_event(struct snd_soc_dapm_widget *w,
-@@ -1018,19 +1186,23 @@ SND_SOC_DAPM_AIF_OUT("AIF1ADC1L", "AIF1 Capture",
- 		     0, WM8994_POWER_MANAGEMENT_4, 9, 0),
- SND_SOC_DAPM_AIF_OUT("AIF1ADC1R", "AIF1 Capture",
- 		     0, WM8994_POWER_MANAGEMENT_4, 8, 0),
--SND_SOC_DAPM_AIF_IN("AIF1DAC1L", NULL, 0,
--		    WM8994_POWER_MANAGEMENT_5, 9, 0),
--SND_SOC_DAPM_AIF_IN("AIF1DAC1R", NULL, 0,
--		    WM8994_POWER_MANAGEMENT_5, 8, 0),
-+SND_SOC_DAPM_AIF_IN_E("AIF1DAC1L", NULL, 0,
-+		      WM8994_POWER_MANAGEMENT_5, 9, 0, wm8958_aif_ev,
-+		      SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+SND_SOC_DAPM_AIF_IN_E("AIF1DAC1R", NULL, 0,
-+		      WM8994_POWER_MANAGEMENT_5, 8, 0, wm8958_aif_ev,
-+		      SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++typedef void (*wm8958_micdet_cb)(u16 status, void *data);
++
+ int wm8994_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack,
+ 		      int micbias, int det, int shrt);
++int wm8958_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack,
++		      wm8958_micdet_cb cb, void *cb_data);
  
- SND_SOC_DAPM_AIF_OUT("AIF1ADC2L", "AIF1 Capture",
- 		     0, WM8994_POWER_MANAGEMENT_4, 11, 0),
- SND_SOC_DAPM_AIF_OUT("AIF1ADC2R", "AIF1 Capture",
- 		     0, WM8994_POWER_MANAGEMENT_4, 10, 0),
--SND_SOC_DAPM_AIF_IN("AIF1DAC2L", NULL, 0,
--		    WM8994_POWER_MANAGEMENT_5, 11, 0),
--SND_SOC_DAPM_AIF_IN("AIF1DAC2R", NULL, 0,
--		    WM8994_POWER_MANAGEMENT_5, 10, 0),
-+SND_SOC_DAPM_AIF_IN_E("AIF1DAC2L", NULL, 0,
-+		      WM8994_POWER_MANAGEMENT_5, 11, 0, wm8958_aif_ev,
-+		      SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+SND_SOC_DAPM_AIF_IN_E("AIF1DAC2R", NULL, 0,
-+		      WM8994_POWER_MANAGEMENT_5, 10, 0, wm8958_aif_ev,
-+		      SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+ #define WM8994_CACHE_SIZE 1570
  
- SND_SOC_DAPM_MIXER("AIF1ADC1L Mixer", SND_SOC_NOPM, 0, 0,
- 		   aif1adc1l_mix, ARRAY_SIZE(aif1adc1l_mix)),
-@@ -1059,10 +1231,12 @@ SND_SOC_DAPM_AIF_OUT("AIF2ADCL", NULL, 0,
- 		     WM8994_POWER_MANAGEMENT_4, 13, 0),
- SND_SOC_DAPM_AIF_OUT("AIF2ADCR", NULL, 0,
- 		     WM8994_POWER_MANAGEMENT_4, 12, 0),
--SND_SOC_DAPM_AIF_IN("AIF2DACL", NULL, 0,
--		    WM8994_POWER_MANAGEMENT_5, 13, 0),
--SND_SOC_DAPM_AIF_IN("AIF2DACR", NULL, 0,
--		    WM8994_POWER_MANAGEMENT_5, 12, 0),
-+SND_SOC_DAPM_AIF_IN_E("AIF2DACL", NULL, 0,
-+		      WM8994_POWER_MANAGEMENT_5, 13, 0, wm8958_aif_ev,
-+		      SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+SND_SOC_DAPM_AIF_IN_E("AIF2DACR", NULL, 0,
-+		      WM8994_POWER_MANAGEMENT_5, 12, 0, wm8958_aif_ev,
-+		      SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
- 
- SND_SOC_DAPM_AIF_IN("AIF1DACDAT", "AIF1 Playback", 0, SND_SOC_NOPM, 0, 0),
- SND_SOC_DAPM_AIF_IN("AIF2DACDAT", "AIF2 Playback", 0, SND_SOC_NOPM, 0, 0),
 -- 
 1.7.1
