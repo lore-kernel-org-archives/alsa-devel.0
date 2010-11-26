@@ -1,15 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.37
-Date: Fri, 26 Nov 2010 13:13:58 +0000
-Message-ID: <20101126131358.GE30360@rakim.wolfsonmicro.main>
+From: Ozan =?utf-8?q?=C3=87a=C4=9Flayan?= <ozan@pardus.org.tr>
+Subject: Re: No sound with Sony VAIO VPCZ11 (ALC889)
+Date: Fri, 26 Nov 2010 15:24:43 +0200
+Message-ID: <201011261524.43802.ozan@pardus.org.tr>
+References: <201011241530.11106.ozan@pardus.org.tr>
+	<201011261444.37717.ozan@pardus.org.tr>
+	<s5hipzks063.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 704D9244E9
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 14:14:00 +0100 (CET)
-Content-Disposition: inline
+Received: from lider.pardus.org.tr (lider.pardus.org.tr [193.140.100.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 97372103CE8
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 14:29:07 +0100 (CET)
+In-Reply-To: <s5hipzks063.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,46 +22,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit d6f443ae4c1d54379ad5953d7bcb89a63387184d:
-
-  ASoC: nuc900-ac97: fix a memory leak (2010-11-24 11:31:18 +0000)
-
-are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.37
-
-Axel has been very busy with lots of small fixes, mostly in error
-handling or unregistration paths which are rarely exercised.
-
-Axel Lin (11):
-      ASoC: Call snd_soc_unregister_dais instead of snd_soc_unregister_dai in sh4_soc_dai_remove
-      ASoC: efika-audio-fabric: fix resource leak in efika_fabric_init error path
-      ASoC: pcm030-audio-fabric: fix resource leak in pcm030_fabric_init error path
-      ASoC: snd-soc-afeb9260: remove unneeded platform_device_del in error path
-      ASoC: sam9g20_wm8731: fix resource leak in at91sam9g20ek_init error path
-      ASoC: simone: fix resource leak in simone_init error path
-      ASoC: imx-ssi: fix resource leak
-      ASoC: phycore-ac97: fix resource leak
-      ASoC: davinci-vcif - fix a memory leak
-      ASoC: tlv320aic3x - fix variable may be used uninitialized warning
-      ASoC: Fix resource reclaim for osk5912
-
-Dmitry Artamonow (1):
-      ASoC: fix SND_PXA2XX_LIB Kconfig warning
-
- sound/soc/atmel/sam9g20_wm8731.c    |    5 ++++-
- sound/soc/atmel/snd-soc-afeb9260.c  |    1 -
- sound/soc/codecs/tlv320aic3x.c      |    6 +++---
- sound/soc/davinci/davinci-vcif.c    |    3 +++
- sound/soc/ep93xx/simone.c           |   18 ++++++++++--------
- sound/soc/fsl/efika-audio-fabric.c  |    1 +
- sound/soc/fsl/pcm030-audio-fabric.c |    1 +
- sound/soc/imx/imx-ssi.c             |   15 +++++++++++----
- sound/soc/imx/phycore-ac97.c        |   28 +++++++++++++++++++++-------
- sound/soc/omap/osk5912.c            |   11 ++++++++---
- sound/soc/pxa/Kconfig               |    1 +
- sound/soc/sh/ssi.c                  |    2 +-
- 12 files changed, 64 insertions(+), 28 deletions(-)
+Q3VtYSAyNiBLYXPEsW0gMjAxMCBnw7xuw7wgKHNhYXQgMTU6MDc6NDgpIFRha2FzaGkgSXdhaSDF
+n3VubGFyxLEgeWF6bcSxxZ90xLE6Cgo+IAo+IE1ha2Ugc3VyZSB0aGF0IHlvdSBwYXNzIG5vIG1v
+ZGVsIG9wdGlvbiwgb3IganVzdCBwYXNzIG1vZGVsPWF1dG8KPiBvcHRpb24uICBJZiB0aGlzIHN0
+aWxsIGRvZXNuJ3Qgd29yaywgdHJ5IHdpdGggcHJvYmVfb25seT0xIG9wdGlvbi4KPiBUaGVuIHlv
+dSdsbCBzZWUgd2hldGhlciBpdCdzIHRoZSBjb250cm9sbGVyIHNpZGUgb3IgdGhlIGNvZGVjIHNp
+ZGUuCgpPa2F5LCBJJ3ZlIGZpcnN0IHBhc3NlZCBtb2RlbD1hdXRvOgoKWyAgIDEwLjcxOTYxNl0g
+SERBIEludGVsIDAwMDA6MDA6MWIuMDogUENJIElOVCBBIC0+IEdTSSAxNiAobGV2ZWwsIGxvdykg
+LT4gSVJRIDE2ClsgICAxMC43MTk3MzVdIEhEQSBJbnRlbCAwMDAwOjAwOjFiLjA6IGlycSA0NCBm
+b3IgTVNJL01TSS1YClsgICAxMC43MTk3NzFdIEhEQSBJbnRlbCAwMDAwOjAwOjFiLjA6IHNldHRp
+bmcgbGF0ZW5jeSB0aW1lciB0byA2NApbICAgMTAuNzUwODg2XSBBTFNBIGhkYV9jb2RlYy5jOjM3
+MDE6IGhkYV9jb2RlYzogbW9kZWwgJ2F1dG8nIGlzIHNlbGVjdGVkClsgICAxMC43NTA4OTBdIGhk
+YV9jb2RlYzogQUxDODg5OiBTS1Ugbm90IHJlYWR5IDB4NDExMTExZjAKWyAgIDEwLjc1MDg5NV0g
+QUxTQSBoZGFfY29kZWMuYzo0NjE5OiBhdXRvY29uZmlnOiBsaW5lX291dHM9MSAoMHgxNC8weDAv
+MHgwLzB4MC8weDApClsgICAxMC43NTA4OThdIEFMU0EgaGRhX2NvZGVjLmM6NDYyMzogICAgc3Bl
+YWtlcl9vdXRzPTAgKDB4MC8weDAvMHgwLzB4MC8weDApClsgICAxMC43NTA5MDBdIEFMU0EgaGRh
+X2NvZGVjLmM6NDYyNzogICAgaHBfb3V0cz0xICgweDE1LzB4MC8weDAvMHgwLzB4MCkKWyAgIDEw
+Ljc1MDkwM10gQUxTQSBoZGFfY29kZWMuYzo0NjI4OiAgICBtb25vOiBtb25vX291dD0weDAKWyAg
+IDEwLjc1MDkwNV0gQUxTQSBoZGFfY29kZWMuYzo0NjMyOiAgICBpbnB1dHM6ClsgICAxMC43NTA5
+MDZdIEFMU0EgaGRhX2NvZGVjLmM6NDYzODrCtwpbICAgMTAuNzU1OTI5XSBoZGFfY29kZWM6IGNh
+bm5vdCBidWlsZCBjb250cm9scyBmb3IgIzAgKGVycm9yIC0xNikKWyAgIDEwLjc1Njk4Nl0gaW5w
+dXQ6IEhEQSBJbnRlbCBIZWFkcGhvbmUgYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFi
+LjAvc291bmQvY2FyZDAvaW5wdXQxMApbICAgMTAuNzU5MzAwXSBIREEgSW50ZWwgMDAwMDowMTow
+MC4xOiBQQ0kgSU5UIEEgLT4gR1NJIDE2IChsZXZlbCwgbG93KSAtPiBJUlEgMTYKWyAgIDEwLjc1
+OTMwNV0gaGRhX2ludGVsOiBEaXNhYmxlIE1TSSBmb3IgTnZpZGlhIGNoaXBzZXQKWyAgIDEwLjc2
+MDczMF0gSERBIEludGVsIDAwMDA6MDE6MDAuMTogc2V0dGluZyBsYXRlbmN5IHRpbWVyIHRvIDY0
+ClsgICAxMC45NjU2MDVdIEFMU0EgaGRhX2dlbmVyaWMuYzo2NTI6IGhkYV9nZW5lcmljOiBubyBw
+cm9wZXIgaW5wdXQgcGF0aCBmb3VuZApbICAgMTAuOTY1NjA5XSBBTFNBIGhkYV9nZW5lcmljLmM6
+NDMwOiBoZGFfZ2VuZXJpYzogbm8gcHJvcGVyIG91dHB1dCBwYXRoIGZvdW5kClsgICAxMC45ODc1
+NzZdIEFMU0EgaGRhX2dlbmVyaWMuYzo2NTI6IGhkYV9nZW5lcmljOiBubyBwcm9wZXIgaW5wdXQg
+cGF0aCBmb3VuZApbICAgMTAuOTg3NTgwXSBBTFNBIGhkYV9nZW5lcmljLmM6NDMwOiBoZGFfZ2Vu
+ZXJpYzogbm8gcHJvcGVyIG91dHB1dCBwYXRoIGZvdW5kClsgICAxMS4wMDk1MzddIEFMU0EgaGRh
+X2dlbmVyaWMuYzo2NTI6IGhkYV9nZW5lcmljOiBubyBwcm9wZXIgaW5wdXQgcGF0aCBmb3VuZApb
+ICAgMTEuMDA5NTQwXSBBTFNBIGhkYV9nZW5lcmljLmM6NDMwOiBoZGFfZ2VuZXJpYzogbm8gcHJv
+cGVyIG91dHB1dCBwYXRoIGZvdW5kClsgICAxMS4wMzE1MDBdIEFMU0EgaGRhX2dlbmVyaWMuYzo2
+NTI6IGhkYV9nZW5lcmljOiBubyBwcm9wZXIgaW5wdXQgcGF0aCBmb3VuZApbICAgMTEuMDMxNTAz
+XSBBTFNBIGhkYV9nZW5lcmljLmM6NDMwOiBoZGFfZ2VuZXJpYzogbm8gcHJvcGVyIG91dHB1dCBw
+YXRoIGZvdW5kClsgICAxMS4wMzE1MDddIEFMU0EgaGRhX2dlbmVyaWMuYzoxMDA1OiBoZGFfZ2Vu
+ZXJpYzogbm8gUENNIGZvdW5kClsgICAxMS4wMzE1MDldIEFMU0EgaGRhX2dlbmVyaWMuYzoxMDA1
+OiBoZGFfZ2VuZXJpYzogbm8gUENNIGZvdW5kClsgICAxMS4wMzE1MTFdIEFMU0EgaGRhX2dlbmVy
+aWMuYzoxMDA1OiBoZGFfZ2VuZXJpYzogbm8gUENNIGZvdW5kClsgICAxMS4wMzE1MTNdIEFMU0Eg
+aGRhX2dlbmVyaWMuYzoxMDA1OiBoZGFfZ2VuZXJpYzogbm8gUENNIGZvdW5kCgpUaGVuIHByb2Jl
+X29ubHk9MSBtb2RlbD1hdXRvOgoKWyAgIDEwLjY1NzQ1MF0gSERBIEludGVsIDAwMDA6MDA6MWIu
+MDogUENJIElOVCBBIC0+IEdTSSAxNiAobGV2ZWwsIGxvdykgLT4gSVJRIDE2ClsgICAxMC42NTc1
+NjFdIEhEQSBJbnRlbCAwMDAwOjAwOjFiLjA6IGlycSA0NCBmb3IgTVNJL01TSS1YClsgICAxMC42
+NTc1OTddIEhEQSBJbnRlbCAwMDAwOjAwOjFiLjA6IHNldHRpbmcgbGF0ZW5jeSB0aW1lciB0byA2
+NApbICAgMTAuNjcyNTQ2XSBIREEgSW50ZWwgMDAwMDowMTowMC4xOiBQQ0kgSU5UIEEgLT4gR1NJ
+IDE2IChsZXZlbCwgbG93KSAtPiBJUlEgMTYKWyAgIDEwLjY3MjU1MV0gaGRhX2ludGVsOiBEaXNh
+YmxlIE1TSSBmb3IgTnZpZGlhIGNoaXBzZXQKWyAgIDEwLjY3MjY1Ml0gSERBIEludGVsIDAwMDA6
+MDE6MDAuMTogc2V0dGluZyBsYXRlbmN5IHRpbWVyIHRvIDY0ClsgICAxMC44ODAyNzFdIEFMU0Eg
+aGRhX2dlbmVyaWMuYzo2NTI6IGhkYV9nZW5lcmljOiBubyBwcm9wZXIgaW5wdXQgcGF0aCBmb3Vu
+ZApbICAgMTAuODgwMjgxXSBBTFNBIGhkYV9nZW5lcmljLmM6NDMwOiBoZGFfZ2VuZXJpYzogbm8g
+cHJvcGVyIG91dHB1dCBwYXRoIGZvdW5kClsgICAxMC45MDQxNTFdIEFMU0EgaGRhX2dlbmVyaWMu
+Yzo2NTI6IGhkYV9nZW5lcmljOiBubyBwcm9wZXIgaW5wdXQgcGF0aCBmb3VuZApbICAgMTAuOTA0
+MTUzXSBBTFNBIGhkYV9nZW5lcmljLmM6NDMwOiBoZGFfZ2VuZXJpYzogbm8gcHJvcGVyIG91dHB1
+dCBwYXRoIGZvdW5kClsgICAxMC45MjYxMTRdIEFMU0EgaGRhX2dlbmVyaWMuYzo2NTI6IGhkYV9n
+ZW5lcmljOiBubyBwcm9wZXIgaW5wdXQgcGF0aCBmb3VuZApbICAgMTAuOTI2MTE3XSBBTFNBIGhk
+YV9nZW5lcmljLmM6NDMwOiBoZGFfZ2VuZXJpYzogbm8gcHJvcGVyIG91dHB1dCBwYXRoIGZvdW5k
+ClsgICAxMC45NDgwNjhdIEFMU0EgaGRhX2dlbmVyaWMuYzo2NTI6IGhkYV9nZW5lcmljOiBubyBw
+cm9wZXIgaW5wdXQgcGF0aCBmb3VuZApbICAgMTAuOTQ4MDcxXSBBTFNBIGhkYV9nZW5lcmljLmM6
+NDMwOiBoZGFfZ2VuZXJpYzogbm8gcHJvcGVyIG91dHB1dCBwYXRoIGZvdW5kClsgICAxMC45NDgw
+NzVdIEFMU0EgaGRhX2dlbmVyaWMuYzoxMDA1OiBoZGFfZ2VuZXJpYzogbm8gUENNIGZvdW5kClsg
+ICAxMC45NDgwNzhdIEFMU0EgaGRhX2dlbmVyaWMuYzoxMDA1OiBoZGFfZ2VuZXJpYzogbm8gUENN
+IGZvdW5kClsgICAxMC45NDgwODFdIEFMU0EgaGRhX2dlbmVyaWMuYzoxMDA1OiBoZGFfZ2VuZXJp
+Yzogbm8gUENNIGZvdW5kClsgICAxMC45NDgwODRdIEFMU0EgaGRhX2dlbmVyaWMuYzoxMDA1OiBo
+ZGFfZ2VuZXJpYzogbm8gUENNIGZvdW5kCgoKLS0tCk96YW4gw4dhxJ9sYXlhbgpUVUJJVEFLL1VF
+S0FFIC0gUGFyZHVzIExpbnV4Cmh0dHA6Ly93d3cucGFyZHVzLm9yZy50ci9lbmcKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
