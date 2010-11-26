@@ -1,18 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 0/4] Fixes resource leaks for Samsung SoCs
-Date: Fri, 26 Nov 2010 12:26:36 +0000
-Message-ID: <1290774396.3298.6.camel@odin>
-References: <1290754245.25125.1.camel@mola>
+Subject: Re: [PATCH] ASoC: Remove redundant hw_write
+ initialisation in WM8737
+Date: Fri, 26 Nov 2010 12:26:57 +0000
+Message-ID: <1290774417.3298.7.camel@odin>
+References: <1290772916-31532-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 39CAA24341
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 13:26:42 +0100 (CET)
-Received: by wyi11 with SMTP id 11so1902941wyi.38
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 04:26:41 -0800 (PST)
-In-Reply-To: <1290754245.25125.1.camel@mola>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id DE7451037FF
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 13:27:04 +0100 (CET)
+Received: by wwe15 with SMTP id 15so1998273wwe.20
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 04:27:00 -0800 (PST)
+In-Reply-To: <1290772916-31532-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,27 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Cuelenaere <mcuelenaere@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Graeme Gregory <graeme@openmoko.org>, Chanwoo Choi <cw00.choi@samsung.com>, Maurus@alsa-project.org, Seungwhan Youn <sw.youn@samsung.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-11-26 at 14:50 +0800, Axel Lin wrote:
-> This serial of patches fixes resource leaks for Samsung SoCs.
+On Fri, 2010-11-26 at 12:01 +0000, Mark Brown wrote:
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/wm8737.c |    1 -
+>  1 files changed, 0 insertions(+), 1 deletions(-)
 > 
-> Axel Lin (4):
->   ASoC: Fix resource leask in goni_wm8994.c
->   ASoC: Fix resource leask in neo1973_gta02_init() error path
->   ASoC: Add missing gpio_free(S3C64XX_GPK(12)) in smartq_exit()
->   ASoC: Fix resource leask in smdk_spdif.c
-> 
->  sound/soc/samsung/goni_wm8994.c          |    9 +++++++--
->  sound/soc/samsung/neo1973_gta02_wm8753.c |   22 +++++++++++-----------
->  sound/soc/samsung/smartq_wm8987.c        |    1 +
->  sound/soc/samsung/smdk_spdif.c           |   13 +++++++++----
->  4 files changed, 28 insertions(+), 17 deletions(-)
-> 
-
-All 
+> diff --git a/sound/soc/codecs/wm8737.c b/sound/soc/codecs/wm8737.c
+> index 2301338..30c67d0 100644
+> --- a/sound/soc/codecs/wm8737.c
+> +++ b/sound/soc/codecs/wm8737.c
+> @@ -560,7 +560,6 @@ static int wm8737_probe(struct snd_soc_codec *codec)
+>  	struct wm8737_priv *wm8737 = snd_soc_codec_get_drvdata(codec);
+>  	int ret, i;
+>  
+> -	codec->hw_write = (hw_write_t)i2c_master_send;
+>  	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8737->control_type);
+>  	if (ret != 0) {
+>  		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
