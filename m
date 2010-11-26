@@ -1,19 +1,39 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
+From: John Ettedgui <john.ettedgui@gmail.com>
 Subject: Re: ALSA Multichannel through HDMI
-Date: Fri, 26 Nov 2010 02:59:40 +0200
-Message-ID: <4CEF067C.8090807@iki.fi>
-References: <20100112045102.GA29735@localhost>	<20100113014550.GA10184@localhost>	<eb9000ab1001122048s1ac0d9c3n130692ba83dd53d1@mail.gmail.com>	<20100113045238.GB26275@localhost>	<eb9000ab1001122055s54bc6697t6103def1e8ae64ae@mail.gmail.com>	<20100113050254.GA28475@localhost>	<AANLkTim8zHRTc0F2CcfoXtxDkH2kpYajCuheo7GoQ4zW@mail.gmail.com>	<ickmvo$kkf$1@dough.gmane.org>	<AANLkTi=d7RHy4KgSS7yB+deAq=JnFabbA9qfwH8WQCG2@mail.gmail.com>	<4CEE3F1E.4010405@iki.fi>	<AANLkTikYpKak6C5Oz=c0OxiG8FaD2qqzn7siW0kMJgzs@mail.gmail.com>	<4CEE4B29.5090808@iki.fi>	<AANLkTi=9SMLG1vYjDAPUjQJaBwzOJSMchbE+oUVGcgRN@mail.gmail.com>	<4CEEB6DF.2060905@iki.fi>	<AANLkTim7O0vvRcQdYBmTNDnBwFhF-RskfOLtbCnKU_5M@mail.gmail.com>	<4CEEE9F9.6040405@iki.fi>	<AANLkTikRP7WnWc1k20qW-nZtOtNcfNimVOcxbf2uC8jD@mail.gmail.com>	<4CEEEE0C.9
- 090803@iki.fi>	<AANLkTikS4C6GS2EuqdA_D58y4h9qCMBEWPSoO7JdhC9g@mail.gmail.com>
+Date: Thu, 25 Nov 2010 17:08:49 -0800
+Message-ID: <AANLkTim9T0-oVTi1PZxD86y0y2YKX5Ctcm3eG63U7i0X@mail.gmail.com>
+References: <20100112045102.GA29735@localhost>
+	<20100113014550.GA10184@localhost>
+	<eb9000ab1001122048s1ac0d9c3n130692ba83dd53d1@mail.gmail.com>
+	<20100113045238.GB26275@localhost>
+	<eb9000ab1001122055s54bc6697t6103def1e8ae64ae@mail.gmail.com>
+	<20100113050254.GA28475@localhost>
+	<AANLkTim8zHRTc0F2CcfoXtxDkH2kpYajCuheo7GoQ4zW@mail.gmail.com>
+	<ickmvo$kkf$1@dough.gmane.org>
+	<AANLkTi=d7RHy4KgSS7yB+deAq=JnFabbA9qfwH8WQCG2@mail.gmail.com>
+	<4CEE3F1E.4010405@iki.fi>
+	<AANLkTikYpKak6C5Oz=c0OxiG8FaD2qqzn7siW0kMJgzs@mail.gmail.com>
+	<4CEE4B29.5090808@iki.fi>
+	<AANLkTi=9SMLG1vYjDAPUjQJaBwzOJSMchbE+oUVGcgRN@mail.gmail.com>
+	<4CEEB6DF.2060905@iki.fi>
+	<AANLkTim7O0vvRcQdYBmTNDnBwFhF-RskfOLtbCnKU_5M@mail.gmail.com>
+	<4CEEE9F9.6040405@iki.fi>
+	<AANLkTikRP7WnWc1k20qW-nZtOtNcfNimVOcxbf2uC8jD@mail.gmail.com>
+	<4CEEEE0C.9090803@iki.fi>
+	<AANLkTikS4C6GS2EuqdA_D58y4h9qCMBEWPSoO7JdhC9g@mail.gmail.com>
 	<AANLkTi=4CjtW0dY=1=kbPXEUu5N8MWYAoudMq409nKTi@mail.gmail.com>
+	<4CEF067C.8090807@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sirokuusama.dnainternet.net (sirokuusama.dnainternet.net
-	[83.102.40.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id B601F103C99
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 01:59:43 +0100 (CET)
-In-Reply-To: <AANLkTi=4CjtW0dY=1=kbPXEUu5N8MWYAoudMq409nKTi@mail.gmail.com>
+Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
+	[209.85.216.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6FF6D103C99
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 02:08:50 +0100 (CET)
+Received: by qyk11 with SMTP id 11so1546074qyk.17
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2010 17:08:49 -0800 (PST)
+In-Reply-To: <4CEF067C.8090807@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,145 +43,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Ettedgui <john.ettedgui@gmail.com>
+To: Anssi Hannula <anssi.hannula@iki.fi>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 26.11.2010 02:53, John Ettedgui wrote:
-> On Thu, Nov 25, 2010 at 3:34 PM, John Ettedgui <john.ettedgui@gmail.com> wrote:
->> On Thu, Nov 25, 2010 at 3:15 PM, Anssi Hannula <anssi.hannula@iki.fi> wrote:
->>> On 26.11.2010 01:11, John Ettedgui wrote:
->>>> On Thu, Nov 25, 2010 at 2:58 PM, Anssi Hannula <anssi.hannula@iki.fi> wrote:
->>>>> On 26.11.2010 00:42, John Ettedgui wrote:
->>>>>> On Thu, Nov 25, 2010 at 11:19 AM, Anssi Hannula <anssi.hannula@iki.fi> wrote:
->>>>>>> On 25.11.2010 14:21, John Ettedgui wrote:
->>>>>>>> On Thu, Nov 25, 2010 at 3:40 AM, Anssi Hannula <anssi.hannula@iki.fi> wrote:
->>>>>>>>> On 25.11.2010 13:09, John Ettedgui wrote:
->>>>>>>>>> On Thu, Nov 25, 2010 at 2:49 AM, Anssi Hannula <anssi.hannula@iki.fi> wrote:
->>>>>>>>>>> On 25.11.2010 06:12, John Ettedgui wrote:
->>>>>>>>>>>> I'm actually trying to get a 5.1 setup working without passthrough, if
->>>>>>>>>>>> I use mplayer with passthrough my receiver behaves just fine, but I am
->>>>>>>>>>>> trying to send the 6 channels from the computer.
->>>>>>>>>>>>
->>>>>>>>>>>> I was actually told that the current ALSA driver for radeon's hdmi
->>>>>>>>>>>> does not support more than 2 channels, and that would explain why I'm
->>>>>>>>>>>> getting this behavior. Is that true though?
->>>>>>>>>>>
->>>>>>>>>>> Yes.
->>>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> However, strangely your log output seems to show the intel's hdmi parser
->>>>>>>>>>> being used instead:
->>>>>>>>>>>
->>>>>>>>>>>> ALSA sound/pci/hda/patch_intelhdmi.c:842: hdmi_setup_stream: NID=0x2,
->>>>>>>>>>>> stream=0x1, new-format=0x11
->>>>>>>>>>>
->>>>>>>>>>> Were you just trying some patch at the time?
->>>>>>>>>>
->>>>>>>>>> yes Wu gave me a patch to try against the kernel, I'm guessing this is
->>>>>>>>>> the reason you see something unexpected.
->>>>>>>>>
->>>>>>>>> Did 6 channels work with that patch? (possibly with a wrong channel order)
->>>>>>>> Not any better as far as I remember.
->>>>>>>
->>>>>>> OK. Did 2 channel audio continue to work with it?
->>>>>>>
->>>>>>> If you are not sure, here's the patch doing the same thing against
->>>>>>> current alsa driver:
->>>>>>> http://stuff.onse.fi/0001-ALSA-hda-Use-generic-HDMI-code-for-ATI-HDMI-codecs.patch
->>>>>>>
->>>>>>> Confirming that would help (it would allow to switch the ATI chip to use
->>>>>>> the generic parser instead of the ATI-specific one), though not with the
->>>>>>> multichannel issue (see below).
->>>>>>>
->>>>>>> [...]
->>>>>>>
->>>>>>>>>> Since I just moved to jack/rca cables I'm in no hurry anymore, but is
->>>>>>>>>> there any reason why the driver cannot work with more than 2 channels?
->>>>>>>>>
->>>>>>>>> I don't really know (it is simply not implemented).
->>>>>>>> Alright.
->>>>>>>>>
->>>>>>>>>> Anything I could do to help with that?
->>>>>>>>>
->>>>>>>>> Possibly. But see above, so that we won't try the same things you
->>>>>>>>> already tried :)
->>>>>>>>>
->>>>>>>> Sure :)
->>>>>>>
->>>>>>> Looking again at the the alsa info output you provided, I don't think I
->>>>>>> have any great ideas. It looks like the chip simply reports that it
->>>>>>> supports a maximum of 2 channels.
->>>>>>>
->>>>>>> One option could be hardcoding "chans = 8;" in generic_hdmi_build_pcms()
->>>>>>> in sound/pci/hda/patch_hdmi.c (assuming you have the above patch and 2
->>>>>>> channel audio works with it). However, I find it rather unlikely that it
->>>>>>> would make any difference.
->>>>>>>
->>>>>>> --
->>>>>>> Anssi Hannula
->>>>>>>
->>>>>>
->>>>>> Anssi,
->>>>>> the patch fails on my kernel, I cannot find the hda_codec_preset
->>>>>> manually in there either.
->>>>>> Did you want me to try that against a 2.6.37 rc instead of a 2.6.36?
->>>>>
->>>>> For 2.6.36 I think you can just use your earlier patch.
->>>>>
->>>>> Note that on that kernel generic_hdmi_build_pcms() is
->>>>> intel_hdmi_build_pcms() in patch_intelhdmi.c.
->>>>>
->>>> ok
->>>>> BTW, I've just been informed by another ATI user that his card was
->>>>> actually stereo-only, while he thought earlier it was multichannel
->>>>> capable. So, are you sure your card is a multichannel one?
->>>>> (if not, it would explain why the card says it is not)
->>>>>
->>>>> --
->>>>> Anssi Hannula
->>>>>
->>>> Yes, it works fine in Window  so I believe the hardware part is good.
->>>
->>> And you are sure it is multichannel PCM, and not e.g. multichannel DTS
->>> or multichannel AC-3 with on-the-fly compression, which are possible
->>> with stereo hdmi as well?
->>>
->>> Just making sure :)
->>>
->>> --
->>> Anssi Hannula
->>>
->>
->> Well, I have not super tested it, but the reason I believe it is is
->> simple, when I use passthrough my receiver says Dolby digital or
->> something like that, but in Windows just going around or playing games
->> it says Multichannel.
-
-Sounds ok then.
-
->> I'll get the patch applied in a few minutes, I was running out of
->> memory and my system was getting really slow... :)
->>
-> 
-> I am not sure if I did it right but now I don't even get hdmi sound
-> working anymore.
-> It is not listed in aplay-l, and dmesg gives me this:
-> [drm:radeon_dvi_detect] *ERROR* HDMI Type A-1: probed a monitor but
-> no|invalid EDID
-> 
-> I've attached the patch I used, since I could not used the previous
-> one I had to hack it, maybe I broke something?
-> (I have not set channels to 8 yet, just changed the parser)
-
-The patch looks ok. The above error message is weird, as it comes from
-the display driver which should not be affected by the patch at all.
-
-I'll look at the code later (tomorrow maybe). Until then I'd advise you
-to retry without the patch and with the patch again, just to make sure
-this is not some unrelated issue...
-Also, post the whole dmesg when it works (2 channel, without patch), and
-when it doesn't (with patch).
-
--- 
-Anssi Hannula
+T24gVGh1LCBOb3YgMjUsIDIwMTAgYXQgNDo1OSBQTSwgQW5zc2kgSGFubnVsYSA8YW5zc2kuaGFu
+bnVsYUBpa2kuZmk+IHdyb3RlOgo+IE9uIDI2LjExLjIwMTAgMDI6NTMsIEpvaG4gRXR0ZWRndWkg
+d3JvdGU6Cj4+IE9uIFRodSwgTm92IDI1LCAyMDEwIGF0IDM6MzQgUE0sIEpvaG4gRXR0ZWRndWkg
+PGpvaG4uZXR0ZWRndWlAZ21haWwuY29tPiB3cm90ZToKPj4+IE9uIFRodSwgTm92IDI1LCAyMDEw
+IGF0IDM6MTUgUE0sIEFuc3NpIEhhbm51bGEgPGFuc3NpLmhhbm51bGFAaWtpLmZpPiB3cm90ZToK
+Pj4+PiBPbiAyNi4xMS4yMDEwIDAxOjExLCBKb2huIEV0dGVkZ3VpIHdyb3RlOgo+Pj4+PiBPbiBU
+aHUsIE5vdiAyNSwgMjAxMCBhdCAyOjU4IFBNLCBBbnNzaSBIYW5udWxhIDxhbnNzaS5oYW5udWxh
+QGlraS5maT4gd3JvdGU6Cj4+Pj4+PiBPbiAyNi4xMS4yMDEwIDAwOjQyLCBKb2huIEV0dGVkZ3Vp
+IHdyb3RlOgo+Pj4+Pj4+IE9uIFRodSwgTm92IDI1LCAyMDEwIGF0IDExOjE5IEFNLCBBbnNzaSBI
+YW5udWxhIDxhbnNzaS5oYW5udWxhQGlraS5maT4gd3JvdGU6Cj4+Pj4+Pj4+IE9uIDI1LjExLjIw
+MTAgMTQ6MjEsIEpvaG4gRXR0ZWRndWkgd3JvdGU6Cj4+Pj4+Pj4+PiBPbiBUaHUsIE5vdiAyNSwg
+MjAxMCBhdCAzOjQwIEFNLCBBbnNzaSBIYW5udWxhIDxhbnNzaS5oYW5udWxhQGlraS5maT4gd3Jv
+dGU6Cj4+Pj4+Pj4+Pj4gT24gMjUuMTEuMjAxMCAxMzowOSwgSm9obiBFdHRlZGd1aSB3cm90ZToK
+Pj4+Pj4+Pj4+Pj4gT24gVGh1LCBOb3YgMjUsIDIwMTAgYXQgMjo0OSBBTSwgQW5zc2kgSGFubnVs
+YSA8YW5zc2kuaGFubnVsYUBpa2kuZmk+IHdyb3RlOgo+Pj4+Pj4+Pj4+Pj4gT24gMjUuMTEuMjAx
+MCAwNjoxMiwgSm9obiBFdHRlZGd1aSB3cm90ZToKPj4+Pj4+Pj4+Pj4+PiBJJ20gYWN0dWFsbHkg
+dHJ5aW5nIHRvIGdldCBhIDUuMSBzZXR1cCB3b3JraW5nIHdpdGhvdXQgcGFzc3Rocm91Z2gsIGlm
+Cj4+Pj4+Pj4+Pj4+Pj4gSSB1c2UgbXBsYXllciB3aXRoIHBhc3N0aHJvdWdoIG15IHJlY2VpdmVy
+IGJlaGF2ZXMganVzdCBmaW5lLCBidXQgSSBhbQo+Pj4+Pj4+Pj4+Pj4+IHRyeWluZyB0byBzZW5k
+IHRoZSA2IGNoYW5uZWxzIGZyb20gdGhlIGNvbXB1dGVyLgo+Pj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+
+Pj4+Pj4gSSB3YXMgYWN0dWFsbHkgdG9sZCB0aGF0IHRoZSBjdXJyZW50IEFMU0EgZHJpdmVyIGZv
+ciByYWRlb24ncyBoZG1pCj4+Pj4+Pj4+Pj4+Pj4gZG9lcyBub3Qgc3VwcG9ydCBtb3JlIHRoYW4g
+MiBjaGFubmVscywgYW5kIHRoYXQgd291bGQgZXhwbGFpbiB3aHkgSSdtCj4+Pj4+Pj4+Pj4+Pj4g
+Z2V0dGluZyB0aGlzIGJlaGF2aW9yLiBJcyB0aGF0IHRydWUgdGhvdWdoPwo+Pj4+Pj4+Pj4+Pj4K
+Pj4+Pj4+Pj4+Pj4+IFllcy4KPj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+Pj4g
+SG93ZXZlciwgc3RyYW5nZWx5IHlvdXIgbG9nIG91dHB1dCBzZWVtcyB0byBzaG93IHRoZSBpbnRl
+bCdzIGhkbWkgcGFyc2VyCj4+Pj4+Pj4+Pj4+PiBiZWluZyB1c2VkIGluc3RlYWQ6Cj4+Pj4+Pj4+
+Pj4+Pgo+Pj4+Pj4+Pj4+Pj4+IEFMU0Egc291bmQvcGNpL2hkYS9wYXRjaF9pbnRlbGhkbWkuYzo4
+NDI6IGhkbWlfc2V0dXBfc3RyZWFtOiBOSUQ9MHgyLAo+Pj4+Pj4+Pj4+Pj4+IHN0cmVhbT0weDEs
+IG5ldy1mb3JtYXQ9MHgxMQo+Pj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4+IFdlcmUgeW91IGp1c3Qg
+dHJ5aW5nIHNvbWUgcGF0Y2ggYXQgdGhlIHRpbWU/Cj4+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+IHll
+cyBXdSBnYXZlIG1lIGEgcGF0Y2ggdG8gdHJ5IGFnYWluc3QgdGhlIGtlcm5lbCwgSSdtIGd1ZXNz
+aW5nIHRoaXMgaXMKPj4+Pj4+Pj4+Pj4gdGhlIHJlYXNvbiB5b3Ugc2VlIHNvbWV0aGluZyB1bmV4
+cGVjdGVkLgo+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4gRGlkIDYgY2hhbm5lbHMgd29yayB3aXRoIHRo
+YXQgcGF0Y2g/IChwb3NzaWJseSB3aXRoIGEgd3JvbmcgY2hhbm5lbCBvcmRlcikKPj4+Pj4+Pj4+
+IE5vdCBhbnkgYmV0dGVyIGFzIGZhciBhcyBJIHJlbWVtYmVyLgo+Pj4+Pj4+Pgo+Pj4+Pj4+PiBP
+Sy4gRGlkIDIgY2hhbm5lbCBhdWRpbyBjb250aW51ZSB0byB3b3JrIHdpdGggaXQ/Cj4+Pj4+Pj4+
+Cj4+Pj4+Pj4+IElmIHlvdSBhcmUgbm90IHN1cmUsIGhlcmUncyB0aGUgcGF0Y2ggZG9pbmcgdGhl
+IHNhbWUgdGhpbmcgYWdhaW5zdAo+Pj4+Pj4+PiBjdXJyZW50IGFsc2EgZHJpdmVyOgo+Pj4+Pj4+
+PiBodHRwOi8vc3R1ZmYub25zZS5maS8wMDAxLUFMU0EtaGRhLVVzZS1nZW5lcmljLUhETUktY29k
+ZS1mb3ItQVRJLUhETUktY29kZWNzLnBhdGNoCj4+Pj4+Pj4+Cj4+Pj4+Pj4+IENvbmZpcm1pbmcg
+dGhhdCB3b3VsZCBoZWxwIChpdCB3b3VsZCBhbGxvdyB0byBzd2l0Y2ggdGhlIEFUSSBjaGlwIHRv
+IHVzZQo+Pj4+Pj4+PiB0aGUgZ2VuZXJpYyBwYXJzZXIgaW5zdGVhZCBvZiB0aGUgQVRJLXNwZWNp
+ZmljIG9uZSksIHRob3VnaCBub3Qgd2l0aCB0aGUKPj4+Pj4+Pj4gbXVsdGljaGFubmVsIGlzc3Vl
+IChzZWUgYmVsb3cpLgo+Pj4+Pj4+Pgo+Pj4+Pj4+PiBbLi4uXQo+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+
+PiBTaW5jZSBJIGp1c3QgbW92ZWQgdG8gamFjay9yY2EgY2FibGVzIEknbSBpbiBubyBodXJyeSBh
+bnltb3JlLCBidXQgaXMKPj4+Pj4+Pj4+Pj4gdGhlcmUgYW55IHJlYXNvbiB3aHkgdGhlIGRyaXZl
+ciBjYW5ub3Qgd29yayB3aXRoIG1vcmUgdGhhbiAyIGNoYW5uZWxzPwo+Pj4+Pj4+Pj4+Cj4+Pj4+
+Pj4+Pj4gSSBkb24ndCByZWFsbHkga25vdyAoaXQgaXMgc2ltcGx5IG5vdCBpbXBsZW1lbnRlZCku
+Cj4+Pj4+Pj4+PiBBbHJpZ2h0Lgo+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4+IEFueXRoaW5nIEkgY291
+bGQgZG8gdG8gaGVscCB3aXRoIHRoYXQ/Cj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+PiBQb3NzaWJseS4g
+QnV0IHNlZSBhYm92ZSwgc28gdGhhdCB3ZSB3b24ndCB0cnkgdGhlIHNhbWUgdGhpbmdzIHlvdQo+
+Pj4+Pj4+Pj4+IGFscmVhZHkgdHJpZWQgOikKPj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4gU3VyZSA6KQo+
+Pj4+Pj4+Pgo+Pj4+Pj4+PiBMb29raW5nIGFnYWluIGF0IHRoZSB0aGUgYWxzYSBpbmZvIG91dHB1
+dCB5b3UgcHJvdmlkZWQsIEkgZG9uJ3QgdGhpbmsgSQo+Pj4+Pj4+PiBoYXZlIGFueSBncmVhdCBp
+ZGVhcy4gSXQgbG9va3MgbGlrZSB0aGUgY2hpcCBzaW1wbHkgcmVwb3J0cyB0aGF0IGl0Cj4+Pj4+
+Pj4+IHN1cHBvcnRzIGEgbWF4aW11bSBvZiAyIGNoYW5uZWxzLgo+Pj4+Pj4+Pgo+Pj4+Pj4+PiBP
+bmUgb3B0aW9uIGNvdWxkIGJlIGhhcmRjb2RpbmcgImNoYW5zID0gODsiIGluIGdlbmVyaWNfaGRt
+aV9idWlsZF9wY21zKCkKPj4+Pj4+Pj4gaW4gc291bmQvcGNpL2hkYS9wYXRjaF9oZG1pLmMgKGFz
+c3VtaW5nIHlvdSBoYXZlIHRoZSBhYm92ZSBwYXRjaCBhbmQgMgo+Pj4+Pj4+PiBjaGFubmVsIGF1
+ZGlvIHdvcmtzIHdpdGggaXQpLiBIb3dldmVyLCBJIGZpbmQgaXQgcmF0aGVyIHVubGlrZWx5IHRo
+YXQgaXQKPj4+Pj4+Pj4gd291bGQgbWFrZSBhbnkgZGlmZmVyZW5jZS4KPj4+Pj4+Pj4KPj4+Pj4+
+Pj4gLS0KPj4+Pj4+Pj4gQW5zc2kgSGFubnVsYQo+Pj4+Pj4+Pgo+Pj4+Pj4+Cj4+Pj4+Pj4gQW5z
+c2ksCj4+Pj4+Pj4gdGhlIHBhdGNoIGZhaWxzIG9uIG15IGtlcm5lbCwgSSBjYW5ub3QgZmluZCB0
+aGUgaGRhX2NvZGVjX3ByZXNldAo+Pj4+Pj4+IG1hbnVhbGx5IGluIHRoZXJlIGVpdGhlci4KPj4+
+Pj4+PiBEaWQgeW91IHdhbnQgbWUgdG8gdHJ5IHRoYXQgYWdhaW5zdCBhIDIuNi4zNyByYyBpbnN0
+ZWFkIG9mIGEgMi42LjM2Pwo+Pj4+Pj4KPj4+Pj4+IEZvciAyLjYuMzYgSSB0aGluayB5b3UgY2Fu
+IGp1c3QgdXNlIHlvdXIgZWFybGllciBwYXRjaC4KPj4+Pj4+Cj4+Pj4+PiBOb3RlIHRoYXQgb24g
+dGhhdCBrZXJuZWwgZ2VuZXJpY19oZG1pX2J1aWxkX3BjbXMoKSBpcwo+Pj4+Pj4gaW50ZWxfaGRt
+aV9idWlsZF9wY21zKCkgaW4gcGF0Y2hfaW50ZWxoZG1pLmMuCj4+Pj4+Pgo+Pj4+PiBvawo+Pj4+
+Pj4gQlRXLCBJJ3ZlIGp1c3QgYmVlbiBpbmZvcm1lZCBieSBhbm90aGVyIEFUSSB1c2VyIHRoYXQg
+aGlzIGNhcmQgd2FzCj4+Pj4+PiBhY3R1YWxseSBzdGVyZW8tb25seSwgd2hpbGUgaGUgdGhvdWdo
+dCBlYXJsaWVyIGl0IHdhcyBtdWx0aWNoYW5uZWwKPj4+Pj4+IGNhcGFibGUuIFNvLCBhcmUgeW91
+IHN1cmUgeW91ciBjYXJkIGlzIGEgbXVsdGljaGFubmVsIG9uZT8KPj4+Pj4+IChpZiBub3QsIGl0
+IHdvdWxkIGV4cGxhaW4gd2h5IHRoZSBjYXJkIHNheXMgaXQgaXMgbm90KQo+Pj4+Pj4KPj4+Pj4+
+IC0tCj4+Pj4+PiBBbnNzaSBIYW5udWxhCj4+Pj4+Pgo+Pj4+PiBZZXMsIGl0IHdvcmtzIGZpbmUg
+aW4gV2luZG93IMKgc28gSSBiZWxpZXZlIHRoZSBoYXJkd2FyZSBwYXJ0IGlzIGdvb2QuCj4+Pj4K
+Pj4+PiBBbmQgeW91IGFyZSBzdXJlIGl0IGlzIG11bHRpY2hhbm5lbCBQQ00sIGFuZCBub3QgZS5n
+LiBtdWx0aWNoYW5uZWwgRFRTCj4+Pj4gb3IgbXVsdGljaGFubmVsIEFDLTMgd2l0aCBvbi10aGUt
+Zmx5IGNvbXByZXNzaW9uLCB3aGljaCBhcmUgcG9zc2libGUKPj4+PiB3aXRoIHN0ZXJlbyBoZG1p
+IGFzIHdlbGw/Cj4+Pj4KPj4+PiBKdXN0IG1ha2luZyBzdXJlIDopCj4+Pj4KPj4+PiAtLQo+Pj4+
+IEFuc3NpIEhhbm51bGEKPj4+Pgo+Pj4KPj4+IFdlbGwsIEkgaGF2ZSBub3Qgc3VwZXIgdGVzdGVk
+IGl0LCBidXQgdGhlIHJlYXNvbiBJIGJlbGlldmUgaXQgaXMgaXMKPj4+IHNpbXBsZSwgd2hlbiBJ
+IHVzZSBwYXNzdGhyb3VnaCBteSByZWNlaXZlciBzYXlzIERvbGJ5IGRpZ2l0YWwgb3IKPj4+IHNv
+bWV0aGluZyBsaWtlIHRoYXQsIGJ1dCBpbiBXaW5kb3dzIGp1c3QgZ29pbmcgYXJvdW5kIG9yIHBs
+YXlpbmcgZ2FtZXMKPj4+IGl0IHNheXMgTXVsdGljaGFubmVsLgo+Cj4gU291bmRzIG9rIHRoZW4u
+Cj4KPj4+IEknbGwgZ2V0IHRoZSBwYXRjaCBhcHBsaWVkIGluIGEgZmV3IG1pbnV0ZXMsIEkgd2Fz
+IHJ1bm5pbmcgb3V0IG9mCj4+PiBtZW1vcnkgYW5kIG15IHN5c3RlbSB3YXMgZ2V0dGluZyByZWFs
+bHkgc2xvdy4uLiA6KQo+Pj4KPj4KPj4gSSBhbSBub3Qgc3VyZSBpZiBJIGRpZCBpdCByaWdodCBi
+dXQgbm93IEkgZG9uJ3QgZXZlbiBnZXQgaGRtaSBzb3VuZAo+PiB3b3JraW5nIGFueW1vcmUuCj4+
+IEl0IGlzIG5vdCBsaXN0ZWQgaW4gYXBsYXktbCwgYW5kIGRtZXNnIGdpdmVzIG1lIHRoaXM6Cj4+
+IFtkcm06cmFkZW9uX2R2aV9kZXRlY3RdICpFUlJPUiogSERNSSBUeXBlIEEtMTogcHJvYmVkIGEg
+bW9uaXRvciBidXQKPj4gbm98aW52YWxpZCBFRElECj4+Cj4+IEkndmUgYXR0YWNoZWQgdGhlIHBh
+dGNoIEkgdXNlZCwgc2luY2UgSSBjb3VsZCBub3QgdXNlZCB0aGUgcHJldmlvdXMKPj4gb25lIEkg
+aGFkIHRvIGhhY2sgaXQsIG1heWJlIEkgYnJva2Ugc29tZXRoaW5nPwo+PiAoSSBoYXZlIG5vdCBz
+ZXQgY2hhbm5lbHMgdG8gOCB5ZXQsIGp1c3QgY2hhbmdlZCB0aGUgcGFyc2VyKQo+Cj4gVGhlIHBh
+dGNoIGxvb2tzIG9rLiBUaGUgYWJvdmUgZXJyb3IgbWVzc2FnZSBpcyB3ZWlyZCwgYXMgaXQgY29t
+ZXMgZnJvbQo+IHRoZSBkaXNwbGF5IGRyaXZlciB3aGljaCBzaG91bGQgbm90IGJlIGFmZmVjdGVk
+IGJ5IHRoZSBwYXRjaCBhdCBhbGwuCj4KPiBJJ2xsIGxvb2sgYXQgdGhlIGNvZGUgbGF0ZXIgKHRv
+bW9ycm93IG1heWJlKS4gVW50aWwgdGhlbiBJJ2QgYWR2aXNlIHlvdQo+IHRvIHJldHJ5IHdpdGhv
+dXQgdGhlIHBhdGNoIGFuZCB3aXRoIHRoZSBwYXRjaCBhZ2FpbiwganVzdCB0byBtYWtlIHN1cmUK
+PiB0aGlzIGlzIG5vdCBzb21lIHVucmVsYXRlZCBpc3N1ZS4uLgo+IEFsc28sIHBvc3QgdGhlIHdo
+b2xlIGRtZXNnIHdoZW4gaXQgd29ya3MgKDIgY2hhbm5lbCwgd2l0aG91dCBwYXRjaCksIGFuZAo+
+IHdoZW4gaXQgZG9lc24ndCAod2l0aCBwYXRjaCkuCj4KPiAtLQo+IEFuc3NpIEhhbm51bGEKPgpG
+b2xsb3dpbmcgeW91ciBtZXNzYWdlIEkgcmVzdGFydGVkIG15IGNvbXB1dGVyIGFuZCB0aGF0IGVy
+cm9yIHdhcwpnb25lLCB5ZXQgdGhlcmUgaXMgc3RpbGwgbm90aGluZyBkaXNwbGF5IGluIGFwbGF5
+IC1sIC8gYXBsYXkgLUwgYWJvdXQKaGRtaSBhbnltb3JlLgpJJ2xsIGdvIGJhY2sgdG8gbXkgbm9u
+IHBhdGNoZWQga2VybmVsIGFuZCBzZWUgd2hhdCBpdCBkb2VzLgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
