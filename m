@@ -1,19 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/4] ASoC: Initial WM8958 audio
-	configuration
-Date: Fri, 26 Nov 2010 17:49:03 +0000
-Message-ID: <1290793743.3298.53.camel@odin>
-References: <1290784869-22204-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/4] ASoC: Convert WM8994 to use
+ soc-cache.c cache functions
+Date: Fri, 26 Nov 2010 18:01:10 +0000
+Message-ID: <1290794470.3298.65.camel@odin>
+References: <1290792224-21758-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 6165B2440F
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 18:49:13 +0100 (CET)
-Received: by wyi11 with SMTP id 11so2201519wyi.38
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 09:49:12 -0800 (PST)
-In-Reply-To: <1290784869-22204-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 646E924422
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 19:01:14 +0100 (CET)
+Received: by wyi11 with SMTP id 11so2211596wyi.38
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 10:01:14 -0800 (PST)
+In-Reply-To: <1290792224-21758-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,15 +27,16 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-11-26 at 15:21 +0000, Mark Brown wrote:
-> The WM8958 is a WM8994 derivative. This patch merely ensures that some
-> revision specific configuration for WM8994 is not enabled on WM8994,
-> additional patches will add support for the new features introduced on
-> the WM8958.
+On Fri, 2010-11-26 at 17:23 +0000, Mark Brown wrote:
+> In the process we convert the driver to read registers one at a time
+> when initialising the cache. This has the effect of working around
+> limitations in the sizes of I2C transactions which can be done by some
+> CPUs. Due to the sparseness of the register map the overhead from this
+> should be minimual unless I2C transactions are very expensive to start.
 > 
 > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-All 
+All
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
