@@ -1,15 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Remove redundant hw_write initialisation
-	in WM8737
-Date: Fri, 26 Nov 2010 12:01:56 +0000
-Message-ID: <1290772916-31532-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [RFC don't apply] ASoC: Add support for optional
+	auxiliary dailess codecs
+Date: Fri, 26 Nov 2010 14:19:42 +0200
+Message-ID: <201011261419.42933.peter.ujfalusi@nokia.com>
+References: <1290700058-9270-1-git-send-email-jhnikula@gmail.com>
+	<20101125213145.GB25162@opensource.wolfsonmicro.com>
+	<20101126092524.ea7cf74d.jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 82520103821
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 13:02:00 +0100 (CET)
+Received: from mgw-sa01.nokia.com (smtp.nokia.com [147.243.1.47])
+	by alsa0.perex.cz (Postfix) with ESMTP id 46D541037FF
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 13:19:53 +0100 (CET)
+In-Reply-To: <20101126092524.ea7cf74d.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,26 +23,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8737.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+Hi,
 
-diff --git a/sound/soc/codecs/wm8737.c b/sound/soc/codecs/wm8737.c
-index 2301338..30c67d0 100644
---- a/sound/soc/codecs/wm8737.c
-+++ b/sound/soc/codecs/wm8737.c
-@@ -560,7 +560,6 @@ static int wm8737_probe(struct snd_soc_codec *codec)
- 	struct wm8737_priv *wm8737 = snd_soc_codec_get_drvdata(codec);
- 	int ret, i;
- 
--	codec->hw_write = (hw_write_t)i2c_master_send;
- 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8737->control_type);
- 	if (ret != 0) {
- 		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
--- 
-1.7.1
+On Friday 26 November 2010 09:25:24 ext Jarkko Nikula wrote:
+> And codecs can be used as an amplifer only by not connecting the DAI.
+> Like if codec chip is cheaper or better available than amplifier or if
+> multicodec package saves board space compared to separate codec and
+> amplifier chips.
+
+We could as well see these things as components on the audio path.
+A standard CODEC would have DAI + DAPM (analog/digital routings, amps) + ga=
+in =
+
+controls.
+In case of an external amplifier we only have the DAPM part + gain control.
+
+If a component has DAI, than the normal PCM operations would apply to them,=
+ if =
+
+the component does not have DAI, than those are not applicable.
+I'm not sure, but I think we do have some level of separation of DAPM and P=
+CM =
+
+operations, right? So why not to utilize, and extend that route?
+All component drivers would use the same registration, core would knows whi=
+ch =
+
+component has DAI, and which does not. Machine driver could specify a list =
+of =
+
+components, provides the DAPM connection between the components.
+
+If DAPM core knows which widget belongs to which component, than I see no r=
+eal =
+
+problem with this method. The DAPM would work just fine. The PCM operatins =
+would =
+
+only apply to component with DAI.
+
+> If I counted correctly we have currently only three amplifier drivers:
+> tpa6130a2.c, wm2000.c and wm9090.c so separation doesn't sound worth of
+> trouble at this point as the core serves well those cases also.
+
+One more: max9877, if I recall correctly that was the first amp driver?
+
+-- =
+
+P=E9ter
