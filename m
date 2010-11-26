@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/4] ASoC: Add WM8958 microphone detection
-	support
-Date: Fri, 26 Nov 2010 15:21:09 +0000
-Message-ID: <1290784869-22204-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1290784869-22204-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: Re: ALSA Multichannel through HDMI
+Date: Fri, 26 Nov 2010 17:30:07 +0200
+Message-ID: <4CEFD27F.8040107@iki.fi>
+References: <20100112045102.GA29735@localhost>	<AANLkTi=d7RHy4KgSS7yB+deAq=JnFabbA9qfwH8WQCG2@mail.gmail.com>	<4CEE3F1E.4010405@iki.fi>	<AANLkTikYpKak6C5Oz=c0OxiG8FaD2qqzn7siW0kMJgzs@mail.gmail.com>	<4CEE4B29.5090808@iki.fi>	<AANLkTi=9SMLG1vYjDAPUjQJaBwzOJSMchbE+oUVGcgRN@mail.gmail.com>	<4CEEB6DF.2060905@iki.fi>	<AANLkTim7O0vvRcQdYBmTNDnBwFhF-RskfOLtbCnKU_5M@mail.gmail.com>	<4CEEE9F9.6040405@iki.fi>	<AANLkTikRP7WnWc1k20qW-nZtOtNcfNimVOcxbf2uC8jD@mail.gmail.com>	<4CEEEE0C.9090803@iki.fi>	<AANLkTikS4C6GS2EuqdA_D58y4h9qCMBEWPSoO7JdhC9g@mail.gmail.com>	<AANLkTi=4CjtW0dY=1=kbPXEUu5N8MWYAoudMq409nKTi@mail.gmail.com>	<4CEF067C.8090807@iki.fi>	<AANLkTim9T0-oVTi1PZxD86y0y2YKX5Ctcm3eG63U7i0X@mail.gmail.com>	<AANLkTimoyrYASyD4g0nv+F81Lcsg=Y23caXKVF5hyK_C@mail.gmail.com>	<4CEF188D.9040605@iki.fi>	<AAN
+ LkTinbea0wMDCuEQgbO7tqxWBB_qfZub9+yNyC+2LR@mail.gmail.com>	<AANLkTim+SH+NezrSqRAN9JC67f5Rz0J7KU4V-KqvqWWB@mail.gmail.com>
+	<AANLkTin=YmPtqHDDqfNnvMXfZmMFKKkV4m10OWW_4ANY@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 07455103D81
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 16:23:32 +0100 (CET)
-In-Reply-To: <1290784869-22204-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from saarni.dnainternet.net (saarni.dnainternet.net [83.102.40.136])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1690E103D7D
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 16:30:11 +0100 (CET)
+In-Reply-To: <AANLkTin=YmPtqHDDqfNnvMXfZmMFKKkV4m10OWW_4ANY@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,297 +22,193 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: John Ettedgui <john.ettedgui@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The WM8958 contains an advanced accessory detection feature which allows
-detection of up to seven different impedence levels on the microphone
-bias output, including detection of video outputs. Since some of the
-more involved accessory interfaces may involve noticable interactions
-with external components a simple detection scheme is provided by
-default with the option to provide custom handling of accessory detect.
+On 26.11.2010 08:00, John Ettedgui wrote:
+> On Thu, Nov 25, 2010 at 9:56 PM, John Ettedgui <john.ettedgui@gmail.com> wrote:
+>> On Thu, Nov 25, 2010 at 6:21 PM, John Ettedgui <john.ettedgui@gmail.com> wrote:
+>>> On Thu, Nov 25, 2010 at 6:16 PM, Anssi Hannula <anssi.hannula@iki.fi> wrote:
+>>>> On 26.11.2010 04:02, John Ettedgui wrote:
+>>>>> On Thu, Nov 25, 2010 at 5:08 PM, John Ettedgui <john.ettedgui@gmail.com> wrote:
+>>>>>> On Thu, Nov 25, 2010 at 4:59 PM, Anssi Hannula <anssi.hannula@iki.fi> wrote:
+>>>>>>> On 26.11.2010 02:53, John Ettedgui wrote:
+>>>>>>>> On Thu, Nov 25, 2010 at 3:34 PM, John Ettedgui <john.ettedgui@gmail.com> wrote:
+>>>>>>>>> On Thu, Nov 25, 2010 at 3:15 PM, Anssi Hannula <anssi.hannula@iki.fi> wrote:
+>>>>>>>>>> On 26.11.2010 01:11, John Ettedgui wrote:
+>>>>>>>>>>> On Thu, Nov 25, 2010 at 2:58 PM, Anssi Hannula <anssi.hannula@iki.fi> wrote:
+>>>>>>>>>>>> On 26.11.2010 00:42, John Ettedgui wrote:
+>>>>>>>>>>>>> On Thu, Nov 25, 2010 at 11:19 AM, Anssi Hannula <anssi.hannula@iki.fi> wrote:
+>>>>>>>>>>>>>> On 25.11.2010 14:21, John Ettedgui wrote:
+>>>>>>>>>>>>>>> On Thu, Nov 25, 2010 at 3:40 AM, Anssi Hannula <anssi.hannula@iki.fi> wrote:
+>>>>>>>>>>>>>>>> On 25.11.2010 13:09, John Ettedgui wrote:
+>>>>>>>>>>>>>>>>> On Thu, Nov 25, 2010 at 2:49 AM, Anssi Hannula <anssi.hannula@iki.fi> wrote:
+>>>>>>>>>>>>>>>>>> On 25.11.2010 06:12, John Ettedgui wrote:
+>>>>>>>>>>>>>>>>>>> I'm actually trying to get a 5.1 setup working without passthrough, if
+>>>>>>>>>>>>>>>>>>> I use mplayer with passthrough my receiver behaves just fine, but I am
+>>>>>>>>>>>>>>>>>>> trying to send the 6 channels from the computer.
+>>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>> I was actually told that the current ALSA driver for radeon's hdmi
+>>>>>>>>>>>>>>>>>>> does not support more than 2 channels, and that would explain why I'm
+>>>>>>>>>>>>>>>>>>> getting this behavior. Is that true though?
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>> Yes.
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>> However, strangely your log output seems to show the intel's hdmi parser
+>>>>>>>>>>>>>>>>>> being used instead:
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>>> ALSA sound/pci/hda/patch_intelhdmi.c:842: hdmi_setup_stream: NID=0x2,
+>>>>>>>>>>>>>>>>>>> stream=0x1, new-format=0x11
+>>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>> Were you just trying some patch at the time?
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> yes Wu gave me a patch to try against the kernel, I'm guessing this is
+>>>>>>>>>>>>>>>>> the reason you see something unexpected.
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>> Did 6 channels work with that patch? (possibly with a wrong channel order)
+>>>>>>>>>>>>>>> Not any better as far as I remember.
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> OK. Did 2 channel audio continue to work with it?
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> If you are not sure, here's the patch doing the same thing against
+>>>>>>>>>>>>>> current alsa driver:
+>>>>>>>>>>>>>> http://stuff.onse.fi/0001-ALSA-hda-Use-generic-HDMI-code-for-ATI-HDMI-codecs.patch
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> Confirming that would help (it would allow to switch the ATI chip to use
+>>>>>>>>>>>>>> the generic parser instead of the ATI-specific one), though not with the
+>>>>>>>>>>>>>> multichannel issue (see below).
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> [...]
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> Since I just moved to jack/rca cables I'm in no hurry anymore, but is
+>>>>>>>>>>>>>>>>> there any reason why the driver cannot work with more than 2 channels?
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>> I don't really know (it is simply not implemented).
+>>>>>>>>>>>>>>> Alright.
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> Anything I could do to help with that?
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>> Possibly. But see above, so that we won't try the same things you
+>>>>>>>>>>>>>>>> already tried :)
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> Sure :)
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> Looking again at the the alsa info output you provided, I don't think I
+>>>>>>>>>>>>>> have any great ideas. It looks like the chip simply reports that it
+>>>>>>>>>>>>>> supports a maximum of 2 channels.
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> One option could be hardcoding "chans = 8;" in generic_hdmi_build_pcms()
+>>>>>>>>>>>>>> in sound/pci/hda/patch_hdmi.c (assuming you have the above patch and 2
+>>>>>>>>>>>>>> channel audio works with it). However, I find it rather unlikely that it
+>>>>>>>>>>>>>> would make any difference.
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> --
+>>>>>>>>>>>>>> Anssi Hannula
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> Anssi,
+>>>>>>>>>>>>> the patch fails on my kernel, I cannot find the hda_codec_preset
+>>>>>>>>>>>>> manually in there either.
+>>>>>>>>>>>>> Did you want me to try that against a 2.6.37 rc instead of a 2.6.36?
+>>>>>>>>>>>>
+>>>>>>>>>>>> For 2.6.36 I think you can just use your earlier patch.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Note that on that kernel generic_hdmi_build_pcms() is
+>>>>>>>>>>>> intel_hdmi_build_pcms() in patch_intelhdmi.c.
+>>>>>>>>>>>>
+>>>>>>>>>>> ok
+>>>>>>>>>>>> BTW, I've just been informed by another ATI user that his card was
+>>>>>>>>>>>> actually stereo-only, while he thought earlier it was multichannel
+>>>>>>>>>>>> capable. So, are you sure your card is a multichannel one?
+>>>>>>>>>>>> (if not, it would explain why the card says it is not)
+>>>>>>>>>>>>
+>>>>>>>>>>>> --
+>>>>>>>>>>>> Anssi Hannula
+>>>>>>>>>>>>
+>>>>>>>>>>> Yes, it works fine in Window  so I believe the hardware part is good.
+>>>>>>>>>>
+>>>>>>>>>> And you are sure it is multichannel PCM, and not e.g. multichannel DTS
+>>>>>>>>>> or multichannel AC-3 with on-the-fly compression, which are possible
+>>>>>>>>>> with stereo hdmi as well?
+>>>>>>>>>>
+>>>>>>>>>> Just making sure :)
+>>>>>>>>>>
+>>>>>>>>>> --
+>>>>>>>>>> Anssi Hannula
+>>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> Well, I have not super tested it, but the reason I believe it is is
+>>>>>>>>> simple, when I use passthrough my receiver says Dolby digital or
+>>>>>>>>> something like that, but in Windows just going around or playing games
+>>>>>>>>> it says Multichannel.
+>>>>>>>
+>>>>>>> Sounds ok then.
+>>>>>>>
+>>>>>>>>> I'll get the patch applied in a few minutes, I was running out of
+>>>>>>>>> memory and my system was getting really slow... :)
+>>>>>>>>>
+>>>>>>>>
+>>>>>>>> I am not sure if I did it right but now I don't even get hdmi sound
+>>>>>>>> working anymore.
+>>>>>>>> It is not listed in aplay-l, and dmesg gives me this:
+>>>>>>>> [drm:radeon_dvi_detect] *ERROR* HDMI Type A-1: probed a monitor but
+>>>>>>>> no|invalid EDID
+>>>>>>>>
+>>>>>>>> I've attached the patch I used, since I could not used the previous
+>>>>>>>> one I had to hack it, maybe I broke something?
+>>>>>>>> (I have not set channels to 8 yet, just changed the parser)
+>>>>>>>
+>>>>>>> The patch looks ok. The above error message is weird, as it comes from
+>>>>>>> the display driver which should not be affected by the patch at all.
+>>>>>>>
+>>>>>>> I'll look at the code later (tomorrow maybe). Until then I'd advise you
+>>>>>>> to retry without the patch and with the patch again, just to make sure
+>>>>>>> this is not some unrelated issue...
+>>>>>>> Also, post the whole dmesg when it works (2 channel, without patch), and
+>>>>>>> when it doesn't (with patch).
+>>>>>>>
+>>>>>>> --
+>>>>>>> Anssi Hannula
+>>>>>>>
+>>>>>> Following your message I restarted my computer and that error was
+>>>>>> gone, yet there is still nothing display in aplay -l / aplay -L about
+>>>>>> hdmi anymore.
+>>>>>> I'll go back to my non patched kernel and see what it does.
+>>>>>>
+>>>>> With the non-patched kernel I get back my hdmi in aplay -l, so it
+>>>>> looks like the patch messed up something.
+>>>>
+>>>> Indeed.
+>>>>
+>>>>> I really think that when I tried it before it did not do that, but it
+>>>>> was so long ago that I could be wrong...
+>>>>
+>>>> Well, the driver has changed since then, it could be more strict now :)
+>>>>
+>>>>> Anyway here are the 2 dmesgs (not sure if they'll help though).
+>>>>
+>>>> Indeed, there doesn't seem to be any difference. Maybe try with
+>>>> CONFIG_SND_DEBUG_VERBOSE?
+>>>>
+>>>> --
+>>>> Anssi Hannula
+>>>>
+>>>
+>>> Sure I'll get that.
+>>>
+>>
+>> There you go.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- include/linux/mfd/wm8994/registers.h |   43 ++++++++++
- sound/soc/codecs/wm8994.c            |  150 ++++++++++++++++++++++++++++++++++
- sound/soc/codecs/wm8994.h            |    4 +
- 3 files changed, 197 insertions(+), 0 deletions(-)
+> ALSA sound/pci/hda/hda_intel.c:2531: chipset global capabilities = 0x1001
+> ALSA sound/pci/hda/hda_intel.c:913: codec_mask = 0x1
+> ALSA sound/pci/hda/hda_intel.c:1354: codec #0 probed OK
+> ALSA sound/pci/hda/hda_generic.c:683: hda_generic: no proper input path found
 
-diff --git a/include/linux/mfd/wm8994/registers.h b/include/linux/mfd/wm8994/registers.h
-index 423b2b5..a610c87 100644
---- a/include/linux/mfd/wm8994/registers.h
-+++ b/include/linux/mfd/wm8994/registers.h
-@@ -70,6 +70,9 @@
- #define WM8994_DC_SERVO_4                       0x57
- #define WM8994_DC_SERVO_READBACK                0x58
- #define WM8994_ANALOGUE_HP_1                    0x60
-+#define WM8958_MIC_DETECT_1                     0xD0
-+#define WM8958_MIC_DETECT_2                     0xD1
-+#define WM8958_MIC_DETECT_3                     0xD2
- #define WM8994_CHIP_REVISION                    0x100
- #define WM8994_CONTROL_INTERFACE                0x101
- #define WM8994_WRITE_SEQUENCER_CTRL_1           0x110
-@@ -1971,6 +1974,46 @@
- #define WM8994_HPOUT1R_DLY_WIDTH                     1  /* HPOUT1R_DLY */
- 
- /*
-+ * R208 (0xD0) - Mic Detect 1
-+ */
-+#define WM8958_MICD_BIAS_STARTTIME_MASK         0xF000  /* MICD_BIAS_STARTTIME - [15:12] */
-+#define WM8958_MICD_BIAS_STARTTIME_SHIFT            12  /* MICD_BIAS_STARTTIME - [15:12] */
-+#define WM8958_MICD_BIAS_STARTTIME_WIDTH             4  /* MICD_BIAS_STARTTIME - [15:12] */
-+#define WM8958_MICD_RATE_MASK                   0x0F00  /* MICD_RATE - [11:8] */
-+#define WM8958_MICD_RATE_SHIFT                       8  /* MICD_RATE - [11:8] */
-+#define WM8958_MICD_RATE_WIDTH                       4  /* MICD_RATE - [11:8] */
-+#define WM8958_MICD_DBTIME                      0x0002  /* MICD_DBTIME */
-+#define WM8958_MICD_DBTIME_MASK                 0x0002  /* MICD_DBTIME */
-+#define WM8958_MICD_DBTIME_SHIFT                     1  /* MICD_DBTIME */
-+#define WM8958_MICD_DBTIME_WIDTH                     1  /* MICD_DBTIME */
-+#define WM8958_MICD_ENA                         0x0001  /* MICD_ENA */
-+#define WM8958_MICD_ENA_MASK                    0x0001  /* MICD_ENA */
-+#define WM8958_MICD_ENA_SHIFT                        0  /* MICD_ENA */
-+#define WM8958_MICD_ENA_WIDTH                        1  /* MICD_ENA */
-+
-+/*
-+ * R209 (0xD1) - Mic Detect 2
-+ */
-+#define WM8958_MICD_LVL_SEL_MASK                0x00FF  /* MICD_LVL_SEL - [7:0] */
-+#define WM8958_MICD_LVL_SEL_SHIFT                    0  /* MICD_LVL_SEL - [7:0] */
-+#define WM8958_MICD_LVL_SEL_WIDTH                    8  /* MICD_LVL_SEL - [7:0] */
-+
-+/*
-+ * R210 (0xD2) - Mic Detect 3
-+ */
-+#define WM8958_MICD_LVL_MASK                    0x07FC  /* MICD_LVL - [10:2] */
-+#define WM8958_MICD_LVL_SHIFT                        2  /* MICD_LVL - [10:2] */
-+#define WM8958_MICD_LVL_WIDTH                        9  /* MICD_LVL - [10:2] */
-+#define WM8958_MICD_VALID                       0x0002  /* MICD_VALID */
-+#define WM8958_MICD_VALID_MASK                  0x0002  /* MICD_VALID */
-+#define WM8958_MICD_VALID_SHIFT                      1  /* MICD_VALID */
-+#define WM8958_MICD_VALID_WIDTH                      1  /* MICD_VALID */
-+#define WM8958_MICD_STS                         0x0001  /* MICD_STS */
-+#define WM8958_MICD_STS_MASK                    0x0001  /* MICD_STS */
-+#define WM8958_MICD_STS_SHIFT                        0  /* MICD_STS */
-+#define WM8958_MICD_STS_WIDTH                        1  /* MICD_STS */
-+
-+/*
-  * R256 (0x100) - Chip Revision
-  */
- #define WM8994_CHIP_REV_MASK                    0x000F  /* CHIP_REV - [3:0] */
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index b30b2dd..948677b 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -21,6 +21,7 @@
- #include <linux/regulator/consumer.h>
- #include <linux/slab.h>
- #include <sound/core.h>
-+#include <sound/jack.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -95,6 +96,11 @@ struct wm8994_priv {
- 
- 	struct wm8994_micdet micdet[2];
- 
-+	wm8958_micdet_cb jack_cb;
-+	void *jack_cb_data;
-+	bool jack_is_mic;
-+	bool jack_is_video;
-+
- 	int revision;
- 	struct wm8994_pdata *pdata;
- };
-@@ -140,6 +146,7 @@ static int wm8994_volatile(unsigned int reg)
- 	case WM8994_LDO_1:
- 	case WM8994_LDO_2:
- 	case WM8958_DSP2_EXECCONTROL:
-+	case WM8958_MIC_DETECT_3:
- 		return 1;
- 	default:
- 		return 0;
-@@ -2633,6 +2640,133 @@ static irqreturn_t wm8994_mic_irq(int irq, void *data)
- 	return IRQ_HANDLED;
- }
- 
-+/* Default microphone detection handler for WM8958 - the user can
-+ * override this if they wish.
-+ */
-+static void wm8958_default_micdet(u16 status, void *data)
-+{
-+	struct snd_soc_codec *codec = data;
-+	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-+	int report = 0;
-+
-+	/* If nothing present then clear our statuses */
-+	if (!(status & WM8958_MICD_STS)) {
-+		wm8994->jack_is_video = false;
-+		wm8994->jack_is_mic = false;
-+		goto done;
-+	}
-+
-+	/* Assume anything over 475 ohms is a microphone and remember
-+	 * that we've seen one (since buttons override it) */
-+	if (status & 0x600)
-+		wm8994->jack_is_mic = true;
-+	if (wm8994->jack_is_mic)
-+		report |= SND_JACK_MICROPHONE;
-+
-+	/* Video has an impedence of approximately 75 ohms; assume
-+	 * this isn't used as a button and remember it since buttons
-+	 * override it. */
-+	if (status & 0x40)
-+		wm8994->jack_is_video = true;
-+	if (wm8994->jack_is_video)
-+		report |= SND_JACK_VIDEOOUT;
-+
-+	/* Everything else is buttons; just assign slots */
-+	if (status & 0x4)
-+		report |= SND_JACK_BTN_0;
-+	if (status & 0x8)
-+		report |= SND_JACK_BTN_1;
-+	if (status & 0x10)
-+		report |= SND_JACK_BTN_2;
-+	if (status & 0x20)
-+		report |= SND_JACK_BTN_3;
-+	if (status & 0x80)
-+		report |= SND_JACK_BTN_4;
-+	if (status & 0x100)
-+		report |= SND_JACK_BTN_5;
-+
-+done:
-+	snd_soc_jack_report(wm8994->micdet[0].jack,
-+			    SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_BTN_2 |
-+			    SND_JACK_BTN_3 | SND_JACK_BTN_4 | SND_JACK_BTN_5 |
-+			    SND_JACK_MICROPHONE | SND_JACK_VIDEOOUT,
-+			    report);
-+}
-+
-+/**
-+ * wm8958_mic_detect - Enable microphone detection via the WM8958 IRQ
-+ *
-+ * @codec:   WM8958 codec
-+ * @jack:    jack to report detection events on
-+ *
-+ * Enable microphone detection functionality for the WM8958.  By
-+ * default simple detection which supports the detection of up to 6
-+ * buttons plus video and microphone functionality is supported.
-+ *
-+ * The WM8958 has an advanced jack detection facility which is able to
-+ * support complex accessory detection, especially when used in
-+ * conjunction with external circuitry.  In order to provide maximum
-+ * flexiblity a callback is provided which allows a completely custom
-+ * detection algorithm.
-+ */
-+int wm8958_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack,
-+		      wm8958_micdet_cb cb, void *cb_data)
-+{
-+	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
-+	struct wm8994 *control = codec->control_data;
-+
-+	if (control->type != WM8958)
-+		return -EINVAL;
-+
-+	if (jack) {
-+		if (!cb) {
-+			dev_dbg(codec->dev, "Using default micdet callback\n");
-+			cb = wm8958_default_micdet;
-+			cb_data = codec;
-+		}
-+
-+		wm8994->micdet[0].jack = jack;
-+		wm8994->jack_cb = cb;
-+		wm8994->jack_cb_data = cb_data;
-+
-+		snd_soc_update_bits(codec, WM8958_MIC_DETECT_1,
-+				    WM8958_MICD_ENA, WM8958_MICD_ENA);
-+	} else {
-+		snd_soc_update_bits(codec, WM8958_MIC_DETECT_1,
-+				    WM8958_MICD_ENA, 0);
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(wm8958_mic_detect);
-+
-+static irqreturn_t wm8958_mic_irq(int irq, void *data)
-+{
-+	struct wm8994_priv *wm8994 = data;
-+	struct snd_soc_codec *codec = wm8994->codec;
-+	int reg;
-+
-+	reg = snd_soc_read(codec, WM8958_MIC_DETECT_3);
-+	if (reg < 0) {
-+		dev_err(codec->dev, "Failed to read mic detect status: %d\n",
-+			reg);
-+		return IRQ_NONE;
-+	}
-+
-+	if (!(reg & WM8958_MICD_VALID)) {
-+		dev_dbg(codec->dev, "Mic detect data not valid\n");
-+		goto out;
-+	}
-+
-+	if (wm8994->jack_cb)
-+		wm8994->jack_cb(reg, wm8994->jack_cb_data);
-+	else
-+		dev_warn(codec->dev, "Accessory detection with no callback\n");
-+
-+out:
-+	return IRQ_HANDLED;
-+}
-+
- static int wm8994_codec_probe(struct snd_soc_codec *codec)
- {
- 	struct wm8994 *control;
-@@ -2732,6 +2866,17 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
- 				 "Failed to request Mic2 short IRQ: %d\n",
- 				 ret);
- 		break;
-+
-+	case WM8958:
-+		ret = wm8994_request_irq(codec->control_data,
-+					 WM8994_IRQ_MIC1_DET,
-+					 wm8958_mic_irq, "Mic detect",
-+					 wm8994);
-+		if (ret != 0)
-+			dev_warn(codec->dev,
-+				 "Failed to request Mic detect IRQ: %d\n",
-+				 ret);
-+		break;
- 	}
- 
- 	/* Remember if AIFnLRCLK is configured as a GPIO.  This should be
-@@ -2866,6 +3011,11 @@ static int  wm8994_codec_remove(struct snd_soc_codec *codec)
- 		wm8994_free_irq(codec->control_data, WM8994_IRQ_MIC1_DET,
- 				wm8994);
- 		break;
-+
-+	case WM8958:
-+		wm8994_free_irq(codec->control_data, WM8994_IRQ_MIC1_DET,
-+				wm8994);
-+		break;
- 	}
- 	kfree(wm8994->retune_mobile_texts);
- 	kfree(wm8994->drc_texts);
-diff --git a/sound/soc/codecs/wm8994.h b/sound/soc/codecs/wm8994.h
-index b8b3166..455cae6 100644
---- a/sound/soc/codecs/wm8994.h
-+++ b/sound/soc/codecs/wm8994.h
-@@ -28,8 +28,12 @@
- #define WM8994_FLL_SRC_LRCLK  3
- #define WM8994_FLL_SRC_BCLK   4
- 
-+typedef void (*wm8958_micdet_cb)(u16 status, void *data);
-+
- int wm8994_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack,
- 		      int micbias, int det, int shrt);
-+int wm8958_mic_detect(struct snd_soc_codec *codec, struct snd_soc_jack *jack,
-+		      wm8958_micdet_cb cb, void *cb_data);
- 
- #define WM8994_CACHE_SIZE 1570
- 
+Hm, for some reason it doesn't try to use the intelhdmi module. Is it
+getting loaded? Have you run "depmod"?
+Does "modinfo snd-hda-codec-intelhdmi" show the alias you added?
+
 -- 
-1.7.1
+Anssi Hannula
