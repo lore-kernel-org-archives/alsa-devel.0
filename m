@@ -1,22 +1,16 @@
-From: Colin Kincaid Williams <discord@uw.edu>
-Subject: Re: poor sound from ALC 850/880 in alsa 1.0.21 and
-	1.0.23
-Date: Sat, 27 Nov 2010 10:58:27 -0800
-Message-ID: <AANLkTi=GJgmYcDd-d6hqOW2uYwJ0i5KYOviv4Dx+JVg_@mail.gmail.com>
-References: <AANLkTikE8tMisXQZfmKA_VqureL3iLU7gJhA4-L0p4HV@mail.gmail.com>
-	<AANLkTikWLaEomZBVSd5iGo8D5rz51aFiA6waMw6JqpUh@mail.gmail.com>
-	<AANLkTikvN5TqtB5RgXSd5A2FMDsDgD9ywo0P9-HJ=q9C@mail.gmail.com>
-	<AANLkTikNgxUxicx31x_kD-Taj6+Hue_orb_vN67vbG8z@mail.gmail.com>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: [PATCH] ALSA: hda: Use BIOS auto-parsing instead of
+ existing model quirk for MEDION MD2
+Date: Sat, 27 Nov 2010 14:12:06 -0500
+Message-ID: <AANLkTik8fBTwMo=7vyFU1Z6OxGREwqvvrCU9s3ctf1Dv@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary=00221597499e634e6b04960d9d9d
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id E2822244FA
-	for <alsa-devel@alsa-project.org>; Sat, 27 Nov 2010 19:58:31 +0100 (CET)
-Received: by bwz8 with SMTP id 8so2815752bwz.38
-	for <alsa-devel@alsa-project.org>; Sat, 27 Nov 2010 10:58:31 -0800 (PST)
-In-Reply-To: <AANLkTikNgxUxicx31x_kD-Taj6+Hue_orb_vN67vbG8z@mail.gmail.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 82AF724501
+	for <alsa-devel@alsa-project.org>; Sat, 27 Nov 2010 20:12:06 +0100 (CET)
+Received: by wyi11 with SMTP id 11so3050786wyi.38
+	for <alsa-devel@alsa-project.org>; Sat, 27 Nov 2010 11:12:06 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,69 +20,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-no, the motherboard has 6 plugs, but no digital outputs on the back.
-Furthermore, I muted the CD channel, the line in was already muted,
-but I still have crap sound compared to my $20 mp3 player. Something
-else is wrong!
+--00221597499e634e6b04960d9d9d
+Content-Type: text/plain; charset=UTF-8
 
-On Fri, Nov 26, 2010 at 11:48 PM, Raymond Yau
-<superquad.vortex2@gmail.com> wrote:
-> 2010/11/27 Colin Kincaid Williams <discord@uw.edu>
->
->> On Fri, Nov 26, 2010 at 8:35 PM, Daniel Chen <seven.steps@gmail.com>
->> wrote:
->> > Please use http://www.alsa-project.org/alsa-info.sh
->> >
->>
->
->
->
-> Node 0x17 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-> =A0Amp-Out caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
-> =A0Amp-Out vals: =A0[0x00 0x00]
-> =A0Pincap 0x0000003f: IN OUT HP Detect Trigger ImpSense
-> =A0Pin Default 0x01012014: [Jack] Line Out at Ext Rear
-> =A0 =A0Conn =3D 1/8, Color =3D Grey
-> =A0 =A0DefAssociation =3D 0x1, Sequence =3D 0x4
-> =A0Pin-ctls: 0x40: OUT
-> =A0Unsolicited: tag=3D00, enabled=3D0
-> =A0Connection: 1
-> =A0 =A0 0x0f
->
-> if your motherboard have 6 audio jacks (pink, blue , green , black , oran=
-ge
-> and grey ) and digital output at rear panel, you should try model=3D6stac=
-k-dig
->
-> Simple mixer control 'CD',0
-> =A0Capabilities: pvolume pswitch penum
-> =A0Playback channels: Front Left - Front Right
-> =A0Limits: Playback 0 - 65
-> =A0Mono:
-> =A0Front Left: Playback 0 [0%] [-35.00dB] [on]
-> =A0Front Right: Playback 0 [0%] [-35.00dB] [on]
->
-> Make sure that you have muted those playback volume control of "CD"
-> ,"Line" to reduce noise from those input to your output
->
->
->
->>> Simple mixer control 'Channel Mode',0
->>> =A0Capabilities: enum
->>> =A0Items: '8ch'
->>> =A0Item0: '8ch'
->>>
->
->
-> only those motherboard with less than 4 output jacks need the "channel mo=
-de"
-> control to retask some input jacks as output jacks
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Hi,
+
+Attached is a patch against current sound-2.6.git master HEAD that
+resolves a regression from 2.6.32 for the user's machine.  Briefly,
+the existing quirk entry, ALC883_MEDION_MD2, is no longer necessary
+for the user's machine; we can use BIOS auto-parsing successfully.
+Please apply.
+
+Thanks,
+-Dan
+
+--00221597499e634e6b04960d9d9d
+Content-Type: text/x-diff; charset=US-ASCII;
+	name="0001-ALSA-hda-Use-BIOS-auto-parsing-instead-of-existing-m.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-hda-Use-BIOS-auto-parsing-instead-of-existing-m.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gh0vlncb0
+
+RnJvbSA1NTUzMjBiYzk3ZjQzYzMyNDAwMWY2N2NiNmMyNjFmMzM5NTRkZjcyIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
+dGU6IFNhdCwgMjcgTm92IDIwMTAgMTM6NTg6MDQgLTA1MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGE6IFVzZSBCSU9TIGF1dG8tcGFyc2luZyBpbnN0ZWFkIG9mIGV4aXN0aW5nIG1vZGVsIHF1
+aXJrIGZvciBNRURJT04gTUQyCgpCdWdMaW5rOiBodHRwczovL2xhdW5jaHBhZC5uZXQvYnVncy82
+ODIxOTkKCkEgMi42LjM1IChVYnVudHUgTWF2ZXJpY2spIHVzZXIsIGJ1cm5pbmdwaGFudG9tMSwg
+cmVwb3J0ZWQgYSByZWdyZXNzaW9uCmluIGF1ZGlvOiBwbGF5YmFjayB3YXMgaW5hdWRpYmxlIHRo
+cm91Z2ggYm90aCBzcGVha2VycyBhbmQgaGVhZHBob25lcy4KSW4gY29tbWl0IDI3MmE1MjdjMDQg
+b2Ygc291bmQtMi42LmdpdCwgYSBuZXcgbW9kZWwgd2FzIGFkZGVkIHdpdGggdGhpcwptYWNoaW5l
+J3MgUENJIFNTSUQuICBGb3J0dW5hdGVseSwgaXQgaXMgbm93IHN1ZmZpY2llbnQgdG8gdXNlIHRo
+ZSBhdXRvCm1vZGVsIGZvciBCSU9TIGF1dG8tcGFyc2luZyBpbnN0ZWFkIG9mIHRoZSBleGlzdGlu
+ZyBxdWlyay4KClBsYXliYWNrLCBjYXB0dXJlLCBhbmQgamFjayBzZW5zZSB3ZXJlIHZlcmlmaWVk
+IHdvcmtpbmcgZm9yIGJvdGgKMi42LjM1IGFuZCB0aGUgYWxzYS1kcml2ZXIgc25hcHNob3QgZnJv
+bSAyMDEwLTExLTI3IHdoZW4gbW9kZWw9YXV0byBpcwp1c2VkLgoKUmVwb3J0ZWQtYW5kLXRlc3Rl
+ZC1ieTogYnVybmluZ3BoYW50b20xCkNjOiA8c3RhYmxlQGtlcm5lbC5vcmc+IFsyLjYuMzUrXQpT
+aWduZWQtb2ZmLWJ5OiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+Ci0tLQogc291
+bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgfCAgICAxIC0KIDEgZmlsZXMgY2hhbmdlZCwgMCBp
+bnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEv
+cGF0Y2hfcmVhbHRlay5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKaW5kZXggOTVi
+MTM4ZC4uZjBhZjhjZiAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMK
+KysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKQEAgLTk4NzQsNyArOTg3NCw2IEBA
+IHN0YXRpYyBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBhbGM4ODJfY2ZnX3RibFtdID0gewogCVNORF9Q
+Q0lfUVVJUksoMHgxN2FhLCAweDNiZmMsICJMZW5vdm8gTkIwNzYzIiwgQUxDODgzX0xFTk9WT19O
+QjA3NjMpLAogCVNORF9QQ0lfUVVJUksoMHgxN2FhLCAweDNiZmQsICJMZW5vdm8gTkIwNzYzIiwg
+QUxDODgzX0xFTk9WT19OQjA3NjMpLAogCVNORF9QQ0lfUVVJUksoMHgxN2FhLCAweDEwMWQsICJM
+ZW5vdm8gU2t5IiwgQUxDODg4X0xFTk9WT19TS1kpLAotCVNORF9QQ0lfUVVJUksoMHgxN2MwLCAw
+eDQwNzEsICJNRURJT04gTUQyIiwgQUxDODgzX01FRElPTl9NRDIpLAogCVNORF9QQ0lfUVVJUkso
+MHgxN2MwLCAweDQwODUsICJNRURJT04gTUQ5NjYzMCIsIEFMQzg4OF9MRU5PVk9fTVM3MTk1X0RJ
+RyksCiAJU05EX1BDSV9RVUlSSygweDE3ZjIsIDB4NTAwMCwgIkFsYmF0cm9uIEtJNjkwLUFNMiIs
+IEFMQzg4M182U1RfRElHKSwKIAlTTkRfUENJX1FVSVJLKDB4MTk5MSwgMHg1NjI1LCAiSGFpZXIg
+VzY2IiwgQUxDODgzX0hBSUVSX1c2NiksCi0tIAoxLjcuMQoK
+--00221597499e634e6b04960d9d9d
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--00221597499e634e6b04960d9d9d--
