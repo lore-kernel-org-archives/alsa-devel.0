@@ -1,22 +1,16 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: poor sound from ALC 850/880 in alsa 1.0.21 and
-	1.0.23
-Date: Sat, 27 Nov 2010 15:48:53 +0800
-Message-ID: <AANLkTikNgxUxicx31x_kD-Taj6+Hue_orb_vN67vbG8z@mail.gmail.com>
-References: <AANLkTikE8tMisXQZfmKA_VqureL3iLU7gJhA4-L0p4HV@mail.gmail.com>
-	<AANLkTikWLaEomZBVSd5iGo8D5rz51aFiA6waMw6JqpUh@mail.gmail.com>
-	<AANLkTikvN5TqtB5RgXSd5A2FMDsDgD9ywo0P9-HJ=q9C@mail.gmail.com>
+From: Amit Nagal <helloin.amit@gmail.com>
+Subject: reset of kernel input buffer for /dev/dsp
+Date: Sat, 27 Nov 2010 21:33:43 +0900
+Message-ID: <AANLkTi=EzbQc__Z+4JCrMNbGpWoKWKmyX+BFhuLcKt7T@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA77C24141
-	for <alsa-devel@alsa-project.org>; Sat, 27 Nov 2010 08:48:55 +0100 (CET)
-Received: by eyg24 with SMTP id 24so1270624eyg.38
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2010 23:48:55 -0800 (PST)
-In-Reply-To: <AANLkTikvN5TqtB5RgXSd5A2FMDsDgD9ywo0P9-HJ=q9C@mail.gmail.com>
+Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
+	[209.85.216.51]) by alsa0.perex.cz (Postfix) with ESMTP id 42DCB2445F
+	for <alsa-devel@alsa-project.org>; Sat, 27 Nov 2010 13:33:47 +0100 (CET)
+Received: by qwd7 with SMTP id 7so407864qwd.38
+	for <alsa-devel@alsa-project.org>; Sat, 27 Nov 2010 04:33:43 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,53 +20,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: alsa-user@lists.sourceforge.net, tiwai@suse.de, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-2010/11/27 Colin Kincaid Williams <discord@uw.edu>
+Hi ,
 
-> On Fri, Nov 26, 2010 at 8:35 PM, Daniel Chen <seven.steps@gmail.com>
-> wrote:
-> > Please use http://www.alsa-project.org/alsa-info.sh
-> >
->
+i am doing usb audio streaming using usb audio class interface .
 
+our application is OSS based , uses OSS calls to interact with linux
+audio driver .
 
+Our device is capture only device .
 
-Node 0x17 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0000003f: IN OUT HP Detect Trigger ImpSense
-  Pin Default 0x01012014: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Grey
-    DefAssociation = 0x1, Sequence = 0x4
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x0f
+we want to flush  kernel input pcm buffer  without using close() system call .
 
-if your motherboard have 6 audio jacks (pink, blue , green , black , orange
-and grey ) and digital output at rear panel, you should try model=6stack-dig
+does OSS supports in userspace any ioctl call which can flush kernel
+pcm buffer at any time .
 
-Simple mixer control 'CD',0
-  Capabilities: pvolume pswitch penum
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 65
-  Mono:
-  Front Left: Playback 0 [0%] [-35.00dB] [on]
-  Front Right: Playback 0 [0%] [-35.00dB] [on]
+right now we have to close audio-fd  and open audio-fd  again .
 
-Make sure that you have muted those playback volume control of "CD"
-,"Line" to reduce noise from those input to your output
+how we can flush  kernel input pcm buffer  without using close system
+call in based OSS application
 
-
-
->> Simple mixer control 'Channel Mode',0
->>  Capabilities: enum
->>  Items: '8ch'
->>  Item0: '8ch'
->>
-
-
-only those motherboard with less than 4 output jacks need the "channel mode"
-control to retask some input jacks as output jacks
+regards
+Amit Nagal
