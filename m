@@ -1,18 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC don't apply] ASoC: Add support for optional
- auxiliary dailess codecs
-Date: Sun, 28 Nov 2010 11:50:04 +0000
-Message-ID: <20101128115004.GB28950@opensource.wolfsonmicro.com>
-References: <1290700058-9270-1-git-send-email-jhnikula@gmail.com>
+Subject: S6000 ASoC drivers with multi-component
+Date: Sun, 28 Nov 2010 12:07:02 +0000
+Message-ID: <20101128120702.GA12683@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 80E9F2443F
-	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2010 12:49:55 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 001BF2444E
+	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2010 13:06:53 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1290700058-9270-1-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,32 +19,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Daniel =?iso-8859-1?Q?Gl=F6ckner?= <dg@emlix.com>
+Cc: Chris Zankel <chris@zankel.net>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 25, 2010 at 05:47:38PM +0200, Jarkko Nikula wrote:
-
-> I'm not entirely sure of reusing struct snd_soc_pcm_runtime but having some
-> common struct on top of it for registering the sysfs nodes and passing to
-> snd_soc_dapm_sys_add didn't sound clear either.
-> Anyway suspend/resume is working with this version and doesn't need any other
-> modifications to soc_suspend/soc_resume than traversing through the registered
-> codecs instead of doing bunch of rtd->dailess etc hacks there.
-
-So, the reason we're doing this is that the sysfs nodes for DAPM and
-regular CODEC stuff are using the device node in the PCM runtime data to
-look up the data structures they need to do things.  The CODEC probably
-isn't an ideal place for the PCM runtime data anyway, it feels like a
-card thing (as it spans multiple devices within the card except in the
-most baroque designs).
-
-Since we appear to be abusing sysfs here anyway (we've got an empty
-release function) I think we should just look into fixing this properly,
-probably by having a device directly on the CODEC and using that for the
-CODEC-specific sysfs files.
-
-That said, this shouldn't affect the external interfaces here - it
-should only have any material impact on the core - so probably shouldn't
-be a blocker for adding this feature.  Liam, does this analysis all
-sound sane to you?
+I'm a little concerned that there have been no updates to the s6000
+audio drivers since the merge of multi-component ASoC (which is now in
+mainline and should be released as part of 2.6.37).  This was a very
+big and invasive update, and experience with other architectures has
+been that there's usually at least some typos that need fixing.  It'd be
+good to get some confirmation that the audio drivers have at least been
+tested with current mainline - if everything worked fine that's
+obviously excellent but it'd be good if someone could confirm that this
+is the case.
