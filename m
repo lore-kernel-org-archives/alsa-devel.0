@@ -1,15 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Blackfin ASoC drivers with multi-component
-Date: Sun, 28 Nov 2010 12:35:58 +0000
-Message-ID: <20101128123558.GB12683@opensource.wolfsonmicro.com>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH 0/4] Fixes resource leaks for Samsung SoCs
+Date: Mon, 29 Nov 2010 08:40:29 +0900
+Message-ID: <AANLkTi=A7LcN6Eoh8WnT2g5TBpFb12ogWncYjZzFeZg3@mail.gmail.com>
+References: <1290754245.25125.1.camel@mola>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B92B724463
-	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2010 13:35:58 +0100 (CET)
-Content-Disposition: inline
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 660451037EC
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2010 00:40:30 +0100 (CET)
+Received: by bwz8 with SMTP id 8so3522554bwz.38
+	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2010 15:40:30 -0800 (PST)
+In-Reply-To: <1290754245.25125.1.camel@mola>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,20 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier@gentoo.org>, Sonic Zhang <sonic.zhang@analog.com>, Barry Song <21cnbao@gmail.com>, Cliff Cai <cliff.cai@analog.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Axel Lin <axel.lin@gmail.com>
+Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Maurus Cuelenaere <mcuelenaere@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Graeme Gregory <graeme@openmoko.org>, Chanwoo Choi <cw00.choi@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Seungwhan Youn <sw.youn@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-I'm a little concerned that there have been no updates to the Blackfin
-audio drivers since the merge of multi-component ASoC (which is now in
-mainline and should be released as part of 2.6.37).  This was a very
-big and invasive update, and experience with other architectures has
-been that there's usually at least some typos that need fixing.  It'd be
-good to get some confirmation that the audio drivers have at least been
-tested with current mainline - if everything worked fine that's
-obviously excellent but it'd be good if someone could confirm that this
-is the case.
-
-There was some discussion with Mike at the time the drivers were merged
-but it sounded more like "I need to get the audio guys to look at this"
-than a report of actual testing and there's been nothing since.
+T24gRnJpLCBOb3YgMjYsIDIwMTAgYXQgMzo1MCBQTSwgQXhlbCBMaW4gPGF4ZWwubGluQGdtYWls
+LmNvbT4gd3JvdGU6Cj4gVGhpcyBzZXJpYWwgb2YgcGF0Y2hlcyBmaXhlcyByZXNvdXJjZSBsZWFr
+cyBmb3IgU2Ftc3VuZyBTb0NzLgo+Cj4gQXhlbCBMaW4gKDQpOgo+IMKgQVNvQzogRml4IHJlc291
+cmNlIGxlYXNrIGluIGdvbmlfd204OTk0LmMKPiDCoEFTb0M6IEZpeCByZXNvdXJjZSBsZWFzayBp
+biBuZW8xOTczX2d0YTAyX2luaXQoKSBlcnJvciBwYXRoCj4gwqBBU29DOiBBZGQgbWlzc2luZyBn
+cGlvX2ZyZWUoUzNDNjRYWF9HUEsoMTIpKSBpbiBzbWFydHFfZXhpdCgpCj4gwqBBU29DOiBGaXgg
+cmVzb3VyY2UgbGVhc2sgaW4gc21ka19zcGRpZi5jCgpBY2tlZC1ieTogSmFzc2kgQnJhciA8amFz
+c2kuYnJhckBzYW1zdW5nLmNvbT4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
