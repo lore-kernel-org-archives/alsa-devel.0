@@ -1,38 +1,34 @@
-From: Irfan Shaikh <irfan.shaikh@sasken.com>
-Subject: Writing 20ms of AUDIO data
-Date: Mon, 29 Nov 2010 14:56:31 +0530
-Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE3A7@EXGMBX01.sasken.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH 0/5] Fix compile error and missing spin_unlock_irqrestore
+	for NUC900 SoC audio
+Date: Mon, 29 Nov 2010 17:38:11 +0800
+Message-ID: <1291023491.22911.1.camel@mola>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id 16E3810380E
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2010 10:30:24 +0100 (CET)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel <linux-kernel@vger.kernel.org>
+Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wan ZongShun <mcuos.com@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello developers,
+This serial fixes compile error and missing spin_unlock_irqrestore for NUC900 SoC audio.
 
-         Please can some tell me how can i configure my snd_pcm_writei so that i can write 20ms of audio data each time.
-Is there any way to find out the time duration interval of PCM frames we write to playback device {So that soem i can write each tie 20 millisec of audio data to device}.
+Regards,
+Axel
 
+Axel Lin (5):
+  ASoC: Fix compile error for nuc900-ac97.c
+  ASoC: Fix prototype for nuc900_ac97_probe and nuc900_ac97_remove
+  ASoC: Fix compile error for nuc900-pcm.c
+  ASoC: Fix missing spin_unlock_irqrestore
+  ASoC: Remove unneeded !! operations while checking return value of
+    nuc900_checkready
 
-Thanks and regards,
+ sound/soc/nuc900/nuc900-ac97.c  |   15 +++++++--------
+ sound/soc/nuc900/nuc900-audio.h |    2 ++
+ sound/soc/nuc900/nuc900-pcm.c   |   11 ++++++-----
+ 3 files changed, 15 insertions(+), 13 deletions(-)
 
-
-
-
-SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any 
- virus transmitted by this email.
-Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
+-- 
+1.7.2
