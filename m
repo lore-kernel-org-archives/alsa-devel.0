@@ -1,7 +1,7 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 3/5] ASoC: Fix compile error for nuc900-pcm.c
-Date: Mon, 29 Nov 2010 17:40:53 +0800
-Message-ID: <1291023653.22911.6.camel@mola>
+Subject: [RFC][PATCH 4/5] ASoC: Fix missing spin_unlock_irqrestore
+Date: Mon, 29 Nov 2010 17:42:47 +0800
+Message-ID: <1291023767.22911.9.camel@mola>
 References: <1291023491.22911.1.camel@mola>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -13,50 +13,68 @@ To: linux-kernel <linux-kernel@vger.kernel.org>
 Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wan ZongShun <mcuos.com@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes below error:
+In nuc900_dma_hw_params(), if snd_pcm_lib_malloc_pages failed
+it returns without calling spin_unlock_irqrestore().
 
-  CC      sound/soc/nuc900/nuc900-pcm.o
-sound/soc/nuc900/nuc900-pcm.c: In function 'nuc900_dma_open':
-sound/soc/nuc900/nuc900-pcm.c:267: error: 'nuc900_ac97_data' undeclared (first use in this function)
-sound/soc/nuc900/nuc900-pcm.c:267: error: (Each undeclared identifier is reported only once
-sound/soc/nuc900/nuc900-pcm.c:267: error: for each function it appears in.)
-sound/soc/nuc900/nuc900-pcm.c: At top level:
-sound/soc/nuc900/nuc900-pcm.c:337: error: expected ',' or ';' before 'static'
-sound/soc/nuc900/nuc900-pcm.c:354: error: 'nuc900_soc_platform_probe' undeclared here (not in a function)
-make[3]: *** [sound/soc/nuc900/nuc900-pcm.o] Error 1
-make[2]: *** [sound/soc/nuc900] Error 2
-make[1]: *** [sound/soc] Error 2
-make: *** [sound] Error 2
+Since snd_pcm_lib_malloc_pages() does not touch struct nuc900_audio,
+we don't need to hold the lock while calling snd_pcm_lib_malloc_pages().
+Fix it by moving spin_lock_irqsave() down to after snd_pcm_lib_malloc_pages().
+
+In nuc900_dma_prepare(), spin_unlock_irqrestore() is missing in the error path.
+Fix it by removing the return in default case.
 
 Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/nuc900/nuc900-audio.h |    2 ++
- sound/soc/nuc900/nuc900-pcm.c   |    2 +-
- 2 files changed, 3 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/nuc900/nuc900-audio.h b/sound/soc/nuc900/nuc900-audio.h
-index aeed8ea..59f7e8e 100644
---- a/sound/soc/nuc900/nuc900-audio.h
-+++ b/sound/soc/nuc900/nuc900-audio.h
-@@ -110,4 +110,6 @@ struct nuc900_audio {
- 
- };
- 
-+extern struct nuc900_audio *nuc900_ac97_data;
-+
- #endif /*end _NUC900_AUDIO_H */
+hi ZongShun,
+I don't have this hardware handy, could you help to test this patch
+if you think this patch is ok.
+
+Regards,
+Axel
+
+ sound/soc/nuc900/nuc900-pcm.c |    9 +++++----
+ 1 files changed, 5 insertions(+), 4 deletions(-)
+
 diff --git a/sound/soc/nuc900/nuc900-pcm.c b/sound/soc/nuc900/nuc900-pcm.c
-index 195d1ac..2245f8b 100644
+index 2245f8b..8263f56 100644
 --- a/sound/soc/nuc900/nuc900-pcm.c
 +++ b/sound/soc/nuc900/nuc900-pcm.c
-@@ -332,7 +332,7 @@ static struct snd_soc_platform_driver nuc900_soc_platform = {
- 	.ops		= &nuc900_dma_ops,
- 	.pcm_new	= nuc900_dma_new,
- 	.pcm_free	= nuc900_dma_free_dma_buffers,
--}
-+};
+@@ -50,12 +50,12 @@ static int nuc900_dma_hw_params(struct snd_pcm_substream *substream,
+ 	unsigned long flags;
+ 	int ret = 0;
  
- static int __devinit nuc900_soc_platform_probe(struct platform_device *pdev)
- {
+-	spin_lock_irqsave(&nuc900_audio->lock, flags);
+-
+ 	ret = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
+ 	if (ret < 0)
+ 		return ret;
+ 
++	spin_lock_irqsave(&nuc900_audio->lock, flags);
++
+ 	nuc900_audio->substream = substream;
+ 	nuc900_audio->dma_addr[substream->stream] = runtime->dma_addr;
+ 	nuc900_audio->buffersize[substream->stream] =
+@@ -169,6 +169,7 @@ static int nuc900_dma_prepare(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct nuc900_audio *nuc900_audio = runtime->private_data;
+ 	unsigned long flags, val;
++	int ret = 0;
+ 
+ 	spin_lock_irqsave(&nuc900_audio->lock, flags);
+ 
+@@ -197,10 +198,10 @@ static int nuc900_dma_prepare(struct snd_pcm_substream *substream)
+ 		AUDIO_WRITE(nuc900_audio->mmio + ACTL_RESET, val);
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
+ 	}
+ 	spin_unlock_irqrestore(&nuc900_audio->lock, flags);
+-	return 0;
++	return ret;
+ }
+ 
+ static int nuc900_dma_trigger(struct snd_pcm_substream *substream, int cmd)
 -- 
 1.7.2
