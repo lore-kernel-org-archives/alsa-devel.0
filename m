@@ -1,21 +1,19 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: Re: alsa-driver: compilation fails
-Date: Mon, 29 Nov 2010 09:00:50 -0600
-Message-ID: <AANLkTinRFztofCud68xRipcuQULyS=Rit7b-90Ni0mdm@mail.gmail.com>
-References: <AANLkTi=KTF89RVmRkNXidW3U08BoeXihHmu8vggE6kBr@mail.gmail.com>
-	<s5hy68jnulg.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.1011240750230.8433@eeebox2.perex-int.cz>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: Add missing dev_set_drvdata in
+ mpc8610_hpcd_probe
+Date: Mon, 29 Nov 2010 16:12:31 +0000
+Message-ID: <20101129161231.GA5881@opensource.wolfsonmicro.com>
+References: <1291013698.19113.1.camel@mola>
+ <4CF3BE7C.2000006@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id B434E24369
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2010 16:00:51 +0100 (CET)
-Received: by iwn7 with SMTP id 7so38498iwn.38
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2010 07:00:50 -0800 (PST)
-In-Reply-To: <alpine.LNX.2.00.1011240750230.8433@eeebox2.perex-int.cz>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E71F7245A5
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2010 17:12:22 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4CF3BE7C.2000006@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,15 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: Axel Lin <axel.lin@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
->> This was already fixed on alsa-driver-build.git.
->> =A0git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/alsa-driver-build=
-.git
->
-> I pulled from this repo, so gitcompile should work again.
+On Mon, Nov 29, 2010 at 08:53:48AM -0600, Timur Tabi wrote:
+> Axel Lin wrote:
+> > Otherwise, calling dev_get_drvdata in mpc8610_hpcd_remove returns NULL.
+> > 
+> > Signed-off-by: Axel Lin <axel.lin@gmail.com>
 
-Thanks. Works fine now.
--Pierre
+> Both patches:
+
+> Acked-by: Timur Tabi <timur@freescale.com>
+
+Applied now.
