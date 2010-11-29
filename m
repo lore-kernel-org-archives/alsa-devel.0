@@ -1,40 +1,41 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 0/5] Fix compile error and missing
- spin_unlock_irqrestore for NUC900 SoC audio
-Date: Mon, 29 Nov 2010 11:18:10 +0000
-Message-ID: <1291029490.3299.148.camel@odin>
-References: <1291023491.22911.1.camel@mola>
+Subject: Re: [PATCH] ASoC: soc-cache: Add error checking in the
+ *_cache_sync functions
+Date: Mon, 29 Nov 2010 11:19:17 +0000
+Message-ID: <1291029557.3299.150.camel@odin>
+References: <1291026294-31869-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1291023491.22911.1.camel@mola>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wan ZongShun <mcuos.com@gmail.com>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id A4B9D10382C
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2010 12:19:20 +0100 (CET)
+Received: by wyi11 with SMTP id 11so4315068wyi.38
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2010 03:19:20 -0800 (PST)
+In-Reply-To: <1291026294-31869-1-git-send-email-dp@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-11-29 at 17:38 +0800, Axel Lin wrote:
-> This serial fixes compile error and missing spin_unlock_irqrestore for NUC900 SoC audio.
+On Mon, 2010-11-29 at 10:24 +0000, Dimitris Papastamos wrote:
+> Ensure that we report any errors encountered during reads/writes
+> in the cache syncing functions.
 > 
-> Regards,
-> Axel
+> Remove redundant newline in the source code.
 > 
-> Axel Lin (5):
->   ASoC: Fix compile error for nuc900-ac97.c
->   ASoC: Fix prototype for nuc900_ac97_probe and nuc900_ac97_remove
->   ASoC: Fix compile error for nuc900-pcm.c
->   ASoC: Fix missing spin_unlock_irqrestore
->   ASoC: Remove unneeded !! operations while checking return value of
->     nuc900_checkready
-> 
->  sound/soc/nuc900/nuc900-ac97.c  |   15 +++++++--------
->  sound/soc/nuc900/nuc900-audio.h |    2 ++
->  sound/soc/nuc900/nuc900-pcm.c   |   11 ++++++-----
->  3 files changed, 15 insertions(+), 13 deletions(-)
-> 
-
-All
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+> ---
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
