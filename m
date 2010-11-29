@@ -1,52 +1,38 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/2] ASoC: Add missing dev_set_drvdata in
- mpc8610_hpcd_probe
-Date: Mon, 29 Nov 2010 11:08:39 +0000
-Message-ID: <1291028919.3299.137.camel@odin>
-References: <1291013698.19113.1.camel@mola>
+Subject: Re: [PATCH 0/5] Fix compile error and missing
+ spin_unlock_irqrestore for NUC900 SoC audio
+Date: Mon, 29 Nov 2010 11:18:10 +0000
+Message-ID: <1291029490.3299.148.camel@odin>
+References: <1291023491.22911.1.camel@mola>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 01E2E24527
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2010 12:08:43 +0100 (CET)
-Received: by wwe15 with SMTP id 15so4426088wwe.20
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2010 03:08:43 -0800 (PST)
-In-Reply-To: <1291013698.19113.1.camel@mola>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1291023491.22911.1.camel@mola>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel <linux-kernel@vger.kernel.org>, Timur Tabi <timur@freescale.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wan ZongShun <mcuos.com@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-11-29 at 14:54 +0800, Axel Lin wrote:
-> Otherwise, calling dev_get_drvdata in mpc8610_hpcd_remove returns NULL.
+On Mon, 2010-11-29 at 17:38 +0800, Axel Lin wrote:
+> This serial fixes compile error and missing spin_unlock_irqrestore for NUC900 SoC audio.
 > 
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-> ---
->  sound/soc/fsl/mpc8610_hpcd.c |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
+> Regards,
+> Axel
 > 
-> diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
-> index 0d7dcf1..7d7847a 100644
-> --- a/sound/soc/fsl/mpc8610_hpcd.c
-> +++ b/sound/soc/fsl/mpc8610_hpcd.c
-> @@ -498,6 +498,7 @@ static int mpc8610_hpcd_probe(struct platform_device *pdev)
->  		dev_err(&pdev->dev, "platform device add failed\n");
->  		goto error;
->  	}
-> +	dev_set_drvdata(&pdev->dev, sound_device);
->  
->  	of_node_put(codec_np);
->  
+> Axel Lin (5):
+>   ASoC: Fix compile error for nuc900-ac97.c
+>   ASoC: Fix prototype for nuc900_ac97_probe and nuc900_ac97_remove
+>   ASoC: Fix compile error for nuc900-pcm.c
+>   ASoC: Fix missing spin_unlock_irqrestore
+>   ASoC: Remove unneeded !! operations while checking return value of
+>     nuc900_checkready
+> 
+>  sound/soc/nuc900/nuc900-ac97.c  |   15 +++++++--------
+>  sound/soc/nuc900/nuc900-audio.h |    2 ++
+>  sound/soc/nuc900/nuc900-pcm.c   |   11 ++++++-----
+>  3 files changed, 15 insertions(+), 13 deletions(-)
+> 
 
 All
 
