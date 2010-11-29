@@ -1,14 +1,18 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: soc-cache: Ensure consistent cache naming
-Date: Mon, 29 Nov 2010 10:54:28 +0000
-Message-ID: <1291028068-25461-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Blackfin ASoC drivers with multi-component
+Date: Mon, 29 Nov 2010 10:56:02 +0000
+Message-ID: <20101129105602.GN30360@rakim.wolfsonmicro.main>
+References: <20101128123558.GB12683@opensource.wolfsonmicro.com>
+	<DB904C5425BA6F4E8424B3B51A1414D1659B574C63@NWD2CMBX1.ad.analog.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6F7762451D
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2010 11:54:29 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 29F1C2451F
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2010 11:56:04 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <DB904C5425BA6F4E8424B3B51A1414D1659B574C63@NWD2CMBX1.ad.analog.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,41 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: "Zhang, Sonic" <Sonic.Zhang@analog.com>
+Cc: "Cai, Cliff" <Cliff.Cai@analog.com>, Mike Frysinger <vapier@gentoo.org>, Barry Song <21cnbao@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "uclinux-dist-devel@blackfin.uclinux.org" <uclinux-dist-devel@blackfin.uclinux.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
----
- include/sound/soc.h   |    2 +-
- sound/soc/soc-cache.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+On Sun, Nov 28, 2010 at 09:27:17PM -0500, Zhang, Sonic wrote:
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 3eb92ef..9e593cf 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -256,7 +256,7 @@ enum snd_soc_control_type {
- };
- 
- enum snd_soc_compress_type {
--	SND_SOC_NO_COMPRESSION,
-+	SND_SOC_FLAT_COMPRESSION,
- 	SND_SOC_LZO_COMPRESSION,
- 	SND_SOC_RBTREE_COMPRESSION
- };
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index e5b1888..9b1ba33 100644
---- a/sound/soc/soc-cache.c
-+++ b/sound/soc/soc-cache.c
-@@ -1520,7 +1520,7 @@ static int snd_soc_flat_cache_init(struct snd_soc_codec *codec)
- /* an array of all supported compression types */
- static const struct snd_soc_cache_ops cache_types[] = {
- 	{
--		.id = SND_SOC_NO_COMPRESSION,
-+		.id = SND_SOC_FLAT_COMPRESSION,
- 		.init = snd_soc_flat_cache_init,
- 		.exit = snd_soc_flat_cache_exit,
- 		.read = snd_soc_flat_cache_read,
--- 
-1.7.3.2
+[Reflowed into 80 columns]
+
+> We are busy with 2010R1 Linux on blackfin release based on kernel
+> 2.6.34. There is no activity in ADI on multi component audio drivers in
+> latest 2.6.37 rc kernel. However, we are switching to the 2011
+> development cycle soon, which will cover some audio drivers on top of
+> the multi-component framework.
+
+Please bear in mind that 2.6.37 will be released probably around the end
+of next month so it's important to get testing and any fixes done before
+then.
