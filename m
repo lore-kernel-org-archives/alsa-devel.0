@@ -1,34 +1,47 @@
 From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 0/5] Fix compile error and missing spin_unlock_irqrestore
-	for NUC900 SoC audio
-Date: Mon, 29 Nov 2010 17:38:11 +0800
-Message-ID: <1291023491.22911.1.camel@mola>
+Subject: [PATCH 1/5] ASoC: Fix compile error for nuc900-ac97.c
+Date: Mon, 29 Nov 2010 17:39:10 +0800
+Message-ID: <1291023550.22911.2.camel@mola>
+References: <1291023491.22911.1.camel@mola>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1291023491.22911.1.camel@mola>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel <linux-kernel@vger.kernel.org>
 Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wan ZongShun <mcuos.com@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This serial fixes compile error and missing spin_unlock_irqrestore for NUC900 SoC audio.
+Fix below compile error by add a missing ';'.
 
-Regards,
-Axel
+  CC      sound/soc/nuc900/nuc900-ac97.o
+sound/soc/nuc900/nuc900-ac97.c:300: warning: initialization from incompatible pointer type
+sound/soc/nuc900/nuc900-ac97.c:301: warning: initialization from incompatible pointer type
+sound/soc/nuc900/nuc900-ac97.c:318: error: expected ',' or ';' before 'static'
+sound/soc/nuc900/nuc900-ac97.c:405: error: 'nuc900_ac97_drvprobe' undeclared here (not in a function)
+make[3]: *** [sound/soc/nuc900/nuc900-ac97.o] Error 1
+make[2]: *** [sound/soc/nuc900] Error 2
+make[1]: *** [sound/soc] Error 2
+make: *** [sound] Error 2
 
-Axel Lin (5):
-  ASoC: Fix compile error for nuc900-ac97.c
-  ASoC: Fix prototype for nuc900_ac97_probe and nuc900_ac97_remove
-  ASoC: Fix compile error for nuc900-pcm.c
-  ASoC: Fix missing spin_unlock_irqrestore
-  ASoC: Remove unneeded !! operations while checking return value of
-    nuc900_checkready
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+ sound/soc/nuc900/nuc900-ac97.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
- sound/soc/nuc900/nuc900-ac97.c  |   15 +++++++--------
- sound/soc/nuc900/nuc900-audio.h |    2 ++
- sound/soc/nuc900/nuc900-pcm.c   |   11 ++++++-----
- 3 files changed, 15 insertions(+), 13 deletions(-)
-
+diff --git a/sound/soc/nuc900/nuc900-ac97.c b/sound/soc/nuc900/nuc900-ac97.c
+index e00e39d..4f056b4 100644
+--- a/sound/soc/nuc900/nuc900-ac97.c
++++ b/sound/soc/nuc900/nuc900-ac97.c
+@@ -313,7 +313,7 @@ static struct snd_soc_dai_driver nuc900_ac97_dai = {
+ 		.channels_max	= 2,
+ 	},
+ 	.ops = &nuc900_ac97_dai_ops,
+-}
++};
+ 
+ static int __devinit nuc900_ac97_drvprobe(struct platform_device *pdev)
+ {
 -- 
 1.7.2
