@@ -1,15 +1,16 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: soc-cache: Add error checking in the
-	*_cache_sync functions
-Date: Mon, 29 Nov 2010 10:24:54 +0000
-Message-ID: <1291026294-31869-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: =?ISO-8859-1?Q?Daniel_Gl=F6ckner?= <dg@emlix.com>
+Subject: Re: S6000 ASoC drivers with multi-component
+Date: Mon, 29 Nov 2010 11:34:03 +0100
+Message-ID: <4CF3819B.5040507@emlix.com>
+References: <20101128120702.GA12683@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9ED08244FB
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2010 11:24:56 +0100 (CET)
+Received: from mx1.emlix.com (mx1.emlix.com [193.175.82.238])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2DCEF2450B
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2010 11:34:05 +0100 (CET)
+In-Reply-To: <20101128120702.GA12683@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,100 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Chris Zankel <chris@zankel.net>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Ensure that we report any errors encountered during reads/writes
-in the cache syncing functions.
+On 11/28/2010 01:07 PM, Mark Brown wrote:
+> I'm a little concerned that there have been no updates to the s6000
+> audio drivers since the merge of multi-component ASoC (which is now in
+> mainline and should be released as part of 2.6.37).  This was a very
+> big and invasive update, and experience with other architectures has
+> been that there's usually at least some typos that need fixing.  It'd be
+> good to get some confirmation that the audio drivers have at least been
+> tested with current mainline - if everything worked fine that's
+> obviously excellent but it'd be good if someone could confirm that this
+> is the case.
 
-Remove redundant newline in the source code.
+Oh dear, you killed Schr=F6dinger's cat..
 
-Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
----
- sound/soc/soc-cache.c |   28 +++++++++++++++++++++-------
- 1 files changed, 21 insertions(+), 7 deletions(-)
+Yes there are some bugs in the s6000 ASoC code.
+A missing semicolon at the end of s6000_i2s_dai, a lacking forward
+declaration of s6000_soc_platform in the request_irq line, and a reference
+to codec->snd_card which should probably be changed to codec->card->snd_car=
+d.
 
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index 6c0589e..e5b1888 100644
---- a/sound/soc/soc-cache.c
-+++ b/sound/soc/soc-cache.c
-@@ -792,7 +792,6 @@ static struct snd_soc_rbtree_node *snd_soc_rbtree_lookup(
- 	return NULL;
- }
- 
--
- static int snd_soc_rbtree_insert(struct rb_root *root,
- 				 struct snd_soc_rbtree_node *rbnode)
- {
-@@ -826,14 +825,19 @@ static int snd_soc_rbtree_cache_sync(struct snd_soc_codec *codec)
- 	struct rb_node *node;
- 	struct snd_soc_rbtree_node *rbnode;
- 	unsigned int val;
-+	int ret;
- 
- 	rbtree_ctx = codec->reg_cache;
- 	for (node = rb_first(&rbtree_ctx->root); node; node = rb_next(node)) {
- 		rbnode = rb_entry(node, struct snd_soc_rbtree_node, node);
- 		if (rbnode->value == rbnode->defval)
- 			continue;
--		snd_soc_cache_read(codec, rbnode->reg, &val);
--		snd_soc_write(codec, rbnode->reg, val);
-+		ret = snd_soc_cache_read(codec, rbnode->reg, &val);
-+		if (ret)
-+			return ret;
-+		ret = snd_soc_write(codec, rbnode->reg, val);
-+		if (ret)
-+			return ret;
- 		dev_dbg(codec->dev, "Synced register %#x, value = %#x\n",
- 			rbnode->reg, val);
- 	}
-@@ -1110,11 +1114,16 @@ static int snd_soc_lzo_cache_sync(struct snd_soc_codec *codec)
- 	struct snd_soc_lzo_ctx **lzo_blocks;
- 	unsigned int val;
- 	int i;
-+	int ret;
- 
- 	lzo_blocks = codec->reg_cache;
- 	for_each_set_bit(i, lzo_blocks[0]->sync_bmp, lzo_blocks[0]->sync_bmp_nbits) {
--		snd_soc_cache_read(codec, i, &val);
--		snd_soc_write(codec, i, val);
-+		ret = snd_soc_cache_read(codec, i, &val);
-+		if (ret)
-+			return ret;
-+		ret = snd_soc_write(codec, i, val);
-+		if (ret)
-+			return ret;
- 		dev_dbg(codec->dev, "Synced register %#x, value = %#x\n",
- 			i, val);
- 	}
-@@ -1390,12 +1399,15 @@ err_tofree:
- static int snd_soc_flat_cache_sync(struct snd_soc_codec *codec)
- {
- 	int i;
-+	int ret;
- 	struct snd_soc_codec_driver *codec_drv;
- 	unsigned int val;
- 
- 	codec_drv = codec->driver;
- 	for (i = 0; i < codec_drv->reg_cache_size; ++i) {
--		snd_soc_cache_read(codec, i, &val);
-+		ret = snd_soc_cache_read(codec, i, &val);
-+		if (ret)
-+			return ret;
- 		if (codec_drv->reg_cache_default) {
- 			switch (codec_drv->reg_word_size) {
- 			case 1: {
-@@ -1418,7 +1430,9 @@ static int snd_soc_flat_cache_sync(struct snd_soc_codec *codec)
- 				BUG();
- 			}
- 		}
--		snd_soc_write(codec, i, val);
-+		ret = snd_soc_write(codec, i, val);
-+		if (ret)
-+			return ret;
- 		dev_dbg(codec->dev, "Synced register %#x, value = %#x\n",
- 			i, val);
- 	}
--- 
-1.7.3.2
+But trying to build a s6105 kernel from vanilla sources made me realize
+two things:
+1. Nobody ever tried to do that before as s6000 support has been merged
+   incompletely and in some cases with merge errors (variant_irq_disable
+   declaration, I2C_BOARD_INFO in struct platform_device[], clk framework
+   missing completely).
+2. Compiling Xtensa kernels in general is broken at least since 2.6.35-rc1
+   because of e520c41085
+
+So for now I could just compile-test the ASoC changes. Actually booting a
+kernel will probably take more of my spare time..
+Would you like to have patches for the found ASoC bugs now or do you prefer
+waiting until I could make it work on hardware?
+
+  Daniel
+
+
+-- =
+
+Dipl.-Math. Daniel Gl=F6ckner, emlix GmbH, http://www.emlix.com
+Fon +49 551 30664-0, Fax -11, Bahnhofsallee 1b, 37081 G=F6ttingen, Germany
+Sitz der Gesellschaft: G=F6ttingen, Amtsgericht G=F6ttingen HR B 3160
+Gesch=E4ftsf=FChrer: Dr. Uwe Kracke, Ust-IdNr.: DE 205 198 055
+
+emlix - your embedded linux partner
