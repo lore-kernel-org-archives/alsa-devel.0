@@ -1,56 +1,118 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH 5/5] ASoC: Remove unneeded !! operations while checking
-	return value of nuc900_checkready
-Date: Mon, 29 Nov 2010 17:43:39 +0800
-Message-ID: <1291023819.22911.11.camel@mola>
-References: <1291023491.22911.1.camel@mola>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: soc-cache: Add error checking in the
+	*_cache_sync functions
+Date: Mon, 29 Nov 2010 10:24:54 +0000
+Message-ID: <1291026294-31869-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1291023491.22911.1.camel@mola>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel <linux-kernel@vger.kernel.org>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Wan ZongShun <mcuos.com@gmail.com>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9ED08244FB
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2010 11:24:56 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-I think this unneededd !! operations just reduce the readability.
+Ensure that we report any errors encountered during reads/writes
+in the cache syncing functions.
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
+Remove redundant newline in the source code.
+
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 ---
- sound/soc/nuc900/nuc900-ac97.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/soc-cache.c |   28 +++++++++++++++++++++-------
+ 1 files changed, 21 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/nuc900/nuc900-ac97.c b/sound/soc/nuc900/nuc900-ac97.c
-index 3d9d8b1..dac6732 100644
---- a/sound/soc/nuc900/nuc900-ac97.c
-+++ b/sound/soc/nuc900/nuc900-ac97.c
-@@ -49,7 +49,7 @@ static unsigned short nuc900_ac97_read(struct snd_ac97 *ac97,
- 	mutex_lock(&ac97_mutex);
+diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
+index 6c0589e..e5b1888 100644
+--- a/sound/soc/soc-cache.c
++++ b/sound/soc/soc-cache.c
+@@ -792,7 +792,6 @@ static struct snd_soc_rbtree_node *snd_soc_rbtree_lookup(
+ 	return NULL;
+ }
  
- 	val = nuc900_checkready();
--	if (!!val) {
-+	if (val) {
- 		dev_err(nuc900_audio->dev, "AC97 codec is not ready\n");
- 		goto out;
+-
+ static int snd_soc_rbtree_insert(struct rb_root *root,
+ 				 struct snd_soc_rbtree_node *rbnode)
+ {
+@@ -826,14 +825,19 @@ static int snd_soc_rbtree_cache_sync(struct snd_soc_codec *codec)
+ 	struct rb_node *node;
+ 	struct snd_soc_rbtree_node *rbnode;
+ 	unsigned int val;
++	int ret;
+ 
+ 	rbtree_ctx = codec->reg_cache;
+ 	for (node = rb_first(&rbtree_ctx->root); node; node = rb_next(node)) {
+ 		rbnode = rb_entry(node, struct snd_soc_rbtree_node, node);
+ 		if (rbnode->value == rbnode->defval)
+ 			continue;
+-		snd_soc_cache_read(codec, rbnode->reg, &val);
+-		snd_soc_write(codec, rbnode->reg, val);
++		ret = snd_soc_cache_read(codec, rbnode->reg, &val);
++		if (ret)
++			return ret;
++		ret = snd_soc_write(codec, rbnode->reg, val);
++		if (ret)
++			return ret;
+ 		dev_dbg(codec->dev, "Synced register %#x, value = %#x\n",
+ 			rbnode->reg, val);
  	}
-@@ -102,7 +102,7 @@ static void nuc900_ac97_write(struct snd_ac97 *ac97, unsigned short reg,
- 	mutex_lock(&ac97_mutex);
+@@ -1110,11 +1114,16 @@ static int snd_soc_lzo_cache_sync(struct snd_soc_codec *codec)
+ 	struct snd_soc_lzo_ctx **lzo_blocks;
+ 	unsigned int val;
+ 	int i;
++	int ret;
  
- 	tmp = nuc900_checkready();
--	if (!!tmp)
-+	if (tmp)
- 		dev_err(nuc900_audio->dev, "AC97 codec is not ready\n");
+ 	lzo_blocks = codec->reg_cache;
+ 	for_each_set_bit(i, lzo_blocks[0]->sync_bmp, lzo_blocks[0]->sync_bmp_nbits) {
+-		snd_soc_cache_read(codec, i, &val);
+-		snd_soc_write(codec, i, val);
++		ret = snd_soc_cache_read(codec, i, &val);
++		if (ret)
++			return ret;
++		ret = snd_soc_write(codec, i, val);
++		if (ret)
++			return ret;
+ 		dev_dbg(codec->dev, "Synced register %#x, value = %#x\n",
+ 			i, val);
+ 	}
+@@ -1390,12 +1399,15 @@ err_tofree:
+ static int snd_soc_flat_cache_sync(struct snd_soc_codec *codec)
+ {
+ 	int i;
++	int ret;
+ 	struct snd_soc_codec_driver *codec_drv;
+ 	unsigned int val;
  
- 	/* clear the R_WB bit and write register index */
-@@ -149,7 +149,7 @@ static void nuc900_ac97_warm_reset(struct snd_ac97 *ac97)
- 	udelay(100);
- 
- 	val = nuc900_checkready();
--	if (!!val)
-+	if (val)
- 		dev_err(nuc900_audio->dev, "AC97 codec is not ready\n");
- 
- 	mutex_unlock(&ac97_mutex);
+ 	codec_drv = codec->driver;
+ 	for (i = 0; i < codec_drv->reg_cache_size; ++i) {
+-		snd_soc_cache_read(codec, i, &val);
++		ret = snd_soc_cache_read(codec, i, &val);
++		if (ret)
++			return ret;
+ 		if (codec_drv->reg_cache_default) {
+ 			switch (codec_drv->reg_word_size) {
+ 			case 1: {
+@@ -1418,7 +1430,9 @@ static int snd_soc_flat_cache_sync(struct snd_soc_codec *codec)
+ 				BUG();
+ 			}
+ 		}
+-		snd_soc_write(codec, i, val);
++		ret = snd_soc_write(codec, i, val);
++		if (ret)
++			return ret;
+ 		dev_dbg(codec->dev, "Synced register %#x, value = %#x\n",
+ 			i, val);
+ 	}
 -- 
-1.7.2
+1.7.3.2
