@@ -1,15 +1,14 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 1/5] ASoC: tpa6130a2: Simplify power state
-	management
-Date: Tue, 30 Nov 2010 16:00:00 +0200
-Message-ID: <1291125604-10396-2-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 4/5] ASoC: tpa6130a2: Add stereo DAPM path
+Date: Tue, 30 Nov 2010 16:00:03 +0200
+Message-ID: <1291125604-10396-5-git-send-email-peter.ujfalusi@nokia.com>
 References: <1291125604-10396-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-sa02.nokia.com (smtp.nokia.com [147.243.1.48])
-	by alsa0.perex.cz (Postfix) with ESMTP id BBE8B103973
+	by alsa0.perex.cz (Postfix) with ESMTP id E48E9103986
 	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2010 15:00:12 +0100 (CET)
 In-Reply-To: <1291125604-10396-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -25,59 +24,50 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Use simpler way to avoid setting the same power state
-for the amplifier.
-Simplifies the check introduced by patch:
-ASoC: tpa6130a2: Fix unbalanced regulator disables
+New DAPM widgets, and paths to enable both channels at the
+same time (for stereo output).
+With this path the switch time difference can be avoided
+between left and right channels.
+The original DAPM paths can be still used, if only one of
+TPA's output has been connected to a speaker, but for most of
+the cases, switching to the stereo path is better.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: Jarkko Nikula <jhnikula@gmail.com>
 ---
- sound/soc/codecs/tpa6130a2.c |   10 ++++++----
- 1 files changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/codecs/tpa6130a2.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
-index 9d61a1d..199edf0 100644
+index 4c77a82..c97badf 100644
 --- a/sound/soc/codecs/tpa6130a2.c
 +++ b/sound/soc/codecs/tpa6130a2.c
-@@ -41,7 +41,7 @@ struct tpa6130a2_data {
- 	unsigned char regs[TPA6130A2_CACHEREGNUM];
- 	struct regulator *supply;
- 	int power_gpio;
--	unsigned char power_state;
-+	u8 power_state:1;
- 	enum tpa_model id;
+@@ -354,20 +354,27 @@ static const struct snd_soc_dapm_widget tpa6130a2_dapm_widgets[] = {
+ 	SND_SOC_DAPM_PGA_E("TPA6130A2 Right", SND_SOC_NOPM,
+ 			TPA6130A2_HP_EN_R, 0, NULL, 0, tpa6130a2_pga_event,
+ 			SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_PGA_E("TPA6130A2 Stereo", SND_SOC_NOPM,
++			TPA6130A2_HP_EN_L | TPA6130A2_HP_EN_R, 0, NULL, 0,
++			tpa6130a2_pga_event,
++			SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
+ 	SND_SOC_DAPM_SUPPLY("TPA6130A2 Enable", SND_SOC_NOPM,
+ 			0, 0, tpa6130a2_supply_event,
+ 			SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
+ 	/* Outputs */
+ 	SND_SOC_DAPM_OUTPUT("TPA6130A2 Headphone Left"),
+ 	SND_SOC_DAPM_OUTPUT("TPA6130A2 Headphone Right"),
++	SND_SOC_DAPM_OUTPUT("TPA6130A2 Headphone Stereo"),
  };
  
-@@ -116,7 +116,7 @@ static int tpa6130a2_initialize(void)
- 	return ret;
- }
+ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"TPA6130A2 Headphone Left", NULL, "TPA6130A2 Left"},
+ 	{"TPA6130A2 Headphone Right", NULL, "TPA6130A2 Right"},
++	{"TPA6130A2 Headphone Stereo", NULL, "TPA6130A2 Stereo"},
  
--static int tpa6130a2_power(int power)
-+static int tpa6130a2_power(u8 power)
- {
- 	struct	tpa6130a2_data *data;
- 	u8	val;
-@@ -126,8 +126,10 @@ static int tpa6130a2_power(int power)
- 	data = i2c_get_clientdata(tpa6130a2_client);
+ 	{"TPA6130A2 Headphone Left", NULL, "TPA6130A2 Enable"},
+ 	{"TPA6130A2 Headphone Right", NULL, "TPA6130A2 Enable"},
++	{"TPA6130A2 Headphone Stereo", NULL, "TPA6130A2 Enable"},
+ };
  
- 	mutex_lock(&data->mutex);
--	if (power && !data->power_state) {
-+	if (power == data->power_state)
-+		goto exit;
- 
-+	if (power) {
- 		ret = regulator_enable(data->supply);
- 		if (ret != 0) {
- 			dev_err(&tpa6130a2_client->dev,
-@@ -154,7 +156,7 @@ static int tpa6130a2_power(int power)
- 		val = tpa6130a2_read(TPA6130A2_REG_CONTROL);
- 		val &= ~TPA6130A2_SWS;
- 		tpa6130a2_i2c_write(TPA6130A2_REG_CONTROL, val);
--	} else if (!power && data->power_state) {
-+	} else {
- 		/* set SWS */
- 		val = tpa6130a2_read(TPA6130A2_REG_CONTROL);
- 		val |= TPA6130A2_SWS;
+ int tpa6130a2_add_controls(struct snd_soc_codec *codec)
 -- 
 1.7.3.2
