@@ -1,123 +1,45 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.38
-Date: Mon, 29 Nov 2010 19:08:13 +0000
-Message-ID: <20101129190812.GV30360@rakim.wolfsonmicro.main>
+From: Wan ZongShun <mcuos.com@gmail.com>
+Subject: Re: [RFC][PATCH 4/5] ASoC: Fix missing spin_unlock_irqrestore
+Date: Tue, 30 Nov 2010 09:36:29 +0800
+Message-ID: <AANLkTinks9Msj11mfJSO9Ezwt179JYkxNKFD3dAp=X+X@mail.gmail.com>
+References: <1291023491.22911.1.camel@mola>
+	<1291023767.22911.9.camel@mola>
+	<20101129114700.GP30360@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AB4FE245F2
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2010 20:08:15 +0100 (CET)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@Slimlogic.co.uk>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20101129114700.GP30360@rakim.wolfsonmicro.main>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Axel Lin <axel.lin@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit ab4e57446ff2e0a5c154cb703595d574130dc919:
+2010/11/29 Mark Brown <broonie@opensource.wolfsonmicro.com>:
+> On Mon, Nov 29, 2010 at 05:42:47PM +0800, Axel Lin wrote:
+>
+>> I don't have this hardware handy, could you help to test this patch
+>> if you think this patch is ok.
+>
+> I've applied everything except this one - Wan, can you let us know how
+> the testing goes please?
+>
 
-  Merge branch 'for-2.6.37' into for-2.6.38 (2010-11-24 11:57:43 +0000)
+Hi all,
 
-are available in the git repository at:
+I have tested it.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.38
+Thanks!
+Acked-by: Wan ZongShun <mcuos.com@gmail.com>
 
-Axel Lin (24):
-      ASoC: Call snd_soc_unregister_dais instead of snd_soc_unregister_dai in sh4_soc_dai_remove
-      ASoC: efika-audio-fabric: fix resource leak in efika_fabric_init error path
-      ASoC: pcm030-audio-fabric: fix resource leak in pcm030_fabric_init error path
-      ASoC: snd-soc-afeb9260: remove unneeded platform_device_del in error path
-      ASoC: sam9g20_wm8731: fix resource leak in at91sam9g20ek_init error path
-      ASoC: simone: fix resource leak in simone_init error path
-      ASoC: imx-ssi: fix resource leak
-      ASoC: phycore-ac97: fix resource leak
-      ASoC: davinci-vcif - fix a memory leak
-      ASoC: neo1973_gta02_wm8753: fix wrong parameter for snd_soc_register_dai and snd_soc_unregister_dai
-      ASoC: Fix compile error for smartq_wm8987.c
-      ASoC: smdk_wm9713: fix resource leak in smdk_init error path
-      ASoC: tlv320aic3x - fix variable may be used uninitialized warning
-      ASoC: Fix resource reclaim for osk5912
-      ASoC: Fix resource leak in goni_wm8994.c
-      ASoC: Fix resource leak in neo1973_gta02_init() error path
-      ASoC: Add missing gpio_free(S3C64XX_GPK(12)) in smartq_exit()
-      ASoC: Fix resource leak in smdk_spdif.c
-      ASoC: Fix compile error for nuc900-ac97.c
-      ASoC: Fix prototype for nuc900_ac97_probe and nuc900_ac97_remove
-      ASoC: Fix compile error for nuc900-pcm.c
-      ASoC: Remove unneeded !! operations while checking return value of nuc900_checkready
-      ASoC: Add missing dev_set_drvdata in mpc8610_hpcd_probe
-      ASoC: Add missing dev_set_drvdata in p1022_ds_probe
 
-Dimitris Papastamos (2):
-      ASoC: soc-cache: Add error checking in the *_cache_sync functions
-      ASoC: soc-cache: Ensure consistent cache naming
+-- 
+*linux-arm-kernel mailing list
+mail addr:linux-arm-kernel@lists.infradead.org
+you can subscribe by:
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
-Dmitry Artamonow (1):
-      ASoC: fix SND_PXA2XX_LIB Kconfig warning
-
-Mark Brown (18):
-      Merge branch 'for-2.6.37' into for-2.6.38
-      ASoC: Make SMDK WM8580 driver unloadable
-      ASoC: Update MAINTAINERS for Samsung driver move
-      ASoC: Add WM8737 ALC support
-      ARM: Samsung: Make sure ASoC DMA device is prototyped
-      Merge branch 'for-2.6.37' into for-2.6.38
-      ASoC: Remove redundant hw_write initialisation in WM8737
-      mfd: Add initial WM8958 support
-      gpiolib: Add WM8958 support to the WM8994 driver
-      ASoC: Use DC servo startup mode when not doing DCS correction
-      ASoC: Initial WM8958 audio configuration
-      ASoC: Implement support for enhanced AIF3 on WM8958
-      ASoC: Add WM8958 Multi-band compressor support
-      ASoC: Add WM8958 microphone detection support
-      ASoC: Convert WM8994 to use soc-cache.c cache functions
-      ASoC: Enable rbtree compression for WM8994/58 register cache
-      ASoC: Implement runtime PM for WM8994/58
-      Merge branch 'for-2.6.37' into for-2.6.38
-
- MAINTAINERS                              |    2 +-
- arch/arm/plat-samsung/dev-asocdma.c      |    1 +
- drivers/gpio/wm8994-gpio.c               |   24 +
- drivers/mfd/wm8994-core.c                |   93 ++-
- include/linux/mfd/wm8994/core.h          |    8 +
- include/linux/mfd/wm8994/registers.h     |  225 +++++
- include/sound/soc.h                      |    2 +-
- sound/soc/atmel/sam9g20_wm8731.c         |    5 +-
- sound/soc/atmel/snd-soc-afeb9260.c       |    1 -
- sound/soc/codecs/tlv320aic3x.c           |    6 +-
- sound/soc/codecs/wm8737.c                |   43 +-
- sound/soc/codecs/wm8994-tables.c         | 1572 ++++++++++++++++++++++++++++++
- sound/soc/codecs/wm8994.c                |  728 ++++++++++++--
- sound/soc/codecs/wm8994.h                |    5 +
- sound/soc/codecs/wm_hubs.c               |   20 +-
- sound/soc/davinci/davinci-vcif.c         |    3 +
- sound/soc/ep93xx/simone.c                |   18 +-
- sound/soc/fsl/efika-audio-fabric.c       |    1 +
- sound/soc/fsl/mpc8610_hpcd.c             |    1 +
- sound/soc/fsl/p1022_ds.c                 |    1 +
- sound/soc/fsl/pcm030-audio-fabric.c      |    1 +
- sound/soc/imx/imx-ssi.c                  |   15 +-
- sound/soc/imx/phycore-ac97.c             |   28 +-
- sound/soc/nuc900/nuc900-ac97.c           |   15 +-
- sound/soc/nuc900/nuc900-audio.h          |    2 +
- sound/soc/nuc900/nuc900-pcm.c            |    2 +-
- sound/soc/omap/osk5912.c                 |   11 +-
- sound/soc/pxa/Kconfig                    |    1 +
- sound/soc/samsung/goni_wm8994.c          |    9 +-
- sound/soc/samsung/neo1973_gta02_wm8753.c |   26 +-
- sound/soc/samsung/smartq_wm8987.c        |   10 +-
- sound/soc/samsung/smdk_spdif.c           |   13 +-
- sound/soc/samsung/smdk_wm8580.c          |    6 +
- sound/soc/samsung/smdk_wm9713.c          |   17 +-
- sound/soc/sh/ssi.c                       |    2 +-
- sound/soc/soc-cache.c                    |   30 +-
- 36 files changed, 2742 insertions(+), 205 deletions(-)
+* linux-arm-NUC900 mailing list
+mail addr:NUC900@googlegroups.com
+main web: https://groups.google.com/group/NUC900
+you can subscribe it by sending me mail:
+mcuos.com@gmail.com
