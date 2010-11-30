@@ -1,60 +1,44 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: Simplify pm860x_probe error handling
-Date: Tue, 30 Nov 2010 15:34:11 +0800
-Message-ID: <1291102451.6929.1.camel@mola>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Hardware events
+Date: Tue, 30 Nov 2010 09:08:50 +0100
+Message-ID: <4CF4B112.3070705@ladisch.de>
+References: <4CF39483.4050704@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel <linux-kernel@vger.kernel.org>
-Cc: Haojian Zhuang <haojian.zhuang@marvell.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 55B7C243F1
+	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2010 09:06:46 +0100 (CET)
+In-Reply-To: <4CF39483.4050704@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Rolf Theunissen <rolf.theunissen@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Simplify pm860x_probe error handling and return actual error code we got.
+Rolf Theunissen wrote:
+> For some hardware devices (for instance the ThinkPad EC) the volume can
+> be changed by (only) hardware buttons.
+> ...
+> This raises the following question: is it possible to detect the events
+> originating from the hardware in the functions that handle the callbacks
+> (set via snd_mixer_elem_set_callback/snd_hctl_elem_set_callback)? This
+> would allow to implement an OSD that only responds to the hardware
+> buttons and that would ignore events originating from "software".
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- sound/soc/codecs/88pm860x-codec.c |   12 +++++-------
- 1 files changed, 5 insertions(+), 7 deletions(-)
+The control notifications are for all changes of the control.
 
-diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
-index 7e4d880..08e15de 100644
---- a/sound/soc/codecs/88pm860x-codec.c
-+++ b/sound/soc/codecs/88pm860x-codec.c
-@@ -1358,7 +1358,7 @@ static int pm860x_probe(struct snd_soc_codec *codec)
- 					   pm860x->name[i], pm860x);
- 		if (ret < 0) {
- 			dev_err(codec->dev, "Failed to request IRQ!\n");
--			goto out_irq;
-+			goto out;
- 		}
- 	}
- 
-@@ -1369,7 +1369,7 @@ static int pm860x_probe(struct snd_soc_codec *codec)
- 	if (ret < 0) {
- 		dev_err(codec->dev, "Failed to fill register cache: %d\n",
- 			ret);
--		goto out_codec;
-+		goto out;
- 	}
- 
- 	snd_soc_add_controls(codec, pm860x_snd_controls,
-@@ -1379,12 +1379,10 @@ static int pm860x_probe(struct snd_soc_codec *codec)
- 	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
- 	return 0;
- 
--out_codec:
--	i = 3;
--out_irq:
--	for (; i >= 0; i--)
-+out:
-+	while (--i >= 0)
- 		free_irq(pm860x->irq[i], pm860x);
--	return -EINVAL;
-+	return ret;
- }
- 
- static int pm860x_remove(struct snd_soc_codec *codec)
--- 
-1.7.2
+If it is not possible to change the volume in software, then the driver
+must not set the control to be writable.
+
+
+Regards,
+Clemens
