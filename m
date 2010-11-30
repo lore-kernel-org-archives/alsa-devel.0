@@ -1,14 +1,14 @@
 From: =?UTF-8?q?Daniel=20Gl=C3=B6ckner?= <daniel-gl@gmx.net>
-Subject: [PATCH 2/3] s6000-pcm: fix compilation
-Date: Tue, 30 Nov 2010 01:00:17 +0100
-Message-ID: <1291075218-7849-2-git-send-email-daniel-gl@gmx.net>
+Subject: [PATCH 3/3] s6105-ipcam: fix compilation
+Date: Tue, 30 Nov 2010 01:00:18 +0100
+Message-ID: <1291075218-7849-3-git-send-email-daniel-gl@gmx.net>
 References: <20101129104228.GM30360@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.gmx.net (mailout-de.gmx.net [213.165.64.23])
-	by alsa0.perex.cz (Postfix) with SMTP id 59948103816
+	by alsa0.perex.cz (Postfix) with SMTP id F38EA1038DA
 	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2010 01:01:37 +0100 (CET)
 In-Reply-To: <20101129104228.GM30360@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -24,20 +24,20 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, =?UTF-8?q?Daniel=20Gl=C3=B6ckner?= <daniel-gl@gmx.net>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-czYwMDBfc29jX3BsYXRmb3JtIGhhcyBsb3N0IGl0cyBmb3J3YXJkIGRlY2xhcmF0aW9uIGFuZCB0
-aGVyZSBubwpsb25nZXIgaXMgYSBuYW1lIGVsZW1lbnQgaW4gaXQsIHNvIHVzZSBhIHN0cmluZyBj
-b25zdGFudCB3aGVuCmNhbGxpbmcgcmVxdWVzdF9pcnEuCgpTaWduZWQtb2ZmLWJ5OiBEYW5pZWwg
-R2zDtmNrbmVyIDxkYW5pZWwtZ2xAZ214Lm5ldD4KLS0tCiBzb3VuZC9zb2MvczYwMDAvczYwMDAt
-cGNtLmMgfCAgICAyICstCiAxIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwgMSBkZWxl
-dGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvczYwMDAvczYwMDAtcGNtLmMgYi9zb3Vu
-ZC9zb2MvczYwMDAvczYwMDAtcGNtLmMKaW5kZXggMjcxZmQyMi4uYWIzY2NhZSAxMDA2NDQKLS0t
-IGEvc291bmQvc29jL3M2MDAwL3M2MDAwLXBjbS5jCisrKyBiL3NvdW5kL3NvYy9zNjAwMC9zNjAw
-MC1wY20uYwpAQCAtNDczLDcgKzQ3Myw3IEBAIHN0YXRpYyBpbnQgczYwMDBfcGNtX25ldyhzdHJ1
-Y3Qgc25kX2NhcmQgKmNhcmQsCiAJfQogCiAJcmVzID0gcmVxdWVzdF9pcnEocGFyYW1zLT5pcnEs
-IHM2MDAwX3BjbV9pcnEsIElSUUZfU0hBUkVELAotCQkJICBzNjAwMF9zb2NfcGxhdGZvcm0ubmFt
-ZSwgcGNtKTsKKwkJCSAgInM2MDAwLWF1ZGlvIiwgcGNtKTsKIAlpZiAocmVzKSB7CiAJCXByaW50
-ayhLRVJOX0VSUiAiczYwMDAtcGNtIGNvdWxkbid0IGdldCBJUlFcbiIpOwogCQlyZXR1cm4gcmVz
-OwotLSAKMS43LjAuNQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+V2hlbiB0aGUgczYxMDUtaXBjYW0gQVNvQyBkcml2ZXIgaGFkIGJlZW4gY29udmVydGVkIHRvIHRo
+ZQptdWx0aS1jb21wb25lbnQgQVBJLCBhIHNpbmdsZSByZWZlcmVuY2UgdG8gYSBmb3JtZXIgc3Ry
+dWN0dXJlCmVsZW1lbnQgcmVtYWluZWQsIGJsb2NraW5nIHN1Y2Nlc3NmdWwgY29tcGlsYXRpb24u
+CgpTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgR2zDtmNrbmVyIDxkYW5pZWwtZ2xAZ214Lm5ldD4KLS0t
+CiBzb3VuZC9zb2MvczYwMDAvczYxMDUtaXBjYW0uYyB8ICAgIDIgKy0KIDEgZmlsZXMgY2hhbmdl
+ZCwgMSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3Nv
+Yy9zNjAwMC9zNjEwNS1pcGNhbS5jIGIvc291bmQvc29jL3M2MDAwL3M2MTA1LWlwY2FtLmMKaW5k
+ZXggOTZjMDVlMS4uYzEyNDRjNSAxMDA2NDQKLS0tIGEvc291bmQvc29jL3M2MDAwL3M2MTA1LWlw
+Y2FtLmMKKysrIGIvc291bmQvc29jL3M2MDAwL3M2MTA1LWlwY2FtLmMKQEAgLTE2Nyw3ICsxNjcs
+NyBAQCBzdGF0aWMgaW50IHM2MTA1X2FpYzN4X2luaXQoc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRp
+bWUgKnJ0ZCkKIAogCXNuZF9zb2NfZGFwbV9zeW5jKGNvZGVjKTsKIAotCXNuZF9jdGxfYWRkKGNv
+ZGVjLT5zbmRfY2FyZCwgc25kX2N0bF9uZXcxKCZhdWRpb19vdXRfbXV4LCBjb2RlYykpOworCXNu
+ZF9jdGxfYWRkKGNvZGVjLT5jYXJkLT5zbmRfY2FyZCwgc25kX2N0bF9uZXcxKCZhdWRpb19vdXRf
+bXV4LCBjb2RlYykpOwogCiAJcmV0dXJuIDA7CiB9Ci0tIAoxLjcuMC41CgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
