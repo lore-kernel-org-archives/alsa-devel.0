@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/5] ASoC: tpa6130a2: Simplify power state
-	management
-Date: Tue, 30 Nov 2010 14:24:26 +0000
-Message-ID: <20101130142426.GI7403@rakim.wolfsonmicro.main>
+Subject: Re: [PATCH 2/5] ASoC: tpa6130a2: Defer SW enable from
+	power enable
+Date: Tue, 30 Nov 2010 14:24:49 +0000
+Message-ID: <20101130142449.GJ7403@rakim.wolfsonmicro.main>
 References: <1291125604-10396-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1291125604-10396-2-git-send-email-peter.ujfalusi@nokia.com>
+	<1291125604-10396-3-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 40054244AC
-	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2010 15:24:28 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B9AF1103986
+	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2010 15:24:50 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1291125604-10396-2-git-send-email-peter.ujfalusi@nokia.com>
+In-Reply-To: <1291125604-10396-3-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,11 +27,14 @@ To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 30, 2010 at 04:00:00PM +0200, Peter Ujfalusi wrote:
-> Use simpler way to avoid setting the same power state
-> for the amplifier.
-> Simplifies the check introduced by patch:
-> ASoC: tpa6130a2: Fix unbalanced regulator disables
+On Tue, Nov 30, 2010 at 04:00:01PM +0200, Peter Ujfalusi wrote:
+> Do not enable the amplifier right after the power has been
+> restored to the amplifier.
+> The DAPM_SUPPLY widget turns on the amp early in the DAPM
+> power walk, and the unmuting of channel happens quite late.
+> Keeping the amp in SW reset state ensures better muting.
+> In this way the pop noise coming from other components (codec)
+> can be filtered out.
 > 
 > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 
