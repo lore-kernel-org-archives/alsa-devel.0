@@ -1,45 +1,37 @@
-From: Wan ZongShun <mcuos.com@gmail.com>
-Subject: Re: [RFC][PATCH 4/5] ASoC: Fix missing spin_unlock_irqrestore
-Date: Tue, 30 Nov 2010 09:36:29 +0800
-Message-ID: <AANLkTinks9Msj11mfJSO9Ezwt179JYkxNKFD3dAp=X+X@mail.gmail.com>
-References: <1291023491.22911.1.camel@mola>
-	<1291023767.22911.9.camel@mola>
-	<20101129114700.GP30360@rakim.wolfsonmicro.main>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: Fix compile error for s6000-i2s.c by adding a
+	missing ';' character
+Date: Tue, 30 Nov 2010 09:45:53 +0800
+Message-ID: <1291081553.18485.3.camel@mola>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20101129114700.GP30360@rakim.wolfsonmicro.main>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Axel Lin <axel.lin@gmail.com>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org
+To: linux-kernel <linux-kernel@vger.kernel.org>
+Cc: dg@emlix.com, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/11/29 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Mon, Nov 29, 2010 at 05:42:47PM +0800, Axel Lin wrote:
->
->> I don't have this hardware handy, could you help to test this patch
->> if you think this patch is ok.
->
-> I've applied everything except this one - Wan, can you let us know how
-> the testing goes please?
->
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
+---
+I don't have toolchain to compile s6000, I'm not able to put the error message in the commit log.
+But I know this patch indeed fixes a compile error.
 
-Hi all,
+ sound/soc/s6000/s6000-i2s.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-I have tested it.
-
-Thanks!
-Acked-by: Wan ZongShun <mcuos.com@gmail.com>
-
-
+diff --git a/sound/soc/s6000/s6000-i2s.c b/sound/soc/s6000/s6000-i2s.c
+index 8778faa..3052f64 100644
+--- a/sound/soc/s6000/s6000-i2s.c
++++ b/sound/soc/s6000/s6000-i2s.c
+@@ -434,7 +434,7 @@ static struct snd_soc_dai_driver s6000_i2s_dai = {
+ 		.rate_max = 1562500,
+ 	},
+ 	.ops = &s6000_i2s_dai_ops,
+-}
++};
+ 
+ static int __devinit s6000_i2s_probe(struct platform_device *pdev)
+ {
 -- 
-*linux-arm-kernel mailing list
-mail addr:linux-arm-kernel@lists.infradead.org
-you can subscribe by:
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
-* linux-arm-NUC900 mailing list
-mail addr:NUC900@googlegroups.com
-main web: https://groups.google.com/group/NUC900
-you can subscribe it by sending me mail:
-mcuos.com@gmail.com
+1.7.2
