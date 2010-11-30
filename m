@@ -1,16 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: Irfan Shaikh <irfan.shaikh@sasken.com>
 Subject: Re: Unable to open CAPTURE device
-Date: Tue, 30 Nov 2010 10:56:20 +0100
-Message-ID: <4CF4CA44.7010409@ladisch.de>
-References: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE3B4@EXGMBX01.sasken.com>
+Date: Tue, 30 Nov 2010 15:35:46 +0530
+Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE3C1@EXGMBX01.sasken.com>
+References: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE3B4@EXGMBX01.sasken.com>,
+	<4CF4CA44.7010409@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 39ABD24448
-	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2010 10:54:16 +0100 (CET)
-In-Reply-To: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE3B4@EXGMBX01.sasken.com>
+Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9DF9224455
+	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2010 11:07:22 +0100 (CET)
+In-Reply-To: <4CF4CA44.7010409@ladisch.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,9 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Irfan Shaikh <irfan.shaikh@sasken.com>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
+
+But Since ipod is connected using USB interface (USB Audio Class device).  Wont it be treated as USB Audio capture device ?
+
+________________________________________
+From: Clemens Ladisch [clemens@ladisch.de]
+Sent: Tuesday, November 30, 2010 3:26 PM
+To: Irfan Shaikh
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Unable to open CAPTURE device
 
 Irfan Shaikh wrote:
 > I have connected ipod to my hardware (using USB) and i want to read
