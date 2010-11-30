@@ -1,15 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH v2] ASoC: tpa6130a2: Replace DAPM code with
-	direct interface
-Date: Thu,  2 Dec 2010 09:29:56 +0200
-Message-ID: <1291274996-28056-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Rolf Theunissen <rolf.theunissen@gmail.com>
+Subject: Re: Hardware events
+Date: Tue, 30 Nov 2010 12:48:27 +0100
+Message-ID: <4CF4E48B.3030600@gmail.com>
+References: <4CF39483.4050704@gmail.com> <4CF4B112.3070705@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-da01.nokia.com (smtp.nokia.com [147.243.128.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 048AB1037FC
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2010 08:30:02 +0100 (CET)
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 43BA01037F3
+	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2010 12:48:31 +0100 (CET)
+Received: by ewy19 with SMTP id 19so2592785ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2010 03:48:31 -0800 (PST)
+In-Reply-To: <4CF4B112.3070705@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,140 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The use of DAPM widgets, and extra routing can cause ordering
-problems in the system.
-Machine drivers should use the exported direct interface with
-SND_SOC_DAPM_HP's event callback to manage the state of the
-amplifier.
+Clemens Ladisch wrote:
+> Rolf Theunissen wrote:
+>    
+>> For some hardware devices (for instance the ThinkPad EC) the volume can
+>> be changed by (only) hardware buttons.
+>> ...
+>> This raises the following question: is it possible to detect the events
+>> originating from the hardware in the functions that handle the callbacks
+>> (set via snd_mixer_elem_set_callback/snd_hctl_elem_set_callback)? This
+>> would allow to implement an OSD that only responds to the hardware
+>> buttons and that would ignore events originating from "software".
+>>      
+> The control notifications are for all changes of the control.
+>
+> If it is not possible to change the volume in software, then the driver
+> must not set the control to be writable.
+>
+>
+> Regards,
+> Clemens
+>    
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
+The issue is not that the driver should be writable or not. Even, if the 
+volume is read only, an OSD can be shown for any event. However when the 
+volume can be set both in hardware and in software, the end-user will 
+expect different behavior.
+For instance, if the user changes the volume in a music player 
+application, no OSD should be shown as this clutters the interface. But 
+if the volume is changed from the hardware a OSD should be shown.
 
-Hello,
+I don't know if a ticket should be opened for this issue.
 
-Changes since v1:
-- DAPM routing removed from the driver
-- tpa6130a2_stereo_enable takes snd_soc_codec as argument
-
-Peter
-
- sound/soc/codecs/tpa6130a2.c |   69 +++++++-----------------------------------
- sound/soc/codecs/tpa6130a2.h |    1 +
- 2 files changed, 12 insertions(+), 58 deletions(-)
-
-diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
-index c97badf..0a99f31 100644
---- a/sound/soc/codecs/tpa6130a2.c
-+++ b/sound/soc/codecs/tpa6130a2.c
-@@ -317,65 +317,24 @@ static void tpa6130a2_channel_enable(u8 channel, int enable)
- 	}
- }
- 
--static int tpa6130a2_pga_event(struct snd_soc_dapm_widget *w,
--		struct snd_kcontrol *kcontrol, int event)
--{
--	switch (event) {
--	case SND_SOC_DAPM_POST_PMU:
--		tpa6130a2_channel_enable(w->shift, 1);
--		break;
--	case SND_SOC_DAPM_POST_PMD:
--		tpa6130a2_channel_enable(w->shift, 0);
--		break;
--	}
--	return 0;
--}
--
--static int tpa6130a2_supply_event(struct snd_soc_dapm_widget *w,
--		struct snd_kcontrol *kcontrol, int event)
-+int tpa6130a2_stereo_enable(struct snd_soc_codec *codec, int enable)
- {
- 	int ret = 0;
--
--	switch (event) {
--	case SND_SOC_DAPM_POST_PMU:
-+	if (enable) {
- 		ret = tpa6130a2_power(1);
--		break;
--	case SND_SOC_DAPM_POST_PMD:
-+		if (ret < 0)
-+			return ret;
-+		tpa6130a2_channel_enable(TPA6130A2_HP_EN_R | TPA6130A2_HP_EN_L,
-+					 1);
-+	} else {
-+		tpa6130a2_channel_enable(TPA6130A2_HP_EN_R | TPA6130A2_HP_EN_L,
-+					 0);
- 		ret = tpa6130a2_power(0);
--		break;
- 	}
-+
- 	return ret;
- }
--
--static const struct snd_soc_dapm_widget tpa6130a2_dapm_widgets[] = {
--	SND_SOC_DAPM_PGA_E("TPA6130A2 Left", SND_SOC_NOPM,
--			TPA6130A2_HP_EN_L, 0, NULL, 0, tpa6130a2_pga_event,
--			SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
--	SND_SOC_DAPM_PGA_E("TPA6130A2 Right", SND_SOC_NOPM,
--			TPA6130A2_HP_EN_R, 0, NULL, 0, tpa6130a2_pga_event,
--			SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
--	SND_SOC_DAPM_PGA_E("TPA6130A2 Stereo", SND_SOC_NOPM,
--			TPA6130A2_HP_EN_L | TPA6130A2_HP_EN_R, 0, NULL, 0,
--			tpa6130a2_pga_event,
--			SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
--	SND_SOC_DAPM_SUPPLY("TPA6130A2 Enable", SND_SOC_NOPM,
--			0, 0, tpa6130a2_supply_event,
--			SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
--	/* Outputs */
--	SND_SOC_DAPM_OUTPUT("TPA6130A2 Headphone Left"),
--	SND_SOC_DAPM_OUTPUT("TPA6130A2 Headphone Right"),
--	SND_SOC_DAPM_OUTPUT("TPA6130A2 Headphone Stereo"),
--};
--
--static const struct snd_soc_dapm_route audio_map[] = {
--	{"TPA6130A2 Headphone Left", NULL, "TPA6130A2 Left"},
--	{"TPA6130A2 Headphone Right", NULL, "TPA6130A2 Right"},
--	{"TPA6130A2 Headphone Stereo", NULL, "TPA6130A2 Stereo"},
--
--	{"TPA6130A2 Headphone Left", NULL, "TPA6130A2 Enable"},
--	{"TPA6130A2 Headphone Right", NULL, "TPA6130A2 Enable"},
--	{"TPA6130A2 Headphone Stereo", NULL, "TPA6130A2 Enable"},
--};
-+EXPORT_SYMBOL_GPL(tpa6130a2_stereo_enable);
- 
- int tpa6130a2_add_controls(struct snd_soc_codec *codec)
- {
-@@ -387,18 +346,12 @@ int tpa6130a2_add_controls(struct snd_soc_codec *codec)
- 
- 	data = i2c_get_clientdata(tpa6130a2_client);
- 
--	snd_soc_dapm_new_controls(dapm, tpa6130a2_dapm_widgets,
--				ARRAY_SIZE(tpa6130a2_dapm_widgets));
--
--	snd_soc_dapm_add_routes(dapm, audio_map, ARRAY_SIZE(audio_map));
--
- 	if (data->id == TPA6140A2)
- 		return snd_soc_add_controls(codec, tpa6140a2_controls,
- 						ARRAY_SIZE(tpa6140a2_controls));
- 	else
- 		return snd_soc_add_controls(codec, tpa6130a2_controls,
- 						ARRAY_SIZE(tpa6130a2_controls));
--
- }
- EXPORT_SYMBOL_GPL(tpa6130a2_add_controls);
- 
-diff --git a/sound/soc/codecs/tpa6130a2.h b/sound/soc/codecs/tpa6130a2.h
-index 57e867f..5df49c8 100644
---- a/sound/soc/codecs/tpa6130a2.h
-+++ b/sound/soc/codecs/tpa6130a2.h
-@@ -57,5 +57,6 @@
- #define TPA6130A2_VERSION_MASK		(0x0f)
- 
- extern int tpa6130a2_add_controls(struct snd_soc_codec *codec);
-+extern int tpa6130a2_stereo_enable(struct snd_soc_codec *codec, int enable);
- 
- #endif /* __TPA6130A2_H__ */
--- 
-1.7.3.2
+Regards,
+Rolf
