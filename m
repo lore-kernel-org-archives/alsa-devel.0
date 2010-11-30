@@ -1,25 +1,36 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Fix compile error for s6000-i2s.c by adding a
- missing ';' character
-Date: Tue, 30 Nov 2010 11:24:47 +0000
-Message-ID: <20101130112447.GD7403@rakim.wolfsonmicro.main>
-References: <1291081553.18485.3.camel@mola>
+Subject: Re: [PATCH 1/3] s6000-i2s: fix compilation
+Date: Tue, 30 Nov 2010 11:26:51 +0000
+Message-ID: <20101130112651.GE7403@rakim.wolfsonmicro.main>
+References: <20101129104228.GM30360@rakim.wolfsonmicro.main>
+	<1291075218-7849-1-git-send-email-daniel-gl@gmx.net>
+	<1291116085.3293.4.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2A39810393B
+	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2010 12:26:53 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1291081553.18485.3.camel@mola>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, dg@emlix.com, Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org
+In-Reply-To: <1291116085.3293.4.camel@odin>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Daniel =?iso-8859-1?Q?Gl=F6ckner?= <daniel-gl@gmx.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 30, 2010 at 09:45:53AM +0800, Axel Lin wrote:
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-> ---
-> I don't have toolchain to compile s6000, I'm not able to put the error message in the commit log.
-> But I know this patch indeed fixes a compile error.
+On Tue, Nov 30, 2010 at 11:21:25AM +0000, Liam Girdwood wrote:
 
-Daniel already posted the same patch (and a bunch of others), just
-waiting for Liam's review.  The S6000 port as a whole doesn't compile
-anyway at the minute (due to arch/ side issues).
+> All
+
+> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+
+...and applied, thanks!
