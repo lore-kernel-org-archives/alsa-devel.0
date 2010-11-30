@@ -1,21 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/2] ASoC: tlv320dac33: Do not enable the
- codec in init_chip
-Date: Tue, 30 Nov 2010 15:45:10 +0000
-Message-ID: <1291131910.3293.19.camel@odin>
-References: <1291120306-18445-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1291120306-18445-2-git-send-email-peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 0/5] ASoC: tpa6130a2: pop removal (mostly)
+ changes
+Date: Tue, 30 Nov 2010 15:45:33 +0000
+Message-ID: <1291131933.3293.20.camel@odin>
+References: <1291125604-10396-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 20C89103983
-	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2010 16:45:14 +0100 (CET)
-Received: by wyi11 with SMTP id 11so5835241wyi.38
-	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2010 07:45:13 -0800 (PST)
-In-Reply-To: <1291120306-18445-2-git-send-email-peter.ujfalusi@nokia.com>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 668A51039A3
+	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2010 16:45:37 +0100 (CET)
+Received: by ewy19 with SMTP id 19so2767629ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2010 07:45:37 -0800 (PST)
+In-Reply-To: <1291125604-10396-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,30 +28,30 @@ To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2010-11-30 at 14:31 +0200, Peter Ujfalusi wrote:
-> No need to enable the codec at this time.
-> The codec will be enabled  later by other events
+On Tue, 2010-11-30 at 15:59 +0200, Peter Ujfalusi wrote:
+> Hello,
 > 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> The following series improves the tpa driver to have better
+> pop filtering capabilities.
+> New stereo DAPM route can be used to reduce left/right power
+> time differences.
+> Machine drivers can opt to not use the built in DAPM routes, and
+> use direct call to enable the stereo path.
+> 
 > ---
->  sound/soc/codecs/tlv320dac33.c |    2 --
->  1 files changed, 0 insertions(+), 2 deletions(-)
+> Peter Ujfalusi (5):
+>   ASoC: tpa6130a2: Simplify power state management
+>   ASoC: tpa6130a2: Defer SW enable from power enable
+>   ASoC: tpa6130a2: Use one event handler for PGA_E
+>   ASoC: tpa6130a2: Add stereo DAPM path
+>   ASoC: tpa6130a2: Make DAPM registration optional, and direct
+>     interface
 > 
-> diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
-> index ccb267f..080ec91 100644
-> --- a/sound/soc/codecs/tlv320dac33.c
-> +++ b/sound/soc/codecs/tlv320dac33.c
-> @@ -315,8 +315,6 @@ static void dac33_init_chip(struct snd_soc_codec *codec)
->  	 clock source = internal osc (?) */
->  	dac33_write(codec, DAC33_ANA_VOL_SOFT_STEP_CTRL, DAC33_VOLCLKEN);
->  
-> -	dac33_write(codec, DAC33_PWR_CTRL, DAC33_PDNALLB);
-> -
->  	/* Restore only selected registers (gains mostly) */
->  	dac33_write(codec, DAC33_LDAC_DIG_VOL_CTRL,
->  		    dac33_read_reg_cache(codec, DAC33_LDAC_DIG_VOL_CTRL));
-
-Both Applied.
+>  sound/soc/codecs/tpa6130a2.c |   77 ++++++++++++++++++++++++------------------
+>  sound/soc/codecs/tpa6130a2.h |    3 +-
+>  2 files changed, 46 insertions(+), 34 deletions(-)
+> 
+ 1 - 4 Applied.
 
 Thanks
 
