@@ -1,21 +1,18 @@
-From: Vaclav Peroutka <vaclavpe@gmail.com>
-Subject: Re: SND-SOC - how to test drivers ?
-Date: Wed, 1 Dec 2010 22:18:04 +0100
-Message-ID: <AANLkTimeVwGDtbE-L+y_dnScLFPk1E9xTQLjvDScd_NP@mail.gmail.com>
-References: <AANLkTikE9aF38vg9WkYAVWTSXY23E7qxkQRyfsBJas6Y@mail.gmail.com>
-	<AANLkTimT0aoTP+MghUvvRru83hCyCG_ALKxbvOBOcQTW@mail.gmail.com>
-	<AANLkTi=SLNeQ5mEFKztB9cmDh3AUVz0fYOB6LGKzf6nL@mail.gmail.com>
-	<AANLkTikBz5t-hUxQYfF6Q_hwyO50hxgxfhhF-FaoAjT4@mail.gmail.com>
+From: c0 <elcorreodelcoco@gmail.com>
+Subject: Re: MAYA44E
+Date: Wed, 01 Dec 2010 22:54:24 +0100
+Message-ID: <1291240464.2688.13.camel@debian>
+References: <1291163321.6691.7.camel@debian>  <4CF60611.6050701@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 265B224425
-	for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2010 22:18:05 +0100 (CET)
-Received: by wyi11 with SMTP id 11so7406940wyi.38
-	for <alsa-devel@alsa-project.org>; Wed, 01 Dec 2010 13:18:04 -0800 (PST)
-In-Reply-To: <AANLkTikBz5t-hUxQYfF6Q_hwyO50hxgxfhhF-FaoAjT4@mail.gmail.com>
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 3C5DB2443A
+	for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2010 22:54:28 +0100 (CET)
+Received: by wyi11 with SMTP id 11so7439894wyi.38
+	for <alsa-devel@alsa-project.org>; Wed, 01 Dec 2010 13:54:27 -0800 (PST)
+In-Reply-To: <4CF60611.6050701@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,64 +22,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/12/1 Jassi Brar <jassisinghbrar@gmail.com>:
-> On Wed, Dec 1, 2010 at 6:14 AM, Vaclav Peroutka <vaclavpe@gmail.com> wrote:
->> 2010/11/23 Jassi Brar <jassisinghbrar@gmail.com>:
->>> On Tue, Nov 23, 2010 at 6:24 AM, Vaclav Peroutka <vaclavpe@gmail.com> wrote:
->>>
->>> How about first making the driver work with some, non-Android, rootfs
->>> that has alsa-utils ?
->>>
->>
->> Hello, I did some progress, but not too much. I am getting "no
->> soundcards found" even if I have /dev/snd and /proc/asound like below.
->> What did I do wrong ?
->
-> Please make sure you use the same I2S device (indexed) in ASoC machine
-> driver as your board init file adds to the platform.
->
-
-Unfortunately I don't know where to look. In the device the CPU
-(s3c6410) has XPCM*0 pins connected to audio card and XPCM*1 pins
-routed to GSM modem (not sure about that).
-
-In the kernel sources I have several s3c_i2s sources. The raw one,
-then s3c6410_i2s, s3c6410_i2s-v32 and s3c6410_i2s-v40. And they are
-very different to each other. I am using s3c6410_i2s-v32 as it is used
-in similar project. Anyway I am not sure which i2s file I should
-use...
-
-In kernel dmesg I have following:
-<6>[    3.006951] Advanced Linux Sound Architecture Driver Version 1.0.18a.
-<4>[    3.028690] No device for DAI MAX9880
-<4>[    3.037007] No device for DAI s3c-i2s
-<4>[    3.045335] [s3c6410_max9880_init][s3c6410_max9880_init]
-platform_set_drvdata
-<4>[    3.062157] s3c_i2s_probe
-<4>[    3.070666] s3c_snd_txctrl
-<4>[    3.078908] I2S off
-<4>[    3.087042] s3c_snd_rxctrl
-<4>[    3.095348] I2S off
-<4>[    3.103452] Maxim MAX9880 Audio CODEC 0.12
-<4>[    3.111595] max9880_probe assign i2c address
-0x10max9880_codec_probe - max9880 found
-<6>[    3.130565] max9880: max9880_init
-<4>[    3.138988] Entered s3c24xx_pcm_new
-<4>[    3.147131] Entered s3c24xx_pcm_preallocate_dma_buffer
-<4>[    3.155941] Entered s3c24xx_pcm_preallocate_dma_buffer
-<6>[    3.164518] asoc: MAX9880 <-> s3c-i2s mapping ok
-<6>[    3.173180] max9880: max9880_dapm_event 769
-<6>[    3.173193]
-<6>[    3.200174] max9880: max9880_dapm_event 0
-<6>[    3.200187]
-<6>[    3.216540] max9880: max9880_add_widgets
-<6>[    3.216554]
-<3>[    3.232180] Failed to add route LMICIN->Mic Input
-<6>[    3.240256] max9880: max9880_add_controls
-<6>[    3.240271]
-<6>[    3.437446] ALSA device list:
-<6>[    3.443669]   #0: S3C6410 MAX9880 (MAX9880)
+PiBUaGUgRVNJIFBDSWUgY2FyZHMgdXNlIGNvbXBsZXRlbHkgZGlmZmVyZW50IGNoaXBzOgo+IDxo
+dHRwOi8vbGFsaXN0cy5zdGFuZm9yZC5lZHUvbGF1LzIwMTAvMDgvMDE2NS5odG1sPgoKSSBqdXN0
+IGhhdmUgdG9vayAyIHBob3RvcyBvZiB0aGUgY2FyZCwgaWYgc29tZW9uZSB3YW50IHRoZSBwaG90
+b3MganVzdAphc2sgbWUgYW5kIGkgd2lsbCBzZW5kLiBUaGUgY2FyZCBoYXMgMiBtYWluIGNoaXBz
+IChvbmUgcGVyIHNpZGUpOgoKRVNJIEVTNzAxMEwgKHBjaWUgY29ubmV4aW9uPykKVEVOT1IgVEU3
+MDA5IChzb3VuZCkKCj4gVG8gcXVvdGUgPGh0dHA6Ly93d3cuZ2ZlYy5jb20udHcvaWNzLnBocD46
+Cj4gfCBQQ0kgZHJpdmVyIHJlYWR5IOKAkyBMaW51eCAsIFdpbmRvd3MKPiAKPiBBcyBJIHdyb3Rl
+IGluIHRoZSBvdGhlciBtYWlsLCBJJ20gbm90IHN1cmUgd2hhdCAicmVhZHkiIGlzIHN1cHBvc2Vk
+IHRvCj4gbWVhbiwgYnV0IGl0IGNlcnRhaW5seSBkb2Vzbid0IG1lYW4gImNhbiBiZSBzaW1wbHkg
+ZG93bmxvYWRlZCIuICBUcnkKPiBhc2tpbmcgR0ZFQyBhbmQgRVNJLiAKCkkgaGF2ZSB3cml0dGVu
+IGFuIGVtYWlsIHRvIHRoZSBHRkVDIFRlbm9yIGNvbnRhY3QsIGFza2luZyBmb3IKZG9jdW1lbnRh
+dGlvbiBvZiBURTcwMDkuIE5vdyBpbSB3YWl0aW5nIGZvciB0aGUgcmVzcG9uc2UuCgpDbGVtZW5z
+LCB0aGFua3MgZm9yIHRoZSBsaW5rcy4KCgpCZXN0IHJlZ2FyZHMuCkpvc2UuCgoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
