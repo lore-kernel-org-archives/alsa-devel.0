@@ -1,40 +1,52 @@
 From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCH] ASoC: Fix build failure in soc-core.c
-Date: Wed,  1 Dec 2010 09:10:47 +0200
-Message-ID: <1291187447-1247-1-git-send-email-jhnikula@gmail.com>
-References: <20101201113138.f6146790.sfr@canb.auug.org.au>
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <20101201113138.f6146790.sfr@canb.auug.org.au>
-Sender: linux-next-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, linux-next@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH] ASoC: Remove unused aic3x_i2c_init and aic3x_i2c_exit
+ functions
+Date: Wed, 1 Dec 2010 09:43:16 +0200
+Message-ID: <20101201094316.6751d3a1.jhnikula@gmail.com>
+References: <1291185504.5563.1.camel@mola>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1291185504.5563.1.camel@mola>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, Vladimir Barinov <vbarinov@embeddedalley.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit 2eea392 "ASoC: Add support for optional auxiliary dailess codecs"
-causes a build failure in soc-core.c: soc_probe_aux_dev since code tries to
-access non-existing struct snd_soc_dapm_context and struct snd_soc_card
-members.
+On Wed, 01 Dec 2010 14:38:24 +0800
+Axel Lin <axel.lin@gmail.com> wrote:
 
-Root cause for this was a double accident. Author sent the RFC patch from
-top of another patch set and the RFC got committed. Fix the build failure
-by removing the code line that depends on that another patch set.
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+> ---
+>  sound/soc/codecs/tlv320aic3x.c |   15 ---------------
+>  1 files changed, 0 insertions(+), 15 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+> index fc5abdf..8cd4cf5 100644
+> --- a/sound/soc/codecs/tlv320aic3x.c
+> +++ b/sound/soc/codecs/tlv320aic3x.c
+> @@ -1545,21 +1545,6 @@ static struct i2c_driver aic3x_i2c_driver = {
+>  	.remove = aic3x_i2c_remove,
+>  	.id_table = aic3x_i2c_id,
+>  };
+> -
+> -static inline void aic3x_i2c_init(void)
+> -{
+> -	int ret;
+> -
+> -	ret = i2c_add_driver(&aic3x_i2c_driver);
+> -	if (ret)
+> -		printk(KERN_ERR "%s: error regsitering i2c driver, %d\n",
+> -		       __func__, ret);
+> -}
+> -
+> -static inline void aic3x_i2c_exit(void)
+> -{
+> -	i2c_del_driver(&aic3x_i2c_driver);
+> -}
+>  #endif
+>  
+True, these are unused nowadays.
 
-Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
----
- sound/soc/soc-core.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index a7670d5..eb950f7 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1644,7 +1644,6 @@ static int soc_probe_aux_dev(struct snd_soc_card *card, int num)
- 	/* mark codec as probed and add to card codec list */
- 	codec->probed = 1;
- 	list_add(&codec->card_list, &card->codec_dev_list);
--	list_add(&codec->dapm.list, &card->dapm_list);
- 
- 	/* now that all clients have probed, initialise the DAI link */
- 	if (aux_dev->init) {
--- 
-1.7.2.3
+Acked-by: Jarkko Nikula <jhnikula@gmail.com>
