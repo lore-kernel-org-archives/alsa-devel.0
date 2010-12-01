@@ -1,20 +1,20 @@
-From: "Babu, Ramesh" <ramesh.babu@intel.com>
-Subject: Re: [PATCH 2/5] [RFC]intel_hdmi_audio: interface	module
-Date: Wed, 1 Dec 2010 15:25:21 +0530
-Message-ID: <12D0C12AF19E15409D57F22566E88EF505ADEC2824@bgsmsx501.gar.corp.intel.com>
-References: <1290433186-31628-1-git-send-email-ramesh.babu@intel.com>
-	<1290433186-31628-2-git-send-email-ramesh.babu@intel.com>
-	<20101122135812.GD15156@sirena.org.uk> <s5h8w0jnlby.wl%tiwai@suse.de>
-	<4F93CB265C2E2E42A19CD9E994A1FA5D060B039F0A@bgsmsx501.gar.corp.intel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: SND-SOC - how to test drivers ?
+Date: Wed, 1 Dec 2010 10:30:23 +0000
+Message-ID: <20101201103022.GA5688@sirena.org.uk>
+References: <AANLkTikE9aF38vg9WkYAVWTSXY23E7qxkQRyfsBJas6Y@mail.gmail.com>
+	<AANLkTimT0aoTP+MghUvvRru83hCyCG_ALKxbvOBOcQTW@mail.gmail.com>
+	<AANLkTi=SLNeQ5mEFKztB9cmDh3AUVz0fYOB6LGKzf6nL@mail.gmail.com>
+	<AANLkTikBz5t-hUxQYfF6Q_hwyO50hxgxfhhF-FaoAjT4@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7988C1039FF
-	for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2010 10:57:20 +0100 (CET)
-In-Reply-To: <4F93CB265C2E2E42A19CD9E994A1FA5D060B039F0A@bgsmsx501.gar.corp.intel.com>
-Content-Language: en-US
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id B77E81039F7
+	for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2010 11:30:24 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <AANLkTikBz5t-hUxQYfF6Q_hwyO50hxgxfhhF-FaoAjT4@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,56 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "Wu, Fengguang" <fengguang.wu@intel.com>, "Bandarupalli,
-	Sailaja" <sailaja.bandarupalli@intel.com>
+To: Jassi Brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, Vaclav Peroutka <vaclavpe@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-> > > > + * had_hot_plug - to create sound card instance for HDMI audio
-> > playabck
-> > > > + *
-> > > > + *
-> > > > + * This function is called when the hdmi cable is plugged in. This
-> > function
-> > > > + * creates and registers the sound card with ALSA
-> > > > + */
-> > > > +static int had_hot_plug(void)
-> > > > +{
-> > >
-> > > It would seem more natural for the HDMI device to be created and
-> > > instatiated via the normal Linux device model - when a HDMI
-> > connection
-> > > is detected the thing doing the detection creates and registers a new
-> > > device of some kind which the driver core then binds to a separate
-> > > driver.
-> >
-> > Yeah, the driver structure here is somehow wacky, although it's not
-> > to hard to trace.
-> >
-> >
-> 
-> Agree, we will work on this and revert back to you.
-> 
+On Wed, Dec 01, 2010 at 08:34:48AM +0900, Jassi Brar wrote:
 
-We are planning to follow the USB audio driver model.  During _init
-audio driver callbacks will be registered with display driver. Whenever
-device is hot plugged, .probe will be invoked and sound card is created.
-During un-plug, .disconnect will be invoked and sound card is removed.
-Similarly .suspend and .resume will be called when the display device
-getting suspended and resumed. Please provide your suggestions on this
-driver model.
+> Please make sure you use the same I2S device (indexed) in ASoC machine
+> driver as your board init file adds to the platform.
 
-static struct hdmi_driver hdmi_audio_driver = {
-    .probe =    hdmi_audio_probe,
-    .disconnect =   hdmi_audio_disconnect,
-    .suspend =  hdmi_audio_suspend,
-    .resume =   hdmi_audio_resume,
- };
- 
- static int __init alsa_card_intelhad_init(void)
- {
- 	return hdmi_register(&hdmi_audio_driver);
- }
-
-Thanks,
-Ramesh & Sailaja
+For debugging stuff like this look at the files in debugfs for ASoC and
+also #define DEBUG at the top of soc-core.c to get a bunch of trace
+showing what's being registered and waited for.
