@@ -1,67 +1,40 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 5/5] ASoC: tpa6130a2: Make DAPM
-	registration optional, and direct interface
-Date: Wed, 1 Dec 2010 08:54:20 +0200
-Message-ID: <201012010854.20201.peter.ujfalusi@nokia.com>
-References: <1291125604-10396-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1291125604-10396-6-git-send-email-peter.ujfalusi@nokia.com>
-	<20101130143013.GM7403@rakim.wolfsonmicro.main>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa01.nokia.com (smtp.nokia.com [147.243.1.47])
-	by alsa0.perex.cz (Postfix) with ESMTP id CCD601038D6
-	for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2010 07:54:23 +0100 (CET)
-In-Reply-To: <20101130143013.GM7403@rakim.wolfsonmicro.main>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: [PATCH] ASoC: Fix build failure in soc-core.c
+Date: Wed,  1 Dec 2010 09:10:47 +0200
+Message-ID: <1291187447-1247-1-git-send-email-jhnikula@gmail.com>
+References: <20101201113138.f6146790.sfr@canb.auug.org.au>
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <20101201113138.f6146790.sfr@canb.auug.org.au>
+Sender: linux-next-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: linux-kernel@vger.kernel.org, linux-next@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jarkko Nikula <jhnikula@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 30 November 2010 16:30:13 ext Mark Brown wrote:
-> On Tue, Nov 30, 2010 at 04:00:04PM +0200, Peter Ujfalusi wrote:
-> > Users can choose to not add the DAPM routes provided by the
-> > amp driver, but use the direct enable/disable interface
-> > from machine driver with SND_SOC_DAPM_HP's event callback.
-> > In some cases this method must be used to make the audio
-> > path pop noise free.
-> =
+Commit 2eea392 "ASoC: Add support for optional auxiliary dailess codecs"
+causes a build failure in soc-core.c: soc_probe_aux_dev since code tries to
+access non-existing struct snd_soc_dapm_context and struct snd_soc_card
+members.
 
-> Is there any situation where it would undesirable to do this?  If not
-> it'd seem better to just make the driver do this always.
+Root cause for this was a double accident. Author sent the RFC patch from
+top of another patch set and the RFC got committed. Fix the build failure
+by removing the code line that depends on that another patch set.
 
-You mean to not have DAPM widgets/routes in the tpa6130a2 driver, and only =
-have =
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+---
+ sound/soc/soc-core.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-a function, which can be used to turn on/off the amp?
-The original [1] (first version) of the tpa6130a2 driver only had DAPM_HP =
-
-widget. It has been changed based on the comments.
-
-> > +int tpa6130a2_stereo_enable(int enable)
-> > +{
-> =
-
-> It'd be much nicer if this took a CODEC as an argument - even if the
-> implementation doesn't actually use it yet it'd be better to have an
-> interface which has an idea that there may be multiple instances of the
-> device.
-
-Sure, I will do that.
-
-[1]
-http://mailman.alsa-project.org/pipermail/alsa-devel/2009-October/022034.ht=
-ml
-
--- =
-
-P=E9ter
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index a7670d5..eb950f7 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1644,7 +1644,6 @@ static int soc_probe_aux_dev(struct snd_soc_card *card, int num)
+ 	/* mark codec as probed and add to card codec list */
+ 	codec->probed = 1;
+ 	list_add(&codec->card_list, &card->codec_dev_list);
+-	list_add(&codec->dapm.list, &card->dapm_list);
+ 
+ 	/* now that all clients have probed, initialise the DAI link */
+ 	if (aux_dev->init) {
+-- 
+1.7.2.3
