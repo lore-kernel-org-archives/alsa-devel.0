@@ -1,16 +1,20 @@
-From: c0 <elcorreodelcoco@gmail.com>
-Subject: MAYA44E
-Date: Wed, 01 Dec 2010 01:28:41 +0100
-Message-ID: <1291163321.6691.7.camel@debian>
+From: Irfan Shaikh <irfan.shaikh@sasken.com>
+Subject: Re: Unable to open CAPTURE device
+Date: Wed, 1 Dec 2010 11:03:55 +0530
+Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE3C8@EXGMBX01.sasken.com>
+References: <16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE3B4@EXGMBX01.sasken.com>,
+	<4CF4CA44.7010409@ladisch.de>
+	<16F32A3F9AF4E441B752BCD79C151ACA5D9A2EE3C1@EXGMBX01.sasken.com>,
+	<4CF519D6.8050601@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 49FD1244DC
-	for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2010 01:28:35 +0100 (CET)
-Received: by wyi11 with SMTP id 11so6316765wyi.38
-	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2010 16:28:34 -0800 (PST)
+Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5233D1037F3
+	for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2010 06:36:18 +0100 (CET)
+In-Reply-To: <4CF519D6.8050601@ladisch.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,31 +24,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi. My name is Jose.
+Now i am able to open ipod as capture device.
+The problem was ipod was been shown as the mass storage device (/dev/sda1).   //snd_pcm_open was failing
+I reconfigured my ipod so that is is being showed as usbaudio class device.            // Works fine now
 
-The maya44 (pci) seems to be supported in snd-ice17xx drivers.
-But the new maya44e (pci express) is "only" recognized in my system as:
+Thanks for your inputs,
+Regards
+Irfan
+________________________________________
+From: Clemens Ladisch [clemens@ladisch.de]
+Sent: Tuesday, November 30, 2010 9:05 PM
+To: Irfan Shaikh
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] Unable to open CAPTURE device
 
-root@debian:/home/co# lspci -vvv -s 04:00.0
-04:00.0 Multimedia audio controller: Device 19fe:7000 (rev 03)
-        Subsystem: Device 0e51:0001
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-        Latency: 64 (40000ns max)
-        Interrupt: pin A routed to IRQ 7
-        Region 0: Memory at fd9fc000 (32-bit, non-prefetchable)
-[size=16K]
-        Capabilities: [50] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
+Irfan Shaikh wrote:
+> But Since ipod is connected using USB interface (USB Audio Class
+> device).  Wont it be treated as USB Audio capture device ?
 
-I would like to help to make this card work.
+In that case, yes.
 
-Best regards.
-Jose.
+Does the device show up in /proc/asound/cards?
+
+
+Regards,
+Clemens
+
+SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any 
+ virus transmitted by this email.
+Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
