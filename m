@@ -1,18 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 0/2] ASoC: sh: fsi-ak4642: modify patches
-Date: Wed, 01 Dec 2010 09:52:03 +0000
-Message-ID: <1291197123.3292.4.camel@odin>
-References: <w3p1v622di4.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: ak4535: Improve readability for
+	setting mute
+Date: Wed, 01 Dec 2010 09:53:52 +0000
+Message-ID: <1291197232.3292.5.camel@odin>
+References: <1291195354.5563.6.camel@mola>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 530D01039DB
-	for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2010 10:52:06 +0100 (CET)
-Received: by wwe15 with SMTP id 15so6902869wwe.20
-	for <alsa-devel@alsa-project.org>; Wed, 01 Dec 2010 01:52:06 -0800 (PST)
-In-Reply-To: <w3p1v622di4.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2D7931039DB
+	for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2010 10:53:55 +0100 (CET)
+Received: by wyi11 with SMTP id 11so6738282wyi.38
+	for <alsa-devel@alsa-project.org>; Wed, 01 Dec 2010 01:53:54 -0800 (PST)
+In-Reply-To: <1291195354.5563.6.camel@mola>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Axel Lin <axel.lin@gmail.com>
+Cc: Richard Purdie <richard@openedhand.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-12-01 at 15:50 +0900, Kuninori Morimoto wrote:
-> Dear Mark, Liam
+On Wed, 2010-12-01 at 17:22 +0800, Axel Lin wrote:
+> The mute/unmute is controled by SMUTE (Soft Mute Control bit):
+>         0: Normal Operation (Default)
+>         1: DAC outputs soft-muted
 > 
-> These are FSI-AK4642 modify patches.
+> I think this change improves readability.
 > 
-> Kuninori Morimoto (2):
->       ASoC: sh: fsi-ak4642: tidyup unnecessary variables
->       ASoC: sh: fsi-ak4642: midify card name
-> 
-> 
-
-Both
+> Signed-off-by: Axel Lin <axel.lin@gmail.com>
+> ---
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
