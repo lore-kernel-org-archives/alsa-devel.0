@@ -1,35 +1,23 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: WM8731: Fix incorrect mask for
- bypass path disable
-Date: Wed, 1 Dec 2010 11:29:08 +0000
-Message-ID: <20101201112908.GG24176@rakim.wolfsonmicro.main>
-References: <1291196335-7118-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Fix build failure in soc-core.c
+Date: Wed, 1 Dec 2010 11:36:23 +0000
+Message-ID: <20101201113623.GI24176@rakim.wolfsonmicro.main>
+References: <20101201113138.f6146790.sfr@canb.auug.org.au>
+ <1291187447-1247-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 79BBA103A07
-	for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2010 12:29:09 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-next-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1291196335-7118-1-git-send-email-dp@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+In-Reply-To: <1291187447-1247-1-git-send-email-jhnikula@gmail.com>
+Sender: linux-next-owner@vger.kernel.org
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-next@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 01, 2010 at 09:38:55AM +0000, Dimitris Papastamos wrote:
-> According to the datasheet the bypass path enable/disable is
-> bit 3 therefore we need 0x8 and not 0x4.
-> 
-> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+On Wed, Dec 01, 2010 at 09:10:47AM +0200, Jarkko Nikula wrote:
+> Commit 2eea392 "ASoC: Add support for optional auxiliary dailess codecs"
+> causes a build failure in soc-core.c: soc_probe_aux_dev since code tries to
+> access non-existing struct snd_soc_dapm_context and struct snd_soc_card
+> members.
 
 Applied, thanks.
