@@ -1,58 +1,57 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCH] ASoC: omap: N810: Don't select CONFIG_OMAP_MUX
-	but make it as dependency
-Date: Wed,  1 Dec 2010 11:01:20 +0200
-Message-ID: <1291194080-8101-1-git-send-email-jhnikula@gmail.com>
+From: Axel Lin <axel.lin@gmail.com>
+Subject: [PATCH] ASoC: ak4535: Improve readability for setting mute
+Date: Wed, 01 Dec 2010 17:22:34 +0800
+Message-ID: <1291195354.5563.6.camel@mola>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4E9581039B2
-	for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2010 10:00:48 +0100 (CET)
-Received: by eyg24 with SMTP id 24so3302679eyg.38
-	for <alsa-devel@alsa-project.org>; Wed, 01 Dec 2010 01:00:44 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel <linux-kernel@vger.kernel.org>
+Cc: Richard Purdie <richard@openedhand.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Not all omap boards use kernel based pin multiplexing so
-CONFIG_SND_OMAP_SOC_N810 should not select it by default as it can make
-harm to other boards in multi-board kernels.
+The mute/unmute is controled by SMUTE (Soft Mute Control bit):
+        0: Normal Operation (Default)
+        1: DAC outputs soft-muted
 
-Therefore put CONFIG_OMAP_MUX as a dependency to N810 ASoC machine driver.
+I think this change improves readability.
 
-Thanks to Tony Lindgren <tony@atomide.com> for noticing.
-
-Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Axel Lin <axel.lin@gmail.com>
 ---
- sound/soc/omap/Kconfig |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/soc/codecs/ak4535.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
-index d542ea2..a088db6 100644
---- a/sound/soc/omap/Kconfig
-+++ b/sound/soc/omap/Kconfig
-@@ -12,8 +12,8 @@ config SND_OMAP_SOC_MCPDM
- config SND_OMAP_SOC_N810
- 	tristate "SoC Audio support for Nokia N810"
- 	depends on SND_OMAP_SOC && MACH_NOKIA_N810 && I2C
-+	depends on OMAP_MUX
- 	select SND_OMAP_SOC_MCBSP
--	select OMAP_MUX
- 	select SND_SOC_TLV320AIC3X
- 	help
- 	  Say Y if you want to add support for SoC audio on Nokia N810.
+diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
+index 7367545..8b38739 100644
+--- a/sound/soc/codecs/ak4535.c
++++ b/sound/soc/codecs/ak4535.c
+@@ -366,9 +366,9 @@ static int ak4535_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ static int ak4535_mute(struct snd_soc_dai *dai, int mute)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+-	u16 mute_reg = ak4535_read_reg_cache(codec, AK4535_DAC) & 0xffdf;
++	u16 mute_reg = ak4535_read_reg_cache(codec, AK4535_DAC);
+ 	if (!mute)
+-		ak4535_write(codec, AK4535_DAC, mute_reg);
++		ak4535_write(codec, AK4535_DAC, mute_reg & ~0x20);
+ 	else
+ 		ak4535_write(codec, AK4535_DAC, mute_reg | 0x20);
+ 	return 0;
+@@ -381,11 +381,11 @@ static int ak4535_set_bias_level(struct snd_soc_codec *codec,
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+-		mute_reg = ak4535_read_reg_cache(codec, AK4535_DAC) & 0xffdf;
+-		ak4535_write(codec, AK4535_DAC, mute_reg);
++		mute_reg = ak4535_read_reg_cache(codec, AK4535_DAC);
++		ak4535_write(codec, AK4535_DAC, mute_reg & ~0x20);
+ 		break;
+ 	case SND_SOC_BIAS_PREPARE:
+-		mute_reg = ak4535_read_reg_cache(codec, AK4535_DAC) & 0xffdf;
++		mute_reg = ak4535_read_reg_cache(codec, AK4535_DAC);
+ 		ak4535_write(codec, AK4535_DAC, mute_reg | 0x20);
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
 -- 
-1.7.2.3
+1.7.2
