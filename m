@@ -1,17 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Hardware events
-Date: Thu, 02 Dec 2010 08:51:18 +0100
-Message-ID: <4CF74FF6.9080009@ladisch.de>
-References: <4CF39483.4050704@gmail.com> <4CF4B112.3070705@ladisch.de>
-	<4CF4E48B.3030600@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ASoC: tpa6130a2: Replace DAPM code with
+ direct interface
+Date: Thu, 2 Dec 2010 09:56:26 +0000
+Message-ID: <20101202095626.GB19267@rakim.wolfsonmicro.main>
+References: <1291274996-28056-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 237C1103804
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2010 08:49:25 +0100 (CET)
-In-Reply-To: <4CF4E48B.3030600@gmail.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F2AD410380F
+	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2010 10:56:28 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1291274996-28056-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,31 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rolf Theunissen <rolf.theunissen@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Rolf Theunissen wrote:
-> Clemens Ladisch wrote:
->> The control notifications are for all changes of the control.
->>
->> If it is not possible to change the volume in software, then the driver
->> must not set the control to be writable.
-> 
-> The issue is not that the driver should be writable or not. Even, if the
-> volume is read only, an OSD can be shown for any event. However when the
-> volume can be set both in hardware and in software, the end-user will
-> expect different behavior.
+On Thu, Dec 02, 2010 at 09:29:56AM +0200, Peter Ujfalusi wrote:
+> The use of DAPM widgets, and extra routing can cause ordering
+> problems in the system.
+> Machine drivers should use the exported direct interface with
+> SND_SOC_DAPM_HP's event callback to manage the state of the
+> amplifier.
 
-The control notifications are for all changes of the control.
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 
-If you want to treat hardware-originated changes differently, you have
-to send an additional, different notification for the OSD tool.
+I thought we'd decided that adding a HP widget in the driver was the
+most straightforward thing here?  Still...
 
-Usually, such volume change buttons are just treated as input devices,
-and software is then expected to change the actual mixer control, but
-this doesn't work if the hardware affects the control directly.
-
-
-Regards,
-Clemens
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
