@@ -1,21 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v2] ASoC: tpa6130a2: Replace DAPM code with
- direct interface
-Date: Thu, 02 Dec 2010 11:50:43 +0000
-Message-ID: <1291290643.3262.47.camel@odin>
-References: <1291274996-28056-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20101202095626.GB19267@rakim.wolfsonmicro.main>
+Subject: Re: [PATCH] ASoC: omap: N810: Don't select
+ CONFIG_OMAP_MUX but make it as dependency
+Date: Thu, 02 Dec 2010 11:50:53 +0000
+Message-ID: <1291290653.3262.48.camel@odin>
+References: <1291194080-8101-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
 	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id DD822103A50
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2010 12:50:47 +0100 (CET)
-Received: by wyi11 with SMTP id 11so8111623wyi.38
-	for <alsa-devel@alsa-project.org>; Thu, 02 Dec 2010 03:50:47 -0800 (PST)
-In-Reply-To: <20101202095626.GB19267@rakim.wolfsonmicro.main>
+	by alsa0.perex.cz (Postfix) with ESMTP id 9FB5C103A73
+	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2010 12:50:56 +0100 (CET)
+Received: by mail-wy0-f179.google.com with SMTP id 11so8111623wyi.38
+	for <alsa-devel@alsa-project.org>; Thu, 02 Dec 2010 03:50:56 -0800 (PST)
+In-Reply-To: <1291194080-8101-1-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,25 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, Brown <broonie@opensource.wolfsonmicro.com>, Mark@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-12-02 at 09:56 +0000, Mark Brown wrote:
-> On Thu, Dec 02, 2010 at 09:29:56AM +0200, Peter Ujfalusi wrote:
-> > The use of DAPM widgets, and extra routing can cause ordering
-> > problems in the system.
-> > Machine drivers should use the exported direct interface with
-> > SND_SOC_DAPM_HP's event callback to manage the state of the
-> > amplifier.
+On Wed, 2010-12-01 at 11:01 +0200, Jarkko Nikula wrote:
+> Not all omap boards use kernel based pin multiplexing so
+> CONFIG_SND_OMAP_SOC_N810 should not select it by default as it can make
+> harm to other boards in multi-board kernels.
 > 
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> Therefore put CONFIG_OMAP_MUX as a dependency to N810 ASoC machine driver.
 > 
-> I thought we'd decided that adding a HP widget in the driver was the
-> most straightforward thing here?  Still...
+> Thanks to Tony Lindgren <tony@atomide.com> for noticing.
 > 
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-
+> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+> Cc: Tony Lindgren <tony@atomide.com>
+> ---
 Applied.
 
 Thanks
