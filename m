@@ -1,18 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Constify struct snd_soc_codec_driver
-Date: Fri, 03 Dec 2010 16:16:33 +0000
-Message-ID: <1291392993.3271.143.camel@odin>
-References: <1291389969-8392-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: WM8580: Debug interface index
+Date: Fri, 3 Dec 2010 16:39:32 +0000
+Message-ID: <20101203163932.GX859@rakim.wolfsonmicro.main>
+References: <1291340065-16897-1-git-send-email-jassi.brar@samsung.com>
+	<1291376076.3271.32.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7C426103B19
-	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 17:16:36 +0100 (CET)
-Received: by wwi18 with SMTP id 18so1191187wwi.2
-	for <alsa-devel@alsa-project.org>; Fri, 03 Dec 2010 08:16:36 -0800 (PST)
-In-Reply-To: <1291389969-8392-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A744A10384A
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 17:39:34 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1291376076.3271.32.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,24 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-12-03 at 15:26 +0000, Mark Brown wrote:
-> Allow the CODEC driver structure to be marked const by making all
-> the APIs that use it do so.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  include/sound/soc.h   |    4 ++--
->  sound/soc/soc-cache.c |   13 +++++++------
->  sound/soc/soc-core.c  |    5 +++--
->  3 files changed, 12 insertions(+), 10 deletions(-)
-> 
+On Fri, Dec 03, 2010 at 11:34:36AM +0000, Liam Girdwood wrote:
+> On Fri, 2010-12-03 at 10:34 +0900, Jassi Brar wrote:
+> > We want the index of DAI's driver here.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+> It's fine but could you add a little more context here.
+
+Yes, please.  Indeed, the DAI ID should be being initialised from the
+driver ID by the core so it's a bit surprising if they diverge - why do
+we want the driver index?  Though I've gone ahead and applied anyway as
+at worst it's a noop.
