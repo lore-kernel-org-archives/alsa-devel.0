@@ -1,15 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: When disabling WM8994 FLL force a source
-	selection
-Date: Fri,  3 Dec 2010 16:45:01 +0000
-Message-ID: <1291394701-30574-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: [PATCH] powerpc/85xx: fix compatible properties of the
+	P1022DS DMA nodes used for audio
+Date: Fri, 3 Dec 2010 10:52:14 -0600
+Message-ID: <1291395134-12435-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A0C7E103B75
-	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 17:45:03 +0100 (CET)
+Received: from VA3EHSOBE001.bigfish.com (va3ehsobe001.messaging.microsoft.com
+	[216.32.180.11])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3577C103B80
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 17:53:53 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,38 +20,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: kumar.gala@freescale.com, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When we disable the WM8994 FLL code path sharing means that we end up
-writing out a configuration. Currently this is the currently active
-input and output frequency (which causes snd_soc_update_bits() to
-suppress actual writes both immediately and in the common case where
-we reenable the same configuration later) but we allow machine drivers
-to pass through a source of zero. Since the register values written
-are one less than the source constants this causes corruption of other
-bitfields in the register.
+In order to prevent the fsl_dma driver from claiming the DMA channels that the
+P1022DS audio driver needs, the compatible properties for those nodes must say
+"fsl,ssi-dma-channel" instead of "fsl,eloplus-dma-channel".
 
-Fix this by using the most recently configured FLL source when none is
-provided.
-
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Signed-off-by: Timur Tabi <timur@freescale.com>
 ---
- sound/soc/codecs/wm8994.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index af3a98a..b37e95c 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -1677,6 +1677,7 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
- 		/* Allow no source specification when stopping */
- 		if (freq_out)
- 			return -EINVAL;
-+		src = wm8994->fll[id].src;
- 		break;
- 	case WM8994_FLL_SRC_MCLK1:
- 	case WM8994_FLL_SRC_MCLK2:
+Kumar, please pick up this patch for 2.6.37.
+
+ arch/powerpc/boot/dts/p1022ds.dts |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/powerpc/boot/dts/p1022ds.dts b/arch/powerpc/boot/dts/p1022ds.dts
+index 2bbecbb..69422eb 100644
+--- a/arch/powerpc/boot/dts/p1022ds.dts
++++ b/arch/powerpc/boot/dts/p1022ds.dts
+@@ -291,13 +291,13 @@
+ 			ranges = <0x0 0xc100 0x200>;
+ 			cell-index = <1>;
+ 			dma00: dma-channel@0 {
+-				compatible = "fsl,eloplus-dma-channel";
++				compatible = "fsl,ssi-dma-channel";
+ 				reg = <0x0 0x80>;
+ 				cell-index = <0>;
+ 				interrupts = <76 2>;
+ 			};
+ 			dma01: dma-channel@80 {
+-				compatible = "fsl,eloplus-dma-channel";
++				compatible = "fsl,ssi-dma-channel";
+ 				reg = <0x80 0x80>;
+ 				cell-index = <1>;
+ 				interrupts = <77 2>;
 -- 
-1.7.1
+1.7.2.3
