@@ -1,18 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: sh: fsi: clean up SPDIF defines
-Date: Fri, 03 Dec 2010 11:59:56 +0000
-Message-ID: <1291377596.3271.40.camel@odin>
-References: <w3phbevdzi0.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 0/4] ASoC: sh: fsi: remove runtime reg check
+Date: Fri, 03 Dec 2010 12:00:14 +0000
+Message-ID: <1291377614.3271.41.camel@odin>
+References: <w3pei9zdzhl.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 94D6C244A4
-	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 12:59:59 +0100 (CET)
-Received: by wwc33 with SMTP id 33so1144415wwc.20
-	for <alsa-devel@alsa-project.org>; Fri, 03 Dec 2010 03:59:59 -0800 (PST)
-In-Reply-To: <w3phbevdzi0.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 60EC6103B29
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 13:00:17 +0100 (CET)
+Received: by wyi11 with SMTP id 11so9375837wyi.38
+	for <alsa-devel@alsa-project.org>; Fri, 03 Dec 2010 04:00:17 -0800 (PST)
+In-Reply-To: <w3pei9zdzhl.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,16 +28,19 @@ Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wol
 List-Id: alsa-devel@alsa-project.org
 
 On Fri, 2010-12-03 at 17:36 +0900, Kuninori Morimoto wrote:
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  sound/soc/sh/fsi.c |   17 ++++++++++++++---
->  1 files changed, 14 insertions(+), 3 deletions(-)
+> Dear Mark, Liam
 > 
-> diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-> index 507e709..76ef3f3 100644
-> --- a/sound/soc/sh/fsi.c
-> +++ b/sound/soc/sh/fsi.c
-> @@ -50,13 +50,20 @@
+> These are "remove runtime reg check" patches from fsi_xx function.
+> 
+> Kuninori Morimoto (4):
+>       ASoC: sh: fsi: remove fsi_master_write
+>       ASoC: sh: fsi: change fsi->mst_ctrl to master->a/b_mclk
+>       ASoC: sh: fsi: remove runtime register check from fsi_reg_xxx
+>       ASoC: sh: fsi: remove runtime register check from fsi_master_xxx
+> 
+> current runtime check is just useless
+
+All
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
