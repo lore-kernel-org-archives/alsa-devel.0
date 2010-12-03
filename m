@@ -1,16 +1,20 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: [PATCH] powerpc/85xx: fix compatible properties of the
-	P1022DS DMA nodes used for audio
-Date: Fri, 3 Dec 2010 10:52:14 -0600
-Message-ID: <1291395134-12435-1-git-send-email-timur@freescale.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: When disabling WM8994 FLL force a
+ source selection
+Date: Fri, 03 Dec 2010 17:07:03 +0000
+Message-ID: <1291396023.3271.144.camel@odin>
+References: <1291394701-30574-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from VA3EHSOBE001.bigfish.com (va3ehsobe001.messaging.microsoft.com
-	[216.32.180.11])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3577C103B80
-	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 17:53:53 +0100 (CET)
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id F13BB103B83
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 18:07:07 +0100 (CET)
+Received: by wyi11 with SMTP id 11so9680618wyi.38
+	for <alsa-devel@alsa-project.org>; Fri, 03 Dec 2010 09:07:07 -0800 (PST)
+In-Reply-To: <1291394701-30574-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,40 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: kumar.gala@freescale.com, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-In order to prevent the fsl_dma driver from claiming the DMA channels that the
-P1022DS audio driver needs, the compatible properties for those nodes must say
-"fsl,ssi-dma-channel" instead of "fsl,eloplus-dma-channel".
+On Fri, 2010-12-03 at 16:45 +0000, Mark Brown wrote:
+> When we disable the WM8994 FLL code path sharing means that we end up
+> writing out a configuration. Currently this is the currently active
+> input and output frequency (which causes snd_soc_update_bits() to
+> suppress actual writes both immediately and in the common case where
+> we reenable the same configuration later) but we allow machine drivers
+> to pass through a source of zero. Since the register values written
+> are one less than the source constants this causes corruption of other
+> bitfields in the register.
+> 
+> Fix this by using the most recently configured FLL source when none is
+> provided.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
 
-Signed-off-by: Timur Tabi <timur@freescale.com>
----
-
-Kumar, please pick up this patch for 2.6.37.
-
- arch/powerpc/boot/dts/p1022ds.dts |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/powerpc/boot/dts/p1022ds.dts b/arch/powerpc/boot/dts/p1022ds.dts
-index 2bbecbb..69422eb 100644
---- a/arch/powerpc/boot/dts/p1022ds.dts
-+++ b/arch/powerpc/boot/dts/p1022ds.dts
-@@ -291,13 +291,13 @@
- 			ranges = <0x0 0xc100 0x200>;
- 			cell-index = <1>;
- 			dma00: dma-channel@0 {
--				compatible = "fsl,eloplus-dma-channel";
-+				compatible = "fsl,ssi-dma-channel";
- 				reg = <0x0 0x80>;
- 				cell-index = <0>;
- 				interrupts = <76 2>;
- 			};
- 			dma01: dma-channel@80 {
--				compatible = "fsl,eloplus-dma-channel";
-+				compatible = "fsl,ssi-dma-channel";
- 				reg = <0x80 0x80>;
- 				cell-index = <1>;
- 				interrupts = <77 2>;
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
-1.7.2.3
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
