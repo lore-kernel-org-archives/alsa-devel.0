@@ -1,92 +1,72 @@
-From: Axel Lin <axel.lin@gmail.com>
-Subject: [PATCH] ASoC: Fix inconsistent meaning of default case while
-	checking alc5623->id
-Date: Fri, 03 Dec 2010 17:25:57 +0800
-Message-ID: <1291368357.20452.6.camel@mola>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [RFC 2/2] ASoC: tlv320dac33: Request for reordered
+	update power sequence
+Date: Fri, 3 Dec 2010 11:36:27 +0200
+Message-ID: <201012031136.27104.peter.ujfalusi@nokia.com>
+References: <1291291390-8669-1-git-send-email-peter.ujfalusi@nokia.com>
+	<201012021452.04720.peter.ujfalusi@nokia.com>
+	<20101202131505.GE859@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel <linux-kernel@vger.kernel.org>
-Cc: Arnaud Patard <arnaud.patard@rtp-net.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-da02.nokia.com (smtp.nokia.com [147.243.128.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id 01511243C1
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 10:36:33 +0100 (CET)
+In-Reply-To: <20101202131505.GE859@rakim.wolfsonmicro.main>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-In alc5623_i2c_probe(),
-the default case for checking alc5623->id behaves the same as case 0x23.
-However, In alc5623_probe() the default case for checking alc5623->id
-becomes to be the same as case 0x21.
-This makes the meaning of default case inconsistent.
+On Thursday 02 December 2010 15:15:06 ext Mark Brown wrote:
+> On Thu, Dec 02, 2010 at 02:52:04PM +0200, Peter Ujfalusi wrote:
+> > Back to the naming.. What about reorder_dapm_update_power, and move the
+> > flag to the snd_soc_dapm_widget struct?
+> =
 
-Since we have checked codec id in alc5623_i2c_probe() by comparing
-vid2 with id->driver_data, it is not possible to run into the default case now.
+> If we're going down this route I'd rather have a name that reflected the
+> new ordering rather than the fact that there's an ordering change.  Not
+> that any ideas occur to me right now.
 
-In case we may add more supported devices to alc5623_i2c_table in the future,
-this patch changes the default case return -EINVAL to let people know that
-they should not run into this case. They should also add a new case accordingly
-for the new id.
+How about:
+route_change_before_powerup
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
+A bit long, but this describes well the meaning.
 
-Or alternatively, we can simply remove the default cases.
+I think it is kind of silly to have a function, which just sets this flag, =
+and I =
 
-Axel
+think having yet another DAPM widgets for this type is again a bad idea.
+Do we have helper function, which can find a widget by name, and return the =
 
- sound/soc/codecs/alc5623.c |   10 +++++++---
- 1 files changed, 7 insertions(+), 3 deletions(-)
+pointer to the snd_soc_dapm_widget?
+I think if we have that, drivers can use that to get the widget they want t=
+o =
 
-diff --git a/sound/soc/codecs/alc5623.c b/sound/soc/codecs/alc5623.c
-index 9783e7e..4f377c9 100644
---- a/sound/soc/codecs/alc5623.c
-+++ b/sound/soc/codecs/alc5623.c
-@@ -925,7 +925,6 @@ static int alc5623_probe(struct snd_soc_codec *codec)
- 	}
- 
- 	switch (alc5623->id) {
--	default:
- 	case 0x21:
- 		snd_soc_add_controls(codec, rt5621_vol_snd_controls,
- 			ARRAY_SIZE(rt5621_vol_snd_controls));
-@@ -938,6 +937,8 @@ static int alc5623_probe(struct snd_soc_codec *codec)
- 		snd_soc_add_controls(codec, alc5623_vol_snd_controls,
- 			ARRAY_SIZE(alc5623_vol_snd_controls));
- 		break;
-+	default:
-+		return -EINVAL;
- 	}
- 
- 	snd_soc_add_controls(codec, alc5623_snd_controls,
-@@ -950,7 +951,6 @@ static int alc5623_probe(struct snd_soc_codec *codec)
- 	snd_soc_dapm_add_routes(dapm, intercon, ARRAY_SIZE(intercon));
- 
- 	switch (alc5623->id) {
--	default:
- 	case 0x21:
- 	case 0x22:
- 		snd_soc_dapm_new_controls(dapm, alc5623_dapm_amp_widgets,
-@@ -962,6 +962,8 @@ static int alc5623_probe(struct snd_soc_codec *codec)
- 		snd_soc_dapm_add_routes(dapm, intercon_spk,
- 					ARRAY_SIZE(intercon_spk));
- 		break;
-+	default:
-+		return -EINVAL;
- 	}
- 
- 	return ret;
-@@ -1039,10 +1041,12 @@ static int alc5623_i2c_probe(struct i2c_client *client,
- 	case 0x22:
- 		alc5623_dai.name = "alc5622-hifi";
- 		break;
--	default:
- 	case 0x23:
- 		alc5623_dai.name = "alc5623-hifi";
- 		break;
-+	default:
-+		kfree(alc5623);
-+		return -EINVAL;
- 	}
- 
- 	i2c_set_clientdata(client, alc5623);
--- 
-1.7.2
+change the power up order, and set this flag.
+If we ever need other new flags for widgets, this can be used for that purp=
+ose.
+We could have an inline function, which uses the dapm_find_widget(), and se=
+ts =
+
+the flag, to minimize duplicated code all over the place.
+
+So I can move the flag per widget, and we are going to have pretty interfac=
+e =
+
+too.
+
+What do you think?
+
+-- =
+
+P=E9ter
