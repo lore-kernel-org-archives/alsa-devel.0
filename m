@@ -1,14 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Constify struct snd_soc_codec_driver
-Date: Fri,  3 Dec 2010 15:26:09 +0000
-Message-ID: <1291389969-8392-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: HDA: Sound mutes when combination is below -48 dB
+Date: Fri, 03 Dec 2010 16:34:14 +0100
+Message-ID: <4CF90DF6.7020008@canonical.com>
+References: <4CF8D4BA.8080904@canonical.com> <s5hlj47ukx2.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3A28E244B9
-	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 16:26:12 +0100 (CET)
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id CB77F2451D
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 16:34:14 +0100 (CET)
+In-Reply-To: <s5hlj47ukx2.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,119 +20,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Allow the CODEC driver structure to be marked const by making all
-the APIs that use it do so.
+On 2010-12-03 12:59, Takashi Iwai wrote:
+> At Fri, 03 Dec 2010 12:30:02 +0100,
+> David Henningsson wrote:
+>>
+>> I'm trying to nail down a strange behaviour. I have one "Master" and one
+>> "Speaker" (or "Headphone") volume control, each ranging from -48 dB to 0
+>> dB. Whenever the sum of "Master" and "Speaker" is below -48 dB, the
+>> output mutes. Codec is attached.
+>>
+>> "Master" is a "Virtual master" control, and both "Master" and "Speaker"
+>> control amp-out on nid 0x13. Nid 0x13 does not have amp-out caps, but
+>> the AFG specifies a range of -96 dB to 0 dB in 0.75 dB steps.
+>>
+>> There is some strange things here. First, in
+>> patch_sigmatel:create_controls_idx, there is this comment:
+>>
+>> 		/* if dB scale is over -64dB, and finer enough,
+>> 		 * let's reduce it to half
+>> 		 */
+>> Hmm? Removing half of the volume slider?
+>>
+>> Second, assuming we actually buy this decision, wouldn't it make sense
+>> for people to be able to combine Master and Speaker to get the full -96
+>> to 0 dB range? Instead, "Master" is just working over the range defined
+>> by "Speaker".
+>
+> Well, the problem was fairly old.  You must think of the world before
+> anything dB evaluation was introduced in the mixer apps.  They just
+> took a percentage value, so we got to cut it off to give some "usable"
+> interface for them.
+>
+> The biggest problem right now is that you can't take it back so easily
+> "just for PA".  The PCM softvol is also the same.  There is no perfect
+> solution, and PA isn't by 100% people here.  However, we must not give
+> a regression in 100% manner.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- include/sound/soc.h   |    4 ++--
- sound/soc/soc-cache.c |   13 +++++++------
- sound/soc/soc-core.c  |    5 +++--
- 3 files changed, 12 insertions(+), 10 deletions(-)
+Ok. I'm not certain I agree, but I see your point.
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 7d53cc4..0eea08e 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -265,7 +265,7 @@ int snd_soc_register_platform(struct device *dev,
- 		struct snd_soc_platform_driver *platform_drv);
- void snd_soc_unregister_platform(struct device *dev);
- int snd_soc_register_codec(struct device *dev,
--		struct snd_soc_codec_driver *codec_drv,
-+		const struct snd_soc_codec_driver *codec_drv,
- 		struct snd_soc_dai_driver *dai_drv, int num_dai);
- void snd_soc_unregister_codec(struct device *dev);
- int snd_soc_codec_volatile_register(struct snd_soc_codec *codec, int reg);
-@@ -453,7 +453,7 @@ struct snd_soc_codec {
- 	const char *name_prefix;
- 	int id;
- 	struct device *dev;
--	struct snd_soc_codec_driver *driver;
-+	const struct snd_soc_codec_driver *driver;
- 
- 	struct mutex mutex;
- 	struct snd_soc_card *card;
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index 6c6ced7..c0497e1 100644
---- a/sound/soc/soc-cache.c
-+++ b/sound/soc/soc-cache.c
-@@ -1078,7 +1078,7 @@ static int snd_soc_lzo_decompress_cache_block(struct snd_soc_codec *codec,
- static inline int snd_soc_lzo_get_blkindex(struct snd_soc_codec *codec,
- 		unsigned int reg)
- {
--	struct snd_soc_codec_driver *codec_drv;
-+	const struct snd_soc_codec_driver *codec_drv;
- 	size_t reg_size;
- 
- 	codec_drv = codec->driver;
-@@ -1090,7 +1090,7 @@ static inline int snd_soc_lzo_get_blkindex(struct snd_soc_codec *codec,
- static inline int snd_soc_lzo_get_blkpos(struct snd_soc_codec *codec,
- 		unsigned int reg)
- {
--	struct snd_soc_codec_driver *codec_drv;
-+	const struct snd_soc_codec_driver *codec_drv;
- 	size_t reg_size;
- 
- 	codec_drv = codec->driver;
-@@ -1101,7 +1101,7 @@ static inline int snd_soc_lzo_get_blkpos(struct snd_soc_codec *codec,
- 
- static inline int snd_soc_lzo_get_blksize(struct snd_soc_codec *codec)
- {
--	struct snd_soc_codec_driver *codec_drv;
-+	const struct snd_soc_codec_driver *codec_drv;
- 	size_t reg_size;
- 
- 	codec_drv = codec->driver;
-@@ -1301,10 +1301,11 @@ static int snd_soc_lzo_cache_init(struct snd_soc_codec *codec)
- {
- 	struct snd_soc_lzo_ctx **lzo_blocks;
- 	size_t reg_size, bmp_size;
--	struct snd_soc_codec_driver *codec_drv;
-+	const struct snd_soc_codec_driver *codec_drv;
- 	int ret, tofree, i, blksize, blkcount;
- 	const char *p, *end;
- 	unsigned long *sync_bmp;
-+	const char *reg_default;
- 
- 	ret = 0;
- 	codec_drv = codec->driver;
-@@ -1404,7 +1405,7 @@ static int snd_soc_flat_cache_sync(struct snd_soc_codec *codec)
- {
- 	int i;
- 	int ret;
--	struct snd_soc_codec_driver *codec_drv;
-+	const struct snd_soc_codec_driver *codec_drv;
- 	unsigned int val;
- 
- 	codec_drv = codec->driver;
-@@ -1504,7 +1505,7 @@ static int snd_soc_flat_cache_exit(struct snd_soc_codec *codec)
- 
- static int snd_soc_flat_cache_init(struct snd_soc_codec *codec)
- {
--	struct snd_soc_codec_driver *codec_drv;
-+	const struct snd_soc_codec_driver *codec_drv;
- 	size_t reg_size;
- 
- 	codec_drv = codec->driver;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 41fe13d..35cdb8f 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3487,8 +3487,9 @@ static void fixup_codec_formats(struct snd_soc_pcm_stream *stream)
-  * @codec: codec to register
-  */
- int snd_soc_register_codec(struct device *dev,
--		struct snd_soc_codec_driver *codec_drv,
--		struct snd_soc_dai_driver *dai_drv, int num_dai)
-+			   const struct snd_soc_codec_driver *codec_drv,
-+			   struct snd_soc_dai_driver *dai_drv,
-+			   int num_dai)
- {
- 	size_t reg_size;
- 	struct snd_soc_codec *codec;
+>
+> OK, let's back to the bug point...
+>
+>> Third, there is an interesting condition in hda_codec.c:update_amp_value:
+>>
+>> 	if (val>  0)
+>> 		val += ofs;
+>>
+>> Now this is in practice turning all volume controls which have ofs (e g
+>> those being "reduced to half") to a minimum-is-mute error: I can set the
+>> amp value to either 0 (-96 dB) or the 65 - 127 range (~ -48 dB - 0 dB).
+>> So it isn't really mute, it's -96 dB signal, but I can't hear that anyway.
+>
+> OK, this looks really like a bug that the driver gives min-mute flag.
+> The min-mute flag should be given only for the STAC codecs with lower
+> resolution, such as STAC9200.  It seems that STAC925x (and STAC9202)
+> are also in this category, while STAC9205 and other IDT codecs have
+> higher resolutions.
+>
+> Since both STAC9200 and STAC925x have own Master definition, the
+> simplest solution is to remove TLV_DB_SCALE_MUTE for vmaster like
+> below...
+
+I've tried it, but it doesn't help. Test case is simple: run the codec 
+attached to the previous mail in hda-emu [1]. Then turn "Master" down 
+from 64 to 60, or anything that makes the combination of "Master" and 
+"Speaker" less than -48 dB, and notice that the amp value sent to the 
+codec is 0x0 (i e -96 dB).
+
+[1] If I never thanked you for that program, I do so now, it is a really 
+great tool!
+
 -- 
-1.7.1
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
