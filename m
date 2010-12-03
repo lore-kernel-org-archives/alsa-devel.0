@@ -1,17 +1,20 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [RFC v2 2/3] ASoC: core: Helper function to request
-	reversed widget power up
-Date: Fri,  3 Dec 2010 15:31:12 +0200
-Message-ID: <1291383073-16048-3-git-send-email-peter.ujfalusi@nokia.com>
-References: <1291383073-16048-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC 0/2] ASoC: core: Option to reorder widget
+	power sequence
+Date: Fri, 3 Dec 2010 14:48:03 +0000
+Message-ID: <20101203144802.GV859@rakim.wolfsonmicro.main>
+References: <1291291390-8669-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20101202130516.GC859@rakim.wolfsonmicro.main>
+	<201012030933.28559.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa01.nokia.com (smtp.nokia.com [147.243.1.47])
-	by alsa0.perex.cz (Postfix) with ESMTP id 16441244CE
-	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 14:31:20 +0100 (CET)
-In-Reply-To: <1291383073-16048-1-git-send-email-peter.ujfalusi@nokia.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8D39A24507
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 15:48:06 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <201012030933.28559.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,86 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Helper function for drivers to request reversed power up sequence
-on a given DAPM widget.
+On Fri, Dec 03, 2010 at 09:33:28AM +0200, Peter Ujfalusi wrote:
+> On Thursday 02 December 2010 15:05:16 ext Mark Brown wrote:
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
- include/sound/soc-dapm.h |    2 ++
- sound/soc/soc-dapm.c     |   37 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 39 insertions(+), 0 deletions(-)
+> > We've now got the split power down/power up sequences - ideally what
+> > we'd be able to do here is get the route update to happen in between the
+> > power down and power up sequences.
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index e5a3c74..d5e11df 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -358,6 +358,8 @@ int snd_soc_dapm_force_enable_pin(struct snd_soc_dapm_context *dapm,
- 				  const char *pin);
- int snd_soc_dapm_ignore_suspend(struct snd_soc_dapm_context *dapm,
- 				const char *pin);
-+int snd_soc_dapm_reverse_powerup_sequence(struct snd_soc_dapm_context *dapm,
-+					  const char *name);
- 
- /* dapm widget types */
- enum snd_soc_dapm_type {
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 7fae969..a3a3e94 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -119,6 +119,19 @@ static inline struct snd_soc_dapm_widget *dapm_cnew_widget(
- 	return kmemdup(_widget, sizeof(*_widget), GFP_KERNEL);
- }
- 
-+/* Find a widget by name */
-+static inline struct snd_soc_dapm_widget *snd_soc_dapm_get_widget(
-+			struct snd_soc_dapm_context *dapm, const char *name)
-+{
-+	struct snd_soc_dapm_widget *w;
-+
-+	list_for_each_entry(w, &dapm->widgets, list) {
-+		if (!strcmp(w->name, name))
-+			return w;
-+	}
-+	return NULL;
-+}
-+
- /**
-  * snd_soc_dapm_set_bias_level - set the bias level for the system
-  * @card: audio device
-@@ -2260,6 +2273,30 @@ int snd_soc_dapm_ignore_suspend(struct snd_soc_dapm_context *dapm,
- EXPORT_SYMBOL_GPL(snd_soc_dapm_ignore_suspend);
- 
- /**
-+ * snd_soc_dapm_reverse_powerup_sequence - reverse power up sequence on a widget
-+ * @codec: audio codec
-+ * @pin: Name of the DAPM widget
-+ *
-+ * Change the power up sequence on a given DAPM widget.
-+ *
-+ * Returns 0 on success, otherwise -EINVAL.
-+ */
-+int snd_soc_dapm_reverse_powerup_sequence(struct snd_soc_dapm_context *dapm,
-+					  const char *name)
-+{
-+	int ret = -EINVAL;
-+	struct snd_soc_dapm_widget *widget;
-+
-+	widget = snd_soc_dapm_get_widget(dapm, name);
-+	if (widget) {
-+		widget->route_change_before_powerup = 1;
-+		ret = 0;
-+	}
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_reverse_powerup_sequence);
-+
-+/**
-  * snd_soc_dapm_free - free dapm resources
-  * @card: SoC device
-  *
--- 
-1.7.3.2
+> What do you mean?
+
+When we do DAPM we run one sequence of register updates to implement
+power downs and then a second sequence to implement the power ups.  What
+you're really asking for here is to have the path update happen between
+these two.  I'm not sure if that is any clearer?  This seems like a
+totally sensible thing for us to be doing in general.
+
+> IMHO using differnet sequence of register write/dapm update power on path enable 
+> and disable shall be enough.
+
+You're working at the widget level but really this sounds like a global
+issue in the sequencing we do - it's fixing one specific use case but
+the level it's doing it at makes the change much less generally useful.
