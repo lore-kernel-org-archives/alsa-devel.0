@@ -1,18 +1,14 @@
-From: Alexander <subaparts@yandex.ru>
-Subject: Re: Does anyone really have success experience with
- SPI codecs with new name-based SOC API?
-Date: Thu, 02 Dec 2010 23:35:59 +0300
-Message-ID: <1291322159.1469.38.camel@r60e>
-References: <1290079866.1496.55.camel@r60e>
-	<AANLkTimPf9MUOtcVs7Yuf6MAftj6LErGXiLCCs6Q5DAp@mail.gmail.com>
+From: Jassi Brar <jassi.brar@samsung.com>
+Subject: [PATCH] ASoC: WM8580: Debug interface index
+Date: Fri,  3 Dec 2010 10:34:25 +0900
+Message-ID: <1291340065-16897-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward9.mail.yandex.net (forward9.mail.yandex.net
-	[77.88.61.48]) by alsa0.perex.cz (Postfix) with ESMTP id 4C0C8244E7
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2010 21:36:01 +0100 (CET)
-In-Reply-To: <AANLkTimPf9MUOtcVs7Yuf6MAftj6LErGXiLCCs6Q5DAp@mail.gmail.com>
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 927E71037EE
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 02:48:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +18,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: kgene.kim@samsung.com, broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
+We want the index of DAI's driver here.
 
+Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+---
+ sound/soc/codecs/wm8580.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-On Thu, 2010-12-02 at 16:12 -0200, Fabio Estevam wrote:
-> On Thu, Nov 18, 2010 at 9:31 AM, Alexander <subaparts@yandex.ru> wrote:
-> > Does anyone really have success experience with SPI codecs with new
-> > name-based SOC API?
-> > There are really few SPI codecs in ASoC subsystem, so I wonder if only I
-> > cannot bind my SPI codec to machine driver.
-> >
-> > The codec is registered with name spi0.0 it's the behavior of SPI
-> > subsystem, I suppose. So the form is %s%d.%d and not %s.%d as supposed
-> > in fmt_single_name() in soc_core.c
-> >
-> Have you managed to bind the SPI codec? I am trying the same thing
-> here. Please let me know.
-
-I've received a reply from Dimitris Papastamos, SoC subsystem developer,
-and he written, that I should use it as is, ie spi0.0
-So I'm finished with names and successfully binded it as
-codecname==spi0.0
-
-But for now, I have no sound anyway, it seems that something in SPI path
-is broken (but I suppose, not in my code, as it works on 2.6.36-rc6), I
-cannot see any communications going to codec with oscilloscope.
-So I'm trying to figure it out now...
-
-Best regards,
-	Alexander A. Sverdlin.
+diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
+index e2a9276..cb7765f 100644
+--- a/sound/soc/codecs/wm8580.c
++++ b/sound/soc/codecs/wm8580.c
+@@ -507,13 +507,13 @@ static int wm8580_paif_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 
+ 	/* Look up the SYSCLK ratio; accept only exact matches */
+-	ratio = wm8580->sysclk[dai->id] / params_rate(params);
++	ratio = wm8580->sysclk[dai->driver->id] / params_rate(params);
+ 	for (i = 0; i < ARRAY_SIZE(wm8580_sysclk_ratios); i++)
+ 		if (ratio == wm8580_sysclk_ratios[i])
+ 			break;
+ 	if (i == ARRAY_SIZE(wm8580_sysclk_ratios)) {
+ 		dev_err(codec->dev, "Invalid clock ratio %d/%d\n",
+-			wm8580->sysclk[dai->id], params_rate(params));
++			wm8580->sysclk[dai->driver->id], params_rate(params));
+ 		return -EINVAL;
+ 	}
+ 	paifa |= i;
+@@ -716,7 +716,7 @@ static int wm8580_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 
+ 	switch (clk_id) {
+ 	case WM8580_CLKSRC_ADCMCLK:
+-		if (dai->id != WM8580_DAI_PAIFTX)
++		if (dai->driver->id != WM8580_DAI_PAIFTX)
+ 			return -EINVAL;
+ 		sel = 0 << sel_shift;
+ 		break;
+@@ -735,7 +735,7 @@ static int wm8580_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 	}
+ 
+ 	/* We really should validate PLL settings but not yet */
+-	wm8580->sysclk[dai->id] = freq;
++	wm8580->sysclk[dai->driver->id] = freq;
+ 
+ 	return snd_soc_update_bits(codec, WM8580_CLKSEL, sel_mask, sel);
+ }
+-- 
+1.6.2.5
