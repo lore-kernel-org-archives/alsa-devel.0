@@ -1,18 +1,18 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCH] ASoC: Don't oops in soc_probe_aux_dev in case
-	of missing codec
-Date: Fri,  3 Dec 2010 09:18:22 +0200
-Message-ID: <1291360702-5709-1-git-send-email-jhnikula@gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [RFC 0/2] ASoC: core: Option to reorder widget
+	power sequence
+Date: Fri, 3 Dec 2010 09:33:28 +0200
+Message-ID: <201012030933.28559.peter.ujfalusi@nokia.com>
+References: <1291291390-8669-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20101202130516.GC859@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id F0796103AFD
-	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 08:17:49 +0100 (CET)
-Received: by eyg24 with SMTP id 24so4829466eyg.38
-	for <alsa-devel@alsa-project.org>; Thu, 02 Dec 2010 23:17:43 -0800 (PST)
+Received: from mgw-da01.nokia.com (smtp.nokia.com [147.243.128.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 33BAB103B02
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 08:33:35 +0100 (CET)
+In-Reply-To: <20101202130516.GC859@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,50 +22,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Blind copy of codec finding algorithm from soc_bind_dai_link does not work
-in soc_probe_aux_dev if matching codec name is not found. In that case the
-code falls through and tries to start the probing procedure with invalid
-codec pointer.
+On Thursday 02 December 2010 15:05:16 ext Mark Brown wrote:
+> On Thu, Dec 02, 2010 at 02:03:08PM +0200, Peter Ujfalusi wrote:
+> > The first patch implements a new flag for the core to reorder the
+> > sequence to: 1. User enable the bypass
+> > 2. The bit enabling the bypass got changed.
+> > 3. DAPM power up sequence takes place
+> > 3.1 codec DAPM widgets got powered on, codec is enabled
+> > 3.2 External speaker enabled
+> =
 
-Fix this and add an error print showing the codec name that cannot be found.
+> Is this OK on power down? On power down we'll adjust the input path to
+> the widget then power down the output path so noise introduced by
+> switching away from the current source will get amplified.  Keeping the
+> current sequence for power down seems more consistent with what you're
+> trying to do.
 
-Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
----
- sound/soc/soc-core.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
+The power down sequence is kept as it was, only the power up sequence has b=
+een =
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index eb950f7..1fd5e72 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1609,7 +1609,7 @@ static int soc_probe_aux_dev(struct snd_soc_card *card, int num)
- 	struct snd_soc_pcm_runtime *rtd = &card->rtd_aux[num];
- 	struct snd_soc_codec *codec;
- 	const char *temp;
--	int ret = 0;
-+	int ret = -ENODEV;
- 
- 	/* find CODEC from registered CODECs*/
- 	list_for_each_entry(codec, &codec_list, list) {
-@@ -1620,10 +1620,14 @@ static int soc_probe_aux_dev(struct snd_soc_card *card, int num)
- 				ret = -EBUSY;
- 				goto out;
- 			}
--			break;
-+			goto found;
- 		}
- 	}
-+	/* codec not found */
-+	dev_err(card->dev, "asoc: codec %s not found", aux_dev->codec_name);
-+	goto out;
- 
-+found:
- 	if (!try_module_get(codec->dev->driver->owner))
- 		return -ENODEV;
- 
--- 
-1.7.2.3
+changed:
+1. User disable the bypass
+2. DAPM power down sequence takes place
+2.1 External speaker disabled
+2.1 codec DAPM widgets got powered down, codec is powered down
+3. The bit for the bypass got changed.
+
+> =
+
+> Looking at the mailing list archive the issues previously were partly
+> things being obscured by this being in terms of the then very
+
+Yes, I know that the old patch changed it for up, and down. I did learnet m=
+y =
+
+lesson, so I only changed the power up sequence.
+
+> non-standard TWL4030 code and also this:
+> | I think there's something useful we can do with DAPM here (independantly
+> | of anything in TWL4030), probably involving splitting up the routing
+> | change walk to run power down first and then power up but the current
+> | patch feels like it's going to cause at least as many problems as it
+> | solves.
+> =
+
+> We've now got the split power down/power up sequences - ideally what
+> we'd be able to do here is get the route update to happen in between the
+> power down and power up sequences.
+
+What do you mean?
+IMHO using differnet sequence of register write/dapm update power on path e=
+nable =
+
+and disable shall be enough.
+
+Also: this patch only solving the pop noise in my case, when the codec is =
+
+powered on, because the bypass got enabled/disabled.
+If the bypass is enabled during active audio (aplay /dev/zero), than the po=
+p =
+
+from the bypass switch is there, but honestly I can not do anything about i=
+t. It =
+
+is a hardware bug, and user space has to deal with it in some way.
+
+-- =
+
+P=E9ter
