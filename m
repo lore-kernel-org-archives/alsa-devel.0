@@ -1,15 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [RFC v2 0/3] ASoC: Option to reorder widget power
-	sequence
-Date: Fri,  3 Dec 2010 15:31:10 +0200
-Message-ID: <1291383073-16048-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [RFC v2 2/3] ASoC: core: Helper function to request
+	reversed widget power up
+Date: Fri,  3 Dec 2010 15:31:12 +0200
+Message-ID: <1291383073-16048-3-git-send-email-peter.ujfalusi@nokia.com>
+References: <1291383073-16048-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-sa01.nokia.com (smtp.nokia.com [147.243.1.47])
-	by alsa0.perex.cz (Postfix) with ESMTP id A73FF244CB
-	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 14:31:19 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 16441244CE
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 14:31:20 +0100 (CET)
+In-Reply-To: <1291383073-16048-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,59 +25,82 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Helper function for drivers to request reversed power up sequence
+on a given DAPM widget.
 
-Chasnges sicne v1:
-- Flag moved to per widget
-- Flag name changed to: route_change_before_powerup
-- Comments from Mark has been addressed in the soc-dapm.c file
-- New helper function to set the reorder power up sequence.
-- tlv320dac33 to be the first codec to use the reversed power up order
-
-Note: power down sequence remains the same for the reordered widgets as well.
-
-Intro from the v1:
-
-Quite some time ago I have faced similar issue with the sequence of the
-DAPM register writes [1]
-For that issue, I used a workaround within the twl4030 codec driver.
-Now I have again issue with the register write sequence.
-
-The dac33 codec emmits a pop noise, when user enable the analog bypass path.
-The route cause in this codec are the DAPM update power and register write
-sequence:
-1. User enable the bypass
-2. DAPM power up sequence takes place
-2.1 codec DAPM widgets got powered on, codec is enabled
-2.2 External speaker enabled
-3. The bit enabling the bypass got changed.
-
-Step 3 cause a pop, which propagate to the speaker, since it is already enabled.
-
-The first patch implements a new flag for the core to reorder the sequence to:
-1. User enable the bypass
-2. The bit enabling the bypass got changed.
-3. DAPM power up sequence takes place
-3.1 codec DAPM widgets got powered on, codec is enabled
-3.2 External speaker enabled
-
-The default sequence is kept, codec driver must ask to have the reordered
-sequence to avoid any side effect on other codecs.
-
-[1]: http://mailman.alsa-project.org/pipermail/alsa-devel/2010-August/030024.html
-
-Peter
-
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
-Peter Ujfalusi (3):
-  ASoC: core: DAPM widget flag for reversed power up sequence
-  ASoC: core: Helper function to request reversed widget power up
-  ASoC: tlv320dac33: Reverse the power up sequence for bypass switches
+ include/sound/soc-dapm.h |    2 ++
+ sound/soc/soc-dapm.c     |   37 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 39 insertions(+), 0 deletions(-)
 
- include/sound/soc-dapm.h       |    3 ++
- sound/soc/codecs/tlv320dac33.c |    4 +++
- sound/soc/soc-dapm.c           |   54 ++++++++++++++++++++++++++++++++++++++-
- 3 files changed, 59 insertions(+), 2 deletions(-)
-
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index e5a3c74..d5e11df 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -358,6 +358,8 @@ int snd_soc_dapm_force_enable_pin(struct snd_soc_dapm_context *dapm,
+ 				  const char *pin);
+ int snd_soc_dapm_ignore_suspend(struct snd_soc_dapm_context *dapm,
+ 				const char *pin);
++int snd_soc_dapm_reverse_powerup_sequence(struct snd_soc_dapm_context *dapm,
++					  const char *name);
+ 
+ /* dapm widget types */
+ enum snd_soc_dapm_type {
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 7fae969..a3a3e94 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -119,6 +119,19 @@ static inline struct snd_soc_dapm_widget *dapm_cnew_widget(
+ 	return kmemdup(_widget, sizeof(*_widget), GFP_KERNEL);
+ }
+ 
++/* Find a widget by name */
++static inline struct snd_soc_dapm_widget *snd_soc_dapm_get_widget(
++			struct snd_soc_dapm_context *dapm, const char *name)
++{
++	struct snd_soc_dapm_widget *w;
++
++	list_for_each_entry(w, &dapm->widgets, list) {
++		if (!strcmp(w->name, name))
++			return w;
++	}
++	return NULL;
++}
++
+ /**
+  * snd_soc_dapm_set_bias_level - set the bias level for the system
+  * @card: audio device
+@@ -2260,6 +2273,30 @@ int snd_soc_dapm_ignore_suspend(struct snd_soc_dapm_context *dapm,
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_ignore_suspend);
+ 
+ /**
++ * snd_soc_dapm_reverse_powerup_sequence - reverse power up sequence on a widget
++ * @codec: audio codec
++ * @pin: Name of the DAPM widget
++ *
++ * Change the power up sequence on a given DAPM widget.
++ *
++ * Returns 0 on success, otherwise -EINVAL.
++ */
++int snd_soc_dapm_reverse_powerup_sequence(struct snd_soc_dapm_context *dapm,
++					  const char *name)
++{
++	int ret = -EINVAL;
++	struct snd_soc_dapm_widget *widget;
++
++	widget = snd_soc_dapm_get_widget(dapm, name);
++	if (widget) {
++		widget->route_change_before_powerup = 1;
++		ret = 0;
++	}
++	return ret;
++}
++EXPORT_SYMBOL_GPL(snd_soc_dapm_reverse_powerup_sequence);
++
++/**
+  * snd_soc_dapm_free - free dapm resources
+  * @card: SoC device
+  *
 -- 
 1.7.3.2
