@@ -1,16 +1,16 @@
 From: Seungwhan Youn <sw.youn@samsung.com>
-Subject: [PATCH 2/3] ASoC: SAMSUNG: Remove duplicated snd_card
-	on smdk_spdif
-Date: Fri,  3 Dec 2010 18:32:02 +0900
-Message-ID: <1291368722-29359-1-git-send-email-sw.youn@samsung.com>
+Subject: [PATCH 3/3] ASoC: SAMSUNG: Match spdif source clock id
+	and asoc platform device
+Date: Fri,  3 Dec 2010 18:37:47 +0900
+Message-ID: <1291369067-31429-1-git-send-email-sw.youn@samsung.com>
 References: <1291368453-30905-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 66A49243DF
-	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 10:48:21 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 1FBBC243D6
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2010 10:53:24 +0100 (CET)
 In-Reply-To: <1291368453-30905-1-git-send-email-sw.youn@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,25 +25,26 @@ To: alsa-devel@alsa-project.org
 Cc: Seungwhan Youn <sw.youn@samsung.com>, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-This patch remove duplicated snd_card defination on smdk_spdif.
+This patch modify to match ids between source clock id and asoc platform
+device that spdif driver can find sclk_audio0 with device id.
 
 Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
 ---
- sound/soc/s3c24xx/smdk_spdif.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
+ sound/soc/s3c24xx/smdk_spdif.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/sound/soc/s3c24xx/smdk_spdif.c b/sound/soc/s3c24xx/smdk_spdif.c
-index cb658d1..0e1fe60 100644
+index 0e1fe60..b4ad231 100644
 --- a/sound/soc/s3c24xx/smdk_spdif.c
 +++ b/sound/soc/s3c24xx/smdk_spdif.c
-@@ -152,8 +152,6 @@ static struct snd_soc_ops smdk_spdif_ops = {
- 	.hw_params = smdk_hw_params,
- };
+@@ -183,7 +183,7 @@ static int __init smdk_init(void)
+ 	if (ret)
+ 		goto err2;
  
--static struct snd_soc_card smdk;
--
- static struct snd_soc_dai_link smdk_dai = {
- 	.name = "S/PDIF",
- 	.stream_name = "S/PDIF PCM Playback",
+-	smdk_snd_spdif_device = platform_device_alloc("soc-audio", -1);
++	smdk_snd_spdif_device = platform_device_alloc("soc-audio", 0);
+ 	if (!smdk_snd_spdif_device) {
+ 		ret = -ENOMEM;
+ 		goto err2;
 -- 
 1.6.2.5
