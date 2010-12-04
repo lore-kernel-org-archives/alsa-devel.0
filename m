@@ -1,20 +1,21 @@
 From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH] ASoC: WM8580: Debug interface index
-Date: Sun, 5 Dec 2010 00:26:43 +0900
-Message-ID: <AANLkTim+_FVqeat+X1Bf-gBWTfs1VyrQsT14_hHA6LGi@mail.gmail.com>
-References: <1291340065-16897-1-git-send-email-jassi.brar@samsung.com>
-	<1291376076.3271.32.camel@odin>
-	<20101203163932.GX859@rakim.wolfsonmicro.main>
+Subject: Re: [PATCH 3/3] ASoC: SAMSUNG: Match spdif source
+ clock id and asoc platform device
+Date: Sun, 5 Dec 2010 00:40:01 +0900
+Message-ID: <AANLkTinw3+t=eVLRUiRhwPA2c_nZ7q7Kfm-QOBmsZLRT@mail.gmail.com>
+References: <1291368453-30905-1-git-send-email-sw.youn@samsung.com>
+	<1291369067-31429-1-git-send-email-sw.youn@samsung.com>
+	<20101203114416.GG3182@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id CACED243FF
-	for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2010 16:26:43 +0100 (CET)
-Received: by bwz8 with SMTP id 8so9616589bwz.38
-	for <alsa-devel@alsa-project.org>; Sat, 04 Dec 2010 07:26:43 -0800 (PST)
-In-Reply-To: <20101203163932.GX859@rakim.wolfsonmicro.main>
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 53FE024414
+	for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2010 16:40:02 +0100 (CET)
+Received: by bwz8 with SMTP id 8so9624241bwz.38
+	for <alsa-devel@alsa-project.org>; Sat, 04 Dec 2010 07:40:02 -0800 (PST)
+In-Reply-To: <20101203114416.GG3182@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +26,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, Jassi Brar <jassi.brar@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, jassi.brar@samsung.com, Seungwhan Youn <sw.youn@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBEZWMgNCwgMjAxMCBhdCAxOjM5IEFNLCBNYXJrIEJyb3duCjxicm9vbmllQG9wZW5z
-b3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gRnJpLCBEZWMgMDMsIDIwMTAgYXQg
-MTE6MzQ6MzZBTSArMDAwMCwgTGlhbSBHaXJkd29vZCB3cm90ZToKPj4gT24gRnJpLCAyMDEwLTEy
-LTAzIGF0IDEwOjM0ICswOTAwLCBKYXNzaSBCcmFyIHdyb3RlOgo+PiA+IFdlIHdhbnQgdGhlIGlu
-ZGV4IG9mIERBSSdzIGRyaXZlciBoZXJlLgo+Cj4+IEl0J3MgZmluZSBidXQgY291bGQgeW91IGFk
-ZCBhIGxpdHRsZSBtb3JlIGNvbnRleHQgaGVyZS4KPgo+IFllcywgcGxlYXNlLiDCoEluZGVlZCwg
-dGhlIERBSSBJRCBzaG91bGQgYmUgYmVpbmcgaW5pdGlhbGlzZWQgZnJvbSB0aGUKPiBkcml2ZXIg
-SUQgYnkgdGhlIGNvcmUgc28gaXQncyBhIGJpdCBzdXJwcmlzaW5nIGlmIHRoZXkgZGl2ZXJnZSAt
-IHdoeSBkbwo+IHdlIHdhbnQgdGhlIGRyaXZlciBpbmRleD8gwqBUaG91Z2ggSSd2ZSBnb25lIGFo
-ZWFkIGFuZCBhcHBsaWVkIGFueXdheSBhcwo+IGF0IHdvcnN0IGl0J3MgYSBub29wLgoKSnVzdCBm
-b3IgdGhlIHNha2Ugb2YgY29uc2lzdGVuY3kuCldlIG1vdmVkIHRvIHVzaW5nIGRyaXZlcidzIGlk
-IHNpbmNlIHRoZSBjb21taXQKJ0FTb0M6IG11bHRpLWNvbXBvbmVudCAtIEFTb0MgTXVsdGktQ29t
-cG9uZW50IFN1cHBvcnQnLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+On Fri, Dec 3, 2010 at 8:44 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+
+>> This patch modify to match ids between source clock id and asoc platform
+>> device that spdif driver can find sclk_audio0 with device id.
+>
+> Something's seriously wrong if you need to do this...
+
+It's necessary evil ATM.
+There is no access to SPDIF device in machine code and we need to
+get/set the clock.
+So the soc-audio is used as a place-holder.
