@@ -1,21 +1,19 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 3/3] ASoC: SAMSUNG: Match spdif source
- clock id and asoc platform device
-Date: Sun, 5 Dec 2010 00:40:01 +0900
-Message-ID: <AANLkTinw3+t=eVLRUiRhwPA2c_nZ7q7Kfm-QOBmsZLRT@mail.gmail.com>
-References: <1291368453-30905-1-git-send-email-sw.youn@samsung.com>
-	<1291369067-31429-1-git-send-email-sw.youn@samsung.com>
-	<20101203114416.GG3182@sirena.org.uk>
+From: JD <jd1008@gmail.com>
+Subject: Re: Building alsa-driver-1.0.23 for sis7012
+Date: Sat, 04 Dec 2010 09:58:41 -0800
+Message-ID: <4CFA8151.1080206@gmail.com>
+References: <4CF9AC6E.5050708@gmail.com>	<AANLkTik06fg1xcWGOANcQvLEdhyN6Z7H3=bYZRi2=3CT@mail.gmail.com>	<4CF9BC30.6040100@gmail.com>	<AANLkTint4iZ7mbobO0-SmaA-0M+KzTseHfcsnyYNJXXJ@mail.gmail.com>	<4CF9E428.8000602@gmail.com>
+	<AANLkTin1-fRcmjjNuNj=xLQO-1HyUgP0ys5617O8rTzF@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 53FE024414
-	for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2010 16:40:02 +0100 (CET)
-Received: by bwz8 with SMTP id 8so9624241bwz.38
-	for <alsa-devel@alsa-project.org>; Sat, 04 Dec 2010 07:40:02 -0800 (PST)
-In-Reply-To: <20101203114416.GG3182@sirena.org.uk>
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51]) by alsa0.perex.cz (Postfix) with ESMTP id 1956524489
+	for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2010 18:58:47 +0100 (CET)
+Received: by ywg8 with SMTP id 8so2625502ywg.38
+	for <alsa-devel@alsa-project.org>; Sat, 04 Dec 2010 09:58:44 -0800 (PST)
+In-Reply-To: <AANLkTin1-fRcmjjNuNj=xLQO-1HyUgP0ys5617O8rTzF@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,19 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, jassi.brar@samsung.com, Seungwhan Youn <sw.youn@samsung.com>
+Cc: Alsa Devel List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 3, 2010 at 8:44 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-
->> This patch modify to match ids between source clock id and asoc platform
->> device that spdif driver can find sclk_audio0 with device id.
+On 12/03/2010 11:12 PM, Daniel Chen wrote:
+> No, clearly things are muted (I've noted with arrows):
 >
-> Something's seriously wrong if you need to do this...
+> Simple mixer control 'Mic',0
+>    Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+> cswitch-exclusive penum
+>    Capture exclusive group: 0
+>    Playback channels: Mono
+>    Capture channels: Front Left - Front Right
+>    Limits: Playback 0 - 31
+>    Mono: Playback 31 [100%] [12.00dB] [off]
+>    Front Left: Capture [off]<---
+>    Front Right: Capture [off]<---
+>
+> [...]
+> Simple mixer control 'Capture',0
+>    Capabilities: cvolume cswitch cswitch-joined penum
+>    Capture channels: Front Left - Front Right
+>    Limits: Capture 0 - 15
+>    Front Left: Capture 15 [100%] [22.50dB] [off]<---
+>    Front Right: Capture 15 [100%] [22.50dB] [off]<---
+>
+OK, then I have no idea how to turn them on.
+The only mixer I have is
+/usr/bin/gst-mixer
+the title of which says:
+Volume control: SIS si7012 (Alsa mixer)
 
-It's necessary evil ATM.
-There is no access to SPDIF device in machine code and we need to
-get/set the clock.
-So the soc-audio is used as a place-holder.
+I check every available tab or button for ways to turn
+on the captures. I do not see any way to turn them on or off.
