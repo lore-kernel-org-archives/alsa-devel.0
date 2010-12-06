@@ -1,15 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: Fix off by one error in WM8994 EQ
-	register bank size
-Date: Mon,  6 Dec 2010 11:12:26 +0000
-Message-ID: <1291633947-12997-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: Fix swap of left and right channels
+	for WM8993/4 speaker boost gain
+Date: Mon,  6 Dec 2010 11:12:27 +0000
+Message-ID: <1291633947-12997-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1291633947-12997-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3DEA6103837
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3FBCB103875
 	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2010 12:12:23 +0100 (CET)
+In-Reply-To: <1291633947-12997-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,24 +27,26 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Uk Kim <w0806.kim@samsung.com>
 
+SPKOUTL_BOOST start from third bit, SPKOUTLR_BOOST start from 0 bit.
+
 Signed-off-by: Uk Kim <w0806.kim@samsung.com>
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/linux/mfd/wm8994/pdata.h |    2 +-
+ sound/soc/codecs/wm_hubs.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/include/linux/mfd/wm8994/pdata.h b/include/linux/mfd/wm8994/pdata.h
-index 5c51f36..add8a1b 100644
---- a/include/linux/mfd/wm8994/pdata.h
-+++ b/include/linux/mfd/wm8994/pdata.h
-@@ -29,7 +29,7 @@ struct wm8994_ldo_pdata {
- #define WM8994_CONFIGURE_GPIO 0x8000
- 
- #define WM8994_DRC_REGS 5
--#define WM8994_EQ_REGS  19
-+#define WM8994_EQ_REGS  20
- 
- /**
-  * DRC configurations are specified with a label and a set of register
+diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+index 19ca782..0e24092 100644
+--- a/sound/soc/codecs/wm_hubs.c
++++ b/sound/soc/codecs/wm_hubs.c
+@@ -293,7 +293,7 @@ SOC_DOUBLE_R("Speaker Switch",
+ SOC_DOUBLE_R("Speaker ZC Switch",
+ 	     WM8993_SPEAKER_VOLUME_LEFT, WM8993_SPEAKER_VOLUME_RIGHT,
+ 	     7, 1, 0),
+-SOC_DOUBLE_TLV("Speaker Boost Volume", WM8993_SPKOUT_BOOST, 0, 3, 7, 0,
++SOC_DOUBLE_TLV("Speaker Boost Volume", WM8993_SPKOUT_BOOST, 3, 0, 7, 0,
+ 	       spkboost_tlv),
+ SOC_ENUM("Speaker Reference", speaker_ref),
+ SOC_ENUM("Speaker Mode", speaker_mode),
 -- 
 1.7.2.3
