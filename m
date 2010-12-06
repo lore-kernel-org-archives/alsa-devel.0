@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: dapm: Add speaker driver widget.
-Date: Mon, 6 Dec 2010 23:09:49 +0000
-Message-ID: <20101206230948.GH2862@opensource.wolfsonmicro.com>
-References: <1889FA7136B567478A67D4B0F85B0CCEA4C52E7E@dlee06.ent.ti.com>
-	<20101206224359.GB2862@opensource.wolfsonmicro.com>
-	<1291676132.3281.116.camel@odin>
+From: "Olaya, Margarita" <magi.olaya@ti.com>
+Subject: Re: [PATCH 2/2] ASoC: sdp4430: Add Jack support
+Date: Mon, 6 Dec 2010 17:13:19 -0600
+Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4CFBC65@dlee06.ent.ti.com>
+References: <1889FA7136B567478A67D4B0F85B0CCEA4C52E83@dlee06.ent.ti.com>
+	<20101206225544.GG2862@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4FAB7103914
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 00:09:39 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1291676132.3281.116.camel@odin>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 21ED1103934
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 00:13:21 +0100 (CET)
+In-Reply-To: <20101206225544.GG2862@opensource.wolfsonmicro.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,46 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: "Olaya, Margarita" <magi.olaya@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 06, 2010 at 10:55:32PM +0000, Liam Girdwood wrote:
-> On Mon, 2010-12-06 at 22:43 +0000, Mark Brown wrote:
+ 
 
-> > Why not use the existing speaker widget?  It's at pretty much the same
-> > point in the sequence and is intended for use with external GPIO
-> > controlled speaker drivers.  It'd be good to discuss this in the
-> > changelog.
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com] 
+> Sent: Monday, December 06, 2010 4:56 PM
+> To: Olaya, Margarita
+> Cc: Liam Girdwood; alsa-devel@alsa-project.org
+> Subject: Re: [PATCH 2/2] ASoC: sdp4430: Add Jack support
+> 
+> On Mon, Dec 06, 2010 at 04:34:53PM -0600, Olaya, Margarita wrote:
+> 
+> > From: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
+> > 
+> > Use jack framework to enable detection for the headset microphone
+> > and stereo output.
+> 
+> This looks OK but...
+> 
+> > +	twl6040_hs_jack_detect(codec, &hs_jack, SND_JACK_HEADSET);
+> >  	return ret;
+> 
+> ...this function doesn't appear to be in mainline yet?
+> 
 
-> In this case the driver block is on the CODEC IC and after the PGA in
-> the audio output path, hence this version is better suited than the
-> external GPIO version.
+ups I'll resubmit with the missing patch.
 
-Sure, but it's fulfiling the same role in the system - it's just that
-these days a lot more CODECs are pulling speaker drivers directly into
-the CODEC die.  Mostly these have worked well handled as PGAs so it's
-not been an issue.
-
-I'd certainly expect to see it handled the same way from a DAPM
-sequencing point of view as it's fulfilling the same role in the system
-(so in the same slot rather than separately as the patch was doing).  Do
-we just need to refactor the existing external widgets to be able to
-exist in either register or GPIO based versions?
-
-> > > +#define SND_SOC_DAPM_DRV(wname, wreg, wshift, winvert,\
-> > > +	 wcontrols, wncontrols) \
-> > > +{	.id = snd_soc_dapm_drv, .name = wname, .reg = wreg, .shift = wshift, \
-> > > +	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = wncontrols}
-
-> > The _DRV name seems rather opaque - I'd suggest _SPK as a name but
-> > obviously that's in use.  If we do want this I guess _SPK_DRV or
-> > sommething.
-
-> I was thinking this too, but then I thought we may want to drive other
-> loads than just speakers here. e.g. haptic, vibra
-
-My main thing here is _DRV - it's not just that it's undescriptive, it's
-also that calling something a driver in a context like this is confusing.
-_OUT_DRV is another idea?  The changelog also needs redoing to reflect
-the more general use.
+Regards,
+Margarita
