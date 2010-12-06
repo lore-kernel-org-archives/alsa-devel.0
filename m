@@ -1,14 +1,14 @@
 From: "Olaya, Margarita" <magi.olaya@ti.com>
-Subject: [PATCH] ASoC: dapm: Add speaker driver widget.
-Date: Mon, 6 Dec 2010 16:34:37 -0600
-Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4C52E7E@dlee06.ent.ti.com>
+Subject: [PATCH] ASoC: mcbsp: Add McBSP support for OMAP4
+Date: Mon, 6 Dec 2010 16:34:40 -0600
+Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4C52E7F@dlee06.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id E707724454
-	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2010 23:34:40 +0100 (CET)
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5CD0B103831
+	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2010 23:34:44 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,103 +23,118 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlog
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-In some cases it was not possible to follow the appropiate power
-ON/OFF sequence.
-Add a widget to support speaker drivers where power ON/OFF
-ordering is important.
+From: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
 
+This patch adds McBSP support for the OMAP4 CPU
+
+Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
 Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
 ---
- include/sound/soc-dapm.h |   10 ++++++++++
- sound/soc/soc-dapm.c     |    6 ++++++
- 2 files changed, 16 insertions(+), 0 deletions(-)
+ sound/soc/omap/omap-mcbsp.c |   38 +++++++++++++++++++++++++++++++++++---
+ sound/soc/omap/omap-mcbsp.h |    4 ++++
+ 2 files changed, 39 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 041e98b..3b438e5 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -71,6 +71,10 @@
- 	 wcontrols, wncontrols) \
- {	.id = snd_soc_dapm_pga, .name = wname, .reg = wreg, .shift = wshift, \
- 	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = wncontrols}
-+#define SND_SOC_DAPM_DRV(wname, wreg, wshift, winvert,\
-+	 wcontrols, wncontrols) \
-+{	.id = snd_soc_dapm_drv, .name = wname, .reg = wreg, .shift = wshift, \
-+	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = wncontrols}
- #define SND_SOC_DAPM_MIXER(wname, wreg, wshift, winvert, \
- 	 wcontrols, wncontrols)\
- {	.id = snd_soc_dapm_mixer, .name = wname, .reg = wreg, .shift = wshift, \
-@@ -115,6 +119,11 @@
- {	.id = snd_soc_dapm_pga, .name = wname, .reg = wreg, .shift = wshift, \
- 	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = wncontrols, \
- 	.event = wevent, .event_flags = wflags}
-+#define SND_SOC_DAPM_DRV_E(wname, wreg, wshift, winvert, wcontrols, \
-+	wncontrols, wevent, wflags) \
-+{	.id = snd_soc_dapm_drv, .name = wname, .reg = wreg, .shift = wshift, \
-+	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = wncontrols, \
-+	.event = wevent, .event_flags = wflags}
- #define SND_SOC_DAPM_MIXER_E(wname, wreg, wshift, winvert, wcontrols, \
- 	wncontrols, wevent, wflags) \
- {	.id = snd_soc_dapm_mixer, .name = wname, .reg = wreg, .shift = wshift, \
-@@ -368,6 +377,7 @@ enum snd_soc_dapm_type {
- 	snd_soc_dapm_mixer,			/* mixes several analog signals together */
- 	snd_soc_dapm_mixer_named_ctl,		/* mixer with named controls */
- 	snd_soc_dapm_pga,			/* programmable gain/attenuation (volume) */
-+	snd_soc_dapm_drv,			/* speaker driver */
- 	snd_soc_dapm_adc,			/* analog to digital converter */
- 	snd_soc_dapm_dac,			/* digital to analog converter */
- 	snd_soc_dapm_micbias,		/* microphone bias (power) */
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 6a29d59..4726b65 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -61,6 +61,7 @@ static int dapm_up_seq[] = {
- 	[snd_soc_dapm_mixer] = 7,
- 	[snd_soc_dapm_mixer_named_ctl] = 7,
- 	[snd_soc_dapm_pga] = 8,
-+	[snd_soc_dapm_drv] = 9,
- 	[snd_soc_dapm_adc] = 9,
- 	[snd_soc_dapm_hp] = 10,
- 	[snd_soc_dapm_spk] = 10,
-@@ -72,6 +73,7 @@ static int dapm_down_seq[] = {
- 	[snd_soc_dapm_adc] = 1,
- 	[snd_soc_dapm_hp] = 2,
- 	[snd_soc_dapm_spk] = 2,
-+	[snd_soc_dapm_drv] = 3,
- 	[snd_soc_dapm_pga] = 4,
- 	[snd_soc_dapm_mixer_named_ctl] = 5,
- 	[snd_soc_dapm_mixer] = 5,
-@@ -231,6 +233,7 @@ static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
- 	break;
- 	/* does not effect routing - always connected */
- 	case snd_soc_dapm_pga:
-+	case snd_soc_dapm_drv:
- 	case snd_soc_dapm_output:
- 	case snd_soc_dapm_adc:
- 	case snd_soc_dapm_input:
-@@ -1243,6 +1246,7 @@ static ssize_t dapm_widget_show(struct device *dev,
- 		case snd_soc_dapm_dac:
- 		case snd_soc_dapm_adc:
- 		case snd_soc_dapm_pga:
-+		case snd_soc_dapm_drv:
- 		case snd_soc_dapm_mixer:
- 		case snd_soc_dapm_mixer_named_ctl:
- 		case snd_soc_dapm_supply:
-@@ -1421,6 +1425,7 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
- 	case snd_soc_dapm_adc:
- 	case snd_soc_dapm_dac:
- 	case snd_soc_dapm_pga:
-+	case snd_soc_dapm_drv:
- 	case snd_soc_dapm_input:
- 	case snd_soc_dapm_output:
- 	case snd_soc_dapm_micbias:
-@@ -1538,6 +1543,7 @@ int snd_soc_dapm_new_widgets(struct snd_soc_dapm_context *dapm)
- 			w->power_check = dapm_dac_check_power;
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 7e84f24..132062c 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -102,6 +102,17 @@ static const int omap24xx_dma_reqs[][2] = {
+ static const int omap24xx_dma_reqs[][2] = {};
+ #endif
+ 
++#if defined(CONFIG_ARCH_OMAP4)
++static const int omap44xx_dma_reqs[][2] = {
++	{ OMAP44XX_DMA_MCBSP1_TX, OMAP44XX_DMA_MCBSP1_RX },
++	{ OMAP44XX_DMA_MCBSP2_TX, OMAP44XX_DMA_MCBSP2_RX },
++	{ OMAP44XX_DMA_MCBSP3_TX, OMAP44XX_DMA_MCBSP3_RX },
++	{ OMAP44XX_DMA_MCBSP4_TX, OMAP44XX_DMA_MCBSP4_RX },
++};
++#else
++static const int omap44xx_dma_reqs[][2] = {};
++#endif
++
+ #if defined(CONFIG_ARCH_OMAP2420)
+ static const unsigned long omap2420_mcbsp_port[][2] = {
+ 	{ OMAP24XX_MCBSP1_BASE + OMAP_MCBSP_REG_DXR1,
+@@ -147,6 +158,21 @@ static const unsigned long omap34xx_mcbsp_port[][2] = {
+ static const unsigned long omap34xx_mcbsp_port[][2] = {};
+ #endif
+ 
++#if defined(CONFIG_ARCH_OMAP4)
++static const unsigned long omap44xx_mcbsp_port[][2] = {
++	{ OMAP44XX_MCBSP1_BASE + OMAP_MCBSP_REG_DXR,
++	  OMAP44XX_MCBSP1_BASE + OMAP_MCBSP_REG_DRR },
++	{ OMAP44XX_MCBSP2_BASE + OMAP_MCBSP_REG_DXR,
++	  OMAP44XX_MCBSP2_BASE + OMAP_MCBSP_REG_DRR },
++	{ OMAP44XX_MCBSP3_BASE + OMAP_MCBSP_REG_DXR,
++	  OMAP44XX_MCBSP3_BASE + OMAP_MCBSP_REG_DRR },
++	{ OMAP44XX_MCBSP4_BASE + OMAP_MCBSP_REG_DXR,
++	  OMAP44XX_MCBSP4_BASE + OMAP_MCBSP_REG_DRR },
++};
++#else
++static const unsigned long omap44xx_mcbsp_port[][2] = {};
++#endif
++
+ static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+@@ -224,7 +250,7 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
+ 	 * 2 channels (stereo): size is 128 / 2 = 64 frames (2 * 64 words)
+ 	 * 4 channels: size is 128 / 4 = 32 frames (4 * 32 words)
+ 	 */
+-	if (cpu_is_omap343x()) {
++	if (cpu_is_omap343x() || cpu_is_omap44xx()) {
+ 		/*
+ 		* Rule for the buffer size. We should not allow
+ 		* smaller buffer than the FIFO size to avoid underruns
+@@ -332,6 +358,9 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+ 	} else if (cpu_is_omap343x()) {
+ 		dma = omap24xx_dma_reqs[bus_id][substream->stream];
+ 		port = omap34xx_mcbsp_port[bus_id][substream->stream];
++	 } else if (cpu_is_omap44xx()) {
++		dma = omap44xx_dma_reqs[bus_id][substream->stream];
++		port = omap44xx_mcbsp_port[bus_id][substream->stream];
+ 	} else {
+ 		return -ENODEV;
+ 	}
+@@ -498,11 +527,11 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 	regs->spcr2	|= XINTM(3) | FREE;
+ 	regs->spcr1	|= RINTM(3);
+ 	/* RFIG and XFIG are not defined in 34xx */
+-	if (!cpu_is_omap34xx()) {
++	if (!cpu_is_omap34xx() && !cpu_is_omap44xx()) {
+ 		regs->rcr2	|= RFIG;
+ 		regs->xcr2	|= XFIG;
+ 	}
+-	if (cpu_is_omap2430() || cpu_is_omap34xx()) {
++	if (cpu_is_omap2430() || cpu_is_omap34xx() || cpu_is_omap44xx()) {
+ 		regs->xccr = DXENDLY(1) | XDMAEN | XDISABLE;
+ 		regs->rccr = RFULL_CYCLE | RDMAEN | RDISABLE;
+ 	}
+@@ -623,6 +652,9 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 		if (cpu_class_is_omap1()) {
+ 			err = -EINVAL;
  			break;
- 		case snd_soc_dapm_pga:
-+		case snd_soc_dapm_drv:
- 			w->power_check = dapm_generic_check_power;
- 			dapm_new_pga(dapm, w);
- 			break;
++		} else if (cpu_is_omap44xx()) {
++			regs->srgr2     |= CLKSM;
++			break;
+ 		}
+ 		err = omap2_mcbsp_set_clks_src(mcbsp_data->bus_id,
+ 					       MCBSP_CLKS_PRCM_SRC);
+diff --git a/sound/soc/omap/omap-mcbsp.h b/sound/soc/omap/omap-mcbsp.h
+index ffdcc5a..110c106 100644
+--- a/sound/soc/omap/omap-mcbsp.h
++++ b/sound/soc/omap/omap-mcbsp.h
+@@ -50,6 +50,10 @@ enum omap_mcbsp_div {
+ #undef  NUM_LINKS
+ #define NUM_LINKS	3
+ #endif
++#if defined(CONFIG_ARCH_OMAP4)
++#undef  NUM_LINKS
++#define NUM_LINKS	4
++#endif
+ #if defined(CONFIG_ARCH_OMAP2430) || defined(CONFIG_ARCH_OMAP3)
+ #undef  NUM_LINKS
+ #define NUM_LINKS	5
 -- 
 1.7.0.4
