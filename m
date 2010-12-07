@@ -1,19 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: omap: Stop DMA re enabling in
- self linkage mode
-Date: Tue, 7 Dec 2010 14:05:12 +0000
-Message-ID: <20101207140512.GX4698@rakim.wolfsonmicro.main>
-References: <1889FA7136B567478A67D4B0F85B0CCEA4C52E81@dlee06.ent.ti.com>
-	<201012071117.26440.peter.ujfalusi@nokia.com>
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: Re: snd_hda_intel error
+Date: Tue, 7 Dec 2010 08:08:55 -0600
+Message-ID: <AANLkTikThHiVi7uW37+Y4hbqkeE3WB54sYsc9OHyCAb=@mail.gmail.com>
+References: <AANLkTik8eGoD1WfJvLZtzWQ-6W=WkjxtQHjJsZ4WN9DX@mail.gmail.com>
+	<AANLkTimUryfsGeiuiATCeBoeFjKqYkJYabqR6+Fj1u5x@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1EF2F103A79
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 15:05:14 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <201012071117.26440.peter.ujfalusi@nokia.com>
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4E973103A73
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 15:08:56 +0100 (CET)
+Received: by iwn41 with SMTP id 41so1306771iwn.38
+	for <alsa-devel@alsa-project.org>; Tue, 07 Dec 2010 06:08:55 -0800 (PST)
+In-Reply-To: <AANLkTimUryfsGeiuiATCeBoeFjKqYkJYabqR6+Fj1u5x@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,18 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "ext Olaya, Margarita" <magi.olaya@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Jack Byer <ftn768@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 07, 2010 at 11:17:26AM +0200, Peter Ujfalusi wrote:
+On Sat, Dec 4, 2010 at 7:38 AM, Jack Byer <ftn768@gmail.com> wrote:
+> I neglected to include this line from dmesg
+>
+> hda-intel: IRQ timing workaround is activated for card #1. Suggest a
+> bigger bdl_pos_adj.
+>
+> I don''t know if that is related or not.
 
-> I have not seen this happening on OMAP2/3, or at least I'm not aware of it.
-> Is this problem OMAP4 only?
-> Do you know if this happens on playback, capture or in both direction?
-> Is it worth to do this workaround only on OMAP4?
-
-Given that the patch should cause at most a single read from a register
-when tearing down DMA if it's not required I'd guess it's safer to just
-unconditionally enable the workaround on the off chance that it's just
-reallly rare rather than not needed?
+No it's not. I provided a fix for this bug in alsa-lib.
+http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=aba87e509898ec9ddb3e319267d7c267409ff100
+You can implement a work-around by using hardware devices in your
+mixer profile instead of front:
+-Pierre
