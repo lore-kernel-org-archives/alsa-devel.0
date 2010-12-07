@@ -1,14 +1,19 @@
-From: Jassi Brar <jassi.brar@samsung.com>
-Subject: [PATCH] ASoC: WM8580: Debug BCLK and sample size
-Date: Tue,  7 Dec 2010 19:23:07 +0900
-Message-ID: <1291717387-11961-1-git-send-email-jassi.brar@samsung.com>
+From: Sudarshan Bisht <sudarshan.bisht@nokia.com>
+Subject: Re: [PATCH 0/2] Fixed issues/defects reported by
+ Coverity tool.
+Date: Tue, 07 Dec 2010 12:40:09 +0200
+Message-ID: <1291718409.2355.151.camel@Sudarshan.research.nokia.com>
+References: <1291377976-9842-1-git-send-email-sudarshan.bisht@nokia.com>
+	<4CFCDC38.4080200@ladisch.de>
+Reply-To: sudarshan.bisht@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 97E5710383D
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 11:39:20 +0100 (CET)
+Received: from mgw-da01.nokia.com (smtp.nokia.com [147.243.128.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 173711039DE
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 11:40:18 +0100 (CET)
+In-Reply-To: <4CFCDC38.4080200@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,43 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: sbkim73@samsung.com, kgene.kim@samsung.com, broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
+To: ext Clemens Ladisch <clemens@ladisch.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-In case of SNDRV_PCM_FORMAT_S32_LE, we need to set WM8580_AIF_LENGTH_32,
-rather than WM8580_AIF_LENGTH_24.
-Also, the BCLK has to be 64fs, for sample size of 20, 24 and 32 bits.
+Thanks for notifying this,
 
-Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
----
- sound/soc/codecs/wm8580.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+I will compress them and send once again.
 
-diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
-index cb7765f..45efc94 100644
---- a/sound/soc/codecs/wm8580.c
-+++ b/sound/soc/codecs/wm8580.c
-@@ -491,16 +491,16 @@ static int wm8580_paif_hw_params(struct snd_pcm_substream *substream,
- 		paifa |= 0x8;
- 		break;
- 	case SNDRV_PCM_FORMAT_S20_3LE:
--		paifa |= 0x10;
-+		paifa |= 0x0;
- 		paifb |= WM8580_AIF_LENGTH_20;
- 		break;
- 	case SNDRV_PCM_FORMAT_S24_LE:
--		paifa |= 0x10;
-+		paifa |= 0x0;
- 		paifb |= WM8580_AIF_LENGTH_24;
- 		break;
- 	case SNDRV_PCM_FORMAT_S32_LE:
--		paifa |= 0x10;
--		paifb |= WM8580_AIF_LENGTH_24;
-+		paifa |= 0x0;
-+		paifb |= WM8580_AIF_LENGTH_32;
- 		break;
- 	default:
- 		return -EINVAL;
--- 
-1.6.2.5
+
+Best Regards,
+ Sudarshan Bisht 
+
+
+On Mon, 2010-12-06 at 13:51 +0100, ext Clemens Ladisch wrote:
+> sudarshan.bisht@nokia.com wrote:
+> > Sudarshan (1):
+> >   alsa-lib: Removed trailing whitespaces as per pulseaudio coding
+> >     guidelines.
+> > 
+> > bisht (1):
+> >   alsa-lib: Coverity tool has picked some minor issues in alsa-lib
+> >     source code, fixed them.
+> 
+> Apparently, your patches were too big and got stuck in some spam filter.
+> 
+> Try to compress them, or put them somewhere on the web.
+> 
+> 
+> Regards,
+> Clemens
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
