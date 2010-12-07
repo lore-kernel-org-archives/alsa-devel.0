@@ -1,21 +1,20 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: Help wanted: emachines em350 internal mic
-Date: Tue, 07 Dec 2010 16:11:59 +1300
-Message-ID: <4CFDA5FF.6060403@audioscience.com>
+Date: Tue, 7 Dec 2010 11:43:32 +0800
+Message-ID: <AANLkTikHW73J1PEnwdA+xbniE=E77A8tPQ=f2px6CO+R@mail.gmail.com>
 References: <AANLkTi=T_5nGv85YE8DcDvyF_HFouh7a-6tOmk58+8EO@mail.gmail.com>
+	<4CFDA5FF.6060403@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 25EA110394A
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 04:12:05 +0100 (CET)
-Received: from [192.168.36.2]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp3.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0LD100BVKFK15Q10@smtp3.clear.net.nz> for
-	alsa-devel@alsa-project.org; Tue, 07 Dec 2010 16:12:02 +1300 (NZDT)
-In-reply-to: <AANLkTi=T_5nGv85YE8DcDvyF_HFouh7a-6tOmk58+8EO@mail.gmail.com>
+Received: from mail-ew0-f42.google.com (mail-ew0-f42.google.com
+	[209.85.215.42])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9FDFE103945
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 04:43:38 +0100 (CET)
+Received: by ewy1 with SMTP id 1so7232848ewy.29
+	for <alsa-devel@alsa-project.org>; Mon, 06 Dec 2010 19:43:33 -0800 (PST)
+In-Reply-To: <4CFDA5FF.6060403@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,59 +24,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Raymond,
+2010/12/7 Eliot Blennerhassett <linux@audioscience.com>
 
-On 03/12/10 15:33, Raymond Yau wrote:
->>> Greetings,
-> 
-> 
->>> There is only a single mic on this netbook. However, the alsa device
->>> shows up as stereo, and the right channel carries an inverted copy of
->>> the left channel.
-> 
+> Thanks Raymond,
+>
+> On 03/12/10 15:33, Raymond Yau wrote:
+> >>> Greetings,
+> >
+> >
+> >>> There is only a single mic on this netbook. However, the alsa device
+> >>> shows up as stereo, and the right channel carries an inverted copy of
+> >>> the left channel.
+> >
+> >
 > http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=59c774ed5ee00e9623a204c3234191d6a6d8cf7a
+>
+> Commitlog was "Add route_policy copy to HDA-Intel.conf for capture
+> Since some digital mics have the phase-inversion problem in one channel,
+> adding both channels for mono stream results in the noise. Use
+> route_policy copy to avoid that situation."
+>
+> As far as I can guess, the commit helps when an application asks to
+> record mono from the stereo device, by copying L rather than summing L+R
+>
+> My machine already has this, however it doesn't really fix the root of
+> the problem.
+>
 
-Commitlog was "Add route_policy copy to HDA-Intel.conf for capture
-Since some digital mics have the phase-inversion problem in one channel,
-adding both channels for mono stream results in the noise. Use
-route_policy copy to avoid that situation."
+https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/639846
 
-As far as I can guess, the commit helps when an application asks to
-record mono from the stereo device, by copying L rather than summing L+R
-
-My machine already has this, however it doesn't really fix the root of
-the problem.
-
-Because the internal mic appears as a stereo device, rather than a mono,
-applications can open it as stereo.
-
-Only later when the resulting signal L+R is sent to a mono output does
-the signal "disappear".
-
-So I'm back to wondering how to force an app (primarily PulseAudio) to
-see the mic as mono?
-
-(I think the external jack is also only mono, at least when used as a
-mic input?)
-
->>> So when the two channels are summed to make a mono (e.g. for
->>> telephony, or playback on mono internal speaker) it appears that there
->>> is no signal.
-> 
->>> Is there a way to "cure" this problem in the driver?  I can think of
->>> * Force internal mic capture to be mono (left only)
->>> * Copy left to right capture
-
-Even in stereo mode!
-
->>> * Invert right capture
->>> but don't know how easy any are to implement.
+The route plugin is only used when the application are alsa 's default
+pcm/ctl device for hda-intel if you fall back to use dmix/dsnoop
 
 
--- 
-Eliot Blennerhassett
-AudioScience Inc.
+pulseaudio is using front device for capturing (i.e. changing PCM Playback
+volume affect pulseaudio recording )
+
+
+>
+> Because the internal mic appears as a stereo device, rather than a mono,
+> applications can open it as stereo.
+>
+> Only later when the resulting signal L+R is sent to a mono output does
+> the signal "disappear".
+>
+> So I'm back to wondering how to force an app (primarily PulseAudio) to
+> see the mic as mono?
+>
+>
+you have to ask PA developer
