@@ -1,14 +1,14 @@
 From: "Olaya, Margarita" <magi.olaya@ti.com>
-Subject: [PATCH v2 0/3] Add Jack support for
-Date: Mon, 6 Dec 2010 18:02:15 -0600
-Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4CFBCB3@dlee06.ent.ti.com>
+Subject: [PATCH v2 2/3] ASoC: sdp4430: Add Jack support
+Date: Mon, 6 Dec 2010 18:02:23 -0600
+Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4CFBCB5@dlee06.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 887DB103962
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 01:02:19 +0100 (CET)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id EF4D410396D
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 01:02:25 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,20 +23,70 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlog
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch series adds the support for headset jack detection
+From: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
 
-v2:
-Include codec patch in the series
+Use jack framework to enable detection for the headset microphone
+and stereo output.
 
-Jorge Eduardo Candelaria (3):
-  ASoC: sdp4430: Enable FM stereo pins
-  ASoC: sdp4430: Add Jack support
-  ASoC: twl6040: Add jack support for headset and handset
+Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
+Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
+---
+ sound/soc/omap/sdp4430.c |   28 ++++++++++++++++++++++++++++
+ 1 files changed, 28 insertions(+), 0 deletions(-)
 
- sound/soc/codecs/twl6040.c |   26 ++++++++++++++++++++++++++
- sound/soc/codecs/twl6040.h |   12 ++++++++++++
- sound/soc/omap/sdp4430.c   |   39 +++++++++++++++++++++++++++++++++++----
- 3 files changed, 73 insertions(+), 4 deletions(-)
-
-Regards,
-Margarita
+diff --git a/sound/soc/omap/sdp4430.c b/sound/soc/omap/sdp4430.c
+index 0c37c51..ca7fb90 100644
+--- a/sound/soc/omap/sdp4430.c
++++ b/sound/soc/omap/sdp4430.c
+@@ -24,6 +24,7 @@
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/soc.h>
++#include <sound/jack.h>
+ 
+ #include <asm/mach-types.h>
+ #include <plat/hardware.h>
+@@ -65,6 +66,21 @@ static struct snd_soc_ops sdp4430_ops = {
+ 	.hw_params = sdp4430_hw_params,
+ };
+ 
++/* Headset jack */
++static struct snd_soc_jack hs_jack;
++
++/*Headset jack detection DAPM pins */
++static struct snd_soc_jack_pin hs_jack_pins[] = {
++	{
++		.pin = "Headset Mic",
++		.mask = SND_JACK_MICROPHONE,
++	},
++	{
++		.pin = "Headset Stereophone",
++		.mask = SND_JACK_HEADPHONE,
++	},
++};
++
+ static int sdp4430_get_power_mode(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+@@ -160,7 +176,19 @@ static int sdp4430_twl6040_init(struct snd_soc_pcm_runtime *rtd)
+ 	snd_soc_dapm_enable_pin(dapm, "Headset Stereophone");
+ 
+ 	ret = snd_soc_dapm_sync(dapm);
++	if (ret)
++		return ret;
++
++	/* Headset jack detection */
++	ret = snd_soc_jack_new(codec, "Headset Jack",
++				SND_JACK_HEADSET, &hs_jack);
++	if (ret)
++		return ret;
++
++	ret = snd_soc_jack_add_pins(&hs_jack, ARRAY_SIZE(hs_jack_pins),
++				hs_jack_pins);
+ 
++	twl6040_hs_jack_detect(codec, &hs_jack, SND_JACK_HEADSET);
+ 	return ret;
+ }
+ 
+-- 
+1.7.0.4
