@@ -1,23 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] ASoC: SAMSUNG: Match spdif
-	source	clock id and asoc platform device
-Date: Tue, 7 Dec 2010 11:19:46 +0000
-Message-ID: <20101207111946.GB10722@sirena.org.uk>
-References: <1291368453-30905-1-git-send-email-sw.youn@samsung.com>
-	<1291369067-31429-1-git-send-email-sw.youn@samsung.com>
-	<20101203114416.GG3182@sirena.org.uk>
-	<AANLkTinw3+t=eVLRUiRhwPA2c_nZ7q7Kfm-QOBmsZLRT@mail.gmail.com>
-	<20101206124611.GA1924@rakim.wolfsonmicro.main>
-	<AANLkTimSDD7xie6CN-D9j_9u4taYy3anwvqQVdwmA1vm@mail.gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: dapm: Add speaker driver widget.
+Date: Tue, 07 Dec 2010 12:34:45 +0000
+Message-ID: <1291725285.3275.14.camel@odin>
+References: <1889FA7136B567478A67D4B0F85B0CCEA4C52E7E@dlee06.ent.ti.com>
+	<20101206224359.GB2862@opensource.wolfsonmicro.com>
+	<1291676132.3281.116.camel@odin>
+	<20101206230948.GH2862@opensource.wolfsonmicro.com>
+	<1291678207.3281.152.camel@odin>
+	(sfid-20101206_233011_917022_3EC062E3)
+	<8C6859A9-36EF-4016-822B-DA67D7147E28@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id A476510381A
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 12:19:47 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <AANLkTimSDD7xie6CN-D9j_9u4taYy3anwvqQVdwmA1vm@mail.gmail.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7161910380F
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 13:34:49 +0100 (CET)
+Received: by wyi11 with SMTP id 11so13314693wyi.38
+	for <alsa-devel@alsa-project.org>; Tue, 07 Dec 2010 04:34:48 -0800 (PST)
+In-Reply-To: <8C6859A9-36EF-4016-822B-DA67D7147E28@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,26 +29,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, Seungwhan Youn <sw.youn@samsung.com>, jassi.brar@samsung.com, lrg@slimlogic.co.uk
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "Olaya, Margarita" <magi.olaya@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 07, 2010 at 11:10:22AM +0900, Jassi Brar wrote:
-> On Mon, Dec 6, 2010 at 9:46 PM, Mark Brown
+On Mon, 2010-12-06 at 23:38 +0000, Mark Brown wrote:
+> On 6 Dec 2010, at 23:30, Liam Girdwood wrote:
+> > On Mon, 2010-12-06 at 23:09 +0000, Mark Brown wrote:
+> >> 
+> 
+> >> Sure, but it's fulfiling the same role in the system - it's just that
+> >> these days a lot more CODECs are pulling speaker drivers directly into
+> >> the CODEC die.  Mostly these have worked well handled as PGAs so it's
+> >> not been an issue.
+> 
+> > In this case as we need to enable the PGA before the driver and disable
+> > the driver before the PGA for pop reduction. Hence the current ordering
+> > needs an addition/refactoring to deal with the newer generation of
+> > CODECs here.
+> 
+> Well, what I'm saying is that...
+> 
+> >> I'd certainly expect to see it handled the same way from a DAPM
+> >> sequencing point of view as it's fulfilling the same role in the system
+> >> (so in the same slot rather than separately as the patch was doing).  Do
+> >> we just need to refactor the existing external widgets to be able to
+> >> exist in either register or GPIO based versions?
+> 
+> ...we don't need to change the ordering at all, we've already got a
+> sequence point for this sort of widget we can use. We should just make
+> the existing speaker and headphone widgets be in terms of one, I think.
+> 
 
-> > In order to do this you need to tell the clock framework about the ASoC
-> > virtual device - once you're doing stuff like that you may as well just
-> > fix the S/PDIF driver to let you do what you need.
+The only minor problem here is that the current sequence point is name
+"snd_soc_dapm_spk" which would seem confusing to haptic/vibra driver
+users. Although, I can live with this....
 
-> Assuming I understand you correctly, the problem still remains of having the
-> S/PDIF driver to setup clock hierarchies -- which is the job of the
-> board init code, IMHO.
-> So until we have proper clock subsystem and board init code to handle
-> such scenarios
-> we have to do that in ASoC machine driver in such hackish way.
-
-It may be that what's needed in the S/PDIF driver is to provide a way to
-get the device for the S/PDIF controller so that the machine driver can
-fiddle with it.  Actually, you can do that anyway as the device will be
-associated with the DAI - the machine driver can just look at dai->dev
-to get the struct device for the S/PDIF controller.
+Liam
