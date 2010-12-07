@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 04/16] ASoC: twl6040: Set default gains
- to minimun value
-Date: Sat, 11 Dec 2010 12:48:54 +0000
-Message-ID: <20101211124854.GG9380@opensource.wolfsonmicro.com>
-References: <1889FA7136B567478A67D4B0F85B0CCEA4E225D3@dlee06.ent.ti.com>
+From: kieran magee <kiergbm@gmail.com>
+Subject: Re: Bug in alsa drivers reported when launching
+	pulseaudio
+Date: Tue, 7 Dec 2010 02:31:25 -0500
+Message-ID: <AANLkTingz+piQv8XWWircFbv-VsN0=9qdRHx9KxuSQ3W@mail.gmail.com>
+References: <AANLkTi=Oeek9Di8bbck=245YYa=YLxfO9pMWmOXb-og4@mail.gmail.com>
+	<AANLkTinF1du57Bk4260UO-od2qLRN2QB3941ybEvCawJ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9442D24335
-	for <alsa-devel@alsa-project.org>; Sat, 11 Dec 2010 13:48:43 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCEA4E225D3@dlee06.ent.ti.com>
+Received: from mail-bw0-f42.google.com (mail-bw0-f42.google.com
+	[209.85.214.42])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4E93D1039C2
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 08:31:27 +0100 (CET)
+Received: by bwz13 with SMTP id 13so11720440bwz.29
+	for <alsa-devel@alsa-project.org>; Mon, 06 Dec 2010 23:31:27 -0800 (PST)
+In-Reply-To: <AANLkTinF1du57Bk4260UO-od2qLRN2QB3941ybEvCawJ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Olaya, Margarita" <magi.olaya@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Daniel Chen <seven.steps@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 10, 2010 at 09:05:35PM -0600, Olaya, Margarita wrote:
-> From: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
-> 
-> Updated default values to improve power consumption.
-> 
-> Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
-> Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
+I'm not sure how this addresses the issue.  Are you saying that I need the
+modules, or that I should revert, or what?
 
-It'd be much more idiomatic to do this by having writes in the driver
-startup path and adding comments to explain why the defaults are being
-changed.  Altering the table with no explanation in the code means that
-someone could quite easily come along later and correct the values back
-to the actual chip defaults, and means that someone could get surprised
-if they write code which assumes these are the actual chip defaults
-later on.
+Thanks for the help,
+-Kieran
+
+On Tue, Dec 7, 2010 at 2:23 AM, Daniel Chen <seven.steps@gmail.com> wrote:
+
+> On Sat, Dec 4, 2010 at 1:54 PM, kieran magee <kiergbm@gmail.com> wrote:
+> > (the system is ubuntu 10.10 kernel 2.6.35-23 )
+>
+> Please read https://wiki.ubuntu.com/Audio/InstallingLinuxAlsaDriverModules
+> .
+>
+> Best,
+> -Dan
+>
