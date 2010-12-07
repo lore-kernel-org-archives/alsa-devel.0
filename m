@@ -1,24 +1,21 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 3/3] ASoC: SAMSUNG: Match spdif source
- clock id and asoc platform device
-Date: Tue, 7 Dec 2010 11:10:22 +0900
-Message-ID: <AANLkTimSDD7xie6CN-D9j_9u4taYy3anwvqQVdwmA1vm@mail.gmail.com>
-References: <1291368453-30905-1-git-send-email-sw.youn@samsung.com>
-	<1291369067-31429-1-git-send-email-sw.youn@samsung.com>
-	<20101203114416.GG3182@sirena.org.uk>
-	<AANLkTinw3+t=eVLRUiRhwPA2c_nZ7q7Kfm-QOBmsZLRT@mail.gmail.com>
-	<20101206124611.GA1924@rakim.wolfsonmicro.main>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Re: Help wanted: emachines em350 internal mic
+Date: Tue, 07 Dec 2010 16:11:59 +1300
+Message-ID: <4CFDA5FF.6060403@audioscience.com>
+References: <AANLkTi=T_5nGv85YE8DcDvyF_HFouh7a-6tOmk58+8EO@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3CAA103827
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 03:10:22 +0100 (CET)
-Received: by fxm15 with SMTP id 15so9787725fxm.38
-	for <alsa-devel@alsa-project.org>; Mon, 06 Dec 2010 18:10:22 -0800 (PST)
-In-Reply-To: <20101206124611.GA1924@rakim.wolfsonmicro.main>
+Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 25EA110394A
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 04:12:05 +0100 (CET)
+Received: from [192.168.36.2]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp3.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0LD100BVKFK15Q10@smtp3.clear.net.nz> for
+	alsa-devel@alsa-project.org; Tue, 07 Dec 2010 16:12:02 +1300 (NZDT)
+In-reply-to: <AANLkTi=T_5nGv85YE8DcDvyF_HFouh7a-6tOmk58+8EO@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,26 +25,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, jassi.brar@samsung.com, Seungwhan Youn <sw.youn@samsung.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 6, 2010 at 9:46 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Sun, Dec 05, 2010 at 12:40:01AM +0900, Jassi Brar wrote:
+Thanks Raymond,
 
->> It's necessary evil ATM.
->> There is no access to SPDIF device in machine code and we need to
->> get/set the clock.
->> So the soc-audio is used as a place-holder.
->
-> In order to do this you need to tell the clock framework about the ASoC
-> virtual device - once you're doing stuff like that you may as well just
-> fix the S/PDIF driver to let you do what you need.
+On 03/12/10 15:33, Raymond Yau wrote:
+>>> Greetings,
+> 
+> 
+>>> There is only a single mic on this netbook. However, the alsa device
+>>> shows up as stereo, and the right channel carries an inverted copy of
+>>> the left channel.
+> 
+> http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=59c774ed5ee00e9623a204c3234191d6a6d8cf7a
 
-Assuming I understand you correctly, the problem still remains of having the
-S/PDIF driver to setup clock hierarchies -- which is the job of the
-board init code, IMHO.
-So until we have proper clock subsystem and board init code to handle
-such scenarios
-we have to do that in ASoC machine driver in such hackish way.
+Commitlog was "Add route_policy copy to HDA-Intel.conf for capture
+Since some digital mics have the phase-inversion problem in one channel,
+adding both channels for mono stream results in the noise. Use
+route_policy copy to avoid that situation."
+
+As far as I can guess, the commit helps when an application asks to
+record mono from the stereo device, by copying L rather than summing L+R
+
+My machine already has this, however it doesn't really fix the root of
+the problem.
+
+Because the internal mic appears as a stereo device, rather than a mono,
+applications can open it as stereo.
+
+Only later when the resulting signal L+R is sent to a mono output does
+the signal "disappear".
+
+So I'm back to wondering how to force an app (primarily PulseAudio) to
+see the mic as mono?
+
+(I think the external jack is also only mono, at least when used as a
+mic input?)
+
+>>> So when the two channels are summed to make a mono (e.g. for
+>>> telephony, or playback on mono internal speaker) it appears that there
+>>> is no signal.
+> 
+>>> Is there a way to "cure" this problem in the driver?  I can think of
+>>> * Force internal mic capture to be mono (left only)
+>>> * Copy left to right capture
+
+Even in stereo mode!
+
+>>> * Invert right capture
+>>> but don't know how easy any are to implement.
+
+
+-- 
+Eliot Blennerhassett
+AudioScience Inc.
