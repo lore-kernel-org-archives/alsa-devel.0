@@ -1,14 +1,16 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: soc-core: Fix null pointer dereference
-Date: Tue,  7 Dec 2010 16:30:38 +0000
-Message-ID: <1291739438-4696-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Anssi Hannula <anssi.hannula@iki.fi>
+Subject: [PATCH] ALSA: hda - Do not wrongly restrict
+	min_channels based on ELD
+Date: Tue,  7 Dec 2010 18:41:35 +0200
+Message-ID: <1291740095-14472-1-git-send-email-anssi.hannula@iki.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 391D3103AB8
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 17:30:40 +0100 (CET)
+Received: from sypressi.dnainternet.net (sypressi.dnainternet.net
+	[83.102.40.135])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2BBE5103A06
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 17:41:53 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,42 +20,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, stable@kernel.org, Jean-Yves Avenard <jyavenard@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-In case the codec driver did not provide a read/write function,
-codec->driver->read|write will be NULL.  Ensure that we use the one
-specified in codec->read|write to avoid oopsing when we access
-the debugfs entries.  This is achieved by using snd_soc_read() and
-snd_soc_write().
+Commit bbbe33900d1f3c added functionality to restrict PCM parameters
+based on ELD info (derived from EDID data) of the audio sink.
 
-Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+However, it wrongly assumes that the bits 0-2 of the first byte of
+CEA Short Audio Descriptors mean a supported number of channels. In
+reality, they mean the maximum number of channels (as per CEA-861-D
+7.5.2). This means that the channel count can only be used to restrict
+max_channels, not min_channels.
+
+Restricting min_channels causes us to deny opening the device in stereo
+mode if the sink only has SADs that declare larger numbers of channels
+(like Primare SP32 AV Processor does).
+
+Fix that by not restricting min_channels based on ELD information.
+
+Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
+Reported-by: Jean-Yves Avenard <jyavenard@gmail.com>
+Tested-by: Jean-Yves Avenard <jyavenard@gmail.com>
+Cc: stable@kernel.org
 ---
- sound/soc/soc-core.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 392d336..ecd9146 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -117,7 +117,7 @@ static ssize_t soc_codec_reg_show(struct snd_soc_codec *codec, char *buf)
- 			 * the register being volatile and the device being
- 			 * powered off.
- 			 */
--			ret = codec->driver->read(codec, i);
-+			ret = snd_soc_read(codec, i);
- 			if (ret >= 0)
- 				count += snprintf(buf + count,
- 						  PAGE_SIZE - count,
-@@ -228,7 +228,7 @@ static ssize_t codec_reg_write_file(struct file *file,
- 		start++;
- 	if (strict_strtoul(start, 16, &value))
- 		return -EINVAL;
--	codec->driver->write(codec, reg, value);
-+	snd_soc_write(codec, reg, value);
- 	return buf_size;
+I think this should go to 2.6.36 stable tree as well. It does not affect
+earlier stable releases.
+
+ sound/pci/hda/hda_eld.c    |    4 ----
+ sound/pci/hda/patch_hdmi.c |    1 -
+ 2 files changed, 0 insertions(+), 5 deletions(-)
+
+diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
+index cb0c23a..47ef8aa 100644
+--- a/sound/pci/hda/hda_eld.c
++++ b/sound/pci/hda/hda_eld.c
+@@ -601,13 +601,10 @@ void hdmi_eld_update_pcm_info(struct hdmi_eld *eld, struct hda_pcm_stream *pcm,
+ 	pcm->rates = 0;
+ 	pcm->formats = 0;
+ 	pcm->maxbps = 0;
+-	pcm->channels_min = -1;
+ 	pcm->channels_max = 0;
+ 	for (i = 0; i < eld->sad_count; i++) {
+ 		struct cea_sad *a = &eld->sad[i];
+ 		pcm->rates |= a->rates;
+-		if (a->channels < pcm->channels_min)
+-			pcm->channels_min = a->channels;
+ 		if (a->channels > pcm->channels_max)
+ 			pcm->channels_max = a->channels;
+ 		if (a->format == AUDIO_CODING_TYPE_LPCM) {
+@@ -635,7 +632,6 @@ void hdmi_eld_update_pcm_info(struct hdmi_eld *eld, struct hda_pcm_stream *pcm,
+ 	/* restrict the parameters by the values the codec provides */
+ 	pcm->rates &= codec_pars->rates;
+ 	pcm->formats &= codec_pars->formats;
+-	pcm->channels_min = max(pcm->channels_min, codec_pars->channels_min);
+ 	pcm->channels_max = min(pcm->channels_max, codec_pars->channels_max);
+ 	pcm->maxbps = min(pcm->maxbps, codec_pars->maxbps);
  }
- 
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index d3e49aa..31df774 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -834,7 +834,6 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
+ 			return -ENODEV;
+ 	} else {
+ 		/* fallback to the codec default */
+-		hinfo->channels_min = codec_pars->channels_min;
+ 		hinfo->channels_max = codec_pars->channels_max;
+ 		hinfo->rates = codec_pars->rates;
+ 		hinfo->formats = codec_pars->formats;
 -- 
-1.7.3.3
+1.7.3
