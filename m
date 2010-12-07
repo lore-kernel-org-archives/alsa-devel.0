@@ -1,15 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Add ADC high pass filter support to
-	WM8994
-Date: Tue,  7 Dec 2010 13:59:19 +0000
-Message-ID: <1291730359-8337-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: dapm: Add speaker driver widget.
+Date: Tue, 07 Dec 2010 14:01:24 +0000
+Message-ID: <1291730484.3275.54.camel@odin>
+References: <1889FA7136B567478A67D4B0F85B0CCEA4C52E7E@dlee06.ent.ti.com>
+	<20101206224359.GB2862@opensource.wolfsonmicro.com>
+	<1291676132.3281.116.camel@odin>
+	<20101206230948.GH2862@opensource.wolfsonmicro.com>
+	<1291678207.3281.152.camel@odin>
+	<8C6859A9-36EF-4016-822B-DA67D7147E28@opensource.wolfsonmicro.com>
+	<1291725285.3275.14.camel@odin>
+	<20101207123600.GD4698@rakim.wolfsonmicro.main>
+	<1291725988.3275.22.camel@odin>
+	<20101207130914.GF4698@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BB15C103A6A
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 14:59:31 +0100 (CET)
+Received: from mail-ew0-f42.google.com (mail-ew0-f42.google.com
+	[209.85.215.42])
+	by alsa0.perex.cz (Postfix) with ESMTP id BA11F103A72
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 15:01:27 +0100 (CET)
+Received: by ewy1 with SMTP id 1so7490691ewy.29
+	for <alsa-devel@alsa-project.org>; Tue, 07 Dec 2010 06:01:27 -0800 (PST)
+In-Reply-To: <20101207130914.GF4698@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,54 +32,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Uk Kim <w0806.kim@samsung.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "Olaya, Margarita" <magi.olaya@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Uk Kim <w0806.kim@samsung.com>
----
- sound/soc/codecs/wm8994.c |   22 ++++++++++++++++++++++
- 1 files changed, 22 insertions(+), 0 deletions(-)
+On Tue, 2010-12-07 at 13:09 +0000, Mark Brown wrote:
+> On Tue, Dec 07, 2010 at 12:46:28PM +0000, Liam Girdwood wrote:
+> 
+> > Ok, but by sharing the number we take away some flexibility in the
+> > sequence ordering. Say something has to be done in the machine driver
+> > _after_ the spk/haptic/vibra driver is enabled in the CODEC driver ?
+> 
+> You can say that for pretty much all of the widgets, though, including
+> the existing speaker and headphone widgets.  
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index b37e95c..78b96f6 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -310,6 +310,19 @@ static const char *sidetone_hpf_text[] = {
- static const struct soc_enum sidetone_hpf =
- 	SOC_ENUM_SINGLE(WM8994_SIDETONE, 7, 7, sidetone_hpf_text);
- 
-+static const char *adc_hpf_text[] = {
-+	"HiFi", "Voice 1", "Voice 2", "Voice 3"
-+};
-+
-+static const struct soc_enum aif1adc1_hpf =
-+	SOC_ENUM_SINGLE(WM8994_AIF1_ADC1_FILTERS, 13, 4, adc_hpf_text);
-+
-+static const struct soc_enum aif1adc2_hpf =
-+	SOC_ENUM_SINGLE(WM8994_AIF1_ADC2_FILTERS, 13, 4, adc_hpf_text);
-+
-+static const struct soc_enum aif2adc_hpf =
-+	SOC_ENUM_SINGLE(WM8994_AIF2_ADC_FILTERS, 13, 4, adc_hpf_text);
-+
- static const DECLARE_TLV_DB_SCALE(aif_tlv, 0, 600, 0);
- static const DECLARE_TLV_DB_SCALE(digital_tlv, -7200, 75, 1);
- static const DECLARE_TLV_DB_SCALE(st_tlv, -3600, 300, 0);
-@@ -812,6 +825,15 @@ SOC_SINGLE_TLV("DAC2 Left Sidetone Volume", WM8994_DAC2_MIXER_VOLUMES,
- SOC_ENUM("Sidetone HPF Mux", sidetone_hpf),
- SOC_SINGLE("Sidetone HPF Switch", WM8994_SIDETONE, 6, 1, 0),
- 
-+SOC_ENUM("AIF1ADC1 HPF Mode", aif1adc1_hpf),
-+SOC_DOUBLE("AIF1ADC1 HPF Switch", WM8994_AIF1_ADC1_FILTERS, 12, 11, 1, 0),
-+
-+SOC_ENUM("AIF1ADC2 HPF Mode", aif1adc2_hpf),
-+SOC_DOUBLE("AIF1ADC2 HPF Switch", WM8994_AIF1_ADC2_FILTERS, 12, 11, 1, 0),
-+
-+SOC_ENUM("AIF2ADC HPF Mode", aif2adc_hpf),
-+SOC_DOUBLE("AIF2ADC HPF Switch", WM8994_AIF2_ADC_FILTERS, 12, 11, 1, 0),
-+
- SOC_DOUBLE_R_TLV("DAC1 Volume", WM8994_DAC1_LEFT_VOLUME,
- 		 WM8994_DAC1_RIGHT_VOLUME, 1, 96, 0, digital_tlv),
- SOC_DOUBLE_R("DAC1 Switch", WM8994_DAC1_LEFT_VOLUME,
+You can only really say for the last widget in the sequence.
+
+> I'd be a bit surprised if
+> you had anything afterwards in this case, a driver is generally the high
+> power stage wired directly to the transducer.
+> 
+> > I dont actually see any major issue of using a new number here unless
+> > you have it reserved for something else ?
+> 
+> Adding a new number and renumbering all the subsequent ones wouldn't be
+> so bad, the patch wasn't doing that.
+
+@@ -61,6 +61,7 @@ static int dapm_up_seq[] = {
+        [snd_soc_dapm_mixer] = 7,
+        [snd_soc_dapm_mixer_named_ctl] = 7,
+        [snd_soc_dapm_pga] = 8,
++       [snd_soc_dapm_drv] = 9,
+        [snd_soc_dapm_adc] = 9,
+        [snd_soc_dapm_hp] = 10,
+        [snd_soc_dapm_spk] = 10,
+
+This patch shares the ADC sequence number for the DRV on the power ON.
+
+@@ -72,6 +73,7 @@ static int dapm_down_seq[] = {
+        [snd_soc_dapm_adc] = 1,
+        [snd_soc_dapm_hp] = 2,
+        [snd_soc_dapm_spk] = 2,
++       [snd_soc_dapm_drv] = 3,
+        [snd_soc_dapm_pga] = 4,
+        [snd_soc_dapm_mixer_named_ctl] = 5,
+        [snd_soc_dapm_mixer] = 5,
+
+and inserts a new number as you suggested for power OFF. Imo, nothing
+wrong with this approach and since I don't have all day to discuss, Magi
+will change both the sequence numbers to use the same number as
+snd_soc_dapm_spk.
+
+Liam
 -- 
-1.7.1
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
