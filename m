@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] ASoC: EDB93xx machine sound driver
-Date: Wed, 8 Dec 2010 13:36:23 +0000
-Message-ID: <20101208133622.GG16418@rakim.wolfsonmicro.main>
-References: <1291809834.31916.5.camel@r60e>
+Subject: Re: [PATCH 2/3] ASoC: CS4271 codec support
+Date: Wed, 8 Dec 2010 13:39:35 +0000
+Message-ID: <20101208133935.GI16418@rakim.wolfsonmicro.main>
+References: <1291809772.31916.4.camel@r60e>
+	<20101208130720.GB2716@pulham.picochip.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4F5ED244C9
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2010 14:36:24 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C7053244AC
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2010 14:39:36 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1291809834.31916.5.camel@r60e>
+In-Reply-To: <20101208130720.GB2716@pulham.picochip.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,19 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alexander <subaparts@yandex.ru>
-Cc: alsa-devel@alsa-project.org, ryan@bluewatersys.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: Jamie Iles <jamie@jamieiles.com>
+Cc: alsa-devel@alsa-project.org, Alexander <subaparts@yandex.ru>, ryan@bluewatersys.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 08, 2010 at 03:03:54PM +0300, Alexander wrote:
-> From: Alexander Sverdlin <subaparts@yandex.ru>
-> 
-> Added support for EDB93xx sound with CS4271 codec.
-> Features:
-> - Playback, Capture
-> - Sample rates from 8kHz to 96kHz tested
-> Limitations:
-> - Depends on ALSA auto sample format conversion
-> - No DAPM support
+On Wed, Dec 08, 2010 at 01:07:20PM +0000, Jamie Iles wrote:
 
-This looks good.
+> Doesn't the dependency on SND_SOC_I2C_AND_SPI mean that you will always have 
+> I2C and SPI_MASTER?
+
+It's not a dependency for the CODEC driver at all.  It means that when
+SND_SOC_ALL_CODECS is selecting the module it will ensure that a
+consistent combination of options is chosen but it is unrelated to use
+in machine drivers and doesn't force both to be enabled even when it is
+selected.
