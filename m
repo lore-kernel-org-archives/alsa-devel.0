@@ -1,14 +1,14 @@
 From: "Olaya, Margarita" <magi.olaya@ti.com>
-Subject: [PATCH v3 0/3] Add Jack support for
-Date: Wed, 8 Dec 2010 10:55:02 -0600
-Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4CFC925@dlee06.ent.ti.com>
+Subject: [PATCH v3 1/3] ASoC: sdp4430: Enable FM stereo pins
+Date: Wed, 8 Dec 2010 10:55:05 -0600
+Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4CFC926@dlee06.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id DE7DC10383A
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2010 17:55:07 +0100 (CET)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 16B5610383A
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2010 17:55:09 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,18 +23,56 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlog
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch series adds the support for headset jack detection
+From: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
 
-v3:
-Reorder patches to avoid building issues.
-Really add the jack detection in the codec
+Add FM stereo pins to the machine driver and add them as a
+dapm widget.
 
-Jorge Eduardo Candelaria (3):
-  ASoC: sdp4430: Enable FM stereo pins
-  ASoC: twl6040: Add jack support for headset and handset
-  ASoC: sdp4430: Add Jack support
+Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
+Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/omap/sdp4430.c |   11 +++++++----
+ 1 files changed, 7 insertions(+), 4 deletions(-)
 
- sound/soc/codecs/twl6040.c |   42 ++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/twl6040.h |   12 ++++++++++++
- sound/soc/omap/sdp4430.c   |   39 +++++++++++++++++++++++++++++++++++----
- 3 files changed, 89 insertions(+), 4 deletions(-)
+diff --git a/sound/soc/omap/sdp4430.c b/sound/soc/omap/sdp4430.c
+index ebbd62f..0c37c51 100644
+--- a/sound/soc/omap/sdp4430.c
++++ b/sound/soc/omap/sdp4430.c
+@@ -101,6 +101,7 @@ static const struct snd_soc_dapm_widget sdp4430_twl6040_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+ 	SND_SOC_DAPM_HP("Headset Stereophone", NULL),
+ 	SND_SOC_DAPM_SPK("Earphone Spk", NULL),
++	SND_SOC_DAPM_INPUT("Aux/FM Stereo In"),
+ };
+ 
+ static const struct snd_soc_dapm_route audio_map[] = {
+@@ -123,6 +124,10 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 
+ 	/* Earphone speaker */
+ 	{"Earphone Spk", NULL, "EP"},
++
++	/* Aux/FM Stereo In: AFML, AFMR */
++	{"AFML", NULL, "Aux/FM Stereo In"},
++	{"AFMR", NULL, "Aux/FM Stereo In"},
+ };
+ 
+ static int sdp4430_twl6040_init(struct snd_soc_pcm_runtime *rtd)
+@@ -149,13 +154,11 @@ static int sdp4430_twl6040_init(struct snd_soc_pcm_runtime *rtd)
+ 	/* SDP4430 connected pins */
+ 	snd_soc_dapm_enable_pin(dapm, "Ext Mic");
+ 	snd_soc_dapm_enable_pin(dapm, "Ext Spk");
++	snd_soc_dapm_enable_pin(dapm, "AFML");
++	snd_soc_dapm_enable_pin(dapm, "AFMR");
+ 	snd_soc_dapm_enable_pin(dapm, "Headset Mic");
+ 	snd_soc_dapm_enable_pin(dapm, "Headset Stereophone");
+ 
+-	/* TWL6040 not connected pins */
+-	snd_soc_dapm_nc_pin(dapm, "AFML");
+-	snd_soc_dapm_nc_pin(dapm, "AFMR");
+-
+ 	ret = snd_soc_dapm_sync(dapm);
+ 
+ 	return ret;
+-- 
+1.7.0.4
