@@ -1,22 +1,20 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH] ALSA: hda - Do not wrongly restrict
- min_channels based on ELD
-Date: Wed, 08 Dec 2010 03:30:41 +0200
-Message-ID: <4CFEDFC1.90305@iki.fi>
-References: <74CDBE0F657A3D45AFBB94109FB122FF030E070176@HQMAIL01.nvidia.com>
-	<4CFE6A47.5050404@iki.fi>
-	<74CDBE0F657A3D45AFBB94109FB122FF030E07019B@HQMAIL01.nvidia.com>
-	<4CFE6F4F.9000007@iki.fi>
-	<74CDBE0F657A3D45AFBB94109FB122FF030E0701B8@HQMAIL01.nvidia.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Help wanted: emachines em350 internal mic
+Date: Wed, 8 Dec 2010 12:13:06 +0800
+Message-ID: <AANLkTim4X-=AZtujs20QwDbaFC5CbuRSdFiWK6z3rV0E@mail.gmail.com>
+References: <AANLkTi=T_5nGv85YE8DcDvyF_HFouh7a-6tOmk58+8EO@mail.gmail.com>
+	<4CFDA5FF.6060403@audioscience.com> <s5hy681ftoj.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sypressi.dnainternet.net (sypressi.dnainternet.net
-	[83.102.40.135])
-	by alsa0.perex.cz (Postfix) with ESMTP id 88FEF103ACD
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2010 02:30:46 +0100 (CET)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF030E0701B8@HQMAIL01.nvidia.com>
+Received: from mail-ew0-f42.google.com (mail-ew0-f42.google.com
+	[209.85.215.42])
+	by alsa0.perex.cz (Postfix) with ESMTP id C0E091037EE
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2010 05:13:08 +0100 (CET)
+Received: by ewy1 with SMTP id 1so592715ewy.29
+	for <alsa-devel@alsa-project.org>; Tue, 07 Dec 2010 20:13:08 -0800 (PST)
+In-Reply-To: <s5hy681ftoj.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,72 +24,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jean-Yves Avenard <jyavenard@gmail.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 07.12.2010 19:52, Stephen Warren wrote:
-> Anssi Hannula wrote:
->>
->> On 07.12.2010 19:26, Stephen Warren wrote:
->>> Anssi Hannula wrote:
->>>>
->>>> On 07.12.2010 18:58, Stephen Warren wrote:
->>>>> Anssi Hannula wrote:
->>>>>> Commit bbbe33900d1f3c added functionality to restrict PCM parameters
->>>>>> based on ELD info (derived from EDID data) of the audio sink.
->>>>>>
->>>>>> However, it wrongly assumes that the bits 0-2 of the first byte of
->>>>>> CEA Short Audio Descriptors mean a supported number of channels. In
->>>>>> reality, they mean the maximum number of channels (as per CEA-861-D
->>>>>> 7.5.2). This means that the channel count can only be used to restrict
->>>>>> max_channels, not min_channels.
->>>>>>
->>>>>> Restricting min_channels causes us to deny opening the device in stereo
->>>>>> mode if the sink only has SADs that declare larger numbers of channels
->>>>>> (like Primare SP32 AV Processor does).
->>>>>>
->>>>>> Fix that by not restricting min_channels based on ELD information.
->> [...]
->>>>>> Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
->>>>>> Reported-by: Jean-Yves Avenard <jyavenard@gmail.com>
->>>>>> Tested-by: Jean-Yves Avenard <jyavenard@gmail.com>
->>>>>> Cc: stable@kernel.org
->> [...]
->>>>>>  	pcm->channels_max = min(pcm->channels_max, codec_pars->channels_max);
->>>>>>  	pcm->maxbps = min(pcm->maxbps, codec_pars->maxbps);
->>>>>>  }
->>>>>> diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
->>>>>> index d3e49aa..31df774 100644
->>>>>> --- a/sound/pci/hda/patch_hdmi.c
->>>>>> +++ b/sound/pci/hda/patch_hdmi.c
->>>>>> @@ -834,7 +834,6 @@ static int hdmi_pcm_open(struct hda_pcm_stream *hinfo,
->>>>>>  			return -ENODEV;
->>>>>>  	} else {
->>>>>>  		/* fallback to the codec default */
->>>>>> -		hinfo->channels_min = codec_pars->channels_min;
->>>>>
->>>>> Isn't this still required to default the value?
->>>>
->>>> Not AFAICS. By default *hinfo has the codec provided parameters, and if
->>>> we never update it from the ELD info, we don't need to restore it either.
->>>
->>> OK. Doesn't the same argument apply to the following 3 lines too then?
->>
->> Nope. hinfo is persistent across open() calls, so we need to reset them
->> if they were ever updated from ELD earlier.
->>
->>>>>>  		hinfo->channels_max = codec_pars->channels_max;
->>>>>>  		hinfo->rates = codec_pars->rates;
->>>>>>  		hinfo->formats = codec_pars->formats;
-> 
-> OK. It seems a little risky to assume that hdmi_eld_update_pcm_info will
-> never touch channels_min, but it's certainly true after this patch, so the
-> patch will function correctly.
-> 
-> Sorry for the confusion/noise.
+2010/12/8 Takashi Iwai <tiwai@suse.de>
 
-No problem, some noise is much more preferable than possible brokenness :)
+> At Tue, 07 Dec 2010 16:11:59 +1300,
+> Eliot Blennerhassett wrote:
+> >
+> > Thanks Raymond,
+> >
+> > On 03/12/10 15:33, Raymond Yau wrote:
+> > >>> Greetings,
+> > >
+> > >
+> > >>> There is only a single mic on this netbook. However, the alsa device
+> > >>> shows up as stereo, and the right channel carries an inverted copy of
+> > >>> the left channel.
+> > >
+> > >
+> http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=59c774ed5ee00e9623a204c3234191d6a6d8cf7a
+> >
+> > Commitlog was "Add route_policy copy to HDA-Intel.conf for capture
+> > Since some digital mics have the phase-inversion problem in one channel,
+> > adding both channels for mono stream results in the noise. Use
+> > route_policy copy to avoid that situation."
+> >
+> > As far as I can guess, the commit helps when an application asks to
+> > record mono from the stereo device, by copying L rather than summing L+R
+> >
+> > My machine already has this, however it doesn't really fix the root of
+> > the problem.
+>
 
--- 
-Anssi Hannula
+
+
+> >
+> > Because the internal mic appears as a stereo device, rather than a mono,
+> > applications can open it as stereo.
+> >
+> > Only later when the resulting signal L+R is sent to a mono output does
+> > the signal "disappear".
+> >
+>
+
+In theory , this should be (L+R)/2 for those stereo mic without phase
+inversion to prevent clipping occur when sent to a mono output
+
+
+> > So I'm back to wondering how to force an app (primarily PulseAudio) to
+> > see the mic as mono?
+>
+> Via pulse configuration?
+>
+
+ PA server use SND_PCM_NO_AUTO_CHANNELS , any plugin which defined in the
+device string in the profile has no effect if your hardware does not support
+1 channel
+
+
+so you need PA to provide downmixing option for recording mono from stereo
+mic
+1) (Left+Right)/2
+2) Left
+3) Right
