@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: EP93xx I2S and PCM fixes
-Date: Wed, 8 Dec 2010 12:46:37 +0000
-Message-ID: <20101208124637.GD16418@rakim.wolfsonmicro.main>
-References: <1291809693.31916.2.camel@r60e>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] Fix possible sprintf overrun
+	in	snd_pcm_hw_open
+Date: Wed, 08 Dec 2010 13:56:01 +0100
+Message-ID: <4CFF8061.1040802@canonical.com>
+References: <4CFF5AF3.5030103@canonical.com> <4CFF762A.9080501@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4A37A103B27
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2010 13:46:39 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1291809693.31916.2.camel@r60e>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 866F32449F
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2010 13:56:07 +0100 (CET)
+In-Reply-To: <4CFF762A.9080501@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,33 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alexander <subaparts@yandex.ru>
-Cc: alsa-devel@alsa-project.org, ryan@bluewatersys.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 08, 2010 at 03:01:33PM +0300, Alexander wrote:
-
-> Changes to I2S code:
-
-This should be split into a patch series, there's a bunch of changes
-here that are pretty much unrelated.  Having everything in one patch
-makes review harder as more changes have to be thought about
-simultaneously and means that the different changes get tied up with
-each other and a problem with one can hold up others.
-
-> - MCLK is turned on on driver probe. This is done for several codecs that need this for 
->   registers access (like CS4271).
-
-This seems like a retrograde step for systems that don't need it.  Would
-it not be better to make this configurable by the machine driver?
-
-> - SCLK and LRCLK rates are corrected, assuming we always send 32 bits * 2 channels to codec.
-
-What was the problem?
-
-> - Formats list shortened to just S32_LE, this makes all the DMA transactions right,
->   while ALSA will do all sample format translation for us.
-
-Again, what was the actual problem?  32 bit samples seem very large if
-the hardware is capable of other formats, especially given that things
-like MP3 tend to produce 16 bit data.
+T24gMjAxMC0xMi0wOCAxMzoxMiwgQ2xlbWVucyBMYWRpc2NoIHdyb3RlOgo+IERhdmlkIEhlbm5p
+bmdzc29uIHdyb3RlOgo+PiBQb3NzaWJsZSBidWZmZXIgb3ZlcnJ1biBpZiB0aGUgbnVtYmVyIG9m
+ICJjYXJkIiBhbmQgImRldmljZSIKPj4gYXJlIGFic3VyZGx5IGhpZ2gsIGVzcGVjaWFsbHkgb24g
+NjQtYml0IHBsYXRmb3Jtcy4KPgo+IFRoZSBzaXplIG9mICJpbnQiIGlzIDMyIGJpdHMgZXZlbiBv
+biA2NC1iaXQgcGxhdGZvcm1zLgoKU2VlbXMgeW91J3JlIHJpZ2h0LCB0aGVuIEkgbGVhcm5lZCBz
+b21ldGhpbmcgbmV3IHRvZGF5IDotKQoKQWx0aG91Z2ggdGhpcyBtaWdodCBiZSBjb21waWxlciBk
+ZXBlbmRlbnQsIGFuZCBzb21lIGV4b3RpYyBwbGF0Zm9ybSAKbWlnaHQgZGVjaWRlIG90aGVyd2lz
+ZSBpbiB0aGUgZnV0dXJlPwoKPiBBcyBmYXIgYXMgSSBjYW4gc2VlLCB0aGVyZSBpcyBubyBidWcu
+CgpFdmVuIGZvciAzMi1iaXQgcGxhdGZvcm1zLCB5b3Ugd291bGQgc3RpbGwgb3ZlcnJ1biB0aGUg
+YnVmZmVyIGlmIHlvdSBzZXQgCmNhcmQgPSBkZXZpY2UgPSDiiJIyMTQ3NDgzNjQ3LgoKLS0gCkRh
+dmlkIEhlbm5pbmdzc29uLCBDYW5vbmljYWwgTHRkLgpodHRwOi8vbGF1bmNocGFkLm5ldC9+ZGl3
+aWMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
