@@ -1,16 +1,19 @@
-From: Jassi Brar <jassi.brar@samsung.com>
-Subject: [PATCHv2] ASoC: WM8580: Debug BCLK and sample size
-Date: Wed,  8 Dec 2010 16:50:24 +0900
-Message-ID: <1291794624-13982-1-git-send-email-jassi.brar@samsung.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCHv2] ASoC: WM8580: Debug BCLK and sample size
+Date: Wed, 8 Dec 2010 08:06:36 +0000
+Message-ID: <A21D77C9-C87A-40DD-BD8A-3A2166B34752@opensource.wolfsonmicro.com>
 References: <1291717387-11961-1-git-send-email-jassi.brar@samsung.com>
-Mime-Version: 1.0
+	<1291794624-13982-1-git-send-email-jassi.brar@samsung.com>
+	(sfid-20101208_080432_329121_B86440D6)
+Mime-Version: 1.0 (Apple Message framework v1082)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5C2D0103AEB
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2010 09:04:29 +0100 (CET)
-In-Reply-To: <1291717387-11961-1-git-send-email-jassi.brar@samsung.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 47116103AF3
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2010 09:06:46 +0100 (CET)
+In-Reply-To: <1291794624-13982-1-git-send-email-jassi.brar@samsung.com>
+	(sfid-20101208_080432_329121_B86440D6)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,40 +23,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: sbkim73@samsung.com, kgene.kim@samsung.com, broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
+To: Jassi Brar <jassi.brar@samsung.com>
+Cc: sbkim73@samsung.com, alsa-devel@alsa-project.org, kgene.kim@samsung.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-In case of SNDRV_PCM_FORMAT_S32_LE, we need to set
-WM8580_AIF_LENGTH_32, rather than WM8580_AIF_LENGTH_24.
-Also, the BCLK has to be 64fs, for sample size of 20, 24 and 32 bits.
+On 8 Dec 2010, at 07:50, Jassi Brar wrote:
 
-Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
----
- sound/soc/codecs/wm8580.c |    5 +----
- 1 files changed, 1 insertions(+), 4 deletions(-)
+> In case of SNDRV_PCM_FORMAT_S32_LE, we need to set
+> WM8580_AIF_LENGTH_32, rather than WM8580_AIF_LENGTH_24.
+> Also, the BCLK has to be 64fs, for sample size of 20, 24 and 32 bits.
+> 
+> Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 
-diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
-index cb7765f..6296946 100644
---- a/sound/soc/codecs/wm8580.c
-+++ b/sound/soc/codecs/wm8580.c
-@@ -491,16 +491,13 @@ static int wm8580_paif_hw_params(struct snd_pcm_substream *substream,
- 		paifa |= 0x8;
- 		break;
- 	case SNDRV_PCM_FORMAT_S20_3LE:
--		paifa |= 0x10;
- 		paifb |= WM8580_AIF_LENGTH_20;
- 		break;
- 	case SNDRV_PCM_FORMAT_S24_LE:
--		paifa |= 0x10;
- 		paifb |= WM8580_AIF_LENGTH_24;
- 		break;
- 	case SNDRV_PCM_FORMAT_S32_LE:
--		paifa |= 0x10;
--		paifb |= WM8580_AIF_LENGTH_24;
-+		paifb |= WM8580_AIF_LENGTH_32;
- 		break;
- 	default:
- 		return -EINVAL;
--- 
-1.6.2.5
+The original version of this patch was already applied, though an
+incremental patch dropping the |= 0 would be nice.
