@@ -1,17 +1,20 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH] ALSA: hda - Reset sample sizes and
- max	bitrates when reading ELD
-Date: Tue, 07 Dec 2010 22:21:57 +0200
-Message-ID: <4CFE9765.40108@iki.fi>
-References: <1291749563-6942-1-git-send-email-anssi.hannula@iki.fi>
+From: Seungwhan Youn <claude.youn@gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: SAMSUNG: Fix initial return value
+Date: Wed, 8 Dec 2010 10:00:04 +0900
+Message-ID: <AANLkTin8xrxvGTKe+X_B_FDQueUJ8DC8=vPvsxZH0B1w@mail.gmail.com>
+References: <1291368453-30905-1-git-send-email-sw.youn@samsung.com>
+	<20101203164225.GY859@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from saarni.dnainternet.net (saarni.dnainternet.net [83.102.40.136])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9C00B103A26
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 21:22:01 +0100 (CET)
-In-Reply-To: <1291749563-6942-1-git-send-email-anssi.hannula@iki.fi>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 92C1A103830
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2010 02:00:05 +0100 (CET)
+Received: by wyi11 with SMTP id 11so549649wyi.38
+	for <alsa-devel@alsa-project.org>; Tue, 07 Dec 2010 17:00:04 -0800 (PST)
+In-Reply-To: <20101203164225.GY859@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,61 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, jassi.brar@samsung.com, Seungwhan Youn <sw.youn@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 07.12.2010 21:19, Anssi Hannula wrote:
-> When a new HDMI/DP device is plugged in, hdmi_update_short_audio_desc()
-> is called for every SAD (Short Audio Descriptor) in the ELD data. For
-> LPCM coding type SAD defines the supported sample sizes. For several
-> other coding types (such as AC-3), a maximum bitrate is defined.
-> 
-> The maximum bitrate and sample size fields are not always cleared.
-> Therefore, if a device is unplugged and a different one is plugged in,
-> and the coding types of some SAD positions differ between the devices,
-> the old max_bitrate or sample_bits values will persist if the new SADs
-> do not define those values.
-> 
-> The leftover max_bitrate and sample_bits do not cause any issues other
-> than wrongly showing up in eld#X.Y procfs file and kernel log.
-
-Actually, only max_bitrate will be shown there, the coding type seems to
-be checked for LPCM before outputting sample_bits into eld#X.Y or log.
-
-It is still probably better to clear that value as well, though.
-
-> Fix that by always clearing sample_bits and max_bitrate when reading
-> SADs.
-> 
-> Signed-off-by: Anssi Hannula <anssi.hannula@iki.fi>
-> ---
->  sound/pci/hda/hda_eld.c |    4 +++-
->  1 files changed, 3 insertions(+), 1 deletions(-)
-> 
-> diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
-> index 009031f..4a66347 100644
-> --- a/sound/pci/hda/hda_eld.c
-> +++ b/sound/pci/hda/hda_eld.c
-> @@ -189,6 +189,9 @@ static void hdmi_update_short_audio_desc(struct cea_sad *a,
->  	a->channels = GRAB_BITS(buf, 0, 0, 3);
->  	a->channels++;
->  
-> +	a->sample_bits = 0;
-> +	a->max_bitrate = 0;
-> +
->  	a->format = GRAB_BITS(buf, 0, 3, 4);
->  	switch (a->format) {
->  	case AUDIO_CODING_TYPE_REF_STREAM_HEADER:
-> @@ -198,7 +201,6 @@ static void hdmi_update_short_audio_desc(struct cea_sad *a,
->  
->  	case AUDIO_CODING_TYPE_LPCM:
->  		val = GRAB_BITS(buf, 2, 0, 3);
-> -		a->sample_bits = 0;
->  		for (i = 0; i < 3; i++)
->  			if (val & (1 << i))
->  				a->sample_bits |= cea_sample_sizes[i + 1];
-
-
--- 
-Anssi Hannula
+T24gU2F0LCBEZWMgNCwgMjAxMCBhdCAxOjQyIEFNLCBNYXJrIEJyb3duCjxicm9vbmllQG9wZW5z
+b3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gRnJpLCBEZWMgMDMsIDIwMTAgYXQg
+MDY6Mjc6MzNQTSArMDkwMCwgU2V1bmd3aGFuIFlvdW4gd3JvdGU6Cj4+IFRoaXMgcGF0Y2ggZml4
+ZWQgaW50aWFsIHJldHVybiB2YWx1ZSB0byBiZSBhICcwJyBhcyBhc3VjY2VzcyBvbgo+PiBzZXRf
+YXVkaW9fY2xvY2tfaGVpcmFjaHkoKS4gVGhpcyBhdm9pZHMgdW5pbnRlbmRlZCBlcnJvciBvbiBp
+bml0aWFsaXplLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBTZXVuZ3doYW4gWW91biA8c3cueW91bkBz
+YW1zdW5nLmNvbT4KPj4gLS0tCj4+IMKgc291bmQvc29jL3MzYzI0eHgvc21ka19zcGRpZi5jIHwg
+wqAgwqAyICstCj4KPiBDb3VsZCB5b3UgcmVnZW5lcmF0ZSBhZ2FpbnN0IGN1cnJlbnQgZm9yLTIu
+Ni4zOCBwbGVhc2U/IMKgVGhlIG1vdmUgdG8gdGhlCj4gU2Ftc3VuZyBkaXJlY3RvcnkgbWVhbnMg
+dGhpcyB3b24ndCBhcHBseSBhbnkgbW9yZS4KCklmIHRoZXJlIGFyZSBzb21ldGhpbmcgbW9yZSBu
+ZWVkZWQgdG8gYWNjZXB0IHRoZXNlIDIgcGF0Y2hlcyBmb3IKMi42LjM3LCBwbGVhc2UgbGV0IG1l
+IGtub3cuCgpCUnMsCkNsYXVkZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
