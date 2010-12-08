@@ -1,19 +1,13 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: SAMSUNG: Fix initial return	value
-Date: Wed, 8 Dec 2010 10:00:09 +0000
-Message-ID: <20101208100009.GA22148@sirena.org.uk>
-References: <1291368453-30905-1-git-send-email-sw.youn@samsung.com>
-	<20101203164225.GY859@rakim.wolfsonmicro.main>
-	<AANLkTin8xrxvGTKe+X_B_FDQueUJ8DC8=vPvsxZH0B1w@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] Fix possible sprintf overrun in snd_pcm_hw_open
+Date: Wed, 08 Dec 2010 11:16:19 +0100
+Message-ID: <4CFF5AF3.5030103@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------080408060601020802060106"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 877F42444E
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2010 11:00:11 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <AANLkTin8xrxvGTKe+X_B_FDQueUJ8DC8=vPvsxZH0B1w@mail.gmail.com>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id D9A53243FE
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2010 11:16:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +17,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Seungwhan Youn <claude.youn@gmail.com>
-Cc: alsa-devel@alsa-project.org, Seungwhan Youn <sw.youn@samsung.com>, jassi.brar@samsung.com, lrg@slimlogic.co.uk
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 08, 2010 at 10:00:04AM +0900, Seungwhan Youn wrote:
+This is a multi-part message in MIME format.
+--------------080408060601020802060106
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> If there are something more needed to accept these 2 patches for
-> 2.6.37, please let me know.
+I spotted this while reading code a few weeks ago, and I ran it through 
+the Ubuntu security team just to be sure.
+They decided it was not needing any security embargo or similar, so here 
+comes the patch.
 
-You'd need to at least resubmit against 2.6.37 but especially with the
-second patch I'm not sure there's any urgency - the second patch is just
-a minor code cleanup and has no practical effect.
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
+
+--------------080408060601020802060106
+Content-Type: text/x-patch;
+ name="0001-Fix-possible-sprintf-overrun-in-snd_pcm_hw_open.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-Fix-possible-sprintf-overrun-in-snd_pcm_hw_open.patch"
+
+>From 3333d9bb8d8f9cc95f9dbf68d0a703a4e832a948 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Wed, 8 Dec 2010 11:06:59 +0100
+Subject: [PATCH] Fix possible sprintf overrun in snd_pcm_hw_open
+
+BugLink: http://launchpad.net/bugs/668487
+
+Possible buffer overrun if the number of "card" and "device"
+are absurdly high, especially on 64-bit platforms.
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ src/pcm/pcm_hw.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
+index 9d243d5..ce74ad4 100644
+--- a/src/pcm/pcm_hw.c
++++ b/src/pcm/pcm_hw.c
+@@ -1270,7 +1270,7 @@ int snd_pcm_hw_open(snd_pcm_t **pcmp, const char *name,
+ 		SNDERR("invalid stream %d", stream);
+ 		return -EINVAL;
+ 	}
+-	sprintf(filename, filefmt, card, device);
++	snprintf(filename, sizeof(filename), filefmt, card, device);
+ 
+       __again:
+       	if (attempt++ > 3) {
+-- 
+1.7.1
+
+
+--------------080408060601020802060106
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------080408060601020802060106--
