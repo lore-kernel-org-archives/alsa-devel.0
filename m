@@ -1,15 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Fix widgets for WM8994/58 AIF2 source
-	control
-Date: Wed,  8 Dec 2010 13:50:25 +0000
-Message-ID: <1291816225-21214-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 2/2] ASoC: tlv320dac33: Move DACL/R power
+	on to PGA widget
+Date: Wed, 8 Dec 2010 15:52:36 +0200
+Message-ID: <201012081552.37049.peter.ujfalusi@nokia.com>
+References: <1291813977-17944-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1291813977-17944-2-git-send-email-peter.ujfalusi@nokia.com>
+	<20101208134131.GK16418@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0E374103851
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2010 14:50:33 +0100 (CET)
+Received: from mgw-sa01.nokia.com (smtp.nokia.com [147.243.1.47])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3AB92103B50
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2010 14:52:48 +0100 (CET)
+In-Reply-To: <20101208134131.GK16418@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,39 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The compiler really ought to have been warning about unreferenced
-variables...
+On Wednesday 08 December 2010 15:41:31 ext Mark Brown wrote:
+> On Wed, Dec 08, 2010 at 03:12:57PM +0200, Peter Ujfalusi wrote:
+> > +	SND_SOC_DAPM_PGA("Left DAC Power", DAC33_LDAC_PWR_CTRL, 2, 0, NULL, 0=
+),
+> > +	SND_SOC_DAPM_PGA("Right DAC Power", DAC33_RDAC_PWR_CTRL, 2, 0, NULL,
+> > 0),
+> =
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8994.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+> These feels like they should be supply widgets for the output amps?
+> Might be a bit clearer.
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index da48802..b599616 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -780,13 +780,13 @@ SOC_DOUBLE_R_TLV("AIF2ADC Volume", WM8994_AIF2_ADC_LEFT_VOLUME,
- 
- SOC_ENUM("AIF1ADCL Source", aif1adcl_src),
- SOC_ENUM("AIF1ADCR Source", aif1adcr_src),
--SOC_ENUM("AIF2ADCL Source", aif1adcl_src),
--SOC_ENUM("AIF2ADCR Source", aif1adcr_src),
-+SOC_ENUM("AIF2ADCL Source", aif2adcl_src),
-+SOC_ENUM("AIF2ADCR Source", aif2adcr_src),
- 
- SOC_ENUM("AIF1DACL Source", aif1dacl_src),
- SOC_ENUM("AIF1DACR Source", aif1dacr_src),
--SOC_ENUM("AIF2DACL Source", aif1dacl_src),
--SOC_ENUM("AIF2DACR Source", aif1dacr_src),
-+SOC_ENUM("AIF2DACL Source", aif2dacl_src),
-+SOC_ENUM("AIF2DACR Source", aif2dacr_src),
- 
- SOC_DOUBLE_R_TLV("AIF1DAC1 Volume", WM8994_AIF1_DAC1_LEFT_VOLUME,
- 		 WM8994_AIF1_DAC1_RIGHT_VOLUME, 1, 96, 0, digital_tlv),
--- 
-1.7.1
+Yes, somehow I tend to forgot about the DAPM_SUPPLY widget ;)
+
+Thanks,
+P=E9ter
