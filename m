@@ -1,15 +1,18 @@
-From: "Olaya, Margarita" <magi.olaya@ti.com>
-Subject: [PATCH v3 3/3] ASoC: sdp4430: Add Jack support
-Date: Wed, 8 Dec 2010 10:55:10 -0600
-Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4CFC928@dlee06.ent.ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 2/3] ASoC: twl6040: Add jack support for
+ headset and handset
+Date: Wed, 8 Dec 2010 17:09:32 +0000
+Message-ID: <20101208170932.GQ16418@rakim.wolfsonmicro.main>
+References: <1889FA7136B567478A67D4B0F85B0CCEA4CFC927@dlee06.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id AFD66103B67
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2010 17:55:12 +0100 (CET)
-Content-Language: en-US
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AFCEC24517
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2010 18:09:34 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCEA4CFC927@dlee06.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,74 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "Olaya, Margarita" <magi.olaya@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
+On Wed, Dec 08, 2010 at 10:55:08AM -0600, Olaya, Margarita wrote:
 
-Use jack framework to enable detection for the headset microphone
-and stereo output.
+>  	case TWL6040_PLUGINT:
+> +		/* Debounce */
+> +		msleep(200);
 
-Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
-Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
----
- sound/soc/omap/sdp4430.c |   28 ++++++++++++++++++++++++++++
- 1 files changed, 28 insertions(+), 0 deletions(-)
+Hrm.  We're blocking the interrupt thread for an extended period, and
+since we don't re-read the status after the debounce period the debounce
+effectiveness will be substantially reduced, and may go very wrong if we
+also get a removal interrupt queued up in the meantime as the removal
+IRQ would then get processed even if the jack was actually inserted.
 
-diff --git a/sound/soc/omap/sdp4430.c b/sound/soc/omap/sdp4430.c
-index 0c37c51..ca7fb90 100644
---- a/sound/soc/omap/sdp4430.c
-+++ b/sound/soc/omap/sdp4430.c
-@@ -24,6 +24,7 @@
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/soc.h>
-+#include <sound/jack.h>
- 
- #include <asm/mach-types.h>
- #include <plat/hardware.h>
-@@ -65,6 +66,21 @@ static struct snd_soc_ops sdp4430_ops = {
- 	.hw_params = sdp4430_hw_params,
- };
- 
-+/* Headset jack */
-+static struct snd_soc_jack hs_jack;
-+
-+/*Headset jack detection DAPM pins */
-+static struct snd_soc_jack_pin hs_jack_pins[] = {
-+	{
-+		.pin = "Headset Mic",
-+		.mask = SND_JACK_MICROPHONE,
-+	},
-+	{
-+		.pin = "Headset Stereophone",
-+		.mask = SND_JACK_HEADPHONE,
-+	},
-+};
-+
- static int sdp4430_get_power_mode(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
- {
-@@ -160,7 +176,19 @@ static int sdp4430_twl6040_init(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_dapm_enable_pin(dapm, "Headset Stereophone");
- 
- 	ret = snd_soc_dapm_sync(dapm);
-+	if (ret)
-+		return ret;
-+
-+	/* Headset jack detection */
-+	ret = snd_soc_jack_new(codec, "Headset Jack",
-+				SND_JACK_HEADSET, &hs_jack);
-+	if (ret)
-+		return ret;
-+
-+	ret = snd_soc_jack_add_pins(&hs_jack, ARRAY_SIZE(hs_jack_pins),
-+				hs_jack_pins);
- 
-+	twl6040_hs_jack_detect(codec, &hs_jack, SND_JACK_HEADSET);
- 	return ret;
- }
- 
--- 
-1.7.0.4
+Scheduling a work item which checks the jack status (like hs_jack_detect
+below does) for both plug and unplug IRQs would deal with this - the
+work will get deferred each time we bounce, and the final status will
+be whatever it stabalises at.
+
+> +		report = jack->report;
+> +		/*
+> +		 * Early interrupt, CODEC driver cannot report jack status
+> +		 * since jack is not registered yet. MACHINE driver will
+> +		 * register jack and report status thru twl6040_hs_jack_detect
+> +		 */
+> +		if (jack->jack)
+> +			snd_soc_jack_report(jack->jack, report, jack->report);
+
+The jack API should handle null jacks happily.
+
+> +struct twl6040_setup_data {
+> +	void (*codec_enable)(int enable);
+> +	void *jack;
+> +};
+
+The jack doesn't look to be used in this, and I guess the codec enable
+belongs with something else?
