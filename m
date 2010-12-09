@@ -1,19 +1,19 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: WM8580: Fix R8 initial value
-Date: Thu, 09 Dec 2010 10:09:16 +0000
-Message-ID: <1291889356.3271.22.camel@odin>
-References: <1291885672-7198-1-git-send-email-jassi.brar@samsung.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] ASoC: EP93xx I2S and PCM fixes
+Date: Thu, 9 Dec 2010 10:54:43 +0000
+Message-ID: <20101209105443.GA4469@rakim.wolfsonmicro.main>
+References: <1291809693.31916.2.camel@r60e>
+	<20101208124637.GD16418@rakim.wolfsonmicro.main>
+	<1291855051.31916.85.camel@r60e>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3F1D103C5C
-	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2010 11:09:19 +0100 (CET)
-Received: by wyi11 with SMTP id 11so2077859wyi.38
-	for <alsa-devel@alsa-project.org>; Thu, 09 Dec 2010 02:09:19 -0800 (PST)
-In-Reply-To: <1291885672-7198-1-git-send-email-jassi.brar@samsung.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E40C8103B8E
+	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2010 11:54:45 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1291855051.31916.85.camel@r60e>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,19 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassi.brar@samsung.com>
-Cc: sbkim73@samsung.com, sw.youn@samsung.com, alsa-devel@alsa-project.org, kgene.kim@samsung.com, broonie@opensource.wolfsonmicro.com
+To: Alexander <subaparts@yandex.ru>
+Cc: alsa-devel@alsa-project.org, ryan@bluewatersys.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-12-09 at 18:07 +0900, Jassi Brar wrote:
-> From: Seungwhan Youn <sw.youn@samsung.com>
-> 
-> Acc to WM8580 manual, the default value for R8 is 0x10, not 0x1c.
-> 
-> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+On Thu, Dec 09, 2010 at 03:37:31AM +0300, Alexander wrote:
+> > > - Formats list shortened to just S32_LE, this makes all the DMA transactions right,
+> > >   while ALSA will do all sample format translation for us.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+> > Again, what was the actual problem?  32 bit samples seem very large if
+> > the hardware is capable of other formats, especially given that things
+> > like MP3 tend to produce 16 bit data.
+
+> It seems that EP93xx DMA could only operate 32 bit words. So the I2S
+> module is always feed by 32 bit samples. Incorrect setting of LRCLK (2
+> times slower) in original ep93xx-i2s.c masks the problem. DMA takes two
+> 16 bit samples instead of one, overall sound speed seems to be normal,
+> but you get actually 4000 sampling rate instead of requested 8000 and
+> therefore some noise... This is also the reason why the capture function
+> not worked at all in this driver...
+
+The approach taken by the original code (while it sounds like it still
+has issues is a pretty standard way to deal with limitations in DMA
+controllers like this.  You often end up programming the DMA controller
+to transfer 32 bit chunks and the I2S controller to transfer two 16 bit
+samples then let the FIFOs on the edge of the I2S controller sort out
+the difference.  This means that the DMA controller transfers a stereo
+pair of samples at a go, which works well enough.  Some of the hardware
+configuration may be technically incorrect according to the spec but so
+long as the externally observable behaviour is OK that's not an issue.
+
+It may be that there's limitations in the hardware that prevent such a
+configuration but I'd like to see more analysis of what's going on here.
