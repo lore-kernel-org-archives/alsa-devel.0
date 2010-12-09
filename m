@@ -1,20 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] ASoC: CS4271 codec support
-Date: Wed, 8 Dec 2010 23:16:34 +0000
-Message-ID: <AB4B79E7-D4CF-4098-83C9-708C1EDBE26F@opensource.wolfsonmicro.com>
-References: <1291809772.31916.4.camel@r60e>
-	<20101208130558.GE16418@rakim.wolfsonmicro.main>
-	<1291849166.31916.74.camel@r60e>
-	(sfid-20101208_225932_331499_3B362103)
-Mime-Version: 1.0 (Apple Message framework v1082)
+From: Alexander <subaparts@yandex.ru>
+Subject: Re: [PATCH 1/3] ASoC: EP93xx I2S and PCM fixes
+Date: Thu, 09 Dec 2010 03:37:31 +0300
+Message-ID: <1291855051.31916.85.camel@r60e>
+References: <1291809693.31916.2.camel@r60e>
+	<20101208124637.GD16418@rakim.wolfsonmicro.main>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E0CC6103B5E
-	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2010 00:16:37 +0100 (CET)
-In-Reply-To: <1291849166.31916.74.camel@r60e>
-	(sfid-20101208_225932_331499_3B362103)
+Received: from forward11.mail.yandex.net (forward11.mail.yandex.net
+	[95.108.130.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 043E5103B7D
+	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2010 01:37:38 +0100 (CET)
+In-Reply-To: <20101208124637.GD16418@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,19 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alexander <subaparts@yandex.ru>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, ryan@bluewatersys.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On 8 Dec 2010, at 22:59, Alexander wrote:
 
-> On Wed, 2010-12-08 at 13:05 +0000, Mark Brown wrote:
 
->> Ideally the deemphasis would be managed based on the sample rate.
+On Wed, 2010-12-08 at 12:46 +0000, Mark Brown wrote:
+> On Wed, Dec 08, 2010 at 03:01:33PM +0300, Alexander wrote:
+> 
+> > Changes to I2S code:
+> 
+> This should be split into a patch series, there's a bunch of changes
+> here that are pretty much unrelated.  Having everything in one patch
+> makes review harder as more changes have to be thought about
+> simultaneously and means that the different changes get tied up with
+> each other and a problem with one can hold up others.
+> 
 
-> I'm not sure if it's necessary feature at all. And the way it should be
-> managed is something unclear to me )
+I'll split it.
 
-Provide the user with an on/off switch then if enabled select the deemphasis
-filter which is closest to the sample rate. It's not essential to provide the control
-but you may as well.
+
+> > - SCLK and LRCLK rates are corrected, assuming we always send 32 bits * 2 channels to codec.
+> 
+> What was the problem?
+> 
+> > - Formats list shortened to just S32_LE, this makes all the DMA transactions right,
+> >   while ALSA will do all sample format translation for us.
+> 
+> Again, what was the actual problem?  32 bit samples seem very large if
+> the hardware is capable of other formats, especially given that things
+> like MP3 tend to produce 16 bit data.
+
+It seems that EP93xx DMA could only operate 32 bit words. So the I2S
+module is always feed by 32 bit samples. Incorrect setting of LRCLK (2
+times slower) in original ep93xx-i2s.c masks the problem. DMA takes two
+16 bit samples instead of one, overall sound speed seems to be normal,
+but you get actually 4000 sampling rate instead of requested 8000 and
+therefore some noise... This is also the reason why the capture function
+not worked at all in this driver...
+
+Best regards,
+	Alexander A. Sverdlin.
