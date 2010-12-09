@@ -1,15 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.38
-Date: Thu, 9 Dec 2010 16:17:02 +0000
-Message-ID: <20101209161702.GF4469@rakim.wolfsonmicro.main>
+Subject: [PATCH] ASoC: Optimise WM9081 FLL performance
+Date: Thu,  9 Dec 2010 16:17:58 +0000
+Message-ID: <1291911478-19271-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D890E103809
-	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2010 17:17:03 +0100 (CET)
-Content-Disposition: inline
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B7B7E103809
+	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2010 17:18:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,35 +18,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mario Becroft <mb@gem.win.co.nz>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 146fd574ec06b1c593805738b1c2c8c5a4128681:
+From: Mario Becroft <mb@gem.win.co.nz>
 
-  ASoC: Add ADC high pass filter support to WM8994 (2010-12-08 15:46:49 +0000)
+Tune the FLL gain for optimal performance according to evaluation
+results.
 
-are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.38
+Signed-off-by: Mario Becroft <mb@gem.win.co.nz>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm9081.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-Alexander Sverdlin (1):
-      ASoC: EP93xx: sampling rate range extended
-
-Dmitry Artamonow (1):
-      ASoC: fix deemphasis control in wm8904/55/60 codecs
-
-Mark Brown (1):
-      Merge branch 'for-2.6.37' into for-2.6.38
-
-Seungwhan Youn (2):
-      ASoC: WM8580: Fix R8 initial value
-      ASoC: Remove unnecessary structure definitions
-
- include/sound/soc.h           |    3 ---
- sound/soc/codecs/wm8580.c     |    2 +-
- sound/soc/codecs/wm8904.c     |    3 ++-
- sound/soc/codecs/wm8955.c     |    3 ++-
- sound/soc/codecs/wm8960.c     |    3 ++-
- sound/soc/ep93xx/ep93xx-i2s.c |    4 ++--
- sound/soc/ep93xx/ep93xx-pcm.c |    4 ++--
- 7 files changed, 11 insertions(+), 11 deletions(-)
+diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
+index c706077..e5055b2 100644
+--- a/sound/soc/codecs/wm9081.c
++++ b/sound/soc/codecs/wm9081.c
+@@ -590,6 +590,10 @@ static int wm9081_set_fll(struct snd_soc_codec *codec, int fll_id,
+ 	reg5 |= fll_div.fll_clk_ref_div << WM9081_FLL_CLK_REF_DIV_SHIFT;
+ 	snd_soc_write(codec, WM9081_FLL_CONTROL_5, reg5);
+ 
++	/* Set gain to the recommended value */
++	snd_soc_update_bits(codec, WM9081_FLL_CONTROL_4,
++			    WM9081_FLL_GAIN_MASK, 0);
++
+ 	/* Enable the FLL */
+ 	snd_soc_write(codec, WM9081_FLL_CONTROL_1, reg1 | WM9081_FLL_ENA);
+ 
+-- 
+1.7.1
