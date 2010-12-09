@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: EP93xx I2S and PCM fixes
-Date: Thu, 9 Dec 2010 10:54:43 +0000
-Message-ID: <20101209105443.GA4469@rakim.wolfsonmicro.main>
-References: <1291809693.31916.2.camel@r60e>
-	<20101208124637.GD16418@rakim.wolfsonmicro.main>
-	<1291855051.31916.85.camel@r60e>
+Subject: Re: [PATCH] ASoC: fix deemphasis control in
+	wm8904/55/60 codecs
+Date: Thu, 9 Dec 2010 10:56:29 +0000
+Message-ID: <20101209105626.GA4548@rakim.wolfsonmicro.main>
+References: <1291840577-23908-1-git-send-email-mad_soft@inbox.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E40C8103B8E
-	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2010 11:54:45 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2E64C103C55
+	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2010 11:56:30 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1291855051.31916.85.camel@r60e>
+In-Reply-To: <1291840577-23908-1-git-send-email-mad_soft@inbox.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,35 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alexander <subaparts@yandex.ru>
-Cc: alsa-devel@alsa-project.org, ryan@bluewatersys.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: Dmitry Artamonow <mad_soft@inbox.ru>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 09, 2010 at 03:37:31AM +0300, Alexander wrote:
-> > > - Formats list shortened to just S32_LE, this makes all the DMA transactions right,
-> > >   while ALSA will do all sample format translation for us.
+On Wed, Dec 08, 2010 at 11:36:17PM +0300, Dmitry Artamonow wrote:
+> Deemphasis control's .get callback should update control's value instead
+> of returning it - return value of callback function is used for indicating
+> error or success of operation.
+> 
+> Signed-off-by: Dmitry Artamonow <mad_soft@inbox.ru>
 
-> > Again, what was the actual problem?  32 bit samples seem very large if
-> > the hardware is capable of other formats, especially given that things
-> > like MP3 tend to produce 16 bit data.
-
-> It seems that EP93xx DMA could only operate 32 bit words. So the I2S
-> module is always feed by 32 bit samples. Incorrect setting of LRCLK (2
-> times slower) in original ep93xx-i2s.c masks the problem. DMA takes two
-> 16 bit samples instead of one, overall sound speed seems to be normal,
-> but you get actually 4000 sampling rate instead of requested 8000 and
-> therefore some noise... This is also the reason why the capture function
-> not worked at all in this driver...
-
-The approach taken by the original code (while it sounds like it still
-has issues is a pretty standard way to deal with limitations in DMA
-controllers like this.  You often end up programming the DMA controller
-to transfer 32 bit chunks and the I2S controller to transfer two 16 bit
-samples then let the FIFOs on the edge of the I2S controller sort out
-the difference.  This means that the DMA controller transfers a stereo
-pair of samples at a go, which works well enough.  Some of the hardware
-configuration may be technically incorrect according to the spec but so
-long as the externally observable behaviour is OK that's not an issue.
-
-It may be that there's limitations in the hardware that prevent such a
-configuration but I'd like to see more analysis of what's going on here.
+Applied, thanks.
