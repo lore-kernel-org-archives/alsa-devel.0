@@ -1,17 +1,16 @@
 From: Alexander <subaparts@yandex.ru>
-Subject: Re: [PATCH 1/3] ASoC: EP93xx I2S and PCM fixes
-Date: Thu, 09 Dec 2010 03:37:31 +0300
-Message-ID: <1291855051.31916.85.camel@r60e>
+Subject: [PATCH] ASoC: EP93xx: sampling rate range extended
+Date: Thu, 09 Dec 2010 03:43:49 +0300
+Message-ID: <1291855429.31916.90.camel@r60e>
 References: <1291809693.31916.2.camel@r60e>
 	<20101208124637.GD16418@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward11.mail.yandex.net (forward11.mail.yandex.net
-	[95.108.130.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 043E5103B7D
-	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2010 01:37:38 +0100 (CET)
+Received: from forward4.mail.yandex.net (forward4.mail.yandex.net [77.88.46.9])
+	by alsa0.perex.cz (Postfix) with ESMTP id E1165103B7D
+	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2010 01:43:55 +0100 (CET)
 In-Reply-To: <20101208124637.GD16418@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,41 +25,51 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, ryan@bluewatersys.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
+From: Alexander Sverdlin <subaparts@yandex.ru>
 
+Changes to both I2S and PCM code:
+- Rates list extended up to 96kHz, it's tested on EDB9302 and works for both capture and
+  playback.
 
-On Wed, 2010-12-08 at 12:46 +0000, Mark Brown wrote:
-> On Wed, Dec 08, 2010 at 03:01:33PM +0300, Alexander wrote:
-> 
-> > Changes to I2S code:
-> 
-> This should be split into a patch series, there's a bunch of changes
-> here that are pretty much unrelated.  Having everything in one patch
-> makes review harder as more changes have to be thought about
-> simultaneously and means that the different changes get tied up with
-> each other and a problem with one can hold up others.
-> 
+Signed-off-by: Alexander Sverdlin <subaparts@yandex.ru>
+---
+ sound/soc/ep93xx/ep93xx-i2s.c |    4 ++--
+ sound/soc/ep93xx/ep93xx-pcm.c |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-I'll split it.
-
-
-> > - SCLK and LRCLK rates are corrected, assuming we always send 32 bits * 2 channels to codec.
-> 
-> What was the problem?
-> 
-> > - Formats list shortened to just S32_LE, this makes all the DMA transactions right,
-> >   while ALSA will do all sample format translation for us.
-> 
-> Again, what was the actual problem?  32 bit samples seem very large if
-> the hardware is capable of other formats, especially given that things
-> like MP3 tend to produce 16 bit data.
-
-It seems that EP93xx DMA could only operate 32 bit words. So the I2S
-module is always feed by 32 bit samples. Incorrect setting of LRCLK (2
-times slower) in original ep93xx-i2s.c masks the problem. DMA takes two
-16 bit samples instead of one, overall sound speed seems to be normal,
-but you get actually 4000 sampling rate instead of requested 8000 and
-therefore some noise... This is also the reason why the capture function
-not worked at all in this driver...
-
-Best regards,
-	Alexander A. Sverdlin.
+diff --git a/sound/soc/ep93xx/ep93xx-i2s.c b/sound/soc/ep93xx/ep93xx-i2s.c
+index 4f48733..9ac93f6 100644
+--- a/sound/soc/ep93xx/ep93xx-i2s.c
++++ b/sound/soc/ep93xx/ep93xx-i2s.c
+@@ -352,13 +352,13 @@ static struct snd_soc_dai_driver ep93xx_i2s_dai = {
+ 	.playback	= {
+ 		.channels_min	= 2,
+ 		.channels_max	= 2,
+-		.rates		= SNDRV_PCM_RATE_8000_48000,
++		.rates		= SNDRV_PCM_RATE_8000_96000,
+ 		.formats	= EP93XX_I2S_FORMATS,
+ 	},
+ 	.capture	= {
+ 		 .channels_min	= 2,
+ 		 .channels_max	= 2,
+-		 .rates		= SNDRV_PCM_RATE_8000_48000,
++		 .rates		= SNDRV_PCM_RATE_8000_96000,
+ 		 .formats	= EP93XX_I2S_FORMATS,
+ 	},
+ 	.ops		= &ep93xx_i2s_dai_ops,
+diff --git a/sound/soc/ep93xx/ep93xx-pcm.c b/sound/soc/ep93xx/ep93xx-pcm.c
+index 2f121dd..0667077 100644
+--- a/sound/soc/ep93xx/ep93xx-pcm.c
++++ b/sound/soc/ep93xx/ep93xx-pcm.c
+@@ -35,9 +35,9 @@ static const struct snd_pcm_hardware ep93xx_pcm_hardware = {
+ 				   SNDRV_PCM_INFO_INTERLEAVED	|
+ 				   SNDRV_PCM_INFO_BLOCK_TRANSFER),
+ 				   
+-	.rates			= SNDRV_PCM_RATE_8000_48000,
++	.rates			= SNDRV_PCM_RATE_8000_96000,
+ 	.rate_min		= SNDRV_PCM_RATE_8000,
+-	.rate_max		= SNDRV_PCM_RATE_48000,
++	.rate_max		= SNDRV_PCM_RATE_96000,
+ 	
+ 	.formats		= (SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE |
