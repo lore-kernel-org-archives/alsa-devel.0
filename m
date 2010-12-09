@@ -1,20 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Remove unnecessary structure
- definitions
-Date: Thu, 09 Dec 2010 10:08:36 +0000
-Message-ID: <1291889316.3271.21.camel@odin>
-References: <1291868259-15059-1-git-send-email-sw.youn@samsung.com>
+Subject: Re: [PATCH] ASoC: WM8580: Fix R8 initial value
+Date: Thu, 09 Dec 2010 10:09:16 +0000
+Message-ID: <1291889356.3271.22.camel@odin>
+References: <1291885672-7198-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
 	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1E2F8103BA8
-	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2010 11:08:40 +0100 (CET)
-Received: by wyi11 with SMTP id 11so2077244wyi.38
-	for <alsa-devel@alsa-project.org>; Thu, 09 Dec 2010 02:08:39 -0800 (PST)
-In-Reply-To: <1291868259-15059-1-git-send-email-sw.youn@samsung.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id C3F1D103C5C
+	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2010 11:09:19 +0100 (CET)
+Received: by wyi11 with SMTP id 11so2077859wyi.38
+	for <alsa-devel@alsa-project.org>; Thu, 09 Dec 2010 02:09:19 -0800 (PST)
+In-Reply-To: <1291885672-7198-1-git-send-email-jassi.brar@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,13 +23,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Seungwhan Youn <sw.youn@samsung.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: Jassi Brar <jassi.brar@samsung.com>
+Cc: sbkim73@samsung.com, sw.youn@samsung.com, alsa-devel@alsa-project.org, kgene.kim@samsung.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-12-09 at 13:17 +0900, Seungwhan Youn wrote:
-> This patch removes some legacy structure definitions which are not using
-> in current ASoC drivers.
+On Thu, 2010-12-09 at 18:07 +0900, Jassi Brar wrote:
+> From: Seungwhan Youn <sw.youn@samsung.com>
+> 
+> Acc to WM8580 manual, the default value for R8 is 0x10, not 0x1c.
 > 
 > Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
 
