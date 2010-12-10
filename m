@@ -1,20 +1,21 @@
-From: Jack Byer <ftn768@gmail.com>
-Subject: Re: snd_hda_intel error
-Date: Tue, 7 Dec 2010 03:43:18 -0600
-Message-ID: <AANLkTikG0KvoF46uVKvYjUQa5JCcZMKyjUF1bYQ9_ZBB@mail.gmail.com>
-References: <AANLkTik8eGoD1WfJvLZtzWQ-6W=WkjxtQHjJsZ4WN9DX@mail.gmail.com>
-	<AANLkTinSULw+Jk2v5nx-6oKEWxdF8qVmq75SYyS3gEZi@mail.gmail.com>
+From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+Subject: Re: Custom IOCTL call
+Date: Sat, 11 Dec 2010 12:23:40 +1300
+Message-ID: <4D02B67C.10903@audioscience.com>
+References: <AANLkTinRmEkLL8Lhp9uZVCWjn2Z3Qh0cgwKZGqJG8o0p@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
-	[209.85.216.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 07FF91039DE
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2010 10:43:18 +0100 (CET)
-Received: by qwj8 with SMTP id 8so7896479qwj.38
-	for <alsa-devel@alsa-project.org>; Tue, 07 Dec 2010 01:43:18 -0800 (PST)
-In-Reply-To: <AANLkTinSULw+Jk2v5nx-6oKEWxdF8qVmq75SYyS3gEZi@mail.gmail.com>
+Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5EB7C10380C
+	for <alsa-devel@alsa-project.org>; Sat, 11 Dec 2010 00:23:47 +0100 (CET)
+Received: from [192.168.36.2]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp5.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0LD800FPNJNJ4I10@smtp5.clear.net.nz> for
+	alsa-devel@alsa-project.org; Sat, 11 Dec 2010 12:23:43 +1300 (NZDT)
+In-reply-to: <AANLkTinRmEkLL8Lhp9uZVCWjn2Z3Qh0cgwKZGqJG8o0p@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,20 +25,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Chen <seven.steps@gmail.com>
+To: Radivoje Jovanovic <radivojejovanovic@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sorry, that was a typo. It should be 2.6.36.1
+On 11/12/10 08:42, Radivoje Jovanovic wrote:
+> I am writing custom IOCTL calls for my card. I have made hwdep interface and
+> set ioctl ops call for it. But, now the question is which device I need to
+> open in my user space app to talk to correct ioctl?
 
-On Tue, Dec 7, 2010 at 1:26 AM, Daniel Chen <seven.steps@gmail.com> wrote:
-> On Sat, Dec 4, 2010 at 8:34 AM, Jack Byer <ftn768@gmail.com> wrote:
->> I am using the driver from the 2.6.31.1 kernel
->
-> You'll at least want to try a daily snapshot,
-> ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.bz2,
-> and use http://www.alsa-project.org/alsa-info.sh.
->
-> Best,
-> -Dan
->
+/dev/snd/hwC0D0
+
+> I have tried /dev/snd/controlC0
+> and /dev/snd/pcmC0D0p
