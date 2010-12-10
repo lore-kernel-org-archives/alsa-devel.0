@@ -1,18 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Optimise WM9081 FLL performance
-Date: Fri, 10 Dec 2010 16:28:32 +0000
-Message-ID: <1291998512.3422.6.camel@odin>
-References: <1291911478-19271-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Implement WM8994/58 DAC and ADC
+ oversampling control
+Date: Fri, 10 Dec 2010 16:29:00 +0000
+Message-ID: <1291998540.3422.7.camel@odin>
+References: <1291896804-15253-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2A63724557
-	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2010 17:28:37 +0100 (CET)
-Received: by wwe15 with SMTP id 15so3682489wwe.20
-	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2010 08:28:36 -0800 (PST)
-In-Reply-To: <1291911478-19271-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id C8CC724559
+	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2010 17:29:10 +0100 (CET)
+Received: by wwe15 with SMTP id 15so3683008wwe.20
+	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2010 08:29:10 -0800 (PST)
+In-Reply-To: <1291896804-15253-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +24,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Mario@alsa-project.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Becroft <mb@gem.win.co.nz>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-12-09 at 16:17 +0000, Mark Brown wrote:
-> From: Mario Becroft <mb@gem.win.co.nz>
+On Thu, 2010-12-09 at 12:13 +0000, Mark Brown wrote:
+> The oversampling rate of the DAC and ADC can be controlled to optimise
+> for either low power consumption or maximum performance.
 > 
-> Tune the FLL gain for optimal performance according to evaluation
-> results.
-> 
-> Signed-off-by: Mario Becroft <mb@gem.win.co.nz>
 > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
-
 -- 
 Freelance Developer, SlimLogic Ltd
 ASoC and Voltage Regulator Maintainer.
