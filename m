@@ -1,18 +1,18 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [RFC 2.6.38] ASoC: Fix bias power down of non-DAPM
-	codec
-Date: Fri, 10 Dec 2010 18:23:41 +0200
-Message-ID: <1291998221-9642-1-git-send-email-jhnikula@gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Optimise WM9081 FLL performance
+Date: Fri, 10 Dec 2010 16:28:32 +0000
+Message-ID: <1291998512.3422.6.camel@odin>
+References: <1291911478-19271-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5B3A524554
-	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2010 17:22:42 +0100 (CET)
-Received: by eyg24 with SMTP id 24so2414560eyg.24
-	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2010 08:22:38 -0800 (PST)
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2A63724557
+	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2010 17:28:37 +0100 (CET)
+Received: by wwe15 with SMTP id 15so3682489wwe.20
+	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2010 08:28:36 -0800 (PST)
+In-Reply-To: <1291911478-19271-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,40 +22,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Mario@alsa-project.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Becroft <mb@gem.win.co.nz>
 List-Id: alsa-devel@alsa-project.org
 
-Currently bias of non-DAPM codec will be powered down (standby/off) whenever
-there is a stream stop. This is wrong in simultaneous playback/capture since
-the bias is put down immediately after stopping the first stream.
+On Thu, 2010-12-09 at 16:17 +0000, Mark Brown wrote:
+> From: Mario Becroft <mb@gem.win.co.nz>
+> 
+> Tune the FLL gain for optimal performance according to evaluation
+> results.
+> 
+> Signed-off-by: Mario Becroft <mb@gem.win.co.nz>
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
 
-Fix this by using the codec->active count when figuring out the needed bias
-level after stream stop.
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
----
-RFC since does this look a valid fix and how to deal with 2.6.37? I think
-patching the .37 first will result in bisect build errors in mainline when
-later merging upcoming .38 changes. Would it be better to patch .37 after
-it's released?
----
- sound/soc/soc-dapm.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 9af2d8a..b521a13 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -981,6 +981,9 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
- 		case SND_SOC_DAPM_STREAM_RESUME:
- 			sys_power = 1;
- 			break;
-+		case SND_SOC_DAPM_STREAM_STOP:
-+			sys_power = !!dapm->codec->active;
-+			break;
- 		case SND_SOC_DAPM_STREAM_SUSPEND:
- 			sys_power = 0;
- 			break;
 -- 
-1.7.2.3
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
