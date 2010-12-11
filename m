@@ -1,15 +1,15 @@
 From: "Olaya, Margarita" <magi.olaya@ti.com>
-Subject: [PATCH v2 10/16] ASoC: twl6040: Enable automatic power
- for phoenix 1.1
-Date: Fri, 10 Dec 2010 21:06:07 -0600
-Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4E225D9@dlee06.ent.ti.com>
+Subject: [PATCH v2 12/16] ASoC: twl6040: Clear interrupt status
+	at boot time
+Date: Fri, 10 Dec 2010 21:06:13 -0600
+Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4E225DA@dlee06.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 20A82103865
-	for <alsa-devel@alsa-project.org>; Sat, 11 Dec 2010 04:06:10 +0100 (CET)
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2B05010397D
+	for <alsa-devel@alsa-project.org>; Sat, 11 Dec 2010 04:06:16 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,49 +24,59 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlog
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Phoenix 1.1 supports automatic power on sequence, a
-verification is added to use it with new revision of
-the chip.
+From: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
 
+On Phoenix 1.1, the INTID register default value is an invalid
+one, causing the interrupt handler to think the phoenix power on
+sequence is ready before it actually finishes.
+
+This causes some i2c errors when trying to configure twl.
+
+Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
 Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
 Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/twl6040.c |   13 +++++++++----
- 1 files changed, 9 insertions(+), 4 deletions(-)
+ sound/soc/codecs/twl6040.c |   21 +++++++++++----------
+ 1 files changed, 11 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 27fc1b9..46e8e93 100644
+index eaab21d..cd11a3d 100644
 --- a/sound/soc/codecs/twl6040.c
 +++ b/sound/soc/codecs/twl6040.c
-@@ -1136,6 +1136,7 @@ static int twl6040_probe(struct snd_soc_codec *codec)
- 	struct twl6040_data *priv;
- 	int audpwron, naudint;
- 	int ret = 0;
-+	u8 icrev;
+@@ -1669,6 +1669,17 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+ 			goto gpio2_err;
  
- 	priv = kzalloc(sizeof(struct twl6040_data), GFP_KERNEL);
- 	if (priv == NULL)
-@@ -1144,13 +1145,17 @@ static int twl6040_probe(struct snd_soc_codec *codec)
- 
- 	priv->codec = codec;
- 
--	if (twl_codec) {
-+	twl_i2c_read_u8(TWL_MODULE_AUDIO_VOICE, &icrev, TWL6040_REG_ASICREV);
+ 		priv->codec_powered = 0;
 +
-+	if (twl_codec && (icrev > 0))
- 		audpwron = twl_codec->audpwron_gpio;
--		naudint = twl_codec->naudint_irq;
++		/* enable only codec ready interrupt */
++		twl6040_write(codec, TWL6040_REG_INTMR,
++					~TWL6040_READYMSK & TWL6040_ALLINT_MSK);
++
++		/* reset interrupt status to allow correct power up sequence */
++		twl6040_read_reg_volatile(codec, TWL6040_REG_INTID);
++	} else {
++		/* no interrupts at all */
++		twl6040_write_reg_cache(codec, TWL6040_REG_INTMR,
++						TWL6040_ALLINT_MSK);
+ 	}
+ 
+ 	if (naudint) {
+@@ -1679,16 +1690,6 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+ 				"twl6040_codec", codec);
+ 		if (ret)
+ 			goto gpio2_err;
 -	} else {
-+	else
- 		audpwron = -EINVAL;
-+
-+	if (twl_codec)
-+		naudint = twl_codec->naudint_irq;
-+	else
- 		naudint = 0;
--	}
+-		if (gpio_is_valid(audpwron)) {
+-			/* enable only codec ready interrupt */
+-			twl6040_write_reg_cache(codec, TWL6040_REG_INTMR,
+-					~TWL6040_READYMSK & TWL6040_ALLINT_MSK);
+-		} else {
+-			/* no interrupts at all */
+-			twl6040_write_reg_cache(codec, TWL6040_REG_INTMR,
+-						TWL6040_ALLINT_MSK);
+-		}
+ 	}
  
- 	priv->audpwron = audpwron;
- 	priv->naudint = naudint;
+ 	/* init vio registers */
 -- 
 1.7.0.4
