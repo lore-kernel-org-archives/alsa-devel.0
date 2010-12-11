@@ -1,15 +1,15 @@
 From: "Olaya, Margarita" <magi.olaya@ti.com>
-Subject: [PATCH v2 09/16] ASoC: twl6040: Fix analog Mic L & R
-	mux controls
-Date: Fri, 10 Dec 2010 21:06:03 -0600
-Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4E225D8@dlee06.ent.ti.com>
+Subject: [PATCH v2 10/16] ASoC: twl6040: Enable automatic power
+ for phoenix 1.1
+Date: Fri, 10 Dec 2010 21:06:07 -0600
+Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4E225D9@dlee06.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 39E84103A8E
-	for <alsa-devel@alsa-project.org>; Sat, 11 Dec 2010 04:06:05 +0100 (CET)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 20A82103865
+	for <alsa-devel@alsa-project.org>; Sat, 11 Dec 2010 04:06:10 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,30 +24,49 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlog
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Francois Mazard <f-mazard@ti.com>
-
-The mux control has 4 elements not 3
+Phoenix 1.1 supports automatic power on sequence, a
+verification is added to use it with new revision of
+the chip.
 
 Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
 Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/twl6040.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/twl6040.c |   13 +++++++++----
+ 1 files changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 9776715..27fc1b9 100644
+index 27fc1b9..46e8e93 100644
 --- a/sound/soc/codecs/twl6040.c
 +++ b/sound/soc/codecs/twl6040.c
-@@ -508,8 +508,8 @@ static const char *twl6040_amicr_texts[] =
- 	{"Headset Mic", "Sub Mic", "Aux/FM Right", "Off"};
+@@ -1136,6 +1136,7 @@ static int twl6040_probe(struct snd_soc_codec *codec)
+ 	struct twl6040_data *priv;
+ 	int audpwron, naudint;
+ 	int ret = 0;
++	u8 icrev;
  
- static const struct soc_enum twl6040_enum[] = {
--	SOC_ENUM_SINGLE(TWL6040_REG_MICLCTL, 3, 3, twl6040_amicl_texts),
--	SOC_ENUM_SINGLE(TWL6040_REG_MICRCTL, 3, 3, twl6040_amicr_texts),
-+	SOC_ENUM_SINGLE(TWL6040_REG_MICLCTL, 3, 4, twl6040_amicl_texts),
-+	SOC_ENUM_SINGLE(TWL6040_REG_MICRCTL, 3, 4, twl6040_amicr_texts),
- };
+ 	priv = kzalloc(sizeof(struct twl6040_data), GFP_KERNEL);
+ 	if (priv == NULL)
+@@ -1144,13 +1145,17 @@ static int twl6040_probe(struct snd_soc_codec *codec)
  
- static const char *twl6040_hs_texts[] = {
+ 	priv->codec = codec;
+ 
+-	if (twl_codec) {
++	twl_i2c_read_u8(TWL_MODULE_AUDIO_VOICE, &icrev, TWL6040_REG_ASICREV);
++
++	if (twl_codec && (icrev > 0))
+ 		audpwron = twl_codec->audpwron_gpio;
+-		naudint = twl_codec->naudint_irq;
+-	} else {
++	else
+ 		audpwron = -EINVAL;
++
++	if (twl_codec)
++		naudint = twl_codec->naudint_irq;
++	else
+ 		naudint = 0;
+-	}
+ 
+ 	priv->audpwron = audpwron;
+ 	priv->naudint = naudint;
 -- 
 1.7.0.4
