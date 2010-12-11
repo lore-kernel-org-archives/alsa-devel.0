@@ -1,15 +1,14 @@
 From: "Olaya, Margarita" <magi.olaya@ti.com>
-Subject: [PATCH v2 16/16] ASoC: twl6040: Fix TLV dB step values
-	for gains
-Date: Fri, 10 Dec 2010 21:06:39 -0600
-Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4E225DF@dlee06.ent.ti.com>
+Subject: [PATCH v2] ASoC: dapm: Add output driver widget
+Date: Fri, 10 Dec 2010 21:11:44 -0600
+Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4E225E0@dlee06.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 358141039F6
-	for <alsa-devel@alsa-project.org>; Sat, 11 Dec 2010 04:06:42 +0100 (CET)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 406E42465B
+	for <alsa-devel@alsa-project.org>; Sat, 11 Dec 2010 04:11:47 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,29 +23,105 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlog
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Some gains were incorrectly configured for dB values.
+In some cases it was not possible to follow the appropiate power
+ON/OFF sequence like in cases where the PGA needs to be enabled
+before the driver and disabled before the PGA for pop reduction.
+
+Add a widget to support output driver (speaker, haptic, vibra, etc)
+drivers where power ON/OFF ordering is important.
 
 Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/twl6040.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ include/sound/soc-dapm.h |   10 ++++++++++
+ sound/soc/soc-dapm.c     |    6 ++++++
+ 2 files changed, 16 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 6e0839a..315ce19 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -954,9 +954,9 @@ static DECLARE_TLV_DB_SCALE(mic_preamp_tlv, -600, 600, 0);
- 
- /*
-  * MICGAIN volume control:
-- * from 6 to 30 dB in 6 dB steps
-+ * from -6 to 30 dB in 6 dB steps
-  */
--static DECLARE_TLV_DB_SCALE(mic_amp_tlv, 600, 600, 0);
-+static DECLARE_TLV_DB_SCALE(mic_amp_tlv, -600, 600, 0);
- 
- /*
-  * AFMGAIN volume control:
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 041e98b..2f76a51 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -71,6 +71,10 @@
+ 	 wcontrols, wncontrols) \
+ {	.id = snd_soc_dapm_pga, .name = wname, .reg = wreg, .shift = wshift, \
+ 	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = wncontrols}
++#define SND_SOC_DAPM_OUT_DRV(wname, wreg, wshift, winvert,\
++	 wcontrols, wncontrols) \
++{	.id = snd_soc_dapm_out_drv, .name = wname, .reg = wreg, .shift = wshift, \
++	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = wncontrols}
+ #define SND_SOC_DAPM_MIXER(wname, wreg, wshift, winvert, \
+ 	 wcontrols, wncontrols)\
+ {	.id = snd_soc_dapm_mixer, .name = wname, .reg = wreg, .shift = wshift, \
+@@ -115,6 +119,11 @@
+ {	.id = snd_soc_dapm_pga, .name = wname, .reg = wreg, .shift = wshift, \
+ 	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = wncontrols, \
+ 	.event = wevent, .event_flags = wflags}
++#define SND_SOC_DAPM_OUT_DRV_E(wname, wreg, wshift, winvert, wcontrols, \
++	wncontrols, wevent, wflags) \
++{	.id = snd_soc_dapm_out_drv, .name = wname, .reg = wreg, .shift = wshift, \
++	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = wncontrols, \
++	.event = wevent, .event_flags = wflags}
+ #define SND_SOC_DAPM_MIXER_E(wname, wreg, wshift, winvert, wcontrols, \
+ 	wncontrols, wevent, wflags) \
+ {	.id = snd_soc_dapm_mixer, .name = wname, .reg = wreg, .shift = wshift, \
+@@ -368,6 +377,7 @@ enum snd_soc_dapm_type {
+ 	snd_soc_dapm_mixer,			/* mixes several analog signals together */
+ 	snd_soc_dapm_mixer_named_ctl,		/* mixer with named controls */
+ 	snd_soc_dapm_pga,			/* programmable gain/attenuation (volume) */
++	snd_soc_dapm_out_drv,			/* output driver */
+ 	snd_soc_dapm_adc,			/* analog to digital converter */
+ 	snd_soc_dapm_dac,			/* digital to analog converter */
+ 	snd_soc_dapm_micbias,		/* microphone bias (power) */
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 6a29d59..31e9681 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -62,6 +62,7 @@ static int dapm_up_seq[] = {
+ 	[snd_soc_dapm_mixer_named_ctl] = 7,
+ 	[snd_soc_dapm_pga] = 8,
+ 	[snd_soc_dapm_adc] = 9,
++	[snd_soc_dapm_out_drv] = 10,
+ 	[snd_soc_dapm_hp] = 10,
+ 	[snd_soc_dapm_spk] = 10,
+ 	[snd_soc_dapm_post] = 11,
+@@ -72,6 +73,7 @@ static int dapm_down_seq[] = {
+ 	[snd_soc_dapm_adc] = 1,
+ 	[snd_soc_dapm_hp] = 2,
+ 	[snd_soc_dapm_spk] = 2,
++	[snd_soc_dapm_out_drv] = 2,
+ 	[snd_soc_dapm_pga] = 4,
+ 	[snd_soc_dapm_mixer_named_ctl] = 5,
+ 	[snd_soc_dapm_mixer] = 5,
+@@ -231,6 +233,7 @@ static void dapm_set_path_status(struct snd_soc_dapm_widget *w,
+ 	break;
+ 	/* does not effect routing - always connected */
+ 	case snd_soc_dapm_pga:
++	case snd_soc_dapm_out_drv:
+ 	case snd_soc_dapm_output:
+ 	case snd_soc_dapm_adc:
+ 	case snd_soc_dapm_input:
+@@ -1243,6 +1246,7 @@ static ssize_t dapm_widget_show(struct device *dev,
+ 		case snd_soc_dapm_dac:
+ 		case snd_soc_dapm_adc:
+ 		case snd_soc_dapm_pga:
++		case snd_soc_dapm_out_drv:
+ 		case snd_soc_dapm_mixer:
+ 		case snd_soc_dapm_mixer_named_ctl:
+ 		case snd_soc_dapm_supply:
+@@ -1421,6 +1425,7 @@ static int snd_soc_dapm_add_route(struct snd_soc_dapm_context *dapm,
+ 	case snd_soc_dapm_adc:
+ 	case snd_soc_dapm_dac:
+ 	case snd_soc_dapm_pga:
++	case snd_soc_dapm_out_drv:
+ 	case snd_soc_dapm_input:
+ 	case snd_soc_dapm_output:
+ 	case snd_soc_dapm_micbias:
+@@ -1538,6 +1543,7 @@ int snd_soc_dapm_new_widgets(struct snd_soc_dapm_context *dapm)
+ 			w->power_check = dapm_dac_check_power;
+ 			break;
+ 		case snd_soc_dapm_pga:
++		case snd_soc_dapm_out_drv:
+ 			w->power_check = dapm_generic_check_power;
+ 			dapm_new_pga(dapm, w);
+ 			break;
 -- 
 1.7.0.4
