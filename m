@@ -1,14 +1,14 @@
 From: "Olaya, Margarita" <magi.olaya@ti.com>
-Subject: [PATCH v2 01/16] ASoC: twl6040: Update twl IO macro
-Date: Fri, 10 Dec 2010 21:05:24 -0600
-Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4E225D0@dlee06.ent.ti.com>
+Subject: [PATCH v2 02/16] ASoC: twl6040: Modify the IRQ handler
+Date: Fri, 10 Dec 2010 21:05:30 -0600
+Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4E225D1@dlee06.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8B9432465E
-	for <alsa-devel@alsa-project.org>; Sat, 11 Dec 2010 04:05:27 +0100 (CET)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id D397F10393F
+	for <alsa-devel@alsa-project.org>; Sat, 11 Dec 2010 04:05:33 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,53 +23,60 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlog
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Update the codec to use the new twl core register macros
+Multiples interrupts can be received. The irq handler is modified
+to attend all of them.
 
 Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/twl6040.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/twl6040.c |   30 ++++++++++++------------------
+ 1 files changed, 12 insertions(+), 18 deletions(-)
 
 diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 5d7e2f7..d33d2b4 100644
+index d33d2b4..8a6c623 100644
 --- a/sound/soc/codecs/twl6040.c
 +++ b/sound/soc/codecs/twl6040.c
-@@ -210,7 +210,7 @@ static int twl6040_read_reg_volatile(struct snd_soc_codec *codec,
- 	if (reg >= TWL6040_CACHEREGNUM)
- 		return -EIO;
+@@ -441,30 +441,24 @@ static irqreturn_t twl6040_naudint_handler(int irq, void *data)
  
--	twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &value, reg);
-+	twl_i2c_read_u8(TWL_MODULE_AUDIO_VOICE, &value, reg);
- 	twl6040_write_reg_cache(codec, reg, value);
+ 	twl_i2c_read_u8(TWL_MODULE_AUDIO_VOICE, &intid, TWL6040_REG_INTID);
  
- 	return value;
-@@ -226,7 +226,7 @@ static int twl6040_write(struct snd_soc_codec *codec,
- 		return -EIO;
+-	switch (intid) {
+-	case TWL6040_THINT:
++	if (intid & TWL6040_THINT)
+ 		dev_alert(codec->dev, "die temp over-limit detection\n");
+-		break;
+-	case TWL6040_PLUGINT:
+-	case TWL6040_UNPLUGINT:
++
++	if ((intid & TWL6040_PLUGINT) || (intid & TWL6040_UNPLUGINT))
+ 		queue_delayed_work(priv->workqueue, &priv->delayed_work,
+ 							msecs_to_jiffies(200));
+-		break;
+-	case TWL6040_HOOKINT:
+-		break;
+-	case TWL6040_HFINT:
++
++	if (intid & TWL6040_HOOKINT)
++		dev_info(codec->dev, "hook detection\n");
++
++	if (intid & TWL6040_HFINT)
+ 		dev_alert(codec->dev, "hf drivers over current detection\n");
+-		break;
+-	case TWL6040_VIBINT:
++
++	if (intid & TWL6040_VIBINT)
+ 		dev_alert(codec->dev, "vib drivers over current detection\n");
+-		break;
+-	case TWL6040_READYINT:
++
++	if (intid & TWL6040_READYINT)
+ 		complete(&priv->ready);
+-		break;
+-	default:
+-		dev_err(codec->dev, "unknown audio interrupt %d\n", intid);
+-		break;
+-	}
  
- 	twl6040_write_reg_cache(codec, reg, value);
--	return twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE, value, reg);
-+	return twl_i2c_write_u8(TWL_MODULE_AUDIO_VOICE, value, reg);
+ 	return IRQ_HANDLED;
  }
- 
- static void twl6040_init_vio_regs(struct snd_soc_codec *codec)
-@@ -439,7 +439,7 @@ static irqreturn_t twl6040_naudint_handler(int irq, void *data)
- 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
- 	u8 intid;
- 
--	twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &intid, TWL6040_REG_INTID);
-+	twl_i2c_read_u8(TWL_MODULE_AUDIO_VOICE, &intid, TWL6040_REG_INTID);
- 
- 	switch (intid) {
- 	case TWL6040_THINT:
-@@ -715,7 +715,7 @@ static int twl6040_power_up_completion(struct snd_soc_codec *codec,
- 				msecs_to_jiffies(48));
- 
- 	if (!time_left) {
--		twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &intid,
-+		twl_i2c_read_u8(TWL_MODULE_AUDIO_VOICE, &intid,
- 							TWL6040_REG_INTID);
- 		if (!(intid & TWL6040_READYINT)) {
- 			dev_err(codec->dev, "timeout waiting for READYINT\n");
 -- 
 1.7.0.4
