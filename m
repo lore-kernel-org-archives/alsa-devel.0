@@ -1,31 +1,18 @@
-From: Halim Sahin <halim.sahin@freenet.de>
-Subject: Re: really no idea? Re: low volume with hda base card
- (see attached alsa-info output
-Date: Mon, 13 Dec 2010 14:18:34 +0100
-Message-ID: <20101213131834.GA31736@gentoo.local>
-References: <20100811175434.GA10043@gentoo.local>
-	<20100813171204.GA25362@gentoo.local>
-	<20100821034235.GA23689@gentoo.local>
-	<s5hlj7xdf7d.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: regarding setting of fragment size in usbaudio
+	driver
+Date: Mon, 13 Dec 2010 14:38:24 +0100
+Message-ID: <4D0621D0.1040403@ladisch.de>
+References: <AANLkTimCg0kxCU1By9eg0Qba5hKMseS5rAZXsE_a4hOF@mail.gmail.com>	<4D05E19D.7010405@ladisch.de>
+	<AANLkTi=S732=Wj572Th860PpBYE0fkJ97JH2CwitZ4ah@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id F1465244A5
-	for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2010 14:18:30 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1PS8IQ-00086D-5F
-	for alsa-devel@alsa-project.org; Mon, 13 Dec 2010 14:18:30 +0100
-Received: from p4fc85f90.dip.t-dialin.net ([79.200.95.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2010 14:18:30 +0100
-Received: from halim.sahin by p4fc85f90.dip.t-dialin.net with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2010 14:18:30 +0100
-Content-Disposition: inline
-In-Reply-To: <s5hlj7xdf7d.wl%tiwai@suse.de>
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 83A0D245E2
+	for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2010 14:35:38 +0100 (CET)
+In-Reply-To: <AANLkTi=S732=Wj572Th860PpBYE0fkJ97JH2CwitZ4ah@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,46 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Amit Nagal <helloin.amit@gmail.com>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-Sorry for using this old thread :-(.
+(please don't top-post)
 
-On Mo, Aug 23, 2010 at 08:18:46 +0200, Takashi Iwai wrote:
-> First off, try with the latest version of alsa-driver.
-> Get the snapshot version from
->   ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
- 
-Done. Compilation and load of the modules are ok but the volume stays
-low on the rear panel of the computer.
-
-
-> If this doesn't help, try to set EAPD on NID 0x14 and/or 0x15, set it
-> to 0x02.  Get hda-verb program (available on OBS home:tiwai repo),
-> then run like
+Amit Nagal wrote:
+> i used SNDCTL_DSP_GETBLKSIZE ioctl to find the fragment size of driver
+> . i found it to be 16k .
 > 
-> 	hda-verb /dev/snd/hwC0D0 0x14 SET_EAPD 0x02
-> 	hda-verb /dev/snd/hwC0D0 0x15 SET_EAPD 0x02
+> 1) now if the application reads 4k data from userspace , read call
+> will remain blocked for audio driver's fragment size usb data read (
+> 16k)
+>  or app_request_size(4k) ?
 
-also no success with hda-verb.
-Do you have more ideas what I can test?
+If, when read() is called, there is enough data in the buffer, it will
+return that data and return immediately.  Otherwise, it will wait for
+the hardware to reach the next period boundary (in OSS: fragment
+boundary) and try again.
 
-Maybe this aditional info helps you :-).
-I noticed a difference in volume between headphone (front connector) and
-the line out (rear panel connector).
-The volume is higher when using the headphone connector but should also
-be improoved a bit :-(.
-this info is from alsamixer and the new driver:
-Card: HDA NVidia
-    Chip: Nvidia ID 7
-This info is from the orginal driver of kernel 2.6.34:
-  Card: HDA NVidia
-    Chip: Nvidia MCP79/7A HDMI
+If you want to have shorter waits, use lower fragment sizes.
 
-Why does alsamixer show     Chip: Nvidia ID 7 with new driver?
 
-All help appreciated ;-)
-
-BR.
-halim
+Regards,
+Clemens
