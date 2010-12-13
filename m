@@ -1,17 +1,16 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Gigabyte 880GM-USB3 MIDI and Dolby 5.1/7.1 issues
-Date: Mon, 13 Dec 2010 09:52:52 +0100
-Message-ID: <4D05DEE4.5020004@ladisch.de>
-References: <AANLkTimb5AnPm13d0kpMmjq4nOTH0dXA_VyO2CXbr_bQ@mail.gmail.com>	<4D00C2EA.1060204@ladisch.de>	<AANLkTikTKQkQqAMddajMHCk1trj=4ncvnbOMLbB-Ctjo@mail.gmail.com>	<4D00D39D.2090001@ladisch.de>
-	<AANLkTimSGFDXAkGt3BQ8fxc5hQZecp=-1Vtdp4vDzbSt@mail.gmail.com>
+Subject: Re: Handling non-buffer-sized MMAP requests
+Date: Mon, 13 Dec 2010 09:56:25 +0100
+Message-ID: <4D05DFB9.3080407@ladisch.de>
+References: <6e2495d80bd7915f371b984cc4b4a503.squirrel@master.museresearch.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id AAB841037E3
-	for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2010 09:50:05 +0100 (CET)
-In-Reply-To: <AANLkTimSGFDXAkGt3BQ8fxc5hQZecp=-1Vtdp4vDzbSt@mail.gmail.com>
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id DE2211037E3
+	for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2010 09:53:38 +0100 (CET)
+In-Reply-To: <6e2495d80bd7915f371b984cc4b4a503.squirrel@master.museresearch.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,30 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jonathan Gardner <jgardner@jonathangardner.net>
+To: louis@museresearch.com
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jonathan Gardner wrote:
-> On Thu, Dec 9, 2010 at 5:03 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
->> Jonathan Gardner wrote:
->>> So should I work with PulseAudio to get their GUI working with my
->>> particular situation?
->>
->> I'm not sure if your situation is one that PA actually wants to handle.
+louis@museresearch.com wrote:
+> Hi everyone, I'm having some difficulty improving a full-duplex MMAP ALSA
+> routine.  ALSA sometimes reports more samples available for input than my
+> buffer can take, or asks for more samples than I have available.  Is this
+> a buffer overrun/underrun? 
+
+Yes.  (And this should happen only when you've disabled stopping on
+an xrun, so you've asked for it.  :-)
+
+> If I restart the streams in the case that too
+> much input is available (on the assumption that it's an xrun) it seems to
+> happen at the drop of a hat and makes things worse.  If I discard the
+> excess input, that doesn't work well either.
 > 
-> I don't understand what you mean, since I am not familiar with ALSA or
-> PulseAudio. Could someone clarify?
+> What is the appropriate way to deal with this situation?
 
-Sorry, my statement seems to imply issues that aren't there.
+The best way would be to prevent this situation from happening, i.e.,
+read the captured data from the buffer before it overflows.
 
-The problem you have is that PulseAudio does not show all the mixer
-controls that you need.  I do not know whether this is because the
-driver does not give the correct information about these controls, or
-because PulseAudio does not interpret it correctly, or because
-PulseAudio does not support this situation.
-
-Try asking on the PA list how to configure your system.
+(In the case of capturing, latency does _not_ depend on the buffer size,
+so you should make the buffer as big as possible.)
 
 
 Regards,
