@@ -1,19 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC 2.6.38] ASoC: Fix build error caused by
- merging a fix for 2.6.37 into 2.6.38
-Date: Mon, 13 Dec 2010 16:47:09 +0000
-Message-ID: <20101213164709.GD25519@rakim.wolfsonmicro.main>
-References: <1292007235-22090-1-git-send-email-jhnikula@gmail.com>
-	<1292007289-22124-1-git-send-email-jhnikula@gmail.com>
+Subject: [PATCH] ASoC: Fix AC'97 registration unwind
+Date: Mon, 13 Dec 2010 17:04:11 +0000
+Message-ID: <1292259851-31853-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F1F8D2466C
-	for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2010 17:47:10 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1292007289-22124-1-git-send-email-jhnikula@gmail.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4C52F24679
+	for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2010 18:04:14 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,13 +18,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 10, 2010 at 08:54:49PM +0200, Jarkko Nikula wrote:
-> Fix "ASoC: Fix bias power down of non-DAPM codec" for 3.6.37 will cause a
-> build error when merging into ASoC for-2.6.38. Fix the issue by doing a
-> change that commit ce6120c "ASoC: Decouple DAPM from CODECs" would do.
+soc_unregister_ac97_dai_link() takes a CODEC as an argument, not a
+rtd like the registration function, so give it what it's looking for.
 
-Applied, thanks.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-core.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 68edc69..1dc4b11 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1830,7 +1830,7 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		if (ret < 0) {
+ 			printk(KERN_ERR "asoc: failed to register AC97 %s\n", card->name);
+ 			while (--i >= 0)
+-				soc_unregister_ac97_dai_link(&card->rtd[i]);
++				soc_unregister_ac97_dai_link(card->rtd[i].codec);
+ 			goto probe_aux_dev_err;
+ 		}
+ 	}
+-- 
+1.7.1
