@@ -1,20 +1,14 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [RFC/PATCH v6 03/12] media: Entities,
-	pads and links
-Date: Tue, 14 Dec 2010 15:57:38 +0100
-Message-ID: <201012141557.40470.laurent.pinchart@ideasonboard.com>
-References: <1290652099-15102-1-git-send-email-laurent.pinchart@ideasonboard.com>
-	<4D0771CB.3020809@ladisch.de>
-	<997f50534838eeb6a31a526e65045635.squirrel@webmail.xs4all.nl>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: soc-cache: A few minor stylistic changes
+Date: Tue, 14 Dec 2010 15:15:36 +0000
+Message-ID: <1292339736-8567-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
-	[95.142.166.194])
-	by alsa0.perex.cz (Postfix) with ESMTP id 090A7245FE
-	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2010 15:56:47 +0100 (CET)
-In-Reply-To: <997f50534838eeb6a31a526e65045635.squirrel@webmail.xs4all.nl>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 03D6C2460A
+	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2010 16:15:38 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,50 +18,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: alsa-devel@alsa-project.org, sakari.ailus@maxwell.research.nokia.com, broonie@opensource.wolfsonmicro.com, Clemens Ladisch <clemens@ladisch.de>, linux-kernel@vger.kernel.org, lennart@poettering.net, linux-omap@vger.kernel.org, linux-media@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Hans,
+Remove redundant parentheses/spaces in the use of the sizeof
+operator.
 
-On Tuesday 14 December 2010 15:51:08 Hans Verkuil wrote:
-> > Laurent Pinchart wrote:
-> >> On Monday 13 December 2010 17:10:51 Clemens Ladisch wrote:
-> >>> TYPE_EXT describes entities that represent some interface to the
-> >>> external world, TYPE_INT those that are internal to the entire device.
-> >>> (I'm not sure if that distinction is very useful, but TYPE_SUBDEV seems
-> >>> to be an even more meaningless name.)
-> >> 
-> >> SUBDEV comes from the V4L2 world, and I agree that it might not be a
-> >> very good
-> >> name.
-> >> 
-> >> I'm not sure I would split entities in internal/external categories. I
-> >> would
-> >> create a category for connectors though.
-> > 
-> > I'm not disagreeing, but what is actually the distinction between types
-> > and subtypes?  ;-)
-> 
-> The type tells what the behavior is of an entity. E.g., type DEVNODE
-> represents device node(s) in userspace, V4L2_SUBDEV represents a v4l2
-> sub-device, etc. The subtype tells whether a V4L2_SUBDEV is a sensor or a
-> receiver or whatever. Nice to know, but it doesn't change the way
-> sub-devices work.
-> 
-> In the case of connectors you would create a CONNECTOR type and have a
-> bunch of subtypes for all the variations of connectors.
-> 
-> That said, I'm not sure whether the distinction is useful for DEVNODEs.
-> You do need to know the subtype in order to interpret the union correctly.
-> 
-> Laurent, does the MC code test against the DEVNODE type? I.e., does the MC
-> code ignore the subtype of a DEVNODE, or does it always use it?
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-cache.c |   14 +++++++-------
+ 1 files changed, 7 insertions(+), 7 deletions(-)
 
-The MC code uses the DEVNODE type, ignoring the subtype, for power management. 
-When a device node is opened all entities in the chain need to be powered up.
-
+diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
+index 678fd75..0e17b40 100644
+--- a/sound/soc/soc-cache.c
++++ b/sound/soc/soc-cache.c
+@@ -85,7 +85,7 @@ static int snd_soc_4_12_spi_write(void *control_data, const char *data,
+ 	msg[1] = data[0];
+ 
+ 	spi_message_init(&m);
+-	memset(&t, 0, (sizeof t));
++	memset(&t, 0, sizeof t);
+ 
+ 	t.tx_buf = &msg[0];
+ 	t.len = len;
+@@ -166,7 +166,7 @@ static int snd_soc_7_9_spi_write(void *control_data, const char *data,
+ 	msg[1] = data[1];
+ 
+ 	spi_message_init(&m);
+-	memset(&t, 0, (sizeof t));
++	memset(&t, 0, sizeof t);
+ 
+ 	t.tx_buf = &msg[0];
+ 	t.len = len;
+@@ -246,7 +246,7 @@ static int snd_soc_8_8_spi_write(void *control_data, const char *data,
+ 	msg[1] = data[1];
+ 
+ 	spi_message_init(&m);
+-	memset(&t, 0, (sizeof t));
++	memset(&t, 0, sizeof t);
+ 
+ 	t.tx_buf = &msg[0];
+ 	t.len = len;
+@@ -326,7 +326,7 @@ static int snd_soc_8_16_spi_write(void *control_data, const char *data,
+ 	msg[2] = data[2];
+ 
+ 	spi_message_init(&m);
+-	memset(&t, 0, (sizeof t));
++	memset(&t, 0, sizeof t);
+ 
+ 	t.tx_buf = &msg[0];
+ 	t.len = len;
+@@ -513,7 +513,7 @@ static int snd_soc_16_8_spi_write(void *control_data, const char *data,
+ 	msg[2] = data[2];
+ 
+ 	spi_message_init(&m);
+-	memset(&t, 0, (sizeof t));
++	memset(&t, 0, sizeof t);
+ 
+ 	t.tx_buf = &msg[0];
+ 	t.len = len;
+@@ -633,7 +633,7 @@ static int snd_soc_16_16_spi_write(void *control_data, const char *data,
+ 	msg[3] = data[3];
+ 
+ 	spi_message_init(&m);
+-	memset(&t, 0, (sizeof t));
++	memset(&t, 0, sizeof t);
+ 
+ 	t.tx_buf = &msg[0];
+ 	t.len = len;
+@@ -1342,7 +1342,7 @@ static int snd_soc_lzo_cache_init(struct snd_soc_codec *codec)
+ 	 * that register.
+ 	 */
+ 	bmp_size = codec_drv->reg_cache_size;
+-	sync_bmp = kmalloc(BITS_TO_LONGS(bmp_size) * sizeof (long),
++	sync_bmp = kmalloc(BITS_TO_LONGS(bmp_size) * sizeof(long),
+ 			   GFP_KERNEL);
+ 	if (!sync_bmp) {
+ 		ret = -ENOMEM;
 -- 
-Regards,
-
-Laurent Pinchart
+1.7.3.3
