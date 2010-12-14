@@ -1,143 +1,117 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [RFC/PATCH v6 03/12] media: Entities,
-	pads and links
-Date: Tue, 14 Dec 2010 15:25:00 +0100
-Message-ID: <201012141525.02463.laurent.pinchart@ideasonboard.com>
-References: <1290652099-15102-1-git-send-email-laurent.pinchart@ideasonboard.com>
-	<201012141300.57118.laurent.pinchart@ideasonboard.com>
-	<4D0771CB.3020809@ladisch.de>
+From: Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>
+Subject: Re: [alsa-devel] [RFC/PATCH v6 03/12] media: Entities, pads and links
+Date: Tue, 14 Dec 2010 16:49:08 +0200
+Message-ID: <4D0783E4.7050708@maxwell.research.nokia.com>
+References: <1290652099-15102-1-git-send-email-laurent.pinchart@ideasonboard.com>	<1290652099-15102-4-git-send-email-laurent.pinchart@ideasonboard.com>	<4CEE2E7D.6060608@ladisch.de>	<201011251621.38757.laurent.pinchart@ideasonboard.com> <4CEF799E.7060508@ladisch.de> <4D06458B.6080808@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
-	[95.142.166.194])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8FC73245D1
-	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2010 15:24:08 +0100 (CET)
-In-Reply-To: <4D0771CB.3020809@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <4D06458B.6080808@ladisch.de>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, sakari.ailus@maxwell.research.nokia.com, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lennart@poettering.net, linux-omap@vger.kernel.org, linux-media@vger.kernel.org
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lennart@poettering.net, linux-omap@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+Hi Clemens, Laurent, Hans & others!
 
-On Tuesday 14 December 2010 14:31:55 Clemens Ladisch wrote:
-> Laurent Pinchart wrote:
-> > On Monday 13 December 2010 17:10:51 Clemens Ladisch wrote:
-> >> TYPE_EXT describes entities that represent some interface to the
-> >> external world, TYPE_INT those that are internal to the entire device.
-> >> (I'm not sure if that distinction is very useful, but TYPE_SUBDEV seems
-> >> to be an even more meaningless name.)
-> > 
-> > SUBDEV comes from the V4L2 world, and I agree that it might not be a very
-> > good name.
-> > 
-> > I'm not sure I would split entities in internal/external categories. I
-> > would create a category for connectors though.
+Clemens Ladisch wrote:
+> I wrote:
+>> I'll see if I can draw up the ALSA-specific media stuff over the weekend.
 > 
-> I'm not disagreeing, but what is actually the distinction between types
-> and subtypes?  ;-)
-
-The type is currently used to distinguish between entities that stream media 
-data from/to memory and other entities. They need to be handled differently in 
-the kernel for power management purposes for instance.
-
-I'm not sure if we should create new types, or just remove the type/subtype 
-distinction and add a flag somewhere.
-
-> >> * Entity properties
-> >> 
-> >> There needs to be a mechanism to associate meta-information (properties)
-> >> with entities.  This information should be optional and extensible, but,
-> >> when being handled inside the kernel, doesn't need to be more than
-> >> a read-only blob.  I think that something like ALSA's TLV format (used
-> >> for mixer controls) can be used here.  (I'm not mentioning the X-word
-> >> here, except to note that the "M" stands for "markup".)
-> > 
-> > I've been thinking of adding a new ioctl for that. It's something we need
-> > to draft. The UVC driver will need it, and I'm pretty sure other V4L2
-> > drivers would find it useful as well.
+> Sorry, wrong weekend.
 > 
-> I'm imagining a "read-the-properties" ioctl that just returns the
-> entity's blob.
-
-Martin Rubli has already proposed something similar a while ago on the linux-
-media mailing list. His proposal didn't use TLV though.
-
-> >> EXT_SPEAKER also includes headphones; there might be made a case for
-> >> having those as a separate subtype.
-> > 
-> > Shouldn't headphones be represented by an EXT_JACK_ANALOG ?
+> Anyway, below are some remarks and a patch.
 > 
-> Headphone jacks are jacks; there are also USB headphones.
-
-So EXT_SPEAKER are speakers not connected through a jack (USB, internal 
-analog, ...) ?
-
-> >> EXT_BROADCAST represents devices like TV tuners, satellite receivers,
-> >> cable tuners, or radios.
-> > 
-> > There's clearly an overlap with V4L here.
 > 
-> These come from the USB audio spec.  Video devices are indeed likely to
-> be more detailed than just a single audio source. :)
-
-Does EXT_BROADCAST represent the TV tuner (or satellite receiver, cable tuner, 
-radio tuner, ...) itself, or the connection between the tuner and the rest of 
-the device ? Most TV tuner are currently handled by V4L2 and would thus turn 
-up as V4L2 subdevs (I'm not sure if that's what we want in the long term, but 
-it's at least the current situation).
-
-> >> INT_CONTROLS may have multiple independent controls (this is USB's
-> >> Feature Unit); INT_EFFECT may have multiple controls that affect one
-> >> single algorithm.
-> > 
-> > I'd describe this as a feature unit/processing unit then.
+> * Entity types
 > 
-> I was aiming for more descriptive names, but I agree that the original
-> names might be more useful.
+> TYPE_NODE was renamed to TYPE_DEVICE because "node" sounds like a node
+> in a graph, which does not distinguish it from other entity types
+> because all entities are part of the topology graph.  I chose "device"
+> as this type describes entities that are visible as some device node to
+> other software.
 > 
-> > Should we have an AUDIO category ?
+> TYPE_EXT describes entities that represent some interface to the
+> external world, TYPE_INT those that are internal to the entire device.
+> (I'm not sure if that distinction is very useful, but TYPE_SUBDEV seems
+> to be an even more meaningless name.)
 > 
-> Probably not, because there are combined audio/video jacks, any maybe
-> other entities.
-
-> >> * Entity specifications
-> >> 
-> >> While TYPE_DEVICE entities can be identified by their device node, other
-> >> entities typcially have just a numeric ID.
-> > 
-> > In V4L2 sub-devices have (or rather will have once the media controller
-> > patches will be integrated) device nodes as well, so exposing that
-> > information is required.
 > 
-> USB and HDA entities already have numeric IDs.
-
-Right. Same for USB Video Class.
-
-We could let drivers set the entity ID, and have the core fill it if the value 
-is 0. Non-zero values would have to be checked for uniqueness though. Hans, a 
-comment on that ?
-
-> >> For that, it would be useful to make do without separate identification
-> >> and let the driver choose the entity ID.
-> > 
-> > How would drivers do that ? What if you have two instances of the same
-> > chip (a video sensor, audio mixer, ...) on the same board ?
+> ALSA mixer controls are not directly represented; a better fit for the
+> architecture of actual devices is that one or more mixer controls can be
+> associated with an entity.  (This can be done with a field of the mixer
+> control.)
 > 
-> Then those would get different IDs; USB descriptors always describe the
-> entire device.
+> 
+> * Entity properties
+> 
+> There needs to be a mechanism to associate meta-information (properties)
+> with entities.  This information should be optional and extensible, but,
+> when being handled inside the kernel, doesn't need to be more than
+> a read-only blob.  I think that something like ALSA's TLV format (used
+> for mixer controls) can be used here.  (I'm not mentioning the X-word
+> here, except to note that the "M" stands for "markup".)
+> 
+> 
+> * Entity subtypes
+> 
+> EXT_JACK_ANALOG represents any analog audio and/or video connector.
+> Properties for audio jacks would be jack type (TRS/RCA), color code,
+> line level, position, etc.
+> 
+> EXT_JACK_DIGITAL represents a digital connector like S/PDIF (coax/
+> TOSLINK), ADAT, TDIF, or MADI.
+> 
+> EXT_JACK_BUS represents a bus like FireWire and comes from the USB audio
+> spec.  (I doubt that any devices with this entitiy will ever exist.)
+> 
+> EXT_INSTRUMENT represents something like an e-guitar, keyboard, or MIDI
+> controller.  (Instrument entities are typically audio sources and MIDI
+> sources and sinks, but can also be audio sinks.)
+> 
+> EXT_SPEAKER also includes headphones; there might be made a case for
+> having those as a separate subtype.
+> 
+> EXT_PLAYER represents a device like a CD/DVD/tape player.  Recorders can
+> also write to that device, so "player" might not be an ideal name.
+> 
+> EXT_BROADCAST represents devices like TV tuners, satellite receivers,
+> cable tuners, or radios.
+> 
+> INT_SYNTHESIZER converts MIDI to audio.
+> 
+> INT_NOISE_SOURCE comes from the USB audio spec; this is not an attempt
+> to describe the characteristics of consumer-grade devices :-) , but
+> represents an internal noise source for level calibration or measurements.
+> 
+> INT_CONTROLS may have multiple independent controls (this is USB's
+> Feature Unit); INT_EFFECT may have multiple controls that affect one
+> single algorithm.
+> 
+> INT_CHANNEL_SPLIT/MERGE are needed for HDAudio devices, whose topology
+> information has only stereo links.
 
--- 
+This naming already has been commented, but what do you think: should
+the type explicitly tell what kind of interface, if any, is exported to
+user space?
+
+Only MEDIA_ENTITY_NODE_* types do this currently, and
+MEDIA_ENTITY_TYPE_SUBDEV_* to some extent, but the way is not consistent
+at the moment. MEDIA_ENTITY_NODE_* range has lost of different
+interfaces whereas MEDIA_ENTITY_TYPE_SUBDEV_* are basically offering
+v4l2_subdev and beyond that, suggesting what kind of controls might be
+found from the nodes.
+
+I would expect that the interfaces offered by the character devices
+would be somewhat standardised in the end like v4l2_subdev user space
+interface.
+
+The types above are mostly describing the role of an entity, which might
+be interesting as well.
+
 Regards,
 
-Laurent Pinchart
+-- 
+Sakari Ailus
+sakari.ailus@maxwell.research.nokia.com
