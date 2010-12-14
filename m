@@ -1,14 +1,18 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: soc-cache: A few minor stylistic changes
-Date: Tue, 14 Dec 2010 15:15:36 +0000
-Message-ID: <1292339736-8567-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [RFC/PATCH v6 03/12] media: Entities,
+	pads and links
+Date: Tue, 14 Dec 2010 16:30:39 +0100
+Message-ID: <4D078D9F.1060700@ladisch.de>
+References: <1290652099-15102-1-git-send-email-laurent.pinchart@ideasonboard.com>	<201012141300.57118.laurent.pinchart@ideasonboard.com>	<4D0771CB.3020809@ladisch.de>
+	<201012141525.02463.laurent.pinchart@ideasonboard.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 03D6C2460A
-	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2010 16:15:38 +0100 (CET)
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 22A502461D
+	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2010 16:30:44 +0100 (CET)
+In-Reply-To: <201012141525.02463.laurent.pinchart@ideasonboard.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,84 +22,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: alsa-devel@alsa-project.org, sakari.ailus@maxwell.research.nokia.com, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lennart@poettering.net, linux-omap@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Remove redundant parentheses/spaces in the use of the sizeof
-operator.
+Laurent Pinchart wrote:
+> On Tuesday 14 December 2010 14:31:55 Clemens Ladisch wrote:
+> > Laurent Pinchart wrote:
+> > > On Monday 13 December 2010 17:10:51 Clemens Ladisch wrote:
+> > >> EXT_SPEAKER also includes headphones; there might be made a case for
+> > >> having those as a separate subtype.
+> > > 
+> > > Shouldn't headphones be represented by an EXT_JACK_ANALOG ?
+> > 
+> > Headphone jacks are jacks; there are also USB headphones.
+> 
+> So EXT_SPEAKER are speakers not connected through a jack (USB, internal
+> analog, ...) ?
 
-Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
----
- sound/soc/soc-cache.c |   14 +++++++-------
- 1 files changed, 7 insertions(+), 7 deletions(-)
+Yes.
 
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index 678fd75..0e17b40 100644
---- a/sound/soc/soc-cache.c
-+++ b/sound/soc/soc-cache.c
-@@ -85,7 +85,7 @@ static int snd_soc_4_12_spi_write(void *control_data, const char *data,
- 	msg[1] = data[0];
- 
- 	spi_message_init(&m);
--	memset(&t, 0, (sizeof t));
-+	memset(&t, 0, sizeof t);
- 
- 	t.tx_buf = &msg[0];
- 	t.len = len;
-@@ -166,7 +166,7 @@ static int snd_soc_7_9_spi_write(void *control_data, const char *data,
- 	msg[1] = data[1];
- 
- 	spi_message_init(&m);
--	memset(&t, 0, (sizeof t));
-+	memset(&t, 0, sizeof t);
- 
- 	t.tx_buf = &msg[0];
- 	t.len = len;
-@@ -246,7 +246,7 @@ static int snd_soc_8_8_spi_write(void *control_data, const char *data,
- 	msg[1] = data[1];
- 
- 	spi_message_init(&m);
--	memset(&t, 0, (sizeof t));
-+	memset(&t, 0, sizeof t);
- 
- 	t.tx_buf = &msg[0];
- 	t.len = len;
-@@ -326,7 +326,7 @@ static int snd_soc_8_16_spi_write(void *control_data, const char *data,
- 	msg[2] = data[2];
- 
- 	spi_message_init(&m);
--	memset(&t, 0, (sizeof t));
-+	memset(&t, 0, sizeof t);
- 
- 	t.tx_buf = &msg[0];
- 	t.len = len;
-@@ -513,7 +513,7 @@ static int snd_soc_16_8_spi_write(void *control_data, const char *data,
- 	msg[2] = data[2];
- 
- 	spi_message_init(&m);
--	memset(&t, 0, (sizeof t));
-+	memset(&t, 0, sizeof t);
- 
- 	t.tx_buf = &msg[0];
- 	t.len = len;
-@@ -633,7 +633,7 @@ static int snd_soc_16_16_spi_write(void *control_data, const char *data,
- 	msg[3] = data[3];
- 
- 	spi_message_init(&m);
--	memset(&t, 0, (sizeof t));
-+	memset(&t, 0, sizeof t);
- 
- 	t.tx_buf = &msg[0];
- 	t.len = len;
-@@ -1342,7 +1342,7 @@ static int snd_soc_lzo_cache_init(struct snd_soc_codec *codec)
- 	 * that register.
- 	 */
- 	bmp_size = codec_drv->reg_cache_size;
--	sync_bmp = kmalloc(BITS_TO_LONGS(bmp_size) * sizeof (long),
-+	sync_bmp = kmalloc(BITS_TO_LONGS(bmp_size) * sizeof(long),
- 			   GFP_KERNEL);
- 	if (!sync_bmp) {
- 		ret = -ENOMEM;
--- 
-1.7.3.3
+When there is jack, the driver often does not know what is connected.
+
+> > >> EXT_BROADCAST represents devices like TV tuners, satellite receivers,
+> > >> cable tuners, or radios.
+> > > 
+> > > There's clearly an overlap with V4L here.
+> > 
+> > These come from the USB audio spec.  Video devices are indeed likely to
+> > be more detailed than just a single audio source. :)
+> 
+> Does EXT_BROADCAST represent the TV tuner (or satellite receiver, cable tuner,
+> radio tuner, ...) itself, or the connection between the tuner and the rest of
+> the device ? Most TV tuner are currently handled by V4L2 and would thus turn
+> up as V4L2 subdevs (I'm not sure if that's what we want in the long term, but
+> it's at least the current situation).
+
+>From the point of view of an audio device, this would be just some audio
+source, much like a connector.  We don't need this if there is some
+better V4L entitity that the USB audio entity can be mapped to.
+
+
+Regards,
+Clemens
