@@ -1,16 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Calculated average playback latency
-Date: Tue, 14 Dec 2010 17:20:47 +0100
-Message-ID: <4D07995F.6020900@ladisch.de>
-References: <AANLkTikcrTA4hRp9AvOfZPGN0FrkKwYS3SaFq0W25NdE@mail.gmail.com>
+Subject: Re: regarding setting of fragment size in usbaudio
+	driver
+Date: Tue, 14 Dec 2010 17:23:33 +0100
+Message-ID: <4D079A05.90505@ladisch.de>
+References: <AANLkTimCg0kxCU1By9eg0Qba5hKMseS5rAZXsE_a4hOF@mail.gmail.com>	<4D05E19D.7010405@ladisch.de>	<AANLkTi=S732=Wj572Th860PpBYE0fkJ97JH2CwitZ4ah@mail.gmail.com>	<4D0621D0.1040403@ladisch.de>
+	<AANLkTi=XTZGC08sq4XfjgEgBH7Aamct75D-XE0wQjciH@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 64F3D24664
-	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2010 17:20:51 +0100 (CET)
-In-Reply-To: <AANLkTikcrTA4hRp9AvOfZPGN0FrkKwYS3SaFq0W25NdE@mail.gmail.com>
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 79A3424664
+	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2010 17:23:36 +0100 (CET)
+In-Reply-To: <AANLkTi=XTZGC08sq4XfjgEgBH7Aamct75D-XE0wQjciH@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,31 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jean-Yves Avenard <jyavenard@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Amit Nagal <helloin.amit@gmail.com>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jean-Yves Avenard wrote:
-> By default, Myth uses mmap access
-
-Why?
-
-> Problem, turned out his was using a USB audio device, and
-> snd_pcm_hw_params_set_access didn't return any error.
-
-USB audio devices do support mmap.
-
-> ... I decided to stop using mmap and instead use snd_pcm_writei.
+Amit Nagal wrote:
+> > If you want to have shorter waits, use lower fragment sizes.
 > 
-> Now on my system, this has added quite a bit of latency and the A/V
-> sync isn't perfect anymore...
+> yes ,  setting of lower fragment size is my requirement at the moment
+> in OSS application .
+> i tried to use SNDCTL_DSP_SETFRAGMENT ioctl to set lower fragment size .
 
-Using mmap neither reduces latency, nor does it improve synchronization.
+In theory, this should work.
 
-> Is there an official way to calculate an average system latency
-> (doesn't need to be perfectly accurate).
+> but audio driver uses default fragment size only and not the fragment
+> size desired by application .
 
-Not the average, but try snd_pcm_delay().
+Does it return an error?  If yes, try moving this call before some
+other parameter setting ioctls.
 
 
 Regards,
