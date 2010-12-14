@@ -1,38 +1,168 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: TWL4030: Fix 24bit support
-Date: Tue, 14 Dec 2010 12:35:04 +0000
-Message-ID: <20101214123504.GD5723@sirena.org.uk>
-References: <1292327129-19417-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20101214114914.GB13649@rakim.wolfsonmicro.main>
-	<201012141411.00740.peter.ujfalusi@nokia.com>
+From: "Hans Verkuil" <hverkuil@xs4all.nl>
+Subject: Re: [alsa-devel] [RFC/PATCH v6 03/12] media: Entities,
+  pads and links
+Date: Tue, 14 Dec 2010 13:40:21 +0100
+Message-ID: <e629c78fffa0f709d743473f10334fd7.squirrel@webmail.xs4all.nl>
+References: <1290652099-15102-1-git-send-email-laurent.pinchart@ideasonboard.com>
+    <4CEF799E.7060508@ladisch.de> <4D06458B.6080808@ladisch.de>
+    <201012141300.57118.laurent.pinchart@ideasonboard.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 754CF1038EE
-	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2010 13:35:05 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <201012141411.00740.peter.ujfalusi@nokia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <201012141300.57118.laurent.pinchart@ideasonboard.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, sakari.ailus@maxwell.research.nokia.com, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lennart@poettering.net, linux-omap@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 14, 2010 at 02:11:00PM +0200, Peter Ujfalusi wrote:
+> Hi Clemens,
+>
+> On Monday 13 December 2010 17:10:51 Clemens Ladisch wrote:
+>> I wrote:
+>> > I'll see if I can draw up the ALSA-specific media stuff over the
+>> weekend.
+>>
+>> Sorry, wrong weekend.
+>>
+>> Anyway, below are some remarks and a patch.
+>
+> Thank you. Please see my comments inline.
+>
+>> * Entity types
+>>
+>> TYPE_NODE was renamed to TYPE_DEVICE because "node" sounds like a node
+>> in a graph, which does not distinguish it from other entity types
+>> because all entities are part of the topology graph.  I chose "device"
+>> as this type describes entities that are visible as some device node to
+>> other software.
+>
+> What this type describes is a device node. Both NODE and DEVICE can be
+> confusing in my opinion, but DEVICE_NODE is a bit long.
 
-> AFAIK this constraint is for applications to know, that only the 24 bit MSB is 
-> valid in S32_LE (for example the ice1712 also sets this constraint to let 
-> application know).
+What about DEVNODE? I think that would be a good alternative.
 
-Hrm, yeah.
+>> TYPE_EXT describes entities that represent some interface to the
+>> external world, TYPE_INT those that are internal to the entire device.
+>> (I'm not sure if that distinction is very useful, but TYPE_SUBDEV seems
+>> to be an even more meaningless name.)
+>
+> SUBDEV comes from the V4L2 world, and I agree that it might not be a very
+> good
+> name.
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+SUBDEV refers to a specific type of driver. Within the v4l world it is
+well defined. So I prefer to keep this. Perhaps some additional comments
+or documentation can be added to clarify this.
+
+> I'm not sure I would split entities in internal/external categories. I
+> would
+> create a category for connectors though.
+
+I agree. It was always the plan to eventually add connectors, but v4l
+didn't really need it (it already has an API to enumerate connectors).
+
+>> ALSA mixer controls are not directly represented; a better fit for the
+>> architecture of actual devices is that one or more mixer controls can be
+>> associated with an entity.  (This can be done with a field of the mixer
+>> control.)
+>
+> Agreed.
+>
+>> * Entity properties
+>>
+>> There needs to be a mechanism to associate meta-information (properties)
+>> with entities.  This information should be optional and extensible, but,
+>> when being handled inside the kernel, doesn't need to be more than
+>> a read-only blob.  I think that something like ALSA's TLV format (used
+>> for mixer controls) can be used here.  (I'm not mentioning the X-word
+>> here, except to note that the "M" stands for "markup".)
+>
+> I've been thinking of adding a new ioctl for that. It's something we need
+> to
+> draft. The UVC driver will need it, and I'm pretty sure other V4L2 drivers
+> would find it useful as well.
+>
+>> * Entity subtypes
+>>
+>> EXT_JACK_ANALOG represents any analog audio and/or video connector.
+>> Properties for audio jacks would be jack type (TRS/RCA), color code,
+>> line level, position, etc.
+>>
+>> EXT_JACK_DIGITAL represents a digital connector like S/PDIF (coax/
+>> TOSLINK), ADAT, TDIF, or MADI.
+>>
+>> EXT_JACK_BUS represents a bus like FireWire and comes from the USB audio
+>> spec.  (I doubt that any devices with this entitiy will ever exist.)
+>>
+>> EXT_INSTRUMENT represents something like an e-guitar, keyboard, or MIDI
+>> controller.  (Instrument entities are typically audio sources and MIDI
+>> sources and sinks, but can also be audio sinks.)
+>>
+>> EXT_SPEAKER also includes headphones; there might be made a case for
+>> having those as a separate subtype.
+>
+> Shouldn't headphones be represented by an EXT_JACK_ANALOG ?
+>
+>> EXT_PLAYER represents a device like a CD/DVD/tape player.  Recorders can
+>> also write to that device, so "player" might not be an ideal name.
+>>
+>> EXT_BROADCAST represents devices like TV tuners, satellite receivers,
+>> cable tuners, or radios.
+
+I don't think it is right to talk about 'represents devices'. I'd rephrase
+it to 'connects to devices'.
+
+> There's clearly an overlap with V4L here. Hopefully someone from the
+> linux-
+> media list can comment on this.
+
+I don't think this will be a problem. Initially we probably won't be
+enumerating connectors for V4L since it already has its own API for that.
+
+>> INT_SYNTHESIZER converts MIDI to audio.
+>>
+>> INT_NOISE_SOURCE comes from the USB audio spec; this is not an attempt
+>> to describe the characteristics of consumer-grade devices :-) , but
+>> represents an internal noise source for level calibration or
+>> measurements.
+>>
+>> INT_CONTROLS may have multiple independent controls (this is USB's
+>> Feature Unit); INT_EFFECT may have multiple controls that affect one
+>> single algorithm.
+>
+> I'd describe this as a feature unit/processing unit then.
+>
+>> INT_CHANNEL_SPLIT/MERGE are needed for HDAudio devices, whose topology
+>> information has only stereo links.
+>
+> Some of those INT entities could also be implemented in dedicated chips,
+> so I
+> really think the EXT/INT split doesn't make too much sense. Should we have
+> an
+> AUDIO category ?
+>
+>> * Entity specifications
+>>
+>> While TYPE_DEVICE entities can be identified by their device node, other
+>> entities typcially have just a numeric ID.
+>
+> In V4L2 sub-devices have (or rather will have once the media controller
+> patches will be integrated) device nodes as well, so exposing that
+> information
+> is required.
+>
+>> For that, it would be useful to make do without separate identification
+>> and
+>> let the driver choose the entity ID.
+>
+> How would drivers do that ? What if you have two instances of the same
+> chip (a
+> video sensor, audio mixer, ...) on the same board ?
+
+Regards,
+
+       Hans
+
+-- 
+Hans Verkuil - video4linux developer - sponsored by Cisco
