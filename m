@@ -1,18 +1,20 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v2  00/16] twl6040 updates
-Date: Tue, 14 Dec 2010 21:32:58 +0000
-Message-ID: <1292362378.3316.38.camel@odin>
-References: <1889FA7136B567478A67D4B0F85B0CCEA4E225CE@dlee06.ent.ti.com>
+From: Eric Miao <eric.y.miao@gmail.com>
+Subject: Re: [PATCH] pxa2xx-ac97: Use platform device IRQ
+	resource.
+Date: Wed, 15 Dec 2010 07:21:37 +0800
+Message-ID: <AANLkTimz9Wp6vCZPm32C9Ykw0sG2TgMLWZVX8Quw9ikp@mail.gmail.com>
+References: <20101214171937.GK15575@mail.wantstofly.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 1DC7324391
-	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2010 22:33:03 +0100 (CET)
-Received: by wyi11 with SMTP id 11so897421wyi.38
-	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2010 13:33:02 -0800 (PST)
-In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCEA4E225CE@dlee06.ent.ti.com>
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id D6C9E24418
+	for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2010 00:21:58 +0100 (CET)
+Received: by iwn42 with SMTP id 42so1402066iwn.38
+	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2010 15:21:58 -0800 (PST)
+In-Reply-To: <20101214171937.GK15575@mail.wantstofly.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,26 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Olaya, Margarita" <magi.olaya@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Lennert Buytenhek <buytenh@wantstofly.org>
+Cc: alsa-devel@alsa-project.org, Russell King <linux@arm.linux.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-12-10 at 21:05 -0600, Olaya, Margarita wrote:
-> This patch series contains several fixes and adds new features
-> for twl6040 (phoenix) codec.
-> 
-> v2:
-> Use dev_info to report detection events
-> Use individual variables for headset and handsfree controls
-> Split patch according to the feature/fix done
-> 
-
-All applied, except 4 (requires rework) and 11 (did not apply)
-
-Thanks
-
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+T24gV2VkLCBEZWMgMTUsIDIwMTAgYXQgMToxOSBBTSwgTGVubmVydCBCdXl0ZW5oZWsKPGJ1eXRl
+bmhAd2FudHN0b2ZseS5vcmc+IHdyb3RlOgo+IEluc3RlYWQgb2YgdXNpbmcgdGhlIElSUV9BQzk3
+IGRlZmluZSwgd2hpY2ggZm9yY2VzIGEgZGVwZW5kZW5jeSBvbgo+IHBsYXRmb3JtIGluY2x1ZGUg
+ZmlsZXMsIHRha2UgdGhlIElSUSBudW1iZXIgdG8gdXNlIGZyb20gdGhlIHNwZWNpZmllZAo+IHBs
+YXRmb3JtIGRldmljZSdzIGZpcnN0IElSUSByZXNvdXJjZS4KPgo+IFNpZ25lZC1vZmYtYnk6IExl
+bm5lcnQgQnV5dGVuaGVrIDxidXl0ZW5oQHNlY3JldGxhYi5jYT4KCkFja2VkLWJ5OiBFcmljIE1p
+YW8gPGVyaWMueS5taWFvQGdtYWlsLmNvbT4KCj4KPiBkaWZmIC0tZ2l0IGEvc291bmQvYXJtL3B4
+YTJ4eC1hYzk3LWxpYi5jIGIvc291bmQvYXJtL3B4YTJ4eC1hYzk3LWxpYi5jCj4gaW5kZXggODhl
+ZWMzOC4uMzkyMWY0YSAxMDA2NDQKPiAtLS0gYS9zb3VuZC9hcm0vcHhhMnh4LWFjOTctbGliLmMK
+PiArKysgYi9zb3VuZC9hcm0vcHhhMnh4LWFjOTctbGliLmMKPiBAQCAtMjAsNyArMjAsNiBAQAo+
+IMKgI2luY2x1ZGUgPHNvdW5kL2FjOTdfY29kZWMuaD4KPiDCoCNpbmNsdWRlIDxzb3VuZC9weGEy
+eHgtbGliLmg+Cj4KPiAtI2luY2x1ZGUgPGFzbS9pcnEuaD4KPiDCoCNpbmNsdWRlIDxtYWNoL3Jl
+Z3MtYWM5Ny5oPgo+IMKgI2luY2x1ZGUgPG1hY2gvYXVkaW8uaD4KPgo+IEBAIC0zMTQsOSArMzEz
+LDE3IEBAIEVYUE9SVF9TWU1CT0xfR1BMKHB4YTJ4eF9hYzk3X2h3X3Jlc3VtZSk7Cj4KPiDCoGlu
+dCBfX2RldmluaXQgcHhhMnh4X2FjOTdfaHdfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAq
+ZGV2KQo+IMKgewo+ICsgwqAgwqAgwqAgaW50IGlycTsKPiDCoCDCoCDCoCDCoGludCByZXQ7Cj4g
+wqAgwqAgwqAgwqBweGEyeHhfYXVkaW9fb3BzX3QgKnBkYXRhID0gZGV2LT5kZXYucGxhdGZvcm1f
+ZGF0YTsKPgo+ICsgwqAgwqAgwqAgaXJxID0gcGxhdGZvcm1fZ2V0X2lycShkZXYsIDApOwo+ICsg
+wqAgwqAgwqAgaWYgKGlycSA8IDApIHsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGRldl9lcnIo
+JmRldi0+ZGV2LCAibm8gSVJRIHJlc291cmNlIGRlZmluZWRcbiIpOwo+ICsgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgcmV0ID0gLUVJTlZBTDsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGdvdG8gZXJy
+X2NvbmY7Cj4gKyDCoCDCoCDCoCB9Cj4gKwo+IMKgIMKgIMKgIMKgaWYgKHBkYXRhKSB7Cj4gwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqBzd2l0Y2ggKHBkYXRhLT5yZXNldF9ncGlvKSB7Cj4gwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqBjYXNlIDk1Ogo+IEBAIC0zNTksNyArMzY2LDcgQEAgaW50IF9fZGV2
+aW5pdCBweGEyeHhfYWM5N19od19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpkZXYpCj4g
+wqAgwqAgwqAgwqBpZiAocmV0KQo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgZ290byBlcnJfY2xr
+MjsKPgo+IC0gwqAgwqAgwqAgcmV0ID0gcmVxdWVzdF9pcnEoSVJRX0FDOTcsIHB4YTJ4eF9hYzk3
+X2lycSwgSVJRRl9ESVNBQkxFRCwgIkFDOTciLCBOVUxMKTsKPiArIMKgIMKgIMKgIHJldCA9IHJl
+cXVlc3RfaXJxKGlycSwgcHhhMnh4X2FjOTdfaXJxLCBJUlFGX0RJU0FCTEVELCAiQUM5NyIsIE5V
+TEwpOwo+IMKgIMKgIMKgIMKgaWYgKHJldCA8IDApCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBn
+b3RvIGVycl9pcnE7Cj4KPiBAQCAtMzgzLDcgKzM5MCw3IEBAIEVYUE9SVF9TWU1CT0xfR1BMKHB4
+YTJ4eF9hYzk3X2h3X3Byb2JlKTsKPiDCoHZvaWQgcHhhMnh4X2FjOTdfaHdfcmVtb3ZlKHN0cnVj
+dCBwbGF0Zm9ybV9kZXZpY2UgKmRldikKPiDCoHsKPiDCoCDCoCDCoCDCoEdDUiB8PSBHQ1JfQUNM
+SU5LX09GRjsKPiAtIMKgIMKgIMKgIGZyZWVfaXJxKElSUV9BQzk3LCBOVUxMKTsKPiArIMKgIMKg
+IMKgIGZyZWVfaXJxKHBsYXRmb3JtX2dldF9pcnEoZGV2LCAwKSwgTlVMTCk7Cj4gwqAgwqAgwqAg
+wqBpZiAoYWM5N2NvbmZfY2xrKSB7Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBjbGtfcHV0KGFj
+OTdjb25mX2Nsayk7Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBhYzk3Y29uZl9jbGsgPSBOVUxM
+Owo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
