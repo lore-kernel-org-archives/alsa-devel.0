@@ -1,20 +1,16 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [RFC/PATCH v6 03/12] media: Entities,
-	pads and links
-Date: Wed, 15 Dec 2010 00:50:44 +0100
-Message-ID: <201012150050.44885.laurent.pinchart@ideasonboard.com>
-References: <1290652099-15102-1-git-send-email-laurent.pinchart@ideasonboard.com>
-	<201012141353.15749.laurent.pinchart@ideasonboard.com>
-	<4D0775DB.2020902@ladisch.de>
+From: "Olaya, Margarita" <magi.olaya@ti.com>
+Subject: [PATCH v3 1/2] ASoC: twl6040: Set default gains to
+	minimun value
+Date: Tue, 14 Dec 2010 19:18:36 -0600
+Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4EDD708@dlee06.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
-	[95.142.166.194])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5FFFB24442
-	for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2010 00:49:49 +0100 (CET)
-In-Reply-To: <4D0775DB.2020902@ladisch.de>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 74D2C24475
+	for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2010 02:18:41 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,67 +20,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, sakari.ailus@maxwell.research.nokia.com, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>, lennart@poettering.net, linux-omap@vger.kernel.org, linux-media@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+Updated default values to improve power consumption.
 
-On Tuesday 14 December 2010 14:49:15 Clemens Ladisch wrote:
-> Laurent Pinchart wrote:
-> > On Tuesday 14 December 2010 13:40:21 Hans Verkuil wrote:
-> >> > On Monday 13 December 2010 17:10:51 Clemens Ladisch wrote:
-> >> >> * Entity types
-> >> >> 
-> >> >> TYPE_NODE was renamed to TYPE_DEVICE because "node" sounds like a
-> >> >> node in a graph, which does not distinguish it from other entity
-> >> >> types because all entities are part of the topology graph.  I chose
-> >> >> "device" as this type describes entities that are visible as some
-> >> >> device node to other software.
-> >> > 
-> >> > What this type describes is a device node. Both NODE and DEVICE can be
-> >> > confusing in my opinion, but DEVICE_NODE is a bit long.
-> >> 
-> >> What about DEVNODE? I think that would be a good alternative.
-> > 
-> > Fine with me. Clemens, any opinion on that ?
-> 
-> Fine with me too.
+Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
+Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
+---
+ sound/soc/codecs/twl6040.c |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
 
-OK I'll use that name.
-
-> > > >> TYPE_EXT describes entities that represent some interface to the
-> > > >> external world, TYPE_INT those that are internal to the entire
-> > > >> device. (I'm not sure if that distinction is very useful, but
-> > > >> TYPE_SUBDEV seems to be an even more meaningless name.)
-> > > > 
-> > > > SUBDEV comes from the V4L2 world, and I agree that it might not be a
-> > > > very good name.
-> > > 
-> > > SUBDEV refers to a specific type of driver. Within the v4l world it is
-> > > well defined. So I prefer to keep this. Perhaps some additional
-> > > comments or documentation can be added to clarify this.
-> > 
-> > Should this be clarified by using V4L2_SUBDEV instead then ?
-> 
-> If the "SUBDEV" concept doesn't exist outside V4L, that would indeed be
-> better.
-> 
-> I don't want to rename things that come out of existing frameworks; this
-> naming discussion makes sense only for those entity (sub)types that can
-> be shared between them.  Are there any, besides jacks?
-
-Some entities like TV tuners play a dual audio/video role. I'm not sure how to 
-handle them, I lack experience in that field.
-
-> > What about ALSA entities, should they use MEDIA_ENTITY_TYPE_ALSA_* ?
-> 
-> The entity types representing ALSA devices are already named "ALSA".
-
-I was talking about the INT_* types. They're ALSA-specific, but have no ALSA 
-in the type name.
-
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index 9dfe208..b252cf8 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -806,6 +806,15 @@ static int twl6040_set_bias_level(struct snd_soc_codec *codec,
+ 
+ 		/* initialize vdd/vss registers with reg_cache */
+ 		twl6040_init_vdd_regs(codec);
++
++		/* Set external boost GPO */
++		twl6040_write(codec, TWL6040_REG_GPOCTL, 0x02);
++
++		/* Set initial minimal gain values */
++		twl6040_write(codec, TWL6040_REG_HSGAIN, 0xFF);
++		twl6040_write(codec, TWL6040_REG_EARCTL, 0x1E);
++		twl6040_write(codec, TWL6040_REG_HFLGAIN, 0x1D);
++		twl6040_write(codec, TWL6040_REG_HFRGAIN, 0x1D);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+ 		if (!priv->codec_powered)
 -- 
-Regards,
-
-Laurent Pinchart
+1.7.0.4
