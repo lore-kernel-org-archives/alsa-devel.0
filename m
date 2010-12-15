@@ -1,19 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/2] ASoC: Remove unused DAPM_DOUBLE
-	control types
-Date: Wed, 15 Dec 2010 13:37:09 +0000
-Message-ID: <1292420229.3348.12.camel@odin>
-References: <1292349202-25538-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 1/2] ASoC: twl6040: Set default gains to
+ minimun value
+Date: Wed, 15 Dec 2010 13:55:13 +0000
+Message-ID: <20101215135513.GB9275@rakim.wolfsonmicro.main>
+References: <1889FA7136B567478A67D4B0F85B0CCEA4EDD708@dlee06.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f42.google.com (mail-ew0-f42.google.com
-	[209.85.215.42]) by alsa0.perex.cz (Postfix) with ESMTP id C19F2244E9
-	for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2010 14:37:13 +0100 (CET)
-Received: by ewy1 with SMTP id 1so1123812ewy.29
-	for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2010 05:37:13 -0800 (PST)
-In-Reply-To: <1292349202-25538-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 93A31103859
+	for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2010 14:55:15 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCEA4EDD708@dlee06.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: "Olaya, Margarita" <magi.olaya@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2010-12-14 at 17:53 +0000, Mark Brown wrote:
-> There are no users of these and it's not clear what they would do given
-> the mono flow modelling which DAPM does. If need arises we can add them
-> again.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+On Tue, Dec 14, 2010 at 07:18:36PM -0600, Olaya, Margarita wrote:
 
-All
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+but...
+
+>  		/* initialize vdd/vss registers with reg_cache */
+>  		twl6040_init_vdd_regs(codec);
+> +
+> +		/* Set external boost GPO */
+> +		twl6040_write(codec, TWL6040_REG_GPOCTL, 0x02);
+
+This sounds like it should be managed as a DAPM widget?  
