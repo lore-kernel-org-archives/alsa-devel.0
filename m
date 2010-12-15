@@ -1,16 +1,19 @@
-From: James Courtier-Dutton <james.dutton@gmail.com>
-Subject: hda_codec_ops hotplug events
-Date: Wed, 15 Dec 2010 15:52:59 +0000
-Message-ID: <AANLkTikH=yugqEBKgMH8j=si63cby9X37gwq069Q5VDC@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: Remove unused DAPM_DOUBLE
+	control types
+Date: Wed, 15 Dec 2010 18:10:37 +0000
+Message-ID: <20101215181037.GD9275@rakim.wolfsonmicro.main>
+References: <1292349202-25538-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1292420229.3348.12.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
-	[209.85.216.51]) by alsa0.perex.cz (Postfix) with ESMTP id EEC652451D
-	for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2010 16:52:59 +0100 (CET)
-Received: by qwj8 with SMTP id 8so2084231qwj.38
-	for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2010 07:52:59 -0800 (PST)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 471E42459C
+	for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2010 19:10:43 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1292420229.3348.12.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,18 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-static struct hda_codec_ops intel_hdmi_patch_ops = {
-        .init                   = intel_hdmi_init,
-        .free                   = intel_hdmi_free,
-        .build_pcms             = intel_hdmi_build_pcms,
-        .build_controls         = intel_hdmi_build_controls,
-        .unsol_event            = hdmi_unsol_event,
-};
+On Wed, Dec 15, 2010 at 01:37:09PM +0000, Liam Girdwood wrote:
+> On Tue, 2010-12-14 at 17:53 +0000, Mark Brown wrote:
+> > There are no users of these and it's not clear what they would do given
+> > the mono flow modelling which DAPM does. If need arises we can add them
+> > again.
+> > 
+> > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-What calls .unsol_event ?
+> All
 
-It need something to cause this function to be executed.
-I cannot seem to find out what calls this.
+> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+
+I've pushed the first patch out now but I'll wait for Peter's testing
+before doing anything with the second one.
