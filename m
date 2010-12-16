@@ -1,19 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v4] ASoC: twl6040: Add ramp up/down volume
- for HS and HF
-Date: Thu, 16 Dec 2010 13:45:15 +0000
-Message-ID: <1292507115.3285.3.camel@odin>
-References: <AANLkTikkc_bTbEtW=_NUL6OLRR5ev0DcR3xKf-GdZ4z=@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 2/2] ASoC: Do DAPM control updates in the
+	middle of DAPM sequences
+Date: Thu, 16 Dec 2010 15:51:13 +0200
+Message-ID: <201012161551.13096.peter.ujfalusi@nokia.com>
+References: <1292349202-25538-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1292349202-25538-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 906D624447
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2010 14:45:20 +0100 (CET)
-Received: by wyi11 with SMTP id 11so2542925wyi.38
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2010 05:45:20 -0800 (PST)
-In-Reply-To: <AANLkTikkc_bTbEtW=_NUL6OLRR5ev0DcR3xKf-GdZ4z=@mail.gmail.com>
+Received: from mgw-da02.nokia.com (smtp.nokia.com [147.243.128.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id CD7B424449
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2010 14:51:11 +0100 (CET)
+In-Reply-To: <1292349202-25538-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,36 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Margarita Olaya <magi.oc@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: alsa-devel@alsa-project.org
+Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-12-15 at 17:20 -0600, Margarita Olaya wrote:
-> From: Margarita Olaya Cabrera <magi.olaya@ti.com>
-> 
-> Add ramp functions for the headset and handsfree outputs
-> in order to reduce the pops during power on/off sequences.
-> 
-> In order to give more control to volume ramp, step size and delay
-> between steps can be specified.
-> 
-> The patches are based on wm8350 implementation from Liam
-> Girdwood.
-> 
-> Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
-> Signed-off-by: Misael Lopez Cruz <misael.lopez@ti.com>
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+On Tuesday 14 December 2010 19:53:22 ext Mark Brown wrote:
+> Attempt to minimise audible effects from mixer and mux updates by
+> implementing the actual register changes between powering down widgets
+> that have become unused and powering up widgets that are newly used.
+> =
+
+> This means that we're making the change with the minimum set of widgets
+> powered, that the input path is connected when we're powering up widgets
+> (so things like DC offset correction can run with their signal active)
+> and that we bring things down to cold before switching away.  Since
+> hardware tends to be designed for the power on/off case more than for
+> dynamic reconfiguration this should minimise pops and clicks during
+> reconfiguration while active.
+> =
+
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 > ---
->  sound/soc/codecs/twl6040.c |  533 +++++++++++++++++++++++++++++++++++++++++++-
->  1 files changed, 521 insertions(+), 12 deletions(-)
-> 
+> =
 
-Now applied.
+> Peter, I think this will address your widget reordering issue - I'd
+> appreciate it if you could test and let me know if it helps.  If this
+> works it avoids the need for the the widget to know anything about the
+> particular algorithm implemented by DAPM which seems more robust to me.
+> =
 
-Thanks
+> Sorry about how long it took to get this done.
 
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Well, it is good, and bad.
+It behaves mostly OK, but there's a strange side effect:
+I noticed a pop on playback stream start on the twl4030 codec.
+I'll look into it, but I do not see how this patch can affect the stream st=
+art..
+Could you hold this patch for some time, so I can look at this?
+
+Thanks,
+P=E9ter
