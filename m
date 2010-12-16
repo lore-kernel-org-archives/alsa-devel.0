@@ -1,44 +1,121 @@
-From: Sergei Shtylyov <sshtylyov-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH] ASoC: Davinci: Replace use of IO_ADDRESS with ioremap()
-Date: Thu, 16 Dec 2010 15:49:19 +0300
-Message-ID: <4D0A0ACF.2010901@mvista.com>
-References: <1292491018-24491-1-git-send-email-vaibhav.bedia@ti.com>
-	<4D09F439.9010404@mvista.com>
-	<FCCFB4CDC6E5564B9182F639FC356087035F30217D@dbde02.ent.ti.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 2/2] ASoC: Do DAPM control updates in the
+	middle of DAPM sequences
+Date: Thu, 16 Dec 2010 15:03:09 +0200
+Message-ID: <201012161503.09095.peter.ujfalusi@nokia.com>
+References: <1292349202-25538-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1292349202-25538-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <FCCFB4CDC6E5564B9182F639FC356087035F30217D-/tLxBxkBPtCIQmiDNMet8wC/G2K4zDHf@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: "Bedia, Vaibhav" <vaibhav.bedia-l0cyMroinI0@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org" <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org" <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-da01.nokia.com (smtp.nokia.com [147.243.128.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id E65292441B
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2010 14:03:10 +0100 (CET)
+In-Reply-To: <1292349202-25538-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+On Tuesday 14 December 2010 19:53:22 ext Mark Brown wrote:
+> @@ -1634,13 +1671,12 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol
+> *kcontrol, (struct soc_mixer_control *)kcontrol->private_value; unsigned
+> int reg =3D mc->reg;
+>         unsigned int shift =3D mc->shift;
+> -       unsigned int rshift =3D mc->rshift;
+>         int max =3D mc->max;
+>         unsigned int mask =3D (1 << fls(max)) - 1;
+>         unsigned int invert =3D mc->invert;
+> -       unsigned int val, val2, val_mask;
+> -       int connect;
+> -       int ret;
+> +       unsigned int val, val_mask;
+> +       int connect, change;
 
-On 16-12-2010 14:41, Bedia, Vaibhav wrote:
+You do not need the change variable, since
 
->>>    err_free_mem:
+> +       struct snd_soc_dapm_update update;
+> =
 
->>      Don't you forget to call clk_disable()/clk_put()?
+>         val =3D (ucontrol->value.integer.value[0] & mask);
+> =
 
-> Will fix this issue also as part of the patch.
+> @@ -1648,18 +1684,12 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol
+> *kcontrol, val =3D max - val;
+>         val_mask =3D mask << shift;
+>         val =3D val << shift;
+> -       if (shift !=3D rshift) {
+> -               val2 =3D (ucontrol->value.integer.value[1] & mask);
+> -               if (invert)
+> -                       val2 =3D max - val2;
+> -               val_mask |=3D mask << rshift;
+> -               val |=3D val2 << rshift;
+> -       }
+> =
 
-    No, this is different issue -- please submit another patch.
+>         mutex_lock(&widget->codec->mutex);
+>         widget->value =3D val;
+> =
 
->>    	release_mem_region(mem->start, (mem->end - mem->start) + 1);
->>    err_release_data:
+> -       if (snd_soc_test_bits(widget->codec, reg, val_mask, val)) {
+> +       change =3D snd_soc_test_bits(widget->codec, reg, val_mask, val);
+> +       if (change) {
 
-> Regards,
-> Vaibhav
+it is used only here, so you could just keep the old if () way.
 
-WBR, Sergei
+>                 if (val)
+>                         /* new connection */
+>                         connect =3D invert ? 0:1;
+> @@ -1667,28 +1697,20 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol
+> *kcontrol, /* old connection must be powered down */
+>                         connect =3D invert ? 1:0;
+> =
+
+> +               update.kcontrol =3D kcontrol;
+> +               update.widget =3D widget;
+> +               update.reg =3D reg;
+> +               update.mask =3D mask;
+> +               update.val =3D val;
+> +               widget->dapm->update =3D &update;
+> +
+>                 dapm_mixer_update_power(widget, kcontrol, connect);
+> +
+> +               widget->dapm->update =3D NULL;
+>         }
+> =
+
+> -       if (widget->event) {
+> -               if (widget->event_flags & SND_SOC_DAPM_PRE_REG) {
+> -                       ret =3D widget->event(widget, kcontrol,
+> -                                               SND_SOC_DAPM_PRE_REG);
+> -                       if (ret < 0) {
+> -                               ret =3D 1;
+> -                               goto out;
+> -                       }
+> -               }
+> -               ret =3D snd_soc_update_bits(widget->codec, reg, val_mask,
+> val); -               if (widget->event_flags & SND_SOC_DAPM_POST_REG)
+> -                       ret =3D widget->event(widget, kcontrol,
+> -                                               SND_SOC_DAPM_POST_REG);
+> -       } else
+> -               ret =3D snd_soc_update_bits(widget->codec, reg, val_mask,
+> val); -
+> -out:
+>         mutex_unlock(&widget->codec->mutex);
+> -       return ret;
+> +       return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(snd_soc_dapm_put_volsw);
+
+-- =
+
+P=E9ter
