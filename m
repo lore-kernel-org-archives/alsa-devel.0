@@ -1,14 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] regulator: Clean up logging a bit
-Date: Fri, 17 Dec 2010 16:04:12 +0000
-Message-ID: <1292601852-21905-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: soc-dapm: Introduce the new
+ snd_soc_dapm_virt_mux type
+Date: Fri, 17 Dec 2010 17:37:12 +0000
+Message-ID: <20101217173712.GA30235@rakim.wolfsonmicro.main>
+References: <1292514819-4254-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A0E7F1037FC
-	for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2010 17:04:14 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 71C331037FC
+	for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2010 18:37:15 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1292514819-4254-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,32 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The recent introduction of standard regulator API logging macros means
-that all our log messages have at least the function name in them and
-logging that the constraints are for the regulator API is probably a
-bit much.
+On Thu, Dec 16, 2010 at 03:53:39PM +0000, Dimitris Papastamos wrote:
+> This new type is a virtual version of snd_soc_dapm_mux.  It is used
+> when a backing register value is not necessary for deciding which
+> input path to connect.  A simple virtual enumeration control e.g.
+> SOC_DAPM_ENUM_VIRT() can be exposed to userspace which will be used
+> to choose which path to connect.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- drivers/regulator/core.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index ab419f8..911b774 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -739,7 +739,7 @@ static void print_constraints(struct regulator_dev *rdev)
- 	if (constraints->valid_modes_mask & REGULATOR_MODE_STANDBY)
- 		count += sprintf(buf + count, "standby");
- 
--	rdev_info(rdev, "regulator: %s\n", buf);
-+	rdev_info(rdev, "%s\n", buf);
- }
- 
- static int machine_constraints_voltage(struct regulator_dev *rdev,
--- 
-1.7.1
+Applied, thanks.
