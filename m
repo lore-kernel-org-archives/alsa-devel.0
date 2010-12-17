@@ -1,21 +1,16 @@
-From: "Bedia, Vaibhav" <vaibhav.bedia@ti.com>
-Subject: Re: [PATCH] ASoC: Davinci: Replace use of IO_ADDRESS
-	with ioremap()
-Date: Fri, 17 Dec 2010 09:46:30 +0530
-Message-ID: <FCCFB4CDC6E5564B9182F639FC356087035F3AB987@dbde02.ent.ti.com>
-References: <1292491018-24491-1-git-send-email-vaibhav.bedia@ti.com>
-	<4D09F439.9010404@mvista.com>
-	<FCCFB4CDC6E5564B9182F639FC356087035F30217D@dbde02.ent.ti.com>
-	<4D0A0ACF.2010901@mvista.com>
+From: Manu Abraham <abraham.manu@gmail.com>
+Subject: callbacks order while capturing from Line-IN
+Date: Fri, 17 Dec 2010 10:28:03 +0530
+Message-ID: <AANLkTik+MSbaDS0jD3ax8t7TFjf1vXAjaK3a=P+5MUNa@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1743510382B
-	for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2010 05:16:44 +0100 (CET)
-In-Reply-To: <4D0A0ACF.2010901@mvista.com>
-Content-Language: en-US
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2257410382B
+	for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2010 05:58:04 +0100 (CET)
+Received: by wwe15 with SMTP id 15so268352wwe.20
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2010 20:58:03 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,29 +20,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sergei Shtylyov <sshtylyov@mvista.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Jaroslav Kysela <perex@perex.cz>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday, December 16, 2010 6:19 PM, Sergei Shtylyov wrote:
-> Hello.
-> 
-> On 16-12-2010 14:41, Bedia, Vaibhav wrote:
-> 
->>>>    err_free_mem:
-> 
->>>      Don't you forget to call clk_disable()/clk_put()?
-> 
->> Will fix this issue also as part of the patch.
-> 
->     No, this is different issue -- please submit another patch.
-> 
->>>    	release_mem_region(mem->start, (mem->end - mem->start) + 1);
->>>    err_release_data:
-> 
+Hi,
 
-Seems like multiple issues can be fixed in the driver. Will send patches for those also.
+By now I am a bit confused.
 
+I am seeing a certain pattern in which the callbacks are invoked:
 
-Regards,
-Vaibhav
+- hw_params()
+- prepare()
+- trigger(); // Start DMA
+- pointer();
+            --> gets data after interrupt is handled
+- trigger(); // Stop DMA
+- prepare();
+- trigger(); // Start DMA
+- pointer();
+           --> gets data after interrupt is handled
+
+..
+..
+
+and so on.
+
+Is this the right behaviour that's expected from a function ALSA
+capture driver ?
+I am trying to understand why there is Start DMA, Stop DMA, Start DMA, Stop DMA
+in a cyclic fashion for each of the interrupts in my setup.
+
+Thanks,
+Manu
