@@ -1,20 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/2] ASoC: sh: fsi: move fsi_irq_enable
- function to fsi_dai_trigger
-Date: Fri, 17 Dec 2010 10:48:40 +0000
-Message-ID: <1292582920.3286.6.camel@odin>
-References: <w3psjxxginc.wl%kuninori.morimoto.gx@renesas.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: question on static dapm routes
+Date: Fri, 17 Dec 2010 11:20:33 +0000
+Message-ID: <20101217112033.GA31453@rakim.wolfsonmicro.main>
+References: <w3pr5dhgij9.wl%kuninori.morimoto.gx@renesas.com>
+	<98769532B4BB14429434178695419EAE053B898E04@bgsmsx501.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1F2B71038E5
-	for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2010 11:48:45 +0100 (CET)
-Received: by wyi11 with SMTP id 11so462356wyi.38
-	for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2010 02:48:43 -0800 (PST)
-In-Reply-To: <w3psjxxginc.wl%kuninori.morimoto.gx@renesas.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7A5D610388D
+	for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2010 12:20:35 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <98769532B4BB14429434178695419EAE053B898E04@bgsmsx501.gar.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,20 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: "Harsha, Priya" <priya.harsha@intel.com>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-12-17 at 12:52 +0900, Kuninori Morimoto wrote:
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  sound/soc/sh/fsi.c |    4 +---
->  1 files changed, 1 insertions(+), 3 deletions(-)
+On Fri, Dec 17, 2010 at 01:56:36PM +0530, Harsha, Priya wrote:
 
-Both
+> In the codec file which we are trying to write, we do not have any dynamic 
+> Switching paths. So for the structure snd_soc_dapm_route, its always
+> 		{sink, NULL, source}.
+> The DAPM widgets are getting enabled at the codec probe
+> (as we saw that they are getting declared as static) . So this consumes 
+> power and we want them do be turned on only when DAI is started?
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+This most likely indicates an error in your DAPM map.  DAPM will only
+power on audio routes which have a fully connected path from an input to
+an output - you will have defined a path which includes the widgets
+which are getting powered on.  Looking through the debugfs file for DAPM
+should let you see which path this is.
+
+> So, does that mean that for every stream, we make use of the startup and 
+> shutdown functions to do our power management of the widgets. Or is there a 
+> way ASOC automatically takes care of powering of the static paths as well?
+
+If your device contains unconditionally connected paths the machine
+driver should use SOC_DAPM_PIN_SWITCH() to add relevant controls for the
+power if it needs them, or use something like jack detection if that's
+supported.
