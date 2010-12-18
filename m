@@ -1,20 +1,21 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: periods*period_size vs. buffer_size;
 	should they be equal?
-Date: Sat, 18 Dec 2010 11:06:45 +0900
-Message-ID: <AANLkTim-5ynM+Z=0PfGPpyN3rOhxb+e6SHkphWZ7=V6T@mail.gmail.com>
+Date: Sat, 18 Dec 2010 11:12:09 +0800
+Message-ID: <AANLkTi=+CyFF3FovfckPmUmoTQdQfzjemF7ppzEMchSy@mail.gmail.com>
 References: <74CDBE0F657A3D45AFBB94109FB122FF030FD787C0@HQMAIL01.nvidia.com>
+	<AANLkTim-5ynM+Z=0PfGPpyN3rOhxb+e6SHkphWZ7=V6T@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bw0-f42.google.com (mail-bw0-f42.google.com
 	[209.85.214.42])
-	by alsa0.perex.cz (Postfix) with ESMTP id 769A110391A
-	for <alsa-devel@alsa-project.org>; Sat, 18 Dec 2010 03:06:48 +0100 (CET)
-Received: by bwz13 with SMTP id 13so1722005bwz.29
-	for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2010 18:06:45 -0800 (PST)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF030FD787C0@HQMAIL01.nvidia.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 1AF0610391A
+	for <alsa-devel@alsa-project.org>; Sat, 18 Dec 2010 04:12:10 +0100 (CET)
+Received: by bwz13 with SMTP id 13so1747941bwz.29
+	for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2010 19:12:09 -0800 (PST)
+In-Reply-To: <AANLkTim-5ynM+Z=0PfGPpyN3rOhxb+e6SHkphWZ7=V6T@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,48 +25,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBEZWMgMTgsIDIwMTAgYXQgNTowNCBBTSwgU3RlcGhlbiBXYXJyZW4gPHN3YXJyZW5A
-bnZpZGlhLmNvbT4gd3JvdGU6Cj4gSSdtIGF0dGVtcHRpbmcgdG8gdW5kZXJzdGFuZCB0aGUgbGF5
-b3V0IG9mIHRoZSBETUEgYnVmZmVyIHVzZWQgYnkgQVNvQwo+IGRldmljZXMuIEl0IHNlZW1zIGxp
-a2UgdGhlIGJ1ZmZlciBzaG91bGQgY29uc2lzdCBvZiBydW50aW1lLT5wZXJpb2RzIGVudHJpZXMK
-PiBlYWNoIG9mIHJ1bnRpbWUtPnBlcmlvZF9zaXplIGZyYW1lcyBvZiBhdWRpbyBkYXRhLiBIZW5j
-ZSwgcnVudGltZS0+YnVmZmVyX3NpemUKPiBzaG91bGQgYmUgZXF1YWwgdG8gcnVudGltZS0+cGVy
-aW9kcyAqIHJ1bnRpbWUtPnBlcmlvZF9zaXplIGluIGZyYW1lcy4KPgo+IFRoaXMgYXNzdW1wdGlv
-biBob2xkcyB0cnVlIGluIG1hbnkgY2FzZXMuIEhvd2V2ZXIsIGl0IGRvZXNuJ3QgaW4gb3RoZXJz
-Ogo+Cj4gKHNpemVzIGluIGhleCkKPgo+IFBsYXlpbmcgV0FWRSAnODAwMC53YXYnIDogU2lnbmVk
-IDE2IGJpdCBMaXR0bGUgRW5kaWFuLCBSYXRlIDgwMDAgSHosIFN0ZXJlbwo+IFsgwqAyMTcuOTEw
-ODY3XSBUcmlnZ2VyOiBydW50aW1lLT5wZXJpb2RzPTQKPiBbIMKgMjE3LjkxNDY5Nl0gVHJpZ2dl
-cjogcnVudGltZS0+cGVyaW9kX3NpemU9M2U4Cj4gWyDCoDIxNy45MTkwNDNdIFRyaWdnZXI6IHJ1
-bnRpbWUtPmJ1ZmZlcl9zaXplPWZhMAo+IFsgwqAyMTcuOTIzMzg5XSBUcmlnZ2VyOiBmMmIoNCk9
-MTAKPgo+IFBsYXlpbmcgV0FWRSAnMTEwMjUud2F2JyA6IFNpZ25lZCAxNiBiaXQgTGl0dGxlIEVu
-ZGlhbiwgUmF0ZSAxMTAyNSBIeiwgU3RlcmVvCj4gWyDCoDI2OC41NDM4MjFdIFRyaWdnZXI6IHJ1
-bnRpbWUtPnBlcmlvZHM9NQo+IFsgwqAyNjguNTQ3NjUxXSBUcmlnZ2VyOiBydW50aW1lLT5wZXJp
-b2Rfc2l6ZT00MDAKPiBbIMKgMjY4LjU1MTk5OF0gVHJpZ2dlcjogcnVudGltZS0+YnVmZmVyX3Np
-emU9MTU4OQo+Cj4gUGxheWluZyBXQVZFICcxNjAwMC53YXYnIDogU2lnbmVkIDE2IGJpdCBMaXR0
-bGUgRW5kaWFuLCBSYXRlIDE2MDAwIEh6LCBTdGVyZW8KPiBbIMKgMzE1Ljg4OTI4MF0gVHJpZ2dl
-cjogcnVudGltZS0+cGVyaW9kcz03Cj4gWyDCoDMxNS44OTMxMDldIFRyaWdnZXI6IHJ1bnRpbWUt
-PnBlcmlvZF9zaXplPTQwMAo+IFsgwqAzMTUuODk3NDU2XSBUcmlnZ2VyOiBydW50aW1lLT5idWZm
-ZXJfc2l6ZT0xZjQwCj4KPiBZZXQgZm9yIGFueSBoaWdoZXIgc2FtcGxlIHJhdGUgdGhlIGxheW91
-dCBpcyBpZGVudGljYWw6Cj4KPiBQbGF5aW5nIFdBVkUgJzk2MDAwLndhdicgOiBTaWduZWQgMTYg
-Yml0IExpdHRsZSBFbmRpYW4sIFJhdGUgOTYwMDAgSHosIFN0ZXJlbwo+IFsgwqAzODUuNDk0NzY0
-XSBUcmlnZ2VyOiBydW50aW1lLT5wZXJpb2RzPTgKPiBbIMKgMzg1LjQ5ODU5NF0gVHJpZ2dlcjog
-cnVudGltZS0+cGVyaW9kX3NpemU9NDAwCj4gWyDCoDM4NS41MDI5NDFdIFRyaWdnZXI6IHJ1bnRp
-bWUtPmJ1ZmZlcl9zaXplPTIwMDAKPgo+IElzIG15IGFzc3VtcHRpb24gd3Jvbmc/IElzIHRoZXJl
-IHNvbWUgYnVnIHNvbWV3aGVyZT8KCllvdSBhc3N1bXB0aW9uIGRvZXNuJ3Qgc2VlbSB0byBiZSBh
-Y2N1cmF0ZS4KVGhlb3JldGljYWxseSwgeW91ciBidWZmZXJfc2l6ZSBtYXkgbm90IGJlIGEgbXVs
-dGlwbGUgb2YgcGVyaW9kX3NpemUuIEJ1dCB0aGF0CndvdWxkIG1lYW4gcG9pbnRzIHNoaWZ0aW5n
-IG9uIHRoZSByaW5nIGJ1ZmZlciBhdCB3aGljaCBpbnRlcnJ1cHRzIGFyZSBnZW5lcmF0ZWQuCgpV
-c3VhbGx5IGVtYmVkZGVkIHN5c3RlbXMgZG9uJ3QgaGF2ZSBkZWRpY2F0ZWQgcmluZyBidWZmZXIg
-RE1BIGZvciB1c2UKd2l0aCBBU29DLi4uIGFuZCBpdCBpcyBjdW1iZXJzb21lIHRvIHJlcHJvZ3Jh
-bSB0aGUgbmV4dCBpbnRlcnJ1cHQgcG9pbnQgaWYKYnVmZmVyX3NpemUgaXMgbm90IGEgbXVsdGlw
-bGUgb2YgcGVyaW9kX3NpemUuIFNvLCB3ZSB1c3VhbGx5IGNhbGwKc25kX3BjbV9od19jb25zdHJh
-aW50X2ludGVnZXIocnVudGltZSwgU05EUlZfUENNX0hXX1BBUkFNX1BFUklPRFMpOwppbiB0aGUg
-c3RyZWFtIG9wZW4gY2FsbGJhY2ssIHdoaWNoIGVuc3VyZXMgY29uc3RyYWluc3QgYnVmZmVyX3Np
-emUgdG8KYmUgYSBtdWx0aXBsZSBvZiBwZXJpb2Rfc2l6ZS4KX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+2010/12/18 Jassi Brar <jassisinghbrar@gmail.com>
+
+> On Sat, Dec 18, 2010 at 5:04 AM, Stephen Warren <swarren@nvidia.com>
+> wrote:
+> > I'm attempting to understand the layout of the DMA buffer used by ASoC
+> > devices. It seems like the buffer should consist of runtime->periods
+> entries
+> > each of runtime->period_size frames of audio data. Hence,
+> runtime->buffer_size
+> > should be equal to runtime->periods * runtime->period_size in frames.
+> >
+> > This assumption holds true in many cases. However, it doesn't in others:
+> >
+> > (sizes in hex)
+> >
+> > Playing WAVE '8000.wav' : Signed 16 bit Little Endian, Rate 8000 Hz,
+> Stereo
+> > [  217.910867] Trigger: runtime->periods=4
+> > [  217.914696] Trigger: runtime->period_size=3e8
+> > [  217.919043] Trigger: runtime->buffer_size=fa0
+> > [  217.923389] Trigger: f2b(4)=10
+> >
+> > Playing WAVE '11025.wav' : Signed 16 bit Little Endian, Rate 11025 Hz,
+> Stereo
+> > [  268.543821] Trigger: runtime->periods=5
+> > [  268.547651] Trigger: runtime->period_size=400
+> > [  268.551998] Trigger: runtime->buffer_size=1589
+> >
+> > Playing WAVE '16000.wav' : Signed 16 bit Little Endian, Rate 16000 Hz,
+> Stereo
+> > [  315.889280] Trigger: runtime->periods=7
+> > [  315.893109] Trigger: runtime->period_size=400
+> > [  315.897456] Trigger: runtime->buffer_size=1f40
+> >
+> > Yet for any higher sample rate the layout is identical:
+> >
+> > Playing WAVE '96000.wav' : Signed 16 bit Little Endian, Rate 96000 Hz,
+> Stereo
+> > [  385.494764] Trigger: runtime->periods=8
+> > [  385.498594] Trigger: runtime->period_size=400
+> > [  385.502941] Trigger: runtime->buffer_size=2000
+> >
+> > Is my assumption wrong? Is there some bug somewhere?
+>
+> You assumption doesn't seem to be accurate.
+> Theoretically, your buffer_size may not be a multiple of period_size. But
+> that
+> would mean points shifting on the ring buffer at which interrupts are
+> generated.
+>
+> Usually embedded systems don't have dedicated ring buffer DMA for use
+> with ASoC... and it is cumbersome to reprogram the next interrupt point if
+> buffer_size is not a multiple of period_size. So, we usually call
+> snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
+> in the stream open callback, which ensures constrainst buffer_size to
+> be a multiple of period_size.
+>
+>
+How about the DMA page size in PCI/PCIe ?
+
+It seem that some PCI card (e.g. au88x0) does not allow a period split
+across two DMA page and require period size must be power of two.
+
+Is this a requirement of using scatther gather buffer or hardware limitation
+of au88x0 ?
