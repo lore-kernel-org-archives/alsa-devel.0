@@ -1,21 +1,19 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: periods*period_size vs. buffer_size;
-	should they be equal?
-Date: Sat, 18 Dec 2010 11:12:09 +0800
-Message-ID: <AANLkTi=+CyFF3FovfckPmUmoTQdQfzjemF7ppzEMchSy@mail.gmail.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF030FD787C0@HQMAIL01.nvidia.com>
-	<AANLkTim-5ynM+Z=0PfGPpyN3rOhxb+e6SHkphWZ7=V6T@mail.gmail.com>
+Subject: Re: lenovo G560 internal microphone fix
+Date: Sat, 18 Dec 2010 12:03:08 +0800
+Message-ID: <AANLkTik+bZjsVqNdvvzpSYy+xcZetJYpU=gYGEBL+hk9@mail.gmail.com>
+References: <AANLkTimZxT6A0-c_useJVDEhLF7+WN0C8SmW=8eNt3jg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f42.google.com (mail-bw0-f42.google.com
-	[209.85.214.42])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1AF0610391A
-	for <alsa-devel@alsa-project.org>; Sat, 18 Dec 2010 04:12:10 +0100 (CET)
-Received: by bwz13 with SMTP id 13so1747941bwz.29
-	for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2010 19:12:09 -0800 (PST)
-In-Reply-To: <AANLkTim-5ynM+Z=0PfGPpyN3rOhxb+e6SHkphWZ7=V6T@mail.gmail.com>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA44A10391A
+	for <alsa-devel@alsa-project.org>; Sat, 18 Dec 2010 05:03:09 +0100 (CET)
+Received: by eyg24 with SMTP id 24so596680eyg.24
+	for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2010 20:03:09 -0800 (PST)
+In-Reply-To: <AANLkTimZxT6A0-c_useJVDEhLF7+WN0C8SmW=8eNt3jg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,68 +26,67 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/12/18 Jassi Brar <jassisinghbrar@gmail.com>
+2010/12/18 Kayne Richens <kayno@kayno.net>
 
-> On Sat, Dec 18, 2010 at 5:04 AM, Stephen Warren <swarren@nvidia.com>
-> wrote:
-> > I'm attempting to understand the layout of the DMA buffer used by ASoC
-> > devices. It seems like the buffer should consist of runtime->periods
-> entries
-> > each of runtime->period_size frames of audio data. Hence,
-> runtime->buffer_size
-> > should be equal to runtime->periods * runtime->period_size in frames.
-> >
-> > This assumption holds true in many cases. However, it doesn't in others:
-> >
-> > (sizes in hex)
-> >
-> > Playing WAVE '8000.wav' : Signed 16 bit Little Endian, Rate 8000 Hz,
-> Stereo
-> > [  217.910867] Trigger: runtime->periods=4
-> > [  217.914696] Trigger: runtime->period_size=3e8
-> > [  217.919043] Trigger: runtime->buffer_size=fa0
-> > [  217.923389] Trigger: f2b(4)=10
-> >
-> > Playing WAVE '11025.wav' : Signed 16 bit Little Endian, Rate 11025 Hz,
-> Stereo
-> > [  268.543821] Trigger: runtime->periods=5
-> > [  268.547651] Trigger: runtime->period_size=400
-> > [  268.551998] Trigger: runtime->buffer_size=1589
-> >
-> > Playing WAVE '16000.wav' : Signed 16 bit Little Endian, Rate 16000 Hz,
-> Stereo
-> > [  315.889280] Trigger: runtime->periods=7
-> > [  315.893109] Trigger: runtime->period_size=400
-> > [  315.897456] Trigger: runtime->buffer_size=1f40
-> >
-> > Yet for any higher sample rate the layout is identical:
-> >
-> > Playing WAVE '96000.wav' : Signed 16 bit Little Endian, Rate 96000 Hz,
-> Stereo
-> > [  385.494764] Trigger: runtime->periods=8
-> > [  385.498594] Trigger: runtime->period_size=400
-> > [  385.502941] Trigger: runtime->buffer_size=2000
-> >
-> > Is my assumption wrong? Is there some bug somewhere?
+> hi
 >
-> You assumption doesn't seem to be accurate.
-> Theoretically, your buffer_size may not be a multiple of period_size. But
-> that
-> would mean points shifting on the ring buffer at which interrupts are
-> generated.
+> I used hda_analyzer to fix my internal microphone on my lenovo G560 laptop.
+> I had to make the following change before the microphone would work:
 >
-> Usually embedded systems don't have dedicated ring buffer DMA for use
-> with ASoC... and it is cumbersome to reprogram the next interrupt point if
-> buffer_size is not a multiple of period_size. So, we usually call
-> snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
-> in the stream open callback, which ensures constrainst buffer_size to
-> be a multiple of period_size.
+> Diff for codec 0/1 (0x14f15069):
+> ---
+> +++
+> @@ -51,26 +51,26 @@
+>     ControlAmp: chs=1, dir=1, idx=0, ofs=0
+>   Control: name="Beep Playback Switch", index=0, device=0
+>     ControlAmp: chs=1, dir=1, idx=0, ofs=0
+>   Amp-Out caps: ofs=0x07, nsteps=0x07, stepsize=0x0f, mute=0
+>   Amp-Out vals: 0x00
+>  Node 0x14 [Audio Input] wcaps 0x100d1b: Stereo Amp-In R/L
+>   Device: name="CONEXANT Analog", type="Audio", device=0
+>   Amp-In caps: ofs=0x4a, nsteps=0x50, stepsize=0x03, mute=1
+> - Amp-In vals: [0x50 0x50] [0x80 0x80] [0x50 0x50] [0x80 0x80]
+> + Amp-In vals: [0x50 0x50] [0x50 0x50] [0x50 0x50] [0x50 0x50]
+>   Converter: stream=0, channel=0
+>   SDI-Select: 0
+>   PCM:
+>     rates [0x160]: 44100 48000 96000
+>     bits [0xe]: 16 20 24
+>     formats [0x1]: PCM
+>   Power: setting=D0, actual=D0
+>   Connection: 4
+> - 0x17 0x18 0x23* 0x24
+> + 0x17 0x18* 0x23 0x24
+>  Node 0x15 [Audio Input] wcaps 0x100d1b: Stereo Amp-In R/L
+>   Amp-In caps: ofs=0x4a, nsteps=0x50, stepsize=0x03, mute=1
+>   Amp-In vals: [0x4a 0x4a] [0x4a 0x4a] [0x4a 0x4a] [0x4a 0x4a]
+>   Converter: stream=0, channel=0
+>   SDI-Select: 0
+>   PCM:
+>     rates [0x160]: 44100 48000 96000
+>     bits [0xe]: 16 20 2
 >
+> My alsa version is 1.0.23 (ubuntu 10.10). I've attached the output of
+> alsa-info.sh.
 >
-How about the DMA page size in PCI/PCIe ?
+> This fix has also helped other G560 owners:
+>
+> https://bugs.launchpad.net/ubuntu/+source/linux-backports-modules-2.6.32/+bug/590756
+>
+> If I need to provide anything else, let me know.
+>
 
-It seem that some PCI card (e.g. au88x0) does not allow a period split
-across two DMA page and require period size must be power of two.
+node 0x24 [Audio Mixer] seem to be "Stereo Mix" from [Audio Output] 0x10 and
+0x11
 
-Is this a requirement of using scatther gather buffer or hardware limitation
-of au88x0 ?
+Node 0x24 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+  Amp-In caps: ofs=0x4a, nsteps=0x4a, stepsize=0x03, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Power: setting=D0, actual=D0
+  Connection: 2
+     0x10 0x11
+
+
+
+This may mean that 5069 may need a more complex input source selection
+instead of using cxt5066_capture_souce
