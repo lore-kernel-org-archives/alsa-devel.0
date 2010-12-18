@@ -1,20 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Handling non-buffer-sized MMAP requests
-Date: Sat, 18 Dec 2010 08:32:47 +0800
-Message-ID: <AANLkTi=nd76edFVHB9G-C7+CBYsqk4MKACxtyiJSLGzB@mail.gmail.com>
-References: <6e2495d80bd7915f371b984cc4b4a503.squirrel@master.museresearch.com>
-	<4D05DFB9.3080407@ladisch.de>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: periods*period_size vs. buffer_size;
+	should they be equal?
+Date: Sat, 18 Dec 2010 11:06:45 +0900
+Message-ID: <AANLkTim-5ynM+Z=0PfGPpyN3rOhxb+e6SHkphWZ7=V6T@mail.gmail.com>
+References: <74CDBE0F657A3D45AFBB94109FB122FF030FD787C0@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bw0-f42.google.com (mail-bw0-f42.google.com
 	[209.85.214.42])
-	by alsa0.perex.cz (Postfix) with ESMTP id CCFBB10391A
-	for <alsa-devel@alsa-project.org>; Sat, 18 Dec 2010 01:32:50 +0100 (CET)
-Received: by bwz13 with SMTP id 13so1678040bwz.29
-	for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2010 16:32:50 -0800 (PST)
-In-Reply-To: <4D05DFB9.3080407@ladisch.de>
+	by alsa0.perex.cz (Postfix) with ESMTP id 769A110391A
+	for <alsa-devel@alsa-project.org>; Sat, 18 Dec 2010 03:06:48 +0100 (CET)
+Received: by bwz13 with SMTP id 13so1722005bwz.29
+	for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2010 18:06:45 -0800 (PST)
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF030FD787C0@HQMAIL01.nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,45 +24,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/12/13 Clemens Ladisch <clemens@ladisch.de>
-
-> louis@museresearch.com wrote:
-> > Hi everyone, I'm having some difficulty improving a full-duplex MMAP ALSA
-> > routine.  ALSA sometimes reports more samples available for input than my
-> > buffer can take, or asks for more samples than I have available.  Is this
-> > a buffer overrun/underrun?
->
-> Yes.  (And this should happen only when you've disabled stopping on
-> an xrun, so you've asked for it.  :-)
->
-> > If I restart the streams in the case that too
-> > much input is available (on the assumption that it's an xrun) it seems to
-> > happen at the drop of a hat and makes things worse.  If I discard the
-> > excess input, that doesn't work well either.
-> >
-> > What is the appropriate way to deal with this situation?
->
-> The best way would be to prevent this situation from happening, i.e.,
-> read the captured data from the buffer before it overflows.
->
-> (In the case of capturing, latency does _not_ depend on the buffer size,
-> so you should make the buffer as big as possible.)
->
->
-Refer to http://thread.gmane.org/gmane.linux.alsa.devel/66826/focus=66954
-
-you mention that snd_pcm_forward can be used to recover from an underrun
-condition for playback
-
-In underrun/overrun of playback/capture , the hardware pointer is ahead of
-the application pointer
-
-Can snd_pcm_forward be used to recover from overrun in  capture when
-automatic stop is disabled ?
-
-Why does  Pulseaudio server request rewind at  the end of underrun ?
-
-D: protocol-native.c: Requesting rewind due to *end of underrun*
+T24gU2F0LCBEZWMgMTgsIDIwMTAgYXQgNTowNCBBTSwgU3RlcGhlbiBXYXJyZW4gPHN3YXJyZW5A
+bnZpZGlhLmNvbT4gd3JvdGU6Cj4gSSdtIGF0dGVtcHRpbmcgdG8gdW5kZXJzdGFuZCB0aGUgbGF5
+b3V0IG9mIHRoZSBETUEgYnVmZmVyIHVzZWQgYnkgQVNvQwo+IGRldmljZXMuIEl0IHNlZW1zIGxp
+a2UgdGhlIGJ1ZmZlciBzaG91bGQgY29uc2lzdCBvZiBydW50aW1lLT5wZXJpb2RzIGVudHJpZXMK
+PiBlYWNoIG9mIHJ1bnRpbWUtPnBlcmlvZF9zaXplIGZyYW1lcyBvZiBhdWRpbyBkYXRhLiBIZW5j
+ZSwgcnVudGltZS0+YnVmZmVyX3NpemUKPiBzaG91bGQgYmUgZXF1YWwgdG8gcnVudGltZS0+cGVy
+aW9kcyAqIHJ1bnRpbWUtPnBlcmlvZF9zaXplIGluIGZyYW1lcy4KPgo+IFRoaXMgYXNzdW1wdGlv
+biBob2xkcyB0cnVlIGluIG1hbnkgY2FzZXMuIEhvd2V2ZXIsIGl0IGRvZXNuJ3QgaW4gb3RoZXJz
+Ogo+Cj4gKHNpemVzIGluIGhleCkKPgo+IFBsYXlpbmcgV0FWRSAnODAwMC53YXYnIDogU2lnbmVk
+IDE2IGJpdCBMaXR0bGUgRW5kaWFuLCBSYXRlIDgwMDAgSHosIFN0ZXJlbwo+IFsgwqAyMTcuOTEw
+ODY3XSBUcmlnZ2VyOiBydW50aW1lLT5wZXJpb2RzPTQKPiBbIMKgMjE3LjkxNDY5Nl0gVHJpZ2dl
+cjogcnVudGltZS0+cGVyaW9kX3NpemU9M2U4Cj4gWyDCoDIxNy45MTkwNDNdIFRyaWdnZXI6IHJ1
+bnRpbWUtPmJ1ZmZlcl9zaXplPWZhMAo+IFsgwqAyMTcuOTIzMzg5XSBUcmlnZ2VyOiBmMmIoNCk9
+MTAKPgo+IFBsYXlpbmcgV0FWRSAnMTEwMjUud2F2JyA6IFNpZ25lZCAxNiBiaXQgTGl0dGxlIEVu
+ZGlhbiwgUmF0ZSAxMTAyNSBIeiwgU3RlcmVvCj4gWyDCoDI2OC41NDM4MjFdIFRyaWdnZXI6IHJ1
+bnRpbWUtPnBlcmlvZHM9NQo+IFsgwqAyNjguNTQ3NjUxXSBUcmlnZ2VyOiBydW50aW1lLT5wZXJp
+b2Rfc2l6ZT00MDAKPiBbIMKgMjY4LjU1MTk5OF0gVHJpZ2dlcjogcnVudGltZS0+YnVmZmVyX3Np
+emU9MTU4OQo+Cj4gUGxheWluZyBXQVZFICcxNjAwMC53YXYnIDogU2lnbmVkIDE2IGJpdCBMaXR0
+bGUgRW5kaWFuLCBSYXRlIDE2MDAwIEh6LCBTdGVyZW8KPiBbIMKgMzE1Ljg4OTI4MF0gVHJpZ2dl
+cjogcnVudGltZS0+cGVyaW9kcz03Cj4gWyDCoDMxNS44OTMxMDldIFRyaWdnZXI6IHJ1bnRpbWUt
+PnBlcmlvZF9zaXplPTQwMAo+IFsgwqAzMTUuODk3NDU2XSBUcmlnZ2VyOiBydW50aW1lLT5idWZm
+ZXJfc2l6ZT0xZjQwCj4KPiBZZXQgZm9yIGFueSBoaWdoZXIgc2FtcGxlIHJhdGUgdGhlIGxheW91
+dCBpcyBpZGVudGljYWw6Cj4KPiBQbGF5aW5nIFdBVkUgJzk2MDAwLndhdicgOiBTaWduZWQgMTYg
+Yml0IExpdHRsZSBFbmRpYW4sIFJhdGUgOTYwMDAgSHosIFN0ZXJlbwo+IFsgwqAzODUuNDk0NzY0
+XSBUcmlnZ2VyOiBydW50aW1lLT5wZXJpb2RzPTgKPiBbIMKgMzg1LjQ5ODU5NF0gVHJpZ2dlcjog
+cnVudGltZS0+cGVyaW9kX3NpemU9NDAwCj4gWyDCoDM4NS41MDI5NDFdIFRyaWdnZXI6IHJ1bnRp
+bWUtPmJ1ZmZlcl9zaXplPTIwMDAKPgo+IElzIG15IGFzc3VtcHRpb24gd3Jvbmc/IElzIHRoZXJl
+IHNvbWUgYnVnIHNvbWV3aGVyZT8KCllvdSBhc3N1bXB0aW9uIGRvZXNuJ3Qgc2VlbSB0byBiZSBh
+Y2N1cmF0ZS4KVGhlb3JldGljYWxseSwgeW91ciBidWZmZXJfc2l6ZSBtYXkgbm90IGJlIGEgbXVs
+dGlwbGUgb2YgcGVyaW9kX3NpemUuIEJ1dCB0aGF0CndvdWxkIG1lYW4gcG9pbnRzIHNoaWZ0aW5n
+IG9uIHRoZSByaW5nIGJ1ZmZlciBhdCB3aGljaCBpbnRlcnJ1cHRzIGFyZSBnZW5lcmF0ZWQuCgpV
+c3VhbGx5IGVtYmVkZGVkIHN5c3RlbXMgZG9uJ3QgaGF2ZSBkZWRpY2F0ZWQgcmluZyBidWZmZXIg
+RE1BIGZvciB1c2UKd2l0aCBBU29DLi4uIGFuZCBpdCBpcyBjdW1iZXJzb21lIHRvIHJlcHJvZ3Jh
+bSB0aGUgbmV4dCBpbnRlcnJ1cHQgcG9pbnQgaWYKYnVmZmVyX3NpemUgaXMgbm90IGEgbXVsdGlw
+bGUgb2YgcGVyaW9kX3NpemUuIFNvLCB3ZSB1c3VhbGx5IGNhbGwKc25kX3BjbV9od19jb25zdHJh
+aW50X2ludGVnZXIocnVudGltZSwgU05EUlZfUENNX0hXX1BBUkFNX1BFUklPRFMpOwppbiB0aGUg
+c3RyZWFtIG9wZW4gY2FsbGJhY2ssIHdoaWNoIGVuc3VyZXMgY29uc3RyYWluc3QgYnVmZmVyX3Np
+emUgdG8KYmUgYSBtdWx0aXBsZSBvZiBwZXJpb2Rfc2l6ZS4KX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
