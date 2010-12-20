@@ -1,23 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Internal Mic vs Int Mic
-Date: Mon, 20 Dec 2010 10:07:38 +0100
-Message-ID: <4D0F1CDA.2090009@canonical.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Add optional pointer to machine
+ audio routes to snd_soc_card
+Date: Mon, 20 Dec 2010 09:24:28 +0000
+Message-ID: <1292837068.3304.2.camel@odin>
+References: <1292607580-27040-1-git-send-email-jhnikula@gmail.com>
+	<20101217223709.GA28118@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id D9CF12448F
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 10:07:43 +0100 (CET)
-Received: from hutte.canonical.com ([91.189.90.181])
-	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
-	id 1PUbiU-0000em-P1
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 09:07:38 +0000
-Received: from c-83-233-18-148.cust.bredband2.com ([83.233.18.148]
-	helo=[192.168.8.102]) by hutte.canonical.com with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
-	(envelope-from <david.henningsson@canonical.com>) id 1PUbiU-0006Vu-M5
-	for alsa-devel@alsa-project.org; Mon, 20 Dec 2010 09:07:38 +0000
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 76D5C244A7
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 10:24:32 +0100 (CET)
+Received: by wyi11 with SMTP id 11so2575086wyi.38
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 01:24:31 -0800 (PST)
+In-Reply-To: <20101217223709.GA28118@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,17 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Peter@alsa-project.org, Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-To try to clean up a little in the Volume Control namespace, it seems 
-"Int Mic" and "Internal Mic" both mean the same thing. "Internal Mic" 
-seems to be the winning one as it is used in 
-hda_codec.c:hda_get_input_pin_label.
+On Fri, 2010-12-17 at 22:37 +0000, Mark Brown wrote:
+> On Fri, Dec 17, 2010 at 07:39:40PM +0200, Jarkko Nikula wrote:
+> > This is targeted mostly to cross-device setups where single audio map
+> > defining routes around and between the codecs looks cleaner than defining
+> > and registering maps to each codec separately from machine init callbacks.
+> > 
+> > This could be also used to reduce simple machine init callbacks where only
+> > snd_soc_dapm_add_routes and snd_soc_dapm_sync are called. However, this does
+> > work only if the widgets names are unique in the system.
+> > 
+> > Idea of common audio map came from Peter Ujfalusi <peter.ujfalusi@nokia.com>.
+> 
+> Good idea.  We should probably just do this for CODECs as well, they're
+> often doing similar boiler plate type stuff.
 
-So, would a patch that changes every "Int Mic" to "Internal Mic" be 
-appreciated and merged?
-
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
