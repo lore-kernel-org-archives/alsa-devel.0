@@ -1,15 +1,20 @@
-From: Irfan Shaikh <irfan.shaikh@sasken.com>
-Subject: Channel configuration
-Date: Mon, 20 Dec 2010 21:42:40 +0530
-Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA635A7480DD@EXGMBX01.sasken.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/4] ASoC: clean up cache accesser
+Date: Mon, 20 Dec 2010 16:27:49 +0000
+Message-ID: <1292862469.29185.7.camel@dplaptop.localdomain>
+References: <s5hei9czeep.wl%tiwai@suse.de>
+	<20101220152709.GJ26706@rakim.wolfsonmicro.main>
+	<s5h4oa8zbe4.wl%tiwai@suse.de> <s5h1v5czb5m.wl%tiwai@suse.de>
+	<s5hzks0xwjy.wl%tiwai@suse.de> <s5hy67kxwir.wl%tiwai@suse.de>
+	<s5hwrn4xwdc.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id 275BC24476
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 17:13:42 +0100 (CET)
-Content-Language: en-US
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E5C51244AD
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 17:27:07 +0100 (CET)
+In-Reply-To: <s5hwrn4xwdc.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,21 +24,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Not able to configure my playback device to MONO . But my playback device supports MONO. What is wrong in the below configuration
-Error : Channels not available for PLAYBACK device
+On Mon, 2010-12-20 at 17:05 +0100, Takashi Iwai wrote:
+> +static inline bool set_cache_val(void *base, unsigned int idx,
+> +				unsigned int val, unsigned int word_size)
+> +{
+> +	if (word_size == 1) {
+> +		u8 *cache = base;
+> +		if (cache[idx] == val)
+> +			return true;
+> +		cache[idx] = val;
+> +	} else {
+> +		u16 *cache = base;
+> +		if (cache[idx] == val)
+> +			return true;
+> +		cache[idx] = val;
+> +	}
+> +	return false;
+> +}
 
-retVal = snd_pcm_hw_params_set_channels( pcm, hwparams, 1);
-  if (retVal < 0){
-    printf("Channels not available : %s\n", name);
-    return retVal;
-  }
+If word_size is anything other than 1 byte, the above else will try to
+handle it and assume it is 16 bits.  I'd expect for an explicit check
+for word_size == 2.  A switch statement would perhaps be preferred for
+legibility.  It'd perhaps be wise to simply die via BUG() or similar if
+an unsupported word size was passed in.
 
+> +static inline unsigned int get_cache_val(const void *base, unsigned int idx,
+> +					 unsigned int word_size)
+> +{
+> +	if (word_size == 1) {
+> +		const u8 *cache = base;
+> +		return cache[idx];
+> +	} else {
+> +		const u16 *cache = base;
+> +		return cache[idx];
+> +	}
+> +}
 
-PLEASE Let me know what mistake am i doing.
+Same here.
 
-SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any 
- virus transmitted by this email.
-Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
+The rest looks good.
+
+Thanks,
+Dimitrios
