@@ -1,336 +1,240 @@
 From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: [RFC/PATCH v7 05/12] media: Reference count and power handling
-Date: Mon, 20 Dec 2010 12:36:28 +0100
-Message-ID: <1292844995-7900-6-git-send-email-laurent.pinchart@ideasonboard.com>
+Subject: [RFC/PATCH v7 11/12] v4l: Make video_device inherit from media_entity
+Date: Mon, 20 Dec 2010 12:36:34 +0100
+Message-ID: <1292844995-7900-12-git-send-email-laurent.pinchart@ideasonboard.com>
 References: <1292844995-7900-1-git-send-email-laurent.pinchart@ideasonboard.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <1292844995-7900-1-git-send-email-laurent.pinchart@ideasonboard.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: linux-media-owner@vger.kernel.org
 To: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, clemens@ladisch.de, gregkh@suse.de, sakari.ailus@maxwell.research.nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>
+V4L2 devices are media entities. As such they need to inherit from
+(include) the media_entity structure.
 
-Basically these are the interface functions:
+When registering/unregistering the device, the media entity is
+automatically registered/unregistered. The entity is acquired on device
+open and released on device close.
 
-media_entity_get() - acquire entity
-media_entity_put() - release entity
-
-If the entity is of node type, the power change is distributed to all
-connected entities. For non-nodes it only affects that very node. A
-mutex is used to serialise access to the entity graph.
-
-In the background there's a depth-first search algorithm that traverses
-the enabled links in the graph. All these functions parse the graph to
-implement whatever they're to do.
-
-The module counters are increased/decreased in media_entity_get/put to
-prevent module unloading when an entity is referenced.
-
-Signed-off-by: Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>
 Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Stanimir Varbanov <svarbanov@mm-sol.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>
 ---
- Documentation/media-framework.txt |   37 +++++++++
- drivers/media/media-device.c      |    1 +
- drivers/media/media-entity.c      |  146 +++++++++++++++++++++++++++++++++++++
- include/media/media-device.h      |    4 +
- include/media/media-entity.h      |   15 ++++
- 5 files changed, 203 insertions(+), 0 deletions(-)
+ Documentation/video4linux/v4l2-framework.txt |   38 ++++++++++++++++++--
+ drivers/media/video/v4l2-dev.c               |   49 +++++++++++++++++++++++---
+ include/media/v4l2-dev.h                     |    7 ++++
+ 3 files changed, 86 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/media-framework.txt b/Documentation/media-framework.txt
-index 2cf3676..e90969e 100644
---- a/Documentation/media-framework.txt
-+++ b/Documentation/media-framework.txt
-@@ -259,3 +259,40 @@ When the graph traversal is complete the function will return NULL.
- Graph traversal can be interrupted at any moment. No cleanup function call is
- required and the graph structure can be freed normally.
+diff --git a/Documentation/video4linux/v4l2-framework.txt b/Documentation/video4linux/v4l2-framework.txt
+index aeb2a22..f231bc20 100644
+--- a/Documentation/video4linux/v4l2-framework.txt
++++ b/Documentation/video4linux/v4l2-framework.txt
+@@ -71,6 +71,10 @@ sub-device instances, the video_device struct stores V4L2 device node data
+ and in the future a v4l2_fh struct will keep track of filehandle instances
+ (this is not yet implemented).
  
++The V4L2 framework also optionally integrates with the media framework. If a
++driver sets the struct v4l2_device mdev field, sub-devices and video nodes
++will automatically appear in the media framework as entities.
 +
-+Reference counting and power handling
-+-------------------------------------
-+
-+Before accessing type-specific entities operations (such as the V4L2
-+sub-device operations), drivers must acquire a reference to the entity. This
-+ensures that the entity will be powered on and ready to accept requests.
-+Similarly, after being done with an entity, drivers must release the
-+reference.
-+
-+	media_entity_get(struct media_entity *entity)
-+
-+The function will increase the entity reference count. If the entity is a node
-+(MEDIA_ENTITY_TYPE_DEVNODE type), the reference count of all entities it is
-+connected to, both directly or indirectly, through enabled links is increased.
-+This ensures that the whole media pipeline will be ready to process
-+
-+Acquiring a reference to an entity increases the media device module reference
-+count to prevent module unloading when an entity is being used.
-+
-+media_entity_get will return a pointer to the entity if successful, or NULL
-+otherwise.
-+
-+	media_entity_put(struct media_entity *entity)
-+
-+The function will decrease the entity reference count and, for node entities,
-+like media_entity_get, the reference count of all connected entities. Calling
-+media_entity_put with a NULL argument is valid and will return immediately.
-+
-+When the first reference to an entity is acquired, or the last reference
-+released, the entity's set_power operation is called. Entity drivers must
-+implement the operation if they need to perform any power management task,
-+such as turning powers or clocks on or off. If no power management is
-+required, drivers don't need to provide a set_power operation. The operation
-+is allowed to fail when turning power on, in which case the media_entity_get
-+function will return NULL.
-+
-diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-index b8a3ace..e4c2157 100644
---- a/drivers/media/media-device.c
-+++ b/drivers/media/media-device.c
-@@ -73,6 +73,7 @@ int __must_check media_device_register(struct media_device *mdev)
- 	mdev->entity_id = 1;
- 	INIT_LIST_HEAD(&mdev->entities);
- 	spin_lock_init(&mdev->lock);
-+	mutex_init(&mdev->graph_mutex);
  
- 	/* Register the device node. */
- 	mdev->devnode.fops = &media_device_fops;
-diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
-index 15f4192..c541f4a 100644
---- a/drivers/media/media-entity.c
-+++ b/drivers/media/media-entity.c
-@@ -23,6 +23,7 @@
- #include <linux/module.h>
- #include <linux/slab.h>
- #include <media/media-entity.h>
-+#include <media/media-device.h>
+ struct v4l2_device
+ ------------------
+@@ -84,11 +88,14 @@ You must register the device instance:
+ 	v4l2_device_register(struct device *dev, struct v4l2_device *v4l2_dev);
  
- /**
-  * media_entity_init - Initialize a media entity
-@@ -196,6 +197,151 @@ media_entity_graph_walk_next(struct media_entity_graph *graph)
- EXPORT_SYMBOL_GPL(media_entity_graph_walk_next);
+ Registration will initialize the v4l2_device struct. If the dev->driver_data
+-field is NULL, it will be linked to v4l2_dev. Drivers that use the media
+-device framework in addition to the V4L2 framework need to set
++field is NULL, it will be linked to v4l2_dev.
++
++Drivers that want integration with the media device framework need to set
+ dev->driver_data manually to point to the driver-specific device structure
+ that embed the struct v4l2_device instance. This is achieved by a
+-dev_set_drvdata() call before registering the V4L2 device instance.
++dev_set_drvdata() call before registering the V4L2 device instance. They must
++also set the struct v4l2_device mdev field to point to a properly initialized
++and registered media_device instance.
  
- /* -----------------------------------------------------------------------------
-+ * Power state handling
-+ */
+ If v4l2_dev->name is empty then it will be set to a value derived from dev
+ (driver name followed by the bus_id, to be precise). If you set it up before
+@@ -532,6 +539,21 @@ If you use v4l2_ioctl_ops, then you should set either .unlocked_ioctl or
+ The v4l2_file_operations struct is a subset of file_operations. The main
+ difference is that the inode argument is omitted since it is never used.
+ 
++If integration with the media framework is needed, you must initialize the
++media_entity struct embedded in the video_device struct (entity field) by
++calling media_entity_init():
 +
-+/* Apply use count to an entity. */
-+static void media_entity_use_apply_one(struct media_entity *entity, int change)
-+{
-+	entity->use_count += change;
-+	WARN_ON(entity->use_count < 0);
-+}
++	struct media_pad *pad = &my_vdev->pad;
++	int err;
 +
-+/*
-+ * Apply use count change to an entity and change power state based on
-+ * new use count.
-+ */
-+static int media_entity_power_apply_one(struct media_entity *entity, int change)
-+{
-+	int ret;
++	err = media_entity_init(&vdev->entity, 1, pad, 0);
 +
-+	if (entity->use_count == 0 && change > 0 &&
-+	    entity->ops && entity->ops->set_power) {
-+		ret = entity->ops->set_power(entity, 1);
-+		if (ret)
++The pads array must have been previously initialized. There is no need to
++manually set the struct media_entity type and name fields.
++
++A reference to the entity will be automatically acquired/released when the
++video device is opened/closed.
++
+ v4l2_file_operations and locking
+ --------------------------------
+ 
+@@ -561,6 +583,9 @@ for you.
+ 		return err;
+ 	}
+ 
++If the v4l2_device parent device has a non-NULL mdev field, the video device
++entity will be automatically registered with the media device.
++
+ Which device is registered depends on the type argument. The following
+ types exist:
+ 
+@@ -636,6 +661,13 @@ release, of course) will return an error as well.
+ When the last user of the video device node exits, then the vdev->release()
+ callback is called and you can do the final cleanup there.
+ 
++Don't forget to cleanup the media entity associated with the video device if
++it has been initialized:
++
++	media_entity_cleanup(&vdev->entity);
++
++This can be done from the release callback.
++
+ 
+ video_device helper functions
+ -----------------------------
+diff --git a/drivers/media/video/v4l2-dev.c b/drivers/media/video/v4l2-dev.c
+index 035db52..9088cab 100644
+--- a/drivers/media/video/v4l2-dev.c
++++ b/drivers/media/video/v4l2-dev.c
+@@ -278,6 +278,9 @@ static int v4l2_mmap(struct file *filp, struct vm_area_struct *vm)
+ static int v4l2_open(struct inode *inode, struct file *filp)
+ {
+ 	struct video_device *vdev;
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	struct media_entity *entity = NULL;
++#endif
+ 	int ret = 0;
+ 
+ 	/* Check if the video device is available */
+@@ -291,6 +294,16 @@ static int v4l2_open(struct inode *inode, struct file *filp)
+ 	/* and increase the device refcount */
+ 	video_get(vdev);
+ 	mutex_unlock(&videodev_lock);
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	if (vdev->v4l2_dev && vdev->v4l2_dev->mdev) {
++		entity = media_entity_get(&vdev->entity);
++		if (!entity) {
++			ret = -EBUSY;
++			video_put(vdev);
 +			return ret;
++		}
 +	}
-+
-+	media_entity_use_apply_one(entity, change);
-+
-+	if (entity->use_count == 0 && change < 0 &&
-+	    entity->ops && entity->ops->set_power)
-+		entity->ops->set_power(entity, 0);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Apply power change to all connected entities. This ignores the
-+ * nodes.
-+ */
-+static int media_entity_power_apply(struct media_entity *entity, int change)
-+{
-+	struct media_entity_graph graph;
-+	struct media_entity *first = entity;
-+	int ret = 0;
-+
-+	if (!change)
-+		return 0;
-+
-+	media_entity_graph_walk_start(&graph, entity);
-+
-+	while (!ret && (entity = media_entity_graph_walk_next(&graph)))
-+		if (media_entity_type(entity) != MEDIA_ENTITY_TYPE_DEVNODE)
-+			ret = media_entity_power_apply_one(entity, change);
-+
-+	if (!ret)
-+		return 0;
-+
-+	media_entity_graph_walk_start(&graph, first);
-+
-+	while ((first = media_entity_graph_walk_next(&graph))
-+	       && first != entity)
-+		if (media_entity_type(first) != MEDIA_ENTITY_TYPE_DEVNODE)
-+			media_entity_power_apply_one(first, -change);
-+
-+	return ret;
-+}
-+
-+/*
-+ * Apply use count change to graph and change power state of entities
-+ * accordingly.
-+ */
-+static int media_entity_node_power_change(struct media_entity *entity,
-+					  int change)
-+{
-+	/* Apply use count to node. */
-+	media_entity_use_apply_one(entity, change);
-+
-+	/* Apply power change to connected non-nodes. */
-+	return media_entity_power_apply(entity, change);
-+}
-+
-+/*
-+ * Node entity use changes are reflected on power state of all
-+ * connected (directly or indirectly) entities whereas non-node entity
-+ * use count changes are limited to that very entity.
-+ */
-+static int media_entity_use_change(struct media_entity *entity, int change)
-+{
-+	if (media_entity_type(entity) == MEDIA_ENTITY_TYPE_DEVNODE)
-+		return media_entity_node_power_change(entity, change);
-+	else
-+		return media_entity_power_apply_one(entity, change);
-+}
-+
-+static struct media_entity *__media_entity_get(struct media_entity *entity)
-+{
-+	if (media_entity_use_change(entity, 1))
-+		return NULL;
-+
-+	return entity;
-+}
-+
-+static void __media_entity_put(struct media_entity *entity)
-+{
-+	media_entity_use_change(entity, -1);
-+}
-+
-+/* user open()s media entity */
-+struct media_entity *media_entity_get(struct media_entity *entity)
-+{
-+	struct media_entity *e;
-+
-+	if (entity == NULL)
-+		return NULL;
-+
-+	if (entity->parent->dev &&
-+	    !try_module_get(entity->parent->dev->driver->owner))
-+		return NULL;
-+
-+	mutex_lock(&entity->parent->graph_mutex);
-+	e = __media_entity_get(entity);
-+	mutex_unlock(&entity->parent->graph_mutex);
-+
-+	if (e == NULL && entity->parent->dev)
-+		module_put(entity->parent->dev->driver->owner);
-+
-+	return e;
-+}
-+EXPORT_SYMBOL_GPL(media_entity_get);
-+
-+/* user release()s media entity */
-+void media_entity_put(struct media_entity *entity)
-+{
-+	if (entity == NULL)
-+		return;
-+
-+	mutex_lock(&entity->parent->graph_mutex);
-+	__media_entity_put(entity);
-+	mutex_unlock(&entity->parent->graph_mutex);
-+
-+	if (entity->parent->dev)
-+		module_put(entity->parent->dev->driver->owner);
-+}
-+EXPORT_SYMBOL_GPL(media_entity_put);
-+
-+/* -----------------------------------------------------------------------------
-  * Links management
-  */
++#endif
+ 	if (vdev->fops->open) {
+ 		if (vdev->lock)
+ 			mutex_lock(vdev->lock);
+@@ -303,8 +316,13 @@ static int v4l2_open(struct inode *inode, struct file *filp)
+ 	}
  
-diff --git a/include/media/media-device.h b/include/media/media-device.h
-index 0b1ecf5..260d59c 100644
---- a/include/media/media-device.h
-+++ b/include/media/media-device.h
-@@ -25,6 +25,7 @@
+ 	/* decrease the refcount in case of an error */
+-	if (ret)
++	if (ret) {
++#if defined(CONFIG_MEDIA_CONTROLLER)
++		if (vdev->v4l2_dev && vdev->v4l2_dev->mdev)
++			media_entity_put(entity);
++#endif
+ 		video_put(vdev);
++	}
+ 	return ret;
+ }
  
- #include <linux/device.h>
- #include <linux/list.h>
-+#include <linux/mutex.h>
- #include <linux/spinlock.h>
+@@ -321,7 +339,10 @@ static int v4l2_release(struct inode *inode, struct file *filp)
+ 		if (vdev->lock)
+ 			mutex_unlock(vdev->lock);
+ 	}
+-
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	if (vdev->v4l2_dev && vdev->v4l2_dev->mdev)
++		media_entity_put(&vdev->entity);
++#endif
+ 	/* decrease the refcount unconditionally since the release()
+ 	   return value is ignored. */
+ 	video_put(vdev);
+@@ -558,12 +579,27 @@ int __video_register_device(struct video_device *vdev, int type, int nr,
+ 	if (nr != -1 && nr != vdev->num && warn_if_nr_in_use)
+ 		printk(KERN_WARNING "%s: requested %s%d, got %s\n", __func__,
+ 			name_base, nr, video_device_node_name(vdev));
+-
+-	/* Part 5: Activate this minor. The char device can now be used. */
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	/* Part 5: Register the entity. */
++	if (vdev->v4l2_dev && vdev->v4l2_dev->mdev) {
++		vdev->entity.type = MEDIA_ENTITY_TYPE_DEVNODE_V4L;
++		vdev->entity.name = vdev->name;
++		vdev->entity.v4l.major = VIDEO_MAJOR;
++		vdev->entity.v4l.minor = vdev->minor;
++		ret = media_device_register_entity(vdev->v4l2_dev->mdev,
++			&vdev->entity);
++		if (ret < 0)
++			printk(KERN_WARNING
++			       "%s: media_device_register_entity failed\n",
++			       __func__);
++	}
++#endif
++	/* Part 6: Activate this minor. The char device can now be used. */
+ 	set_bit(V4L2_FL_REGISTERED, &vdev->flags);
+ 	mutex_lock(&videodev_lock);
+ 	video_device[vdev->minor] = vdev;
+ 	mutex_unlock(&videodev_lock);
++
+ 	return 0;
  
- #include <media/media-devnode.h>
-@@ -42,6 +43,7 @@
-  * @entity_id:	ID of the next entity to be registered
-  * @entities:	List of registered entities
-  * @lock:	Entities list lock
-+ * @graph_mutex: Entities graph operation lock
-  *
-  * This structure represents an abstract high-level media device. It allows easy
-  * access to entities and provides basic media device-level support. The
-@@ -69,6 +71,8 @@ struct media_device {
+ cleanup:
+@@ -590,7 +626,10 @@ void video_unregister_device(struct video_device *vdev)
+ 	/* Check if vdev was ever registered at all */
+ 	if (!vdev || !video_is_registered(vdev))
+ 		return;
+-
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	if (vdev->v4l2_dev && vdev->v4l2_dev->mdev)
++		media_device_unregister_entity(&vdev->entity);
++#endif
+ 	clear_bit(V4L2_FL_REGISTERED, &vdev->flags);
+ 	device_unregister(&vdev->dev);
+ }
+diff --git a/include/media/v4l2-dev.h b/include/media/v4l2-dev.h
+index 4fe6831..51b2c51 100644
+--- a/include/media/v4l2-dev.h
++++ b/include/media/v4l2-dev.h
+@@ -16,6 +16,8 @@
+ #include <linux/mutex.h>
+ #include <linux/videodev2.h>
  
- 	/* Protects the entities list */
- 	spinlock_t lock;
-+	/* Serializes graph operations. */
-+	struct mutex graph_mutex;
++#include <media/media-entity.h>
++
+ #define VIDEO_MAJOR	81
+ 
+ #define VFL_TYPE_GRABBER	0
+@@ -55,6 +57,9 @@ struct v4l2_file_operations {
+ 
+ struct video_device
+ {
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	struct media_entity entity;
++#endif
+ 	/* device ops */
+ 	const struct v4l2_file_operations *fops;
+ 
+@@ -100,6 +105,8 @@ struct video_device
+ 	struct mutex *lock;
  };
  
- /* media_devnode to media_device */
-diff --git a/include/media/media-entity.h b/include/media/media-entity.h
-index 4d76ec3..a78d6c9 100644
---- a/include/media/media-entity.h
-+++ b/include/media/media-entity.h
-@@ -61,6 +61,10 @@ struct media_pad {
- 	unsigned long flags;		/* Pad flags (MEDIA_PAD_FLAG_*) */
- };
++#define media_entity_to_video_device(entity) \
++	container_of(entity, struct video_device, entity)
+ /* dev to video-device */
+ #define to_video_device(cd) container_of(cd, struct video_device, dev)
  
-+struct media_entity_operations {
-+	int (*set_power)(struct media_entity *entity, int power);
-+};
-+
- struct media_entity {
- 	struct list_head list;
- 	struct media_device *parent;	/* Media device this entity belongs to*/
-@@ -81,6 +85,10 @@ struct media_entity {
- 	struct media_pad *pads;		/* Pads array (num_pads elements) */
- 	struct media_link *links;	/* Links array (max_links elements)*/
- 
-+	const struct media_entity_operations *ops;	/* Entity operations */
-+
-+	int use_count;			/* Use count for the entity. */
-+
- 	union {
- 		/* Node specifications */
- 		struct {
-@@ -129,9 +137,16 @@ void media_entity_cleanup(struct media_entity *entity);
- int media_entity_create_link(struct media_entity *source, u16 source_pad,
- 		struct media_entity *sink, u16 sink_pad, u32 flags);
- 
-+struct media_entity *media_entity_get(struct media_entity *entity);
-+void media_entity_put(struct media_entity *entity);
-+
- void media_entity_graph_walk_start(struct media_entity_graph *graph,
- 		struct media_entity *entity);
- struct media_entity *
- media_entity_graph_walk_next(struct media_entity_graph *graph);
- 
-+#define media_entity_call(entity, operation, args...)			\
-+	(((entity)->ops && (entity)->ops->operation) ?			\
-+	 (entity)->ops->operation((entity) , ##args) : -ENOIOCTLCMD)
-+
- #endif
 -- 
 1.7.2.2
