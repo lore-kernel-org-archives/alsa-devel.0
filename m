@@ -1,21 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/4] ASoC: clean up cache accesser
-Date: Mon, 20 Dec 2010 16:42:02 +0000
-Message-ID: <20101220164202.GC14986@sirena.org.uk>
-References: <s5hei9czeep.wl%tiwai@suse.de>
-	<20101220152709.GJ26706@rakim.wolfsonmicro.main>
-	<s5h4oa8zbe4.wl%tiwai@suse.de> <s5h1v5czb5m.wl%tiwai@suse.de>
-	<s5hzks0xwjy.wl%tiwai@suse.de> <s5hy67kxwir.wl%tiwai@suse.de>
-	<s5hwrn4xwdc.wl%tiwai@suse.de>
+Subject: Re: [PATCH] ASoC: twl6040: Convert HF and HS
+	drivers	to use DAPM OUT_DRV widget
+Date: Mon, 20 Dec 2010 16:44:01 +0000
+Message-ID: <20101220164401.GD14986@sirena.org.uk>
+References: <1889FA7136B567478A67D4B0F85B0CCEA4F6D2E0@dlee06.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id A90A11038EA
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 17:42:04 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 639461038EA
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 17:44:02 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5hwrn4xwdc.wl%tiwai@suse.de>
+In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCEA4F6D2E0@dlee06.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,21 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "Olaya, Margarita" <magi.olaya@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 20, 2010 at 05:05:51PM +0100, Takashi Iwai wrote:
+On Mon, Dec 20, 2010 at 10:39:20AM -0600, Olaya, Margarita wrote:
+> Make the phoenix HS and HF drivers use the new DAPM driver
+> widget in order to guarantee power ON/OFF order sequence.
+> 
+> Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
 
-> Erm, subject might be wrong, but I'm too dizzy now.
-
-I think you just mean "Factor out cache accesses" or something?
-
-> +static inline bool set_cache_val(void *base, unsigned int idx,
-> +				unsigned int val, unsigned int word_size)
-> +{
-> +	if (word_size == 1) {
-> +		u8 *cache = base;
-
-Like Dimitris says these really do need to be switch statements.
-Otherwise it looks OK.
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
