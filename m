@@ -1,14 +1,23 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] ALSA: HDA: Add auto-mute for Thinkpad
-	SL410/SL510
-Date: Mon, 20 Dec 2010 08:19:25 +0100
-Message-ID: <4D0F037D.2050700@canonical.com>
+Subject: Internal Mic vs Int Mic
+Date: Mon, 20 Dec 2010 10:07:38 +0100
+Message-ID: <4D0F1CDA.2090009@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------020109060006030901040804"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 86D42243E6
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 08:19:26 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id D9CF12448F
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 10:07:43 +0100 (CET)
+Received: from hutte.canonical.com ([91.189.90.181])
+	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
+	id 1PUbiU-0000em-P1
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 09:07:38 +0000
+Received: from c-83-233-18-148.cust.bredband2.com ([83.233.18.148]
+	helo=[192.168.8.102]) by hutte.canonical.com with esmtpsa
+	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
+	(envelope-from <david.henningsson@canonical.com>) id 1PUbiU-0006Vu-M5
+	for alsa-devel@alsa-project.org; Mon, 20 Dec 2010 09:07:38 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,86 +27,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------020109060006030901040804
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+To try to clean up a little in the Volume Control namespace, it seems 
+"Int Mic" and "Internal Mic" both mean the same thing. "Internal Mic" 
+seems to be the winning one as it is used in 
+hda_codec.c:hda_get_input_pin_label.
 
-SKU turns off auto-mute for these machines, so ignore the SKU.
+So, would a patch that changes every "Int Mic" to "Internal Mic" be 
+appreciated and merged?
 
 -- 
 David Henningsson, Canonical Ltd.
 http://launchpad.net/~diwic
-
---------------020109060006030901040804
-Content-Type: text/x-patch;
- name="0001-ALSA-HDA-Add-auto-mute-for-Thinkpad-SL410-SL510.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-ALSA-HDA-Add-auto-mute-for-Thinkpad-SL410-SL510.patch"
-
->From 330d6ca1731d02ded9697f9649c66bdb1be4e1fd Mon Sep 17 00:00:00 2001
-From: David Henningsson <david.henningsson@canonical.com>
-Date: Fri, 17 Dec 2010 20:43:04 +0100
-Subject: [PATCH] ALSA: HDA: Add auto-mute for Thinkpad SL410/SL510
-
-BugLink: http://launchpad.net/bugs/580006
-
-SKU turns off auto-mute for these machines, so ignore the SKU.
-
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- hda/patch_realtek.c |    7 ++++---
- 1 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 3aeda3a..cc2b8d7 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -14808,7 +14808,7 @@ static int alc269_resume(struct hda_codec *codec)
- enum {
- 	ALC269_FIXUP_SONY_VAIO,
- 	ALC269_FIXUP_DELL_M101Z,
--	ALC269_FIXUP_LENOVO_EDGE14,
-+	ALC269_FIXUP_SKU_IGNORE,
- };
- 
- static const struct alc_fixup alc269_fixups[] = {
-@@ -14826,7 +14826,7 @@ static const struct alc_fixup alc269_fixups[] = {
- 			{}
- 		}
- 	},
--	[ALC269_FIXUP_LENOVO_EDGE14] = {
-+	[ALC269_FIXUP_SKU_IGNORE] = {
- 		.sku = ALC_FIXUP_SKU_IGNORE,
- 	},
- };
-@@ -14834,7 +14834,8 @@ static const struct alc_fixup alc269_fixups[] = {
- static struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK_VENDOR(0x104d, "Sony VAIO", ALC269_FIXUP_SONY_VAIO),
- 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
--	SND_PCI_QUIRK(0x17aa, 0x21b8, "Thinkpad Edge 14", ALC269_FIXUP_LENOVO_EDGE14),
-+	SND_PCI_QUIRK(0x17aa, 0x21b8, "Thinkpad Edge 14", ALC269_FIXUP_SKU_IGNORE),
-+	SND_PCI_QUIRK(0x17aa, 0x20f2, "Thinkpad SL410/510", ALC269_FIXUP_SKU_IGNORE),
- 	{}
- };
- 
--- 
-1.7.1
-
-
---------------020109060006030901040804
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------020109060006030901040804--
