@@ -1,49 +1,69 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Remove some unused defines from WM8903
-Date: Mon, 20 Dec 2010 20:55:46 +0000
-Message-ID: <1292878546-28557-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Jesper Juhl <jj@chaosbits.net>
+Subject: [PATCH] sound, core, pcm_lib: remember to always call va_end() on
+ stuff that we va_start()
+Date: Tue, 21 Dec 2010 00:03:17 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1012202357150.23785@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8C819103801
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 21:55:48 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, Krzysztof Helt <krzysztof.h1@wp.pl>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-These would have been used if we'd done manual clock divider setup,
-but we didn't.
+Hi,
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+The Coverity checker spotted that we do not always remember to call 
+va_end() on 'args' in failure paths in snd_pcm_hw_rule_add().
+Here's a patch to fix that up (compile tested only) - it also removes 
+some annoying trailing whitespace that caught my eye while I was in the 
+area..
+
+Signed-off-by: Jesper Juhl <jj@chaosbits.net>
 ---
- sound/soc/codecs/wm8903.h |    4 ----
- 1 files changed, 0 insertions(+), 4 deletions(-)
+ pcm_lib.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8903.h b/sound/soc/codecs/wm8903.h
-index 7f9f6be..5f23d3c 100644
---- a/sound/soc/codecs/wm8903.h
-+++ b/sound/soc/codecs/wm8903.h
-@@ -19,10 +19,6 @@ extern int wm8903_mic_detect(struct snd_soc_codec *codec,
- 			     struct snd_soc_jack *jack,
- 			     int det, int shrt);
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index b75db8e..11446a1 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -1070,8 +1070,10 @@ int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime, unsigned int cond,
+ 		struct snd_pcm_hw_rule *new;
+ 		unsigned int new_rules = constrs->rules_all + 16;
+ 		new = kcalloc(new_rules, sizeof(*c), GFP_KERNEL);
+-		if (!new)
++		if (!new) {
++			va_end(args);
+ 			return -ENOMEM;
++		}
+ 		if (constrs->rules) {
+ 			memcpy(new, constrs->rules,
+ 			       constrs->rules_num * sizeof(*c));
+@@ -1087,8 +1089,10 @@ int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime, unsigned int cond,
+ 	c->private = private;
+ 	k = 0;
+ 	while (1) {
+-		if (snd_BUG_ON(k >= ARRAY_SIZE(c->deps)))
++		if (snd_BUG_ON(k >= ARRAY_SIZE(c->deps))) {
++			va_end(args);
+ 			return -EINVAL;
++		}
+ 		c->deps[k++] = dep;
+ 		if (dep < 0)
+ 			break;
+@@ -1097,7 +1101,7 @@ int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime, unsigned int cond,
+ 	constrs->rules_num++;
+ 	va_end(args);
+ 	return 0;
+-}				    
++}
  
--#define WM8903_MCLK_DIV_2 1
--#define WM8903_CLK_SYS    2
--#define WM8903_BCLK       3
--#define WM8903_LRCLK      4
+ EXPORT_SYMBOL(snd_pcm_hw_rule_add);
  
- /*
-  * Register values.
+
+
 -- 
-1.7.1
+Jesper Juhl <jj@chaosbits.net>            http://www.chaosbits.net/
+Don't top-post http://www.catb.org/~esr/jargon/html/T/top-post.html
+Plain text mails only, please.
