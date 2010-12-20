@@ -1,20 +1,20 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH] ASoC: Add optional pointer to machine
- audio routes to snd_soc_card
-Date: Mon, 20 Dec 2010 14:17:00 +0200
-Message-ID: <20101220141700.f33cae2e.jhnikula@gmail.com>
-References: <1292607580-27040-1-git-send-email-jhnikula@gmail.com>
-	<201012201322.49437.peter.ujfalusi@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: WM8580: Debug interface index
+Date: Mon, 20 Dec 2010 12:34:04 +0000
+Message-ID: <20101220123403.GD26706@rakim.wolfsonmicro.main>
+References: <1291340065-16897-1-git-send-email-jassi.brar@samsung.com>
+	<1291376076.3271.32.camel@odin>
+	<20101203163932.GX859@rakim.wolfsonmicro.main>
+	<AANLkTim+_FVqeat+X1Bf-gBWTfs1VyrQsT14_hHA6LGi@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f65.google.com (mail-ew0-f65.google.com
-	[209.85.215.65]) by alsa0.perex.cz (Postfix) with ESMTP id AC8F624558
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 13:15:06 +0100 (CET)
-Received: by ewy7 with SMTP id 7so364441ewy.8
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 04:15:06 -0800 (PST)
-In-Reply-To: <201012201322.49437.peter.ujfalusi@nokia.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 497B724572
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 13:34:06 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <AANLkTim+_FVqeat+X1Bf-gBWTfs1VyrQsT14_hHA6LGi@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,30 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Jassi Brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, Jassi Brar <jassi.brar@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 20 Dec 2010 13:22:49 +0200
-Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
+On Sun, Dec 05, 2010 at 12:26:43AM +0900, Jassi Brar wrote:
 
-> For sure we need to have the card level DAPM map, when we have more than one 
-> codec in the system.
-> What I was thinking is more like to move the DAPM map from codec domain up to 
-> card level.
-> What I mean is, that when you build up your ASoC card, the DAPM map/routes are 
-> going to be attached to the card, and not to the codec.
+> Just for the sake of consistency.
+> We moved to using driver's id since the commit
+> 'ASoC: multi-component - ASoC Multi-Component Support'.
 
-Actually paths and widgets are already decoupled from codec and moved
-to card domain. Map/route is initialization time thing which still has
-dependency to codec. I.e. snd_soc_dapm_add_route favors a widget from
-a calling dapm context (codec).
-
-This is due if there are machines with multiple codecs that are not
-cross-connected but if they have widgets with a same name and I didn't
-want to force them to use name prefixing and thus causing
-userspace-kernel space breakage (kcontrol names changed) compared to
-current implementation.
-
--- 
-Jarkko
+That's not actually true - the ID is initialised by default from the
+driver, but the referenced copy is in the DAI runtime structure.
