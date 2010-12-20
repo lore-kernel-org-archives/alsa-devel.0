@@ -1,20 +1,20 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/4] ASoC: clean up cache accesser
-Date: Mon, 20 Dec 2010 16:27:49 +0000
-Message-ID: <1292862469.29185.7.camel@dplaptop.localdomain>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC cache code (looking toward 2.6.38 merge
+	window)
+Date: Mon, 20 Dec 2010 16:34:36 +0000
+Message-ID: <20101220163435.GK26706@rakim.wolfsonmicro.main>
 References: <s5hei9czeep.wl%tiwai@suse.de>
 	<20101220152709.GJ26706@rakim.wolfsonmicro.main>
-	<s5h4oa8zbe4.wl%tiwai@suse.de> <s5h1v5czb5m.wl%tiwai@suse.de>
-	<s5hzks0xwjy.wl%tiwai@suse.de> <s5hy67kxwir.wl%tiwai@suse.de>
-	<s5hwrn4xwdc.wl%tiwai@suse.de>
+	<s5h4oa8zbe4.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E5C51244AD
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 17:27:07 +0100 (CET)
-In-Reply-To: <s5hwrn4xwdc.wl%tiwai@suse.de>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 570FC24443
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 17:34:39 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5h4oa8zbe4.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,48 +25,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-12-20 at 17:05 +0100, Takashi Iwai wrote:
-> +static inline bool set_cache_val(void *base, unsigned int idx,
-> +				unsigned int val, unsigned int word_size)
-> +{
-> +	if (word_size == 1) {
-> +		u8 *cache = base;
-> +		if (cache[idx] == val)
-> +			return true;
-> +		cache[idx] = val;
-> +	} else {
-> +		u16 *cache = base;
-> +		if (cache[idx] == val)
-> +			return true;
-> +		cache[idx] = val;
-> +	}
-> +	return false;
-> +}
+On Mon, Dec 20, 2010 at 04:56:03PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-If word_size is anything other than 1 byte, the above else will try to
-handle it and assume it is 16 bits.  I'd expect for an explicit check
-for word_size == 2.  A switch statement would perhaps be preferred for
-legibility.  It'd perhaps be wise to simply die via BUG() or similar if
-an unsupported word size was passed in.
+> > It wasn't portability, it was specifically the fact that some drivers
+> > want to do block operations which means they depend very strongly on the
+> > exact memory layout of the cache (obviously this only works for
+> > uncompressed caches).
 
-> +static inline unsigned int get_cache_val(const void *base, unsigned int idx,
-> +					 unsigned int word_size)
-> +{
-> +	if (word_size == 1) {
-> +		const u8 *cache = base;
-> +		return cache[idx];
-> +	} else {
-> +		const u16 *cache = base;
-> +		return cache[idx];
-> +	}
-> +}
+> But this is exactly what hinders the portability :)  Which part of
+> soc_4_12_spi_read/write specifies that this must be aligned to be BE
+> while spi_7_9 to be LE?  Why soc_16_16_i2c converts to BE internally
+> while soc_16_8_i2c doesn't?  I mean, such a difference isn't visible 
+> in the API level but hard-coded in the implementation although the
+> API appears as if it's portable.
 
-Same here.
+They should all be specifying something, quite what they should be
+specifying varies - it just comes down to whatever the standard wire
+format that the chip vendors have come up with.  Mostly if it's not
+specified it should be little endian.
 
-The rest looks good.
+It's not really been an issue as pretty much all the CPUs have the same
+endianness.
 
-Thanks,
-Dimitrios
+> > There's more potential users than currently have it enabled, it's just
+> > that the WM8994 driver is the only driver that turns it on by default
+> > right now (several other CODEC drivers should but need testing just to
+> > confirm that it's OK).  It's only a few kilobytes and Kconfig really
+> > isn't good at supporting this sort of selection, I'd worry about the
+> > usability issues.
+
+> Well, it drags LZO COMPRESS and DECOMPRESS unconditionally, which I
+> feel uneasy.  Usually the consumer of such lib stuff has a Kconfig,
+> especially the feature can be optional (and in this case it is).
+
+> The necessary change is simple like below.  The code that requires a
+> compressed cache just needs to select SND_SOC_LZO_CACHE or whatever.
+
+That's one way of doing it, but it does hurt usability.
+
+> It's no urgent issue, yeah.  It's just what I feel uneasy to see such
+> a thing...
+
+If someone's worried about memory usage in ASoC they'd be much better
+going after the strings than this TBH.
+
+> +#ifdef CONFIG_SND_SOC_LZO_CACHE
+> +	SND_SOC_LZO_COMPRESSION = 2,
+> +#endif
+> +#ifdef CONFIG_SND_SOC_RBTREE_CACHE
+> +	SND_SOC_RBTREE_COMPRESSION = 3,
+> +#endif
+
+If we were going to make this user selectable we should keep the defines
+and then fall back to a flat cache if they're turned off otherwise you
+end up having too much faff with Kconfig interdependencies.
+
+>  config SND_SOC_WM8994
+>         tristate
+> +       select SND_SOC_RBTREE_CACHE
+
+Except the machine driver can override this...
