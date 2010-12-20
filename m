@@ -1,20 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC cache code (looking toward 2.6.38 merge
-	window)
-Date: Mon, 20 Dec 2010 16:34:36 +0000
-Message-ID: <20101220163435.GK26706@rakim.wolfsonmicro.main>
-References: <s5hei9czeep.wl%tiwai@suse.de>
-	<20101220152709.GJ26706@rakim.wolfsonmicro.main>
-	<s5h4oa8zbe4.wl%tiwai@suse.de>
+From: "Olaya, Margarita" <magi.olaya@ti.com>
+Subject: [PATCH] ASoC: twl6040: Convert HF and HS drivers to
+ use DAPM OUT_DRV widget
+Date: Mon, 20 Dec 2010 10:39:20 -0600
+Message-ID: <1889FA7136B567478A67D4B0F85B0CCEA4F6D2E0@dlee06.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 570FC24443
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 17:34:39 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5h4oa8zbe4.wl%tiwai@suse.de>
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 812D3244B1
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 17:39:23 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,68 +20,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 20, 2010 at 04:56:03PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
+Make the phoenix HS and HF drivers use the new DAPM driver
+widget in order to guarantee power ON/OFF order sequence.
 
-> > It wasn't portability, it was specifically the fact that some drivers
-> > want to do block operations which means they depend very strongly on the
-> > exact memory layout of the cache (obviously this only works for
-> > uncompressed caches).
+Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
+---
+ sound/soc/codecs/twl6040.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-> But this is exactly what hinders the portability :)  Which part of
-> soc_4_12_spi_read/write specifies that this must be aligned to be BE
-> while spi_7_9 to be LE?  Why soc_16_16_i2c converts to BE internally
-> while soc_16_8_i2c doesn't?  I mean, such a difference isn't visible 
-> in the API level but hard-coded in the implementation although the
-> API appears as if it's portable.
-
-They should all be specifying something, quite what they should be
-specifying varies - it just comes down to whatever the standard wire
-format that the chip vendors have come up with.  Mostly if it's not
-specified it should be little endian.
-
-It's not really been an issue as pretty much all the CPUs have the same
-endianness.
-
-> > There's more potential users than currently have it enabled, it's just
-> > that the WM8994 driver is the only driver that turns it on by default
-> > right now (several other CODEC drivers should but need testing just to
-> > confirm that it's OK).  It's only a few kilobytes and Kconfig really
-> > isn't good at supporting this sort of selection, I'd worry about the
-> > usability issues.
-
-> Well, it drags LZO COMPRESS and DECOMPRESS unconditionally, which I
-> feel uneasy.  Usually the consumer of such lib stuff has a Kconfig,
-> especially the feature can be optional (and in this case it is).
-
-> The necessary change is simple like below.  The code that requires a
-> compressed cache just needs to select SND_SOC_LZO_CACHE or whatever.
-
-That's one way of doing it, but it does hurt usability.
-
-> It's no urgent issue, yeah.  It's just what I feel uneasy to see such
-> a thing...
-
-If someone's worried about memory usage in ASoC they'd be much better
-going after the strings than this TBH.
-
-> +#ifdef CONFIG_SND_SOC_LZO_CACHE
-> +	SND_SOC_LZO_COMPRESSION = 2,
-> +#endif
-> +#ifdef CONFIG_SND_SOC_RBTREE_CACHE
-> +	SND_SOC_RBTREE_COMPRESSION = 3,
-> +#endif
-
-If we were going to make this user selectable we should keep the defines
-and then fall back to a flat cache if they're turned off otherwise you
-end up having too much faff with Kconfig interdependencies.
-
->  config SND_SOC_WM8994
->         tristate
-> +       select SND_SOC_RBTREE_CACHE
-
-Except the machine driver can override this...
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index 2f68f59..4bbf1b1 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -1138,19 +1138,19 @@ static const struct snd_soc_dapm_widget twl6040_dapm_widgets[] = {
+ 			SND_SOC_NOPM, 0, 0, &hsr_mux_controls),
+ 
+ 	/* Analog playback drivers */
+-	SND_SOC_DAPM_PGA_E("Handsfree Left Driver",
++	SND_SOC_DAPM_OUT_DRV_E("Handsfree Left Driver",
+ 			TWL6040_REG_HFLCTL, 4, 0, NULL, 0,
+ 			pga_event,
+ 			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+-	SND_SOC_DAPM_PGA_E("Handsfree Right Driver",
++	SND_SOC_DAPM_OUT_DRV_E("Handsfree Right Driver",
+ 			TWL6040_REG_HFRCTL, 4, 0, NULL, 0,
+ 			pga_event,
+ 			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+-	SND_SOC_DAPM_PGA_E("Headset Left Driver",
++	SND_SOC_DAPM_OUT_DRV_E("Headset Left Driver",
+ 			TWL6040_REG_HSLCTL, 2, 0, NULL, 0,
+ 			pga_event,
+ 			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+-	SND_SOC_DAPM_PGA_E("Headset Right Driver",
++	SND_SOC_DAPM_OUT_DRV_E("Headset Right Driver",
+ 			TWL6040_REG_HSRCTL, 2, 0, NULL, 0,
+ 			pga_event,
+ 			SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+-- 
+1.7.0.4
