@@ -1,17 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHes 00/10] ASoC: Samsung: Enable latest SoCs
-Date: Mon, 20 Dec 2010 13:45:01 +0000
-Message-ID: <20101220134501.GH26706@rakim.wolfsonmicro.main>
-References: <1292810667-29773-1-git-send-email-jassisinghbrar@gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH 0/3] Re:  Internal Mic vs Int Mic
+Date: Mon, 20 Dec 2010 14:55:15 +0100
+Message-ID: <4D0F6043.1010506@canonical.com>
+References: <4D0F1CDA.2090009@canonical.com> <s5hvd2ozk19.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A2A66245C2
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 14:45:02 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1292810667-29773-1-git-send-email-jassisinghbrar@gmail.com>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6CB97245CE
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 14:55:19 +0100 (CET)
+In-Reply-To: <s5hvd2ozk19.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,15 +20,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi@opensource.wolfsonmicro.com, "Brar <jassisinghbrar"@gmail.com
-Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 20, 2010 at 11:04:27AM +0900, Jassi@opensource.wolfsonmicro.com wrote:
+On 2010-12-20 13:49, Takashi Iwai wrote:
+> At Mon, 20 Dec 2010 10:07:38 +0100,
+> David Henningsson wrote:
+>>
+>> To try to clean up a little in the Volume Control namespace, it seems
+>> "Int Mic" and "Internal Mic" both mean the same thing. "Internal Mic"
+>> seems to be the winning one as it is used in
+>> hda_codec.c:hda_get_input_pin_label.
+>>
+>> So, would a patch that changes every "Int Mic" to "Internal Mic" be
+>> appreciated and merged?
+>
+> Sounds reasonable.  Go ahead.
 
->   Next coming are patches that enable I2S and AC97 support on
-> Samsung's latest SoC based SMDKs. The platform side support
-> has been submitted to the LAML.
+Ok. I also took the liberty of renaming "Ext Mic" and "External Mic" to 
+just "Mic", which is the de-facto standard for external microphone jacks.
 
-All applied, thanks.  I did have a couple of minor comments but nothing
-to stop the merge.
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
