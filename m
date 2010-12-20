@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 05/10] ASoC: SMDK6450: Enable I2S device
-Date: Mon, 20 Dec 2010 13:43:21 +0000
-Message-ID: <20101220134321.GG26706@rakim.wolfsonmicro.main>
+Subject: Re: [PATCHes 00/10] ASoC: Samsung: Enable latest SoCs
+Date: Mon, 20 Dec 2010 13:45:01 +0000
+Message-ID: <20101220134501.GH26706@rakim.wolfsonmicro.main>
 References: <1292810667-29773-1-git-send-email-jassisinghbrar@gmail.com>
-	<1292810751-30064-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 58F5E245C1
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 14:43:23 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A2A66245C2
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 14:45:02 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1292810751-30064-1-git-send-email-jassisinghbrar@gmail.com>
+In-Reply-To: <1292810667-29773-1-git-send-email-jassisinghbrar@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,12 +25,11 @@ To: Jassi@opensource.wolfsonmicro.com, "Brar <jassisinghbrar"@gmail.com
 Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 20, 2010 at 11:05:51AM +0900, Jassi@opensource.wolfsonmicro.com wrote:
+On Mon, Dec 20, 2010 at 11:04:27AM +0900, Jassi@opensource.wolfsonmicro.com wrote:
 
->  config ASOC_SAMSUNG_SMDK_WM8580
->  	tristate "SoC I2S Audio support for WM8580 on SMDK"
-> -	depends on ASOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDK6440)
-> +	depends on ASOC_SAMSUNG && (MACH_SMDK6410 || MACH_SMDKC100 || MACH_SMDK6440 || MACH_SMDK6450)
+>   Next coming are patches that enable I2S and AC97 support on
+> Samsung's latest SoC based SMDKs. The platform side support
+> has been submitted to the LAML.
 
-Might be worth adding a HAS_SMDK_WM8580 or something that the machines
-can select otherwise this line couldget very long.
+All applied, thanks.  I did have a couple of minor comments but nothing
+to stop the merge.
