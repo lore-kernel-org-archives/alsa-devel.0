@@ -1,19 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/2] ASoC: Use delayed work to debounce
-	WM8350 jack IRQs
-Date: Wed, 22 Dec 2010 10:55:12 +0000
-Message-ID: <1293015312.3329.12.camel@odin>
-References: <1292976559-11466-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 11/11] ucm: ctlparse - always terminate cset
+	buffer
+Date: Tue, 21 Dec 2010 22:12:00 +0000
+Message-ID: <1292969520-18047-12-git-send-email-lrg@slimlogic.co.uk>
+References: <1292969520-18047-1-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7C19F103C17
-	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 11:55:15 +0100 (CET)
-Received: by wwe15 with SMTP id 15so4773429wwe.20
-	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 02:55:15 -0800 (PST)
-In-Reply-To: <1292976559-11466-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id EFD8F103A60
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2010 23:12:28 +0100 (CET)
+Received: by mail-ww0-f51.google.com with SMTP id 15so4322500wwe.20
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2010 14:12:28 -0800 (PST)
+In-Reply-To: <1292969520-18047-1-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-12-22 at 00:09 +0000, Mark Brown wrote:
-> This avoids blocking the IRQ thread and allows further bounces to extend
-> the debounce time.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/wm8350.c |   62 +++++++++++++++++++++++++++++++-------------
->  1 files changed, 43 insertions(+), 19 deletions(-)
-> 
+Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
+---
+ src/control/ctlparse.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+diff --git a/src/control/ctlparse.c b/src/control/ctlparse.c
+index c8300f3..a929816 100644
+--- a/src/control/ctlparse.c
++++ b/src/control/ctlparse.c
+@@ -208,8 +208,8 @@ int snd_ctl_ascii_elem_id_parse(snd_ctl_elem_id_t *dst, const char *str)
+ 					}
+ 					str++;
+ 				}
+-				*ptr = '\0';
+ 			}
++			*ptr = '\0';
+ 			snd_ctl_elem_id_set_name(dst, buf);
+ 		} else if (!strncasecmp(str, "index=", 6)) {
+ 			str += 6;
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+1.7.1
