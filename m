@@ -1,17 +1,20 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: Tegra driver silent running on linux-next
-Date: Tue, 21 Dec 2010 22:21:40 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF030FD78CE2@HQMAIL01.nvidia.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF030FD78CE0@HQMAIL01.nvidia.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: If we can't find a cache compression
+ type default to flat
+Date: Tue, 21 Dec 2010 20:28:32 +0000
+Message-ID: <1292963312.3296.48.camel@odin>
+References: <1292951442-32687-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id A87592434C
-	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 07:22:19 +0100 (CET)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF030FD78CE0@HQMAIL01.nvidia.com>
-Content-Language: en-US
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 31E7A1039FA
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2010 21:28:41 +0100 (CET)
+Received: by wyi11 with SMTP id 11so4208490wyi.38
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2010 12:28:37 -0800 (PST)
+In-Reply-To: <1292951442-32687-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,25 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Mark Brown (broonie@opensource.wolfsonmicro.com)" <broonie@opensource.wolfsonmicro.com>
-Cc: "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Stephen Warren wrote:
-> I've made the Tegra audio driver compile against ALSA's -next, and it seems
-> like it's working; the files in /sys/kernel/debug/asoc contain everything
-> I'd expect, aplay -[lL] list what I'd expect, aplay runs without errors
-> and completes after the expected about of time, same for speaker-test.
+On Tue, 2010-12-21 at 17:10 +0000, Mark Brown wrote:
+> This makes it easier to make cache types build time configurable as we
+> don't have a hard dependency on a given cache being built in.
 > 
-> However, the headphones are completely silent.
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/soc-cache.c |    9 ++++++---
+>  1 files changed, 6 insertions(+), 3 deletions(-)
 
-Bah, it's working now. Tegra wasn't driving anything on the codec's MCLK input.
-I thought I'd checked all the Tegra clock programming, but obviously not well
-enough...
-
-(and for reference, the DAPM/routing calls I added weren't actually required)
-
-Sorry for the noise.
-
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
-nvpublic
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
