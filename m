@@ -1,69 +1,44 @@
-From: Jesper Juhl <jj@chaosbits.net>
-Subject: [PATCH] sound, core, pcm_lib: remember to always call va_end() on
- stuff that we va_start()
-Date: Tue, 21 Dec 2010 00:03:17 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1012202357150.23785@swampdragon.chaosbits.net>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCHes 00/10] ASoC: Samsung: Enable latest SoCs
+Date: Tue, 21 Dec 2010 10:53:15 +0900
+Message-ID: <AANLkTimB-j7-WDDFBae6c-MxTD083RL4RV=8Vs_APWRP@mail.gmail.com>
+References: <1292810667-29773-1-git-send-email-jassisinghbrar@gmail.com>
+	<20101220134501.GH26706@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, Krzysztof Helt <krzysztof.h1@wp.pl>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bw0-f42.google.com (mail-bw0-f42.google.com
+	[209.85.214.42])
+	by alsa0.perex.cz (Postfix) with ESMTP id A25AC1037F9
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2010 02:53:15 +0100 (CET)
+Received: by bwz13 with SMTP id 13so4248415bwz.29
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2010 17:53:15 -0800 (PST)
+In-Reply-To: <20101220134501.GH26706@rakim.wolfsonmicro.main>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, kgene.kim@samsung.com, "Brar <jassisinghbrar"@gmail.com, Jassi Brar <jassi.brar@samsung.com>, Jassi@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-The Coverity checker spotted that we do not always remember to call 
-va_end() on 'args' in failure paths in snd_pcm_hw_rule_add().
-Here's a patch to fix that up (compile tested only) - it also removes 
-some annoying trailing whitespace that caught my eye while I was in the 
-area..
-
-Signed-off-by: Jesper Juhl <jj@chaosbits.net>
----
- pcm_lib.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index b75db8e..11446a1 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1070,8 +1070,10 @@ int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime, unsigned int cond,
- 		struct snd_pcm_hw_rule *new;
- 		unsigned int new_rules = constrs->rules_all + 16;
- 		new = kcalloc(new_rules, sizeof(*c), GFP_KERNEL);
--		if (!new)
-+		if (!new) {
-+			va_end(args);
- 			return -ENOMEM;
-+		}
- 		if (constrs->rules) {
- 			memcpy(new, constrs->rules,
- 			       constrs->rules_num * sizeof(*c));
-@@ -1087,8 +1089,10 @@ int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime, unsigned int cond,
- 	c->private = private;
- 	k = 0;
- 	while (1) {
--		if (snd_BUG_ON(k >= ARRAY_SIZE(c->deps)))
-+		if (snd_BUG_ON(k >= ARRAY_SIZE(c->deps))) {
-+			va_end(args);
- 			return -EINVAL;
-+		}
- 		c->deps[k++] = dep;
- 		if (dep < 0)
- 			break;
-@@ -1097,7 +1101,7 @@ int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime, unsigned int cond,
- 	constrs->rules_num++;
- 	va_end(args);
- 	return 0;
--}				    
-+}
- 
- EXPORT_SYMBOL(snd_pcm_hw_rule_add);
- 
-
-
--- 
-Jesper Juhl <jj@chaosbits.net>            http://www.chaosbits.net/
-Don't top-post http://www.catb.org/~esr/jargon/html/T/top-post.html
-Plain text mails only, please.
+T24gTW9uLCBEZWMgMjAsIDIwMTAgYXQgMTA6NDUgUE0sIE1hcmsgQnJvd24KPGJyb29uaWVAb3Bl
+bnNvdXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPiBPbiBNb24sIERlYyAyMCwgMjAxMCBh
+dCAxMTowNDoyN0FNICswOTAwLCBKYXNzaUBvcGVuc291cmNlLndvbGZzb25taWNyby5jb20gd3Jv
+dGU6Cj4KPj4gwqAgTmV4dCBjb21pbmcgYXJlIHBhdGNoZXMgdGhhdCBlbmFibGUgSTJTIGFuZCBB
+Qzk3IHN1cHBvcnQgb24KPj4gU2Ftc3VuZydzIGxhdGVzdCBTb0MgYmFzZWQgU01ES3MuIFRoZSBw
+bGF0Zm9ybSBzaWRlIHN1cHBvcnQKPj4gaGFzIGJlZW4gc3VibWl0dGVkIHRvIHRoZSBMQU1MLgo+
+Cj4gQWxsIGFwcGxpZWQsIHRoYW5rcy4gwqBJIGRpZCBoYXZlIGEgY291cGxlIG9mIG1pbm9yIGNv
+bW1lbnRzIGJ1dCBub3RoaW5nCj4gdG8gc3RvcCB0aGUgbWVyZ2UuCgpUaGFua3MuClRob3VnaCBJ
+IHdvdWxkIGhhdmUgaGFwcGlseSByZXN1Ym1pdHRlZCBhZnRlciBtb2RpZnlpbmcgYXMgcGVyIHlv
+dXIgY29tbWVudHMuCk9ubHkgSSByZWFkIHlvdXIgY29tbWVudHMgYW5kIHRoaXMgbWFpbCBqdXN0
+IG5vdyB3aGVuIEkgcmVhY2hlZCBvZmZpY2UgOikKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
