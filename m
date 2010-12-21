@@ -1,15 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.38
-Date: Wed, 22 Dec 2010 11:03:16 +0000
-Message-ID: <20101222110315.GA12426@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: [PATCH 04/11] ucm: implement basic script exec
+	functionality
+Date: Tue, 21 Dec 2010 22:11:53 +0000
+Message-ID: <1292969520-18047-5-git-send-email-lrg@slimlogic.co.uk>
+References: <1292969520-18047-1-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 77CF1103C53
-	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 12:03:04 +0100 (CET)
-Content-Disposition: inline
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8FC66103A43
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2010 23:12:19 +0100 (CET)
+Received: by mail-ww0-f51.google.com with SMTP id 15so4322500wwe.20
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2010 14:12:19 -0800 (PST)
+In-Reply-To: <1292969520-18047-1-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,69 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 991e02b4469c2e92cc98aa5b04fbde981671b74c:
+Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
+---
+ src/ucm/main.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
-  Merge branch 'for-2.6.38' of git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6 into topic/asoc (2010-12-17 16:43:17 +0100)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.38
-
-Dimitris Papastamos (1):
-      ASoC: soc-dapm: Introduce the new snd_soc_dapm_virt_mux type
-
-Jarkko Nikula (3):
-      ASoC: Move DAPM paths from DAPM context to snd_soc_card
-      ASoC: Move widgets from DAPM context to snd_soc_card
-      ASoC: Extend DAPM to handle power changes on cross-device paths
-
-Jassi Brar (10):
-      ASoC: Samsung: Set default rclk source rate
-      ASoC: Samsung: I2S: Flush FIFO after stop
-      ASoC: SMDK_WM8580: Make I2S0 as default dai
-      ASoC: SMDK6440: Enable I2S device
-      ASoC: SMDK6450: Enable I2S device
-      ASoC: SMDK6442: Enable I2S device
-      ASoC: SMDKV210: Enable I2S device
-      ASoC: SMDKC110: Enable I2S device
-      ASoC: SMDKV310: Enable AC97 device
-      ASoC: SMDKV310: Add I2S support
-
-Kuninori Morimoto (3):
-      ASoC: sh: fsi: move fsi_irq_enable function to fsi_dai_trigger
-      ASoC: sh: fsi: Add over/under run counter
-      ASoC: sh: fsi: modify improper dependent
-
-Mark Brown (7):
-      ASoC: Remove unused DAPM_DOUBLE control types
-      ASoC: Do DAPM control updates in the middle of DAPM sequences
-      Merge branch 'topic/asoc' of git://git.kernel.org/.../tiwai/sound-2.6 into for-2.6.38
-      ASoC: Remove some unused defines from WM8903
-      ASoC: Fix WM8994/58 3D stereo control definitions
-      ASoC: If we can't find a cache compression type default to flat
-      ASoC: Make LZO cache compression optional
-
- include/sound/soc-dapm.h        |   43 +++--
- include/sound/soc.h             |    4 +
- sound/soc/Kconfig               |   17 ++-
- sound/soc/codecs/tlv320aic3x.c  |    2 +-
- sound/soc/codecs/wm8903.h       |    4 -
- sound/soc/codecs/wm8960.c       |    4 +-
- sound/soc/codecs/wm8994.c       |    6 +-
- sound/soc/samsung/Kconfig       |   14 ++-
- sound/soc/samsung/Makefile      |    2 +
- sound/soc/samsung/i2s.c         |   12 +-
- sound/soc/samsung/smdk_wm8580.c |   17 +-
- sound/soc/samsung/smdk_wm8994.c |  176 +++++++++++++++++++
- sound/soc/samsung/smdk_wm9713.c |    1 +
- sound/soc/sh/Kconfig            |    4 +-
- sound/soc/sh/fsi.c              |   80 ++++++----
- sound/soc/soc-cache.c           |   13 +-
- sound/soc/soc-core.c            |    6 +-
- sound/soc/soc-dapm.c            |  364 ++++++++++++++++++++++++---------------
- 18 files changed, 551 insertions(+), 218 deletions(-)
- create mode 100644 sound/soc/samsung/smdk_wm8994.c
+diff --git a/src/ucm/main.c b/src/ucm/main.c
+index ecf07f9..64e4279 100644
+--- a/src/ucm/main.c
++++ b/src/ucm/main.c
+@@ -265,7 +265,9 @@ static int execute_sequence(snd_use_case_mgr_t *uc_mgr,
+ 			usleep(s->data.sleep);
+ 			break;
+ 		case SEQUENCE_ELEMENT_TYPE_EXEC:
+-			uc_error("exec not yet implemented: '%s'", s->data.exec);
++			err = system(s->data.exec);
++			if (err < 0)
++				goto __fail;
+ 			break;
+ 		default:
+ 			uc_error("unknown sequence command %i", s->type);
+-- 
+1.7.1
