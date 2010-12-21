@@ -1,68 +1,62 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH] ASoC: Add optional pointer to machine
- audio routes to snd_soc_card
-Date: Tue, 21 Dec 2010 10:16:59 +0200
-Message-ID: <20101221101659.4fde5a83.jhnikula@gmail.com>
-References: <1292607580-27040-1-git-send-email-jhnikula@gmail.com>
-	<201012201322.49437.peter.ujfalusi@nokia.com>
-	<20101220141700.f33cae2e.jhnikula@gmail.com>
-	<201012210930.46971.peter.ujfalusi@nokia.com>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [RFC/PATCH v7 03/12] media: Entities, pads and links
+Date: Tue, 21 Dec 2010 17:22:39 +0100
+Message-ID: <201012211722.39810.hverkuil@xs4all.nl>
+References: <1292844995-7900-1-git-send-email-laurent.pinchart@ideasonboard.com> <1292844995-7900-4-git-send-email-laurent.pinchart@ideasonboard.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f42.google.com (mail-bw0-f42.google.com
-	[209.85.214.42]) by alsa0.perex.cz (Postfix) with ESMTP id 50BA3243D3
-	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2010 09:15:03 +0100 (CET)
-Received: by bwz13 with SMTP id 13so4451423bwz.29
-	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2010 00:15:02 -0800 (PST)
-In-Reply-To: <201012210930.46971.peter.ujfalusi@nokia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1292844995-7900-4-git-send-email-laurent.pinchart@ideasonboard.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, clemens@ladisch.de, gregkh@suse.de, sakari.ailus@maxwell.research.nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 21 Dec 2010 09:30:46 +0200
-Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
+Hi Laurent,
 
-> > This is due if there are machines with multiple codecs that are not
-> > cross-connected but if they have widgets with a same name and I didn't
-> > want to force them to use name prefixing and thus causing
-> > userspace-kernel space breakage (kcontrol names changed) compared to
-> > current implementation.
-> 
-> If you have multiple codecs in your device, it is likely that those codecs will 
-> have colliding widget names for sure.
-> IMHO using prefixes for multi codec cards shall not break the userspace-kernel 
-> interface, since with old ASoC we had one codec per one card.
-> So if you move your machine to real multi-comp, then you anyway break the 
-> userspace-kernel interface by moving the PCMs to one card from the original PCM 
-> per card way.
-> If you have one codec in your system you do not need to prefix that, so you 
-> break nothing.
-> I would use prefixes in real multi codec cases...
->
-It's not entirely sure. Before cross-device set, i.e. in 2.6.37 it's
-possible to build a machine driver with multiple codecs that can have
-the same widgets names since the paths and widgets are per codec.
-Collision could come only from kcontrol names.
+I promised to look at the new type names, so here is my opinion:
 
-But I agree. Prefixing new machines sounds safer in long run. Then it's
-more unlikely that changes in one codec driver causes hard to see
-problems to machines with multiple codecs.
+On Monday, December 20, 2010 12:36:26 Laurent Pinchart wrote:
 
-> Are we using the prefixes for the non DAPM kcontrols as well? I think we shall, 
-> if the prefix is defined.
-> 
-Yep, prefix is put to all codec kcontrols, widget and route names.
+<snip>
+
+> +
+> +#define MEDIA_ENTITY_TYPE_SHIFT			16
+> +#define MEDIA_ENTITY_TYPE_MASK			0x00ff0000
+> +#define MEDIA_ENTITY_SUBTYPE_MASK		0x0000ffff
+> +
+> +#define MEDIA_ENTITY_TYPE_DEVNODE		(1 << MEDIA_ENTITY_TYPE_SHIFT)
+> +#define MEDIA_ENTITY_TYPE_DEVNODE_V4L		(MEDIA_ENTITY_TYPE_DEVNODE + 1)
+> +#define MEDIA_ENTITY_TYPE_DEVNODE_FB		(MEDIA_ENTITY_TYPE_DEVNODE + 2)
+> +#define MEDIA_ENTITY_TYPE_DEVNODE_ALSA		(MEDIA_ENTITY_TYPE_DEVNODE + 3)
+> +#define MEDIA_ENTITY_TYPE_DEVNODE_DVB		(MEDIA_ENTITY_TYPE_DEVNODE + 4)
+> +
+> +#define MEDIA_ENTITY_TYPE_V4L2_SUBDEV		(2 << MEDIA_ENTITY_TYPE_SHIFT)
+> +#define MEDIA_ENTITY_TYPE_V4L2_SUBDEV_SENSOR	(MEDIA_ENTITY_TYPE_V4L2_SUBDEV + 1)
+> +#define MEDIA_ENTITY_TYPE_V4L2_SUBDEV_FLASH	(MEDIA_ENTITY_TYPE_V4L2_SUBDEV + 2)
+> +#define MEDIA_ENTITY_TYPE_V4L2_SUBDEV_LENS	(MEDIA_ENTITY_TYPE_V4L2_SUBDEV + 3)
+> +
+> +#define MEDIA_ENTITY_FLAG_DEFAULT		(1 << 0)
+> +
+> +#define MEDIA_LINK_FLAG_ENABLED			(1 << 0)
+> +#define MEDIA_LINK_FLAG_IMMUTABLE		(1 << 1)
+> +
+> +#define MEDIA_PAD_FLAG_INPUT			(1 << 0)
+> +#define MEDIA_PAD_FLAG_OUTPUT			(1 << 1)
+
+Using V4L2_SUBDEV instead of just SUBDEV is definitely an improvement.
+
+However, I think the defines are getting way too long and I would propose
+to use the ME_ prefix instead of MEDIA_ENTITY_. Also ML_ instead of MEDIA_LINK_
+and MP_ instead of MEDIA_PAD_.
+
+That way it is less of an alphabet soup when reading code.
+
+Regards,
+
+	Hans
 
 -- 
-Jarkko
+Hans Verkuil - video4linux developer - sponsored by Cisco
