@@ -1,14 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Add jack IRQ trace to 88pm860x driver
-Date: Wed, 22 Dec 2010 00:10:42 +0000
-Message-ID: <1292976642-11536-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: [PATCH 08/11] ucm: check the correct return value for
+	modifier
+Date: Tue, 21 Dec 2010 22:11:57 +0000
+Message-ID: <1292969520-18047-9-git-send-email-lrg@slimlogic.co.uk>
+References: <1292969520-18047-1-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 099AC103B1D
-	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 01:10:37 +0100 (CET)
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9590B103A57
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2010 23:12:24 +0100 (CET)
+Received: by mail-ww0-f51.google.com with SMTP id 15so4322500wwe.20
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2010 14:12:24 -0800 (PST)
+In-Reply-To: <1292969520-18047-1-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,37 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>, Haojian Zhuang <haojian.zhuang@marvell.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
 ---
- sound/soc/codecs/88pm860x-codec.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+ src/ucm/main.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
-index 08e15de..a34fb92 100644
---- a/sound/soc/codecs/88pm860x-codec.c
-+++ b/sound/soc/codecs/88pm860x-codec.c
-@@ -22,6 +22,7 @@
- #include <sound/tlv.h>
- #include <sound/initval.h>
- #include <sound/jack.h>
-+#include <trace/events/asoc.h>
- 
- #include "88pm860x-codec.h"
- 
-@@ -1262,6 +1263,10 @@ static irqreturn_t pm860x_codec_handler(int irq, void *data)
- 	mask = pm860x->det.hs_shrt | pm860x->det.hook_det | pm860x->det.lo_shrt
- 		| pm860x->det.hp_det;
- 
-+	if (status & (HEADSET_STATUS | MIC_STATUS | SHORT_HS1 | SHORT_HS2 |
-+		      SHORT_LO1 | SHORT_LO2))
-+		trace_snd_soc_jack_irq(dev_name(pm860x->codec->dev));
-+
- 	if ((pm860x->det.hp_det & SND_JACK_HEADPHONE)
- 		&& (status & HEADSET_STATUS))
- 		report |= SND_JACK_HEADPHONE;
+diff --git a/src/ucm/main.c b/src/ucm/main.c
+index 3a61679..4c13547 100644
+--- a/src/ucm/main.c
++++ b/src/ucm/main.c
+@@ -1323,7 +1323,7 @@ static int switch_modifier(snd_use_case_mgr_t *uc_mgr,
+         if (xold == NULL)
+                 return -ENOENT;
+         xnew = find_modifier(uc_mgr->active_verb, new_modifier);
+-        if (xold == NULL)
++        if (xnew == NULL)
+                 return -ENOENT;
+         err = 0;
+         list_for_each(pos, &xold->transition_list) {
 -- 
-1.7.2.3
+1.7.1
