@@ -1,18 +1,17 @@
-From: Randy Dunlap <randy.dunlap@oracle.com>
-Subject: Re: [PATCH 2/3] ECI: introducing ECI bus driver
-Date: Wed, 22 Dec 2010 09:11:29 -0800
-Message-ID: <20101222091129.da1ecb22.randy.dunlap@oracle.com>
-References: <1293020435-5680-1-git-send-email-tapio.vihuri@nokia.com>
-	<1293020435-5680-2-git-send-email-tapio.vihuri@nokia.com>
-	<1293020435-5680-3-git-send-email-tapio.vihuri@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: asoc SND_SOC_DAPM_AIF_IN question
+Date: Wed, 22 Dec 2010 17:55:03 +0000
+Message-ID: <20101222175503.GA27401@opensource.wolfsonmicro.com>
+References: <438BB0150E931F4B9CE701519A44630104C104C2AA@bgsmsx502.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcsinet10.oracle.com (rcsinet10.oracle.com [148.87.113.121])
-	by alsa0.perex.cz (Postfix) with ESMTP id D983D244D1
-	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 18:18:22 +0100 (CET)
-In-Reply-To: <1293020435-5680-3-git-send-email-tapio.vihuri@nokia.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B472D244E4
+	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 18:54:52 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <438BB0150E931F4B9CE701519A44630104C104C2AA@bgsmsx502.gar.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,94 +21,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tapio.vihuri@nokia.com
-Cc: ilkka.koskinen@nokia.com, alsa-devel@alsa-project.org, dmitry.torokhov@gmail.com, linux-kernel@vger.kernel.org, samu.p.onkalo@nokia.com
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Harsha,
+	Priya" <priya.harsha@intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 22 Dec 2010 14:20:34 +0200 tapio.vihuri@nokia.com wrote:
+On Wed, Dec 22, 2010 at 10:39:55PM +0530, Koul, Vinod wrote:
 
-> From: Tapio Vihuri <tapio.vihuri@nokia.com>
-> 
-> ECI bus controller is kind of bridge between host CPU I2C and ECI accessory
-> ECI communication.
-> 
-> Signed-off-by: Tapio Vihuri <tapio.vihuri@nokia.com>
-> ---
->  drivers/Kconfig           |    2 +
->  drivers/Makefile          |    1 +
->  drivers/ecibus/Kconfig    |   46 ++++
->  drivers/ecibus/Makefile   |   10 +
->  drivers/ecibus/ecibus.c   |  583 +++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/input/eci.h |    8 +
->  6 files changed, 650 insertions(+), 0 deletions(-)
->  create mode 100644 drivers/ecibus/Kconfig
->  create mode 100644 drivers/ecibus/Makefile
->  create mode 100644 drivers/ecibus/ecibus.c
+> So my codec map looks like:
+>         /*headset map*/
+>         { "HSDAC Left", NULL, "PCM_In"},
+>         { "HSDAC Right", NULL, "PCM_In"},
+>         { "PCM_In", NULL, "Headset Rail"},
+>         { "Headset Rail", NULL, "Audio Rail"},
 
+>         /*speaker map*/
+>         { "IHFDAC Left", NULL, "PCM_In"},
+>         { "IHFDAC Right", NULL, "PCM_In"},
+>         { "PCM_In", NULL, "Speaker Rail"},
+>         { "Speaker Rail", NULL, "Audio Rail"},
 
-> diff --git a/drivers/ecibus/Kconfig b/drivers/ecibus/Kconfig
-> new file mode 100644
-> index 0000000..27e5e36
-> --- /dev/null
-> +++ b/drivers/ecibus/Kconfig
-> @@ -0,0 +1,46 @@
-> +#
-> +# ECI driver configuration
-> +#
-> +menuconfig ECI
-> +	bool "ECI support"
-> +	help
-> +	  ECI (Enhancement Control Interface) accessory support
-> +
-> +	  The Enhancement Control Interface functionality
-> +	  ECI is better known as Multimedia Headset for Nokia phones.
-> +	  If headset has many buttons, like play, vol+, vol- etc. then
-> +	  it is propably ECI accessory.
-> +	  Among several buttons ECI accessory contains memory for storing
-> +	  several parameters.
-> +
-> +	  Enable ECI support in terminal so that ECI input driver is able
-> +	  to communicate with ECI accessory
-> +
-> +if ECI
-> +
-> +config ECI_DEBUG
-> +	boolean "Debug support for ECI drivers"
-> +	depends on DEBUG_KERNEL
-> +	help
-> +	  Selects ECI driver debug messaging.
-> +
-> +	  Say "yes" to enable debug messaging (like dev_dbg and pr_debug),
-> +	  sysfs, and debugfs support in ECI controller.
-> +
-> +comment "ECI Master Controller Drivers"
-> +
-> +config ECI_BUS
-> +	tristate "ECI bus controller driver"
-> +	select INPUT_ECI
+> But when the stream is started now all the widgets get powered on. The debugfs 
+> entry says
 
+You have unconditionally connected both speaker and headphone widgets to
+the same input so when that input becomes active paths are completed to
+both outputs and both outpus are enabled.
 
-'select' INPUT_ECI when INPUT and/or INPUT_MISC are not enabled causes this
-kconfig warning:
+These "Rail" widgets look quite unusual - what are they?
 
-warning: (ECI_BUS && ECI) selects INPUT_ECI which has unmet direct dependencies (!S390 && INPUT && INPUT_MISC)
+> What could I be doing wrong here? I want to add this PCM button for all streams 
+> (4 eventually) and this be enabled whenever anyone of them is started.
 
+What is a "PCM button" and what do you mean by starting a "stream"?
+Normally a stream would be a path between the CPU and the CODEC.
 
-> +	help
-> +	  This selects a driver for the ECI bus controller
-> +
-> +	  ECI bus controller is kind of bridge between host CPU I2C and
-> +	  ECI accessory ECI communication.
-> +
-> +	  Say 'y' here to statically link this module into the kernel or 'm'
-> +	  to build it as a dynamically loadable module. The module will be
-> +	  called ecibus.ko
-> +
-> +
-> +endif # ECI
-
-
----
-~Randy
-*** Remember to use Documentation/SubmitChecklist when testing your code ***
-desserts:  http://www.xenotime.net/linux/recipes/
+The way this works is that as described in reply to your previous mail
+DAPM powers anything on which has a completed path from input to output.
+As mentioned then if you have no routing control in the device the
+machine driver will arrange to enable and disable input and output
+widgets on the edge of the CODEC, either automatically using jack
+detection or by offering SOC_DAPM_PIN_SWITCH() or similar controls to
+applications.
