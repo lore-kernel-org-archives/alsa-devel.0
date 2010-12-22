@@ -1,112 +1,59 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [alsa-devel] [RFC/PATCH v6 03/12] media: Entities, pads and links
-Date: Tue, 21 Dec 2010 17:49:22 +0100
-Message-ID: <201012211749.22393.hverkuil@xs4all.nl>
-References: <1290652099-15102-1-git-send-email-laurent.pinchart@ideasonboard.com> <4D0775DB.2020902@ladisch.de> <201012150050.44885.laurent.pinchart@ideasonboard.com>
-Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <201012150050.44885.laurent.pinchart@ideasonboard.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, sakari.ailus@maxwell.research.nokia.com, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lennart@poettering.net, linux-omap@vger.kernel.org, linux-media@vger.kernel.org
+From: tapio.vihuri@nokia.com
+Subject: [PATCH 0/3] input: Add support for ECI (multimedia) accessories
+Date: Wed, 22 Dec 2010 14:20:32 +0200
+Message-ID: <1293020435-5680-1-git-send-email-tapio.vihuri@nokia.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: dmitry.torokhov@gmail.com
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, ilkka.koskinen@nokia.com, samu.p.onkalo@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday, December 15, 2010 00:50:44 Laurent Pinchart wrote:
-> Hi Clemens,
-> 
-> On Tuesday 14 December 2010 14:49:15 Clemens Ladisch wrote:
-> > Laurent Pinchart wrote:
-> > > On Tuesday 14 December 2010 13:40:21 Hans Verkuil wrote:
-> > >> > On Monday 13 December 2010 17:10:51 Clemens Ladisch wrote:
-> > >> >> * Entity types
-> > >> >> 
-> > >> >> TYPE_NODE was renamed to TYPE_DEVICE because "node" sounds like a
-> > >> >> node in a graph, which does not distinguish it from other entity
-> > >> >> types because all entities are part of the topology graph.  I chose
-> > >> >> "device" as this type describes entities that are visible as some
-> > >> >> device node to other software.
-> > >> > 
-> > >> > What this type describes is a device node. Both NODE and DEVICE can be
-> > >> > confusing in my opinion, but DEVICE_NODE is a bit long.
-> > >> 
-> > >> What about DEVNODE? I think that would be a good alternative.
-> > > 
-> > > Fine with me. Clemens, any opinion on that ?
-> > 
-> > Fine with me too.
-> 
-> OK I'll use that name.
-> 
-> > > > >> TYPE_EXT describes entities that represent some interface to the
-> > > > >> external world, TYPE_INT those that are internal to the entire
-> > > > >> device. (I'm not sure if that distinction is very useful, but
-> > > > >> TYPE_SUBDEV seems to be an even more meaningless name.)
-> > > > > 
-> > > > > SUBDEV comes from the V4L2 world, and I agree that it might not be a
-> > > > > very good name.
-> > > > 
-> > > > SUBDEV refers to a specific type of driver. Within the v4l world it is
-> > > > well defined. So I prefer to keep this. Perhaps some additional
-> > > > comments or documentation can be added to clarify this.
-> > > 
-> > > Should this be clarified by using V4L2_SUBDEV instead then ?
-> > 
-> > If the "SUBDEV" concept doesn't exist outside V4L, that would indeed be
-> > better.
-> > 
-> > I don't want to rename things that come out of existing frameworks; this
-> > naming discussion makes sense only for those entity (sub)types that can
-> > be shared between them.  Are there any, besides jacks?
-> 
-> Some entities like TV tuners play a dual audio/video role. I'm not sure how to 
-> handle them, I lack experience in that field.
+From: Tapio Vihuri <tapio.vihuri@nokia.com>
 
-It is very important to distinguish between the actual tuner device and the
-physical connector. ALSA doesn't program a tuner device, that's the domain
-of V4L and DVB. ALSA just sees an input pin.
+Hi all
 
-Regarding tuners there are roughly two types of hardware: one where the audio
-goes to an output jack (and the user has to use a loopback cable to hook it up
-to an audio input), or it goes to memory using DMA and an ALSA driver.
+This patch set introduce Multimedia Headset Accessory support for
+Nokia phones. Technically those are known as ECI (Enhancement Control Interface)
+	
+If headset has many buttons, like play, vol+, vol- etc. then it is propably ECI
+accessory.
 
-In the first scenario the MC would model a TV_ANTENNA connector and an AUDIO_OUT
-connector. The TV_ANTENNA connector would typically link to a V4L2_SUBDEV_TUNER,
-which would link to a V4L2_SUBDEV_AUDIO_DEMOD (in turn linked to the AUDIO_OUT
-connector). The tuner would also link to a V4L2_SUBDEV_VIDEO_DIGITIZER (in turn
-linked to a DEVNODE_V4L).
+Among several buttons ECI accessories contains memory for storing several
+parameters.
 
-In the second scenario there is no AUDIO_OUT connector, instead there is a
-DEVNODE_ALSA.
+This ECI input driver provides the following features:
+ - reading ECI configuration memory
+ - ECI buttons as input events
 
-It can get more complex: in the case of MPEG encoders the audio from the tuner
-goes to an audio demod, the video goes to a digitizer, and the output of those
-subdevs both go into the same MPEG encoder subdev.
+Drive is constructed as follows:
+ - ECI accessory input driver deals with headset accessory
+ - ECI bus control driver deals the HW transfering data to/from headset
+ - platform data match used HW
 
-When modeling hardware like audio or video devices it is important to remember
-to separate I/O pins from actually physical connectors. E.g. an audio device may
-have many possible input pins, but how they are hooked up to which physical
-connectors is something that is board specific and not part of the audio driver
-itself.
+In the future accessory detection logic will be added using ALSA jack reporting.
 
-Anyway, what we need is a 'connector' entity. And just like the other entities,
-connectors can have multiple input pads so I don't see any problems in modeling
-antenna connectors.
+Created against linux-2.6.37-rc6
 
-Regards,
+Please review.
 
-	Hans
+Tapio Vihuri (3):
+  ECI: input: introduce ECI accessory input driver
+  ECI: introducing ECI bus driver
+  ECI: adding platform data for ECI driver
 
-> > > What about ALSA entities, should they use MEDIA_ENTITY_TYPE_ALSA_* ?
-> > 
-> > The entity types representing ALSA devices are already named "ALSA".
-> 
-> I was talking about the INT_* types. They're ALSA-specific, but have no ALSA 
-> in the type name.
-> 
-> 
-
--- 
-Hans Verkuil - video4linux developer - sponsored by Cisco
+ arch/x86/platform/mrst/mrst.c |   59 +++
+ drivers/Kconfig               |    2 +
+ drivers/Makefile              |    1 +
+ drivers/ecibus/Kconfig        |   46 ++
+ drivers/ecibus/Makefile       |   10 +
+ drivers/ecibus/ecibus.c       |  583 ++++++++++++++++++++++++
+ drivers/input/misc/Kconfig    |   18 +
+ drivers/input/misc/Makefile   |    2 +-
+ drivers/input/misc/eci.c      | 1002 +++++++++++++++++++++++++++++++++++++++++
+ include/linux/input/eci.h     |  165 +++++++
+ 10 files changed, 1887 insertions(+), 1 deletions(-)
+ create mode 100644 drivers/ecibus/Kconfig
+ create mode 100644 drivers/ecibus/Makefile
+ create mode 100644 drivers/ecibus/ecibus.c
+ create mode 100644 drivers/input/misc/eci.c
+ create mode 100644 include/linux/input/eci.h
