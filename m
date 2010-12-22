@@ -1,20 +1,21 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
 Subject: Re: [PATCH] ASoC: Add initial WM8995 driver
-Date: Wed, 22 Dec 2010 11:29:40 +0000
-Message-ID: <1293017380.29185.59.camel@dplaptop.localdomain>
+Date: Wed, 22 Dec 2010 10:54:39 +0000
+Message-ID: <1293015279.3329.11.camel@odin>
 References: <1292951800-16694-1-git-send-email-dp@opensource.wolfsonmicro.com>
 	<1292963892.3296.56.camel@odin>
 	<1293013616.29185.55.camel@dplaptop.localdomain>
-	<1293015279.3329.11.camel@odin>
-	<20101222110752.GB12426@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3BE1A1038C3
-	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 12:28:30 +0100 (CET)
-In-Reply-To: <20101222110752.GB12426@opensource.wolfsonmicro.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 713F5103BEB
+	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 11:54:44 +0100 (CET)
+Received: by wyi11 with SMTP id 11so4725904wyi.38
+	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 02:54:43 -0800 (PST)
+In-Reply-To: <1293013616.29185.55.camel@dplaptop.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,38 +25,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-12-22 at 11:07 +0000, Mark Brown wrote:
-> On Wed, Dec 22, 2010 at 10:54:39AM +0000, Liam Girdwood wrote:
-> > On Wed, 2010-12-22 at 10:26 +0000, Dimitris Papastamos wrote:
-> > > On Tue, 2010-12-21 at 20:38 +0000, Liam Girdwood wrote:
-> > > > On Tue, 2010-12-21 at 17:16 +0000, Dimitris Papastamos wrote:
+On Wed, 2010-12-22 at 10:26 +0000, Dimitris Papastamos wrote:
+> On Tue, 2010-12-21 at 20:38 +0000, Liam Girdwood wrote:
+> > On Tue, 2010-12-21 at 17:16 +0000, Dimitris Papastamos wrote:
+> > > The WM8995 is a digital audio hub CODEC designed for smartphones.
+> > > The current driver supports most of the basic functionality of the
+> > > WM8995.
+> > > 
+> > > Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+> > > ---
+> > 
+> > > +
+> > > +static int wm8995_volatile(unsigned int reg)
+> > > +{
+> > > +	if (reg >= WM8995_MAX_REGISTER + 1)
+> > > +		return 1;
+> > > +
+> > 
+> > return -EINVAL here.
 > 
-> > > > > +static int wm8995_volatile(unsigned int reg)
-> > > > > +{
-> > > > > +	if (reg >= WM8995_MAX_REGISTER + 1)
-> > > > > +		return 1;
-> > > > > +
-> 
-> > > > return -EINVAL here.
-> 
-> > > The logic behind this is that out of bounds registers are considered
-> > > volatile. 
-> 
-> > It does look a little odd since out of bounds generally means invalid. 
-> 
-> Most of the drivers that use this idiom use a constant like
-> MAX_CACHED_REGISTER or similar which makes it clearer that there are
-> more registers beyond the end of the register map.  The normal use is to
-> allow access to partially documented diagnostic registers or to support
-> register banks that are partially owned by something else (devices with
-> an embedded DSP being the most obvious example).
+> The logic behind this is that out of bounds registers are considered
+> volatile. 
 
-Yes that makes sense.  I've changed the function to use
-WM8995_MAX_CACHED_REGISTER instead.
+It does look a little odd since out of bounds generally means invalid. 
 
-Thanks,
-Dimitris
+>  If I change it to -EINVAL, the behaviour will essentially be
+> the same because in the soc-cache code we use
+> snd_soc_codec_volatile_register() and we only test it for being
+> non-zero.  We either need clearer semantics for this function or
+> otherwise it should be fine.
+> 
+
+Clearer comments are probably better in this case since it does look
+wrong, however if you have time please feel free to update the function
+semantics. 
+
+> > > +	switch (reg) {
+> > > +	case WM8995_SOFTWARE_RESET:
+> > > +	case WM8995_DC_SERVO_READBACK_0:
+> > > +	case WM8995_INTERRUPT_STATUS_1:
+> > > +	case WM8995_INTERRUPT_STATUS_2:
+> > > +	case WM8995_INTERRUPT_STATUS_1_MASK:
+> > > +	case WM8995_INTERRUPT_STATUS_2_MASK:
+> > > +	case WM8995_INTERRUPT_CONTROL:
+> > > +	case WM8995_ACCESSORY_DETECT_MODE1:
+> > > +	case WM8995_ACCESSORY_DETECT_MODE2:
+> > > +	case WM8995_HEADPHONE_DETECT1:
+> > > +	case WM8995_HEADPHONE_DETECT2:
+> > > +		return 1;
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > 
+> > > +
+> > > +/*
+> > > + * R1 (0x01) - Power Management (1)
+> > > + */
+> > > +#define WM8995_MICB2_ENA                        0x0200	/* MICB2_ENA */
+> > > +#define WM8995_MICB2_ENA_MASK                   0x0200	/* MICB2_ENA */
+> > > +#define WM8995_MICB2_ENA_SHIFT                       9	/* MICB2_ENA */
+> > > +#define WM8995_MICB2_ENA_WIDTH                       1	/* MICB2_ENA */
+> > > +#define WM8995_MICB1_ENA                        0x0100	/* MICB1_ENA */
+> > > +#define WM8995_MICB1_ENA_MASK                   0x0100	/* MICB1_ENA */
+> > > +#define WM8995_MICB1_ENA_SHIFT                       8	/* MICB1_ENA */
+> > > +#define WM8995_MICB1_ENA_WIDTH                       1	/* MICB1_ENA */
+> > > +#define WM8995_HPOUT2L_ENA                      0x0080	/* HPOUT2L_ENA */
+> > > +#define WM8995_HPOUT2L_ENA_MASK                 0x0080	/* HPOUT2L_ENA */
+> > > +#define WM8995_HPOUT2L_ENA_SHIFT                     7	/* HPOUT2L_ENA */
+> > > +#define WM8995_HPOUT2L_ENA_WIDTH                     1	/* HPOUT2L_ENA */
+> > > +#define WM8995_HPOUT2R_ENA                      0x0040	/* HPOUT2R_ENA */
+> > > +#define WM8995_HPOUT2R_ENA_MASK                 0x0040	/* HPOUT2R_ENA */
+> > > +#define WM8995_HPOUT2R_ENA_SHIFT                     6	/* HPOUT2R_ENA */
+> > > +#define WM8995_HPOUT2R_ENA_WIDTH                     1	/* HPOUT2R_ENA */
+> > > +#define WM8995_HPOUT1L_ENA                      0x0020	/* HPOUT1L_ENA */
+> > > +#define WM8995_HPOUT1L_ENA_MASK                 0x0020	/* HPOUT1L_ENA */
+> > > +#define WM8995_HPOUT1L_ENA_SHIFT                     5	/* HPOUT1L_ENA */
+> > > +#define WM8995_HPOUT1L_ENA_WIDTH                     1	/* HPOUT1L_ENA */
+> > > +#define WM8995_HPOUT1R_ENA                      0x0010	/* HPOUT1R_ENA */
+> > > +#define WM8995_HPOUT1R_ENA_MASK                 0x0010	/* HPOUT1R_ENA */
+> > > +#define WM8995_HPOUT1R_ENA_SHIFT                     4	/* HPOUT1R_ENA */
+> > > +#define WM8995_HPOUT1R_ENA_WIDTH                     1	/* HPOUT1R_ENA */
+> > > +#define WM8995_BG_ENA                           0x0001	/* BG_ENA */
+> > > +#define WM8995_BG_ENA_MASK                      0x0001	/* BG_ENA */
+> > > +#define WM8995_BG_ENA_SHIFT                          0	/* BG_ENA */
+> > > +#define WM8995_BG_ENA_WIDTH                          1	/* BG_ENA */
+> > > +
+> > 
+> > It looks like all the register bits have macros but some driver
+> > functions are still using magic numbers for bits instead of the macros.
+> 
+> I've found one call to dc_servo_cmd() using a magic number.  The dapm
+> widgets and the kcontrols don't generally use the macros since the lines
+> become very long.
+> 
+
+There are also some magic numbers in configure_aif_clock,
+wm8995_set_dai_fmt, wm8995_hw_params. It's possible there are no macros
+defined for these numbers though...
+
+Liam
+
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
