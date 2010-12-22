@@ -1,8 +1,12 @@
 From: tapio.vihuri@nokia.com
-Subject: [PATCH 0/3] input: Add support for ECI (multimedia) accessories
-Date: Wed, 22 Dec 2010 14:20:32 +0200
-Message-ID: <1293020435-5680-1-git-send-email-tapio.vihuri@nokia.com>
+Subject: [PATCH 3/3] ECI: adding platform data for ECI driver
+Date: Wed, 22 Dec 2010 14:20:35 +0200
+Message-ID: <1293020435-5680-4-git-send-email-tapio.vihuri@nokia.com>
+References: <1293020435-5680-1-git-send-email-tapio.vihuri@nokia.com>
+ <1293020435-5680-2-git-send-email-tapio.vihuri@nokia.com>
+ <1293020435-5680-3-git-send-email-tapio.vihuri@nokia.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1293020435-5680-3-git-send-email-tapio.vihuri@nokia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: dmitry.torokhov@gmail.com
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, ilkka.koskinen@nokia.com, samu.p.onkalo@nokia.com
@@ -10,50 +14,87 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Tapio Vihuri <tapio.vihuri@nokia.com>
 
-Hi all
+Gives platform data for ECI accessory input driver and
+ECI bus controller driver.
 
-This patch set introduce Multimedia Headset Accessory support for
-Nokia phones. Technically those are known as ECI (Enhancement Control Interface)
-	
-If headset has many buttons, like play, vol+, vol- etc. then it is propably ECI
-accessory.
+Signed-off-by: Tapio Vihuri <tapio.vihuri@nokia.com>
+---
+ arch/x86/platform/mrst/mrst.c |   59 +++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 59 insertions(+), 0 deletions(-)
 
-Among several buttons ECI accessories contains memory for storing several
-parameters.
-
-This ECI input driver provides the following features:
- - reading ECI configuration memory
- - ECI buttons as input events
-
-Drive is constructed as follows:
- - ECI accessory input driver deals with headset accessory
- - ECI bus control driver deals the HW transfering data to/from headset
- - platform data match used HW
-
-In the future accessory detection logic will be added using ALSA jack reporting.
-
-Created against linux-2.6.37-rc6
-
-Please review.
-
-Tapio Vihuri (3):
-  ECI: input: introduce ECI accessory input driver
-  ECI: introducing ECI bus driver
-  ECI: adding platform data for ECI driver
-
- arch/x86/platform/mrst/mrst.c |   59 +++
- drivers/Kconfig               |    2 +
- drivers/Makefile              |    1 +
- drivers/ecibus/Kconfig        |   46 ++
- drivers/ecibus/Makefile       |   10 +
- drivers/ecibus/ecibus.c       |  583 ++++++++++++++++++++++++
- drivers/input/misc/Kconfig    |   18 +
- drivers/input/misc/Makefile   |    2 +-
- drivers/input/misc/eci.c      | 1002 +++++++++++++++++++++++++++++++++++++++++
- include/linux/input/eci.h     |  165 +++++++
- 10 files changed, 1887 insertions(+), 1 deletions(-)
- create mode 100644 drivers/ecibus/Kconfig
- create mode 100644 drivers/ecibus/Makefile
- create mode 100644 drivers/ecibus/ecibus.c
- create mode 100644 drivers/input/misc/eci.c
- create mode 100644 include/linux/input/eci.h
+diff --git a/arch/x86/platform/mrst/mrst.c b/arch/x86/platform/mrst/mrst.c
+index 79ae681..60dca78 100644
+--- a/arch/x86/platform/mrst/mrst.c
++++ b/arch/x86/platform/mrst/mrst.c
+@@ -14,6 +14,7 @@
+ #include <linux/sfi.h>
+ #include <linux/irq.h>
+ #include <linux/module.h>
++#include <linux/platform_device.h>
+ 
+ #include <asm/setup.h>
+ #include <asm/mpspec_def.h>
+@@ -309,3 +310,61 @@ static inline int __init setup_x86_mrst_timer(char *arg)
+ 	return 0;
+ }
+ __setup("x86_mrst_timer=", setup_x86_mrst_timer);
++
++#if defined(CONFIG_ECI) || defined(CONFIG_ECI_MODULE)
++#include <linux/input/eci.h>
++
++#define GPIO_ECI_RSTn		126	/* GP_CORE_030 + 96 */
++#define GPIO_ECI_SW_CTRL	178	/* GP_CORE_082 + 96 */
++#define GPIO_ECI_INT		16	/* GP_AON_016 */
++
++static struct ecibus_platform_data medfield_ecibus_control = {
++	.ecibus_rst_gpio = GPIO_ECI_RSTn,
++	.ecibus_sw_ctrl_gpio = GPIO_ECI_SW_CTRL,
++	.ecibus_int_gpio = GPIO_ECI_INT,
++};
++
++/*
++ * This is just example, should be used in platform audio driver
++ * hsmic_event->event(hsmic_event->private, true)
++ */
++static void medfield_register_hsmic_event_cb(struct audio_hsmic_event *event)
++{
++	struct audio_hsmic_event *hsmic_event;
++
++	hsmic_event = event;
++}
++
++static struct eci_platform_data medfield_eci_platform_data = {
++	.register_hsmic_event_cb	= medfield_register_hsmic_event_cb,
++};
++
++static struct platform_device medfield_ecibus_device = {
++	.name	= "ecibus",
++	.id	= 1,
++	.dev	= {
++		.platform_data = &medfield_ecibus_control,
++	},
++};
++
++static struct platform_device medfield_eci_device = {
++	.name	= "ECI_accessory",
++	.dev	= {
++		.platform_data = &medfield_eci_platform_data,
++	},
++};
++
++static int __init medfield_ecibus_init(void)
++{
++	int retval;
++
++	retval = platform_device_register(&medfield_ecibus_device);
++	if (retval < 0)
++		return retval;
++
++	retval = platform_device_register(&medfield_eci_device);
++
++	return retval;
++}
++device_initcall(medfield_ecibus_init);
++#endif
+-- 
+1.6.5
