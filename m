@@ -1,18 +1,15 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] regulator: Clean up logging a bit
-Date: Tue, 21 Dec 2010 14:47:08 +0000
-Message-ID: <1292942828.3296.45.camel@odin>
-References: <1292601852-21905-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.38
+Date: Wed, 22 Dec 2010 11:03:16 +0000
+Message-ID: <20101222110315.GA12426@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1B95410380D
-	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2010 15:47:14 +0100 (CET)
-Received: by wwe15 with SMTP id 15so3918267wwe.20
-	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2010 06:47:12 -0800 (PST)
-In-Reply-To: <1292601852-21905-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 77CF1103C53
+	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 12:03:04 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,24 +19,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-12-17 at 16:04 +0000, Mark Brown wrote:
-> The recent introduction of standard regulator API logging macros means
-> that all our log messages have at least the function name in them and
-> logging that the constraints are for the regulator API is probably a
-> bit much.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+The following changes since commit 991e02b4469c2e92cc98aa5b04fbde981671b74c:
 
-Applied.
+  Merge branch 'for-2.6.38' of git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6 into topic/asoc (2010-12-17 16:43:17 +0100)
 
-Thanks
+are available in the git repository at:
 
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.38
+
+Dimitris Papastamos (1):
+      ASoC: soc-dapm: Introduce the new snd_soc_dapm_virt_mux type
+
+Jarkko Nikula (3):
+      ASoC: Move DAPM paths from DAPM context to snd_soc_card
+      ASoC: Move widgets from DAPM context to snd_soc_card
+      ASoC: Extend DAPM to handle power changes on cross-device paths
+
+Jassi Brar (10):
+      ASoC: Samsung: Set default rclk source rate
+      ASoC: Samsung: I2S: Flush FIFO after stop
+      ASoC: SMDK_WM8580: Make I2S0 as default dai
+      ASoC: SMDK6440: Enable I2S device
+      ASoC: SMDK6450: Enable I2S device
+      ASoC: SMDK6442: Enable I2S device
+      ASoC: SMDKV210: Enable I2S device
+      ASoC: SMDKC110: Enable I2S device
+      ASoC: SMDKV310: Enable AC97 device
+      ASoC: SMDKV310: Add I2S support
+
+Kuninori Morimoto (3):
+      ASoC: sh: fsi: move fsi_irq_enable function to fsi_dai_trigger
+      ASoC: sh: fsi: Add over/under run counter
+      ASoC: sh: fsi: modify improper dependent
+
+Mark Brown (7):
+      ASoC: Remove unused DAPM_DOUBLE control types
+      ASoC: Do DAPM control updates in the middle of DAPM sequences
+      Merge branch 'topic/asoc' of git://git.kernel.org/.../tiwai/sound-2.6 into for-2.6.38
+      ASoC: Remove some unused defines from WM8903
+      ASoC: Fix WM8994/58 3D stereo control definitions
+      ASoC: If we can't find a cache compression type default to flat
+      ASoC: Make LZO cache compression optional
+
+ include/sound/soc-dapm.h        |   43 +++--
+ include/sound/soc.h             |    4 +
+ sound/soc/Kconfig               |   17 ++-
+ sound/soc/codecs/tlv320aic3x.c  |    2 +-
+ sound/soc/codecs/wm8903.h       |    4 -
+ sound/soc/codecs/wm8960.c       |    4 +-
+ sound/soc/codecs/wm8994.c       |    6 +-
+ sound/soc/samsung/Kconfig       |   14 ++-
+ sound/soc/samsung/Makefile      |    2 +
+ sound/soc/samsung/i2s.c         |   12 +-
+ sound/soc/samsung/smdk_wm8580.c |   17 +-
+ sound/soc/samsung/smdk_wm8994.c |  176 +++++++++++++++++++
+ sound/soc/samsung/smdk_wm9713.c |    1 +
+ sound/soc/sh/Kconfig            |    4 +-
+ sound/soc/sh/fsi.c              |   80 ++++++----
+ sound/soc/soc-cache.c           |   13 +-
+ sound/soc/soc-core.c            |    6 +-
+ sound/soc/soc-dapm.c            |  364 ++++++++++++++++++++++++---------------
+ 18 files changed, 551 insertions(+), 218 deletions(-)
+ create mode 100644 sound/soc/samsung/smdk_wm8994.c
