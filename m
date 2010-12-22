@@ -1,15 +1,18 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: asoc SND_SOC_DAPM_AIF_IN question
-Date: Wed, 22 Dec 2010 22:39:55 +0530
-Message-ID: <438BB0150E931F4B9CE701519A44630104C104C2AA@bgsmsx502.gar.corp.intel.com>
+From: Randy Dunlap <randy.dunlap@oracle.com>
+Subject: Re: [PATCH 2/3] ECI: introducing ECI bus driver
+Date: Wed, 22 Dec 2010 09:17:51 -0800
+Message-ID: <20101222091751.10009e90.randy.dunlap@oracle.com>
+References: <1293020435-5680-1-git-send-email-tapio.vihuri@nokia.com>
+	<1293020435-5680-2-git-send-email-tapio.vihuri@nokia.com>
+	<1293020435-5680-3-git-send-email-tapio.vihuri@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5F7D8244A5
-	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 18:10:03 +0100 (CET)
-Content-Language: en-US
+Received: from rcsinet10.oracle.com (rcsinet10.oracle.com [148.87.113.121])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6889B243FC
+	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 18:18:06 +0100 (CET)
+In-Reply-To: <1293020435-5680-3-git-send-email-tapio.vihuri@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,56 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "Harsha, Priya" <priya.harsha@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: tapio.vihuri@nokia.com
+Cc: ilkka.koskinen@nokia.com, alsa-devel@alsa-project.org, dmitry.torokhov@gmail.com, linux-kernel@vger.kernel.org, samu.p.onkalo@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, 22 Dec 2010 14:20:34 +0200 tapio.vihuri@nokia.com wrote:
 
-In the codec driver I am writing I added 2 paths in map, one for Headset and 
-second for Speaker. Both of these paths have common PCM port enable button so I 
-added that using SND_SOC_DAPM_AIF_IN
+> From: Tapio Vihuri <tapio.vihuri@nokia.com>
+> 
+> ECI bus controller is kind of bridge between host CPU I2C and ECI accessory
+> ECI communication.
+> 
+> Signed-off-by: Tapio Vihuri <tapio.vihuri@nokia.com>
+> ---
+>  drivers/Kconfig           |    2 +
+>  drivers/Makefile          |    1 +
+>  drivers/ecibus/Kconfig    |   46 ++++
+>  drivers/ecibus/Makefile   |   10 +
+>  drivers/ecibus/ecibus.c   |  583 +++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/input/eci.h |    8 +
+>  6 files changed, 650 insertions(+), 0 deletions(-)
+>  create mode 100644 drivers/ecibus/Kconfig
+>  create mode 100644 drivers/ecibus/Makefile
+>  create mode 100644 drivers/ecibus/ecibus.c
 
-So my codec map looks like:
-        /*headset map*/
-        { "HSDAC Left", NULL, "PCM_In"},
-        { "HSDAC Right", NULL, "PCM_In"},
-        { "PCM_In", NULL, "Headset Rail"},
-        { "Headset Rail", NULL, "Audio Rail"},
 
-        /*speaker map*/
-        { "IHFDAC Left", NULL, "PCM_In"},
-        { "IHFDAC Right", NULL, "PCM_In"},
-        { "PCM_In", NULL, "Speaker Rail"},
-        { "Speaker Rail", NULL, "Audio Rail"},
+ERROR: "intel_scu_ipc_iowrite8" [drivers/ecibus/ecibus.ko] undefined!
 
-The debugfs tell me this seems right
-[root@localhost dapm]# cat PCM_In
-PCM_In: Off  in 0 out 5 - R636(0x27c) bit 0
- stream HeadSet Speaker inactive
- in  static Speaker Rail
- in  static Headset Rail
- out static IHFDAC Right
- out static IHFDAC Left
- out static HSDAC Right
- out static HSDAC Left
+You must have had some kernel config enabled that I don't have enabled
+when you built this.  Please fix Kconfig files so that this won't happen.
 
-But when the stream is started now all the widgets get powered on. The debugfs 
-entry says
-[root@localhost dapm]# cat PCM_In
-PCM_In: On  in 1 out 5 - R636(0x27c) bit 0
- stream HeadSet Speaker active
- in  static Speaker Rail
- in  static Headset Rail
- out static IHFDAC Right
- out static IHFDAC Left
- out static HSDAC Right
- out static HSDAC Left
-
-How is this detecting input as 1 (is this due to AIF_IN and thus turning on all 
-the widgets in map? (turns on IHFDAC for HeadSet stream as well :(
-
-What could I be doing wrong here? I want to add this PCM button for all streams 
-(4 eventually) and this be enabled whenever anyone of them is started.
-
-~Vinod
+---
+~Randy
+*** Remember to use Documentation/SubmitChecklist when testing your code ***
+desserts:  http://www.xenotime.net/linux/recipes/
