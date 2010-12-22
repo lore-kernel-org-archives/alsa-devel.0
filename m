@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: asoc SND_SOC_DAPM_AIF_IN question
-Date: Wed, 22 Dec 2010 17:55:03 +0000
-Message-ID: <20101222175503.GA27401@opensource.wolfsonmicro.com>
-References: <438BB0150E931F4B9CE701519A44630104C104C2AA@bgsmsx502.gar.corp.intel.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: [PATCH 07/11] ASoC: tegra: Add tegra-das driver
+Date: Wed, 22 Dec 2010 10:30:15 -0800
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF030FD78D90@HQMAIL01.nvidia.com>
+References: <1292622090-21896-1-git-send-email-swarren@nvidia.com>
+	<1292622090-21896-8-git-send-email-swarren@nvidia.com>
+	<20101217220029.GD25609@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B472D244E4
-	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 18:54:52 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <438BB0150E931F4B9CE701519A44630104C104C2AA@bgsmsx502.gar.corp.intel.com>
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id D876224517
+	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 19:31:18 +0100 (CET)
+In-Reply-To: <20101217220029.GD25609@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,45 +23,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Harsha,
-	Priya" <priya.harsha@intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 22, 2010 at 10:39:55PM +0530, Koul, Vinod wrote:
+Mark Brown wrote:
+> On Fri, Dec 17, 2010 at 02:41:26PM -0700, Stephen Warren wrote:
+> 
+> > /*
+> >  * Terminology:
+> >  * DAS: Digital audio switch (HW module controlled by this driver)
+> >  * DAP: Digital audio port (port/pins on Tegra device)
+> >  * DAC: Digital audio controller (e.g. I2S or AC97 controller elsewhere)
+> >  * 
+> >  * The Tegra DAS is a mux/cross-bar which can connect each DAP to a specific
+> >  * DAC, or another DAP. When DAPs are connected, one must be the master and
+> >  * one the slave. Each DAC allows selection of a specific DAP for input, to
+> >  * cater for the case where N DAPs are connected to 1 DAC for broadcast
+> >  * output.
+> >  *
+> >  * This driver is dumb; no attempt is made to ensure that a valid routing
+> >  * configuration is programmed.
+> >  */ 
+> 
+> Reading this it's essentially just exporting point to point switches
+> within the DAS block.  This really feels like it ought to be represented
+> as a CODEC driver to give runtime flexibility to userspace to control
+> the mux - it looks like the AP part of the system streams data into this
+> block which then has very flexible switching on to the externally
+> connected audio devices.
 
-> So my codec map looks like:
->         /*headset map*/
->         { "HSDAC Left", NULL, "PCM_In"},
->         { "HSDAC Right", NULL, "PCM_In"},
->         { "PCM_In", NULL, "Headset Rail"},
->         { "Headset Rail", NULL, "Audio Rail"},
+Hmm. I don't see any examples of anything like Tegra's DAS in the existing
+ASoC code-base. So, I'm slightly unsure how to recast the DAS driver as
+a codec. In particular, in the machine driver, would I do something like:
 
->         /*speaker map*/
->         { "IHFDAC Left", NULL, "PCM_In"},
->         { "IHFDAC Right", NULL, "PCM_In"},
->         { "PCM_In", NULL, "Speaker Rail"},
->         { "Speaker Rail", NULL, "Audio Rail"},
+static struct snd_soc_dai_link harmony_i2s_das_link = {
+	.name = "WM8903",
+	.stream_name = "WM8903 PCM",
+	.cpu_dai_name = "tegra-i2s-dai.0",
+	.platform_name = "tegra-pcm-audio",
+	.codec_name = "tegra-das.0",
+	.codec_dai_name = "tegra-das.0-in",
+	.ops = &harmony_i2s_das_ops,
+};
 
-> But when the stream is started now all the widgets get powered on. The debugfs 
-> entry says
+static struct snd_soc_dai_link harmony_das_wm8903_link = {
+	.cpu_dai_name = "tegra-das.0-out",
+	.codec_name = "wm8903-codec.0-001a",
+	.codec_dai_name = "wm8903-hifi",
+	.ops = &harmony_das_codec_ops,
+};
 
-You have unconditionally connected both speaker and headphone widgets to
-the same input so when that input becomes active paths are completed to
-both outputs and both outpus are enabled.
+static struct snd_soc_dai_link *harmony_links[] = {
+	& harmony_i2s_das_link,
+	& harmony_das_wm8903_link,
+};
 
-These "Rail" widgets look quite unusual - what are they?
+static struct snd_soc_card snd_soc_harmony = {
+	.name = "tegra-harmony",
+	.dai_link = &harmony_links,
+	.num_links = ARRAY_SIZE(harmony_links),
+};
 
-> What could I be doing wrong here? I want to add this PCM button for all streams 
-> (4 eventually) and this be enabled whenever anyone of them is started.
+And then re-write the tegra-das driver to expose two DAIs somehow?
 
-What is a "PCM button" and what do you mean by starting a "stream"?
-Normally a stream would be a path between the CPU and the CODEC.
+Wouldn't that end up exposing two streams to user-space, one for each entry
+in harmony_links[]?
 
-The way this works is that as described in reply to your previous mail
-DAPM powers anything on which has a completed path from input to output.
-As mentioned then if you have no routing control in the device the
-machine driver will arrange to enable and disable input and output
-widgets on the edge of the CODEC, either automatically using jack
-detection or by offering SOC_DAPM_PIN_SWITCH() or similar controls to
-applications.
+-- 
+nvpublic
