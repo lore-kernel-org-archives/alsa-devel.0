@@ -1,19 +1,17 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [PATCH 08/11] ucm: check the correct return value for
-	modifier
-Date: Tue, 21 Dec 2010 22:11:57 +0000
-Message-ID: <1292969520-18047-9-git-send-email-lrg@slimlogic.co.uk>
-References: <1292969520-18047-1-git-send-email-lrg@slimlogic.co.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Add initial WM8995 driver
+Date: Wed, 22 Dec 2010 13:36:58 +0000
+Message-ID: <20101222133657.GH26306@opensource.wolfsonmicro.com>
+References: <1293017591-1277-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9590B103A57
-	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2010 23:12:24 +0100 (CET)
-Received: by mail-ww0-f51.google.com with SMTP id 15so4322500wwe.20
-	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2010 14:12:24 -0800 (PST)
-In-Reply-To: <1292969520-18047-1-git-send-email-lrg@slimlogic.co.uk>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 645691038E8
+	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 14:36:47 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1293017591-1277-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +21,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
----
- src/ucm/main.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+On Wed, Dec 22, 2010 at 11:33:11AM +0000, Dimitris Papastamos wrote:
+> The WM8995 is a digital audio hub CODEC designed for smartphones.
+> The current driver supports most of the basic functionality of the
+> WM8995.
+> 
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 3a61679..4c13547 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -1323,7 +1323,7 @@ static int switch_modifier(snd_use_case_mgr_t *uc_mgr,
-         if (xold == NULL)
-                 return -ENOENT;
-         xnew = find_modifier(uc_mgr->active_verb, new_modifier);
--        if (xold == NULL)
-+        if (xnew == NULL)
-                 return -ENOENT;
-         err = 0;
-         list_for_each(pos, &xold->transition_list) {
--- 
-1.7.1
+Applied, thanks.
