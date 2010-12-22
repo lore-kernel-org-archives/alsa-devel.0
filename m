@@ -1,7 +1,7 @@
 From: Randy Dunlap <randy.dunlap@oracle.com>
 Subject: Re: [PATCH 2/3] ECI: introducing ECI bus driver
-Date: Wed, 22 Dec 2010 09:17:51 -0800
-Message-ID: <20101222091751.10009e90.randy.dunlap@oracle.com>
+Date: Wed, 22 Dec 2010 09:11:29 -0800
+Message-ID: <20101222091129.da1ecb22.randy.dunlap@oracle.com>
 References: <1293020435-5680-1-git-send-email-tapio.vihuri@nokia.com>
 	<1293020435-5680-2-git-send-email-tapio.vihuri@nokia.com>
 	<1293020435-5680-3-git-send-email-tapio.vihuri@nokia.com>
@@ -10,8 +10,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rcsinet10.oracle.com (rcsinet10.oracle.com [148.87.113.121])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6889B243FC
-	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 18:18:06 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id D983D244D1
+	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 18:18:22 +0100 (CET)
 In-Reply-To: <1293020435-5680-3-git-send-email-tapio.vihuri@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -47,10 +47,67 @@ On Wed, 22 Dec 2010 14:20:34 +0200 tapio.vihuri@nokia.com wrote:
 >  create mode 100644 drivers/ecibus/ecibus.c
 
 
-ERROR: "intel_scu_ipc_iowrite8" [drivers/ecibus/ecibus.ko] undefined!
+> diff --git a/drivers/ecibus/Kconfig b/drivers/ecibus/Kconfig
+> new file mode 100644
+> index 0000000..27e5e36
+> --- /dev/null
+> +++ b/drivers/ecibus/Kconfig
+> @@ -0,0 +1,46 @@
+> +#
+> +# ECI driver configuration
+> +#
+> +menuconfig ECI
+> +	bool "ECI support"
+> +	help
+> +	  ECI (Enhancement Control Interface) accessory support
+> +
+> +	  The Enhancement Control Interface functionality
+> +	  ECI is better known as Multimedia Headset for Nokia phones.
+> +	  If headset has many buttons, like play, vol+, vol- etc. then
+> +	  it is propably ECI accessory.
+> +	  Among several buttons ECI accessory contains memory for storing
+> +	  several parameters.
+> +
+> +	  Enable ECI support in terminal so that ECI input driver is able
+> +	  to communicate with ECI accessory
+> +
+> +if ECI
+> +
+> +config ECI_DEBUG
+> +	boolean "Debug support for ECI drivers"
+> +	depends on DEBUG_KERNEL
+> +	help
+> +	  Selects ECI driver debug messaging.
+> +
+> +	  Say "yes" to enable debug messaging (like dev_dbg and pr_debug),
+> +	  sysfs, and debugfs support in ECI controller.
+> +
+> +comment "ECI Master Controller Drivers"
+> +
+> +config ECI_BUS
+> +	tristate "ECI bus controller driver"
+> +	select INPUT_ECI
 
-You must have had some kernel config enabled that I don't have enabled
-when you built this.  Please fix Kconfig files so that this won't happen.
+
+'select' INPUT_ECI when INPUT and/or INPUT_MISC are not enabled causes this
+kconfig warning:
+
+warning: (ECI_BUS && ECI) selects INPUT_ECI which has unmet direct dependencies (!S390 && INPUT && INPUT_MISC)
+
+
+> +	help
+> +	  This selects a driver for the ECI bus controller
+> +
+> +	  ECI bus controller is kind of bridge between host CPU I2C and
+> +	  ECI accessory ECI communication.
+> +
+> +	  Say 'y' here to statically link this module into the kernel or 'm'
+> +	  to build it as a dynamically loadable module. The module will be
+> +	  called ecibus.ko
+> +
+> +
+> +endif # ECI
+
 
 ---
 ~Randy
