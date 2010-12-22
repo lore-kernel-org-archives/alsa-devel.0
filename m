@@ -1,15 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: If we can't find a cache compression
-	type default to flat
-Date: Tue, 21 Dec 2010 17:10:42 +0000
-Message-ID: <1292951442-32687-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: UCM updates and fixes
+Date: Wed, 22 Dec 2010 00:03:40 +0000
+Message-ID: <20101222000339.GD10081@opensource.wolfsonmicro.com>
+References: <1292969520-18047-1-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 29949103817
-	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2010 18:10:31 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 02B11103AF8
+	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 01:03:29 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1292969520-18047-1-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,45 +21,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This makes it easier to make cache types build time configurable as we
-don't have a hard dependency on a given cache being built in.
+On Tue, Dec 21, 2010 at 10:11:49PM +0000, Liam Girdwood wrote:
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-cache.c |    9 ++++++---
- 1 files changed, 6 insertions(+), 3 deletions(-)
+> This fixes the remaining issues I can currently see in the alsa-lib
+> ucm branch. It also includes a patch to execute commands, although I
+> dont know if this is what you had in mind for exec.
 
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index 678fd75..d78e5b7 100644
---- a/sound/soc/soc-cache.c
-+++ b/sound/soc/soc-cache.c
-@@ -1531,6 +1531,7 @@ static int snd_soc_flat_cache_init(struct snd_soc_codec *codec)
- 
- /* an array of all supported compression types */
- static const struct snd_soc_cache_ops cache_types[] = {
-+	/* Flat *must* be the first entry for fallback */
- 	{
- 		.id = SND_SOC_FLAT_COMPRESSION,
- 		.name = "flat",
-@@ -1567,10 +1568,12 @@ int snd_soc_cache_init(struct snd_soc_codec *codec)
- 	for (i = 0; i < ARRAY_SIZE(cache_types); ++i)
- 		if (cache_types[i].id == codec->compress_type)
- 			break;
-+
-+	/* Fall back to flat compression */
- 	if (i == ARRAY_SIZE(cache_types)) {
--		dev_err(codec->dev, "Could not match compress type: %d\n",
--			codec->compress_type);
--		return -EINVAL;
-+		dev_warn(codec->dev, "Could not match compress type: %d\n",
-+			 codec->compress_type);
-+		i = 0;
- 	}
- 
- 	mutex_init(&codec->cache_rw_mutex);
--- 
-1.7.2.3
+All looks good to me.
