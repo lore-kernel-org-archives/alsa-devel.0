@@ -1,19 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: asoc SND_SOC_DAPM_AIF_IN question
-Date: Thu, 23 Dec 2010 11:28:28 +0000
-Message-ID: <20101223112828.GA14481@opensource.wolfsonmicro.com>
-References: <438BB0150E931F4B9CE701519A44630104C104C2AA@bgsmsx502.gar.corp.intel.com>
-	<20101222175503.GA27401@opensource.wolfsonmicro.com>
-	<438BB0150E931F4B9CE701519A44630104C104C329@bgsmsx502.gar.corp.intel.com>
+Subject: ASoC updates for 2.6.38
+Date: Thu, 23 Dec 2010 12:05:04 +0000
+Message-ID: <20101223120502.GA14938@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 22FD6248FD
-	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2010 12:28:17 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7B60D1038B9
+	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2010 13:04:53 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <438BB0150E931F4B9CE701519A44630104C104C329@bgsmsx502.gar.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,42 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Harsha,
-	Priya" <priya.harsha@intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 23, 2010 at 08:36:07AM +0530, Koul, Vinod wrote:
-> On Wed, Dec 22, 2010 at 11:25:29PM +0530, Mark Brown wrote:
+The following changes since commit 9d01df063e70260d6c0aabd58dd5507db151aa51:
 
-> > These "Rail" widgets look quite unusual - what are they?
+  ASoC: don't pass the string as the format arguemtn for dev_info() (2010-12-22 14:08:40 +0100)
 
-> Audio Supply rails, I have one global audio rail which controls most of audio 
-> widgets and then separate rails for speakers and headset. For example I need to 
-> turn on Audio supply rail and then headset rail for headsets to work properly. 
-> So I described them as SND_SOC_DAPM_SUPPLY. Added events so that I power them on 
-> and power off when stream becomes active or inactive.
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.38
 
-"Audio Supply" sounds like the main analogue bias for the CODEC - that
-would normally be managed by set_bias_level() rather than by having it
-supply every single widget in the CODEC map.
+Dimitris Papastamos (1):
+      ASoC: Add initial WM8995 driver
 
-> > What is a "PCM button" and what do you mean by starting a "stream"?
-> > Normally a stream would be a path between the CPU and the CODEC.
+Mark Brown (4):
+      ASoC: Use delayed work to debounce WM8350 jack IRQs
+      ASoC: Trace Wolfson jack detection IRQs
+      ASoC: Add jack IRQ trace to 88pm860x driver
+      ASoC: ifdef out trace points from modules for x86
 
-> This is PCM interface enable between codec and cpu. So for PCM port to work 
-> between codec and cpu, we need to enable the PCM port, this one does 
-> that. This is going to be a global switch to be turned on for all streams (I 
-> have 4 playback and 1 capture, and can be simultaneous).
+Seungwhan Youn (1):
+      ASoC: SAMSUNG: Debug wrong parameter
 
-If you have multiple links between the CPU and the CODEC with a single
-power bit to control them all I'd suggest defining several AIF widgets,
-each with no power management, then making the actual power controlled
-by a supply widget.  That way the power will be enabled as required but
-you won't have tied all the data streams together in the DAPM map.
-
-> Here I was trying 
-> 1) Putting the PCM_In Button as SND_SOC_DAPM_AIF_IN()
-
-I'm still not sure what you mean by "Button"?  I'm guessing it's a
-register control for power.
+ sound/soc/codecs/88pm860x-codec.c |    7 +
+ sound/soc/codecs/Kconfig          |    4 +
+ sound/soc/codecs/Makefile         |    2 +
+ sound/soc/codecs/wm8350.c         |   71 +-
+ sound/soc/codecs/wm8903.c         |    6 +
+ sound/soc/codecs/wm8962.c         |    5 +
+ sound/soc/codecs/wm8994.c         |    5 +
+ sound/soc/codecs/wm8995.c         | 1818 ++++++++
+ sound/soc/codecs/wm8995.h         | 8749 +++++++++++++++++++++++++++++++++++++
+ sound/soc/samsung/goni_wm8994.c   |    2 +-
+ 10 files changed, 10649 insertions(+), 20 deletions(-)
+ create mode 100644 sound/soc/codecs/wm8995.c
+ create mode 100644 sound/soc/codecs/wm8995.h
