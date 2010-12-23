@@ -1,18 +1,19 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: Re: asoc SND_SOC_DAPM_AIF_IN question
-Date: Thu, 23 Dec 2010 08:36:07 +0530
-Message-ID: <438BB0150E931F4B9CE701519A44630104C104C329@bgsmsx502.gar.corp.intel.com>
-References: <438BB0150E931F4B9CE701519A44630104C104C2AA@bgsmsx502.gar.corp.intel.com>
-	<20101222175503.GA27401@opensource.wolfsonmicro.com>
+From: Greg KH <gregkh@suse.de>
+Subject: Re: [RFC/PATCH v7 01/12] media: Media device node
+	support
+Date: Wed, 22 Dec 2010 19:32:53 -0800
+Message-ID: <20101223033253.GA14692@suse.de>
+References: <1292844995-7900-1-git-send-email-laurent.pinchart@ideasonboard.com>
+	<1292844995-7900-2-git-send-email-laurent.pinchart@ideasonboard.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1743A24779
-	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2010 04:06:20 +0100 (CET)
-In-Reply-To: <20101222175503.GA27401@opensource.wolfsonmicro.com>
-Content-Language: en-US
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7DFF424797
+	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2010 04:34:44 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1292844995-7900-2-git-send-email-laurent.pinchart@ideasonboard.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,81 +23,163 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Harsha,
-	Priya" <priya.harsha@intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: alsa-devel@alsa-project.org, sakari.ailus@maxwell.research.nokia.com, broonie@opensource.wolfsonmicro.com, clemens@ladisch.de, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 22, 2010 at 11:25:29PM +0530, Mark Brown wrote:
-> On Wed, Dec 22, 2010 at 10:39:55PM +0530, Koul, Vinod wrote:
-> 
-> > So my codec map looks like:
-> >         /*headset map*/
-> >         { "HSDAC Left", NULL, "PCM_In"},
-> >         { "HSDAC Right", NULL, "PCM_In"},
-> >         { "PCM_In", NULL, "Headset Rail"},
-> >         { "Headset Rail", NULL, "Audio Rail"},
-> 
-> >         /*speaker map*/
-> >         { "IHFDAC Left", NULL, "PCM_In"},
-> >         { "IHFDAC Right", NULL, "PCM_In"},
-> >         { "PCM_In", NULL, "Speaker Rail"},
-> >         { "Speaker Rail", NULL, "Audio Rail"},
-> 
-> > But when the stream is started now all the widgets get powered on. The
-> > debugfs entry says
-> 
-> You have unconditionally connected both speaker and headphone widgets to
-> the same input so when that input becomes active paths are completed to
-> both outputs and both outpus are enabled.
-Okay, that makes sense.
+On Mon, Dec 20, 2010 at 12:36:24PM +0100, Laurent Pinchart wrote:
+> The media_devnode structure provides support for registering and
+> unregistering character devices using a dynamic major number. Reference
+> counting is handled internally, making device drivers easier to write
+> without having to solve the open/disconnect race condition issue over
+> and over again.
 
-> 
-> These "Rail" widgets look quite unusual - what are they?
-Audio Supply rails, I have one global audio rail which controls most of audio 
-widgets and then separate rails for speakers and headset. For example I need to 
-turn on Audio supply rail and then headset rail for headsets to work properly. 
-So I described them as SND_SOC_DAPM_SUPPLY. Added events so that I power them on 
-and power off when stream becomes active or inactive.
-> 
-> > What could I be doing wrong here? I want to add this PCM button for all
-> streams
-> > (4 eventually) and this be enabled whenever anyone of them is started.
-> 
-> What is a "PCM button" and what do you mean by starting a "stream"?
-> Normally a stream would be a path between the CPU and the CODEC.
-This is PCM interface enable between codec and cpu. So for PCM port to work 
-between codec and cpu, we need to enable the PCM port, this one does 
-that. This is going to be a global switch to be turned on for all streams (I 
-have 4 playback and 1 capture, and can be simultaneous).
+What race condition are you referring to?
 
-> 
-> The way this works is that as described in reply to your previous mail
-> DAPM powers anything on which has a completed path from input to output.
-> As mentioned then if you have no routing control in the device the
-> machine driver will arrange to enable and disable input and output
-> widgets on the edge of the CODEC, either automatically using jack
-> detection or by offering SOC_DAPM_PIN_SWITCH() or similar controls to
-> applications.
-So what I have is below picture in codec
+> +config MEDIA_CONTROLLER
+> +	bool "Media Controller API (EXPERIMENTAL)"
+> +	depends on EXPERIMENTAL
+> +	---help---
+> +	  Enable the media controller API used to query media devices internal
+> +	  topology and configure it dynamically.
+> +
+> +	  This API is mostly used by camera interfaces in embedded platforms.
 
-PCM PORT -> HSDAC -> Earpiece/Headset*
-	   -> IHFDAC ->Speaker
-	   <- ADC <- MICs
+That's nice, but why should I enable this?  Or will drivers enable it
+automatically?
 
-(*this will be toggled by user using controls exposed by machine driver 
- which will using SOC_DAPM_PIN_SWITCH as suggested by you)
 
-Here I was trying 
-1) Putting the PCM_In Button as SND_SOC_DAPM_AIF_IN()
-2) Add this to codec map for streams so that its enabled for all streams
-3) Add supply rails before this so they are powered for this(which is working for me)
+> +#define MEDIA_NUM_DEVICES	256
 
-Now only problem for me is to how to add PCM button for all streams? I have few 
-alternatives like doing this in supply events or in dai start function, but was 
-hoping that since this can be represented as a widget it should be done thru the 
-audio map
+Why this limit?
 
-Any suggestions....
+> +#define MEDIA_NAME		"media"
 
-~Vinod
+Are you sure this is a good name for a camera?
+
+> +static dev_t media_dev_t;
+
+Only one major number?  Is it always dynamic?
+
+> +
+> +/*
+> + *	Active devices
+> + */
+> +static DEFINE_MUTEX(media_devnode_lock);
+> +static DECLARE_BITMAP(media_devnode_nums, MEDIA_NUM_DEVICES);
+> +
+> +/* Called when the last user of the media device exits. */
+> +static void media_devnode_release(struct device *cd)
+> +{
+> +	struct media_devnode *mdev = to_media_devnode(cd);
+> +
+> +	mutex_lock(&media_devnode_lock);
+> +
+> +	/* Delete the cdev on this minor as well */
+> +	cdev_del(&mdev->cdev);
+> +
+> +	/* Mark device node number as free */
+> +	clear_bit(mdev->minor, media_devnode_nums);
+> +
+> +	mutex_unlock(&media_devnode_lock);
+> +
+> +	/* Release media_devnode and perform other cleanups as needed. */
+> +	if (mdev->release)
+> +		mdev->release(mdev);
+> +}
+
+You forgot to free the device structure here as well, right?
+
+> +static ssize_t media_read(struct file *filp, char __user *buf,
+> +		size_t sz, loff_t *off)
+> +{
+> +	struct media_devnode *mdev = media_devnode_data(filp);
+> +
+> +	if (!mdev->fops->read)
+> +		return -EINVAL;
+> +	if (!media_devnode_is_registered(mdev))
+> +		return -EIO;
+
+How could this happen?  And are you sure -EIO is correct?
+
+> +	return mdev->fops->read(filp, buf, sz, off);
+> +}
+> +
+> +static ssize_t media_write(struct file *filp, const char __user *buf,
+> +		size_t sz, loff_t *off)
+> +{
+> +	struct media_devnode *mdev = media_devnode_data(filp);
+> +
+> +	if (!mdev->fops->write)
+> +		return -EINVAL;
+> +	if (!media_devnode_is_registered(mdev))
+> +		return -EIO;
+
+Same as above, and same comment in other places (poll, ioctl.)
+
+> +/* Override for the open function */
+> +static int media_open(struct inode *inode, struct file *filp)
+> +{
+> +	struct media_devnode *mdev;
+> +	int ret;
+> +
+> +	/* Check if the media device is available. This needs to be done with
+> +	 * the media_devnode_lock held to prevent an open/unregister race:
+> +	 * without the lock, the device could be unregistered and freed between
+> +	 * the media_devnode_is_registered() and get_device() calls, leading to
+> +	 * a crash.
+> +	 */
+> +	mutex_lock(&media_devnode_lock);
+> +	mdev = container_of(inode->i_cdev, struct media_devnode, cdev);
+
+By virtue of having the reference to the module held by the vfs, this
+shouldn't ever go away, even if the lock is not held.
+
+> +	/* return ENXIO if the media device has been removed
+> +	   already or if it is not registered anymore. */
+> +	if (!media_devnode_is_registered(mdev)) {
+> +		mutex_unlock(&media_devnode_lock);
+> +		return -ENXIO;
+> +	}
+
+So you can unregister a device at any time, even if the device is open,
+or about to be opened?  Then that's fine, but you can put the lock after
+the container_of(), right?
+
+> +	/* and increase the device refcount */
+> +	get_device(&mdev->dev);
+
+How is that holding anything into memory?  Don't you want to keep the
+module that the fops pointer in the device in memory, not necessarily
+the device itself?
+
+> +	mutex_unlock(&media_devnode_lock);
+> +
+> +	filp->private_data = mdev;
+> +
+> +	if (mdev->fops->open) {
+> +		ret = mdev->fops->open(filp);
+> +		if (ret) {
+> +			put_device(&mdev->dev);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+
+No reference counting for the fops?  Why not?
+
+Anyway, it looks like what you really want is an "easier" way to handle
+a cdev and a struct device that will export the proper information to
+userspace, right?
+
+Why not do this generically, fixing up the cdev interface (which really
+needs it) and not tie it to media devices at all, making it possible for
+_everyone_ to use this type of infrastructure?
+
+That seems like the better thing to do here.
+
+thanks,
+
+greg k-h
