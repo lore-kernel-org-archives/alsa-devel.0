@@ -1,15 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.38
-Date: Thu, 23 Dec 2010 12:05:04 +0000
-Message-ID: <20101223120502.GA14938@opensource.wolfsonmicro.com>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: asoc SND_SOC_DAPM_AIF_IN question
+Date: Thu, 23 Dec 2010 18:31:08 +0530
+Message-ID: <438BB0150E931F4B9CE701519A44630104C104C6B6@bgsmsx502.gar.corp.intel.com>
+References: <438BB0150E931F4B9CE701519A44630104C104C2AA@bgsmsx502.gar.corp.intel.com>
+	<20101222175503.GA27401@opensource.wolfsonmicro.com>
+	<438BB0150E931F4B9CE701519A44630104C104C329@bgsmsx502.gar.corp.intel.com>
+	<20101223112828.GA14481@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7B60D1038B9
-	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2010 13:04:53 +0100 (CET)
-Content-Disposition: inline
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id AE05F1037FB
+	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2010 14:01:13 +0100 (CET)
+In-Reply-To: <20101223112828.GA14481@opensource.wolfsonmicro.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,39 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Harsha,
+	Priya" <priya.harsha@intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 9d01df063e70260d6c0aabd58dd5507db151aa51:
+> "Audio Supply" sounds like the main analogue bias for the CODEC - that
+> would normally be managed by set_bias_level() rather than by having it
+> supply every single widget in the CODEC map.
+Yes that would make sense. But only for Audio rail which is global codec rail.
+What do you recommend for headset and speaker rails? They would be required only for headset and speaker DAI not rest.
 
-  ASoC: don't pass the string as the format arguemtn for dev_info() (2010-12-22 14:08:40 +0100)
+> If you have multiple links between the CPU and the CODEC with a single
+> power bit to control them all I'd suggest defining several AIF widgets,
+> each with no power management, then making the actual power controlled
+> by a supply widget.  That way the power will be enabled as required but
+> you won't have tied all the data streams together in the DAPM map.
+Okay so then why should I do with several AIF widgets, wont doing that in DAI startup be a better idea?
 
-are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.38
+> > Here I was trying
+> > 1) Putting the PCM_In Button as SND_SOC_DAPM_AIF_IN()
+> 
+> I'm still not sure what you mean by "Button"?  I'm guessing it's a
+> register control for power.
+Yes :)
 
-Dimitris Papastamos (1):
-      ASoC: Add initial WM8995 driver
-
-Mark Brown (4):
-      ASoC: Use delayed work to debounce WM8350 jack IRQs
-      ASoC: Trace Wolfson jack detection IRQs
-      ASoC: Add jack IRQ trace to 88pm860x driver
-      ASoC: ifdef out trace points from modules for x86
-
-Seungwhan Youn (1):
-      ASoC: SAMSUNG: Debug wrong parameter
-
- sound/soc/codecs/88pm860x-codec.c |    7 +
- sound/soc/codecs/Kconfig          |    4 +
- sound/soc/codecs/Makefile         |    2 +
- sound/soc/codecs/wm8350.c         |   71 +-
- sound/soc/codecs/wm8903.c         |    6 +
- sound/soc/codecs/wm8962.c         |    5 +
- sound/soc/codecs/wm8994.c         |    5 +
- sound/soc/codecs/wm8995.c         | 1818 ++++++++
- sound/soc/codecs/wm8995.h         | 8749 +++++++++++++++++++++++++++++++++++++
- sound/soc/samsung/goni_wm8994.c   |    2 +-
- 10 files changed, 10649 insertions(+), 20 deletions(-)
- create mode 100644 sound/soc/codecs/wm8995.c
- create mode 100644 sound/soc/codecs/wm8995.h
+~Vinod
