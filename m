@@ -1,21 +1,21 @@
-From: VDR User <user.vdr@gmail.com>
-Subject: Re: Bug in setting channels,
-	related to recent ELD/EDID changes?
-Date: Wed, 22 Dec 2010 23:13:57 -0800
-Message-ID: <AANLkTimxHsUS_zVm0_m-vUcwt4vupUAf-vRhH5VWLwoy@mail.gmail.com>
-References: <AANLkTikneYHc9NmrRW41=xRBW_PVgc0jqdcOaTgHcC-t@mail.gmail.com>
-	<4D12E292.9050204@iki.fi>
+From: <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH] ASoC: mcbsp: Add McBSP support for OMAP4
+Date: Thu, 23 Dec 2010 07:32:18 +0000
+Message-ID: <CF32F28EDF8D20468EEDCBE4975DA0271D4A4D@008-AM1MPN1-021.mgdnok.nokia.com>
+References: <1889FA7136B567478A67D4B0F85B0CCEA4F6D3A7@dlee06.ent.ti.com>
+	<20101220173612.GC2531@rakim.wolfsonmicro.main>
+	<20101221114858.0e29e684.jhnikula@gmail.com>,
+	<1292926632.3296.1.camel@odin>,
+	<CF32F28EDF8D20468EEDCBE4975DA0271CFAAA@008-AM1MPN1-021.mgdnok.nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2FBBC2486C
-	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2010 08:14:00 +0100 (CET)
-Received: by iye19 with SMTP id 19so5227815iye.38
-	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2010 23:13:57 -0800 (PST)
-In-Reply-To: <4D12E292.9050204@iki.fi>
+Received: from mgw-da01.nokia.com (smtp.nokia.com [147.243.128.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2889724881
+	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2010 08:35:32 +0100 (CET)
+In-Reply-To: <CF32F28EDF8D20468EEDCBE4975DA0271CFAAA@008-AM1MPN1-021.mgdnok.nokia.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,97 +25,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: "mailing list: alsa-dev" <alsa-devel@alsa-project.org>
+To: peter.ujfalusi@nokia.com, lrg@slimlogic.co.uk, jhnikula@gmail.com
+Cc: magi.olaya@ti.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBEZWMgMjIsIDIwMTAgYXQgOTo0OCBQTSwgQW5zc2kgSGFubnVsYSA8YW5zc2kuaGFu
-bnVsYUBpa2kuZmk+IHdyb3RlOgo+IE9uIDIzLjEyLjIwMTAgMDQ6MjIsIFZEUiBVc2VyIHdyb3Rl
-Ogo+PiBIaS4gwqBBZnRlciB1cGRhdGluZyBteSBzdGFibGUga2VybmVsIGZyb20gMi42LjM1Ljcg
-dG8gMi42LjM2LjIsIEkgZ2V0Cj4+IGEgcHJvYmxlbSB3aGVuIHR1bmluZyBIRFRWIGNoYW5uZWxz
-IHRoYXQgdXNlIHN1cnJvdW5kIHNvdW5kLiDCoFRoZQo+PiBlcnJvciBJIGdldCBpcyBhcyBmb2xs
-b3dzOgo+Pgo+PiBhdWRpb19hbHNhX291dDogQ2Fubm90IHNldCBudW1iZXIgb2YgY2hhbm5lbHMg
-dG8gNiAoZXJyPS0yMjpJbnZhbGlkIGFyZ3VtZW50KQo+PiBhdWRpb19vdXQ6IG9wZW4gZmFpbGVk
-IQo+Pgo+PiBXaXRoIHRoZSBmb2xsb3dpbmcgeGluZSBlcnJvcjoKPj4gLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLSAoRVJST1IpIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4gVGhlIGF1ZGlvIGRldmlj
-ZSBpcyB1bmF2YWlsYWJsZS4gUGxlYXNlIHZlcmlmeSBpZiBhbm90aGVyIHByb2dyYW0KPj4gYWxy
-ZWFkeSB1c2VzIGl0Lgo+Pgo+PiBbJ0F1ZGlvIGRldmljZSB1bmF2YWlsYWJsZScgJyddCj4+IC0t
-LS0tLS0tLS0tLS0tLS0tLSAoRU5EIE9GIEVSUk9SKSAtLS0tLS0tLS0tLS0tLS0tLS0tCj4KPiBX
-aGF0IGFyZSB0aGUgY29udGVudHMgb2YgL3Byb2MvYXNvdW5kL05WaWRpYS9lbGQqIGFuZAo+IC9w
-cm9jL2Fzb3VuZC9OVmlkaWEvY29kZWMqID8KCkJvb3RlZCBpbnRvIDIuNi4zNS43IHdpdGggcmVj
-ZWl2ZXIgT046CiQgY2F0IC9wcm9jL2Fzb3VuZC9OVmlkaWFfMS9lbGQqCm1vbml0b3JfcHJlc2Vu
-dCAgICAgICAgIDEKZWxkX3ZhbGlkICAgICAgICAgICAgICAgMQptb25pdG9yX25hbWUgICAgICAg
-ICAgICBTT05ZIEFWQU1QCgpjb25uZWN0aW9uX3R5cGUgICAgICAgICBIRE1JCmVsZF92ZXJzaW9u
-ICAgICAgICAgICAgIFsweDJdIENFQS04NjFEIG9yIGJlbG93CmVkaWRfdmVyc2lvbiAgICAgICAg
-ICAgIFsweDNdIENFQS04NjEtQiwgQyBvciBECm1hbnVmYWN0dXJlX2lkICAgICAgICAgIDB4ZDk0
-ZApwcm9kdWN0X2lkICAgICAgICAgICAgICAweGZiMDEKcG9ydF9pZCAgICAgICAgICAgICAgICAg
-MHgyMDAwMApzdXBwb3J0X2hkY3AgICAgICAgICAgICAwCnN1cHBvcnRfYWkgICAgICAgICAgICAg
-IDAKYXVkaW9fc3luY19kZWxheSAgICAgICAgMApzcGVha2VycyAgICAgICAgICAgICAgICBbMHg1
-Zl0gRkwvRlIgTEZFIEZDIFJML1JSIFJDIFJMQy9SUkMKc2FkX2NvdW50ICAgICAgICAgICAgICAg
-NgpzYWQwX2NvZGluZ190eXBlICAgICAgICBbMHgxXSBMUENNCnNhZDBfY2hhbm5lbHMgICAgICAg
-ICAgIDIKc2FkMF9yYXRlcyAgICAgICAgICAgICAgWzB4MWVlMF0gNDQxMDAgNDgwMDAgODgyMDAg
-MTc2NDAwIDE5MjAwMCAzODQwMDAKc2FkMF9iaXRzICAgICAgICAgICAgICAgWzB4ZTAwMDBdIDE2
-IDIwIDI0CnNhZDFfY29kaW5nX3R5cGUgICAgICAgIFsweDFdIExQQ00Kc2FkMV9jaGFubmVscyAg
-ICAgICAgICAgNgpzYWQxX3JhdGVzICAgICAgICAgICAgICBbMHgxZWUwXSA0NDEwMCA0ODAwMCA4
-ODIwMCAxNzY0MDAgMTkyMDAwIDM4NDAwMApzYWQxX2JpdHMgICAgICAgICAgICAgICBbMHhlMDAw
-MF0gMTYgMjAgMjQKc2FkMl9jb2RpbmdfdHlwZSAgICAgICAgWzB4MV0gTFBDTQpzYWQyX2NoYW5u
-ZWxzICAgICAgICAgICA4CnNhZDJfcmF0ZXMgICAgICAgICAgICAgIFsweDFlZTBdIDQ0MTAwIDQ4
-MDAwIDg4MjAwIDE3NjQwMCAxOTIwMDAgMzg0MDAwCnNhZDJfYml0cyAgICAgICAgICAgICAgIFsw
-eGUwMDAwXSAxNiAyMCAyNApzYWQzX2NvZGluZ190eXBlICAgICAgICBbMHgyXSBBQy0zCnNhZDNf
-Y2hhbm5lbHMgICAgICAgICAgIDYKc2FkM19yYXRlcyAgICAgICAgICAgICAgWzB4ZTBdIDQ0MTAw
-IDQ4MDAwIDg4MjAwCnNhZDNfbWF4X2JpdHJhdGUgICAgICAgIDY4MDAwMApzYWQ0X2NvZGluZ190
-eXBlICAgICAgICBbMHg3XSBEVFMKc2FkNF9jaGFubmVscyAgICAgICAgICAgNgpzYWQ0X3JhdGVz
-ICAgICAgICAgICAgICBbMHg2ZTBdIDQ0MTAwIDQ4MDAwIDg4MjAwIDE3NjQwMCAxOTIwMDAKc2Fk
-NF9tYXhfYml0cmF0ZSAgICAgICAgMTUzNjAwMApzYWQ1X2NvZGluZ190eXBlICAgICAgICBbMHhh
-XSBFLUFDLTMvREQrIChEb2xieSBEaWdpdGFsIFBsdXMpCnNhZDVfY2hhbm5lbHMgICAgICAgICAg
-IDgKc2FkNV9yYXRlcyAgICAgICAgICAgICAgWzB4YzBdIDQ4MDAwIDg4MjAwCgpCb290ZWQgaW50
-byAyLjYuMzUuNyB3aXRoIHJlY2VpdmVyIE9GRjoKJCBjYXQgL3Byb2MvYXNvdW5kL05WaWRpYV8x
-L2VsZCoKbW9uaXRvcl9wcmVzZW50ICAgICAgICAgMQplbGRfdmFsaWQgICAgICAgICAgICAgICAx
-Cm1vbml0b3JfbmFtZSAgICAgICAgICAgIFNPTlkgQVZBTVAKCmNvbm5lY3Rpb25fdHlwZSAgICAg
-ICAgIEhETUkKZWxkX3ZlcnNpb24gICAgICAgICAgICAgWzB4Ml0gQ0VBLTg2MUQgb3IgYmVsb3cK
-ZWRpZF92ZXJzaW9uICAgICAgICAgICAgWzB4M10gQ0VBLTg2MS1CLCBDIG9yIEQKbWFudWZhY3R1
-cmVfaWQgICAgICAgICAgMHhkOTRkCnByb2R1Y3RfaWQgICAgICAgICAgICAgIDB4ZmIwMQpwb3J0
-X2lkICAgICAgICAgICAgICAgICAweDIwMDAwCnN1cHBvcnRfaGRjcCAgICAgICAgICAgIDAKc3Vw
-cG9ydF9haSAgICAgICAgICAgICAgMAphdWRpb19zeW5jX2RlbGF5ICAgICAgICAwCnNwZWFrZXJz
-ICAgICAgICAgICAgICAgIFsweGZmZmZdIEZML0ZSIExGRSBGQyBSTC9SUiBSQyBGTEMvRlJDIFJM
-Qy9SUkMKRkxXL0ZSVyBGTEgvRlJIIFRDIEZDSApzYWRfY291bnQgICAgICAgICAgICAgICAxCnNh
-ZDBfY29kaW5nX3R5cGUgICAgICAgIFsweDFdIExQQ00Kc2FkMF9jaGFubmVscyAgICAgICAgICAg
-MgpzYWQwX3JhdGVzICAgICAgICAgICAgICBbMHhlMF0gNDQxMDAgNDgwMDAgODgyMDAKc2FkMF9i
-aXRzICAgICAgICAgICAgICAgWzB4MjAwMDBdIDE2CgokIGNhdCAvcHJvYy9hc291bmQvTlZpZGlh
-XzEvY29kZWMqCkNvZGVjOiBOdmlkaWEgR1BVIDBhIEhETUkvRFAKQWRkcmVzczogMQpGdW5jdGlv
-biBJZDogMHgxClZlbmRvciBJZDogMHgxMGRlMDAwYQpTdWJzeXN0ZW0gSWQ6IDB4MTBkZTAxMDEK
-UmV2aXNpb24gSWQ6IDB4MTAwMTAwCk5vIE1vZGVtIEZ1bmN0aW9uIEdyb3VwIGZvdW5kCkRlZmF1
-bHQgUENNOgogICAgcmF0ZXMgWzB4MF06CiAgICBiaXRzIFsweDBdOgogICAgZm9ybWF0cyBbMHgw
-XToKRGVmYXVsdCBBbXAtSW4gY2FwczogTi9BCkRlZmF1bHQgQW1wLU91dCBjYXBzOiBOL0EKR1BJ
-TzogaW89MCwgbz0wLCBpPTAsIHVuc29saWNpdGVkPTAsIHdha2U9MApOb2RlIDB4MDQgW0F1ZGlv
-IE91dHB1dF0gd2NhcHMgMHg3MmIxOiA4LUNoYW5uZWxzIERpZ2l0YWwgU3RyaXBlIENQCiAgQ29u
-dHJvbDogbmFtZT0iSUVDOTU4IFBsYXliYWNrIENvbiBNYXNrIiwgaW5kZXg9MCwgZGV2aWNlPTAK
-ICBDb250cm9sOiBuYW1lPSJJRUM5NTggUGxheWJhY2sgUHJvIE1hc2siLCBpbmRleD0wLCBkZXZp
-Y2U9MAogIENvbnRyb2w6IG5hbWU9IklFQzk1OCBQbGF5YmFjayBEZWZhdWx0IiwgaW5kZXg9MCwg
-ZGV2aWNlPTAKICBDb250cm9sOiBuYW1lPSJJRUM5NTggUGxheWJhY2sgU3dpdGNoIiwgaW5kZXg9
-MCwgZGV2aWNlPTAKICBEZXZpY2U6IG5hbWU9Ik5WSURJQSBIRE1JIiwgdHlwZT0iSERNSSIsIGRl
-dmljZT0zCiAgQ29udmVydGVyOiBzdHJlYW09NiwgY2hhbm5lbD0wCiAgRGlnaXRhbDogRW5hYmxl
-ZAogIERpZ2l0YWwgY2F0ZWdvcnk6IDB4MAogIFBDTToKICAgIHJhdGVzIFsweDdmMF06IDMyMDAw
-IDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE3NjQwMCAxOTIwMDAKICAgIGJpdHMgWzB4ZV06IDE2
-IDIwIDI0CiAgICBmb3JtYXRzIFsweDVdOiBQQ00gQUMzCiAgVW5zb2xpY2l0ZWQ6IHRhZz0wMCwg
-ZW5hYmxlZD0wCk5vZGUgMHgwNSBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDA3MzgxOiA4LUNoYW5u
-ZWxzIERpZ2l0YWwgQ1AKICBQaW5jYXAgMHgwOTAwMDA5NDogT1VUIERldGVjdCBIQlIgSERNSSBE
-UAogIFBpbiBEZWZhdWx0IDB4MTg1NjAwMTA6IFtKYWNrXSBEaWdpdGFsIE91dCBhdCBJbnQgSERN
-SQogICAgQ29ubiA9IERpZ2l0YWwsIENvbG9yID0gVW5rbm93bgogICAgRGVmQXNzb2NpYXRpb24g
-PSAweDEsIFNlcXVlbmNlID0gMHgwCiAgUGluLWN0bHM6IDB4NDA6IE9VVAogIFVuc29saWNpdGVk
-OiB0YWc9MDUsIGVuYWJsZWQ9MQogIENvbm5lY3Rpb246IDEKICAgICAweDA0CgpJJ20gY2VydGFp
-biBhdCB0aGUgdGltZSBJIGV4cGVyaWVuY2VkIHRoaXMgZXJyb3IsIG15IHJlY2VpdmVyIHdhcwp0
-dXJuZWQgb2ZmLCBjb3VsZCB0aGlzIGJlIHRoZSBjYXVzZSBvZiB0aGUgZXJyb3I/ICBJZiBzbywg
-dGhpcyByZWFsbHkKbmVlZHMgdG8gYmUgZml4ZWQvcmV3b3JrZWQgYXMgbWFueSBwZW9wbGUgZG9u
-J3QgaGF2ZSB0aGVpciByZWNlaXZlcnMKb24gKHRvIHNhdmUgcG93ZXIgdXNhZ2UsIG5vaXNlLCBl
-dGMpIHVubGVzcyB0aGV5IHNwZWNpZmljYWxseQpuZWVkL3dhbnQgaXQuICBJbiB0aGUgZXZlbnQg
-YSByZWNlaXZlciBpcyBvZmYgYW5kIHRoZSB1c2VyIGlzIHRyeWluZwp0byB3YXRjaCBzb21ldGhp
-bmcgdGhhdCByZXF1aXJlcyBtb3JlIHRoZW4gMiBjaGFubmVscywgaGUgc2hvdWxkCmVpdGhlciB0
-dXJuIHRoZSByZWNlaXZlciBvbiwgb3IgYWRqdXN0IHRoZSBzcGVha2VyIGFycmFuZ2VtZW50IGlu
-IHhpbmUKdG8gc3RlcmVvIC0tIGhvd2V2ZXIsIHdoYXQgc2hvdWxkIG5vdCBoYXBwZW4gaXMgdGhl
-IGFsc2EgZHJpdmVyCmZhaWxpbmcuICBNYXliZSBhIGJldHRlciBzb2x1dGlvbiB3b3VsZCBiZSB0
-byBsb2cgYW4gZXJyb3IgdG8gc3lzbG9nCm9yIHNvbWV0aGluZyByYXRoZXIgdGhlbiB0aGUgZHJp
-dmVyIGl0c2VsZiByZXR1cm5pbmcgYW4gZXJyb3I/CgpCZXN0IHJlZ2FyZHMsCkRlcmVrCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi,
+
+> From: alsa-devel-bounces@alsa-project.org [alsa-devel-bounces@alsa-project.org] on behalf of Ujfalusi Peter (Nokia-MS/Tampere)
+> Sent: Thursday, December 23, 2010 08:42
+> To: lrg@slimlogic.co.uk; jhnikula@gmail.com
+> Cc: magi.olaya@ti.com; alsa-devel@alsa-project.org; broonie@opensource.wolfsonmicro.com
+> Subject: Re: [alsa-devel] [PATCH] ASoC: mcbsp: Add McBSP support for OMAP4
+
+> In the patch:
+> @@ -623,6 +652,9 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+>                 if (cpu_class_is_omap1()) {
+>                         err = -EINVAL;
+>                         break;
+> +               } else if (cpu_is_omap44xx()) {
+> +                       regs->srgr2     &= ~CLKSM;
+> 
+> There's no need to clear the CLKSM, since it is by default not set.
+> IMHO you shall handle the OMAP4 in a same way as we handle OMAP3.
+> By doing nothing here.
+> 
+> +                       break;
+
+I think you should not break here, since you might want to select the CLKS/PRCM with the next
+call...
+
+>                 }
+>                 err = omap2_mcbsp_set_clks_src(mcbsp_data->bus_id,
+>                                                MCBSP_CLKS_PRCM_SRC);
+> 
+> 
+> Otherwise:
+> Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+
+Just noticed that, this patch is already in, but the issues, I have commented has to
+be fixed in order to have proper support for OMAP4.
+
+Peter
