@@ -1,36 +1,60 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [RFC/PATCH v7 02/12] media: Media device
-Date: Fri, 24 Dec 2010 13:01:05 +0100
-Message-ID: <201012241301.05834.laurent.pinchart@ideasonboard.com>
-References: <1292844995-7900-1-git-send-email-laurent.pinchart@ideasonboard.com> <1292844995-7900-3-git-send-email-laurent.pinchart@ideasonboard.com> <20101223033346.GB14692@suse.de>
+From: Laurent Epinat <l.epinat@free.fr>
+Subject: New sound device question
+Date: Fri, 24 Dec 2010 14:41:29 +0100
+Message-ID: <4D14A309.9030603@free.fr>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20101223033346.GB14692@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Greg KH <gregkh@suse.de>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, clemens@ladisch.de, sakari.ailus@maxwell.research.nokia.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id 06D19103800
+	for <alsa-devel@alsa-project.org>; Fri, 24 Dec 2010 14:41:00 +0100 (CET)
+Received: from [192.168.1.2] (unknown [82.239.195.157])
+	by smtp6-g21.free.fr (Postfix) with ESMTP id 7846182258
+	for <alsa-devel@alsa-project.org>; Fri, 24 Dec 2010 14:40:57 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Greg,
+Hello All
 
-Thanks for the review.
+I'm a newbie in this group and the sound systems.
 
-On Thursday 23 December 2010 04:33:46 Greg KH wrote:
-> On Mon, Dec 20, 2010 at 12:36:25PM +0100, Laurent Pinchart wrote:
-> > The media_device structure abstracts functions common to all kind of
-> > media devices (v4l2, dvb, alsa, ...). It manages media entities and
-> > offers a userspace API to discover and configure the media device
-> > internal topology.
-> 
-> As you create sysfs files, please also create Documentation/ABI/ entries
-> for those sysfs files at the same time.
+I try to developpe a usb sound driver for a Alesis Multix 8 USB2.0
 
-Sorry for having forgotten that. I will fix it.
+http://www.alesis.com/multimix8usb20
+
+The output interface is allready fonctional, but the Input not :-(
+Because there is 2 end point for it. The first one is on Isochronous 
+mode and the other is on Bulk mode
+
+I don't know how to declare the second endpoint in the quirks_table.
+
+
+Where can I get a good documentation or help about the alsa USB sound 
+structure.
+
+The only informations I have about the devices, are dump from windows
+
+
+thanks
+
+
+
 
 -- 
-Regards,
-
-Laurent Pinchart
+Salutations
+                           __
+  /----------------\      |~~\______/====\__  |
+(  Laurent Epinat  )----  \LE______======= )-+
+  \----------------/               ----|/--   |
+mailto:l.epinat@free.fr              (O)
+http://lepinat.free.fr
