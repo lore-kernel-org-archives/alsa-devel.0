@@ -1,16 +1,20 @@
-From: Radivoje Jovanovic <radivojejovanovic@gmail.com>
-Subject: ALSA alsaSink and NONINTERLEAVED vs INTERLEAVED
-Date: Thu, 23 Dec 2010 15:14:14 -0800
-Message-ID: <AANLkTimJqsByKjAZnu4FmQRpzV-aEhjnNKhsNBrCgLMh@mail.gmail.com>
+From: Seungwhan Youn <claude.youn@gmail.com>
+Subject: Re: [PATCH] ASoC: SAMSUNG: Cleanup dependency of
+	ASOC_SAMSUNG
+Date: Fri, 24 Dec 2010 12:58:54 +0900
+Message-ID: <AANLkTimUk7FHDfWjv2dx0SW7BPJHimOp_4EObgdHwCNU@mail.gmail.com>
+References: <1293092426-31648-1-git-send-email-kgene.kim@samsung.com>
+	<AANLkTikBVFTn6+qnwDEpXGMwDZPTuOt6fh1FaMmHjm+8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 84B69245BF
-	for <alsa-devel@alsa-project.org>; Fri, 24 Dec 2010 00:14:14 +0100 (CET)
-Received: by wwe15 with SMTP id 15so6390024wwe.20
-	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2010 15:14:14 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id 22D182469C
+	for <alsa-devel@alsa-project.org>; Fri, 24 Dec 2010 04:59:32 +0100 (CET)
+Received: by wwe15 with SMTP id 15so6516171wwe.20
+	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2010 19:59:31 -0800 (PST)
+In-Reply-To: <AANLkTikBVFTn6+qnwDEpXGMwDZPTuOt6fh1FaMmHjm+8@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,57 +24,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jassi Brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, Kukjin Kim <kgene.kim@samsung.com>, lrg@slimlogic.co.uk, Jassi Brar <jassi.brar@samsung.com>, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-I have a simple sound card with a stereo output. The driver works just fine
-when using aplay or gstreamer to play wave files. The problem occurs when I
-am trying to play videos through gstreamer. I use following gstremaer
-pipeline (just to test sound):
-gst-launch-0.10 filesrc location=MPEG4_MOVIE_NAME ! qtdemux name=t !  queue
-! faad ! alsasink
+Hi,
 
-If I make my driver with following settings:
-.info =            (SNDRV_PCM_INFO_INTERLEAVED |
-                 SNDRV_PCM_INFO_BLOCK_TRANSFER |
-                 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
+> How about having arch side Board Kconfig file define (if ASOC_SAMSUNG
+> is defined)
+> something like SMDK_HAS_WM8580_I2S/AC97 and these ASoC machine drivers
+> depend upon them? I know Claude already has such patch ready.
+> That way we could simply drop the ASOC_SAMSUNG check ?
 
-gstreamer comes back with a following message:
-Pipeline is PREROLLING ...
-ERROR: from element /GstPipeline:pipeline0/GstAlsaSink:alsasink0: Could not
-get/set settings from/on resource.
-Additional debug info:
-gstalsasink.c(519): set_hwparams ():
-/GstPipeline:pipeline0/GstAlsaSink:alsasink0:
-Unable to set hw params for playback: Invalid argument
-ERROR: pipeline doesn't want to preroll.
-Setting pipeline to NULL ...
-
-If I make my driver with following settings:
-.info =            (SNDRV_PCM_INFO_NONINTERLEAVED |
-                 SNDRV_PCM_INFO_BLOCK_TRANSFER |
-                 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
-gstreamer will play sound. Of course sound will not be correct since the
-data is interleaved. Any idea why is this happening?
-
-Here is the rest of the snd_pcm_hardware struct:
-
-    .formats = SNDRV_PCM_FMTBIT_U16_LE |
-           SNDRV_PCM_FMTBIT_U16_BE |
-           SNDRV_PCM_FMTBIT_S16_LE |
-           SNDRV_PCM_FMTBIT_S16_BE |
-           SNDRV_PCM_FMTBIT_U8,
-    .rates = SNDRV_PCM_RATE_8000_48000 | SNDRV_PCM_RATE_CONTINUOUS,
-    .rate_min = 8000,
-    .rate_max = 48000,
-    .channels_min = 1,
-    .channels_max = 2,
-    .period_bytes_min = 16384,
-    .period_bytes_max = 16384*4,
-    .periods_min =      4,
-    .periods_max =      256,
-    .buffer_bytes_max= 131072,
-
-Cheers
-Ogi
+Yes, I'm making patches that make ASoC Samsung configurations more
+independent from platforms. I think that I can submit these patches
+until today.
