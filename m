@@ -1,19 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/9] ASoC: codecs: wm8523: Fix register
- cache incoherency
-Date: Fri, 24 Dec 2010 15:59:30 +0000
-Message-ID: <20101224155929.GC16614@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/9] ASoC: codecs: Fix register cache
+	incoherencies
+Date: Fri, 24 Dec 2010 16:14:12 +0000
+Message-ID: <20101224161412.GD16614@opensource.wolfsonmicro.com>
 References: <1293198484-1902-1-git-send-email-lars@metafoo.de>
-	<1293198484-1902-4-git-send-email-lars@metafoo.de>
+	<20101224145706.GA16614@opensource.wolfsonmicro.com>
+	<4D14BE81.6000907@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 710EF1039EA
-	for <alsa-devel@alsa-project.org>; Fri, 24 Dec 2010 16:59:19 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7B45B1039EA
+	for <alsa-devel@alsa-project.org>; Fri, 24 Dec 2010 17:14:02 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1293198484-1902-4-git-send-email-lars@metafoo.de>
+In-Reply-To: <4D14BE81.6000907@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,19 +25,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Ian Lartey <ian@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 24, 2010 at 02:47:58PM +0100, Lars-Peter Clausen wrote:
+On Fri, Dec 24, 2010 at 04:38:41PM +0100, Lars-Peter Clausen wrote:
 
->  	/* Change some default settings - latch VU and enable ZC */
-> -	wm8523->reg_cache[WM8523_DAC_GAINR] |= WM8523_DACR_VU;
-> -	wm8523->reg_cache[WM8523_DAC_CTRL3] |= WM8523_ZC;
-> +	reg_cache[WM8523_DAC_GAINR] |= WM8523_DACR_VU;
-> +	reg_cache[WM8523_DAC_CTRL3] |= WM8523_ZC;
+> If there are no other issues with this series, I'll resend it with adjusted commit
+> messages in a few days.
 
-All the drivers where you're making this substitution should in
-principle be changed to use snd_soc_update_bits() since we now have
-support for multiple cache memory formats so may not have this flat in
-memory structure, though for the sake of getting the fixes in it's
-probably best to ignore that and fix it up later.
+Everything except the WM8753 patch looks OK - I *think* the WM8753 patch
+is fine, but on the other hand the driver is clearly quite badly broken
+at the moment so we can hardly make the situation worse.
