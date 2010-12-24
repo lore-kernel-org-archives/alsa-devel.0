@@ -1,7 +1,7 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 6/9] ASoC: codecs: wm8955: Fix register cache incoherency
-Date: Fri, 24 Dec 2010 14:48:01 +0100
-Message-ID: <1293198484-1902-7-git-send-email-lars@metafoo.de>
+Subject: [PATCH 8/9] ASoC: codecs: wm9090: Fix register cache incoherency
+Date: Fri, 24 Dec 2010 14:48:03 +0100
+Message-ID: <1293198484-1902-9-git-send-email-lars@metafoo.de>
 References: <1293198484-1902-1-git-send-email-lars@metafoo.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1293198484-1902-1-git-send-email-lars@metafoo.de>
@@ -15,7 +15,7 @@ framework. But the wm8753 driver still uses its own register cache for its
 private functions, while functions from the ASoC core use the generic cache.
 Thus we end up with two from each other incoherent caches, which leads to
 undefined behaviour.
-This pachtes fixes the issue by changing the wm8955 driver to use the generic
+This pachtes fixes the issue by changing the wm9090 driver to use the generic
 cache framework.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
@@ -25,91 +25,59 @@ Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 ---
 Compile tested only
 ---
- sound/soc/codecs/wm8955.c |   30 +++++++++++++++---------------
- 1 files changed, 15 insertions(+), 15 deletions(-)
+ sound/soc/codecs/wm9090.c |   18 +++++++++---------
+ 1 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8955.c b/sound/soc/codecs/wm8955.c
-index ca0265f..70e9516 100644
---- a/sound/soc/codecs/wm8955.c
-+++ b/sound/soc/codecs/wm8955.c
-@@ -41,8 +41,6 @@ static const char *wm8955_supply_names[WM8955_NUM_SUPPLIES] = {
- struct wm8955_priv {
- 	enum snd_soc_control_type control_type;
- 
--	u16 reg_cache[WM8955_MAX_REGISTER + 1];
--
- 	unsigned int mclk_rate;
- 
- 	int deemph;
-@@ -768,6 +766,7 @@ static int wm8955_set_bias_level(struct snd_soc_codec *codec,
- 				 enum snd_soc_bias_level level)
+diff --git a/sound/soc/codecs/wm9090.c b/sound/soc/codecs/wm9090.c
+index 7ba5807..a788c42 100644
+--- a/sound/soc/codecs/wm9090.c
++++ b/sound/soc/codecs/wm9090.c
+@@ -140,7 +140,6 @@ static const u16 wm9090_reg_defaults[] = {
+ /* This struct is used to save the context */
+ struct wm9090_priv {
+ 	struct mutex mutex;
+-	u16 reg_cache[WM9090_MAX_REGISTER + 1];
+ 	struct wm9090_platform_data pdata;
+ 	void *control_data;
+ };
+@@ -552,6 +551,7 @@ static int wm9090_set_bias_level(struct snd_soc_codec *codec,
+ static int wm9090_probe(struct snd_soc_codec *codec)
  {
- 	struct wm8955_priv *wm8955 = snd_soc_codec_get_drvdata(codec);
+ 	struct wm9090_priv *wm9090 = snd_soc_codec_get_drvdata(codec);
 +	u16 *reg_cache = codec->reg_cache;
- 	int ret, i;
+ 	int ret;
  
- 	switch (level) {
-@@ -800,14 +799,14 @@ static int wm8955_set_bias_level(struct snd_soc_codec *codec,
- 			/* Sync back cached values if they're
- 			 * different from the hardware default.
- 			 */
--			for (i = 0; i < ARRAY_SIZE(wm8955->reg_cache); i++) {
-+			for (i = 0; i < codec->driver->reg_cache_size; i++) {
- 				if (i == WM8955_RESET)
- 					continue;
+ 	codec->control_data = wm9090->control_data;
+@@ -576,22 +576,22 @@ static int wm9090_probe(struct snd_soc_codec *codec)
+ 	/* Configure some defaults; they will be written out when we
+ 	 * bring the bias up.
+ 	 */
+-	wm9090->reg_cache[WM9090_IN1_LINE_INPUT_A_VOLUME] |= WM9090_IN1_VU
++	reg_cache[WM9090_IN1_LINE_INPUT_A_VOLUME] |= WM9090_IN1_VU
+ 		| WM9090_IN1A_ZC;
+-	wm9090->reg_cache[WM9090_IN1_LINE_INPUT_B_VOLUME] |= WM9090_IN1_VU
++	reg_cache[WM9090_IN1_LINE_INPUT_B_VOLUME] |= WM9090_IN1_VU
+ 		| WM9090_IN1B_ZC;
+-	wm9090->reg_cache[WM9090_IN2_LINE_INPUT_A_VOLUME] |= WM9090_IN2_VU
++	reg_cache[WM9090_IN2_LINE_INPUT_A_VOLUME] |= WM9090_IN2_VU
+ 		| WM9090_IN2A_ZC;
+-	wm9090->reg_cache[WM9090_IN2_LINE_INPUT_B_VOLUME] |= WM9090_IN2_VU
++	reg_cache[WM9090_IN2_LINE_INPUT_B_VOLUME] |= WM9090_IN2_VU
+ 		| WM9090_IN2B_ZC;
+-	wm9090->reg_cache[WM9090_SPEAKER_VOLUME_LEFT] |=
++	reg_cache[WM9090_SPEAKER_VOLUME_LEFT] |=
+ 		WM9090_SPKOUT_VU | WM9090_SPKOUTL_ZC;
+-	wm9090->reg_cache[WM9090_LEFT_OUTPUT_VOLUME] |=
++	reg_cache[WM9090_LEFT_OUTPUT_VOLUME] |=
+ 		WM9090_HPOUT1_VU | WM9090_HPOUT1L_ZC;
+-	wm9090->reg_cache[WM9090_RIGHT_OUTPUT_VOLUME] |=
++	reg_cache[WM9090_RIGHT_OUTPUT_VOLUME] |=
+ 		WM9090_HPOUT1_VU | WM9090_HPOUT1R_ZC;
  
--				if (wm8955->reg_cache[i] == wm8955_reg[i])
-+				if (reg_cache[i] == wm8955_reg[i])
- 					continue;
+-	wm9090->reg_cache[WM9090_CLOCKING_1] |= WM9090_TOCLK_ENA;
++	reg_cache[WM9090_CLOCKING_1] |= WM9090_TOCLK_ENA;
  
--				snd_soc_write(codec, i, wm8955->reg_cache[i]);
-+				snd_soc_write(codec, i, reg_cache[i]);
- 			}
- 
- 			/* Enable VREF and VMID */
-@@ -902,6 +901,7 @@ static int wm8955_probe(struct snd_soc_codec *codec)
- {
- 	struct wm8955_priv *wm8955 = snd_soc_codec_get_drvdata(codec);
- 	struct wm8955_pdata *pdata = dev_get_platdata(codec->dev);
-+	u16 *reg_cache = codec->reg_cache;
- 	int ret, i;
- 
- 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, wm8955->control_type);
-@@ -934,25 +934,25 @@ static int wm8955_probe(struct snd_soc_codec *codec)
- 	}
- 
- 	/* Change some default settings - latch VU and enable ZC */
--	wm8955->reg_cache[WM8955_LEFT_DAC_VOLUME] |= WM8955_LDVU;
--	wm8955->reg_cache[WM8955_RIGHT_DAC_VOLUME] |= WM8955_RDVU;
--	wm8955->reg_cache[WM8955_LOUT1_VOLUME] |= WM8955_LO1VU | WM8955_LO1ZC;
--	wm8955->reg_cache[WM8955_ROUT1_VOLUME] |= WM8955_RO1VU | WM8955_RO1ZC;
--	wm8955->reg_cache[WM8955_LOUT2_VOLUME] |= WM8955_LO2VU | WM8955_LO2ZC;
--	wm8955->reg_cache[WM8955_ROUT2_VOLUME] |= WM8955_RO2VU | WM8955_RO2ZC;
--	wm8955->reg_cache[WM8955_MONOOUT_VOLUME] |= WM8955_MOZC;
-+	reg_cache[WM8955_LEFT_DAC_VOLUME] |= WM8955_LDVU;
-+	reg_cache[WM8955_RIGHT_DAC_VOLUME] |= WM8955_RDVU;
-+	reg_cache[WM8955_LOUT1_VOLUME] |= WM8955_LO1VU | WM8955_LO1ZC;
-+	reg_cache[WM8955_ROUT1_VOLUME] |= WM8955_RO1VU | WM8955_RO1ZC;
-+	reg_cache[WM8955_LOUT2_VOLUME] |= WM8955_LO2VU | WM8955_LO2ZC;
-+	reg_cache[WM8955_ROUT2_VOLUME] |= WM8955_RO2VU | WM8955_RO2ZC;
-+	reg_cache[WM8955_MONOOUT_VOLUME] |= WM8955_MOZC;
- 
- 	/* Also enable adaptive bass boost by default */
--	wm8955->reg_cache[WM8955_BASS_CONTROL] |= WM8955_BB;
-+	reg_cache[WM8955_BASS_CONTROL] |= WM8955_BB;
- 
- 	/* Set platform data values */
- 	if (pdata) {
- 		if (pdata->out2_speaker)
--			wm8955->reg_cache[WM8955_ADDITIONAL_CONTROL_2]
-+			reg_cache[WM8955_ADDITIONAL_CONTROL_2]
- 				|= WM8955_ROUT2INV;
- 
- 		if (pdata->monoin_diff)
--			wm8955->reg_cache[WM8955_MONO_OUT_MIX_1]
-+			reg_cache[WM8955_MONO_OUT_MIX_1]
- 				|= WM8955_DMEN;
- 	}
+ 	wm9090_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
  
 -- 
 1.7.2.3
