@@ -1,52 +1,54 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 0/4] Modify configures to support Samsung
- ASoC dependancyless
-Date: Fri, 24 Dec 2010 16:56:44 +0900
-Message-ID: <AANLkTim18YJH=FgCLruJKbyNeRM-zWFBBB6BaOoL-ajp@mail.gmail.com>
-References: <1293171965-24416-1-git-send-email-sw.youn@samsung.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: asoc SND_SOC_DAPM_AIF_IN question
+Date: Fri, 24 Dec 2010 11:35:58 +0000
+Message-ID: <20101224113558.GB15474@opensource.wolfsonmicro.com>
+References: <438BB0150E931F4B9CE701519A44630104C104C2AA@bgsmsx502.gar.corp.intel.com>
+	<20101222175503.GA27401@opensource.wolfsonmicro.com>
+	<438BB0150E931F4B9CE701519A44630104C104C329@bgsmsx502.gar.corp.intel.com>
+	<20101223112828.GA14481@opensource.wolfsonmicro.com>
+	<438BB0150E931F4B9CE701519A44630104C104C6B6@bgsmsx502.gar.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1293171965-24416-1-git-send-email-sw.youn@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Seungwhan Youn <sw.youn@samsung.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, kgene.kim@samsung.com, linux@arm.linux.org.uk, jassi.brar@samsung.com, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org, lrg@slimlogic.co.uk
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CE4AA103938
+	for <alsa-devel@alsa-project.org>; Fri, 24 Dec 2010 12:35:47 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <438BB0150E931F4B9CE701519A44630104C104C6B6@bgsmsx502.gar.corp.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Harsha,
+	Priya" <priya.harsha@intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 24, 2010 at 3:26 PM, Seungwhan Youn <sw.youn@samsung.com> w=
-rote:
-> Hi,
->
-> These patches modify configuration to make audio support configuratio=
-ns on
-> platform(or arch) from sound/soc/samsung. This prevents that audio co=
-nfig
-> consider which board(or arch) can(or should) support ASoC audio drive=
-r, and
-> also prevents audio config dependancy on future Samsung SoCs.
->
->
-> These patches are modify below features:-
-> =C2=A0o Add audio configurations on plat(or arch).
-> =C2=A0o Modify audio configuration depends on plat(or arch) selection=
- on ASoC.
->
-> This patch-set is based on two different branches that :-
-> =C2=A0o ARM patches are based on Kukjin Kim's git branch 'for-next'
-> =C2=A0 (commit id - 30fb9a94ec22435add3d2ea2d1b01c1a5ad6164c)
-> =C2=A0o ASoC patches are based on Mark Brown's git branch 'for-next'
-> =C2=A0 (commit id - 722bc28384accb67c0bfbbe1914fd82d4d0c996a)
->
-> This patch-set contains followings :-
-> =C2=A0o To Kukjin Kim, Ben Dooks and Russell King,
-> =C2=A0- [PATCH 1/4] ARM: Kconfig: Add audio support dependency
-> =C2=A0- [PATCH 2/4] ARM: SAMSUNG: Add SMDK audio configuration
-> =C2=A0o To Jassi Brar, Mark Brown and Liam Girdwood,
-> =C2=A0- [PATCH 3/4] ASoC: SAMSUNG: Modify to indepedant depends on co=
-nfiguration
-> =C2=A0- [PATCH 4/4] ASoC: SAMSUNG: Apply modifications for SMDK audio=
- configuations
+On Thu, Dec 23, 2010 at 06:31:08PM +0530, Koul, Vinod wrote:
 
-All,
-Acked-by : Jassi Brar <jassi.brar@samsung.com>
+> > "Audio Supply" sounds like the main analogue bias for the CODEC - that
+> > would normally be managed by set_bias_level() rather than by having it
+> > supply every single widget in the CODEC map.
+
+> Yes that would make sense. But only for Audio rail which is global codec rail.
+> What do you recommend for headset and speaker rails? They would be required only for headset and speaker DAI not rest.
+
+Supplies for them seem sensible.
+
+> > If you have multiple links between the CPU and the CODEC with a single
+> > power bit to control them all I'd suggest defining several AIF widgets,
+> > each with no power management, then making the actual power controlled
+> > by a supply widget.  That way the power will be enabled as required but
+> > you won't have tied all the data streams together in the DAPM map.
+
+> Okay so then why should I do with several AIF widgets, wont doing that in DAI startup be a better idea?
+
+Doing things via data rather than with explicit code tends to be lower
+maintainance; there's less potential for things to go wrong and it's
+usually less work to keep up to date with API changes.
