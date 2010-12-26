@@ -1,41 +1,51 @@
-From: Jesper Juhl <jj@chaosbits.net>
-Subject: [PATCH][Trivial] sound, ca0106: Fix assignment to 'channel'.
-Date: Fri, 24 Dec 2010 21:55:21 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1012242152030.28973@swampdragon.chaosbits.net>
+From: "Clemens Ladisch" <cladisch@fastmail.net>
+Subject: Re: New sound device question
+Date: Sun, 26 Dec 2010 12:20:35 +0100
+Message-ID: <1293362435.7496.1412275155@webmail.messagingengine.com>
+References: <4D14A309.9030603@free.fr>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, alsa-devel@alsa-project.org, Alexey Dobriyan <adobriyan@gmail.com>, Andy Owen <andy-alsa@ultra-premium.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, trivial@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 5690224440
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2010 12:20:37 +0100 (CET)
+In-Reply-To: <4D14A309.9030603@free.fr>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Laurent Epinat <l.epinat@free.fr>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Laurent Epinat wrote:
+> I try to developpe a usb sound driver for a Alesis Multix 8 USB2.0
+> 
+> http://www.alesis.com/multimix8usb20
+> 
+> The output interface is allready fonctional, but the Input not :-(
+> Because there is 2 end point for it. The first one is on Isochronous
+> mode and the other is on Bulk mode
+> 
+> I don't know how to declare the second endpoint in the quirks_table.
 
-The assignment to the local variable 'channel' in 
-snd_ca0106_pcm_pointer_capture() is a little crazy.
-Order of assignment is undefined. This fixes it.
+There is no predefined quirk for such an endpoint; you'd have to write
+your own code.
 
-Signed-off-by: Jesper Juhl <jj@chaosbits.net>
----
- ca0106_main.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-diff --git a/sound/pci/ca0106/ca0106_main.c b/sound/pci/ca0106/ca0106_main.c
-index d2d12c0..01b4938 100644
---- a/sound/pci/ca0106/ca0106_main.c
-+++ b/sound/pci/ca0106/ca0106_main.c
-@@ -1082,7 +1082,7 @@ snd_ca0106_pcm_pointer_capture(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_ca0106_pcm *epcm = runtime->private_data;
- 	snd_pcm_uframes_t ptr, ptr1, ptr2 = 0;
--	int channel = channel=epcm->channel_id;
-+	int channel = epcm->channel_id;
- 
- 	if (!epcm->running)
- 		return 0;
+> Where can I get a good documentation or help about the alsa USB sound
+> structure.
+
+At the moment, the only documentation is the source code.
+
+> The only informations I have about the devices, are dump from windows
+
+What is the bulk endpoint used for?
 
 
--- 
-Jesper Juhl <jj@chaosbits.net>            http://www.chaosbits.net/
-Don't top-post http://www.catb.org/~esr/jargon/html/T/top-post.html
-Plain text mails only, please.
+Regards,
+Clemens
