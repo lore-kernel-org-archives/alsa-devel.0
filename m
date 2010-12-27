@@ -1,16 +1,16 @@
 From: andi@lisas.de
-Subject: [patch 3/6] sound azt3328: cosmetics: use a helper
- variable for codec setup
-Date: Mon, 27 Dec 2010 21:17:00 +0100
-Message-ID: <20101227201700.GD28432@rhlx01.hs-esslingen.de>
+Subject: [patch 4/6] sound azt3328: use a helper variable to
+ remove one indirection in hotpath
+Date: Mon, 27 Dec 2010 21:17:11 +0100
+Message-ID: <20101227201711.GE28432@rhlx01.hs-esslingen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5B0BB103824
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2010 21:17:00 +0100 (CET)
-Content-Disposition: inline; filename=codec_setup
+	by alsa0.perex.cz (Postfix) with ESMTP id EF30924703
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2010 21:17:11 +0100 (CET)
+Content-Disposition: inline; filename=dma_base_indirection
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,42 +28,60 @@ Signed-off-by: Andreas Mohr <andi@lisas.de>
 
 Index: linux-2.6/sound/pci/azt3328.c
 ===================================================================
---- linux-2.6.orig/sound/pci/azt3328.c	2010-12-27 14:29:14.322851001 -0500
-+++ linux-2.6/sound/pci/azt3328.c	2010-12-27 14:29:16.686184335 -0500
-@@ -2195,6 +2195,7 @@ snd_azf3328_create(struct snd_card *card
- 	};
- 	u8 dma_init;
- 	enum snd_azf3328_codec_type codec_type;
-+	struct snd_azf3328_codec *codec_setup;
+--- linux-2.6.orig/sound/pci/azt3328.c	2010-12-27 14:29:16.686184335 -0500
++++ linux-2.6/sound/pci/azt3328.c	2010-12-27 14:29:18.816184335 -0500
+@@ -294,6 +294,7 @@ MODULE_PARM_DESC(seqtimer_scaling, "Set 
  
- 	*rchip = NULL;
+ struct snd_azf3328_codec_data {
+ 	unsigned long io_base;
++	unsigned int dma_base; /* helper to avoid an indirection in hotpath */
+ 	struct snd_pcm_substream *substream;
+ 	bool running;
+ 	const char *name;
+@@ -1165,14 +1166,17 @@ snd_azf3328_codec_setdmaa(struct snd_azf
+ static int
+ snd_azf3328_codec_prepare(struct snd_pcm_substream *substream)
+ {
+-#if 0
+-	struct snd_azf3328 *chip = snd_pcm_substream_chip(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_azf3328_codec *codec = runtime->private_data;
++#if 0
+         unsigned int size = snd_pcm_lib_buffer_bytes(substream);
+ 	unsigned int count = snd_pcm_lib_period_bytes(substream);
+ #endif
  
-@@ -2232,15 +2233,17 @@ snd_azf3328_create(struct snd_card *card
- 	chip->opl3_io  = pci_resource_start(pci, 3);
- 	chip->mixer_io = pci_resource_start(pci, 4);
- 
--	chip->codecs[AZF_CODEC_PLAYBACK].io_base =
--				chip->ctrl_io + AZF_IO_OFFS_CODEC_PLAYBACK;
--	chip->codecs[AZF_CODEC_PLAYBACK].name = "PLAYBACK";
--	chip->codecs[AZF_CODEC_CAPTURE].io_base =
--				chip->ctrl_io + AZF_IO_OFFS_CODEC_CAPTURE;
--	chip->codecs[AZF_CODEC_CAPTURE].name = "CAPTURE";
--	chip->codecs[AZF_CODEC_I2S_OUT].io_base =
--				chip->ctrl_io + AZF_IO_OFFS_CODEC_I2S_OUT;
--	chip->codecs[AZF_CODEC_I2S_OUT].name = "I2S_OUT";
-+	codec_setup = &chip->codecs[AZF_CODEC_PLAYBACK];
-+	codec_setup->io_base = chip->ctrl_io + AZF_IO_OFFS_CODEC_PLAYBACK;
-+	codec_setup->name = "PLAYBACK";
+ 	snd_azf3328_dbgcallenter();
 +
-+	codec_setup = &chip->codecs[AZF_CODEC_CAPTURE];
-+	codec_setup->io_base = chip->ctrl_io + AZF_IO_OFFS_CODEC_CAPTURE;
-+	codec_setup->name = "CAPTURE";
++	codec->dma_base = runtime->dma_addr;
 +
-+	codec_setup = &chip->codecs[AZF_CODEC_I2S_OUT];
-+	codec_setup->io_base = chip->ctrl_io + AZF_IO_OFFS_CODEC_I2S_OUT;
-+	codec_setup->name = "I2S_OUT";
+ #if 0
+ 	snd_azf3328_codec_setfmt(chip, AZF_CODEC_...,
+ 		runtime->rate,
+@@ -1370,18 +1374,17 @@ snd_azf3328_codec_pointer(struct snd_pcm
+ {
+ 	const struct snd_azf3328 *chip = snd_pcm_substream_chip(substream);
+ 	const struct snd_azf3328_codec_data *codec = &chip->codecs[codec_type];
+-	unsigned long bufptr, result;
++	unsigned long result;
+ 	snd_pcm_uframes_t frmres;
  
- 	if (request_irq(pci->irq, snd_azf3328_interrupt,
- 			IRQF_SHARED, card->shortname, chip)) {
+-#ifdef QUERY_HARDWARE
+-	bufptr = snd_azf3328_codec_inl(codec, IDX_IO_CODEC_DMA_START_1);
+-#else
+-	bufptr = substream->runtime->dma_addr;
+-#endif
+ 	result = snd_azf3328_codec_inl(codec, IDX_IO_CODEC_DMA_CURRPOS);
+ 
+ 	/* calculate offset */
+-	result -= bufptr;
++#ifdef QUERY_HARDWARE
++	result -= snd_azf3328_codec_inl(codec, IDX_IO_CODEC_DMA_START_1);
++#else
++	result -= codec->dma_base;
++#endif
+ 	frmres = bytes_to_frames( substream->runtime, result);
+ 	snd_azf3328_dbgcodec("%08li %s @ 0x%8lx, frames %8ld\n",
+ 				jiffies, codec->name, result, frmres);
 
 -- 
