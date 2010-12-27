@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: ASoC updates for 2.6.38
-Date: Mon, 27 Dec 2010 17:43:07 +0000
-Message-ID: <20101227174306.GA15296@opensource.wolfsonmicro.com>
+Date: Mon, 27 Dec 2010 17:51:38 +0000
+Message-ID: <20101227175138.GA26117@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1FB0324686
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2010 18:42:57 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B250924691
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2010 18:51:27 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,6 +30,11 @@ The following changes since commit d08935711b542c3fe5c51abf290e172536d4cf09:
 are available in the git repository at:
 
   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.38
+
+Sorry, just realised that I've forgotten the (trivial) merge up of your
+warning fix for soc-dapm.c but it'll take kernel.org longer than I have
+to mirror out the merge - it's done locally and will be in the next pull
+request.
 
 Mark Brown (4):
       ASoC: Remove incorrect WM8903 erratum workaround
