@@ -1,16 +1,15 @@
-From: Radivoje Jovanovic <radivojejovanovic@gmail.com>
-Subject: Channel conversion automatic or not?
-Date: Tue, 28 Dec 2010 13:35:29 -0800
-Message-ID: <AANLkTikQGCXj9KELWk_HaJN+dBS4phSQW93W0AQ2w7Rd@mail.gmail.com>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: [PATCH] ALSA: lib: Fix static linking of libasound
+Date: Tue, 28 Dec 2010 16:46:25 -0500
+Message-ID: <AANLkTi=BLZ-HFM4G6D6ZTLtUT5JCaXANS-hgVBC2SAXn@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=0016e65c86dc5b7cb204987f6236
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 7788624608
-	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2010 22:35:31 +0100 (CET)
-Received: by wyi11 with SMTP id 11so9402033wyi.38
-	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2010 13:35:29 -0800 (PST)
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id CDC1124612
+	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2010 22:46:25 +0100 (CET)
+Received: by wyi11 with SMTP id 11so9407807wyi.38
+	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2010 13:46:25 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,44 +19,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+--0016e65c86dc5b7cb204987f6236
+Content-Type: text/plain; charset=UTF-8
+
 Hi,
-In my driver I have specified that the hardware supports only two channels.
-However, if I try playing mono input files on this system I get:
-Playing WAVE 'test.wav' : Unsigned 8 bit, Rate 22050 Hz, Mono
-aplay: set_params:1041: Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  U8
-SUBFORMAT:  STD
-SAMPLE_BITS: 8
-FRAME_BITS: 8
-CHANNELS: 1
-RATE: 22050
-PERIOD_TIME: (371519 371520)
-PERIOD_SIZE: 8192
-PERIOD_BYTES: 8192
-PERIODS: 4
-BUFFER_TIME: (1486077 1486078)
-BUFFER_SIZE: 32768
-BUFFER_BYTES: 32768
-TICK_TIME: 0
 
-If I try playing the same file through the virtual device that I specified
-in asoundrc file like this:
+Attached is a patch from Samuel Thibault that fixes static linking of
+libasound.a (forwarded from Debian bug report #522544).
 
-pcm.mydev {
-    type plug
-    slave {
-        pcm default
-        channels 2
-    }
-}
+Thanks,
+-Dan
 
-and I do aplay -Dmydev test.wav
-File plays no problem.
-I guess the question is shouldn't ALSA convert this data automatically or
-the only way to get this to work is through plugin as I did?
-Cheers
-Ogi
+--0016e65c86dc5b7cb204987f6236
+Content-Type: text/x-diff; charset=US-ASCII;
+	name="0001-ALSA-lib-Fix-static-linking-of-libasound.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-lib-Fix-static-linking-of-libasound.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gi9bt25d0
+
+RnJvbSA1MTY1YmY3NTcxZTQ5YWU5NTA2MDhiNGVlYWJkYzNmMDYyMGUwY2U0IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
+dGU6IFR1ZSwgMjggRGVjIDIwMTAgMTY6MzY6MTYgLTA1MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBsaWI6IEZpeCBzdGF0aWMgbGlua2luZyBvZiBsaWJhc291bmQKCkJ1Z0xpbms6IGh0dHA6Ly9i
+dWdzLmRlYmlhbi5vcmcvY2dpLWJpbi9idWdyZXBvcnQuY2dpP2J1Zz01MjI1NDQKCkluIERlYmlh
+biBCVFMgIzUyMjU0NCwgU2FtdWVsIFRoaWJhdWx0IHJlcG9ydHMgdGhhdApzbmRfZGxzeW0oIl9z
+bmRfY3RsX2h3X29wZW4iKSBmYWlscyBhdCBydW50aW1lIGZvciBhIHN0YXRpY2FsbHktbGlua2Vk
+CmxpYmFzb3VuZCBhbmQgbGF0ZXIgZm9sbG93cyB1cCwgIkFjdHVhbGx5IGl0J3Mgd29yc2UsIGl0
+J3MgYSBidWlsZGluZwpkZXNpZ24gYnVnOiAuYSBmaWxlcyBmb3Igc3VibGlicmFyaWVzIGFyZSBj
+cmVhdGVkLCBhbmQgdGhlbiBhc3NlbWJsZWQgaW4KYm90aCBhIFBJQyAuc28gYW5kIGEgc3RhdGlj
+IC5hLiBUaGUgYXR0YWNoZWQgcGF0Y2ggbWFrZXMgYWxzYSBhbHdheXMKaW5jbHVkZSB0aGUgbGlu
+a2luZyB0cmlja3MgbmVlZGVkIGZvciBzdGF0aWMgbGlua2luZy4iCgpIZXJlIGlzIFNhbXVlbCdz
+IHBhdGNoIHJlZGlmZmVkIGFnYWluc3QgY3VycmVudCBhbHNhLWxpYiBtYXN0ZXIgSEVBRC4KClJl
+cG9ydGVkLWFuZC10ZXN0ZWQtYnk6IFNhbXVlbCBUaGliYXVsdCA8c2FtdWVsLnRoaWJhdWx0QGVu
+cy1seW9uLm9yZz4KU2lnbmVkLW9mZi1ieTogRGFuaWVsIFQgQ2hlbiA8Y3JpbXN1bkB1YnVudHUu
+Y29tPgotLS0KIGluY2x1ZGUvZ2xvYmFsLmggfCAgIDE0ICsrLS0tLS0tLS0tLS0tCiBzcmMvZGxt
+aXNjLmMgICAgIHwgICAgMiAtLQogMiBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDE0
+IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2luY2x1ZGUvZ2xvYmFsLmggYi9pbmNsdWRlL2ds
+b2JhbC5oCmluZGV4IDNlMzY4MGYuLmQzYTI3YzggMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvZ2xvYmFs
+LmgKKysrIGIvaW5jbHVkZS9nbG9iYWwuaApAQCAtNTEsMTcgKzUxLDggQEAgY29uc3QgY2hhciAq
+c25kX2Fzb3VuZGxpYl92ZXJzaW9uKHZvaWQpOwogI2RlZmluZSBBVFRSSUJVVEVfVU5VU0VEIF9f
+YXR0cmlidXRlX18gKChfX3VudXNlZF9fKSkKICNlbmRpZgogCi0jaWZkZWYgUElDIC8qIGR5bmFt
+aWMgYnVpbGQgKi8KLQogLyoqIFxoaWRlaW5pdGlhbGl6ZXIgXGJyaWVmIEhlbHBlciBtYWNybyBm
+b3IgI1NORF9ETFNZTV9CVUlMRF9WRVJTSU9OLiAqLwotI2RlZmluZSBfX1NORF9ETFNZTV9WRVJT
+SU9OKG5hbWUsIHZlcnNpb24pIF8gIyMgbmFtZSAjIyB2ZXJzaW9uCi0vKioKLSAqIFxoaWRlaW5p
+dGlhbGl6ZXIKLSAqIFxicmllZiBBcHBlbmRzIHRoZSBidWlsZCB2ZXJzaW9uIHRvIHRoZSBuYW1l
+IG9mIGEgdmVyc2lvbmVkIGR5bmFtaWMgc3ltYm9sLgotICovCi0jZGVmaW5lIFNORF9ETFNZTV9C
+VUlMRF9WRVJTSU9OKG5hbWUsIHZlcnNpb24pIGNoYXIgX19TTkRfRExTWU1fVkVSU0lPTihuYW1l
+LCB2ZXJzaW9uKTsKLQotI2Vsc2UgLyogc3RhdGljIGJ1aWxkICovCisjZGVmaW5lIF9fU05EX0RM
+U1lNX0RZTl9WRVJTSU9OKG5hbWUsIHZlcnNpb24pIF8gIyMgbmFtZSAjIyB2ZXJzaW9uCiAKIHN0
+cnVjdCBzbmRfZGxzeW1fbGluayB7CiAJc3RydWN0IHNuZF9kbHN5bV9saW5rICpuZXh0OwpAQCAt
+NzgsNiArNjksNyBAQCBleHRlcm4gc3RydWN0IHNuZF9kbHN5bV9saW5rICpzbmRfZGxzeW1fc3Rh
+cnQ7CiAgKiBcYnJpZWYgQXBwZW5kcyB0aGUgYnVpbGQgdmVyc2lvbiB0byB0aGUgbmFtZSBvZiBh
+IHZlcnNpb25lZCBkeW5hbWljIHN5bWJvbC4KICAqLwogI2RlZmluZSBTTkRfRExTWU1fQlVJTERf
+VkVSU0lPTihuYW1lLCB2ZXJzaW9uKSBcCisgIGNoYXIgX19TTkRfRExTWU1fRFlOX1ZFUlNJT04o
+bmFtZSwgdmVyc2lvbik7IFwKICAgc3RhdGljIHN0cnVjdCBzbmRfZGxzeW1fbGluayBfX1NORF9E
+TFNZTV9WRVJTSU9OKHNuZF9kbHN5bV8sIG5hbWUsIHZlcnNpb24pOyBcCiAgIHZvaWQgX19TTkRf
+RExTWU1fVkVSU0lPTihzbmRfZGxzeW1fY29uc3RydWN0b3JfLCBuYW1lLCB2ZXJzaW9uKSAodm9p
+ZCkgX19hdHRyaWJ1dGVfXyAoKGNvbnN0cnVjdG9yKSk7IFwKICAgdm9pZCBfX1NORF9ETFNZTV9W
+RVJTSU9OKHNuZF9kbHN5bV9jb25zdHJ1Y3Rvcl8sIG5hbWUsIHZlcnNpb24pICh2b2lkKSB7IFwK
+QEAgLTg3LDggKzc5LDYgQEAgZXh0ZXJuIHN0cnVjdCBzbmRfZGxzeW1fbGluayAqc25kX2Rsc3lt
+X3N0YXJ0OwogICAgIHNuZF9kbHN5bV9zdGFydCA9ICZfX1NORF9ETFNZTV9WRVJTSU9OKHNuZF9k
+bHN5bV8sIG5hbWUsIHZlcnNpb24pOyBcCiAgIH0KIAotI2VuZGlmCi0KICNpZm5kZWYgX19TVFJJ
+TkcKIC8qKiBcYnJpZWYgUmV0dXJuICd4JyBhcmd1bWVudCBhcyBzdHJpbmcgKi8KICNkZWZpbmUg
+X19TVFJJTkcoeCkgICAgICN4CmRpZmYgLS1naXQgYS9zcmMvZGxtaXNjLmMgYi9zcmMvZGxtaXNj
+LmMKaW5kZXggZWNiYmU4ZC4uYjBiMjNiMSAxMDA2NDQKLS0tIGEvc3JjL2RsbWlzYy5jCisrKyBi
+L3NyYy9kbG1pc2MuYwpAQCAtMzQsMTAgKzM0LDggQEAKICNlbmRpZgogCiAjaWZuZGVmIERPQ19I
+SURERU4KLSNpZm5kZWYgUElDCiBzdHJ1Y3Qgc25kX2Rsc3ltX2xpbmsgKnNuZF9kbHN5bV9zdGFy
+dCA9IE5VTEw7CiAjZW5kaWYKLSNlbmRpZgogCiAvKioKICAqIFxicmllZiBPcGVucyBhIGR5bmFt
+aWMgbGlicmFyeSAtIEFMU0Egd3JhcHBlciBmb3IgXGMgZGxvcGVuLgotLSAKMS43LjEKCg==
+--0016e65c86dc5b7cb204987f6236
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--0016e65c86dc5b7cb204987f6236--
