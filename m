@@ -1,15 +1,16 @@
 From: Daniel Chen <seven.steps@gmail.com>
-Subject: [PATCH] ALSA: lib: Fix static linking of libasound
-Date: Tue, 28 Dec 2010 16:46:25 -0500
-Message-ID: <AANLkTi=BLZ-HFM4G6D6ZTLtUT5JCaXANS-hgVBC2SAXn@mail.gmail.com>
+Subject: [PATCH] ALSA: hda: Use LPIB quirk for Dell Inspiron
+	m101z/1120
+Date: Tue, 28 Dec 2010 17:26:56 -0500
+Message-ID: <AANLkTiktj+mFtVMd+RbzQeyM-29XS_hxb3od-NJmH_vk@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=0016e65c86dc5b7cb204987f6236
+Content-Type: multipart/mixed; boundary=0016367b5e7048edb504987ff33d
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id CDC1124612
-	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2010 22:46:25 +0100 (CET)
-Received: by wyi11 with SMTP id 11so9407807wyi.38
-	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2010 13:46:25 -0800 (PST)
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0CBCA24618
+	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2010 23:26:58 +0100 (CET)
+Received: by wwe15 with SMTP id 15so9547597wwe.20
+	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2010 14:26:56 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,80 +20,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---0016e65c86dc5b7cb204987f6236
+--0016367b5e7048edb504987ff33d
 Content-Type: text/plain; charset=UTF-8
 
 Hi,
 
-Attached is a patch from Samuel Thibault that fixes static linking of
-libasound.a (forwarded from Debian bug report #522544).
+Attached is a patch against master HEAD resolving capture anomalies on
+Sjoerd's Dell Inspiron m101z.
 
 Thanks,
 -Dan
 
---0016e65c86dc5b7cb204987f6236
+--0016367b5e7048edb504987ff33d
 Content-Type: text/x-diff; charset=US-ASCII;
-	name="0001-ALSA-lib-Fix-static-linking-of-libasound.patch"
+	name="0001-ALSA-hda-Use-LPIB-quirk-for-Dell-Inspiron-m101z-1120.patch"
 Content-Disposition: attachment;
-	filename="0001-ALSA-lib-Fix-static-linking-of-libasound.patch"
+	filename="0001-ALSA-hda-Use-LPIB-quirk-for-Dell-Inspiron-m101z-1120.patch"
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gi9bt25d0
+X-Attachment-Id: f_gi9d8lvh0
 
-RnJvbSA1MTY1YmY3NTcxZTQ5YWU5NTA2MDhiNGVlYWJkYzNmMDYyMGUwY2U0IE1vbiBTZXAgMTcg
+RnJvbSA3ZTU0ZWVjOWVhNGU0ZTg4ODRkNDUyMjFmYjUyZDQ1NTUwNmExZWY2IE1vbiBTZXAgMTcg
 MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
-dGU6IFR1ZSwgMjggRGVjIDIwMTAgMTY6MzY6MTYgLTA1MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBsaWI6IEZpeCBzdGF0aWMgbGlua2luZyBvZiBsaWJhc291bmQKCkJ1Z0xpbms6IGh0dHA6Ly9i
-dWdzLmRlYmlhbi5vcmcvY2dpLWJpbi9idWdyZXBvcnQuY2dpP2J1Zz01MjI1NDQKCkluIERlYmlh
-biBCVFMgIzUyMjU0NCwgU2FtdWVsIFRoaWJhdWx0IHJlcG9ydHMgdGhhdApzbmRfZGxzeW0oIl9z
-bmRfY3RsX2h3X29wZW4iKSBmYWlscyBhdCBydW50aW1lIGZvciBhIHN0YXRpY2FsbHktbGlua2Vk
-CmxpYmFzb3VuZCBhbmQgbGF0ZXIgZm9sbG93cyB1cCwgIkFjdHVhbGx5IGl0J3Mgd29yc2UsIGl0
-J3MgYSBidWlsZGluZwpkZXNpZ24gYnVnOiAuYSBmaWxlcyBmb3Igc3VibGlicmFyaWVzIGFyZSBj
-cmVhdGVkLCBhbmQgdGhlbiBhc3NlbWJsZWQgaW4KYm90aCBhIFBJQyAuc28gYW5kIGEgc3RhdGlj
-IC5hLiBUaGUgYXR0YWNoZWQgcGF0Y2ggbWFrZXMgYWxzYSBhbHdheXMKaW5jbHVkZSB0aGUgbGlu
-a2luZyB0cmlja3MgbmVlZGVkIGZvciBzdGF0aWMgbGlua2luZy4iCgpIZXJlIGlzIFNhbXVlbCdz
-IHBhdGNoIHJlZGlmZmVkIGFnYWluc3QgY3VycmVudCBhbHNhLWxpYiBtYXN0ZXIgSEVBRC4KClJl
-cG9ydGVkLWFuZC10ZXN0ZWQtYnk6IFNhbXVlbCBUaGliYXVsdCA8c2FtdWVsLnRoaWJhdWx0QGVu
-cy1seW9uLm9yZz4KU2lnbmVkLW9mZi1ieTogRGFuaWVsIFQgQ2hlbiA8Y3JpbXN1bkB1YnVudHUu
-Y29tPgotLS0KIGluY2x1ZGUvZ2xvYmFsLmggfCAgIDE0ICsrLS0tLS0tLS0tLS0tCiBzcmMvZGxt
-aXNjLmMgICAgIHwgICAgMiAtLQogMiBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDE0
-IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2luY2x1ZGUvZ2xvYmFsLmggYi9pbmNsdWRlL2ds
-b2JhbC5oCmluZGV4IDNlMzY4MGYuLmQzYTI3YzggMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvZ2xvYmFs
-LmgKKysrIGIvaW5jbHVkZS9nbG9iYWwuaApAQCAtNTEsMTcgKzUxLDggQEAgY29uc3QgY2hhciAq
-c25kX2Fzb3VuZGxpYl92ZXJzaW9uKHZvaWQpOwogI2RlZmluZSBBVFRSSUJVVEVfVU5VU0VEIF9f
-YXR0cmlidXRlX18gKChfX3VudXNlZF9fKSkKICNlbmRpZgogCi0jaWZkZWYgUElDIC8qIGR5bmFt
-aWMgYnVpbGQgKi8KLQogLyoqIFxoaWRlaW5pdGlhbGl6ZXIgXGJyaWVmIEhlbHBlciBtYWNybyBm
-b3IgI1NORF9ETFNZTV9CVUlMRF9WRVJTSU9OLiAqLwotI2RlZmluZSBfX1NORF9ETFNZTV9WRVJT
-SU9OKG5hbWUsIHZlcnNpb24pIF8gIyMgbmFtZSAjIyB2ZXJzaW9uCi0vKioKLSAqIFxoaWRlaW5p
-dGlhbGl6ZXIKLSAqIFxicmllZiBBcHBlbmRzIHRoZSBidWlsZCB2ZXJzaW9uIHRvIHRoZSBuYW1l
-IG9mIGEgdmVyc2lvbmVkIGR5bmFtaWMgc3ltYm9sLgotICovCi0jZGVmaW5lIFNORF9ETFNZTV9C
-VUlMRF9WRVJTSU9OKG5hbWUsIHZlcnNpb24pIGNoYXIgX19TTkRfRExTWU1fVkVSU0lPTihuYW1l
-LCB2ZXJzaW9uKTsKLQotI2Vsc2UgLyogc3RhdGljIGJ1aWxkICovCisjZGVmaW5lIF9fU05EX0RM
-U1lNX0RZTl9WRVJTSU9OKG5hbWUsIHZlcnNpb24pIF8gIyMgbmFtZSAjIyB2ZXJzaW9uCiAKIHN0
-cnVjdCBzbmRfZGxzeW1fbGluayB7CiAJc3RydWN0IHNuZF9kbHN5bV9saW5rICpuZXh0OwpAQCAt
-NzgsNiArNjksNyBAQCBleHRlcm4gc3RydWN0IHNuZF9kbHN5bV9saW5rICpzbmRfZGxzeW1fc3Rh
-cnQ7CiAgKiBcYnJpZWYgQXBwZW5kcyB0aGUgYnVpbGQgdmVyc2lvbiB0byB0aGUgbmFtZSBvZiBh
-IHZlcnNpb25lZCBkeW5hbWljIHN5bWJvbC4KICAqLwogI2RlZmluZSBTTkRfRExTWU1fQlVJTERf
-VkVSU0lPTihuYW1lLCB2ZXJzaW9uKSBcCisgIGNoYXIgX19TTkRfRExTWU1fRFlOX1ZFUlNJT04o
-bmFtZSwgdmVyc2lvbik7IFwKICAgc3RhdGljIHN0cnVjdCBzbmRfZGxzeW1fbGluayBfX1NORF9E
-TFNZTV9WRVJTSU9OKHNuZF9kbHN5bV8sIG5hbWUsIHZlcnNpb24pOyBcCiAgIHZvaWQgX19TTkRf
-RExTWU1fVkVSU0lPTihzbmRfZGxzeW1fY29uc3RydWN0b3JfLCBuYW1lLCB2ZXJzaW9uKSAodm9p
-ZCkgX19hdHRyaWJ1dGVfXyAoKGNvbnN0cnVjdG9yKSk7IFwKICAgdm9pZCBfX1NORF9ETFNZTV9W
-RVJTSU9OKHNuZF9kbHN5bV9jb25zdHJ1Y3Rvcl8sIG5hbWUsIHZlcnNpb24pICh2b2lkKSB7IFwK
-QEAgLTg3LDggKzc5LDYgQEAgZXh0ZXJuIHN0cnVjdCBzbmRfZGxzeW1fbGluayAqc25kX2Rsc3lt
-X3N0YXJ0OwogICAgIHNuZF9kbHN5bV9zdGFydCA9ICZfX1NORF9ETFNZTV9WRVJTSU9OKHNuZF9k
-bHN5bV8sIG5hbWUsIHZlcnNpb24pOyBcCiAgIH0KIAotI2VuZGlmCi0KICNpZm5kZWYgX19TVFJJ
-TkcKIC8qKiBcYnJpZWYgUmV0dXJuICd4JyBhcmd1bWVudCBhcyBzdHJpbmcgKi8KICNkZWZpbmUg
-X19TVFJJTkcoeCkgICAgICN4CmRpZmYgLS1naXQgYS9zcmMvZGxtaXNjLmMgYi9zcmMvZGxtaXNj
-LmMKaW5kZXggZWNiYmU4ZC4uYjBiMjNiMSAxMDA2NDQKLS0tIGEvc3JjL2RsbWlzYy5jCisrKyBi
-L3NyYy9kbG1pc2MuYwpAQCAtMzQsMTAgKzM0LDggQEAKICNlbmRpZgogCiAjaWZuZGVmIERPQ19I
-SURERU4KLSNpZm5kZWYgUElDCiBzdHJ1Y3Qgc25kX2Rsc3ltX2xpbmsgKnNuZF9kbHN5bV9zdGFy
-dCA9IE5VTEw7CiAjZW5kaWYKLSNlbmRpZgogCiAvKioKICAqIFxicmllZiBPcGVucyBhIGR5bmFt
-aWMgbGlicmFyeSAtIEFMU0Egd3JhcHBlciBmb3IgXGMgZGxvcGVuLgotLSAKMS43LjEKCg==
---0016e65c86dc5b7cb204987f6236
+dGU6IFR1ZSwgMjggRGVjIDIwMTAgMTc6MjA6MDIgLTA1MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGE6IFVzZSBMUElCIHF1aXJrIGZvciBEZWxsIEluc3Bpcm9uIG0xMDF6LzExMjAKClNqb2Vy
+ZCBTaW1vbnMgcmVwb3J0cyB0aGF0LCB3aXRob3V0IHVzaW5nIHBvc2l0aW9uX2ZpeD0xLCByZWNv
+cmRpbmcKZXhwZXJpZW5jZXMgb3ZlcnJ1bnMuIFdvcmsgYXJvdW5kIHRoYXQgYnkgYXBwbHlpbmcg
+dGhlIExQSUIgcXVpcmsKZm9yIGhpcyBoYXJkd2FyZS4KClJlcG9ydGVkLWFuZC10ZXN0ZWQtYnk6
+IFNqb2VyZCBTaW1vbnMgPHNqb2VyZEBkZWJpYW4ub3JnPgpDYzogPHN0YWJsZUBrZXJuZWwub3Jn
+PgpTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+Ci0tLQog
+c291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYyB8ICAgIDEgKwogMSBmaWxlcyBjaGFuZ2VkLCAxIGlu
+c2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9o
+ZGFfaW50ZWwuYyBiL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMKaW5kZXggZDllMTRmMS4uZDNk
+MThiZSAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYworKysgYi9zb3VuZC9w
+Y2kvaGRhL2hkYV9pbnRlbC5jCkBAIC0yMzAzLDYgKzIzMDMsNyBAQCBzdGF0aWMgc3RydWN0IHNu
+ZF9wY2lfcXVpcmsgcG9zaXRpb25fZml4X2xpc3RbXSBfX2RldmluaXRkYXRhID0gewogCVNORF9Q
+Q0lfUVVJUksoMHgxMDI4LCAweDAxY2MsICJEZWxsIEQ4MjAiLCBQT1NfRklYX0xQSUIpLAogCVNO
+RF9QQ0lfUVVJUksoMHgxMDI4LCAweDAxZGUsICJEZWxsIFByZWNpc2lvbiAzOTAiLCBQT1NfRklY
+X0xQSUIpLAogCVNORF9QQ0lfUVVJUksoMHgxMDI4LCAweDAxZjYsICJEZWxsIExhdGl0dWRlIDEz
+MUwiLCBQT1NfRklYX0xQSUIpLAorCVNORF9QQ0lfUVVJUksoMHgxMDI4LCAweDA0NzAsICJEZWxs
+IEluc3Bpcm9uIDExMjAiLCBQT1NfRklYX0xQSUIpLAogCVNORF9QQ0lfUVVJUksoMHgxMDNjLCAw
+eDMwNmQsICJIUCBkdjMiLCBQT1NfRklYX0xQSUIpLAogCVNORF9QQ0lfUVVJUksoMHgxMDQzLCAw
+eDgxM2QsICJBU1VTIFA1QUQyIiwgUE9TX0ZJWF9MUElCKSwKIAlTTkRfUENJX1FVSVJLKDB4MTA0
+MywgMHg4MWIzLCAiQVNVUyIsIFBPU19GSVhfTFBJQiksCi0tIAoxLjcuMQoK
+--0016367b5e7048edb504987ff33d
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -103,4 +77,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---0016e65c86dc5b7cb204987f6236--
+--0016367b5e7048edb504987ff33d--
