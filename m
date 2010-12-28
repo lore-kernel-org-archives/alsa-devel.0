@@ -1,16 +1,16 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 5/9] ASoC: codecs: wm8904: Fix register cache
+Subject: [PATCH 2/9] ASoC: codecs: max98088: Fix register cache
 	incoherency
-Date: Tue, 28 Dec 2010 21:37:59 +0100
-Message-ID: <1293568684-9626-6-git-send-email-lars@metafoo.de>
+Date: Tue, 28 Dec 2010 21:37:56 +0100
+Message-ID: <1293568684-9626-3-git-send-email-lars@metafoo.de>
 References: <1293568684-9626-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-out-089.synserver.de (smtp-out-091.synserver.de
-	[212.40.180.91]) by alsa0.perex.cz (Postfix) with SMTP id A03C6245E2
-	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2010 21:38:26 +0100 (CET)
+	[212.40.180.91]) by alsa0.perex.cz (Postfix) with SMTP id F05FD245E3
+	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2010 21:38:25 +0100 (CET)
 In-Reply-To: <1293568684-9626-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,132 +22,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Ian Lartey <ian@opensource.wolfsonmicro.com>
+Cc: Peter Hsiang <Peter.Hsiang@maxim-ic.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The multi-component patch(commit f0fba2ad1) moved the allocation of the
 register cache from the driver to the ASoC core. Most drivers where adjusted to
-this, but the wm8904 driver still uses its own register cache for its
+this, but the max98088 driver still uses its own register cache for its
 private functions, while functions from the ASoC core use the generic cache.
 Thus we end up with two from each other incoherent caches, which can lead to
 undefined behaviour.
-This patch fixes the issue by changing the wm8904 driver to use the
+This patch fixes the issue by changing the max98088 driver to use the
 generic register cache in its private functions.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Ian Lartey <ian@opensource.wolfsonmicro.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: Peter Hsiang <Peter.Hsiang@maxim-ic.com>
 
 ---
 Compile tested only
 ---
- sound/soc/codecs/wm8904.c |   37 ++++++++++++++++++-------------------
- 1 files changed, 18 insertions(+), 19 deletions(-)
+ sound/soc/codecs/max98088.c |   10 ++++------
+ 1 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-index 9001cc4..1ec12ef 100644
---- a/sound/soc/codecs/wm8904.c
-+++ b/sound/soc/codecs/wm8904.c
-@@ -50,8 +50,6 @@ static const char *wm8904_supply_names[WM8904_NUM_SUPPLIES] = {
- /* codec private data */
- struct wm8904_priv {
+diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
+index d63e287..6447dbb 100644
+--- a/sound/soc/codecs/max98088.c
++++ b/sound/soc/codecs/max98088.c
+@@ -40,7 +40,6 @@ struct max98088_cdata {
+ };
  
--	u16 reg_cache[WM8904_MAX_REGISTER + 1];
--
- 	enum wm8904_type devtype;
- 	void *control_data;
+ struct max98088_priv {
+-       u8 reg_cache[M98088_REG_CNT];
+        enum max98088_type devtype;
+        void *control_data;
+        struct max98088_pdata *pdata;
+@@ -1588,7 +1587,7 @@ static int max98088_dai2_set_fmt(struct snd_soc_dai *codec_dai,
  
-@@ -2094,7 +2092,7 @@ static int wm8904_digital_mute(struct snd_soc_dai *codec_dai, int mute)
- 
- static void wm8904_sync_cache(struct snd_soc_codec *codec)
+ static void max98088_sync_cache(struct snd_soc_codec *codec)
  {
--	struct wm8904_priv *wm8904 = snd_soc_codec_get_drvdata(codec);
-+	u16 *reg_cache = codec->reg_cache;
- 	int i;
+-       struct max98088_priv *max98088 = snd_soc_codec_get_drvdata(codec);
++       u16 *reg_cache = codec->reg_cache;
+        int i;
  
- 	if (!codec->cache_sync)
-@@ -2105,14 +2103,14 @@ static void wm8904_sync_cache(struct snd_soc_codec *codec)
- 	/* Sync back cached values if they're different from the
- 	 * hardware default.
- 	 */
--	for (i = 1; i < ARRAY_SIZE(wm8904->reg_cache); i++) {
-+	for (i = 1; i < codec->driver->reg_cache_size; i++) {
- 		if (!wm8904_access[i].writable)
- 			continue;
+        if (!codec->cache_sync)
+@@ -1599,14 +1598,14 @@ static void max98088_sync_cache(struct snd_soc_codec *codec)
+        /* write back cached values if they're writeable and
+         * different from the hardware default.
+         */
+-       for (i = 1; i < ARRAY_SIZE(max98088->reg_cache); i++) {
++       for (i = 1; i < codec->driver->reg_cache_size; i++) {
+                if (!max98088_access[i].writable)
+                        continue;
  
--		if (wm8904->reg_cache[i] == wm8904_reg[i])
-+		if (reg_cache[i] == wm8904_reg[i])
- 			continue;
+-               if (max98088->reg_cache[i] == max98088_reg[i])
++               if (reg_cache[i] == max98088_reg[i])
+                        continue;
  
--		snd_soc_write(codec, i, wm8904->reg_cache[i]);
-+		snd_soc_write(codec, i, reg_cache[i]);
- 	}
+-               snd_soc_write(codec, i, max98088->reg_cache[i]);
++               snd_soc_write(codec, i, reg_cache[i]);
+        }
  
- 	codec->cache_sync = 0;
-@@ -2371,6 +2369,7 @@ static int wm8904_probe(struct snd_soc_codec *codec)
- {
- 	struct wm8904_priv *wm8904 = snd_soc_codec_get_drvdata(codec);
- 	struct wm8904_pdata *pdata = wm8904->pdata;
-+	u16 *reg_cache = codec->reg_cache;
- 	int ret, i;
+        codec->cache_sync = 0;
+@@ -1951,7 +1950,6 @@ static int max98088_probe(struct snd_soc_codec *codec)
+        int ret = 0;
  
- 	codec->cache_sync = 1;
-@@ -2437,19 +2436,19 @@ static int wm8904_probe(struct snd_soc_codec *codec)
- 	}
+        codec->cache_sync = 1;
+-       memcpy(codec->reg_cache, max98088_reg, sizeof(max98088_reg));
  
- 	/* Change some default settings - latch VU and enable ZC */
--	wm8904->reg_cache[WM8904_ADC_DIGITAL_VOLUME_LEFT] |= WM8904_ADC_VU;
--	wm8904->reg_cache[WM8904_ADC_DIGITAL_VOLUME_RIGHT] |= WM8904_ADC_VU;
--	wm8904->reg_cache[WM8904_DAC_DIGITAL_VOLUME_LEFT] |= WM8904_DAC_VU;
--	wm8904->reg_cache[WM8904_DAC_DIGITAL_VOLUME_RIGHT] |= WM8904_DAC_VU;
--	wm8904->reg_cache[WM8904_ANALOGUE_OUT1_LEFT] |= WM8904_HPOUT_VU |
-+	reg_cache[WM8904_ADC_DIGITAL_VOLUME_LEFT] |= WM8904_ADC_VU;
-+	reg_cache[WM8904_ADC_DIGITAL_VOLUME_RIGHT] |= WM8904_ADC_VU;
-+	reg_cache[WM8904_DAC_DIGITAL_VOLUME_LEFT] |= WM8904_DAC_VU;
-+	reg_cache[WM8904_DAC_DIGITAL_VOLUME_RIGHT] |= WM8904_DAC_VU;
-+	reg_cache[WM8904_ANALOGUE_OUT1_LEFT] |= WM8904_HPOUT_VU |
- 		WM8904_HPOUTLZC;
--	wm8904->reg_cache[WM8904_ANALOGUE_OUT1_RIGHT] |= WM8904_HPOUT_VU |
-+	reg_cache[WM8904_ANALOGUE_OUT1_RIGHT] |= WM8904_HPOUT_VU |
- 		WM8904_HPOUTRZC;
--	wm8904->reg_cache[WM8904_ANALOGUE_OUT2_LEFT] |= WM8904_LINEOUT_VU |
-+	reg_cache[WM8904_ANALOGUE_OUT2_LEFT] |= WM8904_LINEOUT_VU |
- 		WM8904_LINEOUTLZC;
--	wm8904->reg_cache[WM8904_ANALOGUE_OUT2_RIGHT] |= WM8904_LINEOUT_VU |
-+	reg_cache[WM8904_ANALOGUE_OUT2_RIGHT] |= WM8904_LINEOUT_VU |
- 		WM8904_LINEOUTRZC;
--	wm8904->reg_cache[WM8904_CLOCK_RATES_0] &= ~WM8904_SR_MODE;
-+	reg_cache[WM8904_CLOCK_RATES_0] &= ~WM8904_SR_MODE;
- 
- 	/* Apply configuration from the platform data. */
- 	if (wm8904->pdata) {
-@@ -2457,23 +2456,23 @@ static int wm8904_probe(struct snd_soc_codec *codec)
- 			if (!pdata->gpio_cfg[i])
- 				continue;
- 
--			wm8904->reg_cache[WM8904_GPIO_CONTROL_1 + i]
-+			reg_cache[WM8904_GPIO_CONTROL_1 + i]
- 				= pdata->gpio_cfg[i] & 0xffff;
- 		}
- 
- 		/* Zero is the default value for these anyway */
- 		for (i = 0; i < WM8904_MIC_REGS; i++)
--			wm8904->reg_cache[WM8904_MIC_BIAS_CONTROL_0 + i]
-+			reg_cache[WM8904_MIC_BIAS_CONTROL_0 + i]
- 				= pdata->mic_cfg[i];
- 	}
- 
- 	/* Set Class W by default - this will be managed by the Class
- 	 * G widget at runtime where bypass paths are available.
- 	 */
--	wm8904->reg_cache[WM8904_CLASS_W_0] |= WM8904_CP_DYN_PWR;
-+	reg_cache[WM8904_CLASS_W_0] |= WM8904_CP_DYN_PWR;
- 
- 	/* Use normal bias source */
--	wm8904->reg_cache[WM8904_BIAS_CONTROL_0] &= ~WM8904_POBCTRL;
-+	reg_cache[WM8904_BIAS_CONTROL_0] &= ~WM8904_POBCTRL;
- 
- 	wm8904_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
+        ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_I2C);
+        if (ret != 0) {
 -- 
 1.7.2.3
