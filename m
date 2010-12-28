@@ -1,356 +1,278 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/9] ASoC: codecs: Remove unused reg_cache
-	fields from device structs
-Date: Tue, 28 Dec 2010 21:37:55 +0100
-Message-ID: <1293568684-9626-2-git-send-email-lars@metafoo.de>
+Subject: [PATCH 9/9] ASoC: codecs: wm8753: Fix register cache incoherency
+Date: Tue, 28 Dec 2010 21:38:04 +0100
+Message-ID: <1293568684-9626-11-git-send-email-lars@metafoo.de>
 References: <1293568684-9626-1-git-send-email-lars@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-089.synserver.de (smtp-out-091.synserver.de
-	[212.40.180.91]) by alsa0.perex.cz (Postfix) with SMTP id 7B740245E1
-	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2010 21:38:25 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1293568684-9626-1-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Joonyoung Shim <jy0922.shim@samsung.com>, Richard Purdie <richard@openedhand.com>, Barry Song <21cnbao@gmail.com>, linux-kernel@vger.kernel.org, Zhuang <haojian.zhuang@marvell.com>, Grant Likely <grant.likely@secretlab.ca>, Jonathan Cameron <jic23@cam.ac.uk>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>, Timur Tabi <timur@freescale.com>, Arnaud Patard <arnaud.patard@rtp-net.org>, Mike Arthur <Mike.Arthur@wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The multi-component patch(commit f0fba2ad1) moved the allocation of the
-register cache from the driver to the ASoC core. Most drivers where adjusted to
-this, but there are quite a few drivers left which now have an unused reg_cache field in
-their private device struct.
-This patch removes these unused fields.
+    ASoC: codecs: wm8753: Fix register cache incoherency
+    
+    The multi-component patch(commit f0fba2ad1) introduced a generic register cache
+    framework. But the wm8753 driver still uses its own register cache for its
+    private functions, while functions from the ASoC core use the generic cache.
+    Furthermore the generic cache uses zero-based numbering while the wm8753 cache
+    uses one-based numbering.
+    Thus we end up with two from each other incoherent caches, which leads to undefined
+    behaviour.
+    This patch fixes the issue by changing the wm8753 driver to use the generic
+    cache framework.
+    
+    Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+    Cc: Ian Lartey <ian@opensource.wolfsonmicro.com>
+    Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Zhuang <haojian.zhuang@marvell.com>
-Cc: Barry Song <21cnbao@gmail.com>
-Cc: Joonyoung Shim <jy0922.shim@samsung.com>
-Cc: Timur Tabi <timur@freescale.com>
-Cc: Arnaud Patard <arnaud.patard@rtp-net.org>
-Cc: Grant Likely <grant.likely@secretlab.ca>
-Cc: Richard Purdie <richard@openedhand.com>
-Cc: Mike Arthur <Mike.Arthur@wolfsonmicro.com>
-Cc: Jonathan Cameron <jic23@cam.ac.uk>
-Cc: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-
----
-Compile tested only
----
- sound/soc/codecs/88pm860x-codec.c |    1 -
- sound/soc/codecs/ad193x.c         |    1 -
- sound/soc/codecs/ak4671.c         |    1 -
- sound/soc/codecs/cs4270.c         |    1 -
- sound/soc/codecs/cs42l51.c        |    1 -
- sound/soc/codecs/cx20442.c        |    1 -
- sound/soc/codecs/tlv320aic26.c    |    4 +---
- sound/soc/codecs/uda1380.c        |    1 -
- sound/soc/codecs/wm8580.c         |    1 -
- sound/soc/codecs/wm8711.c         |    1 -
- sound/soc/codecs/wm8731.c         |    1 -
- sound/soc/codecs/wm8750.c         |    1 -
- sound/soc/codecs/wm8900.c         |    1 -
- sound/soc/codecs/wm8903.c         |    2 --
- sound/soc/codecs/wm8940.c         |    1 -
- sound/soc/codecs/wm8960.c         |    1 -
- sound/soc/codecs/wm8961.c         |    1 -
- sound/soc/codecs/wm8974.c         |    1 -
- sound/soc/codecs/wm8978.c         |    1 -
- sound/soc/codecs/wm8988.c         |    1 -
- sound/soc/codecs/wm8993.c         |    1 -
- sound/soc/codecs/wm9081.c         |    1 -
- 22 files changed, 1 insertions(+), 25 deletions(-)
-
-diff --git a/sound/soc/codecs/88pm860x-codec.c b/sound/soc/codecs/88pm860x-codec.c
-index 01d19e9..f0cea2f 100644
---- a/sound/soc/codecs/88pm860x-codec.c
-+++ b/sound/soc/codecs/88pm860x-codec.c
-@@ -146,7 +146,6 @@ struct pm860x_priv {
- 
- 	int			irq[4];
- 	unsigned char		name[4][MAX_NAME_LEN];
--	unsigned char		reg_cache[REG_CACHE_SIZE];
- };
- 
- /* -9450dB to 0dB in 150dB steps ( mute instead of -9450dB) */
-diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
-index fa2834c..ada1152 100644
---- a/sound/soc/codecs/ad193x.c
-+++ b/sound/soc/codecs/ad193x.c
-@@ -24,7 +24,6 @@
- 
- /* codec private data */
- struct ad193x_priv {
--	u8 reg_cache[AD193X_NUM_REGS];
- 	enum snd_soc_control_type bus_type;
- 	void *control_data;
- 	int sysclk;
-diff --git a/sound/soc/codecs/ak4671.c b/sound/soc/codecs/ak4671.c
-index 24f5f49..afcf60c 100644
---- a/sound/soc/codecs/ak4671.c
-+++ b/sound/soc/codecs/ak4671.c
-@@ -28,7 +28,6 @@
- struct ak4671_priv {
- 	enum snd_soc_control_type control_type;
- 	void *control_data;
--	u8 reg_cache[AK4671_CACHEREGNUM];
- };
- 
- /* ak4671 register cache & default register settings */
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index 6d4bdc6..3a582ca 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -114,7 +114,6 @@ static const char *supply_names[] = {
- struct cs4270_private {
- 	enum snd_soc_control_type control_type;
- 	void *control_data;
--	u8 reg_cache[CS4270_NUMREGS];
- 	unsigned int mclk; /* Input frequency of the MCLK pin */
- 	unsigned int mode; /* The mode (I2S or left-justified) */
- 	unsigned int slave_mode;
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index cb086ea..8b3b12c 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -47,7 +47,6 @@ struct cs42l51_private {
- 	unsigned int mclk;
- 	unsigned int audio_mode;	/* The mode (I2S or left-justified) */
- 	enum master_slave_mode func;
--	u8 reg_cache[CS42L51_NUMREGS];
- };
- 
- #define CS42L51_FORMATS ( \
-diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
-index e8d27c8..016c13d 100644
---- a/sound/soc/codecs/cx20442.c
-+++ b/sound/soc/codecs/cx20442.c
-@@ -26,7 +26,6 @@
- struct cx20442_priv {
- 	enum snd_soc_control_type control_type;
- 	void *control_data;
--	u8 reg_cache[1];
- };
- 
- #define CX20442_PM		0x0
-diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
-index 6b7d71e..ca6f9ce 100644
---- a/sound/soc/codecs/tlv320aic26.c
-+++ b/sound/soc/codecs/tlv320aic26.c
-@@ -31,7 +31,6 @@ MODULE_LICENSE("GPL");
- struct aic26 {
- 	struct spi_device *spi;
- 	struct snd_soc_codec codec;
--	u16 reg_cache[AIC26_NUM_REGS];	/* shadow registers */
- 	int master;
- 	int datfm;
- 	int mclk;
-@@ -355,7 +354,6 @@ static DEVICE_ATTR(keyclick, 0644, aic26_keyclick_show, aic26_keyclick_set);
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index 73507e7..12c647a 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -64,22 +64,22 @@ static void wm8753_set_dai_mode(struct snd_soc_codec *codec,
+  * are using 2 wire for device control, so we cache them instead.
   */
- static int aic26_probe(struct snd_soc_codec *codec)
- {
--	struct aic26 *aic26 = snd_soc_codec_get_drvdata(codec);
- 	int ret, err, i, reg;
+ static const u16 wm8753_reg[] = {
+-	0x0008, 0x0000, 0x000a, 0x000a,
+-	0x0033, 0x0000, 0x0007, 0x00ff,
+-	0x00ff, 0x000f, 0x000f, 0x007b,
+-	0x0000, 0x0032, 0x0000, 0x00c3,
+-	0x00c3, 0x00c0, 0x0000, 0x0000,
++	0x0000, 0x0008, 0x0000, 0x000a,
++	0x000a, 0x0033, 0x0000, 0x0007,
++	0x00ff, 0x00ff, 0x000f, 0x000f,
++	0x007b, 0x0000, 0x0032, 0x0000,
++	0x00c3, 0x00c3, 0x00c0, 0x0000,
+ 	0x0000, 0x0000, 0x0000, 0x0000,
+ 	0x0000, 0x0000, 0x0000, 0x0000,
+-	0x0000, 0x0000, 0x0000, 0x0055,
+-	0x0005, 0x0050, 0x0055, 0x0050,
+-	0x0055, 0x0050, 0x0055, 0x0079,
+-	0x0079, 0x0079, 0x0079, 0x0079,
+ 	0x0000, 0x0000, 0x0000, 0x0000,
+-	0x0097, 0x0097, 0x0000, 0x0004,
+-	0x0000, 0x0083, 0x0024, 0x01ba,
+-	0x0000, 0x0083, 0x0024, 0x01ba,
+-	0x0000, 0x0000, 0x0000
++	0x0055, 0x0005, 0x0050, 0x0055,
++	0x0050, 0x0055, 0x0050, 0x0055,
++	0x0079, 0x0079, 0x0079, 0x0079,
++	0x0079, 0x0000, 0x0000, 0x0000,
++	0x0000, 0x0097, 0x0097, 0x0000,
++	0x0004, 0x0000, 0x0083, 0x0024,
++	0x01ba, 0x0000, 0x0083, 0x0024,
++	0x01ba, 0x0000, 0x0000, 0x0000
+ };
  
- 	dev_info(codec->dev, "Probing AIC26 SoC CODEC driver\n");
-@@ -373,7 +371,7 @@ static int aic26_probe(struct snd_soc_codec *codec)
- 	aic26_reg_write(codec, AIC26_REG_AUDIO_CTRL3, reg);
- 
- 	/* Fill register cache */
--	for (i = 0; i < ARRAY_SIZE(aic26->reg_cache); i++)
-+	for (i = 0; i < codec->driver->reg_cache_size; i++)
- 		aic26_reg_read(codec, i);
- 
- 	/* Register the sysfs files for debugging */
-diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
-index 0c6c725..2dec361 100644
---- a/sound/soc/codecs/uda1380.c
-+++ b/sound/soc/codecs/uda1380.c
-@@ -36,7 +36,6 @@
  /* codec private data */
- struct uda1380_priv {
- 	struct snd_soc_codec *codec;
--	u16 reg_cache[UDA1380_CACHEREGNUM];
- 	unsigned int dac_clk;
- 	struct work_struct work;
- 	void *control_data;
-diff --git a/sound/soc/codecs/wm8580.c b/sound/soc/codecs/wm8580.c
-index 8725d4e..754c261 100644
---- a/sound/soc/codecs/wm8580.c
-+++ b/sound/soc/codecs/wm8580.c
-@@ -191,7 +191,6 @@ static const char *wm8580_supply_names[WM8580_NUM_SUPPLIES] = {
- struct wm8580_priv {
+@@ -87,57 +87,10 @@ struct wm8753_priv {
  	enum snd_soc_control_type control_type;
- 	struct regulator_bulk_data supplies[WM8580_NUM_SUPPLIES];
--	u16 reg_cache[WM8580_MAX_REGISTER + 1];
- 	struct pll_state a;
- 	struct pll_state b;
- 	int sysclk[2];
-diff --git a/sound/soc/codecs/wm8711.c b/sound/soc/codecs/wm8711.c
-index 54fbd76..2810e63 100644
---- a/sound/soc/codecs/wm8711.c
-+++ b/sound/soc/codecs/wm8711.c
-@@ -34,7 +34,6 @@
- /* codec private data */
- struct wm8711_priv {
- 	enum snd_soc_control_type bus_type;
--	u16 reg_cache[WM8711_CACHEREGNUM];
  	unsigned int sysclk;
+ 	unsigned int pcmclk;
+-	u16 reg_cache[ARRAY_SIZE(wm8753_reg)];
+ 	int dai_func;
  };
  
-diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index e725c09..1e9972d 100644
---- a/sound/soc/codecs/wm8731.c
-+++ b/sound/soc/codecs/wm8731.c
-@@ -44,7 +44,6 @@ static const char *wm8731_supply_names[WM8731_NUM_SUPPLIES] = {
- struct wm8731_priv {
- 	enum snd_soc_control_type control_type;
- 	struct regulator_bulk_data supplies[WM8731_NUM_SUPPLIES];
--	u16 reg_cache[WM8731_CACHEREGNUM];
- 	unsigned int sysclk;
- 	int sysclk_type;
- };
-diff --git a/sound/soc/codecs/wm8750.c b/sound/soc/codecs/wm8750.c
-index 6c924cd..a14db80 100644
---- a/sound/soc/codecs/wm8750.c
-+++ b/sound/soc/codecs/wm8750.c
-@@ -53,7 +53,6 @@ static const u16 wm8750_reg[] = {
- struct wm8750_priv {
- 	unsigned int sysclk;
- 	enum snd_soc_control_type control_type;
--	u16 reg_cache[ARRAY_SIZE(wm8750_reg)];
- };
- 
- #define wm8750_reset(c)	snd_soc_write(c, WM8750_RESET, 0)
-diff --git a/sound/soc/codecs/wm8900.c b/sound/soc/codecs/wm8900.c
-index aca4b1e..3d7f67c 100644
---- a/sound/soc/codecs/wm8900.c
-+++ b/sound/soc/codecs/wm8900.c
-@@ -140,7 +140,6 @@
- 
- struct wm8900_priv {
- 	enum snd_soc_control_type control_type;
--	u16 reg_cache[WM8900_MAXREG];
- 
- 	u32 fll_in; /* FLL input frequency */
- 	u32 fll_out; /* FLL output frequency */
-diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-index 622b602..0ee6adc 100644
---- a/sound/soc/codecs/wm8903.c
-+++ b/sound/soc/codecs/wm8903.c
-@@ -214,8 +214,6 @@ static u16 wm8903_reg_defaults[] = {
- 
- struct wm8903_priv {
- 
--	u16 reg_cache[ARRAY_SIZE(wm8903_reg_defaults)];
+-/*
+- * read wm8753 register cache
+- */
+-static inline unsigned int wm8753_read_reg_cache(struct snd_soc_codec *codec,
+-	unsigned int reg)
+-{
+-	u16 *cache = codec->reg_cache;
+-	if (reg < 1 || reg >= (ARRAY_SIZE(wm8753_reg) + 1))
+-		return -1;
+-	return cache[reg - 1];
+-}
 -
- 	int sysclk;
- 	int irq;
+-/*
+- * write wm8753 register cache
+- */
+-static inline void wm8753_write_reg_cache(struct snd_soc_codec *codec,
+-	unsigned int reg, unsigned int value)
+-{
+-	u16 *cache = codec->reg_cache;
+-	if (reg < 1 || reg >= (ARRAY_SIZE(wm8753_reg) + 1))
+-		return;
+-	cache[reg - 1] = value;
+-}
+-
+-/*
+- * write to the WM8753 register space
+- */
+-static int wm8753_write(struct snd_soc_codec *codec, unsigned int reg,
+-	unsigned int value)
+-{
+-	u8 data[2];
+-
+-	/* data is
+-	 *   D15..D9 WM8753 register offset
+-	 *   D8...D0 register data
+-	 */
+-	data[0] = (reg << 1) | ((value >> 8) & 0x0001);
+-	data[1] = value & 0x00ff;
+-
+-	wm8753_write_reg_cache(codec, reg, value);
+-	if (codec->hw_write(codec->control_data, data, 2) == 2)
+-		return 0;
+-	else
+-		return -EIO;
+-}
+-
+-#define wm8753_reset(c) wm8753_write(c, WM8753_RESET, 0)
++#define wm8753_reset(c) snd_soc_write(c, WM8753_RESET, 0)
  
-diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
-index 2cb16f8..f8c33b6 100644
---- a/sound/soc/codecs/wm8940.c
-+++ b/sound/soc/codecs/wm8940.c
-@@ -43,7 +43,6 @@
+ /*
+  * WM8753 Controls
+@@ -217,7 +170,7 @@ static int wm8753_get_dai(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
+-	int mode = wm8753_read_reg_cache(codec, WM8753_IOCTL);
++	int mode = snd_soc_read(codec, WM8753_IOCTL);
  
- struct wm8940_priv {
- 	unsigned int sysclk;
--	u16 reg_cache[WM8940_CACHEREGNUM];
- 	enum snd_soc_control_type control_type;
- 	void *control_data;
- };
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 21986c4..6983502 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -72,7 +72,6 @@ static const u16 wm8960_reg[WM8960_CACHEREGNUM] = {
- };
+ 	ucontrol->value.integer.value[0] = (mode & 0xc) >> 2;
+ 	return 0;
+@@ -227,7 +180,7 @@ static int wm8753_set_dai(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
+-	int mode = wm8753_read_reg_cache(codec, WM8753_IOCTL);
++	int mode = snd_soc_read(codec, WM8753_IOCTL);
+ 	struct wm8753_priv *wm8753 = snd_soc_codec_get_drvdata(codec);
  
- struct wm8960_priv {
--	u16 reg_cache[WM8960_CACHEREGNUM];
- 	enum snd_soc_control_type control_type;
- 	void *control_data;
- 	int (*set_bias_level)(struct snd_soc_codec *,
-diff --git a/sound/soc/codecs/wm8961.c b/sound/soc/codecs/wm8961.c
-index 8340485..2892923 100644
---- a/sound/soc/codecs/wm8961.c
-+++ b/sound/soc/codecs/wm8961.c
-@@ -290,7 +290,6 @@ static u16 wm8961_reg_defaults[] = {
- struct wm8961_priv {
- 	enum snd_soc_control_type control_type;
- 	int sysclk;
--	u16 reg_cache[WM8961_MAX_REGISTER];
- };
+ 	if (((mode & 0xc) >> 2) == ucontrol->value.integer.value[0])
+@@ -738,17 +691,17 @@ static int wm8753_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
+ 	if (pll_id == WM8753_PLL1) {
+ 		offset = 0;
+ 		enable = 0x10;
+-		reg = wm8753_read_reg_cache(codec, WM8753_CLOCK) & 0xffef;
++		reg = snd_soc_read(codec, WM8753_CLOCK) & 0xffef;
+ 	} else {
+ 		offset = 4;
+ 		enable = 0x8;
+-		reg = wm8753_read_reg_cache(codec, WM8753_CLOCK) & 0xfff7;
++		reg = snd_soc_read(codec, WM8753_CLOCK) & 0xfff7;
+ 	}
  
- static int wm8961_volatile_register(unsigned int reg)
-diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
-index b4363f6..67a28e6 100644
---- a/sound/soc/codecs/wm8974.c
-+++ b/sound/soc/codecs/wm8974.c
-@@ -52,7 +52,6 @@ static const u16 wm8974_reg[WM8974_CACHEREGNUM] = {
+ 	if (!freq_in || !freq_out) {
+ 		/* disable PLL  */
+-		wm8753_write(codec, WM8753_PLL1CTL1 + offset, 0x0026);
+-		wm8753_write(codec, WM8753_CLOCK, reg);
++		snd_soc_write(codec, WM8753_PLL1CTL1 + offset, 0x0026);
++		snd_soc_write(codec, WM8753_CLOCK, reg);
+ 		return 0;
+ 	} else {
+ 		u16 value = 0;
+@@ -759,20 +712,20 @@ static int wm8753_set_dai_pll(struct snd_soc_dai *codec_dai, int pll_id,
+ 		/* set up N and K PLL divisor ratios */
+ 		/* bits 8:5 = PLL_N, bits 3:0 = PLL_K[21:18] */
+ 		value = (pll_div.n << 5) + ((pll_div.k & 0x3c0000) >> 18);
+-		wm8753_write(codec, WM8753_PLL1CTL2 + offset, value);
++		snd_soc_write(codec, WM8753_PLL1CTL2 + offset, value);
  
- struct wm8974_priv {
- 	enum snd_soc_control_type control_type;
--	u16 reg_cache[WM8974_CACHEREGNUM];
- };
+ 		/* bits 8:0 = PLL_K[17:9] */
+ 		value = (pll_div.k & 0x03fe00) >> 9;
+-		wm8753_write(codec, WM8753_PLL1CTL3 + offset, value);
++		snd_soc_write(codec, WM8753_PLL1CTL3 + offset, value);
  
- #define wm8974_reset(c)	snd_soc_write(c, WM8974_RESET, 0)
-diff --git a/sound/soc/codecs/wm8978.c b/sound/soc/codecs/wm8978.c
-index 13b979a..689fd34 100644
---- a/sound/soc/codecs/wm8978.c
-+++ b/sound/soc/codecs/wm8978.c
-@@ -60,7 +60,6 @@ struct wm8978_priv {
- 	unsigned int f_opclk;
- 	int mclk_idx;
- 	enum wm8978_sysclk_src sysclk;
--	u16 reg_cache[WM8978_CACHEREGNUM];
- };
+ 		/* bits 8:0 = PLL_K[8:0] */
+ 		value = pll_div.k & 0x0001ff;
+-		wm8753_write(codec, WM8753_PLL1CTL4 + offset, value);
++		snd_soc_write(codec, WM8753_PLL1CTL4 + offset, value);
  
- static const char *wm8978_companding[] = {"Off", "NC", "u-law", "A-law"};
-diff --git a/sound/soc/codecs/wm8988.c b/sound/soc/codecs/wm8988.c
-index d7f2597..0828afa 100644
---- a/sound/soc/codecs/wm8988.c
-+++ b/sound/soc/codecs/wm8988.c
-@@ -54,7 +54,6 @@ struct wm8988_priv {
- 	unsigned int sysclk;
- 	enum snd_soc_control_type control_type;
- 	struct snd_pcm_hw_constraint_list *sysclk_constraints;
--	u16 reg_cache[WM8988_NUM_REG];
- };
+ 		/* set PLL as input and enable */
+-		wm8753_write(codec, WM8753_PLL1CTL1 + offset, 0x0027 |
++		snd_soc_write(codec, WM8753_PLL1CTL1 + offset, 0x0027 |
+ 			(pll_div.div2 << 3));
+-		wm8753_write(codec, WM8753_CLOCK, reg | enable);
++		snd_soc_write(codec, WM8753_CLOCK, reg | enable);
+ 	}
+ 	return 0;
+ }
+@@ -1477,7 +1418,7 @@ static void wm8753_set_dai_mode(struct snd_soc_codec *codec,
+ 		else
+ 			dai->driver = &wm8753_all_dai[(wm8753->dai_func << 1) + 1];
+ 	}
+-	wm8753_write(codec, WM8753_IOCTL, wm8753->dai_func);
++	snd_soc_write(codec, WM8753_IOCTL, wm8753->dai_func);
+ }
  
+ static void wm8753_work(struct work_struct *work)
+@@ -1498,21 +1439,21 @@ static int wm8753_suspend(struct snd_soc_codec *codec, pm_message_t state)
+ static int wm8753_resume(struct snd_soc_codec *codec)
+ {
+ 	int i;
+-	u8 data[2];
+-	u16 *cache = codec->reg_cache;
++	unsigned int val;
  
-diff --git a/sound/soc/codecs/wm8993.c b/sound/soc/codecs/wm8993.c
-index 589e3fa..2087c42 100644
---- a/sound/soc/codecs/wm8993.c
-+++ b/sound/soc/codecs/wm8993.c
-@@ -226,7 +226,6 @@ static struct {
+ 	/* Sync reg_cache with the hardware */
+-	for (i = 0; i < ARRAY_SIZE(wm8753_reg); i++) {
+-		if (i + 1 == WM8753_RESET)
++	for (i = 1; i < ARRAY_SIZE(wm8753_reg); i++) {
++		if (i == WM8753_RESET)
++			continue;
++
++		if (snd_soc_cache_read(codec, i, &val))
+ 			continue;
  
- struct wm8993_priv {
- 	struct wm_hubs_data hubs_data;
--	u16 reg_cache[WM8993_REGISTER_COUNT];
- 	struct regulator_bulk_data supplies[WM8993_NUM_SUPPLIES];
- 	struct wm8993_platform_data pdata;
- 	enum snd_soc_control_type control_type;
-diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
-index ecc7c37..11018e2 100644
---- a/sound/soc/codecs/wm9081.c
-+++ b/sound/soc/codecs/wm9081.c
-@@ -158,7 +158,6 @@ static struct {
- struct wm9081_priv {
- 	enum snd_soc_control_type control_type;
- 	void *control_data;
--	u16 reg_cache[WM9081_MAX_REGISTER + 1];
- 	int sysclk_source;
- 	int mclk_rate;
- 	int sysclk_rate;
--- 
-1.7.2.3
+ 		/* No point in writing hardware default values back */
+-		if (cache[i] == wm8753_reg[i])
++		if (val == wm8753_reg[i])
+ 			continue;
+ 
+-		data[0] = ((i + 1) << 1) | ((cache[i] >> 8) & 0x0001);
+-		data[1] = cache[i] & 0x00ff;
+-		codec->hw_write(codec->control_data, data, 2);
++		snd_soc_write(codec, i, val);
+ 	}
+ 
+ 	wm8753_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+@@ -1531,7 +1472,7 @@ static int wm8753_resume(struct snd_soc_codec *codec)
+ static int wm8753_probe(struct snd_soc_codec *codec)
+ {
+ 	struct wm8753_priv *wm8753 = snd_soc_codec_get_drvdata(codec);
+-	int ret = 0, reg;
++	int ret;
+ 
+ 	INIT_DELAYED_WORK(&codec->dapm.delayed_work, wm8753_work);
+ 
+@@ -1556,26 +1497,16 @@ static int wm8753_probe(struct snd_soc_codec *codec)
+ 			      msecs_to_jiffies(caps_charge));
+ 
+ 	/* set the update bits */
+-	reg = wm8753_read_reg_cache(codec, WM8753_LDAC);
+-	wm8753_write(codec, WM8753_LDAC, reg | 0x0100);
+-	reg = wm8753_read_reg_cache(codec, WM8753_RDAC);
+-	wm8753_write(codec, WM8753_RDAC, reg | 0x0100);
+-	reg = wm8753_read_reg_cache(codec, WM8753_LADC);
+-	wm8753_write(codec, WM8753_LADC, reg | 0x0100);
+-	reg = wm8753_read_reg_cache(codec, WM8753_RADC);
+-	wm8753_write(codec, WM8753_RADC, reg | 0x0100);
+-	reg = wm8753_read_reg_cache(codec, WM8753_LOUT1V);
+-	wm8753_write(codec, WM8753_LOUT1V, reg | 0x0100);
+-	reg = wm8753_read_reg_cache(codec, WM8753_ROUT1V);
+-	wm8753_write(codec, WM8753_ROUT1V, reg | 0x0100);
+-	reg = wm8753_read_reg_cache(codec, WM8753_LOUT2V);
+-	wm8753_write(codec, WM8753_LOUT2V, reg | 0x0100);
+-	reg = wm8753_read_reg_cache(codec, WM8753_ROUT2V);
+-	wm8753_write(codec, WM8753_ROUT2V, reg | 0x0100);
+-	reg = wm8753_read_reg_cache(codec, WM8753_LINVOL);
+-	wm8753_write(codec, WM8753_LINVOL, reg | 0x0100);
+-	reg = wm8753_read_reg_cache(codec, WM8753_RINVOL);
+-	wm8753_write(codec, WM8753_RINVOL, reg | 0x0100);
++	snd_soc_update_bits(codec, WM8753_LDAC, 0x0100, 0x0100);
++	snd_soc_update_bits(codec, WM8753_RDAC, 0x0100, 0x0100);
++	snd_soc_update_bits(codec, WM8753_LDAC, 0x0100, 0x0100);
++	snd_soc_update_bits(codec, WM8753_RDAC, 0x0100, 0x0100);
++	snd_soc_update_bits(codec, WM8753_LOUT1V, 0x0100, 0x0100);
++	snd_soc_update_bits(codec, WM8753_ROUT1V, 0x0100, 0x0100);
++	snd_soc_update_bits(codec, WM8753_LOUT2V, 0x0100, 0x0100);
++	snd_soc_update_bits(codec, WM8753_ROUT2V, 0x0100, 0x0100);
++	snd_soc_update_bits(codec, WM8753_LINVOL, 0x0100, 0x0100);
++	snd_soc_update_bits(codec, WM8753_RINVOL, 0x0100, 0x0100);
+ 
+ 	snd_soc_add_controls(codec, wm8753_snd_controls,
+ 			     ARRAY_SIZE(wm8753_snd_controls));
