@@ -1,43 +1,107 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: Why is SND_PCM_FORMAT_S32_LE not able to be set
- and passed to Linux Kernel Asoc?
-Date: Tue, 28 Dec 2010 16:02:44 +0200
-Message-ID: <4D19EE04.4060003@nokia.com>
-References: <0520A3FE5EDCF24F88B3F1451CFC64AE02338750EF@EDPREX01.logicpd.com>	<AANLkTimE_qnG2Y7Z16qgQbc+N9H7SmNOGmXUUsvyhBgZ@mail.gmail.com>
-	<0520A3FE5EDCF24F88B3F1451CFC64AE02338750F0@EDPREX01.logicpd.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/5] ASoC: DMIC: Adding the OMAP DMIC driver
+Date: Tue, 28 Dec 2010 14:18:00 +0000
+Message-ID: <20101228141759.GA31883@opensource.wolfsonmicro.com>
+References: <1293509826-23253-1-git-send-email-dlambert@ti.com>
+ <1293509826-23253-2-git-send-email-dlambert@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-da02.nokia.com (smtp.nokia.com [147.243.128.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id 708461037FB
-	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2010 14:57:05 +0100 (CET)
-In-Reply-To: <0520A3FE5EDCF24F88B3F1451CFC64AE02338750F0@EDPREX01.logicpd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Philip Chu <Philip.Chu@logicpd.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jassi Brar <jassisinghbrar@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1293509826-23253-2-git-send-email-dlambert@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: David Lambert <dlambert@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>, Tony Lindgren <tony@atomide.com>, Paul Walmsley <paul@pwsan.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/28/2010 09:35 AM, ext Philip Chu wrote:
-> Thanks for your reply.
-> =
+On Mon, Dec 27, 2010 at 10:17:02PM -0600, David Lambert wrote:
 
-> Yes I am using plughw - "plughw:0,0" and OMAP3530 Torpedo board. And I am=
- attaching my own sound card driver on McBSP 3.
+> +	case 19200000:
+> +		if (div == 5)
+> +			div_sel = 0x1;
+> +		else if (div == 8)
+> +			div_sel = 0x0;
+> +		break;
 
-The OMAP McBSP DAI has support for S32_LE format.
-I have added S32_LE/24 support for the twl4030 codec, and it
-is working fine.
-I think your codec driver does not support the S32_LE format.
+A switch statement for the valid div values would feel more natural,
+together with a default case to report errors though that's handled
+below so could be skipped.
 
--- =
+> +	/* Acknowledge irq event */
+> +	omap_dmic_write(dmic, OMAP_DMIC_IRQSTATUS, irq_status);
+> +	if (irq_status & OMAP_DMIC_IRQ_FULL)
 
-P=E9ter
+Blank line between these two.
+
+> +		dev_dbg(dmic->dev, "DMIC FIFO error %x\n", irq_status);
+> +
+> +	if (irq_status & OMAP_DMIC_IRQ_EMPTY)
+> +		dev_dbg(dmic->dev, "DMIC FIFO error %x\n", irq_status);
+
+I'd expect these errors to be displayed by default.
+
+> +	if (irq_status & OMAP_DMIC_IRQ)
+> +		dev_dbg(dmic->dev, "DMIC write request\n");
+
+A comment explaining why we don't actually do anything with the request
+would be helpful.  Given that we're ignoring the event it'd seem better
+to just leave it masked and not take the interrupt in the first place.
+
+> +static int omap_dmic_dai_startup(struct snd_pcm_substream *substream,
+> +				  struct snd_soc_dai *dai)
+> +{
+> +	struct omap_dmic *dmic = snd_soc_dai_get_drvdata(dai);
+> +
+> +	if (!dmic->active++)
+> +		pm_runtime_get_sync(dmic->dev);
+
+The pm_runtime API does refcounting for you so you should be able to
+just skip the active count check here, IIRC there's a pm_runtime API you
+could use to query if the DMIC is enabled so you could skip the local
+refcount entirely.
+
+> +static int omap_dmic_dai_hw_free(struct snd_pcm_substream *substream,
+> +				  struct snd_soc_dai *dai)
+> +{
+> +	struct omap_dmic *dmic = snd_soc_dai_get_drvdata(dai);
+> +	struct omap_dmic_link *link = dmic->link;
+> +	int ret = 0;
+> +
+> +	if (dmic->active == 1) {
+> +		ret = omap_dmic_close(dmic);
+> +		link->channels = 0;
+> +	}
+
+I'd feel a bit more happy if this were done in the same place as the
+drop of the refcount though this should actually be OK I think.
+
+> +	switch (freq) {
+> +	case 19200000:
+> +	case 24000000:
+> +	case 24576000:
+> +	case 12000000:
+> +		dmic->clk_freq = freq;
+> +		break;
+> +	default:
+> +		dev_err(dai->dev, "clk freq not supported %d\n", freq);
+> +		ret = -EINVAL;
+> +		goto err_freq;
+> +	}
+
+Can't you ask the parent clock what rate it's set to?
+
+> +	ret = request_threaded_irq(dmic->irq, NULL, omap_dmic_irq_handler,
+> +				   IRQF_ONESHOT, "DMIC", (void *)dmic);
+> +	if (ret) {
+> +		dev_err(dmic->dev, "irq request failed\n");
+> +		goto err_irq;
+> +	}
+
+Does this really need to be a threaded IRQ - the IRQ was just reading
+from CPU registers as far as I remember?
+
+> +MODULE_AUTHOR("David Lambert <dlambert@ti.com>");
+> +MODULE_DESCRIPTION("OMAP DMIC SoC Interface");
+> +MODULE_LICENSE("GPL");
+
+Should have a MODULE_ALIAS too in case it gets built modular.
