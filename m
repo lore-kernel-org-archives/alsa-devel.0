@@ -1,46 +1,89 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: Why is SND_PCM_FORMAT_S32_LE not able to be set
- and passed to Linux Kernel Asoc?
-Date: Tue, 28 Dec 2010 18:46:50 +0200
-Message-ID: <4D1A147A.6010407@nokia.com>
-References: <0520A3FE5EDCF24F88B3F1451CFC64AE02338750EF@EDPREX01.logicpd.com>	<AANLkTimE_qnG2Y7Z16qgQbc+N9H7SmNOGmXUUsvyhBgZ@mail.gmail.com>
-	<0520A3FE5EDCF24F88B3F1451CFC64AE02338750F0@EDPREX01.logicpd.com>
-	<4D19EE04.4060003@nokia.com>
-	<0520A3FE5EDCF24F88B3F1451CFC64AE0233875422@EDPREX01.logicpd.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-da02.nokia.com (smtp.nokia.com [147.243.128.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id 13B542442F
-	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2010 17:41:10 +0100 (CET)
-In-Reply-To: <0520A3FE5EDCF24F88B3F1451CFC64AE0233875422@EDPREX01.logicpd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Philip Chu <Philip.Chu@logicpd.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jassi Brar <jassisinghbrar@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: codecs: Add missing control_type initialization
+Date: Tue, 28 Dec 2010 21:08:57 +0100
+Message-ID: <1293566937-7937-1-git-send-email-lars@metafoo.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/28/2010 06:22 PM, ext Philip Chu wrote:
-> I also added S32_LE support for twl4030 codec. But the thing is, the user=
- land ALSA API is still asking for S16_LE (observed from the pcm_native.c f=
-rom kernel) even when I am using SND_PCM_FORMAT_S32_LE in my application co=
-de as shown in my 1st post.
+Some codec drivers do not initialize the control_type field in their private
+device struct, but still use it when calling snd_soc_codec_set_cache_io.
+This patch fixes the issue by properly initializing it in the drivers probe
+functions.
 
-You should try this patch for the twl4030:
-http://mailman.alsa-project.org/pipermail/alsa-devel/2010-December/034792.h=
-tml
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 
-I used aplay/arecord for testing the 32/24 bit support, and it was fine
-on the twl4030 codec.
+---
+Compile tested only
+---
+ sound/soc/codecs/wm8940.c |    1 +
+ sound/soc/codecs/wm8955.c |    1 +
+ sound/soc/codecs/wm8960.c |    1 +
+ sound/soc/codecs/wm8971.c |    1 +
+ sound/soc/codecs/wm9081.c |    1 +
+ 5 files changed, 5 insertions(+), 0 deletions(-)
 
--- =
-
-P=E9ter
+diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
+index f8c33b6..a2c788f 100644
+--- a/sound/soc/codecs/wm8940.c
++++ b/sound/soc/codecs/wm8940.c
+@@ -767,6 +767,7 @@ static __devinit int wm8940_i2c_probe(struct i2c_client *i2c,
+ 
+ 	i2c_set_clientdata(i2c, wm8940);
+ 	wm8940->control_data = i2c;
++	wm8940->control_type = SND_SOC_I2C;
+ 
+ 	ret = snd_soc_register_codec(&i2c->dev,
+ 			&soc_codec_dev_wm8940, &wm8940_dai, 1);
+diff --git a/sound/soc/codecs/wm8955.c b/sound/soc/codecs/wm8955.c
+index fdc7c8a..2ac35b0 100644
+--- a/sound/soc/codecs/wm8955.c
++++ b/sound/soc/codecs/wm8955.c
+@@ -1003,6 +1003,7 @@ static __devinit int wm8955_i2c_probe(struct i2c_client *i2c,
+ 		return -ENOMEM;
+ 
+ 	i2c_set_clientdata(i2c, wm8955);
++	wm8955->control_type = SND_SOC_I2C;
+ 
+ 	ret = snd_soc_register_codec(&i2c->dev,
+ 			&soc_codec_dev_wm8955, &wm8955_dai, 1);
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 6983502..4a99b766 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -1012,6 +1012,7 @@ static __devinit int wm8960_i2c_probe(struct i2c_client *i2c,
+ 		return -ENOMEM;
+ 
+ 	i2c_set_clientdata(i2c, wm8960);
++	wm8960->control_type = SND_SOC_I2C;
+ 	wm8960->control_data = i2c;
+ 
+ 	ret = snd_soc_register_codec(&i2c->dev,
+diff --git a/sound/soc/codecs/wm8971.c b/sound/soc/codecs/wm8971.c
+index 63f6dbf..9f18db6 100644
+--- a/sound/soc/codecs/wm8971.c
++++ b/sound/soc/codecs/wm8971.c
+@@ -718,6 +718,7 @@ static __devinit int wm8971_i2c_probe(struct i2c_client *i2c,
+ 	if (wm8971 == NULL)
+ 		return -ENOMEM;
+ 
++	wm8971->control_type = SND_SOC_I2C;
+ 	i2c_set_clientdata(i2c, wm8971);
+ 
+ 	ret = snd_soc_register_codec(&i2c->dev,
+diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
+index 11018e2..badc8ee 100644
+--- a/sound/soc/codecs/wm9081.c
++++ b/sound/soc/codecs/wm9081.c
+@@ -1334,6 +1334,7 @@ static __devinit int wm9081_i2c_probe(struct i2c_client *i2c,
+ 		return -ENOMEM;
+ 
+ 	i2c_set_clientdata(i2c, wm9081);
++	wm9081->control_type = SND_SOC_I2C;
+ 	wm9081->control_data = i2c;
+ 
+ 	ret = snd_soc_register_codec(&i2c->dev,
+-- 
+1.7.2.3
