@@ -1,134 +1,33 @@
-From: "Lambert, David" <dlambert@ti.com>
-Subject: Re: [PATCH 3/5] ASoC: DMIC: Adding OMAP DMIC driver to build
-Date: Tue, 28 Dec 2010 20:21:25 -0600
-Message-ID: <AANLkTimRCcBi=FE4h3Daa=zMdmXATLPqM48KNRN8x159@mail.gmail.com>
-References: <1293509826-23253-1-git-send-email-dlambert@ti.com>
- <1293509826-23253-4-git-send-email-dlambert@ti.com> <20101228114000.GD31292@opensource.wolfsonmicro.com>
+From: Paul Mundt <lethal@linux-sh.org>
+Subject: Re: [PATCH] fbdev: sh_mobile_hdmi: fixup compile error
+Date: Wed, 29 Dec 2010 15:25:56 +0900
+Message-ID: <20101229062555.GA12369@linux-sh.org>
+References: <w3phbdzu8ra.wl%kuninori.morimoto.gx@renesas.com> <20101228150645.GG31883@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20101228114000.GD31292@opensource.wolfsonmicro.com>
-Sender: linux-omap-owner@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20101228150645.GG31883@opensource.wolfsonmicro.com>
+Sender: linux-sh-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>, Tony Lindgren <tony@atomide.com>, Paul Walmsley <paul@pwsan.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 28, 2010 at 5:40 AM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Mon, Dec 27, 2010 at 10:17:04PM -0600, David Lambert wrote:
->> Adds the OMAP DMIC driver and codec to the build.
->>
->> Signed-off-by: David Lambert <dlambert@ti.com>
->> ---
->> =A0sound/soc/codecs/Kconfig =A0| =A0 =A03 +++
->> =A0sound/soc/codecs/Makefile | =A0 =A02 ++
->> =A0sound/soc/omap/Kconfig =A0 =A0| =A0 =A05 +++++
->> =A0sound/soc/omap/Makefile =A0 | =A0 =A02 ++
->
-> This should be one of the last patches in the series, but given the s=
-ort
-> of drivers you're introducing I'd expect the drivers to just directly
-> add the build system stuff in the patch.
->
+On Tue, Dec 28, 2010 at 03:06:46PM +0000, Mark Brown wrote:
+> On Mon, Dec 27, 2010 at 01:42:20PM +0900, Kuninori Morimoto wrote:
+> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> > ---
+> > >> Paul
+> > 
+> > This patch is not needed for now on Paul's tree.
+> > But seems to be needed after ALSA tree merge.
+> > 
+> > >> Mark, Liam
+> > 
+> > this patch is needed on current Mark's "for-2.6.38" tree.
+> 
+> Paul, do you want to apply this or shall I?
 
-OK... I can put the makefile and kconfig changes in with the DMIC drive=
-r and the
-DMIC codec.
-
->> =A04 files changed, 12 insertions(+), 0 deletions(-)
->>
->> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
->> index 0f33db2..f6c6d31 100644
->> --- a/sound/soc/codecs/Kconfig
->> +++ b/sound/soc/codecs/Kconfig
->> @@ -166,6 +166,9 @@ config SND_SOC_L3
->> =A0config SND_SOC_DA7210
->> =A0 =A0 =A0 =A0 =A0tristate
->>
->> +config SND_SOC_DMIC
->> + =A0 =A0 tristate
->> +
->> =A0config SND_SOC_MAX98088
->> =A0 =A0 =A0 =A0 tristate
->>
->> diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
->> index 10e5e09..9139cf9 100644
->> --- a/sound/soc/codecs/Makefile
->> +++ b/sound/soc/codecs/Makefile
->> @@ -14,6 +14,7 @@ snd-soc-cs42l51-objs :=3D cs42l51.o
->> =A0snd-soc-cs4270-objs :=3D cs4270.o
->> =A0snd-soc-cx20442-objs :=3D cx20442.o
->> =A0snd-soc-da7210-objs :=3D da7210.o
->> +snd-soc-dmic-objs :=3D dmic.o
->> =A0snd-soc-l3-objs :=3D l3.o
->> =A0snd-soc-max98088-objs :=3D max98088.o
->> =A0snd-soc-pcm3008-objs :=3D pcm3008.o
->> @@ -91,6 +92,7 @@ obj-$(CONFIG_SND_SOC_CS42L51) =A0 =A0 =A0 +=3D snd=
--soc-cs42l51.o
->> =A0obj-$(CONFIG_SND_SOC_CS4270) +=3D snd-soc-cs4270.o
->> =A0obj-$(CONFIG_SND_SOC_CX20442) =A0 =A0 =A0 =A0+=3D snd-soc-cx20442=
-=2Eo
->> =A0obj-$(CONFIG_SND_SOC_DA7210) +=3D snd-soc-da7210.o
->> +obj-$(CONFIG_SND_SOC_DMIC) =A0 +=3D snd-soc-dmic.o
->> =A0obj-$(CONFIG_SND_SOC_L3) =A0 =A0 +=3D snd-soc-l3.o
->> =A0obj-$(CONFIG_SND_SOC_JZ4740_CODEC) =A0 +=3D snd-soc-jz4740-codec.=
-o
->> =A0obj-$(CONFIG_SND_SOC_MAX98088) =A0 =A0 =A0 +=3D snd-soc-max98088.=
-o
->> diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
->> index a088db6..548b13c 100644
->> --- a/sound/soc/omap/Kconfig
->> +++ b/sound/soc/omap/Kconfig
->> @@ -9,6 +9,9 @@ config SND_OMAP_SOC_MCBSP
->> =A0config SND_OMAP_SOC_MCPDM
->> =A0 =A0 =A0 tristate
->>
->> +config SND_OMAP_SOC_DMIC
->> + =A0 =A0 tristate
->> +
->> =A0config SND_OMAP_SOC_N810
->> =A0 =A0 =A0 tristate "SoC Audio support for Nokia N810"
->> =A0 =A0 =A0 depends on SND_OMAP_SOC && MACH_NOKIA_N810 && I2C
->> @@ -103,6 +106,8 @@ config SND_OMAP_SOC_SDP4430
->> =A0 =A0 =A0 depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP_443=
-0SDP
->> =A0 =A0 =A0 select SND_OMAP_SOC_MCPDM
->> =A0 =A0 =A0 select SND_SOC_TWL6040
->> + =A0 =A0 select SND_SOC_DMIC
->> + =A0 =A0 select SND_OMAP_SOC_DMIC
->> =A0 =A0 =A0 help
->> =A0 =A0 =A0 =A0 Say Y if you want to add support for SoC audio on Te=
-xas Instruments
->> =A0 =A0 =A0 =A0 SDP4430.
->> diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
->> index ba9fc65..6ff27f5 100644
->> --- a/sound/soc/omap/Makefile
->> +++ b/sound/soc/omap/Makefile
->> @@ -1,9 +1,11 @@
->> =A0# OMAP Platform Support
->> =A0snd-soc-omap-objs :=3D omap-pcm.o
->> +snd-soc-omap-dmic-objs :=3D omap-dmic.o
->> =A0snd-soc-omap-mcbsp-objs :=3D omap-mcbsp.o
->> =A0snd-soc-omap-mcpdm-objs :=3D omap-mcpdm.o mcpdm.o
->>
->> =A0obj-$(CONFIG_SND_OMAP_SOC) +=3D snd-soc-omap.o
->> +obj-$(CONFIG_SND_OMAP_SOC_DMIC) +=3D snd-soc-omap-dmic.o
->> =A0obj-$(CONFIG_SND_OMAP_SOC_MCBSP) +=3D snd-soc-omap-mcbsp.o
->> =A0obj-$(CONFIG_SND_OMAP_SOC_MCPDM) +=3D snd-soc-omap-mcpdm.o
->>
->> --
->> 1.7.0.4
->>
->
-
-
---
-David Lambert
-OMAP=99 Multimedia
-214-567-5692
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+It doesn't really matter to me, but since it seems to depend on your
+merge perhaps it makes more sense to merge through the ALSA tree, simply
+in terms of limiting bisect damage.
