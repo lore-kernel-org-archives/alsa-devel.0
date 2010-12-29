@@ -1,45 +1,42 @@
-From: Felipe Balbi <balbi@ti.com>
-Subject: Re: [PATCH 1/5] ASoC: DMIC: Adding the OMAP DMIC driver
-Date: Wed, 29 Dec 2010 15:07:57 +0200
-Message-ID: <20101229130757.GD2222@legolas.emea.dhcp.ti.com>
-References: <1293509826-23253-1-git-send-email-dlambert@ti.com>
- <1293509826-23253-2-git-send-email-dlambert@ti.com>
- <20101228111424.GB2239@legolas.emea.dhcp.ti.com>
- <AANLkTi=6iWz0jdakBBgw2OEOjADvS2YmCN0ebKODQ7Ke@mail.gmail.com>
- <20101229094738.GA2254@legolas.emea.dhcp.ti.com>
- <1293618931.3451.17.camel@odin>
- <20101229104432.GB2254@legolas.emea.dhcp.ti.com>
- <1293623571.3451.51.camel@odin>
- <20101229120443.GB2222@legolas.emea.dhcp.ti.com>
- <1293627600.3451.93.camel@odin>
-Reply-To: balbi@ti.com
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] fbdev: sh_mobile_hdmi: fixup compile error
+Date: Wed, 29 Dec 2010 13:33:34 +0000
+Message-ID: <9668ee76-6e43-43d5-a641-e0db2d4376d1@email.android.com>
+References: <w3phbdzu8ra.wl%kuninori.morimoto.gx@renesas.com> <20101228150645.GG31883@opensource.wolfsonmicro.com> <20101229062555.GA12369@linux-sh.org> (sfid-20101229_062749_985456_BD4C209A)
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1293627600.3451.93.camel@odin>
-Sender: linux-omap-owner@vger.kernel.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: balbi@ti.com, "Lambert, David" <dlambert@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>, Paul Walmsley <paul@pwsan.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <20101229062555.GA12369@linux-sh.org> (sfid-20101229_062749_985456_BD4C209A)
+Sender: linux-sh-owner@vger.kernel.org
+To: Paul Mundt <lethal@linux-sh.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Applied, thanks. (Sorry about top posting, using my phone).
 
-On Wed, Dec 29, 2010 at 01:00:00PM +0000, Liam Girdwood wrote:
->Ok, I now think you meant other "ARM architectures" here than other
->Linux architectures in general. It does make a more sense for ARM
->distribution deployment, but I still think guaranteeing successful build
->for this driver on all non ARM architectures atm just to give us
->satisfaction that the driver is "well written" is unnecessary effort.
+"Paul Mundt" <lethal@linux-sh.org> wrote:
 
-Ok.
-
->In a lot of cases drivers under drivers/* and sound/* must touch plat/*
->and mach/* headers for runtime access to hardware IP. I've just grepped
->and the list is quite long for drivers/*
-
-IMHO that's wrong :-p But that's only my opinion. Anyway, I'm ok with
-your decision FWIW.
+>On Tue, Dec 28, 2010 at 03:06:46PM +0000, Mark Brown wrote:
+>> On Mon, Dec 27, 2010 at 01:42:20PM +0900, Kuninori Morimoto wrote:
+>> > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>> > ---
+>> > >> Paul
+>> > 
+>> > This patch is not needed for now on Paul's tree.
+>> > But seems to be needed after ALSA tree merge.
+>> > 
+>> > >> Mark, Liam
+>> > 
+>> > this patch is needed on current Mark's "for-2.6.38" tree.
+>> 
+>> Paul, do you want to apply this or shall I?
+>
+>It doesn't really matter to me, but since it seems to depend on your
+>merge perhaps it makes more sense to merge through the ALSA tree,
+>simply
+>in terms of limiting bisect damage.
 
 -- 
-balbi
+Sent from my Android phone with K-9 Mail. Please excuse my brevity.
