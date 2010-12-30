@@ -1,15 +1,14 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: [PATCH 0/4]: ASoC SST mid asoc drivers
-Date: Thu, 30 Dec 2010 16:40:20 +0530
-Message-ID: <438BB0150E931F4B9CE701519A44630104C10F26DF@bgsmsx502.gar.corp.intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [PATCH 2/4] ASoC sst: Add mid platform driver
+Date: Thu, 30 Dec 2010 16:42:53 +0530
+Message-ID: <1293707573-8340-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2FA8024401
-	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2010 12:12:26 +0100 (CET)
-Content-Language: en-US
+	by alsa0.perex.cz (Postfix) with ESMTP id 349B62440F
+	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2010 12:12:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,32 +18,600 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "Harsha, Priya" <priya.harsha@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Alan Cox <alan@linux.intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, Vinod Koul <vinod.koul@intel.com>, Harsha Priya <priya.harsha@intel.com>, lrg@slimlogic.co.uk, alan@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This patch adds the platform driver for mid asoc drivers
+This platfrom driver sends commands to sst dsp engine driver for the dai operations.
+For this purpose it depends on intel_sst driver which is currently in staging tree
 
-This patchset adds the asoc drivers for mid devices. These drivers along with
-sst driver form the audio subsystem in these class of devices.
-The current asoc driver supports the Intel(R) Medfield platform and msic codec
-with only playback support. More features and codecs will be added in future.
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Harsha Priya <priya.harsha@intel.com>
+---
+ sound/soc/mid-x86/mid_platform.c     |  365 ++++++++++++++++++++++++++++++++++
+ sound/soc/mid-x86/mid_platform.h     |   71 +++++++
+ sound/soc/mid-x86/mid_platform_lib.c |  122 +++++++++++
+ 3 files changed, 558 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/mid-x86/mid_platform.c
+ create mode 100644 sound/soc/mid-x86/mid_platform.h
+ create mode 100644 sound/soc/mid-x86/mid_platform_lib.c
 
-This patchset addresses the comments received in previous RFC patches.
-
-This current patch set adds one msic codec driver, the mid platform driver and 
-machine driver. More codec drivers will be added eventually.
-This misc codec driver adds only playback path. Capture path and jack detection
-are todo.
-
-The Platform driver is currently dependent on the SST driver which is in the
-staging.
-
-Brief description of these patches:
-1/4: Codec driver with config changes
-2/4: Platform driver
-3/4: Machine driver
-4/4: Make file and kconfig changes for machine and platform driver
-
-Thanks
-Harsha & Vinod
+diff --git a/sound/soc/mid-x86/mid_platform.c b/sound/soc/mid-x86/mid_platform.c
+new file mode 100644
+index 0000000..3d26e6e
+--- /dev/null
++++ b/sound/soc/mid-x86/mid_platform.c
+@@ -0,0 +1,365 @@
++/*
++ *  mid_platform.c - Intel MID common Platform driver
++ *
++ *  Copyright (C) 2010 Intel Corp
++ *  Author: Vinod Koul <vinod.koul@intel.com>
++ *  Author: Harsha Priya <priya.harsha@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License along
++ *  with this program; if not, write to the Free Software Foundation, Inc.,
++ *  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *
++ */
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/slab.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include "../../../drivers/staging/intel_sst/intel_sst.h"
++#include "mid_platform.h"
++
++static struct snd_pcm_hardware snd_intelmad_pcm_hw = {
++	.info =	(SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_DOUBLE |
++			SNDRV_PCM_INFO_PAUSE |
++			SNDRV_PCM_INFO_RESUME |
++			SNDRV_PCM_INFO_MMAP|
++			SNDRV_PCM_INFO_MMAP_VALID |
++			SNDRV_PCM_INFO_BLOCK_TRANSFER |
++			SNDRV_PCM_INFO_SYNC_START),
++	.formats = (SNDRV_PCM_FMTBIT_S16 | SNDRV_PCM_FMTBIT_U16 |
++			SNDRV_PCM_FMTBIT_S24 | SNDRV_PCM_FMTBIT_U24 |
++			SNDRV_PCM_FMTBIT_S32 | SNDRV_PCM_FMTBIT_U32),
++	.rates = (SNDRV_PCM_RATE_8000|
++			SNDRV_PCM_RATE_44100 |
++			SNDRV_PCM_RATE_48000),
++	.rate_min = MID_MIN_RATE,
++	.rate_max = MID_MAX_RATE,
++	.channels_min =	MID_MIN_CHANNEL,
++	.channels_max =	MID_MAX_CHANNEL,
++	.buffer_bytes_max = MID_MAX_BUFFER,
++	.period_bytes_min = MID_MIN_PERIOD_BYTES,
++	.period_bytes_max = MID_MAX_PERIOD_BYTES,
++	.periods_min = MID_MIN_PERIODS,
++	.periods_max = MID_MAX_PERIODS,
++	.fifo_size = MID_FIFO_SIZE,
++};
++
++/*MFLD - MSIC*/
++struct snd_soc_dai_driver mfld_dai[] = {
++{
++	.name = "Headset-cpu-dai",
++	.id = 0,
++	.playback = {
++		.channels_min = MID_STEREO,
++		.channels_max = MID_STEREO,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S24_LE,
++	},
++},
++{
++	.name = "Speaker-cpu-dai",
++	.id = 1,
++	.playback = {
++		.channels_min = MID_MONO,
++		.channels_max = MID_STEREO,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S24_LE,
++	},
++},
++{
++	.name = "Vibra 1-cpu-dai",
++	.id = 2,
++	.playback = {
++		.channels_min = MID_MONO,
++		.channels_max = MID_MONO,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S24_LE,
++	},
++},
++{
++	.name = "Vibra 2-cpu-dai",
++	.id = 3,
++	.playback = {
++		.channels_min = MID_MONO,
++		.channels_max = MID_STEREO,
++		.rates = SNDRV_PCM_RATE_48000,
++		.formats = SNDRV_PCM_FMTBIT_S24_LE,
++	},
++},
++};
++
++static int mid_platform_open(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime;
++	struct mid_runtime_stream *stream;
++	int ret_val = 0;
++
++	pr_debug("mid_platform_open called\n");
++
++	runtime = substream->runtime;
++	runtime->hw = snd_intelmad_pcm_hw;
++
++	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
++	if (!stream)
++		return -ENOMEM;
++	stream->stream_info.str_id = 0;
++	stream->stream_status = INIT;
++	stream->stream_info.mad_substream = substream;
++	/* allocate memory for SST API set */
++	stream->sstdrv_ops = kzalloc(sizeof(*stream->sstdrv_ops),
++							GFP_KERNEL);
++	if (!stream->sstdrv_ops) {
++		pr_err("sst: mem allocation for ops fail\n");
++		kfree(stream);
++		return -ENOMEM;
++	}
++	stream->sstdrv_ops->scard_ops = NULL;
++	stream->sstdrv_ops->vendor_id = MSIC_VENDOR_ID;
++	stream->sstdrv_ops->module_name = "msic_audio";
++
++	/* registering with SST driver to get access to SST APIs to use */
++	ret_val = register_sst_card(stream->sstdrv_ops);
++	if (ret_val) {
++		pr_err("sst: sst card registration failed\n");
++		return ret_val;
++	}
++	runtime->private_data = stream;
++	return snd_pcm_hw_constraint_integer(runtime,
++			 SNDRV_PCM_HW_PARAM_PERIODS);
++}
++
++static int mid_platform_close(struct snd_pcm_substream *substream)
++{
++	struct mid_runtime_stream *stream;
++	int ret_val = 0, str_id;
++
++	pr_debug("mid_platform_close called\n");
++
++	stream = substream->runtime->private_data;
++	str_id = stream->stream_info.str_id;
++
++	if (str_id)
++		ret_val = stream->sstdrv_ops->control_set(
++						SST_SND_FREE, &str_id);
++	kfree(stream->sstdrv_ops);
++	kfree(stream);
++	return ret_val;
++}
++
++static int mid_platform_pcm_prepare(struct snd_pcm_substream *substream)
++{
++	struct mid_runtime_stream *stream;
++	int ret_val = 0, str_id;
++
++	pr_debug("mid_platform_pcm_prepare called\n");
++
++	stream = substream->runtime->private_data;
++	str_id = stream->stream_info.str_id;
++	if (stream->stream_info.str_id) {
++		ret_val = stream->sstdrv_ops->control_set(
++						SST_SND_DROP, &str_id);
++		return ret_val;
++	}
++
++	ret_val = snd_intelmad_alloc_stream(substream);
++	if (ret_val < 0)
++		return ret_val;
++	snprintf(substream->pcm->id, sizeof(substream->pcm->id),
++			"%d", stream->stream_info.str_id);
++
++	ret_val = snd_intelmad_init_stream(substream);
++	if (ret_val)
++		return ret_val;
++	substream->runtime->hw.info = SNDRV_PCM_INFO_BLOCK_TRANSFER;
++	return ret_val;
++}
++
++static int mid_platform_pcm_trigger(struct snd_pcm_substream *substream,
++					int cmd)
++{
++	int ret_val = 0, str_id;
++	struct mid_runtime_stream *stream;
++
++	pr_debug("mid_platform_pcm_trigger called\n");
++
++	stream = substream->runtime->private_data;
++
++	str_id = stream->stream_info.str_id;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		pr_debug("sst: Trigger Start\n");
++		ret_val = stream->sstdrv_ops->control_set(
++						SST_SND_START, &str_id);
++		if (ret_val)
++			return ret_val;
++		stream->stream_status = RUNNING;
++		stream->stream_info.mad_substream = substream;
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		pr_debug("sst: in stop\n");
++		ret_val = stream->sstdrv_ops->control_set(
++						SST_SND_DROP, &str_id);
++		if (ret_val)
++			return ret_val;
++		stream->stream_status = DROPPED;
++		break;
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		pr_debug("sst: in pause\n");
++		ret_val = stream->sstdrv_ops->control_set(
++						SST_SND_PAUSE, &str_id);
++		if (ret_val)
++			return ret_val;
++		stream->stream_status = PAUSED;
++		break;
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		pr_debug("sst: in pause release\n");
++		ret_val = stream->sstdrv_ops->control_set(
++						SST_SND_RESUME, &str_id);
++		if (ret_val)
++			return ret_val;
++		stream->stream_status = RUNNING;
++		break;
++	default:
++		return -EINVAL;
++	}
++	return ret_val;
++}
++
++
++static snd_pcm_uframes_t mid_platform_pcm_pointer
++			(struct snd_pcm_substream *substream)
++{
++	/* struct snd_pcm_runtime *runtime = substream->runtime; */
++	struct mid_runtime_stream *stream;
++	int ret_val;
++	struct pcm_stream_info *str_info;
++
++	pr_debug("mid_platform_pcm_pointer called\n");
++
++	stream = substream->runtime->private_data;
++	if (stream->stream_status == INIT)
++		return 0;
++	str_info = &stream->stream_info;
++	ret_val = stream->sstdrv_ops->control_set(
++				SST_SND_BUFFER_POINTER, &str_info);
++	if (ret_val) {
++		pr_err("sst: error code = 0x%x\n", ret_val);
++		return ret_val;
++	}
++
++	return stream->stream_info.buffer_ptr;
++}
++
++
++static struct snd_pcm_ops intel_mid_platform_ops = {
++	.open = mid_platform_open,
++	.close = mid_platform_close,
++	.ioctl = snd_pcm_lib_ioctl,
++	.prepare = mid_platform_pcm_prepare,
++	.trigger = mid_platform_pcm_trigger,
++	.pointer = mid_platform_pcm_pointer,
++};
++
++static void intel_mid_pcm_free(struct snd_pcm *pcm)
++{
++	pr_debug("intel_mid_pcm_free called\n");
++	snd_pcm_lib_preallocate_free_for_all(pcm);
++}
++
++int intel_mid_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
++			struct snd_pcm *pcm)
++{
++	int retval = 0;
++
++	pr_debug("intel_mid_pcm_new called\n");
++
++	if (dai->driver->playback.channels_min ||
++			dai->driver->capture.channels_min) {
++		retval =  snd_pcm_lib_preallocate_pages_for_all(pcm,
++			SNDRV_DMA_TYPE_CONTINUOUS,
++			snd_dma_continuous_data(GFP_KERNEL),
++			MID_MIN_BUFFER, MID_MAX_BUFFER);
++		if (retval) {
++			pr_err("dma buffer allocationf fail\n");
++			return retval;
++		}
++	}
++
++	return retval;
++}
++struct snd_soc_platform_driver intelmid_soc_platform_drv = {
++	.ops		= &intel_mid_platform_ops,
++	.pcm_new	= intel_mid_pcm_new,
++	.pcm_free	= intel_mid_pcm_free,
++};
++
++static int intelmid_platform_probe(struct platform_device *pdev)
++{
++	int ret;
++
++	pr_debug("intelmid_platform_probe called\n");
++	ret = snd_soc_register_platform(&pdev->dev, &intelmid_soc_platform_drv);
++	if (ret) {
++		pr_err("registering soc platform failed\n");
++		return ret;
++	}
++	return snd_soc_register_dais(&pdev->dev,
++				mfld_dai, ARRAY_SIZE(mfld_dai));
++}
++
++static int intelmid_platform_remove(struct platform_device *pdev)
++{
++
++	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(mfld_dai));
++
++	snd_soc_unregister_platform(&pdev->dev);
++	pr_debug("intelmid_platform_remove sucess\n");
++
++	return 0;
++}
++
++static struct platform_driver intelmid_platform_driver = {
++	.driver		= {
++		.name		= "mid-audio-platform",
++		.owner		= THIS_MODULE,
++	},
++	.probe		= intelmid_platform_probe,
++	.remove		= intelmid_platform_remove,
++};
++
++static int __init intel_mid_soc_platform_init(void)
++{
++	pr_debug("intel_mid_soc_platform_init called\n");
++	return  platform_driver_register(&intelmid_platform_driver);
++}
++module_init(intel_mid_soc_platform_init);
++
++static void __exit intel_mid_soc_platform_exit(void)
++{
++	platform_driver_unregister(&intelmid_platform_driver);
++	pr_debug("intel_mid_soc_platform_exit sucess\n");
++}
++module_exit(intel_mid_soc_platform_exit);
++
++MODULE_DESCRIPTION("ASoC Intel(R) MID Platform driver");
++MODULE_AUTHOR("Vinod Koul <vinod.koul@intel.com>");
++MODULE_AUTHOR("Harsha Priya <priya.harsha@intel.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("mid-platform");
+diff --git a/sound/soc/mid-x86/mid_platform.h b/sound/soc/mid-x86/mid_platform.h
+new file mode 100644
+index 0000000..e042266
+--- /dev/null
++++ b/sound/soc/mid-x86/mid_platform.h
+@@ -0,0 +1,71 @@
++/*
++ *  mid_platform.h - Intel MID Platform driver header file
++ *
++ *  Copyright (C) 2010 Intel Corp
++ *  Author: Vinod Koul <vinod.koul@intel.com>
++ *  Author: Harsha Priya <priya.harsha@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License along
++ *  with this program; if not, write to the Free Software Foundation, Inc.,
++ *  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *
++ */
++
++#ifndef __MID_PLATFORMDRV_H__
++#define __MID_PLATFORMDRV_H__
++
++#define MID_MONO		1
++#define MID_STEREO		2
++#define MID_MAX_CAP		5
++
++#define MID_MIN_RATE		8000
++#define MID_MAX_RATE		48000
++#define MID_MIN_CHANNEL		1
++#define MID_MAX_CHANNEL		5
++#define MID_MAX_BUFFER		(800*1024)
++#define MID_MIN_BUFFER		(800*1024)
++#define MID_MIN_PERIOD_BYTES	32
++#define MID_MAX_PERIOD_BYTES	MID_MAX_BUFFER
++#define MID_MIN_PERIODS		2
++#define MID_MAX_PERIODS		(1024*2)
++#define MID_FIFO_SIZE		0
++#define SST_CARD_NAMES		"intel_mid_card"
++#define MSIC_VENDOR_ID		3
++
++int snd_intelmad_alloc_stream(struct snd_pcm_substream *substream);
++int snd_intelmad_init_stream(struct snd_pcm_substream *substream);
++
++struct mid_runtime_stream {
++	int     stream_status;
++	struct pcm_stream_info stream_info;
++	struct intel_sst_card_ops *sstdrv_ops;
++	unsigned long long buffer_ptr;
++};
++
++struct mid_dev_data {
++	struct snd_soc_dai_driver *dai;
++	int	num_dais;
++};
++
++enum mid_drv_status {
++	INIT = 1,
++	STARTED,
++	RUNNING,
++	PAUSED,
++	DROPPED,
++};
++
++#endif
+diff --git a/sound/soc/mid-x86/mid_platform_lib.c b/sound/soc/mid-x86/mid_platform_lib.c
+new file mode 100644
+index 0000000..531bf81
+--- /dev/null
++++ b/sound/soc/mid-x86/mid_platform_lib.c
+@@ -0,0 +1,122 @@
++/*
++ *  mid_platform_lib.c - Intel MID Platform driver lib functions
++ *
++ *  Copyright (C) 2010 Intel Corp
++ *  Author: Vinod Koul <vinod.koul@intel.com>
++ *  Author: Harsha Priya <priya.harsha@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License along
++ *  with this program; if not, write to the Free Software Foundation, Inc.,
++ *  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *
++ */
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/io.h>
++#include <sound/pcm.h>
++#include "../../../drivers/staging/intel_sst/intel_sst.h"
++#include "../../../drivers/staging/intel_sst/intel_sst_ioctl.h"
++#include "mid_platform.h"
++
++int snd_intelmad_alloc_stream(struct snd_pcm_substream *substream)
++{
++	struct mid_runtime_stream *stream =
++			substream->runtime->private_data;
++	struct snd_sst_stream_params param = {{{0,},},};
++	struct snd_sst_params str_params = {0};
++	int ret_val;
++
++	/* set codec params and inform SST driver the same */
++
++	param.uc.pcm_params.codec = SST_CODEC_TYPE_PCM;
++	param.uc.pcm_params.num_chan = (u8) substream->runtime->channels;
++	param.uc.pcm_params.pcm_wd_sz = substream->runtime->sample_bits;
++	param.uc.pcm_params.reserved = 0;
++	param.uc.pcm_params.sfreq = substream->runtime->rate;
++	param.uc.pcm_params.ring_buffer_size =
++					snd_pcm_lib_buffer_bytes(substream);
++	param.uc.pcm_params.period_count = substream->runtime->period_size;
++	param.uc.pcm_params.ring_buffer_addr =
++				virt_to_phys(substream->dma_buffer.area);
++	substream->runtime->dma_area = substream->dma_buffer.area;
++
++	pr_debug("period_cnt = %d\n", param.uc.pcm_params.period_count);
++	pr_debug("sfreq= %d, wd_sz = %d\n",
++		 param.uc.pcm_params.sfreq, param.uc.pcm_params.pcm_wd_sz);
++
++	str_params.sparams = param;
++	str_params.codec = SST_CODEC_TYPE_PCM;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		str_params.ops = STREAM_OPS_PLAYBACK;
++		str_params.device_type = substream->pcm->device + 1;
++		pr_debug("Playbck stream,Device %d\n",
++					substream->pcm->device);
++	} else {
++		str_params.ops = STREAM_OPS_CAPTURE;
++		str_params.device_type = SND_SST_DEVICE_CAPTURE;
++		pr_debug("Capture stream,Device %d\n",
++					substream->pcm->device);
++	}
++	ret_val = stream->sstdrv_ops->control_set(SST_SND_ALLOC, &str_params);
++	pr_debug("SST_SND_PLAY/CAPTURE ret_val = %x\n", ret_val);
++	if (ret_val < 0)
++		return ret_val;
++
++	stream->stream_info.str_id = ret_val;
++	pr_debug("str id :  %d\n", stream->stream_info.str_id);
++
++	return ret_val;
++}
++
++
++void period_elapsed(void *mad_substream)
++{
++	struct snd_pcm_substream *substream = mad_substream;
++	struct mid_runtime_stream *stream;
++
++	if (!substream || !substream->runtime)
++		return;
++	stream = substream->runtime->private_data;
++	if (!stream)
++		return;
++
++	if (stream->stream_status != RUNNING)
++		return;
++	pr_debug("calling period elapsed\n");
++	snd_pcm_period_elapsed(substream);
++	return;
++}
++
++int snd_intelmad_init_stream(struct snd_pcm_substream *substream)
++{
++	struct mid_runtime_stream *stream =
++			substream->runtime->private_data;
++	int ret_val;
++
++	pr_debug("setting buffer ptr param\n");
++	stream->stream_status = INIT;
++	stream->stream_info.period_elapsed = period_elapsed;
++	stream->stream_info.mad_substream = substream;
++	stream->stream_info.buffer_ptr = 0;
++	stream->stream_info.sfreq = substream->runtime->rate;
++	ret_val = stream->sstdrv_ops->control_set(SST_SND_STREAM_INIT,
++				&stream->stream_info);
++	if (ret_val)
++		pr_err("control_set ret error %d\n", ret_val);
++	return ret_val;
++
++}
+-- 
+1.7.2.3
