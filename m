@@ -1,34 +1,25 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: sh: fsi-da7210: remove unnecessary
- format settings
-Date: Sun, 2 Jan 2011 13:50:59 +0000
-Message-ID: <20110102135059.GF4935@opensource.wolfsonmicro.com>
-References: <w3psjxi8mqm.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 2/4] ARM: SAMSUNG: Add SMDK audio configuration
+Date: Sun, 2 Jan 2011 14:01:30 +0000
+Message-ID: <20110102140129.GI4935@opensource.wolfsonmicro.com>
+References: <1293171965-24416-1-git-send-email-sw.youn@samsung.com>
+ <1293172938-23615-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B498F245FA
-	for <alsa-devel@alsa-project.org>; Sun,  2 Jan 2011 14:50:41 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <w3psjxi8mqm.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+In-Reply-To: <1293172938-23615-1-git-send-email-sw.youn@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Seungwhan Youn <sw.youn@samsung.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, linux@arm.linux.org.uk, ben-linux@fluff.org, kgene.kim@samsung.com, lrg@slimlogic.co.uk, jassi.brar@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 28, 2010 at 02:55:45PM +0900, Kuninori Morimoto wrote:
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+On Fri, Dec 24, 2010 at 03:42:18PM +0900, Seungwhan Youn wrote:
+> This patch adds SMDK audio select configurations based on platform dependacny.
+> This helps more easyly and clearly to make sure about configuration on audio
+> drivers support on platform side.
+> 
+> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
 
-Applied, though if this is the default setup it'd not be a problem to
-keep the code so that when the driver does support other configurations
-the machine driver doesn't need modification.
+This doesn't apply against current ASoC; I suspect it needs to be merged
+via the ARM tree.
