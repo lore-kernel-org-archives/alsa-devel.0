@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4] ASoC sst: Add msic codec driver
-Date: Sun, 2 Jan 2011 13:33:23 +0000
-Message-ID: <20110102133322.GC4935@opensource.wolfsonmicro.com>
-References: <1293707551-8308-1-git-send-email-vinod.koul@intel.com>
+Subject: Re: [PATCH 2/4] ASoC sst: Add mid platform driver
+Date: Sun, 2 Jan 2011 13:41:34 +0000
+Message-ID: <20110102134134.GD4935@opensource.wolfsonmicro.com>
+References: <1293707573-8340-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A94CE2456F
-	for <alsa-devel@alsa-project.org>; Sun,  2 Jan 2011 14:33:06 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D10A1245F3
+	for <alsa-devel@alsa-project.org>; Sun,  2 Jan 2011 14:41:17 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1293707551-8308-1-git-send-email-vinod.koul@intel.com>
+In-Reply-To: <1293707573-8340-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,51 +25,65 @@ To: Vinod Koul <vinod.koul@intel.com>
 Cc: tiwai@suse.de, alsa-devel@alsa-project.org, alan@linux.intel.com, Harsha Priya <priya.harsha@intel.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 30, 2010 at 04:42:31PM +0530, Vinod Koul wrote:
+On Thu, Dec 30, 2010 at 04:42:53PM +0530, Vinod Koul wrote:
 
-> This patch adds the msic asoc codec driver. This driver currently supports only playback.
-> Capture and jack detection to be added later
-
-This looks mostly OK, but you probably want to run it through
-checkpatch.pl.  For quite a few of the debug prints you've got here
-you're replicating stuff that's in the core as standard - if you turn on
-debug logs from the core you should get equivalent logging.
-
-Some more specific issues below:
-
-> +	switch (params_format(params)) {
-> +	case SNDRV_PCM_FORMAT_S16_LE:
-> +		format = 3;
+> +	case SNDRV_PCM_TRIGGER_START:
+> +		pr_debug("sst: Trigger Start\n");
+> +		ret_val = stream->sstdrv_ops->control_set(
+> +						SST_SND_START, &str_id);
+> +		if (ret_val)
+> +			return ret_val;
+> +		stream->stream_status = RUNNING;
+> +		stream->stream_info.mad_substream = substream;
 > +		break;
+
+You've no locking in the rest of the driver protecting the variables
+you're updating here.
+
 > +
-> +	case SNDRV_PCM_FORMAT_S24_LE:
-> +		format = 0;
-> +		break;
-> +	default:
-> +		return -EINVAL;
+> +	stream = substream->runtime->private_data;
+> +	if (stream->stream_status == INIT)
+> +		return 0;
+> +	str_info = &stream->stream_info;
+> +	ret_val = stream->sstdrv_ops->control_set(
+> +				SST_SND_BUFFER_POINTER, &str_info);
+> +	if (ret_val) {
+> +		pr_err("sst: error code = 0x%x\n", ret_val);
+> +		return ret_val;
 > +	}
-> +	snd_soc_update_bits(dai->codec, MSIC_PCM2C2, BIT(4)|BIT(5), format);
+> +
+> +	return stream->stream_info.buffer_ptr;
 
-This won't work - both the mask and value for snd_soc_update_bits() are
-bitmasks so I'd expect the format for S16 to be 0x18 with that bitmask.
+I suspect you need to return bytes_to_frames() of this...
 
-> +	snd_soc_update_bits(dai->codec, MSIC_PCM1C1, BIT(7), rate);
+> +	pr_debug("intelmid_platform_probe called\n");
+> +	ret = snd_soc_register_platform(&pdev->dev, &intelmid_soc_platform_drv);
+> +	if (ret) {
+> +		pr_err("registering soc platform failed\n");
+> +		return ret;
+> +	}
+> +	return snd_soc_register_dais(&pdev->dev,
+> +				mfld_dai, ARRAY_SIZE(mfld_dai));
 
-Similarly here.
+You're not unwinding the platform register if the DAI registration
+fail.s
 
-> +	/*PCM interface */
-> +	msic_write(codec, MSIC_PCM2RXSLOT01, 0x10);
-> +	msic_write(codec, MSIC_PCM2RXSLOT23, 0x32);
-> +	msic_write(codec, MSIC_PCM2RXSLOT45, 0x54);
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_ALIAS("mid-platform");
 
-For these it'd be better if you could provide some comments explaining
-what the configuration that's being set is.  It's hard to tell if this
-is stuff that should be managed by the driver or not.
+Same issue as with the CODEC driver here.
 
-> +static struct platform_driver intelmid_codec_driver = {
-> +	.driver		= {
-> +		.name		= "mid-msic-codec",
+> +int snd_intelmad_alloc_stream(struct snd_pcm_substream *substream);
+> +int snd_intelmad_init_stream(struct snd_pcm_substream *substream);
 
-> +MODULE_ALIAS("msic-codec");
+Why are these exposed here?
 
-This should be platform:mid-msic-codec.
+> +enum mid_drv_status {
+> +	INIT = 1,
+> +	STARTED,
+> +	RUNNING,
+> +	PAUSED,
+> +	DROPPED,
+> +};
+
+Namespacing.
