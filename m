@@ -1,21 +1,20 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: Re: [PATCH 3/4] ASoC sst: Add mid machine driver
-Date: Mon, 3 Jan 2011 23:04:11 +0530
-Message-ID: <438BB0150E931F4B9CE701519A44630104C10F2F06@bgsmsx502.gar.corp.intel.com>
-References: <1293707593-8372-1-git-send-email-vinod.koul@intel.com>
-	<20110102134715.GE4935@opensource.wolfsonmicro.com>
-	<438BB0150E931F4B9CE701519A44630104C10F2BEE@bgsmsx502.gar.corp.intel.com>
-	<20110103154319.GC6783@opensource.wolfsonmicro.com>
-	<438BB0150E931F4B9CE701519A44630104C10F2EC9@bgsmsx502.gar.corp.intel.com>
-	<20110103162826.GA7370@opensource.wolfsonmicro.com>
+From: "Harsha, Priya" <priya.harsha@intel.com>
+Subject: Re: regarding references taken on platform and codec
+ driver modules
+Date: Mon, 3 Jan 2011 23:26:34 +0530
+Message-ID: <98769532B4BB14429434178695419EAE053BF51BC3@bgsmsx501.gar.corp.intel.com>
+References: <98769532B4BB14429434178695419EAE053BF51941@bgsmsx501.gar.corp.intel.com>
+	<20110103155454.GE6783@opensource.wolfsonmicro.com>
+	<98769532B4BB14429434178695419EAE053BF51B26@bgsmsx501.gar.corp.intel.com>
+	<20110103163532.GB7370@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 529E81038C7
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2011 18:34:39 +0100 (CET)
-In-Reply-To: <20110103162826.GA7370@opensource.wolfsonmicro.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5DBC91038CD
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2011 18:57:29 +0100 (CET)
+In-Reply-To: <20110103163532.GB7370@opensource.wolfsonmicro.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,41 +26,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "alan@linux.intel.com" <alan@linux.intel.com>, "Harsha,
-	Priya" <priya.harsha@intel.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> > Yes, this patch had only the machine specific controls and dai link.
-> > It also creates the audio platform devices soc-audio platform and codec
-> device.
-> > It doesn't do anything else
-> 
-> This is preceisely the problem.  As I said the machine driver should
-> only be instantiating the machine driver.  Actual physical devices
-> should be being instnantiated using the relevant buses.
-> 
-> Please look at how other platforms are doing this; you should be
-> following the same process.
-Thanks, I will add the soc-audio only and move the others to core.
-So now this machine driver will only add machine controls and dai link along with soc-audio device.
-Would that suffice
+>> driver are left at 3. I did a trace back as where all the references 
+>> are taken and  where all they are released. I find that 4 references 
+>> of codec driver and  platform driver are taken but only one of them is released.
+>
+>> How do I fix this problem?
+>
+>By understanding where the references should be taken and released then 
+>fixing the code to do that.
 
-> > > What exactly is the msic CODEC?  Given the references to non-specific
-> > > "vendor" registers it doesn't sound like a particular CODEC driver.
-> 
-> > Since Medfield platform is not declared yet we can't reveal the name of the
-> > codec vendor. The Moorestown codecs which we will add will not be nameless
-> > as this one and we will add as vendorversion.c format as in current codec
-> > drivers. I will replace this msic driver name once the platform is publically
-> > declared.
-> 
-> So you're saying this is a driver for a specific device that you're
-> releasing under a code name?  That's not what the code looks like.
-> None of this seems terribly clever for mainline; there's too many things
-> about these drivers don't look like what you'd expect embedded audio
-> drivers for Linux to look like from a 1000 foot level.
-This is codec from TI and I will remove the msic name now.
-It will now be ti-sn95031.c
-Does this address your concern on this issue?
+When the dais are binded, the reference to codec and platform driver are taken
+for every dai link but released only once. Instead, the below patch moves to
+taking the reference to codec and platform driver when they are probed and
+release it once. This allows the ASoC driver modules to be inserted and removed 
+without issues.
 
-~Vinod
+Please provide your comments on the patch below that makes this change
+
+From: Harsha Priya <priya.harsha@intel.com>
+Date: Mon, 3 Jan 2011 22:36:05 +0530
+Subject: [PATCH] Fix the reference to codec and platform driver to where they are probed
+
+The soc-core take the platform and codec driver reference and does not free
+them all. This cause the module unload to fail.
+
+This patch fixes by the taking one reference to platform and codec module and 
+free the same.This allows load/unload properly
+
+Signed-off-by: Harsha Priya <priya.harsha@intel.com>
+Signed-off-by: Vinod Koul<vinod.koul@intel.com>
+
+	modified:   sound/soc/soc-core.c
+
+---
+ sound/soc/soc-core.c |   14 +++++++-------
+ 1 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c index 606281a..97f9d3e 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1259,9 +1259,6 @@ find_codec:
+ 		if (!strcmp(codec->name, dai_link->codec_name)) {
+ 			rtd->codec = codec;
+ 
+-			if (!try_module_get(codec->dev->driver->owner))
+-				return -ENODEV;
+-
+ 			/* CODEC found, so find CODEC DAI from registered DAIs from this CODEC*/
+ 			list_for_each_entry(codec_dai, &dai_list, list) {
+ 				if (codec->dev == codec_dai->dev && @@ -1287,10 +1284,6 @@ find_platform:
+ 	/* no, then find CPU DAI from registered DAIs*/
+ 	list_for_each_entry(platform, &platform_list, list) {
+ 		if (!strcmp(platform->name, dai_link->platform_name)) {
+-
+-			if (!try_module_get(platform->dev->driver->owner))
+-				return -ENODEV;
+-
+ 			rtd->platform = platform;
+ 			goto out;
+ 		}
+@@ -1425,6 +1418,9 @@ static int soc_probe_codec(struct snd_soc_card *card,
+ 	soc_init_codec_debugfs(codec);
+ 
+ 	/* mark codec as probed and add to card codec list */
++	if (!try_module_get(codec->dev->driver->owner))
++		return -ENODEV;
++
+ 	codec->probed = 1;
+ 	list_add(&codec->card_list, &card->codec_dev_list);
+ 	list_add(&codec->dapm.list, &card->dapm_list); @@ -1556,6 +1552,10 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num)
+ 			}
+ 		}
+ 		/* mark platform as probed and add to card platform list */
++
++		if (!try_module_get(platform->dev->driver->owner))
++			return -ENODEV;
++
+ 		platform->probed = 1;
+ 		list_add(&platform->card_list, &card->platform_dev_list);
+ 	}
+--
+1.7.2.3
