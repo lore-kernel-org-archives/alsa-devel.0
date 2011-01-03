@@ -1,21 +1,18 @@
-From: Seungwhan Youn <claude.youn@gmail.com>
-Subject: Re: [PATCH 2/4] ARM: SAMSUNG: Add SMDK audio
-	configuration
-Date: Mon, 3 Jan 2011 10:30:05 +0900
-Message-ID: <AANLkTi=yyE7X1Z-WSP6hj=vb2b38DW=BNm+A7Y=+k2wh@mail.gmail.com>
-References: <1293171965-24416-1-git-send-email-sw.youn@samsung.com>
-	<1293172938-23615-1-git-send-email-sw.youn@samsung.com>
-	<20110102140129.GI4935@opensource.wolfsonmicro.com>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH] ALSA: ASoC: Fix SmartQ compilation
+Date: Mon, 3 Jan 2011 10:31:04 +0900
+Message-ID: <AANLkTim9qDiG1YNx7wGK-r_TvXyae=fmD0G73KztC_Og@mail.gmail.com>
+References: <4d20d689.cc7e0e0a.6f59.4a1d@mx.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3526824687
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2011 02:30:06 +0100 (CET)
-Received: by wwe15 with SMTP id 15so12850550wwe.20
-	for <alsa-devel@alsa-project.org>; Sun, 02 Jan 2011 17:30:05 -0800 (PST)
-In-Reply-To: <20110102140129.GI4935@opensource.wolfsonmicro.com>
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 9165B24687
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2011 02:31:04 +0100 (CET)
+Received: by bwz10 with SMTP id 10so6380382bwz.38
+	for <alsa-devel@alsa-project.org>; Sun, 02 Jan 2011 17:31:04 -0800 (PST)
+In-Reply-To: <4d20d689.cc7e0e0a.6f59.4a1d@mx.google.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +22,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux@arm.linux.org.uk, jassi.brar@samsung.com, kgene.kim@samsung.com, ben-linux@fluff.org, lrg@slimlogic.co.uk, linux-arm-kernel@lists.infradead.org, Seungwhan Youn <sw.youn@samsung.com>
+To: Maurus Cuelenaere <mcuelenaere@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jan 2, 2011 at 11:01 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Fri, Dec 24, 2010 at 03:42:18PM +0900, Seungwhan Youn wrote:
->> This patch adds SMDK audio select configurations based on platform dependacny.
->> This helps more easyly and clearly to make sure about configuration on audio
->> drivers support on platform side.
->>
->> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
->
-> This doesn't apply against current ASoC; I suspect it needs to be merged
-> via the ARM tree.
-
-Yes, patch 1/4 and 2/4 was based on Mr. Kukjin Kim's for-next branch.
-So, I hope that Mr. Kukjin Kim sync with you, after he apply these 1,2
-patches.
+T24gTW9uLCBKYW4gMywgMjAxMSBhdCA0OjQ4IEFNLCBNYXVydXMgQ3VlbGVuYWVyZSA8bWN1ZWxl
+bmFlcmVAZ21haWwuY29tPiB3cm90ZToKPiBUaGlzIG1ha2VzIHRoZSBTbWFydFEgc291bmQgZHJp
+dmVyIGNvbXBpbGUgYWdhaW4gd2l0aCByZWNlbnQgQVNvQyBjaGFuZ2VzLgo+Cj4gU2lnbmVkLW9m
+Zi1ieTogTWF1cnVzIEN1ZWxlbmFlcmUgPG1jdWVsZW5hZXJlQGdtYWlsLmNvbT4KPiAtLS0KPiDC
+oHNvdW5kL3NvYy9zM2MyNHh4L3NtYXJ0cV93bTg5ODcuYyB8IMKgIDExICsrKysrKy0tLS0tCgpC
+dXQgd2UgaGF2ZSBtb3ZlZCB0byBzb3VuZC9zb2Mvc2Ftc3VuZy8gbm93LgoKVGhhbmtzCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
