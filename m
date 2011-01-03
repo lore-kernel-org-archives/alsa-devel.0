@@ -1,17 +1,21 @@
-From: Veselin Georgiev <anrieff@gmail.com>
-Subject: Support for X-Fi external front panel - how hard would
-	it be to add it?
-Date: Mon, 3 Jan 2011 02:10:35 +0200
-Message-ID: <201101030210.35718.anrieff@gmail.com>
+From: Seungwhan Youn <claude.youn@gmail.com>
+Subject: Re: [PATCH 2/4] ARM: SAMSUNG: Add SMDK audio
+	configuration
+Date: Mon, 3 Jan 2011 10:30:05 +0900
+Message-ID: <AANLkTi=yyE7X1Z-WSP6hj=vb2b38DW=BNm+A7Y=+k2wh@mail.gmail.com>
+References: <1293171965-24416-1-git-send-email-sw.youn@samsung.com>
+	<1293172938-23615-1-git-send-email-sw.youn@samsung.com>
+	<20110102140129.GI4935@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 8F06424746
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2011 01:12:09 +0100 (CET)
-Received: by ewy19 with SMTP id 19so5447488ewy.38
-	for <alsa-devel@alsa-project.org>; Sun, 02 Jan 2011 16:12:09 -0800 (PST)
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3526824687
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2011 02:30:06 +0100 (CET)
+Received: by wwe15 with SMTP id 15so12850550wwe.20
+	for <alsa-devel@alsa-project.org>; Sun, 02 Jan 2011 17:30:05 -0800 (PST)
+In-Reply-To: <20110102140129.GI4935@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,30 +25,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux@arm.linux.org.uk, jassi.brar@samsung.com, kgene.kim@samsung.com, ben-linux@fluff.org, lrg@slimlogic.co.uk, linux-arm-kernel@lists.infradead.org, Seungwhan Youn <sw.youn@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi guys,
+On Sun, Jan 2, 2011 at 11:01 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Fri, Dec 24, 2010 at 03:42:18PM +0900, Seungwhan Youn wrote:
+>> This patch adds SMDK audio select configurations based on platform dependacny.
+>> This helps more easyly and clearly to make sure about configuration on audio
+>> drivers support on platform side.
+>>
+>> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+>
+> This doesn't apply against current ASoC; I suspect it needs to be merged
+> via the ARM tree.
 
-I have a Creative X-fi Fatal1ty edition card that goes along with an external 
-front panel (I/O) module, mounted in the 5.25" bay.
-So I see there is no support for the front panel in the ALSA X-fi driver, and 
-I'm wondering how hard would it be to add it? Is it at all feasible?
-
-I'm hazy on the following stuff:
-- Does one need to reverse-engineer how the sound card communicates with the 
-front panel, or there are datasheets about that available?
-- Correct me if I'm wrong, but AFAIK, the emu10k1 driver works fine with SB 
-Live! or Audigy-based front-panels, so why not borrow some code from there and 
-hack it into the ctxfi?
-
-I'm ready to try out some hacking with this and get my hands dirty with code 
-if required.
-
-On a related note, there should be some official statement in the wiki saying 
-that the front panel is not supported, as I did a lot of googling, checking 
-various ubuntu/fedora forum posts that hinted the lack of support, and I'm 
-still puzzled... :s
-
-Best Regards,
-Veselin Georgiev
+Yes, patch 1/4 and 2/4 was based on Mr. Kukjin Kim's for-next branch.
+So, I hope that Mr. Kukjin Kim sync with you, after he apply these 1,2
+patches.
