@@ -1,17 +1,17 @@
 From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: Re: [PATCH 2/4] ASoC sst: Add mid platform driver
-Date: Mon, 3 Jan 2011 11:03:16 +0530
-Message-ID: <438BB0150E931F4B9CE701519A44630104C10F2BDF@bgsmsx502.gar.corp.intel.com>
-References: <1293707573-8340-1-git-send-email-vinod.koul@intel.com>
-	<20110102134134.GD4935@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/4] ASoC sst: Add mid machine driver
+Date: Mon, 3 Jan 2011 11:09:16 +0530
+Message-ID: <438BB0150E931F4B9CE701519A44630104C10F2BEE@bgsmsx502.gar.corp.intel.com>
+References: <1293707593-8372-1-git-send-email-vinod.koul@intel.com>
+	<20110102134715.GE4935@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4B00F103862
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2011 06:33:37 +0100 (CET)
-In-Reply-To: <20110102134134.GD4935@opensource.wolfsonmicro.com>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7EC4D10386A
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2011 06:39:42 +0100 (CET)
+In-Reply-To: <20110102134715.GE4935@opensource.wolfsonmicro.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,74 +27,28 @@ Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@a
 	Priya" <priya.harsha@intel.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+> > This patch adds the mic machine driver
+> > The mid machine driver glues the msic and mid_platfrom driver to form the
+> asoc sound driver
 > 
-> > +	case SNDRV_PCM_TRIGGER_START:
-> > +		pr_debug("sst: Trigger Start\n");
-> > +		ret_val = stream->sstdrv_ops->control_set(
-> > +						SST_SND_START, &str_id);
-> > +		if (ret_val)
-> > +			return ret_val;
-> > +		stream->stream_status = RUNNING;
-> > +		stream->stream_info.mad_substream = substream;
-> > +		break;
-> 
-> You've no locking in the rest of the driver protecting the variables
-> you're updating here.
-Will fix this
+> So, this isn't actually doing any sort of interface with your BIOS or
+> otherwise doing anything system-specific.  
+It is not
 
-> > +
-> > +	stream = substream->runtime->private_data;
-> > +	if (stream->stream_status == INIT)
-> > +		return 0;
-> > +	str_info = &stream->stream_info;
-> > +	ret_val = stream->sstdrv_ops->control_set(
-> > +				SST_SND_BUFFER_POINTER, &str_info);
-> > +	if (ret_val) {
-> > +		pr_err("sst: error code = 0x%x\n", ret_val);
-> > +		return ret_val;
-> > +	}
-> > +
-> > +	return stream->stream_info.buffer_ptr;
-> 
-> I suspect you need to return bytes_to_frames() of this...
-No as the DSP FW returns the frame value for the pointer
-
-> 
-> > +	pr_debug("intelmid_platform_probe called\n");
-> > +	ret = snd_soc_register_platform(&pdev->dev, &intelmid_soc_platform_drv);
-> > +	if (ret) {
-> > +		pr_err("registering soc platform failed\n");
-> > +		return ret;
-> > +	}
-> > +	return snd_soc_register_dais(&pdev->dev,
-> > +				mfld_dai, ARRAY_SIZE(mfld_dai));
-> 
-> You're not unwinding the platform register if the DAI registration
-> fail.s
-Will fix
-
-> 
-> > +MODULE_LICENSE("GPL v2");
-> > +MODULE_ALIAS("mid-platform");
-> 
-> Same issue as with the CODEC driver here.
-Okay
-
-> > +int snd_intelmad_alloc_stream(struct snd_pcm_substream *substream);
-> > +int snd_intelmad_init_stream(struct snd_pcm_substream *substream);
-> 
-> Why are these exposed here?
-These function are implemented in platform_lib.c and called in mid_platform.c
+> If this is intended to be
+> a generic driver that manages the interaction with your BIOS then I'd
+> expect to see something like that.  If it's a driver for a specific
+> system then I'd expect the driver to say what it's a driver for.
+No, per your suggestion we made it machine specific driver. Yes will rename it
+to mid_machine_mfld as this is Medfield specific machine driver
+Does that fix your concern?
  
-> > +enum mid_drv_status {
-> > +	INIT = 1,
-> > +	STARTED,
-> > +	RUNNING,
-> > +	PAUSED,
-> > +	DROPPED,
-> > +};
-> 
-> Namespacing.
-Will fix
+> Also, looking at your CODEC driver I'm not seeing anything that looks
+> like the handling for the three "nameless" CODEC vendors you've got -
+> given that you've got vendor workarounds in the code there this is
+> really surprising.
+The msic.c is msic codec which is specific to Medfield platform only. The other
+three codecs are for Moorestown and we will add them ( 3 separate codec drivers)
+when we add Moorestown machine (next after completing this)
 
 ~Vinod
