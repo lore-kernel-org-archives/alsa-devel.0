@@ -1,109 +1,87 @@
-From: Kukjin Kim <kgene.kim@samsung.com>
-Subject: RE: [PATCH 1/4] ARM: Kconfig: Add audio support dependency
-Date: Mon, 03 Jan 2011 11:28:38 +0900
-Message-ID: <019b01cbaaed$f0418d30$d0c4a790$%kim@samsung.com>
-References: <1293171965-24416-1-git-send-email-sw.youn@samsung.com>
- <1293172569-21465-1-git-send-email-sw.youn@samsung.com>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: [PATCH 1/4] ASoC sst: Add msic codec driver
+Date: Mon, 3 Jan 2011 11:00:04 +0530
+Message-ID: <438BB0150E931F4B9CE701519A44630104C10F2BD7@bgsmsx502.gar.corp.intel.com>
+References: <1293707551-8308-1-git-send-email-vinod.koul@intel.com>
+	<20110102133322.GC4935@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1293172569-21465-1-git-send-email-sw.youn@samsung.com>
-Content-language: ko
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: 'Seungwhan Youn' <sw.youn@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: linux@arm.linux.org.uk, ben-linux@fluff.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6B246103862
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2011 06:32:00 +0100 (CET)
+In-Reply-To: <20110102133322.GC4935@opensource.wolfsonmicro.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "alan@linux.intel.com" <alan@linux.intel.com>, "Harsha,
+	Priya" <priya.harsha@intel.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Seungwhan Youn wrote:
 > 
-> This patch adds Samsung ASoC audio support dependency for Samsung SoCs.
+> > This patch adds the msic asoc codec driver. This driver currently supports
+> only playback.
+> > Capture and jack detection to be added later
 > 
-> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
-> ---
->  arch/arm/Kconfig |    7 +++++++
->  1 files changed, 7 insertions(+), 0 deletions(-)
-> 
-> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index d56d21c..ef32a61 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -647,6 +647,7 @@ config ARCH_S3C2410
->  	select HAVE_CLK
->  	select ARCH_USES_GETTIMEOFFSET
->  	select HAVE_S3C2410_I2C if I2C
-> +	select ASOC_SAMSUNG if SND_SOC
->  	help
->  	  Samsung S3C2410X CPU based systems, such as the Simtec Electronics
->  	  BAST (<http://www.simtec.co.uk/products/EB110ITX/>), the IPAQ 1940
-> or
-> @@ -678,6 +679,7 @@ config ARCH_S3C64XX
->  	select SAMSUNG_GPIOLIB_4BIT
->  	select HAVE_S3C2410_I2C if I2C
->  	select HAVE_S3C2410_WATCHDOG if WATCHDOG
-> +	select ASOC_SAMSUNG if SND_SOC
->  	help
->  	  Samsung S3C64XX series based systems
-> 
-> @@ -690,6 +692,7 @@ config ARCH_S5P64X0
->  	select ARCH_USES_GETTIMEOFFSET
->  	select HAVE_S3C2410_I2C if I2C
->  	select HAVE_S3C_RTC if RTC_CLASS
-> +	select ASOC_SAMSUNG if SND_SOC
->  	help
->  	  Samsung S5P64X0 CPU based systems, such as the Samsung SMDK6440,
->  	  SMDK6450.
-> @@ -701,6 +704,7 @@ config ARCH_S5P6442
->  	select HAVE_CLK
->  	select ARCH_USES_GETTIMEOFFSET
->  	select HAVE_S3C2410_WATCHDOG if WATCHDOG
-> +	select ASOC_SAMSUNG if SND_SOC
->  	help
->  	  Samsung S5P6442 CPU based systems
-> 
-> @@ -714,6 +718,7 @@ config ARCH_S5PC100
->  	select HAVE_S3C2410_I2C if I2C
->  	select HAVE_S3C_RTC if RTC_CLASS
->  	select HAVE_S3C2410_WATCHDOG if WATCHDOG
-> +	select ASOC_SAMSUNG if SND_SOC
->  	help
->  	  Samsung S5PC100 series based systems
-> 
-> @@ -729,6 +734,7 @@ config ARCH_S5PV210
->  	select HAVE_S3C2410_I2C if I2C
->  	select HAVE_S3C_RTC if RTC_CLASS
->  	select HAVE_S3C2410_WATCHDOG if WATCHDOG
-> +	select ASOC_SAMSUNG if SND_SOC
->  	help
->  	  Samsung S5PV210/S5PC110 series based systems
-> 
-> @@ -742,6 +748,7 @@ config ARCH_S5PV310
->  	select HAVE_S3C_RTC if RTC_CLASS
->  	select HAVE_S3C2410_I2C if I2C
->  	select HAVE_S3C2410_WATCHDOG if WATCHDOG
-> +	select ASOC_SAMSUNG if SND_SOC
->  	help
->  	  Samsung S5PV310 series based systems
-> 
-> --
+> This looks mostly OK, but you probably want to run it through
+> checkpatch.pl.  For quite a few of the debug prints you've got here
+> you're replicating stuff that's in the core as standard - if you turn on
+> debug logs from the core you should get equivalent logging.
+Yes we have run checkpatch. Currently yes we have quite a few logs, we will
+remove them later when we add the capture, jack detection etc. It would be
+nice to have these logs on.
 
-Hi everyone,
+> Some more specific issues below:
+> 
+> > +	switch (params_format(params)) {
+> > +	case SNDRV_PCM_FORMAT_S16_LE:
+> > +		format = 3;
+> > +		break;
+> > +
+> > +	case SNDRV_PCM_FORMAT_S24_LE:
+> > +		format = 0;
+> > +		break;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +	snd_soc_update_bits(dai->codec, MSIC_PCM2C2, BIT(4)|BIT(5), format);
+> 
+> This won't work - both the mask and value for snd_soc_update_bits() are
+> bitmasks so I'd expect the format for S16 to be 0x18 with that bitmask.
+> 
+> > +	snd_soc_update_bits(dai->codec, MSIC_PCM1C1, BIT(7), rate);
+Will fix
 
-Wow it's 2011, I hope you're happy :-)
+> Similarly here.
+> 
+> > +	/*PCM interface */
+> > +	msic_write(codec, MSIC_PCM2RXSLOT01, 0x10);
+> > +	msic_write(codec, MSIC_PCM2RXSLOT23, 0x32);
+> > +	msic_write(codec, MSIC_PCM2RXSLOT45, 0x54);
+> 
+> For these it'd be better if you could provide some comments explaining
+> what the configuration that's being set is.  It's hard to tell if this
+> is stuff that should be managed by the driver or not.
+Sure
 
-Hmm...sorry for late.
-Looks ok to me..but I know, you changed the name 'ASOC_SAMSUNG' to
-'SND_SOC_SAMSUNG'.
 
-So I'm waiting for updated patch now.
+> 
+> > +static struct platform_driver intelmid_codec_driver = {
+> > +	.driver		= {
+> > +		.name		= "mid-msic-codec",
+> 
+> > +MODULE_ALIAS("msic-codec");
+> 
+> This should be platform:mid-msic-codec.
+Okay
 
-Mr. Youn, could you please update your patch against on sound-2.6 tree?
-Or...Mark, what's your plan about this, please let me know.
-
-Thanks.
-
-Best regards,
-Kgene.
---
-Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
-SW Solution Development Team, Samsung Electronics Co., Ltd.
+~Vinod
