@@ -1,55 +1,109 @@
-From: Jassi Brar <jassi.brar@samsung.com>
-Subject: [PATCH] ASoC: Samsung: Debug register
-Date: Mon,  3 Jan 2011 10:51:11 +0900
-Message-ID: <1294019471-17044-1-git-send-email-jassi.brar@samsung.com>
+From: Kukjin Kim <kgene.kim@samsung.com>
+Subject: RE: [PATCH 1/4] ARM: Kconfig: Add audio support dependency
+Date: Mon, 03 Jan 2011 11:28:38 +0900
+Message-ID: <019b01cbaaed$f0418d30$d0c4a790$%kim@samsung.com>
+References: <1293171965-24416-1-git-send-email-sw.youn@samsung.com>
+ <1293172569-21465-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 54B702479F
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2011 03:15:14 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <1293172569-21465-1-git-send-email-sw.youn@samsung.com>
+Content-language: ko
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: 'Seungwhan Youn' <sw.youn@samsung.com>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: linux@arm.linux.org.uk, ben-linux@fluff.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-The DMA channel status is read from I2SCON register.
+Seungwhan Youn wrote:
+> 
+> This patch adds Samsung ASoC audio support dependency for Samsung SoCs.
+> 
+> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+> ---
+>  arch/arm/Kconfig |    7 +++++++
+>  1 files changed, 7 insertions(+), 0 deletions(-)
+> 
+> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+> index d56d21c..ef32a61 100644
+> --- a/arch/arm/Kconfig
+> +++ b/arch/arm/Kconfig
+> @@ -647,6 +647,7 @@ config ARCH_S3C2410
+>  	select HAVE_CLK
+>  	select ARCH_USES_GETTIMEOFFSET
+>  	select HAVE_S3C2410_I2C if I2C
+> +	select ASOC_SAMSUNG if SND_SOC
+>  	help
+>  	  Samsung S3C2410X CPU based systems, such as the Simtec Electronics
+>  	  BAST (<http://www.simtec.co.uk/products/EB110ITX/>), the IPAQ 1940
+> or
+> @@ -678,6 +679,7 @@ config ARCH_S3C64XX
+>  	select SAMSUNG_GPIOLIB_4BIT
+>  	select HAVE_S3C2410_I2C if I2C
+>  	select HAVE_S3C2410_WATCHDOG if WATCHDOG
+> +	select ASOC_SAMSUNG if SND_SOC
+>  	help
+>  	  Samsung S3C64XX series based systems
+> 
+> @@ -690,6 +692,7 @@ config ARCH_S5P64X0
+>  	select ARCH_USES_GETTIMEOFFSET
+>  	select HAVE_S3C2410_I2C if I2C
+>  	select HAVE_S3C_RTC if RTC_CLASS
+> +	select ASOC_SAMSUNG if SND_SOC
+>  	help
+>  	  Samsung S5P64X0 CPU based systems, such as the Samsung SMDK6440,
+>  	  SMDK6450.
+> @@ -701,6 +704,7 @@ config ARCH_S5P6442
+>  	select HAVE_CLK
+>  	select ARCH_USES_GETTIMEOFFSET
+>  	select HAVE_S3C2410_WATCHDOG if WATCHDOG
+> +	select ASOC_SAMSUNG if SND_SOC
+>  	help
+>  	  Samsung S5P6442 CPU based systems
+> 
+> @@ -714,6 +718,7 @@ config ARCH_S5PC100
+>  	select HAVE_S3C2410_I2C if I2C
+>  	select HAVE_S3C_RTC if RTC_CLASS
+>  	select HAVE_S3C2410_WATCHDOG if WATCHDOG
+> +	select ASOC_SAMSUNG if SND_SOC
+>  	help
+>  	  Samsung S5PC100 series based systems
+> 
+> @@ -729,6 +734,7 @@ config ARCH_S5PV210
+>  	select HAVE_S3C2410_I2C if I2C
+>  	select HAVE_S3C_RTC if RTC_CLASS
+>  	select HAVE_S3C2410_WATCHDOG if WATCHDOG
+> +	select ASOC_SAMSUNG if SND_SOC
+>  	help
+>  	  Samsung S5PV210/S5PC110 series based systems
+> 
+> @@ -742,6 +748,7 @@ config ARCH_S5PV310
+>  	select HAVE_S3C_RTC if RTC_CLASS
+>  	select HAVE_S3C2410_I2C if I2C
+>  	select HAVE_S3C2410_WATCHDOG if WATCHDOG
+> +	select ASOC_SAMSUNG if SND_SOC
+>  	help
+>  	  Samsung S5PV310 series based systems
+> 
+> --
 
-Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
----
- sound/soc/samsung/i2s.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Hi everyone,
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index fab25b6..26ed01b 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -192,7 +192,7 @@ static inline bool tx_active(struct i2s_dai *i2s)
- 	if (!i2s)
- 		return false;
- 
--	active = readl(i2s->addr + I2SMOD);
-+	active = readl(i2s->addr + I2SCON);
- 
- 	if (is_secondary(i2s))
- 		active &= CON_TXSDMA_ACTIVE;
-@@ -224,7 +224,7 @@ static inline bool rx_active(struct i2s_dai *i2s)
- 	if (!i2s)
- 		return false;
- 
--	active = readl(i2s->addr + I2SMOD) & CON_RXDMA_ACTIVE;
-+	active = readl(i2s->addr + I2SCON) & CON_RXDMA_ACTIVE;
- 
- 	return active ? true : false;
- }
--- 
-1.6.2.5
+Wow it's 2011, I hope you're happy :-)
+
+Hmm...sorry for late.
+Looks ok to me..but I know, you changed the name 'ASOC_SAMSUNG' to
+'SND_SOC_SAMSUNG'.
+
+So I'm waiting for updated patch now.
+
+Mr. Youn, could you please update your patch against on sound-2.6 tree?
+Or...Mark, what's your plan about this, please let me know.
+
+Thanks.
+
+Best regards,
+Kgene.
+--
+Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
+SW Solution Development Team, Samsung Electronics Co., Ltd.
