@@ -1,27 +1,16 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: [PATCH] ALSA: lib: Fix static linking of libasound
-Date: Mon, 03 Jan 2011 10:50:54 +0000
-Message-ID: <ifs9me$v2o$1@dough.gmane.org>
-References: <AANLkTi=BLZ-HFM4G6D6ZTLtUT5JCaXANS-hgVBC2SAXn@mail.gmail.com>	<alpine.LNX.2.00.1101011604200.28150@eeebox2.perex-int.cz>	<AANLkTinHXVVVykSh7uzCKNKv5NJsP5AVtj6-dDdzLDmb@mail.gmail.com>
-	<alpine.LNX.2.00.1101020041250.28150@eeebox2.perex-int.cz>
+From: "Harsha, Priya" <priya.harsha@intel.com>
+Subject: regarding references taken on platform and codec
+	driver modules
+Date: Mon, 3 Jan 2011 16:30:35 +0530
+Message-ID: <98769532B4BB14429434178695419EAE053BF51941@bgsmsx501.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id EF4F82437A
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2011 11:51:09 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1PZi0H-0007lY-Dg
-	for alsa-devel@alsa-project.org; Mon, 03 Jan 2011 11:51:05 +0100
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 03 Jan 2011 11:51:05 +0100
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 03 Jan 2011 11:51:05 +0100
-In-Reply-To: <alpine.LNX.2.00.1101020041250.28150@eeebox2.perex-int.cz>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 38AE72437F
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2011 12:00:49 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,49 +20,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Jaroslav Kysela at 01/01/11 23:42 did gyre and gimble:
-> On Sat, 1 Jan 2011, Daniel Chen wrote:
-> 
->> On Sat, Jan 1, 2011 at 10:07 AM, Jaroslav Kysela <perex@perex.cz> wrote:
->>> Is any reason to ignore this configure settings mentined in the INSTALL file
->>> for the static library build?
->>>
->>> ./configure --enable-shared=no --enable-static=yes
->>>
->>> It's mainly libtool issue and having static hacks in the dynamic library
->>> does not make much sense.
->>
->> According to Samuel in the Debian bug report, "when both static &
->> dynamic linking is enabled, automake gets it wrong and uses only the
->> dynamic objects."
->>
->> Is the best course of action here to do a two-pass build, one with
->> "--enable-shared=no --enable-static=yes" and another with
->> "--enable-shared=yes --enable-static=no", simply copying the desired
->> libasound.a from the second pass?
-> 
-> Yes, I believe, it's the right way to compile both types of library 
-> binaries.
+Hi,
 
-Shouldn't the argument then be one that is mutually exclusive then?
+I have 4 dai_link instances as below. (the codec_name and platform_name are 
+the same for all the 4 instances)
 
-e.g. --build-type=[shared||static]
+struct snd_soc_dai_link mfld_msic_dailink[] = {
+        {
+                .name = "Intel MSIC Headset",
+                .stream_name = "Codec",
+                .cpu_dai_name = "Headset-cpu-dai",
+                .codec_dai_name = "Intel MSIC Headset",
+                .codec_name = "mid-msic-codec",
+                .platform_name = "mid-audio-platform",
+                .init = msic_init,
+        },
+        {
+                .name = "Intel MSIC Speaker",
+                .stream_name = "Speaker",
+                .cpu_dai_name = "Speaker-cpu-dai",
+                .codec_dai_name = "Intel MSIC Speaker",
+                .codec_name = "mid-msic-codec",
+                .platform_name = "mid-audio-platform",
+                .init = NULL,
+        },
+        {
+                .name = "Intel MSIC Vibra",
+                .stream_name = "Vibra1",
+                .cpu_dai_name = "Vibra 1-cpu-dai",
+                .codec_dai_name = "Intel MSIC Vibra",
+                .codec_name = "mid-msic-codec",
+                .platform_name = "mid-audio-platform",
+                .init = NULL,
+        },
+        {
+                .name = "Intel MSIC Haptic",
+                .stream_name = "Vibra2",
+                .cpu_dai_name = "Vibra 2-cpu-dai",
+                .codec_dai_name = "Intel MSIC Haptic",
+                .codec_name =  "mid-msic-codec",
+                .platform_name = "mid-audio-platform",
+                .init = NULL,
+        },
+};
 
-Col
+When the soc_bind_dai_link is called
+  For every dai_link instance, reference to codec, platform and cpu_dai are taken
 
+When soc_remove_dai_link is called, the reference is released as follows
+  For cpu_dai after checking if cpu_dai->probed is 1
+ 
+  For codec and platform, it checks for codec->probed and platform->probed
+  So for the first instance of dai_link, the reference of codec and platform are
+  removed correctly but for the other instances, it finds that codec->probed and
+  platform->probed are 0 and does not remove the reference. As a result, the
+  reference count of codec and platform drivers remain as 3 and the rmmod on
+  those driver modules fail.
 
--- 
+Is there anything that I am doing wrong here or missing out?
 
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mageia Contributor [http://www.mageia.org/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+Thanks,
+Harsha
