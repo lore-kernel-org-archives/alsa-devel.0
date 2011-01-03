@@ -1,23 +1,19 @@
-From: Karsten Wiese <fzu@wemgehoertderstaat.de>
-Subject: [PATCH] snd-usb-us122l: Fix MIDI output
-Date: Mon, 3 Jan 2011 02:41:58 +0100
-Message-ID: <201101030241.58904.fzu@wemgehoertderstaat.de>
+From: Seungwhan Youn <claude.youn@gmail.com>
+Subject: Re: [PATCH] ASoC: Change Samsung Kconfig from ASOC_ to
+	SND_SOC_
+Date: Mon, 3 Jan 2011 10:43:53 +0900
+Message-ID: <AANLkTimw6ywAWvzmfZqsMzUqoosKdwYDx3ezKPOGLM+G@mail.gmail.com>
+References: <1293977528-6141-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout8.freenet.de (mout8.freenet.de [195.4.92.98])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0865224772
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2011 02:42:02 +0100 (CET)
-Received: from [195.4.92.20] (helo=10.mx.freenet.de)
-	by mout8.freenet.de with esmtpa (ID fzu@wemgehoertderstaat.de) (port
-	25) (Exim 4.72 #3) id 1PZZQv-00031u-Bs
-	for alsa-devel@alsa-project.org; Mon, 03 Jan 2011 02:42:01 +0100
-Received: from p5dd50aee.dip0.t-ipconnect.de ([93.213.10.238]:63013
-	helo=a64.localdomain)
-	by 10.mx.freenet.de with esmtpa (ID fzu@wemgehoertderstaat.de) (port
-	25) (Exim 4.72 #3) id 1PZZQv-0006RP-5R
-	for alsa-devel@alsa-project.org; Mon, 03 Jan 2011 02:42:01 +0100
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 1C4BD24772
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2011 02:43:54 +0100 (CET)
+Received: by wyi11 with SMTP id 11so12777492wyi.38
+	for <alsa-devel@alsa-project.org>; Sun, 02 Jan 2011 17:43:53 -0800 (PST)
+In-Reply-To: <1293977528-6141-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,46 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Seungwhan Youn <sw.youn@samsung.com>, patches@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, Jan 2, 2011 at 11:12 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> The rest of ASoC is using SND_SOC_ as the prefix for all the Kconfig
+> symbols so do so for the new Samsung drivers too, rather than using
+> ASOC_ as they currently are.
+>
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-The US-122L always reads 9 bytes per urb unless they are set to 0xFD.
+I'll prepare to remake(and resubmit) patch-set, "Modify configures to
+support Samsung ASoC dependancyless", that I submitted before. :)
 
-Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
-Cc: stable@kernel.org
----
- sound/usb/midi.c |   11 +++++++++--
- 1 files changed, 9 insertions(+), 2 deletions(-)
+Acked-by: Seungwhan Youn <sw.youn@samsung.com>
 
-diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index 25bce7e..b1f9ec9 100644
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -850,8 +850,8 @@ static void snd_usbmidi_us122l_output(struct snd_usb_midi_out_endpoint *ep,
- 		return;
- 	}
- 
--	memset(urb->transfer_buffer + count, 0xFD, 9 - count);
--	urb->transfer_buffer_length = count;
-+	memset(urb->transfer_buffer + count, 0xFD, ep->max_transfer - count);
-+	urb->transfer_buffer_length = ep->max_transfer;
- }
- 
- static struct usb_protocol_ops snd_usbmidi_122l_ops = {
-@@ -1295,6 +1295,13 @@ static int snd_usbmidi_out_endpoint_create(struct snd_usb_midi* umidi,
- 	case USB_ID(0x1a86, 0x752d): /* QinHeng CH345 "USB2.0-MIDI" */
- 		ep->max_transfer = 4;
- 		break;
-+		/*
-+		 * Some devices only work with 9 bytes packet size:
-+		 */
-+	case USB_ID(0x0644, 0x800E): /* Tascam US-122L */
-+	case USB_ID(0x0644, 0x800F): /* Tascam US-144 */
-+		ep->max_transfer = 9;
-+		break;
- 	}
- 	for (i = 0; i < OUTPUT_URBS; ++i) {
- 		buffer = usb_alloc_coherent(umidi->dev,
--- 
-1.7.2.3
+Thanks,
+Claude
