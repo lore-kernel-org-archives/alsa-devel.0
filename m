@@ -1,40 +1,40 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH] ASoC: Change Samsung Kconfig from ASOC_ to
-	SND_SOC_
-Date: Mon, 3 Jan 2011 10:35:35 +0900
-Message-ID: <AANLkTikfPoZSEAM_cGbxEO750h679-afgR+NwL71Yjsa@mail.gmail.com>
-References: <1293977528-6141-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Seungwhan Youn <claude.youn@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 1/4] ARM: Kconfig: Add audio support dependency
+Date: Mon, 3 Jan 2011 10:37:29 +0900
+Message-ID: <AANLkTinnzD+cB6QuFJ4NK+-ASLDoTw6EgJiXJBreuzTD@mail.gmail.com>
+References: <1293171965-24416-1-git-send-email-sw.youn@samsung.com>
+	<1293172569-21465-1-git-send-email-sw.youn@samsung.com>
+	<20110102140517.GJ4935@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id E3FC324772
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2011 02:35:35 +0100 (CET)
-Received: by bwz10 with SMTP id 10so6382076bwz.38
-	for <alsa-devel@alsa-project.org>; Sun, 02 Jan 2011 17:35:35 -0800 (PST)
-In-Reply-To: <1293977528-6141-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <20110102140517.GJ4935@opensource.wolfsonmicro.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Seungwhan Youn <sw.youn@samsung.com>, patches@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Seungwhan Youn <sw.youn@samsung.com>, alsa-devel@alsa-project.org, kgene.kim@samsung.com, linux@arm.linux.org.uk, jassi.brar@samsung.com, linux-samsung-soc@vger.kernel.org, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jan 2, 2011 at 11:12 PM, Mark Brown
+On Sun, Jan 2, 2011 at 11:05 PM, Mark Brown
 <broonie@opensource.wolfsonmicro.com> wrote:
-> The rest of ASoC is using SND_SOC_ as the prefix for all the Kconfig
-> symbols so do so for the new Samsung drivers too, rather than using
-> ASOC_ as they currently are.
+> On Fri, Dec 24, 2010 at 03:36:09PM +0900, Seungwhan Youn wrote:
 >
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+>> This patch adds Samsung ASoC audio support dependency for Samsung So=
+Cs.
+>
+>> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+>
+>> + =C2=A0 =C2=A0 select ASOC_SAMSUNG if SND_SOC
+>
+> Hrm, if we're going to do this we probably ought to be doing it for a=
+ll
+> architectures. =C2=A0It's a good idea, we don't tend to have multiple
+> possible architectures supported for a given architecture. =C2=A0Sinc=
+e the
+> second patch didn't apply I'll leave this one too, and patches 3 and =
+4,
+> though they all look good.
 
-Acked-by: Jassi Brar <jassi.brar@samsung.com>
-
-Thanks
+Yes, I think so, but I didn't think that far when I made these
+patches. If you don't mind, can I re-make this patch-set for all
+architectures with your 'Requested-by'?
