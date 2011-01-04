@@ -1,14 +1,14 @@
 From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: [PATCH 3/4] ASoC sst v2: Add medfield machine driver
-Date: Tue,  4 Jan 2011 20:16:50 +0530
-Message-ID: <1294152410-8945-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 1/4] ASoC sst v2: Add sn95031 codec driver
+Date: Tue,  4 Jan 2011 20:16:07 +0530
+Message-ID: <1294152367-8883-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id E64AF103914
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2011 15:44:53 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id D82CA103919
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2011 15:45:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,24 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Vinod Koul <vinod.koul@intel.com>
 
-This patch adds the medfield machine driver
-Machine driver glues the sn95031 codec driver and sst_platform driver to form the asoc sound driver
+This patch adds the sn95031 asoc codec driver. This driver currently supports only playback.
+Capture and jack detection to be added later
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Harsha Priya <priya.harsha@intel.com>
 ---
- sound/soc/mid-x86/mfld_machine.c |  296 ++++++++++++++++++++++++++++++++++++++
- 1 files changed, 296 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/mid-x86/mfld_machine.c
+ sound/soc/codecs/Kconfig   |    4 +
+ sound/soc/codecs/Makefile  |    2 +
+ sound/soc/codecs/sn95031.c |  495 ++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/sn95031.h |   99 +++++++++
+ 4 files changed, 600 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/codecs/sn95031.c
+ create mode 100644 sound/soc/codecs/sn95031.h
 
-diff --git a/sound/soc/mid-x86/mfld_machine.c b/sound/soc/mid-x86/mfld_machine.c
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 054191e..fa42be5 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -32,6 +32,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_MAX98088 if I2C
+ 	select SND_SOC_MAX9877 if I2C
+ 	select SND_SOC_PCM3008
++	select SND_SOC_SN95031 if INTEL_SCU_IPC
+ 	select SND_SOC_SPDIF
+ 	select SND_SOC_SSM2602 if I2C
+ 	select SND_SOC_STAC9766 if SND_SOC_AC97_BUS
+@@ -173,6 +174,9 @@ config SND_SOC_MAX98088
+ config SND_SOC_PCM3008
+        tristate
+ 
++config SND_SOC_SN95031
++	tristate
++
+ config SND_SOC_SPDIF
+ 	tristate
+ 
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 6a1e17b..76304d4 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -18,6 +18,7 @@ snd-soc-l3-objs := l3.o
+ snd-soc-max98088-objs := max98088.o
+ snd-soc-pcm3008-objs := pcm3008.o
+ snd-soc-alc5623-objs := alc5623.o
++snd-soc-sn95031-objs := sn95031.o
+ snd-soc-spdif-objs := spdif_transciever.o
+ snd-soc-ssm2602-objs := ssm2602.o
+ snd-soc-stac9766-objs := stac9766.o
+@@ -97,6 +98,7 @@ obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+= snd-soc-jz4740-codec.o
+ obj-$(CONFIG_SND_SOC_MAX98088)	+= snd-soc-max98088.o
+ obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
+ obj-$(CONFIG_SND_SOC_ALC5623)    += snd-soc-alc5623.o
++obj-$(CONFIG_SND_SOC_SN95031)	+=snd-soc-sn95031.o
+ obj-$(CONFIG_SND_SOC_SPDIF)	+= snd-soc-spdif.o
+ obj-$(CONFIG_SND_SOC_SSM2602)	+= snd-soc-ssm2602.o
+ obj-$(CONFIG_SND_SOC_STAC9766)	+= snd-soc-stac9766.o
+diff --git a/sound/soc/codecs/sn95031.c b/sound/soc/codecs/sn95031.c
 new file mode 100644
-index 0000000..1a330be
+index 0000000..146b744
 --- /dev/null
-+++ b/sound/soc/mid-x86/mfld_machine.c
-@@ -0,0 +1,296 @@
++++ b/sound/soc/codecs/sn95031.c
+@@ -0,0 +1,495 @@
 +/*
-+ *  mfld_machine.c - ASoc Machine driver for Intel Medfield MID platform
++ *  sn95031.c -  TI sn95031 Codec driver
 + *
 + *  Copyright (C) 2010 Intel Corp
 + *  Author: Vinod Koul <vinod.koul@intel.com>
@@ -62,279 +108,583 @@ index 0000000..1a330be
 + *  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 + *
 + * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *
 + */
-+
 +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 +
-+#include <linux/init.h>
-+#include <linux/device.h>
++#include <linux/platform_device.h>
 +#include <linux/slab.h>
++#include <asm/intel_scu_ipc.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
 +#include <sound/soc.h>
-+#include "../codecs/sn95031.h"
++#include <sound/soc-dapm.h>
++#include <sound/initval.h>
++#include "sn95031.h"
 +
-+#define MID_MONO 1
-+#define MID_STEREO 2
-+#define MID_MAX_CAP 5
++#define SN95031_RATES (SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_44100)
++#define SN95031_FORMATS (SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE)
 +
-+static unsigned int	hs_switch;
-+static unsigned int	lo_dac;
++/*
++ * todo:
++ * capture paths
++ * jack detection
++ * PM functions
++ */
 +
-+/* sound card controls */
-+static const char *headset_switch_text[] = {"Earpiece", "Headset"};
-+
-+static const char *lo_text[] = {"Vibra", "Headset", "IHF", "None"};
-+
-+static const struct soc_enum headset_enum =
-+	SOC_ENUM_SINGLE_EXT(2, headset_switch_text);
-+
-+static const struct soc_enum lo_enum =
-+	SOC_ENUM_SINGLE_EXT(4, lo_text);
-+
-+static int headset_get_switch(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
++static inline unsigned int sn95031_read(struct snd_soc_codec *codec,
++			unsigned int reg)
 +{
-+	ucontrol->value.integer.value[0] = hs_switch;
-+	return 0;
++	u8 value = 0;
++	int ret;
++
++	ret = intel_scu_ipc_ioread8(reg, &value);
++	if (ret)
++		pr_err("read of %x failed, err %d\n", reg, ret);
++	return value;
++
 +}
 +
-+static int headset_set_switch(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
++static inline int sn95031_write(struct snd_soc_codec *codec,
++			unsigned int reg, unsigned int value)
 +{
-+	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
++	int ret;
 +
-+	if (ucontrol->value.integer.value[0] == hs_switch)
-+		return 0;
-+
-+	if (ucontrol->value.integer.value[0]) {
-+		pr_debug("hs_set HS path\n");
-+		snd_soc_dapm_enable_pin(&codec->dapm, "HPOUTL");
-+		snd_soc_dapm_enable_pin(&codec->dapm, "HPOUTR");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "EPOUT");
-+	} else {
-+		pr_debug("hs_set EP path\n");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTL");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTR");
-+		snd_soc_dapm_enable_pin(&codec->dapm, "EPOUT");
-+	}
-+	snd_soc_dapm_sync(&codec->dapm);
-+	hs_switch = ucontrol->value.integer.value[0];
-+
-+	return 0;
++	ret = intel_scu_ipc_iowrite8(reg, value);
++	if (ret)
++		pr_err("write of %x failed, err %d\n", reg, ret);
++	return ret;
 +}
 +
-+static void lo_enable_out_pins(struct snd_soc_codec *codec)
++static int sn95031_set_vaud_bias(struct snd_soc_codec *codec,
++		enum snd_soc_bias_level level)
 +{
-+	snd_soc_dapm_enable_pin(&codec->dapm, "IHFOUTL");
-+	snd_soc_dapm_enable_pin(&codec->dapm, "IHFOUTR");
-+	snd_soc_dapm_enable_pin(&codec->dapm, "LINEOUTL");
-+	snd_soc_dapm_enable_pin(&codec->dapm, "LINEOUTR");
-+	snd_soc_dapm_enable_pin(&codec->dapm, "VIB1OUT");
-+	snd_soc_dapm_enable_pin(&codec->dapm, "VIB2OUT");
-+	if (hs_switch) {
-+		snd_soc_dapm_enable_pin(&codec->dapm, "HPOUTL");
-+		snd_soc_dapm_enable_pin(&codec->dapm, "HPOUTR");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "EPOUT");
-+	} else {
-+		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTL");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTR");
-+		snd_soc_dapm_enable_pin(&codec->dapm, "EPOUT");
-+	}
-+}
-+
-+static int lo_get_switch(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	ucontrol->value.integer.value[0] = lo_dac;
-+	return 0;
-+}
-+
-+static int lo_set_switch(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
-+
-+	if (ucontrol->value.integer.value[0] == lo_dac)
-+		return 0;
-+
-+	/* we dont want to work with last state of lineout so just enable all
-+	 * pins and then disable pins not required
-+	 */
-+	lo_enable_out_pins(codec);
-+	switch (ucontrol->value.integer.value[0]) {
-+	case 0:
-+		pr_debug("set vibra path\n");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "VIB1OUT");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "VIB2OUT");
-+		snd_soc_update_bits(codec, SN95031_LOCTL, 0x66, 0);
++	switch (level) {
++	case SND_SOC_BIAS_ON:
 +		break;
 +
-+	case 1:
-+		pr_debug("set hs  path\n");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTL");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTR");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "EPOUT");
-+		snd_soc_update_bits(codec, SN95031_LOCTL, 0x66, 0x22);
++	case SND_SOC_BIAS_PREPARE:
++		if (codec->dapm.bias_level == SND_SOC_BIAS_STANDBY) {
++			pr_debug("vaud_bias powering up pll\n");
++			/* power up the pll */
++			snd_soc_write(codec, SN95031_AUDPLLCTRL, BIT(5));
++			/* enable pcm 2 */
++			snd_soc_update_bits(codec, SN95031_PCM2C2,
++					BIT(0), BIT(0));
++		}
 +		break;
 +
-+	case 2:
-+		pr_debug("set spkr path\n");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "IHFOUTL");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "IHFOUTR");
-+		snd_soc_update_bits(codec, SN95031_LOCTL, 0x66, 0x44);
++	case SND_SOC_BIAS_STANDBY:
++		if (codec->dapm.bias_level == SND_SOC_BIAS_OFF) {
++			pr_debug("vaud_bias power up rail\n");
++			/* power up the rail */
++			snd_soc_write(codec, SN95031_VAUD,
++					BIT(2)|BIT(1)|BIT(0));
++			msleep(1);
++		} else if (codec->dapm.bias_level == SND_SOC_BIAS_PREPARE) {
++			/* turn off pcm */
++			pr_debug("vaud_bias power dn pcm\n");
++			snd_soc_update_bits(codec, SN95031_PCM2C2, BIT(0), 0);
++			snd_soc_write(codec, SN95031_AUDPLLCTRL, 0);
++		}
 +		break;
 +
-+	case 3:
-+		pr_debug("set null path\n");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "LINEOUTL");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "LINEOUTR");
-+		snd_soc_update_bits(codec, SN95031_LOCTL, 0x66, 0x66);
++
++	case SND_SOC_BIAS_OFF:
++		pr_debug("vaud_bias _OFF doing rail shutdown\n");
++		snd_soc_write(codec, SN95031_VAUD, BIT(3));
 +		break;
 +	}
-+	snd_soc_dapm_sync(&codec->dapm);
-+	lo_dac = ucontrol->value.integer.value[0];
++
++	codec->dapm.bias_level = level;
 +	return 0;
 +}
 +
-+static const struct snd_kcontrol_new mfld_snd_controls[] = {
-+	SOC_ENUM_EXT("Playback Switch", headset_enum,
-+			headset_get_switch, headset_set_switch),
-+	SOC_ENUM_EXT("Lineout Mux", lo_enum,
-+			lo_get_switch, lo_set_switch),
++static int sn95031_vhs_event(struct snd_soc_dapm_widget *w,
++		    struct snd_kcontrol *kcontrol, int event)
++{
++	if (SND_SOC_DAPM_EVENT_ON(event)) {
++		pr_debug("VHS SND_SOC_DAPM_EVENT_ON doing rail startup now\n");
++		/* power up the rail */
++		snd_soc_write(w->codec, SN95031_VHSP, 0x3D);
++		snd_soc_write(w->codec, SN95031_VHSN, 0x3F);
++		msleep(1);
++	} else if (SND_SOC_DAPM_EVENT_OFF(event)) {
++		pr_debug("VHS SND_SOC_DAPM_EVENT_OFF doing rail shutdown\n");
++		snd_soc_write(w->codec, SN95031_VHSP, 0xC4);
++		snd_soc_write(w->codec, SN95031_VHSN, 0x04);
++	}
++	return 0;
++}
++
++static int sn95031_vihf_event(struct snd_soc_dapm_widget *w,
++		    struct snd_kcontrol *kcontrol, int event)
++{
++	if (SND_SOC_DAPM_EVENT_ON(event)) {
++		pr_debug("VIHF SND_SOC_DAPM_EVENT_ON doing rail startup now\n");
++		/* power up the rail */
++		snd_soc_write(w->codec, SN95031_VIHF, 0x27);
++		msleep(1);
++	} else if (SND_SOC_DAPM_EVENT_OFF(event)) {
++		pr_debug("VIHF SND_SOC_DAPM_EVENT_OFF doing rail shutdown\n");
++		snd_soc_write(w->codec, SN95031_VIHF, 0x24);
++	}
++	return 0;
++}
++
++/* DAPM widgets */
++static const struct snd_soc_dapm_widget sn95031_dapm_widgets[] = {
++
++	/* all end points mic, hs etc */
++	SND_SOC_DAPM_OUTPUT("HPOUTL"),
++	SND_SOC_DAPM_OUTPUT("HPOUTR"),
++	SND_SOC_DAPM_OUTPUT("EPOUT"),
++	SND_SOC_DAPM_OUTPUT("IHFOUTL"),
++	SND_SOC_DAPM_OUTPUT("IHFOUTR"),
++	SND_SOC_DAPM_OUTPUT("LINEOUTL"),
++	SND_SOC_DAPM_OUTPUT("LINEOUTR"),
++	SND_SOC_DAPM_OUTPUT("VIB1OUT"),
++	SND_SOC_DAPM_OUTPUT("VIB2OUT"),
++
++	SND_SOC_DAPM_SUPPLY("Headset Rail", SND_SOC_NOPM, 0, 0,
++			sn95031_vhs_event,
++			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_SUPPLY("Speaker Rail", SND_SOC_NOPM, 0, 0,
++			sn95031_vihf_event,
++			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++
++	/* playback path driver enables */
++	SND_SOC_DAPM_PGA("Headset Left Playback",
++			SN95031_DRIVEREN, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Headset Right Playback",
++			SN95031_DRIVEREN, 1, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Speaker Left Playback",
++			SN95031_DRIVEREN, 2, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Speaker Right Playback",
++			SN95031_DRIVEREN, 3, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Vibra1 Playback",
++			SN95031_DRIVEREN, 4, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Vibra2 Playback",
++			SN95031_DRIVEREN, 5, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Earpiece Playback",
++			SN95031_DRIVEREN, 6, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Lineout Left Playback",
++			SN95031_LOCTL, 0, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Lineout Right Playback",
++			SN95031_LOCTL, 4, 0, NULL, 0),
++
++	/* playback path filter enable */
++	SND_SOC_DAPM_PGA("Headset Left Filter",
++			SN95031_HSEPRXCTRL, 4, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("Headset Right Filter",
++			SN95031_HSEPRXCTRL, 5, 0,  NULL, 0),
++	SND_SOC_DAPM_PGA("Speaker Left Filter",
++			SN95031_IHFRXCTRL, 0, 0,  NULL, 0),
++	SND_SOC_DAPM_PGA("Speaker Right Filter",
++			SN95031_IHFRXCTRL, 1, 0,  NULL, 0),
++
++	/* DACs */
++	SND_SOC_DAPM_DAC("HSDAC Left", "Headset",
++			SN95031_DACCONFIG, 0, 0),
++	SND_SOC_DAPM_DAC("HSDAC Right", "Headset",
++			SN95031_DACCONFIG, 1, 0),
++	SND_SOC_DAPM_DAC("IHFDAC Left", "Speaker",
++			SN95031_DACCONFIG, 2, 0),
++	SND_SOC_DAPM_DAC("IHFDAC Right", "Speaker",
++			SN95031_DACCONFIG, 3, 0),
++	SND_SOC_DAPM_DAC("Vibra1 DAC", "Vibra1",
++			SN95031_VIB1C5, 1, 0),
++	SND_SOC_DAPM_DAC("Vibra2 DAC", "Vibra2",
++			SN95031_VIB2C5, 1, 0),
 +};
 +
-+static int mfld_init(struct snd_soc_pcm_runtime *runtime)
-+{
-+	struct snd_soc_codec *codec = runtime->codec;
-+	struct snd_soc_dapm_context *dapm = &codec->dapm;
-+	int ret_val;
++static const struct snd_soc_dapm_route sn95031_audio_map[] = {
++	/* headset and earpiece map */
++	{ "HPOUTL", NULL, "Headset Left Playback" },
++	{ "HPOUTR", NULL, "Headset Right Playback" },
++	{ "EPOUT", NULL, "Earpiece Playback" },
++	{ "Headset Left Playback", NULL, "Headset Left Filter"},
++	{ "Headset Right Playback", NULL, "Headset Right Filter"},
++	{ "Earpiece Playback", NULL, "Headset Left Filter"},
++	{ "Headset Left Filter", NULL, "HSDAC Left"},
++	{ "Headset Right Filter", NULL, "HSDAC Right"},
++	{ "HSDAC Left", NULL, "Headset Rail"},
++	{ "HSDAC Right", NULL, "Headset Rail"},
 +
-+	ret_val = snd_soc_add_controls(codec, mfld_snd_controls,
-+				ARRAY_SIZE(mfld_snd_controls));
-+	if (ret_val) {
-+		pr_err("soc_add_controls failed %d", ret_val);
-+		return ret_val;
-+	}
-+	/* default is earpiece pin, userspace sets it explcitly */
-+	snd_soc_dapm_disable_pin(dapm, "HPOUTL");
-+	snd_soc_dapm_disable_pin(dapm, "HPOUTR");
-+	/* default is lineout NC, userspace sets it explcitly */
-+	snd_soc_dapm_disable_pin(dapm, "LINEOUTL");
-+	snd_soc_dapm_disable_pin(dapm, "LINEOUTR");
-+	lo_dac = 3;
-+	hs_switch = 0;
-+	return snd_soc_dapm_sync(dapm);
++	/* speaker map */
++	{ "IHFOUTL", "NULL", "Speaker Left Playback"},
++	{ "IHFOUTR", "NULL", "Speaker Right Playback"},
++	{ "Speaker Left Playback", NULL, "Speaker Left Filter"},
++	{ "Speaker Right Playback", NULL, "Speaker Right Filter"},
++	{ "Speaker Left Filter", NULL, "IHFDAC Left"},
++	{ "Speaker Right Filter", NULL, "IHFDAC Right"},
++	{ "IHFDAC Left", NULL, "Speaker Rail"},
++	{ "IHFDAC Right", NULL, "Speaker Rail"},
++
++	/* vibra map */
++	{"VIB1OUT", NULL, "Vibra1 Playback"},
++	{"Vibra1 Playback", NULL, "Vibra1 DAC"},
++
++	{"VIB2OUT", NULL, "Vibra2 Playback"},
++	{"Vibra2 Playback", NULL, "Vibra2 DAC"},
++
++	/* lineout */
++	{"LINEOUTL", NULL, "Lineout Left Playback"},
++	{"LINEOUTR", NULL, "Lineout Right Playback"},
++	{"Lineout Left Playback", NULL, "Headset Left Filter"},
++	{"Lineout Left Playback", NULL, "Speaker Left Filter"},
++	{"Lineout Left Playback", NULL, "Vibra1 DAC"},
++	{"Lineout Right Playback", NULL, "Headset Right Filter"},
++	{"Lineout Right Playback", NULL, "Speaker Right Filter"},
++	{"Lineout Right Playback", NULL, "Vibra2 DAC"},
++};
++
++/* speaker and headset mutes, for audio pops and clicks */
++static int sn95031_pcm_hs_mute(struct snd_soc_dai *dai, int mute)
++{
++	snd_soc_update_bits(dai->codec,
++			SN95031_HSLVOLCTRL, BIT(7), (!mute << 7));
++	snd_soc_update_bits(dai->codec,
++			SN95031_HSRVOLCTRL, BIT(7), (!mute << 7));
++	return 0;
 +}
 +
-+struct snd_soc_dai_link mfld_msic_dailink[] = {
-+	{
-+		.name = "Medfield Headset",
++static int sn95031_pcm_spkr_mute(struct snd_soc_dai *dai, int mute)
++{
++	snd_soc_update_bits(dai->codec,
++			SN95031_IHFLVOLCTRL, BIT(7), (!mute << 7));
++	snd_soc_update_bits(dai->codec,
++			SN95031_IHFRVOLCTRL, BIT(7), (!mute << 7));
++	return 0;
++}
++
++int sn95031_pcm_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
++{
++	unsigned int format, rate;
++
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		format = BIT(4)|BIT(5);
++		break;
++
++	case SNDRV_PCM_FORMAT_S24_LE:
++		format = 0;
++		break;
++	default:
++		return -EINVAL;
++	}
++	snd_soc_update_bits(dai->codec, SN95031_PCM2C2,
++			BIT(4)|BIT(5), format);
++
++	switch (params_rate(params)) {
++	case 48000:
++		pr_debug("RATE_48000\n");
++		rate = 0;
++		break;
++
++	case 44100:
++		pr_debug("RATE_44100\n");
++		rate = BIT(7);
++		break;
++
++	default:
++		pr_err("ERR rate %d\n", params_rate(params));
++		return -EINVAL;
++	}
++	snd_soc_update_bits(dai->codec, SN95031_PCM1C1, BIT(7), rate);
++
++	return 0;
++}
++
++/* Codec DAI section */
++static struct snd_soc_dai_ops sn95031_headset_dai_ops = {
++	.digital_mute	= sn95031_pcm_hs_mute,
++	.hw_params	= sn95031_pcm_hw_params,
++};
++
++static struct snd_soc_dai_ops sn95031_speaker_dai_ops = {
++	.digital_mute	= sn95031_pcm_spkr_mute,
++	.hw_params	= sn95031_pcm_hw_params,
++};
++
++static struct snd_soc_dai_ops sn95031_vib1_dai_ops = {
++	.hw_params	= sn95031_pcm_hw_params,
++};
++
++static struct snd_soc_dai_ops sn95031_vib2_dai_ops = {
++	.hw_params	= sn95031_pcm_hw_params,
++};
++
++struct snd_soc_dai_driver sn95031_dais[] = {
++{
++	.name = "SN95031 Headset",
++	.playback = {
 +		.stream_name = "Headset",
-+		.cpu_dai_name = "Headset-cpu-dai",
-+		.codec_dai_name = "SN95031 Headset",
-+		.codec_name = "sn95031",
-+		.platform_name = "sst-platform",
-+		.init = mfld_init,
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = SN95031_RATES,
++		.formats = SN95031_FORMATS,
 +	},
-+	{
-+		.name = "Medfield Speaker",
++	.ops = &sn95031_headset_dai_ops,
++},
++{	.name = "SN95031 Speaker",
++	.playback = {
 +		.stream_name = "Speaker",
-+		.cpu_dai_name = "Speaker-cpu-dai",
-+		.codec_dai_name = "SN95031 Speaker",
-+		.codec_name = "sn95031",
-+		.platform_name = "sst-platform",
-+		.init = NULL,
++		.channels_min = 2,
++		.channels_max = 2,
++		.rates = SN95031_RATES,
++		.formats = SN95031_FORMATS,
 +	},
-+	{
-+		.name = "Medfield Vibra",
++	.ops = &sn95031_speaker_dai_ops,
++},
++{	.name = "SN95031 Vibra1",
++	.playback = {
 +		.stream_name = "Vibra1",
-+		.cpu_dai_name = "Vibra1-cpu-dai",
-+		.codec_dai_name = "SN95031 Vibra1",
-+		.codec_name = "sn95031",
-+		.platform_name = "sst-platform",
-+		.init = NULL,
++		.channels_min = 1,
++		.channels_max = 1,
++		.rates = SN95031_RATES,
++		.formats = SN95031_FORMATS,
 +	},
-+	{
-+		.name = "Medfield Haptics",
++	.ops = &sn95031_vib1_dai_ops,
++},
++{	.name = "SN95031 Vibra2",
++	.playback = {
 +		.stream_name = "Vibra2",
-+		.cpu_dai_name = "Vibra2-cpu-dai",
-+		.codec_dai_name = "SN95031 Vibra2",
-+		.codec_name = "sn95031",
-+		.platform_name = "sst-platform",
-+		.init = NULL,
++		.channels_min = 1,
++		.channels_max = 1,
++		.rates = SN95031_RATES,
++		.formats = SN95031_FORMATS,
 +	},
++	.ops = &sn95031_vib2_dai_ops,
++},
 +};
 +
-+/* SoC card */
-+static struct snd_soc_card snd_soc_card_mfld = {
-+	.name = "medfield_audio",
-+	.dai_link = mfld_msic_dailink,
-+	.num_links = ARRAY_SIZE(mfld_msic_dailink),
-+};
-+
-+static int __devinit snd_mfld_mc_probe(struct platform_device *pdev)
++/* codec registration */
++static int sn95031_codec_probe(struct snd_soc_codec *codec)
 +{
-+	struct platform_device *socdev;
-+	int ret_val = 0;
++	int ret;
 +
-+	pr_debug("snd_mfld_mc_probe called\n");
++	pr_debug("codec_probe called\n");
 +
-+	socdev =  platform_device_alloc("soc-audio", -1);
-+	if (!socdev) {
-+		pr_err("soc-audio device allocation failed\n");
-+		return -ENOMEM;
-+	}
-+	platform_set_drvdata(socdev, &snd_soc_card_mfld);
-+	ret_val = platform_device_add(socdev);
-+	if (ret_val) {
-+		pr_err("Unable to add soc-audio device, err %d\n", ret_val);
-+		platform_device_put(socdev);
-+	}
++	codec->dapm.bias_level = SND_SOC_BIAS_OFF;
++	codec->dapm.idle_bias_off = 1;
 +
-+	platform_set_drvdata(pdev, socdev);
++	/* PCM interface config
++	 * This sets the pcm rx slot conguration to max 6 slots
++	 * for max 4 dais (2 stereo and 2 mono)
++	 */
++	snd_soc_write(codec, SN95031_PCM2RXSLOT01, 0x10);
++	snd_soc_write(codec, SN95031_PCM2RXSLOT23, 0x32);
++	snd_soc_write(codec, SN95031_PCM2RXSLOT45, 0x54);
++	/* pcm port setting
++	 * This sets the pcm port to slave and clock at 19.2Mhz which
++	 * can support 6slots, sampling rate set per stream in hw-params
++	 */
++	snd_soc_write(codec, SN95031_PCM1C1, 0x00);
++	snd_soc_write(codec, SN95031_PCM2C1, 0x01);
++	snd_soc_write(codec, SN95031_PCM2C2, 0x0A);
++	snd_soc_write(codec, SN95031_HSMIXER, BIT(0)|BIT(4));
++	/* vendor vibra workround, the vibras are muted by
++	 * custom register so unmute them
++	 */
++	snd_soc_write(codec, SN95031_SSR5, 0x80);
++	snd_soc_write(codec, SN95031_SSR6, 0x80);
++	snd_soc_write(codec, SN95031_VIB1C5, 0x00);
++	snd_soc_write(codec, SN95031_VIB2C5, 0x00);
++	/* configure vibras for pcm port */
++	snd_soc_write(codec, SN95031_VIB1C3, 0x00);
++	snd_soc_write(codec, SN95031_VIB2C3, 0x00);
 +
-+	pr_debug("successfully exited probe\n");
-+	return ret_val;
++	/* soft mute ramp time */
++	snd_soc_write(codec, SN95031_SOFTMUTE, 0x3);
++	/* fix the initial volume at 1dB,
++	 * default in +9dB,
++	 * 1dB give optimal swing on DAC, amps
++	 */
++	snd_soc_write(codec, SN95031_HSLVOLCTRL, 0x08);
++	snd_soc_write(codec, SN95031_HSRVOLCTRL, 0x08);
++	snd_soc_write(codec, SN95031_IHFLVOLCTRL, 0x08);
++	snd_soc_write(codec, SN95031_IHFRVOLCTRL, 0x08);
++	/* dac mode and lineout workaround */
++	snd_soc_write(codec, SN95031_SSR2, 0x10);
++	snd_soc_write(codec, SN95031_SSR3, 0x40);
++
++	ret = snd_soc_dapm_new_controls(&codec->dapm, sn95031_dapm_widgets,
++				ARRAY_SIZE(sn95031_dapm_widgets));
++	if (ret)
++		pr_err("soc_dapm_new_control failed %d", ret);
++	ret = snd_soc_dapm_add_routes(&codec->dapm, sn95031_audio_map,
++				ARRAY_SIZE(sn95031_audio_map));
++	if (ret)
++		pr_err("soc_dapm_add_routes failed %d", ret);
++
++	return ret;
 +}
 +
-+static int __devexit snd_mfld_mc_remove(struct platform_device *pdev)
++static int sn95031_codec_remove(struct snd_soc_codec *codec)
 +{
-+	struct platform_device *socdev =  platform_get_drvdata(pdev);
-+	pr_debug("snd_mfld_mc_remove called\n");
++	pr_debug("codec_remove called\n");
++	sn95031_set_vaud_bias(codec, SND_SOC_BIAS_OFF);
 +
-+	platform_device_unregister(socdev);
-+	platform_set_drvdata(pdev, NULL);
 +	return 0;
 +}
 +
-+static struct platform_driver snd_mfld_mc_driver = {
-+	.driver = {
-+		.owner = THIS_MODULE,
-+		.name = "msic_audio",
-+	},
-+	.probe = snd_mfld_mc_probe,
-+	.remove = __devexit_p(snd_mfld_mc_remove),
++struct snd_soc_codec_driver sn95031_codec = {
++	.probe =	sn95031_codec_probe,
++	.remove =	sn95031_codec_remove,
++	.read		= sn95031_read,
++	.write		= sn95031_write,
++	.set_bias_level	= sn95031_set_vaud_bias,
 +};
 +
-+static int __init snd_mfld_driver_init(void)
++static int __devinit sn95031_device_probe(struct platform_device *pdev)
 +{
-+	pr_debug("snd_mfld_driver_init called\n");
-+	return platform_driver_register(&snd_mfld_mc_driver);
++	pr_debug("codec device probe called for %s\n", dev_name(&pdev->dev));
++	return snd_soc_register_codec(&pdev->dev, &sn95031_codec,
++			sn95031_dais, ARRAY_SIZE(sn95031_dais));
 +}
-+module_init(snd_mfld_driver_init);
 +
-+static void __exit snd_mfld_driver_exit(void)
++static int __devexit sn95031_device_remove(struct platform_device *pdev)
 +{
-+	pr_debug("snd_mfld_driver_exit called\n");
-+	platform_driver_unregister(&snd_mfld_mc_driver);
++	pr_debug("codec device remove called\n");
++	snd_soc_unregister_codec(&pdev->dev);
++	return 0;
 +}
-+module_exit(snd_mfld_driver_exit);
 +
-+MODULE_DESCRIPTION("ASoC Intel(R) MID Machine driver");
++static struct platform_driver sn95031_codec_driver = {
++	.driver		= {
++		.name		= "sn95031",
++		.owner		= THIS_MODULE,
++	},
++	.probe		= sn95031_device_probe,
++	.remove		= sn95031_device_remove,
++};
++
++static int __init sn95031_init(void)
++{
++	pr_debug("driver init called\n");
++	return platform_driver_register(&sn95031_codec_driver);
++}
++module_init(sn95031_init);
++
++static void __exit sn95031_exit(void)
++{
++	pr_debug("driver exit called\n");
++	platform_driver_unregister(&sn95031_codec_driver);
++}
++module_exit(sn95031_exit);
++
++MODULE_DESCRIPTION("ASoC Intel(R) SN95031 codec driver");
 +MODULE_AUTHOR("Vinod Koul <vinod.koul@intel.com>");
 +MODULE_AUTHOR("Harsha Priya <priya.harsha@intel.com>");
 +MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:msic-audio");
++MODULE_ALIAS("platform:sn95031");
+diff --git a/sound/soc/codecs/sn95031.h b/sound/soc/codecs/sn95031.h
+new file mode 100644
+index 0000000..b17a39b
+--- /dev/null
++++ b/sound/soc/codecs/sn95031.h
+@@ -0,0 +1,99 @@
++/*
++ *  sn95031.h - TI sn95031 Codec driver
++ *
++ *  Copyright (C) 2010 Intel Corp
++ *  Author: Vinod Koul <vinod.koul@intel.com>
++ *  Author: Harsha Priya <priya.harsha@intel.com>
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License along
++ *  with this program; if not, write to the Free Software Foundation, Inc.,
++ *  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *
++ */
++#ifndef _SN95031_H
++#define _SN95031_H
++
++/*register map*/
++#define SN95031_VAUD			0xDB
++#define SN95031_VHSP			0xDC
++#define SN95031_VHSN			0xDD
++#define SN95031_VIHF			0xC9
++
++#define SN95031_AUDPLLCTRL		0x240
++#define SN95031_DMICBUF0123		0x241
++#define SN95031_DMICBUF45		0x242
++#define SN95031_DMICGPO		0x244
++#define SN95031_DMICMUX		0x245
++#define SN95031_DMICLK			0x246
++#define SN95031_MICBIAS		0x247
++#define SN95031_ADCCONFIG		0x248
++#define SN95031_MICAMP1		0x249
++#define SN95031_MICAMP2		0x24A
++#define SN95031_NOISEMUX		0x24B
++#define SN95031_AUDIOMUX12		0x24C
++#define SN95031_AUDIOMUX34		0x24D
++#define SN95031_AUDIOSINC		0x24E
++#define SN95031_AUDIOTXEN		0x24F
++#define SN95031_HSEPRXCTRL		0x250
++#define SN95031_IHFRXCTRL		0x251
++#define SN95031_HSMIXER		0x256
++#define SN95031_DACCONFIG		0x257
++#define SN95031_SOFTMUTE		0x258
++#define SN95031_HSLVOLCTRL		0x259
++#define SN95031_HSRVOLCTRL		0x25A
++#define SN95031_IHFLVOLCTRL		0x25B
++#define SN95031_IHFRVOLCTRL		0x25C
++#define SN95031_DRIVEREN		0x25D
++#define SN95031_LOCTL			0x25E
++#define SN95031_VIB1C1			0x25F
++#define SN95031_VIB1C2			0x260
++#define SN95031_VIB1C3			0x261
++#define SN95031_VIB1SPIPCM1		0x262
++#define SN95031_VIB1SPIPCM2		0x263
++#define SN95031_VIB1C5			0x264
++#define SN95031_VIB2C1			0x265
++#define SN95031_VIB2C2			0x266
++#define SN95031_VIB2C3			0x267
++#define SN95031_VIB2SPIPCM1		0x268
++#define SN95031_VIB2SPIPCM2		0x269
++#define SN95031_VIB2C5			0x26A
++#define SN95031_BTNCTRL1		0x26B
++#define SN95031_BTNCTRL2		0x26C
++#define SN95031_PCM1TXSLOT01		0x26D
++#define SN95031_PCM1TXSLOT23		0x26E
++#define SN95031_PCM1TXSLOT45		0x26F
++#define SN95031_PCM1RXSLOT0_3		0x270
++#define SN95031_PCM1RXSLOT45		0x271
++#define SN95031_PCM2TXSLOT01		0x272
++#define SN95031_PCM2TXSLOT23		0x273
++#define SN95031_PCM2TXSLOT45		0x274
++#define SN95031_PCM2RXSLOT01		0x275
++#define SN95031_PCM2RXSLOT23		0x276
++#define SN95031_PCM2RXSLOT45		0x277
++#define SN95031_PCM1C1			0x278
++#define SN95031_PCM1C2			0x279
++#define SN95031_PCM1C3			0x27A
++#define SN95031_PCM2C1			0x27B
++#define SN95031_PCM2C2			0x27C
++/*end codec register defn*/
++
++/*vendor defn these are not part of avp*/
++#define SN95031_SSR2			0x381
++#define SN95031_SSR3			0x382
++#define SN95031_SSR5			0x384
++#define SN95031_SSR6			0x385
++
++#endif
 -- 
 1.7.2.3
