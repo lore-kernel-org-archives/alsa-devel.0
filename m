@@ -1,26 +1,23 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: VIA VT1708 bugs
-Date: Tue, 04 Jan 2011 10:21:34 +0100
-Message-ID: <4D22E69E.1000101@canonical.com>
-References: <4D22C24A.1080302@canonical.com>
-	<AANLkTik8uKj97GOOOtPuftePUDcs01nP8aAHsOtAmiZE@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/4] ASoC sst: Add mid machine driver
+Date: Tue, 4 Jan 2011 13:39:13 +0000
+Message-ID: <20110104133913.GA24774@opensource.wolfsonmicro.com>
+References: <1293707593-8372-1-git-send-email-vinod.koul@intel.com>
+	<20110102134715.GE4935@opensource.wolfsonmicro.com>
+	<438BB0150E931F4B9CE701519A44630104C10F2BEE@bgsmsx502.gar.corp.intel.com>
+	<20110103154319.GC6783@opensource.wolfsonmicro.com>
+	<438BB0150E931F4B9CE701519A44630104C10F2EC9@bgsmsx502.gar.corp.intel.com>
+	<20110103162826.GA7370@opensource.wolfsonmicro.com>
+	<438BB0150E931F4B9CE701519A44630104C10F2F06@bgsmsx502.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id C1BBF1038ED
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2011 10:21:36 +0100 (CET)
-Received: from hutte.canonical.com ([91.189.90.181])
-	by adelie.canonical.com with esmtp (Exim 4.71 #1 (Debian))
-	id 1Pa35C-0001KO-CB
-	for <alsa-devel@alsa-project.org>; Tue, 04 Jan 2011 09:21:34 +0000
-Received: from c-83-233-18-148.cust.bredband2.com ([83.233.18.148]
-	helo=[192.168.8.102]) by hutte.canonical.com with esmtpsa
-	(TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.71)
-	(envelope-from <david.henningsson@canonical.com>) id 1Pa35C-0005rR-8y
-	for alsa-devel@alsa-project.org; Tue, 04 Jan 2011 09:21:34 +0000
-In-Reply-To: <AANLkTik8uKj97GOOOtPuftePUDcs01nP8aAHsOtAmiZE@mail.gmail.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 31A23103800
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2011 14:40:46 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <438BB0150E931F4B9CE701519A44630104C10F2F06@bgsmsx502.gar.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,48 +27,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "alan@linux.intel.com" <alan@linux.intel.com>, "Harsha,
+	Priya" <priya.harsha@intel.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 2011-01-04 08:43, Raymond Yau wrote:
-> 2011/1/4 David Henningsson<david.henningsson@canonical.com>
->
->> Hi,
->>
->> the state of VIA VT1708 in the current kernel is far from optimal. It
->> would be good to improve the situation, at least for 2.6.38. On the
->> machine here, I experience at least these bugs:
->> 3) Several users report headphones output being broken
->>
->> * Symptoms vary a little and some might be due to bug 2), but some
->> however report the headphones volume being "grayed out" in alsamixer. I
->> haven't seen that in particular on the hardware here.
->>
->> 4) All these extra controls - "Independent HP", "Jack Detect", "Smart 5.1"
->>
->
-> Independent headphone
->
-> http://www.viaarena.com/forums/showthread.php?t=41015
+On Mon, Jan 03, 2011 at 11:04:11PM +0530, Koul, Vinod wrote:
 
-Ok, that makes some sense. It translates to me as
-* With independent HP turned off - activates auto-mute between 
-speaker-out/line-out and headphone out. Note the difference between VIA 
-and Realtek/Sigmatel here as line-out are auto-muted as well.
+> Thanks, I will add the soc-audio only and move the others to core.
+> So now this machine driver will only add machine controls and dai link along with soc-audio device.
+> Would that suffice
 
-* With independent HP turned on - headphone out and speaker-out/line-out 
-should take output from different PCM subdevices.
+That sounds reasonable; I'd need to see the code to confirm.
 
-> "Smart 5.1"  similar to switch "channel mode" from 2 to 6 in intedl
-> desktop motherboard with 3 audio jacks in rear panel
+> This is codec from TI and I will remove the msic name now.
+> It will now be ti-sn95031.c
+> Does this address your concern on this issue?
 
-But does turning "Smart 5.1" on, mean that mic-in and line-in are always 
-turned into C/LFE and Back L/R jacks, or is it trying to do some kind of 
-autodetection of the current thing plugged in?
-
-Also, it is not obvious to me how "Jack detect" comes into this equation 
-and how they affect the two parameters above...?
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+Normally Linux just uses the part name so that'd just be sn95031 - look
+at the other CODEC drivers for example.  In general you should try to
+make your code look as similar as possible to what other systems are
+doing.
