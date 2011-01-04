@@ -1,23 +1,13 @@
-From: Karsten Wiese <fzu@wemgehoertderstaat.de>
-Subject: [PATCH] snd-usb-us122l: Fix missing NULL checks
-Date: Tue, 4 Jan 2011 01:20:37 +0100
-Message-ID: <201101040120.38492.fzu@wemgehoertderstaat.de>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Add internal mic for IDT 92HD88B
+Date: Tue, 04 Jan 2011 06:57:27 +0100
+Message-ID: <4D22B6C7.3060806@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------050904050906070104050107"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout5.freenet.de (mout5.freenet.de [195.4.92.95])
-	by alsa0.perex.cz (Postfix) with ESMTP id B84B81038C5
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2011 01:20:44 +0100 (CET)
-Received: from [195.4.92.10] (helo=0.mx.freenet.de)
-	by mout5.freenet.de with esmtpa (ID fzu@wemgehoertderstaat.de) (port
-	25) (Exim 4.72 #3) id 1PZudl-0005cN-Ll
-	for alsa-devel@alsa-project.org; Tue, 04 Jan 2011 01:20:41 +0100
-Received: from p5dd50289.dip0.t-ipconnect.de ([93.213.2.137]:64223
-	helo=a64.localdomain)
-	by 0.mx.freenet.de with esmtpa (ID fzu@wemgehoertderstaat.de) (port 25)
-	(Exim 4.72 #3) id 1PZudl-0004l1-Ch
-	for alsa-devel@alsa-project.org; Tue, 04 Jan 2011 01:20:41 +0100
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id BFEAD1038C5
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2011 06:57:30 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,104 +17,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Fix missing NULL checks in usb_stream_hwdep_poll() and usb_stream_hwdep_ioctl().
-Wake up poll waiters before returning from usb_stream_hwdep_ioctl().
+This is a multi-part message in MIME format.
+--------------050904050906070104050107
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
-Cc: stable@kernel.org
----
- sound/usb/usx2y/us122l.c |   41 ++++++++++++++++++++---------------------
- 1 files changed, 20 insertions(+), 21 deletions(-)
+BugLink: http://bugs.launchpad.net/bugs/696493
 
-diff --git a/sound/usb/usx2y/us122l.c b/sound/usb/usx2y/us122l.c
-index 91bb296..7abda8d 100644
---- a/sound/usb/usx2y/us122l.c
-+++ b/sound/usb/usx2y/us122l.c
-@@ -269,29 +269,26 @@ static unsigned int usb_stream_hwdep_poll(struct snd_hwdep *hw,
- 					  struct file *file, poll_table *wait)
- {
- 	struct us122l	*us122l = hw->private_data;
--	struct usb_stream *s = us122l->sk.s;
- 	unsigned	*polled;
- 	unsigned int	mask;
- 
- 	poll_wait(file, &us122l->sk.sleep, wait);
- 
--	switch (s->state) {
--	case usb_stream_ready:
--		if (us122l->first == file)
--			polled = &s->periods_polled;
--		else
--			polled = &us122l->second_periods_polled;
--		if (*polled != s->periods_done) {
--			*polled = s->periods_done;
--			mask = POLLIN | POLLOUT | POLLWRNORM;
--			break;
-+	mask = POLLIN | POLLOUT | POLLWRNORM | POLLERR;
-+	if (mutex_trylock(&us122l->mutex)) {
-+		struct usb_stream *s = us122l->sk.s;
-+		if (s && s->state == usb_stream_ready) {
-+			if (us122l->first == file)
-+				polled = &s->periods_polled;
-+			else
-+				polled = &us122l->second_periods_polled;
-+			if (*polled != s->periods_done) {
-+				*polled = s->periods_done;
-+				mask = POLLIN | POLLOUT | POLLWRNORM;
-+			} else
-+				mask = 0;
- 		}
--		/* Fall through */
--		mask = 0;
--		break;
--	default:
--		mask = POLLIN | POLLOUT | POLLWRNORM | POLLERR;
--		break;
-+		mutex_unlock(&us122l->mutex);
- 	}
- 	return mask;
- }
-@@ -377,6 +374,7 @@ static int usb_stream_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
- {
- 	struct usb_stream_config *cfg;
- 	struct us122l *us122l = hw->private_data;
-+	struct usb_stream *s;
- 	unsigned min_period_frames;
- 	int err = 0;
- 	bool high_speed;
-@@ -422,18 +420,18 @@ static int usb_stream_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
- 	snd_power_wait(hw->card, SNDRV_CTL_POWER_D0);
- 
- 	mutex_lock(&us122l->mutex);
-+	s = us122l->sk.s;
- 	if (!us122l->master)
- 		us122l->master = file;
- 	else if (us122l->master != file) {
--		if (memcmp(cfg, &us122l->sk.s->cfg, sizeof(*cfg))) {
-+		if (!s || memcmp(cfg, &s->cfg, sizeof(*cfg))) {
- 			err = -EIO;
- 			goto unlock;
- 		}
- 		us122l->slave = file;
- 	}
--	if (!us122l->sk.s ||
--	    memcmp(cfg, &us122l->sk.s->cfg, sizeof(*cfg)) ||
--	    us122l->sk.s->state == usb_stream_xrun) {
-+	if (!s || memcmp(cfg, &s->cfg, sizeof(*cfg)) ||
-+	    s->state == usb_stream_xrun) {
- 		us122l_stop(us122l);
- 		if (!us122l_start(us122l, cfg->sample_rate, cfg->period_frames))
- 			err = -EIO;
-@@ -444,6 +442,7 @@ unlock:
- 	mutex_unlock(&us122l->mutex);
- free:
- 	kfree(cfg);
-+	wake_up_all(&us122l->sk.sleep);
- 	return err;
- }
- 
+According to datasheet (and real-world testing), IDT 92HD88B can
+have internal mics at NID 0x11 and 0x20, so enable them accordingly.
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+
 -- 
-1.7.2.3
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
+
+--------------050904050906070104050107
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Add-internal-mic-for-IDT-92HD88B.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Add-internal-mic-for-IDT-92HD88B.patch"
+
+>From 4fdc8bb0ab1e786821003cb448559efea9d5081a Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Tue, 4 Jan 2011 06:30:53 +0100
+Subject: [PATCH] ALSA: HDA: Add internal mic for IDT 92HD88B
+
+BugLink: http://bugs.launchpad.net/bugs/696493
+
+According to datasheet (and real-world testing), IDT 92HD88B can
+have internal mics at NID 0x11 and 0x20, so enable them accordingly.
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_sigmatel.c |   12 +++++++++++-
+ 1 files changed, 11 insertions(+), 1 deletions(-)
+
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index 6131a92..c8d812e 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -389,6 +389,9 @@ static hda_nid_t stac92hd83xxx_dmic_nids[STAC92HD83XXX_NUM_DMICS + 1] = {
+ 	0x11, 0x20, 0
+ };
+ 
++#define STAC92HD88XXX_NUM_DMICS	STAC92HD83XXX_NUM_DMICS
++#define stac92hd88xxx_dmic_nids	stac92hd83xxx_dmic_nids
++
+ #define STAC92HD87B_NUM_DMICS	 1
+ static hda_nid_t stac92hd87b_dmic_nids[STAC92HD87B_NUM_DMICS + 1] = {
+ 	0x11, 0
+@@ -5462,11 +5465,18 @@ again:
+ 		spec->num_dmics = stac92xx_connected_ports(codec,
+ 				stac92hd87b_dmic_nids,
+ 				STAC92HD87B_NUM_DMICS);
+-		/* Fall through */
++		spec->num_pins = ARRAY_SIZE(stac92hd88xxx_pin_nids);
++		spec->pin_nids = stac92hd88xxx_pin_nids;
++		spec->mono_nid = 0;
++		spec->num_pwrs = 0;
++		break;
+ 	case 0x111d7666:
+ 	case 0x111d7667:
+ 	case 0x111d7668:
+ 	case 0x111d7669:
++		spec->num_dmics = stac92xx_connected_ports(codec,
++				stac92hd88xxx_dmic_nids,
++				STAC92HD88XXX_NUM_DMICS);
+ 		spec->num_pins = ARRAY_SIZE(stac92hd88xxx_pin_nids);
+ 		spec->pin_nids = stac92hd88xxx_pin_nids;
+ 		spec->mono_nid = 0;
+-- 
+1.7.1
+
+
+--------------050904050906070104050107
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------050904050906070104050107--
