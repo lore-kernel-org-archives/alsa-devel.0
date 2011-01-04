@@ -1,22 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: regarding references taken on platform and codec
- driver modules
-Date: Tue, 4 Jan 2011 15:48:26 +0000
-Message-ID: <20110104154825.GF24774@opensource.wolfsonmicro.com>
-References: <98769532B4BB14429434178695419EAE053BF51941@bgsmsx501.gar.corp.intel.com>
-	<20110103155454.GE6783@opensource.wolfsonmicro.com>
-	<98769532B4BB14429434178695419EAE053BF51B26@bgsmsx501.gar.corp.intel.com>
-	<20110103163532.GB7370@opensource.wolfsonmicro.com>
-	<98769532B4BB14429434178695419EAE053BF51BC3@bgsmsx501.gar.corp.intel.com>
+From: VDR User <user.vdr@gmail.com>
+Subject: Re: Bug in setting channels,
+	related to recent ELD/EDID changes?
+Date: Tue, 4 Jan 2011 08:41:31 -0800
+Message-ID: <AANLkTimHu0QS-t=JroWy4j0vts0wjq_R4m4VrGpmu-sb@mail.gmail.com>
+References: <AANLkTikneYHc9NmrRW41=xRBW_PVgc0jqdcOaTgHcC-t@mail.gmail.com>
+	<4D12E292.9050204@iki.fi>
+	<AANLkTimxHsUS_zVm0_m-vUcwt4vupUAf-vRhH5VWLwoy@mail.gmail.com>
+	<4D20508C.7070609@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1CD8C243AA
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2011 16:49:58 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <98769532B4BB14429434178695419EAE053BF51BC3@bgsmsx501.gar.corp.intel.com>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id E5CB324461
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2011 17:41:34 +0100 (CET)
+Received: by iye19 with SMTP id 19so14678812iye.38
+	for <alsa-devel@alsa-project.org>; Tue, 04 Jan 2011 08:41:32 -0800 (PST)
+In-Reply-To: <4D20508C.7070609@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,92 +27,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Harsha, Priya" <priya.harsha@intel.com>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, Linux-ALSA <alsa-devel@alsa-project.org>, ".lrg"@slimlogic.co.uk
+To: Anssi Hannula <anssi.hannula@iki.fi>
+Cc: Takashi Iwai <tiwai@suse.de>, "mailing list: alsa-dev" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 03, 2011 at 11:26:34PM +0530, Harsha, Priya wrote:
-
-> Please provide your comments on the patch below that makes this change
-
-Please follow Documentation/SubmittingPatches - remember to CC
-maintainers (I've added Liam) and don't bury your patches in the middle
-of another e-mail.
-
-> From: Harsha Priya <priya.harsha@intel.com>
-> Date: Mon, 3 Jan 2011 22:36:05 +0530
-> Subject: [PATCH] Fix the reference to codec and platform driver to where they are probed
-> 
-> The soc-core take the platform and codec driver reference and does not free
-> them all. This cause the module unload to fail.
-
-Please explain in which circumstances this happens in the changelog; 
-
-> This patch fixes by the taking one reference to platform and codec module and 
-> free the same.This allows load/unload properly
-
-This looks reasonable, though we're now not counting CODEC DAIs
-individually as we do with platform DAIs which is a bit asymmetric, it
-might be nicer to change to free all the references we're currently
-taking to the CODEC.  I'm not too fussed, though.
-
-> free the same.This allows load/unload properly
-> 
-> Signed-off-by: Harsha Priya <priya.harsha@intel.com>
-> Signed-off-by: Vinod Koul<vinod.koul@intel.com>
-> 
-> 	modified:   sound/soc/soc-core.c
-
-No need for this in the patch either.  Leaving the patch content for Liam:
-
-> 
-> ---
->  sound/soc/soc-core.c |   14 +++++++-------
->  1 files changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c index 606281a..97f9d3e 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -1259,9 +1259,6 @@ find_codec:
->  		if (!strcmp(codec->name, dai_link->codec_name)) {
->  			rtd->codec = codec;
->  
-> -			if (!try_module_get(codec->dev->driver->owner))
-> -				return -ENODEV;
-> -
->  			/* CODEC found, so find CODEC DAI from registered DAIs from this CODEC*/
->  			list_for_each_entry(codec_dai, &dai_list, list) {
->  				if (codec->dev == codec_dai->dev && @@ -1287,10 +1284,6 @@ find_platform:
->  	/* no, then find CPU DAI from registered DAIs*/
->  	list_for_each_entry(platform, &platform_list, list) {
->  		if (!strcmp(platform->name, dai_link->platform_name)) {
-> -
-> -			if (!try_module_get(platform->dev->driver->owner))
-> -				return -ENODEV;
-> -
->  			rtd->platform = platform;
->  			goto out;
->  		}
-> @@ -1425,6 +1418,9 @@ static int soc_probe_codec(struct snd_soc_card *card,
->  	soc_init_codec_debugfs(codec);
->  
->  	/* mark codec as probed and add to card codec list */
-> +	if (!try_module_get(codec->dev->driver->owner))
-> +		return -ENODEV;
-> +
->  	codec->probed = 1;
->  	list_add(&codec->card_list, &card->codec_dev_list);
->  	list_add(&codec->dapm.list, &card->dapm_list); @@ -1556,6 +1552,10 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num)
->  			}
->  		}
->  		/* mark platform as probed and add to card platform list */
-> +
-> +		if (!try_module_get(platform->dev->driver->owner))
-> +			return -ENODEV;
-> +
->  		platform->probed = 1;
->  		list_add(&platform->card_list, &card->platform_dev_list);
->  	}
-> --
-> 1.7.2.3
-> 
+T24gU3VuLCBKYW4gMiwgMjAxMSBhdCAyOjE2IEFNLCBBbnNzaSBIYW5udWxhIDxhbnNzaS5oYW5u
+dWxhQGlraS5maT4gd3JvdGU6Cj4gSGkhCj4KPiBUYWthc2hpLCBpdCBzZWVtcyB0aGUgImFsbG93
+IGFsbCB3aGVuIG5vdCBwbHVnZ2VkIGluIiBiZWhhdmlvdXIgeW91Cj4gaW1wbGVtZW50ZWQgaW4g
+YmJiZTMzOTAgaXMgbm90IGVub3VnaCB0byBhbGxvdyBhcHBsaWNhdGlvbnMgdG8gb3BlbiB0aGUK
+PiBkZXZpY2UgYmVmb3JlIHRoZSBvdXRwdXQgZGV2aWNlIGlzIHJlYWR5LiBTd2l0Y2hlZC1vZmYg
+QS9WIHJlY2VpdmVycyBtYXkKPiBwcm92aWRlIHRoZSBpbmZvcm1hdGlvbiBvZiB0aGUgcGx1Z2dl
+ZC1pbiB0ZWxldmlzaW9uIHdoaWNoIHVzdWFsbHkKPiByZXN0cmljdHMgdGhlIG1heF9jaGFubmVs
+cyB0byAyLCBjYXVzaW5nIGFwcGxpY2F0aW9ucyB0byBmYWlsIG9wZW5pbmcKPiB0aGUgZGV2aWNl
+IHdpdGggbW9yZSBjaGFubmVscyB3aGVuIGEgdGhlIEEvViByZWNlaXZlciBpcyBzd2l0Y2hlZCBv
+ZmYuCj4KPiBBbHNvLCBldmVuIGlmIHRoZSBhcHBsaWNhdGlvbiBjYW4gZ3JhY2VmdWxseSBmYWxs
+YmFjayB0byBzdGVyZW8sIEFGQUlLCj4gdGhlcmUgaXMgbm8gbWV0aG9kIGZvciBhbiBhcHBsaWNh
+dGlvbiB0byBnZXQgaW5mb3JtZWQgd2hlbiB0aGUKPiBsaW1pdGF0aW9uIGlzIGxpZnRlZCwgc28g
+aXQgY2FuJ3QgYXV0b21hdGljYWxseSByZXN1bWUgbXVsdGljaGFubmVsCj4gb3V0cHV0IHdoZW4g
+dGhlIEEvViByZWNlaXZlciBpcyBzd2l0Y2hlZCBvbiBhZ2Fpbi4KPgo+IEJhc2VkIG9uIHRoaXMg
+aW5mbywgSSBndWVzcyB0aGUgcmVzdHJpY3Rpb25zIGJhc2VkIG9uIEVMRCBzaG91bGQgYmUKPiBy
+ZW1vdmVkIDovCj4gVW5sZXNzIHlvdSBoYXZlIHNvbWUgb3RoZXIgaWRlYXMgdG8gZml4IHRoZSBp
+c3N1ZSwgb2YgY291cnNlLgo+Cj4KPiBPbiAyMy4xMi4yMDEwIDA5OjEzLCBWRFIgVXNlciB3cm90
+ZToKPj4gT24gV2VkLCBEZWMgMjIsIDIwMTAgYXQgOTo0OCBQTSwgQW5zc2kgSGFubnVsYSA8YW5z
+c2kuaGFubnVsYUBpa2kuZmk+IHdyb3RlOgo+Pj4gT24gMjMuMTIuMjAxMCAwNDoyMiwgVkRSIFVz
+ZXIgd3JvdGU6Cj4+Pj4gSGkuIMKgQWZ0ZXIgdXBkYXRpbmcgbXkgc3RhYmxlIGtlcm5lbCBmcm9t
+IDIuNi4zNS43IHRvIDIuNi4zNi4yLCBJIGdldAo+Pj4+IGEgcHJvYmxlbSB3aGVuIHR1bmluZyBI
+RFRWIGNoYW5uZWxzIHRoYXQgdXNlIHN1cnJvdW5kIHNvdW5kLiDCoFRoZQo+Pj4+IGVycm9yIEkg
+Z2V0IGlzIGFzIGZvbGxvd3M6Cj4+Pj4KPj4+PiBhdWRpb19hbHNhX291dDogQ2Fubm90IHNldCBu
+dW1iZXIgb2YgY2hhbm5lbHMgdG8gNiAoZXJyPS0yMjpJbnZhbGlkIGFyZ3VtZW50KQo+Pj4+IGF1
+ZGlvX291dDogb3BlbiBmYWlsZWQhCj4+Pj4KPj4+PiBXaXRoIHRoZSBmb2xsb3dpbmcgeGluZSBl
+cnJvcjoKPj4+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tIChFUlJPUikgLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLQo+Pj4+IFRoZSBhdWRpbyBkZXZpY2UgaXMgdW5hdmFpbGFibGUuIFBsZWFzZSB2ZXJp
+ZnkgaWYgYW5vdGhlciBwcm9ncmFtCj4+Pj4gYWxyZWFkeSB1c2VzIGl0Lgo+Pj4+Cj4+Pj4gWydB
+dWRpbyBkZXZpY2UgdW5hdmFpbGFibGUnICcnXQo+Pj4+IC0tLS0tLS0tLS0tLS0tLS0tLSAoRU5E
+IE9GIEVSUk9SKSAtLS0tLS0tLS0tLS0tLS0tLS0tCj4+Pgo+Pj4gV2hhdCBhcmUgdGhlIGNvbnRl
+bnRzIG9mIC9wcm9jL2Fzb3VuZC9OVmlkaWEvZWxkKiBhbmQKPj4+IC9wcm9jL2Fzb3VuZC9OVmlk
+aWEvY29kZWMqID8KPj4KPj4gQm9vdGVkIGludG8gMi42LjM1Ljcgd2l0aCByZWNlaXZlciBPTjoK
+Pj4gJCBjYXQgL3Byb2MvYXNvdW5kL05WaWRpYV8xL2VsZCoKPj4gbW9uaXRvcl9wcmVzZW50IMKg
+IMKgIMKgIMKgIDEKPj4gZWxkX3ZhbGlkIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDEKPj4gbW9uaXRv
+cl9uYW1lIMKgIMKgIMKgIMKgIMKgIMKgU09OWSBBVkFNUAo+Pgo+PiBjb25uZWN0aW9uX3R5cGUg
+wqAgwqAgwqAgwqAgSERNSQo+PiBlbGRfdmVyc2lvbiDCoCDCoCDCoCDCoCDCoCDCoCBbMHgyXSBD
+RUEtODYxRCBvciBiZWxvdwo+PiBlZGlkX3ZlcnNpb24gwqAgwqAgwqAgwqAgwqAgwqBbMHgzXSBD
+RUEtODYxLUIsIEMgb3IgRAo+PiBtYW51ZmFjdHVyZV9pZCDCoCDCoCDCoCDCoCDCoDB4ZDk0ZAo+
+PiBwcm9kdWN0X2lkIMKgIMKgIMKgIMKgIMKgIMKgIMKgMHhmYjAxCj4+IHBvcnRfaWQgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgMHgyMDAwMAo+PiBzdXBwb3J0X2hkY3AgwqAgwqAgwqAgwqAgwqAg
+wqAwCj4+IHN1cHBvcnRfYWkgwqAgwqAgwqAgwqAgwqAgwqAgwqAwCj4+IGF1ZGlvX3N5bmNfZGVs
+YXkgwqAgwqAgwqAgwqAwCj4+IHNwZWFrZXJzIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgWzB4NWZd
+IEZML0ZSIExGRSBGQyBSTC9SUiBSQyBSTEMvUlJDCj4+IHNhZF9jb3VudCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCA2Cj4+IHNhZDBfY29kaW5nX3R5cGUgwqAgwqAgwqAgwqBbMHgxXSBMUENNCj4+IHNh
+ZDBfY2hhbm5lbHMgwqAgwqAgwqAgwqAgwqAgMgo+PiBzYWQwX3JhdGVzIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgWzB4MWVlMF0gNDQxMDAgNDgwMDAgODgyMDAgMTc2NDAwIDE5MjAwMCAzODQwMDAKPj4g
+c2FkMF9iaXRzIMKgIMKgIMKgIMKgIMKgIMKgIMKgIFsweGUwMDAwXSAxNiAyMCAyNAo+PiBzYWQx
+X2NvZGluZ190eXBlIMKgIMKgIMKgIMKgWzB4MV0gTFBDTQo+PiBzYWQxX2NoYW5uZWxzIMKgIMKg
+IMKgIMKgIMKgIDYKPj4gc2FkMV9yYXRlcyDCoCDCoCDCoCDCoCDCoCDCoCDCoFsweDFlZTBdIDQ0
+MTAwIDQ4MDAwIDg4MjAwIDE3NjQwMCAxOTIwMDAgMzg0MDAwCj4+IHNhZDFfYml0cyDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCBbMHhlMDAwMF0gMTYgMjAgMjQKPj4gc2FkMl9jb2RpbmdfdHlwZSDCoCDC
+oCDCoCDCoFsweDFdIExQQ00KPj4gc2FkMl9jaGFubmVscyDCoCDCoCDCoCDCoCDCoCA4Cj4+IHNh
+ZDJfcmF0ZXMgwqAgwqAgwqAgwqAgwqAgwqAgwqBbMHgxZWUwXSA0NDEwMCA0ODAwMCA4ODIwMCAx
+NzY0MDAgMTkyMDAwIDM4NDAwMAo+PiBzYWQyX2JpdHMgwqAgwqAgwqAgwqAgwqAgwqAgwqAgWzB4
+ZTAwMDBdIDE2IDIwIDI0Cj4+IHNhZDNfY29kaW5nX3R5cGUgwqAgwqAgwqAgwqBbMHgyXSBBQy0z
+Cj4+IHNhZDNfY2hhbm5lbHMgwqAgwqAgwqAgwqAgwqAgNgo+PiBzYWQzX3JhdGVzIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgWzB4ZTBdIDQ0MTAwIDQ4MDAwIDg4MjAwCj4+IHNhZDNfbWF4X2JpdHJhdGUg
+wqAgwqAgwqAgwqA2ODAwMDAKPj4gc2FkNF9jb2RpbmdfdHlwZSDCoCDCoCDCoCDCoFsweDddIERU
+Uwo+PiBzYWQ0X2NoYW5uZWxzIMKgIMKgIMKgIMKgIMKgIDYKPj4gc2FkNF9yYXRlcyDCoCDCoCDC
+oCDCoCDCoCDCoCDCoFsweDZlMF0gNDQxMDAgNDgwMDAgODgyMDAgMTc2NDAwIDE5MjAwMAo+PiBz
+YWQ0X21heF9iaXRyYXRlIMKgIMKgIMKgIMKgMTUzNjAwMAo+PiBzYWQ1X2NvZGluZ190eXBlIMKg
+IMKgIMKgIMKgWzB4YV0gRS1BQy0zL0REKyAoRG9sYnkgRGlnaXRhbCBQbHVzKQo+PiBzYWQ1X2No
+YW5uZWxzIMKgIMKgIMKgIMKgIMKgIDgKPj4gc2FkNV9yYXRlcyDCoCDCoCDCoCDCoCDCoCDCoCDC
+oFsweGMwXSA0ODAwMCA4ODIwMAo+Pgo+PiBCb290ZWQgaW50byAyLjYuMzUuNyB3aXRoIHJlY2Vp
+dmVyIE9GRjoKPj4gJCBjYXQgL3Byb2MvYXNvdW5kL05WaWRpYV8xL2VsZCoKPj4gbW9uaXRvcl9w
+cmVzZW50IMKgIMKgIMKgIMKgIDEKPj4gZWxkX3ZhbGlkIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDEK
+Pj4gbW9uaXRvcl9uYW1lIMKgIMKgIMKgIMKgIMKgIMKgU09OWSBBVkFNUAo+Pgo+PiBjb25uZWN0
+aW9uX3R5cGUgwqAgwqAgwqAgwqAgSERNSQo+PiBlbGRfdmVyc2lvbiDCoCDCoCDCoCDCoCDCoCDC
+oCBbMHgyXSBDRUEtODYxRCBvciBiZWxvdwo+PiBlZGlkX3ZlcnNpb24gwqAgwqAgwqAgwqAgwqAg
+wqBbMHgzXSBDRUEtODYxLUIsIEMgb3IgRAo+PiBtYW51ZmFjdHVyZV9pZCDCoCDCoCDCoCDCoCDC
+oDB4ZDk0ZAo+PiBwcm9kdWN0X2lkIMKgIMKgIMKgIMKgIMKgIMKgIMKgMHhmYjAxCj4+IHBvcnRf
+aWQgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgMHgyMDAwMAo+PiBzdXBwb3J0X2hkY3AgwqAgwqAg
+wqAgwqAgwqAgwqAwCj4+IHN1cHBvcnRfYWkgwqAgwqAgwqAgwqAgwqAgwqAgwqAwCj4+IGF1ZGlv
+X3N5bmNfZGVsYXkgwqAgwqAgwqAgwqAwCj4+IHNwZWFrZXJzIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgWzB4ZmZmZl0gRkwvRlIgTEZFIEZDIFJML1JSIFJDIEZMQy9GUkMgUkxDL1JSQwo+PiBGTFcv
+RlJXIEZMSC9GUkggVEMgRkNICj4+IHNhZF9jb3VudCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAxCj4+
+IHNhZDBfY29kaW5nX3R5cGUgwqAgwqAgwqAgwqBbMHgxXSBMUENNCj4+IHNhZDBfY2hhbm5lbHMg
+wqAgwqAgwqAgwqAgwqAgMgo+PiBzYWQwX3JhdGVzIMKgIMKgIMKgIMKgIMKgIMKgIMKgWzB4ZTBd
+IDQ0MTAwIDQ4MDAwIDg4MjAwCj4+IHNhZDBfYml0cyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBbMHgy
+MDAwMF0gMTYKPj4KPj4gSSdtIGNlcnRhaW4gYXQgdGhlIHRpbWUgSSBleHBlcmllbmNlZCB0aGlz
+IGVycm9yLCBteSByZWNlaXZlciB3YXMKPj4gdHVybmVkIG9mZiwgY291bGQgdGhpcyBiZSB0aGUg
+Y2F1c2Ugb2YgdGhlIGVycm9yPyDCoElmIHNvLCB0aGlzIHJlYWxseQo+PiBuZWVkcyB0byBiZSBm
+aXhlZC9yZXdvcmtlZCBhcyBtYW55IHBlb3BsZSBkb24ndCBoYXZlIHRoZWlyIHJlY2VpdmVycwo+
+PiBvbiAodG8gc2F2ZSBwb3dlciB1c2FnZSwgbm9pc2UsIGV0YykgdW5sZXNzIHRoZXkgc3BlY2lm
+aWNhbGx5Cj4+IG5lZWQvd2FudCBpdC4gwqBJbiB0aGUgZXZlbnQgYSByZWNlaXZlciBpcyBvZmYg
+YW5kIHRoZSB1c2VyIGlzIHRyeWluZwo+PiB0byB3YXRjaCBzb21ldGhpbmcgdGhhdCByZXF1aXJl
+cyBtb3JlIHRoZW4gMiBjaGFubmVscywgaGUgc2hvdWxkCj4+IGVpdGhlciB0dXJuIHRoZSByZWNl
+aXZlciBvbiwgb3IgYWRqdXN0IHRoZSBzcGVha2VyIGFycmFuZ2VtZW50IGluIHhpbmUKPj4gdG8g
+c3RlcmVvIC0tIGhvd2V2ZXIsIHdoYXQgc2hvdWxkIG5vdCBoYXBwZW4gaXMgdGhlIGFsc2EgZHJp
+dmVyCj4+IGZhaWxpbmcuIMKgTWF5YmUgYSBiZXR0ZXIgc29sdXRpb24gd291bGQgYmUgdG8gbG9n
+IGFuIGVycm9yIHRvIHN5c2xvZwo+PiBvciBzb21ldGhpbmcgcmF0aGVyIHRoZW4gdGhlIGRyaXZl
+ciBpdHNlbGYgcmV0dXJuaW5nIGFuIGVycm9yPwo+Cj4gQS9WIHJlY2VpdmVycyBzaG93aW5nIFRW
+IGluZm9ybWF0aW9uIGlzIGluZGVlZCBzb21ldGhpbmcgdGhhdCB3YXNuJ3QKPiB0aG91Z2h0IGFi
+b3V0IDooCgpUaGlzIGhhcyBjZXJ0YWlubHkgY2F1c2VkIHByb2JsZW1zLiAgQW55b25lIHRob3Vn
+aHQgb2YgYSB3YXkgdG8KcmVzb2x2ZSBpdCwgb3IgYmV0dGVyIHlldCByZXZlcnNlZCB0aGUgcGF0
+Y2ggdGhhdCBjcmVhdGVkIHRoZQpzaXR1YXRpb24/CgpUaGFua3MsCkRlcmVrCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
