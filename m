@@ -1,24 +1,23 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH 10/11] ASoC: tegra: Harmony machine support
-Date: Mon, 3 Jan 2011 11:39:32 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF030FD79220@HQMAIL01.nvidia.com>
-References: <1292622090-21896-1-git-send-email-swarren@nvidia.com>
-	<1292622090-21896-11-git-send-email-swarren@nvidia.com>
-	<20101217222636.GJ25609@sirena.org.uk>
-	<74CDBE0F657A3D45AFBB94109FB122FF030FD7885D@HQMAIL01.nvidia.com>
-	<20101217230618.GA28364@sirena.org.uk>
-	<20101220211131.GG14986@sirena.org.uk>
-	<74CDBE0F657A3D45AFBB94109FB122FF030FD78E6C@HQMAIL01.nvidia.com>
-	<20101223021916.GB25886@opensource.wolfsonmicro.com>
+From: Karsten Wiese <fzu@wemgehoertderstaat.de>
+Subject: [PATCH] snd-usb-us122l: Fix missing NULL checks
+Date: Tue, 4 Jan 2011 01:20:37 +0100
+Message-ID: <201101040120.38492.fzu@wemgehoertderstaat.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id E17F11038D5
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2011 20:41:15 +0100 (CET)
-In-Reply-To: <20101223021916.GB25886@opensource.wolfsonmicro.com>
-Content-Language: en-US
+Received: from mout5.freenet.de (mout5.freenet.de [195.4.92.95])
+	by alsa0.perex.cz (Postfix) with ESMTP id B84B81038C5
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2011 01:20:44 +0100 (CET)
+Received: from [195.4.92.10] (helo=0.mx.freenet.de)
+	by mout5.freenet.de with esmtpa (ID fzu@wemgehoertderstaat.de) (port
+	25) (Exim 4.72 #3) id 1PZudl-0005cN-Ll
+	for alsa-devel@alsa-project.org; Tue, 04 Jan 2011 01:20:41 +0100
+Received: from p5dd50289.dip0.t-ipconnect.de ([93.213.2.137]:64223
+	helo=a64.localdomain)
+	by 0.mx.freenet.de with esmtpa (ID fzu@wemgehoertderstaat.de) (port 25)
+	(Exim 4.72 #3) id 1PZudl-0004l1-Ch
+	for alsa-devel@alsa-project.org; Tue, 04 Jan 2011 01:20:41 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,40 +27,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "dp@opensource.wolfsonmicro.com" <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> 
-> On Wed, Dec 22, 2010 at 05:13:20PM -0800, Stephen Warren wrote:
-> > As an aside, I was looking through the Tegra documentation, and in fact
-> > the cdev1 pin (which feeds the codec MCLK) can be sourced from pll_a,
-> > i.e. the same clock domain as the I2S bit clock. The existing kernel
-> > clock driver is simply missing the code to set this up.
-> 
-> OK, that's a better solution anyway as it uses less power - the only
-> reason to use the FLL if you can provide a good MCLK directly would be
-> to allow the CODEC to clock itself with the CPU completely off for jack
-> or button detection but that is fairly unusual (usually jack detection
-> wouldn't be a wake event).
-> 
-> > Again unfortunately, implementing and doing that doesn't solve the noise
-> > issue. I suppose I need to start probing the pins with a 'scope/analyzer
-> > to make sure of what's really coming out of Tegra. Pity they're so small
-> > and have no test points:-(
-> 
-> Does providing a good MCLK have any impact at all on the noise levels?
-> It might be interesting to try having the CODEC master the I2S bus - it
-> might not change anything, but it sometimes shows up if one of the clock
-> lines is misconfigured.
+Fix missing NULL checks in usb_stream_hwdep_poll() and usb_stream_hwdep_ioctl().
+Wake up poll waiters before returning from usb_stream_hwdep_ioctl().
 
-Having the codec be master of the bit and frame clocks appears to completely
-solve the noise issues. I do notice that different sample rates play the same
-audio at different pitches though, so something is still wrong, but it's most
-likely to be incorrect codec MCLK input right now; I'll keep investigating...
+Signed-off-by: Karsten Wiese <fzu@wemgehoertderstaat.de>
+Cc: stable@kernel.org
+---
+ sound/usb/usx2y/us122l.c |   41 ++++++++++++++++++++---------------------
+ 1 files changed, 20 insertions(+), 21 deletions(-)
 
-Thanks.
-
+diff --git a/sound/usb/usx2y/us122l.c b/sound/usb/usx2y/us122l.c
+index 91bb296..7abda8d 100644
+--- a/sound/usb/usx2y/us122l.c
++++ b/sound/usb/usx2y/us122l.c
+@@ -269,29 +269,26 @@ static unsigned int usb_stream_hwdep_poll(struct snd_hwdep *hw,
+ 					  struct file *file, poll_table *wait)
+ {
+ 	struct us122l	*us122l = hw->private_data;
+-	struct usb_stream *s = us122l->sk.s;
+ 	unsigned	*polled;
+ 	unsigned int	mask;
+ 
+ 	poll_wait(file, &us122l->sk.sleep, wait);
+ 
+-	switch (s->state) {
+-	case usb_stream_ready:
+-		if (us122l->first == file)
+-			polled = &s->periods_polled;
+-		else
+-			polled = &us122l->second_periods_polled;
+-		if (*polled != s->periods_done) {
+-			*polled = s->periods_done;
+-			mask = POLLIN | POLLOUT | POLLWRNORM;
+-			break;
++	mask = POLLIN | POLLOUT | POLLWRNORM | POLLERR;
++	if (mutex_trylock(&us122l->mutex)) {
++		struct usb_stream *s = us122l->sk.s;
++		if (s && s->state == usb_stream_ready) {
++			if (us122l->first == file)
++				polled = &s->periods_polled;
++			else
++				polled = &us122l->second_periods_polled;
++			if (*polled != s->periods_done) {
++				*polled = s->periods_done;
++				mask = POLLIN | POLLOUT | POLLWRNORM;
++			} else
++				mask = 0;
+ 		}
+-		/* Fall through */
+-		mask = 0;
+-		break;
+-	default:
+-		mask = POLLIN | POLLOUT | POLLWRNORM | POLLERR;
+-		break;
++		mutex_unlock(&us122l->mutex);
+ 	}
+ 	return mask;
+ }
+@@ -377,6 +374,7 @@ static int usb_stream_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
+ {
+ 	struct usb_stream_config *cfg;
+ 	struct us122l *us122l = hw->private_data;
++	struct usb_stream *s;
+ 	unsigned min_period_frames;
+ 	int err = 0;
+ 	bool high_speed;
+@@ -422,18 +420,18 @@ static int usb_stream_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
+ 	snd_power_wait(hw->card, SNDRV_CTL_POWER_D0);
+ 
+ 	mutex_lock(&us122l->mutex);
++	s = us122l->sk.s;
+ 	if (!us122l->master)
+ 		us122l->master = file;
+ 	else if (us122l->master != file) {
+-		if (memcmp(cfg, &us122l->sk.s->cfg, sizeof(*cfg))) {
++		if (!s || memcmp(cfg, &s->cfg, sizeof(*cfg))) {
+ 			err = -EIO;
+ 			goto unlock;
+ 		}
+ 		us122l->slave = file;
+ 	}
+-	if (!us122l->sk.s ||
+-	    memcmp(cfg, &us122l->sk.s->cfg, sizeof(*cfg)) ||
+-	    us122l->sk.s->state == usb_stream_xrun) {
++	if (!s || memcmp(cfg, &s->cfg, sizeof(*cfg)) ||
++	    s->state == usb_stream_xrun) {
+ 		us122l_stop(us122l);
+ 		if (!us122l_start(us122l, cfg->sample_rate, cfg->period_frames))
+ 			err = -EIO;
+@@ -444,6 +442,7 @@ unlock:
+ 	mutex_unlock(&us122l->mutex);
+ free:
+ 	kfree(cfg);
++	wake_up_all(&us122l->sk.sleep);
+ 	return err;
+ }
+ 
 -- 
-nvpublic
+1.7.2.3
