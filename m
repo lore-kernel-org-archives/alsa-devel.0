@@ -1,23 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/4] ASoC sst: Add mid machine driver
-Date: Tue, 4 Jan 2011 13:39:13 +0000
-Message-ID: <20110104133913.GA24774@opensource.wolfsonmicro.com>
-References: <1293707593-8372-1-git-send-email-vinod.koul@intel.com>
-	<20110102134715.GE4935@opensource.wolfsonmicro.com>
-	<438BB0150E931F4B9CE701519A44630104C10F2BEE@bgsmsx502.gar.corp.intel.com>
-	<20110103154319.GC6783@opensource.wolfsonmicro.com>
-	<438BB0150E931F4B9CE701519A44630104C10F2EC9@bgsmsx502.gar.corp.intel.com>
-	<20110103162826.GA7370@opensource.wolfsonmicro.com>
-	<438BB0150E931F4B9CE701519A44630104C10F2F06@bgsmsx502.gar.corp.intel.com>
+From: Tapio Vihuri <tapio.vihuri@nokia.com>
+Subject: Re: [PATCH v2 1/3] ECI: input: introduce ECI accessory
+	input driver
+Date: Tue, 04 Jan 2011 16:01:44 +0200
+Message-ID: <1294149704.2389.82.camel@dell>
+References: <1293716219-26089-1-git-send-email-tapio.vihuri@nokia.com>
+	<1293716219-26089-2-git-send-email-tapio.vihuri@nokia.com>
+	<20110102081922.GD5429@core.coreip.homeip.net>
+Reply-To: tapio.vihuri@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 31A23103800
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2011 14:40:46 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <438BB0150E931F4B9CE701519A44630104C10F2F06@bgsmsx502.gar.corp.intel.com>
+Received: from mgw-da01.nokia.com (smtp.nokia.com [147.243.128.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 71B4A1038BF
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2011 15:02:04 +0100 (CET)
+In-Reply-To: <20110102081922.GD5429@core.coreip.homeip.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,24 +24,160 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "alan@linux.intel.com" <alan@linux.intel.com>, "Harsha,
-	Priya" <priya.harsha@intel.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: ext Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: randy.dunlap@oracle.com, alsa-devel@alsa-project.org, ilkka.koskinen@nokia.com, linux-kernel@vger.kernel.org, samu.p.onkalo@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 03, 2011 at 11:04:11PM +0530, Koul, Vinod wrote:
+On Sun, 2011-01-02 at 00:19 -0800, ext Dmitry Torokhov wrote:
+> Hi Tapio,
+> 
 
-> Thanks, I will add the soc-audio only and move the others to core.
-> So now this machine driver will only add machine controls and dai link along with soc-audio device.
-> Would that suffice
+Hi Dmitry
 
-That sounds reasonable; I'd need to see the code to confirm.
+Thank you for good comments. I sent v3 patch set right after this email.
 
-> This is codec from TI and I will remove the msic name now.
-> It will now be ti-sn95031.c
-> Does this address your concern on this issue?
+--------8<-------
 
-Normally Linux just uses the part name so that'd just be sn95031 - look
-at the other CODEC drivers for example.  In general you should try to
-make your code look as similar as possible to what other systems are
-doing.
+> Please keep Makefile and Kconfig sorted alphabetically.
+> 
+
+Corrected in patch set.
+
+--------8<-------
+
+> Consider switching to sparse keymap library. You won't be needing ugly
+> KEY_MAX + SW_XXX hacks and it will also support remapping keys from
+> userspace.
+> 
+
+Much nicer solution, thank you.
+
+--------8<-------
+
+> Do not break strings on 80 column boundaries, wither align the arguments
+> differently or just go past 80 columns, like this:
+> 
+>                         dev_err(eci->dev,
+>                                 "Unable to control headset microphone\n");
+> 
+Corrected in patch set.
+
+--------8<-------
+
+
+> > +#define eci_initialize_debugfs(eci)  1
+> 
+> Should be 0 I think, and not have a parameter, preferably
+> 
+> static inline int eci_initialize_debugfs(void)
+> {
+>         return 0;
+> }
+> 
+
+I take this static inline solution, but I needed the parameter.
+
+--------8<-------
+
+> > +     struct eci_mem_block *ekey = (void *)buf;
+> > +     int ret;
+> > +
+> > +     /* Read always four bytes */
+> > +     ret = eci->eci_hw_ops->acc_read_direct(0, buf);
+> > +
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     if (ekey->id != ECI_EKEY_BLOCK_ID)
+> > +             return -ENODEV;
+> > +
+> > +     *key = cpu_to_be16(ekey->size);
+> 
+> cpu_to_be16()??? This looks really wierd.
+> 
+
+The ECI specification says that data in ECI accessory's memory is in big
+endian order. This simply get 16-bit size parameter right in any
+endianes machine.
+
+--------8<-------
+
+
+> > +static ssize_t show_cable_plugged(struct device *dev,
+> > +             struct device_attribute *attr, char *buf)
+> > +{
+> > +     struct eci_data *eci = dev_get_drvdata(dev);
+> > +
+> > +     return snprintf(buf, sizeof(buf), "Cable plugged %s\n",
+> > +                             eci->plugged ? "in" : "out");
+> 
+> Should it be dsimple 0/1? How is this attribute supposed to be used?
+> 
+> > +static ssize_t store_cable_plugged(struct device *dev,
+> > +             struct device_attribute *attr,
+> > +             const char *buf, size_t len)
+> > +{
+--------8<-------
+
+> Same here. Should it be in debugfs probably?
+> 
+
+I made it now as 0/1. It's in sysfs as this is user space's interface
+for ECI acessories inserting.
+
+The other way is via ALSA sound driver providing jack detection, but
+it's not there yet.
+
+--------8<-------
+
+> > +     /*
+> > +      * Configure ECI buttons now as we have after parsed
+> > +      * enchancement features table
+> > +      */
+> 
+> I do not understand this comment.
+> 
+
+I have loose some word somewhere... Now it goes:
+ 	/*
+         * Configure ECI buttons now as we know how after
+         * enchancement features table has been parsed
+         */
+
+
+--------8<-------
+
+
+> > +     set_bit(EV_KEY, eci->acc_input->evbit);
+> > +     set_bit(EV_SW, eci->acc_input->evbit);
+> > +     set_bit(EV_REP, eci->acc_input->evbit);
+> 
+> __set_bit(), no neded to lock bus.
+> 
+Corrected in patch set.
+
+--------8<-------
+
+> > +
+> > +static struct miscdevice eci_device = {
+> > +     .minor = MISC_DYNAMIC_MINOR,
+> > +     .name = ECI_DRIVERNAME,
+> > +};
+> 
+> What does this device do?
+> 
+
+Nothing, and I can't even remember why I have put it there first place.
+Removed now.
+
+--------8<-------
+
+> Thank you.
+> 
+> --
+> Dmitry
+
+Thank you, now driver is better.
+
+-- 
+Tapsa
