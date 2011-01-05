@@ -1,15 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.38
-Date: Wed, 5 Jan 2011 12:50:07 +0000
-Message-ID: <20110105125007.GA3268@opensource.wolfsonmicro.com>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: question on SND_SOC_DAPM_MUX
+Date: Wed, 5 Jan 2011 19:08:51 +0530
+Message-ID: <438BB0150E931F4B9CE701519A44630104C119C00F@bgsmsx502.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 21558103909
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2011 13:49:51 +0100 (CET)
-Content-Disposition: inline
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0A40C103931
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2011 14:40:12 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,40 +19,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 644a98453d5764f467b73f2e02df0d2688da1873:
+Hi,
 
-  fbdev: sh_mobile_hdmi: fixup compile error (2010-12-29 13:06:29 +0000)
+I have linein and mic in my codec and a mux which takes these two inputs and
+feeds to adc.
 
-are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.38
+So I added this mux as:
+static const char *sn95031_mic_texts[] = { "amic", "linein" };
 
-Harsha Priya (1):
-      ASoC: Fix the device references to codec and platform drivers
+static const struct soc_enum sn95031_micl_enum =
+       SOC_ENUM_SINGLE(SN95031_ADCCONFIG, 1, 2, sn95031_mic_texts);
 
-Jarkko Nikula (1):
-      ASoC: Remove needless inclusion of tlv320aic3x.h from machine drivers
+And in my dapm_widget array:
+      SND_SOC_DAPM_MUX("Input MICL",
+                        SND_SOC_NOPM, 0, 0, &sn95031_micl_mux_control),
 
-Kuninori Morimoto (1):
-      ASoC: sh: fsi-da7210: remove unnecessary format settings
+I saw at few place in existing codecs that text in MUX (user selection) can be
+used as path element (let me know if that's incorrect)
 
-Mark Brown (2):
-      ASoC: Change Samsung Kconfig from ASOC_ to SND_SOC_
-      Merge branch 'for-2.6.37' into for-2.6.38
 
-Maurus Cuelenaere (1):
-      ASoC: Fix SmartQ compilation
+So I added :
+  { "MIC1 Enable", "amic", "ADC Left"}
 
- sound/soc/davinci/davinci-evm.c           |    1 -
- sound/soc/omap/n810.c                     |    1 -
- sound/soc/omap/rx51.c                     |    1 -
- sound/soc/s6000/s6105-ipcam.c             |    1 -
- sound/soc/samsung/Kconfig                 |   72 ++++++++++++++--------------
- sound/soc/samsung/Makefile                |   36 +++++++-------
- sound/soc/samsung/s3c24xx_simtec_hermes.c |    2 -
- sound/soc/sh/fsi-da7210.c                 |    2 +-
- sound/soc/soc-core.c                      |   14 +++---
- 9 files changed, 62 insertions(+), 68 deletions(-)
+But while adding the routes it returns an error that 
+"sn95031: Failed to add route ADC Left->MIC1 Enable "
+
+Is this the right way to go about adding a mux selection?
+
+~Vinod
