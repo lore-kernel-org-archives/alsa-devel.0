@@ -1,23 +1,20 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: Re: regarding references taken on platform and codec
- driver modules
-Date: Wed, 5 Jan 2011 22:49:32 +0530
-Message-ID: <438BB0150E931F4B9CE701519A44630104C119C092@bgsmsx502.gar.corp.intel.com>
-References: <98769532B4BB14429434178695419EAE053BF51941@bgsmsx501.gar.corp.intel.com>
-	<20110103155454.GE6783@opensource.wolfsonmicro.com>
-	<98769532B4BB14429434178695419EAE053BF51B26@bgsmsx501.gar.corp.intel.com>
-	<20110103163532.GB7370@opensource.wolfsonmicro.com>
-	<98769532B4BB14429434178695419EAE053BF51BC3@bgsmsx501.gar.corp.intel.com>
-	<20110104154825.GF24774@opensource.wolfsonmicro.com>
-	<98769532B4BB14429434178695419EAE053BFABE47@bgsmsx501.gar.corp.intel.com>
+From: <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH] ASoC: omap: rx51: Add stereo output
+ support to audio jack
+Date: Wed, 5 Jan 2011 18:12:21 +0000
+Message-ID: <CF32F28EDF8D20468EEDCBE4975DA0272A7BD0@008-AM1MPN1-027.mgdnok.nokia.com>
+References: <1294242360-1903-1-git-send-email-jhnikula@gmail.com>
+	<20110105155509.GC746@opensource.wolfsonmicro.com>
+	<20110105182924.cf90b12c.jhnikula@gmail.com>,
+	<20110105163900.GD746@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id C8309244CA
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2011 18:19:38 +0100 (CET)
-In-Reply-To: <98769532B4BB14429434178695419EAE053BFABE47@bgsmsx501.gar.corp.intel.com>
+Received: from mgw-da01.nokia.com (mgw-da01.ext.nokia.com [147.243.128.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 89E9C244E4
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2011 19:12:39 +0100 (CET)
+In-Reply-To: <20110105163900.GD746@opensource.wolfsonmicro.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,46 +25,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Harsha, Priya" <priya.harsha@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: broonie@opensource.wolfsonmicro.com, jhnikula@gmail.com
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
+> ________________________________________
+> From: ext Mark Brown [broonie@opensource.wolfsonmicro.com]
+> Sent: Wednesday, January 05, 2011 18:39
+> To: Jarkko Nikula
+> Cc: alsa-devel@alsa-project.org; Liam Girdwood; Ujfalusi Peter (Nokia-MS/Tampere)
+> Subject: Re: [PATCH] ASoC: omap: rx51: Add stereo output support to audio jack
 > 
-> >> Please provide your comments on the patch below that makes this change
-> >
-> >Please follow Documentation/SubmittingPatches - remember to CC
-> >maintainers (I've added Liam) and don't bury your patches in the middle
-> >of another e-mail.
-> >
-> I have sent the patch in a separate email.
-I seem to have hit another instance of where references are kept wrongly.
+> As far as I remember from the previous discussion that had been that
+> making it a CODEC driver would be the simplest thing.  Peter said in
+> reply to my mail saying this:
+> 
+> | At least with my device I need to add some delay before enabling the amp, so
+> | anyway I need to ahve the DAPM_HP in the machine driver.
+> 
+> but it'd seem that the amp driver could do this just as well, possibly
+> based off platform data?
 
-During the testing codec driver probe was failing and this results in wrong
-reference of platform driver .
+Yes that could be done with platform data (the additional delay after amp enable).
+The only thing is that the tpa6130a2 driver must have DAPM_HP widget.
+If we do that, than it would be also useful to have the SOC_DAPM_PIN_SWITCH() defined
+in the tpa6130a2 driver, which might cause some problems with the rx51 machine driver,
+as Jarkko handling the pins within that.
+In rx51, we have several functions on the jack, so SOC_DAPM_PIN_SWITCH() will not going
+to work there, but in my board, I'm using that.
+While we are here, I'd also like to customize the DAPM_HP name as well, since I do not want
+to have TPA6XXXX HP or something visible for user space.
+Also:
+Calling dapm_sync from machine driver might cause some locking issues:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2010-November/033362.html
 
-On investigating the issue is in soc_bind_dai_link()
+I have another issue with my setup, which needs the exported enable/disable function, which
+is the playback start, while the codec BIAS is on, since I need to do some tricks to remove 
+some unwanted clicks.
 
-It takes the reference of cpu_dai and adds the dai in the runtime structure.
-But since the codec was not found these references are kept and modules cant be
-unloaded.
+We can add optional DAPM widget to the driver, as I already commented, I have no problems with
+that, but it has to be really optional.
 
-Now thinking on this and other reference patch recently applied, IMO we can
-instead of taking the module reference check if cpu_dai is probed.
-If probed then only go ahead otherwise return error
-
-Something like this
-@@ -1238,9 +1238,10 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
-        list_for_each_entry(cpu_dai, &dai_list, list) {
-                if (!strcmp(cpu_dai->name, dai_link->cpu_dai_name)) {
-
--                       if (!try_module_get(cpu_dai->dev->driver->owner))
-+                       if (!cpu_dai->probed)
-		                     return -ENODEV;
-
-Would this be right thing to do? My logic is that we should be relying on probed
-to see references (as while marking probed we do take the reference).
-I have tested with both false and positive case worked for me on both counts.
-
-If this looks fine I will send a proper patch
-
-~Vinod
+Peter
