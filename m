@@ -1,20 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: omap: rx51: Add stereo output
- support to audio jack
-Date: Wed, 5 Jan 2011 16:39:00 +0000
-Message-ID: <20110105163900.GD746@opensource.wolfsonmicro.com>
-References: <1294242360-1903-1-git-send-email-jhnikula@gmail.com>
-	<20110105155509.GC746@opensource.wolfsonmicro.com>
-	<20110105182924.cf90b12c.jhnikula@gmail.com>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: regarding references taken on platform and codec
+ driver modules
+Date: Wed, 5 Jan 2011 22:49:32 +0530
+Message-ID: <438BB0150E931F4B9CE701519A44630104C119C092@bgsmsx502.gar.corp.intel.com>
+References: <98769532B4BB14429434178695419EAE053BF51941@bgsmsx501.gar.corp.intel.com>
+	<20110103155454.GE6783@opensource.wolfsonmicro.com>
+	<98769532B4BB14429434178695419EAE053BF51B26@bgsmsx501.gar.corp.intel.com>
+	<20110103163532.GB7370@opensource.wolfsonmicro.com>
+	<98769532B4BB14429434178695419EAE053BF51BC3@bgsmsx501.gar.corp.intel.com>
+	<20110104154825.GF24774@opensource.wolfsonmicro.com>
+	<98769532B4BB14429434178695419EAE053BFABE47@bgsmsx501.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9980E243AF
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2011 17:40:36 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20110105182924.cf90b12c.jhnikula@gmail.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id C8309244CA
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2011 18:19:38 +0100 (CET)
+In-Reply-To: <98769532B4BB14429434178695419EAE053BFABE47@bgsmsx501.gar.corp.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,36 +28,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "Harsha, Priya" <priya.harsha@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 05, 2011 at 06:29:24PM +0200, Jarkko Nikula wrote:
-> Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+> 
+> >> Please provide your comments on the patch below that makes this change
+> >
+> >Please follow Documentation/SubmittingPatches - remember to CC
+> >maintainers (I've added Liam) and don't bury your patches in the middle
+> >of another e-mail.
+> >
+> I have sent the patch in a separate email.
+I seem to have hit another instance of where references are kept wrongly.
 
-> > Having thought about it for at least a second I think we should have a
-> > DAPM context in the cards for all the board-level stuff - does that seem
-> > resonable?  The patch itself looks good:
+During the testing codec driver probe was failing and this results in wrong
+reference of platform driver .
 
-> I don't know. Probably it would be good if machine widgets are in own
-> context. Like having own debugfs/sysfs directory for them etc.
+On investigating the issue is in soc_bind_dai_link()
 
-Yes, exactly.
+It takes the reference of cpu_dai and adds the dai in the runtime structure.
+But since the codec was not found these references are kept and modules cant be
+unloaded.
 
-> In this case it would be just enough if the tpa6130 is a codec driver
-> having DAPM widgets. Then machine driver wouldn't need any these
-> exported special tpa6130a2_ functions and soc-dapm could take care of
-> power changes according to audio map and other info.
+Now thinking on this and other reference patch recently applied, IMO we can
+instead of taking the module reference check if cpu_dai is probed.
+If probed then only go ahead otherwise return error
 
-> But as far as I understood there's no any better way to get rid of pops
-> in tpa6130a2.
+Something like this
+@@ -1238,9 +1238,10 @@ static int soc_bind_dai_link(struct snd_soc_card *card, int num)
+        list_for_each_entry(cpu_dai, &dai_list, list) {
+                if (!strcmp(cpu_dai->name, dai_link->cpu_dai_name)) {
 
-As far as I remember from the previous discussion that had been that
-making it a CODEC driver would be the simplest thing.  Peter said in
-reply to my mail saying this:
+-                       if (!try_module_get(cpu_dai->dev->driver->owner))
++                       if (!cpu_dai->probed)
+		                     return -ENODEV;
 
-| At least with my device I need to add some delay before enabling the amp, so
-| anyway I need to ahve the DAPM_HP in the machine driver.
+Would this be right thing to do? My logic is that we should be relying on probed
+to see references (as while marking probed we do take the reference).
+I have tested with both false and positive case worked for me on both counts.
 
-but it'd seem that the amp driver could do this just as well, possibly
-based off platform data?
+If this looks fine I will send a proper patch
+
+~Vinod
