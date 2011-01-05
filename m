@@ -1,20 +1,17 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] Fix the device references to codec and
- platform drivers
-Date: Wed, 05 Jan 2011 09:59:02 +0000
-Message-ID: <1294221543.3473.0.camel@odin>
-References: <1294207491-17789-1-git-send-email-priya.harsha@intel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ALSA: ASoC: Fix SmartQ compilation
+Date: Wed, 5 Jan 2011 10:04:10 +0000
+Message-ID: <20110105100409.GA6262@sirena.org.uk>
+References: <4d20d689.cc7e0e0a.6f59.4a1d@mx.google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id B689C10386B
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2011 10:59:06 +0100 (CET)
-Received: by wyi11 with SMTP id 11so14974987wyi.38
-	for <alsa-devel@alsa-project.org>; Wed, 05 Jan 2011 01:59:06 -0800 (PST)
-In-Reply-To: <1294207491-17789-1-git-send-email-priya.harsha@intel.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C36110386B
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2011 11:04:13 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4d20d689.cc7e0e0a.6f59.4a1d@mx.google.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,30 +21,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Harsha, Priya" <priya.harsha@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: Maurus Cuelenaere <mcuelenaere@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, jassi.brar@samsung.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2011-01-05 at 11:34 +0530, Harsha, Priya wrote:
-> From: Harsha Priya <priya.harsha@intel.com>
+On Sun, Jan 02, 2011 at 08:48:23PM +0100, Maurus Cuelenaere wrote:
+> This makes the SmartQ sound driver compile again with recent ASoC changes.
 > 
-> The soc-core takes the platform and codec driver reference during probe. Few of
-> these references are not released during remove. This cause the platform and
-> codec driver module unload to fail.
-> 
-> This patch fixes by the taking only one reference to platform and codec module
-> during probe and releases them correctly during remove. This allows load/unload
-> properly
-> 
-> Signed-off-by: Vinod Koul<vinod.koul@intel.com>
-> Signed-off-by: Harsha Priya <priya.harsha@intel.com>
-> ---
->  sound/soc/soc-core.c |   14 +++++++-------
->  1 files changed, 7 insertions(+), 7 deletions(-)
-> 
+> Signed-off-by: Maurus Cuelenaere <mcuelenaere@gmail.com>
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+As Jassi said this doesn't apply against -next.  I've applied for 2.6.37
+and done a merge but I may have resolved some stuff incorrectly so
+please check.
