@@ -1,18 +1,14 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCH] ASoC: Remove needless inclusion of
-	tlv320aic3x.h from machine drivers
-Date: Wed,  5 Jan 2011 12:05:44 +0200
-Message-ID: <1294221944-6400-1-git-send-email-jhnikula@gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Fix volume control indices for Mics
+	(Realtek)
+Date: Wed, 05 Jan 2011 11:10:48 +0100
+Message-ID: <4D2443A8.4090902@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------020605080105020908050807"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id C212F1038B3
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2011 11:05:24 +0100 (CET)
-Received: by ewy19 with SMTP id 19so6261249ewy.38
-	for <alsa-devel@alsa-project.org>; Wed, 05 Jan 2011 02:05:24 -0800 (PST)
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id E33671038EF
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2011 11:10:50 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,85 +18,136 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-After multi-component conversion these machine drivers don't actually need
-anything from sound/soc/codecs/tlv320aic3x.h so don't include it.
+This is a multi-part message in MIME format.
+--------------020605080105020908050807
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
----
-rx51.c and n810.c compile tested but these other machine drivers seems to not
-use anything from tlv320aic3x.h either so should be safe to remove.
----
- sound/soc/davinci/davinci-evm.c           |    1 -
- sound/soc/omap/n810.c                     |    1 -
- sound/soc/omap/rx51.c                     |    1 -
- sound/soc/s6000/s6105-ipcam.c             |    1 -
- sound/soc/samsung/s3c24xx_simtec_hermes.c |    2 --
- 5 files changed, 0 insertions(+), 6 deletions(-)
+This patch assumes you applied the "Boost" => "Boost Volume" patch 
+posted yesterday.
 
-diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
-index 24b031e..0c2d6ba 100644
---- a/sound/soc/davinci/davinci-evm.c
-+++ b/sound/soc/davinci/davinci-evm.c
-@@ -26,7 +26,6 @@
- #include <mach/edma.h>
- #include <mach/mux.h>
- 
--#include "../codecs/tlv320aic3x.h"
- #include "davinci-pcm.h"
- #include "davinci-i2s.h"
- #include "davinci-mcasp.h"
-diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
-index fe215f3..83d213b 100644
---- a/sound/soc/omap/n810.c
-+++ b/sound/soc/omap/n810.c
-@@ -35,7 +35,6 @@
- 
- #include "omap-mcbsp.h"
- #include "omap-pcm.h"
--#include "../codecs/tlv320aic3x.h"
- 
- #define N810_HEADSET_AMP_GPIO	10
- #define N810_SPEAKER_AMP_GPIO	101
-diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
-index 150042a..09fb0df 100644
---- a/sound/soc/omap/rx51.c
-+++ b/sound/soc/omap/rx51.c
-@@ -36,7 +36,6 @@
- 
- #include "omap-mcbsp.h"
- #include "omap-pcm.h"
--#include "../codecs/tlv320aic3x.h"
- 
- #define RX51_TVOUT_SEL_GPIO		40
- #define RX51_JACK_DETECT_GPIO		177
-diff --git a/sound/soc/s6000/s6105-ipcam.c b/sound/soc/s6000/s6105-ipcam.c
-index bf3f3f9..5890e43 100644
---- a/sound/soc/s6000/s6105-ipcam.c
-+++ b/sound/soc/s6000/s6105-ipcam.c
-@@ -21,7 +21,6 @@
- 
- #include <variant/dmac.h>
- 
--#include "../codecs/tlv320aic3x.h"
- #include "s6000-pcm.h"
- #include "s6000-i2s.h"
- 
-diff --git a/sound/soc/samsung/s3c24xx_simtec_hermes.c b/sound/soc/samsung/s3c24xx_simtec_hermes.c
-index 0083aff..bb4292e 100644
---- a/sound/soc/samsung/s3c24xx_simtec_hermes.c
-+++ b/sound/soc/samsung/s3c24xx_simtec_hermes.c
-@@ -21,8 +21,6 @@
- #include "s3c24xx-i2s.h"
- #include "s3c24xx_simtec.h"
- 
--#include "../codecs/tlv320aic3x.h"
--
- static const struct snd_soc_dapm_widget dapm_widgets[] = {
- 	SND_SOC_DAPM_LINE("GSM Out", NULL),
- 	SND_SOC_DAPM_LINE("GSM In", NULL),
+If more than one mic is present with different locations,
+e g "Front Mic" and "Rear Mic", they can use the same index (0),
+since their names are different.
+
+Previous behavior was to have "Front Mic" as index 1, causing it
+to be ignored by e g PulseAudio.
+
 -- 
-1.7.2.3
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
+
+--------------020605080105020908050807
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Fix-volume-control-indices-for-Mics-Realtek.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Fix-volume-control-indices-for-Mics-Realtek.pa";
+ filename*1="tch"
+
+>From 12d16508dec19b6897f6eca10fb38810a2762bc4 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Wed, 5 Jan 2011 11:03:56 +0100
+Subject: [PATCH] ALSA: HDA: Fix volume control indices for Mics (Realtek)
+
+If more than one mic is present with different locations,
+e g "Front Mic" and "Rear Mic", they can use the same index (0),
+since their names are different.
+
+Previous behavior was to have "Front Mic" as index 1, causing it
+to be ignored by e g PulseAudio.
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |   31 +++++++++++++++++++------------
+ 1 files changed, 19 insertions(+), 12 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 18d53d2..e2d2a79 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5200,7 +5200,8 @@ static int alc_auto_create_input_ctls(struct hda_codec *codec,
+ {
+ 	struct alc_spec *spec = codec->spec;
+ 	struct hda_input_mux *imux = &spec->private_imux[0];
+-	int i, err, idx, type, type_idx = 0;
++	int i, err, idx, type_idx = 0;
++	const char *prev_label = NULL;
+ 
+ 	for (i = 0; i < cfg->num_inputs; i++) {
+ 		hda_nid_t pin;
+@@ -5210,12 +5211,13 @@ static int alc_auto_create_input_ctls(struct hda_codec *codec,
+ 		if (!alc_is_input_pin(codec, pin))
+ 			continue;
+ 
+-		type = cfg->inputs[i].type;
+-		if (i > 0 && type == cfg->inputs[i - 1].type)
++		label = hda_get_autocfg_input_label(codec, cfg, i);
++		if (prev_label && !strcmp(label, prev_label))
+ 			type_idx++;
+ 		else
+ 			type_idx = 0;
+-		label = hda_get_autocfg_input_label(codec, cfg, i);
++		prev_label = label;
++
+ 		if (mixer) {
+ 			idx = get_connection_index(codec, mixer, pin);
+ 			if (idx >= 0) {
+@@ -10819,25 +10821,30 @@ static int alc_auto_add_mic_boost(struct hda_codec *codec)
+ {
+ 	struct alc_spec *spec = codec->spec;
+ 	struct auto_pin_cfg *cfg = &spec->autocfg;
+-	int i, err, type;
++	int i, err;
+ 	int type_idx = 0;
+ 	hda_nid_t nid;
++	const char* prev_label = NULL;
+ 
+ 	for (i = 0; i < cfg->num_inputs; i++) {
+ 		if (cfg->inputs[i].type > AUTO_PIN_MIC)
+ 			break;
+ 		nid = cfg->inputs[i].pin;
+ 		if (get_wcaps(codec, nid) & AC_WCAP_IN_AMP) {
+-			char label[32];
+-			type = cfg->inputs[i].type;
+-			if (i > 0 && type == cfg->inputs[i - 1].type)
++			const char* label;
++			char boost_label[32];
++
++			label = hda_get_autocfg_input_label(codec, cfg, i);
++			if (prev_label && !strcmp(label, prev_label))
+ 				type_idx++;
+ 			else
+ 				type_idx = 0;
+-			snprintf(label, sizeof(label), "%s Boost Volume",
+-				 hda_get_autocfg_input_label(codec, cfg, i));
+-			err = add_control(spec, ALC_CTL_WIDGET_VOL, label,
+-					  type_idx,
++			prev_label = label;
++
++			snprintf(boost_label, sizeof(boost_label), 
++				 "%s Boost Volume", label);
++			err = add_control(spec, ALC_CTL_WIDGET_VOL, 
++					  boost_label, type_idx,
+ 				  HDA_COMPOSE_AMP_VAL(nid, 3, 0, HDA_INPUT));
+ 			if (err < 0)
+ 				return err;
+-- 
+1.7.1
+
+
+--------------020605080105020908050807
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------020605080105020908050807--
