@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Fix the device references to codec and
-	platform drivers
-Date: Wed, 5 Jan 2011 11:29:28 +0000
-Message-ID: <20110105112928.GA27706@opensource.wolfsonmicro.com>
-References: <1294207491-17789-1-git-send-email-priya.harsha@intel.com>
+Subject: Re: [PATCH] ASoC: Remove needless inclusion of
+ tlv320aic3x.h from machine drivers
+Date: Wed, 5 Jan 2011 11:29:38 +0000
+Message-ID: <20110105112938.GB27706@opensource.wolfsonmicro.com>
+References: <1294221944-6400-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 95578103909
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2011 12:29:12 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 538F5103962
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2011 12:29:21 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1294207491-17789-1-git-send-email-priya.harsha@intel.com>
+In-Reply-To: <1294221944-6400-1-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Harsha, Priya" <priya.harsha@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 05, 2011 at 11:34:51AM +0530, Harsha, Priya wrote:
-> From: Harsha Priya <priya.harsha@intel.com>
+On Wed, Jan 05, 2011 at 12:05:44PM +0200, Jarkko Nikula wrote:
+> After multi-component conversion these machine drivers don't actually need
+> anything from sound/soc/codecs/tlv320aic3x.h so don't include it.
 > 
-> The soc-core takes the platform and codec driver reference during probe. Few of
-> these references are not released during remove. This cause the platform and
-> codec driver module unload to fail.
+> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
 
 Applied, thanks.
