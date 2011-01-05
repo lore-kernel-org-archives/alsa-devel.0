@@ -1,14 +1,18 @@
-From: =?UTF-8?q?Ozan=20=C3=87a=C4=9Flayan?= <ozan@pardus.org.tr>
-Subject: [PATCH] configure.in: Fix xmlto detection
-Date: Wed,  5 Jan 2011 13:01:04 +0200
-Message-ID: <1294225264-28475-1-git-send-email-ozan@pardus.org.tr>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] Fix the device references to codec and
+	platform drivers
+Date: Wed, 5 Jan 2011 11:29:28 +0000
+Message-ID: <20110105112928.GA27706@opensource.wolfsonmicro.com>
+References: <1294207491-17789-1-git-send-email-priya.harsha@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lider.pardus.org.tr (lider.pardus.org.tr [193.140.100.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 729BF103927
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2011 12:06:38 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 95578103909
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2011 12:29:12 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1294207491-17789-1-git-send-email-priya.harsha@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,37 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Harsha, Priya" <priya.harsha@intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-xmlto was never detected when alsaconf is disabled leading to a missing
-alsactl_init man page.
----
- configure.in |   12 +++++-------
- 1 files changed, 5 insertions(+), 7 deletions(-)
+On Wed, Jan 05, 2011 at 11:34:51AM +0530, Harsha, Priya wrote:
+> From: Harsha Priya <priya.harsha@intel.com>
+> 
+> The soc-core takes the platform and codec driver reference during probe. Few of
+> these references are not released during remove. This cause the platform and
+> codec driver module unload to fail.
 
-diff --git a/configure.in b/configure.in
-index 2d6c80c..561ca46 100644
---- a/configure.in
-+++ b/configure.in
-@@ -102,13 +102,11 @@ AC_ARG_ENABLE(alsaloop,
- AM_CONDITIONAL(ALSALOOP, test x$alsaloop = xtrue)
- 
- xmlto=""
--if test x"$alsaconf" = xtrue; then
--   AC_ARG_ENABLE(xmlto,
--     AS_HELP_STRING([--disable-xmlto], [Disable man page creation via xmlto]),
--     xmlto="$enableval", xmlto="yes")
--   if test "$xmlto" = "yes"; then
--      AC_CHECK_PROG([xmlto], [xmlto], [yes])
--   fi
-+AC_ARG_ENABLE(xmlto,
-+ AS_HELP_STRING([--disable-xmlto], [Disable man page creation via xmlto]),
-+ xmlto="$enableval", xmlto="yes")
-+if test "$xmlto" = "yes"; then
-+  AC_CHECK_PROG([xmlto], [xmlto], [yes])
- fi
- AM_CONDITIONAL(USE_XMLTO, test x"$xmlto" = xyes)
- 
--- 
-1.7.3.4
+Applied, thanks.
