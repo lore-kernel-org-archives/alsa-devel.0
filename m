@@ -1,21 +1,20 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH 07/11] ASoC: tegra: Add tegra-das driver
-Date: Wed, 5 Jan 2011 14:58:02 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0310567AAE@HQMAIL01.nvidia.com>
-References: <1292622090-21896-1-git-send-email-swarren@nvidia.com>
-	<1292622090-21896-8-git-send-email-swarren@nvidia.com>
-	<20101217220029.GD25609@sirena.org.uk>
-	<74CDBE0F657A3D45AFBB94109FB122FF030FD78D90@HQMAIL01.nvidia.com>
-	<20101222201118.GA8167@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: soc-cache: Use reg_def_copy
+ instead of reg_cache_default
+Date: Wed, 5 Jan 2011 23:03:39 +0000
+Message-ID: <20110105230339.GB5476@opensource.wolfsonmicro.com>
+References: <1291306266-4907-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	<1291306266-4907-2-git-send-email-dp@opensource.wolfsonmicro.com>
+	<AANLkTi=yFRw-c+LeQGEUkKuAGCV+tkEYEpo=q22F0ZUq@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C0382442F
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2011 23:58:17 +0100 (CET)
-In-Reply-To: <20101222201118.GA8167@opensource.wolfsonmicro.com>
-Content-Language: en-US
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BA5D32442F
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 00:03:22 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=yFRw-c+LeQGEUkKuAGCV+tkEYEpo=q22F0ZUq@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,57 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Timur Tabi <timur@freescale.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Wed, Dec 22, 2010 at 10:30:15AM -0800, Stephen Warren wrote:
-> > Mark Brown wrote:
-> 
-> > > Reading this it's essentially just exporting point to point switches
-> > > within the DAS block.  This really feels like it ought to be represented
-> > > as a CODEC driver to give runtime flexibility to userspace to control
-> > > the mux - it looks like the AP part of the system streams data into this
-> > > block which then has very flexible switching on to the externally
-> > > connected audio devices.
-> 
-> > Hmm. I don't see any examples of anything like Tegra's DAS in the existing
-> > ASoC code-base. So, I'm slightly unsure how to recast the DAS driver as
-> > a codec. In particular, in the machine driver, would I do something like:
-> 
-> The closest thing in the tree at the minute is WM8994 and WM8995 - both
-> of these have multiple audio interfaces plus a DAC/ADC/DMIC block
-> connected together via a digital mixing block.
-> 
-> > static struct snd_soc_dai_link *harmony_links[] = {
-> > 	& harmony_i2s_das_link,
-> > 	& harmony_das_wm8903_link,
-> > };
-> 
-> Essentially, yes.
-> 
-> > Wouldn't that end up exposing two streams to user-space, one for each entry
-> > in harmony_links[]?
-> 
-> Yeah, that's the unfortunate bit - it doesn't work ideally well right
-> now.  We actually need to take care of this anyway (it's also an issue
-> for things like phones as you get the same structure for the link
-> between a digital baseband and the CODEC it's connected to) and
-> something like this that really strongly benefits from the feature would
-> be a good thing to use to get that working.
-> 
-> I guess for now setting up a 1:1 mapping between the CPU DAIs and the
-> physical ports would get the CPU driver going, then I can do the
-> framework work required to make sure DAPM propagates nicely over the
-> mux.  Does that sound reasonable?
+On Wed, Jan 05, 2011 at 03:04:31PM -0600, Timur Tabi wrote:
 
-So I'm clear, I'm interpreting that as meaning the existing tegra_das.c
-driver that I sent to the list is acceptable for now. Then, once that's
-merged in, we can add in the infra-structure to recast it as a codec/...
-Or, were you asking for some kind of structural change?
+> Unlike all the other codec drivers, the CS4270 driver does not
+> initialize codec_drv->reg_cache_default, so the pointer is NULL during
+> the kmemdup() call.
 
-Thanks.
+> What is the criteria for defining reg_cache_default?  Many drivers
+> don't define it:
 
--- 
-nvpublic
+In general the expectation is that unless it's got a good reason not to
+a well written CODEC driver will use all the standard register cache
+infrastructure, including providing a set of defaults.  Good reasons for
+this include things like not having any registers and indeterminate
+default hardware state.
+
+As you will doubtless have seen when you looked at the code every other
+reference to reg_cache_default checks to see if it's set before using
+it.  This does rather suggest that the intention of the code is that it
+be optional.
