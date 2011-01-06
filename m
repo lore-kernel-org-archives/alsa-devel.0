@@ -1,15 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmciro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: [PATCH] ASoC: Taint the kernel if debugfs is used to
 	write directly to CODECs
-Date: Thu,  6 Jan 2011 16:05:50 +0000
-Message-ID: <1294329950-3881-1-git-send-email-broonie@opensource.wolfsonmciro.com>
+Date: Thu,  6 Jan 2011 16:16:09 +0000
+Message-ID: <1294330569-4036-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7B747244A9
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 17:07:34 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 59125244AC
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 17:17:51 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,14 +20,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmciro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
 Since direct register writes may confuse the drivers and are supposed
 to be used only in diagnostic situations discourage their use in
 production by tainting the kernel when we do a write.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmciro.com>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
  sound/soc/soc-core.c |    4 ++++
  1 files changed, 4 insertions(+), 0 deletions(-)
