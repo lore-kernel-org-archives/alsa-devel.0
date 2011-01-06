@@ -1,19 +1,17 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] ASoC: cs4270: fix dynamic initialization
- of register cache
-Date: Thu, 6 Jan 2011 14:50:49 -0600
-Message-ID: <4D262B29.3010606@freescale.com>
-References: <1294339968-420-1-git-send-email-timur@freescale.com>
-	<20110106201511.GA8018@opensource.wolfsonmicro.com>
+From: Andy Robinson <ajr55555@gmail.com>
+Subject: CX20585 - selecting wrong digital output
+Date: Thu, 6 Jan 2011 15:55:49 -0500
+Message-ID: <AANLkTin7rJUrSyX+Yc=mFA1QcN3PskeGLfe7rtOEd79i@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DB3EHSOBE003.bigfish.com (db3ehsobe003.messaging.microsoft.com
-	[213.199.154.141])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE21524538
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 21:52:18 +0100 (CET)
-In-Reply-To: <20110106201511.GA8018@opensource.wolfsonmicro.com>
+Received: from mail-gx0-f179.google.com (mail-gx0-f179.google.com
+	[209.85.161.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5A91824538
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 21:55:50 +0100 (CET)
+Received: by gxk21 with SMTP id 21so8033362gxk.38
+	for <alsa-devel@alsa-project.org>; Thu, 06 Jan 2011 12:55:49 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +21,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: dp@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> Having a driver per device is pretty icky and off the top of my head I'd
-> expect it to cause problems if there are two cs4270 in the system.  It
-> would be much nicer and more maintainable to avoid bodging around the
-> API like this.
+I opened bug 0005235 in the bug tracking system regarding no output
+from my laptop's (Asus U50F) mini-TOSLINK jack, even though ALSA was
+detecting and providing a SPDIF output device. Using the alsa-info
+output, somebody was able to diagnose the issue, and I was able to
+confirm the problem. It looks like the CX20585 has two digital
+outputs:
 
-BTW, why does ASoC even care about the register cache, if I have to have my own
-functions to read and write it?  In other words, why does function
-cs4270_read_reg_cache() exist at all?  What is the point of having ASoC allocate
-the cache if the driver has to supply functions to read and write it?
+Node 0x12 [Audio Output] wcaps 0x611: Stereo Digital
+Node 0x21 [Audio Output] wcaps 0x611: Stereo Digital
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+Since the CX20585 uses the CXT5066 patch in ALSA, node 0x21 is used
+for the SPDIF device. However, at least in the case of my laptop, that
+digital output is connected to a pin complex which is N/A:
+
+Pin Default 0x400001f0: [N/A] Line Out at Ext N/A
+
+However, node 0x12 IS connected to the optical out jack:
+
+Pin Default 0x034511f0: [Jack] SPDIF Out at Ext Left
+
+So, in this case, ALSA should use node 0x12 instead of node 0x21 for
+SPDIF out. I confirmed this with the latest snapshot by changing the
+digital output from 0x21 to 0x12, and that solved the problem.
+
+If there are no volunteers that want to take a look at a "real"
+solution for this :-), I might take a crack at it myself, but I'm not
+all that familiar with the driver right now. There seems to be
+different ways this could be handled:
+(1) Introduce a model that would use 0x12 instead of 0x21 as the digital output
+(2) Check the pin complexes associated with outputs 0x12 and 0x21 to
+determine which one is actually connected to a jack, and use that
+output as the SPDIF device instead of always choosing 0x21
+(3) What if both digital outputs are connected to a valid jack? Should
+ALSA then create devices for both? As of now, it's not even creating a
+device for 0x12 even though it's a valid audio output.
+
+Any comments or suggestions are welcome.
