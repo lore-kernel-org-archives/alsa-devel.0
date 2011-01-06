@@ -1,42 +1,80 @@
-From: Kevin Hilman <khilman@ti.com>
-Subject: Re: [PATCH v2 3/4] OMAP4: hwmod: add entries for DMIC driver
-Date: Thu, 06 Jan 2011 14:39:44 -0800
-Message-ID: <87k4ihsllb.fsf@ti.com>
-References: <1294322439-16305-1-git-send-email-dlambert@ti.com>
-	<1294322439-16305-4-git-send-email-dlambert@ti.com>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [RFC/PATCH v7 01/12] media: Media device node support
+Date: Fri, 7 Jan 2011 00:27:11 +0100
+Message-ID: <201101070027.11150.hverkuil@xs4all.nl>
+References: <1292844995-7900-1-git-send-email-laurent.pinchart@ideasonboard.com> <201012241259.39148.laurent.pinchart@ideasonboard.com> <20110106221912.GA31328@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1294322439-16305-4-git-send-email-dlambert@ti.com> (David
-	Lambert's message of "Thu, 6 Jan 2011 08:00:38 -0600")
-Sender: linux-omap-owner@vger.kernel.org
-To: David Lambert <dlambert@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>, Paul Walmsley <paul@pwsan.com>, Benoit Cousson <b-cousson@ti.com>
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20110106221912.GA31328@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Greg KH <gregkh@suse.de>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, clemens@ladisch.de, sakari.ailus@maxwell.research.nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-David Lambert <dlambert@ti.com> writes:
+On Thursday, January 06, 2011 23:19:12 Greg KH wrote:
 
-> Adds HWMOD entries for the OMAP DMIC driver and creates
-> a platform device.  The HWMOD entires define the system
-> resource requirements for the drvier such as DMA addresses, channels,
-> and IRQ's.  Placing this information in the HWMOD database allows
-> for more generic drivers to be written and having the specific
-> implementation details defined in HWMOD.
->
-> Signed-off-by: David Lambert <dlambert@ti.com>
->
-> ---
->  arch/arm/mach-omap2/omap_hwmod_44xx_data.c |   91 ++++++++++++++++++++++++++++
->  arch/arm/plat-omap/devices.c               |   35 +++++++++++
->  2 files changed, 126 insertions(+), 0 deletions(-)
+<snip>
 
-Please split this into two patches: one for just the hwmod data, and the
-other for initializing the device.
+> > > > +static ssize_t media_read(struct file *filp, char __user *buf,
+> > > > +		size_t sz, loff_t *off)
+> > > > +{
+> > > > +	struct media_devnode *mdev = media_devnode_data(filp);
+> > > > +
+> > > > +	if (!mdev->fops->read)
+> > > > +		return -EINVAL;
+> > > > +	if (!media_devnode_is_registered(mdev))
+> > > > +		return -EIO;
+> > > 
+> > > How could this happen?
+> > 
+> > This can happen when a USB device is disconnected for instance.
+> 
+> But what's to keep that from happening on the next line as well?
 
-Also, I'm assuming the hwmod data came from the auto-generated data from
-Benoit, correct?  If so authorship and signoff of the hwmod data patch
-should reflect that.
+Nothing.
 
-Thanks,
+> That
+> doesn't seem like a check you can ever be sure about, so I wouldn't do
+> it at all.
 
-Kevin
+Actually, there is a reason why this was done for v4l (and now the media
+API): typically, once a USB disconnect happens V4L drivers will call
+video_unregister_device() which calls device_unregister. Afterwards the
+device node should reject any new file operations except for release().
+
+Obviously, this check can be done in the driver as well, but doing this
+check in the V4L core has the advantage of 1) consistent return codes and
+2) drivers no longer have to check.
+
+Of course, since the disconnect can happen at any time drivers still need
+to be able to handle errors from the USB subsystem due to disconnects, but
+that is something they always have to do.
+
+> 
+> > > And are you sure -EIO is correct?
+> > 
+> > -ENXIO is probably better (I always confuse that with -ENODEV).
+
+I wondered why V4L uses -EIO and I think it is related to the V4L2 specification
+of the read() function:
+
+EIO
+I/O error. This indicates some hardware problem or a failure to communicate with
+a remote device (USB camera etc.).
+
+Well, I guess a disconnect can be seen as a failure to communicate :-)
+
+I think that ENODEV is much better. After all, there is no device
+anymore after a disconnect.
+
+Is there some standard for this?
+
+Regards,
+
+	Hans
+
+-- 
+Hans Verkuil - video4linux developer - sponsored by Cisco
