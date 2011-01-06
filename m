@@ -1,26 +1,20 @@
-From: WH Bouterse <bill@bouterse.com>
-Subject: Alsa hda-analyzer and Lenovo G560
-Date: Thu, 6 Jan 2011 16:37:57 -0500 (EST)
-Message-ID: <9535194.21856.1294349877701.JavaMail.root@email.acmecargo.com>
-References: <32145654.21838.1294347965844.JavaMail.root@email.acmecargo.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: cs4270: fix dynamic initialization
+ of register cache
+Date: Thu, 6 Jan 2011 21:41:04 +0000
+Message-ID: <20110106214103.GH8018@opensource.wolfsonmicro.com>
+References: <1294339968-420-1-git-send-email-timur@freescale.com>
+	<20110106201511.GA8018@opensource.wolfsonmicro.com>
+	<4D2624EB.6060704@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from email.acmecargo.com (mail.acmecargo.com [204.15.137.68])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5B47E103807
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 22:38:00 +0100 (CET)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by email.acmecargo.com (Postfix) with ESMTP id 1A09D9438002
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 16:37:58 -0500 (EST)
-Received: from email.acmecargo.com ([127.0.0.1])
-	by localhost (email.acmecargo.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id kCXrCflLWuDB for <alsa-devel@alsa-project.org>;
-	Thu,  6 Jan 2011 16:37:57 -0500 (EST)
-Received: from email.acmecargo.com (email.acmecargo.com [204.15.137.68])
-	by email.acmecargo.com (Postfix) with ESMTP id BE3AA9438001
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 16:37:57 -0500 (EST)
-In-Reply-To: <32145654.21838.1294347965844.JavaMail.root@email.acmecargo.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 964B8103807
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 22:40:47 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4D2624EB.6060704@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,18 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: dp@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-This may be the wrong list and I apologize !
+On Thu, Jan 06, 2011 at 02:24:11PM -0600, Timur Tabi wrote:
 
-A change in run hda-analyze script today 01/06/11 has rendered internal mic inoperable again for Lenovo G560
-It has been necessary to run script upon each reboot to gain use of the internal mic.
-This was the known problem being worked on.
+> What do I do if there are two CS4270s in a system, and they each have different
+> power-on default values for the registers?  Granted, it's a contrived example,
+> but this could happen if the first CS4270 is a rev1 chip, and the second is a
+> rev2 chip.
 
-Once again if I sent this to the wrong place I apologize and please direct me to the right list.
+So the driver should cope with this, for example by updating the rev1
+configuration to match rev2 at probe time (presumably if the change in
+rev2 was important enough to introduce the change for then rev1 needs
+the change anyway).
 
-WH Bouterse
+> And even if this example is contrived, it's conceivable that there can be codecs
+> where the power-on defaults are set by pin configuration.  Perhaps codec #1 is
+> muted by default and codec #2 isn't.
 
+Again, do something that seems tasteful.  For example, mark the relevant
+register volatile as it might get varied randomly at runtime anyway (I'm
+not sure how the mute pin plays with the register value?).  Or write out
+a particular value at startup.
 
--
+If there really are insurmountable obstacles (I don't beleive there are)
+or you're really dead set on it then teach the core about having to read
+back the state from the device.
