@@ -1,21 +1,26 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] ASoC: cs4270: fix dynamic initialization
- of register cache
-Date: Thu, 6 Jan 2011 15:35:56 -0600
-Message-ID: <4D2635BC.1080108@freescale.com>
-References: <1294339968-420-1-git-send-email-timur@freescale.com>
-	<20110106201511.GA8018@opensource.wolfsonmicro.com>
-	<4D262B29.3010606@freescale.com>
-	<20110106213139.GG8018@opensource.wolfsonmicro.com>
+From: WH Bouterse <bill@bouterse.com>
+Subject: Alsa hda-analyzer and Lenovo G560
+Date: Thu, 6 Jan 2011 16:37:57 -0500 (EST)
+Message-ID: <9535194.21856.1294349877701.JavaMail.root@email.acmecargo.com>
+References: <32145654.21838.1294347965844.JavaMail.root@email.acmecargo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DB3EHSOBE005.bigfish.com (db3ehsobe005.messaging.microsoft.com
-	[213.199.154.143])
-	by alsa0.perex.cz (Postfix) with ESMTP id C8BB5103807
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 22:36:03 +0100 (CET)
-In-Reply-To: <20110106213139.GG8018@opensource.wolfsonmicro.com>
+Received: from email.acmecargo.com (mail.acmecargo.com [204.15.137.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5B47E103807
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 22:38:00 +0100 (CET)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by email.acmecargo.com (Postfix) with ESMTP id 1A09D9438002
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 16:37:58 -0500 (EST)
+Received: from email.acmecargo.com ([127.0.0.1])
+	by localhost (email.acmecargo.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id kCXrCflLWuDB for <alsa-devel@alsa-project.org>;
+	Thu,  6 Jan 2011 16:37:57 -0500 (EST)
+Received: from email.acmecargo.com (email.acmecargo.com [204.15.137.68])
+	by email.acmecargo.com (Postfix) with ESMTP id BE3AA9438001
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 16:37:57 -0500 (EST)
+In-Reply-To: <32145654.21838.1294347965844.JavaMail.root@email.acmecargo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,19 +30,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: dp@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> If you're completely ignoring the standard cache and register I/O code
-> (which isn't ideal) then you should't be telling the core about your
-> cache.
+This may be the wrong list and I apologize !
 
-Tell that to the person who hacked up my driver and apparently broke it.  I'm
-now playing catch-up.  I need to learn all about this (new) register cache
-feature and then try to figure out how to make it work in my driver.
+A change in run hda-analyze script today 01/06/11 has rendered internal mic inoperable again for Lenovo G560
+It has been necessary to run script upon each reboot to gain use of the internal mic.
+This was the known problem being worked on.
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+Once again if I sent this to the wrong place I apologize and please direct me to the right list.
+
+WH Bouterse
+
+
+-
