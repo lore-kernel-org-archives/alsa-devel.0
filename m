@@ -1,25 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: soc-cache: Use
-	reg_def_copy	instead of reg_cache_default
-Date: Thu, 6 Jan 2011 00:34:56 +0000
-Message-ID: <20110106003455.GA12153@opensource.wolfsonmicro.com>
-References: <1291306266-4907-1-git-send-email-dp@opensource.wolfsonmicro.com>
-	<1291306266-4907-2-git-send-email-dp@opensource.wolfsonmicro.com>
-	<AANLkTi=yFRw-c+LeQGEUkKuAGCV+tkEYEpo=q22F0ZUq@mail.gmail.com>
-	<20110105230339.GB5476@opensource.wolfsonmicro.com>
-	<4D24F9E4.1080704@freescale.com>
-	<20110105232947.GA8514@sirena.org.uk>
-	<20110105235115.GB5714@opensource.wolfsonmicro.com>
-	<4D250995.4020409@freescale.com>
+From: Seungwhan Youn <sw.youn@samsung.com>
+Subject: [PATCH] ASoC: SAMSUNG: Remove NEO1973(GTA01) audio
+	driver
+Date: Thu,  6 Jan 2011 09:21:48 +0900
+Message-ID: <1294273308-25124-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6078424493
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 01:34:58 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4D250995.4020409@freescale.com>
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id B897924499
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 01:45:56 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,29 +19,772 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tabi Timur-B04825 <B04825@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: Seungwhan Youn <sw.youn@samsung.com>, graeme.gregory@wolfsonmicro.com, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 06, 2011 at 12:15:17AM +0000, Tabi Timur-B04825 wrote:
+This patch remove to support NEO1973(GTA01) audio driver, because we
+don't need to support audio driver that is not supported in linux kernel.
 
-> I just wanted to get the idea of what you and others intended with the
-> current register cache code, just as a matter of context.  I like to
+Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+---
+ sound/soc/samsung/Kconfig          |    9 -
+ sound/soc/samsung/Makefile         |    2 -
+ sound/soc/samsung/neo1973_wm8753.c |  706 ------------------------------------
+ 3 files changed, 0 insertions(+), 717 deletions(-)
+ delete mode 100644 sound/soc/samsung/neo1973_wm8753.c
 
-So ask that question; "I looked at this and I'm not really sure if it's
-supposed to work or not - thing X suggests yes, thing Y suggests no but
-looks like a bug so..." and so on.
-
-In cases like this (although not I suspect this particular one) the
-answer is often that there was't any particular consideration for
-whatever unusual case you're looking at.
-
-> understand these things *before* I start digging around.
-
-The important thing is to show that you're looking, especially in areas
-where you've done something unusual in your driver.  "Looking at this
-briefly..." isn't a problem, just make it clear that that's what you've
-done.
-
-Part of the reason I'm emphasising this is that stuff like this seems to
-cause you to get stuch relatively often.
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index a6a6b5f..6cd865b 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -34,15 +34,6 @@ config SND_SAMSUNG_SPDIF
+ config SND_SAMSUNG_I2S
+ 	tristate
+ 
+-config SND_SOC_SAMSUNG_NEO1973_WM8753
+-	tristate "SoC I2S Audio support for NEO1973 - WM8753"
+-	depends on SND_SOC_SAMSUNG && MACH_NEO1973_GTA01
+-	select SND_S3C24XX_I2S
+-	select SND_SOC_WM8753
+-	help
+-	  Say Y if you want to add support for SoC audio on smdk2440
+-	  with the WM8753.
+-
+ config SND_SOC_SAMSUNG_NEO1973_GTA02_WM8753
+ 	tristate "Audio support for the Openmoko Neo FreeRunner (GTA02)"
+ 	depends on SND_SOC_SAMSUNG && MACH_NEO1973_GTA02
+diff --git a/sound/soc/samsung/Makefile b/sound/soc/samsung/Makefile
+index 705d4e8..11de33a 100644
+--- a/sound/soc/samsung/Makefile
++++ b/sound/soc/samsung/Makefile
+@@ -19,7 +19,6 @@ obj-$(CONFIG_SND_SAMSUNG_I2S) += snd-soc-i2s.o
+ 
+ # S3C24XX Machine Support
+ snd-soc-jive-wm8750-objs := jive_wm8750.o
+-snd-soc-neo1973-wm8753-objs := neo1973_wm8753.o
+ snd-soc-neo1973-gta02-wm8753-objs := neo1973_gta02_wm8753.o
+ snd-soc-smdk2443-wm9710-objs := smdk2443_wm9710.o
+ snd-soc-ln2440sbc-alc650-objs := ln2440sbc_alc650.o
+@@ -37,7 +36,6 @@ snd-soc-goni-wm8994-objs := goni_wm8994.o
+ snd-soc-smdk-spdif-objs := smdk_spdif.o
+ 
+ obj-$(CONFIG_SND_SOC_SAMSUNG_JIVE_WM8750) += snd-soc-jive-wm8750.o
+-obj-$(CONFIG_SND_SOC_SAMSUNG_NEO1973_WM8753) += snd-soc-neo1973-wm8753.o
+ obj-$(CONFIG_SND_SOC_SAMSUNG_NEO1973_GTA02_WM8753) += snd-soc-neo1973-gta02-wm8753.o
+ obj-$(CONFIG_SND_SOC_SAMSUNG_SMDK2443_WM9710) += snd-soc-smdk2443-wm9710.o
+ obj-$(CONFIG_SND_SOC_SAMSUNG_LN2440SBC_ALC650) += snd-soc-ln2440sbc-alc650.o
+diff --git a/sound/soc/samsung/neo1973_wm8753.c b/sound/soc/samsung/neo1973_wm8753.c
+deleted file mode 100644
+index c7a2451..0000000
+--- a/sound/soc/samsung/neo1973_wm8753.c
++++ /dev/null
+@@ -1,706 +0,0 @@
+-/*
+- * neo1973_wm8753.c  --  SoC audio for Neo1973
+- *
+- * Copyright 2007 Wolfson Microelectronics PLC.
+- * Author: Graeme Gregory
+- *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
+- *
+- *  This program is free software; you can redistribute  it and/or modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
+- *
+- */
+-
+-#include <linux/module.h>
+-#include <linux/moduleparam.h>
+-#include <linux/timer.h>
+-#include <linux/interrupt.h>
+-#include <linux/platform_device.h>
+-#include <linux/i2c.h>
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+-#include <sound/soc.h>
+-#include <sound/tlv.h>
+-
+-#include <asm/mach-types.h>
+-#include <asm/hardware/scoop.h>
+-#include <mach/regs-clock.h>
+-#include <mach/regs-gpio.h>
+-#include <mach/hardware.h>
+-#include <linux/io.h>
+-#include <mach/spi-gpio.h>
+-
+-#include <plat/regs-iis.h>
+-
+-#include "../codecs/wm8753.h"
+-#include "lm4857.h"
+-#include "dma.h"
+-#include "s3c24xx-i2s.h"
+-
+-/* define the scenarios */
+-#define NEO_AUDIO_OFF			0
+-#define NEO_GSM_CALL_AUDIO_HANDSET	1
+-#define NEO_GSM_CALL_AUDIO_HEADSET	2
+-#define NEO_GSM_CALL_AUDIO_BLUETOOTH	3
+-#define NEO_STEREO_TO_SPEAKERS		4
+-#define NEO_STEREO_TO_HEADPHONES	5
+-#define NEO_CAPTURE_HANDSET		6
+-#define NEO_CAPTURE_HEADSET		7
+-#define NEO_CAPTURE_BLUETOOTH		8
+-
+-static struct snd_soc_card neo1973;
+-static struct i2c_client *i2c;
+-
+-static int neo1973_hifi_hw_params(struct snd_pcm_substream *substream,
+-	struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	unsigned int pll_out = 0, bclk = 0;
+-	int ret = 0;
+-	unsigned long iis_clkrate;
+-
+-	pr_debug("Entered %s\n", __func__);
+-
+-	iis_clkrate = s3c24xx_i2s_get_clockrate();
+-
+-	switch (params_rate(params)) {
+-	case 8000:
+-	case 16000:
+-		pll_out = 12288000;
+-		break;
+-	case 48000:
+-		bclk = WM8753_BCLK_DIV_4;
+-		pll_out = 12288000;
+-		break;
+-	case 96000:
+-		bclk = WM8753_BCLK_DIV_2;
+-		pll_out = 12288000;
+-		break;
+-	case 11025:
+-		bclk = WM8753_BCLK_DIV_16;
+-		pll_out = 11289600;
+-		break;
+-	case 22050:
+-		bclk = WM8753_BCLK_DIV_8;
+-		pll_out = 11289600;
+-		break;
+-	case 44100:
+-		bclk = WM8753_BCLK_DIV_4;
+-		pll_out = 11289600;
+-		break;
+-	case 88200:
+-		bclk = WM8753_BCLK_DIV_2;
+-		pll_out = 11289600;
+-		break;
+-	}
+-
+-	/* set codec DAI configuration */
+-	ret = snd_soc_dai_set_fmt(codec_dai,
+-		SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+-		SND_SOC_DAIFMT_CBM_CFM);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* set cpu DAI configuration */
+-	ret = snd_soc_dai_set_fmt(cpu_dai,
+-		SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+-		SND_SOC_DAIFMT_CBM_CFM);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* set the codec system clock for DAC and ADC */
+-	ret = snd_soc_dai_set_sysclk(codec_dai, WM8753_MCLK, pll_out,
+-		SND_SOC_CLOCK_IN);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* set MCLK division for sample rate */
+-	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_MCLK,
+-		S3C2410_IISMOD_32FS);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* set codec BCLK division for sample rate */
+-	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8753_BCLKDIV, bclk);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* set prescaler division for sample rate */
+-	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C24XX_DIV_PRESCALER,
+-		S3C24XX_PRESCALE(4, 4));
+-	if (ret < 0)
+-		return ret;
+-
+-	/* codec PLL input is PCLK/4 */
+-	ret = snd_soc_dai_set_pll(codec_dai, WM8753_PLL1, 0,
+-		iis_clkrate / 4, pll_out);
+-	if (ret < 0)
+-		return ret;
+-
+-	return 0;
+-}
+-
+-static int neo1973_hifi_hw_free(struct snd_pcm_substream *substream)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-
+-	pr_debug("Entered %s\n", __func__);
+-
+-	/* disable the PLL */
+-	return snd_soc_dai_set_pll(codec_dai, WM8753_PLL1, 0, 0, 0);
+-}
+-
+-/*
+- * Neo1973 WM8753 HiFi DAI opserations.
+- */
+-static struct snd_soc_ops neo1973_hifi_ops = {
+-	.hw_params = neo1973_hifi_hw_params,
+-	.hw_free = neo1973_hifi_hw_free,
+-};
+-
+-static int neo1973_voice_hw_params(struct snd_pcm_substream *substream,
+-	struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	unsigned int pcmdiv = 0;
+-	int ret = 0;
+-	unsigned long iis_clkrate;
+-
+-	pr_debug("Entered %s\n", __func__);
+-
+-	iis_clkrate = s3c24xx_i2s_get_clockrate();
+-
+-	if (params_rate(params) != 8000)
+-		return -EINVAL;
+-	if (params_channels(params) != 1)
+-		return -EINVAL;
+-
+-	pcmdiv = WM8753_PCM_DIV_6; /* 2.048 MHz */
+-
+-	/* todo: gg check mode (DSP_B) against CSR datasheet */
+-	/* set codec DAI configuration */
+-	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_DSP_B |
+-		SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* set the codec system clock for DAC and ADC */
+-	ret = snd_soc_dai_set_sysclk(codec_dai, WM8753_PCMCLK, 12288000,
+-		SND_SOC_CLOCK_IN);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* set codec PCM division for sample rate */
+-	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8753_PCMDIV, pcmdiv);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* configure and enable PLL for 12.288MHz output */
+-	ret = snd_soc_dai_set_pll(codec_dai, WM8753_PLL2, 0,
+-		iis_clkrate / 4, 12288000);
+-	if (ret < 0)
+-		return ret;
+-
+-	return 0;
+-}
+-
+-static int neo1973_voice_hw_free(struct snd_pcm_substream *substream)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-
+-	pr_debug("Entered %s\n", __func__);
+-
+-	/* disable the PLL */
+-	return snd_soc_dai_set_pll(codec_dai, WM8753_PLL2, 0, 0, 0);
+-}
+-
+-static struct snd_soc_ops neo1973_voice_ops = {
+-	.hw_params = neo1973_voice_hw_params,
+-	.hw_free = neo1973_voice_hw_free,
+-};
+-
+-static int neo1973_scenario;
+-
+-static int neo1973_get_scenario(struct snd_kcontrol *kcontrol,
+-	struct snd_ctl_elem_value *ucontrol)
+-{
+-	ucontrol->value.integer.value[0] = neo1973_scenario;
+-	return 0;
+-}
+-
+-static int set_scenario_endpoints(struct snd_soc_codec *codec, int scenario)
+-{
+-	struct snd_soc_dapm_context *dapm = &codec->dapm;
+-
+-	pr_debug("Entered %s\n", __func__);
+-
+-	switch (neo1973_scenario) {
+-	case NEO_AUDIO_OFF:
+-		snd_soc_dapm_disable_pin(dapm, "Audio Out");
+-		snd_soc_dapm_disable_pin(dapm, "GSM Line Out");
+-		snd_soc_dapm_disable_pin(dapm, "GSM Line In");
+-		snd_soc_dapm_disable_pin(dapm, "Headset Mic");
+-		snd_soc_dapm_disable_pin(dapm, "Call Mic");
+-		break;
+-	case NEO_GSM_CALL_AUDIO_HANDSET:
+-		snd_soc_dapm_enable_pin(dapm, "Audio Out");
+-		snd_soc_dapm_enable_pin(dapm, "GSM Line Out");
+-		snd_soc_dapm_enable_pin(dapm, "GSM Line In");
+-		snd_soc_dapm_disable_pin(dapm, "Headset Mic");
+-		snd_soc_dapm_enable_pin(dapm, "Call Mic");
+-		break;
+-	case NEO_GSM_CALL_AUDIO_HEADSET:
+-		snd_soc_dapm_enable_pin(dapm, "Audio Out");
+-		snd_soc_dapm_enable_pin(dapm, "GSM Line Out");
+-		snd_soc_dapm_enable_pin(dapm, "GSM Line In");
+-		snd_soc_dapm_enable_pin(dapm, "Headset Mic");
+-		snd_soc_dapm_disable_pin(dapm, "Call Mic");
+-		break;
+-	case NEO_GSM_CALL_AUDIO_BLUETOOTH:
+-		snd_soc_dapm_disable_pin(dapm, "Audio Out");
+-		snd_soc_dapm_enable_pin(dapm, "GSM Line Out");
+-		snd_soc_dapm_enable_pin(dapm, "GSM Line In");
+-		snd_soc_dapm_disable_pin(dapm, "Headset Mic");
+-		snd_soc_dapm_disable_pin(dapm, "Call Mic");
+-		break;
+-	case NEO_STEREO_TO_SPEAKERS:
+-		snd_soc_dapm_enable_pin(dapm, "Audio Out");
+-		snd_soc_dapm_disable_pin(dapm, "GSM Line Out");
+-		snd_soc_dapm_disable_pin(dapm, "GSM Line In");
+-		snd_soc_dapm_disable_pin(dapm, "Headset Mic");
+-		snd_soc_dapm_disable_pin(dapm, "Call Mic");
+-		break;
+-	case NEO_STEREO_TO_HEADPHONES:
+-		snd_soc_dapm_enable_pin(dapm, "Audio Out");
+-		snd_soc_dapm_disable_pin(dapm, "GSM Line Out");
+-		snd_soc_dapm_disable_pin(dapm, "GSM Line In");
+-		snd_soc_dapm_disable_pin(dapm, "Headset Mic");
+-		snd_soc_dapm_disable_pin(dapm, "Call Mic");
+-		break;
+-	case NEO_CAPTURE_HANDSET:
+-		snd_soc_dapm_disable_pin(dapm, "Audio Out");
+-		snd_soc_dapm_disable_pin(dapm, "GSM Line Out");
+-		snd_soc_dapm_disable_pin(dapm, "GSM Line In");
+-		snd_soc_dapm_disable_pin(dapm, "Headset Mic");
+-		snd_soc_dapm_enable_pin(dapm, "Call Mic");
+-		break;
+-	case NEO_CAPTURE_HEADSET:
+-		snd_soc_dapm_disable_pin(dapm, "Audio Out");
+-		snd_soc_dapm_disable_pin(dapm, "GSM Line Out");
+-		snd_soc_dapm_disable_pin(dapm, "GSM Line In");
+-		snd_soc_dapm_enable_pin(dapm, "Headset Mic");
+-		snd_soc_dapm_disable_pin(dapm, "Call Mic");
+-		break;
+-	case NEO_CAPTURE_BLUETOOTH:
+-		snd_soc_dapm_disable_pin(dapm, "Audio Out");
+-		snd_soc_dapm_disable_pin(dapm, "GSM Line Out");
+-		snd_soc_dapm_disable_pin(dapm, "GSM Line In");
+-		snd_soc_dapm_disable_pin(dapm, "Headset Mic");
+-		snd_soc_dapm_disable_pin(dapm, "Call Mic");
+-		break;
+-	default:
+-		snd_soc_dapm_disable_pin(dapm, "Audio Out");
+-		snd_soc_dapm_disable_pin(dapm, "GSM Line Out");
+-		snd_soc_dapm_disable_pin(dapm, "GSM Line In");
+-		snd_soc_dapm_disable_pin(dapm, "Headset Mic");
+-		snd_soc_dapm_disable_pin(dapm, "Call Mic");
+-	}
+-
+-	snd_soc_dapm_sync(dapm);
+-
+-	return 0;
+-}
+-
+-static int neo1973_set_scenario(struct snd_kcontrol *kcontrol,
+-	struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+-
+-	pr_debug("Entered %s\n", __func__);
+-
+-	if (neo1973_scenario == ucontrol->value.integer.value[0])
+-		return 0;
+-
+-	neo1973_scenario = ucontrol->value.integer.value[0];
+-	set_scenario_endpoints(codec, neo1973_scenario);
+-	return 1;
+-}
+-
+-static u8 lm4857_regs[4] = {0x00, 0x40, 0x80, 0xC0};
+-
+-static void lm4857_write_regs(void)
+-{
+-	pr_debug("Entered %s\n", __func__);
+-
+-	if (i2c_master_send(i2c, lm4857_regs, 4) != 4)
+-		printk(KERN_ERR "lm4857: i2c write failed\n");
+-}
+-
+-static int lm4857_get_reg(struct snd_kcontrol *kcontrol,
+-	struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct soc_mixer_control *mc =
+-		(struct soc_mixer_control *)kcontrol->private_value;
+-	int reg = mc->reg;
+-	int shift = mc->shift;
+-	int mask = mc->max;
+-
+-	pr_debug("Entered %s\n", __func__);
+-
+-	ucontrol->value.integer.value[0] = (lm4857_regs[reg] >> shift) & mask;
+-	return 0;
+-}
+-
+-static int lm4857_set_reg(struct snd_kcontrol *kcontrol,
+-	struct snd_ctl_elem_value *ucontrol)
+-{
+-	struct soc_mixer_control *mc =
+-		(struct soc_mixer_control *)kcontrol->private_value;
+-	int reg = mc->reg;
+-	int shift = mc->shift;
+-	int mask = mc->max;
+-
+-	if (((lm4857_regs[reg] >> shift) & mask) ==
+-		ucontrol->value.integer.value[0])
+-		return 0;
+-
+-	lm4857_regs[reg] &= ~(mask << shift);
+-	lm4857_regs[reg] |= ucontrol->value.integer.value[0] << shift;
+-	lm4857_write_regs();
+-	return 1;
+-}
+-
+-static int lm4857_get_mode(struct snd_kcontrol *kcontrol,
+-	struct snd_ctl_elem_value *ucontrol)
+-{
+-	u8 value = lm4857_regs[LM4857_CTRL] & 0x0F;
+-
+-	pr_debug("Entered %s\n", __func__);
+-
+-	if (value)
+-		value -= 5;
+-
+-	ucontrol->value.integer.value[0] = value;
+-	return 0;
+-}
+-
+-static int lm4857_set_mode(struct snd_kcontrol *kcontrol,
+-	struct snd_ctl_elem_value *ucontrol)
+-{
+-	u8 value = ucontrol->value.integer.value[0];
+-
+-	pr_debug("Entered %s\n", __func__);
+-
+-	if (value)
+-		value += 5;
+-
+-	if ((lm4857_regs[LM4857_CTRL] & 0x0F) == value)
+-		return 0;
+-
+-	lm4857_regs[LM4857_CTRL] &= 0xF0;
+-	lm4857_regs[LM4857_CTRL] |= value;
+-	lm4857_write_regs();
+-	return 1;
+-}
+-
+-static const struct snd_soc_dapm_widget wm8753_dapm_widgets[] = {
+-	SND_SOC_DAPM_LINE("Audio Out", NULL),
+-	SND_SOC_DAPM_LINE("GSM Line Out", NULL),
+-	SND_SOC_DAPM_LINE("GSM Line In", NULL),
+-	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+-	SND_SOC_DAPM_MIC("Call Mic", NULL),
+-};
+-
+-
+-static const struct snd_soc_dapm_route dapm_routes[] = {
+-
+-	/* Connections to the lm4857 amp */
+-	{"Audio Out", NULL, "LOUT1"},
+-	{"Audio Out", NULL, "ROUT1"},
+-
+-	/* Connections to the GSM Module */
+-	{"GSM Line Out", NULL, "MONO1"},
+-	{"GSM Line Out", NULL, "MONO2"},
+-	{"RXP", NULL, "GSM Line In"},
+-	{"RXN", NULL, "GSM Line In"},
+-
+-	/* Connections to Headset */
+-	{"MIC1", NULL, "Mic Bias"},
+-	{"Mic Bias", NULL, "Headset Mic"},
+-
+-	/* Call Mic */
+-	{"MIC2", NULL, "Mic Bias"},
+-	{"MIC2N", NULL, "Mic Bias"},
+-	{"Mic Bias", NULL, "Call Mic"},
+-
+-	/* Connect the ALC pins */
+-	{"ACIN", NULL, "ACOP"},
+-};
+-
+-static const char *lm4857_mode[] = {
+-	"Off",
+-	"Call Speaker",
+-	"Stereo Speakers",
+-	"Stereo Speakers + Headphones",
+-	"Headphones"
+-};
+-
+-static const struct soc_enum lm4857_mode_enum[] = {
+-	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(lm4857_mode), lm4857_mode),
+-};
+-
+-static const char *neo_scenarios[] = {
+-	"Off",
+-	"GSM Handset",
+-	"GSM Headset",
+-	"GSM Bluetooth",
+-	"Speakers",
+-	"Headphones",
+-	"Capture Handset",
+-	"Capture Headset",
+-	"Capture Bluetooth"
+-};
+-
+-static const struct soc_enum neo_scenario_enum[] = {
+-	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(neo_scenarios), neo_scenarios),
+-};
+-
+-static const DECLARE_TLV_DB_SCALE(stereo_tlv, -4050, 150, 0);
+-static const DECLARE_TLV_DB_SCALE(mono_tlv, -3450, 150, 0);
+-
+-static const struct snd_kcontrol_new wm8753_neo1973_controls[] = {
+-	SOC_SINGLE_EXT_TLV("Amp Left Playback Volume", LM4857_LVOL, 0, 31, 0,
+-		lm4857_get_reg, lm4857_set_reg, stereo_tlv),
+-	SOC_SINGLE_EXT_TLV("Amp Right Playback Volume", LM4857_RVOL, 0, 31, 0,
+-		lm4857_get_reg, lm4857_set_reg, stereo_tlv),
+-	SOC_SINGLE_EXT_TLV("Amp Mono Playback Volume", LM4857_MVOL, 0, 31, 0,
+-		lm4857_get_reg, lm4857_set_reg, mono_tlv),
+-	SOC_ENUM_EXT("Amp Mode", lm4857_mode_enum[0],
+-		lm4857_get_mode, lm4857_set_mode),
+-	SOC_ENUM_EXT("Neo Mode", neo_scenario_enum[0],
+-		neo1973_get_scenario, neo1973_set_scenario),
+-	SOC_SINGLE_EXT("Amp Spk 3D Playback Switch", LM4857_LVOL, 5, 1, 0,
+-		lm4857_get_reg, lm4857_set_reg),
+-	SOC_SINGLE_EXT("Amp HP 3d Playback Switch", LM4857_RVOL, 5, 1, 0,
+-		lm4857_get_reg, lm4857_set_reg),
+-	SOC_SINGLE_EXT("Amp Fast Wakeup Playback Switch", LM4857_CTRL, 5, 1, 0,
+-		lm4857_get_reg, lm4857_set_reg),
+-	SOC_SINGLE_EXT("Amp Earpiece 6dB Playback Switch", LM4857_CTRL, 4, 1, 0,
+-		lm4857_get_reg, lm4857_set_reg),
+-};
+-
+-/*
+- * This is an example machine initialisation for a wm8753 connected to a
+- * neo1973 II. It is missing logic to detect hp/mic insertions and logic
+- * to re-route the audio in such an event.
+- */
+-static int neo1973_wm8753_init(struct snd_soc_pcm_runtime *rtd)
+-{
+-	struct snd_soc_codec *codec = rtd->codec;
+-	struct snd_soc_dapm_context *dapm = &codec->dapm;
+-	int err;
+-
+-	pr_debug("Entered %s\n", __func__);
+-
+-	/* set up NC codec pins */
+-	snd_soc_dapm_nc_pin(dapm, "LOUT2");
+-	snd_soc_dapm_nc_pin(dapm, "ROUT2");
+-	snd_soc_dapm_nc_pin(dapm, "OUT3");
+-	snd_soc_dapm_nc_pin(dapm, "OUT4");
+-	snd_soc_dapm_nc_pin(dapm, "LINE1");
+-	snd_soc_dapm_nc_pin(dapm, "LINE2");
+-
+-	/* Add neo1973 specific widgets */
+-	snd_soc_dapm_new_controls(dapm, wm8753_dapm_widgets,
+-				  ARRAY_SIZE(wm8753_dapm_widgets));
+-
+-	/* set endpoints to default mode */
+-	set_scenario_endpoints(codec, NEO_AUDIO_OFF);
+-
+-	/* add neo1973 specific controls */
+-	err = snd_soc_add_controls(codec, wm8753_neo1973_controls,
+-				ARRAY_SIZE(8753_neo1973_controls));
+-	if (err < 0)
+-		return err;
+-
+-	/* set up neo1973 specific audio routes */
+-	err = snd_soc_dapm_add_routes(dapm, dapm_routes,
+-				      ARRAY_SIZE(dapm_routes));
+-
+-	snd_soc_dapm_sync(dapm);
+-	return 0;
+-}
+-
+-/*
+- * BT Codec DAI
+- */
+-static struct snd_soc_dai bt_dai = {
+-	.name = "bluetooth-dai",
+-	.playback = {
+-		.channels_min = 1,
+-		.channels_max = 1,
+-		.rates = SNDRV_PCM_RATE_8000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
+-	.capture = {
+-		.channels_min = 1,
+-		.channels_max = 1,
+-		.rates = SNDRV_PCM_RATE_8000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
+-};
+-
+-static struct snd_soc_dai_link neo1973_dai[] = {
+-{ /* Hifi Playback - for similatious use with voice below */
+-	.name = "WM8753",
+-	.stream_name = "WM8753 HiFi",
+-	.platform_name = "samsung-audio",
+-	.cpu_dai_name = "s3c24xx-i2s",
+-	.codec_dai_name = "wm8753-hifi",
+-	.codec_name = "wm8753-codec.0-0x1a",
+-	.init = neo1973_wm8753_init,
+-	.ops = &neo1973_hifi_ops,
+-},
+-{ /* Voice via BT */
+-	.name = "Bluetooth",
+-	.stream_name = "Voice",
+-	.platform_name = "samsung-audio",
+-	.cpu_dai_name = "bluetooth-dai",
+-	.codec_dai_name = "wm8753-voice",
+-	.codec_name = "wm8753-codec.0-0x1a",
+-	.ops = &neo1973_voice_ops,
+-},
+-};
+-
+-static struct snd_soc_card neo1973 = {
+-	.name = "neo1973",
+-	.dai_link = neo1973_dai,
+-	.num_links = ARRAY_SIZE(neo1973_dai),
+-};
+-
+-static int lm4857_i2c_probe(struct i2c_client *client,
+-			    const struct i2c_device_id *id)
+-{
+-	pr_debug("Entered %s\n", __func__);
+-
+-	i2c = client;
+-
+-	lm4857_write_regs();
+-	return 0;
+-}
+-
+-static int lm4857_i2c_remove(struct i2c_client *client)
+-{
+-	pr_debug("Entered %s\n", __func__);
+-
+-	i2c = NULL;
+-
+-	return 0;
+-}
+-
+-static u8 lm4857_state;
+-
+-static int lm4857_suspend(struct i2c_client *dev, pm_message_t state)
+-{
+-	pr_debug("Entered %s\n", __func__);
+-
+-	dev_dbg(&dev->dev, "lm4857_suspend\n");
+-	lm4857_state = lm4857_regs[LM4857_CTRL] & 0xf;
+-	if (lm4857_state) {
+-		lm4857_regs[LM4857_CTRL] &= 0xf0;
+-		lm4857_write_regs();
+-	}
+-	return 0;
+-}
+-
+-static int lm4857_resume(struct i2c_client *dev)
+-{
+-	pr_debug("Entered %s\n", __func__);
+-
+-	if (lm4857_state) {
+-		lm4857_regs[LM4857_CTRL] |= (lm4857_state & 0x0f);
+-		lm4857_write_regs();
+-	}
+-	return 0;
+-}
+-
+-static void lm4857_shutdown(struct i2c_client *dev)
+-{
+-	pr_debug("Entered %s\n", __func__);
+-
+-	dev_dbg(&dev->dev, "lm4857_shutdown\n");
+-	lm4857_regs[LM4857_CTRL] &= 0xf0;
+-	lm4857_write_regs();
+-}
+-
+-static const struct i2c_device_id lm4857_i2c_id[] = {
+-	{ "neo1973_lm4857", 0 },
+-	{ }
+-};
+-
+-static struct i2c_driver lm4857_i2c_driver = {
+-	.driver = {
+-		.name = "LM4857 I2C Amp",
+-		.owner = THIS_MODULE,
+-	},
+-	.suspend =        lm4857_suspend,
+-	.resume	=         lm4857_resume,
+-	.shutdown =       lm4857_shutdown,
+-	.probe =          lm4857_i2c_probe,
+-	.remove =         lm4857_i2c_remove,
+-	.id_table =       lm4857_i2c_id,
+-};
+-
+-static struct platform_device *neo1973_snd_device;
+-
+-static int __init neo1973_init(void)
+-{
+-	int ret;
+-
+-	pr_debug("Entered %s\n", __func__);
+-
+-	if (!machine_is_neo1973_gta01()) {
+-		printk(KERN_INFO
+-			"Only GTA01 hardware supported by ASoC driver\n");
+-		return -ENODEV;
+-	}
+-
+-	neo1973_snd_device = platform_device_alloc("soc-audio", -1);
+-	if (!neo1973_snd_device)
+-		return -ENOMEM;
+-
+-	platform_set_drvdata(neo1973_snd_device, &neo1973);
+-	ret = platform_device_add(neo1973_snd_device);
+-
+-	if (ret) {
+-		platform_device_put(neo1973_snd_device);
+-		return ret;
+-	}
+-
+-	ret = i2c_add_driver(&lm4857_i2c_driver);
+-
+-	if (ret != 0)
+-		platform_device_unregister(neo1973_snd_device);
+-
+-	return ret;
+-}
+-
+-static void __exit neo1973_exit(void)
+-{
+-	pr_debug("Entered %s\n", __func__);
+-
+-	i2c_del_driver(&lm4857_i2c_driver);
+-	platform_device_unregister(neo1973_snd_device);
+-}
+-
+-module_init(neo1973_init);
+-module_exit(neo1973_exit);
+-
+-/* Module information */
+-MODULE_AUTHOR("Graeme Gregory, graeme@openmoko.org, www.openmoko.org");
+-MODULE_DESCRIPTION("ALSA SoC WM8753 Neo1973");
+-MODULE_LICENSE("GPL");
+-- 
+1.6.2.5
