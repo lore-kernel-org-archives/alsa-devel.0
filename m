@@ -1,18 +1,18 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH] ASoC: RX1950: Enable Mic Jack during glue
-	driver init
-Date: Thu,  6 Jan 2011 22:15:49 +0200
-Message-ID: <1294344949-30670-1-git-send-email-anarsoul@gmail.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] ASoC: cs4270: fix dynamic initialization
+ of register cache
+Date: Thu, 6 Jan 2011 14:24:11 -0600
+Message-ID: <4D2624EB.6060704@freescale.com>
+References: <1294339968-420-1-git-send-email-timur@freescale.com>
+	<20110106201511.GA8018@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 53BDA24532
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 21:18:01 +0100 (CET)
-Received: by eyg24 with SMTP id 24so6978580eyg.38
-	for <alsa-devel@alsa-project.org>; Thu, 06 Jan 2011 12:18:00 -0800 (PST)
+Received: from TX2EHSOBE008.bigfish.com (tx2ehsobe004.messaging.microsoft.com
+	[65.55.88.14]) by alsa0.perex.cz (Postfix) with ESMTP id CFBAF2450D
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 21:24:33 +0100 (CET)
+In-Reply-To: <20110106201511.GA8018@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: dp@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Enable Mic Jack during glue driver init, otherwise capture will not work.
+Mark Brown wrote:
+>> > +	u8 reg_cache[CS4270_NUMREGS];
+>> > +	struct snd_soc_codec_driver codec_drv;
+> Having a driver per device is pretty icky and off the top of my head I'd
+> expect it to cause problems if there are two cs4270 in the system.  It
+> would be much nicer and more maintainable to avoid bodging around the
+> API like this.
 
-Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
----
- sound/soc/samsung/rx1950_uda1380.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+The problem is that I need a distinct default register cache for each CS4270 in
+the system, so I don't know how to reconcile the idea that there is supposed to
+be only one snd_soc_codec_driver for all devices.
 
-diff --git a/sound/soc/samsung/rx1950_uda1380.c b/sound/soc/samsung/rx1950_uda1380.c
-index 5a4587e..f400274 100644
---- a/sound/soc/samsung/rx1950_uda1380.c
-+++ b/sound/soc/samsung/rx1950_uda1380.c
-@@ -246,6 +246,7 @@ static int rx1950_uda1380_init(struct snd_soc_pcm_runtime *rtd)
- 
- 	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
- 	snd_soc_dapm_enable_pin(dapm, "Speaker");
-+	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
- 
- 	snd_soc_dapm_sync(dapm);
- 
+What do I do if there are two CS4270s in a system, and they each have different
+power-on default values for the registers?  Granted, it's a contrived example,
+but this could happen if the first CS4270 is a rev1 chip, and the second is a
+rev2 chip.
+
+And even if this example is contrived, it's conceivable that there can be codecs
+where the power-on defaults are set by pin configuration.  Perhaps codec #1 is
+muted by default and codec #2 isn't.
+
 -- 
-1.7.3.2
+Timur Tabi
+Linux kernel developer at Freescale
