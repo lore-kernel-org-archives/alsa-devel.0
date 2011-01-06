@@ -1,26 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 07/11] ASoC: tegra: Add tegra-das driver
-Date: Thu, 6 Jan 2011 22:13:01 +0000
-Message-ID: <20110106221301.GA8408@opensource.wolfsonmicro.com>
-References: <20101222201118.GA8167@opensource.wolfsonmicro.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0310567AAE@HQMAIL01.nvidia.com>
-	<20110105231812.GC5476@opensource.wolfsonmicro.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0310567AC4@HQMAIL01.nvidia.com>
-	<20110105233338.GA5714@opensource.wolfsonmicro.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0310567AE9@HQMAIL01.nvidia.com>
-	<20110106005951.GC12153@opensource.wolfsonmicro.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0310567B85@HQMAIL01.nvidia.com>
-	<20110106210238.GD8018@opensource.wolfsonmicro.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0310567C04@HQMAIL01.nvidia.com>
+From: Greg KH <gregkh@suse.de>
+Subject: Re: [RFC/PATCH v7 01/12] media: Media device node
+	support
+Date: Thu, 6 Jan 2011 14:19:12 -0800
+Message-ID: <20110106221912.GA31328@suse.de>
+References: <1292844995-7900-1-git-send-email-laurent.pinchart@ideasonboard.com>
+	<1292844995-7900-2-git-send-email-laurent.pinchart@ideasonboard.com>
+	<20101223033253.GA14692@suse.de>
+	<201012241259.39148.laurent.pinchart@ideasonboard.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 58098103807
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 23:12:46 +0100 (CET)
+Received: from mx1.suse.de (cantor.suse.de [195.135.220.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id E2643103909
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 23:20:11 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0310567C04@HQMAIL01.nvidia.com>
+In-Reply-To: <201012241259.39148.laurent.pinchart@ideasonboard.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,59 +25,271 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: alsa-devel@alsa-project.org, sakari.ailus@maxwell.research.nokia.com, broonie@opensource.wolfsonmicro.com, clemens@ladisch.de, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 06, 2011 at 01:58:22PM -0800, Stephen Warren wrote:
-> Mark Brown wrote:
-> > On Thu, Jan 06, 2011 at 09:46:10AM -0800, Stephen Warren wrote:
+On Fri, Dec 24, 2010 at 12:59:38PM +0100, Laurent Pinchart wrote:
+> Hi Greg,
+> 
+> Thank you for the review.
+> 
+> On Thursday 23 December 2010 04:32:53 Greg KH wrote:
+> > On Mon, Dec 20, 2010 at 12:36:24PM +0100, Laurent Pinchart wrote:
+> > > The media_devnode structure provides support for registering and
+> > > unregistering character devices using a dynamic major number. Reference
+> > > counting is handled internally, making device drivers easier to write
+> > > without having to solve the open/disconnect race condition issue over
+> > > and over again.
+> > 
+> > What race condition are you referring to?
+> 
+> In a nutshell, the race between device disconnection, which results in the 
+> device instance being delete (if not in use of course), and open() calls from 
+> userspace. The problem has been solved in V4L a couple of releases ago after 
+> suffering from this race for a too long time. As V4L devices (and now media 
+> devices) need to create both a struct device and a struct cdev instance, 
+> careful locking is needed.
 
-> > > "allows". It'd still be nice if the default (in the absence of any
-> > > alsamixer or UCM setup) was that opening e.g. hw:0,0 would allow some
-> > > simple use of the audio, e.g. playback to primary output, capture from
-> > > primary input, so that simple testing could be performed without having
+Ok, that's not really nice, but I guess it is needed.
 
-> > Probably the only people who'd get much from this are people who are
-> > using a reference system with no userspace provided, which is fairly
+> > > +config MEDIA_CONTROLLER
+> > > +	bool "Media Controller API (EXPERIMENTAL)"
+> > > +	depends on EXPERIMENTAL
+> > > +	---help---
+> > > +	  Enable the media controller API used to query media devices internal
+> > > +	  topology and configure it dynamically.
+> > > +
+> > > +	  This API is mostly used by camera interfaces in embedded platforms.
+> > 
+> > That's nice, but why should I enable this?  Or will drivers enable it
+> > automatically?
+> 
+> Drivers depending on the media controller API will enable this, yes. The 
+> option will probably removed later when the API won't be deemed as 
+> experimental anymore.
+> 
+> > > +#define MEDIA_NUM_DEVICES	256
+> > 
+> > Why this limit?
+> 
+> Because I'm using a bitmap to store the used minor numbers, and I thus need a 
+> limit. I could get rid of it of it by using a linked list, but that will not 
+> be efficient (you could argue that the list will hold a few entries only most 
+> of the time, but in that case a limit of 256 minors wouldn't be a problem 
+> :-)).
 
-> People who're bringup up a board without expecting they need to know
-> anything about alsa-lib would get a bit out of this:-) :-)
+As it's only needed to be looked up at open() time, why not just make it
+dynamic?
 
-The trouble is they're in a recursive problem where it's pretty
-difficult to know what a sane setup is for their system/
+> > > +#define MEDIA_NAME		"media"
+> > 
+> > Are you sure this is a good name for a camera?
+> 
+> It's not just camera. Media devices are... well, media devices. Basically 
+> anything that can handle audio and/or video streams. The media controller API 
+> can be used by plain audio devices.
 
-> So I guess what'd help me through this the most is knowing exactly how
-> the user-space is configured; is this all stuff in /etc/asound.conf or
-> some other config file? When you were talking about user-space earlier,
+Ok.
 
-This is up to userspace.  Some systems use asound.conf and
-/usr/share/alsa/cards.  Some systems have init scripts which run amixer
-commands.  Some systems use UCM or their own implementations of that
-idea.  Some systems restore an 'alsactl store' dump in an init script.
+> > > +static dev_t media_dev_t;
+> > 
+> > Only one major number?  Is it always dynamic?
+> 
+> Yes, one major and (for now) 256 minors. Is there a problem with it being 
+> dynamic ?
 
-Partly it depends on how much flexibility is needed - if you've only got
-one input and one output (as is very common) then things are much like
-on a PC, the bigger more complicated the system the more fun things get.
+No, just curious.
 
-> I was thinking of writing a custom application per board/machine to
-> configure the system at e.g. boot time (or libraries that apps would use),
-> which didn't sound appealing; maybe that's part of my misunderstanding.
+> > > +
+> > > +/*
+> > > + *	Active devices
+> > > + */
+> > > +static DEFINE_MUTEX(media_devnode_lock);
+> > > +static DECLARE_BITMAP(media_devnode_nums, MEDIA_NUM_DEVICES);
+> > > +
+> > > +/* Called when the last user of the media device exits. */
+> > > +static void media_devnode_release(struct device *cd)
+> > > +{
+> > > +	struct media_devnode *mdev = to_media_devnode(cd);
+> > > +
+> > > +	mutex_lock(&media_devnode_lock);
+> > > +
+> > > +	/* Delete the cdev on this minor as well */
+> > > +	cdev_del(&mdev->cdev);
+> > > +
+> > > +	/* Mark device node number as free */
+> > > +	clear_bit(mdev->minor, media_devnode_nums);
+> > > +
+> > > +	mutex_unlock(&media_devnode_lock);
+> > > +
+> > > +	/* Release media_devnode and perform other cleanups as needed. */
+> > > +	if (mdev->release)
+> > > +		mdev->release(mdev);
+> > > +}
+> > 
+> > You forgot to free the device structure here as well, right?
+> 
+> That will be done by the release callback. The media_devnode structure is 
+> embedded in the media_device structure, which will be embedded in driver-
+> specific structures.
 
-I was talking about a single application that can choose multiple
-configuration files using some algorithm.
+Ok.
 
-> Are there any public examples for ASoC in particular that I can read in
-> concert with the driver source to get the idea? I did find
-> alsa-lib.git/src/conf but that seems to only cover desktop PCs, not
-> ASoC drivers.
+> > > +static ssize_t media_read(struct file *filp, char __user *buf,
+> > > +		size_t sz, loff_t *off)
+> > > +{
+> > > +	struct media_devnode *mdev = media_devnode_data(filp);
+> > > +
+> > > +	if (!mdev->fops->read)
+> > > +		return -EINVAL;
+> > > +	if (!media_devnode_is_registered(mdev))
+> > > +		return -EIO;
+> > 
+> > How could this happen?
+> 
+> This can happen when a USB device is disconnected for instance.
 
-Beagleboard is the most obvious example, and pretty close to the systems
-you're working on in terms of features.  Not that I know off the top of
-my head what exactly the various software stacks for that are doing or
-where to find them.
+But what's to keep that from happening on the next line as well?  That
+doesn't seem like a check you can ever be sure about, so I wouldn't do
+it at all.
 
-Really there's no difference to PCs here, the userspace API is exactly
-the same and anything that works on PCs should work on an embedded
-system.  You'll generally get more knobs to twiddle but the mechanics of
-doing so are identical.
+> > And are you sure -EIO is correct?
+> 
+> -ENXIO is probably better (I always confuse that with -ENODEV).
+> 
+> > > +	return mdev->fops->read(filp, buf, sz, off);
+> > > +}
+> > > +
+> > > +static ssize_t media_write(struct file *filp, const char __user *buf,
+> > > +		size_t sz, loff_t *off)
+> > > +{
+> > > +	struct media_devnode *mdev = media_devnode_data(filp);
+> > > +
+> > > +	if (!mdev->fops->write)
+> > > +		return -EINVAL;
+> > > +	if (!media_devnode_is_registered(mdev))
+> > > +		return -EIO;
+> > 
+> > Same as above, and same comment in other places (poll, ioctl.)
+> 
+> OK.
+> 
+> > > +/* Override for the open function */
+> > > +static int media_open(struct inode *inode, struct file *filp)
+> > > +{
+> > > +	struct media_devnode *mdev;
+> > > +	int ret;
+> > > +
+> > > +	/* Check if the media device is available. This needs to be done with
+> > > +	 * the media_devnode_lock held to prevent an open/unregister race:
+> > > +	 * without the lock, the device could be unregistered and freed between
+> > > +	 * the media_devnode_is_registered() and get_device() calls, leading to
+> > > +	 * a crash.
+> > > +	 */
+> > > +	mutex_lock(&media_devnode_lock);
+> > > +	mdev = container_of(inode->i_cdev, struct media_devnode, cdev);
+> > 
+> > By virtue of having the reference to the module held by the vfs, this
+> > shouldn't ever go away, even if the lock is not held.
+> 
+> inode->i_cdev is set to NULL by cdev_default_release() which can be called 
+> from media_devnode_unregister(). I could move to container_of outside the 
+> lock, but in that case I would have to check for mdev == NULL || 
+> !mdev_devnode_is_registered(mdev) (or move the NULL check inside 
+> mdev_devnode_is_registered). Is that what you would like ?
+
+As container_of _ALWAYS_ returns a valid pointer, you can't check it for
+NULL.  I don't know, it just doesn't seem correct here, but if you are
+sure it's working properly, I'll not push the issue.
+
+> > > +	/* return ENXIO if the media device has been removed
+> > > +	   already or if it is not registered anymore. */
+> > > +	if (!media_devnode_is_registered(mdev)) {
+> > > +		mutex_unlock(&media_devnode_lock);
+> > > +		return -ENXIO;
+> > > +	}
+> > 
+> > So you can unregister a device at any time, even if the device is open,
+> > or about to be opened?
+> 
+> That's correct. That way drivers don't need to care about unregister/open 
+> races, media_devnode will handle it for them.
+
+Ok.
+
+> > Then that's fine, but you can put the lock after the container_of(), right?
+> 
+> If I add a NULL check (as explained above), yes.
+
+Again, you can't check for NULL as the result of container_of() that
+does not work (hint, container_of() is just pointer math, without ever
+looking at the original pointer value.)
+
+> > > +	/* and increase the device refcount */
+> > > +	get_device(&mdev->dev);
+> > 
+> > How is that holding anything into memory?
+> 
+> That will prevent the device instance from being freed until the device is 
+> closed, thereby holding both the device instance and the cdev instance in 
+> memory.
+
+Tricky :)
+
+> > Don't you want to keep the module that the fops pointer in the device in
+> > memory, not necessarily the device itself?
+> 
+> The cdev owner pointer is set to the fops owner. Unless I'm mistaken it will 
+> keep the module in memory. I need to keep the device in memory (or rather the 
+> media_devnode structure that embeds it) to handle file operations on a device 
+> that gets unregistered after it has been opened.
+
+Ok.
+
+> > > +	mutex_unlock(&media_devnode_lock);
+> > > +
+> > > +	filp->private_data = mdev;
+> > > +
+> > > +	if (mdev->fops->open) {
+> > > +		ret = mdev->fops->open(filp);
+> > > +		if (ret) {
+> > > +			put_device(&mdev->dev);
+> > > +			return ret;
+> > > +		}
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +}
+> > 
+> > No reference counting for the fops?  Why not?
+> 
+> Because cdev already increments the owner refcount on open().
+
+Ok.
+
+> > Anyway, it looks like what you really want is an "easier" way to handle
+> > a cdev and a struct device that will export the proper information to
+> > userspace, right?
+> > 
+> > Why not do this generically, fixing up the cdev interface (which really
+> > needs it) and not tie it to media devices at all, making it possible for
+> > _everyone_ to use this type of infrastructure?
+> > 
+> > That seems like the better thing to do here.
+> 
+> Sounds like a good idea. You're a better cdev expert than me, so could you 
+> give me a few pointers ? Do you want me to create a new object that will hold 
+> a struct cdev and a struct device together, or to embed the device structure 
+> into the existing cdev structure ?
+
+I don't really know, all I know is that cdev is a difficult thing to
+handle at times, but not everyone who uses it needs a struct device.
+But some people do (as this code shows), so I guess it needs to be a
+whole new structure/interface that binds the two together like you just
+did.  I think that would be good for a lot more places other than just
+the media subsystem, so it should go into the core kernel instead.
+
+thanks,
+
+greg k-h
