@@ -1,16 +1,25 @@
-From: M0Rf30 <morf3089@gmail.com>
-Subject: Acer Aspire 4930G mixer regression
-Date: Sun, 02 Jan 2011 11:54:51 +0100
-Message-ID: <4D20597B.8050909@gmail.com>
+From: VDR User <user.vdr@gmail.com>
+Subject: Re: Bug in setting channels,
+	related to recent ELD/EDID changes?
+Date: Thu, 6 Jan 2011 00:43:16 -0800
+Message-ID: <AANLkTimLC4Xpo-fL_qbn+R63D2LusqY=aRTq=+D=5jpx@mail.gmail.com>
+References: <AANLkTikneYHc9NmrRW41=xRBW_PVgc0jqdcOaTgHcC-t@mail.gmail.com>
+	<4D12E292.9050204@iki.fi>
+	<AANLkTimxHsUS_zVm0_m-vUcwt4vupUAf-vRhH5VWLwoy@mail.gmail.com>
+	<4D20508C.7070609@iki.fi>
+	<AANLkTimHu0QS-t=JroWy4j0vts0wjq_R4m4VrGpmu-sb@mail.gmail.com>
+	<AANLkTi=0uVQwsd-cWpZSfRuBVZjh7oRsLXpe_kuLP5Hq@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 51AB2245D7
-	for <alsa-devel@alsa-project.org>; Sun,  2 Jan 2011 11:55:32 +0100 (CET)
-Received: by wyi11 with SMTP id 11so12456574wyi.38
-	for <alsa-devel@alsa-project.org>; Sun, 02 Jan 2011 02:55:31 -0800 (PST)
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id BC5D724386
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 09:43:17 +0100 (CET)
+Received: by iwn42 with SMTP id 42so17686594iwn.38
+	for <alsa-devel@alsa-project.org>; Thu, 06 Jan 2011 00:43:16 -0800 (PST)
+In-Reply-To: <AANLkTi=0uVQwsd-cWpZSfRuBVZjh7oRsLXpe_kuLP5Hq@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,11 +29,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <james.dutton@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Anssi Hannula <anssi.hannula@iki.fi>, "mailing list: alsa-dev" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The soundcard Realtek ALC888 needs a fix when used with 
-acer-aspire-4930g. Main volume is not initialized. Please take a look 
-here https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5176.
-I wrote a patch to solve this problem on my laptop. And it works like a 
-charm.Thanks in advance.
+T24gVHVlLCBKYW4gNCwgMjAxMSBhdCAxMDo0NiBBTSwgSmFtZXMgQ291cnRpZXItRHV0dG9uCjxq
+YW1lcy5kdXR0b25AZ21haWwuY29tPiB3cm90ZToKPj4+IEEvViByZWNlaXZlcnMgc2hvd2luZyBU
+ViBpbmZvcm1hdGlvbiBpcyBpbmRlZWQgc29tZXRoaW5nIHRoYXQgd2Fzbid0Cj4+PiB0aG91Z2h0
+IGFib3V0IDooCj4+Cj4+IFRoaXMgaGFzIGNlcnRhaW5seSBjYXVzZWQgcHJvYmxlbXMuIMKgQW55
+b25lIHRob3VnaHQgb2YgYSB3YXkgdG8KPj4gcmVzb2x2ZSBpdCwgb3IgYmV0dGVyIHlldCByZXZl
+cnNlZCB0aGUgcGF0Y2ggdGhhdCBjcmVhdGVkIHRoZQo+PiBzaXR1YXRpb24/Cj4KPiBJIHRoaW5r
+IHRoaXMgaXMgcmVsYXRlZCB0byBnZW5lcmFsIGhvdC1wbHVnIHN1cHBvcnQgaW4gQUxTQS4KPiBJ
+ZiB5b3UgcGx1ZyBpbiBhIFVTQiBzcGVha2VycywgQUxTQSBzaG91bGQgZGV0ZWN0IG5ldyBzcGVh
+a2VycyBhbmQKPiBoYXZlIGEgd2F5IG9mIGluZm9ybWluZyBhcHBsaWNhdGlvbnMgYWJvdXQgaXQu
+Cj4gV2hlbiB5b3UgdW5wbHVnIFVTQiBzcGVha2VycywgQUxTQSBzaG91bGQgZGV0ZWN0IHRoZSBs
+YWNrIG9mIHNwZWFrZXJzCj4gYW5kIGhhdmUgYSB3YXkgb2YgaW5mb3JtaW5nIGFwcGxpY2F0aW9u
+IGFib3V0IGl0Lgo+IEluIHRoZSBzYW1lIHdheSB0aGUgaWYgeW91IHBvd2VyIG9uIGEgSERNSSBh
+bXAsIGluc3RlYWQgb2YganVzdCB0d28KPiBzcGVha2VycyAoaW4gdGhlIFRWKSwgd2Ugbm93IGhh
+dmUgNS4xIHNwZWFrZXJzLgo+IEFMU0Egc2hvdWxkIGhhdmUgYSB3YXkgdG8gaW5mb3JtIGFwcGxp
+Y2F0aW9ucyBvZiB0aGUgY2hhbmdlcy4KPgo+IEkgZG8gbm90IHRoaW5rIEFMU0EgYWxvbmUgY2Fu
+IGhhbmRsZSB0aGVzZSBob3QgcGx1Zy91bnBsdWcgZXZlbnRzLiBJdAo+IGhhcyB0byBiZSBhcHBs
+aWNhdGlvbnMgdGhhdCBhcmUgbWFkZSB0byB1bmRlcnN0YW5kIHRoZXNlIGV2ZW50cyBhbmQKPiBh
+ZGp1c3QgYWNjb3JkaW5nbHkuCj4gQmVmb3JlIG5vdywgQUxTQSBoYXMgaGFkIHRvIGJlIHRvbGQg
+bWFudWFsbHkgaG93IG1hbnkgc3BlYWtlcnMgYSB1c2VyCj4gaGFzIGF0dGFjaGVkLCBFLmcuIFN0
+ZXJlbywgNS4xIGV0Yy4KPiBXaXRoIG1vZGVybiBzb3VuZCBkZXZpY2VzLCB0aGlzIGluZm9ybWF0
+aW9uIGlzIGF2YWlsYWJsZSBhdXRvbWF0aWNhbGx5Cj4gZnJvbSB0aGUgaGFyZHdhcmUgYW5kIGNo
+YW5nZXMgd2l0aG91dCBub3RpY2UuCj4KPiBTbywgSSBwcm9wb3NlIHRoYXQgYW4gQVBJIHNob3Vs
+ZCBiZSBhZGRlZCB0byBhY2hpZXZlIHRoaXMuCj4gU28sIGluc3RlYWQgb2YgdGhlIGFwcGxpY2F0
+aW9uIHNldHRpbmcgdGhlIHNwZWFrZXIgYXJyYW5nZW1lbnQsIHRoZQo+IHNwZWFrZXIgYXJyYW5n
+ZW1lbnQgaXMgc2V0IGluIEFMU0EsIGFuZCB0aGUgYXBwbGljYXRpb24gcmVxdWVzdHMKPiBpbmZv
+cm1hdGlvbiBhYm91dCBpdC4KPiBXaGVuIHRoZSBhcHBsaWNhdGlvbiB3cml0ZXMgc291bmQgc2Ft
+cGxlcyB0byB0aGUgc291bmQgY2FyZCBhbmQgdGhlCj4gc3BlYWtlciBhcnJhbmdlbWVudCBoYXMg
+Y2hhbmdlZCwgQUxTQSBzaG91bGQgdXNlIGEgc3BlY2lmaWMgZXJyb3IKPiBudW1iZXIgcmVwb3J0
+ZWQgYmFjayBzbyB0aGUgYXBwbGljYXRpb24ga25vd3MgdGhhdCBpdCBzaG91bGQgcmUtY2hlY2sK
+PiB0aGUgc3BlYWtlci1hcnJhbmdlbWVudCBBUEkgYW5kIHJlLW9wZW4gdGhlIHNvdW5kIGNhcmQg
+d2l0aCB0aGUgbmV3Cj4gZGV0YWlscy4KClRoYXQgc291bmRzIGxpa2UgYSBncmVhdCBzb2x1dGlv
+biBhbmQgaG9wZWZ1bGx5IGl0IGJlIGNvbnNpZGVyZWQKd2hlbi9pZiBzdGVwcyBhcmUgdGFrZW4g
+dG8gZml4IHRoaXMgcHJvYmxlbS4gIFVuZm9ydHVuYXRlbHkgdGh1cyBmYXIKaXQgc2VlbXMgdGhl
+IHByZWZlcmVuY2UgaXMgdG8gaWdub3JlIGl0LiAgVGhhdCBiZWluZyB0aGUgY2FzZSwgd2lsbApz
+b21lb25lIHBsZWFzZSBwb3N0IGEgcGF0Y2ggdGhhdCByZXZlcnNlcyB0aGUgY2hhbmdlIHRoYXQg
+Y2F1c2VkIHRoaXMKcHJvYmxlbSBpbiB0aGUgZmlyc3QgcGxhY2U/CgpUaGFua3MsCkRlcmVrCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
