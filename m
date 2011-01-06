@@ -1,19 +1,24 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 4/4] OMAP4: DMIC: Add DMIC codec
-	platform devices
-Date: Thu, 6 Jan 2011 22:25:42 +0000
-Message-ID: <20110106222542.GF8408@opensource.wolfsonmicro.com>
-References: <1294322439-16305-1-git-send-email-dlambert@ti.com>
-	<1294322439-16305-5-git-send-email-dlambert@ti.com>
+Subject: Re: [PATCH] ASoC: cs4270: fix dynamic initialization
+ of register cache
+Date: Thu, 6 Jan 2011 22:31:41 +0000
+Message-ID: <20110106223141.GH8408@opensource.wolfsonmicro.com>
+References: <1294339968-420-1-git-send-email-timur@freescale.com>
+	<20110106201511.GA8018@opensource.wolfsonmicro.com>
+	<4D262B29.3010606@freescale.com>
+	<20110106213139.GG8018@opensource.wolfsonmicro.com>
+	<4D2635BC.1080108@freescale.com>
+	<20110106220406.GI8018@opensource.wolfsonmicro.com>
+	<4D263D1B.7040506@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7CE31103909
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 23:25:27 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E943E103909
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2011 23:31:26 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1294322439-16305-5-git-send-email-dlambert@ti.com>
+In-Reply-To: <4D263D1B.7040506@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,38 +28,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Lambert <dlambert@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Paul Walmsley <paul@pwsan.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Timur Tabi <timur@freescale.com>
+Cc: dp@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 06, 2011 at 08:00:39AM -0600, David Lambert wrote:
-> This creates the DMIC codec platform devices.
-> 
-> The platform devices create an instance of the driver during boot up.
-> 
-> Signed-off-by: David Lambert <dlambert@ti.com>
+On Thu, Jan 06, 2011 at 04:07:23PM -0600, Timur Tabi wrote:
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> My code *was* idiomatic the last time I touched it, which was early 2009.
 
-though:
-
-> +static struct platform_device codec_dmic0 = {
-> +	.name   = "dmic-codec",
-> +	.id     = -1,
-> +};
-
-> +static inline void omap_dmic_init(void)
-> +{
-> +	platform_device_register(&codec_dmic0);
-> +}
-
-This feels like bad namespacing as the name is OMAP-generic but it's
-actually board specific.
-
-It might also be more sensible to just have an array of platform devices
-with one entry and register that rather than bouncing through this
-function as it doesn't add anything and it'll get more and more verbose
-as more platform devices are added.
-
-It may be that these things are idiomatic, though - I've not looked at
-the surrounding code.
+Well, the OF stuff was pretty hairy prior to multi-component...  :)
