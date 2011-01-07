@@ -1,15 +1,14 @@
 From: Seungwhan Youn <sw.youn@samsung.com>
-Subject: [PATCH 3/4] ASoC: SAMSUNG: Move PCM specific
-	definitions into pcm.c
-Date: Fri,  7 Jan 2011 13:57:23 +0900
-Message-ID: <1294376243-18334-1-git-send-email-sw.youn@samsung.com>
+Subject: [PATCH 4/4] ASoC: SAMSUNG: Clean-up header includes
+Date: Fri,  7 Jan 2011 13:57:42 +0900
+Message-ID: <1294376262-18364-1-git-send-email-sw.youn@samsung.com>
 References: <1294375429-16729-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id EA44E24640
+	by alsa0.perex.cz (Postfix) with ESMTP id B560B2463F
 	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2011 06:21:07 +0100 (CET)
 In-Reply-To: <1294375429-16729-1-git-send-email-sw.youn@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -25,253 +24,636 @@ To: alsa-devel@alsa-project.org
 Cc: Seungwhan Youn <sw.youn@samsung.com>, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-This patch moves PCM specific definitions, they doesn't need to be
-shared, into 'pcm.c' from 'pcm.h'.
+This patch remove including unnecessary/duplicated headers which relative
+with Samsung SoCs.
 
 Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
 ---
- sound/soc/samsung/pcm.c |  107 +++++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/samsung/pcm.h |  107 -----------------------------------------------
- 2 files changed, 107 insertions(+), 107 deletions(-)
+ sound/soc/samsung/ac97.c                       |    8 +++-----
+ sound/soc/samsung/dma.c                        |   12 +++---------
+ sound/soc/samsung/goni_wm8994.c                |   10 +---------
+ sound/soc/samsung/h1940_uda1380.c              |   11 +----------
+ sound/soc/samsung/i2s.c                        |    7 +++----
+ sound/soc/samsung/jive_wm8750.c                |   11 -----------
+ sound/soc/samsung/ln2440sbc_alc650.c           |    6 ------
+ sound/soc/samsung/neo1973_gta02_wm8753.c       |   15 ++-------------
+ sound/soc/samsung/pcm.c                        |   15 +++------------
+ sound/soc/samsung/rx1950_uda1380.c             |   14 +-------------
+ sound/soc/samsung/s3c-i2s-v2.c                 |    7 +++----
+ sound/soc/samsung/s3c2412-i2s.c                |   16 +++-------------
+ sound/soc/samsung/s3c24xx-i2s.c                |   18 +++---------------
+ sound/soc/samsung/s3c24xx_simtec.c             |   12 ++----------
+ sound/soc/samsung/s3c24xx_simtec_hermes.c      |   10 ----------
+ sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c |   12 ------------
+ sound/soc/samsung/s3c24xx_uda134x.c            |   12 ++----------
+ sound/soc/samsung/smartq_wm8987.c              |    9 +--------
+ sound/soc/samsung/smdk2443_wm9710.c            |    6 ------
+ sound/soc/samsung/smdk_spdif.c                 |    9 ++-------
+ sound/soc/samsung/smdk_wm8580.c                |    7 +------
+ sound/soc/samsung/smdk_wm9713.c                |    4 ----
+ sound/soc/samsung/spdif.c                      |    7 +++----
+ 23 files changed, 37 insertions(+), 201 deletions(-)
 
+diff --git a/sound/soc/samsung/ac97.c b/sound/soc/samsung/ac97.c
+index 1e84ee0..18528d8 100644
+--- a/sound/soc/samsung/ac97.c
++++ b/sound/soc/samsung/ac97.c
+@@ -12,16 +12,14 @@
+  * published by the Free Software Foundation.
+  */
+ 
+-#include <linux/init.h>
+-#include <linux/module.h>
++#include <sound/soc.h>
++
+ #include <linux/io.h>
+ #include <linux/delay.h>
+ #include <linux/clk.h>
+ 
+-#include <sound/soc.h>
+-
+-#include <plat/regs-ac97.h>
+ #include <mach/dma.h>
++#include <plat/regs-ac97.h>
+ #include <plat/audio.h>
+ 
+ #include "dma.h"
+diff --git a/sound/soc/samsung/dma.c b/sound/soc/samsung/dma.c
+index c2cdb45..c80c070 100644
+--- a/sound/soc/samsung/dma.c
++++ b/sound/soc/samsung/dma.c
+@@ -14,18 +14,12 @@
+  *  option) any later version.
+  */
+ 
+-#include <linux/module.h>
+-#include <linux/init.h>
+-#include <linux/io.h>
+-#include <linux/platform_device.h>
++#include <sound/soc.h>
++#include <sound/pcm_params.h>
++
+ #include <linux/slab.h>
+ #include <linux/dma-mapping.h>
+ 
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include <sound/soc.h>
+-
+ #include <asm/dma.h>
+ #include <mach/hardware.h>
+ #include <mach/dma.h>
+diff --git a/sound/soc/samsung/goni_wm8994.c b/sound/soc/samsung/goni_wm8994.c
+index 34dd9ef..f6b3a3c 100644
+--- a/sound/soc/samsung/goni_wm8994.c
++++ b/sound/soc/samsung/goni_wm8994.c
+@@ -11,21 +11,13 @@
+  *
+  */
+ 
+-#include <linux/module.h>
+-#include <linux/moduleparam.h>
+-#include <linux/io.h>
+-#include <linux/platform_device.h>
+ #include <sound/soc.h>
+ #include <sound/jack.h>
++
+ #include <asm/mach-types.h>
+ #include <mach/gpio.h>
+-#include <mach/regs-clock.h>
+ 
+-#include <linux/mfd/wm8994/core.h>
+-#include <linux/mfd/wm8994/registers.h>
+ #include "../codecs/wm8994.h"
+-#include "dma.h"
+-#include "i2s.h"
+ 
+ #define MACHINE_NAME	0
+ #define CPU_VOICE_DAI	1
+diff --git a/sound/soc/samsung/h1940_uda1380.c b/sound/soc/samsung/h1940_uda1380.c
+index c45f7ce..5653e6d 100644
+--- a/sound/soc/samsung/h1940_uda1380.c
++++ b/sound/soc/samsung/h1940_uda1380.c
+@@ -13,25 +13,16 @@
+  *
+  */
+ 
+-#include <linux/module.h>
+-#include <linux/moduleparam.h>
+-#include <linux/platform_device.h>
+-#include <linux/i2c.h>
+-#include <linux/gpio.h>
+ 
+ #include <sound/soc.h>
+-#include <sound/uda1380.h>
+ #include <sound/jack.h>
+ 
++#include <linux/gpio.h>
+ #include <plat/regs-iis.h>
+-
+ #include <mach/h1940-latch.h>
+-
+ #include <asm/mach-types.h>
+ 
+-#include "dma.h"
+ #include "s3c24xx-i2s.h"
+-#include "../codecs/uda1380.h"
+ 
+ static unsigned int rates[] = {
+ 	11025,
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index d00ac3a..4fa24e0 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -10,15 +10,14 @@
+  * published by the Free Software Foundation.
+  */
+ 
++#include <sound/soc.h>
++#include <sound/pcm_params.h>
++
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+ #include <linux/clk.h>
+ #include <linux/io.h>
+ 
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include <sound/soc.h>
+-
+ #include <plat/audio.h>
+ 
+ #include "dma.h"
+diff --git a/sound/soc/samsung/jive_wm8750.c b/sound/soc/samsung/jive_wm8750.c
+index 0880252..3b53ad5 100644
+--- a/sound/soc/samsung/jive_wm8750.c
++++ b/sound/soc/samsung/jive_wm8750.c
+@@ -11,22 +11,11 @@
+  * published by the Free Software Foundation.
+ */
+ 
+-#include <linux/module.h>
+-#include <linux/moduleparam.h>
+-#include <linux/timer.h>
+-#include <linux/interrupt.h>
+-#include <linux/platform_device.h>
+-#include <linux/clk.h>
+-
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+ #include <sound/soc.h>
+ 
+ #include <asm/mach-types.h>
+ 
+-#include "dma.h"
+ #include "s3c2412-i2s.h"
+-
+ #include "../codecs/wm8750.h"
+ 
+ static const struct snd_soc_dapm_route audio_map[] = {
+diff --git a/sound/soc/samsung/ln2440sbc_alc650.c b/sound/soc/samsung/ln2440sbc_alc650.c
+index 0241429..bd91c19 100644
+--- a/sound/soc/samsung/ln2440sbc_alc650.c
++++ b/sound/soc/samsung/ln2440sbc_alc650.c
+@@ -16,14 +16,8 @@
+  *
+  */
+ 
+-#include <linux/module.h>
+-#include <linux/device.h>
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+ #include <sound/soc.h>
+ 
+-#include "dma.h"
+-
+ static struct snd_soc_card ln2440sbc;
+ 
+ static struct snd_soc_dai_link ln2440sbc_dai[] = {
+diff --git a/sound/soc/samsung/neo1973_gta02_wm8753.c b/sound/soc/samsung/neo1973_gta02_wm8753.c
+index 3eec610..3fe16e5 100644
+--- a/sound/soc/samsung/neo1973_gta02_wm8753.c
++++ b/sound/soc/samsung/neo1973_gta02_wm8753.c
+@@ -13,25 +13,14 @@
+  *  option) any later version.
+  */
+ 
+-#include <linux/module.h>
+-#include <linux/moduleparam.h>
+-#include <linux/timer.h>
+-#include <linux/interrupt.h>
+-#include <linux/platform_device.h>
+-#include <linux/gpio.h>
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+ #include <sound/soc.h>
+ 
++#include <linux/gpio.h>
+ #include <asm/mach-types.h>
+-
+ #include <plat/regs-iis.h>
+-
+-#include <mach/regs-clock.h>
+-#include <asm/io.h>
+ #include <mach/gta02.h>
++
+ #include "../codecs/wm8753.h"
+-#include "dma.h"
+ #include "s3c24xx-i2s.h"
+ 
+ static struct snd_soc_card neo1973_gta02;
 diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
-index 48d0b75..091db5d 100644
+index 091db5d..b7562be 100644
 --- a/sound/soc/samsung/pcm.c
 +++ b/sound/soc/samsung/pcm.c
-@@ -32,6 +32,113 @@
- #include "dma.h"
- #include "pcm.h"
+@@ -11,21 +11,12 @@
+  * published by the Free Software Foundation.
+  */
  
-+/*Register Offsets */
-+#define S3C_PCM_CTL		0x00
-+#define S3C_PCM_CLKCTL		0x04
-+#define S3C_PCM_TXFIFO		0x08
-+#define S3C_PCM_RXFIFO		0x0C
-+#define S3C_PCM_IRQCTL		0x10
-+#define S3C_PCM_IRQSTAT		0x14
-+#define S3C_PCM_FIFOSTAT	0x18
-+#define S3C_PCM_CLRINT		0x20
+-#include <linux/init.h>
+-#include <linux/module.h>
+-#include <linux/device.h>
+-#include <linux/delay.h>
++#include <sound/soc.h>
++#include <sound/pcm_params.h>
 +
-+/* PCM_CTL Bit-Fields */
-+#define S3C_PCM_CTL_TXDIPSTICK_MASK	0x3f
-+#define S3C_PCM_CTL_TXDIPSTICK_SHIFT	13
-+#define S3C_PCM_CTL_RXDIPSTICK_MASK	0x3f
-+#define S3C_PCM_CTL_RXDIPSTICK_SHIFT	7
-+#define S3C_PCM_CTL_TXDMA_EN		(0x1 << 6)
-+#define S3C_PCM_CTL_RXDMA_EN		(0x1 << 5)
-+#define S3C_PCM_CTL_TXMSB_AFTER_FSYNC	(0x1 << 4)
-+#define S3C_PCM_CTL_RXMSB_AFTER_FSYNC	(0x1 << 3)
-+#define S3C_PCM_CTL_TXFIFO_EN		(0x1 << 2)
-+#define S3C_PCM_CTL_RXFIFO_EN		(0x1 << 1)
-+#define S3C_PCM_CTL_ENABLE		(0x1 << 0)
+ #include <linux/clk.h>
+-#include <linux/kernel.h>
+-#include <linux/gpio.h>
+ #include <linux/io.h>
+ 
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include <sound/initval.h>
+-#include <sound/soc.h>
+-
+ #include <plat/audio.h>
+ #include <plat/dma.h>
+ 
+diff --git a/sound/soc/samsung/rx1950_uda1380.c b/sound/soc/samsung/rx1950_uda1380.c
+index 5a4587e..29b1c6d 100644
+--- a/sound/soc/samsung/rx1950_uda1380.c
++++ b/sound/soc/samsung/rx1950_uda1380.c
+@@ -17,26 +17,14 @@
+  *
+  */
+ 
+-#include <linux/module.h>
+-#include <linux/moduleparam.h>
+-#include <linux/platform_device.h>
+-#include <linux/i2c.h>
+-#include <linux/gpio.h>
+-#include <linux/clk.h>
+-
+ #include <sound/soc.h>
+-#include <sound/uda1380.h>
+ #include <sound/jack.h>
+ 
++#include <linux/gpio.h>
+ #include <plat/regs-iis.h>
+-
+-#include <mach/regs-clock.h>
+-
+ #include <asm/mach-types.h>
+ 
+-#include "dma.h"
+ #include "s3c24xx-i2s.h"
+-#include "../codecs/uda1380.h"
+ 
+ static int rx1950_uda1380_init(struct snd_soc_pcm_runtime *rtd);
+ static int rx1950_startup(struct snd_pcm_substream *substream);
+diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
+index 094f36e..5f1a2a4 100644
+--- a/sound/soc/samsung/s3c-i2s-v2.c
++++ b/sound/soc/samsung/s3c-i2s-v2.c
+@@ -16,14 +16,13 @@
+  * option) any later version.
+  */
+ 
++#include <sound/soc.h>
++#include <sound/pcm_params.h>
 +
-+/* PCM_CLKCTL Bit-Fields */
-+#define S3C_PCM_CLKCTL_SERCLK_EN	(0x1 << 19)
-+#define S3C_PCM_CLKCTL_SERCLKSEL_PCLK	(0x1 << 18)
-+#define S3C_PCM_CLKCTL_SCLKDIV_MASK	0x1ff
-+#define S3C_PCM_CLKCTL_SYNCDIV_MASK	0x1ff
-+#define S3C_PCM_CLKCTL_SCLKDIV_SHIFT	9
-+#define S3C_PCM_CLKCTL_SYNCDIV_SHIFT	0
+ #include <linux/delay.h>
+ #include <linux/clk.h>
+ #include <linux/io.h>
+ 
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include <sound/soc.h>
+-
+ #include <mach/dma.h>
+ 
+ #include "regs-i2s-v2.h"
+diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
+index 7ea8378..a6977b7 100644
+--- a/sound/soc/samsung/s3c2412-i2s.c
++++ b/sound/soc/samsung/s3c2412-i2s.c
+@@ -16,22 +16,14 @@
+  * option) any later version.
+  */
+ 
+-#include <linux/init.h>
+-#include <linux/module.h>
+-#include <linux/device.h>
++#include <sound/soc.h>
++#include <sound/pcm_params.h>
 +
-+/* PCM_TXFIFO Bit-Fields */
-+#define S3C_PCM_TXFIFO_DVALID	(0x1 << 16)
-+#define S3C_PCM_TXFIFO_DATA_MSK	(0xffff << 0)
-+
-+/* PCM_RXFIFO Bit-Fields */
-+#define S3C_PCM_RXFIFO_DVALID	(0x1 << 16)
-+#define S3C_PCM_RXFIFO_DATA_MSK	(0xffff << 0)
-+
-+/* PCM_IRQCTL Bit-Fields */
-+#define S3C_PCM_IRQCTL_IRQEN		(0x1 << 14)
-+#define S3C_PCM_IRQCTL_WRDEN		(0x1 << 12)
-+#define S3C_PCM_IRQCTL_TXEMPTYEN	(0x1 << 11)
-+#define S3C_PCM_IRQCTL_TXALMSTEMPTYEN	(0x1 << 10)
-+#define S3C_PCM_IRQCTL_TXFULLEN		(0x1 << 9)
-+#define S3C_PCM_IRQCTL_TXALMSTFULLEN	(0x1 << 8)
-+#define S3C_PCM_IRQCTL_TXSTARVEN	(0x1 << 7)
-+#define S3C_PCM_IRQCTL_TXERROVRFLEN	(0x1 << 6)
-+#define S3C_PCM_IRQCTL_RXEMPTEN		(0x1 << 5)
-+#define S3C_PCM_IRQCTL_RXALMSTEMPTEN	(0x1 << 4)
-+#define S3C_PCM_IRQCTL_RXFULLEN		(0x1 << 3)
-+#define S3C_PCM_IRQCTL_RXALMSTFULLEN	(0x1 << 2)
-+#define S3C_PCM_IRQCTL_RXSTARVEN	(0x1 << 1)
-+#define S3C_PCM_IRQCTL_RXERROVRFLEN	(0x1 << 0)
-+
-+/* PCM_IRQSTAT Bit-Fields */
-+#define S3C_PCM_IRQSTAT_IRQPND		(0x1 << 13)
-+#define S3C_PCM_IRQSTAT_WRD_XFER	(0x1 << 12)
-+#define S3C_PCM_IRQSTAT_TXEMPTY		(0x1 << 11)
-+#define S3C_PCM_IRQSTAT_TXALMSTEMPTY	(0x1 << 10)
-+#define S3C_PCM_IRQSTAT_TXFULL		(0x1 << 9)
-+#define S3C_PCM_IRQSTAT_TXALMSTFULL	(0x1 << 8)
-+#define S3C_PCM_IRQSTAT_TXSTARV		(0x1 << 7)
-+#define S3C_PCM_IRQSTAT_TXERROVRFL	(0x1 << 6)
-+#define S3C_PCM_IRQSTAT_RXEMPT		(0x1 << 5)
-+#define S3C_PCM_IRQSTAT_RXALMSTEMPT	(0x1 << 4)
-+#define S3C_PCM_IRQSTAT_RXFULL		(0x1 << 3)
-+#define S3C_PCM_IRQSTAT_RXALMSTFULL	(0x1 << 2)
-+#define S3C_PCM_IRQSTAT_RXSTARV		(0x1 << 1)
-+#define S3C_PCM_IRQSTAT_RXERROVRFL	(0x1 << 0)
-+
-+/* PCM_FIFOSTAT Bit-Fields */
-+#define S3C_PCM_FIFOSTAT_TXCNT_MSK		(0x3f << 14)
-+#define S3C_PCM_FIFOSTAT_TXFIFOEMPTY		(0x1 << 13)
-+#define S3C_PCM_FIFOSTAT_TXFIFOALMSTEMPTY	(0x1 << 12)
-+#define S3C_PCM_FIFOSTAT_TXFIFOFULL		(0x1 << 11)
-+#define S3C_PCM_FIFOSTAT_TXFIFOALMSTFULL	(0x1 << 10)
-+#define S3C_PCM_FIFOSTAT_RXCNT_MSK		(0x3f << 4)
-+#define S3C_PCM_FIFOSTAT_RXFIFOEMPTY		(0x1 << 3)
-+#define S3C_PCM_FIFOSTAT_RXFIFOALMSTEMPTY	(0x1 << 2)
-+#define S3C_PCM_FIFOSTAT_RXFIFOFULL		(0x1 << 1)
-+#define S3C_PCM_FIFOSTAT_RXFIFOALMSTFULL	(0x1 << 0)
-+
-+/**
-+ * struct s3c_pcm_info - S3C PCM Controller information
-+ * @dev: The parent device passed to use from the probe.
-+ * @regs: The pointer to the device register block.
-+ * @dma_playback: DMA information for playback channel.
-+ * @dma_capture: DMA information for capture channel.
-+ */
-+struct s3c_pcm_info {
-+	spinlock_t lock;
-+	struct device	*dev;
-+	void __iomem	*regs;
-+
-+	unsigned int sclk_per_fs;
-+
-+	/* Whether to keep PCMSCLK enabled even when idle(no active xfer) */
-+	unsigned int idleclk;
-+
-+	struct clk	*pclk;
-+	struct clk	*cclk;
-+
-+	struct s3c_dma_params	*dma_playback;
-+	struct s3c_dma_params	*dma_capture;
-+};
-+
- static struct s3c2410_dma_client s3c_pcm_dma_client_out = {
- 	.name		= "PCM Stereo out"
+ #include <linux/delay.h>
+ #include <linux/gpio.h>
+ #include <linux/clk.h>
+-#include <linux/kernel.h>
+ #include <linux/io.h>
+ 
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include <sound/initval.h>
+-#include <sound/soc.h>
+-#include <mach/hardware.h>
+-
+ #include <mach/regs-gpio.h>
+ #include <mach/dma.h>
+ 
+@@ -39,8 +31,6 @@
+ #include "regs-i2s-v2.h"
+ #include "s3c2412-i2s.h"
+ 
+-#define S3C2412_I2S_DEBUG 0
+-
+ static struct s3c2410_dma_client s3c2412_dma_client_out = {
+ 	.name		= "I2S PCM Stereo out"
  };
-diff --git a/sound/soc/samsung/pcm.h b/sound/soc/samsung/pcm.h
-index 03393dc..726baf8 100644
---- a/sound/soc/samsung/pcm.h
-+++ b/sound/soc/samsung/pcm.h
-@@ -9,116 +9,9 @@
- #ifndef __S3C_PCM_H
- #define __S3C_PCM_H __FILE__
+diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
+index 13e41ed..3b8e3ba 100644
+--- a/sound/soc/samsung/s3c24xx-i2s.c
++++ b/sound/soc/samsung/s3c24xx-i2s.c
+@@ -14,28 +14,16 @@
+  *  option) any later version.
+  */
  
--/*Register Offsets */
--#define S3C_PCM_CTL	(0x00)
--#define S3C_PCM_CLKCTL	(0x04)
--#define S3C_PCM_TXFIFO	(0x08)
--#define S3C_PCM_RXFIFO	(0x0C)
--#define S3C_PCM_IRQCTL	(0x10)
--#define S3C_PCM_IRQSTAT	(0x14)
--#define S3C_PCM_FIFOSTAT	(0x18)
--#define S3C_PCM_CLRINT	(0x20)
--
--/* PCM_CTL Bit-Fields */
--#define S3C_PCM_CTL_TXDIPSTICK_MASK		(0x3f)
--#define S3C_PCM_CTL_TXDIPSTICK_SHIFT	(13)
--#define S3C_PCM_CTL_RXDIPSTICK_MASK		(0x3f)
--#define S3C_PCM_CTL_RXDIPSTICK_SHIFT	(7)
--#define S3C_PCM_CTL_TXDMA_EN		(0x1<<6)
--#define S3C_PCM_CTL_RXDMA_EN		(0x1<<5)
--#define S3C_PCM_CTL_TXMSB_AFTER_FSYNC	(0x1<<4)
--#define S3C_PCM_CTL_RXMSB_AFTER_FSYNC	(0x1<<3)
--#define S3C_PCM_CTL_TXFIFO_EN		(0x1<<2)
--#define S3C_PCM_CTL_RXFIFO_EN		(0x1<<1)
--#define S3C_PCM_CTL_ENABLE			(0x1<<0)
--
--/* PCM_CLKCTL Bit-Fields */
--#define S3C_PCM_CLKCTL_SERCLK_EN		(0x1<<19)
--#define S3C_PCM_CLKCTL_SERCLKSEL_PCLK	(0x1<<18)
--#define S3C_PCM_CLKCTL_SCLKDIV_MASK		(0x1ff)
--#define S3C_PCM_CLKCTL_SYNCDIV_MASK		(0x1ff)
--#define S3C_PCM_CLKCTL_SCLKDIV_SHIFT	(9)
--#define S3C_PCM_CLKCTL_SYNCDIV_SHIFT	(0)
--
--/* PCM_TXFIFO Bit-Fields */
--#define S3C_PCM_TXFIFO_DVALID	(0x1<<16)
--#define S3C_PCM_TXFIFO_DATA_MSK	(0xffff<<0)
--
--/* PCM_RXFIFO Bit-Fields */
--#define S3C_PCM_RXFIFO_DVALID	(0x1<<16)
--#define S3C_PCM_RXFIFO_DATA_MSK	(0xffff<<0)
--
--/* PCM_IRQCTL Bit-Fields */
--#define S3C_PCM_IRQCTL_IRQEN		(0x1<<14)
--#define S3C_PCM_IRQCTL_WRDEN		(0x1<<12)
--#define S3C_PCM_IRQCTL_TXEMPTYEN		(0x1<<11)
--#define S3C_PCM_IRQCTL_TXALMSTEMPTYEN	(0x1<<10)
--#define S3C_PCM_IRQCTL_TXFULLEN		(0x1<<9)
--#define S3C_PCM_IRQCTL_TXALMSTFULLEN	(0x1<<8)
--#define S3C_PCM_IRQCTL_TXSTARVEN		(0x1<<7)
--#define S3C_PCM_IRQCTL_TXERROVRFLEN		(0x1<<6)
--#define S3C_PCM_IRQCTL_RXEMPTEN		(0x1<<5)
--#define S3C_PCM_IRQCTL_RXALMSTEMPTEN	(0x1<<4)
--#define S3C_PCM_IRQCTL_RXFULLEN		(0x1<<3)
--#define S3C_PCM_IRQCTL_RXALMSTFULLEN	(0x1<<2)
--#define S3C_PCM_IRQCTL_RXSTARVEN		(0x1<<1)
--#define S3C_PCM_IRQCTL_RXERROVRFLEN		(0x1<<0)
--
--/* PCM_IRQSTAT Bit-Fields */
--#define S3C_PCM_IRQSTAT_IRQPND		(0x1<<13)
--#define S3C_PCM_IRQSTAT_WRD_XFER		(0x1<<12)
--#define S3C_PCM_IRQSTAT_TXEMPTY		(0x1<<11)
--#define S3C_PCM_IRQSTAT_TXALMSTEMPTY	(0x1<<10)
--#define S3C_PCM_IRQSTAT_TXFULL		(0x1<<9)
--#define S3C_PCM_IRQSTAT_TXALMSTFULL		(0x1<<8)
--#define S3C_PCM_IRQSTAT_TXSTARV		(0x1<<7)
--#define S3C_PCM_IRQSTAT_TXERROVRFL		(0x1<<6)
--#define S3C_PCM_IRQSTAT_RXEMPT		(0x1<<5)
--#define S3C_PCM_IRQSTAT_RXALMSTEMPT		(0x1<<4)
--#define S3C_PCM_IRQSTAT_RXFULL		(0x1<<3)
--#define S3C_PCM_IRQSTAT_RXALMSTFULL		(0x1<<2)
--#define S3C_PCM_IRQSTAT_RXSTARV		(0x1<<1)
--#define S3C_PCM_IRQSTAT_RXERROVRFL		(0x1<<0)
--
--/* PCM_FIFOSTAT Bit-Fields */
--#define S3C_PCM_FIFOSTAT_TXCNT_MSK		(0x3f<<14)
--#define S3C_PCM_FIFOSTAT_TXFIFOEMPTY	(0x1<<13)
--#define S3C_PCM_FIFOSTAT_TXFIFOALMSTEMPTY	(0x1<<12)
--#define S3C_PCM_FIFOSTAT_TXFIFOFULL		(0x1<<11)
--#define S3C_PCM_FIFOSTAT_TXFIFOALMSTFULL	(0x1<<10)
--#define S3C_PCM_FIFOSTAT_RXCNT_MSK		(0x3f<<4)
--#define S3C_PCM_FIFOSTAT_RXFIFOEMPTY	(0x1<<3)
--#define S3C_PCM_FIFOSTAT_RXFIFOALMSTEMPTY	(0x1<<2)
--#define S3C_PCM_FIFOSTAT_RXFIFOFULL		(0x1<<1)
--#define S3C_PCM_FIFOSTAT_RXFIFOALMSTFULL	(0x1<<0)
--
- #define S3C_PCM_CLKSRC_PCLK	0
- #define S3C_PCM_CLKSRC_MUX	1
+-#include <linux/init.h>
+-#include <linux/module.h>
+-#include <linux/device.h>
++#include <sound/soc.h>
++#include <sound/pcm_params.h>
++
+ #include <linux/delay.h>
+ #include <linux/clk.h>
+-#include <linux/jiffies.h>
+ #include <linux/io.h>
+ #include <linux/gpio.h>
  
- #define S3C_PCM_SCLK_PER_FS	0
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include <sound/initval.h>
+-#include <sound/soc.h>
+-
+-#include <mach/hardware.h>
+ #include <mach/regs-gpio.h>
+-#include <mach/regs-clock.h>
+-
+-#include <asm/dma.h>
+ #include <mach/dma.h>
+-
+ #include <plat/regs-iis.h>
  
--/**
-- * struct s3c_pcm_info - S3C PCM Controller information
-- * @dev: The parent device passed to use from the probe.
-- * @regs: The pointer to the device register block.
-- * @dma_playback: DMA information for playback channel.
-- * @dma_capture: DMA information for capture channel.
-- */
--struct s3c_pcm_info {
--	spinlock_t lock;
--	struct device	*dev;
--	void __iomem	*regs;
+ #include "dma.h"
+diff --git a/sound/soc/samsung/s3c24xx_simtec.c b/sound/soc/samsung/s3c24xx_simtec.c
+index a434032..e8ac932 100644
+--- a/sound/soc/samsung/s3c24xx_simtec.c
++++ b/sound/soc/samsung/s3c24xx_simtec.c
+@@ -7,20 +7,12 @@
+  * published by the Free Software Foundation.
+ */
+ 
+-#include <linux/module.h>
+-#include <linux/moduleparam.h>
+-#include <linux/platform_device.h>
+-#include <linux/gpio.h>
+-#include <linux/clk.h>
+-#include <linux/i2c.h>
 -
--	unsigned int sclk_per_fs;
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+ #include <sound/soc.h>
+ 
++#include <linux/gpio.h>
++#include <linux/clk.h>
+ #include <plat/audio-simtec.h>
+ 
+-#include "dma.h"
+ #include "s3c24xx-i2s.h"
+ #include "s3c24xx_simtec.h"
+ 
+diff --git a/sound/soc/samsung/s3c24xx_simtec_hermes.c b/sound/soc/samsung/s3c24xx_simtec_hermes.c
+index bb4292e..d7b3e6e 100644
+--- a/sound/soc/samsung/s3c24xx_simtec_hermes.c
++++ b/sound/soc/samsung/s3c24xx_simtec_hermes.c
+@@ -7,18 +7,8 @@
+  * published by the Free Software Foundation.
+ */
+ 
+-#include <linux/module.h>
+-#include <linux/clk.h>
+-#include <linux/platform_device.h>
 -
--	/* Whether to keep PCMSCLK enabled even when idle(no active xfer) */
--	unsigned int idleclk;
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+ #include <sound/soc.h>
+ 
+-#include <plat/audio-simtec.h>
 -
--	struct clk	*pclk;
--	struct clk	*cclk;
+-#include "dma.h"
+-#include "s3c24xx-i2s.h"
+ #include "s3c24xx_simtec.h"
+ 
+ static const struct snd_soc_dapm_widget dapm_widgets[] = {
+diff --git a/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c b/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
+index fbba4e3..ff6168f 100644
+--- a/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
++++ b/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
+@@ -7,22 +7,10 @@
+  * published by the Free Software Foundation.
+ */
+ 
+-#include <linux/module.h>
+-#include <linux/clk.h>
+-#include <linux/platform_device.h>
 -
--	struct s3c_dma_params	*dma_playback;
--	struct s3c_dma_params	*dma_capture;
--};
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+ #include <sound/soc.h>
+ 
+-#include <plat/audio-simtec.h>
 -
- #endif /* __S3C_PCM_H */
+-#include "dma.h"
+-#include "s3c24xx-i2s.h"
+ #include "s3c24xx_simtec.h"
+ 
+-#include "../codecs/tlv320aic23.h"
+-
+ /* supported machines:
+  *
+  * Machine	Connections		AMP
+diff --git a/sound/soc/samsung/s3c24xx_uda134x.c b/sound/soc/samsung/s3c24xx_uda134x.c
+index cdc8ecb..70a7598 100644
+--- a/sound/soc/samsung/s3c24xx_uda134x.c
++++ b/sound/soc/samsung/s3c24xx_uda134x.c
+@@ -11,22 +11,14 @@
+  * published by the Free Software Foundation.
+  */
+ 
+-#include <linux/module.h>
+-#include <linux/clk.h>
+-#include <linux/mutex.h>
+-#include <linux/gpio.h>
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <sound/s3c24xx_uda134x.h>
+-#include <sound/uda134x.h>
+ 
++#include <linux/clk.h>
++#include <linux/gpio.h>
+ #include <plat/regs-iis.h>
+ 
+-#include "dma.h"
+ #include "s3c24xx-i2s.h"
+-#include "../codecs/uda134x.h"
+-
+ 
+ /* #define ENFORCE_RATES 1 */
+ /*
+diff --git a/sound/soc/samsung/smartq_wm8987.c b/sound/soc/samsung/smartq_wm8987.c
+index 61e2b52..4e5ae41 100644
+--- a/sound/soc/samsung/smartq_wm8987.c
++++ b/sound/soc/samsung/smartq_wm8987.c
+@@ -13,20 +13,13 @@
+  *
+  */
+ 
+-#include <linux/module.h>
+-#include <linux/platform_device.h>
+-#include <linux/gpio.h>
+-
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <sound/jack.h>
+ 
++#include <linux/gpio.h>
+ #include <asm/mach-types.h>
+ 
+-#include "dma.h"
+ #include "i2s.h"
+-
+ #include "../codecs/wm8750.h"
+ 
+ /*
+diff --git a/sound/soc/samsung/smdk2443_wm9710.c b/sound/soc/samsung/smdk2443_wm9710.c
+index 4bd8c0b..3a0dbfc 100644
+--- a/sound/soc/samsung/smdk2443_wm9710.c
++++ b/sound/soc/samsung/smdk2443_wm9710.c
+@@ -12,14 +12,8 @@
+  *
+  */
+ 
+-#include <linux/module.h>
+-#include <linux/device.h>
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+ #include <sound/soc.h>
+ 
+-#include "dma.h"
+-
+ static struct snd_soc_card smdk2443;
+ 
+ static struct snd_soc_dai_link smdk2443_dai[] = {
+diff --git a/sound/soc/samsung/smdk_spdif.c b/sound/soc/samsung/smdk_spdif.c
+index cb2f4d0..5c1f9fb 100644
+--- a/sound/soc/samsung/smdk_spdif.c
++++ b/sound/soc/samsung/smdk_spdif.c
+@@ -10,15 +10,10 @@
+  *
+  */
+ 
+-#include <linux/module.h>
+-#include <linux/device.h>
+-#include <linux/clk.h>
+-
+-#include <plat/devs.h>
+-
+ #include <sound/soc.h>
+ 
+-#include "dma.h"
++#include <linux/clk.h>
++
+ #include "spdif.h"
+ 
+ /* Audio clock settings are belonged to board specific part. Every
+diff --git a/sound/soc/samsung/smdk_wm8580.c b/sound/soc/samsung/smdk_wm8580.c
+index b2cff1a..8aacf23 100644
+--- a/sound/soc/samsung/smdk_wm8580.c
++++ b/sound/soc/samsung/smdk_wm8580.c
+@@ -10,17 +10,12 @@
+  *  option) any later version.
+  */
+ 
+-#include <linux/platform_device.h>
+-#include <linux/clk.h>
+-#include <sound/core.h>
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+ #include <sound/soc.h>
++#include <sound/pcm_params.h>
+ 
+ #include <asm/mach-types.h>
+ 
+ #include "../codecs/wm8580.h"
+-#include "dma.h"
+ #include "i2s.h"
+ 
+ /*
+diff --git a/sound/soc/samsung/smdk_wm9713.c b/sound/soc/samsung/smdk_wm9713.c
+index d58d86e..fffe3c1 100644
+--- a/sound/soc/samsung/smdk_wm9713.c
++++ b/sound/soc/samsung/smdk_wm9713.c
+@@ -11,12 +11,8 @@
+  *
+  */
+ 
+-#include <linux/module.h>
+-#include <linux/device.h>
+ #include <sound/soc.h>
+ 
+-#include "dma.h"
+-
+ static struct snd_soc_card smdk;
+ 
+ /*
+diff --git a/sound/soc/samsung/spdif.c b/sound/soc/samsung/spdif.c
+index f081640..94cc716 100644
+--- a/sound/soc/samsung/spdif.c
++++ b/sound/soc/samsung/spdif.c
+@@ -10,13 +10,12 @@
+  * published by the Free Software Foundation.
+  */
+ 
++#include <sound/soc.h>
++#include <sound/pcm_params.h>
++
+ #include <linux/clk.h>
+ #include <linux/io.h>
+ 
+-#include <sound/pcm.h>
+-#include <sound/pcm_params.h>
+-#include <sound/soc.h>
+-
+ #include <plat/audio.h>
+ #include <mach/dma.h>
+ 
 -- 
 1.6.2.5
