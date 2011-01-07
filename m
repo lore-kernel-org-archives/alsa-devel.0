@@ -1,20 +1,14 @@
-From: Seungwhan Youn <claude.youn@gmail.com>
-Subject: Re: [PATCH 4/4] ASoC: SAMSUNG: Clean-up header includes
-Date: Fri, 7 Jan 2011 16:03:46 +0900
-Message-ID: <AANLkTikZQcxG85Ebjbf_gXbe_VBX-o8Zsg=QdUnuDUhB@mail.gmail.com>
-References: <1294375429-16729-1-git-send-email-sw.youn@samsung.com>
-	<1294376262-18364-1-git-send-email-sw.youn@samsung.com>
-	<AANLkTim+ANz=cszy4gbiWAToPFAMokKe3z9JCZVzHddm@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Add Lenovo vendor quirk for
+	Conexant 205xx
+Date: Fri, 07 Jan 2011 08:11:55 +0100
+Message-ID: <4D26BCBB.4080603@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------000804070405060405080004"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 1E13B246C9
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2011 08:03:48 +0100 (CET)
-Received: by wyi11 with SMTP id 11so17039066wyi.38
-	for <alsa-devel@alsa-project.org>; Thu, 06 Jan 2011 23:03:46 -0800 (PST)
-In-Reply-To: <AANLkTim+ANz=cszy4gbiWAToPFAMokKe3z9JCZVzHddm@mail.gmail.com>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 86B18246FF
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2011 08:11:58 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,24 +18,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, jassi.brar@samsung.com, Seungwhan Youn <sw.youn@samsung.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 7, 2011 at 3:08 PM, Jassi Brar <jassisinghbrar@gmail.com> wrote:
-> On Fri, Jan 7, 2011 at 1:57 PM, Seungwhan Youn <sw.youn@samsung.com> wrote:
->> This patch remove including unnecessary/duplicated headers which relative
->> with Samsung SoCs.
->>
->> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
->
-> I think we'd better keep sound includes after linux's.
+This is a multi-part message in MIME format.
+--------------000804070405060405080004
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-As you know, 'include/sound/soc.h' has some general linux's includes.
-So I made these sequence to prevent dependency problem, because
-reverse including could have some problem, if linux's includes has
-their dependencies.
+BugLink: http://bugs.launchpad.net/bugs/689036
 
-Do we really keep this, 'sound includes after linux's'? :(
+Many new Lenovos need the ideapad quirk. Also, since the
+auto parser for this chip is far from optimal, the regression
+risk is low (although not zero). So let's add it for 2.6.38, but not for 
+stable. Seems reasonable?
 
-Thanks
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
+
+--------------000804070405060405080004
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Add-Lenovo-vendor-quirk-for-Conexant-205xx.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Add-Lenovo-vendor-quirk-for-Conexant-205xx.pat";
+ filename*1="ch"
+
+>From b1d157ec38690d2ef65d7e22fc4dafaddb94a58e Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Fri, 7 Jan 2011 07:53:39 +0100
+Subject: [PATCH] ALSA: HDA: Add Lenovo vendor quirk for Conexant 205xx
+
+BugLink: http://bugs.launchpad.net/bugs/689036
+
+Many new Lenovos need the ideapad quirk. Also, since the
+auto parser for this chip is far from optimal, the regression
+risk is low (although not zero).
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_conexant.c |    9 +--------
+ 1 files changed, 1 insertions(+), 8 deletions(-)
+
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index 74291f7..dc92e93 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -3109,16 +3109,9 @@ static struct snd_pci_quirk cxt5066_cfg_tbl[] = {
+ 		      CXT5066_LAPTOP),
+ 	SND_PCI_QUIRK(0x152d, 0x0833, "OLPC XO-1.5", CXT5066_OLPC_XO_1_5),
+ 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo T400s", CXT5066_THINKPAD),
+-	SND_PCI_QUIRK(0x17aa, 0x21b2, "Thinkpad X100e", CXT5066_IDEAPAD),
+ 	SND_PCI_QUIRK(0x17aa, 0x21c5, "Thinkpad Edge 13", CXT5066_THINKPAD),
+-	SND_PCI_QUIRK(0x17aa, 0x21b3, "Thinkpad Edge 13 (197)", CXT5066_IDEAPAD),
+-	SND_PCI_QUIRK(0x17aa, 0x21b4, "Thinkpad Edge", CXT5066_IDEAPAD),
+-	SND_PCI_QUIRK(0x17aa, 0x21c8, "Thinkpad Edge 11", CXT5066_IDEAPAD),
+  	SND_PCI_QUIRK(0x17aa, 0x215e, "Lenovo Thinkpad", CXT5066_THINKPAD),
+- 	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo G series", CXT5066_IDEAPAD),
+-	SND_PCI_QUIRK(0x17aa, 0x390a, "Lenovo S10-3t", CXT5066_IDEAPAD),
+-	SND_PCI_QUIRK(0x17aa, 0x3938, "Lenovo G series (AMD)", CXT5066_IDEAPAD),
+-	SND_PCI_QUIRK(0x17aa, 0x3a0d, "ideapad", CXT5066_IDEAPAD),
++	SND_PCI_QUIRK_VENDOR(0x17aa, "Lenovo", CXT5066_IDEAPAD), /* Fallback for Lenovos without dock mic */
+ 	{}
+ };
+ 
+-- 
+1.7.1
+
+
+--------------000804070405060405080004
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------000804070405060405080004--
