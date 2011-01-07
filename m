@@ -1,83 +1,55 @@
-From: Greg KH <gregkh@suse.de>
+From: Andy Walls <awalls@md.metrocast.net>
 Subject: Re: [RFC/PATCH v7 01/12] media: Media device node support
-Date: Thu, 6 Jan 2011 15:46:12 -0800
-Message-ID: <20110106234612.GA2097@suse.de>
-References: <1292844995-7900-1-git-send-email-laurent.pinchart@ideasonboard.com>
- <201012241259.39148.laurent.pinchart@ideasonboard.com>
- <20110106221912.GA31328@suse.de>
- <201101070027.11150.hverkuil@xs4all.nl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Date: Thu, 06 Jan 2011 19:24:27 -0500
+Message-ID: <0iuif2gxlcatpj50djfn40p8.1294359457034@email.android.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <201101070027.11150.hverkuil@xs4all.nl>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Hans Verkuil <hverkuil@xs4all.nl>
+To: Hans Verkuil <hverkuil@xs4all.nl>, Greg KH <gregkh@suse.de>
 Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, clemens@ladisch.de, sakari.ailus@maxwell.research.nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 07, 2011 at 12:27:11AM +0100, Hans Verkuil wrote:
-> On Thursday, January 06, 2011 23:19:12 Greg KH wrote:
-> 
-> <snip>
-> 
-> > > > > +static ssize_t media_read(struct file *filp, char __user *buf,
-> > > > > +		size_t sz, loff_t *off)
-> > > > > +{
-> > > > > +	struct media_devnode *mdev = media_devnode_data(filp);
-> > > > > +
-> > > > > +	if (!mdev->fops->read)
-> > > > > +		return -EINVAL;
-> > > > > +	if (!media_devnode_is_registered(mdev))
-> > > > > +		return -EIO;
-> > > > 
-> > > > How could this happen?
-> > > 
-> > > This can happen when a USB device is disconnected for instance.
-> > 
-> > But what's to keep that from happening on the next line as well?
-> 
-> Nothing.
-> 
-> > That
-> > doesn't seem like a check you can ever be sure about, so I wouldn't do
-> > it at all.
-> 
-> Actually, there is a reason why this was done for v4l (and now the media
-> API): typically, once a USB disconnect happens V4L drivers will call
-> video_unregister_device() which calls device_unregister. Afterwards the
-> device node should reject any new file operations except for release().
-> 
-> Obviously, this check can be done in the driver as well, but doing this
-> check in the V4L core has the advantage of 1) consistent return codes and
-> 2) drivers no longer have to check.
-> 
-> Of course, since the disconnect can happen at any time drivers still need
-> to be able to handle errors from the USB subsystem due to disconnects, but
-> that is something they always have to do.
-> 
-> > 
-> > > > And are you sure -EIO is correct?
-> > > 
-> > > -ENXIO is probably better (I always confuse that with -ENODEV).
-> 
-> I wondered why V4L uses -EIO and I think it is related to the V4L2 specification
-> of the read() function:
-> 
-> EIO
-> I/O error. This indicates some hardware problem or a failure to communicate with
-> a remote device (USB camera etc.).
-> 
-> Well, I guess a disconnect can be seen as a failure to communicate :-)
-> 
-> I think that ENODEV is much better. After all, there is no device
-> anymore after a disconnect.
-> 
-> Is there some standard for this?
-
-I've always thought that -ENODEV was good for when the device
-disappeared.
-
-thanks,
-
-greg k-h
+V2h5LCB5ZXMsIHRoZXJlIGlzIGEgc3RhbmRhcmQ6CgpodHRwOi8vcHVicy5vcGVuZ3JvdXAub3Jn
+L29ubGluZXB1YnMvMDA5Njk1Mzk5L2Z1bmN0aW9ucy94c2hfY2hhcDAyXzAzLmh0bWwKCkEgc29t
+ZXdoYXQgdmVyYm9zZSBkZXNjcmlwdGlvbiBvZiB0aGUgZXJybm9zIGlzIGluIHNlY3Rpb24gMi4z
+LgoKLUFuZHkKCkhhbnMgVmVya3VpbCA8aHZlcmt1aWxAeHM0YWxsLm5sPiB3cm90ZToKCj5PbiBU
+aHVyc2RheSwgSmFudWFyeSAwNiwgMjAxMSAyMzoxOToxMiBHcmVnIEtIIHdyb3RlOgo+Cj48c25p
+cD4KPgo+PiA+ID4gPiArc3RhdGljIHNzaXplX3QgbWVkaWFfcmVhZChzdHJ1Y3QgZmlsZSAqZmls
+cCwgY2hhciBfX3VzZXIgKmJ1ZiwKPj4gPiA+ID4gKwkJc2l6ZV90IHN6LCBsb2ZmX3QgKm9mZikK
+Pj4gPiA+ID4gK3sKPj4gPiA+ID4gKwlzdHJ1Y3QgbWVkaWFfZGV2bm9kZSAqbWRldiA9IG1lZGlh
+X2Rldm5vZGVfZGF0YShmaWxwKTsKPj4gPiA+ID4gKwo+PiA+ID4gPiArCWlmICghbWRldi0+Zm9w
+cy0+cmVhZCkKPj4gPiA+ID4gKwkJcmV0dXJuIC1FSU5WQUw7Cj4+ID4gPiA+ICsJaWYgKCFtZWRp
+YV9kZXZub2RlX2lzX3JlZ2lzdGVyZWQobWRldikpCj4+ID4gPiA+ICsJCXJldHVybiAtRUlPOwo+
+PiA+ID4gCj4+ID4gPiBIb3cgY291bGQgdGhpcyBoYXBwZW4/Cj4+ID4gCj4+ID4gVGhpcyBjYW4g
+aGFwcGVuIHdoZW4gYSBVU0IgZGV2aWNlIGlzIGRpc2Nvbm5lY3RlZCBmb3IgaW5zdGFuY2UuCj4+
+IAo+PiBCdXQgd2hhdCdzIHRvIGtlZXAgdGhhdCBmcm9tIGhhcHBlbmluZyBvbiB0aGUgbmV4dCBs
+aW5lIGFzIHdlbGw/Cj4KPk5vdGhpbmcuCj4KPj4gVGhhdAo+PiBkb2Vzbid0IHNlZW0gbGlrZSBh
+IGNoZWNrIHlvdSBjYW4gZXZlciBiZSBzdXJlIGFib3V0LCBzbyBJIHdvdWxkbid0IGRvCj4+IGl0
+IGF0IGFsbC4KPgo+QWN0dWFsbHksIHRoZXJlIGlzIGEgcmVhc29uIHdoeSB0aGlzIHdhcyBkb25l
+IGZvciB2NGwgKGFuZCBub3cgdGhlIG1lZGlhCj5BUEkpOiB0eXBpY2FsbHksIG9uY2UgYSBVU0Ig
+ZGlzY29ubmVjdCBoYXBwZW5zIFY0TCBkcml2ZXJzIHdpbGwgY2FsbAo+dmlkZW9fdW5yZWdpc3Rl
+cl9kZXZpY2UoKSB3aGljaCBjYWxscyBkZXZpY2VfdW5yZWdpc3Rlci4gQWZ0ZXJ3YXJkcyB0aGUK
+PmRldmljZSBub2RlIHNob3VsZCByZWplY3QgYW55IG5ldyBmaWxlIG9wZXJhdGlvbnMgZXhjZXB0
+IGZvciByZWxlYXNlKCkuCj4KPk9idmlvdXNseSwgdGhpcyBjaGVjayBjYW4gYmUgZG9uZSBpbiB0
+aGUgZHJpdmVyIGFzIHdlbGwsIGJ1dCBkb2luZyB0aGlzCj5jaGVjayBpbiB0aGUgVjRMIGNvcmUg
+aGFzIHRoZSBhZHZhbnRhZ2Ugb2YgMSkgY29uc2lzdGVudCByZXR1cm4gY29kZXMgYW5kCj4yKSBk
+cml2ZXJzIG5vIGxvbmdlciBoYXZlIHRvIGNoZWNrLgo+Cj5PZiBjb3Vyc2UsIHNpbmNlIHRoZSBk
+aXNjb25uZWN0IGNhbiBoYXBwZW4gYXQgYW55IHRpbWUgZHJpdmVycyBzdGlsbCBuZWVkCj50byBi
+ZSBhYmxlIHRvIGhhbmRsZSBlcnJvcnMgZnJvbSB0aGUgVVNCIHN1YnN5c3RlbSBkdWUgdG8gZGlz
+Y29ubmVjdHMsIGJ1dAo+dGhhdCBpcyBzb21ldGhpbmcgdGhleSBhbHdheXMgaGF2ZSB0byBkby4K
+Pgo+PiAKPj4gPiA+IEFuZCBhcmUgeW91IHN1cmUgLUVJTyBpcyBjb3JyZWN0Pwo+PiA+IAo+PiA+
+IC1FTlhJTyBpcyBwcm9iYWJseSBiZXR0ZXIgKEkgYWx3YXlzIGNvbmZ1c2UgdGhhdCB3aXRoIC1F
+Tk9ERVYpLgo+Cj5JIHdvbmRlcmVkIHdoeSBWNEwgdXNlcyAtRUlPIGFuZCBJIHRoaW5rIGl0IGlz
+IHJlbGF0ZWQgdG8gdGhlIFY0TDIgc3BlY2lmaWNhdGlvbgo+b2YgdGhlIHJlYWQoKSBmdW5jdGlv
+bjoKPgo+RUlPCj5JL08gZXJyb3IuIFRoaXMgaW5kaWNhdGVzIHNvbWUgaGFyZHdhcmUgcHJvYmxl
+bSBvciBhIGZhaWx1cmUgdG8gY29tbXVuaWNhdGUgd2l0aAo+YSByZW1vdGUgZGV2aWNlIChVU0Ig
+Y2FtZXJhIGV0Yy4pLgo+Cj5XZWxsLCBJIGd1ZXNzIGEgZGlzY29ubmVjdCBjYW4gYmUgc2VlbiBh
+cyBhIGZhaWx1cmUgdG8gY29tbXVuaWNhdGUgOi0pCj4KPkkgdGhpbmsgdGhhdCBFTk9ERVYgaXMg
+bXVjaCBiZXR0ZXIuIEFmdGVyIGFsbCwgdGhlcmUgaXMgbm8gZGV2aWNlCj5hbnltb3JlIGFmdGVy
+IGEgZGlzY29ubmVjdC4KPgo+SXMgdGhlcmUgc29tZSBzdGFuZGFyZCBmb3IgdGhpcz8KPgo+UmVn
+YXJkcywKPgo+CUhhbnMKPgo+LS0gCj5IYW5zIFZlcmt1aWwgLSB2aWRlbzRsaW51eCBkZXZlbG9w
+ZXIgLSBzcG9uc29yZWQgYnkgQ2lzY28KPi0tCj5UbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlz
+dDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbGludXgtbWVkaWEiIGluCj50aGUgYm9keSBv
+ZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZwo+TW9yZSBtYWpvcmRvbW8g
+aW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRvbW8taW5mby5odG1sCg==
