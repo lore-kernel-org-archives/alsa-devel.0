@@ -1,26 +1,33 @@
-From: Andy Walls <awalls@md.metrocast.net>
-Subject: Re: [RFC/PATCH v7 01/12] media: Media device node support
-Date: Thu, 06 Jan 2011 20:04:05 -0500
-Message-ID: <or1jp5vlchhba1mncy9opxxm.1294362245260@email.android.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Greg KH <gregkh@suse.de>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, clemens@ladisch.de, sakari.ailus@maxwell.research.nokia.com
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH] ASoC: RX1950: Enable Mic Jack during glue
+ driver init
+Date: Fri, 7 Jan 2011 10:36:00 +0900
+Message-ID: <AANLkTimWe19FQ++Qf_zkX7eFgAXwKYzXjDgKu-4Qo+PE@mail.gmail.com>
+References: <1294344949-30670-1-git-send-email-anarsoul@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id D1D09245AA
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2011 02:36:00 +0100 (CET)
+Received: by bwz10 with SMTP id 10so10061616bwz.38
+	for <alsa-devel@alsa-project.org>; Thu, 06 Jan 2011 17:36:00 -0800 (PST)
+In-Reply-To: <1294344949-30670-1-git-send-email-anarsoul@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-WWVhaCB3ZWxsLCBsYW1lLW8gZGVmYXVsdCBlbWFpbCBjbGllbnQgb24gbXkgQW5kcm9pZCBwaG9u
-ZS4KCi1BbmR5CgpHcmVnIEtIIDxncmVna2hAc3VzZS5kZT4gd3JvdGU6Cgo+Cj4KPkE6IE5vLgo+
-UTogU2hvdWxkIEkgaW5jbHVkZSBxdW90YXRpb25zIGFmdGVyIG15IHJlcGx5Pwo+Cj5odHRwOi8v
-ZGFyaW5nZmlyZWJhbGwubmV0LzIwMDcvMDcvb25fdG9wCj4KPk9uIFRodSwgSmFuIDA2LCAyMDEx
-IGF0IDA3OjI0OjI3UE0gLTA1MDAsIEFuZHkgV2FsbHMgd3JvdGU6Cj4+IFdoeSwgeWVzLCB0aGVy
-ZSBpcyBhIHN0YW5kYXJkOgo+PiAKPj4gaHR0cDovL3B1YnMub3Blbmdyb3VwLm9yZy9vbmxpbmVw
-dWJzLzAwOTY5NTM5OS9mdW5jdGlvbnMveHNoX2NoYXAwMl8wMy5odG1sCj4+IAo+PiBBIHNvbWV3
-aGF0IHZlcmJvc2UgZGVzY3JpcHRpb24gb2YgdGhlIGVycm5vcyBpcyBpbiBzZWN0aW9uIDIuMy4K
-Pgo+QWgsIHNvIHBlcmhhcHMgLUVOWElPIGlzIHRoZSBjb3JyZWN0IHRoaW5nIHRvIHJldHVybiB3
-aXRoIGhlcmUuCj4KPnRoYW5rcywKPgo+Z3JlZyBrLWgKPi0tCj5UbyB1bnN1YnNjcmliZSBmcm9t
-IHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbGludXgtbWVkaWEiIGluCj50
-aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZwo+TW9yZSBt
-YWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRvbW8taW5mby5o
-dG1sCg==
+On Fri, Jan 7, 2011 at 5:15 AM, Vasily Khoruzhick <anarsoul@gmail.com> wrote:
+> Enable Mic Jack during glue driver init, otherwise capture will not work.
+
+Acked-by: Jassi Brar <jassi.brar@samsung.com>
