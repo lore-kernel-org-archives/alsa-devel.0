@@ -1,21 +1,20 @@
 From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 3/4] ASoC: SAMSUNG: Move PCM specific
- definitions into pcm.c
-Date: Fri, 7 Jan 2011 15:04:11 +0900
-Message-ID: <AANLkTimhrUKyj9AFBE0taVoHbNj8tKnJg4=DCDCiCsdb@mail.gmail.com>
+Subject: Re: [PATCH 4/4] ASoC: SAMSUNG: Clean-up header includes
+Date: Fri, 7 Jan 2011 15:08:49 +0900
+Message-ID: <AANLkTim+ANz=cszy4gbiWAToPFAMokKe3z9JCZVzHddm@mail.gmail.com>
 References: <1294375429-16729-1-git-send-email-sw.youn@samsung.com>
-	<1294376243-18334-1-git-send-email-sw.youn@samsung.com>
+	<1294376262-18364-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
 	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7816910392C
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2011 07:04:11 +0100 (CET)
-Received: by bwz10 with SMTP id 10so10168278bwz.38
-	for <alsa-devel@alsa-project.org>; Thu, 06 Jan 2011 22:04:11 -0800 (PST)
-In-Reply-To: <1294376243-18334-1-git-send-email-sw.youn@samsung.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 1CBAA10392C
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2011 07:08:50 +0100 (CET)
+Received: by bwz10 with SMTP id 10so10170004bwz.38
+	for <alsa-devel@alsa-project.org>; Thu, 06 Jan 2011 22:08:49 -0800 (PST)
+In-Reply-To: <1294376262-18364-1-git-send-email-sw.youn@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,10 +28,56 @@ To: Seungwhan Youn <sw.youn@samsung.com>
 Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 7, 2011 at 1:57 PM, Seungwhan Youn <sw.youn@samsung.com> wrote:
-> This patch moves PCM specific definitions, they doesn't need to be
-> shared, into 'pcm.c' from 'pcm.h'.
->
-> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
-
-Acked-by: Jassi Brar <jassi.brar@samsung.com>
+T24gRnJpLCBKYW4gNywgMjAxMSBhdCAxOjU3IFBNLCBTZXVuZ3doYW4gWW91biA8c3cueW91bkBz
+YW1zdW5nLmNvbT4gd3JvdGU6Cj4gVGhpcyBwYXRjaCByZW1vdmUgaW5jbHVkaW5nIHVubmVjZXNz
+YXJ5L2R1cGxpY2F0ZWQgaGVhZGVycyB3aGljaCByZWxhdGl2ZQo+IHdpdGggU2Ftc3VuZyBTb0Nz
+Lgo+Cj4gU2lnbmVkLW9mZi1ieTogU2V1bmd3aGFuIFlvdW4gPHN3LnlvdW5Ac2Ftc3VuZy5jb20+
+Cj4gLS0tCj4gwqBzb3VuZC9zb2Mvc2Ftc3VuZy9hYzk3LmMgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgfCDCoCDCoDggKysrLS0tLS0KPiDCoHNvdW5kL3NvYy9zYW1zdW5nL2RtYS5j
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxMiArKystLS0tLS0tLS0K
+PiDCoHNvdW5kL3NvYy9zYW1zdW5nL2dvbmlfd204OTk0LmMgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqB8IMKgIDEwICstLS0tLS0tLS0KPiDCoHNvdW5kL3NvYy9zYW1zdW5nL2gxOTQwX3VkYTEzODAu
+YyDCoCDCoCDCoCDCoCDCoCDCoCDCoHwgwqAgMTEgKy0tLS0tLS0tLS0KPiDCoHNvdW5kL3NvYy9z
+YW1zdW5nL2kycy5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCDCoDcg
+KysrLS0tLQo+IMKgc291bmQvc29jL3NhbXN1bmcvaml2ZV93bTg3NTAuYyDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoHwgwqAgMTEgLS0tLS0tLS0tLS0KPiDCoHNvdW5kL3NvYy9zYW1zdW5nL2xuMjQ0
+MHNiY19hbGM2NTAuYyDCoCDCoCDCoCDCoCDCoCB8IMKgIMKgNiAtLS0tLS0KPiDCoHNvdW5kL3Nv
+Yy9zYW1zdW5nL25lbzE5NzNfZ3RhMDJfd204NzUzLmMgwqAgwqAgwqAgfCDCoCAxNSArKy0tLS0t
+LS0tLS0tLS0KPiDCoHNvdW5kL3NvYy9zYW1zdW5nL3BjbS5jIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgfCDCoCAxNSArKystLS0tLS0tLS0tLS0KPiDCoHNvdW5kL3NvYy9zYW1z
+dW5nL3J4MTk1MF91ZGExMzgwLmMgwqAgwqAgwqAgwqAgwqAgwqAgfCDCoCAxNCArLS0tLS0tLS0t
+LS0tLQo+IMKgc291bmQvc29jL3NhbXN1bmcvczNjLWkycy12Mi5jIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIHwgwqAgwqA3ICsrKy0tLS0KPiDCoHNvdW5kL3NvYy9zYW1zdW5nL3MzYzI0MTItaTJz
+LmMgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB8IMKgIDE2ICsrKy0tLS0tLS0tLS0tLS0KPiDCoHNv
+dW5kL3NvYy9zYW1zdW5nL3MzYzI0eHgtaTJzLmMgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB8IMKg
+IDE4ICsrKy0tLS0tLS0tLS0tLS0tLQo+IMKgc291bmQvc29jL3NhbXN1bmcvczNjMjR4eF9zaW10
+ZWMuYyDCoCDCoCDCoCDCoCDCoCDCoCB8IMKgIDEyICsrLS0tLS0tLS0tLQo+IMKgc291bmQvc29j
+L3NhbXN1bmcvczNjMjR4eF9zaW10ZWNfaGVybWVzLmMgwqAgwqAgwqB8IMKgIDEwIC0tLS0tLS0t
+LS0KPiDCoHNvdW5kL3NvYy9zYW1zdW5nL3MzYzI0eHhfc2ltdGVjX3RsdjMyMGFpYzIzLmMgfCDC
+oCAxMiAtLS0tLS0tLS0tLS0KPiDCoHNvdW5kL3NvYy9zYW1zdW5nL3MzYzI0eHhfdWRhMTM0eC5j
+IMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxMiArKy0tLS0tLS0tLS0KPiDCoHNvdW5kL3NvYy9zYW1z
+dW5nL3NtYXJ0cV93bTg5ODcuYyDCoCDCoCDCoCDCoCDCoCDCoCDCoHwgwqAgwqA5ICstLS0tLS0t
+LQo+IMKgc291bmQvc29jL3NhbXN1bmcvc21kazI0NDNfd205NzEwLmMgwqAgwqAgwqAgwqAgwqAg
+wqB8IMKgIMKgNiAtLS0tLS0KPiDCoHNvdW5kL3NvYy9zYW1zdW5nL3NtZGtfc3BkaWYuYyDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCB8IMKgIMKgOSArKy0tLS0tLS0KPiDCoHNvdW5kL3NvYy9zYW1z
+dW5nL3NtZGtfd204NTgwLmMgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB8IMKgIMKgNyArLS0tLS0t
+Cj4gwqBzb3VuZC9zb2Mvc2Ftc3VuZy9zbWRrX3dtOTcxMy5jIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgfCDCoCDCoDQgLS0tLQo+IMKgc291bmQvc29jL3NhbXN1bmcvc3BkaWYuYyDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoHwgwqAgwqA3ICsrKy0tLS0KPiDCoDIzIGZpbGVzIGNoYW5n
+ZWQsIDM3IGluc2VydGlvbnMoKyksIDIwMSBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9z
+b3VuZC9zb2Mvc2Ftc3VuZy9hYzk3LmMgYi9zb3VuZC9zb2Mvc2Ftc3VuZy9hYzk3LmMKPiBpbmRl
+eCAxZTg0ZWUwLi4xODUyOGQ4IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9zYW1zdW5nL2FjOTcu
+Ywo+ICsrKyBiL3NvdW5kL3NvYy9zYW1zdW5nL2FjOTcuYwo+IEBAIC0xMiwxNiArMTIsMTQgQEAK
+PiDCoCogcHVibGlzaGVkIGJ5IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24uCj4gwqAqLwo+
+Cj4gLSNpbmNsdWRlIDxsaW51eC9pbml0Lmg+Cj4gLSNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4K
+PiArI2luY2x1ZGUgPHNvdW5kL3NvYy5oPgo+ICsKPiDCoCNpbmNsdWRlIDxsaW51eC9pby5oPgo+
+IMKgI2luY2x1ZGUgPGxpbnV4L2RlbGF5Lmg+Cj4gwqAjaW5jbHVkZSA8bGludXgvY2xrLmg+Cj4K
+PiAtI2luY2x1ZGUgPHNvdW5kL3NvYy5oPgo+IC0KPiAtI2luY2x1ZGUgPHBsYXQvcmVncy1hYzk3
+Lmg+Cj4gwqAjaW5jbHVkZSA8bWFjaC9kbWEuaD4KPiArI2luY2x1ZGUgPHBsYXQvcmVncy1hYzk3
+Lmg+Cj4gwqAjaW5jbHVkZSA8cGxhdC9hdWRpby5oPgoKSSB0aGluayB3ZSdkIGJldHRlciBrZWVw
+IHNvdW5kIGluY2x1ZGVzIGFmdGVyIGxpbnV4J3MuClNhbWUgZm9yIGFsbCBzdWNoIGluc3RhbmNl
+cyBpbiB0aGUgcmVtYWluaW5nIG9mIHRoZSBwYXRjaC4KT3RoZXJ3aXNlLCB0aGUgcGF0Y2ggaXMg
+b2suCgpUaGFua3MKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
