@@ -1,22 +1,18 @@
-From: Seungwhan Youn <claude.youn@gmail.com>
-Subject: Re: [PATCH 4/4] ASoC: SAMSUNG: Clean-up header includes
-Date: Fri, 7 Jan 2011 20:22:27 +0900
-Message-ID: <AANLkTikW6-B5O5CCD80-Z2wCuJcgTAAszLatEW+DwJ4P@mail.gmail.com>
-References: <1294375429-16729-1-git-send-email-sw.youn@samsung.com>
-	<1294376262-18364-1-git-send-email-sw.youn@samsung.com>
-	<AANLkTim+ANz=cszy4gbiWAToPFAMokKe3z9JCZVzHddm@mail.gmail.com>
-	<AANLkTikZQcxG85Ebjbf_gXbe_VBX-o8Zsg=QdUnuDUhB@mail.gmail.com>
-	<20110107103855.GA9209@opensource.wolfsonmicro.com>
+From: "Bensaid, Selma" <selma.bensaid@intel.com>
+Subject: Re: Questions regarding ASoC
+Date: Fri, 7 Jan 2011 12:28:58 +0000
+Message-ID: <2A84145621092446B6659B8A0F28E26F47005A329E@irsmsx501.ger.corp.intel.com>
+References: <2A84145621092446B6659B8A0F28E26F47003D6535@irsmsx501.ger.corp.intel.com>
+	<201012071530.30789.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 22FCB24386
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2011 12:22:28 +0100 (CET)
-Received: by wyi11 with SMTP id 11so17209903wyi.38
-	for <alsa-devel@alsa-project.org>; Fri, 07 Jan 2011 03:22:27 -0800 (PST)
-In-Reply-To: <20110107103855.GA9209@opensource.wolfsonmicro.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id E8BB2103803
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2011 13:29:53 +0100 (CET)
+In-Reply-To: <201012071530.30789.peter.ujfalusi@nokia.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,24 +22,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, lrg@slimlogic.co.uk, jassi.brar@samsung.com, Seungwhan Youn <sw.youn@samsung.com>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 7, 2011 at 7:38 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Fri, Jan 07, 2011 at 04:03:46PM +0900, Seungwhan Youn wrote:
->
->> As you know, 'include/sound/soc.h' has some general linux's includes.
->> So I made these sequence to prevent dependency problem, because
->> reverse including could have some problem, if linux's includes has
->> their dependencies.
->
-> If there's dependency problems in the core headers we should just fix
-> those, users shouldn't need to worry about that sort of stuff.
+> The driver in upstream at the moment handle only one DAI from the wl1273 (the
+> shared BT/FM dai). wl1273 actually have 2 DAI, but the dedicated FM DAI
+> support is not implemented.
+> The codec driver can handle:
+> BT playback/capture (full duplex)
+> FM playback/capture (half duplex)
+[Selma] in function wl1273_startup (due to the mode WL1273_MODE_BT) sets a constraint min/max to the HW RATE equal to 8000. However the FM runs @48000, did I miss something?
 
-Hmm... I see. I'll re-submit this patch which applies Jassi's
-suggestion with compile test. ;)
+Thanks,
+Selma.
+---------------------------------------------------------------------
+Intel Corporation SAS (French simplified joint stock company)
+Registered headquarters: "Les Montalets"- 2, rue de Paris, 
+92196 Meudon Cedex, France
+Registration Number:  302 456 199 R.C.S. NANTERRE
+Capital: 4,572,000 Euros
 
-Thanks.
-claude
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
