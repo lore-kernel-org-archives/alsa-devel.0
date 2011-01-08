@@ -1,14 +1,14 @@
 From: Stephen Warren <swarren@nvidia.com>
-Subject: [PATCH 6/7] ASoC: tegra: Harmony machine support
-Date: Fri,  7 Jan 2011 22:36:16 -0700
-Message-ID: <1294464977-25814-7-git-send-email-swarren@nvidia.com>
+Subject: [PATCH 7/7] ASoC: tegra: Kconfig and Makefile
+Date: Fri,  7 Jan 2011 22:36:17 -0700
+Message-ID: <1294464977-25814-8-git-send-email-swarren@nvidia.com>
 References: <1294464977-25814-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4542A103848
+	by alsa0.perex.cz (Postfix) with ESMTP id 9935C1039A0
 	for <alsa-devel@alsa-project.org>; Sat,  8 Jan 2011 06:36:41 +0100 (CET)
 In-Reply-To: <1294464977-25814-1-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -26,194 +26,88 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Stephen Warren <swarren@nvidia.com>
 ---
- sound/soc/tegra/harmony.c |  179 +++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 179 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/tegra/harmony.c
+ sound/soc/Kconfig        |    1 +
+ sound/soc/Makefile       |    1 +
+ sound/soc/tegra/Kconfig  |   27 +++++++++++++++++++++++++++
+ sound/soc/tegra/Makefile |   14 ++++++++++++++
+ 4 files changed, 43 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/tegra/Kconfig
+ create mode 100644 sound/soc/tegra/Makefile
 
-diff --git a/sound/soc/tegra/harmony.c b/sound/soc/tegra/harmony.c
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index a3efc52..2cdbdad 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -54,6 +54,7 @@ source "sound/soc/pxa/Kconfig"
+ source "sound/soc/samsung/Kconfig"
+ source "sound/soc/s6000/Kconfig"
+ source "sound/soc/sh/Kconfig"
++source "sound/soc/tegra/Kconfig"
+ source "sound/soc/txx9/Kconfig"
+ 
+ # Supported codecs
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index ce913bf..3141c4d 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -17,4 +17,5 @@ obj-$(CONFIG_SND_SOC)	+= pxa/
+ obj-$(CONFIG_SND_SOC)	+= samsung/
+ obj-$(CONFIG_SND_SOC)	+= s6000/
+ obj-$(CONFIG_SND_SOC)	+= sh/
++obj-$(CONFIG_SND_SOC)	+= tegra/
+ obj-$(CONFIG_SND_SOC)	+= txx9/
+diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
 new file mode 100644
-index 0000000..bf0dbaf
+index 0000000..5514f1c
 --- /dev/null
-+++ b/sound/soc/tegra/harmony.c
-@@ -0,0 +1,179 @@
-+/*
-+ * harmony.c - Harmony machine ASoC driver
-+ *
-+ * Author: Stephen Warren <swarren@nvidia.com>
-+ * Copyright (C) 2010 - NVIDIA, Inc.
-+ *
-+ * Based on code copyright/by:
-+ *
-+ * (c) 2009, 2010 Nvidia Graphics Pvt. Ltd.
-+ *
-+ * Copyright 2007 Wolfson Microelectronics PLC.
-+ * Author: Graeme Gregory
-+ *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-+ * 02110-1301 USA
-+ *
-+ */
++++ b/sound/soc/tegra/Kconfig
+@@ -0,0 +1,27 @@
++config SND_TEGRA_SOC
++	tristate "SoC Audio for the Tegra System-on-Chip"
++	depends on ARCH_TEGRA && TEGRA_SYSTEM_DMA
++	default m
++	help
++	  Say Y or M here if you want support for SoC audio on Tegra.
 +
-+#include <asm/mach-types.h>
-+#include <linux/module.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
++config SND_TEGRA_SOC_I2S
++	tristate
++	depends on SND_TEGRA_SOC
++	depends on !TEGRA_I2S_AUDIO
++	default m
++	help
++	  Say Y or M if you want to add support for codecs attached to the
++	  Tegra I2S interface. You will also need to select the individual
++	  machine drivers to support below.
 +
-+#include "tegra_das.h"
-+#include "tegra_i2s.h"
-+#include "tegra_pcm.h"
-+#include "tegra_asoc_utils.h"
++config SND_TEGRA_SOC_HARMONY
++	tristate "SoC Audio support for Tegra Harmony reference board"
++	depends on SND_TEGRA_SOC && MACH_HARMONY && I2C
++	default m
++	select SND_TEGRA_SOC_I2S
++	select SND_SOC_WM8903
++	help
++	  Say Y or M here if you want to add support for SoC audio on the
++	  Tegra Harmony reference board.
 +
-+#define PREFIX "ASoC Harmony: "
+diff --git a/sound/soc/tegra/Makefile b/sound/soc/tegra/Makefile
+new file mode 100644
+index 0000000..dfd2ab9
+--- /dev/null
++++ b/sound/soc/tegra/Makefile
+@@ -0,0 +1,14 @@
++# Tegra platform Support
++snd-soc-tegra-das-objs := tegra_das.o
++snd-soc-tegra-pcm-objs := tegra_pcm.o
++snd-soc-tegra-i2s-objs := tegra_i2s.o
 +
-+static struct platform_device *harmony_snd_device;
++obj-$(CONFIG_SND_TEGRA_SOC) += snd-soc-tegra-das.o
++obj-$(CONFIG_SND_TEGRA_SOC) += snd-soc-tegra-pcm.o
++obj-$(CONFIG_SND_TEGRA_SOC_I2S) += snd-soc-tegra-i2s.o
 +
-+static int harmony_asoc_hw_params(struct snd_pcm_substream *substream,
-+					struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	int srate, mclk, mclk_change;
-+	int err;
++# Tegra machine Support
++snd-soc-tegra-harmony-objs := harmony.o
++snd-soc-tegra-harmony-objs += tegra_asoc_utils.o
 +
-+	srate = params_rate(params);
-+	switch (srate) {
-+	case 64000:
-+	case 88200:
-+	case 96000:
-+		mclk = 128 * srate;
-+		break;
-+	default:
-+		mclk = 256 * srate;
-+		break;
-+	}
-+	/* FIXME: Codec only requires >= 3MHz if OSR==0 */
-+	while (mclk < 6000000)
-+		mclk *= 2;
-+
-+	err = tegra_asoc_utils_set_rate(srate, mclk, &mclk_change);
-+	if (err < 0) {
-+		pr_err(PREFIX "Can't configure clocks\n");
-+		return err;
-+	}
-+
-+	err = snd_soc_dai_set_fmt(codec_dai,
-+					SND_SOC_DAIFMT_I2S |
-+					SND_SOC_DAIFMT_NB_NF |
-+					SND_SOC_DAIFMT_CBS_CFS);
-+	if (err < 0) {
-+		pr_err(PREFIX "codec_dai fmt not set\n");
-+		return err;
-+	}
-+
-+	err = snd_soc_dai_set_fmt(cpu_dai,
-+					SND_SOC_DAIFMT_I2S |
-+					SND_SOC_DAIFMT_NB_NF |
-+					SND_SOC_DAIFMT_CBS_CFS);
-+	if (err < 0) {
-+		pr_err(PREFIX "cpu_dai fmt not set\n");
-+		return err;
-+	}
-+
-+	if (mclk_change) {
-+	    err = snd_soc_dai_set_sysclk(codec_dai, 0, mclk, SND_SOC_CLOCK_IN);
-+	    if (err < 0) {
-+		    pr_err(PREFIX "codec_dai clock not set\n");
-+		    return err;
-+	    }
-+	}
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops harmony_asoc_ops = {
-+	.hw_params = harmony_asoc_hw_params,
-+};
-+
-+static struct snd_soc_dai_link harmony_wm8903_dai = {
-+	.name = "WM8903",
-+	.stream_name = "WM8903 PCM",
-+	.codec_name = "wm8903-codec.0-001a",
-+	.platform_name = "tegra-pcm-audio",
-+	.cpu_dai_name = "tegra-i2s.0",
-+	.codec_dai_name = "wm8903-hifi",
-+	.ops = &harmony_asoc_ops,
-+};
-+
-+static struct snd_soc_card snd_soc_harmony = {
-+	.name = "tegra-harmony",
-+	.dai_link = &harmony_wm8903_dai,
-+	.num_links = 1,
-+};
-+
-+static int __init harmony_soc_modinit(void)
-+{
-+	int ret;
-+
-+	if (!machine_is_harmony()) {
-+		pr_err(PREFIX "Not running on Tegra Harmony!\n");
-+		return -ENODEV;
-+	}
-+
-+	ret = tegra_asoc_utils_init();
-+	if (ret) {
-+		return ret;
-+	}
-+
-+	/*
-+	 * Create and register platform device
-+	 */
-+	harmony_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (harmony_snd_device == NULL) {
-+		pr_err(PREFIX "platform_device_alloc failed\n");
-+		ret = -ENOMEM;
-+		goto err_clock_utils;
-+	}
-+
-+	platform_set_drvdata(harmony_snd_device, &snd_soc_harmony);
-+
-+	ret = platform_device_add(harmony_snd_device);
-+	if (ret) {
-+		pr_err(PREFIX "platform_device_add failed (%d)\n",
-+			ret);
-+		goto err_device_put;
-+	}
-+
-+	return 0;
-+
-+err_device_put:
-+	platform_device_put(harmony_snd_device);
-+err_clock_utils:
-+	tegra_asoc_utils_fini();
-+	return ret;
-+}
-+module_init(harmony_soc_modinit);
-+
-+static void __exit harmony_soc_modexit(void)
-+{
-+	platform_device_unregister(harmony_snd_device);
-+
-+	tegra_asoc_utils_fini();
-+}
-+module_exit(harmony_soc_modexit);
-+
-+MODULE_AUTHOR("Stephen Warren <swarren@nvidia.com>");
-+MODULE_DESCRIPTION("Harmony machine ASoC driver");
-+MODULE_LICENSE("GPL");
++obj-$(CONFIG_SND_TEGRA_SOC_HARMONY) += snd-soc-tegra-harmony.o
 -- 
 1.7.0.4
