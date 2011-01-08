@@ -1,15 +1,15 @@
 From: Stephen Warren <swarren@nvidia.com>
-Subject: [PATCH 5/7] ASoC: tegra: Machine utility code
-Date: Fri,  7 Jan 2011 22:36:15 -0700
-Message-ID: <1294464977-25814-6-git-send-email-swarren@nvidia.com>
+Subject: [PATCH 6/7] ASoC: tegra: Harmony machine support
+Date: Fri,  7 Jan 2011 22:36:16 -0700
+Message-ID: <1294464977-25814-7-git-send-email-swarren@nvidia.com>
 References: <1294464977-25814-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 45EA8103965
-	for <alsa-devel@alsa-project.org>; Sat,  8 Jan 2011 06:36:40 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 4542A103848
+	for <alsa-devel@alsa-project.org>; Sat,  8 Jan 2011 06:36:41 +0100 (CET)
 In-Reply-To: <1294464977-25814-1-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,30 +24,31 @@ To: alsa-devel@alsa-project.org
 Cc: Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Many portions of Tegra ASoC machine drivers will be similar or identical.
-To avoid cut/paste, this file will act as a repository for all that common
-code. For now, it solely includes code to reprogram the audio PLL for
-44.1KHz- vs. 48KHz-based sample rates.
-
-Signed-Off-By: Stephen Warren <swarren@nvidia.com>
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
 ---
- sound/soc/tegra/tegra_asoc_utils.c |  154 ++++++++++++++++++++++++++++++++++++
- sound/soc/tegra/tegra_asoc_utils.h |   31 +++++++
- 2 files changed, 185 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/tegra/tegra_asoc_utils.c
- create mode 100644 sound/soc/tegra/tegra_asoc_utils.h
+ sound/soc/tegra/harmony.c |  179 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 179 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/tegra/harmony.c
 
-diff --git a/sound/soc/tegra/tegra_asoc_utils.c b/sound/soc/tegra/tegra_asoc_utils.c
+diff --git a/sound/soc/tegra/harmony.c b/sound/soc/tegra/harmony.c
 new file mode 100644
-index 0000000..711ab7f
+index 0000000..bf0dbaf
 --- /dev/null
-+++ b/sound/soc/tegra/tegra_asoc_utils.c
-@@ -0,0 +1,154 @@
++++ b/sound/soc/tegra/harmony.c
+@@ -0,0 +1,179 @@
 +/*
-+ * tegra_asoc_utils.c - Harmony machine ASoC driver
++ * harmony.c - Harmony machine ASoC driver
 + *
 + * Author: Stephen Warren <swarren@nvidia.com>
 + * Copyright (C) 2010 - NVIDIA, Inc.
++ *
++ * Based on code copyright/by:
++ *
++ * (c) 2009, 2010 Nvidia Graphics Pvt. Ltd.
++ *
++ * Copyright 2007 Wolfson Microelectronics PLC.
++ * Author: Graeme Gregory
++ *         graeme.gregory@wolfsonmicro.com or linux@wolfsonmicro.com
 + *
 + * This program is free software; you can redistribute it and/or
 + * modify it under the terms of the GNU General Public License
@@ -65,174 +66,154 @@ index 0000000..711ab7f
 + *
 + */
 +
-+#include <linux/clk.h>
-+#include <linux/err.h>
-+#include <linux/kernel.h>
++#include <asm/mach-types.h>
++#include <linux/module.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
 +
++#include "tegra_das.h"
++#include "tegra_i2s.h"
++#include "tegra_pcm.h"
 +#include "tegra_asoc_utils.h"
 +
-+#define PREFIX "ASoC Tegra: "
++#define PREFIX "ASoC Harmony: "
 +
-+static struct clk *clk_pll_a;
-+static struct clk *clk_pll_a_out0;
-+static struct clk *clk_cdev1;
++static struct platform_device *harmony_snd_device;
 +
-+static int set_baseclock, set_mclk;
-+
-+int tegra_asoc_utils_set_rate(int srate, int mclk, int *mclk_change)
++static int harmony_asoc_hw_params(struct snd_pcm_substream *substream,
++					struct snd_pcm_hw_params *params)
 +{
-+	int new_baseclock;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	int srate, mclk, mclk_change;
 +	int err;
 +
++	srate = params_rate(params);
 +	switch (srate) {
-+	case 11025:
-+	case 22050:
-+	case 44100:
-+	case 88200:
-+		new_baseclock = 56448000;
-+		break;
-+	case 8000:
-+	case 16000:
-+	case 32000:
-+	case 48000:
 +	case 64000:
++	case 88200:
 +	case 96000:
-+		new_baseclock = 73728000;
++		mclk = 128 * srate;
 +		break;
 +	default:
-+		return -EINVAL;
++		mclk = 256 * srate;
++		break;
 +	}
++	/* FIXME: Codec only requires >= 3MHz if OSR==0 */
++	while (mclk < 6000000)
++		mclk *= 2;
 +
-+	*mclk_change = ((new_baseclock != set_baseclock) ||
-+			(mclk != set_mclk));
-+	if (!*mclk_change)
-+	    return 0;
-+
-+	set_baseclock = 0;
-+	set_mclk = 0;
-+
-+	clk_disable(clk_cdev1);
-+	clk_disable(clk_pll_a_out0);
-+	clk_disable(clk_pll_a);
-+
-+	err = clk_set_rate(clk_pll_a, new_baseclock);
-+	if (err) {
-+		pr_err(PREFIX "Can't set pll_a rate: %d\n", err);
++	err = tegra_asoc_utils_set_rate(srate, mclk, &mclk_change);
++	if (err < 0) {
++		pr_err(PREFIX "Can't configure clocks\n");
 +		return err;
 +	}
 +
-+	err = clk_set_rate(clk_pll_a_out0, mclk);
-+	if (err) {
-+		pr_err(PREFIX "Can't set pll_a_out0 rate: %d\n", err);
++	err = snd_soc_dai_set_fmt(codec_dai,
++					SND_SOC_DAIFMT_I2S |
++					SND_SOC_DAIFMT_NB_NF |
++					SND_SOC_DAIFMT_CBS_CFS);
++	if (err < 0) {
++		pr_err(PREFIX "codec_dai fmt not set\n");
 +		return err;
 +	}
 +
-+	/* Don't set cdev1 rate; its locked to pll_a_out0 */
-+
-+	err = clk_enable(clk_pll_a);
-+	if (err) {
-+		pr_err(PREFIX "Can't enable pll_a: %d\n", err);
++	err = snd_soc_dai_set_fmt(cpu_dai,
++					SND_SOC_DAIFMT_I2S |
++					SND_SOC_DAIFMT_NB_NF |
++					SND_SOC_DAIFMT_CBS_CFS);
++	if (err < 0) {
++		pr_err(PREFIX "cpu_dai fmt not set\n");
 +		return err;
 +	}
 +
-+	err = clk_enable(clk_pll_a_out0);
-+	if (err) {
-+		pr_err(PREFIX "Can't enable pll_a_out0: %d\n", err);
-+		return err;
++	if (mclk_change) {
++	    err = snd_soc_dai_set_sysclk(codec_dai, 0, mclk, SND_SOC_CLOCK_IN);
++	    if (err < 0) {
++		    pr_err(PREFIX "codec_dai clock not set\n");
++		    return err;
++	    }
 +	}
-+
-+	err = clk_enable(clk_cdev1);
-+	if (err) {
-+		pr_err(PREFIX "Can't enable cdev1: %d\n", err);
-+		return err;
-+	}
-+
-+	set_baseclock = new_baseclock;
-+	set_mclk = mclk;
 +
 +	return 0;
 +}
 +
-+int tegra_asoc_utils_init(void)
++static struct snd_soc_ops harmony_asoc_ops = {
++	.hw_params = harmony_asoc_hw_params,
++};
++
++static struct snd_soc_dai_link harmony_wm8903_dai = {
++	.name = "WM8903",
++	.stream_name = "WM8903 PCM",
++	.codec_name = "wm8903-codec.0-001a",
++	.platform_name = "tegra-pcm-audio",
++	.cpu_dai_name = "tegra-i2s.0",
++	.codec_dai_name = "wm8903-hifi",
++	.ops = &harmony_asoc_ops,
++};
++
++static struct snd_soc_card snd_soc_harmony = {
++	.name = "tegra-harmony",
++	.dai_link = &harmony_wm8903_dai,
++	.num_links = 1,
++};
++
++static int __init harmony_soc_modinit(void)
 +{
 +	int ret;
 +
-+	clk_pll_a = clk_get_sys(NULL, "pll_a");
-+	if (IS_ERR_OR_NULL(clk_pll_a)) {
-+		pr_err(PREFIX "Can't retrieve clk pll_a\n");
-+		ret = PTR_ERR(clk_pll_a);
-+		goto err;
++	if (!machine_is_harmony()) {
++		pr_err(PREFIX "Not running on Tegra Harmony!\n");
++		return -ENODEV;
 +	}
 +
-+	clk_pll_a_out0 = clk_get_sys(NULL, "pll_a_out0");
-+	if (IS_ERR_OR_NULL(clk_pll_a_out0)) {
-+		pr_err(PREFIX "Can't retrieve clk pll_a_out0\n");
-+		ret = PTR_ERR(clk_pll_a_out0);
-+		goto err;
++	ret = tegra_asoc_utils_init();
++	if (ret) {
++		return ret;
 +	}
 +
-+	clk_cdev1 = clk_get_sys(NULL, "cdev1");
-+	if (IS_ERR_OR_NULL(clk_cdev1)) {
-+		pr_err(PREFIX "Can't retrieve clk cdev1\n");
-+		ret = PTR_ERR(clk_cdev1);
-+		goto err;
++	/*
++	 * Create and register platform device
++	 */
++	harmony_snd_device = platform_device_alloc("soc-audio", -1);
++	if (harmony_snd_device == NULL) {
++		pr_err(PREFIX "platform_device_alloc failed\n");
++		ret = -ENOMEM;
++		goto err_clock_utils;
++	}
++
++	platform_set_drvdata(harmony_snd_device, &snd_soc_harmony);
++
++	ret = platform_device_add(harmony_snd_device);
++	if (ret) {
++		pr_err(PREFIX "platform_device_add failed (%d)\n",
++			ret);
++		goto err_device_put;
 +	}
 +
 +	return 0;
 +
-+err:
-+	if (!IS_ERR_OR_NULL(clk_cdev1))
-+		clk_put(clk_cdev1);
-+	if (!IS_ERR_OR_NULL(clk_pll_a_out0))
-+		clk_put(clk_pll_a_out0);
-+	if (!IS_ERR_OR_NULL(clk_pll_a))
-+		clk_put(clk_pll_a);
++err_device_put:
++	platform_device_put(harmony_snd_device);
++err_clock_utils:
++	tegra_asoc_utils_fini();
 +	return ret;
 +}
++module_init(harmony_soc_modinit);
 +
-+void tegra_asoc_utils_fini(void)
++static void __exit harmony_soc_modexit(void)
 +{
-+	clk_put(clk_cdev1);
-+	clk_put(clk_pll_a_out0);
-+	clk_put(clk_pll_a);
++	platform_device_unregister(harmony_snd_device);
++
++	tegra_asoc_utils_fini();
 +}
++module_exit(harmony_soc_modexit);
 +
-diff --git a/sound/soc/tegra/tegra_asoc_utils.h b/sound/soc/tegra/tegra_asoc_utils.h
-new file mode 100644
-index 0000000..855f8f6
---- /dev/null
-+++ b/sound/soc/tegra/tegra_asoc_utils.h
-@@ -0,0 +1,31 @@
-+/*
-+ * tegra_asoc_utils.h - Definitions for Tegra DAS driver
-+ *
-+ * Author: Stephen Warren <swarren@nvidia.com>
-+ * Copyright (C) 2010 - NVIDIA, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-+ * 02110-1301 USA
-+ *
-+ */
-+
-+#ifndef __TEGRA_ASOC_UTILS_H__
-+#define __TEGRA_ASOC_UTILS_H_
-+
-+int tegra_asoc_utils_set_rate(int srate, int mclk_rate, int *mclk_change);
-+int tegra_asoc_utils_init(void);
-+void tegra_asoc_utils_fini(void);
-+
-+#endif
-+
++MODULE_AUTHOR("Stephen Warren <swarren@nvidia.com>");
++MODULE_DESCRIPTION("Harmony machine ASoC driver");
++MODULE_LICENSE("GPL");
 -- 
 1.7.0.4
