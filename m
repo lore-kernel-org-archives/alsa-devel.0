@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/7] Tegra ALSA/ASoC driver
-Date: Sun, 9 Jan 2011 13:59:52 +0000
-Message-ID: <20110109135952.GA31249@sirena.org.uk>
-References: <1294450353-25076-1-git-send-email-swarren@wwwdotorg.org>
-	<1294464977-25814-1-git-send-email-swarren@nvidia.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 0/4] ASoC: SAMSUNG: Code clean-up suitable
+ for current ASoC
+Date: Sun, 09 Jan 2011 14:01:22 +0000
+Message-ID: <1294581682.4472.148.camel@odin>
+References: <1294375429-16729-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9F974103856
-	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2011 14:59:55 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1294464977-25814-1-git-send-email-swarren@nvidia.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id A9A64103856
+	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2011 15:02:19 +0100 (CET)
+Received: by wwe15 with SMTP id 15so18678612wwe.20
+	for <alsa-devel@alsa-project.org>; Sun, 09 Jan 2011 06:02:19 -0800 (PST)
+In-Reply-To: <1294375429-16729-1-git-send-email-sw.youn@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,19 +23,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Seungwhan Youn <sw.youn@samsung.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 07, 2011 at 10:36:10PM -0700, Stephen Warren wrote:
-> (My apologies; I sent this to both linux-tegra and alsa-devel mailing lists
-> before, but posted from the wrong address, so it got dropped from the ALSA
-> list. Here's a copy, hopefully threaded back into the same conversation as
-> the original copy which made it to linux-tegra)
+On Fri, 2011-01-07 at 13:43 +0900, Seungwhan Youn wrote:
+> Hi,
+> 
+> This patch remove(or move) unnecessary or un-suitable features on current
+> ASoC for all Samsung audio drivers and its supports. After multi-component
+> model patch, ASoC core part controls dai_links instead of _hard_wired_
+> dai links on machine drivers. Due to apply this model, many machine drivers
+> don't need codecs and platforms includes to make _hard_wired_ dai_links.
+> And also, ASoC core header file 'sound/soc.h' has basic includes for device
+> driver, so many of includes in each machine/platform driver are duplicated
+> and not essentially needed.
+> 
+> So, this patch-set check each platform/machine drivers' includes and
+> definitions are suitable or not, remove unnecessary features with compile
+> tests.
+> 
+> 
+> These patches are modify below features:-
+>  o Remove unnecessary 'ac97.h' header file.
+>  o Move each specific definitions, not to be shared by header files.
+>  o Clean-up unnecessary header includes.
+> 
+> This patch-set is based on two different branches that :-
+>  o ASoC patches are based on Mark Brown's git branch 'for-next'
+>    (commit id - f6c2ed5dd6ab43447dacc136585fc894e3f3a82d)
+> 
+> This patch-set contains followings :-
+>  o [PATCH 1/4] ASoC: SAMSUNG: Remove AC97 header file
+>  o [PATCH 2/4] ASoC: SAMSUNG: Clean-up DMA header file
+>  o [PATCH 3/4] ASoC: SAMSUNG: Move PCM specific definitions into pcm.c
+>  o [PATCH 4/4] ASoC: SAMSUNG: Clean-up header includes
+> 
 
-Please always CC maintainers on patches - the mailing lists are often high
-volume and things get lost, and if people are busy they're likely to
-check their inboxes more often.
+All
 
-CCing in Liam, I've not looked through the actual patches yet, I'll do
-so later today or on Monday.
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
