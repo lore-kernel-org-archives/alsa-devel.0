@@ -1,19 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 0/4] ASoC: SAMSUNG: Code clean-up suitable
- for current ASoC
-Date: Sun, 09 Jan 2011 14:01:22 +0000
-Message-ID: <1294581682.4472.148.camel@odin>
-References: <1294375429-16729-1-git-send-email-sw.youn@samsung.com>
+Subject: Re: [PATCH 1/3] ASoC: sn95031 fix the code style and
+ format inconsistencies
+Date: Sun, 09 Jan 2011 14:03:11 +0000
+Message-ID: <1294581791.4472.149.camel@odin>
+References: <1294397428-8730-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id A9A64103856
-	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2011 15:02:19 +0100 (CET)
-Received: by wwe15 with SMTP id 15so18678612wwe.20
-	for <alsa-devel@alsa-project.org>; Sun, 09 Jan 2011 06:02:19 -0800 (PST)
-In-Reply-To: <1294375429-16729-1-git-send-email-sw.youn@samsung.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2C8EB103865
+	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2011 15:03:25 +0100 (CET)
+Received: by wyi11 with SMTP id 11so18822311wyi.38
+	for <alsa-devel@alsa-project.org>; Sun, 09 Jan 2011 06:03:24 -0800 (PST)
+In-Reply-To: <1294397428-8730-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,42 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Seungwhan Youn <sw.youn@samsung.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, jassi.brar@samsung.com
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, alan@linux.intel.com, Harsha Priya <priya.harsha@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2011-01-07 at 13:43 +0900, Seungwhan Youn wrote:
-> Hi,
+On Fri, 2011-01-07 at 16:20 +0530, Koul, Vinod wrote:
+> From: Vinod Koul <vinod.koul@intel.com>
 > 
-> This patch remove(or move) unnecessary or un-suitable features on current
-> ASoC for all Samsung audio drivers and its supports. After multi-component
-> model patch, ASoC core part controls dai_links instead of _hard_wired_
-> dai links on machine drivers. Due to apply this model, many machine drivers
-> don't need codecs and platforms includes to make _hard_wired_ dai_links.
-> And also, ASoC core header file 'sound/soc.h' has basic includes for device
-> driver, so many of includes in each machine/platform driver are duplicated
-> and not essentially needed.
+> this patch fixes inconsistencies commented by Mark.
+> This also fixes few other style things in audio_map & header file
 > 
-> So, this patch-set check each platform/machine drivers' includes and
-> definitions are suitable or not, remove unnecessary features with compile
-> tests.
-> 
-> 
-> These patches are modify below features:-
->  o Remove unnecessary 'ac97.h' header file.
->  o Move each specific definitions, not to be shared by header files.
->  o Clean-up unnecessary header includes.
-> 
-> This patch-set is based on two different branches that :-
->  o ASoC patches are based on Mark Brown's git branch 'for-next'
->    (commit id - f6c2ed5dd6ab43447dacc136585fc894e3f3a82d)
-> 
-> This patch-set contains followings :-
->  o [PATCH 1/4] ASoC: SAMSUNG: Remove AC97 header file
->  o [PATCH 2/4] ASoC: SAMSUNG: Clean-up DMA header file
->  o [PATCH 3/4] ASoC: SAMSUNG: Move PCM specific definitions into pcm.c
->  o [PATCH 4/4] ASoC: SAMSUNG: Clean-up header includes
-> 
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> Signed-off-by: Harsha Priya <priya.harsha@intel.com>
+> ---
+>  sound/soc/codecs/sn95031.c |   30 +++++++++++++++---------------
+>  sound/soc/codecs/sn95031.h |   12 ++++++------
+>  2 files changed, 21 insertions(+), 21 deletions(-)
 
 All
 
