@@ -1,21 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/4] ASoC sst v2: Add sn95031 codec driver
-Date: Sun, 09 Jan 2011 11:30:47 +0000
-Message-ID: <1294572648.4472.0.camel@odin>
-References: <1294152367-8883-1-git-send-email-vinod.koul@intel.com>
-	<20110105235652.GB5770@opensource.wolfsonmicro.com>
-	<438BB0150E931F4B9CE701519A44630104C119C32E@bgsmsx502.gar.corp.intel.com>
+Subject: Re: [PATCH] ASoC: Taint the kernel if debugfs is used
+ to write directly to CODECs
+Date: Sun, 09 Jan 2011 13:56:58 +0000
+Message-ID: <1294581418.4472.146.camel@odin>
+References: <1294329950-3881-1-git-send-email-broonie@opensource.wolfsonmciro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 090E81037E3
-	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2011 12:30:52 +0100 (CET)
-Received: by wyi11 with SMTP id 11so18758741wyi.38
-	for <alsa-devel@alsa-project.org>; Sun, 09 Jan 2011 03:30:52 -0800 (PST)
-In-Reply-To: <438BB0150E931F4B9CE701519A44630104C119C32E@bgsmsx502.gar.corp.intel.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E19C41037E3
+	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2011 14:57:44 +0100 (CET)
+Received: by wwe15 with SMTP id 15so18677367wwe.20
+	for <alsa-devel@alsa-project.org>; Sun, 09 Jan 2011 05:57:44 -0800 (PST)
+In-Reply-To: <1294329950-3881-1-git-send-email-broonie@opensource.wolfsonmciro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,24 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Harsha,
-	Priya" <priya.harsha@intel.com>, "alan@linux.intel.com" <alan@linux.intel.com>
+To: Mark Brown <broonie@opensource.wolfsonmciro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-01-06 at 12:17 +0530, Koul, Vinod wrote:
-> > 
-> > A few comments below; depending on what Liam feels I think we can
-> > possibly merge this as-is on the basis that it's going to get future
-> > updates.
-> Thanks Mark,
-> As we had communicated back in Nov that we are committed to asoc porting.
-> We will continue to submit patches for fixing these as well as adding new
-> features and codecs.
+On Thu, 2011-01-06 at 16:05 +0000, Mark Brown wrote:
+> Since direct register writes may confuse the drivers and are supposed
+> to be used only in diagnostic situations discourage their use in
+> production by tainting the kernel when we do a write.
 > 
-> Liam, please let us know your comments or if you are okay with this.
-
-Sorry, been on the road last week.
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmciro.com>
+> ---
+>  sound/soc/soc-core.c |    4 ++++
+>  1 files changed, 4 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index a233607..dbca5023 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -209,6 +209,10 @@ static ssize_t codec_reg_write_file(struct file *file,
+>  		start++;
+>  	if (strict_strtoul(start, 16, &value))
+>  		return -EINVAL;
+> +
+> +	/* Userspace has been fiddling around behind the kernel's back */
+> +	add_taint(TAINT_USER);
+> +
+>  	snd_soc_write(codec, reg, value);
+>  	return buf_size;
+>  }
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
