@@ -1,20 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 0/7] Tegra ALSA/ASoC driver
-Date: Mon, 10 Jan 2011 21:47:30 +0000
-Message-ID: <1294696050.3416.236.camel@odin>
-References: <1294450353-25076-1-git-send-email-swarren@wwwdotorg.org>
-	<1294464977-25814-1-git-send-email-swarren@nvidia.com>
-	<20110110183558.GF6541@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: soc-core: Add support for NULL
+ default register caches
+Date: Mon, 10 Jan 2011 21:48:58 +0000
+Message-ID: <1294696138.3416.237.camel@odin>
+References: <1294654256-1012-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 4A05824632
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 22:48:04 +0100 (CET)
-Received: by ewy19 with SMTP id 19so8333121ewy.38
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 13:48:03 -0800 (PST)
-In-Reply-To: <20110110183558.GF6541@sirena.org.uk>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 3F88F24634
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 22:50:12 +0100 (CET)
+Received: by wyi11 with SMTP id 11so19941000wyi.38
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 13:50:07 -0800 (PST)
+In-Reply-To: <1294654256-1012-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,29 +23,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Timur@alsa-project.org, Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-01-10 at 18:35 +0000, Mark Brown wrote:
-> On Fri, Jan 07, 2011 at 10:36:10PM -0700, Stephen Warren wrote:
+On Mon, 2011-01-10 at 10:10 +0000, Dimitris Papastamos wrote:
+> The infrastructure for handling NULL default register maps is already
+> included in the soc-cache code, just ensure that we don't try to dereference
+> a NULL pointer while accessing a NULL register cache.
 > 
-> > Stephen Warren (7):
-> >   ASoC: Export debugfs root dentry
-> >   ASoC: tegra: Add tegra-das driver
-> >   ASoC: tegra: Add tegra-pcm driver
-> >   ASoC: tegra: Add tegra-i2s driver
-> >   ASoC: tegra: Machine utility code
-> >   ASoC: tegra: Harmony machine support
-> >   ASoC: tegra: Kconfig and Makefile
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/soc-core.c |   12 +++++++-----
+>  1 files changed, 7 insertions(+), 5 deletions(-)
 > 
-> This all looks good with the exception of the name of the debugfs root
-> symbol and the issues we've previously discussed which I'll work on once
-> I get this running on my Harmony.  Don't worry about correcting the
-> symbol name if Liam's OK with the rest of the series - it's easier for
-> me to do an incremental patch fixing it than re-review.
-
-I've had a quick look and all is fine.
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index bac7291..a9f19c1 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -3503,11 +3503,13 @@ int snd_soc_register_codec(struct device *dev,
+>  		 * kernel might have freed the array by the time we initialize
+>  		 * the cache.
+>  		 */
+> -		codec->reg_def_copy = kmemdup(codec_drv->reg_cache_default,
+> -					      reg_size, GFP_KERNEL);
+> -		if (!codec->reg_def_copy) {
+> -			ret = -ENOMEM;
+> -			goto fail;
+> +		if (codec_drv->reg_cache_default) {
+> +			codec->reg_def_copy = kmemdup(codec_drv->reg_cache_default,
+> +						      reg_size, GFP_KERNEL);
+> +			if (!codec->reg_def_copy) {
+> +				ret = -ENOMEM;
+> +				goto fail;
+> +			}
+>  		}
+>  	}
+>  
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
