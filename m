@@ -1,17 +1,17 @@
-From: Timur Tabi <timur@freescale.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ASoC: soc-core: Add support for NULL
  default register caches
-Date: Mon, 10 Jan 2011 16:10:52 -0600
-Message-ID: <4D2B83EC.4000400@freescale.com>
+Date: Mon, 10 Jan 2011 22:25:06 +0000
+Message-ID: <20110110222506.GB5886@opensource.wolfsonmicro.com>
 References: <1294654256-1012-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from AM1EHSOBE004.bigfish.com (am1ehsobe004.messaging.microsoft.com
-	[213.199.154.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8098A244C7
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 23:11:01 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E1F1624645
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 23:24:50 +0100 (CET)
+Content-Disposition: inline
 In-Reply-To: <1294654256-1012-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,40 +23,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Dimitris Papastamos wrote:
+On Mon, Jan 10, 2011 at 10:10:56AM +0000, Dimitris Papastamos wrote:
 > The infrastructure for handling NULL default register maps is already
 > included in the soc-cache code, just ensure that we don't try to dereference
 > a NULL pointer while accessing a NULL register cache.
 > 
 > Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
-Acked-by: Timur Tabi <timur@freescale.com>
-
-This fixes the kernel panic I was seeing earlier with my CS4270 driver, but it's
-not a replacement for my patch, "[v3] ASoC: cs4270: use the built-in register
-cache support".
-
-With Dimitris' patch alone, the CS4270 still has other bugs:
-
-# cat ./devices/platform/soc-audio/playback/codec_reg
-cs4270-codec.0-004f registers
- 0: <no data: -5>
- 1:   c3
- 2:    0
- 3:   30
- 4:    0
- 5:    0
- 6:    0
- 7:    0
-
-
-So both patches need to be applied, however, I can't say whether Dimitris' patch
-is sufficient for handling NULL default register maps, since I removed that from
-my driver.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+Applied, thanks.
