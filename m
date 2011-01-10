@@ -1,19 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] [v3] ASoC: cs4270: use the built-in
- register cache support
-Date: Mon, 10 Jan 2011 21:59:25 +0000
-Message-ID: <1294696765.3416.243.camel@odin>
-References: <1294687713-16433-1-git-send-email-timur@freescale.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] ASoC: soc-core: Add support for NULL
+ default register caches
+Date: Mon, 10 Jan 2011 16:10:52 -0600
+Message-ID: <4D2B83EC.4000400@freescale.com>
+References: <1294654256-1012-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 60A4610391E
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 23:05:17 +0100 (CET)
-Received: by wwe15 with SMTP id 15so19799846wwe.20
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 14:05:17 -0800 (PST)
-In-Reply-To: <1294687713-16433-1-git-send-email-timur@freescale.com>
+Received: from AM1EHSOBE004.bigfish.com (am1ehsobe004.messaging.microsoft.com
+	[213.199.154.207])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8098A244C7
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 23:11:01 +0100 (CET)
+In-Reply-To: <1294654256-1012-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,38 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: dp@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-01-10 at 13:28 -0600, Timur Tabi wrote:
-> Update the CS4270 driver to use ASoC's internal codec register cache feature.
-> This change allows ASoC to perform the low-level I2C operations necessary to
-> read the register cache.  Support is also added for initializing the register
-> cache with an array of known power-on default values.
+Dimitris Papastamos wrote:
+> The infrastructure for handling NULL default register maps is already
+> included in the soc-cache code, just ensure that we don't try to dereference
+> a NULL pointer while accessing a NULL register cache.
 > 
-> The CS4270 driver was handling the register cache itself, but somwhere along
-> the conversion to multi-compaonent, this feature broke.
-> 
-> Signed-off-by: Timur Tabi <timur@freescale.com>
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+Acked-by: Timur Tabi <timur@freescale.com>
 
-> ---
-> 
-> Mark, I don't have power-management support working on my hardware, so I can't
-> test cs4270_soc_resume(), but I have a suspicion that the call to
-> i2c_smbus_write_byte_data() should be replaced with codec->hw_write().
-> 
+This fixes the kernel panic I was seeing earlier with my CS4270 driver, but it's
+not a replacement for my patch, "[v3] ASoC: cs4270: use the built-in register
+cache support".
 
-You may want to look at using snd_soc_cache_sync() to flush your cache
-at resume().
+With Dimitris' patch alone, the CS4270 still has other bugs:
 
-Thanks
+# cat ./devices/platform/soc-audio/playback/codec_reg
+cs4270-codec.0-004f registers
+ 0: <no data: -5>
+ 1:   c3
+ 2:    0
+ 3:   30
+ 4:    0
+ 5:    0
+ 6:    0
+ 7:    0
 
-Liam
+
+So both patches need to be applied, however, I can't say whether Dimitris' patch
+is sufficient for handling NULL default register maps, since I removed that from
+my driver.
 
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Timur Tabi
+Linux kernel developer at Freescale
