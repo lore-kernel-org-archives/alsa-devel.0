@@ -1,26 +1,25 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] [v2] ASoC: cs4270: use the built-in
- register cache support
-Date: Mon, 10 Jan 2011 13:03:26 -0600
-Message-ID: <4D2B57FE.4090401@freescale.com>
-References: <1294675292-6289-1-git-send-email-timur@freescale.com>
-	<1294676990.11031.10.camel@dplaptop.localdomain>
-	<4D2B34C1.7050209@freescale.com>
-	<1294677365.11031.13.camel@dplaptop.localdomain>
-	<4D2B4376.101@freescale.com>
-	<20110110182302.GB26137@opensource.wolfsonmicro.com>
-	<4D2B50FA.9060102@freescale.com>
-	<20110110183615.GC26137@opensource.wolfsonmicro.com>
-	<4D2B52DA.1090102@freescale.com>
-	<20110110185406.GD26137@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: regarding references taken on platform and codec
+ driver modules
+Date: Mon, 10 Jan 2011 19:01:54 +0000
+Message-ID: <20110110190154.GA11265@opensource.wolfsonmicro.com>
+References: <98769532B4BB14429434178695419EAE053BF51941@bgsmsx501.gar.corp.intel.com>
+	<20110103155454.GE6783@opensource.wolfsonmicro.com>
+	<98769532B4BB14429434178695419EAE053BF51B26@bgsmsx501.gar.corp.intel.com>
+	<20110103163532.GB7370@opensource.wolfsonmicro.com>
+	<98769532B4BB14429434178695419EAE053BF51BC3@bgsmsx501.gar.corp.intel.com>
+	<20110104154825.GF24774@opensource.wolfsonmicro.com>
+	<98769532B4BB14429434178695419EAE053BFABE47@bgsmsx501.gar.corp.intel.com>
+	<438BB0150E931F4B9CE701519A44630104C119C43D@bgsmsx502.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from VA3EHSOBE009.bigfish.com (va3ehsobe006.messaging.microsoft.com
-	[216.32.180.16]) by alsa0.perex.cz (Postfix) with ESMTP id 2BEFE245B6
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 20:03:38 +0100 (CET)
-In-Reply-To: <20110110185406.GD26137@opensource.wolfsonmicro.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 37B8D1037EE
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 20:03:55 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <438BB0150E931F4B9CE701519A44630104C119C43D@bgsmsx502.gar.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,24 +29,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "Harsha,
+	Priya" <priya.harsha@intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> This is all code that's evolved over time, and originally there was no
-> readback facility at all (everything came from cache) so there were no
-> errors to report in the first place.  Besides, in general there's
-> nothing constructive we can do about errors anyway except log them.
+On Thu, Jan 06, 2011 at 02:41:29PM +0530, Koul, Vinod wrote:
 
-Well, I'm not sure I agree.  For one thing, the current code doesn't just fail
-to report I/O errors to the callers, it re-interprets an error code as valid
-date and plows right on ahead.
+> This issue is on removal of soc_remove() it doesn't free up the reference if the card is not instantiated
+> So in case one of the probes fails we should handle this in soc_remove in else for instantated
 
-In addition, there are places where getting a return code would be useful.  I
-call snd_soc_update_bits() in my probe function, so that's a great opportunity
-to tell ASoC that this device is broken and it shouldn't instantiate a sound card.
+> 		    if (rtd->codec->probed)
+>                         module_put(rtd->codec->dev->driver->owner);
+>                 if (rtd->platform->probed)
+>                         module_put(rtd->platform->dev->driver->owner);
+>                 for (i = 0; i < card->num_rtd; i++)
+>                         module_put(rtd[i].cpu_dai->dev->driver->owner);
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+> Would this be the correct way to solve this?
+
+Probably, yes.
