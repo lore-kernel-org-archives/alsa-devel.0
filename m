@@ -1,16 +1,20 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: snd_soc_codec_set_cache_io()
-Date: Sun, 9 Jan 2011 16:15:54 -0600
-Message-ID: <AANLkTikew7_zd1-H+oiirBghFcd176U6t0r-MFAv_DM5@mail.gmail.com>
+From: <jonas.rabbe@nokia.com>
+Subject: PCM direct access functions for recording
+Date: Mon, 10 Jan 2011 05:08:11 +0000
+Message-ID: <C950D15B.2C65%jonas.rabbe@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id A9093244A6
-	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2011 23:16:35 +0100 (CET)
-Received: by fxm5 with SMTP id 5so17677480fxm.38
-	for <alsa-devel@alsa-project.org>; Sun, 09 Jan 2011 14:16:34 -0800 (PST)
+Received: from mgw-da02.nokia.com (smtp.nokia.com [147.243.128.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id CD89E24333
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 06:08:24 +0100 (CET)
+Received: from vaebh106.NOE.Nokia.com (vaebh106.europe.nokia.com
+	[10.160.244.32])
+	by mgw-da02.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p0A5890t027013
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 07:08:22 +0200
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,20 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel mailing list <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
+Hi,
 
-The comments for snd_soc_codec_set_cache_io() say this:
+I am trying to use the PCM direct access  (MMAP) functions for recording sound from an ALSA source, and reading the documentation has brought up a few questions. The documentation page for the mmap function [1] and the PCM test demo [2] both concern themselves with writing to the ring buffer. I was wondering if there was a similar example for reading from the ring buffer.
 
- * Note that at present this code cannot be used by CODECs with
- * volatile registers.
+At this point I have been searching through the alsa-devel archives, alsa-project.org, and anything else google could throw at me, but it seems my google-fu is not as strong as I had thought. Any pointers and links concerning my use case would be most appreciated.
 
-Is this still true?  I ask because I think I've been able to use this
-function in the CS4270 with volatile registers, and it appears to
-work.
+Thank you,
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+Jonas Rabbe
+Software Engineer // Qt Multimedia / Brisbane / Australia
+
+[1] http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m___direct.html
+[2] http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2pcm_8c-example.html
