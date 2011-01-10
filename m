@@ -1,27 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] [v2] ASoC: cs4270: use the built-in
- register cache support
-Date: Mon, 10 Jan 2011 19:13:59 +0000
-Message-ID: <20110110191359.GB11265@opensource.wolfsonmicro.com>
-References: <1294676990.11031.10.camel@dplaptop.localdomain>
-	<4D2B34C1.7050209@freescale.com>
-	<1294677365.11031.13.camel@dplaptop.localdomain>
-	<4D2B4376.101@freescale.com>
-	<20110110182302.GB26137@opensource.wolfsonmicro.com>
-	<4D2B50FA.9060102@freescale.com>
-	<20110110183615.GC26137@opensource.wolfsonmicro.com>
-	<4D2B52DA.1090102@freescale.com>
-	<20110110185406.GD26137@opensource.wolfsonmicro.com>
-	<4D2B57FE.4090401@freescale.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: [PATCH] ASoC: let snd_soc_update_bits() return an
+	error code
+Date: Mon, 10 Jan 2011 13:28:33 -0600
+Message-ID: <1294687713-16433-2-git-send-email-timur@freescale.com>
+References: <1294687713-16433-1-git-send-email-timur@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C0064245BF
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 20:15:59 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4D2B57FE.4090401@freescale.com>
+Received: from VA3EHSOBE009.bigfish.com (va3ehsobe006.messaging.microsoft.com
+	[216.32.180.16]) by alsa0.perex.cz (Postfix) with ESMTP id 430D6245C7
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 20:28:41 +0100 (CET)
+In-Reply-To: <1294687713-16433-1-git-send-email-timur@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,21 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, dp@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 10, 2011 at 01:03:26PM -0600, Timur Tabi wrote:
+Update snd_soc_update_bits() so that it returns a negative error code if the
+the read or write operation fails.
 
-> Well, I'm not sure I agree.  For one thing, the current code doesn't just fail
-> to report I/O errors to the callers, it re-interprets an error code as valid
-> date and plows right on ahead.
+Note that currently, a lot of the lower-level read functions have an unsigned
+integer return type (and some of them even try to return a negative number),
+but this code still appears to work in those cases.
 
-> In addition, there are places where getting a return code would be useful.  I
-> call snd_soc_update_bits() in my probe function, so that's a great opportunity
-> to tell ASoC that this device is broken and it shouldn't instantiate a sound card.
+An examination of the code shows that all current callers are compatible with
+this change.
 
-If you've got the time and enthusiasm to refactor the code to handle
-this better feel free to do so; practically speaking it's not a big deal
-- I/O rarely fails in production, and when it does fail there's
-generally something terribly wrong with the hardware anyway.
+Signed-off-by: Timur Tabi <timur@freescale.com>
+---
+ sound/soc/soc-core.c |   15 +++++++++++----
+ 1 files changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index a233607..ea4a8e6 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2132,19 +2132,26 @@ EXPORT_SYMBOL_GPL(snd_soc_write);
+  *
+  * Writes new register value.
+  *
+- * Returns 1 for change else 0.
++ * Returns 1 for change, 0 for no change, or negative error code.
+  */
+ int snd_soc_update_bits(struct snd_soc_codec *codec, unsigned short reg,
+ 				unsigned int mask, unsigned int value)
+ {
+ 	int change;
+ 	unsigned int old, new;
++	int ret;
++
++	ret = old = snd_soc_read(codec, reg);
++	if (ret < 0)
++		return ret;
+ 
+-	old = snd_soc_read(codec, reg);
+ 	new = (old & ~mask) | value;
+ 	change = old != new;
+-	if (change)
+-		snd_soc_write(codec, reg, new);
++	if (change) {
++		ret = snd_soc_write(codec, reg, new);
++		if (ret < 0)
++			return ret;
++	}
+ 
+ 	return change;
+ }
+-- 
+1.7.3.4
