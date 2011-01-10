@@ -1,25 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: regarding references taken on platform and codec
- driver modules
-Date: Mon, 10 Jan 2011 19:01:54 +0000
-Message-ID: <20110110190154.GA11265@opensource.wolfsonmicro.com>
-References: <98769532B4BB14429434178695419EAE053BF51941@bgsmsx501.gar.corp.intel.com>
-	<20110103155454.GE6783@opensource.wolfsonmicro.com>
-	<98769532B4BB14429434178695419EAE053BF51B26@bgsmsx501.gar.corp.intel.com>
-	<20110103163532.GB7370@opensource.wolfsonmicro.com>
-	<98769532B4BB14429434178695419EAE053BF51BC3@bgsmsx501.gar.corp.intel.com>
-	<20110104154825.GF24774@opensource.wolfsonmicro.com>
-	<98769532B4BB14429434178695419EAE053BFABE47@bgsmsx501.gar.corp.intel.com>
-	<438BB0150E931F4B9CE701519A44630104C119C43D@bgsmsx502.gar.corp.intel.com>
+Subject: [PATCH] ASoC: Fix indentation in soc_remove()
+Date: Mon, 10 Jan 2011 19:06:08 +0000
+Message-ID: <1294686368-11373-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 37B8D1037EE
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 20:03:55 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <438BB0150E931F4B9CE701519A44630104C119C43D@bgsmsx502.gar.corp.intel.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D9A97245BA
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 20:08:12 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,23 +18,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, "Harsha,
-	Priya" <priya.harsha@intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 06, 2011 at 02:41:29PM +0530, Koul, Vinod wrote:
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-core.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-> This issue is on removal of soc_remove() it doesn't free up the reference if the card is not instantiated
-> So in case one of the probes fails we should handle this in soc_remove in else for instantated
-
-> 		    if (rtd->codec->probed)
->                         module_put(rtd->codec->dev->driver->owner);
->                 if (rtd->platform->probed)
->                         module_put(rtd->platform->dev->driver->owner);
->                 for (i = 0; i < card->num_rtd; i++)
->                         module_put(rtd[i].cpu_dai->dev->driver->owner);
-
-> Would this be the correct way to solve this?
-
-Probably, yes.
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 96bf381..ec942a2 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1905,7 +1905,7 @@ static int soc_remove(struct platform_device *pdev)
+ 	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 	int i;
+ 
+-		if (card->instantiated) {
++	if (card->instantiated) {
+ 
+ 		/* make sure any delayed work runs */
+ 		for (i = 0; i < card->num_rtd; i++) {
+-- 
+1.7.2.3
