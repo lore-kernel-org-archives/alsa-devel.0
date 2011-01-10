@@ -1,25 +1,27 @@
-From: VDR User <user.vdr@gmail.com>
-Subject: Re: Bug in setting channels,
-	related to recent ELD/EDID changes?
-Date: Mon, 10 Jan 2011 11:13:34 -0800
-Message-ID: <AANLkTimCWPNBYzGiPqOigeBXyXHQZPj6-cE1-FC1q_4Y@mail.gmail.com>
-References: <AANLkTikneYHc9NmrRW41=xRBW_PVgc0jqdcOaTgHcC-t@mail.gmail.com>
-	<4D12E292.9050204@iki.fi>
-	<AANLkTimxHsUS_zVm0_m-vUcwt4vupUAf-vRhH5VWLwoy@mail.gmail.com>
-	<4D20508C.7070609@iki.fi>
-	<AANLkTimHu0QS-t=JroWy4j0vts0wjq_R4m4VrGpmu-sb@mail.gmail.com>
-	<AANLkTi=0uVQwsd-cWpZSfRuBVZjh7oRsLXpe_kuLP5Hq@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] [v2] ASoC: cs4270: use the built-in
+ register cache support
+Date: Mon, 10 Jan 2011 19:13:59 +0000
+Message-ID: <20110110191359.GB11265@opensource.wolfsonmicro.com>
+References: <1294676990.11031.10.camel@dplaptop.localdomain>
+	<4D2B34C1.7050209@freescale.com>
+	<1294677365.11031.13.camel@dplaptop.localdomain>
+	<4D2B4376.101@freescale.com>
+	<20110110182302.GB26137@opensource.wolfsonmicro.com>
+	<4D2B50FA.9060102@freescale.com>
+	<20110110183615.GC26137@opensource.wolfsonmicro.com>
+	<4D2B52DA.1090102@freescale.com>
+	<20110110185406.GD26137@opensource.wolfsonmicro.com>
+	<4D2B57FE.4090401@freescale.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0B97E245BF
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 20:13:35 +0100 (CET)
-Received: by iye19 with SMTP id 19so20240832iye.38
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 11:13:34 -0800 (PST)
-In-Reply-To: <AANLkTi=0uVQwsd-cWpZSfRuBVZjh7oRsLXpe_kuLP5Hq@mail.gmail.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C0064245BF
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 20:15:59 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4D2B57FE.4090401@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,45 +31,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: James Courtier-Dutton <james.dutton@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Anssi Hannula <anssi.hannula@iki.fi>, "mailing list: alsa-dev" <alsa-devel@alsa-project.org>
+To: Timur Tabi <timur@freescale.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBKYW4gNCwgMjAxMSBhdCAxMDo0NiBBTSwgSmFtZXMgQ291cnRpZXItRHV0dG9uCjxq
-YW1lcy5kdXR0b25AZ21haWwuY29tPiB3cm90ZToKPj4+IEEvViByZWNlaXZlcnMgc2hvd2luZyBU
-ViBpbmZvcm1hdGlvbiBpcyBpbmRlZWQgc29tZXRoaW5nIHRoYXQgd2Fzbid0Cj4+PiB0aG91Z2h0
-IGFib3V0IDooCj4+Cj4+IFRoaXMgaGFzIGNlcnRhaW5seSBjYXVzZWQgcHJvYmxlbXMuIMKgQW55
-b25lIHRob3VnaHQgb2YgYSB3YXkgdG8KPj4gcmVzb2x2ZSBpdCwgb3IgYmV0dGVyIHlldCByZXZl
-cnNlZCB0aGUgcGF0Y2ggdGhhdCBjcmVhdGVkIHRoZQo+PiBzaXR1YXRpb24/Cj4+Cj4KPiBJIHRo
-aW5rIHRoaXMgaXMgcmVsYXRlZCB0byBnZW5lcmFsIGhvdC1wbHVnIHN1cHBvcnQgaW4gQUxTQS4K
-PiBJZiB5b3UgcGx1ZyBpbiBhIFVTQiBzcGVha2VycywgQUxTQSBzaG91bGQgZGV0ZWN0IG5ldyBz
-cGVha2VycyBhbmQKPiBoYXZlIGEgd2F5IG9mIGluZm9ybWluZyBhcHBsaWNhdGlvbnMgYWJvdXQg
-aXQuCj4gV2hlbiB5b3UgdW5wbHVnIFVTQiBzcGVha2VycywgQUxTQSBzaG91bGQgZGV0ZWN0IHRo
-ZSBsYWNrIG9mIHNwZWFrZXJzCj4gYW5kIGhhdmUgYSB3YXkgb2YgaW5mb3JtaW5nIGFwcGxpY2F0
-aW9uIGFib3V0IGl0Lgo+IEluIHRoZSBzYW1lIHdheSB0aGUgaWYgeW91IHBvd2VyIG9uIGEgSERN
-SSBhbXAsIGluc3RlYWQgb2YganVzdCB0d28KPiBzcGVha2VycyAoaW4gdGhlIFRWKSwgd2Ugbm93
-IGhhdmUgNS4xIHNwZWFrZXJzLgo+IEFMU0Egc2hvdWxkIGhhdmUgYSB3YXkgdG8gaW5mb3JtIGFw
-cGxpY2F0aW9ucyBvZiB0aGUgY2hhbmdlcy4KPgo+IEkgZG8gbm90IHRoaW5rIEFMU0EgYWxvbmUg
-Y2FuIGhhbmRsZSB0aGVzZSBob3QgcGx1Zy91bnBsdWcgZXZlbnRzLiBJdAo+IGhhcyB0byBiZSBh
-cHBsaWNhdGlvbnMgdGhhdCBhcmUgbWFkZSB0byB1bmRlcnN0YW5kIHRoZXNlIGV2ZW50cyBhbmQK
-PiBhZGp1c3QgYWNjb3JkaW5nbHkuCj4gQmVmb3JlIG5vdywgQUxTQSBoYXMgaGFkIHRvIGJlIHRv
-bGQgbWFudWFsbHkgaG93IG1hbnkgc3BlYWtlcnMgYSB1c2VyCj4gaGFzIGF0dGFjaGVkLCBFLmcu
-IFN0ZXJlbywgNS4xIGV0Yy4KPiBXaXRoIG1vZGVybiBzb3VuZCBkZXZpY2VzLCB0aGlzIGluZm9y
-bWF0aW9uIGlzIGF2YWlsYWJsZSBhdXRvbWF0aWNhbGx5Cj4gZnJvbSB0aGUgaGFyZHdhcmUgYW5k
-IGNoYW5nZXMgd2l0aG91dCBub3RpY2UuCj4KPiBTbywgSSBwcm9wb3NlIHRoYXQgYW4gQVBJIHNo
-b3VsZCBiZSBhZGRlZCB0byBhY2hpZXZlIHRoaXMuCj4gU28sIGluc3RlYWQgb2YgdGhlIGFwcGxp
-Y2F0aW9uIHNldHRpbmcgdGhlIHNwZWFrZXIgYXJyYW5nZW1lbnQsIHRoZQo+IHNwZWFrZXIgYXJy
-YW5nZW1lbnQgaXMgc2V0IGluIEFMU0EsIGFuZCB0aGUgYXBwbGljYXRpb24gcmVxdWVzdHMKPiBp
-bmZvcm1hdGlvbiBhYm91dCBpdC4KPiBXaGVuIHRoZSBhcHBsaWNhdGlvbiB3cml0ZXMgc291bmQg
-c2FtcGxlcyB0byB0aGUgc291bmQgY2FyZCBhbmQgdGhlCj4gc3BlYWtlciBhcnJhbmdlbWVudCBo
-YXMgY2hhbmdlZCwgQUxTQSBzaG91bGQgdXNlIGEgc3BlY2lmaWMgZXJyb3IKPiBudW1iZXIgcmVw
-b3J0ZWQgYmFjayBzbyB0aGUgYXBwbGljYXRpb24ga25vd3MgdGhhdCBpdCBzaG91bGQgcmUtY2hl
-Y2sKPiB0aGUgc3BlYWtlci1hcnJhbmdlbWVudCBBUEkgYW5kIHJlLW9wZW4gdGhlIHNvdW5kIGNh
-cmQgd2l0aCB0aGUgbmV3Cj4gZGV0YWlscy4KCldpbGwgc29tZW9uZSBwbGVhc2UgZWxhYm9yYXRl
-IG9uIHdoZW4vaG93L2lmIHRoaXMgd2lsbCBldmVyIGJlCmFkZHJlc3NlZD8gIEl0J3MgYSBzaWdu
-aWZpY2FudCBwcm9ibGVtLgoKSWYgbm9uZSBvZiB0aGUgZGV2cyBpbnRlbmQgdG8gZml4IHRoaXMg
-cHJvYmxlbSwgUExFQVNFIHByb3ZpZGUgYSBwYXRjaAp0aGF0IHJlc3RvcmVzIGFsc2EncyBvbGQg
-YmVoYXZpb3IgYmVmb3JlIHRoZSBidWcgd2FzIGludHJvZHVjZWQuCgpUaGFua3MuCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Mon, Jan 10, 2011 at 01:03:26PM -0600, Timur Tabi wrote:
+
+> Well, I'm not sure I agree.  For one thing, the current code doesn't just fail
+> to report I/O errors to the callers, it re-interprets an error code as valid
+> date and plows right on ahead.
+
+> In addition, there are places where getting a return code would be useful.  I
+> call snd_soc_update_bits() in my probe function, so that's a great opportunity
+> to tell ASoC that this device is broken and it shouldn't instantiate a sound card.
+
+If you've got the time and enthusiasm to refactor the code to handle
+this better feel free to do so; practically speaking it's not a big deal
+- I/O rarely fails in production, and when it does fail there's
+generally something terribly wrong with the hardware anyway.
