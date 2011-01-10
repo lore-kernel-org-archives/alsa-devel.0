@@ -1,14 +1,17 @@
-From: "Bensaid, Selma" <selma.bensaid@intel.com>
-Subject: ASoC SSP Driver Question
-Date: Mon, 10 Jan 2011 10:47:33 +0000
-Message-ID: <2A84145621092446B6659B8A0F28E26F47005A34FF@irsmsx501.ger.corp.intel.com>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: question on SND_SOC_DAPM_MUX
+Date: Mon, 10 Jan 2011 16:20:01 +0530
+Message-ID: <438BB0150E931F4B9CE701519A44630108443A6711@bgsmsx502.gar.corp.intel.com>
+References: <438BB0150E931F4B9CE701519A44630104C119C00F@bgsmsx502.gar.corp.intel.com>
+	<CF32F28EDF8D20468EEDCBE4975DA0272AA367@008-AM1MPN1-027.mgdnok.nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8BC022441A
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 11:48:13 +0100 (CET)
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9AFA82441D
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 11:51:11 +0100 (CET)
+In-Reply-To: <CF32F28EDF8D20468EEDCBE4975DA0272AA367@008-AM1MPN1-027.mgdnok.nokia.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -19,44 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "Le Gall, Louis" <louis.le.gall@intel.com>
+To: "peter.ujfalusi@nokia.com" <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+> >
+> > So I added :
+> >   { "MIC1 Enable", "amic", "ADC Left"}
+> 
+> You need to specify the route like:
+>   { "Input MICL", "amic", "ADC Left"}
+> 
+> So, if the "Input MICL" MUX is in amic position, it will connect to "ADC Left"
+> 
+> > But while adding the routes it returns an error that
+> > "sn95031: Failed to add route ADC Left->MIC1 Enable "
+> 
+> Since the "MIC1 Enable" widget does not have the amic route, I believe.
+> 
+Thanks Peter, 
+It worked as you described, I was putting the map wrongly.... inverted actually :(
 
-I'm working on ASoC driver for TI WL1273 (BT/FM) using the Bulverde SSP fro=
-m IPGEAR peripheral. I have seen that a pxa_ssp driver already exists howev=
-er I'm not if we have to use it as is it and adapt our SSP PCI driver to In=
-terface with the pxa-ssp, or can we propose an "intel_ssp" ASoC driver?
-
-Thanks,
-
-Selma.
-
-Selma BENSAID
-UMG/MIPE/WSIV=A0 Software Team
-Office:=A0=A0=A0 +33 (0)1 72 21 04 69
-Mobile:=A0 +33 (0)6 22 21 31 56
-Inet : 8 222 0469
-mailto:selma.bensaid@intel.com
-Intel Corp.
-134, av du G=E9n=E9ral Eisenhower
-31023 TOULOUSE Cedex 1
-France
-
-
-
-
----------------------------------------------------------------------
-Intel Corporation SAS (French simplified joint stock company)
-Registered headquarters: "Les Montalets"- 2, rue de Paris, =
-
-92196 Meudon Cedex, France
-Registration Number:  302 456 199 R.C.S. NANTERRE
-Capital: 4,572,000 Euros
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+~Vinod
