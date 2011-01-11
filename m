@@ -1,18 +1,23 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [PATCH] ucm: fix switch device & modifier when no
-	transition is found
-Date: Tue, 11 Jan 2011 17:56:30 +0000
-Message-ID: <1294768590-17028-1-git-send-email-lrg@slimlogic.co.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Fix section mismatch in wm8995.c
+Date: Tue, 11 Jan 2011 18:14:11 +0000
+Message-ID: <20110111181411.GG13429@opensource.wolfsonmicro.com>
+References: <s5hpqs39xvl.wl%tiwai@suse.de>
+	<20110111171013.GK6541@sirena.org.uk>
+	<s5hlj2r9x52.wl%tiwai@suse.de>
+	<20110111172839.GE13429@opensource.wolfsonmicro.com>
+	<s5hipxv9wi7.wl%tiwai@suse.de>
+	<20110111173349.GF13429@opensource.wolfsonmicro.com>
+	<s5hbp3n9vrl.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f193.google.com (mail-wy0-f193.google.com
-	[74.125.82.193])
-	by alsa0.perex.cz (Postfix) with ESMTP id 80DAD10386B
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 18:56:43 +0100 (CET)
-Received: by wyb42 with SMTP id 42so6927196wyb.8
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 09:56:43 -0800 (PST)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 64549103895
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 19:16:18 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hbp3n9vrl.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +27,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Fix some logic bugs in switch device and switch modifier when
-transition sequences are not found. Also fix check for new device.
+On Tue, Jan 11, 2011 at 06:48:30PM +0100, Takashi Iwai wrote:
 
-Reported-by: w0806.kim@samsung.com
-Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
----
- src/ucm/main.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+> IMO, such a data should be uniquely handled -- either init-only or
+> not.  Through a quick look, snd_soc_cache_sync() may still refer to
+> reg_cache_default.  So, it's still risky to blindly set
+> __devinitconst.  (Yeah, I know it's not used right now, though ;)
 
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 7305042..030c9b1 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -1305,7 +1305,7 @@ static int switch_device(snd_use_case_mgr_t *uc_mgr,
-         if (xold == NULL)
-                 return -ENOENT;
-         xnew = find_device(uc_mgr->active_verb, new_device);
--        if (xold == NULL)
-+        if (xnew == NULL)
-                 return -ENOENT;
-         err = 0;
-         list_for_each(pos, &xold->transition_list) {
-@@ -1327,7 +1327,7 @@ static int switch_device(snd_use_case_mgr_t *uc_mgr,
-                 err = set_device(uc_mgr, xold, 0);
-                 if (err < 0)
-                         return err;
--                err = set_device(uc_mgr, xnew, 0);
-+                err = set_device(uc_mgr, xnew, 1);
-                 if (err < 0)
-                         return err;
-         }
-@@ -1379,7 +1379,7 @@ static int switch_modifier(snd_use_case_mgr_t *uc_mgr,
-                 err = set_modifier(uc_mgr, xold, 0);
-                 if (err < 0)
-                         return err;
--                err = set_modifier(uc_mgr, xnew, 0);
-+                err = set_modifier(uc_mgr, xnew, 1);
-                 if (err < 0)
-                         return err;
-         }
--- 
-1.7.1
+That's a bug in the flat cache, it should be stashing a copy of it in
+the codec instance.  Though it only really makes a difference for
+devices where you'd want to use a compressed cache anyway.
+
+> That is, the data that shall be deleted shouldn't be kept in a
+> structure that might be referred later from other places.
+
+On the other hand you don't want to make stuff too much of a song and
+dance to use.
