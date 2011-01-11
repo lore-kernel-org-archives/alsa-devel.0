@@ -1,17 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: UCM updates and fixes
-Date: Tue, 11 Jan 2011 17:46:52 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1101111743420.28150@eeebox2.perex-int.cz>
-References: <1292969520-18047-1-git-send-email-lrg@slimlogic.co.uk>
-	<1294764191.3338.18.camel@odin>
+From: Metyl Methylius <the.metyl@gmail.com>
+Subject: Re: alsa virtual sound card (with networked output)
+Date: Tue, 11 Jan 2011 17:50:01 +0100
+Message-ID: <AANLkTikgf_0oky3LRr=uNeqJKUMbgjv=pbcmbKrhBqyF@mail.gmail.com>
+References: <AANLkTinXD8u9riu9uwhJPsdKthUHDmK5K1o_+7vv4mcU@mail.gmail.com>
+	<ightce$qr6$1@dough.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id F411E24459
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 17:46:52 +0100 (CET)
-In-Reply-To: <1294764191.3338.18.camel@odin>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3B0F3103827
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 17:50:02 +0100 (CET)
+Received: by ewy19 with SMTP id 19so8689071ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 08:50:02 -0800 (PST)
+In-Reply-To: <ightce$qr6$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,34 +24,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Colin Guthrie <gmane@colin.guthr.ie>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 11 Jan 2011, Liam Girdwood wrote:
+The main reason I can't use pulseaudio it's because it won't even
+compile on the embedded platform i'm running (openwrt). Also
+pulseaudio it's overcomplicated for such a straightforward task. I was
+hoping that a simpler solution would exist.
 
-> On Tue, 2010-12-21 at 22:11 +0000, Liam Girdwood wrote:
->> Jarolsav,
+Metyl
+
+On Tue, Jan 11, 2011 at 4:35 PM, Colin Guthrie <gmane@colin.guthr.ie> wrote:
+> 'Twas brillig, and Metyl Methylius at 11/01/11 14:51 did gyre and gimble:
+>> Hello everyone,
 >>
->> This fixes the remaining issues I can currently see in the alsa-lib
->> ucm branch. It also includes a patch to execute commands, although I
->> dont know if this is what you had in mind for exec.
+>> I was wondering if its possible to just create a "virtual" sound card
+>> using alsa which will just sent its audio stream to other computer
+>> (using TCP/IP or UDP for example). On the other end there would be
+>> some kind of server (or just nc -u -l -p 31337 | aplay ). I want to do
+>> it on alsa layer because other aps using alsa will get immediate
+>> support.
 >>
->> I've also done quite a bit of testing now. What is your merge plan for
->> UCM ? We really need UCM merged soon as there are many users who
->> depend on it.
+>> It should be something like described in
 >>
+>> http://alsa.opensrc.org/index.php/Network
+>>
+>> but with transparent support for all alsa based applications. I dont
+>> care about syncronization or transmission delay. Any pointers as how
+>> this could be done in alsa ?
 >
-> Have you had a chance to look over this patch series yet ?
+> Any particular reason you cannot use PulseAudio? It support usage from
+> existing ALSA apps and also works automatically with SSH by
+> piggy-backing connection settings on X11 root windows which are
+> accessable when the remote connection has X11 forwarding enabled.
+>
+>> This mess was sent using 100% recycled electrons. If you want to get
+>> rid of this mess just turn off your computer,
+>
+> :)
+>
+> --
+>
+> Colin Guthrie
+> gmane(at)colin.guthr.ie
+> http://colin.guthr.ie/
+>
+> Day Job:
+> =A0Tribalogic Limited [http://www.tribalogic.net/]
+> Open Source:
+> =A0Mageia Contributor [http://www.mageia.org/]
+> =A0PulseAudio Hacker [http://www.pulseaudio.org/]
+> =A0Trac Hacker [http://trac.edgewall.org/]
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
 
-Your patches are in my branch. Thank you. I'm actually thinking about more 
-inline functions in use-case.h header file like snd_use_case_card_list() to help 
-application developers. But I'm having mixed feelings about this right 
-now. What do you think?
 
- 					Jaroslav
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+-- =
+
+This mess was sent using 100% recycled electrons. If you want to get
+rid of this mess just turn off your computer,
