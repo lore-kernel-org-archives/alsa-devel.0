@@ -1,17 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 3/7] ASoC: tegra: Add tegra-pcm driver
-Date: Tue, 11 Jan 2011 09:59:00 +0200
-Message-ID: <4D2C0DC4.4000405@nokia.com>
-References: <1294464977-25814-1-git-send-email-swarren@nvidia.com>
-	<1294464977-25814-4-git-send-email-swarren@nvidia.com>
+From: "Harsha, Priya" <priya.harsha@intel.com>
+Subject: Re: [PATCH 2/4] ASoC sst v2: Add mid platform driver
+Date: Tue, 11 Jan 2011 14:33:43 +0530
+Message-ID: <98769532B4BB14429434178695419EAE08C0A9D8B6@bgsmsx501.gar.corp.intel.com>
+References: <1294152392-8914-1-git-send-email-vinod.koul@intel.com>
+	<20110106141215.GC6328@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa01.nokia.com (smtp.nokia.com [147.243.1.47])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1C5EF2454F
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 08:59:02 +0100 (CET)
-In-Reply-To: <1294464977-25814-4-git-send-email-swarren@nvidia.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id B9FB224591
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 10:04:05 +0100 (CET)
+In-Reply-To: <20110106141215.GC6328@opensource.wolfsonmicro.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,61 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Stephen Warren <swarren@nvidia.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, "Koul, Vinod" <vinod.koul@intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "alan@linux.intel.com" <alan@linux.intel.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/08/11 07:36, ext Stephen Warren wrote:
-> This provides an ASoC platform driver that manages Tegra's APB DMA
-> controller.
-> =
+>
+>> +	return stream->stream_info.buffer_ptr;
+>
+>I thought you were going to clarify that this isn't exactly a pointer?
+>
+This variable in declared in Intel sst driver which is in Staging tree. We will
+first send a patch to Greg and once that applied, we will send a change to you
+for renaming the variable.
 
-> Signed-off-by: Stephen Warren <swarren@nvidia.com>
-> ---
->  sound/soc/tegra/tegra_pcm.c |  401 +++++++++++++++++++++++++++++++++++++=
-++++++
->  sound/soc/tegra/tegra_pcm.h |   55 ++++++
->  2 files changed, 456 insertions(+), 0 deletions(-)
->  create mode 100644 sound/soc/tegra/tegra_pcm.c
->  create mode 100644 sound/soc/tegra/tegra_pcm.h
-> =
-
-> diff --git a/sound/soc/tegra/tegra_pcm.c b/sound/soc/tegra/tegra_pcm.c
-
-...
-
-> +       switch (cmd) {
-> +       case SNDRV_PCM_TRIGGER_START:
-> +               prtd->dma_pos =3D 0;
-> +               prtd->dma_pos_end =3D frames_to_bytes(runtime, runtime->p=
-eriods * runtime->period_size);
-> +               prtd->period_index =3D 0;
-> +               prtd->dma_req_idx =3D 0;
-> +               /* Fall-through */
-> +       case SNDRV_PCM_TRIGGER_RESUME:
-> +       case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> +               spin_lock_irqsave(&prtd->lock, flags);
-> +               prtd->running =3D 1;
-> +               spin_unlock_irqrestore(&prtd->lock, flags);
-> +               tegra_pcm_queue_dma(prtd);
-> +               tegra_pcm_queue_dma(prtd);
-> +               break;
-> +       case SNDRV_PCM_TRIGGER_STOP:
-> +       case SNDRV_PCM_TRIGGER_SUSPEND:
-> +       case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> +               spin_lock_irqsave(&prtd->lock, flags);
-> +               prtd->running =3D 0;
-> +               spin_unlock_irqrestore(&prtd->lock, flags);
-> +               tegra_dma_dequeue_req(prtd->dma_chan, &prtd->dma_req[0]);
-> +               tegra_dma_dequeue_req(prtd->dma_chan, &prtd->dma_req[1]);
-
-Does tegra_dma_dequeue_req stops the ongoing DMA transaction as well?
-If I read the code right, you have two DMA requests placed at every
-given time (one is currently running, the other is waiting).
-What happens if the dma_req[0] was running, and you dequeue it? Will the
-DMA engine moves to process the dma_req[1], which will be stopped a
-moment later?
-
--- =
-
-P=E9ter
+-Harsha
