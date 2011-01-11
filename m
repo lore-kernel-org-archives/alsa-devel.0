@@ -1,18 +1,20 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: Bug in setting channels,
- related to recent ELD/EDID changes?
-Date: Tue, 11 Jan 2011 22:47:33 +0200
-Message-ID: <4D2CC1E5.5020105@iki.fi>
-References: <AANLkTikneYHc9NmrRW41=xRBW_PVgc0jqdcOaTgHcC-t@mail.gmail.com>	<4D12E292.9050204@iki.fi>	<AANLkTimxHsUS_zVm0_m-vUcwt4vupUAf-vRhH5VWLwoy@mail.gmail.com>	<4D20508C.7070609@iki.fi>	<s5hoc7ok05l.wl%tiwai@suse.de>	<3a46493bd2a1ec3b74c89cb6970c9ab0.squirrel@mail.onse.fi>	<s5hk4icjy2t.wl%tiwai@suse.de>	<s5hbp3nkj1z.wl%tiwai@suse.de>	<4D2C8C4B.1030202@iki.fi>	<s5hfwsz9wey.wl%tiwai@suse.de>
-	<AANLkTinPbj6K8Lw9PiCsHrqRBT=fwj6YvCrnOh7YK3YB@mail.gmail.com>
+From: Metyl Methylius <the.metyl@gmail.com>
+Subject: Re: alsa virtual sound card (with networked output)
+Date: Tue, 11 Jan 2011 22:11:56 +0100
+Message-ID: <AANLkTikxca8CVECtweO6P7KN7zt0Gc2WOS-huyf5G+9K@mail.gmail.com>
+References: <AANLkTinXD8u9riu9uwhJPsdKthUHDmK5K1o_+7vv4mcU@mail.gmail.com>
+	<alpine.LNX.2.00.1101111726040.28150@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from saarni.dnainternet.net (saarni.dnainternet.net [83.102.40.136])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6FC2210380F
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 21:47:38 +0100 (CET)
-In-Reply-To: <AANLkTinPbj6K8Lw9PiCsHrqRBT=fwj6YvCrnOh7YK3YB@mail.gmail.com>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 39C78103826
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 22:11:58 +0100 (CET)
+Received: by ewy19 with SMTP id 19so8856018ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 13:11:56 -0800 (PST)
+In-Reply-To: <alpine.LNX.2.00.1101111726040.28150@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,37 +24,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: VDR User <user.vdr@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11.01.2011 22:37, VDR User wrote:
-> First, THANK YOU for addressing this!  However, I have a couple
-> questions.  Which solution was implemented; a true/false switch
-> controlling the behavior between the old _working_ method, or the new
-> ELD restricted one?  Or, this module parameter thing that was
-> mentioned?
-> 
-> As a user having to deal with the frustration of this problem, I
-> absolutely think the true/false switch is the best solution as it's
-> set-and-forget.  Set it one time, get the behavior you _want_, and not
-> have to bother with it again.  With the module parameter thing, it
-> sounds like you have to change module parameters according to what you
-> want at the moment.  Or is it that the true/false switch is controlled
-> by a module param?  Maybe I've misinterpreted it but it's not very
-> clear.
+On Tue, Jan 11, 2011 at 5:33 PM, Jaroslav Kysela <perex@perex.cz> wrote:
+> On Tue, 11 Jan 2011, Metyl Methylius wrote:
+>
+>> Hello everyone,
+>>
+>> I was wondering if its possible to just create a "virtual" sound card
+>> using alsa which will just sent its audio stream to other computer
+>> (using TCP/IP or UDP for example). On the other end there would be
+>> some kind of server (or just nc -u -l -p 31337 | aplay ). I want to do
+>> it on alsa layer because other aps using alsa will get immediate
+>> support.
+>>
+>> It should be something like described in
+>>
+>> http://alsa.opensrc.org/index.php/Network
+>>
+>> but with transparent support for all alsa based applications. I dont
+>> care about syncronization or transmission delay. Any pointers as how
+>> this could be done in alsa ?
+>
+> I plan to add network support to the alsaloop utility (in the current
+> repository of the alsa-utils package) using the snd-aloop loopback kernel
+> module on the playback (producer) side. This solution would be 100%
+> transparent for all current ALSA apps. But I don't have any estimate when I
+> start the work on this. Any volunteer? I think that it would be best to use
+> the RTP UDP streaming.
+>
 
-Yes, it is a true/false switch controlled by a module parameter.
+That sounds very interesting. Still there is minor problem with RTP as
+I've found in rfc3551 that at least there defined RAW audio encodings - L8
+and L16 - supports only 8 and 16-bit wide samples (how to support 24
+or 32-bit audio ?).
+Which RTP library do you plan to use unless you wanted to integrate
+RTP code directly into alsaloop ?
 
-> So I grab alsa git, but how do I use the fix to restore the old behavior?
-
-Set the module parameter static_hdmi_pcm of snd-hda-codec-hdmi to 1.
-
-For example, by adding this into /etc/modprobe.conf:
-options snd-hda-codec-hdmi static_hdmi_pcm=1
-
-For the record, this is the commit:
-http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=commitdiff;h=5eedd1422c2fc79c2f9ed8b71056b97570f95572
-
--- 
-Anssi Hannula
+metyl
