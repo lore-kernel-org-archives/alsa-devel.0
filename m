@@ -1,21 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: soc-core: Add support for NULL
-	default register	caches
-Date: Mon, 10 Jan 2011 23:48:25 +0000
-Message-ID: <20110110234824.GA5399@opensource.wolfsonmicro.com>
-References: <1294654256-1012-1-git-send-email-dp@opensource.wolfsonmicro.com>
-	<4D2B83EC.4000400@freescale.com>
-	<20110110222938.GD5886@opensource.wolfsonmicro.com>
-	<4D2B8AC0.2010001@freescale.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [RFC/PATCH v7 01/12] media: Media device node
+	support
+Date: Tue, 11 Jan 2011 08:15:37 +0800
+Message-ID: <AANLkTikPSWL9HGvDnES6EuLh1QAriHqAk=tas9ogBOMi@mail.gmail.com>
+References: <1292844995-7900-1-git-send-email-laurent.pinchart@ideasonboard.com>
+	<201012241259.39148.laurent.pinchart@ideasonboard.com>
+	<20110106221912.GA31328@suse.de>
+	<201101101509.13793.laurent.pinchart@ideasonboard.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1414224158
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 00:48:27 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4D2B8AC0.2010001@freescale.com>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id D8D7D24337
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 01:15:37 +0100 (CET)
+Received: by ewy19 with SMTP id 19so8388061ewy.38
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2011 16:15:37 -0800 (PST)
+In-Reply-To: <201101101509.13793.laurent.pinchart@ideasonboard.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,33 +26,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 10, 2011 at 04:40:00PM -0600, Timur Tabi wrote:
+2011/1/10 Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-> The CS4270 registers are numbered from 1 through 8, so codec_reg should look
-> like this:
+> Hi Greg,
+>
+> On Thursday 06 January 2011 23:19:12 Greg KH wrote:
+> > On Fri, Dec 24, 2010 at 12:59:38PM +0100, Laurent Pinchart wrote:
+> > > On Thursday 23 December 2010 04:32:53 Greg KH wrote:
+> > > > On Mon, Dec 20, 2010 at 12:36:24PM +0100, Laurent Pinchart wrote:
+> > > > > +config MEDIA_CONTROLLER
+> > > > > +       bool "Media Controller API (EXPERIMENTAL)"
+> > > > > +       depends on EXPERIMENTAL
+> > > > > +       ---help---
+> > > > > +         Enable the media controller API used to query media
+> devices
+> > > > > internal +        topology and configure it dynamically.
+> > > > > +
+> > > > > +         This API is mostly used by camera interfaces in embedded
+> > > > > platforms.
+>
 
->  1:   c3
->  2:    0
->  3:   30
->  4:    0
->  5:    0
->  6:    0
->  7:    0
->  8:    0
+codecgraph and the graph function HDA-analyzer already expose the internal
+topology
 
-> What I don't know is why the bad output, but it's probably because the register
-> cache code broke during the various changes applied to it since multi-component
-> was introduced.  Originally, the driver handled the register cache completely
-> internally.  Then, as register caching was added to ASoC itself, the driver was
-> modified to use it.  I believe that those modifications were not really tested.
+Do this new API allow media application to reconfigure the HDA's  audio path
+of a desktop to support multi streaming playback
 
-The issue is that you were using 1 based array indexing and the core
-uses zero based indexing - nothing dramatically wrong and it should've
-fallen through to using the hardware I/O when it went beyond the cache
-so I'd expect things to work fine.  The read failure for register zero
-was handled gracefully, so it looks like everything did what I'd expect
-here.
+http://www.intel.com/support/motherboards/desktop/sb/cs-020642.htm#multistream
