@@ -1,23 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Fix section mismatch in wm8995.c
-Date: Tue, 11 Jan 2011 18:14:11 +0000
-Message-ID: <20110111181411.GG13429@opensource.wolfsonmicro.com>
-References: <s5hpqs39xvl.wl%tiwai@suse.de>
-	<20110111171013.GK6541@sirena.org.uk>
-	<s5hlj2r9x52.wl%tiwai@suse.de>
-	<20110111172839.GE13429@opensource.wolfsonmicro.com>
-	<s5hipxv9wi7.wl%tiwai@suse.de>
-	<20110111173349.GF13429@opensource.wolfsonmicro.com>
-	<s5hbp3n9vrl.wl%tiwai@suse.de>
+Subject: Re: [PATCH] ASoC: soc-cache: Fix invalid memory access
+ during snd_soc_lzo_cache_sync()
+Date: Tue, 11 Jan 2011 18:26:49 +0000
+Message-ID: <20110111182649.GA9324@opensource.wolfsonmicro.com>
+References: <1294745042-23352-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 64549103895
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 19:16:18 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D6E692445D
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 19:26:35 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5hbp3n9vrl.wl%tiwai@suse.de>
+In-Reply-To: <1294745042-23352-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,23 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 11, 2011 at 06:48:30PM +0100, Takashi Iwai wrote:
+On Tue, Jan 11, 2011 at 11:24:02AM +0000, Dimitris Papastamos wrote:
+> The size of the lzo syncing bitmap was incorrectly set to the size
+> of the cache times the word size, however, the correct size is the
+> size of the cache.
+> 
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
-> IMO, such a data should be uniquely handled -- either init-only or
-> not.  Through a quick look, snd_soc_cache_sync() may still refer to
-> reg_cache_default.  So, it's still risky to blindly set
-> __devinitconst.  (Yeah, I know it's not used right now, though ;)
-
-That's a bug in the flat cache, it should be stashing a copy of it in
-the codec instance.  Though it only really makes a difference for
-devices where you'd want to use a compressed cache anyway.
-
-> That is, the data that shall be deleted shouldn't be kept in a
-> structure that might be referred later from other places.
-
-On the other hand you don't want to make stuff too much of a song and
-dance to use.
+Applied, thanks.
