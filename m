@@ -1,19 +1,18 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: soc-core: Simplify compress_type
- overriding functionality
-Date: Tue, 11 Jan 2011 11:47:00 +0000
-Message-ID: <1294746420.3338.11.camel@odin>
-References: <1294746231-13914-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Fix indentation in soc_remove()
+Date: Tue, 11 Jan 2011 11:59:29 +0000
+Message-ID: <1294747169.3338.12.camel@odin>
+References: <1294686368-11373-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7A9E2103834
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 12:47:03 +0100 (CET)
-Received: by wwe15 with SMTP id 15so20333218wwe.20
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 03:47:03 -0800 (PST)
-In-Reply-To: <1294746231-13914-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 173DD24609
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 12:59:35 +0100 (CET)
+Received: by wyi11 with SMTP id 11so20476557wyi.38
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 03:59:34 -0800 (PST)
+In-Reply-To: <1294686368-11373-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,19 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-01-11 at 11:43 +0000, Dimitris Papastamos wrote:
-> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+On Mon, 2011-01-10 at 19:06 +0000, Mark Brown wrote:
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 > ---
->  sound/soc/soc-core.c |   14 ++------------
->  1 files changed, 2 insertions(+), 12 deletions(-)
+>  sound/soc/soc-core.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 > 
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 96bf381..ec942a2 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -1905,7 +1905,7 @@ static int soc_remove(struct platform_device *pdev)
+>  	struct snd_soc_card *card = platform_get_drvdata(pdev);
+>  	int i;
+>  
+> -		if (card->instantiated) {
+> +	if (card->instantiated) {
+>  
+>  		/* make sure any delayed work runs */
+>  		for (i = 0; i < card->num_rtd; i++) {
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
-
 -- 
 Freelance Developer, SlimLogic Ltd
 ASoC and Voltage Regulator Maintainer.
