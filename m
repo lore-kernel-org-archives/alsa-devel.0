@@ -1,15 +1,19 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: soc-core: Simplify compress_type
-	overriding functionality
-Date: Tue, 11 Jan 2011 11:43:51 +0000
-Message-ID: <1294746231-13914-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: soc-cache: Fix invalid memory access
+ during snd_soc_lzo_cache_sync()
+Date: Tue, 11 Jan 2011 11:45:56 +0000
+Message-ID: <1294746356.3338.9.camel@odin>
+References: <1294745042-23352-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 574152448D
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 12:43:59 +0100 (CET)
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 135FA24600
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 12:46:00 +0100 (CET)
+Received: by wyi11 with SMTP id 11so20466182wyi.38
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 03:45:59 -0800 (PST)
+In-Reply-To: <1294745042-23352-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,46 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
----
- sound/soc/soc-core.c |   14 ++------------
- 1 files changed, 2 insertions(+), 12 deletions(-)
+On Tue, 2011-01-11 at 11:24 +0000, Dimitris Papastamos wrote:
+> The size of the lzo syncing bitmap was incorrectly set to the size
+> of the cache times the word size, however, the correct size is the
+> size of the cache.
+> 
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/soc-cache.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
+> index a9ebc07..8c2a21a 100644
+> --- a/sound/soc/soc-cache.c
+> +++ b/sound/soc/soc-cache.c
+> @@ -1361,7 +1361,7 @@ static int snd_soc_lzo_cache_init(struct snd_soc_codec *codec)
+>  			goto err;
+>  		}
+>  		lzo_blocks[i]->sync_bmp = sync_bmp;
+> -		lzo_blocks[i]->sync_bmp_nbits = reg_size;
+> +		lzo_blocks[i]->sync_bmp_nbits = bmp_size;
+>  		/* alloc the working space for the compressed block */
+>  		ret = snd_soc_lzo_prepare(lzo_blocks[i]);
+>  		if (ret < 0)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 2ff708a..52aaef9 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1748,6 +1748,8 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
- 	list_for_each_entry(codec, &codec_list, list) {
- 		if (codec->cache_init)
- 			continue;
-+		/* by default we don't override the compress_type */
-+		compress_type = 0;
- 		/* check to see if we need to override the compress_type */
- 		for (i = 0; i < card->num_configs; ++i) {
- 			codec_conf = &card->codec_conf[i];
-@@ -1758,18 +1760,6 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
- 					break;
- 			}
- 		}
--		if (i == card->num_configs) {
--			/* no need to override the compress_type so
--			 * go ahead and do the standard thing */
--			ret = snd_soc_init_codec_cache(codec, 0);
--			if (ret < 0) {
--				mutex_unlock(&card->mutex);
--				return;
--			}
--			continue;
--		}
--		/* override the compress_type with the one supplied in
--		 * the machine driver */
- 		ret = snd_soc_init_codec_cache(codec, compress_type);
- 		if (ret < 0) {
- 			mutex_unlock(&card->mutex);
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
-1.7.3.5
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
