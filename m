@@ -1,19 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Adding a "capture" device naming scheme
-Date: Wed, 12 Jan 2011 09:08:37 +0800
-Message-ID: <AANLkTikGo8FMVf_9UMBa+iOhgXXdtWFdePk_7=6zwDhA@mail.gmail.com>
-References: <igi861$q8o$1@dough.gmane.org>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: alsa virtual sound card (with networked output)
+Date: Wed, 12 Jan 2011 10:38:00 +0900
+Message-ID: <AANLkTiku5K4fd8fgNQ7m=sywyB6VmK4UZyoQq8nVswQg@mail.gmail.com>
+References: <AANLkTinXD8u9riu9uwhJPsdKthUHDmK5K1o_+7vv4mcU@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id DF9831038C0
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2011 02:08:37 +0100 (CET)
-Received: by ewy19 with SMTP id 19so25381ewy.38
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 17:08:37 -0800 (PST)
-In-Reply-To: <igi861$q8o$1@dough.gmane.org>
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id C25F924408
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2011 02:38:01 +0100 (CET)
+Received: by bwz10 with SMTP id 10so129217bwz.38
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 17:38:01 -0800 (PST)
+In-Reply-To: <AANLkTinXD8u9riu9uwhJPsdKthUHDmK5K1o_+7vv4mcU@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,37 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Metyl Methylius <the.metyl@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/1/12 Colin Guthrie <gmane@colin.guthr.ie>
+On Tue, Jan 11, 2011 at 11:51 PM, Metyl Methylius <the.metyl@gmail.com> wrote:
+> Hello everyone,
+>
+> I was wondering if its possible to just create a "virtual" sound card
+> using alsa which will just sent its audio stream to other computer
+> (using TCP/IP or UDP for example). On the other end there would be
+> some kind of server (or just nc -u -l -p 31337 | aplay ). I want to do
+> it on alsa layer because other aps using alsa will get immediate
+> support.
+>
+> It should be something like described in
+>
+> http://alsa.opensrc.org/index.php/Network
+>
+> but with transparent support for all alsa based applications. I dont
+> care about syncronization or transmission delay. Any pointers as how
+> this could be done in alsa ?
 
-> Hi,
->
-> As has been pointed out a few times, it's incorrect to use "front:" for
-> capture, but can we have an official name/wrapper (I'm unsure of the
-> terminology here) for this so we don't use hw: for recording?
->
-> I'd be in favour of "capture:" or "input:" as these both seem quite
-> logical and easy to understand.
->
-> It would be used thusly:
->
->  arecord -f S16_LE -c 2 -D capture:CARD=Intel
->
-> as opposed to the incorrect:
->  arecord -f S16_LE -c 2 -D front:CARD=Intel
-> or the low level:
->  arecord -f S16_LE -c 2 -D hw:CARD=Intel
->
-
-why do you think that it is incorrect to use hw:CARD=xxx for analog capture
-?
-
-since you need the low level to handle the phase inversion of the stereo mic
-
-if you don't like the "plug" plugin , you will also don't like the "route"
-plugin too
-
-alsa-lib still use the sound card's default device if the linux distribution
-does not override  pcm.!default by pulse ,
+If anything in kernel space, I'd suggest we have Audio-Over-Ethernet(AOE).
+Audio-Over-IP(AOIP) isn't much useful for commercial application requiring
+low-latencies, besides that can be done from User-Space like PulseAudio.
