@@ -1,15 +1,18 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH] ASoC: Blackfin AC97: fix build error after
-	multi-component update
-Date: Tue, 11 Jan 2011 19:57:33 -0500
-Message-ID: <1294793853-16049-1-git-send-email-vapier@gentoo.org>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: tpa6130a2: Fix compiler warning
+Date: Wed, 12 Jan 2011 00:53:58 +0000
+Message-ID: <1294793638.3338.482.camel@odin>
+References: <1293527779-32580-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id BB113243B6
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2011 01:49:43 +0100 (CET)
+Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id D932C103820
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2011 01:54:02 +0100 (CET)
+Received: by wwi18 with SMTP id 18so3450446wwi.2
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 16:54:02 -0800 (PST)
+In-Reply-To: <1293527779-32580-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,33 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-We need to tweak how we query the active capture/playback state after
-the recent overhauls of common code.
+On Tue, 2010-12-28 at 11:16 +0200, Peter Ujfalusi wrote:
+> sound/soc/codecs/tpa6130a2.c: In function 'tpa6130a2_add_controls':
+> sound/soc/codecs/tpa6130a2.c:342: warning: unused variable 'dapm'
+> 
+> Introduced by commit 39646871a47fd8808c08de0ce7d7ca8393af2805 ("ASoC:
+> tpa6130a2: Replace DAPM code with direct interface").
+> 
+> The DAPM code has been removed from the driver, but the
+> dapm struct remained.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> ---
+>  sound/soc/codecs/tpa6130a2.c |    1 -
+>  1 files changed, 0 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+> index 0a99f31..1f1ac81 100644
+> --- a/sound/soc/codecs/tpa6130a2.c
+> +++ b/sound/soc/codecs/tpa6130a2.c
+> @@ -339,7 +339,6 @@ EXPORT_SYMBOL_GPL(tpa6130a2_stereo_enable);
+>  int tpa6130a2_add_controls(struct snd_soc_codec *codec)
+>  {
+>  	struct	tpa6130a2_data *data;
+> -	struct snd_soc_dapm_context *dapm = &codec->dapm;
+>  
+>  	if (tpa6130a2_client == NULL)
+>  		return -ENODEV;
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
- sound/soc/blackfin/bf5xx-ac97.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Applied.
 
-diff --git a/sound/soc/blackfin/bf5xx-ac97.c b/sound/soc/blackfin/bf5xx-ac97.c
-index c5f856e..ffbac26 100644
---- a/sound/soc/blackfin/bf5xx-ac97.c
-+++ b/sound/soc/blackfin/bf5xx-ac97.c
-@@ -260,9 +260,9 @@ static int bf5xx_ac97_suspend(struct snd_soc_dai *dai)
- 	pr_debug("%s : sport %d\n", __func__, dai->id);
- 	if (!dai->active)
- 		return 0;
--	if (dai->capture.active)
-+	if (dai->capture_active)
- 		sport_rx_stop(sport);
--	if (dai->playback.active)
-+	if (dai->playback_active)
- 		sport_tx_stop(sport);
- 	return 0;
- }
+Thanks
+
+Liam
 -- 
-1.7.4.rc1
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
