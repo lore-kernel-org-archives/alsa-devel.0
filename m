@@ -1,41 +1,51 @@
-From: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [PATCH] ASoC: Fix resource leak if soc_register_ac97_dai_link failed
-Date: Tue, 11 Jan 2011 19:19:14 -0500
-Message-ID: <AANLkTimkb4ic3G7rT-WiFtFdC+Sy5gVAikoQVXguVH4J@mail.gmail.com>
-References: <1291726590.2760.3.camel@phoenix>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: [PATCH] ASoC: Blackfin AC97: fix build error after
+	multi-component update
+Date: Tue, 11 Jan 2011 19:57:33 -0500
+Message-ID: <1294793853-16049-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1291726590.2760.3.camel@phoenix>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB113243B6
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2011 01:49:43 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBEZWMgNywgMjAxMCBhdCAwNzo1NiwgQXhlbCBMaW4gd3JvdGU6Cj4gLS0tIGEvc291
-bmQvc29jL3NvYy1jb3JlLmMKPiArKysgYi9zb3VuZC9zb2Mvc29jLWNvcmUuYwo+IEBAIC0xNjE5
-LDEyICsxNjE5LDE0IEBAIHN0YXRpYyB2b2lkIHNuZF9zb2NfaW5zdGFudGlhdGVfY2FyZChzdHJ1
-Y3Qgc25kX3NvY19jYXJkICpjYXJkKQo+IMKgI2lmZGVmIENPTkZJR19TTkRfU09DX0FDOTdfQlVT
-Cj4gwqAgwqAgwqAgwqAvKiByZWdpc3RlciBhbnkgQUM5NyBjb2RlY3MgKi8KPiDCoCDCoCDCoCDC
-oGZvciAoaSA9IDA7IGkgPCBjYXJkLT5udW1fcnRkOyBpKyspIHsKPiAtIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIHJldCA9IHNvY19yZWdpc3Rlcl9hYzk3X2RhaV9saW5rKCZjYXJk
-LT5ydGRbaV0pOwo+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKHJldCA8
-IDApIHsKPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHBy
-aW50ayhLRVJOX0VSUiAiYXNvYzogZmFpbGVkIHRvIHJlZ2lzdGVyIEFDOTcgJXNcbiIsIGNhcmQt
-Pm5hbWUpOwo+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-Z290byBwcm9iZV9kYWlfZXJyOwo+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-fQo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmV0ID0gc29jX3JlZ2lzdGVyX2FjOTdfZGFpX2xp
-bmsoJmNhcmQtPnJ0ZFtpXSk7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAocmV0IDwgMCkg
-ewo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcHJpbnRrKEtFUk5fRVJSICJh
-c29jOiBmYWlsZWQgdG8gcmVnaXN0ZXIgQUM5NyAlc1xuIiwgY2FyZC0+bmFtZSk7Cj4gKyDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCB3aGlsZSAoLS1pID49IDApCj4gKyDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBzb2NfdW5yZWdpc3Rlcl9hYzk3
-X2RhaV9saW5rKCZjYXJkLT5ydGRbaV0pOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgZ290byBwcm9iZV9kYWlfZXJyOwo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgfQo+ICsg
-wqAgwqAgwqAgfQo+IMKgI2VuZGlmCgp0aGlzIGlzbnQgZW50aXJlbHkgY29ycmVjdC4gIHNvY191
-bnJlZ2lzdGVyX2FjOTdfZGFpX2xpbmsgdGFrZXMgYQpwb2ludGVyIHRvIGEgY29kZWMgd2hpY2gg
-Y2FyZC0+cnRkW2ldIGlzIG5vdC4Kc291bmQvc29jL3NvYy1jb3JlLmM6IEluIGZ1bmN0aW9uIOKA
-mHNuZF9zb2NfaW5zdGFudGlhdGVfY2FyZOKAmToKc291bmQvc29jL3NvYy1jb3JlLmM6MTYyNjog
-d2FybmluZzogcGFzc2luZyBhcmd1bWVudCAxIG9mCuKAmHNvY191bnJlZ2lzdGVyX2FjOTdfZGFp
-X2xpbmvigJkgZnJvbSBpbmNvbXBhdGlibGUgcG9pbnRlciB0eXBlCi1taWtlCg==
+We need to tweak how we query the active capture/playback state after
+the recent overhauls of common code.
+
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+ sound/soc/blackfin/bf5xx-ac97.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/blackfin/bf5xx-ac97.c b/sound/soc/blackfin/bf5xx-ac97.c
+index c5f856e..ffbac26 100644
+--- a/sound/soc/blackfin/bf5xx-ac97.c
++++ b/sound/soc/blackfin/bf5xx-ac97.c
+@@ -260,9 +260,9 @@ static int bf5xx_ac97_suspend(struct snd_soc_dai *dai)
+ 	pr_debug("%s : sport %d\n", __func__, dai->id);
+ 	if (!dai->active)
+ 		return 0;
+-	if (dai->capture.active)
++	if (dai->capture_active)
+ 		sport_rx_stop(sport);
+-	if (dai->playback.active)
++	if (dai->playback_active)
+ 		sport_tx_stop(sport);
+ 	return 0;
+ }
+-- 
+1.7.4.rc1
