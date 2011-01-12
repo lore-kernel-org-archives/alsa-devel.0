@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ASoC: soc-cache: Ensure flat compression
  uses a copy of the defaults cache
-Date: Wed, 12 Jan 2011 14:56:43 +0000
-Message-ID: <20110112145642.GB14870@opensource.wolfsonmicro.com>
+Date: Wed, 12 Jan 2011 14:57:02 +0000
+Message-ID: <20110112145701.GC14870@opensource.wolfsonmicro.com>
 References: <1294827748-27755-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 38E80103809
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2011 15:56:27 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 467141039AB
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2011 15:56:46 +0100 (CET)
 Content-Disposition: inline
 In-Reply-To: <1294827748-27755-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
