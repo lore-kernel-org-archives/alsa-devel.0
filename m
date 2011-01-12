@@ -1,19 +1,20 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH] ALSA: hda: Disable 4/6 channels on some
- NVIDIA	GPUs.
-Date: Wed, 12 Jan 2011 06:11:41 +0200
-Message-ID: <4D2D29FD.6040008@iki.fi>
-References: <1294676371-1401-1-git-send-email-ndaga@nvidia.com>
-	<4D2C8F59.4040507@iki.fi>
-	<74CDBE0F657A3D45AFBB94109FB122FF03105680D9@HQMAIL01.nvidia.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: snd_hda_intel: regression from kernel 2.6.36 ->
+	.37 (Microphone)
+Date: Wed, 12 Jan 2011 14:10:43 +0800
+Message-ID: <AANLkTinQkbqJ-eRO9LCVsPVewgWCYBMBLjsDyFtwjhTu@mail.gmail.com>
+References: <ighq3i$9b8$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sypressi.dnainternet.net (sypressi.dnainternet.net
-	[83.102.40.135]) by alsa0.perex.cz (Postfix) with ESMTP id 078CA24395
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2011 05:11:46 +0100 (CET)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF03105680D9@HQMAIL01.nvidia.com>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8194724402
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2011 07:10:49 +0100 (CET)
+Received: by eyg24 with SMTP id 24so80597eyg.38
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 22:10:46 -0800 (PST)
+In-Reply-To: <ighq3i$9b8$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,90 +24,153 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nitin Daga <ndaga@nvidia.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 11.01.2011 19:41, Stephen Warren wrote:
-> Anssi Hannula wrote:
->> On 10.01.2011 18:19, Nitin Daga wrote:
->>> Added hardware constraint in patch_hdmi.c to disable
->>> channels 4/6 which are not supported by some older
->>> NVIDIA GPUs.
->>
->> And 3/5/7, which do not seem to work either with my 0x0007.
-> 
-> Are 3/5/7 channels supported by any vendor?
-> 
->> However, 3/5/7 do not work with my 0x000b system either, is this a hw
->> limitation as well (that should be added to the driver) or is there a
->> bug in the HDA driver for uneven channel counts?
-> 
-> I don't know if NVIDIA HW supports odd numbers of channels; Nitin, can
-> you please find out? That said, the error you quote below for 5 channels
-> sounds more like a software issue to me; some kind of buffer alignment
-> or size constraint can't be satisfied?
-> 
->> (I looked at the HDA specification and it does seem to allow
->> odd-numbered channel counts)
-> 
-> I skimmed quickly, and the only reference I could find was in section
-> 7.6 "Audio Data Packetization" of HDMISpecification1.4a.pdf:
-> 
->     Layout 1 can be used to carry one audio sample with three to
->     eight channels of L-PCM audio.
-> 
-> ... which implies support for an odd number of channels.
-> 
-> That said, the tables and other text near that quote indicate that audio
-> is transferred in subpackets which each contain a pair of channels, and
-> the sample_present bits each cover a subpacket, i.e. a pair of channels.
-> Perhaps table 5-13 "Audio Sample Subpacket"'s V.L/V.R (channel validity)
-> bits are intended to represent which of the two channels in a subpacket
-> exist?
+2011/1/11 Wolfgang Scheicher <wolfgang.scheicher@gmail.com>
 
-Well, the channel is certainly not valid if it does not exist :)
-But I don't think it is that field.
+>
+> I used kernel 2.6.36 from debian experimental for quite some time now,
+> without any problem:
+> http://www.alsa-project.org/db/?f=11290fe50066e9bcd6a244f2c83b1c66c9dd201b
+>
+> Upgrading to 2.6.37 from debian experimental left me unable to use my
+> microphone:
+> http://www.alsa-project.org/db/?f=0f29e6de98ea9fefae5c6e2adb43ff8f8eede697
+>
+> I also noticed some (inconsisitent?) changes in the mixer channel names,
+> like "Mic" became "Rear Mic", while "Mic Boost" remained.
+>
+> Wolfgang Scheicher
+>
+> Node 0x29 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Control: name="Front Mic Boost Capture Volume", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=0, ofs=0
+  Control: name="Smart 5.1", index=0, device=0
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0000233c: IN OUT HP Detect
+    Vref caps: HIZ 50 100
+  Pin Default 0x02a19137: [Jack] Mic at Ext Front
+    Conn = 1/8, Color = Pink
+    DefAssociation = 0x3, Sequence = 0x7
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x21: IN VREF_50
+  Unsolicited: tag=04, enabled=1
+  Power states:  D0 D1 D2 D3
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x1c
 
-> Looking at CEA-861D, Table 17 "Audio InfoFrame Data Byte 1", CC
-> (Channel Count) bits, it's quite explicit that odd numbers of channels
-> are supported.
-
-Actually, I just tested and just transmitting 3-channel data with extra
-4th dummy channel while setting the Audio InfoFrame fields to indicate a
-3 channel stream makes it work.
-
-So it would seem (to me) like the best approach would be:
-1. Add a hw_constraint to prevent odd channel counts (easy)
-2. Provide some way for alsa plug (and the user application) to indicate
-   the "actual/original" channel count/layout without dummy channels,
-   so that the infoframe can be set correctly.
-   This is harder, and I guess should probably be implemented so that
-   the channel remapping issue on older nvidia hw will be fixed as well.
+Node 0x2b [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Control: name="Mic Boost Capture Volume", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=0, ofs=0
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x00002334: IN OUT Detect
+    Vref caps: HIZ 50 100
+  Pin Default 0x01a19036: [Jack] Mic at Ext Rear
+    Conn = 1/8, Color = Pink
+    DefAssociation = 0x3, Sequence = 0x6
+  Pin-ctls: 0x20: IN VREF_HIZ
+  Unsolicited: tag=04, enabled=1
+  Power states:  D0 D1 D2 D3
+  Power: setting=D0, actual=D0
+  Connection: 2
+     0x0a* 0x0c
 
 
->> Strangely, on both of my systems speaker-test -c5 fails with an error:
->>
->> $ speaker-test -Dhdmi -c5
->>
->> speaker-test 1.0.23
->>
->> Playback device is hdmi
->> Stream parameters are 48000Hz, S16_LE, 5 channels
->> Using 16 octaves of pink noise
->> Rate set to 48000Hz (requested 48000Hz)
->> Buffer size range from 128 to 419392
->> Period size range from 64 to 209664
->> Using max buffer size 419392
->> Periods = 4
->> Unable to set nperiods 4 for playback: No such file or directory
->> Setting of hwparams failed: No such file or directory
->>
->> While -c3 and -c7 run fine but no sound is received.
->>
->>> [Nitin's patch elided]
-> 
+Codec: VIA VT2020
+Address: 0
+AFG Function Id: 0x1 (unsol 0)
+Vendor Id: 0x11060441
+Subsystem Id: 0x18492620
+Revision Id: 0x100100
 
 
--- 
-Anssi Hannula
+         { .id = 0x11060441, .name = "VT2020",
+           .patch = patch_vt1718S},
+
+It seem that node 0x2b and 0x29 of your vt2020 does not has any boost since
+vt2020 is using patch_vt1718s()
+
+
+static struct snd_kcontrol_new vt1718S_capture_mixer[] = {
+
+         HDA_CODEC_VOLUME("Mic Boost Capture Volume", 0x2b, 0x0, HDA_INPUT),
+         HDA_CODEC_VOLUME("Front Mic Boost Capture Volume", 0x29, 0x0,
+                        HDA_INPUT),
+
+
+
+
+
+Node 0x21 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+  Control: name="Front Mic Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=3, ofs=0
+  Control: name="Front Mic Playback Switch", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=3, ofs=0
+  Control: name="Rear Mic Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=1, ofs=0
+  Control: name="Rear Mic Playback Switch", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=1, ofs=0
+  Control: name="Line Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=2, ofs=0
+  Control: name="Line Playback Switch", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=2, ofs=0
+  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x9f 0x9f] [0x80 0x80] [0x8f 0x8f]
+  Power states:  D0 D1 D2 D3
+  Power: setting=D0, actual=D0
+  Connection: 5
+     0x2c 0x2b 0x2a 0x29 0x28
+
+Node 0x28 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Control: name="Headphone Playback Switch", index=0, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0000233c: IN OUT HP Detect
+    Vref caps: HIZ 50 100
+  Pin Default 0x0221411f: [Jack] HP Out at Ext Front
+    Conn = 1/8, Color = Green
+    DefAssociation = 0x1, Sequence = 0xf
+    Misc = NO_PRESENCE
+  Pin-ctls: 0xc0: OUT HP VREF_HIZ
+  Unsolicited: tag=05, enabled=1
+  Power states:  D0 D1 D2 D3
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x1b
+
+
+Node 0x21 has only 5 connections but the driver use AMP_IN_MUTE(5) instead
+of AMP_IN_MUTE(4)
+
+node 0x28 only has one connection to 0x1b
+
+static struct hda_verb vt1718S_volume_init_verbs[] = {
+
+
+
+         /* Setup default input of Front HP to MW9 */
+         {0x28, AC_VERB_SET_CONNECT_SEL, 0x1},
+
+
+         /* Mute input amps (CD, Line In, Mic 1 & Mic 2) of the
+analog-loopback
+          * mixer widget
+          */
+
+         /* Amp Indices: CD = 1, Mic1 = 2, Line = 3, Mic2 = 4 */
+         {0x21, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
+         {0x21, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
+         {0x21, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)},
+         {0x21, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)},
+         {0x21, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(5)},
+
+if if is regression , you may need to check those patches
+
+sticky PCM stream assignment
+smart5.1 mode
+<http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=0e7adbe263f89ea2ef15b5af5e80a812b2a85025>
