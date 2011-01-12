@@ -1,22 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [uclinux-dist-devel] [PATCH] ASoC: Blackfin TDM:
- use external frame syncs
-Date: Wed, 12 Jan 2011 17:19:04 +0000
-Message-ID: <20110112171904.GF20911@opensource.wolfsonmicro.com>
-References: <1294819195-29119-1-git-send-email-vapier@gentoo.org>
-	<20110112111222.GC20911@opensource.wolfsonmicro.com>
-	<AANLkTins-dSkJ1e_Z4RmffpgC1wQ-chkXFZ1hq162gP=@mail.gmail.com>
-	<20110112164503.GE20911@opensource.wolfsonmicro.com>
-	<AANLkTik24XnZ+couVccG8y2Husb0WQGbhtWKO1W5oX2T@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: sh: fsi-ak4642: fixup platform
+	device id
+Date: Wed, 12 Jan 2011 23:22:38 +0000
+Message-ID: <20110112232238.GA17852@opensource.wolfsonmicro.com>
+References: <w3pd3o2y6ok.wl%kuninori.morimoto.gx@renesas.com>
+	<w3pbp3my6mw.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 105E810380C
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2011 18:21:16 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C311B2414A
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 00:22:23 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <AANLkTik24XnZ+couVccG8y2Husb0WQGbhtWKO1W5oX2T@mail.gmail.com>
+In-Reply-To: <w3pbp3my6mw.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,23 +23,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 12, 2011 at 12:11:44PM -0500, Mike Frysinger wrote:
-> On Wed, Jan 12, 2011 at 11:45, Mark Brown wrote:
+On Wed, Jan 12, 2011 at 03:32:07PM +0900, Kuninori Morimoto wrote:
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-> > In that case I'd expect an update to your set_dai_fmt() operation
-> > disallowing any configuration except CBM_CFM. =A0Though I see that's the
-> > case already so I'm kind of surprised the system worked at all -
-> > whatever CODECs you're using with the TDM DAI may well be buggy.
-
-> Sonic or perhaps Scott or Bob would have to comment.  i have a limited
-> understanding of the SPORT/audio, so i can only theorize based on the
-> sparse changelogs i'm given.
-
-OK.  The change is *probably* OK in itself (I have a similar changelog
-issue) but it may be pointing up an issue with the CODEC driver, it'd be
-worth investigating that too to make sure there isn't a matching issue
-on the CODEC side.
+Applied.  It'd be really helpful if you could provide more verbose
+changelogs - with this one it's really not clear what the problem is
+that you're fixing or how the change fixes it.
