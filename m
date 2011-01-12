@@ -1,56 +1,41 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Missing patches for 2.6.38 merge?
-Date: Tue, 11 Jan 2011 22:17:49 +0000
-Message-ID: <20110111221749.GA28212@opensource.wolfsonmicro.com>
-References: <s5hipxvi6rm.wl%tiwai@suse.de>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [PATCH] ASoC: Fix resource leak if soc_register_ac97_dai_link failed
+Date: Tue, 11 Jan 2011 19:19:14 -0500
+Message-ID: <AANLkTimkb4ic3G7rT-WiFtFdC+Sy5gVAikoQVXguVH4J@mail.gmail.com>
+References: <1291726590.2760.3.camel@phoenix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6D17D24485
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 23:17:51 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hipxvi6rm.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1291726590.2760.3.camel@phoenix>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Axel Lin <axel.lin@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 11, 2011 at 08:23:41PM +0100, Takashi Iwai wrote:
-
-> Mark, Liam, do you guys have still many pending updates?  If so, please
-> forward quickly.  Also, if a brief summary of this merge in ASoC area
-> is ready, it'd be helpful.
-
-Big update...
-
- - Enhancements to multi-component from Jarkko Nikula allowing multiple
-   devices of the same type to be included in one system (and handling
-   other overlaps between devices) and support cross device DAPM. 
-
- - Support from Dimitris Papastamos for compressing the register cache in
-   memory using either an rbtree or LZO, giving substantial memory savings
-   on CODECs with large register maps.
-
- - Addition of trace points around DAPM and register I/O operation,
-   allowing very low overhead logging without interfering with the main
-   system log, useful for collecting verbose diagnostics without
-   interfering with system operation and for always enabled flight recorder
-   style tracking for intermittent problems.
-
- - Restructuring of the Samsung CPU support from Jassi Brar, including a
-   number of really good usability improvements.
-
- - New CODEC drivers for ALC5621/2/3, WM8737, WM8770 and WM8958.
-
- - Machine support for HP iPAQ H1940, HP t5325 thin clients and OpenRC
-   Ultimate.
+T24gVHVlLCBEZWMgNywgMjAxMCBhdCAwNzo1NiwgQXhlbCBMaW4gd3JvdGU6Cj4gLS0tIGEvc291
+bmQvc29jL3NvYy1jb3JlLmMKPiArKysgYi9zb3VuZC9zb2Mvc29jLWNvcmUuYwo+IEBAIC0xNjE5
+LDEyICsxNjE5LDE0IEBAIHN0YXRpYyB2b2lkIHNuZF9zb2NfaW5zdGFudGlhdGVfY2FyZChzdHJ1
+Y3Qgc25kX3NvY19jYXJkICpjYXJkKQo+IMKgI2lmZGVmIENPTkZJR19TTkRfU09DX0FDOTdfQlVT
+Cj4gwqAgwqAgwqAgwqAvKiByZWdpc3RlciBhbnkgQUM5NyBjb2RlY3MgKi8KPiDCoCDCoCDCoCDC
+oGZvciAoaSA9IDA7IGkgPCBjYXJkLT5udW1fcnRkOyBpKyspIHsKPiAtIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIHJldCA9IHNvY19yZWdpc3Rlcl9hYzk3X2RhaV9saW5rKCZjYXJk
+LT5ydGRbaV0pOwo+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKHJldCA8
+IDApIHsKPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHBy
+aW50ayhLRVJOX0VSUiAiYXNvYzogZmFpbGVkIHRvIHJlZ2lzdGVyIEFDOTcgJXNcbiIsIGNhcmQt
+Pm5hbWUpOwo+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+Z290byBwcm9iZV9kYWlfZXJyOwo+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+fQo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmV0ID0gc29jX3JlZ2lzdGVyX2FjOTdfZGFpX2xp
+bmsoJmNhcmQtPnJ0ZFtpXSk7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAocmV0IDwgMCkg
+ewo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcHJpbnRrKEtFUk5fRVJSICJh
+c29jOiBmYWlsZWQgdG8gcmVnaXN0ZXIgQUM5NyAlc1xuIiwgY2FyZC0+bmFtZSk7Cj4gKyDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCB3aGlsZSAoLS1pID49IDApCj4gKyDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBzb2NfdW5yZWdpc3Rlcl9hYzk3
+X2RhaV9saW5rKCZjYXJkLT5ydGRbaV0pOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgZ290byBwcm9iZV9kYWlfZXJyOwo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgfQo+ICsg
+wqAgwqAgwqAgfQo+IMKgI2VuZGlmCgp0aGlzIGlzbnQgZW50aXJlbHkgY29ycmVjdC4gIHNvY191
+bnJlZ2lzdGVyX2FjOTdfZGFpX2xpbmsgdGFrZXMgYQpwb2ludGVyIHRvIGEgY29kZWMgd2hpY2gg
+Y2FyZC0+cnRkW2ldIGlzIG5vdC4Kc291bmQvc29jL3NvYy1jb3JlLmM6IEluIGZ1bmN0aW9uIOKA
+mHNuZF9zb2NfaW5zdGFudGlhdGVfY2FyZOKAmToKc291bmQvc29jL3NvYy1jb3JlLmM6MTYyNjog
+d2FybmluZzogcGFzc2luZyBhcmd1bWVudCAxIG9mCuKAmHNvY191bnJlZ2lzdGVyX2FjOTdfZGFp
+X2xpbmvigJkgZnJvbSBpbmNvbXBhdGlibGUgcG9pbnRlciB0eXBlCi1taWtlCg==
