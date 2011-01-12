@@ -1,19 +1,17 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: Missing patches for 2.6.38 merge?
-Date: Wed, 12 Jan 2011 01:04:20 +0000
-Message-ID: <1294794260.3338.486.camel@odin>
-References: <s5hipxvi6rm.wl%tiwai@suse.de>
-	<20110111221749.GA28212@opensource.wolfsonmicro.com>
+Subject: [GIT PULL] ASoC Final updates for 2.6.38
+Date: Wed, 12 Jan 2011 01:07:00 +0000
+Message-ID: <1294794420.3338.488.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f65.google.com (mail-ww0-f65.google.com [74.125.82.65])
-	by alsa0.perex.cz (Postfix) with ESMTP id BFA8110387E
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2011 02:04:23 +0100 (CET)
-Received: by wwb39 with SMTP id 39so15386wwb.8
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 17:04:23 -0800 (PST)
-In-Reply-To: <20110111221749.GA28212@opensource.wolfsonmicro.com>
+Received: from mail-wy0-f193.google.com (mail-wy0-f193.google.com
+	[74.125.82.193])
+	by alsa0.perex.cz (Postfix) with ESMTP id E62941038C0
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2011 02:07:03 +0100 (CET)
+Received: by wyb42 with SMTP id 42so16052wyb.8
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2011 17:07:03 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,49 +21,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-01-11 at 22:17 +0000, Mark Brown wrote:
-> On Tue, Jan 11, 2011 at 08:23:41PM +0100, Takashi Iwai wrote:
-> 
-> > Mark, Liam, do you guys have still many pending updates?  If so, please
-> > forward quickly.  Also, if a brief summary of this merge in ASoC area
-> > is ready, it'd be helpful.
-> 
-> Big update...
-> 
->  - Enhancements to multi-component from Jarkko Nikula allowing multiple
->    devices of the same type to be included in one system (and handling
->    other overlaps between devices) and support cross device DAPM. 
-> 
->  - Support from Dimitris Papastamos for compressing the register cache in
->    memory using either an rbtree or LZO, giving substantial memory savings
->    on CODECs with large register maps.
-> 
->  - Addition of trace points around DAPM and register I/O operation,
->    allowing very low overhead logging without interfering with the main
->    system log, useful for collecting verbose diagnostics without
->    interfering with system operation and for always enabled flight recorder
->    style tracking for intermittent problems.
-> 
->  - Restructuring of the Samsung CPU support from Jassi Brar, including a
->    number of really good usability improvements.
-> 
->  - New CODEC drivers for ALC5621/2/3, WM8737, WM8770 and WM8958.
-> 
->  - Machine support for HP iPAQ H1940, HP t5325 thin clients and OpenRC
->    Ultimate.
+Later than usual since I've been on the road lately.
 
+The following changes since commit 991e02b4469c2e92cc98aa5b04fbde981671b74c:
 
- - OMAP4 improvements and preparation for full OMAP4 ABE support.
+  Merge branch 'for-2.6.38' of git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6 into topic/asoc (2010-12-17 16:43:17 +0100)
 
-Thanks
+are available in the git repository at:
 
-Liam 
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.38
 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+David Lambert (1):
+      ASoC: DMIC codec: Adding a generic DMIC codec
+
+Jorge Eduardo Candelaria (1):
+      ASoC: mcbsp: Add McBSP support for OMAP4
+
+Olaya, Margarita (1):
+      ASoC: twl6040: Convert HF and HS drivers to use DAPM OUT_DRV widget
+
+Peter Ujfalusi (5):
+      ASoC: tlv320dac33: Remove manual FIFO configuration
+      ASoC: tlv320dac33: Some cleanup for 32/24 bit support
+      ASoC: tlv320dac33: Add 32/24 bit audio support
+      ASoC: tlv320dac33: Add DAPM selection for LOM invert
+      ASoC: tpa6130a2: Fix compiler warning
+
+ sound/soc/codecs/Kconfig       |    3 +
+ sound/soc/codecs/Makefile      |    2 +
+ sound/soc/codecs/dmic.c        |   81 ++++++++++++
+ sound/soc/codecs/tlv320dac33.c |  269 ++++++++++++++++------------------------
+ sound/soc/codecs/tpa6130a2.c   |    1 -
+ sound/soc/codecs/twl6040.c     |    8 +-
+ sound/soc/omap/omap-mcbsp.c    |   35 +++++-
+ sound/soc/omap/omap-mcbsp.h    |    4 +
+ 8 files changed, 234 insertions(+), 169 deletions(-)
+ create mode 100644 sound/soc/codecs/dmic.c
