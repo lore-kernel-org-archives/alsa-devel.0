@@ -1,18 +1,14 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Questions about Multi-streaming playback with HDA
-	codec ad1988b
-Date: Thu, 13 Jan 2011 10:09:43 +0800
-Message-ID: <AANLkTi=_xGmLUz24UUPvZGdzFJXU0HcpdsxTuU2C=uta@mail.gmail.com>
+From: Seungwhan Youn <sw.youn@samsung.com>
+Subject: [RFC] [ALSA] ASoC documentation updates
+Date: Thu, 13 Jan 2011 11:08:21 +0900
+Message-ID: <1294884501-25880-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3CB8F244AA
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 03:09:45 +0100 (CET)
-Received: by eyg24 with SMTP id 24so603421eyg.38
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2011 18:09:44 -0800 (PST)
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 66D8F244D5
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 03:32:26 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,226 +18,226 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Seungwhan Youn <sw.youn@samsung.com>, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-The patch is to provide a new model which front panel headphone of a
-6stack-dig desktop can be used for playback a stereo stream independent of
-the rear panel
+This patch is only for RFC purpose of ASoC documentation updates which
+match with current ASoC codes with documents. Mostly modify features
+are modified to be sync with changes after multi-component patches.
 
-ad1988b is a HDA codec support  10 channel ( enough DAC for stereo +
-surround71 )
+Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+---
+To Mr. Liam Girdwood and Mark Brown
 
-1) Is this approach to create a new model correct or just need to implement
-a switch for activatie the "independent head phone" like those VIA codecs ?
+I think this modification is not enough to cover current ASoC features,
+and I hope that it will be a good time to introduce recently changes, e.g.
+multi-component model, new linkage system of ASoC DAIs, and so on. But
+if you have some other idea, or other reason to delay this, please ignore
+this RFC. And also if there are something that I can help, please let me
+know.
 
-struct ad198x_spec {
+Thanks,
+Claude
+---
+ Documentation/sound/alsa/soc/codec.txt    |   45 +++++++++++++---------------
+ Documentation/sound/alsa/soc/machine.txt  |   38 ++++++------------------
+ Documentation/sound/alsa/soc/platform.txt |   12 ++++++-
+ 3 files changed, 40 insertions(+), 55 deletions(-)
 
-+    hda_nid_t *alt_dac_nid;
-+    struct hda_pcm_stream *stream_analog_alt_playback;
-
-}
-
-+static hda_nid_t ad1988_6stack_alt_dac_nid[1] = {
-+   0x03
+diff --git a/Documentation/sound/alsa/soc/codec.txt b/Documentation/sound/alsa/soc/codec.txt
+index 37ba3a7..bce23a4 100644
+--- a/Documentation/sound/alsa/soc/codec.txt
++++ b/Documentation/sound/alsa/soc/codec.txt
+@@ -27,42 +27,38 @@ ASoC Codec driver breakdown
+ 
+ 1 - Codec DAI and PCM configuration
+ -----------------------------------
+-Each codec driver must have a struct snd_soc_codec_dai to define its DAI and
++Each codec driver must have a struct snd_soc_dai_driver to define its DAI and
+ PCM capabilities and operations. This struct is exported so that it can be
+ registered with the core by your machine driver.
+ 
+ e.g.
+ 
+-struct snd_soc_codec_dai wm8731_dai = {
+-	.name = "WM8731",
+-	/* playback capabilities */
++static struct snd_soc_dai_ops wm8731_dai_ops = {
++	.prepare	= wm8731_pcm_prepare,
++	.hw_params	= wm8731_hw_params,
++	.shutdown	= wm8731_shutdown,
++	.digital_mute	= wm8731_mute,
++	.set_sysclk	= wm8731_set_dai_sysclk,
++	.set_fmt	= wm8731_set_dai_fmt,
 +};
-
-static const char *ad1988_models[AD1988_MODEL_LAST] = {
-    [AD1988_6STACK]        = "6stack",
-    [AD1988_6STACK_DIG]    = "6stack-dig",
-+  [AD1988_6STACK_DIG_FP]    = "6stack-dig-fp",
-    [AD1988_3STACK]        = "3stack",
-    [AD1988_3STACK_DIG]    = "3stack-dig",
-    [AD1988_LAPTOP]        = "laptop",
-    [AD1988_LAPTOP_DIG]    = "laptop-dig",
-    [AD1988_AUTO]        = "auto",
-};
-
-enum {
-    AD1988_6STACK,
-    AD1988_6STACK_DIG,
-+  AD1988_6STACK_DIG_FP,
-    AD1988_3STACK,
-    AD1988_3STACK_DIG,
-    AD1988_LAPTOP,
-    AD1988_LAPTOP_DIG,
-    AD1988_AUTO,
-    AD1988_MODEL_LAST,
-};
-
-
-2) do the driver need to define .prepare and .cleanup function or just need
-to use "hda_pcm_default_prepare() and hda_pcm_default_cleanup()
-
-static int ad198x_alt_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
-                struct hda_codec *codec,
-                unsigned int stream_tag,
-                unsigned int format,
-                struct snd_pcm_substream *substream)
-{
-    struct ad198x_spec *spec = codec->spec;
-    snd_hda_codec_setup_stream(codec, spec->alt_dac_nid[0], stream_tag, 0,
-format);
-        return 0;
-}
-
-static int ad198x_alt_playback_pcm_cleanup(struct hda_pcm_stream *hinfo,
-                struct hda_codec *codec,
-                struct snd_pcm_substream *substream)
-{
-    struct ad198x_spec *spec = codec->spec;
-    snd_hda_codec_cleanup_stream(codec, spec->alt_dac_nid[0]);
-    return 0;
-}
-
-static struct hda_pcm_stream ad198x_pcm_analog_alt_playback = {
-    .substreams = 1,
-    .channels_min = 2,
-    .channels_max = 2,
-    /* NID is set in ad198x_build_pcms */
-        .ops = {
-        .prepare = ad198x_alt_playback_pcm_prepare,
-            .cleanup = ad198x_alt_playback_pcm_cleanup
-    },
-};
-
-3) Is it correct to use device 2 for analog alternate playback since some
-HDA codec implement this feature on "hw:0,0,1" and realtek driver create
-alternate capture on "hw:0,2" ,  this seem create a lot of problem of the
-application (e.g. PA server ) ?
-
-static int ad198x_build_pcms(struct hda_codec *codec)
-{
-
-    if (spec->alt_dac_nid && spec->stream_analog_alt_playback) {
-        codec->num_pcms++;
-        info = spec->pcm_rec + 2;
-        info->name = "AD198x Alternate Analog";
-        info->pcm_type = HDA_PCM_TYPE_AUDIO;
-        info->stream[SNDRV_PCM_STREAM_PLAYBACK] =
-*spec->stream_analog_alt_playback;
-        info->stream[SNDRV_PCM_STREAM_PLAYBACK].nid = spec->alt_dac_nid[0];
-        }
-}
-
-static struct snd_kcontrol_new ad1988_6stack_fp_mixers[] = {
-    HDA_CODEC_VOLUME("Front Playback Volume", 0x04, 0x0, HDA_OUTPUT),
-    HDA_CODEC_VOLUME("Surround Playback Volume", 0x06, 0x0, HDA_OUTPUT),
-    HDA_CODEC_VOLUME_MONO("Center Playback Volume", 0x05, 1, 0x0,
-HDA_OUTPUT),
-    HDA_CODEC_VOLUME_MONO("LFE Playback Volume", 0x05, 2, 0x0, HDA_OUTPUT),
-    HDA_CODEC_VOLUME("Side Playback Volume", 0x0a, 0x0, HDA_OUTPUT),
-    HDA_CODEC_VOLUME("Headphone Playback Volume", 0x03, 0x0, HDA_OUTPUT),
-
-    HDA_BIND_MUTE("Front Playback Switch", 0x29, 2, HDA_INPUT),
-    HDA_BIND_MUTE("Surround Playback Switch", 0x2a, 2, HDA_INPUT),
-    HDA_BIND_MUTE_MONO("Center Playback Switch", 0x27, 1, 2, HDA_INPUT),
-    HDA_BIND_MUTE_MONO("LFE Playback Switch", 0x27, 2, 2, HDA_INPUT),
-    HDA_BIND_MUTE("Side Playback Switch", 0x28, 2, HDA_INPUT),
-    HDA_BIND_MUTE("Headphone Playback Switch", 0x22, 2, HDA_INPUT),
-    HDA_BIND_MUTE("Mono Playback Switch", 0x1e, 2, HDA_INPUT),
-
-    HDA_CODEC_VOLUME("CD Playback Volume", 0x20, 0x6, HDA_INPUT),
-    HDA_CODEC_MUTE("CD Playback Switch", 0x20, 0x6, HDA_INPUT),
-    HDA_CODEC_VOLUME("Front Mic Playback Volume", 0x20, 0x0, HDA_INPUT),
-    HDA_CODEC_MUTE("Front Mic Playback Switch", 0x20, 0x0, HDA_INPUT),
-    HDA_CODEC_VOLUME("Line Playback Volume", 0x20, 0x1, HDA_INPUT),
-    HDA_CODEC_MUTE("Line Playback Switch", 0x20, 0x1, HDA_INPUT),
-    HDA_CODEC_VOLUME("Mic Playback Volume", 0x20, 0x4, HDA_INPUT),
-    HDA_CODEC_MUTE("Mic Playback Switch", 0x20, 0x4, HDA_INPUT),
-
-    HDA_CODEC_VOLUME("Analog Mix Playback Volume", 0x21, 0x0, HDA_OUTPUT),
-    HDA_CODEC_MUTE("Analog Mix Playback Switch", 0x21, 0x0, HDA_OUTPUT),
-
-    HDA_CODEC_VOLUME("Front Mic Boost Volume", 0x39, 0x0, HDA_OUTPUT),
-    HDA_CODEC_VOLUME("Mic Boost Volume", 0x3c, 0x0, HDA_OUTPUT),
-
-    { } /* end */
-};
-
-static struct hda_verb ad1988_6stack_fp_init_verbs[] = {
-    /* Front, Surround, CLFE, side DAC; unmute as default */
-    {0x04, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-    {0x06, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-    {0x05, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-    {0x0a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-        /* Headphone; unmute as default */
-    {0x03, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-    /* Port-A front headphon path */
-    {0x37, AC_VERB_SET_CONNECT_SEL, 0x00}, /* DAC:03h */
-    {0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-    {0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
-    {0x11, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-    {0x11, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
-    /* Port-D line-out path */
-    {0x29, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-    {0x29, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
-    {0x12, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-    {0x12, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-    /* Port-F surround path */
-    {0x2a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-    {0x2a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
-    {0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-    {0x16, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-    /* Port-G CLFE path */
-    {0x27, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-    {0x27, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
-    {0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-    {0x24, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-    /* Port-H side path */
-    {0x28, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-    {0x28, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
-    {0x25, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-    {0x25, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-    /* Mono out path */
-    {0x36, AC_VERB_SET_CONNECT_SEL, 0x1}, /* DAC1:04h */
-    {0x1e, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-    {0x1e, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
-    {0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
-    {0x13, AC_VERB_SET_AMP_GAIN_MUTE, 0xb01f}, /* unmute, 0dB */
-    /* Port-B front mic-in path */
-    {0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
-    {0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
-    {0x39, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
-    /* Port-C line-in path */
-    {0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
-    {0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
-    {0x3a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
-    {0x33, AC_VERB_SET_CONNECT_SEL, 0x0},
-    /* Port-E mic-in path */
-    {0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
-    {0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
-    {0x3c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
-    {0x34, AC_VERB_SET_CONNECT_SEL, 0x0},
-    /* Analog CD Input */
-    {0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
-    /* Analog Mix output amp */
-    {0x21, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE | 0x1f}, /* 0dB */
-
-    { }
-};
-
-static int patch_ad1988(struct hda_codec *codec)
-{
-
-
-        switch (board_config) {
-        case AD1988_6STACK_DIG_FP:
-                spec->multiout.max_channels = 8;
-        spec->multiout.num_dacs = 4;
-        spec->multiout.dac_nids = ad1988_6stack_dac_nids;
-        spec->alt_dac_nid = ad1988_6stack_alt_dac_nid;
-        spec->stream_analog_alt_playback = &ad198x_pcm_analog_alt_playback;
-        spec->input_mux = &ad1988_6stack_capture_source;
-        spec->num_mixers = 1;
-        spec->mixers[0] = ad1988_6stack_fp_mixers;
-        spec->num_init_verbs = 1;
-        spec->init_verbs[0] = ad1988_6stack_fp_init_verbs;
-        spec->multiout.dig_out_nid = AD1988_SPDIF_OUT;
-        spec->dig_in_nid = AD1988_SPDIF_IN;
-        break;
-
-3) What functions are still missing in this model ?
-a), do this new model need to disable hp_automute() function
-b) any change in ad198x_power_eapd_xxx() functions ?
-c) idenifty ad1988a and ad1988b
++
++struct snd_soc_dai_driver wm8731_dai = {
++	.name = "wm8731-hifi",
+ 	.playback = {
+ 		.stream_name = "Playback",
+ 		.channels_min = 1,
+ 		.channels_max = 2,
+ 		.rates = WM8731_RATES,
+ 		.formats = WM8731_FORMATS,},
+-	/* capture capabilities */
+ 	.capture = {
+ 		.stream_name = "Capture",
+ 		.channels_min = 1,
+ 		.channels_max = 2,
+ 		.rates = WM8731_RATES,
+ 		.formats = WM8731_FORMATS,},
+-	/* pcm operations - see section 4 below */
+-	.ops = {
+-		.prepare = wm8731_pcm_prepare,
+-		.hw_params = wm8731_hw_params,
+-		.shutdown = wm8731_shutdown,
+-	},
+-	/* DAI operations - see DAI.txt */
+-	.dai_ops = {
+-		.digital_mute = wm8731_mute,
+-		.set_sysclk = wm8731_set_dai_sysclk,
+-		.set_fmt = wm8731_set_dai_fmt,
+-	}
++	.ops = &wm8731_dai_ops,
++	.symmetric_rates = 1,
+ };
+-EXPORT_SYMBOL_GPL(wm8731_dai);
+ 
+ 
+ 2 - Codec control IO
+@@ -186,13 +182,14 @@ when the mute is applied or freed.
+ 
+ i.e.
+ 
+-static int wm8974_mute(struct snd_soc_codec *codec,
+-	struct snd_soc_codec_dai *dai, int mute)
++static int wm8974_mute(struct snd_soc_dai *dai, int mute)
+ {
+-	u16 mute_reg = wm8974_read_reg_cache(codec, WM8974_DAC) & 0xffbf;
+-	if(mute)
+-		wm8974_write(codec, WM8974_DAC, mute_reg | 0x40);
++	struct snd_soc_codec *codec = dai->codec;
++	u16 mute_reg = snd_soc_read(codec, WM8974_DAC) & 0xffbf;
++
++	if (mute)
++		snd_soc_write(codec, WM8974_DAC, mute_reg | 0x40);
+ 	else
+-		wm8974_write(codec, WM8974_DAC, mute_reg);
++		snd_soc_write(codec, WM8974_DAC, mute_reg);
+ 	return 0;
+ }
+diff --git a/Documentation/sound/alsa/soc/machine.txt b/Documentation/sound/alsa/soc/machine.txt
+index 2524c75..3e2ec9c 100644
+--- a/Documentation/sound/alsa/soc/machine.txt
++++ b/Documentation/sound/alsa/soc/machine.txt
+@@ -12,6 +12,8 @@ the following struct:-
+ struct snd_soc_card {
+ 	char *name;
+ 
++	...
++
+ 	int (*probe)(struct platform_device *pdev);
+ 	int (*remove)(struct platform_device *pdev);
+ 
+@@ -22,12 +24,13 @@ struct snd_soc_card {
+ 	int (*resume_pre)(struct platform_device *pdev);
+ 	int (*resume_post)(struct platform_device *pdev);
+ 
+-	/* machine stream operations */
+-	struct snd_soc_ops *ops;
++	...
+ 
+ 	/* CPU <--> Codec DAI links  */
+ 	struct snd_soc_dai_link *dai_link;
+ 	int num_links;
++
++	...
+ };
+ 
+ probe()/remove()
+@@ -42,11 +45,6 @@ of any machine audio tasks that have to be done before or after the codec, DAIs
+ and DMA is suspended and resumed. Optional.
+ 
+ 
+-Machine operations
+-------------------
+-The machine specific audio operations can be set here. Again this is optional.
+-
+-
+ Machine DAI Configuration
+ -------------------------
+ The machine DAI configuration glues all the codec and CPU DAIs together. It can
+@@ -61,8 +59,10 @@ struct snd_soc_dai_link is used to set up each DAI in your machine. e.g.
+ static struct snd_soc_dai_link corgi_dai = {
+ 	.name = "WM8731",
+ 	.stream_name = "WM8731",
+-	.cpu_dai = &pxa_i2s_dai,
+-	.codec_dai = &wm8731_dai,
++	.cpu_dai_name = "pxa-is2-dai",
++	.codec_dai_name = "wm8731-hifi",
++	.platform_name = "pxa-pcm-audio",
++	.codec_name = "wm8713-codec.0-001a",
+ 	.init = corgi_wm8731_init,
+ 	.ops = &corgi_ops,
+ };
+@@ -77,26 +77,6 @@ static struct snd_soc_card snd_soc_corgi = {
+ };
+ 
+ 
+-Machine Audio Subsystem
+------------------------
+-
+-The machine soc device glues the platform, machine and codec driver together.
+-Private data can also be set here. e.g.
+-
+-/* corgi audio private data */
+-static struct wm8731_setup_data corgi_wm8731_setup = {
+-	.i2c_address = 0x1b,
+-};
+-
+-/* corgi audio subsystem */
+-static struct snd_soc_device corgi_snd_devdata = {
+-	.machine = &snd_soc_corgi,
+-	.platform = &pxa2xx_soc_platform,
+-	.codec_dev = &soc_codec_dev_wm8731,
+-	.codec_data = &corgi_wm8731_setup,
+-};
+-
+-
+ Machine Power Map
+ -----------------
+ 
+diff --git a/Documentation/sound/alsa/soc/platform.txt b/Documentation/sound/alsa/soc/platform.txt
+index 06d8359..d57efad 100644
+--- a/Documentation/sound/alsa/soc/platform.txt
++++ b/Documentation/sound/alsa/soc/platform.txt
+@@ -20,9 +20,10 @@ struct snd_soc_ops {
+ 	int (*trigger)(struct snd_pcm_substream *, int);
+ };
+ 
+-The platform driver exports its DMA functionality via struct snd_soc_platform:-
++The platform driver exports its DMA functionality via struct
++snd_soc_platform_driver:-
+ 
+-struct snd_soc_platform {
++struct snd_soc_platform_driver {
+ 	char *name;
+ 
+ 	int (*probe)(struct platform_device *pdev);
+@@ -34,6 +35,13 @@ struct snd_soc_platform {
+ 	int (*pcm_new)(struct snd_card *, struct snd_soc_codec_dai *, struct snd_pcm *);
+ 	void (*pcm_free)(struct snd_pcm *);
+ 
++	/*
++	 * For platform caused delay reporting.
++	 * Optional.
++	 */
++	snd_pcm_sframes_t (*delay)(struct snd_pcm_substream *,
++		struct snd_soc_dai *);
++
+ 	/* platform stream ops */
+ 	struct snd_pcm_ops *pcm_ops;
+ };
+-- 
+1.6.2.5
