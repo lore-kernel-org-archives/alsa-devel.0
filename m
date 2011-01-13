@@ -1,20 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Blackfin TDM: fix missed
- snd_soc_dai_get_drvdata update
-Date: Thu, 13 Jan 2011 13:57:32 +0000
-Message-ID: <1294927052.3453.11.camel@odin>
-References: <1294805299-5265-1-git-send-email-vapier@gentoo.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: tegra: s/IS_ERR_OR_NULL/IS_ERR/ for
+	clk_get_sys
+Date: Thu, 13 Jan 2011 13:58:36 +0000
+Message-ID: <20110113135836.GE11840@opensource.wolfsonmicro.com>
+References: <1294775333-8372-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1D5C510385E
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 14:57:36 +0100 (CET)
-Received: by wyi11 with SMTP id 11so1713811wyi.38
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 05:57:35 -0800 (PST)
-In-Reply-To: <1294805299-5265-1-git-send-email-vapier@gentoo.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7E251103873
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 14:58:20 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1294775333-8372-1-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,19 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, stable-review@kernel.org, uclinux-dist-devel@blackfin.uclinux.org, stable@kernel.org
+To: Stephen Warren <swarren@nvidia.com>
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-01-11 at 23:08 -0500, Mike Frysinger wrote:
-> One spot was missed in this driver when converting from
-> snd_soc_dai.private_data to snd_soc_dai_get_drvdata.
-> 
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-> ---
+On Tue, Jan 11, 2011 at 12:48:53PM -0700, Stephen Warren wrote:
+> A recent discussion on linux-arm-kernel noted that the value returned by
+> clk_get_sys is an opaque token, and not strictly a pointer; it is
+> meaningful only to the clock API, clients should not dereference the value,
+> and the clock API must accept any non-IS_ERR value it returned.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Applied, thanks.
