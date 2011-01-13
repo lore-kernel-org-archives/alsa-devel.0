@@ -1,23 +1,15 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: [uclinux-dist-devel] [PATCH] ASoC: Blackfin TDM:
- fix missed snd_soc_dai_get_drvdata update
-Date: Thu, 13 Jan 2011 12:17:15 -0500
-Message-ID: <AANLkTi=Uf_uFT46fDrgQcwrwiO8GOGhxs_PZJEcG7XxY@mail.gmail.com>
-References: <1294805299-5265-1-git-send-email-vapier@gentoo.org>
-	<20110113135525.GD11840@opensource.wolfsonmicro.com>
-	<AANLkTi=5z0u3un8mGoFChMyzgeGY-tajr3iCC-aR6Dv6@mail.gmail.com>
-	<20110113171249.GH30351@opensource.wolfsonmicro.com>
+From: Nitin Daga <ndaga@nvidia.com>
+Subject: [PATCH] ALSA: hda: Disable odd numbered channels on
+	HDMI controllers.
+Date: Fri, 14 Jan 2011 01:49:47 +0530
+Message-ID: <1294949987-11389-1-git-send-email-ndaga@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 57F07103B3F
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 18:18:09 +0100 (CET)
-Received: by eyg24 with SMTP id 24so920171eyg.38
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 09:18:09 -0800 (PST)
-In-Reply-To: <20110113171249.GH30351@opensource.wolfsonmicro.com>
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 35BF8103B06
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 21:20:03 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,20 +19,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Nitin Daga <ndaga@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 13, 2011 at 12:12, Mark Brown wrote:
-> On Thu, Jan 13, 2011 at 11:52:02AM -0500, Mike Frysinger wrote:
->> On Thu, Jan 13, 2011 at 08:55, Mark Brown wrote:
->> > Ccing in Liam - Mike, please remember to CC maintainers on patches - and
->> > dropping the stable lists for now.
->>
->> i thought you were the ASoC maintainer
->
-> We comaintain ASoC, we generally both review everything except during
-> vacations.
+Added code in hda_intel.c to disable odd numbered channels
+not supported by HDMI controllers.
 
-np ... i'll update my .git/mail
--mike
+Signed-off-by: Nitin Daga <ndaga@nvidia.com>
+Acked-By: Stephen Warren <swarren@nvidia.com>
+---
+ pci/hda/hda_intel.c |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
+
+diff --git a/pci/hda/hda_intel.c b/pci/hda/hda_intel.c
+index a78ea34..293c685 100644
+--- a/pci/hda/hda_intel.c
++++ b/pci/hda/hda_intel.c
+@@ -1539,6 +1539,16 @@ struct azx_pcm {
+ 	struct hda_pcm_stream *hinfo[2];
+ };
+ 
++static unsigned int channels_2_4_6_8[] = {
++	2, 4, 6, 8
++};
++
++static struct snd_pcm_hw_constraint_list hw_constraints_2_4_6_8_channels = {
++	.count = ARRAY_SIZE(channels_2_4_6_8),
++	.list = channels_2_4_6_8,
++	.mask = 0,
++};
++
+ static int azx_pcm_open(struct snd_pcm_substream *substream)
+ {
+ 	struct azx_pcm *apcm = snd_pcm_substream_chip(substream);
+@@ -1566,6 +1576,9 @@ static int azx_pcm_open(struct snd_pcm_substream *substream)
+ 				   128);
+ 	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
+ 				   128);
++	snd_pcm_hw_constraint_list(runtime, 0,
++				   SNDRV_PCM_HW_PARAM_CHANNELS,
++				   &hw_constraints_2_4_6_8_channels);
+ 	snd_hda_power_up(apcm->codec);
+ 	err = hinfo->ops.open(hinfo, apcm->codec, substream);
+ 	if (err < 0) {
+-- 
+1.7.0.4
+
+
+-----------------------------------------------------------------------------------
+This email message is for the sole use of the intended recipient(s) and may contain
+confidential information.  Any unauthorized review, use, disclosure or distribution
+is prohibited.  If you are not the intended recipient, please contact the sender by
+reply email and destroy all copies of the original message.
+-----------------------------------------------------------------------------------
