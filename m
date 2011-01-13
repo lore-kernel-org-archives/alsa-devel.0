@@ -1,18 +1,15 @@
-From: Anssi Hannula <anssi.hannula@iki.fi>
-Subject: Re: [PATCH] ALSA: hda: Disable odd numbered channels
- on	HDMI controllers.
-Date: Thu, 13 Jan 2011 22:42:39 +0200
-Message-ID: <4D2F63BF.8000308@iki.fi>
-References: <1294949987-11389-1-git-send-email-ndaga@nvidia.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: [PATCH] ASoC: tegra: Remove TEGRA_I2S_AUDIO from
+	Kconfig
+Date: Thu, 13 Jan 2011 15:21:53 -0700
+Message-ID: <1294957313-15834-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sirokuusama.dnainternet.net (sirokuusama.dnainternet.net
-	[83.102.40.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id BED5E103B06
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 21:42:43 +0100 (CET)
-In-Reply-To: <1294949987-11389-1-git-send-email-ndaga@nvidia.com>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id DF298103B23
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 23:22:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,68 +19,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Nitin Daga <ndaga@nvidia.com>
-Cc: alsa-devel@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 13.01.2011 22:19, Nitin Daga wrote:
-> Added code in hda_intel.c to disable odd numbered channels
-> not supported by HDMI controllers.
-> 
-> Signed-off-by: Nitin Daga <ndaga@nvidia.com>
-> Acked-By: Stephen Warren <swarren@nvidia.com>
-> ---
->  pci/hda/hda_intel.c |   13 +++++++++++++
->  1 files changed, 13 insertions(+), 0 deletions(-)
-> 
-> diff --git a/pci/hda/hda_intel.c b/pci/hda/hda_intel.c
-> index a78ea34..293c685 100644
-> --- a/pci/hda/hda_intel.c
-> +++ b/pci/hda/hda_intel.c
-> @@ -1539,6 +1539,16 @@ struct azx_pcm {
->  	struct hda_pcm_stream *hinfo[2];
->  };
->  
-> +static unsigned int channels_2_4_6_8[] = {
-> +	2, 4, 6, 8
-> +};
-> +
-> +static struct snd_pcm_hw_constraint_list hw_constraints_2_4_6_8_channels = {
-> +	.count = ARRAY_SIZE(channels_2_4_6_8),
-> +	.list = channels_2_4_6_8,
-> +	.mask = 0,
-> +};
+That config variable doesn't exist in the mainline kernel, and hence
+the dependency shouldn't either.
 
-Hmm, can't these be const? OTOH none of the other drivers use const for
-snd_pcm_hw_constraint_list either, so I guess it is ok.
+In linux-tegra-2.6.36, the dependency did exist to avoid a conflict with
+the old non-ALSA Tegra I2S driver. However, this isn't and won't be
+upstreamed.
 
->  static int azx_pcm_open(struct snd_pcm_substream *substream)
->  {
->  	struct azx_pcm *apcm = snd_pcm_substream_chip(substream);
-> @@ -1566,6 +1576,9 @@ static int azx_pcm_open(struct snd_pcm_substream *substream)
->  				   128);
->  	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
->  				   128);
-> +	snd_pcm_hw_constraint_list(runtime, 0,
-> +				   SNDRV_PCM_HW_PARAM_CHANNELS,
-> +				   &hw_constraints_2_4_6_8_channels);
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
+---
+ sound/soc/tegra/Kconfig |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-This would seem simpler and more generic (there are codecs that have
-over 8 channels):
-snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS, 2);
-
-However, either of those would AFAICS break Si3054 Modem codec which is
-mono-only.
-
-Maybe just add the constraint to patch_hdmi.c?
-Or use the patch as is but add 1, 10, 12, 14, 16 (or so) to the allowed
-channel counts list.
-
-Not really sure what is the preferred approach, though.
-
->  	snd_hda_power_up(apcm->codec);
->  	err = hinfo->ops.open(hinfo, apcm->codec, substream);
->  	if (err < 0) {
-
+diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
+index 5514f1c..66b504f 100644
+--- a/sound/soc/tegra/Kconfig
++++ b/sound/soc/tegra/Kconfig
+@@ -8,7 +8,6 @@ config SND_TEGRA_SOC
+ config SND_TEGRA_SOC_I2S
+ 	tristate
+ 	depends on SND_TEGRA_SOC
+-	depends on !TEGRA_I2S_AUDIO
+ 	default m
+ 	help
+ 	  Say Y or M if you want to add support for codecs attached to the
 -- 
-Anssi Hannula
+1.7.0.4
