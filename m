@@ -1,20 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v2 1/3] ASoC: soc-cache: Add support for
- default readable()/volatile() functions
-Date: Thu, 13 Jan 2011 13:31:12 +0000
-Message-ID: <1294925472.3453.3.camel@odin>
-References: <1294921238-11859-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: WL1273 FM radio: Access I2C
+	IO	functions through pointers.
+Date: Thu, 13 Jan 2011 13:34:26 +0000
+Message-ID: <20110113133426.GA20480@sirena.org.uk>
+References: <1294924965-6358-1-git-send-email-matti.j.aaltonen@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id B0033103852
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 14:31:15 +0100 (CET)
-Received: by wyi11 with SMTP id 11so1688592wyi.38
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 05:31:15 -0800 (PST)
-In-Reply-To: <1294921238-11859-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3ADED10385E
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 14:34:28 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1294924965-6358-1-git-send-email-matti.j.aaltonen@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,29 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: Peter Hsiang <Peter.Hsiang@maxim-ic.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Timur Tabi <timur@freescale.com>
+To: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-01-13 at 12:20 +0000, Dimitris Papastamos wrote:
-> For common scenarios, device drivers can provide a table of all the
-> registers that are at least either readable/writable/volatile.  The idea
-> is that if a register lookup fails, all of its read/write/vol members
-> will be zero and will be treated as default.  This also reduces the
-> size of the register access array.
-> 
-> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+On Thu, Jan 13, 2011 at 03:22:45PM +0200, Matti J. Aaltonen wrote:
+> These changes are needed to keep up with the changes in the
+> MFD core and V4L2 parts of the wl1273 FM radio driver.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
-
-I think we may be getting to the point where we should probably look
-into making this register cache functionality available to other non
-ASoC I2C and SPI based drivers.
-
-Thanks
-
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+This needs to be submitted as part of the patch that changes the API of
+the core otherwise you'll break builds.
