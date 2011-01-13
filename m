@@ -1,15 +1,15 @@
 From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: [PATCH 2/4] ASoC: soc core move the card debugfs
-	initialization
-Date: Thu, 13 Jan 2011 22:48:32 +0530
-Message-ID: <1294939112-26381-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 3/4] ASoC: soc core add inline to handle card
+	list initialzation
+Date: Thu, 13 Jan 2011 22:48:52 +0530
+Message-ID: <1294939132-26412-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 905E3103B20
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 18:16:31 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1863A103B20
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 18:16:49 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,38 +25,57 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Vinod Koul <vinod.koul@intel.com>
 
-The card debugfs initialization is done in soc_probe but would be better if it
-is done when the card in registered
+Currently the soc_probe initializes the card hence it does the card list
+initialzation. But if machines directly register the card they would need to
+do these steps, so putting them as inline would save lot of code
 
-This patch moves the debugfs initialization to register_card()
+This patch adds an inline to do list initialzation
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Harsha Priya <harsha.priya@intel.com>
 ---
- sound/soc/soc-core.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ include/sound/soc.h  |   10 ++++++++++
+ sound/soc/soc-core.c |    7 +------
+ 2 files changed, 11 insertions(+), 6 deletions(-)
 
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index accb8a1..541ddfa 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -779,6 +779,16 @@ static inline void *snd_soc_pcm_get_drvdata(struct snd_soc_pcm_runtime *rtd)
+ 	return dev_get_drvdata(&rtd->dev);
+ }
+ 
++static inline void snd_soc_initialize_card_lists(struct snd_soc_card *card)
++{
++	INIT_LIST_HEAD(&card->dai_dev_list);
++	INIT_LIST_HEAD(&card->codec_dev_list);
++	INIT_LIST_HEAD(&card->platform_dev_list);
++	INIT_LIST_HEAD(&card->widgets);
++	INIT_LIST_HEAD(&card->paths);
++	INIT_LIST_HEAD(&card->dapm_list);
++}
++
+ #include <sound/soc-dai.h>
+ 
+ #ifdef CONFIG_DEBUG_FS
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 318c3a7..9c5e7cf 100644
+index 9c5e7cf..8305712 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1879,8 +1879,6 @@ static int soc_probe(struct platform_device *pdev)
- 	INIT_LIST_HEAD(&card->paths);
- 	INIT_LIST_HEAD(&card->dapm_list);
+@@ -1872,12 +1872,7 @@ static int soc_probe(struct platform_device *pdev)
  
--	soc_init_card_debugfs(card);
--
+ 	/* Bodge while we unpick instantiation */
+ 	card->dev = &pdev->dev;
+-	INIT_LIST_HEAD(&card->dai_dev_list);
+-	INIT_LIST_HEAD(&card->codec_dev_list);
+-	INIT_LIST_HEAD(&card->platform_dev_list);
+-	INIT_LIST_HEAD(&card->widgets);
+-	INIT_LIST_HEAD(&card->paths);
+-	INIT_LIST_HEAD(&card->dapm_list);
++	snd_soc_initialize_card_lists(card);
+ 
  	ret = snd_soc_register_card(card);
  	if (ret != 0) {
- 		dev_err(&pdev->dev, "Failed to register card\n");
-@@ -3123,6 +3121,8 @@ static int snd_soc_register_card(struct snd_soc_card *card)
- 	if (!card->name || !card->dev)
- 		return -EINVAL;
- 
-+	soc_init_card_debugfs(card);
-+
- 	card->rtd = kzalloc(sizeof(struct snd_soc_pcm_runtime) *
- 			    (card->num_links + card->num_aux_devs),
- 			    GFP_KERNEL);
 -- 
 1.7.2.3
