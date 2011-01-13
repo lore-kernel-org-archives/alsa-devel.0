@@ -1,23 +1,18 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: Make register_card API available to
- drivers
-Date: Thu, 13 Jan 2011 19:31:48 +0530
-Message-ID: <438BB0150E931F4B9CE701519A4463010844671FDC@bgsmsx502.gar.corp.intel.com>
-References: <1294901358-14364-1-git-send-email-vinod.koul@intel.com>
-	<20110113112607.GA9936@opensource.wolfsonmicro.com>
-	<438BB0150E931F4B9CE701519A4463010844671F9B@bgsmsx502.gar.corp.intel.com>
-	<20110113114203.GA30351@opensource.wolfsonmicro.com>
-	<438BB0150E931F4B9CE701519A4463010844671FD1@bgsmsx502.gar.corp.intel.com>
-	<20110113133435.GC30351@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 1/3] ASoC: soc-cache: Add support
+	for	default readable()/volatile() functions
+Date: Thu, 13 Jan 2011 14:08:55 +0000
+Message-ID: <20110113140855.GB20480@sirena.org.uk>
+References: <1294921238-11859-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id CEEA6103873
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 15:01:58 +0100 (CET)
-In-Reply-To: <20110113133435.GC30351@opensource.wolfsonmicro.com>
-Content-Language: en-US
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 85DF9103AF8
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 15:08:58 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1294921238-11859-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,31 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Harsha,
-	Priya" <priya.harsha@intel.com>, "Bensaid,
-	Selma" <selma.bensaid@intel.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: Peter Hsiang <Peter.Hsiang@maxim-ic.com>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-> The above doesn't require any change in existing machine drivers - they
-> still pass the card data structure into the soc-audio device which then
-> registers with the core.  This the whole point, move the soc-audio
-> device over to using an API that can also be used externally then
-> convert the machine drivers to stop using the soc-audio device.
-> 
-> > Btw this make me wonder what will soc_probe be used (it is not doing anything)
-> > Do we still need this and creating soc-audio device?
-> 
-> That's the point I'm making above.  It shouldn't be involved at all
-> except as part of the soc-audio device code, anything registering a card
-> directly should never call it.
-Agreed :)
-Knowing the context helps...
+On Thu, Jan 13, 2011 at 12:20:36PM +0000, Dimitris Papastamos wrote:
+> For common scenarios, device drivers can provide a table of all the
+> registers that are at least either readable/writable/volatile.  The idea
+> is that if a register lookup fails, all of its read/write/vol members
+> will be zero and will be treated as default.  This also reduces the
+> size of the register access array.
 
-Above works well for probe, but not sure if that is intention for remove().
-Do you expect the machine driver to call codec and platform remove before it
-unregisters the card.
-The code inside: 
-	if (card->instantiated)
+Applied all three, thanks.
 
-~Vinod
+Liam was just mentioning on IM that it might be worth looking at pulling
+the cache and I/O code out of ASoC for use by other I2C/SPI based
+subsystems.  I'll take a look at that.
