@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/4] ASoC: soc core allow machine driver to
- register the card
-Date: Fri, 14 Jan 2011 10:52:24 +0000
-Message-ID: <20110114105224.GA13256@opensource.wolfsonmicro.com>
-References: <1294939150-26443-1-git-send-email-vinod.koul@intel.com>
-	<20110113234135.GD13717@opensource.wolfsonmicro.com>
-	<438BB0150E931F4B9CE701519A4463010844672180@bgsmsx502.gar.corp.intel.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: tegra: Remove TEGRA_I2S_AUDIO from
+ Kconfig
+Date: Fri, 14 Jan 2011 11:04:54 +0000
+Message-ID: <1295003094.3293.68.camel@odin>
+References: <1294957313-15834-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ECB4E103B90
-	for <alsa-devel@alsa-project.org>; Fri, 14 Jan 2011 11:52:27 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <438BB0150E931F4B9CE701519A4463010844672180@bgsmsx502.gar.corp.intel.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7AC7E103B90
+	for <alsa-devel@alsa-project.org>; Fri, 14 Jan 2011 12:04:57 +0100 (CET)
+Received: by wyi11 with SMTP id 11so2684363wyi.38
+	for <alsa-devel@alsa-project.org>; Fri, 14 Jan 2011 03:04:57 -0800 (PST)
+In-Reply-To: <1294957313-15834-1-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,29 +24,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Koul, Vinod" <vinod.koul@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Harsha,
-	Priya" <priya.harsha@intel.com>, "Bensaid,
-	Selma" <selma.bensaid@intel.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 14, 2011 at 09:54:59AM +0530, Koul, Vinod wrote:
+On Thu, 2011-01-13 at 15:21 -0700, Stephen Warren wrote:
+> That config variable doesn't exist in the mainline kernel, and hence
+> the dependency shouldn't either.
+> 
+> In linux-tegra-2.6.36, the dependency did exist to avoid a conflict with
+> the old non-ALSA Tegra I2S driver. However, this isn't and won't be
+> upstreamed.
+> 
+> Signed-off-by: Stephen Warren <swarren@nvidia.com>
+> ---
 
-> > > +	/* no card, so machine driver is registering card */
-> > > +	if (!card)
-> > > +		return 0;
-> > > +
-
-> > I'll review this one more closely tomorrow - as I said with the combined
-> > patch I'd not expect the soc-audio device to be involved when the
-> > machine driver is registering a card so I'd like to understand in more
-> > detail why this is still required.
-
-> If someone is still creating soc-audio device and not adding the drvdata the
-> code following this will use a null pointer :(. So tried to protect, but again
-> if people are doing right, then this shouldn't be invoked at all
-
-If that's all it is then the check should be changed to return -EINVAL
-or similar as this is an error which prevents the device being
-instantiated.  It shouldn't pretend it succeeded, and not doing so will
-save us having to check in any of the other functions.
+Acked-by Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
