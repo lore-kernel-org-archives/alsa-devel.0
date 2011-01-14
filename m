@@ -1,20 +1,17 @@
-From: Philip Chu <Philip.Chu@logicpd.com>
-Subject: ALSA driver fails to creat ControlC1 and others...
-Date: Thu, 13 Jan 2011 18:17:24 -0600
-Message-ID: <0520A3FE5EDCF24F88B3F1451CFC64AE03E397B635@EDPREX01.logicpd.com>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: Re: [PATCH 4/4] ASoC: soc core allow machine driver to
+ register the card
+Date: Fri, 14 Jan 2011 09:54:59 +0530
+Message-ID: <438BB0150E931F4B9CE701519A4463010844672180@bgsmsx502.gar.corp.intel.com>
 References: <1294939150-26443-1-git-send-email-vinod.koul@intel.com>
 	<20110113234135.GD13717@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from barracuda.logicpd.com (unknown [174.46.170.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7B418243FA
-	for <alsa-devel@alsa-project.org>; Fri, 14 Jan 2011 01:17:31 +0100 (CET)
-Received: from EDPREX01.logicpd.com (edprex01.logicpd.com [10.1.18.134]) by
-	barracuda.logicpd.com with ESMTP id 74vyDyuAboPxwpZh
-	(version=TLSv1 cipher=AES128-SHA bits=128 verify=NO) for
-	<alsa-devel@alsa-project.org>; Thu, 13 Jan 2011 18:17:25 -0600 (CST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4E87D103B73
+	for <alsa-devel@alsa-project.org>; Fri, 14 Jan 2011 05:27:09 +0100 (CET)
 In-Reply-To: <20110113234135.GD13717@opensource.wolfsonmicro.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -26,34 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Harsha,
+	Priya" <priya.harsha@intel.com>, "Bensaid,
+	Selma" <selma.bensaid@intel.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-I am having problem creating 2nd ALSA sound card driver I developed:
+> > @@ -1870,6 +1868,10 @@ static int soc_probe(struct platform_device *pdev)
+> >  	struct snd_soc_card *card = platform_get_drvdata(pdev);
+> >  	int ret = 0;
+> >
+> > +	/* no card, so machine driver is registering card */
+> > +	if (!card)
+> > +		return 0;
+> > +
+> 
+> I'll review this one more closely tomorrow - as I said with the combined
+> patch I'd not expect the soc-audio device to be involved when the
+> machine driver is registering a card so I'd like to understand in more
+> detail why this is still required.
 
-I found snd_ctl_dev_register() in control.c is called successfully but I do not see the 2nd sound card entry below:
+If someone is still creating soc-audio device and not adding the drvdata the
+code following this will use a null pointer :(. So tried to protect, but again
+if people are doing right, then this shouldn't be invoked at all
 
-# ls /dev/snd
-controlC0  pcmC0D0c   pcmC0D0p   pcmC0D1c   seq        timer
-
-And I saw a suspicious message at the end of boot steps:
-
-Unmuting sound device: [FAIL]
-Starting dropbear sshd: OK
-
-
-Well, this happens with one file system, and with another file system, the 2nd card entry is created correctly as below:
-
-# ls /dev/snd
-controlC0  pcmC0D0c   pcmC1D1c   seq
-controlC1  pcmC0D0p   pcmC1D1p   timer
-
-And I don't see that message.
-
-
-Anybody has some suggestions?
-
-
-Thanks a lot in advance.
-
-Philip
+~Vinod
