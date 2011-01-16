@@ -1,19 +1,17 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Card driver: device or resource busy
-Date: Sun, 16 Jan 2011 09:13:29 +0800
-Message-ID: <AANLkTikWa6DgGBE5rrq2LEuXbC7gdZVcV-XOaBLHq3DZ@mail.gmail.com>
-References: <12d8ae03d3b.-1810748071142587921.-87582792196928800@zoho.com>
+Subject: [PATCH] ALSA : au88x0 - fix playback/capture channels
+	of au8830
+Date: Sun, 16 Jan 2011 11:14:09 +0800
+Message-ID: <AANLkTi=1dGY2iyjzPvjoBWgd__tEOkK-tckQ-nS7mrQ2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=90e6ba53b1069c73a40499ee0f73
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
 	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7864124432
-	for <alsa-devel@alsa-project.org>; Sun, 16 Jan 2011 02:13:30 +0100 (CET)
-Received: by eyg24 with SMTP id 24so1985961eyg.38
-	for <alsa-devel@alsa-project.org>; Sat, 15 Jan 2011 17:13:30 -0800 (PST)
-In-Reply-To: <12d8ae03d3b.-1810748071142587921.-87582792196928800@zoho.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C5FE244C3
+	for <alsa-devel@alsa-project.org>; Sun, 16 Jan 2011 04:14:10 +0100 (CET)
+Received: by eyg24 with SMTP id 24so2000139eyg.38
+	for <alsa-devel@alsa-project.org>; Sat, 15 Jan 2011 19:14:10 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +21,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-2011/1/16 torsten.schenk <torsten.schenk@zoho.com>
+--90e6ba53b1069c73a40499ee0f73
+Content-Type: text/plain; charset=ISO-8859-1
 
-> Hello,
->
-> I'm currently developing a driver for a card. PCM playback works so far, I
-> just encountered some playback issues when firefox (flash) and another alsa
-> client wanted to play back at the same time. I figured out that the
-> difference between my driver and existing ones is, that my driver only
-> allows one client and others multiple. I get a "Device or resource busy"
-> when I play back two times the same file (also different ones of course)
-> with mplayer f.ex.
->
+patch to change supported playback channels of au8830 to 1,2,4 and capture
+channels to 1,2
+This prevent oops when oss emulation use SNDCTL_DSP_CHANNELS to set 3
+channels
 
-if your sound card 's DSP can mix more than one audio stream, you need to
-specify the number of playback streams in snd_pcm_new()
+--90e6ba53b1069c73a40499ee0f73
+Content-Type: application/octet-stream; name="0001-ALSA-au88x0.patch"
+Content-Disposition: attachment; filename="0001-ALSA-au88x0.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gizdcp8z0
 
- int snd_pcm_new(struct snd_card *card, const char *id, int device,
-        int playback_count, int capture_count,
-        struct snd_pcm **rpcm);
+RnJvbSAwNjdhN2YyY2JhYWM2YzVmZDAxMDZiMDk0NDg3M2NjOGUwODVhMjI5IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
+Y29tPgpEYXRlOiBTdW4sIDE2IEphbiAyMDExIDEwOjU1OjU0ICswODAwClN1YmplY3Q6IFtQQVRD
+SF0gQUxTQSA6IGF1ODh4MCAtIGZpeCBwbGF5YmFjay9jYXB0dXJlIGNoYW5uZWxzCiBwYXRjaCB0
+byBjaGFuZ2Ugc3VwcG9ydGVkIHBsYXliYWNrIGNoYW5uZWxzIG9mIGF1ODgzMCB0byAxLDIsNAog
+YW5kIGNhcHR1cmUgY2hhbm5lbHMgdG8gMSwyCiBUaGlzIHByZXZlbnQgb29wcyB3aGVuIG9zcyBl
+bXVsYXRpb24gdXNlIFNORENUTF9EU1BfQ0hBTk5FTFMKIHRvIHNldCAzIENoYW5uZWxzCgoKU2ln
+bmVkLW9mZi1ieTogUmF5bW9uZCBZYXUgPHN1cGVycXVhZC52b3J0ZXgyQGdtYWlsLmNvbT4KCmRp
+ZmYgLS1naXQgYS9zb3VuZC9wY2kvYXU4OHgwL2F1ODh4MF9wY20uYyBiL3NvdW5kL3BjaS9hdTg4
+eDAvYXU4OHgwX3BjbS5jCmluZGV4IGI5ZDJmMjAuLjU0MzlkNjYgMTAwNjQ0Ci0tLSBhL3NvdW5k
+L3BjaS9hdTg4eDAvYXU4OHgwX3BjbS5jCisrKyBiL3NvdW5kL3BjaS9hdTg4eDAvYXU4OHgwX3Bj
+bS5jCkBAIC00MiwxMSArNDIsNyBAQCBzdGF0aWMgc3RydWN0IHNuZF9wY21faGFyZHdhcmUgc25k
+X3ZvcnRleF9wbGF5YmFja19od19hZGIgPSB7CiAJLnJhdGVfbWluID0gNTAwMCwKIAkucmF0ZV9t
+YXggPSA0ODAwMCwKIAkuY2hhbm5lbHNfbWluID0gMSwKLSNpZmRlZiBDSElQX0FVODgzMAotCS5j
+aGFubmVsc19tYXggPSA0LAotI2Vsc2UKIAkuY2hhbm5lbHNfbWF4ID0gMiwKLSNlbmRpZgogCS5i
+dWZmZXJfYnl0ZXNfbWF4ID0gMHgxMDAwMCwKIAkucGVyaW9kX2J5dGVzX21pbiA9IDB4MSwKIAku
+cGVyaW9kX2J5dGVzX21heCA9IDB4MTAwMCwKQEAgLTExNSw2ICsxMTEsMTcgQEAgc3RhdGljIHN0
+cnVjdCBzbmRfcGNtX2hhcmR3YXJlIHNuZF92b3J0ZXhfcGxheWJhY2tfaHdfd3QgPSB7CiAJLnBl
+cmlvZHNfbWF4ID0gNjQsCiB9OwogI2VuZGlmCisjaWZkZWYgQ0hJUF9BVTg4MzAKK3N0YXRpYyB1
+bnNpZ25lZCBpbnQgYXU4ODMwX2NoYW5uZWxzWzNdID0geworCTEsIDIsIDQsCit9OworCitzdGF0
+aWMgc3RydWN0IHNuZF9wY21faHdfY29uc3RyYWludF9saXN0IGh3X2NvbnN0cmFpbnRzX2F1ODgz
+MF9jaGFubmVscyA9IHsKKwkuY291bnQgPSBBUlJBWV9TSVpFKGF1ODgzMF9jaGFubmVscyksCisJ
+Lmxpc3QgPSBhdTg4MzBfY2hhbm5lbHMsCisJLm1hc2sgPSAwLAorfTsKKyNlbmRpZgogLyogb3Bl
+biBjYWxsYmFjayAqLwogc3RhdGljIGludCBzbmRfdm9ydGV4X3BjbV9vcGVuKHN0cnVjdCBzbmRf
+cGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQogewpAQCAtMTU2LDYgKzE2MywxNSBAQCBzdGF0aWMg
+aW50IHNuZF92b3J0ZXhfcGNtX29wZW4oc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJl
+YW0pCiAJCWlmIChWT1JURVhfUENNX1RZUEUoc3Vic3RyZWFtLT5wY20pID09IFZPUlRFWF9QQ01f
+QURCCiAJCSAgICB8fCBWT1JURVhfUENNX1RZUEUoc3Vic3RyZWFtLT5wY20pID09IFZPUlRFWF9Q
+Q01fSTJTKQogCQkJcnVudGltZS0+aHcgPSBzbmRfdm9ydGV4X3BsYXliYWNrX2h3X2FkYjsKKyNp
+ZmRlZiBDSElQX0FVODgzMAorCQlpZiAoc3Vic3RyZWFtLT5zdHJlYW0gPT0gU05EUlZfUENNX1NU
+UkVBTV9QTEFZQkFDSyAmJgorCQkJVk9SVEVYX1BDTV9UWVBFKHN1YnN0cmVhbS0+cGNtKSA9PSBW
+T1JURVhfUENNX0FEQikgeworCQkJcnVudGltZS0+aHcuY2hhbm5lbHNfbWF4ID0gNDsKKwkJCXNu
+ZF9wY21faHdfY29uc3RyYWludF9saXN0KHJ1bnRpbWUsIDAsCisJCQkJU05EUlZfUENNX0hXX1BB
+UkFNX0NIQU5ORUxTLAorCQkJCSZod19jb25zdHJhaW50c19hdTg4MzBfY2hhbm5lbHMpOworCQl9
+CisjZW5kaWYKIAkJc3Vic3RyZWFtLT5ydW50aW1lLT5wcml2YXRlX2RhdGEgPSBOVUxMOwogCX0K
+ICNpZm5kZWYgQ0hJUF9BVTg4MTAKLS0gCjEuNi4wLjYKCg==
+--90e6ba53b1069c73a40499ee0f73
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-otherwise you will need to use a sound server or dmix for software mixing
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--90e6ba53b1069c73a40499ee0f73--
