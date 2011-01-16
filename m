@@ -1,19 +1,19 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: jack-sense where is it?
-Date: Sun, 16 Jan 2011 09:02:45 +0800
-Message-ID: <AANLkTimbA8wZJ88no1VoiRQ6RqOCtkDA3Rysv7KNTEXB@mail.gmail.com>
-References: <AANLkTikhy-mRzUJbyJBV2YzFvrQyvyd5_QWzh88+kVZ+@mail.gmail.com>
+Subject: Re: Card driver: device or resource busy
+Date: Sun, 16 Jan 2011 09:13:29 +0800
+Message-ID: <AANLkTikWa6DgGBE5rrq2LEuXbC7gdZVcV-XOaBLHq3DZ@mail.gmail.com>
+References: <12d8ae03d3b.-1810748071142587921.-87582792196928800@zoho.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
 	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 846B324418
-	for <alsa-devel@alsa-project.org>; Sun, 16 Jan 2011 02:02:46 +0100 (CET)
-Received: by eyg24 with SMTP id 24so1984619eyg.38
-	for <alsa-devel@alsa-project.org>; Sat, 15 Jan 2011 17:02:46 -0800 (PST)
-In-Reply-To: <AANLkTikhy-mRzUJbyJBV2YzFvrQyvyd5_QWzh88+kVZ+@mail.gmail.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 7864124432
+	for <alsa-devel@alsa-project.org>; Sun, 16 Jan 2011 02:13:30 +0100 (CET)
+Received: by eyg24 with SMTP id 24so1985961eyg.38
+	for <alsa-devel@alsa-project.org>; Sat, 15 Jan 2011 17:13:30 -0800 (PST)
+In-Reply-To: <12d8ae03d3b.-1810748071142587921.-87582792196928800@zoho.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,22 +26,24 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/1/16 Paulo Silva <paulo.jnkml@gmail.com>
+2011/1/16 torsten.schenk <torsten.schenk@zoho.com>
 
+> Hello,
 >
-> This is because I have two headphone jacks and since I upgraded to 2.6.26,
-> when I plug anything to the 2nd headphone the first gets muted.
+> I'm currently developing a driver for a card. PCM playback works so far, I
+> just encountered some playback issues when firefox (flash) and another alsa
+> client wanted to play back at the same time. I figured out that the
+> difference between my driver and existing ones is, that my driver only
+> allows one client and others multiple. I get a "Device or resource busy"
+> when I play back two times the same file (also different ones of course)
+> with mplayer f.ex.
 >
-> I think this is a jack sensing related bug, since the 1st jack is
-> enumerated
-> as "Front" and the 2nd as "Headphone" when in reality they are both
-> "Headphone" 1 and 2.
->
 
+if your sound card 's DSP can mix more than one audio stream, you need to
+specify the number of playback streams in snd_pcm_new()
 
-if your notebook has dual headphone jacks and internal speakers,
-this usually need special handling in hp_automute() function of your hda
-codec since it depend on how your hda codec route the audio to dual
-headphone jacks and internal speakers
+ int snd_pcm_new(struct snd_card *card, const char *id, int device,
+        int playback_count, int capture_count,
+        struct snd_pcm **rpcm);
 
-you will need to study datasheet of your hda codec and hda/patch_xxxx.c
+otherwise you will need to use a sound server or dmix for software mixing
