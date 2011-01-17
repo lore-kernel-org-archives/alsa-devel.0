@@ -1,17 +1,20 @@
-From: Alexander <subaparts@yandex.ru>
-Subject: Re: [PATCH] ASoC: CS4271 codec support
-Date: Mon, 17 Jan 2011 16:37:29 +0300
-Message-ID: <1295271449.16460.34.camel@r60e>
-References: <1295217350.16460.11.camel@r60e>
-	<1295260210.11031.38.camel@dplaptop.localdomain>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 4/4] ASoC: soc core allow machine driver to
+ register the card
+Date: Mon, 17 Jan 2011 13:45:02 +0000
+Message-ID: <1295271902.3283.7.camel@odin>
+References: <1295013168-29748-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward9.mail.yandex.net (forward9.mail.yandex.net
-	[77.88.61.48]) by alsa0.perex.cz (Postfix) with ESMTP id A033E103804
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2011 14:37:34 +0100 (CET)
-In-Reply-To: <1295260210.11031.38.camel@dplaptop.localdomain>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 38B80103804
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2011 14:45:07 +0100 (CET)
+Received: by wyi11 with SMTP id 11so5141098wyi.38
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2011 05:45:06 -0800 (PST)
+In-Reply-To: <1295013168-29748-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,145 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, ryan@bluewatersys.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Harsha Priya <priya.harsha@intel.com>, selma.bensaid@intel.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Dear Dimitris,
+On Fri, 2011-01-14 at 19:22 +0530, Koul, Vinod wrote:
+> From: Vinod Koul <vinod.koul@intel.com>
+> 
+> The machine driver can't register the card directly and need to do this thru
+> soc-audio device creation
+> 
+> This patch allows the register and unregister card to be directly called by
+> machine drivers
+> 
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> Signed-off-by: Harsha Priya <priya.harsha@intel.com>
+> ---
 
-On Mon, 2011-01-17 at 10:30 +0000, Dimitris Papastamos wrote:
-> On Mon, 2011-01-17 at 01:35 +0300, Alexander wrote:
-> > +/* CS4271 default register settings, except auto-mute is off */
-> > +static const u8 cs4271_dflt_reg[CS4271_NR_REGS] = {
-> > +	0, 0, 0, CS4271_DACVOL_ATAPI_AL_BR, 0, 0, 0,
-> > +	CS4271_MODE2_CPEN | CS4271_MODE2_PDN,
-> > +};
-> 
-> I'd be better to leave these as defaults, and perform any initialization
-> in the the cs4271_probe() function.
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-It's space optimized without affecting readability. I can rename it to
-cs4271_init_reg[].
+Fwiw, adding this functionality to core has been on my TODO list for a
+while. I can delete this task now :)
 
-> 
-> > +	/* Configure DAC */
-> > +	val = cs4271_clk_tab[i].speed_mode;
-> > +
-> > +	if (cs4271->master)
-> > +		val |= cs4271_clk_tab[i].mclk_master | CS4271_MODE1_MASTER;
-> > +	else
-> > +		val |= cs4271_clk_tab[i].mclk_slave;
-> 
-> This should ideally live in cs4271_set_dai_fmt().
+Thanks !
 
-It's space optimized for particular codec hardware without affecting
-readability.
-
-> 
-> > +	switch (cs4271->mode) {
-> > +	case SND_SOC_DAIFMT_LEFT_J:
-> > +		val |= CS4271_MODE1_DAC_DIF_LJ;
-> > +		break;
-> > +	case SND_SOC_DAIFMT_I2S:
-> > +		val |= CS4271_MODE1_DAC_DIF_I2S;
-> > +		break;
-> > +	default:
-> > +		dev_err(codec->dev, "Invalid DAI format\n");
-> > +		return -EINVAL;
-> > +	}
-> 
-> Same here.
-
-Same here.
-
-> 
-> > +/* CS4271 controls */
-> > +static DECLARE_TLV_DB_SCALE(cs4271_dac_tlv, -12700, 100, 0);
-> 
-> Are you use this doesn't mute the DAC?  If so the the last parameter
-> should be 1.
-
-No I do not use this, some people asked for this last time I've tried to
-submit this code. And no, this doesn't mute the DAC.
-
-> 
-> > +#ifdef CONFIG_PM
-> > +static int cs4271_soc_suspend(struct snd_soc_codec *codec, pm_message_t mesg)
-> > +{
-> > +	/* Set power-down bit */
-> > +	snd_soc_update_bits(codec, CS4271_MODE2, CS4271_MODE2_PDN,
-> > +		CS4271_MODE2_PDN);
-> > +
-> > +	return 0;
-> > +}
-> > +#else
-> > +#define cs4271_soc_suspend	NULL
-> > +#endif /* CONFIG_PM */
-> > +
-> > +/* This function used also in codec probe function and not only for PM */
-> > +static int cs4271_soc_resume(struct snd_soc_codec *codec)
-> > +{
-> > +	int ret;
-> > +
-> > +	/* Restore codec state */
-> > +	ret = cs4271_write_cache(codec);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	/* then disable the power-down bit */
-> > +	snd_soc_update_bits(codec, CS4271_MODE2, CS4271_MODE2_PDN, 0);
-> > +
-> > +	return 0;
-> > +}
-> 
-> Consider setting the set_bias_level callback and performing the required
-> work in there.  You can then trigger a change in the bias levels by
-> calling your cs4271_set_bias_level() function from within your suspend()
-> and resume() functions.
-> 
-> > +	/*
-> > +	 * In case of I2C, chip address specified in board data.
-> > +	 * So cache IO operations use 8 bit codec register address.
-> > +	 * In case of SPI, chip address and register address
-> > +	 * passed together as 16 bit value.
-> > +	 * Anyway, register address is masked with 0xFF inside
-> > +	 * soc-cache code.
-> > +	 */
-> 
-> Have you tested your driver using both SPI and I2C?
-
-Yes.
-
-> 
-> > +	ret = (cs4271->bus_type == SND_SOC_SPI) ? 16 : 8;
-> 
-> Please avoid using the ternary operator like this.
-
-What's wrong with it?
-
-> 
-> > +	ret = snd_soc_codec_set_cache_io(codec, ret, 8, cs4271->bus_type);
-> > +	if (ret) {
-> > +		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret = cs4271_soc_resume(codec);
-> > +	if (ret < 0)
-> > +		return ret;
-> 
-> This should also changed to a call to
-> cs4271_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-> 
-
-There is no need for DAPM on hardware I consider. I can even remove PM
-stuff. Someone may implement it later, if CS4271 would appear on
-something except Cirrus dev. boards.
-
-> Thanks,
-> Dimitris
-> 
-> 
-
-Thanks,
-	Alexander.
+Liam  
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
