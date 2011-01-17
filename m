@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: WM8995: Add regulator handling code
-Date: Mon, 17 Jan 2011 14:00:11 +0000
-Message-ID: <20110117140010.GE21113@opensource.wolfsonmicro.com>
-References: <1295262012-6074-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: WM8990: msleep() takes milliseconds
+ not jiffies
+Date: Mon, 17 Jan 2011 14:05:10 +0000
+Message-ID: <1295273110.3283.20.camel@odin>
+References: <1295020753-1453-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A729D103866
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2011 15:00:12 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1295262012-6074-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id D4454244FF
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2011 15:05:14 +0100 (CET)
+Received: by wyi11 with SMTP id 11so5158847wyi.38
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2011 06:05:14 -0800 (PST)
+In-Reply-To: <1295020753-1453-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,10 +24,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 17, 2011 at 11:00:12AM +0000, Dimitris Papastamos wrote:
+On Fri, 2011-01-14 at 15:59 +0000, Dimitris Papastamos wrote:
 > Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/wm8990.c |   10 +++++-----
+>  1 files changed, 5 insertions(+), 5 deletions(-)
+> 
 
-Applied, thanks.
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
