@@ -1,18 +1,13 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH] ASoC: dapm: Fix race condition in widgets
- power list creation
-Date: Tue, 18 Jan 2011 14:47:17 +0200
-Message-ID: <4D358BD5.4010207@nokia.com>
-References: <1295318127-17968-1-git-send-email-misael.lopez@ti.com>	<20110118103954.GA26498@opensource.wolfsonmicro.com>	<4D357B09.70505@nokia.com>	<20110118113956.GE26498@opensource.wolfsonmicro.com>	<4D3582D3.40105@nokia.com>
-	<20110118122605.GG26498@opensource.wolfsonmicro.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Remove quirk for Acer Aspire 4930G
+Date: Tue, 18 Jan 2011 13:49:07 +0100
+Message-ID: <4D358C43.3030608@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="------------060800040608070500030208"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa02.nokia.com (smtp.nokia.com [147.243.1.48])
-	by alsa0.perex.cz (Postfix) with ESMTP id F33C910382A
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 13:47:18 +0100 (CET)
-In-Reply-To: <20110118122605.GG26498@opensource.wolfsonmicro.com>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 89E6810382A
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 13:49:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,34 +17,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Misael Lopez Cruz <misael.lopez@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/18/11 14:26, ext Mark Brown wrote:
->> The snd_soc_dapm_sync is just a wrapper for dapm_power_widgets, right?
->> It (snd_soc_dapm_sync) is used in soc-core:soc_post_component_init.
-> =
+This is a multi-part message in MIME format.
+--------------060800040608070500030208
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> You're jumping into the analysis mid-way here again...
+BugLink: http://bugs.launchpad.net/bugs/647970
 
-Unfortunately yes I did :(
+According to the reporter, model=auto works better than
+the current quirk for Acer Aspire 4930G.
 
->> Modify the snd_soc_dapm_sync to use the codec->mutex around the
->> dapm_power_widgets call.
-> =
+Cc: stable@kernel.org (2.6.35+)
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 
-> This doesn't sound like the right solution in a multi-CODEC system, DAPM
-> will affect multiple devices within the system.
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
 
-Yes, you are right.
+--------------060800040608070500030208
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Remove-quirk-for-Acer-Aspire-4930G.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Remove-quirk-for-Acer-Aspire-4930G.patch"
 
-But I think the snd_soc_dapm_sync call in soc_post_component_init can be
-removed, since it has been taken care of the snd_soc_dapm_new_widgets
-call...
-Surely it is not solving the problem, in fact it has nothing to do with
-the problem ;)
+>From 0c0ec949889bbaab4fd093144ba8be483f64fc32 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Tue, 18 Jan 2011 13:29:53 +0100
+Subject: [PATCH] ALSA: HDA: Remove quirk for Acer Aspire 4930G
 
--- =
+BugLink: http://bugs.launchpad.net/bugs/647970
 
-P=E9ter
+According to the reporter, model=auto works better than
+the current quirk for Acer Aspire 4930G.
+
+Cc: stable@kernel.org (2.6.35+)
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 4f006ee..9c123d0 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9842,8 +9842,6 @@ static struct snd_pci_quirk alc882_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x0110, "Acer Aspire", ALC883_ACER_ASPIRE),
+ 	SND_PCI_QUIRK(0x1025, 0x0112, "Acer Aspire 9303", ALC883_ACER_ASPIRE),
+ 	SND_PCI_QUIRK(0x1025, 0x0121, "Acer Aspire 5920G", ALC883_ACER_ASPIRE),
+-	SND_PCI_QUIRK(0x1025, 0x013e, "Acer Aspire 4930G",
+-		ALC888_ACER_ASPIRE_4930G),
+ 	SND_PCI_QUIRK(0x1025, 0x013f, "Acer Aspire 5930G",
+ 		ALC888_ACER_ASPIRE_4930G),
+ 	SND_PCI_QUIRK(0x1025, 0x0145, "Acer Aspire 8930G",
+-- 
+1.7.1
+
+
+--------------060800040608070500030208
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------060800040608070500030208--
