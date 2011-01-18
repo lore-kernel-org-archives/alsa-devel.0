@@ -1,27 +1,20 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: Re: [PATCH - [hdspm] 1/3] Add headers for RayDAT and
-	AIO support.
-Date: Tue, 18 Jan 2011 16:00:39 +0100
-Message-ID: <20110118150039.GU21889@ltw.loris.tv>
-References: <1295359939-14673-1-git-send-email-adi@drcomp.erfurt.thur.de>
-	<1295359939-14673-2-git-send-email-adi@drcomp.erfurt.thur.de>
-	<s5hmxmygtre.wl%tiwai@suse.de>
+From: Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: PXA: Fix codec address on Zipit
+	Z2
+Date: Tue, 18 Jan 2011 16:05:47 +0100
+Message-ID: <201101181605.47580.marek.vasut@gmail.com>
+References: <1295362465-21794-1-git-send-email-anarsoul@gmail.com>
+	<1295362465-21794-2-git-send-email-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id EC9ED245D8
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 16:00:50 +0100 (CET)
-Received: from localhost (ltw.loris.tv [127.0.0.1])
-	by ltw.loris.tv (Postfix) with ESMTP id 891BD1AC62E
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 16:00:44 +0100 (CET)
-Received: from ltw.loris.tv ([127.0.0.1])
-	by localhost (ltw.loris.tv [127.0.0.1]) (amavisd-new, port 10024)
-	with LMTP id bweuKoZV+3HN for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jan 2011 16:00:40 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hmxmygtre.wl%tiwai@suse.de>
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id B7FD7245D8
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 16:02:54 +0100 (CET)
+Received: by fxm5 with SMTP id 5so7337000fxm.38
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 07:02:54 -0800 (PST)
+In-Reply-To: <1295362465-21794-2-git-send-email-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,46 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 18, 2011 at 03:40:21PM +0100, Takashi Iwai wrote:
-
-> Adrian Knoth wrote:
-> > 
-> > +struct hdspm_peak_rms {
-> > +		uint32_t input_peaks[64];
-> > +		uint32_t playback_peaks[64];
-> > +		uint32_t output_peaks[64];
-> Strange indentation level?
-
-Indeed. Fixed.
-
-> > +struct hdspm_status {
-> > +	hdspm_io_type card_type;
-> > +	hdspm_syncsource autosync_source;
-> > +
-> > +	unsigned long long card_clock;
-> Use more explicit int type with bit width.
-
-Done.
-
-> > +static char *texts_sync_status[] = {
-> > +	"no lock",
-> > +	"lock",
-> > +	"sync"
-> > +};
+On Tuesday 18 January 2011 15:54:25 Vasily Khoruzhick wrote:
+> WM8750 address is 0x1b, not 0x1a. Without this fix
+> ALSA detects no sound cards on Zipit
 > 
-> Put these to *.c.
+> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+> ---
+>  sound/soc/pxa/z2.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/soc/pxa/z2.c b/sound/soc/pxa/z2.c
+> index 0da889d..62c77dc 100644
+> --- a/sound/soc/pxa/z2.c
+> +++ b/sound/soc/pxa/z2.c
+> @@ -193,7 +193,7 @@ static struct snd_soc_dai_link z2_dai = {
+>  	.cpu_dai_name	= "pxa2xx-i2s",
+>  	.codec_dai_name	= "wm8750-hifi",
+>  	.platform_name = "pxa-pcm-audio",
+> -	.codec_name	= "wm8750-codec.0-001a",
+> +	.codec_name	= "wm8750-codec.0-001b",
+>  	.init		= z2_wm8750_init,
+>  	.ops		= &z2_ops,
+>  };
 
-Looks like this array is actually unused. Let's see which of them can be
-dropped or moved to *.c.
+Acked-by: Marek Vasut <marek.vasut@gmail.com>
 
-I'll have to cross-check with hdspmixer, some parts are referenced
-there.
-
-
-Cheers
-
--- 
-mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
+Mark, shall I/Eric pick it via pxa-linux-2.6 or are you taking care of these two 
+?
