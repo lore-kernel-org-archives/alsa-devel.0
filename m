@@ -1,17 +1,20 @@
-From: Neil Jones <neiljay@gmail.com>
-Subject: Question about ASOC codec drivers
-Date: Tue, 18 Jan 2011 17:35:22 +0000
-Message-ID: <AANLkTim-3xObWzoF4aMUA6umYcD=wDhvY+mChqQhU=JY@mail.gmail.com>
+From: Kevin Hilman <khilman@ti.com>
+Subject: Re: ALSA issue on DA850/OMAP-L138/AM18x
+Date: Tue, 18 Jan 2011 10:04:08 -0800
+Message-ID: <87ei8aytpj.fsf@ti.com>
+References: <B85A65D85D7EB246BE421B3FB0FBB59302484734E0@dbde02.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7459F103859
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 18:38:11 +0100 (CET)
-Received: by wyi11 with SMTP id 11so6441331wyi.38
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 09:38:11 -0800 (PST)
+Received: from na3sys009aog108.obsmtp.com (na3sys009aog108.obsmtp.com
+	[74.125.149.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id 34CC1103859
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 19:04:20 +0100 (CET)
+Received: by mail-vw0-f51.google.com with SMTP id 20so2544010vws.38
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 10:04:14 -0800 (PST)
+In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB59302484734E0@dbde02.ent.ti.com>
+	(Sudhakar Rajashekhara's message of "Tue, 18 Jan 2011 10:13:14 +0530")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,93 +24,123 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+"Rajashekhara, Sudhakar" <sudhakar.raj@ti.com> writes:
 
-Im trying to write an ASOC Codec driver for a new codec and im having
-problems setting up the widgets and interconnects.
+> Resending with proper $SUBJECT...
+> Hi,
+>
+> I was testing Audio with 2.6.37 on DA850 from Kevin Hilman Linux tree
+> at [1] and found that audio is broken. Below patch fixes the issue.
+> ---
+> From: Rajashekhara, Sudhakar <sudhakar.raj@ti.com>
+>
+> davinci: fixes for audio on da850/omap-l138/am18x
+>
+> On DA850/OMAP-L138/AM18x, AIC3x codec is at 0x18 slave address.
+> But in sound/soc/davinci/davinci-evm.c file, "struct snd_soc_dai_link"
+> has the wrong AIC3x codec slave address. This patch fixes this issue.
 
-The input structure is similar to the wm8731 so i have based my codec
-on this (my widget code is included at the bottom)
+As suggested by Sergei...
 
-problem is I get this error on startup:
+This part should be one patch, and merged by Liam via ASoC tree for
+2.6.38-rc cycle.
 
-Failed to add route Line Input->Input Mux
+> Also, this patch registers the platform device for davinci-pcm-audio.
 
-Add then when I run alsa-mixer I get a memfault in the strcpy in
-snd_soc_info_enum_double()
+This should be a separate patch as well, and I will merge it via davinci
+tree for the .38-rc cycle.
 
-it appears to be indexing a string 1 past the end, ie
-uinfo->value.enumerated.item = 3 but e->texts is pointing to the
-tansen_input_select[] array of strings which only has 3 entries, so it
-blows up (e->max = 7??).
+> Signed-off-by: Rajashekhara, Sudhakar <sudhakar.raj@ti.com>
+> ---
+>  arch/arm/mach-davinci/devices-da8xx.c |   12 ++++++++++++
+>  sound/soc/davinci/davinci-evm.c       |    2 +-
+>  2 files changed, 13 insertions(+), 1 deletions(-)
+>
+> diff --git a/arch/arm/mach-davinci/devices-da8xx.c b/arch/arm/mach-davinci/devices-da8xx.c
+> index 9eec630..17c0dbc 100644
+> --- a/arch/arm/mach-davinci/devices-da8xx.c
+> +++ b/arch/arm/mach-davinci/devices-da8xx.c
+> @@ -473,6 +473,11 @@ static struct resource da850_mcasp_resources[] = {
+>  	},
+>  };
+>  
+> +struct platform_device davinci_pcm_device = {
+> +	.name	= "davinci-pcm-audio",
+> +	.id	= -1,
+> +};
+> +
+>  static struct platform_device da850_mcasp_device = {
+>  	.name		= "davinci-mcasp",
+>  	.id		= 0,
+> @@ -480,8 +485,15 @@ static struct platform_device da850_mcasp_device = {
+>  	.resource	= da850_mcasp_resources,
+>  };
+>  
+> +static void davinci_init_pcm(void)
+> +{
+> +	platform_device_register(&davinci_pcm_device);
+> +}
+> +
+>  void __init da8xx_register_mcasp(int id, struct snd_platform_data *pdata)
+>  {
+> +	davinci_init_pcm();
+> +
+>  	/* DA830/OMAP-L137 has 3 instances of McASP */
+>  	if (cpu_is_davinci_da830() && id == 1) {
+>  		da830_mcasp1_device.dev.platform_data = pdata;
+> diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
+> index bc9e6b0..07db881 100644
+> --- a/sound/soc/davinci/davinci-evm.c
+> +++ b/sound/soc/davinci/davinci-evm.c
+> @@ -224,7 +224,7 @@ static struct snd_soc_dai_link da8xx_evm_dai = {
+>  	.stream_name = "AIC3X",
+>  	.cpu_dai_name= "davinci-mcasp.0",
+>  	.codec_dai_name = "tlv320aic3x-hifi",
+> -	.codec_name = "tlv320aic3x-codec.0-001a",
+> +	.codec_name = "tlv320aic3x-codec.1-0018",
+>  	.platform_name = "davinci-pcm-audio",
+>  	.init = evm_aic3x_init,
+>  	.ops = &evm_ops,
+> ---
+>
+> Also, I found that either CONFIG_REGULATOR should not be defined or if
+> CONFIG_REGULATOR is defined then CONFIG_REGULATOR_DUMMY should also be
+> defined. Without this menuconfig fix, Soundcard does not get detected.
 
-also shouldn't the strcpy by a strncpy as we are copying to a fixed
-64byte buffer ?
+When you send final version, care to include a patch for da8xx_omapl_defconfig?
 
-thanks for anyhelp.
+Kevin
 
-Neil
-
-
-
-my widget code:
-
-static const struct snd_kcontrol_new tansen_snd_controls[] = {
-SOC_DOUBLE_R("Master Playback Volume",
-	     TANSEN_TM_OP_TOP7, TANSEN_TM_OP_TOP8,
-	     0, 0xFF, 0
-	     ),
-SOC_DOUBLE("Line/IPOD-In Gain", TANSEN_TM_IP_TOP5, 5, 2, 0x7, 0),
-SOC_DOUBLE("Mic-In Gain", TANSEN_TM_IP_TOP4, 0, 4, 0xF, 0),
-};
-
-static const char *tansen_input_select[] = { "Mic In",
-					    "Line In",
-					    "IPOD In",
-					  };
-
-static const struct soc_enum tansen_ip_enum =
-SOC_ENUM_SINGLE(TANSEN_TM_IP_TOP2, 4, 0x7, tansen_input_select);
-
-/* Input mux */
-static const struct snd_kcontrol_new tansen_input_mux_controls =
-SOC_DAPM_ENUM("Input Select", tansen_ip_enum);
-
-static const struct snd_soc_dapm_widget tansen_dapm_widgets[] = {
-SND_SOC_DAPM_DAC("DAC", "Playback", SND_SOC_NOPM, 0, 0),
-SND_SOC_DAPM_OUTPUT("LHPOUT"),
-SND_SOC_DAPM_OUTPUT("RHPOUT"),
-SND_SOC_DAPM_ADC("ADC", "Capture", SND_SOC_NOPM, 0, 0),
-SND_SOC_DAPM_MUX("Input Mux", SND_SOC_NOPM, 0, 0, &tansen_input_mux_controls),
-SND_SOC_DAPM_PGA("PGA", SND_SOC_NOPM, 0, 0, NULL, 0),
-SND_SOC_DAPM_MICBIAS("Mic Bias", TANSEN_TM_MICBIAS_1, 4, 1),
-SND_SOC_DAPM_INPUT("MICIN"),
-SND_SOC_DAPM_INPUT("RLINEIN"),
-SND_SOC_DAPM_INPUT("LLINEIN"),
-SND_SOC_DAPM_INPUT("RIPODIN"),
-SND_SOC_DAPM_INPUT("LIPODIN")
-};
-
-static const struct snd_soc_dapm_route intercon[] = {
-
-	/* outputs */
-	{"RHPOUT", NULL, "DAC"},
-	{"LHPOUT", NULL, "DAC"},
-
-	/* input mux */
-	{"Input Mux", "Line In", "Line Input"},
-	{"Input Mux", "Mic In",  "Mic bias"},
-	{"Input Mux", "Ipod In", "Ipod Input"},
-	{"ADC", NULL, "PGA"},
-	{"PGA", NULL, "Input Mux"},
-
-	/* inputs */
-	{"Line Input", NULL, "LLINEIN"},
-	{"Line Input", NULL, "RLINEIN"},
-	{"Ipod Input", NULL, "LIPODIN"},
-	{"Ipod Input", NULL, "RIPODIN"},
-	{"Mic bias", NULL, "MICIN"},
-};
+> With the above fixes, arecord and aplay does not work for the first time.
+> Couple of times I get the below error:
+>
+> root@da850-omapl138-evm:~# arecord -f dat | aplay -f dat
+> arecord: main:608: audio open error: Invalid argument
+> aplay: playback:2297: read error
+> root@da850-omapl138-evm:~# arecord -f dat | aplay -f dat
+> aplay: main:608: audio open error: Invalid argument
+> Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
+>
+> Third time arecord and aplay work normally.
+>
+> Has anyone seen such issues on DA850 or any other platform?
+>
+> I am currently debugging this issue. I'll submit the above patch to community
+> once the issue of fixed.
+>
+> [1] http://git.kernel.org/?p=linux/kernel/git/khilman/linux-davinci.git;a=summary 
+>
+> Regards,
+> Sudhakar
+> _______________________________________________
+> Davinci-linux-open-source mailing list
+> Davinci-linux-open-source@linux.davincidsp.com
+> http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source
+> _______________________________________________
+> Davinci-linux-open-source mailing list
+> Davinci-linux-open-source@linux.davincidsp.com
+> http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source
