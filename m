@@ -1,26 +1,17 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: Re: [PATCH - [hdspm] 2/3] Enable RME RayDAT and AIO
-Date: Tue, 18 Jan 2011 16:24:08 +0100
-Message-ID: <20110118152408.GV21889@ltw.loris.tv>
-References: <1295359939-14673-1-git-send-email-adi@drcomp.erfurt.thur.de>
-	<1295359939-14673-3-git-send-email-adi@drcomp.erfurt.thur.de>
-	<s5hlj2igt1f.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/3] ASoC: Provide per widget type callback
+	when executing DAPM sequences
+Date: Tue, 18 Jan 2011 16:20:14 +0000
+Message-ID: <1295367614-12143-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1295367614-12143-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id 825012472D
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 16:24:21 +0100 (CET)
-Received: from localhost (ltw.loris.tv [127.0.0.1])
-	by ltw.loris.tv (Postfix) with ESMTP id 26E7F1AC62A
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 16:24:15 +0100 (CET)
-Received: from ltw.loris.tv ([127.0.0.1])
-	by localhost (ltw.loris.tv [127.0.0.1]) (amavisd-new, port 10024)
-	with LMTP id 1AxAoCnDmuIl for <alsa-devel@alsa-project.org>;
-	Tue, 18 Jan 2011 16:24:09 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hlj2igt1f.wl%tiwai@suse.de>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 75D0E103947
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 17:20:18 +0100 (CET)
+In-Reply-To: <1295367614-12143-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,66 +21,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 18, 2011 at 03:55:56PM +0100, Takashi Iwai wrote:
+Many modern devices have features such as DC servos which take time to start.
+Currently these are handled by per-widget events but this makes it difficult
+to paralleise operations on multiple widgets, meaning delays can end up
+being needlessly serialised. By providing a callback to drivers when all
+widgets of a given type have been handled during a DAPM sequence the core
+allows drivers to start operations separately and wait for them to complete
+much more simply.
 
-> > -#include <linux/math64.h>
-> No math64 stuff is necessary?
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ include/sound/soc-dapm.h |    3 +++
+ include/sound/soc.h      |    3 +++
+ sound/soc/soc-core.c     |    1 +
+ sound/soc/soc-dapm.c     |   16 +++++++++++++++-
+ 4 files changed, 22 insertions(+), 1 deletions(-)
 
-Probably not. At least it works and compiles without. Perhaps
-cross-included from somewhere else? I see div_u64 down there, so I guess
-linux/math64.h should be included. Fixed.
-
-> > +#include <linux/sysfs.h>
-> It's not implemented yet, so don't include it.
-
-ACK.
-
-> > -static DEFINE_PCI_DEVICE_TABLE(snd_hdspm_ids) = {
-> > +static struct pci_device_id snd_hdspm_ids[] __devinitdata = {
-> Why open-coded again?
-
-No particular reason. Now you mention it, I'll change it back.
-
-How did it end up there?: I took the code from Florian's tarball. Looks
-like there was some divergent development in the meantime (between his
-fork and mainline kernel)
-
-> > @@ -796,6 +1009,8 @@ static void hdspm_silence_playback(struct hdspm *hdspm)
-> >  	int n = hdspm->period_bytes;
-> >  	void *buf = hdspm->playback_buffer;
-> >  
-> > +	snd_printk(KERN_INFO "hdspm_silence_playback\n");
-> Don't put such a verbose debug message in frequently called callbacks.
-
-ACK. Removed.
-
-> >  	n = div_u64(n, rate);
-> >  	/* n should be less than 2^32 for being written to FREQ register */
-> > -	snd_BUG_ON(n >> 32);
-> > +	snd_BUG_ON((n >> 32) == 0);
-> This check is consistent with the comment above...
-
-Inconsistent I guess...?
-
-I suggest to remove the line. We know n, we control rate, this should
-never be an issue.
-
-
-> The rest is too long to review. Would be nice if you can split the
-> whole patch in logical orders...
-
-I'm afraid I can't, because there's no logical order. There's just this
-single hdspm.c (and .h) by Florian and my style fixes. No VCS.
-
-So whatever is wrong needs to be spotted by some experienced ALSA dev. I
-guess you'd be faster fixing it instead of mailing me all the things
-that are wrong, but I'm happy to change things you point out.
-
-
-Cheers
-
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index a3760c9..6c9ae23 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -500,6 +500,9 @@ struct snd_soc_dapm_context {
+ 
+ 	struct snd_soc_dapm_update *update;
+ 
++	void (*seq_notifier)(struct snd_soc_dapm_context *,
++			     enum snd_soc_dapm_type);
++
+ 	struct device *dev; /* from parent - for debug */
+ 	struct snd_soc_codec *codec; /* parent codec */
+ 	struct snd_soc_card *card; /* parent card */
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index d824e70..c0d2f4b 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -545,6 +545,9 @@ struct snd_soc_codec_driver {
+ 	/* codec bias level */
+ 	int (*set_bias_level)(struct snd_soc_codec *,
+ 			      enum snd_soc_bias_level level);
++
++	void (*seq_notifier)(struct snd_soc_dapm_context *,
++			     enum snd_soc_dapm_type);
+ };
+ 
+ /* SoC platform interface */
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 8305712..08d7b98 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3496,6 +3496,7 @@ int snd_soc_register_codec(struct device *dev,
+ 	codec->dapm.bias_level = SND_SOC_BIAS_OFF;
+ 	codec->dapm.dev = dev;
+ 	codec->dapm.codec = codec;
++	codec->dapm.seq_notifier = codec_drv->seq_notifier;
+ 	codec->dev = dev;
+ 	codec->driver = codec_drv;
+ 	codec->num_dai = num_dai;
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index eb7436c..37b376f 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -878,7 +878,7 @@ static void dapm_seq_run(struct snd_soc_dapm_context *dapm,
+ 	int cur_subseq = -1;
+ 	int cur_reg = SND_SOC_NOPM;
+ 	struct snd_soc_dapm_context *cur_dapm = NULL;
+-	int ret;
++	int ret, i;
+ 	int *sort;
+ 
+ 	if (power_up)
+@@ -895,6 +895,13 @@ static void dapm_seq_run(struct snd_soc_dapm_context *dapm,
+ 			if (!list_empty(&pending))
+ 				dapm_seq_run_coalesced(cur_dapm, &pending);
+ 
++			if (cur_dapm && cur_dapm->seq_notifier) {
++				for (i = 0; i < ARRAY_SIZE(dapm_up_seq); i++)
++					if (sort[i] == cur_sort)
++						cur_dapm->seq_notifier(cur_dapm,
++								       i);
++			}
++
+ 			INIT_LIST_HEAD(&pending);
+ 			cur_sort = -1;
+ 			cur_subseq = -1;
+@@ -956,6 +963,13 @@ static void dapm_seq_run(struct snd_soc_dapm_context *dapm,
+ 
+ 	if (!list_empty(&pending))
+ 		dapm_seq_run_coalesced(dapm, &pending);
++
++	if (cur_dapm && cur_dapm->seq_notifier) {
++		for (i = 0; i < ARRAY_SIZE(dapm_up_seq); i++)
++			if (sort[i] == cur_sort)
++				cur_dapm->seq_notifier(cur_dapm,
++						       i);
++	}
+ }
+ 
+ static void dapm_widget_update(struct snd_soc_dapm_context *dapm)
 -- 
-mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
+1.7.2.3
