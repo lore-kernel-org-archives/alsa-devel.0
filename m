@@ -1,15 +1,11 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH] ASoC: core: Remove dapm_sync call from
-	soc_post_component_init
-Date: Tue, 18 Jan 2011 15:51:45 +0200
-Message-ID: <1295358705-17871-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: [PATCH - [hdspm] 0/3] Support for RME RayDAT and AIO
+Date: Tue, 18 Jan 2011 15:12:16 +0100
+Message-ID: <1295359939-14673-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa02.nokia.com (smtp.nokia.com [147.243.1.48])
-	by alsa0.perex.cz (Postfix) with ESMTP id C311C10383D
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 14:51:47 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,30 +15,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: patch@alsa-project.org
+Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-snd_soc_dapm_new_widgets will call dapm_power_widgets at
-the end, so there is no need to call snd_soc_dapm_sync
-after snd_soc_dapm_new_widgets.
+Hi!
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
- sound/soc/soc-core.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+As announced a few days ago, I've integrated the offspring hdspm driver
+by Florian Faber. The new code now also supports the 36in/36out RME
+RayDAT cards and RME AIOs.
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index bac7291..952f104 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1467,7 +1467,6 @@ static int soc_post_component_init(struct snd_soc_card *card,
- 
- 	/* Make sure all DAPM widgets are instantiated */
- 	snd_soc_dapm_new_widgets(&codec->dapm);
--	snd_soc_dapm_sync(&codec->dapm);
- 
- 	/* register the rtd device */
- 	rtd->codec = codec;
+I tried to follow the kernel's coding style as much as possible,
+however, there are still a few overlong lines left. For example, I
+didn't want to break "if read_reg(...) & 0x3f" at "& 0x3f", as it
+worsens readability. If it's required to comply, feel free to add the
+missing line breaks.
+
+Right now, RayDATs and AIOs can only operate on a single period size
+of 1024 samples, because these cards always use a fixed 16k buffer per
+channel and only vary interrupt frequency. I'm going to try to fix this
+after I've learned more about the PCM interface. ;) Any suggestions
+welcome.
+
+Cheers
+
+Adrian Knoth (3):
+  Add headers for RayDAT and AIO support.
+  Enable RME RayDAT and AIO
+  Add RayDAT and AIO strings to Kconfig
+
+ include/hdspm.h     |  442 +++++-
+ pci/Kconfig         |    6 +-
+ pci/rme9652/hdspm.c | 4135 +++++++++++++++++++++++++++++++++++++--------------
+ 3 files changed, 3442 insertions(+), 1141 deletions(-)
+
 -- 
-1.7.4.rc2
+1.7.2.3
