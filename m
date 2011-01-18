@@ -1,18 +1,14 @@
 From: "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>
-Subject: Re: [PATCH 0/5] davinci: da850: clean up pinmux arrays
-	in da850.c
-Date: Tue, 18 Jan 2011 10:10:12 +0530
-Message-ID: <B85A65D85D7EB246BE421B3FB0FBB59302484734D4@dbde02.ent.ti.com>
-References: <1294406333-30054-1-git-send-email-michael.williamson@criticallink.com>
-	<B85A65D85D7EB246BE421B3FB0FBB59302484733F8@dbde02.ent.ti.com>
+Subject: ALSA issue on DA850/OMAP-L138/AM18x
+Date: Tue, 18 Jan 2011 10:13:14 +0530
+Message-ID: <B85A65D85D7EB246BE421B3FB0FBB59302484734E0@dbde02.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3582B246C2
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 05:40:36 +0100 (CET)
-In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB59302484733F8@dbde02.ent.ti.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 37031246C2
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 05:43:38 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,8 +20,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>
-Cc: "khilman@deeprootsystems.com" <khilman@deeprootsystems.com>, Michael@alsa-project.org, Williamson <michael.williamson@criticallink.com>, "Nori,  Sekhar" <nsekhar@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: "khilman@deeprootsystems.com" <khilman@deeprootsystems.com>, Michael Williamson <michael.williamson@criticallink.com>, "Nori,
+	Sekhar" <nsekhar@ti.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
+
+Resending with proper $SUBJECT...
 
 Hi,
 
@@ -121,3 +120,7 @@ once the issue of fixed.
 
 Regards,
 Sudhakar
+_______________________________________________
+Davinci-linux-open-source mailing list
+Davinci-linux-open-source@linux.davincidsp.com
+http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source
