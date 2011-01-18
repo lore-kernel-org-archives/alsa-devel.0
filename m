@@ -1,17 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/3] ASoC: Provide per widget type callback
-	when executing DAPM sequences
-Date: Tue, 18 Jan 2011 16:20:14 +0000
-Message-ID: <1295367614-12143-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1295367614-12143-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/3] ASoC: Explicitly say if we're powering up
+	or down
+Date: Tue, 18 Jan 2011 16:20:12 +0000
+Message-ID: <1295367614-12143-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 75D0E103947
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5FF0524747
 	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 17:20:18 +0100 (CET)
-In-Reply-To: <1295367614-12143-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,102 +23,131 @@ To: Liam Girdwood <lrg@slimlogic.co.uk>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Many modern devices have features such as DC servos which take time to start.
-Currently these are handled by per-widget events but this makes it difficult
-to paralleise operations on multiple widgets, meaning delays can end up
-being needlessly serialised. By providing a callback to drivers when all
-widgets of a given type have been handled during a DAPM sequence the core
-allows drivers to start operations separately and wait for them to complete
-much more simply.
+Rather than passing the sequence to use for DAPM widgets around by reference
+explicitly say if we're powering up or down until the point where we need
+the sequence itself. This should make no practical difference in itself but
+supports future refactoring.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/sound/soc-dapm.h |    3 +++
- include/sound/soc.h      |    3 +++
- sound/soc/soc-core.c     |    1 +
- sound/soc/soc-dapm.c     |   16 +++++++++++++++-
- 4 files changed, 22 insertions(+), 1 deletions(-)
+ sound/soc/soc-dapm.c |   37 +++++++++++++++++++++++++------------
+ 1 files changed, 25 insertions(+), 12 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index a3760c9..6c9ae23 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -500,6 +500,9 @@ struct snd_soc_dapm_context {
- 
- 	struct snd_soc_dapm_update *update;
- 
-+	void (*seq_notifier)(struct snd_soc_dapm_context *,
-+			     enum snd_soc_dapm_type);
-+
- 	struct device *dev; /* from parent - for debug */
- 	struct snd_soc_codec *codec; /* parent codec */
- 	struct snd_soc_card *card; /* parent card */
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index d824e70..c0d2f4b 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -545,6 +545,9 @@ struct snd_soc_codec_driver {
- 	/* codec bias level */
- 	int (*set_bias_level)(struct snd_soc_codec *,
- 			      enum snd_soc_bias_level level);
-+
-+	void (*seq_notifier)(struct snd_soc_dapm_context *,
-+			     enum snd_soc_dapm_type);
- };
- 
- /* SoC platform interface */
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 8305712..08d7b98 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3496,6 +3496,7 @@ int snd_soc_register_codec(struct device *dev,
- 	codec->dapm.bias_level = SND_SOC_BIAS_OFF;
- 	codec->dapm.dev = dev;
- 	codec->dapm.codec = codec;
-+	codec->dapm.seq_notifier = codec_drv->seq_notifier;
- 	codec->dev = dev;
- 	codec->driver = codec_drv;
- 	codec->num_dai = num_dai;
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index eb7436c..37b376f 100644
+index 499730a..57e1c9f 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -878,7 +878,7 @@ static void dapm_seq_run(struct snd_soc_dapm_context *dapm,
- 	int cur_subseq = -1;
+@@ -726,8 +726,15 @@ static int dapm_supply_check_power(struct snd_soc_dapm_widget *w)
+ 
+ static int dapm_seq_compare(struct snd_soc_dapm_widget *a,
+ 			    struct snd_soc_dapm_widget *b,
+-			    int sort[])
++			    bool power_up)
+ {
++	int *sort;
++
++	if (power_up)
++		sort = dapm_up_seq;
++	else
++		sort = dapm_down_seq;
++
+ 	if (sort[a->id] != sort[b->id])
+ 		return sort[a->id] - sort[b->id];
+ 	if (a->reg != b->reg)
+@@ -741,12 +748,12 @@ static int dapm_seq_compare(struct snd_soc_dapm_widget *a,
+ /* Insert a widget in order into a DAPM power sequence. */
+ static void dapm_seq_insert(struct snd_soc_dapm_widget *new_widget,
+ 			    struct list_head *list,
+-			    int sort[])
++			    bool power_up)
+ {
+ 	struct snd_soc_dapm_widget *w;
+ 
+ 	list_for_each_entry(w, list, power_list)
+-		if (dapm_seq_compare(new_widget, w, sort) < 0) {
++		if (dapm_seq_compare(new_widget, w, power_up) < 0) {
+ 			list_add_tail(&new_widget->power_list, &w->power_list);
+ 			return;
+ 		}
+@@ -857,7 +864,7 @@ static void dapm_seq_run_coalesced(struct snd_soc_dapm_context *dapm,
+  * handled.
+  */
+ static void dapm_seq_run(struct snd_soc_dapm_context *dapm,
+-			 struct list_head *list, int event, int sort[])
++			 struct list_head *list, int event, bool power_up)
+ {
+ 	struct snd_soc_dapm_widget *w, *n;
+ 	LIST_HEAD(pending);
+@@ -865,6 +872,12 @@ static void dapm_seq_run(struct snd_soc_dapm_context *dapm,
  	int cur_reg = SND_SOC_NOPM;
  	struct snd_soc_dapm_context *cur_dapm = NULL;
--	int ret;
-+	int ret, i;
- 	int *sort;
- 
- 	if (power_up)
-@@ -895,6 +895,13 @@ static void dapm_seq_run(struct snd_soc_dapm_context *dapm,
- 			if (!list_empty(&pending))
- 				dapm_seq_run_coalesced(cur_dapm, &pending);
- 
-+			if (cur_dapm && cur_dapm->seq_notifier) {
-+				for (i = 0; i < ARRAY_SIZE(dapm_up_seq); i++)
-+					if (sort[i] == cur_sort)
-+						cur_dapm->seq_notifier(cur_dapm,
-+								       i);
-+			}
+ 	int ret;
++	int *sort;
 +
- 			INIT_LIST_HEAD(&pending);
- 			cur_sort = -1;
- 			cur_subseq = -1;
-@@ -956,6 +963,13 @@ static void dapm_seq_run(struct snd_soc_dapm_context *dapm,
++	if (power_up)
++		sort = dapm_up_seq;
++	else
++		sort = dapm_down_seq;
  
- 	if (!list_empty(&pending))
- 		dapm_seq_run_coalesced(dapm, &pending);
-+
-+	if (cur_dapm && cur_dapm->seq_notifier) {
-+		for (i = 0; i < ARRAY_SIZE(dapm_up_seq); i++)
-+			if (sort[i] == cur_sort)
-+				cur_dapm->seq_notifier(cur_dapm,
-+						       i);
-+	}
+ 	list_for_each_entry_safe(w, n, list, power_list) {
+ 		ret = 0;
+@@ -1002,10 +1015,10 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
+ 	list_for_each_entry(w, &card->widgets, list) {
+ 		switch (w->id) {
+ 		case snd_soc_dapm_pre:
+-			dapm_seq_insert(w, &down_list, dapm_down_seq);
++			dapm_seq_insert(w, &down_list, false);
+ 			break;
+ 		case snd_soc_dapm_post:
+-			dapm_seq_insert(w, &up_list, dapm_up_seq);
++			dapm_seq_insert(w, &up_list, true);
+ 			break;
+ 
+ 		default:
+@@ -1025,9 +1038,9 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
+ 			trace_snd_soc_dapm_widget_power(w, power);
+ 
+ 			if (power)
+-				dapm_seq_insert(w, &up_list, dapm_up_seq);
++				dapm_seq_insert(w, &up_list, true);
+ 			else
+-				dapm_seq_insert(w, &down_list, dapm_down_seq);
++				dapm_seq_insert(w, &down_list, false);
+ 
+ 			w->power = power;
+ 			break;
+@@ -1086,12 +1099,12 @@ static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
+ 	}
+ 
+ 	/* Power down widgets first; try to avoid amplifying pops. */
+-	dapm_seq_run(dapm, &down_list, event, dapm_down_seq);
++	dapm_seq_run(dapm, &down_list, event, false);
+ 
+ 	dapm_widget_update(dapm);
+ 
+ 	/* Now power up. */
+-	dapm_seq_run(dapm, &up_list, event, dapm_up_seq);
++	dapm_seq_run(dapm, &up_list, event, true);
+ 
+ 	list_for_each_entry(d, &dapm->card->dapm_list, list) {
+ 		/* If we just powered the last thing off drop to standby bias */
+@@ -2372,7 +2385,7 @@ static void soc_dapm_shutdown_codec(struct snd_soc_dapm_context *dapm)
+ 		if (w->dapm != dapm)
+ 			continue;
+ 		if (w->power) {
+-			dapm_seq_insert(w, &down_list, dapm_down_seq);
++			dapm_seq_insert(w, &down_list, false);
+ 			w->power = 0;
+ 			powerdown = 1;
+ 		}
+@@ -2383,7 +2396,7 @@ static void soc_dapm_shutdown_codec(struct snd_soc_dapm_context *dapm)
+ 	 */
+ 	if (powerdown) {
+ 		snd_soc_dapm_set_bias_level(NULL, dapm, SND_SOC_BIAS_PREPARE);
+-		dapm_seq_run(dapm, &down_list, 0, dapm_down_seq);
++		dapm_seq_run(dapm, &down_list, 0, false);
+ 		snd_soc_dapm_set_bias_level(NULL, dapm, SND_SOC_BIAS_STANDBY);
+ 	}
  }
- 
- static void dapm_widget_update(struct snd_soc_dapm_context *dapm)
 -- 
 1.7.2.3
