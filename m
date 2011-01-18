@@ -1,19 +1,27 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH 2/2] ASoC: PXA: Fix codec address on Zipit Z2
-Date: Tue, 18 Jan 2011 16:54:25 +0200
-Message-ID: <1295362465-21794-2-git-send-email-anarsoul@gmail.com>
-References: <1295362465-21794-1-git-send-email-anarsoul@gmail.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: Re: [PATCH - [hdspm] 1/3] Add headers for RayDAT and
+	AIO support.
+Date: Tue, 18 Jan 2011 16:00:39 +0100
+Message-ID: <20110118150039.GU21889@ltw.loris.tv>
+References: <1295359939-14673-1-git-send-email-adi@drcomp.erfurt.thur.de>
+	<1295359939-14673-2-git-send-email-adi@drcomp.erfurt.thur.de>
+	<s5hmxmygtre.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 97083103867
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 15:57:01 +0100 (CET)
-Received: by mail-ew0-f51.google.com with SMTP id 19so3148205ewy.38
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 06:57:01 -0800 (PST)
-In-Reply-To: <1295362465-21794-1-git-send-email-anarsoul@gmail.com>
+Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id EC9ED245D8
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 16:00:50 +0100 (CET)
+Received: from localhost (ltw.loris.tv [127.0.0.1])
+	by ltw.loris.tv (Postfix) with ESMTP id 891BD1AC62E
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 16:00:44 +0100 (CET)
+Received: from ltw.loris.tv ([127.0.0.1])
+	by localhost (ltw.loris.tv [127.0.0.1]) (amavisd-new, port 10024)
+	with LMTP id bweuKoZV+3HN for <alsa-devel@alsa-project.org>;
+	Tue, 18 Jan 2011 16:00:40 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hmxmygtre.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,29 +31,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Marek Vasut <marek.vasut@gmail.com>, anarsoul@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-WM8750 address is 0x1b, not 0x1a. Without this fix
-ALSA detects no sound cards on Zipit
+On Tue, Jan 18, 2011 at 03:40:21PM +0100, Takashi Iwai wrote:
 
-Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
----
- sound/soc/pxa/z2.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+> Adrian Knoth wrote:
+> > 
+> > +struct hdspm_peak_rms {
+> > +		uint32_t input_peaks[64];
+> > +		uint32_t playback_peaks[64];
+> > +		uint32_t output_peaks[64];
+> Strange indentation level?
 
-diff --git a/sound/soc/pxa/z2.c b/sound/soc/pxa/z2.c
-index 0da889d..62c77dc 100644
---- a/sound/soc/pxa/z2.c
-+++ b/sound/soc/pxa/z2.c
-@@ -193,7 +193,7 @@ static struct snd_soc_dai_link z2_dai = {
- 	.cpu_dai_name	= "pxa2xx-i2s",
- 	.codec_dai_name	= "wm8750-hifi",
- 	.platform_name = "pxa-pcm-audio",
--	.codec_name	= "wm8750-codec.0-001a",
-+	.codec_name	= "wm8750-codec.0-001b",
- 	.init		= z2_wm8750_init,
- 	.ops		= &z2_ops,
- };
+Indeed. Fixed.
+
+> > +struct hdspm_status {
+> > +	hdspm_io_type card_type;
+> > +	hdspm_syncsource autosync_source;
+> > +
+> > +	unsigned long long card_clock;
+> Use more explicit int type with bit width.
+
+Done.
+
+> > +static char *texts_sync_status[] = {
+> > +	"no lock",
+> > +	"lock",
+> > +	"sync"
+> > +};
+> 
+> Put these to *.c.
+
+Looks like this array is actually unused. Let's see which of them can be
+dropped or moved to *.c.
+
+I'll have to cross-check with hdspmixer, some parts are referenced
+there.
+
+
+Cheers
+
 -- 
-1.7.4.rc1
+mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
