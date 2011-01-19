@@ -1,50 +1,42 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH 0/3] Tegra: Add internal speaker support
-Date: Tue, 18 Jan 2011 16:29:37 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0310955319@HQMAIL01.nvidia.com>
-References: <1295393859-3396-1-git-send-email-swarren@wwwdotorg.org>
-	<20110119002513.GB4337@opensource.wolfsonmicro.com>
+From: "Nori, Sekhar" <nsekhar-l0cyMroinI0@public.gmane.org>
+Subject: RE: ALSA issue on DA850/OMAP-L138/AM18x
+Date: Wed, 19 Jan 2011 06:39:43 +0530
+Message-ID: <B85A65D85D7EB246BE421B3FB0FBB5930248473C06@dbde02.ent.ti.com>
+References: <B85A65D85D7EB246BE421B3FB0FBB59302484734E0@dbde02.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id B1768244AB
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 01:29:48 +0100 (CET)
-In-Reply-To: <20110119002513.GB4337@opensource.wolfsonmicro.com>
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB59302484734E0-/tLxBxkBPtCIQmiDNMet8wC/G2K4zDHf@public.gmane.org>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: "Rajashekhara, Sudhakar" <sudhakar.raj-l0cyMroinI0@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-lin>
+Cc: "khilman-1D3HCaltpLuhEniVeURVKkEOCMrvLtNR@public.gmane.org" <khilman-1D3HCaltpLuhEniVeURVKkEOCMrvLtNR@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Tue, Jan 18, 2011 at 04:37:36PM -0700, Stephen Warren wrote:
-> 
-> > a) Is this the right way to expose GPIO APIs from a codec? The tlv320aic3
-> >    seems to do it this way, but wm8962.c uses the generic GPIO API. I shied
-> >    away from the latter, since I wasn't sure how to name the WM8903's GPIOs
-> >    in the gpio_* calls. I suppose it'd need a bunch of GPIO driver platform
-> >    data to hook it all together and name GPIOs from a mach-tegra/include
-> >    header file, but if this is the way to go, I need to read up on that more.
-> 
-> What naming is required for the GPIOs?  GPIOs are referred to by number
-> in Linux.
+Hi Sudhakar,
 
-Naming/numbering mean the same thing to me; I have to pass a number to
-gpio_request/gpio_set_value, either by hard-coded number or name (i.e. #define
-referring to some number).
+On Tue, Jan 18, 2011 at 10:13:14, Rajashekhara, Sudhakar wrote:
 
-I'll go read up on gpiolib some more to see how those API-level numbers get
-mapped to a specific controller and GPIO number.
+> I was testing Audio with 2.6.37 on DA850 from Kevin Hilman Linux tree
+> at [1] and found that audio is broken. Below patch fixes the issue.
 
--- 
-nvpublic
+[...]
+
+> I am currently debugging this issue. I'll submit the above patch to community
+> once the issue of fixed.
+
+When posting the formal patch please don't forget:
+
+Cc: stable-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org  [2.6.37]
+
+Thanks,
+Sekhar
