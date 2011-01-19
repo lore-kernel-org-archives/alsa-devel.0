@@ -1,15 +1,19 @@
-From: Harsha Priya <priya.harsha@intel.com>
-Subject: [PATCH 3/4] ASoC: mid-x86: Add support for capture in
-	machine driver
-Date: Wed, 19 Jan 2011 18:18:34 +0530
-Message-ID: <1295441314-32209-1-git-send-email-priya.harsha@intel.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] Asoc: WM8994: fix wrong value in tristate
+	function
+Date: Wed, 19 Jan 2011 12:44:59 +0000
+Message-ID: <1295441099.3328.92.camel@odin>
+References: <1295435447-1569-1-git-send-email-zhouqiao@marvell.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3249F1039B4
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 13:34:22 +0100 (CET)
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6CF1010399C
+	for <Alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 13:45:03 +0100 (CET)
+Received: by wwe15 with SMTP id 15so790388wwe.20
+	for <Alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 04:45:02 -0800 (PST)
+In-Reply-To: <1295435447-1569-1-git-send-email-zhouqiao@marvell.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,37 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Vinod Koul <vinod.koul@intel.com>, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: Qiao Zhou <zhouqiao@marvell.com>
+Cc: Alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Vinod Koul <vinod.koul@intel.com>
+On Wed, 2011-01-19 at 19:10 +0800, Qiao Zhou wrote:
+> fix wrong value in wm8994_set_tristate func. when updating reg bits,
+> it should use "value", not "reg".
+> 
+> Signed-off-by: Qiao Zhou <zhouqiao@marvell.com>
 
-This configures the capture unused pins and sets
-the DMIC cfg by default (also done by user)
-
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/mid-x86/mfld_machine.c |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/mid-x86/mfld_machine.c b/sound/soc/mid-x86/mfld_machine.c
-index 1a330be..1cd49a2 100644
---- a/sound/soc/mid-x86/mfld_machine.c
-+++ b/sound/soc/mid-x86/mfld_machine.c
-@@ -182,6 +182,13 @@ static int mfld_init(struct snd_soc_pcm_runtime *runtime)
- 	snd_soc_dapm_disable_pin(dapm, "LINEOUTR");
- 	lo_dac = 3;
- 	hs_switch = 0;
-+	/* we dont use linein in this so set to NC */
-+	snd_soc_dapm_disable_pin(dapm, "LINEINL");
-+	snd_soc_dapm_disable_pin(dapm, "LINEINR");
-+	/* we are using DMICs here so configure how the clock and out pin is set */
-+	snd_soc_write(codec, SN95031_DMICBUF0123, 0x85);
-+	snd_soc_write(codec, SN95031_DMICBUF45, 0x02);
-+	snd_soc_update_bits(codec, SN95031_DMICMUX, 0x7, 0x07);
- 	return snd_soc_dapm_sync(dapm);
- }
- 
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
-1.7.2.3
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
