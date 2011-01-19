@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: WM8903: Add wm8903_set_gpio
-Date: Wed, 19 Jan 2011 00:21:02 +0000
-Message-ID: <20110119002102.GA4337@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/3] Tegra: Add internal speaker support
+Date: Wed, 19 Jan 2011 00:25:14 +0000
+Message-ID: <20110119002513.GB4337@opensource.wolfsonmicro.com>
 References: <1295393859-3396-1-git-send-email-swarren@wwwdotorg.org>
-	<1295393859-3396-2-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 743EC244A4
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 01:21:04 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AFB7824434
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 01:25:14 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1295393859-3396-2-git-send-email-swarren@wwwdotorg.org>
+In-Reply-To: <1295393859-3396-1-git-send-email-swarren@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,28 +25,29 @@ To: Stephen Warren <swarren@wwwdotorg.org>
 Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 18, 2011 at 04:37:37PM -0700, Stephen Warren wrote:
-> From: Stephen Warren <swarren@nvidia.com>
+On Tue, Jan 18, 2011 at 04:37:36PM -0700, Stephen Warren wrote:
 
-This should be implemented using gpiolib - see WM8962 for an example of
-this.  That way the control can be plugged into more other subsystems in
-the kernel (probably including whenever I or someone else gets around to
-it a widget like the one you open code in a later patch).  I know some
-of the drivers do export the GPIOs using custom APIs but that's
-something that should be fixed.
+> a) Is this the right way to expose GPIO APIs from a codec? The tlv320aic3
+>    seems to do it this way, but wm8962.c uses the generic GPIO API. I shied
+>    away from the latter, since I wasn't sure how to name the WM8903's GPIOs
+>    in the gpio_* calls. I suppose it'd need a bunch of GPIO driver platform
+>    data to hook it all together and name GPIOs from a mach-tegra/include
+>    header file, but if this is the way to go, I need to read up on that more.
 
-> Also, fix platform_data handling to have an explicit "don't touch this pin"
-> option.
+What naming is required for the GPIOs?  GPIOs are referred to by number
+in Linux.
 
-This should've been a separate patch since it's OK to go in as-is.
+> b) Is the WM8903 platform_data handling full fleshed out; simply by having
+>    platform_data, WM8903_WSEQ_ENA is set, whereas without any pdata, it
+>    isn't. Should this be conditional, or should I always have specified some
+>    platform data for Tegra, and I'm just getting lucky that it works without
+>    any?
 
-> Temporarily hack out the mic detection platform_data handling for simplicity
-
-There's no patch restoring the functionality...
-
-> tesing the GPIO changes. Should the write-sequencer enabling be conditional?
-
-Yes.  It's not actually enabling the write sequencer itself, it's
-enabling a low rate clock that's shared between a number of functions in
-the device including jack detection.  Without the clock jack detection
-will not function.
+Ah, your comment about the sequencer is clearer now.  This is not
+enabling the write sequencer, that'll be done transiently when required
+if it's not set here.  It's enabling a clock which is used by several
+parts of the chip including the write sequencer all the time so that the
+mic detection can function in the absence of any other software managing
+it.  This is why it's conditional on microphone detection being
+configured, other functions can have this clock disabled most of the
+time.
