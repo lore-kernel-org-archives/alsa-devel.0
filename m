@@ -1,16 +1,18 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: soc-cache: Apply the cache_bypass
-	option
-Date: Wed, 19 Jan 2011 14:53:37 +0000
-Message-ID: <1295448817-9044-2-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 1/2] ASoC: soc-cache: Introduce the
+ cache_bypass option
+Date: Wed, 19 Jan 2011 15:25:11 +0000
+Message-ID: <1295450711.3328.205.camel@odin>
 References: <1295448817-9044-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1B84310385F
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 15:53:40 +0100 (CET)
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8333810384B
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 16:25:19 +0100 (CET)
+Received: by wwe15 with SMTP id 15so950634wwe.20
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 07:25:19 -0800 (PST)
 In-Reply-To: <1295448817-9044-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,43 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Incorporate the use of the cache_bypass functionality in the
-syncing functions.  The snd_soc_flat_cache_sync() need not be
-hooked as there is no performance benefit from using the
-cache_bypass option.
+On Wed, 2011-01-19 at 14:53 +0000, Dimitris Papastamos wrote:
+> This is primarily needed to avoid writing back to the cache
+> whenever we are syncing the cache with the hardware.  This gives a
+> performance benefit especially for large register maps.
+> 
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
-Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
----
- sound/soc/soc-cache.c |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
+Both
 
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index 1ebff9f..f834839 100644
---- a/sound/soc/soc-cache.c
-+++ b/sound/soc/soc-cache.c
-@@ -890,7 +890,9 @@ static int snd_soc_rbtree_cache_sync(struct snd_soc_codec *codec)
- 		ret = snd_soc_cache_read(codec, rbnode->reg, &val);
- 		if (ret)
- 			return ret;
-+		codec->cache_bypass = 1;
- 		ret = snd_soc_write(codec, rbnode->reg, val);
-+		codec->cache_bypass = 0;
- 		if (ret)
- 			return ret;
- 		dev_dbg(codec->dev, "Synced register %#x, value = %#x\n",
-@@ -1148,7 +1150,9 @@ static int snd_soc_lzo_cache_sync(struct snd_soc_codec *codec)
- 		ret = snd_soc_cache_read(codec, i, &val);
- 		if (ret)
- 			return ret;
-+		codec->cache_bypass = 1;
- 		ret = snd_soc_write(codec, i, val);
-+		codec->cache_bypass = 0;
- 		if (ret)
- 			return ret;
- 		dev_dbg(codec->dev, "Synced register %#x, value = %#x\n",
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
-1.7.3.5
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
