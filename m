@@ -1,16 +1,15 @@
-From: "Harsha, Priya" <priya.harsha@intel.com>
-Subject: [PATCH 0/4] ASoC: patch series to add support for
- capture and jack sense in mid-x86 drivers
-Date: Wed, 19 Jan 2011 18:22:01 +0530
-Message-ID: <98769532B4BB14429434178695419EAE08C0D41CEB@bgsmsx501.gar.corp.intel.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: WM8995: Fix incorrect use of
+	snd_soc_update_bits()
+Date: Wed, 19 Jan 2011 12:55:28 +0000
+Message-ID: <1295441728-23326-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 901BA24469
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 13:52:08 +0100 (CET)
-Content-Language: en-US
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4466324469
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 13:55:30 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,25 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Harsha,
-	Priya" <priya.harsha@intel.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+In the wm8995_set_tristate() function when updating the register
+bits use the value and not the register index as the value argument.
 
-This patch set adds support for capture and jack sense in mid-x6 platform,
-machine and TI sn95031 codec drivers.
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8995.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-[PATCH 1/4] ASoC: sn95031: add capture support
-	This patch adds support for capture codec dais and widgets
-[PATCH 2/4] ASoC: sst_platform: add support for capture stream on headset dai
- 	This patch adds mid-x86 sst platform driver support for capture on
- 	headset dai
-[PATCH 3/4] ASoC: mid-x86: Add support for capture in machine driver
-	This patch adds support for enabling capture in mfld machine driver
-[PATCH 4/4] ASoC: mid-x86 add jack detect support
-	This patch adds support for jack detection and reporting support in
-	sn95031 codec and mfld_machine driver
-
--Harsha
+diff --git a/sound/soc/codecs/wm8995.c b/sound/soc/codecs/wm8995.c
+index 7d56341..67eaaec 100644
+--- a/sound/soc/codecs/wm8995.c
++++ b/sound/soc/codecs/wm8995.c
+@@ -1265,7 +1265,7 @@ static int wm8995_set_tristate(struct snd_soc_dai *codec_dai, int tristate)
+ 	else
+ 		val = 0;
+ 
+-	return snd_soc_update_bits(codec, reg, mask, reg);
++	return snd_soc_update_bits(codec, reg, mask, val);
+ }
+ 
+ /* The size in bits of the FLL divide multiplied by 10
+-- 
+1.7.3.5
