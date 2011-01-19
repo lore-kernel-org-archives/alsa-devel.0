@@ -1,15 +1,15 @@
-From: Harsha Priya <priya.harsha@intel.com>
-Subject: [PATCH 3/4] ASoC: mid-x86: Add support for capture in
-	machine driver
-Date: Wed, 19 Jan 2011 18:17:01 +0530
-Message-ID: <1295441221-32132-1-git-send-email-priya.harsha@intel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.39
+Date: Wed, 19 Jan 2011 12:33:20 +0000
+Message-ID: <20110119123320.GA31791@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 176281039A6
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 13:32:54 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C2FE01039AB
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 13:33:02 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,37 +19,196 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Vinod Koul <vinod.koul@intel.com>, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-From: Vinod Koul <vinod.koul@intel.com>
+The following changes since commit c56eb8fb6dccb83d9fe62fd4dc00c834de9bc470:
 
-This configures the capture unused pins and sets
-the DMIC cfg by default (also done by user)
+  Linux 2.6.38-rc1 (2011-01-18 15:14:02 -0800)
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
----
- sound/soc/mid-x86/mfld_machine.c |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.39
 
-diff --git a/sound/soc/mid-x86/mfld_machine.c b/sound/soc/mid-x86/mfld_machine.c
-index 1a330be..1cd49a2 100644
---- a/sound/soc/mid-x86/mfld_machine.c
-+++ b/sound/soc/mid-x86/mfld_machine.c
-@@ -182,6 +182,13 @@ static int mfld_init(struct snd_soc_pcm_runtime *runtime)
- 	snd_soc_dapm_disable_pin(dapm, "LINEOUTR");
- 	lo_dac = 3;
- 	hs_switch = 0;
-+	/* we dont use linein in this so set to NC */
-+	snd_soc_dapm_disable_pin(dapm, "LINEINL");
-+	snd_soc_dapm_disable_pin(dapm, "LINEINR");
-+	/* we are using DMICs here so configure how the clock and out pin is set */
-+	snd_soc_write(codec, SN95031_DMICBUF0123, 0x85);
-+	snd_soc_write(codec, SN95031_DMICBUF45, 0x02);
-+	snd_soc_update_bits(codec, SN95031_DMICMUX, 0x7, 0x07);
- 	return snd_soc_dapm_sync(dapm);
- }
- 
--- 
-1.7.2.3
+Barry Song (2):
+      ASoC: Blackfin TDM: use external frame syncs
+      ASoC: Blackfin: fix DAI/SPORT config dependency issues
+
+Dimitris Papastamos (11):
+      ASoC: soc-core: Add support for NULL default register caches
+      ASoC: WM8995: Remember to flush the cache on resume
+      ASoC: soc-cache: Clean up the cache manipulation code
+      ASoC: soc-core: Simplify compress_type overriding functionality
+      ASoC: soc-cache: Ensure flat compression uses a copy of the defaults cache
+      ASoC: soc-cache: Add reg_size as a member to snd_soc_codec
+      ASoC: soc-cache: Add support for default readable()/volatile() functions
+      ASoC: Update users of readable_register()/volatile_register()
+      ASoC: Automatically assign the default readable()/volatile() functions
+      ASoC: WM8991: Add initial WM8991 driver
+      ASoC: WM8995: Add regulator handling code
+
+Harsha Priya (2):
+      ASoC: sst_platform created helper functions
+      ASoC: sst_platform porting sst dsp driver interface as per latest in Greg's staging tree
+
+Kuninori Morimoto (1):
+      ASoC: sh: fsi-ak4642: fixup platform device id
+
+Mark Brown (8):
+      ASoC: Taint the kernel if debugfs is used to write directly to CODECs
+      ASoC: Update name of debugfs root symbol to snd_soc_
+      ASoC: Fix indentation in soc_remove()
+      Merge branch 'for-2.6.38' into for-2.6.39
+      ASoC: Avoid direct register cache access when setting defaults
+      Merge branch 'for-2.6.38' into for-2.6.39
+      Merge branch 'for-2.6.38' of git://git.kernel.org/.../broonie/sound-2.6 into for-2.6.38
+      Merge branch 'for-2.6.38' into for-2.6.39
+
+Mike Frysinger (2):
+      ASoC: Blackfin TDM: fix missed snd_soc_dai_get_drvdata update
+      ASoC: Blackfin AC97: fix build error after multi-component update
+
+Peter Ujfalusi (1):
+      ASoC: core: Remove dapm_sync call from soc_post_component_init
+
+Seungwhan Youn (6):
+      ASoC: SAMSUNG: Remove AC97 header file
+      ASoC: SAMSUNG: Clean-up DMA header file
+      ASoC: SAMSUNG: Move PCM specific definitions into pcm.c
+      ASoC: SAMSUNG: Clean-up header includes
+      ASoC: documentation updates
+      ASoC: documentation updates
+
+Stephen Warren (10):
+      ASoC: Export debugfs root dentry
+      ASoC: tegra: Add tegra-das driver
+      ASoC: tegra: Add tegra-pcm driver
+      ASoC: tegra: Add tegra-i2s driver
+      ASoC: tegra: Machine utility code
+      ASoC: tegra: Harmony machine support
+      ASoC: tegra: Kconfig and Makefile
+      ASoC: tegra: s/IS_ERR_OR_NULL/IS_ERR/ for clk_get_sys
+      ASoC: tegra: Remove TEGRA_I2S_AUDIO from Kconfig
+      ASoC: tegra: Add DAPM widgets/routes for Harmony
+
+Timur Tabi (1):
+      ASoC: let snd_soc_update_bits() return an error code
+
+Vasily Khoruzhick (2):
+      ASoC: PXA: Fix jack detection on Zipit Z2
+      ASoC: PXA: Fix codec address on Zipit Z2
+
+Vinod Koul (12):
+      ASoC: sst v2: Add sn95031 codec driver
+      ASoC: sst v2: Add mid platform driver
+      ASoC sst v2: Add medfield machine driver
+      ASoC: sst v2: Add makefiles and kconfigs changes
+      ASoC: sn95031 fix the code style and format inconsistencies
+      ASoC: sst platform - fix the style inconsistency
+      ASoC: mid-x86 - remove the flag in makefile
+      ASoC: soc core move card cleanup from soc_remove()
+      ASoC: soc core move the card debugfs initialization
+      ASoC: soc core add inline to handle card list initialzation
+      ASoC: soc core allow machine driver to register the card
+      ASoC: Add dependency on INTEL_SCU_IPC for Intel MID drivers
+
+ Documentation/sound/alsa/soc/codec.txt         |   45 +-
+ Documentation/sound/alsa/soc/machine.txt       |   38 +-
+ Documentation/sound/alsa/soc/platform.txt      |   12 +-
+ include/sound/soc.h                            |   45 +-
+ sound/soc/Kconfig                              |    2 +
+ sound/soc/Makefile                             |    2 +
+ sound/soc/blackfin/Kconfig                     |   11 +-
+ sound/soc/blackfin/bf5xx-ac97.c                |    4 +-
+ sound/soc/blackfin/bf5xx-tdm.c                 |   10 +-
+ sound/soc/codecs/Kconfig                       |    8 +
+ sound/soc/codecs/Makefile                      |    4 +
+ sound/soc/codecs/cs4270.c                      |    4 +-
+ sound/soc/codecs/max98088.c                    |    2 +-
+ sound/soc/codecs/sn95031.c                     |  495 ++++++++
+ sound/soc/codecs/sn95031.h                     |   99 ++
+ sound/soc/codecs/wm8523.c                      |    8 +-
+ sound/soc/codecs/wm8741.c                      |   13 +-
+ sound/soc/codecs/wm8804.c                      |    2 +-
+ sound/soc/codecs/wm8900.c                      |    2 +-
+ sound/soc/codecs/wm8903.c                      |    2 +-
+ sound/soc/codecs/wm8904.c                      |   43 +-
+ sound/soc/codecs/wm8955.c                      |   27 +-
+ sound/soc/codecs/wm8961.c                      |    2 +-
+ sound/soc/codecs/wm8962.c                      |   34 +-
+ sound/soc/codecs/wm8978.c                      |    2 +-
+ sound/soc/codecs/wm8991.c                      | 1427 ++++++++++++++++++++++++
+ sound/soc/codecs/wm8991.h                      |  833 ++++++++++++++
+ sound/soc/codecs/wm8993.c                      |    2 +-
+ sound/soc/codecs/wm8994.c                      |   10 +-
+ sound/soc/codecs/wm8995.c                      |  103 ++-
+ sound/soc/codecs/wm9081.c                      |    2 +-
+ sound/soc/codecs/wm9090.c                      |   45 +-
+ sound/soc/mid-x86/Kconfig                      |   14 +
+ sound/soc/mid-x86/Makefile                     |    5 +
+ sound/soc/mid-x86/mfld_machine.c               |  296 +++++
+ sound/soc/mid-x86/sst_platform.c               |  459 ++++++++
+ sound/soc/mid-x86/sst_platform.h               |   63 ++
+ sound/soc/pxa/z2.c                             |    3 +-
+ sound/soc/samsung/ac97.c                       |    8 +-
+ sound/soc/samsung/ac97.h                       |   21 -
+ sound/soc/samsung/dma.c                        |   11 +-
+ sound/soc/samsung/dma.h                        |    8 -
+ sound/soc/samsung/goni_wm8994.c                |   10 +-
+ sound/soc/samsung/h1940_uda1380.c              |    9 -
+ sound/soc/samsung/i2s.c                        |    3 +-
+ sound/soc/samsung/jive_wm8750.c                |   11 -
+ sound/soc/samsung/ln2440sbc_alc650.c           |    7 -
+ sound/soc/samsung/neo1973_gta02_wm8753.c       |   14 +-
+ sound/soc/samsung/pcm.c                        |  118 ++-
+ sound/soc/samsung/pcm.h                        |  107 --
+ sound/soc/samsung/rx1950_uda1380.c             |   11 -
+ sound/soc/samsung/s3c-i2s-v2.c                 |    3 +-
+ sound/soc/samsung/s3c2412-i2s.c                |   12 +-
+ sound/soc/samsung/s3c24xx-i2s.c                |   14 +-
+ sound/soc/samsung/s3c24xx_simtec.c             |    7 -
+ sound/soc/samsung/s3c24xx_simtec_hermes.c      |   10 -
+ sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c |   12 -
+ sound/soc/samsung/s3c24xx_uda134x.c            |    9 +-
+ sound/soc/samsung/smartq_wm8987.c              |    6 -
+ sound/soc/samsung/smdk2443_wm9710.c            |    7 -
+ sound/soc/samsung/smdk_spdif.c                 |    5 -
+ sound/soc/samsung/smdk_wm8580.c                |    7 +-
+ sound/soc/samsung/smdk_wm9713.c                |    5 -
+ sound/soc/samsung/spdif.c                      |    3 +-
+ sound/soc/sh/fsi-ak4642.c                      |   11 +-
+ sound/soc/soc-cache.c                          |  317 +++---
+ sound/soc/soc-core.c                           |  165 ++--
+ sound/soc/tegra/Kconfig                        |   26 +
+ sound/soc/tegra/Makefile                       |   14 +
+ sound/soc/tegra/harmony.c                      |  210 ++++
+ sound/soc/tegra/tegra_asoc_utils.c             |  152 +++
+ sound/soc/tegra/tegra_asoc_utils.h             |   31 +
+ sound/soc/tegra/tegra_das.c                    |  264 +++++
+ sound/soc/tegra/tegra_das.h                    |  135 +++
+ sound/soc/tegra/tegra_i2s.c                    |  502 +++++++++
+ sound/soc/tegra/tegra_i2s.h                    |  165 +++
+ sound/soc/tegra/tegra_pcm.c                    |  401 +++++++
+ sound/soc/tegra/tegra_pcm.h                    |   55 +
+ 78 files changed, 6347 insertions(+), 717 deletions(-)
+ create mode 100644 sound/soc/codecs/sn95031.c
+ create mode 100644 sound/soc/codecs/sn95031.h
+ create mode 100644 sound/soc/codecs/wm8991.c
+ create mode 100644 sound/soc/codecs/wm8991.h
+ create mode 100644 sound/soc/mid-x86/Kconfig
+ create mode 100644 sound/soc/mid-x86/Makefile
+ create mode 100644 sound/soc/mid-x86/mfld_machine.c
+ create mode 100644 sound/soc/mid-x86/sst_platform.c
+ create mode 100644 sound/soc/mid-x86/sst_platform.h
+ delete mode 100644 sound/soc/samsung/ac97.h
+ create mode 100644 sound/soc/tegra/Kconfig
+ create mode 100644 sound/soc/tegra/Makefile
+ create mode 100644 sound/soc/tegra/harmony.c
+ create mode 100644 sound/soc/tegra/tegra_asoc_utils.c
+ create mode 100644 sound/soc/tegra/tegra_asoc_utils.h
+ create mode 100644 sound/soc/tegra/tegra_das.c
+ create mode 100644 sound/soc/tegra/tegra_das.h
+ create mode 100644 sound/soc/tegra/tegra_i2s.c
+ create mode 100644 sound/soc/tegra/tegra_i2s.h
+ create mode 100644 sound/soc/tegra/tegra_pcm.c
+ create mode 100644 sound/soc/tegra/tegra_pcm.h
