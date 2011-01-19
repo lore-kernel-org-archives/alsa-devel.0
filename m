@@ -1,18 +1,17 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 0/3] Tegra: Add internal speaker support
-Date: Wed, 19 Jan 2011 12:47:20 +0000
-Message-ID: <1295441240.3328.95.camel@odin>
-References: <1295393859-3396-1-git-send-email-swarren@wwwdotorg.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/4] ASoC: sn95031: add capture support
+Date: Wed, 19 Jan 2011 12:51:32 +0000
+Message-ID: <20110119125131.GB31791@opensource.wolfsonmicro.com>
+References: <1295441169-32063-1-git-send-email-priya.harsha@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id CA32524469
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 13:47:24 +0100 (CET)
-Received: by wyi11 with SMTP id 11so791320wyi.38
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 04:47:24 -0800 (PST)
-In-Reply-To: <1295393859-3396-1-git-send-email-swarren@wwwdotorg.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F162924469
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 13:51:15 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1295441169-32063-1-git-send-email-priya.harsha@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,39 +21,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Stephen Warren <swarren@nvidia.com>
+To: Harsha Priya <priya.harsha@intel.com>
+Cc: tiwai@suse.de, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-01-18 at 16:37 -0700, Stephen Warren wrote:
-> From: Stephen Warren <swarren@nvidia.com>
-> 
-> Harmony has headers on the board for an internal speaker and internal mic.
-> I've started looking at enabling these, along with full jack detection etc.
-> This first set of patches is an RFC (Request For Comments) on whether it's
-> the correct direction, particularly with respect to:
-> 
-> a) Is this the right way to expose GPIO APIs from a codec? The tlv320aic3
->    seems to do it this way, but wm8962.c uses the generic GPIO API. I shied
->    away from the latter, since I wasn't sure how to name the WM8903's GPIOs
->    in the gpio_* calls. I suppose it'd need a bunch of GPIO driver platform
->    data to hook it all together and name GPIOs from a mach-tegra/include
->    header file, but if this is the way to go, I need to read up on that more.
-> 
-> b) Is the WM8903 platform_data handling full fleshed out; simply by having
->    platform_data, WM8903_WSEQ_ENA is set, whereas without any pdata, it
->    isn't. Should this be conditional, or should I always have specified some
->    platform data for Tegra, and I'm just getting lucky that it works without
->    any?
-> 
-> Thanks for any coments.
-> 
+On Wed, Jan 19, 2011 at 06:16:09PM +0530, Harsha Priya wrote:
 
-2 & 3 look fine and
+> +static int amic1_mic_bias(struct snd_soc_dapm_widget *w,
+> +				struct snd_kcontrol *k, int event)
+> +{
+> +	unsigned int value = 0;
+> +
+> +	if (SND_SOC_DAPM_EVENT_ON(event)) {
+> +		pr_debug("AMIC1 SND_SOC_DAPM_EVENT_ON doing\n");
+> +		value = BIT(2);
+> +	}
+> +	snd_soc_update_bits(w->codec, SN95031_MICBIAS, BIT(2), value);
+> +	return 0;
+> +}
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+I'm not clear why this is being done using an event?  It's updating a
+single register bit which is what the standard MICBIAS widget does.
+There's also another example of debug logging which replicates the
+standard feature facilities.
 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+> +static int dmic12_mic_bias(struct snd_soc_dapm_widget *w,
+> +				struct snd_kcontrol *k, int event)
+> +{
+> +	unsigned int ldo = 0, clk = 0, out = 0;
+> +
+> +	if (SND_SOC_DAPM_EVENT_ON(event)) {
+> +		pr_debug("DMIC12 SND_SOC_DAPM_EVENT_ON doing\n");
+> +		ldo = BIT(5)|BIT(4);
+> +		clk = BIT(0);
+> +		out = BIT(3);
+> +	}
+> +	/* program DMIC LDO */
+> +	snd_soc_update_bits(w->codec, SN95031_MICBIAS, BIT(5)|BIT(4), ldo);
+> +	msleep(1);
+> +	/* enable/disable DMIC clock and o/p */
+> +	snd_soc_update_bits(w->codec, SN95031_DMICLK, BIT(0), clk);
+> +	snd_soc_update_bits(w->codec, SN95031_DMICMUX, BIT(3), out);
+
+How about using a supply widget for the LDO and the clock?  This would
+also ensure that...
+
+> +	if (SND_SOC_DAPM_EVENT_ON(event)) {
+> +		pr_debug("DMIC34 SND_SOC_DAPM_EVENT_ON doing\n");
+> +		ldo = BIT(5)|BIT(4);
+> +		clk = BIT(1);
+> +		out = BIT(4);
+
+...we don't end up disabling them when one of the DMICs is shut off but
+the other is left on.
+
+> +	SND_SOC_DAPM_MIC("AMIC1", amic1_mic_bias), /* headset mic */
+> +	SND_SOC_DAPM_MIC("AMIC2", amic2_mic_bias),
+> +	SND_SOC_DAPM_MIC("DMIC1", dmic12_mic_bias),
+> +	SND_SOC_DAPM_MIC("DMIC2", dmic12_mic_bias),
+> +	SND_SOC_DAPM_MIC("DMIC3", dmic34_mic_bias),
+> +	SND_SOC_DAPM_MIC("DMIC4", dmic34_mic_bias),
+> +	SND_SOC_DAPM_MIC("DMIC5", dmic56_mic_bias),
+> +	SND_SOC_DAPM_MIC("DMIC6", dmic56_mic_bias),
+
+These widgets are for use externally to the device in machine drivers.
+The pins on the CODEC should be _INPUT() widgets and the biases should
+be MICBIAS widgets.
+
+> +	SND_SOC_DAPM_REG(snd_soc_dapm_micbias, "MIC1 Enable", SN95031_MICAMP1,
+> +			0, 1, 1, 0),
+> +	SND_SOC_DAPM_REG(snd_soc_dapm_micbias, "MIC2 Enable", SN95031_MICAMP2,
+> +			0, 1, 1, 0),
+
+These look awfully like they should just be normal PGA widgets?
