@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Question about ASOC codec drivers
-Date: Tue, 18 Jan 2011 19:19:23 +0000
-Message-ID: <20110118191923.GB17591@sirena.org.uk>
-References: <AANLkTim-3xObWzoF4aMUA6umYcD=wDhvY+mChqQhU=JY@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: WM8903: Add wm8903_set_gpio
+Date: Wed, 19 Jan 2011 00:21:02 +0000
+Message-ID: <20110119002102.GA4337@opensource.wolfsonmicro.com>
+References: <1295393859-3396-1-git-send-email-swarren@wwwdotorg.org>
+	<1295393859-3396-2-git-send-email-swarren@wwwdotorg.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0EC422417E
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2011 20:19:24 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 743EC244A4
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 01:21:04 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <AANLkTim-3xObWzoF4aMUA6umYcD=wDhvY+mChqQhU=JY@mail.gmail.com>
+In-Reply-To: <1295393859-3396-2-git-send-email-swarren@wwwdotorg.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,27 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Neil Jones <neiljay@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Stephen Warren <swarren@wwwdotorg.org>
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 18, 2011 at 05:35:22PM +0000, Neil Jones wrote:
+On Tue, Jan 18, 2011 at 04:37:37PM -0700, Stephen Warren wrote:
+> From: Stephen Warren <swarren@nvidia.com>
 
-> tansen_input_select[] array of strings which only has 3 entries, so it
-> blows up (e->max = 7??).
+This should be implemented using gpiolib - see WM8962 for an example of
+this.  That way the control can be plugged into more other subsystems in
+the kernel (probably including whenever I or someone else gets around to
+it a widget like the one you open code in a later patch).  I know some
+of the drivers do export the GPIOs using custom APIs but that's
+something that should be fixed.
 
-This...
+> Also, fix platform_data handling to have an explicit "don't touch this pin"
+> option.
 
-> also shouldn't the strcpy by a strncpy as we are copying to a fixed
-> 64byte buffer ?
+This should've been a separate patch since it's OK to go in as-is.
 
-There's rather a lot of strcpy() calls in the kernel; perhaps you could
-be more specific?  Ideally if you think there's a change that should be
-made please post a patch.
+> Temporarily hack out the mic detection platform_data handling for simplicity
 
-> static const struct soc_enum tansen_ip_enum =
-> SOC_ENUM_SINGLE(TANSEN_TM_IP_TOP2, 4, 0x7, tansen_input_select);
+There's no patch restoring the functionality...
 
-...is exactly what you told the driver to do.  You've told the core
-there are seven items in the enumeration so it's expecting an array of
-seven strings.
+> tesing the GPIO changes. Should the write-sequencer enabling be conditional?
+
+Yes.  It's not actually enabling the write sequencer itself, it's
+enabling a low rate clock that's shared between a number of functions in
+the device including jack detection.  Without the clock jack detection
+will not function.
