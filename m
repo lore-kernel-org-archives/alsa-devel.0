@@ -1,95 +1,168 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: Re: [PATCH 4/4] ASoC: mid-x86 add jack detect support
-Date: Wed, 19 Jan 2011 22:18:04 +0530
-Message-ID: <438BB0150E931F4B9CE701519A446301084470BBE1@bgsmsx502.gar.corp.intel.com>
-References: <1295441296-32180-1-git-send-email-priya.harsha@intel.com>
-	<20110119144138.GB16328@opensource.wolfsonmicro.com>
+From: Jiri Kosina <jkosina@suse.cz>
+Subject: =?ISO-8859-7?Q?Re=3A_=5BPatch=5D_Kill_off_warning=3A_=A1inline=A2_is_not_at_beginning_of_declaration?=
+Date: Wed, 19 Jan 2011 15:44:33 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1101191543110.26685@pobox.suse.cz>
+References: <alpine.LNX.2.00.1101170000270.13377@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5C541244CF
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2011 17:50:59 +0100 (CET)
-In-Reply-To: <20110119144138.GB16328@opensource.wolfsonmicro.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, "Harsha, Priya" <priya.harsha@intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset="iso-8859-7"
+Content-Transfer-Encoding: base64
+Return-path: <oprofile-list-bounces@lists.sourceforge.net>
+In-Reply-To: <alpine.LNX.2.00.1101170000270.13377@swampdragon.chaosbits.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/oprofile-list>,
+	<mailto:oprofile-list-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=oprofile-list>
+List-Post: <mailto:oprofile-list@lists.sourceforge.net>
+List-Help: <mailto:oprofile-list-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/oprofile-list>,
+	<mailto:oprofile-list-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: oprofile-list-bounces@lists.sourceforge.net
+To: Jesper Juhl <jj@chaosbits.net>
+Cc: alsa-devel@alsa-project.org, Mauro Carvalho Chehab <mchehab@redhat.com>, Takashi Iwai <tiwai@suse.de>, Frederic Weisbecker <fweisbec@gmail.com>, "Gustavo F. Padovan" <padovan@profusion.mobi>, Jaroslav Kysela <perex@perex.cz>, Jens Axboe <jens.axboe@oracle.com>, Stephen Hemminger <shemminger@vyatta.com>, Andi Kleen <ak@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, "Pekka Savola (ipv6)" <pekkas@netcore.fi>, x86@kernel.org, James Morris <jmorris@namei.org>, Ingo Molnar <mingo@redhat.com>, oprofile-list@lists.sf.net, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Mark Fasheh <mfasheh@suse.com>, Marcel Holtmann <marcel@holtmann.org>, "John W. Linville" <linville@tuxdriver.com>, David Teigland <teigland@redhat.com>, Joel Becker <jlbec@evilplan.org>, Thomas Gleixner <tglx@linutronix.de>, linux-edac@vger.kernel.org, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, netdev@vger.ker
 List-Id: alsa-devel@alsa-project.org
 
-> This should be split into two: one patch adding the feature in the
-> CODEC, the other adding the use of the feature in the machine driver.
-Agreed
-
-> >  	/* all end points mic, hs etc */
-> > +	SND_SOC_DAPM_HP("HeadPhones", NULL),
-> 
-> Again this is a machine driver widget.
-ACK
-
-> > +int sn95031_get_headset_state(void)
-> > +{
-> > +	unsigned int mic_bias = sn95031_get_mic_bias(sn95031_codec);
-> > +
-> > +	if (mic_bias >= SN_HP_START && mic_bias < SN_HP_END) {
-> > +		pr_debug("sst: Detected Headphone!!!\n");
-> > +		snd_soc_update_bits(sn95031_codec, AUDIO_GPIO_CTRL,
-> > +					BIT(1), BIT(0));
-> > +	} else if (mic_bias >= SN_AM_HS_START && mic_bias < SN_AM_HS_END) {
-> > +		pr_debug("sst: Detected American headset\n");
-> > +		snd_soc_update_bits(sn95031_codec, AUDIO_GPIO_CTRL,
-> > +					BIT(1), BIT(1));
-> > +	} else if (mic_bias >= SN_HS_START && mic_bias < SN_HS_END) {
-> > +		pr_debug("sst: Detected Headset!!!\n");
-> > +		snd_soc_update_bits(sn95031_codec, AUDIO_GPIO_CTRL,
-> > +					BIT(1), BIT(0));
-> > +		enable_jack_btn(sn95031_codec);
-> > +		return SND_JACK_HEADSET;
-> > +	} else
-> > +		pr_debug("sst: Detected Open Cable!!!\n");
-> 
-> What exactly is this doing?  It looks like it's measuring the voltage on
-> micbias and using that to identify the accessory connected?  That's
-> normally a machine specific thing - different manufacturers have
-> different ideas about what they want to do with this.  Some will do
-> things like have multiple buttons on the jack with different resistances
-> connected between them and measure the voltage to determine which button
-> has been pressed, take a look at the Nexus S kernel for one example.
-> 
-> Looking at all this fairly briefly it looks like all the CODEC is doing
-> is providing an ADC and possibly some signals fed directly into the CPU.
-> The detection then mostly belongs externally to the CODEC driver - the
-> CPU then generates interrupts and the machine driver goes off and does
-> some ADC readings using the facility provided by the CODEC.
-> 
-> Since this is a common pattern we should ideally have some utility code
-> which can take any table of ADC values in conjunction with any ADC and
-> use those to do detection.
-Yes the codec reads into the ADC to measure the micbias voltage.
-It has map where we know based on micbais present what kind of accessory maybe
-connected. Since this is entirely codec domain it should be in codec.
-Let me know if you disagree.
-
-> 
-> > +static int sn95031_initialize_adc(struct snd_soc_codec *sn95031_codec)
-> > +{
-> > +	int base_addr, chnl_addr;
-> > +	int value;
-> > +	static int channel_index;
-> 
-> The functions added in this header look like they'd be better placed in
-> the source file?
-Typically ADC should be a separate driver but we don't have that yet so
-though of adding these as helpers.
-When we get a proper adc driver we can replace this with code calling adc.
-
-~Vinod
+T24gTW9uLCAxNyBKYW4gMjAxMSwgSmVzcGVyIEp1aGwgd3JvdGU6Cgo+IEZpeCBhIGJ1bmNoIG9m
+IAo+IAl3YXJuaW5nOiChaW5saW5loiBpcyBub3QgYXQgYmVnaW5uaW5nIG9mIGRlY2xhcmF0aW9u
+Cj4gbWVzc2FnZXMgd2hlbiBidWlsZGluZyBhICdtYWtlIGFsbHllc2NvbmZpZycga2VybmVsIHdp
+dGggLVdleHRyYS4KPiAKPiBUaGVzZSB3YXJuaW5ncyBhcmUgdHJpdmlhbCB0byBraWxsLCB5ZXQg
+cmF0aGVyIGFubm95aW5nIHdoZW4gYnVpbGRpbmcgd2l0aCAKPiAtV2V4dHJhLgo+IFRoZSBtb3Jl
+IHdlIGNhbiBjdXQgZG93biBvbiBwb2ludGxlc3MgY3JhcCBsaWtlIHRoaXMgdGhlIGJldHRlciAo
+SU1ITykuCj4gCj4gQSBwcmV2aW91cyBwYXRjaCB0byBkbyB0aGlzIGZvciBhICdhbGxub2NvbmZp
+ZycgYnVpbGQgaGFzIGFscmVhZHkgYmVlbiAKPiBtZXJnZWQuIFRoaXMganVzdCB0YWtlcyB0aGUg
+Y2xlYW51cCBhIGxpdHRsZSBmdXJ0aGVyLgo+IAo+IFNpZ25lZC1vZmYtYnk6IEplc3BlciBKdWhs
+IDxqakBjaGFvc2JpdHMubmV0Pgo+IC0tLQo+ICBhcmNoL3g4Ni9vcHJvZmlsZS9vcF9tb2RlbF9w
+NC5jIHwgICAgMiArLQo+ICBkcml2ZXJzL2JsdWV0b290aC9idHVzYi5jICAgICAgIHwgICAgNCAr
+Ky0tCj4gIGRyaXZlcnMvY3B1aWRsZS9zeXNmcy5jICAgICAgICAgfCAgICAyICstCj4gIGRyaXZl
+cnMvZWRhYy9pNzMwMF9lZGFjLmMgICAgICAgfCAgICAyICstCj4gIGZzL29jZnMyL2Rpci5jICAg
+ICAgICAgICAgICAgICAgfCAgICAyICstCj4gIGtlcm5lbC90cmFjZS9yaW5nX2J1ZmZlci5jICAg
+ICAgfCAgICAyICstCj4gIG5ldC9pcHY2L2luZXQ2X2hhc2h0YWJsZXMuYyAgICAgfCAgICAyICst
+Cj4gIG5ldC9tYWM4MDIxMS90eC5jICAgICAgICAgICAgICAgfCAgICAyICstCj4gIHNvdW5kL3Bj
+aS9hdTg4eDAvYXU4OHgwLmggICAgICAgfCAgICA0ICsrLS0KPiAgc291bmQvcGNpL2F1ODh4MC9h
+dTg4eDBfY29yZS5jICB8ICAgIDQgKystLQo+ICAxMCBmaWxlcyBjaGFuZ2VkLCAxMyBpbnNlcnRp
+b25zKCspLCAxMyBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvYXJjaC94ODYvb3Byb2Zp
+bGUvb3BfbW9kZWxfcDQuYyBiL2FyY2gveDg2L29wcm9maWxlL29wX21vZGVsX3A0LmMKPiBpbmRl
+eCA5ZmFkZWMwLi45OGFiMTMwIDEwMDY0NAo+IC0tLSBhL2FyY2gveDg2L29wcm9maWxlL29wX21v
+ZGVsX3A0LmMKPiArKysgYi9hcmNoL3g4Ni9vcHJvZmlsZS9vcF9tb2RlbF9wNC5jCj4gQEAgLTUw
+LDcgKzUwLDcgQEAgc3RhdGljIGlubGluZSB2b2lkIHNldHVwX251bV9jb3VudGVycyh2b2lkKQo+
+ICAjZW5kaWYKPiAgfQo+ICAKPiAtc3RhdGljIGludCBpbmxpbmUgYWRkcl9pbmNyZW1lbnQodm9p
+ZCkKPiArc3RhdGljIGlubGluZSBpbnQgYWRkcl9pbmNyZW1lbnQodm9pZCkKPiAgewo+ICAjaWZk
+ZWYgQ09ORklHX1NNUAo+ICAJcmV0dXJuIHNtcF9udW1fc2libGluZ3MgPT0gMiA/IDIgOiAxOwo+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2JsdWV0b290aC9idHVzYi5jIGIvZHJpdmVycy9ibHVldG9v
+dGgvYnR1c2IuYwo+IGluZGV4IDFkYTc3M2YuLjkyZDI5YmYgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVy
+cy9ibHVldG9vdGgvYnR1c2IuYwo+ICsrKyBiL2RyaXZlcnMvYmx1ZXRvb3RoL2J0dXNiLmMKPiBA
+QCAtNDI0LDcgKzQyNCw3IEBAIHN0YXRpYyB2b2lkIGJ0dXNiX2lzb2NfY29tcGxldGUoc3RydWN0
+IHVyYiAqdXJiKQo+ICAJfQo+ICB9Cj4gIAo+IC1zdGF0aWMgdm9pZCBpbmxpbmUgX19maWxsX2lz
+b2NfZGVzY3JpcHRvcihzdHJ1Y3QgdXJiICp1cmIsIGludCBsZW4sIGludCBtdHUpCj4gK3N0YXRp
+YyBpbmxpbmUgdm9pZCBfX2ZpbGxfaXNvY19kZXNjcmlwdG9yKHN0cnVjdCB1cmIgKnVyYiwgaW50
+IGxlbiwgaW50IG10dSkKPiAgewo+ICAJaW50IGksIG9mZnNldCA9IDA7Cj4gIAo+IEBAIC03NzUs
+NyArNzc1LDcgQEAgc3RhdGljIHZvaWQgYnR1c2Jfbm90aWZ5KHN0cnVjdCBoY2lfZGV2ICpoZGV2
+LCB1bnNpZ25lZCBpbnQgZXZ0KQo+ICAJfQo+ICB9Cj4gIAo+IC1zdGF0aWMgaW50IGlubGluZSBf
+X3NldF9pc29jX2ludGVyZmFjZShzdHJ1Y3QgaGNpX2RldiAqaGRldiwgaW50IGFsdHNldHRpbmcp
+Cj4gK3N0YXRpYyBpbmxpbmUgaW50IF9fc2V0X2lzb2NfaW50ZXJmYWNlKHN0cnVjdCBoY2lfZGV2
+ICpoZGV2LCBpbnQgYWx0c2V0dGluZykKPiAgewo+ICAJc3RydWN0IGJ0dXNiX2RhdGEgKmRhdGEg
+PSBoZGV2LT5kcml2ZXJfZGF0YTsKPiAgCXN0cnVjdCB1c2JfaW50ZXJmYWNlICppbnRmID0gZGF0
+YS0+aXNvYzsKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jcHVpZGxlL3N5c2ZzLmMgYi9kcml2ZXJz
+L2NwdWlkbGUvc3lzZnMuYwo+IGluZGV4IDAzMTBmZmEuLmJlNzkxN2VjIDEwMDY0NAo+IC0tLSBh
+L2RyaXZlcnMvY3B1aWRsZS9zeXNmcy5jCj4gKysrIGIvZHJpdmVycy9jcHVpZGxlL3N5c2ZzLmMK
+PiBAQCAtMzAwLDcgKzMwMCw3IEBAIHN0YXRpYyBzdHJ1Y3Qga29ial90eXBlIGt0eXBlX3N0YXRl
+X2NwdWlkbGUgPSB7Cj4gIAkucmVsZWFzZSA9IGNwdWlkbGVfc3RhdGVfc3lzZnNfcmVsZWFzZSwK
+PiAgfTsKPiAgCj4gLXN0YXRpYyB2b2lkIGlubGluZSBjcHVpZGxlX2ZyZWVfc3RhdGVfa29iaihz
+dHJ1Y3QgY3B1aWRsZV9kZXZpY2UgKmRldmljZSwgaW50IGkpCj4gK3N0YXRpYyBpbmxpbmUgdm9p
+ZCBjcHVpZGxlX2ZyZWVfc3RhdGVfa29iaihzdHJ1Y3QgY3B1aWRsZV9kZXZpY2UgKmRldmljZSwg
+aW50IGkpCj4gIHsKPiAgCWtvYmplY3RfcHV0KCZkZXZpY2UtPmtvYmpzW2ldLT5rb2JqKTsKPiAg
+CXdhaXRfZm9yX2NvbXBsZXRpb24oJmRldmljZS0+a29ianNbaV0tPmtvYmpfdW5yZWdpc3Rlcik7
+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZWRhYy9pNzMwMF9lZGFjLmMgYi9kcml2ZXJzL2VkYWMv
+aTczMDBfZWRhYy5jCj4gaW5kZXggMDU1MjNiNS4uNzZkMWY1NyAxMDA2NDQKPiAtLS0gYS9kcml2
+ZXJzL2VkYWMvaTczMDBfZWRhYy5jCj4gKysrIGIvZHJpdmVycy9lZGFjL2k3MzAwX2VkYWMuYwo+
+IEBAIC0xNjIsNyArMTYyLDcgQEAgc3RhdGljIHN0cnVjdCBlZGFjX3BjaV9jdGxfaW5mbyAqaTcz
+MDBfcGNpOwo+ICAjZGVmaW5lIEFNQlBSRVNFTlRfMAkweDY0Cj4gICNkZWZpbmUgQU1CUFJFU0VO
+VF8xCTB4NjYKPiAgCj4gLWNvbnN0IHN0YXRpYyB1MTYgbXRyX3JlZ3NbTUFYX1NMT1RTXSA9IHsK
+PiArc3RhdGljIGNvbnN0IHUxNiBtdHJfcmVnc1tNQVhfU0xPVFNdID0gewo+ICAJMHg4MCwgMHg4
+NCwgMHg4OCwgMHg4YywKPiAgCTB4ODIsIDB4ODYsIDB4OGEsIDB4OGUKPiAgfTsKPiBkaWZmIC0t
+Z2l0IGEvZnMvb2NmczIvZGlyLmMgYi9mcy9vY2ZzMi9kaXIuYwo+IGluZGV4IGQ0MTdiM2YuLmY5
+N2I2ZjEgMTAwNjQ0Cj4gLS0tIGEvZnMvb2NmczIvZGlyLmMKPiArKysgYi9mcy9vY2ZzMi9kaXIu
+Ywo+IEBAIC0zNTQsNyArMzU0LDcgQEAgc3RhdGljIGlubGluZSBpbnQgb2NmczJfbWF0Y2goaW50
+IGxlbiwKPiAgLyoKPiAgICogUmV0dXJucyAwIGlmIG5vdCBmb3VuZCwgLTEgb24gZmFpbHVyZSwg
+YW5kIDEgb24gc3VjY2Vzcwo+ICAgKi8KPiAtc3RhdGljIGludCBpbmxpbmUgb2NmczJfc2VhcmNo
+X2RpcmJsb2NrKHN0cnVjdCBidWZmZXJfaGVhZCAqYmgsCj4gK3N0YXRpYyBpbmxpbmUgaW50IG9j
+ZnMyX3NlYXJjaF9kaXJibG9jayhzdHJ1Y3QgYnVmZmVyX2hlYWQgKmJoLAo+ICAJCQkJCXN0cnVj
+dCBpbm9kZSAqZGlyLAo+ICAJCQkJCWNvbnN0IGNoYXIgKm5hbWUsIGludCBuYW1lbGVuLAo+ICAJ
+CQkJCXVuc2lnbmVkIGxvbmcgb2Zmc2V0LAo+IGRpZmYgLS1naXQgYS9rZXJuZWwvdHJhY2Uvcmlu
+Z19idWZmZXIuYyBiL2tlcm5lbC90cmFjZS9yaW5nX2J1ZmZlci5jCj4gaW5kZXggYmQxYzM1YS4u
+NmVlNTZiNCAxMDA2NDQKPiAtLS0gYS9rZXJuZWwvdHJhY2UvcmluZ19idWZmZXIuYwo+ICsrKyBi
+L2tlcm5lbC90cmFjZS9yaW5nX2J1ZmZlci5jCj4gQEAgLTY2OSw3ICs2NjksNyBAQCBzdGF0aWMg
+c3RydWN0IGxpc3RfaGVhZCAqcmJfbGlzdF9oZWFkKHN0cnVjdCBsaXN0X2hlYWQgKmxpc3QpCj4g
+ICAqIHRoZSByZWFkZXIgcGFnZSkuIEJ1dCBpZiB0aGUgbmV4dCBwYWdlIGlzIGEgaGVhZGVyIHBh
+Z2UsCj4gICAqIGl0cyBmbGFncyB3aWxsIGJlIG5vbiB6ZXJvLgo+ICAgKi8KPiAtc3RhdGljIGlu
+dCBpbmxpbmUKPiArc3RhdGljIGlubGluZSBpbnQKPiAgcmJfaXNfaGVhZF9wYWdlKHN0cnVjdCBy
+aW5nX2J1ZmZlcl9wZXJfY3B1ICpjcHVfYnVmZmVyLAo+ICAJCXN0cnVjdCBidWZmZXJfcGFnZSAq
+cGFnZSwgc3RydWN0IGxpc3RfaGVhZCAqbGlzdCkKPiAgewo+IGRpZmYgLS1naXQgYS9uZXQvaXB2
+Ni9pbmV0Nl9oYXNodGFibGVzLmMgYi9uZXQvaXB2Ni9pbmV0Nl9oYXNodGFibGVzLmMKPiBpbmRl
+eCA2MzNhNmMyLi5iNTMxOTcyIDEwMDY0NAo+IC0tLSBhL25ldC9pcHY2L2luZXQ2X2hhc2h0YWJs
+ZXMuYwo+ICsrKyBiL25ldC9pcHY2L2luZXQ2X2hhc2h0YWJsZXMuYwo+IEBAIC0xMjQsNyArMTI0
+LDcgQEAgb3V0Ogo+ICB9Cj4gIEVYUE9SVF9TWU1CT0woX19pbmV0Nl9sb29rdXBfZXN0YWJsaXNo
+ZWQpOwo+ICAKPiAtc3RhdGljIGludCBpbmxpbmUgY29tcHV0ZV9zY29yZShzdHJ1Y3Qgc29jayAq
+c2ssIHN0cnVjdCBuZXQgKm5ldCwKPiArc3RhdGljIGlubGluZSBpbnQgY29tcHV0ZV9zY29yZShz
+dHJ1Y3Qgc29jayAqc2ssIHN0cnVjdCBuZXQgKm5ldCwKPiAgCQkJCWNvbnN0IHVuc2lnbmVkIHNo
+b3J0IGhudW0sCj4gIAkJCQljb25zdCBzdHJ1Y3QgaW42X2FkZHIgKmRhZGRyLAo+ICAJCQkJY29u
+c3QgaW50IGRpZikKPiBkaWZmIC0tZ2l0IGEvbmV0L21hYzgwMjExL3R4LmMgYi9uZXQvbWFjODAy
+MTEvdHguYwo+IGluZGV4IDU5NTBlM2EuLmE0NDlkZDUgMTAwNjQ0Cj4gLS0tIGEvbmV0L21hYzgw
+MjExL3R4LmMKPiArKysgYi9uZXQvbWFjODAyMTEvdHguYwo+IEBAIC0xNzMsNyArMTczLDcgQEAg
+c3RhdGljIF9fbGUxNiBpZWVlODAyMTFfZHVyYXRpb24oc3RydWN0IGllZWU4MDIxMV90eF9kYXRh
+ICp0eCwgaW50IGdyb3VwX2FkZHIsCj4gIAlyZXR1cm4gY3B1X3RvX2xlMTYoZHVyKTsKPiAgfQo+
+ICAKPiAtc3RhdGljIGludCBpbmxpbmUgaXNfaWVlZTgwMjExX2RldmljZShzdHJ1Y3QgaWVlZTgw
+MjExX2xvY2FsICpsb2NhbCwKPiArc3RhdGljIGlubGluZSBpbnQgaXNfaWVlZTgwMjExX2Rldmlj
+ZShzdHJ1Y3QgaWVlZTgwMjExX2xvY2FsICpsb2NhbCwKPiAgCQkJCSAgICAgIHN0cnVjdCBuZXRf
+ZGV2aWNlICpkZXYpCj4gIHsKPiAgCXJldHVybiBsb2NhbCA9PSB3ZGV2X3ByaXYoZGV2LT5pZWVl
+ODAyMTFfcHRyKTsKPiBkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2F1ODh4MC9hdTg4eDAuaCBiL3Nv
+dW5kL3BjaS9hdTg4eDAvYXU4OHgwLmgKPiBpbmRleCBjZjQ2YmJhLi5lY2I4ZjRkIDEwMDY0NAo+
+IC0tLSBhL3NvdW5kL3BjaS9hdTg4eDAvYXU4OHgwLmgKPiArKysgYi9zb3VuZC9wY2kvYXU4OHgw
+L2F1ODh4MC5oCj4gQEAgLTIxMSw3ICsyMTEsNyBAQCBzdGF0aWMgdm9pZCB2b3J0ZXhfYWRiZG1h
+X3N0YXJ0Zmlmbyh2b3J0ZXhfdCAqIHZvcnRleCwgaW50IGFkYmRtYSk7Cj4gIC8vc3RhdGljIHZv
+aWQgdm9ydGV4X2FkYmRtYV9zdG9wZmlmbyh2b3J0ZXhfdCAqdm9ydGV4LCBpbnQgYWRiZG1hKTsK
+PiAgc3RhdGljIHZvaWQgdm9ydGV4X2FkYmRtYV9wYXVzZWZpZm8odm9ydGV4X3QgKiB2b3J0ZXgs
+IGludCBhZGJkbWEpOwo+ICBzdGF0aWMgdm9pZCB2b3J0ZXhfYWRiZG1hX3Jlc3VtZWZpZm8odm9y
+dGV4X3QgKiB2b3J0ZXgsIGludCBhZGJkbWEpOwo+IC1zdGF0aWMgaW50IGlubGluZSB2b3J0ZXhf
+YWRiZG1hX2dldGxpbmVhcnBvcyh2b3J0ZXhfdCAqIHZvcnRleCwgaW50IGFkYmRtYSk7Cj4gK3N0
+YXRpYyBpbmxpbmUgaW50IHZvcnRleF9hZGJkbWFfZ2V0bGluZWFycG9zKHZvcnRleF90ICogdm9y
+dGV4LCBpbnQgYWRiZG1hKTsKPiAgc3RhdGljIHZvaWQgdm9ydGV4X2FkYmRtYV9yZXNldHVwKHZv
+cnRleF90ICp2b3J0ZXgsIGludCBhZGJkbWEpOwo+ICAKPiAgI2lmbmRlZiBDSElQX0FVODgxMAo+
+IEBAIC0yMTksNyArMjE5LDcgQEAgc3RhdGljIHZvaWQgdm9ydGV4X3d0ZG1hX3N0YXJ0Zmlmbyh2
+b3J0ZXhfdCAqIHZvcnRleCwgaW50IHd0ZG1hKTsKPiAgc3RhdGljIHZvaWQgdm9ydGV4X3d0ZG1h
+X3N0b3BmaWZvKHZvcnRleF90ICogdm9ydGV4LCBpbnQgd3RkbWEpOwo+ICBzdGF0aWMgdm9pZCB2
+b3J0ZXhfd3RkbWFfcGF1c2VmaWZvKHZvcnRleF90ICogdm9ydGV4LCBpbnQgd3RkbWEpOwo+ICBz
+dGF0aWMgdm9pZCB2b3J0ZXhfd3RkbWFfcmVzdW1lZmlmbyh2b3J0ZXhfdCAqIHZvcnRleCwgaW50
+IHd0ZG1hKTsKPiAtc3RhdGljIGludCBpbmxpbmUgdm9ydGV4X3d0ZG1hX2dldGxpbmVhcnBvcyh2
+b3J0ZXhfdCAqIHZvcnRleCwgaW50IHd0ZG1hKTsKPiArc3RhdGljIGlubGluZSBpbnQgdm9ydGV4
+X3d0ZG1hX2dldGxpbmVhcnBvcyh2b3J0ZXhfdCAqIHZvcnRleCwgaW50IHd0ZG1hKTsKPiAgI2Vu
+ZGlmCj4gIAo+ICAvKiBnbG9iYWwgc3R1ZmYuICovCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9h
+dTg4eDAvYXU4OHgwX2NvcmUuYyBiL3NvdW5kL3BjaS9hdTg4eDAvYXU4OHgwX2NvcmUuYwo+IGlu
+ZGV4IDIzZjQ5ZjMuLmQ0MzI1MmEgMTAwNjQ0Cj4gLS0tIGEvc291bmQvcGNpL2F1ODh4MC9hdTg4
+eDBfY29yZS5jCj4gKysrIGIvc291bmQvcGNpL2F1ODh4MC9hdTg4eDBfY29yZS5jCj4gQEAgLTEy
+NDksNyArMTI0OSw3IEBAIHN0YXRpYyB2b2lkIHZvcnRleF9hZGJkbWFfcmVzZXR1cCh2b3J0ZXhf
+dCAqdm9ydGV4LCBpbnQgYWRiZG1hKSB7Cj4gIAl9Cj4gIH0KPiAgCj4gLXN0YXRpYyBpbnQgaW5s
+aW5lIHZvcnRleF9hZGJkbWFfZ2V0bGluZWFycG9zKHZvcnRleF90ICogdm9ydGV4LCBpbnQgYWRi
+ZG1hKQo+ICtzdGF0aWMgaW5saW5lIGludCB2b3J0ZXhfYWRiZG1hX2dldGxpbmVhcnBvcyh2b3J0
+ZXhfdCAqIHZvcnRleCwgaW50IGFkYmRtYSkKPiAgewo+ICAJc3RyZWFtX3QgKmRtYSA9ICZ2b3J0
+ZXgtPmRtYV9hZGJbYWRiZG1hXTsKPiAgCWludCB0ZW1wOwo+IEBAIC0xNDk4LDcgKzE0OTgsNyBA
+QCBzdGF0aWMgaW50IHZvcnRleF93dGRtYV9nZXRjdXJzdWJ1ZmZlcih2b3J0ZXhfdCAqIHZvcnRl
+eCwgaW50IHd0ZG1hKQo+ICAJCSBQT1NfU0hJRlQpICYgUE9TX01BU0spOwo+ICB9Cj4gICNlbmRp
+Zgo+IC1zdGF0aWMgaW50IGlubGluZSB2b3J0ZXhfd3RkbWFfZ2V0bGluZWFycG9zKHZvcnRleF90
+ICogdm9ydGV4LCBpbnQgd3RkbWEpCj4gK3N0YXRpYyBpbmxpbmUgaW50IHZvcnRleF93dGRtYV9n
+ZXRsaW5lYXJwb3Modm9ydGV4X3QgKiB2b3J0ZXgsIGludCB3dGRtYSkKPiAgewo+ICAJc3RyZWFt
+X3QgKmRtYSA9ICZ2b3J0ZXgtPmRtYV93dFt3dGRtYV07Cj4gIAlpbnQgdGVtcDsKCldvdywgd2hh
+dCBhIGh1Z2UgQ0MgbGlzdCBmb3Igc3VjaCBhIHNpbXBsZSBjaGFuZ2UuIEplc3BlciwgSSB0aGlu
+ayB5b3UgCnNob3VsZCByZS1jb25zaWRlciB0aGlzIG5leHQgdGltZS4gSSBiZXQgeW91IHVzZWQg
+Z2V0X21haW50YWluZXIgc2NyaXB0LCAKZGlkbid0IHlvdT8gOikKCkkgaGF2ZSBhcHBsaWVkIGl0
+IHRvIG15IHRyZWUgbm93LiBJZiBhbnlvbmUgaGFzIG9iamVjdGlvbnMvaGFzIGFscmVhZHkgCmFw
+cGxpZWQgcGFydCBvZiB0aGUgcGF0Y2ggdG8gc3Vic3lzdGVtIHRyZWUsIHBsZWFzZSBsZXQgbWUg
+a25vdy4KClRoYW5rcywKCi0tIApKaXJpIEtvc2luYQpTVVNFIExhYnMsIE5vdmVsbCBJbmMuCgot
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0KUHJvdGVjdCBZb3VyIFNpdGUgYW5kIEN1c3RvbWVycyBmcm9t
+IE1hbHdhcmUgQXR0YWNrcwpMZWFybiBhYm91dCB2YXJpb3VzIG1hbHdhcmUgdGFjdGljcyBhbmQg
+aG93IHRvIGF2b2lkIHRoZW0uIFVuZGVyc3RhbmQgCm1hbHdhcmUgdGhyZWF0cywgdGhlIGltcGFj
+dCB0aGV5IGNhbiBoYXZlIG9uIHlvdXIgYnVzaW5lc3MsIGFuZCBob3cgeW91IApjYW4gcHJvdGVj
+dCB5b3VyIGNvbXBhbnkgYW5kIGN1c3RvbWVycyBieSB1c2luZyBjb2RlIHNpZ25pbmcuCmh0dHA6
+Ly9wLnNmLm5ldC9zZnUvb3JhY2xlLXNmZGV2bmwKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18Kb3Byb2ZpbGUtbGlzdCBtYWlsaW5nIGxpc3QKb3Byb2ZpbGUt
+bGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQv
+bGlzdHMvbGlzdGluZm8vb3Byb2ZpbGUtbGlzdAo=
