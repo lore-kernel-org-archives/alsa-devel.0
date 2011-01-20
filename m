@@ -1,8 +1,8 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Subject: [PATCH 1/3 v2] ASoC: ak4642: add SND_SOC_DAIFMT_FORMAT
 	support
-Date: Thu, 20 Jan 2011 11:45:29 +0900
-Message-ID: <w3pvd1kpa2e.wl%kuninori.morimoto.gx@renesas.com>
+Date: Thu, 20 Jan 2011 11:45:34 +0900
+Message-ID: <w3ptyh4pa29.wl%kuninori.morimoto.gx@renesas.com>
 References: <w3pk4iay72i.wl%kuninori.morimoto.gx@renesas.com>
 	<w3pei8iy6z6.wl%kuninori.morimoto.gx@renesas.com>
 	<20110112145302.GA14870@opensource.wolfsonmicro.com>
@@ -13,16 +13,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from relmlor2.renesas.com (relmlor2.renesas.com [210.160.252.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id 132A2103883
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 03:45:31 +0100 (CET)
-Received: from relmlir1.idc.renesas.com ([10.200.68.151])
+	by alsa0.perex.cz (Postfix) with ESMTP id 45465103A00
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 03:45:36 +0100 (CET)
+Received: from relmlir2.idc.renesas.com ([10.200.68.152])
 	by relmlor2.idc.renesas.com ( SJSMS)
-	with ESMTP id <0LFA00NA5VNT4Z40@relmlor2.idc.renesas.com> for
-	alsa-devel@alsa-project.org; Thu, 20 Jan 2011 11:45:29 +0900 (JST)
-Received: from relmlac4.idc.renesas.com ([10.200.69.24])
-	by relmlir1.idc.renesas.com (SJSMS)
-	with ESMTP id <0LFA00F24VNTL020@relmlir1.idc.renesas.com> for
-	alsa-devel@alsa-project.org; Thu, 20 Jan 2011 11:45:29 +0900 (JST)
+	with ESMTP id <0LFA00NIPVNZ4R40@relmlor2.idc.renesas.com> for
+	alsa-devel@alsa-project.org; Thu, 20 Jan 2011 11:45:35 +0900 (JST)
+Received: from relmlac2.idc.renesas.com ([10.200.69.22])
+	by relmlir2.idc.renesas.com ( SJSMS)
+	with ESMTP id <0LFA00FCXVNXIA20@relmlir2.idc.renesas.com> for
+	alsa-devel@alsa-project.org; Thu, 20 Jan 2011 11:45:35 +0900 (JST)
 In-reply-to: <w3pwrm0pa3u.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
