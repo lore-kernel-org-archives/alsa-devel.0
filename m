@@ -1,18 +1,17 @@
-From: Robin Neatherway <neatherway@gmail.com>
-Subject: Re: Jack sense fails on Fujitsu p7120
-Date: Thu, 20 Jan 2011 14:12:48 +0000
-Message-ID: <AANLkTikfs4USwOtn=mTK-O5_02d8P4uJgFnHOKtM37Ed@mail.gmail.com>
-References: <AANLkTimGPyno7Wd3TfO7dhZe9e4a5QcXLS8Upa1Mq7q_@mail.gmail.com>
+From: =?UTF-8?q?Diego=20Elio=20Petten=C3=B2?= <flameeyes@gmail.com>
+Subject: [alsa-lib PATCH] Update attributes.m4 to avoid
+	warnings with autoconf-2.68
+Date: Thu, 20 Jan 2011 15:47:03 +0100
+Message-ID: <1295534823-31657-1-git-send-email-flameeyes@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
-	[209.85.216.51]) by alsa0.perex.cz (Postfix) with ESMTP id 85CC1244FB
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 15:13:09 +0100 (CET)
-Received: by qwj8 with SMTP id 8so639348qwj.38
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 06:13:08 -0800 (PST)
-In-Reply-To: <AANLkTimGPyno7Wd3TfO7dhZe9e4a5QcXLS8Upa1Mq7q_@mail.gmail.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id CE3B32450E
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 15:47:07 +0100 (CET)
+Received: by wwe15 with SMTP id 15so660895wwe.20
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 06:47:07 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,27 +24,76 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi again,
+---
+ m4/attributes.m4 |   21 +++++++++++++++------
+ 1 files changed, 15 insertions(+), 6 deletions(-)
 
-I'm just wondering if this is the wrong venue for this question? If so
-please could someone direct me to a more appropriate place to ask?
-
-Thanks
-
-On Wed, Jan 19, 2011 at 10:32 AM, Robin Neatherway <neatherway@gmail.com> wrote:
-> I posted regarding this issue to alsa-users, but haven't had any response.
-> I've come to the conclusion that I will have to modify the driver myself to
-> rectify this problem, so I would appreciate some pointers as to how to get
-> started with that.
-> Running Xubuntu 10.10 with Alsa 1.0.23
-> The sound chip is Intel HDA, ALC260. I have tried setting
-> options snd-hda-intel model=fujitsu
-> in /etc/modprobe.d/alsa-base.conf, but this hasn't made any difference.
-> There is no "Jack Sense" option in alsamixer. I've also tried a couple of
-> values for fix_position.
-> I've tried following the ubuntu wiki pages for Intel HDA and sound debugging
-> in general, to no avail. When doing the jack sense test recommended on
-> https://wiki.ubuntu.com/ALSA/JackSense the two files generated with and
-> without the headphones plugged in were identical. This makes me think it is
-> a driver problem. I pasted the output of `cat /proc/asound/card*/codec*` at
-> http://pastebin.com/4NyvdsXf in case this is of any help.
+diff --git a/m4/attributes.m4 b/m4/attributes.m4
+index e86456a..82b4a3c 100644
+--- a/m4/attributes.m4
++++ b/m4/attributes.m4
+@@ -25,7 +25,7 @@ dnl License when using or distributing such scripts, even though portions
+ dnl of the text of the Macro appear in them. The GNU General Public
+ dnl License (GPL) does govern all other use of the material that
+ dnl constitutes the Autoconf Macro.
+-dnl 
++dnl
+ dnl This special exception to the GPL applies to versions of the
+ dnl Autoconf Macro released by this project. When you make and
+ dnl distribute a modified version of the Autoconf Macro, you may extend
+@@ -39,7 +39,7 @@ AC_DEFUN([CC_CHECK_CFLAGS_SILENT], [
+   AC_CACHE_VAL(AS_TR_SH([cc_cv_cflags_$1]),
+     [ac_save_CFLAGS="$CFLAGS"
+      CFLAGS="$CFLAGS $1"
+-     AC_COMPILE_IFELSE([int a;],
++     AC_LINK_IFELSE([AC_LANG_SOURCE([int main() { return 0; }])],
+        [eval "AS_TR_SH([cc_cv_cflags_$1])='yes'"],
+        [eval "AS_TR_SH([cc_cv_cflags_$1])='no'"])
+      CFLAGS="$ac_save_CFLAGS"
+@@ -89,7 +89,7 @@ AC_DEFUN([CC_CHECK_LDFLAGS], [
+     AS_TR_SH([cc_cv_ldflags_$1]),
+     [ac_save_LDFLAGS="$LDFLAGS"
+      LDFLAGS="$LDFLAGS $1"
+-     AC_LINK_IFELSE([int main() { return 1; }],
++     AC_LINK_IFELSE([AC_LANG_SOURCE([int main() { return 1; }])],
+        [eval "AS_TR_SH([cc_cv_ldflags_$1])='yes'"],
+        [eval "AS_TR_SH([cc_cv_ldflags_$1])="])
+      LDFLAGS="$ac_save_LDFLAGS"
+@@ -147,7 +147,7 @@ AC_DEFUN([CC_CHECK_ATTRIBUTE], [
+     AS_TR_SH([cc_cv_attribute_$1]),
+     [ac_save_CFLAGS="$CFLAGS"
+      CFLAGS="$CFLAGS $cc_cv_werror"
+-     AC_COMPILE_IFELSE([$3],
++     AC_COMPILE_IFELSE([AC_LANG_SOURCE([$3])],
+        [eval "AS_TR_SH([cc_cv_attribute_$1])='yes'"],
+        [eval "AS_TR_SH([cc_cv_attribute_$1])='no'"])
+      CFLAGS="$ac_save_CFLAGS"
+@@ -165,7 +165,16 @@ AC_DEFUN([CC_CHECK_ATTRIBUTE], [
+ AC_DEFUN([CC_ATTRIBUTE_CONSTRUCTOR], [
+   CC_CHECK_ATTRIBUTE(
+     [constructor],,
+-    [void __attribute__((constructor)) ctor() { int a; }],
++    [extern void foo();
++     void __attribute__((constructor)) ctor() { foo(); }],
++    [$1], [$2])
++])
++
++AC_DEFUN([CC_ATTRIBUTE_DESTRUCTOR], [
++  CC_CHECK_ATTRIBUTE(
++    [destructor],,
++    [extern void foo();
++     void __attribute__((destructor)) dtor() { foo(); }],
+     [$1], [$2])
+ ])
+ 
+@@ -257,7 +266,7 @@ AC_DEFUN([CC_FLAG_VISIBILITY], [
+ 	cc_cv_flag_visibility='yes',
+ 	cc_cv_flag_visibility='no')
+      CFLAGS="$cc_flag_visibility_save_CFLAGS"])
+-  
++
+   AS_IF([test "x$cc_cv_flag_visibility" = "xyes"],
+     [AC_DEFINE([SUPPORT_FLAG_VISIBILITY], 1,
+        [Define this if the compiler supports the -fvisibility flag])
+-- 
+1.7.4.rc2
