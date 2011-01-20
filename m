@@ -1,17 +1,14 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: hda : computer using EAPD as external amplifier
- controller
-Date: Thu, 20 Jan 2011 10:07:55 +0100
-Message-ID: <4D37FB6B.9040701@canonical.com>
-References: <20110119182448.2c8dbf28@destiny.ordissimo>
+Subject: [PATCH] ALSA: HDA: Add SKU ignore for another Thinkpad
+	Edge 14
+Date: Thu, 20 Jan 2011 10:19:22 +0100
+Message-ID: <4D37FE1A.9030304@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------070500050103000507060302"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 20F9A1037E3
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 10:07:59 +0100 (CET)
-In-Reply-To: <20110119182448.2c8dbf28@destiny.ordissimo>
+	by alsa0.perex.cz (Postfix) with ESMTP id 2C1BB1037E3
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 10:19:24 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,34 +18,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Anisse Astier <anisse@astier.eu>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 2011-01-19 18:24, Anisse Astier wrote:
-> Hi,
->
-> I have this computer, with an integrated speaker. It's using an ALC662,
-> see attached alsa-info output.
->
-> By default, speaker doesn't work. Now, after playing a bit with
-> hda-analyzer, I figured that output PIN 0x14 has EAPD enabled, which is
-> the default way of doing things in auto configure mode. But disabling
-> EAPD on this PIN makes speaker work. See second alsa-info attached.
->
-> Is it necessary to write a full blown quirk just to modify this parameter?
->
->  From what I've seen in patch_realtek, it seems we need to write the whole
-> config for the device when adding a quirk: we can't rely on auto
-> configuration and then put a small quirk on top of that. Am I right ?
+This is a multi-part message in MIME format.
+--------------070500050103000507060302
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Perhaps this commit can give you some inspiration?
+BugLink: http://bugs.launchpad.net/bugs/705323
 
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=357f915ece53aa4c8759087888346145848ea753
+Thinkpad Edge 14 has one more SSID that suffers from disabled auto-mute.
 
-...although Takashi just rewrote the quirking system a bit, so you'll 
-have to adjust to that when you add your (similar) quirk.
 
 -- 
 David Henningsson, Canonical Ltd.
 http://launchpad.net/~diwic
+
+--------------070500050103000507060302
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Add-SKU-ignore-for-another-Thinkpad-Edge-14.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Add-SKU-ignore-for-another-Thinkpad-Edge-14.pa";
+ filename*1="tch"
+
+>From cf3278eb3542fb7ed821db418e7e6e67fe01a563 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Wed, 19 Jan 2011 11:59:01 +0100
+Subject: [PATCH] ALSA: HDA: Add SKU ignore for another Thinkpad Edge 14
+
+BugLink: http://bugs.launchpad.net/bugs/705323
+
+Thinkpad Edge 14 has one more SSID that suffers from disabled auto-mute.
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 4f006ee..b974164 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -14951,6 +14951,7 @@ static struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK_VENDOR(0x104d, "Sony VAIO", ALC269_FIXUP_SONY_VAIO),
+ 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
+ 	SND_PCI_QUIRK(0x17aa, 0x21b8, "Thinkpad Edge 14", ALC269_FIXUP_SKU_IGNORE),
++	SND_PCI_QUIRK(0x17aa, 0x21e9, "Thinkpad Edge 14", ALC269_FIXUP_SKU_IGNORE),
+ 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Thinkpad SL410/510", ALC269_FIXUP_SKU_IGNORE),
+ 	SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73JW),
+ 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
+-- 
+1.7.1
+
+
+--------------070500050103000507060302
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------070500050103000507060302--
