@@ -1,21 +1,19 @@
-From: Anisse Astier <anisse@astier.eu>
-Subject: [PATCH] ALSA: hda - Fix EAPD to low on CZC P10T tablet
- computer with ALC662
-Date: Thu, 20 Jan 2011 12:36:21 +0100
-Message-ID: <20110120123621.0833a7c4@destiny.ordissimo>
-References: <20110119182448.2c8dbf28@destiny.ordissimo>
-	<4D37FB6B.9040701@canonical.com> <s5hzkqvkj2s.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 1/4] ASoC: WM8903: Expose GPIOs through
+	gpiolib
+Date: Thu, 20 Jan 2011 11:53:17 +0000
+Message-ID: <20110120115317.GC2551@opensource.wolfsonmicro.com>
+References: <1295393859-3396-1-git-send-email-swarren@wwwdotorg.org>
+	<1295470205-26501-2-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 42DC6103A2B
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 12:36:49 +0100 (CET)
-Received: by wyi11 with SMTP id 11so481745wyi.38
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 03:36:49 -0800 (PST)
-In-Reply-To: <s5hzkqvkj2s.wl%tiwai@suse.de>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B521B103A5B
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 12:53:19 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1295470205-26501-2-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,59 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, David Henningsson <david.henningsson@canonical.com>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Jan 19, 2011 at 01:50:02PM -0700, Stephen Warren wrote:
 
-Signed-off-by: Anisse Astier <anisse@astier.eu>
----
-Hi Takashi, David,
+This looks good, one query and one minor omission though.
 
-Thanks for you feedback.
-This patch is on top of sound-2.6/for-next branch.
+>  /* Used to enable configuration of a GPIO to all zeros */
+> -#define WM8903_GPIO_NO_CONFIG 0x8000
+> +#define WM8903_GPIO_NO_CONFIG 0x10000
 
-Regards,
-Anisse
----
- sound/pci/hda/patch_realtek.c |   11 ++++++++++-
- 1 files changed, 10 insertions(+), 1 deletions(-)
+Why this change?  The top bit in the registers is never actually used,
+really they're all 15 bit.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index d59d1db..43b2bcd 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -19568,6 +19568,7 @@ enum {
- 	ALC662_FIXUP_ASPIRE,
- 	ALC662_FIXUP_IDEAPAD,
- 	ALC272_FIXUP_MARIO,
-+	ALC662_FIXUP_CZC_P10T,
- };
- 
- static const struct alc_fixup alc662_fixups[] = {
-@@ -19588,7 +19589,14 @@ static const struct alc_fixup alc662_fixups[] = {
- 	[ALC272_FIXUP_MARIO] = {
- 		.type = ALC_FIXUP_FUNC,
- 		.v.func = alc272_fixup_mario,
--	}
-+	},
-+	[ALC662_FIXUP_CZC_P10T] = {
-+		.type = ALC_FIXUP_VERBS,
-+		.v.verbs = (const struct hda_verb[]) {
-+			{0x14, AC_VERB_SET_EAPD_BTLENABLE, 0},
-+			{}
-+		}
-+	},
- };
- 
- static struct snd_pci_quirk alc662_fixup_tbl[] = {
-@@ -19596,6 +19604,7 @@ static struct snd_pci_quirk alc662_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x144d, 0xc051, "Samsung R720", ALC662_FIXUP_IDEAPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo Ideapad Y550P", ALC662_FIXUP_IDEAPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Ideapad Y550", ALC662_FIXUP_IDEAPAD),
-+	SND_PCI_QUIRK(0x1b35, 0x2206, "CZC P10T", ALC662_FIXUP_CZC_P10T),
- 	{}
- };
- 
--- 
-1.7.3.2
+> +static int wm8903_gpio_direction_in(struct gpio_chip *chip, unsigned offset)
+> +{
+> +	struct wm8903_priv *wm8903 = gpio_to_wm8903(chip);
+> +	struct snd_soc_codec *codec = wm8903->codec;
+> +
+> +	return snd_soc_update_bits(codec, WM8903_GPIO_CONTROL_1 + offset,
+> +				   WM8903_GP1_DIR_MASK, WM8903_GP1_DIR);
+> +}
+
+> +static int wm8903_gpio_direction_out(struct gpio_chip *chip,
+> +				     unsigned offset, int value)
+> +{
+> +	struct wm8903_priv *wm8903 = gpio_to_wm8903(chip);
+> +	struct snd_soc_codec *codec = wm8903->codec;
+> +
+> +	return snd_soc_update_bits(codec, WM8903_GPIO_CONTROL_1 + offset,
+> +				   WM8903_GP1_DIR_MASK | WM8903_GP1_LVL_MASK,
+> +				   value << WM8903_GP2_LVL_SHIFT);
+> +}
+
+These should also set GPn_FN - to zero for GPIO output, 3 for GPIO
+input.  Otherwise changing between input and output mode at runtime
+won't do the right thing.  As a side effect of that you probably
+wouldn't need to specify the GPIO configuration in platform data.
