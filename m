@@ -1,16 +1,16 @@
 From: Stephen Warren <swarren@nvidia.com>
-Subject: [PATCH v3 3/4] ARM: tegra: Platform data fixes for
-	ASoC driver updates
-Date: Thu, 20 Jan 2011 13:52:10 -0700
-Message-ID: <1295556731-25165-4-git-send-email-swarren@nvidia.com>
+Subject: [PATCH v3 4/4] ASoC: tegra: Harmony: Support the
+	internal speaker
+Date: Thu, 20 Jan 2011 13:52:11 -0700
+Message-ID: <1295556731-25165-5-git-send-email-swarren@nvidia.com>
 References: <1295556731-25165-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0EE83243EF
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 21:52:23 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 389D0243F1
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 21:52:24 +0100 (CET)
 In-Reply-To: <1295556731-25165-1-git-send-email-swarren@nvidia.com>
 In-Reply-To: <1295393859-3396-1-git-send-email-swarren@wwwdotorg.org>
 References: <1295393859-3396-1-git-send-email-swarren@wwwdotorg.org>
@@ -27,114 +27,206 @@ To: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-The WM8903 driver now needs platform data in order to correctly expose its
-GPIOs through gpiolib.
+Add DAPM widget definitions, and code to control the speaker amplifier
+GPIO to the Harmony machine driver. Currently, this path is always enabled,
+while playback is active, since jack detection isn't yet implemented.
 
-The top-level ASoC driver now needs a platform device in order to provide
-infra-structure to pass in platform data.
+The driver initialization path has been reworked a little, and a new
+driver/device introduced, in order to allow platform data to be passed in,
+currently containing just the speaker enable GPIO ID.
 
-The top-level ASoC driver now needs platform data in order to be informed
-which GPIO IDs to use.
-
-This is all needed to allow the top-level ASoC driver to configure the
-WM8903's GPIO3 as an output GPIO, and enable it as appropriate. This is the
-enable signal for the external speaker amplifier chips.
+The GPIO is only requested during _init, since that's the first time it is
+guaranteed that the WM8903 module is loaded, probed, and hence has exported
+its GPIO chip.
 
 Signed-off-by: Stephen Warren <swarren@nvidia.com>
 ---
- arch/arm/mach-tegra/board-harmony.c |   31 +++++++++++++++++++++++++++++++
- arch/arm/mach-tegra/gpio-names.h    |    2 ++
- 2 files changed, 33 insertions(+), 0 deletions(-)
+ sound/soc/tegra/harmony.c |   87 +++++++++++++++++++++++++++++++++++++++------
+ 1 files changed, 76 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm/mach-tegra/board-harmony.c b/arch/arm/mach-tegra/board-harmony.c
-index 2696a20..c5a4ae0 100644
---- a/arch/arm/mach-tegra/board-harmony.c
-+++ b/arch/arm/mach-tegra/board-harmony.c
-@@ -2,6 +2,7 @@
-  * arch/arm/mach-tegra/board-harmony.c
+diff --git a/sound/soc/tegra/harmony.c b/sound/soc/tegra/harmony.c
+index b160b71..e424997 100644
+--- a/sound/soc/tegra/harmony.c
++++ b/sound/soc/tegra/harmony.c
+@@ -2,7 +2,7 @@
+  * harmony.c - Harmony machine ASoC driver
   *
-  * Copyright (C) 2010 Google, Inc.
-+ * Copyright (C) 2011 NVIDIA, Inc.
+  * Author: Stephen Warren <swarren@nvidia.com>
+- * Copyright (C) 2010 - NVIDIA, Inc.
++ * Copyright (C) 2010-2011 - NVIDIA, Inc.
   *
-  * This software is licensed under the terms of the GNU General Public
-  * License version 2, as published by the Free Software Foundation, and
-@@ -24,12 +25,15 @@
- #include <linux/i2c.h>
- #include <linux/io.h>
+  * Based on code copyright/by:
+  *
+@@ -29,7 +29,14 @@
+  */
  
-+#include <sound/wm8903.h>
-+
  #include <asm/mach-types.h>
- #include <asm/mach/arch.h>
- #include <asm/mach/time.h>
- #include <asm/setup.h>
- 
- #include <mach/gpio.h>
++
++#include <linux/gpio.h>
+ #include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++
 +#include <mach/harmony_audio.h>
- #include <mach/i2c.h>
- #include <mach/iomap.h>
- #include <mach/irqs.h>
-@@ -53,6 +57,8 @@
- #define ATAG_NVIDIA_PRESERVED_MEM_N	2
- #define ATAG_NVIDIA_FORCE_32		0x7fffffff
- 
-+#define GPIO_WM8903(_x_) (TEGRA_MAX_GPIO + 1 + (_x_))
 +
- struct tag_tegra {
- 	__u32 bootarg_key;
- 	__u32 bootarg_len;
-@@ -112,9 +118,33 @@ static struct tegra_i2c_platform_data harmony_i2c1_platform_data = {
- 	.bus_clk_rate	= { 400000, 0 },
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -40,9 +47,12 @@
+ #include "tegra_pcm.h"
+ #include "tegra_asoc_utils.h"
+ 
+-#define PREFIX "ASoC Harmony: "
++#define DRV_NAME "tegra-snd-harmony"
++#define PREFIX DRV_NAME ": "
+ 
++static struct harmony_audio_platform_data *pdata;
+ static struct platform_device *harmony_snd_device;
++static int gpio_spkr_en_requested;
+ 
+ static int harmony_asoc_hw_params(struct snd_pcm_substream *substream,
+ 					struct snd_pcm_hw_params *params)
+@@ -107,7 +117,17 @@ static struct snd_soc_ops harmony_asoc_ops = {
+ 	.hw_params = harmony_asoc_hw_params,
  };
  
-+static struct wm8903_platform_data harmony_wm8903_pdata = {
-+	.gpio_base = GPIO_WM8903(0),
-+	.gpio_cfg = {
-+		WM8903_GPIO_NO_CONFIG,
-+		WM8903_GPIO_NO_CONFIG,
-+		0,
-+		WM8903_GPIO_NO_CONFIG,
-+		WM8903_GPIO_NO_CONFIG,
++static int harmony_event_int_spk(struct snd_soc_dapm_widget *w,
++					struct snd_kcontrol *k, int event)
++{
++	gpio_set_value_cansleep(pdata->gpio_spkr_en,
++				!!SND_SOC_DAPM_EVENT_ON(event));
++
++	return 0;
++}
++
+ static const struct snd_soc_dapm_widget harmony_dapm_widgets[] = {
++	SND_SOC_DAPM_SPK("Int Spk", harmony_event_int_spk),
+ 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+ 	SND_SOC_DAPM_MIC("Mic Jack", NULL),
+ };
+@@ -115,6 +135,10 @@ static const struct snd_soc_dapm_widget harmony_dapm_widgets[] = {
+ static const struct snd_soc_dapm_route harmony_audio_map[] = {
+ 	{"Headphone Jack", NULL, "HPOUTR"},
+ 	{"Headphone Jack", NULL, "HPOUTL"},
++	{"Int Spk", NULL, "ROP"},
++	{"Int Spk", NULL, "RON"},
++	{"Int Spk", NULL, "LOP"},
++	{"Int Spk", NULL, "LON"},
+ 	{"Mic Bias", NULL, "Mic Jack"},
+ 	{"IN1L", NULL, "Mic Bias"},
+ };
+@@ -123,6 +147,7 @@ static int harmony_asoc_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_codec *codec = rtd->codec;
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
++	int ret;
+ 
+ 	snd_soc_dapm_new_controls(dapm, harmony_dapm_widgets,
+ 					ARRAY_SIZE(harmony_dapm_widgets));
+@@ -131,9 +156,19 @@ static int harmony_asoc_init(struct snd_soc_pcm_runtime *rtd)
+ 				ARRAY_SIZE(harmony_audio_map));
+ 
+ 	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
++	snd_soc_dapm_enable_pin(dapm, "Int Spk");
+ 	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
+ 	snd_soc_dapm_sync(dapm);
+ 
++	ret = gpio_request(pdata->gpio_spkr_en, "spkr_en");
++	if (ret) {
++		pr_err(PREFIX "cannot get spkr_en gpio\n");
++		return ret;
++	}
++	gpio_spkr_en_requested = 1;
++
++	gpio_direction_output(pdata->gpio_spkr_en, 0);
++
+ 	return 0;
+ }
+ 
+@@ -154,13 +189,19 @@ static struct snd_soc_card snd_soc_harmony = {
+ 	.num_links = 1,
+ };
+ 
+-static int __init harmony_soc_modinit(void)
++static __devinit int tegra_snd_harmony_probe(struct platform_device *pdev)
+ {
+ 	int ret;
+ 
+-	if (!machine_is_harmony()) {
+-		pr_err(PREFIX "Not running on Tegra Harmony!\n");
+-		return -ENODEV;
++	if (pdev->id != 0) {
++		dev_err(&pdev->dev, "ID %d out of range\n", pdev->id);
++		return -EINVAL;
++	}
++
++	pdata = pdev->dev.platform_data;
++	if (!pdata) {
++		dev_err(&pdev->dev, "no platform data supplied\n");
++		return -EINVAL;
+ 	}
+ 
+ 	ret = tegra_asoc_utils_init();
+@@ -173,7 +214,7 @@ static int __init harmony_soc_modinit(void)
+ 	 */
+ 	harmony_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (harmony_snd_device == NULL) {
+-		pr_err(PREFIX "platform_device_alloc failed\n");
++		dev_err(&pdev->dev, "platform_device_alloc failed\n");
+ 		ret = -ENOMEM;
+ 		goto err_clock_utils;
+ 	}
+@@ -182,7 +223,7 @@ static int __init harmony_soc_modinit(void)
+ 
+ 	ret = platform_device_add(harmony_snd_device);
+ 	if (ret) {
+-		pr_err(PREFIX "platform_device_add failed (%d)\n",
++		dev_err(&pdev->dev, "platform_device_add failed (%d)\n",
+ 			ret);
+ 		goto err_device_put;
+ 	}
+@@ -195,15 +236,39 @@ err_clock_utils:
+ 	tegra_asoc_utils_fini();
+ 	return ret;
+ }
+-module_init(harmony_soc_modinit);
+ 
+-static void __exit harmony_soc_modexit(void)
++static int __devexit tegra_snd_harmony_remove(struct platform_device *pdev)
+ {
+ 	platform_device_unregister(harmony_snd_device);
+ 
++	if (gpio_spkr_en_requested)
++		gpio_free(pdata->gpio_spkr_en);
++
+ 	tegra_asoc_utils_fini();
++
++	return 0;
++}
++
++static struct platform_driver tegra_snd_harmony_driver = {
++	.driver = {
++		.name = DRV_NAME,
++		.owner = THIS_MODULE,
 +	},
++	.probe = tegra_snd_harmony_probe,
++	.remove = __devexit_p(tegra_snd_harmony_remove),
 +};
 +
- static struct i2c_board_info __initdata harmony_i2c_bus1_board_info[] = {
- 	{
- 		I2C_BOARD_INFO("wm8903", 0x1a),
-+		.platform_data = &harmony_wm8903_pdata,
-+	},
-+};
++static int __init snd_tegra_harmony_init(void)
++{
++	return platform_driver_register(&tegra_snd_harmony_driver);
++}
++module_init(snd_tegra_harmony_init);
 +
-+static struct harmony_audio_platform_data harmony_audio_pdata = {
-+	.gpio_spkr_en = GPIO_WM8903(2),
-+};
-+
-+static struct platform_device harmony_audio_device = {
-+	.name   = "tegra-snd-harmony",
-+	.id     = 0,
-+	.dev    = {
-+		.platform_data  = &harmony_audio_pdata,
- 	},
- };
++static void __exit snd_tegra_harmony_exit(void)
++{
++	platform_driver_unregister(&tegra_snd_harmony_driver);
+ }
+-module_exit(harmony_soc_modexit);
++module_exit(snd_tegra_harmony_exit);
  
-@@ -127,6 +157,7 @@ static struct platform_device *harmony_devices[] __initdata = {
- 	&tegra_i2s_device1,
- 	&tegra_das_device,
- 	&tegra_pcm_device,
-+	&harmony_audio_device,
- };
- 
- static void __init tegra_harmony_fixup(struct machine_desc *desc,
-diff --git a/arch/arm/mach-tegra/gpio-names.h b/arch/arm/mach-tegra/gpio-names.h
-index f28220a..e8b5cf3 100644
---- a/arch/arm/mach-tegra/gpio-names.h
-+++ b/arch/arm/mach-tegra/gpio-names.h
-@@ -244,4 +244,6 @@
- #define TEGRA_GPIO_PBB6		222
- #define TEGRA_GPIO_PBB7		223
- 
-+#define TEGRA_MAX_GPIO		TEGRA_GPIO_PBB7
-+
- #endif
+ MODULE_AUTHOR("Stephen Warren <swarren@nvidia.com>");
+ MODULE_DESCRIPTION("Harmony machine ASoC driver");
 -- 
 1.7.1
