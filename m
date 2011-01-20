@@ -1,149 +1,94 @@
-From: Dan Sharon <dansharon-ScDXFp4xN3PN+rMO2ozGnw@public.gmane.org>
-Subject: Re: ALSA issue on DA850/OMAP-L138/AM18x
-Date: Thu, 20 Jan 2011 10:33:23 -0500
-Message-ID: <AANLkTin-xRaiwsj05h7aL3r=3nbAMDFPkjPo0gzGCbwf@mail.gmail.com>
-References: <B85A65D85D7EB246BE421B3FB0FBB59302484734E0@dbde02.ent.ti.com>
-	<AANLkTi=X3KRngiNz5iQzojh_-h4W-iRDsbq8Hvy6Lm1x@mail.gmail.com>
-	<B85A65D85D7EB246BE421B3FB0FBB593024850919E@dbde02.ent.ti.com>
+From: Neil Jones <neiljay@gmail.com>
+Subject: Re: Question about ASOC codec drivers
+Date: Thu, 20 Jan 2011 16:12:12 +0000
+Message-ID: <AANLkTinKB1gHgrvk=pfbqqQnGaebne6uuVFFGARdS7+D@mail.gmail.com>
+References: <AANLkTim-3xObWzoF4aMUA6umYcD=wDhvY+mChqQhU=JY@mail.gmail.com>
+	<20110118191923.GB17591@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0985645527=="
-Return-path: <davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB593024850919E-/tLxBxkBPtCIQmiDNMet8wC/G2K4zDHf@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: "Rajashekhara, Sudhakar" <sudhakar.raj-l0cyMroinI0@public.gmane.org>
-Cc: "khilman-1D3HCaltpLuhEniVeURVKkEOCMrvLtNR@public.gmane.org" <khilman-1D3HCaltpLuhEniVeURVKkEOCMrvLtNR@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id C0FDA103A4B
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 17:12:26 +0100 (CET)
+Received: by eyg24 with SMTP id 24so311144eyg.38
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 08:12:22 -0800 (PST)
+In-Reply-To: <20110118191923.GB17591@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============0985645527==
-Content-Type: multipart/alternative; boundary=000e0cd76264a1e7b3049a48da7a
-
---000e0cd76264a1e7b3049a48da7a
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi Sudhakar,
-
-you're quite right - if 'arecord -f dat | aplay -f dat' is executed
-immediately after boot, indeed I do get the same errors as you.
-
-Thank you very much for the patches.
-Regards,
-/Dan
-
-On Thu, Jan 20, 2011 at 12:05 AM, Rajashekhara, Sudhakar <
-sudhakar.raj-l0cyMroinI0@public.gmane.org> wrote:
-
-> Hi Dan,
->
-> Thanks for testing this patch. I'll add your Tested-by tag when I submit
-> this patch.
->
-> On Wed, Jan 19, 2011 at 00:32:21, Dan Sharon wrote:
-> > These patches apply cleanly to 'v2.6.37'
-> > 3c0eee3fe6a3a1c745379547c7e7c904aa64f6d5
-> >
-> > of
-> > git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-davinci.git.
-> >
-> > The kernel was built with the 'da8xx_omapl_defconfig' from the
-> omap-l1tree,
-> > and 'make menuconfig' to enable ASoC (the defconfig already has
-> CONFIG_REGULATOR=y,
-> > CONFIG_REGULATOR_DUMMY=y, and CONFIG_REGULATOR_TPS6507X=y).
-> >
-> > Testing was done on a da850evm by tftp'ing the kernel into ram, and using
-> the
-> > SPI-flash-based rootfs from the PSP that shipped with the board.
-> >
-> > Using 'arecord -r 48000 -c 2 -f S32_BE -t raw -v -d 1 > /tmp/arecord.cap'
-> produced
-> > a file of 384000 bytes (48000 x 2 x 4 bytes/sample).
-> > 'arecord -r 48000 -c 2 -f S32_BE -t raw -v > /dev/null' ran flawlessly
-> for several
-> > hours.
-> >
-> > I was not able to reproduce Sudhakar's problems with 'arecord -f dat |
-> aplay -f dat'.
-> >
->
-> Did you try the above, immediately after the da850evm boots? I am not
-> facing the issue if I run arecod and aplay together after executing
-> arecord or aplay individually.
->
-> Thanks,
-> Sudhakar
->
-
---000e0cd76264a1e7b3049a48da7a
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Hi Sudhakar,<br><br>you&#39;re quite right - if &#39;arecord -f dat | aplay=
- -f dat&#39; is executed immediately after boot, indeed I do get the same e=
-rrors as you.<br><br>Thank you very much for the patches.<br>Regards,<br>
-/Dan<br><br><div class=3D"gmail_quote">On Thu, Jan 20, 2011 at 12:05 AM, Ra=
-jashekhara, Sudhakar <span dir=3D"ltr">&lt;<a href=3D"mailto:sudhakar.raj@t=
-i.com">sudhakar.raj-l0cyMroinI0@public.gmane.org</a>&gt;</span> wrote:<br><blockquote class=3D"gm=
-ail_quote" style=3D"margin: 0pt 0pt 0pt 0.8ex; border-left: 1px solid rgb(2=
-04, 204, 204); padding-left: 1ex;">
-Hi Dan,<br>
-<br>
-Thanks for testing this patch. I&#39;ll add your Tested-by tag when I submi=
-t this patch.<br>
-<div class=3D"im"><br>
-On Wed, Jan 19, 2011 at 00:32:21, Dan Sharon wrote:<br>
-&gt; These patches apply cleanly to &#39;v2.6.37&#39;<br>
-&gt; 3c0eee3fe6a3a1c745379547c7e7c904aa64f6d5<br>
-&gt;<br>
-&gt; of<br>
-&gt; git://<a href=3D"http://git.kernel.org/pub/scm/linux/kernel/git/khilma=
-n/linux-davinci.git" target=3D"_blank">git.kernel.org/pub/scm/linux/kernel/=
-git/khilman/linux-davinci.git</a>.<br>
-&gt;<br>
-&gt; The kernel was built with the &#39;da8xx_omapl_defconfig&#39; from the=
- omap-l1tree,<br>
-&gt; and &#39;make menuconfig&#39; to enable ASoC (the defconfig already ha=
-s CONFIG_REGULATOR=3Dy,<br>
-&gt; CONFIG_REGULATOR_DUMMY=3Dy, and CONFIG_REGULATOR_TPS6507X=3Dy).<br>
-&gt;<br>
-&gt; Testing was done on a da850evm by tftp&#39;ing the kernel into ram, an=
-d using the<br>
-&gt; SPI-flash-based rootfs from the PSP that shipped with the board.<br>
-&gt;<br>
-&gt; Using &#39;arecord -r 48000 -c 2 -f S32_BE -t raw -v -d 1 &gt; /tmp/ar=
-ecord.cap&#39; produced<br>
-&gt; a file of 384000 bytes (48000 x 2 x 4 bytes/sample).<br>
-&gt; &#39;arecord -r 48000 -c 2 -f S32_BE -t raw -v &gt; /dev/null&#39; ran=
- flawlessly for several<br>
-&gt; hours.<br>
-&gt;<br>
-&gt; I was not able to reproduce Sudhakar&#39;s problems with &#39;arecord =
--f dat | aplay -f dat&#39;.<br>
-&gt;<br>
-<br>
-</div>Did you try the above, immediately after the da850evm boots? I am not=
-<br>
-facing the issue if I run arecod and aplay together after executing<br>
-arecord or aplay individually.<br>
-<br>
-Thanks,<br>
-<font color=3D"#888888">Sudhakar<br>
-</font></blockquote></div><br>
-
---000e0cd76264a1e7b3049a48da7a--
-
---===============0985645527==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0985645527==--
+PiAuLi5pcyBleGFjdGx5IHdoYXQgeW91IHRvbGQgdGhlIGRyaXZlciB0byBkby4gIFlvdSd2ZSB0
+b2xkIHRoZSBjb3JlCj4gdGhlcmUgYXJlIHNldmVuIGl0ZW1zIGluIHRoZSBlbnVtZXJhdGlvbiBz
+byBpdCdzIGV4cGVjdGluZyBhbiBhcnJheSBvZgo+IHNldmVuIHN0cmluZ3MuCgpEVUghIHNvcnJ5
+LCBpbiBteSBoZWFkIGkgcmVhZCAueG1heCBhcyAueG1hc2sgY2hlZXJzIGZvciB0aGUgc3BvdC4K
+Ckkgc3RpbGwgZ2V0ICdGYWlsZWQgdG8gYWRkIHJvdXRlIExpbmUgSW5wdXQtPklucHV0IE11eCcg
+dGhvdWdoID8KCj4gSWRlYWxseSBpZiB5b3UgdGhpbmsgdGhlcmUncyBhIGNoYW5nZSB0aGF0IHNo
+b3VsZCBiZQo+IG1hZGUgcGxlYXNlIHBvc3QgYSBwYXRjaC4KCkZyb206IE5laWwgSm9uZXMgPG5l
+aWxqYXlAZ21haWwuY29tPgpEYXRlOiBUaHUsIDIwIEphbiAyMDExIDE1OjU5OjM4ICswMDAwClN1
+YmplY3Q6IFtQQVRDSF0gc291bmQvc29jOiBjaGFuZ2UgcG90ZW50aWFsbHkgcmlza3kgc3RyY3B5
+IHRvIHN0cm5jcHkuCgpTaWduZWQtb2ZmLWJ5OiBOZWlsIEpvbmVzIDxuZWlsamF5QGdtYWlsLmNv
+bT4KLS0tCiBpbmNsdWRlL3NvdW5kL2Fzb3VuZC5oIHwgICAxMSArKysrKysrLS0tLQogc291bmQv
+c29jL3NvYy1jb3JlLmMgICB8ICAgIDUgKysrLS0KIDIgZmlsZXMgY2hhbmdlZCwgMTAgaW5zZXJ0
+aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9pbmNsdWRlL3NvdW5kL2Fzb3Vu
+ZC5oIGIvaW5jbHVkZS9zb3VuZC9hc291bmQuaAppbmRleCBhMTgwM2VjLi5mNjk0NjA0IDEwMDY0
+NAotLS0gYS9pbmNsdWRlL3NvdW5kL2Fzb3VuZC5oCisrKyBiL2luY2x1ZGUvc291bmQvYXNvdW5k
+LmgKQEAgLTc2MSw2ICs3NjEsOCBAQCB0eXBlZGVmIGludCBfX2JpdHdpc2Ugc25kX2N0bF9lbGVt
+X2lmYWNlX3Q7CiAjZGVmaW5lIFNORFJWX0NUTF9QT1dFUl9EM2hvdCAgICAgICAgICAoU05EUlZf
+Q1RMX1BPV0VSX0QzfDB4MDAwMCkKIC8qIE9mZiwgd2l0aCBwb3dlciAqLwogI2RlZmluZSBTTkRS
+Vl9DVExfUE9XRVJfRDNjb2xkICAgICAgICAgKFNORFJWX0NUTF9QT1dFUl9EM3wweDAwMDEpCiAv
+KiBPZmYsIHdpdGhvdXQgcG93ZXIgKi8KCisjZGVmaW5lIFNORFJWX0NUTF9FTEVNRU5UX0lORk9f
+TkFNRV9MRU5HVEggNjQKKwogc3RydWN0IHNuZF9jdGxfZWxlbV9pZCB7CiAgICAgICAgdW5zaWdu
+ZWQgaW50IG51bWlkOyAgICAgICAgICAgICAvKiBudW1lcmljIGlkZW50aWZpZXIsIHplcm8gPSBp
+bnZhbGlkICovCiAgICAgICAgc25kX2N0bF9lbGVtX2lmYWNlX3QgaWZhY2U7ICAgICAvKiBpbnRl
+cmZhY2UgaWRlbnRpZmllciAqLwpAQCAtNzk5LDcgKzgwMSw4IEBAIHN0cnVjdCBzbmRfY3RsX2Vs
+ZW1faW5mbyB7CiAgICAgICAgICAgICAgICBzdHJ1Y3QgewogICAgICAgICAgICAgICAgICAgICAg
+ICB1bnNpZ25lZCBpbnQgaXRlbXM7ICAgICAvKiBSOiBudW1iZXIgb2YgaXRlbXMgKi8KICAgICAg
+ICAgICAgICAgICAgICAgICAgdW5zaWduZWQgaW50IGl0ZW07ICAgICAgLyogVzogaXRlbSBudW1i
+ZXIgKi8KLSAgICAgICAgICAgICAgICAgICAgICAgY2hhciBuYW1lWzY0XTsgICAgICAgICAgLyog
+UjogdmFsdWUgbmFtZSAqLworICAgICAgICAgICAgICAgICAgICAgICAvKiBSOiB2YWx1ZSBuYW1l
+ICovCisgICAgICAgICAgICAgICAgICAgICAgIGNoYXIgbmFtZVtTTkRSVl9DVExfRUxFTUVOVF9J
+TkZPX05BTUVfTEVOR1RIXTsKICAgICAgICAgICAgICAgIH0gZW51bWVyYXRlZDsKICAgICAgICAg
+ICAgICAgIHVuc2lnbmVkIGNoYXIgcmVzZXJ2ZWRbMTI4XTsKICAgICAgICB9IHZhbHVlOwpkaWZm
+IC0tZ2l0IGEvc291bmQvc29jL3NvYy1jb3JlLmMgYi9zb3VuZC9zb2Mvc29jLWNvcmUuYwppbmRl
+eCA4NWI3ZDU0Li4zYWQzMzYxIDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvc29jLWNvcmUuYworKysg
+Yi9zb3VuZC9zb2Mvc29jLWNvcmUuYwpAQCAtMjA1Niw4ICsyMDU2LDkgQEAgaW50IHNuZF9zb2Nf
+aW5mb19lbnVtX2RvdWJsZShzdHJ1Y3Qgc25kX2tjb250cm9sCiprY29udHJvbCwKCiAgICAgICAg
+aWYgKHVpbmZvLT52YWx1ZS5lbnVtZXJhdGVkLml0ZW0gPiBlLT5tYXggLSAxKQogICAgICAgICAg
+ICAgICAgdWluZm8tPnZhbHVlLmVudW1lcmF0ZWQuaXRlbSA9IGUtPm1heCAtIDE7Ci0gICAgICAg
+c3RyY3B5KHVpbmZvLT52YWx1ZS5lbnVtZXJhdGVkLm5hbWUsCi0gICAgICAgICAgICAgICBlLT50
+ZXh0c1t1aW5mby0+dmFsdWUuZW51bWVyYXRlZC5pdGVtXSk7CisgICAgICAgc3RybmNweSh1aW5m
+by0+dmFsdWUuZW51bWVyYXRlZC5uYW1lLAorICAgICAgICAgICAgICAgZS0+dGV4dHNbdWluZm8t
+PnZhbHVlLmVudW1lcmF0ZWQuaXRlbV0sCisgICAgICAgICAgICAgICBTTkRSVl9DVExfRUxFTUVO
+VF9JTkZPX05BTUVfTEVOR1RIKTsKICAgICAgICByZXR1cm4gMDsKIH0KIEVYUE9SVF9TWU1CT0xf
+R1BMKHNuZF9zb2NfaW5mb19lbnVtX2RvdWJsZSk7Ci0tCjEuNS41LjIKCgoKT24gVHVlLCBKYW4g
+MTgsIDIwMTEgYXQgNzoxOSBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVuc291cmNlLndvbGZz
+b25taWNyby5jb20+IHdyb3RlOgo+IE9uIFR1ZSwgSmFuIDE4LCAyMDExIGF0IDA1OjM1OjIyUE0g
+KzAwMDAsIE5laWwgSm9uZXMgd3JvdGU6Cj4KPj4gdGFuc2VuX2lucHV0X3NlbGVjdFtdIGFycmF5
+IG9mIHN0cmluZ3Mgd2hpY2ggb25seSBoYXMgMyBlbnRyaWVzLCBzbyBpdAo+PiBibG93cyB1cCAo
+ZS0+bWF4ID0gNz8/KS4KPgo+IFRoaXMuLi4KPgo+PiBhbHNvIHNob3VsZG4ndCB0aGUgc3RyY3B5
+IGJ5IGEgc3RybmNweSBhcyB3ZSBhcmUgY29weWluZyB0byBhIGZpeGVkCj4+IDY0Ynl0ZSBidWZm
+ZXIgPwo+Cj4gVGhlcmUncyByYXRoZXIgYSBsb3Qgb2Ygc3RyY3B5KCkgY2FsbHMgaW4gdGhlIGtl
+cm5lbDsgcGVyaGFwcyB5b3UgY291bGQKPiBiZSBtb3JlIHNwZWNpZmljPyDCoElkZWFsbHkgaWYg
+eW91IHRoaW5rIHRoZXJlJ3MgYSBjaGFuZ2UgdGhhdCBzaG91bGQgYmUKPiBtYWRlIHBsZWFzZSBw
+b3N0IGEgcGF0Y2guCj4KPj4gc3RhdGljIGNvbnN0IHN0cnVjdCBzb2NfZW51bSB0YW5zZW5faXBf
+ZW51bSA9Cj4+IFNPQ19FTlVNX1NJTkdMRShUQU5TRU5fVE1fSVBfVE9QMiwgNCwgMHg3LCB0YW5z
+ZW5faW5wdXRfc2VsZWN0KTsKPgo+IC4uLmlzIGV4YWN0bHkgd2hhdCB5b3UgdG9sZCB0aGUgZHJp
+dmVyIHRvIGRvLiDCoFlvdSd2ZSB0b2xkIHRoZSBjb3JlCj4gdGhlcmUgYXJlIHNldmVuIGl0ZW1z
+IGluIHRoZSBlbnVtZXJhdGlvbiBzbyBpdCdzIGV4cGVjdGluZyBhbiBhcnJheSBvZgo+IHNldmVu
+IHN0cmluZ3MuCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+Zwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCj4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
