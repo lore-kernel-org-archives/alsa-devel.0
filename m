@@ -1,21 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v2 0/4] Tegra: Harmony: Add internal
- speaker support
-Date: Thu, 20 Jan 2011 10:04:38 +0000
-Message-ID: <1295517879.3277.1.camel@odin>
-References: <1295393859-3396-1-git-send-email-swarren@wwwdotorg.org>
-	<1295470205-26501-1-git-send-email-swarren@nvidia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC updates for 2.6.39
+Date: Thu, 20 Jan 2011 11:31:18 +0000
+Message-ID: <20110120113117.GA2551@opensource.wolfsonmicro.com>
+References: <20110119123320.GA31791@opensource.wolfsonmicro.com>
+	<s5hbp3ckr1i.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id C659B103A56
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 11:04:42 +0100 (CET)
-Received: by wyi11 with SMTP id 11so404008wyi.38
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 02:04:42 -0800 (PST)
-In-Reply-To: <1295470205-26501-1-git-send-email-swarren@nvidia.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1E09B103A2B
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 12:31:28 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hbp3ckr1i.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,50 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2011-01-19 at 13:50 -0700, Stephen Warren wrote:
-> Harmony has headers on the board for an internal speaker and internal mic.
-> This patch series adds various infra-structure, and enables usage of the
-> internal speaker.
-> 
-> The patch series includes both changes to code within the ASoC
-> subsystem and Tegra subsystem, the latter provided only for context when
-> reading the ASoC changes. Would you prefer I separated these so that the
-> ASoC maintainers can grab a whole series and apply it, rather than just
-> a subset of the patches?
-> 
-> While patch 2 is physically located in the Tegra subsystem, I'd
-> consider it part of the ASoC driver. Can such a change be checked into
-> the ASoC tree? This new header file will be required to build to ASoC driver
-> once the following patches are in. I was considering placing this in
-> include/sound, following the example of various codecs, but it doesn't seem
-> a good idea to pollute that directory with platform-specific files. The
-> current location for the file follows the example of s3c24xx/simtec. Perhaps
-> it should be in sound/soc/tegra?
-> 
-> Stephen Warren (4):
->   ASoC: WM8903: Expose GPIOs through gpiolib
->   ARM: tegra: Add Harmony sound platform data type
->   ARM: tegra: Platform data fixes for ASoC driver updates
->   ASoC: tegra: Harmony: Support the internal speaker
-> 
->  arch/arm/mach-tegra/board-harmony.c              |   31 ++++++
->  arch/arm/mach-tegra/gpio-names.h                 |    2 +
->  arch/arm/mach-tegra/include/mach/harmony_audio.h |   19 ++++
->  include/sound/wm8903.h                           |    7 +-
->  sound/soc/codecs/wm8903.c                        |  117 +++++++++++++++++++++-
->  sound/soc/tegra/harmony.c                        |   89 ++++++++++++++--
->  6 files changed, 251 insertions(+), 14 deletions(-)
->  create mode 100644 arch/arm/mach-tegra/include/mach/harmony_audio.h
-> 
+On Thu, Jan 20, 2011 at 07:50:01AM +0100, Takashi Iwai wrote:
 
-All
+> It's merged to master, but not to linux-next yet for a while.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+FWIW they're in -next today via my tree without any apparent merge
+issues.
