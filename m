@@ -1,21 +1,21 @@
-From: Anisse Astier <anisse@astier.eu>
-Subject: Re: hda : computer using EAPD as external amplifier
- controller
-Date: Thu, 20 Jan 2011 11:00:06 +0100
-Message-ID: <20110120110006.742da7cc@destiny.ordissimo>
-References: <20110119182448.2c8dbf28@destiny.ordissimo>
-	<4D37FB6B.9040701@canonical.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH v2 0/4] Tegra: Harmony: Add internal
+ speaker support
+Date: Thu, 20 Jan 2011 10:04:38 +0000
+Message-ID: <1295517879.3277.1.camel@odin>
+References: <1295393859-3396-1-git-send-email-swarren@wwwdotorg.org>
+	<1295470205-26501-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f193.google.com (mail-wy0-f193.google.com
-	[74.125.82.193])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3B94103A56
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 11:00:33 +0100 (CET)
-Received: by wyb42 with SMTP id 42so129061wyb.8
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 02:00:33 -0800 (PST)
-In-Reply-To: <4D37FB6B.9040701@canonical.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id C659B103A56
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 11:04:42 +0100 (CET)
+Received: by wyi11 with SMTP id 11so404008wyi.38
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 02:04:42 -0800 (PST)
+In-Reply-To: <1295470205-26501-1-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,30 +25,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Stephen Warren <swarren@nvidia.com>
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi David,
-
-On Thu, 20 Jan 2011 10:07:55 +0100, David Henningsson <david.henningsson@canonical.com> wrote :
-
-> On 2011-01-19 18:24, Anisse Astier wrote:
-> >
-> >  From what I've seen in patch_realtek, it seems we need to write the whole
-> > config for the device when adding a quirk: we can't rely on auto
-> > configuration and then put a small quirk on top of that. Am I right ?
+On Wed, 2011-01-19 at 13:50 -0700, Stephen Warren wrote:
+> Harmony has headers on the board for an internal speaker and internal mic.
+> This patch series adds various infra-structure, and enables usage of the
+> internal speaker.
 > 
-> Perhaps this commit can give you some inspiration?
+> The patch series includes both changes to code within the ASoC
+> subsystem and Tegra subsystem, the latter provided only for context when
+> reading the ASoC changes. Would you prefer I separated these so that the
+> ASoC maintainers can grab a whole series and apply it, rather than just
+> a subset of the patches?
 > 
-> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=357f915ece53aa4c8759087888346145848ea753
+> While patch 2 is physically located in the Tegra subsystem, I'd
+> consider it part of the ASoC driver. Can such a change be checked into
+> the ASoC tree? This new header file will be required to build to ASoC driver
+> once the following patches are in. I was considering placing this in
+> include/sound, following the example of various codecs, but it doesn't seem
+> a good idea to pollute that directory with platform-specific files. The
+> current location for the file follows the example of s3c24xx/simtec. Perhaps
+> it should be in sound/soc/tegra?
 > 
-> ...although Takashi just rewrote the quirking system a bit, so you'll 
-> have to adjust to that when you add your (similar) quirk.
+> Stephen Warren (4):
+>   ASoC: WM8903: Expose GPIOs through gpiolib
+>   ARM: tegra: Add Harmony sound platform data type
+>   ARM: tegra: Platform data fixes for ASoC driver updates
+>   ASoC: tegra: Harmony: Support the internal speaker
+> 
+>  arch/arm/mach-tegra/board-harmony.c              |   31 ++++++
+>  arch/arm/mach-tegra/gpio-names.h                 |    2 +
+>  arch/arm/mach-tegra/include/mach/harmony_audio.h |   19 ++++
+>  include/sound/wm8903.h                           |    7 +-
+>  sound/soc/codecs/wm8903.c                        |  117 +++++++++++++++++++++-
+>  sound/soc/tegra/harmony.c                        |   89 ++++++++++++++--
+>  6 files changed, 251 insertions(+), 14 deletions(-)
+>  create mode 100644 arch/arm/mach-tegra/include/mach/harmony_audio.h
+> 
 
-Well, I was wrong, thanks a lot for pointing me in the right direction !
-Just did a rebase of sound-2.6/for-next branch and read Takashi's followup
-email, fix should be trivial, a patch will follow soon. 
+All
 
-Regards,
-Anisse
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
