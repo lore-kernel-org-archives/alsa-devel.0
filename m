@@ -1,51 +1,49 @@
-From: Jesper Juhl <jj@chaosbits.net>
-Subject: [PATCH][RFC] Sound, Xonar, CS43xx: Don't overrun static array
-Date: Thu, 20 Jan 2011 22:37:43 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1101202228370.11854@swampdragon.chaosbits.net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Staticise twl6040_hs_jack_report()
+Date: Thu, 20 Jan 2011 21:43:44 +0000
+Message-ID: <1295559824-3837-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Clemens Ladisch <clemens@ladisch.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A8ADE24437
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2011 22:43:31 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Margarita Olaya Cabrera <magi.olaya@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
+It's an internal function so shouldn't be exported (as sparse points
+out).
 
-'cs4398_regs' in 'struct xonar_cs43xx' is an array of 'u8' with a size of 
-8. So, this code in sound/pci/oxygen/xonar_cs43xx.c::dump_d1_registers()
-
-    		for (i = 2; i <= 8; ++i)
-	  			snd_iprintf(buffer, " %02x", data->cs4398_regs[i]);
-
-will overrun the array when 'i == 8'.
-
-I guess that what's needed to fix it is the trivial patch below, but I 
-must admit that I have no idea about this code, so I may very well be 
-wrong. Additionally, I have no way to actually test this, so all I know is 
-that the below compiles. Someone who actually knows this code should take 
-a look before anything is comitted - consider the below (not much more 
-than) a bug report.
-
-Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- xonar_cs43xx.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/twl6040.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/oxygen/xonar_cs43xx.c b/sound/pci/oxygen/xonar_cs43xx.c
-index 9f72d42..2527191 100644
---- a/sound/pci/oxygen/xonar_cs43xx.c
-+++ b/sound/pci/oxygen/xonar_cs43xx.c
-@@ -392,7 +392,7 @@ static void dump_d1_registers(struct oxygen *chip,
- 	unsigned int i;
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index 4bbf1b1..482fcdb 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -724,8 +724,8 @@ static int twl6040_power_mode_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
  
- 	snd_iprintf(buffer, "\nCS4398: 7?");
--	for (i = 2; i <= 8; ++i)
-+	for (i = 2; i < 8; ++i)
- 		snd_iprintf(buffer, " %02x", data->cs4398_regs[i]);
- 	snd_iprintf(buffer, "\n");
- 	dump_cs4362a_registers(data, buffer);
-
+-void twl6040_hs_jack_report(struct snd_soc_codec *codec,
+-				struct snd_soc_jack *jack, int report)
++static void twl6040_hs_jack_report(struct snd_soc_codec *codec,
++				   struct snd_soc_jack *jack, int report)
+ {
+ 	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
+ 	int status;
 -- 
-Jesper Juhl <jj@chaosbits.net>            http://www.chaosbits.net/
-Don't top-post http://www.catb.org/~esr/jargon/html/T/top-post.html
-Plain text mails only, please.
+1.7.2.3
