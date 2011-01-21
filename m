@@ -1,16 +1,28 @@
-From: "Koyamangalath, Abhilash" <abhilash.kv@ti.com>
-Subject: Re: [QUERY] [AUDIO][OMAP3 EVM] arecord not working on
-	OMAP3 EVM
-Date: Fri, 21 Jan 2011 19:30:38 +0530
-Message-ID: <FCCFB4CDC6E5564B9182F639FC356087035F9B2821__24401.2962481522$1295940207$gmane$org@dbde02.ent.ti.com>
-References: <FCCFB4CDC6E5564B9182F639FC356087035F9B2239@dbde02.ent.ti.com>
-	<4D393C42.1070503@nokia.com>
+From: Colin Cross <ccross@google.com>
+Subject: Re: [PATCH v3 2/4] ARM: tegra: Add Harmony sound
+	platform data type
+Date: Fri, 21 Jan 2011 10:43:26 -0800
+Message-ID: <AANLkTimx3Co9HjpBoB07G8YnQG8LAukxMqLdCMgDf1j+@mail.gmail.com>
+References: <1295393859-3396-1-git-send-email-swarren@wwwdotorg.org>
+	<1295556731-25165-1-git-send-email-swarren@nvidia.com>
+	<1295556731-25165-3-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <4D393C42.1070503@nokia.com>
-Content-Language: en-US
+Received: from smtp-out.google.com (smtp-out.google.com [74.125.121.67])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2F5EB103B16
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 19:43:35 +0100 (CET)
+Received: from hpaq7.eem.corp.google.com (hpaq7.eem.corp.google.com
+	[172.25.149.7]) by smtp-out.google.com with ESMTP id p0LIhT5b014119
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 10:43:34 -0800
+Received: from qwh6 (qwh6.prod.google.com [10.241.194.198])
+	by hpaq7.eem.corp.google.com with ESMTP id p0LIhQen022773
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NOT)
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 10:43:27 -0800
+Received: by qwh6 with SMTP id 6so2271915qwh.21
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 10:43:26 -0800 (PST)
+In-Reply-To: <1295556731-25165-3-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,61 +32,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Peter, =
-
-Your comment helped.
-
-> -----Original Message-----
-> From: Peter Ujfalusi [mailto:peter.ujfalusi@nokia.com]
-> Sent: Friday, January 21, 2011 1:27 PM
-> To: Koyamangalath, Abhilash
-> Cc: linux-omap@vger.kernel.org; alsa-devel@vger.kernel.org
-> Subject: Re: [QUERY] [AUDIO][OMAP3 EVM] arecord not working on OMAP3 EVM
-> =
-
-> On 01/20/11 17:26, ext Koyamangalath, Abhilash wrote:
-> > Hi all
-> > While testing audio capture (using arecord e,g.),I'm getting only noise
-> in the (zeroed out) output buffers on the OMAP3 EVM.
-> > I have enabled AUXL and AUXR mic inputs through alsamixer, which
-> according to the schematics are connected to the "Audio In"
-> > connector on the board, even though the TWL4030 reg list does not allow
-> me any ways ( or so I think) to specify mic-bias for
-> > these aux inputs.
-> =
-
-> Well, it is auxiliary input (line in). You do not need bias for it.
-> I do not have access to OMAP3 EVM documentation, but Beagle also have
-> AUXL/R as input.
-> I guess you need to use correct cable, and correct source for the input
-> (stereo jack I suppose).
-No need of bias precludes using a MIC, so I tried by connecting a Line-in/o=
-ut audio cable (a cable with a 3.5 mm audio jack on each end) fed from the =
-PC and it worked, thanks. Originally, I had connected a head-phone mic dire=
-ctly to the audio-in port, which it seems, rather expects a dc-biased and/o=
-r a pre-amplified signal.
-
-> =
-
-> > With AUXL and AUXR muted - I get only silence, which seems to make
-> sense.
-> > Is there any basic startup setting I'm missing, maybe specific to OMAP3
-> EVM?
-> =
-
-> Beagle?
-> =
-
-> > Has anyone seen anything like this before, and could provide pointers?
-> =
-
-> My bet goes for the wrong cable/accessory pair.
-Bang On.
-> =
-
+On Thu, Jan 20, 2011 at 12:52 PM, Stephen Warren <swarren@nvidia.com> wrote:
+> Signed-off-by: Stephen Warren <swarren@nvidia.com>
+> ---
+> =A0arch/arm/mach-tegra/include/mach/harmony_audio.h | =A0 19 ++++++++++++=
++++++++
+> =A01 files changed, 19 insertions(+), 0 deletions(-)
+> =A0create mode 100644 arch/arm/mach-tegra/include/mach/harmony_audio.h
+>
+> diff --git a/arch/arm/mach-tegra/include/mach/harmony_audio.h b/arch/arm/=
+mach-tegra/include/mach/harmony_audio.h
+> new file mode 100644
+> index 0000000..5c46391
+> --- /dev/null
+> +++ b/arch/arm/mach-tegra/include/mach/harmony_audio.h
+> @@ -0,0 +1,19 @@
+> +/*
+> + * arch/arm/mach-tegra/include/mach/harmony_audio.h
+> + *
+> + * Copyright 2011 NVIDIA, Inc.
+> + *
+> + * This software is licensed under the terms of the GNU General Public
+> + * License version 2, as published by the Free Software Foundation, and
+> + * may be copied, distributed, and modified under those terms.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See the
+> + * GNU General Public License for more details.
+> + *
+> + */
+> +
+> +struct harmony_audio_platform_data {
+> + =A0 =A0 =A0 int gpio_spkr_en;
+> +};
 > --
-> P=E9ter
+> 1.7.1
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-tegra" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
+
+Does this file really belong in mach-tegra if its for a driver that is
+in a common directory (drivers/sound/soc)?  Putting it in
+include/linux would solve all your tree-ordering problems.
