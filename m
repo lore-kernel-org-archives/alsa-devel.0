@@ -1,20 +1,15 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: Re: UCM questions
-Date: Fri, 21 Jan 2011 09:12:51 -0600
-Message-ID: <AANLkTinxwo_GErQroF4S-_z3G0UyT2sD4nBVbXVJz122@mail.gmail.com>
-References: <AANLkTim72DeHVzx3kmgF59EQQwC8jHAVpMZnt+kVTddX@mail.gmail.com>
-	<20110121113744.GA18682@sirena.org.uk>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: soc-cache: Add trace event for
+	snd_soc_cache_sync()
+Date: Fri, 21 Jan 2011 15:24:53 +0000
+Message-ID: <1295623493-30609-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id BD6561037F5
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 16:12:54 +0100 (CET)
-Received: by iwb12 with SMTP id 12so1948897iwb.38
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 07:12:52 -0800 (PST)
-In-Reply-To: <20110121113744.GA18682@sirena.org.uk>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CA29C24523
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 16:24:55 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,42 +19,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Mark for your answers.
+This patch makes it easy to see when the syncing process begins and
+ends.  You can also enable the snd_soc_reg_write tracepoint to see
+which registers are being synced.
 
-> The device/use case names there are just defaults, systems can add their
-> own. =A0The default set of use cases and devices are likely to handle
-> most cases but there's going to be a dependence on the system
-> integration.
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ include/trace/events/asoc.h |   25 +++++++++++++++++++++++++
+ sound/soc/soc-cache.c       |   10 ++++++++++
+ 2 files changed, 35 insertions(+), 0 deletions(-)
 
-I am fine with a system-specific configuration file for each use case,
-but if I have to change the defines in alsa-lib it's a bit of a pain.
-It'll imply branches and specific packages just for a stupid include
-file.
-
->> I make a difference between a USB headset and USB speakers?
->
-> You'd probably need to handle identifying the different classes USB
-> devices in whatever owns the use case configuration for the system.
-> I'm not sure that's been looked at in much detail, USB host support is
-> fairly unusual in the embedded systems this targets.
-
-I am thinking netbooks and tablets where USB is more likely to be
-present. For handsets I am not sure.
-
->> - has anyone generated a typical configuration file for USB and
->> HDAudio? I only see an OMAP conf.
->
-> Someone asked this at LPC as well - my thought there is that probably
-> PC systems would be happier trying to work without explicit use case
-> configuration as they are currently.
-
-Humm, not sure people are totally happy with audio on Linux PC
-systems... we still don't have a simple solution for
-routing/configuration/policy, UCM could provide simple hooks for users
-(or PulseAudio) to do what they do most, e.g for a voice call the
-headset is used while for movies the HDMI output is used.
--Pierre
+diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
+index 186e84d..ce993a3 100644
+--- a/include/trace/events/asoc.h
++++ b/include/trace/events/asoc.h
+@@ -229,6 +229,31 @@ TRACE_EVENT(snd_soc_jack_notify,
+ 	TP_printk("jack=%s %x", __get_str(name), (int)__entry->val)
+ );
+ 
++TRACE_EVENT(snd_soc_cache_sync,
++
++	TP_PROTO(struct snd_soc_codec *codec, const char *type,
++		 const char *status),
++
++	TP_ARGS(codec, type, status),
++
++	TP_STRUCT__entry(
++		__string(	name,		codec->name	)
++		__string(	status,		status		)
++		__string(	type,		type		)
++		__field(	int,		id		)
++	),
++
++	TP_fast_assign(
++		__assign_str(name, codec->name);
++		__assign_str(status, status);
++		__assign_str(type, type);
++		__entry->id = codec->id
++	),
++
++	TP_printk("codec=%s.%d type=%s status=%s", __get_str(name),
++		  (int)__entry->id, __get_str(type), __get_str(status))
++);
++
+ #endif /* _TRACE_ASOC_H */
+ 
+ /* This part must be outside protection */
+diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
+index f834839..db66dc4 100644
+--- a/sound/soc/soc-cache.c
++++ b/sound/soc/soc-cache.c
+@@ -18,6 +18,8 @@
+ #include <linux/bitmap.h>
+ #include <linux/rbtree.h>
+ 
++#include <trace/events/asoc.h>
++
+ static unsigned int snd_soc_4_12_read(struct snd_soc_codec *codec,
+ 				     unsigned int reg)
+ {
+@@ -1601,18 +1603,26 @@ EXPORT_SYMBOL_GPL(snd_soc_cache_write);
+ int snd_soc_cache_sync(struct snd_soc_codec *codec)
+ {
+ 	int ret;
++	const char *name;
+ 
+ 	if (!codec->cache_sync) {
+ 		return 0;
+ 	}
+ 
++	if (codec->cache_ops->name)
++		name = codec->cache_ops->name;
++	else
++		name = "unknown";
++
+ 	if (codec->cache_ops && codec->cache_ops->sync) {
+ 		if (codec->cache_ops->name)
+ 			dev_dbg(codec->dev, "Syncing %s cache for %s codec\n",
+ 				codec->cache_ops->name, codec->name);
++		trace_snd_soc_cache_sync(codec, name, "start");
+ 		ret = codec->cache_ops->sync(codec);
+ 		if (!ret)
+ 			codec->cache_sync = 0;
++		trace_snd_soc_cache_sync(codec, name, "end");
+ 		return ret;
+ 	}
+ 
+-- 
+1.7.3.5
