@@ -1,19 +1,17 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] davinci: da8xx/omap-l1xx: match codec_name
-	with i2c ids
-Date: Fri, 21 Jan 2011 14:38:28 +0000
-Message-ID: <1295620708.3348.233.camel@odin>
-References: <1295619896-5498-1-git-send-email-sudhakar.raj@ti.com>
+From: Anisse Astier <anisse@astier.eu>
+Subject: [PATCH] ALSA: hda - add quirk for Ordissimo EVE using
+ a realtek ALC662
+Date: Fri, 21 Jan 2011 15:45:44 +0100
+Message-ID: <20110121154544.4e5ed4e6@destiny.ordissimo>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 33DF224616
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 15:38:36 +0100 (CET)
-Received: by ewy19 with SMTP id 19so841367ewy.38
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 06:38:35 -0800 (PST)
-In-Reply-To: <1295619896-5498-1-git-send-email-sudhakar.raj@ti.com>
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 6F5EE2461D
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 15:46:17 +0100 (CET)
+Received: by fxm5 with SMTP id 5so1849260fxm.38
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 06:46:17 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,39 +21,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>
-Cc: khilman@ti.com, davinci-linux-open-source@linux.davincidsp.com, dansharon@nanometrics.ca, alsa-devel@alsa-project.org, stable@kernel.org, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2011-01-21 at 19:54 +0530, Rajashekhara, Sudhakar wrote:
-> The codec_name entry for da8xx evm in sound/soc/davinci/davinci-evm.c
-> is not matching with the i2c ids in the board file. Without this fix the
-> soundcard does not get detected on da850/omap-l138/am18x evm.
-> 
-> Signed-off-by: Rajashekhara, Sudhakar <sudhakar.raj@ti.com>
-> Tested-by: Dan Sharon <dansharon@nanometrics.ca>
-> ---
-> This patch applies to Linus's kernel tree.
-> 
->  sound/soc/davinci/davinci-evm.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
-> index 0c2d6ba..b36f0b3 100644
-> --- a/sound/soc/davinci/davinci-evm.c
-> +++ b/sound/soc/davinci/davinci-evm.c
-> @@ -223,7 +223,7 @@ static struct snd_soc_dai_link da8xx_evm_dai = {
->  	.stream_name = "AIC3X",
->  	.cpu_dai_name= "davinci-mcasp.0",
->  	.codec_dai_name = "tlv320aic3x-hifi",
-> -	.codec_name = "tlv320aic3x-codec.0-001a",
-> +	.codec_name = "tlv320aic3x-codec.1-0018",
->  	.platform_name = "davinci-pcm-audio",
->  	.init = evm_aic3x_init,
->  	.ops = &evm_ops,
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+
+---
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 7262980..a72c8bd 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -18292,6 +18292,7 @@ static struct snd_pci_quirk alc662_cfg_tbl[] = {
+ 					ALC662_3ST_6ch_DIG),
+ 	SND_PCI_QUIRK_MASK(0x1854, 0xf000, 0x2000, "ASUS H13-200x",
+ 			   ALC663_ASUS_H13),
++	SND_PCI_QUIRK(0x1991, 0x5628, "Ordissimo EVE", ALC662_LENOVO_101E),
+ 	{}
+ };
+ 
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+1.7.3.2
