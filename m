@@ -1,15 +1,22 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH v2] ASoC: soc-cache: Add trace event for
-	snd_soc_cache_sync()
-Date: Fri, 21 Jan 2011 15:29:02 +0000
-Message-ID: <1295623742-7988-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Subject: Re: [PATCH] ALSA: hda - add quirk for Ordissimo EVE
+ using a realtek ALC662
+Date: Fri, 21 Jan 2011 16:36:28 +0100
+Message-ID: <1295624188.12720.68.camel@mattotaupa>
+References: <20110121154544.4e5ed4e6@destiny.ordissimo>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6209263352710279995=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B88D024602
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 16:29:03 +0100 (CET)
+Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id A9B9824628
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 16:36:31 +0100 (CET)
+Received: from f053036037.adsl.alicedsl.de ([78.53.36.37]
+	helo=[192.168.178.21])
+	by mail.gw90.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
+	id 1PgJ2L-0008CT-DN
+	for alsa-devel@alsa-project.org; Fri, 21 Jan 2011 15:36:29 +0000
+In-Reply-To: <20110121154544.4e5ed4e6@destiny.ordissimo>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,95 +26,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch makes it easy to see when the syncing process begins and
-ends.  You can also enable the snd_soc_reg_write tracepoint to see
-which registers are being synced.
 
-Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
----
- include/trace/events/asoc.h |   25 +++++++++++++++++++++++++
- sound/soc/soc-cache.c       |   10 ++++++++++
- 2 files changed, 35 insertions(+), 0 deletions(-)
+--===============6209263352710279995==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-q9U05gwak+x3ONepVND9"
 
-diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
-index 186e84d..ae973d2 100644
---- a/include/trace/events/asoc.h
-+++ b/include/trace/events/asoc.h
-@@ -229,6 +229,31 @@ TRACE_EVENT(snd_soc_jack_notify,
- 	TP_printk("jack=%s %x", __get_str(name), (int)__entry->val)
- );
- 
-+TRACE_EVENT(snd_soc_cache_sync,
-+
-+	TP_PROTO(struct snd_soc_codec *codec, const char *type,
-+		 const char *status),
-+
-+	TP_ARGS(codec, type, status),
-+
-+	TP_STRUCT__entry(
-+		__string(	name,		codec->name	)
-+		__string(	status,		status		)
-+		__string(	type,		type		)
-+		__field(	int,		id		)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(name, codec->name);
-+		__assign_str(status, status);
-+		__assign_str(type, type);
-+		__entry->id = codec->id;
-+	),
-+
-+	TP_printk("codec=%s.%d type=%s status=%s", __get_str(name),
-+		  (int)__entry->id, __get_str(type), __get_str(status))
-+);
-+
- #endif /* _TRACE_ASOC_H */
- 
- /* This part must be outside protection */
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index f834839..db66dc4 100644
---- a/sound/soc/soc-cache.c
-+++ b/sound/soc/soc-cache.c
-@@ -18,6 +18,8 @@
- #include <linux/bitmap.h>
- #include <linux/rbtree.h>
- 
-+#include <trace/events/asoc.h>
-+
- static unsigned int snd_soc_4_12_read(struct snd_soc_codec *codec,
- 				     unsigned int reg)
- {
-@@ -1601,18 +1603,26 @@ EXPORT_SYMBOL_GPL(snd_soc_cache_write);
- int snd_soc_cache_sync(struct snd_soc_codec *codec)
- {
- 	int ret;
-+	const char *name;
- 
- 	if (!codec->cache_sync) {
- 		return 0;
- 	}
- 
-+	if (codec->cache_ops->name)
-+		name = codec->cache_ops->name;
-+	else
-+		name = "unknown";
-+
- 	if (codec->cache_ops && codec->cache_ops->sync) {
- 		if (codec->cache_ops->name)
- 			dev_dbg(codec->dev, "Syncing %s cache for %s codec\n",
- 				codec->cache_ops->name, codec->name);
-+		trace_snd_soc_cache_sync(codec, name, "start");
- 		ret = codec->cache_ops->sync(codec);
- 		if (!ret)
- 			codec->cache_sync = 0;
-+		trace_snd_soc_cache_sync(codec, name, "end");
- 		return ret;
- 	}
- 
--- 
-1.7.3.5
+
+--=-q9U05gwak+x3ONepVND9
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Dear Anisse,
+
+
+Am Freitag, den 21.01.2011, 15:45 +0100 schrieb Anisse Astier:
+
+[=E2=80=A6]
+
+without your Signed-off-by line [1] your patch cannot be committed.
+
+Additionally it would be great if you could add more detail. What did
+not work with your sound card and had it ever worked before?
+
+
+Thanks,
+
+Paul
+
+
+[1] http://git.kernel.org/?p=3Dlinux/kernel/git/tiwai/sound-2.6.git;a=3Dblo=
+b;f=3DDocumentation/SubmittingPatches;h=3D689e2371095cc5dfea9927120009341f3=
+69159aa;hb=3DHEAD
+    see section 12
+
+--=-q9U05gwak+x3ONepVND9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEABECAAYFAk05p/wACgkQPX1aK2wOHVjIeACfXtwUpX1C3dOrPua6gMFpxkqe
+4t4AnRCvbdyLdrWoulxELnNYfG2v1I8H
+=7XvB
+-----END PGP SIGNATURE-----
+
+--=-q9U05gwak+x3ONepVND9--
+
+
+--===============6209263352710279995==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============6209263352710279995==--
