@@ -1,22 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
 Subject: Re: UCM questions
-Date: Fri, 21 Jan 2011 23:37:05 +0000
-Message-ID: <1295653025.3348.697.camel@odin>
+Date: Fri, 21 Jan 2011 23:37:08 +0000
+Message-ID: <1295653028.3348.698.camel@odin>
 References: <AANLkTim72DeHVzx3kmgF59EQQwC8jHAVpMZnt+kVTddX@mail.gmail.com>
-	<20110121113744.GA18682@sirena.org.uk>
-	<AANLkTinxwo_GErQroF4S-_z3G0UyT2sD4nBVbXVJz122@mail.gmail.com>
-	<20110121164329.GB6200@opensource.wolfsonmicro.com>
-	<AANLkTim_Q=oTfHS33R2hf6B3gC1Dj2fpiCAjfa7kJFw7@mail.gmail.com>
+	<20110121113744.GA18682@sirena.org.uk> <1295623491.3348.284.camel@odin>
+	<AANLkTi=V9ouox2vp5VYA+_gmsOCCecBKOjpd58DsuaxK@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 8BD5224439
-	for <alsa-devel@alsa-project.org>; Sat, 22 Jan 2011 00:37:10 +0100 (CET)
-Received: by wyi11 with SMTP id 11so2364851wyi.38
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 15:37:08 -0800 (PST)
-In-Reply-To: <AANLkTim_Q=oTfHS33R2hf6B3gC1Dj2fpiCAjfa7kJFw7@mail.gmail.com>
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 9F5D424439
+	for <alsa-devel@alsa-project.org>; Sat, 22 Jan 2011 00:37:12 +0100 (CET)
+Received: by mail-wy0-f179.google.com with SMTP id 11so2364851wyi.38
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 15:37:12 -0800 (PST)
+In-Reply-To: <AANLkTi=V9ouox2vp5VYA+_gmsOCCecBKOjpd58DsuaxK@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,48 +28,27 @@ To: pl bossart <bossart.nospam@gmail.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2011-01-21 at 14:53 -0600, pl bossart wrote:
-> >> I am fine with a system-specific configuration file for each use case,
-> >> but if I have to change the defines in alsa-lib it's a bit of a pain.
-> >> It'll imply branches and specific packages just for a stupid include
-> >> file.
-> >
-> > If the define isn't there you should just be able to use a string - no
-> > need to update the header file unless the thing being added is
-> > sufficiently general that it seems like a good idea.
+On Fri, 2011-01-21 at 15:03 -0600, pl bossart wrote:
+> > Originally, verbs were mapped 1:1 with cards, however Jaroslav recently
+> > added support for multiple cards per verb.
 > 
-> I think I am missing something here.
-> First I believe there's only one application (PulseAudio or resource
-> management of some sort) that will talk to UCM. Player applications
-> shouldn't know anything about UCM, right? You would end-up making
-> conflicting decisions.
+> Does this mean for a given verb UCM will return a list of devices on
+> different cards that can be used, and the application will choose from
+> the list?
 
-Yes, it's intended only Pulseaudio (or similar) will directly control
-the use case.
+UCM does return the appropriate sink and source PCM device for the given
+use case if required. e.g the OMAP4 has multiple PCM devices, some are
+for high quality hifi whilst others are lower power tones. 
 
-> Next, if everyone can add #defines and craft new strings to represent
-> verbs, this central application/module will either ask for use cases
-> that are not supported everywhere, or limit itself to 'common' use
-> cases. Or do we expect to rewrite this on each and every platform?
-> Wouldn't it make sense to avoid branches and proliferation by limiting
-> the definition of use cases and instead only allow for changes in
-> configuration files?
+>  Or are these multiple cards supposed to be used
+> simultaneously?
+> I probably need more expresso here..
 
-The intention is to add all the reasonable use case types to the ucm
-header. We should still support bespoke use cases, but we should aim to
-include as many popular use cases as possible in ucm. I was only
-thinking of phone related use cases when devising the original verbs.
-
-Please do send a patch for any additional verbs you can think off :)
-
-Thanks
+It's to allow multiple cards to be used simultaneously, e.g. a use case
+could also involve aspects of two sound cards, maybe one for capture and
+the other for playback.
 
 Liam
-
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
 -- 
 Freelance Developer, SlimLogic Ltd
