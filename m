@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: UCM questions
-Date: Fri, 21 Jan 2011 16:43:29 +0000
-Message-ID: <20110121164329.GB6200@opensource.wolfsonmicro.com>
-References: <AANLkTim72DeHVzx3kmgF59EQQwC8jHAVpMZnt+kVTddX@mail.gmail.com>
-	<20110121113744.GA18682@sirena.org.uk>
-	<AANLkTinxwo_GErQroF4S-_z3G0UyT2sD4nBVbXVJz122@mail.gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Staticise twl6040_hs_jack_report()
+Date: Fri, 21 Jan 2011 16:46:38 +0000
+Message-ID: <1295628398.3348.305.camel@odin>
+References: <1295559824-3837-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 85E4A1037F5
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 17:43:32 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <AANLkTinxwo_GErQroF4S-_z3G0UyT2sD4nBVbXVJz122@mail.gmail.com>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id A07D3103AF7
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 17:46:43 +0100 (CET)
+Received: by eyg24 with SMTP id 24so949410eyg.38
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 08:46:43 -0800 (PST)
+In-Reply-To: <1295559824-3837-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,38 +23,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pl bossart <bossart.nospam@gmail.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Margarita Olaya Cabrera <magi.olaya@ti.com>, Misael Lopez Cruz <misael.lopez@ti.com>, patches@opensource.wolfsonmicro.com, Jorge Eduardo Candelaria <jorge.candelaria@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 21, 2011 at 09:12:51AM -0600, pl bossart wrote:
+On Thu, 2011-01-20 at 21:43 +0000, Mark Brown wrote:
+> It's an internal function so shouldn't be exported (as sparse points
+> out).
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/twl6040.c |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+> index 4bbf1b1..482fcdb 100644
+> --- a/sound/soc/codecs/twl6040.c
+> +++ b/sound/soc/codecs/twl6040.c
+> @@ -724,8 +724,8 @@ static int twl6040_power_mode_event(struct snd_soc_dapm_widget *w,
+>  	return 0;
+>  }
+>  
+> -void twl6040_hs_jack_report(struct snd_soc_codec *codec,
+> -				struct snd_soc_jack *jack, int report)
+> +static void twl6040_hs_jack_report(struct snd_soc_codec *codec,
+> +				   struct snd_soc_jack *jack, int report)
+>  {
+>  	struct twl6040_data *priv = snd_soc_codec_get_drvdata(codec);
+>  	int status;
 
-> > The device/use case names there are just defaults, systems can add their
-> > own. =A0The default set of use cases and devices are likely to handle
-> > most cases but there's going to be a dependence on the system
-> > integration.
+Applied.
 
-> I am fine with a system-specific configuration file for each use case,
-> but if I have to change the defines in alsa-lib it's a bit of a pain.
-> It'll imply branches and specific packages just for a stupid include
-> file.
+Thanks
 
-If the define isn't there you should just be able to use a string - no
-need to update the header file unless the thing being added is
-sufficiently general that it seems like a good idea.
-
-> >> - has anyone generated a typical configuration file for USB and
-> >> HDAudio? I only see an OMAP conf.
-
-> > Someone asked this at LPC as well - my thought there is that probably
-> > PC systems would be happier trying to work without explicit use case
-> > configuration as they are currently.
-
-> Humm, not sure people are totally happy with audio on Linux PC
-> systems... we still don't have a simple solution for
-> routing/configuration/policy, UCM could provide simple hooks for users
-> (or PulseAudio) to do what they do most, e.g for a voice call the
-> headset is used while for movies the HDMI output is used.
-
-It's certainly useful for overriding the default behaviour - I'm more
-worried about the idea of using it for the default.
+Liam
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
