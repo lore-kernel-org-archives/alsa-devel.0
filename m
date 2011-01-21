@@ -1,14 +1,15 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 2/2] ALSA: HDA: Add a new model "asus" for
-	Conexant 5066/205xx
-Date: Fri, 21 Jan 2011 13:46:00 +0100
-Message-ID: <4D398008.8080707@canonical.com>
+From: "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>
+Subject: [PATCH] davinci: da8xx/omap-l1xx: match codec_name
+	with i2c ids
+Date: Fri, 21 Jan 2011 19:54:56 +0530
+Message-ID: <1295619896-5498-1-git-send-email-sudhakar.raj@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050308060108010003060101"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7AC25245DC
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 13:46:04 +0100 (CET)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 12FCF24612
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 15:26:48 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,165 +19,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Cc: khilman@ti.com, davinci-linux-open-source@linux.davincidsp.com, dansharon@nanometrics.ca, "Rajashekhara,
+	Sudhakar" <sudhakar.raj@ti.com>, stable@kernel.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050308060108010003060101
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+The codec_name entry for da8xx evm in sound/soc/davinci/davinci-evm.c
+is not matching with the i2c ids in the board file. Without this fix the
+soundcard does not get detected on da850/omap-l138/am18x evm.
 
-BugLink: http://bugs.launchpad.net/bugs/701271
-
-This new model, named "asus", is identical to the "hp_laptop" model,
-except for the location of the internal mic, which is at pin 0x1a.
-It is used for Asus K52JU and Lenovo G560.
-
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
-
---------------050308060108010003060101
-Content-Type: text/x-patch;
- name="0002-ALSA-HDA-Add-a-new-model-asus-for-Conexant-5066-205x.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0002-ALSA-HDA-Add-a-new-model-asus-for-Conexant-5066-205x.pa";
- filename*1="tch"
-
->From aa9c48a0b2264418728152ae2d1c697e2fd04fde Mon Sep 17 00:00:00 2001
-From: David Henningsson <david.henningsson@canonical.com>
-Date: Fri, 21 Jan 2011 13:33:28 +0100
-Subject: [PATCH 2/2] ALSA: HDA: Add a new model "asus" for Conexant 5066/205xx
-
-BugLink: http://bugs.launchpad.net/bugs/701271
-
-This new model, named "asus", is identical to the "hp_laptop" model,
-except for the location of the internal mic, which is at pin 0x1a.
-It is used for Asus K52JU and Lenovo G560.
-
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+Signed-off-by: Rajashekhara, Sudhakar <sudhakar.raj@ti.com>
+Tested-by: Dan Sharon <dansharon@nanometrics.ca>
 ---
- Documentation/sound/alsa/HD-Audio-Models.txt |    1 +
- sound/pci/hda/patch_conexant.c               |   24 +++++++++++++++++++++++-
- 2 files changed, 24 insertions(+), 1 deletions(-)
+This patch applies to Linus's kernel tree.
 
-diff --git a/Documentation/sound/alsa/HD-Audio-Models.txt b/Documentation/sound/alsa/HD-Audio-Models.txt
-index 16ae430..0caf77e 100644
---- a/Documentation/sound/alsa/HD-Audio-Models.txt
-+++ b/Documentation/sound/alsa/HD-Audio-Models.txt
-@@ -296,6 +296,7 @@ Conexant 5066
- =============
-   laptop	Basic Laptop config (default)
-   hp-laptop	HP laptops, e g G60
-+  asus		Asus K52JU, Lenovo G560
-   dell-laptop	Dell laptops
-   dell-vostro	Dell Vostro
-   olpc-xo-1_5	OLPC XO 1.5
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index 7cd59b9..19f0daf 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -127,6 +127,7 @@ struct conexant_spec {
- 	unsigned int ideapad:1;
- 	unsigned int thinkpad:1;
- 	unsigned int hp_laptop:1;
-+	unsigned int asus:1;
- 
- 	unsigned int ext_mic_present;
- 	unsigned int recording;
-@@ -2312,6 +2313,19 @@ static void cxt5066_ideapad_automic(struct hda_codec *codec)
- 	}
- }
- 
-+
-+/* toggle input of built-in digital mic and mic jack appropriately */
-+static void cxt5066_asus_automic(struct hda_codec *codec)
-+{
-+	unsigned int present;
-+
-+	present = snd_hda_jack_detect(codec, 0x1b);
-+	snd_printdd("CXT5066: external microphone present=%d\n", present);
-+	snd_hda_codec_write(codec, 0x17, 0, AC_VERB_SET_CONNECT_SEL,
-+			    present ? 1 : 0);
-+}
-+
-+
- /* toggle input of built-in digital mic and mic jack appropriately */
- static void cxt5066_hp_laptop_automic(struct hda_codec *codec)
- {
-@@ -2400,6 +2414,8 @@ static void cxt5066_automic(struct hda_codec *codec)
- 		cxt5066_thinkpad_automic(codec);
- 	else if (spec->hp_laptop)
- 		cxt5066_hp_laptop_automic(codec);
-+	else if (spec->asus)
-+		cxt5066_asus_automic(codec);
- }
- 
- /* unsolicited event for jack sensing */
-@@ -3045,6 +3061,7 @@ enum {
- 	CXT5066_DELL_VOSTRO,	/* Dell Vostro 1015i */
- 	CXT5066_IDEAPAD,	/* Lenovo IdeaPad U150 */
- 	CXT5066_THINKPAD,	/* Lenovo ThinkPad T410s, others? */
-+	CXT5066_ASUS,		/* Asus K52JU, Lenovo G560 - Int mic at 0x1a and Ext mic at 0x1b */
- 	CXT5066_HP_LAPTOP,      /* HP Laptop */
- 	CXT5066_MODELS
- };
-@@ -3056,6 +3073,7 @@ static const char * const cxt5066_models[CXT5066_MODELS] = {
- 	[CXT5066_DELL_VOSTRO]	= "dell-vostro",
- 	[CXT5066_IDEAPAD]	= "ideapad",
- 	[CXT5066_THINKPAD]	= "thinkpad",
-+	[CXT5066_ASUS]		= "asus",
- 	[CXT5066_HP_LAPTOP]	= "hp-laptop",
- };
- 
-@@ -3068,6 +3086,7 @@ static struct snd_pci_quirk cxt5066_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0408, "Dell Inspiron One 19T", CXT5066_IDEAPAD),
- 	SND_PCI_QUIRK(0x103c, 0x360b, "HP G60", CXT5066_HP_LAPTOP),
- 	SND_PCI_QUIRK(0x1043, 0x13f3, "Asus A52J", CXT5066_HP_LAPTOP),
-+	SND_PCI_QUIRK(0x1043, 0x1643, "Asus K52JU", CXT5066_ASUS),
- 	SND_PCI_QUIRK(0x1179, 0xff1e, "Toshiba Satellite C650D", CXT5066_IDEAPAD),
- 	SND_PCI_QUIRK(0x1179, 0xff50, "Toshiba Satellite P500-PSPGSC-01800T", CXT5066_OLPC_XO_1_5),
- 	SND_PCI_QUIRK(0x1179, 0xffe0, "Toshiba Satellite Pro T130-15F", CXT5066_OLPC_XO_1_5),
-@@ -3077,6 +3096,7 @@ static struct snd_pci_quirk cxt5066_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo T400s", CXT5066_THINKPAD),
- 	SND_PCI_QUIRK(0x17aa, 0x21c5, "Thinkpad Edge 13", CXT5066_THINKPAD),
-  	SND_PCI_QUIRK(0x17aa, 0x215e, "Lenovo Thinkpad", CXT5066_THINKPAD),
-+	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo G560", CXT5066_ASUS),
- 	SND_PCI_QUIRK_VENDOR(0x17aa, "Lenovo", CXT5066_IDEAPAD), /* Fallback for Lenovos without dock mic */
- 	{}
- };
-@@ -3132,13 +3152,15 @@ static int patch_cxt5066(struct hda_codec *codec)
- 		spec->num_init_verbs++;
- 		spec->dell_automute = 1;
- 		break;
-+	case CXT5066_ASUS:
- 	case CXT5066_HP_LAPTOP:
- 		codec->patch_ops.init = cxt5066_init;
- 		codec->patch_ops.unsol_event = cxt5066_unsol_event;
- 		spec->init_verbs[spec->num_init_verbs] =
- 			cxt5066_init_verbs_hp_laptop;
- 		spec->num_init_verbs++;
--		spec->hp_laptop = 1;
-+		spec->hp_laptop = board_config == CXT5066_HP_LAPTOP;
-+		spec->asus = board_config == CXT5066_ASUS;
- 		spec->mixers[spec->num_mixers++] = cxt5066_mixer_master;
- 		spec->mixers[spec->num_mixers++] = cxt5066_mixers;
- 		/* no S/PDIF out */
+ sound/soc/davinci/davinci-evm.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
+index 0c2d6ba..b36f0b3 100644
+--- a/sound/soc/davinci/davinci-evm.c
++++ b/sound/soc/davinci/davinci-evm.c
+@@ -223,7 +223,7 @@ static struct snd_soc_dai_link da8xx_evm_dai = {
+ 	.stream_name = "AIC3X",
+ 	.cpu_dai_name= "davinci-mcasp.0",
+ 	.codec_dai_name = "tlv320aic3x-hifi",
+-	.codec_name = "tlv320aic3x-codec.0-001a",
++	.codec_name = "tlv320aic3x-codec.1-0018",
+ 	.platform_name = "davinci-pcm-audio",
+ 	.init = evm_aic3x_init,
+ 	.ops = &evm_ops,
 -- 
 1.7.1
-
-
---------------050308060108010003060101
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------050308060108010003060101--
