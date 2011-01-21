@@ -1,22 +1,19 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: Re: [PATCH] ALSA: hda - add quirk for Ordissimo EVE
- using a realtek ALC662
-Date: Fri, 21 Jan 2011 16:36:28 +0100
-Message-ID: <1295624188.12720.68.camel@mattotaupa>
-References: <20110121154544.4e5ed4e6@destiny.ordissimo>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: UCM questions
+Date: Fri, 21 Jan 2011 16:43:29 +0000
+Message-ID: <20110121164329.GB6200@opensource.wolfsonmicro.com>
+References: <AANLkTim72DeHVzx3kmgF59EQQwC8jHAVpMZnt+kVTddX@mail.gmail.com>
+	<20110121113744.GA18682@sirena.org.uk>
+	<AANLkTinxwo_GErQroF4S-_z3G0UyT2sD4nBVbXVJz122@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6209263352710279995=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id A9B9824628
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 16:36:31 +0100 (CET)
-Received: from f053036037.adsl.alicedsl.de ([78.53.36.37]
-	helo=[192.168.178.21])
-	by mail.gw90.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
-	id 1PgJ2L-0008CT-DN
-	for alsa-devel@alsa-project.org; Fri, 21 Jan 2011 15:36:29 +0000
-In-Reply-To: <20110121154544.4e5ed4e6@destiny.ordissimo>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 85E4A1037F5
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 17:43:32 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <AANLkTinxwo_GErQroF4S-_z3G0UyT2sD4nBVbXVJz122@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,65 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: pl bossart <bossart.nospam@gmail.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jan 21, 2011 at 09:12:51AM -0600, pl bossart wrote:
 
---===============6209263352710279995==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-q9U05gwak+x3ONepVND9"
+> > The device/use case names there are just defaults, systems can add their
+> > own. =A0The default set of use cases and devices are likely to handle
+> > most cases but there's going to be a dependence on the system
+> > integration.
 
+> I am fine with a system-specific configuration file for each use case,
+> but if I have to change the defines in alsa-lib it's a bit of a pain.
+> It'll imply branches and specific packages just for a stupid include
+> file.
 
---=-q9U05gwak+x3ONepVND9
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+If the define isn't there you should just be able to use a string - no
+need to update the header file unless the thing being added is
+sufficiently general that it seems like a good idea.
 
-Dear Anisse,
+> >> - has anyone generated a typical configuration file for USB and
+> >> HDAudio? I only see an OMAP conf.
 
+> > Someone asked this at LPC as well - my thought there is that probably
+> > PC systems would be happier trying to work without explicit use case
+> > configuration as they are currently.
 
-Am Freitag, den 21.01.2011, 15:45 +0100 schrieb Anisse Astier:
+> Humm, not sure people are totally happy with audio on Linux PC
+> systems... we still don't have a simple solution for
+> routing/configuration/policy, UCM could provide simple hooks for users
+> (or PulseAudio) to do what they do most, e.g for a voice call the
+> headset is used while for movies the HDMI output is used.
 
-[=E2=80=A6]
-
-without your Signed-off-by line [1] your patch cannot be committed.
-
-Additionally it would be great if you could add more detail. What did
-not work with your sound card and had it ever worked before?
-
-
-Thanks,
-
-Paul
-
-
-[1] http://git.kernel.org/?p=3Dlinux/kernel/git/tiwai/sound-2.6.git;a=3Dblo=
-b;f=3DDocumentation/SubmittingPatches;h=3D689e2371095cc5dfea9927120009341f3=
-69159aa;hb=3DHEAD
-    see section 12
-
---=-q9U05gwak+x3ONepVND9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEABECAAYFAk05p/wACgkQPX1aK2wOHVjIeACfXtwUpX1C3dOrPua6gMFpxkqe
-4t4AnRCvbdyLdrWoulxELnNYfG2v1I8H
-=7XvB
------END PGP SIGNATURE-----
-
---=-q9U05gwak+x3ONepVND9--
-
-
---===============6209263352710279995==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============6209263352710279995==--
+It's certainly useful for overriding the default behaviour - I'm more
+worried about the idea of using it for the default.
