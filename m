@@ -1,18 +1,20 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: soc-cache: Add trace event for
- snd_soc_cache_sync()
-Date: Fri, 21 Jan 2011 14:54:27 +0000
-Message-ID: <1295621667.5771.4.camel@dplaptop.localdomain>
-References: <1295620548-26297-1-git-send-email-dp@opensource.wolfsonmicro.com>
-	<20110121144634.GA6200@opensource.wolfsonmicro.com>
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: Re: UCM questions
+Date: Fri, 21 Jan 2011 09:12:51 -0600
+Message-ID: <AANLkTinxwo_GErQroF4S-_z3G0UyT2sD4nBVbXVJz122@mail.gmail.com>
+References: <AANLkTim72DeHVzx3kmgF59EQQwC8jHAVpMZnt+kVTddX@mail.gmail.com>
+	<20110121113744.GA18682@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 057B124624
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 15:55:17 +0100 (CET)
-In-Reply-To: <20110121144634.GA6200@opensource.wolfsonmicro.com>
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id BD6561037F5
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 16:12:54 +0100 (CET)
+Received: by iwb12 with SMTP id 12so1948897iwb.38
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 07:12:52 -0800 (PST)
+In-Reply-To: <20110121113744.GA18682@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +25,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam@alsa-project.org, Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2011-01-21 at 14:46 +0000, Mark Brown wrote:
-> On Fri, Jan 21, 2011 at 02:35:48PM +0000, Dimitris Papastamos wrote:
-> > This patch makes it easier to see which of the register writes are part
-> > of the cache syncing functionality.
-> 
-> Might be more useful to have sync start and end events?  That way we can
-> not only see which writes are part of the sync but we can also see how
-> long the overall process takes, helping diagnose if our CPU side stuff
-> is too expensive.
+Thanks Mark for your answers.
 
-I'll add those yes and remove the one I've got now.
+> The device/use case names there are just defaults, systems can add their
+> own. =A0The default set of use cases and devices are likely to handle
+> most cases but there's going to be a dependence on the system
+> integration.
 
-Thanks,
-Dimitris
+I am fine with a system-specific configuration file for each use case,
+but if I have to change the defines in alsa-lib it's a bit of a pain.
+It'll imply branches and specific packages just for a stupid include
+file.
+
+>> I make a difference between a USB headset and USB speakers?
+>
+> You'd probably need to handle identifying the different classes USB
+> devices in whatever owns the use case configuration for the system.
+> I'm not sure that's been looked at in much detail, USB host support is
+> fairly unusual in the embedded systems this targets.
+
+I am thinking netbooks and tablets where USB is more likely to be
+present. For handsets I am not sure.
+
+>> - has anyone generated a typical configuration file for USB and
+>> HDAudio? I only see an OMAP conf.
+>
+> Someone asked this at LPC as well - my thought there is that probably
+> PC systems would be happier trying to work without explicit use case
+> configuration as they are currently.
+
+Humm, not sure people are totally happy with audio on Linux PC
+systems... we still don't have a simple solution for
+routing/configuration/policy, UCM could provide simple hooks for users
+(or PulseAudio) to do what they do most, e.g for a voice call the
+headset is used while for movies the HDMI output is used.
+-Pierre
