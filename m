@@ -1,20 +1,23 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: UCM questions
-Date: Fri, 21 Jan 2011 23:37:08 +0000
-Message-ID: <1295653028.3348.698.camel@odin>
-References: <AANLkTim72DeHVzx3kmgF59EQQwC8jHAVpMZnt+kVTddX@mail.gmail.com>
-	<20110121113744.GA18682@sirena.org.uk> <1295623491.3348.284.camel@odin>
-	<AANLkTi=V9ouox2vp5VYA+_gmsOCCecBKOjpd58DsuaxK@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 2/4] ARM: tegra: Add Harmony sound
+	platform data type
+Date: Fri, 21 Jan 2011 23:41:40 +0000
+Message-ID: <20110121234140.GA20247@opensource.wolfsonmicro.com>
+References: <1295393859-3396-1-git-send-email-swarren@wwwdotorg.org>
+	<1295556731-25165-1-git-send-email-swarren@nvidia.com>
+	<1295556731-25165-3-git-send-email-swarren@nvidia.com>
+	<AANLkTimx3Co9HjpBoB07G8YnQG8LAukxMqLdCMgDf1j+@mail.gmail.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF03109559DF@HQMAIL01.nvidia.com>
+	<AANLkTi=t0c4kCziPg=b0nqNRSw4od2U7__NwMu=dhW3Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 9F5D424439
-	for <alsa-devel@alsa-project.org>; Sat, 22 Jan 2011 00:37:12 +0100 (CET)
-Received: by mail-wy0-f179.google.com with SMTP id 11so2364851wyi.38
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 15:37:12 -0800 (PST)
-In-Reply-To: <AANLkTi=V9ouox2vp5VYA+_gmsOCCecBKOjpd58DsuaxK@mail.gmail.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4311524442
+	for <alsa-devel@alsa-project.org>; Sat, 22 Jan 2011 00:41:41 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=t0c4kCziPg=b0nqNRSw4od2U7__NwMu=dhW3Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,33 +27,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pl bossart <bossart.nospam@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Colin Cross <ccross@google.com>
+Cc: "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stephen Warren <swarren@nvidia.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2011-01-21 at 15:03 -0600, pl bossart wrote:
-> > Originally, verbs were mapped 1:1 with cards, however Jaroslav recently
-> > added support for multiple cards per verb.
-> 
-> Does this mean for a given verb UCM will return a list of devices on
-> different cards that can be used, and the application will choose from
-> the list?
+On Fri, Jan 21, 2011 at 02:41:08PM -0800, Colin Cross wrote:
 
-UCM does return the appropriate sink and source PCM device for the given
-use case if required. e.g the OMAP4 has multiple PCM devices, some are
-for high quality hifi whilst others are lower power tones. 
+> Could the same platform_data patch go into both ASoC and Tegra?  It
+> would fall out in the merge, no matter who gets pulled first.  If we
+> go that route, whichever place you put the header, one of the trees
+> will have an include file that is in the other tree's directory.
 
->  Or are these multiple cards supposed to be used
-> simultaneously?
-> I probably need more expresso here..
+The usual thing here would be a branch that gets merged into both trees
+(to avoid the commit getting duplicated) or to only apply in one tree
+and let things sort themselves out in -next and the merge window.
 
-It's to allow multiple cards to be used simultaneously, e.g. a use case
-could also involve aspects of two sound cards, maybe one for capture and
-the other for playback.
+> I still think the header makes more sense in include/sound than
+> mach-tegra, but if the ASoC maintainers prefer it in mach-tegra,
+> consider the patch Acked-by: Colin Cross <ccross@android.com> for
+> inclusion in the ASoC tree.
 
-Liam
-
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+The general style for architecture specific headers is that they get
+included in architecture specific directories to avoid general namespace
+pollution.
