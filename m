@@ -1,39 +1,64 @@
-From: Joel Becker <jlbec@evilplan.org>
-Subject: Re:
- =?utf-8?b?W1BhdGNoXSBLaWxsIG9mZiB3YXJuaW5nOiDigJhp?=
- =?utf-8?q?nline=E2=80=99_is_not_at_beginning_of_declaration?=
-Date: Fri, 21 Jan 2011 17:31:30 +0000
-Message-ID: <20110121173130.GD8323@ZenIV.linux.org.uk>
-References: <alpine.LNX.2.00.1101170000270.13377@swampdragon.chaosbits.net>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: [PATCH v3 3/4] ARM: tegra: Platform data fixes for
+ ASoC driver updates
+Date: Fri, 21 Jan 2011 09:45:56 -0800
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0310AD4251@HQMAIL01.nvidia.com>
+References: <1295393859-3396-1-git-send-email-swarren@wwwdotorg.org>
+	<1295556731-25165-4-git-send-email-swarren@nvidia.com>,
+	<20110120212259.GA21324@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <ocfs2-devel-bounces@oss.oracle.com>
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.00.1101170000270.13377@swampdragon.chaosbits.net>
-List-Unsubscribe: <http://oss.oracle.com/mailman/listinfo/ocfs2-devel>,
-	<mailto:ocfs2-devel-request@oss.oracle.com?subject=unsubscribe>
-List-Archive: <http://oss.oracle.com/pipermail/ocfs2-devel>
-List-Post: <mailto:ocfs2-devel@oss.oracle.com>
-List-Help: <mailto:ocfs2-devel-request@oss.oracle.com?subject=help>
-List-Subscribe: <http://oss.oracle.com/mailman/listinfo/ocfs2-devel>,
-	<mailto:ocfs2-devel-request@oss.oracle.com?subject=subscribe>
-Sender: ocfs2-devel-bounces@oss.oracle.com
-Errors-To: ocfs2-devel-bounces@oss.oracle.com
-To: Jesper Juhl <jj@chaosbits.net>
-Cc: alsa-devel@alsa-project.org, Mauro Carvalho Chehab <mchehab@redhat.com>, Takashi Iwai <tiwai@suse.de>, Frederic Weisbecker <fweisbec@gmail.com>, "Gustavo F. Padovan" <padovan@profusion.mobi>, Jaroslav Kysela <perex@perex.cz>, Jens Axboe <jens.axboe@oracle.com>, Stephen Hemminger <shemminger@vyatta.com>, Andi Kleen <ak@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, "Pekka Savola (ipv6)" <pekkas@netcore.fi>, Robert Richter <robert.richter@amd.com>, x86@kernel.org, James Morris <jmorris@namei.org>, Ingo Molnar <mingo@redhat.com>, oprofile-list@lists.sf.net, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Mark Fasheh <mfasheh@suse.com>, Marcel Holtmann <marcel@holtmann.org>, "John W. Linville" <linville@tuxdriver.com>, Thomas Gleixner <tglx@linutronix.de>, linux-edac@vger.kernel.orgt
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 28B391037F5
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 18:46:13 +0100 (CET)
+In-Reply-To: <20110120212259.GA21324@opensource.wolfsonmicro.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, "Erik Gilling
+	(konkers@google.com)" <konkers@google.com>, "Colin Cross (ccross@google.com)" <ccross@google.com>
+Cc: "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBKYW4gMTcsIDIwMTEgYXQgMTI6MDk6MzhBTSArMDEwMCwgSmVzcGVyIEp1aGwgd3Jv
-dGU6Cj4gRml4IGEgYnVuY2ggb2YgCj4gCXdhcm5pbmc6IOKAmGlubGluZeKAmSBpcyBub3QgYXQg
-YmVnaW5uaW5nIG9mIGRlY2xhcmF0aW9uCj4gbWVzc2FnZXMgd2hlbiBidWlsZGluZyBhICdtYWtl
-IGFsbHllc2NvbmZpZycga2VybmVsIHdpdGggLVdleHRyYS4KPiAKPiBUaGVzZSB3YXJuaW5ncyBh
-cmUgdHJpdmlhbCB0byBraWxsLCB5ZXQgcmF0aGVyIGFubm95aW5nIHdoZW4gYnVpbGRpbmcgd2l0
-aCAKPiAtV2V4dHJhLgo+IFRoZSBtb3JlIHdlIGNhbiBjdXQgZG93biBvbiBwb2ludGxlc3MgY3Jh
-cCBsaWtlIHRoaXMgdGhlIGJldHRlciAoSU1ITykuCj4gCj4gQSBwcmV2aW91cyBwYXRjaCB0byBk
-byB0aGlzIGZvciBhICdhbGxub2NvbmZpZycgYnVpbGQgaGFzIGFscmVhZHkgYmVlbiAKPiBtZXJn
-ZWQuIFRoaXMganVzdCB0YWtlcyB0aGUgY2xlYW51cCBhIGxpdHRsZSBmdXJ0aGVyLgo+IAo+IFNp
-Z25lZC1vZmYtYnk6IEplc3BlciBKdWhsIDxqakBjaGFvc2JpdHMubmV0PgoKQWNrZWQgZm9yIGZz
-L29jZnMyCgpKb2VsCgotLSAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCk9jZnMyLWRldmVsIG1haWxpbmcgbGlzdApPY2ZzMi1kZXZlbEBvc3Mub3JhY2xl
-LmNvbQpodHRwOi8vb3NzLm9yYWNsZS5jb20vbWFpbG1hbi9saXN0aW5mby9vY2ZzMi1kZXZlbA==
+[I apologize if the email formatting is terrible; my usual system is broken
+right now. I hope this is plain text]
+
+Mark Brown wrote on Thursday, January 20, 2011 14:22:
+> On Thu, Jan 20, 2011 at 01:52:10PM -0700, Stephen Warren wrote:
+> > The WM8903 driver now needs platform data in order to correctly expose its
+> > GPIOs through gpiolib.
+> 
+> This isn't really a fix - it's enabling a new feature that wasn't
+> previously supported
+
+Agreed. I'll reword this when I submit it for inclusion in the Tegra tree.
+
+> I'm happy with this version of the series, I guess Liam will be too.
+> Ideally someone from the Tegra side should sign off on the arch/arm
+> side - that'll need to go through the same tree as the ASoC side for
+> build dependencies.
+
+I assume you're only talking about:
+
+a882c75eadfcdc56f47962dd3f7870d6def62847
+ARM: tegra: Add Harmony sound platform data type
+
+The other arch/arm patches won't apply anywhere yet since they build
+on top of various other patches that haven't been submitted for or
+applied to the linux-tegra tree yet.
+
+CC += Colin/Erik to ack/nack the header addition mentioned above.
+
+Thanks
+
+-- 
+nvpublic
