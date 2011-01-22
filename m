@@ -1,18 +1,17 @@
-From: Andreas Mohr <andi@lisas.de>
-Subject: Re: [PATCH 1/1] SOUND: azt3328,
-	fix broken AZF_FMT_XLATE macro
-Date: Sat, 22 Jan 2011 21:01:27 +0100
-Message-ID: <20110122200127.GA1824@rhlx01.hs-esslingen.de>
-References: <1295704570-27015-1-git-send-email-jslaby@suse.cz>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] SoC: Samsung: Fix outdated cpu_dai_name for
+	s3c24xx i2s
+Date: Sat, 22 Jan 2011 23:38:08 +0100
+Message-ID: <1295735888-25527-2-git-send-email-lars@metafoo.de>
+References: <1295735888-25527-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6CA641037F9
-	for <alsa-devel@alsa-project.org>; Sat, 22 Jan 2011 21:01:29 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1295704570-27015-1-git-send-email-jslaby@suse.cz>
+Received: from smtp-out-002.synserver.de (smtp-out-005.synserver.de
+	[212.40.180.5]) by alsa0.perex.cz (Postfix) with SMTP id 8E1731037F9
+	for <alsa-devel@alsa-project.org>; Sat, 22 Jan 2011 23:38:27 +0100 (CET)
+In-Reply-To: <1295735888-25527-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,47 +21,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jiri Slaby <jslaby@suse.cz>
-Cc: alsa-devel@alsa-project.org, jirislaby@gmail.com, tiwai@suse.de, linux-kernel@vger.kernel.org, Andreas Mohr <andi@lisas.de>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, "for 2.6.37" <stable@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jan 22, 2011 at 02:56:10PM +0100, Jiri Slaby wrote:
-> Despite the AZF_FMT_XLATE macro looks totally weird and useless, it's
-> heavily broken (apart it also broke my parser).
-> The 'break' in the macro belongs to the do-while loop and not to the
-> switch. So it always falls through the all cases till the end.
-> 
-> Remove the do-while from the macro.
+During the multi-component patch the s3c24xx i2s driver was renamed from
+"s3c24xx-i2s" to "s3c24xx-iis", while the sound board drivers were not
+updated to reflect this change as well.
 
-Hmm, there doesn't remain much to say other than "Double ouch. Mea culpa.".
+As a result there is no match between the dai_link and the i2s driver and no
+sound card is instantiated.
 
-However I'd like to add one bit, that the usual macro-side
-do ... while(0) loop has been added by me due to a checkpatch.pl warning
-which called for attention. IOW, it could be argued that checkpatch.pl
-led people into ""improving"" formely "working" (whatever one may think of it)
-code.
-Something to be investigated, methinks.
+This patch fixes the problem by updating the sound board drivers to use
+"s3c24xx-iis" for the cpu_dai_name.
 
-> Also people should terminate statements with semicolons. So force
-> people to do so by removing the last one in the macro.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Cc: stable@kernel.org (for 2.6.37)
+---
+ sound/soc/samsung/neo1973_gta02_wm8753.c       |    2 +-
+ sound/soc/samsung/neo1973_wm8753.c             |    2 +-
+ sound/soc/samsung/s3c24xx_simtec_hermes.c      |    2 +-
+ sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c |    2 +-
+ sound/soc/samsung/s3c24xx_uda134x.c            |    2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-Oh dammit of course, I'm normally implementing it this way as well.
-Unfortunately I failed to submit it that way in this particular case.
-
-> I vote for removing that crap completely because it makes the code
-> weird anyway -- you have to specify manually both of freq and bits
-> which is I would expect to be avoided exactly by such a macro.
-
-The reason that it broke your parser is certainly a very valid one.
-Macro syntax is known to be arcane and quite variable between compilers
-(e.g. I read that the gcc people said that they were the only one who
-_really_ grokked macro evaluation order and token pasting the way
-it was meant to be implemented - go figure...).
-
-As such I support a change here.
-I'll try to come up with a translation table instead, 
-or else probably best just revert this wetware fart.
-
-Thanks,
-
-Andreas Mohr
+diff --git a/sound/soc/samsung/neo1973_gta02_wm8753.c b/sound/soc/samsung/neo1973_gta02_wm8753.c
+index 5e77cd1..95ebf81 100644
+--- a/sound/soc/samsung/neo1973_gta02_wm8753.c
++++ b/sound/soc/samsung/neo1973_gta02_wm8753.c
+@@ -387,7 +387,7 @@ static struct snd_soc_dai_link neo1973_gta02_dai[] = {
+ { /* Hifi Playback - for similatious use with voice below */
+ 	.name = "WM8753",
+ 	.stream_name = "WM8753 HiFi",
+-	.cpu_dai_name = "s3c24xx-i2s",
++	.cpu_dai_name = "s3c24xx-iis",
+ 	.codec_dai_name = "wm8753-hifi",
+ 	.init = neo1973_gta02_wm8753_init,
+ 	.platform_name = "samsung-audio",
+diff --git a/sound/soc/samsung/neo1973_wm8753.c b/sound/soc/samsung/neo1973_wm8753.c
+index cf69e14..d20815d 100644
+--- a/sound/soc/samsung/neo1973_wm8753.c
++++ b/sound/soc/samsung/neo1973_wm8753.c
+@@ -559,7 +559,7 @@ static struct snd_soc_dai_link neo1973_dai[] = {
+ 	.name = "WM8753",
+ 	.stream_name = "WM8753 HiFi",
+ 	.platform_name = "samsung-audio",
+-	.cpu_dai_name = "s3c24xx-i2s",
++	.cpu_dai_name = "s3c24xx-iis",
+ 	.codec_dai_name = "wm8753-hifi",
+ 	.codec_name = "wm8753-codec.0-001a",
+ 	.init = neo1973_wm8753_init,
+diff --git a/sound/soc/samsung/s3c24xx_simtec_hermes.c b/sound/soc/samsung/s3c24xx_simtec_hermes.c
+index 2fa6d1b..ce6aef6 100644
+--- a/sound/soc/samsung/s3c24xx_simtec_hermes.c
++++ b/sound/soc/samsung/s3c24xx_simtec_hermes.c
+@@ -85,7 +85,7 @@ static struct snd_soc_dai_link simtec_dai_aic33 = {
+ 	.name		= "tlv320aic33",
+ 	.stream_name	= "TLV320AIC33",
+ 	.codec_name	= "tlv320aic3x-codec.0-001a",
+-	.cpu_dai_name	= "s3c24xx-i2s",
++	.cpu_dai_name	= "s3c24xx-iis",
+ 	.codec_dai_name = "tlv320aic3x-hifi",
+ 	.platform_name	= "samsung-audio",
+ 	.init		= simtec_hermes_init,
+diff --git a/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c b/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
+index d219223..a7ef7db 100644
+--- a/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
++++ b/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
+@@ -74,7 +74,7 @@ static struct snd_soc_dai_link simtec_dai_aic23 = {
+ 	.name		= "tlv320aic23",
+ 	.stream_name	= "TLV320AIC23",
+ 	.codec_name	= "tlv320aic3x-codec.0-001a",
+-	.cpu_dai_name	= "s3c24xx-i2s",
++	.cpu_dai_name	= "s3c24xx-iis",
+ 	.codec_dai_name = "tlv320aic3x-hifi",
+ 	.platform_name	= "samsung-audio",
+ 	.init		= simtec_tlv320aic23_init,
+diff --git a/sound/soc/samsung/s3c24xx_uda134x.c b/sound/soc/samsung/s3c24xx_uda134x.c
+index ce749a1..3cb7007 100644
+--- a/sound/soc/samsung/s3c24xx_uda134x.c
++++ b/sound/soc/samsung/s3c24xx_uda134x.c
+@@ -221,7 +221,7 @@ static struct snd_soc_dai_link s3c24xx_uda134x_dai_link = {
+ 	.stream_name = "UDA134X",
+ 	.codec_name = "uda134x-hifi",
+ 	.codec_dai_name = "uda134x-hifi",
+-	.cpu_dai_name = "s3c24xx-i2s",
++	.cpu_dai_name = "s3c24xx-iis",
+ 	.ops = &s3c24xx_uda134x_ops,
+ 	.platform_name	= "samsung-audio",
+ };
+-- 
+1.7.2.3
