@@ -1,27 +1,26 @@
-From: VDR User <user.vdr@gmail.com>
-Subject: Re: Bug in setting channels,
-	related to recent ELD/EDID changes?
-Date: Fri, 21 Jan 2011 18:53:31 -0800
-Message-ID: <AANLkTik-i__KMMGsj9SxWP1Q2er43zc+_L-KotqFj8eJ@mail.gmail.com>
-References: <AANLkTikneYHc9NmrRW41=xRBW_PVgc0jqdcOaTgHcC-t@mail.gmail.com>
-	<4D12E292.9050204@iki.fi>
-	<AANLkTimxHsUS_zVm0_m-vUcwt4vupUAf-vRhH5VWLwoy@mail.gmail.com>
-	<4D20508C.7070609@iki.fi> <s5hoc7ok05l.wl%tiwai@suse.de>
-	<3a46493bd2a1ec3b74c89cb6970c9ab0.squirrel@mail.onse.fi>
-	<s5hk4icjy2t.wl%tiwai@suse.de> <s5hbp3nkj1z.wl%tiwai@suse.de>
-	<4D2C8C4B.1030202@iki.fi> <s5hfwsz9wey.wl%tiwai@suse.de>
-	<AANLkTinPbj6K8Lw9PiCsHrqRBT=fwj6YvCrnOh7YK3YB@mail.gmail.com>
-	<4D2CC1E5.5020105@iki.fi>
+From: Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH v3 2/4] ARM: tegra: Add Harmony sound
+	platform data type
+Date: Fri, 21 Jan 2011 21:14:59 -0800
+Message-ID: <AANLkTi=XQ7ATDOH8NDbXk4Fgs4D8rnDTR6LokExuo+gP@mail.gmail.com>
+References: <1295393859-3396-1-git-send-email-swarren@wwwdotorg.org>
+	<1295556731-25165-1-git-send-email-swarren@nvidia.com>
+	<1295556731-25165-3-git-send-email-swarren@nvidia.com>
+	<AANLkTimx3Co9HjpBoB07G8YnQG8LAukxMqLdCMgDf1j+@mail.gmail.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF03109559DF@HQMAIL01.nvidia.com>
+	<AANLkTi=t0c4kCziPg=b0nqNRSw4od2U7__NwMu=dhW3Q@mail.gmail.com>
+	<20110121234140.GA20247@opensource.wolfsonmicro.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF0310955A2F@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 8E0ED244D2
-	for <alsa-devel@alsa-project.org>; Sat, 22 Jan 2011 03:53:32 +0100 (CET)
-Received: by ewy19 with SMTP id 19so1211231ewy.38
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 18:53:32 -0800 (PST)
-In-Reply-To: <4D2CC1E5.5020105@iki.fi>
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id E4A702433E
+	for <alsa-devel@alsa-project.org>; Sat, 22 Jan 2011 06:15:01 +0100 (CET)
+Received: by fxm5 with SMTP id 5so2524409fxm.38
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2011 21:14:59 -0800 (PST)
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0310955A2F@HQMAIL01.nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,65 +30,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Anssi Hannula <anssi.hannula@iki.fi>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Colin Cross <ccross@google.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBKYW4gMTEsIDIwMTEgYXQgMTI6NDcgUE0sIEFuc3NpIEhhbm51bGEgPGFuc3NpLmhh
-bm51bGFAaWtpLmZpPiB3cm90ZToKPj4gRmlyc3QsIFRIQU5LIFlPVSBmb3IgYWRkcmVzc2luZyB0
-aGlzISDCoEhvd2V2ZXIsIEkgaGF2ZSBhIGNvdXBsZQo+PiBxdWVzdGlvbnMuIMKgV2hpY2ggc29s
-dXRpb24gd2FzIGltcGxlbWVudGVkOyBhIHRydWUvZmFsc2Ugc3dpdGNoCj4+IGNvbnRyb2xsaW5n
-IHRoZSBiZWhhdmlvciBiZXR3ZWVuIHRoZSBvbGQgX3dvcmtpbmdfIG1ldGhvZCwgb3IgdGhlIG5l
-dwo+PiBFTEQgcmVzdHJpY3RlZCBvbmU/IMKgT3IsIHRoaXMgbW9kdWxlIHBhcmFtZXRlciB0aGlu
-ZyB0aGF0IHdhcwo+PiBtZW50aW9uZWQ/Cj4+Cj4+IEFzIGEgdXNlciBoYXZpbmcgdG8gZGVhbCB3
-aXRoIHRoZSBmcnVzdHJhdGlvbiBvZiB0aGlzIHByb2JsZW0sIEkKPj4gYWJzb2x1dGVseSB0aGlu
-ayB0aGUgdHJ1ZS9mYWxzZSBzd2l0Y2ggaXMgdGhlIGJlc3Qgc29sdXRpb24gYXMgaXQncwo+PiBz
-ZXQtYW5kLWZvcmdldC4gwqBTZXQgaXQgb25lIHRpbWUsIGdldCB0aGUgYmVoYXZpb3IgeW91IF93
-YW50XywgYW5kIG5vdAo+PiBoYXZlIHRvIGJvdGhlciB3aXRoIGl0IGFnYWluLiDCoFdpdGggdGhl
-IG1vZHVsZSBwYXJhbWV0ZXIgdGhpbmcsIGl0Cj4+IHNvdW5kcyBsaWtlIHlvdSBoYXZlIHRvIGNo
-YW5nZSBtb2R1bGUgcGFyYW1ldGVycyBhY2NvcmRpbmcgdG8gd2hhdCB5b3UKPj4gd2FudCBhdCB0
-aGUgbW9tZW50LiDCoE9yIGlzIGl0IHRoYXQgdGhlIHRydWUvZmFsc2Ugc3dpdGNoIGlzIGNvbnRy
-b2xsZWQKPj4gYnkgYSBtb2R1bGUgcGFyYW0/IMKgTWF5YmUgSSd2ZSBtaXNpbnRlcnByZXRlZCBp
-dCBidXQgaXQncyBub3QgdmVyeQo+PiBjbGVhci4KPgo+IFllcywgaXQgaXMgYSB0cnVlL2ZhbHNl
-IHN3aXRjaCBjb250cm9sbGVkIGJ5IGEgbW9kdWxlIHBhcmFtZXRlci4KPgo+PiBTbyBJIGdyYWIg
-YWxzYSBnaXQsIGJ1dCBob3cgZG8gSSB1c2UgdGhlIGZpeCB0byByZXN0b3JlIHRoZSBvbGQgYmVo
-YXZpb3I/Cj4KPiBTZXQgdGhlIG1vZHVsZSBwYXJhbWV0ZXIgc3RhdGljX2hkbWlfcGNtIG9mIHNu
-ZC1oZGEtY29kZWMtaGRtaSB0byAxLgo+Cj4gRm9yIGV4YW1wbGUsIGJ5IGFkZGluZyB0aGlzIGlu
-dG8gL2V0Yy9tb2Rwcm9iZS5jb25mOgo+IG9wdGlvbnMgc25kLWhkYS1jb2RlYy1oZG1pIHN0YXRp
-Y19oZG1pX3BjbT0xCj4KPiBGb3IgdGhlIHJlY29yZCwgdGhpcyBpcyB0aGUgY29tbWl0Ogo+IGh0
-dHA6Ly9naXQua2VybmVsLm9yZy8/cD1saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLTIuNi5n
-aXQ7YT1jb21taXRkaWZmO2g9NWVlZGQxNDIyYzJmYzc5YzJmOWVkOGI3MTA1NmI5NzU3MGY5NTU3
-MgoKVGhpcyBhcHBlYXJzIHRvIG5vdCBiZSB3b3JraW5nIHByb3Blcmx5LiAgSGVyZSBhcmUgdGhl
-IHRlc3QgcmVzdWx0czoKCmNvbGQgYm9vdCBwYywga2VybmVsIDIuNi4zNC43LCBhbHNhIGtlcm5l
-bCBkcml2ZXJzLCByZWNlaXZlciBvZmYKZWxkIHNob3dzIDIgY2hhbm5lbCBzdGVyZW8gKGZyb20g
-dHYpIGF2YWlsYWJsZQp2ZHIgdHVuZWQgdG8gaGR0diB3aXRoIDUuMSBzdXJyb3VuZCBhdWRpbzog
-bm8gZXJyb3JzIGZyb20gYWxzYSwKc3Vycm91bmQgY2hhbm5lbHMgbWlzc2luZwp2ZHIgdHVuZWQg
-dG8gaGR0diB3aXRoIDUuMSBzdXJyb3VuZCBhdWRpbywgcmVjZWl2ZXIgdHVybmVkIG9uOiBubwpl
-cnJvcnMgZnJvbSBhbHNhLCBzdXJyb3VuZCBjaGFubmVscyB3b3JraW5nCgpjb2xkIGJvb3QgcGMs
-IGtlcm5lbCAyLjYuMzcsIGFsc2Egc25hcHNob3QgZHJpdmVycyBqYW4uMjIsMjAxMCwgcmVjZWl2
-ZXIgb2ZmCmVsZCBzaG93cyAyIGNoYW5uZWwgc3RlcmVvIChmcm9tIHR2KSBhdmFpbGFibGUKb3B0
-aW9ucyBzbmQtaGRhLWNvZGVjLWhkbWkgc3RhdGljX2hkbWlfcGNtPTEKdmRyIHR1bmVkIHRvIGhk
-dHYgd2l0aCA1LjEgc3Vycm91bmQgYXVkaW86IG5vIGVycm9ycyBmcm9tIGFsc2EsIHNvbWUKc3Vy
-cm91bmQgY2hhbm5lbHMgbWlzc2luZwp2ZHIgdHVuZWQgdG8gaGR0diB3aXRoIDUuMSBzdXJyb3Vu
-ZCBhdWRpbywgcmVjZWl2ZXIgdHVybmVkIG9uOiBubwplcnJvcnMgZnJvbSBhbHNhLCBzb21lIHN1
-cnJvdW5kIGNoYW5uZWxzIG1pc3NpbmcKCmNvbGQgYm9vdCBwYywga2VybmVsIDIuNi4zNywgYWxz
-YSBzbmFwc2hvdCBkcml2ZXJzIGphbi4yMiwyMDEwLCByZWNlaXZlciBvbgplbGQgc2hvd3MgOCBj
-aGFubmVscyAoNy4xKSBhdmFpbGFibGUKdmRyIHR1bmVkIHRvIGhkdHYgd2l0aCA1LjEgc3Vycm91
-bmQgYXVkaW86IG5vIGVycm9ycyBmcm9tIGFsc2EsIHNvbWUKc3Vycm91bmQgY2hhbm5lbHMgbWlz
-c2luZwp2ZHIgdHVuZWQgdG8gaGR0diB3aXRoIDUuMSBzdXJyb3VuZCBhdWRpbywgcmVjZWl2ZXIg
-dHVybmVkIG9uOiBubwplcnJvcnMgZnJvbSBhbHNhLCBzb21lIHN1cnJvdW5kIGNoYW5uZWxzIG1p
-c3NpbmcKClRoZSBIRCBjb250ZW50IEkgd2FzIHVzaW5nIHdhcyB0aGUgbW92aWUgV2F0Y2htZW4u
-ICBJbiBhbGwgY2FzZXMgd2hlcmUKInNvbWUgc3Vycm91bmQgY2hhbm5lbHMgbWlzc2luZyIsIGl0
-IHdhcyBhdCBhIG1pbmltdW0gd2hhdGV2ZXIKY2hhbm5lbChzKSBjYXJyeSB0aGUgbWFpbiBhdWRp
-byBmb3IgdGhlIHRhbGtpbmcvc3Bva2VuIGRpYWxvZy4gIEFsbAooYXMgZmFyIGFzIEkga25vdywg
-YnV0IGNvdWxkIGJlIHdyb25nKSB0aGUgYmFja2dyb3VuZCBhdWRpbyBzZWVtZWQgdG8KYmUgcHJl
-c2VudC4KCkNvdWxkIHNvbWVvbmUgcGxlYXNlIHRha2UgYSBsb29rIGF0IHRoZSB3b3JrYXJvdW5k
-IHBhdGNoLiAgVGhlIG5ldwoic3RhdGljX2hkbWlfcGNtIiBwYXJhbWV0ZXIgd2hlbiBzZXQgdG8g
-MSBpcyBzdXBwb3NlZCB0byBtaW1pYyB0aGUKb3JpZ2luYWwgYWxzYSBiZWhhdmlvciBwcmlvciB0
-byB0aGlzIGVsZCByZXN0cmljdGlvbiBzdHVmZiBiZWluZyBhZGRlZApidXQgdGhlIHBhdGNoIGFw
-cGVhcnMgdG8gc29tZWhvdyBoYXZlIGJyb2tlbiBzdXJyb3VuZCBzb3VuZCBhcwpkZXNjcmliZWQg
-YWJvdmUuCgpUaGFua3MgZm9yIHlvdXIgaGVscCByZXNvbHZpbmcgdGhpcyB2ZXJ5IGZydXN0cmF0
-aW5nIHByb2JsZW0hCkRlcmVrCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+On Fri, Jan 21, 2011 at 3:49 PM, Stephen Warren <swarren@nvidia.com> wrote:
+> Mark Brown wrote on Sent: Friday, January 21, 2011 4:42 PM:
+>> The usual thing here would be a branch that gets merged into both trees
+>> (to avoid the commit getting duplicated) or to only apply in one tree and
+>> let things sort themselves out in -next and the merge window.
+>
+> Ah yes, I do remember you mentioning that before. Now I realize exactly
+> what you mean.
+
+
+Sounds overly complicated to me since you don't already have a tree
+hosted somewhere.
+
+Mark; why don't you apply it with Colin's acked-by, and Colin can just
+cherry-pick from that for-next branch?
+
+
+-Olof
