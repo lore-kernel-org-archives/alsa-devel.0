@@ -1,24 +1,19 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Should "Master" control the "Line In" volume (loopback)
-Date: Sun, 23 Jan 2011 17:37:07 +0000
-Message-ID: <ihhp04$h9d$1@dough.gmane.org>
+From: Robin Neatherway <neatherway@gmail.com>
+Subject: Re: Jack sense fails on Fujitsu p7120
+Date: Sun, 23 Jan 2011 19:55:13 +0000
+Message-ID: <AANLkTim2ch5-QHoh67SuKwMmTMQL=HM6VG1iVCxxoo9+@mail.gmail.com>
+References: <AANLkTimGPyno7Wd3TfO7dhZe9e4a5QcXLS8Upa1Mq7q_@mail.gmail.com>
+	<AANLkTimb+yqOhWP1Rc78F9pc+j6VEGp7v0SYvGi7mGrb@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 87DEB244DF
-	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2011 18:37:28 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Ph3sP-000768-QE
-	for alsa-devel@alsa-project.org; Sun, 23 Jan 2011 18:37:21 +0100
-Received: from cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
-	([94.173.13.3]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2011 18:37:21 +0100
-Received: from gmane by cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
-	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2011 18:37:21 +0100
+Received: from mail-qw0-f51.google.com (mail-qw0-f51.google.com
+	[209.85.216.51]) by alsa0.perex.cz (Postfix) with ESMTP id E172A24334
+	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2011 20:55:35 +0100 (CET)
+Received: by qwj8 with SMTP id 8so3428603qwj.38
+	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2011 11:55:35 -0800 (PST)
+In-Reply-To: <AANLkTimb+yqOhWP1Rc78F9pc+j6VEGp7v0SYvGi7mGrb@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,41 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+> If you compiled the driver in debug mode, you can select model=test for
+> alc260
+>
+> http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=7cf51e48315d87b4c1cf600d611894f45f661142
 
-I have a question-by-proxy from a user who is confused because his
-"Master" kcontrol is affecting the volume via Line In (which he uses to
-loopback an analog signal to his speakers).
+Thanks for the suggestion. I tried compiling both the stable versions
+and the latest snapshots. The result was that new modules appeared in
+/lib/modules/`uname -r`/updates/alsa, which I think is the idea.
+However, when trying to use these modules, I received
 
-I've not got much hardware here for comparison, but I'm pretty sure that
-Master usually doesn't affect Line In.
+$ sudo modprobe snd-hda-intel
+FATAL: Error inserting snd_hda_intel
+(/lib/modules/2.6.35-24-generic/updates/alsa/pci/hda/snd-hda-intel.ko):
+Unknown symbol in module, or unknown parameter (see dmesg)
 
-So couple of questions:
- 1. Is it typical that Master affects Line In?
- 2. If not, can it be fixed for this h/w?
+And dmesg contains the following:
+syslog:Jan 23 16:47:03 baldur kernel: [   23.389315] snd: Unknown
+symbol unregister_sound_special (err 0)
+syslog:Jan 23 16:47:03 baldur kernel: [   23.390067] snd: Unknown
+symbol register_sound_special_device (err 0)
 
-ALSA info here: https://bzattachment.mandriva.com/attachment.cgi?id=18170
+After reinstalling the alsa and linux-sound packages for Ubuntu, I
+recovered sound, but I can't try the "test" parameter without being
+able to load the module.
 
-(for reference the full bug is here:
-https://qa.mandriva.com/show_bug.cgi?id=62218)
+Do you know what this error means?
 
-
-Cheers
-Col
-
-
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mageia Contributor [http://www.mageia.org/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+Robin
