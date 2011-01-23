@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: EDB93xx machine sound driver with
-	CS4271
-Date: Sun, 23 Jan 2011 00:05:53 +0000
-Message-ID: <20110123000553.GA22878@opensource.wolfsonmicro.com>
-References: <1295649882.1561.32.camel@r60e>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] ASoC: Fix codec device id format used by
+	some dai_links
+Date: Sun, 23 Jan 2011 01:16:33 +0100
+Message-ID: <4D3B7361.3030800@metafoo.de>
+References: <1295735888-25527-1-git-send-email-lars@metafoo.de>
+	<20110122233309.GA22799@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C00AE1037FB
-	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2011 01:05:36 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1295649882.1561.32.camel@r60e>
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 05CEF1037FB
+	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2011 01:16:52 +0100 (CET)
+In-Reply-To: <20110122233309.GA22799@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,20 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alexander Sverdlin <subaparts@yandex.ru>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "for 2.6.37" <stable@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jan 22, 2011 at 01:44:42AM +0300, Alexander Sverdlin wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
->  arch/arm/mach-ep93xx/edb93xx.c |   54 +++++++++++++++
+On 01/23/2011 01:01 AM, Mark Brown wrote:
+> On Sun, Jan 23, 2011 at 12:58:02AM +0100, Lars-Peter Clausen wrote:
+>
+>> I just went through the whole list and the wm8994 codec is a platform driver as well.
+>> And on the jive board the wm8750 is connected through SPI.
+>
+> Yeah, Liam made up a lot of this stuff through guesswork but as you can
+> see a mechanical run through fixing them won't work as not everything is
+> I2C based in the first place.
 
-This should be split into a separate patch and CCed to the relevant
-maintainers for review.
+On the other hand a mechanical run wont break anything that is not already broken,
+but potentially fixes it.
 
-> +static struct spi_board_info edb93xx_spi_board_info[] = {
-> +	{
-> +		.modalias	= "cs4271-codec",
+I could resend the patch with those three cases which were definitely wrong in the
+current patch fixed to use the correct SPI or platform id. Or I could just send the
+fix for the neo1973 and neo1973_gta02 boards. Which one do you prefer?
 
-Gah, missed this.  We ought to renamen the CODEC driver to drop the
--codec suffix from the name registered for SPI.
+- - Lars
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAk07c2EACgkQBX4mSR26RiNwkgCcCwFvSv2k4pH+2KwHeP7zHB+3
+aMsAn1PYvQnTXM36+DTASMgFXfcj9hRV
+=OQXL
+-----END PGP SIGNATURE-----
