@@ -1,28 +1,24 @@
-From: Arthur Marsh <arthur.marsh@internode.on.net>
-Subject: Re: commit 109fef9edcc100952eec980acbc2e1295627fbab
- ALSA: timer: automatically load the high-resolution timer causing MIDI
- playback tempo problems
-Date: Mon, 24 Jan 2011 02:18:31 +1030
-Message-ID: <4D3C4DCF.60800@internode.on.net>
-References: <4D3C3F02.7050008@internode.on.net>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Should "Master" control the "Line In" volume (loopback)
+Date: Sun, 23 Jan 2011 17:37:07 +0000
+Message-ID: <ihhp04$h9d$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 96728244BE
-	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2011 16:54:21 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 87DEB244DF
+	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2011 18:37:28 +0100 (CET)
 Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Ph2Gi-0005H6-BT
-	for alsa-devel@alsa-project.org; Sun, 23 Jan 2011 16:54:20 +0100
-Received: from ppp121-45-139-71.lns21.adl2.internode.on.net ([121.45.139.71])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Ph3sP-000768-QE
+	for alsa-devel@alsa-project.org; Sun, 23 Jan 2011 18:37:21 +0100
+Received: from cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
+	([94.173.13.3]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2011 16:54:20 +0100
-Received: from arthur.marsh by ppp121-45-139-71.lns21.adl2.internode.on.net
+	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2011 18:37:21 +0100
+Received: from gmane by cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
 	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2011 16:54:20 +0100
-In-Reply-To: <4D3C3F02.7050008@internode.on.net>
+	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2011 18:37:21 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,78 +29,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Arthur Marsh wrote, on 24/01/11 01:15:
-> Hi, on an old machine I have with Intel 440BX chipset and PII-266 CPU, I
-> found recent kernels causing MIDI sound output from a Soundblaster
-> Audigy 2 ZS to be varying widely in tempo.
->
-> dmesg reports with recent kernels (both those that allow correct
-> playback of MIDI files and those that give wide variation in playback
-> tempo):
->
-> Clocksource tsc unstable (delta = 132040172 ns)
-> Switching to clocksource pit
->
-> After git-bisection I found:
->
-> git bisect bad
-> 109fef9edcc100952eec980acbc2e1295627fbab is the first bad commit
-> commit 109fef9edcc100952eec980acbc2e1295627fbab
-> Author: Clemens Ladisch<clemens@ladisch.de>
-> Date:   Thu Nov 18 09:53:54 2010 +0100
->
->       ALSA: timer: automatically load the high-resolution timer
->
->       Increase the default timer limit so that snd-hrtimer.ko can be
->       automatically loaded when needed, e.g., when used as the default
->       sequencer timer.  This replaces the check for the obsolete
->       CONFIG_SND_HPET.
->
->       Signed-off-by: Clemens Ladisch<clemens@ladisch.de>
->       Signed-off-by: Takashi Iwai<tiwai@suse.de>
->
-> :040000 040000 c7b3b046ea99e563228f36ea4a00f9b763bf5813
-> 741f137a201b31bdf5eaaa58c3031b4b2a68c6d6 M      sound
->
-> diff --git a/sound/core/timer.c b/sound/core/timer.c
-> index 13afb60..b3aaa60 100644
-> --- a/sound/core/timer.c
-> +++ b/sound/core/timer.c
-> @@ -34,8 +34,8 @@
->    #include<sound/initval.h>
->    #include<linux/kmod.h>
->
-> -#if defined(CONFIG_SND_HPET) || defined(CONFIG_SND_HPET_MODULE)
-> -#define DEFAULT_TIMER_LIMIT 3
-> +#if defined(CONFIG_SND_HRTIMER) || defined(CONFIG_SND_HRTIMER_MODULE)
-> +#define DEFAULT_TIMER_LIMIT 4
->    #elif defined(CONFIG_SND_RTCTIMER) || defined(CONFIG_SND_RTCTIMER_MODULE)
->    #define DEFAULT_TIMER_LIMIT 2
->    #else
->
-> I am currently rebuilding kernel 2.6.38-rc2 with this patch reverted to
-> verify that this commit triggers the problem with this machine.
->
-> Arthur.
+Hi,
 
-I forgot to mention, the kernels I have been using have all had
+I have a question-by-proxy from a user who is confused because his
+"Master" kcontrol is affecting the volume via Line In (which he uses to
+loopback an analog signal to his speakers).
 
-CONFIG_SND_HPET* undefined
-CONFIG_SND_HRTIMER=m
-CONFIG_SND_RTC* undefined
+I've not got much hardware here for comparison, but I'm pretty sure that
+Master usually doesn't affect Line In.
 
-as per Debian kernel 2.6.32-5-686 version 2.6.32-30.
+So couple of questions:
+ 1. Is it typical that Master affects Line In?
+ 2. If not, can it be fixed for this h/w?
 
-With the above patch applied,
+ALSA info here: https://bzattachment.mandriva.com/attachment.cgi?id=18170
 
-both snd_hrtimer and snd_seq_dummy get loaded, but without the patch 
-applied, neither of snd_hrtimer or snd_seq_dummy gets loaded.
+(for reference the full bug is here:
+https://qa.mandriva.com/show_bug.cgi?id=62218)
 
-Without the patch applied, if the CPU has some idle time, the sound 
-playback using aplaymidi is fine, with the patch, the sound tempo can 
-vary widely even with idle CPU time.
 
-Arthur.
+Cheers
+Col
+
+
+-- 
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mageia Contributor [http://www.mageia.org/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
