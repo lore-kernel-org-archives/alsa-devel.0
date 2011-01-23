@@ -1,19 +1,21 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: Fix codec device id format used by
-	some dai_links
-Date: Sun, 23 Jan 2011 01:16:33 +0100
-Message-ID: <4D3B7361.3030800@metafoo.de>
-References: <1295735888-25527-1-git-send-email-lars@metafoo.de>
-	<20110122233309.GA22799@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: UCM questions
+Date: Sun, 23 Jan 2011 00:41:29 +0000
+Message-ID: <20110123004129.GB22878@opensource.wolfsonmicro.com>
+References: <AANLkTim72DeHVzx3kmgF59EQQwC8jHAVpMZnt+kVTddX@mail.gmail.com>
+	<20110121113744.GA18682@sirena.org.uk>
+	<AANLkTinxwo_GErQroF4S-_z3G0UyT2sD4nBVbXVJz122@mail.gmail.com>
+	<20110121164329.GB6200@opensource.wolfsonmicro.com>
+	<AANLkTim_Q=oTfHS33R2hf6B3gC1Dj2fpiCAjfa7kJFw7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
-	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id 05CEF1037FB
-	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2011 01:16:52 +0100 (CET)
-In-Reply-To: <20110122233309.GA22799@opensource.wolfsonmicro.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C13B210384E
+	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2011 01:41:12 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <AANLkTim_Q=oTfHS33R2hf6B3gC1Dj2fpiCAjfa7kJFw7@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,36 +25,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "for 2.6.37" <stable@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: pl bossart <bossart.nospam@gmail.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Fri, Jan 21, 2011 at 02:53:30PM -0600, pl bossart wrote:
 
-On 01/23/2011 01:01 AM, Mark Brown wrote:
-> On Sun, Jan 23, 2011 at 12:58:02AM +0100, Lars-Peter Clausen wrote:
->
->> I just went through the whole list and the wm8994 codec is a platform driver as well.
->> And on the jive board the wm8750 is connected through SPI.
->
-> Yeah, Liam made up a lot of this stuff through guesswork but as you can
-> see a mechanical run through fixing them won't work as not everything is
-> I2C based in the first place.
+In addition to what Liam said...
 
-On the other hand a mechanical run wont break anything that is not already broken,
-but potentially fixes it.
+> Next, if everyone can add #defines and craft new strings to represent
+> verbs, this central application/module will either ask for use cases
+> that are not supported everywhere, or limit itself to 'common' use
+> cases. Or do we expect to rewrite this on each and every platform?
 
-I could resend the patch with those three cases which were definitely wrong in the
-current patch fixed to use the correct SPI or platform id. Or I could just send the
-fix for the neo1973 and neo1973_gta02 boards. Which one do you prefer?
+Given the amount of OS integration involved and the way people do these
+things I'd imagine that the actual decision making module is probably
+going to be very OS specific - there's so much other infrastructure to
+hook into and so much variation in what that looks like that we will
+need to cope with random use cases being defined by the system.  Making
+the values strings was largely a recognition of that, it means that
+people don't need to patch UCM if they want to go and do their own
+thing.  This all makes it easier to adopt UCM and deploy new use cases.
 
-- - Lars
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+> Wouldn't it make sense to avoid branches and proliferation by limiting
+> the definition of use cases and instead only allow for changes in
+> configuration files?
 
-iEYEARECAAYFAk07c2EACgkQBX4mSR26RiNwkgCcCwFvSv2k4pH+2KwHeP7zHB+3
-aMsAn1PYvQnTXM36+DTASMgFXfcj9hRV
-=OQXL
------END PGP SIGNATURE-----
+I'm not 100% sure I'm parsing this correctly but if you're suggesting
+explicitly enumerating all use cases in the code I suspect you'd just
+see system integrators patching locally or abusing predefined use cases
+they don't currently need rather than working upstream to integrate
+their use cases.  Distros and so on who need to work over a wide range
+of devices are more likely to be affected, I think the most effective
+thing for them is going to be to keep the standard repository of use
+case definitions actively maintained so that there's something for
+effort to coalesce around.
