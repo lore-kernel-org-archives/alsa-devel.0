@@ -1,7 +1,7 @@
 From: George Morgan <gm.swdev@gmail.com>
 Subject: Re: Bug 0002542
-Date: Mon, 24 Jan 2011 15:55:23 -0500
-Message-ID: <AANLkTim+M2Dqc9q_qnOvZbpYNbVyk-aw5Jqs+j2c6cfb@mail.gmail.com>
+Date: Mon, 24 Jan 2011 16:04:51 -0500
+Message-ID: <AANLkTikcu6gfnztGgeASQ=nS4ts4jfyRLfyBzqxn2WRC@mail.gmail.com>
 References: <AANLkTina57s0fxMtGriV+5-BH9XsJcT4Z_cGvsF44UHF@mail.gmail.com>
 	<alpine.LNX.2.00.1101242124160.6272@eeebox2.perex-int.cz>
 Mime-Version: 1.0
@@ -10,10 +10,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
 	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7296810384B
-	for <Alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 21:55:24 +0100 (CET)
-Received: by bwz10 with SMTP id 10so4041425bwz.38
-	for <Alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 12:55:24 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id 17410103848
+	for <Alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 22:04:54 +0100 (CET)
+Received: by bwz10 with SMTP id 10so4050345bwz.38
+	for <Alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 13:04:53 -0800 (PST)
 In-Reply-To: <alpine.LNX.2.00.1101242124160.6272@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,8 +24,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Alsa-devel@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 On Mon, Jan 24, 2011 at 3:25 PM, Jaroslav Kysela <perex@perex.cz> wrote:
@@ -66,11 +65,11 @@ On Mon, Jan 24, 2011 at 3:25 PM, Jaroslav Kysela <perex@perex.cz> wrote:
 > Linux Kernel Sound Maintainer
 > ALSA Project, Red Hat, Inc.
 >
->
-Yes that is the bug that actually talks about what I was trying to fix.  The
-bug I mentioned is affected by the bug you mentioned.
-
-Incidentally https://bugtrack.alsa-project.org/ has an expired security
-certificate...firefox says: "The certificate expired on 7/19/2009 6:18 AM"
+> Ok, the "fix" in git.alsa-project.org link above for "alsa/aoss.in"
+actually breaks aoss.in...  The old line [-] works correctly.  The new line
+[+] appears to be wrong.  I had to look at it twice to notice.  The other
+changes in that diff look ok as far as I can tell.  The line that I quoted
+is from the latest stable source tarball on the alsa-project.org website
+(1.0.17).
 
 George Morgan
