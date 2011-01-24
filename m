@@ -1,15 +1,15 @@
-From: <subashchandra.bose@wipro.com>
-Subject: Support of different channels for ADC driver
-Date: Mon, 24 Jan 2011 19:07:27 +0530
-Message-ID: <BB839B33747DCE498F4863BA28262B08DDD4FA@BLR-SJP-MBX01.wipro.com>
+From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+Subject: [PATCH] alsa: fix invalid hardware.h include in ac97c
+	for AVR32 architecture
+Date: Mon, 24 Jan 2011 16:09:56 +0100
+Message-ID: <1295881796-27625-1-git-send-email-hcegtvedt@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wipro-blr-out01.wipro.com (wipro-blr-out01.wipro.com
-	[203.91.198.74]) by alsa0.perex.cz (Postfix) with ESMTP id 5612024448
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 14:37:30 +0100 (CET)
-Content-class: urn:content-classes:message
+Received: from relay.atmel.no (relay.atmel.no [194.19.124.36])
+	by alsa0.perex.cz (Postfix) with ESMTP id 325DA244B4
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 16:10:33 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,24 +20,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: kernel@avr32linux.org, Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
+From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
 
-I am developing General ADC driver with input data for voice channel, High Speed
-channel and low speed channel.
+This patch fixes the non-compiling AC97C driver for AVR32 architecture by
+include mach/hardware.h only for AT91 architecture. The AVR32 architecture does
+not supply the hardware.h include file.
 
-I went into alsa-project website and found alsa pcm interface can be used to configure
-voice channel. How can I use to configure high speed and low speed channels as well in 
-same driver.
+Signed-off-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+CC: stable@vger.kernel.org
+---
+This patch also applies to the stable kernels, as the ac97c.c file has not been
+compilable for AVR32 since commit 7177395fdd919e561544a7d1c0ac196098a2ae2d
 
-Thanks in Advance,
--Subash.  
+ sound/atmel/ac97c.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
 
-Please do not print this email unless it is absolutely necessary. 
-
-The information contained in this electronic message and any attachments to this message are intended for the exclusive use of the addressee(s) and may contain proprietary, confidential or privileged information. If you are not the intended recipient, you should not disseminate, distribute or copy this e-mail. Please notify the sender immediately and destroy all copies of this message and any attachments. 
-
-WARNING: Computer viruses can be transmitted via email. The recipient should check this email and any attachments for the presence of viruses. The company accepts no liability for any damage caused by any virus transmitted by this email. 
-
-www.wipro.com
+diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
+index 10c3a87..b310702 100644
+--- a/sound/atmel/ac97c.c
++++ b/sound/atmel/ac97c.c
+@@ -33,9 +33,12 @@
+ #include <linux/dw_dmac.h>
+ 
+ #include <mach/cpu.h>
+-#include <mach/hardware.h>
+ #include <mach/gpio.h>
+ 
++#ifdef CONFIG_ARCH_AT91
++#include <mach/hardware.h>
++#endif
++
+ #include "ac97c.h"
+ 
+ enum {
+-- 
+1.7.1
