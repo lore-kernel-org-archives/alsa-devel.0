@@ -1,15 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.38
-Date: Mon, 24 Jan 2011 15:17:38 +0000
-Message-ID: <20110124151737.GG29925@opensource.wolfsonmicro.com>
+From: Andy Robinson <ajr55555@gmail.com>
+Subject: Re: [PATCH] ALSA: HDA: cxt5066 - Use asus model for
+ Asus U50F, select correct SPDIF output
+Date: Mon, 24 Jan 2011 10:53:39 -0500
+Message-ID: <AANLkTikHCU__=WgyWpt=WhWcW_CxYik=s3ecLWsodozx@mail.gmail.com>
+References: <AANLkTikMSu8r9=o3fNJGRPSu4do_A4wj+o5aEv9V4NZG@mail.gmail.com>
+	<s5h7hdu8mrk.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=0016e642d4548621ca049a999abe
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DB99E244BA
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 16:17:41 +0100 (CET)
-Content-Disposition: inline
+Received: from mail-yi0-f51.google.com (mail-yi0-f51.google.com
+	[209.85.218.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3D0C410383B
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 16:53:41 +0100 (CET)
+Received: by yib12 with SMTP id 12so1518566yib.38
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 07:53:40 -0800 (PST)
+In-Reply-To: <s5h7hdu8mrk.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,33 +25,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit f758b53a79ce6076542739563985d5ff0521dc5a:
+--0016e642d4548621ca049a999abe
+Content-Type: text/plain; charset=ISO-8859-1
 
-  Merge branch 'topic/hda' (2011-01-22 17:29:50 +0100)
+I have attached a revised version of the patch, for which checkpatch
+reports no style issues.
 
-are available in the git repository at:
+--0016e642d4548621ca049a999abe
+Content-Type: text/x-patch; charset=US-ASCII;
+	name="0001-ALSA-HDA-cxt5066-Use-asus-model-for-Asus-U50F-select.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-HDA-cxt5066-Use-asus-model-for-Asus-U50F-select.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gjbk2ehc1
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.38
+RnJvbSAyZDhjOTdmNWI2OWQ3MjFhZWM3ZGNhY2M0Zjg4Njc1MzBjMWM1NzJmIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBBbmR5IFJvYmluc29uIDxhanI1NTU1NUBnbWFpbC5jb20+CkRh
+dGU6IE1vbiwgMjQgSmFuIDIwMTEgMTA6MTI6MzcgLTA1MDAKU3ViamVjdDogW1BBVENIIDEvMV0g
+QUxTQTogSERBOiBjeHQ1MDY2IC0gVXNlIGFzdXMgbW9kZWwgZm9yIEFzdXMgVTUwRiwgc2VsZWN0
+IGNvcnJlY3QgU1BESUYgb3V0cHV0CiBDaGFuZ2VkIHRoZSBBc3VzIEE1MkogcXVpcmsgdG8gdXNl
+IHRoZSBhc3VzIG1vZGVsIGluc3RlYWQgb2YgdGhlIGhwX2xhcHRvcAogbW9kZWwsIHdoaWNoIGZp
+eGVzIHRoZSBleHRlcm5hbCBtaWMgaW5wdXQuIEFkZGVkIGFuIEFzdXMgVTUwRiBxdWlyayB0byB1
+c2UKIHRoZSBhc3VzIG1vZGVsLiBGb3IgdGhlIGN4dDUwNjYgY29kZWNzLCBhZGRlZCBjaGVja2lu
+ZyBvZiB0aGUgZGlnaXRhbCBvdXRwdXQKIHBpbnMgdG8gZGV0ZXJtaW5lIHdoaWNoIGRpZ2l0YWwg
+b3V0cHV0IG5vZGVzIHRvIHVzZSBpbnN0ZWFkIG9mIGFsd2F5cyB1c2luZwogbm9kZSAweDIxLCBz
+aW5jZSBzb21lIHN5c3RlbXMgaGF2ZSBub2RlIDB4MTIgY29ubmVjdGVkIHRvIGEgU1BESUYgb3V0
+IGphY2suCgoKU2lnbmVkLW9mZi1ieTogQW5keSBSb2JpbnNvbiA8YWpyNTU1NTVAZ21haWwuY29t
+PgoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyBiL3NvdW5kL3Bj
+aS9oZGEvcGF0Y2hfY29uZXhhbnQuYwppbmRleCAxOWYwZGFmLi42YmVlMjYyIDEwMDY0NAotLS0g
+YS9zb3VuZC9wY2kvaGRhL3BhdGNoX2NvbmV4YW50LmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRj
+aF9jb25leGFudC5jCkBAIC04NSw2ICs4NSw3IEBAIHN0cnVjdCBjb25leGFudF9zcGVjIHsKIAl1
+bnNpZ25lZCBpbnQgYXV0b19taWM7CiAJaW50IGF1dG9fbWljX2V4dDsJCS8qIGF1dG9jZmcuaW5w
+dXRzW10gaW5kZXggZm9yIGV4dCBtaWMgKi8KIAl1bnNpZ25lZCBpbnQgbmVlZF9kYWNfZml4Owor
+CWhkYV9uaWRfdCBzbGF2ZV9kaWdfb3V0c1syXTsKIAogCS8qIGNhcHR1cmUgKi8KIAl1bnNpZ25l
+ZCBpbnQgbnVtX2FkY19uaWRzOwpAQCAtMzUzLDYgKzM1NCw4IEBAIHN0YXRpYyBpbnQgY29uZXhh
+bnRfYnVpbGRfcGNtcyhzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAkJCWluZm8tPnN0cmVhbVtT
+TkRSVl9QQ01fU1RSRUFNX0NBUFRVUkVdLm5pZCA9CiAJCQkJc3BlYy0+ZGlnX2luX25pZDsKIAkJ
+fQorCQlpZiAoc3BlYy0+c2xhdmVfZGlnX291dHNbMF0pCisJCQljb2RlYy0+c2xhdmVfZGlnX291
+dHMgPSBzcGVjLT5zbGF2ZV9kaWdfb3V0czsKIAl9CiAKIAlyZXR1cm4gMDsKQEAgLTIxMDEsNyAr
+MjEwNCw3IEBAIHN0YXRpYyBpbnQgcGF0Y2hfY3h0NTA1MShzdHJ1Y3QgaGRhX2NvZGVjICpjb2Rl
+YykKIHN0YXRpYyBoZGFfbmlkX3QgY3h0NTA2Nl9kYWNfbmlkc1sxXSA9IHsgMHgxMCB9Owogc3Rh
+dGljIGhkYV9uaWRfdCBjeHQ1MDY2X2FkY19uaWRzWzNdID0geyAweDE0LCAweDE1LCAweDE2IH07
+CiBzdGF0aWMgaGRhX25pZF90IGN4dDUwNjZfY2Fwc3JjX25pZHNbMV0gPSB7IDB4MTcgfTsKLSNk
+ZWZpbmUgQ1hUNTA2Nl9TUERJRl9PVVQJMHgyMQorc3RhdGljIGhkYV9uaWRfdCBjeHQ1MDY2X2Rp
+Z291dF9waW5fbmlkc1syXSA9IHsgMHgyMCwgMHgyMiB9OwogCiAvKiBPTFBDJ3MgbWljcm9waG9u
+ZSBwb3J0IGlzIERDIGNvdXBsZWQgZm9yIHVzZSB3aXRoIGV4dGVybmFsIHNlbnNvcnMsCiAgKiB0
+aGVyZWZvcmUgd2UgdXNlIGEgNTAlIG1pYyBiaWFzIGluIG9yZGVyIHRvIGNlbnRlciB0aGUgaW5w
+dXQgc2lnbmFsIHdpdGgKQEAgLTI2MjMsNiArMjYyNiwzMCBAQCBzdGF0aWMgdm9pZCBjeHQ1MDY2
+X29scGNfY2FwdHVyZV9jbGVhbnVwKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogCXNwZWMtPnJl
+Y29yZGluZyA9IDA7CiB9CiAKK3N0YXRpYyB2b2lkIGNvbmV4YW50X2NoZWNrX2RpZ19vdXRzKHN0
+cnVjdCBoZGFfY29kZWMgKmNvZGVjLAorCQkJCSAgICBoZGFfbmlkX3QgKmRpZ19waW5zLAorCQkJ
+CSAgICBpbnQgbnVtX3BpbnMpCit7CisJc3RydWN0IGNvbmV4YW50X3NwZWMgKnNwZWMgPSBjb2Rl
+Yy0+c3BlYzsKKwloZGFfbmlkX3QgKm5pZF9sb2MgPSAmc3BlYy0+bXVsdGlvdXQuZGlnX291dF9u
+aWQ7CisJaW50IGk7CisKKwlmb3IgKGkgPSAwOyBpIDwgbnVtX3BpbnM7IGkrKykgeworCQlpZiAo
+Z2V0X2RlZmNmZ19jb25uZWN0KAorCQkgICAgc25kX2hkYV9jb2RlY19nZXRfcGluY2ZnKGNvZGVj
+LCAqZGlnX3BpbnMpKQorCQkJIT0gQUNfSkFDS19QT1JUX05PTkUKKwkJICAgICYmIHNuZF9oZGFf
+Z2V0X2Nvbm5lY3Rpb25zKGNvZGVjLCAqZGlnX3BpbnMsIG5pZF9sb2MsIDEpCisJCQk9PSAxKSB7
+CisJCQlpZiAoc3BlYy0+c2xhdmVfZGlnX291dHNbMF0pCisJCQkJbmlkX2xvYysrOworCQkJZWxz
+ZQorCQkJCW5pZF9sb2MgPSBzcGVjLT5zbGF2ZV9kaWdfb3V0czsKKwkJfQorCisJCWRpZ19waW5z
+Kys7CisJfQorfQorCiBzdGF0aWMgc3RydWN0IGhkYV9pbnB1dF9tdXggY3h0NTA2Nl9jYXB0dXJl
+X3NvdXJjZSA9IHsKIAkubnVtX2l0ZW1zID0gNCwKIAkuaXRlbXMgPSB7CkBAIC0zMDg1LDggKzMx
+MTIsOSBAQCBzdGF0aWMgc3RydWN0IHNuZF9wY2lfcXVpcmsgY3h0NTA2Nl9jZmdfdGJsW10gPSB7
+CiAJU05EX1BDSV9RVUlSSygweDEwMjgsIDB4MDQwMiwgIkRlbGwgVm9zdHJvIiwgQ1hUNTA2Nl9E
+RUxMX1ZPU1RSTyksCiAJU05EX1BDSV9RVUlSSygweDEwMjgsIDB4MDQwOCwgIkRlbGwgSW5zcGly
+b24gT25lIDE5VCIsIENYVDUwNjZfSURFQVBBRCksCiAJU05EX1BDSV9RVUlSSygweDEwM2MsIDB4
+MzYwYiwgIkhQIEc2MCIsIENYVDUwNjZfSFBfTEFQVE9QKSwKLQlTTkRfUENJX1FVSVJLKDB4MTA0
+MywgMHgxM2YzLCAiQXN1cyBBNTJKIiwgQ1hUNTA2Nl9IUF9MQVBUT1ApLAorCVNORF9QQ0lfUVVJ
+UksoMHgxMDQzLCAweDEzZjMsICJBc3VzIEE1MkoiLCBDWFQ1MDY2X0FTVVMpLAogCVNORF9QQ0lf
+UVVJUksoMHgxMDQzLCAweDE2NDMsICJBc3VzIEs1MkpVIiwgQ1hUNTA2Nl9BU1VTKSwKKwlTTkRf
+UENJX1FVSVJLKDB4MTA0MywgMHgxOTkzLCAiQXN1cyBVNTBGIiwgQ1hUNTA2Nl9BU1VTKSwKIAlT
+TkRfUENJX1FVSVJLKDB4MTE3OSwgMHhmZjFlLCAiVG9zaGliYSBTYXRlbGxpdGUgQzY1MEQiLCBD
+WFQ1MDY2X0lERUFQQUQpLAogCVNORF9QQ0lfUVVJUksoMHgxMTc5LCAweGZmNTAsICJUb3NoaWJh
+IFNhdGVsbGl0ZSBQNTAwLVBTUEdTQy0wMTgwMFQiLCBDWFQ1MDY2X09MUENfWE9fMV81KSwKIAlT
+TkRfUENJX1FVSVJLKDB4MTE3OSwgMHhmZmUwLCAiVG9zaGliYSBTYXRlbGxpdGUgUHJvIFQxMzAt
+MTVGIiwgQ1hUNTA2Nl9PTFBDX1hPXzFfNSksCkBAIC0zMTE4LDcgKzMxNDYsOCBAQCBzdGF0aWMg
+aW50IHBhdGNoX2N4dDUwNjYoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiAJc3BlYy0+bXVsdGlv
+dXQubWF4X2NoYW5uZWxzID0gMjsKIAlzcGVjLT5tdWx0aW91dC5udW1fZGFjcyA9IEFSUkFZX1NJ
+WkUoY3h0NTA2Nl9kYWNfbmlkcyk7CiAJc3BlYy0+bXVsdGlvdXQuZGFjX25pZHMgPSBjeHQ1MDY2
+X2RhY19uaWRzOwotCXNwZWMtPm11bHRpb3V0LmRpZ19vdXRfbmlkID0gQ1hUNTA2Nl9TUERJRl9P
+VVQ7CisJY29uZXhhbnRfY2hlY2tfZGlnX291dHMoY29kZWMsIGN4dDUwNjZfZGlnb3V0X3Bpbl9u
+aWRzLAorCSAgICBBUlJBWV9TSVpFKGN4dDUwNjZfZGlnb3V0X3Bpbl9uaWRzKSk7CiAJc3BlYy0+
+bnVtX2FkY19uaWRzID0gMTsKIAlzcGVjLT5hZGNfbmlkcyA9IGN4dDUwNjZfYWRjX25pZHM7CiAJ
+c3BlYy0+Y2Fwc3JjX25pZHMgPSBjeHQ1MDY2X2NhcHNyY19uaWRzOwpAQCAtMzE2NCw3ICszMTkz
+LDggQEAgc3RhdGljIGludCBwYXRjaF9jeHQ1MDY2KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQog
+CQlzcGVjLT5taXhlcnNbc3BlYy0+bnVtX21peGVycysrXSA9IGN4dDUwNjZfbWl4ZXJfbWFzdGVy
+OwogCQlzcGVjLT5taXhlcnNbc3BlYy0+bnVtX21peGVycysrXSA9IGN4dDUwNjZfbWl4ZXJzOwog
+CQkvKiBubyBTL1BESUYgb3V0ICovCi0JCXNwZWMtPm11bHRpb3V0LmRpZ19vdXRfbmlkID0gMDsK
+KwkJaWYgKGJvYXJkX2NvbmZpZyA9PSBDWFQ1MDY2X0hQX0xBUFRPUCkKKwkJCXNwZWMtPm11bHRp
+b3V0LmRpZ19vdXRfbmlkID0gMDsKIAkJLyogaW5wdXQgc291cmNlIGF1dG9tYXRpY2FsbHkgc2Vs
+ZWN0ZWQgKi8KIAkJc3BlYy0+aW5wdXRfbXV4ID0gTlVMTDsKIAkJc3BlYy0+cG9ydF9kX21vZGUg
+PSAwOwotLSAKMS43LjEKCg==
+--0016e642d4548621ca049a999abe
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Usual small, driver-specific updates.
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-Dimitris Papastamos (1):
-      ASoC: WM8995: Fix incorrect use of snd_soc_update_bits()
-
-Mark Brown (1):
-      ASoC: Handle low measured DC offsets for wm_hubs devices
-
-Qiao Zhou (1):
-      ASoC: WM8994: fix wrong value in tristate function
-
-Rajashekhara, Sudhakar (1):
-      ASoC: da8xx/omap-l1xx: match codec_name with i2c ids
-
- sound/soc/codecs/wm8994.c       |    2 +-
- sound/soc/codecs/wm8995.c       |    2 +-
- sound/soc/codecs/wm_hubs.c      |   15 +++++++--------
- sound/soc/davinci/davinci-evm.c |    2 +-
- 4 files changed, 10 insertions(+), 11 deletions(-)
+--0016e642d4548621ca049a999abe--
