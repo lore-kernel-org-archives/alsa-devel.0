@@ -1,17 +1,14 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH 2/2] ALSA: HDA: Add a new model "asus" for
-	Conexant 5066/205xx
-Date: Mon, 24 Jan 2011 13:12:39 +0100
-Message-ID: <4D3D6CB7.5070102@canonical.com>
-References: <4D398008.8080707@canonical.com> <s5hzkqshpdm.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Fix type for snd_soc_volatile_register()
+Date: Mon, 24 Jan 2011 12:39:32 +0000
+Message-ID: <1295872772-6308-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9ACE92440F
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 13:12:42 +0100 (CET)
-In-Reply-To: <s5hzkqshpdm.wl%tiwai@suse.de>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2477B24480
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 13:40:24 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,28 +18,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2011-01-22 17:31, Takashi Iwai wrote:
-> At Fri, 21 Jan 2011 13:46:00 +0100,
-> David Henningsson wrote:
->>
->> BugLink: http://bugs.launchpad.net/bugs/701271
->>
->> This new model, named "asus", is identical to the "hp_laptop" model,
->> except for the location of the internal mic, which is at pin 0x1a.
->> It is used for Asus K52JU and Lenovo G560.
->>
->> Signed-off-by: David Henningsson<david.henningsson@canonical.com>
->
-> Applied, but to topic/asoc branch, as these involve rewrites.
-> Thanks.
+We generally refer to registers as unsigned ints (including in the
+underlying CODEC driver operation).
 
-You mean the topic/hda branch, right? Does this mean it'll not be in 
-2.6.38, and will it be if I provide a backport for the second patch?
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ include/sound/soc.h  |    3 ++-
+ sound/soc/soc-core.c |   22 +++++++++++++++++++++-
+ 2 files changed, 23 insertions(+), 2 deletions(-)
 
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index c184f84..1355ef0 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -267,7 +267,8 @@ int snd_soc_register_codec(struct device *dev,
+ 		const struct snd_soc_codec_driver *codec_drv,
+ 		struct snd_soc_dai_driver *dai_drv, int num_dai);
+ void snd_soc_unregister_codec(struct device *dev);
+-int snd_soc_codec_volatile_register(struct snd_soc_codec *codec, int reg);
++int snd_soc_codec_volatile_register(struct snd_soc_codec *codec,
++				    unsigned int reg);
+ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
+ 			       int addr_bits, int data_bits,
+ 			       enum snd_soc_control_type control);
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index b0e7689..ba81892 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2029,7 +2029,8 @@ static int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+  *
+  * Boolean function indiciating if a CODEC register is volatile.
+  */
+-int snd_soc_codec_volatile_register(struct snd_soc_codec *codec, int reg)
++int snd_soc_codec_volatile_register(struct snd_soc_codec *codec,
++				    unsigned int reg)
+ {
+ 	if (codec->volatile_register)
+ 		return codec->volatile_register(codec, reg);
+@@ -2039,6 +2040,25 @@ int snd_soc_codec_volatile_register(struct snd_soc_codec *codec, int reg)
+ EXPORT_SYMBOL_GPL(snd_soc_codec_volatile_register);
+ 
+ /**
++ * snd_soc_codec_register_name: Return a plain text register name
++ *
++ * @codec: CODEC to query.
++ * @reg: Register to query for.
++ *
++ * Returns a string with a plain text name for the register, or NULL
++ * if none is available.
++ */
++const char *snd_soc_codec_register_name(struct snd_soc_codec *codec,
++					unsigned int reg)
++{
++	if (codec->volatile_register)
++		return codec->register_name(codec, reg);
++	else
++		return NULL;
++}
++EXPORT_SYMBOL_GPL(snd_soc_codec_register_name);
++
++/**
+  * snd_soc_new_ac97_codec - initailise AC97 device
+  * @codec: audio codec
+  * @ops: AC97 bus operations
 -- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+1.7.2.3
