@@ -1,143 +1,113 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 1/2 v2] ASoC: Fix codec device id format used by some dai_links
-Date: Mon, 24 Jan 2011 22:09:22 +0100
-Message-ID: <1295903363-4433-1-git-send-email-lars@metafoo.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 2/2] SoC: Samsung: Fix outdated cpu_dai_name
+	for s3c24xx i2s
+Date: Mon, 24 Jan 2011 22:12:42 +0100
+Message-ID: <1295903562-4564-1-git-send-email-lars@metafoo.de>
+References: <1295903363-4433-1-git-send-email-lars@metafoo.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-035.synserver.de (smtp-out-035.synserver.de
+	[212.40.180.35]) by alsa0.perex.cz (Postfix) with SMTP id F39AB103848
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 22:13:00 +0100 (CET)
+In-Reply-To: <1295903363-4433-1-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The id part of an I2C device name is created with the "%d-%04x" format string.
+During the multi-component patch the s3c24xx i2s driver was renamed from
+"s3c24xx-i2s" to "s3c24xx-iis", while the sound board drivers were not
+updated to reflect this change as well.
 
-So for example for an I2C device which is connected to the adapter with the id 0
-and has its address set to 0x1a the id part of the devices name would be
-"0-001a".
-
-Currently some sound board drivers have the id part the codec_name field of
-their dai_link structures set as if it had been created by a "%d-0x%x" format
-string. For example "0-0x1a" instead of "0-001a".
-
-As a result there is no match between the codec device and the dai_link and no
+As a result there is no match between the dai_link and the i2s driver and no
 sound card is instantiated.
 
-This patch fixes it.
+This patch fixes the problem by updating the sound board drivers to use
+"s3c24xx-iis" for the cpu_dai_name.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-
 ---
-This problem has been noted with the neo1993_gta02 sound board driver and has
-only been runtime tested for the neo1973 and neo1973_gta02 sound board drivers.
-But in theory the problem should be the same for all of the drivers changed by
-this patch.
-
-Changes since v1:
-* Fix only those drivers where it could be verified(By looking at the mach board
-  file) that the codec is connected through an I2C bus.
----
- sound/soc/atmel/snd-soc-afeb9260.c             |    2 +-
- sound/soc/blackfin/bf5xx-ssm2602.c             |    2 +-
- sound/soc/samsung/neo1973_gta02_wm8753.c       |    4 ++--
- sound/soc/samsung/neo1973_wm8753.c             |    4 ++--
+ sound/soc/samsung/neo1973_gta02_wm8753.c       |    2 +-
+ sound/soc/samsung/neo1973_wm8753.c             |    2 +-
  sound/soc/samsung/s3c24xx_simtec_hermes.c      |    2 +-
  sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c |    2 +-
- 6 files changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/samsung/s3c24xx_uda134x.c            |    2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/atmel/snd-soc-afeb9260.c b/sound/soc/atmel/snd-soc-afeb9260.c
-index da2208e..5e4d499 100644
---- a/sound/soc/atmel/snd-soc-afeb9260.c
-+++ b/sound/soc/atmel/snd-soc-afeb9260.c
-@@ -129,7 +129,7 @@ static struct snd_soc_dai_link afeb9260_dai = {
- 	.cpu_dai_name = "atmel-ssc-dai.0",
- 	.codec_dai_name = "tlv320aic23-hifi",
- 	.platform_name = "atmel_pcm-audio",
--	.codec_name = "tlv320aic23-codec.0-0x1a",
-+	.codec_name = "tlv320aic23-codec.0-001a",
- 	.init = afeb9260_tlv320aic23_init,
- 	.ops = &afeb9260_ops,
- };
-diff --git a/sound/soc/blackfin/bf5xx-ssm2602.c b/sound/soc/blackfin/bf5xx-ssm2602.c
-index e902b24..ad28663 100644
---- a/sound/soc/blackfin/bf5xx-ssm2602.c
-+++ b/sound/soc/blackfin/bf5xx-ssm2602.c
-@@ -119,7 +119,7 @@ static struct snd_soc_dai_link bf5xx_ssm2602_dai = {
- 	.cpu_dai_name = "bf5xx-i2s",
- 	.codec_dai_name = "ssm2602-hifi",
- 	.platform_name = "bf5xx-pcm-audio",
--	.codec_name = "ssm2602-codec.0-0x1b",
-+	.codec_name = "ssm2602-codec.0-001b",
- 	.ops = &bf5xx_ssm2602_ops,
- };
- 
 diff --git a/sound/soc/samsung/neo1973_gta02_wm8753.c b/sound/soc/samsung/neo1973_gta02_wm8753.c
-index 3eec610..9e05e10 100644
+index 9e05e10..0d0ae2b 100644
 --- a/sound/soc/samsung/neo1973_gta02_wm8753.c
 +++ b/sound/soc/samsung/neo1973_gta02_wm8753.c
-@@ -401,7 +401,7 @@ static struct snd_soc_dai_link neo1973_gta02_dai[] = {
+@@ -397,7 +397,7 @@ static struct snd_soc_dai_link neo1973_gta02_dai[] = {
+ { /* Hifi Playback - for similatious use with voice below */
+ 	.name = "WM8753",
+ 	.stream_name = "WM8753 HiFi",
+-	.cpu_dai_name = "s3c24xx-i2s",
++	.cpu_dai_name = "s3c24xx-iis",
  	.codec_dai_name = "wm8753-hifi",
  	.init = neo1973_gta02_wm8753_init,
  	.platform_name = "samsung-audio",
--	.codec_name = "wm8753-codec.0-0x1a",
-+	.codec_name = "wm8753-codec.0-001a",
- 	.ops = &neo1973_gta02_hifi_ops,
- },
- { /* Voice via BT */
-@@ -410,7 +410,7 @@ static struct snd_soc_dai_link neo1973_gta02_dai[] = {
- 	.cpu_dai_name = "bluetooth-dai",
- 	.codec_dai_name = "wm8753-voice",
- 	.ops = &neo1973_gta02_voice_ops,
--	.codec_name = "wm8753-codec.0-0x1a",
-+	.codec_name = "wm8753-codec.0-001a",
- 	.platform_name = "samsung-audio",
- },
- };
 diff --git a/sound/soc/samsung/neo1973_wm8753.c b/sound/soc/samsung/neo1973_wm8753.c
-index c7a2451..cf69e14 100644
+index cf69e14..d20815d 100644
 --- a/sound/soc/samsung/neo1973_wm8753.c
 +++ b/sound/soc/samsung/neo1973_wm8753.c
-@@ -561,7 +561,7 @@ static struct snd_soc_dai_link neo1973_dai[] = {
+@@ -559,7 +559,7 @@ static struct snd_soc_dai_link neo1973_dai[] = {
+ 	.name = "WM8753",
+ 	.stream_name = "WM8753 HiFi",
  	.platform_name = "samsung-audio",
- 	.cpu_dai_name = "s3c24xx-i2s",
+-	.cpu_dai_name = "s3c24xx-i2s",
++	.cpu_dai_name = "s3c24xx-iis",
  	.codec_dai_name = "wm8753-hifi",
--	.codec_name = "wm8753-codec.0-0x1a",
-+	.codec_name = "wm8753-codec.0-001a",
+ 	.codec_name = "wm8753-codec.0-001a",
  	.init = neo1973_wm8753_init,
- 	.ops = &neo1973_hifi_ops,
- },
-@@ -571,7 +571,7 @@ static struct snd_soc_dai_link neo1973_dai[] = {
- 	.platform_name = "samsung-audio",
- 	.cpu_dai_name = "bluetooth-dai",
- 	.codec_dai_name = "wm8753-voice",
--	.codec_name = "wm8753-codec.0-0x1a",
-+	.codec_name = "wm8753-codec.0-001a",
- 	.ops = &neo1973_voice_ops,
- },
- };
 diff --git a/sound/soc/samsung/s3c24xx_simtec_hermes.c b/sound/soc/samsung/s3c24xx_simtec_hermes.c
-index bb4292e..287a971 100644
+index 287a971..08fcaaa 100644
 --- a/sound/soc/samsung/s3c24xx_simtec_hermes.c
 +++ b/sound/soc/samsung/s3c24xx_simtec_hermes.c
-@@ -94,7 +94,7 @@ static int simtec_hermes_init(struct snd_soc_pcm_runtime *rtd)
- static struct snd_soc_dai_link simtec_dai_aic33 = {
+@@ -95,7 +95,7 @@ static struct snd_soc_dai_link simtec_dai_aic33 = {
  	.name		= "tlv320aic33",
  	.stream_name	= "TLV320AIC33",
--	.codec_name	= "tlv320aic3x-codec.0-0x1a",
-+	.codec_name	= "tlv320aic3x-codec.0-001a",
- 	.cpu_dai_name	= "s3c24xx-i2s",
+ 	.codec_name	= "tlv320aic3x-codec.0-001a",
+-	.cpu_dai_name	= "s3c24xx-i2s",
++	.cpu_dai_name	= "s3c24xx-iis",
  	.codec_dai_name = "tlv320aic3x-hifi",
  	.platform_name	= "samsung-audio",
+ 	.init		= simtec_hermes_init,
 diff --git a/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c b/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
-index fbba4e3..d2b14ba 100644
+index d2b14ba..116e3e6 100644
 --- a/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
 +++ b/sound/soc/samsung/s3c24xx_simtec_tlv320aic23.c
-@@ -85,7 +85,7 @@ static int simtec_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
- static struct snd_soc_dai_link simtec_dai_aic23 = {
+@@ -86,7 +86,7 @@ static struct snd_soc_dai_link simtec_dai_aic23 = {
  	.name		= "tlv320aic23",
  	.stream_name	= "TLV320AIC23",
--	.codec_name	= "tlv320aic3x-codec.0-0x1a",
-+	.codec_name	= "tlv320aic3x-codec.0-001a",
- 	.cpu_dai_name	= "s3c24xx-i2s",
+ 	.codec_name	= "tlv320aic3x-codec.0-001a",
+-	.cpu_dai_name	= "s3c24xx-i2s",
++	.cpu_dai_name	= "s3c24xx-iis",
  	.codec_dai_name = "tlv320aic3x-hifi",
  	.platform_name	= "samsung-audio",
+ 	.init		= simtec_tlv320aic23_init,
+diff --git a/sound/soc/samsung/s3c24xx_uda134x.c b/sound/soc/samsung/s3c24xx_uda134x.c
+index cdc8ecb..2c09e93 100644
+--- a/sound/soc/samsung/s3c24xx_uda134x.c
++++ b/sound/soc/samsung/s3c24xx_uda134x.c
+@@ -228,7 +228,7 @@ static struct snd_soc_dai_link s3c24xx_uda134x_dai_link = {
+ 	.stream_name = "UDA134X",
+ 	.codec_name = "uda134x-hifi",
+ 	.codec_dai_name = "uda134x-hifi",
+-	.cpu_dai_name = "s3c24xx-i2s",
++	.cpu_dai_name = "s3c24xx-iis",
+ 	.ops = &s3c24xx_uda134x_ops,
+ 	.platform_name	= "samsung-audio",
+ };
 -- 
 1.7.2.3
