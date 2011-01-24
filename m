@@ -1,20 +1,20 @@
-From: Xavier Bestel <xavier.bestel@free.fr>
-Subject: Re: HDMI with more than 2ch ?
-Date: Mon, 24 Jan 2011 10:22:40 +0100
-Message-ID: <1295860960.14528.11.camel@skunk>
-References: <1295860599.14528.8.camel@skunk>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] SoC: Samsung: Fix outdated cpu_dai_name
+ for s3c24xx i2s
+Date: Mon, 24 Jan 2011 11:16:05 +0000
+Message-ID: <1295867765.3419.6.camel@odin>
+References: <1295735888-25527-1-git-send-email-lars@metafoo.de>
+	<1295735888-25527-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
-	by alsa0.perex.cz (Postfix) with ESMTP id C1B6B10383B
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 10:22:44 +0100 (CET)
-Received: from nat-ies.mentorg.com ([192.94.31.2]
-	helo=EU1-MAIL.mgc.mentorg.com) by relay1.mentorg.com with esmtp
-	id 1PhIdG-0003BQ-Fu from xavier.bestel@free.fr
-	for alsa-devel@alsa-project.org; Mon, 24 Jan 2011 01:22:42 -0800
-In-Reply-To: <1295860599.14528.8.camel@skunk>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 2CFD92445E
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 12:16:10 +0100 (CET)
+Received: by wyi11 with SMTP id 11so3993629wyi.38
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 03:16:09 -0800 (PST)
+In-Reply-To: <1295735888-25527-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,24 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, "for 2.6.37" <stable@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-01-24 at 10:16 +0100, Xavier Bestel wrote:
-> Hi,
+On Sat, 2011-01-22 at 23:38 +0100, Lars-Peter Clausen wrote:
+> During the multi-component patch the s3c24xx i2s driver was renamed from
+> "s3c24xx-i2s" to "s3c24xx-iis", while the sound board drivers were not
+> updated to reflect this change as well.
 > 
-> I'm using HDMI output on an HD 2600, using KMS from kernel 2.6.37:
-> http://www.alsa-project.org/db/?f=b3f67a0890f9878b7b3f345578e24eda0aaa59ac
-> The problem is that only 2ch are supported (not 1, not 3 or more). I
-> tested with speaker-test, it only works with -c 2.
+> As a result there is no match between the dai_link and the i2s driver and no
+> sound card is instantiated.
+> 
+> This patch fixes the problem by updating the sound board drivers to use
+> "s3c24xx-iis" for the cpu_dai_name.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: stable@kernel.org (for 2.6.37)
 
-Just in case:
-[root@awak:~]$ speaker-test -Dhw:1,3 -c6 -twav
-
-speaker-test 1.0.23
-
-Playback device is hw:1,3
-Stream parameters are 48000Hz, S16_LE, 6 channels
-WAV file(s)
-Channels count (6) not available for playbacks: Argument invalide
-Setting of hwparams failed: Argument invalide
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
