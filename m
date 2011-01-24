@@ -1,15 +1,15 @@
-From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
-Subject: [PATCH] alsa: fix invalid hardware.h include in ac97c
-	for AVR32 architecture
-Date: Mon, 24 Jan 2011 16:09:56 +0100
-Message-ID: <1295881796-27625-1-git-send-email-hcegtvedt@atmel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.38
+Date: Mon, 24 Jan 2011 15:17:38 +0000
+Message-ID: <20110124151737.GG29925@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay.atmel.no (relay.atmel.no [194.19.124.36])
-	by alsa0.perex.cz (Postfix) with ESMTP id 325DA244B4
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 16:10:33 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DB99E244BA
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 16:17:41 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,42 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: kernel@avr32linux.org, Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>, stable@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+The following changes since commit f758b53a79ce6076542739563985d5ff0521dc5a:
 
-This patch fixes the non-compiling AC97C driver for AVR32 architecture by
-include mach/hardware.h only for AT91 architecture. The AVR32 architecture does
-not supply the hardware.h include file.
+  Merge branch 'topic/hda' (2011-01-22 17:29:50 +0100)
 
-Signed-off-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-CC: stable@vger.kernel.org
----
-This patch also applies to the stable kernels, as the ac97c.c file has not been
-compilable for AVR32 since commit 7177395fdd919e561544a7d1c0ac196098a2ae2d
+are available in the git repository at:
 
- sound/atmel/ac97c.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.38
 
-diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
-index 10c3a87..b310702 100644
---- a/sound/atmel/ac97c.c
-+++ b/sound/atmel/ac97c.c
-@@ -33,9 +33,12 @@
- #include <linux/dw_dmac.h>
- 
- #include <mach/cpu.h>
--#include <mach/hardware.h>
- #include <mach/gpio.h>
- 
-+#ifdef CONFIG_ARCH_AT91
-+#include <mach/hardware.h>
-+#endif
-+
- #include "ac97c.h"
- 
- enum {
--- 
-1.7.1
+Usual small, driver-specific updates.
+
+Dimitris Papastamos (1):
+      ASoC: WM8995: Fix incorrect use of snd_soc_update_bits()
+
+Mark Brown (1):
+      ASoC: Handle low measured DC offsets for wm_hubs devices
+
+Qiao Zhou (1):
+      ASoC: WM8994: fix wrong value in tristate function
+
+Rajashekhara, Sudhakar (1):
+      ASoC: da8xx/omap-l1xx: match codec_name with i2c ids
+
+ sound/soc/codecs/wm8994.c       |    2 +-
+ sound/soc/codecs/wm8995.c       |    2 +-
+ sound/soc/codecs/wm_hubs.c      |   15 +++++++--------
+ sound/soc/davinci/davinci-evm.c |    2 +-
+ 4 files changed, 10 insertions(+), 11 deletions(-)
