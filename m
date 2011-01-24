@@ -1,58 +1,63 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: Re: UCM questions
-Date: Mon, 24 Jan 2011 14:31:31 -0800
-Message-ID: <AANLkTi=zH6SMyH4p2Uhy7dbS-qi1VBw4zDAqAsYb1MrP@mail.gmail.com>
-References: <AANLkTim72DeHVzx3kmgF59EQQwC8jHAVpMZnt+kVTddX@mail.gmail.com>
-	<20110121113744.GA18682@sirena.org.uk>
-	<1295623491.3348.284.camel@odin>
-	<AANLkTi=V9ouox2vp5VYA+_gmsOCCecBKOjpd58DsuaxK@mail.gmail.com>
-	<alpine.LNX.2.00.1101231430550.6272@eeebox2.perex-int.cz>
+From: Kevin Hilman <khilman@ti.com>
+Subject: Re: [PATCH] davinci: da8xx/omap-l1xx: match codec_name
+	with i2c ids
+Date: Mon, 24 Jan 2011 15:00:57 -0800
+Message-ID: <8739oh6h5i.fsf@ti.com>
+References: <1295619896-5498-1-git-send-email-sudhakar.raj@ti.com>
+	<1295620708.3348.233.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9996C103848
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 23:31:32 +0100 (CET)
-Received: by iye19 with SMTP id 19so5073460iye.38
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 14:31:31 -0800 (PST)
-In-Reply-To: <alpine.LNX.2.00.1101231430550.6272@eeebox2.perex-int.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Return-path: <stable-bounces@linux.kernel.org>
+In-Reply-To: <1295620708.3348.233.camel@odin> (Liam Girdwood's message of
+	"Fri, 21 Jan 2011 14:38:28 +0000")
+List-Unsubscribe: <http://linux.kernel.org/mailman/options/stable>,
+	<mailto:stable-request@linux.kernel.org?subject=unsubscribe>
+List-Archive: <http://linux.kernel.org/mailman/private/stable/>
+List-Post: <mailto:stable@linux.kernel.org>
+List-Help: <mailto:stable-request@linux.kernel.org?subject=help>
+List-Subscribe: <http://linux.kernel.org/mailman/listinfo/stable>,
+	<mailto:stable-request@linux.kernel.org?subject=subscribe>
+Sender: stable-bounces@linux.kernel.org
+Errors-To: stable-bounces@linux.kernel.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: davinci-linux-open-source@linux.davincidsp.com, "Rajashekhara,
+	Sudhakar" <sudhakar.raj@ti.com>, alsa-devel@alsa-project.org, dansharon@nanometrics.ca, stable@kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-> You may have for example USB microphone and USB speakers plugged to the
-> system (each represents one card for the ALSA driver with different USB
-> physical links). UCM can join these two cards as one "virtual", so if an app
-> asks for playback device, USB speakers are returned and for capture device,
-> USB MIC is returned. Only one alsa-lib's device should be returned for given
-> verb/device/modifier identifiers. I admit that the PCM configuration for
-> alsa-lib allows this too, but UCM handles also the mixer control mapping.
+Liam Girdwood <lrg@slimlogic.co.uk> writes:
 
-Makes sense now.
+> On Fri, 2011-01-21 at 19:54 +0530, Rajashekhara, Sudhakar wrote:
+>> The codec_name entry for da8xx evm in sound/soc/davinci/davinci-evm.c
+>> is not matching with the i2c ids in the board file. Without this fix the
+>> soundcard does not get detected on da850/omap-l138/am18x evm.
+>> 
+>> Signed-off-by: Rajashekhara, Sudhakar <sudhakar.raj@ti.com>
+>> Tested-by: Dan Sharon <dansharon@nanometrics.ca>
+>> ---
+>> This patch applies to Linus's kernel tree.
+>> 
+>>  sound/soc/davinci/davinci-evm.c |    2 +-
+>>  1 files changed, 1 insertions(+), 1 deletions(-)
+>> 
+>> diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
+>> index 0c2d6ba..b36f0b3 100644
+>> --- a/sound/soc/davinci/davinci-evm.c
+>> +++ b/sound/soc/davinci/davinci-evm.c
+>> @@ -223,7 +223,7 @@ static struct snd_soc_dai_link da8xx_evm_dai = {
+>>  	.stream_name = "AIC3X",
+>>  	.cpu_dai_name= "davinci-mcasp.0",
+>>  	.codec_dai_name = "tlv320aic3x-hifi",
+>> -	.codec_name = "tlv320aic3x-codec.0-001a",
+>> +	.codec_name = "tlv320aic3x-codec.1-0018",
+>>  	.platform_name = "davinci-pcm-audio",
+>>  	.init = evm_aic3x_init,
+>>  	.ops = &evm_ops,
+>
+> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-> Anyway, your questions are mostly about the abstract mapping. The purpose of
-> UCM is to allow any abstraction, so strings in the header file like "HiFi"
-> or so are just common cases. But anyone can create own abstraction for
-> different purposes.
+Liam,
 
-Most of my questions are not really on the abstraction but really on
-how to handle devices that can be plugged or may not be active at all
-times. USB, HDMI, Wireless/remote displays fall in this category. So
-on top of the traditional local headset/speakers, I can either have a
-variety of devices that can be used for the same use case. It's still
-not clear to me if I would need to create a set of new verbs
-(hifi_usb, hifi_hdmi) or if I can stick to the existing verbs and add
-a modifier?
-Thanks for your comments,
--Pierre
+I'm assuming you'll merge this one via the ASoC tree?
+
+Kevin
