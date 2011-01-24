@@ -1,17 +1,18 @@
-From: Andy Robinson <ajr55555@gmail.com>
-Subject: [PATCH] ALSA: HDA: cxt5066 - Use asus model for Asus
- U50F, select correct SPDIF output
-Date: Mon, 24 Jan 2011 01:59:52 -0500
-Message-ID: <AANLkTikMSu8r9=o3fNJGRPSu4do_A4wj+o5aEv9V4NZG@mail.gmail.com>
+From: Xavier Bestel <xavier.bestel@free.fr>
+Subject: HDMI with more than 2ch ?
+Date: Mon, 24 Jan 2011 10:16:37 +0100
+Message-ID: <1295860599.14528.8.camel@skunk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=00163628384089217c049a9225b4
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yi0-f51.google.com (mail-yi0-f51.google.com
-	[209.85.218.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 887C510383B
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 07:59:56 +0100 (CET)
-Received: by yib12 with SMTP id 12so1356220yib.38
-	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2011 22:59:52 -0800 (PST)
+Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9D91410382F
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 10:16:43 +0100 (CET)
+Received: from nat-ies.mentorg.com ([192.94.31.2]
+	helo=EU1-MAIL.mgc.mentorg.com) by relay1.mentorg.com with esmtp
+	id 1PhIXR-0002ZQ-Gu from xavier.bestel@free.fr
+	for alsa-devel@alsa-project.org; Mon, 24 Jan 2011 01:16:41 -0800
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,104 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
-Cc: tiwai@suse.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---00163628384089217c049a9225b4
-Content-Type: text/plain; charset=ISO-8859-1
+Hi,
 
-The attached patch adds a quirk to use the newly-added asus model for
-the Asus U50F. It also selects the correct digital outputs based on
-the pin config instead of always using node 0x21, since the Asus U50F
-uses node 0x12 for digital out.
+I'm using HDMI output on an HD 2600, using KMS from kernel 2.6.37:
+http://www.alsa-project.org/db/?f=b3f67a0890f9878b7b3f345578e24eda0aaa59ac
+The problem is that only 2ch are supported (not 1, not 3 or more). I
+tested with speaker-test, it only works with -c 2.
 
---00163628384089217c049a9225b4
-Content-Type: text/x-patch; charset=US-ASCII;
-	name="0001-ALSA-HDA-Use-asus-model-for-Asus-U50F-select-correct.patch"
-Content-Disposition: attachment;
-	filename="0001-ALSA-HDA-Use-asus-model-for-Asus-U50F-select-correct.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gjb0nexf0
+So how can I access the other PCM channels ? There are 8 of them
+available in the HDMI standard, I thought the card should be able to
+drive all of them.
 
-RnJvbSBiOGQ0NDMwODc2N2Y4NWE4MTVlNzlmYzU1NDc0NjcyMDg3ZjRkZWM5IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBBbmR5IFJvYmluc29uIDxhanI1NTU1NUBnbWFpbC5jb20+CkRh
-dGU6IE1vbiwgMjQgSmFuIDIwMTEgMDE6MTk6MjMgLTA1MDAKU3ViamVjdDogW1BBVENIIDEvMV0g
-QUxTQTogSERBOiBVc2UgYXN1cyBtb2RlbCBmb3IgQXN1cyBVNTBGLCBzZWxlY3QgY29ycmVjdCBT
-UERJRiBvdXRwdXQKCgpTaWduZWQtb2ZmLWJ5OiBBbmR5IFJvYmluc29uIDxhanI1NTU1NUBnbWFp
-bC5jb20+CgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jIGIvc291
-bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jCmluZGV4IDE5ZjBkYWYuLjQ0MDI3ODQgMTAwNjQ0
-Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYworKysgYi9zb3VuZC9wY2kvaGRh
-L3BhdGNoX2NvbmV4YW50LmMKQEAgLTg1LDYgKzg1LDcgQEAgc3RydWN0IGNvbmV4YW50X3NwZWMg
-ewogCXVuc2lnbmVkIGludCBhdXRvX21pYzsKIAlpbnQgYXV0b19taWNfZXh0OwkJLyogYXV0b2Nm
-Zy5pbnB1dHNbXSBpbmRleCBmb3IgZXh0IG1pYyAqLwogCXVuc2lnbmVkIGludCBuZWVkX2RhY19m
-aXg7CisJaGRhX25pZF90IHNsYXZlX2RpZ19vdXRzWzJdOwogCiAJLyogY2FwdHVyZSAqLwogCXVu
-c2lnbmVkIGludCBudW1fYWRjX25pZHM7CkBAIC0zNTMsNiArMzU0LDkgQEAgc3RhdGljIGludCBj
-b25leGFudF9idWlsZF9wY21zKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogCQkJaW5mby0+c3Ry
-ZWFtW1NORFJWX1BDTV9TVFJFQU1fQ0FQVFVSRV0ubmlkID0KIAkJCQlzcGVjLT5kaWdfaW5fbmlk
-OwogCQl9CisJCWlmIChzcGVjLT5zbGF2ZV9kaWdfb3V0c1swXSkgeworCQkJY29kZWMtPnNsYXZl
-X2RpZ19vdXRzID0gc3BlYy0+c2xhdmVfZGlnX291dHM7CisJCX0KIAl9CiAKIAlyZXR1cm4gMDsK
-QEAgLTIxMDEsNyArMjEwNSw3IEBAIHN0YXRpYyBpbnQgcGF0Y2hfY3h0NTA1MShzdHJ1Y3QgaGRh
-X2NvZGVjICpjb2RlYykKIHN0YXRpYyBoZGFfbmlkX3QgY3h0NTA2Nl9kYWNfbmlkc1sxXSA9IHsg
-MHgxMCB9Owogc3RhdGljIGhkYV9uaWRfdCBjeHQ1MDY2X2FkY19uaWRzWzNdID0geyAweDE0LCAw
-eDE1LCAweDE2IH07CiBzdGF0aWMgaGRhX25pZF90IGN4dDUwNjZfY2Fwc3JjX25pZHNbMV0gPSB7
-IDB4MTcgfTsKLSNkZWZpbmUgQ1hUNTA2Nl9TUERJRl9PVVQJMHgyMQorc3RhdGljIGhkYV9uaWRf
-dCBjeHQ1MDY2X2RpZ291dF9waW5fbmlkc1syXSA9IHsgMHgyMCwgMHgyMiB9OwogCiAvKiBPTFBD
-J3MgbWljcm9waG9uZSBwb3J0IGlzIERDIGNvdXBsZWQgZm9yIHVzZSB3aXRoIGV4dGVybmFsIHNl
-bnNvcnMsCiAgKiB0aGVyZWZvcmUgd2UgdXNlIGEgNTAlIG1pYyBiaWFzIGluIG9yZGVyIHRvIGNl
-bnRlciB0aGUgaW5wdXQgc2lnbmFsIHdpdGgKQEAgLTI2MjMsNiArMjYyNywyNyBAQCBzdGF0aWMg
-dm9pZCBjeHQ1MDY2X29scGNfY2FwdHVyZV9jbGVhbnVwKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVj
-KQogCXNwZWMtPnJlY29yZGluZyA9IDA7CiB9CiAKK3N0YXRpYyB2b2lkIGNvbmV4YW50X2NoZWNr
-X2RpZ19vdXRzKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLAorCQkJCSAgICBoZGFfbmlkX3QgKmRp
-Z19waW5zLAorCQkJCSAgICBpbnQgbnVtX3BpbnMpCit7CisJc3RydWN0IGNvbmV4YW50X3NwZWMg
-KnNwZWMgPSBjb2RlYy0+c3BlYzsKKwloZGFfbmlkX3QgKm5pZF9sb2MgPSAmc3BlYy0+bXVsdGlv
-dXQuZGlnX291dF9uaWQ7CisJaW50IGk7CisKKwlmb3IgKGkgPSAwOyBpIDwgbnVtX3BpbnM7IGkr
-KykgeworCQlpZiAoZ2V0X2RlZmNmZ19jb25uZWN0KHNuZF9oZGFfY29kZWNfZ2V0X3BpbmNmZyhj
-b2RlYywgKmRpZ19waW5zKSkgIT0gQUNfSkFDS19QT1JUX05PTkUKKwkJICAgICYmIHNuZF9oZGFf
-Z2V0X2Nvbm5lY3Rpb25zKGNvZGVjLCAqZGlnX3BpbnMsIG5pZF9sb2MsIDEpID09IDEpIHsKKwkJ
-CWlmIChzcGVjLT5zbGF2ZV9kaWdfb3V0c1swXSkKKwkJCQluaWRfbG9jKys7CisJCQllbHNlCisJ
-CQkJbmlkX2xvYyA9IHNwZWMtPnNsYXZlX2RpZ19vdXRzOworCQl9CisKKwkJZGlnX3BpbnMrKzsK
-Kwl9Cit9CisKIHN0YXRpYyBzdHJ1Y3QgaGRhX2lucHV0X211eCBjeHQ1MDY2X2NhcHR1cmVfc291
-cmNlID0gewogCS5udW1faXRlbXMgPSA0LAogCS5pdGVtcyA9IHsKQEAgLTMwODUsOCArMzExMCw5
-IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBjeHQ1MDY2X2NmZ190YmxbXSA9IHsKIAlT
-TkRfUENJX1FVSVJLKDB4MTAyOCwgMHgwNDAyLCAiRGVsbCBWb3N0cm8iLCBDWFQ1MDY2X0RFTExf
-Vk9TVFJPKSwKIAlTTkRfUENJX1FVSVJLKDB4MTAyOCwgMHgwNDA4LCAiRGVsbCBJbnNwaXJvbiBP
-bmUgMTlUIiwgQ1hUNTA2Nl9JREVBUEFEKSwKIAlTTkRfUENJX1FVSVJLKDB4MTAzYywgMHgzNjBi
-LCAiSFAgRzYwIiwgQ1hUNTA2Nl9IUF9MQVBUT1ApLAotCVNORF9QQ0lfUVVJUksoMHgxMDQzLCAw
-eDEzZjMsICJBc3VzIEE1MkoiLCBDWFQ1MDY2X0hQX0xBUFRPUCksCisJU05EX1BDSV9RVUlSSygw
-eDEwNDMsIDB4MTNmMywgIkFzdXMgQTUySiIsIENYVDUwNjZfQVNVUyksCiAJU05EX1BDSV9RVUlS
-SygweDEwNDMsIDB4MTY0MywgIkFzdXMgSzUySlUiLCBDWFQ1MDY2X0FTVVMpLAorCVNORF9QQ0lf
-UVVJUksoMHgxMDQzLCAweDE5OTMsICJBc3VzIFU1MEYiLCBDWFQ1MDY2X0FTVVMpLAogCVNORF9Q
-Q0lfUVVJUksoMHgxMTc5LCAweGZmMWUsICJUb3NoaWJhIFNhdGVsbGl0ZSBDNjUwRCIsIENYVDUw
-NjZfSURFQVBBRCksCiAJU05EX1BDSV9RVUlSSygweDExNzksIDB4ZmY1MCwgIlRvc2hpYmEgU2F0
-ZWxsaXRlIFA1MDAtUFNQR1NDLTAxODAwVCIsIENYVDUwNjZfT0xQQ19YT18xXzUpLAogCVNORF9Q
-Q0lfUVVJUksoMHgxMTc5LCAweGZmZTAsICJUb3NoaWJhIFNhdGVsbGl0ZSBQcm8gVDEzMC0xNUYi
-LCBDWFQ1MDY2X09MUENfWE9fMV81KSwKQEAgLTMxMTgsNyArMzE0NCw3IEBAIHN0YXRpYyBpbnQg
-cGF0Y2hfY3h0NTA2NihzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAlzcGVjLT5tdWx0aW91dC5t
-YXhfY2hhbm5lbHMgPSAyOwogCXNwZWMtPm11bHRpb3V0Lm51bV9kYWNzID0gQVJSQVlfU0laRShj
-eHQ1MDY2X2RhY19uaWRzKTsKIAlzcGVjLT5tdWx0aW91dC5kYWNfbmlkcyA9IGN4dDUwNjZfZGFj
-X25pZHM7Ci0Jc3BlYy0+bXVsdGlvdXQuZGlnX291dF9uaWQgPSBDWFQ1MDY2X1NQRElGX09VVDsK
-Kwljb25leGFudF9jaGVja19kaWdfb3V0cyhjb2RlYywgY3h0NTA2Nl9kaWdvdXRfcGluX25pZHMs
-IEFSUkFZX1NJWkUoY3h0NTA2Nl9kaWdvdXRfcGluX25pZHMpKTsKIAlzcGVjLT5udW1fYWRjX25p
-ZHMgPSAxOwogCXNwZWMtPmFkY19uaWRzID0gY3h0NTA2Nl9hZGNfbmlkczsKIAlzcGVjLT5jYXBz
-cmNfbmlkcyA9IGN4dDUwNjZfY2Fwc3JjX25pZHM7CkBAIC0zMTY0LDcgKzMxOTAsOCBAQCBzdGF0
-aWMgaW50IHBhdGNoX2N4dDUwNjYoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiAJCXNwZWMtPm1p
-eGVyc1tzcGVjLT5udW1fbWl4ZXJzKytdID0gY3h0NTA2Nl9taXhlcl9tYXN0ZXI7CiAJCXNwZWMt
-Pm1peGVyc1tzcGVjLT5udW1fbWl4ZXJzKytdID0gY3h0NTA2Nl9taXhlcnM7CiAJCS8qIG5vIFMv
-UERJRiBvdXQgKi8KLQkJc3BlYy0+bXVsdGlvdXQuZGlnX291dF9uaWQgPSAwOworCQlpZiAoYm9h
-cmRfY29uZmlnID09IENYVDUwNjZfSFBfTEFQVE9QKQorCQkJc3BlYy0+bXVsdGlvdXQuZGlnX291
-dF9uaWQgPSAwOwogCQkvKiBpbnB1dCBzb3VyY2UgYXV0b21hdGljYWxseSBzZWxlY3RlZCAqLwog
-CQlzcGVjLT5pbnB1dF9tdXggPSBOVUxMOwogCQlzcGVjLT5wb3J0X2RfbW9kZSA9IDA7Ci0tIAox
-LjcuMQoK
---00163628384089217c049a9225b4
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---00163628384089217c049a9225b4--
+Thanks,
+	Xav
