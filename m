@@ -1,19 +1,20 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: sh: fsi-hdmi: Add FSI port and HDMI
- selection
-Date: Mon, 24 Jan 2011 11:24:45 +0000
-Message-ID: <1295868285.3419.8.camel@odin>
-References: <w3poc77151t.wl%kuninori.morimoto.gx@renesas.com>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH] SoC: Samsung: Fix outdated cpu_dai_name
+ for s3c24xx i2s
+Date: Mon, 24 Jan 2011 20:31:19 +0900
+Message-ID: <AANLkTim2L=ybmFhFXkQ+h_FrqQuMzzt9tHj_+WMgbyN5@mail.gmail.com>
+References: <1295735888-25527-1-git-send-email-lars@metafoo.de>
+	<1295735888-25527-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id AB6492446F
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 12:24:54 +0100 (CET)
-Received: by wyi11 with SMTP id 11so4000775wyi.38
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 03:24:54 -0800 (PST)
-In-Reply-To: <w3poc77151t.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id CB1BF2446F
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 12:31:20 +0100 (CET)
+Received: by bwz10 with SMTP id 10so3519473bwz.38
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 03:31:20 -0800 (PST)
+In-Reply-To: <1295735888-25527-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,29 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Paul Mundt <lethal@linux-sh.org>
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: "for 2.6.37" <stable@kernel.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-01-24 at 10:09 +0900, Kuninori Morimoto wrote:
-> This patch add platform_device_id which can control
-> PortA/PortB for FSI2-HDMI from platform data.
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
-> Paul
-> 
-> Can you please check it ?
-> because it change ap4/mackerel board
-> 
->  arch/arm/mach-shmobile/board-ap4evb.c   |    5 ++
->  arch/arm/mach-shmobile/board-mackerel.c |    5 ++
->  sound/soc/sh/fsi-hdmi.c                 |   66 ++++++++++++++++++++++++++++--
->  3 files changed, 71 insertions(+), 5 deletions(-)
-> 
+On Sun, Jan 23, 2011 at 7:38 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+> During the multi-component patch the s3c24xx i2s driver was renamed from
+> "s3c24xx-i2s" to "s3c24xx-iis", while the sound board drivers were not
+> updated to reflect this change as well.
+>
+> As a result there is no match between the dai_link and the i2s driver and no
+> sound card is instantiated.
+>
+> This patch fixes the problem by updating the sound board drivers to use
+> "s3c24xx-iis" for the cpu_dai_name.
+>
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: stable@kernel.org (for 2.6.37)
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Acked-by: Jassi Brar <jassi.brar@samsung.com>
