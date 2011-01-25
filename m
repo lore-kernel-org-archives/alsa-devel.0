@@ -1,19 +1,24 @@
-From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-Subject: Re: [PATCH] alsa: fix invalid hardware.h include in
- ac97c for AVR32 architecture
-Date: Tue, 25 Jan 2011 19:31:22 +0100
-Message-ID: <20110125183122.GA10090@ssg-0.norway.atmel.com>
-References: <1295881796-27625-1-git-send-email-hcegtvedt@atmel.com>
-	<s5hwrls3o76.wl%tiwai@suse.de>
+From: Kevin Hilman <khilman@ti.com>
+Subject: Re: [PATCH] davinci: da8xx/omap-l1xx: match codec_name
+	with i2c ids
+Date: Tue, 25 Jan 2011 10:36:31 -0800
+Message-ID: <87fwsg25lc.fsf@ti.com>
+References: <1295619896-5498-1-git-send-email-sudhakar.raj@ti.com>
+	<1295620708.3348.233.camel@odin> <8739oh6h5i.fsf@ti.com>
+	<87r5c15272.fsf@ti.com> <1295953146.3322.17.camel@odin>
+	<20110125123529.GC13051@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay.atmel.no (relay.atmel.no [194.19.124.36])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8BFE4103979
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 19:31:36 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hwrls3o76.wl%tiwai@suse.de>
+Received: from na3sys009aog117.obsmtp.com (na3sys009aog117.obsmtp.com
+	[74.125.149.242])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7F7321039A9
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 19:36:38 +0100 (CET)
+Received: by gwj21 with SMTP id 21so2083533gwj.41
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 10:36:36 -0800 (PST)
+In-Reply-To: <20110125123529.GC13051@sirena.org.uk> (Mark Brown's message of
+	"Tue, 25 Jan 2011 12:35:29 +0000")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,29 +28,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, kernel@avr32linux.org, stable@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, dansharon@nanometrics.ca, alsa-devel@alsa-project.org, "Rajashekhara,
+	Sudhakar" <sudhakar.raj@ti.com>, stable@kernel.org, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Around Tue 25 Jan 2011 18:09:17 +0100 or thereabout, Takashi Iwai wrote:
-> At Mon, 24 Jan 2011 16:09:56 +0100,
-> Hans-Christian Egtvedt wrote:
->> 
->> From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
->> 
->> This patch fixes the non-compiling AC97C driver for AVR32 architecture by
->> include mach/hardware.h only for AT91 architecture. The AVR32 architecture does
->> not supply the hardware.h include file.
->> 
->> Signed-off-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
->> CC: stable@vger.kernel.org
-> 
-> Applied now.  Thanks.
+Mark Brown <broonie@opensource.wolfsonmicro.com> writes:
 
-Thanks, I see you lined it up on your master branch, do you plan pushing it
-for the 2.6.38 release?
+> On Tue, Jan 25, 2011 at 10:59:05AM +0000, Liam Girdwood wrote:
+>> On Mon, 2011-01-24 at 15:09 -0800, Kevin Hilman wrote:
+>
+>> > On second thought, these should probably merge for .38-rc3.
+>
+>> > If you're OK with it, I can merge this and the platform fix together for
+>> > .38-rc3.
+>
+>> Yes please :)
+>
+> I applied it and sent it off towards Linux a few days ago.
 
-<snipp>
+OK, missed that.
 
--- 
-Best regards, HC
+I'll queue up the platform one then.
+
+Thanks,
+
+Kevin
