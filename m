@@ -1,21 +1,21 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 2/2] SoC: Samsung: Fix outdated
- cpu_dai_name for s3c24xx i2s
-Date: Tue, 25 Jan 2011 10:44:26 +0900
-Message-ID: <AANLkTino6vc5h7MrxZTkxcpXba3TZedrD+70F49VOAPA@mail.gmail.com>
-References: <1295903363-4433-1-git-send-email-lars@metafoo.de>
-	<1295903562-4564-1-git-send-email-lars@metafoo.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Should "Master" control the "Line In" volume
+	(loopback)
+Date: Tue, 25 Jan 2011 10:32:59 +0800
+Message-ID: <AANLkTik1xUCsy5Fh_pC++c-jwHzsVtV_WKDGehQBOdWx@mail.gmail.com>
+References: <ihhp04$h9d$1@dough.gmane.org>
+	<s5h39oi8mf9.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4751B103848
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 02:44:27 +0100 (CET)
-Received: by bwz10 with SMTP id 10so4270743bwz.38
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 17:44:27 -0800 (PST)
-In-Reply-To: <1295903562-4564-1-git-send-email-lars@metafoo.de>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id A970A103848
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 03:33:02 +0100 (CET)
+Received: by ewy19 with SMTP id 19so2239401ewy.38
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 18:33:01 -0800 (PST)
+In-Reply-To: <s5h39oi8mf9.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,21 +25,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 25, 2011 at 6:12 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
-> During the multi-component patch the s3c24xx i2s driver was renamed from
-> "s3c24xx-i2s" to "s3c24xx-iis", while the sound board drivers were not
-> updated to reflect this change as well.
->
-> As a result there is no match between the dai_link and the i2s driver and no
-> sound card is instantiated.
->
-> This patch fixes the problem by updating the sound board drivers to use
-> "s3c24xx-iis" for the cpu_dai_name.
->
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+2011/1/24 Takashi Iwai <tiwai@suse.de>
 
-Acked-by: Jassi Brar <jassi.brar@samsung.com>
+> At Sun, 23 Jan 2011 17:37:07 +0000,
+> Colin Guthrie wrote:
+> >
+> > Hi,
+> >
+> > I have a question-by-proxy from a user who is confused because his
+> > "Master" kcontrol is affecting the volume via Line In (which he uses to
+> > loopback an analog signal to his speakers).
+> >
+> > I've not got much hardware here for comparison, but I'm pretty sure that
+> > Master usually doesn't affect Line In.
+> >
+> > So couple of questions:
+> >  1. Is it typical that Master affects Line In?
+>
+> Yes, but only for the loopback volume.  It's independent from the
+> line-in capture volume.
+>
+>
+
+>> ALSA info here: https://bzattachment.mandriva.com/attachment.cgi?id=18170
+
+>> (for reference the full bug is here:
+>> https://qa.mandriva.com/show_bug.cgi?id=62218<https://qa.mandriva.com/show_bug.cgi?id=62218>
+)
+
+>> (1) KDE kmix is now pulseaudio aware and as such, kmix does not show the
+>> individual channels in the mixer
+>> I have my Sirrus/XM satellite radio plugged into LINE-IN and I listen to
+it
+>> while using the computer.
+
+"virtual master" already have "Front" and "Headphone" as slaves
+
+if the user want to hear the satelite radio from LINE_IN
+
+Why Kmix does not control those  "Mic Playback" and "Line Playback" any more
+?
+
+
+The max dB of Line and Mic playback volume are +12dB while those slave
+volume controls are only +3dB
+
+
+	control.1 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 63'
+		comment.dbmin -9150
+		comment.dbmax 300
+		iface MIXER
+		name 'Front Playback Volume'
+		value.0 61
+		value.1 61
+	}
+
+ control.3 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 63'
+		comment.dbmin -9150
+		comment.dbmax 300
+		iface MIXER
+		name 'Headphone Playback Volume'
+		value.0 61
+		value.1 61
+	}
+
+
+	control.11 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		comment.dbmin -3450
+		comment.dbmax 1200
+		iface MIXER
+		name 'Line Playback Volume'
+		value.0 28
+		value.1 28
+	}
+
+
+
+http://www.analog.com/en/audiovideo-products/audio-codecs/ad1983/products/product.html
