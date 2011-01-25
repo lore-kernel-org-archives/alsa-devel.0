@@ -1,25 +1,14 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: Re: UCM questions
-Date: Tue, 25 Jan 2011 13:58:19 -0800
-Message-ID: <AANLkTim8=jOV8toPMbeFTC+JMEKYXJ7TJEq1RxC24GMx@mail.gmail.com>
-References: <AANLkTim72DeHVzx3kmgF59EQQwC8jHAVpMZnt+kVTddX@mail.gmail.com>
-	<20110121113744.GA18682@sirena.org.uk>
-	<1295623491.3348.284.camel@odin>
-	<AANLkTi=V9ouox2vp5VYA+_gmsOCCecBKOjpd58DsuaxK@mail.gmail.com>
-	<alpine.LNX.2.00.1101231430550.6272@eeebox2.perex-int.cz>
-	<AANLkTi=zH6SMyH4p2Uhy7dbS-qi1VBw4zDAqAsYb1MrP@mail.gmail.com>
-	<1295957605.3322.89.camel@odin>
+From: David Lambert <dlambert@ti.com>
+Subject: [PATCH v3 0/4] Adding OMAP DMIC driver to kernel
+Date: Tue, 25 Jan 2011 16:00:58 -0600
+Message-ID: <1295992862-6154-1-git-send-email-dlambert@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 75296244EE
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 22:58:22 +0100 (CET)
-Received: by iye19 with SMTP id 19so6276253iye.38
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 13:58:20 -0800 (PST)
-In-Reply-To: <1295957605.3322.89.camel@odin>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id D699D244EE
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 23:01:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,21 +18,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Cc: Tony Lindgren <tony@atomide.com>, Paul Walmsley <paul@pwsan.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, David Lambert <dlambert@ti.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
->> Most of my questions are not really on the abstraction but really on
->> how to handle devices that can be plugged or may not be active at all
->> times. USB, HDMI, Wireless/remote displays fall in this category. So
->> on top of the traditional local headset/speakers, I can either have a
->> variety of devices that can be used for the same use case. It's still
->> not clear to me if I would need to create a set of new verbs
->> (hifi_usb, hifi_hdmi) or if I can stick to the existing verbs and add
->> a modifier?
->
-> You should stick to the existing verb and use a new device in most cases
-> above where your use case is the same but the output device is
-> different.
+This is a patch series to add the OMAP Digital Microphone
+driver for OMAP4.
 
-ok, thanks for clarifying.
+It includes the driver, a generic DMIC codec, platform devices,
+as well as HWMOD entries for OMAP44xx chipsets.
+
+Note: The DMIC codec driver was removed from this series as it was
+accepted for and merged for the 2.6.38 kernel.
+
+Benoit Cousson (1):
+  OMAP4: hwmod: add entries for DMIC driver
+
+David Lambert (3):
+  ASoC: DMIC: Adding the OMAP DMIC driver
+  OMAP4: DMIC: initializes the DMIC driver
+  OMAP4: DMIC: Add DMIC codec platform devices
+
+ arch/arm/mach-omap2/board-4430sdp.c        |   11 +
+ arch/arm/mach-omap2/omap_hwmod_44xx_data.c |   91 +++++
+ arch/arm/plat-omap/devices.c               |   35 ++
+ arch/arm/plat-omap/include/plat/dmic.h     |   82 +++++
+ sound/soc/omap/Kconfig                     |    3 +
+ sound/soc/omap/Makefile                    |    2 +
+ sound/soc/omap/omap-dmic.c                 |  534 ++++++++++++++++++++++++++++
+ 7 files changed, 758 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/plat-omap/include/plat/dmic.h
+ create mode 100644 sound/soc/omap/omap-dmic.c
