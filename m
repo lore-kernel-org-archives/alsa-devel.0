@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] davinci: da8xx/omap-l1xx: match	codec_name
-	with i2c ids
-Date: Tue, 25 Jan 2011 12:35:29 +0000
-Message-ID: <20110125123529.GC13051@sirena.org.uk>
-References: <1295619896-5498-1-git-send-email-sudhakar.raj@ti.com>
-	<1295620708.3348.233.camel@odin> <8739oh6h5i.fsf@ti.com>
-	<87r5c15272.fsf@ti.com> <1295953146.3322.17.camel@odin>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: alsa-util.c: snd_pcm_avail() returned a value that
+ is exceptionally large: 675220 bytes (3827 ms).
+Date: Tue, 25 Jan 2011 21:26:29 +0800
+Message-ID: <AANLkTimnWDXRGsX_-uvemsDaOCfogW44R09jA=7hiYpG@mail.gmail.com>
+References: <4D393FA6.8050805@san.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id AAD5E103929
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 13:35:35 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1295953146.3322.17.camel@odin>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4ACDD103929
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 14:26:57 +0100 (CET)
+Received: by ewy19 with SMTP id 19so2440449ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 05:26:53 -0800 (PST)
+In-Reply-To: <4D393FA6.8050805@san.ru>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,18 +24,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Kevin Hilman <khilman@ti.com>, davinci-linux-open-source@linux.davincidsp.com, dansharon@nanometrics.ca, alsa-devel@alsa-project.org, "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>, stable@kernel.org, linux-arm-kernel@lists.infradead.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 25, 2011 at 10:59:05AM +0000, Liam Girdwood wrote:
-> On Mon, 2011-01-24 at 15:09 -0800, Kevin Hilman wrote:
+2011/1/21 support <support@san.ru>
 
-> > On second thought, these should probably merge for .38-rc3.
+>
+>
+> alsa-util.c: snd_pcm_avail() returned a value that is exceptionally large:
+> 675220 bytes (3827 ms).
+> alsa-util.c: Most likely this is a bug in the ALSA driver 'snd_emu10k1'.
+> Please report this issue to the ALSA developers.
+>
+>
+>
+> http://www.alsa-project.org/db/?f=641d9cb90af2e47e527c2912bee4e34bff41b87b
+>
+> # rpm -qa | grep alsa
+> alsa-lib-devel-1.0.23-2.fc14.i686
+> alsa-plugins-pulseaudio-1.0.22-1.fc13.i686
+> alsa-utils-1.0.23-3.fc14.i686
+> alsa-lib-1.0.23-2.fc14.i686
+>
+> # uname -a
+> Linux wp.san.ru 2.6.35.10-74.fc14.i686 #1 SMP Thu Dec 23 16:17:40 UTC 2010
+> i686 i686 i386 GNU/Linux
+>
+>
+>
+This is underrun occur in PA server  since hw_ptr is ahead of appl_ptr and
+( 978317001 978195372) > buffer size  16384
 
-> > If you're OK with it, I can merge this and the platform fix together for
-> > .38-rc3.
+Jan 21 10:55:20 wp pulseaudio[2393]: alsa-util.c: Slave: Hardware PCM
+card 0 'SB Live! [Unknown]' device
+0 subdevice 0
+Jan 21 10:55:20 wp pulseaudio[2393]: alsa-util.c: Its setup is:
+Jan 21 10:55:20 wp pulseaudio[2393]: alsa-util.c:   stream       : PLAYBACK
 
-> Yes please :)
 
-I applied it and sent it off towards Linux a few days ago.
+Jan 21 10:55:20 wp pulseaudio[2393]: alsa-util.c:   buffer_size  : 16384
+Jan 21 10:55:20 wp pulseaudio[2393]: alsa-util.c:   period_size  : 16384
+
+Jan 21 10:55:20 wp pulseaudio[2393]: alsa-util.c:   appl_ptr     : 978195372
+Jan 21 10:55:20 wp pulseaudio[2393]: alsa-util.c:   hw_ptr       : 978317001
