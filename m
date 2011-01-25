@@ -1,21 +1,25 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Jack sense fails on Fujitsu p7120
-Date: Tue, 25 Jan 2011 09:17:21 +0800
-Message-ID: <AANLkTimszyfVj8pbt4jujQ3o96OqVHKb-bb7o8GXG5pU@mail.gmail.com>
-References: <AANLkTimGPyno7Wd3TfO7dhZe9e4a5QcXLS8Upa1Mq7q_@mail.gmail.com>
-	<AANLkTimb+yqOhWP1Rc78F9pc+j6VEGp7v0SYvGi7mGrb@mail.gmail.com>
-	<AANLkTim2ch5-QHoh67SuKwMmTMQL=HM6VG1iVCxxoo9+@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: HDMI with more than 2ch ?
+Date: Tue, 25 Jan 2011 02:17:50 +0100
+Message-ID: <4D3E24BE.8030607@canonical.com>
+References: <1295860599.14528.8.camel@skunk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 78757103848
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 02:17:23 +0100 (CET)
-Received: by ewy19 with SMTP id 19so2211781ewy.38
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 17:17:22 -0800 (PST)
-In-Reply-To: <AANLkTim2ch5-QHoh67SuKwMmTMQL=HM6VG1iVCxxoo9+@mail.gmail.com>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id A57D8103848
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 02:17:47 +0100 (CET)
+Received: from hutte.canonical.com ([91.189.90.181])
+	by adelie.canonical.com with esmtp (Exim 4.71 #1 (Debian))
+	id 1PhXXW-0000xl-9M
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 01:17:46 +0000
+Received: from c-83-233-18-148.cust.bredband2.com ([83.233.18.148]
+	helo=[192.168.8.102]) by hutte.canonical.com with esmtpsa
+	(TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.71)
+	(envelope-from <david.henningsson@canonical.com>) id 1PhXXW-0007G8-3T
+	for alsa-devel@alsa-project.org; Tue, 25 Jan 2011 01:17:46 +0000
+In-Reply-To: <1295860599.14528.8.camel@skunk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,42 +29,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/1/24 Robin Neatherway <neatherway@gmail.com>
+On 2011-01-24 10:16, Xavier Bestel wrote:
+> Hi,
+>
+> I'm using HDMI output on an HD 2600, using KMS from kernel 2.6.37:
+> http://www.alsa-project.org/db/?f=b3f67a0890f9878b7b3f345578e24eda0aaa59ac
+> The problem is that only 2ch are supported (not 1, not 3 or more). I
+> tested with speaker-test, it only works with -c 2.
+>
+> So how can I access the other PCM channels ? There are 8 of them
+> available in the HDMI standard, I thought the card should be able to
+> drive all of them.
 
-> > If you compiled the driver in debug mode, you can select model=test for
-> > alc260
-> >
-> >
-> http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=7cf51e48315d87b4c1cf600d611894f45f661142
->
-> Thanks for the suggestion. I tried compiling both the stable versions
-> and the latest snapshots. The result was that new modules appeared in
-> /lib/modules/`uname -r`/updates/alsa, which I think is the idea.
-> However, when trying to use these modules, I received
->
-> $ sudo modprobe snd-hda-intel
-> FATAL: Error inserting snd_hda_intel
-> (/lib/modules/2.6.35-24-generic/updates/alsa/pci/hda/snd-hda-intel.ko):
-> Unknown symbol in module, or unknown parameter (see dmesg)
->
-> And dmesg contains the following:
-> syslog:Jan 23 16:47:03 baldur kernel: [   23.389315] snd: Unknown
-> symbol unregister_sound_special (err 0)
-> syslog:Jan 23 16:47:03 baldur kernel: [   23.390067] snd: Unknown
-> symbol register_sound_special_device (err 0)
->
-> After reinstalling the alsa and linux-sound packages for Ubuntu, I
-> recovered sound, but I can't try the "test" parameter without being
-> able to load the module.
->
-> Do you know what this error means?
->
+According to your HDMI codec it only supports stereo output, not 
+8-channel PCM. This is a limitation in your hardware, not in the HDMI 
+standard.
 
+That is, if you want more channels, you probably want to ac3-encode the 
+audio data.
 
-Because ubuntu had disabled OSS emulation , you have to disable OSS
-emulation too.
-
-./configure --with-oss=no
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
