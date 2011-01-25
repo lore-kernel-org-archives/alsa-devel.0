@@ -1,19 +1,25 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [GIT PULL] Branch to add harmony_audio.h to Tegra
-	and ASoC
-Date: Tue, 25 Jan 2011 12:48:41 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0310955E8B@HQMAIL01.nvidia.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF0310955A8F@HQMAIL01.nvidia.com>
-	<20110125202156.GA4605@opensource.wolfsonmicro.com>
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: Re: UCM questions
+Date: Tue, 25 Jan 2011 13:58:19 -0800
+Message-ID: <AANLkTim8=jOV8toPMbeFTC+JMEKYXJ7TJEq1RxC24GMx@mail.gmail.com>
+References: <AANLkTim72DeHVzx3kmgF59EQQwC8jHAVpMZnt+kVTddX@mail.gmail.com>
+	<20110121113744.GA18682@sirena.org.uk>
+	<1295623491.3348.284.camel@odin>
+	<AANLkTi=V9ouox2vp5VYA+_gmsOCCecBKOjpd58DsuaxK@mail.gmail.com>
+	<alpine.LNX.2.00.1101231430550.6272@eeebox2.perex-int.cz>
+	<AANLkTi=zH6SMyH4p2Uhy7dbS-qi1VBw4zDAqAsYb1MrP@mail.gmail.com>
+	<1295957605.3322.89.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id C561C10399F
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 21:48:58 +0100 (CET)
-In-Reply-To: <20110125202156.GA4605@opensource.wolfsonmicro.com>
-Content-Language: en-US
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 75296244EE
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 22:58:22 +0100 (CET)
+Received: by iye19 with SMTP id 19so6276253iye.38
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 13:58:20 -0800 (PST)
+In-Reply-To: <1295957605.3322.89.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,32 +29,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Colin Cross
-	(ccross@google.com)" <ccross@google.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote atTuesday, January 25, 2011 1:22 PM:
-> On Fri, Jan 21, 2011 at 10:18:35PM -0800, Stephen Warren wrote:
-> 
-> > Please pull:
-> 
-> > http://avon.wwwdotorg.org/downloads/kernel.git
-> > tegra_harmony_asoc_platform_data
-> 
-> That doesn't seem to work, git can't find the branch there (git
-> request-pull is your friend for checking this stuff).  I've created a
-> branch
+>> Most of my questions are not really on the abstraction but really on
+>> how to handle devices that can be plugged or may not be active at all
+>> times. USB, HDMI, Wireless/remote displays fall in this category. So
+>> on top of the traditional local headset/speakers, I can either have a
+>> variety of devices that can be used for the same use case. It's still
+>> not clear to me if I would need to create a set of new verbs
+>> (hifi_usb, hifi_hdmi) or if I can stick to the existing verbs and add
+>> a modifier?
+>
+> You should stick to the existing verb and use a new device in most cases
+> above where your use case is the same but the output device is
+> different.
 
-Uggh. I evidently forgot to run "git update-server-info". Of course,
-running "git branch -a" on the server, which I did, doesn't show up
-that error. Thanks for the request-pull pointer.
-
->   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git
-> tegra-arch
-> 
-> with the patch you posted to the mailing list and merged that into my
-> for-2.6.39 branch.
-
--- 
-nvpublic
+ok, thanks for clarifying.
