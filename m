@@ -1,19 +1,19 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/2 v2] ASoC: Fix codec device id format
- used by some dai_links
-Date: Tue, 25 Jan 2011 11:55:12 +0000
-Message-ID: <1295956512.3322.74.camel@odin>
-References: <1295903363-4433-1-git-send-email-lars@metafoo.de>
+From: Alexander Sverdlin <subaparts@yandex.ru>
+Subject: Re: [PATCH] EDB93xx: Add support for CS4271 CODEC on
+ EDB93xx boards
+Date: Tue, 25 Jan 2011 15:08:32 +0300
+Message-ID: <1295957312.27379.21.camel@r60e>
+References: <1295743884.14515.35.camel@r60e>
+	<0D753D10438DA54287A00B027084269764CEA9D89C@AUSP01VMBX24.collaborationhost.net>
+	<20110125114641.GA13051@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id C2BC0103929
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 12:55:16 +0100 (CET)
-Received: by wwe15 with SMTP id 15so4710928wwe.20
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 03:55:16 -0800 (PST)
-In-Reply-To: <1295903363-4433-1-git-send-email-lars@metafoo.de>
+Received: from forward7.mail.yandex.net (forward7.mail.yandex.net
+	[77.88.61.37]) by alsa0.perex.cz (Postfix) with ESMTP id 313CE103932
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 13:08:36 +0100 (CET)
+In-Reply-To: <20110125114641.GA13051@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,33 +23,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, George Kashperko <george@chas.com.ua>, H Hartley Sweeten <hartleys@visionengravers.com>, Lennert Buytenhek <buytenh@wantstofly.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-01-24 at 22:09 +0100, Lars-Peter Clausen wrote:
-> The id part of an I2C device name is created with the "%d-%04x" format string.
-> 
-> So for example for an I2C device which is connected to the adapter with the id 0
-> and has its address set to 0x1a the id part of the devices name would be
-> "0-001a".
-> 
-> Currently some sound board drivers have the id part the codec_name field of
-> their dai_link structures set as if it had been created by a "%d-0x%x" format
-> string. For example "0-0x1a" instead of "0-001a".
-> 
-> As a result there is no match between the codec device and the dai_link and no
-> sound card is instantiated.
-> 
-> This patch fixes it.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> 
+Dear Mark,
 
-Both
+On Tue, 2011-01-25 at 11:46 +0000, Mark Brown wrote:
+> > Where can I find the patches that add the codec and soc support?
+> 
+> > I would like to test this patch on an edb9307a but need those in order to
+> > continue.
+> 
+> He posted them to alsa-devel, the CODEC support was merged already.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+
+Sorry, didn't CCed to all, but I've sent all of them to Hartley and even
+received first suggestions regarding platform code. Will try to
+implement them when there will be some time for this again.
+
+Best regards,
+	Alexander.
