@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Question about your DSP topic branch
-Date: Tue, 25 Jan 2011 11:51:13 +0000
-Message-ID: <20110125115113.GB13051@sirena.org.uk>
-References: <4D2652C8.7030701@codeaurora.org> <4D3E7536.9070906@codeaurora.org>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 1/2 v2] ASoC: Fix codec device id format
+ used by some dai_links
+Date: Tue, 25 Jan 2011 11:55:12 +0000
+Message-ID: <1295956512.3322.74.camel@odin>
+References: <1295903363-4433-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 67BC61037E3
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 12:51:15 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4D3E7536.9070906@codeaurora.org>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id C2BC0103929
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 12:55:16 +0100 (CET)
+Received: by wwe15 with SMTP id 15so4710928wwe.20
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 03:55:16 -0800 (PST)
+In-Reply-To: <1295903363-4433-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,22 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>
-Cc: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 24, 2011 at 11:01:10PM -0800, Patrick Lai wrote:
+On Mon, 2011-01-24 at 22:09 +0100, Lars-Peter Clausen wrote:
+> The id part of an I2C device name is created with the "%d-%04x" format string.
+> 
+> So for example for an I2C device which is connected to the adapter with the id 0
+> and has its address set to 0x1a the id part of the devices name would be
+> "0-001a".
+> 
+> Currently some sound board drivers have the id part the codec_name field of
+> their dai_link structures set as if it had been created by a "%d-0x%x" format
+> string. For example "0-0x1a" instead of "0-001a".
+> 
+> As a result there is no match between the codec device and the dai_link and no
+> sound card is instantiated.
+> 
+> This patch fixes it.
+> 
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> 
 
-> 8. I see there is dmic codec(dmic.c) under sound/soc/codec which is 
-> pretty much just a dummy codec driver. I supposed the configuration of 
-> DMIC is done in other driver. Would it be better if we could have 
+Both
 
-It's for direct DMIC interfaces in CPUs like OMAP4 has.
-
-> something like fixed voltage regulator? So, there is no need to 
-> duplicate the effort.
-
-Yes, that'd be kind of nice but given how tiny these noop drivers are
-and the fact that they do all need to specify their capabilites it's not
-clear that there's much advantage from combining them into a single
-driver - the boiler plate is so small and simple.
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
