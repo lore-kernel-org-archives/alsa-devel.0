@@ -1,22 +1,21 @@
-From: Kevin Hilman <khilman@ti.com>
-Subject: Re: [PATCH] davinci: da8xx/omap-l1xx: match codec_name
-	with i2c ids
-Date: Mon, 24 Jan 2011 15:09:21 -0800
-Message-ID: <87r5c15272.fsf@ti.com>
-References: <1295619896-5498-1-git-send-email-sudhakar.raj@ti.com>
-	<1295620708.3348.233.camel@odin> <8739oh6h5i.fsf@ti.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Jack sense fails on Fujitsu p7120
+Date: Tue, 25 Jan 2011 09:17:21 +0800
+Message-ID: <AANLkTimszyfVj8pbt4jujQ3o96OqVHKb-bb7o8GXG5pU@mail.gmail.com>
+References: <AANLkTimGPyno7Wd3TfO7dhZe9e4a5QcXLS8Upa1Mq7q_@mail.gmail.com>
+	<AANLkTimb+yqOhWP1Rc78F9pc+j6VEGp7v0SYvGi7mGrb@mail.gmail.com>
+	<AANLkTim2ch5-QHoh67SuKwMmTMQL=HM6VG1iVCxxoo9+@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog105.obsmtp.com (na3sys009aog105.obsmtp.com
-	[74.125.149.75])
-	by alsa0.perex.cz (Postfix) with ESMTP id 63133103896
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 00:09:31 +0100 (CET)
-Received: by mail-pv0-f181.google.com with SMTP id 12so1228306pvg.26
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 15:09:24 -0800 (PST)
-In-Reply-To: <8739oh6h5i.fsf@ti.com> (Kevin Hilman's message of "Mon, 24 Jan
-	2011 15:00:57 -0800")
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 78757103848
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 02:17:23 +0100 (CET)
+Received: by ewy19 with SMTP id 19so2211781ewy.38
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2011 17:17:22 -0800 (PST)
+In-Reply-To: <AANLkTim2ch5-QHoh67SuKwMmTMQL=HM6VG1iVCxxoo9+@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,52 +25,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: davinci-linux-open-source@linux.davincidsp.com, "Rajashekhara,
-	Sudhakar" <sudhakar.raj@ti.com>, alsa-devel@alsa-project.org, dansharon@nanometrics.ca, stable@kernel.org, linux-arm-kernel@lists.infradead.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Kevin Hilman <khilman@ti.com> writes:
+2011/1/24 Robin Neatherway <neatherway@gmail.com>
 
-> Liam Girdwood <lrg@slimlogic.co.uk> writes:
+> > If you compiled the driver in debug mode, you can select model=test for
+> > alc260
+> >
+> >
+> http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=7cf51e48315d87b4c1cf600d611894f45f661142
 >
->> On Fri, 2011-01-21 at 19:54 +0530, Rajashekhara, Sudhakar wrote:
->>> The codec_name entry for da8xx evm in sound/soc/davinci/davinci-evm.c
->>> is not matching with the i2c ids in the board file. Without this fix the
->>> soundcard does not get detected on da850/omap-l138/am18x evm.
->>> 
->>> Signed-off-by: Rajashekhara, Sudhakar <sudhakar.raj@ti.com>
->>> Tested-by: Dan Sharon <dansharon@nanometrics.ca>
->>> ---
->>> This patch applies to Linus's kernel tree.
->>> 
->>>  sound/soc/davinci/davinci-evm.c |    2 +-
->>>  1 files changed, 1 insertions(+), 1 deletions(-)
->>> 
->>> diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
->>> index 0c2d6ba..b36f0b3 100644
->>> --- a/sound/soc/davinci/davinci-evm.c
->>> +++ b/sound/soc/davinci/davinci-evm.c
->>> @@ -223,7 +223,7 @@ static struct snd_soc_dai_link da8xx_evm_dai = {
->>>  	.stream_name = "AIC3X",
->>>  	.cpu_dai_name= "davinci-mcasp.0",
->>>  	.codec_dai_name = "tlv320aic3x-hifi",
->>> -	.codec_name = "tlv320aic3x-codec.0-001a",
->>> +	.codec_name = "tlv320aic3x-codec.1-0018",
->>>  	.platform_name = "davinci-pcm-audio",
->>>  	.init = evm_aic3x_init,
->>>  	.ops = &evm_ops,
->>
->> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> Thanks for the suggestion. I tried compiling both the stable versions
+> and the latest snapshots. The result was that new modules appeared in
+> /lib/modules/`uname -r`/updates/alsa, which I think is the idea.
+> However, when trying to use these modules, I received
 >
-> Liam,
+> $ sudo modprobe snd-hda-intel
+> FATAL: Error inserting snd_hda_intel
+> (/lib/modules/2.6.35-24-generic/updates/alsa/pci/hda/snd-hda-intel.ko):
+> Unknown symbol in module, or unknown parameter (see dmesg)
 >
-> I'm assuming you'll merge this one via the ASoC tree?
+> And dmesg contains the following:
+> syslog:Jan 23 16:47:03 baldur kernel: [   23.389315] snd: Unknown
+> symbol unregister_sound_special (err 0)
+> syslog:Jan 23 16:47:03 baldur kernel: [   23.390067] snd: Unknown
+> symbol register_sound_special_device (err 0)
+>
+> After reinstalling the alsa and linux-sound packages for Ubuntu, I
+> recovered sound, but I can't try the "test" parameter without being
+> able to load the module.
+>
+> Do you know what this error means?
 >
 
-On second thought, these should probably merge for .38-rc3.
 
-If you're OK with it, I can merge this and the platform fix together for
-.38-rc3.
+Because ubuntu had disabled OSS emulation , you have to disable OSS
+emulation too.
 
-Kevin
+./configure --with-oss=no
