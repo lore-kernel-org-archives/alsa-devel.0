@@ -1,20 +1,18 @@
-From: Paul Mundt <lethal@linux-sh.org>
-Subject: Re: [RFC][PATCH 0/3] ASoC: sh: fsi: sound format
-	selection
-Date: Tue, 25 Jan 2011 23:44:39 +0900
-Message-ID: <20110125144438.GA19428@linux-sh.org>
-References: <w3pmxmr13jx.wl%kuninori.morimoto.gx@renesas.com>
-	<20110125141144.GF31453@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: correct link specifications for
+ corgi, poodle and spitz
+Date: Tue, 25 Jan 2011 15:03:17 +0000
+Message-ID: <20110125150317.GG31453@opensource.wolfsonmicro.com>
+References: <1295637257-28299-1-git-send-email-dbaryshkov@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from master.linux-sh.org (124x34x33x190.ap124.ftth.ucom.ne.jp
-	[124.34.33.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id E03AA103971
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 15:44:50 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 00B12103971
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 16:03:20 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20110125141144.GF31453@opensource.wolfsonmicro.com>
+In-Reply-To: <1295637257-28299-1-git-send-email-dbaryshkov@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,19 +22,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 25, 2011 at 02:11:44PM +0000, Mark Brown wrote:
-> On Mon, Jan 24, 2011 at 10:41:22AM +0900, Kuninori Morimoto wrote:
-> 
-> > But I'm not sure it is OK for SPDIF.
-> > So, I set these patches as [RFC]
-> 
-> This looks OK for me providing it tests OK - if everyone else is OK with
-> it we can just apply?
+On Fri, Jan 21, 2011 at 10:14:17PM +0300, Dmitry Eremin-Solenikov wrote:
+> ASoC DAI link descriptions for Corgi, Poodle and Spitz platforms
+> contained incorrect names for cpu_dai and codec, which effectievly disabled sound
+> on theese platforms. Fix that errors.
 
-The architecture bits are largely trivial, so no problem there:
+Ccing in Liam who you forgot to CC - please make sure you CC all
+maintainers on patches.
 
-Acked-by: Paul Mundt <lethal@linux-sh.org>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
+> ---
+>  sound/soc/pxa/corgi.c  |    4 ++--
+>  sound/soc/pxa/poodle.c |    2 +-
+>  sound/soc/pxa/spitz.c  |    4 ++--
+>  3 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/sound/soc/pxa/corgi.c b/sound/soc/pxa/corgi.c
+> index f451acd..135d903 100644
+> --- a/sound/soc/pxa/corgi.c
+> +++ b/sound/soc/pxa/corgi.c
+> @@ -305,10 +305,10 @@ static int corgi_wm8731_init(struct snd_soc_pcm_runtime *rtd)
+>  static struct snd_soc_dai_link corgi_dai = {
+>  	.name = "WM8731",
+>  	.stream_name = "WM8731",
+> -	.cpu_dai_name = "pxa-is2-dai",
+> +	.cpu_dai_name = "pxa2xx-i2s",
+>  	.codec_dai_name = "wm8731-hifi",
+>  	.platform_name = "pxa-pcm-audio",
+> -	.codec_name = "wm8731-codec-0.001a",
+> +	.codec_name = "wm8731-codec-0.001b",
+>  	.init = corgi_wm8731_init,
+>  	.ops = &corgi_ops,
+>  };
+> diff --git a/sound/soc/pxa/poodle.c b/sound/soc/pxa/poodle.c
+> index 84edd03..0eebe11 100644
+> --- a/sound/soc/pxa/poodle.c
+> +++ b/sound/soc/pxa/poodle.c
+> @@ -274,7 +274,7 @@ static struct snd_soc_dai_link poodle_dai = {
+>  	.cpu_dai_name = "pxa2xx-i2s",
+>  	.codec_dai_name = "wm8731-hifi",
+>  	.platform_name = "pxa-pcm-audio",
+> -	.codec_name = "wm8731-codec.0-001a",
+> +	.codec_name = "wm8731-codec.0-001b",
+>  	.init = poodle_wm8731_init,
+>  	.ops = &poodle_ops,
+>  };
+> diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
+> index 0b30d7d..7604471 100644
+> --- a/sound/soc/pxa/spitz.c
+> +++ b/sound/soc/pxa/spitz.c
+> @@ -313,10 +313,10 @@ static int spitz_wm8750_init(struct snd_soc_pcm_runtime *rtd)
+>  static struct snd_soc_dai_link spitz_dai = {
+>  	.name = "wm8750",
+>  	.stream_name = "WM8750",
+> -	.cpu_dai_name = "pxa-is2",
+> +	.cpu_dai_name = "pxa2xx-i2s",
+>  	.codec_dai_name = "wm8750-hifi",
+>  	.platform_name = "pxa-pcm-audio",
+> -	.codec_name = "wm8750-codec.0-001a",
+> +	.codec_name = "wm8750-codec.0-001b",
+>  	.init = spitz_wm8750_init,
+>  	.ops = &spitz_ops,
+>  };
+> -- 
+> 1.7.2.3
+> 
