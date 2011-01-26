@@ -1,21 +1,20 @@
-From: Fredrik Lingvall <fl@ifi.uio.no>
-Subject: Re: hdspmixer
-Date: Wed, 26 Jan 2011 14:55:13 +0100
-Message-ID: <4D4027C1.106@ifi.uio.no>
-References: <alpine.LNX.2.00.1101261044110.6272@eeebox2.perex-int.cz>
-	<4D3FF1C4.8000704@ifi.uio.no>
-	<alpine.LNX.2.00.1101261108320.6272@eeebox2.perex-int.cz>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH 1/4] ASoC: soc-core: Increment codec and
+ platform driver refcounts before probing
+Date: Wed, 26 Jan 2011 16:28:01 +0200
+Message-ID: <20110126162801.b53e4cdf.jhnikula@gmail.com>
+References: <1296043097-11720-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id DCBE1103A31
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 14:55:18 +0100 (CET)
-Received: by bwz10 with SMTP id 10so1404515bwz.38
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 05:55:18 -0800 (PST)
-In-Reply-To: <alpine.LNX.2.00.1101261108320.6272@eeebox2.perex-int.cz>
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8A8AE103A1B
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 15:26:42 +0100 (CET)
+Received: by fxm5 with SMTP id 5so1015061fxm.38
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 06:26:42 -0800 (PST)
+In-Reply-To: <1296043097-11720-1-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,53 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>, Florian Faber <faber@faberman.de>
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Harsha Priya <priya.harsha@intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/26/11 11:13, Jaroslav Kysela wrote:
-> On Wed, 26 Jan 2011, Fredrik Lingvall wrote:
->
->> I did two things to build the hdspmixer I got from Florian.
->>
->> 1) Moved the #endif (at line 121)
->>
->> #endif                /* __SOUND_HDSPM_H */
->>
->> downto the last line of the hdspm.h
->
-> It's already in hdspm.h we have in the GIT kernel tree:
->
-> http://git.alsa-project.org/?p=alsa-kernel.git;a=blob;f=include/sound/hdspm.h;h=81990b2bcc981bb4f31cae44616aa052c5f1066e;hb=HEAD
->
->
+On Wed, 26 Jan 2011 13:58:14 +0200
+Jarkko Nikula <jhnikula@gmail.com> wrote:
 
-I have now build the hdspm driver from:
-http://wiki.linuxproaudio.org/index.php/Driver:hdspm (2010-12-25)
-and the hdspmixer (hdspmixer_64-1.9) from:
-http://wiki.linuxproaudio.org/index.php/App:hdspmixer_64
+> Commit f6c2ed5 "ASoC: Fix the device references to codec and platform drivers"
+> moved codec and platform driver refcount increments from soc_bind_dai_link
+> to more appropriate places.
+> 
+> Adjust a little them so that refcounts are incremented before executing the
+> driver probe functions.
+> 
+> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+> Cc: Vinod Koul <vinod.koul@intel.com>
+> Cc: Harsha Priya <priya.harsha@intel.com>
+> ---
+> I don't know any regression with this so probably 2.6.39 material.
+> ---
+Actually I found a regression that I like to fix before this. There's a
+try_module_get in soc_probe_aux_dev that the commit f6c2ed5 didn't
+remove and for auxialiry devices there will be then two try_module_get
+calls since another is in soc_probe_codec.
 
-I did this by copying the hdspm.c file to the (gentoo kernel)
-/usr/src/linux-2.6.36-gentoo-r5/sound/pci/rme9652/hdspm.c
-and the hdspm.h file to /usr/include/alsa/sound/hdspm.h and
-/usr/include/sound/hdspm.h (had to change the include path for hdspm.h
-in hdspm.c as well).
 
-Both the driver and hdspmixer build fine.
-
-There are some differences to the driver at:
-
-http://git.alsa-project.org/?p=alsa-kernel.git;a=blob;f=include/sound/hdspm.h;h=81990b2bcc981bb4f31cae44616aa052c5f1066e;hb=HEAD
-http://git.alsa-project.org/?p=alsa-kernel.git;a=blob;f=sound/pci/rme9652/hdspm.c;h=f5eadfc0672ab0073db93f8fe2b484069b42c814;hb=HEAD
-
-At a quick glance I could see that Florian's name was missing in the
-MODULE_AUTHOR section for example.
-
-There is also one problem that I have with the driver and and MADIFace
-plus a RME M-32 ADC (on a Macbook Pro running x86_64 Gentoo) - the boot
-sequence hugs if I have the coax MADI input connected and switched on.
-By toggeling to MADI optical during boot is boots fine and I can
-afterwards switch back to coax after boot and the card and driver works
-fine.
-
-/Fredrik
+-- 
+Jarkko
