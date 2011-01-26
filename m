@@ -1,14 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Make cache status available via debugfs
-Date: Wed, 26 Jan 2011 21:05:46 +0000
-Message-ID: <1296075946-20037-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Add subsequence information to
+	seq_notify callbacks
+Date: Wed, 26 Jan 2011 21:41:56 +0000
+Message-ID: <1296078116-28867-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A8C75103A7A
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 22:05:49 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1E0FF245B0
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 22:41:59 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,51 +23,64 @@ To: Liam Girdwood <lrg@slimlogic.co.uk>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Could just as well live in sysfs but sysfs doesn't have the simple
-value export helpers debugfs does.
+Allows drivers to distinguish which subsequence is being notified when
+they get called back.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/sound/soc.h  |    4 ++--
- sound/soc/soc-core.c |    5 +++++
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ include/sound/soc-dapm.h |    2 +-
+ include/sound/soc.h      |    2 +-
+ sound/soc/soc-dapm.c     |    5 +++--
+ 3 files changed, 5 insertions(+), 4 deletions(-)
 
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index 6a25e69..979ed84 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -501,7 +501,7 @@ struct snd_soc_dapm_context {
+ 	struct snd_soc_dapm_update *update;
+ 
+ 	void (*seq_notifier)(struct snd_soc_dapm_context *,
+-			     enum snd_soc_dapm_type);
++			     enum snd_soc_dapm_type, int);
+ 
+ 	struct device *dev; /* from parent - for debug */
+ 	struct snd_soc_codec *codec; /* parent codec */
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 4fd79e0..49a14da 100644
+index 49a14da..ab0d5cd 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -494,14 +494,14 @@ struct snd_soc_codec {
- 	struct snd_ac97 *ac97;  /* for ad-hoc ac97 devices */
- 	unsigned int active;
- 	unsigned int cache_bypass:1; /* Suppress access to the cache */
--	unsigned int cache_only:1;  /* Suppress writes to hardware */
--	unsigned int cache_sync:1; /* Cache needs to be synced to hardware */
- 	unsigned int suspended:1; /* Codec is in suspend PM state */
- 	unsigned int probed:1; /* Codec has been probed */
- 	unsigned int ac97_registered:1; /* Codec has been AC97 registered */
- 	unsigned int ac97_created:1; /* Codec has been created by SoC */
- 	unsigned int sysfs_registered:1; /* codec has been sysfs registered */
- 	unsigned int cache_init:1; /* codec cache has been initialized */
-+	u32 cache_only;  /* Suppress writes to hardware */
-+	u32 cache_sync; /* Cache needs to be synced to hardware */
+@@ -554,7 +554,7 @@ struct snd_soc_codec_driver {
+ 			      enum snd_soc_bias_level level);
  
- 	/* codec IO */
- 	void *control_data; /* codec control (i2c/3wire) data */
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 5dffc7a4..8af47f7 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -235,6 +235,11 @@ static void soc_init_codec_debugfs(struct snd_soc_codec *codec)
- 		return;
+ 	void (*seq_notifier)(struct snd_soc_dapm_context *,
+-			     enum snd_soc_dapm_type);
++			     enum snd_soc_dapm_type, int);
+ };
+ 
+ /* SoC platform interface */
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 37b376f..0f94fd0 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -899,7 +899,8 @@ static void dapm_seq_run(struct snd_soc_dapm_context *dapm,
+ 				for (i = 0; i < ARRAY_SIZE(dapm_up_seq); i++)
+ 					if (sort[i] == cur_sort)
+ 						cur_dapm->seq_notifier(cur_dapm,
+-								       i);
++								       i,
++								       cur_subseq);
+ 			}
+ 
+ 			INIT_LIST_HEAD(&pending);
+@@ -968,7 +969,7 @@ static void dapm_seq_run(struct snd_soc_dapm_context *dapm,
+ 		for (i = 0; i < ARRAY_SIZE(dapm_up_seq); i++)
+ 			if (sort[i] == cur_sort)
+ 				cur_dapm->seq_notifier(cur_dapm,
+-						       i);
++						       i, cur_subseq);
  	}
+ }
  
-+	debugfs_create_bool("cache_sync", 0444, codec->debugfs_codec_root,
-+			    &codec->cache_sync);
-+	debugfs_create_bool("cache_only", 0444, codec->debugfs_codec_root,
-+			    &codec->cache_only);
-+
- 	codec->debugfs_reg = debugfs_create_file("codec_reg", 0644,
- 						 codec->debugfs_codec_root,
- 						 codec, &codec_reg_fops);
 -- 
 1.7.2.3
