@@ -1,48 +1,53 @@
-From: "Lambert, David" <dlambert@ti.com>
-Subject: Re: [PATCH v3 2/4] OMAP4: hwmod: add entries for DMIC driver
-Date: Wed, 26 Jan 2011 06:55:39 -0600
-Message-ID: <AANLkTi=GFtasMK70zOs-m6FTXchNgxv3ryS1g11sL_2w@mail.gmail.com>
-References: <1295992862-6154-1-git-send-email-dlambert@ti.com>
- <1295992862-6154-3-git-send-email-dlambert@ti.com> <alpine.DEB.2.00.1101251654290.16671@utopia.booyaka.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Staticise non-exported symbols in cs4271
+Date: Wed, 26 Jan 2011 11:36:14 +0000
+Message-ID: <1296041774-24028-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1101251654290.16671@utopia.booyaka.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Paul Walmsley <paul@pwsan.com>
-Cc: Benoit Cousson <b-cousson@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 26CAE24531
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 14:06:29 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Alexander Sverdlin <subaparts@yandex.ru>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 25, 2011 at 5:54 PM, Paul Walmsley <paul@pwsan.com> wrote:
->
-> On Tue, 25 Jan 2011, David Lambert wrote:
->
-> > From: Benoit Cousson <b-cousson@ti.com>
-> >
-> > Adds HWMOD entries for the OMAP DMIC driver and creates
-> > a platform device. =A0The HWMOD entires define the system
-> > resource requirements for the drvier such as DMA addresses, channel=
-s,
-> > and IRQ's. =A0Placing this information in the HWMOD database allows
-> > for more generic drivers to be written and having the specific
-> > implementation details defined in HWMOD.
-> >
-> > Signed-off-by: David Lambert <dlambert@ti.com>
->
-> This should have Benoit's Signed-off-by: also.
->
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/cs4271.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-OK... Benoit has already agreed to it... will it be sufficient if I
-just have him ACK the
-change here on e-mail?
-
---
-David Lambert
-OMAP=99 Multimedia
-214-567-5692
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index 5357ec5..9c5b7db 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -386,7 +386,7 @@ static struct snd_soc_dai_ops cs4271_dai_ops = {
+ 	.digital_mute	= cs4271_digital_mute,
+ };
+ 
+-struct snd_soc_dai_driver cs4271_dai = {
++static struct snd_soc_dai_driver cs4271_dai = {
+ 	.name = "cs4271-hifi",
+ 	.playback = {
+ 		.stream_name	= "Playback",
+@@ -526,7 +526,7 @@ static int cs4271_remove(struct snd_soc_codec *codec)
+ 	return 0;
+ };
+ 
+-struct snd_soc_codec_driver soc_codec_dev_cs4271 = {
++static struct snd_soc_codec_driver soc_codec_dev_cs4271 = {
+ 	.probe			= cs4271_probe,
+ 	.remove			= cs4271_remove,
+ 	.suspend		= cs4271_soc_suspend,
+-- 
+1.7.2.3
