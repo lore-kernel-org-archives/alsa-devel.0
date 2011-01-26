@@ -1,17 +1,20 @@
 From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCH 1/4] ASoC: soc-core: Increment codec and
-	platform driver refcounts before probing
-Date: Wed, 26 Jan 2011 13:58:14 +0200
-Message-ID: <1296043097-11720-1-git-send-email-jhnikula@gmail.com>
+Subject: [PATCH 2/4] ASoC: Add optional pointer to machine
+	audio routes to snd_soc_card
+Date: Wed, 26 Jan 2011 13:58:15 +0200
+Message-ID: <1296043097-11720-2-git-send-email-jhnikula@gmail.com>
+References: <1296043097-11720-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 900FF2454F
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 12:57:03 +0100 (CET)
-Received: by fxm5 with SMTP id 5so871208fxm.38
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 03:57:03 -0800 (PST)
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id F273E1039F4
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 12:57:06 +0100 (CET)
+Received: by mail-fx0-f51.google.com with SMTP id 5so871208fxm.38
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 03:57:06 -0800 (PST)
+In-Reply-To: <1296043097-11720-1-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,88 +25,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Harsha Priya <priya.harsha@intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Commit f6c2ed5 "ASoC: Fix the device references to codec and platform drivers"
-moved codec and platform driver refcount increments from soc_bind_dai_link
-to more appropriate places.
+This is targeted mostly to cross-device setups where single audio map
+defining routes around and between the codecs looks cleaner than defining
+and registering maps to each codec separately from machine init callbacks.
 
-Adjust a little them so that refcounts are incremented before executing the
-driver probe functions.
+This could be also used to reduce simple machine init callbacks where only
+snd_soc_dapm_add_routes and snd_soc_dapm_sync are called. However, this does
+work only if the widgets names are unique in the system.
+
+Idea of common audio map came from Peter Ujfalusi <peter.ujfalusi@nokia.com>.
 
 Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Vinod Koul <vinod.koul@intel.com>
-Cc: Harsha Priya <priya.harsha@intel.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
-I don't know any regression with this so probably 2.6.39 material.
----
- sound/soc/soc-core.c |   21 +++++++++++++--------
- 1 files changed, 13 insertions(+), 8 deletions(-)
+ include/sound/soc.h  |    8 ++++++++
+ sound/soc/soc-core.c |   21 +++++++++++++++++++++
+ 2 files changed, 29 insertions(+), 0 deletions(-)
 
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 1355ef0..fec03ae 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -686,6 +686,14 @@ struct snd_soc_card {
+ 	struct snd_soc_pcm_runtime *rtd_aux;
+ 	int num_aux_rtd;
+ 
++	/*
++	 * optional machine audio map. Can be used as an alternative for
++	 * snd_soc_dapm_add_routes call in machine init in single codec setup
++	 * or as a common audio map in cross-device setup
++	 */
++	const struct snd_soc_dapm_route *route;
++	int num_routes;
++
+ 	struct work_struct deferred_resume_work;
+ 
+ 	/* lists of probed devices belonging to this card */
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 14861f9..4da185f 100644
+index 4da185f..17484b1 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1408,26 +1408,31 @@ static int soc_probe_codec(struct snd_soc_card *card,
- 	codec->dapm.card = card;
- 	soc_set_name_prefix(card, codec);
+@@ -1727,6 +1727,7 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	struct snd_soc_codec *codec;
+ 	struct snd_soc_codec_conf *codec_conf;
+ 	enum snd_soc_compress_type compress_type;
++	const char *temp;
+ 	int ret, i;
  
-+	if (!try_module_get(codec->dev->driver->owner))
-+		return -ENODEV;
-+
- 	if (codec->driver->probe) {
- 		ret = codec->driver->probe(codec);
- 		if (ret < 0) {
- 			dev_err(codec->dev,
- 				"asoc: failed to probe CODEC %s: %d\n",
- 				codec->name, ret);
--			return ret;
-+			goto err_probe;
+ 	mutex_lock(&card->mutex);
+@@ -1810,6 +1811,26 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
  		}
  	}
  
- 	soc_init_codec_debugfs(codec);
- 
- 	/* mark codec as probed and add to card codec list */
--	if (!try_module_get(codec->dev->driver->owner))
--		return -ENODEV;
--
- 	codec->probed = 1;
- 	list_add(&codec->card_list, &card->codec_dev_list);
- 	list_add(&codec->dapm.list, &card->dapm_list);
- 
-+	return 0;
++	if (card->route) {
++		/*
++		 * use the last codec and dapm context of it when setting up
++		 * the common audio map
++		 */
++		codec = list_first_entry(&card->codec_dev_list,
++					 struct snd_soc_codec, card_list);
++		temp = codec->name_prefix;
++		codec->name_prefix = NULL;
++		ret = snd_soc_dapm_add_routes(&codec->dapm,
++					      card->route, card->num_routes);
++		if (ret < 0) {
++			pr_err("asoc: failed to add routes %s: %d\n",
++			       card->name, ret);
++			goto probe_aux_dev_err;
++		}
++		codec->name_prefix = temp;
++		snd_soc_dapm_sync(&codec->dapm);
++	}
 +
-+err_probe:
-+	module_put(codec->dev->driver->owner);
-+
- 	return ret;
- }
- 
-@@ -1545,19 +1550,19 @@ static int soc_probe_dai_link(struct snd_soc_card *card, int num)
- 
- 	/* probe the platform */
- 	if (!platform->probed) {
-+		if (!try_module_get(platform->dev->driver->owner))
-+			return -ENODEV;
-+
- 		if (platform->driver->probe) {
- 			ret = platform->driver->probe(platform);
- 			if (ret < 0) {
- 				printk(KERN_ERR "asoc: failed to probe platform %s\n",
- 						platform->name);
-+				module_put(platform->dev->driver->owner);
- 				return ret;
- 			}
- 		}
- 		/* mark platform as probed and add to card platform list */
--
--		if (!try_module_get(platform->dev->driver->owner))
--			return -ENODEV;
--
- 		platform->probed = 1;
- 		list_add(&platform->card_list, &card->platform_dev_list);
- 	}
+ 	snprintf(card->snd_card->shortname, sizeof(card->snd_card->shortname),
+ 		 "%s",  card->name);
+ 	snprintf(card->snd_card->longname, sizeof(card->snd_card->longname),
 -- 
 1.7.2.3
