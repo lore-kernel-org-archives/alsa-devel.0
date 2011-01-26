@@ -1,15 +1,13 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: Re: hdspmixer
-Date: Wed, 26 Jan 2011 11:23:05 +0100
-Message-ID: <4D3FF609.5090408@drcomp.erfurt.thur.de>
-References: <alpine.LNX.2.00.1101261044110.6272@eeebox2.perex-int.cz>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Fix automute on Thinkpad L412/L512
+Date: Wed, 26 Jan 2011 11:53:52 +0100
+Message-ID: <4D3FFD40.7020201@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------060906060706060400030004"
+Content-Type: multipart/mixed; boundary="------------050307010508090001070500"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id 85E252450F
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 11:23:22 +0100 (CET)
-In-Reply-To: <alpine.LNX.2.00.1101261044110.6272@eeebox2.perex-int.cz>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5007624517
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 11:53:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,445 +17,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------060906060706060400030004
-Content-Type: text/plain; charset=ISO-8859-1
+--------------050307010508090001070500
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 01/26/11 10:49, Jaroslav Kysela wrote:
-
-> Hi,
-
-Hi!
-
-> working on new ALSA release, but it seems that 
-> alsa-tools/hdspmixer is out of sync with current 
-> linux/sound/hdsp.h / hdspm.h after this commit:
-
-That's very likely. The commit was ment to amend ongoing work on the
-hdspm driver, but it took me a little longer to get it done. (I
-completed it yesterday, but I still have to send the patch)
-
-Find attached the hdspm.h I'm going to send today (hopefully; like
-always, time is the foremost problem).
-
-With this file, I'm able to compile and run hdspmixer.
+More Thinkpad machines with invalid SKU found, that disables
+automute between speakers and headphones on these machines. I'm 
+considering putting in a quirk mask instead, but I'm not exactly sure on 
+how wide I should make it...any suggestion?
 
 
-HTH
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
 
---------------060906060706060400030004
-Content-Type: text/x-chdr;
- name="hdspm.h"
+--------------050307010508090001070500
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Fix-automute-on-Thinkpad-L412-L512.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
- filename="hdspm.h"
+ filename*0="0001-ALSA-HDA-Fix-automute-on-Thinkpad-L412-L512.patch"
 
-#ifndef __SOUND_HDSPM_H
-#define __SOUND_HDSPM_H
-/*
- *   Copyright (C) 2003 Winfried Ritsch (IEM)
- *   based on hdsp.h from Thomas Charbonnel (thomas@undata.org)
- *
- *
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation; either version 2 of the License, or
- *   (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program; if not, write to the Free Software
- *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
+>From ffe97bdd72c997ba5c0bfd0e05288fe9f4093b45 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Wed, 26 Jan 2011 11:46:12 +0100
+Subject: [PATCH] ALSA: HDA: Fix automute on Thinkpad L412/L512
 
-/* Maximum channels is 64 even on 56Mode you have 64playbacks to matrix */
-#define HDSPM_MAX_CHANNELS      64
+BugLink: http://bugs.launchpad.net/bugs/707902
 
-enum hdspm_io_type {
-	MADI,
-	MADIface,
-	AIO,
-	AES32,
-	RayDAT
-};
+More Thinkpad machines with invalid SKU found, that disables
+automute between speakers and headphones on these machines.
 
-enum hdspm_speed {
-	ss,
-	ds,
-	qs
-};
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
 
-/* -------------------- IOCTL Peak/RMS Meters -------------------- */
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index be4df4c..2fa9ed9 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -14954,9 +14954,11 @@ static struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x104d, 0x9084, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
+ 	SND_PCI_QUIRK_VENDOR(0x104d, "Sony VAIO", ALC269_FIXUP_SONY_VAIO),
+ 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
+-	SND_PCI_QUIRK(0x17aa, 0x21b8, "Thinkpad Edge 14", ALC269_FIXUP_SKU_IGNORE),
+-	SND_PCI_QUIRK(0x17aa, 0x21e9, "Thinkpad Edge 14", ALC269_FIXUP_SKU_IGNORE),
+ 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Thinkpad SL410/510", ALC269_FIXUP_SKU_IGNORE),
++	SND_PCI_QUIRK(0x17aa, 0x215e, "Thinkpad L512", ALC269_FIXUP_SKU_IGNORE),
++	SND_PCI_QUIRK(0x17aa, 0x21b8, "Thinkpad Edge 14", ALC269_FIXUP_SKU_IGNORE),
++	SND_PCI_QUIRK(0x17aa, 0x21ca, "Thinkpad L412", ALC269_FIXUP_SKU_IGNORE),
++	SND_PCI_QUIRK(0x17aa, 0x21e9, "Thinkpad Edge 15", ALC269_FIXUP_SKU_IGNORE),
+ 	SND_PCI_QUIRK(0x1043, 0x1a13, "Asus G73Jw", ALC269_FIXUP_ASUS_G73JW),
+ 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
+ 	{}
+-- 
+1.7.1
 
-struct hdspm_peak_rms {
-	uint32_t input_peaks[64];
-	uint32_t playback_peaks[64];
-	uint32_t output_peaks[64];
 
-	uint64_t input_rms[64];
-	uint64_t playback_rms[64];
-	uint64_t output_rms[64];
-
-	uint8_t speed; /* enum {ss, ds, qs} */
-	int status2;
-};
-
-#define SNDRV_HDSPM_IOCTL_GET_PEAK_RMS \
-	_IOR('H', 0x42, struct hdspm_peak_rms)
-
-/* ------------ CONFIG block IOCTL ---------------------- */
-
-struct hdspm_config {
-	unsigned char pref_sync_ref;
-	unsigned char wordclock_sync_check;
-	unsigned char madi_sync_check;
-	unsigned int system_sample_rate;
-	unsigned int autosync_sample_rate;
-	unsigned char system_clock_mode;
-	unsigned char clock_source;
-	unsigned char autosync_ref;
-	unsigned char line_out;
-	unsigned int passthru;
-	unsigned int analog_out;
-};
-
-#define SNDRV_HDSPM_IOCTL_GET_CONFIG \
-	_IOR('H', 0x41, struct hdspm_config)
-
-/**
- * If there's a TCO (TimeCode Option) board installed,
- * there are further options and status data available.
- * The hdspm_ltc structure contains the current SMPTE
- * timecode and some status information and can be
- * obtained via SNDRV_HDSPM_IOCTL_GET_LTC or in the
- * hdspm_status struct.
- **/
-
-enum hdspm_ltc_format {
-	format_invalid,
-	fps_24,
-	fps_25,
-	fps_2997,
-	fps_30
-};
-
-enum hdspm_ltc_frame {
-	frame_invalid,
-	drop_frame,
-	full_frame
-};
-
-enum hdspm_ltc_input_format {
-	ntsc,
-	pal,
-	no_video
-};
-
-struct hdspm_ltc {
-	unsigned int ltc;
-
-	enum hdspm_ltc_format format;
-	enum hdspm_ltc_frame frame;
-	enum hdspm_ltc_input_format input_format;
-};
-
-#define SNDRV_HDSPM_IOCTL_GET_LTC _IOR('H', 0x46, struct hdspm_mixer_ioctl)
-
-/**
- * The status data reflects the device's current state
- * as determined by the card's configuration and
- * connection status.
- **/
-
-enum hdspm_sync {
-	hdspm_sync_no_lock = 0,
-	hdspm_sync_lock = 1,
-	hdspm_sync_sync = 2
-};
-
-enum hdspm_madi_input {
-	hdspm_input_optical = 0,
-	hdspm_input_coax = 1
-};
-
-enum hdspm_madi_channel_format {
-	hdspm_format_ch_64 = 0,
-	hdspm_format_ch_56 = 1
-};
-
-enum hdspm_madi_frame_format {
-	hdspm_frame_48 = 0,
-	hdspm_frame_96 = 1
-};
-
-enum hdspm_syncsource {
-	syncsource_wc = 0,
-	syncsource_madi = 1,
-	syncsource_tco = 2,
-	syncsource_sync = 3,
-	syncsource_none = 4
-};
-
-struct hdspm_status {
-	uint8_t card_type; /* enum hdspm_io_type */
-	enum hdspm_syncsource autosync_source;
-
-	uint64_t card_clock;
-	uint32_t master_period;
-
-	union {
-		struct {
-			uint8_t sync_wc; /* enum hdspm_sync */
-			uint8_t sync_madi; /* enum hdspm_sync */
-			uint8_t sync_tco; /* enum hdspm_sync */
-			uint8_t sync_in; /* enum hdspm_sync */
-			uint8_t madi_input; /* enum hdspm_madi_input */
-			uint8_t channel_format; /* enum hdspm_madi_channel_format */
-			uint8_t frame_format; /* enum hdspm_madi_frame_format */
-		} madi;
-	} card_specific;
-};
-
-#define SNDRV_HDSPM_IOCTL_GET_STATUS \
-	_IOR('H', 0x47, struct hdspm_status)
-
-/**
- * Get information about the card and its add-ons.
- **/
-
-#define HDSPM_ADDON_TCO 1
-
-struct hdspm_version {
-	uint8_t card_type; /* enum hdspm_io_type */
-	char cardname[20];
-	unsigned int serial;
-	unsigned short firmware_rev;
-	int addons;
-};
-
-#define SNDRV_HDSPM_IOCTL_GET_VERSION _IOR('H', 0x43, struct hdspm_version)
-
-/* ------------- get Matrix Mixer IOCTL --------------- */
-
-/* MADI mixer: 64inputs+64playback in 64outputs = 8192 => *4Byte =
- * 32768 Bytes
- */
-
-/* organisation is 64 channelfader in a continous memory block */
-/* equivalent to hardware definition, maybe for future feature of mmap of
- * them
- */
-/* each of 64 outputs has 64 infader and 64 outfader:
-   Ins to Outs mixer[out].in[in], Outstreams to Outs mixer[out].pb[pb] */
-
-#define HDSPM_MIXER_CHANNELS HDSPM_MAX_CHANNELS
-
-struct hdspm_channelfader {
-	unsigned int in[HDSPM_MIXER_CHANNELS];
-	unsigned int pb[HDSPM_MIXER_CHANNELS];
-};
-
-struct hdspm_mixer {
-	struct hdspm_channelfader ch[HDSPM_MIXER_CHANNELS];
-};
-
-struct hdspm_mixer_ioctl {
-	struct hdspm_mixer *mixer;
-};
-
-/* use indirect access due to the limit of ioctl bit size */
-#define SNDRV_HDSPM_IOCTL_GET_MIXER _IOR('H', 0x44, struct hdspm_mixer_ioctl)
-
-/* typedefs for compatibility to user-space */
-typedef struct hdspm_peak_rms hdspm_peak_rms_t;
-typedef struct hdspm_config_info hdspm_config_info_t;
-typedef struct hdspm_version hdspm_version_t;
-typedef struct hdspm_channelfader snd_hdspm_channelfader_t;
-typedef struct hdspm_mixer hdspm_mixer_t;
-
-/* These tables map the ALSA channels 1..N to the channels that we
-   need to use in order to find the relevant channel buffer. RME
-   refers to this kind of mapping as between "the ADAT channel and
-   the DMA channel." We index it using the logical audio channel,
-   and the value is the DMA channel (i.e. channel buffer number)
-   where the data for that channel can be read/written from/to.
-*/
-
-static char channel_map_unity_ss[HDSPM_MAX_CHANNELS] = {
-	0, 1, 2, 3, 4, 5, 6, 7,
-	8, 9, 10, 11, 12, 13, 14, 15,
-	16, 17, 18, 19, 20, 21, 22, 23,
-	24, 25, 26, 27, 28, 29, 30, 31,
-	32, 33, 34, 35, 36, 37, 38, 39,
-	40, 41, 42, 43, 44, 45, 46, 47,
-	48, 49, 50, 51, 52, 53, 54, 55,
-	56, 57, 58, 59, 60, 61, 62, 63
-};
-
-static char channel_map_unity_ds[HDSPM_MAX_CHANNELS] = {
-	0, 2, 4, 6, 8, 10, 12, 14,
-	16, 18, 20, 22, 24, 26, 28, 30,
-	32, 34, 36, 38, 40, 42, 44, 46,
-	48, 50, 52, 54, 56, 58, 60, 62,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-};
-
-static char channel_map_unity_qs[HDSPM_MAX_CHANNELS] = {
-	0, 4, 8, 12, 16, 20, 24, 28,
-	32, 36, 40, 44, 48, 52, 56, 60,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-};
-
-static char channel_map_raydat_ss[HDSPM_MAX_CHANNELS] = {
-	4, 5, 6, 7, 8, 9, 10, 11,	/* ADAT 1 */
-	12, 13, 14, 15, 16, 17, 18, 19,	/* ADAT 2 */
-	20, 21, 22, 23, 24, 25, 26, 27,	/* ADAT 3 */
-	28, 29, 30, 31, 32, 33, 34, 35,	/* ADAT 4 */
-	0, 1,			/* AES */
-	2, 3,			/* SPDIF */
-	-1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-};
-
-static char channel_map_raydat_ds[HDSPM_MAX_CHANNELS] = {
-	4, 5, 6, 7,		/* ADAT 1 */
-	8, 9, 10, 11,		/* ADAT 2 */
-	12, 13, 14, 15,		/* ADAT 3 */
-	16, 17, 18, 19,		/* ADAT 4 */
-	0, 1,			/* AES */
-	2, 3,			/* SPDIF */
-	-1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-};
-
-static char channel_map_raydat_qs[HDSPM_MAX_CHANNELS] = {
-	4, 5,			/* ADAT 1 */
-	6, 7,			/* ADAT 2 */
-	8, 9,			/* ADAT 3 */
-	10, 11,			/* ADAT 4 */
-	0, 1,			/* AES */
-	2, 3,			/* SPDIF */
-	-1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-};
-
-static char channel_map_aio_in_ss[HDSPM_MAX_CHANNELS] = {
-	0, 1,			/* line in */
-	8, 9,			/* aes in, */
-	10, 11,			/* spdif in */
-	12, 13, 14, 15, 16, 17, 18, 19,	/* ADAT in */
-	-1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-};
-
-static char channel_map_aio_out_ss[HDSPM_MAX_CHANNELS] = {
-	0, 1,			/* line out */
-	8, 9,			/* aes out */
-	10, 11,			/* spdif out */
-	12, 13, 14, 15, 16, 17, 18, 19,	/* ADAT out */
-	6, 7,			/* phone out */
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-};
-
-static char channel_map_aio_in_ds[HDSPM_MAX_CHANNELS] = {
-	0, 1,			/* line in */
-	8, 9,			/* aes in */
-	10, 11,			/* spdif in */
-	12, 14, 16, 18,		/* adat in */
-	-1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1
-};
-
-static char channel_map_aio_out_ds[HDSPM_MAX_CHANNELS] = {
-	0, 1,			/* line out */
-	8, 9,			/* aes out */
-	10, 11,			/* spdif out */
-	12, 14, 16, 18,		/* adat out */
-	6, 7,			/* phone out */
-	-1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1
-};
-
-static char channel_map_aio_in_qs[HDSPM_MAX_CHANNELS] = {
-	0, 1,			/* line in */
-	8, 9,			/* aes in */
-	10, 11,			/* spdif in */
-	12, 16,			/* adat in */
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1
-};
-
-static char channel_map_aio_out_qs[HDSPM_MAX_CHANNELS] = {
-	0, 1,			/* line out */
-	8, 9,			/* aes out */
-	10, 11,			/* spdif out */
-	12, 16,			/* adat out */
-	6, 7,			/* phone out */
-	-1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1
-};
-
-#endif
-
---------------060906060706060400030004
+--------------050307010508090001070500
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -468,4 +90,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---------------060906060706060400030004--
+--------------050307010508090001070500--
