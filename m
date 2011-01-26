@@ -1,15 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/3] ASoC: Use card rather than soc-audio
-	device to card PM functions
-Date: Wed, 26 Jan 2011 17:08:27 +0000
-Message-ID: <1296061709-12494-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/3] ASoC: Replace pdev with card in machine
+	driver probe and remove
+Date: Wed, 26 Jan 2011 17:08:28 +0000
+Message-ID: <1296061709-12494-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1296061709-12494-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 08A8924599
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0B65C2459A
 	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 18:08:37 +0100 (CET)
+In-Reply-To: <1296061709-12494-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,130 +25,176 @@ To: Liam Girdwood <lrg@slimlogic.co.uk>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-The platform device for the card is tied closely to the soc-audio
-implementation which we're currently trying to remove in favour of
-allowing cards to have their own devices. Begin removing it by
-replacing it with the card in the suspend and resume callbacks we
-give to cards, also taking the opportunity to remove the legacy
-suspend types which are currently hard coded anyway.
+In order to support cards instantiated without using soc-audio remove
+the use of the platform device in the card probe() and remove() ops.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/sound/soc.h      |    8 ++++----
- sound/soc/pxa/raumfeld.c |    4 ++--
- sound/soc/pxa/zylonite.c |    5 ++---
- sound/soc/soc-core.c     |    9 ++++-----
- 4 files changed, 12 insertions(+), 14 deletions(-)
+ include/sound/soc.h          |    4 ++--
+ sound/soc/fsl/mpc8610_hpcd.c |    6 ++----
+ sound/soc/fsl/p1022_ds.c     |    6 ++----
+ sound/soc/pxa/tosa.c         |    4 ++--
+ sound/soc/pxa/zylonite.c     |    4 ++--
+ sound/soc/soc-core.c         |    8 +++-----
+ 6 files changed, 13 insertions(+), 19 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 00c6fba..d1cc1a2 100644
+index d1cc1a2..a6a9013 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -655,10 +655,10 @@ struct snd_soc_card {
+@@ -650,8 +650,8 @@ struct snd_soc_card {
+ 
+ 	bool instantiated;
+ 
+-	int (*probe)(struct platform_device *pdev);
+-	int (*remove)(struct platform_device *pdev);
++	int (*probe)(struct snd_soc_card *card);
++	int (*remove)(struct snd_soc_card *card);
  
  	/* the pre and post PM functions are used to do any PM work before and
  	 * after the codec and DAI's do any PM work. */
--	int (*suspend_pre)(struct platform_device *pdev, pm_message_t state);
--	int (*suspend_post)(struct platform_device *pdev, pm_message_t state);
--	int (*resume_pre)(struct platform_device *pdev);
--	int (*resume_post)(struct platform_device *pdev);
-+	int (*suspend_pre)(struct snd_soc_card *card);
-+	int (*suspend_post)(struct snd_soc_card *card);
-+	int (*resume_pre)(struct snd_soc_card *card);
-+	int (*resume_post)(struct snd_soc_card *card);
- 
- 	/* callbacks */
- 	int (*set_bias_level)(struct snd_soc_card *,
-diff --git a/sound/soc/pxa/raumfeld.c b/sound/soc/pxa/raumfeld.c
-index 0fd60f4..db1dd56 100644
---- a/sound/soc/pxa/raumfeld.c
-+++ b/sound/soc/pxa/raumfeld.c
-@@ -151,13 +151,13 @@ static struct snd_soc_ops raumfeld_cs4270_ops = {
- 	.hw_params = raumfeld_cs4270_hw_params,
+diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
+index 7d7847a..c16c6b2 100644
+--- a/sound/soc/fsl/mpc8610_hpcd.c
++++ b/sound/soc/fsl/mpc8610_hpcd.c
+@@ -53,9 +53,8 @@ struct mpc8610_hpcd_data {
+  *
+  * Here we program the DMACR and PMUXCR registers.
+  */
+-static int mpc8610_hpcd_machine_probe(struct platform_device *sound_device)
++static int mpc8610_hpcd_machine_probe(struct snd_soc_card *card)
+ {
+-	struct snd_soc_card *card = platform_get_drvdata(sound_device);
+ 	struct mpc8610_hpcd_data *machine_data =
+ 		container_of(card, struct mpc8610_hpcd_data, card);
+ 	struct ccsr_guts_86xx __iomem *guts;
+@@ -138,9 +137,8 @@ static int mpc8610_hpcd_startup(struct snd_pcm_substream *substream)
+  * This function is called to remove the sound device for one SSI.  We
+  * de-program the DMACR and PMUXCR register.
+  */
+-static int mpc8610_hpcd_machine_remove(struct platform_device *sound_device)
++static int mpc8610_hpcd_machine_remove(struct snd_soc_card *card)
+ {
+-	struct snd_soc_card *card = platform_get_drvdata(sound_device);
+ 	struct mpc8610_hpcd_data *machine_data =
+ 		container_of(card, struct mpc8610_hpcd_data, card);
+ 	struct ccsr_guts_86xx __iomem *guts;
+diff --git a/sound/soc/fsl/p1022_ds.c b/sound/soc/fsl/p1022_ds.c
+index 026b756..66e0b68 100644
+--- a/sound/soc/fsl/p1022_ds.c
++++ b/sound/soc/fsl/p1022_ds.c
+@@ -85,9 +85,8 @@ struct machine_data {
+  *
+  * Here we program the DMACR and PMUXCR registers.
+  */
+-static int p1022_ds_machine_probe(struct platform_device *sound_device)
++static int p1022_ds_machine_probe(struct snd_soc_card *card)
+ {
+-	struct snd_soc_card *card = platform_get_drvdata(sound_device);
+ 	struct machine_data *mdata =
+ 		container_of(card, struct machine_data, card);
+ 	struct ccsr_guts_85xx __iomem *guts;
+@@ -160,9 +159,8 @@ static int p1022_ds_startup(struct snd_pcm_substream *substream)
+  * This function is called to remove the sound device for one SSI.  We
+  * de-program the DMACR and PMUXCR register.
+  */
+-static int p1022_ds_machine_remove(struct platform_device *sound_device)
++static int p1022_ds_machine_remove(struct snd_soc_card *card)
+ {
+-	struct snd_soc_card *card = platform_get_drvdata(sound_device);
+ 	struct machine_data *mdata =
+ 		container_of(card, struct machine_data, card);
+ 	struct ccsr_guts_85xx __iomem *guts;
+diff --git a/sound/soc/pxa/tosa.c b/sound/soc/pxa/tosa.c
+index f75804e..489139a 100644
+--- a/sound/soc/pxa/tosa.c
++++ b/sound/soc/pxa/tosa.c
+@@ -237,7 +237,7 @@ static struct snd_soc_dai_link tosa_dai[] = {
+ },
  };
  
--static int raumfeld_line_suspend(struct platform_device *pdev, pm_message_t state)
-+static int raumfeld_line_suspend(struct snd_soc_card *card)
+-static int tosa_probe(struct platform_device *dev)
++static int tosa_probe(struct snd_soc_card *card)
  {
- 	raumfeld_enable_audio(false);
- 	return 0;
+ 	int ret;
+ 
+@@ -251,7 +251,7 @@ static int tosa_probe(struct platform_device *dev)
+ 	return ret;
  }
  
--static int raumfeld_line_resume(struct platform_device *pdev)
-+static int raumfeld_line_resume(struct snd_soc_card *card)
+-static int tosa_remove(struct platform_device *dev)
++static int tosa_remove(struct snd_soc_card *card)
  {
- 	raumfeld_enable_audio(true);
+ 	gpio_free(TOSA_GPIO_L_MUTE);
  	return 0;
 diff --git a/sound/soc/pxa/zylonite.c b/sound/soc/pxa/zylonite.c
-index b222a7d..7b72901 100644
+index 7b72901..c585829 100644
 --- a/sound/soc/pxa/zylonite.c
 +++ b/sound/soc/pxa/zylonite.c
-@@ -226,8 +226,7 @@ static int zylonite_remove(struct platform_device *pdev)
+@@ -189,7 +189,7 @@ static struct snd_soc_dai_link zylonite_dai[] = {
+ },
+ };
+ 
+-static int zylonite_probe(struct platform_device *pdev)
++static int zylonite_probe(struct snd_soc_card *card)
+ {
+ 	int ret;
+ 
+@@ -216,7 +216,7 @@ static int zylonite_probe(struct platform_device *pdev)
  	return 0;
  }
  
--static int zylonite_suspend_post(struct platform_device *pdev,
--				 pm_message_t state)
-+static int zylonite_suspend_post(struct snd_soc_card *card)
+-static int zylonite_remove(struct platform_device *pdev)
++static int zylonite_remove(struct snd_soc_card *card)
  {
- 	if (clk_pout)
+ 	if (clk_pout) {
  		clk_disable(pout);
-@@ -235,7 +234,7 @@ static int zylonite_suspend_post(struct platform_device *pdev,
- 	return 0;
- }
- 
--static int zylonite_resume_pre(struct platform_device *pdev)
-+static int zylonite_resume_pre(struct snd_soc_card *card)
- {
- 	int ret = 0;
- 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 14861f9..446838e 100644
+index 446838e..4bc2365 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1011,7 +1011,7 @@ static int soc_suspend(struct device *dev)
- 	}
+@@ -1717,7 +1717,6 @@ static int snd_soc_init_codec_cache(struct snd_soc_codec *codec,
  
- 	if (card->suspend_pre)
--		card->suspend_pre(pdev, PMSG_SUSPEND);
-+		card->suspend_pre(card);
- 
- 	for (i = 0; i < card->num_rtd; i++) {
- 		struct snd_soc_dai *cpu_dai = card->rtd[i].cpu_dai;
-@@ -1078,7 +1078,7 @@ static int soc_suspend(struct device *dev)
- 	}
- 
- 	if (card->suspend_post)
--		card->suspend_post(pdev, PMSG_SUSPEND);
-+		card->suspend_post(card);
- 
- 	return 0;
- }
-@@ -1090,7 +1090,6 @@ static void soc_resume_deferred(struct work_struct *work)
+ static void snd_soc_instantiate_card(struct snd_soc_card *card)
  {
- 	struct snd_soc_card *card =
- 			container_of(work, struct snd_soc_card, deferred_resume_work);
 -	struct platform_device *pdev = to_platform_device(card->dev);
  	struct snd_soc_codec *codec;
+ 	struct snd_soc_codec_conf *codec_conf;
+ 	enum snd_soc_compress_type compress_type;
+@@ -1781,7 +1780,7 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 
+ 	/* initialise the sound card only once */
+ 	if (card->probe) {
+-		ret = card->probe(pdev);
++		ret = card->probe(card);
+ 		if (ret < 0)
+ 			goto card_probe_error;
+ 	}
+@@ -1842,7 +1841,7 @@ probe_dai_err:
+ 
+ card_probe_error:
+ 	if (card->remove)
+-		card->remove(pdev);
++		card->remove(card);
+ 
+ 	snd_card_free(card->snd_card);
+ 
+@@ -1888,7 +1887,6 @@ static int soc_probe(struct platform_device *pdev)
+ 
+ static int soc_cleanup_card_resources(struct snd_soc_card *card)
+ {
+-	struct platform_device *pdev = to_platform_device(card->dev);
  	int i;
  
-@@ -1104,7 +1103,7 @@ static void soc_resume_deferred(struct work_struct *work)
- 	snd_power_change_state(card->snd_card, SNDRV_CTL_POWER_D2);
+ 	/* make sure any delayed work runs */
+@@ -1909,7 +1907,7 @@ static int soc_cleanup_card_resources(struct snd_soc_card *card)
  
- 	if (card->resume_pre)
--		card->resume_pre(pdev);
-+		card->resume_pre(card);
+ 	/* remove the card */
+ 	if (card->remove)
+-		card->remove(pdev);
++		card->remove(card);
  
- 	/* resume AC97 DAIs */
- 	for (i = 0; i < card->num_rtd; i++) {
-@@ -1179,7 +1178,7 @@ static void soc_resume_deferred(struct work_struct *work)
- 	}
- 
- 	if (card->resume_post)
--		card->resume_post(pdev);
-+		card->resume_post(card);
- 
- 	dev_dbg(card->dev, "resume work completed\n");
- 
+ 	kfree(card->rtd);
+ 	snd_card_free(card->snd_card);
 -- 
 1.7.2.3
