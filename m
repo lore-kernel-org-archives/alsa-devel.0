@@ -1,18 +1,22 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCH 2.6.38] ASoC: Fix module refcount for auxiliary
-	devices
-Date: Wed, 26 Jan 2011 16:39:37 +0200
-Message-ID: <1296052777-3890-1-git-send-email-jhnikula@gmail.com>
+From: Andy Robinson <ajr55555@gmail.com>
+Subject: Re: [PATCH 2/2] ALSA: HDA: Add a new model "asus" for
+ Conexant 5066/205xx
+Date: Wed, 26 Jan 2011 10:56:33 -0500
+Message-ID: <AANLkTikz=2fsQQwjuUWxxMHJRW-E_uq5p5X6y060muYr@mail.gmail.com>
+References: <4D398008.8080707@canonical.com> <s5hzkqshpdm.wl%tiwai@suse.de>
+	<4D3D6CB7.5070102@canonical.com> <s5hd3nm8nwg.wl%tiwai@suse.de>
+	<4D4024FF.3040506@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id E6D80103A1B
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 15:38:20 +0100 (CET)
-Received: by fxm5 with SMTP id 5so1025584fxm.38
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 06:38:20 -0800 (PST)
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 89D6C24577
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 16:57:50 +0100 (CET)
+Received: by yxs7 with SMTP id 7so191812yxs.38
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 07:57:47 -0800 (PST)
+In-Reply-To: <4D4024FF.3040506@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,38 +26,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Harsha Priya <priya.harsha@intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: David Henningsson <david.henningsson@canonical.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Commit f6c2ed5 "ASoC: Fix the device references to codec and platform drivers"
-moved codec driver refcount increments from soc_bind_dai_link into
-soc_probe_codec.
+Certainly, I should be able test it sometime later today. I'll let you
+know the results.
 
-However, the commit didn't remove try_module_get from soc_probe_aux_dev so
-the auxiliary device reference counts are incremented twice as the
-soc_probe_codec is called from soc_probe_aux_dev too.
+I'm wondering how common this configuration is on Asus systems - that
+is, if the asus model should be the rule for Asus rather than the
+exception for a few specific ones. When I have some free time, maybe
+I'll delve into the alsa-info database to see what's been reported
+there. I suppose it could also be handled generically by checking to
+see if mics are on nodes 0x1a, 0x1b, 0x1c, 0x1d, and/or 0x23, and
+automatically selecting the correct automic logic based on that.
 
-Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Vinod Koul <vinod.koul@intel.com>
-Cc: Harsha Priya <priya.harsha@intel.com>
----
- sound/soc/soc-core.c |    3 ---
- 1 files changed, 0 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index bac7291..c4b6061 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1664,9 +1664,6 @@ static int soc_probe_aux_dev(struct snd_soc_card *card, int num)
- 	goto out;
- 
- found:
--	if (!try_module_get(codec->dev->driver->owner))
--		return -ENODEV;
--
- 	ret = soc_probe_codec(card, codec);
- 	if (ret < 0)
- 		return ret;
--- 
-1.7.2.3
+On Wed, Jan 26, 2011 at 8:43 AM, David Henningsson
+<david.henningsson@canonical.com> wrote:
+> On 2011-01-24 13:52, Takashi Iwai wrote:
+>>
+>> At Mon, 24 Jan 2011 13:12:39 +0100,
+>> David Henningsson wrote:
+>>>
+>>> On 2011-01-22 17:31, Takashi Iwai wrote:
+>>>>
+>>>> At Fri, 21 Jan 2011 13:46:00 +0100,
+>>>> David Henningsson wrote:
+>>>>>
+>>>>> BugLink: http://bugs.launchpad.net/bugs/701271
+>>>>>
+>>>>> This new model, named "asus", is identical to the "hp_laptop" model,
+>>>>> except for the location of the internal mic, which is at pin 0x1a.
+>>>>> It is used for Asus K52JU and Lenovo G560.
+>>>>>
+>>>>> Signed-off-by: David Henningsson<david.henningsson@canonical.com>
+>>>>
+>>>> Applied, but to topic/asoc branch, as these involve rewrites.
+>>>> Thanks.
+>>>
+>>> You mean the topic/hda branch, right?
+>>
+>> Argh, yes, of course...
+>>
+>>> Does this mean it'll not be in 2.6.38, and will it be if I provide a
+>>> backport for the second patch?
+>>
+>> Right.
+>
+> Ok, here's a backport, although untested since I don't have the hardware
+> here. Andy, would it be possible for you to test it for me?
+>
+> --
+> David Henningsson, Canonical Ltd.
+> http://launchpad.net/~diwic
+>
