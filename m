@@ -1,31 +1,56 @@
-From: Paul Walmsley <paul@pwsan.com>
-Subject: Re: [PATCH v3 2/4] OMAP4: hwmod: add entries for DMIC driver
-Date: Tue, 25 Jan 2011 16:54:56 -0700 (MST)
-Message-ID: <alpine.DEB.2.00.1101251654290.16671@utopia.booyaka.com>
-References: <1295992862-6154-1-git-send-email-dlambert@ti.com> <1295992862-6154-3-git-send-email-dlambert@ti.com>
+From: "G, Manjunath Kondaiah" <manjugk@ti.com>
+Subject: Re: [PATCH v3 0/4] Adding OMAP DMIC driver to kernel
+Date: Wed, 26 Jan 2011 06:52:36 +0530
+Message-ID: <20110126012236.GB8524@manju-desktop>
+References: <1295992862-6154-1-git-send-email-dlambert@ti.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1295992862-6154-3-git-send-email-dlambert@ti.com>
+Content-Disposition: inline
+In-Reply-To: <1295992862-6154-1-git-send-email-dlambert@ti.com>
 Sender: linux-omap-owner@vger.kernel.org
-To: Benoit Cousson <b-cousson@ti.com>, David Lambert <dlambert@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: David Lambert <dlambert@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Tony Lindgren <tony@atomide.com>, Paul Walmsley <paul@pwsan.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 25 Jan 2011, David Lambert wrote:
-
-> From: Benoit Cousson <b-cousson@ti.com>
+On Tue, Jan 25, 2011 at 04:00:58PM -0600, David Lambert wrote:
+> This is a patch series to add the OMAP Digital Microphone
+> driver for OMAP4.
 > 
-> Adds HWMOD entries for the OMAP DMIC driver and creates
-> a platform device.  The HWMOD entires define the system
-> resource requirements for the drvier such as DMA addresses, channels,
-> and IRQ's.  Placing this information in the HWMOD database allows
-> for more generic drivers to be written and having the specific
-> implementation details defined in HWMOD.
+> It includes the driver, a generic DMIC codec, platform devices,
+> as well as HWMOD entries for OMAP44xx chipsets.
 > 
-> Signed-off-by: David Lambert <dlambert@ti.com>
+> Note: The DMIC codec driver was removed from this series as it was
+> accepted for and merged for the 2.6.38 kernel.
 
-This should have Benoit's Signed-off-by: also.
+You have not mentioned the baseline for this patch series. I tried to apply
+first patch of this series on linux omap master branch, patch applies cleanly
+but the changes are not getting compiled eventhough it is enabled in Makefile
+if I use omap2plus_defconfig. Am I missing anything?
 
+-Manjunath
 
-- Paul
+> 
+> Benoit Cousson (1):
+>   OMAP4: hwmod: add entries for DMIC driver
+> 
+> David Lambert (3):
+>   ASoC: DMIC: Adding the OMAP DMIC driver
+>   OMAP4: DMIC: initializes the DMIC driver
+>   OMAP4: DMIC: Add DMIC codec platform devices
+> 
+>  arch/arm/mach-omap2/board-4430sdp.c        |   11 +
+>  arch/arm/mach-omap2/omap_hwmod_44xx_data.c |   91 +++++
+>  arch/arm/plat-omap/devices.c               |   35 ++
+>  arch/arm/plat-omap/include/plat/dmic.h     |   82 +++++
+>  sound/soc/omap/Kconfig                     |    3 +
+>  sound/soc/omap/Makefile                    |    2 +
+>  sound/soc/omap/omap-dmic.c                 |  534 ++++++++++++++++++++++++++++
+>  7 files changed, 758 insertions(+), 0 deletions(-)
+>  create mode 100644 arch/arm/plat-omap/include/plat/dmic.h
+>  create mode 100644 sound/soc/omap/omap-dmic.c
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
