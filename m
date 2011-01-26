@@ -1,22 +1,12 @@
-From: Andy Robinson <ajr55555@gmail.com>
-Subject: Re: [PATCH 2/2] ALSA: HDA: Add a new model "asus" for
- Conexant 5066/205xx
-Date: Wed, 26 Jan 2011 10:56:33 -0500
-Message-ID: <AANLkTikz=2fsQQwjuUWxxMHJRW-E_uq5p5X6y060muYr@mail.gmail.com>
-References: <4D398008.8080707@canonical.com> <s5hzkqshpdm.wl%tiwai@suse.de>
-	<4D3D6CB7.5070102@canonical.com> <s5hd3nm8nwg.wl%tiwai@suse.de>
-	<4D4024FF.3040506@canonical.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: =?utf-8?q?=5Bhdspm=3A_Add_RME_RayDAT/AIO_0/2=5D_Rewo?=
+	=?utf-8?q?rked_support_for_RayDAT/AIO?=
+Date: Wed, 26 Jan 2011 16:58:28 +0100
+Message-ID: <1296057510-10047-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 89D6C24577
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 16:57:50 +0100 (CET)
-Received: by yxs7 with SMTP id 7so191812yxs.38
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 07:57:47 -0800 (PST)
-In-Reply-To: <4D4024FF.3040506@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,57 +16,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: patch@alsa-project.org
+Cc: tiwai@suse.de, Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Certainly, I should be able test it sometime later today. I'll let you
-know the results.
-
-I'm wondering how common this configuration is on Asus systems - that
-is, if the asus model should be the rule for Asus rather than the
-exception for a few specific ones. When I have some free time, maybe
-I'll delve into the alsa-info database to see what's been reported
-there. I suppose it could also be handled generically by checking to
-see if mics are on nodes 0x1a, 0x1b, 0x1c, 0x1d, and/or 0x23, and
-automatically selecting the correct automic logic based on that.
-
-On Wed, Jan 26, 2011 at 8:43 AM, David Henningsson
-<david.henningsson@canonical.com> wrote:
-> On 2011-01-24 13:52, Takashi Iwai wrote:
->>
->> At Mon, 24 Jan 2011 13:12:39 +0100,
->> David Henningsson wrote:
->>>
->>> On 2011-01-22 17:31, Takashi Iwai wrote:
->>>>
->>>> At Fri, 21 Jan 2011 13:46:00 +0100,
->>>> David Henningsson wrote:
->>>>>
->>>>> BugLink: http://bugs.launchpad.net/bugs/701271
->>>>>
->>>>> This new model, named "asus", is identical to the "hp_laptop" model,
->>>>> except for the location of the internal mic, which is at pin 0x1a.
->>>>> It is used for Asus K52JU and Lenovo G560.
->>>>>
->>>>> Signed-off-by: David Henningsson<david.henningsson@canonical.com>
->>>>
->>>> Applied, but to topic/asoc branch, as these involve rewrites.
->>>> Thanks.
->>>
->>> You mean the topic/hda branch, right?
->>
->> Argh, yes, of course...
->>
->>> Does this mean it'll not be in 2.6.38, and will it be if I provide a
->>> backport for the second patch?
->>
->> Right.
->
-> Ok, here's a backport, although untested since I don't have the hardware
-> here. Andy, would it be possible for you to test it for me?
->
-> --
-> David Henningsson, Canonical Ltd.
-> http://launchpad.net/~diwic
->
+SGkhCgpGaW5hbGx5LCBoZXJlJ3MgdGhlIHBhdGNoIHRoYXQgYWRkcyBSTUUgUmF5REFUIGFuZCBB
+SU8gc3VwcG9ydCB0byBoZHBzbS4KQ29kZSB3YXMgdGFrZW4gZnJvbSBGbG9yaWFuIEZhYmVyJ3MK
+CiAgwqBodHRwOi8vd2lraS5saW51eHByb2F1ZGlvLm9yZy9pbmRleC5waHAvRHJpdmVyOmhkc3Bl
+CgpyZXZpc2lvbiAoMjAxMC0xMi0yNSkgYW5kIGhlYXZpbHkgbW9kaWZpZWQgdG8gKGFsbW9zdCkg
+Y29tcGx5IHdpdGggdGhlCmNvZGluZyBzdHlsZS4KCkkgYWxzbyBlbmFibGVkIFMvUERJRiBpbnB1
+dCBhbmQgYXVnbWVudGVkIHRoZSBjb2RlIHRvIGFsbG93IGZvcgphbGwgcGVyaW9kIHNpemVzIGJl
+dHdlZW4gNjQgYW5kIDQwOTYgc2FtcGxlcyBvbiBSYXlEQVRzL0FJT3MuCgpBcyBwb2ludGVkIG91
+dCBieSBUYWthc2hpIGVhcmxpZXIgdGhpcyBtb250aCwgdGhpcyB2ZXJzaW9uIG5vdyBkb2Vzbid0
+CnVzZSB0eXBlZGVmcyBvciBlbnVtcyBpbiBpb2N0bCBzdHJ1Y3RzLiBJIGhvcGUgdGhhdCBJIGNh
+dWdodCBhbGwKdXBzdHJlYW0gY2hhbmdlcyB0aGF0IGhhcHBlbmVkIGluIHRoZSBsYXN0IHRocmVl
+IHllYXJzLiA7KQoKT2J2aW91c2x5LCB0aGUgcGF0Y2ggaXMgZXh0cmVtZWx5IGxvbmcsIGl0IGFk
+ZHMgTU1BUCBhY2Nlc3MsIHN1cHBvcnQgZm9yCnRoZSBhZGRpdGlvbmFsIFRDTyBoYXJkd2FyZSBt
+b2R1bGUsIG1vcmUgTUlESSBwb3J0cyBhbmQgcHJvYmFibHkgYSBsb3QKbW9yZS4KCkl0J3MgbW9y
+ZSBsaWtlIGEgbmV3IGdlbmVyYXRpb24gdGhhbiBhbiBldm9sdXRpb24sIGFuZCBpZiB5b3UgdGhp
+bmsgaXQncwp0b28gbXVjaCwgeW91IGNvdWxkIHN0aWxsIGNhbGwgaXQgaGRzcGUgYW5kIG1ha2Ug
+aXQgYSBuZXcgZHJpdmVyCmluc3RlYWQsIGhvd2V2ZXIsIGdpdmVuIHRoYXQgT1NYIGFuZCBXaW4z
+MiBvbmx5IGhhdmUgb25lIGhkc3AgZHJpdmVyIGZvcgphbGwgY2FyZHMsIGl0IGZlZWxzIHdyb25n
+IHRvIGhhdmUgdGhyZWUgb24gTGludXguIEluIHRoZW9yeSwgYWxsIHRoaXMKY2FuIGJlIG1lcmdl
+ZCB3aXRoIHRoZSBoZHNwIGRyaXZlciwgYnV0IHRoYXQncyBmb3Igc29tZSBvdGhlciB0aW1lLiA7
+KQoKCkNoZWVycwoKQWRyaWFuIEtub3RoICgyKToKICBBZGQgc3VwcG9ydCBmb3IgUk1FIFJheURB
+VCBhbmQgQUlPCiAgQWRkIFJheURBVCBhbmQgQUlPIHN0cmluZ3MgdG8gS2NvbmZpZwoKIGluY2x1
+ZGUvaGRzcG0uaCAgICAgfCAgMzQ3ICsrKystCiBwY2kvS2NvbmZpZyAgICAgICAgIHwgICAgNiAr
+LQogcGNpL3JtZTk2NTIvaGRzcG0uYyB8IDQyMjcgKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKy0tLS0tLS0tLS0tLS0tCiAzIGZpbGVzIGNoYW5nZWQsIDM0MjQgaW5zZXJ0aW9u
+cygrKSwgMTE1NiBkZWxldGlvbnMoLSkKCi0tIAoxLjcuMi4zCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
