@@ -1,19 +1,14 @@
-From: Bas Wijnen <wijnen@debian.org>
-Subject: Fwd: aseqview patch for building with new autoconf
-Date: Tue, 25 Jan 2011 19:06:31 +0100
-Message-ID: <4D3F1127.1010207@debian.org>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Re: [QUERY] Download calibration data to co-processor
+Date: Tue, 25 Jan 2011 23:58:54 -0800
+Message-ID: <4D3FD43E.9090001__804.688203106885$1296114007$gmane$org@codeaurora.org>
+References: <4D3E6A0D.40308@codeaurora.org>
+	<20110125133643.GD31453@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7557323325798693831=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-vbr7.xs4all.nl (smtp-vbr7.xs4all.nl [194.109.24.27])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6373B103979
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 19:06:49 +0100 (CET)
-Received: from a83-163-111-92.adsl.xs4all.nl (a83-163-111-92.adsl.xs4all.nl
-	[83.163.111.92])
-	by smtp-vbr7.xs4all.nl (8.13.8/8.13.8) with ESMTP id p0PI6c8Y027589
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2011 19:06:49 +0100 (CET)
-	(envelope-from wijnen@debian.org)
+In-Reply-To: <20110125133643.GD31453@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,95 +19,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+Cc: linux-arm-msm@vger.kernel.org, alsa-devel@vger.kernel.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
+On 1/25/2011 5:36 AM, Mark Brown wrote:
+> On Mon, Jan 24, 2011 at 10:13:33PM -0800, Patrick Lai wrote:
+>
+>
+> What we're doing for this currently is passing the configuration data in
+> platform data or via request_firmware()  (mostly using the latter for
+> larger data).  At the minute we're loading everything at startup rather
+> than on demand, with the drivers presenting an enum with the available
+> use cases if there's more than one.
+>
+Can you point me to an example driver which does exactly what you 
+describe? Loading at startup is what I would like to avoid. That means
+calibration data for all use cases would be packed into single binary file.
 
---===============7557323325798693831==
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=_spark-19438-1295978797-0001-2"
+>> perform extensive parsing of data. Furthermore, host processor and
+>> co-processor need to establish common use case definitions so
+>> co-processor know what chunk of calibration data to apply in certain
+>> scenario such as device switch.
+>
+> I don't understand the issue with either parsing cost or with listing
+> use cases  - I'd expect that for multiple use cases the host processor
+> and (if required) the coprocessor would parse the set of use cases out
+> of the data (for many systems the coprocessor won't know anything about
+> use cases and they'll be managed by the host reprogramming coefficients
+> to switch), and I'd expect that either the format will be defined to
+> something readily usable or the host can do the required processing.
+> Could you elaborate on the issues here, it's possible I'm missing
+> something about the sort of data you're looking at?
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
+Parsing is not a big concern as the co-processor in question does 
+parsing to some extend. The calibration binary contains coefficients for 
+different features on the co-processor for a given playback or capture 
+path. I would like to keep parsing based on features(i.e type of filter) 
+supported on the co-processor but stay use case agnostic. A more 
+concrete example would be reapplying calibration data for different 
+device mode(speaker, headphone). In this case, if calibrations data for 
+all devices is packed into single binary, host-processor and 
+co-processor would need to maintain common device ID. When there is 
+device switch, host-processor passes new device ID so co-processor know 
+the right set of calibration to apply. As a device mode is constructed 
+by connecting components in the CODEC through mixer commands, 
+co-processor should also stay device-mode agnostic. That's why I believe 
+push down model would work better based what I have stated above.
 
---=_spark-19438-1295978797-0001-2
-Content-Type: multipart/mixed;
- boundary="------------070508010408010501090101"
+>> If there is no precedent, my idea is to apply calibration data
+>> through sysfs. After introduction of ASoC multi-component
+>> architecture, PCM stream created from dailink is registered as
+>> device. So, there is syfs entry for each dailink. If ALSA ASoC can
+>> provide API for drivers(platform/CPU) to register additional
+>> attributes to the PCM device, this approach gives user-space
+>> application the ability to push down new calibration as audio
+>> situation changes. I believe it's a viable solution to my problem
+>> and perhaps can be useful to other systems as well.
+>
+> I'm not enthused about sysfs for this as it means applications end up
+> needing custom infrastructure for individual cards, or UCM needs to end
+> up integrating that anyway, so we'd have some issues at the application
+> level when writing generic code for multiple systems
 
-This is a multi-part message in MIME format.
---------------070508010408010501090101
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+That's exactly why we need UCM, right? Though application request for 
+headphone device, different system would have different set of mixer 
+controls to construct headphone device. That's why I do not see why each 
+DAI link cannot have its own unique attributes.
 
-Hello,
+we'd need support
+> for enumerating and understanding the available settings.  In terms of
+> actually loading the data it doesn't really offer anything that
+> request_firmware() doesn't except for a push interface and it's not got
+> the existing userspace infrastructure that request_firmware() does.
 
-When trying to build aseqview from source (autoreconf -fis; ./configure;
-make), I found that it produced errors in configure. The web told me
-that those were caused by underquoted constructs in configure.in, which
-newer autoconf version have stricter requirements for than older
-versions. I've attached a patch which makes it build.
-
-Thanks,
-Bas Wijnen
-
-
---------------070508010408010501090101
-Content-Type: text/x-patch;
- name="aseqview-autoconf.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="aseqview-autoconf.patch"
-
---- aseqview-0.2.8/configure.in	2007-05-09 13:02:00.000000000 +0200
-+++ aseqview-0.2.8.new/configure.in	2011-01-02 00:29:21.000000000 +0100
-@@ -11,13 +11,13 @@ AC_HEADER_STDC
- AC_C_INLINE
-=20
- AH_TEMPLATE([HAVE_LIBCAP], [Hey, we have libcap])
--AC_CHECK_HEADER(sys/capability.h,
--		AC_CHECK_LIB(cap, cap_get_proc,
-+AC_CHECK_HEADER([sys/capability.h],
-+		[AC_CHECK_LIB([cap], [cap_get_proc],
- 			     [AC_DEFINE(HAVE_LIBCAP)
--			      LIBS=3D"$LIBS -lcap"]))
-+			      LIBS=3D"$LIBS -lcap"])])
-=20
- AM_PATH_ALSA(0.5.0)
--AC_CHECK_HEADERS(alsa/asoundlib.h)
-+AC_CHECK_HEADERS([alsa/asoundlib.h])
-=20
- AC_ARG_ENABLE(gtk2,
-     [  --enable-gtk2     Use gtk+-2.x instead of gtk+-1.x],
+Request_frmware() can accomplish my request but requires common device 
+ID to be defined. If there is new use case with new device defined, 
+co-processor would have to be updated with new ID and it's not a 
+scalable solution. Another approach is to devise mixer command which 
+passes name of calibration file. This command triggers 
+request_firmware() being called with file name passed as parameter of 
+the command. The caveat is, unless user-space application wants to 
+extract calibration data for a device mode and save into file system at 
+run-time, we would end up having numerous calibration files in the file 
+system.
+> Thinking off the top of my head I think we're reasonably covered from
+> the point of view of actually injecting data already but we currently
+> don't have a way to add additional data at runtime (eg, when doing a
+> calibration run).  If we added a way for applications to say "I'd like
+> to add some new coefficients to this feature" then that would address
+> that aspect of things, I think?
 
 
---------------070508010408010501090101--
-
---=_spark-19438-1295978797-0001-2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Transfer-Encoding: 7bit
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk0/ESoACgkQFShl+2J8z5XDgQCgq/9jcUNuSUSsFUHvlep1JwBd
-s/cAoLOLM9sFdE8wFYYYI8akF1Xv2ro/
-=fp3e
------END PGP SIGNATURE-----
-
---=_spark-19438-1295978797-0001-2--
-
---===============7557323325798693831==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============7557323325798693831==--
+-- 
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
