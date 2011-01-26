@@ -1,12 +1,14 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: =?utf-8?q?=5Bhdspm=3A_Add_RME_RayDAT/AIO_0/2=5D_Rewo?=
-	=?utf-8?q?rked_support_for_RayDAT/AIO?=
-Date: Wed, 26 Jan 2011 16:58:28 +0100
-Message-ID: <1296057510-10047-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [[PATCH] - hdspm 2/2] Add RayDAT and AIO strings to
+	Kconfig
+Date: Wed, 26 Jan 2011 16:58:30 +0100
+Message-ID: <1296057510-10047-3-git-send-email-adi@drcomp.erfurt.thur.de>
+References: <1296057510-10047-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1296057510-10047-1-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,31 +22,30 @@ To: patch@alsa-project.org
 Cc: tiwai@suse.de, Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkhCgpGaW5hbGx5LCBoZXJlJ3MgdGhlIHBhdGNoIHRoYXQgYWRkcyBSTUUgUmF5REFUIGFuZCBB
-SU8gc3VwcG9ydCB0byBoZHBzbS4KQ29kZSB3YXMgdGFrZW4gZnJvbSBGbG9yaWFuIEZhYmVyJ3MK
-CiAgwqBodHRwOi8vd2lraS5saW51eHByb2F1ZGlvLm9yZy9pbmRleC5waHAvRHJpdmVyOmhkc3Bl
-CgpyZXZpc2lvbiAoMjAxMC0xMi0yNSkgYW5kIGhlYXZpbHkgbW9kaWZpZWQgdG8gKGFsbW9zdCkg
-Y29tcGx5IHdpdGggdGhlCmNvZGluZyBzdHlsZS4KCkkgYWxzbyBlbmFibGVkIFMvUERJRiBpbnB1
-dCBhbmQgYXVnbWVudGVkIHRoZSBjb2RlIHRvIGFsbG93IGZvcgphbGwgcGVyaW9kIHNpemVzIGJl
-dHdlZW4gNjQgYW5kIDQwOTYgc2FtcGxlcyBvbiBSYXlEQVRzL0FJT3MuCgpBcyBwb2ludGVkIG91
-dCBieSBUYWthc2hpIGVhcmxpZXIgdGhpcyBtb250aCwgdGhpcyB2ZXJzaW9uIG5vdyBkb2Vzbid0
-CnVzZSB0eXBlZGVmcyBvciBlbnVtcyBpbiBpb2N0bCBzdHJ1Y3RzLiBJIGhvcGUgdGhhdCBJIGNh
-dWdodCBhbGwKdXBzdHJlYW0gY2hhbmdlcyB0aGF0IGhhcHBlbmVkIGluIHRoZSBsYXN0IHRocmVl
-IHllYXJzLiA7KQoKT2J2aW91c2x5LCB0aGUgcGF0Y2ggaXMgZXh0cmVtZWx5IGxvbmcsIGl0IGFk
-ZHMgTU1BUCBhY2Nlc3MsIHN1cHBvcnQgZm9yCnRoZSBhZGRpdGlvbmFsIFRDTyBoYXJkd2FyZSBt
-b2R1bGUsIG1vcmUgTUlESSBwb3J0cyBhbmQgcHJvYmFibHkgYSBsb3QKbW9yZS4KCkl0J3MgbW9y
-ZSBsaWtlIGEgbmV3IGdlbmVyYXRpb24gdGhhbiBhbiBldm9sdXRpb24sIGFuZCBpZiB5b3UgdGhp
-bmsgaXQncwp0b28gbXVjaCwgeW91IGNvdWxkIHN0aWxsIGNhbGwgaXQgaGRzcGUgYW5kIG1ha2Ug
-aXQgYSBuZXcgZHJpdmVyCmluc3RlYWQsIGhvd2V2ZXIsIGdpdmVuIHRoYXQgT1NYIGFuZCBXaW4z
-MiBvbmx5IGhhdmUgb25lIGhkc3AgZHJpdmVyIGZvcgphbGwgY2FyZHMsIGl0IGZlZWxzIHdyb25n
-IHRvIGhhdmUgdGhyZWUgb24gTGludXguIEluIHRoZW9yeSwgYWxsIHRoaXMKY2FuIGJlIG1lcmdl
-ZCB3aXRoIHRoZSBoZHNwIGRyaXZlciwgYnV0IHRoYXQncyBmb3Igc29tZSBvdGhlciB0aW1lLiA7
-KQoKCkNoZWVycwoKQWRyaWFuIEtub3RoICgyKToKICBBZGQgc3VwcG9ydCBmb3IgUk1FIFJheURB
-VCBhbmQgQUlPCiAgQWRkIFJheURBVCBhbmQgQUlPIHN0cmluZ3MgdG8gS2NvbmZpZwoKIGluY2x1
-ZGUvaGRzcG0uaCAgICAgfCAgMzQ3ICsrKystCiBwY2kvS2NvbmZpZyAgICAgICAgIHwgICAgNiAr
-LQogcGNpL3JtZTk2NTIvaGRzcG0uYyB8IDQyMjcgKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKy0tLS0tLS0tLS0tLS0tCiAzIGZpbGVzIGNoYW5nZWQsIDM0MjQgaW5zZXJ0aW9u
-cygrKSwgMTE1NiBkZWxldGlvbnMoLSkKCi0tIAoxLjcuMi4zCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Inform users about the newly added capabilities.
+
+Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+
+diff --git a/pci/Kconfig b/pci/Kconfig
+index 7b2678a..5df9844 100644
+--- a/pci/Kconfig
++++ b/pci/Kconfig
+@@ -570,13 +570,13 @@ comment "Don't forget to add built-in firmwares for HDSP driver"
+ 	depends on SND_HDSP=y
+ 
+ config SND_HDSPM
+-	tristate "RME Hammerfall DSP MADI"
++	tristate "RME Hammerfall DSP MADI/RayDAT/AIO"
+ 	select SND_HWDEP
+ 	select SND_RAWMIDI
+ 	select SND_PCM
+ 	help
+-	  Say Y here to include support for RME Hammerfall DSP MADI
+-	  soundcards.
++	  Say Y here to include support for RME Hammerfall DSP MADI,
++	  RayDAT and AIO soundcards.
+ 
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-hdspm.
+-- 
+1.7.2.3
