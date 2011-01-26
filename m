@@ -1,12 +1,14 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: =?utf-8?q?=5Bhdspm=3A_Add_RME_RayDAT/AIO_0/2=5D_Rewo?=
-	=?utf-8?q?rked_support_for_RayDAT/AIO?=
-Date: Wed, 26 Jan 2011 19:32:13 +0100
-Message-ID: <1296066735-11280-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH - [hdspm] RayDAT/AIO 2/2] ALSA: Add RayDAT and
+	AIO strings to Kconfig
+Date: Wed, 26 Jan 2011 19:32:15 +0100
+Message-ID: <1296066735-11280-3-git-send-email-adi@drcomp.erfurt.thur.de>
+References: <1296066735-11280-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1296066735-11280-1-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,26 +22,30 @@ To: patch@alsa-project.org
 Cc: tiwai@suse.de, Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkhCgpGaW5hbGx5LCBoZXJlJ3MgdGhlIHBhdGNoIHRoYXQgYWRkcyBSTUUgUmF5REFUIGFuZCBB
-SU8gc3VwcG9ydCB0byBoZHBzbS4gCkNvZGUgd2FzIHRha2VuIGZyb20gRmxvcmlhbiBGYWJlcidz
-CgogIMKgaHR0cDovL3dpa2kubGludXhwcm9hdWRpby5vcmcvaW5kZXgucGhwL0RyaXZlcjpoZHNw
-ZQoKcmV2aXNpb24gKDIwMTAtMTItMjUpIGFuZCBoZWF2aWx5IG1vZGlmaWVkIHRvIChhbG1vc3Qp
-IGNvbXBseSB3aXRoIHRoZQpjb2Rpbmcgc3R5bGUuCgpJIGFsc28gZW5hYmxlZCBTL1BESUYgaW5w
-dXQgYW5kIGF1Z21lbnRlZCB0aGUgY29kZSB0byBhbGxvdyBmb3IKYWxsIHBlcmlvZCBzaXplcyBi
-ZXR3ZWVuIDY0IGFuZCA0MDk2IHNhbXBsZXMgb24gUmF5REFUcy9BSU9zLgoKQXMgcG9pbnRlZCBv
-dXQgYnkgVGFrYXNoaSBlYXJsaWVyIHRoaXMgbW9udGgsIHRoaXMgdmVyc2lvbiBub3cgZG9lc24n
-dAp1c2UgdHlwZWRlZnMgb3IgZW51bXMgaW4gaW9jdGwgc3RydWN0cy4KCk9idmlvdXNseSwgdGhl
-IHBhdGNoIGlzIGV4dHJlbWVseSBsb25nLCBpdCBhZGRzIE1NQVAgYWNjZXNzLCBzdXBwb3J0IGZv
-cgp0aGUgYWRkaXRpb25hbCBUQ08gaGFyZHdhcmUgbW9kdWxlLCBtb3JlIE1JREkgcG9ydHMgYW5k
-IHByb2JhYmx5IGEgbG90Cm1vcmUuCgpDaGVlcnMKClBTOiBUaGlzIGlzIHRoZSB0aGlyZCB2ZXJz
-aW9uIG9mIHRoZSBwYXRjaCwgbm93IHdpdGhvdXQgY29uZmxpY3RpbmcKaW9jdGxzIChob3BlZnVs
-bHkpIGFuZCB3aXRob3V0IHN0YXRpYyBhcnJheXMgaW4gdGhlIGhlYWRlciBmaWxlLgoKQWRyaWFu
-IEtub3RoICgyKToKICBBTFNBOiBBZGQgc3VwcG9ydCBmb3IgUk1FIFJheURBVCBhbmQgQUlPCiAg
-QUxTQTogQWRkIFJheURBVCBhbmQgQUlPIHN0cmluZ3MgdG8gS2NvbmZpZwoKIGluY2x1ZGUvc291
-bmQvaGRzcG0uaCAgICAgfCAgMzQ5ICsrKystCiBzb3VuZC9wY2kvS2NvbmZpZyAgICAgICAgIHwg
-ICAgNiArLQogc291bmQvcGNpL3JtZTk2NTIvaGRzcG0uYyB8IDQyMzEgKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tCiAzIGZpbGVzIGNoYW5nZWQsIDM0MjcgaW5z
-ZXJ0aW9ucygrKSwgMTE1OSBkZWxldGlvbnMoLSkKCi0tIAoxLjcuMi4zCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Inform users about the newly added support for RayDAT and AIO.
+
+Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+
+diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
+index 9823d59..1fb3e24 100644
+--- a/sound/pci/Kconfig
++++ b/sound/pci/Kconfig
+@@ -572,13 +572,13 @@ comment "Don't forget to add built-in firmwares for HDSP driver"
+ 	depends on SND_HDSP=y
+ 
+ config SND_HDSPM
+-	tristate "RME Hammerfall DSP MADI"
++	tristate "RME Hammerfall DSP MADI/RayDAT/AIO"
+ 	select SND_HWDEP
+ 	select SND_RAWMIDI
+ 	select SND_PCM
+ 	help
+-	  Say Y here to include support for RME Hammerfall DSP MADI
+-	  soundcards.
++	  Say Y here to include support for RME Hammerfall DSP MADI,
++	  RayDAT and AIO soundcards.
+ 
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-hdspm.
+-- 
+1.7.2.3
