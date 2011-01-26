@@ -1,17 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/3] ASoC: Export card PM callbacks for use in
-	direct registered cards
-Date: Wed, 26 Jan 2011 17:08:29 +0000
-Message-ID: <1296061709-12494-3-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1296061709-12494-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/3] ASoC: Use card rather than soc-audio
+	device to card PM functions
+Date: Wed, 26 Jan 2011 17:08:27 +0000
+Message-ID: <1296061709-12494-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0D2EC2459B
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 08A8924599
 	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 18:08:37 +0100 (CET)
-In-Reply-To: <1296061709-12494-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,133 +23,130 @@ To: Liam Girdwood <lrg@slimlogic.co.uk>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Allow hookup of cards registered directly with the core to the PM
-operations by exporting the device power management operations to
-modules, also exporting the default PM operations since it is
-expected that most cards will end up using exactly the same setup.
-
-Note that the callbacks require that the driver data for the card be
-the snd_soc_card.
+The platform device for the card is tied closely to the soc-audio
+implementation which we're currently trying to remove in favour of
+allowing cards to have their own devices. Begin removing it by
+replacing it with the card in the suspend and resume callbacks we
+give to cards, also taking the opportunity to remove the legacy
+suspend types which are currently hard coded anyway.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/sound/soc.h  |    5 +++++
- sound/soc/soc-core.c |   34 +++++++++++++++++-----------------
- 2 files changed, 22 insertions(+), 17 deletions(-)
+ include/sound/soc.h      |    8 ++++----
+ sound/soc/pxa/raumfeld.c |    4 ++--
+ sound/soc/pxa/zylonite.c |    5 ++---
+ sound/soc/soc-core.c     |    9 ++++-----
+ 4 files changed, 12 insertions(+), 14 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index a6a9013..4fd79e0 100644
+index 00c6fba..d1cc1a2 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -261,6 +261,9 @@ enum snd_soc_compress_type {
+@@ -655,10 +655,10 @@ struct snd_soc_card {
  
- int snd_soc_register_card(struct snd_soc_card *card);
- int snd_soc_unregister_card(struct snd_soc_card *card);
-+int snd_soc_suspend(struct device *dev);
-+int snd_soc_resume(struct device *dev);
-+int snd_soc_poweroff(struct device *dev);
- int snd_soc_register_platform(struct device *dev,
- 		struct snd_soc_platform_driver *platform_drv);
- void snd_soc_unregister_platform(struct device *dev);
-@@ -803,4 +806,6 @@ static inline void snd_soc_initialize_card_lists(struct snd_soc_card *card)
- extern struct dentry *snd_soc_debugfs_root;
- #endif
+ 	/* the pre and post PM functions are used to do any PM work before and
+ 	 * after the codec and DAI's do any PM work. */
+-	int (*suspend_pre)(struct platform_device *pdev, pm_message_t state);
+-	int (*suspend_post)(struct platform_device *pdev, pm_message_t state);
+-	int (*resume_pre)(struct platform_device *pdev);
+-	int (*resume_post)(struct platform_device *pdev);
++	int (*suspend_pre)(struct snd_soc_card *card);
++	int (*suspend_post)(struct snd_soc_card *card);
++	int (*resume_pre)(struct snd_soc_card *card);
++	int (*resume_post)(struct snd_soc_card *card);
  
-+extern const struct dev_pm_ops snd_soc_pm_ops;
-+
- #endif
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 4bc2365..5dffc7a4 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -965,12 +965,11 @@ static struct snd_pcm_ops soc_pcm_ops = {
- 	.pointer	= soc_pcm_pointer,
+ 	/* callbacks */
+ 	int (*set_bias_level)(struct snd_soc_card *,
+diff --git a/sound/soc/pxa/raumfeld.c b/sound/soc/pxa/raumfeld.c
+index 0fd60f4..db1dd56 100644
+--- a/sound/soc/pxa/raumfeld.c
++++ b/sound/soc/pxa/raumfeld.c
+@@ -151,13 +151,13 @@ static struct snd_soc_ops raumfeld_cs4270_ops = {
+ 	.hw_params = raumfeld_cs4270_hw_params,
  };
  
--#ifdef CONFIG_PM
-+#ifdef CONFIG_PM_SLEEP
- /* powers down audio subsystem for suspend */
--static int soc_suspend(struct device *dev)
-+int snd_soc_suspend(struct device *dev)
+-static int raumfeld_line_suspend(struct platform_device *pdev, pm_message_t state)
++static int raumfeld_line_suspend(struct snd_soc_card *card)
  {
--	struct platform_device *pdev = to_platform_device(dev);
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+	struct snd_soc_card *card = dev_get_drvdata(dev);
+ 	raumfeld_enable_audio(false);
+ 	return 0;
+ }
+ 
+-static int raumfeld_line_resume(struct platform_device *pdev)
++static int raumfeld_line_resume(struct snd_soc_card *card)
+ {
+ 	raumfeld_enable_audio(true);
+ 	return 0;
+diff --git a/sound/soc/pxa/zylonite.c b/sound/soc/pxa/zylonite.c
+index b222a7d..7b72901 100644
+--- a/sound/soc/pxa/zylonite.c
++++ b/sound/soc/pxa/zylonite.c
+@@ -226,8 +226,7 @@ static int zylonite_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int zylonite_suspend_post(struct platform_device *pdev,
+-				 pm_message_t state)
++static int zylonite_suspend_post(struct snd_soc_card *card)
+ {
+ 	if (clk_pout)
+ 		clk_disable(pout);
+@@ -235,7 +234,7 @@ static int zylonite_suspend_post(struct platform_device *pdev,
+ 	return 0;
+ }
+ 
+-static int zylonite_resume_pre(struct platform_device *pdev)
++static int zylonite_resume_pre(struct snd_soc_card *card)
+ {
+ 	int ret = 0;
+ 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 14861f9..446838e 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1011,7 +1011,7 @@ static int soc_suspend(struct device *dev)
+ 	}
+ 
+ 	if (card->suspend_pre)
+-		card->suspend_pre(pdev, PMSG_SUSPEND);
++		card->suspend_pre(card);
+ 
+ 	for (i = 0; i < card->num_rtd; i++) {
+ 		struct snd_soc_dai *cpu_dai = card->rtd[i].cpu_dai;
+@@ -1078,7 +1078,7 @@ static int soc_suspend(struct device *dev)
+ 	}
+ 
+ 	if (card->suspend_post)
+-		card->suspend_post(pdev, PMSG_SUSPEND);
++		card->suspend_post(card);
+ 
+ 	return 0;
+ }
+@@ -1090,7 +1090,6 @@ static void soc_resume_deferred(struct work_struct *work)
+ {
+ 	struct snd_soc_card *card =
+ 			container_of(work, struct snd_soc_card, deferred_resume_work);
+-	struct platform_device *pdev = to_platform_device(card->dev);
  	struct snd_soc_codec *codec;
  	int i;
  
-@@ -1082,6 +1081,7 @@ static int soc_suspend(struct device *dev)
+@@ -1104,7 +1103,7 @@ static void soc_resume_deferred(struct work_struct *work)
+ 	snd_power_change_state(card->snd_card, SNDRV_CTL_POWER_D2);
  
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(snd_soc_suspend);
+ 	if (card->resume_pre)
+-		card->resume_pre(pdev);
++		card->resume_pre(card);
  
- /* deferred resume work, so resume can complete before we finished
-  * setting our codec back up, which can be very slow on I2C
-@@ -1187,10 +1187,9 @@ static void soc_resume_deferred(struct work_struct *work)
- }
+ 	/* resume AC97 DAIs */
+ 	for (i = 0; i < card->num_rtd; i++) {
+@@ -1179,7 +1178,7 @@ static void soc_resume_deferred(struct work_struct *work)
+ 	}
  
- /* powers up audio subsystem after a suspend */
--static int soc_resume(struct device *dev)
-+int snd_soc_resume(struct device *dev)
- {
--	struct platform_device *pdev = to_platform_device(dev);
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+	struct snd_soc_card *card = dev_get_drvdata(dev);
- 	int i;
+ 	if (card->resume_post)
+-		card->resume_post(pdev);
++		card->resume_post(card);
  
- 	/* AC97 devices might have other drivers hanging off them so
-@@ -1212,9 +1211,10 @@ static int soc_resume(struct device *dev)
+ 	dev_dbg(card->dev, "resume work completed\n");
  
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(snd_soc_resume);
- #else
--#define soc_suspend	NULL
--#define soc_resume	NULL
-+#define snd_soc_suspend NULL
-+#define snd_soc_resume NULL
- #endif
- 
- static struct snd_soc_dai_ops null_dai_ops = {
-@@ -1924,10 +1924,9 @@ static int soc_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int soc_poweroff(struct device *dev)
-+int snd_soc_poweroff(struct device *dev)
- {
--	struct platform_device *pdev = to_platform_device(dev);
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
-+	struct snd_soc_card *card = dev_get_drvdata(dev);
- 	int i;
- 
- 	if (!card->instantiated)
-@@ -1944,11 +1943,12 @@ static int soc_poweroff(struct device *dev)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(snd_soc_poweroff);
- 
--static const struct dev_pm_ops soc_pm_ops = {
--	.suspend = soc_suspend,
--	.resume = soc_resume,
--	.poweroff = soc_poweroff,
-+const struct dev_pm_ops snd_soc_pm_ops = {
-+	.suspend = snd_soc_suspend,
-+	.resume = snd_soc_resume,
-+	.poweroff = snd_soc_poweroff,
- };
- 
- /* ASoC platform driver */
-@@ -1956,7 +1956,7 @@ static struct platform_driver soc_driver = {
- 	.driver		= {
- 		.name		= "soc-audio",
- 		.owner		= THIS_MODULE,
--		.pm		= &soc_pm_ops,
-+		.pm		= &snd_soc_pm_ops,
- 	},
- 	.probe		= soc_probe,
- 	.remove		= soc_remove,
 -- 
 1.7.2.3
