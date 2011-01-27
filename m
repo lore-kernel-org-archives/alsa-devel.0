@@ -1,280 +1,121 @@
 From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: [PATCH v8 09/12] media: Pipelines and media streams
-Date: Thu, 27 Jan 2011 13:30:34 +0100
-Message-ID: <1296131437-29954-10-git-send-email-laurent.pinchart@ideasonboard.com>
+Subject: [PATCH v8 10/12] v4l: Add a media_device pointer to the v4l2_device structure
+Date: Thu, 27 Jan 2011 13:30:35 +0100
+Message-ID: <1296131437-29954-11-git-send-email-laurent.pinchart@ideasonboard.com>
 References: <1296131437-29954-1-git-send-email-laurent.pinchart@ideasonboard.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
-	[95.142.166.194])
-	by alsa0.perex.cz (Postfix) with ESMTP id 51F77103B05
-	for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2011 13:30:40 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1296131437-29954-1-git-send-email-laurent.pinchart@ideasonboard.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: clemens@ladisch.de, broonie@opensource.wolfsonmicro.com, sakari.ailus@maxwell.research.nokia.com
+Cc: sakari.ailus@maxwell.research.nokia.com, broonie@opensource.wolfsonmicro.com, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Drivers often need to associate pipeline objects to entities, and to
-take stream state into account when configuring entities and links. The
-pipeline API helps drivers manage that information.
+The pointer will later be used to register/unregister media entities
+when registering/unregistering a v4l2_subdev or a video_device.
 
-When starting streaming, drivers call media_entity_pipeline_start(). The
-function marks all entities connected to the given entity through
-enabled links, either directly or indirectly, as streaming. Similarly,
-when stopping the stream, drivers call media_entity_pipeline_stop().
+With the introduction of media devices, device drivers need to store a
+pointer to a driver-specific structure in the device's drvdata.
+v4l2_device can't claim ownership of the drvdata anymore.
 
-The media_entity_pipeline_start() function takes a pointer to a media
-pipeline and stores it in every entity in the graph. Drivers should
-embed the media_pipeline structure in higher-level pipeline structures
-and can then access the pipeline through the media_entity structure.
-
-Link configuration will fail with -EBUSY by default if either end of the
-link is a streaming entity, unless the link is marked with the
-MEDIA_LNK_FL_DYNAMIC flag.
+To maintain compatibility with drivers that rely on v4l2_device storing
+a pointer to itself in the device's drvdata, v4l2_device_register() will
+keep doing so if the drvdata is NULL.
 
 Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 ---
- Documentation/DocBook/v4l/media-ioc-enum-links.xml |    5 ++
- Documentation/DocBook/v4l/media-ioc-setup-link.xml |    3 +
- Documentation/media-framework.txt                  |   38 ++++++++++
- drivers/media/media-entity.c                       |   73 ++++++++++++++++++++
- include/linux/media.h                              |    1 +
- include/media/media-entity.h                       |   10 +++
- 6 files changed, 130 insertions(+), 0 deletions(-)
+ Documentation/video4linux/v4l2-framework.txt |   17 ++++++++++++-----
+ drivers/media/video/v4l2-device.c            |   13 +++++++------
+ include/media/v4l2-device.h                  |    4 ++++
+ 3 files changed, 23 insertions(+), 11 deletions(-)
 
-diff --git a/Documentation/DocBook/v4l/media-ioc-enum-links.xml b/Documentation/DocBook/v4l/media-ioc-enum-links.xml
-index daf0360..b204bfb 100644
---- a/Documentation/DocBook/v4l/media-ioc-enum-links.xml
-+++ b/Documentation/DocBook/v4l/media-ioc-enum-links.xml
-@@ -179,6 +179,11 @@
- 	    <entry>The link enabled state can't be modified at runtime. An
- 	    immutable link is always enabled.</entry>
- 	  </row>
-+	  <row>
-+	    <entry><constant>MEDIA_LNK_FL_DYNAMIC</constant></entry>
-+	    <entry>The link enabled state can be modified during streaming. This
-+	    flag is set by drivers and is read-only for applications.</entry>
-+	  </row>
- 	</tbody>
-       </tgroup>
-     </table>
-diff --git a/Documentation/DocBook/v4l/media-ioc-setup-link.xml b/Documentation/DocBook/v4l/media-ioc-setup-link.xml
-index 09ab3d2..2331e76 100644
---- a/Documentation/DocBook/v4l/media-ioc-setup-link.xml
-+++ b/Documentation/DocBook/v4l/media-ioc-setup-link.xml
-@@ -60,6 +60,9 @@
-     <para>Link configuration has no side effect on other links. If an enabled
-     link at the sink pad prevents the link from being enabled, the driver
-     returns with an &EBUSY;.</para>
-+    <para>Only links marked with the <constant>DYNAMIC</constant> link flag can
-+    be enabled/disabled while streaming media data. Attempting to enable or
-+    disable a streaming non-dynamic link will return an &EBUSY;.</para>
-     <para>If the specified link can't be found the driver returns with an
-     &EINVAL;.</para>
-   </refsect1>
-diff --git a/Documentation/media-framework.txt b/Documentation/media-framework.txt
-index 634845e..435d0c4 100644
---- a/Documentation/media-framework.txt
-+++ b/Documentation/media-framework.txt
-@@ -313,3 +313,41 @@ Link configuration must not have any side effect on other links. If an enabled
- link at a sink pad prevents another link at the same pad from being disabled,
- the link_setup operation must return -EBUSY and can't implicitly disable the
- first enabled link.
-+
-+
-+Pipelines and media streams
-+---------------------------
-+
-+When starting streaming, drivers must notify all entities in the pipeline to
-+prevent link states from being modified during streaming by calling
-+
-+	media_entity_pipeline_start(struct media_entity *entity,
-+				    struct media_pipeline *pipe);
-+
-+The function will mark all entities connected to the given entity through
-+enabled links, either directly or indirectly, as streaming.
-+
-+The media_pipeline instance pointed to by the pipe argument will be stored in
-+every entity in the pipeline. Drivers should embed the media_pipeline structure
-+in higher-level pipeline structures and can then access the pipeline through
-+the media_entity pipe field.
-+
-+Calls to media_entity_pipeline_start() can be nested. The pipeline pointer must
-+be identical for all nested calls to the function.
-+
-+When stopping the stream, drivers must notify the entities with
-+
-+	media_entity_pipeline_stop(struct media_entity *entity);
-+
-+If multiple calls to media_entity_pipeline_start() have been made the same
-+number of media_entity_pipeline_stop() calls are required to stop streaming. The
-+media_entity pipe field is reset to NULL on the last nested stop call.
-+
-+Link configuration will fail with -EBUSY by default if either end of the link is
-+a streaming entity. Links that can be modified while streaming must be marked
-+with the MEDIA_LNK_FL_DYNAMIC flag.
-+
-+If other operations need to be disallowed on streaming entities (such as
-+changing entities configuration parameters) drivers can explictly check the
-+media_entity stream_count field to find out if an entity is streaming. This
-+operation must be done with the media_device graph_mutex held.
-diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
-index d703ce8..e63e089 100644
---- a/drivers/media/media-entity.c
-+++ b/drivers/media/media-entity.c
-@@ -197,6 +197,75 @@ media_entity_graph_walk_next(struct media_entity_graph *graph)
- EXPORT_SYMBOL_GPL(media_entity_graph_walk_next);
+diff --git a/Documentation/video4linux/v4l2-framework.txt b/Documentation/video4linux/v4l2-framework.txt
+index 4db1def..aeb2a22 100644
+--- a/Documentation/video4linux/v4l2-framework.txt
++++ b/Documentation/video4linux/v4l2-framework.txt
+@@ -83,11 +83,17 @@ You must register the device instance:
  
- /* -----------------------------------------------------------------------------
-+ * Pipeline management
-+ */
-+
-+/**
-+ * media_entity_pipeline_start - Mark a pipeline as streaming
-+ * @entity: Starting entity
-+ * @pipe: Media pipeline to be assigned to all entities in the pipeline.
-+ *
-+ * Mark all entities connected to a given entity through enabled links, either
-+ * directly or indirectly, as streaming. The given pipeline object is assigned to
-+ * every entity in the pipeline and stored in the media_entity pipe field.
-+ *
-+ * Calls to this function can be nested, in which case the same number of
-+ * media_entity_pipeline_stop() calls will be required to stop streaming. The
-+ * pipeline pointer must be identical for all nested calls to
-+ * media_entity_pipeline_start().
-+ */
-+void media_entity_pipeline_start(struct media_entity *entity,
-+				 struct media_pipeline *pipe)
-+{
-+	struct media_device *mdev = entity->parent;
-+	struct media_entity_graph graph;
-+
-+	mutex_lock(&mdev->graph_mutex);
-+
-+	media_entity_graph_walk_start(&graph, entity);
-+
-+	while ((entity = media_entity_graph_walk_next(&graph))) {
-+		entity->stream_count++;
-+		WARN_ON(entity->pipe && entity->pipe != pipe);
-+		entity->pipe = pipe;
-+	}
-+
-+	mutex_unlock(&mdev->graph_mutex);
-+}
-+EXPORT_SYMBOL_GPL(media_entity_pipeline_start);
-+
-+/**
-+ * media_entity_pipeline_stop - Mark a pipeline as not streaming
-+ * @entity: Starting entity
-+ *
-+ * Mark all entities connected to a given entity through enabled links, either
-+ * directly or indirectly, as not streaming. The media_entity pipe field is
-+ * reset to NULL.
-+ *
-+ * If multiple calls to media_entity_pipeline_start() have been made, the same
-+ * number of calls to this function are required to mark the pipeline as not
-+ * streaming.
-+ */
-+void media_entity_pipeline_stop(struct media_entity *entity)
-+{
-+	struct media_device *mdev = entity->parent;
-+	struct media_entity_graph graph;
-+
-+	mutex_lock(&mdev->graph_mutex);
-+
-+	media_entity_graph_walk_start(&graph, entity);
-+
-+	while ((entity = media_entity_graph_walk_next(&graph))) {
-+		entity->stream_count--;
-+		if (entity->stream_count == 0)
-+			entity->pipe = NULL;
-+	}
-+
-+	mutex_unlock(&mdev->graph_mutex);
-+}
-+EXPORT_SYMBOL_GPL(media_entity_pipeline_stop);
-+
-+/* -----------------------------------------------------------------------------
-  * Module use count
-  */
+ 	v4l2_device_register(struct device *dev, struct v4l2_device *v4l2_dev);
  
-@@ -364,6 +433,10 @@ int __media_entity_setup_link(struct media_link *link, u32 flags)
- 	source = link->source->entity;
- 	sink = link->sink->entity;
- 
-+	if (!(link->flags & MEDIA_LNK_FL_DYNAMIC) &&
-+	    (source->stream_count || sink->stream_count))
-+		return -EBUSY;
+-Registration will initialize the v4l2_device struct and link dev->driver_data
+-to v4l2_dev. If v4l2_dev->name is empty then it will be set to a value derived
+-from dev (driver name followed by the bus_id, to be precise). If you set it
+-up before calling v4l2_device_register then it will be untouched. If dev is
+-NULL, then you *must* setup v4l2_dev->name before calling v4l2_device_register.
++Registration will initialize the v4l2_device struct. If the dev->driver_data
++field is NULL, it will be linked to v4l2_dev. Drivers that use the media
++device framework in addition to the V4L2 framework need to set
++dev->driver_data manually to point to the driver-specific device structure
++that embed the struct v4l2_device instance. This is achieved by a
++dev_set_drvdata() call before registering the V4L2 device instance.
 +
- 	mdev = source->parent;
++If v4l2_dev->name is empty then it will be set to a value derived from dev
++(driver name followed by the bus_id, to be precise). If you set it up before
++calling v4l2_device_register then it will be untouched. If dev is NULL, then
++you *must* setup v4l2_dev->name before calling v4l2_device_register.
  
- 	if ((flags & MEDIA_LNK_FL_ENABLED) && mdev->link_notify) {
-diff --git a/include/linux/media.h b/include/linux/media.h
-index 2f67ed2..29039e8 100644
---- a/include/linux/media.h
-+++ b/include/linux/media.h
-@@ -106,6 +106,7 @@ struct media_pad_desc {
+ You can use v4l2_device_set_name() to set the name based on a driver name and
+ a driver-global atomic_t instance. This will generate names like ivtv0, ivtv1,
+@@ -108,6 +114,7 @@ You unregister with:
  
- #define MEDIA_LNK_FL_ENABLED		(1 << 0)
- #define MEDIA_LNK_FL_IMMUTABLE		(1 << 1)
-+#define MEDIA_LNK_FL_DYNAMIC		(1 << 2)
+ 	v4l2_device_unregister(struct v4l2_device *v4l2_dev);
  
- struct media_link_desc {
- 	struct media_pad_desc source;
-diff --git a/include/media/media-entity.h b/include/media/media-entity.h
-index 60fc7bd..450ba12 100644
---- a/include/media/media-entity.h
-+++ b/include/media/media-entity.h
-@@ -26,6 +26,9 @@
- #include <linux/list.h>
- #include <linux/media.h>
++If the dev->driver_data field points to v4l2_dev, it will be reset to NULL.
+ Unregistering will also automatically unregister all subdevs from the device.
  
-+struct media_pipeline {
-+};
+ If you have a hotpluggable device (e.g. a USB device), then when a disconnect
+diff --git a/drivers/media/video/v4l2-device.c b/drivers/media/video/v4l2-device.c
+index 97e84df..5c16a12 100644
+--- a/drivers/media/video/v4l2-device.c
++++ b/drivers/media/video/v4l2-device.c
+@@ -47,9 +47,8 @@ int v4l2_device_register(struct device *dev, struct v4l2_device *v4l2_dev)
+ 	if (!v4l2_dev->name[0])
+ 		snprintf(v4l2_dev->name, sizeof(v4l2_dev->name), "%s %s",
+ 			dev->driver->name, dev_name(dev));
+-	if (dev_get_drvdata(dev))
+-		v4l2_warn(v4l2_dev, "Non-NULL drvdata on register\n");
+-	dev_set_drvdata(dev, v4l2_dev);
++	if (!dev_get_drvdata(dev))
++		dev_set_drvdata(dev, v4l2_dev);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(v4l2_device_register);
+@@ -72,10 +71,12 @@ EXPORT_SYMBOL_GPL(v4l2_device_set_name);
+ 
+ void v4l2_device_disconnect(struct v4l2_device *v4l2_dev)
+ {
+-	if (v4l2_dev->dev) {
++	if (v4l2_dev->dev == NULL)
++		return;
 +
- struct media_link {
- 	struct media_pad *source;	/* Source pad */
- 	struct media_pad *sink;		/* Sink pad  */
-@@ -67,8 +70,11 @@ struct media_entity {
++	if (dev_get_drvdata(v4l2_dev->dev) == v4l2_dev)
+ 		dev_set_drvdata(v4l2_dev->dev, NULL);
+-		v4l2_dev->dev = NULL;
+-	}
++	v4l2_dev->dev = NULL;
+ }
+ EXPORT_SYMBOL_GPL(v4l2_device_disconnect);
  
- 	const struct media_entity_operations *ops;	/* Entity operations */
+diff --git a/include/media/v4l2-device.h b/include/media/v4l2-device.h
+index b16f307..759db73 100644
+--- a/include/media/v4l2-device.h
++++ b/include/media/v4l2-device.h
+@@ -21,6 +21,7 @@
+ #ifndef _V4L2_DEVICE_H
+ #define _V4L2_DEVICE_H
  
-+	int stream_count;		/* Stream count for the entity. */
- 	int use_count;			/* Use count for the entity. */
++#include <media/media-device.h>
+ #include <media/v4l2-subdev.h>
  
-+	struct media_pipeline *pipe;	/* Pipeline this entity belongs to. */
-+
- 	union {
- 		/* Node specifications */
- 		struct {
-@@ -114,6 +120,7 @@ struct media_entity_graph {
- int media_entity_init(struct media_entity *entity, u16 num_pads,
- 		struct media_pad *pads, u16 extra_links);
- void media_entity_cleanup(struct media_entity *entity);
-+
- int media_entity_create_link(struct media_entity *source, u16 source_pad,
- 		struct media_entity *sink, u16 sink_pad, u32 flags);
- int __media_entity_setup_link(struct media_link *link, u32 flags);
-@@ -129,6 +136,9 @@ void media_entity_graph_walk_start(struct media_entity_graph *graph,
- 		struct media_entity *entity);
- struct media_entity *
- media_entity_graph_walk_next(struct media_entity_graph *graph);
-+void media_entity_pipeline_start(struct media_entity *entity,
-+		struct media_pipeline *pipe);
-+void media_entity_pipeline_stop(struct media_entity *entity);
- 
- #define media_entity_call(entity, operation, args...)			\
- 	(((entity)->ops && (entity)->ops->operation) ?			\
+ /* Each instance of a V4L2 device should create the v4l2_device struct,
+@@ -39,6 +40,9 @@ struct v4l2_device {
+ 	   Note: dev might be NULL if there is no parent device
+ 	   as is the case with e.g. ISA devices. */
+ 	struct device *dev;
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	struct media_device *mdev;
++#endif
+ 	/* used to keep track of the registered subdevs */
+ 	struct list_head subdevs;
+ 	/* lock this struct; can be used by the driver as well if this
 -- 
 1.7.3.4
