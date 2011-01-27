@@ -1,17 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: Triggering a DAPM widget event
-Date: Thu, 27 Jan 2011 09:09:39 +0200
-Message-ID: <4D411A33.3080205@nokia.com>
-References: <39D4D143FC30524CAB784A72ADFECEEE34A0BC92CA@NLCLUEXM02.connect1.	local><20110126165347.GB10759@sirena.org.uk><39D4D143FC30524CAB784A72ADFECEEE34A0E8F3DF@NLCLUEXM02.connect1.local>	<20110126182754.GJ8501@opensource.wolfsonmicro.com>
-	<39D4D143FC30524CAB784A72ADFECEEE34A0E8F455@NLCLUEXM02.connect1.local>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH 4/4] ASoC: Convert bunch of codecs to use
+ soc-core interconnect registration
+Date: Thu, 27 Jan 2011 09:21:16 +0200
+Message-ID: <20110127092116.e29f5cb1.jhnikula@gmail.com>
+References: <1296043097-11720-1-git-send-email-jhnikula@gmail.com>
+	<1296043097-11720-4-git-send-email-jhnikula@gmail.com>
+	<4D411745.4070307@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-da01.nokia.com (smtp.nokia.com [147.243.128.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 348242440E
-	for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2011 08:09:43 +0100 (CET)
-In-Reply-To: <39D4D143FC30524CAB784A72ADFECEEE34A0E8F455@NLCLUEXM02.connect1.local>
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 7169C2464F
+	for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2011 08:19:54 +0100 (CET)
+Received: by fxm5 with SMTP id 5so1836344fxm.38
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2011 23:19:54 -0800 (PST)
+In-Reply-To: <4D411745.4070307@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,39 +25,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext Harrod, John" <john.harrod@philips.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/26/11 22:38, ext Harrod, John wrote:
->> What is your actual problem here?
-> =
+On Thu, 27 Jan 2011 08:57:09 +0200
+Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
 
-> I have a speaker widget (snd_soc_dapm_spk) whose event handler only recei=
-ves a
-> SND_SOC_DAPM_PRE_PMD event when the pcm is closed.
+> On 01/26/11 13:58, ext Jarkko Nikula wrote:
+> > These codec drivers have only single interconnect map so these can be
+> > switched to use soc-core based interconnect registration.
+> > 
+> > This simplifies those codecs that check the return value of
+> > snd_soc_dapm_add_routes and adds a failure path to those that don't.
+> 
+> I might be missing something, but the only benefit of the 3+4 patch is
+> actually the failure check for the snd_soc_dapm_add_routes, which was
+> not done for most of the codecs, but now it is done in the core.
+> On the other hand, now we always have one check for the
+> codec->driver->route in soc_probe_codec.
+> I don't see how these actually simplifies the codec drivers.
+> We had a single snd_soc_dapm_add_routes call before the patches, now we
+> have two fields to fill in snd_soc_codec_driver...
+> 
+Yeah, simplification comes only if a driver is checking the return value
+what most are not doing currently.
 
-Events on widgets are (among others):
-SND_SOC_DAPM_PRE_PMU: will be sent before the widget power up
-SND_SOC_DAPM_POST_PMU: will be sent after the widget power up
-SND_SOC_DAPM_PRE_PMD: will be sent before the widget power down
-SND_SOC_DAPM_POST_PMD: will be sent after the widget power down
+Another issue that came to my mind if some drivers need to add
+additional interconnects later then there's basically need to revert
+the 4/4 for those codecs. However, I don't think there are many codecs
+that will do that.
 
-The *_PMU events are triggered whenever the widget is going to be
-powered up:
-stream start, within prepare time;
-complete bypass, or loopback path
-
-The *_PMD events are triggered whenever the widget is going to be
-powered down:
-bypass, or loopback path is disabled
-After the stream has been stopped/closed.
- In case of playback the power down is delayed (5 sec by default)
- In case of capture the power down is instant.
-
-If you stop, and restart the playback stream within 5 sec, events will
-not be triggered on the widgets, since they are still powered.
-
--- =
-
-P=E9ter
+-- 
+Jarkko
