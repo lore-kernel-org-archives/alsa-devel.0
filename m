@@ -1,21 +1,20 @@
-From: kvoigtlaender <kvoigtlaender@web.de>
-Subject: =?utf-8?q?alsamixer_don=C2=B4t_start?=
-Date: Sun, 30 Jan 2011 10:40:52 +0100
-Message-ID: <4D453224.6040502@web.de>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: Re: Question about your DSP topic branch
+Date: Thu, 27 Jan 2011 13:51:58 -0800
+Message-ID: <4D41E8FE.4070206@codeaurora.org>
+References: <4D2652C8.7030701@codeaurora.org> <4D3E7536.9070906@codeaurora.org>
+	<20110125115113.GB13051@sirena.org.uk>
+	<4D3FBDB1.90804@codeaurora.org>
+	<20110126112004.GA5476@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fmmailgate01.web.de (fmmailgate01.web.de [217.72.192.221])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7866A1037FC
-	for <alsa-devel@alsa-project.org>; Sun, 30 Jan 2011 10:40:56 +0100 (CET)
-Received: from smtp06.web.de  ( [172.20.5.172])
-	by fmmailgate01.web.de (Postfix) with ESMTP id 13FA81868692C
-	for <alsa-devel@alsa-project.org>; Sun, 30 Jan 2011 10:40:54 +0100 (CET)
-Received: from [93.203.1.32] (helo=[192.168.178.30])
-	by smtp06.web.de with esmtp (TLSv1:AES256-SHA:256) (WEB.DE 4.110 #2)
-	id 1PjTm9-0000oE-00
-	for alsa-devel@alsa-project.org; Sun, 30 Jan 2011 10:40:54 +0100
+Received: from wolverine02.qualcomm.com (wolverine02.qualcomm.com
+	[199.106.114.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 16FF510380A
+	for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2011 22:52:07 +0100 (CET)
+In-Reply-To: <20110126112004.GA5476@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,13 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I described my problem here (in german): 
-http://www.vdr-portal.de/board/thread.php?postid=974850#post974850
+On 1/26/2011 3:20 AM, Mark Brown wrote:
+> On Tue, Jan 25, 2011 at 10:22:41PM -0800, Patrick Lai wrote:
+>> On 1/25/2011 3:51 AM, Mark Brown wrote:
+>
+>>> Yes, that'd be kind of nice but given how tiny these noop drivers are
+>>> and the fact that they do all need to specify their capabilites it's not
+>>> clear that there's much advantage from combining them into a single
+>>> driver - the boiler plate is so small and simple.
+>
+>> Do we consider the case that codec driver is not required such as
+>> virtual sink or sink is configured outside of ALSA driver? If we
+>> create dummy codec driver for each use case, wouldn't
+>> sound/soc/codecs end up littered with bunch of noop drivers?
+>
+> Yup, but it's not really a big cost - they're all so trivial.
 
-Mobo Gigabyte M68M-S2P with nVidia chip and ALC883
-Tried with headphone on rear and front socket.
-Error "unknown symbol" in dmesg.
-Card is not recognized.
+Currently, I already have few dummy codec drivers in mind for the 
+project I am working on. I am not worried about the size of these files. 
+Beside having tons of dummy codec drivers in the source tree, I am also 
+looking at the value and effort to upstream these trivial drivers.
+>> Furthermore, couldn't capabilities
+>> being passed through platform device?
+>
+> Right, but of course you probably end up defining a common set of
+> platform data for each device so people don't have to cut'n'paste the
+> same thing into all the different board files.
+
+Yes, that would be convenient for others. However, I see the effort to 
+create multiple platform devices and paste the capabilities in the board 
+file far less than upstreamng no-op drivers and making changes in 
+Kconfig and Makefile under sound/soc/codecs.
+
+Thanks
+
+-- 
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
