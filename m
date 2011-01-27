@@ -1,15 +1,15 @@
-From: "Manjunathappa, Prakash" <prakash.pm@ti.com>
-Subject: [PATCH] ASoC: DaVinci: fix kernel panic due to
-	uninitialized platform_data
-Date: Thu, 27 Jan 2011 19:17:43 +0530
-Message-ID: <1296136063-31625-1-git-send-email-prakash.pm@ti.com>
+From: Irfan Shaikh <irfan.shaikh@sasken.com>
+Subject: ALSA mixer query
+Date: Thu, 27 Jan 2011 19:39:20 +0530
+Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA69CF0CF4EA@EXGMBX01.sasken.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id BFF49103ACE
-	for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2011 14:50:11 +0100 (CET)
+Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
+	by alsa0.perex.cz (Postfix) with ESMTP id F2D50103B08
+	for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2011 15:09:43 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,37 +19,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Manjunathappa,
-	Prakash" <prakash.pm@ti.com>, stable@kernel.org, linux-arm-kernel@lists.infradead.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes the Kernel panic issue on accessing davinci_vc in
-cq93vc_probe function. struct davinci_vc is part of platform device's
-private driver data(codec->dev->p->driver_data) and this is populated
-by DaVinci Voice Codec MFD driver.
+Hello all,
 
-Signed-off-by: Manjunathappa, Prakash <prakash.pm@ti.com>
----
-This patch applies to Linus's tree at [1].
+             I am rendering audio to a PCM playback device (hw:0,0). I also need to render the same audio data to second PCM playback device (hw:0,1).
 
-[1] http://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
----
- sound/soc/codecs/cq93vc.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+1) Can i use ALSA mixer APIs so that i give PCM audio data to 1 playback device or some common interface,
+    but the PCM audio data is rendered to both devices (hw:0,0 and hw:0,1)
 
-diff --git a/sound/soc/codecs/cq93vc.c b/sound/soc/codecs/cq93vc.c
-index 46dbfd0..347a567 100644
---- a/sound/soc/codecs/cq93vc.c
-+++ b/sound/soc/codecs/cq93vc.c
-@@ -153,7 +153,7 @@ static int cq93vc_resume(struct snd_soc_codec *codec)
- 
- static int cq93vc_probe(struct snd_soc_codec *codec)
- {
--	struct davinci_vc *davinci_vc = codec->dev->platform_data;
-+	struct davinci_vc *davinci_vc = snd_soc_codec_get_drvdata(codec);
- 
- 	davinci_vc->cq93vc.codec = codec;
- 	codec->control_data = davinci_vc;
--- 
-1.7.1
+Regards
+Irfan
+
+SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any 
+ virus transmitted by this email.
+Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
