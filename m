@@ -1,121 +1,54 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: [PATCH v8 10/12] v4l: Add a media_device pointer to the v4l2_device structure
-Date: Thu, 27 Jan 2011 13:30:35 +0100
-Message-ID: <1296131437-29954-11-git-send-email-laurent.pinchart@ideasonboard.com>
-References: <1296131437-29954-1-git-send-email-laurent.pinchart@ideasonboard.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1296131437-29954-1-git-send-email-laurent.pinchart@ideasonboard.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: sakari.ailus@maxwell.research.nokia.com, broonie@opensource.wolfsonmicro.com, clemens@ladisch.de
+From: "Manjunathappa, Prakash" <prakash.pm-l0cyMroinI0@public.gmane.org>
+Subject: [PATCH] MFD: DaVinci: Fix voice codec device name
+Date: Thu, 27 Jan 2011 18:58:36 +0530
+Message-ID: <1296134916-25742-1-git-send-email-prakash.pm@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, stable-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The pointer will later be used to register/unregister media entities
-when registering/unregistering a v4l2_subdev or a video_device.
+Fix the device name in DaVinci Voice Codec MFD driver to load
+davinci-vcif and cq93vc codec client drivers.
 
-With the introduction of media devices, device drivers need to store a
-pointer to a driver-specific structure in the device's drvdata.
-v4l2_device can't claim ownership of the drvdata anymore.
-
-To maintain compatibility with drivers that rely on v4l2_device storing
-a pointer to itself in the device's drvdata, v4l2_device_register() will
-keep doing so if the drvdata is NULL.
-
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Manjunathappa, Prakash <prakash.pm-l0cyMroinI0@public.gmane.org>
 ---
- Documentation/video4linux/v4l2-framework.txt |   17 ++++++++++++-----
- drivers/media/video/v4l2-device.c            |   13 +++++++------
- include/media/v4l2-device.h                  |    4 ++++
- 3 files changed, 23 insertions(+), 11 deletions(-)
+This patch applies to Linus's tree at [1].
 
-diff --git a/Documentation/video4linux/v4l2-framework.txt b/Documentation/video4linux/v4l2-framework.txt
-index 4db1def..aeb2a22 100644
---- a/Documentation/video4linux/v4l2-framework.txt
-+++ b/Documentation/video4linux/v4l2-framework.txt
-@@ -83,11 +83,17 @@ You must register the device instance:
+[1] http://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
+---
+ drivers/mfd/davinci_voicecodec.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mfd/davinci_voicecodec.c b/drivers/mfd/davinci_voicecodec.c
+index 33c923d..fdd8a1b 100644
+--- a/drivers/mfd/davinci_voicecodec.c
++++ b/drivers/mfd/davinci_voicecodec.c
+@@ -118,12 +118,12 @@ static int __init davinci_vc_probe(struct platform_device *pdev)
  
- 	v4l2_device_register(struct device *dev, struct v4l2_device *v4l2_dev);
+ 	/* Voice codec interface client */
+ 	cell = &davinci_vc->cells[DAVINCI_VC_VCIF_CELL];
+-	cell->name = "davinci_vcif";
++	cell->name = "davinci-vcif";
+ 	cell->driver_data = davinci_vc;
  
--Registration will initialize the v4l2_device struct and link dev->driver_data
--to v4l2_dev. If v4l2_dev->name is empty then it will be set to a value derived
--from dev (driver name followed by the bus_id, to be precise). If you set it
--up before calling v4l2_device_register then it will be untouched. If dev is
--NULL, then you *must* setup v4l2_dev->name before calling v4l2_device_register.
-+Registration will initialize the v4l2_device struct. If the dev->driver_data
-+field is NULL, it will be linked to v4l2_dev. Drivers that use the media
-+device framework in addition to the V4L2 framework need to set
-+dev->driver_data manually to point to the driver-specific device structure
-+that embed the struct v4l2_device instance. This is achieved by a
-+dev_set_drvdata() call before registering the V4L2 device instance.
-+
-+If v4l2_dev->name is empty then it will be set to a value derived from dev
-+(driver name followed by the bus_id, to be precise). If you set it up before
-+calling v4l2_device_register then it will be untouched. If dev is NULL, then
-+you *must* setup v4l2_dev->name before calling v4l2_device_register.
+ 	/* Voice codec CQ93VC client */
+ 	cell = &davinci_vc->cells[DAVINCI_VC_CQ93VC_CELL];
+-	cell->name = "cq93vc";
++	cell->name = "cq93vc-codec";
+ 	cell->driver_data = davinci_vc;
  
- You can use v4l2_device_set_name() to set the name based on a driver name and
- a driver-global atomic_t instance. This will generate names like ivtv0, ivtv1,
-@@ -108,6 +114,7 @@ You unregister with:
- 
- 	v4l2_device_unregister(struct v4l2_device *v4l2_dev);
- 
-+If the dev->driver_data field points to v4l2_dev, it will be reset to NULL.
- Unregistering will also automatically unregister all subdevs from the device.
- 
- If you have a hotpluggable device (e.g. a USB device), then when a disconnect
-diff --git a/drivers/media/video/v4l2-device.c b/drivers/media/video/v4l2-device.c
-index 97e84df..5c16a12 100644
---- a/drivers/media/video/v4l2-device.c
-+++ b/drivers/media/video/v4l2-device.c
-@@ -47,9 +47,8 @@ int v4l2_device_register(struct device *dev, struct v4l2_device *v4l2_dev)
- 	if (!v4l2_dev->name[0])
- 		snprintf(v4l2_dev->name, sizeof(v4l2_dev->name), "%s %s",
- 			dev->driver->name, dev_name(dev));
--	if (dev_get_drvdata(dev))
--		v4l2_warn(v4l2_dev, "Non-NULL drvdata on register\n");
--	dev_set_drvdata(dev, v4l2_dev);
-+	if (!dev_get_drvdata(dev))
-+		dev_set_drvdata(dev, v4l2_dev);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(v4l2_device_register);
-@@ -72,10 +71,12 @@ EXPORT_SYMBOL_GPL(v4l2_device_set_name);
- 
- void v4l2_device_disconnect(struct v4l2_device *v4l2_dev)
- {
--	if (v4l2_dev->dev) {
-+	if (v4l2_dev->dev == NULL)
-+		return;
-+
-+	if (dev_get_drvdata(v4l2_dev->dev) == v4l2_dev)
- 		dev_set_drvdata(v4l2_dev->dev, NULL);
--		v4l2_dev->dev = NULL;
--	}
-+	v4l2_dev->dev = NULL;
- }
- EXPORT_SYMBOL_GPL(v4l2_device_disconnect);
- 
-diff --git a/include/media/v4l2-device.h b/include/media/v4l2-device.h
-index b16f307..759db73 100644
---- a/include/media/v4l2-device.h
-+++ b/include/media/v4l2-device.h
-@@ -21,6 +21,7 @@
- #ifndef _V4L2_DEVICE_H
- #define _V4L2_DEVICE_H
- 
-+#include <media/media-device.h>
- #include <media/v4l2-subdev.h>
- 
- /* Each instance of a V4L2 device should create the v4l2_device struct,
-@@ -39,6 +40,9 @@ struct v4l2_device {
- 	   Note: dev might be NULL if there is no parent device
- 	   as is the case with e.g. ISA devices. */
- 	struct device *dev;
-+#if defined(CONFIG_MEDIA_CONTROLLER)
-+	struct media_device *mdev;
-+#endif
- 	/* used to keep track of the registered subdevs */
- 	struct list_head subdevs;
- 	/* lock this struct; can be used by the driver as well if this
+ 	ret = mfd_add_devices(&pdev->dev, pdev->id, davinci_vc->cells,
 -- 
-1.7.3.4
+1.7.1
