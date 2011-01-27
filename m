@@ -1,30 +1,13 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Problem with VIA VT1708S and git versions of
-	alsa-driver.
-Date: Thu, 27 Jan 2011 17:09:34 +0800
-Message-ID: <AANLkTi=14Q53BtcafboP=qz2-9AEcnnE3UD+HTwoGtbe@mail.gmail.com>
-References: <AANLkTikaYCybUxW7dE3tizYZztT8pVo6Jeg-mh=e0NqZ@mail.gmail.com>
-	<AANLkTi=UTy8tdLqL-90UJOXtU=Ks1+ZZrGV2nCbw=xjD@mail.gmail.com>
-	<AANLkTinYcRqMwH2FSUjXiOxZg4x09q673FL9m15YvXEa@mail.gmail.com>
-	<AANLkTik8HayTEADWn74PJ0NgjGunamsSAZpy_GanuZo3@mail.gmail.com>
-	<AANLkTimz3iiXPhEarEUY1Gw5GxrTuv+UXgKKZS3ObzuS@mail.gmail.com>
-	<AANLkTi=S20cpKy-CObvKB-OLDKbQ7FBhFrbnd448B+sO@mail.gmail.com>
-	<AANLkTikyjZvD+ptCcgBrN2av-jQmKWOekbzvfXYAdpOV@mail.gmail.com>
-	<AANLkTim_A5m2MryxmkEHtcc3gNFWTaRW8J3=dZC6wd67@mail.gmail.com>
-	<AANLkTinUWD9Oq2iAbn_nc5E+M=y4yXx4u0Eff9jYSGyk@mail.gmail.com>
-	<AANLkTimcAUn=+1B3=LJbD7dBBZ3NvaeX_q+_sHP6QhB3@mail.gmail.com>
-	<AANLkTimiwTcnCnGECN8jpzY2VaMTmpcHBx-qmFDmwxSY@mail.gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Fix microphone(s) on Lenovo Edge 13
+Date: Thu, 27 Jan 2011 10:37:02 +0100
+Message-ID: <4D413CBE.9080409@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------020306060702000000060003"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 84725103A9C
-	for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2011 10:09:36 +0100 (CET)
-Received: by eyg24 with SMTP id 24so941109eyg.38
-	for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2011 01:09:36 -0800 (PST)
-In-Reply-To: <AANLkTimiwTcnCnGECN8jpzY2VaMTmpcHBx-qmFDmwxSY@mail.gmail.com>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id F333824675
+	for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2011 10:37:04 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,60 +17,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-2011/1/27 Mark Goldstein <goldstein.mark@gmail.com>
+This is a multi-part message in MIME format.
+--------------020306060702000000060003
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> Hi,
->
-> I've renewed my experiments after long break (sorry, had to do other
-> stuff and since released version 1.0.23 worked for me, I reverted to
-> that version).
->
-> I still have not tried hda-emulator, but I made some progress.
->
-> 1) I compiled the git version (snapshot from Jan 20) for OpenSUSE 11.1
-> with test kernel 2.6.32.28.
-> I saw the same behavior as before:
-> - Line control does nothing;
-> - Front Mic control actually changes volume of Line In;
-> - Neither Front nor Rear Mic work at all; (Answering to Raymond's
-> question regarding Mic Boost - I have "Rear Mic" control, but Mic
-> Boost).
->
-> 2) I decided to compare patch.via.c from version 1.0.23 that works for
-> me and git version.
-> It appears to me that the clue could be found in the function
-> vt1708S_auto_create_analog_input_ctls. The one in 1.0.23 uses explicit
-> control indexes, while the function from git version calls
-> vt_auto_create_analog_input_ctls, passing it the array of indexes:
-> static hda_nid_t pin_idxs[] = { 0x1f, 0x1a, 0x1b, 0x1e, 0, 0xff };
->
-> Comparing the indexes used in  vt1708S_auto_create_analog_input_ctls
-> with those used for other codec and with version from 1.0.23, I
-> started suspecting that the order of indexes is wrong. I changed the
-> array like this:
-> static hda_nid_t pin_idxs[] = { 0, 0x1f, 0x1a, 0x1b, 0x1e, 0xff };
-> After re-compiling the version I've got much better behavior:
-> - Line control (index 1b) works correctly now;
-> - Front Mic control (index 0x1e) actually controls Rear Mic and this
-> Rear Mic works;
-> - Front mic still does not work;
-> - Rear Mic control (index 0x1a) seems not working and there is still
-> Mic Boost, not Rear Mic Boost.
->
->
-Do you mean that regiession is caused by this patch ?
+This Edge 13 model has an internal mic at 0x1a and should
+therefore use the asus quirk.
 
-http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=f3268512c3a5dea587cfe875b8bca98d9e164cd9;hp=73413b120d5d6eb6c98451bbc19acf43e0e300ae
+Since my backport of the asus model is now tested and working, would it 
+be possible to apply that patch as well as this quirk to 2.6.38?
+
+Thanks Takashi for keeping up with all the patches coming in! :-)
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
+
+--------------020306060702000000060003
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Fix-microphone-s-on-Lenovo-Edge-13.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Fix-microphone-s-on-Lenovo-Edge-13.patch"
+
+>From c8c0ca221b4de97682d2e9e5ad73c0ac6346b398 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Thu, 27 Jan 2011 10:28:46 +0100
+Subject: [PATCH] ALSA: HDA: Fix microphone(s) on Lenovo Edge 13
+
+BugLink: http://bugs.launchpad.net/bugs/708521
+
+This Edge 13 model has an internal mic at 0x1a and should
+therefore use the asus quirk.
+
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_conexant.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index 9867afc..7e1ca43 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -3120,6 +3120,7 @@ static struct snd_pci_quirk cxt5066_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(0x152d, 0x0833, "OLPC XO-1.5", CXT5066_OLPC_XO_1_5),
+ 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo T400s", CXT5066_THINKPAD),
+ 	SND_PCI_QUIRK(0x17aa, 0x21c5, "Thinkpad Edge 13", CXT5066_THINKPAD),
++	SND_PCI_QUIRK(0x17aa, 0x21c6, "Thinkpad Edge 13", CXT5066_ASUS),
+  	SND_PCI_QUIRK(0x17aa, 0x215e, "Lenovo Thinkpad", CXT5066_THINKPAD),
+ 	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo G560", CXT5066_ASUS),
+ 	SND_PCI_QUIRK_VENDOR(0x17aa, "Lenovo", CXT5066_IDEAPAD), /* Fallback for Lenovos without dock mic */
+-- 
+1.7.1
 
 
-it seem vt_auto_create_analog_input_ctls() try to assign stereo mixer as the
-first item of the imux(s) node 0x17 and 0x1e
+--------------020306060702000000060003
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-assign those playback volume of those input pins in to stereo mixer for node
-0x16
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-but it should assign auto_pin_cfg_labels[] according to the imux node 0x17
-and 0x1e
+--------------020306060702000000060003--
