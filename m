@@ -1,16 +1,30 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Fixed sampling freq UAC2 doubt
-Date: Thu, 27 Jan 2011 09:14:29 +0100
-Message-ID: <4D412965.7010704@ladisch.de>
-References: <AANLkTinCZyrS6GDKfs3WerNrQ7DaF6_nMHLCaWqERmxC@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Problem with VIA VT1708S and git versions of
+	alsa-driver.
+Date: Thu, 27 Jan 2011 17:09:34 +0800
+Message-ID: <AANLkTi=14Q53BtcafboP=qz2-9AEcnnE3UD+HTwoGtbe@mail.gmail.com>
+References: <AANLkTikaYCybUxW7dE3tizYZztT8pVo6Jeg-mh=e0NqZ@mail.gmail.com>
+	<AANLkTi=UTy8tdLqL-90UJOXtU=Ks1+ZZrGV2nCbw=xjD@mail.gmail.com>
+	<AANLkTinYcRqMwH2FSUjXiOxZg4x09q673FL9m15YvXEa@mail.gmail.com>
+	<AANLkTik8HayTEADWn74PJ0NgjGunamsSAZpy_GanuZo3@mail.gmail.com>
+	<AANLkTimz3iiXPhEarEUY1Gw5GxrTuv+UXgKKZS3ObzuS@mail.gmail.com>
+	<AANLkTi=S20cpKy-CObvKB-OLDKbQ7FBhFrbnd448B+sO@mail.gmail.com>
+	<AANLkTikyjZvD+ptCcgBrN2av-jQmKWOekbzvfXYAdpOV@mail.gmail.com>
+	<AANLkTim_A5m2MryxmkEHtcc3gNFWTaRW8J3=dZC6wd67@mail.gmail.com>
+	<AANLkTinUWD9Oq2iAbn_nc5E+M=y4yXx4u0Eff9jYSGyk@mail.gmail.com>
+	<AANLkTimcAUn=+1B3=LJbD7dBBZ3NvaeX_q+_sHP6QhB3@mail.gmail.com>
+	<AANLkTimiwTcnCnGECN8jpzY2VaMTmpcHBx-qmFDmwxSY@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 7AA9C103A7E
-	for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2011 09:14:11 +0100 (CET)
-In-Reply-To: <AANLkTinCZyrS6GDKfs3WerNrQ7DaF6_nMHLCaWqERmxC@mail.gmail.com>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 84725103A9C
+	for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2011 10:09:36 +0100 (CET)
+Received: by eyg24 with SMTP id 24so941109eyg.38
+	for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2011 01:09:36 -0800 (PST)
+In-Reply-To: <AANLkTimiwTcnCnGECN8jpzY2VaMTmpcHBx-qmFDmwxSY@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,37 +34,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassisinghbrar@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Daniel Mack <daniel@caiaq.de>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jassi Brar wrote:
->  While testing my under-development generic USB Audio Class 2.0 _gadget_ driver
-> with ALSA's USB Audio Class driver, I came across an apparent discrepency.
-> Or so do I think.
-> 
-> Page-98 Section 5.2.5.1.1 of 'Audio 20 final.pdf' specifies :-
-> [In many cases, the Clock Source Entity represents a crystal
-> oscillator based generator
->  with a single fixed frequency. In that case, the Set request is not supported.]
-> 
-> Here 'not supported' means setup requests for CUR/RANGE CS_SAM_FREQ_CONTROL
-> should stall. Right ?
+2011/1/27 Mark Goldstein <goldstein.mark@gmail.com>
 
-Strictly speaking, "is not" (instead of "might not be") implies that the
-device _must_ stall.
+> Hi,
+>
+> I've renewed my experiments after long break (sorry, had to do other
+> stuff and since released version 1.0.23 worked for me, I reverted to
+> that version).
+>
+> I still have not tried hda-emulator, but I made some progress.
+>
+> 1) I compiled the git version (snapshot from Jan 20) for OpenSUSE 11.1
+> with test kernel 2.6.32.28.
+> I saw the same behavior as before:
+> - Line control does nothing;
+> - Front Mic control actually changes volume of Line In;
+> - Neither Front nor Rear Mic work at all; (Answering to Raymond's
+> question regarding Mic Boost - I have "Rear Mic" control, but Mic
+> Boost).
+>
+> 2) I decided to compare patch.via.c from version 1.0.23 that works for
+> me and git version.
+> It appears to me that the clue could be found in the function
+> vt1708S_auto_create_analog_input_ctls. The one in 1.0.23 uses explicit
+> control indexes, while the function from git version calls
+> vt_auto_create_analog_input_ctls, passing it the array of indexes:
+> static hda_nid_t pin_idxs[] = { 0x1f, 0x1a, 0x1b, 0x1e, 0, 0xff };
+>
+> Comparing the indexes used in  vt1708S_auto_create_analog_input_ctls
+> with those used for other codec and with version from 1.0.23, I
+> started suspecting that the order of indexes is wrong. I changed the
+> array like this:
+> static hda_nid_t pin_idxs[] = { 0, 0x1f, 0x1a, 0x1b, 0x1e, 0xff };
+> After re-compiling the version I've got much better behavior:
+> - Line control (index 1b) works correctly now;
+> - Front Mic control (index 0x1e) actually controls Rear Mic and this
+> Rear Mic works;
+> - Front mic still does not work;
+> - Rear Mic control (index 0x1a) seems not working and there is still
+> Mic Boost, not Rear Mic Boost.
+>
+>
+Do you mean that regiession is caused by this patch ?
 
-> The snd_usb_hw_params in sound/usb/pcm.c apparently attempts to do that with
-> disregard to Clock-Frequency-Control bitmask in bmControls field of the
-> Clock Source Descriptor.
-> 
-> The confusion is, subs->cur_rate is initialized only if snd_usb_init_sample_rate
-> succeeds. Which does SET control tranfer, albeit with the supported frequency.
-> Couldn't a fixed sampling freq UAC2 compliant device refuse to work in
-> that case, thereby failing any attempt to use the USB card?
-
-Yes, it will fail.  This is a bug in the driver.
+http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=f3268512c3a5dea587cfe875b8bca98d9e164cd9;hp=73413b120d5d6eb6c98451bbc19acf43e0e300ae
 
 
-Regards,
-Clemens
+it seem vt_auto_create_analog_input_ctls() try to assign stereo mixer as the
+first item of the imux(s) node 0x17 and 0x1e
+
+assign those playback volume of those input pins in to stereo mixer for node
+0x16
+
+but it should assign auto_pin_cfg_labels[] according to the imux node 0x17
+and 0x1e
