@@ -1,16 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ALSA mixer query
-Date: Fri, 28 Jan 2011 14:00:23 +0100
-Message-ID: <4D42BDE7.5000606@ladisch.de>
-References: <16F32A3F9AF4E441B752BCD79C151ACA69CF0CF4EA@EXGMBX01.sasken.com>
+From: "Babu, Ramesh" <ramesh.babu@intel.com>
+Subject: ASoC: Configuring codec PCM port question
+Date: Fri, 28 Jan 2011 18:30:59 +0530
+Message-ID: <12D0C12AF19E15409D57F22566E88EF50937515E81@bgsmsx501.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 208012455C
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 14:00:07 +0100 (CET)
-In-Reply-To: <16F32A3F9AF4E441B752BCD79C151ACA69CF0CF4EA@EXGMBX01.sasken.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA3552455C
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 14:01:05 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,38 +19,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Irfan Shaikh <irfan.shaikh@sasken.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Irfan Shaikh wrote:
-> I am rendering audio to a PCM playback device (hw:0,0). I also need
-> to render the same audio data to second PCM playback device (hw:0,1).
-> 
-> 1) Can i use ALSA mixer APIs so that i give PCM audio data to 1
->    playback device or some common interface, but the PCM audio data
->    is rendered to both devices (hw:0,0 and hw:0,1)
+Hi
 
-The mixer API ist just an interface to the hardware, so this would
-depend on the hardware's capabilities.
+My codec has 2 ports, PCM1 and PCM2 ports.
+PCM2 port is used for playback and capture operations and
+PCM1 is connected to Modem.
+The ASoC driver has to configure, enable and disable PCM1 port during voice
+call activity.
 
-However, you could use the plugin mechanism to create a virtual PCM
-device that routes its data to two actual devices.  See
-<http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html#pcm_plugins_multi>.
+I am thinking of following two options to configure PCM1 port:
 
-> SASKEN BUSINESS DISCLAIMER: This message may contain bla bla bla ...
+1. AlSA Mixer control:  Create mixer control and provide options like VOICE_HS,
+	VOICE_IHF, VOICE_EP and VOICE_DISABLE. Application will use one of the option to
+	Configure the PCM1 port.
 
-This e-mail contains public information intended for any subscriber of
-this mailing list and for anybody else who bothers to read it; it will
-be copied, disclosed and distributed to the public.  If you think you
-are not the intended recipient, please commit suicide immediately.
-These terms apply also to any e-mails quoted in, referenced from, or
-answering this e-mail, and supersede any confidentiality notices in
-those e-mails.  Additionally, confidentiality notices in those e-mails
-will incur legal processing fees of $42 per line; you have agreed to
-this by reading this confidentiality notice.
+2. IOCTL : Application invokes IOCTL in hardware specific driver code and then it enables
+	PCM1 port (cross-path DAPM ?) 
 
+Which is the best way to implement it?
+Are there any other existing way to implement it?
 
-
-Regards,
-Clemens
+Thanks
+Ramesh
