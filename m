@@ -1,37 +1,35 @@
-From: Amerigo Wang <amwang@redhat.com>
-Subject: [Patch] sound: silent echo'ed messages in Makefile
-Date: Fri, 28 Jan 2011 16:52:00 +0800
-Message-ID: <1296204727-19160-1-git-send-email-amwang@redhat.com>
+From: Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>
+Subject: Re: [PATCH v8 03/12] media: Entities, pads and links
+Date: Fri, 28 Jan 2011 12:53:39 +0200
+Message-ID: <4D42A033.9030906@maxwell.research.nokia.com>
+References: <1296131437-29954-1-git-send-email-laurent.pinchart@ideasonboard.com> <1296131437-29954-4-git-send-email-laurent.pinchart@ideasonboard.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1296131437-29954-4-git-send-email-laurent.pinchart@ideasonboard.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: WANG Cong <amwang@redhat.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Paul Mundt <lethal@linux-sh.org>, John Kacur <jkacur@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, alsa-devel@alsa-project.org
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Silent these echo's, please.
+Hi Laurent,
 
-Signed-off-by: WANG Cong <amwang@redhat.com>
+Thanks for the patches!
 
----
-diff --git a/sound/oss/Makefile b/sound/oss/Makefile
-index 96f14dc..90ffb99 100644
---- a/sound/oss/Makefile
-+++ b/sound/oss/Makefile
-@@ -87,7 +87,7 @@ ifeq ($(CONFIG_PSS_HAVE_BOOT),y)
- 	$(obj)/bin2hex pss_synth < $< > $@
- else
-     $(obj)/pss_boot.h:
--	(							\
-+	$(Q)(							\
- 	    echo 'static unsigned char * pss_synth = NULL;';	\
- 	    echo 'static int pss_synthLen = 0;';		\
- 	) > $@
-@@ -102,7 +102,7 @@ ifeq ($(CONFIG_TRIX_HAVE_BOOT),y)
- 	$(obj)/hex2hex -i trix_boot < $< > $@
- else
-     $(obj)/trix_boot.h:
--	(							\
-+	$(Q)(							\
- 	    echo 'static unsigned char * trix_boot = NULL;';	\
- 	    echo 'static int trix_boot_len = 0;';		\
- 	) > $@
+I've got one comment that I should have made long time ago... Pads are
+inputs or outputs... or: are they sinks or sources? I recall that it was
+agreed on some occasion that sink and source are much less ambiguous and
+they should be used instead.
+
+So we'd have MEDIA_PAD_FL_{SINK,SOURCE}, for example. Currently the
+source and documentation is using input/output and source/sink
+interchangeably. I think sink and source should be used all the time.
+
+What do you think?
+
+Regards,
+
+-- 
+Sakari Ailus
+sakari.ailus@maxwell.research.nokia.com
