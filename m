@@ -1,15 +1,15 @@
 From: Harsha Priya <priya.harsha@intel.com>
-Subject: [PATCH 2/3] ASoC: mid-x86 machine driver - add jack
-	detect support
-Date: Fri, 28 Jan 2011 22:40:04 +0530
-Message-ID: <1296234604-6653-1-git-send-email-priya.harsha@intel.com>
+Subject: [PATCH 3/3] ASoC: sn95031 codec - adding jack
+	detection/reporting
+Date: Fri, 28 Jan 2011 22:41:00 +0530
+Message-ID: <1296234660-6727-1-git-send-email-priya.harsha@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 84DAE24337
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 17:55:12 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 192E62433B
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 17:56:29 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,285 +23,325 @@ To: alsa-devel@alsa-project.org
 Cc: Harsha Priya <priya.harsha@intel.com>, Vinod Koul <vinod.koul@intel.com>, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the jack detection in mid-86 machine driver
+This patch adds the jack detection logic in sn95031 codec.
+This also adds code for reading the ADC to figure out the
+mic bias and therby report jack type detected
 
 Signed-off-by: Harsha Priya <priya.harsha@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/mid-x86/mfld_machine.c |  175 ++++++++++++++++++++++++++++++++------
- 1 files changed, 148 insertions(+), 27 deletions(-)
+ sound/soc/codecs/sn95031.c |  197 +++++++++++++++++++++++++++++++++++++++++--
+ sound/soc/codecs/sn95031.h |   45 ++++++++++
+ 2 files changed, 232 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/mid-x86/mfld_machine.c b/sound/soc/mid-x86/mfld_machine.c
-index 1a330be..d708da8 100644
---- a/sound/soc/mid-x86/mfld_machine.c
-+++ b/sound/soc/mid-x86/mfld_machine.c
+diff --git a/sound/soc/codecs/sn95031.c b/sound/soc/codecs/sn95031.c
+index 593632c..3fd2289 100644
+--- a/sound/soc/codecs/sn95031.c
++++ b/sound/soc/codecs/sn95031.c
 @@ -27,6 +27,7 @@
- #include <linux/init.h>
- #include <linux/device.h>
+ 
+ #include <linux/platform_device.h>
  #include <linux/slab.h>
-+#include <linux/io.h>
++#include <linux/input.h>
+ #include <asm/intel_scu_ipc.h>
  #include <sound/pcm.h>
  #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -35,10 +36,33 @@
- #define MID_MONO 1
- #define MID_STEREO 2
- #define MID_MAX_CAP 5
-+#define IRQ_BASE 0xFFFF7FCD
-+#define IRQ_SIZE 1
+@@ -38,12 +39,130 @@
+ #define SN95031_RATES (SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_44100)
+ #define SN95031_FORMATS (SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE)
  
- static unsigned int	hs_switch;
- static unsigned int	lo_dac;
- 
-+struct mfld_mc_private {
-+	struct platform_device *socdev;
-+	struct workqueue_struct *mfld_jack_wq;
-+	void __iomem *int_base;
-+	struct snd_soc_codec *codec;
-+} mc_drv_ctx;
++/* adc helper functions */
 +
-+struct snd_soc_jack mfld_jack;
-+
-+/*Headset jack detection DAPM pins */
-+static struct snd_soc_jack_pin mfld_jack_pins[] = {
-+	{
-+		.pin = "Headphones",
-+		.mask = SND_JACK_HEADPHONE,
-+	},
-+	{
-+		.pin = "AMIC1",
-+		.mask = SND_JACK_MICROPHONE,
-+	},
-+};
-+
- /* sound card controls */
- static const char *headset_switch_text[] = {"Earpiece", "Headset"};
- 
-@@ -67,13 +91,11 @@ static int headset_set_switch(struct snd_kcontrol *kcontrol,
- 
- 	if (ucontrol->value.integer.value[0]) {
- 		pr_debug("hs_set HS path\n");
--		snd_soc_dapm_enable_pin(&codec->dapm, "HPOUTL");
--		snd_soc_dapm_enable_pin(&codec->dapm, "HPOUTR");
-+		snd_soc_dapm_enable_pin(&codec->dapm, "Headphones");
- 		snd_soc_dapm_disable_pin(&codec->dapm, "EPOUT");
- 	} else {
- 		pr_debug("hs_set EP path\n");
--		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTL");
--		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTR");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "Headphones");
- 		snd_soc_dapm_enable_pin(&codec->dapm, "EPOUT");
- 	}
- 	snd_soc_dapm_sync(&codec->dapm);
-@@ -91,12 +113,10 @@ static void lo_enable_out_pins(struct snd_soc_codec *codec)
- 	snd_soc_dapm_enable_pin(&codec->dapm, "VIB1OUT");
- 	snd_soc_dapm_enable_pin(&codec->dapm, "VIB2OUT");
- 	if (hs_switch) {
--		snd_soc_dapm_enable_pin(&codec->dapm, "HPOUTL");
--		snd_soc_dapm_enable_pin(&codec->dapm, "HPOUTR");
-+		snd_soc_dapm_enable_pin(&codec->dapm, "Headphones");
- 		snd_soc_dapm_disable_pin(&codec->dapm, "EPOUT");
- 	} else {
--		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTL");
--		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTR");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "Headphones");
- 		snd_soc_dapm_enable_pin(&codec->dapm, "EPOUT");
- 	}
- }
-@@ -130,8 +150,7 @@ static int lo_set_switch(struct snd_kcontrol *kcontrol,
- 
- 	case 1:
- 		pr_debug("set hs  path\n");
--		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTL");
--		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTR");
-+		snd_soc_dapm_disable_pin(&codec->dapm, "Headphones");
- 		snd_soc_dapm_disable_pin(&codec->dapm, "EPOUT");
- 		snd_soc_update_bits(codec, SN95031_LOCTL, 0x66, 0x22);
- 		break;
-@@ -162,12 +181,36 @@ static const struct snd_kcontrol_new mfld_snd_controls[] = {
- 			lo_get_switch, lo_set_switch),
- };
- 
-+static const struct snd_soc_dapm_widget mfld_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphones", NULL),
-+	SND_SOC_DAPM_MIC("Mic", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route mfld_map[] = {
-+	{"Headphones", NULL, "HPOUTR"},
-+	{"Headphones", NULL, "HPOUTL"},
-+	{"Mic", NULL, "AMIC1"},
-+};
-+
- static int mfld_init(struct snd_soc_pcm_runtime *runtime)
- {
- 	struct snd_soc_codec *codec = runtime->codec;
- 	struct snd_soc_dapm_context *dapm = &codec->dapm;
- 	int ret_val;
- 
-+	/* Add jack sense widgets */
-+	snd_soc_dapm_new_controls(dapm, mfld_widgets, ARRAY_SIZE(mfld_widgets));
-+
-+	/* Set up the map */
-+	snd_soc_dapm_add_routes(dapm, mfld_map, ARRAY_SIZE(mfld_map));
-+
-+	/* always connected */
-+	snd_soc_dapm_enable_pin(dapm, "Headphones");
-+	snd_soc_dapm_enable_pin(dapm, "Mic");
-+	snd_soc_dapm_sync(dapm);
-+
-+	mc_drv_ctx.codec = codec;
-+
- 	ret_val = snd_soc_add_controls(codec, mfld_snd_controls,
- 				ARRAY_SIZE(mfld_snd_controls));
- 	if (ret_val) {
-@@ -175,14 +218,32 @@ static int mfld_init(struct snd_soc_pcm_runtime *runtime)
- 		return ret_val;
- 	}
- 	/* default is earpiece pin, userspace sets it explcitly */
--	snd_soc_dapm_disable_pin(dapm, "HPOUTL");
--	snd_soc_dapm_disable_pin(dapm, "HPOUTR");
-+	snd_soc_dapm_disable_pin(dapm, "Headphones");
- 	/* default is lineout NC, userspace sets it explcitly */
- 	snd_soc_dapm_disable_pin(dapm, "LINEOUTL");
- 	snd_soc_dapm_disable_pin(dapm, "LINEOUTR");
- 	lo_dac = 3;
- 	hs_switch = 0;
--	return snd_soc_dapm_sync(dapm);
-+	snd_soc_dapm_sync(dapm);
-+
-+	/* Headset jack detection */
-+	ret_val = snd_soc_jack_new(codec, "Intel(R) MID Audio Jack",
-+			SND_JACK_HEADSET | SND_JACK_BTN_0 |
-+			SND_JACK_BTN_1, &mfld_jack);
-+
-+	if (ret_val) {
-+		pr_err("jack creation failed\n");
-+		return ret_val;
-+	}
-+
-+	ret_val = snd_soc_jack_add_pins(&mfld_jack,
-+			ARRAY_SIZE(mfld_jack_pins), mfld_jack_pins);
-+	if (ret_val) {
-+		pr_err("adding jack pins failed\n");
-+		return ret_val;
-+	}
-+	disable_jack_btn(codec);
-+	return ret_val;
- }
- 
- struct snd_soc_dai_link mfld_msic_dailink[] = {
-@@ -231,37 +292,97 @@ static struct snd_soc_card snd_soc_card_mfld = {
- 	.num_links = ARRAY_SIZE(mfld_msic_dailink),
- };
- 
-+void snd_mfld_jack_detection(struct work_struct *work)
++/* enables mic bias voltage */
++void sn95031_enable_mic_bias(struct snd_soc_codec *codec)
 +{
-+	struct mfld_jack_msg_wq *jack_msg =
-+			container_of(work, struct mfld_jack_msg_wq, wq);
-+
-+	sn95031_jack_detection(&mfld_jack, jack_msg);
-+	kfree(jack_msg);
++	snd_soc_write(codec, SN95031_VAUD, BIT(2)|BIT(1)|BIT(0));
++	snd_soc_update_bits(codec, SN95031_MICBIAS, BIT(2), BIT(2));
 +}
 +
-+static irqreturn_t snd_mfld_jack_intr_handler(int irq, void *dev)
++/* Enable/Disable the ADC depending on the argument */
++static void configure_adc(struct snd_soc_codec *sn95031_codec, int val)
 +{
-+	struct mfld_jack_msg_wq *jack_msg;
-+	struct mfld_mc_private *mc_private = (struct mfld_mc_private *) dev;
++	int value = snd_soc_read(sn95031_codec, SN95031_ADC1CNTL1);
 +
-+	jack_msg = kzalloc(sizeof(*jack_msg), GFP_ATOMIC);
-+	memcpy_fromio(&jack_msg->intr_id,
-+			((void *)(mc_private->int_base)),
-+			sizeof(u8));
-+	jack_msg->codec = mc_private->codec;
-+	pr_debug("snd_mfld_jack_intr_handler called value %x\n",
-+					jack_msg->intr_id);
-+	INIT_WORK(&jack_msg->wq, snd_mfld_jack_detection);
-+	queue_work(mc_private->mfld_jack_wq, &jack_msg->wq);
-+
-+	return IRQ_HANDLED;
++	if (val) {
++		/* Enable and start the ADC */
++		value |= (SN95031_ADC_ENBL | SN95031_ADC_START);
++		value &= (~ADC_NO_LOOP);
++	} else
++		/* Just stop the ADC */
++		value &= (~SN95031_ADC_START);
++	snd_soc_write(sn95031_codec, SN95031_ADC1CNTL1, value);
 +}
 +
- static int __devinit snd_mfld_mc_probe(struct platform_device *pdev)
- {
--	struct platform_device *socdev;
--	int ret_val = 0;
-+	int ret_val = 0, irq;
- 
- 	pr_debug("snd_mfld_mc_probe called\n");
- 
--	socdev =  platform_device_alloc("soc-audio", -1);
--	if (!socdev) {
-+	/* retrive the irq number */
-+	irq = platform_get_irq(pdev, 0);
-+	/*	audio interrupt base of SRAM location where
-+	*	interrupts are stored by System FW */
-+	mc_drv_ctx.int_base = ioremap_nocache(IRQ_BASE, IRQ_SIZE);
-+	if (!mc_drv_ctx.int_base) {
-+		pr_err("Mapping of cache failed\n");
-+		ret_val = -ENOMEM;
-+		goto unalloc;
-+	}
-+	/* create botoom half handler for interrupt */
-+	mc_drv_ctx.mfld_jack_wq = create_workqueue("mfld_jack_wq");
-+	if (!mc_drv_ctx.mfld_jack_wq) {
-+		pr_err("cannot create jack workqueue\n");
-+		ret_val = -ENOMEM;
-+		goto unalloc;
-+	}
-+	/* register for interrupt */
-+	ret_val = request_irq(irq, snd_mfld_jack_intr_handler,
-+				IRQF_SHARED, pdev->dev.driver->name,
-+				&mc_drv_ctx);
-+	if (ret_val) {
-+		pr_err("cannot register IRQ\n");
-+		goto destroy_wq;
-+	}
-+	/* create soc device */
-+	mc_drv_ctx.socdev = platform_device_alloc("soc-audio", -1);
-+	if (!mc_drv_ctx.socdev) {
- 		pr_err("soc-audio device allocation failed\n");
--		return -ENOMEM;
-+		ret_val = -ENOMEM;
-+		goto destroy_wq;
- 	}
--	platform_set_drvdata(socdev, &snd_soc_card_mfld);
--	ret_val = platform_device_add(socdev);
-+	platform_set_drvdata(mc_drv_ctx.socdev, &snd_soc_card_mfld);
-+	ret_val = platform_device_add(mc_drv_ctx.socdev);
- 	if (ret_val) {
- 		pr_err("Unable to add soc-audio device, err %d\n", ret_val);
--		platform_device_put(socdev);
-+		goto unregister;
- 	}
--
--	platform_set_drvdata(pdev, socdev);
--
-+	platform_set_drvdata(pdev, &mc_drv_ctx);
- 	pr_debug("successfully exited probe\n");
- 	return ret_val;
+ /*
+- * todo:
+- * capture paths
+- * jack detection
+- * PM functions
++ * finds an empty channel for conversion
++ * If the ADC is not enabled then start using 0th channel
++ * itself. Otherwise find an empty channel by looking for a
++ * channel in which the stopbit is set to 1. returns the index
++ * of the first free channel if succeeds or an error code.
++ *
++ * Context: can sleep
++ *
+  */
++static int find_free_channel(struct snd_soc_codec *sn95031_codec)
++{
++	int ret = 0, i, value;
 +
-+unregister:
-+	platform_device_put(mc_drv_ctx.socdev);
-+destroy_wq:
-+	destroy_workqueue(mc_drv_ctx.mfld_jack_wq);
-+unalloc:
-+	return ret_val;
++	/* check whether ADC is enabled */
++	value = snd_soc_read(sn95031_codec, SN95031_ADC1CNTL1);
++
++	if ((value & SN95031_ADC_ENBL) == 0)
++		return 0;
++
++	/* ADC is already enabled; Looking for an empty channel */
++	for (i = 0; i < ADC_CHANLS_MAX; i++) {
++		value = snd_soc_read(sn95031_codec, ADC_CHNL_START_ADDR + i);
++		if (value & SN95031_STOPBIT_MASK) {
++			ret = i;
++			break;
++		}
++	}
++	return (ret > ADC_LOOP_MAX) ? (-EINVAL) : ret;
++}
++
++/* Initialize the ADC for reading thermistor values. Can sleep. */
++static int sn95031_initialize_adc(struct snd_soc_codec *sn95031_codec)
++{
++	int base_addr, chnl_addr;
++	int value;
++	static int channel_index;
++
++	/* Index of the first channel in which the stop bit is set */
++	channel_index = find_free_channel(sn95031_codec);
++	if (channel_index < 0) {
++		pr_err("No free ADC channels");
++		return channel_index;
++	}
++
++	base_addr = ADC_CHNL_START_ADDR + channel_index;
++
++	if (!(channel_index == 0 || channel_index == ADC_LOOP_MAX)) {
++		/* Reset stop bit for channels other than 0 and 12 */
++		value = snd_soc_read(sn95031_codec, base_addr);
++		/* Set the stop bit to zero */
++		snd_soc_write(sn95031_codec, base_addr, value & 0xEF);
++		/* Index of the first free channel */
++		base_addr++;
++		channel_index++;
++	}
++
++	/* Since this is the last channel, set the stop bit
++	   to 1 by ORing the DIE_SENSOR_CODE with 0x10 */
++	snd_soc_write(sn95031_codec, base_addr, AUDIO_DETECT_CODE | 0x10);
++
++	chnl_addr = ADC_DATA_START_ADDR + 2 * channel_index;
++	pr_debug("mid_initialize : %x", chnl_addr);
++	configure_adc(sn95031_codec, 1);
++	return chnl_addr;
++}
++
++
++/* reads the ADC registers and gets the mic bias value in mV. */
++static unsigned int sn95031_get_mic_bias(struct snd_soc_codec *codec)
++{
++	u16 adc_adr = sn95031_initialize_adc(codec);
++	u16 adc_val1, adc_val2;
++	unsigned int mic_bias;
++
++	sn95031_enable_mic_bias(codec);
++
++	/* Enable the sound card for conversion before reading */
++	snd_soc_write(codec, SN95031_ADC1CNTL3, 0x05);
++	/* Re-toggle the RRDATARD bit */
++	snd_soc_write(codec, SN95031_ADC1CNTL3, 0x04);
++
++	/* Read the higher bits of data */
++	msleep(1000);
++	adc_val1 = snd_soc_read(codec, adc_adr);
++	adc_adr++;
++	adc_val2 = snd_soc_read(codec, adc_adr);
++
++	/* Adding lower two bits to the higher bits */
++	mic_bias = (adc_val1 << 2) + (adc_val2 & 3);
++	/* convesion into mV */
++	mic_bias = (ADC_ONE_LSB_MULTIPLIER * mic_bias) / 1000;
++	pr_debug("mic bias = %dmV\n", mic_bias);
++	return mic_bias;
++}
++EXPORT_SYMBOL_GPL(sn95031_get_mic_bias);
++
++/*end - adc helper functions */
++
++/* codec read/write functions */
+ 
+ static inline unsigned int sn95031_read(struct snd_soc_codec *codec,
+ 			unsigned int reg)
+@@ -69,6 +188,8 @@ static inline int sn95031_write(struct snd_soc_codec *codec,
+ 	return ret;
  }
  
- static int __devexit snd_mfld_mc_remove(struct platform_device *pdev)
++/* end - codec read/write functions */
++
+ static int sn95031_set_vaud_bias(struct snd_soc_codec *codec,
+ 		enum snd_soc_bias_level level)
  {
--	struct platform_device *socdev =  platform_get_drvdata(pdev);
--	pr_debug("snd_mfld_mc_remove called\n");
-+	struct mfld_mc_private *mc_private_data = platform_get_drvdata(pdev);
+@@ -373,6 +494,62 @@ struct snd_soc_dai_driver sn95031_dais[] = {
+ },
+ };
  
--	platform_device_unregister(socdev);
-+	pr_debug("snd_mfld_mc_remove called\n");
-+	free_irq(platform_get_irq(pdev, 0), mc_private_data);
-+	destroy_workqueue(mc_private_data->mfld_jack_wq);
-+	platform_device_unregister(mc_private_data->socdev);
- 	platform_set_drvdata(pdev, NULL);
++int sn95031_get_headset_state(struct snd_soc_codec *codec)
++{
++	unsigned int mic_bias = sn95031_get_mic_bias(codec);
++	int jack_type = snd_soc_jack_get_type(mic_bias);
++
++	if (mic_bias >= SND_SOC_JACK_AM_HS_START &&
++			mic_bias < SND_SOC_JACK_AM_HS_END)
++		snd_soc_update_bits(codec, AUDIO_GPIO_CTRL, BIT(1), BIT(1));
++	else
++		snd_soc_update_bits(codec, AUDIO_GPIO_CTRL, BIT(1), BIT(0));
++
++	pr_debug("jack type detected = %d\n", jack_type);
++	if (jack_type == SND_JACK_HEADSET)
++		enable_jack_btn(codec);
++	return jack_type;
++}
++EXPORT_SYMBOL_GPL(sn95031_get_headset_state);
++
++void sn95031_jack_detection(struct snd_soc_jack *mfld_jack,
++		struct mfld_jack_msg_wq *jack_msg)
++{
++	unsigned int status, mask;
++	static int jack_state = SND_JACK_HEADSET;
++	struct snd_soc_codec *codec = jack_msg->codec;
++
++	if (!codec) {
++		pr_err("codec is null\n");
++		return;
++	}
++	pr_debug("interrupt id read in sram = 0x%x\n", jack_msg->intr_id);
++	if (jack_msg->intr_id & 0x1) {
++		pr_debug("short_push detected\n");
++		mask = status = SND_JACK_BTN_0;
++	} else if (jack_msg->intr_id & 0x2) {
++		pr_debug("long_push detected\n");
++		mask = status = SND_JACK_BTN_1;
++	} else if (jack_msg->intr_id & 0x4) {
++		mask = status = sn95031_get_headset_state(codec);
++		jack_state = mask;
++	} else if (jack_msg->intr_id & 0x8) {
++		pr_debug("headset or headphones removed\n");
++		status = 0;
++		mask = jack_state;
++		disable_jack_btn(codec);
++	} else {
++		pr_err("unidentified interrupt\n");
++		return;
++	}
++
++	snd_soc_jack_report(mfld_jack, status, mask);
++	/*button pressed and released */
++	if (status == SND_JACK_BTN_0 || status == SND_JACK_BTN_1)
++		snd_soc_jack_report(mfld_jack, 0, mask);
++}
++EXPORT_SYMBOL_GPL(sn95031_jack_detection);
++
+ /* codec registration */
+ static int sn95031_codec_probe(struct snd_soc_codec *codec)
+ {
+@@ -443,18 +620,18 @@ static int sn95031_codec_remove(struct snd_soc_codec *codec)
  	return 0;
  }
+ 
+-struct snd_soc_codec_driver sn95031_codec = {
+-	.probe		= sn95031_codec_probe,
+-	.remove		= sn95031_codec_remove,
+-	.read		= sn95031_read,
+-	.write		= sn95031_write,
++struct snd_soc_codec_driver sn95031_soc_codec = {
++	.probe = sn95031_codec_probe,
++	.remove = sn95031_codec_remove,
++	.read = sn95031_read,
++	.write = sn95031_write,
+ 	.set_bias_level	= sn95031_set_vaud_bias,
+ };
+ 
+ static int __devinit sn95031_device_probe(struct platform_device *pdev)
+ {
+ 	pr_debug("codec device probe called for %s\n", dev_name(&pdev->dev));
+-	return snd_soc_register_codec(&pdev->dev, &sn95031_codec,
++	return snd_soc_register_codec(&pdev->dev, &sn95031_soc_codec,
+ 			sn95031_dais, ARRAY_SIZE(sn95031_dais));
+ }
+ 
+diff --git a/sound/soc/codecs/sn95031.h b/sound/soc/codecs/sn95031.h
+index e2b17d9..d808cff 100644
+--- a/sound/soc/codecs/sn95031.h
++++ b/sound/soc/codecs/sn95031.h
+@@ -1,3 +1,4 @@
++
+ /*
+  *  sn95031.h - TI sn95031 Codec driver
+  *
+@@ -25,6 +26,7 @@
+  */
+ #ifndef _SN95031_H
+ #define _SN95031_H
++#include <sound/jack.h>
+ 
+ /*register map*/
+ #define SN95031_VAUD			0xDB
+@@ -96,4 +98,47 @@
+ #define SN95031_SSR5			0x384
+ #define SN95031_SSR6			0x385
+ 
++/* ADC registers */
++
++#define SN95031_ADC1CNTL1 0x1C0
++#define SN95031_ADC_ENBL 0x10
++#define SN95031_ADC_START 0x08
++#define SN95031_ADC1CNTL3 0x1C2
++#define SN95031_ADCTHERM_ENBL 0x04
++#define SN95031_ADCRRDATA_ENBL 0x05
++#define SN95031_STOPBIT_MASK 16
++#define SN95031_ADCTHERM_MASK 4
++#define ADC_CHANLS_MAX 15 /* Number of ADC channels */
++#define ADC_LOOP_MAX (ADC_CHANLS_MAX - 1)
++#define ADC_NO_LOOP 0x07
++
++/* ADC channel code values */
++#define AUDIO_DETECT_CODE 0x06
++#define AUDIO_GPIO_CTRL 0x070
++/* ADC base addresses */
++#define ADC_CHNL_START_ADDR 0x1C5 /* increments by 1 */
++#define ADC_DATA_START_ADDR 0x1D4  /* increments by 2 */
++/* multipier to convert to mV */
++#define ADC_ONE_LSB_MULTIPLIER 2346
++
++struct mfld_jack_msg_wq {
++	u8 intr_id;
++	struct snd_soc_codec *codec;
++	struct work_struct wq;
++};
++
++static inline void disable_jack_btn(struct snd_soc_codec *codec)
++{
++	snd_soc_write(codec, SN95031_BTNCTRL2, 0x00);
++}
++
++static inline void enable_jack_btn(struct snd_soc_codec *codec)
++{
++	snd_soc_write(codec, SN95031_BTNCTRL1, 0x77);
++	snd_soc_write(codec, SN95031_BTNCTRL2, 0x01);
++}
++
++extern void sn95031_jack_detection(struct snd_soc_jack *mfld_jack,
++		struct mfld_jack_msg_wq *jack_msg);
++
+ #endif
 -- 
 1.7.3.4
