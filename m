@@ -1,109 +1,37 @@
-From: "Varadarajan, Charulatha" <charu@ti.com>
-Subject: Re: [PATCH v3 1/4] ASoC: DMIC: Adding the OMAP DMIC driver
-Date: Fri, 28 Jan 2011 14:15:36 +0530
-Message-ID: <AANLkTikZExkXPSzD3OrhZgC2pdoL5Lw8AqK6Ocso0mnq@mail.gmail.com>
-References: <1295992862-6154-1-git-send-email-dlambert@ti.com> <1295992862-6154-2-git-send-email-dlambert@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1295992862-6154-2-git-send-email-dlambert@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: David Lambert <dlambert@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Tony Lindgren <tony@atomide.com>, Paul Walmsley <paul@pwsan.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+From: Amerigo Wang <amwang@redhat.com>
+Subject: [Patch] sound: silent echo'ed messages in Makefile
+Date: Fri, 28 Jan 2011 16:52:00 +0800
+Message-ID: <1296204727-19160-1-git-send-email-amwang@redhat.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: WANG Cong <amwang@redhat.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Paul Mundt <lethal@linux-sh.org>, John Kacur <jkacur@redhat.com>, Ralf Baechle <ralf@linux-mips.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<<snip>>
+Silent these echo's, please.
 
-> +
-> +static int omap_dmic_set_dai_sysclk(struct snd_soc_dai *dai,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- int clk_id, unsigned int freq,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- int dir)
-> +{
-> + =A0 =A0 =A0 struct omap_dmic *dmic =3D snd_soc_dai_get_drvdata(dai)=
-;
-> + =A0 =A0 =A0 struct clk *dmic_clk, *parent_clk;
-> + =A0 =A0 =A0 int ret =3D 0;
-> +
-> + =A0 =A0 =A0 dmic_clk =3D clk_get(NULL, "dmic_fck");
+Signed-off-by: WANG Cong <amwang@redhat.com>
 
-It is preferred to use device pointer. instead of NULL.
-(Applicable elsewhere)
-
-> + =A0 =A0 =A0 if (IS_ERR(dmic_clk))
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -ENODEV;
-> +
-> + =A0 =A0 =A0 switch (clk_id) {
-> + =A0 =A0 =A0 case OMAP_DMIC_SYSCLK_PAD_CLKS:
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 parent_clk =3D clk_get(NULL, "pad_clks_=
-ck");
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (IS_ERR(parent_clk)) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -ENODEV;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto err_par;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
-> + =A0 =A0 =A0 case OMAP_DMIC_SYSCLK_SLIMBLUS_CLKS:
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 parent_clk =3D clk_get(NULL, "slimbus_c=
-lk");
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (IS_ERR(parent_clk)) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -ENODEV;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto err_par;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
-> + =A0 =A0 =A0 case OMAP_DMIC_SYSCLK_SYNC_MUX_CLKS:
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 parent_clk =3D clk_get(NULL, "dmic_sync=
-_mux_ck");
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (IS_ERR(parent_clk)) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -ENODEV;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto err_par;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
-> + =A0 =A0 =A0 default:
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(dai->dev, "clk_id not supported=
- %d\n", clk_id);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -EINVAL;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto err_par;
-> + =A0 =A0 =A0 }
-> +
-> + =A0 =A0 =A0 if (dmic->sysclk !=3D clk_id) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* reparent not allowed if a stream is =
-ongoing */
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (dmic->active > 1) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -EBUSY;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto err_busy;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
-> +
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* disable clock while reparenting */
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (dmic->active =3D=3D 1)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 pm_runtime_put_sync(dmi=
-c->dev);
-> +
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D clk_set_parent(dmic_clk, parent=
-_clk);
-> +
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (dmic->active =3D=3D 1)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 pm_runtime_get_sync(dmi=
-c->dev);
-> +
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dmic->sysclk =3D clk_id;
-> + =A0 =A0 =A0 }
-> +
-> + =A0 =A0 =A0 dmic->clk_freq =3D clk_get_rate(dmic_clk);
-> +
-> +err_busy:
-> + =A0 =A0 =A0 clk_put(parent_clk);
-> +err_par:
-> + =A0 =A0 =A0 clk_put(dmic_clk);
-> +
-> + =A0 =A0 =A0 return ret;
-> +}
-> +
-
-<<snip>>
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+---
+diff --git a/sound/oss/Makefile b/sound/oss/Makefile
+index 96f14dc..90ffb99 100644
+--- a/sound/oss/Makefile
++++ b/sound/oss/Makefile
+@@ -87,7 +87,7 @@ ifeq ($(CONFIG_PSS_HAVE_BOOT),y)
+ 	$(obj)/bin2hex pss_synth < $< > $@
+ else
+     $(obj)/pss_boot.h:
+-	(							\
++	$(Q)(							\
+ 	    echo 'static unsigned char * pss_synth = NULL;';	\
+ 	    echo 'static int pss_synthLen = 0;';		\
+ 	) > $@
+@@ -102,7 +102,7 @@ ifeq ($(CONFIG_TRIX_HAVE_BOOT),y)
+ 	$(obj)/hex2hex -i trix_boot < $< > $@
+ else
+     $(obj)/trix_boot.h:
+-	(							\
++	$(Q)(							\
+ 	    echo 'static unsigned char * trix_boot = NULL;';	\
+ 	    echo 'static int trix_boot_len = 0;';		\
+ 	) > $@
