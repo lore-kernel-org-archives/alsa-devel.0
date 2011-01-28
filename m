@@ -1,17 +1,16 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ASoC: Fix typo in snd_soc_dapm_put_volsw
-Date: Fri, 28 Jan 2011 13:04:55 +0000
-Message-ID: <1296219895.3335.54.camel@odin>
+Date: Fri, 28 Jan 2011 13:12:43 +0000
+Message-ID: <20110128131242.GA11125@sirena.org.uk>
 References: <1296165245-10828-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 015992456C
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 14:04:59 +0100 (CET)
-Received: by wyi11 with SMTP id 11so3141782wyi.38
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 05:04:59 -0800 (PST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6577A24554
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 14:12:47 +0100 (CET)
+Content-Disposition: inline
 In-Reply-To: <1296165245-10828-1-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,19 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Stephen Warren <swarren@nvidia.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-01-27 at 14:54 -0700, Stephen Warren wrote:
+On Thu, Jan 27, 2011 at 02:54:05PM -0700, Stephen Warren wrote:
 > This fixes a regression introduced by:
 > 97404f2e0386ac147cec00fc5d89ea475b04bd78
 > ASoC: Do DAPM control updates in the middle of DAPM sequences
-> 
-> Signed-off-by: Stephen Warren <swarren@nvidia.com>
-> ---
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+This would be *much* easier to review if you'd mentioned what the issue
+you're fixing is...  I think the changelog should be something along the
+lines of:
+
+snd_soc_dapm_put_volsw() has variables for both the unshifted and
+shifted mask for updates commit 97404f (ASoC: Do DAPM control updates in
+the middle of DAPM sequences) got confused between the two of these.
+Since there's no need to keep a copy of the unshifted mask fix this and
+simplify the code by using only one mask variable.
