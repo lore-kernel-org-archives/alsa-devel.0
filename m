@@ -1,18 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Use card as parameter to exported PM
-	functions
-Date: Fri, 28 Jan 2011 12:44:44 +0000
-Message-ID: <20110128124444.GB10350@opensource.wolfsonmicro.com>
-References: <1296154616-1209-1-git-send-email-swarren@nvidia.com>
+Subject: Re: Strange control interactions on Tegra Harmony
+Date: Fri, 28 Jan 2011 12:55:53 +0000
+Message-ID: <20110128125553.GC10350@opensource.wolfsonmicro.com>
+References: <74CDBE0F657A3D45AFBB94109FB122FF0310C8DD47@HQMAIL01.nvidia.com>
+	<20110127184927.GC12717@opensource.wolfsonmicro.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF0310C8DDEA@HQMAIL01.nvidia.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF0310C8DE0F@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D300C24547
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 13:44:27 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B38B424556
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 13:55:39 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1296154616-1209-1-git-send-email-swarren@nvidia.com>
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0310C8DE0F@HQMAIL01.nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,30 +25,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Stephen Warren <swarren@nvidia.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+Cc: "dp@opensource.wolfsonmicro.com" <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 27, 2011 at 11:56:56AM -0700, Stephen Warren wrote:
+On Thu, Jan 27, 2011 at 02:55:07PM -0800, Stephen Warren wrote:
+> Stephen Warren wrote at Thursday, January 27, 2011 3:00 PM:
 
-> This patch reworks the exported PM functions to take the card instead of the
-> dev, thus allowing machine drivers to use a custom drvdata type. The
-> disadvantage is that every machine driver that does this must then implement
-> something similar to the soc_suspend/resume_dev functions in this patch.
+> > The issue with both the headphone and speaker mute controls muting both
+> > outputs is something else though.
 
-This is exactly why I didn't implement them this way - almost all
-drivers are just going to want to use the exact same boilerplate pm_ops
-so we don't want them having to all implement the same mapping
-functions.  There's also enough callbacks from the core into the machine
-drivers to mean that I'm not sure we'd need to do anything else, and
-keeping things in the ASoC model is much more in the flow of pushing PM
-into the core.
+> Hmm. This issue happens when I run:
 
-> An alternative might be to add a drvdata field to struct snd_soc_card,
-> accompanied by snd_soc_set/get_drvdata functions.
+> aplay foo.wav
 
-> Another alternative would be to wrap the snd_soc_card stored in the drvdata
-> within another type, and use container_of whenever the machine driver needed
-> the data in the wrapper type.
+> But not when I run:
 
-Either of these would work.  The former is going to be much more
-friendly for users.
+> aplay -D hw:0,0 foo.wav
+
+> I deleted /etc/asound.conf (which set the default sink to pulse), and the
+> problem went away. I guess I won't bother investigating this anymore right
+> now.
+
+This sounds like the driver's happy and something in userspace is trying
+to be too clever about things.
