@@ -1,35 +1,79 @@
-From: Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>
-Subject: Re: [PATCH v8 03/12] media: Entities, pads and links
-Date: Fri, 28 Jan 2011 12:53:39 +0200
-Message-ID: <4D42A033.9030906@maxwell.research.nokia.com>
-References: <1296131437-29954-1-git-send-email-laurent.pinchart@ideasonboard.com> <1296131437-29954-4-git-send-email-laurent.pinchart@ideasonboard.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: HDA: Fix microphone(s) on Lenovo
+	Edge 13
+Date: Fri, 28 Jan 2011 12:51:30 +0100
+Message-ID: <4D42ADC2.7090001@canonical.com>
+References: <4D413CBE.9080409@canonical.com> <s5hd3nhcv7u.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1296131437-29954-4-git-send-email-laurent.pinchart@ideasonboard.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, clemens@ladisch.de
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0B6B02446B
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 12:51:32 +0100 (CET)
+In-Reply-To: <s5hd3nhcv7u.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Laurent,
+On 2011-01-28 09:01, Takashi Iwai wrote:
+> At Thu, 27 Jan 2011 10:37:02 +0100,
+> David Henningsson wrote:
+>>
+>> > From c8c0ca221b4de97682d2e9e5ad73c0ac6346b398 Mon Sep 17 00:00:00 2001
+>> From: David Henningsson<david.henningsson@canonical.com>
+>> Date: Thu, 27 Jan 2011 10:28:46 +0100
+>> Subject: [PATCH] ALSA: HDA: Fix microphone(s) on Lenovo Edge 13
+>>
+>> BugLink: http://bugs.launchpad.net/bugs/708521
+>>
+>> This Edge 13 model has an internal mic at 0x1a and should
+>> therefore use the asus quirk.
+>>
+>> Signed-off-by: David Henningsson<david.henningsson@canonical.com>
+>> ---
+>>   sound/pci/hda/patch_conexant.c |    1 +
+>>   1 files changed, 1 insertions(+), 0 deletions(-)
+>>
+>> diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+>> index 9867afc..7e1ca43 100644
+>> --- a/sound/pci/hda/patch_conexant.c
+>> +++ b/sound/pci/hda/patch_conexant.c
+>> @@ -3120,6 +3120,7 @@ static struct snd_pci_quirk cxt5066_cfg_tbl[] = {
+>>   	SND_PCI_QUIRK(0x152d, 0x0833, "OLPC XO-1.5", CXT5066_OLPC_XO_1_5),
+>>   	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo T400s", CXT5066_THINKPAD),
+>>   	SND_PCI_QUIRK(0x17aa, 0x21c5, "Thinkpad Edge 13", CXT5066_THINKPAD),
+>> +	SND_PCI_QUIRK(0x17aa, 0x21c6, "Thinkpad Edge 13", CXT5066_ASUS),
+>
+> Can 21c5 and 21c6 be incompatible models?
 
-Thanks for the patches!
+Good question. Seems like Manoj committed that one, I'll ask him about it.
 
-I've got one comment that I should have made long time ago... Pads are
-inputs or outputs... or: are they sinks or sources? I recall that it was
-agreed on some occasion that sink and source are much less ambiguous and
-they should be used instead.
+> This should be merged, I guess.
+>
+> I applided the patch but currently it's for 2.6.39 since CXT5066_ASUS
+> changes aren't queued for 2.6.38 (as non-trivial changes).
 
-So we'd have MEDIA_PAD_FL_{SINK,SOURCE}, for example. Currently the
-source and documentation is using input/output and source/sink
-interchangeably. I think sink and source should be used all the time.
+Sorry, I was under the impression that you would accept a backport for 
+2.6.38, as you said in the earlier email?
 
-What do you think?
+> And I hope that we should go further a bit for now -- more clean up of
+> the cxt5066 code either checking BIOS pins or hp/mic/spk pre-defined
+> pins.  Currently, the code is fairly messy (partly because of olpc
+> support), and now is a good chance to improve it a bit more.
 
-Regards,
+Maybe so. I'm not sure I can commit to doing that work right now, as I 
+have other work commitments waiting for me to take care of them.
 
 -- 
-Sakari Ailus
-sakari.ailus@maxwell.research.nokia.com
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
