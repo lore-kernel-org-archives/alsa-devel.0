@@ -1,150 +1,263 @@
-From: Patrick Lai <plai@codeaurora.org>
-Subject: Re: Question about your DSP topic branch
-Date: Thu, 27 Jan 2011 15:41:35 -0800
-Message-ID: <4D4202AF.1090206@codeaurora.org>
-References: <4D2652C8.7030701@codeaurora.org>	 <4D3E7536.9070906@codeaurora.org> <1295973973.3322.347.camel@odin>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Problem with VIA VT1708S and git versions of
+	alsa-driver.
+Date: Fri, 28 Jan 2011 08:47:27 +0800
+Message-ID: <AANLkTim95ynONz5N27J4EOBR93ROsoWdZajovDCaWX9f@mail.gmail.com>
+References: <AANLkTikaYCybUxW7dE3tizYZztT8pVo6Jeg-mh=e0NqZ@mail.gmail.com>
+	<AANLkTi=UTy8tdLqL-90UJOXtU=Ks1+ZZrGV2nCbw=xjD@mail.gmail.com>
+	<AANLkTinYcRqMwH2FSUjXiOxZg4x09q673FL9m15YvXEa@mail.gmail.com>
+	<AANLkTik8HayTEADWn74PJ0NgjGunamsSAZpy_GanuZo3@mail.gmail.com>
+	<AANLkTimz3iiXPhEarEUY1Gw5GxrTuv+UXgKKZS3ObzuS@mail.gmail.com>
+	<AANLkTi=S20cpKy-CObvKB-OLDKbQ7FBhFrbnd448B+sO@mail.gmail.com>
+	<AANLkTikyjZvD+ptCcgBrN2av-jQmKWOekbzvfXYAdpOV@mail.gmail.com>
+	<AANLkTim_A5m2MryxmkEHtcc3gNFWTaRW8J3=dZC6wd67@mail.gmail.com>
+	<AANLkTinUWD9Oq2iAbn_nc5E+M=y4yXx4u0Eff9jYSGyk@mail.gmail.com>
+	<AANLkTimcAUn=+1B3=LJbD7dBBZ3NvaeX_q+_sHP6QhB3@mail.gmail.com>
+	<AANLkTimiwTcnCnGECN8jpzY2VaMTmpcHBx-qmFDmwxSY@mail.gmail.com>
+	<AANLkTi=14Q53BtcafboP=qz2-9AEcnnE3UD+HTwoGtbe@mail.gmail.com>
+	<AANLkTimQ+evOVnG78UWPhCORKo2VvXyzVO8BhTrzSnVG@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-msm-owner@vger.kernel.org>
-In-Reply-To: <1295973973.3322.347.camel@odin>
-Sender: linux-arm-msm-owner@vger.kernel.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@vger.kernel.org, alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmciro.com>, linux-arm-msm@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E55B11037FB
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 01:47:32 +0100 (CET)
+Received: by ewy19 with SMTP id 19so1242438ewy.38
+	for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2011 16:47:29 -0800 (PST)
+In-Reply-To: <AANLkTimQ+evOVnG78UWPhCORKo2VvXyzVO8BhTrzSnVG@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 1/25/2011 8:46 AM, Liam Girdwood wrote:
-> Hi Patrick,
->
-> CCing in Mark and alsa-devel@alsa-project.org (preferred list)
->
-> On Mon, 2011-01-24 at 23:01 -0800, Patrick Lai wrote:
->> Hi Liam,
->>
->> I have two more questions about your DSP topic branch
->>
->> 7. I see in sdp4430.c, SDP4430 MODEM front-end dailink no_host_mode is
->> set to SND_SOC_DAI_LINK_NO_HOST. What is the purpose of no_host_mode?
->
-> No host mode means no audio is transferred to the host CPU in this case.
-> i.e. the MODEM routes audio directly between the DSP and mic/speaker.
->
-> This flags also tells the ASoC core that no DMA will be required, hence
-> the code in the DMA branch will not start any DMA. This part had to be
-> cleaned up for upstream.
->
->> Is it for use case that two physical devices can exchange audio data
->> without host-processor intervention? If so, if user-space application
->> tries to write to PCM buffer, will framework reject the buffer?
->>
->
-> Yes, that's correct. The PCM core will also not complain here when it
-> receive no data either.
+2011/1/27 Mark Goldstein <goldstein.mark@gmail.com>
 
-I experimented NO_HOST option and found platform driver pcm copy 
-function is called. Is it part of the clean up you were talking about?
-
->> 8. I see there is dmic codec(dmic.c) under sound/soc/codec which is
->> pretty much just a dummy codec driver. I supposed the configuration of
->> DMIC is done in other driver. Would it be better if we could have
->> something like fixed voltage regulator? So, there is no need to
->> duplicate the effort.
->>
+> On Thu, Jan 27, 2011 at 11:09 AM, Raymond Yau
+> <superquad.vortex2@gmail.com> wrote:
+> > 2011/1/27 Mark Goldstein <goldstein.mark@gmail.com>
+> >
+> >> Hi,
+> >>
+> >> I've renewed my experiments after long break (sorry, had to do other
+> >> stuff and since released version 1.0.23 worked for me, I reverted to
+> >> that version).
+> >>
+> >> I still have not tried hda-emulator, but I made some progress.
+> >>
+> >> 1) I compiled the git version (snapshot from Jan 20) for OpenSUSE 11.1
+> >> with test kernel 2.6.32.28.
+> >> I saw the same behavior as before:
+> >> - Line control does nothing;
+> >> - Front Mic control actually changes volume of Line In;
+> >> - Neither Front nor Rear Mic work at all; (Answering to Raymond's
+> >> question regarding Mic Boost - I have "Rear Mic" control, but Mic
+> >> Boost).
+> >>
+> >> 2) I decided to compare patch.via.c from version 1.0.23 that works for
+> >> me and git version.
+> >> It appears to me that the clue could be found in the function
+> >> vt1708S_auto_create_analog_input_ctls. The one in 1.0.23 uses explicit
+> >> control indexes, while the function from git version calls
+> >> vt_auto_create_analog_input_ctls, passing it the array of indexes:
+> >> static hda_nid_t pin_idxs[] = { 0x1f, 0x1a, 0x1b, 0x1e, 0, 0xff };
+> >>
+> >> Comparing the indexes used in  vt1708S_auto_create_analog_input_ctls
+> >> with those used for other codec and with version from 1.0.23, I
+> >> started suspecting that the order of indexes is wrong. I changed the
+> >> array like this:
+> >> static hda_nid_t pin_idxs[] = { 0, 0x1f, 0x1a, 0x1b, 0x1e, 0xff };
+> >> After re-compiling the version I've got much better behavior:
+> >> - Line control (index 1b) works correctly now;
+> >> - Front Mic control (index 0x1e) actually controls Rear Mic and this
+> >> Rear Mic works;
+> >> - Front mic still does not work;
+> >> - Rear Mic control (index 0x1a) seems not working and there is still
+> >> Mic Boost, not Rear Mic Boost.
+> >>
+> >>
+> > Do you mean that regiession is caused by this patch ?
+> >
+> >
+> http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=f3268512c3a5dea587cfe875b8bca98d9e164cd9;hp=73413b120d5d6eb6c98451bbc19acf43e0e300ae
 >
-> Yeah, this is a generic DMIC driver. It's designed to have a very wide
-> coverage and should cover most DMICs out there. So it should also be
-> able to fit into your architecture too.
+> Yes, looks very probable. Additional confirmation to this is that I
+> noticed the problem at the beginning of September after installing git
+> version; this patch is dated by Aug 30th.
 >
->> Look forward to seeing your reply soon
->>
->> Thanks
->>
->> On 1/6/2011 3:39 PM, Patrick Lai wrote:
->>> Hi Liam,
->>>
->>> I sync to your kernel DSP topic branch two days back in attempt to
->>> understand the up-coming ASOC DSP design. I have few questions to get
->>> clarification from you.
->>>
->>> 1. In the sdp4430.c, there are both FE dai link and BE dai link have
->>> omap-aess-audio as platform driver. How is omap-aess-audio platform
->>> driver used in both front-end and backend?
->>>
+> > it seem vt_auto_create_analog_input_ctls() try to assign stereo mixer as
+> the
+> > first item of the imux(s) node 0x17 and 0x1e
+> >
+> > assign those playback volume of those input pins in to stereo mixer for
+> node
+> > 0x16
+> >
+> > but it should assign auto_pin_cfg_labels[] according to the imux node
+> 0x17
+> > and 0x1e
 >
-> The MODEM and Low Power (LP) Front Ends (FE) use the AESS platform
-> driver since they do not require DMA, whilts the other FE's use the
-> normal DMA platform driver since they do require DMA.
+> Is the order of controls in hda_nid_t_pin_idxs fixed, or depends on
+> specific codec?
 >
-PCM functions inside omap-abe-dsp.c seem to do no-op if dai ID is not 
-MODEM or LP. I guess reusing omap-aess-audio platform driver for the 
-back-end DAI link serves purpose of architecture requirement that each 
-DAI-LINK must have platform driver. Do I get the right impression?
-
-
->
->>> 2. Front-end dai with stream name "Multimedia" has platform driver as
->>> omap-pcm-audio which is the DMA based. This front-end dai is mapped to
->>> backend (i.e PDM-DL1) with platform driver as omap-aess-audio.
->>> Omap-aess-audio looks to me is DSP platform driver. If a stream is DMA
->>> based, it seems strange to have DSP-based backend.
->>>
->
-> The DMA is used to send the PCM data from the ALSA PCM device to the DSP
-> FIFO.
->
->>> 3. To best of my knowledge, I see in omap-abe.c which is the front end
->>> implementation. Playback_trigger() seems to go ahead enable all
->>> back-ends linked to the given front-end. However, front end may not be
->>> routed to all back-ends. Where in the code to make sure BE is only
->>> activated when a stream is being routed to that particular back-end?
->>>
->
-> This is all done in soc-dsp.c now. We use the DAPM graph to work out all
-> valid routes from FE to BE and vice versa.
+> In any case, I will probably try to temporary replace the
+> vt1708S_auto_create_analog_input_ctls by the one from 1.0.23 and see
+> if this will fix the issue.
 >
 
-I experimented dynamic routing. If issuing mixer command to route AIF_IN 
-to AIF_OUT through mixer widget before starting playback, it works. 
-Otherwise, I get I/O error from aplay. I think it's acceptable to 
-require application to setup path before start of playback. For  device 
-switch case, is it mandatory to route stream to the mixer of BE 
-DAI-LINK2 before derouting stream out of mixer of BE DAI-LINK1?
+Either [Audio Input] nodes connect directly to input pin [Pin complex]
+or connected to [Audio Selector] which has a connection list
 
->>> 4. omap-abe.c manages activation of BE DAIS and omap-abe-dsp.c manages
->>> routing of front-end to back-end DAPM widgets and routing map. Am I
->>> correct?
->
-> Yes, although the routing management is now all in soc-dsp.c
->
->> This leads to previous question. How are two drivers working
->>> together to make sure BEs are only activated if Front-end has been
->>> routed to them?
->>>
->
-> soc-dsp.c now marshals all the PCM ops and makes sure that only valid
-> paths have their DAIs activated.
->
->
->>> 5. Is there mechanism for front-end to switch between DMA and DSP
->>> platform driver? It looks to me that mapping of frond-end and platform
->>> driver is predetermined based on use case. For example, HDMI goes
->>> through DMA as legacy dailink.
->
-> There is no way to dynamically switch platform drivers atm, but this can
-> be solved by having a mutually exclusive FE for each use case.
->
->>>
->>> 6. struct abe_data has array member called dapm. It looks to me that
->>> this array simply tracks dapm components status but I don't see it's
->>> really being used in meaningful way in omap-abe-adsp.c.
->>>
->
-> It used by the OMAP4 ABE to work out the OPP power level and to work out
-> the routing between FE and BE.
->
-> Liam
+Node 0x13 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Control: name="Capture Volume", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=0, ofs=0
+  Control: name="Capture Switch", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=0, ofs=0
+  Device: name="VT1708S Analog", type="Audio", device=0
+  Amp-In caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x93 0x93]
+  Converter: stream=1, channel=0
+  SDI-Select: 0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power states:  D0 D1 D2 D3
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x17
 
 
--- 
-Sent by an employee of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+ARECORD
+
+**** List of CAPTURE Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: VT1708S Analog [VT1708S Analog]
+  Subdevices: 2/2
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+
+
+dsnoop does work properlry when there is more than on subdevices since
+dmix/dsnoop must use subdevice 0
+
+
+This mean that the subdevice 1 is only connected to mic at front panel
+
+Node 0x14 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Control: name="Capture Volume", index=1, device=0
+    ControlAmp: chs=3, dir=In, idx=0, ofs=0
+  Control: name="Capture Switch", index=1, device=0
+    ControlAmp: chs=3, dir=In, idx=0, ofs=0
+  Amp-In caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x80 0x80]
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power states:  D0 D1 D2 D3
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x1e
+
+Node 0x1e [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+  Control: name="Front Mic Boost Capture Volume", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=0, ofs=0
+  Control: name="Smart 5.1", index=0, device=0
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0000233c: IN OUT HP Detect
+    Vref caps: HIZ 50 100
+  Pin Default 0x02a19038: [Jack] Mic at Ext Front
+    Conn = 1/8, Color = Pink
+    DefAssociation = 0x3, Sequence = 0x8
+  Pin-ctls: 0x21: IN VREF_50
+  Unsolicited: tag=04, enabled=1
+  Power states:  D0 D1 D2 D3
+  Power: setting=D0, actual=D0
+  Connection: 2
+     0x16 0x25*
+
+Auto parsing give you a list of input pins , mic, cd ,aux, ...
+
+Just need the "stereo mixer" node 0x16 and the list of input pins to build
+the enum item list of Input Source with the position of those input pin in
+the connection list of [Audio selector] to change the amp in values
+
+Node 0x17 [Audio Selector] wcaps 0x300501: Stereo
+  Control: name="Input Source", index=0, device=0
+  Power states:  D0 D1 D2 D3
+  Power: setting=D0, actual=D0
+  Connection: 6
+     0x1f 0x1a* 0x1b 0x1e 0x1d 0x16
+
+
+the list of input pins can also be used to create those "Playback Volume"
+controls and "mute" switches with the position of those input in in the
+connection list of the strereo mixer [Audio Mixer]
+
+
+Node 0x16 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+  Control: name="Master Front Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=0, ofs=0
+  Control: name="Master Front Playback Switch", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=0, ofs=0
+  Control: name="Mic Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=2, ofs=0
+  Control: name="Mic Playback Switch", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=2, ofs=0
+  Control: name="Front Mic Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=4, ofs=0
+  Control: name="Front Mic Playback Switch", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=4, ofs=0
+  Control: name="Line Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=3, ofs=0
+  Control: name="Line Playback Switch", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=3, ofs=0
+  Control: name="CD Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=1, ofs=0
+  Control: name="CD Playback Switch", index=0, device=0
+    ControlAmp: chs=3, dir=In, idx=1, ofs=0
+  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x0f 0x14] [0x17 0x17] [0x80 0x80] [0x1b 0x1b] [0x9b 0x9b]
+[0x97 0x97] [0x97 0x97]
+  Power states:  D0 D1 D2 D3
+  Power: setting=D0, actual=D0
+  Connection: 7
+     0x10 0x1f 0x1a 0x1b 0x1e 0x1d 0x25
+
+
+
+
+**** List of PLAYBACK Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: VT1708S Analog [VT1708S Analog]
+  Subdevices: 2/2
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+
+The independent headpone seem share with "side' channel since vt1708s only
+has 8 channels
+
+Node 0x25 [Audio Output] wcaps 0x41d: Stereo Amp-Out
+  Control: name="Side Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Control: name="Headphone Playback Volume", index=0, device=0
+    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
+  Amp-Out caps: ofs=0x2a, nsteps=0x2a, stepsize=0x05, mute=0
+  Amp-Out vals:  [0x24 0x24]
+  Converter: stream=0, channel=0
+  PCM:
+    rates [0x5e0]: 44100 48000 88200 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power states:  D0 D1 D2 D3
+  Power: setting=D0, actual=D0
