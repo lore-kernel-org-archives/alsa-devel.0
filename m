@@ -1,15 +1,18 @@
-From: "Babu, Ramesh" <ramesh.babu@intel.com>
-Subject: ASoC: Configuring codec PCM port question
-Date: Fri, 28 Jan 2011 18:30:59 +0530
-Message-ID: <12D0C12AF19E15409D57F22566E88EF50937515E81@bgsmsx501.gar.corp.intel.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Fix typo in snd_soc_dapm_put_volsw
+Date: Fri, 28 Jan 2011 13:04:55 +0000
+Message-ID: <1296219895.3335.54.camel@odin>
+References: <1296165245-10828-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id EA3552455C
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 14:01:05 +0100 (CET)
-Content-Language: en-US
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 015992456C
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 14:04:59 +0100 (CET)
+Received: by wyi11 with SMTP id 11so3141782wyi.38
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 05:04:59 -0800 (PST)
+In-Reply-To: <1296165245-10828-1-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,29 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+On Thu, 2011-01-27 at 14:54 -0700, Stephen Warren wrote:
+> This fixes a regression introduced by:
+> 97404f2e0386ac147cec00fc5d89ea475b04bd78
+> ASoC: Do DAPM control updates in the middle of DAPM sequences
+> 
+> Signed-off-by: Stephen Warren <swarren@nvidia.com>
+> ---
 
-My codec has 2 ports, PCM1 and PCM2 ports.
-PCM2 port is used for playback and capture operations and
-PCM1 is connected to Modem.
-The ASoC driver has to configure, enable and disable PCM1 port during voice
-call activity.
-
-I am thinking of following two options to configure PCM1 port:
-
-1. AlSA Mixer control:  Create mixer control and provide options like VOICE_HS,
-	VOICE_IHF, VOICE_EP and VOICE_DISABLE. Application will use one of the option to
-	Configure the PCM1 port.
-
-2. IOCTL : Application invokes IOCTL in hardware specific driver code and then it enables
-	PCM1 port (cross-path DAPM ?) 
-
-Which is the best way to implement it?
-Are there any other existing way to implement it?
-
-Thanks
-Ramesh
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
