@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: DaVinci: fix kernel panic due to
- uninitialized platform_data
-Date: Fri, 28 Jan 2011 12:25:24 +0000
-Message-ID: <20110128122524.GA10350@opensource.wolfsonmicro.com>
-References: <1296136063-31625-1-git-send-email-prakash.pm@ti.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: [PATCH] ALSA: HDA: Fix microphone(s) on Lenovo
+	Edge 13
+Date: Fri, 28 Jan 2011 13:40:34 +0100
+Message-ID: <4D42B942.9080209@canonical.com>
+References: <4D413CBE.9080409@canonical.com>	<s5hd3nhcv7u.wl%tiwai@suse.de>	<4D42ADC2.7090001@canonical.com>
+	<s5h1v3xw7o7.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F11E524533
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 13:25:07 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1296136063-31625-1-git-send-email-prakash.pm@ti.com>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9E8F924545
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 13:40:36 +0100 (CET)
+In-Reply-To: <s5h1v3xw7o7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Manjunathappa, Prakash" <prakash.pm@ti.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, stable@kernel.org, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 27, 2011 at 07:17:43PM +0530, Manjunathappa, Prakash wrote:
-> This patch fixes the Kernel panic issue on accessing davinci_vc in
-> cq93vc_probe function. struct davinci_vc is part of platform device's
-> private driver data(codec->dev->p->driver_data) and this is populated
-> by DaVinci Voice Codec MFD driver.
-> 
-> Signed-off-by: Manjunathappa, Prakash <prakash.pm@ti.com>
+On 2011-01-28 13:10, Takashi Iwai wrote:
+> At Fri, 28 Jan 2011 12:51:30 +0100,
+> David Henningsson wrote:
+>>
+>> On 2011-01-28 09:01, Takashi Iwai wrote:
+>>> At Thu, 27 Jan 2011 10:37:02 +0100,
+>>> David Henningsson wrote:
+>>>>
+>>>>>  From c8c0ca221b4de97682d2e9e5ad73c0ac6346b398 Mon Sep 17 00:00:00 2001
+>>>> From: David Henningsson<david.henningsson@canonical.com>
+>>>> Date: Thu, 27 Jan 2011 10:28:46 +0100
+>>>> Subject: [PATCH] ALSA: HDA: Fix microphone(s) on Lenovo Edge 13
+>>>>
+>>>> BugLink: http://bugs.launchpad.net/bugs/708521
+>>>>
+>>>> This Edge 13 model has an internal mic at 0x1a and should
+>>>> therefore use the asus quirk.
+>>>>
+>>>> Signed-off-by: David Henningsson<david.henningsson@canonical.com>
+>>>> ---
+>>>>    sound/pci/hda/patch_conexant.c |    1 +
+>>>>    1 files changed, 1 insertions(+), 0 deletions(-)
+>>>>
+>>>> diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+>>>> index 9867afc..7e1ca43 100644
+>>>> --- a/sound/pci/hda/patch_conexant.c
+>>>> +++ b/sound/pci/hda/patch_conexant.c
+>>>> @@ -3120,6 +3120,7 @@ static struct snd_pci_quirk cxt5066_cfg_tbl[] = {
+>>>>    	SND_PCI_QUIRK(0x152d, 0x0833, "OLPC XO-1.5", CXT5066_OLPC_XO_1_5),
+>>>>    	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo T400s", CXT5066_THINKPAD),
+>>>>    	SND_PCI_QUIRK(0x17aa, 0x21c5, "Thinkpad Edge 13", CXT5066_THINKPAD),
+>>>> +	SND_PCI_QUIRK(0x17aa, 0x21c6, "Thinkpad Edge 13", CXT5066_ASUS),
+>>>
+>>> Can 21c5 and 21c6 be incompatible models?
+>>
+>> Good question. Seems like Manoj committed that one, I'll ask him about it.
 
-Applied, thanks.
+I followed the buglink for Manoj's commit and found an internal mic at 
+node 0x1a, so it's likely it should be changed to the asus model.
+
+>>
+>>> This should be merged, I guess.
+>>>
+>>> I applided the patch but currently it's for 2.6.39 since CXT5066_ASUS
+>>> changes aren't queued for 2.6.38 (as non-trivial changes).
+>>
+>> Sorry, I was under the impression that you would accept a backport for
+>> 2.6.38, as you said in the earlier email?
+>
+> Ah, no.  I didn't mean that.  Sorry not being clear enough.
+>
+> Moving the commits from 2.6.39 tree is possible but a bit mess
+> because of rebase, thus I'd like to avoid it, unless it's urgently
+> needed.
+
+Well, that's up to you - from my/Ubuntu's perspective, it's important to 
+have it in 2.6.38 (Ubuntu 11.04 will have kernel 2.6.38), so if you 
+don't, I'll just apply it downstream instead, in the Ubuntu kernel.
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
