@@ -1,16 +1,16 @@
 From: Stephen Warren <swarren@nvidia.com>
-Subject: [PATCH 2/7] ASoC: Tegra: Harmony: Don't use soc-audio
-	platform device
-Date: Fri, 28 Jan 2011 14:26:36 -0700
-Message-ID: <1296250001-6348-2-git-send-email-swarren@nvidia.com>
+Subject: [PATCH 3/7] ASoC: Tegra: Harmony: Support the internal
+	speaker
+Date: Fri, 28 Jan 2011 14:26:37 -0700
+Message-ID: <1296250001-6348-3-git-send-email-swarren@nvidia.com>
 References: <1296250001-6348-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 97D1824420
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 22:26:56 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 6081024420
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 22:26:58 +0100 (CET)
 In-Reply-To: <1296250001-6348-1-git-send-email-swarren@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,170 +25,151 @@ To: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Previously, snd-soc-tegra-harmony internally instantiated a platform device
-object whenever the module was loaded. Instead, switch to a more typical model
-where arch/arm/mach-tegra defines a platform device, and snd-soc-tegra-harmony
-acts as a driver for such a platform device.
+Add DAPM widget definitions for the internal speaker paths. Currently, this
+path is always enabled while playback is active.
 
-Define a new struct tegra_harmony to store driver data in the future.
+Add code to control the speaker amplifier GPIO.
+
+The GPIO is requested during _init, since that's the first time it is
+guaranteed that the WM8903 module is loaded, probed, and hence has exported
+its GPIO chip.
 
 Signed-off-by: Stephen Warren <swarren@nvidia.com>
 ---
- sound/soc/tegra/harmony.c |   94 +++++++++++++++++++++++++++++++-------------
- 1 files changed, 66 insertions(+), 28 deletions(-)
+ sound/soc/tegra/harmony.c |   51 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 51 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/tegra/harmony.c b/sound/soc/tegra/harmony.c
-index b160b71..2d6a15c 100644
+index 2d6a15c..0f5a481 100644
 --- a/sound/soc/tegra/harmony.c
 +++ b/sound/soc/tegra/harmony.c
-@@ -2,7 +2,7 @@
-  * harmony.c - Harmony machine ASoC driver
-  *
-  * Author: Stephen Warren <swarren@nvidia.com>
-- * Copyright (C) 2010 - NVIDIA, Inc.
-+ * Copyright (C) 2010-2011 - NVIDIA, Inc.
-  *
-  * Based on code copyright/by:
-  *
-@@ -29,7 +29,11 @@
-  */
- 
- #include <asm/mach-types.h>
-+
+@@ -33,6 +33,9 @@
  #include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
++#include <linux/gpio.h>
 +
++#include <mach/harmony_audio.h>
+ 
  #include <sound/core.h>
  #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -40,9 +44,11 @@
- #include "tegra_pcm.h"
- #include "tegra_asoc_utils.h"
+@@ -48,6 +51,8 @@
+ #define PREFIX DRV_NAME ": "
  
--#define PREFIX "ASoC Harmony: "
-+#define DRV_NAME "tegra-snd-harmony"
-+#define PREFIX DRV_NAME ": "
- 
--static struct platform_device *harmony_snd_device;
-+struct tegra_harmony {
-+};
- 
- static int harmony_asoc_hw_params(struct snd_pcm_substream *substream,
- 					struct snd_pcm_hw_params *params)
-@@ -154,56 +160,88 @@ static struct snd_soc_card snd_soc_harmony = {
- 	.num_links = 1,
+ struct tegra_harmony {
++	struct harmony_audio_platform_data *pdata;
++	int gpio_spkr_en_requested;
  };
  
--static int __init harmony_soc_modinit(void)
-+static __devinit int tegra_snd_harmony_probe(struct platform_device *pdev)
- {
-+	struct snd_soc_card *card = &snd_soc_harmony;
-+	struct tegra_harmony *harmony;
- 	int ret;
+ static int harmony_asoc_hw_params(struct snd_pcm_substream *substream,
+@@ -113,7 +118,22 @@ static struct snd_soc_ops harmony_asoc_ops = {
+ 	.hw_params = harmony_asoc_hw_params,
+ };
  
- 	if (!machine_is_harmony()) {
--		pr_err(PREFIX "Not running on Tegra Harmony!\n");
-+		dev_err(&pdev->dev, "Not running on Tegra Harmony!\n");
- 		return -ENODEV;
- 	}
- 
--	ret = tegra_asoc_utils_init();
--	if (ret) {
--		return ret;
-+	harmony = kzalloc(sizeof(struct tegra_harmony), GFP_KERNEL);
-+	if (!harmony) {
-+		dev_err(&pdev->dev, "Can't allocate tegra_harmony\n");
-+		return -ENOMEM;
- 	}
- 
--	/*
--	 * Create and register platform device
--	 */
--	harmony_snd_device = platform_device_alloc("soc-audio", -1);
--	if (harmony_snd_device == NULL) {
--		pr_err(PREFIX "platform_device_alloc failed\n");
--		ret = -ENOMEM;
--		goto err_clock_utils;
--	}
-+	ret = tegra_asoc_utils_init();
-+	if (ret)
-+		goto err_free_harmony;
- 
--	platform_set_drvdata(harmony_snd_device, &snd_soc_harmony);
-+	card->dev = &pdev->dev;
-+	platform_set_drvdata(pdev, card);
-+	snd_soc_card_set_drvdata(card, harmony);
- 
--	ret = platform_device_add(harmony_snd_device);
-+	ret = snd_soc_register_card(card);
- 	if (ret) {
--		pr_err(PREFIX "platform_device_add failed (%d)\n",
-+		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n",
- 			ret);
--		goto err_device_put;
-+		goto err_clear_drvdata;
- 	}
- 
- 	return 0;
- 
--err_device_put:
--	platform_device_put(harmony_snd_device);
--err_clock_utils:
-+err_clear_drvdata:
-+	snd_soc_card_set_drvdata(card, NULL);
-+	platform_set_drvdata(pdev, NULL);
-+	card->dev = NULL;
- 	tegra_asoc_utils_fini();
-+err_free_harmony:
-+	kfree(harmony);
- 	return ret;
- }
--module_init(harmony_soc_modinit);
- 
--static void __exit harmony_soc_modexit(void)
-+static int __devexit tegra_snd_harmony_remove(struct platform_device *pdev)
- {
--	platform_device_unregister(harmony_snd_device);
-+	struct snd_soc_card *card = platform_get_drvdata(pdev);
++static int harmony_event_int_spk(struct snd_soc_dapm_widget *w,
++					struct snd_kcontrol *k, int event)
++{
++	struct snd_soc_codec *codec = w->codec;
++	struct snd_soc_card *card = codec->card;
 +	struct tegra_harmony *harmony = snd_soc_card_get_drvdata(card);
++	struct harmony_audio_platform_data *pdata = harmony->pdata;
 +
-+	snd_soc_unregister_card(card);
-+
-+	snd_soc_card_set_drvdata(card, NULL);
-+	platform_set_drvdata(pdev, NULL);
-+	card->dev = NULL;
- 
- 	tegra_asoc_utils_fini();
-+
-+	kfree(harmony);
++	gpio_set_value_cansleep(pdata->gpio_spkr_en,
++				!!SND_SOC_DAPM_EVENT_ON(event));
 +
 +	return 0;
 +}
 +
-+static struct platform_driver tegra_snd_harmony_driver = {
-+	.driver = {
-+		.name = DRV_NAME,
-+		.owner = THIS_MODULE,
-+	},
-+	.probe = tegra_snd_harmony_probe,
-+	.remove = __devexit_p(tegra_snd_harmony_remove),
-+};
+ static const struct snd_soc_dapm_widget harmony_dapm_widgets[] = {
++	SND_SOC_DAPM_SPK("Int Spk", harmony_event_int_spk),
+ 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+ 	SND_SOC_DAPM_MIC("Mic Jack", NULL),
+ };
+@@ -121,6 +141,10 @@ static const struct snd_soc_dapm_widget harmony_dapm_widgets[] = {
+ static const struct snd_soc_dapm_route harmony_audio_map[] = {
+ 	{"Headphone Jack", NULL, "HPOUTR"},
+ 	{"Headphone Jack", NULL, "HPOUTL"},
++	{"Int Spk", NULL, "ROP"},
++	{"Int Spk", NULL, "RON"},
++	{"Int Spk", NULL, "LOP"},
++	{"Int Spk", NULL, "LON"},
+ 	{"Mic Bias", NULL, "Mic Jack"},
+ 	{"IN1L", NULL, "Mic Bias"},
+ };
+@@ -129,6 +153,19 @@ static int harmony_asoc_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_codec *codec = rtd->codec;
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
++	struct snd_soc_card *card = codec->card;
++	struct tegra_harmony *harmony = snd_soc_card_get_drvdata(card);
++	struct harmony_audio_platform_data *pdata = harmony->pdata;
++	int ret;
 +
-+static int __init snd_tegra_harmony_init(void)
-+{
-+	return platform_driver_register(&tegra_snd_harmony_driver);
-+}
-+module_init(snd_tegra_harmony_init);
++	ret = gpio_request(pdata->gpio_spkr_en, "spkr_en");
++	if (ret) {
++		dev_err(card->dev, "cannot get spkr_en gpio\n");
++		return ret;
++	}
++	harmony->gpio_spkr_en_requested = 1;
 +
-+static void __exit snd_tegra_harmony_exit(void)
-+{
-+	platform_driver_unregister(&tegra_snd_harmony_driver);
- }
--module_exit(harmony_soc_modexit);
-+module_exit(snd_tegra_harmony_exit);
++	gpio_direction_output(pdata->gpio_spkr_en, 0);
  
- MODULE_AUTHOR("Stephen Warren <swarren@nvidia.com>");
- MODULE_DESCRIPTION("Harmony machine ASoC driver");
+ 	snd_soc_dapm_new_controls(dapm, harmony_dapm_widgets,
+ 					ARRAY_SIZE(harmony_dapm_widgets));
+@@ -137,6 +174,7 @@ static int harmony_asoc_init(struct snd_soc_pcm_runtime *rtd)
+ 				ARRAY_SIZE(harmony_audio_map));
+ 
+ 	snd_soc_dapm_enable_pin(dapm, "Headphone Jack");
++	snd_soc_dapm_enable_pin(dapm, "Int Spk");
+ 	snd_soc_dapm_enable_pin(dapm, "Mic Jack");
+ 	snd_soc_dapm_sync(dapm);
+ 
+@@ -164,6 +202,7 @@ static __devinit int tegra_snd_harmony_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = &snd_soc_harmony;
+ 	struct tegra_harmony *harmony;
++	struct harmony_audio_platform_data *pdata;
+ 	int ret;
+ 
+ 	if (!machine_is_harmony()) {
+@@ -171,12 +210,20 @@ static __devinit int tegra_snd_harmony_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
++	pdata = pdev->dev.platform_data;
++	if (!pdata) {
++		dev_err(&pdev->dev, "no platform data supplied\n");
++		return -EINVAL;
++	}
++
+ 	harmony = kzalloc(sizeof(struct tegra_harmony), GFP_KERNEL);
+ 	if (!harmony) {
+ 		dev_err(&pdev->dev, "Can't allocate tegra_harmony\n");
+ 		return -ENOMEM;
+ 	}
+ 
++	harmony->pdata = pdata;
++
+ 	ret = tegra_asoc_utils_init();
+ 	if (ret)
+ 		goto err_free_harmony;
+@@ -208,6 +255,7 @@ static int __devexit tegra_snd_harmony_remove(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 	struct tegra_harmony *harmony = snd_soc_card_get_drvdata(card);
++	struct harmony_audio_platform_data *pdata = harmony->pdata;
+ 
+ 	snd_soc_unregister_card(card);
+ 
+@@ -217,6 +265,9 @@ static int __devexit tegra_snd_harmony_remove(struct platform_device *pdev)
+ 
+ 	tegra_asoc_utils_fini();
+ 
++	if (harmony->gpio_spkr_en_requested)
++		gpio_free(pdata->gpio_spkr_en);
++
+ 	kfree(harmony);
+ 
+ 	return 0;
 -- 
 1.7.1
