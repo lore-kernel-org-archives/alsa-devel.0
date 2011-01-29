@@ -1,18 +1,35 @@
-From: Wu Fengguang <wfg@linux.intel.com>
-Subject: Re: [PATCH] sound,
- hda_eld: suspicious sizeof() in call to snd_print_pcm_bits()
-Date: Sat, 29 Jan 2011 18:46:33 +0800
-Message-ID: <20110129104633.GA12643@localhost>
-References: <alpine.LNX.2.00.1101290132560.6465@swampdragon.chaosbits.net>
+From: Mark Goldstein <goldstein.mark@gmail.com>
+Subject: Re: Problem with VIA VT1708S and git versions of
+	alsa-driver.
+Date: Sat, 29 Jan 2011 12:53:38 +0200
+Message-ID: <AANLkTikb1R-8Y6nf+SjPrS8gMVUZ3VLSxEKyGcPq=dKa@mail.gmail.com>
+References: <AANLkTikaYCybUxW7dE3tizYZztT8pVo6Jeg-mh=e0NqZ@mail.gmail.com>
+	<AANLkTi=UTy8tdLqL-90UJOXtU=Ks1+ZZrGV2nCbw=xjD@mail.gmail.com>
+	<AANLkTinYcRqMwH2FSUjXiOxZg4x09q673FL9m15YvXEa@mail.gmail.com>
+	<AANLkTik8HayTEADWn74PJ0NgjGunamsSAZpy_GanuZo3@mail.gmail.com>
+	<AANLkTimz3iiXPhEarEUY1Gw5GxrTuv+UXgKKZS3ObzuS@mail.gmail.com>
+	<AANLkTi=S20cpKy-CObvKB-OLDKbQ7FBhFrbnd448B+sO@mail.gmail.com>
+	<AANLkTikyjZvD+ptCcgBrN2av-jQmKWOekbzvfXYAdpOV@mail.gmail.com>
+	<AANLkTim_A5m2MryxmkEHtcc3gNFWTaRW8J3=dZC6wd67@mail.gmail.com>
+	<AANLkTinUWD9Oq2iAbn_nc5E+M=y4yXx4u0Eff9jYSGyk@mail.gmail.com>
+	<AANLkTimcAUn=+1B3=LJbD7dBBZ3NvaeX_q+_sHP6QhB3@mail.gmail.com>
+	<AANLkTimiwTcnCnGECN8jpzY2VaMTmpcHBx-qmFDmwxSY@mail.gmail.com>
+	<AANLkTi=14Q53BtcafboP=qz2-9AEcnnE3UD+HTwoGtbe@mail.gmail.com>
+	<AANLkTimQ+evOVnG78UWPhCORKo2VvXyzVO8BhTrzSnVG@mail.gmail.com>
+	<AANLkTim95ynONz5N27J4EOBR93ROsoWdZajovDCaWX9f@mail.gmail.com>
+	<AANLkTinm3WYzzjVB-K6yVMeZm3+0hxsDGSb4+hQB4jLh@mail.gmail.com>
+	<AANLkTikFtQpiAqfpgx-8BjJh=jcHwVW2OQccCU_23Yq7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 89774103803
-	for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2011 11:46:38 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.00.1101290132560.6465@swampdragon.chaosbits.net>
+Received: from mail-yi0-f51.google.com (mail-yi0-f51.google.com
+	[209.85.218.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id D5DCB103803
+	for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2011 11:53:59 +0100 (CET)
+Received: by yib12 with SMTP id 12so1624242yib.38
+	for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2011 02:53:58 -0800 (PST)
+In-Reply-To: <AANLkTikFtQpiAqfpgx-8BjJh=jcHwVW2OQccCU_23Yq7@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +39,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jesper Juhl <jj@chaosbits.net>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Mark Goldstein <goldstein.mark@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jan 29, 2011 at 01:40:04AM +0100, Jesper Juhl wrote:
+On Sat, Jan 29, 2011 at 12:42 PM, Mark Goldstein
+<goldstein.mark@gmail.com> wrote:
+> On Sat, Jan 29, 2011 at 11:37 AM, Mark Goldstein
+> <goldstein.mark@gmail.com> wrote:
+>> On Fri, Jan 28, 2011 at 2:47 AM, Raymond Yau
+>> <superquad.vortex2@gmail.com> wrote:
+>>> 2011/1/27 Mark Goldstein <goldstein.mark@gmail.com>
+>>>
+>>>> On Thu, Jan 27, 2011 at 11:09 AM, Raymond Yau
+>>>> <superquad.vortex2@gmail.com> wrote:
+>>>> > 2011/1/27 Mark Goldstein <goldstein.mark@gmail.com>
+>>>> >
+>
+>> Still trying to figure out why only Rear Mic works while Front Mic does not.
+>
+> Ok, for some reason Pin-ctls for Front Mic (0x1e) set to VREF Hi-Z.
+> After I set it to VREF 50 using hda-analyser, Front Mic started
+> working. Have to figure out why it is set to Hi-Z.
+>
 
->  	if (a->format == AUDIO_CODING_TYPE_LPCM)
-> -		snd_print_pcm_bits(a->sample_bits, buf2 + 8, sizeof(buf2 - 8));
-> +		snd_print_pcm_bits(a->sample_bits, buf2 + 8, sizeof(buf2) - 8);
+static void via_auto_init_analog_input(struct hda_codec *codec)
+{
+	struct via_spec *spec = codec->spec;
+	const struct auto_pin_cfg *cfg = &spec->autocfg;
+	unsigned int ctl;
+	int i;
 
-Good catch!
+	for (i = 0; i < cfg->num_inputs; i++) {
+		hda_nid_t nid = cfg->inputs[i].pin;
+		if (spec->smart51_enabled && is_smart51_pins(spec, nid))
+			ctl = PIN_OUT;
+		else if (i == AUTO_PIN_MIC)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^
+			ctl = PIN_VREF50;
+		else
+			ctl = PIN_IN;
+		snd_hda_codec_write(codec, nid, 0,
+				    AC_VERB_SET_PIN_WIDGET_CONTROL, ctl);
+	}
+}
 
-Reviewed-by: Wu Fengguang <fengguang.wu@intel.com>
+Should it probably be
+else if (cfg->input[i].type == AUTO_PIN_MIC) ?
+
+
+
+
+-- 
+Mark Goldstein
