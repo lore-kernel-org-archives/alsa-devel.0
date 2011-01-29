@@ -1,46 +1,45 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: [PATCH 7/7] ASoC: Tegra: I2S: Use dev_err not pr_err
-Date: Fri, 28 Jan 2011 14:26:41 -0700
-Message-ID: <1296250001-6348-7-git-send-email-swarren@nvidia.com>
-References: <1296250001-6348-1-git-send-email-swarren@nvidia.com>
+From: Jesper Juhl <jj@chaosbits.net>
+Subject: [PATCH] sound, hda_eld: suspicious sizeof() in call to
+ snd_print_pcm_bits()
+Date: Sat, 29 Jan 2011 01:40:04 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1101290132560.6465@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9A93824420
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2011 22:27:06 +0100 (CET)
-In-Reply-To: <1296250001-6348-1-git-send-email-swarren@nvidia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Wu Fengguang <wfg@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
----
- sound/soc/tegra/tegra_i2s.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+In hdmi_show_short_audio_desc() we call snd_print_pcm_bits() like this:
+  snd_print_pcm_bits(a->sample_bits, buf2 + 8, sizeof(buf2 - 8));
+that last argument is supposed to be the size of the buffer that 
+snd_print_pcm_bits() writes to, so I believe it should be this:
+  snd_print_pcm_bits(a->sample_bits, buf2 + 8, sizeof(buf2) - 8);
 
-diff --git a/sound/soc/tegra/tegra_i2s.c b/sound/soc/tegra/tegra_i2s.c
-index 6d66878..870ee36 100644
---- a/sound/soc/tegra/tegra_i2s.c
-+++ b/sound/soc/tegra/tegra_i2s.c
-@@ -386,7 +386,7 @@ static __devinit int tegra_i2s_platform_probe(struct platform_device *pdev)
- 	snprintf(clk_name, sizeof(clk_name), DRV_NAME ".%d", pdev->id);
- 	i2s->clk_i2s = clk_get_sys(clk_name, NULL);
- 	if (IS_ERR(i2s->clk_i2s)) {
--		pr_err("Can't retrieve i2s clock\n");
-+		dev_err(&pdev->dev, "Can't retrieve i2s clock\n");
- 		ret = PTR_ERR(i2s->clk_i2s);
- 		goto err_free;
- 	}
+Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+---
+ hda_eld.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+ Compile tested only. I don't have relevant hardware.
+
+diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
+index 4a66347..74b0560 100644
+--- a/sound/pci/hda/hda_eld.c
++++ b/sound/pci/hda/hda_eld.c
+@@ -381,7 +381,7 @@ static void hdmi_show_short_audio_desc(struct cea_sad *a)
+ 	snd_print_pcm_rates(a->rates, buf, sizeof(buf));
+ 
+ 	if (a->format == AUDIO_CODING_TYPE_LPCM)
+-		snd_print_pcm_bits(a->sample_bits, buf2 + 8, sizeof(buf2 - 8));
++		snd_print_pcm_bits(a->sample_bits, buf2 + 8, sizeof(buf2) - 8);
+ 	else if (a->max_bitrate)
+ 		snprintf(buf2, sizeof(buf2),
+ 				", max bitrate = %d", a->max_bitrate);
+
+
 -- 
-1.7.1
+Jesper Juhl <jj@chaosbits.net>            http://www.chaosbits.net/
+Don't top-post http://www.catb.org/~esr/jargon/html/T/top-post.html
+Plain text mails only, please.
