@@ -1,36 +1,18 @@
-From: Mark Goldstein <goldstein.mark@gmail.com>
-Subject: Re: Problem with VIA VT1708S and git versions of
-	alsa-driver.
-Date: Sat, 29 Jan 2011 14:42:43 +0200
-Message-ID: <AANLkTimEJkcTJoLuNXKGN+dfxctVS0SmPEDcFvLCNMwE@mail.gmail.com>
-References: <AANLkTikaYCybUxW7dE3tizYZztT8pVo6Jeg-mh=e0NqZ@mail.gmail.com>
-	<AANLkTi=UTy8tdLqL-90UJOXtU=Ks1+ZZrGV2nCbw=xjD@mail.gmail.com>
-	<AANLkTinYcRqMwH2FSUjXiOxZg4x09q673FL9m15YvXEa@mail.gmail.com>
-	<AANLkTik8HayTEADWn74PJ0NgjGunamsSAZpy_GanuZo3@mail.gmail.com>
-	<AANLkTimz3iiXPhEarEUY1Gw5GxrTuv+UXgKKZS3ObzuS@mail.gmail.com>
-	<AANLkTi=S20cpKy-CObvKB-OLDKbQ7FBhFrbnd448B+sO@mail.gmail.com>
-	<AANLkTikyjZvD+ptCcgBrN2av-jQmKWOekbzvfXYAdpOV@mail.gmail.com>
-	<AANLkTim_A5m2MryxmkEHtcc3gNFWTaRW8J3=dZC6wd67@mail.gmail.com>
-	<AANLkTinUWD9Oq2iAbn_nc5E+M=y4yXx4u0Eff9jYSGyk@mail.gmail.com>
-	<AANLkTimcAUn=+1B3=LJbD7dBBZ3NvaeX_q+_sHP6QhB3@mail.gmail.com>
-	<AANLkTimiwTcnCnGECN8jpzY2VaMTmpcHBx-qmFDmwxSY@mail.gmail.com>
-	<AANLkTi=14Q53BtcafboP=qz2-9AEcnnE3UD+HTwoGtbe@mail.gmail.com>
-	<AANLkTimQ+evOVnG78UWPhCORKo2VvXyzVO8BhTrzSnVG@mail.gmail.com>
-	<AANLkTim95ynONz5N27J4EOBR93ROsoWdZajovDCaWX9f@mail.gmail.com>
-	<AANLkTinm3WYzzjVB-K6yVMeZm3+0hxsDGSb4+hQB4jLh@mail.gmail.com>
-	<AANLkTikFtQpiAqfpgx-8BjJh=jcHwVW2OQccCU_23Yq7@mail.gmail.com>
-	<AANLkTikb1R-8Y6nf+SjPrS8gMVUZ3VLSxEKyGcPq=dKa@mail.gmail.com>
+From: Wolfram Nyaa~ <wolfram@ritsuka.org>
+Subject: Re: VIA VT1828S: crash in alsamixer, no mic input
+Date: Sat, 29 Jan 2011 23:09:12 +0600
+Message-ID: <4D4449B8.1080906@ritsuka.org>
+References: <4D439AE2.1010101@ritsuka.org> <s5hlj24artp.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="------------070102030106050301030808"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91ECB2444B
-	for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2011 13:43:04 +0100 (CET)
-Received: by yxs7 with SMTP id 7so1649064yxs.38
-	for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2011 04:43:03 -0800 (PST)
-In-Reply-To: <AANLkTikb1R-8Y6nf+SjPrS8gMVUZ3VLSxEKyGcPq=dKa@mail.gmail.com>
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id A8DA8103803
+	for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2011 18:09:02 +0100 (CET)
+Received: by fxm5 with SMTP id 5so4414862fxm.38
+	for <alsa-devel@alsa-project.org>; Sat, 29 Jan 2011 09:09:02 -0800 (PST)
+In-Reply-To: <s5hlj24artp.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -40,74 +22,112 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jan 29, 2011 at 12:53 PM, Mark Goldstein
-<goldstein.mark@gmail.com> wrote:
-> On Sat, Jan 29, 2011 at 12:42 PM, Mark Goldstein
-> <goldstein.mark@gmail.com> wrote:
->> On Sat, Jan 29, 2011 at 11:37 AM, Mark Goldstein
->> <goldstein.mark@gmail.com> wrote:
->>> On Fri, Jan 28, 2011 at 2:47 AM, Raymond Yau
->>> <superquad.vortex2@gmail.com> wrote:
->>>> 2011/1/27 Mark Goldstein <goldstein.mark@gmail.com>
->>>>
->>>>> On Thu, Jan 27, 2011 at 11:09 AM, Raymond Yau
->>>>> <superquad.vortex2@gmail.com> wrote:
->>>>> > 2011/1/27 Mark Goldstein <goldstein.mark@gmail.com>
->>>>> >
+This is a multi-part message in MIME format.
+--------------070102030106050301030808
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+All information attached to linked thread.
+
+On 01/29/2011 05:10 PM, Takashi Iwai wrote:
+> At Sat, 29 Jan 2011 10:43:14 +0600,
+> Wolfram Nyaa~ wrote:
 >>
->>> Still trying to figure out why only Rear Mic works while Front Mic does=
- not.
+>> Hash: SHA1
 >>
->> Ok, for some reason Pin-ctls for Front Mic (0x1e) set to VREF Hi-Z.
->> After I set it to VREF 50 using hda-analyser, Front Mic started
->> working. Have to figure out why it is set to Hi-Z.
+>> Hi.
 >>
->
-> static void via_auto_init_analog_input(struct hda_codec *codec)
-> {
-> =A0 =A0 =A0 =A0struct via_spec *spec =3D codec->spec;
-> =A0 =A0 =A0 =A0const struct auto_pin_cfg *cfg =3D &spec->autocfg;
-> =A0 =A0 =A0 =A0unsigned int ctl;
-> =A0 =A0 =A0 =A0int i;
->
-> =A0 =A0 =A0 =A0for (i =3D 0; i < cfg->num_inputs; i++) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0hda_nid_t nid =3D cfg->inputs[i].pin;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (spec->smart51_enabled && is_smart51_pi=
-ns(spec, nid))
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ctl =3D PIN_OUT;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0else if (i =3D=3D AUTO_PIN_MIC)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0^^^^^^^^^^^^^^^^^^^^^^=
-^^^
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ctl =3D PIN_VREF50;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0else
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ctl =3D PIN_IN;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_hda_codec_write(codec, nid, 0,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0AC=
-_VERB_SET_PIN_WIDGET_CONTROL, ctl);
-> =A0 =A0 =A0 =A0}
-> }
->
-> Should it probably be
-> else if (cfg->input[i].type =3D=3D AUTO_PIN_MIC) ?
+>> I've found crash in alsamixer and described it in comment 0023300 in the
+>> following issue thread at bugtracker:
+>> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5249
+> 
+> Could you attach the output of alsa-info.sh (run with --no-upload
+> option)?  Which kernel version, alsa-driver version exactly?
+> 
+> 
+> Takashi
+> 
 
-OK, now it works for me.
-So totally there were 3 changes:
-1) setting of PIN control for Mics
-2) shifting the ids in pin_idxs one position to the right
-3) using specialized version of vt_auto_create_analog_input_ctls, that
-passes idx - 1 to snd_hda_add_imux_item.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.16 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-Well, instead of last two changes it was probably possible to use only
-3rd, but instead of passing idx - 1 to snd_hda_add_imux_item pass idx
-+ 1 to via_new_analog_input.
+iQEcBAEBAgAGBQJNREm3AAoJEN9tENx5d7sAwUIIAJN5jbpKL7tz+qtTdgzLIr0c
+mL7PBxZgRZRimkH8x37luO/F0MtxXO0m1FJVixXQhoZwP7I0q42JZgLyBwKp9ntS
+/IPAWMnBrR2e7BkAwJGc5RMCEvlEpWR+p4EEOySs22hLM1LjPulmHnrbzTbP7+RY
+WgIcWNAiTORnZs54FkkMwe7ffQ7CfObCZ+P74CTGh79ONKchulFtg8q8x6Y45fKE
+iH2X0wyUMXaOqv4S9kG53TFdT8HnUwtYwjnkb8ZhZ6p19QrkeOmODTZzxt+8k9fj
+1v3UaFjEW7Q7ohyk4/lK1FIXUhEk//oTtQX/tLUazfZBrCPYb3ZjOzatyGvbsIs=
+=ryap
+-----END PGP SIGNATURE-----
 
-Of course it should be done in more common way, since not only VT1708S
-used different indexes for via_new_analog_input and
-snd_hda_add_imux_item.
+--------------070102030106050301030808
+Content-Type: application/pgp-keys;
+ name="0x7977BB00.asc"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0x7977BB00.asc"
 
--- =
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v2.0.16 (GNU/Linux)
 
-Mark Goldstein
+mQENBEt9gKIBCADoXrpv0rG/GfmnrHxnU/y/v+/8jX6Vi53kE7GvE/IL91W19+0D
+EUdAoqpVtCs1OaVDYbv8bC1/2zerGWL2T7jyhxMzOKSRYkArLqYWdxIg9f2ZtC0/
+BQJ299WkYFyHPZKPH8uSR4/iRSePASKFVHYcqk2n7Fq5AFVFtcDVeKscHcxEuVCD
+4+iLobIxjbujiNGiLlnN2jfn2vS7gu+s9rDA4JdkmAGqwXLYS2o76anXQSxvBNOI
+RNNaUd/AYgjum548kEIvxV1uBKG0yBvx1mvwNAw3OzXw1WTcOpAgKkukpXjin2Av
+HrZINwD+xe7v6UJcat7akyC9fknITgHth0ejABEBAAG0I1dvbGZyYW0gTnlhYX4g
+PHdvbGZyYW1Acml0c3VrYS5vcmc+iQE+BBMBAgAoBQJLfYCiAhsjBQkJZgGABgsJ
+CAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRDfbRDceXe7AI0RB/4gdJZ7aAQBLxD7
+8EU62joFBdnAjaWqNFYlCxWyvh8ZqSc4X87z6Zq9bGJ/wyCzX0zvTUBsKxm0Zg6f
+1/0V0XPQlg7eXSDml6xB23pmFcytcy3vGQM+P3JJZ4491Vax0eb2dQJVNG93MqYO
+aczSEBJd010BsoOLxgqSdN73mDaxacBSVZf9hXQHhj6/hzGo1ptn1MVCXWm+9NbU
+eCgrQ8IZ5idBqWrF9UKajDoakc16TpvPvWueXBi1CKkdZC4wKgrGO3bj0HvMKZC+
+fJVM4Jlaq1Zrhqfj0M1p6nLtwqChSzZawtylpZ5722edr/LLP5YgbpE7DqNTnY21
+9aAbIrXquQENBEt9gKIBCAC3NiRrYWgQQgX20tt2xF/Tc6b4jBBNi8UsEIYLCYq/
+pu8fJ40Y+1J7f9LbUtltu6nDTJG5k129qRDnFP0zIWNqBA+aSJlkotIPuCwRKiP6
+ylEVS1O8JdTScmB9sPlEGqyPppYaVLDbOHCTrycvMbcjtThgpa4Lnx0crF94Atr9
+vUWX3VEe9atZp8TcHQTflmFe1hGiUViB8el+PeeKz0llm3hYQ1rSniLjXqluUw++
+y61rkPDwH6lOsNU7bvUdfIbz9OqHqkr4WhIsJzkpTU/liC91pegAgx9N1kb+1y3o
+8Mzz6/L4AYmZnZFKSjlDOVfB8AgD87OEK4pQCTXUi4JlABEBAAGJASUEGAECAA8F
+Akt9gKICGwwFCQlmAYAACgkQ320Q3Hl3uwBMpgf/adH26oGIJBGkLoY3o4Whv7p2
+is7aFwt9wTOjIMv2gj8OTEj9nGMTgqajr46Xw14wCTz5CQU27jAzTd2w2miD/cKn
+Wy8p1hLZvuYPlgUXaiErV07wJMiuUs+6GAUyd8aGRQjVJ0M2TFuTmDXTZUWs3/so
+ZGUv1fbX7yXaZrWieHQLqIrWylWwiLG/6UqudoKhwfd02kkKoCGVTrR3Vckz0TER
+KwgCxGtrh8nvGcFBfZyUNbTzekA5c+Tl1Ld24A+lizV4jJPnXszSCIC6gPu2hK11
+8vNdSDp83SLW2WhGcuc4I9wHWeM/o2ISmSFbkx42I0xO3cKO2A2J1tTdOmDKyQ==
+=msSC
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------070102030106050301030808
+Content-Type: application/pgp-signature;
+ name="0x7977BB00.asc.sig"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="0x7977BB00.asc.sig"
+
+iQEcBAABAgAGBQJNREm3AAoJEN9tENx5d7sAAJsH/12CI69qeWT7dj6UONzNI//yOHhtZJ5B
+BNdWMqVilBJNDQEDZWbfZ7Hl5Fm4hHYNYHU3RcXePmtcY/sAOOkeRFdiYLRSjwxcJoZEPz6P
+DT0PBysjZu+D4Kv0YrSb4sLvtIjtImYdFBpRfundcP6NLYLrvCI3xbyzMgEXRK7BesmGHuTH
+mwRinSsA1uWesLGxgY2mgKmAVBuApjhyl3re+UK9Vgnz19r8hT+X/0ogdaozEoSDKPrqA+wc
+UzneA50YMYc9zq+e3O/mNKLpvxsiVzUxwvWrGnzda23BI/njqtHC7MJ8uwbykdiTJC5WkeVq
+k9aOOnVfdYVOFUdhThRFef0=
+--------------070102030106050301030808
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------070102030106050301030808--
