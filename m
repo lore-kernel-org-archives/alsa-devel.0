@@ -1,17 +1,20 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Conexant 5069: internal speakers are not muted
- when headphones are plugged in
-Date: Mon, 31 Jan 2011 12:45:05 +0100
-Message-ID: <4D46A0C1.7010507@canonical.com>
-References: <1296472096.3922.67.camel@mattotaupa>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 0/3] ASoC: patch series to add support for
+ capture in mid-x86 and sn95031 codec
+Date: Mon, 31 Jan 2011 12:02:56 +0000
+Message-ID: <1296475376.3316.43.camel@odin>
+References: <98769532B4BB14429434178695419EAE08C0F3E93E@bgsmsx501.gar.corp.intel.com>
+	<20110131114107.GC5123@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3C7D4244CB
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 12:45:04 +0100 (CET)
-In-Reply-To: <1296472096.3922.67.camel@mattotaupa>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 746DA244E0
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 13:03:02 +0100 (CET)
+Received: by wwe15 with SMTP id 15so5472846wwe.20
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 04:03:02 -0800 (PST)
+In-Reply-To: <20110131114107.GC5123@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,40 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Paul Menzel <paulepanter@users.sourceforge.net>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Harsha, Priya" <priya.harsha@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxMS0wMS0zMSAxMjowOCwgUGF1bCBNZW56ZWwgd3JvdGU6Cj4gRGVhciBBTFNBIGZvbGtz
-LAo+Cj4KPiBJIGVuY291bnRlciBhIHByb2JsZW0gd2l0aCBhIExlbm92byBHNTU1IHdoZXJlIHRo
-ZSBpbnRlcm5hbCBzcGVha2VycyBhcmUKPiBub3QgbXV0ZWQgd2hlbiBoZWFkcGhvbmVzIGFyZSBw
-bHVnZ2VkIGluLiBVYnVudHUgMTAuMTAgd2l0aCBMaW51eCAyLjYuMzUKPiBbMV0gcnVucyB0aGUg
-TGVub3ZvLCBidXQgdGhpcyBzZWVtcyB0byBiZSBhIGNvbW1vbiBwcm9ibGVtIFsyXVszXS4KPgo+
-IEkgdHJpZWQgdG8gbG9hZCB0aGUgbW9kdWxlIHdpdGggYG1vZGVsPWxlbm92b2AsIGJ1dCB0aGUg
-b25seSByZXN1bHQgd2FzLAo+IHRoYXQgdGhlIGV4dGVybmFsIHNwZWFrZXJzIGRpZCBub3Qgd29y
-ayBhdCBhbGwuIERvIHlvdSBoYXZlIGFub3RoZXIgaWRlYQo+IHdoYXQgdG8gdXNlIGZvciB0aGUg
-YG1vZGVsYD8gVGhlIHN5c3RlbSBoYXMgdG8gcmVib290ZWQgZXZlcnkgdGltZSwKPiBzaW5jZSBJ
-IGNhbm5vdCB1bmxvYWQgdGhlIG1vZHVsZSB1c2luZwo+Cj4gCXN1ZG8gbW9kcHJvYmUgLXIgc25k
-LWhkYS1pbnRlbAo+Cj4gb3IKPgo+IAlzdWRvIHJtbW9kIHNuZC1oZGEtaW50ZWwKPgo+IHNpbmNl
-IGl0IHNlZW1zIHRvIGJlIGluIHVzZSBieSB0aGUgc3lzdGVtLgo+Cj4gU2VlbXMgbGlrZSBJIG1p
-c3NlZCBgbW9kZWw9dGhpbmtwYWRgIGluIFszXS4gQnV0IEkgZG8gbm90IGhhdmUgYWNjZXNzIHRv
-Cj4gdGhlIHN5c3RlbSByaWdodCBub3csIHNvIEkgYW0gc2VuZGluZyB0aGlzIHJlcG9ydCBhbnl3
-YXkuCj4KPiBQbGVhc2UgZmluZCBhdHRhY2hlZCB0aGUgb3V0cHV0IG9mIGBhbHNhLWluZm8uc2hg
-IHdpdGggdGhlIGRlZmF1bHQKPiBiZWhhdmlvciAoaGVhZHBob25lcyB3b3JrLCBidXQgaW50ZXJu
-YWwgb25lcyBhcmUgbm90IG11dGVkKSBhbmQgd2l0aAo+IGBtb2RlbD1sZW5vdm9gIChoZWFkcGhv
-bmVzIGRvIG5vdCB3b3JrKS4KPgo+IERhdmlkLCBkbyB5b3Uga25vdyBpZiB5b3VyIHJlY2VudCBw
-YXRjaGVzIHNlbnQgdG8gdGhpcyBsaXN0Cj4KPiBbUEFUQ0ggMi8yXSBBTFNBOiBIREE6IEFkZCBh
-IG5ldyBtb2RlbCAiYXN1cyIgZm9yIENvbmV4YW50IDUwNjYvMjA1eHggWzVdCj4gW1BBVENIXSBB
-TFNBOiBIREE6IEFkZCBMZW5vdm8gdmVuZG9yIHF1aXJrIGZvciBDb25leGFudCAyMDV4eCBbNl0K
-Pgo+IHdpbGwgYWxzbyBhZGRyZXNzIHRoaXMgaXNzdWXCuT8gVGhleSBhcmUgZm9yIDUwNjYgYW5k
-IEkgaGF2ZSA1MDY5Cj4gYWNjb3JkaW5nIHRvIFsyXS4gSWYgeWVzLCBpcyB0aGVyZSBhIHBhY2th
-Z2UgcmVwb3NpdG9yeSB3aXRoIGEgcGFja2FnZQo+IGhhdmluZyB0aGlzIHBhdGNoZXMgYXBwbGll
-ZCBJIGNhbiBpbnN0YWxsIHVzaW5nIHRoZSBwYWNrYWdlIG1hbmFnZW1lbnQKPiBzeXN0ZW0/CgpZ
-b3UgaGF2ZSBhbiBpbnRlcm5hbCBtaWMgYXQgMHgxYSwgc28gaXQgc2VlbXMgbGlrZSBtb2RlbD1h
-c3VzIHdvdWxkIGJlIAp0aGUgb25lIGZvciB5b3UuIEJ1dCBpZiB5b3UganVzdCB3YW50IGhlYWRw
-aG9uZXMgYXV0b211dGluZywgCm1vZGVsPWlkZWFwYWQgb3IgbW9kZWw9dGhpbmtwYWQgc2hvdWxk
-IGRvIGFzIHdlbGwuCgovLyBEYXZpZAoKLS0gCkRhdmlkIEhlbm5pbmdzc29uLCBDYW5vbmljYWwg
-THRkLgpodHRwOi8vbGF1bmNocGFkLm5ldC9+ZGl3aWMKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Mon, 2011-01-31 at 11:41 +0000, Mark Brown wrote:
+> On Fri, Jan 28, 2011 at 10:08:41PM +0530, Harsha, Priya wrote:
+> 
+> > This patch set adds support for capture in mid-x6 platform, machine and TI
+> > sn95031 codec drivers.
+> 
+> If you're sending a patch series please ensure that it's threaded with
+> itself and with the cover letter - git send-email can do this for you.
+> This is especially important when you're sending multiple serieses at
+> the same time since otherwise it's harder to figure out which patches
+> are in which series.
+> 
+> Overall this looks OK.
+
+Yep, agreed.
+
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
