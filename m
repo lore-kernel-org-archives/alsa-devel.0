@@ -1,14 +1,21 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: [PATCH] ASoC: Tegra: Harmony: Remove redundant !!
-Date: Mon, 31 Jan 2011 11:00:17 -0700
-Message-ID: <1296496817-10128-1-git-send-email-swarren@nvidia.com>
+From: VDR User <user.vdr@gmail.com>
+Subject: Re: NVIDIA HDMI surround sound is broken starting with
+ kernel 2.6.36
+Date: Mon, 31 Jan 2011 10:37:05 -0800
+Message-ID: <AANLkTikx4pVSHanCeDymo_0oDEE41TFiddNFhg5gh-NZ@mail.gmail.com>
+References: <AANLkTikFWjahA8TcGzTuWjkvkvg4chA0Q7s-1nXj179e@mail.gmail.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF0310C8E1CB@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA2A410388C
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 19:00:27 +0100 (CET)
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id A27071037F2
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 19:37:07 +0100 (CET)
+Received: by iye19 with SMTP id 19so5734109iye.38
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 10:37:05 -0800 (PST)
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0310C8E1CB@HQMAIL01.nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,31 +25,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: "mailing list: alsa-dev" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-gpio_set_value* should accept logic values not just 0 or 1. The WM8903 GPIO
-driver has been fixed to work this way, so remove the redundant !!
-previously required when it didn't accept values >1.
-
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
----
- sound/soc/tegra/harmony.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/tegra/harmony.c b/sound/soc/tegra/harmony.c
-index d1faa63..11e2cb8 100644
---- a/sound/soc/tegra/harmony.c
-+++ b/sound/soc/tegra/harmony.c
-@@ -132,7 +132,7 @@ static int harmony_event_int_spk(struct snd_soc_dapm_widget *w,
- 	struct harmony_audio_platform_data *pdata = harmony->pdata;
- 
- 	gpio_set_value_cansleep(pdata->gpio_spkr_en,
--				!!SND_SOC_DAPM_EVENT_ON(event));
-+				SND_SOC_DAPM_EVENT_ON(event));
- 
- 	return 0;
- }
--- 
-1.7.1
+T24gTW9uLCBKYW4gMzEsIDIwMTEgYXQgOTo1MSBBTSwgU3RlcGhlbiBXYXJyZW4gPHN3YXJyZW5A
+bnZpZGlhLmNvbT4gd3JvdGU6Cj4+IEFsc28sIGV2ZW4gdGhvdWdoIHRoZSBlbGQgZmlsZSBpcyBy
+ZW1vdmVkLCB0aGUgZWxkIGluZm8gaXMgX25vdF8KPj4gdXBkYXRlZCB3aGVuIHN0b3BwaW5nIGFs
+c2EgJiB1bmxvYWRpbmcgZHJpdmVycywgdGhlbiByZWxvYWRpbmcuIMKgQQo+PiByZWJvb3QgaXMg
+cmVxdWlyZWQgdG8gZ2V0IHRoZSBlbGQgaW5mbyB0byB1cGRhdGUuIMKgVGhpcyBpcyB3aHkgSSBj
+b2xkCj4+IGJvb3QgdGhlIHBjIGZvciBlYWNoIHRlc3QuCj4KPiBUaGUgTlZJRElBIGdyYXBoaWNz
+IGRyaXZlciByZWFkcyB0aGUgbW9uaXRvcidzIEVESUQgYW5kIHBhc3NlZCB0aGUgRUxECj4gaW5m
+b3JtYXRpb24gdG8gdGhlIGF1ZGlvIEhXLCBmcm9tIHdoZW5jZSBpdCBpcyByZWFkIGJ5IHRoZSBB
+TFNBIGRyaXZlci4KPiBUaGUgRURJRCBpcyBvbmx5IHJlYWQgd2hlbiB0aGUgWCBzZXJ2ZXIgaXMg
+c3RhcnRlZCwgb3IgcGVyaGFwcyB3aGVuIHlvdQo+IGNsaWNrIHRoZSAiZGV0ZWN0IGRpc3BsYXlz
+IiBidXR0b24gaW4gdGhlIG52aWRpYS1zZXR0aW5ncyB1dGlsaXR5Lgo+Cj4gSGVuY2UsIHJlc3Rh
+cnRpbmcgWCAoZS5nLiBsb2dvdXQvbG9naW4pLCBvciB1c2luZyBudmlkaWEtc2V0dGluZ3MsIGlz
+Cj4gcHJvYmFibHkgc3VmZmljaWVudCB0byB1cGRhdGUgdGhlIEVMRCBkYXRhOyBubyByZWJvb3Qg
+cmVxdWlyZWQuCgpUaGF0IGV4cGxhaW5zIHdoeSB0aGUgRUxEIGluZm8gaXNuJ3QgdXBkYXRlZCwg
+YWx0aG91Z2ggZG9lc24ndCBleHBsYWluCnRoZSBhY3R1YWwgcHJvYmxlbSBvZiBtaXNzaW5nIGNo
+YW5uZWxzLiAgSSBkbyB0aGluayBpdCdzIHdvcnRoeSB0bwpyZXRoaW5rIHRoYXQgYmVoYXZpb3Ig
+aW4gdGhlIE52aWRpYSBkcml2ZXIuICBUaGUgcmVhc29uIGJlaW5nIHRoYXQKbWFueSB1c2Vycywg
+bGlrZSBteXNlbGYsIGFyZSB1c2luZyBhbiBodHBjIGVudmlyb25tZW50IHdoZXJlIHRoZQphdWRp
+by92aWRlbyBvdXRwdXQgaXMgY29ubmVjdGVkIGRpcmVjdGx5IHRvIGEgdHYgb3IgaG9tZSB0aGVh
+dGVyCnJlY2VpdmVyLiAgSW4gbXkgY2FzZSBpdCdzIGEgcmVjZWl2ZXIgdGhhdCBpcyB0dXJuZWQg
+b24vb2ZmIGFzIG5lZWRlZC4KIFRoZXJlIGlzIG5vIGtleWJvYXJkLCBtb3VzZSwgb3IgYW55dGhp
+bmcgb3RoZXIgdGhlbiBhbiBJUiByZW1vdGUKY29udHJvbCB0byBuYXZpZ2F0ZSB0aGUgc29mdHdh
+cmUgSSdtIHJ1bm5pbmcuICBUbyBjbGljayAiZGV0ZWN0CmRpc3BsYXlzIiB3b3VsZCBtZWFuIGRp
+Z2dpbmcgdGhlIGJveCBvdXQgb2YgaXRzIGN1cnJlbnQgbG9jYXRpb24gYW5kCmNvbm5lY3Rpbmcg
+YSBtb25pdG9yICYgbW91c2UgdG8gaXQganVzdCB0byBkbyBzby4gIEV4dHJlbWVseQppbmNvbnZl
+bmllbnQuICBJIHdvdWxkIGd1ZXNzIHRoYXQgdGhlIGJlc3Qgc29sdXRpb24gd291bGQgYmUgdGhl
+Ck52aWRpYSBkcml2ZXIgaGF2aW5nIHRoZSBhYmlsaXR5IHRvIHVwZGF0ZSB0aGUgRUxEIGluZm8g
+dXBvbiByZXF1ZXN0LgpUaGVyZSdzIGdvdCB0byBiZSBtZXRob2Qgb2YgZGV0ZWN0aW5nIHRoaW5n
+cyBsaWtlIHJlY2VpdmVycyBiZWluZwp0dXJuZWQgb24vb2ZmLgoKTWF5YmUgYW5vdGhlciB0aHJl
+YWQgc2hvdWxkIGJlIHN0YXJ0ZWQgcmVnYXJkaW5nIHRoYXQgaXNzdWUgc2luY2UKd2UncmUgZ2V0
+dGluZyBhd2F5IGZyb20gdGhlIHByb2JsZW0gb2YgbWlzc2luZyBjaGFubmVscy4KX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
