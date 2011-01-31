@@ -1,170 +1,72 @@
-From: Kishon Vijay Abraham I <kishon@ti.com>
-Subject: [PATCH v2 12/13] ASoC: McBSP: get hw params from McBSP driver
-Date: Mon, 31 Jan 2011 20:20:36 +0530
-Message-ID: <1296485437-12806-13-git-send-email-kishon@ti.com>
-References: <1296485437-12806-1-git-send-email-kishon@ti.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1296485437-12806-1-git-send-email-kishon@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, paul@pwsan.com, charu@ti.com, shubhrajyoti@ti.com, b-cousson@ti.com, khilman@deeprootsystems.com, p-basak2@ti.com, Kishon Vijay Abraham I <kishon@ti.com>, Jarkko Nikula <jhnikula@gmail.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: finally, ALSA 1.0.24 is out
+Date: Mon, 31 Jan 2011 16:16:40 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1101311605240.6272@eeebox2.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5CADD24575
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 16:16:41 +0100 (CET)
+Received: from server.perex.cz (server.perex.cz [172.16.0.20])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	536A9149FFA
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 16:16:41 +0100 (CET)
+Received: from eeebox2.perex-int.cz (localhost [127.0.0.1])
+	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	359E0850D7
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 16:16:41 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Removed the use of macros to obtain base address and DMA channel number.
-Instead use the McBSP driver API's that passes base address and DMA
-channel number to the client driver.
+Hello all,
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Cc: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
- sound/soc/omap/omap-mcbsp.c |  126 ++-----------------------------------------
- 1 files changed, 4 insertions(+), 122 deletions(-)
+ 	after very intensive testing, I released all ALSA packages with 
+version number 1.0.24(+) :
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index ede6afd..2175f09 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -69,110 +69,6 @@ static struct omap_mcbsp_data mcbsp_data[NUM_LINKS];
-  */
- static struct omap_pcm_dma_data omap_mcbsp_dai_dma_params[NUM_LINKS][2];
- 
--#if defined(CONFIG_ARCH_OMAP15XX) || defined(CONFIG_ARCH_OMAP16XX)
--static const int omap1_dma_reqs[][2] = {
--	{ OMAP_DMA_MCBSP1_TX, OMAP_DMA_MCBSP1_RX },
--	{ OMAP_DMA_MCBSP2_TX, OMAP_DMA_MCBSP2_RX },
--	{ OMAP_DMA_MCBSP3_TX, OMAP_DMA_MCBSP3_RX },
--};
--static const unsigned long omap1_mcbsp_port[][2] = {
--	{ OMAP1510_MCBSP1_BASE + OMAP_MCBSP_REG_DXR1,
--	  OMAP1510_MCBSP1_BASE + OMAP_MCBSP_REG_DRR1 },
--	{ OMAP1510_MCBSP2_BASE + OMAP_MCBSP_REG_DXR1,
--	  OMAP1510_MCBSP2_BASE + OMAP_MCBSP_REG_DRR1 },
--	{ OMAP1510_MCBSP3_BASE + OMAP_MCBSP_REG_DXR1,
--	  OMAP1510_MCBSP3_BASE + OMAP_MCBSP_REG_DRR1 },
--};
--#else
--static const int omap1_dma_reqs[][2] = {};
--static const unsigned long omap1_mcbsp_port[][2] = {};
--#endif
--
--#if defined(CONFIG_ARCH_OMAP2) || defined(CONFIG_ARCH_OMAP3)
--static const int omap24xx_dma_reqs[][2] = {
--	{ OMAP24XX_DMA_MCBSP1_TX, OMAP24XX_DMA_MCBSP1_RX },
--	{ OMAP24XX_DMA_MCBSP2_TX, OMAP24XX_DMA_MCBSP2_RX },
--#if defined(CONFIG_SOC_OMAP2430) || defined(CONFIG_ARCH_OMAP3)
--	{ OMAP24XX_DMA_MCBSP3_TX, OMAP24XX_DMA_MCBSP3_RX },
--	{ OMAP24XX_DMA_MCBSP4_TX, OMAP24XX_DMA_MCBSP4_RX },
--	{ OMAP24XX_DMA_MCBSP5_TX, OMAP24XX_DMA_MCBSP5_RX },
--#endif
--};
--#else
--static const int omap24xx_dma_reqs[][2] = {};
--#endif
--
--#if defined(CONFIG_ARCH_OMAP4)
--static const int omap44xx_dma_reqs[][2] = {
--	{ OMAP44XX_DMA_MCBSP1_TX, OMAP44XX_DMA_MCBSP1_RX },
--	{ OMAP44XX_DMA_MCBSP2_TX, OMAP44XX_DMA_MCBSP2_RX },
--	{ OMAP44XX_DMA_MCBSP3_TX, OMAP44XX_DMA_MCBSP3_RX },
--	{ OMAP44XX_DMA_MCBSP4_TX, OMAP44XX_DMA_MCBSP4_RX },
--};
--#else
--static const int omap44xx_dma_reqs[][2] = {};
--#endif
--
--#if defined(CONFIG_SOC_OMAP2420)
--static const unsigned long omap2420_mcbsp_port[][2] = {
--	{ OMAP24XX_MCBSP1_BASE + OMAP_MCBSP_REG_DXR1,
--	  OMAP24XX_MCBSP1_BASE + OMAP_MCBSP_REG_DRR1 },
--	{ OMAP24XX_MCBSP2_BASE + OMAP_MCBSP_REG_DXR1,
--	  OMAP24XX_MCBSP2_BASE + OMAP_MCBSP_REG_DRR1 },
--};
--#else
--static const unsigned long omap2420_mcbsp_port[][2] = {};
--#endif
--
--#if defined(CONFIG_SOC_OMAP2430)
--static const unsigned long omap2430_mcbsp_port[][2] = {
--	{ OMAP24XX_MCBSP1_BASE + OMAP_MCBSP_REG_DXR,
--	  OMAP24XX_MCBSP1_BASE + OMAP_MCBSP_REG_DRR },
--	{ OMAP24XX_MCBSP2_BASE + OMAP_MCBSP_REG_DXR,
--	  OMAP24XX_MCBSP2_BASE + OMAP_MCBSP_REG_DRR },
--	{ OMAP2430_MCBSP3_BASE + OMAP_MCBSP_REG_DXR,
--	  OMAP2430_MCBSP3_BASE + OMAP_MCBSP_REG_DRR },
--	{ OMAP2430_MCBSP4_BASE + OMAP_MCBSP_REG_DXR,
--	  OMAP2430_MCBSP4_BASE + OMAP_MCBSP_REG_DRR },
--	{ OMAP2430_MCBSP5_BASE + OMAP_MCBSP_REG_DXR,
--	  OMAP2430_MCBSP5_BASE + OMAP_MCBSP_REG_DRR },
--};
--#else
--static const unsigned long omap2430_mcbsp_port[][2] = {};
--#endif
--
--#if defined(CONFIG_ARCH_OMAP3)
--static const unsigned long omap34xx_mcbsp_port[][2] = {
--	{ OMAP34XX_MCBSP1_BASE + OMAP_MCBSP_REG_DXR,
--	  OMAP34XX_MCBSP1_BASE + OMAP_MCBSP_REG_DRR },
--	{ OMAP34XX_MCBSP2_BASE + OMAP_MCBSP_REG_DXR,
--	  OMAP34XX_MCBSP2_BASE + OMAP_MCBSP_REG_DRR },
--	{ OMAP34XX_MCBSP3_BASE + OMAP_MCBSP_REG_DXR,
--	  OMAP34XX_MCBSP3_BASE + OMAP_MCBSP_REG_DRR },
--	{ OMAP34XX_MCBSP4_BASE + OMAP_MCBSP_REG_DXR,
--	  OMAP34XX_MCBSP4_BASE + OMAP_MCBSP_REG_DRR },
--	{ OMAP34XX_MCBSP5_BASE + OMAP_MCBSP_REG_DXR,
--	  OMAP34XX_MCBSP5_BASE + OMAP_MCBSP_REG_DRR },
--};
--#else
--static const unsigned long omap34xx_mcbsp_port[][2] = {};
--#endif
--
--#if defined(CONFIG_ARCH_OMAP4)
--static const unsigned long omap44xx_mcbsp_port[][2] = {
--	{ OMAP44XX_MCBSP1_BASE + OMAP_MCBSP_REG_DXR,
--	  OMAP44XX_MCBSP1_BASE + OMAP_MCBSP_REG_DRR },
--	{ OMAP44XX_MCBSP2_BASE + OMAP_MCBSP_REG_DXR,
--	  OMAP44XX_MCBSP2_BASE + OMAP_MCBSP_REG_DRR },
--	{ OMAP44XX_MCBSP3_BASE + OMAP_MCBSP_REG_DXR,
--	  OMAP44XX_MCBSP3_BASE + OMAP_MCBSP_REG_DRR },
--	{ OMAP44XX_MCBSP4_BASE + OMAP_MCBSP_REG_DXR,
--	  OMAP44XX_MCBSP4_BASE + OMAP_MCBSP_REG_DRR },
--};
--#else
--static const unsigned long omap44xx_mcbsp_port[][2] = {};
--#endif
--
- static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-@@ -346,24 +242,10 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 	unsigned int format, div, framesize, master;
- 
- 	dma_data = &omap_mcbsp_dai_dma_params[cpu_dai->id][substream->stream];
--	if (cpu_class_is_omap1()) {
--		dma = omap1_dma_reqs[bus_id][substream->stream];
--		port = omap1_mcbsp_port[bus_id][substream->stream];
--	} else if (cpu_is_omap2420()) {
--		dma = omap24xx_dma_reqs[bus_id][substream->stream];
--		port = omap2420_mcbsp_port[bus_id][substream->stream];
--	} else if (cpu_is_omap2430()) {
--		dma = omap24xx_dma_reqs[bus_id][substream->stream];
--		port = omap2430_mcbsp_port[bus_id][substream->stream];
--	} else if (cpu_is_omap343x()) {
--		dma = omap24xx_dma_reqs[bus_id][substream->stream];
--		port = omap34xx_mcbsp_port[bus_id][substream->stream];
--	 } else if (cpu_is_omap44xx()) {
--		dma = omap44xx_dma_reqs[bus_id][substream->stream];
--		port = omap44xx_mcbsp_port[bus_id][substream->stream];
--	} else {
--		return -ENODEV;
--	}
-+
-+	dma = omap_mcbsp_dma_ch_params(bus_id, substream->stream);
-+	port = omap_mcbsp_dma_reg_params(bus_id, substream->stream);
-+
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S16_LE:
- 		dma_data->data_type = OMAP_DMA_DATA_TYPE_S16;
--- 
-1.7.0.4
+     * alsa-driver-1.0.24
+     * alsa-lib-1.0.24.1
+     * alsa-utils-1.0.24.2
+     * alsa-tools-1.0.24
+     * alsa-firmware-1.0.24
+     * alsa-plugins-1.0.24
+     * pyalsa-1.0.24
 
+ 	The full list of changes is here:
+
+http://www.alsa-project.org/main/index.php/Changes_v1.0.23_v1.0.24
+
+ 	There is a ton of work in these parts (among others):
+
+* alsa-driver
+   - HDA driver
+   - ASoC tree
+   - USB driver
+* alsa-library
+   - Use Case Manager
+* alsa-utils
+   - alsaloop and alsaucm introduction
+   - alsactl improvements
+* alsa-tools
+   - updated hdspmixer
+
+ 	Please, report compilation problems directly to me or to the 
+alsa-devel mailing list.
+
+ 				Enjoy this release,
+ 						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
