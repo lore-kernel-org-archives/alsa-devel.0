@@ -1,15 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Accept any logical value for WM8962 GPIO
-	set()
-Date: Mon, 31 Jan 2011 13:55:11 +0000
-Message-ID: <1296482111-3022-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: need input on USB Audio class device.
+Date: Mon, 31 Jan 2011 12:42:28 +0100
+Message-ID: <4D46A024.5000901@ladisch.de>
+References: <AANLkTi=yA+Ma0zo6HAceOdK1u8gv1hcVcT1dsOapv=Tp@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9A7A21038C6
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 14:55:13 +0100 (CET)
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 5F8451038C6
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 14:56:32 +0100 (CET)
+In-Reply-To: <AANLkTi=yA+Ma0zo6HAceOdK1u8gv1hcVcT1dsOapv=Tp@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,27 +20,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Sakthi Subramanian <sakthi.subramaniang@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8962.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Sakthi Subramanian wrote:
+> ...
+> I have started capturing the data with the above change,
+> and opened the same using Audacity, it says 16 bit PCM Mono channel Little Endian.
+> in my opinion, that must show as 8 channel.
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index 5c7b730..3b71dd6 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3635,7 +3635,7 @@ static void wm8962_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
- 	struct snd_soc_codec *codec = wm8962->codec;
- 
- 	snd_soc_update_bits(codec, WM8962_GPIO_BASE + offset,
--			    WM8962_GP2_LVL, value << WM8962_GP2_LVL_SHIFT);
-+			    WM8962_GP2_LVL, !!value << WM8962_GP2_LVL_SHIFT);
- }
- 
- static int wm8962_gpio_direction_out(struct gpio_chip *chip,
--- 
-1.7.2.3
+What did you open, the device or a file?
+In the first case, you have to tell Audacity to use 8 channels.
+In the latter case, I'd guess that your application did not write the .wav
+header correctly.
+
+
+Regards,
+Clemens
