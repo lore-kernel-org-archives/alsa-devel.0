@@ -1,16 +1,15 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ASoC: Support 8 bit samples in soc-util
-Date: Mon, 31 Jan 2011 23:27:41 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1101312325010.6272@eeebox2.perex-int.cz>
-References: <1296505848-29532-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: [PATCH] ARM: tegra: Add to struct
+	harmony_audio_platform_data
+Date: Mon, 31 Jan 2011 15:37:15 -0700
+Message-ID: <1296513435-14792-1-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5A1461037EA
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 23:27:42 +0100 (CET)
-In-Reply-To: <1296505848-29532-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3B2361037EA
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 23:37:24 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,39 +19,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 31 Jan 2011, Mark Brown wrote:
+Add fields to describe all the audio-related GPIOs on Harmony, except for
+the codec's GPIO IRQ, which will be passed in its i2c_board_info.
 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
+---
+Mark, can you please apply this to your tegra-arch branch, and merge that.
+Thanks!
 
-Is any reason to avoid using the snd_pcm_format_width() function here?
+ arch/arm/mach-tegra/include/mach/harmony_audio.h |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
- 						Jaroslav
-
-> ---
-> sound/soc/soc-utils.c |    4 ++++
-> 1 files changed, 4 insertions(+), 0 deletions(-)
->
-> diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-> index 1d07b93..e31d843 100644
-> --- a/sound/soc/soc-utils.c
-> +++ b/sound/soc/soc-utils.c
-> @@ -29,6 +29,10 @@ int snd_soc_params_to_frame_size(struct snd_pcm_hw_params *params)
-> 	int sample_size;
->
-> 	switch (params_format(params)) {
-> +	case SNDRV_PCM_FORMAT_S8:
-> +	case SNDRV_PCM_FORMAT_U8:
-> +		sample_size = 8;
-> +		break;
-> 	case SNDRV_PCM_FORMAT_S16_LE:
-> 	case SNDRV_PCM_FORMAT_S16_BE:
-> 		sample_size = 16;
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+diff --git a/arch/arm/mach-tegra/include/mach/harmony_audio.h b/arch/arm/mach-tegra/include/mach/harmony_audio.h
+index 5c46391..af08650 100644
+--- a/arch/arm/mach-tegra/include/mach/harmony_audio.h
++++ b/arch/arm/mach-tegra/include/mach/harmony_audio.h
+@@ -16,4 +16,7 @@
+ 
+ struct harmony_audio_platform_data {
+ 	int gpio_spkr_en;
++	int gpio_hp_det;
++	int gpio_int_mic_en;
++	int gpio_ext_mic_en;
+ };
+-- 
+1.7.1
