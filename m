@@ -1,17 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: finally, ALSA 1.0.24 is out
-Date: Mon, 31 Jan 2011 18:00:28 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1101311757390.6272@eeebox2.perex-int.cz>
-References: <alpine.LNX.2.00.1101311605240.6272@eeebox2.perex-int.cz>
-	<s5h7hdlrpln.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Accept any logical value for WM8962
+ GPIO set()
+Date: Mon, 31 Jan 2011 17:02:06 +0000
+Message-ID: <1296493326.3316.208.camel@odin>
+References: <1296482111-3022-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 96AD724618
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 18:00:28 +0100 (CET)
-In-Reply-To: <s5h7hdlrpln.wl%tiwai@suse.de>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 28B981037E3
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 18:02:10 +0100 (CET)
+Received: by wyi11 with SMTP id 11so5657967wyi.38
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 09:02:09 -0800 (PST)
+In-Reply-To: <1296482111-3022-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,40 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 31 Jan 2011, Takashi Iwai wrote:
+On Mon, 2011-01-31 at 13:55 +0000, Mark Brown wrote:
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/wm8962.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+> index 5c7b730..3b71dd6 100644
+> --- a/sound/soc/codecs/wm8962.c
+> +++ b/sound/soc/codecs/wm8962.c
+> @@ -3635,7 +3635,7 @@ static void wm8962_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
+>  	struct snd_soc_codec *codec = wm8962->codec;
+>  
+>  	snd_soc_update_bits(codec, WM8962_GPIO_BASE + offset,
+> -			    WM8962_GP2_LVL, value << WM8962_GP2_LVL_SHIFT);
+> +			    WM8962_GP2_LVL, !!value << WM8962_GP2_LVL_SHIFT);
+>  }
+>  
+>  static int wm8962_gpio_direction_out(struct gpio_chip *chip,
 
-> At Mon, 31 Jan 2011 16:16:40 +0100 (CET),
-> Jaroslav Kysela wrote:
->>
->> Hello all,
->>
->>  	after very intensive testing, I released all ALSA packages with
->> version number 1.0.24(+) :
->>
->>      * alsa-driver-1.0.24
->>      * alsa-lib-1.0.24.1
->>      * alsa-utils-1.0.24.2
->>      * alsa-tools-1.0.24
->
-> Isn't 1.0.24.1 released?
-
-Yep, just forget to repack.
-
->>      * alsa-firmware-1.0.24
->
-> I found a missing EXTRA_DIST for a file.  My bad.
-> Fixed now on git tree.
-> Could you re-release alsa-firmware tarball?
-
-Done. Thank you.
-
- 					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
