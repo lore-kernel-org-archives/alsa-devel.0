@@ -1,20 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 0/3] ASoC: patch series to add support for
- capture in mid-x86 and sn95031 codec
-Date: Mon, 31 Jan 2011 12:02:56 +0000
-Message-ID: <1296475376.3316.43.camel@odin>
-References: <98769532B4BB14429434178695419EAE08C0F3E93E@bgsmsx501.gar.corp.intel.com>
-	<20110131114107.GC5123@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] soc: neo1973_wm8753 audio support does	not
+	require scoop
+Date: Mon, 31 Jan 2011 12:05:04 +0000
+Message-ID: <1296475504.3316.46.camel@odin>
+References: <201101281200.18371.hartleys@visionengravers.com>
+	<20110131112339.GD11937@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 746DA244E0
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 13:03:02 +0100 (CET)
-Received: by wwe15 with SMTP id 15so5472846wwe.20
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 04:03:02 -0800 (PST)
-In-Reply-To: <20110131114107.GC5123@opensource.wolfsonmicro.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 66CDC244E4
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 13:05:08 +0100 (CET)
+Received: by wyi11 with SMTP id 11so5366550wyi.38
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 04:05:08 -0800 (PST)
+In-Reply-To: <20110131112339.GD11937@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,24 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Harsha, Priya" <priya.harsha@intel.com>
+Cc: H Hartley Sweeten <hartleys@visionengravers.com>, alsa-devel@alsa-project.org, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-01-31 at 11:41 +0000, Mark Brown wrote:
-> On Fri, Jan 28, 2011 at 10:08:41PM +0530, Harsha, Priya wrote:
+On Mon, 2011-01-31 at 11:23 +0000, Mark Brown wrote:
+> On Fri, Jan 28, 2011 at 12:00:18PM -0700, H Hartley Sweeten wrote:
+> > This driver does not use any of the functionality provided by the scoop
+> > hardware.  Remove the unneeded header.
+> > 
+> > Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
 > 
-> > This patch set adds support for capture in mid-x6 platform, machine and TI
-> > sn95031 codec drivers.
+> CCing in Liam.  As I think I've mentioned before please do remember to
+> CC maintainers.
 > 
-> If you're sending a patch series please ensure that it's threaded with
-> itself and with the cover letter - git send-email can do this for you.
-> This is especially important when you're sending multiple serieses at
-> the same time since otherwise it's harder to figure out which patches
-> are in which series.
-> 
-> Overall this looks OK.
+> > 
+> > ---
+> > 
+> > diff --git a/sound/soc/samsung/neo1973_wm8753.c b/sound/soc/samsung/neo1973_wm8753.c
+> > index c7a2451..c5b3113 100644
+> > --- a/sound/soc/samsung/neo1973_wm8753.c
+> > +++ b/sound/soc/samsung/neo1973_wm8753.c
+> > @@ -24,7 +24,6 @@
+> >  #include <sound/tlv.h>
+> >  
+> >  #include <asm/mach-types.h>
+> > -#include <asm/hardware/scoop.h>
+> >  #include <mach/regs-clock.h>
+> >  #include <mach/regs-gpio.h>
+> >  #include <mach/hardware.h>
 
-Yep, agreed.
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
