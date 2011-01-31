@@ -1,20 +1,16 @@
-From: Patrick Lai <plai@codeaurora.org>
-Subject: Re: Question about your DSP topic branch
-Date: Thu, 27 Jan 2011 13:51:58 -0800
-Message-ID: <4D41E8FE.4070206@codeaurora.org>
-References: <4D2652C8.7030701@codeaurora.org> <4D3E7536.9070906@codeaurora.org>
-	<20110125115113.GB13051@sirena.org.uk>
-	<4D3FBDB1.90804@codeaurora.org>
-	<20110126112004.GA5476@opensource.wolfsonmicro.com>
+From: Benjamin Hovey <bend.hovey@gmail.com>
+Subject: snd-via82xx setting
+Date: Sun, 30 Jan 2011 21:48:39 -0500
+Message-ID: <AANLkTimbB8WNVDJCD+rEng9NZbJGvtEkVBBXmxQS==7D@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wolverine02.qualcomm.com (wolverine02.qualcomm.com
-	[199.106.114.251])
-	by alsa0.perex.cz (Postfix) with ESMTP id 16FF510380A
-	for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2011 22:52:07 +0100 (CET)
-In-Reply-To: <20110126112004.GA5476@opensource.wolfsonmicro.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id B9A4C1037E3
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 03:48:40 +0100 (CET)
+Received: by wwe15 with SMTP id 15so5128606wwe.20
+	for <alsa-devel@alsa-project.org>; Sun, 30 Jan 2011 18:48:39 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,44 +20,130 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 1/26/2011 3:20 AM, Mark Brown wrote:
-> On Tue, Jan 25, 2011 at 10:22:41PM -0800, Patrick Lai wrote:
->> On 1/25/2011 3:51 AM, Mark Brown wrote:
->
->>> Yes, that'd be kind of nice but given how tiny these noop drivers are
->>> and the fact that they do all need to specify their capabilites it's not
->>> clear that there's much advantage from combining them into a single
->>> driver - the boiler plate is so small and simple.
->
->> Do we consider the case that codec driver is not required such as
->> virtual sink or sink is configured outside of ALSA driver? If we
->> create dummy codec driver for each use case, wouldn't
->> sound/soc/codecs end up littered with bunch of noop drivers?
->
-> Yup, but it's not really a big cost - they're all so trivial.
+FYI, the below system required the following non-default settings for ALSA
+to play any SPDIF output correctly.  Prior to finding this setting, output
+from different sources, WAV, MP3, CD, etc, were played at a slightly faster
+speed than they should have.
 
-Currently, I already have few dummy codec drivers in mind for the 
-project I am working on. I am not worried about the size of these files. 
-Beside having tons of dummy codec drivers in the source tree, I am also 
-looking at the value and effort to upstream these trivial drivers.
->> Furthermore, couldn't capabilities
->> being passed through platform device?
->
-> Right, but of course you probably end up defining a common set of
-> platform data for each device so people don't have to cut'n'paste the
-> same thing into all the different board files.
+snd_via82xx: dxs_support=3
 
-Yes, that would be convenient for others. However, I see the effort to 
-create multiple platform devices and paste the capabilities in the board 
-file far less than upstreamng no-op drivers and making changes in 
-Kconfig and Makefile under sound/soc/codecs.
+When installed, the default setting was dxs_support=5.
 
-Thanks
+Hope this helps.  I am new to Linux and it took me quite a while to find out
+how to set this setting (I put it in  /etc/modprobe.d/alsa-base.conf)
+Cheers
 
--- 
-Sent by an employee of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+
+
+upload=true&script=true&cardinfo=
+!!################################
+!!ALSA Information Script v 0.4.60
+!!################################
+
+!!Script ran on: Mon Jan 31 02:37:03 UTC 2011
+
+
+!!Linux Distribution
+!!------------------
+
+Ubuntu 10.04.1 LTS \n \l DISTRIB_ID=Ubuntu DISTRIB_DESCRIPTION="Ubuntu
+10.04.1 LTS"
+
+
+!!DMI Information
+!!---------------
+
+Manufacturer:      VIA Technologies, Inc.
+Product Name:      KT600-8237
+Product Version:
+
+
+!!Kernel Information
+!!------------------
+
+Kernel release:    2.6.32-28-generic
+Operating System:  GNU/Linux
+Architecture:      i686
+Processor:         unknown
+SMP Enabled:       Yes
+
+
+!!ALSA Version
+!!------------
+
+Driver version:     1.0.21
+Library version:    1.0.23
+Utilities version:  1.0.22
+
+
+!!Loaded ALSA modules
+!!-------------------
+
+snd_via82xx
+snd_emu10k1
+
+
+!!Sound Servers on this system
+!!----------------------------
+
+Pulseaudio:
+      Installed - Yes (/usr/bin/pulseaudio)
+      Running - Yes
+
+ESound Daemon:
+      Installed - Yes (/usr/bin/esd)
+      Running - No
+
+
+!!Soundcards recognised by ALSA
+!!-----------------------------
+
+ 0 [V8237          ]: VIA8237 - VIA 8237
+                      VIA 8237 with VT1616i at 0xe400, irq 22
+ 1 [Live           ]: EMU10K1 - SB Live! Platinum [CT4760P]
+                      SB Live! Platinum [CT4760P] (rev.8, serial:0x80401102)
+at 0xb000, irq 17
+
+
+!!PCI Soundcards installed in the system
+!!--------------------------------------
+
+00:09.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev 08)
+00:0a.0 Multimedia controller: Sigma Designs, Inc. REALmagic Hollywood Plus
+DVD Decoder (rev 02)
+00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+
+
+!!Advanced information - PCI Vendor/Device/Subsystem ID's
+!!--------------------------------------------------------
+
+00:09.0 0401: 1102:0002 (rev 08)
+    Subsystem: 1102:8040
+--
+00:11.5 0401: 1106:3059 (rev 60)
+    Subsystem: 147b:1408
+
+
+!!Modprobe options (Sound related)
+!!--------------------------------
+
+snd_via82xx: index=0
+snd_emu10k1: index=1
+snd_via82xx: dxs_support=4
+snd-atiixp-modem: index=-2
+snd-intel8x0m: index=-2
+snd-via82xx-modem: index=-2
+snd-usb-audio: index=-2
+snd-usb-us122l: index=-2
+snd-usb-usx2y: index=-2
+snd-usb-caiaq: index=-2
+snd-cmipci: mpu_port=0x330 fm_port=0x388
+snd-pcsp: index=-2
+snd_via82xx: index=0
+snd_emu10k1: index=1
+snd_via82xx: dxs_support=3
+snd_via82xx: ac97_clock=48000
