@@ -1,53 +1,37 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: Re: Bad sound quality
-Date: Mon, 31 Jan 2011 11:42:39 +0100
-Message-ID: <20110131104239.GB15327@ltw.loris.tv>
-References: <op.vp52nhm16rav7x@standa-win7>
+From: Samuel Ortiz <sameo-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Subject: Re: [PATCH] MFD: DaVinci: Fix voice codec device name
+Date: Mon, 31 Jan 2011 12:04:19 +0100
+Message-ID: <20110131110418.GH5954@sortiz-mobl>
+References: <1296134916-25742-1-git-send-email-prakash.pm@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id BDEDB2445E
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 11:42:54 +0100 (CET)
-Received: from localhost (ltw.loris.tv [127.0.0.1])
-	by ltw.loris.tv (Postfix) with ESMTP id B518C7B4243
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 11:42:43 +0100 (CET)
-Received: from ltw.loris.tv ([127.0.0.1])
-	by localhost (ltw.loris.tv [127.0.0.1]) (amavisd-new, port 10024)
-	with LMTP id mvuI94lpHung for <alsa-devel@alsa-project.org>;
-	Mon, 31 Jan 2011 11:42:39 +0100 (CET)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <op.vp52nhm16rav7x@standa-win7>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+In-Reply-To: <1296134916-25742-1-git-send-email-prakash.pm-l0cyMroinI0@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: "Manjunathappa, Prakash" <prakash.pm-l0cyMroinI0@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, stable-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBKYW4gMzEsIDIwMTEgYXQgMTA6NDM6NTVBTSArMDEwMCwgU3RhbmlzbGF2IEt1xI1l
-cmEgd3JvdGU6CgpIaSEKCj4gSW4gbGludXggY29tcGFyZWQgdG8gd2luZG93cyB0aGUgc291bmQg
-cXVhbGl0eSBpcyBtdWNoIHdvcnNlLiBJIGhhdmUgdHJpZWQgIAoKSXMgdGhpcyBzb21lIGtpbmQg
-b2YgdHJvbGxpbmc/IFBsZWFzZSByZWNvcmQgdGhlIG91dHB1dCBvZiB0aGUgc2FtZQpzaWduYWwg
-YXQgdW5pdHkgZ2FpbiB1bmRlciBMaW51eCBhbmQgV2luZG93cywgcHJlZmVycmFibHkgdmlhIGEg
-ZGlnaXRhbApjb25uZWN0aW9uLCBhbGlnbiB0aGUgc3RyZWFtcyBhbmQgY2hlY2sgZm9yIGFueSBk
-aWZmZXJlbmNlcywgZXNwZWNpYWxseQppbiB0aGUgcmVzdWx0aW5nIHNwZWN0cmEuCgpJdCBtaWdo
-dCBiZSBwb3NzaWJsZSB0aGVyZSdzIHNvbWUgcG9vciByZXNhbXBsaW5nIG9yIGVycm9uZW91cyBk
-YXRhdHlwZQpjb252ZXJzaW9uIGluIHlvdXIgc2lnbmFsIGNoYWluLCBwcm9iYWJseSBpbiB1c2Vy
-c3BhY2UuIFRoaXMgd291bGQKZXhwbGFpbiB3aHkgaXQgb2NjdXJzIG9uIGFsbCB5b3VyIGNhcmRz
-LgoKCldoYXQgeW91IGNhbiB0cnk6IHBsYXliYWNrIG9mIGEgbG9zc2xlc3MgKHJlYWQ6IHdhdiwg
-ZmxhYykgZmlsZSBkaXJlY3RseQp0byBBTFNBIHdpdGhvdXQgZG1peCwgcHVsc2VhdWRpbywgcGhv
-bm9uIG9yIHdoYXRldmVyLiBUaGlzIGlzIHlvdXIKYmFzZWxpbmUgZm9yIGNvbXBhcmlzb24uIElm
-IHRoaXMgInJlYWxseSBzb3VuZHMgd29yc2UgdGhhbiBXaW5kb3dzIiAoSQpjb3VsZCBoYXJkbHkg
-dHlwZSB0aGlzIHVuZGlmZmVyZW50aWF0ZWQgcGhyYXNlKSwgdGhlbiBpdCdzIHNvbWUgRFNQIGNv
-ZGUKb24gdGhlIFdpbmRvd3Mgc2lkZS4KCgpIVEgKCi0tIAptYWlsOiBhZGlAdGh1ci5kZSAgCWh0
-dHA6Ly9hZGkudGh1ci5kZQlQR1AvR1BHOiBrZXkgdmlhIGtleXNlcnZlcgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Prakash,
+
+On Thu, Jan 27, 2011 at 06:58:36PM +0530, Manjunathappa, Prakash wrote:
+> Fix the device name in DaVinci Voice Codec MFD driver to load
+> davinci-vcif and cq93vc codec client drivers.
+Thanks, patch applied.
+
+Cheers,
+Samuel.
+
+-- 
+Intel Open Source Technology Centre
+http://oss.intel.com/
