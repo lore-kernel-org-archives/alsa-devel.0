@@ -1,21 +1,18 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: Re: =?iso-8859-1?q?alsamixer_don=B4t_start?=
-Date: Mon, 31 Jan 2011 10:36:19 +0100
-Message-ID: <1296466579.3922.8.camel@mattotaupa>
-References: <4D453224.6040502@web.de>
+From: =?iso-8859-2?B?U3RhbmlzbGF2IEt16GVyYQ==?= <kacernator@quick.cz>
+Subject: Bad sound quality
+Date: Mon, 31 Jan 2011 10:43:55 +0100
+Message-ID: <op.vp52nhm16rav7x@standa-win7>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5256031259305568439=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 858E7243E7
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 10:36:22 +0100 (CET)
-Received: from f053033079.adsl.alicedsl.de ([78.53.33.79]
-	helo=[192.168.178.21])
-	by mail.gw90.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
-	id 1PjqBI-0000rv-LJ
-	for alsa-devel@alsa-project.org; Mon, 31 Jan 2011 09:36:20 +0000
-In-Reply-To: <4D453224.6040502@web.de>
+Received: from fep15.mx.upcmail.net (fep15.mx.upcmail.net [62.179.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7763D24401
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 10:44:01 +0100 (CET)
+Received: from edge02.upcmail.net ([192.168.13.237]) by viefep15-int.chello.at
+	(InterMail vM.8.01.02.02 201-2260-120-106-20100312) with ESMTP
+	id <20110131094400.CCRU1633.viefep15-int.chello.at@edge02.upcmail.net>
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 10:44:00 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,70 +25,21 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============5256031259305568439==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-W+OJYzDf+GcOVlzhTr1S"
+In linux compared to windows the sound quality is much worse. I have tried  
+different sound cards, different distributions during past 3 years and the  
+sound is still not good. In linux the sound is somewhat towards mids, less  
+bass and is overall dirtier compared to windows (xp or 7). Problem is not  
+driver specific as I have tried different sound cards on different  
+computers. I can hear the difference even on laptop speakers.
+When using jack server sounds is little better, but still no way same as  
+in windows.
+For me it is major obstacle not using linux as I would love to, because I  
+listen to music so much with quality hifi system.
 
+Sound cards which were tested are: onboard VIA, onboard Intel ACL889,  
+Sound Blaster Live, Echo Gina20.
 
---=-W+OJYzDf+GcOVlzhTr1S
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Am Sonntag, den 30.01.2011, 10:40 +0100 schrieb kvoigtlaender:
-> I described my problem here (in german):=20
-> http://www.vdr-portal.de/board/thread.php?postid=3D974850#post974850
->=20
-> Mobo Gigabyte M68M-S2P with nVidia chip and ALC883
-> Tried with headphone on rear and front socket.
-> Error "unknown symbol" in dmesg.
-> Card is not recognized.
-
-I guess you will not get a lot of responses when people will have to
-read a forum post in a language not used on this list.
-
-You seem to use yaVDR and updated ALSA. Using the distribution packages
-or did you compile from upstream sources?
-
-If you expect someone to answer you will have to provide more
-information (in a way it makes it easy to grasp).
-
-Anyway, please take a look at the Wiki page =C2=BBHelp To Debug=C2=AB [1] a=
-nd
-report back. But I guess this is a yaVDR issue and not an upstream ALSA
-issue.
-
-
-Thanks,
-
-Paul
-
-
-[1] http://alsa-project.org/main/index.php/Help_To_Debug
-
---=-W+OJYzDf+GcOVlzhTr1S
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEABECAAYFAk1GgpMACgkQPX1aK2wOHVjLuACfZTqRJ6tEmuXZR/ejBtn6rsXN
-+QgAmwWQgIb92ybdtTKVY8WvlWCqbmEx
-=RnYQ
------END PGP SIGNATURE-----
-
---=-W+OJYzDf+GcOVlzhTr1S--
-
-
---===============5256031259305568439==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5256031259305568439==--
+Thank.
+Standa
