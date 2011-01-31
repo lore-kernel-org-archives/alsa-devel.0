@@ -1,15 +1,20 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: [PATCH] ARM: tegra: Add to struct
-	harmony_audio_platform_data
-Date: Mon, 31 Jan 2011 15:37:15 -0700
-Message-ID: <1296513435-14792-1-git-send-email-swarren@nvidia.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: UCM list/set/get
+Date: Mon, 31 Jan 2011 23:40:44 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1101312334410.6272@eeebox2.perex-int.cz>
+References: <AANLkTi=pwNpK-c+h_xSkiQG8V8nhLZs-9X8+DceDw0S3@mail.gmail.com>
+	<20110131112257.GC11937@sirena.org.uk>
+	<1296482038.3316.160.camel@odin>
+	<alpine.LNX.2.00.1101311454510.6272@eeebox2.perex-int.cz>
+	<AANLkTinW-H+E_+3Nr+3P65D6vzhBbVSW4zQLVfO58Ckh@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from avon.wwwdotorg.org (avon.wwwdotorg.org [70.85.31.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3B2361037EA
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 23:37:24 +0100 (CET)
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 624E62412E
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 23:40:45 +0100 (CET)
+In-Reply-To: <AANLkTinW-H+E_+3Nr+3P65D6vzhBbVSW4zQLVfO58Ckh@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,32 +24,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>
+To: pl bossart <bossart.nospam@gmail.com>
+Cc: Margarita Olaya <magi@slimlogic.co.uk>, ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Add fields to describe all the audio-related GPIOs on Harmony, except for
-the codec's GPIO IRQ, which will be passed in its i2c_board_info.
+On Mon, 31 Jan 2011, pl bossart wrote:
 
-Signed-off-by: Stephen Warren <swarren@nvidia.com>
----
-Mark, can you please apply this to your tegra-arch branch, and merge that.
-Thanks!
+>>> cset "name='Master Playback Switch' 1,1"
+>>
+>> For complete cset command look to 'amixer cset' syntax. You may get list of
+>> available identifiers using 'amixer controls'.
+>
+> Thanks Jaroslav. I had not connected the dots with amixer. Works fine
+> now for the defaults. I am still not able to get/set a verb
+>
+> $ ./alsaucm -c TestHDA get _verb
+> sh: my: command not found
+> ./alsaucm: error failed to get _verb: No such file or directory
 
- arch/arm/mach-tegra/include/mach/harmony_audio.h |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+No verb is active here, so the error code is correct. In this state, you 
+can just list available verbs or devices and set one. The command to list 
+devices for TestHDA case is:
 
-diff --git a/arch/arm/mach-tegra/include/mach/harmony_audio.h b/arch/arm/mach-tegra/include/mach/harmony_audio.h
-index 5c46391..af08650 100644
---- a/arch/arm/mach-tegra/include/mach/harmony_audio.h
-+++ b/arch/arm/mach-tegra/include/mach/harmony_audio.h
-@@ -16,4 +16,7 @@
- 
- struct harmony_audio_platform_data {
- 	int gpio_spkr_en;
-+	int gpio_hp_det;
-+	int gpio_int_mic_en;
-+	int gpio_ext_mic_en;
- };
--- 
-1.7.1
+list _devices/Case1
+
+> same for set. Isn't _verb a know identifier in src/ucm/main.c?
+
+This works for me:
+
+ALSA_CONFIG_UCM="$HOME/alsa/alsa-lib/test/ucm" ./alsaucm open TestHDA \
+set _verb Case1 get _verb set _enadev Device1.0 list _devices
+
+You may split commands to the interactive mode or you may use a batch file 
+and run:
+
+ALSA_CONFIG_UCM="$HOME/alsa/alsa-lib/test/ucm" ./alsaucm -b test.batch
+
+test.batch file contents:
+
+open TestHDA
+set _verb Case1
+get _verb
+set _enadev Device1.0
+list _devices
+
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
