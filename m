@@ -1,55 +1,26 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Accept any logical value for WM8962
- GPIO set()
-Date: Mon, 31 Jan 2011 17:02:06 +0000
-Message-ID: <1296493326.3316.208.camel@odin>
-References: <1296482111-3022-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 12/13] ASoC: McBSP: get hw params from McBSP driver
+Date: Mon, 31 Jan 2011 17:16:28 +0000
+Message-ID: <20110131171628.GJ5123@opensource.wolfsonmicro.com>
+References: <1296485437-12806-1-git-send-email-kishon@ti.com>
+ <1296485437-12806-13-git-send-email-kishon@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 28B981037E3
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 18:02:10 +0100 (CET)
-Received: by wyi11 with SMTP id 11so5657967wyi.38
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 09:02:09 -0800 (PST)
-In-Reply-To: <1296482111-3022-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1296485437-12806-13-git-send-email-kishon@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Kishon Vijay Abraham I <kishon@ti.com>
+Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, paul@pwsan.com, charu@ti.com, shubhrajyoti@ti.com, b-cousson@ti.com, khilman@deeprootsystems.com, p-basak2@ti.com, Jarkko Nikula <jhnikula@gmail.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-01-31 at 13:55 +0000, Mark Brown wrote:
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/wm8962.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
+On Mon, Jan 31, 2011 at 08:20:36PM +0530, Kishon Vijay Abraham I wrote:
+> Removed the use of macros to obtain base address and DMA channel number.
+> Instead use the McBSP driver API's that passes base address and DMA
+> channel number to the client driver.
 > 
-> diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-> index 5c7b730..3b71dd6 100644
-> --- a/sound/soc/codecs/wm8962.c
-> +++ b/sound/soc/codecs/wm8962.c
-> @@ -3635,7 +3635,7 @@ static void wm8962_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
->  	struct snd_soc_codec *codec = wm8962->codec;
->  
->  	snd_soc_update_bits(codec, WM8962_GPIO_BASE + offset,
-> -			    WM8962_GP2_LVL, value << WM8962_GP2_LVL_SHIFT);
-> +			    WM8962_GP2_LVL, !!value << WM8962_GP2_LVL_SHIFT);
->  }
->  
->  static int wm8962_gpio_direction_out(struct gpio_chip *chip,
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> Cc: Jarkko Nikula <jhnikula@gmail.com>
+> Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
