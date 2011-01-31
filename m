@@ -1,16 +1,21 @@
-From: Benjamin Hovey <bend.hovey@gmail.com>
-Subject: snd-via82xx setting
-Date: Sun, 30 Jan 2011 21:48:39 -0500
-Message-ID: <AANLkTimbB8WNVDJCD+rEng9NZbJGvtEkVBBXmxQS==7D@mail.gmail.com>
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Subject: Re: =?iso-8859-1?q?alsamixer_don=B4t_start?=
+Date: Mon, 31 Jan 2011 10:36:19 +0100
+Message-ID: <1296466579.3922.8.camel@mattotaupa>
+References: <4D453224.6040502@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5256031259305568439=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id B9A4C1037E3
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 03:48:40 +0100 (CET)
-Received: by wwe15 with SMTP id 15so5128606wwe.20
-	for <alsa-devel@alsa-project.org>; Sun, 30 Jan 2011 18:48:39 -0800 (PST)
+Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id 858E7243E7
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 10:36:22 +0100 (CET)
+Received: from f053033079.adsl.alicedsl.de ([78.53.33.79]
+	helo=[192.168.178.21])
+	by mail.gw90.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
+	id 1PjqBI-0000rv-LJ
+	for alsa-devel@alsa-project.org; Mon, 31 Jan 2011 09:36:20 +0000
+In-Reply-To: <4D453224.6040502@web.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,127 +28,70 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-FYI, the below system required the following non-default settings for ALSA
-to play any SPDIF output correctly.  Prior to finding this setting, output
-from different sources, WAV, MP3, CD, etc, were played at a slightly faster
-speed than they should have.
 
-snd_via82xx: dxs_support=3
-
-When installed, the default setting was dxs_support=5.
-
-Hope this helps.  I am new to Linux and it took me quite a while to find out
-how to set this setting (I put it in  /etc/modprobe.d/alsa-base.conf)
-Cheers
+--===============5256031259305568439==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-W+OJYzDf+GcOVlzhTr1S"
 
 
+--=-W+OJYzDf+GcOVlzhTr1S
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-upload=true&script=true&cardinfo=
-!!################################
-!!ALSA Information Script v 0.4.60
-!!################################
+Am Sonntag, den 30.01.2011, 10:40 +0100 schrieb kvoigtlaender:
+> I described my problem here (in german):=20
+> http://www.vdr-portal.de/board/thread.php?postid=3D974850#post974850
+>=20
+> Mobo Gigabyte M68M-S2P with nVidia chip and ALC883
+> Tried with headphone on rear and front socket.
+> Error "unknown symbol" in dmesg.
+> Card is not recognized.
 
-!!Script ran on: Mon Jan 31 02:37:03 UTC 2011
+I guess you will not get a lot of responses when people will have to
+read a forum post in a language not used on this list.
 
+You seem to use yaVDR and updated ALSA. Using the distribution packages
+or did you compile from upstream sources?
 
-!!Linux Distribution
-!!------------------
+If you expect someone to answer you will have to provide more
+information (in a way it makes it easy to grasp).
 
-Ubuntu 10.04.1 LTS \n \l DISTRIB_ID=Ubuntu DISTRIB_DESCRIPTION="Ubuntu
-10.04.1 LTS"
-
-
-!!DMI Information
-!!---------------
-
-Manufacturer:      VIA Technologies, Inc.
-Product Name:      KT600-8237
-Product Version:
-
-
-!!Kernel Information
-!!------------------
-
-Kernel release:    2.6.32-28-generic
-Operating System:  GNU/Linux
-Architecture:      i686
-Processor:         unknown
-SMP Enabled:       Yes
+Anyway, please take a look at the Wiki page =C2=BBHelp To Debug=C2=AB [1] a=
+nd
+report back. But I guess this is a yaVDR issue and not an upstream ALSA
+issue.
 
 
-!!ALSA Version
-!!------------
+Thanks,
 
-Driver version:     1.0.21
-Library version:    1.0.23
-Utilities version:  1.0.22
+Paul
 
 
-!!Loaded ALSA modules
-!!-------------------
+[1] http://alsa-project.org/main/index.php/Help_To_Debug
 
-snd_via82xx
-snd_emu10k1
+--=-W+OJYzDf+GcOVlzhTr1S
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
 
-!!Sound Servers on this system
-!!----------------------------
+iEYEABECAAYFAk1GgpMACgkQPX1aK2wOHVjLuACfZTqRJ6tEmuXZR/ejBtn6rsXN
++QgAmwWQgIb92ybdtTKVY8WvlWCqbmEx
+=RnYQ
+-----END PGP SIGNATURE-----
 
-Pulseaudio:
-      Installed - Yes (/usr/bin/pulseaudio)
-      Running - Yes
-
-ESound Daemon:
-      Installed - Yes (/usr/bin/esd)
-      Running - No
+--=-W+OJYzDf+GcOVlzhTr1S--
 
 
-!!Soundcards recognised by ALSA
-!!-----------------------------
+--===============5256031259305568439==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
- 0 [V8237          ]: VIA8237 - VIA 8237
-                      VIA 8237 with VT1616i at 0xe400, irq 22
- 1 [Live           ]: EMU10K1 - SB Live! Platinum [CT4760P]
-                      SB Live! Platinum [CT4760P] (rev.8, serial:0x80401102)
-at 0xb000, irq 17
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-
-!!PCI Soundcards installed in the system
-!!--------------------------------------
-
-00:09.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev 08)
-00:0a.0 Multimedia controller: Sigma Designs, Inc. REALmagic Hollywood Plus
-DVD Decoder (rev 02)
-00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-
-
-!!Advanced information - PCI Vendor/Device/Subsystem ID's
-!!--------------------------------------------------------
-
-00:09.0 0401: 1102:0002 (rev 08)
-    Subsystem: 1102:8040
---
-00:11.5 0401: 1106:3059 (rev 60)
-    Subsystem: 147b:1408
-
-
-!!Modprobe options (Sound related)
-!!--------------------------------
-
-snd_via82xx: index=0
-snd_emu10k1: index=1
-snd_via82xx: dxs_support=4
-snd-atiixp-modem: index=-2
-snd-intel8x0m: index=-2
-snd-via82xx-modem: index=-2
-snd-usb-audio: index=-2
-snd-usb-us122l: index=-2
-snd-usb-usx2y: index=-2
-snd-usb-caiaq: index=-2
-snd-cmipci: mpu_port=0x330 fm_port=0x388
-snd-pcsp: index=-2
-snd_via82xx: index=0
-snd_emu10k1: index=1
-snd_via82xx: dxs_support=3
-snd_via82xx: ac97_clock=48000
+--===============5256031259305568439==--
