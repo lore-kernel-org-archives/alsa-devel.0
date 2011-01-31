@@ -1,17 +1,14 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Nvidia HDMI and four codecs
-Date: Wed, 02 Feb 2011 09:03:42 +0100
-Message-ID: <4D490FDE.9070900@canonical.com>
-References: <4D47BFEB.8040602@canonical.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0310C8E418@HQMAIL01.nvidia.com>
+From: Sven Neumann <s.neumann@raumfeld.com>
+Subject: [PATCH] ASoC: PXA: formatting
+Date: Mon, 31 Jan 2011 16:10:50 +0100
+Message-ID: <1296486650-6370-1-git-send-email-s.neumann@raumfeld.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 866AD10380A
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 09:03:48 +0100 (CET)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0310C8E418@HQMAIL01.nvidia.com>
+Received: from mail.bugwerft.de (mail.bugwerft.de [212.112.241.193])
+	by alsa0.perex.cz (Postfix) with ESMTP id 296EA24560
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 16:11:15 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,142 +18,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Nitin Daga <ndaga@nvidia.com>
+To: alsa-devel@alsa-project.org
+Cc: Sven Neumann <s.neumann@raumfeld.com>, Daniel Mack <daniel@caiaq.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 2011-02-01 17:36, Stephen Warren wrote:
-> David Henningsson wrote at Tuesday, February 01, 2011 1:10 AM:
->> I've seen a few Nvidia HDMI's recently which have four HDMI codecs
->> connected to the same HDA controller.
->
-> This is the case for any NVIDIA GPU that supports HDA, and also our most
-> recent chipset.
->
->> The problem is that we don't know
->> which one(s) of these four that is the real one. So people will have to
->> try devices "hdmi:Nvidia,0", "hdmi:Nvidia,1", "hdmi:Nvidia,2" and
->> "hdmi:Nvidia,3" to figure out which one is the right one. (And by
->> empirical testing we know that it isn't always the first one.)
->
-> /proc/asound/card<n>/eld* will tell you which one to use; the ELD file
-> numbering should match the hdmi: device numbering.
->
-> eld 0,1,2,3 also match hw:$card:$device with device=3,7,8,9.
->
-> I do have an audio document that's aimed at technical end-users to explain
-> all of this. However, I haven't quite finished it, and issues with the
-> publication mechanism have stopped me publishing it so far.
->
->> Thinking PulseAudio and/or "Just Works", this is not good enough, so is
->> there a way to know beforehand which one of these four that is actually
->> physically connected?
->
-> I don't believe it's possible to determine which of the codecs are physically
-> connected to actual connectors on the graphics board. This would be a static
-> facet of the board design.
+Signed-off-by: Sven Neumann <s.neumann@raumfeld.com>
+---
+ sound/soc/pxa/raumfeld.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
 
-Ok, thanks for confirming.
-
-As you might have seen, for Intel HDMI I made a patch that makes it act 
-upon the pin config default register. I'd love it if things could work 
-out the same way for Nvidia HDMI. I don't know enough about the BIOS/HW 
-side of things to know for sure, but I guess this will be something up 
-to whoever makes the board (e g Asus) to set inside the GPU somehow.
-
-Failing that, we could try hiding things in the driver by quirking, 
-either at the codec level or at the pin complex level.
-
-> Beyond that, the ELD files will indicate which codecs/pins are routed to a
-> connector with an audio-capable display attached and that X is actually
-> sending a signal to. This can dynamically change as the X server is
-> reconfigured, either when X restarts, or dynamically through our management
-> protocol or application.
->
->> I'd love BIOS to provide a good codec probe mask, a pin config default,
->> or something similar, but given a codec-proc I can't see any difference
->> between the real ones and the unconnected ones, so I don't know how to
->> fix up the driver without hardcoding/quirking every one of them. Any
->> hints?
->
-> ALSA now exposes a logical device (hdmi:Nvidia,n) for each pin complex[1]
-> (equivalently each codec since there's a 1:1 mapping in our GPUs right now).
-> However, PulseAudio still only offers the user the first of these devices,
-> thus causing users to resort to probe masks to select which ALSA device they
-> wish to use.
->
-> If PulseAudio were to offer all HDMI devices in its UI, at least the user
-> Could configure their system using the regular GUI tools. I did suggest this
-> on the PulseAudio list, and I think the maintainers agreed this would be a
-> good idea in principle. However, I haven't taken the time to drive this.
->
-> http://www.mail-archive.com/pulseaudio-discuss@mail.0pointer.de/msg07433.html
-
-Thanks, reading that thread made a few things clearer.
-
-As for PulseAudio, showing four HDMI devices is quite simple [1] but I 
-still think it would be a little confusing to show four devices to 
-choose from and would wish for something more intuitive.
-
-> [1] Concentrating abstractions on pin complexes rather than codecs will
-> ensure ALSA etc. are more ready for other codec/converter/pin
-> combinations that may be seen on other or future GPUs.
-
-I agree.
-
-So let's sum up the options here:
-
-1) Board manufacturer sets a codec probe mask.
-
-2) Board manufacturer sets pin config default register. This might 
-require some support in the driver as well.
-
-1) and 2) won't work for existing boards and I don't know how difficult 
-it would be to persuade the board manufacturers to do it for future boards.
-
-3) Quirking in the driver - codec probe mask
-
-This was my primary option until yesterday, when I saw a machine which 
-had the same PCI SSID for both the primary HDA controller and the Nvidia 
-HDA controller.
-
-4) Quirking in the driver - pin config default register. Will need some 
-work in the driver, but I guess it's doable.
-
-3) and 4) gives us a lot of quirking to do.
-
-5) Show all four devices in PulseAudio. Simple, but confusing for the user.
-
-6) Proper jack detection in PulseAudio, which might be based on ELD 
-information. This is what would need the most work to do, and things 
-will still be confusing for people not using PulseAudio. It might be the 
-long path to go anyway, as it would enable features such as auto-moving 
-to HDMI when HDMI is plugged in, etc.
-
+diff --git a/sound/soc/pxa/raumfeld.c b/sound/soc/pxa/raumfeld.c
+index 0fd60f4..4a4b73e 100644
+--- a/sound/soc/pxa/raumfeld.c
++++ b/sound/soc/pxa/raumfeld.c
+@@ -229,19 +229,19 @@ static struct snd_soc_dai_link raumfeld_dai[] = {
+ {
+ 	.name		= "ak4104",
+ 	.stream_name	= "Playback",
+-	.cpu_dai_name = "pxa-ssp-dai.1",
+-	.codec_dai_name = "ak4104-hifi",
+-	.platform_name = "pxa-pcm-audio",
++	.cpu_dai_name	= "pxa-ssp-dai.1",
++	.codec_dai_name	= "ak4104-hifi",
++	.platform_name	= "pxa-pcm-audio",
+ 	.ops		= &raumfeld_ak4104_ops,
+-	.codec_name = "ak4104-codec.0",
++	.codec_name	= "ak4104-codec.0",
+ },
+ {
+ 	.name		= "CS4270",
+ 	.stream_name	= "CS4270",
+-	.cpu_dai_name = "pxa-ssp-dai.0",
+-	.platform_name = "pxa-pcm-audio",
+-	.codec_dai_name = "cs4270-hifi",
+-	.codec_name = "cs4270-codec.0-0048",
++	.cpu_dai_name	= "pxa-ssp-dai.0",
++	.platform_name	= "pxa-pcm-audio",
++	.codec_dai_name	= "cs4270-hifi",
++	.codec_name	= "cs4270-codec.0-0048",
+ 	.ops		= &raumfeld_cs4270_ops,
+ },};
+ 
 -- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
-
-[1] I haven't tested it, but I guess the following addition to 
-/usr/shared/pulseaudio/alsa-mixer/profile-sets/default.conf should do it:
-
-[Mapping hdmi-stereo-extra1]
-description = HDMI out extra 1
-device-strings = hdmi:%f,1
-channel-map = left,right
-priority = 2
-direction = output
-
-[Mapping hdmi-stereo-extra2]
-description = HDMI out extra 2
-device-strings = hdmi:%f,2
-channel-map = left,right
-priority = 2
-direction = output
-
-[Mapping hdmi-stereo-extra3]
-description = HDMI out extra 3
-device-strings = hdmi:%f,3
-channel-map = left,right
-priority = 2
-direction = output
+1.7.1
