@@ -1,15 +1,22 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: snd_soc_jack_add_gpios vs. SOC_DAPM_PIN_SWITCH
-Date: Mon, 31 Jan 2011 16:03:58 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0310C8E333@HQMAIL01.nvidia.com>
+From: Robin Neatherway <neatherway@gmail.com>
+Subject: Re: Jack sense fails on Fujitsu p7120
+Date: Tue, 1 Feb 2011 01:49:37 +0000
+Message-ID: <AANLkTi=hFT5Sono3Sehq2WRZZcgEULs2jwwm-ZTDEb0R@mail.gmail.com>
+References: <AANLkTimGPyno7Wd3TfO7dhZe9e4a5QcXLS8Upa1Mq7q_@mail.gmail.com>
+	<AANLkTimb+yqOhWP1Rc78F9pc+j6VEGp7v0SYvGi7mGrb@mail.gmail.com>
+	<AANLkTim2ch5-QHoh67SuKwMmTMQL=HM6VG1iVCxxoo9+@mail.gmail.com>
+	<AANLkTimszyfVj8pbt4jujQ3o96OqVHKb-bb7o8GXG5pU@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9826D243A7
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 01:04:04 +0100 (CET)
-Content-Language: en-US
+Received: from mail-qy0-f172.google.com (mail-qy0-f172.google.com
+	[209.85.216.172])
+	by alsa0.perex.cz (Postfix) with ESMTP id DFD33245AA
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 02:50:03 +0100 (CET)
+Received: by qyk34 with SMTP id 34so3693852qyk.17
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2011 17:50:02 -0800 (PST)
+In-Reply-To: <AANLkTimszyfVj8pbt4jujQ3o96OqVHKb-bb7o8GXG5pU@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,33 +26,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Mark Brown (broonie@opensource.wolfsonmicro.com)" <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I've set up headphone hack detection in my machine driver, using
-snd_soc_jack_new, snd_soc_jack_add_pins, and snd_soc_jack_add_gpios.
+> Because ubuntu had disabled OSS emulation , you have to disable OSS
+> emulation too.
+>
+> ./configure --with-oss=no
 
-I've also created a control to allow the user to enable/disable the headphone
-jack:
+Thanks for the tip. I've compiled the 1.0.24 drivers tarball using
+./configure --with-debug=full --with-oss=no and it now loads
+correctly. I have a large number of controls in alsamixer, having set
+model=test in /etc/modprobe.d/alsa-base.conf.
 
-static const struct snd_kcontrol_new harmony_controls[] = {
-	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
-};
+The control names are now generic, but I have found that LOUT1 is the
+headphones and LOUT2 is the speakers. There are also GPIO pins 0-3
+available. I have tried toggling these, but it does not affect the
+jack sense, which still does not operate.
 
-On their own, both of these work fine.
+The new alsa-info is at the following URL:
+http://www.alsa-project.org/db/?f=3fb1a67066b9d06ac8405685ff7358af053e2668
 
-However, if I use the control to disable the headphones, then unplug/replug
-the headphones, the jack detect seems to override the control, and I hear
-audio from the headphones.
+How should I proceed? I've looked at the pci/drivers/hda_intel.c, and
+I notice that several "quirk" modes are enabled for particular models.
+Is it sensible to try enumerating these on my laptop, or are tables
+like this:
 
-Is this something that's known not yet implemented or was never intended to
-be used this way, or should I look further to find the issue?
+   SND_PCI_QUIRK(0x1025, 0x009f, "Acer Aspire 5110", POS_FIX_LPIB),
+   SND_PCI_QUIRK(0x1025, 0x026f, "Acer Aspire 5538", POS_FIX_LPIB),
+   SND_PCI_QUIRK(0x1028, 0x01cc, "Dell D820", POS_FIX_LPIB),
+   SND_PCI_QUIRK(0x1028, 0x01de, "Dell Precision 390", POS_FIX_LPIB),
+   SND_PCI_QUIRK(0x1028, 0x01f6, "Dell Latitude 131L", POS_FIX_LPIB),
 
-FYI, sound/soc/samsung/smartq_wm8987.c has this same code structure, and I 
-imagine will have the same issue.
+changing different addresses for each laptop model?
 
-Thanks.
-
--- 
-nvpublic
+Thanks again for your help so far.
