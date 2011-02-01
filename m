@@ -1,21 +1,21 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Questions about Multi-streaming playback with HDA
- codec ad1988b
-Date: Tue, 1 Feb 2011 16:55:01 +0800
-Message-ID: <AANLkTi=GfTA1eQd38nR85iAOm-yeN6c2N9_-ZhoP8BQn@mail.gmail.com>
-References: <AANLkTi=_xGmLUz24UUPvZGdzFJXU0HcpdsxTuU2C=uta@mail.gmail.com>
-	<s5h1v4b38hq.wl%tiwai@suse.de>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH v6 0/3] input: Add support for ECI
+ (multimedia) accessories
+Date: Tue, 1 Feb 2011 00:58:23 -0800
+Message-ID: <20110201085823.GB17706@core.coreip.homeip.net>
+References: <1296482634-31666-1-git-send-email-tapio.vihuri@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 959142443B
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 09:55:02 +0100 (CET)
-Received: by eyg24 with SMTP id 24so2833085eyg.38
-	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 00:55:02 -0800 (PST)
-In-Reply-To: <s5h1v4b38hq.wl%tiwai@suse.de>
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8E62E2443F
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 09:58:34 +0100 (CET)
+Received: by iwb12 with SMTP id 12so6925691iwb.38
+	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 00:58:33 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <1296482634-31666-1-git-send-email-tapio.vihuri@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,36 +25,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: tapio.vihuri@nokia.com
+Cc: randy.dunlap@oracle.com, alsa-devel@alsa-project.org, samu.p.onkalo@nokia.com, peter.ujfalusi@nokia.com, linux-kernel@vger.kernel.org, ilkka.koskinen@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-2011/1/17 Takashi Iwai <tiwai@suse.de>
+Hi Tapio,
 
->
->
-> > c) idenifty ad1988a and ad1988b
->
-> Once if we have a PCI quirk entry with any real device ids.
->
->
-ad1989b has SPDIF OUT 2 for HDMI
+On Mon, Jan 31, 2011 at 04:03:51PM +0200, tapio.vihuri@nokia.com wrote:
+> 
+> This patch set introduce Multimedia Headset Accessory support for
+> Nokia phones. Technically those are known as ECI (Enhancement Control Interface)
+> 	
+> If headset has many buttons, like play, vol+, vol- etc. then it is propably ECI
+> accessory.
+> 
+> Among several buttons ECI accessories contains memory for storing several
+> parameters.
+> 
+> This ECI input driver provides the following features:
+>  - reading ECI configuration memory
+>  - ECI buttons as input events
+> 
+> Drive is constructed as follows:
+>  - ECI accessory input driver deals with headset accessory
+>  - ECI bus control driver deals the HW transfering data to/from headset
+>  - platform data match used HW
 
-http://www.analog.com/en/audiovideo-products/audio-codecs/ad1989b/products/product.html
+I finally had a chance to look though the patches more closely and I do
+not understand why you decided to introduce the platform device in
+addition to I2C device. You end up with 2 artificially separated bodies of
+code that are not viable on their own. The ECI module with it's platform
+device is not usable without the controller; the controller can not be
+registered without the ECI device initialized; there are ordering
+issues, both initialization and PM-wise and you are forced to support
+only one device.
 
-https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/711066
+Is there going to be an SPI interface as well? If not then fold it all
+together and have I2C device as the only device involved. If SPI is a
+possibility then look in drivers such as adxl34x, ad714x and others that
+are split into core module and bus interface implementations.
 
-http://launchpadlibrarian.net/63268478/Card0.Codecs.codec.0.txt
+Thanks.
 
-Node 0x1d [Pin Complex] wcaps 0x40030d: Stereo Digital Amp-Out
-  Control: name="HDMI Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=Out, idx=0, ofs=0
-  Amp-Out caps: ofs=0x27, nsteps=0x27, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x27 0x27]
-  Pincap 0x00000010: OUT
-  Pin Default 0x1856f1b0: [Jack] Digital Out at Int HDMI
-    Conn = Digital, Color = Other
-    DefAssociation = 0xb, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0b
+-- 
+Dmitry
