@@ -1,17 +1,14 @@
-From: Vincent Meserette <vmeserette@aldebaran-robotics.com>
-Subject: issue with AD1989A HDA codec and alsamixer
-Date: Tue, 1 Feb 2011 15:57:29 +0100
-Message-ID: <AANLkTin8tsrNrcoYaPvQz0uO=OtD-tow1Ds0i8WTJyh7@mail.gmail.com>
+From: Torsten Schenk <torsten.schenk@zoho.com>
+Subject: Digital IO and SPDIF format
+Date: Tue, 01 Feb 2011 16:03:58 +0100
+Message-ID: <12de1c06449.-3167568757226561582.4620295999935056878@zoho.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 78E17103948
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 15:57:30 +0100 (CET)
-Received: by eyg24 with SMTP id 24so2972727eyg.38
-	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 06:57:30 -0800 (PST)
+Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
+	by alsa0.perex.cz (Postfix) with ESMTP id 365CD2448E
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 16:04:00 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,24 +18,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Hello,
 
-I am working on a system which includes a connexant AD1989A HDA codec
-connected to a ATOM processor.
-I have four microphones connected to the B and C ports of this codec.
-If I change one of the 3 capture gains present in the alsamixer
-(Capture, Capture 1 or Capture 3), I can't have any more signal on the
-B and C ports
-It seems to be due to the fact that ALSA breaks (for example for the
-Capture gain) the link between the ADC selector 0 and ADC_0 widgets of
-the codec, what can be easily seen with codecgraph.
+I'm currenty trying to make digital IO working for snd-usb-6fire. I figured out what the card does but I don't know how things (especially input) should be handled in alsa. Unfortunately it is relatively hard to find documentation on that topic so that I decided to ask the pros.
 
-Have you ever had this kind of problem?
-Do you know how can I resolve it ?
+The card can receive the whole spdif subframe with all bits (BMW + at least channel status bit and parity bit, but I guess also the other two).
+It also does receive two spdif-frames per frame (making it possible to receive f.ex. 96kHz digital audio if 6fire's sample rate is set to 48kHz)
+This also leads to the fact that the 6fire does not drop spdif frames if playback device's sample rate is not very much higher than 6fire's. If the playback device's clock is a bit quicker (up to twice the speed) than the 6fire's one, the 6fire simply captures a frame (when neccesary) that contains two spdif frames.
 
-Many thanks for your asnwers and best regards
+My question is (concerning capturing):
+How should I handle:
+- if 6fire's clock and playback device's clock differ, should I use playback device's clock (no interpolation of samples but capturing tool might have invalid sample rate information) or the 6fire's clock (samples need to be interpolated somehow)?
+- if the 6fire's clock should be used, are small clock drifts acceptable without interpolation?
+- in case of interpolation: how?
+- should I receive a whole spdif block (usually 192 spdif frames) and use the information I got from the block (f.ex. left/right channel bits) before copying it to alsa or should I directly copy every frame to alsa?
 
-Vincent
+Concerning (also output):
+Am I correct in assuming that SNDRV_PCM_FORMAT_IEC958_SUBFRAME_XX samples are formatted like in the specification (4 bit preamble, 24 bit audio data, VUCP flags)? If you know of any tool that is able to handle this format, please let me know so that I have a basis to test the whole stuff.
+
+Thanks,
+Torsten
