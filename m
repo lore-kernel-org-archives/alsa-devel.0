@@ -1,74 +1,59 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH v2 13/13] OMAP: hwmod: Removal of macros for data that
- is obtained from hwmod database
-Date: Tue, 1 Feb 2011 20:07:13 +0200
-Message-ID: <20110201200713.34fdb4fc.jhnikula@gmail.com>
-References: <1296485437-12806-1-git-send-email-kishon@ti.com>
-	<1296485437-12806-14-git-send-email-kishon@ti.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: snd_soc_jack_add_gpios vs. SOC_DAPM_PIN_SWITCH
+Date: Tue, 1 Feb 2011 10:59:00 -0800
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0310C8E48A@HQMAIL01.nvidia.com>
+References: <74CDBE0F657A3D45AFBB94109FB122FF0310C8E333@HQMAIL01.nvidia.com>
+	<20110201113351.GB12743@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1296485437-12806-14-git-send-email-kishon@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Kishon Vijay Abraham I <kishon@ti.com>
-Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, paul@pwsan.com, charu@ti.com, shubhrajyoti@ti.com, b-cousson@ti.com, khilman@deeprootsystems.com, p-basak2@ti.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7801724628
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 19:59:07 +0100 (CET)
+In-Reply-To: <20110201113351.GB12743@opensource.wolfsonmicro.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 31 Jan 2011 20:20:37 +0530
-Kishon Vijay Abraham I <kishon@ti.com> wrote:
-
-> Information like base address and DMA channel nubers should no longer
-> be obtained using macros. These information should be obtained from
-> hwmod database. Hence the macros that define the base address are removed.
+Mark Brown wrote at Tuesday, February 01, 2011 4:34 AM:
+> On Mon, Jan 31, 2011 at 04:03:58PM -0800, Stephen Warren wrote:
 > 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> Signed-off-by: Charulatha V <charu@ti.com>
-> ---
->  arch/arm/mach-omap1/mcbsp.c             |   64 +++++++++++++++---------------
->  arch/arm/plat-omap/include/plat/mcbsp.h |   50 +-----------------------
->  2 files changed, 33 insertions(+), 81 deletions(-)
+> > However, if I use the control to disable the headphones, then
+> > unplug/replug the headphones, the jack detect seems to override
+> > the control, and I hear audio from the headphones.
 > 
-> diff --git a/arch/arm/mach-omap1/mcbsp.c b/arch/arm/mach-omap1/mcbsp.c
-> index 2b89ebd..d90f649 100644
-> --- a/arch/arm/mach-omap1/mcbsp.c
-> +++ b/arch/arm/mach-omap1/mcbsp.c
-> @@ -83,14 +83,14 @@ struct resource omap7xx_mcbsp_res[][6] = {
->  	{
->  		{
->  			.name  = "mpu",
-> -			.start = OMAP7XX_MCBSP1_BASE,
-> -			.end   = OMAP7XX_MCBSP1_BASE + SZ_256,
-> +			.start = 0xfffb1000,
-> +			.end   = 0xfffb10ff,
+> Using these two together makes no sense.  Either you manually control
+> the state of the output or you manage it automatically.
 
-For these changes I don't see immediate reason as they reduce
-readability. Is this better to do outside of this set together with a
-patch that adds these into hwmod database etc?
+I was thinking that the jack detect would be used to enable/disable widgets
+for power purposes, but with a manual override to allow SW to set up use
+cases where only the internal speakers were used, and never headphones.
 
-> -#define AUDIO_MCBSP_DATAWRITE	(OMAP1510_MCBSP1_BASE + OMAP_MCBSP_REG_DXR1)
-> -#define AUDIO_MCBSP_DATAREAD	(OMAP1510_MCBSP1_BASE + OMAP_MCBSP_REG_DRR1)
-> -
-> -#define AUDIO_MCBSP		OMAP_MCBSP1
-> -#define AUDIO_DMA_TX		OMAP_DMA_MCBSP1_TX
-> -#define AUDIO_DMA_RX		OMAP_DMA_MCBSP1_RX
-> -
->  #else
->  
->  #define OMAP_MCBSP_REG_DRR2	0x00
-> @@ -177,13 +136,6 @@ static struct platform_device omap_mcbsp##port_nr = {	\
->  #define OMAP_ST_REG_SFIRCR	0x28
->  #define OMAP_ST_REG_SSELCR	0x2C
->  
-> -#define AUDIO_MCBSP_DATAWRITE	(OMAP24XX_MCBSP2_BASE + OMAP_MCBSP_REG_DXR1)
-> -#define AUDIO_MCBSP_DATAREAD	(OMAP24XX_MCBSP2_BASE + OMAP_MCBSP_REG_DRR1)
-> -
-> -#define AUDIO_MCBSP		OMAP_MCBSP2
-> -#define AUDIO_DMA_TX		OMAP24XX_DMA_MCBSP2_TX
-> -#define AUDIO_DMA_RX		OMAP24XX_DMA_MCBSP2_RX
-> -
-These looks things that can be removed immediately and independently
-from this set.
+That said, if that isn't something that's ever typically done, I'm fine
+not supporting that.
+
+> Generally a PIN_SWITCH() should only be used to offer control if none is
+> availabile within the CODEC - in the case of Harmony it wouldn't make
+> much sense as there's plenty of control in the CODEC for what gets
+> routed to the various outputs.
+
+IIRC, the codec controls allow selecting only what gets routed, but there
+wasn't an overall "enable/disable speakers" switch (the mute switch does
+not disable the DAPM widgets). One would have to disable all the routing
+options to disable the speaker amplifiers, which would entail remembering
+what those routing options were to restore them once the speakers were
+desired again. A manual switch avoids this.
 
 -- 
-Jarkko
+nvpublic
