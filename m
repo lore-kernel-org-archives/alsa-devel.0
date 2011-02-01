@@ -1,20 +1,18 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Use snd_pcm_format_width() in
- snd_soc_params_to_frame_size()
-Date: Tue, 01 Feb 2011 14:30:35 +0000
-Message-ID: <1296570635.3327.40.camel@odin>
-References: <1296567050-32607-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: CX20442: fix NULL pointer dereference
+Date: Tue, 01 Feb 2011 14:30:24 +0000
+Message-ID: <1296570624.3327.39.camel@odin>
+References: <201102011301.17699.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id BDB36103944
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 15:30:40 +0100 (CET)
-Received: by wyi11 with SMTP id 11so6685076wyi.38
-	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 06:30:40 -0800 (PST)
-In-Reply-To: <1296567050-32607-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1E059103998
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 15:30:46 +0100 (CET)
+Received: by wwe15 with SMTP id 15so6823142wwe.20
+	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 06:30:45 -0800 (PST)
+In-Reply-To: <201102011301.17699.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,50 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-02-01 at 13:30 +0000, Mark Brown wrote:
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/soc-utils.c |   23 +++--------------------
->  1 files changed, 3 insertions(+), 20 deletions(-)
+On Tue, 2011-02-01 at 13:01 +0100, Janusz Krzysztofik wrote:
+> The CX20442 codec driver never provided the snd_soc_codec_driver's 
+> .reg_cache_default member. With the latest ASoC framework changes, it 
+> seems to be referred unconditionally, resulting in a NULL pointer 
+> dereference if missing. Provide it.
 > 
-> diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-> index 1d07b93..3f45e6a 100644
-> --- a/sound/soc/soc-utils.c
-> +++ b/sound/soc/soc-utils.c
-> @@ -28,26 +28,9 @@ int snd_soc_params_to_frame_size(struct snd_pcm_hw_params *params)
->  {
->  	int sample_size;
+> Created and tested on Amstrad Delta against linux-2.6.38-rc2
+> 
+> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+> ---
+> NOTE:
+> I'm not sure if the value choosen is Amstrad Delta specific or not.
+> 
+>  sound/soc/codecs/cx20442.c |    3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> --- git/sound/soc/codecs/cx20442.c.orig	2011-01-31 20:09:18.000000000 +0100
+> +++ git/sound/soc/codecs/cx20442.c	2011-01-31 20:16:20.000000000 +0100
+> @@ -367,9 +367,12 @@ static int cx20442_codec_remove(struct s
+>  	return 0;
+>  }
 >  
-> -	switch (params_format(params)) {
-> -	case SNDRV_PCM_FORMAT_S16_LE:
-> -	case SNDRV_PCM_FORMAT_S16_BE:
-> -		sample_size = 16;
-> -		break;
-> -	case SNDRV_PCM_FORMAT_S20_3LE:
-> -	case SNDRV_PCM_FORMAT_S20_3BE:
-> -		sample_size = 20;
-> -		break;
-> -	case SNDRV_PCM_FORMAT_S24_LE:
-> -	case SNDRV_PCM_FORMAT_S24_BE:
-> -		sample_size = 24;
-> -		break;
-> -	case SNDRV_PCM_FORMAT_S32_LE:
-> -	case SNDRV_PCM_FORMAT_S32_BE:
-> -		sample_size = 32;
-> -		break;
-> -	default:
-> -		return -ENOTSUPP;
-> -	}
-> +	sample_size = snd_pcm_format_width(params_format(params));
-> +	if (sample_size < 0)
-> +		return sample_size;
->  
->  	return snd_soc_calc_frame_size(sample_size, params_channels(params),
->  				       1);
+> +static const u8 cx20442_reg = CX20442_TELOUT | CX20442_MIC;
+> +
+>  static struct snd_soc_codec_driver cx20442_codec_dev = {
+>  	.probe = 	cx20442_codec_probe,
+>  	.remove = 	cx20442_codec_remove,
+> +	.reg_cache_default = &cx20442_reg,
+>  	.reg_cache_size = 1,
+>  	.reg_word_size = sizeof(u8),
+>  	.read = cx20442_read_reg_cache,
+> _______________________________________________
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
