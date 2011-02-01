@@ -1,19 +1,15 @@
-From: Tapio Vihuri <tapio.vihuri@nokia.com>
-Subject: Re: [PATCH v6 0/3] input: Add support for ECI
- (multimedia) accessories
-Date: Tue, 01 Feb 2011 11:32:41 +0200
-Message-ID: <1296552761.4168.40.camel@dell>
-References: <1296482634-31666-1-git-send-email-tapio.vihuri@nokia.com>
-	<20110201085823.GB17706@core.coreip.homeip.net>
-Reply-To: tapio.vihuri@nokia.com
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: [PATCH] ASoC: Amstrad Delta: fix const related build
+	error
+Date: Tue, 1 Feb 2011 10:38:29 +0100
+Message-ID: <201102011038.29330.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa01.nokia.com (smtp.nokia.com [147.243.1.47])
-	by alsa0.perex.cz (Postfix) with ESMTP id D4D4E1037F3
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 10:33:02 +0100 (CET)
-In-Reply-To: <20110201085823.GB17706@core.coreip.homeip.net>
+Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 28A9E103926
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 10:59:05 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,86 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: randy.dunlap@oracle.com, alsa-devel@alsa-project.org, samu.p.onkalo@nokia.com, peter.ujfalusi@nokia.com, linux-kernel@vger.kernel.org, ilkka.koskinen@nokia.com
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-02-01 at 00:58 -0800, ext Dmitry Torokhov wrote:
-> Hi Tapio,
-> 
-> On Mon, Jan 31, 2011 at 04:03:51PM +0200, tapio.vihuri@nokia.com wrote:
-> > 
-> > This patch set introduce Multimedia Headset Accessory support for
-> > Nokia phones. Technically those are known as ECI (Enhancement Control Interface)
-> > 	
-> > If headset has many buttons, like play, vol+, vol- etc. then it is propably ECI
-> > accessory.
-> > 
-> > Among several buttons ECI accessories contains memory for storing several
-> > parameters.
-> > 
-> > This ECI input driver provides the following features:
-> >  - reading ECI configuration memory
-> >  - ECI buttons as input events
-> > 
-> > Drive is constructed as follows:
-> >  - ECI accessory input driver deals with headset accessory
-> >  - ECI bus control driver deals the HW transfering data to/from headset
-> >  - platform data match used HW
-> 
-> I finally had a chance to look though the patches more closely and I do
-> not understand why you decided to introduce the platform device in
-> addition to I2C device. You end up with 2 artificially separated bodies of
-> code that are not viable on their own. The ECI module with it's platform
-> device is not usable without the controller; the controller can not be
-> registered without the ECI device initialized; there are ordering
-> issues, both initialization and PM-wise and you are forced to support
-> only one device.
-> 
-> Is there going to be an SPI interface as well? If not then fold it all
-> together and have I2C device as the only device involved. If SPI is a
-> possibility then look in drivers such as adxl34x, ad714x and others that
-> are split into core module and bus interface implementations.
-> 
-> Thanks.
-> 
+The Amstrad Delta ASoC driver used to override the digital_mute() 
+callback, expected to be not provided by the on-board CX20442 CODEC 
+driver, with its own implementation. While this is still posssible when 
+substituting the whole empty snd_soc_dai_driver.ops member (the CX20442 
+case), replacing snd_soc_dai_ops.digital_mute only is no longer correct 
+after the snd_soc_dai_driver.ops member has been constified, and results 
+in build error.
 
-Hi Dmitry
+Drop this actually not used code path in hope the CX20442 driver never 
+provides its own snd_soc_dai_ops structure.
 
-Thank you for reviewing.
+Created and tested against linux-2.6.38-rc2
 
-The reasoning for separating driver to the two parts is having both
-common and different hardware.
+Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+---
+Please consider queuing this patch for the current rc cycle.
 
-The ECI input, as platform device is common part and only dealing with
-the accessory HW (meaning the headset accessory).
-This is standardiced part of system, where specification guarantee HW
-behaving same way accross several headset accessories.
-The accessory is plugged to the terminal using four pin AV-cable, much
-same way as USB mouse.
-I just didn't see need to introduce new bus type for one wire ECI data
-link, hence platform device.
+ sound/soc/omap/ams-delta.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-The ECI controller, as I2C device is the variable part of the system.
-In this case it's microcontroller in I2C bus, but there are other
-versions too.
-There is no specification about these controller's internals, and those
-are quite different.
-It is also possible to use other buses too for connecting controller to
-terminal, like SPI.
-
-The idea was that if ECI is used in device, just take ECI input driver
-and select the ECI controller which is used in the platform.
-
-And as long as the ECI controller driver use the same interface to ECI
-input driver, evetrything works OK.
-This allows also dynamic selection of used control device. I mean we can
-compile several ECI controllers as modules and detect the HW at
-initialization.
-
-I use the ad714x as example, but I can take second look on that too.
-
-Please let me know if this is making sense.
-
-Thanks,
-Tapio
+--- git/sound/soc/omap/ams-delta.c.orig	2011-01-31 19:49:29.000000000 
++0100
++++ git/sound/soc/omap/ams-delta.c	2011-01-31 23:24:45.000000000 +0100
+@@ -507,8 +507,6 @@ static int ams_delta_cx20442_init(struct
+ 	/* Set up digital mute if not provided by the codec */
+ 	if (!codec_dai->driver->ops) {
+ 		codec_dai->driver->ops = &ams_delta_dai_ops;
+-	} else if (!codec_dai->driver->ops->digital_mute) {
+-		codec_dai->driver->ops->digital_mute = ams_delta_digital_mute;
+ 	} else {
+ 		ams_delta_ops.startup = ams_delta_startup;
+ 		ams_delta_ops.shutdown = ams_delta_shutdown;
