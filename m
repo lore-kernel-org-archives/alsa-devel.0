@@ -1,46 +1,101 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH v2 08/13] OMAP2+: McBSP: hwmod adaptation for McBSP
-Date: Tue, 01 Feb 2011 14:22:49 +0200
-Message-ID: <4D47FB19.9040901@nokia.com>
-References: <1296485437-12806-1-git-send-email-kishon@ti.com> <1296485437-12806-9-git-send-email-kishon@ti.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: soc-core: Ensure codec_reg has fixed
+	length fields
+Date: Tue,  1 Feb 2011 12:24:08 +0000
+Message-ID: <1296563048-8137-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1296485437-12806-9-git-send-email-kishon@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: ext Kishon Vijay Abraham I <kishon@ti.com>
-Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, paul@pwsan.com, charu@ti.com, shubhrajyoti@ti.com, b-cousson@ti.com, khilman@deeprootsystems.com, p-basak2@ti.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E9DB0244B1
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 13:24:15 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Looks good, but...
+Make the format of the codec_reg file more easily parsable.  Remove
+the header field which gives the codec name.  These changes are important
+when it comes to extend the debugfs codec_reg file to dump more than
+PAGE_SIZE bytes to make it easier to calculate offsets within the
+file.
 
-On 01/31/2011 04:50 PM, ext Kishon Vijay Abraham I wrote:
-> Modify OMAP2+ McBSP to use omap hwmod framework APIs
->=20
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> Signed-off-by: Charulatha V <charu@ti.com>
-> Signed-off-by: Shubhrajyoti D <shubhrajyoti@ti.com>
-> ---
->  arch/arm/mach-omap2/mcbsp.c |  685 +++------------------------------=
-----------
->  1 files changed, 43 insertions(+), 642 deletions(-)
+We still need to handle the case when the snd_soc_read() call fails
+and <no data: %d> is outputted.
 
-=2E..
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-core.c |   27 ++++++++++++++++++++++++---
+ 1 files changed, 24 insertions(+), 3 deletions(-)
 
-> +	if (oh->class->rev =3D=3D MCBSP_CONFIG_TYPE3) {
-> +		if (id =3D=3D 2)
-> +			pdata->buffer_size =3D 0x500; /*FIFO size is 1024 + 256*/
-> +		else
-> +			pdata->buffer_size =3D 0x80;  /*FIFO size is 128*/
-> +	}
-
-I would add spaces around these comments (after /* and before */).
-
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 3feddd9..205cbd7 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -69,10 +69,32 @@ static int pmdown_time = 5000;
+ module_param(pmdown_time, int, 0);
+ MODULE_PARM_DESC(pmdown_time, "DAPM stream powerdown time (msecs)");
+ 
++/* returns the minimum number of bytes needed to represent
++ * a particular given value */
++static int min_bytes_needed(unsigned long val)
++{
++	int c = 0;
++	int i;
++
++	for (i = (sizeof val * 8) - 1; i >= 0; --i, ++c)
++		if (val & (1UL << i))
++			break;
++	c = (sizeof val * 8) - c;
++	if (!c || (c % 8))
++		c = (c + 8) / 8;
++	else
++		c /= 8;
++	return c;
++}
++
+ /* codec register dump */
+ static ssize_t soc_codec_reg_show(struct snd_soc_codec *codec, char *buf)
+ {
+ 	int ret, i, step = 1, count = 0;
++	int wordsize, regsize;
++
++	wordsize = codec->driver->reg_word_size * 2;
++	regsize = min_bytes_needed(codec->driver->reg_cache_size) * 2;
+ 
+ 	if (!codec->driver->reg_cache_size)
+ 		return 0;
+@@ -80,12 +102,11 @@ static ssize_t soc_codec_reg_show(struct snd_soc_codec *codec, char *buf)
+ 	if (codec->driver->reg_cache_step)
+ 		step = codec->driver->reg_cache_step;
+ 
+-	count += sprintf(buf, "%s registers\n", codec->name);
+ 	for (i = 0; i < codec->driver->reg_cache_size; i += step) {
+ 		if (codec->readable_register && !codec->readable_register(codec, i))
+ 			continue;
+ 
+-		count += sprintf(buf + count, "%2x: ", i);
++		count += sprintf(buf + count, "%.*x: ", regsize, i);
+ 		if (count >= PAGE_SIZE - 1)
+ 			break;
+ 
+@@ -101,7 +122,7 @@ static ssize_t soc_codec_reg_show(struct snd_soc_codec *codec, char *buf)
+ 			if (ret >= 0)
+ 				count += snprintf(buf + count,
+ 						  PAGE_SIZE - count,
+-						  "%4x", ret);
++						  "%.*x", wordsize, ret);
+ 			else
+ 				count += snprintf(buf + count,
+ 						  PAGE_SIZE - count,
+-- 
+1.7.3.5
