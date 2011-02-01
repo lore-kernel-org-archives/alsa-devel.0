@@ -1,49 +1,157 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: soc_jack - add function to
- determine jack type
-Date: Tue, 1 Feb 2011 13:43:53 +0000
-Message-ID: <20110201134352.GF12743@opensource.wolfsonmicro.com>
-References: <1296234579-6622-1-git-send-email-priya.harsha@intel.com>
-	<20110131120826.GD5123@opensource.wolfsonmicro.com>
-	<98769532B4BB14429434178695419EAE08C0FE9A4D@bgsmsx501.gar.corp.intel.com>
-	<20110201132206.GE12743@opensource.wolfsonmicro.com>
-	<98769532B4BB14429434178695419EAE08C0FE9A6C@bgsmsx501.gar.corp.intel.com>
+From: "ABRAHAM, KISHON VIJAY" <kishon@ti.com>
+Subject: Re: [PATCH v2 09/13] OMAP: McBSP: use omap_device APIs to modify SYSCONFIG
+Date: Tue, 1 Feb 2011 19:17:53 +0530
+Message-ID: <AANLkTiksT=eQ3w9P80HeXtSp2wzFjmX5Gb7YFZNjQkcp@mail.gmail.com>
+References: <1296485437-12806-1-git-send-email-kishon@ti.com>
+	<1296485437-12806-10-git-send-email-kishon@ti.com>
+	<4D47FA37.1060001@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C0D0110394A
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 14:43:56 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <98769532B4BB14429434178695419EAE08C0FE9A6C@bgsmsx501.gar.corp.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Harsha, Priya" <priya.harsha@intel.com>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <4D47FA37.1060001@nokia.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, paul@pwsan.com, charu@ti.com, shubhrajyoti@ti.com, b-cousson@ti.com, khilman@deeprootsystems.com, p-basak2@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 01, 2011 at 07:05:26PM +0530, Harsha, Priya wrote:
+On Tue, Feb 1, 2011 at 5:49 PM, Peter Ujfalusi <peter.ujfalusi@nokia.co=
+m> wrote:
+> Hi,
+>
+> On 01/31/2011 04:50 PM, ext Kishon Vijay Abraham I wrote:
+>> McBSP2/3 in OMAP3 has sidetone feature which requires autoidle
+>> to be disabled before starting the sidetone. Also SYSCONFIG
+>> register has to be set with smart idle or no idle depending on the
+>> dma op mode (threshold or element sync). For doing these operations
+>> dynamically at runtime, omap_device APIs are used to modify SYSCONFI=
+G register.
+>>
+>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>> ---
+>> =A0arch/arm/plat-omap/mcbsp.c | =A0 66 +++++++++++++++++++++++------=
+--------------
+>> =A01 files changed, 35 insertions(+), 31 deletions(-)
+>>
+>> diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
+>
+> ...
+>
+>> =A0static inline void omap34xx_mcbsp_request(struct omap_mcbsp *mcbs=
+p)
+>> =A0{
+>> + =A0 =A0 struct omap_device *od;
+>> +
+>> + =A0 =A0 od =3D find_omap_device_by_dev(mcbsp->dev);
+>> =A0 =A0 =A0 /*
+>> =A0 =A0 =A0 =A0* Enable wakup behavior, smart idle and all wakeups
+>> =A0 =A0 =A0 =A0* REVISIT: some wakeups may be unnecessary
+>> =A0 =A0 =A0 =A0*/
+>> =A0 =A0 =A0 if (cpu_is_omap34xx() || cpu_is_omap44xx()) {
+>> - =A0 =A0 =A0 =A0 =A0 =A0 u16 syscon;
+>> -
+>> - =A0 =A0 =A0 =A0 =A0 =A0 syscon =3D MCBSP_READ(mcbsp, SYSCON);
+>> - =A0 =A0 =A0 =A0 =A0 =A0 syscon &=3D ~(ENAWAKEUP | SIDLEMODE(0x03) =
+| CLOCKACTIVITY(0x03));
+>> -
+>> - =A0 =A0 =A0 =A0 =A0 =A0 if (mcbsp->dma_op_mode =3D=3D MCBSP_DMA_MO=
+DE_THRESHOLD) {
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 syscon |=3D (ENAWAKEUP | S=
+IDLEMODE(0x02) |
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 CLOCKACTIVITY(0x02));
+>> + =A0 =A0 =A0 =A0 =A0 =A0 if (mcbsp->dma_op_mode !=3D MCBSP_DMA_MODE=
+_THRESHOLD)
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 omap_device_noidle(od);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 else
+>
+> Would it make sense to call here:
+> omap_device_smartidle(od); ?
 
-Please fix the word wrapping in your MUA to wrap at less than 80
-columns.
+   I dint explicitly call it because, pm_runtime_get_sync() would have
+already set the
+   SYSCONFIG to smartidle.
 
-> What if I add a field debouce to snd_soc_jack and machine driver needs
-> to program the value. The codec driver should wait for that time
-> before reading the adc values Will this help
+> What happens, if we configure McBSP to element mode, play a sample,
+> configure it to threshold?
+> I think we should explicitly as for smartidle, when we suppose to be =
+in
+> smartidle.
 
-The driver providing the ADC (which may not be part of a CODEC at all)
-shouldn't have to worry about this stuff unless it's done the
-debouncing - we should avoid having to open code functionality in
-individual drivers.  It feels like we should have actual code for
-managing the process of detecting what's connected, with flexibility to
-handle things like pre-debouncing.  If some of it is left sketchy in the
-first instance that's OK but we should have an idea what the overall
-picture is.
+   In either ways, this function will be called when we do a request
+and this function
+   (omap34xx_mcbsp_request) gets called after pm_runtime_get_sync. So b=
+ased on
+   the value of dma_op_mode at the time of request, either noidle or
+smartidle will
+   be set.
+
+>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 MCBSP_WRITE(mcbsp, WAKEU=
+PEN, XRDYEN | RRDYEN);
+>> - =A0 =A0 =A0 =A0 =A0 =A0 } else {
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 syscon |=3D SIDLEMODE(0x01=
+);
+>> - =A0 =A0 =A0 =A0 =A0 =A0 }
+>> -
+>> - =A0 =A0 =A0 =A0 =A0 =A0 MCBSP_WRITE(mcbsp, SYSCON, syscon);
+>> =A0 =A0 =A0 }
+>> =A0}
+>>
+>> =A0static inline void omap34xx_mcbsp_free(struct omap_mcbsp *mcbsp)
+>> =A0{
+>> + =A0 =A0 struct omap_device *od;
+>> +
+>> + =A0 =A0 od =3D find_omap_device_by_dev(mcbsp->dev);
+>> +
+>> =A0 =A0 =A0 /*
+>> =A0 =A0 =A0 =A0* Disable wakup behavior, smart idle and all wakeups
+>> =A0 =A0 =A0 =A0*/
+>> =A0 =A0 =A0 if (cpu_is_omap34xx() || cpu_is_omap44xx()) {
+>> - =A0 =A0 =A0 =A0 =A0 =A0 u16 syscon;
+>> -
+>> - =A0 =A0 =A0 =A0 =A0 =A0 syscon =3D MCBSP_READ(mcbsp, SYSCON);
+>> - =A0 =A0 =A0 =A0 =A0 =A0 syscon &=3D ~(ENAWAKEUP | SIDLEMODE(0x03) =
+| CLOCKACTIVITY(0x03));
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 /*
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* HW bug workaround - If no_idle mode=
+ is taken, we need to
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* go to smart_idle before going to al=
+ways_idle, or the
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0* device will not hit retention anymo=
+re.
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*/
+>> - =A0 =A0 =A0 =A0 =A0 =A0 syscon |=3D SIDLEMODE(0x02);
+>> - =A0 =A0 =A0 =A0 =A0 =A0 MCBSP_WRITE(mcbsp, SYSCON, syscon);
+>> -
+>> - =A0 =A0 =A0 =A0 =A0 =A0 syscon &=3D ~(SIDLEMODE(0x03));
+>> - =A0 =A0 =A0 =A0 =A0 =A0 MCBSP_WRITE(mcbsp, SYSCON, syscon);
+>> -
+>> + =A0 =A0 =A0 =A0 =A0 =A0 omap_device_default_idle(od);
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 MCBSP_WRITE(mcbsp, WAKEUPEN, 0);
+>
+> Hrm, it would be better to do it as the comment said:
+> omap_device_smartidle(od);
+> omap_device_forceidle(od);
+
+  hmmm..ok. Will make this change in the next version.
+
+>
+> BTW: what is the default_idle in case of McBSP?
+
+   The default idle mode for McBSP is SMARTIDLE. It is actually
+   based on SWSUP flag. If it is set, the idlemode is NOIDLE else
+   SMARTIDLE. Pls have a look at my patch that implements
+   omap_device_default_idle() [1].
+
+   [1]http://permalink.gmane.org/gmane.linux.ports.arm.omap/51134
+
+>
+> --
+> P=E9ter
+>
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
