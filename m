@@ -1,17 +1,18 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: [Resend] [PATCH] ASoC: Amstrad Delta: fix const
-	related build error
-Date: Tue, 1 Feb 2011 11:11:55 +0100
-Message-ID: <201102011111.56190.jkrzyszt@tis.icnet.pl>
-References: <201102011038.29330.jkrzyszt@tis.icnet.pl>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Support 8 bit samples in soc-util
+Date: Tue, 1 Feb 2011 11:00:06 +0000
+Message-ID: <20110201110005.GA12743@opensource.wolfsonmicro.com>
+References: <1296505848-29532-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<alpine.LNX.2.00.1101312325010.6272@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4BA29103926
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 11:12:48 +0100 (CET)
-In-Reply-To: <201102011038.29330.jkrzyszt@tis.icnet.pl>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 11EE3103943
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 12:00:08 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <alpine.LNX.2.00.1101312325010.6272@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,39 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The Amstrad Delta ASoC driver used to override the digital_mute() 
-callback, expected to be not provided by the on-board CX20442 CODEC 
-driver, with its own implementation. While this is still posssible when 
-substituting the whole empty snd_soc_dai_driver.ops member (the CX20442 
-case), replacing snd_soc_dai_ops.digital_mute only is no longer correct 
-after the snd_soc_dai_driver.ops member has been constified, and results 
-in build error.
+On Mon, Jan 31, 2011 at 11:27:41PM +0100, Jaroslav Kysela wrote:
+> On Mon, 31 Jan 2011, Mark Brown wrote:
 
-Drop this actually not used code path in hope the CX20442 driver never 
-provides its own snd_soc_dai_ops structure.
+> >Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-Created and tested against linux-2.6.38-rc2
+> Is any reason to avoid using the snd_pcm_format_width() function here?
 
-Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
----
-Resending because of line wrap, sorry.
-Please consider queuing this patch for the current rc cycle.
-
- sound/soc/omap/ams-delta.c |    2 --
- 1 file changed, 2 deletions(-)
-
---- git/sound/soc/omap/ams-delta.c.orig	2011-01-31 19:49:29.000000000 +0100
-+++ git/sound/soc/omap/ams-delta.c	2011-01-31 23:24:45.000000000 +0100
-@@ -507,8 +507,6 @@ static int ams_delta_cx20442_init(struct
- 	/* Set up digital mute if not provided by the codec */
- 	if (!codec_dai->driver->ops) {
- 		codec_dai->driver->ops = &ams_delta_dai_ops;
--	} else if (!codec_dai->driver->ops->digital_mute) {
--		codec_dai->driver->ops->digital_mute = ams_delta_digital_mute;
- 	} else {
- 		ams_delta_ops.startup = ams_delta_startup;
- 		ams_delta_ops.shutdown = ams_delta_shutdown;
+Poor documentation.
