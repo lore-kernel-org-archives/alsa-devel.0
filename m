@@ -1,18 +1,18 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: snd_soc_jack_add_gpios vs. SOC_DAPM_PIN_SWITCH
-Date: Tue, 1 Feb 2011 10:59:00 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0310C8E48A@HQMAIL01.nvidia.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF0310C8E333@HQMAIL01.nvidia.com>
-	<20110201113351.GB12743@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH v2 00/13] OMAP: McBSP: hwmod adaptation and
+ runtime conversion
+Date: Tue, 01 Feb 2011 21:44:03 +0200
+Message-ID: <4D486283.6000107@nokia.com>
+References: <1296485437-12806-1-git-send-email-kishon@ti.com>
+	<20110201195326.b3c9f5f5.jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7801724628
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 19:59:07 +0100 (CET)
-In-Reply-To: <20110201113351.GB12743@opensource.wolfsonmicro.com>
-Content-Language: en-US
+Received: from mgw-da02.nokia.com (smtp.nokia.com [147.243.128.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id C3FC424648
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 20:38:11 +0100 (CET)
+In-Reply-To: <20110201195326.b3c9f5f5.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,38 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: ext Jarkko Nikula <jhnikula@gmail.com>
+Cc: alsa-devel@alsa-project.org, b-cousson@ti.com, khilman@deeprootsystems.com, broonie@opensource.wolfsonmicro.com, paul@pwsan.com, Kishon Vijay Abraham I <kishon@ti.com>, p-basak2@ti.com, charu@ti.com, linux-omap@vger.kernel.org, shubhrajyoti@ti.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote at Tuesday, February 01, 2011 4:34 AM:
-> On Mon, Jan 31, 2011 at 04:03:58PM -0800, Stephen Warren wrote:
+On 02/01/2011 07:53 PM, ext Jarkko Nikula wrote:
+> On Mon, 31 Jan 2011 20:20:24 +0530
+> Kishon Vijay Abraham I <kishon@ti.com> wrote:
 > 
-> > However, if I use the control to disable the headphones, then
-> > unplug/replug the headphones, the jack detect seems to override
-> > the control, and I hear audio from the headphones.
-> 
-> Using these two together makes no sense.  Either you manually control
-> the state of the output or you manage it automatically.
+>> Modify OMAP McBSP driver to use omap hwmod framework and pm runtime  APIs.
+>>
+>> Created on top of linux OMAP master (linux-omap-2.6 :master)
+>> Did digital loopback testing on OMAP4430, OMAP3430 and OMAP2430 SDP boards.
+>> Verified that this patch series does not break the OMAP1 build.
+>>
+>> Patch series modifies audio layer and hence would appreciate the help of
+>> some audio guy to test this series.
+>>
+>> Patch series requires the following patch to be present
+>> http://permalink.gmane.org/gmane.linux.ports.arm.omap/51132
+>> http://permalink.gmane.org/gmane.linux.ports.arm.omap/51133
+>> http://permalink.gmane.org/gmane.linux.ports.arm.omap/51134
+>>
+> Generally I don't see any major show stopper here in audio point of
+> view after fixing those few minor details. I tested and Beagle plays
+> fine and N810 too with some tweaks (not related to this set).
 
-I was thinking that the jack detect would be used to enable/disable widgets
-for power purposes, but with a manual override to allow SW to set up use
-cases where only the internal speakers were used, and never headphones.
+I have not tested the series on HW, but it looks OK for me as well.
 
-That said, if that isn't something that's ever typically done, I'm fine
-not supporting that.
-
-> Generally a PIN_SWITCH() should only be used to offer control if none is
-> availabile within the CODEC - in the case of Harmony it wouldn't make
-> much sense as there's plenty of control in the CODEC for what gets
-> routed to the various outputs.
-
-IIRC, the codec controls allow selecting only what gets routed, but there
-wasn't an overall "enable/disable speakers" switch (the mute switch does
-not disable the DAPM widgets). One would have to disable all the routing
-options to disable the speaker amplifiers, which would entail remembering
-what those routing options were to restore them once the speakers were
-desired again. A manual switch avoids this.
-
--- 
-nvpublic
+All:
+Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
