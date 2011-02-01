@@ -1,19 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ARM: tegra: Add to struct
-	harmony_audio_platform_data
-Date: Tue, 01 Feb 2011 14:01:46 +0000
-Message-ID: <1296568906.3327.14.camel@odin>
-References: <1296513435-14792-1-git-send-email-swarren@nvidia.com>
+Subject: Re: [Resend] [PATCH] ASoC: Amstrad Delta: fix const
+ related build error
+Date: Tue, 01 Feb 2011 14:02:24 +0000
+Message-ID: <1296568944.3327.15.camel@odin>
+References: <201102011038.29330.jkrzyszt@tis.icnet.pl>
+	<201102011111.56190.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id BEF4224519
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 15:01:50 +0100 (CET)
-Received: by wyi11 with SMTP id 11so6657198wyi.38
-	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 06:01:50 -0800 (PST)
-In-Reply-To: <1296513435-14792-1-git-send-email-swarren@nvidia.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2087024524
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 15:02:28 +0100 (CET)
+Received: by wwe15 with SMTP id 15so6794671wwe.20
+	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 06:02:27 -0800 (PST)
+In-Reply-To: <201102011111.56190.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,35 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-01-31 at 15:37 -0700, Stephen Warren wrote:
-> Add fields to describe all the audio-related GPIOs on Harmony, except for
-> the codec's GPIO IRQ, which will be passed in its i2c_board_info.
+On Tue, 2011-02-01 at 11:11 +0100, Janusz Krzysztofik wrote:
+> The Amstrad Delta ASoC driver used to override the digital_mute() 
+> callback, expected to be not provided by the on-board CX20442 CODEC 
+> driver, with its own implementation. While this is still posssible when 
+> substituting the whole empty snd_soc_dai_driver.ops member (the CX20442 
+> case), replacing snd_soc_dai_ops.digital_mute only is no longer correct 
+> after the snd_soc_dai_driver.ops member has been constified, and results 
+> in build error.
 > 
-> Signed-off-by: Stephen Warren <swarren@nvidia.com>
+> Drop this actually not used code path in hope the CX20442 driver never 
+> provides its own snd_soc_dai_ops structure.
+> 
+> Created and tested against linux-2.6.38-rc2
+> 
+> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 > ---
-> Mark, can you please apply this to your tegra-arch branch, and merge that.
-> Thanks!
+> Resending because of line wrap, sorry.
+> Please consider queuing this patch for the current rc cycle.
 > 
->  arch/arm/mach-tegra/include/mach/harmony_audio.h |    3 +++
->  1 files changed, 3 insertions(+), 0 deletions(-)
-> 
-> diff --git a/arch/arm/mach-tegra/include/mach/harmony_audio.h b/arch/arm/mach-tegra/include/mach/harmony_audio.h
-> index 5c46391..af08650 100644
-> --- a/arch/arm/mach-tegra/include/mach/harmony_audio.h
-> +++ b/arch/arm/mach-tegra/include/mach/harmony_audio.h
-> @@ -16,4 +16,7 @@
->  
->  struct harmony_audio_platform_data {
->  	int gpio_spkr_en;
-> +	int gpio_hp_det;
-> +	int gpio_int_mic_en;
-> +	int gpio_ext_mic_en;
->  };
-
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
