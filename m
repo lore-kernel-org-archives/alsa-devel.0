@@ -1,17 +1,19 @@
-From: "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>
-Subject: Re: No soundcards found with 2.6.37 (and 2.6.38-rc2)
-Date: Tue, 1 Feb 2011 14:57:57 +0530
-Message-ID: <B85A65D85D7EB246BE421B3FB0FBB59302486D66D4@dbde02.ent.ti.com>
-References: <1296551578.2009.43.camel@sven>
+From: Tapio Vihuri <tapio.vihuri@nokia.com>
+Subject: Re: [PATCH v6 0/3] input: Add support for ECI
+ (multimedia) accessories
+Date: Tue, 01 Feb 2011 11:32:41 +0200
+Message-ID: <1296552761.4168.40.camel@dell>
+References: <1296482634-31666-1-git-send-email-tapio.vihuri@nokia.com>
+	<20110201085823.GB17706@core.coreip.homeip.net>
+Reply-To: tapio.vihuri@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id F3C4C24464
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 10:28:07 +0100 (CET)
-In-Reply-To: <1296551578.2009.43.camel@sven>
-Content-Language: en-US
+Received: from mgw-sa01.nokia.com (smtp.nokia.com [147.243.1.47])
+	by alsa0.perex.cz (Postfix) with ESMTP id D4D4E1037F3
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 10:33:02 +0100 (CET)
+In-Reply-To: <20110201085823.GB17706@core.coreip.homeip.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,31 +23,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sven Neumann <s.neumann@raumfeld.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Daniel Mack <daniel@caiaq.de>
+To: ext Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: randy.dunlap@oracle.com, alsa-devel@alsa-project.org, samu.p.onkalo@nokia.com, peter.ujfalusi@nokia.com, linux-kernel@vger.kernel.org, ilkka.koskinen@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Tue, Feb 01, 2011 at 14:42:58, Sven Neumann wrote:
-> Hi,
+On Tue, 2011-02-01 at 00:58 -0800, ext Dmitry Torokhov wrote:
+> Hi Tapio,
 > 
-> we are using an ARM PXA300 based device with SoC devices. The code is
-> completely upstream, our platform is defined in sound/soc/pxa/raumfeld.c
+> On Mon, Jan 31, 2011 at 04:03:51PM +0200, tapio.vihuri@nokia.com wrote:
+> > 
+> > This patch set introduce Multimedia Headset Accessory support for
+> > Nokia phones. Technically those are known as ECI (Enhancement Control Interface)
+> > 	
+> > If headset has many buttons, like play, vol+, vol- etc. then it is propably ECI
+> > accessory.
+> > 
+> > Among several buttons ECI accessories contains memory for storing several
+> > parameters.
+> > 
+> > This ECI input driver provides the following features:
+> >  - reading ECI configuration memory
+> >  - ECI buttons as input events
+> > 
+> > Drive is constructed as follows:
+> >  - ECI accessory input driver deals with headset accessory
+> >  - ECI bus control driver deals the HW transfering data to/from headset
+> >  - platform data match used HW
 > 
-> I've recently tried to update our kernel to 2.6.37, but it looks like
-> there have been some changes in the Linux kernel that cause our sound
-> hardware not to be recognized or initialised correctly any longer.
+> I finally had a chance to look though the patches more closely and I do
+> not understand why you decided to introduce the platform device in
+> addition to I2C device. You end up with 2 artificially separated bodies of
+> code that are not viable on their own. The ECI module with it's platform
+> device is not usable without the controller; the controller can not be
+> registered without the ECI device initialized; there are ordering
+> issues, both initialization and PM-wise and you are forced to support
+> only one device.
+> 
+> Is there going to be an SPI interface as well? If not then fold it all
+> together and have I2C device as the only device involved. If SPI is a
+> possibility then look in drivers such as adxl34x, ad714x and others that
+> are split into core module and bus interface implementations.
+> 
+> Thanks.
 > 
 
-I also faced similar problem on the platform I had and I submitted couple of
-patches to overcome this. Please see:
+Hi Dmitry
 
-https://patchwork.kernel.org/patch/495211/ 
-https://patchwork.kernel.org/patch/495751/
+Thank you for reviewing.
 
-Also, you can refer to https://patchwork.kernel.org/patch/485331/ for the
-discussion which happened before posting the patch to the list.
+The reasoning for separating driver to the two parts is having both
+common and different hardware.
+
+The ECI input, as platform device is common part and only dealing with
+the accessory HW (meaning the headset accessory).
+This is standardiced part of system, where specification guarantee HW
+behaving same way accross several headset accessories.
+The accessory is plugged to the terminal using four pin AV-cable, much
+same way as USB mouse.
+I just didn't see need to introduce new bus type for one wire ECI data
+link, hence platform device.
+
+The ECI controller, as I2C device is the variable part of the system.
+In this case it's microcontroller in I2C bus, but there are other
+versions too.
+There is no specification about these controller's internals, and those
+are quite different.
+It is also possible to use other buses too for connecting controller to
+terminal, like SPI.
+
+The idea was that if ECI is used in device, just take ECI input driver
+and select the ECI controller which is used in the platform.
+
+And as long as the ECI controller driver use the same interface to ECI
+input driver, evetrything works OK.
+This allows also dynamic selection of used control device. I mean we can
+compile several ECI controllers as modules and detect the HW at
+initialization.
+
+I use the ad714x as example, but I can take second look on that too.
+
+Please let me know if this is making sense.
 
 Thanks,
-Sudhakar
+Tapio
