@@ -1,18 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: soc-core: Ensure codec_reg has fixed
- length fields
-Date: Tue, 1 Feb 2011 14:31:29 +0000
-Message-ID: <20110201143129.GL12743@opensource.wolfsonmicro.com>
-References: <1296563048-8137-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.38
+Date: Tue, 1 Feb 2011 14:56:31 +0000
+Message-ID: <20110201145631.GA7680@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C97011039AD
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 15:31:30 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3DCD010393B
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 15:56:15 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1296563048-8137-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +19,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 01, 2011 at 12:24:08PM +0000, Dimitris Papastamos wrote:
-> Make the format of the codec_reg file more easily parsable.  Remove
-> the header field which gives the codec name.  These changes are important
-> when it comes to extend the debugfs codec_reg file to dump more than
-> PAGE_SIZE bytes to make it easier to calculate offsets within the
-> file.
+The following changes since commit a3adfa00e8089aa72826c6ba04bcb18cfceaf0a9:
 
-Applied, thanks.
+  ASoC: correct link specifications for corgi, poodle and spitz (2011-01-25 15:18:42 +0000)
+
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.38
+
+Nothing exciting here except for Stephen's mask/val_mask fix which fixes
+a fairly wide breakage.
+
+Janusz Krzysztofik (2):
+      ASoC: Amstrad Delta: fix const related build error
+      ASoC: CX20442: fix NULL pointer dereference
+
+Jarkko Nikula (1):
+      ASoC: Fix module refcount for auxiliary devices
+
+Manjunathappa, Prakash (1):
+      ASoC: DaVinci: fix kernel panic due to uninitialized platform_data
+
+Stephen Warren (1):
+      ASoC: Fix mask/val_mask confusion snd_soc_dapm_put_volsw()
+
+ sound/soc/codecs/cq93vc.c  |    2 +-
+ sound/soc/codecs/cx20442.c |    3 +++
+ sound/soc/omap/ams-delta.c |    2 --
+ sound/soc/soc-core.c       |    3 ---
+ sound/soc/soc-dapm.c       |    6 +++---
+ 5 files changed, 7 insertions(+), 9 deletions(-)
