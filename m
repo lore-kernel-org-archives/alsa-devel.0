@@ -1,15 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.38
-Date: Tue, 1 Feb 2011 14:56:31 +0000
-Message-ID: <20110201145631.GA7680@opensource.wolfsonmicro.com>
+From: Vincent Meserette <vmeserette@aldebaran-robotics.com>
+Subject: issue with AD1989A HDA codec and alsamixer
+Date: Tue, 1 Feb 2011 15:57:29 +0100
+Message-ID: <AANLkTin8tsrNrcoYaPvQz0uO=OtD-tow1Ds0i8WTJyh7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3DCD010393B
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 15:56:15 +0100 (CET)
-Content-Disposition: inline
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 78E17103948
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 15:57:30 +0100 (CET)
+Received: by eyg24 with SMTP id 24so2972727eyg.38
+	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 06:57:30 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,36 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit a3adfa00e8089aa72826c6ba04bcb18cfceaf0a9:
+Hi all,
 
-  ASoC: correct link specifications for corgi, poodle and spitz (2011-01-25 15:18:42 +0000)
+I am working on a system which includes a connexant AD1989A HDA codec
+connected to a ATOM processor.
+I have four microphones connected to the B and C ports of this codec.
+If I change one of the 3 capture gains present in the alsamixer
+(Capture, Capture 1 or Capture 3), I can't have any more signal on the
+B and C ports
+It seems to be due to the fact that ALSA breaks (for example for the
+Capture gain) the link between the ADC selector 0 and ADC_0 widgets of
+the codec, what can be easily seen with codecgraph.
 
-are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.38
+Have you ever had this kind of problem?
+Do you know how can I resolve it ?
 
-Nothing exciting here except for Stephen's mask/val_mask fix which fixes
-a fairly wide breakage.
+Many thanks for your asnwers and best regards
 
-Janusz Krzysztofik (2):
-      ASoC: Amstrad Delta: fix const related build error
-      ASoC: CX20442: fix NULL pointer dereference
-
-Jarkko Nikula (1):
-      ASoC: Fix module refcount for auxiliary devices
-
-Manjunathappa, Prakash (1):
-      ASoC: DaVinci: fix kernel panic due to uninitialized platform_data
-
-Stephen Warren (1):
-      ASoC: Fix mask/val_mask confusion snd_soc_dapm_put_volsw()
-
- sound/soc/codecs/cq93vc.c  |    2 +-
- sound/soc/codecs/cx20442.c |    3 +++
- sound/soc/omap/ams-delta.c |    2 --
- sound/soc/soc-core.c       |    3 ---
- sound/soc/soc-dapm.c       |    6 +++---
- 5 files changed, 7 insertions(+), 9 deletions(-)
+Vincent
