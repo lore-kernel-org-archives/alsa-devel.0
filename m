@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ARM: tegra: Add to struct
-	harmony_audio_platform_data
-Date: Tue, 1 Feb 2011 14:17:35 +0000
-Message-ID: <20110201141734.GJ12743@opensource.wolfsonmicro.com>
-References: <1296513435-14792-1-git-send-email-swarren@nvidia.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: soc-core: Ensure codec_reg has fixed
+ length fields
+Date: Tue, 01 Feb 2011 14:25:33 +0000
+Message-ID: <1296570333.3327.38.camel@odin>
+References: <1296563048-8137-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1DC0110392A
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 15:17:36 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1296513435-14792-1-git-send-email-swarren@nvidia.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7119C103944
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 15:25:37 +0100 (CET)
+Received: by wyi11 with SMTP id 11so6680511wyi.38
+	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 06:25:37 -0800 (PST)
+In-Reply-To: <1296563048-8137-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,14 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 31, 2011 at 03:37:15PM -0700, Stephen Warren wrote:
-> Add fields to describe all the audio-related GPIOs on Harmony, except for
-> the codec's GPIO IRQ, which will be passed in its i2c_board_info.
+On Tue, 2011-02-01 at 12:24 +0000, Dimitris Papastamos wrote:
+> Make the format of the codec_reg file more easily parsable.  Remove
+> the header field which gives the codec name.  These changes are important
+> when it comes to extend the debugfs codec_reg file to dump more than
+> PAGE_SIZE bytes to make it easier to calculate offsets within the
+> file.
 > 
-> Signed-off-by: Stephen Warren <swarren@nvidia.com>
+> We still need to handle the case when the snd_soc_read() call fails
+> and <no data: %d> is outputted.
+> 
+> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
-Applied, thanks.
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
