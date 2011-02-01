@@ -1,19 +1,23 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: Codecs without auto-parser (was: ALSA: HDA: Fix
- microphone(s) on Lenovo	Edge 13)
-Date: Tue, 01 Feb 2011 08:37:25 +0100
-Message-ID: <4D47B835.7090502@canonical.com>
-References: <4D413CBE.9080409@canonical.com>
-	<s5hd3nhcv7u.wl%tiwai@suse.de>	<4D42ADC2.7090001@canonical.com>
-	<s5h1v3xw7o7.wl%tiwai@suse.de>
+Subject: Nvidia HDMI and four codecs
+Date: Tue, 01 Feb 2011 09:10:19 +0100
+Message-ID: <4D47BFEB.8040602@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3517B2438E
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 08:37:28 +0100 (CET)
-In-Reply-To: <s5h1v3xw7o7.wl%tiwai@suse.de>
+	by alsa0.perex.cz (Postfix) with ESMTP id 646F4243EA
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 09:10:20 +0100 (CET)
+Received: from youngberry.canonical.com ([91.189.89.112])
+	by adelie.canonical.com with esmtp (Exim 4.71 #1 (Debian))
+	id 1PkBJb-0000ye-2B
+	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 08:10:19 +0000
+Received: from c-83-233-18-148.cust.bredband2.com ([83.233.18.148]
+	helo=[192.168.8.102]) by youngberry.canonical.com with esmtpsa
+	(TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.71)
+	(envelope-from <david.henningsson@canonical.com>) id 1PkBJa-0001ZV-WB
+	for alsa-devel@alsa-project.org; Tue, 01 Feb 2011 08:10:19 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,47 +27,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 2011-01-28 13:10, Takashi Iwai wrote:
-> At Fri, 28 Jan 2011 12:51:30 +0100,
-> David Henningsson wrote:
->>
->> On 2011-01-28 09:01, Takashi Iwai wrote:
->>> And I hope that we should go further a bit for now -- more clean up of
->>> the cxt5066 code either checking BIOS pins or hp/mic/spk pre-defined
->>> pins.  Currently, the code is fairly messy (partly because of olpc
->>> support), and now is a good chance to improve it a bit more.
->>
->> Maybe so. I'm not sure I can commit to doing that work right now, as I
->> have other work commitments waiting for me to take care of them.
->
-> OK.
+I've seen a few Nvidia HDMI's recently which have four HDMI codecs 
+connected to the same HDA controller. The problem is that we don't know 
+which one(s) of these four that is the real one. So people will have to 
+try devices "hdmi:Nvidia,0", "hdmi:Nvidia,1", "hdmi:Nvidia,2" and 
+"hdmi:Nvidia,3" to figure out which one is the right one. (And by 
+empirical testing we know that it isn't always the first one.)
 
-Hmm. I got a few things cleared up yesterday, and so I might have some 
-time to actually do this. However, it also seems like I have to fix an 
-AD1984A machine, and that driver is in equally bad shape (as in: no 
-auto-parser, just a list of models). I could add another model, but 
-suppose I'd do this the right way, how would I do it?
+Thinking PulseAudio and/or "Just Works", this is not good enough, so is 
+there a way to know beforehand which one of these four that is actually 
+physically connected?
 
-I guess there are three options to start off with:
-
-1) ad1988 seems to have an auto-parser. There are a lot of hardcoded 
-nids in there, but I guess I could copy-and-paste some into a new 
-auto-parser for ad1984a.
-
-2) It seems to me like the most competent candidate for auto-parser 
-currently is the cx_auto stuff - compared to other auto-parsers the 
-hardcoded nids are fewer. Perhaps this one could be extended to also do 
-auto-parsing for codecs from other vendors? Or at least some convenience 
-functions moved to hda_codec.c in order to remove duplication between 
-vendors?
-
-3) There is also the generic parser. It seems to be the one most capable 
-of handling randomly complex graphs, but is lacking automute/jack-detect 
-support, and maybe other functions as well (?).
+I'd love BIOS to provide a good codec probe mask, a pin config default, 
+or something similar, but given a codec-proc I can't see any difference 
+between the real ones and the unconnected ones, so I don't know how to 
+fix up the driver without hardcoding/quirking every one of them. Any hints?
 
 -- 
 David Henningsson, Canonical Ltd.
