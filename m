@@ -1,21 +1,14 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v6 0/3] input: Add support for ECI
- (multimedia) accessories
-Date: Tue, 1 Feb 2011 00:58:23 -0800
-Message-ID: <20110201085823.GB17706@core.coreip.homeip.net>
-References: <1296482634-31666-1-git-send-email-tapio.vihuri@nokia.com>
+From: Sven Neumann <s.neumann@raumfeld.com>
+Subject: No soundcards found with 2.6.37 (and 2.6.38-rc2)
+Date: Tue, 01 Feb 2011 10:12:58 +0100
+Message-ID: <1296551578.2009.43.camel@sven>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8E62E2443F
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 09:58:34 +0100 (CET)
-Received: by iwb12 with SMTP id 12so6925691iwb.38
-	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 00:58:33 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <1296482634-31666-1-git-send-email-tapio.vihuri@nokia.com>
+Received: from vwp2514.webpack.hosteurope.de (vwp2514.webpack.hosteurope.de
+	[87.230.42.24]) by alsa0.perex.cz (Postfix) with ESMTP id E094D2445C
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2011 10:13:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,47 +18,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tapio.vihuri@nokia.com
-Cc: randy.dunlap@oracle.com, alsa-devel@alsa-project.org, samu.p.onkalo@nokia.com, peter.ujfalusi@nokia.com, linux-kernel@vger.kernel.org, ilkka.koskinen@nokia.com
+To: alsa-devel@alsa-project.org
+Cc: Daniel Mack <daniel@caiaq.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Tapio,
-
-On Mon, Jan 31, 2011 at 04:03:51PM +0200, tapio.vihuri@nokia.com wrote:
-> 
-> This patch set introduce Multimedia Headset Accessory support for
-> Nokia phones. Technically those are known as ECI (Enhancement Control Interface)
-> 	
-> If headset has many buttons, like play, vol+, vol- etc. then it is propably ECI
-> accessory.
-> 
-> Among several buttons ECI accessories contains memory for storing several
-> parameters.
-> 
-> This ECI input driver provides the following features:
->  - reading ECI configuration memory
->  - ECI buttons as input events
-> 
-> Drive is constructed as follows:
->  - ECI accessory input driver deals with headset accessory
->  - ECI bus control driver deals the HW transfering data to/from headset
->  - platform data match used HW
-
-I finally had a chance to look though the patches more closely and I do
-not understand why you decided to introduce the platform device in
-addition to I2C device. You end up with 2 artificially separated bodies of
-code that are not viable on their own. The ECI module with it's platform
-device is not usable without the controller; the controller can not be
-registered without the ECI device initialized; there are ordering
-issues, both initialization and PM-wise and you are forced to support
-only one device.
-
-Is there going to be an SPI interface as well? If not then fold it all
-together and have I2C device as the only device involved. If SPI is a
-possibility then look in drivers such as adxl34x, ad714x and others that
-are split into core module and bus interface implementations.
-
-Thanks.
-
--- 
-Dmitry
+SGksCgp3ZSBhcmUgdXNpbmcgYW4gQVJNIFBYQTMwMCBiYXNlZCBkZXZpY2Ugd2l0aCBTb0MgZGV2
+aWNlcy4gVGhlIGNvZGUgaXMKY29tcGxldGVseSB1cHN0cmVhbSwgb3VyIHBsYXRmb3JtIGlzIGRl
+ZmluZWQgaW4gc291bmQvc29jL3B4YS9yYXVtZmVsZC5jCgpJJ3ZlIHJlY2VudGx5IHRyaWVkIHRv
+IHVwZGF0ZSBvdXIga2VybmVsIHRvIDIuNi4zNywgYnV0IGl0IGxvb2tzIGxpa2UKdGhlcmUgaGF2
+ZSBiZWVuIHNvbWUgY2hhbmdlcyBpbiB0aGUgTGludXgga2VybmVsIHRoYXQgY2F1c2Ugb3VyIHNv
+dW5kCmhhcmR3YXJlIG5vdCB0byBiZSByZWNvZ25pemVkIG9yIGluaXRpYWxpc2VkIGNvcnJlY3Rs
+eSBhbnkgbG9uZ2VyLgoKVGhpcyBpcyB0aGUgb3V0cHV0IHdoZW4gYm9vdGluZyBMaW51eCAyLjYu
+MzYuMzoKClsgICAyNi45MDkyNDJdIEFzYWhpIEthc2VpIEFLNDEwNCBBTFNBIFNvQyBDb2RlYyBE
+cml2ZXIKWyAgIDI2LjkxNTExOF0gTm8gZGV2aWNlIGZvciBEQUkgYWs0MTA0ClsgICAyNi45MTg2
+ODBdIGFrNDEwNCBzcGkwLjA6IFNQSSBkZXZpY2UgaW5pdGlhbGl6ZWQKWyAgIDI2LjkyMzg3MF0g
+Q2lycnVzIExvZ2ljIENTNDI3MCBBTFNBIFNvQyBDb2RlYyBEcml2ZXIKWyAgIDI2LjkyOTQ3MV0g
+Y3M0MjcwIDAtMDA0ODogZm91bmQgZGV2aWNlIGF0IGkyYyBhZGRyZXNzIDQ4ClsgICAyNi45MzQ5
+MzVdIGNzNDI3MCAwLTAwNDg6IGhhcmR3YXJlIHJldmlzaW9uIDMKWyAgIDI2Ljk0MTU1N10gTm8g
+ZGV2aWNlIGZvciBEQUkgcHhhMnh4LXNzcDEKWyAgIDI2Ljk0NTU1NF0gTm8gZGV2aWNlIGZvciBE
+QUkgcHhhMnh4LXNzcDIKWyAgIDI2Ljk0OTUzM10gTm8gZGV2aWNlIGZvciBEQUkgcHhhMnh4LXNz
+cDMKWyAgIDI2Ljk1MzU5MF0gTm8gZGV2aWNlIGZvciBEQUkgcHhhMnh4LXNzcDQKWyAgIDI2Ljk1
+OTgxNF0gYXNvYzogY3M0MjcwIDwtPiBweGEyeHgtc3NwMSBtYXBwaW5nIG9rClsgICAyNi45NzAw
+MDddIGFzb2M6IGFrNDEwNCA8LT4gcHhhMnh4LXNzcDIgbWFwcGluZyBvawpbICAgMjcuMDgwNzE5
+XSBBTFNBIGRldmljZSBsaXN0OgpbICAgMjcuMDgzNjkwXSAgICMwOiBSYXVtZmVsZCBhbmFsb2cg
+KENTNDI3MCkKWyAgIDI3LjA4Nzc1MF0gICAjMTogUmF1bWZlbGQgUy9QRElGIChhazQxMDQpCgpB
+bmQgaGVyZSBhcmUgdGhlIHJlbGV2YW50IGxpbmVzIGZyb20gYm9vdGluZyAyLjYuMzc6CgpbICAg
+MjYuOTI3ODAyXSBBc2FoaSBLYXNlaSBBSzQxMDQgQUxTQSBTb0MgQ29kZWMgRHJpdmVyClsgICAy
+Ni45MzMyNjldIENpcnJ1cyBMb2dpYyBDUzQyNzAgQUxTQSBTb0MgQ29kZWMgRHJpdmVyClsgICAy
+Ni45Mzg4ODZdIGNzNDI3MC1jb2RlYyAwLTAwNDg6IGZvdW5kIGRldmljZSBhdCBpMmMgYWRkcmVz
+cyA0OApbICAgMjYuOTQ0Nzc0XSBjczQyNzAtY29kZWMgMC0wMDQ4OiBoYXJkd2FyZSByZXZpc2lv
+biAzClsgICAyNy4wNTg5NzJdIEFMU0EgZGV2aWNlIGxpc3Q6ClsgICAyNy4wNjE5MzNdICAgTm8g
+c291bmRjYXJkcyBmb3VuZC4KCgpCYXNlZCBvbiB0aGlzIG91dHB1dCBJJ3ZlIGRvbmUgYSBnaXQg
+YmlzZWN0LiBVbmZvcnR1bmF0ZWx5IHRoZXJlIGlzIGEKbGFyZ2VyIHNlcmllcyBvZiBjb21taXRz
+IHRoYXQgZG9uJ3QgZXZlbiBjb21waWxlLCBzbyBJIGhhdmUgbm90IGJlZW4KYWJsZSB0byBmaW5k
+IG91dCB0aGUgZXhhY3QgY29tbWl0IHRoYXQgYnJva2UgaXQsIGJ1dCBJJ3ZlIGJvaWxlZCBpdCBk
+b3duCnRvIGEgbnVtYmVyIG9mIGNvbW1pdHM6CgpUaGVyZSBhcmUgb25seSAnc2tpcCdwZWQgY29t
+bWl0cyBsZWZ0IHRvIHRlc3QuClRoZSBmaXJzdCBiYWQgY29tbWl0IGNvdWxkIGJlIGFueSBvZjoK
+NWRjYmE1ZDY3NDFkNDUzM2UwZWY2OTY1MDdmOTNmMmE0YzczOGVmYgpjZjdhZjAxYWE3N2VjMWIx
+NzY4N2Y1MzI4Y2UwYTU5ODcwOWVmZDU5CjU0ZDhkMGFlYjk2ZTY3N2MxMjk5MThiMzkxYjllNzRk
+NDhlNjUyOTQKYTZkMTQzNDJkYzQ2ZjBlZjk0Y2NjZjMyM2ZkOTQ4MWRlODRiNDU4Zgo0OGJkMzQ3
+MmQ2NTEyYzc0MjU3NzA2ZjdjMzhhZDEwYTcxMTdiYWM3Cjk2MGQwNjk3OTE5YWVmNDUzMjczZTNh
+MGNjYzg3ZGFmNTJkODA4YWMKMzgxYWM5OTBkYjNmNGZkZmJlOTFlM2E2MzZjYWIwM2VkZjI5M2I5
+YwozODQ0NWFmM2JjMDY1ODYxNWZkOWE3MjRmYmNiNjcxNDhlYWMyY2QzCjEzY2I2MWY4YzI2MWNh
+NmEyMThmODNmNGVlOWMzYmQ1Y2ZjMjIzYTUKYWYzNzUxYTBiZmU0ZDQ2MWUwNTY3OTYxZGMwNjQ0
+OGYyMTI4ZTI2ZgoyNmUyNzdkNzE1MWFiY2VmOGVmYTFlNmYxZjBkMTQyMGQ0ZWQxN2M2CjZiYTZj
+OWMzNDE0Yjk1YzNlZDUwZDUyOWZiMGVmYTc0NGVkNDU3NjEKMTBlMmYxMTMyNmUwYTI2M2YwMzM2
+Njg2NDU0YmU2N2VmYjJiNTZkYwpmZjcxMzM0YTQ2ODQ0ZDBhZTZmZjAwNTVjNTQ5NzkwYmNkMjdi
+YjEwCjg3YTA2MzJiMjk0MTBiYWI1YzE3ODNkN2ViOTc5YzhkOTQyZDQyMDkKZGQ5OWE0NTI0YmQ5
+ZjgyMzU4ZTlhMjBhNDRjNWU3ODRiYWE0ZTcwMgoxYTNjNWE0OTFhZjY3NTZkYmJhNmVlMTY2YTlk
+ZWU3MmJiNDE0YmE4CmY1ZDFlNWVkNThkYzAxNzhlMTY3OGRiNjMxNTY3NzI5OTkzNzlkNDkKNmU2
+ZjY2MjI2ZjAwOTJhMzk1MjZmOGQ2ZjAyZWJiNDQ3ZDk5NWJlMgo2ZjM0MWQxNDgxMTU1MGQ4NjNi
+YTgwNGNlNmVjNzc1N2E3MTQ1MDgxCmVhYWUxODNmNGIzZjI1NTIyY2QxM2ViZjMwMTYyYzFjYjg2
+M2IxZjEKOWQzN2U4OTQ3YzYxMzE5MGI3YjkyYzYzODMwZTYzOGZmZGIwOGU0OAplMjMxY2FiMGE0
+YjU4NDRhZTEzYTk1ODQ0MzNjYTNiOWIyMDQ2MjllCmY1MTU4MmZkOGQ5YjExOTZkNThjZDk0YzJi
+NGI3NTljYzFiYWY1N2EKMzc4MmE1Mjg5NzRjOTYwN2JkZTAzZWMyNjViYmViZDJkYzMwMGVhMQo2
+OThjYjExMWY0NGQ4MWRkM2E2MDRiYTJhN2YzZjg2NWI2NmI5ZGRmCjhlZjMzOWRmMjVlZDQyNGU3
+NDMwZmQ0MTFhNTI4NDBjNmFmMzY4YzYKOWE3NmYxZmY2ZTI5OWZiYjA0MTQ5ZmUxNWFmZjA2MTM1
+MWZkMGRhYgpjNTYwN2Q4ZTdhNGMzMGQyZmY2MmI4ZWVmZTNmOTc3ZDVjNzFkMmZlCmYwZmJhMmFk
+MWI2YjUzZDUzNjAxMjVjNDE5NTNiN2FmY2Q2ZGVmZjAKYmEyNzcyZWRiZTFmMDNhNjk1MDI5Y2E4
+Mjg0NDYxNWZlNDFkMjhmYwpXZSBjYW5ub3QgYmlzZWN0IG1vcmUhCgoKQXMgZmFyIGFzIEkgY2Fu
+IHNlZSB0aGVzZSBwYXRjaGVzIGFyZSBhbGwgcGFydCBvZiB0aGUgaW50cm9kdWN0aW9uIG9mCkFT
+b0MgTXVsdGktQ29tcG9uZW50IFN1cHBvcnQuIFBlcmhhcHMgc29tZW9uZSB3aG8ncyBiZWVuIHdv
+cmtpbmcgb24gdGhpcwpjb3VsZCBoYXZlIGEgbG9vayBhbmQgZ2l2ZSBtZSBzb21lIGhpbnRzIG9u
+IGhvdyB0byBwcm9jZWVkIGZ1cnRoZXI/CgpJJ3ZlIGFscmVhZHkgdHJpZWQgMi42LjM4LXJjMiB3
+aXRoIHNhbWUgcmVzdWx0cyBhcyB3aXRoIDIuNi4zNy4KCgpUaGFua3MsClN2ZW4KCgotLSAKU3Zl
+biBOZXVtYW5uCkhlYWQgb2YgUkFVTUZFTEQgU29mdHdhcmUgRGV2ZWxvcG1lbnQKCkxhdXRzcHJl
+Y2hlciBUZXVmZWwgR21iSCB8IELDvGxvd3N0ci4gNjYgfCAxMDc4MyBCZXJsaW4gfCBHZXJtYW55
+ClRlbDogKzQ5ICgwKTMwLTMwMCA5MzAgMTUzIHwgcy5uZXVtYW5uQHJhdW1mZWxkLmNvbQoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
+YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
