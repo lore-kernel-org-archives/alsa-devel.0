@@ -1,17 +1,17 @@
-From: George Morgan <gm.swdev@gmail.com>
-Subject: Expired security certificate for
-	https://bugtrack.alsa-project.org
-Date: Wed, 2 Feb 2011 11:02:45 -0500
-Message-ID: <AANLkTikaNnruZsPeYDi8n5oMO=acVLWaRe+GqqFVqf2R@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Expired security certificate for
+ https://bugtrack.alsa-project.org
+Date: Wed, 2 Feb 2011 17:07:57 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1102021707240.6272@eeebox2.perex-int.cz>
+References: <AANLkTikaNnruZsPeYDi8n5oMO=acVLWaRe+GqqFVqf2R@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 3B0E324740
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 17:02:46 +0100 (CET)
-Received: by bwz10 with SMTP id 10so682100bwz.38
-	for <alsa-devel@alsa-project.org>; Wed, 02 Feb 2011 08:02:45 -0800 (PST)
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id C0783103818
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 17:07:57 +0100 (CET)
+In-Reply-To: <AANLkTikaNnruZsPeYDi8n5oMO=acVLWaRe+GqqFVqf2R@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,12 +21,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: George Morgan <gm.swdev@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Any chance that the security certificate can be updated for
-https://bugtrack.alsa-project.org ?
+On Wed, 2 Feb 2011, George Morgan wrote:
 
-The certificate expired on 7/19/2009 6:18 AM.
+> Any chance that the security certificate can be updated for
+> https://bugtrack.alsa-project.org ?
+>
+> The certificate expired on 7/19/2009 6:18 AM.
 
-George Morgan
+Nice date. The certificate was renewed.
+
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
