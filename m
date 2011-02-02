@@ -1,43 +1,49 @@
-From: "Sebastian H." <vand2@gmx.de>
-Subject: Re: alsa-lib TLVs and valgrind
-Date: Wed, 02 Feb 2011 16:16:15 +0100
-Message-ID: <4D49753F.7000507@gmx.de>
-References: <4D4945FA.4030506@gmx.de> <4D495859.6070101@ladisch.de>
-	<4D4959AB.1050703@gmx.de> <4D497464.4050506@ladisch.de>
+From: Mauro Carvalho Chehab <mchehab@redhat.com>
+Subject: Re: WL1273 FM Radio driver...
+Date: Wed, 02 Feb 2011 13:35:01 -0200
+Message-ID: <4D4979A5.1020000@redhat.com>
+References: <1295363063.25951.67.camel@masi.mnp.nokia.com> <20110130232358.GD2565@sortiz-mobl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.22])
-	by alsa0.perex.cz (Postfix) with SMTP id EA18D24597
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 16:21:23 +0100 (CET)
-In-Reply-To: <4D497464.4050506@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <20110130232358.GD2565@sortiz-mobl>
+Sender: linux-media-owner@vger.kernel.org
+To: Samuel Ortiz <sameo@linux.intel.com>
+Cc: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, hverkuil@xs4all.nl, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Am 02.02.2011 16:12, schrieb Clemens Ladisch:
-> Sebastian H. wrote:
->> Am 02.02.2011 14:12, schrieb Clemens Ladisch:
->>> Valgrind doesn't know about some of the ALSA ioctls.
->>> Somebody would have to add them to valgrind.
+Em 30-01-2011 21:23, Samuel Ortiz escreveu:
+> Hi Matti,
+>=20
+> On Tue, Jan 18, 2011 at 05:04:23PM +0200, Matti J. Aaltonen wrote:
+>> Hello
 >>
->> That seems to require quite some effort - also to maintain.
->> Couldn't just the dB min/max values be initialized with 0 or sth.?
-> 
-> Then it wouldn't be possible for valgrind to catch wrong uses of the
-> ioctl.
+>> I have been trying to get the WL1273 FM radio driver into the kernel=
+ for
+>> some time. It has been kind of difficult, one of the reasons is that=
+ I
+>> didn't realize I should have tried to involve all relevant maintaine=
+rs
+>> to the discussion form the beginning (AsoC, Media and MFD). At Mark'=
+s
+>> suggestion I'm trying to reopen the discussion now.
+>>
+>> The driver consists of an MFD core and two child drivers (the audio
+>> codec and the V4L2 driver). And the question is mainly about the rol=
+e of
+>> the MFD driver: the original design had the IO functions in the core=
+=2E
+>> Currently the core is practically empty mainly because Mauro very
+>> strongly wanted to have =E2=80=9Ceverything=E2=80=9D in the V4L2 dri=
+ver.
+> What was Mauro main concerns with having the IO part in the core ?
+> A lot of MFD drivers are going that path already.
 
-Ok. My knowledge of how valgrind works is limited anyway.
+My concerns is that the V4L2-specific part of the code should be at dri=
+vers/media.
+I prefer that the specific MFD I/O part to be at drivers/mfd, just like
+the other drivers.
 
-Thank you,
-Sebastian
+Cheers,
+Mauro
