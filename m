@@ -1,17 +1,17 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: alsa-lib TLVs and valgrind
-Date: Wed, 02 Feb 2011 16:12:36 +0100
-Message-ID: <4D497464.4050506@ladisch.de>
-References: <4D4945FA.4030506@gmx.de> <4D495859.6070101@ladisch.de>
-	<4D4959AB.1050703@gmx.de>
+Subject: Re: need input on USB Audio class device.
+Date: Wed, 02 Feb 2011 16:14:28 +0100
+Message-ID: <4D4974D4.4070803@ladisch.de>
+References: <AANLkTi=yA+Ma0zo6HAceOdK1u8gv1hcVcT1dsOapv=Tp@mail.gmail.com>	<4D46A024.5000901@ladisch.de>
+	<AANLkTi=oR4ADAjJOArUme73AjKdGnge8_n8Eo_+Fgw85@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 1609224572
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 16:12:28 +0100 (CET)
-In-Reply-To: <4D4959AB.1050703@gmx.de>
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 628E62457B
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 16:14:19 +0100 (CET)
+In-Reply-To: <AANLkTi=oR4ADAjJOArUme73AjKdGnge8_n8Eo_+Fgw85@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,20 +21,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Sebastian H." <vand2@gmx.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Sakthi Subramanian <sakthi.subramaniang@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sebastian H. wrote:
-> Am 02.02.2011 14:12, schrieb Clemens Ladisch:
-> > Valgrind doesn't know about some of the ALSA ioctls.
-> > Somebody would have to add them to valgrind.
-> 
-> That seems to require quite some effort - also to maintain.
-> Couldn't just the dB min/max values be initialized with 0 or sth.?
+Sakthi Subramanian wrote:
+> i have opened a capture device, and the captured data i have written to a
+> file.
+> That file is of RAW format.
+> I have opened the raw file in audacity, with 8 channel it shows only 2
+> channels having the captured data.
 
-Then it wouldn't be possible for valgrind to catch wrong uses of the
-ioctl.
+Raw-format files do not have any information about the format, so
+Audacity has to guess.  Just write a .wav file with the proper headers.
 
 
 Regards,
