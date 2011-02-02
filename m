@@ -1,108 +1,76 @@
-From: "ABRAHAM, KISHON VIJAY" <kishon@ti.com>
-Subject: Re: [PATCH v2 13/13] OMAP: hwmod: Removal of macros for data that is
- obtained from hwmod database
-Date: Wed, 2 Feb 2011 11:45:25 +0530
-Message-ID: <AANLkTi=CiA5hHbBgGFbER2u37vW2_pFbQ+x98wpVL-HM@mail.gmail.com>
-References: <1296485437-12806-1-git-send-email-kishon@ti.com>
-	<1296485437-12806-14-git-send-email-kishon@ti.com>
-	<20110201200713.34fdb4fc.jhnikula@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: issue with AD1989A HDA codec and alsamixer
+Date: Wed, 2 Feb 2011 14:16:55 +0800
+Message-ID: <AANLkTim-Vq6bhd=nHOVkToMSuT9R1n3nnQi-J4bzZNc_@mail.gmail.com>
+References: <AANLkTin8tsrNrcoYaPvQz0uO=OtD-tow1Ds0i8WTJyh7@mail.gmail.com>
+	<AANLkTinec0di98dMdyNoANXBoLG_uRJ+NghEyboCuMUa@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20110201200713.34fdb4fc.jhnikula@gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, paul@pwsan.com, charu@ti.com, shubhrajyoti@ti.com, b-cousson@ti.com, khilman@deeprootsystems.com, p-basak2@ti.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id DC6F31037FB
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 07:16:57 +0100 (CET)
+Received: by ewy19 with SMTP id 19so3396374ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 22:16:55 -0800 (PST)
+In-Reply-To: <AANLkTinec0di98dMdyNoANXBoLG_uRJ+NghEyboCuMUa@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 1, 2011 at 11:37 PM, Jarkko Nikula <jhnikula@gmail.com> wro=
-te:
-> On Mon, 31 Jan 2011 20:20:37 +0530
-> Kishon Vijay Abraham I <kishon@ti.com> wrote:
+2011/2/2 Raymond Yau <superquad.vortex2@gmail.com>
+
 >
->> Information like base address and DMA channel nubers should no longe=
-r
->> be obtained using macros. These information should be obtained from
->> hwmod database. Hence the macros that define the base address are re=
-moved.
+>
+> 2011/2/1 Vincent Meserette <vmeserette@aldebaran-robotics.com>
+>
+> Hi all,
 >>
->> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
->> Signed-off-by: Charulatha V <charu@ti.com>
->> ---
->> =A0arch/arm/mach-omap1/mcbsp.c =A0 =A0 =A0 =A0 =A0 =A0 | =A0 64 ++++=
-+++++++++++---------------
->> =A0arch/arm/plat-omap/include/plat/mcbsp.h | =A0 50 +---------------=
---------
->> =A02 files changed, 33 insertions(+), 81 deletions(-)
+>> I am working on a system which includes a connexant AD1989A HDA codec
+>> connected to a ATOM processor.
+>> I have four microphones connected to the B and C ports of this codec.
+>> If I change one of the 3 capture gains present in the alsamixer
+>> (Capture, Capture 1 or Capture 3), I can't have any more signal on the
+>> B and C ports
+>> It seems to be due to the fact that ALSA breaks (for example for the
+>> Capture gain) the link between the ADC selector 0 and ADC_0 widgets of
+>> the codec, what can be easily seen with codecgraph.
 >>
->> diff --git a/arch/arm/mach-omap1/mcbsp.c b/arch/arm/mach-omap1/mcbsp=
-=2Ec
->> index 2b89ebd..d90f649 100644
->> --- a/arch/arm/mach-omap1/mcbsp.c
->> +++ b/arch/arm/mach-omap1/mcbsp.c
->> @@ -83,14 +83,14 @@ struct resource omap7xx_mcbsp_res[][6] =3D {
->> =A0 =A0 =A0 {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .name =A0=3D "mpu",
->> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .start =3D OMAP7XX_MCBSP1_=
-BASE,
->> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .end =A0 =3D OMAP7XX_MCBSP=
-1_BASE + SZ_256,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .start =3D 0xfffb1000,
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .end =A0 =3D 0xfffb10ff,
->
-> For these changes I don't see immediate reason as they reduce
-> readability.
-
- Maybe I should leave without modifying these resources. The main
-purpose of doing this
-  is to remove macros defined in mcbsp.h so that the client drivers
-don't use it directly.
-
->Is this better to do outside of this set together with a
-> patch that adds these into hwmod database etc?
-
- OMAP1 does not have hwmod database.
-
->
->> -#define AUDIO_MCBSP_DATAWRITE =A0 =A0 =A0 =A0(OMAP1510_MCBSP1_BASE =
-+ OMAP_MCBSP_REG_DXR1)
->> -#define AUDIO_MCBSP_DATAREAD (OMAP1510_MCBSP1_BASE + OMAP_MCBSP_REG=
-_DRR1)
->> -
->> -#define AUDIO_MCBSP =A0 =A0 =A0 =A0 =A0OMAP_MCBSP1
->> -#define AUDIO_DMA_TX =A0 =A0 =A0 =A0 OMAP_DMA_MCBSP1_TX
->> -#define AUDIO_DMA_RX =A0 =A0 =A0 =A0 OMAP_DMA_MCBSP1_RX
->> -
->> =A0#else
+>> Have you ever had this kind of problem?
+>> Do you know how can I resolve it ?
 >>
->> =A0#define OMAP_MCBSP_REG_DRR2 =A00x00
->> @@ -177,13 +136,6 @@ static struct platform_device omap_mcbsp##port_=
-nr =3D { =A0 =A0\
->> =A0#define OMAP_ST_REG_SFIRCR =A0 0x28
->> =A0#define OMAP_ST_REG_SSELCR =A0 0x2C
+>> Many thanks for your asnwers and best regards
 >>
->> -#define AUDIO_MCBSP_DATAWRITE =A0 =A0 =A0 =A0(OMAP24XX_MCBSP2_BASE =
-+ OMAP_MCBSP_REG_DXR1)
->> -#define AUDIO_MCBSP_DATAREAD (OMAP24XX_MCBSP2_BASE + OMAP_MCBSP_REG=
-_DRR1)
->> -
->> -#define AUDIO_MCBSP =A0 =A0 =A0 =A0 =A0OMAP_MCBSP2
->> -#define AUDIO_DMA_TX =A0 =A0 =A0 =A0 OMAP24XX_DMA_MCBSP2_TX
->> -#define AUDIO_DMA_RX =A0 =A0 =A0 =A0 OMAP24XX_DMA_MCBSP2_RX
->> -
-> These looks things that can be removed immediately and independently
-> from this set.
-
-  ok.
-
+>> Vincent
+>>
 >
-> --
-> Jarkko
+> What is the Vendor Id of conexant AD1989A ?
 >
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> are your codec are using patch_analog.c according to vendor id of the codec
+> ?
+>
+> Looking at the datasheet of ad1988a , ad1988b and ad1989b at analog device
+> web site and ad1989a conexant web site
+>
+> The digital microphone of conexant ad1989a only connect to adc0 in the
+> functional block diagram
+>
+>
+If the number of input sources of adc0 of ad1989a is more than those of adc1
+and adc2
+
+This may mean that you will need to implement a specific
+ad1989a_capture_mixer[] for ad1989a instead of using ad1988_capture_mixer
+and
+
+may need to implement ad1989a_pcm_analog_alt_capture  for adc1 and adc2
+similar to alc880_pcm_analog_alt_capture
