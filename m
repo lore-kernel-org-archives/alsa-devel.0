@@ -1,15 +1,19 @@
-From: Vaibhav Bedia <vaibhav.bedia@ti.com>
-Subject: [PATCH] asoc: davinci: da830/omap-l138: correct
-	cpu_dai_name
-Date: Wed,  2 Feb 2011 20:24:04 +0530
-Message-ID: <1296658444-8836-1-git-send-email-vaibhav.bedia@ti.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: soc-core: Remove display_register()
+	callback
+Date: Wed, 02 Feb 2011 14:54:33 +0000
+Message-ID: <1296658473.4393.2.camel@dplaptop.localdomain>
+References: <1296642054-10485-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	<20110202102335.GM12743@opensource.wolfsonmicro.com>
+	<AANLkTing5zryWWt4HZHGUd15-6mrxpnRwA8EEiE8DGem@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4D985103830
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 15:54:16 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 27726103837
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 15:56:37 +0100 (CET)
+In-Reply-To: <AANLkTing5zryWWt4HZHGUd15-6mrxpnRwA8EEiE8DGem@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,60 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: davinci-linux-open-source@linux.davincidsp.com, broonie@opensource.wolfsonmicro.com, stable@kernel.org, Vaibhav Bedia <vaibhav.bedia@ti.com>, lrg@slimlogic.co.uk
+To: "jonsmirl@gmail.com" <jonsmirl@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-McASP1 is used on the DA830/OMAP-L137 platform for the codec.
-This is different from the DA850/OMAP-L138 platform which uses McASP0.
+On Wed, 2011-02-02 at 09:50 -0500, jonsmirl@gmail.com wrote:
+> On Wed, Feb 2, 2011 at 5:23 AM, Mark Brown
+> <broonie@opensource.wolfsonmicro.com> wrote:
+> > On Wed, Feb 02, 2011 at 10:20:54AM +0000, Dimitris Papastamos wrote:
+> >> Remove the display_register() callback as there are no users of it
+> >> in the upstream kernel and makes it difficult to unify the format
+> >> of the codec_reg file.
+> >
+> >> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+> >
+> > This was rather strongly requested for some devices with extremely large
+> > registers (128 bits at least IIRC) which may eventually make it to
+> > mainline.  It seems better to just have some sort of fallback for those
+> > devices, if it causes output problems people can always fix those.
+> >
+> 
+> TI Codec devices have two problems:
+> 1) large registers - up to 128 bits
+> 2) sparse register maps - big gaps between valid register addresses.
 
-This is fixed by adding a new snd_soc_dai_link struct.
+Yes, I've dropped the patch.
 
-Signed-off-by: Vaibhav Bedia <vaibhav.bedia@ti.com>
----
- sound/soc/davinci/davinci-evm.c |   18 +++++++++++++++---
- 1 files changed, 15 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
-index b36f0b3..fe79842 100644
---- a/sound/soc/davinci/davinci-evm.c
-+++ b/sound/soc/davinci/davinci-evm.c
-@@ -218,7 +218,19 @@ static struct snd_soc_dai_link dm6467_evm_dai[] = {
- 		.ops = &evm_spdif_ops,
- 	},
- };
--static struct snd_soc_dai_link da8xx_evm_dai = {
-+
-+static struct snd_soc_dai_link da830_evm_dai = {
-+	.name = "TLV320AIC3X",
-+	.stream_name = "AIC3X",
-+	.cpu_dai_name = "davinci-mcasp.1",
-+	.codec_dai_name = "tlv320aic3x-hifi",
-+	.codec_name = "tlv320aic3x-codec.1-0018",
-+	.platform_name = "davinci-pcm-audio",
-+	.init = evm_aic3x_init,
-+	.ops = &evm_ops,
-+};
-+
-+static struct snd_soc_dai_link da850_evm_dai = {
- 	.name = "TLV320AIC3X",
- 	.stream_name = "AIC3X",
- 	.cpu_dai_name= "davinci-mcasp.0",
-@@ -259,13 +271,13 @@ static struct snd_soc_card dm6467_snd_soc_card_evm = {
- 
- static struct snd_soc_card da830_snd_soc_card = {
- 	.name = "DA830/OMAP-L137 EVM",
--	.dai_link = &da8xx_evm_dai,
-+	.dai_link = &da830_evm_dai,
- 	.num_links = 1,
- };
- 
- static struct snd_soc_card da850_snd_soc_card = {
- 	.name = "DA850/OMAP-L138 EVM",
--	.dai_link = &da8xx_evm_dai,
-+	.dai_link = &da850_evm_dai,
- 	.num_links = 1,
- };
- 
--- 
-1.6.2.4
+Thanks,
+Dimitris
