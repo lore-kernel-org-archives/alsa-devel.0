@@ -1,18 +1,17 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] ASoC: soc-core: Support debugfs entries
  larger than PAGE_SIZE bytes
-Date: Wed, 02 Feb 2011 20:47:16 +0000
-Message-ID: <1296679636.3333.22.camel@odin>
+Date: Wed, 2 Feb 2011 20:48:18 +0000
+Message-ID: <20110202204817.GG28705@opensource.wolfsonmicro.com>
 References: <1296655138-29844-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4AE7C24374
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 21:47:19 +0100 (CET)
-Received: by wwi18 with SMTP id 18so6437785wwi.2
-	for <alsa-devel@alsa-project.org>; Wed, 02 Feb 2011 12:47:18 -0800 (PST)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 684F024374
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 21:48:19 +0100 (CET)
+Content-Disposition: inline
 In-Reply-To: <1296655138-29844-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,18 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2011-02-02 at 13:58 +0000, Dimitris Papastamos wrote:
+On Wed, Feb 02, 2011 at 01:58:58PM +0000, Dimitris Papastamos wrote:
 > For some codecs with large register maps, it was not possible to dump
 > all registers via the codec_reg file but only up to PAGE_SIZE bytes.
 > This patch fixes this problem.
-> 
-> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Applied, thanks.
