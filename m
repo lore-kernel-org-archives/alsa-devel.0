@@ -1,16 +1,26 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd-usb-audio dying on jackd xruns
-Date: Wed, 02 Feb 2011 18:33:04 +0100
-Message-ID: <4D499550.2070508@ladisch.de>
-References: <AANLkTinc02yXS=axf5wCQMq3e+nhiJj_ZaHmjk-bcorS@mail.gmail.com>
+From: Alexander Sverdlin <subaparts@yandex.ru>
+Subject: Re: [PATCH] EDB93xx: Add support for CS4271 CODEC on
+	EDB93xx boards
+Date: Wed, 02 Feb 2011 20:33:19 +0300
+Message-ID: <1296667999.1504.44.camel@r60e>
+References: <1296603653.1504.9.camel@r60e>
+	<0D753D10438DA54287A00B027084269764CEF59B2B@AUSP01VMBX24.collaborationhost.net>
+	<1296643688.1504.23.camel@r60e>
+	<20110202104943.GN12743@opensource.wolfsonmicro.com>
+	<1296645167.1504.31.camel@r60e>
+	<20110202125327.GO12743@opensource.wolfsonmicro.com>
+	<1296653211.1504.40.camel@r60e>
+	<0D753D10438DA54287A00B027084269764CEFD45C8@AUSP01VMBX24.collaborationhost.net>
+	<20110202165959.GT12743@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 33A8A2474D
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 18:32:57 +0100 (CET)
-In-Reply-To: <AANLkTinc02yXS=axf5wCQMq3e+nhiJj_ZaHmjk-bcorS@mail.gmail.com>
+Received: from forward15.mail.yandex.net (forward15.mail.yandex.net
+	[95.108.130.119])
+	by alsa0.perex.cz (Postfix) with ESMTP id A22BA2474D
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 18:33:28 +0100 (CET)
+In-Reply-To: <20110202165959.GT12743@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,25 +30,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rods Bobavich <rodnisms@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, H Hartley Sweeten <hartleys@visionengravers.com>, Lennert Buytenhek <buytenh@wantstofly.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Rods Bobavich wrote:
-> So I start jackd and it runs fine for a while. Then ALSA crashes and
-> triggers an xrun. Jackd continues to do its merry thing - minus the part
-> about spitting info out to my soundcard...
+Dear Mark,
+
+On Wed, 2011-02-02 at 17:00 +0000, Mark Brown wrote:
+> On Wed, Feb 02, 2011 at 10:53:15AM -0600, H Hartley Sweeten wrote:
 > 
-> At first I thought this was a Jackd issue but when I looked deeper it seems
-> to be ALSA. Once this happens I cannot restart jackd and resume an audio
-> session. In fact, I cannot even rmmod snd-usb-audio. Sometimes I cannot
-> lsusb. So it looks like something is getting seriously hosed!
+> > I don't have any problem with leaving the reset management in the codec.
+> > The enable (chip-select) should be handled in the platform code.  But,
+> > gpio_disable should be removed from struct cs4271_platform_data to avoid
+> > any confusion.
+> 
+> Is that really a chip select or is it a power control?
+> 
 
-Looks like a bug in the USB controller driver, probably triggered by some
-unexpected behaviour of your USB controller.
-
-When this happens, are there any error messages in the system log?
-
-
-Regards,
-Clemens
+It's a chip select. The way I've managed it in CODEC it's because Cirrus
+boards do not have any other SPI devices. Supported by current mainline,
+at least.
