@@ -1,41 +1,212 @@
-From: Alexander Sverdlin <subaparts@yandex.ru>
-Subject: Re: [PATCH] ASoC: EDB93xx machine sound driver with
- CS4271
-Date: Wed, 02 Feb 2011 02:58:15 +0300
-Message-ID: <1296604695.1504.15.camel@r60e>
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+Subject: RE: [PATCH] EDB93xx: Add support for CS4271 CODEC on EDB93xx boards
+Date: Tue, 1 Feb 2011 18:02:51 -0600
+Message-ID: <0D753D10438DA54287A00B027084269764CEF59B2B@AUSP01VMBX24.collaborationhost.net>
+References: <1296603653.1504.9.camel@r60e>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward10.mail.yandex.net (forward10.mail.yandex.net
-	[77.88.61.49]) by alsa0.perex.cz (Postfix) with ESMTP id B07EB103806
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 00:58:23 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: todorcolov@abv.bg
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1296603653.1504.9.camel@r60e>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Alexander Sverdlin <subaparts@yandex.ru>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Lennert Buytenhek <buytenh@wantstofly.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Todor,
+On Tuesday, February 01, 2011 4:41 PM, Alexander Sverdlin wrote:
+> From: Alexander Sverdlin <subaparts@yandex.ru>
+> 
+> Add support for CS4271 SPI-connected CODEC on EDB93xx boards.
+> Major rework based on code provided by H Hartley Sweeten <hsweeten@visionengravers.com>.
+> Tested on EDB9302, others (EDB9301, EDB9302A, EDB9307A, EDB0315A) should work.
+>         
+> Signed-off-by: Alexander Sverdlin <subaparts@yandex.ru>
+> ---
+>  arch/arm/mach-ep93xx/edb93xx.c |  117 ++++++++++++++++++++++++++++++++++++++++
+>  1 files changed, 117 insertions(+), 0 deletions(-)
+> 
+> diff --git a/arch/arm/mach-ep93xx/edb93xx.c b/arch/arm/mach-ep93xx/edb93xx.c
+> index 4b04316..f20be96 100644
+> --- a/arch/arm/mach-ep93xx/edb93xx.c
+> +++ b/arch/arm/mach-ep93xx/edb93xx.c
+> @@ -30,12 +30,22 @@
+>  #include <linux/gpio.h>
+>  #include <linux/i2c.h>
+>  #include <linux/i2c-gpio.h>
+> +#include <linux/spi/spi.h>
+> +#include <linux/delay.h>
+> +#include <mach/ep93xx_spi.h>
+>  
+>  #include <mach/hardware.h>
+>  
+>  #include <asm/mach-types.h>
+>  #include <asm/mach/arch.h>
+>  
+> +#include <sound/cs4271.h>
+> +
+> +#define edb93xx_has_audio() (machine_is_edb9301() ||	\
+> +			     machine_is_edb9302() ||	\
+> +			     machine_is_edb9302a() ||	\
+> +			     machine_is_edb9307a() ||	\
+> +			     machine_is_edb9315a())
+>  
+>  static void __init edb93xx_register_flash(void)
+>  {
+> @@ -93,6 +103,111 @@ static void __init edb93xx_register_i2c(void)
+>  
+>  
+>  /*************************************************************************
+> + * EDB93xx SPI peripheral handling
+> + *************************************************************************/
+> +static int edb93xx_cs4271_hw_setup(struct spi_device *spi)
+> +{
+> +	int gpio_nreset;
+> +	int err;
+> +
+> +	if (machine_is_edb9301() || machine_is_edb9302()) {
+> +		gpio_nreset = EP93XX_GPIO_LINE_EGPIO1;
 
-> Zdrastvuj Aleks,
-> I'd like to test the sound module. Which is the latest patch versions
-> and 
-> coresponding kernel version? In which official kernel release do you
-> plan to 
-> merge it?
+Are you planning on removing gpio_nreset and gpio_disable from struct cs4271_platform_data?
+If not, you should just setup the gpio mapping in edb93xx_register_spi before you actually
+register the spi_board_info.  Then this function and the following two can just do something
+like the following and not worry about the if ... else if ... etc.
 
-As I can conclude from list, you should see it in 2.6.39 and possibly
--next already. 75% of the driver has been merged already. All you have
-to do to start testing is to add patch that I've just sent to the list
-([PATCH] EDB93xx: Add support for CS4271 CODEC on  EDB93xx boards).
 
-Best regards,
-	Alexander.
+	struct cs4271_platform_data *cs4271 = spi->dev.platform_data;
+	int err;
+
+	err = gpio_request(cs4271->gpio_disable, spi->modalias);
+	...
+
+
+> +	} else if (machine_is_edb9302a() || machine_is_edb9307a()) {
+> +		ep93xx_devcfg_set_bits(EP93XX_SYSCON_DEVCFG_HONIDE);
+
+You shouldn't need this.  The ep93xx gpio core will now defaults all the ports to gpio
+mode.  See commit fd015480c29deb52ae3bfaf41e888c450765edd8.
+
+> +		gpio_nreset = EP93XX_GPIO_LINE_DD2;
+
+Please use EP93XX_GPIO_LINE_H(2) instead.  None of the datasheets reference the "DD2"
+gpio.
+
+> +	} else if (machine_is_edb9315a()) {
+> +		gpio_nreset = EP93XX_GPIO_LINE_EGPIO14;
+> +	} else {
+> +		return -EINVAL;
+> +	}
+> +
+> +	err = gpio_request(gpio_nreset, spi->modalias);
+> +	if (err)
+> +		return err;
+> +	err = gpio_request(EP93XX_GPIO_LINE_EGPIO6, spi->modalias);
+> +	if (err)
+> +		return err;
+> +
+> +	gpio_direction_output(EP93XX_GPIO_LINE_EGPIO6, 1);
+> +
+> +	/* Reset codec */
+> +	gpio_direction_output(gpio_nreset, 0);
+> +	udelay(1);
+> +	gpio_set_value(gpio_nreset, 1);
+> +	/* Give the codec time to wake up */
+> +	udelay(1);
+> +
+> +	return 0;
+> +}
+> +
+> +static void edb93xx_cs4271_hw_cleanup(struct spi_device *spi)
+> +{
+> +	int gpio_nreset;
+> +
+> +	if (machine_is_edb9301() || machine_is_edb9302())
+> +		gpio_nreset = EP93XX_GPIO_LINE_EGPIO1;
+> +	else if (machine_is_edb9302a() || machine_is_edb9307a())
+> +		gpio_nreset = EP93XX_GPIO_LINE_DD2;
+> +	else if (machine_is_edb9315a())
+> +		gpio_nreset = EP93XX_GPIO_LINE_EGPIO14;
+> +	else
+> +		return;
+> +
+> +	gpio_set_value(gpio_nreset, 0);
+> +	gpio_free(gpio_nreset);
+> +
+> +	gpio_set_value(EP93XX_GPIO_LINE_EGPIO6, 1);
+> +	gpio_free(EP93XX_GPIO_LINE_EGPIO6);
+> +}
+> +
+> +static void edb93xx_cs4271_hw_cs_control(struct spi_device *spi, int value)
+> +{
+> +	gpio_set_value(EP93XX_GPIO_LINE_EGPIO6, value);
+> +}
+> +
+> +static struct ep93xx_spi_chip_ops edb93xx_cs4271_hw = {
+> +	.setup		= edb93xx_cs4271_hw_setup,
+> +	.cleanup	= edb93xx_cs4271_hw_cleanup,
+> +	.cs_control	= edb93xx_cs4271_hw_cs_control,
+> +};
+> +
+> +static struct spi_board_info edb93xx_spi_board_info[] __initdata = {
+> +	{
+> +		.modalias		= "cs4271",
+> +		.controller_data	= &edb93xx_cs4271_hw,
+> +		.max_speed_hz		= 6000000,
+> +		.bus_num		= 0,
+> +		.chip_select		= 0,
+> +		.mode			= SPI_MODE_3,
+> +	},
+> +};
+> +
+> +static struct ep93xx_spi_info edb93xx_spi_info = {
+> +	.num_chipselect	= ARRAY_SIZE(edb93xx_spi_board_info),
+> +};
+> +
+> +static void __init edb93xx_register_spi(void)
+> +{
+> +	if (edb93xx_has_audio()) {
+> +		ep93xx_register_spi(&edb93xx_spi_info,
+> +				    edb93xx_spi_board_info,
+> +				    ARRAY_SIZE(edb93xx_spi_board_info));
+> +	}
+> +}
+> +
+> +
+> +/*************************************************************************
+> + * EDB93xx I2S
+> + *************************************************************************/
+> +static void __init edb93xx_register_i2s(void)
+> +{
+> +	if (edb93xx_has_audio()) {
+> +		ep93xx_register_i2s();
+> +	}
+> +}
+> +
+> +
+> +/*************************************************************************
+>   * EDB93xx pwm
+>   *************************************************************************/
+>  static void __init edb93xx_register_pwm(void)
+> @@ -117,6 +232,8 @@ static void __init edb93xx_init_machine(void)
+>  	edb93xx_register_flash();
+>  	ep93xx_register_eth(&edb93xx_eth_data, 1);
+>  	edb93xx_register_i2c();
+> +	edb93xx_register_spi();
+> +	edb93xx_register_i2s();
+>  	edb93xx_register_pwm();
+>  }
+>  
+
+
+Other than using struct cs4271_platform_data to hold the gpio information, this
+looks better.  Now other spi devices can live on bus.
+
+Hartley
