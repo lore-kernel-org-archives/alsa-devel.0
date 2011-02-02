@@ -1,18 +1,15 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [PATCH] ASoC: Amstrad Delta: fix NULL pointer
-	dereference
-Date: Wed, 2 Feb 2011 11:02:20 +0100
-Message-ID: <201102021102.20679.jkrzyszt@tis.icnet.pl>
-References: <201102011840.55512.jkrzyszt@tis.icnet.pl>
-	<20110201213301.GB12101@opensource.wolfsonmicro.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: soc-core: Remove display_register()
+	callback
+Date: Wed,  2 Feb 2011 10:20:54 +0000
+Message-ID: <1296642054-10485-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1A9E7103832
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 11:03:21 +0100 (CET)
-In-Reply-To: <20110201213301.GB12101@opensource.wolfsonmicro.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C10E8103832
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 11:20:56 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +19,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-RG5pYSB3dG9yZWsgMDEgbHV0eSAyMDExIG8gMjI6MzM6MDEgTWFyayBCcm93biBuYXBpc2HFgihh
-KToKPiBPbiBUdWUsIEZlYiAwMSwgMjAxMSBhdCAwNjo0MDo1NVBNICswMTAwLCBKYW51c3ogS3J6
-eXN6dG9maWsgd3JvdGU6Cj4gPiBJdCBsb29rcyBsaWtlIHRoZSAuY2FyZCBtZW1iZXIgb2YgdGhl
-IHNuZF9zb2NfcGNtX3J1bnRpbWUgc3RydWN0dXJlCj4gPiBwb2ludGVkIHRvIGJ5IHRoZSBzbmRf
-c29jX2RhaV9saW5rLmluaXQoKSBhcmd1bWVudCBpcyBubyBsb25nZXIKPiA+IGluaXRpYWxpemVk
-IGJlZm9yZSB0aGUgZnVuY3Rpb24gYmVpbmcgY2FsbGVkLiBBcyB0aGUgQW1zdHJhZCBEZWx0YQo+
-ID4gc291bmQgY2FyZCBkcml2ZXIgd2FzIG1ha2luZyB1c2Ugb2YgaXQgZm9yIGxvY2F0aW5nIGl0
-cwo+ID4gc25kX3NvY19jYXJkIHN0cnVjdHVyZSwgdGhpcyByZXN1bHRlZCBpbiBhY3R1YWwgb3Ig
-cG90ZW50aWFsIE5VTEwKPiA+IHBvaW50ZXIgZGVyZWZlcmVuY2VzLgo+IAo+IFNlZW1zIGxpa2Ug
-aXQnZCBiZSBiZXR0ZXIgdG8gZml4IHRoaXMgaW4gdGhlIGNvcmUgLSB0aGlzIGlzIGEKPiByZWFz
-b25hYmxlIHRoaW5nIHRvIHdhbnQgdG8gaGF2ZSBzZXQgdXAgYW5kIHRoZSB1c2UgYW1zLWRlbHRh
-IG1ha2VzCj4gb2YgaXQgc2VlbXMgcGVyZmVjdGx5IHNlbnNpYmxlLiAgQ2FyZSB0byBkbyBhIHBh
-dGNoPwoKU3VyZS4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+Remove the display_register() callback as there are no users of it
+in the upstream kernel and makes it difficult to unify the format
+of the codec_reg file.
+
+Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+---
+ include/sound/soc.h  |    2 --
+ sound/soc/soc-core.c |   31 +++++++++++++------------------
+ 2 files changed, 13 insertions(+), 20 deletions(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 4b6c0a8..2e6463f 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -536,8 +536,6 @@ struct snd_soc_codec_driver {
+ 	/* codec IO */
+ 	unsigned int (*read)(struct snd_soc_codec *, unsigned int);
+ 	int (*write)(struct snd_soc_codec *, unsigned int, unsigned int);
+-	int (*display_register)(struct snd_soc_codec *, char *,
+-				size_t, unsigned int);
+ 	int (*volatile_register)(struct snd_soc_codec *, unsigned int);
+ 	int (*readable_register)(struct snd_soc_codec *, unsigned int);
+ 	short reg_cache_size;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 205cbd7..4c061c3 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -110,24 +110,19 @@ static ssize_t soc_codec_reg_show(struct snd_soc_codec *codec, char *buf)
+ 		if (count >= PAGE_SIZE - 1)
+ 			break;
+ 
+-		if (codec->driver->display_register) {
+-			count += codec->driver->display_register(codec, buf + count,
+-							 PAGE_SIZE - count, i);
+-		} else {
+-			/* If the read fails it's almost certainly due to
+-			 * the register being volatile and the device being
+-			 * powered off.
+-			 */
+-			ret = snd_soc_read(codec, i);
+-			if (ret >= 0)
+-				count += snprintf(buf + count,
+-						  PAGE_SIZE - count,
+-						  "%.*x", wordsize, ret);
+-			else
+-				count += snprintf(buf + count,
+-						  PAGE_SIZE - count,
+-						  "<no data: %d>", ret);
+-		}
++		/* If the read fails it's almost certainly due to
++		 * the register being volatile and the device being
++		 * powered off.
++		 */
++		ret = snd_soc_read(codec, i);
++		if (ret >= 0)
++			count += snprintf(buf + count,
++					  PAGE_SIZE - count,
++					  "%.*x", wordsize, ret);
++		else
++			count += snprintf(buf + count,
++					  PAGE_SIZE - count,
++					  "<no data: %d>", ret);
+ 
+ 		if (count >= PAGE_SIZE - 1)
+ 			break;
+-- 
+1.7.3.5
