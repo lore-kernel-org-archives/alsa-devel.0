@@ -1,20 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: issue with AD1989A HDA codec and alsamixer
-Date: Wed, 2 Feb 2011 14:16:55 +0800
-Message-ID: <AANLkTim-Vq6bhd=nHOVkToMSuT9R1n3nnQi-J4bzZNc_@mail.gmail.com>
-References: <AANLkTin8tsrNrcoYaPvQz0uO=OtD-tow1Ds0i8WTJyh7@mail.gmail.com>
-	<AANLkTinec0di98dMdyNoANXBoLG_uRJ+NghEyboCuMUa@mail.gmail.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH v6 0/3] input: Add support for ECI
+ (multimedia) accessories
+Date: Tue, 1 Feb 2011 22:21:22 -0800
+Message-ID: <20110202062122.GA22251@core.coreip.homeip.net>
+References: <1296482634-31666-1-git-send-email-tapio.vihuri@nokia.com>
+	<20110201085823.GB17706@core.coreip.homeip.net>
+	<1296552761.4168.40.camel@dell>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id DC6F31037FB
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 07:16:57 +0100 (CET)
-Received: by ewy19 with SMTP id 19so3396374ewy.38
-	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 22:16:55 -0800 (PST)
-In-Reply-To: <AANLkTinec0di98dMdyNoANXBoLG_uRJ+NghEyboCuMUa@mail.gmail.com>
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id CCB43103804
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 07:21:31 +0100 (CET)
+Received: by iwb12 with SMTP id 12so8043787iwb.38
+	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 22:21:31 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <1296552761.4168.40.camel@dell>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,53 +27,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Tapio Vihuri <tapio.vihuri@nokia.com>
+Cc: randy.dunlap@oracle.com, alsa-devel@alsa-project.org, samu.p.onkalo@nokia.com, peter.ujfalusi@nokia.com, linux-kernel@vger.kernel.org, ilkka.koskinen@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-2011/2/2 Raymond Yau <superquad.vortex2@gmail.com>
+On Tue, Feb 01, 2011 at 11:32:41AM +0200, Tapio Vihuri wrote:
+> On Tue, 2011-02-01 at 00:58 -0800, ext Dmitry Torokhov wrote:
+> > Hi Tapio,
+> > 
+> > On Mon, Jan 31, 2011 at 04:03:51PM +0200, tapio.vihuri@nokia.com wrote:
+> > > 
+> > > This patch set introduce Multimedia Headset Accessory support for
+> > > Nokia phones. Technically those are known as ECI (Enhancement Control Interface)
+> > > 	
+> > > If headset has many buttons, like play, vol+, vol- etc. then it is propably ECI
+> > > accessory.
+> > > 
+> > > Among several buttons ECI accessories contains memory for storing several
+> > > parameters.
+> > > 
+> > > This ECI input driver provides the following features:
+> > >  - reading ECI configuration memory
+> > >  - ECI buttons as input events
+> > > 
+> > > Drive is constructed as follows:
+> > >  - ECI accessory input driver deals with headset accessory
+> > >  - ECI bus control driver deals the HW transfering data to/from headset
+> > >  - platform data match used HW
+> > 
+> > I finally had a chance to look though the patches more closely and I do
+> > not understand why you decided to introduce the platform device in
+> > addition to I2C device. You end up with 2 artificially separated bodies of
+> > code that are not viable on their own. The ECI module with it's platform
+> > device is not usable without the controller; the controller can not be
+> > registered without the ECI device initialized; there are ordering
+> > issues, both initialization and PM-wise and you are forced to support
+> > only one device.
+> > 
+> > Is there going to be an SPI interface as well? If not then fold it all
+> > together and have I2C device as the only device involved. If SPI is a
+> > possibility then look in drivers such as adxl34x, ad714x and others that
+> > are split into core module and bus interface implementations.
+> > 
+> > Thanks.
+> > 
+> 
+> Hi Dmitry
+> 
+> Thank you for reviewing.
+> 
+> The reasoning for separating driver to the two parts is having both
+> common and different hardware.
+> 
+> The ECI input, as platform device is common part and only dealing with
+> the accessory HW (meaning the headset accessory).
+> This is standardiced part of system, where specification guarantee HW
+> behaving same way accross several headset accessories.
+> The accessory is plugged to the terminal using four pin AV-cable, much
+> same way as USB mouse.
+> I just didn't see need to introduce new bus type for one wire ECI data
+> link, hence platform device.
+> 
+> The ECI controller, as I2C device is the variable part of the system.
+> In this case it's microcontroller in I2C bus, but there are other
+> versions too.
+> There is no specification about these controller's internals, and those
+> are quite different.
+> It is also possible to use other buses too for connecting controller to
+> terminal, like SPI.
+> 
+> The idea was that if ECI is used in device, just take ECI input driver
+> and select the ECI controller which is used in the platform.
+> 
+> And as long as the ECI controller driver use the same interface to ECI
+> input driver, evetrything works OK.
+> This allows also dynamic selection of used control device. I mean we can
+> compile several ECI controllers as modules and detect the HW at
+> initialization.
+> 
+> I use the ad714x as example, but I can take second look on that too.
+> 
+> Please let me know if this is making sense.
 
->
->
-> 2011/2/1 Vincent Meserette <vmeserette@aldebaran-robotics.com>
->
-> Hi all,
->>
->> I am working on a system which includes a connexant AD1989A HDA codec
->> connected to a ATOM processor.
->> I have four microphones connected to the B and C ports of this codec.
->> If I change one of the 3 capture gains present in the alsamixer
->> (Capture, Capture 1 or Capture 3), I can't have any more signal on the
->> B and C ports
->> It seems to be due to the fact that ALSA breaks (for example for the
->> Capture gain) the link between the ADC selector 0 and ADC_0 widgets of
->> the codec, what can be easily seen with codecgraph.
->>
->> Have you ever had this kind of problem?
->> Do you know how can I resolve it ?
->>
->> Many thanks for your asnwers and best regards
->>
->> Vincent
->>
->
-> What is the Vendor Id of conexant AD1989A ?
->
-> are your codec are using patch_analog.c according to vendor id of the codec
-> ?
->
-> Looking at the datasheet of ad1988a , ad1988b and ad1989b at analog device
-> web site and ad1989a conexant web site
->
-> The digital microphone of conexant ad1989a only connect to adc0 in the
-> functional block diagram
->
->
-If the number of input sources of adc0 of ad1989a is more than those of adc1
-and adc2
+Tapio,
 
-This may mean that you will need to implement a specific
-ad1989a_capture_mixer[] for ad1989a instead of using ad1988_capture_mixer
-and
+I understand that ECI accessory is the standard part that can be attached
+to several controllers, it still does not explain the need for the
+platform device.
 
-may need to implement ad1989a_pcm_analog_alt_capture  for adc1 and adc2
-similar to alc880_pcm_analog_alt_capture
+If ECI accessory is the only device that uses the interface you
+specified then write a module containing that core functionality, with a
+function to instantiate an instance of the accessory and have controller
+drivers call this function as part of their bind procedure (i.e. do what
+adxl34x and company are doing).
+
+If there could be other accessories utilizing the same interface then
+creating a new bus is the only viable option.
+
+Thank you.
+
+-- 
+Dmitry
