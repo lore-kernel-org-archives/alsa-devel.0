@@ -1,58 +1,71 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: problem with mms stream - [AO_ALSA] Trying to
-	reset soundcard
-Date: Wed, 2 Feb 2011 09:24:56 +0800
-Message-ID: <AANLkTikoPUm2cqq4-eycig20pga-VHauHD_Weuz4aSex@mail.gmail.com>
-Reply-To: "MPlayer usage questions, feature requests,
-	bug reports" <mplayer-users@mplayerhq.hu>
+Subject: Re: Jack sense fails on Fujitsu p7120
+Date: Wed, 2 Feb 2011 11:14:19 +0800
+Message-ID: <AANLkTimt3U7Dxs5ufTqJ1Qd5uCNcLs_Lexcp5B9MP6E1@mail.gmail.com>
+References: <AANLkTimGPyno7Wd3TfO7dhZe9e4a5QcXLS8Upa1Mq7q_@mail.gmail.com>
+	<AANLkTimb+yqOhWP1Rc78F9pc+j6VEGp7v0SYvGi7mGrb@mail.gmail.com>
+	<AANLkTim2ch5-QHoh67SuKwMmTMQL=HM6VG1iVCxxoo9+@mail.gmail.com>
+	<AANLkTimszyfVj8pbt4jujQ3o96OqVHKb-bb7o8GXG5pU@mail.gmail.com>
+	<AANLkTi=hFT5Sono3Sehq2WRZZcgEULs2jwwm-ZTDEb0R@mail.gmail.com>
+	<AANLkTi=xPwCS0AH1jzGx9UB5=fSLNGMJa-J6tyFgjSaG@mail.gmail.com>
+	<AANLkTi=u8QCzVRUjQVJVfPqOhy8wsA5P7bsFPP2t9w9Z@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="koi8-r"
-Content-Transfer-Encoding: base64
-Return-path: <mplayer-users-bounces@mplayerhq.hu>
-List-Unsubscribe: <https://lists.mplayerhq.hu/mailman/options/mplayer-users>,
-	<mailto:mplayer-users-request@mplayerhq.hu?subject=unsubscribe>
-List-Archive: <http://lists.mplayerhq.hu/pipermail/mplayer-users>
-List-Post: <mailto:mplayer-users@mplayerhq.hu>
-List-Help: <mailto:mplayer-users-request@mplayerhq.hu?subject=help>
-List-Subscribe: <https://lists.mplayerhq.hu/mailman/listinfo/mplayer-users>,
-	<mailto:mplayer-users-request@mplayerhq.hu?subject=subscribe>
-Sender: mplayer-users-bounces@mplayerhq.hu
-Errors-To: mplayer-users-bounces@mplayerhq.hu
-To: "MPlayer usage questions, feature requests,
-	bug reports" <mplayer-users@mplayerhq.hu>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 30B12103804
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 04:14:22 +0100 (CET)
+Received: by ewy19 with SMTP id 19so3370697ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 19:14:19 -0800 (PST)
+In-Reply-To: <AANLkTi=u8QCzVRUjQVJVfPqOhy8wsA5P7bsFPP2t9w9Z@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-PvDSydfF1NPU19XALCBSZWltYXIKPiBPbiBTdW4sIEphbiAyNCwgMjAxMCBhdCAwMjozNjo1MFBN
-ICswMzAwLCBHb2dhNzc3IHdyb3RlOgo+ID4gW0FPX0FMU0FdIFdyaXRlIGVycm9yOiBCcm9rZW4g
-cGlwZTQ0Mjg5MjguMCAoLTI0Li04KSA5Ni40JSA2JQo+ID4gW0FPX0FMU0FdIFRyeWluZyB0byBy
-ZXNldCBzb3VuZGNhcmQuCj4gPiBJbmNyZWFzaW5nIGZpbHRlcmVkIGF1ZGlvIGJ1ZmZlciBzaXpl
-IGZyb20gNjU1MzYgdG8gNjc1MzYxJSA5JQo+ID4gSW5jcmVhc2luZyBmaWx0ZXJlZCBhdWRpbyBi
-dWZmZXIgc2l6ZSBmcm9tIDY3NTM2IHRvIDY3NTQ0MiUgMTIlCj4gPiBbQU9fQUxTQV0gV3JpdGUg
-ZXJyb3I6IEJyb2tlbiBwaXBlNDQyODkyOC4wICgtMjQuLTgpIDI0LjAlIDYlCj4gPiBbQU9fQUxT
-QV0gVHJ5aW5nIHRvIHJlc2V0IHNvdW5kY2FyZC4KPgo+IEkgYW0gbm90IHN1cmUgdGhpcyBpcyB0
-aGUgc2FtZSBpc3N1ZSwgYnV0IEkgaGFkIHRoaXMgcGFydCBhcyB3ZWxsLgoKICAgICAgcmVzID0g
-c25kX3BjbV93cml0ZWkoYWxzYV9oYW5kbGVyLCBkYXRhLCBudW1fZnJhbWVzKTsKLi4uCiAgICAg
-IGlmIChyZXMgPCAwKSB7CgltcF9tc2coTVNHVF9BTyxNU0dMX0VSUixNU0dUUl9BT19BTFNBX1dy
-aXRlRXJyb3IsIHNuZF9zdHJlcnJvcihyZXMpKTsKCW1wX21zZyhNU0dUX0FPLE1TR0xfSU5GTyxN
-U0dUUl9BT19BTFNBX1RyeWluZ1RvUmVzZXRTb3VuZGNhcmQpOwoJaWYgKChyZXMgPSBzbmRfcGNt
-X3ByZXBhcmUoYWxzYV9oYW5kbGVyKSkgPCAwKSB7CgkgIG1wX21zZyhNU0dUX0FPLE1TR0xfRVJS
-LE1TR1RSX0FPX0FMU0FfUGNtUHJlcGFyZUVycm9yLCBzbmRfc3RyZXJyb3IocmVzKSk7CgkgIHJl
-dHVybiAwOwoJICBicmVhazsKCX0KICAgICAgfQoKVGhlICJwdWxzZSIgcGx1Z2luIHJldHVybiAt
-RVBJUEUgIkJyb2tlbiBwaXBlIiBhdCBmb3VyIGNvbmRpdGlvbnMgYWZ0ZXIKbXBsYXllciBjYWxs
-IHNuZF9wY21fd3JpdGVpKCkKCjEpIGlvLT5zdGF0ZSA9PSBTTkRfUENNX1NUQVRFX1hSVU4KMikg
-cGNtLT51bmRlcnJ1bgozKSB1cGRhdGVfcHRyKHBjbSkgcmV0dXJuIGVycgoKbXBsYXllciBjYWxs
-IHNuZF9wY21fcHJlcGFyZSgpIHRvIHJlY292ZXIgZnJvbSAiQnJva2VuIFBpcGUiLgoKYnV0IHdo
-eSBtcGxheWVyIGluY3JlYXNpbmcgZmlsdGVyZWQgYXVkaW8gYnVmZmVyID8KCgoKc3RhdGljIHNu
-ZF9wY21fc2ZyYW1lc190IHB1bHNlX3BvaW50ZXIoc25kX3BjbV9pb3BsdWdfdCAqIGlvKQp7Ci4u
-LgkKCWlmIChpby0+c3RhdGUgPT0gU05EX1BDTV9TVEFURV9YUlVOKQoJCXJldHVybiAtRVBJUEU7
-CgoKCglpZiAocGNtLT51bmRlcnJ1bikgewoJCXJldCA9IC1FUElQRTsKCQlnb3RvIGZpbmlzaDsK
-CX0KCglpZiAoaW8tPnN0YXRlICE9IFNORF9QQ01fU1RBVEVfUlVOTklORykKCQlyZXR1cm4gMDsK
-CglwYV90aHJlYWRlZF9tYWlubG9vcF9sb2NrKHBjbS0+cC0+bWFpbmxvb3ApOwoKCXJldCA9IGNo
-ZWNrX3N0cmVhbShwY20pOwoJaWYgKHJldCA8IDApCgkJZ290byBmaW5pc2g7CgoJaWYgKHBjbS0+
-dW5kZXJydW4pIHsKCQlyZXQgPSAtRVBJUEU7CgkJZ290byBmaW5pc2g7Cgl9CgoJcmV0ID0gdXBk
-YXRlX3B0cihwY20pOwoJaWYgKHJldCA8IDApIHsKCQlyZXQgPSAtRVBJUEU7CgkJZ290byBmaW5p
-c2g7Cgl9CgoJaWYgKHBjbS0+dW5kZXJydW4pCgkJcmV0ID0gLUVQSVBFOwoJZWxzZQoJCXJldCA9
-IHNuZF9wY21fYnl0ZXNfdG9fZnJhbWVzKGlvLT5wY20sIHBjbS0+cHRyKTsKCmZpbmlzaDoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTVBsYXllci11c2Vy
-cyBtYWlsaW5nIGxpc3QKTVBsYXllci11c2Vyc0BtcGxheWVyaHEuaHUKaHR0cHM6Ly9saXN0cy5t
-cGxheWVyaHEuaHUvbWFpbG1hbi9saXN0aW5mby9tcGxheWVyLXVzZXJz
+2011/2/2 Robin Neatherway <neatherway@gmail.com>
+
+> > Do you mean
+> >
+> > LOUT1 playback volume control at node 0x8 affect the volume of your
+> > headphone and LOUT2 playback volume control at node 0x9 affect the volume
+> of
+> > your speakers ?
+> >
+> > If you look at 4.1 Block Diagram of alc260 datasheet ,
+> >
+> > LOUT1 is connected to 0xf Line Out and
+> > LOUT2 is connected to 0x10 HP
+>
+> Having looked at the datasheet I agree with you, this seems
+> surprising. However, if I run speaker-test and then toggle the mutes
+> of LOUT1 and LOUT2 one by one, they toggle the headphones and speakers
+> respectively.
+>
+> Additionally, to hear output on each device I have to set the
+> following pin modes:
+>
+> Headphones: LINE1 pin mode at node 0x14 must be set to line out
+> (quieter)/headphones (louder)
+> Speakers: HP-OUT pin mode at node 0x10 must be set to line
+> out/headphones (same volume)
+>
+>
+hp_automute work only when it get the correct position of HP and speaker
+[Pin complex]
+
+Can you post the output of alsa-info.sh using model=auto after a cold boot
+to find out whether BIOS setup pin default of node 0x0f and 0x10 to HP and
+Speakers  ?
+
+if not, you will need to find any alc269 model which create "Headphone
+Playback Volume" at node 0x8 and "Speaker Playback volume" at node 0x09
