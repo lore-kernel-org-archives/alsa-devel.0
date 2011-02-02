@@ -1,65 +1,51 @@
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-Subject: RE: [PATCH] EDB93xx: Add support for CS4271 CODEC on EDB93xx boards
-Date: Wed, 2 Feb 2011 10:53:15 -0600
-Message-ID: <0D753D10438DA54287A00B027084269764CEFD45C8@AUSP01VMBX24.collaborationhost.net>
-References: <1296603653.1504.9.camel@r60e>
-	<0D753D10438DA54287A00B027084269764CEF59B2B@AUSP01VMBX24.collaborationhost.net>
-	<1296643688.1504.23.camel@r60e>
-	<20110202104943.GN12743@opensource.wolfsonmicro.com>
-	<1296645167.1504.31.camel@r60e>
-	<20110202125327.GO12743@opensource.wolfsonmicro.com>
-	<1296653211.1504.40.camel@r60e>
+From: Rods Bobavich <rodnisms@gmail.com>
+Subject: snd-usb-audio dying on jackd xruns
+Date: Wed, 2 Feb 2011 09:54:24 -0700
+Message-ID: <AANLkTinc02yXS=axf5wCQMq3e+nhiJj_ZaHmjk-bcorS@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1296653211.1504.40.camel@r60e>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Alexander Sverdlin <subaparts@yandex.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lennert Buytenhek <buytenh@wantstofly.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id C384F24341
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 17:54:44 +0100 (CET)
+Received: by ewy19 with SMTP id 19so139270ewy.38
+	for <alsa-devel@alsa-project.org>; Wed, 02 Feb 2011 08:54:44 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday, February 02, 2011 6:27 AM, Alexander Sverdlin wrote:
-> 
-> Dear Mark, Dear Hartley,
-> 
-> On Wed, 2011-02-02 at 12:53 +0000, Mark Brown wrote:
->>> Now Hartley suggested to move GPIO handling to platform code. This makes
->>> sense, as SPI-enable will be managed automatically, and reset is also
->>> more related to platform (depending on schematics, inversion and so on).
->>
->> What is the advantage of this?  The GPIO management has to be done
->> somewhere and replicating it in every platform seems like a complete
->> waste of time.  Given that one of the GPIOs is a power control it'll
->> also mean that it's not possible to manage the power dynamically at
->> runtime.
->> 
->
-> I think we can leave reset management in CODEC (as it will be almost the
-> same for all platforms), leave enable pin management in CODEC unused,
-> but attach enable GPIO to spi_board_info in platform to enable other SPI
-> devices on bus.
-> 
-> Hartley, in this case we cannot use existing cs4271_platform_data and
-> have to leave long if-else statemens as is. Would it be ok?
+So I start jackd and it runs fine for a while. Then ALSA crashes and
+triggers an xrun. Jackd continues to do its merry thing - minus the part
+about spitting info out to my soundcard...
 
-I don't have any problem with leaving the reset management in the codec.
-The enable (chip-select) should be handled in the platform code.  But,
-gpio_disable should be removed from struct cs4271_platform_data to avoid
-any confusion.
+At first I thought this was a Jackd issue but when I looked deeper it seems
+to be ALSA. Once this happens I cannot restart jackd and resume an audio
+session. In fact, I cannot even rmmod snd-usb-audio. Sometimes I cannot
+lsusb. So it looks like something is getting seriously hosed!
 
-I have an idea on how to remove the if-else mess in the ep93xx platform init.
-Please make any updates you have and post the patches.  I will comment on
-it then.
+It seems to be specific to my machine.
 
-Thanks,
-Hartley
+I've tried multiple usb intefaces. All work fine with other computers. I've
+tried multiple version of Ubuntu with various versions of ALSA on this
+machine. All exhibit the same behavior. I have 3 other machines that run
+these interfaces just fine... So it seems to be a
+hardware compatibility issue not a software glitch in one version.
+
+I've tried many boot flags but to no avail. I'm at a loss on how to
+troubleshoot.
+
+The machine is M4N75TD motherboard with a Phenom II 1055T and the latest
+bios flash.
+
+Please advise,
+
+...Rods ;-)
