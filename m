@@ -1,26 +1,38 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: WL1273 FM Radio driver...
-Date: Wed, 2 Feb 2011 15:51:49 +0000
-Message-ID: <20110202155148.GS12743@opensource.wolfsonmicro.com>
-References: <1295363063.25951.67.camel@masi.mnp.nokia.com>
- <20110130232358.GD2565@sortiz-mobl>
- <4D4979A5.1020000@redhat.com>
+From: Sergei Shtylyov <sshtylyov@mvista.com>
+Subject: Re: [PATCH] asoc: davinci: da830/omap-l138: correct
+	cpu_dai_name
+Date: Wed, 02 Feb 2011 18:51:58 +0300
+Message-ID: <4D497D9E.9040201@mvista.com>
+References: <1296658444-8836-1-git-send-email-vaibhav.bedia@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-media-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4D4979A5.1020000@redhat.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@redhat.com>
-Cc: Samuel Ortiz <sameo@linux.intel.com>, "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, hverkuil@xs4all.nl, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <stable-bounces@linux.kernel.org>
+In-Reply-To: <1296658444-8836-1-git-send-email-vaibhav.bedia@ti.com>
+List-Unsubscribe: <http://linux.kernel.org/mailman/options/stable>,
+	<mailto:stable-request@linux.kernel.org?subject=unsubscribe>
+List-Archive: <http://linux.kernel.org/mailman/private/stable/>
+List-Post: <mailto:stable@linux.kernel.org>
+List-Help: <mailto:stable-request@linux.kernel.org?subject=help>
+List-Subscribe: <http://linux.kernel.org/mailman/listinfo/stable>,
+	<mailto:stable-request@linux.kernel.org?subject=subscribe>
+Sender: stable-bounces@linux.kernel.org
+Errors-To: stable-bounces@linux.kernel.org
+To: Vaibhav Bedia <vaibhav.bedia@ti.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, davinci-linux-open-source@linux.davincidsp.com, stable@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 02, 2011 at 01:35:01PM -0200, Mauro Carvalho Chehab wrote:
+Hello.
 
-[Reflowed into 80 columns.]
-> My concerns is that the V4L2-specific part of the code should be at
-> drivers/media.  I prefer that the specific MFD I/O part to be at
-> drivers/mfd, just like the other drivers.
+Vaibhav Bedia wrote:
 
-Currently that's not the case - the I/O functionality is not in any
-meaningful sense included in the MFD, it's provided by the V4L portion.
+> McASP1 is used on the DA830/OMAP-L137 platform for the codec.
+> This is different from the DA850/OMAP-L138 platform which uses McASP0.
+
+    I guess that in the subject you meant to type "da830/omap-l137"?
+
+> This is fixed by adding a new snd_soc_dai_link struct.
+
+> Signed-off-by: Vaibhav Bedia <vaibhav.bedia@ti.com>
+
+WBR, Sergei
