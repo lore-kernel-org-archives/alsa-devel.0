@@ -1,21 +1,17 @@
-From: Mika Westerberg <mika.westerberg@iki.fi>
-Subject: Re: [PATCH] EDB93xx: Add support for CS4271 CODEC on
- EDB93xx boards
-Date: Wed, 2 Feb 2011 09:54:34 +0200
-Message-ID: <20110202075434.GA2445@acer>
-References: <1296603653.1504.9.camel@r60e>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: Re: Nvidia HDMI and four codecs
+Date: Wed, 02 Feb 2011 09:03:42 +0100
+Message-ID: <4D490FDE.9070900@canonical.com>
+References: <4D47BFEB.8040602@canonical.com>
+	<74CDBE0F657A3D45AFBB94109FB122FF0310C8E418@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id BDDE41037FB
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 08:56:23 +0100 (CET)
-Received: by eyg24 with SMTP id 24so3458343eyg.38
-	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 23:56:20 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <1296603653.1504.9.camel@r60e>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 866AD10380A
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 09:03:48 +0100 (CET)
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0310C8E418@HQMAIL01.nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,95 +21,142 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alexander Sverdlin <subaparts@yandex.ru>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, H Hartley Sweeten <hsweeten@visionengravers.com>, Lennert Buytenhek <buytenh@wantstofly.org>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Stephen Warren <swarren@nvidia.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Nitin Daga <ndaga@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 02, 2011 at 02:40:53AM +0300, Alexander Sverdlin wrote:
-> From: Alexander Sverdlin <subaparts@yandex.ru>
-> 
-> Add support for CS4271 SPI-connected CODEC on EDB93xx boards.
-> Major rework based on code provided by H Hartley Sweeten <hsweeten@visionengravers.com>.
-> Tested on EDB9302, others (EDB9301, EDB9302A, EDB9307A, EDB0315A) should work.
+On 2011-02-01 17:36, Stephen Warren wrote:
+> David Henningsson wrote at Tuesday, February 01, 2011 1:10 AM:
+>> I've seen a few Nvidia HDMI's recently which have four HDMI codecs
+>> connected to the same HDA controller.
+>
+> This is the case for any NVIDIA GPU that supports HDA, and also our most
+> recent chipset.
+>
+>> The problem is that we don't know
+>> which one(s) of these four that is the real one. So people will have to
+>> try devices "hdmi:Nvidia,0", "hdmi:Nvidia,1", "hdmi:Nvidia,2" and
+>> "hdmi:Nvidia,3" to figure out which one is the right one. (And by
+>> empirical testing we know that it isn't always the first one.)
+>
+> /proc/asound/card<n>/eld* will tell you which one to use; the ELD file
+> numbering should match the hdmi: device numbering.
+>
+> eld 0,1,2,3 also match hw:$card:$device with device=3,7,8,9.
+>
+> I do have an audio document that's aimed at technical end-users to explain
+> all of this. However, I haven't quite finished it, and issues with the
+> publication mechanism have stopped me publishing it so far.
+>
+>> Thinking PulseAudio and/or "Just Works", this is not good enough, so is
+>> there a way to know beforehand which one of these four that is actually
+>> physically connected?
+>
+> I don't believe it's possible to determine which of the codecs are physically
+> connected to actual connectors on the graphics board. This would be a static
+> facet of the board design.
 
-One minor comment, see below.
+Ok, thanks for confirming.
 
->         
-> Signed-off-by: Alexander Sverdlin <subaparts@yandex.ru>
-> ---
->  arch/arm/mach-ep93xx/edb93xx.c |  117 ++++++++++++++++++++++++++++++++++++++++
->  1 files changed, 117 insertions(+), 0 deletions(-)
-> 
-> diff --git a/arch/arm/mach-ep93xx/edb93xx.c b/arch/arm/mach-ep93xx/edb93xx.c
-> index 4b04316..f20be96 100644
-> --- a/arch/arm/mach-ep93xx/edb93xx.c
-> +++ b/arch/arm/mach-ep93xx/edb93xx.c
-> @@ -30,12 +30,22 @@
->  #include <linux/gpio.h>
->  #include <linux/i2c.h>
->  #include <linux/i2c-gpio.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/delay.h>
-> +#include <mach/ep93xx_spi.h>
->  
->  #include <mach/hardware.h>
->  
->  #include <asm/mach-types.h>
->  #include <asm/mach/arch.h>
->  
-> +#include <sound/cs4271.h>
-> +
-> +#define edb93xx_has_audio() (machine_is_edb9301() ||	\
-> +			     machine_is_edb9302() ||	\
-> +			     machine_is_edb9302a() ||	\
-> +			     machine_is_edb9307a() ||	\
-> +			     machine_is_edb9315a())
->  
->  static void __init edb93xx_register_flash(void)
->  {
-> @@ -93,6 +103,111 @@ static void __init edb93xx_register_i2c(void)
->  
->  
->  /*************************************************************************
-> + * EDB93xx SPI peripheral handling
-> + *************************************************************************/
-> +static int edb93xx_cs4271_hw_setup(struct spi_device *spi)
-> +{
-> +	int gpio_nreset;
-> +	int err;
-> +
-> +	if (machine_is_edb9301() || machine_is_edb9302()) {
-> +		gpio_nreset = EP93XX_GPIO_LINE_EGPIO1;
-> +	} else if (machine_is_edb9302a() || machine_is_edb9307a()) {
-> +		ep93xx_devcfg_set_bits(EP93XX_SYSCON_DEVCFG_HONIDE);
-> +		gpio_nreset = EP93XX_GPIO_LINE_DD2;
-> +	} else if (machine_is_edb9315a()) {
-> +		gpio_nreset = EP93XX_GPIO_LINE_EGPIO14;
-> +	} else {
-> +		return -EINVAL;
-> +	}
-> +
-> +	err = gpio_request(gpio_nreset, spi->modalias);
-> +	if (err)
-> +		return err;
-> +	err = gpio_request(EP93XX_GPIO_LINE_EGPIO6, spi->modalias);
-> +	if (err)
+As you might have seen, for Intel HDMI I made a patch that makes it act 
+upon the pin config default register. I'd love it if things could work 
+out the same way for Nvidia HDMI. I don't know enough about the BIOS/HW 
+side of things to know for sure, but I guess this will be something up 
+to whoever makes the board (e g Asus) to set inside the GPU somehow.
 
-Should you call gpio_free() for gpio_nreset here?
+Failing that, we could try hiding things in the driver by quirking, 
+either at the codec level or at the pin complex level.
 
-Regards,
-MW
+> Beyond that, the ELD files will indicate which codecs/pins are routed to a
+> connector with an audio-capable display attached and that X is actually
+> sending a signal to. This can dynamically change as the X server is
+> reconfigured, either when X restarts, or dynamically through our management
+> protocol or application.
+>
+>> I'd love BIOS to provide a good codec probe mask, a pin config default,
+>> or something similar, but given a codec-proc I can't see any difference
+>> between the real ones and the unconnected ones, so I don't know how to
+>> fix up the driver without hardcoding/quirking every one of them. Any
+>> hints?
+>
+> ALSA now exposes a logical device (hdmi:Nvidia,n) for each pin complex[1]
+> (equivalently each codec since there's a 1:1 mapping in our GPUs right now).
+> However, PulseAudio still only offers the user the first of these devices,
+> thus causing users to resort to probe masks to select which ALSA device they
+> wish to use.
+>
+> If PulseAudio were to offer all HDMI devices in its UI, at least the user
+> Could configure their system using the regular GUI tools. I did suggest this
+> on the PulseAudio list, and I think the maintainers agreed this would be a
+> good idea in principle. However, I haven't taken the time to drive this.
+>
+> http://www.mail-archive.com/pulseaudio-discuss@mail.0pointer.de/msg07433.html
 
-> +		return err;
-> +
-> +	gpio_direction_output(EP93XX_GPIO_LINE_EGPIO6, 1);
-> +
-> +	/* Reset codec */
-> +	gpio_direction_output(gpio_nreset, 0);
-> +	udelay(1);
-> +	gpio_set_value(gpio_nreset, 1);
-> +	/* Give the codec time to wake up */
-> +	udelay(1);
-> +
-> +	return 0;
-> +}
+Thanks, reading that thread made a few things clearer.
+
+As for PulseAudio, showing four HDMI devices is quite simple [1] but I 
+still think it would be a little confusing to show four devices to 
+choose from and would wish for something more intuitive.
+
+> [1] Concentrating abstractions on pin complexes rather than codecs will
+> ensure ALSA etc. are more ready for other codec/converter/pin
+> combinations that may be seen on other or future GPUs.
+
+I agree.
+
+So let's sum up the options here:
+
+1) Board manufacturer sets a codec probe mask.
+
+2) Board manufacturer sets pin config default register. This might 
+require some support in the driver as well.
+
+1) and 2) won't work for existing boards and I don't know how difficult 
+it would be to persuade the board manufacturers to do it for future boards.
+
+3) Quirking in the driver - codec probe mask
+
+This was my primary option until yesterday, when I saw a machine which 
+had the same PCI SSID for both the primary HDA controller and the Nvidia 
+HDA controller.
+
+4) Quirking in the driver - pin config default register. Will need some 
+work in the driver, but I guess it's doable.
+
+3) and 4) gives us a lot of quirking to do.
+
+5) Show all four devices in PulseAudio. Simple, but confusing for the user.
+
+6) Proper jack detection in PulseAudio, which might be based on ELD 
+information. This is what would need the most work to do, and things 
+will still be confusing for people not using PulseAudio. It might be the 
+long path to go anyway, as it would enable features such as auto-moving 
+to HDMI when HDMI is plugged in, etc.
+
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
+
+[1] I haven't tested it, but I guess the following addition to 
+/usr/shared/pulseaudio/alsa-mixer/profile-sets/default.conf should do it:
+
+[Mapping hdmi-stereo-extra1]
+description = HDMI out extra 1
+device-strings = hdmi:%f,1
+channel-map = left,right
+priority = 2
+direction = output
+
+[Mapping hdmi-stereo-extra2]
+description = HDMI out extra 2
+device-strings = hdmi:%f,2
+channel-map = left,right
+priority = 2
+direction = output
+
+[Mapping hdmi-stereo-extra3]
+description = HDMI out extra 3
+device-strings = hdmi:%f,3
+channel-map = left,right
+priority = 2
+direction = output
