@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: PXA: formatting
-Date: Wed, 2 Feb 2011 10:54:12 +0000
-Message-ID: <20110202105412.GB9810@sirena.org.uk>
-References: <1296486650-6370-1-git-send-email-s.neumann@raumfeld.com>
+From: Alexander Sverdlin <subaparts@yandex.ru>
+Subject: Re: [PATCH] EDB93xx: Add support for CS4271 CODEC on
+	EDB93xx boards
+Date: Wed, 02 Feb 2011 14:12:47 +0300
+Message-ID: <1296645167.1504.31.camel@r60e>
+References: <1296603653.1504.9.camel@r60e>
+	<0D753D10438DA54287A00B027084269764CEF59B2B@AUSP01VMBX24.collaborationhost.net>
+	<1296643688.1504.23.camel@r60e>
+	<20110202104943.GN12743@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id A10A61039B4
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 11:54:14 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1296486650-6370-1-git-send-email-s.neumann@raumfeld.com>
+Received: from forward9.mail.yandex.net (forward9.mail.yandex.net
+	[77.88.61.48]) by alsa0.perex.cz (Postfix) with ESMTP id BC46C244DA
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 12:12:55 +0100 (CET)
+In-Reply-To: <20110202104943.GN12743@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,59 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sven Neumann <s.neumann@raumfeld.com>
-Cc: alsa-devel@alsa-project.org, Daniel Mack <daniel@caiaq.de>, lrg@slimlogic.co.uk
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, H Hartley Sweeten <hartleys@visionengravers.com>, Lennert Buytenhek <buytenh@wantstofly.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 31, 2011 at 04:10:50PM +0100, Sven Neumann wrote:
-> Signed-off-by: Sven Neumann <s.neumann@raumfeld.com>
+Dear Mark,
 
-Always CC maintainers on patch submissions as documented in
-SubmittingPatches.  Adding Liam.
-
->  sound/soc/pxa/raumfeld.c |   16 ++++++++--------
->  1 files changed, 8 insertions(+), 8 deletions(-)
+On Wed, 2011-02-02 at 10:49 +0000, Mark Brown wrote:
+> On Wed, Feb 02, 2011 at 01:48:08PM +0300, Alexander Sverdlin wrote:
 > 
-> diff --git a/sound/soc/pxa/raumfeld.c b/sound/soc/pxa/raumfeld.c
-> index 0fd60f4..4a4b73e 100644
-> --- a/sound/soc/pxa/raumfeld.c
-> +++ b/sound/soc/pxa/raumfeld.c
-> @@ -229,19 +229,19 @@ static struct snd_soc_dai_link raumfeld_dai[] = {
->  {
->  	.name		= "ak4104",
->  	.stream_name	= "Playback",
-> -	.cpu_dai_name = "pxa-ssp-dai.1",
-> -	.codec_dai_name = "ak4104-hifi",
-> -	.platform_name = "pxa-pcm-audio",
-> +	.cpu_dai_name	= "pxa-ssp-dai.1",
-> +	.codec_dai_name	= "ak4104-hifi",
-> +	.platform_name	= "pxa-pcm-audio",
->  	.ops		= &raumfeld_ak4104_ops,
-> -	.codec_name = "ak4104-codec.0",
-> +	.codec_name	= "ak4104-codec.0",
->  },
->  {
->  	.name		= "CS4270",
->  	.stream_name	= "CS4270",
-> -	.cpu_dai_name = "pxa-ssp-dai.0",
-> -	.platform_name = "pxa-pcm-audio",
-> -	.codec_dai_name = "cs4270-hifi",
-> -	.codec_name = "cs4270-codec.0-0048",
-> +	.cpu_dai_name	= "pxa-ssp-dai.0",
-> +	.platform_name	= "pxa-pcm-audio",
-> +	.codec_dai_name	= "cs4270-hifi",
-> +	.codec_name	= "cs4270-codec.0-0048",
->  	.ops		= &raumfeld_cs4270_ops,
->  },};
->  
-> -- 
-> 1.7.1
+> > I'm really confused now, where should it be? If I will init
+> > cs4271_platform_data with GPIO values, CODEC driver will manage it.
+> > Otherwise CODEC driver should be rewritten without GPIO support and I
+> > can add it to platform code.
 > 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> What is the problem?
 > 
 
--- 
-"You grabbed my hand and we fell into it, like a daydream - or a fever."
+On 07 OCT 2010 you advised to integrate GPIO handling (reset and
+SPI-enable) into CODEC code flow.
+
+Now Hartley suggested to move GPIO handling to platform code. This makes
+sense, as SPI-enable will be managed automatically, and reset is also
+more related to platform (depending on schematics, inversion and so on).
+
+As for me, I think handle it in platform code is better. So we can now
+remove all the GPIO code and cs4271_platform_data structure from CS4271
+CODEC.
+
+Best regards,
+	Alexander.
