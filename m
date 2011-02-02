@@ -1,8 +1,7 @@
-From: Alexander Sverdlin <subaparts@yandex.ru>
-Subject: Re: [PATCH] EDB93xx: Add support for CS4271 CODEC on
-	EDB93xx boards
-Date: Wed, 02 Feb 2011 20:33:19 +0300
-Message-ID: <1296667999.1504.44.camel@r60e>
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+Subject: RE: [PATCH] EDB93xx: Add support for CS4271 CODEC on EDB93xx boards
+Date: Wed, 2 Feb 2011 11:48:01 -0600
+Message-ID: <0D753D10438DA54287A00B027084269764CEFD473E@AUSP01VMBX24.collaborationhost.net>
 References: <1296603653.1504.9.camel@r60e>
 	<0D753D10438DA54287A00B027084269764CEF59B2B@AUSP01VMBX24.collaborationhost.net>
 	<1296643688.1504.23.camel@r60e>
@@ -12,41 +11,45 @@ References: <1296603653.1504.9.camel@r60e>
 	<1296653211.1504.40.camel@r60e>
 	<0D753D10438DA54287A00B027084269764CEFD45C8@AUSP01VMBX24.collaborationhost.net>
 	<20110202165959.GT12743@opensource.wolfsonmicro.com>
+	<1296667999.1504.44.camel@r60e>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward15.mail.yandex.net (forward15.mail.yandex.net
-	[95.108.130.119])
-	by alsa0.perex.cz (Postfix) with ESMTP id A22BA2474D
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 18:33:28 +0100 (CET)
-In-Reply-To: <20110202165959.GT12743@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, H Hartley Sweeten <hartleys@visionengravers.com>, Lennert Buytenhek <buytenh@wantstofly.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1296667999.1504.44.camel@r60e>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Alexander Sverdlin <subaparts@yandex.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lennert Buytenhek <buytenh@wantstofly.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Mark,
+On Wednesday, February 02, 2011 10:33 AM, Alexander Sverdlin wrote:
+> It's a chip select. The way I've managed it in CODEC it's because Cirrus
+> boards do not have any other SPI devices. Supported by current mainline,
+> at least.
 
-On Wed, 2011-02-02 at 17:00 +0000, Mark Brown wrote:
-> On Wed, Feb 02, 2011 at 10:53:15AM -0600, H Hartley Sweeten wrote:
-> 
-> > I don't have any problem with leaving the reset management in the codec.
-> > The enable (chip-select) should be handled in the platform code.  But,
-> > gpio_disable should be removed from struct cs4271_platform_data to avoid
-> > any confusion.
-> 
-> Is that really a chip select or is it a power control?
-> 
+All the EDB93xx boards also have an spi flash device.  And there are a
+couple drivers in mainline that can be used.  Depending on the actual spi
+flash device: drivers/mtd/m25p80.c, drivers/mtd/sst25l.c, or 
+/drivers/misc/eeprom/at25.c.
 
-It's a chip select. The way I've managed it in CODEC it's because Cirrus
-boards do not have any other SPI devices. Supported by current mainline,
-at least.
+There are a couple patches floating around to add the spi flash support
+to the edb93xx platform init but nothing is merged yet.
+
+BTW, you really should remove the or-gate's that Cirrus used with the spi
+chip-selects to logically-and the SFRM and GPIO signals.  The SFRM signal
+deasserts when the spi fifo's empty which could cause a chip-select 
+deassertion to the chip in the middle of a transfer.  For the spi flash,
+this breaks any read's from the device.  Just connect the gpio line
+directly to the chip-select of the device.
+
+Regards,
+Hartley
