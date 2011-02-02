@@ -1,22 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] EDB93xx: Add support for CS4271 CODEC on
-	EDB93xx boards
-Date: Wed, 2 Feb 2011 12:53:27 +0000
-Message-ID: <20110202125327.GO12743@opensource.wolfsonmicro.com>
-References: <1296603653.1504.9.camel@r60e>
-	<0D753D10438DA54287A00B027084269764CEF59B2B@AUSP01VMBX24.collaborationhost.net>
-	<1296643688.1504.23.camel@r60e>
-	<20110202104943.GN12743@opensource.wolfsonmicro.com>
-	<1296645167.1504.31.camel@r60e>
+Subject: Re: [PATCH] ASoC: soc-core: Support debugfs entries
+ larger than PAGE_SIZE bytes
+Date: Wed, 2 Feb 2011 13:07:41 +0000
+Message-ID: <20110202130741.GP12743@opensource.wolfsonmicro.com>
+References: <1296646145-2356-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1EECF24526
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 13:53:31 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 17599103827
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 14:07:44 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1296645167.1504.31.camel@r60e>
+In-Reply-To: <1296646145-2356-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,21 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alexander Sverdlin <subaparts@yandex.ru>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, H Hartley Sweeten <hartleys@visionengravers.com>, Lennert Buytenhek <buytenh@wantstofly.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 02, 2011 at 02:12:47PM +0300, Alexander Sverdlin wrote:
+On Wed, Feb 02, 2011 at 11:29:05AM +0000, Dimitris Papastamos wrote:
 
-> On 07 OCT 2010 you advised to integrate GPIO handling (reset and
-> SPI-enable) into CODEC code flow.
+> +/* fill buf which is 'len' bytes with a formatted
+> + * string of the form 'reg: value\n' */
+> +static int format_register_str(struct snd_soc_codec *codec,
+> +			       unsigned int regidx, char *buf, size_t len)
 
-> Now Hartley suggested to move GPIO handling to platform code. This makes
-> sense, as SPI-enable will be managed automatically, and reset is also
-> more related to platform (depending on schematics, inversion and so on).
+The naming of regidx is really inconsistent with the rest of the code
+which pretty much always calls registers reg.
 
-What is the advantage of this?  The GPIO management has to be done
-somewhere and replicating it in every platform seems like a complete
-waste of time.  Given that one of the GPIOs is a power control it'll
-also mean that it's not possible to manage the power dynamically at
-runtime.
+> +	/* we don't currently handle failed reads */
+> +	ret = snd_soc_read(codec , regidx);
+> +	if (ret < 0) {
+> +		dev_err(codec->dev, "Failed to read from %#x\n", regidx);
+> +		return ret;
+> +	}
+
+I'd suggest filling the field with some obvious out of bound character
+such as X.
+
+> +	if (ret >= 0) {
+> +		if (!access_ok(VERIFY_WRITE, user_buf, ret)) {
+> +			ret = -EFAULT;
+> +			goto out;
+> +		}
+> +		if (copy_to_user(user_buf, buf, ret)) {
+> +			ret = -EFAULT;
+> +			goto out;
+> +		}
+
+Why do we need the access_ok() here?  I'd really expect copy_to_user()
+to do the right thing here and simple_read_from_buffer() doesn't do
+this.
