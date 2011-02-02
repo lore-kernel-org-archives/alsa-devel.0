@@ -1,24 +1,19 @@
-From: Robin Neatherway <neatherway@gmail.com>
-Subject: Re: Jack sense fails on Fujitsu p7120
-Date: Wed, 2 Feb 2011 00:04:56 +0000
-Message-ID: <AANLkTi=u8QCzVRUjQVJVfPqOhy8wsA5P7bsFPP2t9w9Z@mail.gmail.com>
-References: <AANLkTimGPyno7Wd3TfO7dhZe9e4a5QcXLS8Upa1Mq7q_@mail.gmail.com>
-	<AANLkTimb+yqOhWP1Rc78F9pc+j6VEGp7v0SYvGi7mGrb@mail.gmail.com>
-	<AANLkTim2ch5-QHoh67SuKwMmTMQL=HM6VG1iVCxxoo9+@mail.gmail.com>
-	<AANLkTimszyfVj8pbt4jujQ3o96OqVHKb-bb7o8GXG5pU@mail.gmail.com>
-	<AANLkTi=hFT5Sono3Sehq2WRZZcgEULs2jwwm-ZTDEb0R@mail.gmail.com>
-	<AANLkTi=xPwCS0AH1jzGx9UB5=fSLNGMJa-J6tyFgjSaG@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: issue with AD1989A HDA codec and alsamixer
+Date: Wed, 2 Feb 2011 08:15:03 +0800
+Message-ID: <AANLkTinec0di98dMdyNoANXBoLG_uRJ+NghEyboCuMUa@mail.gmail.com>
+References: <AANLkTin8tsrNrcoYaPvQz0uO=OtD-tow1Ds0i8WTJyh7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f172.google.com (mail-qy0-f172.google.com
-	[209.85.216.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9A91A103806
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 01:05:20 +0100 (CET)
-Received: by qyk34 with SMTP id 34so4861339qyk.17
-	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 16:05:16 -0800 (PST)
-In-Reply-To: <AANLkTi=xPwCS0AH1jzGx9UB5=fSLNGMJa-J6tyFgjSaG@mail.gmail.com>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id C5213103806
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 01:15:03 +0100 (CET)
+Received: by ewy19 with SMTP id 19so3337121ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 16:15:03 -0800 (PST)
+In-Reply-To: <AANLkTin8tsrNrcoYaPvQz0uO=OtD-tow1Ds0i8WTJyh7@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,44 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> Do you mean
+2011/2/1 Vincent Meserette <vmeserette@aldebaran-robotics.com>
+
+> Hi all,
 >
-> LOUT1 playback volume control at node 0x8 affect the volume of your
-> headphone and LOUT2 playback volume control at node 0x9 affect the volume of
-> your speakers ?
+> I am working on a system which includes a connexant AD1989A HDA codec
+> connected to a ATOM processor.
+> I have four microphones connected to the B and C ports of this codec.
+> If I change one of the 3 capture gains present in the alsamixer
+> (Capture, Capture 1 or Capture 3), I can't have any more signal on the
+> B and C ports
+> It seems to be due to the fact that ALSA breaks (for example for the
+> Capture gain) the link between the ADC selector 0 and ADC_0 widgets of
+> the codec, what can be easily seen with codecgraph.
 >
-> If you look at 4.1 Block Diagram of alc260 datasheet ,
+> Have you ever had this kind of problem?
+> Do you know how can I resolve it ?
 >
-> LOUT1 is connected to 0xf Line Out and
-> LOUT2 is connected to 0x10 HP
+> Many thanks for your asnwers and best regards
+>
+> Vincent
+>
 
-Having looked at the datasheet I agree with you, this seems
-surprising. However, if I run speaker-test and then toggle the mutes
-of LOUT1 and LOUT2 one by one, they toggle the headphones and speakers
-respectively.
+What is the Vendor Id of conexant AD1989A ?
 
-Additionally, to hear output on each device I have to set the
-following pin modes:
+are your codec are using patch_analog.c according to vendor id of the codec
+?
 
-Headphones: LINE1 pin mode at node 0x14 must be set to line out
-(quieter)/headphones (louder)
-Speakers: HP-OUT pin mode at node 0x10 must be set to line
-out/headphones (same volume)
+Looking at the datasheet of ad1988a , ad1988b and ad1989b at analog device
+web site and ad1989a conexant web site
 
-This bears little relationship to the datasheet.
-
-
->From the datasheet it looks like:
-
-Node 0x1b [Volume Knob Widget] wcaps 0x600080: Mono
-  Volume-Knob: delta=0, steps=64, direct=0, val=48
-  Unsolicited: tag=00, enabled=0
-  Connection: 0
-
-should be responsible for the jack detection. I have noticed in my
-testing that the "val" is sometimes 48 and sometimes 49, but I haven't
-been able to correlate this with presence of headphones or otherwise.
+The digital microphone of conexant ad1989a only connect to adc0 in the
+functional block diagram
