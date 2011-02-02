@@ -1,60 +1,58 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: issue with AD1989A HDA codec and alsamixer
-Date: Wed, 2 Feb 2011 08:15:03 +0800
-Message-ID: <AANLkTinec0di98dMdyNoANXBoLG_uRJ+NghEyboCuMUa@mail.gmail.com>
-References: <AANLkTin8tsrNrcoYaPvQz0uO=OtD-tow1Ds0i8WTJyh7@mail.gmail.com>
+Subject: Re: problem with mms stream - [AO_ALSA] Trying to
+	reset soundcard
+Date: Wed, 2 Feb 2011 09:24:56 +0800
+Message-ID: <AANLkTikoPUm2cqq4-eycig20pga-VHauHD_Weuz4aSex@mail.gmail.com>
+Reply-To: "MPlayer usage questions, feature requests,
+	bug reports" <mplayer-users@mplayerhq.hu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id C5213103806
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 01:15:03 +0100 (CET)
-Received: by ewy19 with SMTP id 19so3337121ewy.38
-	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 16:15:03 -0800 (PST)
-In-Reply-To: <AANLkTin8tsrNrcoYaPvQz0uO=OtD-tow1Ds0i8WTJyh7@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: base64
+Return-path: <mplayer-users-bounces@mplayerhq.hu>
+List-Unsubscribe: <https://lists.mplayerhq.hu/mailman/options/mplayer-users>,
+	<mailto:mplayer-users-request@mplayerhq.hu?subject=unsubscribe>
+List-Archive: <http://lists.mplayerhq.hu/pipermail/mplayer-users>
+List-Post: <mailto:mplayer-users@mplayerhq.hu>
+List-Help: <mailto:mplayer-users-request@mplayerhq.hu?subject=help>
+List-Subscribe: <https://lists.mplayerhq.hu/mailman/listinfo/mplayer-users>,
+	<mailto:mplayer-users-request@mplayerhq.hu?subject=subscribe>
+Sender: mplayer-users-bounces@mplayerhq.hu
+Errors-To: mplayer-users-bounces@mplayerhq.hu
+To: "MPlayer usage questions, feature requests,
+	bug reports" <mplayer-users@mplayerhq.hu>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2011/2/1 Vincent Meserette <vmeserette@aldebaran-robotics.com>
-
-> Hi all,
->
-> I am working on a system which includes a connexant AD1989A HDA codec
-> connected to a ATOM processor.
-> I have four microphones connected to the B and C ports of this codec.
-> If I change one of the 3 capture gains present in the alsamixer
-> (Capture, Capture 1 or Capture 3), I can't have any more signal on the
-> B and C ports
-> It seems to be due to the fact that ALSA breaks (for example for the
-> Capture gain) the link between the ADC selector 0 and ADC_0 widgets of
-> the codec, what can be easily seen with codecgraph.
->
-> Have you ever had this kind of problem?
-> Do you know how can I resolve it ?
->
-> Many thanks for your asnwers and best regards
->
-> Vincent
->
-
-What is the Vendor Id of conexant AD1989A ?
-
-are your codec are using patch_analog.c according to vendor id of the codec
-?
-
-Looking at the datasheet of ad1988a , ad1988b and ad1989b at analog device
-web site and ad1989a conexant web site
-
-The digital microphone of conexant ad1989a only connect to adc0 in the
-functional block diagram
+PvDSydfF1NPU19XALCBSZWltYXIKPiBPbiBTdW4sIEphbiAyNCwgMjAxMCBhdCAwMjozNjo1MFBN
+ICswMzAwLCBHb2dhNzc3IHdyb3RlOgo+ID4gW0FPX0FMU0FdIFdyaXRlIGVycm9yOiBCcm9rZW4g
+cGlwZTQ0Mjg5MjguMCAoLTI0Li04KSA5Ni40JSA2JQo+ID4gW0FPX0FMU0FdIFRyeWluZyB0byBy
+ZXNldCBzb3VuZGNhcmQuCj4gPiBJbmNyZWFzaW5nIGZpbHRlcmVkIGF1ZGlvIGJ1ZmZlciBzaXpl
+IGZyb20gNjU1MzYgdG8gNjc1MzYxJSA5JQo+ID4gSW5jcmVhc2luZyBmaWx0ZXJlZCBhdWRpbyBi
+dWZmZXIgc2l6ZSBmcm9tIDY3NTM2IHRvIDY3NTQ0MiUgMTIlCj4gPiBbQU9fQUxTQV0gV3JpdGUg
+ZXJyb3I6IEJyb2tlbiBwaXBlNDQyODkyOC4wICgtMjQuLTgpIDI0LjAlIDYlCj4gPiBbQU9fQUxT
+QV0gVHJ5aW5nIHRvIHJlc2V0IHNvdW5kY2FyZC4KPgo+IEkgYW0gbm90IHN1cmUgdGhpcyBpcyB0
+aGUgc2FtZSBpc3N1ZSwgYnV0IEkgaGFkIHRoaXMgcGFydCBhcyB3ZWxsLgoKICAgICAgcmVzID0g
+c25kX3BjbV93cml0ZWkoYWxzYV9oYW5kbGVyLCBkYXRhLCBudW1fZnJhbWVzKTsKLi4uCiAgICAg
+IGlmIChyZXMgPCAwKSB7CgltcF9tc2coTVNHVF9BTyxNU0dMX0VSUixNU0dUUl9BT19BTFNBX1dy
+aXRlRXJyb3IsIHNuZF9zdHJlcnJvcihyZXMpKTsKCW1wX21zZyhNU0dUX0FPLE1TR0xfSU5GTyxN
+U0dUUl9BT19BTFNBX1RyeWluZ1RvUmVzZXRTb3VuZGNhcmQpOwoJaWYgKChyZXMgPSBzbmRfcGNt
+X3ByZXBhcmUoYWxzYV9oYW5kbGVyKSkgPCAwKSB7CgkgIG1wX21zZyhNU0dUX0FPLE1TR0xfRVJS
+LE1TR1RSX0FPX0FMU0FfUGNtUHJlcGFyZUVycm9yLCBzbmRfc3RyZXJyb3IocmVzKSk7CgkgIHJl
+dHVybiAwOwoJICBicmVhazsKCX0KICAgICAgfQoKVGhlICJwdWxzZSIgcGx1Z2luIHJldHVybiAt
+RVBJUEUgIkJyb2tlbiBwaXBlIiBhdCBmb3VyIGNvbmRpdGlvbnMgYWZ0ZXIKbXBsYXllciBjYWxs
+IHNuZF9wY21fd3JpdGVpKCkKCjEpIGlvLT5zdGF0ZSA9PSBTTkRfUENNX1NUQVRFX1hSVU4KMikg
+cGNtLT51bmRlcnJ1bgozKSB1cGRhdGVfcHRyKHBjbSkgcmV0dXJuIGVycgoKbXBsYXllciBjYWxs
+IHNuZF9wY21fcHJlcGFyZSgpIHRvIHJlY292ZXIgZnJvbSAiQnJva2VuIFBpcGUiLgoKYnV0IHdo
+eSBtcGxheWVyIGluY3JlYXNpbmcgZmlsdGVyZWQgYXVkaW8gYnVmZmVyID8KCgoKc3RhdGljIHNu
+ZF9wY21fc2ZyYW1lc190IHB1bHNlX3BvaW50ZXIoc25kX3BjbV9pb3BsdWdfdCAqIGlvKQp7Ci4u
+LgkKCWlmIChpby0+c3RhdGUgPT0gU05EX1BDTV9TVEFURV9YUlVOKQoJCXJldHVybiAtRVBJUEU7
+CgoKCglpZiAocGNtLT51bmRlcnJ1bikgewoJCXJldCA9IC1FUElQRTsKCQlnb3RvIGZpbmlzaDsK
+CX0KCglpZiAoaW8tPnN0YXRlICE9IFNORF9QQ01fU1RBVEVfUlVOTklORykKCQlyZXR1cm4gMDsK
+CglwYV90aHJlYWRlZF9tYWlubG9vcF9sb2NrKHBjbS0+cC0+bWFpbmxvb3ApOwoKCXJldCA9IGNo
+ZWNrX3N0cmVhbShwY20pOwoJaWYgKHJldCA8IDApCgkJZ290byBmaW5pc2g7CgoJaWYgKHBjbS0+
+dW5kZXJydW4pIHsKCQlyZXQgPSAtRVBJUEU7CgkJZ290byBmaW5pc2g7Cgl9CgoJcmV0ID0gdXBk
+YXRlX3B0cihwY20pOwoJaWYgKHJldCA8IDApIHsKCQlyZXQgPSAtRVBJUEU7CgkJZ290byBmaW5p
+c2g7Cgl9CgoJaWYgKHBjbS0+dW5kZXJydW4pCgkJcmV0ID0gLUVQSVBFOwoJZWxzZQoJCXJldCA9
+IHNuZF9wY21fYnl0ZXNfdG9fZnJhbWVzKGlvLT5wY20sIHBjbS0+cHRyKTsKCmZpbmlzaDoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTVBsYXllci11c2Vy
+cyBtYWlsaW5nIGxpc3QKTVBsYXllci11c2Vyc0BtcGxheWVyaHEuaHUKaHR0cHM6Ly9saXN0cy5t
+cGxheWVyaHEuaHUvbWFpbG1hbi9saXN0aW5mby9tcGxheWVyLXVzZXJz
