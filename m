@@ -1,130 +1,55 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v6 0/3] input: Add support for ECI
- (multimedia) accessories
-Date: Tue, 1 Feb 2011 22:21:22 -0800
-Message-ID: <20110202062122.GA22251@core.coreip.homeip.net>
-References: <1296482634-31666-1-git-send-email-tapio.vihuri@nokia.com>
-	<20110201085823.GB17706@core.coreip.homeip.net>
-	<1296552761.4168.40.camel@dell>
+From: "ABRAHAM, KISHON VIJAY" <kishon@ti.com>
+Subject: Re: [alsa-devel] [PATCH v2 08/13] OMAP2+: McBSP: hwmod adaptation for McBSP
+Date: Wed, 2 Feb 2011 11:53:32 +0530
+Message-ID: <AANLkTimzjg3+yGwz1sa+dfWyrjaS1mO+zn_LT3hhDHdQ@mail.gmail.com>
+References: <1296485437-12806-1-git-send-email-kishon@ti.com>
+	<1296485437-12806-9-git-send-email-kishon@ti.com>
+	<4D47FB19.9040901@nokia.com>
+	<20110201194436.74826dd0.jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id CCB43103804
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 07:21:31 +0100 (CET)
-Received: by iwb12 with SMTP id 12so8043787iwb.38
-	for <alsa-devel@alsa-project.org>; Tue, 01 Feb 2011 22:21:31 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <1296552761.4168.40.camel@dell>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tapio Vihuri <tapio.vihuri@nokia.com>
-Cc: randy.dunlap@oracle.com, alsa-devel@alsa-project.org, samu.p.onkalo@nokia.com, peter.ujfalusi@nokia.com, linux-kernel@vger.kernel.org, ilkka.koskinen@nokia.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20110201194436.74826dd0.jhnikula@gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>, alsa-devel@alsa-project.org, b-cousson@ti.com, khilman@deeprootsystems.com, broonie@opensource.wolfsonmicro.com, paul@pwsan.com, p-basak2@ti.com, lrg@slimlogic.co.uk, linux-omap@vger.kernel.org, shubhrajyoti@ti.com, charu@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 01, 2011 at 11:32:41AM +0200, Tapio Vihuri wrote:
-> On Tue, 2011-02-01 at 00:58 -0800, ext Dmitry Torokhov wrote:
-> > Hi Tapio,
-> > 
-> > On Mon, Jan 31, 2011 at 04:03:51PM +0200, tapio.vihuri@nokia.com wrote:
-> > > 
-> > > This patch set introduce Multimedia Headset Accessory support for
-> > > Nokia phones. Technically those are known as ECI (Enhancement Control Interface)
-> > > 	
-> > > If headset has many buttons, like play, vol+, vol- etc. then it is propably ECI
-> > > accessory.
-> > > 
-> > > Among several buttons ECI accessories contains memory for storing several
-> > > parameters.
-> > > 
-> > > This ECI input driver provides the following features:
-> > >  - reading ECI configuration memory
-> > >  - ECI buttons as input events
-> > > 
-> > > Drive is constructed as follows:
-> > >  - ECI accessory input driver deals with headset accessory
-> > >  - ECI bus control driver deals the HW transfering data to/from headset
-> > >  - platform data match used HW
-> > 
-> > I finally had a chance to look though the patches more closely and I do
-> > not understand why you decided to introduce the platform device in
-> > addition to I2C device. You end up with 2 artificially separated bodies of
-> > code that are not viable on their own. The ECI module with it's platform
-> > device is not usable without the controller; the controller can not be
-> > registered without the ECI device initialized; there are ordering
-> > issues, both initialization and PM-wise and you are forced to support
-> > only one device.
-> > 
-> > Is there going to be an SPI interface as well? If not then fold it all
-> > together and have I2C device as the only device involved. If SPI is a
-> > possibility then look in drivers such as adxl34x, ad714x and others that
-> > are split into core module and bus interface implementations.
-> > 
-> > Thanks.
-> > 
-> 
-> Hi Dmitry
-> 
-> Thank you for reviewing.
-> 
-> The reasoning for separating driver to the two parts is having both
-> common and different hardware.
-> 
-> The ECI input, as platform device is common part and only dealing with
-> the accessory HW (meaning the headset accessory).
-> This is standardiced part of system, where specification guarantee HW
-> behaving same way accross several headset accessories.
-> The accessory is plugged to the terminal using four pin AV-cable, much
-> same way as USB mouse.
-> I just didn't see need to introduce new bus type for one wire ECI data
-> link, hence platform device.
-> 
-> The ECI controller, as I2C device is the variable part of the system.
-> In this case it's microcontroller in I2C bus, but there are other
-> versions too.
-> There is no specification about these controller's internals, and those
-> are quite different.
-> It is also possible to use other buses too for connecting controller to
-> terminal, like SPI.
-> 
-> The idea was that if ECI is used in device, just take ECI input driver
-> and select the ECI controller which is used in the platform.
-> 
-> And as long as the ECI controller driver use the same interface to ECI
-> input driver, evetrything works OK.
-> This allows also dynamic selection of used control device. I mean we can
-> compile several ECI controllers as modules and detect the HW at
-> initialization.
-> 
-> I use the ad714x as example, but I can take second look on that too.
-> 
-> Please let me know if this is making sense.
+On Tue, Feb 1, 2011 at 11:14 PM, Jarkko Nikula <jhnikula@gmail.com> wro=
+te:
+> On Tue, 01 Feb 2011 14:22:49 +0200
+> Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
+>
+>> Looks good, but...
+>> > + =A0 if (oh->class->rev =3D=3D MCBSP_CONFIG_TYPE3) {
+>> > + =A0 =A0 =A0 =A0 =A0 if (id =3D=3D 2)
+>> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 pdata->buffer_size =3D 0x500=
+; /*FIFO size is 1024 + 256*/
+>> > + =A0 =A0 =A0 =A0 =A0 else
+>> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 pdata->buffer_size =3D 0x80;=
+ =A0/*FIFO size is 128*/
+>> > + =A0 }
+>>
+>> I would add spaces around these comments (after /* and before */).
+>>
+> Actually this part of code doesn't compile for CONFIG_ARCH_OMAP2 if
+> CONFIG_ARCH_OMAP3 is not set. Reason is that the buffer_size in under
+> CONFIG_ARCH_OMAP3 compilation in struct omap_mcbsp_platform_data
+> definition.
+>
+> I think it's easiest if this patch just removes that conditional
+> compilation from struct omap_mcbsp_platform_data as it really doesn't
+> save that much from non !OMAP3 builds.
 
-Tapio,
+  Thanks. Will fix it in the next version.
 
-I understand that ECI accessory is the standard part that can be attached
-to several controllers, it still does not explain the need for the
-platform device.
-
-If ECI accessory is the only device that uses the interface you
-specified then write a module containing that core functionality, with a
-function to instantiate an instance of the accessory and have controller
-drivers call this function as part of their bind procedure (i.e. do what
-adxl34x and company are doing).
-
-If there could be other accessories utilizing the same interface then
-creating a new bus is the only viable option.
-
-Thank you.
-
--- 
-Dmitry
+>
+> --
+> Jarkko
+>
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
