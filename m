@@ -1,58 +1,44 @@
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-Subject: RE: [PATCH] EDB93xx: Add support for CS4271 CODEC on EDB93xx boards
-Date: Wed, 2 Feb 2011 11:21:40 -0600
-Message-ID: <0D753D10438DA54287A00B027084269764CEFD4693@AUSP01VMBX24.collaborationhost.net>
-References: <1296603653.1504.9.camel@r60e>
-	<0D753D10438DA54287A00B027084269764CEF59B2B@AUSP01VMBX24.collaborationhost.net>
-	<1296643688.1504.23.camel@r60e>
-	<20110202104943.GN12743@opensource.wolfsonmicro.com>
-	<1296645167.1504.31.camel@r60e>
-	<20110202125327.GO12743@opensource.wolfsonmicro.com>
-	<1296653211.1504.40.camel@r60e>
-	<0D753D10438DA54287A00B027084269764CEFD45C8@AUSP01VMBX24.collaborationhost.net>
-	<20110202165959.GT12743@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: snd-usb-audio dying on jackd xruns
+Date: Wed, 02 Feb 2011 18:33:04 +0100
+Message-ID: <4D499550.2070508@ladisch.de>
+References: <AANLkTinc02yXS=axf5wCQMq3e+nhiJj_ZaHmjk-bcorS@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20110202165959.GT12743@opensource.wolfsonmicro.com>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexander Sverdlin <subaparts@yandex.ru>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Lennert Buytenhek <buytenh@wantstofly.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 33A8A2474D
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 18:32:57 +0100 (CET)
+In-Reply-To: <AANLkTinc02yXS=axf5wCQMq3e+nhiJj_ZaHmjk-bcorS@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Rods Bobavich <rodnisms@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday, February 02, 2011 10:00 AM, Mark Brown wrote:
-> On Wed, Feb 02, 2011 at 10:53:15AM -0600, H Hartley Sweeten wrote:
->> I don't have any problem with leaving the reset management in the codec.
->> The enable (chip-select) should be handled in the platform code.  But,
->> gpio_disable should be removed from struct cs4271_platform_data to avoid
->> any confusion.
->
-> Is that really a chip select or is it a power control?
+Rods Bobavich wrote:
+> So I start jackd and it runs fine for a while. Then ALSA crashes and
+> triggers an xrun. Jackd continues to do its merry thing - minus the part
+> about spitting info out to my soundcard...
+> 
+> At first I thought this was a Jackd issue but when I looked deeper it seems
+> to be ALSA. Once this happens I cannot restart jackd and resume an audio
+> session. In fact, I cannot even rmmod snd-usb-audio. Sometimes I cannot
+> lsusb. So it looks like something is getting seriously hosed!
 
->From the datasheet:
+Looks like a bug in the USB controller driver, probably triggered by some
+unexpected behaviour of your USB controller.
 
-Pin Name   #  Pin Description
---------  --  ----------------------------------------------------------
-AD0/nCS   13  Address Bit 0 (I2S)/Control Port Chip Select (SPI) (Input)
-              - AD0 is a chip address pin in I2C mode; nCS is the chip
-              signal select for SPI format.
+When this happens, are there any error messages in the system log?
 
-The other pin in question:
-
-Pin Name   #  Pin Description
---------  --  ----------------------------------------------------------
-nRST      14  Reset (Input) - The device enters a low power mode when
-              this pin is driven low.
 
 Regards,
-Hartley
+Clemens
