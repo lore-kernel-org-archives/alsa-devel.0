@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: soc-core: Support debugfs entries
- larger than PAGE_SIZE bytes
-Date: Wed, 2 Feb 2011 13:07:41 +0000
-Message-ID: <20110202130741.GP12743@opensource.wolfsonmicro.com>
-References: <1296646145-2356-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: alsa-lib TLVs and valgrind
+Date: Wed, 02 Feb 2011 14:12:57 +0100
+Message-ID: <4D495859.6070101@ladisch.de>
+References: <4D4945FA.4030506@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 17599103827
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 14:07:44 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1296646145-2356-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 7CFF72454B
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 14:12:48 +0100 (CET)
+In-Reply-To: <4D4945FA.4030506@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,40 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "Sebastian H." <vand2@gmx.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 02, 2011 at 11:29:05AM +0000, Dimitris Papastamos wrote:
+Sebastian H. wrote:
+> I'm about to release a new version of alsamixer-qt4
+> (now named qasmixer) and ran the program through valgrind.
+> 
+> valgrind --track-origins=yes src/qasmixer &> valgrind.log
+> 
+> The log file contains tons of warnings like this
+> 
+> ==3432== Conditional jump or move depends on uninitialised value(s)
+> ...
+> ... (qasmixer function calls)
+> ...
+> ==3432==  Uninitialised value was created by a heap allocation
+> ... malloc (vg_replace_malloc.c:236)
+> ... init_db_range (simple_none.c:1111)
+> ... get_dB_range (simple_none.c:1156)
+> ... get_dB_range_ops (simple_none.c:1173)
+> ... snd_mixer_selem_get_playback_dB_range (simple.c:298)
 
-> +/* fill buf which is 'len' bytes with a formatted
-> + * string of the form 'reg: value\n' */
-> +static int format_register_str(struct snd_soc_codec *codec,
-> +			       unsigned int regidx, char *buf, size_t len)
+Valgrind doesn't know about some of the ALSA ioctls.
+Somebody would have to add them to valgrind.
 
-The naming of regidx is really inconsistent with the rest of the code
-which pretty much always calls registers reg.
 
-> +	/* we don't currently handle failed reads */
-> +	ret = snd_soc_read(codec , regidx);
-> +	if (ret < 0) {
-> +		dev_err(codec->dev, "Failed to read from %#x\n", regidx);
-> +		return ret;
-> +	}
-
-I'd suggest filling the field with some obvious out of bound character
-such as X.
-
-> +	if (ret >= 0) {
-> +		if (!access_ok(VERIFY_WRITE, user_buf, ret)) {
-> +			ret = -EFAULT;
-> +			goto out;
-> +		}
-> +		if (copy_to_user(user_buf, buf, ret)) {
-> +			ret = -EFAULT;
-> +			goto out;
-> +		}
-
-Why do we need the access_ok() here?  I'd really expect copy_to_user()
-to do the right thing here and simple_read_from_buffer() doesn't do
-this.
+Regards,
+Clemens
