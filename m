@@ -1,7 +1,8 @@
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-Subject: RE: [PATCH] EDB93xx: Add support for CS4271 CODEC on EDB93xx boards
-Date: Wed, 2 Feb 2011 12:18:59 -0600
-Message-ID: <0D753D10438DA54287A00B027084269764CEFD4802@AUSP01VMBX24.collaborationhost.net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] EDB93xx: Add support for CS4271 CODEC on
+	EDB93xx boards
+Date: Wed, 2 Feb 2011 18:31:58 +0000
+Message-ID: <20110202183158.GG9810@sirena.org.uk>
 References: <1296603653.1504.9.camel@r60e>
 	<0D753D10438DA54287A00B027084269764CEF59B2B@AUSP01VMBX24.collaborationhost.net>
 	<1296643688.1504.23.camel@r60e>
@@ -9,98 +10,35 @@ References: <1296603653.1504.9.camel@r60e>
 	<1296645167.1504.31.camel@r60e>
 	<20110202125327.GO12743@opensource.wolfsonmicro.com>
 	<1296653211.1504.40.camel@r60e>
+	<0D753D10438DA54287A00B027084269764CEFD45C8@AUSP01VMBX24.collaborationhost.net>
+	<20110202165959.GT12743@opensource.wolfsonmicro.com>
+	<1296667999.1504.44.camel@r60e>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1296653211.1504.40.camel@r60e>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Alexander Sverdlin <subaparts@yandex.ru>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lennert Buytenhek <buytenh@wantstofly.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 002152455E
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2011 19:32:00 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1296667999.1504.44.camel@r60e>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Alexander Sverdlin <subaparts@yandex.ru>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, H Hartley Sweeten <hartleys@visionengravers.com>, Lennert Buytenhek <buytenh@wantstofly.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday, February 02, 2011 6:27 AM, Alexander Sverdlin wrote:
-> I think we can leave reset management in CODEC (as it will be almost the
-> same for all platforms), leave enable pin management in CODEC unused,
-> but attach enable GPIO to spi_board_info in platform to enable other SPI
-> devices on bus.
-> 
-> Hartley, in this case we cannot use existing cs4271_platform_data and
-> have to leave long if-else statemens as is. Would it be ok?
+On Wed, Feb 02, 2011 at 08:33:19PM +0300, Alexander Sverdlin wrote:
 
-Alexander,
+> It's a chip select. The way I've managed it in CODEC it's because Cirrus
+> boards do not have any other SPI devices. Supported by current mainline,
+> at least.
 
-Below is what I propose for the platform init code.  This assumes that the
-reset gpio will still be handled by the codec since it's related to power
-management.
-
-Regards,
-Hartley
-
-
-
-static struct cs4271_platform_data edb93xx_cs4271_data = {
-	.gpio_nreset		= -EINVAL,	/* filled in later */
-};
-
-static int edb93xx_cs4271_hw_setup(struct spi_device *spi)
-{
-	return gpio_request_one(EP93XX_GPIO_LINE_EGPIO6,
-				GPIOF_OUT_INIT_HIGH, spi->modalias);
-}
-
-static void edb93xx_cs4271_hw_cleanup(struct spi_device *spi)
-{
-	gpio_free(EP93XX_GPIO_LINE_EGPIO6);
-}
-
-static void edb93xx_cs4271_hw_cs_control(struct spi_device *spi, int value)
-{
-	gpio_set_value(EP93XX_GPIO_LINE_EGPIO6, value);
-}
-
-static struct ep93xx_spi_chip_ops edb93xx_cs4721_hw  = {
-	.setup		= edb93xx_cs4271_hw_setup,
-	.cleanup	= edb93xx_cs4271_hw_cleanup,
-	.cs_control	= edb93xx_cs4271_hw_cs_control,
-};
-
-static struct spi_board_info edb93xx_spi_board_info[] __initdata = {
-	{
-		.modalias		= "cs4271",
-		.platform_data		= &edb93xx_cs4271_data,
-		.controller_data	= &edb93xx_cs4721_hw,
-		.max_speed_hz		= 6000000,
-		.bus_num		= 0,
-		.chip_select		= 0,
-		.mode			= SPI_MODE_3,
-	},
-};
-
-static struct ep93xx_spi_info edb93xx_spi_master __initdata = {
-	.num_chipselect		= ARRAY_SIZE(edb93xx_spi_board_info),
-};
-
-static void __init edb93xx_register_spi(void)
-{
-	if (machine_is_edb9301() || machine_is_edb9302()) {
-		edb93xx_cs4271_data.gpio_nreset = EP93XX_GPIO_LINE_EGPIO1;
-	} else if (machine_is_edb9302a() || machine_is_edb9307a()) {
-		edb93xx_cs4271_data.gpio_nreset = EP93XX_GPIO_LINE_H(2);
-	} else if (machine_is_edb9315a()) {
-		edb93xx_cs4271_data.gpio_nreset = EP93XX_GPIO_LINE_EGPIO14;
-	}
-
-	ep93xx_register_spi(&edb93xx_spi_master,
-			    edb93xx_spi_board_info,
-			    ARRAY_SIZE(edb93xx_spi_board_info));
-}
+Please do this properly with the SPI core.
