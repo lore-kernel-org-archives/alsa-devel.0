@@ -1,66 +1,82 @@
-From: Samuel Ortiz <sameo@linux.intel.com>
-Subject: Re: WL1273 FM Radio driver...
-Date: Thu, 3 Feb 2011 01:37:49 +0100
-Message-ID: <20110203003748.GH25448@sortiz-mobl>
-References: <1295363063.25951.67.camel@masi.mnp.nokia.com>
- <20110130232358.GD2565@sortiz-mobl>
- <4D4979A5.1020000@redhat.com>
+From: Andres Salomon <dilinger@queued.net>
+Subject: [PATCH 09/19] wl1273: mfd_cell is now implicitly available to
+ drivers
+Date: Wed, 2 Feb 2011 20:11:33 -0800
+Message-ID: <20110202201133.08dbd07e@queued.net>
+References: <20110202195417.228e2656@queued.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-media-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4D4979A5.1020000@redhat.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@redhat.com>
-Cc: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, hverkuil@xs4all.nl, linux-media@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20110202195417.228e2656@queued.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Samuel Ortiz <sameo@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Matti Aaltonen <matti.j.aaltonen@nokia.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mauro,
 
-On Wed, Feb 02, 2011 at 01:35:01PM -0200, Mauro Carvalho Chehab wrote:
-> Em 30-01-2011 21:23, Samuel Ortiz escreveu:
-> > Hi Matti,
-> >=20
-> > On Tue, Jan 18, 2011 at 05:04:23PM +0200, Matti J. Aaltonen wrote:
-> >> Hello
-> >>
-> >> I have been trying to get the WL1273 FM radio driver into the kern=
-el for
-> >> some time. It has been kind of difficult, one of the reasons is th=
-at I
-> >> didn't realize I should have tried to involve all relevant maintai=
-ners
-> >> to the discussion form the beginning (AsoC, Media and MFD). At Mar=
-k's
-> >> suggestion I'm trying to reopen the discussion now.
-> >>
-> >> The driver consists of an MFD core and two child drivers (the audi=
-o
-> >> codec and the V4L2 driver). And the question is mainly about the r=
-ole of
-> >> the MFD driver: the original design had the IO functions in the co=
-re.
-> >> Currently the core is practically empty mainly because Mauro very
-> >> strongly wanted to have =E2=80=9Ceverything=E2=80=9D in the V4L2 d=
-river.
-> > What was Mauro main concerns with having the IO part in the core ?
-> > A lot of MFD drivers are going that path already.
->=20
-> My concerns is that the V4L2-specific part of the code should be at d=
-rivers/media.
-> I prefer that the specific MFD I/O part to be at drivers/mfd, just li=
-ke
-> the other drivers.
-Agreed, but it seems that's not the case currently. Would you be ok wit=
-h Matti
-refactoring those 2 drivers a bit so that the actual core I/O parts sho=
-uld be
-handled by the MFD driver ?
+No need to explicitly set the cell's platform_data/data_size.
 
-Cheers,
-Samuel.
+In this case, move the various platform_data pointers
+to driver_data.  All of the clients which make use of it
+are also changed.
 
---=20
-Intel Open Source Technology Centre
-http://oss.intel.com/
+Signed-off-by: Andres Salomon <dilinger@queued.net>
+---
+ drivers/media/radio/radio-wl1273.c |    2 +-
+ drivers/mfd/wl1273-core.c          |    6 ++----
+ sound/soc/codecs/wl1273.c          |    2 +-
+ 3 files changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/media/radio/radio-wl1273.c b/drivers/media/radio/radio-wl1273.c
+index 7ecc8e6..ebb6eb5 100644
+--- a/drivers/media/radio/radio-wl1273.c
++++ b/drivers/media/radio/radio-wl1273.c
+@@ -2138,7 +2138,7 @@ static int wl1273_fm_radio_remove(struct platform_device *pdev)
+ 
+ static int __devinit wl1273_fm_radio_probe(struct platform_device *pdev)
+ {
+-	struct wl1273_core **core = pdev->dev.platform_data;
++	struct wl1273_core **core = platform_get_drvdata(pdev);
+ 	struct wl1273_device *radio;
+ 	struct v4l2_ctrl *ctrl;
+ 	int r = 0;
+diff --git a/drivers/mfd/wl1273-core.c b/drivers/mfd/wl1273-core.c
+index d2ecc24..61ec252 100644
+--- a/drivers/mfd/wl1273-core.c
++++ b/drivers/mfd/wl1273-core.c
+@@ -79,8 +79,7 @@ static int __devinit wl1273_core_probe(struct i2c_client *client,
+ 
+ 	cell = &core->cells[children];
+ 	cell->name = "wl1273_fm_radio";
+-	cell->platform_data = &core;
+-	cell->data_size = sizeof(core);
++	cell->driver_data = &core;
+ 	children++;
+ 
+ 	if (pdata->children & WL1273_CODEC_CHILD) {
+@@ -88,8 +87,7 @@ static int __devinit wl1273_core_probe(struct i2c_client *client,
+ 
+ 		dev_dbg(&client->dev, "%s: Have codec.\n", __func__);
+ 		cell->name = "wl1273-codec";
+-		cell->platform_data = &core;
+-		cell->data_size = sizeof(core);
++		cell->driver_data = &core;
+ 		children++;
+ 	}
+ 
+diff --git a/sound/soc/codecs/wl1273.c b/sound/soc/codecs/wl1273.c
+index 861b28f..0af2c2d 100644
+--- a/sound/soc/codecs/wl1273.c
++++ b/sound/soc/codecs/wl1273.c
+@@ -436,7 +436,7 @@ EXPORT_SYMBOL_GPL(wl1273_get_format);
+ 
+ static int wl1273_probe(struct snd_soc_codec *codec)
+ {
+-	struct wl1273_core **core = codec->dev->platform_data;
++	struct wl1273_core **core = dev_get_drvdata(codec->dev);
+ 	struct wl1273_priv *wl1273;
+ 	int r;
+ 
+-- 
+1.7.2.3
