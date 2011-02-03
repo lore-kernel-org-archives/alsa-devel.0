@@ -1,18 +1,14 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] asoc: davinci: da830/omap-l137: correct
-	cpu_dai_name
-Date: Thu, 3 Feb 2011 20:22:53 +0000
-Message-ID: <20110203202252.GA3835@opensource.wolfsonmicro.com>
-References: <1296731545-8338-1-git-send-email-vaibhav.bedia@ti.com>
+From: "Sebastian H." <vand2@gmx.de>
+Subject: QasMixer 0.7.0 released (former Alsamixer-Qt4)
+Date: Thu, 03 Feb 2011 21:31:43 +0100
+Message-ID: <4D4B10AF.1030603@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 20DB3103851
-	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2011 21:22:35 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1296731545-8338-1-git-send-email-vaibhav.bedia@ti.com>
+Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.22])
+	by alsa0.perex.cz (Postfix) with SMTP id 92905103866
+	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2011 21:28:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,14 +18,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vaibhav Bedia <vaibhav.bedia@ti.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, davinci-linux-open-source@linux.davincidsp.com, sshtylyov@mvista.com, stable@kernel.org
+To: alsa-user@lists.sourceforge.net
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 03, 2011 at 04:42:25PM +0530, Vaibhav Bedia wrote:
-> McASP1 is used on the DA830/OMAP-L137 platform for the codec.
-> This is different from the DA850/OMAP-L138 platform which uses McASP0.
-> 
-> This is fixed by adding a new snd_soc_dai_link struct.
+Hello ALSA users
 
-Applied, thanks.
+A new version 0.7.0 of QasMixer (formerly Alsamixer-Qt4)
+is now available at
+http://xwmw.org/qasmixer
+or
+http://sourceforge.net/projects/qasmixer/
+
+QasMixer is a fusion of Alsamixer-Qt4 and AlsaInfo-Qt4.
+Both will be discontinued because it's easier for me to support
+just one larger application instead of two smaller ones.
+
+Most notably for end users will be the improved desktop integration
+with single instance mode, a system tray icon, a qasmixer.desktop
+file for application menus and automatic desktop size detection
+which should play well with netbooks.
+
+Regards,
+Sebastian Holtermann
