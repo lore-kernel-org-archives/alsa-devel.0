@@ -1,18 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] ASoC: sn95031 codec - adding jack
- detection/reporting
-Date: Thu, 3 Feb 2011 16:06:40 +0000
-Message-ID: <20110203160640.GD2576@opensource.wolfsonmicro.com>
-References: <1296732382-923-1-git-send-email-priya.harsha@intel.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: Pulseaudio UCM integration - (Was:UCM list/set/get)
+Date: Thu, 03 Feb 2011 16:08:37 +0000
+Message-ID: <1296749317.3456.121.camel@odin>
+References: <AANLkTi=pwNpK-c+h_xSkiQG8V8nhLZs-9X8+DceDw0S3@mail.gmail.com>
+	<20110131112257.GC11937@sirena.org.uk> <1296482038.3316.160.camel@odin>
+	<AANLkTinbtXS4G0uHYKiu9RRjP8hVEKY53xn6gzGYLZia@mail.gmail.com>
+	<alpine.LNX.2.00.1102020909000.6272@eeebox2.perex-int.cz>
+	<1296679324.3333.20.camel@odin>
+	<AANLkTiknZgB4Y6+yao1t=dhAabi-mAsuD9DZ2s9umBPn@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AA6FC103A66
-	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2011 17:06:23 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1296732382-923-1-git-send-email-priya.harsha@intel.com>
+Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5B128103A85
+	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2011 17:08:41 +0100 (CET)
+Received: by wwi18 with SMTP id 18so7382046wwi.2
+	for <alsa-devel@alsa-project.org>; Thu, 03 Feb 2011 08:08:41 -0800 (PST)
+In-Reply-To: <AANLkTiknZgB4Y6+yao1t=dhAabi-mAsuD9DZ2s9umBPn@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,117 +27,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Harsha Priya <priya.harsha@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: pl bossart <bossart.nospam@gmail.com>
+Cc: Margarita Olaya <magi@slimlogic.co.uk>, ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Colin Guthrie <gmane@colin.guthr.ie>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 03, 2011 at 04:56:22PM +0530, Harsha Priya wrote:
-> This patch adds the jack detection logic in sn95031 codec.
-> This also adds code for reading the ADC to figure out the
-> mic bias and therby report jack type detected
+On Thu, 2011-02-03 at 09:31 -0600, pl bossart wrote:
+> >> Also, more work
+> >> is required to separate ALSA card from UCM card (to support virtual or
+> >> mixed "soundcards").
+> >
+> > Agreed, but Margarita will initially be targeting a simpler system with
+> > one sound card and then move on to support a virtual sound card.
+> 
+> I quickly looked at the code. Interesting. I was thinking of a
+> different approach where a separate pulseaudio module would open the
+> use case manager, get the list of cards and verbs. this would be done
+> on startup. Doing this inside module-alsa-card results in redundant
+> activity, you're going to re-open and read the verbs for each card.
+> 
 
-In order to reduce the amount of reposting and review we all need to do
-it might be worth restructuring this to get some of the functionality in
-independantly of the actual jack detection.
+I should say that the initial design and patch implementation was
+carried out before Jaroslav added the virtual card support. The initial
+plan was to compute UCM values per card at startup.
 
-> +/* enables mic bias voltage */
-> +void sn95031_enable_mic_bias(struct snd_soc_codec *codec)
-> +{
-> +	snd_soc_write(codec, SN95031_VAUD, BIT(2)|BIT(1)|BIT(0));
-> +	snd_soc_update_bits(codec, SN95031_MICBIAS, BIT(2), BIT(2));
-> +}
+This code is also experimental, Margarita planned to see what worked
+best with one card at first before moving to virtual card support.
 
-The micbias control looks like one of the things that could go in
-independently.  Though looking at the code it looks like this could
-actually just be patch 1/3 anyway?
+> I am also concerned about the card_set_profile() code in module-alsa-card
+>    if (nd->profile->is_ucm) {
+>         pa_log_debug("set UCM %s", nd->profile->name + 4);
+>         return snd_use_case_set(nd->profile->uc_mgr, verb,
+> nd->profile->name + 4);
+>     }
+> There's an awful amount of code after the return to handle multiple
+> sinks that may become active for a given profile. Even if you have a
+> single card, it's not clear to me how multiple devices would be
+> handled (eg. voice, music, tones in the 4430 case) if you bypass this
+> code. Are they considered as different sinks from a PulseAudio
+> perspective? The routing and how devices allowed in a specific use
+> case are exposed in PulseAudio isn't clear to me at all.
+> 
 
-> +/* Enable/Disable the ADC depending on the argument */
-> +static void configure_adc(struct snd_soc_codec *sn95031_codec, int val)
-> +{
-> +	int value = snd_soc_read(sn95031_codec, SN95031_ADC1CNTL1);
-> +
-> +	if (val) {
-> +		/* Enable and start the ADC */
-> +		value |= (SN95031_ADC_ENBL | SN95031_ADC_START);
-> +		value &= (~ADC_NO_LOOP);
-> +	} else
-> +		/* Just stop the ADC */
-> +		value &= (~SN95031_ADC_START);
+I don't think Margarita has got this far yet.
 
-Use {} on both branches for clarity.
+> Last, looking at the code, I saw this comment
+> 	/* FIXME: UCM needs to provide API to acquire verb comments */
+> A change is not needed, the list of verbs already comes as verb0,
+> comment0, verb1, comment1, etc.
 
-> +/* Initialize the ADC for reading thermistor values. Can sleep. */
-> +static int sn95031_initialize_adc(struct snd_soc_codec *sn95031_codec)
+Again, this comment was from the ancient code.
 
-Cut'n'paste error with the comment?  The comment does suggest that this
-is a general purpose ADC and therefore we ought to implement the ADC
-support and then layer the mic detection on top of it so the ADC can be
-used for other applications like hardware monitoring.
+> My $0.02
+> -Pierre
 
-> +/* end - codec read/write functions */
-> +
+I've CC'ed Colin for his $0.02 too. I do agree though, that with virtual
+card support it does seem right to create a new Pulseaudio module to
+manage UCM.
 
-Unrelated change?
+At a high level, the new module could :-
 
-> +int sn95031_get_headset_state(struct snd_soc_jack *mfld_jack,
-> +				struct snd_soc_codec *codec)
-> +{
-> +	int micbias = sn95031_get_mic_bias(codec);
-> +
-> +	int jack_type = snd_soc_jack_get_type(mfld_jack, micbias);
-> +
-> +	/* If american headest, program the gpio control registers */
-> +	if (micbias >=  SN95031_VOL_HP && micbias <  SN95031_VOL_AM_HS)
-> +		snd_soc_update_bits(codec, AUDIO_GPIO_CTRL, BIT(1), BIT(1));
-> +	else
-> +		snd_soc_update_bits(codec, AUDIO_GPIO_CTRL, BIT(1), BIT(0));
-> +
-> +	pr_debug("jack type detected = %d\n", jack_type);
-> +	if (jack_type == SND_JACK_HEADSET)
-> +		enable_jack_btn(codec);
-> +	return jack_type;
-> +}
-> +
+Compute use cases for each sound device at init {
+	if (ucm config exists)
+		use UCM config
+	else
+		use existing config method
+}
 
-Should be either static or have an EXPORT_SYOMBOL_GPL?
+Whilst Pulseaudio would use computed use case values for every new
+client stream (using module-intended-roles ?).
 
-> +void sn95031_jack_detection(struct snd_soc_jack *mfld_jack,
-> +		struct mfld_jack_msg_wq *jack_msg)
+Thoughts ?
 
-> +	pr_debug("interrupt id read in sram = 0x%x\n", jack_msg->intr_id);
-> +	if (jack_msg->intr_id & 0x1) {
-> +		pr_debug("short_push detected\n");
-> +		mask = status = SND_JACK_BTN_0;
-> +	} else if (jack_msg->intr_id & 0x2) {
-> +		pr_debug("long_push detected\n");
-> +		mask = status = SND_JACK_BTN_1;
-
-Shouldn't this be using a mask of BTN_0 and BTN_1 for both buttons, they
-can't be detected simultaneously?
-
-> +#define ADC_CHANLS_MAX 15 /* Number of ADC channels */
-> +#define ADC_LOOP_MAX (ADC_CHANLS_MAX - 1)
-> +#define ADC_NO_LOOP 0x07
-
-Namespacing for this and most of the other stuff below this.
-
-> +
-> +/* ADC channel code values */
-> +#define AUDIO_DETECT_CODE 0x06
-> +#define AUDIO_GPIO_CTRL 0x070
-
-What exactly is the GPIO configuration done here, BTW - GPIO makes it
-sound like this is somehow board specific?
-
-> +static inline void disable_jack_btn(struct snd_soc_codec *codec)
-> +{
-> +	snd_soc_write(codec, SN95031_BTNCTRL2, 0x00);
-> +}
-> +
-> +static inline void enable_jack_btn(struct snd_soc_codec *codec)
-> +{
-> +	snd_soc_write(codec, SN95031_BTNCTRL1, 0x77);
-> +	snd_soc_write(codec, SN95031_BTNCTRL2, 0x01);
-> +}
-
-Put these in the source file.
+Liam
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
