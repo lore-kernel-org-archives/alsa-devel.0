@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: soc_jack - add function to add
- jack zones and determine jack type
-Date: Thu, 3 Feb 2011 15:16:28 +0000
-Message-ID: <20110203151628.GB2576@opensource.wolfsonmicro.com>
-References: <1296732343-22627-1-git-send-email-priya.harsha@intel.com>
+Subject: Re: [PATCH 2/3] ASoC: mid-x86 machine driver - add
+ jack detect support
+Date: Thu, 3 Feb 2011 15:20:48 +0000
+Message-ID: <20110203152048.GC2576@opensource.wolfsonmicro.com>
+References: <1296732361-24172-1-git-send-email-priya.harsha@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 31073103828
-	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2011 16:16:11 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 59E8E103868
+	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2011 16:20:30 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1296732343-22627-1-git-send-email-priya.harsha@intel.com>
+In-Reply-To: <1296732361-24172-1-git-send-email-priya.harsha@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,65 +26,49 @@ To: Harsha Priya <priya.harsha@intel.com>
 Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 03, 2011 at 04:55:43PM +0530, Harsha Priya wrote:
+On Thu, Feb 03, 2011 at 04:56:01PM +0530, Harsha Priya wrote:
 
-> +/* struct snd_soc_jack_zone - Describes voltage zones of jack detection
-> + *
-> + * @adc_value_start: start range of voltage value in adc channel
-> + *			when jack is pluggedin
-> + * @adc_value_end: end range of voltage value in adc channel
-> + *			when jack is pluggedin
-> + * @jack_type: type of jack that is expected for this voltage
-> + */
-> +struct snd_soc_jack_zone {
-> +	unsigned int adc_value_start;
-> +	unsigned int adc_value_end;
-> +	unsigned int jack_type;
-> +	struct list_head list;
+> +#define IRQ_BASE 0xFFFF7FCD
+> +#define IRQ_SIZE 1
+
+This looks like it should be coming in via a platform device or
+something?
+
+> +static struct snd_soc_jack_pin mfld_jack_pins[] = {
+> +	{
+> +		.pin = "Headphones",
+> +		.mask = SND_JACK_HEADPHONE,
+> +	},
+> +	{
+> +		.pin = "AMIC1",
+> +		.mask = SND_JACK_MICROPHONE,
+> +	},
 > +};
+> +/* jack detection voltage zones */
 
-This is a lot better than the previous version but I think we do need to
-include settling time support in here.  As I said before most hardware
-used for this isn't specialised and won't have debounce support, and in
-cases like detection of simple headphones on a headset jack the settling
-time is essential in order to distinguish between that and a headset
-with a microphone short button active.
+Blank line between these - in general it'd be worth checking into this.
 
-I'd also like to change adc_value_x to be {min,max}_mv or something
-similar for clarity, min and max are more obvious and using mv makes it
-clear what units are being used and that we're not working in terms of
-raw ADC values or similar.
-
-> +static int snd_soc_validate_jack_type(int type)
-> +{
-> +	switch (type) {
-
-I don't see the need for this and in any case...
-
-> +	case SND_JACK_HEADPHONE:
-> +	case SND_JACK_MICROPHONE:
-> +	case SND_JACK_HEADSET:
-> +	case SND_JACK_LINEOUT:
-> +	case SND_JACK_MECHANICAL:
-> +	case SND_JACK_VIDEOOUT:
-> +	case SND_JACK_AVOUT:
-> +		break;
-
-...this doesn't cover things like buttons implemented by shorting
-different resistances to ground.
-
-> +int snd_soc_jack_get_type(struct snd_soc_jack *jack, int micbias_voltage)
-> +{
-> +	struct snd_soc_jack_zone *zone;
-> +
-> +	list_for_each_entry(zone, &jack->jack_zones, list) {
-> +		if (micbias_voltage >= zone->adc_value_start &&
-> +			micbias_voltage < zone->adc_value_end)
-> +				return zone->jack_type;
+> +	/* retrive the irq number */
+> +	irq = platform_get_irq(pdev, 0);
+> +	/*	audio interrupt base of SRAM location where
+> +	*	interrupts are stored by System FW */
+> +	mc_drv_ctx.int_base = ioremap_nocache(IRQ_BASE, IRQ_SIZE);
+> +	if (!mc_drv_ctx.int_base) {
+> +		pr_err("Mapping of cache failed\n");
+> +		ret_val = -ENOMEM;
+> +		goto unalloc;
 > +	}
-> +	return -ENODEV;
+> +	/* create botoom half handler for interrupt */
+> +	mc_drv_ctx.mfld_jack_wq = create_workqueue("mfld_jack_wq");
+> +	if (!mc_drv_ctx.mfld_jack_wq) {
+> +		pr_err("cannot create jack workqueue\n");
+> +		ret_val = -ENOMEM;
+> +		goto unalloc;
+> +	}
+> +	/* register for interrupt */
+> +	ret_val = request_irq(irq, snd_mfld_jack_intr_handler,
+> +				IRQF_SHARED, pdev->dev.driver->name,
+> +				&mc_drv_ctx);
 
-Returning 0 would be more helpful - that'd mean that you could just
-report the result straight off.  However, as I said last time I do think
-that we should be doing something more active to manage the detection
-here.  That's pretty essential for anything time based.
+I suspect you can just use request_threaded_irq() here which would ave
+open coding the workqueue.
