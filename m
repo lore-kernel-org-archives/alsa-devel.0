@@ -1,15 +1,15 @@
 From: Harsha Priya <priya.harsha@intel.com>
-Subject: [PATCH 1/3] ASoC: soc_jack - add function to add jack
-	zones and determine jack type
-Date: Thu,  3 Feb 2011 16:55:43 +0530
-Message-ID: <1296732343-22627-1-git-send-email-priya.harsha@intel.com>
+Subject: [PATCH 2/3] ASoC: mid-x86 machine driver - add jack
+	detect support
+Date: Thu,  3 Feb 2011 16:56:01 +0530
+Message-ID: <1296732361-24172-1-git-send-email-priya.harsha@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5CDBD103A50
-	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2011 12:10:27 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id B2FCC103A86
+	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2011 12:10:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,161 +23,298 @@ To: alsa-devel@alsa-project.org
 Cc: Harsha Priya <priya.harsha@intel.com>, Vinod Koul <vinod.koul@intel.com>, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Based on the voltage value in adc channel,jack plugged in needs to be determined
-
-This patch adds a helper functions that adds the adc voltage zones and
-determines the jack type given the mic bias value.
-
-When a jack is created, the voltage zones can to be added to it. Later when a
-jack is inserted, the micbias voltage can be measured and used to find the
-jack type
-
-For any codec that would give the mic bias value on a jack insertion,
-this function would return the type of jack based on mic bias range
+This patch adds the jack detection in mid-86 machine driver
 
 Signed-off-by: Harsha Priya <priya.harsha@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- include/sound/soc.h  |   20 +++++++++++++++
- sound/soc/soc-jack.c |   67 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 87 insertions(+), 0 deletions(-)
+ sound/soc/mid-x86/mfld_machine.c |  186 ++++++++++++++++++++++++++++++++------
+ 1 files changed, 159 insertions(+), 27 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 4b6c0a8..97f2a3a 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -234,6 +234,7 @@ struct snd_soc_codec;
- struct snd_soc_codec_driver;
- struct soc_enum;
- struct snd_soc_jack;
-+struct snd_soc_jack_zone;
- struct snd_soc_jack_pin;
- struct snd_soc_cache_ops;
- #include <sound/soc-dapm.h>
-@@ -307,6 +308,9 @@ void snd_soc_jack_notifier_register(struct snd_soc_jack *jack,
- 				    struct notifier_block *nb);
- void snd_soc_jack_notifier_unregister(struct snd_soc_jack *jack,
- 				      struct notifier_block *nb);
-+int snd_soc_jack_add_zones(struct snd_soc_jack *jack, int count,
-+			  struct snd_soc_jack_zone *zones);
-+int snd_soc_jack_get_type(struct snd_soc_jack *jack, int micbias_voltage);
- #ifdef CONFIG_GPIOLIB
- int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
- 			struct snd_soc_jack_gpio *gpios);
-@@ -406,6 +410,21 @@ struct snd_soc_jack_pin {
- 	bool invert;
- };
+diff --git a/sound/soc/mid-x86/mfld_machine.c b/sound/soc/mid-x86/mfld_machine.c
+index 7925851..7abd3fc 100644
+--- a/sound/soc/mid-x86/mfld_machine.c
++++ b/sound/soc/mid-x86/mfld_machine.c
+@@ -27,6 +27,7 @@
+ #include <linux/init.h>
+ #include <linux/device.h>
+ #include <linux/slab.h>
++#include <linux/io.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -35,10 +36,38 @@
+ #define MID_MONO 1
+ #define MID_STEREO 2
+ #define MID_MAX_CAP 5
++#define IRQ_BASE 0xFFFF7FCD
++#define IRQ_SIZE 1
  
-+/* struct snd_soc_jack_zone - Describes voltage zones of jack detection
-+ *
-+ * @adc_value_start: start range of voltage value in adc channel
-+ *			when jack is pluggedin
-+ * @adc_value_end: end range of voltage value in adc channel
-+ *			when jack is pluggedin
-+ * @jack_type: type of jack that is expected for this voltage
-+ */
-+struct snd_soc_jack_zone {
-+	unsigned int adc_value_start;
-+	unsigned int adc_value_end;
-+	unsigned int jack_type;
-+	struct list_head list;
+ static unsigned int	hs_switch;
+ static unsigned int	lo_dac;
+ 
++struct mfld_mc_private {
++	struct platform_device *socdev;
++	struct workqueue_struct *mfld_jack_wq;
++	void __iomem *int_base;
++	struct snd_soc_codec *codec;
++} mc_drv_ctx;
++
++struct snd_soc_jack mfld_jack;
++
++/*Headset jack detection DAPM pins */
++static struct snd_soc_jack_pin mfld_jack_pins[] = {
++	{
++		.pin = "Headphones",
++		.mask = SND_JACK_HEADPHONE,
++	},
++	{
++		.pin = "AMIC1",
++		.mask = SND_JACK_MICROPHONE,
++	},
++};
++/* jack detection voltage zones */
++static struct snd_soc_jack_zone mfld_zones[] = {
++	{SN95031_VOL_START, SN95031_VOL_AM_HS, SND_JACK_HEADPHONE},
++	{SN95031_VOL_AM_HS, SN95031_VOL_HS, SND_JACK_HEADSET},
 +};
 +
- /**
-  * struct snd_soc_jack_gpio - Describes a gpio pin for jack detection
-  *
-@@ -435,6 +454,7 @@ struct snd_soc_jack {
- 	struct list_head pins;
- 	int status;
- 	struct blocking_notifier_head notifier;
-+	struct list_head jack_zones;
+ /* sound card controls */
+ static const char *headset_switch_text[] = {"Earpiece", "Headset"};
+ 
+@@ -67,13 +96,11 @@ static int headset_set_switch(struct snd_kcontrol *kcontrol,
+ 
+ 	if (ucontrol->value.integer.value[0]) {
+ 		pr_debug("hs_set HS path\n");
+-		snd_soc_dapm_enable_pin(&codec->dapm, "HPOUTL");
+-		snd_soc_dapm_enable_pin(&codec->dapm, "HPOUTR");
++		snd_soc_dapm_enable_pin(&codec->dapm, "Headphones");
+ 		snd_soc_dapm_disable_pin(&codec->dapm, "EPOUT");
+ 	} else {
+ 		pr_debug("hs_set EP path\n");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTL");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTR");
++		snd_soc_dapm_disable_pin(&codec->dapm, "Headphones");
+ 		snd_soc_dapm_enable_pin(&codec->dapm, "EPOUT");
+ 	}
+ 	snd_soc_dapm_sync(&codec->dapm);
+@@ -91,12 +118,10 @@ static void lo_enable_out_pins(struct snd_soc_codec *codec)
+ 	snd_soc_dapm_enable_pin(&codec->dapm, "VIB1OUT");
+ 	snd_soc_dapm_enable_pin(&codec->dapm, "VIB2OUT");
+ 	if (hs_switch) {
+-		snd_soc_dapm_enable_pin(&codec->dapm, "HPOUTL");
+-		snd_soc_dapm_enable_pin(&codec->dapm, "HPOUTR");
++		snd_soc_dapm_enable_pin(&codec->dapm, "Headphones");
+ 		snd_soc_dapm_disable_pin(&codec->dapm, "EPOUT");
+ 	} else {
+-		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTL");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTR");
++		snd_soc_dapm_disable_pin(&codec->dapm, "Headphones");
+ 		snd_soc_dapm_enable_pin(&codec->dapm, "EPOUT");
+ 	}
+ }
+@@ -130,8 +155,7 @@ static int lo_set_switch(struct snd_kcontrol *kcontrol,
+ 
+ 	case 1:
+ 		pr_debug("set hs  path\n");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTL");
+-		snd_soc_dapm_disable_pin(&codec->dapm, "HPOUTR");
++		snd_soc_dapm_disable_pin(&codec->dapm, "Headphones");
+ 		snd_soc_dapm_disable_pin(&codec->dapm, "EPOUT");
+ 		snd_soc_update_bits(codec, SN95031_LOCTL, 0x66, 0x22);
+ 		break;
+@@ -162,12 +186,36 @@ static const struct snd_kcontrol_new mfld_snd_controls[] = {
+ 			lo_get_switch, lo_set_switch),
  };
  
- /* SoC PCM stream information */
-diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index ac5a5bc..66bd68f 100644
---- a/sound/soc/soc-jack.c
-+++ b/sound/soc/soc-jack.c
-@@ -37,6 +37,7 @@ int snd_soc_jack_new(struct snd_soc_codec *codec, const char *id, int type,
++static const struct snd_soc_dapm_widget mfld_widgets[] = {
++	SND_SOC_DAPM_HP("Headphones", NULL),
++	SND_SOC_DAPM_MIC("Mic", NULL),
++};
++
++static const struct snd_soc_dapm_route mfld_map[] = {
++	{"Headphones", NULL, "HPOUTR"},
++	{"Headphones", NULL, "HPOUTL"},
++	{"Mic", NULL, "AMIC1"},
++};
++
+ static int mfld_init(struct snd_soc_pcm_runtime *runtime)
  {
- 	jack->codec = codec;
- 	INIT_LIST_HEAD(&jack->pins);
-+	INIT_LIST_HEAD(&jack->jack_zones);
- 	BLOCKING_INIT_NOTIFIER_HEAD(&jack->notifier);
+ 	struct snd_soc_codec *codec = runtime->codec;
+ 	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 	int ret_val;
  
- 	return snd_jack_new(codec->card->snd_card, id, type, &jack->jack);
-@@ -111,6 +112,72 @@ out:
++	/* Add jack sense widgets */
++	snd_soc_dapm_new_controls(dapm, mfld_widgets, ARRAY_SIZE(mfld_widgets));
++
++	/* Set up the map */
++	snd_soc_dapm_add_routes(dapm, mfld_map, ARRAY_SIZE(mfld_map));
++
++	/* always connected */
++	snd_soc_dapm_enable_pin(dapm, "Headphones");
++	snd_soc_dapm_enable_pin(dapm, "Mic");
++	snd_soc_dapm_sync(dapm);
++
++	mc_drv_ctx.codec = codec;
++
+ 	ret_val = snd_soc_add_controls(codec, mfld_snd_controls,
+ 				ARRAY_SIZE(mfld_snd_controls));
+ 	if (ret_val) {
+@@ -175,8 +223,7 @@ static int mfld_init(struct snd_soc_pcm_runtime *runtime)
+ 		return ret_val;
+ 	}
+ 	/* default is earpiece pin, userspace sets it explcitly */
+-	snd_soc_dapm_disable_pin(dapm, "HPOUTL");
+-	snd_soc_dapm_disable_pin(dapm, "HPOUTR");
++	snd_soc_dapm_disable_pin(dapm, "Headphones");
+ 	/* default is lineout NC, userspace sets it explcitly */
+ 	snd_soc_dapm_disable_pin(dapm, "LINEOUTL");
+ 	snd_soc_dapm_disable_pin(dapm, "LINEOUTR");
+@@ -185,7 +232,32 @@ static int mfld_init(struct snd_soc_pcm_runtime *runtime)
+ 	/* we dont use linein in this so set to NC */
+ 	snd_soc_dapm_disable_pin(dapm, "LINEINL");
+ 	snd_soc_dapm_disable_pin(dapm, "LINEINR");
+-	return snd_soc_dapm_sync(dapm);
++	snd_soc_dapm_sync(dapm);
++
++	/* Headset jack detection */
++	ret_val = snd_soc_jack_new(codec, "Intel(R) MID Audio Jack",
++			SND_JACK_HEADSET | SND_JACK_BTN_0 |
++			SND_JACK_BTN_1, &mfld_jack);
++
++	if (ret_val) {
++		pr_err("jack creation failed\n");
++		return ret_val;
++	}
++
++	ret_val = snd_soc_jack_add_pins(&mfld_jack,
++			ARRAY_SIZE(mfld_jack_pins), mfld_jack_pins);
++	if (ret_val) {
++		pr_err("adding jack pins failed\n");
++		return ret_val;
++	}
++	ret_val = snd_soc_jack_add_zones(&mfld_jack,
++			ARRAY_SIZE(mfld_zones), mfld_zones);
++	if (ret_val) {
++		pr_err("adding jack zones failed\n");
++		return ret_val;
++	}
++	disable_jack_btn(codec);
++	return ret_val;
  }
- EXPORT_SYMBOL_GPL(snd_soc_jack_report);
  
-+static int snd_soc_validate_jack_type(int type)
+ struct snd_soc_dai_link mfld_msic_dailink[] = {
+@@ -234,37 +306,97 @@ static struct snd_soc_card snd_soc_card_mfld = {
+ 	.num_links = ARRAY_SIZE(mfld_msic_dailink),
+ };
+ 
++void snd_mfld_jack_detection(struct work_struct *work)
 +{
-+	switch (type) {
-+	case SND_JACK_HEADPHONE:
-+	case SND_JACK_MICROPHONE:
-+	case SND_JACK_HEADSET:
-+	case SND_JACK_LINEOUT:
-+	case SND_JACK_MECHANICAL:
-+	case SND_JACK_VIDEOOUT:
-+	case SND_JACK_AVOUT:
-+		break;
-+	default:
-+		return -EINVAL;
++	struct mfld_jack_msg_wq *jack_msg =
++			container_of(work, struct mfld_jack_msg_wq, wq);
 +
-+	};
-+	return 0;
++	sn95031_jack_detection(&mfld_jack, jack_msg);
++	kfree(jack_msg);
 +}
 +
-+/**
-+ * snd_soc_jack_add_zones - Associate voltage zones with jack
-+ *
-+ * @jack:  ASoC jack
-+ * @count: Number of zones
-+ * @zone:  Array of zones
-+ *
-+ * After this function has been called the zones specified in the
-+ * array will be associated with the jack.
-+ */
-+int snd_soc_jack_add_zones(struct snd_soc_jack *jack, int count,
-+			  struct snd_soc_jack_zone *zones)
++static irqreturn_t snd_mfld_jack_intr_handler(int irq, void *dev)
 +{
-+	int i;
++	struct mfld_jack_msg_wq *jack_msg;
++	struct mfld_mc_private *mc_private = (struct mfld_mc_private *) dev;
 +
-+	for (i = 0; i < count; i++) {
-+		if (snd_soc_validate_jack_type(zones[i].jack_type)) {
-+			printk(KERN_ERR "Unknown jack type given %d\n", i);
-+			return -EINVAL;
-+		}
-+		INIT_LIST_HEAD(&zones[i].list);
-+		list_add(&(zones[i].list), &jack->jack_zones);
++	jack_msg = kzalloc(sizeof(*jack_msg), GFP_ATOMIC);
++	memcpy_fromio(&jack_msg->intr_id,
++			((void *)(mc_private->int_base)),
++			sizeof(u8));
++	jack_msg->codec = mc_private->codec;
++	pr_debug("snd_mfld_jack_intr_handler called value %x\n",
++					jack_msg->intr_id);
++	INIT_WORK(&jack_msg->wq, snd_mfld_jack_detection);
++	queue_work(mc_private->mfld_jack_wq, &jack_msg->wq);
++
++	return IRQ_HANDLED;
++}
++
+ static int __devinit snd_mfld_mc_probe(struct platform_device *pdev)
+ {
+-	struct platform_device *socdev;
+-	int ret_val = 0;
++	int ret_val = 0, irq;
+ 
+ 	pr_debug("snd_mfld_mc_probe called\n");
+ 
+-	socdev =  platform_device_alloc("soc-audio", -1);
+-	if (!socdev) {
++	/* retrive the irq number */
++	irq = platform_get_irq(pdev, 0);
++	/*	audio interrupt base of SRAM location where
++	*	interrupts are stored by System FW */
++	mc_drv_ctx.int_base = ioremap_nocache(IRQ_BASE, IRQ_SIZE);
++	if (!mc_drv_ctx.int_base) {
++		pr_err("Mapping of cache failed\n");
++		ret_val = -ENOMEM;
++		goto unalloc;
 +	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_jack_add_zones);
-+
-+/**
-+ * snd_soc_jack_get_type - Based on the mic bias value, this function returns
-+ * the type of jack from the zones delcared in the jack type
-+ *
-+ * @micbias_voltage:  mic bias voltage at adc channel when jack is plugged in
-+ *
-+ * Based on the mic bias value passed, this function helps identify
-+ * the type of jack from the already delcared jack zones
-+ **/
-+int snd_soc_jack_get_type(struct snd_soc_jack *jack, int micbias_voltage)
-+{
-+	struct snd_soc_jack_zone *zone;
-+
-+	list_for_each_entry(zone, &jack->jack_zones, list) {
-+		if (micbias_voltage >= zone->adc_value_start &&
-+			micbias_voltage < zone->adc_value_end)
-+				return zone->jack_type;
++	/* create botoom half handler for interrupt */
++	mc_drv_ctx.mfld_jack_wq = create_workqueue("mfld_jack_wq");
++	if (!mc_drv_ctx.mfld_jack_wq) {
++		pr_err("cannot create jack workqueue\n");
++		ret_val = -ENOMEM;
++		goto unalloc;
 +	}
-+	return -ENODEV;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_jack_get_type);
- /**
-  * snd_soc_jack_add_pins - Associate DAPM pins with an ASoC jack
-  *
++	/* register for interrupt */
++	ret_val = request_irq(irq, snd_mfld_jack_intr_handler,
++				IRQF_SHARED, pdev->dev.driver->name,
++				&mc_drv_ctx);
++	if (ret_val) {
++		pr_err("cannot register IRQ\n");
++		goto destroy_wq;
++	}
++	/* create soc device */
++	mc_drv_ctx.socdev = platform_device_alloc("soc-audio", -1);
++	if (!mc_drv_ctx.socdev) {
+ 		pr_err("soc-audio device allocation failed\n");
+-		return -ENOMEM;
++		ret_val = -ENOMEM;
++		goto destroy_wq;
+ 	}
+-	platform_set_drvdata(socdev, &snd_soc_card_mfld);
+-	ret_val = platform_device_add(socdev);
++	platform_set_drvdata(mc_drv_ctx.socdev, &snd_soc_card_mfld);
++	ret_val = platform_device_add(mc_drv_ctx.socdev);
+ 	if (ret_val) {
+ 		pr_err("Unable to add soc-audio device, err %d\n", ret_val);
+-		platform_device_put(socdev);
++		goto unregister;
+ 	}
+-
+-	platform_set_drvdata(pdev, socdev);
+-
++	platform_set_drvdata(pdev, &mc_drv_ctx);
+ 	pr_debug("successfully exited probe\n");
+ 	return ret_val;
++
++unregister:
++	platform_device_put(mc_drv_ctx.socdev);
++destroy_wq:
++	destroy_workqueue(mc_drv_ctx.mfld_jack_wq);
++unalloc:
++	return ret_val;
+ }
+ 
+ static int __devexit snd_mfld_mc_remove(struct platform_device *pdev)
+ {
+-	struct platform_device *socdev =  platform_get_drvdata(pdev);
+-	pr_debug("snd_mfld_mc_remove called\n");
++	struct mfld_mc_private *mc_private_data = platform_get_drvdata(pdev);
+ 
+-	platform_device_unregister(socdev);
++	pr_debug("snd_mfld_mc_remove called\n");
++	free_irq(platform_get_irq(pdev, 0), mc_private_data);
++	destroy_workqueue(mc_private_data->mfld_jack_wq);
++	platform_device_unregister(mc_private_data->socdev);
+ 	platform_set_drvdata(pdev, NULL);
+ 	return 0;
+ }
 -- 
 1.7.3.4
