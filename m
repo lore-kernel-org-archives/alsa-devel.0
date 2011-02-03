@@ -1,47 +1,37 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] ASoC: sn95031 codec - adding
-	jack	detection/reporting
-Date: Thu, 3 Feb 2011 23:03:04 +0000
-Message-ID: <20110203230304.GA11433@sirena.org.uk>
-References: <1296732382-923-1-git-send-email-priya.harsha@intel.com>
-	<20110203160640.GD2576@opensource.wolfsonmicro.com>
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: RE: [PATCH 1/6] ASoC: Tegra: Harmony: Add headphone jack detection
+Date: Thu, 3 Feb 2011 15:25:04 -0800
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0310C8EA93@HQMAIL01.nvidia.com>
+References: <1296766578-13988-1-git-send-email-swarren@nvidia.com>
+ <20110203223530.GA4586@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4FC78103AD5
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 00:03:09 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20110203160640.GD2576@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Harsha Priya <priya.harsha@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20110203223530.GA4586-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Content-Language: en-US
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: "lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org" <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 03, 2011 at 04:06:40PM +0000, Mark Brown wrote:
-> On Thu, Feb 03, 2011 at 04:56:22PM +0530, Harsha Priya wrote:
+Mark Brown wrote at Thursday, February 03, 2011 3:36 PM:
+> On Thu, Feb 03, 2011 at 01:56:13PM -0700, Stephen Warren wrote:
+> 
+> > +static struct snd_soc_jack harmony_hp_jack;
+> > +
+> 
+> Since you've changed to using a platform device you should really be
+> dynamically allocating this I guess.  But this isn't actually a
+> practical problem so not worth caring about.
 
-> > +	pr_debug("interrupt id read in sram = 0x%x\n", jack_msg->intr_id);
-> > +	if (jack_msg->intr_id & 0x1) {
-> > +		pr_debug("short_push detected\n");
-> > +		mask = status = SND_JACK_BTN_0;
-> > +	} else if (jack_msg->intr_id & 0x2) {
-> > +		pr_debug("long_push detected\n");
-> > +		mask = status = SND_JACK_BTN_1;
+Uggh. The code may as well be consistent. I'll fix this up and resubmit
+if you haven't already applied it.
 
-> Shouldn't this be using a mask of BTN_0 and BTN_1 for both buttons, they
-> can't be detected simultaneously?
+-- 
+nvpublic
 
-By the way, this logic for reporting the buttons separately to the
-detection of the headset/headphone status is something that should be
-pulled out into generic code as the same mechanism is going to be needed
-by anything using voltage based detection.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-tegra" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
