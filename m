@@ -1,14 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Sort ALC5623 in Kconfig and Makefile
-Date: Thu,  3 Feb 2011 14:08:30 +0000
-Message-ID: <1296742110-29827-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/3] ASoC: add support for jack detection
+ in mid-x86 and sn95031 codec
+Date: Thu, 3 Feb 2011 14:47:48 +0000
+Message-ID: <20110203144748.GA2576@opensource.wolfsonmicro.com>
+References: <98769532B4BB14429434178695419EAE08C1031900@bgsmsx501.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2C172103828
-	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2011 15:08:34 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3B6FB103828
+	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2011 15:47:31 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <98769532B4BB14429434178695419EAE08C1031900@bgsmsx501.gar.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,34 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: "Harsha, Priya" <priya.harsha@intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/Makefile |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+On Thu, Feb 03, 2011 at 04:40:06PM +0530, Harsha, Priya wrote:
 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 06894da..46ffb26 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -92,6 +92,7 @@ obj-$(CONFIG_SND_SOC_AK4104)	+= snd-soc-ak4104.o
- obj-$(CONFIG_SND_SOC_AK4535)	+= snd-soc-ak4535.o
- obj-$(CONFIG_SND_SOC_AK4642)	+= snd-soc-ak4642.o
- obj-$(CONFIG_SND_SOC_AK4671)	+= snd-soc-ak4671.o
-+obj-$(CONFIG_SND_SOC_ALC5623)    += snd-soc-alc5623.o
- obj-$(CONFIG_SND_SOC_CQ0093VC) += snd-soc-cq93vc.o
- obj-$(CONFIG_SND_SOC_CS42L51)	+= snd-soc-cs42l51.o
- obj-$(CONFIG_SND_SOC_CS4270)	+= snd-soc-cs4270.o
-@@ -103,7 +104,6 @@ obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
- obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+= snd-soc-jz4740-codec.o
- obj-$(CONFIG_SND_SOC_MAX98088)	+= snd-soc-max98088.o
- obj-$(CONFIG_SND_SOC_PCM3008)	+= snd-soc-pcm3008.o
--obj-$(CONFIG_SND_SOC_ALC5623)    += snd-soc-alc5623.o
- obj-$(CONFIG_SND_SOC_SN95031)	+=snd-soc-sn95031.o
- obj-$(CONFIG_SND_SOC_SPDIF)	+= snd-soc-spdif.o
- obj-$(CONFIG_SND_SOC_SSM2602)	+= snd-soc-ssm2602.o
--- 
-1.7.2.3
+> This patch set adds support for jack detection in mid-x6 machine and TI sn95031
+> codec drivers. Also adds a helper function in soc-jack.c for converting mic bias
+> values to jack types.
+
+As previously mentioned please thread all the message in a patch series
+together.
