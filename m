@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 6/6] ASoC: Tegra: Harmony: Support both int
-	and ext mics
-Date: Thu, 3 Feb 2011 22:52:35 +0000
-Message-ID: <20110203225235.GD4586@opensource.wolfsonmicro.com>
-References: <1296766578-13988-1-git-send-email-swarren@nvidia.com>
-	<1296766578-13988-6-git-send-email-swarren@nvidia.com>
+Subject: Re: [PATCH 3/3] ASoC: sn95031 codec - adding
+	jack	detection/reporting
+Date: Thu, 3 Feb 2011 23:03:04 +0000
+Message-ID: <20110203230304.GA11433@sirena.org.uk>
+References: <1296732382-923-1-git-send-email-priya.harsha@intel.com>
+	<20110203160640.GD2576@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8E406103AE0
-	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2011 23:52:17 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4FC78103AD5
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 00:03:09 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1296766578-13988-6-git-send-email-swarren@nvidia.com>
+In-Reply-To: <20110203160640.GD2576@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,53 +23,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Harsha Priya <priya.harsha@intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 03, 2011 at 01:56:18PM -0700, Stephen Warren wrote:
+On Thu, Feb 03, 2011 at 04:06:40PM +0000, Mark Brown wrote:
+> On Thu, Feb 03, 2011 at 04:56:22PM +0530, Harsha Priya wrote:
 
-> At present, I'm not sure how best to resolve this. Downstream drivers
-> directly tweaked the wm8903's registers so that both ADCs processed the
-> same input channel.
+> > +	pr_debug("interrupt id read in sram = 0x%x\n", jack_msg->intr_id);
+> > +	if (jack_msg->intr_id & 0x1) {
+> > +		pr_debug("short_push detected\n");
+> > +		mask = status = SND_JACK_BTN_0;
+> > +	} else if (jack_msg->intr_id & 0x2) {
+> > +		pr_debug("long_push detected\n");
+> > +		mask = status = SND_JACK_BTN_1;
 
-The CODEC driver needs to have support for routing the left and right
-channels like things like the WM8993 do.
+> Shouldn't this be using a mask of BTN_0 and BTN_1 for both buttons, they
+> can't be detected simultaneously?
 
->  	{"IN1L", NULL, "Mic Jack"},
-> +	{"IN1R", NULL, "Mic Jack"},
-
-This looks odd - I'd expect to see separate widgets for the internal
-microphone rather than using the same widget.  This would greatly
-simplify the driver code without really impacting the level of
-configuration applications need to do (and allowing them to use both
-simultaneously if they want to).
-
-> +static int harmony_set_mic_selection(struct snd_kcontrol *kcontrol,
-> +				     struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-> +	struct snd_soc_card *card = codec->card;
-> +	struct tegra_harmony *harmony = snd_soc_card_get_drvdata(card);
-> +
-> +	if (harmony->mic_selection == ucontrol->value.integer.value[0])
-> +		return 0;
-> +
-> +	harmony->mic_selection = ucontrol->value.integer.value[0];
-> +	harmony_mic_control(codec);
-
-This should be locking the CODEC mutex while doing the update.
-
-> +static const struct soc_enum harmony_enum[] = {
-> +	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(mic_selection_names),
-> +			    mic_selection_names),
->  };
-
-Don't create arrays of enums, declare individual varaibles and reference
-them...
-
-> +	SOC_ENUM_EXT("Mic Selection", harmony_enum[0],
-> +		     harmony_get_mic_selection, harmony_set_mic_selection),
-
-...as it makes the references to them much easier to follow and less
-error prone.
+By the way, this logic for reporting the buttons separately to the
+detection of the headset/headphone status is something that should be
+pulled out into generic code as the same mechanism is going to be needed
+by anything using voltage based detection.
