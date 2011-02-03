@@ -1,36 +1,27 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: ANNOUNCE: NVIDIA HDMI audio documentation
-Date: Thu, 3 Feb 2011 14:37:37 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0310C8EA6D@HQMAIL01.nvidia.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH 4/6] ASoC: Tegra: Harmony: Implement mic detection
+Date: Thu, 3 Feb 2011 22:40:11 +0000
+Message-ID: <20110203224011.GC4586@opensource.wolfsonmicro.com>
+References: <1296766578-13988-1-git-send-email-swarren@nvidia.com>
+ <1296766578-13988-4-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9E847103867
-	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2011 23:37:40 +0100 (CET)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1296766578-13988-4-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-I have written a document re: how to understand and trouble-shoot issues
-with audio-over-HDMI on NVIDIA GPUs. It's available at:
+On Thu, Feb 03, 2011 at 01:56:16PM -0700, Stephen Warren wrote:
 
-ftp://download.nvidia.com/XFree86/gpu-hdmi-audio-document/gpu-hdmi-audio.html
+> * Remove Mic Bias from DAPM route map, so that Mic Bias isn't disable
+>   when capture is stopped, thus preventing further mic detection from
+>   operating.
 
-The intent is to provide all the support information I've given various
-people on support forums in a centralized place.
-
-Hope this helps!
-
--- 
-nvpublic
+You should be using snd_soc_dapm_force_enable_pin() to do this.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-tegra" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
