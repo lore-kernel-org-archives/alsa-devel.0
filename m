@@ -1,37 +1,54 @@
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: RE: [PATCH 1/6] ASoC: Tegra: Harmony: Add headphone jack detection
-Date: Thu, 3 Feb 2011 15:25:04 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0310C8EA93@HQMAIL01.nvidia.com>
-References: <1296766578-13988-1-git-send-email-swarren@nvidia.com>
- <20110203223530.GA4586@opensource.wolfsonmicro.com>
+From: Robin Neatherway <neatherway@gmail.com>
+Subject: Re: Jack sense fails on Fujitsu p7120
+Date: Thu, 3 Feb 2011 23:49:55 +0000
+Message-ID: <AANLkTimfN_d+BoB-NLtVuYTnMuKnF7N+Bj7fqi+3mxOJ@mail.gmail.com>
+References: <AANLkTimGPyno7Wd3TfO7dhZe9e4a5QcXLS8Upa1Mq7q_@mail.gmail.com>
+	<AANLkTimb+yqOhWP1Rc78F9pc+j6VEGp7v0SYvGi7mGrb@mail.gmail.com>
+	<AANLkTim2ch5-QHoh67SuKwMmTMQL=HM6VG1iVCxxoo9+@mail.gmail.com>
+	<AANLkTimszyfVj8pbt4jujQ3o96OqVHKb-bb7o8GXG5pU@mail.gmail.com>
+	<AANLkTi=hFT5Sono3Sehq2WRZZcgEULs2jwwm-ZTDEb0R@mail.gmail.com>
+	<AANLkTi=xPwCS0AH1jzGx9UB5=fSLNGMJa-J6tyFgjSaG@mail.gmail.com>
+	<AANLkTi=u8QCzVRUjQVJVfPqOhy8wsA5P7bsFPP2t9w9Z@mail.gmail.com>
+	<AANLkTimt3U7Dxs5ufTqJ1Qd5uCNcLs_Lexcp5B9MP6E1@mail.gmail.com>
+	<s5hmxme5sue.wl%tiwai@suse.de>
+	<AANLkTi=xW-_Myvi279yJEySDDRsktrMkVpFyQhu0mu0w@mail.gmail.com>
+	<s5hlj1xy3ph.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20110203223530.GA4586-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Content-Language: en-US
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: "lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org" <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 05B61103AD5
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 00:50:16 +0100 (CET)
+Received: by vws20 with SMTP id 20so1091496vws.38
+	for <alsa-devel@alsa-project.org>; Thu, 03 Feb 2011 15:50:15 -0800 (PST)
+In-Reply-To: <s5hlj1xy3ph.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote at Thursday, February 03, 2011 3:36 PM:
-> On Thu, Feb 03, 2011 at 01:56:13PM -0700, Stephen Warren wrote:
-> 
-> > +static struct snd_soc_jack harmony_hp_jack;
-> > +
-> 
-> Since you've changed to using a platform device you should really be
-> dynamically allocating this I guess.  But this isn't actually a
-> practical problem so not worth caring about.
+> if not, you will need to find any alc269 model which create "Headphone
+> Playback Volume" at node 0x8 and "Speaker Playback volume" at node 0x09
 
-Uggh. The code may as well be consistent. I'll fix this up and resubmit
-if you haven't already applied it.
+With model=3Dauto, these appear at the correct nodes, but I no longer
+get any sound over the speakers. How can I control where these appear,
+or add an EAPD pin to try and reenable the speakers?
 
--- 
-nvpublic
+> Others are no pin widgets. =A0See HD-audio specification for more details.
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-tegra" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+OK, I've found "7.3.3.31 Configuration Default" in the spec which
+describes the meaning of the pin config register. From the discussion
+so far I think I need to change node 0x1B to be a jack sense pin. I
+must misunderstand though because a) Configuration Default has nothing
+to do with whether it is a jack sense pin and b) 0x1B is not a pin
+widget anyway.
