@@ -1,14 +1,15 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH - hdspmixer 4/4] hdspmixer: Break overlong line
-	and don't plenken.
-Date: Thu,  3 Feb 2011 22:43:37 +0100
-Message-ID: <1296769417-1320-5-git-send-email-adi@drcomp.erfurt.thur.de>
-References: <1296769417-1320-1-git-send-email-adi@drcomp.erfurt.thur.de>
+From: Alexander Sverdlin <subaparts@yandex.ru>
+Subject: [PATCH] EDB93xx: Add support for CS4271 SPI-connected
+	CODEC
+Date: Fri, 04 Feb 2011 01:01:06 +0300
+Message-ID: <1296770466.14577.8.camel@r60e>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1296769417-1320-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Received: from forward5.mail.yandex.net (forward5.mail.yandex.net
+	[77.88.46.21]) by alsa0.perex.cz (Postfix) with ESMTP id A1BBC10385F
+	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2011 23:01:15 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,85 +19,133 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
+To: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dimitris Papastamos <dp@opens>
+Cc: H Hartley Sweeten <hsweeten@visionengravers.com>, Lennert Buytenhek <buytenh@wantstofly.org>
 List-Id: alsa-devel@alsa-project.org
 
-Pure code beautification, just in case somebody ever needs to touch this
-again.
+From: Alexander Sverdlin <subaparts@yandex.ru>
 
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Add support for CS4271 SPI-connected CODEC to EDB93xx
+        
+Signed-off-by: Alexander Sverdlin <subaparts@yandex.ru>
+---
+ arch/arm/mach-ep93xx/edb93xx.c |   85 ++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 85 insertions(+), 0 deletions(-)
 
-diff --git a/hdspmixer/src/hdspmixer.cxx b/hdspmixer/src/hdspmixer.cxx
-index 6d85062..866afda 100644
---- a/hdspmixer/src/hdspmixer.cxx
-+++ b/hdspmixer/src/hdspmixer.cxx
-@@ -44,7 +44,7 @@ int main(int argc, char **argv)
-     printf("\nHDSPMixer %s - Copyright (C) 2003 Thomas Charbonnel <thomas@undata.org>\n", VERSION);
-     printf("This program comes with ABSOLUTELY NO WARRANTY\n");
-     printf("HDSPMixer is free software, see the file COPYING for details\n\n");
--    printf("Looking for RME cards :\n");
-+    printf("Looking for RME cards:\n");
+diff --git a/arch/arm/mach-ep93xx/edb93xx.c b/arch/arm/mach-ep93xx/edb93xx.c
+index 3f37567..c1e73ee 100644
+--- a/arch/arm/mach-ep93xx/edb93xx.c
++++ b/arch/arm/mach-ep93xx/edb93xx.c
+@@ -30,13 +30,17 @@
+ #include <linux/gpio.h>
+ #include <linux/i2c.h>
+ #include <linux/i2c-gpio.h>
++#include <linux/spi/spi.h>
  
-     while (snd_card_next(&card) >= 0) {
-         if (card < 0) {
-@@ -52,37 +52,37 @@ int main(int argc, char **argv)
-         }
+ #include <mach/hardware.h>
+ #include <mach/fb.h>
++#include <mach/ep93xx_spi.h>
  
-         snd_card_get_longname(card, &name);
--        printf("Card %d : %s\n", card, name);
-+        printf("Card %d: %s\n", card, name);
-         if (!strncmp(name, "RME Hammerfall DSP + Multiface", 30)) {
--            printf("Multiface found !\n");
-+            printf("Multiface found!\n");
-             hdsp_cards[cards] = new HDSPMixerCard(Multiface, card);
-             cards++;
-         } else if (!strncmp(name, "RME Hammerfall DSP + Digiface", 29)) {
--            printf("Digiface found !\n");
-+            printf("Digiface found!\n");
-             hdsp_cards[cards] = new HDSPMixerCard(Digiface, card);
-             cards++;
-         } else if (!strncmp(name, "RME Hammerfall HDSP 9652", 24)) {
--            printf("HDSP 9652 found !\n");
-+            printf("HDSP 9652 found!\n");
-             hdsp_cards[cards] = new HDSPMixerCard(H9652, card);
-             cards++;
-         } else if (!strncmp(name, "RME Hammerfall HDSP 9632", 24)) {
--            printf("HDSP 9632 found !\n");
-+            printf("HDSP 9632 found!\n");
-             hdsp_cards[cards] = new HDSPMixerCard(H9632, card);
-             cards++;
-         } else if (!strncmp(name, "RME MADIface", 12)) {
--            printf("RME MADIface found !\n");
-+            printf("RME MADIface found!\n");
-             hdsp_cards[cards] = new HDSPMixerCard(HDSPeMADI, card);
-             cards++;
-         } else if (!strncmp(name, "RME MADI", 8)) {
--            printf("RME MADI found !\n");
-+            printf("RME MADI found!\n");
-             hdsp_cards[cards] = new HDSPMixerCard(HDSPeMADI, card);
-             cards++;
-         } else if (!strncmp(name, "RME RayDAT", 10)) {
--            printf("RME RayDAT found !\n");
-+            printf("RME RayDAT found!\n");
-             hdsp_cards[cards] = new HDSPMixerCard(HDSPeRayDAT, card);
-             cards++;
-         } else if (!strncmp(name, "RME AIO", 7)) {
--            printf("RME AIO found !\n");
-+            printf("RME AIO found!\n");
-             hdsp_cards[cards] = new HDSPMixerCard(HDSPeAIO, card);
-             cards++;
-         } else if (!strncmp(name, "RME Hammerfall DSP", 18)) {
-@@ -101,7 +101,9 @@ int main(int argc, char **argv)
-     }
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
  
-     printf("%d RME cards %s found.\n", cards, (cards > 1) ? "cards" : "card");
--    window = new HDSPMixerWindow(0, 0, hdsp_cards[0]->window_width, hdsp_cards[0]->window_height, "HDSPMixer", hdsp_cards[0], hdsp_cards[1], hdsp_cards[2]);
-+    window = new HDSPMixerWindow(0, 0, hdsp_cards[0]->window_width,
-+            hdsp_cards[0]->window_height, "HDSPMixer", hdsp_cards[0],
-+            hdsp_cards[1], hdsp_cards[2]);
-     Fl::visual(FL_DOUBLE|FL_INDEX);
-     window->show(argc, argv);
++#include <sound/cs4271.h>
++
  
--- 
-1.7.2.3
+ static void __init edb93xx_register_flash(void)
+ {
+@@ -94,6 +98,85 @@ static void __init edb93xx_register_i2c(void)
+ 
+ 
+ /*************************************************************************
++ * EDB93xx SPI peripheral handling
++ *************************************************************************/
++static struct cs4271_platform_data edb93xx_cs4271_data = {
++	.gpio_nreset	= -EINVAL,	/* filled in later */
++};
++
++static int edb93xx_cs4271_hw_setup(struct spi_device *spi)
++{
++	return gpio_request_one(EP93XX_GPIO_LINE_EGPIO6,
++				GPIOF_OUT_INIT_HIGH, spi->modalias);
++}
++
++static void edb93xx_cs4271_hw_cleanup(struct spi_device *spi)
++{
++	gpio_free(EP93XX_GPIO_LINE_EGPIO6);
++}
++
++static void edb93xx_cs4271_hw_cs_control(struct spi_device *spi, int value)
++{
++	gpio_set_value(EP93XX_GPIO_LINE_EGPIO6, value);
++}
++
++static struct ep93xx_spi_chip_ops edb93xx_cs4271_hw = {
++	.setup		= edb93xx_cs4271_hw_setup,
++	.cleanup	= edb93xx_cs4271_hw_cleanup,
++	.cs_control	= edb93xx_cs4271_hw_cs_control,
++};
++
++static struct spi_board_info edb93xx_spi_board_info[] __initdata = {
++	{
++		.modalias		= "cs4271",
++		.platform_data		= &edb93xx_cs4271_data,
++		.controller_data	= &edb93xx_cs4271_hw,
++		.max_speed_hz		= 6000000,
++		.bus_num		= 0,
++		.chip_select		= 0,
++		.mode			= SPI_MODE_3,
++	},
++};
++
++static struct ep93xx_spi_info edb93xx_spi_info __initdata = {
++	.num_chipselect	= ARRAY_SIZE(edb93xx_spi_board_info),
++};
++
++static void __init edb93xx_register_spi(void)
++{
++	if (machine_is_edb9301() || machine_is_edb9302())
++		edb93xx_cs4271_data.gpio_nreset = EP93XX_GPIO_LINE_EGPIO1;
++	else if (machine_is_edb9302a() || machine_is_edb9307a())
++		edb93xx_cs4271_data.gpio_nreset = EP93XX_GPIO_LINE_H(2);
++	else if (machine_is_edb9315a())
++		edb93xx_cs4271_data.gpio_nreset = EP93XX_GPIO_LINE_EGPIO14;
++	else
++		return;
++
++	ep93xx_register_spi(&edb93xx_spi_info, edb93xx_spi_board_info,
++			    ARRAY_SIZE(edb93xx_spi_board_info));
++}
++
++
++/*************************************************************************
++ * EDB93xx I2S
++ *************************************************************************/
++static int __init edb93xx_has_audio(void)
++{
++	return (machine_is_edb9301() || machine_is_edb9302() ||
++		machine_is_edb9302a() || machine_is_edb9307a() ||
++		machine_is_edb9315a());
++}
++
++static void __init edb93xx_register_i2s(void)
++{
++	if (edb93xx_has_audio()) {
++		ep93xx_register_i2s();
++	}
++}
++
++
++/*************************************************************************
+  * EDB93xx pwm
+  *************************************************************************/
+ static void __init edb93xx_register_pwm(void)
+@@ -149,6 +232,8 @@ static void __init edb93xx_init_machine(void)
+ 	edb93xx_register_flash();
+ 	ep93xx_register_eth(&edb93xx_eth_data, 1);
+ 	edb93xx_register_i2c();
++	edb93xx_register_spi();
++	edb93xx_register_i2s();
+ 	edb93xx_register_pwm();
+ 	edb93xx_register_fb();
+ }
