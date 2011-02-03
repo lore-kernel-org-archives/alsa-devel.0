@@ -1,34 +1,66 @@
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-Subject: RE: [PATCH] ASoC: CS4271: Move Chip Select control out of the CODEC
-	code.
-Date: Wed, 2 Feb 2011 18:18:06 -0600
-Message-ID: <0D753D10438DA54287A00B027084269764CEFD504B@AUSP01VMBX24.collaborationhost.net>
-References: <1296691905.1504.47.camel@r60e>
+From: Samuel Ortiz <sameo@linux.intel.com>
+Subject: Re: WL1273 FM Radio driver...
+Date: Thu, 3 Feb 2011 01:37:49 +0100
+Message-ID: <20110203003748.GH25448@sortiz-mobl>
+References: <1295363063.25951.67.camel@masi.mnp.nokia.com>
+ <20110130232358.GD2565@sortiz-mobl>
+ <4D4979A5.1020000@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1296691905.1504.47.camel@r60e>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Alexander Sverdlin <subaparts@yandex.ru>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Lennert Buytenhek <buytenh@wantstofly.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-media-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <4D4979A5.1020000@redhat.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab@redhat.com>
+Cc: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, hverkuil@xs4all.nl, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday, February 02, 2011 5:12 PM, Alexander Sverdlin wrote:
->
-> Move Chip Select control out of the CODEC code for CS4271.
->        
-> Signed-off-by: Alexander Sverdlin <subaparts@yandex.ru>
+Hi Mauro,
 
-FWIW...
+On Wed, Feb 02, 2011 at 01:35:01PM -0200, Mauro Carvalho Chehab wrote:
+> Em 30-01-2011 21:23, Samuel Ortiz escreveu:
+> > Hi Matti,
+> >=20
+> > On Tue, Jan 18, 2011 at 05:04:23PM +0200, Matti J. Aaltonen wrote:
+> >> Hello
+> >>
+> >> I have been trying to get the WL1273 FM radio driver into the kern=
+el for
+> >> some time. It has been kind of difficult, one of the reasons is th=
+at I
+> >> didn't realize I should have tried to involve all relevant maintai=
+ners
+> >> to the discussion form the beginning (AsoC, Media and MFD). At Mar=
+k's
+> >> suggestion I'm trying to reopen the discussion now.
+> >>
+> >> The driver consists of an MFD core and two child drivers (the audi=
+o
+> >> codec and the V4L2 driver). And the question is mainly about the r=
+ole of
+> >> the MFD driver: the original design had the IO functions in the co=
+re.
+> >> Currently the core is practically empty mainly because Mauro very
+> >> strongly wanted to have =E2=80=9Ceverything=E2=80=9D in the V4L2 d=
+river.
+> > What was Mauro main concerns with having the IO part in the core ?
+> > A lot of MFD drivers are going that path already.
+>=20
+> My concerns is that the V4L2-specific part of the code should be at d=
+rivers/media.
+> I prefer that the specific MFD I/O part to be at drivers/mfd, just li=
+ke
+> the other drivers.
+Agreed, but it seems that's not the case currently. Would you be ok wit=
+h Matti
+refactoring those 2 drivers a bit so that the actual core I/O parts sho=
+uld be
+handled by the MFD driver ?
 
-Reviewed-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+Cheers,
+Samuel.
+
+--=20
+Intel Open Source Technology Centre
+http://oss.intel.com/
