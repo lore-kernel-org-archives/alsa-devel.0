@@ -1,65 +1,44 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH v8 05/12] media: Entity use count
-Date: Fri, 4 Feb 2011 14:19:19 +0100
-Message-ID: <201102041419.19916.hverkuil@xs4all.nl>
-References: <1296131437-29954-1-git-send-email-laurent.pinchart@ideasonboard.com> <201102041122.03886.hverkuil@xs4all.nl> <4D4BF23A.1050800@maxwell.research.nokia.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [Alsa-devel] how to cross compile the alsa util?
+Date: Fri, 04 Feb 2011 14:22:52 +0100
+Message-ID: <4D4BFDAC.8070105@ladisch.de>
+References: <4D4BF986.8030603@gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4D4BF23A.1050800@maxwell.research.nokia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, clemens@ladisch.de
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 44F50103B0C
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 14:22:49 +0100 (CET)
+In-Reply-To: <4D4BF986.8030603@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Leonid <leonopulos@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday, February 04, 2011 13:34:02 Sakari Ailus wrote:
-> Hi,
-> 
-> And many thanks for the comments!
-> 
-> Hans Verkuil wrote:
+Leonid wrote:
+> checking for ncursesw5-config... yes
+> checking for curses library... ncursesw
+> checking for curses header name...<ncurses.h>
+> checking for curses compiler flags... -I/usr/include/ncursesw
 > ...
-> >> diff --git a/include/media/media-entity.h b/include/media/media-entity.h
-> >> index b82f824..114541a 100644
-> >> --- a/include/media/media-entity.h
-> >> +++ b/include/media/media-entity.h
-> >> @@ -81,6 +81,8 @@ struct media_entity {
-> >>  	struct media_pad *pads;		/* Pads array (num_pads elements) */
-> >>  	struct media_link *links;	/* Links array (max_links elements)*/
-> >>  
-> >> +	int use_count;			/* Use count for the entity. */
-> > 
-> > Isn't unsigned better?
-> 
-> Could be. The result, though, will be slightly more difficult checking
-> for bad use count --- which always is a driver bug.
-> 
-> me->use_count += change;
-> WARN_ON(me->use_count < 0);
-> 
-> we must do something like this:
-> 
-> if (change < 0)
-> 	WARN_ON(me->use_count < (unsigned)-change);
-> me->use_count += change;
-> 
-> I'd perhaps also go with unsigned int; the choice for signed was made
-> mainly since the above check and with signed int the check was more trivial.
+> checking for panel.h... no
+> configure: error: required curses helper header not found
 
-I saw this WARN_ON as well. I think there is a good reason for that WARN_ON,
-but I think a comment in the header explaining why it is an int will be
-useful. If I trip over it, then others will as well :-)
+Alsamixer also requires the panel and menu libraries.  These are part
+of ncurses; check whether they are included in your ncurses package, or
+maybe available as separate -dev packages.
+
+You could also disable alsamixer.
+
 
 Regards,
-
-	Hans
-
-> 
-> Regards,
-> 
-> 
-
--- 
-Hans Verkuil - video4linux developer - sponsored by Cisco
+Clemens
