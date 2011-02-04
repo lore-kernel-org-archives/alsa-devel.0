@@ -1,80 +1,53 @@
-From: "Cousson, Benoit" <b-cousson@ti.com>
-Subject: Re: [PATCH v2 01/13] OMAP: hwmod: Add member 'name' to omap_hwmod_addr_space
- struct
-Date: Fri, 4 Feb 2011 21:21:48 +0100
-Message-ID: <4D4C5FDC.7050008@ti.com>
-References: <1296485437-12806-1-git-send-email-kishon@ti.com>	<1296485437-12806-2-git-send-email-kishon@ti.com> <8762szpor3.fsf@ti.com>
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: RE: [PATCH 1/6] ASoC: Tegra: Harmony: Add headphone jack detection
+Date: Fri, 4 Feb 2011 12:32:14 -0800
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0310F5FB00@HQMAIL01.nvidia.com>
+References: <1296766578-13988-1-git-send-email-swarren@nvidia.com>
+ <20110203223530.GA4586@opensource.wolfsonmicro.com>
+ <74CDBE0F657A3D45AFBB94109FB122FF0310C8EA93@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <8762szpor3.fsf@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Hilman, Kevin" <khilman@ti.com>
-Cc: "ABRAHAM, KISHON VIJAY" <kishon@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "paul@pwsan.com" <paul@pwsan.com>, "Varadarajan, Charulatha" <charu@ti.com>, "Datta, Shubhrajyoti" <shubhrajyoti@ti.com>, "Basak, Partha" <p-basak2@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0310C8EA93-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
+Content-Language: en-US
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: "lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org" <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 2/4/2011 8:45 PM, Hilman, Kevin wrote:
-> Kishon Vijay Abraham I<kishon@ti.com>  writes:
->
->> Adds a structure member 'name' to 'omap_hwmod_addr_space' structure.
->> The drivers can use platform_get_resource_byname() to get resource of
->> type 'IORESOURCE_MEM' by name so that it need not rely on the order to get
->> the proper resource.
->>
->> Signed-off-by: Kishon Vijay Abraham I<kishon@ti.com>
->> Signed-off-by: Benoit Cousson<b-cousson@ti.com>
->> ---
->>   arch/arm/mach-omap2/omap_hwmod.c             |    1 +
->>   arch/arm/plat-omap/include/plat/omap_hwmod.h |    4 +++-
->>   2 files changed, 4 insertions(+), 1 deletions(-)
->>
->> diff --git a/arch/arm/mach-omap2/omap_hwmod.c b/arch/arm/mach-omap2/omap_hwmod.c
->> index 709543a..7bd4900 100644
->> --- a/arch/arm/mach-omap2/omap_hwmod.c
->> +++ b/arch/arm/mach-omap2/omap_hwmod.c
->> @@ -1898,6 +1898,7 @@ int omap_hwmod_fill_resources(struct omap_hwmod *oh, struct resource *res)
->>   		os = oh->slaves[i];
->>
->>   		for (j = 0; j<  os->addr_cnt; j++) {
->> +			(res + r)->name = (os->addr + j)->name;
->>   			(res + r)->start = (os->addr + j)->pa_start;
->>   			(res + r)->end = (os->addr + j)->pa_end;
->>   			(res + r)->flags = IORESOURCE_MEM;
->> diff --git a/arch/arm/plat-omap/include/plat/omap_hwmod.h b/arch/arm/plat-omap/include/plat/omap_hwmod.h
->> index 76f0274..85899a7 100644
->> --- a/arch/arm/plat-omap/include/plat/omap_hwmod.h
->> +++ b/arch/arm/plat-omap/include/plat/omap_hwmod.h
->> @@ -178,7 +178,8 @@ struct omap_hwmod_omap2_firewall {
->>   #define ADDR_TYPE_RT		(1<<  1)
->>
->>   /**
->> - * struct omap_hwmod_addr_space - MPU address space handled by the hwmod
->> + * struct omap_hwmod_addr_space - address space handled by the hwmod
->
-> Any reason you modified the comment here?
+Stephen Warren wrote at Thursday, February 03, 2011 4:25 PM:
+> 
+> Mark Brown wrote at Thursday, February 03, 2011 3:36 PM:
+> > On Thu, Feb 03, 2011 at 01:56:13PM -0700, Stephen Warren wrote:
+> >
+> > > +static struct snd_soc_jack harmony_hp_jack;
+> > > +
+> >
+> > Since you've changed to using a platform device you should really be
+> > dynamically allocating this I guess.  But this isn't actually a
+> > practical problem so not worth caring about.
+> 
+> Uggh. The code may as well be consistent. I'll fix this up and resubmit
+> if you haven't already applied it.
 
-The idea of that patch is to allow hwmod to provide address space 
-accessible from SDMA (though L3). Hence the suppression of the MPU.
-In the future, we might even be able to provide the address for the DSP 
-or the IPU viewpoint
+Hmm. Looking at this a bit more, solving it fully is kinda nasty; I'd have
+to move not only that jack definition, but also all the pins and gpios into
+struct tegra_harmony, since snd_soc_jack_add_{pins,gpios} modify all of
+those structures. But, there would still have to be static const "template"
+copies of those data structures to initialize the copies in struct
+tegra_harmony.
 
-Regards,
-Benoit
+The same thing then applies to some of the subsequent changes, for the
+mic jacks etc.
 
->
-> Kevin
->
->> + * @name: name of the address space
->>    * @pa_start: starting physical address
->>    * @pa_end: ending physical address
->>    * @flags: (see omap_hwmod_addr_space.flags macros above)
->> @@ -187,6 +188,7 @@ struct omap_hwmod_omap2_firewall {
->>    * structure.  GPMC is one example.
->>    */
->>   struct omap_hwmod_addr_space {
->> +	const char *name;
->>   	u32 pa_start;
->>   	u32 pa_end;
->>   	u8 flags;
+That seems like a lot of overhead, both code-wise, and runtime space-wise,
+to solve a problem that as you mention isn't a practical concern.
 
+-- 
+nvpublic
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-tegra" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
