@@ -1,20 +1,31 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Codecs without auto-parser
-Date: Fri, 04 Feb 2011 10:37:41 +0100
-Message-ID: <4D4BC8E5.8020704@canonical.com>
-References: <4D413CBE.9080409@canonical.com>
-	<s5hd3nhcv7u.wl%tiwai@suse.de>	<4D42ADC2.7090001@canonical.com>
-	<s5h1v3xw7o7.wl%tiwai@suse.de>	<4D47B835.7090502@canonical.com>
-	<s5hvd13xwv9.wl%tiwai@suse.de>	<4D497545.4000605@canonical.com>
-	<s5hvd1145s5.wl%tiwai@suse.de>
+From: Robin Neatherway <neatherway@gmail.com>
+Subject: Re: Jack sense fails on Fujitsu p7120
+Date: Fri, 4 Feb 2011 10:17:07 +0000
+Message-ID: <AANLkTinaE_N=aqMXRLgXMg_O-jsGXz2ea3xFDh74QK1G@mail.gmail.com>
+References: <AANLkTimGPyno7Wd3TfO7dhZe9e4a5QcXLS8Upa1Mq7q_@mail.gmail.com>
+	<AANLkTimb+yqOhWP1Rc78F9pc+j6VEGp7v0SYvGi7mGrb@mail.gmail.com>
+	<AANLkTim2ch5-QHoh67SuKwMmTMQL=HM6VG1iVCxxoo9+@mail.gmail.com>
+	<AANLkTimszyfVj8pbt4jujQ3o96OqVHKb-bb7o8GXG5pU@mail.gmail.com>
+	<AANLkTi=hFT5Sono3Sehq2WRZZcgEULs2jwwm-ZTDEb0R@mail.gmail.com>
+	<AANLkTi=xPwCS0AH1jzGx9UB5=fSLNGMJa-J6tyFgjSaG@mail.gmail.com>
+	<AANLkTi=u8QCzVRUjQVJVfPqOhy8wsA5P7bsFPP2t9w9Z@mail.gmail.com>
+	<AANLkTimt3U7Dxs5ufTqJ1Qd5uCNcLs_Lexcp5B9MP6E1@mail.gmail.com>
+	<s5hmxme5sue.wl%tiwai@suse.de>
+	<AANLkTi=xW-_Myvi279yJEySDDRsktrMkVpFyQhu0mu0w@mail.gmail.com>
+	<s5hlj1xy3ph.wl%tiwai@suse.de>
+	<AANLkTimfN_d+BoB-NLtVuYTnMuKnF7N+Bj7fqi+3mxOJ@mail.gmail.com>
+	<s5hy65wwcby.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 62552103922
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 10:37:35 +0100 (CET)
-In-Reply-To: <s5hvd1145s5.wl%tiwai@suse.de>
+Received: from mail-vx0-f179.google.com (mail-vx0-f179.google.com
+	[209.85.220.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5F7EA103AF6
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 11:17:29 +0100 (CET)
+Received: by vxb40 with SMTP id 40so626441vxb.38
+	for <alsa-devel@alsa-project.org>; Fri, 04 Feb 2011 02:17:27 -0800 (PST)
+In-Reply-To: <s5hy65wwcby.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,147 +36,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 2011-02-03 14:16, Takashi Iwai wrote:
-> At Wed, 02 Feb 2011 16:16:21 +0100,
-> David Henningsson wrote:
->>
->> On 2011-02-01 22:34, Takashi Iwai wrote:
->>> At Tue, 01 Feb 2011 08:37:25 +0100,
->>> David Henningsson wrote:
->>>>
->>>> On 2011-01-28 13:10, Takashi Iwai wrote:
->>>>> At Fri, 28 Jan 2011 12:51:30 +0100,
->>>>> David Henningsson wrote:
->>>>>>
->>>>>> On 2011-01-28 09:01, Takashi Iwai wrote:
->>>>>>> And I hope that we should go further a bit for now -- more clean up of
->>>>>>> the cxt5066 code either checking BIOS pins or hp/mic/spk pre-defined
->>>>>>> pins.  Currently, the code is fairly messy (partly because of olpc
->>>>>>> support), and now is a good chance to improve it a bit more.
->>>>>>
->>>>>> Maybe so. I'm not sure I can commit to doing that work right now, as I
->>>>>> have other work commitments waiting for me to take care of them.
->>>>>
->>>>> OK.
->>>>
->>>> Hmm. I got a few things cleared up yesterday, and so I might have some
->>>> time to actually do this.
->>>
->>> Great.
->>>
->>>> However, it also seems like I have to fix an
->>>> AD1984A machine, and that driver is in equally bad shape (as in: no
->>>> auto-parser, just a list of models).
->>>
->>> Yeah, I know...
->>>
->>>> I could add another model, but
->>>> suppose I'd do this the right way, how would I do it?
->>>>
->>>> I guess there are three options to start off with:
->>>>
->>>> 1) ad1988 seems to have an auto-parser. There are a lot of hardcoded
->>>> nids in there, but I guess I could copy-and-paste some into a new
->>>> auto-parser for ad1984a.
->>>
->>> Well... AD1988 and AD1984A aren't so similar, IIRC.
->>> AD1984A is more straightforward hardware implementation while AD1988
->>> can have more connections.  Also AD1988 auto-parser isn't in the best
->>> form in comparison with other codecs.
->>>
->>> That being said, if AD1984A can fit with AD1988's auto-parser (i.e.
->>> my memory was too vague), it's fine.  We can adapt it.
->>>
->>> If this is hard, one more quirk model won't be too bad for AD1984A
->>> since this is a pretty simple codec, and there won't be so more devices
->>> with this old chip.
->>
->> Ok. I had one more look at AD1988's auto-parser and I don't think it's
->> good to start off that one.
->>
->>>> 2) It seems to me like the most competent candidate for auto-parser
->>>> currently is the cx_auto stuff - compared to other auto-parsers the
->>>> hardcoded nids are fewer. Perhaps this one could be extended to also do
->>>> auto-parsing for codecs from other vendors? Or at least some convenience
->>>> functions moved to hda_codec.c in order to remove duplication between
->>>> vendors?
->>>
->>> Yes, I can loudly tell people "I have a dream, unify all codec parsers!" :)
->>> But, I'm afraid that a big hammer doesn't work.  The topology is fairly
->>> different between codecs, and resolving all makes the parser complex.
->>> So, some hints would be needed to simplify the logic, after all.
->>>
->>>> 3) There is also the generic parser. It seems to be the one most capable
->>>> of handling randomly complex graphs, but is lacking automute/jack-detect
->>>> support, and maybe other functions as well (?).
->>>
->>> The generic parser is the very first parser, and it never worked rightly.
->>> This should be really replaced with a more clever one.
->>
->> Hrmm...am I the only one thinking that your answer to 2) and 3) are in
->> direct contradiction? :-)
->
-> The reality is bitter, you know :)
->
->> I'm looking at fill_cx_auto_dacs. That doesn't look like Conexant
->> specific stuff at all. cx_auto_hp_automute looks quite generic as well,
->> except for a pointer deref in the beginning.
->> cx_auto_build_output_controls could be merged with
->> xxxx_create_multi_out_ctls present in the Realtek and Analog parsers.
->> And so on.
->>
->> Shouldn't we move and rename fill_cx_auto_dacs to hda_codec.c and use it
->> for all codecs, instead of hardcoding dac nids everywhere? At least in
->> general? (There might be exceptions, where there is a dac you don't want
->> to use.)
->
-> Well, Conexant auto-parser is a fairly recent one I wrote, so it's
-> more or less generic.  But there are still a few glitches that
-> Conexant parser doesn't handle properly, IIRC.
->
-> We can give it a try with different codecs using hda-emu to see what
-> doesn't fit.
->
->> Anyway, you wanted some work done to Conexant 5066. Could you clarify
->> that a little? You likely want to call snd_hda_parse_pin_def_config -
->> but are you expecting yet another auto-parser after that? Or just to
->> choose model based on the result? And should we remove all the model
->> quirks (except possibly for OLPC) afterwards?
->
-> My initial idea was to adapt the current Conexant parser for 5066.
-> If it doesn't work by some reason, adjust the code, then replaces the
-> model quirks with the pin-config presets.
+> The auto codec parser reads the default config values of all pin
+> widgets, and enables the jack sense when a pin is a HP jack. =A0That's
+> why it's important to figure out which pin widget corresponds to which
+> actual I/O.
 
-Ok. While waiting for your answer I continued thinking and writing a 
-little code - here's how I would see a generic version of auto_parse_output:
+Right. With "auto", the jack sense might well be working then, but I
+can't tell because there is no output over the speakers. Unless there
+is another way of telling?
 
-1) Make a breadth-first-search, starting at each (output) pin, to find 
-what DACs are reachable from each pin.
+I'm pretty confused right now. Raymond suggested that the important
+thing is to ensure that the nodes 0x8 and 0x9 are HP and Speaker
+volume respectively, while you are suggesting that I should alter the
+pin configuration, which only affects pin widgets and these are only
+from 0xF to 0x19. The pin configuration doesn't seem to contain
+anything to do with jack sense, so I'm not sure what I should change
+there.
 
-2) Start assigning DACs to pins, start off with line-outs (similar to 
-what cx_auto does today). If HP's and Speakers can't have their own 
-DACs, they'll have to share with their line-out counterpart (usually Front).
+How do you normally figure out which pin widget corresponds to which
+I/O? Is it just trial and error?
 
-3) Investigate path from pin to DAC and add mute switches as close to 
-the pin:s as possible.
+The ALC260 datasheet (http://realtek.info/pdf/alc260.pdf section 4.1,
+page 4) seems to make it pretty clear that the jack sense is at node
+0x1b, and the block diagram indicates that it is a pin, so why is it
+not showing up as a pin widget?
 
-4) Add volume controls on all capable widgets that are a part of the 
-path. For 3 and 4 the naming must be decided based on what paths they 
-are a part of.
-
-(On top of that, add a quirk system that works with snd_hda_codec_read 
-so that any command can be overridden to returned a fixed value instead. 
-That quirk system could then be used to not only override pin configs 
-but also remove paths so the above algorithm does not discover them, and 
-other things.)
-
-What do you think? Maybe I should give up these thoughts for now and 
-just go with your suggestion...but then I would still have to fix that 
-model for AD1984a...
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
+Thanks,
+Robin
