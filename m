@@ -1,53 +1,125 @@
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: RE: [PATCH 1/6] ASoC: Tegra: Harmony: Add headphone jack detection
-Date: Fri, 4 Feb 2011 12:32:14 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0310F5FB00@HQMAIL01.nvidia.com>
-References: <1296766578-13988-1-git-send-email-swarren@nvidia.com>
- <20110203223530.GA4586@opensource.wolfsonmicro.com>
- <74CDBE0F657A3D45AFBB94109FB122FF0310C8EA93@HQMAIL01.nvidia.com>
+From: Kevin Hilman <khilman@ti.com>
+Subject: Re: [PATCH v2 00/13] OMAP: McBSP: hwmod adaptation  and runtime conversion
+Date: Fri, 04 Feb 2011 13:42:18 -0800
+Message-ID: <87ei7no4sk.fsf@ti.com>
+References: <1296485437-12806-1-git-send-email-kishon@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0310C8EA93-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
-Content-Language: en-US
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: "lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org" <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1296485437-12806-1-git-send-email-kishon@ti.com> (Kishon Vijay
+	Abraham, I's message of "Mon, 31 Jan 2011 20:20:24 +0530")
+Sender: linux-omap-owner@vger.kernel.org
+To: Kishon Vijay Abraham I <kishon@ti.com>
+Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, paul@pwsan.com, charu@ti.com, shubhrajyoti@ti.com, b-cousson@ti.com, p-basak2@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Stephen Warren wrote at Thursday, February 03, 2011 4:25 PM:
-> 
-> Mark Brown wrote at Thursday, February 03, 2011 3:36 PM:
-> > On Thu, Feb 03, 2011 at 01:56:13PM -0700, Stephen Warren wrote:
-> >
-> > > +static struct snd_soc_jack harmony_hp_jack;
-> > > +
-> >
-> > Since you've changed to using a platform device you should really be
-> > dynamically allocating this I guess.  But this isn't actually a
-> > practical problem so not worth caring about.
-> 
-> Uggh. The code may as well be consistent. I'll fix this up and resubmit
-> if you haven't already applied it.
+Kishon Vijay Abraham I <kishon@ti.com> writes:
 
-Hmm. Looking at this a bit more, solving it fully is kinda nasty; I'd have
-to move not only that jack definition, but also all the pins and gpios into
-struct tegra_harmony, since snd_soc_jack_add_{pins,gpios} modify all of
-those structures. But, there would still have to be static const "template"
-copies of those data structures to initialize the copies in struct
-tegra_harmony.
+> Modify OMAP McBSP driver to use omap hwmod framework and pm runtime  APIs.
+>
+> Created on top of linux OMAP master (linux-omap-2.6 :master)
+> Did digital loopback testing on OMAP4430, OMAP3430 and OMAP2430 SDP boards.
+> Verified that this patch series does not break the OMAP1 build.
 
-The same thing then applies to some of the subsequent changes, for the
-mic jacks etc.
+Can you also do some basic PM testing with audio?  e.g. does audio still
+work after suspend/resume  what about with CPUidle when retention and/or
+off are hit during idle?
 
-That seems like a lot of overhead, both code-wise, and runtime space-wise,
-to solve a problem that as you mention isn't a practical concern.
+Kevin
 
--- 
-nvpublic
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-tegra" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Patch series modifies audio layer and hence would appreciate the help of
+> some audio guy to test this series.
+>
+> Patch series requires the following patch to be present
+> http://permalink.gmane.org/gmane.linux.ports.arm.omap/51132
+> http://permalink.gmane.org/gmane.linux.ports.arm.omap/51133
+> http://permalink.gmane.org/gmane.linux.ports.arm.omap/51134
+>
+> V2:
+> * Added omap_hwmod_lookup() in the callback to omap_hwmod_for_each_by_class()
+>  to obtain hwmod data for sidetone. Previously this nesting of hwmod APIs was
+>  prevented by the use of mutex.
+>
+> * Added a revision member in hwmod database inorder to facilitate the driver
+>  to differentiate between different OMAP.
+>
+> * Created APIs to pass DMA params from McBSP driver to client drivers
+>
+> * Cleaned up sound soc by removing the use of macros to obtain base address
+>  and DMA channel number and instead use APIs exposed by the driver.
+>
+> * Removed macros defined in mcbsp driver for data that is obtained from
+>  hwmod database
+>
+> V1:
+> * McBSP is designed to use multiple hwmods for a single device when the McBSP
+>  device has sidetone feature.
+>
+> * To avoid funcionality break of OMAP1 McBSP in between the series
+>  and to keep the patches readable, implementation was done in two steps:
+>   - First modify mcbsp driver to use platform_get* APIs
+>   - then convert it to use hwmod framework for OMAP2+.
+>
+> * API's like omap_device_noidle() and omap_device_default_idle() is used to
+>  change the SYCONFIG register bits. This change is done to align with the
+>  discussion on [2]
+>
+> * Use '.rev' of omap_hwmod class to identify OMAP3 specific settings
+>
+> * Use *ST_* macros for idlest_idle bit
+>
+> * Incorporate other general review comments provided for hwmod adpatation
+>  of other OMAP driver's (eg., do pdata free after a omap_device_build())
+>
+> * Retain fclk even after pm_runtime adaptation to facilitate switching of
+>  functional clock from one source to another
+>
+> * Add member 'name' to omap_hwmod_addr_space struct so that the driver need
+>  not rely on the order to get the proper resource [3].
+>
+> Discussions related to the first RFC patch can be found at [1]
+>
+> [1]: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg36743.html
+> [2]: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg39615.html
+> [3]: https://patchwork.kernel.org/patch/233211/
+>
+> Benoit Cousson (1):
+>   OMAP4: hwmod data: Add McBSP
+>
+> Charulatha V (3):
+>   OMAP2420: hwmod data: Add McBSP
+>   OMAP2430: hwmod data: Add McBSP
+>   OMAP3: hwmod data: Add McBSP
+>
+> Kishon Vijay Abraham I (9):
+>   OMAP: hwmod: Add member 'name' to omap_hwmod_addr_space struct
+>   OMAP: McBSP: Convert McBSP to platform device model
+>   OMAP3: hwmod: add dev_attr for McBSP sidetone
+>   OMAP2+: McBSP: hwmod adaptation for McBSP
+>   OMAP: McBSP: use omap_device APIs to modify SYSCONFIG
+>   OMAP: McBSP: Add pm runtime support
+>   OMAP: McBSP: APIs to pass DMA params from McBSP driver to client
+>     drivers
+>   ASoC: McBSP: get hw params from McBSP driver
+>   OMAP: hwmod: Removal of macros for data that is obtained from hwmod
+>     database
+>
+>  arch/arm/mach-omap1/mcbsp.c                  |  383 +++++++++++++++----
+>  arch/arm/mach-omap2/mcbsp.c                  |  228 +++---------
+>  arch/arm/mach-omap2/omap_hwmod.c             |    1 +
+>  arch/arm/mach-omap2/omap_hwmod_2420_data.c   |  167 ++++++++
+>  arch/arm/mach-omap2/omap_hwmod_2430_data.c   |  417 ++++++++++++++++++++
+>  arch/arm/mach-omap2/omap_hwmod_3xxx_data.c   |  544 ++++++++++++++++++++++++++
+>  arch/arm/mach-omap2/omap_hwmod_44xx_data.c   |  321 +++++++++++++++
+>  arch/arm/mach-omap2/prcm-common.h            |    4 +
+>  arch/arm/plat-omap/devices.c                 |   10 +-
+>  arch/arm/plat-omap/include/plat/mcbsp.h      |   69 +---
+>  arch/arm/plat-omap/include/plat/omap_hwmod.h |    4 +-
+>  arch/arm/plat-omap/mcbsp.c                   |  207 +++++++---
+>  sound/soc/omap/omap-mcbsp.c                  |  126 +------
+>  13 files changed, 2006 insertions(+), 475 deletions(-)
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
