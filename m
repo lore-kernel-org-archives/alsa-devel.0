@@ -1,29 +1,20 @@
-From: Robin Neatherway <neatherway@gmail.com>
-Subject: Re: Jack sense fails on Fujitsu p7120
-Date: Thu, 3 Feb 2011 23:49:55 +0000
-Message-ID: <AANLkTimfN_d+BoB-NLtVuYTnMuKnF7N+Bj7fqi+3mxOJ@mail.gmail.com>
-References: <AANLkTimGPyno7Wd3TfO7dhZe9e4a5QcXLS8Upa1Mq7q_@mail.gmail.com>
-	<AANLkTimb+yqOhWP1Rc78F9pc+j6VEGp7v0SYvGi7mGrb@mail.gmail.com>
-	<AANLkTim2ch5-QHoh67SuKwMmTMQL=HM6VG1iVCxxoo9+@mail.gmail.com>
-	<AANLkTimszyfVj8pbt4jujQ3o96OqVHKb-bb7o8GXG5pU@mail.gmail.com>
-	<AANLkTi=hFT5Sono3Sehq2WRZZcgEULs2jwwm-ZTDEb0R@mail.gmail.com>
-	<AANLkTi=xPwCS0AH1jzGx9UB5=fSLNGMJa-J6tyFgjSaG@mail.gmail.com>
-	<AANLkTi=u8QCzVRUjQVJVfPqOhy8wsA5P7bsFPP2t9w9Z@mail.gmail.com>
-	<AANLkTimt3U7Dxs5ufTqJ1Qd5uCNcLs_Lexcp5B9MP6E1@mail.gmail.com>
-	<s5hmxme5sue.wl%tiwai@suse.de>
-	<AANLkTi=xW-_Myvi279yJEySDDRsktrMkVpFyQhu0mu0w@mail.gmail.com>
-	<s5hlj1xy3ph.wl%tiwai@suse.de>
+From: VDR User <user.vdr@gmail.com>
+Subject: Re: NVIDIA HDMI surround sound is broken starting with
+	kernel 2.6.36
+Date: Thu, 3 Feb 2011 16:08:49 -0800
+Message-ID: <AANLkTinCXEsiff7NWjepBe_71N8ah_eMCFJcOkj2zZCK@mail.gmail.com>
+References: <AANLkTikFWjahA8TcGzTuWjkvkvg4chA0Q7s-1nXj179e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 05B61103AD5
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 00:50:16 +0100 (CET)
-Received: by vws20 with SMTP id 20so1091496vws.38
-	for <alsa-devel@alsa-project.org>; Thu, 03 Feb 2011 15:50:15 -0800 (PST)
-In-Reply-To: <s5hlj1xy3ph.wl%tiwai@suse.de>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 356A2103A88
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 01:08:51 +0100 (CET)
+Received: by iye19 with SMTP id 19so1717833iye.38
+	for <alsa-devel@alsa-project.org>; Thu, 03 Feb 2011 16:08:50 -0800 (PST)
+In-Reply-To: <AANLkTikFWjahA8TcGzTuWjkvkvg4chA0Q7s-1nXj179e@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,22 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: "mailing list: alsa-dev" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> if not, you will need to find any alc269 model which create "Headphone
-> Playback Volume" at node 0x8 and "Speaker Playback volume" at node 0x09
-
-With model=3Dauto, these appear at the correct nodes, but I no longer
-get any sound over the speakers. How can I control where these appear,
-or add an EAPD pin to try and reenable the speakers?
-
-> Others are no pin widgets. =A0See HD-audio specification for more details.
-
-OK, I've found "7.3.3.31 Configuration Default" in the spec which
-describes the meaning of the pin config register. From the discussion
-so far I think I need to change node 0x1B to be a jack sense pin. I
-must misunderstand though because a) Configuration Default has nothing
-to do with whether it is a jack sense pin and b) 0x1B is not a pin
-widget anyway.
+T24gTW9uLCBKYW4gMzEsIDIwMTEgYXQgOTozOCBBTSwgVkRSIFVzZXIgPHVzZXIudmRyQGdtYWls
+LmNvbT4gd3JvdGU6Cj4gVGhlIGJlaGF2aW9yIGRlc2NyaWJlZCBiZWxvdyBzdGFydGVkIHdpdGgg
+Mi42LjM2IGFuZCBmb2xsb3dzIHRocm91Z2gKPiB1cCB0byB0aGUgbW9zdCByZWNlbnQgc3RhYmxl
+IGtlcm5lbCwgMi42LjM3LiDCoFRoZSBsYXN0IHByb3Blcmx5Cj4gd29ya2luZyBkcml2ZXIgaXMg
+aW4ga2VybmVsIDIuNi4zNS45LiDCoEkgc2hvdWxkIGFsc28gbWVudGlvbiB0aGF0Cj4gd2hpbGUg
+dGhlIHRlc3RzIGJlbG93IHVzZSB0aGUgc3RhdGljX2hkbWlfcGNtIGZsYWcgcmVjZW50bHkgaW50
+cm9kdWNlZAo+IHRvIGFsc2EgZ2l0LCBJIGFsc28gdGVzdGVkIHdpdGggdGhlIGluLWtlcm5lbCBk
+cml2ZXJzIGZvciBlYWNoIHN0YWJsZQo+IGtlcm5lbC4gwqBUaGUgcGFydGljdWxhciBkZXZpY2Ug
+dXNlZCBmb3IgdGVzdGluZyBpcyBhbiBOdmlkaWEgR1QyMjAKPiB2aWRlbyBjYXJkIGNvbm5lY3Rl
+ZCBkaXJlY3RseSB0byBteSByZWNlaXZlciB2aWEgSERNSS4KPgo+IENhbiBzb21lb25lIHBsZWFz
+ZSBsb29rIGludG8gdGhpcz8KPgo+IFRlc3RlZDoKPiBjb2xkIGJvb3QsIGtlcm5lbCAyLjYuMzcs
+IGFsc2Egc25hcHNob3QgamFuLjI1LDIwMTAsCj4gc3RhdGljX2hkbWlfcGNtPTEsIHJlY2VpdmVy
+IE9OCj4KPiBjb2xkIGJvb3QsIGtlcm5lbCAyLjYuMzcsIGFsc2Egc25hcHNob3QgamFuLjI1LDIw
+MTAsCj4gc3RhdGljX2hkbWlfcGNtPTEsIHJlY2VpdmVyIE9GRgo+Cj4gY29sZCBib290LCBrZXJu
+ZWwgMi42LjM3LCBhbHNhIHNuYXBzaG90IGphbi4yNSwyMDEwLAo+IHN0YXRpY19oZG1pX3BjbT0w
+LCByZWNlaXZlciBPTgo+Cj4gY29sZCBib290LCBrZXJuZWwgMi42LjM3LCBhbHNhIHNuYXBzaG90
+IGphbi4yNSwyMDEwLAo+IHN0YXRpY19oZG1pX3BjbT0wLCByZWNlaXZlciBPRkYKPgo+IEluIGFs
+bCBjYXNlcyBvbmx5IHRoZSBmcm9udC1sZWZ0IGFuZCBmcm9udC1yaWdodCBzcGVha2VycyB3b3Jr
+ZWQuCj4gTEZFLCByZWFyLWxlZnQsIHJlYXItcmlnaHQsIGFuZCBjZW50ZXIgd2VyZSBtaXNzaW5n
+LiDCoEVMRCBjb3JyZWN0bHkKPiByZXBvcnRlZCBjaGFubmVscyBjb3JyZXNwb25kaW5nIHRvIHJl
+Y2VpdmVyIE9OL09GRi4gKHJlY2VpdmVyIG9uPTcuMSwKPiByZWNlaXZlciBvZmY9dHYgc3RlcmVv
+KS4KPgo+IEFsc28sIGV2ZW4gdGhvdWdoIHRoZSBlbGQgZmlsZSBpcyByZW1vdmVkLCB0aGUgZWxk
+IGluZm8gaXMgX25vdF8KPiB1cGRhdGVkIHdoZW4gc3RvcHBpbmcgYWxzYSAmIHVubG9hZGluZyBk
+cml2ZXJzLCB0aGVuIHJlbG9hZGluZy4gwqBBCj4gcmVib290IGlzIHJlcXVpcmVkIHRvIGdldCB0
+aGUgZWxkIGluZm8gdG8gdXBkYXRlLiDCoFRoaXMgaXMgd2h5IEkgY29sZAo+IGJvb3QgdGhlIHBj
+IGZvciBlYWNoIHRlc3QuCj4KPiBXaXRoIGtlcm5lbCAyLjYuMzUuOSBkcml2ZXJzLCBmcm9udC1s
+ZWZ0ICYgZnJvbnQtcmlnaHQgd29ya2VkIHdpdGgKPiByZWNlaXZlciBPRkYgYXMgZXhwZWN0ZWQu
+IMKgSSB0aGVuIHR1cm4gdGhlIHJlY2VpdmVyIG9uIGFuZCBhbGwKPiBjaGFubmVscyB3b3JrZWQu
+IMKgSSBkaWRuJ3QgYm90aGVyIHRvIHN0b3AgYWxzYSwgcmVib290LCBvciBldmVuIGxvb2sKPiBh
+dCBlbGQgaW5mbyBzaW5jZSBpdCB3b3Jrcy4KCldpbGwgc29tZW9uZSBQTEVBU0UgbG9vayBpbnRv
+IHRoaXM/Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
