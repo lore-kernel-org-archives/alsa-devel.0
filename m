@@ -1,196 +1,46 @@
-From: Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [PATCH v8 05/12] media: Entity use count
-Date: Fri, 4 Feb 2011 11:22:03 +0100
-Message-ID: <201102041122.03886.hverkuil@xs4all.nl>
-References: <1296131437-29954-1-git-send-email-laurent.pinchart@ideasonboard.com> <1296131437-29954-6-git-send-email-laurent.pinchart@ideasonboard.com>
+From: Mika Westerberg <mika.westerberg@iki.fi>
+Subject: [PATCH] ASoC: ep93xx-ac97: remove extra empty line
+Date: Fri,  4 Feb 2011 12:22:55 +0200
+Message-ID: <1296814975-15121-1-git-send-email-mika.westerberg@iki.fi>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1296131437-29954-6-git-send-email-laurent.pinchart@ideasonboard.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, sakari.ailus@maxwell.research.nokia.com, broonie@opensource.wolfsonmicro.com, clemens@ladisch.de
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 451EC103AF6
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 11:25:17 +0100 (CET)
+Received: by bwz10 with SMTP id 10so2532944bwz.38
+	for <alsa-devel@alsa-project.org>; Fri, 04 Feb 2011 02:25:16 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mika Westerberg <mika.westerberg@iki.fi>, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday, January 27, 2011 13:30:30 Laurent Pinchart wrote:
-> Due to the wide differences between drivers regarding power management
-> needs, the media controller does not implement power management.
-> However, the media_entity structure includes a use_count field that
-> media drivers can use to track the number of users of every entity for
-> power management needs.
-> 
-> The use_count field is owned by media drivers and must not be touched by
-> entity drivers. Access to the field must be protected by the media
-> device graph_mutex lock.
-> 
-> Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> ---
->  Documentation/media-framework.txt |   13 ++++++++++
->  drivers/media/media-device.c      |    1 +
->  drivers/media/media-entity.c      |   46 +++++++++++++++++++++++++++++++++++++
->  include/media/media-device.h      |    4 +++
->  include/media/media-entity.h      |    5 ++++
->  5 files changed, 69 insertions(+), 0 deletions(-)
-> 
-> diff --git a/Documentation/media-framework.txt b/Documentation/media-framework.txt
-> index 88fe379..9017a41 100644
-> --- a/Documentation/media-framework.txt
-> +++ b/Documentation/media-framework.txt
-> @@ -258,3 +258,16 @@ When the graph traversal is complete the function will return NULL.
->  
->  Graph traversal can be interrupted at any moment. No cleanup function call is
->  required and the graph structure can be freed normally.
-> +
-> +
-> +Use count and power handling
-> +----------------------------
-> +
-> +Due to the wide differences between drivers regarding power management needs,
-> +the media controller does not implement power management. However, the
-> +media_entity structure includes a use_count field that media drivers can use to
-> +track the number of users of every entity for power management needs.
-> +
-> +The use_count field is owned by media drivers and must not be touched by entity
-> +drivers. Access to the field must be protected by the media device graph_mutex
-> +lock.
-> diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-> index b8a3ace..e4c2157 100644
-> --- a/drivers/media/media-device.c
-> +++ b/drivers/media/media-device.c
-> @@ -73,6 +73,7 @@ int __must_check media_device_register(struct media_device *mdev)
->  	mdev->entity_id = 1;
->  	INIT_LIST_HEAD(&mdev->entities);
->  	spin_lock_init(&mdev->lock);
-> +	mutex_init(&mdev->graph_mutex);
->  
->  	/* Register the device node. */
->  	mdev->devnode.fops = &media_device_fops;
-> diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
-> index a805f20..fe6bfd2 100644
-> --- a/drivers/media/media-entity.c
-> +++ b/drivers/media/media-entity.c
-> @@ -23,6 +23,7 @@
->  #include <linux/module.h>
->  #include <linux/slab.h>
->  #include <media/media-entity.h>
-> +#include <media/media-device.h>
->  
->  /**
->   * media_entity_init - Initialize a media entity
-> @@ -196,6 +197,51 @@ media_entity_graph_walk_next(struct media_entity_graph *graph)
->  EXPORT_SYMBOL_GPL(media_entity_graph_walk_next);
->  
->  /* -----------------------------------------------------------------------------
-> + * Module use count
-> + */
-> +
-> +/*
-> + * media_entity_get - Get a reference to the parent module
-> + * @entity: The entity
-> + *
-> + * Get a reference to the parent media device module.
-> + *
-> + * The function will return immediately if @entity is NULL.
-> + *
-> + * Return a pointer to the entity on success or NULL on failure.
-> + */
-> +struct media_entity *media_entity_get(struct media_entity *entity)
-> +{
-> +	if (entity == NULL)
-> +		return NULL;
-> +
-> +	if (entity->parent->dev &&
-> +	    !try_module_get(entity->parent->dev->driver->owner))
-> +		return NULL;
-> +
-> +	return entity;
-> +}
-> +EXPORT_SYMBOL_GPL(media_entity_get);
-> +
-> +/*
-> + * media_entity_put - Release the reference to the parent module
-> + * @entity: The entity
-> + *
-> + * Release the reference count acquired by media_entity_get().
-> + *
-> + * The function will return immediately if @entity is NULL.
-> + */
-> +void media_entity_put(struct media_entity *entity)
-> +{
-> +	if (entity == NULL)
-> +		return;
-> +
-> +	if (entity->parent->dev)
-> +		module_put(entity->parent->dev->driver->owner);
-> +}
-> +EXPORT_SYMBOL_GPL(media_entity_put);
-> +
-> +/* -----------------------------------------------------------------------------
->   * Links management
->   */
->  
-> diff --git a/include/media/media-device.h b/include/media/media-device.h
-> index 0b1ecf5..260d59c 100644
-> --- a/include/media/media-device.h
-> +++ b/include/media/media-device.h
-> @@ -25,6 +25,7 @@
->  
->  #include <linux/device.h>
->  #include <linux/list.h>
-> +#include <linux/mutex.h>
->  #include <linux/spinlock.h>
->  
->  #include <media/media-devnode.h>
-> @@ -42,6 +43,7 @@
->   * @entity_id:	ID of the next entity to be registered
->   * @entities:	List of registered entities
->   * @lock:	Entities list lock
-> + * @graph_mutex: Entities graph operation lock
->   *
->   * This structure represents an abstract high-level media device. It allows easy
->   * access to entities and provides basic media device-level support. The
-> @@ -69,6 +71,8 @@ struct media_device {
->  
->  	/* Protects the entities list */
->  	spinlock_t lock;
-> +	/* Serializes graph operations. */
-> +	struct mutex graph_mutex;
->  };
->  
->  /* media_devnode to media_device */
-> diff --git a/include/media/media-entity.h b/include/media/media-entity.h
-> index b82f824..114541a 100644
-> --- a/include/media/media-entity.h
-> +++ b/include/media/media-entity.h
-> @@ -81,6 +81,8 @@ struct media_entity {
->  	struct media_pad *pads;		/* Pads array (num_pads elements) */
->  	struct media_link *links;	/* Links array (max_links elements)*/
->  
-> +	int use_count;			/* Use count for the entity. */
+Signed-off-by: Mika Westerberg <mika.westerberg@iki.fi>
+---
+ sound/soc/ep93xx/ep93xx-ac97.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-Isn't unsigned better?
-
-> +
->  	union {
->  		/* Node specifications */
->  		struct {
-> @@ -129,6 +131,9 @@ void media_entity_cleanup(struct media_entity *entity);
->  int media_entity_create_link(struct media_entity *source, u16 source_pad,
->  		struct media_entity *sink, u16 sink_pad, u32 flags);
->  
-> +struct media_entity *media_entity_get(struct media_entity *entity);
-> +void media_entity_put(struct media_entity *entity);
-> +
->  void media_entity_graph_walk_start(struct media_entity_graph *graph,
->  		struct media_entity *entity);
->  struct media_entity *
-> 
-
-Regards,
-
-	Hans
-
+diff --git a/sound/soc/ep93xx/ep93xx-ac97.c b/sound/soc/ep93xx/ep93xx-ac97.c
+index 68a0bae..104e95c 100644
+--- a/sound/soc/ep93xx/ep93xx-ac97.c
++++ b/sound/soc/ep93xx/ep93xx-ac97.c
+@@ -253,7 +253,6 @@ static int ep93xx_ac97_trigger(struct snd_pcm_substream *substream,
+ 	struct ep93xx_ac97_info *info = snd_soc_dai_get_drvdata(dai);
+ 	unsigned v = 0;
+ 
+-
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
 -- 
-Hans Verkuil - video4linux developer - sponsored by Cisco
+1.7.2.3
