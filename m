@@ -1,19 +1,18 @@
 From: "Harsha, Priya" <priya.harsha@intel.com>
-Subject: Re: [PATCH 3/3] ASoC: sn95031 codec - adding
-	jack	detection/reporting
-Date: Fri, 4 Feb 2011 09:20:52 +0530
-Message-ID: <98769532B4BB14429434178695419EAE08C107FB23@bgsmsx501.gar.corp.intel.com>
-References: <1296732382-923-1-git-send-email-priya.harsha@intel.com>
-	<20110203160640.GD2576@opensource.wolfsonmicro.com>
-	<20110203230304.GA11433@sirena.org.uk>
+Subject: Re: [PATCH 1/3] ASoC: soc_jack - add function to add
+ jack zones and determine jack type
+Date: Fri, 4 Feb 2011 09:23:03 +0530
+Message-ID: <98769532B4BB14429434178695419EAE08C107FB29@bgsmsx501.gar.corp.intel.com>
+References: <1296732343-22627-1-git-send-email-priya.harsha@intel.com>
+	<20110203151628.GB2576@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id 441F8103922
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 04:51:00 +0100 (CET)
-In-Reply-To: <20110203230304.GA11433@sirena.org.uk>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9683D103922
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 04:53:09 +0100 (CET)
+In-Reply-To: <20110203151628.GB2576@opensource.wolfsonmicro.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,22 +27,75 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+
+>> +/* struct snd_soc_jack_zone - Describes voltage zones of jack detection
+>> + *
+>> + * @adc_value_start: start range of voltage value in adc channel
+>> + *			when jack is pluggedin
+>> + * @adc_value_end: end range of voltage value in adc channel
+>> + *			when jack is pluggedin
+>> + * @jack_type: type of jack that is expected for this voltage
+>> + */
+>> +struct snd_soc_jack_zone {
+>> +	unsigned int adc_value_start;
+>> +	unsigned int adc_value_end;
+>> +	unsigned int jack_type;
+>> +	struct list_head list;
+>> +};
 >
->> > +	pr_debug("interrupt id read in sram = 0x%x\n", jack_msg->intr_id);
->> > +	if (jack_msg->intr_id & 0x1) {
->> > +		pr_debug("short_push detected\n");
->> > +		mask = status = SND_JACK_BTN_0;
->> > +	} else if (jack_msg->intr_id & 0x2) {
->> > +		pr_debug("long_push detected\n");
->> > +		mask = status = SND_JACK_BTN_1;
+>This is a lot better than the previous version but I think we do need to
+>include settling time support in here.  As I said before most hardware
+>used for this isn't specialised and won't have debounce support, and in
+>cases like detection of simple headphones on a headset jack the settling
+>time is essential in order to distinguish between that and a headset
+>with a microphone short button active.
+I will add it as a part of this structure.
+
 >
->> Shouldn't this be using a mask of BTN_0 and BTN_1 for both buttons, they
->> can't be detected simultaneously?
+>I'd also like to change adc_value_x to be {min,max}_mv or something
+>similar for clarity, min and max are more obvious and using mv makes it
+>clear what units are being used and that we're not working in terms of
+>raw ADC values or similar.
+I will change the names accordingly.
+
 >
->By the way, this logic for reporting the buttons separately to the
->detection of the headset/headphone status is something that should be
->pulled out into generic code as the same mechanism is going to be needed
->by anything using voltage based detection.
-But here, we don't do button press detection based on voltage. We get a
-separate value being set in register when interrupt is generated. In the
-generic code of adding zones and retrieving type, we can add the button press.
+>> +static int snd_soc_validate_jack_type(int type)
+>> +{
+>> +	switch (type) {
+>
+>I don't see the need for this and in any case...
+I wanted to make sure that when they add a type it's a type recognized by ALSA
+
+>
+>> +	case SND_JACK_HEADPHONE:
+>> +	case SND_JACK_MICROPHONE:
+>> +	case SND_JACK_HEADSET:
+>> +	case SND_JACK_LINEOUT:
+>> +	case SND_JACK_MECHANICAL:
+>> +	case SND_JACK_VIDEOOUT:
+>> +	case SND_JACK_AVOUT:
+>> +		break;
+>
+>...this doesn't cover things like buttons implemented by shorting
+I will add the buttons.
+
+>different resistances to ground.
+>
+>> +int snd_soc_jack_get_type(struct snd_soc_jack *jack, int micbias_voltage)
+>> +{
+>> +	struct snd_soc_jack_zone *zone;
+>> +
+>> +	list_for_each_entry(zone, &jack->jack_zones, list) {
+>> +		if (micbias_voltage >= zone->adc_value_start &&
+>> +			micbias_voltage < zone->adc_value_end)
+>> +				return zone->jack_type;
+>> +	}
+>> +	return -ENODEV;
+>
+>Returning 0 would be more helpful - that'd mean that you could just
+>report the result straight off.  However, as I said last time I do think
+>that we should be doing something more active to manage the detection
+>here.  That's pretty essential for anything time based.
+I will change the return value.
+
+-Harsha
