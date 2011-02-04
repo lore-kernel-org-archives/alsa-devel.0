@@ -1,34 +1,85 @@
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-Subject: RE: [PATCH] EDB93xx: Add support for CS4271 SPI-connected CODEC
-Date: Fri, 4 Feb 2011 12:22:27 -0600
-Message-ID: <0D753D10438DA54287A00B027084269764CF0C46CF@AUSP01VMBX24.collaborationhost.net>
-References: <1296843601.14577.14.camel@r60e>
+From: Kevin Hilman <khilman@ti.com>
+Subject: Re: [PATCH v2 01/13] OMAP: hwmod: Add member 'name' to
+	omap_hwmod_addr_space struct
+Date: Fri, 04 Feb 2011 11:45:52 -0800
+Message-ID: <8762szpor3.fsf@ti.com>
+References: <1296485437-12806-1-git-send-email-kishon@ti.com>
+	<1296485437-12806-2-git-send-email-kishon@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1296843601.14577.14.camel@r60e>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Alexander Sverdlin <subaparts@yandex.ru>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Lennert Buytenhek <buytenh@wantstofly.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from na3sys009aog117.obsmtp.com (na3sys009aog117.obsmtp.com
+	[74.125.149.242])
+	by alsa0.perex.cz (Postfix) with ESMTP id ECBE0103B27
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 20:45:56 +0100 (CET)
+Received: by mail-pz0-f46.google.com with SMTP id 35so625560pzk.5
+	for <alsa-devel@alsa-project.org>; Fri, 04 Feb 2011 11:45:55 -0800 (PST)
+In-Reply-To: <1296485437-12806-2-git-send-email-kishon@ti.com> (Kishon Vijay
+	Abraham, I's message of "Mon, 31 Jan 2011 20:20:25 +0530")
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Kishon Vijay Abraham I <kishon@ti.com>
+Cc: alsa-devel@alsa-project.org, b-cousson@ti.com, broonie@opensource.wolfsonmicro.com, paul@pwsan.com, p-basak2@ti.com, lrg@slimlogic.co.uk, linux-omap@vger.kernel.org, shubhrajyoti@ti.com, charu@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-On Friday, February 04, 2011 11:20 AM, Alexander Sverdlin wrote:
+Kishon Vijay Abraham I <kishon@ti.com> writes:
+
+> Adds a structure member 'name' to 'omap_hwmod_addr_space' structure.
+> The drivers can use platform_get_resource_byname() to get resource of
+> type 'IORESOURCE_MEM' by name so that it need not rely on the order to get
+> the proper resource.
 >
-> Add support for CS4271 SPI-connected CODEC to EDB93xx.
-> Modified according to latest comments by H Hartley Sweeten.
- >       
-> Signed-off-by: Alexander Sverdlin <subaparts@yandex.ru>
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> Signed-off-by: Benoit Cousson <b-cousson@ti.com>
+> ---
+>  arch/arm/mach-omap2/omap_hwmod.c             |    1 +
+>  arch/arm/plat-omap/include/plat/omap_hwmod.h |    4 +++-
+>  2 files changed, 4 insertions(+), 1 deletions(-)
+>
+> diff --git a/arch/arm/mach-omap2/omap_hwmod.c b/arch/arm/mach-omap2/omap_hwmod.c
+> index 709543a..7bd4900 100644
+> --- a/arch/arm/mach-omap2/omap_hwmod.c
+> +++ b/arch/arm/mach-omap2/omap_hwmod.c
+> @@ -1898,6 +1898,7 @@ int omap_hwmod_fill_resources(struct omap_hwmod *oh, struct resource *res)
+>  		os = oh->slaves[i];
+>  
+>  		for (j = 0; j < os->addr_cnt; j++) {
+> +			(res + r)->name = (os->addr + j)->name;
+>  			(res + r)->start = (os->addr + j)->pa_start;
+>  			(res + r)->end = (os->addr + j)->pa_end;
+>  			(res + r)->flags = IORESOURCE_MEM;
+> diff --git a/arch/arm/plat-omap/include/plat/omap_hwmod.h b/arch/arm/plat-omap/include/plat/omap_hwmod.h
+> index 76f0274..85899a7 100644
+> --- a/arch/arm/plat-omap/include/plat/omap_hwmod.h
+> +++ b/arch/arm/plat-omap/include/plat/omap_hwmod.h
+> @@ -178,7 +178,8 @@ struct omap_hwmod_omap2_firewall {
+>  #define ADDR_TYPE_RT		(1 << 1)
+>  
+>  /**
+> - * struct omap_hwmod_addr_space - MPU address space handled by the hwmod
+> + * struct omap_hwmod_addr_space - address space handled by the hwmod
 
-Thanks!
+Any reason you modified the comment here?  
 
-Acked-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+Kevin
+
+> + * @name: name of the address space
+>   * @pa_start: starting physical address
+>   * @pa_end: ending physical address
+>   * @flags: (see omap_hwmod_addr_space.flags macros above)
+> @@ -187,6 +188,7 @@ struct omap_hwmod_omap2_firewall {
+>   * structure.  GPMC is one example.
+>   */
+>  struct omap_hwmod_addr_space {
+> +	const char *name;
+>  	u32 pa_start;
+>  	u32 pa_end;
+>  	u8 flags;
