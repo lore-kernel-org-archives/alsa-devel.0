@@ -1,20 +1,20 @@
-From: VDR User <user.vdr@gmail.com>
-Subject: Re: NVIDIA HDMI surround sound is broken starting with
-	kernel 2.6.36
-Date: Thu, 3 Feb 2011 16:08:49 -0800
-Message-ID: <AANLkTinCXEsiff7NWjepBe_71N8ah_eMCFJcOkj2zZCK@mail.gmail.com>
-References: <AANLkTikFWjahA8TcGzTuWjkvkvg4chA0Q7s-1nXj179e@mail.gmail.com>
+From: "Harsha, Priya" <priya.harsha@intel.com>
+Subject: Re: [PATCH 3/3] ASoC: sn95031 codec - adding
+	jack	detection/reporting
+Date: Fri, 4 Feb 2011 09:20:52 +0530
+Message-ID: <98769532B4BB14429434178695419EAE08C107FB23@bgsmsx501.gar.corp.intel.com>
+References: <1296732382-923-1-git-send-email-priya.harsha@intel.com>
+	<20110203160640.GD2576@opensource.wolfsonmicro.com>
+	<20110203230304.GA11433@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 356A2103A88
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 01:08:51 +0100 (CET)
-Received: by iye19 with SMTP id 19so1717833iye.38
-	for <alsa-devel@alsa-project.org>; Thu, 03 Feb 2011 16:08:50 -0800 (PST)
-In-Reply-To: <AANLkTikFWjahA8TcGzTuWjkvkvg4chA0Q7s-1nXj179e@mail.gmail.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 441F8103922
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 04:51:00 +0100 (CET)
+In-Reply-To: <20110203230304.GA11433@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,39 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "mailing list: alsa-dev" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBKYW4gMzEsIDIwMTEgYXQgOTozOCBBTSwgVkRSIFVzZXIgPHVzZXIudmRyQGdtYWls
-LmNvbT4gd3JvdGU6Cj4gVGhlIGJlaGF2aW9yIGRlc2NyaWJlZCBiZWxvdyBzdGFydGVkIHdpdGgg
-Mi42LjM2IGFuZCBmb2xsb3dzIHRocm91Z2gKPiB1cCB0byB0aGUgbW9zdCByZWNlbnQgc3RhYmxl
-IGtlcm5lbCwgMi42LjM3LiDCoFRoZSBsYXN0IHByb3Blcmx5Cj4gd29ya2luZyBkcml2ZXIgaXMg
-aW4ga2VybmVsIDIuNi4zNS45LiDCoEkgc2hvdWxkIGFsc28gbWVudGlvbiB0aGF0Cj4gd2hpbGUg
-dGhlIHRlc3RzIGJlbG93IHVzZSB0aGUgc3RhdGljX2hkbWlfcGNtIGZsYWcgcmVjZW50bHkgaW50
-cm9kdWNlZAo+IHRvIGFsc2EgZ2l0LCBJIGFsc28gdGVzdGVkIHdpdGggdGhlIGluLWtlcm5lbCBk
-cml2ZXJzIGZvciBlYWNoIHN0YWJsZQo+IGtlcm5lbC4gwqBUaGUgcGFydGljdWxhciBkZXZpY2Ug
-dXNlZCBmb3IgdGVzdGluZyBpcyBhbiBOdmlkaWEgR1QyMjAKPiB2aWRlbyBjYXJkIGNvbm5lY3Rl
-ZCBkaXJlY3RseSB0byBteSByZWNlaXZlciB2aWEgSERNSS4KPgo+IENhbiBzb21lb25lIHBsZWFz
-ZSBsb29rIGludG8gdGhpcz8KPgo+IFRlc3RlZDoKPiBjb2xkIGJvb3QsIGtlcm5lbCAyLjYuMzcs
-IGFsc2Egc25hcHNob3QgamFuLjI1LDIwMTAsCj4gc3RhdGljX2hkbWlfcGNtPTEsIHJlY2VpdmVy
-IE9OCj4KPiBjb2xkIGJvb3QsIGtlcm5lbCAyLjYuMzcsIGFsc2Egc25hcHNob3QgamFuLjI1LDIw
-MTAsCj4gc3RhdGljX2hkbWlfcGNtPTEsIHJlY2VpdmVyIE9GRgo+Cj4gY29sZCBib290LCBrZXJu
-ZWwgMi42LjM3LCBhbHNhIHNuYXBzaG90IGphbi4yNSwyMDEwLAo+IHN0YXRpY19oZG1pX3BjbT0w
-LCByZWNlaXZlciBPTgo+Cj4gY29sZCBib290LCBrZXJuZWwgMi42LjM3LCBhbHNhIHNuYXBzaG90
-IGphbi4yNSwyMDEwLAo+IHN0YXRpY19oZG1pX3BjbT0wLCByZWNlaXZlciBPRkYKPgo+IEluIGFs
-bCBjYXNlcyBvbmx5IHRoZSBmcm9udC1sZWZ0IGFuZCBmcm9udC1yaWdodCBzcGVha2VycyB3b3Jr
-ZWQuCj4gTEZFLCByZWFyLWxlZnQsIHJlYXItcmlnaHQsIGFuZCBjZW50ZXIgd2VyZSBtaXNzaW5n
-LiDCoEVMRCBjb3JyZWN0bHkKPiByZXBvcnRlZCBjaGFubmVscyBjb3JyZXNwb25kaW5nIHRvIHJl
-Y2VpdmVyIE9OL09GRi4gKHJlY2VpdmVyIG9uPTcuMSwKPiByZWNlaXZlciBvZmY9dHYgc3RlcmVv
-KS4KPgo+IEFsc28sIGV2ZW4gdGhvdWdoIHRoZSBlbGQgZmlsZSBpcyByZW1vdmVkLCB0aGUgZWxk
-IGluZm8gaXMgX25vdF8KPiB1cGRhdGVkIHdoZW4gc3RvcHBpbmcgYWxzYSAmIHVubG9hZGluZyBk
-cml2ZXJzLCB0aGVuIHJlbG9hZGluZy4gwqBBCj4gcmVib290IGlzIHJlcXVpcmVkIHRvIGdldCB0
-aGUgZWxkIGluZm8gdG8gdXBkYXRlLiDCoFRoaXMgaXMgd2h5IEkgY29sZAo+IGJvb3QgdGhlIHBj
-IGZvciBlYWNoIHRlc3QuCj4KPiBXaXRoIGtlcm5lbCAyLjYuMzUuOSBkcml2ZXJzLCBmcm9udC1s
-ZWZ0ICYgZnJvbnQtcmlnaHQgd29ya2VkIHdpdGgKPiByZWNlaXZlciBPRkYgYXMgZXhwZWN0ZWQu
-IMKgSSB0aGVuIHR1cm4gdGhlIHJlY2VpdmVyIG9uIGFuZCBhbGwKPiBjaGFubmVscyB3b3JrZWQu
-IMKgSSBkaWRuJ3QgYm90aGVyIHRvIHN0b3AgYWxzYSwgcmVib290LCBvciBldmVuIGxvb2sKPiBh
-dCBlbGQgaW5mbyBzaW5jZSBpdCB3b3Jrcy4KCldpbGwgc29tZW9uZSBQTEVBU0UgbG9vayBpbnRv
-IHRoaXM/Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+>
+>> > +	pr_debug("interrupt id read in sram = 0x%x\n", jack_msg->intr_id);
+>> > +	if (jack_msg->intr_id & 0x1) {
+>> > +		pr_debug("short_push detected\n");
+>> > +		mask = status = SND_JACK_BTN_0;
+>> > +	} else if (jack_msg->intr_id & 0x2) {
+>> > +		pr_debug("long_push detected\n");
+>> > +		mask = status = SND_JACK_BTN_1;
+>
+>> Shouldn't this be using a mask of BTN_0 and BTN_1 for both buttons, they
+>> can't be detected simultaneously?
+>
+>By the way, this logic for reporting the buttons separately to the
+>detection of the headset/headphone status is something that should be
+>pulled out into generic code as the same mechanism is going to be needed
+>by anything using voltage based detection.
+But here, we don't do button press detection based on voltage. We get a
+separate value being set in register when interrupt is generated. In the
+generic code of adding zones and retrieving type, we can add the button press.
