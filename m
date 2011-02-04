@@ -1,38 +1,170 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/6] ASoC: Tegra: Harmony: Add headphone
-	jack detection
-Date: Fri, 4 Feb 2011 14:47:43 +0000
-Message-ID: <20110204144743.GC6540@opensource.wolfsonmicro.com>
-References: <1296766578-13988-1-git-send-email-swarren@nvidia.com>
-	<20110203223530.GA4586@opensource.wolfsonmicro.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0310C8EA93@HQMAIL01.nvidia.com>
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+Subject: RE: [PATCH] EDB93xx: Add support for CS4271 SPI-connected CODEC
+Date: Fri, 4 Feb 2011 10:53:02 -0600
+Message-ID: <0D753D10438DA54287A00B027084269764CF0C44AA@AUSP01VMBX24.collaborationhost.net>
+References: <1296770466.14577.8.camel@r60e>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9C226103B27
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 15:47:24 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0310C8EA93@HQMAIL01.nvidia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1296770466.14577.8.camel@r60e>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Alexander Sverdlin <subaparts@yandex.ru>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Lennert Buytenhek <buytenh@wantstofly.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 03, 2011 at 03:25:04PM -0800, Stephen Warren wrote:
+On Thursday, February 03, 2011 3:01 PM, Alexander Sverdlin wrote:
+>
+> Add support for CS4271 SPI-connected CODEC to EDB93xx
+>
+> Signed-off-by: Alexander Sverdlin <subaparts@yandex.ru>
+> ---
+>  arch/arm/mach-ep93xx/edb93xx.c |   85 ++++++++++++++++++++++++++++++++++++++++
+>  1 files changed, 85 insertions(+), 0 deletions(-)
+>
+> diff --git a/arch/arm/mach-ep93xx/edb93xx.c b/arch/arm/mach-ep93xx/edb93xx.c
+> index 3f37567..c1e73ee 100644
+> --- a/arch/arm/mach-ep93xx/edb93xx.c
+> +++ b/arch/arm/mach-ep93xx/edb93xx.c
+> @@ -30,13 +30,17 @@
+>  #include <linux/gpio.h>
+>  #include <linux/i2c.h>
+>  #include <linux/i2c-gpio.h>
+> +#include <linux/spi/spi.h>
+> 
+>  #include <mach/hardware.h>
+>  #include <mach/fb.h>
+> +#include <mach/ep93xx_spi.h>
+>
+>  #include <asm/mach-types.h>
+>  #include <asm/mach/arch.h>
+> 
+> +#include <sound/cs4271.h>
+> +
 
-> Uggh. The code may as well be consistent. I'll fix this up and resubmit
-> if you haven't already applied it.
+Nitpick... Please move this include to before the <mach/*> includes.
 
-Except when he's on holiday or otherwise unavailable I won't generally
-apply anything unless it's an emergency bugfix until Liam has also
-reviewed it.
+> 
+>  static void __init edb93xx_register_flash(void)
+>  {
+> @@ -94,6 +98,85 @@ static void __init edb93xx_register_i2c(void)
+> 
+> 
+>  /*************************************************************************
+> + * EDB93xx SPI peripheral handling
+> + *************************************************************************/
+> +static struct cs4271_platform_data edb93xx_cs4271_data = {
+> +	.gpio_nreset	= -EINVAL,	/* filled in later */
+> +};
+> +
+> +static int edb93xx_cs4271_hw_setup(struct spi_device *spi)
+> +{
+> +	return gpio_request_one(EP93XX_GPIO_LINE_EGPIO6,
+> +				GPIOF_OUT_INIT_HIGH, spi->modalias);
+> +}
+> +
+> +static void edb93xx_cs4271_hw_cleanup(struct spi_device *spi)
+> +{
+> +	gpio_free(EP93XX_GPIO_LINE_EGPIO6);
+> +}
+> +
+> +static void edb93xx_cs4271_hw_cs_control(struct spi_device *spi, int value)
+> +{
+> +	gpio_set_value(EP93XX_GPIO_LINE_EGPIO6, value);
+> +}
+> +
+> +static struct ep93xx_spi_chip_ops edb93xx_cs4271_hw = {
+> +	.setup		= edb93xx_cs4271_hw_setup,
+> +	.cleanup	= edb93xx_cs4271_hw_cleanup,
+> +	.cs_control	= edb93xx_cs4271_hw_cs_control,
+> +};
+
+This all looks good!  Thanks.
+
+> +
+> +static struct spi_board_info edb93xx_spi_board_info[] __initdata = {
+> +	{
+> +		.modalias		= "cs4271",
+> +		.platform_data		= &edb93xx_cs4271_data,
+> +		.controller_data	= &edb93xx_cs4271_hw,
+> +		.max_speed_hz		= 6000000,
+> +		.bus_num		= 0,
+> +		.chip_select		= 0,
+> +		.mode			= SPI_MODE_3,
+> +	},
+> +};
+> +
+> +static struct ep93xx_spi_info edb93xx_spi_info __initdata = {
+> +	.num_chipselect	= ARRAY_SIZE(edb93xx_spi_board_info),
+> +};
+> +
+> +static void __init edb93xx_register_spi(void)
+> +{
+> +	if (machine_is_edb9301() || machine_is_edb9302())
+> +		edb93xx_cs4271_data.gpio_nreset = EP93XX_GPIO_LINE_EGPIO1;
+> +	else if (machine_is_edb9302a() || machine_is_edb9307a())
+> +		edb93xx_cs4271_data.gpio_nreset = EP93XX_GPIO_LINE_H(2);
+> +	else if (machine_is_edb9315a())
+> +		edb93xx_cs4271_data.gpio_nreset = EP93XX_GPIO_LINE_EGPIO14;
+> +	else
+> +		return;
+
+You might want to just remove the last else test.
+
+When the spi flash finally gets added it will exist on all edb93xx boards
+and the call below will need to happen regardless of the tests above.
+
+For the edb93xx boards that don't have the cs4271 codec, it will still be
+registered but it will not _do_ anything because the 12s driver will not
+be registered below.
+
+> +
+> +	ep93xx_register_spi(&edb93xx_spi_info, edb93xx_spi_board_info,
+> +			    ARRAY_SIZE(edb93xx_spi_board_info));
+> +}
+> +
+> +
+> +/*************************************************************************
+> + * EDB93xx I2S
+> + *************************************************************************/
+> +static int __init edb93xx_has_audio(void)
+> +{
+> +	return (machine_is_edb9301() || machine_is_edb9302() ||
+> +		machine_is_edb9302a() || machine_is_edb9307a() ||
+> +		machine_is_edb9315a());
+> +}
+> +
+> +static void __init edb93xx_register_i2s(void)
+> +{
+> +	if (edb93xx_has_audio()) {
+> +		ep93xx_register_i2s();
+> +	}
+> +}
+> +
+> +
+> +/*************************************************************************
+>   * EDB93xx pwm
+>   *************************************************************************/
+>  static void __init edb93xx_register_pwm(void)
+> @@ -149,6 +232,8 @@ static void __init edb93xx_init_machine(void)
+>  	edb93xx_register_flash();
+>  	ep93xx_register_eth(&edb93xx_eth_data, 1);
+>  	edb93xx_register_i2c();
+> +	edb93xx_register_spi();
+> +	edb93xx_register_i2s();
+>  	edb93xx_register_pwm();
+>  	edb93xx_register_fb();
+>  }
+
+Other than the comments above this looks good.
+
+Acked-by: H Hartley Sweeten <hsweeten@visionengravers.com>
