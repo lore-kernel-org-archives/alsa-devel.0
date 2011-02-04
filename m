@@ -1,31 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: ep93xx-ac97: remove extra empty line
-Date: Fri, 4 Feb 2011 14:36:39 +0000
-Message-ID: <20110204143639.GF5393@opensource.wolfsonmicro.com>
-References: <1296814975-15121-1-git-send-email-mika.westerberg@iki.fi>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [PATCH 2/6] ASoC: Tegra: Harmony: Add switch control for
+ speaker
+Date: Fri, 4 Feb 2011 14:46:15 +0000
+Message-ID: <20110204144615.GA6540@opensource.wolfsonmicro.com>
+References: <1296766578-13988-1-git-send-email-swarren@nvidia.com>
+ <1296766578-13988-2-git-send-email-swarren@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 22809103B0C
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 15:36:24 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1296814975-15121-1-git-send-email-mika.westerberg@iki.fi>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mika Westerberg <mika.westerberg@iki.fi>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+In-Reply-To: <1296766578-13988-2-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 04, 2011 at 12:22:55PM +0200, Mika Westerberg wrote:
-> Signed-off-by: Mika Westerberg <mika.westerberg@iki.fi>
+On Thu, Feb 03, 2011 at 01:56:14PM -0700, Stephen Warren wrote:
+> Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 
-Applied, thanks.
+This looks good but won't apply without patch 1 so please resubmit.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-tegra" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
