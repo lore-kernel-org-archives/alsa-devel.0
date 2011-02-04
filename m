@@ -1,19 +1,20 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: Nvidia HDMI and four codecs
-Date: Fri, 04 Feb 2011 08:27:50 +0100
-Message-ID: <4D4BAA76.20303@canonical.com>
-References: <4D47BFEB.8040602@canonical.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0310C8E418@HQMAIL01.nvidia.com>
-	<4D490FDE.9070900@canonical.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0310C8E9DE@HQMAIL01.nvidia.com>
+Subject: Re: Codecs without auto-parser
+Date: Fri, 04 Feb 2011 10:37:41 +0100
+Message-ID: <4D4BC8E5.8020704@canonical.com>
+References: <4D413CBE.9080409@canonical.com>
+	<s5hd3nhcv7u.wl%tiwai@suse.de>	<4D42ADC2.7090001@canonical.com>
+	<s5h1v3xw7o7.wl%tiwai@suse.de>	<4D47B835.7090502@canonical.com>
+	<s5hvd13xwv9.wl%tiwai@suse.de>	<4D497545.4000605@canonical.com>
+	<s5hvd1145s5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id A735C103922
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 08:27:45 +0100 (CET)
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF0310C8E9DE@HQMAIL01.nvidia.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 62552103922
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2011 10:37:35 +0100 (CET)
+In-Reply-To: <s5hvd1145s5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,179 +24,147 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Nitin Daga <ndaga@nvidia.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 2011-02-03 21:35, Stephen Warren wrote:
-> David Henningsson wrote at Wednesday, February 02, 2011 1:04 AM:
->> On 2011-02-01 17:36, Stephen Warren wrote:
->>> David Henningsson wrote at Tuesday, February 01, 2011 1:10 AM:
->>>> I've seen a few Nvidia HDMI's recently which have four HDMI codecs
->>>> connected to the same HDA controller.
->>>> ...
->>>> The problem is that we don't know which one(s) of these four that
->>>> is the real one.
->>>> ...
->
-> (oh, and note that there can be multiple displays active, and hence there
-> can be more than one "real one").
-
-True. On the ALSA level, we should support everything we can, however 
-PulseAudio has a somewhat simplified focus so at that level, it is 
-acceptable that only one HDMI display is active at a time (audio-wise). 
-At least if anything is still possible by configuration changes in e g 
-/etc/pulse/default.pa.
-
->>> I don't believe it's possible to determine which of the codecs are
->>> physically connected to actual connectors on the graphics board. This
->>> would be a static facet of the board design.
->> ...
->> As you might have seen, for Intel HDMI I made a patch that makes it act
->> upon the pin config default register.
->> ...
->>>> I'd love BIOS to provide a good codec probe mask, a pin config default,
->>>> or something similar, but given a codec-proc I can't see any difference
->>>> between the real ones and the unconnected ones, so I don't know how to
->>>> fix up the driver without hardcoding/quirking every one of them. Any
->>>> hints?
+On 2011-02-03 14:16, Takashi Iwai wrote:
+> At Wed, 02 Feb 2011 16:16:21 +0100,
+> David Henningsson wrote:
+>>
+>> On 2011-02-01 22:34, Takashi Iwai wrote:
+>>> At Tue, 01 Feb 2011 08:37:25 +0100,
+>>> David Henningsson wrote:
+>>>>
+>>>> On 2011-01-28 13:10, Takashi Iwai wrote:
+>>>>> At Fri, 28 Jan 2011 12:51:30 +0100,
+>>>>> David Henningsson wrote:
+>>>>>>
+>>>>>> On 2011-01-28 09:01, Takashi Iwai wrote:
+>>>>>>> And I hope that we should go further a bit for now -- more clean up of
+>>>>>>> the cxt5066 code either checking BIOS pins or hp/mic/spk pre-defined
+>>>>>>> pins.  Currently, the code is fairly messy (partly because of olpc
+>>>>>>> support), and now is a good chance to improve it a bit more.
+>>>>>>
+>>>>>> Maybe so. I'm not sure I can commit to doing that work right now, as I
+>>>>>> have other work commitments waiting for me to take care of them.
+>>>>>
+>>>>> OK.
+>>>>
+>>>> Hmm. I got a few things cleared up yesterday, and so I might have some
+>>>> time to actually do this.
 >>>
->>> ALSA now exposes a logical device (hdmi:Nvidia,n) for each pin complex
->>> ...
->>> If PulseAudio were to offer all HDMI devices in its UI, at least the
->>> user could configure their system using the regular GUI tools.
->>> ...
->>> http://www.mail-archive.com/pulseaudio-discuss@mail.0pointer.de/msg07433.html
+>>> Great.
+>>>
+>>>> However, it also seems like I have to fix an
+>>>> AD1984A machine, and that driver is in equally bad shape (as in: no
+>>>> auto-parser, just a list of models).
+>>>
+>>> Yeah, I know...
+>>>
+>>>> I could add another model, but
+>>>> suppose I'd do this the right way, how would I do it?
+>>>>
+>>>> I guess there are three options to start off with:
+>>>>
+>>>> 1) ad1988 seems to have an auto-parser. There are a lot of hardcoded
+>>>> nids in there, but I guess I could copy-and-paste some into a new
+>>>> auto-parser for ad1984a.
+>>>
+>>> Well... AD1988 and AD1984A aren't so similar, IIRC.
+>>> AD1984A is more straightforward hardware implementation while AD1988
+>>> can have more connections.  Also AD1988 auto-parser isn't in the best
+>>> form in comparison with other codecs.
+>>>
+>>> That being said, if AD1984A can fit with AD1988's auto-parser (i.e.
+>>> my memory was too vague), it's fine.  We can adapt it.
+>>>
+>>> If this is hard, one more quirk model won't be too bad for AD1984A
+>>> since this is a pretty simple codec, and there won't be so more devices
+>>> with this old chip.
 >>
->> Thanks, reading that thread made a few things clearer.
+>> Ok. I had one more look at AD1988's auto-parser and I don't think it's
+>> good to start off that one.
 >>
->> As for PulseAudio, showing four HDMI devices is quite simple [1] but I
->> still think it would be a little confusing to show four devices to
->> choose from and would wish for something more intuitive.
+>>>> 2) It seems to me like the most competent candidate for auto-parser
+>>>> currently is the cx_auto stuff - compared to other auto-parsers the
+>>>> hardcoded nids are fewer. Perhaps this one could be extended to also do
+>>>> auto-parsing for codecs from other vendors? Or at least some convenience
+>>>> functions moved to hda_codec.c in order to remove duplication between
+>>>> vendors?
+>>>
+>>> Yes, I can loudly tell people "I have a dream, unify all codec parsers!" :)
+>>> But, I'm afraid that a big hammer doesn't work.  The topology is fairly
+>>> different between codecs, and resolving all makes the parser complex.
+>>> So, some hints would be needed to simplify the logic, after all.
+>>>
+>>>> 3) There is also the generic parser. It seems to be the one most capable
+>>>> of handling randomly complex graphs, but is lacking automute/jack-detect
+>>>> support, and maybe other functions as well (?).
+>>>
+>>> The generic parser is the very first parser, and it never worked rightly.
+>>> This should be really replaced with a more clever one.
+>>
+>> Hrmm...am I the only one thinking that your answer to 2) and 3) are in
+>> direct contradiction? :-)
 >
-> I'm not sure if that will work.
+> The reality is bitter, you know :)
 >
-> Note: My observations are based on adding the following to
-> /etc/pulse/default.pa:
+>> I'm looking at fill_cx_auto_dacs. That doesn't look like Conexant
+>> specific stuff at all. cx_auto_hp_automute looks quite generic as well,
+>> except for a pointer deref in the beginning.
+>> cx_auto_build_output_controls could be merged with
+>> xxxx_create_multi_out_ctls present in the Realtek and Analog parsers.
+>> And so on.
+>>
+>> Shouldn't we move and rename fill_cx_auto_dacs to hda_codec.c and use it
+>> for all codecs, instead of hardcoding dac nids everywhere? At least in
+>> general? (There might be exceptions, where there is a dac you don't want
+>> to use.)
 >
-> load-module module-alsa-sink device=hw:1,7
-> load-module module-alsa-sink device=hw:1,8
-> load-module module-alsa-sink device=hw:1,9
+> Well, Conexant auto-parser is a fairly recent one I wrote, so it's
+> more or less generic.  But there are still a few glitches that
+> Conexant parser doesn't handle properly, IIRC.
 >
-> With the above, at least during startup (and perhaps long-term during
-> operation), PulseAudio opens all the devices at once. This exceeds the
-> maximum number of streams our audio controller can support (2), and hence
-> the load-module fails, and hence the PulseAudio daemon fails to start.
+> We can give it a try with different codecs using hda-emu to see what
+> doesn't fit.
 >
-> Perhaps the mechanism you presented avoids that?
+>> Anyway, you wanted some work done to Conexant 5066. Could you clarify
+>> that a little? You likely want to call snd_hda_parse_pin_def_config -
+>> but are you expecting yet another auto-parser after that? Or just to
+>> choose model based on the result? And should we remove all the model
+>> quirks (except possibly for OLPC) afterwards?
+>
+> My initial idea was to adapt the current Conexant parser for 5066.
+> If it doesn't work by some reason, adjust the code, then replaces the
+> model quirks with the pin-config presets.
 
-I don't have the hardware here, so I can't test, but I believe so - with 
-this configuration, they will open one at a time and selectable through 
-setting the profile (in gnome-volume-control, that would correspond to 
-four different "Profiles" on the "Hardware" tab).
+Ok. While waiting for your answer I continued thinking and writing a 
+little code - here's how I would see a generic version of auto_parse_output:
 
-Thinking of it, it might make sense to add the below as an interim 
-solution even in standard PulseAudio and/or Ubuntu.
+1) Make a breadth-first-search, starting at each (output) pin, to find 
+what DACs are reachable from each pin.
 
-> If you know which specific subset you want, adding fewer of those entries
-> to the file does work, and can be an alternative to a probe mask.
->
->> So let's sum up the options here:
->>
->> 1) Board manufacturer sets a codec probe mask.
->
-> I'm not sure how they'd do that, since the probe mask is a Linux-specific
-> kernel command-line option.
+2) Start assigning DACs to pins, start off with line-outs (similar to 
+what cx_auto does today). If HP's and Speakers can't have their own 
+DACs, they'll have to share with their line-out counterpart (usually Front).
 
-Hmm, you're probably right. Linux reads this from the STATESTS register 
-on reset (see hda_intel.c:azx_reset) but unless you have some internal 
-method of turning off the codecs completely (this might also save 
-power?) this might not be an option.
+3) Investigate path from pin to DAC and add mute switches as close to 
+the pin:s as possible.
 
->> 2) Board manufacturer sets pin config default register. This might
->> require some support in the driver as well.
->>
->> 1) and 2) won't work for existing boards and I don't know how difficult
->> it would be to persuade the board manufacturers to do it for future
->> boards.
->
-> Yes, this isn't possible with any current boards.
->
-> However, for some future designs, it sounds like we may be setting the
-> pin config default register to indicate which pin complexes are actually
-> connected to a physical connector on the board.
+4) Add volume controls on all capable widgets that are a part of the 
+path. For 3 and 4 the naming must be decided based on what paths they 
+are a part of.
 
-Sounds good to me - then at least we have some way of autodiscovering 
-connections before they are active.
+(On top of that, add a quirk system that works with snd_hda_codec_read 
+so that any command can be overridden to returned a fixed value instead. 
+That quirk system could then be used to not only override pin configs 
+but also remove paths so the above algorithm does not discover them, and 
+other things.)
 
->> 3) Quirking in the driver - codec probe mask
->>
->> This was my primary option until yesterday, when I saw a machine which
->> had the same PCI SSID for both the primary HDA controller and the Nvidia
->> HDA controller.
->
-> The 3D/VGA controller and the HD-Audio controller will always be different
-> PCI functions (same domain/bus/device, different function address), and
-> appropriately marked as either a 3D or audio controller. Perhaps that can
-> help apply any quirk to the appropriate device/driver.
->
-> In practice for all the GPUs I've seen the 3D controller is function 0 and
-> the HD-audio controller is function 1. However, it would be unwise to
-> assume those specific numbers will apply in all cases.
->
->> 4) Quirking in the driver - pin config default register. Will need some
->> work in the driver, but I guess it's doable.
->
-> This is probably better than quirking a probe_mask; it'd be more similar to
-> the case where this register was already filled in by the HW/BIOS.
-
-Ok, this seems reasonable, although somewhat more work in the driver 
-compared to the probe_mask approach.
-
-We usually use the PCI SSID as key to selecting a quirk - are two cards 
-with different layout (as in different codecs physically connected), 
-guaranteed to have different PCI Subsystem IDs?
-
->> 3) and 4) gives us a lot of quirking to do.
->>
->> 5) Show all four devices in PulseAudio. Simple, but confusing for the
->> user.
->
-> And there is the issue I mentioned above to work out.
->
->> 6) Proper jack detection in PulseAudio, which might be based on ELD
->> information. This is what would need the most work to do, and things
->> will still be confusing for people not using PulseAudio. It might be the
->> long path to go anyway, as it would enable features such as auto-moving
->> to HDMI when HDMI is plugged in, etc.
->>
->> --
->> David Henningsson, Canonical Ltd.
->> http://launchpad.net/~diwic
->>
->> [1] I haven't tested it, but I guess the following addition to
->> /usr/shared/pulseaudio/alsa-mixer/profile-sets/default.conf should do it:
->>
->> [Mapping hdmi-stereo-extra1]
->> description = HDMI out extra 1
->> device-strings = hdmi:%f,1
->> channel-map = left,right
->> priority = 2
->> direction = output
->>
->> [Mapping hdmi-stereo-extra2]
->> description = HDMI out extra 2
->> device-strings = hdmi:%f,2
->> channel-map = left,right
->> priority = 2
->> direction = output
->>
->> [Mapping hdmi-stereo-extra3]
->> description = HDMI out extra 3
->> device-strings = hdmi:%f,3
->> channel-map = left,right
->> priority = 2
->> direction = output
+What do you think? Maybe I should give up these thoughts for now and 
+just go with your suggestion...but then I would still have to fix that 
+model for AD1984a...
 
 -- 
 David Henningsson, Canonical Ltd.
