@@ -1,98 +1,71 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: Nvidia HDMI and four codecs
-Date: Fri, 4 Feb 2011 15:25:20 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0310F5FB7D@HQMAIL01.nvidia.com>
-References: <4D47BFEB.8040602@canonical.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0310C8E418@HQMAIL01.nvidia.com>
-	<4D490FDE.9070900@canonical.com>
-	<74CDBE0F657A3D45AFBB94109FB122FF0310C8E9DE@HQMAIL01.nvidia.com>
-	<4D4BAA76.20303@canonical.com>
+From: Andres Salomon <dilinger@queued.net>
+Subject: Re: [PATCH 12/19] twl4030: mfd_cell is now implicitly available to
+ drivers
+Date: Fri, 4 Feb 2011 18:39:13 -0800
+Message-ID: <20110204183913.318e6664@debxo>
+References: <20110202195417.228e2656@queued.net>
+	<20110202201522.72d37f1e@queued.net>
+	<20110203060521.GA25739@core.coreip.homeip.net>
+	<20110202223959.244b4a01@queued.net>
+	<20110203065339.GA5592@core.coreip.homeip.net>
+	<20110202230326.167fe873@queued.net>
+	<20110203093154.GC21591@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 458C3103B54
-	for <alsa-devel@alsa-project.org>; Sat,  5 Feb 2011 00:25:26 +0100 (CET)
-In-Reply-To: <4D4BAA76.20303@canonical.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <david.henningsson@canonical.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Nitin Daga <ndaga@nvidia.com>
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <20110203093154.GC21591@opensource.wolfsonmicro.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Timur Tabi <timur@freescale.com>, linux-input@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-David Henningsson wrote at Wednesday, February 02, 2011 1:04 AM:
-> As for PulseAudio, showing four HDMI devices is quite simple [1] but I
-> still think it would be a little confusing to show four devices to
-> choose from and would wish for something more intuitive.
-> ...
-> [1] I haven't tested it, but I guess the following addition to
-> /usr/shared/pulseaudio/alsa-mixer/profile-sets/default.conf should do it:
->
-> [Mapping hdmi-stereo-extra1]
-> description = HDMI out extra 1
-> device-strings = hdmi:%f,1
-> channel-map = left,right
-> priority = 2
-> direction = output
->
-> [Mapping hdmi-stereo-extra2]
-> description = HDMI out extra 2
-> device-strings = hdmi:%f,2
-> channel-map = left,right
-> priority = 2
-> direction = output
->
-> [Mapping hdmi-stereo-extra3]
-> description = HDMI out extra 3
-> device-strings = hdmi:%f,3
-> channel-map = left,right
-> priority = 2
-> direction = output
+On Thu, 3 Feb 2011 09:31:54 +0000
+Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
 
-This kinda works, but is pretty broken.
+> On Wed, Feb 02, 2011 at 11:03:26PM -0800, Andres Salomon wrote:
+> > Dmitry Torokhov <dmitry.torokhov@gmail.com> wrote:
+> 
+> > > Then they are doing it incorrectly. One possible way is to have
+> > > parent device carry relevant data in its drvdata and have
+> > > children get it from there.
+> 
+> > I believe some drivers are even using the parent device already.
+> > See drivers/leds/leds-mc13783.c, for example, whose parent device
+> > drvdata is used to pass around a struct mc13783 to its children.
+> > Sounds like a possibility, will need to look into it further.
+> 
+> That's the current best practice approach.
 
-I tested on:
-* Ubuntu Lucid with all updates
-* Your audio PPA, so the latest ALSA kernel driver
-* alsa-lib 1.0.24.1
+One of the main reasons to have the cell data in the platform
+device rather than its parent device is because the parent device will
+have the entire array of cells.  This isn't helpful when you want to
+know specifically which cell's .enable hook to call.  One possibility
+is to use the pdev->id field.  Currently, mfd-core allows drivers to
+override this per-cell; depending upon how drivers make use of this,
+I'm tempted to get rid of it from the mfd_cell struct and just always
+have it be an index into the mfd_cell array (dictated by
+mfd_add_devices).  Of course, wm831x-core/wm831x-dcdc does some pretty
+weird stuff with ->id, so I still need to figure out if what it's doing
+is really necessary.
 
-I tested earlier on Karmic too, and saw the same behavior. Unfortunately,
-Maverick is having issues on my test machine, so I didn't test it.
+I'm also struggling with a way to have cells automatically saved
+by mfd-core. One (ugly) option would be to allow an mfd driver to set
+drvdata, and mfd-core (in mfd_add_devices) would allocate a struct that
+includes a pointer to drvdata as well as to the mfd_cells.  Drvdata
+would be updated to point to this new struct instead.  In one scenario,
+this requires evil macro redefining; in another, a weird API addition
+to mfd_add_devices to pass the size of what's pointed to by the
+parent's drvdata.  I don't like this option very much.
 
-When I log in, there is only 1 display by default, and hence only one pin
-complex with valid ELD information (eld#0.0 in my case).
+Another option is to require structs that mfd drivers assign to
+drvdata to include a pointer to cells, but I'd really like a way to
+enforce that with the compiler (BUILD_BUG_ON comes to mind).
+It also runs into the problem of not knowing the type in drvdata. I'm
+imagining something like:
 
-In the Gnome volume applet, Hardware tab, I do see those extra sinks show
-up. However, as soon as I select one of the new extra options, the entry on
-the Output tab for the GPU gets removed, so I can't actually route audio
-over HDMI anymore.
+#define mfd_get_cell(pdev, type) (((type *)platform_get_drvdata(pdev))->cell)
 
-pavucontrol is similar; the Configuration tab shows the new profile, but the
-Output Devices tab doesn't show any entry for the GPU.
+Even that would require the weird API of mfd_add_devices needing to be
+passed the type of what's pointed to by the parent's drvdata.
 
-Now, if I use nvidia-settings to light up another display, in TwinView
-mode, there are now two pin complexes with valid ELD information (eld#0.0
-and eld#3.0 in my case).
-
-There is no immediate change to the Gnome volume applet or pavucontrol.
-
-However, if I kill the PulseAudio daemon, and let it restart, then both
-the Gnome volume applet and pavucontrol start behaving more as expected; I
-can use either to change the GPU's profile selection, and audio will get
-moved between the two monitors, or /dev/null if I select a non-connected
-profile.
-
-I assume this is an issue within PulseAudio. Unfortunately, I doubt I'll
-be able to find time to look into this in detail.
-
---
-nvpublic
