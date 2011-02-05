@@ -1,21 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: issue with AD1989A HDA codec and alsamixer
-Date: Sat, 5 Feb 2011 17:46:51 +0800
-Message-ID: <AANLkTinoF-RqGFo7w57E8C+L5=zKH_hQ+0G0defh0WX-@mail.gmail.com>
-References: <AANLkTin8tsrNrcoYaPvQz0uO=OtD-tow1Ds0i8WTJyh7@mail.gmail.com>
-	<AANLkTinec0di98dMdyNoANXBoLG_uRJ+NghEyboCuMUa@mail.gmail.com>
-	<AANLkTim-Vq6bhd=nHOVkToMSuT9R1n3nnQi-J4bzZNc_@mail.gmail.com>
-	<AANLkTikRJtbkSewNxEC_SqapNXQookdcHit4cDDix_s7@mail.gmail.com>
+From: Nowardev-Team <nowardev@gmail.com>
+Subject: ALC861-VD bad recording issue
+Date: Sat, 5 Feb 2011 11:25:26 +0100
+Message-ID: <AANLkTinc-P-eUF9F6gtB1u6u-PYmrr9R0PJ5q2gppB14@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id C3EF82465A
-	for <alsa-devel@alsa-project.org>; Sat,  5 Feb 2011 10:46:54 +0100 (CET)
-Received: by ewy19 with SMTP id 19so1556832ewy.38
-	for <alsa-devel@alsa-project.org>; Sat, 05 Feb 2011 01:46:53 -0800 (PST)
-In-Reply-To: <AANLkTikRJtbkSewNxEC_SqapNXQookdcHit4cDDix_s7@mail.gmail.com>
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id DD71E24403
+	for <alsa-devel@alsa-project.org>; Sat,  5 Feb 2011 11:25:30 +0100 (CET)
+Received: by eyg24 with SMTP id 24so1561817eyg.38
+	for <alsa-devel@alsa-project.org>; Sat, 05 Feb 2011 02:25:27 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,47 +21,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/2/3 Vincent Meserette <vmeserette@aldebaran-robotics.com>
+This is the output of the alsa script to ge information about my system and
+the driver
 
-> Hi Raymond,
->
-> Many thanks for your answer.
->
-> Looking the AD1989A datasheet (which can be found here :
-> http://www.conexant.com/products/entry.jsp?id=599) the vendor id of the
-> codec seems to be 11D4989A
-> So, I think the codec taken into account in the "patch_analog.c" file is
-> well the AD1989A because I found these lines in the source code :
->
-> /*
->  * patch entries
->  */
-> static struct hda_codec_preset snd_hda_preset_analog[] = {
->    ...
->     { .id = 0x11d4989a, .name = "AD1989A", .patch = patch_ad1988 },
->    ...
->     {} /* terminator */
-> };
->
-> Concerning the digital microphone input of the codec, I don't use it. I
-> have four electret microphones connected to the B and C ports of the codec
-> (one on the PORT-B_L pin, one on the PORT-B_R pin, one on the PORT-C_L pin
-> and one on the PORT-C_R pin). I have connected by software configuration the
-> port B to the ADC1 and the port C to the ADC0.
-> Maybe my problem comes from here, because I don't use the codec in a
-> standard configuration ?
-> if it is the case, do you know how can i resolve it ?
-> Do you also know which registers control the three capture gains of the
-> alsamixerl (i thought it was the gains of the ADC0, ADC1 and ADC2 )?
->
+http://www.alsa-project.org/db/?f=9871b38d99bdd4cc91e398b60eb31361eb305395
 
-can you post the output of alsa-info.sh
+<http://www.alsa-project.org/db/?f=9871b38d99bdd4cc91e398b60eb31361eb305395>the
+issue :
 
-Six 192kHz 92dB ADCs
-- simultaneous record of up to 3 stereo channels
+when i record with mic i get always a bad recording with some tic tic tic
+tic , does not matter if i use low volume for the mic i can hear them
+anyway...
 
-It does not imply you can record 4 channels with the existing hda driver
-which create three subdevices
+if i use louder volume i can hear them ...
+
+i tried with
+
+arecord --quiet --file-type wav --rate=44100 -D plughw:Intel  test.wav
+
+with this there is less rumors
+
+when i play with
+
+arecord --quiet --file-type wav --rate=44100  test.wav
+
+i got a lots of problems ... alsa (snd_pcm_recover) underrun occurred
+
+the strange thing is that on kubuntu 8.04 it was workin better ...  that was
+my screenshot of alsamixer in the terminal
+
+http://nowardev.files.wordpress.com/2009/11/alsamixer.png
+
+now to get the " mic volume controller" i have to use
+
+options snd-hda-intel model=lenovo
+
+tried with all these lenovo is the only i can use
+
+ALC861VD/660VD
+==============
+3stack 3-jack
+3stack-dig 3-jack with SPDIF OUT
+6stack-dig 6-jack with SPDIF OUT
+3stack-660 3-jack (for ALC660VD)
+3stack-660-digout 3-jack with SPDIF OUT (for ALC660VD)
+lenovo Lenovo 3000 C200
+dallas Dallas laptops
+hp HP TX1000
+asus-v1s ASUS V1Sn
+auto auto-config reading BIOS (default)
+
+but i get ...  a lots of "controllers"
+like you can see here
+
+http://i0.simplest-image-hosting.net/168bf183b2abe8bc9188aacc163dd507/alsamixerlenovo.jpeg
+
+it seems that capture is the controller that  can increase the mic volume
+... :S
+
+i have tried every damned combinations of volumes but i get a lots of rumors
+always
