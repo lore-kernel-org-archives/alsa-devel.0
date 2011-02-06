@@ -1,29 +1,11 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Jack sense fails on Fujitsu p7120
-Date: Sun, 6 Feb 2011 07:36:02 +0800
-Message-ID: <AANLkTi=TJcxbJWs4Yz4rMVAqhFBZWz7cFm2uLCQAOiGw@mail.gmail.com>
-References: <AANLkTimGPyno7Wd3TfO7dhZe9e4a5QcXLS8Upa1Mq7q_@mail.gmail.com>
-	<AANLkTimb+yqOhWP1Rc78F9pc+j6VEGp7v0SYvGi7mGrb@mail.gmail.com>
-	<AANLkTim2ch5-QHoh67SuKwMmTMQL=HM6VG1iVCxxoo9+@mail.gmail.com>
-	<AANLkTimszyfVj8pbt4jujQ3o96OqVHKb-bb7o8GXG5pU@mail.gmail.com>
-	<AANLkTi=hFT5Sono3Sehq2WRZZcgEULs2jwwm-ZTDEb0R@mail.gmail.com>
-	<AANLkTi=xPwCS0AH1jzGx9UB5=fSLNGMJa-J6tyFgjSaG@mail.gmail.com>
-	<AANLkTi=u8QCzVRUjQVJVfPqOhy8wsA5P7bsFPP2t9w9Z@mail.gmail.com>
-	<AANLkTimt3U7Dxs5ufTqJ1Qd5uCNcLs_Lexcp5B9MP6E1@mail.gmail.com>
-	<s5hmxme5sue.wl%tiwai@suse.de>
-	<AANLkTi=xW-_Myvi279yJEySDDRsktrMkVpFyQhu0mu0w@mail.gmail.com>
-	<s5hlj1xy3ph.wl%tiwai@suse.de>
-	<AANLkTimfN_d+BoB-NLtVuYTnMuKnF7N+Bj7fqi+3mxOJ@mail.gmail.com>
+From: Joseph Teichman <josteich@gmail.com>
+Subject: [PATCH] Enable E-mu 0204
+Date: Sat, 5 Feb 2011 23:13:06 -0500
+Message-ID: <AANLkTinJJBA5REceETdLt-bJHPkUgXQQ3fdZa98rS4zZ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 163D7243F2
-	for <alsa-devel@alsa-project.org>; Sun,  6 Feb 2011 00:36:05 +0100 (CET)
-Received: by ewy19 with SMTP id 19so1687414ewy.38
-	for <alsa-devel@alsa-project.org>; Sat, 05 Feb 2011 15:36:02 -0800 (PST)
-In-Reply-To: <AANLkTimfN_d+BoB-NLtVuYTnMuKnF7N+Bj7fqi+3mxOJ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,21 +15,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org, patch@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2011/2/4 Robin Neatherway <neatherway@gmail.com>
+This is a trivial patch to enable the E-mu 0204, which is the newest
+device in the series 0202USB, 0404USB and Tracker Pre.
 
-> > if not, you will need to find any alc269 model which create "Headphone
-> > Playback Volume" at node 0x8 and "Speaker Playback volume" at node 0x09
->
-> With model=auto, these appear at the correct nodes, but I no longer
-> get any sound over the speakers. How can I control where these appear,
-> or add an EAPD pin to try and reenable the speakers?
->
+Signed-off-by: Joseph Teichman <josteich at gmail.com>
 
-If you look at the datasheet  LOUT1 and LOUT2 can be connected to 0xf, 0x10,
-0x12 , 0x13, 0x14 and 0x15
+--- alsa-kmirror/usb/mixer.c 2011-01-27 07:09:20.000000000 -0500
++++ alsa-kmirror-jt/usb/mixer.c 2011-02-05 20:42:00.000000000 -0500
+@@ -1566,7 +1566,7 @@
+cval->initialized =3D 1;
+} else {
+if (type =3D=3D USB_XU_CLOCK_RATE) {
+- /* E-Mu USB 0404/0202/TrackerPre
++ /* E-Mu USB 0404/0202/TrackerPre/0204
+* samplerate control quirk
+*/
+cval->min =3D 0;
+diff -u ./quirks.c /home/joe/alsa-driver-1.0.24-jt/sound/usb/quirks.c
+--- ./quirks.c 2011-01-27 07:09:20.000000000 -0500
++++ /home/joe/alsa-driver-1.0.24-jt/sound/usb/quirks.c 2011-02-05
+20:40:28.000000000 -0500
+@@ -532,7 +532,7 @@
+}
 
-So you have to find out which pin complex is your speaker by mute/unmute the
-mute switch of those pin complex
+/*
+- * For E-Mu 0404USB/0202USB/TrackerPre sample rate should be set for devic=
+e,
++ * For E-Mu 0404USB/0202USB/TrackerPre/0204USB sample rate should be
+set for device,
+=A0* not for interface.
+=A0*/
+
+@@ -589,6 +589,7 @@
+case USB_ID(0x041e, 0x3f02): /* E-Mu 0202 USB */
+case USB_ID(0x041e, 0x3f04): /* E-Mu 0404 USB */
+case USB_ID(0x041e, 0x3f0a): /* E-Mu Tracker Pre */
++ case USB_ID(0x041e, 0x3f19): /* E-Mu 0204 USB */
+set_format_emu_quirk(subs, fmt);
+break;
+}
+diff -u ./quirks-table.h
+/home/joe/alsa-driver-1.0.24-jt/sound/usb/quirks-table.h
+--- ./quirks-table.h 2011-01-27 07:09:20.000000000 -0500
++++ /home/joe/alsa-driver-1.0.24-jt/sound/usb/quirks-table.h
+2011-02-05 20:41:02.000000000 -0500
+@@ -79,6 +79,13 @@
+.idProduct =3D 0x3f0a,
+.bInterfaceClass =3D USB_CLASS_AUDIO,
+},
++{
++ /* E-Mu 0204 USB */
++ .match_flags =3D USB_DEVICE_ID_MATCH_DEVICE,
++ .idVendor =3D 0x041e,
++ .idProduct =3D 0x3f19,
++ .bInterfaceClass =3D USB_CLASS_AUDIO,
++},
+
+/*
+=A0* Logitech QuickCam: bDeviceClass is vendor-specific, so generic interfa=
+ce
