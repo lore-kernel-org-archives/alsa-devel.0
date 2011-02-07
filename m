@@ -1,58 +1,74 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 6/7] ASoC: Samsung: neo1973_gta02: Fix
- bluetooth DAI registration
-Date: Mon, 7 Feb 2011 11:59:06 +0000
-Message-ID: <20110207115906.GD10564@opensource.wolfsonmicro.com>
-References: <1297033463-14577-1-git-send-email-lars@metafoo.de>
-	<1297033463-14577-6-git-send-email-lars@metafoo.de>
+From: Mauro Carvalho Chehab <mchehab@redhat.com>
+Subject: Re: WL1273 FM Radio driver...
+Date: Mon, 07 Feb 2011 10:00:16 -0200
+Message-ID: <4D4FDED0.7070008@redhat.com>
+References: <1297075922.15320.31.camel@masi.mnp.nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6249710381A
-	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2011 12:59:09 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1297033463-14577-6-git-send-email-lars@metafoo.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <1297075922.15320.31.camel@masi.mnp.nokia.com>
+Sender: linux-media-owner@vger.kernel.org
+To: matti.j.aaltonen@nokia.com
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, hverkuil@xs4all.nl, sameo@linux.intel.com, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 07, 2011 at 12:04:22AM +0100, Lars-Peter Clausen wrote:
-> This patch fixes two issues with the bluethooth DAI registration:
-> * The DAI has to be registered only after the sound device has been added.
+Em 07-02-2011 08:52, Matti J. Aaltonen escreveu:
+> Hello.
+> 
+> Mark Brown wrote:
+>> On Wed, Feb 02, 2011 at 01:35:01PM -0200, Mauro 
+>> Carvalho Chehab wrote:
+>>
+>> [Reflowed into 80 columns.]
+>>> My concerns is that the V4L2-specific part of the code should be at
+>>> drivers/media.  I prefer that the specific MFD I/O part to be at
+>>> drivers/mfd, just like the other drivers.
+>>
+>> Currently that's not the case - the I/O functionality is not in any
+>> meaningful sense included in the MFD, it's provided by the V4L portion.
+> 
+> I've been away for two and a half weeks so I haven't been able to
+> comment...
+> 
+> But before I start to make changes, I'd still like to ask for a comment
+> on my original plan, which was to have the I/O functions in the MFD
+> driver and also have there things like interrupt handling etc.
+> 
+> My vision was that the MFD part would have the application logic and the
+> child drivers would be just true interfaces to the core functionality,
+> because I kind of saw the children to be of equal importance and because
+> the codec and the v4l2 driver share some controls like for example the
+> volume control. 
+> 
+> If you'd care to take a look an earlier version of the MFD driver here:
+> 
+> http://article.gmane.org/gmane.linux.drivers.video-input-infrastructure/23602/match=aaltonen
+> 
+> So the question is if I put only the I/O stuff into the MFD driver or
+> can I have the other application logic there as well?
 
-This isn't a problem, components in the system can be registered in any
-order.
+Matti,
 
-> * Currently the DAI is registered with snd_soc_register_dai which causes it to
->   be named after the device it was registered for. Which is in this case the
->   "soc-audio" device. (Ab)use snd_soc_register_dais which causes the DAI to be
->   named after the DAI driver, which is what we want in this case.
+Things that are required in order to access the device via MFD should be at
+the MFD part (for example, wl1273_fm_read_reg/wl1273_fm_write_cmd/wl1273_fm_write_data). 
+The logic that are related to control the radio (wl1273_fm_set_audio,  wl1273_fm_set_volume,
+etc) are not related to access the device via the MFD bus. They should be at
+the media part of the driver, where they belong.
 
-This doesn't tie up with your change which...
+One example that you could as reference for the mfd/media is the Timeberdale driver. 
+The MFD-specific part is at:
+	drivers/mfd/timberdale.c
 
-> -	/* register bluetooth DAI here */
-> -	ret = snd_soc_register_dai(&neo1973_gta02_snd_device->dev, &bt_dai);
-> -	if (ret)
-> -		goto err_put_device;
+The media part is at:
+	drivers/media/video/timblogiw.c
 
-> +	/* register bluetooth DAI here */
-> +	ret = snd_soc_register_dais(&neo1973_gta02_snd_device->dev, &bt_dai, 1);
->  	if (ret)
-> -		goto err_unregister_dai;
-> +		goto err_unregister_device;
+All you'll see at the MFD part is the logic to access the MFD bus and a description
+of the devices that will be coupled into it (in this case, it is a multi-function
+board). In other words, I/O control and the needed glue to access the I2C devices.
+All logic required to control the media driver is at timblogiw.c.
 
-...uses the same device in both cases and looking briefly at the code
-both register functions just use the dev that was passed in.  In any
-case, we clearly shouldn't be applying patches which bodge around the
-core.
+I hope that helps.
+
+Thanks,
+Mauro
