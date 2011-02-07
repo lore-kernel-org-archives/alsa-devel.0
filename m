@@ -1,14 +1,24 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 2/2] hdspmixer: Style and purity fixes for name
-	arrays.
-Date: Mon,  7 Feb 2011 18:55:26 +0100
-Message-ID: <1297101326-10509-3-git-send-email-adi@drcomp.erfurt.thur.de>
-References: <1297101326-10509-1-git-send-email-adi@drcomp.erfurt.thur.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 6/7] ASoC: Samsung: neo1973_gta02: Fix
+	bluetooth DAI registration
+Date: Mon, 07 Feb 2011 19:09:30 +0100
+Message-ID: <4D50355A.60500@metafoo.de>
+References: <1297033463-14577-1-git-send-email-lars@metafoo.de>
+	<1297033463-14577-6-git-send-email-lars@metafoo.de>
+	<20110207115906.GD10564@opensource.wolfsonmicro.com>
+	<4D5023A4.3020209@metafoo.de>
+	<20110207170213.GP10564@opensource.wolfsonmicro.com>
+	<4D502DBF.3050205@metafoo.de>
+	<20110207174950.GQ10564@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1297101326-10509-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id EB2A310380B
+	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2011 19:07:59 +0100 (CET)
+In-Reply-To: <20110207174950.GQ10564@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,172 +28,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Contribution by Fredrik Lingvall <fredrik.lingvall@gmail.com>
+On 02/07/2011 06:49 PM, Mark Brown wrote:
+> As I said when replying to your previous mail and I'm sure some earlier
+> ones too you need to fix your MUA to word wrap at less than 80 columns.
+> I've yet again reflowed your text so that it's legible.
+> 
+> On Mon, Feb 07, 2011 at 06:37:03PM +0100, Lars-Peter Clausen wrote:
+>> On 02/07/2011 06:02 PM, Mark Brown wrote:
+> 
+>>> If you think the core isn't behaving helpfully the core should be
+>>> changed.  This is part of how APIs evolve to be maximally useful.
+> 
+>> As I see it the problem is that we have a deviceless dai and there is
+>> not really a way to register a dai without a device. But I have no
+>> idea right now how to change the core to make it "behave helpfully".
+> 
+> You don't like the names the core is coming up with.  Make better ones.
 
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
----
- hdspmixer/src/HDSPMixerSelector.cxx |  124 ++++++++++++++++++-----------------
- 1 files changed, 65 insertions(+), 59 deletions(-)
+I don't like the the names a specific function of the core is coming up with, so I
+used another one which names I like.
 
-diff --git a/hdspmixer/src/HDSPMixerSelector.cxx b/hdspmixer/src/HDSPMixerSelector.cxx
-index 23cb744..bc18f60 100644
---- a/hdspmixer/src/HDSPMixerSelector.cxx
-+++ b/hdspmixer/src/HDSPMixerSelector.cxx
-@@ -36,15 +36,14 @@ static char *destinations_madi_ds[16] = {
-   "1+2", "3+4", "5+6", "7+8",
-   "9+10", "11+12", "13+14", "15+16",
-   "17+18", "19+20", "21+22", "23+24",
--  "25+26", "27+28", "29+30", "31+32",
-+  "25+26", "27+28", "29+30", "31+32"
- };
- 
- static char *destinations_madi_qs[8] = {
-   "1+2", "3+4", "5+6", "7+8",
--  "9+10", "11+12", "13+14", "15+16",
-+  "9+10", "11+12", "13+14", "15+16"
- };
- 
--
- static char *destinations_aes[8] = {
-   "AES 1+2", "AES 3+4", "AES 5+6", "AES 7+8",
-   "AES 9+10", "AES 11+12", "AES 13+14", "AES 15+16",
-@@ -82,73 +81,80 @@ static char *destinations_raydat_qs[6] = {
- static char *destinations_aio_ss[8] = {
-   "AN 1+2",
-   "AES",
--  "SPDIF", 
-+  "SPDIF",
-   "A 1+2", "A 3+4", "A 5+6", "A 7+8",
--  "Phones",
-+  "Phones"
- };
- 
- static char *destinations_aio_ds[6] = {
-   "AN 1+2", 
-   "AES",
--  "SPDIF", 
--  "A 1+2", "A 3+4"
--  "Phones",
-+  "SPDIF",
-+  "A 1+2", "A 3+4",
-+  "Phones"
- };
- 
- static char *destinations_aio_qs[5] = {
-   "AN 1+2",
-   "AES",
--  "SPDIF", 
--  "A 1+2"
--  "Phones",
-+  "SPDIF",
-+  "A 1+2",
-+  "Phones"
-+};
-+
-+static char *destinations_mf_ss[10] = {
-+  "AN 1+2", "AN 3+4", "AN 5+6", "AN 7+8",
-+  "A 1+2", "A 3+4", "A 5+6", "A 7+8",
-+  "SPDIF", "Analog"
-+};
-+
-+static char *destinations_mf_ds[8] = {
-+  "AN 1+2", "AN 3+4", "AN 5+6", "AN 7+8",
-+  "A 1+2", "A 3+4",
-+  "SPDIF", "Analog"
-+};
-+
-+static char *destinations_df_ss[14] = {
-+  "A1 1+2", "A1 3+4", "A1 5+6", "A1 7+8",
-+  "A2 1+2", "A2 3+4", "A2 5+6", "A2 7+8",
-+  "A3 1+2", "A3 3+4", "A3 5+6", "A3 7+8",
-+  "SPDIF", "Analog"
- };
- 
--    static char *destinations_mf_ss[10] = {
--	"AN 1+2", "AN 3+4", "AN 5+6", "AN 7+8",
--	"A 1+2", "A 3+4", "A 5+6", "A 7+8",
--	"SPDIF", "Analog"
--    };
--    static char *destinations_mf_ds[8] = {
--	"AN 1+2", "AN 3+4", "AN 5+6", "AN 7+8",
--	"A 1+2", "A 3+4",
--        "SPDIF", "Analog"
--    };
--    static char *destinations_df_ss[14] = {
--	"A1 1+2", "A1 3+4", "A1 5+6", "A1 7+8",
--	"A2 1+2", "A2 3+4", "A2 5+6", "A2 7+8",
--	"A3 1+2", "A3 3+4", "A3 5+6", "A3 7+8",
--	"SPDIF", "Analog"
--    };
--    static char *destinations_df_ds[8] = {
--	"A1 1+2", "A1 3+4",
--	"A2 1+2", "A2 3+4",
--	"A3 1+2", "A3 3+4",
--	"SPDIF", "Analog"
--    };
--    static char *destinations_h9652_ss[13] = {
--	"A1 1+2", "A1 3+4", "A1 5+6", "A1 7+8",
--	"A2 1+2", "A2 3+4", "A2 5+6", "A2 7+8",
--	"A3 1+2", "A3 3+4", "A3 5+6", "A3 7+8",
--	"SPDIF"
--    };
-+static char *destinations_df_ds[8] = {
-+  "A1 1+2", "A1 3+4",
-+  "A2 1+2", "A2 3+4",
-+  "A3 1+2", "A3 3+4",
-+  "SPDIF", "Analog"
-+};
- 
--    static char *destinations_h9652_ds[7] = {
--	"A1 1+2", "A1 3+4",
--	"A2 1+2", "A2 3+4",
--	"A3 1+2", "A3 3+4",
--	"SPDIF"
--    };
--    static char *destinations_h9632_ss[8] = {
--	"A 1+2", "A 3+4", "A 5+6", "A 7+8",
--	"SPDIF", "AN 1+2", "AN 3+4", "AN 5+6"
--    };
--    static char *destinations_h9632_ds[6] = {
--	"A 1+2", "A 3+4",
--	"SPDIF", "AN 1+2", "AN 3+4", "AN 5+6"    
--    };
--    static char *destinations_h9632_qs[4] = {
--	"SPDIF", "AN 1+2", "AN 3+4", "AN 5+6"    
--    };
-+static char *destinations_h9652_ss[13] = {
-+  "A1 1+2", "A1 3+4", "A1 5+6", "A1 7+8",
-+  "A2 1+2", "A2 3+4", "A2 5+6", "A2 7+8",
-+  "A3 1+2", "A3 3+4", "A3 5+6", "A3 7+8",
-+  "SPDIF"
-+};
-+
-+static char *destinations_h9652_ds[7] = {
-+  "A1 1+2", "A1 3+4",
-+  "A2 1+2", "A2 3+4",
-+  "A3 1+2", "A3 3+4",
-+  "SPDIF"
-+};
-+
-+static char *destinations_h9632_ss[8] = {
-+  "A 1+2", "A 3+4", "A 5+6", "A 7+8",
-+  "SPDIF", "AN 1+2", "AN 3+4", "AN 5+6"
-+};
-+
-+static char *destinations_h9632_ds[6] = {
-+  "A 1+2", "A 3+4",
-+  "SPDIF", "AN 1+2", "AN 3+4", "AN 5+6"    
-+};
-+
-+static char *destinations_h9632_qs[4] = {
-+  "SPDIF", "AN 1+2", "AN 3+4", "AN 5+6"    
-+};
- 
- HDSPMixerSelector::HDSPMixerSelector(int x, int y, int w, int h):Fl_Menu_(x, y, w, h)
- {
--- 
-1.7.2.3
+> 
+>> And in a sense snd_soc_register_dais seems to be the right thing to
+>> use for now, because the sound card as a whole has multiple dais they
+>> just not all registered at the same time.
+> 
+> The card is only registering one DAI, all the other DAIs are attached to
+> other devices in the system.
+
+Isn't the card the combination of these other devices?
+
+> 
+>>> To be honest it's not massively obvious that we shouldn't just be taking
+>>> the name of the device here, either using a device to represent the
+>>> modem
+> 
+>> Seriously? I don't see how adding a dummy device wouldn't be "bodging
+>> around the core". Especially if using snd_soc_register_dais is.
+> 
+> The bluetooth chip is an actual device which I can point to on the
+> board and schematic, having a struct device to represent a device that's
+> actually present doesn't seem like a great leap.
+
+Well, there is an actual device representing the bt device, but since this is the
+standard bt usb device I have no idea how we would get an reference to it from within
+the sound board driver.
+
+> 
+>>> or registering the card using snd_soc_register_machine() and using
+>>> a more meaningful name for the card seems like a sensible approach here.
+> 
+>> Well, if were using snd_soc_register_machine to give the card a
+>> different name the bluetooth-dai would still be named after the card,
+>> wouldn't it? So there is no improvement here as to giving the dai a
+>> meaningful name.
+> 
+> It does mean it's named after the board.
+
+Ok. Could you please explain how snd_soc_register_machine would work and how it would
+effekt the naming of the dai? I couldn't find any reference to it.
+
+- Lars
