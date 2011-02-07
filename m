@@ -1,21 +1,22 @@
-From: Steven Rosenberg <stevenhrosenberg@gmail.com>
-Subject: Re: [solved] Conexant 5069: internal speakers are not
- muted when headphones are plugged in
-Date: Sun, 06 Feb 2011 21:31:25 -0800
-Message-ID: <4D4F83AD.1050207@gmail.com>
-References: <1296472096.3922.67.camel@mattotaupa>	
-	<4D46A0C1.7010507@canonical.com>
-	<1296920404.3692.22.camel@mattotaupa>
+From: "ABRAHAM, KISHON VIJAY" <kishon@ti.com>
+Subject: Re: [PATCH v2 01/13] OMAP: hwmod: Add member 'name' to
+ omap_hwmod_addr_space struct
+Date: Mon, 7 Feb 2011 11:32:06 +0530
+Message-ID: <AANLkTinVYk8gdvMMfEh=79R_gvt1FqsorEuhmPToX=38@mail.gmail.com>
+References: <1296485437-12806-1-git-send-email-kishon@ti.com>
+	<1296485437-12806-2-git-send-email-kishon@ti.com>
+	<8762szpor3.fsf@ti.com> <4D4C5FDC.7050008@ti.com>
+	<87d3n7la3a.fsf@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 3921324567
-	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2011 06:31:34 +0100 (CET)
-Received: by pwj4 with SMTP id 4so1043128pwj.38
-	for <alsa-devel@alsa-project.org>; Sun, 06 Feb 2011 21:31:32 -0800 (PST)
-In-Reply-To: <1296920404.3692.22.camel@mattotaupa>
+Received: from na3sys009aog104.obsmtp.com (na3sys009aog104.obsmtp.com
+	[74.125.149.73]) by alsa0.perex.cz (Postfix) with ESMTP id 657B2245B8
+	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2011 07:02:07 +0100 (CET)
+Received: by mail-iw0-f181.google.com with SMTP id 3so4510060iwn.12
+	for <alsa-devel@alsa-project.org>; Sun, 06 Feb 2011 22:02:06 -0800 (PST)
+In-Reply-To: <87d3n7la3a.fsf@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,78 +26,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Paul Menzel <paulepanter@users.sourceforge.net>
-Cc: alsa-devel@alsa-project.org
+To: Kevin Hilman <khilman@ti.com>
+Cc: "paul@pwsan.com" <paul@pwsan.com>, "Cousson, Benoit" <b-cousson@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Basak, Partha" <p-basak2@ti.com>, "Varadarajan,
+	Charulatha" <charu@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Datta, Shubhrajyoti" <shubhrajyoti@ti.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/05/2011 07:40 AM, Paul Menzel wrote:
-> Am Montag, den 31.01.2011, 12:45 +0100 schrieb David Henningsson:
->> On 2011-01-31 12:08, Paul Menzel wrote:
+On Sat, Feb 5, 2011 at 3:46 AM, Kevin Hilman <khilman@ti.com> wrote:
+> "Cousson, Benoit" <b-cousson@ti.com> writes:
 >
->>> I encounter a problem with a Lenovo G555 where the internal speakers are
->>> not muted when headphones are plugged in. Ubuntu 10.10 with Linux 2.6.35
->>> [1] runs the Lenovo, but this seems to be a common problem [2][3].
+>> On 2/4/2011 8:45 PM, Hilman, Kevin wrote:
+>>> Kishon Vijay Abraham I<kishon@ti.com> =A0writes:
 >>>
->>> I tried to load the module with `model=3Dlenovo`, but the only result w=
-as,
->>> that the external speakers did not work at all. Do you have another idea
->>> what to use for the `model`? The system has to rebooted every time,
->>> since I cannot unload the module using
+>>>> Adds a structure member 'name' to 'omap_hwmod_addr_space' structure.
+>>>> The drivers can use platform_get_resource_byname() to get resource of
+>>>> type 'IORESOURCE_MEM' by name so that it need not rely on the order to=
+ get
+>>>> the proper resource.
+>>>>
+>>>> Signed-off-by: Kishon Vijay Abraham I<kishon@ti.com>
+>>>> Signed-off-by: Benoit Cousson<b-cousson@ti.com>
+>>>> ---
+>>>> =A0 arch/arm/mach-omap2/omap_hwmod.c =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =A0=
+1 +
+>>>> =A0 arch/arm/plat-omap/include/plat/omap_hwmod.h | =A0 =A04 +++-
+>>>> =A0 2 files changed, 4 insertions(+), 1 deletions(-)
+>>>>
+>>>> diff --git a/arch/arm/mach-omap2/omap_hwmod.c b/arch/arm/mach-omap2/om=
+ap_hwmod.c
+>>>> index 709543a..7bd4900 100644
+>>>> --- a/arch/arm/mach-omap2/omap_hwmod.c
+>>>> +++ b/arch/arm/mach-omap2/omap_hwmod.c
+>>>> @@ -1898,6 +1898,7 @@ int omap_hwmod_fill_resources(struct omap_hwmod =
+*oh, struct resource *res)
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 os =3D oh->slaves[i];
+>>>>
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 for (j =3D 0; j< =A0os->addr_cnt; j++) {
+>>>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (res + r)->name =3D (os->addr + =
+j)->name;
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (res + r)->start =3D (os->addr=
+ + j)->pa_start;
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (res + r)->end =3D (os->addr +=
+ j)->pa_end;
+>>>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (res + r)->flags =3D IORESOURC=
+E_MEM;
+>>>> diff --git a/arch/arm/plat-omap/include/plat/omap_hwmod.h b/arch/arm/p=
+lat-omap/include/plat/omap_hwmod.h
+>>>> index 76f0274..85899a7 100644
+>>>> --- a/arch/arm/plat-omap/include/plat/omap_hwmod.h
+>>>> +++ b/arch/arm/plat-omap/include/plat/omap_hwmod.h
+>>>> @@ -178,7 +178,8 @@ struct omap_hwmod_omap2_firewall {
+>>>> =A0 #define ADDR_TYPE_RT =A0 =A0 =A0 =A0 =A0 =A0 =A0(1<< =A01)
+>>>>
+>>>> =A0 /**
+>>>> - * struct omap_hwmod_addr_space - MPU address space handled by the hw=
+mod
+>>>> + * struct omap_hwmod_addr_space - address space handled by the hwmod
 >>>
->>> 	sudo modprobe -r snd-hda-intel
->>>
->>> or
->>>
->>> 	sudo rmmod snd-hda-intel
->>>
->>> since it seems to be in use by the system.
->>>
->>> Seems like I missed `model=3Dthinkpad` in [3]. But I do not have access=
- to
->>> the system right now, so I am sending this report anyway.
->>>
->>> Please find attached the output of `alsa-info.sh` with the default
->>> behavior (headphones work, but internal ones are not muted) and with
->>> `model=3Dlenovo` (headphones do not work).
->>>
->>> David, do you know if your recent patches sent to this list
->>>
->>> [PATCH 2/2] ALSA: HDA: Add a new model "asus" for Conexant 5066/205xx [=
-5]
->>> [PATCH] ALSA: HDA: Add Lenovo vendor quirk for Conexant 205xx [6]
->>>
->>> will also address this issue=B9? They are for 5066 and I have 5069
->>> according to [2]. If yes, is there a package repository with a package
->>> having this patches applied I can install using the package management
->>> system?
+>>> Any reason you modified the comment here?
 >>
->> You have an internal mic at 0x1a, so it seems like model=3Dasus would be
->> the one for you. But if you just want headphones automuting,
->> model=3Dideapad or model=3Dthinkpad should do as well.
+>> The idea of that patch is to allow hwmod to provide address space
+>> accessible from SDMA (though L3). Hence the suppression of the MPU.
+>> In the future, we might even be able to provide the address for the
+>> DSP or the IPU viewpoint
+>>
 >
-> For now automuting headphones is good enough and `model=3Dthinkpad` works
-> as expected.
->
-> Can you give an estimate when a package with your patch for `model=3Dasus`
-> will be available? Or do I have to wait for Linux 2.6.38 [1]?
->
->
-> Thanks,
->
-> Paul
->
->
-> [1] http://mailman.alsa-project.org/pipermail/alsa-devel/2011-January/036=
-183.html
+> OK, this rationale is missing from the changelog, and seems very much
+> unrelated to $SUBJECT patch.
 
-I'd like to report that in the 2.6.37 kernel, the audio of the Lenovo =
+   ok. Will change it in the next version.
 
-G555 does mute when headphones are plugged in.
-
-This works out of the box. No modification of any configuration files is =
-
-necessary.
-
-I'm running Debian Squeeze with the 2.6.37 kernel from Liquorix =
-
-(http://liuqorix.net).
+>
+> Kevin
+>
+>
+>
