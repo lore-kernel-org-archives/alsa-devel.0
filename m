@@ -1,26 +1,52 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 1/7] ASoC: neo1973_wm8753: Remove scenario
- management code.
-Date: Mon, 7 Feb 2011 11:25:17 +0900
-Message-ID: <AANLkTinOHBA9YHyt8s1PgiJoDNpiOw8EZywt5kwJwTx-@mail.gmail.com>
-References: <1297033463-14577-1-git-send-email-lars@metafoo.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: finally, ALSA 1.0.24 is out
+Date: Mon, 7 Feb 2011 14:42:51 +0800
+Message-ID: <AANLkTinW9nD4EAFPczAG47GGGKW4XEGx0BqSwLySR2v=@mail.gmail.com>
+References: <alpine.LNX.2.00.1101311605240.6272@eeebox2.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1297033463-14577-1-git-send-email-lars@metafoo.de>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Linux Samsung SoC <linux-samsung-soc@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 3E59624602
+	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2011 07:42:53 +0100 (CET)
+Received: by ewy19 with SMTP id 19so1929805ewy.38
+	for <alsa-devel@alsa-project.org>; Sun, 06 Feb 2011 22:42:52 -0800 (PST)
+In-Reply-To: <alpine.LNX.2.00.1101311605240.6272@eeebox2.perex-int.cz>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 7, 2011 at 8:04 AM, Lars-Peter Clausen <lars@metafoo.de> wrote:
-> It has been proven to be inflexible to do scenario management in kernel space.
->
-> Since actual neo1973 board support has not been merged in mainline and this
-> patch has been in the neo1973 tree for some time now it should be safe to remove
-> this functionality without breaking existing userspace.
->
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+2011/1/31 Jaroslav Kysela <perex@perex.cz>
 
-All
-Acked-by: Jassi Brar <jassi.brar@samsung.com>
+> Hello all,
+>
+>        after very intensive testing, I released all ALSA packages with
+> version number 1.0.24(+) :
+>
+>
+when running alsa-driver 1.0.24 configure script
+
+./configure --with-debug=verbose
+
+why the script try to remove some system files ?
+
+checking for built-in ALSA... no
+checking for existing ALSA module... yes
+checking for Red Hat kernel... auto
+checking for Red Hat kernel... no
+checking for SUSE kernel... auto
+checking for SUSE kernel... no
+checking for updating alsa-kernel version.h... yes
+checking for CONFIG_EXPERIMENTAL... yes
+rm: cannot remove `include/linux/usb/audio-v2.h': Permission denied
+rm: cannot remove `include/linux/usb/audio.h': Permission denied
+rm: cannot remove `include/trace/events/asoc.h': Permission denied
