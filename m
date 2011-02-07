@@ -1,68 +1,52 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 6/7] ASoC: Samsung: neo1973_gta02: Fix bluetooth DAI registration
-Date: Mon, 07 Feb 2011 17:53:56 +0100
-Message-ID: <4D5023A4.3020209@metafoo.de>
-References: <1297033463-14577-1-git-send-email-lars@metafoo.de> <1297033463-14577-6-git-send-email-lars@metafoo.de> <20110207115906.GD10564@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 1/2] ALSA: add LaCie Firewire
+ Speakers/Griffin FireWave surround driver
+Date: Mon, 07 Feb 2011 17:57:58 +0100
+Message-ID: <4D502496.5010900@ladisch.de>
+References: <4D46933D.5050609@ladisch.de>	<4D4FB7C8.7090501@ladisch.de>	<4D4FB7F6.8000801@ladisch.de>
+	<20110207174919.43b85e16@stein>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20110207115906.GD10564@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 285C124491
+	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2011 17:56:57 +0100 (CET)
+In-Reply-To: <20110207174919.43b85e16@stein>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Stefan Richter <stefanr@s5r6.in-berlin.de>
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, Jay Fenlason <fenlason@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/07/2011 12:59 PM, Mark Brown wrote:
-> On Mon, Feb 07, 2011 at 12:04:22AM +0100, Lars-Peter Clausen wrote:
->> This patch fixes two issues with the bluethooth DAI registration:
->> * The DAI has to be registered only after the sound device has been added.
+Stefan Richter wrote:
+> On Feb 07 Clemens Ladisch wrote:
+> > +	static const struct device_info lacie_speakers = {
+> > +		.driver_name = "FWSpeakers",
+> > +		.short_name = "Firewire Speakers",
+> > +		.long_name = "LaCie Firewire Speakers",
 > 
-> This isn't a problem, components in the system can be registered in any
-> order.
+> FWIW, it is spelled "LaCie FireWire Speakers" in LaCie's printed material
+> and on their web site, whereas their firmware programmers put "LaCie
+> Firewire speakers" as model descriptor leaf into the Configuration ROM.
 
-By device I mean the soc-core platform device, which has to exist before a dai can be
-registered with that device.
+I took the latter as model, but capitalized "Speakers" because it's
+a proper noun.  I'll change it to "W".
 
-> 
->> * Currently the DAI is registered with snd_soc_register_dai which causes it to
->>   be named after the device it was registered for. Which is in this case the
->>   "soc-audio" device. (Ab)use snd_soc_register_dais which causes the DAI to be
->>   named after the DAI driver, which is what we want in this case.
-> 
-> This doesn't tie up with your change which...
-> 
->> -	/* register bluetooth DAI here */
->> -	ret = snd_soc_register_dai(&neo1973_gta02_snd_device->dev, &bt_dai);
->> -	if (ret)
->> -		goto err_put_device;
-> 
->> +	/* register bluetooth DAI here */
->> +	ret = snd_soc_register_dais(&neo1973_gta02_snd_device->dev, &bt_dai, 1);
->>  	if (ret)
->> -		goto err_unregister_dai;
->> +		goto err_unregister_device;
-> 
-> ...uses the same device in both cases and looking briefly at the code
-> both register functions just use the dev that was passed in.
+> Does the precise case of device_info strings matter to userspace?
 
-The difference between the two is that snd_soc_register_dais calls fmt_multiple_name,
-but snd_soc_register_dai uses fmt_single_name. The later uses the name of device for
-which the dai is registered to generate the dai_device name, while the former uses
-the name of the dai_driver.
-So by calling snd_soc_register_dai the bluetooth dai_device will be name "soc-core"
-instead of "bluetooth-dai". So currently there is no match between the dai_link and
-the dai_device, as a result the sound card is not instantiated.
+Only for the driver name.  If I had used a common driver name for both,
+the .conf file would have to use the short name to differentiate them.
+The long name contains random junk (as far as everybody except
+PulseAudio is concerned).
 
-> In any
-> case, we clearly shouldn't be applying patches which bodge around the
-> core.
 
-Well the alternative would be a patch looking like this:
-
--	.cpu_dai_name = "bluetooth-dai",
-+	.cpu_dai_name = "soc-core",
-
-Which isn't really nice either.
-
-- Lars
+Regards,
+Clemens
