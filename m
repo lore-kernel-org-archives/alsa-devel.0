@@ -1,65 +1,37 @@
 From: Mauro Carvalho Chehab <mchehab@redhat.com>
 Subject: Re: WL1273 FM Radio driver...
-Date: Mon, 07 Feb 2011 13:57:10 -0200
-Message-ID: <4D501656.5000309@redhat.com>
-References: <1297075922.15320.31.camel@masi.mnp.nokia.com>	 <4D4FDED0.7070008@redhat.com>	 <20110207120234.GE10564@opensource.wolfsonmicro.com>	 <4D4FEA03.7090109@redhat.com>	 <20110207131045.GG10564@opensource.wolfsonmicro.com>	 <4D4FF821.4010701@redhat.com> <1297087744.15320.56.camel@masi.mnp.nokia.com>
+Date: Mon, 07 Feb 2011 14:00:04 -0200
+Message-ID: <4D501704.6060504@redhat.com>
+References: <1297075922.15320.31.camel@masi.mnp.nokia.com>	 <4D4FDED0.7070008@redhat.com>	 <20110207120234.GE10564@opensource.wolfsonmicro.com>	 <4D4FEA03.7090109@redhat.com>	 <20110207131045.GG10564@opensource.wolfsonmicro.com>	 <4D4FF821.4010701@redhat.com>	 <20110207135225.GJ10564@opensource.wolfsonmicro.com> <1297088242.15320.62.camel@masi.mnp.nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <1297087744.15320.56.camel@masi.mnp.nokia.com>
+In-Reply-To: <1297088242.15320.62.camel@masi.mnp.nokia.com>
 Sender: linux-media-owner@vger.kernel.org
 To: matti.j.aaltonen@nokia.com
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, hverkuil@xs4all.nl, sameo@linux.intel.com, linux-media@vger.kernel.org
+Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, hverkuil@xs4all.nl, sameo@linux.intel.com, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Em 07-02-2011 12:09, Matti J. Aaltonen escreveu:
-> On Mon, 2011-02-07 at 11:48 -0200, ext Mauro Carvalho Chehab wrote:
->> Em 07-02-2011 11:10, Mark Brown escreveu:
->>> On Mon, Feb 07, 2011 at 10:48:03AM -0200, Mauro Carvalho Chehab wrote:
->>>> Em 07-02-2011 10:02, Mark Brown escreveu:
->>>>> On Mon, Feb 07, 2011 at 10:00:16AM -0200, Mauro Carvalho Chehab wrote:
->>>
->>>>>> the MFD part (for example, wl1273_fm_read_reg/wl1273_fm_write_cmd/wl1273_fm_write_data). 
->>>>>> The logic that are related to control the radio (wl1273_fm_set_audio,  wl1273_fm_set_volume,
->>>>>> etc) are not related to access the device via the MFD bus. They should be at
->>>>>> the media part of the driver, where they belong.
->>>
->>>>> Those functions are being used by the audio driver.
->>>
->>>> Not sure if I understood your comments. Several media drivers have alsa drivers:
->>>
->>> There is an audio driver for this chip and it is using those functions.
+Em 07-02-2011 12:17, Matti J. Aaltonen escreveu:
+> On Mon, 2011-02-07 at 13:52 +0000, ext Mark Brown wrote:
+>> On Mon, Feb 07, 2011 at 11:48:17AM -0200, Mauro Carvalho Chehab wrote:
+>>> Em 07-02-2011 11:10, Mark Brown escreveu:
 >>
->> Where are the other drivers that depend on it?
-> 
-> There's the MFD driver driver/mfd/wl1273-core.c, which is to offer the
-> (I2C) I/O functions to the child drivers:
-> drivers/media/radio/radio-wl1273.c and sound/soc/codecs/wl1273.c.
-> 
-> Both children depend on the MFD driver for I/O and the codec also
-> depends on the presence of the radio-wl1273 driver because without the
-> v4l2 part nothing can be done...
-
-I think that the better would be to move the audio part (sound/soc/codecs/wl1273.c)
-as drivers/media/radio/wl1273/wl1273-alsa.c. Is there any problem on moving it, or
-the alsa driver is also tightly coupled on the rest of the sound/soc stuff?
-
-I remember that, in the past, there were someone that proposed to move /sound into
-/media/sound, and move some common stuff between them into /media/common.
-
-Btw, there are(where?) some problems between -alsa and -media subsystems: basically, 
-the audio core needs to be initialized before the drivers. However, this sometimes
-don't happen (I can't remember the exact situation - perhaps builtin compilations?),
-but we ended by needing to explicitly delaying the init of some drivers with:
-	late_initcall(saa7134_alsa_init); 
-To avoid some OOPS conditions.
-
-> 
-> Matti
-> 
+>>>> There is an audio driver for this chip and it is using those functions.
 >>
->> Mauro
+>>> Where are the other drivers that depend on it?
 >>
+>> Nothing's been merged yet to my knowledge, Matti can comment on any
+>> incoming boards which will use it (rx51?).
 > 
-> 
+> Yes, nothing's been merged yet. There are only dependencies between the
+> parts of this driver... I cannot comment on upcoming boards, I just hope
+> we could agree on a sensible structure for this thing.
+
+We don't need any brand names or specific details, but it would be good to 
+have an overview, in general lines, about the architecture, in order to help 
+you to map how this would fit. In particular, the architecturre of 
+things that are tightly coupled and can't be splitted by some bus abstraction.
+
+Mauro.
