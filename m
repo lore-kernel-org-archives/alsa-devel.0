@@ -1,56 +1,208 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: WL1273 FM Radio driver...
-Date: Mon, 7 Feb 2011 16:01:21 +0000
-Message-ID: <20110207160120.GO10564@opensource.wolfsonmicro.com>
-References: <1297075922.15320.31.camel@masi.mnp.nokia.com>
- <4D4FDED0.7070008@redhat.com>
- <20110207120234.GE10564@opensource.wolfsonmicro.com>
- <4D4FEA03.7090109@redhat.com>
- <20110207131045.GG10564@opensource.wolfsonmicro.com>
- <4D4FF821.4010701@redhat.com>
- <1297087744.15320.56.camel@masi.mnp.nokia.com>
- <4D501656.5000309@redhat.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: issue with AD1989A HDA codec and alsamixer
+Date: Tue, 8 Feb 2011 00:12:42 +0800
+Message-ID: <AANLkTimYUk4fD8LDTPATRmkWvv_ycrVEqggnGtk8A_UM@mail.gmail.com>
+References: <AANLkTin8tsrNrcoYaPvQz0uO=OtD-tow1Ds0i8WTJyh7@mail.gmail.com>
+	<AANLkTinec0di98dMdyNoANXBoLG_uRJ+NghEyboCuMUa@mail.gmail.com>
+	<AANLkTim-Vq6bhd=nHOVkToMSuT9R1n3nnQi-J4bzZNc_@mail.gmail.com>
+	<AANLkTikRJtbkSewNxEC_SqapNXQookdcHit4cDDix_s7@mail.gmail.com>
+	<AANLkTinoF-RqGFo7w57E8C+L5=zKH_hQ+0G0defh0WX-@mail.gmail.com>
+	<AANLkTikugTHmj5aKZqXSi3g50gkqLDXiWmTshBbd9TGQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-media-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4D501656.5000309@redhat.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@redhat.com>
-Cc: matti.j.aaltonen@nokia.com, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, hverkuil@xs4all.nl, sameo@linux.intel.com, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 55C9424466
+	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2011 17:19:16 +0100 (CET)
+Received: by ewy19 with SMTP id 19so2188197ewy.38
+	for <alsa-devel@alsa-project.org>; Mon, 07 Feb 2011 08:19:10 -0800 (PST)
+In-Reply-To: <AANLkTikugTHmj5aKZqXSi3g50gkqLDXiWmTshBbd9TGQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 07, 2011 at 01:57:10PM -0200, Mauro Carvalho Chehab wrote:
-> Em 07-02-2011 12:09, Matti J. Aaltonen escreveu:
+2011/2/7 Vincent Meserette <vmeserette@aldebaran-robotics.com>
 
-> > Both children depend on the MFD driver for I/O and the codec also
-> > depends on the presence of the radio-wl1273 driver because without the
-> > v4l2 part nothing can be done...
+>
+> To record four channels simultaneously, I have created the following alsa=
+ configuration file :
+>
+> *# output device
+> pcm.AD1989A{
+>     type hw
+>     card 0
+> }
+>
+> # input device* *
+> pcm.quad {
+>         type multi
+>
+>         slaves.a.pcm "hw:0,0,0" # ADC 0 of the codec (left and right mics)
+>         slaves.a.channels 2
+>         slaves.b.pcm "hw:0,0,1" # ADC 1 of the codec (front and rear mics)
+>         slaves.b.channels 2
+>
+>         bindings.0.slave a
+>         bindings.0.channel 0
+>         bindings.1.slave a
+>         bindings.1.channel 1
+>         bindings.2.slave b
+>         bindings.2.channel 0
+>         bindings.3.slave b
+>         bindings.3.channel 1
+> }
+>
+> # input device containing interleaved data
+> pcm.quad2 {
+>         type route
+>         slave.pcm "quad"
+>         ttable.0.0 1
+>         ttable.1.1 1
+>         ttable.2.2 1
+>         ttable.3.3 1
+> }
+>
+> ### CTL DEVICES (controls)
+> ctl.mixer0 {
+>     type hw
+>     card 0
+> }*
+>
+> With this configuration file, I am able to record the four channels
+> simultaneously with the following command :
+>
+> arecord -c4 -fS16_LE -r48000 -D =ABquad2 =BB -d5 /tmp/recording.wav
+>
+>
+it is strange that I alway got overrun only at the first time of running the
+above command but no overrun on the second time
 
-> I think that the better would be to move the audio part (sound/soc/codecs/wl1273.c)
-> as drivers/media/radio/wl1273/wl1273-alsa.c. Is there any problem on moving it, or
-> the alsa driver is also tightly coupled on the rest of the sound/soc stuff?
-
-As I said in my previous e-mail it's tightly coupled.
-
-> I remember that, in the past, there were someone that proposed to move /sound into
-> /media/sound, and move some common stuff between them into /media/common.
-
-This is the first embedded audio driver that's had interface with media
-stuff, the driver situation for embedded audio is very different to that
-for PCs.  Embedded audio subsystems are tightly coupled integrations of
-many different devices, the sound card userspace sees is produced by
-coordinating the actions of several different drivers.
-
-> Btw, there are(where?) some problems between -alsa and -media subsystems: basically, 
-> the audio core needs to be initialized before the drivers. However, this sometimes
-> don't happen (I can't remember the exact situation - perhaps builtin compilations?),
-> but we ended by needing to explicitly delaying the init of some drivers with:
-> 	late_initcall(saa7134_alsa_init); 
-> To avoid some OOPS conditions.
-
-This isn't a problem for embedded audio, instantiation of the cards is
-deferred until all the components for the card have registered with the
-core so nothing will happen until dependencies are satisfied, though it
-is a problem with the wl1273 driver as it currently stands due to the
-lack of a functional MFD.
+arecord -v -c4 -fS16_LE -r48000 -D quad2  -d5 /tmp/recording.wav
+Recording WAVE '/tmp/recording.wav' : Signed 16 bit Little Endian, Rate
+48000 Hz, Channels 4
+Route conversion PCM
+  Transformation table:
+    0 <- 0
+    1 <- 1
+    2 <- 2
+    3 <- 3
+Its setup is:
+  stream       : CAPTURE
+  access       : RW_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 4
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 16384
+  period_size  : 4096
+  period_time  : 85333
+  tstamp_mode  : NONE
+  period_step  : 1
+  avail_min    : 4096
+  period_event : 0
+  start_threshold  : 1
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Slave: Multi PCM
+  Channel bindings:
+    0: slave 0, channel 0
+    1: slave 0, channel 1
+    2: slave 1, channel 0
+    3: slave 1, channel 1
+Its setup is:
+  stream       : CAPTURE
+  access       : MMAP_COMPLEX
+  format       : S16_LE
+  subformat    : STD
+  channels     : 4
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 16384
+  period_size  : 4096
+  period_time  : 85333
+  tstamp_mode  : NONE
+  period_step  : 1
+  avail_min    : 4096
+  period_event : 0
+  start_threshold  : 1
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+Slave #0: Hardware PCM card 1 'HDA Intel' device 0 subdevice 0
+Its setup is:
+  stream       : CAPTURE
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 16384
+  period_size  : 4096
+  period_time  : 85333
+  tstamp_mode  : NONE
+  period_step  : 1
+  avail_min    : 4096
+  period_event : 0
+  start_threshold  : 1
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+  appl_ptr     : 0
+  hw_ptr       : 0
+Slave #1: Hardware PCM card 1 'HDA Intel' device 0 subdevice 1
+Its setup is:
+  stream       : CAPTURE
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 16384
+  period_size  : 4096
+  period_time  : 85333
+  tstamp_mode  : NONE
+  period_step  : 1
+  avail_min    : 4096
+  period_event : 0
+  start_threshold  : 1
+  stop_threshold   : 16384
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1073741824
+  appl_ptr     : 0
+  hw_ptr       : 0
+overrun!!! (at least 0.001 ms long)
+Status:
+  state       : XRUN
+  trigger_time: 1077.282286934
+  tstamp      : 1077.282292637
+  delay       : 0
+  avail       : 16384
+  avail_max   : 16384
+overrun!!! (at least 0.001 ms long)
+Status:
+  state       : XRUN
+  trigger_time: 1077.623810402
+  tstamp      : 1077.623819150
+  delay       : 0
+  avail       : 16384
