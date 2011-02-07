@@ -1,16 +1,17 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: finally, ALSA 1.0.24 is out
-Date: Mon, 7 Feb 2011 08:19:07 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1102070817400.6272@eeebox2.perex-int.cz>
-References: <alpine.LNX.2.00.1101311605240.6272@eeebox2.perex-int.cz>
-	<AANLkTinW9nD4EAFPczAG47GGGKW4XEGx0BqSwLySR2v=@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH 0/2] LaCie Firewire Speakers/Griffin FireWave
+	support
+Date: Mon, 07 Feb 2011 10:13:44 +0100
+Message-ID: <4D4FB7C8.7090501@ladisch.de>
+References: <4D46933D.5050609@ladisch.de>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-1796410586-1297063147=:6272"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6D5742462B
-	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2011 08:19:08 +0100 (CET)
-In-Reply-To: <AANLkTinW9nD4EAFPczAG47GGGKW4XEGx0BqSwLySR2v=@mail.gmail.com>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id D7942246C2
+	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2011 10:13:44 +0100 (CET)
+In-Reply-To: <4D46933D.5050609@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,68 +21,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Stefan Richter <stefanr@s5r6.in-berlin.de>, Jay Fenlason <fenlason@redhat.com>
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+This driver version is, I hope, finished enough so that I can commit it
+soon.
 
---8323584-1796410586-1297063147=:6272
-Content-Type: TEXT/PLAIN; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+The FireWave's low-frequency processing makes me believe that this
+device is prepared to accept two- and four-channel data, so I've enabled
+this in the driver; but I'd still like to actually know if it works.
+(If it does, adding support for the AC-3 decoding will be possible too.)
 
-On Mon, 7 Feb 2011, Raymond Yau wrote:
+I haven't yet looked into volume controls.
 
->=20
->=20
-> 2011/1/31 Jaroslav Kysela <perex@perex.cz>
->       Hello all,
->
->       =C2=A0 =C2=A0 =C2=A0 =C2=A0after very intensive testing, I released=
- all ALSA
->       packages with
->       version number 1.0.24(+) :
->
+Jay, are you OK with "Tested-by: Jay Fenlason <fenlason@redhat.com>"?
 
-> when running alsa-driver 1.0.24 configure script
->=20
-> ./configure --with-debug=3Dverbose
->=20
-> why the script try to remove some system files ?
->=20
-> checking for built-in ALSA... no
-> checking for existing ALSA module... yes
-> checking for Red Hat kernel... auto
-> checking for Red Hat kernel... no
-> checking for SUSE kernel... auto
-> checking for SUSE kernel... no
-> checking for updating alsa-kernel version.h... yes
-> checking for CONFIG_EXPERIMENTAL... yes
-> rm: cannot remove `include/linux/usb/audio-v2.h': Permission denied
-> rm: cannot remove `include/linux/usb/audio.h': Permission denied
-> rm: cannot remove `include/trace/events/asoc.h': Permission denied
+Stefan, if those firewire core bits are worth your notice :) , please
+give an Acked-by for them.  
 
-There rm calls are for alsa-driver/include tree (for emulated headers).=20
-You probably unpacked source with different permissions than you're=20
-trying to compile.
 
- =09=09=09=09=09Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
-
---8323584-1796410586-1297063147=:6272
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---8323584-1796410586-1297063147=:6272--
+Regards,
+Clemens
