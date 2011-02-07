@@ -1,37 +1,32 @@
-From: Mauro Carvalho Chehab <mchehab@redhat.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: WL1273 FM Radio driver...
-Date: Mon, 07 Feb 2011 10:48:03 -0200
-Message-ID: <4D4FEA03.7090109@redhat.com>
-References: <1297075922.15320.31.camel@masi.mnp.nokia.com> <4D4FDED0.7070008@redhat.com> <20110207120234.GE10564@opensource.wolfsonmicro.com>
+Date: Mon, 7 Feb 2011 13:10:45 +0000
+Message-ID: <20110207131045.GG10564@opensource.wolfsonmicro.com>
+References: <1297075922.15320.31.camel@masi.mnp.nokia.com>
+ <4D4FDED0.7070008@redhat.com>
+ <20110207120234.GE10564@opensource.wolfsonmicro.com>
+ <4D4FEA03.7090109@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <20110207120234.GE10564@opensource.wolfsonmicro.com>
+Content-Disposition: inline
+In-Reply-To: <4D4FEA03.7090109@redhat.com>
 Sender: linux-media-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mauro Carvalho Chehab <mchehab@redhat.com>
 Cc: matti.j.aaltonen@nokia.com, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, hverkuil@xs4all.nl, sameo@linux.intel.com, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Em 07-02-2011 10:02, Mark Brown escreveu:
-> On Mon, Feb 07, 2011 at 10:00:16AM -0200, Mauro Carvalho Chehab wrote:
-> 
->> the MFD part (for example, wl1273_fm_read_reg/wl1273_fm_write_cmd/wl1273_fm_write_data). 
->> The logic that are related to control the radio (wl1273_fm_set_audio,  wl1273_fm_set_volume,
->> etc) are not related to access the device via the MFD bus. They should be at
->> the media part of the driver, where they belong.
-> 
-> Those functions are being used by the audio driver.
+On Mon, Feb 07, 2011 at 10:48:03AM -0200, Mauro Carvalho Chehab wrote:
+> Em 07-02-2011 10:02, Mark Brown escreveu:
+> > On Mon, Feb 07, 2011 at 10:00:16AM -0200, Mauro Carvalho Chehab wrote:
 
-Not sure if I understood your comments. Several media drivers have alsa drivers:
-saa7134, em28xx, cx231xx, etc. The audio drivers for them are also under 
-/drivers/media, as it is not easy to de-couple audio and video/radio part
-on those devices. For bttv and some USB boards (that use snd-usb-audio), the audio
-part is at /sound, as the audio part on them are independent and don't need to
-share anything, as audio is provided by a completely independent group of
-registers.
+> >> the MFD part (for example, wl1273_fm_read_reg/wl1273_fm_write_cmd/wl1273_fm_write_data). 
+> >> The logic that are related to control the radio (wl1273_fm_set_audio,  wl1273_fm_set_volume,
+> >> etc) are not related to access the device via the MFD bus. They should be at
+> >> the media part of the driver, where they belong.
 
-I suggest to use the same logic for wl1273.
+> > Those functions are being used by the audio driver.
 
-Cheers,
-Mauro.
+> Not sure if I understood your comments. Several media drivers have alsa drivers:
+
+There is an audio driver for this chip and it is using those functions.
