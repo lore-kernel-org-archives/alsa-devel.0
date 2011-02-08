@@ -1,85 +1,45 @@
-From: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Subject: Re: [PATCH 1/2] ALSA: add LaCie Firewire Speakers/Griffin FireWave
-	surround driver
-Date: Tue, 8 Feb 2011 22:10:52 +0100
-Message-ID: <20110208221052.1c9faa9f@stein>
-References: <4D46933D.5050609@ladisch.de> <4D4FB7C8.7090501@ladisch.de>
-	<4D4FB7F6.8000801@ladisch.de> <20110207154025.13fdeba3@stein>
-	<20110207225604.3fe43920@stein> <4D5146FC.7050708@ladisch.de>
+From: Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 1/6] ASoC: Tegra: Harmony: Add headphone
+ jack detection
+Date: Tue, 08 Feb 2011 21:56:19 +0000
+Message-ID: <1297202179.3314.124.camel@odin>
+References: <1296766578-13988-1-git-send-email-swarren@nvidia.com>
+	 <20110203223530.GA4586@opensource.wolfsonmicro.com>
+	 <74CDBE0F657A3D45AFBB94109FB122FF0310C8EA93@HQMAIL01.nvidia.com>
+	 <74CDBE0F657A3D45AFBB94109FB122FF0310F5FB00@HQMAIL01.nvidia.com>
+	 <74CDBE0F657A3D45AFBB94109FB122FF0310F5FFA5@HQMAIL01.nvidia.com>
+	 <20110208205917.GB23844@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux1394-devel-bounces@lists.sourceforge.net>
-In-Reply-To: <4D5146FC.7050708@ladisch.de>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=linux1394-devel>
-List-Post: <mailto:linux1394-devel@lists.sourceforge.net>
-List-Help: <mailto:linux1394-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux1394-devel>,
-	<mailto:linux1394-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: linux1394-devel-bounces@lists.sourceforge.net
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net, Jay Fenlason <fenlason@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20110208205917.GB23844-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRmViIDA4IENsZW1lbnMgTGFkaXNjaCB3cm90ZToKPiBTdGVmYW4gUmljaHRlciB3cm90ZToK
-PiA+IE5leHQgdGVzdDogIFBsdWdnZWQgdGhlIFNwZWFrZXJzIGluLCB1bmxvYWRlZCBzbmRfaGRh
-X2ludGVsLCBsb2FkZWQKPiA+IGZpcmV3aXJlLW9oY2ksIHNuZF9maXJld2lyZV9zcGVha2VycyBu
-b3cgZ2V0cyBib3VuZCB0byBkZXZpZSByaWdodCBhd2F5Lgo+ID4gU3RhcnRlZCB4aW5lIGFuZCBw
-bGF5ZWQgYSBmaWxlLiAgTm8gY29tcGxhaW50LiAgKEhtbSwgSSB3b25kZXIgd2hldGhlciBJCj4g
-PiBoYWQgYW4gb3BlcmF0b3IgZXJyb3IgaW4gbXkgZWFybGllciBzZXNzaW9uIHdpdGggRmlyZVdh
-dmUuKSAgVGhlcmUgaXMgdGhlCj4gPiBzYW1lIHByb2JsZW0gYXMgaW4gdGhlIGZpcnN0IEtERTQg
-Y29udHJvbCBwYW5lbCB0ZXN0OiAgUGxheWJhY2sgc3RhcnRzCj4gPiB3aXRoIGFuIEF1dGVjaHJl
-IHJlbWl4IGR1cmluZyB0aGUgZmlyc3QgZmV3IHNlY29uZHMuIDstKQoKSSBjYW5ub3QgcmVwcm9k
-dWNlIHRoZSBub2lzZSAoY2xpY2tzKSBhdCB0aGUgc3RhcnQuICBCdXQgY2xpY2tzIG9yIHBvcHMK
-ZHVyaW5nIHBsYXliYWNrIGFyZSBmdWxseSByZXByb2R1Y2libGUgd2l0aCB0aGUgRmlyZVdhdmUu
-ICBJIGFtIG5vdCAxMDAlCnN1cmUgYnV0IEkgdGhpbmsgdGhlIFNwZWFrZXJzIGFyZSBub3QgYWZm
-ZWN0ZWQuCgpUaGVzZSBjbGlja3Mgb3IgcG9wcyBvY2N1ciBhdCBhIGZhc3QgcmF0ZSB3aGVuZXZl
-ciB0aGVyZSBpcyBhIGxvdWRlcgpwYXNzYWdlIGluIHRoZSBzb3VuZCBzdHJlYW0uICBUaGUgcGl0
-Y2ggYW5kIHJhdGUgb2YgY2xpY2tzIG9yIHBvcHMKYXBwYXJlbnRseSBkZXBlbmRzIG9uIHRoZSBz
-cGVjdHJ1bSBvZiBvZiB0aGUgc291bmQgc3RyZWFtLiAgVGhleSBoYXBwZW4KYWxvbmdzaWRlIHRo
-ZSBub3JtYWwgZXhwZWN0ZWQgc291bmQuCgo+IElmIGl0IGlzIHRoZSBzYW1lIHdpdGggYm90aCBk
-ZXZpY2VzLCB0aGUgcHJvYmxlbSBpcyBwcm9iYWJseSBub3QgYSB3cm9uZwo+IG51bWJlciBvZiBj
-aGFubmVscy4KPiAKPiBDaG9wcHkgc291bmQgY291bGQgaW5kaWNhdGUgYSB3cm9uZyBzYW1wbGUg
-cmF0ZS4gIEpheSB1c2VkIHNwZWFrZXItdGVzdCwKPiB3aGljaCB1c2VzIDQ4IGtIeiBieSBkZWZh
-dWx0LCBidXQgbW9zdCBtdXNpYyBmaWxlcyBhcmUgNDQuMSBrSHosIHNvIGl0Cj4gbG9va3MgYXMg
-aWYgc3dpdGNoaW5nIHRoZSBzYW1wbGUgcmF0ZSBkb2VzIG5vdCB3b3JrIGNvcnJlY3RseS4KPiAK
-PiA+IEFsYXMgdGhlIG1pc3NpbmcgbWl4ZXIgbWFrZXMgdGhlIHdob2xlIGFmZmFpciBub3QgcXVp
-dGUgdXNhYmxlIHlldDogIFRoZQo+ID4gTGFDaWUgRmlyZVdpcmUgU3BlYWtlcnMgYXJlIHZlcnkg
-bG91ZDsgdG9vIGxvdWQgZm9yIHRoZSBkZXNrIG9yIGxpdmluZwo+ID4gcm9vbS4gIE9uIE9TIFgs
-IEkgaGFkIHRoZWlyIHZvbHVtZSBwdWxsZWQgZG93biB0byB0aGUgbG93ZXN0IG1hcmsuCj4gCj4g
-QXR0YWNoZWQgYXJlIC5jb25mIGZpbGVzIHRoYXQgZW5hYmxlIHNvZnR3YXJlIHZvbHVtZSBlbXVs
-YXRpb24gZm9yCj4gZGV2aWNlcyAiZGVmYXVsdCIsICJmcm9udCIsICJzdXJyb3VuZDQwIiwgYW5k
-ICJzdXJyb3VuZDUxIiwgYnV0IG5vdCAiaHciLgo+IFB1dCB0aGVtIGludG8gL3Vzci9zaGFyZS9h
-bHNhL2NhcmRzLyAob3Igd2hlcmV2ZXIgeW91ciBkaXN0cmlidXRpb24gcHV0cwo+IHRoZW0pLgoK
-VGhpcyB3b3JrcyBpbmRlZWQuLi4gbW9zdCBvZiB0aGUgdGltZS4gIEV2ZW50dWFsbHkgKGFmdGVy
-IGRldmljZSByZXBsdWdzCm9yIGRyaXZlciByZWxvYWRpbmcpLCBzb21laG93IHRoaXMgc29mdHdh
-cmUgbWl4ZXIvIHZvbHVtZSBjb250cm9sIHdhcyBub3QKZm91bmQgYW55bW9yZS4gIEl0IHdhcyBi
-YWNrIGFnYWluIGluIGEgbGF0ZXIgc2Vzc2lvbi4KCkJ1dCBJIGxlYXJuZWQgdGhhdCBBdWRhY2lv
-dXMgaGFzIGFuIG9wdGlvbiB0byBhZGQgc3VjaCBhIHNvZnR3YXJlIG1peGVyLwp2b2x1bWUgY29u
-dHJvbCBpdHNlbGYuCgpUaGUgZWZmZWN0IG9mIGVpdGhlciB3YXkgb2Ygdm9sdW1lIGNvbnRyb2wg
-b24gdGhlIFNwZWFrZXJzIGlzIHRoYXQgdGhleQpiZWNvbWUgdXNhYmxlIChhcyBmYXIgYXMgZGVz
-a3RvcCBzcGVha2VycyBjYW4gYmUgY29uc2lkZXJlZCB1c2FibGUpLgoKVGhlIGVmZmVjdCBvbiB0
-aGUgRmlyZVdhdmUgaXMgdGhhdCBhYm92ZSBtZW50aW9uZWQgY2xpY2tzIG9yIHBvcHMgYXJlCmF2
-b2lkZWQgaWYgdGhlIHZvbHVtZSBpcyB0dXJuZWQgZG93biBmYXIgZW5vdWdoLiAgSG93ZXZlciwg
-YXQgdGhpcyBzdGF0ZQp0aGUgcmlnaHQgY2hhbm5lbCBwdXRzIG91dCBhIGhpZ2gtZnJlcXVlbmN5
-IHRvbmUsIGNsb3NlIHRvIHdoYXQgSSBzdXNwZWN0CmlzIHRoZSB1cHBlciBmcmVxdWVuY3kgb2Yg
-dGhlIGhlYXJpbmcgY2FwYWJpbGl0eSBvZiBhIHdlbGwtbWFpbnRhaW5lZCBlYXIuClRoZSBsZWZ0
-IGNoYW5uZWwgZG9lc24ndCBkbyB0aGF0LgoKRnVydGhlcm1vcmUsIHRoZSBtdWZmbGVkIHNvdW5k
-IHRoYXQgdGhlIEMvUyBwb3J0ICh0aGUgUyBjaGFubmVsKSBwdXRzIG91dAp1bmRlciBPUyBYIGJ5
-IEFwcGxlJ3Mgc3RvY2sgZHJpdmVywrkgZG9lcyBub3Qgb2NjdXIgdW5kZXIgTGludXguCgrCuSkg
-YXMgaWYgaXQgd2FzIGRyaXZlbiBhcyBhIDIuMSBzeXN0ZW0sIGJ1dCBpdCBpcyBwcm9iYWJseSBq
-dXN0IGFjY2lkZW50YWwKYmVjYXVzZSBpdCBpcyB0b28gcXVpZXQgYW5kIHRoZXJlIGFyZSBvY2Nh
-c2lvbmFsIHBvcHMgb24gdGhpcyBjaGFubmVsCi0tIApTdGVmYW4gUmljaHRlcgotPT09PT0tPT0t
-PT0gLS09LSAtPS0tLQpodHRwOi8vYXJjZ3JhcGguZGUvc3IvCgotLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0KVGhlIHVsdGltYXRlIGFsbC1pbi1vbmUgcGVyZm9ybWFuY2UgdG9vbGtpdDogSW50ZWwoUikg
-UGFyYWxsZWwgU3R1ZGlvIFhFOgpQaW5wb2ludCBtZW1vcnkgYW5kIHRocmVhZGluZyBlcnJvcnMg
-YmVmb3JlIHRoZXkgaGFwcGVuLgpGaW5kIGFuZCBmaXggbW9yZSB0aGFuIDI1MCBzZWN1cml0eSBk
-ZWZlY3RzIGluIHRoZSBkZXZlbG9wbWVudCBjeWNsZS4KTG9jYXRlIGJvdHRsZW5lY2tzIGluIHNl
-cmlhbCBhbmQgcGFyYWxsZWwgY29kZSB0aGF0IGxpbWl0IHBlcmZvcm1hbmNlLgpodHRwOi8vcC5z
-Zi5uZXQvc2Z1L2ludGVsLWRldjJkZXZmZWIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KbWFpbGluZyBsaXN0IGxpbnV4MTM5NC1kZXZlbEBsaXN0cy5zb3Vy
-Y2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8v
-bGludXgxMzk0LWRldmVsCg==
+On Tue, 2011-02-08 at 20:59 +0000, Mark Brown wrote:
+> On Tue, Feb 08, 2011 at 12:28:48PM -0800, Stephen Warren wrote:
+> 
+> > Mark, I'm happy to go either way on this; the SW engineer in me doesn't like
+> > non-const globals and inconsistency with the rest of the state data, but
+> > equally fixing this seems like it would bloat the code and might make it
+> > less readable.
+> 
+> > Let me know which way you'd prefer it to go.
+> 
+> I think your current patch is fine.  Liam?
+
+Yeah, lets go with this.
+
+Acked-by: Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-tegra" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
