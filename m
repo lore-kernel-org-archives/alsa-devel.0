@@ -1,15 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.39
-Date: Tue, 8 Feb 2011 12:45:45 +0000
-Message-ID: <20110208124545.GF29850@opensource.wolfsonmicro.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v8 05/12] media: Entity use count
+Date: Tue, 8 Feb 2011 13:57:33 +0100
+Message-ID: <201102081357.34145.laurent.pinchart@ideasonboard.com>
+References: <1296131437-29954-1-git-send-email-laurent.pinchart@ideasonboard.com>
+	<4D4BF23A.1050800@maxwell.research.nokia.com>
+	<201102041419.19916.hverkuil@xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B336B24464
-	for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2011 13:45:47 +0100 (CET)
-Content-Disposition: inline
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
+	[95.142.166.194])
+	by alsa0.perex.cz (Postfix) with ESMTP id DDA96103813
+	for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2011 13:57:35 +0100 (CET)
+In-Reply-To: <201102041419.19916.hverkuil@xs4all.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,62 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@maxwell.research.nokia.com>, broonie@opensource.wolfsonmicro.com, clemens@ladisch.de, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 273de37655369e57919f19e157fafb2b4b1e4472:
+Hi Hans,
 
-  Merge branch 'for-2.6.39' of git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6 into for-2.6.39 (2011-02-01 14:55:10 +0000)
+On Friday 04 February 2011 14:19:19 Hans Verkuil wrote:
+> On Friday, February 04, 2011 13:34:02 Sakari Ailus wrote:
+> > Hi,
+> > 
+> > And many thanks for the comments!
+> > 
+> > Hans Verkuil wrote:
+> > ...
+> > 
+> > >> diff --git a/include/media/media-entity.h
+> > >> b/include/media/media-entity.h index b82f824..114541a 100644
+> > >> --- a/include/media/media-entity.h
+> > >> +++ b/include/media/media-entity.h
+> > >> @@ -81,6 +81,8 @@ struct media_entity {
+> > >> 
+> > >>  	struct media_pad *pads;		/* Pads array (num_pads elements) */
+> > >>  	struct media_link *links;	/* Links array (max_links elements)*/
+> > >> 
+> > >> +	int use_count;			/* Use count for the entity. */
+> > > 
+> > > Isn't unsigned better?
+> > 
+> > Could be. The result, though, will be slightly more difficult checking
+> > for bad use count --- which always is a driver bug.
+> > 
+> > me->use_count += change;
+> > WARN_ON(me->use_count < 0);
+> > 
+> > we must do something like this:
+> > 
+> > if (change < 0)
+> > 
+> > 	WARN_ON(me->use_count < (unsigned)-change);
+> > 
+> > me->use_count += change;
+> > 
+> > I'd perhaps also go with unsigned int; the choice for signed was made
+> > mainly since the above check and with signed int the check was more
+> > trivial.
+> 
+> I saw this WARN_ON as well. I think there is a good reason for that
+> WARN_ON, but I think a comment in the header explaining why it is an int
+> will be useful. If I trip over it, then others will as well :-)
 
-are available in the git repository at:
+I'll add a comment. Thanks.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.39
+-- 
+Regards,
 
-Alexander Sverdlin (1):
-      ASoC: CS4271: Move Chip Select control out of the CODEC code.
-
-Dan Carpenter (1):
-      ASoC: soc-cache: dereferencing before checking
-
-Dimitris Papastamos (1):
-      ASoC: soc-core: Support debugfs entries larger than PAGE_SIZE bytes
-
-Janusz Krzysztofik (1):
-      ASoC: fill in snd_soc_pcm_runtime.card before calling snd_soc_dai_link.init()
-
-Lars-Peter Clausen (1):
-      ASoC: codecs: wm8753: Fix DAI mode switching
-
-Mark Brown (6):
-      ASoC: Update PM ifdefs for exported suspend/resume
-      Merge branch 'for-2.6.38' into for-2.6.39
-      ASoC: Sort ALC5623 in Kconfig and Makefile
-      ASoC: Create an AIF1ADCDAT signal widget to match AIF2
-      ASoC: Improve WM8994 digital power sequencing
-      Merge branch 'for-2.6.38' into for-2.6.39
-
-Mika Westerberg (1):
-      ASoC: ep93xx-ac97: remove extra empty line
-
-Sven Neumann (1):
-      ASoC: PXA: formatting
-
-Vaibhav Bedia (1):
-      asoc: davinci: da830/omap-l137: correct cpu_dai_name
-
-Vinod Koul (1):
-      ASoC: mid-x86: Fix dependency on intel_sst driver
-
- include/sound/cs4271.h          |    1 -
- sound/soc/codecs/Makefile       |    2 +-
- sound/soc/codecs/cs4271.c       |   22 +---
- sound/soc/codecs/wm8753.c       |  296 ++++++++++++++++-----------------------
- sound/soc/codecs/wm8994.c       |   26 +++-
- sound/soc/davinci/davinci-evm.c |   18 ++-
- sound/soc/ep93xx/ep93xx-ac97.c  |    1 -
- sound/soc/mid-x86/Kconfig       |    2 +-
- sound/soc/pxa/raumfeld.c        |   16 +-
- sound/soc/soc-cache.c           |   25 ++--
- sound/soc/soc-core.c            |  114 ++++++++++-----
- 11 files changed, 258 insertions(+), 265 deletions(-)
+Laurent Pinchart
