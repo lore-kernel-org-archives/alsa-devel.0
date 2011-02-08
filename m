@@ -1,27 +1,11 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Adding bluetooth PCM interface support to ASoC (Was:
- Re: [PATCH 6/7] ASoC: Samsung: neo1973_gta02: Fix bluetooth DAI
- registration)
-Date: Mon, 07 Feb 2011 23:55:22 +0100
-Message-ID: <4D50785A.7050801@metafoo.de>
-References: <1297033463-14577-1-git-send-email-lars@metafoo.de>
-	<1297033463-14577-6-git-send-email-lars@metafoo.de>
-	<20110207115906.GD10564@opensource.wolfsonmicro.com>
-	<4D5023A4.3020209@metafoo.de>
-	<20110207170213.GP10564@opensource.wolfsonmicro.com>
-	<4D502DBF.3050205@metafoo.de>
-	<20110207174950.GQ10564@opensource.wolfsonmicro.com>
-	<4D50355A.60500@metafoo.de>
-	<20110207181702.GR10564@opensource.wolfsonmicro.com>
+From: josteich@gmail.com
+Subject: [PATCH] [ALSA] Enable the E-MU 0204 USB
+Date: Tue,  8 Feb 2011 01:28:40 -0500
+Message-ID: <1297146520-3992-1-git-send-email-josteich@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailhost.informatik.uni-hamburg.de
-	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
-	by alsa0.perex.cz (Postfix) with ESMTP id BFFFA2454C
-	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2011 23:54:03 +0100 (CET)
-In-Reply-To: <20110207181702.GR10564@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,57 +15,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, "Marcel Holtmann \"" <marcel@holtmann.org>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Joseph Teichman <josteich@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/07/2011 07:17 PM, Mark Brown wrote:
->>> The bluetooth chip is an actual device which I can point to on the
->>> board and schematic, having a struct device to represent a device that's
->>> actually present doesn't seem like a great leap.
-> 
->> Well, there is an actual device representing the bt device, but since
->> this is the standard bt usb device I have no idea how we would get an
->> reference to it from within the sound board driver.
-> 
-> If you've got a real device and a driver binding to it then you can make
-> the driver for that device register the DAI from its probe function, no
-> need for the machine driver to get involved.
->
+From: Joseph Teichman <josteich@gmail.com>
 
-The audio hardware setup of the board looks roughly like this:
 
-  [### SOC ###]
-   |         |
-   | USB     | I2S
-   |         |
- [BT]----[Codec]----[Modem]
-     PCM        Analog
+Signed-off-by: Joseph Teichman <josteich@gmail.com>
 
-So the bluetooth chip is handeld by the standard USB BT HCI driver.
-
-I did some research on the topic and it seems that this is a pretty common
-setup in embedded devices.
-Audio to the bluetooth chip can either be send over the HCI interface (USB in
-this case) from the CPU or over the PCM interface from the codec, so that audio
-data from the modem to a bluetooth headset doesn't have to be routed through
-the CPU.
-The PCM interface seems to be part of the bluetooth standard and there are even
-registers (PSKEY_PCM_CONFIG32) to configure the PCM format and bit-rate.
-
-This and that neo1973 devices dont seem the only ones using such a setup, it
-would naturally make sense to write an ASoC driver to negotiate the PCM format
-between the codec and bluetooth chip and maybe do power management. (And
-ofcourse register a dai_device).
-
-But the bluetooth audio support seems to be entirely written in userspace. The
-in-kernel bluetooth drivers in general seem only to provide a common interface
-to the underlying hardware and all of the higher level functionality seems to
-be implemented in userspace.
-So right now I have no idea where to start if one wanted to add a ASoC driver
-which did the bt-dai configuration.
-
-I've Cced Marcel Holtmann and the bluez mailinglist, maybe someone can give
-some input on subject.
-
-- Lars
+diff --git a/usb/mixer.c b/usb/mixer.c
+index 7df89b3..85af605 100644
+--- a/usb/mixer.c
++++ b/usb/mixer.c
+@@ -95,7 +95,7 @@ enum {
+ };
+ 
+ 
+-/*E-mu 0202(0404) eXtension Unit(XU) control*/
++/*E-mu 0202/0404/0204 eXtension Unit(XU) control*/
+ enum {
+ 	USB_XU_CLOCK_RATE 		= 0xe301,
+ 	USB_XU_CLOCK_SOURCE		= 0xe302,
+@@ -1566,7 +1566,7 @@ static int build_audio_procunit(struct mixer_build *state, int unitid, void *raw
+ 			cval->initialized = 1;
+ 		} else {
+ 			if (type == USB_XU_CLOCK_RATE) {
+-				/* E-Mu USB 0404/0202/TrackerPre
++				/* E-Mu USB 0404/0202/TrackerPre/0204
+ 				 * samplerate control quirk
+ 				 */
+ 				cval->min = 0;
+diff --git a/usb/quirks-table.h b/usb/quirks-table.h
+index 3599987..921a86f 100644
+--- a/usb/quirks-table.h
++++ b/usb/quirks-table.h
+@@ -79,6 +79,13 @@
+ 	.idProduct = 0x3f0a,
+ 	.bInterfaceClass = USB_CLASS_AUDIO,
+ },
++{
++	/* E-Mu 0204 USB */
++	.match_flags = USB_DEVICE_ID_MATCH_DEVICE,
++	.idVendor = 0x041e,
++	.idProduct = 0x3f19,
++	.bInterfaceClass = USB_CLASS_AUDIO,
++},
+ 
+ /*
+  * Logitech QuickCam: bDeviceClass is vendor-specific, so generic interface
+diff --git a/usb/quirks.c b/usb/quirks.c
+index cf8bf08..e314cdb 100644
+--- a/usb/quirks.c
++++ b/usb/quirks.c
+@@ -532,7 +532,7 @@ int snd_usb_is_big_endian_format(struct snd_usb_audio *chip, struct audioformat
+ }
+ 
+ /*
+- * For E-Mu 0404USB/0202USB/TrackerPre sample rate should be set for device,
++ * For E-Mu 0404USB/0202USB/TrackerPre/0204 sample rate should be set for device,
+  * not for interface.
+  */
+ 
+@@ -589,6 +589,7 @@ void snd_usb_set_format_quirk(struct snd_usb_substream *subs,
+ 	case USB_ID(0x041e, 0x3f02): /* E-Mu 0202 USB */
+ 	case USB_ID(0x041e, 0x3f04): /* E-Mu 0404 USB */
+ 	case USB_ID(0x041e, 0x3f0a): /* E-Mu Tracker Pre */
++	case USB_ID(0x041e, 0x3f19): /* E-Mu 0204 USB */
+ 		set_format_emu_quirk(subs, fmt);
+ 		break;
+ 	}
+-- 
+1.7.0.4
