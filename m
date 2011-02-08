@@ -1,18 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: WL1273 FM Radio driver...
-Date: Tue, 08 Feb 2011 13:02:39 +0200
-Message-ID: <4D5122CF.3010403@nokia.com>
-References: <1297075922.15320.31.camel@masi.mnp.nokia.com>		<4D4FDED0.7070008@redhat.com>		<20110207120234.GE10564@opensource.wolfsonmicro.com>		<4D4FEA03.7090109@redhat.com>		<20110207131045.GG10564@opensource.wolfsonmicro.com>		<4D4FF821.4010701@redhat.com>		<20110207135225.GJ10564@opensource.wolfsonmicro.com>	<1297088242.15320.62.camel@masi.mnp.nokia.com>	<4D501704.6060504@redhat.com>
-	<4D5109B3.60504@nokia.com>
-	<2A84145621092446B6659B8A0F28E26F47010C29F1@irsmsx501.ger.corp.intel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: CS4271: Move Chip Select control out
+ of the CODEC code.
+Date: Tue, 8 Feb 2011 11:26:42 +0000
+Message-ID: <20110208112642.GB29850@opensource.wolfsonmicro.com>
+References: <1296691905.1504.47.camel@r60e>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa01.nokia.com (smtp.nokia.com [147.243.1.47])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1ECEE2446B
-	for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2011 12:02:55 +0100 (CET)
-In-Reply-To: <2A84145621092446B6659B8A0F28E26F47010C29F1@irsmsx501.ger.corp.intel.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6FE1924475
+	for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2011 12:26:45 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1296691905.1504.47.camel@r60e>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,38 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext Bensaid, Selma" <selma.bensaid@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ext Mauro Carvalho Chehab <mchehab@redhat.com>, ext Mark Brown <broonie@opensource.wolfsonmicro.com>, "hverkuil@xs4all.nl" <hverkuil@xs4all.nl>, "matti.j.aaltonen@nokia.com" <matti.j.aaltonen@nokia.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "sameo@linux.intel.com" <sameo@linux.intel.com>
+To: Alexander Sverdlin <subaparts@yandex.ru>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, H Hartley Sweeten <hsweeten@visionengravers.com>, linux-arm-kernel@lists.infradead.org, Lennert Buytenhek <buytenh@wantstofly.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/08/11 12:09, ext Bensaid, Selma wrote:
-> 2 Digital interfaces are possible for FM WL1273:
-> - the external connection: the I2S lines are used for the FM PCM samples
-> - the internal connection: the BT PCM interface is used for the FM PCM sa=
-mples
+On Thu, Feb 03, 2011 at 03:11:45AM +0300, Alexander Sverdlin wrote:
+> From: Alexander Sverdlin <subaparts@yandex.ru>
+> 
+> Move Chip Select control out of the CODEC code for CS4271.
 
-Yes, that is correct, I just did not wanted to go into details.
-Currently the ASoC codec driver only supports the BT/FM PCM interface.
-Adding the dedicated I2S interface for the FM radio should not be a big
-effort, we just need to add another dai to the codec driver, and connect
-that to the host processor.
-As I said before, we only implemented the BT/FM PCM interface support,
-since we do not have HW, where we could verify the dedicated FM I2S
-lines. But adding the support should not be a big deal IMHO (and can be
-done even without any means of testing it).
-
-> For both configuration we have a set of HCI commands to configure the FM =
-audio =
-
-> path and one of my concerns is to know if the wl1273_codec should handle =
-the audio path configuration =
-
-> and the switch between FM and BT SCO?
-
-It would be better if the codec could handle the configuration,
-depending on which DAI is in use. If we can send HCI commands from
-kernel, I think that would be the cleanest way.
-
--- =
-
-P=E9ter
+Applied, thanks.
