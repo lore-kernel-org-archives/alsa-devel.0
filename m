@@ -1,74 +1,79 @@
-From: "Bensaid, Selma" <selma.bensaid@intel.com>
-Subject: RE: [alsa-devel] WL1273 FM Radio driver...
-Date: Tue, 8 Feb 2011 10:09:33 +0000
-Message-ID: <2A84145621092446B6659B8A0F28E26F47010C29F1@irsmsx501.ger.corp.intel.com>
-References: <1297075922.15320.31.camel@masi.mnp.nokia.com>
-		<4D4FDED0.7070008@redhat.com>
-		<20110207120234.GE10564@opensource.wolfsonmicro.com>
-		<4D4FEA03.7090109@redhat.com>
-		<20110207131045.GG10564@opensource.wolfsonmicro.com>
-		<4D4FF821.4010701@redhat.com>
-		<20110207135225.GJ10564@opensource.wolfsonmicro.com>
-	<1297088242.15320.62.camel@masi.mnp.nokia.com>	<4D501704.6060504@redhat.com>
- <4D5109B3.60504@nokia.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: ALSA: Reasonable buffer size / where should it be
+	implemented?
+Date: Tue, 8 Feb 2011 11:21:11 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1102081109170.6272@eeebox2.perex-int.cz>
+References: <4D511552.7030409@t-online.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <4D5109B3.60504@nokia.com>
-Content-Language: en-US
-Sender: linux-media-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>, ext Mauro Carvalho Chehab <mchehab@redhat.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "sameo@linux.intel.com" <sameo@linux.intel.com>, ext Mark Brown <broonie@opensource.wolfsonmicro.com>, "hverkuil@xs4all.nl" <hverkuil@xs4all.nl>, "matti.j.aaltonen@nokia.com" <matti.j.aaltonen@nokia.com>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5349924436
+	for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2011 11:21:12 +0100 (CET)
+In-Reply-To: <4D511552.7030409@t-online.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Knut Petersen <Knut_Petersen@t-online.de>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-> The wl1273 as such is designed for embedded systems.
-> It can be connected in several ways to the system:
-> - analog only
-> In this way the RX/TX is connected to some codec's Line IN/OUT
-> For this to work, we don't need any audio driver for the FM chip
-> (basically the same configuration as rx51 has in regards of FM radio)
->=20
-> - Digital interfaces
-> The I2S lines are connected to the main processor. In this way the
-> wl1273 acts as a codec.
-> In order to provide platform independent driver we need to use ASoC
-> framework. ASoC have broad main processor side support, and it is eas=
-y
-> to switch the arch, if we have proper ASoC codec driver for the wl127=
-3.
-> It is also better to keep the codec implementation under
-> sound/soc/codecs.
->=20
-2 Digital interfaces are possible for FM WL1273:
-- the external connection: the I2S lines are used for the FM PCM sample=
-s
-- the internal connection: the BT PCM interface is used for the FM PCM =
-samples
-=46or both configuration we have a set of HCI commands to configure the=
- FM audio=20
-path and one of my concerns is to know if the wl1273_codec should handl=
-e the audio path configuration=20
-and the switch between FM and BT SCO?
+On Tue, 8 Feb 2011, Knut Petersen wrote:
 
-> I have not looked deeply into the wl1273 datasheets, but I'm sure
-> there's a way to nicely divide the parts between the MFD, V4L, and AS=
-oC.
->=20
-> --
-> P=E9ter
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
----------------------------------------------------------------------
-Intel Corporation SAS (French simplified joint stock company)
-Registered headquarters: "Les Montalets"- 2, rue de Paris,=20
-92196 Meudon Cedex, France
-Registration Number:  302 456 199 R.C.S. NANTERRE
-Capital: 4,572,000 Euros
+> I use a RME Digi 96 PAD audio card, and I do have
+> buffer overrun/underrun problems if I use the standard
+> rme96c linux driver.
+>
+> I need a simple recording machine. It should not fail if
+> e.g. cron starts updatedb or if I start a make -j 15 icecream
+> compile job and decide to surf the internet while I record
+> the digital satellite radio 48kHz stream.
 
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+I would determine the culprit where the user space blocks. If you write 
+data to HDD, the culprit is probably there, in my opinion. The current 
+PC machines can handle 82ms latencies quite well.
+
+A right behaving application should do the quick audio sample reads to a 
+big buffer and queue these data to HDD in a separate thread to not block 
+the audio input.
+
+> There is a lot of information about xrun problems, but
+> somehow that information either does not help to prevent
+> xruns on my system, is outdated, or asks for system
+> changes I do not accept.
+>
+> No, JACK does not help. No, I do not need low latency.
+> No, I don't want to switch to rt kernels. No, I don't want
+> to use an audio PC without X, without cron, network, etc.
+>
+> The hardware provides independent 64k ringbuffers for
+> capture and playback, that's not more than 85msec for a
+> 96 kHz / 2 channel / 32 bit setup or ADAT. That's simply
+> not enough for reliable operation.
+>
+> My private solution is a rme96.c that kmallocs  4 MB
+> software buffers for capture and playback, data transfer
+> between software and hardware buffer in the interrupt
+> service routine. That does efficiently prevent xruns even
+> on a really loaded system.
+>
+> But I don't know if that is the right way to go.
+
+It's probably the right way to go. I would only copy data in a tasklet not 
+directly in the interrupt routine. New hardware (like HDA) have 
+scatter-gather DMA buffers with almost unlimited size, so users can just 
+tune the system up.
+
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
