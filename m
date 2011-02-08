@@ -1,28 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Adding bluetooth PCM interface support to ASoC
- (Was: Re: [PATCH 6/7] ASoC: Samsung: neo1973_gta02: Fix bluetooth DAI
- registration)
-Date: Tue, 8 Feb 2011 13:08:23 +0000
-Message-ID: <20110208130823.GG29850@opensource.wolfsonmicro.com>
-References: <1297033463-14577-1-git-send-email-lars@metafoo.de>
-	<1297033463-14577-6-git-send-email-lars@metafoo.de>
-	<20110207115906.GD10564@opensource.wolfsonmicro.com>
-	<4D5023A4.3020209@metafoo.de>
-	<20110207170213.GP10564@opensource.wolfsonmicro.com>
-	<4D502DBF.3050205@metafoo.de>
-	<20110207174950.GQ10564@opensource.wolfsonmicro.com>
-	<4D50355A.60500@metafoo.de>
-	<20110207181702.GR10564@opensource.wolfsonmicro.com>
-	<4D50785A.7050801@metafoo.de>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v8 03/12] media: Entities, pads and links
+Date: Tue, 8 Feb 2011 14:35:14 +0100
+Message-ID: <201102081435.15911.laurent.pinchart@ideasonboard.com>
+References: <1296131437-29954-1-git-send-email-laurent.pinchart@ideasonboard.com>
+	<1296131437-29954-4-git-send-email-laurent.pinchart@ideasonboard.com>
+	<201102041120.37541.hverkuil@xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D9CD0103813
-	for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2011 14:08:25 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4D50785A.7050801@metafoo.de>
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
+	[95.142.166.194])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0ABB8103813
+	for <alsa-devel@alsa-project.org>; Tue,  8 Feb 2011 14:35:19 +0100 (CET)
+In-Reply-To: <201102041120.37541.hverkuil@xs4all.nl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,27 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Marcel Holtmann <marcel@holtmann.org>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: alsa-devel@alsa-project.org, sakari.ailus@maxwell.research.nokia.com, broonie@opensource.wolfsonmicro.com, clemens@ladisch.de, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 07, 2011 at 11:55:22PM +0100, Lars-Peter Clausen wrote:
+Hi Hans,
 
-> I did some research on the topic and it seems that this is a pretty common
-> setup in embedded devices.
+On Friday 04 February 2011 11:20:37 Hans Verkuil wrote:
+> On Thursday, January 27, 2011 13:30:28 Laurent Pinchart wrote:
 
-Yes, this is a totally vanilla setup except that for modern hardware the
-baseband is connected digitally also.
+<snip>
 
-> But the bluetooth audio support seems to be entirely written in userspace. The
-> in-kernel bluetooth drivers in general seem only to provide a common interface
-> to the underlying hardware and all of the higher level functionality seems to
-> be implemented in userspace.
-> So right now I have no idea where to start if one wanted to add a ASoC driver
-> which did the bt-dai configuration.
+> > +#define MEDIA_ENT_TYPE_SHIFT		16
+> > +#define MEDIA_ENT_TYPE_MASK		0x00ff0000
+> > +#define MEDIA_ENT_SUBTYPE_MASK		0x0000ffff
+> > +
+> > +#define MEDIA_ENT_T_DEVNODE		(1 << MEDIA_ENTITY_TYPE_SHIFT)
+> > +#define MEDIA_ENT_T_DEVNODE_V4L		(MEDIA_ENTITY_T_DEVNODE + 1)
+> > +#define MEDIA_ENT_T_DEVNODE_FB		(MEDIA_ENTITY_T_DEVNODE + 2)
+> > +#define MEDIA_ENT_T_DEVNODE_ALSA	(MEDIA_ENTITY_T_DEVNODE + 3)
+> > +#define MEDIA_ENT_T_DEVNODE_DVB		(MEDIA_ENTITY_T_DEVNODE + 4)
+> > +
+> > +#define MEDIA_ENT_T_V4L2_SUBDEV		(2 << MEDIA_ENTITY_TYPE_SHIFT)
+> > +#define MEDIA_ENT_T_V4L2_SUBDEV_SENSOR	(MEDIA_ENTITY_T_V4L2_SUBDEV + 1)
+> > +#define MEDIA_ENT_T_V4L2_SUBDEV_FLASH	(MEDIA_ENTITY_T_V4L2_SUBDEV + 2)
+> > +#define MEDIA_ENT_T_V4L2_SUBDEV_LENS	(MEDIA_ENTITY_T_V4L2_SUBDEV + 3)
+> 
+> MEDIA_ENTITY_? That should be MEDIA_ENT_. It looks like this was never
+> compiled...
 
-The obvious starting point would seem to be to provide a driver which
-allows userspace to tell the kernel about configuration changes - that's
-what we're doing at the minute for the trivial case where the hardware
-doesn't change configuration.  We could then look at pushing more of the
-code into the kernel if that made sense.
+Oops. I probably forgot to compile this intermediate patch (the end result is 
+correct though). I'll fix it.
+
+-- 
+Regards,
+
+Laurent Pinchart
