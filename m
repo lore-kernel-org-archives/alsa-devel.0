@@ -1,21 +1,16 @@
-From: Arthur Marsh <arthur.marsh@internode.on.net>
-Subject: Re: MIDI playback not keeping steady time with recent
- kernels
-Date: Wed, 09 Feb 2011 11:21:26 +1030
-Message-ID: <4D51E50E.8000703@internode.on.net>
-References: <559v18-575.ln1@ppp121-45-136-118.lns11.adl6.internode.on.net>	<bma128-mok.ln1@ppp121-45-136-118.lns11.adl6.internode.on.net>	<elo128-8u4.ln1@ppp121-45-136-118.lns11.adl6.internode.on.net>
-	<11c228-725.ln1@ppp121-45-136-118.lns11.adl6.internode.on.net>
-	<4D512EA9.2020909@ladisch.de> <4D515EFD.3040909@internode.on.net>
-	<4D5163D8.8010708@ladisch.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: ALC861-VD bad recording issue
+Date: Wed, 9 Feb 2011 14:27:10 +0800
+Message-ID: <AANLkTimqH9Rb3PMyp8p9-CH2kfYe710O+bYGbNH9bhAg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ipmail05.adl6.internode.on.net (ipmail05.adl6.internode.on.net
-	[150.101.137.143])
-	by alsa0.perex.cz (Postfix) with ESMTP id E4112244B8
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2011 01:51:48 +0100 (CET)
-In-Reply-To: <4D5163D8.8010708@ladisch.de>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 80500243E6
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2011 07:27:12 +0100 (CET)
+Received: by ewy19 with SMTP id 19so3203606ewy.38
+	for <alsa-devel@alsa-project.org>; Tue, 08 Feb 2011 22:27:11 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,55 +20,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+> This is the output of the alsa script to ge information about my system
+and the driver
 
 
-Clemens Ladisch wrote, on 09/02/11 02:10:
-> Arthur Marsh wrote:
->> OK, I applied this patch.
->>
->> When the MIDI file was playing:
->> I still experienced some slow-down and speed-up under heavy load.
->
-> Is "some" less than previously?
+http://www.alsa-project.org/db/?f=9871b38d99bdd4cc91e398b60eb31361eb305395
 
-The amount of slow-down appears to be less than previously.
+Node 0x22 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Control: name="Input Source", index=0, device=0
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x80 0x80] [0x00
+0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+[0x80 0x80]
+  Connection: 11
+     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
 
->
-> It shouldn't be possible to get a speed-up; this looks as if your
-> computer's clock is not stable.  Are you using an NTP daemon?
-
-To clarify, the speed-up is back to original tempo, and yes I'm using an 
-NTP daemon. There has been an issue of the pc not keeping accurate time 
-under GNU/Linux even with ntpd running and using an NTP server a few 
-hops away.
-
->
-> What kind of heave load is this?  Does the same happen if you execute
-> "yes | tail" in a shell?
-
-The load when I experienced this problem was about 4 or 5, and mainly 
-seemed to be tied to activities that caused swapping (e.g. running 
-aptitude -u when other applications were using all available memory and 
-some swap).
-
-After quitting some applications so that there was no swapping going on 
-(kswapd0 showing 0.0 cpu), the MIDI file played fine, even with 
-"yes|tail" running.
-
-Adding aptitude -u to the mix, which resulted in kswapd0 running at 4 to 
-10 percent cpu, caused a slow-down.
-
-
->
->
-> Regards,
-> Clemens
->
-
-Thanks again,
-
-Arthur.
+if Input source is using [Audio Mixer], the driver may need to unmute
+only the seleted source and the other sources may need to be muted
