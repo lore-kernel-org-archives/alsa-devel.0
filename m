@@ -1,167 +1,61 @@
-From: Vaibhav Bedia <vaibhav.bedia-l0cyMroinI0@public.gmane.org>
-Subject: [PATCH v2 3/3] ASoC: Davinci: Replace usage of IO_ADDRESS with
-	ioremap()
-Date: Wed,  9 Feb 2011 18:39:54 +0530
-Message-ID: <1297256994-17137-3-git-send-email-vaibhav.bedia@ti.com>
-References: <1297256994-17137-1-git-send-email-vaibhav.bedia@ti.com>
-	<1297256994-17137-2-git-send-email-vaibhav.bedia@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/3] ASoC: Remove redundant -codec from WM8903
+	driver name
+Date: Wed,  9 Feb 2011 13:47:06 +0000
+Message-ID: <1297259228-1891-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <1297256994-17137-2-git-send-email-vaibhav.bedia-l0cyMroinI0@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, sshtylyov-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org, lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D0300103868
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2011 14:47:14 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, swarren@nvidia.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch modifies the Davinci i2s and mcasp drivers to make use of
-ioremap() instead of IO_ADDRESS()
+It causes noisy -codecs to appear in things like .codec_name.
 
-Signed-off-by: Vaibhav Bedia <vaibhav.bedia-l0cyMroinI0@public.gmane.org>
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
+ sound/soc/codecs/wm8903.c |    2 +-
+ sound/soc/tegra/harmony.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-v2:
-Don't call iounmap when ioremap has failed.
-
-Other comments from Sergie on the previous patch has been incorporated in a different patch.
-
-v1:
-http://thread.gmane.org/gmane.linux.alsa.devel/80120
-
- sound/soc/davinci/davinci-i2s.c   |   19 +++++++++++++------
- sound/soc/davinci/davinci-mcasp.c |   20 ++++++++++++++------
- 2 files changed, 27 insertions(+), 12 deletions(-)
-
-diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
-index e763d58..d0d60b8 100644
---- a/sound/soc/davinci/davinci-i2s.c
-+++ b/sound/soc/davinci/davinci-i2s.c
-@@ -694,20 +694,25 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 	}
- 	clk_enable(dev->clk);
+diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
+index 27cd8f5..04c3256 100644
+--- a/sound/soc/codecs/wm8903.c
++++ b/sound/soc/codecs/wm8903.c
+@@ -2134,7 +2134,7 @@ MODULE_DEVICE_TABLE(i2c, wm8903_i2c_id);
  
--	dev->base = (void __iomem *)IO_ADDRESS(mem->start);
-+	dev->base = ioremap(mem->start, resource_size(mem));
-+	if (!dev->base) {
-+		dev_err(&pdev->dev, "ioremap failed\n");
-+		ret = -ENOMEM;
-+		goto err_release_clk;
-+	}
- 
- 	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK].dma_addr =
--	    (dma_addr_t)(io_v2p(dev->base) + DAVINCI_MCBSP_DXR_REG);
-+	    (dma_addr_t)(mem->start + DAVINCI_MCBSP_DXR_REG);
- 
- 	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE].dma_addr =
--	    (dma_addr_t)(io_v2p(dev->base) + DAVINCI_MCBSP_DRR_REG);
-+	    (dma_addr_t)(mem->start + DAVINCI_MCBSP_DRR_REG);
- 
- 	/* first TX, then RX */
- 	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (!res) {
- 		dev_err(&pdev->dev, "no DMA resource\n");
- 		ret = -ENXIO;
--		goto err_release_clk;
-+		goto err_iounmap;
- 	}
- 	dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK].channel = res->start;
- 
-@@ -715,7 +720,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 	if (!res) {
- 		dev_err(&pdev->dev, "no DMA resource\n");
- 		ret = -ENXIO;
--		goto err_release_clk;
-+		goto err_iounmap;
- 	}
- 	dev->dma_params[SNDRV_PCM_STREAM_CAPTURE].channel = res->start;
- 	dev->dev = &pdev->dev;
-@@ -724,10 +729,12 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 
- 	ret = snd_soc_register_dai(&pdev->dev, &davinci_i2s_dai);
- 	if (ret != 0)
--		goto err_release_clk;
-+		goto err_iounmap;
- 
- 	return 0;
- 
-+err_iounmap:
-+	iounmap(dev->base);
- err_release_clk:
- 	clk_disable(dev->clk);
- 	clk_put(dev->clk);
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index e7ae621..a5af834 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -885,7 +885,13 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	clk_enable(dev->clk);
- 	dev->clk_active = 1;
- 
--	dev->base = (void __iomem *)IO_ADDRESS(mem->start);
-+	dev->base = ioremap(mem->start, resource_size(mem));
-+	if (!dev->base) {
-+		dev_err(&pdev->dev, "ioremap failed\n");
-+		ret = -ENOMEM;
-+		goto err_release_clk;
-+	}
-+
- 	dev->op_mode = pdata->op_mode;
- 	dev->tdm_slots = pdata->tdm_slots;
- 	dev->num_serializer = pdata->num_serializer;
-@@ -899,14 +905,14 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	dma_data->asp_chan_q = pdata->asp_chan_q;
- 	dma_data->ram_chan_q = pdata->ram_chan_q;
- 	dma_data->dma_addr = (dma_addr_t) (pdata->tx_dma_offset +
--							io_v2p(dev->base));
-+							mem->start);
- 
- 	/* first TX, then RX */
- 	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
- 	if (!res) {
- 		dev_err(&pdev->dev, "no DMA resource\n");
- 		ret = -ENODEV;
--		goto err_release_clk;
-+		goto err_iounmap;
- 	}
- 
- 	dma_data->channel = res->start;
-@@ -915,13 +921,13 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	dma_data->asp_chan_q = pdata->asp_chan_q;
- 	dma_data->ram_chan_q = pdata->ram_chan_q;
- 	dma_data->dma_addr = (dma_addr_t)(pdata->rx_dma_offset +
--							io_v2p(dev->base));
-+							mem->start);
- 
- 	res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
- 	if (!res) {
- 		dev_err(&pdev->dev, "no DMA resource\n");
- 		ret = -ENODEV;
--		goto err_release_clk;
-+		goto err_iounmap;
- 	}
- 
- 	dma_data->channel = res->start;
-@@ -929,9 +935,11 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	ret = snd_soc_register_dai(&pdev->dev, &davinci_mcasp_dai[pdata->op_mode]);
- 
- 	if (ret != 0)
--		goto err_release_clk;
-+		goto err_iounmap;
- 	return 0;
- 
-+err_iounmap:
-+	iounmap(dev->base);
- err_release_clk:
- 	clk_disable(dev->clk);
- 	clk_put(dev->clk);
+ static struct i2c_driver wm8903_i2c_driver = {
+ 	.driver = {
+-		.name = "wm8903-codec",
++		.name = "wm8903",
+ 		.owner = THIS_MODULE,
+ 	},
+ 	.probe =    wm8903_i2c_probe,
+diff --git a/sound/soc/tegra/harmony.c b/sound/soc/tegra/harmony.c
+index 11e2cb8..d702abe 100644
+--- a/sound/soc/tegra/harmony.c
++++ b/sound/soc/tegra/harmony.c
+@@ -189,7 +189,7 @@ static int harmony_asoc_init(struct snd_soc_pcm_runtime *rtd)
+ static struct snd_soc_dai_link harmony_wm8903_dai = {
+ 	.name = "WM8903",
+ 	.stream_name = "WM8903 PCM",
+-	.codec_name = "wm8903-codec.0-001a",
++	.codec_name = "wm8903.0-001a",
+ 	.platform_name = "tegra-pcm-audio",
+ 	.cpu_dai_name = "tegra-i2s.0",
+ 	.codec_dai_name = "wm8903-hifi",
 -- 
-1.6.2.4
+1.7.2.3
