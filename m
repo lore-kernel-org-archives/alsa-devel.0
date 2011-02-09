@@ -1,29 +1,42 @@
-From: Paul Walmsley <paul@pwsan.com>
-Subject: Re: [PATCH v2 01/13] OMAP: hwmod: Add member 'name' to omap_hwmod_addr_space
- struct
-Date: Wed, 9 Feb 2011 14:14:07 -0700 (MST)
-Message-ID: <alpine.DEB.2.00.1102091413340.21991@utopia.booyaka.com>
-References: <1296485437-12806-1-git-send-email-kishon@ti.com> <1296485437-12806-2-git-send-email-kishon@ti.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Actively manage WM8903 DC servo
+ configuration
+Date: Wed, 09 Feb 2011 21:49:54 +0000
+Message-ID: <1297288194.3297.181.camel@odin>
+References: <1297282510-2319-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1296485437-12806-2-git-send-email-kishon@ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: khilman@deeprootsystems.com, tony@atomide.com, Kishon Vijay Abraham I <kishon@ti.com>
-Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, charu@ti.com, shubhrajyoti@ti.com, b-cousson@ti.com, p-basak2@ti.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id C39DF243FC
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2011 22:49:57 +0100 (CET)
+Received: by wyi11 with SMTP id 11so649986wyi.38
+	for <alsa-devel@alsa-project.org>; Wed, 09 Feb 2011 13:49:57 -0800 (PST)
+In-Reply-To: <1297282510-2319-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 31 Jan 2011, Kishon Vijay Abraham I wrote:
-
-> Adds a structure member 'name' to 'omap_hwmod_addr_space' structure.
-> The drivers can use platform_get_resource_byname() to get resource of
-> type 'IORESOURCE_MEM' by name so that it need not rely on the order to get
-> the proper resource.
+On Wed, 2011-02-09 at 20:15 +0000, Mark Brown wrote:
+> Explicitly cache the DC servo offsets for digital paths in the driver,
+> allowing them to be preserved over suspend and resume, and ensure that
+> we recalibrate analogue outputs paths when they are in use so that we
+> cover any changes in the input offset.
 > 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> Signed-off-by: Benoit Cousson <b-cousson@ti.com>
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-Acked-by: Paul Walmsley <paul@pwsan.com> -- although, please update the 
-patch description as Kevin requested.
-
-- Paul
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
