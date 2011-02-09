@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/3] ASoC: Add support for AIF channel muxing
-	on WM8903
-Date: Wed,  9 Feb 2011 13:47:08 +0000
-Message-ID: <1297259228-1891-3-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/3] ASoC: Display WM8903 chip revision
+	alphabetically
+Date: Wed,  9 Feb 2011 13:47:07 +0000
+Message-ID: <1297259228-1891-2-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <1297259228-1891-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D2008103876
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2011 14:47:14 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1C4E81038EA
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2011 14:47:15 +0100 (CET)
 In-Reply-To: <1297259228-1891-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,122 +27,23 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8903.c |   66 ++++++++++++++++++++++++++++++++++++++++++---
- 1 files changed, 62 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wm8903.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-index caf41ad..b20611b 100644
+index 04c3256..caf41ad 100644
 --- a/sound/soc/codecs/wm8903.c
 +++ b/sound/soc/codecs/wm8903.c
-@@ -679,6 +679,22 @@ static const struct soc_enum lsidetone_enum =
- static const struct soc_enum rsidetone_enum =
- 	SOC_ENUM_SINGLE(WM8903_DAC_DIGITAL_0, 0, 3, sidetone_text);
+@@ -1983,8 +1983,8 @@ static int wm8903_probe(struct snd_soc_codec *codec)
+ 	}
  
-+static const char *aif_text[] = {
-+	"Left", "Right"
-+};
-+
-+static const struct soc_enum lcapture_enum =
-+	SOC_ENUM_SINGLE(WM8903_AUDIO_INTERFACE_0, 7, 2, aif_text);
-+
-+static const struct soc_enum rcapture_enum =
-+	SOC_ENUM_SINGLE(WM8903_AUDIO_INTERFACE_0, 6, 2, aif_text);
-+
-+static const struct soc_enum lplay_enum =
-+	SOC_ENUM_SINGLE(WM8903_AUDIO_INTERFACE_0, 5, 2, aif_text);
-+
-+static const struct soc_enum rplay_enum =
-+	SOC_ENUM_SINGLE(WM8903_AUDIO_INTERFACE_0, 4, 2, aif_text);
-+
- static const struct snd_kcontrol_new wm8903_snd_controls[] = {
+ 	val = snd_soc_read(codec, WM8903_REVISION_NUMBER);
+-	dev_info(codec->dev, "WM8903 revision %d\n",
+-		 val & WM8903_CHIP_REV_MASK);
++	dev_info(codec->dev, "WM8903 revision %c\n",
++		 (val & WM8903_CHIP_REV_MASK) + 'A');
  
- /* Input PGAs - No TLV since the scale depends on PGA mode */
-@@ -796,6 +812,18 @@ static const struct snd_kcontrol_new lsidetone_mux =
- static const struct snd_kcontrol_new rsidetone_mux =
- 	SOC_DAPM_ENUM("DACR Sidetone Mux", rsidetone_enum);
- 
-+static const struct snd_kcontrol_new lcapture_mux =
-+	SOC_DAPM_ENUM("Left Capture Mux", lcapture_enum);
-+
-+static const struct snd_kcontrol_new rcapture_mux =
-+	SOC_DAPM_ENUM("Right Capture Mux", rcapture_enum);
-+
-+static const struct snd_kcontrol_new lplay_mux =
-+	SOC_DAPM_ENUM("Left Playback Mux", lplay_enum);
-+
-+static const struct snd_kcontrol_new rplay_mux =
-+	SOC_DAPM_ENUM("Right Playback Mux", rplay_enum);
-+
- static const struct snd_kcontrol_new left_output_mixer[] = {
- SOC_DAPM_SINGLE("DACL Switch", WM8903_ANALOGUE_LEFT_MIX_0, 3, 1, 0),
- SOC_DAPM_SINGLE("DACR Switch", WM8903_ANALOGUE_LEFT_MIX_0, 2, 1, 0),
-@@ -859,14 +887,26 @@ SND_SOC_DAPM_MUX("Right Input Mode Mux", SND_SOC_NOPM, 0, 0, &rinput_mode_mux),
- SND_SOC_DAPM_PGA("Left Input PGA", WM8903_POWER_MANAGEMENT_0, 1, 0, NULL, 0),
- SND_SOC_DAPM_PGA("Right Input PGA", WM8903_POWER_MANAGEMENT_0, 0, 0, NULL, 0),
- 
--SND_SOC_DAPM_ADC("ADCL", "Left HiFi Capture", WM8903_POWER_MANAGEMENT_6, 1, 0),
--SND_SOC_DAPM_ADC("ADCR", "Right HiFi Capture", WM8903_POWER_MANAGEMENT_6, 0, 0),
-+SND_SOC_DAPM_ADC("ADCL", NULL, WM8903_POWER_MANAGEMENT_6, 1, 0),
-+SND_SOC_DAPM_ADC("ADCR", NULL, WM8903_POWER_MANAGEMENT_6, 0, 0),
-+
-+SND_SOC_DAPM_MUX("Left Capture Mux", SND_SOC_NOPM, 0, 0, &lcapture_mux),
-+SND_SOC_DAPM_MUX("Right Capture Mux", SND_SOC_NOPM, 0, 0, &rcapture_mux),
-+
-+SND_SOC_DAPM_AIF_OUT("AIFTXL", "Left HiFi Capture", 0, SND_SOC_NOPM, 0, 0),
-+SND_SOC_DAPM_AIF_OUT("AIFTXR", "Right HiFi Capture", 0, SND_SOC_NOPM, 0, 0),
- 
- SND_SOC_DAPM_MUX("DACL Sidetone", SND_SOC_NOPM, 0, 0, &lsidetone_mux),
- SND_SOC_DAPM_MUX("DACR Sidetone", SND_SOC_NOPM, 0, 0, &rsidetone_mux),
- 
--SND_SOC_DAPM_DAC("DACL", "Left Playback", WM8903_POWER_MANAGEMENT_6, 3, 0),
--SND_SOC_DAPM_DAC("DACR", "Right Playback", WM8903_POWER_MANAGEMENT_6, 2, 0),
-+SND_SOC_DAPM_AIF_IN("AIFRXL", "Left Playback", 0, SND_SOC_NOPM, 0, 0),
-+SND_SOC_DAPM_AIF_IN("AIFRXR", "Right Playback", 0, SND_SOC_NOPM, 0, 0),
-+
-+SND_SOC_DAPM_MUX("Left Playback Mux", SND_SOC_NOPM, 0, 0, &lplay_mux),
-+SND_SOC_DAPM_MUX("Right Playback Mux", SND_SOC_NOPM, 0, 0, &rplay_mux),
-+
-+SND_SOC_DAPM_DAC("DACL", NULL, WM8903_POWER_MANAGEMENT_6, 3, 0),
-+SND_SOC_DAPM_DAC("DACR", NULL, WM8903_POWER_MANAGEMENT_6, 2, 0),
- 
- SND_SOC_DAPM_MIXER("Left Output Mixer", WM8903_POWER_MANAGEMENT_1, 1, 0,
- 		   left_output_mixer, ARRAY_SIZE(left_output_mixer)),
-@@ -948,18 +988,36 @@ static const struct snd_soc_dapm_route intercon[] = {
- 	{ "Left Input PGA", NULL, "Left Input Mode Mux" },
- 	{ "Right Input PGA", NULL, "Right Input Mode Mux" },
- 
-+	{ "Left Capture Mux", "Left", "ADCL" },
-+	{ "Left Capture Mux", "Right", "ADCR" },
-+
-+	{ "Right Capture Mux", "Left", "ADCL" },
-+	{ "Right Capture Mux", "Right", "ADCR" },
-+
-+	{ "AIFTXL", NULL, "Left Capture Mux" },
-+	{ "AIFTXR", NULL, "Right Capture Mux" },
-+
- 	{ "ADCL", NULL, "Left Input PGA" },
- 	{ "ADCL", NULL, "CLK_DSP" },
- 	{ "ADCR", NULL, "Right Input PGA" },
- 	{ "ADCR", NULL, "CLK_DSP" },
- 
-+	{ "Left Playback Mux", "Left", "AIFRXL" },
-+	{ "Left Playback Mux", "Right", "AIFRXR" },
-+
-+	{ "Right Playback Mux", "Left", "AIFRXL" },
-+	{ "Right Playback Mux", "Right", "AIFRXR" },
-+
- 	{ "DACL Sidetone", "Left", "ADCL" },
- 	{ "DACL Sidetone", "Right", "ADCR" },
- 	{ "DACR Sidetone", "Left", "ADCL" },
- 	{ "DACR Sidetone", "Right", "ADCR" },
- 
-+	{ "DACL", NULL, "Left Playback Mux" },
- 	{ "DACL", NULL, "DACL Sidetone" },
- 	{ "DACL", NULL, "CLK_DSP" },
-+
-+	{ "DACR", NULL, "Right Playback Mux" },
- 	{ "DACR", NULL, "DACR Sidetone" },
- 	{ "DACR", NULL, "CLK_DSP" },
+ 	wm8903_reset(codec);
  
 -- 
 1.7.2.3
