@@ -1,25 +1,41 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH 2/6] ASoC: Tegra: Harmony: Add switch
- control for speaker
-Date: Wed, 9 Feb 2011 12:11:28 +0000
-Message-ID: <20110209121128.GC12333@opensource.wolfsonmicro.com>
-References: <1296766578-13988-1-git-send-email-swarren@nvidia.com>
- <1296766578-13988-2-git-send-email-swarren@nvidia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] ASoC: sn95031: Add jack support in the
+	codec
+Date: Wed, 9 Feb 2011 12:11:39 +0000
+Message-ID: <20110209121139.GA24042@opensource.wolfsonmicro.com>
+References: <1297242747-18632-1-git-send-email-vinod.koul@intel.com>
+	<1297242747-18632-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 36B47103847
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2011 13:11:41 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1296766578-13988-2-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+In-Reply-To: <1297242747-18632-2-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Harsha Priya <priya.harsha@intel.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 03, 2011 at 01:56:14PM -0700, Stephen Warren wrote:
-> Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+On Wed, Feb 09, 2011 at 02:42:25PM +0530, Koul, Vinod wrote:
 
-Applied, thanks.
---
-To unsubscribe from this list: send the line "unsubscribe linux-tegra" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> +void disable_jack_btn(struct snd_soc_codec *codec)
+> +{
+> +	snd_soc_write(codec, SN95031_BTNCTRL2, 0x00);
+> +}
+> +EXPORT_SYMBOL_GPL(disable_jack_btn);
+
+This needs to be namespaced.  It's also surprising that the matching
+enable function isn't exposed...
+
+The code itself looks OK.
