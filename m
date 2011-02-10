@@ -1,8 +1,7 @@
 From: linux@audioscience.com
-Subject: [PATCH 27/28] Fix outstream start trigger for non-mmap
-	adapters.
-Date: Thu, 10 Feb 2011 17:26:20 +1300
-Message-ID: <1297311981-30448-28-git-send-email-linux@audioscience.com>
+Subject: [PATCH 28/28] HPI v4.06
+Date: Thu, 10 Feb 2011 17:26:21 +1300
+Message-ID: <1297311981-30448-29-git-send-email-linux@audioscience.com>
 References: <1297311981-30448-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,24 +23,28 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
+Firmware version check depends on hpi version. Update so correct firmware
+is accepted.
+
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- pci/asihpi/asihpi.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ pci/asihpi/hpi.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/pci/asihpi/asihpi.c b/pci/asihpi/asihpi.c
-index b2c0c8a..c0ae94f 100644
---- a/pci/asihpi/asihpi.c
-+++ b/pci/asihpi/asihpi.c
-@@ -632,7 +632,8 @@ static int snd_card_asihpi_trigger(struct snd_pcm_substream *substream,
- 		VPRINTK1(KERN_INFO "start\n");
- 		/* start the master stream */
- 		snd_card_asihpi_pcm_timer_start(substream);
--		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		if ((substream->stream == SNDRV_PCM_STREAM_CAPTURE) ||
-+			!card->support_mmap)
- 			hpi_handle_error(hpi_stream_start(dpcm->h_stream));
- 		break;
+diff --git a/pci/asihpi/hpi.h b/pci/asihpi/hpi.h
+index dec1c30..6fc025c 100644
+--- a/pci/asihpi/hpi.h
++++ b/pci/asihpi/hpi.h
+@@ -43,8 +43,8 @@ i.e 3.05.02 is a development version
+ #define HPI_VER_RELEASE(v) ((int)(v & 0xFF))
  
+ /* Use single digits for versions less that 10 to avoid octal. */
+-#define HPI_VER HPI_VERSION_CONSTRUCTOR(4L, 5, 32)
+-#define HPI_VER_STRING "4.05.32"
++#define HPI_VER HPI_VERSION_CONSTRUCTOR(4L, 6, 0)
++#define HPI_VER_STRING "4.06.00"
+ 
+ /* Library version as documented in hpi-api-versions.txt */
+ #define HPI_LIB_VER  HPI_VERSION_CONSTRUCTOR(9, 0, 0)
 -- 
 1.7.0.4
