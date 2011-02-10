@@ -1,16 +1,18 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCH] ASoC: Allow use sleeping gpio in soc-jack
-Date: Thu, 10 Feb 2011 17:22:23 +0200
-Message-ID: <1297351343-17297-1-git-send-email-jhnikula@gmail.com>
+From: =?utf-8?Q?Jon_Harald_=C3=98ymyr?= <joymyr@gmail.com>
+Subject: C API, usage of function _snd_pcm_file_open()
+Date: Thu, 10 Feb 2011 16:49:06 +0100 (CET)
+Message-ID: <30083061.18.1297352942734.JavaMail.jon@TT-WS-002>
+References: <21273028.14.1297352791843.JavaMail.jon@TT-WS-002>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 6A8932454A
-	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 16:22:25 +0100 (CET)
-Received: by fxm5 with SMTP id 5so1602412fxm.38
-	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 07:22:25 -0800 (PST)
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id A9EB524562
+	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 16:48:55 +0100 (CET)
+Received: by ewy19 with SMTP id 19so768795ewy.38
+	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 07:48:55 -0800 (PST)
+In-Reply-To: <21273028.14.1297352791843.JavaMail.jon@TT-WS-002>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,32 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-It is safe to use sleeping gpio in snd_soc_jack_gpio_detect as it is not
-called from interrupt context. This avoids WARN_ON from __gpio_get_value
-if sleeping gpio is registered for jack.
+I had a look at the Spotify C API, and found that they were using the following code to output music from Spotify: snd_pcm_open(&h, dev, SND_PCM_STREAM_PLAYBACK, 0).
 
-Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
----
-Only compile tested.
----
- sound/soc/soc-jack.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+I want use this function instead: 
+int _snd_pcm_file_open(snd_pcm_t **pcmp, const char *name, snd_config_t *root, snd_config_t *conf, snd_pcm_stream_t stream, int mode)
 
-diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index 99dbaf7..4579ee0 100644
---- a/sound/soc/soc-jack.c
-+++ b/sound/soc/soc-jack.c
-@@ -240,7 +240,7 @@ static void snd_soc_jack_gpio_detect(struct snd_soc_jack_gpio *gpio)
- 	int enable;
- 	int report;
- 
--	enable = gpio_get_value(gpio->gpio);
-+	enable = gpio_get_value_cansleep(gpio->gpio);
- 	if (gpio->invert)
- 		enable = !enable;
- 
--- 
-1.7.2.3
+The function is found here: 
+http://www.alsa-project.org/alsa-doc/alsa-lib/pcm__file_8c.html#94d0dc725e55a974d792e16f8abdc60a
+
+I'm not able to find anything in the documentation explaining what the two parameters snd_config_t *root and snd_config_t *conf is.
+
+What I'm trying to achieve is to write the stream to a file, and then read it from another application. But it would be even better if I could make the C application write to standard output.
+
+Can anybody help me with this?
+I'm not very experienced with either C programming or streaming, but I would really like to make this work.
