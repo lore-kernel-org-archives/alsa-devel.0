@@ -1,7 +1,8 @@
 From: linux@audioscience.com
-Subject: [PATCH 26/28] Tighten firmware version requirements.
-Date: Thu, 10 Feb 2011 17:26:19 +1300
-Message-ID: <1297311981-30448-27-git-send-email-linux@audioscience.com>
+Subject: [PATCH 25/28] Ensure all adapter data is cleared on
+	device removal.
+Date: Thu, 10 Feb 2011 17:26:18 +1300
+Message-ID: <1297311981-30448-26-git-send-email-linux@audioscience.com>
 References: <1297311981-30448-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -23,40 +24,35 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-Difference in major.minor between driver and firmware is an error now.
-Release version mismatch give a warning.
-
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- pci/asihpi/hpidspcd.c |    7 +++----
- 1 files changed, 3 insertions(+), 4 deletions(-)
+ pci/asihpi/hpioctl.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/pci/asihpi/hpidspcd.c b/pci/asihpi/hpidspcd.c
-index f9958e9..fb311d8 100644
---- a/pci/asihpi/hpidspcd.c
-+++ b/pci/asihpi/hpidspcd.c
-@@ -100,9 +100,9 @@ short hpi_dsp_code_open(u32 adapter, struct dsp_code *ps_dsp_code,
- 		goto error2;
+diff --git a/pci/asihpi/hpioctl.c b/pci/asihpi/hpioctl.c
+index 0ea9aae..26186be 100644
+--- a/pci/asihpi/hpioctl.c
++++ b/pci/asihpi/hpioctl.c
+@@ -449,10 +449,8 @@ void __devexit asihpi_adapter_remove(struct pci_dev *pci_dev)
+ 		}
  	}
  
--	if (header.version / 10000 != HPI_VER_DECIMAL / 10000) {
-+	if (header.version / 100 != HPI_VER_DECIMAL / 100) {
- 		dev_printk(KERN_ERR, &ps_dsp_code->ps_dev->dev,
--			"Firmware Major Version mismatch "
-+			"Incompatible firmware version "
- 			"DSP image %d != Driver %d\n", header.version,
- 			HPI_VER_DECIMAL);
- 		goto error2;
-@@ -110,9 +110,8 @@ short hpi_dsp_code_open(u32 adapter, struct dsp_code *ps_dsp_code,
+-	if (pa->p_buffer) {
+-		pa->buffer_size = 0;
++	if (pa->p_buffer)
+ 		vfree(pa->p_buffer);
+-	}
  
- 	if (header.version != HPI_VER_DECIMAL) {
- 		dev_printk(KERN_WARNING, &ps_dsp_code->ps_dev->dev,
--			"firmware: version mismatch  DSP image %d != Driver %d\n",
-+			"Firmware: release version mismatch  DSP image %d != Driver %d\n",
- 			header.version, HPI_VER_DECIMAL);
--		/* goto error2;  still allow driver to load */
- 	}
+ 	pci_set_drvdata(pci_dev, NULL);
+ 	if (1)
+@@ -461,6 +459,8 @@ void __devexit asihpi_adapter_remove(struct pci_dev *pci_dev)
+ 			pci_dev->vendor, pci_dev->device,
+ 			pci_dev->subsystem_vendor, pci_dev->subsystem_device,
+ 			pci_dev->devfn, pa->index);
++
++	memset(pa, 0, sizeof(*pa));
+ }
  
- 	HPI_DEBUG_LOG(DEBUG, "dsp code %s opened\n", fw_name);
+ void __init asihpi_init(void)
 -- 
 1.7.0.4
