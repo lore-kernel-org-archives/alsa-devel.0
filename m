@@ -1,11 +1,13 @@
 From: linux@audioscience.com
-Subject: [PATCH] asihpi: Update from 4.04 to 4.06
-Date: Thu, 10 Feb 2011 17:25:53 +1300
-Message-ID: <1297311981-30448-1-git-send-email-linux@audioscience.com>
+Subject: [PATCH 01/28] Switch to dev_printk.
+Date: Thu, 10 Feb 2011 17:25:54 +1300
+Message-ID: <1297311981-30448-2-git-send-email-linux@audioscience.com>
+References: <1297311981-30448-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-reply-to: <1297311981-30448-1-git-send-email-linux@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -16,44 +18,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: patch@alsa-project.org
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch series updates asihpi driver from version 4.04 to 4.06
+From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-Major changes:
-- hpi6205 adapters no longer signal interrupts on message 
-transfer, freeing the interrupt for use by streams. This requires matching
-DSP firmware.
-- rewrote alsa driver pcm stream timer function so it works better with 
-small buffer sizes e.g. JACK.
-- update alsa control names to better conform to 'standard' style.
+Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+---
+ pci/asihpi/hpidspcd.c |   34 +++++++++++++++++++---------------
+ 1 files changed, 19 insertions(+), 15 deletions(-)
 
-Minor changes: add low level volume mute control, allow adapters with 
-duplicate hardware index jumpers to be discovered, fix playback start for 
-non-mmap adapters.
-
-Cosmetic changes: removal of many unused functions and data. removal of vestigial
-hpi subsys pointer from hpi functions. conversion of many defines to enums,
-various cleanups to comment text and some badly munged identifiers.
-
-
- asihpi.c       |  781 ++++++++---------
- hpi.h          | 1214 ++++++++++-----------------
- hpi6000.c      |  299 +++---
- hpi6205.c      |  603 +++++--------
- hpi6205.h      |    7 
- hpi_internal.h | 1118 ++++++++++++-------------
- hpicmn.c       |  480 ++++++----
- hpicmn.h       |   24 
- hpidebug.c     |  157 ---
- hpidebug.h     |  323 -------
- hpidspcd.c     |   37 
- hpidspcd.h     |    2 
- hpifunc.c      | 2498 ++++++++++++++++-----------------------------------------
- hpimsginit.c   |   18 
- hpimsginit.h   |   12 
- hpimsgx.c      |  203 +---
- hpioctl.c      |   85 -
- hpios.h        |   10 
- 18 files changed, 2914 insertions(+), 4957 deletions(-)
+diff --git a/pci/asihpi/hpidspcd.c b/pci/asihpi/hpidspcd.c
+index 9b10d9a..f9958e9 100644
+--- a/pci/asihpi/hpidspcd.c
++++ b/pci/asihpi/hpidspcd.c
+@@ -71,47 +71,51 @@ short hpi_dsp_code_open(u32 adapter, struct dsp_code *ps_dsp_code,
+ 	int err;
+ 
+ 	sprintf(fw_name, "asihpi/dsp%04x.bin", adapter);
+-	HPI_DEBUG_LOG(INFO, "requesting firmware for %s\n", fw_name);
+ 
+ 	err = request_firmware(&ps_firmware, fw_name,
+ 		&ps_dsp_code->ps_dev->dev);
++
+ 	if (err != 0) {
+-		HPI_DEBUG_LOG(ERROR, "%d, request_firmware failed for  %s\n",
+-			err, fw_name);
++		dev_printk(KERN_ERR, &ps_dsp_code->ps_dev->dev,
++			"%d, request_firmware failed for  %s\n", err,
++			fw_name);
+ 		goto error1;
+ 	}
+ 	if (ps_firmware->size < sizeof(header)) {
+-		HPI_DEBUG_LOG(ERROR, "header size too small %s\n", fw_name);
++		dev_printk(KERN_ERR, &ps_dsp_code->ps_dev->dev,
++			"Header size too small %s\n", fw_name);
+ 		goto error2;
+ 	}
+ 	memcpy(&header, ps_firmware->data, sizeof(header));
+ 	if (header.adapter != adapter) {
+-		HPI_DEBUG_LOG(ERROR, "adapter type incorrect %4x != %4x\n",
+-			header.adapter, adapter);
++		dev_printk(KERN_ERR, &ps_dsp_code->ps_dev->dev,
++			"Adapter type incorrect %4x != %4x\n", header.adapter,
++			adapter);
+ 		goto error2;
+ 	}
+ 	if (header.size != ps_firmware->size) {
+-		HPI_DEBUG_LOG(ERROR, "code size wrong  %d != %ld\n",
+-			header.size, (unsigned long)ps_firmware->size);
++		dev_printk(KERN_ERR, &ps_dsp_code->ps_dev->dev,
++			"Code size wrong  %d != %ld\n", header.size,
++			(unsigned long)ps_firmware->size);
+ 		goto error2;
+ 	}
+ 
+ 	if (header.version / 10000 != HPI_VER_DECIMAL / 10000) {
+-		HPI_DEBUG_LOG(ERROR,
+-			"firmware major version mismatch "
+-			"DSP image %d != driver %d\n", header.version,
++		dev_printk(KERN_ERR, &ps_dsp_code->ps_dev->dev,
++			"Firmware Major Version mismatch "
++			"DSP image %d != Driver %d\n", header.version,
+ 			HPI_VER_DECIMAL);
+ 		goto error2;
+ 	}
+ 
+ 	if (header.version != HPI_VER_DECIMAL) {
+-		HPI_DEBUG_LOG(WARNING,
+-			"version mismatch  DSP image %d != driver %d\n",
++		dev_printk(KERN_WARNING, &ps_dsp_code->ps_dev->dev,
++			"firmware: version mismatch  DSP image %d != Driver %d\n",
+ 			header.version, HPI_VER_DECIMAL);
+ 		/* goto error2;  still allow driver to load */
+ 	}
+ 
+-	HPI_DEBUG_LOG(INFO, "dsp code %s opened\n", fw_name);
++	HPI_DEBUG_LOG(DEBUG, "dsp code %s opened\n", fw_name);
+ 	ps_dsp_code->ps_firmware = ps_firmware;
+ 	ps_dsp_code->block_length = header.size / sizeof(u32);
+ 	ps_dsp_code->word_count = sizeof(header) / sizeof(u32);
+@@ -148,7 +152,7 @@ void hpi_dsp_code_rewind(struct dsp_code *ps_dsp_code)
+ short hpi_dsp_code_read_word(struct dsp_code *ps_dsp_code, u32 *pword)
+ {
+ 	if (ps_dsp_code->word_count + 1 > ps_dsp_code->block_length)
+-		return (HPI_ERROR_DSP_FILE_FORMAT);
++		return HPI_ERROR_DSP_FILE_FORMAT;
+ 
+ 	*pword = ((u32 *)(ps_dsp_code->ps_firmware->data))[ps_dsp_code->
+ 		word_count];
+-- 
+1.7.0.4
