@@ -1,26 +1,22 @@
-From: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
-Subject: Re: WL1273 FM Radio driver...
-Date: Thu, 10 Feb 2011 14:10:40 +0200
-Message-ID: <1297339840.15320.101.camel@masi.mnp.nokia.com>
-References: <4D4FF821.4010701@redhat.com>
-	<20110207135225.GJ10564@opensource.wolfsonmicro.com>
-	<1297088242.15320.62.camel@masi.mnp.nokia.com>
-	<4D501704.6060504@redhat.com> <4D5109B3.60504@nokia.com>
-	<2A84145621092446B6659B8A0F28E26F47010C29F1@irsmsx501.ger.corp.intel.com>
-	<4D5122CF.3010403@nokia.com>
-	<1297236165.15320.70.camel@masi.mnp.nokia.com>
-	<2A84145621092446B6659B8A0F28E26F4703CC3968@irsmsx501.ger.corp.intel.com>
-	<1297332223.15320.95.camel@masi.mnp.nokia.com>
-	<20110210110205.GA28336@opensource.wolfsonmicro.com>
-Reply-To: matti.j.aaltonen@nokia.com
+From: Anisse Astier <anisse@astier.eu>
+Subject: [PATCH resend] ALSA: hda - add quirk for Ordissimo EVE
+ using a realtek ALC662
+Date: Thu, 10 Feb 2011 13:14:44 +0100
+Message-ID: <20110210131444.5c2c9448@destiny.ordissimo>
+References: <20110121154544.4e5ed4e6@destiny.ordissimo>
+	<1295624188.12720.68.camel@mattotaupa>
+	<s5hvd1e77ce.wl%tiwai@suse.de>
+	<20110124174300.079c8cb7@destiny.ordissimo>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa02.nokia.com (smtp.nokia.com [147.243.1.48])
-	by alsa0.perex.cz (Postfix) with ESMTP id 379DC244BE
-	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 13:11:09 +0100 (CET)
-In-Reply-To: <20110210110205.GA28336@opensource.wolfsonmicro.com>
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 7AFD2244C7
+	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 13:15:55 +0100 (CET)
+Received: by fxm5 with SMTP id 5so1407418fxm.38
+	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 04:15:55 -0800 (PST)
+In-Reply-To: <20110124174300.079c8cb7@destiny.ordissimo>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,27 +26,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ext Mauro Carvalho Chehab <mchehab@redhat.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "ext Bensaid,
-	Selma" <selma.bensaid@intel.com>, "hverkuil@xs4all.nl" <hverkuil@xs4all.nl>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "sameo@linux.intel.com" <sameo@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Paul Menzel <paulepanter@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-02-10 at 11:02 +0000, ext Mark Brown wrote:
-> On Thu, Feb 10, 2011 at 12:03:43PM +0200, Matti J. Aaltonen wrote:
-> 
-> > We know these messages, they are mentioned in the documentation and we
-> > use them already, but we send them from the user space. The problem is
-> > how to send the messages from the driver within the kernel.
-> 
-> Set up a line discipline - it's not in principle that much different to
-> what something like PPP is doing.
 
-I'll look into it. 
+This netbook has a only one jack output and an internal mic.
 
-But I got the following quick comment from a local BT expert: "No you
-cannot change line discipline if bt is already in use. And it's not uart
-interface but hci interface. uart can be replaced with sdio for example
-and you still have the same hci interface."
+By default, mic and jack sense aren't working. Using lenovo-101e
+parameters makes both work.
 
-Thanks,
-Matti
+The device seems based on a Sharetronic Q70, so this should fix audio for
+this model too.
+
+Signed-off-by: Anisse Astier <anisse@astier.eu>
+---
+Hi,
+
+Sorry for the delay. As usual, this is based on sound-2.6/for-next.
+
+Regards,
+
+Anisse
+---
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 1e092b3..6a43c1c 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -18934,6 +18934,7 @@ static struct snd_pci_quirk alc662_cfg_tbl[] = {
+ 					ALC662_3ST_6ch_DIG),
+ 	SND_PCI_QUIRK_MASK(0x1854, 0xf000, 0x2000, "ASUS H13-200x",
+ 			   ALC663_ASUS_H13),
++	SND_PCI_QUIRK(0x1991, 0x5628, "Ordissimo EVE", ALC662_LENOVO_101E),
+ 	{}
+ };
+ 
+-- 
+1.7.3.2
