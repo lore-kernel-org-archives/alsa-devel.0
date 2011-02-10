@@ -1,7 +1,8 @@
 From: linux@audioscience.com
-Subject: [PATCH 21/28] Remove unused code and data.
-Date: Thu, 10 Feb 2011 17:26:14 +1300
-Message-ID: <1297311981-30448-22-git-send-email-linux@audioscience.com>
+Subject: [PATCH 22/28] Use consistent err return variable,
+ change some bad variable names.
+Date: Thu, 10 Feb 2011 17:26:15 +1300
+Message-ID: <1297311981-30448-23-git-send-email-linux@audioscience.com>
 References: <1297311981-30448-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -25,211 +26,341 @@ From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- pci/asihpi/hpi6205.c      |   37 +---------------
- pci/asihpi/hpi_internal.h |    4 --
- pci/asihpi/hpifunc.c      |  106 ---------------------------------------------
- 3 files changed, 1 insertions(+), 146 deletions(-)
+ pci/asihpi/hpifunc.c |  143 ++++++++++++++++++++++++++------------------------
+ 1 files changed, 75 insertions(+), 68 deletions(-)
 
-diff --git a/pci/asihpi/hpi6205.c b/pci/asihpi/hpi6205.c
-index 377e56f..33136cb 100644
---- a/pci/asihpi/hpi6205.c
-+++ b/pci/asihpi/hpi6205.c
-@@ -127,9 +127,6 @@ struct hpi_hw_obj {
- 	u32 outstream_host_buffer_size[HPI_MAX_STREAMS];
- 
- 	struct consistent_dma_area h_control_cache;
--	struct consistent_dma_area h_async_event_buffer;
--/*      struct hpi_control_cache_single *pControlCache; */
--	struct hpi_async_event *p_async_event_buffer;
- 	struct hpi_control_cache *p_cache;
- };
- 
-@@ -625,34 +622,6 @@ static u16 create_adapter_obj(struct hpi_adapter_obj *pao,
- 			pao->has_control_cache = 0;
- 		}
- 	}
--	/* allocate bus mastering async buffer and tell the DSP about it */
--	if (interface->async_buffer.b.size) {
--		err = hpios_locked_mem_alloc(&phw->h_async_event_buffer,
--			interface->async_buffer.b.size *
--			sizeof(struct hpi_async_event), pao->pci.pci_dev);
--		if (!err)
--			err = hpios_locked_mem_get_virt_addr
--				(&phw->h_async_event_buffer, (void *)
--				&phw->p_async_event_buffer);
--		if (!err)
--			memset((void *)phw->p_async_event_buffer, 0,
--				interface->async_buffer.b.size *
--				sizeof(struct hpi_async_event));
--		if (!err) {
--			err = hpios_locked_mem_get_phys_addr
--				(&phw->h_async_event_buffer, &phys_addr);
--			interface->async_buffer.physical_address32 =
--				phys_addr;
--		}
--		if (err) {
--			if (hpios_locked_mem_valid(&phw->
--					h_async_event_buffer)) {
--				hpios_locked_mem_free
--					(&phw->h_async_event_buffer);
--				phw->p_async_event_buffer = NULL;
--			}
--		}
--	}
- 	send_dsp_command(phw, H620_HIF_IDLE);
- 
- 	{
-@@ -716,11 +685,6 @@ static void delete_adapter_obj(struct hpi_adapter_obj *pao)
- 
- 	phw = pao->priv;
- 
--	if (hpios_locked_mem_valid(&phw->h_async_event_buffer)) {
--		hpios_locked_mem_free(&phw->h_async_event_buffer);
--		phw->p_async_event_buffer = NULL;
--	}
--
- 	if (hpios_locked_mem_valid(&phw->h_control_cache)) {
- 		hpios_locked_mem_free(&phw->h_control_cache);
- 		hpi_free_control_cache(phw->p_cache);
-@@ -1126,6 +1090,7 @@ static void instream_host_buffer_allocate(struct hpi_adapter_obj *pao,
- 		status->auxiliary_data_available = 0;
- 
- 		hw_message(pao, phm, phr);
-+
- 		if (phr->error
- 			&& hpios_locked_mem_valid(&phw->
- 				instream_host_buffers[phm->obj_index])) {
-diff --git a/pci/asihpi/hpi_internal.h b/pci/asihpi/hpi_internal.h
-index 9908160..06a8779 100644
---- a/pci/asihpi/hpi_internal.h
-+++ b/pci/asihpi/hpi_internal.h
-@@ -1541,10 +1541,6 @@ u32 hpi_indexes_to_handle(const char c_object, const u16 adapter_index,
- /* main HPI entry point */
- void hpi_send_recv(struct hpi_message *phm, struct hpi_response *phr);
- 
--/* UDP message */
--void hpi_send_recvUDP(struct hpi_message *phm, struct hpi_response *phr,
--	const unsigned int timeout);
--
- /* used in PnP OS/driver */
- u16 hpi_subsys_create_adapter(const struct hpi_resource *p_resource,
- 	u16 *pw_adapter_index);
 diff --git a/pci/asihpi/hpifunc.c b/pci/asihpi/hpifunc.c
-index b79eba1..3aa1f09 100644
+index 3aa1f09..c38fc94 100644
 --- a/pci/asihpi/hpifunc.c
 +++ b/pci/asihpi/hpifunc.c
-@@ -263,112 +263,6 @@ u16 hpi_adapter_get_module_by_index(u16 adapter_index, u16 module_index,
- 	return hr.error;
+@@ -310,7 +310,7 @@ u16 hpi_adapter_enumerate_property(u16 adapter_index, u16 index,
+ u16 hpi_format_create(struct hpi_format *p_format, u16 channels, u16 format,
+ 	u32 sample_rate, u32 bit_rate, u32 attributes)
+ {
+-	u16 error = 0;
++	u16 err = 0;
+ 	struct hpi_msg_format fmt;
+ 
+ 	switch (channels) {
+@@ -322,8 +322,8 @@ u16 hpi_format_create(struct hpi_format *p_format, u16 channels, u16 format,
+ 	case 16:
+ 		break;
+ 	default:
+-		error = HPI_ERROR_INVALID_CHANNELS;
+-		return error;
++		err = HPI_ERROR_INVALID_CHANNELS;
++		return err;
+ 	}
+ 	fmt.channels = channels;
+ 
+@@ -346,17 +346,17 @@ u16 hpi_format_create(struct hpi_format *p_format, u16 channels, u16 format,
+ 	case HPI_FORMAT_OEM2:
+ 		break;
+ 	default:
+-		error = HPI_ERROR_INVALID_FORMAT;
+-		return error;
++		err = HPI_ERROR_INVALID_FORMAT;
++		return err;
+ 	}
+ 	fmt.format = format;
+ 
+ 	if (sample_rate < 8000L) {
+-		error = HPI_ERROR_INCOMPATIBLE_SAMPLERATE;
++		err = HPI_ERROR_INCOMPATIBLE_SAMPLERATE;
+ 		sample_rate = 8000L;
+ 	}
+ 	if (sample_rate > 200000L) {
+-		error = HPI_ERROR_INCOMPATIBLE_SAMPLERATE;
++		err = HPI_ERROR_INCOMPATIBLE_SAMPLERATE;
+ 		sample_rate = 200000L;
+ 	}
+ 	fmt.sample_rate = sample_rate;
+@@ -387,10 +387,10 @@ u16 hpi_format_create(struct hpi_format *p_format, u16 channels, u16 format,
+ 		if ((channels == 1)
+ 			&& (attributes != HPI_MPEG_MODE_DEFAULT)) {
+ 			attributes = HPI_MPEG_MODE_DEFAULT;
+-			error = HPI_ERROR_INVALID_FORMAT;
++			err = HPI_ERROR_INVALID_FORMAT;
+ 		} else if (attributes > HPI_MPEG_MODE_DUALCHANNEL) {
+ 			attributes = HPI_MPEG_MODE_DEFAULT;
+-			error = HPI_ERROR_INVALID_FORMAT;
++			err = HPI_ERROR_INVALID_FORMAT;
+ 		}
+ 		fmt.attributes = attributes;
+ 		break;
+@@ -399,7 +399,7 @@ u16 hpi_format_create(struct hpi_format *p_format, u16 channels, u16 format,
+ 	}
+ 
+ 	hpi_msg_to_format(p_format, &fmt);
+-	return error;
++	return err;
  }
  
--u16 hpi_adapter_get_assert2(u16 adapter_index, u16 *p_assert_count,
--	char *psz_assert, u32 *p_param1, u32 *p_param2,
--	u32 *p_dsp_string_addr, u16 *p_processor_id)
--{
--	struct hpi_message hm;
--	struct hpi_response hr;
--	hpi_init_message_response(&hm, &hr, HPI_OBJ_ADAPTER,
--		HPI_ADAPTER_GET_ASSERT);
--	hm.adapter_index = adapter_index;
--
--	hpi_send_recv(&hm, &hr);
--
--	*p_assert_count = 0;
--
--	if (!hr.error) {
--		*p_assert_count = hr.u.ax.assert.count;
--
--		if (*p_assert_count) {
--			*p_param1 = hr.u.ax.assert.p1;
--			*p_param2 = hr.u.ax.assert.p2;
--			*p_processor_id = hr.u.ax.assert.dsp_index;
--			*p_dsp_string_addr = hr.u.ax.assert.dsp_msg_addr;
--			memcpy(psz_assert, hr.u.ax.assert.sz_message,
--				HPI_STRING_LEN);
--		} else {
--			*psz_assert = 0;
--		}
--	}
--	return hr.error;
--}
--
--u16 hpi_adapter_test_assert(u16 adapter_index, u16 assert_id)
--{
--	struct hpi_message hm;
--	struct hpi_response hr;
--	hpi_init_message_response(&hm, &hr, HPI_OBJ_ADAPTER,
--		HPI_ADAPTER_TEST_ASSERT);
--	hm.adapter_index = adapter_index;
--	hm.u.ax.test_assert.value = assert_id;
--
--	hpi_send_recv(&hm, &hr);
--
--	return hr.error;
--}
--
--u16 hpi_adapter_enable_capability(u16 adapter_index, u16 capability, u32 key)
--{
--#if 1
--	return HPI_ERROR_UNIMPLEMENTED;
--#else
--	struct hpi_message hm;
--	struct hpi_response hr;
--	hpi_init_message_response(&hm, &hr, HPI_OBJ_ADAPTER,
--		HPI_ADAPTER_ENABLE_CAPABILITY);
--	hm.adapter_index = adapter_index;
--	hm.u.ax.enable_cap.cap = capability;
--	hm.u.ax.enable_cap.key = key;
--
--	hpi_send_recv(&hm, &hr);
--
--	return hr.error;
--#endif
--}
--
--u16 hpi_adapter_self_test(u16 adapter_index)
--{
--	struct hpi_message hm;
--	struct hpi_response hr;
--	hpi_init_message_response(&hm, &hr, HPI_OBJ_ADAPTER,
--		HPI_ADAPTER_SELFTEST);
--	hm.adapter_index = adapter_index;
--	hpi_send_recv(&hm, &hr);
--	return hr.error;
--}
--
--u16 hpi_adapter_debug_read(u16 adapter_index, u32 dsp_address, char *p_buffer,
--	int *count_bytes)
--{
--	struct hpi_msg_adapter_debug_read hm;
--	struct hpi_res_adapter_debug_read hr;
--
--	hpi_init_message_responseV1(&hm.h, sizeof(hm), &hr.h, sizeof(hr),
--		HPI_OBJ_ADAPTER, HPI_ADAPTER_DEBUG_READ);
--
--	hm.h.adapter_index = adapter_index;
--	hm.dsp_address = dsp_address;
--
--	if (*count_bytes > (int)sizeof(hr.bytes))
--		*count_bytes = (int)sizeof(hr.bytes);
--
--	hm.count_bytes = *count_bytes;
--
--	hpi_send_recvV1(&hm.h, &hr.h);
--
--	if (!hr.h.error) {
--		int res_bytes = hr.h.size - sizeof(hr.h);
--		if (res_bytes > *count_bytes)
--			res_bytes = *count_bytes;
--		*count_bytes = res_bytes;
--		memcpy(p_buffer, &hr.bytes, res_bytes);
--	} else
--		*count_bytes = 0;
--
--	return hr.h.error;
--}
--
- u16 hpi_adapter_set_property(u16 adapter_index, u16 property, u16 parameter1,
- 	u16 parameter2)
+ u16 hpi_stream_estimate_buffer_size(struct hpi_format *p_format,
+@@ -1567,13 +1567,13 @@ u16 hpi_aesebu_receiver_get_channel_status(u32 h_control, u16 index,
+ u16 hpi_aesebu_receiver_get_error_status(u32 h_control, u16 *pw_error_data)
  {
+ 	u32 error_data = 0;
+-	u16 error = 0;
++	u16 err = 0;
+ 
+-	error = hpi_control_param1_get(h_control, HPI_AESEBURX_ERRORSTATUS,
++	err = hpi_control_param1_get(h_control, HPI_AESEBURX_ERRORSTATUS,
+ 		&error_data);
+ 	if (pw_error_data)
+ 		*pw_error_data = (u16)error_data;
+-	return error;
++	return err;
+ }
+ 
+ u16 hpi_aesebu_transmitter_set_sample_rate(u32 h_control, u32 sample_rate)
+@@ -1680,11 +1680,11 @@ u16 hpi_channel_mode_set(u32 h_control, u16 mode)
+ u16 hpi_channel_mode_get(u32 h_control, u16 *mode)
+ {
+ 	u32 mode32 = 0;
+-	u16 error = hpi_control_param1_get(h_control,
++	u16 err = hpi_control_param1_get(h_control,
+ 		HPI_CHANNEL_MODE_MODE, &mode32);
+ 	if (mode)
+ 		*mode = (u16)mode32;
+-	return error;
++	return err;
+ }
+ 
+ u16 hpi_cobranet_hmi_write(u32 h_control, u32 hmi_address, u32 byte_count,
+@@ -1785,9 +1785,9 @@ u16 hpi_cobranet_get_ip_address(u32 h_control, u32 *pdw_ip_address)
+ {
+ 	u32 byte_count;
+ 	u32 iP;
+-	u16 error;
++	u16 err;
+ 
+-	error = hpi_cobranet_hmi_read(h_control,
++	err = hpi_cobranet_hmi_read(h_control,
+ 		HPI_COBRANET_HMI_cobra_ip_mon_currentIP, 4, &byte_count,
+ 		(u8 *)&iP);
+ 
+@@ -1795,26 +1795,26 @@ u16 hpi_cobranet_get_ip_address(u32 h_control, u32 *pdw_ip_address)
+ 		((iP & 0xff000000) >> 8) | ((iP & 0x00ff0000) << 8) | ((iP &
+ 			0x0000ff00) >> 8) | ((iP & 0x000000ff) << 8);
+ 
+-	if (error)
++	if (err)
+ 		*pdw_ip_address = 0;
+ 
+-	return error;
++	return err;
+ 
+ }
+ 
+ u16 hpi_cobranet_set_ip_address(u32 h_control, u32 dw_ip_address)
+ {
+ 	u32 iP;
+-	u16 error;
++	u16 err;
+ 
+ 	iP = ((dw_ip_address & 0xff000000) >> 8) | ((dw_ip_address &
+ 			0x00ff0000) << 8) | ((dw_ip_address & 0x0000ff00) >>
+ 		8) | ((dw_ip_address & 0x000000ff) << 8);
+ 
+-	error = hpi_cobranet_hmi_write(h_control,
++	err = hpi_cobranet_hmi_write(h_control,
+ 		HPI_COBRANET_HMI_cobra_ip_mon_currentIP, 4, (u8 *)&iP);
+ 
+-	return error;
++	return err;
+ 
+ }
+ 
+@@ -1822,8 +1822,8 @@ u16 hpi_cobranet_get_static_ip_address(u32 h_control, u32 *pdw_ip_address)
+ {
+ 	u32 byte_count;
+ 	u32 iP;
+-	u16 error;
+-	error = hpi_cobranet_hmi_read(h_control,
++	u16 err;
++	err = hpi_cobranet_hmi_read(h_control,
+ 		HPI_COBRANET_HMI_cobra_ip_mon_staticIP, 4, &byte_count,
+ 		(u8 *)&iP);
+ 
+@@ -1831,55 +1831,62 @@ u16 hpi_cobranet_get_static_ip_address(u32 h_control, u32 *pdw_ip_address)
+ 		((iP & 0xff000000) >> 8) | ((iP & 0x00ff0000) << 8) | ((iP &
+ 			0x0000ff00) >> 8) | ((iP & 0x000000ff) << 8);
+ 
+-	if (error)
++	if (err)
+ 		*pdw_ip_address = 0;
+ 
+-	return error;
++	return err;
+ 
+ }
+ 
+ u16 hpi_cobranet_set_static_ip_address(u32 h_control, u32 dw_ip_address)
+ {
+ 	u32 iP;
+-	u16 error;
++	u16 err;
+ 
+ 	iP = ((dw_ip_address & 0xff000000) >> 8) | ((dw_ip_address &
+ 			0x00ff0000) << 8) | ((dw_ip_address & 0x0000ff00) >>
+ 		8) | ((dw_ip_address & 0x000000ff) << 8);
+ 
+-	error = hpi_cobranet_hmi_write(h_control,
++	err = hpi_cobranet_hmi_write(h_control,
+ 		HPI_COBRANET_HMI_cobra_ip_mon_staticIP, 4, (u8 *)&iP);
+ 
+-	return error;
++	return err;
+ 
+ }
+ 
+-u16 hpi_cobranet_get_macaddress(u32 h_control, u32 *pmAC_MS_bs,
+-	u32 *pmAC_LS_bs)
++u16 hpi_cobranet_get_macaddress(u32 h_control, u32 *p_mac_msbs,
++	u32 *p_mac_lsbs)
+ {
+ 	u32 byte_count;
+-	u16 error;
+-	u32 mAC;
++	u16 err;
++	u32 mac;
+ 
+-	error = hpi_cobranet_hmi_read(h_control,
++	err = hpi_cobranet_hmi_read(h_control,
+ 		HPI_COBRANET_HMI_cobra_if_phy_address, 4, &byte_count,
+-		(u8 *)&mAC);
+-	*pmAC_MS_bs =
+-		((mAC & 0xff000000) >> 8) | ((mAC & 0x00ff0000) << 8) | ((mAC
+-			& 0x0000ff00) >> 8) | ((mAC & 0x000000ff) << 8);
+-	error += hpi_cobranet_hmi_read(h_control,
+-		HPI_COBRANET_HMI_cobra_if_phy_address + 1, 4, &byte_count,
+-		(u8 *)&mAC);
+-	*pmAC_LS_bs =
+-		((mAC & 0xff000000) >> 8) | ((mAC & 0x00ff0000) << 8) | ((mAC
+-			& 0x0000ff00) >> 8) | ((mAC & 0x000000ff) << 8);
+-
+-	if (error) {
+-		*pmAC_MS_bs = 0;
+-		*pmAC_LS_bs = 0;
++		(u8 *)&mac);
++
++	if (!err) {
++		*p_mac_msbs =
++			((mac & 0xff000000) >> 8) | ((mac & 0x00ff0000) << 8)
++			| ((mac & 0x0000ff00) >> 8) | ((mac & 0x000000ff) <<
++			8);
++
++		err = hpi_cobranet_hmi_read(h_control,
++			HPI_COBRANET_HMI_cobra_if_phy_address + 1, 4,
++			&byte_count, (u8 *)&mac);
+ 	}
+ 
+-	return error;
++	if (!err) {
++		*p_mac_lsbs =
++			((mac & 0xff000000) >> 8) | ((mac & 0x00ff0000) << 8)
++			| ((mac & 0x0000ff00) >> 8) | ((mac & 0x000000ff) <<
++			8);
++	} else {
++		*p_mac_msbs = 0;
++		*p_mac_lsbs = 0;
++	}
++
++	return err;
+ }
+ 
+ u16 hpi_compander_set_enable(u32 h_control, u32 enable)
+@@ -2158,14 +2165,14 @@ u16 hpi_multiplexer_get_source(u32 h_control, u16 *source_node_type,
+ 	u16 *source_node_index)
+ {
+ 	u32 node, index;
+-	u16 error = hpi_control_param2_get(h_control,
++	u16 err = hpi_control_param2_get(h_control,
+ 		HPI_MULTIPLEXER_SOURCE, &node,
+ 		&index);
+ 	if (source_node_type)
+ 		*source_node_type = (u16)node;
+ 	if (source_node_index)
+ 		*source_node_index = (u16)index;
+-	return error;
++	return err;
+ }
+ 
+ u16 hpi_multiplexer_query_source(u32 h_control, u16 index,
+@@ -2304,14 +2311,14 @@ u16 hpi_sample_clock_set_source(u32 h_control, u16 source)
+ 
+ u16 hpi_sample_clock_get_source(u32 h_control, u16 *pw_source)
+ {
+-	u16 error = 0;
++	u16 err = 0;
+ 	u32 source = 0;
+-	error = hpi_control_param1_get(h_control, HPI_SAMPLECLOCK_SOURCE,
++	err = hpi_control_param1_get(h_control, HPI_SAMPLECLOCK_SOURCE,
+ 		&source);
+-	if (!error)
++	if (!err)
+ 		if (pw_source)
+ 			*pw_source = (u16)source;
+-	return error;
++	return err;
+ }
+ 
+ u16 hpi_sample_clock_query_source_index(const u32 h_clock, const u32 index,
+@@ -2334,14 +2341,14 @@ u16 hpi_sample_clock_set_source_index(u32 h_control, u16 source_index)
+ 
+ u16 hpi_sample_clock_get_source_index(u32 h_control, u16 *pw_source_index)
+ {
+-	u16 error = 0;
++	u16 err = 0;
+ 	u32 source_index = 0;
+-	error = hpi_control_param1_get(h_control,
+-		HPI_SAMPLECLOCK_SOURCE_INDEX, &source_index);
+-	if (!error)
++	err = hpi_control_param1_get(h_control, HPI_SAMPLECLOCK_SOURCE_INDEX,
++		&source_index);
++	if (!err)
+ 		if (pw_source_index)
+ 			*pw_source_index = (u16)source_index;
+-	return error;
++	return err;
+ }
+ 
+ u16 hpi_sample_clock_query_local_rate(const u32 h_clock, const u32 index,
+@@ -2362,26 +2369,26 @@ u16 hpi_sample_clock_set_local_rate(u32 h_control, u32 sample_rate)
+ 
+ u16 hpi_sample_clock_get_local_rate(u32 h_control, u32 *psample_rate)
+ {
+-	u16 error = 0;
++	u16 err = 0;
+ 	u32 sample_rate = 0;
+-	error = hpi_control_param1_get(h_control,
++	err = hpi_control_param1_get(h_control,
+ 		HPI_SAMPLECLOCK_LOCAL_SAMPLERATE, &sample_rate);
+-	if (!error)
++	if (!err)
+ 		if (psample_rate)
+ 			*psample_rate = sample_rate;
+-	return error;
++	return err;
+ }
+ 
+ u16 hpi_sample_clock_get_sample_rate(u32 h_control, u32 *psample_rate)
+ {
+-	u16 error = 0;
++	u16 err = 0;
+ 	u32 sample_rate = 0;
+-	error = hpi_control_param1_get(h_control, HPI_SAMPLECLOCK_SAMPLERATE,
++	err = hpi_control_param1_get(h_control, HPI_SAMPLECLOCK_SAMPLERATE,
+ 		&sample_rate);
+-	if (!error)
++	if (!err)
+ 		if (psample_rate)
+ 			*psample_rate = sample_rate;
+-	return error;
++	return err;
+ }
+ 
+ u16 hpi_sample_clock_set_auto(u32 h_control, u32 enable)
 -- 
 1.7.0.4
