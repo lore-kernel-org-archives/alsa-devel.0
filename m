@@ -1,84 +1,57 @@
-From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Subject: [PATCH 7/7] ASoC: Tegra: Add MODULE_ALIAS
-Date: Thu, 10 Feb 2011 15:37:19 -0700
-Message-ID: <1297377439-27382-7-git-send-email-swarren@nvidia.com>
-References: <1297377439-27382-1-git-send-email-swarren@nvidia.com>
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1297377439-27382-1-git-send-email-swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: [PATCH 3/3] ASoC: Add support for AIF channel
+ muxing on WM8903
+Date: Thu, 10 Feb 2011 14:59:17 -0800
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0310F6050C@HQMAIL01.nvidia.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 42266244B7
+	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 23:59:33 +0100 (CET)
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@nvidia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-With the appropriate MODULE_ALIAS in place, the audio modules will be
-automatically loaded; there is no longer a need for manual modprobes.
+Stephen Warren wrote at Wednesday, February 09, 2011 9:33 AM:
+> 
+> Mark Brown wrote at Wednesday, February 09, 2011 6:47 AM:
+> > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> > ---
+> >  sound/soc/codecs/wm8903.c |   66 ++++++++++++++++++++++++++++++++++++++++++---
+> >  1 files changed, 62 insertions(+), 4 deletions(-)
+> 
+> ...I'll make sure to test it within the next few days, once it's applied.
 
-Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
----
- sound/soc/tegra/harmony.c   |    1 +
- sound/soc/tegra/tegra_das.c |    1 +
- sound/soc/tegra/tegra_i2s.c |    1 +
- sound/soc/tegra/tegra_pcm.c |    5 ++++-
- 4 files changed, 7 insertions(+), 1 deletions(-)
+Mark,
 
-diff --git a/sound/soc/tegra/harmony.c b/sound/soc/tegra/harmony.c
-index c54d420..e6216b4 100644
---- a/sound/soc/tegra/harmony.c
-+++ b/sound/soc/tegra/harmony.c
-@@ -390,3 +390,4 @@ module_exit(snd_tegra_harmony_exit);
- MODULE_AUTHOR("Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>");
- MODULE_DESCRIPTION("Harmony machine ASoC driver");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:" DRV_NAME);
-diff --git a/sound/soc/tegra/tegra_das.c b/sound/soc/tegra/tegra_das.c
-index 01eb9c9..9f24ef7 100644
---- a/sound/soc/tegra/tegra_das.c
-+++ b/sound/soc/tegra/tegra_das.c
-@@ -262,3 +262,4 @@ module_exit(tegra_das_modexit);
- MODULE_AUTHOR("Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>");
- MODULE_DESCRIPTION("Tegra DAS driver");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:" DRV_NAME);
-diff --git a/sound/soc/tegra/tegra_i2s.c b/sound/soc/tegra/tegra_i2s.c
-index 870ee36..4f5e2c9 100644
---- a/sound/soc/tegra/tegra_i2s.c
-+++ b/sound/soc/tegra/tegra_i2s.c
-@@ -500,3 +500,4 @@ module_exit(snd_tegra_i2s_exit);
- MODULE_AUTHOR("Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>");
- MODULE_DESCRIPTION("Tegra I2S ASoC driver");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:" DRV_NAME);
-diff --git a/sound/soc/tegra/tegra_pcm.c b/sound/soc/tegra/tegra_pcm.c
-index 663ea9f..40540b1 100644
---- a/sound/soc/tegra/tegra_pcm.c
-+++ b/sound/soc/tegra/tegra_pcm.c
-@@ -39,6 +39,8 @@
+I did find one issue with this.
+
+With the default Left/Right Capture Mux settings, and the patch series I just
+posted, mic detection now works fine in all the scenarios I tested:
+
+1) Mic plugged in before loading driver, or not.
+2) Mic plugged in when starting to capture, or not.
+3) Mic removed and plugged back in while capture active.
+
+However, if I flip the Right Capture Mux to setting Left (while not capturing),
+then this breaks case (3) above; the initial portion of the recording is fine,
+but when I remove and plug the mic back in, something isn't turned on, and so
+nothing is recorded after that.
+
+I haven't had a chance to look into this yet, but can later; probably on
+Saturday evening.
  
- #include "tegra_pcm.h"
- 
-+#define DRV_NAME "tegra-pcm-audio"
-+
- static const struct snd_pcm_hardware tegra_pcm_hardware = {
- 	.info			= SNDRV_PCM_INFO_MMAP |
- 				  SNDRV_PCM_INFO_MMAP_VALID |
-@@ -377,7 +379,7 @@ static int __devexit tegra_pcm_platform_remove(struct platform_device *pdev)
- 
- static struct platform_driver tegra_pcm_driver = {
- 	.driver = {
--		.name = "tegra-pcm-audio",
-+		.name = DRV_NAME,
- 		.owner = THIS_MODULE,
- 	},
- 	.probe = tegra_pcm_platform_probe,
-@@ -399,3 +401,4 @@ module_exit(snd_tegra_pcm_exit);
- MODULE_AUTHOR("Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>");
- MODULE_DESCRIPTION("Tegra PCM ASoC driver");
- MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:" DRV_NAME);
 -- 
-1.7.1
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-tegra" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+nvpublic
