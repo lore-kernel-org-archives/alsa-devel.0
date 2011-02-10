@@ -1,7 +1,8 @@
 From: linux@audioscience.com
-Subject: [PATCH 09/28] Checkpatch line lengths etc.
-Date: Thu, 10 Feb 2011 17:26:02 +1300
-Message-ID: <1297311981-30448-10-git-send-email-linux@audioscience.com>
+Subject: [PATCH 07/28] Add adapter index to cache info for
+	debug.
+Date: Thu, 10 Feb 2011 17:26:00 +1300
+Message-ID: <1297311981-30448-8-git-send-email-linux@audioscience.com>
 References: <1297311981-30448-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -25,155 +26,95 @@ From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- pci/asihpi/hpi6000.c  |    3 ++-
- pci/asihpi/hpicmn.c   |   31 +++++++++++++++++--------------
- pci/asihpi/hpidebug.c |    2 +-
- pci/asihpi/hpidebug.h |    8 ++++----
- 4 files changed, 24 insertions(+), 20 deletions(-)
+ pci/asihpi/hpi6000.c |    3 +++
+ pci/asihpi/hpi6205.c |    3 +++
+ pci/asihpi/hpicmn.c  |   16 ++++++++++++----
+ pci/asihpi/hpicmn.h  |    3 ++-
+ 4 files changed, 20 insertions(+), 5 deletions(-)
 
 diff --git a/pci/asihpi/hpi6000.c b/pci/asihpi/hpi6000.c
-index c486af1..4346583 100644
+index c85db49..c486af1 100644
 --- a/pci/asihpi/hpi6000.c
 +++ b/pci/asihpi/hpi6000.c
-@@ -43,7 +43,8 @@
- #define HPI_HIF_ERROR_MASK      0x4000
+@@ -582,6 +582,9 @@ static short create_adapter_obj(struct hpi_adapter_obj *pao,
+ 		pao->adapter_type, pao->index);
+ 	pao->open = 0;	/* upon creation the adapter is closed */
  
- /* HPI6000 specific error codes */
--#define HPI6000_ERROR_BASE                              900	/* not actually used anywhere */
-+#define HPI6000_ERROR_BASE 900	/* not actually used anywhere */
++	if (phw->p_cache)
++		phw->p_cache->adap_idx = pao->index;
 +
- /* operational/messaging errors */
- #define HPI6000_ERROR_MSG_RESP_IDLE_TIMEOUT             901
+ 	return hpi_add_adapter(pao);
+ }
  
+diff --git a/pci/asihpi/hpi6205.c b/pci/asihpi/hpi6205.c
+index b740edc..5ebf8f8 100644
+--- a/pci/asihpi/hpi6205.c
++++ b/pci/asihpi/hpi6205.c
+@@ -718,6 +718,9 @@ static u16 create_adapter_obj(struct hpi_adapter_obj *pao,
+ 
+ 	pao->open = 0;	/* upon creation the adapter is closed */
+ 
++	if (phw->p_cache)
++		phw->p_cache->adap_idx = pao->index;
++
+ 	HPI_DEBUG_LOG(INFO, "bootload DSP OK\n");
+ 
+ 	return hpi_add_adapter(pao);
 diff --git a/pci/asihpi/hpicmn.c b/pci/asihpi/hpicmn.c
-index 85c2972..8346aea 100644
+index 793236e..85c2972 100644
 --- a/pci/asihpi/hpicmn.c
 +++ b/pci/asihpi/hpicmn.c
-@@ -46,17 +46,19 @@ static struct hpi_adapters_list adapters;
- u16 hpi_validate_response(struct hpi_message *phm, struct hpi_response *phr)
- {
- 	if (phr->type != HPI_TYPE_RESPONSE) {
--		HPI_DEBUG_LOG(ERROR, "header type %d invalid", phr->type);
-+		HPI_DEBUG_LOG(ERROR, "header type %d invalid\n", phr->type);
- 		return HPI_ERROR_INVALID_RESPONSE;
- 	}
+@@ -197,11 +197,18 @@ static unsigned int control_cache_alloc_check(struct hpi_control_cache *pC)
+ 				&p_master_cache[byte_count];
  
- 	if (phr->object != phm->object) {
--		HPI_DEBUG_LOG(ERROR, "header object %d invalid", phr->object);
-+		HPI_DEBUG_LOG(ERROR, "header object %d invalid\n",
-+			phr->object);
- 		return HPI_ERROR_INVALID_RESPONSE;
- 	}
- 
- 	if (phr->function != phm->function) {
--		HPI_DEBUG_LOG(ERROR, "header type %d invalid", phr->function);
-+		HPI_DEBUG_LOG(ERROR, "header type %d invalid\n",
-+			phr->function);
- 		return HPI_ERROR_INVALID_RESPONSE;
- 	}
- 
-@@ -114,7 +116,7 @@ struct hpi_adapter_obj *hpi_find_adapter(u16 adapter_index)
- 	struct hpi_adapter_obj *pao = NULL;
- 
- 	if (adapter_index >= HPI_MAX_ADAPTERS) {
--		HPI_DEBUG_LOG(VERBOSE, "find_adapter invalid index %d ",
-+		HPI_DEBUG_LOG(VERBOSE, "find_adapter invalid index %d\n",
- 			adapter_index);
- 		return NULL;
- 	}
-@@ -203,9 +205,10 @@ static unsigned int control_cache_alloc_check(struct hpi_control_cache *pC)
- 						pC->adap_idx);
- 					return 0;
- 				}
--				/* ? This is a severe error, the cache is probably
--				   corrupted.  Minimum valid entry size is
--				   sizeof(struct hpi_control_cache_info) */
-+				/* The cache is invalid.
-+				 * Minimum valid entry size is
-+				 * sizeof(struct hpi_control_cache_info)
-+				 */
+ 			if (!info->size_in32bit_words) {
++				if (i == 0) {
++					HPI_DEBUG_LOG(INFO,
++						"adap %d cache not ready?\n",
++						pC->adap_idx);
++					return 0;
++				}
+ 				/* ? This is a severe error, the cache is probably
+ 				   corrupted.  Minimum valid entry size is
+ 				   sizeof(struct hpi_control_cache_info) */
  				HPI_DEBUG_LOG(ERROR,
- 					"adap %d zero size cache entry %d\n",
- 					pC->adap_idx, i);
-@@ -226,9 +229,10 @@ static unsigned int control_cache_alloc_check(struct hpi_control_cache *pC)
- 				info->control_index, info->control_type,
- 				info->size_in32bit_words);
- 
--			/* quit loop early if whole cache has been scanned. */
--			/* pC->dwControlCount is the maximum possible entries, */
--			/* but some may not be in the cache at all */
-+			/* quit loop early if whole cache has been scanned.
-+			 * dwControlCount is the maximum possible entries
-+			 * but some may be absent from the cache
-+			 */
- 			if (byte_count >= pC->cache_size_in_bytes)
+-					"zero size cache entry %d\n", i);
++					"adap %d zero size cache entry %d\n",
++					pC->adap_idx, i);
  				break;
- 			/* have seen last control index */
-@@ -238,15 +242,15 @@ static unsigned int control_cache_alloc_check(struct hpi_control_cache *pC)
+ 			}
+ 
+@@ -231,12 +238,13 @@ static unsigned int control_cache_alloc_check(struct hpi_control_cache *pC)
  
  		if (byte_count != pC->cache_size_in_bytes)
  			HPI_DEBUG_LOG(WARNING,
--				"adap %d bytecount %d != cache size %d",
-+				"adap %d bytecount %d != cache size %d\n",
- 				pC->adap_idx, byte_count,
+-				"bytecount %d != cache size %d", byte_count,
++				"adap %d bytecount %d != cache size %d",
++				pC->adap_idx, byte_count,
  				pC->cache_size_in_bytes);
  		else
  			HPI_DEBUG_LOG(DEBUG,
--				"adap %d cache good, bytecount == cache size = %d",
-+				"adap %d cache good, bytecount == cache size = %d\n",
- 				pC->adap_idx, byte_count);
+-				"cache good. bytecount == cache size = %d",
+-				byte_count);
++				"adap %d cache good, bytecount == cache size = %d",
++				pC->adap_idx, byte_count);
  
--		pC->init = cached;
-+		pC->init = (u16)cached;
+ 		pC->init = cached;
  	}
- 	return pC->init;
- }
-@@ -430,7 +434,6 @@ short hpi_check_control_cache(struct hpi_control_cache *p_cache,
- 	case HPI_CONTROL_SILENCEDETECTOR:
- 		if (phm->u.c.attribute == HPI_SILENCEDETECTOR_STATE) {
- 			phr->u.c.param1 = pC->u.silence.state;
--			/*? phr->u.c.dwParam2 = pC->u.silence.dwCount; */
- 		} else
- 			found = 0;
- 		break;
-diff --git a/pci/asihpi/hpidebug.c b/pci/asihpi/hpidebug.c
-index 4b81c80..b52baf6 100644
---- a/pci/asihpi/hpidebug.c
-+++ b/pci/asihpi/hpidebug.c
-@@ -48,7 +48,7 @@ int hpi_debug_level_get(void)
- void hpi_debug_message(struct hpi_message *phm, char *sz_fileline)
- {
- 	if (phm) {
--		printk("HPI_MSG%d,%d,%d,%d,%d\n", phm->version,
-+		printk(KERN_DEBUG "HPI_MSG%d,%d,%d,%d,%d\n", phm->version,
- 			phm->adapter_index, phm->obj_index, phm->function,
- 			phm->u.c.attribute);
- 	}
-diff --git a/pci/asihpi/hpidebug.h b/pci/asihpi/hpidebug.h
-index 632d7d0..940f54c 100644
---- a/pci/asihpi/hpidebug.h
-+++ b/pci/asihpi/hpidebug.h
-@@ -80,17 +80,17 @@ void hpi_debug_data(u16 *pdata, u32 len);
- #define HPI_DEBUG_MESSAGE(level, phm) \
- 	do { \
- 		if (hpi_debug_level >= HPI_DEBUG_LEVEL_##level) { \
--			hpi_debug_message(phm,HPI_DEBUG_FLAG_##level \
-+			hpi_debug_message(phm, HPI_DEBUG_FLAG_##level \
- 				FILE_LINE __stringify(level)); \
- 		} \
- 	} while (0)
+diff --git a/pci/asihpi/hpicmn.h b/pci/asihpi/hpicmn.h
+index e2f6f1f..2708c4d 100644
+--- a/pci/asihpi/hpicmn.h
++++ b/pci/asihpi/hpicmn.h
+@@ -33,8 +33,9 @@ struct hpi_adapter_obj {
+ };
  
- #define HPI_DEBUG_RESPONSE(phr) \
- 	do { \
--		if (((hpi_debug_level >= HPI_DEBUG_LEVEL_DEBUG) && (phr->error)) ||\
-+		if (((hpi_debug_level >= HPI_DEBUG_LEVEL_DEBUG) && \
-+			(phr->error)) ||\
- 		(hpi_debug_level >= HPI_DEBUG_LEVEL_VERBOSE)) \
--			printk(KERN_DEBUG\
--				"HPI_RES%d,%d,%d\n", \
-+			printk(KERN_DEBUG "HPI_RES%d,%d,%d\n", \
- 				phr->version, phr->error, phr->specific_error); \
- 	} while (0)
- 
+ struct hpi_control_cache {
+-	u32 init;	     /**< indicates whether the
++	u16 init;	     /**< indicates whether the
+ 				structures are initialized */
++	u16 adap_idx;
+ 	u32 control_count;
+ 	u32 cache_size_in_bytes;
+ 	struct hpi_control_cache_info
 -- 
 1.7.0.4
