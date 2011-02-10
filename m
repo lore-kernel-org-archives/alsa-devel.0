@@ -1,22 +1,15 @@
-From: Anisse Astier <anisse@astier.eu>
-Subject: [PATCH resend] ALSA: hda - add quirk for Ordissimo EVE
- using a realtek ALC662
-Date: Thu, 10 Feb 2011 13:14:44 +0100
-Message-ID: <20110210131444.5c2c9448@destiny.ordissimo>
-References: <20110121154544.4e5ed4e6@destiny.ordissimo>
-	<1295624188.12720.68.camel@mattotaupa>
-	<s5hvd1e77ce.wl%tiwai@suse.de>
-	<20110124174300.079c8cb7@destiny.ordissimo>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: [PATCH 2.6.38] ASoC: CX20442: fix wrong
+	reg_cache_default content
+Date: Thu, 10 Feb 2011 13:24:32 +0100
+Message-ID: <201102101324.40463.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 7AFD2244C7
-	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 13:15:55 +0100 (CET)
-Received: by fxm5 with SMTP id 5so1407418fxm.38
-	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 04:15:55 -0800 (PST)
-In-Reply-To: <20110124174300.079c8cb7@destiny.ordissimo>
+Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4DA2D244D3
+	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 13:25:32 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,42 +20,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Paul Menzel <paulepanter@users.sourceforge.net>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+Content of the CX20442's snd_soc_codec_driver.reg_cache_default pointed 
+area, introduced with my recent NULL pointer dereferece fix (commit 
+f019ee5feb344ff0b22b58df4568676295aae14f), occured wrong after further 
+testing, more thorough than just booting successfully. There are two 
+problems with it:
 
-This netbook has a only one jack output and an internal mic.
+1) It should read
+	(1 << CX20442_TELOUT) | (1 << CX20442_MIC),
+   not 
+	CX20442_TELOUT | CX20442_MIC.
 
-By default, mic and jack sense aren't working. Using lenovo-101e
-parameters makes both work.
+2) While correctly matching actual codec hardware state on boot when 
+   fixed per 1), a few more code modifications would still be required 
+   to reflect that state not only into register cache, but also force 
+   them into DAPM pins state, otherwise an inconsitency occures which 
+   may prevent further codec state changes from being applied correctly. 
+   As a result, the phone stops ringing after reboot, until someone 
+   picks up the handset for the first time.
 
-The device seems based on a Sharetronic Q70, so this should fix audio for
-this model too.
+Revert that reg_cache_default content to a working, previous de facto 
+default value of 0, in hope this change can still be accepted as an rc 
+cycle fix.
 
-Signed-off-by: Anisse Astier <anisse@astier.eu>
+Created and tested against linux-2.6.38-rc4
+
+Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 ---
-Hi,
 
-Sorry for the delay. As usual, this is based on sound-2.6/for-next.
+ sound/soc/codecs/cx20442.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-
-Anisse
----
- sound/pci/hda/patch_realtek.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 1e092b3..6a43c1c 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -18934,6 +18934,7 @@ static struct snd_pci_quirk alc662_cfg_tbl[] = {
- 					ALC662_3ST_6ch_DIG),
- 	SND_PCI_QUIRK_MASK(0x1854, 0xf000, 0x2000, "ASUS H13-200x",
- 			   ALC663_ASUS_H13),
-+	SND_PCI_QUIRK(0x1991, 0x5628, "Ordissimo EVE", ALC662_LENOVO_101E),
- 	{}
- };
+--- git/sound/soc/codecs/cx20442.c.orig	2011-02-10 00:52:33.000000000 +0100
++++ git/sound/soc/codecs/cx20442.c	2011-02-10 12:17:31.000000000 +0100
+@@ -367,7 +367,7 @@ static int cx20442_codec_remove(struct s
+ 	return 0;
+ }
  
--- 
-1.7.3.2
+-static const u8 cx20442_reg = CX20442_TELOUT | CX20442_MIC;
++static const u8 cx20442_reg;
+ 
+ static struct snd_soc_codec_driver cx20442_codec_dev = {
+ 	.probe = 	cx20442_codec_probe,
