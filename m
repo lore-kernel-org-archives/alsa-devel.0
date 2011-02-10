@@ -1,8 +1,7 @@
 From: linux@audioscience.com
-Subject: [PATCH 22/28] Use consistent err return variable,
- change some bad variable names.
-Date: Thu, 10 Feb 2011 17:26:15 +1300
-Message-ID: <1297311981-30448-23-git-send-email-linux@audioscience.com>
+Subject: [PATCH 24/28] Minor define updates
+Date: Thu, 10 Feb 2011 17:26:17 +1300
+Message-ID: <1297311981-30448-25-git-send-email-linux@audioscience.com>
 References: <1297311981-30448-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,343 +23,122 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
+HPI version 4.05.32
+Tweak HPI error code for backward compatibility.
+Add BUILD to build-related defines.
+
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- pci/asihpi/hpifunc.c |  143 ++++++++++++++++++++++++++------------------------
- 1 files changed, 75 insertions(+), 68 deletions(-)
+ pci/asihpi/hpi.h          |   25 +++++++++++++++++--------
+ pci/asihpi/hpi_internal.h |    7 +++----
+ pci/asihpi/hpios.h        |    6 ++----
+ 3 files changed, 22 insertions(+), 16 deletions(-)
 
-diff --git a/pci/asihpi/hpifunc.c b/pci/asihpi/hpifunc.c
-index 3aa1f09..c38fc94 100644
---- a/pci/asihpi/hpifunc.c
-+++ b/pci/asihpi/hpifunc.c
-@@ -310,7 +310,7 @@ u16 hpi_adapter_enumerate_property(u16 adapter_index, u16 index,
- u16 hpi_format_create(struct hpi_format *p_format, u16 channels, u16 format,
- 	u32 sample_rate, u32 bit_rate, u32 attributes)
- {
--	u16 error = 0;
-+	u16 err = 0;
- 	struct hpi_msg_format fmt;
+diff --git a/pci/asihpi/hpi.h b/pci/asihpi/hpi.h
+index ec19df5..dec1c30 100644
+--- a/pci/asihpi/hpi.h
++++ b/pci/asihpi/hpi.h
+@@ -43,14 +43,15 @@ i.e 3.05.02 is a development version
+ #define HPI_VER_RELEASE(v) ((int)(v & 0xFF))
  
- 	switch (channels) {
-@@ -322,8 +322,8 @@ u16 hpi_format_create(struct hpi_format *p_format, u16 channels, u16 format,
- 	case 16:
- 		break;
- 	default:
--		error = HPI_ERROR_INVALID_CHANNELS;
--		return error;
-+		err = HPI_ERROR_INVALID_CHANNELS;
-+		return err;
- 	}
- 	fmt.channels = channels;
+ /* Use single digits for versions less that 10 to avoid octal. */
+-#define HPI_VER HPI_VERSION_CONSTRUCTOR(4L, 5, 19)
+-#define HPI_VER_STRING "4.05.19"
++#define HPI_VER HPI_VERSION_CONSTRUCTOR(4L, 5, 32)
++#define HPI_VER_STRING "4.05.32"
  
-@@ -346,17 +346,17 @@ u16 hpi_format_create(struct hpi_format *p_format, u16 channels, u16 format,
- 	case HPI_FORMAT_OEM2:
- 		break;
- 	default:
--		error = HPI_ERROR_INVALID_FORMAT;
--		return error;
-+		err = HPI_ERROR_INVALID_FORMAT;
-+		return err;
- 	}
- 	fmt.format = format;
+ /* Library version as documented in hpi-api-versions.txt */
+ #define HPI_LIB_VER  HPI_VERSION_CONSTRUCTOR(9, 0, 0)
  
- 	if (sample_rate < 8000L) {
--		error = HPI_ERROR_INCOMPATIBLE_SAMPLERATE;
-+		err = HPI_ERROR_INCOMPATIBLE_SAMPLERATE;
- 		sample_rate = 8000L;
- 	}
- 	if (sample_rate > 200000L) {
--		error = HPI_ERROR_INCOMPATIBLE_SAMPLERATE;
-+		err = HPI_ERROR_INCOMPATIBLE_SAMPLERATE;
- 		sample_rate = 200000L;
- 	}
- 	fmt.sample_rate = sample_rate;
-@@ -387,10 +387,10 @@ u16 hpi_format_create(struct hpi_format *p_format, u16 channels, u16 format,
- 		if ((channels == 1)
- 			&& (attributes != HPI_MPEG_MODE_DEFAULT)) {
- 			attributes = HPI_MPEG_MODE_DEFAULT;
--			error = HPI_ERROR_INVALID_FORMAT;
-+			err = HPI_ERROR_INVALID_FORMAT;
- 		} else if (attributes > HPI_MPEG_MODE_DUALCHANNEL) {
- 			attributes = HPI_MPEG_MODE_DEFAULT;
--			error = HPI_ERROR_INVALID_FORMAT;
-+			err = HPI_ERROR_INVALID_FORMAT;
- 		}
- 		fmt.attributes = attributes;
- 		break;
-@@ -399,7 +399,7 @@ u16 hpi_format_create(struct hpi_format *p_format, u16 channels, u16 format,
- 	}
+ #include <linux/types.h>
+-#define HPI_EXCLUDE_DEPRECATED
++#define HPI_BUILD_EXCLUDE_DEPRECATED
++#define HPI_BUILD_KERNEL_MODE
  
- 	hpi_msg_to_format(p_format, &fmt);
--	return error;
-+	return err;
- }
+ /******************************************************************************/
+ /********       HPI API DEFINITIONS                                       *****/
+@@ -933,11 +934,9 @@ enum HPI_ERROR_CODES {
+ 	/** Adapter number out of range or not set properly. */
+ 	HPI_ERROR_BAD_ADAPTER_NUMBER = 202,
+ 	/** 2 adapters with the same adapter number. */
+-	HPI_DUPLICATE_ADAPTER_NUMBER = 203,
++	HPI_ERROR_DUPLICATE_ADAPTER_NUMBER = 203,
+ 	/** DSP code failed to bootload. (unused?) */
+ 	HPI_ERROR_DSP_BOOTLOAD = 204,
+-	/** Communication with DSP failed */
+-	HPI_ERROR_DSP_COMMUNICATION = 205,
+ 	/** Couldn't find or open the DSP code file. */
+ 	HPI_ERROR_DSP_FILE_NOT_FOUND = 206,
+ 	/** Internal DSP hardware error. */
+@@ -1056,8 +1055,18 @@ enum HPI_ERROR_CODES {
+ 	/** hpioct32.c can't obtain mutex */
+ 	HPI_ERROR_MUTEX_TIMEOUT = 700,
  
- u16 hpi_stream_estimate_buffer_size(struct hpi_format *p_format,
-@@ -1567,13 +1567,13 @@ u16 hpi_aesebu_receiver_get_channel_status(u32 h_control, u16 index,
- u16 hpi_aesebu_receiver_get_error_status(u32 h_control, u16 *pw_error_data)
- {
- 	u32 error_data = 0;
--	u16 error = 0;
-+	u16 err = 0;
+-	/** errors from HPI backends have values >= this */
+-	HPI_ERROR_BACKEND_BASE = 900
++	/** Backend errors used to be greater than this.
++	    \deprecated Now, all backends return only errors defined here in hpi.h
++	*/
++	HPI_ERROR_BACKEND_BASE = 900,
++
++	/** Communication with DSP failed */
++	HPI_ERROR_DSP_COMMUNICATION = 900
++		/* Note that the dsp communication error is set to this value so that
++		   it remains compatible with any software that expects such errors
++		   to be backend errors i.e. >= 900.
++		   Do not define any new error codes with values > 900.
++		 */
+ };
  
--	error = hpi_control_param1_get(h_control, HPI_AESEBURX_ERRORSTATUS,
-+	err = hpi_control_param1_get(h_control, HPI_AESEBURX_ERRORSTATUS,
- 		&error_data);
- 	if (pw_error_data)
- 		*pw_error_data = (u16)error_data;
--	return error;
-+	return err;
- }
+ /** \defgroup maximums HPI maximum values
+diff --git a/pci/asihpi/hpi_internal.h b/pci/asihpi/hpi_internal.h
+index ca5b844..af678be 100644
+--- a/pci/asihpi/hpi_internal.h
++++ b/pci/asihpi/hpi_internal.h
+@@ -309,8 +309,8 @@ enum HPI_CONTROL_ATTRIBUTES {
  
- u16 hpi_aesebu_transmitter_set_sample_rate(u32 h_control, u32 sample_rate)
-@@ -1680,11 +1680,11 @@ u16 hpi_channel_mode_set(u32 h_control, u16 mode)
- u16 hpi_channel_mode_get(u32 h_control, u16 *mode)
- {
- 	u32 mode32 = 0;
--	u16 error = hpi_control_param1_get(h_control,
-+	u16 err = hpi_control_param1_get(h_control,
- 		HPI_CHANNEL_MODE_MODE, &mode32);
- 	if (mode)
- 		*mode = (u16)mode32;
--	return error;
-+	return err;
- }
+ #define HPI_ETHERNET_UDP_PORT (44600)	/*!< UDP messaging port */
  
- u16 hpi_cobranet_hmi_write(u32 h_control, u32 hmi_address, u32 byte_count,
-@@ -1785,9 +1785,9 @@ u16 hpi_cobranet_get_ip_address(u32 h_control, u32 *pdw_ip_address)
- {
- 	u32 byte_count;
- 	u32 iP;
--	u16 error;
-+	u16 err;
+-/** Base network time out is set to 100 milli-seconds. */
+-#define HPI_ETHERNET_TIMEOUT_MS      (100)
++/** Default network timeout in milli-seconds. */
++#define HPI_ETHERNET_TIMEOUT_MS 500
  
--	error = hpi_cobranet_hmi_read(h_control,
-+	err = hpi_cobranet_hmi_read(h_control,
- 		HPI_COBRANET_HMI_cobra_ip_mon_currentIP, 4, &byte_count,
- 		(u8 *)&iP);
+ /** Locked memory buffer alloc/free phases */
+ enum HPI_BUFFER_CMDS {
+@@ -389,8 +389,7 @@ enum HPI_OBJECT_TYPES {
+ };
  
-@@ -1795,26 +1795,26 @@ u16 hpi_cobranet_get_ip_address(u32 h_control, u32 *pdw_ip_address)
- 		((iP & 0xff000000) >> 8) | ((iP & 0x00ff0000) << 8) | ((iP &
- 			0x0000ff00) >> 8) | ((iP & 0x000000ff) << 8);
+ #define HPI_OBJ_FUNCTION_SPACING 0x100
+-#define HPI_FUNC_ID(obj, index) \
+-	(HPI_OBJ_##obj * HPI_OBJ_FUNCTION_SPACING + index)
++#define HPI_FUNC_ID(obj, i) (HPI_OBJ_##obj * HPI_OBJ_FUNCTION_SPACING + i)
  
--	if (error)
-+	if (err)
- 		*pdw_ip_address = 0;
+ #define HPI_EXTRACT_INDEX(fn) (fn & 0xff)
  
--	return error;
-+	return err;
+diff --git a/pci/asihpi/hpios.h b/pci/asihpi/hpios.h
+index 90879b1..03273e7 100644
+--- a/pci/asihpi/hpios.h
++++ b/pci/asihpi/hpios.h
+@@ -27,9 +27,7 @@ HPI Operating System Specific macros for Linux Kernel driver
+ #define HPI_OS_LINUX_KERNEL
  
- }
- 
- u16 hpi_cobranet_set_ip_address(u32 h_control, u32 dw_ip_address)
- {
- 	u32 iP;
--	u16 error;
-+	u16 err;
- 
- 	iP = ((dw_ip_address & 0xff000000) >> 8) | ((dw_ip_address &
- 			0x00ff0000) << 8) | ((dw_ip_address & 0x0000ff00) >>
- 		8) | ((dw_ip_address & 0x000000ff) << 8);
- 
--	error = hpi_cobranet_hmi_write(h_control,
-+	err = hpi_cobranet_hmi_write(h_control,
- 		HPI_COBRANET_HMI_cobra_ip_mon_currentIP, 4, (u8 *)&iP);
- 
--	return error;
-+	return err;
- 
- }
- 
-@@ -1822,8 +1822,8 @@ u16 hpi_cobranet_get_static_ip_address(u32 h_control, u32 *pdw_ip_address)
- {
- 	u32 byte_count;
- 	u32 iP;
--	u16 error;
--	error = hpi_cobranet_hmi_read(h_control,
-+	u16 err;
-+	err = hpi_cobranet_hmi_read(h_control,
- 		HPI_COBRANET_HMI_cobra_ip_mon_staticIP, 4, &byte_count,
- 		(u8 *)&iP);
- 
-@@ -1831,55 +1831,62 @@ u16 hpi_cobranet_get_static_ip_address(u32 h_control, u32 *pdw_ip_address)
- 		((iP & 0xff000000) >> 8) | ((iP & 0x00ff0000) << 8) | ((iP &
- 			0x0000ff00) >> 8) | ((iP & 0x000000ff) << 8);
- 
--	if (error)
-+	if (err)
- 		*pdw_ip_address = 0;
- 
--	return error;
-+	return err;
- 
- }
- 
- u16 hpi_cobranet_set_static_ip_address(u32 h_control, u32 dw_ip_address)
- {
- 	u32 iP;
--	u16 error;
-+	u16 err;
- 
- 	iP = ((dw_ip_address & 0xff000000) >> 8) | ((dw_ip_address &
- 			0x00ff0000) << 8) | ((dw_ip_address & 0x0000ff00) >>
- 		8) | ((dw_ip_address & 0x000000ff) << 8);
- 
--	error = hpi_cobranet_hmi_write(h_control,
-+	err = hpi_cobranet_hmi_write(h_control,
- 		HPI_COBRANET_HMI_cobra_ip_mon_staticIP, 4, (u8 *)&iP);
- 
--	return error;
-+	return err;
- 
- }
- 
--u16 hpi_cobranet_get_macaddress(u32 h_control, u32 *pmAC_MS_bs,
--	u32 *pmAC_LS_bs)
-+u16 hpi_cobranet_get_macaddress(u32 h_control, u32 *p_mac_msbs,
-+	u32 *p_mac_lsbs)
- {
- 	u32 byte_count;
--	u16 error;
--	u32 mAC;
-+	u16 err;
-+	u32 mac;
- 
--	error = hpi_cobranet_hmi_read(h_control,
-+	err = hpi_cobranet_hmi_read(h_control,
- 		HPI_COBRANET_HMI_cobra_if_phy_address, 4, &byte_count,
--		(u8 *)&mAC);
--	*pmAC_MS_bs =
--		((mAC & 0xff000000) >> 8) | ((mAC & 0x00ff0000) << 8) | ((mAC
--			& 0x0000ff00) >> 8) | ((mAC & 0x000000ff) << 8);
--	error += hpi_cobranet_hmi_read(h_control,
--		HPI_COBRANET_HMI_cobra_if_phy_address + 1, 4, &byte_count,
--		(u8 *)&mAC);
--	*pmAC_LS_bs =
--		((mAC & 0xff000000) >> 8) | ((mAC & 0x00ff0000) << 8) | ((mAC
--			& 0x0000ff00) >> 8) | ((mAC & 0x000000ff) << 8);
+ #define HPI_OS_DEFINED
+-#define HPI_KERNEL_MODE
 -
--	if (error) {
--		*pmAC_MS_bs = 0;
--		*pmAC_LS_bs = 0;
-+		(u8 *)&mac);
-+
-+	if (!err) {
-+		*p_mac_msbs =
-+			((mac & 0xff000000) >> 8) | ((mac & 0x00ff0000) << 8)
-+			| ((mac & 0x0000ff00) >> 8) | ((mac & 0x000000ff) <<
-+			8);
-+
-+		err = hpi_cobranet_hmi_read(h_control,
-+			HPI_COBRANET_HMI_cobra_if_phy_address + 1, 4,
-+			&byte_count, (u8 *)&mac);
- 	}
+-#define HPI_REASSIGN_DUPLICATE_ADAPTER_IDX
++#define HPI_BUILD_KERNEL_MODE
  
--	return error;
-+	if (!err) {
-+		*p_mac_lsbs =
-+			((mac & 0xff000000) >> 8) | ((mac & 0x00ff0000) << 8)
-+			| ((mac & 0x0000ff00) >> 8) | ((mac & 0x000000ff) <<
-+			8);
-+	} else {
-+		*p_mac_msbs = 0;
-+		*p_mac_lsbs = 0;
-+	}
-+
-+	return err;
- }
+ #include <linux/io.h>
+ #include <asm/system.h>
+@@ -142,7 +140,7 @@ static inline void cond_unlock(struct hpios_spinlock *l)
+ #define hpios_dsplock_unlock(obj)  cond_unlock(&(obj)->dsp_lock)
  
- u16 hpi_compander_set_enable(u32 h_control, u32 enable)
-@@ -2158,14 +2165,14 @@ u16 hpi_multiplexer_get_source(u32 h_control, u16 *source_node_type,
- 	u16 *source_node_index)
- {
- 	u32 node, index;
--	u16 error = hpi_control_param2_get(h_control,
-+	u16 err = hpi_control_param2_get(h_control,
- 		HPI_MULTIPLEXER_SOURCE, &node,
- 		&index);
- 	if (source_node_type)
- 		*source_node_type = (u16)node;
- 	if (source_node_index)
- 		*source_node_index = (u16)index;
--	return error;
-+	return err;
- }
+ #ifdef CONFIG_SND_DEBUG
+-#define HPI_DEBUG
++#define HPI_BUILD_DEBUG
+ #endif
  
- u16 hpi_multiplexer_query_source(u32 h_control, u16 index,
-@@ -2304,14 +2311,14 @@ u16 hpi_sample_clock_set_source(u32 h_control, u16 source)
- 
- u16 hpi_sample_clock_get_source(u32 h_control, u16 *pw_source)
- {
--	u16 error = 0;
-+	u16 err = 0;
- 	u32 source = 0;
--	error = hpi_control_param1_get(h_control, HPI_SAMPLECLOCK_SOURCE,
-+	err = hpi_control_param1_get(h_control, HPI_SAMPLECLOCK_SOURCE,
- 		&source);
--	if (!error)
-+	if (!err)
- 		if (pw_source)
- 			*pw_source = (u16)source;
--	return error;
-+	return err;
- }
- 
- u16 hpi_sample_clock_query_source_index(const u32 h_clock, const u32 index,
-@@ -2334,14 +2341,14 @@ u16 hpi_sample_clock_set_source_index(u32 h_control, u16 source_index)
- 
- u16 hpi_sample_clock_get_source_index(u32 h_control, u16 *pw_source_index)
- {
--	u16 error = 0;
-+	u16 err = 0;
- 	u32 source_index = 0;
--	error = hpi_control_param1_get(h_control,
--		HPI_SAMPLECLOCK_SOURCE_INDEX, &source_index);
--	if (!error)
-+	err = hpi_control_param1_get(h_control, HPI_SAMPLECLOCK_SOURCE_INDEX,
-+		&source_index);
-+	if (!err)
- 		if (pw_source_index)
- 			*pw_source_index = (u16)source_index;
--	return error;
-+	return err;
- }
- 
- u16 hpi_sample_clock_query_local_rate(const u32 h_clock, const u32 index,
-@@ -2362,26 +2369,26 @@ u16 hpi_sample_clock_set_local_rate(u32 h_control, u32 sample_rate)
- 
- u16 hpi_sample_clock_get_local_rate(u32 h_control, u32 *psample_rate)
- {
--	u16 error = 0;
-+	u16 err = 0;
- 	u32 sample_rate = 0;
--	error = hpi_control_param1_get(h_control,
-+	err = hpi_control_param1_get(h_control,
- 		HPI_SAMPLECLOCK_LOCAL_SAMPLERATE, &sample_rate);
--	if (!error)
-+	if (!err)
- 		if (psample_rate)
- 			*psample_rate = sample_rate;
--	return error;
-+	return err;
- }
- 
- u16 hpi_sample_clock_get_sample_rate(u32 h_control, u32 *psample_rate)
- {
--	u16 error = 0;
-+	u16 err = 0;
- 	u32 sample_rate = 0;
--	error = hpi_control_param1_get(h_control, HPI_SAMPLECLOCK_SAMPLERATE,
-+	err = hpi_control_param1_get(h_control, HPI_SAMPLECLOCK_SAMPLERATE,
- 		&sample_rate);
--	if (!error)
-+	if (!err)
- 		if (psample_rate)
- 			*psample_rate = sample_rate;
--	return error;
-+	return err;
- }
- 
- u16 hpi_sample_clock_set_auto(u32 h_control, u32 enable)
+ #define HPI_ALIST_LOCKING
 -- 
 1.7.0.4
