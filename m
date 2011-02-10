@@ -1,15 +1,28 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: [PATCH] ASoC: mid-x86: Use the soc-jack apis for jack
-	type detection
-Date: Thu, 10 Feb 2011 12:58:01 +0530
-Message-ID: <1297322881-20461-1-git-send-email-vinod.koul@intel.com>
+From: "Bensaid, Selma" <selma.bensaid@intel.com>
+Subject: Re: WL1273 FM Radio driver...
+Date: Thu, 10 Feb 2011 09:35:38 +0000
+Message-ID: <2A84145621092446B6659B8A0F28E26F4703CC3968@irsmsx501.ger.corp.intel.com>
+References: <1297075922.15320.31.camel@masi.mnp.nokia.com>
+	<4D4FDED0.7070008@redhat.com>
+	<20110207120234.GE10564@opensource.wolfsonmicro.com>
+	<4D4FEA03.7090109@redhat.com>
+	<20110207131045.GG10564@opensource.wolfsonmicro.com>
+	<4D4FF821.4010701@redhat.com>
+	<20110207135225.GJ10564@opensource.wolfsonmicro.com>
+	<1297088242.15320.62.camel@masi.mnp.nokia.com>
+	<4D501704.6060504@redhat.com> <4D5109B3.60504@nokia.com>
+	<2A84145621092446B6659B8A0F28E26F47010C29F1@irsmsx501.ger.corp.intel.com>
+	<4D5122CF.3010403@nokia.com>
+	<1297236165.15320.70.camel@masi.mnp.nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id F33471039B4
-	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 08:20:25 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9D2AC103981
+	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 10:36:14 +0100 (CET)
+In-Reply-To: <1297236165.15320.70.camel@masi.mnp.nokia.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,67 +32,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, broonie@opensource.wolfsonmicro.com, Harsha Priya <priya.harsha@intel.com>, lrg@slimlogic.co.uk
+To: "matti.j.aaltonen@nokia.com" <matti.j.aaltonen@nokia.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ext Mauro Carvalho Chehab <mchehab@redhat.com>, ext Mark Brown <broonie@opensource.wolfsonmicro.com>, "hverkuil@xs4all.nl" <hverkuil@xs4all.nl>, "sameo@linux.intel.com" <sameo@linux.intel.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Vinod Koul <vinod.koul@intel.com>
+> On Tue, 2011-02-08 at 13:02 +0200, Peter Ujfalusi wrote:
+> > > For both configuration we have a set of HCI commands to configure the FM
+> audio
+> > > path and one of my concerns is to know if the wl1273_codec should handle
+> the audio path configuration
+> > > and the switch between FM and BT SCO?
+> >
+> > It would be better if the codec could handle the configuration,
+> > depending on which DAI is in use. If we can send HCI commands from
+> > kernel, I think that would be the cleanest way.
+> 
+> Yes, I would have done just that - and we talked a lot about it locally
+> - if I had known how to do it. I started to work on it and also talked
+> to some BT people but it didn't seem feasible at the time. Advice
+> welcome of course...
+> 
+> Cheers,
+> Matti
+> 
+Hi,
+Below the set of HCI commands that we have identified to configure the FM and BT SCO audio paths:
+-	External Audio Connection
+	o	START BT SCO Connection
+		# BT audio Path PCM  &  FM audio Path I2S
+		> hcitool cmd 0x3F 0X195 FF FF FF FF FF FF FF FF 01 02 FF 00 00 00 00 
+		# BT AUDIO Codec Configuration: MASTER
+		> hcitool cmd 0x3F 0X106 00 03 00 40 1F 00 00 01 00 00 00 00 10 00 02 00 00 10 00 02 00 01 00 00 00 00 00 00 00 00 00 00
 
-This patch modifies the mfld_machine to use the new jack apis for adding the
-voltage zones for jack type detection. It also modifed TI sn95031 codec driver
-to use these new apis
+	o	STOP BT SCO Connection
+		# BT AUDIO Codec Configuration: SLAVE
+		> hcitool cmd 0x3F 0X106 00 03 01 40 1F 00 00 01 00 00 00 00 10 00 02 00 00 10 00 02 00 01 00 00 00 00 00 00 00 00 00 00
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Harsha Priya <priya.harsha@intel.com>
----
- sound/soc/codecs/sn95031.c       |    4 +---
- sound/soc/mid-x86/mfld_machine.c |   12 ++++++++++++
- 2 files changed, 13 insertions(+), 3 deletions(-)
+ 
+-	Internal Audio Connection
+	o	START BT SCO Connection
+		# BT audio Path PCM 
+		# FM audio Path None
+		> hcitool cmd 0x3F 0X195  FF FF FF FF FF FF FF FF 01 00 FF 00 00 00 00 
+		# BT AUDIO Codec Configuration: MASTER
+		> hcitool cmd 0x3F 0X106 00 03 00 40 1F 00 00 01 00 00 00 00 10 00 02 00 00 10 00 02 00 01 00 00 00 00 00 00 00 00 00 00
 
-diff --git a/sound/soc/codecs/sn95031.c b/sound/soc/codecs/sn95031.c
-index 4cc0017..d0b7802 100644
---- a/sound/soc/codecs/sn95031.c
-+++ b/sound/soc/codecs/sn95031.c
-@@ -782,9 +782,7 @@ static int sn95031_get_headset_state(struct snd_soc_jack *mfld_jack)
- {
- 	int micbias = sn95031_get_mic_bias(mfld_jack->codec);
+	o	STOP BT SCO Connection
+		# BT audio Path None & FM audio Path None
+		> hcitool cmd 0x3F 0X195  FF FF FF FF FF FF FF FF 00 00 FF 00 00 00 00 
+
+	o	FM Audio Path configuration
+		# BT audio Path None  & FM audio Path PCM
+		> hcitool cmd 0x3F 0X195  FF FF FF FF FF FF FF FF 00 01 FF 00 00 00 00
  
--	/* Defaulting to HEADSET for now.
--	 * will change after adding soc-jack detection apis */
--	int jack_type = SND_JACK_HEADSET;
-+	int jack_type = snd_soc_jack_get_type(mfld_jack, micbias);
- 
- 	pr_debug("jack type detected = %d\n", jack_type);
- 	if (jack_type == SND_JACK_HEADSET)
-diff --git a/sound/soc/mid-x86/mfld_machine.c b/sound/soc/mid-x86/mfld_machine.c
-index 45a0067..96487fb 100644
---- a/sound/soc/mid-x86/mfld_machine.c
-+++ b/sound/soc/mid-x86/mfld_machine.c
-@@ -74,6 +74,12 @@ static struct snd_soc_jack_pin mfld_jack_pins[] = {
- 	},
- };
- 
-+/* jack detection voltage zones */
-+static struct snd_soc_jack_zone mfld_zones[] = {
-+	{MFLD_MV_START, MFLD_MV_AM_HS, SND_JACK_HEADPHONE},
-+	{MFLD_MV_AM_HS, MFLD_MV_HS, SND_JACK_HEADSET},
-+};
-+
- /* sound card controls */
- static const char *headset_switch_text[] = {"Earpiece", "Headset"};
- 
-@@ -264,6 +270,12 @@ static int mfld_init(struct snd_soc_pcm_runtime *runtime)
- 		pr_err("adding jack pins failed\n");
- 		return ret_val;
- 	}
-+	ret_val = snd_soc_jack_add_zones(&mfld_jack,
-+			ARRAY_SIZE(mfld_zones), mfld_zones);
-+	if (ret_val) {
-+		pr_err("adding jack zones failed\n");
-+		return ret_val;
-+	}
- 
- 	/* we want to check if anything is inserted at boot,
- 	 * so send a fake event to codec and it will read adc
--- 
-1.7.2.3
+Please note that the BT SCO Codec settings are platform specific.
+Selma.
+
+
+
+---------------------------------------------------------------------
+Intel Corporation SAS (French simplified joint stock company)
+Registered headquarters: "Les Montalets"- 2, rue de Paris, 
+92196 Meudon Cedex, France
+Registration Number:  302 456 199 R.C.S. NANTERRE
+Capital: 4,572,000 Euros
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
