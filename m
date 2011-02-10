@@ -1,17 +1,11 @@
-From: Torsten Schenk <torsten.schenk@zoho.com>
-Subject: Re: [PATCH] ALSA: usb - prevent kernel panic on
- disconnect
-Date: Thu, 10 Feb 2011 03:17:27 +0100
-Message-ID: <12e0d5bddfc.-957256567165512453.3394632391713713714@zoho.com>
-References: <1297278804-21011-1-git-send-email-pierre-louis.bossart@intel.com>
+From: linux@audioscience.com
+Subject: [PATCH] asihpi: Update from 4.04 to 4.06
+Date: Thu, 10 Feb 2011 17:25:53 +1300
+Message-ID: <1297311981-30448-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sender1.zohomail.com (sender1.zohomail.com [72.5.230.95])
-	by alsa0.perex.cz (Postfix) with ESMTP id D37121039AB
-	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 03:17:34 +0100 (CET)
-In-Reply-To: <1297278804-21011-1-git-send-email-pierre-louis.bossart@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,30 +15,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-Cc: sarah.a.sharp@linux.intel.com, bossart.nospam@gmail.com, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
+To: patch@alsa-project.org
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+This patch series updates asihpi driver from version 4.04 to 4.06
 
-I encountered a similar problem while developing drivers for the dmx 6fire usb. Perhaps my finding could provide you with some more information about the kernel panic. I found out that if the device is removed,
-the isoc-packet status indicate an error in the in-urb-retire method; the urb status still is 0. This happens a few ms before the actual disconnect() handler is called.
-I also looked into the snd-usb-audio driver and could not find any isoc-packet status check. Maybe this could lead to inconsistencies between PCM stream state
-and urbs.
+Major changes:
+- hpi6205 adapters no longer signal interrupts on message 
+transfer, freeing the interrupt for use by streams. This requires matching
+DSP firmware.
+- rewrote alsa driver pcm stream timer function so it works better with 
+small buffer sizes e.g. JACK.
+- update alsa control names to better conform to 'standard' style.
 
-Greets, Torsten
+Minor changes: add low level volume mute control, allow adapters with 
+duplicate hardware index jumpers to be discovered, fix playback start for 
+non-mmap adapters.
 
----- On Wed, 09 Feb 2011 20:13:24 +0100 Pierre-Louis Bossart  wrote ---- 
+Cosmetic changes: removal of many unused functions and data. removal of vestigial
+hpi subsys pointer from hpi functions. conversion of many defines to enums,
+various cleanups to comment text and some badly munged identifiers.
 
->Fix 100% reproducible kernel panic when a USB audio device is 
->disconnected during playback. When the PCM substream is NULL, any 
->dereference causes a kernel panic. This isn't a recent problem, the crash 
->happened with a 2.6.35 kernel as well 
-> 
->Note that this is only a work-around, it does not address the 
->root cause of this inconsistency between urbs and PCM states. The 
->dmesg below shows two calls to snd_urb_complete, the substream is 
->NULL and the state is either running or stopped. This doesn't make 
->any sense. 
-> 
->Thanks to Sarah Sharp  for her 
->help. 
+
+ asihpi.c       |  781 ++++++++---------
+ hpi.h          | 1214 ++++++++++-----------------
+ hpi6000.c      |  299 +++---
+ hpi6205.c      |  603 +++++--------
+ hpi6205.h      |    7 
+ hpi_internal.h | 1118 ++++++++++++-------------
+ hpicmn.c       |  480 ++++++----
+ hpicmn.h       |   24 
+ hpidebug.c     |  157 ---
+ hpidebug.h     |  323 -------
+ hpidspcd.c     |   37 
+ hpidspcd.h     |    2 
+ hpifunc.c      | 2498 ++++++++++++++++-----------------------------------------
+ hpimsginit.c   |   18 
+ hpimsginit.h   |   12 
+ hpimsgx.c      |  203 +---
+ hpioctl.c      |   85 -
+ hpios.h        |   10 
+ 18 files changed, 2914 insertions(+), 4957 deletions(-)
