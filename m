@@ -1,16 +1,18 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH 3/3] ASoC: Add support for AIF channel
- muxing on WM8903
-Date: Thu, 10 Feb 2011 14:59:17 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF0310F6050C@HQMAIL01.nvidia.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Allow use sleeping gpio in soc-jack
+Date: Thu, 10 Feb 2011 23:03:52 +0000
+Message-ID: <1297379032.3313.46.camel@odin>
+References: <1297351343-17297-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 42266244B7
-	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 23:59:33 +0100 (CET)
-Content-Language: en-US
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id A382A244C3
+	for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2011 00:03:56 +0100 (CET)
+Received: by wwe15 with SMTP id 15so1914236wwe.20
+	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 15:03:56 -0800 (PST)
+In-Reply-To: <1297351343-17297-1-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,38 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@nvidia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Stephen Warren wrote at Wednesday, February 09, 2011 9:33 AM:
+On Thu, 2011-02-10 at 17:22 +0200, Jarkko Nikula wrote:
+> It is safe to use sleeping gpio in snd_soc_jack_gpio_detect as it is not
+> called from interrupt context. This avoids WARN_ON from __gpio_get_value
+> if sleeping gpio is registered for jack.
 > 
-> Mark Brown wrote at Wednesday, February 09, 2011 6:47 AM:
-> > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> > ---
-> >  sound/soc/codecs/wm8903.c |   66 ++++++++++++++++++++++++++++++++++++++++++---
-> >  1 files changed, 62 insertions(+), 4 deletions(-)
-> 
-> ...I'll make sure to test it within the next few days, once it's applied.
+> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+> ---
 
-Mark,
-
-I did find one issue with this.
-
-With the default Left/Right Capture Mux settings, and the patch series I just
-posted, mic detection now works fine in all the scenarios I tested:
-
-1) Mic plugged in before loading driver, or not.
-2) Mic plugged in when starting to capture, or not.
-3) Mic removed and plugged back in while capture active.
-
-However, if I flip the Right Capture Mux to setting Left (while not capturing),
-then this breaks case (3) above; the initial portion of the recording is fine,
-but when I remove and plug the mic back in, something isn't turned on, and so
-nothing is recorded after that.
-
-I haven't had a chance to look into this yet, but can later; probably on
-Saturday evening.
- 
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
-nvpublic
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
