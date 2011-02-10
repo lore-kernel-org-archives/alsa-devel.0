@@ -1,8 +1,8 @@
 From: linux@audioscience.com
-Subject: [PATCH 25/28] Ensure all adapter data is cleared on
-	device removal.
-Date: Thu, 10 Feb 2011 17:26:18 +1300
-Message-ID: <1297311981-30448-26-git-send-email-linux@audioscience.com>
+Subject: [PATCH 27/28] Fix outstream start trigger for non-mmap
+	adapters.
+Date: Thu, 10 Feb 2011 17:26:20 +1300
+Message-ID: <1297311981-30448-28-git-send-email-linux@audioscience.com>
 References: <1297311981-30448-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -26,33 +26,22 @@ From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- pci/asihpi/hpioctl.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+ pci/asihpi/asihpi.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/pci/asihpi/hpioctl.c b/pci/asihpi/hpioctl.c
-index 0ea9aae..26186be 100644
---- a/pci/asihpi/hpioctl.c
-+++ b/pci/asihpi/hpioctl.c
-@@ -449,10 +449,8 @@ void __devexit asihpi_adapter_remove(struct pci_dev *pci_dev)
- 		}
- 	}
+diff --git a/pci/asihpi/asihpi.c b/pci/asihpi/asihpi.c
+index b2c0c8a..c0ae94f 100644
+--- a/pci/asihpi/asihpi.c
++++ b/pci/asihpi/asihpi.c
+@@ -632,7 +632,8 @@ static int snd_card_asihpi_trigger(struct snd_pcm_substream *substream,
+ 		VPRINTK1(KERN_INFO "start\n");
+ 		/* start the master stream */
+ 		snd_card_asihpi_pcm_timer_start(substream);
+-		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		if ((substream->stream == SNDRV_PCM_STREAM_CAPTURE) ||
++			!card->support_mmap)
+ 			hpi_handle_error(hpi_stream_start(dpcm->h_stream));
+ 		break;
  
--	if (pa->p_buffer) {
--		pa->buffer_size = 0;
-+	if (pa->p_buffer)
- 		vfree(pa->p_buffer);
--	}
- 
- 	pci_set_drvdata(pci_dev, NULL);
- 	if (1)
-@@ -461,6 +459,8 @@ void __devexit asihpi_adapter_remove(struct pci_dev *pci_dev)
- 			pci_dev->vendor, pci_dev->device,
- 			pci_dev->subsystem_vendor, pci_dev->subsystem_device,
- 			pci_dev->devfn, pa->index);
-+
-+	memset(pa, 0, sizeof(*pa));
- }
- 
- void __init asihpi_init(void)
 -- 
 1.7.0.4
