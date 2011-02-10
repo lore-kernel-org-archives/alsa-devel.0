@@ -1,7 +1,8 @@
 From: linux@audioscience.com
-Subject: [PATCH 13/28] Code cleanup.
-Date: Thu, 10 Feb 2011 17:26:06 +1300
-Message-ID: <1297311981-30448-14-git-send-email-linux@audioscience.com>
+Subject: [PATCH 14/28] Remove int flag polling code preparing
+ for stream interrupts.
+Date: Thu, 10 Feb 2011 17:26:07 +1300
+Message-ID: <1297311981-30448-15-git-send-email-linux@audioscience.com>
 References: <1297311981-30448-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -23,141 +24,187 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-Remove unused function.
-Simplify hpi_alloc_control_cache.
-Remove useless assignment to struct subsequently freed.
+Interrupt flag used for message handshake will be required for
+stream interrupts, so conditionally compiled code without
+HPI6205_NO_HSR_POLL defined can never be used;  removing it.
 
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- pci/asihpi/hpicmn.c |   42 +++++++++---------------------------------
- pci/asihpi/hpicmn.h |   15 +++++++--------
- 2 files changed, 16 insertions(+), 41 deletions(-)
+ pci/asihpi/hpi6205.c |  101 --------------------------------------------------
+ pci/asihpi/hpi6205.h |    3 -
+ 2 files changed, 0 insertions(+), 104 deletions(-)
 
-diff --git a/pci/asihpi/hpicmn.c b/pci/asihpi/hpicmn.c
-index 8346aea..4d696ab 100644
---- a/pci/asihpi/hpicmn.c
-+++ b/pci/asihpi/hpicmn.c
-@@ -156,7 +156,7 @@ static void subsys_get_adapter(struct hpi_message *phm,
- 	/* find the nCount'th nonzero adapter in array */
- 	for (index = 0; index < HPI_MAX_ADAPTERS; index++) {
- 		if (adapters.adapter[index].adapter_type) {
--			if (count == 0)
-+			if (!count)
- 				break;
- 			count--;
- 		}
-@@ -199,7 +199,7 @@ static unsigned int control_cache_alloc_check(struct hpi_control_cache *pC)
- 				&p_master_cache[byte_count];
+diff --git a/pci/asihpi/hpi6205.c b/pci/asihpi/hpi6205.c
+index 5fe535b..cbf79a9 100644
+--- a/pci/asihpi/hpi6205.c
++++ b/pci/asihpi/hpi6205.c
+@@ -527,10 +527,6 @@ static u16 create_adapter_obj(struct hpi_adapter_obj *pao,
+ 	struct hpi_hw_obj *phw = pao->priv;
+ 	struct bus_master_interface *interface;
+ 	u32 phys_addr;
+-#ifndef HPI6205_NO_HSR_POLL
+-	u32 time_out = HPI6205_TIMEOUT;
+-	u32 temp1;
+-#endif
+ 	int i;
+ 	u16 err;
  
- 			if (!info->size_in32bit_words) {
--				if (i == 0) {
-+				if (!i) {
- 					HPI_DEBUG_LOG(INFO,
- 						"adap %d cache not ready?\n",
- 						pC->adap_idx);
-@@ -279,28 +279,6 @@ static short find_control(u16 control_index,
- 	return 1;
- }
+@@ -584,27 +580,6 @@ static u16 create_adapter_obj(struct hpi_adapter_obj *pao,
  
--/** Used by the kernel driver to figure out if a buffer needs mapping.
-- */
--short hpi_check_buffer_mapping(struct hpi_control_cache *p_cache,
--	struct hpi_message *phm, void **p, unsigned int *pN)
--{
--	*pN = 0;
--	*p = NULL;
--	if ((phm->function == HPI_CONTROL_GET_STATE)
--		&& (phm->object == HPI_OBJ_CONTROLEX)
--		) {
--		struct hpi_control_cache_info *pI;
+ 	interface = phw->p_interface_buffer;
+ 
+-#ifndef HPI6205_NO_HSR_POLL
+-	/* wait for first interrupt indicating the DSP init is done */
+-	time_out = HPI6205_TIMEOUT * 10;
+-	temp1 = 0;
+-	while (((temp1 & C6205_HSR_INTSRC) == 0) && --time_out)
+-		temp1 = ioread32(phw->prHSR);
 -
--		if (!find_control(phm->obj_index, p_cache, &pI)) {
--			HPI_DEBUG_LOG(VERBOSE,
--				"HPICMN find_control() failed for adap %d\n",
--				phm->adapter_index);
--			return 0;
--		}
+-	if (temp1 & C6205_HSR_INTSRC)
+-		HPI_DEBUG_LOG(INFO,
+-			"Interrupt confirming DSP code running OK\n");
+-	else {
+-		HPI_DEBUG_LOG(ERROR,
+-			"Timed out waiting for interrupt "
+-			"confirming DSP code running\n");
+-		return HPI6205_ERROR_6205_NO_IRQ;
 -	}
--	return 0;
--}
 -
- /* allow unified treatment of several string fields within struct */
- #define HPICMN_PAD_OFS_AND_SIZE(m)  {\
- 	offsetof(struct hpi_control_cache_pad, m), \
-@@ -612,24 +590,24 @@ void hpi_cmn_control_cache_sync_to_msg(struct hpi_control_cache *p_cache,
- 	}
- }
+-	/* reset the interrupt */
+-	iowrite32(C6205_HSR_INTSRC, phw->prHSR);
+-#endif
+-
+ 	/* make sure the DSP has started ok */
+ 	if (!wait_dsp_ack(phw, H620_HIF_RESET, HPI6205_TIMEOUT * 10)) {
+ 		HPI_DEBUG_LOG(ERROR, "timed out waiting reset state \n");
+@@ -1982,9 +1957,6 @@ static short hpi6205_transfer_data(struct hpi_adapter_obj *pao, u8 *p_data,
+ 	struct hpi_hw_obj *phw = pao->priv;
+ 	u32 data_transferred = 0;
+ 	u16 err = 0;
+-#ifndef HPI6205_NO_HSR_POLL
+-	u32 time_out;
+-#endif
+ 	u32 temp2;
+ 	struct bus_master_interface *interface = phw->p_interface_buffer;
  
--struct hpi_control_cache *hpi_alloc_control_cache(const u32
--	number_of_controls, const u32 size_in_bytes, u8 *pDSP_control_buffer)
-+struct hpi_control_cache *hpi_alloc_control_cache(const u32 control_count,
-+	const u32 size_in_bytes, u8 *p_dsp_control_buffer)
+@@ -2009,14 +1981,10 @@ static short hpi6205_transfer_data(struct hpi_adapter_obj *pao, u8 *p_data,
+ 
+ 		interface->transfer_size_in_bytes = this_copy;
+ 
+-#ifdef HPI6205_NO_HSR_POLL
+ 		/* DSP must change this back to nOperation */
+ 		interface->dsp_ack = H620_HIF_IDLE;
+-#endif
+-
+ 		send_dsp_command(phw, operation);
+ 
+-#ifdef HPI6205_NO_HSR_POLL
+ 		temp2 = wait_dsp_ack(phw, operation, HPI6205_TIMEOUT);
+ 		HPI_DEBUG_LOG(DEBUG, "spun %d times for data xfer of %d\n",
+ 			HPI6205_TIMEOUT - temp2, this_copy);
+@@ -2029,40 +1997,6 @@ static short hpi6205_transfer_data(struct hpi_adapter_obj *pao, u8 *p_data,
+ 
+ 			break;
+ 		}
+-#else
+-		/* spin waiting on the result */
+-		time_out = HPI6205_TIMEOUT;
+-		temp2 = 0;
+-		while ((temp2 == 0) && time_out--) {
+-			/* give 16k bus mastering transfer time to happen */
+-			/*(16k / 132Mbytes/s = 122usec) */
+-			hpios_delay_micro_seconds(20);
+-			temp2 = ioread32(phw->prHSR);
+-			temp2 &= C6205_HSR_INTSRC;
+-		}
+-		HPI_DEBUG_LOG(DEBUG, "spun %d times for data xfer of %d\n",
+-			HPI6205_TIMEOUT - time_out, this_copy);
+-		if (temp2 == C6205_HSR_INTSRC) {
+-			HPI_DEBUG_LOG(VERBOSE,
+-				"Interrupt from HIF <data> OK\n");
+-			/*
+-			   if(interface->dwDspAck != nOperation) {
+-			   HPI_DEBUG_LOG(DEBUG("interface->dwDspAck=%d,
+-			   expected %d \n",
+-			   interface->dwDspAck,nOperation);
+-			   }
+-			 */
+-		}
+-/* need to handle this differently... */
+-		else {
+-			HPI_DEBUG_LOG(ERROR,
+-				"Interrupt from HIF <data> BAD\n");
+-			err = HPI_ERROR_DSP_HARDWARE;
+-		}
+-
+-		/* reset the interrupt from the DSP */
+-		iowrite32(C6205_HSR_INTSRC, phw->prHSR);
+-#endif
+ 		if (operation == H620_HIF_GET_DATA)
+ 			memcpy(&p_data[data_transferred],
+ 				(void *)&interface->u.b_data[0], this_copy);
+@@ -2119,9 +2053,6 @@ static unsigned int message_count;
+ static u16 message_response_sequence(struct hpi_adapter_obj *pao,
+ 	struct hpi_message *phm, struct hpi_response *phr)
  {
- 	struct hpi_control_cache *p_cache =
- 		kmalloc(sizeof(*p_cache), GFP_KERNEL);
- 	if (!p_cache)
- 		return NULL;
-+
- 	p_cache->p_info =
--		kmalloc(sizeof(*p_cache->p_info) * number_of_controls,
--			GFP_KERNEL);
-+		kmalloc(sizeof(*p_cache->p_info) * control_count, GFP_KERNEL);
- 	if (!p_cache->p_info) {
- 		kfree(p_cache);
- 		return NULL;
- 	}
-+	memset(p_cache->p_info, 0, sizeof(*p_cache->p_info) * control_count);
- 	p_cache->cache_size_in_bytes = size_in_bytes;
--	p_cache->control_count = number_of_controls;
--	p_cache->p_cache =
--		(struct hpi_control_cache_single *)pDSP_control_buffer;
-+	p_cache->control_count = control_count;
-+	p_cache->p_cache = p_dsp_control_buffer;
- 	p_cache->init = 0;
- 	return p_cache;
- }
-@@ -638,8 +616,6 @@ void hpi_free_control_cache(struct hpi_control_cache *p_cache)
- {
- 	if (p_cache) {
- 		kfree(p_cache->p_info);
--		p_cache->p_info = NULL;
--		p_cache->init = 0;
- 		kfree(p_cache);
- 	}
- }
-diff --git a/pci/asihpi/hpicmn.h b/pci/asihpi/hpicmn.h
-index 2708c4d..6db1e0b 100644
---- a/pci/asihpi/hpicmn.h
-+++ b/pci/asihpi/hpicmn.h
-@@ -33,15 +33,15 @@ struct hpi_adapter_obj {
- };
+-#ifndef HPI6205_NO_HSR_POLL
+-	u32 temp2;
+-#endif
+ 	u32 time_out, time_out2;
+ 	struct hpi_hw_obj *phw = pao->priv;
+ 	struct bus_master_interface *interface = phw->p_interface_buffer;
+@@ -2164,38 +2095,6 @@ static u16 message_response_sequence(struct hpi_adapter_obj *pao,
+ 	/* spin waiting on HIF interrupt flag (end of msg process) */
+ 	time_out = HPI6205_TIMEOUT;
  
- struct hpi_control_cache {
--	u16 init;	     /**< indicates whether the
--				structures are initialized */
-+	/** indicates whether the structures are initialized */
-+	u16 init;
- 	u16 adap_idx;
- 	u32 control_count;
- 	u32 cache_size_in_bytes;
--	struct hpi_control_cache_info
--	**p_info;		 /**< pointer to allocated memory of
--				lookup pointers. */
--	u8 *p_cache;	/**< pointer to DSP's control cache. */
-+	/** pointer to allocated memory of lookup pointers. */
-+	struct hpi_control_cache_info **p_info;
-+	/** pointer to DSP's control cache. */
-+	u8 *p_cache;
- };
+-#ifndef HPI6205_NO_HSR_POLL
+-	temp2 = 0;
+-	while ((temp2 == 0) && --time_out) {
+-		temp2 = ioread32(phw->prHSR);
+-		temp2 &= C6205_HSR_INTSRC;
+-		hpios_delay_micro_seconds(1);
+-	}
+-	if (temp2 == C6205_HSR_INTSRC) {
+-		rmb();	/* ensure we see latest value for dsp_ack */
+-		if ((interface->dsp_ack != H620_HIF_GET_RESP)) {
+-			HPI_DEBUG_LOG(DEBUG,
+-				"(%u)interface->dsp_ack(0x%x) != "
+-				"H620_HIF_GET_RESP, t=%u\n", message_count,
+-				interface->dsp_ack,
+-				HPI6205_TIMEOUT - time_out);
+-		} else {
+-			HPI_DEBUG_LOG(VERBOSE,
+-				"(%u)int with GET_RESP after %u\n",
+-				message_count, HPI6205_TIMEOUT - time_out);
+-		}
+-
+-	} else {
+-		/* can we do anything else in response to the error ? */
+-		HPI_DEBUG_LOG(ERROR,
+-			"Interrupt from HIF module BAD (function %x)\n",
+-			phm->function);
+-	}
+-
+-	/* reset the interrupt from the DSP */
+-	iowrite32(C6205_HSR_INTSRC, phw->prHSR);
+-#endif
+-
+ 	/* read the result */
+ 	if (time_out) {
+ 		if (interface->u.response_buffer.size <= phr->size)
+diff --git a/pci/asihpi/hpi6205.h b/pci/asihpi/hpi6205.h
+index e00edb0..df2f02c 100644
+--- a/pci/asihpi/hpi6205.h
++++ b/pci/asihpi/hpi6205.h
+@@ -25,9 +25,6 @@ Copyright AudioScience, Inc., 2003
+ #ifndef _HPI6205_H_
+ #define _HPI6205_H_
  
- struct hpi_adapter_obj *hpi_find_adapter(u16 adapter_index);
-@@ -57,6 +57,5 @@ void hpi_free_control_cache(struct hpi_control_cache *p_cache);
+-/* transitional conditional compile shared between host and DSP */
+-/* #define HPI6205_NO_HSR_POLL */
+-
+ #include "hpi_internal.h"
  
- void hpi_cmn_control_cache_sync_to_msg(struct hpi_control_cache *pC,
- 	struct hpi_message *phm, struct hpi_response *phr);
-+
- u16 hpi_validate_response(struct hpi_message *phm, struct hpi_response *phr);
--short hpi_check_buffer_mapping(struct hpi_control_cache *p_cache,
--	struct hpi_message *phm, void **p, unsigned int *pN);
+ /***********************************************************
 -- 
 1.7.0.4
