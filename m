@@ -1,8 +1,7 @@
 From: linux@audioscience.com
-Subject: [PATCH 07/28] Add adapter index to cache info for
-	debug.
-Date: Thu, 10 Feb 2011 17:26:00 +1300
-Message-ID: <1297311981-30448-8-git-send-email-linux@audioscience.com>
+Subject: [PATCH 10/28] Update error codes.
+Date: Thu, 10 Feb 2011 17:26:03 +1300
+Message-ID: <1297311981-30448-11-git-send-email-linux@audioscience.com>
 References: <1297311981-30448-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -24,97 +23,89 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
+Some error codes had duplicate meanings. Just use one.
+
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- pci/asihpi/hpi6000.c |    3 +++
- pci/asihpi/hpi6205.c |    3 +++
- pci/asihpi/hpicmn.c  |   16 ++++++++++++----
- pci/asihpi/hpicmn.h  |    3 ++-
- 4 files changed, 20 insertions(+), 5 deletions(-)
+ pci/asihpi/hpi6205.c |   17 +++++++++--------
+ 1 files changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/pci/asihpi/hpi6000.c b/pci/asihpi/hpi6000.c
-index c85db49..c486af1 100644
---- a/pci/asihpi/hpi6000.c
-+++ b/pci/asihpi/hpi6000.c
-@@ -582,6 +582,9 @@ static short create_adapter_obj(struct hpi_adapter_obj *pao,
- 		pao->adapter_type, pao->index);
- 	pao->open = 0;	/* upon creation the adapter is closed */
- 
-+	if (phw->p_cache)
-+		phw->p_cache->adap_idx = pao->index;
-+
- 	return hpi_add_adapter(pao);
- }
- 
 diff --git a/pci/asihpi/hpi6205.c b/pci/asihpi/hpi6205.c
-index b740edc..5ebf8f8 100644
+index 5ebf8f8..a3f650d 100644
 --- a/pci/asihpi/hpi6205.c
 +++ b/pci/asihpi/hpi6205.c
-@@ -718,6 +718,9 @@ static u16 create_adapter_obj(struct hpi_adapter_obj *pao,
+@@ -38,7 +38,7 @@
  
- 	pao->open = 0;	/* upon creation the adapter is closed */
+ /*****************************************************************************/
+ /* HPI6205 specific error codes */
+-#define HPI6205_ERROR_BASE                      1000	/* not actually used anywhere */
++#define HPI6205_ERROR_BASE 1000	/* not actually used anywhere */
  
-+	if (phw->p_cache)
-+		phw->p_cache->adap_idx = pao->index;
-+
- 	HPI_DEBUG_LOG(INFO, "bootload DSP OK\n");
+ /* operational/messaging errors */
+ #define HPI6205_ERROR_MSG_RESP_IDLE_TIMEOUT     1015
+@@ -293,7 +293,7 @@ static void outstream_message(struct hpi_adapter_obj *pao,
+ {
  
- 	return hpi_add_adapter(pao);
-diff --git a/pci/asihpi/hpicmn.c b/pci/asihpi/hpicmn.c
-index 793236e..85c2972 100644
---- a/pci/asihpi/hpicmn.c
-+++ b/pci/asihpi/hpicmn.c
-@@ -197,11 +197,18 @@ static unsigned int control_cache_alloc_check(struct hpi_control_cache *pC)
- 				&p_master_cache[byte_count];
+ 	if (phm->obj_index >= HPI_MAX_STREAMS) {
+-		phr->error = HPI_ERROR_INVALID_STREAM;
++		phr->error = HPI_ERROR_INVALID_OBJ_INDEX;
+ 		HPI_DEBUG_LOG(WARNING,
+ 			"Message referencing invalid stream %d "
+ 			"on adapter index %d\n", phm->obj_index,
+@@ -337,7 +337,7 @@ static void instream_message(struct hpi_adapter_obj *pao,
+ {
  
- 			if (!info->size_in32bit_words) {
-+				if (i == 0) {
-+					HPI_DEBUG_LOG(INFO,
-+						"adap %d cache not ready?\n",
-+						pC->adap_idx);
-+					return 0;
-+				}
- 				/* ? This is a severe error, the cache is probably
- 				   corrupted.  Minimum valid entry size is
- 				   sizeof(struct hpi_control_cache_info) */
- 				HPI_DEBUG_LOG(ERROR,
--					"zero size cache entry %d\n", i);
-+					"adap %d zero size cache entry %d\n",
-+					pC->adap_idx, i);
- 				break;
- 			}
+ 	if (phm->obj_index >= HPI_MAX_STREAMS) {
+-		phr->error = HPI_ERROR_INVALID_STREAM;
++		phr->error = HPI_ERROR_INVALID_OBJ_INDEX;
+ 		HPI_DEBUG_LOG(WARNING,
+ 			"Message referencing invalid stream %d "
+ 			"on adapter index %d\n", phm->obj_index,
+@@ -864,6 +864,7 @@ static void outstream_host_buffer_allocate(struct hpi_adapter_obj *pao,
+ 		status->dSP_index = 0;
+ 		status->host_index = status->dSP_index;
+ 		status->size_in_bytes = phm->u.d.u.buffer.buffer_size;
++		status->auxiliary_data_available = 0;
  
-@@ -231,12 +238,13 @@ static unsigned int control_cache_alloc_check(struct hpi_control_cache *pC)
+ 		hw_message(pao, phm, phr);
  
- 		if (byte_count != pC->cache_size_in_bytes)
- 			HPI_DEBUG_LOG(WARNING,
--				"bytecount %d != cache size %d", byte_count,
-+				"adap %d bytecount %d != cache size %d",
-+				pC->adap_idx, byte_count,
- 				pC->cache_size_in_bytes);
- 		else
- 			HPI_DEBUG_LOG(DEBUG,
--				"cache good. bytecount == cache size = %d",
--				byte_count);
-+				"adap %d cache good, bytecount == cache size = %d",
-+				pC->adap_idx, byte_count);
+@@ -995,8 +996,8 @@ static void outstream_write(struct hpi_adapter_obj *pao,
+ 	/*
+ 	 * This version relies on the DSP code triggering an OStream buffer
+ 	 * update immediately following a SET_FORMAT call. The host has
+-	 * already written data into the BBM buffer, but the DSP won't know about
+-	 * it until dwHostIndex is adjusted.
++	 * already written data into the BBM buffer, but the DSP won't know
++	 * about it until dwHostIndex is adjusted.
+ 	 */
+ 	if (phw->flag_outstream_just_reset[phm->obj_index]) {
+ 		/* Format can only change after reset. Must tell DSP. */
+@@ -1140,6 +1141,7 @@ static void instream_host_buffer_allocate(struct hpi_adapter_obj *pao,
+ 		status->dSP_index = 0;
+ 		status->host_index = status->dSP_index;
+ 		status->size_in_bytes = phm->u.d.u.buffer.buffer_size;
++		status->auxiliary_data_available = 0;
  
- 		pC->init = cached;
- 	}
-diff --git a/pci/asihpi/hpicmn.h b/pci/asihpi/hpicmn.h
-index e2f6f1f..2708c4d 100644
---- a/pci/asihpi/hpicmn.h
-+++ b/pci/asihpi/hpicmn.h
-@@ -33,8 +33,9 @@ struct hpi_adapter_obj {
- };
+ 		hw_message(pao, phm, phr);
+ 		if (phr->error
+@@ -1982,7 +1984,7 @@ static short hpi6205_transfer_data(struct hpi_adapter_obj *pao, u8 *p_data,
+ 	struct bus_master_interface *interface = phw->p_interface_buffer;
  
- struct hpi_control_cache {
--	u32 init;	     /**< indicates whether the
-+	u16 init;	     /**< indicates whether the
- 				structures are initialized */
-+	u16 adap_idx;
- 	u32 control_count;
- 	u32 cache_size_in_bytes;
- 	struct hpi_control_cache_info
+ 	if (!p_data)
+-		return HPI_ERROR_INVALID_DATA_TRANSFER;
++		return HPI_ERROR_INVALID_DATA_POINTER;
+ 
+ 	data_size &= ~3L;	/* round data_size down to nearest 4 bytes */
+ 
+@@ -2122,8 +2124,7 @@ static u16 message_response_sequence(struct hpi_adapter_obj *pao,
+ 
+ 	message_count++;
+ 	if (phm->size > sizeof(interface->u)) {
+-		/* really MESSAGE buffer too small */
+-		phr->error = HPI_ERROR_RESPONSE_BUFFER_TOO_SMALL;
++		phr->error = HPI_ERROR_MESSAGE_BUFFER_TOO_SMALL;
+ 		phr->specific_error = sizeof(interface->u);
+ 		phr->size = sizeof(struct hpi_response_header);
+ 		HPI_DEBUG_LOG(ERROR,
 -- 
 1.7.0.4
