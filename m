@@ -1,19 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 2.6.38] ASoC: CX20442: fix wrong
- reg_cache_default content
-Date: Thu, 10 Feb 2011 23:59:57 +0000
-Message-ID: <1297382397.3313.102.camel@odin>
-References: <201102101324.40463.jkrzyszt@tis.icnet.pl>
+Subject: Re: [PATCH] ASoC: mid-x86: Use the soc-jack apis for
+ jack type detection
+Date: Fri, 11 Feb 2011 00:02:21 +0000
+Message-ID: <1297382541.3313.103.camel@odin>
+References: <1297322881-20461-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 66006243FA
-	for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2011 01:00:00 +0100 (CET)
-Received: by wwe15 with SMTP id 15so1964092wwe.20
-	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 16:00:00 -0800 (PST)
-In-Reply-To: <201102101324.40463.jkrzyszt@tis.icnet.pl>
+	by alsa0.perex.cz (Postfix) with ESMTP id E8262243FC
+	for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2011 01:02:26 +0100 (CET)
+Received: by wwe15 with SMTP id 15so1966204wwe.20
+	for <alsa-devel@alsa-project.org>; Thu, 10 Feb 2011 16:02:26 -0800 (PST)
+In-Reply-To: <1297322881-20461-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,37 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: Harsha Priya <priya.harsha@intel.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2011-02-10 at 13:24 +0100, Janusz Krzysztofik wrote:
-> Content of the CX20442's snd_soc_codec_driver.reg_cache_default pointed 
-> area, introduced with my recent NULL pointer dereferece fix (commit 
-> f019ee5feb344ff0b22b58df4568676295aae14f), occured wrong after further 
-> testing, more thorough than just booting successfully. There are two 
-> problems with it:
+On Thu, 2011-02-10 at 12:58 +0530, Koul, Vinod wrote:
+> From: Vinod Koul <vinod.koul@intel.com>
 > 
-> 1) It should read
-> 	(1 << CX20442_TELOUT) | (1 << CX20442_MIC),
->    not 
-> 	CX20442_TELOUT | CX20442_MIC.
+> This patch modifies the mfld_machine to use the new jack apis for adding the
+> voltage zones for jack type detection. It also modifed TI sn95031 codec driver
+> to use these new apis
 > 
-> 2) While correctly matching actual codec hardware state on boot when 
->    fixed per 1), a few more code modifications would still be required 
->    to reflect that state not only into register cache, but also force 
->    them into DAPM pins state, otherwise an inconsitency occures which 
->    may prevent further codec state changes from being applied correctly. 
->    As a result, the phone stops ringing after reboot, until someone 
->    picks up the handset for the first time.
-> 
-> Revert that reg_cache_default content to a working, previous de facto 
-> default value of 0, in hope this change can still be accepted as an rc 
-> cycle fix.
-> 
-> Created and tested against linux-2.6.38-rc4
-> 
-> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> Signed-off-by: Harsha Priya <priya.harsha@intel.com>
 > ---
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
