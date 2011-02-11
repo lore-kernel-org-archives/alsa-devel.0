@@ -1,16 +1,18 @@
-From: "Sebastian H." <vand2@gmx.de>
-Subject: Re: finally, ALSA 1.0.24 is out
-Date: Fri, 11 Feb 2011 16:12:22 +0100
-Message-ID: <4D5551D6.7010006@gmx.de>
-References: <alpine.LNX.2.00.1101311605240.6272@eeebox2.perex-int.cz>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2 2.6.38] ASoC: soc-cache: Introduce the
+ cache_bypass option
+Date: Fri, 11 Feb 2011 15:18:26 +0000
+Message-ID: <20110211151825.GA23687@opensource.wolfsonmicro.com>
+References: <1297436042-18324-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout-de.gmx.net (mailout-de.gmx.net [213.165.64.22])
-	by alsa0.perex.cz (Postfix) with SMTP id ED99C24577
-	for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2011 16:08:41 +0100 (CET)
-In-Reply-To: <alpine.LNX.2.00.1101311605240.6272@eeebox2.perex-int.cz>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D6397245B4
+	for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2011 16:18:04 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1297436042-18324-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,17 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Am 31.01.2011 16:16, schrieb Jaroslav Kysela:
-> Hello all,
-> 
->  	after very intensive testing, I released all ALSA packages with 
-> version number 1.0.24(+) :
-> 
+On Fri, Feb 11, 2011 at 02:54:01PM +0000, Dimitris Papastamos wrote:
+> This is primarily needed to avoid writing back to the cache
+> whenever we are syncing the cache with the hardware.  This gives a
+> performance benefit especially for large register maps.
 
-Just wondering, is the alsa-announce list still active?
-
-Sebastian H.
+Hrm, this is a rather large and invasive patch to be applying as part of
+a bug fix for a specific driver this late in the release process.  Can
+we do something driver specific for the 2.6.38 release?
