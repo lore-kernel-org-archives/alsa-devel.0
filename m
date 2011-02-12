@@ -1,15 +1,15 @@
 From: Andres Salomon <dilinger@queued.net>
-Subject: [PATCH 10/17] wl1273: mfd_cell is now implicitly available to
+Subject: [PATCH 13/17] twl4030: mfd_cell is now implicitly available to
  drivers
-Date: Fri, 11 Feb 2011 18:12:28 -0800
-Message-ID: <20110211181228.74a8cf5a@queued.net>
+Date: Fri, 11 Feb 2011 18:15:38 -0800
+Message-ID: <20110211181538.3230cb99@queued.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <linux-input-owner@vger.kernel.org>
+Sender: linux-input-owner@vger.kernel.org
 To: Samuel Ortiz <sameo@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>, linux-media@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-input@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
@@ -18,57 +18,66 @@ change clients to use that, and remove the now-unused data_size.
 
 Signed-off-by: Andres Salomon <dilinger@queued.net>
 ---
- drivers/media/radio/radio-wl1273.c |    2 +-
- drivers/mfd/wl1273-core.c          |    2 --
- sound/soc/codecs/wl1273.c          |    3 ++-
- 3 files changed, 3 insertions(+), 4 deletions(-)
+ drivers/input/misc/twl4030-vibra.c |    2 +-
+ drivers/mfd/twl4030-codec.c        |    2 --
+ sound/soc/codecs/twl4030.c         |    5 +++--
+ 3 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/media/radio/radio-wl1273.c b/drivers/media/radio/radio-wl1273.c
-index 7ecc8e6..4698eb0 100644
---- a/drivers/media/radio/radio-wl1273.c
-+++ b/drivers/media/radio/radio-wl1273.c
-@@ -2138,7 +2138,7 @@ static int wl1273_fm_radio_remove(struct platform_device *pdev)
+diff --git a/drivers/input/misc/twl4030-vibra.c b/drivers/input/misc/twl4030-vibra.c
+index 014dd4a..1246ae1 100644
+--- a/drivers/input/misc/twl4030-vibra.c
++++ b/drivers/input/misc/twl4030-vibra.c
+@@ -196,7 +196,7 @@ static SIMPLE_DEV_PM_OPS(twl4030_vibra_pm_ops,
  
- static int __devinit wl1273_fm_radio_probe(struct platform_device *pdev)
+ static int __devinit twl4030_vibra_probe(struct platform_device *pdev)
  {
--	struct wl1273_core **core = pdev->dev.platform_data;
-+	struct wl1273_core **core = mfd_get_data(pdev);
- 	struct wl1273_device *radio;
- 	struct v4l2_ctrl *ctrl;
- 	int r = 0;
-diff --git a/drivers/mfd/wl1273-core.c b/drivers/mfd/wl1273-core.c
-index d2ecc24..703085e 100644
---- a/drivers/mfd/wl1273-core.c
-+++ b/drivers/mfd/wl1273-core.c
-@@ -80,7 +80,6 @@ static int __devinit wl1273_core_probe(struct i2c_client *client,
- 	cell = &core->cells[children];
- 	cell->name = "wl1273_fm_radio";
- 	cell->platform_data = &core;
--	cell->data_size = sizeof(core);
- 	children++;
+-	struct twl4030_codec_vibra_data *pdata = pdev->dev.platform_data;
++	struct twl4030_codec_vibra_data *pdata = mfd_get_data(pdev);
+ 	struct vibra_info *info;
+ 	int ret;
  
- 	if (pdata->children & WL1273_CODEC_CHILD) {
-@@ -89,7 +88,6 @@ static int __devinit wl1273_core_probe(struct i2c_client *client,
- 		dev_dbg(&client->dev, "%s: Have codec.\n", __func__);
- 		cell->name = "wl1273-codec";
- 		cell->platform_data = &core;
--		cell->data_size = sizeof(core);
- 		children++;
+diff --git a/drivers/mfd/twl4030-codec.c b/drivers/mfd/twl4030-codec.c
+index 9a4b196..0f57426 100644
+--- a/drivers/mfd/twl4030-codec.c
++++ b/drivers/mfd/twl4030-codec.c
+@@ -209,14 +209,12 @@ static int __devinit twl4030_codec_probe(struct platform_device *pdev)
+ 		cell = &codec->cells[childs];
+ 		cell->name = "twl4030-codec";
+ 		cell->platform_data = pdata->audio;
+-		cell->data_size = sizeof(*pdata->audio);
+ 		childs++;
+ 	}
+ 	if (pdata->vibra) {
+ 		cell = &codec->cells[childs];
+ 		cell->name = "twl4030-vibra";
+ 		cell->platform_data = pdata->vibra;
+-		cell->data_size = sizeof(*pdata->vibra);
+ 		childs++;
  	}
  
-diff --git a/sound/soc/codecs/wl1273.c b/sound/soc/codecs/wl1273.c
-index 861b28f..1ad0d5a 100644
---- a/sound/soc/codecs/wl1273.c
-+++ b/sound/soc/codecs/wl1273.c
-@@ -436,7 +436,8 @@ EXPORT_SYMBOL_GPL(wl1273_get_format);
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index e4d464b..37004afb 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -732,7 +732,8 @@ static int aif_event(struct snd_soc_dapm_widget *w,
  
- static int wl1273_probe(struct snd_soc_codec *codec)
+ static void headset_ramp(struct snd_soc_codec *codec, int ramp)
  {
--	struct wl1273_core **core = codec->dev->platform_data;
-+	struct wl1273_core **core =
+-	struct twl4030_codec_audio_data *pdata = codec->dev->platform_data;
++	struct twl4030_codec_audio_data *pdata =
 +			mfd_get_data(to_platform_device(codec->dev));
- 	struct wl1273_priv *wl1273;
- 	int r;
+ 	unsigned char hs_gain, hs_pop;
+ 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
+ 	/* Base values for ramp delay calculation: 2^19 - 2^26 */
+@@ -2297,7 +2298,7 @@ static struct snd_soc_codec_driver soc_codec_dev_twl4030 = {
  
+ static int __devinit twl4030_codec_probe(struct platform_device *pdev)
+ {
+-	struct twl4030_codec_audio_data *pdata = pdev->dev.platform_data;
++	struct twl4030_codec_audio_data *pdata = mfd_get_data(pdev);
+ 
+ 	if (!pdata) {
+ 		dev_err(&pdev->dev, "platform_data is missing\n");
 -- 
 1.7.2.3
+
