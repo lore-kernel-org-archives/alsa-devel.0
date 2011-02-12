@@ -1,83 +1,42 @@
-From: Andres Salomon <dilinger@queued.net>
-Subject: [PATCH 13/17] twl4030: mfd_cell is now implicitly available to
- drivers
-Date: Fri, 11 Feb 2011 18:15:38 -0800
-Message-ID: <20110211181538.3230cb99@queued.net>
+From: <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 13/17] twl4030: mfd_cell is now implicitly
+ available to drivers
+Date: Sat, 12 Feb 2011 15:15:02 +0000
+Message-ID: <CF32F28EDF8D20468EEDCBE4975DA0274A4309@008-AM1MPN1-027.mgdnok.nokia.com>
+References: <20110211181538.3230cb99@queued.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-input-owner@vger.kernel.org>
-Sender: linux-input-owner@vger.kernel.org
-To: Samuel Ortiz <sameo@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-input@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-da01.nokia.com (smtp.nokia.com [147.243.128.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3D433103800
+	for <alsa-devel@alsa-project.org>; Sat, 12 Feb 2011 16:16:13 +0100 (CET)
+In-Reply-To: <20110211181538.3230cb99@queued.net>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: dilinger@queued.net, sameo@linux.intel.com
+Cc: alsa-devel@alsa-project.org, dmitry.torokhov@gmail.com, tiwai@suse.de, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
+> ________________________________________
+> From: ext Andres Salomon [dilinger@queued.net]
+> Sent: Saturday, February 12, 2011 04:15
+> To: Samuel Ortiz
+> Cc: linux-kernel@vger.kernel.org; Mark Brown; Dmitry Torokhov; Ujfalusi Peter (Nokia-MS/Tampere); Liam Girdwood; Jaroslav Kysela; Takashi Iwai; linux-input@vger.kernel.org; alsa-devel@alsa-project.org
+> Subject: [PATCH 13/17] twl4030: mfd_cell is now implicitly available to drivers
+> 
+> The cell's platform_data is now accessed with a helper function;
+> change clients to use that, and remove the now-unused data_size.
+> 
+> Signed-off-by: Andres Salomon <dilinger@queued.net>
+> ---
 
-The cell's platform_data is now accessed with a helper function;
-change clients to use that, and remove the now-unused data_size.
-
-Signed-off-by: Andres Salomon <dilinger@queued.net>
----
- drivers/input/misc/twl4030-vibra.c |    2 +-
- drivers/mfd/twl4030-codec.c        |    2 --
- sound/soc/codecs/twl4030.c         |    5 +++--
- 3 files changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/input/misc/twl4030-vibra.c b/drivers/input/misc/twl4030-vibra.c
-index 014dd4a..1246ae1 100644
---- a/drivers/input/misc/twl4030-vibra.c
-+++ b/drivers/input/misc/twl4030-vibra.c
-@@ -196,7 +196,7 @@ static SIMPLE_DEV_PM_OPS(twl4030_vibra_pm_ops,
- 
- static int __devinit twl4030_vibra_probe(struct platform_device *pdev)
- {
--	struct twl4030_codec_vibra_data *pdata = pdev->dev.platform_data;
-+	struct twl4030_codec_vibra_data *pdata = mfd_get_data(pdev);
- 	struct vibra_info *info;
- 	int ret;
- 
-diff --git a/drivers/mfd/twl4030-codec.c b/drivers/mfd/twl4030-codec.c
-index 9a4b196..0f57426 100644
---- a/drivers/mfd/twl4030-codec.c
-+++ b/drivers/mfd/twl4030-codec.c
-@@ -209,14 +209,12 @@ static int __devinit twl4030_codec_probe(struct platform_device *pdev)
- 		cell = &codec->cells[childs];
- 		cell->name = "twl4030-codec";
- 		cell->platform_data = pdata->audio;
--		cell->data_size = sizeof(*pdata->audio);
- 		childs++;
- 	}
- 	if (pdata->vibra) {
- 		cell = &codec->cells[childs];
- 		cell->name = "twl4030-vibra";
- 		cell->platform_data = pdata->vibra;
--		cell->data_size = sizeof(*pdata->vibra);
- 		childs++;
- 	}
- 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index e4d464b..37004afb 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -732,7 +732,8 @@ static int aif_event(struct snd_soc_dapm_widget *w,
- 
- static void headset_ramp(struct snd_soc_codec *codec, int ramp)
- {
--	struct twl4030_codec_audio_data *pdata = codec->dev->platform_data;
-+	struct twl4030_codec_audio_data *pdata =
-+			mfd_get_data(to_platform_device(codec->dev));
- 	unsigned char hs_gain, hs_pop;
- 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
- 	/* Base values for ramp delay calculation: 2^19 - 2^26 */
-@@ -2297,7 +2298,7 @@ static struct snd_soc_codec_driver soc_codec_dev_twl4030 = {
- 
- static int __devinit twl4030_codec_probe(struct platform_device *pdev)
- {
--	struct twl4030_codec_audio_data *pdata = pdev->dev.platform_data;
-+	struct twl4030_codec_audio_data *pdata = mfd_get_data(pdev);
- 
- 	if (!pdata) {
- 		dev_err(&pdev->dev, "platform_data is missing\n");
--- 
-1.7.2.3
-
+Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
