@@ -1,35 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 1/2 2.6.38] ASoC: WM8994: Improve
- robustness in some use cases
-Date: Sun, 13 Feb 2011 19:45:55 +0000
-Message-ID: <20110213194553.GA16041@opensource.wolfsonmicro.com>
-References: <1297441932-13350-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 1/7] ASoC: WM8903: Fix mic detection
+ register definitions
+Date: Sun, 13 Feb 2011 19:47:49 +0000
+Message-ID: <20110213194749.GA3521@opensource.wolfsonmicro.com>
+References: <1297377439-27382-1-git-send-email-swarren@nvidia.com>
+ <1297614107.3436.23.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 04B211037F3
-	for <alsa-devel@alsa-project.org>; Sun, 13 Feb 2011 20:45:34 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1297441932-13350-1-git-send-email-dp@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
+In-Reply-To: <1297614107.3436.23.camel@odin>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
+Cc: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 11, 2011 at 04:32:11PM +0000, Dimitris Papastamos wrote:
-> Ensure that on disabling certain registers such as AIF1DAC1L,
-> AIF1DAC1R etc. the AIF1CLK and AIF2CLK remain enabled.  Similarly
-> when enabling those registers, AIF1CLK and AIF2CLK will remain
-> disabled.
+On Sun, Feb 13, 2011 at 04:21:47PM +0000, Liam Girdwood wrote:
 
-Applied both, thanks.
+> All
+
+> Acked-by: Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>
+
+Applied, thanks.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-tegra" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
