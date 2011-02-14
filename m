@@ -1,138 +1,79 @@
-From: Hans Verkuil <hansverk@cisco.com>
-Subject: Re: [PATCH v9 00/12] Media controller (core and V4L2)
-Date: Mon, 14 Feb 2011 13:49:45 +0100
-Message-ID: <201102141349.45127.hansverk@cisco.com>
-References: <1297686067-9666-1-git-send-email-laurent.pinchart@ideasonboard.com>
+From: kuldeep ghan <ghankp@gmail.com>
+Subject: Re: Unable to attach mixer to device AndroidOut: No
+	such file or directory
+Date: Mon, 14 Feb 2011 19:40:14 +0530
+Message-ID: <AANLkTi=za9h-=brgcFLh7askFyjU1XkmmnyosqzsYdgB@mail.gmail.com>
+References: <AANLkTindSL6f2TqJ96kXbbhMKgqxLWqGwCHGdy6tDSN-@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <1297686067-9666-1-git-send-email-laurent.pinchart@ideasonboard.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, sakari.ailus@maxwell.research.nokia.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id DA3DD10381E
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2011 15:10:17 +0100 (CET)
+Received: by iye19 with SMTP id 19so5322234iye.38
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2011 06:10:14 -0800 (PST)
+In-Reply-To: <AANLkTindSL6f2TqJ96kXbbhMKgqxLWqGwCHGdy6tDSN-@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Here is my
+Hi, Here is the debug log I get when i try to create instance of audio
+hardware device.
 
-Acked-by: Hans Verkuil <hverkuil@xs4all.nl>
+ALSAMixer:167 intializing AndroidOut Mixer!!!
+ALSALib external/alsa-lib/src/control/control.c:902:(snd_ctl_open_noupdate)
+Invalid CTL AndroidOut
+initMixer:110 Unable to attach mixer to device: No such file or directory
+ALSAMixer:169 intializing AndroidIn Mixer!!!
+ALSALib external/alsa-lib/src/control/control.c:902:(snd_ctl_open_noupdate)
+Invalid CTL AndroidIn
+initMixer:110 Unable to attach mixer to device: No such file or directory
+Mixer: master 'PCM' not found.
+Mixer: route 'Earpiece' not found.
+Mixer: route 'Speaker' not found.
+Mixer: route 'Headphone' not found.
+Mixer: route 'Bluetooth' not found.
+Mixer: route 'Bluetooth A2DP' not found.
+Mixer: master 'Capture' not found.
+Mixer: route 'Capture' not found.
+Mixer: route '' not found.
+Mixer: route 'Capture' not found.
+Mixer: route 'Bluetooth Capture' not found.
+Mixer: route 'Bluetooth A2DP Capture' not found.
+mixer initialized.
+openOutputStream called for devices: 0x00000001
+ALSALib external/alsa-lib/src/pcm/pcm.c:2210:(snd_pcm_open_noupdate) Unknown
+PCM AndroidCapture
+openOutputStream called for devices: 0x00000001
+ALSALib external/alsa-lib/src/pcm/pcm.c:2210:(snd_pcm_open_noupdate) Unknown
+PCM AndroidPlayback_Earpiece_incall
+ALSALib external/alsa-lib/src/pcm/pcm.c:2210:(snd_pcm_open_noupdate) Unknown
+PCM AndroidPlayback_Earpiece
+ALSALib external/alsa-lib/src/pcm/pcm.c:2210:(snd_pcm_open_noupdate) Unknown
+PCM AndroidPlayback
 
-for this patch series.
+Where are AndroidOut and AndroidIn created? what is the possible reason for
+failure above?
 
-Regards,
+Kuldeep
 
-	Hans
+On Sun, Feb 13, 2011 at 10:33 PM, kuldeep ghan <ghankp@gmail.com> wrote:
 
-On Monday, February 14, 2011 13:20:55 Laurent Pinchart wrote:
-> Hi everybody,
-> 
-> Here is the ninth version of the media controller core and V4L2 patches.
-> 
-> Quick reminder for those who missed the previous version. let me quote the
-> documentation (Documentation/DocBook/v4l/media-controller.xml).
-> 
-> "Discovering a [media] device internal topology, and configuring it at 
-runtime,
-> is one of the goals of the media controller API. To achieve this, hardware
-> devices are modelled as an oriented graph of building blocks called entities
-> connected through pads."
-> 
-> The code has been extensively reviewed by the V4L community, and this 
-version
-> is the first one to incorporate comments from the ALSA community (big thanks
-> to Mark Brown and Clemens Ladisch). Two issues are not fully addressed yet,
-> namely power management (I need to discuss this some more with the ALSA
-> developers to really understand their requirements) and entities type names.
-> I'm still posting this for review, as other developers have showed interest 
-in
-> commenting on the code.
-> 
-> I want to emphasize once again that the media controller API does not 
-replace
-> the V4L, DVB or ALSA APIs. It complements them.
-> 
-> The first user of the media controller API is the OMAP3 ISP driver. You can
-> find it (as well as these patches and other V4L-specific patches) in a git 
-tree
-> at http://git.linuxtv.org/pinchartl/media.git (media-0005-omap3isp branch). 
-The
-> OMAP3 ISP driver patches are regularly posted for review on the linux-media
-> list.
-> 
-> Laurent Pinchart (11):
->   media: Media device node support
->   media: Media device
->   media: Entities, pads and links
->   media: Entity use count
->   media: Media device information query
->   media: Entities, pads and links enumeration
->   media: Links setup
->   media: Pipelines and media streams
->   v4l: Add a media_device pointer to the v4l2_device structure
->   v4l: Make video_device inherit from media_entity
->   v4l: Make v4l2_subdev inherit from media_entity
-> 
-> Sakari Ailus (1):
->   media: Entity graph traversal
-> 
->  Documentation/ABI/testing/sysfs-bus-media          |    6 +
->  Documentation/DocBook/media-entities.tmpl          |   24 +
->  Documentation/DocBook/media.tmpl                   |    3 +
->  Documentation/DocBook/v4l/media-controller.xml     |   89 ++++
->  Documentation/DocBook/v4l/media-func-close.xml     |   59 +++
->  Documentation/DocBook/v4l/media-func-ioctl.xml     |  116 +++++
->  Documentation/DocBook/v4l/media-func-open.xml      |   94 ++++
->  .../DocBook/v4l/media-ioc-device-info.xml          |  133 +++++
->  .../DocBook/v4l/media-ioc-enum-entities.xml        |  308 +++++++++++
->  Documentation/DocBook/v4l/media-ioc-enum-links.xml |  207 ++++++++
->  Documentation/DocBook/v4l/media-ioc-setup-link.xml |   93 ++++
->  Documentation/media-framework.txt                  |  353 +++++++++++++
->  Documentation/video4linux/v4l2-framework.txt       |   72 +++-
->  drivers/media/Kconfig                              |   13 +
->  drivers/media/Makefile                             |    6 +
->  drivers/media/media-device.c                       |  382 ++++++++++++++
->  drivers/media/media-devnode.c                      |  321 ++++++++++++
->  drivers/media/media-entity.c                       |  536 
-++++++++++++++++++++
->  drivers/media/video/v4l2-dev.c                     |   49 ++-
->  drivers/media/video/v4l2-device.c                  |   49 ++-
->  drivers/media/video/v4l2-subdev.c                  |   28 +-
->  include/linux/Kbuild                               |    1 +
->  include/linux/media.h                              |  132 +++++
->  include/media/media-device.h                       |   95 ++++
->  include/media/media-devnode.h                      |   97 ++++
->  include/media/media-entity.h                       |  151 ++++++
->  include/media/v4l2-dev.h                           |    7 +
->  include/media/v4l2-device.h                        |    4 +
->  include/media/v4l2-subdev.h                        |    6 +
->  29 files changed, 3413 insertions(+), 21 deletions(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-bus-media
->  create mode 100644 Documentation/DocBook/v4l/media-controller.xml
->  create mode 100644 Documentation/DocBook/v4l/media-func-close.xml
->  create mode 100644 Documentation/DocBook/v4l/media-func-ioctl.xml
->  create mode 100644 Documentation/DocBook/v4l/media-func-open.xml
->  create mode 100644 Documentation/DocBook/v4l/media-ioc-device-info.xml
->  create mode 100644 Documentation/DocBook/v4l/media-ioc-enum-entities.xml
->  create mode 100644 Documentation/DocBook/v4l/media-ioc-enum-links.xml
->  create mode 100644 Documentation/DocBook/v4l/media-ioc-setup-link.xml
->  create mode 100644 Documentation/media-framework.txt
->  create mode 100644 drivers/media/media-device.c
->  create mode 100644 drivers/media/media-devnode.c
->  create mode 100644 drivers/media/media-entity.c
->  create mode 100644 include/linux/media.h
->  create mode 100644 include/media/media-device.h
->  create mode 100644 include/media/media-devnode.h
->  create mode 100644 include/media/media-entity.h
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-media" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-> 
+> I am trying to get audio working with android kernel. I am able to play wav
+> files with alsa_aplay but when I try to open Output or Input stream using
+> libadio Its failing.
+>
+> Can anyone help me with this? what could be wrong?
+>
+>
+>
