@@ -1,419 +1,245 @@
 From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: [PATCH v9 02/12] media: Media device
-Date: Mon, 14 Feb 2011 13:20:57 +0100
-Message-ID: <1297686067-9666-3-git-send-email-laurent.pinchart@ideasonboard.com>
+Subject: [PATCH v9 12/12] v4l: Make v4l2_subdev inherit from media_entity
+Date: Mon, 14 Feb 2011 13:21:07 +0100
+Message-ID: <1297686067-9666-13-git-send-email-laurent.pinchart@ideasonboard.com>
 References: <1297686067-9666-1-git-send-email-laurent.pinchart@ideasonboard.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
-	[95.142.166.194])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9ACDC103824
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2011 13:21:10 +0100 (CET)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1297686067-9666-1-git-send-email-laurent.pinchart@ideasonboard.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 Cc: sakari.ailus@maxwell.research.nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-The media_device structure abstracts functions common to all kind of
-media devices (v4l2, dvb, alsa, ...). It manages media entities and
-offers a userspace API to discover and configure the media device
-internal topology.
+V4L2 subdevices are media entities. As such they need to inherit from
+(include) the media_entity structure.
+
+When registering/unregistering the subdevice, the media entity is
+automatically registered/unregistered. The entity is acquired on device
+open and released on device close.
 
 Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@iki.fi>
 ---
- Documentation/ABI/testing/sysfs-bus-media      |    6 ++
- Documentation/DocBook/media-entities.tmpl      |    2 +
- Documentation/DocBook/media.tmpl               |    3 +
- Documentation/DocBook/v4l/media-controller.xml |   56 +++++++++++++
- Documentation/media-framework.txt              |   67 ++++++++++++++++
- drivers/media/Makefile                         |    2 +-
- drivers/media/media-device.c                   |  100 ++++++++++++++++++++++++
- include/media/media-device.h                   |   69 ++++++++++++++++
- 8 files changed, 304 insertions(+), 1 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-media
- create mode 100644 Documentation/DocBook/v4l/media-controller.xml
- create mode 100644 Documentation/media-framework.txt
- create mode 100644 drivers/media/media-device.c
- create mode 100644 include/media/media-device.h
+ Documentation/video4linux/v4l2-framework.txt |   23 ++++++++++++++++
+ drivers/media/video/v4l2-device.c            |   36 +++++++++++++++++++++++---
+ drivers/media/video/v4l2-subdev.c            |   28 ++++++++++++++++++-
+ include/media/v4l2-subdev.h                  |    6 ++++
+ 4 files changed, 87 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-media b/Documentation/ABI/testing/sysfs-bus-media
-new file mode 100644
-index 0000000..7057e57
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-bus-media
-@@ -0,0 +1,6 @@
-+What:		/sys/bus/media/devices/.../model
-+Date:		January 2011
-+Contact:	Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-+		linux-media@vger.kernel.org
-+Description:	Contains the device model name in UTF-8. The device version is
-+		is not be appended to the model name.
-diff --git a/Documentation/DocBook/media-entities.tmpl b/Documentation/DocBook/media-entities.tmpl
-index be34dcb..61d6f11 100644
---- a/Documentation/DocBook/media-entities.tmpl
-+++ b/Documentation/DocBook/media-entities.tmpl
-@@ -321,6 +321,8 @@
- <!ENTITY sub-media-entities SYSTEM "media-entities.tmpl">
- <!ENTITY sub-media-indices SYSTEM "media-indices.tmpl">
+diff --git a/Documentation/video4linux/v4l2-framework.txt b/Documentation/video4linux/v4l2-framework.txt
+index 0627081..77d96f4 100644
+--- a/Documentation/video4linux/v4l2-framework.txt
++++ b/Documentation/video4linux/v4l2-framework.txt
+@@ -268,6 +268,26 @@ A sub-device driver initializes the v4l2_subdev struct using:
+ Afterwards you need to initialize subdev->name with a unique name and set the
+ module owner. This is done for you if you use the i2c helper functions.
  
-+<!ENTITY sub-media-controller SYSTEM "v4l/media-controller.xml">
++If integration with the media framework is needed, you must initialize the
++media_entity struct embedded in the v4l2_subdev struct (entity field) by
++calling media_entity_init():
 +
- <!-- Function Reference -->
- <!ENTITY close SYSTEM "v4l/func-close.xml">
- <!ENTITY ioctl SYSTEM "v4l/func-ioctl.xml">
-diff --git a/Documentation/DocBook/media.tmpl b/Documentation/DocBook/media.tmpl
-index a99088a..88f2cc6 100644
---- a/Documentation/DocBook/media.tmpl
-+++ b/Documentation/DocBook/media.tmpl
-@@ -106,6 +106,9 @@ Foundation. A copy of the license is included in the chapter entitled
- &sub-remote_controllers;
- </chapter>
- </part>
-+<part id="media_common">
-+&sub-media-controller;
-+</part>
++	struct media_pad *pads = &my_sd->pads;
++	int err;
++
++	err = media_entity_init(&sd->entity, npads, pads, 0);
++
++The pads array must have been previously initialized. There is no need to
++manually set the struct media_entity type and name fields, but the revision
++field must be initialized if needed.
++
++A reference to the entity will be automatically acquired/released when the
++subdev device node (if any) is opened/closed.
++
++Don't forget to cleanup the media entity before the sub-device is destroyed:
++
++	media_entity_cleanup(&sd->entity);
++
+ A device (bridge) driver needs to register the v4l2_subdev with the
+ v4l2_device:
  
- &sub-fdl-appendix;
+@@ -277,6 +297,9 @@ This can fail if the subdev module disappeared before it could be registered.
+ After this function was called successfully the subdev->dev field points to
+ the v4l2_device.
  
-diff --git a/Documentation/DocBook/v4l/media-controller.xml b/Documentation/DocBook/v4l/media-controller.xml
-new file mode 100644
-index 0000000..253ddb4
---- /dev/null
-+++ b/Documentation/DocBook/v4l/media-controller.xml
-@@ -0,0 +1,56 @@
-+<partinfo>
-+  <authorgroup>
-+    <author>
-+      <firstname>Laurent</firstname>
-+      <surname>Pinchart</surname>
-+      <affiliation><address><email>laurent.pinchart@ideasonboard.com</email></address></affiliation>
-+      <contrib>Initial version.</contrib>
-+    </author>
-+  </authorgroup>
-+  <copyright>
-+    <year>2010</year>
-+    <holder>Laurent Pinchart</holder>
-+  </copyright>
++If the v4l2_device parent device has a non-NULL mdev field, the sub-device
++entity will be automatically registered with the media device.
 +
-+  <revhistory>
-+    <!-- Put document revisions here, newest first. -->
-+    <revision>
-+      <revnumber>1.0.0</revnumber>
-+      <date>2010-11-10</date>
-+      <authorinitials>lp</authorinitials>
-+      <revremark>Initial revision</revremark>
-+    </revision>
-+  </revhistory>
-+</partinfo>
-+
-+<title>Media Controller API</title>
-+
-+<chapter id="media_controller">
-+  <title>Media Controller</title>
-+
-+  <section id="media-controller-intro">
-+    <title>Introduction</title>
-+    <para>Media devices increasingly handle multiple related functions. Many USB
-+    cameras include microphones, video capture hardware can also output video,
-+    or SoC camera interfaces also perform memory-to-memory operations similar to
-+    video codecs.</para>
-+    <para>Independent functions, even when implemented in the same hardware, can
-+    be modelled as separate devices. A USB camera with a microphone will be
-+    presented to userspace applications as V4L2 and ALSA capture devices. The
-+    devices' relationships (when using a webcam, end-users shouldn't have to
-+    manually select the associated USB microphone), while not made available
-+    directly to applications by the drivers, can usually be retrieved from
-+    sysfs.</para>
-+    <para>With more and more advanced SoC devices being introduced, the current
-+    approach will not scale. Device topologies are getting increasingly complex
-+    and can't always be represented by a tree structure. Hardware blocks are
-+    shared between different functions, creating dependencies between seemingly
-+    unrelated devices.</para>
-+    <para>Kernel abstraction APIs such as V4L2 and ALSA provide means for
-+    applications to access hardware parameters. As newer hardware expose an
-+    increasingly high number of those parameters, drivers need to guess what
-+    applications really require based on limited information, thereby
-+    implementing policies that belong to userspace.</para>
-+    <para>The media controller API aims at solving those problems.</para>
-+  </section>
-+</chapter>
-diff --git a/Documentation/media-framework.txt b/Documentation/media-framework.txt
-new file mode 100644
-index 0000000..1844c3f
---- /dev/null
-+++ b/Documentation/media-framework.txt
-@@ -0,0 +1,67 @@
-+Linux kernel media framework
-+============================
-+
-+This document describes the Linux kernel media framework, its data structures,
-+functions and their usage.
-+
-+
-+Introduction
-+------------
-+
-+The media controller API is documented in DocBook format in
-+Documentation/DocBook/v4l/media-controller.xml. This document will focus on
-+the kernel-side implementation of the media framework.
-+
-+
-+Media device
-+------------
-+
-+A media device is represented by a struct media_device instance, defined in
-+include/media/media-device.h. Allocation of the structure is handled by the
-+media device driver, usually by embedding the media_device instance in a
-+larger driver-specific structure.
-+
-+Drivers register media device instances by calling
-+
-+	media_device_register(struct media_device *mdev);
-+
-+The caller is responsible for initializing the media_device structure before
-+registration. The following fields must be set:
-+
-+ - dev must point to the parent device (usually a pci_dev, usb_interface or
-+   platform_device instance).
-+
-+ - model must be filled with the device model name as a NUL-terminated UTF-8
-+   string. The device/model revision must not be stored in this field.
-+
-+The following fields are optional:
-+
-+ - serial is a unique serial number stored as a NUL-terminated ASCII string.
-+   The field is big enough to store a GUID in text form. If the hardware
-+   doesn't provide a unique serial number this field must be left empty.
-+
-+ - bus_info represents the location of the device in the system as a
-+   NUL-terminated ASCII string. For PCI/PCIe devices bus_info must be set to
-+   "PCI:" (or "PCIe:") followed by the value of pci_name(). For USB devices,
-+   the usb_make_path() function must be used. This field is used by
-+   applications to distinguish between otherwise identical devices that don't
-+   provide a serial number.
-+
-+ - hw_revision is the hardware device revision in a driver-specific format.
-+   When possible the revision should be formatted with the KERNEL_VERSION
-+   macro.
-+
-+ - driver_version is formatted with the KERNEL_VERSION macro. The version
-+   minor must be incremented when new features are added to the userspace API
-+   without breaking binary compatibility. The version major must be
-+   incremented when binary compatibility is broken.
-+
-+Upon successful registration a character device named media[0-9]+ is created.
-+The device major and minor numbers are dynamic. The model name is exported as
-+a sysfs attribute.
-+
-+Drivers unregister media device instances by calling
-+
-+	media_device_unregister(struct media_device *mdev);
-+
-+Unregistering a media device that hasn't been registered is *NOT* safe.
-diff --git a/drivers/media/Makefile b/drivers/media/Makefile
-index d56349f..36731aa 100644
---- a/drivers/media/Makefile
-+++ b/drivers/media/Makefile
-@@ -2,7 +2,7 @@
- # Makefile for the kernel multimedia device drivers.
- #
+ You can unregister a sub-device using:
  
--media-objs	:= media-devnode.o
-+media-objs	:= media-device.o media-devnode.o
+ 	v4l2_device_unregister_subdev(sd);
+diff --git a/drivers/media/video/v4l2-device.c b/drivers/media/video/v4l2-device.c
+index 0af46e4..259415b 100644
+--- a/drivers/media/video/v4l2-device.c
++++ b/drivers/media/video/v4l2-device.c
+@@ -118,8 +118,11 @@ void v4l2_device_unregister(struct v4l2_device *v4l2_dev)
+ EXPORT_SYMBOL_GPL(v4l2_device_unregister);
  
- ifeq ($(CONFIG_MEDIA_CONTROLLER),y)
-   obj-$(CONFIG_MEDIA_SUPPORT) += media.o
-diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-new file mode 100644
-index 0000000..bcd3985
---- /dev/null
-+++ b/drivers/media/media-device.c
-@@ -0,0 +1,100 @@
-+/*
-+ * Media device
-+ *
-+ * Copyright (C) 2010 Nokia Corporation
-+ *
-+ * Contacts: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-+ *	     Sakari Ailus <sakari.ailus@iki.fi>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-+ */
-+
-+#include <linux/types.h>
-+#include <linux/ioctl.h>
-+
-+#include <media/media-device.h>
-+#include <media/media-devnode.h>
-+
-+static const struct media_file_operations media_device_fops = {
-+	.owner = THIS_MODULE,
-+};
-+
-+/* -----------------------------------------------------------------------------
-+ * sysfs
-+ */
-+
-+static ssize_t show_model(struct device *cd,
-+			  struct device_attribute *attr, char *buf)
-+{
-+	struct media_device *mdev = to_media_device(to_media_devnode(cd));
-+
-+	return sprintf(buf, "%.*s\n", (int)sizeof(mdev->model), mdev->model);
-+}
-+
-+static DEVICE_ATTR(model, S_IRUGO, show_model, NULL);
-+
-+/* -----------------------------------------------------------------------------
-+ * Registration/unregistration
-+ */
-+
-+static void media_device_release(struct media_devnode *mdev)
-+{
-+}
-+
-+/**
-+ * media_device_register - register a media device
-+ * @mdev:	The media device
-+ *
-+ * The caller is responsible for initializing the media device before
-+ * registration. The following fields must be set:
-+ *
-+ * - dev must point to the parent device
-+ * - model must be filled with the device model name
-+ */
-+int __must_check media_device_register(struct media_device *mdev)
-+{
-+	int ret;
-+
-+	if (WARN_ON(mdev->dev == NULL || mdev->model[0] == 0))
-+		return -EINVAL;
-+
-+	/* Register the device node. */
-+	mdev->devnode.fops = &media_device_fops;
-+	mdev->devnode.parent = mdev->dev;
-+	mdev->devnode.release = media_device_release;
-+	ret = media_devnode_register(&mdev->devnode);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = device_create_file(&mdev->devnode.dev, &dev_attr_model);
-+	if (ret < 0) {
-+		media_devnode_unregister(&mdev->devnode);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(media_device_register);
-+
-+/**
-+ * media_device_unregister - unregister a media device
-+ * @mdev:	The media device
-+ *
-+ */
-+void media_device_unregister(struct media_device *mdev)
-+{
-+	device_remove_file(&mdev->devnode.dev, &dev_attr_model);
-+	media_devnode_unregister(&mdev->devnode);
-+}
-+EXPORT_SYMBOL_GPL(media_device_unregister);
-diff --git a/include/media/media-device.h b/include/media/media-device.h
-new file mode 100644
-index 0000000..30857f7
---- /dev/null
-+++ b/include/media/media-device.h
-@@ -0,0 +1,69 @@
-+/*
-+ * Media device
-+ *
-+ * Copyright (C) 2010 Nokia Corporation
-+ *
-+ * Contacts: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-+ *	     Sakari Ailus <sakari.ailus@iki.fi>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-+ */
-+
-+#ifndef _MEDIA_DEVICE_H
-+#define _MEDIA_DEVICE_H
-+
-+#include <linux/device.h>
-+#include <linux/list.h>
-+
-+#include <media/media-devnode.h>
-+
-+/**
-+ * struct media_device - Media device
-+ * @dev:	Parent device
-+ * @devnode:	Media device node
-+ * @model:	Device model name
-+ * @serial:	Device serial number (optional)
-+ * @bus_info:	Unique and stable device location identifier
-+ * @hw_revision: Hardware device revision
-+ * @driver_version: Device driver version
-+ *
-+ * This structure represents an abstract high-level media device. It allows easy
-+ * access to entities and provides basic media device-level support. The
-+ * structure can be allocated directly or embedded in a larger structure.
-+ *
-+ * The parent @dev is a physical device. It must be set before registering the
-+ * media device.
-+ *
-+ * @model is a descriptive model name exported through sysfs. It doesn't have to
-+ * be unique.
-+ */
-+struct media_device {
-+	/* dev->driver_data points to this struct. */
-+	struct device *dev;
-+	struct media_devnode devnode;
-+
-+	char model[32];
-+	char serial[40];
-+	char bus_info[32];
-+	u32 hw_revision;
-+	u32 driver_version;
-+};
-+
-+/* media_devnode to media_device */
-+#define to_media_device(node) container_of(node, struct media_device, devnode)
-+
-+int __must_check media_device_register(struct media_device *mdev);
-+void media_device_unregister(struct media_device *mdev);
-+
+ int v4l2_device_register_subdev(struct v4l2_device *v4l2_dev,
+-						struct v4l2_subdev *sd)
++				struct v4l2_subdev *sd)
+ {
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	struct media_entity *entity = &sd->entity;
 +#endif
+ 	int err;
+ 
+ 	/* Check for valid input */
+@@ -147,6 +150,19 @@ int v4l2_device_register_subdev(struct v4l2_device *v4l2_dev,
+ 		return err;
+ 	}
+ 
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	/* Register the entity. */
++	if (v4l2_dev->mdev) {
++		err = media_device_register_entity(v4l2_dev->mdev, entity);
++		if (err < 0) {
++			if (sd->internal_ops && sd->internal_ops->unregistered)
++				sd->internal_ops->unregistered(sd);
++			module_put(sd->owner);
++			return err;
++		}
++	}
++#endif
++
+ 	spin_lock(&v4l2_dev->lock);
+ 	list_add_tail(&sd->list, &v4l2_dev->subdevs);
+ 	spin_unlock(&v4l2_dev->lock);
+@@ -177,25 +193,37 @@ int v4l2_device_register_subdev_nodes(struct v4l2_device *v4l2_dev)
+ 					      sd->owner);
+ 		if (err < 0)
+ 			return err;
++#if defined(CONFIG_MEDIA_CONTROLLER)
++		sd->entity.v4l.major = VIDEO_MAJOR;
++		sd->entity.v4l.minor = vdev->minor;
++#endif
+ 	}
+-
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(v4l2_device_register_subdev_nodes);
+ 
+ void v4l2_device_unregister_subdev(struct v4l2_subdev *sd)
+ {
++	struct v4l2_device *v4l2_dev;
++
+ 	/* return if it isn't registered */
+ 	if (sd == NULL || sd->v4l2_dev == NULL)
+ 		return;
+ 
+-	spin_lock(&sd->v4l2_dev->lock);
++	v4l2_dev = sd->v4l2_dev;
++
++	spin_lock(&v4l2_dev->lock);
+ 	list_del(&sd->list);
+-	spin_unlock(&sd->v4l2_dev->lock);
++	spin_unlock(&v4l2_dev->lock);
++
+ 	if (sd->internal_ops && sd->internal_ops->unregistered)
+ 		sd->internal_ops->unregistered(sd);
+ 	sd->v4l2_dev = NULL;
+ 
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	if (v4l2_dev->mdev)
++		media_device_unregister_entity(&sd->entity);
++#endif
+ 	video_unregister_device(&sd->devnode);
+ 	module_put(sd->owner);
+ }
+diff --git a/drivers/media/video/v4l2-subdev.c b/drivers/media/video/v4l2-subdev.c
+index 9374406..29b7ddf 100644
+--- a/drivers/media/video/v4l2-subdev.c
++++ b/drivers/media/video/v4l2-subdev.c
+@@ -35,7 +35,10 @@ static int subdev_open(struct file *file)
+ {
+ 	struct video_device *vdev = video_devdata(file);
+ 	struct v4l2_subdev *sd = vdev_to_v4l2_subdev(vdev);
+-	struct v4l2_fh *vfh;
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	struct media_entity *entity;
++#endif
++	struct v4l2_fh *vfh = NULL;
+ 	int ret;
+ 
+ 	if (sd->flags & V4L2_SUBDEV_FL_HAS_EVENTS) {
+@@ -58,11 +61,20 @@ static int subdev_open(struct file *file)
+ 		v4l2_fh_add(vfh);
+ 		file->private_data = vfh;
+ 	}
+-
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	if (sd->v4l2_dev->mdev) {
++		entity = media_entity_get(&sd->entity);
++		if (!entity) {
++			ret = -EBUSY;
++			goto err;
++		}
++	}
++#endif
+ 	return 0;
+ 
+ err:
+ 	if (vfh != NULL) {
++		v4l2_fh_del(vfh);
+ 		v4l2_fh_exit(vfh);
+ 		kfree(vfh);
+ 	}
+@@ -72,8 +84,16 @@ err:
+ 
+ static int subdev_close(struct file *file)
+ {
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	struct video_device *vdev = video_devdata(file);
++	struct v4l2_subdev *sd = vdev_to_v4l2_subdev(vdev);
++#endif
+ 	struct v4l2_fh *vfh = file->private_data;
+ 
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	if (sd->v4l2_dev->mdev)
++		media_entity_put(&sd->entity);
++#endif
+ 	if (vfh != NULL) {
+ 		v4l2_fh_del(vfh);
+ 		v4l2_fh_exit(vfh);
+@@ -172,5 +192,9 @@ void v4l2_subdev_init(struct v4l2_subdev *sd, const struct v4l2_subdev_ops *ops)
+ 	sd->grp_id = 0;
+ 	sd->dev_priv = NULL;
+ 	sd->host_priv = NULL;
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	sd->entity.name = sd->name;
++	sd->entity.type = MEDIA_ENT_T_V4L2_SUBDEV;
++#endif
+ }
+ EXPORT_SYMBOL(v4l2_subdev_init);
+diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
+index 3f4e0d1..c37d6e4 100644
+--- a/include/media/v4l2-subdev.h
++++ b/include/media/v4l2-subdev.h
+@@ -21,6 +21,7 @@
+ #ifndef _V4L2_SUBDEV_H
+ #define _V4L2_SUBDEV_H
+ 
++#include <media/media-entity.h>
+ #include <media/v4l2-common.h>
+ #include <media/v4l2-dev.h>
+ #include <media/v4l2-mediabus.h>
+@@ -448,6 +449,9 @@ struct v4l2_subdev_internal_ops {
+    stand-alone or embedded in a larger struct.
+  */
+ struct v4l2_subdev {
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	struct media_entity entity;
++#endif
+ 	struct list_head list;
+ 	struct module *owner;
+ 	u32 flags;
+@@ -470,6 +474,8 @@ struct v4l2_subdev {
+ 	unsigned int nevents;
+ };
+ 
++#define media_entity_to_v4l2_subdev(ent) \
++	container_of(ent, struct v4l2_subdev, entity)
+ #define vdev_to_v4l2_subdev(vdev) \
+ 	container_of(vdev, struct v4l2_subdev, devnode)
+ 
 -- 
 1.7.3.4
