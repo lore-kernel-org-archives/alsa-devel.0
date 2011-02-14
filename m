@@ -1,23 +1,14 @@
-From: ylin@mail.com
-Subject: Re: Channel swapping issue on TI OMAP3/TWL4030
-Date: Mon, 14 Feb 2011 12:58:35 -0500
-Message-ID: <8CD9A87EF4FB765-1218-647@web-mmc-m03.sysops.aol.com>
-References: <8CD98E75F0E83E2-63C-14642@web-mmc-m05.sysops.aol.com>
-	<CF32F28EDF8D20468EEDCBE4975DA0274A46DB@008-AM1MPN1-027.mgdnok.nokia.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] And it's another happy day in the land of
+	quirks
+Date: Mon, 14 Feb 2011 20:35:46 +0100
+Message-ID: <4D598412.607@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------070706030207060809010808"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imr-ma02.mx.aol.com (imr-ma02.mx.aol.com [64.12.206.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 95819244A8
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2011 18:58:59 +0100 (CET)
-Received: from imo-ma03.mx.aol.com (imo-ma03.mx.aol.com [64.12.78.138])
-	by imr-ma02.mx.aol.com (8.14.1/8.14.1) with ESMTP id p1EHwjVJ015258
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2011 12:58:45 -0500
-Received: from ylin@mail.com
-	by imo-ma03.mx.aol.com  (mail_out_v42.9.) id 5.eb5.fd42f1d (45455)
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2011 12:58:43 -0500 (EST)
-In-Reply-To: <CF32F28EDF8D20468EEDCBE4975DA0274A46DB@008-AM1MPN1-027.mgdnok.nokia.com>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 167E2244F4
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2011 20:35:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,34 +18,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------070706030207060809010808
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> I have not experienced with channel swapping during capture..
-> It would help, if I know:
-> what is your kernel version
-> Source of the recording (digimic, HS, main mic, etc)
+Guess what - it's another quirk! :-)
 
-We are using 2.6.32.  The source of the recording is using Analog Mic.  
-The Left Main mic is always on, and Right Sub mic can be either on or 
-off when this occurs.  We are not using AUX or digimic.
 
-> To clarify:
-> you experience sudden channel switch during active recording, when
-> the recording was running for few hours?
-> Or is it that you start/stop the recording, and sometimes the channels
-> are swapped?
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
 
-It is sudden channel switch during active recording.  There is no XRUN 
-or any noticeable error when this happens.
+--------------070706030207060809010808
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Add-position_fix-quirk-for-an-Asus-device.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Add-position_fix-quirk-for-an-Asus-device.patc";
+ filename*1="h"
 
-This is a VoIP app, we have duplex audio when this happens.  Both 
-capture and playback are setup to run at 48kHz, 2 channel, S16_LE, with 
-period size 10 mSec.
+>From 0f209b6a868299c8a00a47be396972181c94a9a0 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Mon, 14 Feb 2011 20:27:44 +0100
+Subject: [PATCH] ALSA: HDA: Add position_fix quirk for an Asus device
 
-For playing, the left and right are the same data, we could not tell if 
-the channel switch happens to playback as well.
+The bug reporter claims that position_fix=1 is needed for his
+microphone to work. The controller PCI vendor-id is [1002:4383] (rev 40).
 
-Thanks,
-Ying
+Reported-by: Kjell L.
+BugLink: http://bugs.launchpad.net/bugs/718402
+Cc: stable@kernel.org
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/hda_intel.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 0baffcd..fcedad9 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2308,6 +2308,7 @@ static struct snd_pci_quirk position_fix_list[] __devinitdata = {
+ 	SND_PCI_QUIRK(0x1043, 0x813d, "ASUS P5AD2", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1043, 0x81b3, "ASUS", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1043, 0x81e7, "ASUS M2V", POS_FIX_LPIB),
++	SND_PCI_QUIRK(0x1043, 0x8410, "ASUS", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x104d, 0x9069, "Sony VPCS11V9E", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1106, 0x3288, "ASUS M2V-MX SE", POS_FIX_LPIB),
+ 	SND_PCI_QUIRK(0x1179, 0xff10, "Toshiba A100-259", POS_FIX_LPIB),
+-- 
+1.7.1
+
+
+--------------070706030207060809010808
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------070706030207060809010808--
