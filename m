@@ -1,245 +1,280 @@
 From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: [PATCH v9 12/12] v4l: Make v4l2_subdev inherit from media_entity
-Date: Mon, 14 Feb 2011 13:21:07 +0100
-Message-ID: <1297686067-9666-13-git-send-email-laurent.pinchart@ideasonboard.com>
+Subject: [PATCH v9 09/12] media: Pipelines and media streams
+Date: Mon, 14 Feb 2011 13:21:04 +0100
+Message-ID: <1297686067-9666-10-git-send-email-laurent.pinchart@ideasonboard.com>
 References: <1297686067-9666-1-git-send-email-laurent.pinchart@ideasonboard.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
+	[95.142.166.194])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6F742103835
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2011 13:21:12 +0100 (CET)
 In-Reply-To: <1297686067-9666-1-git-send-email-laurent.pinchart@ideasonboard.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 Cc: sakari.ailus@maxwell.research.nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-V4L2 subdevices are media entities. As such they need to inherit from
-(include) the media_entity structure.
+Drivers often need to associate pipeline objects to entities, and to
+take stream state into account when configuring entities and links. The
+pipeline API helps drivers manage that information.
 
-When registering/unregistering the subdevice, the media entity is
-automatically registered/unregistered. The entity is acquired on device
-open and released on device close.
+When starting streaming, drivers call media_entity_pipeline_start(). The
+function marks all entities connected to the given entity through
+enabled links, either directly or indirectly, as streaming. Similarly,
+when stopping the stream, drivers call media_entity_pipeline_stop().
+
+The media_entity_pipeline_start() function takes a pointer to a media
+pipeline and stores it in every entity in the graph. Drivers should
+embed the media_pipeline structure in higher-level pipeline structures
+and can then access the pipeline through the media_entity structure.
+
+Link configuration will fail with -EBUSY by default if either end of the
+link is a streaming entity, unless the link is marked with the
+MEDIA_LNK_FL_DYNAMIC flag.
 
 Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@iki.fi>
 ---
- Documentation/video4linux/v4l2-framework.txt |   23 ++++++++++++++++
- drivers/media/video/v4l2-device.c            |   36 +++++++++++++++++++++++---
- drivers/media/video/v4l2-subdev.c            |   28 ++++++++++++++++++-
- include/media/v4l2-subdev.h                  |    6 ++++
- 4 files changed, 87 insertions(+), 6 deletions(-)
+ Documentation/DocBook/v4l/media-ioc-enum-links.xml |    5 ++
+ Documentation/DocBook/v4l/media-ioc-setup-link.xml |    3 +
+ Documentation/media-framework.txt                  |   38 ++++++++++
+ drivers/media/media-entity.c                       |   73 ++++++++++++++++++++
+ include/linux/media.h                              |    1 +
+ include/media/media-entity.h                       |   10 +++
+ 6 files changed, 130 insertions(+), 0 deletions(-)
 
-diff --git a/Documentation/video4linux/v4l2-framework.txt b/Documentation/video4linux/v4l2-framework.txt
-index 0627081..77d96f4 100644
---- a/Documentation/video4linux/v4l2-framework.txt
-+++ b/Documentation/video4linux/v4l2-framework.txt
-@@ -268,6 +268,26 @@ A sub-device driver initializes the v4l2_subdev struct using:
- Afterwards you need to initialize subdev->name with a unique name and set the
- module owner. This is done for you if you use the i2c helper functions.
+diff --git a/Documentation/DocBook/v4l/media-ioc-enum-links.xml b/Documentation/DocBook/v4l/media-ioc-enum-links.xml
+index 4b08e55..ca968bc 100644
+--- a/Documentation/DocBook/v4l/media-ioc-enum-links.xml
++++ b/Documentation/DocBook/v4l/media-ioc-enum-links.xml
+@@ -179,6 +179,11 @@
+ 	    <entry>The link enabled state can't be modified at runtime. An
+ 	    immutable link is always enabled.</entry>
+ 	  </row>
++	  <row>
++	    <entry><constant>MEDIA_LNK_FL_DYNAMIC</constant></entry>
++	    <entry>The link enabled state can be modified during streaming. This
++	    flag is set by drivers and is read-only for applications.</entry>
++	  </row>
+ 	</tbody>
+       </tgroup>
+     </table>
+diff --git a/Documentation/DocBook/v4l/media-ioc-setup-link.xml b/Documentation/DocBook/v4l/media-ioc-setup-link.xml
+index 09ab3d2..2331e76 100644
+--- a/Documentation/DocBook/v4l/media-ioc-setup-link.xml
++++ b/Documentation/DocBook/v4l/media-ioc-setup-link.xml
+@@ -60,6 +60,9 @@
+     <para>Link configuration has no side effect on other links. If an enabled
+     link at the sink pad prevents the link from being enabled, the driver
+     returns with an &EBUSY;.</para>
++    <para>Only links marked with the <constant>DYNAMIC</constant> link flag can
++    be enabled/disabled while streaming media data. Attempting to enable or
++    disable a streaming non-dynamic link will return an &EBUSY;.</para>
+     <para>If the specified link can't be found the driver returns with an
+     &EINVAL;.</para>
+   </refsect1>
+diff --git a/Documentation/media-framework.txt b/Documentation/media-framework.txt
+index 4809221..fd48add 100644
+--- a/Documentation/media-framework.txt
++++ b/Documentation/media-framework.txt
+@@ -313,3 +313,41 @@ Link configuration must not have any side effect on other links. If an enabled
+ link at a sink pad prevents another link at the same pad from being disabled,
+ the link_setup operation must return -EBUSY and can't implicitly disable the
+ first enabled link.
++
++
++Pipelines and media streams
++---------------------------
++
++When starting streaming, drivers must notify all entities in the pipeline to
++prevent link states from being modified during streaming by calling
++
++	media_entity_pipeline_start(struct media_entity *entity,
++				    struct media_pipeline *pipe);
++
++The function will mark all entities connected to the given entity through
++enabled links, either directly or indirectly, as streaming.
++
++The media_pipeline instance pointed to by the pipe argument will be stored in
++every entity in the pipeline. Drivers should embed the media_pipeline structure
++in higher-level pipeline structures and can then access the pipeline through
++the media_entity pipe field.
++
++Calls to media_entity_pipeline_start() can be nested. The pipeline pointer must
++be identical for all nested calls to the function.
++
++When stopping the stream, drivers must notify the entities with
++
++	media_entity_pipeline_stop(struct media_entity *entity);
++
++If multiple calls to media_entity_pipeline_start() have been made the same
++number of media_entity_pipeline_stop() calls are required to stop streaming. The
++media_entity pipe field is reset to NULL on the last nested stop call.
++
++Link configuration will fail with -EBUSY by default if either end of the link is
++a streaming entity. Links that can be modified while streaming must be marked
++with the MEDIA_LNK_FL_DYNAMIC flag.
++
++If other operations need to be disallowed on streaming entities (such as
++changing entities configuration parameters) drivers can explictly check the
++media_entity stream_count field to find out if an entity is streaming. This
++operation must be done with the media_device graph_mutex held.
+diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
+index 6795c92..23640ed 100644
+--- a/drivers/media/media-entity.c
++++ b/drivers/media/media-entity.c
+@@ -197,6 +197,75 @@ media_entity_graph_walk_next(struct media_entity_graph *graph)
+ EXPORT_SYMBOL_GPL(media_entity_graph_walk_next);
  
-+If integration with the media framework is needed, you must initialize the
-+media_entity struct embedded in the v4l2_subdev struct (entity field) by
-+calling media_entity_init():
+ /* -----------------------------------------------------------------------------
++ * Pipeline management
++ */
 +
-+	struct media_pad *pads = &my_sd->pads;
-+	int err;
++/**
++ * media_entity_pipeline_start - Mark a pipeline as streaming
++ * @entity: Starting entity
++ * @pipe: Media pipeline to be assigned to all entities in the pipeline.
++ *
++ * Mark all entities connected to a given entity through enabled links, either
++ * directly or indirectly, as streaming. The given pipeline object is assigned to
++ * every entity in the pipeline and stored in the media_entity pipe field.
++ *
++ * Calls to this function can be nested, in which case the same number of
++ * media_entity_pipeline_stop() calls will be required to stop streaming. The
++ * pipeline pointer must be identical for all nested calls to
++ * media_entity_pipeline_start().
++ */
++void media_entity_pipeline_start(struct media_entity *entity,
++				 struct media_pipeline *pipe)
++{
++	struct media_device *mdev = entity->parent;
++	struct media_entity_graph graph;
 +
-+	err = media_entity_init(&sd->entity, npads, pads, 0);
++	mutex_lock(&mdev->graph_mutex);
 +
-+The pads array must have been previously initialized. There is no need to
-+manually set the struct media_entity type and name fields, but the revision
-+field must be initialized if needed.
++	media_entity_graph_walk_start(&graph, entity);
 +
-+A reference to the entity will be automatically acquired/released when the
-+subdev device node (if any) is opened/closed.
-+
-+Don't forget to cleanup the media entity before the sub-device is destroyed:
-+
-+	media_entity_cleanup(&sd->entity);
-+
- A device (bridge) driver needs to register the v4l2_subdev with the
- v4l2_device:
- 
-@@ -277,6 +297,9 @@ This can fail if the subdev module disappeared before it could be registered.
- After this function was called successfully the subdev->dev field points to
- the v4l2_device.
- 
-+If the v4l2_device parent device has a non-NULL mdev field, the sub-device
-+entity will be automatically registered with the media device.
-+
- You can unregister a sub-device using:
- 
- 	v4l2_device_unregister_subdev(sd);
-diff --git a/drivers/media/video/v4l2-device.c b/drivers/media/video/v4l2-device.c
-index 0af46e4..259415b 100644
---- a/drivers/media/video/v4l2-device.c
-+++ b/drivers/media/video/v4l2-device.c
-@@ -118,8 +118,11 @@ void v4l2_device_unregister(struct v4l2_device *v4l2_dev)
- EXPORT_SYMBOL_GPL(v4l2_device_unregister);
- 
- int v4l2_device_register_subdev(struct v4l2_device *v4l2_dev,
--						struct v4l2_subdev *sd)
-+				struct v4l2_subdev *sd)
- {
-+#if defined(CONFIG_MEDIA_CONTROLLER)
-+	struct media_entity *entity = &sd->entity;
-+#endif
- 	int err;
- 
- 	/* Check for valid input */
-@@ -147,6 +150,19 @@ int v4l2_device_register_subdev(struct v4l2_device *v4l2_dev,
- 		return err;
- 	}
- 
-+#if defined(CONFIG_MEDIA_CONTROLLER)
-+	/* Register the entity. */
-+	if (v4l2_dev->mdev) {
-+		err = media_device_register_entity(v4l2_dev->mdev, entity);
-+		if (err < 0) {
-+			if (sd->internal_ops && sd->internal_ops->unregistered)
-+				sd->internal_ops->unregistered(sd);
-+			module_put(sd->owner);
-+			return err;
-+		}
++	while ((entity = media_entity_graph_walk_next(&graph))) {
++		entity->stream_count++;
++		WARN_ON(entity->pipe && entity->pipe != pipe);
++		entity->pipe = pipe;
 +	}
-+#endif
 +
- 	spin_lock(&v4l2_dev->lock);
- 	list_add_tail(&sd->list, &v4l2_dev->subdevs);
- 	spin_unlock(&v4l2_dev->lock);
-@@ -177,25 +193,37 @@ int v4l2_device_register_subdev_nodes(struct v4l2_device *v4l2_dev)
- 					      sd->owner);
- 		if (err < 0)
- 			return err;
-+#if defined(CONFIG_MEDIA_CONTROLLER)
-+		sd->entity.v4l.major = VIDEO_MAJOR;
-+		sd->entity.v4l.minor = vdev->minor;
-+#endif
- 	}
--
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(v4l2_device_register_subdev_nodes);
- 
- void v4l2_device_unregister_subdev(struct v4l2_subdev *sd)
- {
-+	struct v4l2_device *v4l2_dev;
++	mutex_unlock(&mdev->graph_mutex);
++}
++EXPORT_SYMBOL_GPL(media_entity_pipeline_start);
 +
- 	/* return if it isn't registered */
- 	if (sd == NULL || sd->v4l2_dev == NULL)
- 		return;
- 
--	spin_lock(&sd->v4l2_dev->lock);
-+	v4l2_dev = sd->v4l2_dev;
++/**
++ * media_entity_pipeline_stop - Mark a pipeline as not streaming
++ * @entity: Starting entity
++ *
++ * Mark all entities connected to a given entity through enabled links, either
++ * directly or indirectly, as not streaming. The media_entity pipe field is
++ * reset to NULL.
++ *
++ * If multiple calls to media_entity_pipeline_start() have been made, the same
++ * number of calls to this function are required to mark the pipeline as not
++ * streaming.
++ */
++void media_entity_pipeline_stop(struct media_entity *entity)
++{
++	struct media_device *mdev = entity->parent;
++	struct media_entity_graph graph;
 +
-+	spin_lock(&v4l2_dev->lock);
- 	list_del(&sd->list);
--	spin_unlock(&sd->v4l2_dev->lock);
-+	spin_unlock(&v4l2_dev->lock);
++	mutex_lock(&mdev->graph_mutex);
 +
- 	if (sd->internal_ops && sd->internal_ops->unregistered)
- 		sd->internal_ops->unregistered(sd);
- 	sd->v4l2_dev = NULL;
- 
-+#if defined(CONFIG_MEDIA_CONTROLLER)
-+	if (v4l2_dev->mdev)
-+		media_device_unregister_entity(&sd->entity);
-+#endif
- 	video_unregister_device(&sd->devnode);
- 	module_put(sd->owner);
- }
-diff --git a/drivers/media/video/v4l2-subdev.c b/drivers/media/video/v4l2-subdev.c
-index 9374406..29b7ddf 100644
---- a/drivers/media/video/v4l2-subdev.c
-+++ b/drivers/media/video/v4l2-subdev.c
-@@ -35,7 +35,10 @@ static int subdev_open(struct file *file)
- {
- 	struct video_device *vdev = video_devdata(file);
- 	struct v4l2_subdev *sd = vdev_to_v4l2_subdev(vdev);
--	struct v4l2_fh *vfh;
-+#if defined(CONFIG_MEDIA_CONTROLLER)
-+	struct media_entity *entity;
-+#endif
-+	struct v4l2_fh *vfh = NULL;
- 	int ret;
- 
- 	if (sd->flags & V4L2_SUBDEV_FL_HAS_EVENTS) {
-@@ -58,11 +61,20 @@ static int subdev_open(struct file *file)
- 		v4l2_fh_add(vfh);
- 		file->private_data = vfh;
- 	}
--
-+#if defined(CONFIG_MEDIA_CONTROLLER)
-+	if (sd->v4l2_dev->mdev) {
-+		entity = media_entity_get(&sd->entity);
-+		if (!entity) {
-+			ret = -EBUSY;
-+			goto err;
-+		}
++	media_entity_graph_walk_start(&graph, entity);
++
++	while ((entity = media_entity_graph_walk_next(&graph))) {
++		entity->stream_count--;
++		if (entity->stream_count == 0)
++			entity->pipe = NULL;
 +	}
-+#endif
- 	return 0;
- 
- err:
- 	if (vfh != NULL) {
-+		v4l2_fh_del(vfh);
- 		v4l2_fh_exit(vfh);
- 		kfree(vfh);
- 	}
-@@ -72,8 +84,16 @@ err:
- 
- static int subdev_close(struct file *file)
- {
-+#if defined(CONFIG_MEDIA_CONTROLLER)
-+	struct video_device *vdev = video_devdata(file);
-+	struct v4l2_subdev *sd = vdev_to_v4l2_subdev(vdev);
-+#endif
- 	struct v4l2_fh *vfh = file->private_data;
- 
-+#if defined(CONFIG_MEDIA_CONTROLLER)
-+	if (sd->v4l2_dev->mdev)
-+		media_entity_put(&sd->entity);
-+#endif
- 	if (vfh != NULL) {
- 		v4l2_fh_del(vfh);
- 		v4l2_fh_exit(vfh);
-@@ -172,5 +192,9 @@ void v4l2_subdev_init(struct v4l2_subdev *sd, const struct v4l2_subdev_ops *ops)
- 	sd->grp_id = 0;
- 	sd->dev_priv = NULL;
- 	sd->host_priv = NULL;
-+#if defined(CONFIG_MEDIA_CONTROLLER)
-+	sd->entity.name = sd->name;
-+	sd->entity.type = MEDIA_ENT_T_V4L2_SUBDEV;
-+#endif
- }
- EXPORT_SYMBOL(v4l2_subdev_init);
-diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
-index 3f4e0d1..c37d6e4 100644
---- a/include/media/v4l2-subdev.h
-+++ b/include/media/v4l2-subdev.h
-@@ -21,6 +21,7 @@
- #ifndef _V4L2_SUBDEV_H
- #define _V4L2_SUBDEV_H
- 
-+#include <media/media-entity.h>
- #include <media/v4l2-common.h>
- #include <media/v4l2-dev.h>
- #include <media/v4l2-mediabus.h>
-@@ -448,6 +449,9 @@ struct v4l2_subdev_internal_ops {
-    stand-alone or embedded in a larger struct.
++
++	mutex_unlock(&mdev->graph_mutex);
++}
++EXPORT_SYMBOL_GPL(media_entity_pipeline_stop);
++
++/* -----------------------------------------------------------------------------
+  * Module use count
   */
- struct v4l2_subdev {
-+#if defined(CONFIG_MEDIA_CONTROLLER)
-+	struct media_entity entity;
-+#endif
- 	struct list_head list;
- 	struct module *owner;
- 	u32 flags;
-@@ -470,6 +474,8 @@ struct v4l2_subdev {
- 	unsigned int nevents;
- };
  
-+#define media_entity_to_v4l2_subdev(ent) \
-+	container_of(ent, struct v4l2_subdev, entity)
- #define vdev_to_v4l2_subdev(vdev) \
- 	container_of(vdev, struct v4l2_subdev, devnode)
+@@ -364,6 +433,10 @@ int __media_entity_setup_link(struct media_link *link, u32 flags)
+ 	source = link->source->entity;
+ 	sink = link->sink->entity;
  
++	if (!(link->flags & MEDIA_LNK_FL_DYNAMIC) &&
++	    (source->stream_count || sink->stream_count))
++		return -EBUSY;
++
+ 	mdev = source->parent;
+ 
+ 	if ((flags & MEDIA_LNK_FL_ENABLED) && mdev->link_notify) {
+diff --git a/include/linux/media.h b/include/linux/media.h
+index 7c69913..7ed23b4 100644
+--- a/include/linux/media.h
++++ b/include/linux/media.h
+@@ -106,6 +106,7 @@ struct media_pad_desc {
+ 
+ #define MEDIA_LNK_FL_ENABLED		(1 << 0)
+ #define MEDIA_LNK_FL_IMMUTABLE		(1 << 1)
++#define MEDIA_LNK_FL_DYNAMIC		(1 << 2)
+ 
+ struct media_link_desc {
+ 	struct media_pad_desc source;
+diff --git a/include/media/media-entity.h b/include/media/media-entity.h
+index d889dcc..cd8bca6 100644
+--- a/include/media/media-entity.h
++++ b/include/media/media-entity.h
+@@ -26,6 +26,9 @@
+ #include <linux/list.h>
+ #include <linux/media.h>
+ 
++struct media_pipeline {
++};
++
+ struct media_link {
+ 	struct media_pad *source;	/* Source pad */
+ 	struct media_pad *sink;		/* Sink pad  */
+@@ -71,8 +74,11 @@ struct media_entity {
+ 	 * purpose: a simple WARN_ON(<0) check can be used to detect reference
+ 	 * count bugs that would make them negative.
+ 	 */
++	int stream_count;		/* Stream count for the entity. */
+ 	int use_count;			/* Use count for the entity. */
+ 
++	struct media_pipeline *pipe;	/* Pipeline this entity belongs to. */
++
+ 	union {
+ 		/* Node specifications */
+ 		struct {
+@@ -118,6 +124,7 @@ struct media_entity_graph {
+ int media_entity_init(struct media_entity *entity, u16 num_pads,
+ 		struct media_pad *pads, u16 extra_links);
+ void media_entity_cleanup(struct media_entity *entity);
++
+ int media_entity_create_link(struct media_entity *source, u16 source_pad,
+ 		struct media_entity *sink, u16 sink_pad, u32 flags);
+ int __media_entity_setup_link(struct media_link *link, u32 flags);
+@@ -133,6 +140,9 @@ void media_entity_graph_walk_start(struct media_entity_graph *graph,
+ 		struct media_entity *entity);
+ struct media_entity *
+ media_entity_graph_walk_next(struct media_entity_graph *graph);
++void media_entity_pipeline_start(struct media_entity *entity,
++		struct media_pipeline *pipe);
++void media_entity_pipeline_stop(struct media_entity *entity);
+ 
+ #define media_entity_call(entity, operation, args...)			\
+ 	(((entity)->ops && (entity)->ops->operation) ?			\
 -- 
 1.7.3.4
