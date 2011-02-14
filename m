@@ -1,14 +1,16 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH] And it's another happy day in the land of
-	quirks
-Date: Mon, 14 Feb 2011 20:35:46 +0100
-Message-ID: <4D598412.607@canonical.com>
+From: Omari Stephens <xsdg@xsdg.org>
+Subject: Re: [PATCH] New quirk for USB DAC 08bb:2704
+Date: Mon, 14 Feb 2011 21:16:18 +0000
+Message-ID: <4D599BA2.3040105@xsdg.org>
+References: <4D570F65.6000108@xsdg.org> <s5htyg6k0dz.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------070706030207060809010808"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 167E2244F4
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2011 20:35:41 +0100 (CET)
+Received: from ocaml.xvm.mit.edu (SIPB-VM-99.MIT.EDU [18.181.0.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1405F103831
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2011 22:17:46 +0100 (CET)
+In-Reply-To: <s5htyg6k0dz.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,70 +20,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070706030207060809010808
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+On 02/14/2011 05:10 PM, Takashi Iwai wrote:
+> At Sat, 12 Feb 2011 22:53:25 +0000,
+> Omari Stephens wrote:
+>>
+>> Howdy, all
+>>
+>> I have one of these:
+>> http://www.chordelectronics.co.uk/products_detail.asp?id=63
+>>
+>> It's got one of these USB DACs inside
+>> ID 08bb:2704 Texas Instruments Japan
+>>
+>> The DAC has a single mixer control, Master, which allows you to adjust
+>> volume and mute/unmute.  The fun thing is that the volume adjustment has
+>> no effect whatsoever.  On machines running pulse, this means that output
+>> will be at 0dB pretty much all the time.  (Of course, this is true of
+>> non-pulse machines also).
+>>
+>> The attached patch disables the Master control, which causes pulse to
+>> control levels entirely in software, as it should for this device.
+>>
+>> The main downside to this patch is that, while the volume part of the
+>> Master control is non-functional, the mute/unmute aspect does work as
+>> expected.  I couldn't figure out how to change the Master control to
+>> just a mute/unmute control, but if someone has suggestions on what to
+>> do, that'd be appreciated.  Judging by the comments in the code (and
+>> contrary to what I wrote in the map comment), I presume the mute/unmute
+>> control is the only reason why 08bb:2702 isn't doing this same thing.
+>
+> The patch looks good to me.  Could you give your sign-off?
+Oops; sorry (haven't submitted a kernel patch before).  Will do.
 
-Guess what - it's another quirk! :-)
+That said, I have some friends with the same device, and at least one 
+says that the volume control works fine for him, so I want to do a bit 
+more investigation before this quirk gets added.  Will send email when I 
+get things figured out a little more.
 
-
--- 
-David Henningsson, Canonical Ltd.
-http://launchpad.net/~diwic
-
---------------070706030207060809010808
-Content-Type: text/x-patch;
- name="0001-ALSA-HDA-Add-position_fix-quirk-for-an-Asus-device.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-ALSA-HDA-Add-position_fix-quirk-for-an-Asus-device.patc";
- filename*1="h"
-
->From 0f209b6a868299c8a00a47be396972181c94a9a0 Mon Sep 17 00:00:00 2001
-From: David Henningsson <david.henningsson@canonical.com>
-Date: Mon, 14 Feb 2011 20:27:44 +0100
-Subject: [PATCH] ALSA: HDA: Add position_fix quirk for an Asus device
-
-The bug reporter claims that position_fix=1 is needed for his
-microphone to work. The controller PCI vendor-id is [1002:4383] (rev 40).
-
-Reported-by: Kjell L.
-BugLink: http://bugs.launchpad.net/bugs/718402
-Cc: stable@kernel.org
-Signed-off-by: David Henningsson <david.henningsson@canonical.com>
----
- sound/pci/hda/hda_intel.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 0baffcd..fcedad9 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2308,6 +2308,7 @@ static struct snd_pci_quirk position_fix_list[] __devinitdata = {
- 	SND_PCI_QUIRK(0x1043, 0x813d, "ASUS P5AD2", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x1043, 0x81b3, "ASUS", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x1043, 0x81e7, "ASUS M2V", POS_FIX_LPIB),
-+	SND_PCI_QUIRK(0x1043, 0x8410, "ASUS", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x104d, 0x9069, "Sony VPCS11V9E", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x1106, 0x3288, "ASUS M2V-MX SE", POS_FIX_LPIB),
- 	SND_PCI_QUIRK(0x1179, 0xff10, "Toshiba A100-259", POS_FIX_LPIB),
--- 
-1.7.1
-
-
---------------070706030207060809010808
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------070706030207060809010808--
+--xsdg
