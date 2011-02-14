@@ -1,78 +1,61 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: [PATCH] ALSA : au88x0 - modify pointer callback of
- au88x0 to give accurate playback position
-Date: Mon, 14 Feb 2011 09:32:06 +0800
-Message-ID: <AANLkTin4VX5xT_056dHnPH1owTi5_OhDFDTVRdfwMQ=S@mail.gmail.com>
+From: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
+Subject: Re: [PATCH] USB-sound: prevent kernel panic on disconnect
+Date: Mon, 14 Feb 2011 09:54:01 +0100
+Message-ID: <4D58EDA9.2020805@ladisch.de>
+References: <Pine.LNX.4.44L0.1102111737280.13739-100000@netrider.rowland.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=90e6ba1819a0084b94049c340465
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 450681037F3
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2011 02:32:10 +0100 (CET)
-Received: by ewy19 with SMTP id 19so1939398ewy.38
-	for <alsa-devel@alsa-project.org>; Sun, 13 Feb 2011 17:32:06 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: manuel.jander@gmail.com, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <Pine.LNX.4.44L0.1102111737280.13739-100000-pYrvlCTfrz9XsRXLowluHWD2FQJk+8+b@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Cc: Sarah Sharp <sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, bossart.nospam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Pierre-Louis Bossart <pierre-louis.bossart-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
---90e6ba1819a0084b94049c340465
-Content-Type: text/plain; charset=ISO-8859-1
+Alan Stern wrote:
+> On Fri, 11 Feb 2011, Sarah Sharp wrote:
+> > I suspect it might be the audio driver, as someone on the alsa mailing
+> > list suggested the USB sound driver can't handle when one isochronous
+> > buffer in an URB has an error, but the URB status is 0.
+> 
+> I don't think that can happen.  The URB status won't be 0 unless all 
+> the individual buffers have 0 status.
 
-Modify pointer callback of au88x0 to give accurate playback position
+In any case, the driver would then just copy garbage samples out of the
+buffer; this wouldn't affect the driver's data structures.
+
+> > From: Pierre-Louis Bossart <bossart.nospam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> > 
+> > Note that this is only a work-around, it does not address the
+> > root cause of this inconsistency between urbs and PCM states. The
+> > dmesg below shows two calls to snd_urb_complete, the substream is
+> > NULL and the state is either running or stopped. This doesn't make
+> > any sense.
+> > ...
+> > ALSA urb.c:492: frame 0 active: -84
+> > ALSA urb.c:197: cannot submit urb (err = -19)
+> > ALSA urb.c:186: NULL substream (subs->running 1) <- How is this possible?
+> > ALSA urb.c:186: NULL substream (subs->running 0)
+> 
+> It's most likely a matter of the device being disconnected but the
+> device file still being open.
+
+subs->pcm_substream == NULL happens only when the device file _has_
+been closed.
+
+> Perhaps not everything gets cleaned up the way it should when that
+> happens.
+
+There seems to be a race between snd_usb_pcm_close() and
+snd_usb_stream_disconnect().  I think a mutex taken by both functions
+should fix this; and all functions that check 'shutdown' probably need
+serializing.
 
 
-Signed-off-by: Raymond Yau <superquad.vortex2@gmail.com>
-
---90e6ba1819a0084b94049c340465
-Content-Type: application/octet-stream;
-	name="0001-Modify-pointer-callback-of-au88x0-to-give-accurate-playback-position.patch"
-Content-Disposition: attachment;
-	filename="0001-Modify-pointer-callback-of-au88x0-to-give-accurate-playback-position.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gk4p903p0
-
-RnJvbSBjOGQxMjEyYTE1ZDE2NGJlNjkzNmZkN2I5ZjA0ZDRiM2MzOGE0ZDY3IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
-Y29tPgpEYXRlOiBNb24sIDE0IEZlYiAyMDExIDA3OjMzOjI0ICswODAwClN1YmplY3Q6IFtQQVRD
-SCBBTFNBIGF1ODh4MCAxLzFdIE1vZGlmeSBwb2ludGVyIGNhbGxiYWNrIG9mIGF1ODh4MCB0byBn
-aXZlIGFjY3VyYXRlIHBsYXliYWNrIHBvc2l0aW9uCgoKU2lnbmVkLW9mZi1ieTogUmF5bW9uZCBZ
-YXUgPHN1cGVycXVhZC52b3J0ZXgyQGdtYWlsLmNvbT4KCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kv
-YXU4OHgwL2F1ODh4MF9jb3JlLmMgYi9zb3VuZC9wY2kvYXU4OHgwL2F1ODh4MF9jb3JlLmMKaW5k
-ZXggMjNmNDlmMy4uMzBmZjYwYiAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2F1ODh4MC9hdTg4eDBf
-Y29yZS5jCisrKyBiL3NvdW5kL3BjaS9hdTg4eDAvYXU4OHgwX2NvcmUuYwpAQCAtMTI1MiwxMSAr
-MTI1MiwxOSBAQCBzdGF0aWMgdm9pZCB2b3J0ZXhfYWRiZG1hX3Jlc2V0dXAodm9ydGV4X3QgKnZv
-cnRleCwgaW50IGFkYmRtYSkgewogc3RhdGljIGludCBpbmxpbmUgdm9ydGV4X2FkYmRtYV9nZXRs
-aW5lYXJwb3Modm9ydGV4X3QgKiB2b3J0ZXgsIGludCBhZGJkbWEpCiB7CiAJc3RyZWFtX3QgKmRt
-YSA9ICZ2b3J0ZXgtPmRtYV9hZGJbYWRiZG1hXTsKLQlpbnQgdGVtcDsKKwlpbnQgdGVtcCwgcGFn
-ZSwgZGVsdGE7CiAKIAl0ZW1wID0gaHdyZWFkKHZvcnRleC0+bW1pbywgVk9SVEVYX0FEQkRNQV9T
-VEFUICsgKGFkYmRtYSA8PCAyKSk7Ci0JdGVtcCA9IChkbWEtPnBlcmlvZF92aXJ0ICogZG1hLT5w
-ZXJpb2RfYnl0ZXMpICsgKHRlbXAgJiAoZG1hLT5wZXJpb2RfYnl0ZXMgLSAxKSk7Ci0JcmV0dXJu
-IHRlbXA7CisJcGFnZSA9ICh0ZW1wICYgQURCX1NVQkJVRl9NQVNLKSA+PiBBREJfU1VCQlVGX1NI
-SUZUOworCWlmIChkbWEtPm5yX3BlcmlvZHMgPj0gNCkKKwkJZGVsdGEgPSAocGFnZSAtIGRtYS0+
-cGVyaW9kX3JlYWwpICYgMzsKKwllbHNlIHsKKwkJZGVsdGEgPSAocGFnZSAtIGRtYS0+cGVyaW9k
-X3JlYWwpOworCQlpZiAoZGVsdGEgPCAwKQorCQkJZGVsdGEgKz0gZG1hLT5ucl9wZXJpb2RzOwor
-CX0KKwlyZXR1cm4gKGRtYS0+cGVyaW9kX3ZpcnQgKyBkZWx0YSkgKiBkbWEtPnBlcmlvZF9ieXRl
-cworCQkrICh0ZW1wICYgKGRtYS0+cGVyaW9kX2J5dGVzIC0gMSkpOwogfQogCiBzdGF0aWMgdm9p
-ZCB2b3J0ZXhfYWRiZG1hX3N0YXJ0Zmlmbyh2b3J0ZXhfdCAqIHZvcnRleCwgaW50IGFkYmRtYSkK
-LS0gCjEuNi4wLjYKCg==
---90e6ba1819a0084b94049c340465
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---90e6ba1819a0084b94049c340465--
+Regards,
+Clemens
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
