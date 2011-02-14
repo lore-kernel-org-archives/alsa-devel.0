@@ -1,61 +1,68 @@
-From: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-Subject: Re: [PATCH] USB-sound: prevent kernel panic on disconnect
-Date: Mon, 14 Feb 2011 09:54:01 +0100
-Message-ID: <4D58EDA9.2020805@ladisch.de>
-References: <Pine.LNX.4.44L0.1102111737280.13739-100000@netrider.rowland.org>
+From: "Nenad Sljivic" <nenad.sljivic@rt-rk.com>
+Subject: plughw, access modes
+Date: Mon, 14 Feb 2011 03:04:27 -0800
+Message-ID: <8C2D93A7301A488588BD4A2CAD8C6F4D@domain.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <Pine.LNX.4.44L0.1102111737280.13739-100000-pYrvlCTfrz9XsRXLowluHWD2FQJk+8+b@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Cc: Sarah Sharp <sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, bossart.nospam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Pierre-Louis Bossart <pierre-louis.bossart-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.rt-rk.com (mail.rt-rk.ftn.uns.ac.rs [147.91.177.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id A60421037F3
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2011 12:04:44 +0100 (CET)
+Received: from localhost (mail.localdomain [127.0.0.1])
+	by mail.rt-rk.com (Postfix) with ESMTP id 2AD0125C031
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2011 12:04:41 +0100 (CET)
+Received: from mail.rt-rk.com ([127.0.0.1])
+	by localhost (mail.rt-rk.com [127.0.0.1]) (amavisd-new, port 10024)
+	with LMTP id i-IruY2H8isw for <alsa-devel@alsa-project.org>;
+	Mon, 14 Feb 2011 12:04:41 +0100 (CET)
+Received: from ne6414 (c-98-210-180-191.hsd1.ca.comcast.net [98.210.180.191])
+	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
+	(No client certificate requested)
+	by mail.rt-rk.com (Postfix) with ESMTP id B9E9925C02E
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2011 12:04:32 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Alan Stern wrote:
-> On Fri, 11 Feb 2011, Sarah Sharp wrote:
-> > I suspect it might be the audio driver, as someone on the alsa mailing
-> > list suggested the USB sound driver can't handle when one isochronous
-> > buffer in an URB has an error, but the URB status is 0.
-> 
-> I don't think that can happen.  The URB status won't be 0 unless all 
-> the individual buffers have 0 status.
+Greetings guys,
 
-In any case, the driver would then just copy garbage samples out of the
-buffer; this wouldn't affect the driver's data structures.
+ 
 
-> > From: Pierre-Louis Bossart <bossart.nospam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> > 
-> > Note that this is only a work-around, it does not address the
-> > root cause of this inconsistency between urbs and PCM states. The
-> > dmesg below shows two calls to snd_urb_complete, the substream is
-> > NULL and the state is either running or stopped. This doesn't make
-> > any sense.
-> > ...
-> > ALSA urb.c:492: frame 0 active: -84
-> > ALSA urb.c:197: cannot submit urb (err = -19)
-> > ALSA urb.c:186: NULL substream (subs->running 1) <- How is this possible?
-> > ALSA urb.c:186: NULL substream (subs->running 0)
-> 
-> It's most likely a matter of the device being disconnected but the
-> device file still being open.
+I am dealing with the device driver for the chip that has his own hardware
+buffer and the DMA is not available. Therefore, driver doesn't support MMAP
+access and the data is copied using the copy file operation. My HW natively
+supports BE format. 
 
-subs->pcm_substream == NULL happens only when the device file _has_
-been closed.
+However, I would like to be able to play little endian pcm as well. 
 
-> Perhaps not everything gets cleaned up the way it should when that
-> happens.
+The problem, occurs when I try to use plughw device in order to play LE pcm
+file
 
-There seems to be a race between snd_usb_pcm_close() and
-snd_usb_stream_disconnect().  I think a mutex taken by both functions
-should fix this; and all functions that check 'shutdown' probably need
-serializing.
+ 
 
+" aplay: set_params:1022: Unable to install hw params: "
 
-Regards,
-Clemens
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+ 
+
+My debugging session proved me that plughw device is trying to access device
+driver with MMAP_INTERLEAVED mode. Does it mean that this is the only way
+for plughw to access device driver, and that I am not able to use plugins
+unless do some heavy modifications of device drivers (implement mmap
+access). Am I missing something?
+
+Any info on this would be most welcome.
+
+ 
+
+Thanks,
+
+Nenad
