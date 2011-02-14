@@ -1,7 +1,8 @@
 From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: [PATCH v9 08/12] media: Links setup
-Date: Mon, 14 Feb 2011 13:21:03 +0100
-Message-ID: <1297686067-9666-9-git-send-email-laurent.pinchart@ideasonboard.com>
+Subject: [PATCH v9 11/12] v4l: Make video_device inherit from
+	media_entity
+Date: Mon, 14 Feb 2011 13:21:06 +0100
+Message-ID: <1297686067-9666-12-git-send-email-laurent.pinchart@ideasonboard.com>
 References: <1297686067-9666-1-git-send-email-laurent.pinchart@ideasonboard.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
 	[95.142.166.194])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2FE4D103832
+	by alsa0.perex.cz (Postfix) with ESMTP id E96C010383A
 	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2011 13:21:12 +0100 (CET)
 In-Reply-To: <1297686067-9666-1-git-send-email-laurent.pinchart@ideasonboard.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -25,514 +26,231 @@ To: linux-media@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.
 Cc: sakari.ailus@maxwell.research.nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-Create the following ioctl and implement it at the media device level to
-setup links.
+V4L2 devices are media entities. As such they need to inherit from
+(include) the media_entity structure.
 
-- MEDIA_IOC_SETUP_LINK: Modify the properties of a given link
-
-The only property that can currently be modified is the ENABLED link
-flag to enable/disable a link. Links marked with the IMMUTABLE link flag
-can not be enabled or disabled.
-
-Enabling or disabling a link has effects on entities' use count. Those
-changes are automatically propagated through the graph.
+When registering/unregistering the device, the media entity is
+automatically registered/unregistered. The entity is acquired on device
+open and released on device close.
 
 Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Stanimir Varbanov <svarbanov@mm-sol.com>
 Signed-off-by: Sakari Ailus <sakari.ailus@iki.fi>
 ---
- Documentation/DocBook/media-entities.tmpl          |    2 +
- Documentation/DocBook/v4l/media-controller.xml     |    1 +
- Documentation/DocBook/v4l/media-ioc-setup-link.xml |   90 +++++++++++
- Documentation/media-framework.txt                  |   42 ++++++
- drivers/media/media-device.c                       |   45 ++++++
- drivers/media/media-entity.c                       |  155 ++++++++++++++++++++
- include/linux/media.h                              |    1 +
- include/media/media-device.h                       |    3 +
- include/media/media-entity.h                       |   17 ++
- 9 files changed, 356 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/DocBook/v4l/media-ioc-setup-link.xml
+ Documentation/video4linux/v4l2-framework.txt |   38 ++++++++++++++++++--
+ drivers/media/video/v4l2-dev.c               |   49 +++++++++++++++++++++++--
+ include/media/v4l2-dev.h                     |    7 ++++
+ 3 files changed, 87 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/DocBook/media-entities.tmpl b/Documentation/DocBook/media-entities.tmpl
-index 6e7dae4..679c585 100644
---- a/Documentation/DocBook/media-entities.tmpl
-+++ b/Documentation/DocBook/media-entities.tmpl
-@@ -94,6 +94,7 @@
- <!ENTITY MEDIA-IOC-DEVICE-INFO "<link linkend='media-ioc-device-info'><constant>MEDIA_IOC_DEVICE_INFO</constant></link>">
- <!ENTITY MEDIA-IOC-ENUM-ENTITIES "<link linkend='media-ioc-enum-entities'><constant>MEDIA_IOC_ENUM_ENTITIES</constant></link>">
- <!ENTITY MEDIA-IOC-ENUM-LINKS "<link linkend='media-ioc-enum-links'><constant>MEDIA_IOC_ENUM_LINKS</constant></link>">
-+<!ENTITY MEDIA-IOC-SETUP-LINK "<link linkend='media-ioc-setup-link'><constant>MEDIA_IOC_SETUP_LINK</constant></link>">
+diff --git a/Documentation/video4linux/v4l2-framework.txt b/Documentation/video4linux/v4l2-framework.txt
+index 7de55cf..0627081 100644
+--- a/Documentation/video4linux/v4l2-framework.txt
++++ b/Documentation/video4linux/v4l2-framework.txt
+@@ -71,6 +71,10 @@ sub-device instances, the video_device struct stores V4L2 device node data
+ and in the future a v4l2_fh struct will keep track of filehandle instances
+ (this is not yet implemented).
  
- <!-- Types -->
- <!ENTITY v4l2-std-id "<link linkend='v4l2-std-id'>v4l2_std_id</link>">
-@@ -342,6 +343,7 @@
- <!ENTITY sub-media-ioc-device-info SYSTEM "v4l/media-ioc-device-info.xml">
- <!ENTITY sub-media-ioc-enum-entities SYSTEM "v4l/media-ioc-enum-entities.xml">
- <!ENTITY sub-media-ioc-enum-links SYSTEM "v4l/media-ioc-enum-links.xml">
-+<!ENTITY sub-media-ioc-setup-link SYSTEM "v4l/media-ioc-setup-link.xml">
- 
- <!-- Function Reference -->
- <!ENTITY close SYSTEM "v4l/func-close.xml">
-diff --git a/Documentation/DocBook/v4l/media-controller.xml b/Documentation/DocBook/v4l/media-controller.xml
-index 2c4fd2b..2dc25e1 100644
---- a/Documentation/DocBook/v4l/media-controller.xml
-+++ b/Documentation/DocBook/v4l/media-controller.xml
-@@ -85,4 +85,5 @@
-   &sub-media-ioc-device-info;
-   &sub-media-ioc-enum-entities;
-   &sub-media-ioc-enum-links;
-+  &sub-media-ioc-setup-link;
- </appendix>
-diff --git a/Documentation/DocBook/v4l/media-ioc-setup-link.xml b/Documentation/DocBook/v4l/media-ioc-setup-link.xml
-new file mode 100644
-index 0000000..09ab3d2
---- /dev/null
-+++ b/Documentation/DocBook/v4l/media-ioc-setup-link.xml
-@@ -0,0 +1,90 @@
-+<refentry id="media-ioc-setup-link">
-+  <refmeta>
-+    <refentrytitle>ioctl MEDIA_IOC_SETUP_LINK</refentrytitle>
-+    &manvol;
-+  </refmeta>
-+
-+  <refnamediv>
-+    <refname>MEDIA_IOC_SETUP_LINK</refname>
-+    <refpurpose>Modify the properties of a link</refpurpose>
-+  </refnamediv>
-+
-+  <refsynopsisdiv>
-+    <funcsynopsis>
-+      <funcprototype>
-+	<funcdef>int <function>ioctl</function></funcdef>
-+	<paramdef>int <parameter>fd</parameter></paramdef>
-+	<paramdef>int <parameter>request</parameter></paramdef>
-+	<paramdef>struct media_link_desc *<parameter>argp</parameter></paramdef>
-+      </funcprototype>
-+    </funcsynopsis>
-+  </refsynopsisdiv>
-+
-+  <refsect1>
-+    <title>Arguments</title>
-+
-+    <variablelist>
-+      <varlistentry>
-+	<term><parameter>fd</parameter></term>
-+	<listitem>
-+	  <para>File descriptor returned by
-+	  <link linkend='media-func-open'><function>open()</function></link>.</para>
-+	</listitem>
-+      </varlistentry>
-+      <varlistentry>
-+	<term><parameter>request</parameter></term>
-+	<listitem>
-+	  <para>MEDIA_IOC_ENUM_LINKS</para>
-+	</listitem>
-+      </varlistentry>
-+      <varlistentry>
-+	<term><parameter>argp</parameter></term>
-+	<listitem>
-+	  <para></para>
-+	</listitem>
-+      </varlistentry>
-+    </variablelist>
-+  </refsect1>
-+
-+  <refsect1>
-+    <title>Description</title>
-+
-+    <para>To change link properties applications fill a &media-link-desc; with
-+    link identification information (source and sink pad) and the new requested
-+    link flags. They then call the MEDIA_IOC_SETUP_LINK ioctl with a pointer to
-+    that structure.</para>
-+    <para>The only configurable property is the <constant>ENABLED</constant>
-+    link flag to enable/disable a link. Links marked with the
-+    <constant>IMMUTABLE</constant> link flag can not be enabled or disabled.
-+    </para>
-+    <para>Link configuration has no side effect on other links. If an enabled
-+    link at the sink pad prevents the link from being enabled, the driver
-+    returns with an &EBUSY;.</para>
-+    <para>If the specified link can't be found the driver returns with an
-+    &EINVAL;.</para>
-+  </refsect1>
-+
-+  <refsect1>
-+    &return-value;
-+
-+    <variablelist>
-+      <varlistentry>
-+	<term><errorcode>EBUSY</errorcode></term>
-+	<listitem>
-+	  <para>The link properties can't be changed because the link is
-+	  currently busy. This can be caused, for instance, by an active media
-+	  stream (audio or video) on the link. The ioctl shouldn't be retried if
-+	  no other action is performed before to fix the problem.</para>
-+	</listitem>
-+      </varlistentry>
-+      <varlistentry>
-+	<term><errorcode>EINVAL</errorcode></term>
-+	<listitem>
-+	  <para>The &media-link-desc; references a non-existing link, or the
-+	  link is immutable and an attempt to modify its configuration was made.
-+	  </para>
-+	</listitem>
-+      </varlistentry>
-+    </variablelist>
-+  </refsect1>
-+</refentry>
-diff --git a/Documentation/media-framework.txt b/Documentation/media-framework.txt
-index 78ae020..4809221 100644
---- a/Documentation/media-framework.txt
-+++ b/Documentation/media-framework.txt
-@@ -259,6 +259,16 @@ When the graph traversal is complete the function will return NULL.
- Graph traversal can be interrupted at any moment. No cleanup function call is
- required and the graph structure can be freed normally.
- 
-+Helper functions can be used to find a link between two given pads, or a pad
-+connected to another pad through an enabled link
-+
-+	media_entity_find_link(struct media_pad *source,
-+			       struct media_pad *sink);
-+
-+	media_entity_remote_source(struct media_pad *pad);
-+
-+Refer to the kerneldoc documentation for more information.
++The V4L2 framework also optionally integrates with the media framework. If a
++driver sets the struct v4l2_device mdev field, sub-devices and video nodes
++will automatically appear in the media framework as entities.
 +
  
- Use count and power handling
- ----------------------------
-@@ -271,3 +281,35 @@ track the number of users of every entity for power management needs.
- The use_count field is owned by media drivers and must not be touched by entity
- drivers. Access to the field must be protected by the media device graph_mutex
- lock.
-+
-+
-+Links setup
-+-----------
-+
-+Link properties can be modified at runtime by calling
-+
-+	media_entity_setup_link(struct media_link *link, u32 flags);
-+
-+The flags argument contains the requested new link flags.
-+
-+The only configurable property is the ENABLED link flag to enable/disable a
-+link. Links marked with the IMMUTABLE link flag can not be enabled or disabled.
-+
-+When a link is enabled or disabled, the media framework calls the
-+link_setup operation for the two entities at the source and sink of the link,
-+in that order. If the second link_setup call fails, another link_setup call is
-+made on the first entity to restore the original link flags.
-+
-+Media device drivers can be notified of link setup operations by setting the
-+media_device::link_notify pointer to a callback function. If provided, the
-+notification callback will be called before enabling and after disabling
-+links.
-+
-+Entity drivers must implement the link_setup operation if any of their links
-+is non-immutable. The operation must either configure the hardware or store
-+the configuration information to be applied later.
-+
-+Link configuration must not have any side effect on other links. If an enabled
-+link at a sink pad prevents another link at the same pad from being disabled,
-+the link_setup operation must return -EBUSY and can't implicitly disable the
-+first enabled link.
-diff --git a/drivers/media/media-device.c b/drivers/media/media-device.c
-index 648a9d8..16b70b4 100644
---- a/drivers/media/media-device.c
-+++ b/drivers/media/media-device.c
-@@ -172,6 +172,44 @@ static long media_device_enum_links(struct media_device *mdev,
- 	return 0;
- }
+ struct v4l2_device
+ ------------------
+@@ -84,11 +88,14 @@ You must register the device instance:
+ 	v4l2_device_register(struct device *dev, struct v4l2_device *v4l2_dev);
  
-+static long media_device_setup_link(struct media_device *mdev,
-+				    struct media_link_desc __user *_ulink)
-+{
-+	struct media_link *link = NULL;
-+	struct media_link_desc ulink;
-+	struct media_entity *source;
-+	struct media_entity *sink;
-+	int ret;
+ Registration will initialize the v4l2_device struct. If the dev->driver_data
+-field is NULL, it will be linked to v4l2_dev. Drivers that use the media
+-device framework in addition to the V4L2 framework need to set
++field is NULL, it will be linked to v4l2_dev.
 +
-+	if (copy_from_user(&ulink, _ulink, sizeof(ulink)))
-+		return -EFAULT;
-+
-+	/* Find the source and sink entities and link.
-+	 */
-+	source = find_entity(mdev, ulink.source.entity);
-+	sink = find_entity(mdev, ulink.sink.entity);
-+
-+	if (source == NULL || sink == NULL)
-+		return -EINVAL;
-+
-+	if (ulink.source.index >= source->num_pads ||
-+	    ulink.sink.index >= sink->num_pads)
-+		return -EINVAL;
-+
-+	link = media_entity_find_link(&source->pads[ulink.source.index],
-+				      &sink->pads[ulink.sink.index]);
-+	if (link == NULL)
-+		return -EINVAL;
-+
-+	/* Setup the link on both entities. */
-+	ret = __media_entity_setup_link(link, ulink.flags);
-+
-+	if (copy_to_user(_ulink, &ulink, sizeof(ulink)))
-+		return -EFAULT;
-+
-+	return ret;
-+}
-+
- static long media_device_ioctl(struct file *filp, unsigned int cmd,
- 			       unsigned long arg)
- {
-@@ -197,6 +235,13 @@ static long media_device_ioctl(struct file *filp, unsigned int cmd,
- 		mutex_unlock(&dev->graph_mutex);
- 		break;
++Drivers that want integration with the media device framework need to set
+ dev->driver_data manually to point to the driver-specific device structure
+ that embed the struct v4l2_device instance. This is achieved by a
+-dev_set_drvdata() call before registering the V4L2 device instance.
++dev_set_drvdata() call before registering the V4L2 device instance. They must
++also set the struct v4l2_device mdev field to point to a properly initialized
++and registered media_device instance.
  
-+	case MEDIA_IOC_SETUP_LINK:
-+		mutex_lock(&dev->graph_mutex);
-+		ret = media_device_setup_link(dev,
-+				(struct media_link_desc __user *)arg);
-+		mutex_unlock(&dev->graph_mutex);
-+		break;
+ If v4l2_dev->name is empty then it will be set to a value derived from dev
+ (driver name followed by the bus_id, to be precise). If you set it up before
+@@ -530,6 +537,21 @@ If you use v4l2_ioctl_ops, then you should set either .unlocked_ioctl or
+ The v4l2_file_operations struct is a subset of file_operations. The main
+ difference is that the inode argument is omitted since it is never used.
+ 
++If integration with the media framework is needed, you must initialize the
++media_entity struct embedded in the video_device struct (entity field) by
++calling media_entity_init():
 +
- 	default:
- 		ret = -ENOIOCTLCMD;
++	struct media_pad *pad = &my_vdev->pad;
++	int err;
++
++	err = media_entity_init(&vdev->entity, 1, pad, 0);
++
++The pads array must have been previously initialized. There is no need to
++manually set the struct media_entity type and name fields.
++
++A reference to the entity will be automatically acquired/released when the
++video device is opened/closed.
++
+ v4l2_file_operations and locking
+ --------------------------------
+ 
+@@ -559,6 +581,9 @@ for you.
+ 		return err;
  	}
-diff --git a/drivers/media/media-entity.c b/drivers/media/media-entity.c
-index 3e7e2d5..6795c92 100644
---- a/drivers/media/media-entity.c
-+++ b/drivers/media/media-entity.c
-@@ -306,3 +306,158 @@ media_entity_create_link(struct media_entity *source, u16 source_pad,
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(media_entity_create_link);
+ 
++If the v4l2_device parent device has a non-NULL mdev field, the video device
++entity will be automatically registered with the media device.
 +
-+static int __media_entity_setup_link_notify(struct media_link *link, u32 flags)
-+{
-+	const u32 mask = MEDIA_LNK_FL_ENABLED;
-+	int ret;
+ Which device is registered depends on the type argument. The following
+ types exist:
+ 
+@@ -634,6 +659,13 @@ release, of course) will return an error as well.
+ When the last user of the video device node exits, then the vdev->release()
+ callback is called and you can do the final cleanup there.
+ 
++Don't forget to cleanup the media entity associated with the video device if
++it has been initialized:
 +
-+	/* Notify both entities. */
-+	ret = media_entity_call(link->source->entity, link_setup,
-+				link->source, link->sink, flags);
-+	if (ret < 0 && ret != -ENOIOCTLCMD)
-+		return ret;
++	media_entity_cleanup(&vdev->entity);
 +
-+	ret = media_entity_call(link->sink->entity, link_setup,
-+				link->sink, link->source, flags);
-+	if (ret < 0 && ret != -ENOIOCTLCMD) {
-+		media_entity_call(link->source->entity, link_setup,
-+				  link->source, link->sink, link->flags);
-+		return ret;
-+	}
++This can be done from the release callback.
 +
-+	link->flags = (link->flags & ~mask) | (flags & mask);
-+	link->reverse->flags = link->flags;
-+
-+	return 0;
-+}
-+
-+/**
-+ * __media_entity_setup_link - Configure a media link
-+ * @link: The link being configured
-+ * @flags: Link configuration flags
-+ *
-+ * The bulk of link setup is handled by the two entities connected through the
-+ * link. This function notifies both entities of the link configuration change.
-+ *
-+ * If the link is immutable or if the current and new configuration are
-+ * identical, return immediately.
-+ *
-+ * The user is expected to hold link->source->parent->mutex. If not,
-+ * media_entity_setup_link() should be used instead.
-+ */
-+int __media_entity_setup_link(struct media_link *link, u32 flags)
-+{
-+	struct media_device *mdev;
-+	struct media_entity *source, *sink;
-+	int ret = -EBUSY;
-+
-+	if (link == NULL)
-+		return -EINVAL;
-+
-+	if (link->flags & MEDIA_LNK_FL_IMMUTABLE)
-+		return link->flags == flags ? 0 : -EINVAL;
-+
-+	if (link->flags == flags)
-+		return 0;
-+
-+	source = link->source->entity;
-+	sink = link->sink->entity;
-+
-+	mdev = source->parent;
-+
-+	if ((flags & MEDIA_LNK_FL_ENABLED) && mdev->link_notify) {
-+		ret = mdev->link_notify(link->source, link->sink,
-+					MEDIA_LNK_FL_ENABLED);
-+		if (ret < 0)
+ 
+ video_device helper functions
+ -----------------------------
+diff --git a/drivers/media/video/v4l2-dev.c b/drivers/media/video/v4l2-dev.c
+index abe04ef..e405b80 100644
+--- a/drivers/media/video/v4l2-dev.c
++++ b/drivers/media/video/v4l2-dev.c
+@@ -303,6 +303,9 @@ static int v4l2_mmap(struct file *filp, struct vm_area_struct *vm)
+ static int v4l2_open(struct inode *inode, struct file *filp)
+ {
+ 	struct video_device *vdev;
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	struct media_entity *entity = NULL;
++#endif
+ 	int ret = 0;
+ 
+ 	/* Check if the video device is available */
+@@ -316,6 +319,16 @@ static int v4l2_open(struct inode *inode, struct file *filp)
+ 	/* and increase the device refcount */
+ 	video_get(vdev);
+ 	mutex_unlock(&videodev_lock);
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	if (vdev->v4l2_dev && vdev->v4l2_dev->mdev) {
++		entity = media_entity_get(&vdev->entity);
++		if (!entity) {
++			ret = -EBUSY;
++			video_put(vdev);
 +			return ret;
++		}
 +	}
-+
-+	ret = __media_entity_setup_link_notify(link, flags);
-+	if (ret < 0)
-+		goto err;
-+
-+	if (!(flags & MEDIA_LNK_FL_ENABLED) && mdev->link_notify)
-+		mdev->link_notify(link->source, link->sink, 0);
-+
-+	return 0;
-+
-+err:
-+	if ((flags & MEDIA_LNK_FL_ENABLED) && mdev->link_notify)
-+		mdev->link_notify(link->source, link->sink, 0);
-+
-+	return ret;
-+}
-+
-+int media_entity_setup_link(struct media_link *link, u32 flags)
-+{
-+	int ret;
-+
-+	mutex_lock(&link->source->entity->parent->graph_mutex);
-+	ret = __media_entity_setup_link(link, flags);
-+	mutex_unlock(&link->source->entity->parent->graph_mutex);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(media_entity_setup_link);
-+
-+/**
-+ * media_entity_find_link - Find a link between two pads
-+ * @source: Source pad
-+ * @sink: Sink pad
-+ *
-+ * Return a pointer to the link between the two entities. If no such link
-+ * exists, return NULL.
-+ */
-+struct media_link *
-+media_entity_find_link(struct media_pad *source, struct media_pad *sink)
-+{
-+	struct media_link *link;
-+	unsigned int i;
-+
-+	for (i = 0; i < source->entity->num_links; ++i) {
-+		link = &source->entity->links[i];
-+
-+		if (link->source->entity == source->entity &&
-+		    link->source->index == source->index &&
-+		    link->sink->entity == sink->entity &&
-+		    link->sink->index == sink->index)
-+			return link;
-+	}
-+
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(media_entity_find_link);
-+
-+/**
-+ * media_entity_remote_source - Find the source pad at the remote end of a link
-+ * @pad: Sink pad at the local end of the link
-+ *
-+ * Search for a remote source pad connected to the given sink pad by iterating
-+ * over all links originating or terminating at that pad until an enabled link
-+ * is found.
-+ *
-+ * Return a pointer to the pad at the remote end of the first found enabled
-+ * link, or NULL if no enabled link has been found.
-+ */
-+struct media_pad *media_entity_remote_source(struct media_pad *pad)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < pad->entity->num_links; i++) {
-+		struct media_link *link = &pad->entity->links[i];
-+
-+		if (!(link->flags & MEDIA_LNK_FL_ENABLED))
-+			continue;
-+
-+		if (link->source == pad)
-+			return link->sink;
-+
-+		if (link->sink == pad)
-+			return link->source;
-+	}
-+
-+	return NULL;
-+
-+}
-+EXPORT_SYMBOL_GPL(media_entity_remote_source);
-diff --git a/include/linux/media.h b/include/linux/media.h
-index 17c93a4..7c69913 100644
---- a/include/linux/media.h
-+++ b/include/linux/media.h
-@@ -126,5 +126,6 @@ struct media_links_enum {
- #define MEDIA_IOC_DEVICE_INFO		_IOWR('M', 1, struct media_device_info)
- #define MEDIA_IOC_ENUM_ENTITIES		_IOWR('M', 2, struct media_entity_desc)
- #define MEDIA_IOC_ENUM_LINKS		_IOWR('M', 3, struct media_links_enum)
-+#define MEDIA_IOC_SETUP_LINK		_IOWR('M', 4, struct media_link_desc)
++#endif
+ 	if (vdev->fops->open) {
+ 		if (vdev->lock && mutex_lock_interruptible(vdev->lock)) {
+ 			ret = -ERESTARTSYS;
+@@ -331,8 +344,13 @@ static int v4l2_open(struct inode *inode, struct file *filp)
  
- #endif /* __LINUX_MEDIA_H */
-diff --git a/include/media/media-device.h b/include/media/media-device.h
-index 5d2bff4..6a27d91 100644
---- a/include/media/media-device.h
-+++ b/include/media/media-device.h
-@@ -73,6 +73,9 @@ struct media_device {
- 	spinlock_t lock;
- 	/* Serializes graph operations. */
- 	struct mutex graph_mutex;
+ err:
+ 	/* decrease the refcount in case of an error */
+-	if (ret)
++	if (ret) {
++#if defined(CONFIG_MEDIA_CONTROLLER)
++		if (vdev->v4l2_dev && vdev->v4l2_dev->mdev)
++			media_entity_put(entity);
++#endif
+ 		video_put(vdev);
++	}
+ 	return ret;
+ }
+ 
+@@ -349,7 +367,10 @@ static int v4l2_release(struct inode *inode, struct file *filp)
+ 		if (vdev->lock)
+ 			mutex_unlock(vdev->lock);
+ 	}
+-
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	if (vdev->v4l2_dev && vdev->v4l2_dev->mdev)
++		media_entity_put(&vdev->entity);
++#endif
+ 	/* decrease the refcount unconditionally since the release()
+ 	   return value is ignored. */
+ 	video_put(vdev);
+@@ -585,12 +606,27 @@ int __video_register_device(struct video_device *vdev, int type, int nr,
+ 	if (nr != -1 && nr != vdev->num && warn_if_nr_in_use)
+ 		printk(KERN_WARNING "%s: requested %s%d, got %s\n", __func__,
+ 			name_base, nr, video_device_node_name(vdev));
+-
+-	/* Part 5: Activate this minor. The char device can now be used. */
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	/* Part 5: Register the entity. */
++	if (vdev->v4l2_dev && vdev->v4l2_dev->mdev) {
++		vdev->entity.type = MEDIA_ENT_T_DEVNODE_V4L;
++		vdev->entity.name = vdev->name;
++		vdev->entity.v4l.major = VIDEO_MAJOR;
++		vdev->entity.v4l.minor = vdev->minor;
++		ret = media_device_register_entity(vdev->v4l2_dev->mdev,
++			&vdev->entity);
++		if (ret < 0)
++			printk(KERN_WARNING
++			       "%s: media_device_register_entity failed\n",
++			       __func__);
++	}
++#endif
++	/* Part 6: Activate this minor. The char device can now be used. */
+ 	set_bit(V4L2_FL_REGISTERED, &vdev->flags);
+ 	mutex_lock(&videodev_lock);
+ 	video_device[vdev->minor] = vdev;
+ 	mutex_unlock(&videodev_lock);
 +
-+	int (*link_notify)(struct media_pad *source,
-+			   struct media_pad *sink, u32 flags);
+ 	return 0;
+ 
+ cleanup:
+@@ -618,6 +654,11 @@ void video_unregister_device(struct video_device *vdev)
+ 	if (!vdev || !video_is_registered(vdev))
+ 		return;
+ 
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	if (vdev->v4l2_dev && vdev->v4l2_dev->mdev)
++		media_device_unregister_entity(&vdev->entity);
++#endif
++
+ 	mutex_lock(&videodev_lock);
+ 	/* This must be in a critical section to prevent a race with v4l2_open.
+ 	 * Once this bit has been cleared video_get may never be called again.
+diff --git a/include/media/v4l2-dev.h b/include/media/v4l2-dev.h
+index 4fe6831..51b2c51 100644
+--- a/include/media/v4l2-dev.h
++++ b/include/media/v4l2-dev.h
+@@ -16,6 +16,8 @@
+ #include <linux/mutex.h>
+ #include <linux/videodev2.h>
+ 
++#include <media/media-entity.h>
++
+ #define VIDEO_MAJOR	81
+ 
+ #define VFL_TYPE_GRABBER	0
+@@ -55,6 +57,9 @@ struct v4l2_file_operations {
+ 
+ struct video_device
+ {
++#if defined(CONFIG_MEDIA_CONTROLLER)
++	struct media_entity entity;
++#endif
+ 	/* device ops */
+ 	const struct v4l2_file_operations *fops;
+ 
+@@ -100,6 +105,8 @@ struct video_device
+ 	struct mutex *lock;
  };
  
- /* media_devnode to media_device */
-diff --git a/include/media/media-entity.h b/include/media/media-entity.h
-index 51bdafc..d889dcc 100644
---- a/include/media/media-entity.h
-+++ b/include/media/media-entity.h
-@@ -39,6 +39,12 @@ struct media_pad {
- 	unsigned long flags;		/* Pad flags (MEDIA_PAD_FL_*) */
- };
++#define media_entity_to_video_device(entity) \
++	container_of(entity, struct video_device, entity)
+ /* dev to video-device */
+ #define to_video_device(cd) container_of(cd, struct video_device, dev)
  
-+struct media_entity_operations {
-+	int (*link_setup)(struct media_entity *entity,
-+			  const struct media_pad *local,
-+			  const struct media_pad *remote, u32 flags);
-+};
-+
- struct media_entity {
- 	struct list_head list;
- 	struct media_device *parent;	/* Media device this entity belongs to*/
-@@ -59,6 +65,8 @@ struct media_entity {
- 	struct media_pad *pads;		/* Pads array (num_pads elements) */
- 	struct media_link *links;	/* Links array (max_links elements)*/
- 
-+	const struct media_entity_operations *ops;	/* Entity operations */
-+
- 	/* Reference counts must never be negative, but are signed integers on
- 	 * purpose: a simple WARN_ON(<0) check can be used to detect reference
- 	 * count bugs that would make them negative.
-@@ -112,6 +120,11 @@ int media_entity_init(struct media_entity *entity, u16 num_pads,
- void media_entity_cleanup(struct media_entity *entity);
- int media_entity_create_link(struct media_entity *source, u16 source_pad,
- 		struct media_entity *sink, u16 sink_pad, u32 flags);
-+int __media_entity_setup_link(struct media_link *link, u32 flags);
-+int media_entity_setup_link(struct media_link *link, u32 flags);
-+struct media_link *media_entity_find_link(struct media_pad *source,
-+		struct media_pad *sink);
-+struct media_pad *media_entity_remote_source(struct media_pad *pad);
- 
- struct media_entity *media_entity_get(struct media_entity *entity);
- void media_entity_put(struct media_entity *entity);
-@@ -121,4 +134,8 @@ void media_entity_graph_walk_start(struct media_entity_graph *graph,
- struct media_entity *
- media_entity_graph_walk_next(struct media_entity_graph *graph);
- 
-+#define media_entity_call(entity, operation, args...)			\
-+	(((entity)->ops && (entity)->ops->operation) ?			\
-+	 (entity)->ops->operation((entity) , ##args) : -ENOIOCTLCMD)
-+
- #endif
 -- 
 1.7.3.4
