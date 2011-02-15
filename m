@@ -1,15 +1,16 @@
 From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: [PATCH 3/5] ASoC: sn95031: fix the amic tlv scale
-Date: Tue, 15 Feb 2011 18:28:53 +0530
-Message-ID: <1297774735-32184-4-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 4/5] ASoC: sst_platform: fix the pulseaudio
+	error
+Date: Tue, 15 Feb 2011 18:28:54 +0530
+Message-ID: <1297774735-32184-5-git-send-email-vinod.koul@intel.com>
 References: <1297774735-32184-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 89D56103851
-	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 13:50:09 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id E621D10388C
+	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 13:50:11 +0100 (CET)
 In-Reply-To: <1297774735-32184-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,27 +27,42 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Vinod Koul <vinod.koul@intel.com>
 
-The tlv scale is defined as (min, step, mute). The mute is not supported here so
-put the value to 0
+Pulseaudio doesnt work with current driver and it was root caused to absense of
+hw_params function and malloc_pages in it.
+This patch adds this and allows pa to work fine with these drivers
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Harsha Priya <priya.harsha@intel.com>
 ---
- sound/soc/codecs/sn95031.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/soc/mid-x86/sst_platform.c |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/sn95031.c b/sound/soc/codecs/sn95031.c
-index 5eb39c7..2a30eae 100644
---- a/sound/soc/codecs/sn95031.c
-+++ b/sound/soc/codecs/sn95031.c
-@@ -359,7 +359,7 @@ static const struct snd_kcontrol_new sn95031_input4_mux_control =
- static const char *sn95031_micmode_text[] = {"Single Ended", "Differential"};
+diff --git a/sound/soc/mid-x86/sst_platform.c b/sound/soc/mid-x86/sst_platform.c
+index 96e6e9c..ee2c224 100644
+--- a/sound/soc/mid-x86/sst_platform.c
++++ b/sound/soc/mid-x86/sst_platform.c
+@@ -365,6 +365,14 @@ static snd_pcm_uframes_t sst_platform_pcm_pointer
+ 	return stream->stream_info.buffer_ptr;
+ }
  
- /* 0dB to 30dB in 10dB steps */
--static const DECLARE_TLV_DB_SCALE(mic_tlv, 0, 10, 30);
-+static const DECLARE_TLV_DB_SCALE(mic_tlv, 0, 10, 0);
++static int sst_platform_pcm_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params)
++{
++	snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
++	memset(substream->runtime->dma_area, 0, params_buffer_bytes(params));
++
++	return 0;
++}
  
- static const struct soc_enum sn95031_micmode1_enum =
- 	SOC_ENUM_SINGLE(SN95031_MICAMP1, 1, 2, sn95031_micmode_text);
+ static struct snd_pcm_ops sst_platform_ops = {
+ 	.open = sst_platform_open,
+@@ -373,6 +381,7 @@ static struct snd_pcm_ops sst_platform_ops = {
+ 	.prepare = sst_platform_pcm_prepare,
+ 	.trigger = sst_platform_pcm_trigger,
+ 	.pointer = sst_platform_pcm_pointer,
++	.hw_params = sst_platform_pcm_hw_params,
+ };
+ 
+ static void sst_pcm_free(struct snd_pcm *pcm)
 -- 
 1.7.2.3
