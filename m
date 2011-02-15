@@ -1,17 +1,14 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: Channel swapping issue on TI OMAP3/TWL4030
-Date: Tue, 15 Feb 2011 09:15:44 +0200
-Message-ID: <4D5A2820.7060404@nokia.com>
-References: <8CD98E75F0E83E2-63C-14642@web-mmc-m05.sysops.aol.com><CF32F28EDF8D20468EEDCBE4975DA0274A46DB@008-AM1MPN1-027.mgdnok.nokia.com>	<8CD9A87EF4FB765-1218-647@web-mmc-m03.sysops.aol.com>
-	<8CD9AB6C4E69A1D-1448-84EE@web-mmc-d04.sysops.aol.com>
+From: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
+Subject: [PATCH v19 0/3] TI Wl1273 FM radio driver.
+Date: Tue, 15 Feb 2011 10:13:43 +0200
+Message-ID: <1297757626-3281-1-git-send-email-matti.j.aaltonen@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-da01.nokia.com (smtp.nokia.com [147.243.128.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id E7B8A103847
-	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 08:15:49 +0100 (CET)
-In-Reply-To: <8CD9AB6C4E69A1D-1448-84EE@web-mmc-d04.sysops.aol.com>
+Received: from mgw-sa02.nokia.com (smtp.nokia.com [147.243.1.48])
+	by alsa0.perex.cz (Postfix) with ESMTP id C1BB9103844
+	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 09:15:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,51 +18,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext ylin@mail.com" <ylin@mail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, mchehab@redhat.com, hverkuil@xs4all.nl, sameo@linux.intel.com, linux-media@vger.kernel.org
+Cc: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hello.
 
-On 02/15/11 01:33, ext ylin@mail.com wrote:
-> Some update:
-> We peeked into the substream->dma_buffer.area, and found out the =
+Now I've refactored the code so that the I2C I/O functions are in the 
+MFD core. Also now the codec can be compiled without compiling the V4L2
+driver.
 
-> channels are already switched in DMA buffer.  We are looking into =
+I haven't implemented the audio routing (yet), but I've added a TODO
+comment about it in the codec file.
 
-> McBSP2 and DMA to find some clues, but not familiar in these areas.  =
+Cheers,
+Matti
 
-> Any suggestion how to further narrow down the problem?
+Matti J. Aaltonen (3):
+  MFD: WL1273 FM Radio: MFD driver for the FM radio.
+  V4L2: WL1273 FM Radio: TI WL1273 FM radio driver
+  ASoC: WL1273 FM radio: Access I2C IO functions through pointers.
 
-Few more things:
-I suppose the twl4030 is the master on the bus (McBSP slave)
-Since you are using stereo capture, I assume the digital interface is in
-I2S mode.
-
-I could think of three source for channel switch:
-1. The switch happens within the twl4030 codec itself
-2. Switch happens because of underflow situation in McBSP
-3. Switch happens because of overflow situation in McBSP
-
-
-To narrow down the problem:
-1. You need tracepoints on you board for McBSP2 pins, and a scope
-You need to monitor the DX, and FS lines (bitclock might be useful as well).
-Keep the right channel disabled, and run your application, observe the
-DX/FS on the scope. When you notice the channel swap, check back on the
-scope, if the data moved from left to right channel.
-
-2/3. This is a bit more trickier, but I have done this several times:
-You need to use the PRCM compliant interrupt configuration.
-Do not request the TX/RX (62, 63 for McBSP2) interrupts in
-omap_mcbsp_request, but request only the common IRQ (17 for McBSP2).
-Enable the ROVFLEN, RUNDFEN, and RSYNCERREN bits in IRQENABLE_REG.
-In the ir handler check for these enabled events (in IRQSTATUS_REG), and
-print out the reason for the event (Do not forget to write back the
-register content to IRQSTATUS_REG to ack the event).
-
-I hope this helps narrowing down the problem.
-
--- =
-
-P=E9ter
+ drivers/media/radio/Kconfig        |   16 +
+ drivers/media/radio/Makefile       |    1 +
+ drivers/media/radio/radio-wl1273.c | 2183 ++++++++++++++++++++++++++++++++++++
+ drivers/mfd/Kconfig                |   10 +
+ drivers/mfd/Makefile               |    1 +
+ drivers/mfd/wl1273-core.c          |  295 +++++
+ include/linux/mfd/wl1273-core.h    |  291 +++++
+ sound/soc/codecs/Kconfig           |    2 +-
+ sound/soc/codecs/wl1273.c          |   38 +-
+ sound/soc/codecs/wl1273.h          |   71 --
+ 10 files changed, 2817 insertions(+), 91 deletions(-)
+ create mode 100644 drivers/media/radio/radio-wl1273.c
+ create mode 100644 drivers/mfd/wl1273-core.c
+ create mode 100644 include/linux/mfd/wl1273-core.h
