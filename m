@@ -1,64 +1,52 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/3] ASoC: omap: rx51: Use gpio_request_one
- to configure tvout_sel gpio
-Date: Tue, 15 Feb 2011 21:54:41 +0000
-Message-ID: <1297806881.3337.90.camel@odin>
-References: <1297696822-32174-1-git-send-email-jhnikula@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8D7FF10386E
-	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 22:54:44 +0100 (CET)
-Received: by wwe15 with SMTP id 15so661840wwe.20
-	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 13:54:44 -0800 (PST)
-In-Reply-To: <1297696822-32174-1-git-send-email-jhnikula@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Andres Salomon <dilinger@queued.net>
+Subject: [PATCH 3/9] wm8400-codec: use mfd_data instead of driver_data
+Date: Tue, 15 Feb 2011 14:25:23 -0800
+Message-ID: <1297808729-21110-4-git-send-email-dilinger@queued.net>
+References: <1297808729-21110-1-git-send-email-dilinger@queued.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1297808729-21110-1-git-send-email-dilinger@queued.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Samuel Ortiz <sameo@linux.intel.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Ian Lartey <ian@opensource.wolfsonmicro.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-02-14 at 17:20 +0200, Jarkko Nikula wrote:
-> Just slight cleanup to be sync with upcoming change.
-> 
-> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-> ---
->  sound/soc/omap/rx51.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
-> index 2d7d411..9411969 100644
-> --- a/sound/soc/omap/rx51.c
-> +++ b/sound/soc/omap/rx51.c
-> @@ -394,10 +394,10 @@ static int __init rx51_soc_init(void)
->  	if (!machine_is_nokia_rx51())
->  		return -ENODEV;
->  
-> -	err = gpio_request(RX51_TVOUT_SEL_GPIO, "tvout_sel");
-> +	err = gpio_request_one(RX51_TVOUT_SEL_GPIO,
-> +			       GPIOF_DIR_OUT | GPIOF_INIT_LOW, "tvout_sel");
->  	if (err)
->  		goto err_gpio_tvout_sel;
-> -	gpio_direction_output(RX51_TVOUT_SEL_GPIO, 0);
->  
->  	rx51_snd_device = platform_device_alloc("soc-audio", -1);
->  	if (!rx51_snd_device) {
+Use mfd_data for passing information from mfd drivers to soc
+clients.  The mfd_cell's driver_data field is being phased out.
 
-All applied.
+Clients that were using driver_data now access .mfd_data
+via mfd_get_data().
 
-Thanks
+Signed-off-by: Andres Salomon <dilinger@queued.net>
+---
+ drivers/mfd/wm8400-core.c |    2 +-
+ sound/soc/codecs/wm8400.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Liam
+diff --git a/drivers/mfd/wm8400-core.c b/drivers/mfd/wm8400-core.c
+index 1bfef48..3a6e78c 100644
+--- a/drivers/mfd/wm8400-core.c
++++ b/drivers/mfd/wm8400-core.c
+@@ -245,7 +245,7 @@ static int wm8400_register_codec(struct wm8400 *wm8400)
+ {
+ 	struct mfd_cell cell = {
+ 		.name = "wm8400-codec",
+-		.driver_data = wm8400,
++		.mfd_data = wm8400,
+ 	};
+ 
+ 	return mfd_add_devices(wm8400->dev, -1, &cell, 1, NULL, 0);
+diff --git a/sound/soc/codecs/wm8400.c b/sound/soc/codecs/wm8400.c
+index 3c3bc07..ee105c2 100644
+--- a/sound/soc/codecs/wm8400.c
++++ b/sound/soc/codecs/wm8400.c
+@@ -1377,7 +1377,7 @@ static void wm8400_probe_deferred(struct work_struct *work)
+ 
+ static int wm8400_codec_probe(struct snd_soc_codec *codec)
+ {
+-	struct wm8400 *wm8400 = dev_get_platdata(codec->dev);
++	struct wm8400 *wm8400 = mfd_get_data(to_platform_device(codec->dev));
+ 	struct wm8400_priv *priv;
+ 	int ret;
+ 	u16 reg;
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+1.7.2.3
