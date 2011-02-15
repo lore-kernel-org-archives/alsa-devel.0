@@ -1,32 +1,40 @@
-From: Mauro Carvalho Chehab <mchehab@redhat.com>
-Subject: Re: [PATCH v19 0/3] TI Wl1273 FM radio driver.
-Date: Tue, 15 Feb 2011 17:59:52 -0200
-Message-ID: <4D5ADB38.4070600@redhat.com>
-References: <1297757626-3281-1-git-send-email-matti.j.aaltonen@nokia.com>
+From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Subject: ASoC HDMI codec location
+Date: Tue, 15 Feb 2011 12:29:59 -0800
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF03112A51BE@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <1297757626-3281-1-git-send-email-matti.j.aaltonen@nokia.com>
-Sender: linux-media-owner@vger.kernel.org
-To: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, hverkuil@xs4all.nl, sameo@linux.intel.com, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Language: en-US
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "Mark Brown (broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org)" <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Em 15-02-2011 06:13, Matti J. Aaltonen escreveu:
-> Hello.
-> 
-> Now I've refactored the code so that the I2C I/O functions are in the 
-> MFD core. Also now the codec can be compiled without compiling the V4L2
-> driver.
-> 
-> I haven't implemented the audio routing (yet), but I've added a TODO
-> comment about it in the codec file.
+Mark,
 
-Matti,
+I'm looking at enabling audio-over-HDMI on Tegra in the ChromeOS kernel.
+This will use the SPDIF controller as the CPU DAI. Right now, I have things
+working with the stub SPDIF codec (codecs/spdif_transciever.c), but to
+support a non-hard-coded sample rate, need a real codec driver that writes
+registers in the HDMI controller.
 
-It looks ok on my eyes. As most of the changes is at the V4L part, it is
-probably better to merge this patch via my tree.
+I see that a Samsung chip has such a codec in drivers/video/sh_mobile_hdmi.c.
+The equivalent for Tegra would be drivers/video/tegra/dc/hdmi.c. Note that
+this location doesn't yet exist upstream. I just wanted to confirm that this
+location makes sense to you, vs. implementing a codec in sound/soc/tegra/hdmi.c,
+and having that call functions exposed by the Tegra dc/hdmi.c driver?
 
-Cheers,
-Mauro
+Note that the SPDIF controller isn't involved in the Tegra Digital Audio
+Switch muxing/switching module at all.
+
+Thanks.
+
+-- 
+nvpublic
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-tegra" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
