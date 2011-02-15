@@ -1,16 +1,16 @@
 From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: [PATCH 4/5] ASoC: sst_platform: fix the pulseaudio
-	error
-Date: Tue, 15 Feb 2011 18:28:54 +0530
-Message-ID: <1297774735-32184-5-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 5/5] ASoC: mfld_machine: make use of
+	soc_register_card API
+Date: Tue, 15 Feb 2011 18:28:55 +0530
+Message-ID: <1297774735-32184-6-git-send-email-vinod.koul@intel.com>
 References: <1297774735-32184-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id E621D10388C
-	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 13:50:11 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 93BD41038AC
+	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 13:50:13 +0100 (CET)
 In-Reply-To: <1297774735-32184-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,42 +27,58 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Vinod Koul <vinod.koul@intel.com>
 
-Pulseaudio doesnt work with current driver and it was root caused to absense of
-hw_params function and malloc_pages in it.
-This patch adds this and allows pa to work fine with these drivers
+This patch removes the old method of soc-audio device creation in mfld machine
+and makes use of new soc_register_card API to register the card
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Harsha Priya <priya.harsha@intel.com>
 ---
- sound/soc/mid-x86/sst_platform.c |    9 +++++++++
- 1 files changed, 9 insertions(+), 0 deletions(-)
+ sound/soc/mid-x86/mfld_machine.c |   20 ++++++--------------
+ 1 files changed, 6 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/mid-x86/sst_platform.c b/sound/soc/mid-x86/sst_platform.c
-index 96e6e9c..ee2c224 100644
---- a/sound/soc/mid-x86/sst_platform.c
-+++ b/sound/soc/mid-x86/sst_platform.c
-@@ -365,6 +365,14 @@ static snd_pcm_uframes_t sst_platform_pcm_pointer
- 	return stream->stream_info.buffer_ptr;
- }
+diff --git a/sound/soc/mid-x86/mfld_machine.c b/sound/soc/mid-x86/mfld_machine.c
+index 96487fb..429aa1b 100644
+--- a/sound/soc/mid-x86/mfld_machine.c
++++ b/sound/soc/mid-x86/mfld_machine.c
+@@ -392,25 +392,17 @@ static int __devinit snd_mfld_mc_probe(struct platform_device *pdev)
+ 		pr_err("cannot register IRQ\n");
+ 		goto unalloc;
+ 	}
+-	/* create soc device */
+-	mc_drv_ctx->socdev = platform_device_alloc("soc-audio", -1);
+-	if (!mc_drv_ctx->socdev) {
+-		pr_err("soc-audio device allocation failed\n");
+-		ret_val = -ENOMEM;
+-		goto freeirq;
+-	}
+-	platform_set_drvdata(mc_drv_ctx->socdev, &snd_soc_card_mfld);
+-	ret_val = platform_device_add(mc_drv_ctx->socdev);
++	/* register the soc card */
++	snd_soc_card_mfld.dev = &pdev->dev;
++	ret_val = snd_soc_register_card(&snd_soc_card_mfld);
+ 	if (ret_val) {
+-		pr_err("Unable to add soc-audio device, err %d\n", ret_val);
+-		goto unregister;
++		pr_debug("snd_soc_register_card failed %d\n", ret_val);
++		goto freeirq;
+ 	}
+ 	platform_set_drvdata(pdev, mc_drv_ctx);
+ 	pr_debug("successfully exited probe\n");
+ 	return ret_val;
  
-+static int sst_platform_pcm_hw_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params)
-+{
-+	snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(params));
-+	memset(substream->runtime->dma_area, 0, params_buffer_bytes(params));
-+
-+	return 0;
-+}
+-unregister:
+-	platform_device_put(mc_drv_ctx->socdev);
+ freeirq:
+ 	free_irq(irq, mc_drv_ctx);
+ unalloc:
+@@ -424,7 +416,7 @@ static int __devexit snd_mfld_mc_remove(struct platform_device *pdev)
  
- static struct snd_pcm_ops sst_platform_ops = {
- 	.open = sst_platform_open,
-@@ -373,6 +381,7 @@ static struct snd_pcm_ops sst_platform_ops = {
- 	.prepare = sst_platform_pcm_prepare,
- 	.trigger = sst_platform_pcm_trigger,
- 	.pointer = sst_platform_pcm_pointer,
-+	.hw_params = sst_platform_pcm_hw_params,
- };
- 
- static void sst_pcm_free(struct snd_pcm *pcm)
+ 	pr_debug("snd_mfld_mc_remove called\n");
+ 	free_irq(platform_get_irq(pdev, 0), mc_drv_ctx);
+-	platform_device_unregister(mc_drv_ctx->socdev);
++	snd_soc_unregister_card(&snd_soc_card_mfld);
+ 	kfree(mc_drv_ctx);
+ 	platform_set_drvdata(pdev, NULL);
+ 	return 0;
 -- 
 1.7.2.3
