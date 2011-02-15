@@ -1,13 +1,28 @@
 From: Andres Salomon <dilinger@queued.net>
-Subject: [PATCH 3/9] wm8400-codec: use mfd_data instead of driver_data
-Date: Tue, 15 Feb 2011 14:25:23 -0800
-Message-ID: <1297808729-21110-4-git-send-email-dilinger@queued.net>
+Subject: [PATCH 2/9] davinci_voicecodec: use mfd_data instead
+	of driver_data
+Date: Tue, 15 Feb 2011 14:25:22 -0800
+Message-ID: <1297808729-21110-3-git-send-email-dilinger@queued.net>
 References: <1297808729-21110-1-git-send-email-dilinger@queued.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lunge.queued.net (LUNGE.MIT.EDU [18.54.1.69])
+	by alsa0.perex.cz (Postfix) with ESMTP id F268C10386E
+	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 23:25:36 +0100 (CET)
 In-Reply-To: <1297808729-21110-1-git-send-email-dilinger@queued.net>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Samuel Ortiz <sameo@linux.intel.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Ian Lartey <ian@opensource.wolfsonmicro.com>, Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
 Use mfd_data for passing information from mfd drivers to soc
@@ -18,35 +33,56 @@ via mfd_get_data().
 
 Signed-off-by: Andres Salomon <dilinger@queued.net>
 ---
- drivers/mfd/wm8400-core.c |    2 +-
- sound/soc/codecs/wm8400.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/mfd/davinci_voicecodec.c |    4 ++--
+ sound/soc/codecs/cq93vc.c        |    3 ++-
+ sound/soc/davinci/davinci-vcif.c |    2 +-
+ 3 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mfd/wm8400-core.c b/drivers/mfd/wm8400-core.c
-index 1bfef48..3a6e78c 100644
---- a/drivers/mfd/wm8400-core.c
-+++ b/drivers/mfd/wm8400-core.c
-@@ -245,7 +245,7 @@ static int wm8400_register_codec(struct wm8400 *wm8400)
- {
- 	struct mfd_cell cell = {
- 		.name = "wm8400-codec",
--		.driver_data = wm8400,
-+		.mfd_data = wm8400,
- 	};
+diff --git a/drivers/mfd/davinci_voicecodec.c b/drivers/mfd/davinci_voicecodec.c
+index 33c923d..f946c0b 100644
+--- a/drivers/mfd/davinci_voicecodec.c
++++ b/drivers/mfd/davinci_voicecodec.c
+@@ -119,12 +119,12 @@ static int __init davinci_vc_probe(struct platform_device *pdev)
+ 	/* Voice codec interface client */
+ 	cell = &davinci_vc->cells[DAVINCI_VC_VCIF_CELL];
+ 	cell->name = "davinci_vcif";
+-	cell->driver_data = davinci_vc;
++	cell->mfd_data = davinci_vc;
  
- 	return mfd_add_devices(wm8400->dev, -1, &cell, 1, NULL, 0);
-diff --git a/sound/soc/codecs/wm8400.c b/sound/soc/codecs/wm8400.c
-index 3c3bc07..ee105c2 100644
---- a/sound/soc/codecs/wm8400.c
-+++ b/sound/soc/codecs/wm8400.c
-@@ -1377,7 +1377,7 @@ static void wm8400_probe_deferred(struct work_struct *work)
+ 	/* Voice codec CQ93VC client */
+ 	cell = &davinci_vc->cells[DAVINCI_VC_CQ93VC_CELL];
+ 	cell->name = "cq93vc";
+-	cell->driver_data = davinci_vc;
++	cell->mfd_data = davinci_vc;
  
- static int wm8400_codec_probe(struct snd_soc_codec *codec)
+ 	ret = mfd_add_devices(&pdev->dev, pdev->id, davinci_vc->cells,
+ 			      DAVINCI_VC_CELLS, NULL, 0);
+diff --git a/sound/soc/codecs/cq93vc.c b/sound/soc/codecs/cq93vc.c
+index 46dbfd0..b8066ef 100644
+--- a/sound/soc/codecs/cq93vc.c
++++ b/sound/soc/codecs/cq93vc.c
+@@ -153,7 +153,8 @@ static int cq93vc_resume(struct snd_soc_codec *codec)
+ 
+ static int cq93vc_probe(struct snd_soc_codec *codec)
  {
--	struct wm8400 *wm8400 = dev_get_platdata(codec->dev);
-+	struct wm8400 *wm8400 = mfd_get_data(to_platform_device(codec->dev));
- 	struct wm8400_priv *priv;
+-	struct davinci_vc *davinci_vc = codec->dev->platform_data;
++	struct davinci_vc *davinci_vc =
++			mfd_get_data(to_platform_device(codec->dev));
+ 
+ 	davinci_vc->cq93vc.codec = codec;
+ 	codec->control_data = davinci_vc;
+diff --git a/sound/soc/davinci/davinci-vcif.c b/sound/soc/davinci/davinci-vcif.c
+index 9d2afcc..13e05a3 100644
+--- a/sound/soc/davinci/davinci-vcif.c
++++ b/sound/soc/davinci/davinci-vcif.c
+@@ -205,7 +205,7 @@ static struct snd_soc_dai_driver davinci_vcif_dai = {
+ 
+ static int davinci_vcif_probe(struct platform_device *pdev)
+ {
+-	struct davinci_vc *davinci_vc = platform_get_drvdata(pdev);
++	struct davinci_vc *davinci_vc = mfd_get_data(pdev);
+ 	struct davinci_vcif_dev *davinci_vcif_dev;
  	int ret;
- 	u16 reg;
+ 
 -- 
 1.7.2.3
