@@ -1,88 +1,37 @@
-From: Andres Salomon <dilinger@queued.net>
-Subject: [PATCH 2/9] davinci_voicecodec: use mfd_data instead
-	of driver_data
-Date: Tue, 15 Feb 2011 14:25:22 -0800
-Message-ID: <1297808729-21110-3-git-send-email-dilinger@queued.net>
-References: <1297808729-21110-1-git-send-email-dilinger@queued.net>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: ASoC HDMI codec location
+Date: Tue, 15 Feb 2011 23:58:33 +0000
+Message-ID: <20110215235832.GB2462@opensource.wolfsonmicro.com>
+References: <74CDBE0F657A3D45AFBB94109FB122FF03112A51BE@HQMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lunge.queued.net (LUNGE.MIT.EDU [18.54.1.69])
-	by alsa0.perex.cz (Postfix) with ESMTP id F268C10386E
-	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 23:25:36 +0100 (CET)
-In-Reply-To: <1297808729-21110-1-git-send-email-dilinger@queued.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Samuel Ortiz <sameo@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF03112A51BE-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Use mfd_data for passing information from mfd drivers to soc
-clients.  The mfd_cell's driver_data field is being phased out.
+On Tue, Feb 15, 2011 at 12:29:59PM -0800, Stephen Warren wrote:
 
-Clients that were using driver_data now access .mfd_data
-via mfd_get_data().
+> I see that a Samsung chip has such a codec in drivers/video/sh_mobile_hdmi.c.
 
-Signed-off-by: Andres Salomon <dilinger@queued.net>
----
- drivers/mfd/davinci_voicecodec.c |    4 ++--
- sound/soc/codecs/cq93vc.c        |    3 ++-
- sound/soc/davinci/davinci-vcif.c |    2 +-
- 3 files changed, 5 insertions(+), 4 deletions(-)
+That's not Samsung, that's Renesas' SuperH.
 
-diff --git a/drivers/mfd/davinci_voicecodec.c b/drivers/mfd/davinci_voicecodec.c
-index 33c923d..f946c0b 100644
---- a/drivers/mfd/davinci_voicecodec.c
-+++ b/drivers/mfd/davinci_voicecodec.c
-@@ -119,12 +119,12 @@ static int __init davinci_vc_probe(struct platform_device *pdev)
- 	/* Voice codec interface client */
- 	cell = &davinci_vc->cells[DAVINCI_VC_VCIF_CELL];
- 	cell->name = "davinci_vcif";
--	cell->driver_data = davinci_vc;
-+	cell->mfd_data = davinci_vc;
- 
- 	/* Voice codec CQ93VC client */
- 	cell = &davinci_vc->cells[DAVINCI_VC_CQ93VC_CELL];
- 	cell->name = "cq93vc";
--	cell->driver_data = davinci_vc;
-+	cell->mfd_data = davinci_vc;
- 
- 	ret = mfd_add_devices(&pdev->dev, pdev->id, davinci_vc->cells,
- 			      DAVINCI_VC_CELLS, NULL, 0);
-diff --git a/sound/soc/codecs/cq93vc.c b/sound/soc/codecs/cq93vc.c
-index 46dbfd0..b8066ef 100644
---- a/sound/soc/codecs/cq93vc.c
-+++ b/sound/soc/codecs/cq93vc.c
-@@ -153,7 +153,8 @@ static int cq93vc_resume(struct snd_soc_codec *codec)
- 
- static int cq93vc_probe(struct snd_soc_codec *codec)
- {
--	struct davinci_vc *davinci_vc = codec->dev->platform_data;
-+	struct davinci_vc *davinci_vc =
-+			mfd_get_data(to_platform_device(codec->dev));
- 
- 	davinci_vc->cq93vc.codec = codec;
- 	codec->control_data = davinci_vc;
-diff --git a/sound/soc/davinci/davinci-vcif.c b/sound/soc/davinci/davinci-vcif.c
-index 9d2afcc..13e05a3 100644
---- a/sound/soc/davinci/davinci-vcif.c
-+++ b/sound/soc/davinci/davinci-vcif.c
-@@ -205,7 +205,7 @@ static struct snd_soc_dai_driver davinci_vcif_dai = {
- 
- static int davinci_vcif_probe(struct platform_device *pdev)
- {
--	struct davinci_vc *davinci_vc = platform_get_drvdata(pdev);
-+	struct davinci_vc *davinci_vc = mfd_get_data(pdev);
- 	struct davinci_vcif_dev *davinci_vcif_dev;
- 	int ret;
- 
--- 
-1.7.2.3
+> The equivalent for Tegra would be drivers/video/tegra/dc/hdmi.c. Note that
+> this location doesn't yet exist upstream. I just wanted to confirm that this
+> location makes sense to you, vs. implementing a codec in sound/soc/tegra/hdmi.c,
+> and having that call functions exposed by the Tegra dc/hdmi.c driver?
+
+Note that the SH code has code in *both* locations - there's an ASoC
+driver that calls into the video driver as well under sound/soc/sh.
+
+> Note that the SPDIF controller isn't involved in the Tegra Digital Audio
+> Switch muxing/switching module at all.
+
+Is the DMA shared?
+--
+To unsubscribe from this list: send the line "unsubscribe linux-tegra" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
