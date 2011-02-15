@@ -1,21 +1,14 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: Channel swapping issue on TI OMAP3/TWL4030
-Date: Tue, 15 Feb 2011 10:28:33 +0200
-Message-ID: <20110215102833.0727ef53.jhnikula@gmail.com>
-References: <8CD98E75F0E83E2-63C-14642@web-mmc-m05.sysops.aol.com>
-	<CF32F28EDF8D20468EEDCBE4975DA0274A46DB@008-AM1MPN1-027.mgdnok.nokia.com>
-	<8CD9A87EF4FB765-1218-647@web-mmc-m03.sysops.aol.com>
+From: "Koul, Vinod" <vinod.koul@intel.com>
+Subject: [PATCH 0/5] mfld machine and codec fixes
+Date: Tue, 15 Feb 2011 18:28:50 +0530
+Message-ID: <1297774735-32184-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 135F9103851
-	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 09:28:13 +0100 (CET)
-Received: by ewy19 with SMTP id 19so2542052ewy.38
-	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 00:28:12 -0800 (PST)
-In-Reply-To: <8CD9A87EF4FB765-1218-647@web-mmc-m03.sysops.aol.com>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8F887103803
+	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 13:50:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,30 +18,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ylin@mail.com
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 14 Feb 2011 12:58:35 -0500
-ylin@mail.com wrote:
+From: Vinod Koul <vinod.koul@intel.com>
 
-> 
-> > I have not experienced with channel swapping during capture..
-> > It would help, if I know:
-> > what is your kernel version
-> > Source of the recording (digimic, HS, main mic, etc)
-> 
-> We are using 2.6.32.  The source of the recording is using Analog Mic.  
-> The Left Main mic is always on, and Right Sub mic can be either on or 
-> off when this occurs.  We are not using AUX or digimic.
-> 
-I was thinking is this 2.6.32 derived completely from Vanilla version or
-only partially? I think I've seen some case where the kernel was forked
-earlier and got upgraded to the upstream version only partially.
+Hi,
 
-Even Peter told that those channel switching patches in 2.6.32 should
-fix the playback case only, worth to check just in case are those fixes
-in your kernel tree.
+This 5 patch series introduces some minor fixes in the TI sn95031 codec driver
+and the mfld_machine driver and sst_platfrom driver.
+This also changes mfld_machine to use the soc_register_card() API.
+
+Vinod Koul (5):
+  ASoC: sn95031: make playback rails depend on actual pins they control
+  ASoC: sn95031: fix the DMIC path routing
+  ASoC: sn95031: fix the amic tlv scale
+  ASoC: sst_platform: fix the pulseaudio error
+  ASoC: mfld_machine: make use of soc_register_card API
+
+ sound/soc/codecs/sn95031.c       |   58 +++++++++++++++++++-------------------
+ sound/soc/mid-x86/mfld_machine.c |   20 ++++---------
+ sound/soc/mid-x86/sst_platform.c |    9 ++++++
+ 3 files changed, 44 insertions(+), 43 deletions(-)
 
 -- 
-Jarkko
+1.7.2.3
