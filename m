@@ -1,17 +1,17 @@
-From: "Koul, Vinod" <vinod.koul@intel.com>
-Subject: [PATCH 5/5] ASoC: mfld_machine: make use of
-	soc_register_card API
-Date: Tue, 15 Feb 2011 18:28:55 +0530
-Message-ID: <1297774735-32184-6-git-send-email-vinod.koul@intel.com>
-References: <1297774735-32184-1-git-send-email-vinod.koul@intel.com>
+From: tapio.vihuri@nokia.com
+Subject: [PATCH v7 2/2] ECI: adding platform data for ECI driver
+Date: Tue, 15 Feb 2011 15:12:00 +0200
+Message-ID: <1297775520-1993-3-git-send-email-tapio.vihuri@nokia.com>
+References: <1297775520-1993-1-git-send-email-tapio.vihuri@nokia.com>
+	<1297775520-1993-2-git-send-email-tapio.vihuri@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 93BD41038AC
-	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 13:50:13 +0100 (CET)
-In-Reply-To: <1297774735-32184-1-git-send-email-vinod.koul@intel.com>
+Received: from mgw-da02.nokia.com (smtp.nokia.com [147.243.128.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id D68C2103868
+	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 14:12:29 +0100 (CET)
+In-Reply-To: <1297775520-1993-2-git-send-email-tapio.vihuri@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,64 +21,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, broonie@opensource.wolfsonmicro.com, Harsha Priya <priya.harsha@intel.com>, lrg@slimlogic.co.uk
+To: dmitry.torokhov@gmail.com
+Cc: randy.dunlap@oracle.com, alsa-devel@alsa-project.org, samu.p.onkalo@nokia.com, peter.ujfalusi@nokia.com, linux-kernel@vger.kernel.org, ilkka.koskinen@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Vinod Koul <vinod.koul@intel.com>
+From: Tapio Vihuri <tapio.vihuri@nokia.com>
 
-This patch removes the old method of soc-audio device creation in mfld machine
-and makes use of new soc_register_card API to register the card
+Gives platform data for ECI accessory input driver.
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Harsha Priya <priya.harsha@intel.com>
+Signed-off-by: Tapio Vihuri <tapio.vihuri@nokia.com>
 ---
- sound/soc/mid-x86/mfld_machine.c |   20 ++++++--------------
- 1 files changed, 6 insertions(+), 14 deletions(-)
+ arch/x86/platform/mrst/mrst.c |   32 ++++++++++++++++++++++++++++++++
+ 1 files changed, 32 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/mid-x86/mfld_machine.c b/sound/soc/mid-x86/mfld_machine.c
-index 96487fb..429aa1b 100644
---- a/sound/soc/mid-x86/mfld_machine.c
-+++ b/sound/soc/mid-x86/mfld_machine.c
-@@ -392,25 +392,17 @@ static int __devinit snd_mfld_mc_probe(struct platform_device *pdev)
- 		pr_err("cannot register IRQ\n");
- 		goto unalloc;
- 	}
--	/* create soc device */
--	mc_drv_ctx->socdev = platform_device_alloc("soc-audio", -1);
--	if (!mc_drv_ctx->socdev) {
--		pr_err("soc-audio device allocation failed\n");
--		ret_val = -ENOMEM;
--		goto freeirq;
--	}
--	platform_set_drvdata(mc_drv_ctx->socdev, &snd_soc_card_mfld);
--	ret_val = platform_device_add(mc_drv_ctx->socdev);
-+	/* register the soc card */
-+	snd_soc_card_mfld.dev = &pdev->dev;
-+	ret_val = snd_soc_register_card(&snd_soc_card_mfld);
- 	if (ret_val) {
--		pr_err("Unable to add soc-audio device, err %d\n", ret_val);
--		goto unregister;
-+		pr_debug("snd_soc_register_card failed %d\n", ret_val);
-+		goto freeirq;
- 	}
- 	platform_set_drvdata(pdev, mc_drv_ctx);
- 	pr_debug("successfully exited probe\n");
- 	return ret_val;
+diff --git a/arch/x86/platform/mrst/mrst.c b/arch/x86/platform/mrst/mrst.c
+index ea6529e..e9cec91 100644
+--- a/arch/x86/platform/mrst/mrst.c
++++ b/arch/x86/platform/mrst/mrst.c
+@@ -24,6 +24,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/irq.h>
+ #include <linux/module.h>
++#include <linux/input/eci.h>
  
--unregister:
--	platform_device_put(mc_drv_ctx->socdev);
- freeirq:
- 	free_irq(irq, mc_drv_ctx);
- unalloc:
-@@ -424,7 +416,7 @@ static int __devexit snd_mfld_mc_remove(struct platform_device *pdev)
+ #include <asm/setup.h>
+ #include <asm/mpspec_def.h>
+@@ -478,6 +479,30 @@ static void __init *no_platform_data(void *info)
+ 	return NULL;
+ }
  
- 	pr_debug("snd_mfld_mc_remove called\n");
- 	free_irq(platform_get_irq(pdev, 0), mc_drv_ctx);
--	platform_device_unregister(mc_drv_ctx->socdev);
-+	snd_soc_unregister_card(&snd_soc_card_mfld);
- 	kfree(mc_drv_ctx);
- 	platform_set_drvdata(pdev, NULL);
- 	return 0;
++/*
++ * This is just example, should be implented in platform audio driver,
++ * ie. sound/...
++ * Then audio driver can call like hsmic_event->event(hsmic_event->private, 0);
++ * to set hsmic bias off
++ */
++static struct audio_hsmic_event *hsmic_event;
++static void mrst_register_hsmic_event_cb(struct audio_hsmic_event *event)
++{
++	hsmic_event = event;
++}
++EXPORT_SYMBOL(mrst_register_hsmic_event_cb);
++
++static void *eci_platform_data_init(void *info)
++{
++	static struct eci_platform_data mrst_eci_data = {
++		.eci_rst_gpio = GPIO_ECI_RSTn,
++		.eci_sw_ctrl_gpio = GPIO_ECI_SW_CTRL,
++		.eci_int_gpio = GPIO_ECI_INT,
++		.register_hsmic_event_cb = mrst_register_hsmic_event_cb,
++	};
++	return &mrst_eci_data;
++}
++
+ static const struct devs_id __initconst device_ids[] = {
+ 	{"pmic_gpio", SFI_DEV_TYPE_SPI, 1, &pmic_gpio_platform_data},
+ 	{"spi_max3111", SFI_DEV_TYPE_SPI, 0, &max3111_platform_data},
+@@ -487,6 +512,7 @@ static const struct devs_id __initconst device_ids[] = {
+ 	{"i2c_accel", SFI_DEV_TYPE_I2C, 0, &lis331dl_platform_data},
+ 	{"pmic_audio", SFI_DEV_TYPE_IPC, 1, &no_platform_data},
+ 	{"msic_audio", SFI_DEV_TYPE_IPC, 1, &no_platform_data},
++	{"eci_ctrl", SFI_DEV_TYPE_I2C, 0, &eci_platform_data_init},
+ 	{},
+ };
+ 
+@@ -659,6 +685,12 @@ static void __init sfi_handle_i2c_dev(int bus, struct i2c_board_info *i2c_info)
+ 		i2c_register_board_info(bus, i2c_info, 1);
+  }
+ 
++static int __init mrst_eci_init(void)
++{
++	/* Turn on vprog2 */
++	return intel_scu_ipc_iowrite8(AvP_MSIC_VPROG2, AvP_MSIC_VPROG2_2V5_ON);
++}
++device_initcall(mrst_eci_init);
+ 
+ static int __init sfi_parse_devs(struct sfi_table_header *table)
+ {
 -- 
-1.7.2.3
+1.6.5
