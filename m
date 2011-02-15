@@ -1,24 +1,17 @@
-From: "Nenad Sljivic" <nenad.sljivic@rt-rk.com>
-Subject: Re: plughw, access modes
-Date: Mon, 14 Feb 2011 15:44:46 -0800
-Message-ID: <F065A87938B647EBABBE915132703FE8@domain.local>
-References: <8C2D93A7301A488588BD4A2CAD8C6F4D@domain.local>
-	<alpine.LNX.2.00.1102141206450.6272@eeebox2.perex-int.cz>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: Channel swapping issue on TI OMAP3/TWL4030
+Date: Tue, 15 Feb 2011 08:59:50 +0200
+Message-ID: <4D5A2466.2060705@nokia.com>
+References: <8CD98E75F0E83E2-63C-14642@web-mmc-m05.sysops.aol.com>	<CF32F28EDF8D20468EEDCBE4975DA0274A46DB@008-AM1MPN1-027.mgdnok.nokia.com>
+	<8CD9A87EF4FB765-1218-647@web-mmc-m03.sysops.aol.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.rt-rk.com (mail.rt-rk.ftn.uns.ac.rs [147.91.177.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2DA6C2454C
-	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 00:44:53 +0100 (CET)
-Received: from localhost (mail.localdomain [127.0.0.1])
-	by mail.rt-rk.com (Postfix) with ESMTP id 655D525C03A
-	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 00:44:52 +0100 (CET)
-Received: from mail.rt-rk.com ([127.0.0.1])
-	by localhost (mail.rt-rk.com [127.0.0.1]) (amavisd-new, port 10024)
-	with LMTP id lJ0dnOJFLwOZ for <alsa-devel@alsa-project.org>;
-	Tue, 15 Feb 2011 00:44:52 +0100 (CET)
-In-Reply-To: <alpine.LNX.2.00.1102141206450.6272@eeebox2.perex-int.cz>
+Received: from mgw-da02.nokia.com (smtp.nokia.com [147.243.128.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id AD202103844
+	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2011 07:59:56 +0100 (CET)
+In-Reply-To: <8CD9A87EF4FB765-1218-647@web-mmc-m03.sysops.aol.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,75 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: 'Jaroslav Kysela' <perex@perex.cz>
+To: "ext ylin@mail.com" <ylin@mail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav,
+On 02/14/11 19:58, ext ylin@mail.com wrote:
+> =
 
-Thanks a lot for your prompt reply, but as far as I see, mmap_emulation flag
-is not supported anymore. 
-I am using 1.0.19 version of alsa-lib.
+>> I have not experienced with channel swapping during capture..
+>> It would help, if I know:
+>> what is your kernel version
+>> Source of the recording (digimic, HS, main mic, etc)
+> =
 
-1) Should I use mmap_emul plugin instead of it? I haven't been able to find
-any example or configuration that's using this plugin
+> We are using 2.6.32.  The source of the recording is using Analog Mic.  =
 
-2)  Additional to that, do I have to set SNDRV_PCM_INFO_MMAP in my device
-driver, in order for mmap emulation to work?
+> The Left Main mic is always on, and Right Sub mic can be either on or =
 
-Sorry for my ignorance, but I am an extreme newbie in this area so any help
-is greatly appreciated.
+> off when this occurs.  We are not using AUX or digimic.
+> =
 
-Thanks a lot,
-Nenad 
+>> To clarify:
+>> you experience sudden channel switch during active recording, when
+>> the recording was running for few hours?
+>> Or is it that you start/stop the recording, and sometimes the channels
+>> are swapped?
+> =
 
------Original Message-----
-From: Jaroslav Kysela [mailto:perex@perex.cz] 
-Sent: 14 February 2011 03:10
-To: Nenad Sljivic
-Cc: alsa-devel@alsa-project.org
-Subject: Re: [alsa-devel] plughw, access modes
+> It is sudden channel switch during active recording.  There is no XRUN =
 
-On Mon, 14 Feb 2011, Nenad Sljivic wrote:
+> or any noticeable error when this happens.
+> =
 
-> Greetings guys,
->
->
->
-> I am dealing with the device driver for the chip that has his own hardware
-> buffer and the DMA is not available. Therefore, driver doesn't support
-MMAP
-> access and the data is copied using the copy file operation. My HW
-natively
-> supports BE format.
->
-> However, I would like to be able to play little endian pcm as well.
->
-> The problem, occurs when I try to use plughw device in order to play LE
-pcm
-> file
->
->
->
-> " aplay: set_params:1022: Unable to install hw params: "
->
->
->
-> My debugging session proved me that plughw device is trying to access
-device
-> driver with MMAP_INTERLEAVED mode. Does it mean that this is the only way
-> for plughw to access device driver, and that I am not able to use plugins
-> unless do some heavy modifications of device drivers (implement mmap
-> access). Am I missing something?
+> This is a VoIP app, we have duplex audio when this happens.  Both =
 
-You may enable mmap_emulation for the hw: plugin - see mmap_emulation in:
+> capture and playback are setup to run at 48kHz, 2 channel, S16_LE, with =
 
-http://git.alsa-project.org/?p=alsa-lib.git;a=blob_plain;f=doc/asoundrc.txt;
-hb=HEAD
+> period size 10 mSec.
 
- 						Jaroslav
+I forgot to ask:
+what mode you are using the McBSP?
+Is it in element, or threshold mode?
+You can check/change the McBSP mode in:
+/sys/devices/platform/omap-mcbsp.2/dma_op_mode
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+> For playing, the left and right are the same data, we could not tell if =
+
+> the channel switch happens to playback as well.
+
+I see. Is there a way for you to run your application to capture only,
+and from a separate app (aplay?) play a sample, which has audio only on
+one channel?
+
+-- =
+
+P=E9ter
