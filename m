@@ -1,37 +1,44 @@
-From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: ASoC HDMI codec location
-Date: Tue, 15 Feb 2011 23:58:33 +0000
-Message-ID: <20110215235832.GB2462@opensource.wolfsonmicro.com>
-References: <74CDBE0F657A3D45AFBB94109FB122FF03112A51BE@HQMAIL01.nvidia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/5] ASoC: sst_platform: fix the pulseaudio
+	error
+Date: Tue, 15 Feb 2011 17:57:15 -0800
+Message-ID: <20110216015714.GA3021@opensource.wolfsonmicro.com>
+References: <1297774735-32184-1-git-send-email-vinod.koul@intel.com>
+	<1297774735-32184-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5D6BA243EC
+	for <alsa-devel@alsa-project.org>; Wed, 16 Feb 2011 02:57:04 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <74CDBE0F657A3D45AFBB94109FB122FF03112A51BE-C7FfzLzN0UxDw2glCA4ptUEOCMrvLtNR@public.gmane.org>
-Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1297774735-32184-5-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "Koul, Vinod" <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Harsha Priya <priya.harsha@intel.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 15, 2011 at 12:29:59PM -0800, Stephen Warren wrote:
+On Tue, Feb 15, 2011 at 06:28:54PM +0530, Koul, Vinod wrote:
+> From: Vinod Koul <vinod.koul@intel.com>
+> 
+> Pulseaudio doesnt work with current driver and it was root caused to absense of
+> hw_params function and malloc_pages in it.
+> This patch adds this and allows pa to work fine with these drivers
 
-> I see that a Samsung chip has such a codec in drivers/video/sh_mobile_hdmi.c.
+For changes like this you really should provide changelogs which are
+more specific about what the actual problem is - it's fine to say that
+you found the problem while testing with PulseAudio but you really
+should say what the problem you found was.  This is more useful for both
+review and for mining the changelog as it explains the change itself
+rather than the circumstances in which it was created.
 
-That's not Samsung, that's Renesas' SuperH.
-
-> The equivalent for Tegra would be drivers/video/tegra/dc/hdmi.c. Note that
-> this location doesn't yet exist upstream. I just wanted to confirm that this
-> location makes sense to you, vs. implementing a codec in sound/soc/tegra/hdmi.c,
-> and having that call functions exposed by the Tegra dc/hdmi.c driver?
-
-Note that the SH code has code in *both* locations - there's an ASoC
-driver that calls into the video driver as well under sound/soc/sh.
-
-> Note that the SPDIF controller isn't involved in the Tegra Digital Audio
-> Switch muxing/switching module at all.
-
-Is the DMA shared?
---
-To unsubscribe from this list: send the line "unsubscribe linux-tegra" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Anyway, I've applied the whole series - thanks!
