@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3] ASoC: Add Freescale SGTL5000
-	codec	support
-Date: Thu, 17 Feb 2011 02:11:21 +0000
-Message-ID: <20110217021121.GA5194@opensource.wolfsonmicro.com>
+From: Zeng Zhaoming <zhaoming.zeng@freescale.com>
+Subject: Re: [PATCH v3] ASoC: Add Freescale SGTL5000 codec
+ support
+Date: Thu, 17 Feb 2011 02:33:28 +0800
+Message-ID: <20110216183328.GB21063@ubuntu.localdomain>
 References: <1297810576-2575-1-git-send-email-zhaoming.zeng@freescale.com>
-	<87k4gzq2no.fsf@lechat.rtp-net.org>
-	<20110216180103.GA21063@ubuntu.localdomain>
+	<AANLkTi=xvpWqnChvyJvDVjCK8dH3rfd75e0c43x8a1JP@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="gb18030"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 345F524362
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 03:11:23 +0100 (CET)
+Received: from DB3EHSOBE005.bigfish.com (db3ehsobe005.messaging.microsoft.com
+	[213.199.154.143])
+	by alsa0.perex.cz (Postfix) with ESMTP id D0AD5243ED
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 03:39:57 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20110216180103.GA21063@ubuntu.localdomain>
+In-Reply-To: <AANLkTi=xvpWqnChvyJvDVjCK8dH3rfd75e0c43x8a1JP@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,22 +24,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Zeng Zhaoming <zhaoming.zeng@freescale.com>
-Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, zengzm.kernel@gmail.com, lrg@slimlogic.co.uk, Arnaud Patard <arnaud.patard@rtp-net.org>, linuxzsc@gmail.com
+To: Timur Tabi <timur.tabi@gmail.com>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, zengzm.kernel@gmail.com, lrg@slimlogic.co.uk, arnaud.patard@rtp-net.org, linuxzsc@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 17, 2011 at 02:01:03AM +0800, Zeng Zhaoming wrote:
-> On Wed 2011-02-16 19:01:47, Arnaud Patard wrote:
-
-> > I don't see a member 'bias_level' in snd_soc_codec in the trees I have
-> > on my drive. Which tree did you use ?
-
-> I will check the ASoC changes of 2.6.38, and rebase to it.
-
-You should always develop against the latest development versions of
-code, not released kernels.  -next includes pretty much the right stuff,
-in the case of ASoC you want
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.39
-
-(pick the highest numbered branch).
+T24gV2VkIDIwMTEtMDItMTYgMTY6MjA6MzcsIFRpbXVyIFRhYmkgd3JvdGU6Cj4gT24gVHVlLCBG
+ZWIgMTUsIDIwMTEgYXQgNDo1NiBQTSwgIDx6aGFvbWluZy56ZW5nQGZyZWVzY2FsZS5jb20+IHdy
+b3RlOgo+ID4gRnJvbTogWmVuZyBaaGFvbWluZyA8emhhb21pbmcuemVuZ0BmcmVlc2NhbGUuY29t
+Pgo+ID4KPiA+IEFkZCBGcmVlc2NhbGUgU0dUTDUwMDAgY29kZWMgc3VwcG9ydAo+IAo+IFBsZWFz
+ZSBwcm92aWRlIGEgZGVzY3JpcHRpb24gb2YgdGhpcyBwYXJ0LiAgV2hhdCBpcyBpdCwgd2hhdCBm
+ZWF0dXJlcwo+IGRvZXMgaXQgaGF2ZSwgZXRjLgo+IAo+ID4gQEAgLTE3Niw2ICsxNzcsOSBAQCBj
+b25maWcgU05EX1NPQ19NQVg5ODA4OAo+ID4ggTCEMmNvbmZpZyBTTkRfU09DX1BDTTMwMDgKPiA+
+IIEwhDIggTCEMiCBMIQyIIEwhDJ0cmlzdGF0ZQo+ID4KPiA+ICtjb25maWcgU05EX1NPQ19TR1RM
+NTAwMAo+ID4gKyCBMIQyIIEwhDIggTCEMiB0cmlzdGF0ZQo+ID4gKwo+IAo+IFBsZWFzZSBwcm92
+aWRlIHNvbWUga2luZCBvZiBkZXNjcmlwdGl2ZSB0ZXh0IGhlcmUuCj4gCj4gPiArIIEwhDIggTCE
+MiCBMIQyIGwgPSBsIDwgMHgzYyA/IDB4M2MgOiBsOwo+ID4gKyCBMIQyIIEwhDIggTCEMiBsID0g
+bCA+IDB4ZmMgPyAweGZjIDogbDsKPiA+ICsggTCEMiCBMIQyIIEwhDIgciA9IHIgPCAweDNjID8g
+MHgzYyA6IHI7Cj4gPiArIIEwhDIggTCEMiCBMIQyIHIgPSByID4gMHhmYyA/IDB4ZmMgOiByOwo+
+IAo+IFVzZSB0aGUgY2xhbXAoKSBtYWNybyBpbnN0ZWFkLgoKdGhhbmtzIGZvciB0aGUgaGludC4K
+PiAKPiA+ICsKPiA+ICsggTCEMiCBMIQyIIEwhDIgLyogcmV2ZXJ0IGl0ICovCj4gPiArIIEwhDIg
+gTCEMiCBMIQyIGwgPSAweGZjIC0gbDsKPiA+ICsggTCEMiCBMIQyIIEwhDIgciA9IDB4ZmMgLSBy
+Owo+IAo+IEkgdGhpbmsgeW91IG1lYW4gImludmVydCBpdCIuICAicmV2ZXJ0IiBtZWFucyB0byB1
+bmRvIGEgY2hhbmdlLgo+CnllcywgaW52ZXJ0IGl0LiA7KQo+ID4gKyCBMIQyIIEwhDIggTCEMiBp
+ZiAobXV0ZSkKPiA+ICsggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiBzbmRfc29j
+X3VwZGF0ZV9iaXRzKGNvZGVjLCBTR1RMNTAwMF9DSElQX0FEQ0RBQ19DVFJMLAo+ID4gKyCBMIQy
+IIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCB
+MIQyIIEwhDIggTCEMiBhZGNkYWNfY3RybCwgYWRjZGFjX2N0cmwpOwo+ID4gKyCBMIQyIIEwhDIg
+gTCEMiBlbHNlCj4gPiArIIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIgc25kX3Nv
+Y191cGRhdGVfYml0cyhjb2RlYywgU0dUTDUwMDBfQ0hJUF9BRENEQUNfQ1RSTCwKPiA+ICsggTCE
+MiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIg
+gTCEMiCBMIQyIIEwhDIgYWRjZGFjX2N0cmwsIDApOwo+IAo+IEhvdyBhYm91dDoKPiAKPiBzbmRf
+c29jX3VwZGF0ZV9iaXRzKGNvZGVjLCBTR1RMNTAwMF9DSElQX0FEQ0RBQ19DVFJMLCBhZGNkYWNf
+Y3RybCwKPiBtdXRlID8gYWRjZGFjX2N0cmwgOiAwKTsKPgpZZXMsIHRoaXMgb25lIGlzIGJldHRl
+ci4gSSB3aWxsIGNoYW5nZSB0byB0aGlzIHN0eWxlIGluIHRoZSB3aG9sZSBmaWxlLgoKPiA+ICtz
+dGF0aWMgaW50IHNndGw1MDAwX3N1c3BlbmQoc3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjLCBw
+bV9tZXNzYWdlX3Qgc3RhdGUpCj4gPiArewo+ID4gKyCBMIQyIIEwhDIggTCEMiBzZ3RsNTAwMF9z
+ZXRfYmlhc19sZXZlbChjb2RlYywgU05EX1NPQ19CSUFTX09GRik7Cj4gPiArCj4gPiArIIEwhDIg
+gTCEMiCBMIQyIHJldHVybiAwOwo+ID4gK30KPiAKPiAjaWZkZWYgQ09ORklHX1BNID8KPiAKPiAK
+PiA+ICsggTCEMiCBMIQyIIEwhDIgLyoKPiA+ICsggTCEMiCBMIQyIIEwhDIggTCEMiogY29weSBE
+QVAgZGVmYXVsdCB2YWx1ZXMgdG8gZGVmYXVsdCB2YWx1ZSBhcnJheS4KPiA+ICsggTCEMiCBMIQy
+IIEwhDIggTCEMiogc2d0bDUwMDAgcmVnaXN0ZXIgc3BhY2UgaGFzIGEgYmlnIGhvbGUsIG1lcmdl
+IGl0Cj4gPiArIIEwhDIggTCEMiCBMIQyIIEwhDIqIGF0IGluaXQgcGhhc2UgbWFrZXMgbGlmZSBl
+YXN5Lgo+ID4gKyCBMIQyIIEwhDIggTCEMiCBMIQyKiBGSVhNRTogc2hvdWxkIHdlIGRyb3AgJ2Nv
+bnN0JyBvZiBzZ3RsNTAwMF9yZWdzPwo+ID4gKyCBMIQyIIEwhDIggTCEMiCBMIQyKi8KPiA+ICsg
+gTCEMiCBMIQyIIEwhDIgbWVtY3B5KCh2b2lkICopKCZzZ3RsNTAwMF9yZWdzWzBdICsgKFNHVEw1
+MDAwX0RBUF9SRUdfT0ZGU0VUID4+IDEpKSwKPiA+ICsggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQy
+IIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIHNndGw1MDAwX2RhcF9yZWdzLAo+ID4gKyCB
+MIQyIIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIgMHgz
+YSk7Cj4gCj4gSSBkb24ndCB0aGluayB5b3UgbmVlZCB0aGUgIih2b2lkICopIgo+IAo+IEFuZCB3
+aGF0IGlzIDB4M2E/Cj4gCj4gPiArTU9EVUxFX0RFU0NSSVBUSU9OKCJBU29DIHNndGw1MDAwIGRy
+aXZlciIpOwo+ID4gK01PRFVMRV9BVVRIT1IoIkZyZWVzY2FsZSBTZW1pY29uZHVjdG9yLCBJbmMu
+Iik7Cj4gCj4gUGxlYXNlIGNvbnNpZGVyIHB1dHRpbmcgeW91ciBuYW1lIGhlcmUsIHNvIHRoYXQg
+cGVvcGxlIGtub3cgd2hvIHRoZQo+IHJlYWwgYXV0aG9yIGlzLgo+IAo+ID4gZGlmZiAtLWdpdCBh
+L3NvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAuaCBiL3NvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAu
+aAo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiA+IGluZGV4IDAwMDAwMDAuLjdmMjQ2NTUKPiA+
+IC0tLSAvZGV2L251bGwKPiA+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAuaAo+ID4g
+QEAgLTAsMCArMSw0MDMgQEAKPiA+ICsvKgo+ID4gKyAqIHNndGw1MDAwLmggLSBTR1RMNTAwMCBh
+dWRpbyBjb2RlYyBpbnRlcmZhY2UKPiAKPiBUaGlzIHdob2xlIGZpbGUgc2hvdWxkIHByb2JhYmx5
+IGJlIG1lcmdlZCBpbnRvIHNndGw1MDAwLmMsIHNpbmNlIHRoYXQKPiBmaWxlIGlzIHRoZSBvbmx5
+IGZpbGUgdGhhdCAjaW5jbHVkZXMgc2d0bDUwMDAuaC4gIE5vIHBvaW50IGluIGhhdmluZyBhCj4g
+aGVhZGVyIGZpbGUgdGhhdCBpcyBvbmx5IGluY2x1ZGVkIGJ5IG9uZSBvdGhlciBmaWxlLgo+ClRo
+aXMgaXMgbm90IGNvbW1vbiBvbiBBU29DIGNvZGVjIGRyaXZlcnMsIG1hbnkgZHJpdmVycyBoYXZl
+IHRoZWlyIG93biBoZWFkZXIgZmlsZS4KSSB0aGluayBpdCBtYWtlIHRoZSBjb2RlIG1vcmUgY2xl
+YXIuCgo+ID4gKyAqCj4gPiArICogQ29weXJpZ2h0IDIwMDgtMjAwOSBGcmVlc2NhbGUgU2VtaWNv
+bmR1Y3RvciwgSW5jLgo+IAo+IFNvIHRoZSBoZWFkZXIgZmlsZSBpcyBjb3B5cmlnaHQgMjAwOSwg
+YnV0IHRoZSBzb3VyY2UgZmlsZSBpcyBjb3B5cmlnaHQgMjAxMT8KPiAKPiA+ICsgKgo+ID4gKyAq
+IIEwhDJUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUg
+gTCEMml0IGFuZC9vciBtb2RpZnkgaXQKPiA+ICsgKiCBMIQydW5kZXIggTCEMnRoZSB0ZXJtcyBv
+ZiCBMIQydGhlIEdOVSBHZW5lcmFsIIEwhDJQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkg
+dGhlCj4gPiArICoggTCEMkZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsggTCEMmVpdGhlciB2ZXJz
+aW9uIDIgb2YgdGhlIIEwhDJMaWNlbnNlLCBvciAoYXQgeW91cgo+ID4gKyAqIIEwhDJvcHRpb24p
+IGFueSBsYXRlciB2ZXJzaW9uLgo+IAo+IEFsc28sIHRoZSBoZWFkZXIgZmlsZSBpcyAiR1BMIHYy
+IG9yIGxhdGVyIiwgYnV0IHRoZSBzb3VyY2UgZmlsZSBpcwo+ICJHUEwgdjIgb25seSIuICBQaWNr
+IG9uZSBvciB0aGUgb3RoZXIsIGJ1dCBkb24ndCB1c2UgYm90aC4gIEknbQo+IHN1cnByaXNlZCB5
+b3VyIHBhdGNoIHdhcyBhcHByb3ZlZCBieSB0aGUgUFBQIGxlZ2FsIHJldmlldy4KPgpPaywgSSB3
+aWxsIGNoYW5nZSBpdCB0byBHUEwgdjIgb25seSwgdGhhbmtzIHRvIHBvaW50IGl0IG91dC4KPiAt
+LSAKPiBUaW11ciBUYWJpCj4gTGludXgga2VybmVsIGRldmVsb3BlciBhdCBGcmVlc2NhbGUKPiBf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
