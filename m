@@ -1,15 +1,15 @@
 From: Andreas Mohr <andi@lisas.de>
-Subject: [PATCH] sound azt3328: hook up new emulated AC97 on
-	AC97 patch side
-Date: Thu, 17 Feb 2011 00:16:12 +0100
-Message-ID: <20110216231612.GB1638@rhlx01.hs-esslingen.de>
+Subject: [PATCH] sound ac97: replace open-coded,
+ error-prone stuff with AC97 bit defines
+Date: Thu, 17 Feb 2011 00:17:53 +0100
+Message-ID: <20110216231753.GC1638@rhlx01.hs-esslingen.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id C1394103918
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 00:16:12 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 2B14A10390B
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 00:17:54 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,190 +26,255 @@ List-Id: alsa-devel@alsa-project.org
 
 ChangeLog:
 
-Make newly created AC97 emulation of azt3328 known to the AC97 layer side.
-- relocate common functions to the top (due to definition after use)
-- rename control names
-- adjust 3D settings to the card's custom layout of this register
+Use AC97 macros (sometimes already existing, or newly added)
+instead of error-prone repetition of open-coded values.
 
 Signed-off-by: Andreas Mohr <andi@lisas.de>
 ---
 Patch created on -rc3, tested and checkpatch.pl'd.
 GIT history seems clean, should thus apply easily.
 
+Optional, suggested patch.
+
 Thanks!
 
+Index: linux-2.6/include/sound/ac97_codec.h
+===================================================================
+--- linux-2.6.orig/include/sound/ac97_codec.h	2011-02-16 23:18:39.000000000 +0100
++++ linux-2.6/include/sound/ac97_codec.h	2011-02-16 23:19:04.000000000 +0100
+@@ -96,6 +96,10 @@
+ #define AC97_FUNC_INFO		0x68	/* Function Information */
+ #define AC97_SENSE_INFO		0x6a	/* Sense Details */
+ 
++/* volume controls */
++#define AC97_MUTE_MASK_MONO	0x8000
++#define AC97_MUTE_MASK_STEREO	0x8080
++
+ /* slot allocation */
+ #define AC97_SLOT_TAG		0
+ #define AC97_SLOT_CMD_ADDR	1
+@@ -138,6 +142,7 @@
+ #define AC97_BC_18BIT_ADC	0x0100	/* 18-bit ADC resolution */
+ #define AC97_BC_20BIT_ADC	0x0200	/* 20-bit ADC resolution */
+ #define AC97_BC_ADC_MASK	0x0300
++#define AC97_BC_3D_TECH_ID_MASK	0x7c00	/* Per-vendor ID of 3D enhancement */
+ 
+ /* general purpose */
+ #define AC97_GP_DRSS_MASK	0x0c00	/* double rate slot select */
 Index: linux-2.6/sound/pci/ac97/ac97_codec.c
 ===================================================================
---- linux-2.6.orig/sound/pci/ac97/ac97_codec.c	2011-02-16 23:18:54.000000000 +0100
-+++ linux-2.6/sound/pci/ac97/ac97_codec.c	2011-02-16 23:24:12.000000000 +0100
-@@ -71,6 +71,12 @@
- { 0x414b4d00, 0xffffff00, "Asahi Kasei",	NULL,	NULL },
- { 0x414c4300, 0xffffff00, "Realtek",		NULL,	NULL },
- { 0x414c4700, 0xffffff00, "Realtek",		NULL,	NULL },
-+/*
-+ * This is an _inofficial_ Aztech Labs entry
-+ * (value might differ from unknown official Aztech ID),
-+ * currently used by the AC97 emulation of the almost-AC97 PCI168 card.
-+ */
-+{ 0x415a5400, 0xffffff00, "Aztech Labs (emulated)",	NULL,	NULL },
- { 0x434d4900, 0xffffff00, "C-Media Electronics", NULL,	NULL },
- { 0x43525900, 0xffffff00, "Cirrus Logic",	NULL,	NULL },
- { 0x43585400, 0xffffff00, "Conexant",           NULL,	NULL },
-@@ -127,6 +133,7 @@
- { 0x414c4781, 0xffffffff, "ALC658D",		NULL,	NULL }, /* already patched */
- { 0x414c4780, 0xfffffff0, "ALC658",		patch_alc655,	NULL },
- { 0x414c4790, 0xfffffff0, "ALC850",		patch_alc850,	NULL },
-+{ 0x415a5401, 0xffffffff, "AZF3328",		patch_aztech_azf3328,	NULL },
- { 0x434d4941, 0xffffffff, "CMI9738",		patch_cm9738,	NULL },
- { 0x434d4961, 0xffffffff, "CMI9739",		patch_cm9739,	NULL },
- { 0x434d4969, 0xffffffff, "CMI9780",		patch_cm9780,	NULL },
-Index: linux-2.6/sound/pci/ac97/ac97_patch.c
-===================================================================
---- linux-2.6.orig/sound/pci/ac97/ac97_patch.c	2011-02-16 23:18:54.000000000 +0100
-+++ linux-2.6/sound/pci/ac97/ac97_patch.c	2011-02-16 23:19:03.000000000 +0100
-@@ -222,6 +222,47 @@
- 	return is_surround_on(ac97);
+--- linux-2.6.orig/sound/pci/ac97/ac97_codec.c	2011-02-16 23:19:03.000000000 +0100
++++ linux-2.6/sound/pci/ac97/ac97_codec.c	2011-02-16 23:19:04.000000000 +0100
+@@ -597,9 +597,9 @@
+ 	snd_ac97_page_restore(ac97, page_save);
+ #ifdef CONFIG_SND_AC97_POWER_SAVE
+ 	/* check analog mixer power-down */
+-	if ((val_mask & 0x8000) &&
++	if ((val_mask & AC97_PD_EAPD) &&
+ 	    (kcontrol->private_value & (1<<30))) {
+-		if (val & 0x8000)
++		if (val & AC97_PD_EAPD)
+ 			ac97->power_up &= ~(1 << (reg>>1));
+ 		else
+ 			ac97->power_up |= 1 << (reg>>1);
+@@ -1042,20 +1042,20 @@
+ 
+ static int snd_ac97_try_volume_mix(struct snd_ac97 * ac97, int reg)
+ {
+-	unsigned short val, mask = 0x8000;
++	unsigned short val, mask = AC97_MUTE_MASK_MONO;
+ 
+ 	if (! snd_ac97_valid_reg(ac97, reg))
+ 		return 0;
+ 
+ 	switch (reg) {
+ 	case AC97_MASTER_TONE:
+-		return ac97->caps & 0x04 ? 1 : 0;
++		return ac97->caps & AC97_BC_BASS_TREBLE ? 1 : 0;
+ 	case AC97_HEADPHONE:
+-		return ac97->caps & 0x10 ? 1 : 0;
++		return ac97->caps & AC97_BC_HEADPHONE ? 1 : 0;
+ 	case AC97_REC_GAIN_MIC:
+-		return ac97->caps & 0x01 ? 1 : 0;
++		return ac97->caps & AC97_BC_DEDICATED_MIC ? 1 : 0;
+ 	case AC97_3D_CONTROL:
+-		if (ac97->caps & 0x7c00) {
++		if (ac97->caps & AC97_BC_3D_TECH_ID_MASK) {
+ 			val = snd_ac97_read(ac97, reg);
+ 			/* if nonzero - fixed and we can't set it */
+ 			return val == 0;
+@@ -1111,7 +1111,10 @@
+ 	*lo_max = *hi_max = 0;
+ 	for (i = 0 ; i < ARRAY_SIZE(cbit); i++) {
+ 		unsigned short val;
+-		snd_ac97_write(ac97, reg, 0x8080 | cbit[i] | (cbit[i] << 8));
++		snd_ac97_write(
++			ac97, reg,
++			AC97_MUTE_MASK_STEREO | cbit[i] | (cbit[i] << 8)
++		);
+ 		/* Do the read twice due to buffers on some ac97 codecs.
+ 		 * e.g. The STAC9704 returns exactly what you wrote to the register
+ 		 * if you read it immediately. This causes the detect routine to fail.
+@@ -1146,14 +1149,14 @@
+ 	unsigned short val, val1;
+ 
+ 	*max = 63;
+-	val = 0x8080 | (0x20 << shift);
++	val = AC97_MUTE_MASK_STEREO | (0x20 << shift);
+ 	snd_ac97_write(ac97, reg, val);
+ 	val1 = snd_ac97_read(ac97, reg);
+ 	if (val != val1) {
+ 		*max = 31;
+ 	}
+ 	/* reset volume to zero */
+-	snd_ac97_write_cache(ac97, reg, 0x8080);
++	snd_ac97_write_cache(ac97, reg, AC97_MUTE_MASK_STEREO);
  }
  
-+/* find a mixer control element with the given name */
-+static struct snd_kcontrol *snd_ac97_find_mixer_ctl(struct snd_ac97 *ac97,
-+						    const char *name)
-+{
-+	struct snd_ctl_elem_id id;
-+	memset(&id, 0, sizeof(id));
-+	id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-+	strcpy(id.name, name);
-+	return snd_ctl_find_id(ac97->bus->card, &id);
-+}
-+
-+/* create a virtual master control and add slaves */
-+static int snd_ac97_add_vmaster(struct snd_ac97 *ac97, char *name,
-+				const unsigned int *tlv, const char **slaves)
-+{
-+	struct snd_kcontrol *kctl;
-+	const char **s;
-+	int err;
-+
-+	kctl = snd_ctl_make_virtual_master(name, tlv);
-+	if (!kctl)
-+		return -ENOMEM;
-+	err = snd_ctl_add(ac97->bus->card, kctl);
-+	if (err < 0)
-+		return err;
-+
-+	for (s = slaves; *s; s++) {
-+		struct snd_kcontrol *sctl;
-+
-+		sctl = snd_ac97_find_mixer_ctl(ac97, *s);
-+		if (!sctl) {
-+			snd_printdd("Cannot find slave %s, skipped\n", *s);
-+			continue;
-+		}
-+		err = snd_ctl_add_slave(kctl, sctl);
-+		if (err < 0)
-+			return err;
-+	}
-+	return 0;
-+}
-+
- /* The following snd_ac97_ymf753_... items added by David Shust (dshust@shustring.com) */
- /* Modified for YMF743 by Keita Maehara <maehara@debian.org> */
+ static inline int printable(unsigned int x)
+@@ -1190,16 +1193,16 @@
+ 	if (! snd_ac97_valid_reg(ac97, reg))
+ 		return 0;
  
-@@ -2940,6 +2981,49 @@
+-	mute_mask = 0x8000;
++	mute_mask = AC97_MUTE_MASK_MONO;
+ 	val = snd_ac97_read(ac97, reg);
+ 	if (check_stereo || (ac97->flags & AC97_STEREO_MUTES)) {
+ 		/* check whether both mute bits work */
+-		val1 = val | 0x8080;
++		val1 = val | AC97_MUTE_MASK_STEREO;
+ 		snd_ac97_write(ac97, reg, val1);
+ 		if (val1 == snd_ac97_read(ac97, reg))
+-			mute_mask = 0x8080;
++			mute_mask = AC97_MUTE_MASK_STEREO;
+ 	}
+-	if (mute_mask == 0x8080) {
++	if (mute_mask == AC97_MUTE_MASK_STEREO) {
+ 		struct snd_kcontrol_new tmp = AC97_DOUBLE(name, reg, 15, 7, 1, 1);
+ 		if (check_amix)
+ 			tmp.private_value |= (1 << 30);
+@@ -1275,9 +1278,11 @@
+ 	err = snd_ctl_add(card, kctl);
+ 	if (err < 0)
+ 		return err;
+-	snd_ac97_write_cache(ac97, reg,
+-			     (snd_ac97_read(ac97, reg) & 0x8080) |
+-			     lo_max | (hi_max << 8));
++	snd_ac97_write_cache(
++		ac97, reg,
++		(snd_ac97_read(ac97, reg) & AC97_MUTE_MASK_STEREO)
++		| lo_max | (hi_max << 8)
++	);
  	return 0;
  }
  
-+static int patch_aztech_azf3328_specific(struct snd_ac97 *ac97)
-+{
-+	struct snd_kcontrol *kctl_3d_center =
-+		snd_ac97_find_mixer_ctl(ac97, "3D Control - Center");
-+	struct snd_kcontrol *kctl_3d_depth =
-+		snd_ac97_find_mixer_ctl(ac97, "3D Control - Depth");
-+
-+	/*
-+	 * 3D register is different from AC97 standard layout
-+	 * (also do some renaming, to resemble Windows driver naming)
-+	 */
-+	if (kctl_3d_center) {
-+		kctl_3d_center->private_value =
-+			AC97_SINGLE_VALUE(AC97_3D_CONTROL, 1, 0x07, 0);
-+		snd_ac97_rename_vol_ctl(ac97,
-+			"3D Control - Center", "3D Control - Width"
+@@ -1339,7 +1344,7 @@
+ 			return err;
+ 	}
+ 
+-	ac97->regs[AC97_CENTER_LFE_MASTER] = 0x8080;
++	ac97->regs[AC97_CENTER_LFE_MASTER] = AC97_MUTE_MASK_STEREO;
+ 
+ 	/* build center controls */
+ 	if ((snd_ac97_try_volume_mix(ac97, AC97_CENTER_LFE_MASTER)) 
+@@ -1417,8 +1422,12 @@
+ 			if ((err = snd_ctl_add(card, kctl = snd_ac97_cnew(&snd_ac97_controls_pc_beep[idx], ac97))) < 0)
+ 				return err;
+ 		set_tlv_db_scale(kctl, db_scale_4bit);
+-		snd_ac97_write_cache(ac97, AC97_PC_BEEP,
+-				     snd_ac97_read(ac97, AC97_PC_BEEP) | 0x801e);
++		snd_ac97_write_cache(
++			ac97,
++			AC97_PC_BEEP,
++			(snd_ac97_read(ac97, AC97_PC_BEEP)
++				| AC97_MUTE_MASK_MONO | 0x001e)
 +		);
-+	}
-+	if (kctl_3d_depth)
-+		kctl_3d_depth->private_value =
-+			AC97_SINGLE_VALUE(AC97_3D_CONTROL, 8, 0x03, 0);
-+
-+	/* Aztech Windows driver calls the
-+	   equivalent control "Modem Playback", thus rename it: */
-+	snd_ac97_rename_vol_ctl(ac97,
-+		"Master Mono Playback", "Modem Playback"
-+	);
-+	snd_ac97_rename_vol_ctl(ac97,
-+		"Headphone Playback", "FM Synth Playback"
-+	);
-+
-+	return 0;
-+}
-+
-+static const struct snd_ac97_build_ops patch_aztech_azf3328_ops = {
-+	.build_specific	= patch_aztech_azf3328_specific
-+};
-+
-+static int patch_aztech_azf3328(struct snd_ac97 *ac97)
-+{
-+	ac97->build_ops = &patch_aztech_azf3328_ops;
-+	return 0;
-+}
+ 	}
+ 	
+ 	/* build Phone controls */
+@@ -1552,7 +1561,7 @@
+ 	}
  
- /*
-  * C-Media CM97xx codecs
-@@ -3371,47 +3455,6 @@
- 	NULL
- };
+ 	/* build Simulated Stereo Enhancement control */
+-	if (ac97->caps & 0x0008) {
++	if (ac97->caps & AC97_BC_SIM_STEREO) {
+ 		if ((err = snd_ctl_add(card, snd_ac97_cnew(&snd_ac97_controls_general[AC97_GENERAL_STEREO_ENHANCEMENT], ac97))) < 0)
+ 			return err;
+ 	}
+@@ -1564,7 +1573,7 @@
+ 	}
  
--/* find a mixer control element with the given name */
--static struct snd_kcontrol *snd_ac97_find_mixer_ctl(struct snd_ac97 *ac97,
--						    const char *name)
--{
--	struct snd_ctl_elem_id id;
--	memset(&id, 0, sizeof(id));
--	id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
--	strcpy(id.name, name);
--	return snd_ctl_find_id(ac97->bus->card, &id);
--}
--
--/* create a virtual master control and add slaves */
--static int snd_ac97_add_vmaster(struct snd_ac97 *ac97, char *name,
--				const unsigned int *tlv, const char **slaves)
--{
--	struct snd_kcontrol *kctl;
--	const char **s;
--	int err;
--
--	kctl = snd_ctl_make_virtual_master(name, tlv);
--	if (!kctl)
--		return -ENOMEM;
--	err = snd_ctl_add(ac97->bus->card, kctl);
--	if (err < 0)
--		return err;
--
--	for (s = slaves; *s; s++) {
--		struct snd_kcontrol *sctl;
--
--		sctl = snd_ac97_find_mixer_ctl(ac97, *s);
--		if (!sctl) {
--			snd_printdd("Cannot find slave %s, skipped\n", *s);
--			continue;
--		}
--		err = snd_ctl_add_slave(kctl, sctl);
--		if (err < 0)
--			return err;
--	}
--	return 0;
--}
--
- static int patch_vt1616_specific(struct snd_ac97 * ac97)
- {
- 	struct snd_kcontrol *kctl;
+ 	/* build Loudness control */
+-	if (ac97->caps & 0x0020) {
++	if (ac97->caps & AC97_BC_LOUDNESS) {
+ 		if ((err = snd_ctl_add(card, snd_ac97_cnew(&snd_ac97_controls_general[AC97_GENERAL_LOUDNESS], ac97))) < 0)
+ 			return err;
+ 	}
+@@ -2549,8 +2558,8 @@
+ 			schedule_timeout_uninterruptible(1);
+ 		} while (time_after_eq(end_time, jiffies));
+ 		/* FIXME: extra delay */
+-		ac97->bus->ops->write(ac97, AC97_MASTER, 0x8000);
+-		if (snd_ac97_read(ac97, AC97_MASTER) != 0x8000)
++		ac97->bus->ops->write(ac97, AC97_MASTER, AC97_MUTE_MASK_MONO);
++		if (snd_ac97_read(ac97, AC97_MASTER) != AC97_MUTE_MASK_MONO)
+ 			msleep(250);
+ 	} else {
+ 		end_time = jiffies + msecs_to_jiffies(100);
+@@ -2754,12 +2763,12 @@
+ 		int rshift = (kcontrol->private_value >> 12) & 0x0f;
+ 		unsigned short mask;
+ 		if (shift != rshift)
+-			mask = 0x8080;
++			mask = AC97_MUTE_MASK_STEREO;
+ 		else
+-			mask = 0x8000;
+-		snd_ac97_update_bits(ac97, AC97_POWERDOWN, 0x8000,
++			mask = AC97_MUTE_MASK_MONO;
++		snd_ac97_update_bits(ac97, AC97_POWERDOWN, AC97_PD_EAPD,
+ 				     (ac97->regs[AC97_MASTER] & mask) == mask ?
+-				     0x8000 : 0);
++				     AC97_PD_EAPD : 0);
+ 	}
+ 	return err;
+ }
+@@ -2772,7 +2781,10 @@
+ 		return -ENOENT;
+ 	msw->put = master_mute_sw_put;
+ 	snd_ac97_remove_ctl(ac97, "External Amplifier", NULL);
+-	snd_ac97_update_bits(ac97, AC97_POWERDOWN, 0x8000, 0x8000); /* mute LED on */
++	snd_ac97_update_bits(
++		ac97, AC97_POWERDOWN,
++		AC97_PD_EAPD, AC97_PD_EAPD /* mute LED on */
++	);
+ 	ac97->scaps |= AC97_SCAP_EAPD_LED;
+ 	return 0;
+ }
+@@ -2787,12 +2799,12 @@
+ 		int rshift = (kcontrol->private_value >> 12) & 0x0f;
+ 		unsigned short mask;
+ 		if (shift != rshift)
+-			mask = 0x8080;
++			mask = AC97_MUTE_MASK_STEREO;
+ 		else
+-			mask = 0x8000;
+-		snd_ac97_update_bits(ac97, AC97_POWERDOWN, 0x8000,
++			mask = AC97_MUTE_MASK_MONO;
++		snd_ac97_update_bits(ac97, AC97_POWERDOWN, AC97_PD_EAPD,
+ 				     (ac97->regs[AC97_MASTER] & mask) == mask ?
+-				     0x8000 : 0);
++				     AC97_PD_EAPD : 0);
+ 	}
+ 	return err;
+ }
+@@ -2808,7 +2820,10 @@
+ 	snd_ac97_remove_ctl(ac97, "External Amplifier", NULL);
+ 	snd_ac97_remove_ctl(ac97, "Headphone Playback", "Switch");
+ 	snd_ac97_remove_ctl(ac97, "Headphone Playback", "Volume");
+-	snd_ac97_update_bits(ac97, AC97_POWERDOWN, 0x8000, 0x8000); /* mute LED on */
++	snd_ac97_update_bits(
++		ac97, AC97_POWERDOWN,
++		AC97_PD_EAPD, AC97_PD_EAPD /* mute LED on */
++	);
+ 	return 0;
+ }
