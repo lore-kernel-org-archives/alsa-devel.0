@@ -1,15 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] mfd: Remove bitrotted genirq comment from
-	wm831x IRQ code
-Date: Wed, 16 Feb 2011 14:58:11 -0800
-Message-ID: <1297897091-6516-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3] ASoC: Add Freescale SGTL5000 codec
+ support
+Date: Wed, 16 Feb 2011 15:01:18 -0800
+Message-ID: <20110216230117.GA6551@opensource.wolfsonmicro.com>
+References: <1297810576-2575-1-git-send-email-zhaoming.zeng@freescale.com>
+	<AANLkTi=xvpWqnChvyJvDVjCK8dH3rfd75e0c43x8a1JP@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6376110387F
-	for <alsa-devel@alsa-project.org>; Wed, 16 Feb 2011 23:58:02 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E6567103870
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 00:00:56 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=xvpWqnChvyJvDVjCK8dH3rfd75e0c43x8a1JP@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,34 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Timur Tabi <timur.tabi@gmail.com>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, zengzm.kernel@gmail.com, zhaoming.zeng@freescale.com, linuxzsc@gmail.com, arnaud.patard@rtp-net.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- drivers/mfd/wm831x-irq.c |    9 ---------
- 1 files changed, 0 insertions(+), 9 deletions(-)
+On Wed, Feb 16, 2011 at 04:20:37PM -0600, Timur Tabi wrote:
 
-diff --git a/drivers/mfd/wm831x-irq.c b/drivers/mfd/wm831x-irq.c
-index 03eb61d..2e45f60 100644
---- a/drivers/mfd/wm831x-irq.c
-+++ b/drivers/mfd/wm831x-irq.c
-@@ -26,15 +26,6 @@
- 
- #include <linux/delay.h>
- 
--/*
-- * Since generic IRQs don't currently support interrupt controllers on
-- * interrupt driven buses we don't use genirq but instead provide an
-- * interface that looks very much like the standard ones.  This leads
-- * to some bodges, including storing interrupt handler information in
-- * the static irq_data table we use to look up the data for individual
-- * interrupts, but hopefully won't last too long.
-- */
--
- struct wm831x_irq_data {
- 	int primary;
- 	int reg;
--- 
-1.7.2.3
+> > +static int sgtl5000_suspend(struct snd_soc_codec *codec, pm_message_t =
+state)
+> > +{
+> > + =A0 =A0 =A0 sgtl5000_set_bias_level(codec, SND_SOC_BIAS_OFF);
+> > +
+> > + =A0 =A0 =A0 return 0;
+> > +}
+
+> #ifdef CONFIG_PM ?
+
+Should be CONFIG_SUSPEND.
+
+> > + =A0 =A0 =A0 memcpy((void *)(&sgtl5000_regs[0] + (SGTL5000_DAP_REG_OFF=
+SET >> 1)),
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sgtl5000_dap_regs,
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 0x3a);
+
+> I don't think you need the "(void *)"
+
+You never need to cast to void in C.  C++ requires this but not C.
