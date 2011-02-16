@@ -1,20 +1,19 @@
 From: Zeng Zhaoming <zhaoming.zeng@freescale.com>
 Subject: Re: [PATCH v3] ASoC: Add Freescale SGTL5000 codec
- support
-Date: Thu, 17 Feb 2011 02:33:28 +0800
-Message-ID: <20110216183328.GB21063@ubuntu.localdomain>
+	support
+Date: Thu, 17 Feb 2011 02:53:52 +0800
+Message-ID: <20110216185352.GC21063@ubuntu.localdomain>
 References: <1297810576-2575-1-git-send-email-zhaoming.zeng@freescale.com>
-	<AANLkTi=xvpWqnChvyJvDVjCK8dH3rfd75e0c43x8a1JP@mail.gmail.com>
+	<20110216195314.GA29547@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="gb18030"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DB3EHSOBE005.bigfish.com (db3ehsobe005.messaging.microsoft.com
-	[213.199.154.143])
-	by alsa0.perex.cz (Postfix) with ESMTP id D0AD5243ED
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 03:39:57 +0100 (CET)
+Received: from VA3EHSOBE004.bigfish.com (va3ehsobe004.messaging.microsoft.com
+	[216.32.180.14]) by alsa0.perex.cz (Postfix) with ESMTP id D493424435
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 04:00:22 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <AANLkTi=xvpWqnChvyJvDVjCK8dH3rfd75e0c43x8a1JP@mail.gmail.com>
+In-Reply-To: <20110216195314.GA29547@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,85 +23,168 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur.tabi@gmail.com>
-Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, zengzm.kernel@gmail.com, lrg@slimlogic.co.uk, arnaud.patard@rtp-net.org, linuxzsc@gmail.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, zengzm.kernel@gmail.com, lrg@slimlogic.co.uk, arnaud.patard@rtp-net.org, linuxzsc@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkIDIwMTEtMDItMTYgMTY6MjA6MzcsIFRpbXVyIFRhYmkgd3JvdGU6Cj4gT24gVHVlLCBG
-ZWIgMTUsIDIwMTEgYXQgNDo1NiBQTSwgIDx6aGFvbWluZy56ZW5nQGZyZWVzY2FsZS5jb20+IHdy
-b3RlOgo+ID4gRnJvbTogWmVuZyBaaGFvbWluZyA8emhhb21pbmcuemVuZ0BmcmVlc2NhbGUuY29t
-Pgo+ID4KPiA+IEFkZCBGcmVlc2NhbGUgU0dUTDUwMDAgY29kZWMgc3VwcG9ydAo+IAo+IFBsZWFz
-ZSBwcm92aWRlIGEgZGVzY3JpcHRpb24gb2YgdGhpcyBwYXJ0LiAgV2hhdCBpcyBpdCwgd2hhdCBm
-ZWF0dXJlcwo+IGRvZXMgaXQgaGF2ZSwgZXRjLgo+IAo+ID4gQEAgLTE3Niw2ICsxNzcsOSBAQCBj
-b25maWcgU05EX1NPQ19NQVg5ODA4OAo+ID4ggTCEMmNvbmZpZyBTTkRfU09DX1BDTTMwMDgKPiA+
-IIEwhDIggTCEMiCBMIQyIIEwhDJ0cmlzdGF0ZQo+ID4KPiA+ICtjb25maWcgU05EX1NPQ19TR1RM
-NTAwMAo+ID4gKyCBMIQyIIEwhDIggTCEMiB0cmlzdGF0ZQo+ID4gKwo+IAo+IFBsZWFzZSBwcm92
-aWRlIHNvbWUga2luZCBvZiBkZXNjcmlwdGl2ZSB0ZXh0IGhlcmUuCj4gCj4gPiArIIEwhDIggTCE
-MiCBMIQyIGwgPSBsIDwgMHgzYyA/IDB4M2MgOiBsOwo+ID4gKyCBMIQyIIEwhDIggTCEMiBsID0g
-bCA+IDB4ZmMgPyAweGZjIDogbDsKPiA+ICsggTCEMiCBMIQyIIEwhDIgciA9IHIgPCAweDNjID8g
-MHgzYyA6IHI7Cj4gPiArIIEwhDIggTCEMiCBMIQyIHIgPSByID4gMHhmYyA/IDB4ZmMgOiByOwo+
-IAo+IFVzZSB0aGUgY2xhbXAoKSBtYWNybyBpbnN0ZWFkLgoKdGhhbmtzIGZvciB0aGUgaGludC4K
-PiAKPiA+ICsKPiA+ICsggTCEMiCBMIQyIIEwhDIgLyogcmV2ZXJ0IGl0ICovCj4gPiArIIEwhDIg
-gTCEMiCBMIQyIGwgPSAweGZjIC0gbDsKPiA+ICsggTCEMiCBMIQyIIEwhDIgciA9IDB4ZmMgLSBy
-Owo+IAo+IEkgdGhpbmsgeW91IG1lYW4gImludmVydCBpdCIuICAicmV2ZXJ0IiBtZWFucyB0byB1
-bmRvIGEgY2hhbmdlLgo+CnllcywgaW52ZXJ0IGl0LiA7KQo+ID4gKyCBMIQyIIEwhDIggTCEMiBp
-ZiAobXV0ZSkKPiA+ICsggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiBzbmRfc29j
-X3VwZGF0ZV9iaXRzKGNvZGVjLCBTR1RMNTAwMF9DSElQX0FEQ0RBQ19DVFJMLAo+ID4gKyCBMIQy
-IIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCB
-MIQyIIEwhDIggTCEMiBhZGNkYWNfY3RybCwgYWRjZGFjX2N0cmwpOwo+ID4gKyCBMIQyIIEwhDIg
-gTCEMiBlbHNlCj4gPiArIIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIgc25kX3Nv
-Y191cGRhdGVfYml0cyhjb2RlYywgU0dUTDUwMDBfQ0hJUF9BRENEQUNfQ1RSTCwKPiA+ICsggTCE
-MiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIg
-gTCEMiCBMIQyIIEwhDIgYWRjZGFjX2N0cmwsIDApOwo+IAo+IEhvdyBhYm91dDoKPiAKPiBzbmRf
-c29jX3VwZGF0ZV9iaXRzKGNvZGVjLCBTR1RMNTAwMF9DSElQX0FEQ0RBQ19DVFJMLCBhZGNkYWNf
-Y3RybCwKPiBtdXRlID8gYWRjZGFjX2N0cmwgOiAwKTsKPgpZZXMsIHRoaXMgb25lIGlzIGJldHRl
-ci4gSSB3aWxsIGNoYW5nZSB0byB0aGlzIHN0eWxlIGluIHRoZSB3aG9sZSBmaWxlLgoKPiA+ICtz
-dGF0aWMgaW50IHNndGw1MDAwX3N1c3BlbmQoc3RydWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjLCBw
-bV9tZXNzYWdlX3Qgc3RhdGUpCj4gPiArewo+ID4gKyCBMIQyIIEwhDIggTCEMiBzZ3RsNTAwMF9z
-ZXRfYmlhc19sZXZlbChjb2RlYywgU05EX1NPQ19CSUFTX09GRik7Cj4gPiArCj4gPiArIIEwhDIg
-gTCEMiCBMIQyIHJldHVybiAwOwo+ID4gK30KPiAKPiAjaWZkZWYgQ09ORklHX1BNID8KPiAKPiAK
-PiA+ICsggTCEMiCBMIQyIIEwhDIgLyoKPiA+ICsggTCEMiCBMIQyIIEwhDIggTCEMiogY29weSBE
-QVAgZGVmYXVsdCB2YWx1ZXMgdG8gZGVmYXVsdCB2YWx1ZSBhcnJheS4KPiA+ICsggTCEMiCBMIQy
-IIEwhDIggTCEMiogc2d0bDUwMDAgcmVnaXN0ZXIgc3BhY2UgaGFzIGEgYmlnIGhvbGUsIG1lcmdl
-IGl0Cj4gPiArIIEwhDIggTCEMiCBMIQyIIEwhDIqIGF0IGluaXQgcGhhc2UgbWFrZXMgbGlmZSBl
-YXN5Lgo+ID4gKyCBMIQyIIEwhDIggTCEMiCBMIQyKiBGSVhNRTogc2hvdWxkIHdlIGRyb3AgJ2Nv
-bnN0JyBvZiBzZ3RsNTAwMF9yZWdzPwo+ID4gKyCBMIQyIIEwhDIggTCEMiCBMIQyKi8KPiA+ICsg
-gTCEMiCBMIQyIIEwhDIgbWVtY3B5KCh2b2lkICopKCZzZ3RsNTAwMF9yZWdzWzBdICsgKFNHVEw1
-MDAwX0RBUF9SRUdfT0ZGU0VUID4+IDEpKSwKPiA+ICsggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQy
-IIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIHNndGw1MDAwX2RhcF9yZWdzLAo+ID4gKyCB
-MIQyIIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIggTCEMiCBMIQyIIEwhDIgMHgz
-YSk7Cj4gCj4gSSBkb24ndCB0aGluayB5b3UgbmVlZCB0aGUgIih2b2lkICopIgo+IAo+IEFuZCB3
-aGF0IGlzIDB4M2E/Cj4gCj4gPiArTU9EVUxFX0RFU0NSSVBUSU9OKCJBU29DIHNndGw1MDAwIGRy
-aXZlciIpOwo+ID4gK01PRFVMRV9BVVRIT1IoIkZyZWVzY2FsZSBTZW1pY29uZHVjdG9yLCBJbmMu
-Iik7Cj4gCj4gUGxlYXNlIGNvbnNpZGVyIHB1dHRpbmcgeW91ciBuYW1lIGhlcmUsIHNvIHRoYXQg
-cGVvcGxlIGtub3cgd2hvIHRoZQo+IHJlYWwgYXV0aG9yIGlzLgo+IAo+ID4gZGlmZiAtLWdpdCBh
-L3NvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAuaCBiL3NvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAu
-aAo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiA+IGluZGV4IDAwMDAwMDAuLjdmMjQ2NTUKPiA+
-IC0tLSAvZGV2L251bGwKPiA+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAuaAo+ID4g
-QEAgLTAsMCArMSw0MDMgQEAKPiA+ICsvKgo+ID4gKyAqIHNndGw1MDAwLmggLSBTR1RMNTAwMCBh
-dWRpbyBjb2RlYyBpbnRlcmZhY2UKPiAKPiBUaGlzIHdob2xlIGZpbGUgc2hvdWxkIHByb2JhYmx5
-IGJlIG1lcmdlZCBpbnRvIHNndGw1MDAwLmMsIHNpbmNlIHRoYXQKPiBmaWxlIGlzIHRoZSBvbmx5
-IGZpbGUgdGhhdCAjaW5jbHVkZXMgc2d0bDUwMDAuaC4gIE5vIHBvaW50IGluIGhhdmluZyBhCj4g
-aGVhZGVyIGZpbGUgdGhhdCBpcyBvbmx5IGluY2x1ZGVkIGJ5IG9uZSBvdGhlciBmaWxlLgo+ClRo
-aXMgaXMgbm90IGNvbW1vbiBvbiBBU29DIGNvZGVjIGRyaXZlcnMsIG1hbnkgZHJpdmVycyBoYXZl
-IHRoZWlyIG93biBoZWFkZXIgZmlsZS4KSSB0aGluayBpdCBtYWtlIHRoZSBjb2RlIG1vcmUgY2xl
-YXIuCgo+ID4gKyAqCj4gPiArICogQ29weXJpZ2h0IDIwMDgtMjAwOSBGcmVlc2NhbGUgU2VtaWNv
-bmR1Y3RvciwgSW5jLgo+IAo+IFNvIHRoZSBoZWFkZXIgZmlsZSBpcyBjb3B5cmlnaHQgMjAwOSwg
-YnV0IHRoZSBzb3VyY2UgZmlsZSBpcyBjb3B5cmlnaHQgMjAxMT8KPiAKPiA+ICsgKgo+ID4gKyAq
-IIEwhDJUaGlzIHByb2dyYW0gaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUg
-gTCEMml0IGFuZC9vciBtb2RpZnkgaXQKPiA+ICsgKiCBMIQydW5kZXIggTCEMnRoZSB0ZXJtcyBv
-ZiCBMIQydGhlIEdOVSBHZW5lcmFsIIEwhDJQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkg
-dGhlCj4gPiArICoggTCEMkZyZWUgU29mdHdhcmUgRm91bmRhdGlvbjsggTCEMmVpdGhlciB2ZXJz
-aW9uIDIgb2YgdGhlIIEwhDJMaWNlbnNlLCBvciAoYXQgeW91cgo+ID4gKyAqIIEwhDJvcHRpb24p
-IGFueSBsYXRlciB2ZXJzaW9uLgo+IAo+IEFsc28sIHRoZSBoZWFkZXIgZmlsZSBpcyAiR1BMIHYy
-IG9yIGxhdGVyIiwgYnV0IHRoZSBzb3VyY2UgZmlsZSBpcwo+ICJHUEwgdjIgb25seSIuICBQaWNr
-IG9uZSBvciB0aGUgb3RoZXIsIGJ1dCBkb24ndCB1c2UgYm90aC4gIEknbQo+IHN1cnByaXNlZCB5
-b3VyIHBhdGNoIHdhcyBhcHByb3ZlZCBieSB0aGUgUFBQIGxlZ2FsIHJldmlldy4KPgpPaywgSSB3
-aWxsIGNoYW5nZSBpdCB0byBHUEwgdjIgb25seSwgdGhhbmtzIHRvIHBvaW50IGl0IG91dC4KPiAt
-LSAKPiBUaW11ciBUYWJpCj4gTGludXgga2VybmVsIGRldmVsb3BlciBhdCBGcmVlc2NhbGUKPiBf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Wed 2011-02-16 19:53:14, Mark Brown wrote:
+> On Wed, Feb 16, 2011 at 06:56:16AM +0800, zhaoming.zeng@freescale.com wrote:
+> 
+> > +static int mic_bias_event(struct snd_soc_dapm_widget *w,
+> > +	struct snd_kcontrol *kcontrol, int event)
+> > +{
+> > +	/* change mic bias resistor to 4Kohm */
+> > +	snd_soc_update_bits(w->codec, SGTL5000_CHIP_MIC_CTRL,
+> > +			SGTL5000_BIAS_R_4k, SGTL5000_BIAS_R_4k);
+> > +
+> > +	return 0;
+> > +}
+> 
+> I'd expect something to power off the mic bias when there's a power off
+> event.
+>
+I will add it in the next version.
+
+> > +	reg = snd_soc_read(codec, SGTL5000_CHIP_DAC_VOL);
+> > +	l = (reg & SGTL5000_DAC_VOL_LEFT_MASK) >> SGTL5000_DAC_VOL_LEFT_SHIFT;
+> > +	r = (reg & SGTL5000_DAC_VOL_RIGHT_MASK) >> SGTL5000_DAC_VOL_RIGHT_SHIFT;
+> > +	l = l < 0x3c ? 0x3c : l;
+> > +	l = l > 0xfc ? 0xfc : l;
+> > +	r = r < 0x3c ? 0x3c : r;
+> > +	r = r > 0xfc ? 0xfc : r;
+> 
+> My previous comments about the lebility of this still stand.
+>
+Sorry, I don't catch you means quite well, you means more comments to make it clearer?
+
+> > +/* need SOC_DOUBLE_S8_TLV with invert */
+> > +#define SGTL5000_PCM_PLAYBACK_CONTROL	\
+> > +	 {			\
+> > +		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,	\
+> > +		.name = "PCM Playback Volume",		\
+> > +		.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ |	\
+> > +			SNDRV_CTL_ELEM_ACCESS_READWRITE,	\
+> > +		.info = dac_info_volsw,				\
+> > +		.get = dac_get_volsw,				\
+> > +		.put = dac_put_volsw,				\
+> > +	}
+> 
+> Since there's no macro arguments this could just be defined directly in
+> line.
+>
+you means add it to kcontrol array directly instead of define a macro for it?
+
+> > +	SOC_SINGLE("Capture Attenuate Switch (-6db)",
+> > +		SGTL5000_CHIP_ANA_ADC_CTRL,
+> > +		8, 1, 0),
+> 
+> This should be a TLV control (-6 to 0 in steps of 6 dB) with Volume
+> rather than Switch.
+> 
+> > +	/* set devided factor of frame clock */
+> > +	switch (sys_fs / frame_rate) {
+> > +	case 4:
+> > +		clk_ctl |= SGTL5000_RATE_MODE_DIV_4 << SGTL5000_RATE_MODE_SHIFT;
+> > +		break;
+> > +	case 2:
+> > +		clk_ctl |= SGTL5000_RATE_MODE_DIV_2 << SGTL5000_RATE_MODE_SHIFT;
+> > +		break;
+> > +	/*
+> > +	 * this implict case 1:
+> > +	 * because default: sys_fs = lrclk;
+> > +	 */
+> > +	default:
+> > +		clk_ctl |= SGTL5000_RATE_MODE_DIV_1 << SGTL5000_RATE_MODE_SHIFT;
+> > +		break;
+> > +	}
+> 
+> This would be much better off as case 1: with a default returning an
+> error in case the user has misclocked the device.  For example, if the
+> ratio were to wind up as 8 then we'd accept that.
+> 
+> > +	/*
+> > +	 * calculate the divider of mclk/sample_freq,
+> > +	 * factor of freq =96k can only be 256, since mclk in range (12m,27m)
+> > +	 */
+> > +	if (sys_fs * 256 == sgtl5000->sysclk)
+> > +		clk_ctl |= SGTL5000_MCLK_FREQ_256FS <<
+> > +			SGTL5000_MCLK_FREQ_SHIFT;
+> > +	else if (sys_fs * 384 == sgtl5000->sysclk)
+> > +		clk_ctl |= SGTL5000_MCLK_FREQ_384FS <<
+> > +			SGTL5000_MCLK_FREQ_SHIFT;
+> > +	else if (sys_fs * 512 == sgtl5000->sysclk)
+> > +		clk_ctl |= SGTL5000_MCLK_FREQ_512FS <<
+> > +			SGTL5000_MCLK_FREQ_SHIFT;
+> 
+> This'd be clearer as a switch on sysfs / sysclk with this:
+> 
+> > +	else {
+> > +		/* if mclk not satisify the divider, using pll */
+> > +		if (sgtl5000->master)
+> > +			clk_ctl |= SGTL5000_MCLK_FREQ_PLL <<
+> > +				SGTL5000_MCLK_FREQ_SHIFT;
+> > +		else {
+> > +			pr_err("%s: PLL not supported in slave mode\n",
+> > +				__func__);
+> > +			return -EINVAL;
+> > +		}
+> 
+> as the default.
+>
+Yes, it is clearer. thanks for the suggestion.
+
+> > +	} else
+> > +		/* power down pll */
+> > +		snd_soc_update_bits(codec, SGTL5000_CHIP_ANA_POWER,
+> > +			SGTL5000_PLL_POWERUP | SGTL5000_VCOAMP_POWERUP,
+> > +			0);
+> 
+> Use { } for the else case if the main case uses them.
+> 
+> > +	case SND_SOC_BIAS_STANDBY:
+> > +		if (codec->bias_level == SND_SOC_BIAS_OFF) {
+> > +			for (i = 0; i < SGTL5000_SUPPLY_NUM; i++) {
+> > +				if (!sgtl5000->supplies[i])
+> > +					continue;
+> > +				regulator_enable(sgtl5000->supplies[i]);
+> 
+> Why are the supplies optional?
+> 
+> > +	vdda  = regulator_get_voltage(sgtl5000->supplies[VDDA]) / 1000;
+> > +	vddio = regulator_get_voltage(sgtl5000->supplies[VDDIO]) / 1000;
+> 
+> You're not checking these for errors.
+> 
+> > +	if (sgtl5000->supplies[VDDD])
+> > +		vddd = regulator_get_voltage(sgtl5000->supplies[VDDD]) / 1000;
+> > +	else
+> > +		vddd = 0;
+> 
+> If VDD is optional it'd seem easier to substitute in a fixed voltage
+> regulator when it's not detected.  It'd make the code much more
+> idiomatic and save having to special case missing regulators everywhere.
+>
+Ok, I will try to add a fixed regulator if VDDD not provided externally.
+
+> > +	if (!vddd) {
+> > +		/* set VDDD to 1.2v */
+> > +		lreg_ctrl |= 0x8 << SGTL5000_LINREG_VDDD_SHIFT;
+> > +		/* power up internal linear regulator */
+> > +		ana_pwr |= SGTL5000_LINEREG_D_POWERUP |
+> > +				SGTL5000_LINREG_SIMPLE_POWERUP |
+> > +				SGTL5000_STARTUP_POWERUP;
+> > +	}
+> 
+> Or even implement an actual regulator driver for it.
+> 
+> > +	/* set default volume of adc */
+> > +	reg = snd_soc_read(codec, SGTL5000_CHIP_ANA_ADC_CTRL);
+> > +	reg &= ~SGTL5000_ADC_VOL_M6DB;
+> > +	reg &= ~(SGTL5000_ADC_VOL_LEFT_MASK | SGTL5000_ADC_VOL_RIGHT_MASK);
+> > +	reg |= (0xf << SGTL5000_ADC_VOL_LEFT_SHIFT)
+> > +	    | (0xf << SGTL5000_ADC_VOL_RIGHT_SHIFT);
+> > +	snd_soc_write(codec, SGTL5000_CHIP_ANA_ADC_CTRL, reg);
+> 
+> Leave this up to userspace.
+
+Thanks.
