@@ -1,58 +1,43 @@
-From: Christophe Aeschlimann <c.aeschlimann-5/WUhD8XThOVQ4qyx6sgCw@public.gmane.org>
-Subject: Re: ALSA issue on DA850/OMAP-L138/AM18x
-Date: Wed, 16 Feb 2011 15:07:57 +0100
-Message-ID: <4D5BDA3D.5080905@acn-group.ch>
-References: <B85A65D85D7EB246BE421B3FB0FBB59302484734E0@dbde02.ent.ti.com>
+From: Denis 'GNUtoo' Carikli <GNUtoo@no-log.org>
+Subject: Re: alsa and terratec aureon 7.1 USB sound card
+Date: Wed, 16 Feb 2011 17:01:23 +0100
+Message-ID: <1297872083.5201.5.camel@gnutoo-laptop>
+References: <AANLkTik=yWQH5pVODvbktjwk+mmcb69QyuwqvU8y2B0V@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB59302484734E0-/tLxBxkBPtCIQmiDNMet8wC/G2K4zDHf@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: "Rajashekhara, Sudhakar" <sudhakar.raj-l0cyMroinI0@public.gmane.org>
-Cc: "khilman-1D3HCaltpLuhEniVeURVKkEOCMrvLtNR@public.gmane.org" <khilman-1D3HCaltpLuhEniVeURVKkEOCMrvLtNR@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp205.alice.it (smtp205.alice.it [82.57.200.101])
+	by alsa0.perex.cz (Postfix) with ESMTP id A59401037F2
+	for <alsa-devel@alsa-project.org>; Wed, 16 Feb 2011 17:01:33 +0100 (CET)
+In-Reply-To: <AANLkTik=yWQH5pVODvbktjwk+mmcb69QyuwqvU8y2B0V@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Vincent Meserette <vmeserette@aldebaran-robotics.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sudhakar,
+On Wed, 2011-02-16 at 11:50 +0100, Vincent Meserette wrote:
+> Hi all,
+> 
+> I just wanted to know if anyone of you already used the terratec aureon 7.1
+> USB sound card with linux.
+> Is it well recognized by alsa ?
+> 
+> Thanks in advance for your reply.
+I use an Aureon Dual that is an usb card in the form of an usb stick
+if I remember well the driver is CONFIG_SND_USB_AUDIO
 
-On 18.01.2011 05:43, Rajashekhara, Sudhakar wrote:
+Note that in the past some wireless card manufacturer changed the chip
+inside the wireless card, changing the version of the card(not very easy
+to find on the box) or changing nothing at all in the packaging. so
+beware....
 
-[...]
-
- > With the above fixes, arecord and aplay does not work for the first time.
- > Couple of times I get the below error:
- >
- > root@da850-omapl138-evm:~# arecord -f dat | aplay -f dat
- > arecord: main:608: audio open error: Invalid argument
- > aplay: playback:2297: read error
- > root@da850-omapl138-evm:~# arecord -f dat | aplay -f dat
- > aplay: main:608: audio open error: Invalid argument
- > Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, 
-Stereo
- >
- > Third time arecord and aplay work normally.
- >
- > Has anyone seen such issues on DA850 or any other platform?
- >
- > I am currently debugging this issue. I'll submit the above patch to 
-community
- > once the issue of fixed.
-
-I'm facing the same issue here.
-
-Did you make any progress on that one ?
-
- > Regards,
- > Sudhakar
-
-Regards,
-
-Christophe
+Denis.
