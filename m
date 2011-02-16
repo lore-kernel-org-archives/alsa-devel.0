@@ -1,280 +1,80 @@
-From: Andreas Mohr <andi@lisas.de>
-Subject: [PATCH] sound ac97: replace open-coded,
- error-prone stuff with AC97 bit defines
-Date: Thu, 17 Feb 2011 00:17:53 +0100
-Message-ID: <20110216231753.GC1638@rhlx01.hs-esslingen.de>
+From: Sarah Sharp <sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Subject: Re: [PATCH] USB-sound: prevent kernel panic on disconnect
+Date: Wed, 16 Feb 2011 15:54:22 -0800
+Message-ID: <20110216235422.GB6375@xanatos>
+References: <Pine.LNX.4.44L0.1102111737280.13739-100000@netrider.rowland.org>
+ <4D58EDA9.2020805@ladisch.de>
+ <s5hoc6ejz2j.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2B14A10390B
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 00:17:54 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <s5hoc6ejz2j.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, bossart.nospam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Pierre-Louis Bossart <pierre-louis.bossart-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-ChangeLog:
+On Mon, Feb 14, 2011 at 06:39:00PM +0100, Takashi Iwai wrote:
+> At Mon, 14 Feb 2011 09:54:01 +0100,
+> Clemens Ladisch wrote:
+> > 
+> > Alan Stern wrote:
+> > > On Fri, 11 Feb 2011, Sarah Sharp wrote:
+> > > > I suspect it might be the audio driver, as someone on the alsa mailing
+> > > > list suggested the USB sound driver can't handle when one isochronous
+> > > > buffer in an URB has an error, but the URB status is 0.
+> > > 
+> > > I don't think that can happen.  The URB status won't be 0 unless all 
+> > > the individual buffers have 0 status.
+> > 
+> > In any case, the driver would then just copy garbage samples out of the
+> > buffer; this wouldn't affect the driver's data structures.
+> > 
+> > > > From: Pierre-Louis Bossart <bossart.nospam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> > > > 
+> > > > Note that this is only a work-around, it does not address the
+> > > > root cause of this inconsistency between urbs and PCM states. The
+> > > > dmesg below shows two calls to snd_urb_complete, the substream is
+> > > > NULL and the state is either running or stopped. This doesn't make
+> > > > any sense.
+> > > > ...
+> > > > ALSA urb.c:492: frame 0 active: -84
+> > > > ALSA urb.c:197: cannot submit urb (err = -19)
+> > > > ALSA urb.c:186: NULL substream (subs->running 1) <- How is this possible?
+> > > > ALSA urb.c:186: NULL substream (subs->running 0)
+> > > 
+> > > It's most likely a matter of the device being disconnected but the
+> > > device file still being open.
+> > 
+> > subs->pcm_substream == NULL happens only when the device file _has_
+> > been closed.
+> 
+> More exactly, it's cleared the PCM close callback, so during it's
+> being closed :)
+> Looks like a race as you mentioned below, indeed.
+> 
+> > > Perhaps not everything gets cleaned up the way it should when that
+> > > happens.
+> > 
+> > There seems to be a race between snd_usb_pcm_close() and
+> > snd_usb_stream_disconnect().  I think a mutex taken by both functions
+> > should fix this; and all functions that check 'shutdown' probably need
+> > serializing.
+> 
+> Or, rather make sure that snd_usb_release_substreams() is finished
+> before PCM close; actually it should be called in hw_free callback,
+> but currently it's skipped by the shutdown flag check.  I guess this
+> check isn't right.
+> 
+> The serialization of shutdown check is a good point, but this won't
+> hit actual bugs, I suppose.
 
-Use AC97 macros (sometimes already existing, or newly added)
-instead of error-prone repetition of open-coded values.
+Ok.  I don't have the audio expertise to make a patch; can you or
+Clemens make one for Pierre to try out?
 
-Signed-off-by: Andreas Mohr <andi@lisas.de>
----
-Patch created on -rc3, tested and checkpatch.pl'd.
-GIT history seems clean, should thus apply easily.
-
-Optional, suggested patch.
-
-Thanks!
-
-Index: linux-2.6/include/sound/ac97_codec.h
-===================================================================
---- linux-2.6.orig/include/sound/ac97_codec.h	2011-02-16 23:18:39.000000000 +0100
-+++ linux-2.6/include/sound/ac97_codec.h	2011-02-16 23:19:04.000000000 +0100
-@@ -96,6 +96,10 @@
- #define AC97_FUNC_INFO		0x68	/* Function Information */
- #define AC97_SENSE_INFO		0x6a	/* Sense Details */
- 
-+/* volume controls */
-+#define AC97_MUTE_MASK_MONO	0x8000
-+#define AC97_MUTE_MASK_STEREO	0x8080
-+
- /* slot allocation */
- #define AC97_SLOT_TAG		0
- #define AC97_SLOT_CMD_ADDR	1
-@@ -138,6 +142,7 @@
- #define AC97_BC_18BIT_ADC	0x0100	/* 18-bit ADC resolution */
- #define AC97_BC_20BIT_ADC	0x0200	/* 20-bit ADC resolution */
- #define AC97_BC_ADC_MASK	0x0300
-+#define AC97_BC_3D_TECH_ID_MASK	0x7c00	/* Per-vendor ID of 3D enhancement */
- 
- /* general purpose */
- #define AC97_GP_DRSS_MASK	0x0c00	/* double rate slot select */
-Index: linux-2.6/sound/pci/ac97/ac97_codec.c
-===================================================================
---- linux-2.6.orig/sound/pci/ac97/ac97_codec.c	2011-02-16 23:19:03.000000000 +0100
-+++ linux-2.6/sound/pci/ac97/ac97_codec.c	2011-02-16 23:19:04.000000000 +0100
-@@ -597,9 +597,9 @@
- 	snd_ac97_page_restore(ac97, page_save);
- #ifdef CONFIG_SND_AC97_POWER_SAVE
- 	/* check analog mixer power-down */
--	if ((val_mask & 0x8000) &&
-+	if ((val_mask & AC97_PD_EAPD) &&
- 	    (kcontrol->private_value & (1<<30))) {
--		if (val & 0x8000)
-+		if (val & AC97_PD_EAPD)
- 			ac97->power_up &= ~(1 << (reg>>1));
- 		else
- 			ac97->power_up |= 1 << (reg>>1);
-@@ -1042,20 +1042,20 @@
- 
- static int snd_ac97_try_volume_mix(struct snd_ac97 * ac97, int reg)
- {
--	unsigned short val, mask = 0x8000;
-+	unsigned short val, mask = AC97_MUTE_MASK_MONO;
- 
- 	if (! snd_ac97_valid_reg(ac97, reg))
- 		return 0;
- 
- 	switch (reg) {
- 	case AC97_MASTER_TONE:
--		return ac97->caps & 0x04 ? 1 : 0;
-+		return ac97->caps & AC97_BC_BASS_TREBLE ? 1 : 0;
- 	case AC97_HEADPHONE:
--		return ac97->caps & 0x10 ? 1 : 0;
-+		return ac97->caps & AC97_BC_HEADPHONE ? 1 : 0;
- 	case AC97_REC_GAIN_MIC:
--		return ac97->caps & 0x01 ? 1 : 0;
-+		return ac97->caps & AC97_BC_DEDICATED_MIC ? 1 : 0;
- 	case AC97_3D_CONTROL:
--		if (ac97->caps & 0x7c00) {
-+		if (ac97->caps & AC97_BC_3D_TECH_ID_MASK) {
- 			val = snd_ac97_read(ac97, reg);
- 			/* if nonzero - fixed and we can't set it */
- 			return val == 0;
-@@ -1111,7 +1111,10 @@
- 	*lo_max = *hi_max = 0;
- 	for (i = 0 ; i < ARRAY_SIZE(cbit); i++) {
- 		unsigned short val;
--		snd_ac97_write(ac97, reg, 0x8080 | cbit[i] | (cbit[i] << 8));
-+		snd_ac97_write(
-+			ac97, reg,
-+			AC97_MUTE_MASK_STEREO | cbit[i] | (cbit[i] << 8)
-+		);
- 		/* Do the read twice due to buffers on some ac97 codecs.
- 		 * e.g. The STAC9704 returns exactly what you wrote to the register
- 		 * if you read it immediately. This causes the detect routine to fail.
-@@ -1146,14 +1149,14 @@
- 	unsigned short val, val1;
- 
- 	*max = 63;
--	val = 0x8080 | (0x20 << shift);
-+	val = AC97_MUTE_MASK_STEREO | (0x20 << shift);
- 	snd_ac97_write(ac97, reg, val);
- 	val1 = snd_ac97_read(ac97, reg);
- 	if (val != val1) {
- 		*max = 31;
- 	}
- 	/* reset volume to zero */
--	snd_ac97_write_cache(ac97, reg, 0x8080);
-+	snd_ac97_write_cache(ac97, reg, AC97_MUTE_MASK_STEREO);
- }
- 
- static inline int printable(unsigned int x)
-@@ -1190,16 +1193,16 @@
- 	if (! snd_ac97_valid_reg(ac97, reg))
- 		return 0;
- 
--	mute_mask = 0x8000;
-+	mute_mask = AC97_MUTE_MASK_MONO;
- 	val = snd_ac97_read(ac97, reg);
- 	if (check_stereo || (ac97->flags & AC97_STEREO_MUTES)) {
- 		/* check whether both mute bits work */
--		val1 = val | 0x8080;
-+		val1 = val | AC97_MUTE_MASK_STEREO;
- 		snd_ac97_write(ac97, reg, val1);
- 		if (val1 == snd_ac97_read(ac97, reg))
--			mute_mask = 0x8080;
-+			mute_mask = AC97_MUTE_MASK_STEREO;
- 	}
--	if (mute_mask == 0x8080) {
-+	if (mute_mask == AC97_MUTE_MASK_STEREO) {
- 		struct snd_kcontrol_new tmp = AC97_DOUBLE(name, reg, 15, 7, 1, 1);
- 		if (check_amix)
- 			tmp.private_value |= (1 << 30);
-@@ -1275,9 +1278,11 @@
- 	err = snd_ctl_add(card, kctl);
- 	if (err < 0)
- 		return err;
--	snd_ac97_write_cache(ac97, reg,
--			     (snd_ac97_read(ac97, reg) & 0x8080) |
--			     lo_max | (hi_max << 8));
-+	snd_ac97_write_cache(
-+		ac97, reg,
-+		(snd_ac97_read(ac97, reg) & AC97_MUTE_MASK_STEREO)
-+		| lo_max | (hi_max << 8)
-+	);
- 	return 0;
- }
- 
-@@ -1339,7 +1344,7 @@
- 			return err;
- 	}
- 
--	ac97->regs[AC97_CENTER_LFE_MASTER] = 0x8080;
-+	ac97->regs[AC97_CENTER_LFE_MASTER] = AC97_MUTE_MASK_STEREO;
- 
- 	/* build center controls */
- 	if ((snd_ac97_try_volume_mix(ac97, AC97_CENTER_LFE_MASTER)) 
-@@ -1417,8 +1422,12 @@
- 			if ((err = snd_ctl_add(card, kctl = snd_ac97_cnew(&snd_ac97_controls_pc_beep[idx], ac97))) < 0)
- 				return err;
- 		set_tlv_db_scale(kctl, db_scale_4bit);
--		snd_ac97_write_cache(ac97, AC97_PC_BEEP,
--				     snd_ac97_read(ac97, AC97_PC_BEEP) | 0x801e);
-+		snd_ac97_write_cache(
-+			ac97,
-+			AC97_PC_BEEP,
-+			(snd_ac97_read(ac97, AC97_PC_BEEP)
-+				| AC97_MUTE_MASK_MONO | 0x001e)
-+		);
- 	}
- 	
- 	/* build Phone controls */
-@@ -1552,7 +1561,7 @@
- 	}
- 
- 	/* build Simulated Stereo Enhancement control */
--	if (ac97->caps & 0x0008) {
-+	if (ac97->caps & AC97_BC_SIM_STEREO) {
- 		if ((err = snd_ctl_add(card, snd_ac97_cnew(&snd_ac97_controls_general[AC97_GENERAL_STEREO_ENHANCEMENT], ac97))) < 0)
- 			return err;
- 	}
-@@ -1564,7 +1573,7 @@
- 	}
- 
- 	/* build Loudness control */
--	if (ac97->caps & 0x0020) {
-+	if (ac97->caps & AC97_BC_LOUDNESS) {
- 		if ((err = snd_ctl_add(card, snd_ac97_cnew(&snd_ac97_controls_general[AC97_GENERAL_LOUDNESS], ac97))) < 0)
- 			return err;
- 	}
-@@ -2549,8 +2558,8 @@
- 			schedule_timeout_uninterruptible(1);
- 		} while (time_after_eq(end_time, jiffies));
- 		/* FIXME: extra delay */
--		ac97->bus->ops->write(ac97, AC97_MASTER, 0x8000);
--		if (snd_ac97_read(ac97, AC97_MASTER) != 0x8000)
-+		ac97->bus->ops->write(ac97, AC97_MASTER, AC97_MUTE_MASK_MONO);
-+		if (snd_ac97_read(ac97, AC97_MASTER) != AC97_MUTE_MASK_MONO)
- 			msleep(250);
- 	} else {
- 		end_time = jiffies + msecs_to_jiffies(100);
-@@ -2754,12 +2763,12 @@
- 		int rshift = (kcontrol->private_value >> 12) & 0x0f;
- 		unsigned short mask;
- 		if (shift != rshift)
--			mask = 0x8080;
-+			mask = AC97_MUTE_MASK_STEREO;
- 		else
--			mask = 0x8000;
--		snd_ac97_update_bits(ac97, AC97_POWERDOWN, 0x8000,
-+			mask = AC97_MUTE_MASK_MONO;
-+		snd_ac97_update_bits(ac97, AC97_POWERDOWN, AC97_PD_EAPD,
- 				     (ac97->regs[AC97_MASTER] & mask) == mask ?
--				     0x8000 : 0);
-+				     AC97_PD_EAPD : 0);
- 	}
- 	return err;
- }
-@@ -2772,7 +2781,10 @@
- 		return -ENOENT;
- 	msw->put = master_mute_sw_put;
- 	snd_ac97_remove_ctl(ac97, "External Amplifier", NULL);
--	snd_ac97_update_bits(ac97, AC97_POWERDOWN, 0x8000, 0x8000); /* mute LED on */
-+	snd_ac97_update_bits(
-+		ac97, AC97_POWERDOWN,
-+		AC97_PD_EAPD, AC97_PD_EAPD /* mute LED on */
-+	);
- 	ac97->scaps |= AC97_SCAP_EAPD_LED;
- 	return 0;
- }
-@@ -2787,12 +2799,12 @@
- 		int rshift = (kcontrol->private_value >> 12) & 0x0f;
- 		unsigned short mask;
- 		if (shift != rshift)
--			mask = 0x8080;
-+			mask = AC97_MUTE_MASK_STEREO;
- 		else
--			mask = 0x8000;
--		snd_ac97_update_bits(ac97, AC97_POWERDOWN, 0x8000,
-+			mask = AC97_MUTE_MASK_MONO;
-+		snd_ac97_update_bits(ac97, AC97_POWERDOWN, AC97_PD_EAPD,
- 				     (ac97->regs[AC97_MASTER] & mask) == mask ?
--				     0x8000 : 0);
-+				     AC97_PD_EAPD : 0);
- 	}
- 	return err;
- }
-@@ -2808,7 +2820,10 @@
- 	snd_ac97_remove_ctl(ac97, "External Amplifier", NULL);
- 	snd_ac97_remove_ctl(ac97, "Headphone Playback", "Switch");
- 	snd_ac97_remove_ctl(ac97, "Headphone Playback", "Volume");
--	snd_ac97_update_bits(ac97, AC97_POWERDOWN, 0x8000, 0x8000); /* mute LED on */
-+	snd_ac97_update_bits(
-+		ac97, AC97_POWERDOWN,
-+		AC97_PD_EAPD, AC97_PD_EAPD /* mute LED on */
-+	);
- 	return 0;
- }
+Sarah Sharp
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
