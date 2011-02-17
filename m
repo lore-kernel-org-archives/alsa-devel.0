@@ -1,20 +1,17 @@
-From: Zeng Zhaoming <zhaoming.zeng@freescale.com>
-Subject: Re: [PATCH v3] ASoC: Add Freescale SGTL5000 codec
- support
-Date: Thu, 17 Feb 2011 09:21:40 +0800
-Message-ID: <20110217012140.GA4111@ubuntu.localdomain>
-References: <1297810576-2575-1-git-send-email-zhaoming.zeng@freescale.com>
-	<87aahvoxej.fsf@lechat.rtp-net.org>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: Channel swapping issue on TI OMAP3/TWL4030
+Date: Thu, 17 Feb 2011 13:44:14 +0200
+Message-ID: <4D5D0A0E.5030505@nokia.com>
+References: <8CD98E75F0E83E2-63C-14642@web-mmc-m05.sysops.aol.com>	<CF32F28EDF8D20468EEDCBE4975DA0274A46DB@008-AM1MPN1-027.mgdnok.nokia.com><8CD9A87EF4FB765-1218-647@web-mmc-m03.sysops.aol.com>	<4D5A2466.2060705@nokia.com><8CD9B43DFD8A17C-DE8-B3DD@web-mmc-d01.sysops.aol.com>	<4D5B7AB5.201@nokia.com>
+	<8CD9C6B934040FF-13C8-4BFB@web-mmc-d06.sysops.aol.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1outboundpool.messaging.microsoft.com [216.32.181.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id 616CB10390B
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 10:28:10 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <87aahvoxej.fsf@lechat.rtp-net.org>
+Received: from mgw-sa02.nokia.com (smtp.nokia.com [147.243.1.48])
+	by alsa0.perex.cz (Postfix) with ESMTP id C12A724133
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 12:44:17 +0100 (CET)
+In-Reply-To: <8CD9C6B934040FF-13C8-4BFB@web-mmc-d06.sysops.aol.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,106 +21,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Arnaud Patard <arnaud.patard@rtp-net.org>
-Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, zengzm.kernel@gmail.com, lrg@slimlogic.co.uk, linuxzsc@gmail.com
+To: "ext ylin@mail.com" <ylin@mail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu 2011-02-17 09:52:52, Arnaud Patard wrote:
-> <zhaoming.zeng@freescale.com> writes:
-> 
-> Hi,
-> 
-> 
-> > From: Zeng Zhaoming <zhaoming.zeng@freescale.com>
-> >
-> > Add Freescale SGTL5000 codec support
-> >
-> > Signed-off-by: Zeng Zhaoming <zhaoming.zeng@freescale.com>
-> > ---
-> > changes since v2:
-> > 1. clean up register default values
-> > 2. rewrite codec power up code, add sgtl5000_set_power_regs()
-> > 3. rewrite codec clock configure code sgtl5000_set_clock()
-> > 4. reimplement PM hooks, restore register by particular order.
-> > 5. clean up dapm code, remove dac and adc event hooks.
-> > 6. clean up codec private structure, remove unnecessary fields.
-> > 7. add comments for uncommon code.
-> >
-> > Thanks for Mark's review.
-> 
-> [...]
-> 
-> > +/*
-> > + * custom put function for PCM playback volume
-> > + * PCM volume with 0.5017 dB steps from 0 to -90 dB
-> > + * 0x3B and less = Reserved
-> > + * 0x3C = 0 dB
-> > + * 0x3D = -0.5 dB
-> > + * 0xF0 = -90 dB
-> > + * 0xFC and greater = Muted
-> > + */
-> > +static int dac_put_volsw(struct snd_kcontrol *kcontrol,
-> > +			 struct snd_ctl_elem_value *ucontrol)
-> > +{
-> > +	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-> > +	int reg, l, r;
-> > +
-> > +	l = ucontrol->value.integer.value[0];
-> > +	r = ucontrol->value.integer.value[1];
-> > +
-> > +	l = l < 0 ? 0 : l;
-> > +	l = l > 0xfc - 0x3c ? 0xfc - 0x3c : l;
-> > +	r = r < 0 ? 0 : r;
-> > +	r = r > 0xfc - 0x3c ? 0xfc - 0x3c : r;
-> > +	l = 0xfc - l;
-> > +	r = 0xfc - r;
-> > +
-> > +	reg = l << SGTL5000_DAC_VOL_LEFT_SHIFT |
-> > +	    r << SGTL5000_DAC_VOL_RIGHT_SHIFT;
-> > +
-> > +	snd_soc_update_bits_locked(codec, SGTL5000_CHIP_DAC_VOL, reg, reg);
-> 
-> Why are you using update_bits_locked and not snd_soc_write ?
-> Here snd_soc_update_bits_locked is just good at making the PCM playback
-> mixer acting weird (I even got to a point that with a 0 value in the
-> mixer, I was unable to raise the volume). snd_soc_write just works.
-> 
-> [...]
->
-hi, Arnaud, thanks. I just find this problem too.
-It will be changed to snd_soc_write() in v4.
+On 02/17/11 05:40, ext ylin@mail.com wrote:
+> We tried element and frame mode, playback doesn't sound correct with =
 
-> > +
-> > +static int sgtl5000_probe(struct snd_soc_codec *codec)
-> > +{
-> > +	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
-> > +	u16 reg;
-> > +	int ret;
-> > +	int rev;
-> > +	int i;
-> > +
-> > +	/* setup i2c data ops */
-> > +	ret = snd_soc_codec_set_cache_io(codec, 16, 16, SND_SOC_I2C);
-> > +	if (ret < 0) {
-> > +		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	/* read chip information */
-> > +	reg = snd_soc_read(codec, SGTL5000_CHIP_ID);
-> 
-> I've a problem with doing that here. You do assume that the regulators
-> are enabled at this point which is not always the case. This results on
-> a timeout on i2c and then reg contains 0. Please enable regultors firsts
-> And no, I don't see having the regulators for things like vddio set to
-> "always on" in the machine file as a good idea. If the driver is not
-> loaded, having the codec off is good for power consumption.
->
-you are right, I always enable regulator in platform code,
-it is better to enable it when driver is loading. I will fix it in v4.
+> these mode, but the capture is OK.
 
-> Arnaud
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Hrm, this does not sound right... Historically the element mode was the
+first and only mode of using McBSP. The threshold mode has been added later.
+Could you explain what do you mean, when you said that the playback was
+not correct?
+I have never experienced problems with the element mode.
+In what mode you are using the TWL4030 codec? Is it master?
+If it is master, can you compare your machine driver with for example
+the Beagle board's machine driver?
+Or can you share the relevant configuration (from your machine driver)
+with us?
+
+> None of our test shows the playback problem.  I think the playback path =
+
+> is fine, but will keep testing.
+> =
+
+> Also, we have verified the audio data from I2S interface looks fine =
+
+> using a scope even when the channels are switched.  We can eliminate =
+
+> twl4030 codec from the problem,
+
+That's good.
+
+> and focus on McBSP and DMA.  We don't =
+
+> have chance to check McBSP overflow/underflow as you suggested yet.
+
+If we don't figure out what is the problem, you might need to do this...
+
+-- =
+
+P=E9ter
