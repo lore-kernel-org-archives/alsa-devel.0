@@ -1,17 +1,14 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: Channel swapping issue on TI OMAP3/TWL4030
-Date: Thu, 17 Feb 2011 13:48:18 +0200
-Message-ID: <4D5D0B02.9030002@nokia.com>
-References: <8CD98E75F0E83E2-63C-14642@web-mmc-m05.sysops.aol.com>	<CF32F28EDF8D20468EEDCBE4975DA0274A46DB@008-AM1MPN1-027.mgdnok.nokia.com>	<8CD9A87EF4FB765-1218-647@web-mmc-m03.sysops.aol.com>	<20110215102833.0727ef53.jhnikula@gmail.com>	<8CD9B447BF02D2F-DE8-B4B6@web-mmc-d01.sysops.aol.com>	<8CD9C6D5C822217-13C8-4CCF@web-mmc-d06.sysops.aol.com>
-	<20110217101723.b272f4e4.jhnikula@gmail.com>
+From: Jason Fox <jfox@gai-tronics.com>
+Subject: ASOC: AD193X, AT91SAM9263 and Channel Slot Shifting
+Date: Thu, 17 Feb 2011 08:30:19 -0500
+Message-ID: <1297949419.7194.55.camel@alice.bigman.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-da01.nokia.com (smtp.nokia.com [147.243.128.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9586824133
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 12:48:23 +0100 (CET)
-In-Reply-To: <20110217101723.b272f4e4.jhnikula@gmail.com>
+Received: from exprod7og117.obsmtp.com (exprod7og117.obsmtp.com [64.18.2.6])
+	by alsa0.perex.cz (Postfix) with SMTP id AF0712438A
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 14:31:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,22 +18,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, ylin@mail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 02/17/11 10:17, ext Jarkko Nikula wrote:
-> Thanks, this is very good information and seems to indicate the same
-> problem must be in upstream also as I don't recall that there were any
-> other swapping related fixes than those that fix the playback case.
+I am currently working with an AD1939 being driven by an AT91SAM9263 and
+currently configured for 4 channels. The AT91 is successfully sending
+data to to the CODEC but the DMA transfer is not correctly synchronized
+to the LRCLK frame sync.  So, the data for channel 0 might show up in
+slot 1, 2, 3 - or sometimes slot 0 where it belongs!  Can anyone give me
+a suggestion as to where I might look in the drivers to debug this frame
+sync problem?  My hardware engineer assures me that the AT91 SSC and
+AD1939 are configured correctly which regard to LRCLK and BCLK.
 
-This is the first time I have heard of channel swapping related to
-capture on OMAP platforms.
-In playback case we can still have corner cases, when channels would
-swap/shift, but in capture?
-The only thing that I can think of is FIFO overflow, when odd number of
-word got discarded, so from application point the channels would swap.
+Thanks!
 
--- =
-
-P=E9ter
+Jason Fox 
+*******************************************************************
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom
+they are addressed. If you have received this email in error please
+notify the system manager. This footnote also confirms that this
+email message has been swept for the presence of computer viruses.
+www.Hubbell.com - Hubbell Incorporated**
