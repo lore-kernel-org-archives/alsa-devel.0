@@ -1,23 +1,18 @@
-From: ylin@mail.com
-Subject: Re: Channel swapping issue on TI OMAP3/TWL4030
-Date: Wed, 16 Feb 2011 22:53:25 -0500
-Message-ID: <8CD9C6D5C822217-13C8-4CCF@web-mmc-d06.sysops.aol.com>
-References: <8CD98E75F0E83E2-63C-14642@web-mmc-m05.sysops.aol.com><CF32F28EDF8D20468EEDCBE4975DA0274A46DB@008-AM1MPN1-027.mgdnok.nokia.com><8CD9A87EF4FB765-1218-647@web-mmc-m03.sysops.aol.com><20110215102833.0727ef53.jhnikula@gmail.com>
-	<8CD9B447BF02D2F-DE8-B4B6@web-mmc-d01.sysops.aol.com>
+From: "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>
+Subject: Re: ALSA issue on DA850/OMAP-L138/AM18x
+Date: Thu, 17 Feb 2011 09:53:40 +0530
+Message-ID: <B85A65D85D7EB246BE421B3FB0FBB593024B83B5E4@dbde02.ent.ti.com>
+References: <B85A65D85D7EB246BE421B3FB0FBB59302484734E0@dbde02.ent.ti.com>
+	<4D5BDA3D.5080905@acn-group.ch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imr-db02.mx.aol.com (imr-db02.mx.aol.com [205.188.91.96])
-	by alsa0.perex.cz (Postfix) with ESMTP id A4311244BA
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 04:53:46 +0100 (CET)
-Received: from imo-da02.mx.aol.com (imo-da02.mx.aol.com [205.188.169.200])
-	by imr-db02.mx.aol.com (8.14.1/8.14.1) with ESMTP id p1H3re7P024443
-	for <alsa-devel@alsa-project.org>; Wed, 16 Feb 2011 22:53:40 -0500
-Received: from ylin@mail.com
-	by imo-da02.mx.aol.com  (mail_out_v42.9.) id 5.e80.5a67017 (55714)
-	for <alsa-devel@alsa-project.org>; Wed, 16 Feb 2011 22:53:36 -0500 (EST)
-In-Reply-To: <8CD9B447BF02D2F-DE8-B4B6@web-mmc-d01.sysops.aol.com>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 057B324460
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 05:24:11 +0100 (CET)
+In-Reply-To: <4D5BDA3D.5080905@acn-group.ch>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,20 +22,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Christophe Aeschlimann <c.aeschlimann@acn-group.ch>
+Cc: "khilman@deeprootsystems.com" <khilman@deeprootsystems.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-> >
-> > Even Peter told that those channel switching patches in 2.6.32 
-should
-> > fix the playback case only, worth to check just in case are those
-> fixes
-> > in your kernel tree.
->
-> Those fixes are not in our kernel, I will apply them and re-test.
+Hi Christophe,
 
-We applied those 2 patches, but still have channel swapping issue from 
-capture audio.
+On Wed, Feb 16, 2011 at 19:37:57, Christophe Aeschlimann wrote:
+> Hi Sudhakar,
+> 
+> On 18.01.2011 05:43, Rajashekhara, Sudhakar wrote:
+> 
+> [...]
+> 
+>  > With the above fixes, arecord and aplay does not work for the first time.
+>  > Couple of times I get the below error:
+>  >
+>  > root@da850-omapl138-evm:~# arecord -f dat | aplay -f dat
+>  > arecord: main:608: audio open error: Invalid argument
+>  > aplay: playback:2297: read error
+>  > root@da850-omapl138-evm:~# arecord -f dat | aplay -f dat
+>  > aplay: main:608: audio open error: Invalid argument
+>  > Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, 
+> Stereo
+>  >
+>  > Third time arecord and aplay work normally.
+>  >
+>  > Has anyone seen such issues on DA850 or any other platform?
+>  >
+>  > I am currently debugging this issue. I'll submit the above patch to 
+> community
+>  > once the issue of fixed.
+> 
+> I'm facing the same issue here.
+> 
+> Did you make any progress on that one ?
+> 
+
+Reverting the commit 140176159597ea1f23dcccb47b5c38fdf7c7faa8 
+(ASoC: Configure symmetric rates for tlv320aic3x) resolves the issue. We are
+still working on the proper fix.
 
 Thanks,
-Ying
+Sudhakar 
