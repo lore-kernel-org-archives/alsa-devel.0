@@ -1,19 +1,17 @@
-From: Andreas Mohr <andi@lisas.de>
-Subject: Re: [PATCH] sound azt3328: add custom AC97
- semi-emulation, to be able to use standard ALSA AC97 layer
-Date: Thu, 17 Feb 2011 19:27:30 +0100
-Message-ID: <20110217182730.GB20893@rhlx01.hs-esslingen.de>
-References: <20110216231547.GA1638@rhlx01.hs-esslingen.de>
-	<s5hvd0iwojc.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Log wm_hubs DC servo operation code when
+	reporting a timeout
+Date: Thu, 17 Feb 2011 20:07:37 +0000
+Message-ID: <1297973257-27612-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id DE83C103833
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 19:27:30 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hvd0iwojc.wl%tiwai@suse.de>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8CC70103800
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 21:07:39 +0100 (CET)
+In-Reply-To: <>
+References: <>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,35 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Andreas Mohr <andi@lisas.de>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm_hubs.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-On Thu, Feb 17, 2011 at 06:37:11PM +0100, Takashi Iwai wrote:
-> At Thu, 17 Feb 2011 00:15:47 +0100,
-> Andreas Mohr wrote:
-> > @@ -189,6 +195,19 @@
-> >  #include <sound/mpu401.h>
-> >  #include <sound/opl3.h>
-> >  #include <sound/initval.h>
-> > +/*
-> > + * For now, use AC97 layer in case CONFIG_SND_AC97_CODEC is available.
-> > + * If our AC97 emulation turns out to work nicely,
-> > + * then make it unconditional and remove old custom AC97 crap
-> > + * (and Kconfig-select SND_AC97_CODEC).
-> 
-> In theory, this causes a problem when you build azt driver into kernel
-> and build ac97 as a module.
-
-Ah, darn, right!
-
-> I'd suggest just to select AC97 always, and give some switch (either
-> static or dynamic) for AC97 control method.
-
-Will do, thanks!
-
-(I'm preferring compile-time switch)
-
-Andreas Mohr
+diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+index 613df5d..a5c1556 100644
+--- a/sound/soc/codecs/wm_hubs.c
++++ b/sound/soc/codecs/wm_hubs.c
+@@ -82,7 +82,8 @@ static void wait_for_dc_servo(struct snd_soc_codec *codec, unsigned int op)
+ 	} while (reg & op && count < 400);
+ 
+ 	if (reg & op)
+-		dev_err(codec->dev, "Timed out waiting for DC Servo\n");
++		dev_err(codec->dev, "Timed out waiting for DC Servo %x\n",
++			op);
+ }
+ 
+ /*
+-- 
+1.7.2.3
