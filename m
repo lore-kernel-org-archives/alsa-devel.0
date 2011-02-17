@@ -1,48 +1,65 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Log wm_hubs DC servo operation code when
-	reporting a timeout
-Date: Thu, 17 Feb 2011 20:07:37 +0000
-Message-ID: <1297973257-27612-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [alsa-devel] [PATCH v2 08/13] OMAP2+: McBSP: hwmod adaptation
+ for McBSP
+Date: Thu, 17 Feb 2011 15:41:40 -0800
+Message-ID: <20110217234140.GH20795@atomide.com>
+References: <1296485437-12806-1-git-send-email-kishon@ti.com>
+ <1296485437-12806-9-git-send-email-kishon@ti.com>
+ <4D47FB19.9040901@nokia.com>
+ <20110201194436.74826dd0.jhnikula@gmail.com>
+ <AANLkTimzjg3+yGwz1sa+dfWyrjaS1mO+zn_LT3hhDHdQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8CC70103800
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 21:07:39 +0100 (CET)
-In-Reply-To: <>
-References: <>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <AANLkTimzjg3+yGwz1sa+dfWyrjaS1mO+zn_LT3hhDHdQ@mail.gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: "ABRAHAM, KISHON VIJAY" <kishon@ti.com>
+Cc: Jarkko Nikula <jhnikula@gmail.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, alsa-devel@alsa-project.org, b-cousson@ti.com, khilman@deeprootsystems.com, broonie@opensource.wolfsonmicro.com, paul@pwsan.com, p-basak2@ti.com, lrg@slimlogic.co.uk, linux-omap@vger.kernel.org, shubhrajyoti@ti.com, charu@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_hubs.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+* ABRAHAM, KISHON VIJAY <kishon@ti.com> [110201 22:22]:
+> On Tue, Feb 1, 2011 at 11:14 PM, Jarkko Nikula <jhnikula@gmail.com> w=
+rote:
+> > On Tue, 01 Feb 2011 14:22:49 +0200
+> > Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
+> >
+> >> Looks good, but...
+> >> > + =C2=A0 if (oh->class->rev =3D=3D MCBSP_CONFIG_TYPE3) {
+> >> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (id =3D=3D 2)
+> >> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ pdata->buffer_size =3D 0x500; /*FIFO size is 1024 + 256*/
+> >> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 else
+> >> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ pdata->buffer_size =3D 0x80; =C2=A0/*FIFO size is 128*/
+> >> > + =C2=A0 }
+> >>
+> >> I would add spaces around these comments (after /* and before */).
+> >>
+> > Actually this part of code doesn't compile for CONFIG_ARCH_OMAP2 if
+> > CONFIG_ARCH_OMAP3 is not set. Reason is that the buffer_size in und=
+er
+> > CONFIG_ARCH_OMAP3 compilation in struct omap_mcbsp_platform_data
+> > definition.
+> >
+> > I think it's easiest if this patch just removes that conditional
+> > compilation from struct omap_mcbsp_platform_data as it really doesn=
+'t
+> > save that much from non !OMAP3 builds.
+>=20
+>   Thanks. Will fix it in the next version.
 
-diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-index 613df5d..a5c1556 100644
---- a/sound/soc/codecs/wm_hubs.c
-+++ b/sound/soc/codecs/wm_hubs.c
-@@ -82,7 +82,8 @@ static void wait_for_dc_servo(struct snd_soc_codec *codec, unsigned int op)
- 	} while (reg & op && count < 400);
- 
- 	if (reg & op)
--		dev_err(codec->dev, "Timed out waiting for DC Servo\n");
-+		dev_err(codec->dev, "Timed out waiting for DC Servo %x\n",
-+			op);
- }
- 
- /*
--- 
-1.7.2.3
+Any news on updating this series?
+
+Note that you can now leave out the omap4 hwmod data as that has
+been merged to omap-for-linus.
+
+Regards,
+
+Tony
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
