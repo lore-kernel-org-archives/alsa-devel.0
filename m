@@ -1,18 +1,20 @@
-From: "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>
-Subject: Re: ALSA issue on DA850/OMAP-L138/AM18x
-Date: Thu, 17 Feb 2011 09:53:40 +0530
-Message-ID: <B85A65D85D7EB246BE421B3FB0FBB593024B83B5E4@dbde02.ent.ti.com>
-References: <B85A65D85D7EB246BE421B3FB0FBB59302484734E0@dbde02.ent.ti.com>
-	<4D5BDA3D.5080905@acn-group.ch>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3] ASoC: Add Freescale SGTL5000 codec
+	support
+Date: Thu, 17 Feb 2011 06:11:38 +0000
+Message-ID: <20110217061138.GB9645@opensource.wolfsonmicro.com>
+References: <1297810576-2575-1-git-send-email-zhaoming.zeng@freescale.com>
+	<20110216195314.GA29547@opensource.wolfsonmicro.com>
+	<20110216185352.GC21063@ubuntu.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 057B324460
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 05:24:11 +0100 (CET)
-In-Reply-To: <4D5BDA3D.5080905@acn-group.ch>
-Content-Language: en-US
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9AFA224604
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 07:11:40 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20110216185352.GC21063@ubuntu.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,46 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Christophe Aeschlimann <c.aeschlimann@acn-group.ch>
-Cc: "khilman@deeprootsystems.com" <khilman@deeprootsystems.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Zeng Zhaoming <zhaoming.zeng@freescale.com>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, zengzm.kernel@gmail.com, lrg@slimlogic.co.uk, arnaud.patard@rtp-net.org, linuxzsc@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Christophe,
+On Thu, Feb 17, 2011 at 02:53:52AM +0800, Zeng Zhaoming wrote:
+> On Wed 2011-02-16 19:53:14, Mark Brown wrote:
+> > On Wed, Feb 16, 2011 at 06:56:16AM +0800, zhaoming.zeng@freescale.com wrote:
 
-On Wed, Feb 16, 2011 at 19:37:57, Christophe Aeschlimann wrote:
-> Hi Sudhakar,
-> 
-> On 18.01.2011 05:43, Rajashekhara, Sudhakar wrote:
-> 
-> [...]
-> 
->  > With the above fixes, arecord and aplay does not work for the first time.
->  > Couple of times I get the below error:
->  >
->  > root@da850-omapl138-evm:~# arecord -f dat | aplay -f dat
->  > arecord: main:608: audio open error: Invalid argument
->  > aplay: playback:2297: read error
->  > root@da850-omapl138-evm:~# arecord -f dat | aplay -f dat
->  > aplay: main:608: audio open error: Invalid argument
->  > Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, 
-> Stereo
->  >
->  > Third time arecord and aplay work normally.
->  >
->  > Has anyone seen such issues on DA850 or any other platform?
->  >
->  > I am currently debugging this issue. I'll submit the above patch to 
-> community
->  > once the issue of fixed.
-> 
-> I'm facing the same issue here.
-> 
-> Did you make any progress on that one ?
-> 
+> > > +	l = (reg & SGTL5000_DAC_VOL_LEFT_MASK) >> SGTL5000_DAC_VOL_LEFT_SHIFT;
+> > > +	r = (reg & SGTL5000_DAC_VOL_RIGHT_MASK) >> SGTL5000_DAC_VOL_RIGHT_SHIFT;
+> > > +	l = l < 0x3c ? 0x3c : l;
+> > > +	l = l > 0xfc ? 0xfc : l;
+> > > +	r = r < 0x3c ? 0x3c : r;
+> > > +	r = r > 0xfc ? 0xfc : r;
 
-Reverting the commit 140176159597ea1f23dcccb47b5c38fdf7c7faa8 
-(ASoC: Configure symmetric rates for tlv320aic3x) resolves the issue. We are
-still working on the proper fix.
+> > My previous comments about the lebility of this still stand.
 
-Thanks,
-Sudhakar 
+> Sorry, I don't catch you means quite well, you means more comments to make it clearer?
+
+It needs to be clearer and I'm pretty certain that comments aren't
+enough to deal with the issue - the stack of ternery operators and magic
+numbers just isn't good for comprehensibility.
+
+> > Since there's no macro arguments this could just be defined directly in
+> > line.
+
+> you means add it to kcontrol array directly instead of define a macro for it?
+
+Yes.
