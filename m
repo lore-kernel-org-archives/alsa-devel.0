@@ -1,24 +1,18 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: Channel swapping issue on TI OMAP3/TWL4030
-Date: Thu, 17 Feb 2011 10:17:23 +0200
-Message-ID: <20110217101723.b272f4e4.jhnikula@gmail.com>
-References: <8CD98E75F0E83E2-63C-14642@web-mmc-m05.sysops.aol.com>
-	<CF32F28EDF8D20468EEDCBE4975DA0274A46DB@008-AM1MPN1-027.mgdnok.nokia.com>
-	<8CD9A87EF4FB765-1218-647@web-mmc-m03.sysops.aol.com>
-	<20110215102833.0727ef53.jhnikula@gmail.com>
-	<8CD9B447BF02D2F-DE8-B4B6@web-mmc-d01.sysops.aol.com>
-	<8CD9C6D5C822217-13C8-4CCF@web-mmc-d06.sysops.aol.com>
+From: Arnaud Patard (Rtp) <arnaud.patard@rtp-net.org>
+Subject: Re: [PATCH v3] ASoC: Add Freescale SGTL5000 codec
+	support
+Date: Thu, 17 Feb 2011 09:52:52 +0100
+Message-ID: <87aahvoxej.fsf@lechat.rtp-net.org>
+References: <1297810576-2575-1-git-send-email-zhaoming.zeng@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 986D010388B
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 09:16:52 +0100 (CET)
-Received: by eyg24 with SMTP id 24so1160063eyg.38
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 00:16:52 -0800 (PST)
-In-Reply-To: <8CD9C6D5C822217-13C8-4CCF@web-mmc-d06.sysops.aol.com>
+Received: from lechat.rtp-net.org (lechat.rtp-net.org [88.191.19.38])
+	by alsa0.perex.cz (Postfix) with ESMTP id 62CBA246B4
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2011 09:52:23 +0100 (CET)
+In-Reply-To: <1297810576-2575-1-git-send-email-zhaoming.zeng@freescale.com>
+	(zhaoming zeng's message of "Wed, 16 Feb 2011 06:56:16 +0800")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,27 +22,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ylin@mail.com
-Cc: alsa-devel@alsa-project.org
+To: zhaoming.zeng@freescale.com
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, zengzm.kernel@gmail.com, lrg@slimlogic.co.uk, linuxzsc@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 16 Feb 2011 22:53:25 -0500
-ylin@mail.com wrote:
+<zhaoming.zeng@freescale.com> writes:
 
-> > > Even Peter told that those channel switching patches in 2.6.32 
-> should
-> > > fix the playback case only, worth to check just in case are those
-> > fixes
-> > > in your kernel tree.
-> >
-> > Those fixes are not in our kernel, I will apply them and re-test.
-> 
-> We applied those 2 patches, but still have channel swapping issue from 
-> capture audio.
-> 
-Thanks, this is very good information and seems to indicate the same
-problem must be in upstream also as I don't recall that there were any
-other swapping related fixes than those that fix the playback case.
+Hi,
 
--- 
-Jarkko
+
+> From: Zeng Zhaoming <zhaoming.zeng@freescale.com>
+>
+> Add Freescale SGTL5000 codec support
+>
+> Signed-off-by: Zeng Zhaoming <zhaoming.zeng@freescale.com>
+> ---
+> changes since v2:
+> 1. clean up register default values
+> 2. rewrite codec power up code, add sgtl5000_set_power_regs()
+> 3. rewrite codec clock configure code sgtl5000_set_clock()
+> 4. reimplement PM hooks, restore register by particular order.
+> 5. clean up dapm code, remove dac and adc event hooks.
+> 6. clean up codec private structure, remove unnecessary fields.
+> 7. add comments for uncommon code.
+>
+> Thanks for Mark's review.
+
+[...]
+
+> +/*
+> + * custom put function for PCM playback volume
+> + * PCM volume with 0.5017 dB steps from 0 to -90 dB
+> + * 0x3B and less = Reserved
+> + * 0x3C = 0 dB
+> + * 0x3D = -0.5 dB
+> + * 0xF0 = -90 dB
+> + * 0xFC and greater = Muted
+> + */
+> +static int dac_put_volsw(struct snd_kcontrol *kcontrol,
+> +			 struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
+> +	int reg, l, r;
+> +
+> +	l = ucontrol->value.integer.value[0];
+> +	r = ucontrol->value.integer.value[1];
+> +
+> +	l = l < 0 ? 0 : l;
+> +	l = l > 0xfc - 0x3c ? 0xfc - 0x3c : l;
+> +	r = r < 0 ? 0 : r;
+> +	r = r > 0xfc - 0x3c ? 0xfc - 0x3c : r;
+> +	l = 0xfc - l;
+> +	r = 0xfc - r;
+> +
+> +	reg = l << SGTL5000_DAC_VOL_LEFT_SHIFT |
+> +	    r << SGTL5000_DAC_VOL_RIGHT_SHIFT;
+> +
+> +	snd_soc_update_bits_locked(codec, SGTL5000_CHIP_DAC_VOL, reg, reg);
+
+Why are you using update_bits_locked and not snd_soc_write ?
+Here snd_soc_update_bits_locked is just good at making the PCM playback
+mixer acting weird (I even got to a point that with a 0 value in the
+mixer, I was unable to raise the volume). snd_soc_write just works.
+
+[...]
+
+> +
+> +static int sgtl5000_probe(struct snd_soc_codec *codec)
+> +{
+> +	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
+> +	u16 reg;
+> +	int ret;
+> +	int rev;
+> +	int i;
+> +
+> +	/* setup i2c data ops */
+> +	ret = snd_soc_codec_set_cache_io(codec, 16, 16, SND_SOC_I2C);
+> +	if (ret < 0) {
+> +		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/* read chip information */
+> +	reg = snd_soc_read(codec, SGTL5000_CHIP_ID);
+
+I've a problem with doing that here. You do assume that the regulators
+are enabled at this point which is not always the case. This results on
+a timeout on i2c and then reg contains 0. Please enable regultors firsts
+And no, I don't see having the regulators for things like vddio set to
+"always on" in the machine file as a good idea. If the driver is not
+loaded, having the codec off is good for power consumption.
+
+Arnaud
