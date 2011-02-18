@@ -1,69 +1,89 @@
-From: "ABRAHAM, KISHON VIJAY" <kishon@ti.com>
-Subject: Re: [alsa-devel] [PATCH v2 08/13] OMAP2+: McBSP: hwmod adaptation for McBSP
-Date: Fri, 18 Feb 2011 13:50:54 +0530
-Message-ID: <AANLkTimOf1WKHJUTaCWE9+HRmjFa0Ms9Wg2704ZUt+Ua@mail.gmail.com>
-References: <1296485437-12806-1-git-send-email-kishon@ti.com>
-	<1296485437-12806-9-git-send-email-kishon@ti.com>
-	<4D47FB19.9040901@nokia.com>
-	<20110201194436.74826dd0.jhnikula@gmail.com>
-	<AANLkTimzjg3+yGwz1sa+dfWyrjaS1mO+zn_LT3hhDHdQ@mail.gmail.com>
-	<20110217234140.GH20795@atomide.com>
-	<20110218100822.751b28d5.jhnikula@gmail.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] ALSA: HDA: Do not announce false surround in
+	Conexant auto
+Date: Fri, 18 Feb 2011 09:33:55 +0100
+Message-ID: <4D5E2EF3.8020202@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20110218100822.751b28d5.jhnikula@gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, alsa-devel@alsa-project.org, b-cousson@ti.com, khilman@deeprootsystems.com, broonie@opensource.wolfsonmicro.com, paul@pwsan.com, p-basak2@ti.com, lrg@slimlogic.co.uk, linux-omap@vger.kernel.org, shubhrajyoti@ti.com, charu@ti.com
+Content-Type: multipart/mixed; boundary="------------060309080607070205030803"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9E5A4243B4
+	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2011 09:33:57 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This is a multi-part message in MIME format.
+--------------060309080607070205030803
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I'll send patch series in a short while.
+Without this patch, one line-out and one speaker and
+Conexant's auto parser would announce (non-working) surround
+capabilities.
 
--Kishon
+-- 
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
 
-On Fri, Feb 18, 2011 at 1:38 PM, Jarkko Nikula <jhnikula@gmail.com> wro=
-te:
-> On Thu, 17 Feb 2011 15:41:40 -0800
-> Tony Lindgren <tony@atomide.com> wrote:
->
->> > > Actually this part of code doesn't compile for CONFIG_ARCH_OMAP2=
- if
->> > > CONFIG_ARCH_OMAP3 is not set. Reason is that the buffer_size in =
-under
->> > > CONFIG_ARCH_OMAP3 compilation in struct omap_mcbsp_platform_data
->> > > definition.
->> > >
->> > > I think it's easiest if this patch just removes that conditional
->> > > compilation from struct omap_mcbsp_platform_data as it really do=
-esn't
->> > > save that much from non !OMAP3 builds.
->> >
->> > =A0 Thanks. Will fix it in the next version.
->>
->> Any news on updating this series?
->>
->> Note that you can now leave out the omap4 hwmod data as that has
->> been merged to omap-for-linus.
->>
-> My impression from last round was that there is not that many changes
-> required. Of course there must not have bisect issues like above, sho=
-uld
-> not break OMAP1 (which I think was addressed already) but otherwise I
-> think most of the issues were small.
->
-> Kevin had concerns about PM testing but I would not put that much
-> emphasis on that since the set should not make things any worse but
-> should make possible to go forward with PM.
->
-> --
-> Jarkko
->
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--------------060309080607070205030803
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Do-not-announce-false-surround-in-Conexant-.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Do-not-announce-false-surround-in-Conexant-.pa";
+ filename*1="tch"
+
+>From d7acab6cd1aa8be6a04d1c9a47d1802a39597a3e Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Wed, 16 Feb 2011 21:34:04 +0100
+Subject: [PATCH] ALSA: HDA: Do not announce false surround in Conexant auto
+
+Without this patch, one line-out and one speaker and
+Conexant's auto parser would announce (non-working) surround
+capabilities.
+
+BugLink: http://bugs.launchpad.net/bugs/721126
+Cc: stable@kernel.org
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_conexant.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index fbe97d3..029741f 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -3410,7 +3410,7 @@ static void cx_auto_parse_output(struct hda_codec *codec)
+ 		}
+ 	}
+ 	spec->multiout.dac_nids = spec->private_dac_nids;
+-	spec->multiout.max_channels = nums * 2;
++	spec->multiout.max_channels = spec->multiout.num_dacs * 2;
+ 
+ 	if (cfg->hp_outs > 0)
+ 		spec->auto_mute = 1;
+-- 
+1.7.1
+
+
+--------------060309080607070205030803
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------060309080607070205030803--
