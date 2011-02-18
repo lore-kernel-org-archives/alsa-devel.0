@@ -1,18 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v9 01/12] media: Media device node support
-Date: Fri, 18 Feb 2011 22:33:37 +0000
-Message-ID: <20110218223337.GC25168@sirena.org.uk>
-References: <1297686067-9666-1-git-send-email-laurent.pinchart@ideasonboard.com>
-	<1297686067-9666-2-git-send-email-laurent.pinchart@ideasonboard.com>
+Subject: [PATCH] ASoC: Mark WM8958 microphone detection
+	registers readable
+Date: Fri, 18 Feb 2011 14:51:53 -0800
+Message-ID: <1298069513-11003-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id D861124489
-	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2011 23:33:39 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1297686067-9666-2-git-send-email-laurent.pinchart@ideasonboard.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 050B92449B
+	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2011 23:56:12 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +19,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: alsa-devel@alsa-project.org, sakari.ailus@maxwell.research.nokia.com, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 14, 2011 at 01:20:56PM +0100, Laurent Pinchart wrote:
+So they show up in codec_reg.
 
-> +	  Enable the media controller API used to query media devices internal
-> +	  topology and configure it dynamically.
-> +
-> +	  This API is mostly used by camera interfaces in embedded platforms.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994-tables.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-I'd expect this comment is going to bitrot very soon once the framework
-goes in.
+diff --git a/sound/soc/codecs/wm8994-tables.c b/sound/soc/codecs/wm8994-tables.c
+index 68e9b02..42b3248 100644
+--- a/sound/soc/codecs/wm8994-tables.c
++++ b/sound/soc/codecs/wm8994-tables.c
+@@ -209,9 +209,9 @@ const struct wm8994_access_mask wm8994_access_masks[WM8994_CACHE_SIZE] = {
+ 	{ 0x0000, 0x0000 }, /* R205 */
+ 	{ 0x0000, 0x0000 }, /* R206 */
+ 	{ 0x0000, 0x0000 }, /* R207 */
+-	{ 0x0000, 0x0000 }, /* R208 */
+-	{ 0x0000, 0x0000 }, /* R209 */
+-	{ 0x0000, 0x0000 }, /* R210 */
++	{ 0xFFFF, 0xFFFF }, /* R208 */
++	{ 0xFFFF, 0xFFFF }, /* R209 */
++	{ 0xFFFF, 0xFFFF }, /* R210 */
+ 	{ 0x0000, 0x0000 }, /* R211 */
+ 	{ 0x0000, 0x0000 }, /* R212 */
+ 	{ 0x0000, 0x0000 }, /* R213 */
+-- 
+1.7.2.3
