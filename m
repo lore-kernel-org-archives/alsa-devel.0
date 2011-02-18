@@ -1,18 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 13/29] twl4030: mfd_cell is now implicitly
- available to drivers (v2)
-Date: Fri, 18 Feb 2011 08:44:14 +0200
-Message-ID: <4D5E153E.308@nokia.com>
-References: <1297998456-7615-1-git-send-email-dilinger@queued.net>
-	<1297998456-7615-14-git-send-email-dilinger@queued.net>
+Subject: Re: [PATCH] ASoC: Support direct microphone detection
+ IRQ
+Date: Fri, 18 Feb 2011 08:46:31 +0200
+Message-ID: <4D5E15C7.20602@nokia.com>
+References: <1298001983-8047-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-da02.nokia.com (smtp.nokia.com [147.243.128.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE50D2451F
-	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2011 07:44:21 +0100 (CET)
-In-Reply-To: <1297998456-7615-14-git-send-email-dilinger@queued.net>
+Received: from mgw-da01.nokia.com (smtp.nokia.com [147.243.128.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 39817103810
+	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2011 07:46:36 +0100 (CET)
+In-Reply-To: <1298001983-8047-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +21,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Andres Salomon <dilinger@queued.net>
-Cc: alsa-devel@alsa-project.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Samuel Ortiz <sameo@linux.intel.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 02/18/11 05:07, ext Andres Salomon wrote:
-> The cell's platform_data is now accessed with a helper function;
-> change clients to use that, and remove the now-unused data_size.
-> 
-> v2: add some missing mfd/core.h includes.
-> 
-> Signed-off-by: Andres Salomon <dilinger@queued.net>
-> ---
->  drivers/input/misc/twl4030-vibra.c |    3 ++-
->  drivers/mfd/twl4030-codec.c        |    2 --
->  sound/soc/codecs/twl4030.c         |    6 ++++--
->  3 files changed, 6 insertions(+), 5 deletions(-)
+On 02/18/11 06:06, ext Mark Brown wrote:
+> Allow direct routing of the WM8958 microphone detection signal to a GPIO
+> to be used, saving the need to demux the interrupt.
+> =
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  include/linux/mfd/wm8994/pdata.h |    5 +++
+>  sound/soc/codecs/wm8994.c        |   57 +++++++++++++++++++++++---------=
+-----
+>  2 files changed, 40 insertions(+), 22 deletions(-)
+
+Probably the commit title should contain wm8994 as well.
+First I thought that you are implementing soc wide abstraction...
+
+-- =
+
+P=E9ter
