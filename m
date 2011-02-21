@@ -1,8 +1,8 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: pci/hda/patch_via.c - broken between 2.6.36 and
  2.6.37 (bisected)
-Date: Mon, 21 Feb 2011 07:39:38 +0800
-Message-ID: <AANLkTikrdA4TM8oVddrgMRLcYJqSJvk5tW=9eY9L7oiY@mail.gmail.com>
+Date: Mon, 21 Feb 2011 08:24:59 +0800
+Message-ID: <AANLkTikmhR_3wCzJoUiQe3b8Ja9dADcAg-f=Hr5J__+4@mail.gmail.com>
 References: <ijqrmf$tlg$1@dough.gmane.org>
 	<AANLkTim-SMpK7ZFV1dn99v_KFeGYy2xNzLyzGzBuG-XC@mail.gmail.com>
 	<201102201439.54277.wolfgang.scheicher@gmail.com>
@@ -12,10 +12,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ey0-f178.google.com (mail-ey0-f178.google.com
 	[209.85.215.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id DD7892456A
-	for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2011 00:39:39 +0100 (CET)
-Received: by eya25 with SMTP id 25so802978eya.9
-	for <alsa-devel@alsa-project.org>; Sun, 20 Feb 2011 15:39:39 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id C694D1037FC
+	for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2011 01:25:57 +0100 (CET)
+Received: by eya25 with SMTP id 25so809301eya.9
+	for <alsa-devel@alsa-project.org>; Sun, 20 Feb 2011 16:25:55 -0800 (PST)
 In-Reply-To: <201102201439.54277.wolfgang.scheicher@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -73,35 +73,6 @@ List-Id: alsa-devel@alsa-project.org
 > Worf
 >
 
-
-http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=1564b2878f5cf160f60af99d4dbca1dd7809ee8a
-
-Smart 5.1 is for 3-jacks model, to reuse input pins as outputs.
-While off, they act as "line out" / "line in" / "mic in".
-While on, they acts as "line out" / "back left/right" / "center/lfe".
-
-If the driver use "Smart5.1 switch" for those 5-jacks model, you will need
-to modify the function is_smart51_pins()
-
-
-static int is_smart51_pins(struct via_spec *spec, hda_nid_t pin)
-{
-	const struct auto_pin_cfg *cfg = &spec->autocfg;
-	int i;
-        if (cfg->line_outs == 4)
-            return 0;
-	for (i = 0; i < cfg->num_inputs; i++) {
-		if (pin == cfg->inputs[i].pin) {
-                        switch(cfg->inputs[i].type){
-			case AUTO_PIN_LINE_IN:
-			        return (cfg->line_outs == 3 || cfg->line_outs == 1);
-                        case AUTO_PIN_MIC:
-                                if (
-strncmp(hda_get_autocfg_input_label(spec->codec,cfg,i),"Rear Mic",8)
-== 0 )
-			           return (cfg->line_outs == 1);
-                        }
-                }
-	}
-	return 0;
-}
+A better way is to disable the creation of smart5.1 switch when
+(cfg->line-outs != 1 ) and use "surround71 switch" to retask "line in" to
+side
