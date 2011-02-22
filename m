@@ -1,55 +1,49 @@
-From: pl bossart <bossart.nospam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: ALSA: usb-audio: fix oops due to cleanup race when disconnecting
-Date: Tue, 22 Feb 2011 14:18:41 -0600
-Message-ID: <AANLkTikcXPTZYYwYDunq4pJwzDhxSv5u++jEWN0RU4EQ@mail.gmail.com>
-References: <Pine.LNX.4.44L0.1102111737280.13739-100000@netrider.rowland.org>
-	<4D58EDA9.2020805@ladisch.de>
-	<s5hoc6ejz2j.wl%tiwai@suse.de>
-	<20110216235422.GB6375@xanatos>
-	<s5hk4gyy9m1.wl%tiwai@suse.de>
-	<4D63800E.30509@ladisch.de>
-	<s5hfwrg9zpv.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Pass the jack to jack notifiers
+Date: Tue, 22 Feb 2011 20:44:22 +0000
+Message-ID: <1298407462-2311-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <s5hfwrg9zpv.wl%tiwai-l3A5Bk7waGM@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Sarah Sharp <sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 027FC1037FB
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2011 21:44:24 +0100 (CET)
+In-Reply-To: <>
+References: <>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
->> When a USB audio device is disconnected, snd_usb_audio_disconnect()
->> kills all audio URBs. =A0At the same time, the application, after be=
-ing
->> notified of the disconnection, might close the device, in which case
->> ALSA calls the .hw_free callback, which should free the URBs too.
->>
->> Commit de1b8b93a0ba prevented snd_usb_hw_free() from freeing the URB=
-s to
->> avoid a hang that resulted from this race, but this introduced anoth=
-er
->> race because the URB callbacks could now be executed after
->> snd_usb_hw_free() has returned, and try to access already freed data=
-=2E
->>
->> Fix the first race by introducing a mutex to serialize the disconnec=
-t
->> callback and all PCM callbacks that manage URBs (hw_free and hw_para=
-ms).
->>
->> Reported-by: Pierre-Louis Bossart <pierre-louis.bossart-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
->> [CL: also serialize hw_params callback]
->> Signed-off-by: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
->
-> Ah, I forgot to put my sign-off since I was waiting for any test
-> result... =A0Has anyone tried it?
+We're currently not passing anything and this will make the card and so on
+more discoverable.
 
-Doesn't work for me. same oops as before. Either I made a mistake when
-merging this patch manually (there were some rejects), or the problem
-is still there.
--Pierre
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/soc-jack.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
+index 1382251..fcab80b 100644
+--- a/sound/soc/soc-jack.c
++++ b/sound/soc/soc-jack.c
+@@ -101,7 +101,7 @@ void snd_soc_jack_report(struct snd_soc_jack *jack, int status, int mask)
+ 	}
+ 
+ 	/* Report before the DAPM sync to help users updating micbias status */
+-	blocking_notifier_call_chain(&jack->notifier, status, NULL);
++	blocking_notifier_call_chain(&jack->notifier, status, jack);
+ 
+ 	snd_soc_dapm_sync(dapm);
+ 
+-- 
+1.7.2.3
