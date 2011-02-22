@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC updates for 2.6.38
-Date: Tue, 22 Feb 2011 04:49:10 +0000
-Message-ID: <20110222044910.GE18299@sirena.org.uk>
-References: <20110218041933.GB6069@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ASoC: Fix WM8958 default microphone
+	detection argument ordering
+Date: Tue, 22 Feb 2011 04:52:05 +0000
+Message-ID: <1298350326-15840-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id DF040244FB
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2011 05:49:12 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20110218041933.GB6069@opensource.wolfsonmicro.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3B72C244FD
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2011 05:52:08 +0100 (CET)
+In-Reply-To: <>
+References: <>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,53 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 17, 2011 at 08:19:34PM -0800, Mark Brown wrote:
-> The following changes since commit 6ed8f1485fc82d44ac464bc84a7dcdddd1fa096f:
-> 
->   ASoC: Improve WM8994 digital power sequencing (2011-02-03 20:17:13 +0000)
-> 
-> are available in the git repository at:
->   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.38
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm8994.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
 
-Any updates on this?  Some of these fixes are fairly urgent.
-
-> These are all driver specific with the exception of the two commits from
-> me.  These are both small and focused changes which fix obvious issues
-> for some systems, both being things that the framework should clearly
-> have been doing but had omitted to do.
-
-Ping?
-
-> Dimitris Papastamos (2):
->       ASoC: WM8994: Improve robustness in some use cases
->       ASoC: WM8994: Improve playback robustness
-> 
-> Janusz Krzysztofik (1):
->       ASoC: CX20442: fix wrong reg_cache_default content
-> 
-> Mark Brown (2):
->       ASoC: Sync initial widget state with hardware
->       ASoC: Ensure supplies are maintained for force enabled widgets
-> 
-> Stephen Warren (2):
->       ASoC: WM8903: Fix mic detection register definitions
->       ASoC: WM8903: Fix mic detection enable logic
-> 
->  include/sound/wm8903.h     |   10 +--
->  sound/soc/codecs/cx20442.c |    2 +-
->  sound/soc/codecs/wm8903.c  |    2 +-
->  sound/soc/codecs/wm8994.c  |  197 ++++++++++++++++++++++++++++++++++++++++---
->  sound/soc/soc-dapm.c       |   23 +++++-
->  5 files changed, 210 insertions(+), 24 deletions(-)
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
-
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 4df047e..5f16870 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -3012,11 +3012,10 @@ static void wm8958_default_micdet(u16 status, void *data)
+ 		report |= SND_JACK_BTN_5;
+ 
+ done:
+-	snd_soc_jack_report(wm8994->micdet[0].jack,
++	snd_soc_jack_report(wm8994->micdet[0].jack, report,
+ 			    SND_JACK_BTN_0 | SND_JACK_BTN_1 | SND_JACK_BTN_2 |
+ 			    SND_JACK_BTN_3 | SND_JACK_BTN_4 | SND_JACK_BTN_5 |
+-			    SND_JACK_MICROPHONE | SND_JACK_VIDEOOUT,
+-			    report);
++			    SND_JACK_MICROPHONE | SND_JACK_VIDEOOUT);
+ }
+ 
+ /**
 -- 
-"You grabbed my hand and we fell into it, like a daydream - or a fever."
+1.7.2.3
