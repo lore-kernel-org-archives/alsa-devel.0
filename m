@@ -1,20 +1,21 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Correct definition of
- WM8903_VMID_RES_5K
-Date: Tue, 22 Feb 2011 09:42:02 +0000
-Message-ID: <1298367722.3353.12.camel@odin>
+Subject: Re: [PATCH] ASoC: Support configuration of WM8958
+ microphone bias analogue parameters
+Date: Tue, 22 Feb 2011 09:42:20 +0000
+Message-ID: <1298367740.3353.13.camel@odin>
 References: <>
-	<1298314655-5596-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+	<1298337360-12614-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C32510386A
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2011 10:42:05 +0100 (CET)
-Received: by wwe15 with SMTP id 15so6817981wwe.20
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2011 01:42:05 -0800 (PST)
-In-Reply-To: <1298314655-5596-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 10FA410386A
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2011 10:42:24 +0100 (CET)
+Received: by wyb28 with SMTP id 28so1936313wyb.38
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2011 01:42:23 -0800 (PST)
+In-Reply-To: <1298337360-12614-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,24 +29,15 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-02-21 at 18:57 +0000, Mark Brown wrote:
+On Tue, 2011-02-22 at 01:16 +0000, Mark Brown wrote:
+> The WM8958 has a different microphone bias architecture to WM8994 so needs
+> different configuration to WM8994. Support this in platform data.
+> 
 > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 > ---
->  sound/soc/codecs/wm8903.h |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wm8903.h b/sound/soc/codecs/wm8903.h
-> index 7d96646..ed4cb5b 100644
-> --- a/sound/soc/codecs/wm8903.h
-> +++ b/sound/soc/codecs/wm8903.h
-> @@ -183,7 +183,7 @@ extern int wm8903_mic_detect(struct snd_soc_codec *codec,
->  
->  #define WM8903_VMID_RES_50K                          2
->  #define WM8903_VMID_RES_250K                         3
-> -#define WM8903_VMID_RES_5K                           4
-> +#define WM8903_VMID_RES_5K                           6
->  
->  /*
->   * R8 (0x08) - Analogue DAC 0
+>  include/linux/mfd/wm8994/pdata.h     |    7 +++++--
+>  include/linux/mfd/wm8994/registers.h |    2 ++
+>  sound/soc/codecs/wm8994.c            |    7 +++++++
+>  3 files changed, 14 insertions(+), 2 deletions(-)
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
