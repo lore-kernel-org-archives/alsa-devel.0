@@ -1,67 +1,57 @@
-From: Sarah Sharp <sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+From: pl bossart <bossart.nospam@gmail.com>
 Subject: Re: ALSA: usb-audio: fix oops due to cleanup race when
- disconnecting
-Date: Tue, 22 Feb 2011 13:38:18 -0800
-Message-ID: <20110222213818.GA3141@xanatos>
+	disconnecting
+Date: Tue, 22 Feb 2011 16:19:20 -0600
+Message-ID: <AANLkTi=tYR1daV8zWschBikOkcOgWk864n+b-30q4sSD@mail.gmail.com>
 References: <Pine.LNX.4.44L0.1102111737280.13739-100000@netrider.rowland.org>
- <4D58EDA9.2020805@ladisch.de>
- <s5hoc6ejz2j.wl%tiwai@suse.de>
- <20110216235422.GB6375@xanatos>
- <s5hk4gyy9m1.wl%tiwai@suse.de>
- <4D63800E.30509@ladisch.de>
- <s5hfwrg9zpv.wl%tiwai@suse.de>
- <AANLkTikcXPTZYYwYDunq4pJwzDhxSv5u++jEWN0RU4EQ@mail.gmail.com>
+	<4D58EDA9.2020805@ladisch.de> <s5hoc6ejz2j.wl%tiwai@suse.de>
+	<20110216235422.GB6375@xanatos> <s5hk4gyy9m1.wl%tiwai@suse.de>
+	<4D63800E.30509@ladisch.de> <s5hfwrg9zpv.wl%tiwai@suse.de>
+	<AANLkTikcXPTZYYwYDunq4pJwzDhxSv5u++jEWN0RU4EQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <AANLkTikcXPTZYYwYDunq4pJwzDhxSv5u++jEWN0RU4EQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: pl bossart <bossart.nospam-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 500FC103804
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2011 23:19:22 +0100 (CET)
+Received: by yxp4 with SMTP id 4so1162549yxp.38
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2011 14:19:21 -0800 (PST)
+In-Reply-To: <AANLkTikcXPTZYYwYDunq4pJwzDhxSv5u++jEWN0RU4EQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Sarah Sharp <sarah.a.sharp@linux.intel.com>, Alan Stern <stern@rowland.harvard.edu>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 22, 2011 at 02:18:41PM -0600, pl bossart wrote:
-> >> When a USB audio device is disconnected, snd_usb_audio_disconnect(=
-)
-> >> kills all audio URBs. =A0At the same time, the application, after =
-being
-> >> notified of the disconnection, might close the device, in which ca=
-se
-> >> ALSA calls the .hw_free callback, which should free the URBs too.
-> >>
-> >> Commit de1b8b93a0ba prevented snd_usb_hw_free() from freeing the U=
-RBs to
-> >> avoid a hang that resulted from this race, but this introduced ano=
-ther
-> >> race because the URB callbacks could now be executed after
-> >> snd_usb_hw_free() has returned, and try to access already freed da=
-ta.
-> >>
-> >> Fix the first race by introducing a mutex to serialize the disconn=
-ect
-> >> callback and all PCM callbacks that manage URBs (hw_free and hw_pa=
-rams).
-> >>
-> >> Reported-by: Pierre-Louis Bossart <pierre-louis.bossart-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-> >> [CL: also serialize hw_params callback]
-> >> Signed-off-by: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>
-> >
-> > Ah, I forgot to put my sign-off since I was waiting for any test
-> > result... =A0Has anyone tried it?
->=20
-> Doesn't work for me. same oops as before. Either I made a mistake whe=
-n
+>> Ah, I forgot to put my sign-off since I was waiting for any test
+>> result... =A0Has anyone tried it?
+>
+> Doesn't work for me. same oops as before. Either I made a mistake when
 > merging this patch manually (there were some rejects), or the problem
 > is still there.
 
-Which kernel version were you trying to patch?  Was it a vanilla kernel=
-,
-or did you have some other changes applied?
+Added some additional traces, the dereference takes place before the
+mutex is unlocked.
 
-Sarah Sharp
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+usb 3-1: USB disconnect, address 5
+ALSA card.c:556: locking USB shutdown mutex
+ALSA urb.c:492: frame 0 active: -84
+ALSA urb.c:197: cannot submit urb (err =3D -19)
+ALSA urb.c:492: frame 0 active: -84
+ALSA urb.c:197: cannot submit urb (err =3D -19)
+ALSA urb.c:492: frame 0 active: -84
+ALSA urb.c:197: cannot submit urb (err =3D -19)
+ALSA urb.c:492: frame 0 active: -84
+ALSA urb.c:197: cannot submit urb (err =3D -19)
+ALSA urb.c:186: NULL substream (subs->running 0)
+ALSA urb.c:186: NULL substream (subs->running 0)
+ALSA card.c:575: UNlocking USB shutdown mutex
