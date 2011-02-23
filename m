@@ -1,10 +1,17 @@
-From: =?UTF-8?Q?=C5=81ukasz_Wojni=C5=82owicz?= <lukasz.wojnilowicz@gmail.com>
-Subject: ALSA: hda - 4930g add internal lfe slider
-Date: Wed, 23 Feb 2011 18:50:20 +0100
-Message-ID: <1298483420.2456.8.camel@localhost.localdomain>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: : Question ASoC driver without Codec driver?
+Date: Wed, 23 Feb 2011 20:08:57 +0000
+Message-ID: <20110223200857.GB2534@opensource.wolfsonmicro.com>
+References: <2A84145621092446B6659B8A0F28E26F4703F09682@irsmsx501.ger.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-xh+zD/dD9g2bzHiYW/Jd"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E696B24387
+	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2011 21:08:37 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <2A84145621092446B6659B8A0F28E26F4703F09682@irsmsx501.ger.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -14,83 +21,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org
+To: "Bensaid, Selma" <selma.bensaid@intel.com>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Benavoli, PatrickX" <patrickx.benavoli@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Feb 23, 2011 at 09:29:41AM +0000, Bensaid, Selma wrote:
 
---=-xh+zD/dD9g2bzHiYW/Jd
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> I'm trying to find out if it's possible to implement an ASoC driver 
+> without a codec driver.
 
-Hello,
-Lately I sent patch that switched lfe with side in mixer for
-acer-aspire-4930g. Then I connected 5.1 speaker system and noticed that
-lfe slider wasn't working and that old lfe slider worked. What I'm doing
-now is:
+Obviously, platform and CPU drivers have no CODEC dependencies.
 
-- reverting old patch
-- adding internal lfe slider
-- removing side as it is superfluous (ALC888S-VC is 7.1 but in fact
-laptop can only do 5.1 and it is so in drivers for MS Windows)
+> I'm implementing a ASoC driver for BT/FM WL1273, where the FM WL1273 control 
+> interface is based on V4L2 since since we use the Combined Interface 
+> Mode (The host controls both the BT and the FM Radio through the BT HCI host interface).
 
-Cheers,
-=C5=81ukasz
-
-
---=-xh+zD/dD9g2bzHiYW/Jd
-Content-Disposition: attachment; filename="patch_realtek.patch"
-Content-Type: text/x-patch; name="patch_realtek.patch"; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-From: =C5=81ukasz Wojni=C5=82owicz <lukasz.wojnilowicz@gmail.com>
-Subject: ALSA: hda - 4930g add internal lfe slider
-
-Signed-off-by: =C5=81ukasz Wojni=C5=82owicz <lukasz.wojnilowicz@gmail.com=
->
-
---- patch_realtek.c	2011-02-22 08:21:56.000000000 +0100
-+++ patch_realtek.c	2011-02-23 18:19:19.203076469 +0100
-@@ -2295,13 +2295,13 @@
- 	HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, HDA_INPUT),
- 	HDA_CODEC_VOLUME("Surround Playback Volume", 0x0d, 0x0, HDA_OUTPUT),
- 	HDA_BIND_MUTE("Surround Playback Switch", 0x0d, 2, HDA_INPUT),
--	HDA_CODEC_VOLUME_MONO("Center Playback Volume", 0x0f, 2, 0x0,
-+	HDA_CODEC_VOLUME_MONO("Center Playback Volume", 0x0e, 1, 0x0,
- 		HDA_OUTPUT),
--	HDA_BIND_MUTE_MONO("Center Playback Switch", 0x0f, 2, 2, HDA_INPUT),
--	HDA_CODEC_VOLUME_MONO("LFE Playback Volume", 0x0f, 1, 0x0, HDA_OUTPUT),
--	HDA_BIND_MUTE_MONO("LFE Playback Switch", 0x0f, 1, 2, HDA_INPUT),
--	HDA_CODEC_VOLUME("Side Playback Volume", 0x0e, 0x0, HDA_OUTPUT),
--	HDA_BIND_MUTE("Side Playback Switch", 0x0e, 2, HDA_INPUT),
-+	HDA_BIND_MUTE_MONO("Center Playback Switch", 0x0e, 1, 2, HDA_INPUT),
-+	HDA_CODEC_VOLUME_MONO("LFE Playback Volume", 0x0e, 2, 0x0, HDA_OUTPUT),
-+	HDA_BIND_MUTE_MONO("LFE Playback Switch", 0x0e, 2, 2, HDA_INPUT),
-+	HDA_CODEC_VOLUME_MONO("Internal LFE Playback Volume", 0x0f, 1, 0x0, HDA=
-_OUTPUT),
-+	HDA_BIND_MUTE_MONO("Internal LFE Playback Switch", 0x0f, 1, 2, HDA_INPU=
-T),
- 	HDA_CODEC_VOLUME("CD Playback Volume", 0x0b, 0x04, HDA_INPUT),
- 	HDA_CODEC_MUTE("CD Playback Switch", 0x0b, 0x04, HDA_INPUT),
- 	HDA_CODEC_VOLUME("Line Playback Volume", 0x0b, 0x02, HDA_INPUT),
-@@ -2312,7 +2312,6 @@
- 	{ } /* end */
- };
-=20
--
- static struct snd_kcontrol_new alc889_acer_aspire_8930g_mixer[] =3D {
- 	HDA_CODEC_VOLUME("Front Playback Volume", 0x0c, 0x0, HDA_OUTPUT),
- 	HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, HDA_INPUT),
-
---=-xh+zD/dD9g2bzHiYW/Jd
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---=-xh+zD/dD9g2bzHiYW/Jd--
+You need to implement a CODEC driver for this but there's no reason for
+it to do anything except expose the capabilities of the device - there's
+several in tree examples you can look at.  Remember that we still need
+to know how to configure the other drivers that talk to the chip, even
+if the chip itself is unconfigurable.
