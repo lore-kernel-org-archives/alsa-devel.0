@@ -1,20 +1,20 @@
 From: Zeng Zhaoming <zhaoming.zeng@freescale.com>
 Subject: Re: [PATCH v4] ASoC: Add Freescale SGTL5000 codec
 	support
-Date: Wed, 23 Feb 2011 08:00:40 +0800
-Message-ID: <20110223000040.GA1555@ubuntu.localdomain>
+Date: Wed, 23 Feb 2011 08:19:50 +0800
+Message-ID: <20110223001950.GB1555@ubuntu.localdomain>
 References: <1298246965-22575-1-git-send-email-zhaoming.zeng@freescale.com>
-	<20110222134319.GA7381@pengutronix.de>
+	<87r5az5h0b.fsf@lebrac.rtp-net.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ch1outboundpool.messaging.microsoft.com
-	(ch1outboundpool.messaging.microsoft.com [216.32.181.181])
-	by alsa0.perex.cz (Postfix) with ESMTP id 654C910380B
-	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2011 09:00:58 +0100 (CET)
+Received: from DB3EHSOBE006.bigfish.com (db3ehsobe006.messaging.microsoft.com
+	[213.199.154.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id 381F4103810
+	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2011 09:20:26 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20110222134319.GA7381@pengutronix.de>
+In-Reply-To: <87r5az5h0b.fsf@lebrac.rtp-net.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,81 +24,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, timur.tabi@gmail.com, zengzm.kernel@gmail.com, linuxzsc@gmail.com, arnaud.patard@rtp-net.org, lrg@slimlogic.co.uk
+To: Arnaud Patard <arnaud.patard@rtp-net.org>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, timur.tabi@gmail.com, zengzm.kernel@gmail.com, linuxzsc@gmail.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue 2011-02-22 14:43:19, Sascha Hauer wrote:
-> Hi Zeng,
+On Wed 2011-02-23 08:47:48, Arnaud Patard wrote:
+> <zhaoming.zeng@freescale.com> writes:
 > 
-> I finally got some time testing this. I did not get it to work
-> yet, but some comments inline.
+> Hi,
 > 
-> Sascha
+> [...]
 > 
-> On Mon, Feb 21, 2011 at 08:09:25AM +0800, zhaoming.zeng@freescale.com wrote:
+[...]
 > > +
-> > +/* regulator supplies for sgtl5000, VDDD is an option external supply */
-> > +enum sgtl5000_regulator_supplies {
-> > +	VDDA,
-> > +	VDDIO,
-> > +	VDDD,
-> > +	SGTL5000_SUPPLY_NUM
-> > +};
-> > +
-> > +/* vddd is optinal supply */
+> > +	/* if using pll, please check manual 6.4.2 for detail */
+> > +	if ((clk_ctl & SGTL5000_MCLK_FREQ_MASK) == SGTL5000_MCLK_FREQ_PLL) {
+> > +		u64 out, t;
+> > +		int div2;
+> > +		int pll_ctl;
+> > +		unsigned int in, int_div, frac_div;
 > 
-> Should be 'optional'
+> btw, I don't know for other developers, but I don't like variables
+> declared like this.
 > 
 > > +
-> > +	/* set devided factor of frame clock */
-> 
-> 'divided'
-> 
-> > +	switch (sys_fs / frame_rate) {
-> > +	case 4:
-> > +		clk_ctl |= SGTL5000_RATE_MODE_DIV_4 << SGTL5000_RATE_MODE_SHIFT;
-> > +		break;
-> > +	case 2:
-> > +		clk_ctl |= SGTL5000_RATE_MODE_DIV_2 << SGTL5000_RATE_MODE_SHIFT;
-> > +		break;
-> > +	case 1:
-> > +		clk_ctl |= SGTL5000_RATE_MODE_DIV_1 << SGTL5000_RATE_MODE_SHIFT;
-> > +		break;
-> > +	default:
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	/* set the sys_fs accroding to frame rate */
-> 
-> Should be 'according'. This typo is present three more times in the
-> patch.
-> 
-sorry for so many typos, I will enable spell check in my emacs configure.
-
-> If one branch of an if statement has braces than the other should
-> have them too.
-> 
-> > +			pr_err("%s: PLL not supported in slave mode\n",
-> > +				__func__);
-> 
-> should be dev_err like already used elsewhere in this function.
->
-I will fix it in v5 patch.
-> > +
-> > +static int sgtl5000_enable_regulators(struct snd_soc_codec *codec)
-> > +{
-> > +	u16 reg;
-> > +	int ret;
-> > +	int rev, i;
-> > +	int external_vddd = 0;
-> > +	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
-> > +
-> > +	for (i = 0; i < ARRAY_SIZE(sgtl5000->supplies); i++)
+> > +		if (sgtl5000->sysclk > 17000000) {
+> > +			div2 = 1;
+> > +			in = sgtl5000->sysclk / 2;
+> > +		} else {
+> > +			div2 = 0;
+> > +			in = sgtl5000->sysclk;
 > > +		sgtl5000->supplies[i].supply = supply_names[i];
 > > +
 > > +	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(sgtl5000->supplies),
 > > +				sgtl5000->supplies);
+> 
+> so here, you're calling '_get' for vdda, vddd, vddio.
+> 
 > > +	if (!ret)
 > > +		external_vddd = 1;
 > > +	else {
@@ -159,6 +121,10 @@ I will fix it in v5 patch.
 > > +					sgtl5000->supplies);
 > > +		/* free VDDD regulator */
 > > +		regulator_put(sgtl5000->supplies[VDDD].consumer);
+> 
+> so you call put for vddd only and in regulator_put there's a line doing
+> kfree(....consumer) so now sgtl5000->supplies[VDDD].consumer is null.
+> 
 > > +
 > > +		sgtl5000->supplies[VDDD].supply = LDO_CONSUMER_NAME;
 > > +
@@ -170,16 +136,16 @@ I will fix it in v5 patch.
 > > +				ARRAY_SIZE(sgtl5000->supplies),
 > > +				sgtl5000->supplies);
 > 
-> If I understand this correctly you want to replace VDDD with the just
-> registered regulator. You freed one regulator from the array, so
-> instead of requesting them all again this should be:
-> 
-> 		sgtl5000->supplies[VDDD].consumer =
-> 			regulator_get(codec->dev, sgtl5000->supplies[VDDD].supply);
+> and here you're calling 'get' for vdda, vddio and vddd_lo. This means
+> that in this code path, you're requesting 2 times vdda/vddio. It's a
+> bug. You should call only regulator_get for vddd_lo and set
+> sgtl5000->supplies[VDDD].consumer in case of success. If you don't set
+> it, calling regulator_bulk_enable will result in a oops as .consumer is
+> null.
 >
-You are right. I prefer to using regulator_bulk_free() to
-avoid accessing data structure of regulator_bulk_data.
-
+sorry, my test case not cover this code. what about regulator_bulk_free()
+instead of regulator_put(). This aligns to regulator bulk way.
+> 
 > > +		if (ret) {
 > > +			ldo_regulator_remove(codec);
 > > +			dev_err(codec->dev,
@@ -208,18 +174,97 @@ avoid accessing data structure of regulator_bulk_data.
 > > +
 > > +}
 > > +static int sgtl5000_probe(struct snd_soc_codec *codec)
-> 
-> please add a blank line between two functions.
-> 
 > > +{
 > > +	int ret;
 > > +
+> > +	/* setup i2c data ops */
+> > +	ret = snd_soc_codec_set_cache_io(codec, 16, 16, SND_SOC_I2C);
+> > +	if (ret < 0) {
+> > +		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = sgtl5000_enable_regulators(codec);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* power up sgtl5000 */
+> > +	ret = sgtl5000_set_power_regs(codec);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* enable small pop, introduce 400ms delay in turning off */
+> > +	snd_soc_update_bits(codec, SGTL5000_CHIP_REF_CTRL,
+> > +				SGTL5000_SMALL_POP,
+> > +				SGTL5000_SMALL_POP);
+> > +
+> > +	/* disable short cut detector */
+> > +	snd_soc_write(codec, SGTL5000_CHIP_SHORT_CTRL, 0);
+> > +
+> > +	/*
+> > +	 * set i2s as default input of sound switch
+> > +	 * TODO: add sound switch to control and dapm widge.
+> > +	 */
+> > +	snd_soc_write(codec, SGTL5000_CHIP_SSS_CTRL,
+> > +			SGTL5000_DAC_SEL_I2S_IN << SGTL5000_DAC_SEL_SHIFT);
+> > +	snd_soc_write(codec, SGTL5000_CHIP_DIG_POWER,
+> > +			SGTL5000_ADC_EN | SGTL5000_DAC_EN);
+> > +
+> > +	/* enable dac volume ramp by default */
+> > +	snd_soc_write(codec, SGTL5000_CHIP_ADCDAC_CTRL,
+> > +			SGTL5000_DAC_VOL_RAMP_EN |
+> > +			SGTL5000_DAC_MUTE_RIGHT |
+> > +			SGTL5000_DAC_MUTE_LEFT);
+> > +
+> > +	snd_soc_write(codec, SGTL5000_CHIP_PAD_STRENGTH, 0x015f);
+> > +
+> > +	snd_soc_write(codec, SGTL5000_CHIP_ANA_CTRL,
+> > +			SGTL5000_HP_ZCD_EN |
+> > +			SGTL5000_ADC_ZCD_EN);
+> > +
+> > +	snd_soc_write(codec, SGTL5000_CHIP_MIC_CTRL, 0);
+> > +
+> > +	/*
+> > +	 * disable DAP
+> > +	 * TODO:
+> > +	 * Enable DAP in kcontrol and dapm.
+> > +	 */
+> > +	snd_soc_write(codec, SGTL5000_DAP_CTRL, 0);
+> > +
+> > +	/* leading to standby state */
+> > +	ret = sgtl5000_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	snd_soc_add_controls(codec, sgtl5000_snd_controls,
+> > +			     ARRAY_SIZE(sgtl5000_snd_controls));
+> > +
+> > +	snd_soc_dapm_new_controls(&codec->dapm, sgtl5000_dapm_widgets,
+> > +				  ARRAY_SIZE(sgtl5000_dapm_widgets));
+> > +
+> > +	snd_soc_dapm_add_routes(&codec->dapm, audio_map,
+> > +				ARRAY_SIZE(audio_map));
+> > +
+> > +	snd_soc_dapm_new_widgets(&codec->dapm);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int sgtl5000_remove(struct snd_soc_codec *codec)
+> > +{
+> > +	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
+> > +
+> > +	sgtl5000_set_bias_level(codec, SND_SOC_BIAS_OFF);
+> > +
+> > +	snd_soc_dapm_free(&codec->dapm);
 > 
-> Sascha
+> someone will have to check but iirc, the core is calling
+> snd_soc_dapm_free() for you after calling the remove() hook.
+> 
 >
+You are right, I'm not notice this changes. It is better to
+let ASoC code to free it.
+
+> Arnaud
+
 Thanks.
-> -- 
-> Pengutronix e.K.                           |                             |
-> Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-> Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
