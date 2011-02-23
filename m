@@ -1,14 +1,11 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 3/8] ALSA: hdspm - Restrict channel count on
-	RME AES/AES32
-Date: Wed, 23 Feb 2011 11:43:10 +0100
-Message-ID: <1298457795-28114-4-git-send-email-adi@drcomp.erfurt.thur.de>
-References: <1298457795-28114-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 0/8] Fixes for HDSPM, especially AES(32)
+Date: Wed, 23 Feb 2011 11:43:07 +0100
+Message-ID: <1298457795-28114-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1298457795-28114-1-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,106 +19,29 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Without calling an appropriate rule, AES/AES32 cards would announce a
-theoretical channel count of 64 (HDSPM_MAX_CHANNELS), leading to the
-already known bug:
+Hi!
 
-[37422.640481] ------------[ cut here ]------------
-[37422.640487] WARNING: at sound/pci/rme9652/hdspm.c:5449
-snd_hdspm_ioctl+0x18f/0x202 [snd_hdspm]()
-[37422.640489] Hardware name: PRIMERGY RX100 S6
-[37422.640490] BUG? (info->channel >= hdspm->max_channels_in)
-[37422.640492] Modules linked in: snd_hdspm snd_seq_midi ipmi_watchdog
-ipmi_poweroff ipmi_si ipmi_devintf ipmi_msghandler i2c_i801 e1000e
-snd_rawmidi power_meter [last unloaded: snd_hdspm]
-[37422.640501] Pid: 22231, comm: jackd Tainted: G      D W
-2.6.36-gentoo-r5 #5
-[37422.640502] Call Trace:
-[37422.640508]  [<ffffffff8103db3a>] warn_slowpath_common+0x80/0x98
-[37422.640511]  [<ffffffff8103dbe6>] warn_slowpath_fmt+0x41/0x43
-[37422.640514]  [<ffffffff81034306>] ? get_parent_ip+0x11/0x42
-[37422.640518]  [<ffffffffa0055763>] snd_hdspm_ioctl+0x18f/0x202
-[snd_hdspm]
-[37422.640522]  [<ffffffff813fd626>] snd_pcm_channel_info+0x73/0x7c
-[37422.640525]  [<ffffffff814001e9>] snd_pcm_common_ioctl1+0x326/0xb01
-[37422.640527]  [<ffffffff81034306>] ? get_parent_ip+0x11/0x42
-[37422.640531]  [<ffffffff8105be6c>] ? __srcu_read_unlock+0x3b/0x59
-[37422.640533]  [<ffffffff81400bce>] snd_pcm_capture_ioctl1+0x20a/0x227
-[37422.640537]  [<ffffffff811e599c>] ? file_has_perm+0x90/0x9e
-[37422.640540]  [<ffffffff81400c15>] snd_pcm_capture_ioctl+0x2a/0x2e
-[37422.640543]  [<ffffffff810f2c69>] do_vfs_ioctl+0x404/0x453
-[37422.640546]  [<ffffffff810f2d09>] sys_ioctl+0x51/0x74
-[37422.640549]  [<ffffffff81002aab>] system_call_fastpath+0x16/0x1b
-[37422.640552] ---[ end trace 0cd919cd68118082 ]---
 
-We already have all the right values in place, we simply have to inform
-the upper layers about this restriction.
+Florian Faber, Fredrik Lingvall and me have gone through an e-mail debug
+session during the past few weeks.
 
-Note that snd_hdspm_hw_rule_rate_out_channels and
-snd_hdspm_hw_rule_rate_in_channels must not be called on AES32, because
-the channel count is always 16, no matter of the samplerate in use.
+Here's our result containing several fixes for RME cards.
 
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 509a35a..17939b9 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -5836,17 +5836,19 @@ static int snd_hdspm_playback_open(struct snd_pcm_substream *substream)
- 		snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
- 				&hdspm_hw_constraints_aes32_sample_rates);
- 	} else {
--		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
--				snd_hdspm_hw_rule_out_channels, hdspm,
--				SNDRV_PCM_HW_PARAM_CHANNELS, -1);
--		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
--				snd_hdspm_hw_rule_out_channels_rate, hdspm,
--				SNDRV_PCM_HW_PARAM_RATE, -1);
--
- 		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
- 				snd_hdspm_hw_rule_rate_out_channels, hdspm,
- 				SNDRV_PCM_HW_PARAM_CHANNELS, -1);
- 	}
-+
-+	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+			snd_hdspm_hw_rule_out_channels, hdspm,
-+			SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+
-+	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+			snd_hdspm_hw_rule_out_channels_rate, hdspm,
-+			SNDRV_PCM_HW_PARAM_RATE, -1);
-+
- 	return 0;
- }
- 
-@@ -5904,17 +5906,19 @@ static int snd_hdspm_capture_open(struct snd_pcm_substream *substream)
- 		snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
- 				&hdspm_hw_constraints_aes32_sample_rates);
- 	} else {
--		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
--				     snd_hdspm_hw_rule_in_channels, hdspm,
--				     SNDRV_PCM_HW_PARAM_CHANNELS, -1);
--		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
--				    snd_hdspm_hw_rule_in_channels_rate, hdspm,
--				    SNDRV_PCM_HW_PARAM_RATE, -1);
--
- 		snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
--				    snd_hdspm_hw_rule_rate_in_channels, hdspm,
--				    SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+				snd_hdspm_hw_rule_rate_in_channels, hdspm,
-+				SNDRV_PCM_HW_PARAM_CHANNELS, -1);
- 	}
-+
-+	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+			snd_hdspm_hw_rule_in_channels, hdspm,
-+			SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+
-+	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+			snd_hdspm_hw_rule_in_channels_rate, hdspm,
-+			SNDRV_PCM_HW_PARAM_RATE, -1);
-+
- 	return 0;
- }
- 
+Cheers
+
+Adrian Knoth (8):
+  ALSA: hpdsm - RME AES(32): Fix missing channel mappings
+  ALSA: hdspm - Fix buffer handling on RME MADI/MADIface/AES(32)
+  ALSA: hdspm - Restrict channel count on RME AES/AES32
+  ALSA: hdspm - Fix DS/QS output channel mappings on RME MADI/MADIface
+  ALSA: hdspm - Remove input selector on MADIface
+  ALSA: hdspm - fix sync check on AES32
+  ALSA: hdspm - prevent reading unitialized stack memory
+  ALSA: hdspm - Fix lock/sync reporting on MADI and AES32
+
+ sound/pci/rme9652/hdspm.c |  130 +++++++++++++++++++++++++++++++++++---------
+ 1 files changed, 103 insertions(+), 27 deletions(-)
+
 -- 
 1.7.2.3
