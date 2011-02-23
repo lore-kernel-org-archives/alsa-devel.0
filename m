@@ -1,8 +1,8 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 7/8] ALSA: hdspm - prevent reading unitialized
-	stack memory
-Date: Wed, 23 Feb 2011 11:43:14 +0100
-Message-ID: <1298457795-28114-8-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 5/8] ALSA: hdspm - Remove input selector on
+	MADIface
+Date: Wed, 23 Feb 2011 11:43:12 +0100
+Message-ID: <1298457795-28114-6-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <1298457795-28114-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,28 +22,25 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Original patch by Dan Rosenberg <drosenberg@vsecurity.com> under commit
-e68d3b316ab7b02a074edc4f770e6a746390cb7d. I'm copying his text here:
-
-The SNDRV_HDSPM_IOCTL_GET_CONFIG_INFO ioctl in hdspm.c allow unprivileged
-users to read uninitialized kernel stack memory, because several fields
-of the hdspm_config struct declared on the stack are not altered
-or zeroed before being copied back to the user.  This patch takes care
-of it.
+In contrast to the RME MADI card, coax/optical selection on the MADIface
+is done via a physical switch located at the breakout box. Obviously,
+the driver cannot switch ports in software.
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
 diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 0b0293f..ced1406 100644
+index 7246302..ea49ffe 100644
 --- a/sound/pci/rme9652/hdspm.c
 +++ b/sound/pci/rme9652/hdspm.c
-@@ -6081,6 +6081,7 @@ static int snd_hdspm_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
+@@ -4272,8 +4272,7 @@ static struct snd_kcontrol_new snd_hdspm_controls_madiface[] = {
+ 	HDSPM_SYNC_CHECK("MADI SyncCheck", 0),
+ 	HDSPM_TX_64("TX 64 channels mode", 0),
+ 	HDSPM_C_TMS("Clear Track Marker", 0),
+-	HDSPM_SAFE_MODE("Safe Mode", 0),
+-	HDSPM_INPUT_SELECT("Input Select", 0),
++	HDSPM_SAFE_MODE("Safe Mode", 0)
+ };
  
- 	case SNDRV_HDSPM_IOCTL_GET_CONFIG:
- 
-+		memset(&info, 0, sizeof(info));
- 		spin_lock_irq(&hdspm->lock);
- 		info.pref_sync_ref = hdspm_pref_sync_ref(hdspm);
- 		info.wordclock_sync_check = hdspm_wc_sync_check(hdspm);
+ static struct snd_kcontrol_new snd_hdspm_controls_aio[] = {
 -- 
 1.7.2.3
