@@ -1,7 +1,8 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 6/8] ALSA: hdspm - fix sync check on AES32
-Date: Wed, 23 Feb 2011 11:43:13 +0100
-Message-ID: <1298457795-28114-7-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 7/8] ALSA: hdspm - prevent reading unitialized
+	stack memory
+Date: Wed, 23 Feb 2011 11:43:14 +0100
+Message-ID: <1298457795-28114-8-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <1298457795-28114-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,66 +22,28 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fredrik Lingvall <fredrik.lingvall@gmail.com> has discovered wrong
-frequency and sync detection on AES32. According to him, the provided
-patch fixes these issues.
+Original patch by Dan Rosenberg <drosenberg@vsecurity.com> under commit
+e68d3b316ab7b02a074edc4f770e6a746390cb7d. I'm copying his text here:
+
+The SNDRV_HDSPM_IOCTL_GET_CONFIG_INFO ioctl in hdspm.c allow unprivileged
+users to read uninitialized kernel stack memory, because several fields
+of the hdspm_config struct declared on the stack are not altered
+or zeroed before being copied back to the user.  This patch takes care
+of it.
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
 diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index ea49ffe..0b0293f 100644
+index 0b0293f..ced1406 100644
 --- a/sound/pci/rme9652/hdspm.c
 +++ b/sound/pci/rme9652/hdspm.c
-@@ -1082,7 +1082,7 @@ static int hdspm_external_sample_rate(struct hdspm *hdspm)
- 	case AES32:
- 		status2 = hdspm_read(hdspm, HDSPM_statusRegister2);
- 		status = hdspm_read(hdspm, HDSPM_statusRegister);
--		timecode =	hdspm_read(hdspm, HDSPM_timecodeRegister);
-+		timecode = hdspm_read(hdspm, HDSPM_timecodeRegister);
+@@ -6081,6 +6081,7 @@ static int snd_hdspm_hwdep_ioctl(struct snd_hwdep *hw, struct file *file,
  
- 		syncref = hdspm_autosync_ref(hdspm);
+ 	case SNDRV_HDSPM_IOCTL_GET_CONFIG:
  
-@@ -2115,6 +2115,29 @@ static int snd_hdspm_get_autosync_sample_rate(struct snd_kcontrol *kcontrol,
- 				hdspm_get_s1_sample_rate(hdspm,
- 						ucontrol->id.index-1);
- 		}
-+
-+	case AES32:
-+
-+		switch (kcontrol->private_value) {
-+		case 0: /* WC */
-+			ucontrol->value.enumerated.item[0] =
-+				hdspm_get_wc_sample_rate(hdspm);
-+			break;
-+		case 9: /* TCO */
-+			ucontrol->value.enumerated.item[0] =
-+				hdspm_get_tco_sample_rate(hdspm);
-+			break;
-+		case 10: /* SYNC_IN */
-+			ucontrol->value.enumerated.item[0] =
-+				hdspm_get_sync_in_sample_rate(hdspm);
-+			break;
-+		default: /* AES1 to AES8 */
-+			ucontrol->value.enumerated.item[0] =
-+				hdspm_get_s1_sample_rate(hdspm,
-+						kcontrol->private_value-1);
-+			break;
-+
-+		}
- 	default:
- 		break;
- 	}
-@@ -3803,9 +3826,9 @@ static int snd_hdspm_get_sync_check(struct snd_kcontrol *kcontrol,
- 			val = hdspm_tco_sync_check(hdspm); break;
- 		case 10 /* SYNC IN */:
- 			val = hdspm_sync_in_sync_check(hdspm); break;
--		default:
-+		default: /* AES1 to AES8 */
- 			 val = hdspm_aes_sync_check(hdspm,
--					 ucontrol->id.index-1);
-+					 kcontrol->private_value-1);
- 		}
- 
- 	}
++		memset(&info, 0, sizeof(info));
+ 		spin_lock_irq(&hdspm->lock);
+ 		info.pref_sync_ref = hdspm_pref_sync_ref(hdspm);
+ 		info.wordclock_sync_check = hdspm_wc_sync_check(hdspm);
 -- 
 1.7.2.3
