@@ -1,23 +1,10 @@
-From: ylin@mail.com
-Subject: Re: Channel swapping issue on TI OMAP3/TWL4030
-Date: Wed, 23 Feb 2011 10:26:02 -0500
-Message-ID: <8CDA1851D39EA53-3E0-7A27@web-mmc-d01.sysops.aol.com>
-References: <8CD98E75F0E83E2-63C-14642@web-mmc-m05.sysops.aol.com>	<CF32F28EDF8D20468EEDCBE4975DA0274A46DB@008-AM1MPN1-027.mgdnok.nokia.com><8CD9A87EF4FB765-1218-647@web-mmc-m03.sysops.aol.com>	<4D5A2466.2060705@nokia.com><8CD9B43DFD8A17C-DE8-B3DD@web-mmc-d01.sysops.aol.com>	<4D5B7AB5.201@nokia.com><8CD9C6B934040FF-13C8-4BFB@web-mmc-d06.sysops.aol.com><4D5D0A0E.5030505@nokia.com>	<8CD9E665EC96F93-126C-1145E@web-mmc-d04.sysops.aol.com><8CD9EC9F73F6CCC-DDC-EA8F@web-mmc-d06.sysops.aol.com>
-	<4D636574.9050501@nokia.com>
+From: =?UTF-8?Q?=C5=81ukasz_Wojni=C5=82owicz?= <lukasz.wojnilowicz@gmail.com>
+Subject: ALSA: hda - 4930g add internal lfe slider
+Date: Wed, 23 Feb 2011 18:50:20 +0100
+Message-ID: <1298483420.2456.8.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-xh+zD/dD9g2bzHiYW/Jd"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imr-da04.mx.aol.com (imr-da04.mx.aol.com [205.188.105.146])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0E096245B8
-	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2011 16:26:22 +0100 (CET)
-Received: from imo-ma02.mx.aol.com (imo-ma02.mx.aol.com [64.12.78.137])
-	by imr-da04.mx.aol.com (8.14.1/8.14.1) with ESMTP id p1NFQK8Z031106
-	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2011 10:26:20 -0500
-Received: from ylin@mail.com
-	by imo-ma02.mx.aol.com  (mail_out_v42.9.) id 5.f82.9da7f4f (37566)
-	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2011 10:26:16 -0500 (EST)
-In-Reply-To: <4D636574.9050501@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,23 +14,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> I think you need to implement the PRCM compliant interrupt config to
-> check for McBSP underflow/overflow.
 
-I have implemented the interrupt handle for IRQ 17 for receive error 
-and underflow/overflow.  However, the devices are running for 2 days 
-without channel swapped.  I will keep them running.
+--=-xh+zD/dD9g2bzHiYW/Jd
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> I'll try to resurrect my Beagle board, since that as well have the twl
-> codec on McBSP2...
+Hello,
+Lately I sent patch that switched lfe with side in mixer for
+acer-aspire-4930g. Then I connected 5.1 speaker system and noticed that
+lfe slider wasn't working and that old lfe slider worked. What I'm doing
+now is:
 
-I will test it on EVM board as well.
+- reverting old patch
+- adding internal lfe slider
+- removing side as it is superfluous (ALC888S-VC is 7.1 but in fact
+laptop can only do 5.1 and it is so in drivers for MS Windows)
 
-We have tested the element mode for dma_op_mode.  It works fine, we 
-don't see any channel swapping in this mode.
+Cheers,
+=C5=81ukasz
 
-Thanks,
-Ying
+
+--=-xh+zD/dD9g2bzHiYW/Jd
+Content-Disposition: attachment; filename="patch_realtek.patch"
+Content-Type: text/x-patch; name="patch_realtek.patch"; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+From: =C5=81ukasz Wojni=C5=82owicz <lukasz.wojnilowicz@gmail.com>
+Subject: ALSA: hda - 4930g add internal lfe slider
+
+Signed-off-by: =C5=81ukasz Wojni=C5=82owicz <lukasz.wojnilowicz@gmail.com=
+>
+
+--- patch_realtek.c	2011-02-22 08:21:56.000000000 +0100
++++ patch_realtek.c	2011-02-23 18:19:19.203076469 +0100
+@@ -2295,13 +2295,13 @@
+ 	HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("Surround Playback Volume", 0x0d, 0x0, HDA_OUTPUT),
+ 	HDA_BIND_MUTE("Surround Playback Switch", 0x0d, 2, HDA_INPUT),
+-	HDA_CODEC_VOLUME_MONO("Center Playback Volume", 0x0f, 2, 0x0,
++	HDA_CODEC_VOLUME_MONO("Center Playback Volume", 0x0e, 1, 0x0,
+ 		HDA_OUTPUT),
+-	HDA_BIND_MUTE_MONO("Center Playback Switch", 0x0f, 2, 2, HDA_INPUT),
+-	HDA_CODEC_VOLUME_MONO("LFE Playback Volume", 0x0f, 1, 0x0, HDA_OUTPUT),
+-	HDA_BIND_MUTE_MONO("LFE Playback Switch", 0x0f, 1, 2, HDA_INPUT),
+-	HDA_CODEC_VOLUME("Side Playback Volume", 0x0e, 0x0, HDA_OUTPUT),
+-	HDA_BIND_MUTE("Side Playback Switch", 0x0e, 2, HDA_INPUT),
++	HDA_BIND_MUTE_MONO("Center Playback Switch", 0x0e, 1, 2, HDA_INPUT),
++	HDA_CODEC_VOLUME_MONO("LFE Playback Volume", 0x0e, 2, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE_MONO("LFE Playback Switch", 0x0e, 2, 2, HDA_INPUT),
++	HDA_CODEC_VOLUME_MONO("Internal LFE Playback Volume", 0x0f, 1, 0x0, HDA=
+_OUTPUT),
++	HDA_BIND_MUTE_MONO("Internal LFE Playback Switch", 0x0f, 1, 2, HDA_INPU=
+T),
+ 	HDA_CODEC_VOLUME("CD Playback Volume", 0x0b, 0x04, HDA_INPUT),
+ 	HDA_CODEC_MUTE("CD Playback Switch", 0x0b, 0x04, HDA_INPUT),
+ 	HDA_CODEC_VOLUME("Line Playback Volume", 0x0b, 0x02, HDA_INPUT),
+@@ -2312,7 +2312,6 @@
+ 	{ } /* end */
+ };
+=20
+-
+ static struct snd_kcontrol_new alc889_acer_aspire_8930g_mixer[] =3D {
+ 	HDA_CODEC_VOLUME("Front Playback Volume", 0x0c, 0x0, HDA_OUTPUT),
+ 	HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, HDA_INPUT),
+
+--=-xh+zD/dD9g2bzHiYW/Jd
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--=-xh+zD/dD9g2bzHiYW/Jd--
