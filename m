@@ -1,20 +1,15 @@
-From: Zeng Zhaoming <zhaoming.zeng@freescale.com>
-Subject: Re: [PATCH v4] ASoC: Add Freescale SGTL5000 codec
-	support
-Date: Wed, 23 Feb 2011 08:19:50 +0800
-Message-ID: <20110223001950.GB1555@ubuntu.localdomain>
-References: <1298246965-22575-1-git-send-email-zhaoming.zeng@freescale.com>
-	<87r5az5h0b.fsf@lebrac.rtp-net.org>
+From: "Bensaid, Selma" <selma.bensaid@intel.com>
+Subject: : Question ASoC driver without Codec driver?
+Date: Wed, 23 Feb 2011 09:29:41 +0000
+Message-ID: <2A84145621092446B6659B8A0F28E26F4703F09682@irsmsx501.ger.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from DB3EHSOBE006.bigfish.com (db3ehsobe006.messaging.microsoft.com
-	[213.199.154.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id 381F4103810
-	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2011 09:20:26 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <87r5az5h0b.fsf@lebrac.rtp-net.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 98552103810
+	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2011 10:30:01 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,247 +19,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Arnaud Patard <arnaud.patard@rtp-net.org>
-Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, timur.tabi@gmail.com, zengzm.kernel@gmail.com, linuxzsc@gmail.com, lrg@slimlogic.co.uk
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "Koul, Vinod" <vinod.koul@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Benavoli,
+	PatrickX" <patrickx.benavoli@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed 2011-02-23 08:47:48, Arnaud Patard wrote:
-> <zhaoming.zeng@freescale.com> writes:
-> 
-> Hi,
-> 
-> [...]
-> 
-[...]
-> > +
-> > +	/* if using pll, please check manual 6.4.2 for detail */
-> > +	if ((clk_ctl & SGTL5000_MCLK_FREQ_MASK) == SGTL5000_MCLK_FREQ_PLL) {
-> > +		u64 out, t;
-> > +		int div2;
-> > +		int pll_ctl;
-> > +		unsigned int in, int_div, frac_div;
-> 
-> btw, I don't know for other developers, but I don't like variables
-> declared like this.
-> 
-> > +
-> > +		if (sgtl5000->sysclk > 17000000) {
-> > +			div2 = 1;
-> > +			in = sgtl5000->sysclk / 2;
-> > +		} else {
-> > +			div2 = 0;
-> > +			in = sgtl5000->sysclk;
-> > +		sgtl5000->supplies[i].supply = supply_names[i];
-> > +
-> > +	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(sgtl5000->supplies),
-> > +				sgtl5000->supplies);
-> 
-> so here, you're calling '_get' for vdda, vddd, vddio.
-> 
-> > +	if (!ret)
-> > +		external_vddd = 1;
-> > +	else {
-> > +		/* set internal ldo to 1.2v */
-> > +		int voltage = LDO_VOLTAGE;
-> > +
-> > +		sgtl5000->supplies[VDDD].supply = LDO_CONSUMER_NAME;
-> > +
-> > +		ret = ldo_regulator_register(codec, &ldo_init_data, voltage);
-> > +		if (ret) {
-> > +			dev_err(codec->dev,
-> > +			"Failed to register vddd internal supplies: %d\n",
-> > +				ret);
-> > +			return ret;
-> > +		}
-> > +		ret = regulator_bulk_get(codec->dev,
-> > +				ARRAY_SIZE(sgtl5000->supplies),
-> > +				sgtl5000->supplies);
-> > +
-> > +		if (ret) {
-> > +			ldo_regulator_remove(codec);
-> > +			dev_err(codec->dev,
-> > +				"Failed to request supplies: %d\n", ret);
-> > +
-> > +			return ret;
-> > +		}
-> > +	}
-> > +
-> > +	ret = regulator_bulk_enable(ARRAY_SIZE(sgtl5000->supplies),
-> > +					sgtl5000->supplies);
-> > +	if (ret)
-> > +		goto err_regulator_free;
-> > +
-> > +	/* wait for all power rails bring up */
-> > +	udelay(10);
-> > +
-> > +	/* read chip information */
-> > +	reg = snd_soc_read(codec, SGTL5000_CHIP_ID);
-> > +	if (((reg & SGTL5000_PARTID_MASK) >> SGTL5000_PARTID_SHIFT) !=
-> > +	    SGTL5000_PARTID_PART_ID) {
-> > +		dev_err(codec->dev,
-> > +			"Device with ID register %x is not a sgtl5000\n", reg);
-> > +		ret = -ENODEV;
-> > +		goto err_regulator_disable;
-> > +	}
-> > +
-> > +	rev = (reg & SGTL5000_REVID_MASK) >> SGTL5000_REVID_SHIFT;
-> > +	dev_info(codec->dev, "sgtl5000 revision %d\n", rev);
-> > +
-> > +	/*
-> > +	 * workaround for revision 0x11 and later,
-> > +	 * roll back to use internal LDO
-> > +	 */
-> > +	if (external_vddd && rev >= 0x11) {
-> > +		int voltage = LDO_VOLTAGE;
-> > +		/* disable all regulator first */
-> > +		regulator_bulk_disable(ARRAY_SIZE(sgtl5000->supplies),
-> > +					sgtl5000->supplies);
-> > +		/* free VDDD regulator */
-> > +		regulator_put(sgtl5000->supplies[VDDD].consumer);
-> 
-> so you call put for vddd only and in regulator_put there's a line doing
-> kfree(....consumer) so now sgtl5000->supplies[VDDD].consumer is null.
-> 
-> > +
-> > +		sgtl5000->supplies[VDDD].supply = LDO_CONSUMER_NAME;
-> > +
-> > +		ret = ldo_regulator_register(codec, &ldo_init_data, voltage);
-> > +		if (ret)
-> > +			return ret;
-> > +
-> > +		ret = regulator_bulk_get(codec->dev,
-> > +				ARRAY_SIZE(sgtl5000->supplies),
-> > +				sgtl5000->supplies);
-> 
-> and here you're calling 'get' for vdda, vddio and vddd_lo. This means
-> that in this code path, you're requesting 2 times vdda/vddio. It's a
-> bug. You should call only regulator_get for vddd_lo and set
-> sgtl5000->supplies[VDDD].consumer in case of success. If you don't set
-> it, calling regulator_bulk_enable will result in a oops as .consumer is
-> null.
->
-sorry, my test case not cover this code. what about regulator_bulk_free()
-instead of regulator_put(). This aligns to regulator bulk way.
-> 
-> > +		if (ret) {
-> > +			ldo_regulator_remove(codec);
-> > +			dev_err(codec->dev,
-> > +				"Failed to request supplies: %d\n", ret);
-> > +
-> > +			return ret;
-> > +		}
-> > +
-> > +		ret = regulator_bulk_enable(ARRAY_SIZE(sgtl5000->supplies),
-> > +						sgtl5000->supplies);
-> > +		if (ret)
-> > +			goto err_regulator_free;
-> > +	}
-> > +
-> > +	return 0;
-> > +
-> > +err_regulator_disable:
-> > +	regulator_bulk_disable(ARRAY_SIZE(sgtl5000->supplies),
-> > +				sgtl5000->supplies);
-> > +err_regulator_free:
-> > +	regulator_bulk_free(ARRAY_SIZE(sgtl5000->supplies),
-> > +				sgtl5000->supplies);
-> > +	if (external_vddd)
-> > +		ldo_regulator_remove(codec);
-> > +	return ret;
-> > +
-> > +}
-> > +static int sgtl5000_probe(struct snd_soc_codec *codec)
-> > +{
-> > +	int ret;
-> > +
-> > +	/* setup i2c data ops */
-> > +	ret = snd_soc_codec_set_cache_io(codec, 16, 16, SND_SOC_I2C);
-> > +	if (ret < 0) {
-> > +		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	ret = sgtl5000_enable_regulators(codec);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/* power up sgtl5000 */
-> > +	ret = sgtl5000_set_power_regs(codec);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	/* enable small pop, introduce 400ms delay in turning off */
-> > +	snd_soc_update_bits(codec, SGTL5000_CHIP_REF_CTRL,
-> > +				SGTL5000_SMALL_POP,
-> > +				SGTL5000_SMALL_POP);
-> > +
-> > +	/* disable short cut detector */
-> > +	snd_soc_write(codec, SGTL5000_CHIP_SHORT_CTRL, 0);
-> > +
-> > +	/*
-> > +	 * set i2s as default input of sound switch
-> > +	 * TODO: add sound switch to control and dapm widge.
-> > +	 */
-> > +	snd_soc_write(codec, SGTL5000_CHIP_SSS_CTRL,
-> > +			SGTL5000_DAC_SEL_I2S_IN << SGTL5000_DAC_SEL_SHIFT);
-> > +	snd_soc_write(codec, SGTL5000_CHIP_DIG_POWER,
-> > +			SGTL5000_ADC_EN | SGTL5000_DAC_EN);
-> > +
-> > +	/* enable dac volume ramp by default */
-> > +	snd_soc_write(codec, SGTL5000_CHIP_ADCDAC_CTRL,
-> > +			SGTL5000_DAC_VOL_RAMP_EN |
-> > +			SGTL5000_DAC_MUTE_RIGHT |
-> > +			SGTL5000_DAC_MUTE_LEFT);
-> > +
-> > +	snd_soc_write(codec, SGTL5000_CHIP_PAD_STRENGTH, 0x015f);
-> > +
-> > +	snd_soc_write(codec, SGTL5000_CHIP_ANA_CTRL,
-> > +			SGTL5000_HP_ZCD_EN |
-> > +			SGTL5000_ADC_ZCD_EN);
-> > +
-> > +	snd_soc_write(codec, SGTL5000_CHIP_MIC_CTRL, 0);
-> > +
-> > +	/*
-> > +	 * disable DAP
-> > +	 * TODO:
-> > +	 * Enable DAP in kcontrol and dapm.
-> > +	 */
-> > +	snd_soc_write(codec, SGTL5000_DAP_CTRL, 0);
-> > +
-> > +	/* leading to standby state */
-> > +	ret = sgtl5000_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	snd_soc_add_controls(codec, sgtl5000_snd_controls,
-> > +			     ARRAY_SIZE(sgtl5000_snd_controls));
-> > +
-> > +	snd_soc_dapm_new_controls(&codec->dapm, sgtl5000_dapm_widgets,
-> > +				  ARRAY_SIZE(sgtl5000_dapm_widgets));
-> > +
-> > +	snd_soc_dapm_add_routes(&codec->dapm, audio_map,
-> > +				ARRAY_SIZE(audio_map));
-> > +
-> > +	snd_soc_dapm_new_widgets(&codec->dapm);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int sgtl5000_remove(struct snd_soc_codec *codec)
-> > +{
-> > +	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
-> > +
-> > +	sgtl5000_set_bias_level(codec, SND_SOC_BIAS_OFF);
-> > +
-> > +	snd_soc_dapm_free(&codec->dapm);
-> 
-> someone will have to check but iirc, the core is calling
-> snd_soc_dapm_free() for you after calling the remove() hook.
-> 
->
-You are right, I'm not notice this changes. It is better to
-let ASoC code to free it.
+Hi,
 
-> Arnaud
+I'm trying to find out if it's possible to implement an ASoC driver 
+without a codec driver.
 
-Thanks.
+I'm implementing a ASoC driver for BT/FM WL1273, where the FM WL1273 control 
+interface is based on V4L2 since since we use the Combined Interface 
+Mode (The host controls both the BT and the FM Radio through the BT HCI host interface).
+
+Thanks for your help.
+
+Selma.
+
+
+---------------------------------------------------------------------
+Intel Corporation SAS (French simplified joint stock company)
+Registered headquarters: "Les Montalets"- 2, rue de Paris, 
+92196 Meudon Cedex, France
+Registration Number:  302 456 199 R.C.S. NANTERRE
+Capital: 4,572,000 Euros
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
