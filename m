@@ -1,15 +1,14 @@
-From: "Bensaid, Selma" <selma.bensaid@intel.com>
-Subject: : Question ASoC driver without Codec driver?
-Date: Wed, 23 Feb 2011 09:29:41 +0000
-Message-ID: <2A84145621092446B6659B8A0F28E26F4703F09682@irsmsx501.ger.corp.intel.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 2/8] ALSA: hdspm - Fix buffer handling on RME
+	MADI/MADIface/AES(32)
+Date: Wed, 23 Feb 2011 11:43:09 +0100
+Message-ID: <1298457795-28114-3-git-send-email-adi@drcomp.erfurt.thur.de>
+References: <1298457795-28114-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 98552103810
-	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2011 10:30:01 +0100 (CET)
-Content-Language: en-US
+In-Reply-To: <1298457795-28114-1-git-send-email-adi@drcomp.erfurt.thur.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,33 +18,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Benavoli,
-	PatrickX" <patrickx.benavoli@intel.com>
+To: patch@alsa-project.org
+Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Only RayDAT and AIO provide sane buffer pointers that can be used with
+HDSPM_BufferPositionMask, on all other cards, this would result in a
+wrong HW pointer leading to xruns and these messages:
 
-I'm trying to find out if it's possible to implement an ASoC driver 
-without a codec driver.
+[260808.916788] BUG: pcmC0D0p:0, pos = 2976, buffer size = 1024, period size = 512
+[260808.961124] BUG: pcmC0D0c:0, pos = 4944, buffer size = 1024, period size = 512
 
-I'm implementing a ASoC driver for BT/FM WL1273, where the FM WL1273 control 
-interface is based on V4L2 since since we use the Combined Interface 
-Mode (The host controls both the BT and the FM Radio through the BT HCI host interface).
+Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
-Thanks for your help.
-
-Selma.
-
-
----------------------------------------------------------------------
-Intel Corporation SAS (French simplified joint stock company)
-Registered headquarters: "Les Montalets"- 2, rue de Paris, 
-92196 Meudon Cedex, France
-Registration Number:  302 456 199 R.C.S. NANTERRE
-Capital: 4,572,000 Euros
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
+index 9258897..509a35a 100644
+--- a/sound/pci/rme9652/hdspm.c
++++ b/sound/pci/rme9652/hdspm.c
+@@ -1231,8 +1231,17 @@ static snd_pcm_uframes_t hdspm_hw_pointer(struct hdspm *hdspm)
+ 	int position;
+ 
+ 	position = hdspm_read(hdspm, HDSPM_statusRegister);
+-	position &= HDSPM_BufferPositionMask;
+-	position /= 4; /* Bytes per sample */
++
++	switch (hdspm->io_type) {
++	case RayDAT:
++	case AIO:
++		position &= HDSPM_BufferPositionMask;
++		position /= 4; /* Bytes per sample */
++		break;
++	default:
++		position = (position & HDSPM_BufferID) ?
++			(hdspm->period_bytes / 4) : 0;
++	}
+ 
+ 	return position;
+ }
+-- 
+1.7.2.3
