@@ -1,14 +1,14 @@
 From: David Henningsson <david.henningsson@canonical.com>
-Subject: [PATCH 1/2] ALSA: HDA: Add a new Conexant codec 506e
-	(20590)
-Date: Wed, 23 Feb 2011 13:22:39 +0100
-Message-ID: <4D64FC0F.6090002@canonical.com>
+Subject: [PATCH 2/2] ALSA: HDA: Add ideapad quirk for two Dell
+	machines
+Date: Wed, 23 Feb 2011 13:23:20 +0100
+Message-ID: <4D64FC38.7040604@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------020500020206030309030703"
+Content-Type: multipart/mixed; boundary="------------070408030205050402080201"
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 96C71103800
-	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2011 13:22:42 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 6BC78103800
+	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2011 13:23:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,67 +22,56 @@ To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <t
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------020500020206030309030703
+--------------070408030205050402080201
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 
-I'm a little hesitant as of whether to send this one to stable or not, 
-as the fallback of the 5066 parser can perform worse than the generic 
-one. However, if we don't, we can't quirk them to work perfectly later. 
-What do you think?
 
 -- 
 David Henningsson, Canonical Ltd.
 http://launchpad.net/~diwic
 
---------------020500020206030309030703
+--------------070408030205050402080201
 Content-Type: text/x-patch;
- name="0001-ALSA-HDA-Add-a-new-Conexant-codec-506e-20590.patch"
+ name="0002-ALSA-HDA-Add-ideapad-quirk-for-two-Dell-machines.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
- filename*0="0001-ALSA-HDA-Add-a-new-Conexant-codec-506e-20590.patch"
+ filename*0="0002-ALSA-HDA-Add-ideapad-quirk-for-two-Dell-machines.patch"
 
->From 7ba625cf57f80e124024fd46a1bfe1fb8f9c1558 Mon Sep 17 00:00:00 2001
+>From 2b56e004fc05bf01d19010f30a1f888678a4a729 Mon Sep 17 00:00:00 2001
 From: David Henningsson <david.henningsson@canonical.com>
-Date: Tue, 8 Feb 2011 07:16:06 +0100
-Subject: [PATCH 1/2] ALSA: HDA: Add a new Conexant codec 506e (20590)
+Date: Wed, 23 Feb 2011 13:15:56 +0100
+Subject: [PATCH 2/2] ALSA: HDA: Add ideapad quirk for two Dell machines
 
-Conexant 506e/20590 has the same graph as the rest of the 5066 family.
+These two Dell machines have been reported working well with
+the ideapad model.
 
-BugLink: http://bugs.launchpad.net/bugs/723672
-
+BugLink: http://bugs.launchpad.net/bugs/723676
 Cc: stable@kernel.org
+Tested-by: David Chen <david.chen@canonical.com>
 Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/pci/hda/patch_conexant.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+ sound/pci/hda/patch_conexant.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
 diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index dd7c5c1..909ce9e 100644
+index 909ce9e..4d5004e 100644
 --- a/sound/pci/hda/patch_conexant.c
 +++ b/sound/pci/hda/patch_conexant.c
-@@ -3937,6 +3937,8 @@ static struct hda_codec_preset snd_hda_preset_conexant[] = {
- 	  .patch = patch_cxt5066 },
- 	{ .id = 0x14f15069, .name = "CX20585",
- 	  .patch = patch_cxt5066 },
-+	{ .id = 0x14f1506e, .name = "CX20590",
-+	  .patch = patch_cxt5066 },
- 	{ .id = 0x14f15097, .name = "CX20631",
- 	  .patch = patch_conexant_auto },
- 	{ .id = 0x14f15098, .name = "CX20632",
-@@ -3963,6 +3965,7 @@ MODULE_ALIAS("snd-hda-codec-id:14f15066");
- MODULE_ALIAS("snd-hda-codec-id:14f15067");
- MODULE_ALIAS("snd-hda-codec-id:14f15068");
- MODULE_ALIAS("snd-hda-codec-id:14f15069");
-+MODULE_ALIAS("snd-hda-codec-id:14f1506e");
- MODULE_ALIAS("snd-hda-codec-id:14f15097");
- MODULE_ALIAS("snd-hda-codec-id:14f15098");
- MODULE_ALIAS("snd-hda-codec-id:14f150a1");
+@@ -3114,6 +3114,8 @@ static struct snd_pci_quirk cxt5066_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0401, "Dell Vostro 1014", CXT5066_DELL_VOSTRO),
+ 	SND_PCI_QUIRK(0x1028, 0x0402, "Dell Vostro", CXT5066_DELL_VOSTRO),
+ 	SND_PCI_QUIRK(0x1028, 0x0408, "Dell Inspiron One 19T", CXT5066_IDEAPAD),
++	SND_PCI_QUIRK(0x1028, 0x050f, "Dell Inspiron", CXT5066_IDEAPAD),
++	SND_PCI_QUIRK(0x1028, 0x0510, "Dell Vostro", CXT5066_IDEAPAD),
+ 	SND_PCI_QUIRK(0x103c, 0x360b, "HP G60", CXT5066_HP_LAPTOP),
+ 	SND_PCI_QUIRK(0x1043, 0x13f3, "Asus A52J", CXT5066_ASUS),
+ 	SND_PCI_QUIRK(0x1043, 0x1643, "Asus K52JU", CXT5066_ASUS),
 -- 
 1.7.1
 
 
---------------020500020206030309030703
+--------------070408030205050402080201
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -93,4 +82,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---------------020500020206030309030703--
+--------------070408030205050402080201--
