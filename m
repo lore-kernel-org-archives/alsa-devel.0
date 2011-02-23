@@ -1,17 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: : Question ASoC driver without Codec driver?
-Date: Wed, 23 Feb 2011 20:08:57 +0000
-Message-ID: <20110223200857.GB2534@opensource.wolfsonmicro.com>
-References: <2A84145621092446B6659B8A0F28E26F4703F09682@irsmsx501.ger.corp.intel.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Pass the jack to jack notifiers
+Date: Wed, 23 Feb 2011 21:12:39 +0000
+Message-ID: <1298495559.3396.221.camel@odin>
+References: <>
+	<1298407462-2311-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E696B24387
-	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2011 21:08:37 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <2A84145621092446B6659B8A0F28E26F4703F09682@irsmsx501.ger.corp.intel.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 25ED124416
+	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2011 22:12:44 +0100 (CET)
+Received: by wyb28 with SMTP id 28so3687195wyb.38
+	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2011 13:12:42 -0800 (PST)
+In-Reply-To: <1298407462-2311-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,23 +23,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Bensaid, Selma" <selma.bensaid@intel.com>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Benavoli, PatrickX" <patrickx.benavoli@intel.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 23, 2011 at 09:29:41AM +0000, Bensaid, Selma wrote:
+On Tue, 2011-02-22 at 20:44 +0000, Mark Brown wrote:
+> We're currently not passing anything and this will make the card and so on
+> more discoverable.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-> I'm trying to find out if it's possible to implement an ASoC driver 
-> without a codec driver.
-
-Obviously, platform and CPU drivers have no CODEC dependencies.
-
-> I'm implementing a ASoC driver for BT/FM WL1273, where the FM WL1273 control 
-> interface is based on V4L2 since since we use the Combined Interface 
-> Mode (The host controls both the BT and the FM Radio through the BT HCI host interface).
-
-You need to implement a CODEC driver for this but there's no reason for
-it to do anything except expose the capabilities of the device - there's
-several in tree examples you can look at.  Remember that we still need
-to know how to configure the other drivers that talk to the chip, even
-if the chip itself is unconfigurable.
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
