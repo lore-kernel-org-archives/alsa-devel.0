@@ -1,15 +1,11 @@
-From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: soc-dapm: Include quotes around contents
-	in debugfs entries
-Date: Thu, 24 Feb 2011 17:09:32 +0000
-Message-ID: <1298567372-7030-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 0/6] hdspmixer fixes
+Date: Thu, 24 Feb 2011 21:33:25 +0100
+Message-ID: <1298579611-16573-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A266824439
-	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2011 18:09:34 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,40 +15,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: patch@alsa-project.org
+Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sometimes the name of the control switch of a dapm route contains
-spaces which makes it impossible to distinguish it from the source widget.
-Add quotes around the names of the widgets to makes these parsable.
+Hi!
 
-Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
----
- sound/soc/soc-dapm.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Here's a collection of fixes to hdspmixer. Besides style fixes, it
+re-enables support for Multiface/Digiface and other non-MADI cards.
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 200ae7c..b8e6ab7 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -1242,7 +1242,7 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
- 
- 		if (p->connect)
- 			ret += snprintf(buf + ret, PAGE_SIZE - ret,
--					" in  %s %s\n",
-+					" in  \"%s\" \"%s\"\n",
- 					p->name ? p->name : "static",
- 					p->source->name);
- 	}
-@@ -1252,7 +1252,7 @@ static ssize_t dapm_widget_power_read_file(struct file *file,
- 
- 		if (p->connect)
- 			ret += snprintf(buf + ret, PAGE_SIZE - ret,
--					" out %s %s\n",
-+					" out \"%s\" \"%s\"\n",
- 					p->name ? p->name : "static",
- 					p->sink->name);
- 	}
+The support was accidently lost when merging hdspmixer64 with hdspmixer.
+Today, RME has provided me with two cards (Multiface and AES32), so I
+had the opportunity to fix the broken bits.
+
+Also, the old code never handled three cards correctly, but that's
+fixed, too. (and tested against the three RME cards currently in my
+workstation)
+
+
+Cheers
+
+
+Adrian Knoth (6):
+  hdspmixer: Improve code coherency
+  hdspmixer: Update FSF address.
+  hdspmixer: Increase height of about window.
+  hdspmixer: Bump version number to 1.10
+  hdspmixer: Fix ALSA snd_ctl_open error when running with three cards.
+  hdspmixer: Fix metering for non-MADI cards
+
+ hdspmixer/configure.in               |    2 +-
+ hdspmixer/src/HDSPMixerAboutText.cxx |   13 ++-
+ hdspmixer/src/HDSPMixerCard.cxx      |  163 ++---------------------
+ hdspmixer/src/HDSPMixerOutput.cxx    |    4 +-
+ hdspmixer/src/HDSPMixerSelector.cxx  |    7 +-
+ hdspmixer/src/HDSPMixerWindow.cxx    |   75 +++++++----
+ hdspmixer/src/HDSPMixerWindow.h      |    4 +-
+ hdspmixer/src/channelmap.h           |  234 +++++++++++++++++++++++++++++++---
+ hdspmixer/src/defines.h              |    4 +-
+ hdspmixer/src/hdspmixer.cxx          |    3 +
+ hdspmixer/src/mappings.h             |   93 --------------
+ 11 files changed, 308 insertions(+), 294 deletions(-)
+ delete mode 100644 hdspmixer/src/mappings.h
+
 -- 
-1.7.4.1
+1.7.2.3
