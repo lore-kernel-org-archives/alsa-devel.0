@@ -1,7 +1,7 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 3/6] hdspmixer: Increase height of about window.
-Date: Thu, 24 Feb 2011 21:33:28 +0100
-Message-ID: <1298579611-16573-4-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 4/6] hdspmixer: Bump version number to 1.10
+Date: Thu, 24 Feb 2011 21:33:29 +0100
+Message-ID: <1298579611-16573-5-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <1298579611-16573-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,22 +21,22 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The copyright list got longer, so we need more vertical space.
+Florian Faber's last hdspmixer64 version was 1.9, so let's make this the
+successor (contains everything that was in 1.9 and also Fredrik's work
+on AES(32) support)
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
-diff --git a/hdspmixer/src/HDSPMixerWindow.cxx b/hdspmixer/src/HDSPMixerWindow.cxx
-index 5ac3794..38e7b61 100644
---- a/hdspmixer/src/HDSPMixerWindow.cxx
-+++ b/hdspmixer/src/HDSPMixerWindow.cxx
-@@ -716,7 +716,7 @@ HDSPMixerWindow::HDSPMixerWindow(int x, int y, int w, int h, const char *label,
-     scroll->end();
-     end();
-     setup = new HDSPMixerSetup(400, 260, "Level Meters Setup", this);
--    about = new HDSPMixerAbout(360, 260, "About HDSPMixer", this);
-+    about = new HDSPMixerAbout(360, 300, "About HDSPMixer", this);
-     i = 0;
-     while (cards[i] != NULL) {
- 	cards[i++]->initializeCard(this);
+diff --git a/hdspmixer/configure.in b/hdspmixer/configure.in
+index 8f2c498..1b43bc9 100644
+--- a/hdspmixer/configure.in
++++ b/hdspmixer/configure.in
+@@ -1,5 +1,5 @@
+ AC_INIT(src/hdspmixer.cxx)
+-AM_INIT_AUTOMAKE(hdspmixer, 1.6)
++AM_INIT_AUTOMAKE(hdspmixer, 1.10)
+ 
+ AC_PROG_CXX
+ AC_PROG_MAKE_SET
 -- 
 1.7.2.3
