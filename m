@@ -1,7 +1,8 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 6/6] hdspmixer: Fix metering for non-MADI cards
-Date: Thu, 24 Feb 2011 21:33:31 +0100
-Message-ID: <1298579611-16573-7-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 5/6] hdspmixer: Fix ALSA snd_ctl_open error
+	when running with three cards.
+Date: Thu, 24 Feb 2011 21:33:30 +0100
+Message-ID: <1298579611-16573-6-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <1298579611-16573-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,107 +22,92 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently, hdsp and hdspm use different ioctls. Consequently, the metering
-is wrong. To avoid code duplication, use pointers to the corresponding
-struct members.
+If three (or more) RME cards are installed in one box, hdspmixer will
+try to open a non-existing 4th card, causing an error in snd_ctl_open
+and finally terminates itself.
+
+cards[] is a static array, and one must not read beyond the last
+element. The solution is far from elegant, however, it's a rather
+unintrusive change.
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
 diff --git a/hdspmixer/src/HDSPMixerWindow.cxx b/hdspmixer/src/HDSPMixerWindow.cxx
-index a2e3db8..27003a0 100644
+index 38e7b61..a2e3db8 100644
 --- a/hdspmixer/src/HDSPMixerWindow.cxx
 +++ b/hdspmixer/src/HDSPMixerWindow.cxx
-@@ -31,6 +31,9 @@ static void readregisters_cb(void *arg)
-     snd_hwdep_t *hw;
-     hdsp_peak_rms_t hdsp_peak_rms;
-     struct hdspm_peak_rms hdspm_peak_rms;
-+    bool isMADI = false;
-+    uint32_t *input_peaks, *playback_peaks, *output_peaks;
-+    uint64_t *input_rms, *playback_rms, *output_rms;
-     
-     HDSPMixerWindow *w = (HDSPMixerWindow *)arg;
- 
-@@ -48,6 +51,7 @@ static void readregisters_cb(void *arg)
- 	(HDSPeAIO == w->cards[w->current_card]->type) ||
- 	(HDSP_AES == w->cards[w->current_card]->type) ||
- 	(HDSPeRayDAT == w->cards[w->current_card]->type)) {
-+      isMADI = true;
-       if ((err = snd_hwdep_ioctl(hw, SNDRV_HDSPM_IOCTL_GET_PEAK_RMS, (void *)&hdspm_peak_rms)) < 0) {
- 	fprintf(stderr, "HwDep ioctl failed. Metering stopped\n");
- 	snd_hwdep_close(hw);
-@@ -62,33 +66,54 @@ static void readregisters_cb(void *arg)
+@@ -219,7 +219,7 @@ static void restore_defaults_cb(Fl_Widget *widget, void *arg)
+     snprintf(w->window_title, FL_PATH_MAX, "HDSPMixer");
+     w->label(w->window_title);
+     w->resetMixer();
+-    while (w->cards[i] != NULL) {
++    while (i < MAX_CARDS && w->cards[i] != NULL) {
+ 	w->restoreDefaults(i++);
      }
-     snd_hwdep_close(hw);
+     w->inputs->buttons->presets->preset_change(1);
+@@ -408,7 +408,7 @@ void HDSPMixerWindow::load()
+     if ((file = fopen(file_name, "r")) == NULL) {
+ 	int i = 0;
+ 	fl_alert("Error opening file %s for reading", file_name);
+-	while (cards[i] != NULL) {
++	while (i < MAX_CARDS && cards[i] != NULL) {
+ 	    restoreDefaults(i++);
+ 	}
+ 	inputs->buttons->presets->preset_change(1);	
+@@ -718,7 +718,7 @@ HDSPMixerWindow::HDSPMixerWindow(int x, int y, int w, int h, const char *label,
+     setup = new HDSPMixerSetup(400, 260, "Level Meters Setup", this);
+     about = new HDSPMixerAbout(360, 300, "About HDSPMixer", this);
+     i = 0;
+-    while (cards[i] != NULL) {
++    while (i < MAX_CARDS && cards[i] != NULL) {
+ 	cards[i++]->initializeCard(this);
+     }
+     size_range(MIN_WIDTH, MIN_HEIGHT, cards[current_card]->window_width, cards[current_card]->window_height);
+@@ -729,7 +729,7 @@ HDSPMixerWindow::HDSPMixerWindow(int x, int y, int w, int h, const char *label,
+     } else {
+ 	printf("Initializing default presets\n");
+ 	i = 0;
+-	while (cards[i] != NULL) {
++	while (i < MAX_CARDS && cards[i] != NULL) {
+ 	    restoreDefaults(i++);
+ 	}
+ 	inputs->buttons->presets->preset_change(1);
+@@ -738,7 +738,7 @@ HDSPMixerWindow::HDSPMixerWindow(int x, int y, int w, int h, const char *label,
+     Fl::add_handler(handler_cb);
+     Fl::add_timeout(0.030, readregisters_cb, this);
+     i = 0;
+-    while (cards[i] != NULL)
++    while (i < MAX_CARDS && cards[i] != NULL)
+       inputs->buttons->cardselector->ActivateCard (i++);
+ }
  
--    // check for speed change
--    if (hdspm_peak_rms.speed != w->cards[w->current_card]->speed_mode) {
--      w->cards[w->current_card]->setMode(hdspm_peak_rms.speed);
-+    if (isMADI) {
-+        // check for speed change
-+	    if (hdspm_peak_rms.speed != w->cards[w->current_card]->speed_mode) {
-+		    w->cards[w->current_card]->setMode(hdspm_peak_rms.speed);
-+	    }
-+        input_peaks = hdspm_peak_rms.input_peaks;
-+        playback_peaks = hdspm_peak_rms.playback_peaks;
-+        output_peaks = hdspm_peak_rms.output_peaks;
+diff --git a/hdspmixer/src/HDSPMixerWindow.h b/hdspmixer/src/HDSPMixerWindow.h
+index f10b729..0eb6f1a 100644
+--- a/hdspmixer/src/HDSPMixerWindow.h
++++ b/hdspmixer/src/HDSPMixerWindow.h
+@@ -73,8 +73,8 @@ public:
+     Fl_Scroll *scroll;
+     HDSPMixerSetup *setup;
+     HDSPMixerAbout *about;
+-    HDSPMixerPresetData *data[3][3][8]; /* data[card number][mode(ss/ds/qs)][preset number] */
+-    HDSPMixerCard *cards[3];
++    HDSPMixerPresetData *data[MAX_CARDS][3][8]; /* data[card number][mode(ss/ds/qs)][preset number] */
++    HDSPMixerCard *cards[MAX_CARDS];
+     HDSPMixerInputs *inputs;
+     HDSPMixerPlaybacks *playbacks;
+     HDSPMixerOutputs *outputs;
+diff --git a/hdspmixer/src/defines.h b/hdspmixer/src/defines.h
+index 2065620..d29c37c 100644
+--- a/hdspmixer/src/defines.h
++++ b/hdspmixer/src/defines.h
+@@ -47,6 +47,8 @@
+ 
+ #define PAN_WIDTH 28
+ 
++#define MAX_CARDS	3
 +
-+        input_rms = hdspm_peak_rms.input_rms;
-+        playback_rms = hdspm_peak_rms.playback_rms;
-+        output_rms = hdspm_peak_rms.output_rms;
-+    } else {
-+        /* speed changes on non-MADI are already handled via alsactl_cb and
-+         * getSpeed(), but the metering structs differ.
-+         */
-+        input_peaks = hdsp_peak_rms.input_peaks;
-+        playback_peaks = hdsp_peak_rms.playback_peaks;
-+        output_peaks = hdsp_peak_rms.output_peaks;
-+
-+        input_rms = hdsp_peak_rms.input_rms;
-+        playback_rms = hdsp_peak_rms.playback_rms;
-+        output_rms = hdsp_peak_rms.output_rms;
-     }
+ typedef unsigned long long int int64;
  
-+    /* update the meter */
-     if (w->inputs->buttons->input) {
--      for (int i = 0; i < w->cards[w->current_card]->channels_input; ++i) {
--	w->inputs->strips[i]->meter->update(hdspm_peak_rms.input_peaks[(w->cards[w->current_card]->meter_map_input[i])] & 0xffffff00,
--					    hdspm_peak_rms.input_peaks[(w->cards[w->current_card]->meter_map_input[i])] & 0xf,
--					    hdspm_peak_rms.input_rms[(w->cards[w->current_card]->meter_map_input[i])]);
--      }
-+        for (int i = 0; i < w->cards[w->current_card]->channels_input; ++i) {
-+            w->inputs->strips[i]->meter->update(input_peaks[(w->cards[w->current_card]->meter_map_input[i])] & 0xffffff00,
-+                    input_peaks[(w->cards[w->current_card]->meter_map_input[i])] & 0xf,
-+                    input_rms[(w->cards[w->current_card]->meter_map_input[i])]);
-+        }
-     }
--     
-+
-     if (w->inputs->buttons->playback) {
--      for (int i = 0; i < w->cards[w->current_card]->channels_playback; ++i) {
--	w->playbacks->strips[i]->meter->update(hdspm_peak_rms.playback_peaks[(w->cards[w->current_card]->meter_map_playback[i])] & 0xffffff00,
--					       hdspm_peak_rms.playback_peaks[(w->cards[w->current_card]->meter_map_playback[i])] & 0xf,
--					       hdspm_peak_rms.playback_rms[(w->cards[w->current_card]->meter_map_playback[i])]);
--      }
-+        for (int i = 0; i < w->cards[w->current_card]->channels_playback; ++i) {
-+            w->playbacks->strips[i]->meter->update(playback_peaks[(w->cards[w->current_card]->meter_map_playback[i])] & 0xffffff00,
-+                    playback_peaks[(w->cards[w->current_card]->meter_map_playback[i])] & 0xf,
-+                    playback_rms[(w->cards[w->current_card]->meter_map_playback[i])]);
-+        }
-     }
- 
-     if (w->inputs->buttons->output) {
--      for (int i = 0; i < w->cards[w->current_card]->channels_playback; ++i) {
--	w->outputs->strips[i]->meter->update(hdspm_peak_rms.output_peaks[(w->cards[w->current_card]->meter_map_playback[i])] & 0xffffff00,
--					     hdspm_peak_rms.output_peaks[(w->cards[w->current_card]->meter_map_playback[i])] & 0xf,
--					     hdspm_peak_rms.output_rms[(w->cards[w->current_card]->meter_map_playback[i])]);
--      }
-+        for (int i = 0; i < w->cards[w->current_card]->channels_playback; ++i) {
-+            w->outputs->strips[i]->meter->update(output_peaks[(w->cards[w->current_card]->meter_map_playback[i])] & 0xffffff00,
-+                    output_peaks[(w->cards[w->current_card]->meter_map_playback[i])] & 0xf,
-+                    output_rms[(w->cards[w->current_card]->meter_map_playback[i])]);
-+        }
-     }
- 
-     Fl::add_timeout(0.03, readregisters_cb, w);
+ #endif
 -- 
 1.7.2.3
