@@ -1,7 +1,7 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 2/6] hdspmixer: Update FSF address.
-Date: Thu, 24 Feb 2011 21:33:27 +0100
-Message-ID: <1298579611-16573-3-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 3/6] hdspmixer: Increase height of about window.
+Date: Thu, 24 Feb 2011 21:33:28 +0100
+Message-ID: <1298579611-16573-4-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <1298579611-16573-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,27 +21,22 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The FSF has moved, so reflect this change in the about dialogue.
-
-See also http://www.fsf.org/about/contact/
+The copyright list got longer, so we need more vertical space.
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
-diff --git a/hdspmixer/src/HDSPMixerAboutText.cxx b/hdspmixer/src/HDSPMixerAboutText.cxx
-index 40bd862..c8c9b1a 100644
---- a/hdspmixer/src/HDSPMixerAboutText.cxx
-+++ b/hdspmixer/src/HDSPMixerAboutText.cxx
-@@ -41,8 +41,9 @@ HDSPMixerAboutText::HDSPMixerAboutText(int x, int y, int w, int h):Fl_Widget(x,
- 	       "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
- 	       "See the GNU General Public License for more details.\n\n"
- 	       "You should have received a copy of the GNU General Public License\n"
--	       "along with this program; if not, write to the Free Software\n"
--	       "Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.\n";
-+	       "along with this program; if not, write to the\n"
-+	       "Free Software Foundation, Inc., 51 Franklin Street, Suite 500,\n"
-+	       "Boston, MA 02110-1335, USA.\n";
- }
- 
- void HDSPMixerAboutText::draw()
+diff --git a/hdspmixer/src/HDSPMixerWindow.cxx b/hdspmixer/src/HDSPMixerWindow.cxx
+index 5ac3794..38e7b61 100644
+--- a/hdspmixer/src/HDSPMixerWindow.cxx
++++ b/hdspmixer/src/HDSPMixerWindow.cxx
+@@ -716,7 +716,7 @@ HDSPMixerWindow::HDSPMixerWindow(int x, int y, int w, int h, const char *label,
+     scroll->end();
+     end();
+     setup = new HDSPMixerSetup(400, 260, "Level Meters Setup", this);
+-    about = new HDSPMixerAbout(360, 260, "About HDSPMixer", this);
++    about = new HDSPMixerAbout(360, 300, "About HDSPMixer", this);
+     i = 0;
+     while (cards[i] != NULL) {
+ 	cards[i++]->initializeCard(this);
 -- 
 1.7.2.3
