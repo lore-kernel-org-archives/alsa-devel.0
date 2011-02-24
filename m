@@ -1,16 +1,25 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: : Question ASoC driver without Codec driver?
-Date: Thu, 24 Feb 2011 09:39:54 +0200
-Message-ID: <4D660B4A.80905@nokia.com>
-References: <2A84145621092446B6659B8A0F28E26F4703F09682@irsmsx501.ger.corp.intel.com>
+From: Bryan Ischo <bryan@ischo.com>
+Subject: Problem when using silence 'trick'
+Date: Thu, 24 Feb 2011 00:11:12 -0800
+Message-ID: <4D6612A0.9000106@ischo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa02.nokia.com (smtp.nokia.com [147.243.1.48])
-	by alsa0.perex.cz (Postfix) with ESMTP id 819432440F
-	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2011 08:40:05 +0100 (CET)
-In-Reply-To: <2A84145621092446B6659B8A0F28E26F4703F09682@irsmsx501.ger.corp.intel.com>
+Received: from sasl.smtp.pobox.com (b-pb-sasl-quonix.pobox.com [208.72.237.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id B8BCE24463
+	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2011 09:11:19 +0100 (CET)
+Received: from sasl.smtp.pobox.com (unknown [127.0.0.1])
+	by b-sasl-quonix.pobox.com (Postfix) with ESMTP id 649AF1C50
+	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2011 03:11:14 -0500 (EST)
+Received: from b-pb-sasl-quonix.pobox.com (unknown [127.0.0.1])
+	by b-sasl-quonix.pobox.com (Postfix) with ESMTP id 615321C4F
+	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2011 03:11:14 -0500 (EST)
+Received: from [192.168.1.88] (unknown [174.62.74.120]) (using TLSv1 with
+	cipher DHE-RSA-AES256-SHA (256/256 bits)) (No client certificate
+	requested)
+	by b-sasl-quonix.pobox.com (Postfix) with ESMTPSA id C746A1C4C for
+	<alsa-devel@alsa-project.org>; Thu, 24 Feb 2011 03:11:13 -0500 (EST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,49 +29,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext Bensaid, Selma" <selma.bensaid@intel.com>
-Cc: "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Aaltonen Matti Johannes <matti.j.aaltonen@nokia.com>, "Benavoli,
-	PatrickX" <patrickx.benavoli@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi ALSA developers!
 
-On 02/23/11 11:29, ext Bensaid, Selma wrote:
-> Hi,
-> =
+I am working on my first project that uses sound under Linux, and I've 
+chosen to implement directly to the ALSA API.  I am amazed that I was 
+able to get sound working in so few lines of code with ALSA.  I like the 
+API and its performance alot but I have a problem!
 
-> I'm trying to find out if it's possible to implement an ASoC driver =
+My program, early in its development, wanted to play just one sound 
+stream at a time; and it is a sound stream which normally delivers audio 
+at a sufficent rate to avoid XRUN but in some circumstances the thread 
+generating audio cannot keep up and it falls behind, resulting in XRUN.  
+Well I found that in cases where the audio thread is 'almost' keeping 
+up, the standard behavior of allowing an XRUN to occur, detecting it on 
+the next call to snd_pcm_writei, and 'fixing' it by calling 
+snd_pcm_prepare() and then proceeding to continue delivering audio 
+frames, had the following unfortunate problems:
 
-> without a codec driver.
-> =
+1. The audio sounds crackly and awful (which is to be expected to some 
+degree with XRUN)
+2. The time taken to re-prepare the ALSA device is counterproductive; it 
+takes even more time away from the thread that is delivering audio and 
+thus makes the case where the audio is very marginally behind 'real 
+time' much worse.
 
-> I'm implementing a ASoC driver for BT/FM WL1273,
+I thought, if only I could tell ALSA to just play silence if it has run 
+out of frames of audio instead of XRUNning, and then I can add real 
+frames of audio back in as soon as they are available and pick up the 
+audio stream where it left off.
 
-Well, probably you did noticed, that we already have driver for the
-WL1273 in upstream... As I recall you have sent several mails regarding
-to writing a new codec driver for the same chip.
+Some digging into the ALSA API and I found that someone on the ALSA team 
+had already beaten me to the thought!  The API docs kind of hint at how 
+you would go about doing this, and I found this technique to be very 
+successful:
 
-> where the FM WL1273 control =
+1. Use snd_pcm_sw_params_set_stop_threshold to set the stop threshold to 
+0.  Now, no XRUN - ALSA will keep looping in the circular buffer and 
+play whatever is there; and if you haven't updated quickly enough, you 
+just get looping snippets of audio.
 
-> interface is based on V4L2 since since we use the Combined Interface =
+2. Use snd_pcm_sw_params_set_silence_threshold to 0 and 
+snd_pcm_sw_params_set_silence_size to set the silence 'size' to the 
+boundary value obtained by calling snd_pcm_sw_params_get_boundary().  
+Now ALSA is instructed to fill the already-played portions of the 
+circular buffer with silence, which means that even when looping due to 
+XRUN, no sound is played over and over, instead silence is played.
 
-> Mode (The host controls both the BT and the FM Radio through the BT HCI h=
-ost interface).
+Hey presto - works perfectly!
 
-It is true, that the current implementation relies on i2c interface, but..
-AFAIK TI has the combined interface mode for this chip in the staging area.
-Recently there were a thread about the possibility of using that work,
-and offer the two interface for the wl1273 BT/FM control, so one can
-choose which to use.
-I'm not sure, of the BT driver for the wl1273 is in upstream.
+Then later on I needed to play more than one sound simultaneously.  It 
+turns out that I had been opening the "plughw:0,0" device originally and 
+this had been working great with my sound trick.  The problem is, you 
+cannot use plughw:0,0 and open it more than once to play more than one 
+sound simultaneously; the second open will fail.
 
-What I propose is to:
-- Help TI to get the combined interface mode out from the staging
-- Work with TI, Matti, and BT guys to implement line discipline driver
-to be used by the BT, and the codec/BT/FM part of wl1273
-- Work with TI, Matti, and BT guys, and convert/add support for the
-combined interface mode in the existing MFD/codec/V4L/BT driver.
+So after some digging I found that the device I really should have been 
+using all along is called "default" (hey, you'd think it would be 
+obvious, but somehow I never found ALSA documentation that told me to do 
+this).
 
--- =
+Now the real problem: when I use the "default" device with my silence 
+technique, I have no problem playing multiple audio streams 
+simultaneously by opening the "default" device multiple times and 
+simultaneously playing streams into the different devices.  BUT, 
+whenever I cannot deliver audio fast enough to a stream, and the silence 
+trick takes over and the stream plays some silence - boom, the device 
+goes silent forever.  I don't get any errors from any ALSA function, I 
+just get silence no matter what I write into the device after that 
+point.  This is in sharp contrast to the plughw:0,0 device, which does 
+play silence if I don't deliver audio fast enough but immediately plays 
+whatever audio I do end up delivering to it when I finally have audio to 
+deliver.
 
-P=E9ter
+Am I using an invalid technique with this silence trick?
+Is this a known and expected behavior of the "default" device?
+Or could something else be going on?
+
+Thanks for any advice you can give!
+
+Best wishes,
+Bryan
