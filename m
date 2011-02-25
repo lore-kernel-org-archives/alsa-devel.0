@@ -1,20 +1,23 @@
-From: Javier Martin <javier.martin@vista-silicon.com>
-Subject: [PATCH 4/4] ARM: Add SSI and aic3204 code to
-	Visstrim_M10 boards.
-Date: Fri, 25 Feb 2011 14:42:50 +0100
-Message-ID: <1298641370-17461-4-git-send-email-javier.martin@vista-silicon.com>
-References: <1298641370-17461-1-git-send-email-javier.martin@vista-silicon.com>
+From: ylin@mail.com
+Subject: Re: Channel swapping issue on TI OMAP3/TWL4030
+Date: Fri, 25 Feb 2011 10:32:11 -0500
+Message-ID: <8CDA3184E0F0520-4AC-24D6@web-mmc-d01.sysops.aol.com>
+References: <8CD98E75F0E83E2-63C-14642@web-mmc-m05.sysops.aol.com>	<CF32F28EDF8D20468EEDCBE4975DA0274A46DB@008-AM1MPN1-027.mgdnok.nokia.com><8CD9A87EF4FB765-1218-647@web-mmc-m03.sysops.aol.com>	<4D5A2466.2060705@nokia.com><8CD9B43DFD8A17C-DE8-B3DD@web-mmc-d01.sysops.aol.com>	<4D5B7AB5.201@nokia.com><8CD9C6B934040FF-13C8-4BFB@web-mmc-d06.sysops.aol.com><4D5D0A0E.5030505@nokia.com>	<8CD9E665EC96F93-126C-1145E@web-mmc-d04.sysops.aol.com><8CD9EC9F73F6CCC-DDC-EA8F@web-mmc-d06.sysops.aol.com><4D636574.9050501@nokia.com>
+	<8CDA1851D39EA53-3E0-7A27@web-mmc-d01.sysops.aol.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id EBCC6103995
-	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 14:43:35 +0100 (CET)
-Received: by mail-bw0-f51.google.com with SMTP id 10so2053337bwz.38
-	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 05:43:35 -0800 (PST)
-In-Reply-To: <1298641370-17461-1-git-send-email-javier.martin@vista-silicon.com>
+Received: from imr-da02.mx.aol.com (imr-da02.mx.aol.com [205.188.105.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4E2C8244DC
+	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 16:32:41 +0100 (CET)
+Received: from imo-ma03.mx.aol.com (imo-ma03.mx.aol.com [64.12.78.138])
+	by imr-da02.mx.aol.com (8.14.1/8.14.1) with ESMTP id p1PFWYBY027812
+	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 10:32:34 -0500
+Received: from ylin@mail.com
+	by imo-ma03.mx.aol.com  (mail_out_v42.9.) id 5.102c.886d7fb (44630)
+	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 10:32:25 -0500 (EST)
+In-Reply-To: <8CDA1851D39EA53-3E0-7A27@web-mmc-d01.sysops.aol.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,75 +28,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, Javier Martin <javier.martin@vista-silicon.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Visstrim_M10 boards have an TI tlv320aic3204 codec
-attached to SSI1.
 
-Signed-off-by: Javier Martin <javier.martin@vista-silicon.com>
----
- arch/arm/mach-imx/Kconfig                   |    1 +
- arch/arm/mach-imx/mach-imx27_visstrim_m10.c |   14 ++++++++++++++
- 2 files changed, 15 insertions(+), 0 deletions(-)
+> > I think you need to implement the PRCM compliant interrupt config to
+> > check for McBSP underflow/overflow.
+>
+> I have implemented the interrupt handle for IRQ 17 for receive error
+> and underflow/overflow.  However, the devices are running for 2 days
+> without channel swapped.  I will keep them running.
 
-diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
-index 197f9e2..4d01d8c 100644
---- a/arch/arm/mach-imx/Kconfig
-+++ b/arch/arm/mach-imx/Kconfig
-@@ -168,6 +168,7 @@ config MACH_IMX27_VISSTRIM_M10
- 	bool "Vista Silicon i.MX27 Visstrim_m10"
- 	select IMX_HAVE_PLATFORM_IMX_I2C
- 	select IMX_HAVE_PLATFORM_IMX_UART
-+	select IMX_HAVE_PLATFORM_IMX_SSI
- 	help
- 	  Include support for Visstrim_m10 platform and its different variants.
- 	  This includes specific configurations for the board and its
-diff --git a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-index 59716fa..b346484 100644
---- a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-+++ b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-@@ -69,6 +69,11 @@ static const int visstrim_m10_pins[] __initconst = {
- 	PD15_AOUT_FEC_COL,
- 	PD16_AIN_FEC_TX_ER,
- 	PF23_AIN_FEC_TX_EN,
-+	/* SSI1 */
-+	PC20_PF_SSI1_FS,
-+	PC21_PF_SSI1_RXD,
-+	PC22_PF_SSI1_TXD,
-+	PC23_PF_SSI1_CLK,
- 	/* SDHC1 */
- 	PE18_PF_SD1_D0,
- 	PE19_PF_SD1_D1,
-@@ -207,6 +212,9 @@ static struct i2c_board_info visstrim_m10_i2c_devices[] = {
- 		I2C_BOARD_INFO("pca9555", 0x20),
- 		.platform_data = &visstrim_m10_pca9555_pdata,
- 	},
-+	{
-+		I2C_BOARD_INFO("tlv320aic32x4", 0x18),
-+	}
- };
- 
- /* USB OTG */
-@@ -222,6 +230,11 @@ static struct mxc_usbh_platform_data visstrim_m10_usbotg_pdata = {
- 	.flags	= MXC_EHCI_POWER_PINS_ENABLED,
- };
- 
-+/* SSI */
-+static const struct imx_ssi_platform_data visstrim_m10_ssi_pdata __initconst = {
-+	.flags			= IMX_SSI_DMA | IMX_SSI_SYN,
-+};
-+
- static void __init visstrim_m10_board_init(void)
- {
- 	int ret;
-@@ -231,6 +244,7 @@ static void __init visstrim_m10_board_init(void)
- 	if (ret)
- 		pr_err("Failed to setup pins (%d)\n", ret);
- 
-+	imx27_add_imx_ssi(0, &visstrim_m10_ssi_pdata);
- 	imx27_add_imx_uart0(&uart_pdata);
- 
- 	i2c_register_board_info(0, visstrim_m10_i2c_devices,
--- 
-1.7.0.4
+Finally, after 4 days, we caught the problem again.  When channel is 
+swapped, the IRQ is trigger with receive underrun (IRQ_STATUS_REG = 
+0x171e).  And, from the status register, the transmit is overflow as 
+well.  However, I didn't fill zero to one of the transmit channel, and 
+couldn't tell if the playback is swap as well.  Any idea why underun 
+happens, or any suggestion to fix it?
+
+Thanks,
+Ying
