@@ -1,18 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 21/21]sound:soc:samsung:dma.c remove one	to
-	many l's in the word.
-Date: Fri, 25 Feb 2011 11:51:04 +0000
-Message-ID: <20110225115103.GA12838@sirena.org.uk>
-References: <1298614597-4340-1-git-send-email-justinmattock@gmail.com>
+Subject: ASoC updates for 2.6.38
+Date: Fri, 25 Feb 2011 11:51:48 +0000
+Message-ID: <20110225115148.GA28980@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0D5332449D
-	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 12:51:14 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9CC58244AA
+	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 12:51:28 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1298614597-4340-1-git-send-email-justinmattock@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,19 +19,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Justin P. Mattock" <justinmattock@gmail.com>
-Cc: alsa-devel@alsa-project.org, trivial@kernel.org, jassi.brar@samsung.com, tiwai@suse.de, linux-kernel@vger.kernel.org, lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 24, 2011 at 10:16:37PM -0800, Justin P. Mattock wrote:
-> The patch below removes an extra "l" in the word.
-> 
-> Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
+The following changes since commit 3017358a75917b5ed5ad361c02ba2a7e257d3b2a:
 
-Applied.
+  ASoC: Ensure supplies are maintained for force enabled widgets (2011-02-13 19:49:47 +0000)
 
-Please remember to CC maintainers on patches as covered in
-Documentation/SubmittingPatches, even trivial patches should be made
-visible to maintainers.  Please also try to use changelogs for your
-patch which resemble other changelogs for the code area you're working
-on.
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.38
+
+More of the usual small fixes.
+
+Dmitry Eremin-Solenikov (1):
+      ASoC: correct pxa AC97 DAI names
+
+Mark Brown (3):
+      ASoC: Fix WM8958 default microphone detection argument ordering
+      ASoC: Correct definition of WM8903_VMID_RES_5K
+      ASoC: Hook wm_hubs micbiases up to CLK_SYS
+
+ sound/soc/codecs/wm8903.h      |    2 +-
+ sound/soc/codecs/wm8994.c      |    5 ++---
+ sound/soc/codecs/wm_hubs.c     |    3 +++
+ sound/soc/pxa/e740_wm9705.c    |    4 ++--
+ sound/soc/pxa/e750_wm9705.c    |    4 ++--
+ sound/soc/pxa/e800_wm9712.c    |    4 ++--
+ sound/soc/pxa/em-x270.c        |    4 ++--
+ sound/soc/pxa/mioa701_wm9713.c |    4 ++--
+ sound/soc/pxa/palm27x.c        |    4 ++--
+ sound/soc/pxa/tosa.c           |    4 ++--
+ sound/soc/pxa/zylonite.c       |    4 ++--
+ 11 files changed, 22 insertions(+), 20 deletions(-)
