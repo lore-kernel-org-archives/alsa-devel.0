@@ -1,14 +1,17 @@
-From: =?UTF-8?q?Eric=20B=C3=A9nard?= <eric@eukrea.com>
-Subject: [PATCH] eukrea-tlv320: add MBIMXSD51 support
-Date: Fri, 25 Feb 2011 13:48:15 +0100
-Message-ID: <1298638095-4084-1-git-send-email-eric@eukrea.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] eukrea-tlv320: fix platform_name
+Date: Fri, 25 Feb 2011 12:49:58 +0000
+Message-ID: <20110225124957.GA12330@opensource.wolfsonmicro.com>
+References: <1298638066-4049-1-git-send-email-eric@eukrea.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from 26.mail-out.ovh.net (1.26.mail-out.ovh.net [46.105.43.121])
-	by alsa0.perex.cz (Postfix) with SMTP id 46978103962
-	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 13:48:18 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CB8001037F3
+	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 13:49:36 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1298638066-4049-1-git-send-email-eric@eukrea.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,32 +21,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: Eric =?iso-8859-1?Q?B=E9nard?= <eric@eukrea.com>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-U2lnbmVkLW9mZi1ieTogRXJpYyBCw6luYXJkIDxlcmljQGV1a3JlYS5jb20+Ci0tLQogc291bmQv
-c29jL2lteC9LY29uZmlnICAgICAgICAgfCAgICAzICsrLQogc291bmQvc29jL2lteC9ldWtyZWEt
-dGx2MzIwLmMgfCAgICAzICsrLQogMiBmaWxlcyBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDIg
-ZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2lteC9LY29uZmlnIGIvc291bmQv
-c29jL2lteC9LY29uZmlnCmluZGV4IDY0MjI3MGEuLjllZWI4ZjAgMTAwNjQ0Ci0tLSBhL3NvdW5k
-L3NvYy9pbXgvS2NvbmZpZworKysgYi9zb3VuZC9zb2MvaW14L0tjb25maWcKQEAgLTQ0LDcgKzQ0
-LDggQEAgY29uZmlnIFNORF9TT0NfRVVLUkVBX1RMVjMyMAogCXRyaXN0YXRlICJFdWtyZWEgVExW
-MzIwIgogCWRlcGVuZHMgb24gTUFDSF9FVUtSRUFfTUJJTVgyN19CQVNFQk9BUkQgXAogCQl8fCBN
-QUNIX0VVS1JFQV9NQklNWFNEMjVfQkFTRUJPQVJEIFwKLQkJfHwgTUFDSF9FVUtSRUFfTUJJTVhT
-RDM1X0JBU0VCT0FSRAorCQl8fCBNQUNIX0VVS1JFQV9NQklNWFNEMzVfQkFTRUJPQVJEIFwKKwkJ
-fHwgTUFDSF9FVUtSRUFfTUJJTVhTRDUxX0JBU0VCT0FSRAogCXNlbGVjdCBTTkRfU09DX1RMVjMy
-MEFJQzIzCiAJc2VsZWN0IFNORF9NWENfU09DX1NTSQogCXNlbGVjdCBTTkRfTVhDX1NPQ19GSVEK
-ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbXgvZXVrcmVhLXRsdjMyMC5jIGIvc291bmQvc29jL2lt
-eC9ldWtyZWEtdGx2MzIwLmMKaW5kZXggMWU5YmNjYS4uNzVmYjRiOCAxMDA2NDQKLS0tIGEvc291
-bmQvc29jL2lteC9ldWtyZWEtdGx2MzIwLmMKKysrIGIvc291bmQvc29jL2lteC9ldWtyZWEtdGx2
-MzIwLmMKQEAgLTk4LDcgKzk4LDggQEAgc3RhdGljIGludCBfX2luaXQgZXVrcmVhX3RsdjMyMF9p
-bml0KHZvaWQpCiAJaW50IHJldDsKIAogCWlmICghbWFjaGluZV9pc19ldWtyZWFfY3B1aW14Mjco
-KSAmJiAhbWFjaGluZV9pc19ldWtyZWFfY3B1aW14MjVzZCgpCi0JCSYmICFtYWNoaW5lX2lzX2V1
-a3JlYV9jcHVpbXgzNXNkKCkpCisJCSYmICFtYWNoaW5lX2lzX2V1a3JlYV9jcHVpbXgzNXNkKCkK
-KwkJJiYgIW1hY2hpbmVfaXNfZXVrcmVhX2NwdWlteDUxc2QoKSkKIAkJLyogcmV0dXJuIGhhcHB5
-LiBXZSBtaWdodCBydW4gb24gYSB0b3RhbGx5IGRpZmZlcmVudCBtYWNoaW5lICovCiAJCXJldHVy
-biAwOwogCi0tIAoxLjcuNAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+On Fri, Feb 25, 2011 at 01:47:46PM +0100, Eric B=E9nard wrote:
+> commit f0fba2ad1b6b53d5360125c41953b7afcd6deff0 included a mistake
+
+Always include the subject line of the commit in patches - readers are
+unlikely to have memorised commit IDs.
+
+The patch itself looks OK but I'll wait for Liam's ack.
