@@ -1,18 +1,18 @@
 From: "Justin P. Mattock" <justinmattock@gmail.com>
-Subject: [PATCH 19/21]sound:pci:emu10k1:emu10k1_main.c remove
-	one to many l's in the word.
-Date: Thu, 24 Feb 2011 22:15:42 -0800
-Message-ID: <1298614542-4192-1-git-send-email-justinmattock@gmail.com>
+Subject: [PATCH 20/21]sound:pci:hda:patch_realtek.c remove one
+	to many l's in the word.
+Date: Thu, 24 Feb 2011 22:16:02 -0800
+Message-ID: <1298614562-4230-1-git-send-email-justinmattock@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yi0-f51.google.com (mail-yi0-f51.google.com
-	[209.85.218.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9E76D1037EC
-	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 07:16:02 +0100 (CET)
-Received: by yib2 with SMTP id 2so717228yib.38
-	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2011 22:16:00 -0800 (PST)
+Received: from mail-yw0-f51.google.com (mail-yw0-f51.google.com
+	[209.85.213.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id B3D8210380C
+	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 07:16:21 +0100 (CET)
+Received: by ywg4 with SMTP id 4so385496ywg.38
+	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2011 22:16:21 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,21 +31,21 @@ The patch below removes an extra "l" in the word.
 Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
 
 ---
- sound/pci/emu10k1/emu10k1_main.c |    2 +-
+ sound/pci/hda/patch_realtek.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
-index 66c7fb3..5e619a8 100644
---- a/sound/pci/emu10k1/emu10k1_main.c
-+++ b/sound/pci/emu10k1/emu10k1_main.c
-@@ -926,7 +926,7 @@ static int snd_emu10k1_emu1010_init(struct snd_emu10k1 *emu)
- 	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_IN, 0x19);
- 	/* Unknown. */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_MIDI_OUT, 0x0c);
--	/* IRQ Enable: Alll on */
-+	/* IRQ Enable: All on */
- 	/* snd_emu1010_fpga_write(emu, 0x09, 0x0f ); */
- 	/* IRQ Enable: All off */
- 	snd_emu1010_fpga_write(emu, EMU_HANA_IRQ_ENABLE, 0x00);
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 3328a25..c5208c9 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4705,7 +4705,7 @@ static struct snd_pci_quirk alc880_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(0x1558, 0x5401, "ASUS", ALC880_ASUS_DIG2),
+ 	SND_PCI_QUIRK(0x1565, 0x8202, "Biostar", ALC880_5ST_DIG),
+ 	SND_PCI_QUIRK(0x1584, 0x9050, "Uniwill", ALC880_UNIWILL_DIG),
+-	SND_PCI_QUIRK(0x1584, 0x9054, "Uniwlll", ALC880_F1734),
++	SND_PCI_QUIRK(0x1584, 0x9054, "Uniwill", ALC880_F1734),
+ 	SND_PCI_QUIRK(0x1584, 0x9070, "Uniwill", ALC880_UNIWILL),
+ 	SND_PCI_QUIRK(0x1584, 0x9077, "Uniwill P53", ALC880_UNIWILL_P53),
+ 	SND_PCI_QUIRK(0x161f, 0x203d, "W810", ALC880_W810),
 -- 
 1.7.4.1
