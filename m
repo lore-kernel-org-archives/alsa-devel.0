@@ -1,15 +1,14 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.39
-Date: Fri, 25 Feb 2011 12:48:23 +0000
-Message-ID: <20110225124823.GF28980@opensource.wolfsonmicro.com>
+From: =?UTF-8?q?Eric=20B=C3=A9nard?= <eric@eukrea.com>
+Subject: [PATCH] eukrea-tlv320: add MBIMXSD51 support
+Date: Fri, 25 Feb 2011 13:48:15 +0100
+Message-ID: <1298638095-4084-1-git-send-email-eric@eukrea.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ED7C7103962
-	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 13:48:02 +0100 (CET)
-Content-Disposition: inline
+Received: from 26.mail-out.ovh.net (1.26.mail-out.ovh.net [46.105.43.121])
+	by alsa0.perex.cz (Postfix) with SMTP id 46978103962
+	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 13:48:18 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,73 +18,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit fadddc8753ccfab26ee57f3205d6926fe4be1350:
-
-  ASoC: Add kerneldoc for jack_status_check callback (2011-02-18 09:14:24 -0800)
-
-are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.39
-
-Dimitris Papastamos (1):
-      ASoC: soc-dapm: Include quotes around contents in debugfs entries
-
-Dmitry Eremin-Solenikov (1):
-      ASoC: correct pxa AC97 DAI names
-
-Justin P. Mattock (1):
-      ASoC: remove one to many l's in the word
-
-Mark Brown (15):
-      ASoC: Mark WM8958 microphone detection registers readable
-      ASoC: Hook wm_hubs micbiases up to CLK_SYS
-      ASoC: Fix WM8958 default microphone detection argument ordering
-      ASoC: Correct definition of WM8903_VMID_RES_5K
-      ASoC: Hook wm_hubs micbiases up to CLK_SYS
-      Merge branch 'for-2.6.38' into for-2.6.39
-      ASoC: Remove card from snd_soc_dapm_set_bias_level()
-      ASoC: Run bias level changes for all DAPM contexts in parallel
-      ASoC: Mark WM8958 microphone bias registers as readable
-      ASoC: Support WM8958 direct microphone detection IRQ
-      ASoC: Support configuration of WM8958 microphone bias analogue parameters
-      ASoC: Simplify default WM8958 jack detection code
-      ASoC: Pass the jack to jack notifiers
-      ASoC: Remove -codec suffix from WM9081 driver
-      Merge branch 'for-2.6.38' into for-2.6.39
-
-Stephen Warren (1):
-      ASoC: Tegra: Move utilities to separate module
-
-Zeng Zhaoming (1):
-      ASoC: Add Freescale SGTL5000 codec support
-
- include/linux/mfd/wm8994/pdata.h     |   12 +-
- include/linux/mfd/wm8994/registers.h |    2 +
- sound/soc/codecs/Kconfig             |    5 +
- sound/soc/codecs/Makefile            |    2 +
- sound/soc/codecs/sgtl5000.c          | 1512 ++++++++++++++++++++++++++++++++++
- sound/soc/codecs/sgtl5000.h          |  402 +++++++++
- sound/soc/codecs/wm8903.h            |    2 +-
- sound/soc/codecs/wm8994-tables.c     |   10 +-
- sound/soc/codecs/wm8994.c            |  105 ++--
- sound/soc/codecs/wm9081.c            |    2 +-
- sound/soc/codecs/wm_hubs.c           |    3 +
- sound/soc/pxa/e740_wm9705.c          |    4 +-
- sound/soc/pxa/e750_wm9705.c          |    4 +-
- sound/soc/pxa/e800_wm9712.c          |    4 +-
- sound/soc/pxa/em-x270.c              |    4 +-
- sound/soc/pxa/mioa701_wm9713.c       |    4 +-
- sound/soc/pxa/palm27x.c              |    4 +-
- sound/soc/pxa/tosa.c                 |    4 +-
- sound/soc/pxa/zylonite.c             |    4 +-
- sound/soc/samsung/dma.c              |    2 +-
- sound/soc/soc-dapm.c                 |  134 ++--
- sound/soc/soc-jack.c                 |    2 +-
- sound/soc/tegra/Makefile             |    3 +-
- sound/soc/tegra/tegra_asoc_utils.c   |    6 +
- 24 files changed, 2091 insertions(+), 145 deletions(-)
- create mode 100644 sound/soc/codecs/sgtl5000.c
- create mode 100644 sound/soc/codecs/sgtl5000.h
+U2lnbmVkLW9mZi1ieTogRXJpYyBCw6luYXJkIDxlcmljQGV1a3JlYS5jb20+Ci0tLQogc291bmQv
+c29jL2lteC9LY29uZmlnICAgICAgICAgfCAgICAzICsrLQogc291bmQvc29jL2lteC9ldWtyZWEt
+dGx2MzIwLmMgfCAgICAzICsrLQogMiBmaWxlcyBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDIg
+ZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2lteC9LY29uZmlnIGIvc291bmQv
+c29jL2lteC9LY29uZmlnCmluZGV4IDY0MjI3MGEuLjllZWI4ZjAgMTAwNjQ0Ci0tLSBhL3NvdW5k
+L3NvYy9pbXgvS2NvbmZpZworKysgYi9zb3VuZC9zb2MvaW14L0tjb25maWcKQEAgLTQ0LDcgKzQ0
+LDggQEAgY29uZmlnIFNORF9TT0NfRVVLUkVBX1RMVjMyMAogCXRyaXN0YXRlICJFdWtyZWEgVExW
+MzIwIgogCWRlcGVuZHMgb24gTUFDSF9FVUtSRUFfTUJJTVgyN19CQVNFQk9BUkQgXAogCQl8fCBN
+QUNIX0VVS1JFQV9NQklNWFNEMjVfQkFTRUJPQVJEIFwKLQkJfHwgTUFDSF9FVUtSRUFfTUJJTVhT
+RDM1X0JBU0VCT0FSRAorCQl8fCBNQUNIX0VVS1JFQV9NQklNWFNEMzVfQkFTRUJPQVJEIFwKKwkJ
+fHwgTUFDSF9FVUtSRUFfTUJJTVhTRDUxX0JBU0VCT0FSRAogCXNlbGVjdCBTTkRfU09DX1RMVjMy
+MEFJQzIzCiAJc2VsZWN0IFNORF9NWENfU09DX1NTSQogCXNlbGVjdCBTTkRfTVhDX1NPQ19GSVEK
+ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbXgvZXVrcmVhLXRsdjMyMC5jIGIvc291bmQvc29jL2lt
+eC9ldWtyZWEtdGx2MzIwLmMKaW5kZXggMWU5YmNjYS4uNzVmYjRiOCAxMDA2NDQKLS0tIGEvc291
+bmQvc29jL2lteC9ldWtyZWEtdGx2MzIwLmMKKysrIGIvc291bmQvc29jL2lteC9ldWtyZWEtdGx2
+MzIwLmMKQEAgLTk4LDcgKzk4LDggQEAgc3RhdGljIGludCBfX2luaXQgZXVrcmVhX3RsdjMyMF9p
+bml0KHZvaWQpCiAJaW50IHJldDsKIAogCWlmICghbWFjaGluZV9pc19ldWtyZWFfY3B1aW14Mjco
+KSAmJiAhbWFjaGluZV9pc19ldWtyZWFfY3B1aW14MjVzZCgpCi0JCSYmICFtYWNoaW5lX2lzX2V1
+a3JlYV9jcHVpbXgzNXNkKCkpCisJCSYmICFtYWNoaW5lX2lzX2V1a3JlYV9jcHVpbXgzNXNkKCkK
+KwkJJiYgIW1hY2hpbmVfaXNfZXVrcmVhX2NwdWlteDUxc2QoKSkKIAkJLyogcmV0dXJuIGhhcHB5
+LiBXZSBtaWdodCBydW4gb24gYSB0b3RhbGx5IGRpZmZlcmVudCBtYWNoaW5lICovCiAJCXJldHVy
+biAwOwogCi0tIAoxLjcuNAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
