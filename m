@@ -1,19 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] eukrea-tlv320: fix platform_name
-Date: Fri, 25 Feb 2011 12:55:19 +0000
-Message-ID: <1298638519.3363.74.camel@odin>
-References: <1298638066-4049-1-git-send-email-eric@eukrea.com>
-	<20110225124957.GA12330@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Move WM2000 to dev_pm_ops
+Date: Fri, 25 Feb 2011 12:55:49 +0000
+Message-ID: <1298638549.3363.75.camel@odin>
+References: <1298636752-11198-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 973A910393B
-	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 13:55:28 +0100 (CET)
-Received: by wwb17 with SMTP id 17so503784wwb.2
-	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 04:55:27 -0800 (PST)
-In-Reply-To: <20110225124957.GA12330@opensource.wolfsonmicro.com>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A4B310396B
+	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 13:55:53 +0100 (CET)
+Received: by wyb28 with SMTP id 28so1517889wyb.38
+	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 04:55:53 -0800 (PST)
+In-Reply-To: <1298636752-11198-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,20 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, s.hauer@pengutronix.de, Eric =?ISO-8859-1?Q?B=E9nard?= <eric@eukrea.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAyMDExLTAyLTI1IGF0IDEyOjQ5ICswMDAwLCBNYXJrIEJyb3duIHdyb3RlOgo+IE9u
-IEZyaSwgRmViIDI1LCAyMDExIGF0IDAxOjQ3OjQ2UE0gKzAxMDAsIEVyaWMgQsOpbmFyZCB3cm90
-ZToKPiA+IGNvbW1pdCBmMGZiYTJhZDFiNmI1M2Q1MzYwMTI1YzQxOTUzYjdhZmNkNmRlZmYwIGlu
-Y2x1ZGVkIGEgbWlzdGFrZQo+IAo+IEFsd2F5cyBpbmNsdWRlIHRoZSBzdWJqZWN0IGxpbmUgb2Yg
-dGhlIGNvbW1pdCBpbiBwYXRjaGVzIC0gcmVhZGVycyBhcmUKPiB1bmxpa2VseSB0byBoYXZlIG1l
-bW9yaXNlZCBjb21taXQgSURzLgo+IAo+IFRoZSBwYXRjaCBpdHNlbGYgbG9va3MgT0sgYnV0IEkn
-bGwgd2FpdCBmb3IgTGlhbSdzIGFjay4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwKCkJvdGgKCkFja2VkLWJ5OiBMaWFtIEdpcmR3b29kIDxscmdA
-c2xpbWxvZ2ljLmNvLnVrPgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+On Fri, 2011-02-25 at 12:25 +0000, Mark Brown wrote:
+> There's a general move to use dev_pm_ops rather than bus specific functions
+> in order to facilitate work on the PM core. Do this conversion to WM2000.
+> The driver ought to be updated to work better in a multi-component model
+> but the mechanical conversion ensures that we avoid blocking PM core work
+> until that happens.
+> 
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/wm2000.c |   14 +++++++-------
+>  1 files changed, 7 insertions(+), 7 deletions(-)
+> 
+
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
