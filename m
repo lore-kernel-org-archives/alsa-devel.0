@@ -1,22 +1,16 @@
-From: Timur Tabi <timur.tabi@gmail.com>
-Subject: Re: [PATCH v5] ASoC: Add Freescale SGTL5000 codec
-	support
-Date: Fri, 25 Feb 2011 17:01:45 -0600
-Message-ID: <AANLkTimQRX3CAdmMmbMX5qd-TRYv10-nNx+rWnGjyw03@mail.gmail.com>
-References: <1298484501-3993-1-git-send-email-zhaoming.zeng@freescale.com>
-	<20110225120906.GE28980@opensource.wolfsonmicro.com>
-	<AANLkTikpBB5vVKj+Y2EfbjfC=6aigeCjaqZ9mz9+qWuF@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: [[PATCH] ALSA 1/1] Fix alsa-lib to regard 3D control -
+ Depth as Playback Controls
+Date: Sat, 26 Feb 2011 09:41:38 +0800
+Message-ID: <AANLkTikUE8r-DtNMRZiQzc0wyeXczZaJFJSOZvxFdXXn@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=20cf3054a38f369a6f049d258c66
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5315C103943
-	for <alsa-devel@alsa-project.org>; Sat, 26 Feb 2011 00:02:26 +0100 (CET)
-Received: by fxm11 with SMTP id 11so2075308fxm.38
-	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 15:02:25 -0800 (PST)
-In-Reply-To: <AANLkTikpBB5vVKj+Y2EfbjfC=6aigeCjaqZ9mz9+qWuF@mail.gmail.com>
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id DA7972439C
+	for <alsa-devel@alsa-project.org>; Sat, 26 Feb 2011 02:41:38 +0100 (CET)
+Received: by fxm11 with SMTP id 11so2147829fxm.38
+	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2011 17:41:38 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,19 +20,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Zeng Zhaoming <zengzm.kernel@gmail.com>
-Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, Mark Brown <broonie@opensource.wolfsonmicro.com>, xiao-lizhang@freescale.com, zhaoming.zeng@freescale.com, lrg@slimlogic.co.uk, arnaud.patard@rtp-net.org, linuxzsc@gmail.com
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 25, 2011 at 9:56 AM, Zeng Zhaoming <zengzm.kernel@gmail.com> wrote:
+--20cf3054a38f369a6f049d258c66
+Content-Type: text/plain; charset=ISO-8859-1
 
-> I have not remove void* since my toolchain ( gcc 4.4.4) complains
-> about the type mismatch, I will test
-> it with other version toolchain to confirm.
+Fix alsa-lib to regard 3D control - Depth as Playback Controls
 
-That's because you declared sgtl5000_regs[] as "const", which it
-isn't.  The compiler is trying to tell you that you made a mistake.
+This allow those mixer or recording application to find those controls which
+are really used for capturing
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+--20cf3054a38f369a6f049d258c66
+Content-Type: application/octet-stream;
+	name="0001-Fix-alsa-lib-to-regard-3D-control-Depth-as-Playback-control.patch"
+Content-Disposition: attachment;
+	filename="0001-Fix-alsa-lib-to-regard-3D-control-Depth-as-Playback-control.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gklv3myj0
+
+RnJvbSAxODI4MmZiMzViZTA3MGRjODVlNTYzZDczZjYzOWZiNTI5ODgyYjliIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBSYXltb25kIFlhdSA8c3VwZXJxdWFkLnZvcnRleDJAZ21haWwu
+Y29tPgpEYXRlOiBTYXQsIDI2IEZlYiAyMDExIDA5OjI0OjQzICswODAwClN1YmplY3Q6IFtbUEFU
+Q0hdIEFMU0EgIDEvMV0gRml4IGFsc2EtbGliIHRvIHJlZ2FyZCAzRCBjb250cm9sIC0gRGVwdGgg
+YXMgUGxheWJhY2sgQ29udHJvbHMKCgpTaWduZWQtb2ZmLWJ5OiBSYXltb25kIFlhdSA8c3VwZXJx
+dWFkLnZvcnRleDJAZ21haWwuY29tPgoKZGlmZiAtLWdpdCBhL3NyYy9taXhlci9zaW1wbGVfbm9u
+ZS5jIGIvc3JjL21peGVyL3NpbXBsZV9ub25lLmMKaW5kZXggNDI2ZjJkNy4uMzk1ZTRkNiAxMDA2
+NDQKLS0tIGEvc3JjL21peGVyL3NpbXBsZV9ub25lLmMKKysrIGIvc3JjL21peGVyL3NpbXBsZV9u
+b25lLmMKQEAgLTkzNyw3ICs5MzcsMTIgQEAgc3RhdGljIGludCBiYXNlX2xlbihjb25zdCBjaGFy
+ICpuYW1lLCBzZWxlbV9jdGxfdHlwZV90ICp0eXBlKQogCQkqdHlwZSA9IENUTF9DQVBUVVJFX1JP
+VVRFOwogCQlyZXR1cm4gc3RybGVuKG5hbWUpOwogCX0KLQorCWlmIChzdHJzdHIobmFtZSwgIjNE
+IENvbnRyb2wiKSA+IDApIHsKKwkJaWYgKHN0cnN0cihuYW1lLCAiRGVwdGgiKSA+IDApIHsKKwkJ
+CSp0eXBlID0gQ1RMX1BMQVlCQUNLX1ZPTFVNRTsKKwkJCXJldHVybiBzdHJsZW4obmFtZSk7CisJ
+CX0KKwl9CiAJcmV0dXJuIDA7CiB9CiAKLS0gCjEuNi4wLjYKCg==
+--20cf3054a38f369a6f049d258c66
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--20cf3054a38f369a6f049d258c66--
