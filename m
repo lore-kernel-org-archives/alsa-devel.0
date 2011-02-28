@@ -1,15 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.39
-Date: Mon, 28 Feb 2011 15:09:15 +0000
-Message-ID: <20110228150915.GA26619@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Staticise non-exported symbols in
+ SGTL5000
+Date: Mon, 28 Feb 2011 15:08:54 +0000
+Message-ID: <1298905734.3300.1.camel@odin>
+References: <1298903619-25151-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AFAFB247F2
-	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2011 16:08:54 +0100 (CET)
-Content-Disposition: inline
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id DDD5C1038C3
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2011 16:08:58 +0100 (CET)
+Received: by wyb28 with SMTP id 28so3632886wyb.38
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2011 07:08:58 -0800 (PST)
+In-Reply-To: <1298903619-25151-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,33 +24,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Taksahi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: zhaoming.zeng@freescale.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 9b34e6cc3bc2bf826c078c93c81b46f6c08da25f:
+On Mon, 2011-02-28 at 14:33 +0000, Mark Brown wrote:
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/sgtl5000.c |    6 +++---
+>  1 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+> index b528f97..b7e97c0 100644
+> --- a/sound/soc/codecs/sgtl5000.c
+> +++ b/sound/soc/codecs/sgtl5000.c
+> @@ -124,7 +124,7 @@ static struct regulator_consumer_supply ldo_consumer[] = {
+>  	REGULATOR_SUPPLY(LDO_CONSUMER_NAME, NULL),
+>  };
+>  
+> -struct regulator_init_data ldo_init_data = {
+> +static struct regulator_init_data ldo_init_data = {
+>  	.constraints = {
+>  		.min_uV                 = 850000,
+>  		.max_uV                 = 1600000,
+> @@ -946,7 +946,7 @@ static int sgtl5000_set_bias_level(struct snd_soc_codec *codec,
+>  			SNDRV_PCM_FMTBIT_S24_LE |\
+>  			SNDRV_PCM_FMTBIT_S32_LE)
+>  
+> -struct snd_soc_dai_ops sgtl5000_ops = {
+> +static struct snd_soc_dai_ops sgtl5000_ops = {
+>  	.hw_params = sgtl5000_pcm_hw_params,
+>  	.digital_mute = sgtl5000_digital_mute,
+>  	.set_fmt = sgtl5000_set_dai_fmt,
+> @@ -1421,7 +1421,7 @@ static int sgtl5000_remove(struct snd_soc_codec *codec)
+>  	return 0;
+>  }
+>  
+> -struct snd_soc_codec_driver sgtl5000_driver = {
+> +static struct snd_soc_codec_driver sgtl5000_driver = {
+>  	.probe = sgtl5000_probe,
+>  	.remove = sgtl5000_remove,
+>  	.suspend = sgtl5000_suspend,
 
-  ASoC: Add Freescale SGTL5000 codec support (2011-02-25 12:09:33 +0000)
-
-are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2=
-.6.39
-
-Eric B=E9nard (2):
-      eukrea-tlv320: fix platform_name
-      ASoC: eukrea-tlv320: add MBIMXSD51 support
-
-Mark Brown (3):
-      ASoC: Move WM2000 to dev_pm_ops
-      Merge branch 'for-2.6.38' into for-2.6.39
-      ASoC: Staticise non-exported symbols in SGTL5000
-
-Zeng Zhaoming (1):
-      ASoC: remove unnecessary header including in SGTL5000 codec driver
-
- sound/soc/codecs/sgtl5000.c   |    7 +++----
- sound/soc/codecs/sgtl5000.h   |    2 --
- sound/soc/codecs/wm2000.c     |   14 +++++++-------
- sound/soc/imx/Kconfig         |    3 ++-
- sound/soc/imx/eukrea-tlv320.c |    5 +++--
- 5 files changed, 15 insertions(+), 16 deletions(-)
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
