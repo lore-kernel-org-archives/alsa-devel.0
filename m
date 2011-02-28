@@ -1,42 +1,70 @@
-From: Samuel Ortiz <sameo@linux.intel.com>
-Subject: Re: [PATCH v19 0/3] TI Wl1273 FM radio driver.
-Date: Mon, 28 Feb 2011 01:13:24 +0100
-Message-ID: <20110228001323.GB2749@sortiz-mobl>
-References: <1297757626-3281-1-git-send-email-matti.j.aaltonen@nokia.com>
- <4D5ADB38.4070600@redhat.com>
+From: Richard Samson <samson.richard@gmail.com>
+Subject: [PATCH] add new Fermi 5xx codec IDs to snd-hda
+Date: Mon, 28 Feb 2011 02:10:54 +0100
+Message-ID: <1298855454.2347.27.camel@cartman.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-media-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4D5ADB38.4070600@redhat.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@redhat.com>
-Cc: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, hverkuil@xs4all.nl, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A2B01037EE
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2011 02:10:57 +0100 (CET)
+Received: by bwz10 with SMTP id 10so3550590bwz.38
+	for <alsa-devel@alsa-project.org>; Sun, 27 Feb 2011 17:10:57 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mauro,
+Hello,
 
-On Tue, Feb 15, 2011 at 05:59:52PM -0200, Mauro Carvalho Chehab wrote:
-> Em 15-02-2011 06:13, Matti J. Aaltonen escreveu:
-> > Hello.
-> > 
-> > Now I've refactored the code so that the I2C I/O functions are in the 
-> > MFD core. Also now the codec can be compiled without compiling the V4L2
-> > driver.
-> > 
-> > I haven't implemented the audio routing (yet), but I've added a TODO
-> > comment about it in the codec file.
-> 
-> Matti,
-> 
-> It looks ok on my eyes. As most of the changes is at the V4L part, it is
-> probably better to merge this patch via my tree.
-I'm fine with that, yes. I'll add my Acked-by once Matti has fixed the minor
-issues I found.
+It's my first patch/post here, i'm not sure if this list is the right
+place to suggest this patch.
 
-Cheers,
-Samuel.
+To follow up a previous commit on snd-hda :
+http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=commitdiff;h=9cf2657d05f9f9e04c3e113d68bf7cef5a942070
 
--- 
-Intel Open Source Technology Centre
-http://oss.intel.com/
+I added a new entry in patch_hdmi.c to get sound working on my own 560
+Ti card :
+
+--- patch_hdmi.c        2011-02-15 22:29:51.000000000 +0100
++++ patch_hdmi_GTX-560Ti.c      2011-02-27 23:52:56.984613414 +0100
+@@ -1634,6 +1634,7 @@
+ { .id = 0x10de0012, .name = "GPU 12 HDMI/DP",  .patch =
+patch_nvhdmi_8ch_89 },
+ { .id = 0x10de0013, .name = "GPU 13 HDMI/DP",  .patch =
+patch_nvhdmi_8ch_89 },
+ { .id = 0x10de0014, .name = "GPU 14 HDMI/DP",  .patch =
+patch_nvhdmi_8ch_89 },
++{ .id = 0x10de0016, .name = "GPU 16 HDMI/DP",   .patch =
+patch_nvhdmi_8ch_89 },
+ { .id = 0x10de0018, .name = "GPU 18 HDMI/DP",  .patch =
+patch_nvhdmi_8ch_89 },
+ { .id = 0x10de0019, .name = "GPU 19 HDMI/DP",  .patch =
+patch_nvhdmi_8ch_89 },
+ { .id = 0x10de001a, .name = "GPU 1a HDMI/DP",  .patch =
+patch_nvhdmi_8ch_89 },
+@@ -1676,6 +1677,7 @@
+ MODULE_ALIAS("snd-hda-codec-id:10de0012");
+ MODULE_ALIAS("snd-hda-codec-id:10de0013");
+ MODULE_ALIAS("snd-hda-codec-id:10de0014");
++MODULE_ALIAS("snd-hda-codec-id:10de0016");
+ MODULE_ALIAS("snd-hda-codec-id:10de0018");
+ MODULE_ALIAS("snd-hda-codec-id:10de0019");
+ MODULE_ALIAS("snd-hda-codec-id:10de001a");
+
+I think other 5xx cards need new value also.
+
+Regards,
+
+---
+Richard Samson
+samson.richard@gmail.com
