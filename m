@@ -1,20 +1,15 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: Re: [PATCH 0/6] hdspmixer fixes
-Date: Mon, 28 Feb 2011 15:24:58 +0100
-Message-ID: <20110228142458.GT15327@ltw.loris.tv>
-References: <1298579611-16573-1-git-send-email-adi@drcomp.erfurt.thur.de>
-	<s5h39n8qxdb.wl%tiwai@suse.de>
-	<20110228140345.GR15327@ltw.loris.tv>
-	<s5hhbbop80e.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Staticise non-exported symbols in
+	SGTL5000
+Date: Mon, 28 Feb 2011 14:33:39 +0000
+Message-ID: <1298903619-25151-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
-	by alsa0.perex.cz (Postfix) with ESMTP id E6A3210385E
-	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2011 15:25:14 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hhbbop80e.wl%tiwai@suse.de>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C4C5310385E
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2011 15:33:19 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,31 +19,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: zhaoming.zeng@freescale.com, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 28, 2011 at 03:07:45PM +0100, Takashi Iwai wrote:
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/sgtl5000.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-> > > Though, the static definitions in channel_mapping.h aren't ideal.
-> > > If these are referred from difference places, they should be external
-> > > and defined only once.
-> > 
-> > I'm not sure what you mean. Do you suggest to make them external inside
-> > hdspmixer? Like with pixmaps.h?
-> 
-> Yes.
-> 
-> The static array definitions shouldn't be included in multiple files.
-
-The patch was half ready when I noticed that the static arrays are only
-referenced exactly once in the whole code.
-
-I could complete the patch, though there seems to be no real benefit
-from it at the moment.
-
-
-Cheers
-
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index b528f97..b7e97c0 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -124,7 +124,7 @@ static struct regulator_consumer_supply ldo_consumer[] = {
+ 	REGULATOR_SUPPLY(LDO_CONSUMER_NAME, NULL),
+ };
+ 
+-struct regulator_init_data ldo_init_data = {
++static struct regulator_init_data ldo_init_data = {
+ 	.constraints = {
+ 		.min_uV                 = 850000,
+ 		.max_uV                 = 1600000,
+@@ -946,7 +946,7 @@ static int sgtl5000_set_bias_level(struct snd_soc_codec *codec,
+ 			SNDRV_PCM_FMTBIT_S24_LE |\
+ 			SNDRV_PCM_FMTBIT_S32_LE)
+ 
+-struct snd_soc_dai_ops sgtl5000_ops = {
++static struct snd_soc_dai_ops sgtl5000_ops = {
+ 	.hw_params = sgtl5000_pcm_hw_params,
+ 	.digital_mute = sgtl5000_digital_mute,
+ 	.set_fmt = sgtl5000_set_dai_fmt,
+@@ -1421,7 +1421,7 @@ static int sgtl5000_remove(struct snd_soc_codec *codec)
+ 	return 0;
+ }
+ 
+-struct snd_soc_codec_driver sgtl5000_driver = {
++static struct snd_soc_codec_driver sgtl5000_driver = {
+ 	.probe = sgtl5000_probe,
+ 	.remove = sgtl5000_remove,
+ 	.suspend = sgtl5000_suspend,
 -- 
-mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
+1.7.2.3
