@@ -1,19 +1,20 @@
-From: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
-Subject: [PATCH v20 3/3] ASoC: WL1273 FM radio: Access I2C IO
-	functions through pointers.
-Date: Mon, 28 Feb 2011 13:02:31 +0200
-Message-ID: <1298890951-23339-4-git-send-email-matti.j.aaltonen@nokia.com>
-References: <1298890951-23339-1-git-send-email-matti.j.aaltonen@nokia.com>
-	<1298890951-23339-2-git-send-email-matti.j.aaltonen@nokia.com>
-	<1298890951-23339-3-git-send-email-matti.j.aaltonen@nokia.com>
+From: Grzegorz Daniluk <g.daniluk@elproma.com.pl>
+Subject: Re: [PATCH 1/2] acore: deprecated function
+	in	wrappers.c
+Date: Mon, 28 Feb 2011 12:43:00 +0100
+Message-ID: <4D6B8A44.7080805@elproma.com.pl>
+References: <4D67CC36.4090004@elproma.com.pl>
+	<s5hk4goqfz7.wl%tiwai@suse.de>	<4D67D019.80807@elproma.com.pl>
+	<s5hhbbsqfc5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-sa02.nokia.com (smtp.nokia.com [147.243.1.48])
-	by alsa0.perex.cz (Postfix) with ESMTP id 17B64103845
-	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2011 12:02:59 +0100 (CET)
-In-Reply-To: <1298890951-23339-3-git-send-email-matti.j.aaltonen@nokia.com>
+Received: from mailmxout.mailmx.agnat.pl (mailmxout4.mailmx.agnat.pl
+	[193.239.44.248])
+	by alsa0.perex.cz (Postfix) with ESMTP id C2229103810
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2011 12:44:04 +0100 (CET)
+In-Reply-To: <s5hhbbsqfc5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,73 +24,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, mchehab@redhat.com, hverkuil@xs4all.nl, sameo@linux.intel.com, linux-media@vger.kernel.org
-Cc: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-These changes are needed to keep up with the changes in the
-MFD core and V4L2 parts of the wl1273 FM radio driver.
+Takashi Iwai wrote:
+> Then configure script didn't detect the condition properly.
+> Check CONFIG_HAVE_PCI_DEV_PRESENT in you config.log.  Most likely
+> a wrong gcc option or path is given, and the check is screwed up.
+>
+>
+> Takashi
+ok, but still, something is wrong if it tries to compile the wrapper 
+code even if new kernel was detected (2.6.35)...
 
-Use function pointers instead of exported functions for I2C IO.
-Also move all preprocessor constants from the wl1273.h to
-include/linux/mfd/wl1273-core.h.
-
-Also update the year in the copyright statement.
-
-Signed-off-by: Matti J. Aaltonen <matti.j.aaltonen@nokia.com>
----
- sound/soc/codecs/Kconfig  |    2 +-
- sound/soc/codecs/wl1273.c |   11 ++++++++---
- 2 files changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index c48b23c..9726d6e 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -44,7 +44,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_TWL6040 if TWL4030_CORE
- 	select SND_SOC_UDA134X
- 	select SND_SOC_UDA1380 if I2C
--	select SND_SOC_WL1273 if RADIO_WL1273
-+	select SND_SOC_WL1273 if MFD_WL1273_CORE
- 	select SND_SOC_WM2000 if I2C
- 	select SND_SOC_WM8350 if MFD_WM8350
- 	select SND_SOC_WM8400 if MFD_WM8400
-diff --git a/sound/soc/codecs/wl1273.c b/sound/soc/codecs/wl1273.c
-index 861b28f..3c27fed 100644
---- a/sound/soc/codecs/wl1273.c
-+++ b/sound/soc/codecs/wl1273.c
-@@ -3,7 +3,7 @@
-  *
-  * Author:      Matti Aaltonen, <matti.j.aaltonen@nokia.com>
-  *
-- * Copyright:   (C) 2010 Nokia Corporation
-+ * Copyright:   (C) 2011 Nokia Corporation
-  *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of the GNU General Public License
-@@ -179,7 +179,12 @@ static int snd_wl1273_get_audio_route(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
--static const char *wl1273_audio_route[] = { "Bt", "FmRx", "FmTx" };
-+/*
-+ * TODO: Implement the audio routing in the driver. Now this control
-+ * only indicates the setting that has been done elsewhere (in the user
-+ * space).
-+ */
-+static const char * const wl1273_audio_route[] = { "Bt", "FmRx", "FmTx" };
- 
- static int snd_wl1273_set_audio_route(struct snd_kcontrol *kcontrol,
- 				      struct snd_ctl_elem_value *ucontrol)
-@@ -239,7 +244,7 @@ static int snd_wl1273_fm_audio_put(struct snd_kcontrol *kcontrol,
- 	return 1;
- }
- 
--static const char *wl1273_audio_strings[] = { "Digital", "Analog" };
-+static const char * const wl1273_audio_strings[] = { "Digital", "Analog" };
- 
- static const struct soc_enum wl1273_audio_enum =
- 	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(wl1273_audio_strings),
--- 
-1.6.1.3
+Greg
