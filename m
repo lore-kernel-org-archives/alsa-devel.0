@@ -1,20 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v5] ASoC: Add Freescale SGTL5000 codec
-	support
-Date: Mon, 28 Feb 2011 14:45:26 +0000
-Message-ID: <20110228144526.GG13869@opensource.wolfsonmicro.com>
-References: <1298484501-3993-1-git-send-email-zhaoming.zeng@freescale.com>
-	<20110225120906.GE28980@opensource.wolfsonmicro.com>
-	<AANLkTikpBB5vVKj+Y2EfbjfC=6aigeCjaqZ9mz9+qWuF@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: alsa-lib: snd_mixer_selem_is_active changes
+ -	which event?
+Date: Mon, 28 Feb 2011 15:56:41 +0100
+Message-ID: <4D6BB7A9.1030804@ladisch.de>
+References: <4D5ACED8.5030707@gmx.de>	<4D5B8D23.2080107@ladisch.de>
+	<AANLkTik0K1vk+n2oa30w2+vi6hH23ju2XYYVkGOn_+A6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 176D410385E
-	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2011 15:45:11 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <AANLkTikpBB5vVKj+Y2EfbjfC=6aigeCjaqZ9mz9+qWuF@mail.gmail.com>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 8405110385E
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2011 15:55:30 +0100 (CET)
+In-Reply-To: <AANLkTik0K1vk+n2oa30w2+vi6hH23ju2XYYVkGOn_+A6@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,43 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Zeng Zhaoming <zengzm.kernel@gmail.com>
-Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, timur.tabi@gmail.com, xiao-lizhang@freescale.com, zhaoming.zeng@freescale.com, lrg@slimlogic.co.uk, arnaud.patard@rtp-net.org, linuxzsc@gmail.com
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 25, 2011 at 11:56:52PM +0800, Zeng Zhaoming wrote:
-> On Fri, Feb 25, 2011 at 8:09 PM, Mark Brown
+Raymond Yau wrote:
+> Patch which fix the display of active/inactive controls in alsamixer
 
-> > This is going to fail on systems without voltage readback capabilities,
-> > including systems which have the regulator API disabled and stubbed out.
+Applied, thanks.
 
-> if the regulator driver not allow readback, I have no way to get the
-> voltage of vdda and vddio,
-> the voltage levels are critical  to codec initialization.
 
-> Can you shed some light on howto around this?
-
-If you can't read the data back you need to guess what the configuration
-is somehow; I'd suggest just picking values and warning about what
-you're doing.
-
-> >> + =A0 =A0 memcpy((void *)(&sgtl5000_regs[0] + (SGTL5000_DAP_REG_OFFSET=
- >> 1)),
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 sgtl5000_dap_regs,
-> >> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SGTL5000_MAX_REG_OFFSET - SG=
-TL5000_DAP_REG_OFFSET);
-
-> > As has been pointed out on previous revisions of the patch there is no
-> > need to cast away from void in C and it can be actively harmful.
-
-> I have not remove void* since my toolchain ( gcc 4.4.4) complains
-> about the type mismatch, I will test
-> it with other version toolchain to confirm.
-
-As Timur indicated the reason this is complaining is that you're
-memcpy() is writing to const data.  This is *clearly* buggy - the fact
-that casting away removes the warning is an example of why you should
-never have casts like this.
-
-You should take a copy of the array and modify that, having the defaults
-as const is correct.
+Clemens
