@@ -1,17 +1,17 @@
-From: Richard Samson <samson.richard@gmail.com>
-Subject: [PATCH] add new Fermi 5xx codec IDs to snd-hda
-Date: Mon, 28 Feb 2011 02:10:54 +0100
-Message-ID: <1298855454.2347.27.camel@cartman.lan>
+From: Dan Swain <sp4md4n@gmail.com>
+Subject: Tascam M-164UF module request/information
+Date: Sun, 27 Feb 2011 20:03:46 -0700
+Message-ID: <AANLkTi=10Hg=5EGgfq9zAoPNajPOEO4teTmkPW=A2_hM@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6A2B01037EE
-	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2011 02:10:57 +0100 (CET)
-Received: by bwz10 with SMTP id 10so3550590bwz.38
-	for <alsa-devel@alsa-project.org>; Sun, 27 Feb 2011 17:10:57 -0800 (PST)
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D97E1037EE
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2011 04:04:00 +0100 (CET)
+Received: by vws18 with SMTP id 18so2917534vws.38
+	for <alsa-devel@alsa-project.org>; Sun, 27 Feb 2011 19:03:46 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,47 +24,23 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Dear ALSA developers,
 
-It's my first patch/post here, i'm not sure if this list is the right
-place to suggest this patch.
+After talking with nevyn on the ALSA IRC channel on Freenode, I have been
+recommended to submit the device information to this list so that the
+developers can take it further!
 
-To follow up a previous commit on snd-hda :
-http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=commitdiff;h=9cf2657d05f9f9e04c3e113d68bf7cef5a942070
+The pastebin for this device is at: http://alsa.pastebin.com/YsMDfyxi (a
+lsusb -v -d 0644: output)
 
-I added a new entry in patch_hdmi.c to get sound working on my own 560
-Ti card :
+The device shows up in dmesg, but so far ALSA is unaware of the device.
 
---- patch_hdmi.c        2011-02-15 22:29:51.000000000 +0100
-+++ patch_hdmi_GTX-560Ti.c      2011-02-27 23:52:56.984613414 +0100
-@@ -1634,6 +1634,7 @@
- { .id = 0x10de0012, .name = "GPU 12 HDMI/DP",  .patch =
-patch_nvhdmi_8ch_89 },
- { .id = 0x10de0013, .name = "GPU 13 HDMI/DP",  .patch =
-patch_nvhdmi_8ch_89 },
- { .id = 0x10de0014, .name = "GPU 14 HDMI/DP",  .patch =
-patch_nvhdmi_8ch_89 },
-+{ .id = 0x10de0016, .name = "GPU 16 HDMI/DP",   .patch =
-patch_nvhdmi_8ch_89 },
- { .id = 0x10de0018, .name = "GPU 18 HDMI/DP",  .patch =
-patch_nvhdmi_8ch_89 },
- { .id = 0x10de0019, .name = "GPU 19 HDMI/DP",  .patch =
-patch_nvhdmi_8ch_89 },
- { .id = 0x10de001a, .name = "GPU 1a HDMI/DP",  .patch =
-patch_nvhdmi_8ch_89 },
-@@ -1676,6 +1677,7 @@
- MODULE_ALIAS("snd-hda-codec-id:10de0012");
- MODULE_ALIAS("snd-hda-codec-id:10de0013");
- MODULE_ALIAS("snd-hda-codec-id:10de0014");
-+MODULE_ALIAS("snd-hda-codec-id:10de0016");
- MODULE_ALIAS("snd-hda-codec-id:10de0018");
- MODULE_ALIAS("snd-hda-codec-id:10de0019");
- MODULE_ALIAS("snd-hda-codec-id:10de001a");
+I don't have much programming experience, but if I can offer any help,
+please let me know and I'll do what I can :-)
 
-I think other 5xx cards need new value also.
+Many Thanks,
 
-Regards,
+Dan
 
----
-Richard Samson
-samson.richard@gmail.com
+PS: Official information for the device can be found at:
+http://www.tascam.de/en/m-164.html
