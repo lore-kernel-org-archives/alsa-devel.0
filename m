@@ -1,11 +1,20 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 0/4] More hdspm fixes
-Date: Mon, 28 Feb 2011 15:14:46 +0100
-Message-ID: <1298902490-10950-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: Re: [PATCH 0/6] hdspmixer fixes
+Date: Mon, 28 Feb 2011 15:24:58 +0100
+Message-ID: <20110228142458.GT15327@ltw.loris.tv>
+References: <1298579611-16573-1-git-send-email-adi@drcomp.erfurt.thur.de>
+	<s5h39n8qxdb.wl%tiwai@suse.de>
+	<20110228140345.GR15327@ltw.loris.tv>
+	<s5hhbbop80e.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ltw.loris.tv (ltw.loris.tv [85.14.220.160])
+	by alsa0.perex.cz (Postfix) with ESMTP id E6A3210385E
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2011 15:25:14 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hhbbop80e.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -15,35 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+On Mon, Feb 28, 2011 at 03:07:45PM +0100, Takashi Iwai wrote:
 
-Here are four more patches to hdspm. Most importantly, they add the
-missing PCI firmware revision for AES32. Without it, loading hdspm would
-crash on machines with these cards. To prevent such a crash upon unknown
-firmware revisions, I've created a second patch adding a default case to
-the firmware switch-case statement.
+> > > Though, the static definitions in channel_mapping.h aren't ideal.
+> > > If these are referred from difference places, they should be external
+> > > and defined only once.
+> > 
+> > I'm not sure what you mean. Do you suggest to make them external inside
+> > hdspmixer? Like with pixmaps.h?
+> 
+> Yes.
+> 
+> The static array definitions shouldn't be included in multiple files.
 
-Also worth mentioning: midi port initialization is now no longer
-hardcoded, thus fixing a bootup problem on MADIface.
+The patch was half ready when I noticed that the static arrays are only
+referenced exactly once in the whole code.
 
-All patches have been runtime tested on MADIface, AES32, AES (PCIe) and
-RayDAT.
+I could complete the patch, though there seems to be no real benefit
+from it at the moment.
 
 
 Cheers
 
-Adrian Knoth (4):
-  ALSA: hdspm - AES32: Use define instead of hardcoded channel count
-  ALSA: hdspm - Add updated firmware revision for AES32
-  ALSA: hdspm - Abort on unknown firmware revision
-  ALSA: hdspm - Fix midi port initialization
-
- sound/pci/rme9652/hdspm.c |   24 ++++++++++++++++++------
- 1 files changed, 18 insertions(+), 6 deletions(-)
-
 -- 
-1.7.4.1
+mail: adi@thur.de  	http://adi.thur.de	PGP/GPG: key via keyserver
