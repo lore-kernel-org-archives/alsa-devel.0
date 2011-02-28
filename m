@@ -1,17 +1,17 @@
 From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2 2.6.38] ASoC: WM8994: Ensure late enable
-	events are processed for the ADCs
-Date: Mon, 28 Feb 2011 17:24:12 +0000
-Message-ID: <1298913852-22766-2-git-send-email-dp@opensource.wolfsonmicro.com>
-References: <1298913852-22766-1-git-send-email-dp@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: WM8994: Ensure late enable events
+	are processed for the ADCs
+Date: Mon, 28 Feb 2011 17:27:31 +0000
+Message-ID: <1298914051-24754-2-git-send-email-dp@opensource.wolfsonmicro.com>
+References: <1298914051-24754-1-git-send-email-dp@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7729E103848
-	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2011 18:24:14 +0100 (CET)
-In-Reply-To: <1298913852-22766-1-git-send-email-dp@opensource.wolfsonmicro.com>
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E04A2103800
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2011 18:27:38 +0100 (CET)
+In-Reply-To: <1298914051-24754-1-git-send-email-dp@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,10 +35,10 @@ Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
  1 files changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 9e91525..f330ad0 100644
+index 4dfbaee..bab0799 100644
 --- a/sound/soc/codecs/wm8994.c
 +++ b/sound/soc/codecs/wm8994.c
-@@ -1096,6 +1096,13 @@ static int aif2clk_ev(struct snd_soc_dapm_widget *w,
+@@ -1095,6 +1095,13 @@ static int aif2clk_ev(struct snd_soc_dapm_widget *w,
  	return 0;
  }
  
@@ -52,7 +52,7 @@ index 9e91525..f330ad0 100644
  static int dac_ev(struct snd_soc_dapm_widget *w,
  		  struct snd_kcontrol *kcontrol, int event)
  {
-@@ -1510,8 +1517,10 @@ SND_SOC_DAPM_ADC("DMIC1R", NULL, WM8994_POWER_MANAGEMENT_4, 2, 0),
+@@ -1509,8 +1516,10 @@ SND_SOC_DAPM_ADC("DMIC1R", NULL, WM8994_POWER_MANAGEMENT_4, 2, 0),
  SND_SOC_DAPM_ADC("ADCL", NULL, SND_SOC_NOPM, 1, 0),
  SND_SOC_DAPM_ADC("ADCR", NULL, SND_SOC_NOPM, 0, 0),
  
