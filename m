@@ -1,8 +1,7 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 1/4] ALSA: hdspm - AES32: Use define instead of
-	hardcoded channel count
-Date: Mon, 28 Feb 2011 15:14:47 +0100
-Message-ID: <1298902490-10950-2-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 4/4] ALSA: hdspm - Fix midi port initialization
+Date: Mon, 28 Feb 2011 15:14:50 +0100
+Message-ID: <1298902490-10950-5-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <1298902490-10950-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,44 +21,33 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Depending on the model and the presence of a TCO module, the number of
+midi ports varies. Some have 1 port (MADIface), some have 2 (default),
+with TCO, there are 3.
+
+Don't hardcode the number of midi ports to initialize.
+
+This patch also fixes a boot lockup on MADIface.
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
 diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 5dbf620..7ce4929 100644
+index 78f6ab5..3224766 100644
 --- a/sound/pci/rme9652/hdspm.c
 +++ b/sound/pci/rme9652/hdspm.c
-@@ -506,6 +506,8 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
- #define AIO_OUT_DS_CHANNELS        12
- #define AIO_OUT_QS_CHANNELS        10
+@@ -6291,8 +6291,11 @@ static int __devinit snd_hdspm_create_pcm(struct snd_card *card,
  
-+#define AES32_CHANNELS		16
+ static inline void snd_hdspm_initialize_midi_flush(struct hdspm * hdspm)
+ {
+-	snd_hdspm_flush_midi_input(hdspm, 0);
+-	snd_hdspm_flush_midi_input(hdspm, 1);
++	int i;
 +
- /* the size of a substream (1 mono data stream) */
- #define HDSPM_CHANNEL_BUFFER_SAMPLES  (16*1024)
- #define HDSPM_CHANNEL_BUFFER_BYTES    (4*HDSPM_CHANNEL_BUFFER_SAMPLES)
-@@ -6449,9 +6451,9 @@ static int __devinit snd_hdspm_create(struct snd_card *card,
++	for (i=0; i < hdspm->midiPorts; i++) {
++		snd_hdspm_flush_midi_input(hdspm, i);
++	}
+ }
  
- 	switch (hdspm->io_type) {
- 	case AES32:
--		hdspm->ss_in_channels = hdspm->ss_out_channels = 16;
--		hdspm->ds_in_channels = hdspm->ds_out_channels = 16;
--		hdspm->qs_in_channels = hdspm->qs_out_channels = 16;
-+		hdspm->ss_in_channels = hdspm->ss_out_channels = AES32_CHANNELS;
-+		hdspm->ds_in_channels = hdspm->ds_out_channels = AES32_CHANNELS;
-+		hdspm->qs_in_channels = hdspm->qs_out_channels = AES32_CHANNELS;
- 
- 		hdspm->channel_map_in_ss = hdspm->channel_map_out_ss =
- 			channel_map_aes32;
-@@ -6466,7 +6468,8 @@ static int __devinit snd_hdspm_create(struct snd_card *card,
- 		hdspm->port_names_in_qs = hdspm->port_names_out_qs =
- 			texts_ports_aes32;
- 
--		hdspm->max_channels_out = hdspm->max_channels_in = 16;
-+		hdspm->max_channels_out = hdspm->max_channels_in =
-+			AES32_CHANNELS;
- 		hdspm->port_names_in = hdspm->port_names_out =
- 			texts_ports_aes32;
- 		hdspm->channel_map_in = hdspm->channel_map_out =
+ static int __devinit snd_hdspm_create_alsa_devices(struct snd_card *card,
 -- 
 1.7.4.1
