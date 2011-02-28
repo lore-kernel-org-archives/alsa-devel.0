@@ -1,8 +1,8 @@
 From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 3/4] ALSA: hdspm - Abort on unknown firmware
-	revision
-Date: Mon, 28 Feb 2011 15:14:49 +0100
-Message-ID: <1298902490-10950-4-git-send-email-adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 1/4] ALSA: hdspm - AES32: Use define instead of
+	hardcoded channel count
+Date: Mon, 28 Feb 2011 15:14:47 +0100
+Message-ID: <1298902490-10950-2-git-send-email-adi@drcomp.erfurt.thur.de>
 References: <1298902490-10950-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,65 +22,44 @@ To: patch@alsa-project.org
 Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Don't continue if we cannot detect the real card type, otherwise, all
-subsequent functions, especially strcpy(), would fail, leaving the whole
-driver in an unusable state.
-
-Without such a protection, dmesg would look like this:
-
-Pid: 1525, comm: modprobe Not tainted 2.6.38-rc6 #1 MSI MS-7250/MS-7250
-EIP: 0060:[<c114e700>] EFLAGS: 00010296 CPU: 1
-EIP is at strcpy+0x10/0x30
-EAX: f4d33e58 EBX: f5990800 ECX: f4d33e58 EDX: 00000000
-ESI: 00000000 EDI: f4d33e58 EBP: f5990930 ESP: f3dd3e0c
-DS: 007b ES: 007b FS: 00d8 GS: 0033 SS: 0068
-f53d4204 00000000 f90bfc03 00000001 00000001 f3dd3e64 c10fedff f3dd3e7c
-f3d854e4 f53d4000 c10307b8 00000001 c10307b8 f5990860 c10307b8 00000001
-c10332e5 f59908bc c12f4339 f59908bc f5990860 c11ef207 f4d33e00 f53d4000
-[<f90bfc03>] ? snd_hdspm_probe+0x7e7/0x1166 [snd_hdspm]
-[<c10fedff>] ? __sysfs_add_one+0x1f/0xf0
-[<c10307b8>] ? get_parent_ip+0x8/0x20
-[<c10307b8>] ? get_parent_ip+0x8/0x20
-[<c10307b8>] ? get_parent_ip+0x8/0x20
-[<c10332e5>] ? add_preempt_count+0xa5/0xd0
-[<c12f4339>] ? _raw_spin_lock_irqsave+0x19/0x40
-[<c11ef207>] ? pm_runtime_enable+0x17/0x80
-[<c1160172>] ? local_pci_probe+0x42/0xb0
-[<c1161091>] ? pci_device_probe+0x61/0x80
-[<c11e9587>] ? driver_probe_device+0x77/0x180
-[<c11600f0>] ? pci_match_device+0xa0/0xc0
-[<c11e9709>] ? __driver_attach+0x79/0x80
-[<c11e9690>] ? __driver_attach+0x0/0x80
-[<c11e8e32>] ? bus_for_each_dev+0x52/0x80
-[<c11e9416>] ? driver_attach+0x16/0x20
-[<c11e9690>] ? __driver_attach+0x0/0x80
-[<c11e8771>] ? bus_add_driver+0xa1/0x220
-[<c1160f20>] ? pci_device_remove+0x0/0xf0
-[<c11e99a3>] ? driver_register+0x63/0x120
-[<c11612bd>] ? __pci_register_driver+0x3d/0xb0
-[<c1001132>] ? do_one_initcall+0x32/0x160
-[<f90d6000>] ? alsa_card_hdspm_init+0x0/0x14 [snd_hdspm]
-[<c10676a9>] ? sys_init_module+0x99/0x1e0
-[<c10ade3d>] ? sys_close+0x6d/0xc0
-[<c1002c90>] ? sysenter_do_call+0x12/0x26
----[ end trace 239f0661c558378b ]---
 
 Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
 
 diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 20c54f7..78f6ab5 100644
+index 5dbf620..7ce4929 100644
 --- a/sound/pci/rme9652/hdspm.c
 +++ b/sound/pci/rme9652/hdspm.c
-@@ -6399,6 +6399,10 @@ static int __devinit snd_hdspm_create(struct snd_card *card,
- 		hdspm->card_name = "RME AES32";
- 		hdspm->midiPorts = 2;
- 		break;
-+	default:
-+		snd_printk(KERN_ERR "HDSPM: unknown firmware revision %x\n",
-+				hdspm->firmware_rev);
-+		return -ENODEV;
- 	}
+@@ -506,6 +506,8 @@ MODULE_SUPPORTED_DEVICE("{{RME HDSPM-MADI}}");
+ #define AIO_OUT_DS_CHANNELS        12
+ #define AIO_OUT_QS_CHANNELS        10
  
- 	err = pci_enable_device(pci);
++#define AES32_CHANNELS		16
++
+ /* the size of a substream (1 mono data stream) */
+ #define HDSPM_CHANNEL_BUFFER_SAMPLES  (16*1024)
+ #define HDSPM_CHANNEL_BUFFER_BYTES    (4*HDSPM_CHANNEL_BUFFER_SAMPLES)
+@@ -6449,9 +6451,9 @@ static int __devinit snd_hdspm_create(struct snd_card *card,
+ 
+ 	switch (hdspm->io_type) {
+ 	case AES32:
+-		hdspm->ss_in_channels = hdspm->ss_out_channels = 16;
+-		hdspm->ds_in_channels = hdspm->ds_out_channels = 16;
+-		hdspm->qs_in_channels = hdspm->qs_out_channels = 16;
++		hdspm->ss_in_channels = hdspm->ss_out_channels = AES32_CHANNELS;
++		hdspm->ds_in_channels = hdspm->ds_out_channels = AES32_CHANNELS;
++		hdspm->qs_in_channels = hdspm->qs_out_channels = AES32_CHANNELS;
+ 
+ 		hdspm->channel_map_in_ss = hdspm->channel_map_out_ss =
+ 			channel_map_aes32;
+@@ -6466,7 +6468,8 @@ static int __devinit snd_hdspm_create(struct snd_card *card,
+ 		hdspm->port_names_in_qs = hdspm->port_names_out_qs =
+ 			texts_ports_aes32;
+ 
+-		hdspm->max_channels_out = hdspm->max_channels_in = 16;
++		hdspm->max_channels_out = hdspm->max_channels_in =
++			AES32_CHANNELS;
+ 		hdspm->port_names_in = hdspm->port_names_out =
+ 			texts_ports_aes32;
+ 		hdspm->channel_map_in = hdspm->channel_map_out =
 -- 
 1.7.4.1
