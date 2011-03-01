@@ -1,55 +1,50 @@
-From: Abhilash K V <abhilash.kv@ti.com>
-Subject: [PATCH] audio:am3517evm support for AIC23
-Date: Tue,  1 Mar 2011 21:13:38 +0530
-Message-ID: <1298994218-30610-1-git-send-email-abhilash.kv@ti.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: Abhilash K V <abhilash.kv@ti.com>
+From: Stephen Warren <swarren@nvidia.com>
+Subject: Re: [PATCH] add new Fermi 5xx codec IDs to snd-hda
+Date: Tue, 1 Mar 2011 08:40:32 -0800
+Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF045687B06F@HQMAIL01.nvidia.com>
+References: <1298855454.2347.27.camel@cartman.lan>
+	<74CDBE0F657A3D45AFBB94109FB122FF045687AE77@HQMAIL01.nvidia.com>
+	<s5hk4gknkh4.wl%tiwai@suse.de>
+	<AANLkTinP5Y3XF7SjGJLy5XE4ojD4MfG8oA97WJHob-3R@mail.gmail.com>
+	<s5h62s4ghfd.wl%tiwai@suse.de> <1298992476.2376.13.camel@cartman.lan>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7DA9824856
+	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 17:42:28 +0100 (CET)
+In-Reply-To: <1298992476.2376.13.camel@cartman.lan>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Richard Samson <samson.richard@gmail.com>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nitin Daga <ndaga@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch aims to fix the registration of the AIC23-based audio
-module on the AM3517-EVM, with the following two changes:
-
-1. The i2c_board_info entry supporting aic23 codec was added into
-   the i2c2 bus.
-2. The i2c client device name (".2-001a" in this case, including
-   the separator period) was appended to the codec_name member of
-   am3517evm_dai to resolve the names mismatch happening in
-   soc_bind_dai_link().
-
-Signed-off-by: Abhilash K V <abhilash.kv@ti.com>
----
- arch/arm/mach-omap2/board-am3517evm.c |    3 +++
- sound/soc/omap/am3517evm.c            |    2 +-
- 2 files changed, 4 insertions(+), 1 deletions(-)
-
-diff --git a/arch/arm/mach-omap2/board-am3517evm.c b/arch/arm/mach-omap2/board-am3517evm.c
-index ad71cbf..8da8d20 100644
---- a/arch/arm/mach-omap2/board-am3517evm.c
-+++ b/arch/arm/mach-omap2/board-am3517evm.c
-@@ -358,6 +358,9 @@ static struct pca953x_platform_data am3517evm_gpio_expander_info_0 = {
- };
- static struct i2c_board_info __initdata am3517evm_i2c2_boardinfo[] = {
- 	{
-+		I2C_BOARD_INFO("tlv320aic23", 0x1A),
-+	},
-+	{
- 		I2C_BOARD_INFO("tca6416", 0x21),
- 		.platform_data = &am3517evm_gpio_expander_info_0,
- 	},
-diff --git a/sound/soc/omap/am3517evm.c b/sound/soc/omap/am3517evm.c
-index 979dd50..ddbd2a1 100644
---- a/sound/soc/omap/am3517evm.c
-+++ b/sound/soc/omap/am3517evm.c
-@@ -139,7 +139,7 @@ static struct snd_soc_dai_link am3517evm_dai = {
- 	.cpu_dai_name ="omap-mcbsp-dai.0",
- 	.codec_dai_name = "tlv320aic23-hifi",
- 	.platform_name = "omap-pcm-audio",
--	.codec_name = "tlv320aic23-codec",
-+	.codec_name = "tlv320aic23-codec.2-001a",
- 	.init = am3517evm_aic23_init,
- 	.ops = &am3517evm_ops,
- };
--- 
-1.6.2.4
+UmljaGFyZCBTYW1zb24gd3JvdGUgYXQgVHVlc2RheSwgTWFyY2ggMDEsIDIwMTEgODoxNSBBTToN
+Cj4gTGUgbHVuZGkgMjggZsOpdnJpZXIgMjAxMSDDoCAxOTowOSArMDEwMCwgVGFrYXNoaSBJd2Fp
+IGEgw6ljcml0IDoNCj4gPiBBdCBNb24sIDI4IEZlYiAyMDExIDE4OjU2OjIwICswMTAwLA0KPiA+
+IHNhbXNvbi5yaWNoYXJkQGdtYWlsLmNvbSB3cm90ZToNCj4gPiA+IEFzIFN0ZXBoZW4gV2FycmVu
+IHNhaWQsIGEgcGF0Y2ggd2l0aCBmdWxsIHN1cHBvcnQgb2YgNXh4IGNhcmRzIHdpbGwgYmUNCj4g
+PiA+IG1vcmUgdXNlZnVsLg0KPiA+DQo+ID4gT0ssIFN0ZXBoZW4sIGNvdWxkIHlvdSBwcmVwYXJl
+IHRoZSBwYXRjaCBpbmNsdWRpbmcgYWxsIG1pc3NpbmcgSURzPw0KPiANCj4gSSB3cm90ZSBhbiBu
+ZXcgcGF0Y2ggd2l0aCB0aHJlZSBuZXcgY29kZWMgSURzIGZvciBOdmlkaWEgRmVybWkgY2FyZHMu
+DQo+IEkgYXR0ZW5kZWQgdG8gdXNlIGV4aXN0aW5nIElEcyBhbmQgb25saW5lIHRlY2huaWNhbCBz
+cGVjaWZpY2F0aW9ucyB0bw0KPiBnZXQgdHdvIG90aGVycyBjYXJkcyA6DQo+IC0gTnZpZGlhIEdl
+Rm9yY2UgR1RYIDQ3MCA6IGlkID0gMHgxMGRlMDAxNQ0KPiAtIE52aWRpYSBHZUZvcmNlIEdUWCA1
+NjAgVGkgOiBpZCA9IDB4MTBkZTAwMTYgKHdvcmtzIGZpbmUpDQo+IC0gTnZpZGlhIEdlRm9yY2Ug
+R1RYIDU3MCA6IGlkID0gMHgxMGRlMDAxNw0KDQpUaGV5IGRvbid0IGFwcGVhciB0byBtYXRjaCBv
+dXIgV2luZG93cyBkcml2ZXIuIFdoZXJlIGRpZCB5b3UgZ2V0IHRoZSB2YWx1ZXMNCmZyb20/ICgw
+eDE3IGlzbid0IGluIHRoZSBXaW5kb3dzIGRyaXZlciBhdCBhbGwuIDB4MTUgc2hvdWxkbid0IGJl
+IGEgR1RYIDQ3MCkNCg0KVGhhbmtzLg0KDQotLSANCm52cHVibGljDQoNCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
