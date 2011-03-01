@@ -1,18 +1,11 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: period_time in slave definition
-Date: Tue, 1 Mar 2011 10:22:45 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1103011020080.7877@eeebox2.perex-int.cz>
-References: <4D6B943E.4060302@ivitera.com>
-	<alpine.LNX.2.00.1102281412520.7877@eeebox2.perex-int.cz>
-	<4D6CB760.5070601@ivitera.com>
+From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Subject: [PATCH 0/5] Even more hdspmixer fixes
+Date: Tue,  1 Mar 2011 10:42:22 +0100
+Message-ID: <1298972547-8759-1-git-send-email-adi@drcomp.erfurt.thur.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7F61324785
-	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 10:22:46 +0100 (CET)
-In-Reply-To: <4D6CB760.5070601@ivitera.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,99 +15,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pavel Hofman <pavel.hofman@ivitera.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: patch@alsa-project.org
+Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 1 Mar 2011, Pavel Hofman wrote:
+Hi!
 
-> Jaroslav Kysela napsal(a):
->> On Mon, 28 Feb 2011, Pavel Hofman wrote:
->>
->>> Hi,
->>>
->>> According to
->>> http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html , my
->>> .asoundrc contains:
->>>
->>> pcm.test {
->>>        type plug
->>>        slave {
->>>                pcm "hw:0"
->>>                format "unchanged"
->>>                channels "unchanged"
->>>                rate "unchanged"
->>>                period_size 1024
->>>                buffer_size 4096
->>>        }
->>> }
->>>
->>>
->>> While pcm, format, channels, and rate are accepted, the period and
->>> buffer fields are refused:
->>>
->>> ALSA lib pcm.c:6811:(snd_pcm_slave_conf) Unknown field period_time
->>
->> It's correct, pcm:plug does not support buffer modifiers. Look to
->> "Automatic conversion plugin".
->>
->>> I checked the source code and the keywords seem to be ok
->>>
->>> pcm.c:
->>> static const char *const names[SND_PCM_HW_PARAM_LAST_INTERVAL + 1] = {
->>>     [SND_PCM_HW_PARAM_FORMAT] = "format",
->>>     [SND_PCM_HW_PARAM_CHANNELS] = "channels",
->>>     [SND_PCM_HW_PARAM_RATE] = "rate",
->>>     [SND_PCM_HW_PARAM_PERIOD_TIME] = "period_time",
->>>     [SND_PCM_HW_PARAM_PERIOD_SIZE] = "period_size",
->>>     [SND_PCM_HW_PARAM_BUFFER_TIME] = "buffer_time",
->>>     [SND_PCM_HW_PARAM_BUFFER_SIZE] = "buffer_size",
->>>     [SND_PCM_HW_PARAM_PERIODS] = "periods"
->>> };
->>
->> It's just a table to translate all possibilites between index and name.
->> The plug plugins allow only this:
->>
->>     err = snd_pcm_slave_conf(root, slave, &sconf, 3,
->>                  SND_PCM_HW_PARAM_FORMAT, SCONF_UNCHANGED, &sformat,
->>                  SND_PCM_HW_PARAM_CHANNELS, SCONF_UNCHANGED, &schannels,
->>                  SND_PCM_HW_PARAM_RATE, SCONF_UNCHANGED, &srate);
->>
->>                     Jaroslav
->>
->
->
-> Well, still I do not understand why we are talking about the plug
-> plugin, when I am trying to redefine the slave via pcm_slave. The
-> documentation at
-> http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html says the
-> pcm_slave can define period_time and buffer_time, while a slightly
-> modified example from the wiki page fails:
->
-> pcm_slave.slave_rate44100Hz {
->        pcm "hw:0,0"
->        rate 44100
-> --->	period_time 1024
-> }
->
-> pcm.rate44100Hz {
->        type plug
->        slave slave_rate44100Hz
-> }
->
-> How does the slave definition relate to the plug plugin? Sorry for these
-> basics but I am really trying to understand that, so far no success.
+Next round of hdspmixer updates. Mostly cosmetics, but also fixing a
+segfault with H9652 cards.
 
-The above description is an universal description for all slaves. 
-Unfortunately, not all plugins accept the whole range of parameters.
-You have to look to the snd_pcm_slave_conf() caller which parameters are 
-accepted.
+Thanks to Craig Bourne for immediate testing, also tested and confirmed
+to be working on RayDAT, Multiface and AES32.
 
-The description should be better.
 
- 					Jaroslav
+Adrian Knoth (5):
+  hdspmixer: Fix compiler warnings.
+  hdspmixer: Don't use hardcoded number of cards.
+  hdspmixer: Make static destination maps extern
+  hdspmixer: Lower nesting depth in label assignment
+  hdspmixer: Fix labels on H9652
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+ hdspmixer/pixmaps/Slider1.xpm        |    2 +-
+ hdspmixer/pixmaps/Slider2.xpm        |    2 +-
+ hdspmixer/pixmaps/Zlmloop2.xpm       |    2 +-
+ hdspmixer/pixmaps/Zlmloopm2.xpm      |    2 +-
+ hdspmixer/pixmaps/b_blank.xpm        |    2 +-
+ hdspmixer/pixmaps/b_card1.xpm        |    2 +-
+ hdspmixer/pixmaps/b_card2.xpm        |    2 +-
+ hdspmixer/pixmaps/b_card3.xpm        |    2 +-
+ hdspmixer/pixmaps/b_mute.xpm         |    2 +-
+ hdspmixer/pixmaps/b_pre1.xpm         |    2 +-
+ hdspmixer/pixmaps/b_pre2.xpm         |    2 +-
+ hdspmixer/pixmaps/b_pre3.xpm         |    2 +-
+ hdspmixer/pixmaps/b_pre4.xpm         |    2 +-
+ hdspmixer/pixmaps/b_pre5.xpm         |    2 +-
+ hdspmixer/pixmaps/b_pre6.xpm         |    2 +-
+ hdspmixer/pixmaps/b_pre7.xpm         |    2 +-
+ hdspmixer/pixmaps/b_pre8.xpm         |    2 +-
+ hdspmixer/pixmaps/b_save.xpm         |    2 +-
+ hdspmixer/pixmaps/b_solo.xpm         |    2 +-
+ hdspmixer/pixmaps/b_zlm.xpm          |    2 +-
+ hdspmixer/pixmaps/buttons.xpm        |    2 +-
+ hdspmixer/pixmaps/empty.xpm          |    2 +-
+ hdspmixer/pixmaps/empty_2.xpm        |    2 +-
+ hdspmixer/pixmaps/empty_linux.xpm    |    2 +-
+ hdspmixer/pixmaps/iomixer.xpm        |    2 +-
+ hdspmixer/pixmaps/iomixer_r.xpm      |    2 +-
+ hdspmixer/pixmaps/level.xpm          |    2 +-
+ hdspmixer/pixmaps/matrix_black.xpm   |    2 +-
+ hdspmixer/pixmaps/matrix_grey.xpm    |    2 +-
+ hdspmixer/pixmaps/matrix_grey_l.xpm  |    2 +-
+ hdspmixer/pixmaps/matrix_grey_o.xpm  |    2 +-
+ hdspmixer/pixmaps/matrix_grey_ol.xpm |    2 +-
+ hdspmixer/pixmaps/matrix_mute.xpm    |    2 +-
+ hdspmixer/pixmaps/matrix_white.xpm   |    2 +-
+ hdspmixer/pixmaps/matrix_yellow.xpm  |    2 +-
+ hdspmixer/pixmaps/monitor.xpm        |    2 +-
+ hdspmixer/pixmaps/mute.xpm           |    2 +-
+ hdspmixer/pixmaps/output.xpm         |    2 +-
+ hdspmixer/pixmaps/output_r.xpm       |    2 +-
+ hdspmixer/pixmaps/over.xpm           |    2 +-
+ hdspmixer/pixmaps/peak.xpm           |    2 +-
+ hdspmixer/pixmaps/solo.xpm           |    2 +-
+ hdspmixer/src/HDSPMixerAbout.cxx     |    2 +-
+ hdspmixer/src/HDSPMixerAbout.h       |    2 +-
+ hdspmixer/src/HDSPMixerAboutText.h   |    2 +-
+ hdspmixer/src/HDSPMixerGain.cxx      |    2 +-
+ hdspmixer/src/HDSPMixerGain.h        |    2 +-
+ hdspmixer/src/HDSPMixerIOMixer.h     |    4 +-
+ hdspmixer/src/HDSPMixerOutput.cxx    |  189 ++++++++++--------
+ hdspmixer/src/HDSPMixerOutput.h      |    4 +-
+ hdspmixer/src/HDSPMixerSelector.cxx  |   38 ++--
+ hdspmixer/src/HDSPMixerSelector.h    |    2 +-
+ hdspmixer/src/HDSPMixerSetup.cxx     |    2 +-
+ hdspmixer/src/HDSPMixerSetup.h       |    2 +-
+ hdspmixer/src/Makefile.am            |    1 +
+ hdspmixer/src/channelmap.cxx         |  368 ++++++++++++++++++++++++++++++++++
+ hdspmixer/src/channelmap.h           |  348 ++++++---------------------------
+ hdspmixer/src/pixmaps.h              |   76 ++++----
+ 58 files changed, 642 insertions(+), 486 deletions(-)
+ create mode 100644 hdspmixer/src/channelmap.cxx
+
+-- 
+1.7.4.1
