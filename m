@@ -1,17 +1,14 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: period_time in slave definition
-Date: Tue, 01 Mar 2011 11:28:05 +0100
-Message-ID: <4D6CCA35.8050507@ivitera.com>
-References: <4D6B943E.4060302@ivitera.com>	<alpine.LNX.2.00.1102281412520.7877@eeebox2.perex-int.cz>	<4D6CB760.5070601@ivitera.com>	<alpine.LNX.2.00.1103011020080.7877@eeebox2.perex-int.cz>
-	<4D6CC009.9050501@ivitera.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [TLV320AIC23] [AM3517EVM][AUDIO] codec name
+ mis-match in soc_bind_dai_link
+Date: Tue, 1 Mar 2011 12:42:43 +0200
+Message-ID: <20110301124243.6c329c74.jhnikula__37687.800001777$1298976103$gmane$org@gmail.com>
+References: <FCCFB4CDC6E5564B9182F639FC3560870370776EC3@dbde02.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (upc-plzen.insite.cz [84.242.100.8])
-	by alsa0.perex.cz (Postfix) with ESMTP id F3143247A5
-	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 11:34:32 +0100 (CET)
-In-Reply-To: <4D6CC009.9050501@ivitera.com>
+In-Reply-To: <FCCFB4CDC6E5564B9182F639FC3560870370776EC3@dbde02.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,83 +18,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@vger.kernel.org" <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Pavel Hofman napsal(a):
-> Jaroslav Kysela napsal(a):
->> On Tue, 1 Mar 2011, Pavel Hofman wrote:
->>
->>> Jaroslav Kysela napsal(a):
->>>> It's correct, pcm:plug does not support buffer modifiers. Look to
->>>> "Automatic conversion plugin".
->>>>
->>>>> I checked the source code and the keywords seem to be ok
->>>>>
->>>>> pcm.c:
->>>>> static const char *const names[SND_PCM_HW_PARAM_LAST_INTERVAL + 1] = {
->>>>>     [SND_PCM_HW_PARAM_FORMAT] = "format",
->>>>>     [SND_PCM_HW_PARAM_CHANNELS] = "channels",
->>>>>     [SND_PCM_HW_PARAM_RATE] = "rate",
->>>>>     [SND_PCM_HW_PARAM_PERIOD_TIME] = "period_time",
->>>>>     [SND_PCM_HW_PARAM_PERIOD_SIZE] = "period_size",
->>>>>     [SND_PCM_HW_PARAM_BUFFER_TIME] = "buffer_time",
->>>>>     [SND_PCM_HW_PARAM_BUFFER_SIZE] = "buffer_size",
->>>>>     [SND_PCM_HW_PARAM_PERIODS] = "periods"
->>>>> };
->>>> It's just a table to translate all possibilites between index and name.
->>>> The plug plugins allow only this:
->>>>
->>>>     err = snd_pcm_slave_conf(root, slave, &sconf, 3,
->>>>                  SND_PCM_HW_PARAM_FORMAT, SCONF_UNCHANGED, &sformat,
->>>>                  SND_PCM_HW_PARAM_CHANNELS, SCONF_UNCHANGED, &schannels,
->>>>                  SND_PCM_HW_PARAM_RATE, SCONF_UNCHANGED, &srate);
->>>>
->>>>                     Jaroslav
->>>>
->>>
->>> Well, still I do not understand why we are talking about the plug
->>> plugin, when I am trying to redefine the slave via pcm_slave. The
->>> documentation at
->>> http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html says the
->>> pcm_slave can define period_time and buffer_time, while a slightly
->>> modified example from the wiki page fails:
->>>
->>> pcm_slave.slave_rate44100Hz {
->>>        pcm "hw:0,0"
->>>        rate 44100
->>> --->    period_time 1024
->>> }
->>>
->>> pcm.rate44100Hz {
->>>        type plug
->>>        slave slave_rate44100Hz
->>> }
->>>
->>> How does the slave definition relate to the plug plugin? Sorry for these
->>> basics but I am really trying to understand that, so far no success.
->> The above description is an universal description for all slaves.
->> Unfortunately, not all plugins accept the whole range of parameters.
->> You have to look to the snd_pcm_slave_conf() caller which parameters are
->> accepted.
->>
-> 
-> Thanks a lot for your clarification. Would it make sense to add these
-> parameters to the plug plugin? I guess it would not be as simple as in
-> dshare.c:
-> 
-> 	params.period_size = psize;
-> 	params.buffer_size = bsize;
-> 
-> when opening the slave.
-> 
-> Or should I use dshare when I need to specify period and buffer
-> parameters outside of the application?
-> 
+On Tue, 1 Mar 2011 15:22:29 +0530
+"Koyamangalath, Abhilash" <abhilash.kv@ti.com> wrote:
 
-Well, dshare resamples to common rate too. That is not the way to go.
+> Now, if I change the dai-link->codec_name to force-match by appending 2-001a to the codec_name in (sound/soc/omap/am3517evm.c):
+> 	static struct snd_soc_dai_link am3517evm_dai = {
+> 			:
+>       	  .codec_name = "tlv320aic23-codec.2-001a ",
+> 			:
+> 	};
+> 
+> the registration proceeds smoothly and I can see device nodes getting created. 
+> Since now there is no way to provide a customized i2c device name to a client device (or so I believe), what could be the best solution to this problem ?
+> 
+The fix above. Care to check also osk5912.c?
 
-Thanks,
 
-Pavel.
+-- 
+Jarkko
