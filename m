@@ -1,16 +1,22 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Underrun
-Date: Tue, 01 Mar 2011 14:42:47 +0100
-Message-ID: <4D6CF7D7.2030509@ladisch.de>
-References: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB5665@EXGMBX01.sasken.com>
+From: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
+Subject: Re: [PATCH v22 3/3] ASoC: WL1273 FM radio: Access I2C
+ IO functions through pointers.
+Date: Tue, 01 Mar 2011 15:44:45 +0200
+Message-ID: <1298987085.29371.123.camel@masi.mnp.nokia.com>
+References: <1298985037-2714-1-git-send-email-matti.j.aaltonen@nokia.com>
+	<1298985037-2714-2-git-send-email-matti.j.aaltonen@nokia.com>
+	<1298985037-2714-3-git-send-email-matti.j.aaltonen@nokia.com>
+	<1298985037-2714-4-git-send-email-matti.j.aaltonen@nokia.com>
+	<20110301132315.GD9662@opensource.wolfsonmicro.com>
+Reply-To: matti.j.aaltonen@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id E55C01038F0
-	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 14:41:38 +0100 (CET)
-In-Reply-To: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB5665@EXGMBX01.sasken.com>
+Received: from mgw-da01.nokia.com (smtp.nokia.com [147.243.128.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id E48CC103927
+	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 14:44:51 +0100 (CET)
+In-Reply-To: <20110301132315.GD9662@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,43 +26,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Irfan Shaikh <irfan.shaikh@sasken.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "bahathir@gmail.com" <bahathir@gmail.com>
+To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, sameo@linux.intel.com, mchehab@redhat.com, hverkuil@xs4all.nl, lrg@slimlogic.co.uk, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Irfan Shaikh wrote:
-> I am getting many under-run in my audio capture and playback application.
+On Tue, 2011-03-01 at 13:23 +0000, ext Mark Brown wrote:
+> On Tue, Mar 01, 2011 at 03:10:37PM +0200, Matti J. Aaltonen wrote:
+> > These changes are needed to keep up with the changes in the
+> > MFD core and V4L2 parts of the wl1273 FM radio driver.
+> > 
+> > Use function pointers instead of exported functions for I2C IO.
+> > Also move all preprocessor constants from the wl1273.h to
+> > include/linux/mfd/wl1273-core.h.
+> > 
+> > Also update the year in the copyright statement.
+> > 
+> > Signed-off-by: Matti J. Aaltonen <matti.j.aaltonen@nokia.com>
 > 
-> 1) My CAPTURE buffer is of 1024 * 8 (Period size * no of periods), PLAYBACK buffer is of (512 * 16)
-> 2) I try to read 8 K frames each time and write returned frames to playback device.
+> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> 
+> *Please* keep acks unless you're making substantial changes to
+> repostings.
 
-If you wait until the capture buffer is full, it's likely that you
-get over/underruns at this moment.  You have to do the processing in
-smaller chunks.
+OK, I see, I should have added the ACKs to the relevant driver files
+instead of copying them to the cover letter...
 
-Typically, in loops like this, the normal state is that the capture
-buffer is almost empty, and the playback buffer almost full.  You read
-one period from the capture buffer (waiting for it if necessary),
-process it, and write it to the playback buffer.  You need at least two
-period per buffer so that one can be captured/played while the other one
-is being processed, and maybe more periods as safety against delays.
+Cheers,
+Matti
 
-> B) Can i use snd_pcm_prepare() twice in two consecutive lines
-
-Yes (if the driver isn't buggy).
-
-Regards,
-Clemens
-
-
-> SASKEN BUSINESS DISCLAIMER: ...
-
-EVEN MORE IMPORTANT DISCLAIMER:
-This e-mail contains public information intended for any subscriber of
-this mailing list and for anybody else who bothers to read it; it will
-be copied, disclosed and distributed to the public.  If you think you
-are not the intended recipient, please commit suicide immediately.
-These terms apply also to any e-mails quoted in, referenced from, or
-answering this e-mail, and supersede any disclaimers in those e-mails.
-Additionally, disclaimers in those e-mails will incur legal processing
-fees of $42 per line; you have agreed to this by reading this disclaimer.
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-media" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
