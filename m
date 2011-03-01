@@ -1,92 +1,56 @@
-From: Javier Martin <javier.martin@vista-silicon.com>
-Subject: [PATCH v2 4/4] ARM: Add SSI and aic3204 code to Visstrim_M10 boards.
-Date: Tue,  1 Mar 2011 15:02:08 +0100
-Message-ID: <1298988128-11520-5-git-send-email-javier.martin@vista-silicon.com>
-References: <1298988128-11520-1-git-send-email-javier.martin@vista-silicon.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/4] ASoC: Add TI tlv320aic32x4 codec
+	support.
+Date: Tue, 1 Mar 2011 14:11:06 +0000
+Message-ID: <20110301141105.GF9662@opensource.wolfsonmicro.com>
+References: <1298641370-17461-1-git-send-email-javier.martin@vista-silicon.com>
+	<20110228150014.GI13869@opensource.wolfsonmicro.com>
+	<AANLkTinjj8rZS_Y9qiHbrU2nAYSXTikTNtyU71Bk7UqL@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1298988128-11520-1-git-send-email-javier.martin@vista-silicon.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: alsa-devel@alsa-project.org
-Cc: s.hauer@pengutronix.de, broonie@opensource.wolfsonmicro.com, b32542@freescale.com, linux-arm-kernel@lists.infradead.org, Javier Martin <javier.martin@vista-silicon.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ED453103854
+	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 15:11:20 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <AANLkTinjj8rZS_Y9qiHbrU2nAYSXTikTNtyU71Bk7UqL@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: javier Martin <javier.martin@vista-silicon.com>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, Zeng Zhaoming <b32542@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Visstrim_M10 boards have an TI tlv320aic3204 codec
-attached to SSI1.
+On Tue, Mar 01, 2011 at 08:59:23AM +0100, javier Martin wrote:
 
-Signed-off-by: Javier Martin <javier.martin@vista-silicon.com>
----
- arch/arm/mach-imx/Kconfig                   |    1 +
- arch/arm/mach-imx/mach-imx27_visstrim_m10.c |   14 ++++++++++++++
- 2 files changed, 15 insertions(+), 0 deletions(-)
+> > What are these "aic32x4_configs" all about? =A0They look like you're
+> > setting non-default configurations...
 
-diff --git a/arch/arm/mach-imx/Kconfig b/arch/arm/mach-imx/Kconfig
-index 197f9e2..4d01d8c 100644
---- a/arch/arm/mach-imx/Kconfig
-+++ b/arch/arm/mach-imx/Kconfig
-@@ -168,6 +168,7 @@ config MACH_IMX27_VISSTRIM_M10
- 	bool "Vista Silicon i.MX27 Visstrim_m10"
- 	select IMX_HAVE_PLATFORM_IMX_I2C
- 	select IMX_HAVE_PLATFORM_IMX_UART
-+	select IMX_HAVE_PLATFORM_IMX_SSI
- 	help
- 	  Include support for Visstrim_m10 platform and its different variants.
- 	  This includes specific configurations for the board and its
-diff --git a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-index 59716fa..b346484 100644
---- a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-+++ b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
-@@ -69,6 +69,11 @@ static const int visstrim_m10_pins[] __initconst = {
- 	PD15_AOUT_FEC_COL,
- 	PD16_AIN_FEC_TX_ER,
- 	PF23_AIN_FEC_TX_EN,
-+	/* SSI1 */
-+	PC20_PF_SSI1_FS,
-+	PC21_PF_SSI1_RXD,
-+	PC22_PF_SSI1_TXD,
-+	PC23_PF_SSI1_CLK,
- 	/* SDHC1 */
- 	PE18_PF_SD1_D0,
- 	PE19_PF_SD1_D1,
-@@ -207,6 +212,9 @@ static struct i2c_board_info visstrim_m10_i2c_devices[] = {
- 		I2C_BOARD_INFO("pca9555", 0x20),
- 		.platform_data = &visstrim_m10_pca9555_pdata,
- 	},
-+	{
-+		I2C_BOARD_INFO("tlv320aic32x4", 0x18),
-+	}
- };
- 
- /* USB OTG */
-@@ -222,6 +230,11 @@ static struct mxc_usbh_platform_data visstrim_m10_usbotg_pdata = {
- 	.flags	= MXC_EHCI_POWER_PINS_ENABLED,
- };
- 
-+/* SSI */
-+static const struct imx_ssi_platform_data visstrim_m10_ssi_pdata __initconst = {
-+	.flags			= IMX_SSI_DMA | IMX_SSI_SYN,
-+};
-+
- static void __init visstrim_m10_board_init(void)
- {
- 	int ret;
-@@ -231,6 +244,7 @@ static void __init visstrim_m10_board_init(void)
- 	if (ret)
- 		pr_err("Failed to setup pins (%d)\n", ret);
- 
-+	imx27_add_imx_ssi(0, &visstrim_m10_ssi_pdata);
- 	imx27_add_imx_uart0(&uart_pdata);
- 
- 	i2c_register_board_info(0, visstrim_m10_i2c_devices,
--- 
-1.7.0.4
+> This tlv320aic32x4 codec is kind of a huge monster; it has more than
+> 200 registers which provide more flexibility than it is needed.
+
+So what is all this magic stuff and why is it using such an odd way of
+implementing whatever it's doing?  Part of the problem here is that the
+functionality is scattered all the way through the driver so it's less
+clear than it should be what's going on.
+
+> For example, BCLK and MCLK are forced here to derive from internal PLL
+> which is needed for frequency calculation table to be valid. Bypassing
+> this PLL doesn't provide new or better functionality.
+
+I rather suspect it provides lower power consumption.
+
+> The same happens regarding DAC internal connections. I don't think
+> allowing the user to swap left and right channels makes sense here.
+
+There are a number of CPUs out there that end up being happier with
+channels in the wrong order due to peculiarities of the DMA.  This is
+also used to get a microphone input connected to the right analogue
+input to appear on the left channel of a recording for mono use.
