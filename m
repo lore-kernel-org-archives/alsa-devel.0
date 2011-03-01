@@ -1,17 +1,15 @@
-From: Arun Raghavan <arun.raghavan@collabora.co.uk>
-Subject: Re: CS4206 and S/PDIF (again)
-Date: Tue, 01 Mar 2011 11:13:46 +0530
-Message-ID: <1298958226.12314.14.camel@snowflake>
-References: <1298955969.12314.12.camel@snowflake>
-	<1298958197.12314.13.camel@snowflake>
+From: Irfan Shaikh <irfan.shaikh@sasken.com>
+Subject: Underrun
+Date: Tue, 1 Mar 2011 11:29:48 +0530
+Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB5665@EXGMBX01.sasken.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [93.93.128.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id D4B4C2469F
-	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 06:43:47 +0100 (CET)
-In-Reply-To: <1298958197.12314.13.camel@snowflake>
+Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
+	by alsa0.perex.cz (Postfix) with ESMTP id 89F76246B3
+	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 06:59:52 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,21 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "bahathir@gmail.com" <bahathir@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-03-01 at 11:13 +0530, Arun Raghavan wrote:
-> On Tue, 2011-03-01 at 10:36 +0530, Arun Raghavan wrote:
-> > Hello,
-> > I saw an earlier thread where someone with a MacBook Pro 6.2 couldn't
-> > get S/PDIF working. I'm facing the same problem on my MacBook Pro 5.5. I
-> > know this used to work at some point because the LED from the digital
-> > out used to glow (but my last recollection of this is from ca. Jan 2010,
-> > so not too helpful).
-> 
-> Another thing that's unlikely to be helpful. Occasionally, jiggling the
-> headphone jack causes the light to blink once.
+Hello All,
 
-I meant headphone mixer control, sorry.
+A)     I am getting many under-run in my audio capture and playback application.
 
--- Arun
+         1) My CAPTURE buffer is of 1024 * 8 (Period size * no of periods), PLAYBACK buffer is of (512 * 16)
+         2) I try to read 8 K frames each time and write returned frames to playback device.
+         3) Stereo audio, sample size 2 bytes, frame size 4 bytes, 48000 Hz
+
+I have done following to reduce under run :
+         1) Increased the number of periods on playback device (to increase playback latency).
+         2) optimized my code
+
+Please sugest me some more way so that i can avoid underrun of my playback device
+
+
+B) Can i use snd_pcm_prepare() twice in two consecutive lines
+
+For eg :
+{
+snd_pcm_prepare(pcm);
+ snd_pcm_prepare(pcm);
+}
+
+        I just want to know if this is OK for playback device state.
+
+Regards
+
+
+
+
+SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any 
+ virus transmitted by this email.
+Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
