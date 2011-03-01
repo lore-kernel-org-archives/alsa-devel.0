@@ -1,14 +1,19 @@
 From: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
-Subject: [PATCH v22 0/3] ASoC/MFD/V4L2: WL1273 FM Radio Driver
-Date: Tue,  1 Mar 2011 15:10:34 +0200
-Message-ID: <1298985037-2714-1-git-send-email-matti.j.aaltonen@nokia.com>
+Subject: [PATCH v22 3/3] ASoC: WL1273 FM radio: Access I2C IO
+	functions through pointers.
+Date: Tue,  1 Mar 2011 15:10:37 +0200
+Message-ID: <1298985037-2714-4-git-send-email-matti.j.aaltonen@nokia.com>
+References: <1298985037-2714-1-git-send-email-matti.j.aaltonen@nokia.com>
+	<1298985037-2714-2-git-send-email-matti.j.aaltonen@nokia.com>
+	<1298985037-2714-3-git-send-email-matti.j.aaltonen@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-da01.nokia.com (smtp.nokia.com [147.243.128.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id C49EF1038D5
+	by alsa0.perex.cz (Postfix) with ESMTP id C1411103854
 	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 14:11:12 +0100 (CET)
+In-Reply-To: <1298985037-2714-3-git-send-email-matti.j.aaltonen@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,48 +27,69 @@ To: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlo
 Cc: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+These changes are needed to keep up with the changes in the
+MFD core and V4L2 parts of the wl1273 FM radio driver.
 
-Thanks for the comment Mark.
+Use function pointers instead of exported functions for I2C IO.
+Also move all preprocessor constants from the wl1273.h to
+include/linux/mfd/wl1273-core.h.
 
-On Tue, 2011-03-01 at 11:54 +0000, ext Mark Brown wrote:
-On Tue, Mar 01, 2011 at 10:00:50AM +0200, Matti J. Aaltonen wrote:
-> > These changes are needed to keep up with the changes in the
-> > MFD core and V4L2 parts of the wl1273 FM radio driver.
-> > 
-> > Use function pointers instead of exported functions for I2C IO.
-> > Also move all preprocessor constants from the wl1273.h to
-> > include/linux/mfd/wl1273-core.h.
-> > 
-> > Also update the year in the copyright statement.
-> 
-> It's not actually doing that:
-> 
-> > - * Copyright:   (C) 2010 Nokia Corporation
-> > + * Copyright:   (C) 2011 Nokia Corporation
-> 
-> It's replacing it - portions are still 2010.
+Also update the year in the copyright statement.
 
-Kept also the year 2010 on the copyright line.
+Signed-off-by: Matti J. Aaltonen <matti.j.aaltonen@nokia.com>
+---
+ sound/soc/codecs/Kconfig  |    2 +-
+ sound/soc/codecs/wl1273.c |   11 ++++++++---
+ 2 files changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index c48b23c..9726d6e 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -44,7 +44,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_TWL6040 if TWL4030_CORE
+ 	select SND_SOC_UDA134X
+ 	select SND_SOC_UDA1380 if I2C
+-	select SND_SOC_WL1273 if RADIO_WL1273
++	select SND_SOC_WL1273 if MFD_WL1273_CORE
+ 	select SND_SOC_WM2000 if I2C
+ 	select SND_SOC_WM8350 if MFD_WM8350
+ 	select SND_SOC_WM8400 if MFD_WM8400
+diff --git a/sound/soc/codecs/wl1273.c b/sound/soc/codecs/wl1273.c
+index 861b28f..5836201 100644
+--- a/sound/soc/codecs/wl1273.c
++++ b/sound/soc/codecs/wl1273.c
+@@ -3,7 +3,7 @@
+  *
+  * Author:      Matti Aaltonen, <matti.j.aaltonen@nokia.com>
+  *
+- * Copyright:   (C) 2010 Nokia Corporation
++ * Copyright:   (C) 2010, 2011 Nokia Corporation
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License
+@@ -179,7 +179,12 @@ static int snd_wl1273_get_audio_route(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
  
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+-static const char *wl1273_audio_route[] = { "Bt", "FmRx", "FmTx" };
++/*
++ * TODO: Implement the audio routing in the driver. Now this control
++ * only indicates the setting that has been done elsewhere (in the user
++ * space).
++ */
++static const char * const wl1273_audio_route[] = { "Bt", "FmRx", "FmTx" };
  
-
-On Tue, 2011-03-01 at 12:43 +0100, ext Samuel Ortiz wrote:
-> Acked-by: Samuel Ortiz <sameo@linux.intel.com>
-
-Cheers,
-Matti
-
-Matti J. Aaltonen (3):
-  MFD: WL1273 FM Radio: MFD driver for the FM radio.
-  V4L2: WL1273 FM Radio: TI WL1273 FM radio driver
-  ASoC: WL1273 FM radio: Access I2C IO functions through pointers.
-
- drivers/media/radio/radio-wl1273.c |  360 +++++++++++-------------------------
- drivers/mfd/Kconfig                |    2 +-
- drivers/mfd/wl1273-core.c          |  149 +++++++++++++++-
- include/linux/mfd/wl1273-core.h    |    2 +
- sound/soc/codecs/Kconfig           |    2 +-
- sound/soc/codecs/wl1273.c          |   11 +-
- 6 files changed, 264 insertions(+), 262 deletions(-)
+ static int snd_wl1273_set_audio_route(struct snd_kcontrol *kcontrol,
+ 				      struct snd_ctl_elem_value *ucontrol)
+@@ -239,7 +244,7 @@ static int snd_wl1273_fm_audio_put(struct snd_kcontrol *kcontrol,
+ 	return 1;
+ }
+ 
+-static const char *wl1273_audio_strings[] = { "Digital", "Analog" };
++static const char * const wl1273_audio_strings[] = { "Digital", "Analog" };
+ 
+ static const struct soc_enum wl1273_audio_enum =
+ 	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(wl1273_audio_strings),
+-- 
+1.6.1.3
