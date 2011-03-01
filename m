@@ -1,13 +1,19 @@
-From: Adrian Knoth <adi@drcomp.erfurt.thur.de>
-Subject: [PATCH 5/5] hdspmixer: Fix labels on H9652
-Date: Tue,  1 Mar 2011 10:42:27 +0100
-Message-ID: <1298972547-8759-6-git-send-email-adi@drcomp.erfurt.thur.de>
-References: <1298972547-8759-1-git-send-email-adi@drcomp.erfurt.thur.de>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: period_time in slave definition
+Date: Tue, 01 Mar 2011 10:44:41 +0100
+Message-ID: <4D6CC009.9050501@ivitera.com>
+References: <4D6B943E.4060302@ivitera.com>
+	<alpine.LNX.2.00.1102281412520.7877@eeebox2.perex-int.cz>
+	<4D6CB760.5070601@ivitera.com>
+	<alpine.LNX.2.00.1103011020080.7877@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1298972547-8759-1-git-send-email-adi@drcomp.erfurt.thur.de>
+Received: from cable.insite.cz (upc-plzen.insite.cz [84.242.100.8])
+	by alsa0.perex.cz (Postfix) with ESMTP id E11662479A
+	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 10:44:43 +0100 (CET)
+In-Reply-To: <alpine.LNX.2.00.1103011020080.7877@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,29 +23,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Adrian Knoth <adi@drcomp.erfurt.thur.de>, alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The H9652 uses the same layout as the Digiface, except Digiface features
-an additional headphones out. That's why the channel mappings are the
-same, but Digiface has mexdest=14 while H9652 has maxdest=13 (12 ADAT
-pairs, another pair for S/PDIF and headphone-L/R on Digiface)
+Jaroslav Kysela napsal(a):
+> On Tue, 1 Mar 2011, Pavel Hofman wrote:
+> 
+>> Jaroslav Kysela napsal(a):
+>>>
+>>> It's correct, pcm:plug does not support buffer modifiers. Look to
+>>> "Automatic conversion plugin".
+>>>
+>>>> I checked the source code and the keywords seem to be ok
+>>>>
+>>>> pcm.c:
+>>>> static const char *const names[SND_PCM_HW_PARAM_LAST_INTERVAL + 1] = {
+>>>>     [SND_PCM_HW_PARAM_FORMAT] = "format",
+>>>>     [SND_PCM_HW_PARAM_CHANNELS] = "channels",
+>>>>     [SND_PCM_HW_PARAM_RATE] = "rate",
+>>>>     [SND_PCM_HW_PARAM_PERIOD_TIME] = "period_time",
+>>>>     [SND_PCM_HW_PARAM_PERIOD_SIZE] = "period_size",
+>>>>     [SND_PCM_HW_PARAM_BUFFER_TIME] = "buffer_time",
+>>>>     [SND_PCM_HW_PARAM_BUFFER_SIZE] = "buffer_size",
+>>>>     [SND_PCM_HW_PARAM_PERIODS] = "periods"
+>>>> };
+>>>
+>>> It's just a table to translate all possibilites between index and name.
+>>> The plug plugins allow only this:
+>>>
+>>>     err = snd_pcm_slave_conf(root, slave, &sconf, 3,
+>>>                  SND_PCM_HW_PARAM_FORMAT, SCONF_UNCHANGED, &sformat,
+>>>                  SND_PCM_HW_PARAM_CHANNELS, SCONF_UNCHANGED, &schannels,
+>>>                  SND_PCM_HW_PARAM_RATE, SCONF_UNCHANGED, &srate);
+>>>
+>>>                     Jaroslav
+>>>
+>>
+>>
+>> Well, still I do not understand why we are talking about the plug
+>> plugin, when I am trying to redefine the slave via pcm_slave. The
+>> documentation at
+>> http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html says the
+>> pcm_slave can define period_time and buffer_time, while a slightly
+>> modified example from the wiki page fails:
+>>
+>> pcm_slave.slave_rate44100Hz {
+>>        pcm "hw:0,0"
+>>        rate 44100
+>> --->    period_time 1024
+>> }
+>>
+>> pcm.rate44100Hz {
+>>        type plug
+>>        slave slave_rate44100Hz
+>> }
+>>
+>> How does the slave definition relate to the plug plugin? Sorry for these
+>> basics but I am really trying to understand that, so far no success.
+> 
+> The above description is an universal description for all slaves.
+> Unfortunately, not all plugins accept the whole range of parameters.
+> You have to look to the snd_pcm_slave_conf() caller which parameters are
+> accepted.
+> 
 
-Signed-off-by: Adrian Knoth <adi@drcomp.erfurt.thur.de>
+Thanks a lot for your clarification. Would it make sense to add these
+parameters to the plug plugin? I guess it would not be as simple as in
+dshare.c:
 
-diff --git a/hdspmixer/src/HDSPMixerOutput.cxx b/hdspmixer/src/HDSPMixerOutput.cxx
-index b0064c2..5047825 100644
---- a/hdspmixer/src/HDSPMixerOutput.cxx
-+++ b/hdspmixer/src/HDSPMixerOutput.cxx
-@@ -220,7 +220,7 @@ void HDSPMixerOutput::setLabels()
-         return;
-     };
-     
--    if (type == Digiface) {
-+    if (type == Digiface || type == H9652) {
-         if (sm)
-             labels_input = labels_playback = labels_df_ds;
-         else
--- 
-1.7.4.1
+	params.period_size = psize;
+	params.buffer_size = bsize;
+
+when opening the slave.
+
+Or should I use dshare when I need to specify period and buffer
+parameters outside of the application?
+
+Thanks a lot,
+
+Pavel.
