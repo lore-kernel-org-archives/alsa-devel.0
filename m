@@ -1,15 +1,21 @@
-From: Irfan Shaikh <irfan.shaikh@sasken.com>
-Subject: Underrun
-Date: Tue, 1 Mar 2011 11:29:48 +0530
-Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB5665@EXGMBX01.sasken.com>
+From: javier Martin <javier.martin@vista-silicon.com>
+Subject: Re: [PATCH 1/4] ASoC: Add TI tlv320aic32x4 codec
+	support.
+Date: Tue, 1 Mar 2011 08:59:23 +0100
+Message-ID: <AANLkTinjj8rZS_Y9qiHbrU2nAYSXTikTNtyU71Bk7UqL@mail.gmail.com>
+References: <1298641370-17461-1-git-send-email-javier.martin@vista-silicon.com>
+	<20110228150014.GI13869@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id 89F76246B3
-	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 06:59:52 +0100 (CET)
-Content-Language: en-US
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7F02424728
+	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 08:59:26 +0100 (CET)
+Received: by iwc10 with SMTP id 10so4269738iwc.38
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2011 23:59:24 -0800 (PST)
+In-Reply-To: <20110228150014.GI13869@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,39 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "bahathir@gmail.com" <bahathir@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, Zeng Zhaoming <b32542@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello All,
+Hi Mark,
+thank you for your review. I will try to solve every issue you pointed out.
 
-A)     I am getting many under-run in my audio capture and playback application.
+Regarding non-default configurations:
 
-         1) My CAPTURE buffer is of 1024 * 8 (Period size * no of periods), PLAYBACK buffer is of (512 * 16)
-         2) I try to read 8 K frames each time and write returned frames to playback device.
-         3) Stereo audio, sample size 2 bytes, frame size 4 bytes, 48000 Hz
+>> +static const struct aic32x4_configs aic32x4_reg_init[] =3D {
+>> + =A0 =A0 {AIC32X4_PWRCFG, AIC32X4_AVDDWEAKDISABLE},
+>
+> What are these "aic32x4_configs" all about? =A0They look like you're
+> setting non-default configurations...
 
-I have done following to reduce under run :
-         1) Increased the number of periods on playback device (to increase playback latency).
-         2) optimized my code
+This tlv320aic32x4 codec is kind of a huge monster; it has more than
+200 registers which provide more flexibility than it is needed.
+For example, BCLK and MCLK are forced here to derive from internal PLL
+which is needed for frequency calculation table to be valid. Bypassing
+this PLL doesn't provide new or better functionality.
+The same happens regarding DAC internal connections. I don't think
+allowing the user to swap left and right channels makes sense here.
 
-Please sugest me some more way so that i can avoid underrun of my playback device
+-- =
 
-
-B) Can i use snd_pcm_prepare() twice in two consecutive lines
-
-For eg :
-{
-snd_pcm_prepare(pcm);
- snd_pcm_prepare(pcm);
-}
-
-        I just want to know if this is OK for playback device state.
-
-Regards
-
-
-
-
-SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any 
- virus transmitted by this email.
-Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
+Javier Martin
+Vista Silicon S.L.
+CDTUC - FASE C - Oficina S-345
+Avda de los Castros s/n
+39005- Santander. Cantabria. Spain
++34 942 25 32 60
+www.vista-silicon.com
