@@ -1,22 +1,17 @@
-From: Richard Samson <samson.richard@gmail.com>
-Subject: Re: [PATCH] add new Fermi 5xx codec IDs to snd-hda
-Date: Tue, 01 Mar 2011 16:14:36 +0100
-Message-ID: <1298992476.2376.13.camel@cartman.lan>
-References: <1298855454.2347.27.camel@cartman.lan>
-	<74CDBE0F657A3D45AFBB94109FB122FF045687AE77@HQMAIL01.nvidia.com>
-	<s5hk4gknkh4.wl%tiwai@suse.de>
-	<AANLkTinP5Y3XF7SjGJLy5XE4ojD4MfG8oA97WJHob-3R@mail.gmail.com>
-	<s5h62s4ghfd.wl%tiwai@suse.de>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: period_time in slave definition
+Date: Tue, 01 Mar 2011 16:26:19 +0100
+Message-ID: <4D6D101B.9040709@ivitera.com>
+References: <4D6B943E.4060302@ivitera.com>	<alpine.LNX.2.00.1102281412520.7877@eeebox2.perex-int.cz>	<4D6CB760.5070601@ivitera.com>	<alpine.LNX.2.00.1103011020080.7877@eeebox2.perex-int.cz>
+	<4D6CC009.9050501@ivitera.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 7B1682481F
-	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 16:14:45 +0100 (CET)
-Received: by fxm11 with SMTP id 11so4658696fxm.38
-	for <alsa-devel@alsa-project.org>; Tue, 01 Mar 2011 07:14:43 -0800 (PST)
-In-Reply-To: <s5h62s4ghfd.wl%tiwai@suse.de>
+Received: from cable.insite.cz (upc-plzen.insite.cz [84.242.100.8])
+	by alsa0.perex.cz (Postfix) with ESMTP id 55D032482E
+	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 16:34:40 +0100 (CET)
+In-Reply-To: <4D6CC009.9050501@ivitera.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,82 +21,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Stephen Warren <swarren@nvidia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-TGUgbHVuZGkgMjggZsOpdnJpZXIgMjAxMSDDoCAxOTowOSArMDEwMCwgVGFrYXNoaSBJd2FpIGEg
-w6ljcml0IDoKPiBBdCBNb24sIDI4IEZlYiAyMDExIDE4OjU2OjIwICswMTAwLAo+IHNhbXNvbi5y
-aWNoYXJkQGdtYWlsLmNvbSB3cm90ZToKPiA+IAo+ID4gSGVsbG8sCj4gPiAKPiA+IFRoYW5rIHlv
-dSBmb3IgeW91ciByZXBsaWVzLgo+ID4gCj4gPiBBcyBTdGVwaGVuIFdhcnJlbiBzYWlkLCBhIHBh
-dGNoIHdpdGggZnVsbCBzdXBwb3J0IG9mIDV4eCBjYXJkcyB3aWxsIGJlCj4gPiBtb3JlIHVzZWZ1
-bC4KPiA+IEknbGwgYmUgYWJsZSB0byB3cml0ZSBhIG5ldyBwYXRjaCBidXQgSSBkb24ndCBoYXZl
-IHRoZSBrbm93bGVkZ2UgdG8KPiA+IGdldCBvdGhlciBJRHMuCj4gCj4gT0ssIFN0ZXBoZW4sIGNv
-dWxkIHlvdSBwcmVwYXJlIHRoZSBwYXRjaCBpbmNsdWRpbmcgYWxsIG1pc3NpbmcgSURzPwo+IAo+
-IAo+IHRoYW5rcywKPiAKPiBUYWthc2hpCj4gCgpIZWxsbywKCkkgd3JvdGUgYW4gbmV3IHBhdGNo
-IHdpdGggdGhyZWUgbmV3IGNvZGVjIElEcyBmb3IgTnZpZGlhIEZlcm1pIGNhcmRzLgpJIGF0dGVu
-ZGVkIHRvIHVzZSBleGlzdGluZyBJRHMgYW5kIG9ubGluZSB0ZWNobmljYWwgc3BlY2lmaWNhdGlv
-bnMgdG8KZ2V0IHR3byBvdGhlcnMgY2FyZHMgOgotIE52aWRpYSBHZUZvcmNlIEdUWCA0NzAgOiBp
-ZCA9IDB4MTBkZTAwMTUKLSBOdmlkaWEgR2VGb3JjZSBHVFggNTYwIFRpIDogaWQgPSAweDEwZGUw
-MDE2ICh3b3JrcyBmaW5lKQotIE52aWRpYSBHZUZvcmNlIEdUWCA1NzAgOiBpZCA9IDB4MTBkZTAw
-MTcKClN0ZXBoZW4sIGNvdWxkIHlvdSBjb25maXJtIHRoZXNlIG5ldyBJRHMgYXJlIGNvcnJlY3Qg
-PwoKVGhpcyBwYXRjaCBhcHBsaWVzIG9uIDIuNi4zOC1yYzYgYW5kIHRydW5rLgoKU2lnbmVkLW9m
-Zi1ieTogUmljaGFyZCBTYW1zb24gPHNhbXNvbi5yaWNoYXJkQGdtYWlsLmNvbT4KCmRpZmYgLXVw
-IHNvdW5kL3BjaS9oZGEvcGF0Y2hfaGRtaS5jey5vcmlnLH0gPgp+L3NuZC1jb2RlYy1oZGFfcGF0
-Y2gtaGRtaV9OdmlkaWFfNXh4LnBhdGNoCi0tLSBzb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYy5v
-cmlnICAgICAyMDExLTAzLTAxIDE0OjE1OjA3LjM4MDg2MDk4NAorMDEwMAorKysgc291bmQvcGNp
-L2hkYS9wYXRjaF9oZG1pLmMgIDIwMTEtMDMtMDEgMTU6NDQ6MTYuODM2NDQ0MTMzICswMTAwCkBA
-IC0xNjM0LDYgKzE2MzQsOSBAQCBzdGF0aWMgc3RydWN0IGhkYV9jb2RlY19wcmVzZXQgc25kX2hk
-YV9wCiB7IC5pZCA9IDB4MTBkZTAwMTIsIC5uYW1lID0gIkdQVSAxMiBIRE1JL0RQIiwgIC5wYXRj
-aCA9CnBhdGNoX252aGRtaV84Y2hfODkgfSwKIHsgLmlkID0gMHgxMGRlMDAxMywgLm5hbWUgPSAi
-R1BVIDEzIEhETUkvRFAiLCAgLnBhdGNoID0KcGF0Y2hfbnZoZG1pXzhjaF84OSB9LAogeyAuaWQg
-PSAweDEwZGUwMDE0LCAubmFtZSA9ICJHUFUgMTQgSERNSS9EUCIsICAucGF0Y2ggPQpwYXRjaF9u
-dmhkbWlfOGNoXzg5IH0sCit7IC5pZCA9IDB4MTBkZTAwMTUsIC5uYW1lID0gIkdQVSAxNSBIRE1J
-L0RQIiwgICAucGF0Y2ggPQpwYXRjaF9udmhkbWlfOGNoXzg5IH0sCit7IC5pZCA9IDB4MTBkZTAw
-MTYsIC5uYW1lID0gIkdQVSAxNiBIRE1JL0RQIiwgICAucGF0Y2ggPQpwYXRjaF9udmhkbWlfOGNo
-Xzg5IH0sCit7IC5pZCA9IDB4MTBkZTAwMTcsIC5uYW1lID0gIkdQVSAxNyBIRE1JL0RQIiwgICAu
-cGF0Y2ggPQpwYXRjaF9udmhkbWlfOGNoXzg5IH0sCiB7IC5pZCA9IDB4MTBkZTAwMTgsIC5uYW1l
-ID0gIkdQVSAxOCBIRE1JL0RQIiwgIC5wYXRjaCA9CnBhdGNoX252aGRtaV84Y2hfODkgfSwKIHsg
-LmlkID0gMHgxMGRlMDAxOSwgLm5hbWUgPSAiR1BVIDE5IEhETUkvRFAiLCAgLnBhdGNoID0KcGF0
-Y2hfbnZoZG1pXzhjaF84OSB9LAogeyAuaWQgPSAweDEwZGUwMDFhLCAubmFtZSA9ICJHUFUgMWEg
-SERNSS9EUCIsICAucGF0Y2ggPQpwYXRjaF9udmhkbWlfOGNoXzg5IH0sCkBAIC0xNjc2LDYgKzE2
-NzksOSBAQCBNT0RVTEVfQUxJQVMoInNuZC1oZGEtY29kZWMtaWQ6MTBkZTAwMTEiCiBNT0RVTEVf
-QUxJQVMoInNuZC1oZGEtY29kZWMtaWQ6MTBkZTAwMTIiKTsKIE1PRFVMRV9BTElBUygic25kLWhk
-YS1jb2RlYy1pZDoxMGRlMDAxMyIpOwogTU9EVUxFX0FMSUFTKCJzbmQtaGRhLWNvZGVjLWlkOjEw
-ZGUwMDE0Iik7CitNT0RVTEVfQUxJQVMoInNuZC1oZGEtY29kZWMtaWQ6MTBkZTAwMTUiKTsKK01P
-RFVMRV9BTElBUygic25kLWhkYS1jb2RlYy1pZDoxMGRlMDAxNiIpOworTU9EVUxFX0FMSUFTKCJz
-bmQtaGRhLWNvZGVjLWlkOjEwZGUwMDE3Iik7CiBNT0RVTEVfQUxJQVMoInNuZC1oZGEtY29kZWMt
-aWQ6MTBkZTAwMTgiKTsKIE1PRFVMRV9BTElBUygic25kLWhkYS1jb2RlYy1pZDoxMGRlMDAxOSIp
-OwogTU9EVUxFX0FMSUFTKCJzbmQtaGRhLWNvZGVjLWlkOjEwZGUwMDFhIik7CgpUaGFua3MuClJp
-Y2hhcmQgU2Ftc29uCgo+ID4gCj4gPiBSaWNoYXJkIFNhbXNvbgo+ID4gCj4gPiAyMDExLzIvMjgg
-VGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPjoKPiA+ID4gQXQgTW9uLCAyOCBGZWIgMjAxMSAw
-OToxMzoyOSAtMDgwMCwKPiA+ID4gU3RlcGhlbiBXYXJyZW4gd3JvdGU6Cj4gPiA+Pgo+ID4gPj4g
-UmljaGFyZCBTYW1zb24gd3JvdGUgYXQgU3VuZGF5LCBGZWJydWFyeSAyNywgMjAxMSA2OjExIFBN
-Ogo+ID4gPj4gPiAuLi4KPiA+ID4+ID4gSSBhZGRlZCBhIG5ldyBlbnRyeSBpbiBwYXRjaF9oZG1p
-LmMgdG8gZ2V0IHNvdW5kIHdvcmtpbmcgb24gbXkgb3duIDU2MAo+ID4gPj4gPiBUaSBjYXJkIDoK
-PiA+ID4+ID4KPiA+ID4+ID4gLS0tIHBhdGNoX2hkbWkuYyAgICAgICAgMjAxMS0wMi0xNSAyMjoy
-OTo1MS4wMDAwMDAwMDAgKzAxMDAKPiA+ID4+ID4gKysrIHBhdGNoX2hkbWlfR1RYLTU2MFRpLmMg
-ICAgICAyMDExLTAyLTI3IDIzOjUyOjU2Ljk4NDYxMzQxNCArMDEwMAo+ID4gPj4gLi4uCj4gPiA+
-PiA+IHBhdGNoX252aGRtaV84Y2hfODkgfSwKPiA+ID4+ID4gIHsgLmlkID0gMHgxMGRlMDAxNCwg
-Lm5hbWUgPSAiR1BVIDE0IEhETUkvRFAiLCAgLnBhdGNoID0KPiA+ID4+ID4gcGF0Y2hfbnZoZG1p
-XzhjaF84OSB9LAo+ID4gPj4gPiAreyAuaWQgPSAweDEwZGUwMDE2LCAubmFtZSA9ICJHUFUgMTYg
-SERNSS9EUCIsICAgLnBhdGNoID0KPiA+ID4+ID4gcGF0Y2hfbnZoZG1pXzhjaF84OSB9LAo+ID4g
-Pj4gPiAgeyAuaWQgPSAweDEwZGUwMDE4LCAubmFtZSA9ICJHUFUgMTggSERNSS9EUCIsICAucGF0
-Y2ggPQo+ID4gPj4gLi4uCj4gPiA+Pgo+ID4gPj4gQWNrZWQtQnk6IFN0ZXBoZW4gV2FycmVuIDxz
-d2FycmVuQG52aWRpYS5jb20+Cj4gPiA+Pgo+ID4gPj4gSG1tLiBXaGVuIEkgc3VibWl0dGVkIHRo
-YXQgbGFzdCBwYXRjaCwgSSB0aGluayBJIGxvb2tlZCBhdCB0aGUgd3JvbmcgYnJhbmNoCj4gPiA+
-PiBvZiBvdXIgV2luZG93cyBkcml2ZXJzLCBhbmQgaGVuY2UgbWlzc2VkIGEgY291cGxlIElEcywg
-YW5kIGFkZGVkIGEgY291cGxlIG9mCj4gPiA+PiBJRHMgdGhhdCB3b24ndCBiZSB1c2VkLiBPbmNl
-IHRoaXMgaXMgbWVyZ2VkLCBJJ2xsIGZvbGxvdyB1cCB3aXRoIGFub3RoZXIKPiA+ID4+IHBhdGNo
-IHRvIGZpeCB0aGUgb3RoZXIgaXNzdWVzIChvciBsZXQgbWUga25vdyBpZiB5b3UganVzdCB3YW50
-IG1lIHRvIHByb3ZpZGUKPiA+ID4+IGEgc2luZ2xlIHBhdGNoIHdpdGggZXZlcnl0aGluZyBpbiBp
-dCwgVGFrYXNoaSkuCj4gPiA+Cj4gPiA+IEkgZG9uJ3QgbWluZCBpbiBlaXRoZXIgd2F5IGFzIGxv
-bmcgYXMgaXQncyBhIHNpbXBsZSBwYXRjaC4KPiA+ID4gQXMgSSBhbHJlYWR5IGFza2VkIFJpY2hh
-cmQgZm9yIHJlLXN1Ym1pdHRpbmcgd2l0aCBoaXMgc2lnbi1vZmYsCj4gPiA+IHdlIGNhbiB3YWl0
-IGZvciBhIHdoaWxlLgo+ID4gPgo+ID4gPiBCVFcsIHRoaXMga2luZCBvZiBpZCBhZGRpdGlvbiBw
-YXRjaCBjYW4gYmUgc3RpbGwgbWVyZ2VkIGluIDIuNi4zOAo+ID4gPiBpZiB0aGUgY2hpcHMgbGlz
-dGVkIHRoZXJlIGFyZSByZWFsIG9uZXMuCj4gPiA+Cj4gPiA+Cj4gPiA+IHRoYW5rcywKPiA+ID4K
-PiA+ID4gVGFrYXNoaQo+ID4gPgo+ID4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+Pavel Hofman napsal(a):
+> Jaroslav Kysela napsal(a):
+>> On Tue, 1 Mar 2011, Pavel Hofman wrote:
+>>
+>>> Jaroslav Kysela napsal(a):
+>>>> It's correct, pcm:plug does not support buffer modifiers. Look to
+>>>> "Automatic conversion plugin".
+>>>>
+>>>>> I checked the source code and the keywords seem to be ok
+>>>>>
+>>>>> pcm.c:
+>>>>> static const char *const names[SND_PCM_HW_PARAM_LAST_INTERVAL + 1] = {
+>>>>>     [SND_PCM_HW_PARAM_FORMAT] = "format",
+>>>>>     [SND_PCM_HW_PARAM_CHANNELS] = "channels",
+>>>>>     [SND_PCM_HW_PARAM_RATE] = "rate",
+>>>>>     [SND_PCM_HW_PARAM_PERIOD_TIME] = "period_time",
+>>>>>     [SND_PCM_HW_PARAM_PERIOD_SIZE] = "period_size",
+>>>>>     [SND_PCM_HW_PARAM_BUFFER_TIME] = "buffer_time",
+>>>>>     [SND_PCM_HW_PARAM_BUFFER_SIZE] = "buffer_size",
+>>>>>     [SND_PCM_HW_PARAM_PERIODS] = "periods"
+>>>>> };
+>>>> It's just a table to translate all possibilites between index and name.
+>>>> The plug plugins allow only this:
+>>>>
+>>>>     err = snd_pcm_slave_conf(root, slave, &sconf, 3,
+>>>>                  SND_PCM_HW_PARAM_FORMAT, SCONF_UNCHANGED, &sformat,
+>>>>                  SND_PCM_HW_PARAM_CHANNELS, SCONF_UNCHANGED, &schannels,
+>>>>                  SND_PCM_HW_PARAM_RATE, SCONF_UNCHANGED, &srate);
+>>>>
+>>>>                     Jaroslav
+>>>>
+>>>
+>>> Well, still I do not understand why we are talking about the plug
+>>> plugin, when I am trying to redefine the slave via pcm_slave. The
+>>> documentation at
+>>> http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html says the
+>>> pcm_slave can define period_time and buffer_time, while a slightly
+>>> modified example from the wiki page fails:
+>>>
+>>> pcm_slave.slave_rate44100Hz {
+>>>        pcm "hw:0,0"
+>>>        rate 44100
+>>> --->    period_time 1024
+>>> }
+>>>
+>>> pcm.rate44100Hz {
+>>>        type plug
+>>>        slave slave_rate44100Hz
+>>> }
+>>>
+>>> How does the slave definition relate to the plug plugin? Sorry for these
+>>> basics but I am really trying to understand that, so far no success.
+>> The above description is an universal description for all slaves.
+>> Unfortunately, not all plugins accept the whole range of parameters.
+>> You have to look to the snd_pcm_slave_conf() caller which parameters are
+>> accepted.
+>>
+> 
+> Thanks a lot for your clarification. Would it make sense to add these
+> parameters to the plug plugin? I guess it would not be as simple as in
+> dshare.c:
+> 
+> 	params.period_size = psize;
+> 	params.buffer_size = bsize;
+> 
+> when opening the slave.
+> 
+
+One more question regarding the defaults. Older version of audacious
+(e.g. in ubuntu karmic) uses a very simple code:
+
+    snd_pcm_hw_params_alloca(&hwparams);
+    snd_pcm_hw_params_any(pcm_handle, hwparams);
+    snd_pcm_hw_params_set_access(pcm_handle, hwparams,
+SND_PCM_ACCESS_RW_INTERLEAVED);
+    snd_pcm_hw_params_set_format(pcm_handle, hwparams, afmt);
+    snd_pcm_hw_params_set_channels(pcm_handle, hwparams, nch);
+    snd_pcm_hw_params_set_rate(pcm_handle, hwparams, rate, 0);
+
+    err = snd_pcm_hw_params(pcm_handle, hwparams);
+    if (err < 0)
+    {
+        _ERROR("snd_pcm_hw_params failed: %s", snd_strerror(err));
+        return -1;
+    }
+
+
+There is no buffer or period setup. I assume some alsa-lib default value
+is used. When playing, the period size is set very low:
+
+access: MMAP_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 2
+rate: 96000 (96000/1)
+period_size: 8
+buffer_size: 8192
+
+As a result, the sound card (ICH5) keeps throwing 12.000 interrupts per
+second and CPU load is rather high. Does this "default" period_size
+value make sense? This is the reason I am trying to specify it outside
+of the application.
+
+Thanks a lot for help.
+
+Pavel.
