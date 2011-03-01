@@ -1,15 +1,17 @@
-From: Irfan Shaikh <irfan.shaikh@sasken.com>
-Subject: snd_pcm_prepare FAILS
-Date: Tue, 1 Mar 2011 14:28:32 +0530
-Message-ID: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB5669@EXGMBX01.sasken.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: period_time in slave definition
+Date: Tue, 01 Mar 2011 10:07:44 +0100
+Message-ID: <4D6CB760.5070601@ivitera.com>
+References: <4D6B943E.4060302@ivitera.com>
+	<alpine.LNX.2.00.1102281412520.7877@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta-blr1.sasken.com (mta-blr1.sasken.com [203.200.200.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7ED5724769
-	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 09:58:36 +0100 (CET)
-Content-Language: en-US
+Received: from cable.insite.cz (upc-plzen.insite.cz [84.242.100.8])
+	by alsa0.perex.cz (Postfix) with ESMTP id D6D6024784
+	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 10:14:28 +0100 (CET)
+In-Reply-To: <alpine.LNX.2.00.1102281412520.7877@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,30 +21,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Jaroslav Kysela napsal(a):
+> On Mon, 28 Feb 2011, Pavel Hofman wrote:
+> 
+>> Hi,
+>>
+>> According to
+>> http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html , my
+>> .asoundrc contains:
+>>
+>> pcm.test {
+>>        type plug
+>>        slave {
+>>                pcm "hw:0"
+>>                format "unchanged"
+>>                channels "unchanged"
+>>                rate "unchanged"
+>>                period_size 1024
+>>                buffer_size 4096
+>>        }
+>> }
+>>
+>>
+>> While pcm, format, channels, and rate are accepted, the period and
+>> buffer fields are refused:
+>>
+>> ALSA lib pcm.c:6811:(snd_pcm_slave_conf) Unknown field period_time
+> 
+> It's correct, pcm:plug does not support buffer modifiers. Look to
+> "Automatic conversion plugin".
+> 
+>> I checked the source code and the keywords seem to be ok
+>>
+>> pcm.c:
+>> static const char *const names[SND_PCM_HW_PARAM_LAST_INTERVAL + 1] = {
+>>     [SND_PCM_HW_PARAM_FORMAT] = "format",
+>>     [SND_PCM_HW_PARAM_CHANNELS] = "channels",
+>>     [SND_PCM_HW_PARAM_RATE] = "rate",
+>>     [SND_PCM_HW_PARAM_PERIOD_TIME] = "period_time",
+>>     [SND_PCM_HW_PARAM_PERIOD_SIZE] = "period_size",
+>>     [SND_PCM_HW_PARAM_BUFFER_TIME] = "buffer_time",
+>>     [SND_PCM_HW_PARAM_BUFFER_SIZE] = "buffer_size",
+>>     [SND_PCM_HW_PARAM_PERIODS] = "periods"
+>> };
+> 
+> It's just a table to translate all possibilites between index and name.
+> The plug plugins allow only this:
+> 
+>     err = snd_pcm_slave_conf(root, slave, &sconf, 3,
+>                  SND_PCM_HW_PARAM_FORMAT, SCONF_UNCHANGED, &sformat,
+>                  SND_PCM_HW_PARAM_CHANNELS, SCONF_UNCHANGED, &schannels,
+>                  SND_PCM_HW_PARAM_RATE, SCONF_UNCHANGED, &srate);
+> 
+>                     Jaroslav
+> 
 
-        I have been using following section of code, my snd_pcm_prepare() always fails and i am not able to  play audio using snd_pcm_writei().
 
-    /******************************Code*********************************/
-    err=snd_pcm_prepare(handle);
-    if (err < 0)
-        RSE_TRACE_ERROR(MP_ALSA_TRACE,("Can't recovery from underrun, prepare failed: %s\n", snd_strerror(err)));
-    /**********************************************************************/
+Well, still I do not understand why we are talking about the plug
+plugin, when I am trying to redefine the slave via pcm_slave. The
+documentation at
+http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html says the
+pcm_slave can define period_time and buffer_time, while a slightly
+modified example from the wiki page fails:
 
-    $$$$$$$$$$$$    Output : Can't recovery from underrun, prepare failed: Device or resource busy  $$$$$$$$$$$$$
+pcm_slave.slave_rate44100Hz {
+        pcm "hw:0,0"
+        rate 44100
+--->	period_time 1024	
+}
 
+pcm.rate44100Hz {
+        type plug
+        slave slave_rate44100Hz
+}
 
-    Can some one please share there comments on the above. What is going run above.
+How does the slave definition relate to the plug plugin? Sorry for these
+basics but I am really trying to understand that, so far no success.
 
-Regards,
+Thanks a lot.
 
-
-
-
-
-SASKEN BUSINESS DISCLAIMER: This message may contain confidential, proprietary or legally privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by Sasken Communication Technologies Limited ("Sasken") unless sent with that express intent and with due authority of Sasken. Sasken has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any 
- virus transmitted by this email.
-Read Disclaimer at http://www.sasken.com/extras/mail_disclaimer.html
+Pavel.
