@@ -1,51 +1,50 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd_pcm_prepare FAILS
-Date: Tue, 01 Mar 2011 14:48:22 +0100
-Message-ID: <4D6CF926.3000608@ladisch.de>
-References: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB5669@EXGMBX01.sasken.com>
+From: Samuel Ortiz <sameo@linux.intel.com>
+Subject: Re: [PATCH v22 3/3] ASoC: WL1273 FM radio: Access I2C IO functions
+ through pointers.
+Date: Tue, 1 Mar 2011 14:50:41 +0100
+Message-ID: <20110301135040.GB4543@sortiz-mobl>
+References: <1298985037-2714-1-git-send-email-matti.j.aaltonen@nokia.com>
+ <1298985037-2714-2-git-send-email-matti.j.aaltonen@nokia.com>
+ <1298985037-2714-3-git-send-email-matti.j.aaltonen@nokia.com>
+ <1298985037-2714-4-git-send-email-matti.j.aaltonen@nokia.com>
+ <20110301132315.GD9662@opensource.wolfsonmicro.com>
+ <1298987085.29371.123.camel@masi.mnp.nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id C76C1103854
-	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 14:47:14 +0100 (CET)
-In-Reply-To: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB5669@EXGMBX01.sasken.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Irfan Shaikh <irfan.shaikh@sasken.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-media-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1298987085.29371.123.camel@masi.mnp.nokia.com>
+Sender: linux-media-owner@vger.kernel.org
+To: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>
+Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, mchehab@redhat.com, hverkuil@xs4all.nl, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Irfan Shaikh wrote:
-> err=snd_pcm_prepare(handle);
-> if (err < 0)
->      RSE_TRACE_ERROR(MP_ALSA_TRACE,("Can't recovery from underrun, prepare failed: %s\n", snd_strerror(err)));
+On Tue, Mar 01, 2011 at 03:44:45PM +0200, Matti J. Aaltonen wrote:
+> On Tue, 2011-03-01 at 13:23 +0000, ext Mark Brown wrote:
+> > On Tue, Mar 01, 2011 at 03:10:37PM +0200, Matti J. Aaltonen wrote:
+> > > These changes are needed to keep up with the changes in the
+> > > MFD core and V4L2 parts of the wl1273 FM radio driver.
+> > > 
+> > > Use function pointers instead of exported functions for I2C IO.
+> > > Also move all preprocessor constants from the wl1273.h to
+> > > include/linux/mfd/wl1273-core.h.
+> > > 
+> > > Also update the year in the copyright statement.
+> > > 
+> > > Signed-off-by: Matti J. Aaltonen <matti.j.aaltonen@nokia.com>
+> > 
+> > Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> > 
+> > *Please* keep acks unless you're making substantial changes to
+> > repostings.
 > 
-> Output : Can't recovery from underrun, prepare failed: Device or resource busy
+> OK, I see, I should have added the ACKs to the relevant driver files
+> instead of copying them to the cover letter...
+Yes, it makes it easier for the maintainer taking your patches.
 
-This error comes from the device driver (whatever it is).
+Cheers,
+Samuel.
 
-
-Regards,
-Clemens
-
-
-> SASKEN BUSINESS DISCLAIMER: ...
-
-EVEN MORE IMPORTANT DISCLAIMER:
-This e-mail contains public information intended for any subscriber of
-this mailing list and for anybody else who bothers to read it; it will
-be copied, disclosed and distributed to the public.  If you think you
-are not the intended recipient, please commit suicide immediately.
-These terms apply also to any e-mails quoted in, referenced from, or
-answering this e-mail, and supersede any disclaimers in those e-mails.
-Additionally, disclaimers in those e-mails will incur legal processing
-fees of $42 per line; you have agreed to this by reading this disclaimer.
+-- 
+Intel Open Source Technology Centre
+http://oss.intel.com/
