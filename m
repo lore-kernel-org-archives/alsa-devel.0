@@ -1,23 +1,18 @@
-From: Stephen Warren <swarren@nvidia.com>
-Subject: Re: [PATCH] add new Fermi 5xx codec IDs to snd-hda
-Date: Tue, 1 Mar 2011 09:45:54 -0800
-Message-ID: <74CDBE0F657A3D45AFBB94109FB122FF045687B08A@HQMAIL01.nvidia.com>
-References: <1298855454.2347.27.camel@cartman.lan>
-	<74CDBE0F657A3D45AFBB94109FB122FF045687AE77@HQMAIL01.nvidia.com>
-	<s5hk4gknkh4.wl%tiwai@suse.de>
-	<AANLkTinP5Y3XF7SjGJLy5XE4ojD4MfG8oA97WJHob-3R@mail.gmail.com>
-	<s5h62s4ghfd.wl%tiwai@suse.de> <1298992476.2376.13.camel@cartman.lan>
-	<74CDBE0F657A3D45AFBB94109FB122FF045687B06F@HQMAIL01.nvidia.com>
-	<1298999780.1827.7.camel@cartman.lan>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH] audio:am3517evm support for AIC23
+Date: Tue, 1 Mar 2011 20:37:22 +0200
+Message-ID: <20110301203722.3ba044e5.jhnikula@gmail.com>
+References: <1298994218-30610-1-git-send-email-abhilash.kv@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.121.140])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3659B24878
-	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 18:47:41 +0100 (CET)
-In-Reply-To: <1298999780.1827.7.camel@cartman.lan>
-Content-Language: en-US
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 642BA248A0
+	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 19:37:30 +0100 (CET)
+Received: by bwz10 with SMTP id 10so5098877bwz.38
+	for <alsa-devel@alsa-project.org>; Tue, 01 Mar 2011 10:37:26 -0800 (PST)
+In-Reply-To: <1298994218-30610-1-git-send-email-abhilash.kv@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,42 +22,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Richard Samson <samson.richard@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Nitin Daga <ndaga@nvidia.com>
+To: Abhilash K V <abhilash.kv@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-UmljaGFyZCBTYW1zb24gd3JvdGUgYXQgVHVlc2RheSwgTWFyY2ggMDEsIDIwMTEgMTA6MTYgQU06
-DQo+IExlIG1hcmRpIDAxIG1hcnMgMjAxMSDDoCAwODo0MCAtMDgwMCwgU3RlcGhlbiBXYXJyZW4g
-YSDDqWNyaXQgOg0KPiA+IFJpY2hhcmQgU2Ftc29uIHdyb3RlIGF0IFR1ZXNkYXksIE1hcmNoIDAx
-LCAyMDExIDg6MTUgQU06DQo+ID4gPiBMZSBsdW5kaSAyOCBmw6l2cmllciAyMDExIMOgIDE5OjA5
-ICswMTAwLCBUYWthc2hpIEl3YWkgYSDDqWNyaXQgOg0KPiA+ID4gPiBBdCBNb24sIDI4IEZlYiAy
-MDExIDE4OjU2OjIwICswMTAwLA0KPiA+ID4gPiBzYW1zb24ucmljaGFyZEBnbWFpbC5jb20gd3Jv
-dGU6DQo+ID4gPiA+ID4gQXMgU3RlcGhlbiBXYXJyZW4gc2FpZCwgYSBwYXRjaCB3aXRoIGZ1bGwg
-c3VwcG9ydCBvZiA1eHggY2FyZHMgd2lsbCBiZQ0KPiA+ID4gPiA+IG1vcmUgdXNlZnVsLg0KPiA+
-ID4gPg0KPiA+ID4gPiBPSywgU3RlcGhlbiwgY291bGQgeW91IHByZXBhcmUgdGhlIHBhdGNoIGlu
-Y2x1ZGluZyBhbGwgbWlzc2luZyBJRHM/DQo+ID4gPg0KPiA+ID4gSSB3cm90ZSBhbiBuZXcgcGF0
-Y2ggd2l0aCB0aHJlZSBuZXcgY29kZWMgSURzIGZvciBOdmlkaWEgRmVybWkgY2FyZHMuDQo+ID4g
-PiBJIGF0dGVuZGVkIHRvIHVzZSBleGlzdGluZyBJRHMgYW5kIG9ubGluZSB0ZWNobmljYWwgc3Bl
-Y2lmaWNhdGlvbnMgdG8NCj4gPiA+IGdldCB0d28gb3RoZXJzIGNhcmRzIDoNCj4gPiA+IC0gTnZp
-ZGlhIEdlRm9yY2UgR1RYIDQ3MCA6IGlkID0gMHgxMGRlMDAxNQ0KPiA+ID4gLSBOdmlkaWEgR2VG
-b3JjZSBHVFggNTYwIFRpIDogaWQgPSAweDEwZGUwMDE2ICh3b3JrcyBmaW5lKQ0KPiA+ID4gLSBO
-dmlkaWEgR2VGb3JjZSBHVFggNTcwIDogaWQgPSAweDEwZGUwMDE3DQo+ID4NCj4gPiBUaGV5IGRv
-bid0IGFwcGVhciB0byBtYXRjaCBvdXIgV2luZG93cyBkcml2ZXIuIFdoZXJlIGRpZCB5b3UgZ2V0
-IHRoZSB2YWx1ZXMNCj4gPiBmcm9tPyAoMHgxNyBpc24ndCBpbiB0aGUgV2luZG93cyBkcml2ZXIg
-YXQgYWxsLiAweDE1IHNob3VsZG4ndCBiZSBhIEdUWCA0NzApDQo+IA0KPiBJIGFzayB0byBhIHJl
-c2VsbGVyLCBpdCBzZWVtcyBhIGJhZCBpZGVhLg0KDQpUaGUgb25seSB3YXkgdG8gZmluZCB0aGUg
-dmFsdWVzIHRoYXQgSSBrbm93IG9mIHdvdWxkIGJlIHRvIHBsdWcgdGhlIGNhcmQNCmluLCBydW4g
-TGludXgsIGFuZCBsb29rIGF0IHRoZSBBTFNBIC9wcm9jIGZpbGVzLiAoUGVyaGFwcyB0aGVyZSdz
-IHNvbWUNCmVxdWl2YWxlbnQgdG9vbCB1bmRlciBXaW5kb3dzKQ0KDQo+IElmIEkgY2FuIGhlbHAs
-IHdoZXJlIGFyZSB0aGVzZSB2YWx1ZXMgaW4gdGhlIFdpbmRvd3MgZHJpdmVyID8NCg0KVGhleSBl
-bmNvZGVkIGludG8gdGhlIGJpbmFyeS4gSSBkb3VidCB0aGV5J3JlIHVzZXItYWNjZXNzaWJsZS4N
-Cg0KU28sIEkgdGhpbmsgdGhlIGJlc3Qgd2F5IHRvIHByb2NlZWQgaXMgZm9yIHlvdSB0byBtb2Rp
-ZnkgeW91ciBwYXRjaCB0byBhZGQNCklEcyAweDE1IGFuZCAweDE2IG9ubHkuIEknbSBwcmV0dHkg
-c3VyZSBJRCAweDE3IGlzbid0IGFzc2lnbmVkIHRvIGFueXRoaW5nLg0KTGV0J3Mgbm90IHJlbW92
-ZSBhbnkgTlZJRElBIElEcyBldmVuIHRob3VnaCBJJ20gcHJldHR5IHN1cmUgYSBjb3VwbGUgYXJl
-bid0DQphY3R1YWxseSBhc3NpZ25lZDsgaWYgSSdtIHdyb25nLCB3ZSdkIGp1c3QgaGF2ZSB0byBh
-ZGQgdGhlbSBiYWNrIGxhdGVyLCBhbmQNCmhhdmluZyB0aGVtIGluIHdvbid0IGhhcm0gYW55dGhp
-bmcuDQoNClRoYW5rcy4NCg0KLS0gDQpudnB1YmxpYw0KDQpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi
+
+On Tue,  1 Mar 2011 21:13:38 +0530
+Abhilash K V <abhilash.kv@ti.com> wrote:
+
+> This patch aims to fix the registration of the AIC23-based audio
+> module on the AM3517-EVM, with the following two changes:
+> 
+> 1. The i2c_board_info entry supporting aic23 codec was added into
+>    the i2c2 bus.
+> 2. The i2c client device name (".2-001a" in this case, including
+>    the separator period) was appended to the codec_name member of
+>    am3517evm_dai to resolve the names mismatch happening in
+>    soc_bind_dai_link().
+> 
+> Signed-off-by: Abhilash K V <abhilash.kv@ti.com>
+> ---
+>  arch/arm/mach-omap2/board-am3517evm.c |    3 +++
+>  sound/soc/omap/am3517evm.c            |    2 +-
+>  2 files changed, 4 insertions(+), 1 deletions(-)
+> 
+First, your patch does the correct things.
+
+I investigated a bit and it looks like the sound/soc/omap/am3517evm.c
+never worked in mainline since the patch below adding codec to
+board-am3517evm.c wasn't applied by reason or another.
+
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg18470.html
+
+This means that you should split this patch into two and they can be
+sent as independent patches. am3517evm.c change via alsa-devel
+and board-am3517evm.c via linux-omap & linux-arm-kernel. Some comments
+below.
+
+> diff --git a/arch/arm/mach-omap2/board-am3517evm.c b/arch/arm/mach-omap2/board-am3517evm.c
+> index ad71cbf..8da8d20 100644
+> --- a/arch/arm/mach-omap2/board-am3517evm.c
+> +++ b/arch/arm/mach-omap2/board-am3517evm.c
+> @@ -358,6 +358,9 @@ static struct pca953x_platform_data am3517evm_gpio_expander_info_0 = {
+>  };
+>  static struct i2c_board_info __initdata am3517evm_i2c2_boardinfo[] = {
+>  	{
+> +		I2C_BOARD_INFO("tlv320aic23", 0x1A),
+> +	},
+> +	{
+
+This is ok and don't need anything else as the rest pieces from
+original missing patch are added by another patches.
+
+> --- a/sound/soc/omap/am3517evm.c
+> +++ b/sound/soc/omap/am3517evm.c
+> @@ -139,7 +139,7 @@ static struct snd_soc_dai_link am3517evm_dai = {
+>  	.cpu_dai_name ="omap-mcbsp-dai.0",
+>  	.codec_dai_name = "tlv320aic23-hifi",
+>  	.platform_name = "omap-pcm-audio",
+> -	.codec_name = "tlv320aic23-codec",
+> +	.codec_name = "tlv320aic23-codec.2-001a",
+>  	.init = am3517evm_aic23_init,
+>  	.ops = &am3517evm_ops,
+>  };
+
+Subject for this part could be something like
+"ASoC: AM3517: Update codec name after multi-component update".
+
+Remember to cc ASoC maintainers Mark Brown and Liam Girdwood.
+
+You could add my acks to splitted patches.
+
+Acked-by: Jarkko Nikula <jhnikula@gmail.com>
