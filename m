@@ -1,78 +1,37 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 1/4] ASoC: Add TI tlv320aic32x4 codec
-	support.
-Date: Tue, 1 Mar 2011 14:22:31 +0000
-Message-ID: <20110301142231.GH9662@opensource.wolfsonmicro.com>
-References: <1298988128-11520-1-git-send-email-javier.martin@vista-silicon.com>
-	<1298988128-11520-2-git-send-email-javier.martin@vista-silicon.com>
+From: Jiri Kosina <jkosina@suse.cz>
+Subject: Re: [alsa-devel] [PATCH 21/21]sound:soc:samsung:dma.c remove one to
+ many l's in the word.
+Date: Tue, 1 Mar 2011 15:26:16 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1103011526020.32580@pobox.suse.cz>
+References: <1298614597-4340-1-git-send-email-justinmattock@gmail.com> <20110225115103.GA12838@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 87ED0103854
-	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 15:22:34 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1298988128-11520-2-git-send-email-javier.martin@vista-silicon.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Javier Martin <javier.martin@vista-silicon.com>
-Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org, b32542@freescale.com
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20110225115103.GA12838@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "Justin P. Mattock" <justinmattock@gmail.com>, alsa-devel@alsa-project.org, jassi.brar@samsung.com, tiwai@suse.de, linux-kernel@vger.kernel.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 01, 2011 at 03:02:05PM +0100, Javier Martin wrote:
+On Fri, 25 Feb 2011, Mark Brown wrote:
 
-> +	SOC_DOUBLE_R_TLV("ADC Level Volume", AIC32X4_LADCVOL,
-> +			AIC32X4_RADCVOL, 0, 0x28, 0, tlv_step_0_5),
-> +	SOC_DOUBLE_R_TLV("PGA Gain Level Volume", AIC32X4_LMICPGAVOL,
-> +			AIC32X4_RMICPGAVOL, 0, 0x5f, 0, tlv_step_0_5),
+> On Thu, Feb 24, 2011 at 10:16:37PM -0800, Justin P. Mattock wrote:
+> > The patch below removes an extra "l" in the word.
+> > 
+> > Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
+> 
+> Applied.
 
-I suspect you don't want to have Gain and Level in there.
+I don't see it in linux-next as of today though ... ?
 
-> +	SOC_SINGLE("AGC Left Enable Switch", AIC32X4_LAGC1, 7, 1, 0),
-> +	SOC_SINGLE("AGC Right Enable Switch", AIC32X4_RAGC1, 7, 1, 0),
+> 
+> Please remember to CC maintainers on patches as covered in
+> Documentation/SubmittingPatches, even trivial patches should be made
+> visible to maintainers.  Please also try to use changelogs for your
+> patch which resemble other changelogs for the code area you're working
+> on.
+> 
 
-A switch is obviously an enable.
-
-> +static const struct aic32x4_configs aic32x4_reg_init[] = {
-
-As I said in reply to your previous posting this looks like it shouldn't
-be here.  A few things jump out as suspicious but not everything you're
-doing is clear:
-
-> +	{AIC32X4_LDOCTL, AIC32X4_LDOCTLEN},
-
-This looks like it should be dynamically managed at runtime, either via
-DAPM or in the bias level functions.
-
-> +	{AIC32X4_CMMODE, AIC32X4_LDOIN_18_36 | AIC32X4_LDOIN2HP},
-> +	{AIC32X4_CLKMUX, AIC32X4_PLLCLKIN},
-> +	{AIC32X4_IFACE3, AIC32X4_DACMOD2BCLK},
-> +	{AIC32X4_DACSETUP,
-> +	 AIC32X4_LDAC2LCHN | AIC32X4_RDAC2RCHN | AIC32X4_SSTEP2WCLK},
-> +	{AIC32X4_LMICPGANIN, AIC32X4_LMICPGANIN_IN2R_10K},
-> +	{AIC32X4_RMICPGANIN, AIC32X4_RMICPGANIN_IN1L_10K},
-
-These look like platform configuration.
-
-> +	{AIC32X4_LMICPGAVOL, 0x00},
-> +	{AIC32X4_RMICPGAVOL, 0x00},
-
-These look like volume controls which should be exposed to users.
-
-> +	/* Unmute ADC left and right channels */
-> +	{AIC32X4_ADCFGA, 0x00},
-
-This looks like it should be user visible.
-
-> +	/* MICBIAS = 2.075V(CM=0.75V) generated from LDOIN */
-> +	{AIC32X4_MICBIAS, 0x68},
-
-This should be configured by the platform.
+-- 
+Jiri Kosina
+SUSE Labs, Novell Inc.
