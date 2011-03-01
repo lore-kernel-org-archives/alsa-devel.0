@@ -1,40 +1,31 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v2 2.6.38] ASoC: WM8994: Ensure late enable
- events are processed for the ADCs
-Date: Tue, 01 Mar 2011 14:39:21 +0000
-Message-ID: <1298990361.3345.17.camel@odin>
-References: <1298980030-6831-1-git-send-email-dp@opensource.wolfsonmicro.com>
+From: Jiri Kosina <jkosina@suse.cz>
+Subject: Re: [alsa-devel] [PATCH 21/21]sound:soc:samsung:dma.c remove one to
+ many l's in the word.
+Date: Tue, 1 Mar 2011 15:43:08 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1103011542450.32580@pobox.suse.cz>
+References: <1298614597-4340-1-git-send-email-justinmattock@gmail.com> <20110225115103.GA12838@sirena.org.uk> <alpine.LNX.2.00.1103011526020.32580@pobox.suse.cz> <20110301142846.GD12568@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 45A21103923
-	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 15:39:25 +0100 (CET)
-Received: by mail-ww0-f51.google.com with SMTP id 26so5092082wwf.20
-	for <alsa-devel@alsa-project.org>; Tue, 01 Mar 2011 06:39:25 -0800 (PST)
-In-Reply-To: <1298980030-6831-1-git-send-email-dp@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, patches@opensource.wolfsonmicro.com
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20110301142846.GD12568@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "Justin P. Mattock" <justinmattock@gmail.com>, alsa-devel@alsa-project.org, jassi.brar@samsung.com, tiwai@suse.de, linux-kernel@vger.kernel.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2011-03-01 at 11:47 +0000, Dimitris Papastamos wrote:
-> Ensure that the ADCs are provided with a clock as the previous patch
-> "ASoC: WM8994: Improve playback robustness" did not handle this case
-> properly.
+On Tue, 1 Mar 2011, Mark Brown wrote:
+
+> On Tue, Mar 01, 2011 at 03:26:16PM +0100, Jiri Kosina wrote:
+> > On Fri, 25 Feb 2011, Mark Brown wrote:
 > 
-> Signed-off-by: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/wm8994.c |   26 +++++++++++++++++++++++---
->  1 files changed, 23 insertions(+), 3 deletions(-)
+> > > Applied.
 > 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> > I don't see it in linux-next as of today though ... ?
+> 
+> I do - it's ceade6c81bd913b23bffb3d80909ea430850c79b.
+
+Bah, I had bogus clone of linux-next, sorry for the noise.
+
+-- 
+Jiri Kosina
+SUSE Labs, Novell Inc.
