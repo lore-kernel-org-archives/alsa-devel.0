@@ -1,83 +1,80 @@
-From: Sylwester Nawrocki <snjw23@gmail.com>
-Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3 ISP driver
-Date: Sat, 05 Mar 2011 15:29:08 +0100
-Message-ID: <4D7248B4.9090003@gmail.com>
-References: <201102171606.58540.laurent.pinchart@ideasonboard.com>	<201103031125.06419.laurent.pinchart@ideasonboard.com>	<4D71471D.6060808@redhat.com>	<201103051252.12342.hverkuil@xs4all.nl> <AANLkTi=SS3CBkKUdovU33SQi=s9gNprZszKaMrkRGqGy@mail.gmail.com>
+From: Chih-Wei Huang <cwhuang@linux.org.tw>
+Subject: Fix for recording issue of ASUS N82JV
+Date: Tue, 01 Mar 2011 15:35:07 +0800
+Message-ID: <4D6CA1AB.30403@linux.org.tw>
+References: <4D672B85.9020603@linux.org.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <AANLkTi=SS3CBkKUdovU33SQi=s9gNprZszKaMrkRGqGy@mail.gmail.com>
-Sender: linux-media-owner@vger.kernel.org
-To: David Cohen <dacohen@gmail.com>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>, Mauro Carvalho Chehab <mchehab@redhat.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>, Pawel Osciak <pawel@osciak.com>
+Content-Type: multipart/mixed; boundary="------------020804080107020309070207"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.linux.org.tw (n201.enc.hlc.edu.tw [210.240.39.201])
+	by alsa0.perex.cz (Postfix) with SMTP id A48B42471C
+	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 08:35:14 +0100 (CET)
+In-Reply-To: <4D672B85.9020603@linux.org.tw>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi David,
+This is a multi-part message in MIME format.
+--------------020804080107020309070207
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 03/05/2011 02:04 PM, David Cohen wrote:
-> Hi Hans,
-> 
-> On Sat, Mar 5, 2011 at 1:52 PM, Hans Verkuil<hverkuil@xs4all.nl>  wrote:
->> On Friday, March 04, 2011 21:10:05 Mauro Carvalho Chehab wrote:
->>> Em 03-03-2011 07:25, Laurent Pinchart escreveu:
-...
->>>>        v4l: Group media bus pixel codes by types and sort them alphabetically
->>>
->>> The presence of those mediabus names against the traditional fourcc codes
->>> at the API adds some mess to the media controller. Not sure how to solve,
->>> but maybe the best way is to add a table at the V4L2 API associating each
->>> media bus format to the corresponding V4L2 fourcc codes.
->>
->> You can't do that in general. Only for specific hardware platforms. If you
->> could do it, then we would have never bothered creating these mediabus fourccs.
->>
->> How a mediabus fourcc translates to a pixelcode (== memory format) depends
->> entirely on the hardware capabilities (mostly that of the DMA engine).
-> 
-> May I ask you one question here? (not entirely related to this patch set).
-> Why pixelcode != mediabus fourcc?
-> e.g. OMAP2 camera driver talks to sensor through subdev interface and
-> sets its own output pixelformat depending on sensor's mediabus fourcc.
-> So it needs a translation table mbus_pixelcode ->  pixelformat. Why
-> can't it be pixelformat ->  pixelformat ?
-> 
+Hi,
+This small patch fixes the unable to record issue
+on ASUS N82JV. Thanks.
 
-Let me try to explain, struct v4l2_mbus_framefmt::code (pixelcode)
-describes how data is transfered/sampled on the camera parallel or serial bus.
-It defines bus width, data alignment and how many data samples form a single
-pixel.
-
-struct v4l2_pix_format::pixelformat (fourcc) on the other hand describes how
-the image data is stored in memory.
- 
-As Hans pointed out there is not always a 1:1 correspondence, e.g. 
-
-1. Both V4L2_MBUS_FMT_YUYV8_1x16 and V4L2_MBUS_FMT_YUYV8_2x8 may being 
-translating to V4L2_PIX_FMT_YUYV fourcc,
-
-2. Or the DMA engine in the camera host interface might be capable of
-converting single V4L2_MBUS_FMT_RGB555 pixelcode to V4L2_PIX_FMT_RGB555
-and V4L2_PIX_FMT_RGB565 fourcc's. So the user can choose any of them they
-seem most suitable and the hardware takes care of the conversion. 
-
-What translations are available really depends on the hardware, so how
-could we define a standard translation table? IMO it should be realized
-in each driver on an individual basis.
+Tested OK on android-x86 2.2 & 2.3 with kernel 2.6.38-rc4.
 
 Regards,
-Sylwester
 
-> Regards,
-> 
-> David
-> 
->>
->> A generic V4L2 application will never use mediabus fourcc codes. It's only used
->> by drivers and applications written specifically for that hardware and using
->> /dev/v4l-subdevX devices.
->>
->> Regards,
->>
->>         Hans
->>
+
+--------------020804080107020309070207
+Content-Type: text/plain;
+ name="0001-ALSA-hda-Fix-unable-to-record-issue-on-ASUS-N82JV.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-hda-Fix-unable-to-record-issue-on-ASUS-N82JV.patch"
+
+RnJvbSAxYTYxYjgzMGI4OThiNGJkMjgxZjkyZWFiMjVkNmZjODY5YmU3MDFkIE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBDaGloLVdlaSBIdWFuZyA8Y3dodWFuZ0BsaW51eC5v
+cmcudHc+CkRhdGU6IEZyaSwgMjUgRmViIDIwMTEgMTE6MTQ6MzEgKzA4MDAKU3ViamVjdDog
+W1BBVENIXSBBTFNBOiBoZGEgLSBGaXggdW5hYmxlIHRvIHJlY29yZCBpc3N1ZSBvbiBBU1VT
+IE44MkpWCgpUaGUgY29kZWMgb2YgTjgySlYgaXMgQUxDMjY5VkIuCgpTaWduZWQtb2ZmLWJ5
+OiBDaGloLVdlaSBIdWFuZyA8Y3dodWFuZ0BsaW51eC5vcmcudHc+Ci0tLQogc291bmQvcGNp
+L2hkYS9wYXRjaF9yZWFsdGVrLmMgfCAgICAyICstCiAxIGZpbGVzIGNoYW5nZWQsIDEgaW5z
+ZXJ0aW9ucygrKSwgMSBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRh
+L3BhdGNoX3JlYWx0ZWsuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCmluZGV4
+IDMzMjhhMjUuLjBiMDgwMGYgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVh
+bHRlay5jCisrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCkBAIC0xNTAxNSw3
+ICsxNTAxNSw3IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBhbGMyNjlfY2ZnX3Ri
+bFtdID0gewogCVNORF9QQ0lfUVVJUksoMHgxMDQzLCAweDExZTMsICJBU1VTIFUzM0pjIiwg
+QUxDMjY5VkJfQU1JQyksCiAJU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTI3MywgIkFTVVMg
+VUw4MEp0IiwgQUxDMjY5VkJfQU1JQyksCiAJU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTI4
+MywgIkFTVVMgVTUzSmMiLCBBTEMyNjlfQU1JQyksCi0JU05EX1BDSV9RVUlSSygweDEwNDMs
+IDB4MTJiMywgIkFTVVMgTjgySnYiLCBBTEMyNjlfQU1JQyksCisJU05EX1BDSV9RVUlSSygw
+eDEwNDMsIDB4MTJiMywgIkFTVVMgTjgySlYiLCBBTEMyNjlWQl9BTUlDKSwKIAlTTkRfUENJ
+X1FVSVJLKDB4MTA0MywgMHgxMmQzLCAiQVNVUyBONjFKdiIsIEFMQzI2OV9BTUlDKSwKIAlT
+TkRfUENJX1FVSVJLKDB4MTA0MywgMHgxM2EzLCAiQVNVUyBVTDMwVnQiLCBBTEMyNjlfQU1J
+QyksCiAJU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTM3MywgIkFTVVMgRzczSlgiLCBBTEMy
+NjlfQU1JQyksCi0tIAoxLjcuMy4yCgo=
+--------------020804080107020309070207
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------020804080107020309070207--
