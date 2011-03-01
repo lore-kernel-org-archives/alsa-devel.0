@@ -1,17 +1,18 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
+From: Jaroslav Kysela <perex@perex.cz>
 Subject: Re: period_time in slave definition
-Date: Tue, 01 Mar 2011 10:07:44 +0100
-Message-ID: <4D6CB760.5070601@ivitera.com>
+Date: Tue, 1 Mar 2011 10:22:45 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1103011020080.7877@eeebox2.perex-int.cz>
 References: <4D6B943E.4060302@ivitera.com>
 	<alpine.LNX.2.00.1102281412520.7877@eeebox2.perex-int.cz>
+	<4D6CB760.5070601@ivitera.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (upc-plzen.insite.cz [84.242.100.8])
-	by alsa0.perex.cz (Postfix) with ESMTP id D6D6024784
-	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 10:14:28 +0100 (CET)
-In-Reply-To: <alpine.LNX.2.00.1102281412520.7877@eeebox2.perex-int.cz>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7F61324785
+	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2011 10:22:46 +0100 (CET)
+In-Reply-To: <4D6CB760.5070601@ivitera.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,87 +22,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
+To: Pavel Hofman <pavel.hofman@ivitera.com>
 Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela napsal(a):
-> On Mon, 28 Feb 2011, Pavel Hofman wrote:
-> 
->> Hi,
+On Tue, 1 Mar 2011, Pavel Hofman wrote:
+
+> Jaroslav Kysela napsal(a):
+>> On Mon, 28 Feb 2011, Pavel Hofman wrote:
 >>
->> According to
->> http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html , my
->> .asoundrc contains:
+>>> Hi,
+>>>
+>>> According to
+>>> http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html , my
+>>> .asoundrc contains:
+>>>
+>>> pcm.test {
+>>>        type plug
+>>>        slave {
+>>>                pcm "hw:0"
+>>>                format "unchanged"
+>>>                channels "unchanged"
+>>>                rate "unchanged"
+>>>                period_size 1024
+>>>                buffer_size 4096
+>>>        }
+>>> }
+>>>
+>>>
+>>> While pcm, format, channels, and rate are accepted, the period and
+>>> buffer fields are refused:
+>>>
+>>> ALSA lib pcm.c:6811:(snd_pcm_slave_conf) Unknown field period_time
 >>
->> pcm.test {
->>        type plug
->>        slave {
->>                pcm "hw:0"
->>                format "unchanged"
->>                channels "unchanged"
->>                rate "unchanged"
->>                period_size 1024
->>                buffer_size 4096
->>        }
->> }
+>> It's correct, pcm:plug does not support buffer modifiers. Look to
+>> "Automatic conversion plugin".
 >>
+>>> I checked the source code and the keywords seem to be ok
+>>>
+>>> pcm.c:
+>>> static const char *const names[SND_PCM_HW_PARAM_LAST_INTERVAL + 1] = {
+>>>     [SND_PCM_HW_PARAM_FORMAT] = "format",
+>>>     [SND_PCM_HW_PARAM_CHANNELS] = "channels",
+>>>     [SND_PCM_HW_PARAM_RATE] = "rate",
+>>>     [SND_PCM_HW_PARAM_PERIOD_TIME] = "period_time",
+>>>     [SND_PCM_HW_PARAM_PERIOD_SIZE] = "period_size",
+>>>     [SND_PCM_HW_PARAM_BUFFER_TIME] = "buffer_time",
+>>>     [SND_PCM_HW_PARAM_BUFFER_SIZE] = "buffer_size",
+>>>     [SND_PCM_HW_PARAM_PERIODS] = "periods"
+>>> };
 >>
->> While pcm, format, channels, and rate are accepted, the period and
->> buffer fields are refused:
+>> It's just a table to translate all possibilites between index and name.
+>> The plug plugins allow only this:
 >>
->> ALSA lib pcm.c:6811:(snd_pcm_slave_conf) Unknown field period_time
-> 
-> It's correct, pcm:plug does not support buffer modifiers. Look to
-> "Automatic conversion plugin".
-> 
->> I checked the source code and the keywords seem to be ok
+>>     err = snd_pcm_slave_conf(root, slave, &sconf, 3,
+>>                  SND_PCM_HW_PARAM_FORMAT, SCONF_UNCHANGED, &sformat,
+>>                  SND_PCM_HW_PARAM_CHANNELS, SCONF_UNCHANGED, &schannels,
+>>                  SND_PCM_HW_PARAM_RATE, SCONF_UNCHANGED, &srate);
 >>
->> pcm.c:
->> static const char *const names[SND_PCM_HW_PARAM_LAST_INTERVAL + 1] = {
->>     [SND_PCM_HW_PARAM_FORMAT] = "format",
->>     [SND_PCM_HW_PARAM_CHANNELS] = "channels",
->>     [SND_PCM_HW_PARAM_RATE] = "rate",
->>     [SND_PCM_HW_PARAM_PERIOD_TIME] = "period_time",
->>     [SND_PCM_HW_PARAM_PERIOD_SIZE] = "period_size",
->>     [SND_PCM_HW_PARAM_BUFFER_TIME] = "buffer_time",
->>     [SND_PCM_HW_PARAM_BUFFER_SIZE] = "buffer_size",
->>     [SND_PCM_HW_PARAM_PERIODS] = "periods"
->> };
-> 
-> It's just a table to translate all possibilites between index and name.
-> The plug plugins allow only this:
-> 
->     err = snd_pcm_slave_conf(root, slave, &sconf, 3,
->                  SND_PCM_HW_PARAM_FORMAT, SCONF_UNCHANGED, &sformat,
->                  SND_PCM_HW_PARAM_CHANNELS, SCONF_UNCHANGED, &schannels,
->                  SND_PCM_HW_PARAM_RATE, SCONF_UNCHANGED, &srate);
-> 
->                     Jaroslav
-> 
+>>                     Jaroslav
+>>
+>
+>
+> Well, still I do not understand why we are talking about the plug
+> plugin, when I am trying to redefine the slave via pcm_slave. The
+> documentation at
+> http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html says the
+> pcm_slave can define period_time and buffer_time, while a slightly
+> modified example from the wiki page fails:
+>
+> pcm_slave.slave_rate44100Hz {
+>        pcm "hw:0,0"
+>        rate 44100
+> --->	period_time 1024
+> }
+>
+> pcm.rate44100Hz {
+>        type plug
+>        slave slave_rate44100Hz
+> }
+>
+> How does the slave definition relate to the plug plugin? Sorry for these
+> basics but I am really trying to understand that, so far no success.
 
+The above description is an universal description for all slaves. 
+Unfortunately, not all plugins accept the whole range of parameters.
+You have to look to the snd_pcm_slave_conf() caller which parameters are 
+accepted.
 
-Well, still I do not understand why we are talking about the plug
-plugin, when I am trying to redefine the slave via pcm_slave. The
-documentation at
-http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html says the
-pcm_slave can define period_time and buffer_time, while a slightly
-modified example from the wiki page fails:
+The description should be better.
 
-pcm_slave.slave_rate44100Hz {
-        pcm "hw:0,0"
-        rate 44100
---->	period_time 1024	
-}
+ 					Jaroslav
 
-pcm.rate44100Hz {
-        type plug
-        slave slave_rate44100Hz
-}
-
-How does the slave definition relate to the plug plugin? Sorry for these
-basics but I am really trying to understand that, so far no success.
-
-Thanks a lot.
-
-Pavel.
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
