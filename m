@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/5] ASoC: Get the card directly from the DAPM
-	context
-Date: Wed,  2 Mar 2011 19:21:07 +0000
-Message-ID: <1299093671-12309-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 5/5] ASoC: Add a late_probe() callback to cards
+Date: Wed,  2 Mar 2011 19:21:11 +0000
+Message-ID: <1299093671-12309-5-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1299093671-12309-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3986B10381E
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3DF9E103834
 	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2011 20:20:54 +0100 (CET)
+In-Reply-To: <1299093671-12309-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,53 +24,47 @@ To: Liam Girdwood <lrg@slimlogic.co.uk>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Rather than indirecting through the CODEC we can look the card up directly
-from the card pointer in the DAPM context.
+This is run after the DAPM widgets and routes are added, allowing setup
+of things like jacks using the routes. The main card probe() is run before
+anything else so can't be used for this purpose.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-dapm.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+ include/sound/soc.h  |    1 +
+ sound/soc/soc-core.c |    9 +++++++++
+ 2 files changed, 10 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index b8e6ab7..8240ab8 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -368,7 +368,7 @@ static int dapm_new_mixer(struct snd_soc_dapm_context *dapm,
- 	int i, ret = 0;
- 	size_t name_len;
- 	struct snd_soc_dapm_path *path;
--	struct snd_card *card = dapm->codec->card->snd_card;
-+	struct snd_card *card = dapm->card->snd_card;
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 601c41e..a23f5a5 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -683,6 +683,7 @@ struct snd_soc_card {
+ 	bool instantiated;
  
- 	/* add kcontrol */
- 	for (i = 0; i < w->num_kcontrols; i++) {
-@@ -430,7 +430,7 @@ static int dapm_new_mux(struct snd_soc_dapm_context *dapm,
- {
- 	struct snd_soc_dapm_path *path = NULL;
- 	struct snd_kcontrol *kcontrol;
--	struct snd_card *card = dapm->codec->card->snd_card;
-+	struct snd_card *card = dapm->card->snd_card;
- 	int ret = 0;
+ 	int (*probe)(struct snd_soc_card *card);
++	int (*late_probe)(struct snd_soc_card *card);
+ 	int (*remove)(struct snd_soc_card *card);
  
- 	if (!w->num_kcontrols) {
-@@ -480,7 +480,7 @@ static inline void dapm_clear_walk(struct snd_soc_dapm_context *dapm)
-  */
- static int snd_soc_dapm_suspend_check(struct snd_soc_dapm_widget *widget)
- {
--	int level = snd_power_get_state(widget->dapm->codec->card->snd_card);
-+	int level = snd_power_get_state(widget->dapm->card->snd_card);
+ 	/* the pre and post PM functions are used to do any PM work before and
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 6a2839c..8926d38 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1892,6 +1892,15 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	snprintf(card->snd_card->longname, sizeof(card->snd_card->longname),
+ 		 "%s", card->name);
  
- 	switch (level) {
- 	case SNDRV_CTL_POWER_D3hot:
-@@ -1083,7 +1083,7 @@ static void dapm_post_sequence_async(void *data, async_cookie_t cookie)
-  */
- static int dapm_power_widgets(struct snd_soc_dapm_context *dapm, int event)
- {
--	struct snd_soc_card *card = dapm->codec->card;
-+	struct snd_soc_card *card = dapm->card;
- 	struct snd_soc_dapm_widget *w;
- 	struct snd_soc_dapm_context *d;
- 	LIST_HEAD(up_list);
++	if (card->late_probe) {
++		ret = card->late_probe(card);
++		if (ret < 0) {
++			dev_err(card->dev, "%s late_probe() failed: %d\n",
++				card->name, ret);
++			goto probe_aux_dev_err;
++		}
++	}
++
+ 	ret = snd_card_register(card->snd_card);
+ 	if (ret < 0) {
+ 		printk(KERN_ERR "asoc: failed to register soundcard for %s\n", card->name);
 -- 
 1.7.2.3
