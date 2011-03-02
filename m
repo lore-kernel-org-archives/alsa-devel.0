@@ -1,45 +1,37 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 0/2] twl4030_codec cleanup
-Date: Wed, 2 Mar 2011 09:21:44 -0800
-Message-ID: <20110302172144.GT20560@atomide.com>
-References: <1299072246-26402-1-git-send-email-ilkka.koskinen@nokia.com>
-	<20110302143433.GM16181@sortiz-mobl>
+From: Mauro Carvalho Chehab <mchehab@redhat.com>
+Subject: Re: [PATCH v21 1/3] MFD: WL1273 FM Radio: MFD driver for the FM radio.
+Date: Wed, 02 Mar 2011 14:42:21 -0300
+Message-ID: <4D6E817D.7090500@redhat.com>
+References: <1298966450-31814-1-git-send-email-matti.j.aaltonen@nokia.com> <1298966450-31814-2-git-send-email-matti.j.aaltonen@nokia.com> <20110301114353.GA4543@sortiz-mobl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mho-02-ewr.mailhop.org (mho-02-ewr.mailhop.org [204.13.248.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1D5A31037F3
-	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2011 18:21:55 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20110302143433.GM16181@sortiz-mobl>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <20110301114353.GA4543@sortiz-mobl>
+Sender: linux-media-owner@vger.kernel.org
 To: Samuel Ortiz <sameo@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, broonie@opensource.wolfsonmicro.com, peter.ujfalusi@nokia.com, linux-kernel@vger.kernel.org, Ilkka Koskinen <ilkka.koskinen@nokia.com>, lrg@slimlogic.co.uk
+Cc: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, hverkuil@xs4all.nl, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Samuel,
-
-* Samuel Ortiz <sameo@linux.intel.com> [110302 06:32]:
-> Hi Ilkka,
+Em 01-03-2011 08:43, Samuel Ortiz escreveu:
+> Hi Matti,
 > 
-> On Wed, Mar 02, 2011 at 03:24:04PM +0200, Ilkka Koskinen wrote:
-> > This series of patches removes duplicate audio_mclk fields from
-> > twl4030_codec driver.
-> > 
-> > The patches have been compiled on sound-2.6/for-2.6.39 branch.
-> > I haven't tested them on any target board though.
-> I'm fine with the twl.h changes, but I think it would make sense for Tony to
-> take this patchset. Tony, is that ok with you ?
+> On Tue, Mar 01, 2011 at 10:00:48AM +0200, Matti J. Aaltonen wrote:
+>> This is the core of the WL1273 FM radio driver, it connects
+>> the two child modules. The two child drivers are
+>> drivers/media/radio/radio-wl1273.c and sound/soc/codecs/wl1273.c.
+>>
+>> The radio-wl1273 driver implements the V4L2 interface and communicates
+>> with the device. The ALSA codec offers digital audio, without it only
+>> analog audio is available.
+> 
+> Acked-by: Samuel Ortiz <sameo@linux.intel.com>
+> 
+> Mauro, I suppose you're taking this one ?
 
-Sure if you prefer that.
+Yes, I'm taking this patch series. As patch 1/3 didn't seem to change
+between v21 and v22, I'm adding your acked-by to the v22 1/3 and committing
+it on my tree.
 
-Tony
+Thanks!
+Mauro
