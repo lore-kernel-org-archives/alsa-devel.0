@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.38
-Date: Wed, 2 Mar 2011 11:34:16 +0000
-Message-ID: <20110302113415.GA18103@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.39
+Date: Wed, 2 Mar 2011 11:36:14 +0000
+Message-ID: <20110302113613.GB18103@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 927511037EC
-	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2011 12:34:19 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3278F1037EC
+	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2011 12:36:15 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,20 +23,35 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 43c63188821dc21b2af23a40a18faea6e386e90a:
+The following changes since commit 61a142b7e4b5c4cce1b4ea52a829984959120089:
 
-  eukrea-tlv320: fix platform_name (2011-02-25 12:57:49 +0000)
+  ASoC: Staticise non-exported symbols in SGTL5000 (2011-02-28 14:33:01 +0000)
 
 are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.38
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.39
 
-Dimitris Papastamos (2):
+Dimitris Papastamos (3):
       ASoC: WM8994: Don't disable the AIF[1|2]CLK_ENA unconditionaly
       ASoC: WM8994: Ensure late enable events are processed for the ADCs
+      ASoC: WM8994: Ensure MICBIAS is provided with a clock
 
-Mark Brown (1):
+Javier Martin (1):
+      ASoC: Fix burstsize and DSP_B format problems in imx-ssi.
+
+Mark Brown (4):
       ASoC: Fix WM9081 platform data initialisation
+      Merge branch 'for-2.6.38' into for-2.6.39
+      ASoC: Remove module probe announcements from CODEC drivers
+      ASoC: Add platform data for WM9081 IRQ pin configuration
 
- sound/soc/codecs/wm8994.c |   51 +++++++++++++++++++++++++++++++++++++--------
- sound/soc/codecs/wm9081.c |    5 ++++
- 2 files changed, 47 insertions(+), 9 deletions(-)
+Stephen Warren (1):
+      ASoC: Tegra: Fix error handling in DMA channel alloc
+
+ include/sound/wm9081.h      |    9 ++++--
+ sound/soc/codecs/ak4104.c   |    1 -
+ sound/soc/codecs/cs4270.c   |    2 -
+ sound/soc/codecs/wm8994.c   |   64 +++++++++++++++++++++++++++++++++++++------
+ sound/soc/codecs/wm9081.c   |   30 +++++++++++++++-----
+ sound/soc/imx/imx-ssi.c     |    5 +++-
+ sound/soc/tegra/tegra_pcm.c |    4 +-
+ 7 files changed, 89 insertions(+), 26 deletions(-)
