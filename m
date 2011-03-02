@@ -1,37 +1,77 @@
-From: Mauro Carvalho Chehab <mchehab@redhat.com>
-Subject: Re: [PATCH v21 1/3] MFD: WL1273 FM Radio: MFD driver for the FM radio.
-Date: Wed, 02 Mar 2011 14:42:21 -0300
-Message-ID: <4D6E817D.7090500@redhat.com>
-References: <1298966450-31814-1-git-send-email-matti.j.aaltonen@nokia.com> <1298966450-31814-2-git-send-email-matti.j.aaltonen@nokia.com> <20110301114353.GA4543@sortiz-mobl>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 4/5] ASoC: Allow card DAPM widgets and routes
+	to be set up at registration
+Date: Wed,  2 Mar 2011 19:21:10 +0000
+Message-ID: <1299093671-12309-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1299093671-12309-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <20110301114353.GA4543@sortiz-mobl>
-Sender: linux-media-owner@vger.kernel.org
-To: Samuel Ortiz <sameo@linux.intel.com>
-Cc: "Matti J. Aaltonen" <matti.j.aaltonen@nokia.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, hverkuil@xs4all.nl, linux-media@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3964E1037F3
+	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2011 20:20:54 +0100 (CET)
+In-Reply-To: <1299093671-12309-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Em 01-03-2011 08:43, Samuel Ortiz escreveu:
-> Hi Matti,
-> 
-> On Tue, Mar 01, 2011 at 10:00:48AM +0200, Matti J. Aaltonen wrote:
->> This is the core of the WL1273 FM radio driver, it connects
->> the two child modules. The two child drivers are
->> drivers/media/radio/radio-wl1273.c and sound/soc/codecs/wl1273.c.
->>
->> The radio-wl1273 driver implements the V4L2 interface and communicates
->> with the device. The ALSA codec offers digital audio, without it only
->> analog audio is available.
-> 
-> Acked-by: Samuel Ortiz <sameo@linux.intel.com>
-> 
-> Mauro, I suppose you're taking this one ?
+These will be added after all devices are registered and allow most DAI
+init functions in machine drivers to be replaced by simple data.
+Regular controls are not supported as the registration function still
+works in terms of CODECs.
 
-Yes, I'm taking this patch series. As patch 1/3 didn't seem to change
-between v21 and v22, I'm adding your acked-by to the v22 1/3 and committing
-it on my tree.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ include/sound/soc.h  |    8 ++++++++
+ sound/soc/soc-core.c |    7 +++++++
+ 2 files changed, 15 insertions(+), 0 deletions(-)
 
-Thanks!
-Mauro
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 24a35d6..601c41e 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -719,6 +719,14 @@ struct snd_soc_card {
+ 	struct snd_soc_pcm_runtime *rtd_aux;
+ 	int num_aux_rtd;
+ 
++	/*
++	 * Card-specific routes and widgets.
++	 */
++	struct snd_soc_dapm_widget *dapm_widgets;
++	int num_dapm_widgets;
++	struct snd_soc_dapm_route *dapm_routes;
++	int num_dapm_routes;
++
+ 	struct work_struct deferred_resume_work;
+ 
+ 	/* lists of probed devices belonging to this card */
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 24bfc3ff..6a2839c 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1872,6 +1872,13 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		}
+ 	}
+ 
++	if (card->dapm_widgets)
++		snd_soc_dapm_new_controls(&card->dapm, card->dapm_widgets,
++					  card->num_dapm_widgets);
++	if (card->dapm_routes)
++		snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
++					card->num_dapm_routes);
++
+ 	card->dapm.debugfs_dapm = debugfs_create_dir("dapm",
+ 						     card->debugfs_card_root);
+ 	if (!card->dapm.debugfs_dapm)
+-- 
+1.7.2.3
