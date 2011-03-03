@@ -1,17 +1,19 @@
-From: Arun Raghavan <arun.raghavan@collabora.co.uk>
-Subject: Re: [PATCH] ALSA: hda - apply CS420X erratum fix for
- CS4207 only
-Date: Thu, 03 Mar 2011 10:57:26 +0530
-Message-ID: <1299130046.5858.8.camel@snowflake>
-References: <C9941A81.3C4F%brian.austin@cirrus.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3
+	ISP driver
+Date: Thu, 3 Mar 2011 10:29:41 +0100
+Message-ID: <201103031029.44957.laurent.pinchart@ideasonboard.com>
+References: <201102171606.58540.laurent.pinchart@ideasonboard.com>
+	<4D6EA4EB.9070607@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [93.93.128.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id 203C3103819
-	for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2011 06:27:33 +0100 (CET)
-In-Reply-To: <C9941A81.3C4F%brian.austin@cirrus.com>
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
+	[95.142.166.194])
+	by alsa0.perex.cz (Postfix) with ESMTP id 503B1103819
+	for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2011 10:30:27 +0100 (CET)
+In-Reply-To: <4D6EA4EB.9070607@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,18 +23,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Austin, Brian" <Brian.Austin@cirrus.com>
-Cc: Arun@alsa-project.org, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Raghavan <arun@accosted.net>
+To: Mauro Carvalho Chehab <mchehab@redhat.com>
+Cc: alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>, Pawel Osciak <pawel@osciak.com>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2011-03-02 at 22:03 +0000, Austin, Brian wrote:
-> That should not happen. This sequence was tested on all version of cs420x
+Hi Mauro,
+
+On Wednesday 02 March 2011 21:13:31 Mauro Carvalho Chehab wrote:
+> Em 17-02-2011 13:06, Laurent Pinchart escreveu:
+> >       v4l: Share code between video_usercopy and video_ioctl2
 > 
-> Is there some output of the failure you can report?
+> Two hunks failed on this patch:
+> 
+> $ quilt push
+> Applying patch
+> patches/0951-v4l-Share-code-between-video_usercopy-and-video_ioct.patch
+> patching file drivers/media/video/v4l2-ioctl.c
+> Hunk #1 FAILED at 325.
+> Hunk #2 succeeded at 332 (offset -33 lines).
+> Hunk #3 succeeded at 368 (offset -33 lines).
+> Hunk #4 succeeded at 397 (offset -33 lines).
+> Hunk #5 FAILED at 1982.
+> 2 out of 5 hunks FAILED -- rejects in file drivers/media/video/v4l2-ioctl.c
+> Patch
+> patches/0951-v4l-Share-code-between-video_usercopy-and-video_ioct.patch
+> does not apply (enforce with -f)
+> 
+> Basically, the code for video_ioctl2 suffered some recent changes. I
+> suspect that the blamed patch is this one:
+> 
+> cff7fbc6 (Pawel Osciak           2010-12-23 04:15:27 -0300 2342)       
+> bool    has_array_args; cff7fbc6 (Pawel Osciak           2010-12-23
+> 04:15:27 -0300 2343)        size_t  array_size = 0;
+> 
+> Could you please fix the merge conflicts?
 
-I haven't seen any output on failure (other than the fact that the
-digital out never comes on if this sequence is used). My hardware is a
-MacBook Pro 5.5 (and another person sees this line causing the same
-issue for them on the MBP .62 as well).
+Sure. I'm working on that right now, I'll send a new pull request.
 
--- Arun
+-- 
+Regards,
+
+Laurent Pinchart
