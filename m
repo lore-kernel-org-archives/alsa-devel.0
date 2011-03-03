@@ -1,18 +1,25 @@
-From: "Austin, Brian" <Brian.Austin@cirrus.com>
-Subject: Re: CS4206 and S/PDIF (again)
-Date: Wed, 2 Mar 2011 22:02:03 +0000
-Message-ID: <C99419DF.3C4B%brian.austin@cirrus.com>
-References: <1299102498-29063-1-git-send-email-arun.raghavan@collabora.co.uk>
+From: Mohammad Bahathir Hashim <bahathir@gmail.com>
+Subject: [FIX]: No SPDIF out from MacBookPro 6, 2, since 2.6.36
+Date: Thu, 3 Mar 2011 04:20:37 +0000 (UTC)
+Message-ID: <ikn4uk$e4d$1@dough.gmane.org>
+Reply-To: Mohammad Bahathir Hashim <bahathir@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from TX2EHSOBE009.bigfish.com (tx2ehsobe004.messaging.microsoft.com
-	[65.55.88.14]) by alsa0.perex.cz (Postfix) with ESMTP id 4E44C10383E
-	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2011 23:04:16 +0100 (CET)
-In-Reply-To: <1299102498-29063-1-git-send-email-arun.raghavan@collabora.co.uk>
-Content-Language: en-US
-Content-ID: <C848F0213A6646499168E41C3A6651C0@ad.cirrus.com>
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 413C1103816
+	for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2011 05:20:58 +0100 (CET)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Pv01x-0003TX-83
+	for alsa-devel@alsa-project.org; Thu, 03 Mar 2011 05:20:49 +0100
+Received: from 203.106.17.237 ([203.106.17.237])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 03 Mar 2011 05:20:49 +0100
+Received: from bahathir by 203.106.17.237 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 03 Mar 2011 05:20:49 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +29,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Arun Raghavan <arun.raghavan@collabora.co.uk>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The verb sequence works for all 420x versions and has no impact on which
-version it is applied to.
+Hi,
 
-Brian
+Problem : No SPDIF since 2.6.36
+HW : MacBookPro 15" HiRes (mid-2010)
+Audio : 00:1b.0 Audio device: Intel Corporation 5 Series/3400 Series
+Chipset High Definition Audio (rev 06)
+HDA codec : Cirrus CS4206
 
-On 3/2/11 3:48 PM, "Arun Raghavan" <arun.raghavan@collabora.co.uk> wrote:
+This simple patch will bypass the errata workaround for CS4207, and I
+able to use the SPDIF (Toslink) out again.
 
->I bisected this down to the erratum fix added in commit a769cbcf. From
->what I can tell, the erratum only applies to CS4207, so I'm attaching a
->patch to make the fix conditional. CC'ing the author of that commit to
->verify that this is correct.
->
->Cheers,
->Arun
->
->
+Suggestion : Make a conditional expression to load the errata
+verb/code if the driver detects CS4207.
+
+Thank you.
+
+--- orig/patch_cirrus.c	2011-03-03 11:56:31.726000009 +0800
++++ patch_cirrus.c	2011-03-03 12:05:38.556000063 +0800
+@@ -1066,7 +1066,7 @@
+ 	struct cs_spec *spec = codec->spec;
+ 
+ 	/* init_verb sequence for C0/C1/C2 errata*/
+-	snd_hda_sequence_write(codec, cs_errata_init_verbs);
++	/*snd_hda_sequence_write(codec, cs_errata_init_verbs);*/
+ 
+ 	snd_hda_sequence_write(codec, cs_coef_init_verbs);
