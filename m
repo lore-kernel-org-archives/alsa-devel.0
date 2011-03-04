@@ -1,120 +1,218 @@
-From: Mauro Carvalho Chehab <mchehab@redhat.com>
+From: David Cohen <dacohen@gmail.com>
 Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3 ISP driver
-Date: Fri, 04 Mar 2011 19:16:38 -0300
-Message-ID: <4D7164C6.9080503@redhat.com>
+Date: Sat, 5 Mar 2011 00:33:02 +0200
+Message-ID: <AANLkTi=p6S0CYv6=E51LHJprp1AZpd+ZymiVywaaUWOy@mail.gmail.com>
 References: <201102171606.58540.laurent.pinchart@ideasonboard.com>
+	<4D7164C6.9080503@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <201102171606.58540.laurent.pinchart@ideasonboard.com>
+In-Reply-To: <4D7164C6.9080503@redhat.com>
 Sender: linux-media-owner@vger.kernel.org
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>
+To: Mauro Carvalho Chehab <mchehab@redhat.com>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Laurent,
+Hi Mauro,
 
-Em 17-02-2011 13:06, Laurent Pinchart escreveu:
-> Hi Mauro,
-> 
-> The following changes since commit 85e2efbb1db9a18d218006706d6e4fbeb0216213:
-> 
->   Linux 2.6.38-rc5 (2011-02-15 19:23:45 -0800)
-> 
-> are available in the git repository at:
->   git://linuxtv.org/pinchartl/media.git media-0005-omap3isp
+On Sat, Mar 5, 2011 at 12:16 AM, Mauro Carvalho Chehab
+<mchehab@redhat.com> wrote:
+> Hi Laurent,
+>
+> Em 17-02-2011 13:06, Laurent Pinchart escreveu:
+>> Hi Mauro,
+>>
+>> The following changes since commit 85e2efbb1db9a18d218006706d6e4fbeb=
+0216213:
+>>
+>> =C2=A0 Linux 2.6.38-rc5 (2011-02-15 19:23:45 -0800)
+>>
+>> are available in the git repository at:
+>> =C2=A0 git://linuxtv.org/pinchartl/media.git media-0005-omap3isp
+>
+> I've added the patches that looked ok on my eyes at:
+>
+> http://git.linuxtv.org/mchehab/experimental.git?a=3Dshortlog;h=3Drefs=
+/heads/media_controller
+>
+> There are just a few small adjustments on a few of them, as I've comm=
+ented.
+> I prefer if you do them on separate patches, to save my work of not n=
+eeding
+> to review the entire series again.
+>
+> The ones still pending on my quilt tree are:
+>
+> 0030-v4l-subdev-Generic-ioctl-support.patch
+> 0040-omap3isp-OMAP3-ISP-core.patch
+> 0041-omap3isp-Video-devices-and-buffers-queue.patch
+> 0042-omap3isp-CCP2-CSI2-receivers.patch
+> 0043-omap3isp-CCDC-preview-engine-and-resizer.patch
+> 0044-omap3isp-Statistics.patch
+> 0045-omap3isp-Kconfig-and-Makefile.patch
+> 0046-omap3isp-Add-set-performance-callback-in-isp-platfor.patch
+>
+> with the following diffstat:
+>
+> =C2=A0Documentation/video4linux/v4l2-framework.txt =C2=A0 =C2=A0 =C2=A0=
+ | =C2=A0 =C2=A05 +
+> =C2=A0MAINTAINERS =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0| =C2=A0 =C2=A06 +
+> =C2=A0drivers/media/video/Kconfig =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=A0 13 +
+> =C2=A0drivers/media/video/Makefile =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A02 +
+> =C2=A0drivers/media/video/omap3-isp/Makefile =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 | =C2=A0 13 +
+> =C2=A0drivers/media/video/omap3-isp/cfa_coef_table.h =C2=A0 =C2=A0 | =
+=C2=A0 61 +
+> =C2=A0drivers/media/video/omap3-isp/gamma_table.h =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0| =C2=A0 90 +
+> =C2=A0drivers/media/video/omap3-isp/isp.c =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0| 2220 +++++++++++++++++++
+> =C2=A0drivers/media/video/omap3-isp/isp.h =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=A0428 ++++
+> =C2=A0drivers/media/video/omap3-isp/ispccdc.c =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0| 2268 ++++++++++++++++++++
+> =C2=A0drivers/media/video/omap3-isp/ispccdc.h =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0| =C2=A0219 ++
+> =C2=A0drivers/media/video/omap3-isp/ispccp2.c =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0| 1173 ++++++++++
+> =C2=A0drivers/media/video/omap3-isp/ispccp2.h =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0| =C2=A0 98 +
+> =C2=A0drivers/media/video/omap3-isp/ispcsi2.c =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0| 1317 ++++++++++++
+> =C2=A0drivers/media/video/omap3-isp/ispcsi2.h =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0| =C2=A0166 ++
+> =C2=A0drivers/media/video/omap3-isp/ispcsiphy.c =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0| =C2=A0247 +++
+> =C2=A0drivers/media/video/omap3-isp/ispcsiphy.h =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0| =C2=A0 74 +
+> =C2=A0drivers/media/video/omap3-isp/isph3a.h =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 | =C2=A0117 +
+> =C2=A0drivers/media/video/omap3-isp/isph3a_aewb.c =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0| =C2=A0374 ++++
+> =C2=A0drivers/media/video/omap3-isp/isph3a_af.c =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0| =C2=A0429 ++++
+> =C2=A0drivers/media/video/omap3-isp/isphist.c =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0| =C2=A0520 +++++
+> =C2=A0drivers/media/video/omap3-isp/isphist.h =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0| =C2=A0 40 +
+> =C2=A0drivers/media/video/omap3-isp/isppreview.c =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 | 2113 ++++++++++++++++++
+> =C2=A0drivers/media/video/omap3-isp/isppreview.h =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 | =C2=A0214 ++
+> =C2=A0drivers/media/video/omap3-isp/ispqueue.c =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 | 1153 ++++++++++
+> =C2=A0drivers/media/video/omap3-isp/ispqueue.h =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 | =C2=A0187 ++
+> =C2=A0drivers/media/video/omap3-isp/ispreg.h =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 | 1589 ++++++++++++++
+> =C2=A0drivers/media/video/omap3-isp/ispresizer.c =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 | 1693 +++++++++++++++
+> =C2=A0drivers/media/video/omap3-isp/ispresizer.h =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 | =C2=A0147 ++
+> =C2=A0drivers/media/video/omap3-isp/ispstat.c =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0| 1092 ++++++++++
+> =C2=A0drivers/media/video/omap3-isp/ispstat.h =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0| =C2=A0169 ++
+> =C2=A0drivers/media/video/omap3-isp/ispvideo.c =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 | 1255 +++++++++++
+> =C2=A0drivers/media/video/omap3-isp/ispvideo.h =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 | =C2=A0202 ++
+> =C2=A0drivers/media/video/omap3-isp/luma_enhance_table.h | =C2=A0 42 =
++
+> =C2=A0drivers/media/video/omap3-isp/noise_filter_table.h | =C2=A0 30 =
++
+> =C2=A0drivers/media/video/v4l2-subdev.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=A0 =C2=A02 +-
+> =C2=A0drivers/media/video/videobuf-dma-contig.c =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0| =C2=A0 =C2=A02 +-
+> =C2=A0include/linux/Kbuild =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 | =C2=A0=
+ =C2=A01 +
+> =C2=A038 files changed, 19769 insertions(+), 2 deletions(-)
+>
+> I used quilt for all patches, except for the one patch with some gifs=
+, where I did a
+> git cherry-pick. So, the imported patches should be ok. Of course, it=
+ doesn't hurt
+> do double check.
+>
+> The main issue with the omap3isp is due to the presence of private io=
+ctl's that
+> I don't have a clear idea about what they are really doing.
+>
+> I couldn't see any documentation about them on a very quick look. Whi=
+le I suspect
+> that they are used only for 3A, I have no means of being sure about t=
+hat.
+>
+> Also, as I've said several times, while I don't like, I have nothing =
+against
+> having some ioctls that would be used by a vendor to implement their =
+own 3A software
+> algorithms that he may need to hide for some reason or have any paten=
+ts applied to
+> the algorithm, but only if:
+> =C2=A0 =C2=A0 =C2=A0 =C2=A01) such algorithms are implemented on user=
+space;
 
-I've added the patches that looked ok on my eyes at:
+Yes.
 
-http://git.linuxtv.org/mchehab/experimental.git?a=shortlog;h=refs/heads/media_controller
+> =C2=A0 =C2=A0 =C2=A0 =C2=A02) the userspace API used by them is fully=
+ documented, in order
+> to allow that someone else with enough motivation and spare time may
+> want to implement his own algorithm (including an open-source one);
 
-There are just a few small adjustments on a few of them, as I've commented.
-I prefer if you do them on separate patches, to save my work of not needing
-to review the entire series again.
+The API is pretty close to what is found on public OMAP3 TRM. I'd say
+it's almost to fill registers through a userspace API.
 
-The ones still pending on my quilt tree are:
+> =C2=A0 =C2=A0 =C2=A0 =C2=A03) there are no patents denying or chargin=
+g for the usage and/or
+> distribution/redistribution of the Kernel with the provided kernel dr=
+iver;
 
-0030-v4l-subdev-Generic-ioctl-support.patch
-0040-omap3isp-OMAP3-ISP-core.patch
-0041-omap3isp-Video-devices-and-buffers-queue.patch
-0042-omap3isp-CCP2-CSI2-receivers.patch
-0043-omap3isp-CCDC-preview-engine-and-resizer.patch
-0044-omap3isp-Statistics.patch
-0045-omap3isp-Kconfig-and-Makefile.patch
-0046-omap3isp-Add-set-performance-callback-in-isp-platfor.patch
+I'd say there's no patent / charge for usage or redistribution. But
+that's lawyer stuff. :/
 
-with the following diffstat:
+> =C2=A0 =C2=A0 =C2=A0 =C2=A04) if the device works with a reasonable q=
+uality without them
+> (by reasonable I mean like a cheap webcam, where libv4l could use his
+> set of 3A algorithms to provide a good quality).
 
- Documentation/video4linux/v4l2-framework.txt       |    5 +
- MAINTAINERS                                        |    6 +
- drivers/media/video/Kconfig                        |   13 +
- drivers/media/video/Makefile                       |    2 +
- drivers/media/video/omap3-isp/Makefile             |   13 +
- drivers/media/video/omap3-isp/cfa_coef_table.h     |   61 +
- drivers/media/video/omap3-isp/gamma_table.h        |   90 +
- drivers/media/video/omap3-isp/isp.c                | 2220 +++++++++++++++++++
- drivers/media/video/omap3-isp/isp.h                |  428 ++++
- drivers/media/video/omap3-isp/ispccdc.c            | 2268 ++++++++++++++++++++
- drivers/media/video/omap3-isp/ispccdc.h            |  219 ++
- drivers/media/video/omap3-isp/ispccp2.c            | 1173 ++++++++++
- drivers/media/video/omap3-isp/ispccp2.h            |   98 +
- drivers/media/video/omap3-isp/ispcsi2.c            | 1317 ++++++++++++
- drivers/media/video/omap3-isp/ispcsi2.h            |  166 ++
- drivers/media/video/omap3-isp/ispcsiphy.c          |  247 +++
- drivers/media/video/omap3-isp/ispcsiphy.h          |   74 +
- drivers/media/video/omap3-isp/isph3a.h             |  117 +
- drivers/media/video/omap3-isp/isph3a_aewb.c        |  374 ++++
- drivers/media/video/omap3-isp/isph3a_af.c          |  429 ++++
- drivers/media/video/omap3-isp/isphist.c            |  520 +++++
- drivers/media/video/omap3-isp/isphist.h            |   40 +
- drivers/media/video/omap3-isp/isppreview.c         | 2113 ++++++++++++++++++
- drivers/media/video/omap3-isp/isppreview.h         |  214 ++
- drivers/media/video/omap3-isp/ispqueue.c           | 1153 ++++++++++
- drivers/media/video/omap3-isp/ispqueue.h           |  187 ++
- drivers/media/video/omap3-isp/ispreg.h             | 1589 ++++++++++++++
- drivers/media/video/omap3-isp/ispresizer.c         | 1693 +++++++++++++++
- drivers/media/video/omap3-isp/ispresizer.h         |  147 ++
- drivers/media/video/omap3-isp/ispstat.c            | 1092 ++++++++++
- drivers/media/video/omap3-isp/ispstat.h            |  169 ++
- drivers/media/video/omap3-isp/ispvideo.c           | 1255 +++++++++++
- drivers/media/video/omap3-isp/ispvideo.h           |  202 ++
- drivers/media/video/omap3-isp/luma_enhance_table.h |   42 +
- drivers/media/video/omap3-isp/noise_filter_table.h |   30 +
- drivers/media/video/v4l2-subdev.c                  |    2 +-
- drivers/media/video/videobuf-dma-contig.c          |    2 +-
- include/linux/Kbuild                               |    1 +
- 38 files changed, 19769 insertions(+), 2 deletions(-)
+It depends on the sensor as well, but in general should work with a
+reasonable quality without using statistic modules.
 
-I used quilt for all patches, except for the one patch with some gifs, where I did a
-git cherry-pick. So, the imported patches should be ok. Of course, it doesn't hurt
-do double check.
+>
+> Assuming that all those private ioctl's are really for 3A, it is ok f=
+or me
+> to accept such ioctls after being sure that the above applies. I'm no=
+t sure
+> how to check (4), as, while I have 2 omap boards here (a Beagleboard =
+and a
+> gumstix), none of them have any sensor.
 
-The main issue with the omap3isp is due to the presence of private ioctl's that
-I don't have a clear idea about what they are really doing. 
+The private ioctl are used mostly on statistic modules (3A and
+Histogram). But it's used for CCDC and Preview modules configuration
+too.
 
-I couldn't see any documentation about them on a very quick look. While I suspect
-that they are used only for 3A, I have no means of being sure about that. 
+Regards,
 
-Also, as I've said several times, while I don't like, I have nothing against 
-having some ioctls that would be used by a vendor to implement their own 3A software 
-algorithms that he may need to hide for some reason or have any patents applied to
-the algorithm, but only if:
-	1) such algorithms are implemented on userspace;
-	2) the userspace API used by them is fully documented, in order
-to allow that someone else with enough motivation and spare time may
-want to implement his own algorithm (including an open-source one);
-	3) there are no patents denying or charging for the usage and/or
-distribution/redistribution of the Kernel with the provided kernel driver;
-	4) if the device works with a reasonable quality without them
-(by reasonable I mean like a cheap webcam, where libv4l could use his
-set of 3A algorithms to provide a good quality).
+David
 
-Assuming that all those private ioctl's are really for 3A, it is ok for me
-to accept such ioctls after being sure that the above applies. I'm not sure
-how to check (4), as, while I have 2 omap boards here (a Beagleboard and a
-gumstix), none of them have any sensor.
-
-
-Cheers,
-Mauro.
+>
+>
+> Cheers,
+> Mauro.
+>
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-media=
+" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =C2=A0http://vger.kernel.org/majordomo-info.ht=
+ml
+>
