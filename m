@@ -1,16 +1,17 @@
-From: Alexander Sverdlin <subaparts@yandex.ru>
-Subject: Re: [PATCH 2/2] ASoC: Constify i2c_device_id table
-Date: Fri, 04 Mar 2011 10:32:45 +0300
-Message-ID: <1299223965.27359.2.camel@r60e>
-References: <1299223098.20907.1.camel@mola>  <1299223323.20907.4.camel@mola>
+From: asim khan <khan.asim.2009@gmail.com>
+Subject: aplay: pcm_write:1603: write error: Input/output error
+Date: Fri, 4 Mar 2011 15:01:54 +0530
+Message-ID: <AANLkTimjLhXMU-urzL8jPSRNedUrCBWtCNagbe0B5gWp@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward1.mail.yandex.net (forward1.mail.yandex.net [77.88.46.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6094B103819
-	for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2011 08:32:54 +0100 (CET)
-In-Reply-To: <1299223323.20907.4.camel@mola>
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 182662446F
+	for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2011 10:31:56 +0100 (CET)
+Received: by gye5 with SMTP id 5so857292gye.38
+	for <alsa-devel@alsa-project.org>; Fri, 04 Mar 2011 01:31:54 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,18 +21,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam@alsa-project.org, Timur Tabi <timur@freescale.com>, Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2011-03-04 at 15:22 +0800, Axel Lin wrote:
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-> Cc: Alexander Sverdlin <subaparts@yandex.ru>
-> Cc: Timur Tabi <timur@freescale.com>
-> ---
->  sound/soc/codecs/cs4270.c |    2 +-
->  sound/soc/codecs/cs4271.c |    2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
+Hi,
+   Iam using Qemu 0.14.0 and linux 2.6.33 but whenever Iam playing any wav
+file with aplay Iam getting error
+*"aplay: pcm_write:1603: write error: Input/output error*"..donno whats
+going wrong..I googled but not much help...its bit urgent plz update me as
+soon as possible.
 
-Acked-by: Alexander Sverdlin <subaparts@yandex.ru>
+
+
+--Thanx
+AK
