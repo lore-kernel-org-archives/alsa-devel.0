@@ -1,49 +1,61 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v3] ASoC: Add TI tlv320aic32x4 codec
-	support.
-Date: Fri, 4 Mar 2011 18:24:03 +0000
-Message-ID: <20110304182402.GA11930@opensource.wolfsonmicro.com>
-References: <1299073952-11768-1-git-send-email-javier.martin@vista-silicon.com>
+From: Mauro Carvalho Chehab <mchehab@redhat.com>
+Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3 ISP driver
+Date: Fri, 04 Mar 2011 16:25:49 -0300
+Message-ID: <4D713CBD.7030405@redhat.com>
+References: <201102171606.58540.laurent.pinchart@ideasonboard.com> <4D6EA4EB.9070607@redhat.com> <201103031125.06419.laurent.pinchart@ideasonboard.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4D386103994
-	for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2011 19:24:06 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1299073952-11768-1-git-send-email-javier.martin@vista-silicon.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Javier Martin <javier.martin@vista-silicon.com>
-Cc: alsa-devel@alsa-project.org, b32542@freescale.com, lrg@slimlogic.co.uk
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <201103031125.06419.laurent.pinchart@ideasonboard.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>, Pawel Osciak <pawel@osciak.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 02, 2011 at 02:52:32PM +0100, Javier Martin wrote:
-> This patch adds support for tlv320aic3205 and tlv320aic3254 codecs.
-> It doesn't include miniDSP support for aic3254.
+Em 03-03-2011 07:25, Laurent Pinchart escreveu:
+> Hi Mauro,
 > 
-> Signed-off-by: Javier Martin <javier.martin@vista-silicon.com>
+> The following changes since commit 88a763df226facb74fdb254563e30e9efb64275c:
+> 
+>   [media] dw2102: prof 1100 corrected (2011-03-02 16:56:54 -0300)
+> 
+> are available in the git repository at:
+>   git://linuxtv.org/pinchartl/media.git media-2.6.39-0005-omap3isp
+> 
+> The branch has been rebased on top of the latest for_v2.6.39 branch, with the
+> v4l2-ioctl.c conflict resolved.
+> 
+> Antti Koskipaa (1):
+>       v4l: v4l2_subdev userspace crop API
+> 
+> David Cohen (1):
+>       omap3isp: Statistics
+> 
+> Laurent Pinchart (36):
+>       v4l: Share code between video_usercopy and video_ioctl2
+>       v4l: subdev: Don't require core operations
+>       v4l: subdev: Add device node support
+>       v4l: subdev: Uninline the v4l2_subdev_init function
+>       v4l: subdev: Control ioctls support
+>       media: Media device node support
+>       media: Media device
+>       media: Entities, pads and links
+>       media: Entity use count
+>       media: Media device information query
 
-I've applied this, thanks.
+Hi Laurent,
 
-One thing which can be dealt with incrementally:
+You're using 'M' for the media control ioctl's, but I'm not seeing any patch
+adding that range to the ioctl-number:
+	Documentation/ioctl/ioctl-number.txt
 
-> +	/* Do DACs need to be swapped? */
-> +	if (aic32x4->swapdacs) {
-> +		snd_soc_write(codec, AIC32X4_DACSETUP, AIC32X4_LDAC2RCHN | AIC32X4_RDAC2LCHN);
-> +	} else {
-> +		snd_soc_write(codec, AIC32X4_DACSETUP, AIC32X4_LDAC2LCHN | AIC32X4_RDAC2RCHN);
-> +	}
+In particular, according with the text, 'M' is used by several other drivers,
+including audio, with doesn't sounds like a good idea to me.
 
-These should be runtime controlled: in the cases where you use it to get
-a mic channel from left to right or vice versa you often have two mics
-you need to swap between rather than a single static configuration (eg,
-built in plus headset).
+So, please send me a patch, at the end of the series, reserving an unused range 
+for the media controller and replacing the ioctl numbers that you've already
+added to the new ioctl group.
+
+Thanks!
+Mauro
