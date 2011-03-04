@@ -1,15 +1,22 @@
-From: "Bensaid, Selma" <selma.bensaid@intel.com>
-Subject: : Question cpu_dai->active  & codec_dai->active
-Date: Fri, 4 Mar 2011 11:04:20 +0000
-Message-ID: <2A84145621092446B6659B8A0F28E26F4703F71706@irsmsx501.ger.corp.intel.com>
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Subject: Re: QEMU 0.14.0 and aplay: pcm_write:1603: write
+ error: Input/output error
+Date: Fri, 04 Mar 2011 13:11:11 +0100
+Message-ID: <1299240671.4029.5.camel@mattotaupa>
+References: <AANLkTimjLhXMU-urzL8jPSRNedUrCBWtCNagbe0B5gWp@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1295653230008110220=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id F0C1E10381D
-	for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2011 12:04:34 +0100 (CET)
-Content-Language: en-US
+Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id DCA3424475
+	for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2011 13:11:14 +0100 (CET)
+Received: from f053039171.adsl.alicedsl.de ([78.53.39.171]
+	helo=[192.168.178.21])
+	by mail.gw90.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
+	id 1PvTqj-0003OT-5P
+	for alsa-devel@alsa-project.org; Fri, 04 Mar 2011 12:11:13 +0000
+In-Reply-To: <AANLkTimjLhXMU-urzL8jPSRNedUrCBWtCNagbe0B5gWp@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,35 +26,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-Why the cpu_dai->active and codec_dai->active are not used to check if
-the corresponding shutdown or startup callbacks should be called or not?
-
-This could be useful for DAIs that handle capture and playback streams by avoiding:
-
-- perform 2 cpu_dai or codec_dai startup when opening both streams (playback and 
-Capture)
-- close a cpu_dai or codec_dai for a stream (example playback) while
-the 2nd stream (playback) is still running
-
-Thanks,
-
-Selma.
+--===============1295653230008110220==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-3rLGcqEhi/0wZUEzvdYX"
 
 
----------------------------------------------------------------------
-Intel Corporation SAS (French simplified joint stock company)
-Registered headquarters: "Les Montalets"- 2, rue de Paris, 
-92196 Meudon Cedex, France
-Registration Number:  302 456 199 R.C.S. NANTERRE
-Capital: 4,572,000 Euros
+--=-3rLGcqEhi/0wZUEzvdYX
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+Dear Asim,
+
+
+Am Freitag, den 04.03.2011, 15:01 +0530 schrieb asim khan:
+
+>    Iam using Qemu 0.14.0 and linux 2.6.33 but whenever Iam playing any wa=
+v
+> file with aplay Iam getting error
+> *"aplay: pcm_write:1603: write error: Input/output error*"..donno whats
+> going wrong..I googled but not much help...its bit urgent plz update me a=
+s
+> soon as possible.
+
+sorry, I cannot help you. I think you should at least provide what is
+written in the ALSA Wiki [1], i. e. at least attach the output of
+`alsa-info.sh`.
+
+I guess you should also try to ask people on the QEMU list and you could
+also try to use more recent versions of the Linux kernel.
+
+
+Thanks and good luck,
+
+Paul
+
+
+[1] http://alsa-project.org/main/index.php/Help_To_Debug
+
+--=-3rLGcqEhi/0wZUEzvdYX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+
+iEYEABECAAYFAk1w1toACgkQPX1aK2wOHVix9QCfZu4vmz8eaQsJOPY1AUhVTC5S
++Q4An3SLEoIiJQD8uX0cExQqeLP3tRJX
+=oCks
+-----END PGP SIGNATURE-----
+
+--=-3rLGcqEhi/0wZUEzvdYX--
+
+
+--===============1295653230008110220==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1295653230008110220==--
