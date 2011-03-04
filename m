@@ -1,29 +1,73 @@
-From: Tabi Timur-B04825 <B04825@freescale.com>
-Subject: Re: [PATCH 2/2] ASoC: Constify i2c_device_id table
-Date: Fri, 4 Mar 2011 12:41:35 +0000
-Message-ID: <4D70DDFE.8080006@freescale.com>
-References: <1299223098.20907.1.camel@mola> <1299223323.20907.4.camel@mola>
+From: Grzegorz Daniluk <g.daniluk@elproma.com.pl>
+Subject: Re: 1.0.24 alsa-driver compilation problem
+Date: Fri, 04 Mar 2011 14:20:01 +0100
+Message-ID: <4D70E701.3050500@elproma.com.pl>
+References: <4D70B9DA.8070607@elproma.com.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1299223323.20907.4.camel@mola>
-Content-Language: en-US
-Content-ID: <38CC693A7D1EE94D923E47D986CD6D62@freescale.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Axel Lin <axel.lin@gmail.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Alexander Sverdlin <subaparts@yandex.ru>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailmxout.mailmx.agnat.pl (mailmxout4.mailmx.agnat.pl
+	[193.239.44.248])
+	by alsa0.perex.cz (Postfix) with ESMTP id E94072413A
+	for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2011 14:20:35 +0100 (CET)
+Received: from smtp.agnat.pl ([193.239.44.82])
+	by mailmxout.mailmx.agnat.pl with esmtp (Exim 4.74)
+	(envelope-from <g.daniluk@elproma.com.pl>) id 1PvUvK-0000uI-U4
+	for alsa-devel@alsa-project.org; Fri, 04 Mar 2011 14:20:02 +0100
+Received: from [78.133.172.40] (helo=[192.168.1.79])
+	by smtp.agnat.pl with esmtpsa (TLSv1:DHE-RSA-AES256-SHA:256)
+	(Exim 4.71) (envelope-from <g.daniluk@elproma.com.pl>)
+	id 1PvUvK-0000ts-RP
+	for alsa-devel@alsa-project.org; Fri, 04 Mar 2011 14:20:02 +0100
+In-Reply-To: <4D70B9DA.8070607@elproma.com.pl>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Axel Lin wrote:
-> Signed-off-by: Axel Lin<axel.lin@gmail.com>
-> Cc: Alexander Sverdlin<subaparts@yandex.ru>
-> Cc: Timur Tabi<timur@freescale.com>
-> ---
+ok, when I add the --with-oss=no option to ./configure those warnings 
+disappear and I can load the module without any problems. But still.. 
+how can I compile alsa to have also oss emulation (I need /dev/dsp to 
+access sound codec from my software).
 
-Acked-by: Timur Tabi <timur@freescale.com>
+Greg
 
-
--- 
-Timur Tabi
-Linux kernel developer
+Grzegorz Daniluk wrote:
+> Hi,
+> I'm trying to cross-compile the latest 1.0.24 alsa-driver for my 
+> embedded system (using SH4 processor and linux kernel 2.6.35). Before 
+> compiling 1.0.24 I did turn off the alsa in kernel configuration 
+> (leaving just Sound card support enabled). So I run as follows:
+> ./configure --with-kernel=<where_my_kernel_src's_are> 
+> --with-build=<where_my_kernel_src's_are> --with-cross=sh4-linux-gnu-
+>
+> and then 'make'. However, during 'make' I've noticed the following warning:
+>
+> WARNING: "register_sound_special_device" 
+> [/root/alsa-driver-1.0.24/acore/snd.ko] undefined!
+> WARNING: "unregister_sound_special" 
+> [/root/alsa-driver-1.0.24/acore/snd.ko] undefined!
+>
+> and then when trying to insmod the snd.ko module the following error 
+> appears:
+>
+> snd: Unknown symbol unregister_sound_special (err 0)
+> snd: Unknown symbol register_sound_special_device (err 0)
+>
+> thank you for your help,
+> best regards,
+> Greg
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>   
