@@ -1,7 +1,7 @@
 From: Mauro Carvalho Chehab <mchehab@redhat.com>
 Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3 ISP driver
-Date: Fri, 04 Mar 2011 16:25:49 -0300
-Message-ID: <4D713CBD.7030405@redhat.com>
+Date: Fri, 04 Mar 2011 17:10:05 -0300
+Message-ID: <4D71471D.6060808@redhat.com>
 References: <201102171606.58540.laurent.pinchart@ideasonboard.com> <4D6EA4EB.9070607@redhat.com> <201103031125.06419.laurent.pinchart@ideasonboard.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
@@ -43,19 +43,21 @@ Em 03-03-2011 07:25, Laurent Pinchart escreveu:
 >       media: Entities, pads and links
 >       media: Entity use count
 >       media: Media device information query
+>       media: Entities, pads and links enumeration
+>       media: Links setup
+>       media: Pipelines and media streams
+>       v4l: Add a media_device pointer to the v4l2_device structure
+>       v4l: Make video_device inherit from media_entity
+>       v4l: Make v4l2_subdev inherit from media_entity
+>       v4l: Move the media/v4l2-mediabus.h header to include/linux
+>       v4l: Replace enums with fixed-sized fields in public structure
+>       v4l: Rename V4L2_MBUS_FMT_GREY8_1X8 to V4L2_MBUS_FMT_Y8_1X8
+>       v4l: Group media bus pixel codes by types and sort them alphabetically
 
-Hi Laurent,
+The presence of those mediabus names against the traditional fourcc codes
+at the API adds some mess to the media controller. Not sure how to solve,
+but maybe the best way is to add a table at the V4L2 API associating each
+media bus format to the corresponding V4L2 fourcc codes.
 
-You're using 'M' for the media control ioctl's, but I'm not seeing any patch
-adding that range to the ioctl-number:
-	Documentation/ioctl/ioctl-number.txt
-
-In particular, according with the text, 'M' is used by several other drivers,
-including audio, with doesn't sounds like a good idea to me.
-
-So, please send me a patch, at the end of the series, reserving an unused range 
-for the media controller and replacing the ioctl numbers that you've already
-added to the new ioctl group.
-
-Thanks!
+Cheers,
 Mauro
