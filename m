@@ -1,39 +1,96 @@
-From: Alexander Sverdlin <subaparts@yandex.ru>
-Subject: Re: [PATCH] ASoC: Enable 192kHz sample rate for EP92xx.
-Date: Sat, 05 Mar 2011 22:23:16 +0300
-Message-ID: <1299352996.27359.110.camel@r60e>
-References: <1299286637.27359.107.camel@r60e>
-	<20110305142036.GV16649@mail.wantstofly.org>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3 ISP driver
+Date: Sat, 5 Mar 2011 21:48:05 +0100
+Message-ID: <201103052148.06603.laurent.pinchart@ideasonboard.com>
+References: <201102171606.58540.laurent.pinchart@ideasonboard.com> <201103051402.34416.laurent.pinchart@ideasonboard.com> <4D727F64.7040805@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward9.mail.yandex.net (forward9.mail.yandex.net
-	[77.88.61.48]) by alsa0.perex.cz (Postfix) with ESMTP id 7A16E1037F2
-	for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2011 20:23:22 +0100 (CET)
-In-Reply-To: <20110305142036.GV16649@mail.wantstofly.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lennert Buytenhek <buytenh@wantstofly.org>
-Cc: Douglas <chasedouglas@gmail.com>, alsa-devel@alsa-project.org, Ryan Mallon <ryan@bluewatersys.com>, Chase@alsa-project.org
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <4D727F64.7040805@redhat.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab@redhat.com>
+Cc: "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>, Pawel Osciak <pawel@osciak.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dear Lennert,
+Hi Mauro,
 
-On Sat, 2011-03-05 at 15:20 +0100, Lennert Buytenhek wrote:
-> > Enable 192kHz sample rate for EP92xx.
->                                   ^^^^
+On Saturday 05 March 2011 19:22:28 Mauro Carvalho Chehab wrote:
+> Em 05-03-2011 10:02, Laurent Pinchart escreveu:
+> > Hi Mauro,
+> > 
+> > Thanks for the review. Let me address all your concerns in a single mail.
+> > 
+> > - ioctl numbers
+> > 
+> > I'll send you a patch that reserves a range in Documentation/ioctl/ioctl-
+> > number.txt and update include/linux/media.h accordingly.
 > 
-> 93xx?
+> Ok, thanks.
 
-Sure, EP93xx.
+"media: Pick a free ioctls range" at the top of the 
+http://git.linuxtv.org/pinchartl/media.git?a=shortlog;h=refs/heads/media-2.6.39-0005-
+omap3isp branch
 
-Best regards,
-	Alexander.
+> > - private ioctls
+> > 
+> > As already explained by David, the private ioctls are used to control
+> > advanced device features that can't be handled by V4L2 controls at the
+> > moment (such as setting a gamma correction table). Using those ioctls is
+> > not mandatory, and the device will work correctly without them (albeit
+> > with a non optimal image quality).
+> > 
+> > David said he will submit a patch to document the ioctls.
+> 
+> Ok.
+
+Working on that.
+
+> > - media bus formats
+> > 
+> > As Hans explained, there's no 1:1 relationship between media bus formats
+> > and pixel formats.
+> 
+> Yet, there are some relationship between them. See my comments on my
+> previous email.
+
+Let's continue the discussion in the mail thread.
+
+> > - FOURCC and media bus codes documentation
+> > 
+> > I forgot to document some of them. I'll send a new patch that adds the
+> > missing documentation.
+> 
+> Ok.
+
+"v4l: Add documentation for the 12 bits bayer pixel formats"
+"v4l: Fix 12 bits bayer media bus format documentation"
+
+in the 
+http://git.linuxtv.org/pinchartl/media.git?a=shortlog;h=refs/heads/media-2.6.39-0004-
+v4l-misc branch.
+
+> > Is there any other issue I need to address ?
+> 
+> Nothing else, in the patches I've analysed so far. I'll take a look at the
+> remaining omap3isp after receiving the documentation for the private
+> ioctl's.
+> 
+> > My understanding is that there's
+> > no need to rebase the existing patches, is that correct ?
+> 
+> Yes, it is correct. Just send the new patches to be applied at the end of
+> the series. I'll eventually reorder them if needed to avoid breaking git
+> bisect.
+
+Please squash "v4l: Add documentation for the 12 bits bayer pixel formats" 
+with "v4l: Add 12 bits bayer pixel formats" and "v4l: Fix 12 bits bayer media 
+bus format documentation" with "v4l: Add missing 12 bits bayer media bus 
+formats" when applying to keep the history clean. You can discard the commit 
+message of the two new patches.
+
+-- 
+Regards,
+
+Laurent Pinchart
