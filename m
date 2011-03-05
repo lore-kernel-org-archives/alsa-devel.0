@@ -1,127 +1,78 @@
-From: David Cohen <dacohen@gmail.com>
-Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3 ISP driver
-Date: Sat, 5 Mar 2011 15:04:21 +0200
-Message-ID: <AANLkTi=SS3CBkKUdovU33SQi=s9gNprZszKaMrkRGqGy@mail.gmail.com>
-References: <201102171606.58540.laurent.pinchart@ideasonboard.com>
-	<201103031125.06419.laurent.pinchart@ideasonboard.com>
-	<4D71471D.6060808@redhat.com>
-	<201103051252.12342.hverkuil@xs4all.nl>
+From: Richard Samson <samson.richard@gmail.com>
+Subject: Re: [PATCH] add new Fermi 5xx codec IDs to snd-hda
+Date: Sat, 05 Mar 2011 14:08:13 +0100
+Message-ID: <1299330493.1921.3.camel@cartman.lan>
+References: <1298855454.2347.27.camel@cartman.lan>
+	<74CDBE0F657A3D45AFBB94109FB122FF045687AE77@HQMAIL01.nvidia.com>
+	<s5hk4gknkh4.wl%tiwai@suse.de>
+	<AANLkTinP5Y3XF7SjGJLy5XE4ojD4MfG8oA97WJHob-3R@mail.gmail.com>
+	<s5h62s4ghfd.wl%tiwai@suse.de> <1298992476.2376.13.camel@cartman.lan>
+	<74CDBE0F657A3D45AFBB94109FB122FF045687B06F@HQMAIL01.nvidia.com>
+	<1298999780.1827.7.camel@cartman.lan>
+	<74CDBE0F657A3D45AFBB94109FB122FF045687B08A@HQMAIL01.nvidia.com>
+	<s5hk4ggju9r.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <201103051252.12342.hverkuil@xs4all.nl>
-Sender: linux-media-owner@vger.kernel.org
-To: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: Mauro Carvalho Chehab <mchehab@redhat.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>, Pawel Osciak <pawel@osciak.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 6210C2451D
+	for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2011 14:08:16 +0100 (CET)
+Received: by bwz10 with SMTP id 10so2786602bwz.38
+	for <alsa-devel@alsa-project.org>; Sat, 05 Mar 2011 05:08:16 -0800 (PST)
+In-Reply-To: <s5hk4ggju9r.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Stephen Warren <swarren@nvidia.com>, Nitin Daga <ndaga@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Hans,
-
-On Sat, Mar 5, 2011 at 1:52 PM, Hans Verkuil <hverkuil@xs4all.nl> wrote=
-:
-> On Friday, March 04, 2011 21:10:05 Mauro Carvalho Chehab wrote:
->> Em 03-03-2011 07:25, Laurent Pinchart escreveu:
->> > Hi Mauro,
->> >
->> > The following changes since commit 88a763df226facb74fdb254563e30e9=
-efb64275c:
->> >
->> > =C2=A0 [media] dw2102: prof 1100 corrected (2011-03-02 16:56:54 -0=
-300)
->> >
->> > are available in the git repository at:
->> > =C2=A0 git://linuxtv.org/pinchartl/media.git media-2.6.39-0005-oma=
-p3isp
->> >
->> > The branch has been rebased on top of the latest for_v2.6.39 branc=
-h, with the
->> > v4l2-ioctl.c conflict resolved.
->> >
->> > Antti Koskipaa (1):
->> > =C2=A0 =C2=A0 =C2=A0 v4l: v4l2_subdev userspace crop API
->> >
->> > David Cohen (1):
->> > =C2=A0 =C2=A0 =C2=A0 omap3isp: Statistics
->> >
->> > Laurent Pinchart (36):
->> > =C2=A0 =C2=A0 =C2=A0 v4l: Share code between video_usercopy and vi=
-deo_ioctl2
->> > =C2=A0 =C2=A0 =C2=A0 v4l: subdev: Don't require core operations
->> > =C2=A0 =C2=A0 =C2=A0 v4l: subdev: Add device node support
->> > =C2=A0 =C2=A0 =C2=A0 v4l: subdev: Uninline the v4l2_subdev_init fu=
-nction
->> > =C2=A0 =C2=A0 =C2=A0 v4l: subdev: Control ioctls support
->> > =C2=A0 =C2=A0 =C2=A0 media: Media device node support
->> > =C2=A0 =C2=A0 =C2=A0 media: Media device
->> > =C2=A0 =C2=A0 =C2=A0 media: Entities, pads and links
->> > =C2=A0 =C2=A0 =C2=A0 media: Entity use count
->> > =C2=A0 =C2=A0 =C2=A0 media: Media device information query
->> > =C2=A0 =C2=A0 =C2=A0 media: Entities, pads and links enumeration
->> > =C2=A0 =C2=A0 =C2=A0 media: Links setup
->> > =C2=A0 =C2=A0 =C2=A0 media: Pipelines and media streams
->> > =C2=A0 =C2=A0 =C2=A0 v4l: Add a media_device pointer to the v4l2_d=
-evice structure
->> > =C2=A0 =C2=A0 =C2=A0 v4l: Make video_device inherit from media_ent=
-ity
->> > =C2=A0 =C2=A0 =C2=A0 v4l: Make v4l2_subdev inherit from media_enti=
-ty
->> > =C2=A0 =C2=A0 =C2=A0 v4l: Move the media/v4l2-mediabus.h header to=
- include/linux
->> > =C2=A0 =C2=A0 =C2=A0 v4l: Replace enums with fixed-sized fields in=
- public structure
->> > =C2=A0 =C2=A0 =C2=A0 v4l: Rename V4L2_MBUS_FMT_GREY8_1X8 to V4L2_M=
-BUS_FMT_Y8_1X8
->> > =C2=A0 =C2=A0 =C2=A0 v4l: Group media bus pixel codes by types and=
- sort them alphabetically
->>
->> The presence of those mediabus names against the traditional fourcc =
-codes
->> at the API adds some mess to the media controller. Not sure how to s=
-olve,
->> but maybe the best way is to add a table at the V4L2 API associating=
- each
->> media bus format to the corresponding V4L2 fourcc codes.
->
-> You can't do that in general. Only for specific hardware platforms. I=
-f you
-> could do it, then we would have never bothered creating these mediabu=
-s fourccs.
->
-> How a mediabus fourcc translates to a pixelcode (=3D=3D memory format=
-) depends
-> entirely on the hardware capabilities (mostly that of the DMA engine)=
-=2E
-
-May I ask you one question here? (not entirely related to this patch se=
-t).
-Why pixelcode !=3D mediabus fourcc?
-e.g. OMAP2 camera driver talks to sensor through subdev interface and
-sets its own output pixelformat depending on sensor's mediabus fourcc.
-So it needs a translation table mbus_pixelcode -> pixelformat. Why
-can't it be pixelformat -> pixelformat ?
-
-Regards,
-
-David
-
->
-> A generic V4L2 application will never use mediabus fourcc codes. It's=
- only used
-> by drivers and applications written specifically for that hardware an=
-d using
-> /dev/v4l-subdevX devices.
->
-> Regards,
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0Hans
->
-> --
-> Hans Verkuil - video4linux developer - sponsored by Cisco
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-media=
-" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =C2=A0http://vger.kernel.org/majordomo-info.ht=
-ml
->
+TGUgamV1ZGkgMDMgbWFycyAyMDExIMOgIDEyOjUyICswMTAwLCBUYWthc2hpIEl3YWkgYSDDqWNy
+aXQgOgo+IEF0IFR1ZSwgMSBNYXIgMjAxMSAwOTo0NTo1NCAtMDgwMCwKPiBTdGVwaGVuIFdhcnJl
+biB3cm90ZToKPiA+IAo+ID4gUmljaGFyZCBTYW1zb24gd3JvdGUgYXQgVHVlc2RheSwgTWFyY2gg
+MDEsIDIwMTEgMTA6MTYgQU06Cj4gPiA+IExlIG1hcmRpIDAxIG1hcnMgMjAxMSDDoCAwODo0MCAt
+MDgwMCwgU3RlcGhlbiBXYXJyZW4gYSDDqWNyaXQgOgo+ID4gPiA+IFJpY2hhcmQgU2Ftc29uIHdy
+b3RlIGF0IFR1ZXNkYXksIE1hcmNoIDAxLCAyMDExIDg6MTUgQU06Cj4gPiA+ID4gPiBMZSBsdW5k
+aSAyOCBmw6l2cmllciAyMDExIMOgIDE5OjA5ICswMTAwLCBUYWthc2hpIEl3YWkgYSDDqWNyaXQg
+Ogo+ID4gPiA+ID4gPiBBdCBNb24sIDI4IEZlYiAyMDExIDE4OjU2OjIwICswMTAwLAo+ID4gPiA+
+ID4gPiBzYW1zb24ucmljaGFyZEBnbWFpbC5jb20gd3JvdGU6Cj4gPiA+ID4gPiA+ID4gQXMgU3Rl
+cGhlbiBXYXJyZW4gc2FpZCwgYSBwYXRjaCB3aXRoIGZ1bGwgc3VwcG9ydCBvZiA1eHggY2FyZHMg
+d2lsbCBiZQo+ID4gPiA+ID4gPiA+IG1vcmUgdXNlZnVsLgo+ID4gPiA+ID4gPgo+ID4gPiA+ID4g
+PiBPSywgU3RlcGhlbiwgY291bGQgeW91IHByZXBhcmUgdGhlIHBhdGNoIGluY2x1ZGluZyBhbGwg
+bWlzc2luZyBJRHM/Cj4gPiA+ID4gPgo+ID4gPiA+ID4gSSB3cm90ZSBhbiBuZXcgcGF0Y2ggd2l0
+aCB0aHJlZSBuZXcgY29kZWMgSURzIGZvciBOdmlkaWEgRmVybWkgY2FyZHMuCj4gPiA+ID4gPiBJ
+IGF0dGVuZGVkIHRvIHVzZSBleGlzdGluZyBJRHMgYW5kIG9ubGluZSB0ZWNobmljYWwgc3BlY2lm
+aWNhdGlvbnMgdG8KPiA+ID4gPiA+IGdldCB0d28gb3RoZXJzIGNhcmRzIDoKPiA+ID4gPiA+IC0g
+TnZpZGlhIEdlRm9yY2UgR1RYIDQ3MCA6IGlkID0gMHgxMGRlMDAxNQo+ID4gPiA+ID4gLSBOdmlk
+aWEgR2VGb3JjZSBHVFggNTYwIFRpIDogaWQgPSAweDEwZGUwMDE2ICh3b3JrcyBmaW5lKQo+ID4g
+PiA+ID4gLSBOdmlkaWEgR2VGb3JjZSBHVFggNTcwIDogaWQgPSAweDEwZGUwMDE3Cj4gPiA+ID4K
+PiA+ID4gPiBUaGV5IGRvbid0IGFwcGVhciB0byBtYXRjaCBvdXIgV2luZG93cyBkcml2ZXIuIFdo
+ZXJlIGRpZCB5b3UgZ2V0IHRoZSB2YWx1ZXMKPiA+ID4gPiBmcm9tPyAoMHgxNyBpc24ndCBpbiB0
+aGUgV2luZG93cyBkcml2ZXIgYXQgYWxsLiAweDE1IHNob3VsZG4ndCBiZSBhIEdUWCA0NzApCj4g
+PiA+IAo+ID4gPiBJIGFzayB0byBhIHJlc2VsbGVyLCBpdCBzZWVtcyBhIGJhZCBpZGVhLgo+ID4g
+Cj4gPiBUaGUgb25seSB3YXkgdG8gZmluZCB0aGUgdmFsdWVzIHRoYXQgSSBrbm93IG9mIHdvdWxk
+IGJlIHRvIHBsdWcgdGhlIGNhcmQKPiA+IGluLCBydW4gTGludXgsIGFuZCBsb29rIGF0IHRoZSBB
+TFNBIC9wcm9jIGZpbGVzLiAoUGVyaGFwcyB0aGVyZSdzIHNvbWUKPiA+IGVxdWl2YWxlbnQgdG9v
+bCB1bmRlciBXaW5kb3dzKQo+ID4gCj4gPiA+IElmIEkgY2FuIGhlbHAsIHdoZXJlIGFyZSB0aGVz
+ZSB2YWx1ZXMgaW4gdGhlIFdpbmRvd3MgZHJpdmVyID8KPiA+IAo+ID4gVGhleSBlbmNvZGVkIGlu
+dG8gdGhlIGJpbmFyeS4gSSBkb3VidCB0aGV5J3JlIHVzZXItYWNjZXNzaWJsZS4KPiA+IAo+ID4g
+U28sIEkgdGhpbmsgdGhlIGJlc3Qgd2F5IHRvIHByb2NlZWQgaXMgZm9yIHlvdSB0byBtb2RpZnkg
+eW91ciBwYXRjaCB0byBhZGQKPiA+IElEcyAweDE1IGFuZCAweDE2IG9ubHkuIEknbSBwcmV0dHkg
+c3VyZSBJRCAweDE3IGlzbid0IGFzc2lnbmVkIHRvIGFueXRoaW5nLgo+ID4gTGV0J3Mgbm90IHJl
+bW92ZSBhbnkgTlZJRElBIElEcyBldmVuIHRob3VnaCBJJ20gcHJldHR5IHN1cmUgYSBjb3VwbGUg
+YXJlbid0Cj4gPiBhY3R1YWxseSBhc3NpZ25lZDsgaWYgSSdtIHdyb25nLCB3ZSdkIGp1c3QgaGF2
+ZSB0byBhZGQgdGhlbSBiYWNrIGxhdGVyLCBhbmQKPiA+IGhhdmluZyB0aGVtIGluIHdvbid0IGhh
+cm0gYW55dGhpbmcuCj4gCj4gT0ssIEkgbW9kaWZpZWQgUmljaGFyZCdzIHBhdGNoIHRvIGdldCBy
+aWQgb2YgMHgxNyBhbmQgbWVyZ2VkIG5vdwo+IHRvIHNvdW5kIGdpdCB0cmVlLgo+IAo+IAo+IHRo
+YW5rcywKPiAKPiBUYWthc2hpCgpIZWxsbywKClRoYW5rIHlvdSBmb3IgdGhpcyBjb21taXQuCgpS
+aWNoYXJkIFNhbXNvbgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
