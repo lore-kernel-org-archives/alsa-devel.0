@@ -1,57 +1,53 @@
-From: Zeng Zhaoming <zengzm.kernel@gmail.com>
-Subject: Re: [PATCH -next] soc: sgtl5000 uses regulator interfaces
-Date: Sat, 5 Mar 2011 20:41:38 +0800
-Message-ID: <AANLkTikivW3+V4QYh9Nt9FGXTefZiN9WbpAvGVeBJHNN@mail.gmail.com>
-References: <20110304180027.20deb6c4.sfr@canb.auug.org.au>
-	<20110304173357.23d36116.randy.dunlap@oracle.com>
-	<20110305112936.GA30187@opensource.wolfsonmicro.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3 ISP driver
+Date: Sat, 5 Mar 2011 14:02:33 +0100
+Message-ID: <201103051402.34416.laurent.pinchart@ideasonboard.com>
+References: <201102171606.58540.laurent.pinchart@ideasonboard.com> <201103031125.06419.laurent.pinchart@ideasonboard.com> <4D713CBD.7030405@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <20110305112936.GA30187@opensource.wolfsonmicro.com>
-Sender: linux-next-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Randy Dunlap <randy.dunlap@oracle.com>, Stephen Rothwell <sfr@canb.auug.org.au>, Zeng Zhaoming <zhaoming.zeng@freescale.com>, linux-next@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <4D713CBD.7030405@redhat.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab@redhat.com>
+Cc: "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>, Pawel Osciak <pawel@osciak.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Mar 5, 2011 at 7:29 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Fri, Mar 04, 2011 at 05:33:57PM -0800, Randy Dunlap wrote:
->> From: Randy Dunlap <randy.dunlap@oracle.com>
->>
->> sgtl5000 uses regulator interfaces, so make selecting it depend
->> on REGULATOR.
->>
->> sgtl5000.c:(.text+0x4ae33): undefined reference to `regulator_unregi=
-ster'
->> sgtl5000.c:(.text+0x4af41): undefined reference to `rdev_get_drvdata=
-'
->> sgtl5000.c:(.text+0x4b191): undefined reference to `regulator_regist=
-er'
->
+Hi Mauro,
 
-hi=EF=BC=8C Thanks for the report.
+Thanks for the review. Let me address all your concerns in a single mail.
 
-> Since the regulator on the device is optional this isn't the best fix=
-,
-> the code should be updated to support building without regulator.
+- ioctl numbers
 
-I will fix the code. If regulator not enabled, and the optional
-regulator not provided externally,
-a warning message will print out, and internal regulator will set
-directly by write register.
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kerne=
-l" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =C2=A0http://vger.kernel.org/majordomo-info.ht=
-ml
-> Please read the FAQ at =C2=A0http://www.tux.org/lkml/
->
+I'll send you a patch that reserves a range in Documentation/ioctl/ioctl-
+number.txt and update include/linux/media.h accordingly.
+
+- private ioctls
+
+As already explained by David, the private ioctls are used to control advanced 
+device features that can't be handled by V4L2 controls at the moment (such as 
+setting a gamma correction table). Using those ioctls is not mandatory, and 
+the device will work correctly without them (albeit with a non optimal image 
+quality).
+
+David said he will submit a patch to document the ioctls.
+
+- media bus formats
+
+As Hans explained, there's no 1:1 relationship between media bus formats and 
+pixel formats.
+
+- FOURCC and media bus codes documentation
+
+I forgot to document some of them. I'll send a new patch that adds the missing 
+documentation.
 
 
+Is there any other issue I need to address ? My understanding is that there's 
+no need to rebase the existing patches, is that correct ?
 
---=20
-Best Regards
-=C2=A0 =C2=A0 Zeng Zhaoming
+-- 
+Regards,
+
+Laurent Pinchart
