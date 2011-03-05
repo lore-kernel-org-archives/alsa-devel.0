@@ -1,88 +1,67 @@
 From: Mauro Carvalho Chehab <mchehab@redhat.com>
 Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3 ISP driver
-Date: Sat, 05 Mar 2011 15:14:06 -0300
-Message-ID: <4D727D6E.2070602@redhat.com>
-References: <201102171606.58540.laurent.pinchart@ideasonboard.com>	<201103031125.06419.laurent.pinchart@ideasonboard.com>	<4D71471D.6060808@redhat.com>	<201103051252.12342.hverkuil@xs4all.nl> <AANLkTi=SS3CBkKUdovU33SQi=s9gNprZszKaMrkRGqGy@mail.gmail.com> <4D7248B4.9090003@gmail.com>
+Date: Sat, 05 Mar 2011 15:22:28 -0300
+Message-ID: <4D727F64.7040805@redhat.com>
+References: <201102171606.58540.laurent.pinchart@ideasonboard.com> <201103031125.06419.laurent.pinchart@ideasonboard.com> <4D713CBD.7030405@redhat.com> <201103051402.34416.laurent.pinchart@ideasonboard.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <4D7248B4.9090003@gmail.com>
+In-Reply-To: <201103051402.34416.laurent.pinchart@ideasonboard.com>
 Sender: linux-media-owner@vger.kernel.org
-To: Sylwester Nawrocki <snjw23@gmail.com>
-Cc: David Cohen <dacohen@gmail.com>, Hans Verkuil <hverkuil@xs4all.nl>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>, Pawel Osciak <pawel@osciak.com>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>, Pawel Osciak <pawel@osciak.com>
 List-Id: alsa-devel@alsa-project.org
 
-Em 05-03-2011 11:29, Sylwester Nawrocki escreveu:
-> Hi David,
+Em 05-03-2011 10:02, Laurent Pinchart escreveu:
+> Hi Mauro,
 > 
-> On 03/05/2011 02:04 PM, David Cohen wrote:
->> Hi Hans,
->>
->> On Sat, Mar 5, 2011 at 1:52 PM, Hans Verkuil<hverkuil@xs4all.nl>  wrote:
->>> On Friday, March 04, 2011 21:10:05 Mauro Carvalho Chehab wrote:
->>>> Em 03-03-2011 07:25, Laurent Pinchart escreveu:
-> ...
->>>>>        v4l: Group media bus pixel codes by types and sort them alphabetically
->>>>
->>>> The presence of those mediabus names against the traditional fourcc codes
->>>> at the API adds some mess to the media controller. Not sure how to solve,
->>>> but maybe the best way is to add a table at the V4L2 API associating each
->>>> media bus format to the corresponding V4L2 fourcc codes.
->>>
->>> You can't do that in general. Only for specific hardware platforms. If you
->>> could do it, then we would have never bothered creating these mediabus fourccs.
->>>
->>> How a mediabus fourcc translates to a pixelcode (== memory format) depends
->>> entirely on the hardware capabilities (mostly that of the DMA engine).
->>
->> May I ask you one question here? (not entirely related to this patch set).
->> Why pixelcode != mediabus fourcc?
->> e.g. OMAP2 camera driver talks to sensor through subdev interface and
->> sets its own output pixelformat depending on sensor's mediabus fourcc.
->> So it needs a translation table mbus_pixelcode ->  pixelformat. Why
->> can't it be pixelformat ->  pixelformat ?
->>
+> Thanks for the review. Let me address all your concerns in a single mail.
 > 
-> Let me try to explain, struct v4l2_mbus_framefmt::code (pixelcode)
-> describes how data is transfered/sampled on the camera parallel or serial bus.
-> It defines bus width, data alignment and how many data samples form a single
-> pixel.
+> - ioctl numbers
 > 
-> struct v4l2_pix_format::pixelformat (fourcc) on the other hand describes how
-> the image data is stored in memory.
->  
-> As Hans pointed out there is not always a 1:1 correspondence, e.g. 
+> I'll send you a patch that reserves a range in Documentation/ioctl/ioctl-
+> number.txt and update include/linux/media.h accordingly.
 
-The relation may not be 1:1 but they are related.
-
-It should be documented somehow how those are related, otherwise, the API
-will be obscure. 
-
-Of course, the output format may be different than the internal formats, 
-since some bridges have format converters.
-
+Ok, thanks.
 > 
-> 1. Both V4L2_MBUS_FMT_YUYV8_1x16 and V4L2_MBUS_FMT_YUYV8_2x8 may being 
-> translating to V4L2_PIX_FMT_YUYV fourcc,
+> - private ioctls
+> 
+> As already explained by David, the private ioctls are used to control advanced 
+> device features that can't be handled by V4L2 controls at the moment (such as 
+> setting a gamma correction table). Using those ioctls is not mandatory, and 
+> the device will work correctly without them (albeit with a non optimal image 
+> quality).
+> 
+> David said he will submit a patch to document the ioctls.
 
-Ok, so there is a relationship between them.
+Ok.
 
-> 2. Or the DMA engine in the camera host interface might be capable of
-> converting single V4L2_MBUS_FMT_RGB555 pixelcode to V4L2_PIX_FMT_RGB555
-> and V4L2_PIX_FMT_RGB565 fourcc's. So the user can choose any of them they
-> seem most suitable and the hardware takes care of the conversion. 
+> - media bus formats
+> 
+> As Hans explained, there's no 1:1 relationship between media bus formats and 
+> pixel formats.
 
-No. You can't create an additional bit. if V4L2_MBUS_FMT_RGB555 provides 5
-bits for all color channels, the only corresponding format is V4L2_PIX_FMT_RGB555,
-as there's no way to get 6 bits for green, if the hardware sampled it with
-5 bits. Ok, some bridge may fill with 0 an "extra" bit for green, but this
-is the bridge doing a format conversion.
+Yet, there are some relationship between them. See my comments on my previous email.
 
-In general, for all RGB formats, a mapping between MBUS_FMT_RGBxxx and the
-corresponding fourcc formats could be mapped on two formats only: 
-V4L2_PIX_FMT_RGBxxx or V4L2_PIX_FMT_BGRxxx.
- 
-> What translations are available really depends on the hardware, so how
-> could we define a standard translation table? IMO it should be realized
-> in each driver on an individual basis.
+> - FOURCC and media bus codes documentation
+> 
+> I forgot to document some of them. I'll send a new patch that adds the missing 
+> documentation.
+
+Ok.
+> 
+> 
+> Is there any other issue I need to address ? 
+
+Nothing else, in the patches I've analysed so far. I'll take a look at the remaining
+omap3isp after receiving the documentation for the private ioctl's.
+
+> My understanding is that there's 
+> no need to rebase the existing patches, is that correct ?
+
+Yes, it is correct. Just send the new patches to be applied at the end of the series.
+I'll eventually reorder them if needed to avoid breaking git bisect.
+
+Thanks!
+Mauro.
