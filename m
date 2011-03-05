@@ -1,255 +1,69 @@
-From: David Cohen <dacohen@gmail.com>
-Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3 ISP driver
-Date: Sat, 5 Mar 2011 02:40:38 +0200
-Message-ID: <AANLkTinTdNCRzGeAf_3r09Yz6H3d5MVjRMP-05Uidod_@mail.gmail.com>
-References: <201102171606.58540.laurent.pinchart@ideasonboard.com>
-	<4D7164C6.9080503@redhat.com>
-	<AANLkTi=p6S0CYv6=E51LHJprp1AZpd+ZymiVywaaUWOy@mail.gmail.com>
-	<4D716B15.6090609@redhat.com>
-	<AANLkTi=2S2FUJmafdgz--ujKLXdyBZ4DVz1nbFzkU2DL@mail.gmail.com>
-	<4D717A86.5050003@redhat.com>
+From: Alexander Sverdlin <subaparts@yandex.ru>
+Subject: [PATCH] ASoC: Extend range of supported sample rates
+ for CS4271 CODEC.
+Date: Sat, 05 Mar 2011 03:55:04 +0300
+Message-ID: <1299286504.27359.100.camel@r60e>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <4D717A86.5050003@redhat.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@redhat.com>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from forward8.mail.yandex.net (forward8.mail.yandex.net
+	[77.88.61.38]) by alsa0.perex.cz (Postfix) with ESMTP id BD92D2436F
+	for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2011 01:55:09 +0100 (CET)
+Received: from smtp6.mail.yandex.net (smtp6.mail.yandex.net [77.88.61.56])
+	by forward8.mail.yandex.net (Yandex) with ESMTP id 5F30FF622EA
+	for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2011 03:55:06 +0300 (MSK)
+Received: from [192.168.1.202] (ppp91-77-173-192.pppoe.mtu-net.ru
+	[91.77.173.192])
+	by smtp6.mail.yandex.net (Yandex) with ESMTPA id 300A52A8056
+	for <alsa-devel@alsa-project.org>; Sat,  5 Mar 2011 03:55:06 +0300 (MSK)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Mar 5, 2011 at 1:49 AM, Mauro Carvalho Chehab
-<mchehab@redhat.com> wrote:
-> Em 04-03-2011 19:49, David Cohen escreveu:
->> On Sat, Mar 5, 2011 at 12:43 AM, Mauro Carvalho Chehab
->> <mchehab@redhat.com> wrote:
->>> Em 04-03-2011 19:33, David Cohen escreveu:
->>>> Hi Mauro,
->>>>
->>>> On Sat, Mar 5, 2011 at 12:16 AM, Mauro Carvalho Chehab
->>>> <mchehab@redhat.com> wrote:
->>>>> Hi Laurent,
->>>>>
->>>>> Em 17-02-2011 13:06, Laurent Pinchart escreveu:
->>>>>> Hi Mauro,
->>>>>>
->>>>>> The following changes since commit 85e2efbb1db9a18d218006706d6e4=
-fbeb0216213:
->>>>>>
->>>>>> =C2=A0 Linux 2.6.38-rc5 (2011-02-15 19:23:45 -0800)
->>>>>>
->>>>>> are available in the git repository at:
->>>>>> =C2=A0 git://linuxtv.org/pinchartl/media.git media-0005-omap3isp
->>>>>
->>>>> I've added the patches that looked ok on my eyes at:
->>>>>
->>>>> http://git.linuxtv.org/mchehab/experimental.git?a=3Dshortlog;h=3D=
-refs/heads/media_controller
->>>>>
->>>>> There are just a few small adjustments on a few of them, as I've =
-commented.
->>>>> I prefer if you do them on separate patches, to save my work of n=
-ot needing
->>>>> to review the entire series again.
->>>>>
->>>>> The ones still pending on my quilt tree are:
->>>>>
->>>>> 0030-v4l-subdev-Generic-ioctl-support.patch
->>>>> 0040-omap3isp-OMAP3-ISP-core.patch
->>>>> 0041-omap3isp-Video-devices-and-buffers-queue.patch
->>>>> 0042-omap3isp-CCP2-CSI2-receivers.patch
->>>>> 0043-omap3isp-CCDC-preview-engine-and-resizer.patch
->>>>> 0044-omap3isp-Statistics.patch
->>>>> 0045-omap3isp-Kconfig-and-Makefile.patch
->>>>> 0046-omap3isp-Add-set-performance-callback-in-isp-platfor.patch
->>>>>
->>>>> with the following diffstat:
->>>>>
->>>>> =C2=A0Documentation/video4linux/v4l2-framework.txt =C2=A0 =C2=A0 =
-=C2=A0 | =C2=A0 =C2=A05 +
->>>>> =C2=A0MAINTAINERS =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0| =C2=A0 =C2=A06 +
->>>>> =C2=A0drivers/media/video/Kconfig =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=A0 13 +
->>>>> =C2=A0drivers/media/video/Makefile =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 | =C2=A0 =C2=A02 +
->>>>> =C2=A0drivers/media/video/omap3-isp/Makefile =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 | =C2=A0 13 +
->>>>> =C2=A0drivers/media/video/omap3-isp/cfa_coef_table.h =C2=A0 =C2=A0=
- | =C2=A0 61 +
->>>>> =C2=A0drivers/media/video/omap3-isp/gamma_table.h =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0| =C2=A0 90 +
->>>>> =C2=A0drivers/media/video/omap3-isp/isp.c =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0| 2220 +++++++++++++++++++
->>>>> =C2=A0drivers/media/video/omap3-isp/isp.h =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=A0428 ++++
->>>>> =C2=A0drivers/media/video/omap3-isp/ispccdc.c =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0| 2268 ++++++++++++++++++++
->>>>> =C2=A0drivers/media/video/omap3-isp/ispccdc.h =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0| =C2=A0219 ++
->>>>> =C2=A0drivers/media/video/omap3-isp/ispccp2.c =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0| 1173 ++++++++++
->>>>> =C2=A0drivers/media/video/omap3-isp/ispccp2.h =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0| =C2=A0 98 +
->>>>> =C2=A0drivers/media/video/omap3-isp/ispcsi2.c =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0| 1317 ++++++++++++
->>>>> =C2=A0drivers/media/video/omap3-isp/ispcsi2.h =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0| =C2=A0166 ++
->>>>> =C2=A0drivers/media/video/omap3-isp/ispcsiphy.c =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0| =C2=A0247 +++
->>>>> =C2=A0drivers/media/video/omap3-isp/ispcsiphy.h =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0| =C2=A0 74 +
->>>>> =C2=A0drivers/media/video/omap3-isp/isph3a.h =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 | =C2=A0117 +
->>>>> =C2=A0drivers/media/video/omap3-isp/isph3a_aewb.c =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0| =C2=A0374 ++++
->>>>> =C2=A0drivers/media/video/omap3-isp/isph3a_af.c =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0| =C2=A0429 ++++
->>>>> =C2=A0drivers/media/video/omap3-isp/isphist.c =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0| =C2=A0520 +++++
->>>>> =C2=A0drivers/media/video/omap3-isp/isphist.h =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0| =C2=A0 40 +
->>>>> =C2=A0drivers/media/video/omap3-isp/isppreview.c =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 | 2113 ++++++++++++++++++
->>>>> =C2=A0drivers/media/video/omap3-isp/isppreview.h =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 | =C2=A0214 ++
->>>>> =C2=A0drivers/media/video/omap3-isp/ispqueue.c =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 | 1153 ++++++++++
->>>>> =C2=A0drivers/media/video/omap3-isp/ispqueue.h =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 | =C2=A0187 ++
->>>>> =C2=A0drivers/media/video/omap3-isp/ispreg.h =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 | 1589 ++++++++++++++
->>>>> =C2=A0drivers/media/video/omap3-isp/ispresizer.c =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 | 1693 +++++++++++++++
->>>>> =C2=A0drivers/media/video/omap3-isp/ispresizer.h =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 | =C2=A0147 ++
->>>>> =C2=A0drivers/media/video/omap3-isp/ispstat.c =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0| 1092 ++++++++++
->>>>> =C2=A0drivers/media/video/omap3-isp/ispstat.h =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0| =C2=A0169 ++
->>>>> =C2=A0drivers/media/video/omap3-isp/ispvideo.c =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 | 1255 +++++++++++
->>>>> =C2=A0drivers/media/video/omap3-isp/ispvideo.h =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 | =C2=A0202 ++
->>>>> =C2=A0drivers/media/video/omap3-isp/luma_enhance_table.h | =C2=A0=
- 42 +
->>>>> =C2=A0drivers/media/video/omap3-isp/noise_filter_table.h | =C2=A0=
- 30 +
->>>>> =C2=A0drivers/media/video/v4l2-subdev.c =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=A0 =C2=A02 +-
->>>>> =C2=A0drivers/media/video/videobuf-dma-contig.c =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0| =C2=A0 =C2=A02 +-
->>>>> =C2=A0include/linux/Kbuild =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 | =C2=
-=A0 =C2=A01 +
->>>>> =C2=A038 files changed, 19769 insertions(+), 2 deletions(-)
->>>>>
->>>>> I used quilt for all patches, except for the one patch with some =
-gifs, where I did a
->>>>> git cherry-pick. So, the imported patches should be ok. Of course=
-, it doesn't hurt
->>>>> do double check.
->>>>>
->>>>> The main issue with the omap3isp is due to the presence of privat=
-e ioctl's that
->>>>> I don't have a clear idea about what they are really doing.
->>>>>
->>>>> I couldn't see any documentation about them on a very quick look.=
- While I suspect
->>>>> that they are used only for 3A, I have no means of being sure abo=
-ut that.
->>>>>
->>>>> Also, as I've said several times, while I don't like, I have noth=
-ing against
->>>>> having some ioctls that would be used by a vendor to implement th=
-eir own 3A software
->>>>> algorithms that he may need to hide for some reason or have any p=
-atents applied to
->>>>> the algorithm, but only if:
->>>>> =C2=A0 =C2=A0 =C2=A0 =C2=A01) such algorithms are implemented on =
-userspace;
->>>>
->>>> Yes.
->>>>
->>>>> =C2=A0 =C2=A0 =C2=A0 =C2=A02) the userspace API used by them is f=
-ully documented, in order
->>>>> to allow that someone else with enough motivation and spare time =
-may
->>>>> want to implement his own algorithm (including an open-source one=
-);
->>>>
->>>> The API is pretty close to what is found on public OMAP3 TRM. I'd =
-say
->>>> it's almost to fill registers through a userspace API.
->>>
->>> Ok, so a simple patch adding a txt file documenting those private i=
-octls
->>> to Documentation/video4linux explaining how to use them and pointin=
-g to
->>> OMAP3 TRM documentation is enough.
->>
->> Ok. I'll provide a patch for it.
->
-> Ok, thanks.
->>
->>>
->>>>> =C2=A0 =C2=A0 =C2=A0 =C2=A03) there are no patents denying or cha=
-rging for the usage and/or
->>>>> distribution/redistribution of the Kernel with the provided kerne=
-l driver;
->>>>
->>>> I'd say there's no patent / charge for usage or redistribution. Bu=
-t
->>>> that's lawyer stuff. :/
->>>>
->>>>> =C2=A0 =C2=A0 =C2=A0 =C2=A04) if the device works with a reasonab=
-le quality without them
->>>>> (by reasonable I mean like a cheap webcam, where libv4l could use=
- his
->>>>> set of 3A algorithms to provide a good quality).
->>>>
->>>> It depends on the sensor as well, but in general should work with =
-a
->>>> reasonable quality without using statistic modules.
->>>>
->>>>>
->>>>> Assuming that all those private ioctl's are really for 3A, it is =
-ok for me
->>>>> to accept such ioctls after being sure that the above applies. I'=
-m not sure
->>>>> how to check (4), as, while I have 2 omap boards here (a Beaglebo=
-ard and a
->>>>> gumstix), none of them have any sensor.
->>>>
->>>> The private ioctl are used mostly on statistic modules (3A and
->>>> Histogram). But it's used for CCDC and Preview modules configurati=
-on
->>>> too.
->>>
->>> The issue here is: what if no CCDC and no Preview initialization ev=
-er happen?
->>
->> Currently the driver does not support such situation. Either all
->> modules successfully initialize or ISP driver doesn't probe correctl=
-y.
->
-> I'm not sure if I understood (or if you understood my question ;) )
->
-> What I'm asking is: what happens if the private ioctl's for CCDC and =
-Preview
-> initialization are never called (or any other private/subdev ioctl)?
-> The device will work or not?
+From: Alexander Sverdlin <subaparts@yandex.ru>
 
-It seems I misunderstood you question for the first time. The answer
-is yes. Some functionalities will be disabled and others initialized
-with valid default values.
+Extend range of supported sample rates for CS4271 CODEC.
 
-Br,
+Signed-off-by: Alexander Sverdlin <subaparts@yandex.ru>
+---
+ sound/soc/codecs/cs4271.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-David
-
->
-> Cheers,
-> Mauro
->
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index 1791796..e5cc4da 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -33,6 +33,7 @@
+ #define CS4271_PCM_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
+ 			    SNDRV_PCM_FMTBIT_S24_LE | \
+ 			    SNDRV_PCM_FMTBIT_S32_LE)
++#define CS4271_PCM_RATES SNDRV_PCM_RATE_8000_192000
+ 
+ /*
+  * CS4271 registers
+@@ -392,14 +393,14 @@ static struct snd_soc_dai_driver cs4271_dai = {
+ 		.stream_name	= "Playback",
+ 		.channels_min	= 2,
+ 		.channels_max	= 2,
+-		.rates		= SNDRV_PCM_RATE_8000_96000,
++		.rates		= CS4271_PCM_RATES,
+ 		.formats	= CS4271_PCM_FORMATS,
+ 	},
+ 	.capture = {
+ 		.stream_name	= "Capture",
+ 		.channels_min	= 2,
+ 		.channels_max	= 2,
+-		.rates		= SNDRV_PCM_RATE_8000_96000,
++		.rates		= CS4271_PCM_RATES,
+ 		.formats	= CS4271_PCM_FORMATS,
+ 	},
+ 	.ops = &cs4271_dai_ops,
