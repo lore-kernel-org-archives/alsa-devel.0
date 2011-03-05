@@ -1,96 +1,63 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3 ISP driver
-Date: Sat, 5 Mar 2011 21:48:05 +0100
-Message-ID: <201103052148.06603.laurent.pinchart@ideasonboard.com>
-References: <201102171606.58540.laurent.pinchart@ideasonboard.com> <201103051402.34416.laurent.pinchart@ideasonboard.com> <4D727F64.7040805@redhat.com>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: [PATCH v2] intel8x0m: wait a bit before warm reset check
+Date: Sun, 06 Mar 2011 00:01:43 +0100
+Message-ID: <1299366106.2470.5.camel@t41.thuisdomein>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <4D727F64.7040805@redhat.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@redhat.com>
-Cc: "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>, Pawel Osciak <pawel@osciak.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mauro,
+At every resume a laptop I use prints this message (at KERN_ERR level):
+    ALSA sound/pci/intel8x0m.c:904: AC'97 warm reset still in progress? [0x2]
 
-On Saturday 05 March 2011 19:22:28 Mauro Carvalho Chehab wrote:
-> Em 05-03-2011 10:02, Laurent Pinchart escreveu:
-> > Hi Mauro,
-> > 
-> > Thanks for the review. Let me address all your concerns in a single mail.
-> > 
-> > - ioctl numbers
-> > 
-> > I'll send you a patch that reserves a range in Documentation/ioctl/ioctl-
-> > number.txt and update include/linux/media.h accordingly.
-> 
-> Ok, thanks.
+The thing to note here is that 0x2 corresponds to ICH_AC97COLD. Ie, what
+seems to be happening is that the register involved indicated a warm
+reset for some time (as the ICH_AC97WARM bit was set) but by the time
+the warning is printed, and that same register is checked again, that
+bit is already cleared and only the ICH_AC97COLD bit is still set.
 
-"media: Pick a free ioctls range" at the top of the 
-http://git.linuxtv.org/pinchartl/media.git?a=shortlog;h=refs/heads/media-2.6.39-0005-
-omap3isp branch
+It turns out a warm reset needs some time to settle, but it is currently
+checked right away. The test therefore fails the first time it is done
+and schedule_timeout_uninterruptible() will be called. Once we return
+from that jiffies is already (far) past end_time on this laptop, so we
+exit the loop, print a warning, and exit the function while the warm
+reset actually succeeded.
 
-> > - private ioctls
-> > 
-> > As already explained by David, the private ioctls are used to control
-> > advanced device features that can't be handled by V4L2 controls at the
-> > moment (such as setting a gamma correction table). Using those ioctls is
-> > not mandatory, and the device will work correctly without them (albeit
-> > with a non optimal image quality).
-> > 
-> > David said he will submit a patch to document the ioctls.
-> 
-> Ok.
+One way to fix this is to call udelay() after writing to the register
+involved. A handful of tests suggests 500 usecs is a safe value. (This
+might punish the "finish cold reset" case, but on this laptop such a
+cold reset apparently never happens, so I can't say for sure.)
 
-Working on that.
+While we're at it drop the extra single tick from end_time, as it looks
+rather silly.
 
-> > - media bus formats
-> > 
-> > As Hans explained, there's no 1:1 relationship between media bus formats
-> > and pixel formats.
-> 
-> Yet, there are some relationship between them. See my comments on my
-> previous email.
+Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+---
+0) v1 was called " intel8x0m: schedule timeout before warm reset check".
 
-Let's continue the discussion in the mail thread.
+1) A udelay of 250 usecs always failed while 300 usecs always worked. So
+500 usecs might be a bit cautious.
 
-> > - FOURCC and media bus codes documentation
-> > 
-> > I forgot to document some of them. I'll send a new patch that adds the
-> > missing documentation.
-> 
-> Ok.
+ sound/pci/intel8x0m.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-"v4l: Add documentation for the 12 bits bayer pixel formats"
-"v4l: Fix 12 bits bayer media bus format documentation"
-
-in the 
-http://git.linuxtv.org/pinchartl/media.git?a=shortlog;h=refs/heads/media-2.6.39-0004-
-v4l-misc branch.
-
-> > Is there any other issue I need to address ?
-> 
-> Nothing else, in the patches I've analysed so far. I'll take a look at the
-> remaining omap3isp after receiving the documentation for the private
-> ioctl's.
-> 
-> > My understanding is that there's
-> > no need to rebase the existing patches, is that correct ?
-> 
-> Yes, it is correct. Just send the new patches to be applied at the end of
-> the series. I'll eventually reorder them if needed to avoid breaking git
-> bisect.
-
-Please squash "v4l: Add documentation for the 12 bits bayer pixel formats" 
-with "v4l: Add 12 bits bayer pixel formats" and "v4l: Fix 12 bits bayer media 
-bus format documentation" with "v4l: Add missing 12 bits bayer media bus 
-formats" when applying to keep the history clean. You can discard the commit 
-message of the two new patches.
-
+diff --git a/sound/pci/intel8x0m.c b/sound/pci/intel8x0m.c
+index 13cec1e..62fad24 100644
+--- a/sound/pci/intel8x0m.c
++++ b/sound/pci/intel8x0m.c
+@@ -894,7 +894,8 @@ static int snd_intel8x0m_ich_chip_init(struct intel8x0m *chip, int probing)
+ 	/* finish cold or do warm reset */
+ 	cnt |= (cnt & ICH_AC97COLD) == 0 ? ICH_AC97COLD : ICH_AC97WARM;
+ 	iputdword(chip, ICHREG(GLOB_CNT), cnt);
+-	end_time = (jiffies + (HZ / 4)) + 1;
++	udelay(500);
++	end_time = jiffies + HZ / 4;
+ 	do {
+ 		if ((igetdword(chip, ICHREG(GLOB_CNT)) & ICH_AC97WARM) == 0)
+ 			goto __ok;
 -- 
-Regards,
-
-Laurent Pinchart
+1.7.4.1
