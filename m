@@ -1,20 +1,16 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3
-	ISP driver
-Date: Sun, 6 Mar 2011 18:21:31 +0100
-Message-ID: <201103061821.31705.laurent.pinchart@ideasonboard.com>
-References: <201102171606.58540.laurent.pinchart@ideasonboard.com>
-	<201103061238.42784.laurent.pinchart@ideasonboard.com>
-	<4D738CFC.40301@redhat.com>
+From: Ryan Mallon <ryan@bluewatersys.com>
+Subject: Re: [PATCH] ASoC: Improve EP93xx I2S clocks management.
+Date: Mon, 07 Mar 2011 11:02:56 +1300
+Message-ID: <4D740490.8060200@bluewatersys.com>
+References: <1299286635.27359.106.camel@r60e>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
-	[95.142.166.194])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5A5C1103800
-	for <alsa-devel@alsa-project.org>; Sun,  6 Mar 2011 18:21:14 +0100 (CET)
-In-Reply-To: <4D738CFC.40301@redhat.com>
+Received: from hayes.bluewaternz.com (mail.bluewatersys.com [202.124.120.130])
+	by alsa0.perex.cz (Postfix) with ESMTP id 81EB12414C
+	for <alsa-devel@alsa-project.org>; Sun,  6 Mar 2011 23:03:04 +0100 (CET)
+In-Reply-To: <1299286635.27359.106.camel@r60e>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,74 +20,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mauro Carvalho Chehab <mchehab@redhat.com>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>, alsa-devel@alsa-project.org, Pawel Osciak <pawel@osciak.com>, Sakari Ailus <sakari.ailus@retiisi.org.uk>, Sylwester Nawrocki <snjw23@gmail.com>, David Cohen <dacohen@gmail.com>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+To: Alexander Sverdlin <subaparts@yandex.ru>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mauro,
+On 03/05/2011 01:57 PM, Alexander Sverdlin wrote:
+> From: Alexander Sverdlin <subaparts@yandex.ru>
+> 
+> Improve EP93xx I2S clocks management.
+> Some freqs values are set not exact as they requested for MCLK and
+> original code was not able to find divisors for SCLK and LRCLK.
+> This code just picks up nearest value from 3 possible variants.
+> This patch makes 44100 and 192000 rates working and fixes
+> capture function.
+> 
+> Signed-off-by: Alexander Sverdlin <subaparts@yandex.ru>
+> ---
+>  sound/soc/ep93xx/ep93xx-i2s.c |   19 +++++++++----------
+>  1 files changed, 9 insertions(+), 10 deletions(-)
+> 
+> diff --git a/sound/soc/ep93xx/ep93xx-i2s.c b/sound/soc/ep93xx/ep93xx-i2s.c
+> index 0458dd4..3d4c086 100644
+> --- a/sound/soc/ep93xx/ep93xx-i2s.c
+> +++ b/sound/soc/ep93xx/ep93xx-i2s.c
+> @@ -242,7 +242,7 @@ static int ep93xx_i2s_hw_params(struct snd_pcm_substream *substream,
+>  {
+>  	struct ep93xx_i2s_info *info = snd_soc_dai_get_drvdata(dai);
+>  	unsigned word_len, div, sdiv, lrdiv;
+> -	int found = 0, err;
+> +	int err;
+>  
+>  	switch (params_format(params)) {
+>  	case SNDRV_PCM_FORMAT_S16_LE:
+> @@ -275,15 +275,14 @@ static int ep93xx_i2s_hw_params(struct snd_pcm_substream *substream,
+>  	 * the codec uses.
+>  	 */
+>  	div = clk_get_rate(info->mclk) / params_rate(params);
+> -	for (sdiv = 2; sdiv <= 4; sdiv += 2)
+> -		for (lrdiv = 64; lrdiv <= 128; lrdiv <<= 1)
+> -			if (sdiv * lrdiv == div) {
+> -				found = 1;
+> -				goto out;
+> -			}
+> -out:
+> -	if (!found)
+> -		return -EINVAL;
+> +	sdiv = 4;
+> +	if (div > (256 + 512) / 2) {
+> +		lrdiv = 128;
+> +	} else {
+> +		lrdiv = 64;
+> +		if (div < (128 + 256) / 2)
+> +			sdiv = 2;
+> +	}
 
-On Sunday 06 March 2011 14:32:44 Mauro Carvalho Chehab wrote:
-> Em 06-03-2011 08:38, Laurent Pinchart escreveu:
-> > On Sunday 06 March 2011 11:56:04 Mauro Carvalho Chehab wrote:
-> >> Em 05-03-2011 20:23, Sylwester Nawrocki escreveu:
-> >> 
-> >> A somewhat unrelated question that occurred to me today: what happens
-> >> when a format change happens while streaming?
-> >> 
-> >> Considering that some formats need more bits than others, this could
-> >> lead into buffer overflows, either internally at the device or
-> >> externally, on bridges that just forward whatever it receives to the
-> >> DMA buffers (there are some that just does that). I didn't see anything
-> >> inside the mc code preventing such condition to happen, and probably
-> >> implementing it won't be an easy job. So, one alternative would be to
-> >> require some special CAPS if userspace tries to set the mbus format
-> >> directly, or to recommend userspace to create media controller nodes
-> >> with 0600 permission.
-> > 
-> > That's not really a media controller issue. Whether formats can be
-> > changed during streaming is a driver decision. The OMAP3 ISP driver
-> > won't allow formats to be changed during streaming. If the hardware
-> > allows for such format changes, drivers can implement support for that
-> > and make sure that no buffer overflow will occur.
-> 
-> Such issues is caused by having two API's that allow format changes, one
-> that does it device-based, and another one doing it subdev-based.
-> 
-> Ok, drivers can implementing locks to prevent such troubles, but, without
-> the core providing a reliable mechanism, it is hard to implement a
-> correct lock.
-> 
-> For example, let's suppose that some driver is using mt9m111 subdev (I just
-> picked one random sensor that supports lots of MBUS formats). There's
-> nothing there preventing a subdev call for it to change mbus format while
-> streaming. Worse than that, the sensor driver has no way to block it, as
-> it doesn't know that the bridge driver is streaming or not.
-> 
-> The code at subdev_do_ioctl() is just:
-> 
-> case VIDIOC_SUBDEV_S_FMT: {
->         struct v4l2_subdev_format *format = arg;
-> 
->         if (format->which != V4L2_SUBDEV_FORMAT_TRY &&
->             format->which != V4L2_SUBDEV_FORMAT_ACTIVE)
->                 return -EINVAL;
-> 
->         if (format->pad >= sd->entity.num_pads)
->                 return -EINVAL;
-> 
->         return v4l2_subdev_call(sd, pad, set_fmt, subdev_fh, format);
-> }
-> 
-> So, mc core won't be preventing it.
-> 
-> So, I can't see how such subdev request would be implementing a logic to
-> return -EBUSY on those cases.
+I don't understand where the magic numbers above come from? Does it work
+correctly for all rates? I think a comment is needed to explain how this
+works.
 
-Drivers can use the media_device graph_mutex to serialize format and stream 
-management calls. A finer grain locking mechanism implemented in the core 
-might be better, but we're not stuck without a solution at the moment.
+An alternative would be to keep the existing loop form, but try and find
+the closest match rather than an exact match. Something like this
+(untested):
+
+	unsigned long diff, lowest_diff = ULONG_MAX;
+
+	/* Find the closest match for sdiv/lrdiv */
+	best_sdiv  = 2;
+	best_lrdiv = 64;
+	for (sdiv = 2; sdiv <= 4; sdiv += 2) {
+		for (lrdiv = 64; lrdiv <= 128; lrdiv <<= 1) {
+			diff = abs(div - (sdiv * lrdiv));
+			if (diff < lowest_diff) {
+				lowest_diff = diff;
+				best_sdiv   = sdiv;
+				best_lrdiv  = lrdiv;
+			}
+		}
+	}
+
+	sdiv  = best_sdiv;
+	lrdiv = best_lrdiv;
+
+~Ryan
 
 -- 
-Regards,
+Bluewater Systems Ltd - ARM Technology Solution Centre
 
-Laurent Pinchart
+Ryan Mallon         		5 Amuri Park, 404 Barbadoes St
+ryan@bluewatersys.com         	PO Box 13 889, Christchurch 8013
+http://www.bluewatersys.com	New Zealand
+Phone: +64 3 3779127		Freecall: Australia 1800 148 751
+Fax:   +64 3 3779135			  USA 1800 261 2934
