@@ -1,66 +1,127 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3
-	ISP driver
-Date: Sun, 6 Mar 2011 11:17:42 +0100
-Message-ID: <201103061117.42896.laurent.pinchart@ideasonboard.com>
-References: <201102171606.58540.laurent.pinchart@ideasonboard.com>
-	<4D73472A.60702@retiisi.org.uk>
+From: Mauro Carvalho Chehab <mchehab@redhat.com>
+Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3 ISP driver
+Date: Sun, 06 Mar 2011 07:56:04 -0300
+Message-ID: <4D736844.50703@redhat.com>
+References: <201102171606.58540.laurent.pinchart@ideasonboard.com>	<201103031125.06419.laurent.pinchart@ideasonboard.com>	<4D71471D.6060808@redhat.com>	<201103051252.12342.hverkuil@xs4all.nl> <AANLkTi=SS3CBkKUdovU33SQi=s9gNprZszKaMrkRGqGy@mail.gmail.com> <4D7248B4.9090003@gmail.com> <4D727D6E.2070602@redhat.com> <4D72C5F0.6090209@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com
-	[95.142.166.194])
-	by alsa0.perex.cz (Postfix) with ESMTP id DC3F9243D6
-	for <alsa-devel@alsa-project.org>; Sun,  6 Mar 2011 11:17:25 +0100 (CET)
-In-Reply-To: <4D73472A.60702@retiisi.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sakari Ailus <sakari.ailus@retiisi.org.uk>
-Cc: alsa-devel@alsa-project.org, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <4D72C5F0.6090209@gmail.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Sylwester Nawrocki <snjw23@gmail.com>
+Cc: David Cohen <dacohen@gmail.com>, Hans Verkuil <hverkuil@xs4all.nl>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>, Pawel Osciak <pawel@osciak.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Sakari,
+Em 05-03-2011 20:23, Sylwester Nawrocki escreveu:
+> Hi Mauro,
+> 
+> On 03/05/2011 07:14 PM, Mauro Carvalho Chehab wrote:
+>> Em 05-03-2011 11:29, Sylwester Nawrocki escreveu:
+>>> Hi David,
+>>>
+>>> On 03/05/2011 02:04 PM, David Cohen wrote:
+>>>> Hi Hans,
+>>>>
+>>>> On Sat, Mar 5, 2011 at 1:52 PM, Hans Verkuil<hverkuil@xs4all.nl>   wrote:
+>>>>> On Friday, March 04, 2011 21:10:05 Mauro Carvalho Chehab wrote:
+>>>>>> Em 03-03-2011 07:25, Laurent Pinchart escreveu:
+>>> ...
+>>>>>>>         v4l: Group media bus pixel codes by types and sort them alphabetically
+>>>>>>
+>>>>>> The presence of those mediabus names against the traditional fourcc codes
+>>>>>> at the API adds some mess to the media controller. Not sure how to solve,
+>>>>>> but maybe the best way is to add a table at the V4L2 API associating each
+>>>>>> media bus format to the corresponding V4L2 fourcc codes.
+>>>>>
+>>>>> You can't do that in general. Only for specific hardware platforms. If you
+>>>>> could do it, then we would have never bothered creating these mediabus fourccs.
+>>>>>
+>>>>> How a mediabus fourcc translates to a pixelcode (== memory format) depends
+>>>>> entirely on the hardware capabilities (mostly that of the DMA engine).
+>>>>
+>>>> May I ask you one question here? (not entirely related to this patch set).
+>>>> Why pixelcode != mediabus fourcc?
+>>>> e.g. OMAP2 camera driver talks to sensor through subdev interface and
+>>>> sets its own output pixelformat depending on sensor's mediabus fourcc.
+>>>> So it needs a translation table mbus_pixelcode ->   pixelformat. Why
+>>>> can't it be pixelformat ->   pixelformat ?
+>>>>
+>>>
+>>> Let me try to explain, struct v4l2_mbus_framefmt::code (pixelcode)
+>>> describes how data is transfered/sampled on the camera parallel or serial bus.
+>>> It defines bus width, data alignment and how many data samples form a single
+>>> pixel.
+>>>
+>>> struct v4l2_pix_format::pixelformat (fourcc) on the other hand describes how
+>>> the image data is stored in memory.
+>>>
+>>> As Hans pointed out there is not always a 1:1 correspondence, e.g.
+>>
+>> The relation may not be 1:1 but they are related.
+>>
+>> It should be documented somehow how those are related, otherwise, the API
+>> will be obscure.
+> 
+> Yeah, I agree this is a good point now when the media bus formats have become
+> public. Perhaps by a misunderstanding I just thought it is all more about some
+> utility functions in the v4l core rather than the documentation.
 
-On Sunday 06 March 2011 09:34:50 Sakari Ailus wrote:
-> Hi Laurent,
+Yes, now you got my point. 
+ 
+>>
+>> Of course, the output format may be different than the internal formats,
+>> since some bridges have format converters.
+>>
+>>>
+>>> 1. Both V4L2_MBUS_FMT_YUYV8_1x16 and V4L2_MBUS_FMT_YUYV8_2x8 may being
+>>> translating to V4L2_PIX_FMT_YUYV fourcc,
+>>
+>> Ok, so there is a relationship between them.
+>>
+>>> 2. Or the DMA engine in the camera host interface might be capable of
+>>> converting single V4L2_MBUS_FMT_RGB555 pixelcode to V4L2_PIX_FMT_RGB555
+>>> and V4L2_PIX_FMT_RGB565 fourcc's. So the user can choose any of them they
+>>> seem most suitable and the hardware takes care of the conversion.
+>>
+>> No. You can't create an additional bit. if V4L2_MBUS_FMT_RGB555 provides 5
+>> bits for all color channels, the only corresponding format is V4L2_PIX_FMT_RGB555,
+>> as there's no way to get 6 bits for green, if the hardware sampled it with
+>> 5 bits. Ok, some bridge may fill with 0 an "extra" bit for green, but this
+>> is the bridge doing a format conversion.
+>>
+>> In general, for all RGB formats, a mapping between MBUS_FMT_RGBxxx and the
+>> corresponding fourcc formats could be mapped on two formats only:
+>> V4L2_PIX_FMT_RGBxxx or V4L2_PIX_FMT_BGRxxx.
 > 
-> Many thanks for the pull req!
+> OK, that might not have been a good example, of one mbus pixel code to many
+> fourccs relationship. 
+> There will be always conversion between media bus pixelcode and fourccs 
+> as they are in completely different domains. And the method of conversion 
+> from media bus formats may be an intrinsic property of a bridge, changing
+> across various bridges, e.g. different endianness may be used.
 > 
-> On Thu, Feb 17, 2011 at 04:06:58PM +0100, Laurent Pinchart wrote:
-> ...
-> 
-> >  drivers/media/video/omap3-isp/ispresizer.c         | 1693 ++++++++++++++
-> >  drivers/media/video/omap3-isp/ispresizer.h         |  147 ++
-> >  drivers/media/video/omap3-isp/ispstat.c            | 1092 +++++++++
-> >  drivers/media/video/omap3-isp/ispstat.h            |  169 ++
-> >  drivers/media/video/omap3-isp/ispvideo.c           | 1264 ++++++++++
-> >  drivers/media/video/omap3-isp/ispvideo.h           |  202 ++
-> >  drivers/media/video/omap3-isp/luma_enhance_table.h |   42 +
-> >  drivers/media/video/omap3-isp/noise_filter_table.h |   30 +
-> 
-> ...
-> 
-> >  include/linux/Kbuild                               |    4 +
-> >  include/linux/media.h                              |  132 ++
-> >  include/linux/omap3isp.h                           |  646 +++++
-> 
-> What about renaming the directory omap3isp for the sake of consistency?
-> The header file is called omap3isp.h and omap3isp is the prefix used in
-> the driver for exported symbols.
+> So I think in general it is good to clearly specify the relationships 
+> in the API but we need to be aware of varying "correlation ratio" across 
+> the formats and that we should perhaps operate on ranges rather than single
+> formats. Perhaps the API should provide guidelines of which formats should
+> be used when to obtain best results.
 
-I'm fine with both. If Mauro prefers omap3-isp, I can update the patches.
+It makes sense to operate in ranges are you're proposing.
 
-> My apologies for not bringing this up earlier.
+A somewhat unrelated question that occurred to me today: what happens when a 
+format change happens while streaming? 
 
--- 
-Regards,
+Considering that some formats need more bits than others, this could lead into 
+buffer overflows, either internally at the device or externally, on bridges 
+that just forward whatever it receives to the DMA buffers (there are some that 
+just does that). I didn't see anything inside the mc code preventing such
+condition to happen, and probably implementing it won't be an easy job. So,
+one alternative would be to require some special CAPS if userspace tries to
+set the mbus format directly, or to recommend userspace to create media
+controller nodes with 0600 permission.
 
-Laurent Pinchart
+Comments?
+
+Thanks,
+Mauro.
