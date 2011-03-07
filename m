@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: Fix outdated API usage in
-	tlv320aic32x4
-Date: Mon,  7 Mar 2011 11:11:04 +0000
-Message-ID: <1299496265-8090-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: Add missing debugfs conditionals
+Date: Mon,  7 Mar 2011 11:11:05 +0000
+Message-ID: <1299496265-8090-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1299496265-8090-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 90F0F10384E
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 12:11:12 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 05C7510387F
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 12:11:13 +0100 (CET)
+In-Reply-To: <1299496265-8090-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,39 +26,28 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/tlv320aic32x4.c |   10 +++++-----
- 1 files changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/soc-core.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index ee82e38..e93b9d1 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -340,13 +340,13 @@ static inline int aic32x4_get_divs(int mclk, int rate)
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 8926d38..be34f6b 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1879,6 +1879,7 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
+ 					card->num_dapm_routes);
  
- static int aic32x4_add_widgets(struct snd_soc_codec *codec)
- {
--	snd_soc_dapm_new_controls(codec, aic32x4_dapm_widgets,
--				ARRAY_SIZE(aic32x4_dapm_widgets));
-+	snd_soc_dapm_new_controls(&codec->dapm, aic32x4_dapm_widgets,
-+				  ARRAY_SIZE(aic32x4_dapm_widgets));
++#ifdef CONFIG_DEBUG_FS
+ 	card->dapm.debugfs_dapm = debugfs_create_dir("dapm",
+ 						     card->debugfs_card_root);
+ 	if (!card->dapm.debugfs_dapm)
+@@ -1886,6 +1887,7 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 		       "Failed to create card DAPM debugfs directory\n");
  
--	snd_soc_dapm_add_routes(codec, aic32x4_dapm_routes,
-+	snd_soc_dapm_add_routes(&codec->dapm, aic32x4_dapm_routes,
- 				ARRAY_SIZE(aic32x4_dapm_routes));
+ 	snd_soc_dapm_debugfs_init(&card->dapm);
++#endif
  
--	snd_soc_dapm_new_widgets(codec);
-+	snd_soc_dapm_new_widgets(&codec->dapm);
- 	return 0;
- }
- 
-@@ -602,7 +602,7 @@ static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
- 	case SND_SOC_BIAS_OFF:
- 		break;
- 	}
--	codec->bias_level = level;
-+	codec->dapm.bias_level = level;
- 	return 0;
- }
- 
+ 	snprintf(card->snd_card->shortname, sizeof(card->snd_card->shortname),
+ 		 "%s",  card->name);
 -- 
 1.7.2.3
