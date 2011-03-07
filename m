@@ -1,15 +1,15 @@
 From: Alexander Sverdlin <subaparts@yandex.ru>
-Subject: [PATCH 1/6] ASoC: Extend range of supported sample
- rates for CS4271 CODEC.
-Date: Mon, 07 Mar 2011 20:29:36 +0300
-Message-ID: <1299518976.2255.65.camel@r60e>
+Subject: [PATCH 3/6] ASoC: EDB93xx: Manage I2S rates according
+ to datasheet for CS4271 CODEC.
+Date: Mon, 07 Mar 2011 20:29:53 +0300
+Message-ID: <1299518993.2255.67.camel@r60e>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward5.mail.yandex.net (forward5.mail.yandex.net
-	[77.88.46.21]) by alsa0.perex.cz (Postfix) with ESMTP id 52670244DE
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 18:29:43 +0100 (CET)
+Received: from forward4.mail.yandex.net (forward4.mail.yandex.net [77.88.46.9])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2BF4F103936
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 18:29:56 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,40 +25,41 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Alexander Sverdlin <subaparts@yandex.ru>
 
-Extend range of supported sample rates for CS4271 CODEC.
+Manage I2S rates according to datasheet for CS4271 CODEC in EDB93xx
+machine driver.
 
 Signed-off-by: Alexander Sverdlin <subaparts@yandex.ru>
-Acked-by: Liam Girdwood <lrg@ti.com>
 ---
- sound/soc/codecs/cs4271.c |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/ep93xx/edb93xx.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
-index 1791796..e5cc4da 100644
---- a/sound/soc/codecs/cs4271.c
-+++ b/sound/soc/codecs/cs4271.c
-@@ -33,6 +33,7 @@
- #define CS4271_PCM_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
- 			    SNDRV_PCM_FMTBIT_S24_LE | \
- 			    SNDRV_PCM_FMTBIT_S32_LE)
-+#define CS4271_PCM_RATES SNDRV_PCM_RATE_8000_192000
+diff --git a/sound/soc/ep93xx/edb93xx.c b/sound/soc/ep93xx/edb93xx.c
+index b270085..d3aa151 100644
+--- a/sound/soc/ep93xx/edb93xx.c
++++ b/sound/soc/ep93xx/edb93xx.c
+@@ -41,17 +41,17 @@ static int edb93xx_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int err;
++	unsigned int mclk_rate;
+ 	unsigned int rate = params_rate(params);
++
+ 	/*
+-	 * We set LRCLK equal to `rate' and SCLK = LRCLK * 64,
+-	 * because our sample size is 32 bit * 2 channels.
+-	 * I2S standard permits us to transmit more bits than
+-	 * the codec uses.
+-	 * MCLK = SCLK * 4 is the best recommended value,
+-	 * but we have to fall back to ratio 2 for higher
+-	 * sample rates.
++	 * According to CS4271 datasheet we use MCLK/LRCK=256 for
++	 * rates below 50kHz and 128 for higher sample rates
+ 	 */
+-	unsigned int mclk_rate = rate * 64 * ((rate <= 48000) ? 4 : 2);
++	if (rate < 50000)
++		mclk_rate = rate * 64 * 4;
++	else
++		mclk_rate = rate * 64 * 2;
  
- /*
-  * CS4271 registers
-@@ -392,14 +393,14 @@ static struct snd_soc_dai_driver cs4271_dai = {
- 		.stream_name	= "Playback",
- 		.channels_min	= 2,
- 		.channels_max	= 2,
--		.rates		= SNDRV_PCM_RATE_8000_96000,
-+		.rates		= CS4271_PCM_RATES,
- 		.formats	= CS4271_PCM_FORMATS,
- 	},
- 	.capture = {
- 		.stream_name	= "Capture",
- 		.channels_min	= 2,
- 		.channels_max	= 2,
--		.rates		= SNDRV_PCM_RATE_8000_96000,
-+		.rates		= CS4271_PCM_RATES,
- 		.formats	= CS4271_PCM_FORMATS,
- 	},
- 	.ops = &cs4271_dai_ops,
+ 	err = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
+ 				  SND_SOC_DAIFMT_NB_IF |
