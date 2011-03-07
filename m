@@ -1,78 +1,88 @@
-From: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [Device-drivers-devel] [PATCH] Add driver for
- Analog Devices ADAU1701 SigmaDSP
-Date: Mon, 7 Mar 2011 06:50:15 -0500
-Message-ID: <AANLkTikynw7vCsqqyNZW-LFuGUKKQEtG3s4YCZjpOvko@mail.gmail.com>
-References: <1299460302-15392-1-git-send-email-cliff.cai@analog.com>
-	<20110307114142.GB13471@opensource.wolfsonmicro.com>
+From: Mauro Carvalho Chehab <mchehab@redhat.com>
+Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3 ISP driver
+Date: Mon, 07 Mar 2011 08:50:28 -0300
+Message-ID: <4D74C684.7090507@redhat.com>
+References: <201102171606.58540.laurent.pinchart@ideasonboard.com> <201103061238.42784.laurent.pinchart@ideasonboard.com> <4D738CFC.40301@redhat.com> <201103061821.31705.laurent.pinchart@ideasonboard.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yi0-f51.google.com (mail-yi0-f51.google.com
-	[209.85.218.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4876C103881
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 12:50:36 +0100 (CET)
-Received: by yib2 with SMTP id 2so1881018yib.38
-	for <alsa-devel@alsa-project.org>; Mon, 07 Mar 2011 03:50:35 -0800 (PST)
-In-Reply-To: <20110307114142.GB13471@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: cliff.cai@analog.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, akpm@linux-foundation.org, lrg@slimlogic.co.uk
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <201103061821.31705.laurent.pinchart@ideasonboard.com>
+Sender: linux-media-owner@vger.kernel.org
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Sylwester Nawrocki <snjw23@gmail.com>, David Cohen <dacohen@gmail.com>, Hans Verkuil <hverkuil@xs4all.nl>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>, Pawel Osciak <pawel@osciak.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBNYXIgNywgMjAxMSBhdCAwNjo0MSwgTWFyayBCcm93biB3cm90ZToKPiBPbiBNb24s
-IE1hciAwNywgMjAxMSBhdCAwOToxMTo0MkFNICswODAwLCBjbGlmZi5jYWlAYW5hbG9nLmNvbSB3
-cm90ZToKPj4gRnJvbTogQ2xpZmYgQ2FpIDxjbGlmZi5jYWlAYW5hbG9nLmNvbT4KPj4gSXQgbmVl
-ZHMgdG8gaW5jbHVkZSAibGludXgvc2lnbWEuaCIgd2hpY2ggaXMgc3RpbGwgaW4gQW5kcmV3IE1v
-cnRvbidzCj4+IHRyZWUuCj4KPiBJcyB0aGlzIG5lZWRlZCBieSBvdGhlciB0cmVlcz8KCm5vCgo+
-wqBJIGNhbid0IGFwcGx5IHRoaXMgZHJpdmVyIHVudGlsIGl0J3MgbWVyZ2VkIGludG8gQVNvQyB2
-aWEgc29tZSBtZWFucwoKYW5kIGFuZHJldyBoYXMgYmVlbiBob2xkaW5nIG9mZiBvbiBtZXJnaW5n
-IHRoZSBmaXJtd2FyZSBkcml2ZXIgdW50aWwKc29tZXRoaW5nIGluIG1haW5saW5lIG5lZWRzIGl0
-LiAgb25jZSBhIGRyaXZlciBnZXRzIHRvIHRoZSBwb2ludCB3aGVyZQp5b3UncmUgZmluZSB3aXRo
-IG1lcmdpbmcgaXQsIHdlIGNhbiBidWcgYWtwbSB0byBwdXNoIHRoZSBzaWdtYQpmaXJtd2FyZSBs
-b2FkZXIgdG8gbGludXMuCgo+PiAgICAgICBzZWxlY3QgU05EX1NPQ19QQ00zMDA4Cj4+ICAgICAg
-IHNlbGVjdCBTTkRfU09DX1NQRElGCj4+ICAgICAgIHNlbGVjdCBTTkRfU09DX1NTTTI2MDIgaWYg
-STJDCj4+ICsgICAgIHNlbGVjdCBTTkRfU09DX0FEQVUxNzAxIGlmIEkyQwo+PiAgICAgICBzZWxl
-Y3QgU05EX1NPQ19TVEFDOTc2NiBpZiBTTkRfU09DX0FDOTdfQlVTCj4+ICAgICAgIHNlbGVjdCBT
-TkRfU09DX1RMVjMyMEFJQzIzIGlmIEkyQwo+Cj4gVGhpcyBwcmVzdW1hYmx5IGFsc28gbmVlZHMg
-dG8gc2VsZWN0IHRoZSBEU1AgQVBJIG90aGVyd2lzZSBpdCdzIG5vdAo+IGdvaW5nIHRvIGJ1aWxk
-LgoKYnkgIkRTUCBBUEkiIGknbSBndWVzc2luZyB5b3UgbWVhbiB0aGUgU2lnbWEgZmlybXdhcmUg
-bG9hZGVyCgo+PiArc3RhdGljIHNzaXplX3QgYWRhdTEzNzFfZHNwX2xvYWQoc3RydWN0IGRldmlj
-ZSAqZGV2LAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBkZXZpY2Vf
-YXR0cmlidXRlICphdHRyLAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnN0
-IGNoYXIgKmJ1Ziwgc2l6ZV90IGNvdW50KQo+PiArewo+PiArICAgICBpbnQgcmV0ID0gMDsKPj4g
-KyAgICAgc3RydWN0IGFkYXUxNzAxX3ByaXYgKmFkYXUxNzAxID0gZGV2X2dldF9kcnZkYXRhKGRl
-dik7Cj4+ICsgICAgIHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYyA9IGFkYXUxNzAxLT5jb2Rl
-YzsKPj4gKyAgICAgcmV0ID0gYWRhdTE3MDFfc2V0cHJvZ3JhbShjb2RlYyk7Cj4+ICsgICAgIGlm
-IChyZXQpCj4+ICsgICAgICAgICAgICAgcmV0dXJuIHJldDsKPj4gKyAgICAgZWxzZQo+PiArICAg
-ICAgICAgICAgIHJldHVybiBjb3VudDsKPj4gK30KPj4gK3N0YXRpYyBERVZJQ0VfQVRUUihkc3As
-IDA2NDQsIE5VTEwsIGFkYXUxMzcxX2RzcF9sb2FkKTsKPgo+IFlvdSdyZSBtYXJraW5nIHRoZSBm
-aWxlIGFzIHN1cHBvcnRpbmcgYm90aCByZWFkIGFuZCB3cml0ZSBidXQgb25seQo+IHByb3ZpZGlu
-ZyB3cml0ZSBmdW5jdGlvbmFsaXR5LCBhbmQgdGhlIHdyaXRlIGZ1bmN0aW9uYWxpdHkgdG90YWxs
-eQo+IGlnbm9yZXMgdGhlIHdyaXR0ZW4gZGF0YS4KPgo+IE1vcmUgZ2VuZXJhbGx5IHRoaXMgZG9l
-c24ndCBzZWVtIGxpa2UgYSBncmVhdCBpbnRlcmZhY2UgLSBhcHBhcmVudGx5IHRoZQo+IGRldmlj
-ZSByZXF1cmllcyB0aGF0IGZpcm13YXJlIGJlIGxvYWRlZCBidXQgdGhlIHdob2xlIGZpcm13YXJl
-IGxvYWQKPiBwcm9jZXNzIGlzbid0IGF0IGFsbCBqb2luZWQgdXAgd2l0aCB0aGUgZHJpdmVyIGNv
-ZGUgbWVhbmluZyB0aGF0IHRoZQo+IGFwcGxpY2F0aW9uIGxheWVyIGhhcyB0byBmaWd1cmUgb3V0
-IHdoZW4gZmlybXdhcmUgbmVlZHMgdG8gYmUgcmVsb2FkZWQsCj4gdGhlcmUncyBubyB1bmRlcnN0
-YW5kaW5nIG9uIHRoZSBwYXJ0IG9mIHRoZSBkcml2ZXIgb2Ygd2hhdCB0aGUgZmlybXdhcmUKPiBv
-biB0aGUgZGV2aWNlIGlzIGRvaW5nIG9yIGhvdyBpdCdzIGdsdWVkIGludG8gdGhlIGF1ZGlvIHN1
-YnN5c3RlbS4KCnRoZSBBUEkgc2hvdWxkIGFsbG93IGZvciB1c2Vyc3BhY2UgdG8gc3BlY2lmeSB0
-aGUgZmlybXdhcmUgbmFtZSwgYnV0CnRoYXQncyBhYm91dCBpdC4gIGl0IGlzIHVwIHRvIHRoZSB1
-c2Vyc3BhY2UgYXBwbGljYXRpb24gdG8gYXJiaXRyYXJpbHkKbG9hZCBkaWZmZXJlbnQgZmlybXdh
-cmUgZmlsZXMgb24gdGhlIGZseSBpbnRvIHRoZSBjb2RlYyB3aXRob3V0IHRoZQpjb2RlYyBjYXJp
-bmcgd2hhdCdzIGdvaW5nIGludG8gaXQuICBvZnRlbiB0aW1lcyB0aGUgZmlybXdhcmUgaXMgRFNQ
-CmNvZGUgdG8gZG8gZGlmZmVyZW50IHBvc3QgcHJvY2Vzc2luZyBvbiB0aGUgYXVkaW8gc3RyZWFt
-IChjbGVhbnVwIG9yCndoYXRldmVyKS4KLW1pa2UKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+Em 06-03-2011 14:21, Laurent Pinchart escreveu:
+> Hi Mauro,
+> 
+> On Sunday 06 March 2011 14:32:44 Mauro Carvalho Chehab wrote:
+>> Em 06-03-2011 08:38, Laurent Pinchart escreveu:
+>>> On Sunday 06 March 2011 11:56:04 Mauro Carvalho Chehab wrote:
+>>>> Em 05-03-2011 20:23, Sylwester Nawrocki escreveu:
+>>>>
+>>>> A somewhat unrelated question that occurred to me today: what happens
+>>>> when a format change happens while streaming?
+>>>>
+>>>> Considering that some formats need more bits than others, this could
+>>>> lead into buffer overflows, either internally at the device or
+>>>> externally, on bridges that just forward whatever it receives to the
+>>>> DMA buffers (there are some that just does that). I didn't see anything
+>>>> inside the mc code preventing such condition to happen, and probably
+>>>> implementing it won't be an easy job. So, one alternative would be to
+>>>> require some special CAPS if userspace tries to set the mbus format
+>>>> directly, or to recommend userspace to create media controller nodes
+>>>> with 0600 permission.
+>>>
+>>> That's not really a media controller issue. Whether formats can be
+>>> changed during streaming is a driver decision. The OMAP3 ISP driver
+>>> won't allow formats to be changed during streaming. If the hardware
+>>> allows for such format changes, drivers can implement support for that
+>>> and make sure that no buffer overflow will occur.
+>>
+>> Such issues is caused by having two API's that allow format changes, one
+>> that does it device-based, and another one doing it subdev-based.
+>>
+>> Ok, drivers can implementing locks to prevent such troubles, but, without
+>> the core providing a reliable mechanism, it is hard to implement a
+>> correct lock.
+>>
+>> For example, let's suppose that some driver is using mt9m111 subdev (I just
+>> picked one random sensor that supports lots of MBUS formats). There's
+>> nothing there preventing a subdev call for it to change mbus format while
+>> streaming. Worse than that, the sensor driver has no way to block it, as
+>> it doesn't know that the bridge driver is streaming or not.
+>>
+>> The code at subdev_do_ioctl() is just:
+>>
+>> case VIDIOC_SUBDEV_S_FMT: {
+>>         struct v4l2_subdev_format *format = arg;
+>>
+>>         if (format->which != V4L2_SUBDEV_FORMAT_TRY &&
+>>             format->which != V4L2_SUBDEV_FORMAT_ACTIVE)
+>>                 return -EINVAL;
+>>
+>>         if (format->pad >= sd->entity.num_pads)
+>>                 return -EINVAL;
+>>
+>>         return v4l2_subdev_call(sd, pad, set_fmt, subdev_fh, format);
+>> }
+>>
+>> So, mc core won't be preventing it.
+>>
+>> So, I can't see how such subdev request would be implementing a logic to
+>> return -EBUSY on those cases.
+> 
+> Drivers can use the media_device graph_mutex to serialize format and stream 
+> management calls. A finer grain locking mechanism implemented in the core 
+> might be better, but we're not stuck without a solution at the moment.
+
+Ok, i see. This is not the best world, as I suspect that developers will
+just try to enable media controller for a few devices without taking enough
+care to avoid buffer overflows.
+While we don't have a better way for doing it, please add a note at the kernel 
+api doc saying about that, briefly describing how to properly lock it, because
+this is not obvious at all.
+
+Cheers,
+Mauro
