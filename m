@@ -1,15 +1,14 @@
 From: Alexander Sverdlin <subaparts@yandex.ru>
-Subject: [PATCH 3/6] ASoC: EDB93xx: Manage I2S rates according
- to datasheet for CS4271 CODEC.
-Date: Mon, 07 Mar 2011 20:29:53 +0300
-Message-ID: <1299518993.2255.67.camel@r60e>
+Subject: [PATCH 4/6] ASoC: Remove warnings in ep93xx-i2s.c
+Date: Mon, 07 Mar 2011 20:29:58 +0300
+Message-ID: <1299518998.2255.68.camel@r60e>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward4.mail.yandex.net (forward4.mail.yandex.net [77.88.46.9])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2BF4F103936
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 18:29:56 +0100 (CET)
+Received: from forward1.mail.yandex.net (forward1.mail.yandex.net [77.88.46.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id C8B01103937
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 18:30:00 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,46 +19,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Ryan Mallon <ryan@bluewatersys.com>, Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Mark@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Alexander Sverdlin <subaparts@yandex.ru>
 
-Manage I2S rates according to datasheet for CS4271 CODEC in EDB93xx
-machine driver.
+Remove warnings in ep93xx-i2s.c
 
 Signed-off-by: Alexander Sverdlin <subaparts@yandex.ru>
+Acked-by: Ryan Mallon <ryan@bluewatersys.com>
+Acked-by: Liam Girdwood <lrg@ti.com>
 ---
- sound/soc/ep93xx/edb93xx.c |   16 ++++++++--------
- 1 files changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/ep93xx/ep93xx-i2s.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/ep93xx/edb93xx.c b/sound/soc/ep93xx/edb93xx.c
-index b270085..d3aa151 100644
---- a/sound/soc/ep93xx/edb93xx.c
-+++ b/sound/soc/ep93xx/edb93xx.c
-@@ -41,17 +41,17 @@ static int edb93xx_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int err;
-+	unsigned int mclk_rate;
- 	unsigned int rate = params_rate(params);
-+
- 	/*
--	 * We set LRCLK equal to `rate' and SCLK = LRCLK * 64,
--	 * because our sample size is 32 bit * 2 channels.
--	 * I2S standard permits us to transmit more bits than
--	 * the codec uses.
--	 * MCLK = SCLK * 4 is the best recommended value,
--	 * but we have to fall back to ratio 2 for higher
--	 * sample rates.
-+	 * According to CS4271 datasheet we use MCLK/LRCK=256 for
-+	 * rates below 50kHz and 128 for higher sample rates
- 	 */
--	unsigned int mclk_rate = rate * 64 * ((rate <= 48000) ? 4 : 2);
-+	if (rate < 50000)
-+		mclk_rate = rate * 64 * 4;
-+	else
-+		mclk_rate = rate * 64 * 2;
+diff --git a/sound/soc/ep93xx/ep93xx-i2s.c b/sound/soc/ep93xx/ep93xx-i2s.c
+index 3d4c086..042f4e9 100644
+--- a/sound/soc/ep93xx/ep93xx-i2s.c
++++ b/sound/soc/ep93xx/ep93xx-i2s.c
+@@ -313,10 +313,12 @@ static int ep93xx_i2s_suspend(struct snd_soc_dai *dai)
+ 	struct ep93xx_i2s_info *info = snd_soc_dai_get_drvdata(dai);
  
- 	err = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
- 				  SND_SOC_DAIFMT_NB_IF |
+ 	if (!dai->active)
+-		return;
++		return 0;
+ 
+ 	ep93xx_i2s_disable(info, SNDRV_PCM_STREAM_PLAYBACK);
+ 	ep93xx_i2s_disable(info, SNDRV_PCM_STREAM_CAPTURE);
++
++	return 0;
+ }
+ 
+ static int ep93xx_i2s_resume(struct snd_soc_dai *dai)
+@@ -324,10 +326,12 @@ static int ep93xx_i2s_resume(struct snd_soc_dai *dai)
+ 	struct ep93xx_i2s_info *info = snd_soc_dai_get_drvdata(dai);
+ 
+ 	if (!dai->active)
+-		return;
++		return 0;
+ 
+ 	ep93xx_i2s_enable(info, SNDRV_PCM_STREAM_PLAYBACK);
+ 	ep93xx_i2s_enable(info, SNDRV_PCM_STREAM_CAPTURE);
++
++	return 0;
+ }
+ #else
+ #define ep93xx_i2s_suspend	NULL
