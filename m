@@ -1,18 +1,14 @@
-From: Javier Martin <javier.martin@vista-silicon.com>
-Subject: [PATCH] ASoC: Add machine driver for Visstrim_M10
-	board.
-Date: Mon,  7 Mar 2011 08:47:09 +0100
-Message-ID: <1299484029-2446-1-git-send-email-javier.martin@vista-silicon.com>
+From: David Henningsson <david.henningsson@canonical.com>
+Subject: [PATCH] Four patches to fixup surround internal
+ speakers on Realtek 88x
+Date: Mon, 07 Mar 2011 09:22:42 +0100
+Message-ID: <4D7495D2.80605@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------070904000204070302040307"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 95030103807
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 08:47:22 +0100 (CET)
-Received: by wyb28 with SMTP id 28so3820469wyb.38
-	for <alsa-devel@alsa-project.org>; Sun, 06 Mar 2011 23:47:21 -0800 (PST)
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 79759103807
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 09:22:47 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,200 +18,285 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, Javier Martin <javier.martin@vista-silicon.com>, lrg@slimlogic.co.uk
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
+Cc: nusch88@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Visstrim_M10 boards have an external tlcv320aic3205 codec
-attached to SSI1. This driver glues together both interfaces.
-External amplifier is not supported in this first version.
+This is a multi-part message in MIME format.
+--------------070904000204070302040307
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Javier Martin <javier.martin@vista-silicon.com>
+I spend last Friday together with Bart=C5=82omiej =C5=BBoga=C5=82a fixing=
+ up a long=20
+standing issue with Lenovo Y530, which has 4+1 internal speakers on a=20
+Realtek 888. And we all want that supported by the auto parser, don't=20
+we? So here comes the patches. Would be nice to have in 2.6.38.
+
+
+--=20
+David Henningsson, Canonical Ltd.
+http://launchpad.net/~diwic
+
+--------------070904000204070302040307
+Content-Type: text/x-patch;
+ name="0001-ALSA-HDA-Enable-surround-and-subwoofer-on-Lenovo-Ide.patch"
+Content-Disposition: attachment;
+ filename*0="0001-ALSA-HDA-Enable-surround-and-subwoofer-on-Lenovo-Ide.pa";
+ filename*1="tch"
+Content-Transfer-Encoding: quoted-printable
+
+>From 869a246337ece559ea0792ae853ee75daf328f40 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Fri, 4 Mar 2011 13:37:50 +0100
+Subject: [PATCH 1/4] ALSA: HDA: Enable surround and subwoofer on Lenovo I=
+deapad Y530
+MIME-Version: 1.0
+Content-Type: text/plain; charset=3DUTF-8
+Content-Transfer-Encoding: 8bit
+
+The pin config values would change the association instead of the
+sequence, this commit fixes that up.
+
+Tested-by: Bart=C5=82omiej =C5=BBoga=C5=82a <nusch88@gmail.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
 ---
- sound/soc/imx/Kconfig           |   10 +++
- sound/soc/imx/Makefile          |    2 +
- sound/soc/imx/mx27vis-aic32x4.c |  137 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 149 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/imx/mx27vis-aic32x4.c
+ sound/pci/hda/patch_realtek.c |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/imx/Kconfig b/sound/soc/imx/Kconfig
-index 642270a..15e7c04 100644
---- a/sound/soc/imx/Kconfig
-+++ b/sound/soc/imx/Kconfig
-@@ -30,6 +30,16 @@ config SND_MXC_SOC_WM1133_EV1
- 	  Enable support for audio on the i.MX31ADS with the WM1133-EV1
- 	  PMIC board with WM8835x fitted.
- 
-+config SND_SOC_MX27VIS_AIC32X4
-+	tristate "SoC audio support for Visstrim M10 boards"
-+	depends on MACH_IMX27_VISSTRIM_M10
-+	select SND_SOC_TVL320AIC32X4
-+	select SND_MXC_SOC_SSI
-+	select SND_MXC_SOC_MX2
-+	help
-+	  Say Y if you want to add support for SoC audio on Visstrim SM10
-+	  board with TLV320AIC32X4 codec.
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.=
+c
+index f721a18..ed4873c 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -10747,6 +10747,7 @@ static struct alc_config_preset alc882_presets[] =
+=3D {
+  */
+ enum {
+ 	PINFIX_ABIT_AW9D_MAX,
++	PINFIX_LENOVO_Y530,
+ 	PINFIX_PB_M5210,
+ 	PINFIX_ACER_ASPIRE_7736,
+ };
+@@ -10761,6 +10762,14 @@ static const struct alc_fixup alc882_fixups[] =3D=
+ {
+ 			{ }
+ 		}
+ 	},
++	[PINFIX_LENOVO_Y530] =3D {
++		.type =3D ALC_FIXUP_PINS,
++		.v.pins =3D (const struct alc_pincfg[]) {
++			{ 0x15, 0x99130112 }, /* rear int speakers */
++			{ 0x16, 0x99130111 }, /* subwoofer */
++			{ }
++		}
++	},
+ 	[PINFIX_PB_M5210] =3D {
+ 		.type =3D ALC_FIXUP_VERBS,
+ 		.v.verbs =3D (const struct hda_verb[]) {
+@@ -10776,6 +10785,7 @@ static const struct alc_fixup alc882_fixups[] =3D=
+ {
+=20
+ static struct snd_pci_quirk alc882_fixup_tbl[] =3D {
+ 	SND_PCI_QUIRK(0x1025, 0x0155, "Packard-Bell M5120", PINFIX_PB_M5210),
++	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Y530", PINFIX_LENOVO_Y530),
+ 	SND_PCI_QUIRK(0x147b, 0x107a, "Abit AW9D-MAX", PINFIX_ABIT_AW9D_MAX),
+ 	SND_PCI_QUIRK(0x1025, 0x0296, "Acer Aspire 7736z", PINFIX_ACER_ASPIRE_7=
+736),
+ 	{}
+--=20
+1.7.1
+
+
+--------------070904000204070302040307
+Content-Type: text/x-patch;
+ name="0002-ALSA-HDA-Fix-volume-control-naming-for-surround-spea.patch"
+Content-Disposition: attachment;
+ filename*0="0002-ALSA-HDA-Fix-volume-control-naming-for-surround-spea.pa";
+ filename*1="tch"
+Content-Transfer-Encoding: quoted-printable
+
+>From 36a9f29b1de6a101dfd2d083b619cc55fbcf38ae Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Fri, 4 Mar 2011 14:08:30 +0100
+Subject: [PATCH 2/4] ALSA: HDA: Fix volume control naming for surround sp=
+eakers on Realtek auto-parser
+
+When more than one pair of internal speakers is present, allow names
+according to their channels.
+
+Tested-by: Bart=C5=82omiej =C5=BBoga=C5=82a <nusch88@gmail.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.=
+c
+index ed4873c..fe45c61 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5150,7 +5150,9 @@ static const char *alc_get_line_out_pfx(const struc=
+t auto_pin_cfg *cfg,
+=20
+ 	switch (cfg->line_out_type) {
+ 	case AUTO_PIN_SPEAKER_OUT:
+-		return "Speaker";
++		if (cfg->line_outs =3D=3D 1)
++			return "Speaker";
++		break;
+ 	case AUTO_PIN_HP_OUT:
+ 		return "Headphone";
+ 	default:
+--=20
+1.7.1
+
+
+--------------070904000204070302040307
+Content-Type: text/x-patch;
+ name="0003-ALSA-HDA-Fixup-unnecessary-volume-control-index-on-R.patch"
+Content-Disposition: attachment;
+ filename*0="0003-ALSA-HDA-Fixup-unnecessary-volume-control-index-on-R.pa";
+ filename*1="tch"
+Content-Transfer-Encoding: quoted-printable
+
+>From 59ffe41f2ea198787be49996e36c43f32cc794a7 Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Fri, 4 Mar 2011 14:22:25 +0100
+Subject: [PATCH 3/4] ALSA: HDA: Fixup unnecessary volume control index on=
+ Realtek ALC88x
+
+Without this change, a volume control named "Surround" or "Side" would
+get an unnecessary index, causing it to be ignored by the vmaster and
+PulseAudio.
+
+Tested-by: Bart=C5=82omiej =C5=BBoga=C5=82a <nusch88@gmail.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.=
+c
+index fe45c61..f94b12f 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5206,16 +5206,19 @@ static int alc880_auto_create_multi_out_ctls(stru=
+ct alc_spec *spec,
+ 				return err;
+ 		} else {
+ 			const char *name =3D pfx;
+-			if (!name)
++			int index =3D i;
++			if (!name) {
+ 				name =3D chname[i];
++				index =3D 0;
++			}
+ 			err =3D __add_pb_vol_ctrl(spec, ALC_CTL_WIDGET_VOL,
+-						name, i,
++						name, index,
+ 					  HDA_COMPOSE_AMP_VAL(nid, 3, 0,
+ 							      HDA_OUTPUT));
+ 			if (err < 0)
+ 				return err;
+ 			err =3D __add_pb_sw_ctrl(spec, ALC_CTL_BIND_MUTE,
+-					       name, i,
++					       name, index,
+ 					  HDA_COMPOSE_AMP_VAL(nid, 3, 2,
+ 							      HDA_INPUT));
+ 			if (err < 0)
+--=20
+1.7.1
+
+
+--------------070904000204070302040307
+Content-Type: text/x-patch;
+ name="0004-ALSA-HDA-Realtek-ALC88x-Do-not-over-initialize-speak.patch"
+Content-Disposition: attachment;
+ filename*0="0004-ALSA-HDA-Realtek-ALC88x-Do-not-over-initialize-speak.pa";
+ filename*1="tch"
+Content-Transfer-Encoding: quoted-printable
+
+>From 247b0dbb5c5df7cdb8d9d5b08f48577c33c0afee Mon Sep 17 00:00:00 2001
+From: David Henningsson <david.henningsson@canonical.com>
+Date: Fri, 4 Mar 2011 16:54:52 +0100
+Subject: [PATCH 4/4] ALSA: HDA: Realtek ALC88x: Do not over-initialize sp=
+eakers and hp that are primary outputs
+
+Do not initialize again the what has already been initialized as
+multi outs, as this breaks surround speakers.
+
+Tested-by: Bart=C5=82omiej =C5=BBoga=C5=82a <nusch88@gmail.com>
+Signed-off-by: David Henningsson <david.henningsson@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c |   37 +++++++++++++++++++++--------------=
+--
+ 1 files changed, 21 insertions(+), 16 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.=
+c
+index f94b12f..3dc88ba 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -10843,23 +10843,28 @@ static void alc882_auto_init_hp_out(struct hda_=
+codec *codec)
+ 	hda_nid_t pin, dac;
+ 	int i;
+=20
+-	for (i =3D 0; i < ARRAY_SIZE(spec->autocfg.hp_pins); i++) {
+-		pin =3D spec->autocfg.hp_pins[i];
+-		if (!pin)
+-			break;
+-		dac =3D spec->multiout.hp_nid;
+-		if (!dac)
+-			dac =3D spec->multiout.dac_nids[0]; /* to front */
+-		alc882_auto_set_output_and_unmute(codec, pin, PIN_HP, dac);
++	if (spec->autocfg.line_out_type !=3D AUTO_PIN_HP_OUT) {
++		for (i =3D 0; i < ARRAY_SIZE(spec->autocfg.hp_pins); i++) {
++			pin =3D spec->autocfg.hp_pins[i];
++			if (!pin)
++				break;
++			dac =3D spec->multiout.hp_nid;
++			if (!dac)
++				dac =3D spec->multiout.dac_nids[0]; /* to front */
++			alc882_auto_set_output_and_unmute(codec, pin, PIN_HP, dac);
++		}
+ 	}
+-	for (i =3D 0; i < ARRAY_SIZE(spec->autocfg.speaker_pins); i++) {
+-		pin =3D spec->autocfg.speaker_pins[i];
+-		if (!pin)
+-			break;
+-		dac =3D spec->multiout.extra_out_nid[0];
+-		if (!dac)
+-			dac =3D spec->multiout.dac_nids[0]; /* to front */
+-		alc882_auto_set_output_and_unmute(codec, pin, PIN_OUT, dac);
 +
- config SND_SOC_PHYCORE_AC97
- 	tristate "SoC Audio support for Phytec phyCORE (and phyCARD) boards"
- 	depends on MACH_PCM043 || MACH_PCA100
-diff --git a/sound/soc/imx/Makefile b/sound/soc/imx/Makefile
-index b67fc02..d6d609b 100644
---- a/sound/soc/imx/Makefile
-+++ b/sound/soc/imx/Makefile
-@@ -10,8 +10,10 @@ obj-$(CONFIG_SND_MXC_SOC_MX2) += snd-soc-imx-mx2.o
- # i.MX Machine Support
- snd-soc-eukrea-tlv320-objs := eukrea-tlv320.o
- snd-soc-phycore-ac97-objs := phycore-ac97.o
-+snd-soc-mx27vis-aic32x4-objs := mx27vis-aic32x4.o
- snd-soc-wm1133-ev1-objs := wm1133-ev1.o
- 
- obj-$(CONFIG_SND_SOC_EUKREA_TLV320) += snd-soc-eukrea-tlv320.o
- obj-$(CONFIG_SND_SOC_PHYCORE_AC97) += snd-soc-phycore-ac97.o
-+obj-$(CONFIG_SND_SOC_MX27VIS_AIC32X4) += snd-soc-mx27vis-aic32x4.o
- obj-$(CONFIG_SND_MXC_SOC_WM1133_EV1) += snd-soc-wm1133-ev1.o
-diff --git a/sound/soc/imx/mx27vis-aic32x4.c b/sound/soc/imx/mx27vis-aic32x4.c
-new file mode 100644
-index 0000000..054110b
---- /dev/null
-+++ b/sound/soc/imx/mx27vis-aic32x4.c
-@@ -0,0 +1,137 @@
-+/*
-+ * mx27vis-aic32x4.c
-+ *
-+ * Copyright 2011 Vista Silicon S.L.
-+ *
-+ * Author: Javier Martin <javier.martin@vista-silicon.com>
-+ *
-+ * This program is free software; you can redistribute  it and/or modify it
-+ * under  the terms of  the GNU General  Public License as published by the
-+ * Free Software Foundation;  either version 2 of the  License, or (at your
-+ * option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-+ * MA 02110-1301, USA.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/device.h>
-+#include <linux/i2c.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <asm/mach-types.h>
-+#include <mach/audmux.h>
-+
-+#include "../codecs/tlv320aic32x4.h"
-+#include "imx-ssi.h"
-+
-+static int mx27vis_aic32x4_hw_params(struct snd_pcm_substream *substream,
-+			    struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	int ret;
-+	u32 dai_format;
-+
-+	dai_format = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_NB_NF |
-+		SND_SOC_DAIFMT_CBM_CFM;
-+
-+	/* set codec DAI configuration */
-+	snd_soc_dai_set_fmt(codec_dai, dai_format);
-+
-+	/* set cpu DAI configuration */
-+	snd_soc_dai_set_fmt(cpu_dai, dai_format);
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
-+				     25000000, SND_SOC_CLOCK_OUT);
-+	if (ret) {
-+		pr_err("%s: failed setting codec sysclk\n", __func__);
-+		return ret;
-+	}
-+
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, IMX_SSP_SYS_CLK, 0,
-+				SND_SOC_CLOCK_IN);
-+	if (ret) {
-+		pr_err("can't set CPU system clock IMX_SSP_SYS_CLK\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops mx27vis_aic32x4_snd_ops = {
-+	.hw_params	= mx27vis_aic32x4_hw_params,
-+};
-+
-+static struct snd_soc_dai_link mx27vis_aic32x4_dai = {
-+	.name		= "tlv320aic32x4",
-+	.stream_name	= "TLV320AIC32X4",
-+	.codec_dai_name	= "tlv320aic32x4-hifi",
-+	.platform_name	= "imx-pcm-audio.0",
-+	.codec_name	= "tlv320aic32x4.0-0018",
-+	.cpu_dai_name	= "imx-ssi.0",
-+	.ops		= &mx27vis_aic32x4_snd_ops,
-+};
-+
-+static struct snd_soc_card mx27vis_aic32x4 = {
-+	.name		= "visstrim_m10-audio",
-+	.dai_link	= &mx27vis_aic32x4_dai,
-+	.num_links	= 1,
-+};
-+
-+static struct platform_device *mx27vis_aic32x4_snd_device;
-+
-+static int __init mx27vis_aic32x4_init(void)
-+{
-+	int ret;
-+
-+	mx27vis_aic32x4_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!mx27vis_aic32x4_snd_device)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(mx27vis_aic32x4_snd_device, &mx27vis_aic32x4);
-+	ret = platform_device_add(mx27vis_aic32x4_snd_device);
-+
-+	if (ret) {
-+		printk(KERN_ERR "ASoC: Platform device allocation failed\n");
-+		platform_device_put(mx27vis_aic32x4_snd_device);
-+	}
-+
-+	/* Connect SSI0 as clock slave to SSI1 external pins */
-+	mxc_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
-+			MXC_AUDMUX_V1_PCR_SYN |
-+			MXC_AUDMUX_V1_PCR_TFSDIR |
-+			MXC_AUDMUX_V1_PCR_TCLKDIR |
-+			MXC_AUDMUX_V1_PCR_TFCSEL(MX27_AUDMUX_PPCR1_SSI_PINS_1) |
-+			MXC_AUDMUX_V1_PCR_RXDSEL(MX27_AUDMUX_PPCR1_SSI_PINS_1)
-+	);
-+	mxc_audmux_v1_configure_port(MX27_AUDMUX_PPCR1_SSI_PINS_1,
-+			MXC_AUDMUX_V1_PCR_SYN |
-+			MXC_AUDMUX_V1_PCR_RXDSEL(MX27_AUDMUX_HPCR1_SSI0)
-+	);
-+
-+	return ret;
-+}
-+
-+static void __exit mx27vis_aic32x4_exit(void)
-+{
-+	platform_device_unregister(mx27vis_aic32x4_snd_device);
-+}
-+
-+module_init(mx27vis_aic32x4_init);
-+module_exit(mx27vis_aic32x4_exit);
-+
-+MODULE_AUTHOR("Javier Martin <javier.martin@vista-silicon.com>");
-+MODULE_DESCRIPTION("ALSA SoC AIC32X4 mx27 visstrim");
-+MODULE_LICENSE("GPL");
--- 
-1.7.0.4
++	if (spec->autocfg.line_out_type !=3D AUTO_PIN_SPEAKER_OUT) {
++		for (i =3D 0; i < ARRAY_SIZE(spec->autocfg.speaker_pins); i++) {
++			pin =3D spec->autocfg.speaker_pins[i];
++			if (!pin)
++				break;
++			dac =3D spec->multiout.extra_out_nid[0];
++			if (!dac)
++				dac =3D spec->multiout.dac_nids[0]; /* to front */
++			alc882_auto_set_output_and_unmute(codec, pin, PIN_OUT, dac);
++		}
+ 	}
+ }
+=20
+--=20
+1.7.1
+
+
+--------------070904000204070302040307
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------070904000204070302040307--
