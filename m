@@ -1,17 +1,19 @@
-From: "S. Christian Collins" <s.chriscollins@gmail.com>
-Subject: X-Fi Titanium S/PDIF output sample rate
-Date: Mon, 07 Mar 2011 10:32:26 -0600
-Message-ID: <4D75089A.3020609@gmail.com>
+From: Seungwhan Youn <claude.youn@gmail.com>
+Subject: Re: [PATCH] ASoC: Add MAX9850 codec driver
+Date: Tue, 8 Mar 2011 01:40:05 +0900
+Message-ID: <AANLkTikYd7+WXa1jcse=VG1YxyX52JM1Z6y-khCwZJ-R@mail.gmail.com>
+References: <1299501913-3772-1-git-send-email-christian.glindkamp@taskit.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7D865244C8
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 17:32:30 +0100 (CET)
-Received: by iwc10 with SMTP id 10so4469103iwc.38
-	for <alsa-devel@alsa-project.org>; Mon, 07 Mar 2011 08:32:29 -0800 (PST)
+Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
+	[209.85.215.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id A4613244CD
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 17:40:06 +0100 (CET)
+Received: by eyg5 with SMTP id 5so1385307eyg.38
+	for <alsa-devel@alsa-project.org>; Mon, 07 Mar 2011 08:40:06 -0800 (PST)
+In-Reply-To: <1299501913-3772-1-git-send-email-christian.glindkamp@taskit.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,37 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Christian Glindkamp <christian.glindkamp@taskit.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-I have two sound cards in my system, a Sound Blaster X-Fi Titanium 
-(PCI-Express) and an Echo Gina 3G, with the optical output from the X-Fi 
-connected to the optical input on the Gina 3G.  I'm looking for a way to 
-change the S/PDIF output sample rate on the X-Fi to 48 KHz.  I've tried 
-using iecset, but none of the commands change any of the values reported 
-by iecset.  Here is the output from iecset:
-
-Mode: consumer
-Data: audio
-Rate: 48000 Hz
-Copyright: protected
-Emphasis: none
-Category: PCM coder
-Original: original
-Clock: 1000 ppm
-
-Now, here's the weird thing: even though iecset reports the X-Fi S/PDIF 
-rate at 48 KHz, my Echo Gina 3G seems to pick up the stream as 96 KHz 
-instead, ie. the Gina 3G becomes "locked" at 96 KHz upon activating its 
-S/PDIF input and getting its clock from the optical stream.
-
-I noticed in the Windows driver that the X-Fi's internal sampling rate 
-can be adjusted in the driver setting (44.1, 48, 88.2, 96), but the 
-S/PDIF rate can't be adjusted.  Instead, the X-Fi's S/PDIF rate seems to 
-be locked to the internal sampling rate.
-
-So, it appears that I may need to adjust the X-Fi's internal sampling 
-rate somehow, but I have no idea how to do this.  Does anybody know if 
-this can even be done?
-
--~Chris
+SGksCgo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL21heDk4NTAuaCBiL3NvdW5kL3Nv
+Yy9jb2RlY3MvbWF4OTg1MC5oCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAw
+Li41MjY4NTc1Cj4gLS0tIC9kZXYvbnVsbAo+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3MvbWF4OTg1
+MC5oCj4gQEAgLTAsMCArMSw0MSBAQAo+ICsvKgo+ICsgKiBtYXg5ODUwLmggwqAtLSDCoGNvZGVj
+IGRyaXZlciBmb3IgbWF4OTg1MAo+ICsgKgo+ICsgKiBDb3B5cmlnaHQgKEMpIDIwMTEgdGFza2l0
+IEdtYkgKPiArICogQXV0aG9yOiBDaHJpc3RpYW4gR2xpbmRrYW1wIDxjaHJpc3RpYW4uZ2xpbmRr
+YW1wQHRhc2tpdC5kZT4KPiArICoKPiArICogVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7
+IHlvdSBjYW4gcmVkaXN0cmlidXRlIMKgaXQgYW5kL29yIG1vZGlmeSBpdAo+ICsgKiB1bmRlciDC
+oHRoZSB0ZXJtcyBvZiDCoHRoZSBHTlUgR2VuZXJhbCDCoFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxp
+c2hlZCBieSB0aGUKPiArICogRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyDCoGVpdGhlciB2ZXJz
+aW9uIDIgb2YgdGhlIMKgTGljZW5zZSwgb3IgKGF0IHlvdXIKPiArICogb3B0aW9uKSBhbnkgbGF0
+ZXIgdmVyc2lvbi4KPiArICoKPiArICovCj4gKwo+ICsjaWZuZGVmIF9NQVg5ODUwX0gKPiArI2Rl
+ZmluZSBfTUFYOTg1MF9ICj4gKwo+ICsjZGVmaW5lIE1BWDk4NTBfU1RBVFVTQSDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoDB4MDAKPiArI2RlZmluZSBNQVg5ODUwX1NUQVRVU0Ig
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAweDAxCj4gKyNkZWZpbmUgTUFYOTg1
+MF9WT0xVTUUgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgMHgwMgo+ICsjZGVmaW5lIE1BWDk4NTBf
+R0VORVJBTF9QVVJQT1NFIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgMHgwMwo+ICsjZGVmaW5lIE1B
+WDk4NTBfSU5URVJSVVBUIMKgIMKgIMKgIMKgIMKgIMKgIMKgMHgwNAo+ICsjZGVmaW5lIE1BWDk4
+NTBfRU5BQkxFIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDB4MDUKPiArI2RlZmluZSBNQVg5ODUw
+X0NMT0NLIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgMHgwNgo+ICsjZGVmaW5lIE1BWDk4NTBf
+Q0hBUkdFX1BVTVAgwqAgwqAgwqAgwqAgwqAgwqAweDA3Cj4gKyNkZWZpbmUgTUFYOTg1MF9MUkNM
+S19NU0IgwqAgwqAgwqAgwqAgwqAgwqAgwqAweDA4Cj4gKyNkZWZpbmUgTUFYOTg1MF9MUkNMS19M
+U0IgwqAgwqAgwqAgwqAgwqAgwqAgwqAweDA5Cj4gKyNkZWZpbmUgTUFYOTg1MF9ESUdJVEFMX0FV
+RElPIMKgIMKgIMKgIMKgIMKgMHgwYQo+ICsKPiArI2RlZmluZSBNQVg5ODUwX0NBQ0hFUkVHTlVN
+IDExCj4gKwo+ICsvKiBNQVg5ODUwX0VOQUJMRSAqLwo+ICsjZGVmaW5lIE1BWDk4NTBfU0hETiDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAoMTw8NykKPiArCj4gKy8qIE1BWDk4NTBfRElHSVRB
+TF9BVURJTyAqLwo+ICsjZGVmaW5lIE1BWDk4NTBfTUFTVEVSIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgICgxPDw3KQo+ICsjZGVmaW5lIE1BWDk4NTBfSU5WIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgKDE8PDYpCj4gKyNkZWZpbmUgTUFYOTg1MF9CQ0lOViDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCgxPDw1KQo+ICsjZGVmaW5lIE1BWDk4NTBfRExZIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgKDE8PDMpCj4gKyNkZWZpbmUgTUFYOTg1MF9SVEogwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAoMTw8MikKPiArCj4gKyNlbmRpZgoKSU1ITywgYmVjYXVzZSBvZiBNQVg5ODUw
+XyogbWFjcm9zIGFyZSBvbmx5IHVzaW5nIGluc2lkZSBtYXg5ODUwLmMsIEkKdGhpbmsgdGhhdCBt
+b3ZlIE1BWDk4NTBfKiBtYWNyb3MgaW50byBtYXg5ODUwLmMgYW5kIHJlbW92ZSBtYXg5ODUwLmgK
+aGVhZGVyIGZpbGUsIGlzIG1vcmUgbG9va3MgZ29vZCB0byBtZS4KX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
