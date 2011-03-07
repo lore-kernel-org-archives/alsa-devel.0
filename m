@@ -1,24 +1,24 @@
-From: Mike Frysinger <vapier.adi@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [Device-drivers-devel] [PATCH] Add driver for
  Analog Devices ADAU1701 SigmaDSP
-Date: Mon, 7 Mar 2011 10:33:25 -0500
-Message-ID: <AANLkTi=e1xDz6fhBU7NL32DXL1J9Y1CDD2bHQVL6oASw@mail.gmail.com>
+Date: Mon, 7 Mar 2011 15:55:09 +0000
+Message-ID: <20110307155508.GM13471@opensource.wolfsonmicro.com>
 References: <1299460302-15392-1-git-send-email-cliff.cai@analog.com>
 	<20110307114142.GB13471@opensource.wolfsonmicro.com>
 	<AANLkTikynw7vCsqqyNZW-LFuGUKKQEtG3s4YCZjpOvko@mail.gmail.com>
 	<20110307121502.GG13471@opensource.wolfsonmicro.com>
 	<AANLkTinKpvgBokSHpsVf1KVX+m6sD0Xp_dFe8Y+HzY-7@mail.gmail.com>
 	<20110307145931.GK13471@opensource.wolfsonmicro.com>
+	<AANLkTi=e1xDz6fhBU7NL32DXL1J9Y1CDD2bHQVL6oASw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw0-f49.google.com (mail-gw0-f49.google.com [74.125.83.49])
-	by alsa0.perex.cz (Postfix) with ESMTP id 187622449F
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 16:33:46 +0100 (CET)
-Received: by gwj15 with SMTP id 15so2308168gwj.8
-	for <alsa-devel@alsa-project.org>; Mon, 07 Mar 2011 07:33:45 -0800 (PST)
-In-Reply-To: <20110307145931.GK13471@opensource.wolfsonmicro.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D6E16244A9
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 16:55:11 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <AANLkTi=e1xDz6fhBU7NL32DXL1J9Y1CDD2bHQVL6oASw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,122 +28,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mike Frysinger <vapier.adi@gmail.com>
 Cc: cliff.cai@analog.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, akpm@linux-foundation.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBNYXIgNywgMjAxMSBhdCAwOTo1OSwgTWFyayBCcm93biB3cm90ZToKPiBPbiBNb24s
-IE1hciAwNywgMjAxMSBhdCAwNzoyOToxMkFNIC0wNTAwLCBNaWtlIEZyeXNpbmdlciB3cm90ZToK
-Pj4gT24gTW9uLCBNYXIgNywgMjAxMSBhdCAwNzoxNSwgTWFyayBCcm93biB3cm90ZToKPj4gPiBJ
-dCdkIHNlZW0gZWFzaWVyIHRvIGp1c3QgbWVyZ2UgdGhlIHR3byBwYXRjaGVzIHRvZ2V0aGVyIHJh
-dGhlciB0aGFuCj4+ID4gdHJ5aW5nIHRvIGRlYWwgd2l0aCBjcm9zcy10cmVlIGlzc3Vlcy4KPj4K
-Pj4gdGhhdCBzb3VuZHMgbGlrZSBhIHRlcnJpYmxlIGlkZWEuIMKgdGhleSdyZSBsb2dpY2FsbHkg
-ZGlmZmVyZW50Cj4+IGNoYW5nZXNldHMgYW5kIHdlIHNob3VsZG50IGJlIHNxdWFzaGluZyB0aGVt
-IHRvZ2V0aGVyIHNpbXBseSB0byB3b3JrCj4+IGFyb3VuZCBwcm9ibGVtcyB3aXRoIHByb2Nlc3Mg
-d29ya2Zsb3dzLgo+Cj4gSSdtIG5vdCBzYXlpbmcgc3F1YXNoIHRoZSBjaGFuZ2VzLCBJJ20gc2F5
-aW5nIGFwcGx5IHRoZW0gYm90aCB2aWEgdGhlCj4gc2FtZSB0cmVlLgoKbWVyZ2luZyB0cmVlcyAh
-PSBtZXJnaW5nIHBhdGNoZXMgOykKCj4+ID4gUmlnaHQsIGFuZCB0aGlzIGlzbid0IGEgcGFydGlj
-dWxhcmx5IHVudXN1YWwgcmVxdWlyZW1lbnQgZXNwZWNpYWxseSBpZgo+PiA+IHRoZSBkcml2ZXIg
-aXNuJ3QgZ29pbmcgdG8gaGF2ZSBhbnkgYWJpbGl0eSB0byBpbnRlcmFjdCB3aXRoIHRoZSBEU1Ag
-KGF0Cj4+ID4gd2hpY2ggcG9pbnQgaXQncyBqdXN0IGNvZWZmaWNpZW50IGRhdGEsIHRoZSBmYWN0
-IHRoYXQgaXQncyBhIERTUCBwcm9ncmFtCj4+ID4gaXMgdW5pbnRlcmVzdGluZykuIMKgVGhlIHBy
-b2JsZW0gaXMgdGhhdCB0aGlzIGlzbid0IGEgZ3JlYXQgaW50ZXJmYWNlIGZvcgo+PiA+IGRvaW5n
-IHRoYXQuCj4KPj4gaSBkb250IHNlZSBzdWdnZXN0aW9ucyBvZiBhIGJldHRlciBpbnRlcmZhY2Ug
-YW55d2hlcmUgLi4uCj4KPiBJdCBjdXJyZW50bHkgaXNuJ3QgYW5kIEknZCBlbmNvdXJhZ2UgeW91
-IHRvIGNvbnRyaWJ1dGUgdG8gdGhlIGRpc2N1c3Npb24KPiB0aGF0J3MgYmVlbiBnb2luZyBvbiBv
-biB0aGlzLCBvciBldmVuIGJldHRlciBoZWxwIG91dCB3aXRoIGNvZGUuIMKgVGhlcmUKPiB3YXMg
-c29tZSBkaXNjdXNzaW9uIG9uIHRoZSBsaXN0IHJlY2VudGx5IChpbiB0aGUgcGFzdCBtb250aCBJ
-SVJDKS4KCmknZCBiZSBsb29raW5nIGF0IENsaWZmL01pY2hhZWwgZm9yIHRoaXMuICB0aGUgQURJ
-IGxpbnV4IHRlYW0gaGFzIGJlZW4KcmVzdHJ1Y3R1cmVkIGFuZCBhdWRpbyBwYXJ0cyBhcmUgaGFu
-ZGxlZCBieSBNaWNoYWVsJ3MgbmV3IGdyb3VwIG5vdy4KCj4+IHdydCBzdHJlYW0gZmxvd3MsIGFs
-bCB0aGUgY3VzdG9tZXJzIHdlJ3ZlIHRhbGtlZCB0byBhcmUgZmluZSB3aXRoIHRoaXMKPj4gLS0g
-aGF2aW5nIHN0cmVhbSBjb250cm9sIGJlIGFuIGFwcGxpY2F0aW9uIGlzc3VlLiDCoHRoZWlyIGFw
-cGxpY2F0aW9uCj4+IGlzIGRyaXZpbmcgdGhlIGNvZGVjIGRpcmVjdGx5IGFuZCBrbm93cyB3aGVu
-IGl0IG5lZWRzIHRvIGNoYW5nZSB0aGUKPj4gZmlybXdhcmUsIHNvIGl0IHBhdXNlcyBpdHMgYWxz
-YSBmbG93LCBsb2FkcyB0aGUgbmV3IGZpcm13YXJlLCBhbmQKPj4gbW92ZXMgb24uCj4KPiBJJ2Qg
-ZXhwZWN0IHRoYXQgdGhlIGRyaXZlciB3b3VsZCBhdCBsZWFzdCBlcnJvciBvdXQgaWYgdGhlIHVz
-ZXIgdHJpZWQgdG8KPiBkbyB0aGUgd3JvbmcgdGhpbmcgaGVyZSwgbGlrZSBJIHNheSBjdXJyZW50
-bHkgdGhlIGZpcm13YXJlIGNvZGUgaXMganVzdAo+IG5vdCBqb2luZWQgdXAgd2l0aCBhbnl0aGlu
-ZyBlbHNlIGF0IGFsbC4KCmkgZG9udCBzZWUgaG93IHRoZSBkcml2ZXIgY2FuIGRldGVjdCBhICJ3
-cm9uZyIgdGhpbmcuICB0aGUgZHJpdmVyIGhhcwpubyBpZGVhIHdoYXQgYXJiaXRyYXJ5IGNvZGUg
-dGhlIHVzZXIgaXMgZ29pbmcgdG8gbG9hZCBhbmQgd2hhdCB0aGF0CmNvZGUgaXMgZ29pbmcgdG8g
-ZG8sIG9yIHZhbGlkYXRlIHRoZSBjb2RlIGluIGFueSB3YXkuICB0aGlzIGlzIHdoeSB0aGUKZmly
-bXdhcmUgaGFzIGEgc21hbGwgY3JjIGhlYWRlciBvbiBpdCAtLSB3ZSBvbmx5IG1ha2Ugc3VyZSB0
-aGF0IHdoYXQKdGhlIHVzZXIgY29tcGlsZWQgYXQgYnVpbGQgdGltZSBtYXRjaGVzIHdoYXQgaXMg
-bG9hZGVkIGludG8gdGhlCmhhcmR3YXJlLgoKPj4gdGhhdCBzYWlkLCBpIGRvbnQgc2VlIGFueXRo
-aW5nIGluIGFzb2MgdG9kYXkgdG8gYWRkcmVzcyB0aGlzLCBzbyBpZgo+PiB3ZSdyZSBzaW1wbHkg
-bWlzc2luZyBpdCwgcGxlYXNlIGhpZ2hsaWdodCBpdCBmb3IgdXMuCj4KPiBUaGVyZSdzIGhhbmRs
-aW5nIG9mIHRoaXMgaW4gYSBidW5jaCBvZiBkcml2ZXJzIGZvciB0aGluZ3MgbGlrZSBFUQo+IGNv
-ZWZmaWNpZW50cyAtIHRoZSBtaXNzaW5nIGJpdCBpcyBhIHdheSBvZiB0ZWxsaW5nIHRoZSBkcml2
-ZXIgdGhhdCB0aGVyZQo+IGFyZSBuZXcgY29lZmZpY2llbnQgc2V0cyBhdmFpbGFibGUgYXQgcnVu
-dGltZSwgYXQgdGhlIG1pbnV0ZSBldmVyeXRoaW5nCj4gdGhhdCBzdXBwb3J0cyB0aGlzIGVudW1l
-cmF0ZXMgdGhlIGF2YWlsYWJsZSBjb2VmZmljaWVudCBzZXRzIGluIHBsYXRmb3JtCj4gZGF0YSBh
-bmQgcHJlc2VudHMgdGhlIHVzZXIgd2l0aCBhbiBlbnVtZXJhdGlvbi4KCmknbSBub3Qgc3VyZSB0
-aGF0IGV4YW1wbGUgaXMgYXBwbGljYWJsZSAuLi4gb3IgaWYgaXQgaXMsIGl0J3MgYSBwcmV0dHkK
-cm91Z2ggZml0IHRvIHRoZSBwb2ludCBvZiBub3QgYmVpbmcgd29ydGh3aGlsZQoKPj4gPiBJdCdz
-IGFsc28gbm90IGFuIGludGVyZmFjZSB3aGljaCBvZmZlcnMgYW55IGtpbmQgb2YgZGlzY292ZXJh
-YmlsaXR5IG9yCj4+ID4gZW51bWVyYWJpbGl0eSwgbWVhbmluZyB0aGF0IGl0J3Mgbm90IHN1aXRh
-YmxlIGZvciBpbnRlZ3JhdGlvbiBpbnRvCj4+ID4gYXBwbGljYXRpb24gbGF5ZXIgY29kZSBzdWNo
-IGFzIHRoZSB1c2UgY2FzZSBtYW5hZ2VyLiDCoEFwcGxpY2F0aW9ucyBuZWVkCj4+ID4gdG8gYmUg
-aGFyZCBjb2RlZCB0byBrbm93IHRoYXQgYSBwYXJ0aWN1bGFyIG1hZ2ljIHN5c2ZzIGZpbGUgbmVl
-ZHMgdG8gYmUKPj4gPiBwb2tlZC4gwqBUaGlzIHdvdWxkIGJlIGEgYmlnIHN0ZXAgYmFja3dhcmRz
-IGluIHRlcm1zIG9mIHRoZSBhYmlsaXR5IHRvCj4+ID4gcnVuIG9mZiB0aGUgc2hlbGYgYXBwbGlj
-YXRpb24gc29mdHdhcmUuCj4KPj4gaSBkb250IHNlZSB0aGUgaXNzdWUgaGVyZS4gwqB0aGUgZmly
-bXdhcmUgaXMgKm9wdGlvbmFsKiBhbmQgZG9lcyBub3QKPj4gaW1wYWlyIGJhc2ljIGF1ZGlvIG91
-dHB1dC4gwqBmdXJ0aGVyLCB0aGUgZmlybXdhcmUgaXMgZnVsbHkKPgo+IElmIHRoZSBmaXJtd2Fy
-ZSBpcyB0b3RhbGx5IG9wdGlvbmFsIHRoZSBkcml2ZXIgbmVlZHMgdXBkYXRpbmcgLQo+IGN1cnJl
-bnRseSBhdCBzdGFydHVwIGl0IGRvZXM6Cj4KPiB8ICsgwqAgwqAgwqAgLyogTG9hZCBkZWZhdWx0
-IHByb2dyYW0gKi8KPiB8ICsgwqAgwqAgwqAgcmV0ID0gYWRhdTE3MDFfc2V0cHJvZ3JhbShjb2Rl
-Yyk7Cj4gfCArIMKgIMKgIMKgIGlmIChyZXQgPCAwKSB7Cj4gfCArIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIHByaW50ayhLRVJOX0VSUiAiTG9hZGluZyBwcm9ncmFtIGRhdGEgZmFpbGVkXG4iKTsKPiB8
-ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgZ290byBlcnJvcjsKPiB8ICsgwqAgwqAgwqAgfQo+Cj4g
-d2hpY2ggd2lsbCBtYWtlIHRoZSBmaXJtd2FyZSBtYW5kYXRvcnkuIMKgSW4gYW55IGNhc2UsIHRo
-ZSBpbnRlcmZhY2UKPiBpc3N1ZXMgYXJlIHRoZXJlIGlmIHRoZSBmaXJtd2FyZSBpcyBvcHRpb25h
-bCBvciBub3QuCgppIGJlbGlldmUgdGhhdCBpcyBhbiBlcnJvciBpbiB0aGUgZHJpdmVyLiAgQ2xp
-ZmYgY2FuIG9idmlvdXNseSBjb3JyZWN0Cm1lIGhlcmUgc2luY2UgaGUncyBhY3R1YWxseSB3b3Jr
-aW5nIG9uIHRoZSBjb2RlYy4KCj4+IHdyaXR0ZW4vY29tcGlsZWQvbWFpbnRhaW5lZCBieSB0aGUg
-ZW5kIGN1c3RvbWVyLCBqdXN0IGxpa2UgdGhlCj4+IGFwcGxpY2F0aW9uLiDCoHdoaWNoIG1lYW5z
-IHRoZXJlIGlzIG5vICJtYWdpYyIgaGVyZSAtLSB0aGUgZW5kIGN1c3RvbWVyCj4+IGlzIHRoZSB3
-aXphcmQuCj4+Cj4+IHRoZXJlIGlzIG5vICJzdG9jayIgZmlybXdhcmUgdGhhdCBBREkgb3IgYW55
-b25lIHByb3ZpZGVzIGZvciBhbnkgb2YKPj4gdGhlc2UgU2lnbWFEU1AgYXVkaW8gY29kZWNzLgo+
-Cj4gVGhlIHF1ZXN0aW9uIG9mIHdoZXJlIHRoZSBEU1AgZmlybXdhcmUgKG9yIGNvZWZmaWNpZW50
-IGRhdGEpIGNvbWVzIGZyb20KPiBpcyBvcnRob2dvbmFsIHRvIHRoZSBpc3N1ZSBvZiBydW50aW1l
-IG1hbmFnZW1lbnQgb2YgdGhlIGRhdGEuIMKgVGhlIGlzc3VlCj4gaXMgaG93IHRoZSBhcHBsaWNh
-dGlvbiBsYXllciBjYW4gdGVsbCBpZiB0aGVyZSBhcmUgbXVsdGlwbGUgY29lZmZpY2llbnQKPiBz
-ZXRzIGFuZCBjaGFuZ2UgYmV0d2VlbiB0aGVtLCBlaXRoZXIgZGlyZWN0bHkgb3IgdmlhIHNvbWV0
-aGluZyBsaWtlIFVDTS4KPiBFdmVuIGlmIHRoZSBzeXN0ZW0gaXMgdXNpbmcgYSBjdXN0b20gYXBw
-bGljYXRpb24gcmF0aGVyIHRoYW4gYW4gb2ZmIHRoZQo+IHNoZWxmIGRpc3RyaWJ1dGlvbiAod2hp
-Y2ggYXJlIGJlY29taW5nIG1vcmUgYW5kIG1vcmUgY29tbW9uIGluIGVtYmVkZGVkCj4gc3lzdGVt
-cykgdGhlcmUncyBubyByZWFzb24gdGhleSBzaG91bGRuJ3QgYmUgYWJsZSB0byByZWx5IG9uIHN0
-YW5kYXJkCj4gdG9vbHMgZm9yIG1hbmFnaW5nIHRoZWlyIGF1ZGlvIGNvbmZpZ3VyYXRpb25zLgoK
-aWYgdGhlIHN0YW5kYXJkIHRvb2xzIGV4aXN0ZWQgdG9kYXksIGknZCBvZiBjb3Vyc2UgYWdyZWUu
-ICBidXQgYXMgeW91CmluZGljYXRlZCB0aGVyZSdzIG5vdGhpbmcgcmlnaHQgbm93IGZvciB1cyB0
-byBidWcgb2ZmIG9mLiAgc28gaG93CnVzZXJzcGFjZSAicHJvYmVzIiBmb3IgZXhpc3RpbmcgZGF0
-YSB3b3VsZCBiZSBob3dldmVyIHRoZSBlbmQgdXNlcgpjaG9vc2VzIHRvIG1hbmFnZSB0aGluZ3Mu
-ICBpdCdzIG5vdCBsaWtlIHRoZSBzdGFuZGFyZCB0b29scyBjb3VsZApyZWFsbHkgcHJvdmlkZSBh
-bnl0aGluZyBvdGhlciB0aGFuIGEgc2ltcGxlIHN0cmluZyB0aGF0IGluZGljYXRlcwoic29tZSBi
-bG9iIGV4aXN0cyB3aXRoIG5hbWUgeHh4Ii4gIHRoZSBtZWFuaW5nL21ldGFkYXRhIHRoYXQgc3Vy
-cm91bmRzCnh4eCBpc250IHJlYWxseSByZWxldmFudCBmcm9tIHRoZSBrZXJuZWwncyBwb3YuCgo+
-IEF0IHByZXNlbnQgdXNlcnNwYWNlIGNhbiBlbnVtZXJhdGUgYW5kIGNoYW5nZSB0aGUgcnVudGlt
-ZSBjb25maWd1cmF0aW9uCj4gdGhlIHN5c3RlbSBvZmZlcnMgdmlhIHRoZSBBTFNBIEFQSXMgKGFu
-ZCB0aGlzIHdpbGwgZ2V0IGV2ZW4gYmV0dGVyIG9uY2UKPiB0aGUgbWVkaWEgY29udHJvbGxlciBB
-UEkgc3RhcnRzIGJlaW5nIHVzZWQpLiDCoFRoaXMgbWVhbnMgdGhhdCB5b3UgY2FuCj4gZmFpcmx5
-IGVhc2lseSB3cml0ZSBhIHVzZXJzcGFjZSB0aGF0J2xsIHJ1biBvbiBwcmV0dHkgbXVjaCBhbnkg
-TGludXgKPiBhdWRpbyBoYXJkd2FyZSwgYWRhcHRpbmcgd2l0aCBwdXJlIGNvbmZpZ3VyYXRpb24g
-Zm9yIHdoaWNoIHlvdSBjYW4KPiBwcm92aWRlIHBvaW50IGFuZCBjbGljayB0dW5pbmcgKHJlYWxp
-c3RpY2FsbHkgYnkgYWxsb3dpbmcgdGhlIHVzZXIgdG8KPiBjb25maWd1cmUgdmlhIHN0YW5kYXJk
-IEFMU0EgdG9vbHMgYW5kIG9mZmVyaW5nIGEgInNhdmUgYXMgdXNlIGNhc2UiIHR5cGUKPiBpbnRl
-cmZhY2UpLiDCoElmIHdlIHN0YXJ0IGFkZGluZyBiYWNrZG9vcnMgdG8gZHJpdmVycyB3ZSdyZSB0
-YWtpbmcgYSBzdGVwCj4gYmFjayBmcm9tIHdoZXJlIHdlIGFyZSBjdXJyZW50bHkgYnkgcmVxdWly
-aW5nIHRoYXQgdGhlIGFwcGxpY2F0aW9uIGxheWVyCj4ga25vdyBtYWdpYyBzdHVmZiBhYm91dCBp
-bmRpdmlkdWFsIHN5c3RlbXMgaW4gb3JkZXIgdG8gd29yayB3aXRoIHRoZW0uCgpmcm9tIGhvdyB3
-ZSd2ZSBzZWVuIHBlb3BsZSB1c2luZyB0aGVzZSBjb2RlY3MsIHRoaXMgc2NlbmFyaW8gZG9lc250
-Cm1ha2UgbXVjaCBzZW5zZS4gIHRoZSBkaWZmZXJlbnQgYWxnb3JpdGhtcyB3b3VsZCBiZSBsb2Fk
-ZWQgb24gdGhlIGZseQpieSB0aGUgYXBwbGljYXRpb24gYW5kIGl0cyBjdXJyZW50IG9wZXJhdGlu
-ZyBuZWVkcywgbm90IGEgc2luZ2xlCmFsZ29yaXRobSBzZWxlY3RlZCBieSB0aGUgZW5kZXIgdXNl
-ciB0aGF0IHdvdWxkbnQgY2hhbmdlIGZvciB0aGUgbGlmZQpvZiB0aGUgYXBwLiAgbm90IHNheWlu
-ZyB0aGUgc2NlbmFyaW8gd291bGQgbmV2ZXIgY29tZSB1cCwganVzdCB0aGF0IGl0CmlzbnQgdGhl
-IG9uZSB3ZSdkIGJlIGZvY3VzZWQgb24uCi1taWtlCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Mon, Mar 07, 2011 at 10:33:25AM -0500, Mike Frysinger wrote:
+> On Mon, Mar 7, 2011 at 09:59, Mark Brown wrote:
+
+Please at the start of capitalise sentences, it makes your text much
+more leigible.
+
+> > It currently isn't and I'd encourage you to contribute to the discussion
+> > that's been going on on this, or even better help out with code. =A0The=
+re
+> > was some discussion on the list recently (in the past month IIRC).
+
+> i'd be looking at Cliff/Michael for this.  the ADI linux team has been
+> restructured and audio parts are handled by Michael's new group now.
+
+Sure, "you" in the above is Analog (and indeed anyone else who's looking
+at similar areas).
+
+> > I'd expect that the driver would at least error out if the user tried to
+> > do the wrong thing here, like I say currently the firmware code is just
+> > not joined up with anything else at all.
+
+> i dont see how the driver can detect a "wrong" thing.  the driver has
+> no idea what arbitrary code the user is going to load and what that
+> code is going to do, or validate the code in any way.  this is why the
+> firmware has a small crc header on it -- we only make sure that what
+> the user compiled at build time matches what is loaded into the
+> hardware.
+
+At a bare minimum suddenly stopping and starting the firmware while
+audio is going through it is unlikely to work well (you'd most likely
+get a hard stop of the audio followed by a sudden hard start which sound
+very unpleasant to listeners) and so should be prevented.  There's a
+bunch of options for doing this (including refusing to change, ensuring
+the DSP output is muted during the change or routing around the DSP
+while doing the change).
+
+> > systems) there's no reason they shouldn't be able to rely on standard
+> > tools for managing their audio configurations.
+
+> if the standard tools existed today, i'd of course agree.  but as you
+> indicated there's nothing right now for us to bug off of.  so how
+> userspace "probes" for existing data would be however the end user
+> chooses to manage things.  it's not like the standard tools could
+> really provide anything other than a simple string that indicates
+> "some blob exists with name xxx".  the meaning/metadata that surrounds
+> xxx isnt really relevant from the kernel's pov.
+
+The standard tools should also be able to manage the mechanics of
+actually getting the new data into the kernel at appropriate moments.
+This includes both offering control via UIs such as alsamixer and being
+able to include configuration of the data in UCM configurations.
+
+> > At present userspace can enumerate and change the runtime configuration
+> > the system offers via the ALSA APIs (and this will get even better once
+> > the media controller API starts being used). =A0This means that you can
+> > fairly easily write a userspace that'll run on pretty much any Linux
+> > audio hardware, adapting with pure configuration for which you can
+> > provide point and click tuning (realistically by allowing the user to
+> > configure via standard ALSA tools and offering a "save as use case" type
+> > interface). =A0If we start adding backdoors to drivers we're taking a s=
+tep
+> > back from where we are currently by requiring that the application layer
+> > know magic stuff about individual systems in order to work with them.
+
+> from how we've seen people using these codecs, this scenario doesnt
+> make much sense.  the different algorithms would be loaded on the fly
+> by the application and its current operating needs, not a single
+> algorithm selected by the ender user that wouldnt change for the life
+> of the app.  not saying the scenario would never come up, just that it
+> isnt the one we'd be focused on.
+
+I'm not sure you're following what's being said here.  The above control
+discussed above full system configuration of all the control offered by
+the system, not tuning the parameters of an individual algorithm.  This
+includes volume controls, routing controls, algorithms, coefficients and
+anything else that can be changed.  A scenario where you want to change
+the set of algorithms the hardware can support is certainly included in
+that.
