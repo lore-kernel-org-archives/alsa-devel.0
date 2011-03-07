@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Add machine driver for Visstrim_M10
-	board.
-Date: Mon, 7 Mar 2011 11:49:47 +0000
-Message-ID: <20110307114947.GF13471@opensource.wolfsonmicro.com>
-References: <1299484029-2446-1-git-send-email-javier.martin@vista-silicon.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [Device-drivers-devel] [PATCH] Add driver for
+ Analog Devices ADAU1701 SigmaDSP
+Date: Mon, 7 Mar 2011 06:50:15 -0500
+Message-ID: <AANLkTikynw7vCsqqyNZW-LFuGUKKQEtG3s4YCZjpOvko@mail.gmail.com>
+References: <1299460302-15392-1-git-send-email-cliff.cai@analog.com>
+	<20110307114142.GB13471@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5C7BE10382B
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 12:49:50 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1299484029-2446-1-git-send-email-javier.martin@vista-silicon.com>
+Received: from mail-yi0-f51.google.com (mail-yi0-f51.google.com
+	[209.85.218.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4876C103881
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 12:50:36 +0100 (CET)
+Received: by yib2 with SMTP id 2so1881018yib.38
+	for <alsa-devel@alsa-project.org>; Mon, 07 Mar 2011 03:50:35 -0800 (PST)
+In-Reply-To: <20110307114142.GB13471@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +25,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Javier Martin <javier.martin@vista-silicon.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: cliff.cai@analog.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, akpm@linux-foundation.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 07, 2011 at 08:47:09AM +0100, Javier Martin wrote:
-> Visstrim_M10 boards have an external tlcv320aic3205 codec
-> attached to SSI1. This driver glues together both interfaces.
-> External amplifier is not supported in this first version.
-> 
-> Signed-off-by: Javier Martin <javier.martin@vista-silicon.com>
-
-Applied, thanks.
+T24gTW9uLCBNYXIgNywgMjAxMSBhdCAwNjo0MSwgTWFyayBCcm93biB3cm90ZToKPiBPbiBNb24s
+IE1hciAwNywgMjAxMSBhdCAwOToxMTo0MkFNICswODAwLCBjbGlmZi5jYWlAYW5hbG9nLmNvbSB3
+cm90ZToKPj4gRnJvbTogQ2xpZmYgQ2FpIDxjbGlmZi5jYWlAYW5hbG9nLmNvbT4KPj4gSXQgbmVl
+ZHMgdG8gaW5jbHVkZSAibGludXgvc2lnbWEuaCIgd2hpY2ggaXMgc3RpbGwgaW4gQW5kcmV3IE1v
+cnRvbidzCj4+IHRyZWUuCj4KPiBJcyB0aGlzIG5lZWRlZCBieSBvdGhlciB0cmVlcz8KCm5vCgo+
+wqBJIGNhbid0IGFwcGx5IHRoaXMgZHJpdmVyIHVudGlsIGl0J3MgbWVyZ2VkIGludG8gQVNvQyB2
+aWEgc29tZSBtZWFucwoKYW5kIGFuZHJldyBoYXMgYmVlbiBob2xkaW5nIG9mZiBvbiBtZXJnaW5n
+IHRoZSBmaXJtd2FyZSBkcml2ZXIgdW50aWwKc29tZXRoaW5nIGluIG1haW5saW5lIG5lZWRzIGl0
+LiAgb25jZSBhIGRyaXZlciBnZXRzIHRvIHRoZSBwb2ludCB3aGVyZQp5b3UncmUgZmluZSB3aXRo
+IG1lcmdpbmcgaXQsIHdlIGNhbiBidWcgYWtwbSB0byBwdXNoIHRoZSBzaWdtYQpmaXJtd2FyZSBs
+b2FkZXIgdG8gbGludXMuCgo+PiAgICAgICBzZWxlY3QgU05EX1NPQ19QQ00zMDA4Cj4+ICAgICAg
+IHNlbGVjdCBTTkRfU09DX1NQRElGCj4+ICAgICAgIHNlbGVjdCBTTkRfU09DX1NTTTI2MDIgaWYg
+STJDCj4+ICsgICAgIHNlbGVjdCBTTkRfU09DX0FEQVUxNzAxIGlmIEkyQwo+PiAgICAgICBzZWxl
+Y3QgU05EX1NPQ19TVEFDOTc2NiBpZiBTTkRfU09DX0FDOTdfQlVTCj4+ICAgICAgIHNlbGVjdCBT
+TkRfU09DX1RMVjMyMEFJQzIzIGlmIEkyQwo+Cj4gVGhpcyBwcmVzdW1hYmx5IGFsc28gbmVlZHMg
+dG8gc2VsZWN0IHRoZSBEU1AgQVBJIG90aGVyd2lzZSBpdCdzIG5vdAo+IGdvaW5nIHRvIGJ1aWxk
+LgoKYnkgIkRTUCBBUEkiIGknbSBndWVzc2luZyB5b3UgbWVhbiB0aGUgU2lnbWEgZmlybXdhcmUg
+bG9hZGVyCgo+PiArc3RhdGljIHNzaXplX3QgYWRhdTEzNzFfZHNwX2xvYWQoc3RydWN0IGRldmlj
+ZSAqZGV2LAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBkZXZpY2Vf
+YXR0cmlidXRlICphdHRyLAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnN0
+IGNoYXIgKmJ1Ziwgc2l6ZV90IGNvdW50KQo+PiArewo+PiArICAgICBpbnQgcmV0ID0gMDsKPj4g
+KyAgICAgc3RydWN0IGFkYXUxNzAxX3ByaXYgKmFkYXUxNzAxID0gZGV2X2dldF9kcnZkYXRhKGRl
+dik7Cj4+ICsgICAgIHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYyA9IGFkYXUxNzAxLT5jb2Rl
+YzsKPj4gKyAgICAgcmV0ID0gYWRhdTE3MDFfc2V0cHJvZ3JhbShjb2RlYyk7Cj4+ICsgICAgIGlm
+IChyZXQpCj4+ICsgICAgICAgICAgICAgcmV0dXJuIHJldDsKPj4gKyAgICAgZWxzZQo+PiArICAg
+ICAgICAgICAgIHJldHVybiBjb3VudDsKPj4gK30KPj4gK3N0YXRpYyBERVZJQ0VfQVRUUihkc3As
+IDA2NDQsIE5VTEwsIGFkYXUxMzcxX2RzcF9sb2FkKTsKPgo+IFlvdSdyZSBtYXJraW5nIHRoZSBm
+aWxlIGFzIHN1cHBvcnRpbmcgYm90aCByZWFkIGFuZCB3cml0ZSBidXQgb25seQo+IHByb3ZpZGlu
+ZyB3cml0ZSBmdW5jdGlvbmFsaXR5LCBhbmQgdGhlIHdyaXRlIGZ1bmN0aW9uYWxpdHkgdG90YWxs
+eQo+IGlnbm9yZXMgdGhlIHdyaXR0ZW4gZGF0YS4KPgo+IE1vcmUgZ2VuZXJhbGx5IHRoaXMgZG9l
+c24ndCBzZWVtIGxpa2UgYSBncmVhdCBpbnRlcmZhY2UgLSBhcHBhcmVudGx5IHRoZQo+IGRldmlj
+ZSByZXF1cmllcyB0aGF0IGZpcm13YXJlIGJlIGxvYWRlZCBidXQgdGhlIHdob2xlIGZpcm13YXJl
+IGxvYWQKPiBwcm9jZXNzIGlzbid0IGF0IGFsbCBqb2luZWQgdXAgd2l0aCB0aGUgZHJpdmVyIGNv
+ZGUgbWVhbmluZyB0aGF0IHRoZQo+IGFwcGxpY2F0aW9uIGxheWVyIGhhcyB0byBmaWd1cmUgb3V0
+IHdoZW4gZmlybXdhcmUgbmVlZHMgdG8gYmUgcmVsb2FkZWQsCj4gdGhlcmUncyBubyB1bmRlcnN0
+YW5kaW5nIG9uIHRoZSBwYXJ0IG9mIHRoZSBkcml2ZXIgb2Ygd2hhdCB0aGUgZmlybXdhcmUKPiBv
+biB0aGUgZGV2aWNlIGlzIGRvaW5nIG9yIGhvdyBpdCdzIGdsdWVkIGludG8gdGhlIGF1ZGlvIHN1
+YnN5c3RlbS4KCnRoZSBBUEkgc2hvdWxkIGFsbG93IGZvciB1c2Vyc3BhY2UgdG8gc3BlY2lmeSB0
+aGUgZmlybXdhcmUgbmFtZSwgYnV0CnRoYXQncyBhYm91dCBpdC4gIGl0IGlzIHVwIHRvIHRoZSB1
+c2Vyc3BhY2UgYXBwbGljYXRpb24gdG8gYXJiaXRyYXJpbHkKbG9hZCBkaWZmZXJlbnQgZmlybXdh
+cmUgZmlsZXMgb24gdGhlIGZseSBpbnRvIHRoZSBjb2RlYyB3aXRob3V0IHRoZQpjb2RlYyBjYXJp
+bmcgd2hhdCdzIGdvaW5nIGludG8gaXQuICBvZnRlbiB0aW1lcyB0aGUgZmlybXdhcmUgaXMgRFNQ
+CmNvZGUgdG8gZG8gZGlmZmVyZW50IHBvc3QgcHJvY2Vzc2luZyBvbiB0aGUgYXVkaW8gc3RyZWFt
+IChjbGVhbnVwIG9yCndoYXRldmVyKS4KLW1pa2UKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
