@@ -1,253 +1,63 @@
-From: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [Device-drivers-devel] [PATCH] Add driver for Analog Devices
- ADAU1701 SigmaDSP
-Date: Sun, 6 Mar 2011 21:44:49 -0500
-Message-ID: <AANLkTinGyn8tujw-TrLibuDuj_Xqb4_YEPfLPFUy4WdO@mail.gmail.com>
-References: <1299460302-15392-1-git-send-email-cliff.cai@analog.com>
+From: Alexander Sverdlin <subaparts@yandex.ru>
+Subject: Re: [PATCH] ASoC: Improve EP93xx I2S clocks management.
+Date: Mon, 07 Mar 2011 08:39:06 +0300
+Message-ID: <1299476346.27359.120.camel@r60e>
+References: <1299286635.27359.106.camel@r60e>
+	<4D740490.8060200@bluewatersys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1299460302-15392-1-git-send-email-cliff.cai@analog.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: cliff.cai@analog.com
-Cc: broonie@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, akpm@linux-foundation.org, lrg@slimlogic.co.uk
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from forward3.mail.yandex.net (forward3.mail.yandex.net [77.88.46.8])
+	by alsa0.perex.cz (Postfix) with ESMTP id 237CA2445C
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 06:39:11 +0100 (CET)
+In-Reply-To: <4D740490.8060200@bluewatersys.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Ryan Mallon <ryan@bluewatersys.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Mar 6, 2011 at 20:11,  <cliff.cai@analog.com> wrote:
-> +#define ADAU1701_FIRMWARE "SigmaDSP_fw.bin"
+Dear Ryan,
 
-this probably needs to be more specific.  like "adau1701.bin".
-otherwise it makes it a pain to work with diff codecs in the same
-system.
+On Mon, 2011-03-07 at 11:02 +1300, Ryan Mallon wrote:
+> > +	sdiv = 4;
+> > +	if (div > (256 + 512) / 2) {
+> > +		lrdiv = 128;
+> > +	} else {
+> > +		lrdiv = 64;
+> > +		if (div < (128 + 256) / 2)
+> > +			sdiv = 2;
+> > +	}
+> 
+> I don't understand where the magic numbers above come from? Does it work
+> correctly for all rates? I think a comment is needed to explain how this
+> works.
 
-> +static int adau1701_write_register(struct snd_soc_codec *codec,
-> + =C2=A0 =C2=A0 =C2=A0 u16 reg_address, u8 length, u32 value)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 int ret;
-> + =C2=A0 =C2=A0 =C2=A0 int count =3D length + 2; /*data plus 16bit re=
-gister address*/
-> + =C2=A0 =C2=A0 =C2=A0 u8 buf[8] =3D {0, 0, 0, 0, 0, 0, 0, 0};
-> +
-> + =C2=A0 =C2=A0 =C2=A0 if (length =3D=3D 0)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -1;
-> + =C2=A0 =C2=A0 =C2=A0 buf[0] =3D (reg_address >> 8) & 0xFF;
+The Magic is simply centers between divisors. The loop produced only 3
+variants of divisors. So do this code. But it's simpler and it prefers
+LRDIV = 64. I do not know what do you mean by all rates, with fixed MCLK
+there is no way to produce all the rates. With variable MCLK I'm having
+full 8000-192000 range now.
 
-should be a blank line after that return
+> 
+> An alternative would be to keep the existing loop form, but try and find
+> the closest match rather than an exact match. Something like this
+> (untested):
 
-> + =C2=A0 =C2=A0 =C2=A0 buf[1] =3D reg_address & 0xFF;
-> + =C2=A0 =C2=A0 =C2=A0 if (length =3D=3D 1)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 buf[2] =3D value &=
- 0xFF;
-> + =C2=A0 =C2=A0 =C2=A0 else if (length =3D=3D 2) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 buf[2] =3D (value =
->> 8) & 0xFF;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 buf[3] =3D value &=
- 0xFF;
-> + =C2=A0 =C2=A0 =C2=A0 } else if (length =3D=3D 3) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 buf[2] =3D (value =
->> 16) & 0xFF;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 buf[3] =3D (value =
->> 8) & 0xFF;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 buf[4] =3D value &=
- 0xFF;
-> + =C2=A0 =C2=A0 =C2=A0 }
+This is huge comparing to 2 ifs... But the main task of keeping LRCLK=64
+where possible still can be achieved if we swap to lines:
 
-i think the buf[8] init forces gcc to generate bad code, and seems to
-be useless.  shouldnt the code have an "else" brace to return -1 if
-length is greater than 3, and then change the decl to "u8 buf[5];" ?
 
-also, all these 0xFF masks are useless -- you're assigning it to a u8
-which implies bit truncation
+> 	for (sdiv = 2; sdiv <= 4; sdiv += 2) {
+> 		for (lrdiv = 64; lrdiv <= 128; lrdiv <<= 1) {
 
-> +       ret =3D i2c_master_send(codec->control_data, buf, count);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 return ret;
-> +
-> +}
-
-the whole "int ret" seems kind of useless in this func.  just return
-the i2c_master_send and drop the ret var completely.  and drop the
-blank link after the return.
-
-> +/*
-> + * read ADAU1701 hw register
-> + */
-> +static u32 adau1701_read_register(struct snd_soc_codec *codec,
-> + =C2=A0 =C2=A0 =C2=A0 u16 reg_address, u8 length)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 u8 addr[2];
-> + =C2=A0 =C2=A0 =C2=A0 u8 buf[2];
-> + =C2=A0 =C2=A0 =C2=A0 u32 value =3D 0;
-> + =C2=A0 =C2=A0 =C2=A0 int ret;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 if (reg_address < ADAU1701_FIRSTREG)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 reg_address =3D re=
-g_address + ADAU1701_FIRSTREG;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 if ((reg_address < ADAU1701_FIRSTREG) || (reg_=
-address > ADAU1701_LASTREG))
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -EIO;
-
-this func has "u32" for ret, and you return the raw register value
-below.  but here you try returning -EIO.  shouldnt it be "int" so the
-caller can check for "< 0" ?
-
-> + =C2=A0 =C2=A0 =C2=A0 addr[0] =3D (reg_address >> 8) & 0xFF;
-> + =C2=A0 =C2=A0 =C2=A0 addr[1] =3D reg_address & 0xFF;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 /* write the 2byte read address */
-> + =C2=A0 =C2=A0 =C2=A0 ret =3D i2c_master_send(codec->control_data, a=
-ddr, 2);
-> + =C2=A0 =C2=A0 =C2=A0 if (ret)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return ret;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 if (length =3D=3D 1) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (i2c_master_rec=
-v(codec->control_data, buf, 1) !=3D 1)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 return -EIO;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 value =3D buf[0];
-> + =C2=A0 =C2=A0 =C2=A0 } else if (length =3D=3D 2) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (i2c_master_rec=
-v(codec->control_data, buf, 2) !=3D 2)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 return -EIO;
-
-seems like this can be combined into one simple code block where you
-replace "1" and '2" with "length"
-
-> +static int adau1701_setprogram(struct snd_soc_codec *codec)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 int ret =3D 0;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 ret =3D process_sigma_firmware(codec->control_=
-data, ADAU1701_FIRMWARE);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 return ret;
-> +}
-
-seems like this should be one statement -- a simple return
-
-> +static int adau1701_set_bias_level(struct snd_soc_codec *codec,
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0enum snd_soc_bias_level level=
-)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 u16 reg;
-> + =C2=A0 =C2=A0 =C2=A0 switch (level) {
-> + =C2=A0 =C2=A0 =C2=A0 case SND_SOC_BIAS_ON:
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 reg =3D adau1701_r=
-ead_register(codec, ADAU1701_AUXNPOW, 2);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 reg &=3D ~(AUXNPOW=
-_AAPD | AUXNPOW_D0PD | AUXNPOW_D1PD | =C2=A0AUXNPOW_D2PD |
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0AUXNPOW_D3PD | AUXNPOW_VBPD | AUXNPOW_VRPD);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 adau1701_write_reg=
-ister(codec, ADAU1701_AUXNPOW, 2, reg);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 break;
-> + =C2=A0 =C2=A0 =C2=A0 case SND_SOC_BIAS_PREPARE:
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 break;
-> + =C2=A0 =C2=A0 =C2=A0 case SND_SOC_BIAS_STANDBY:
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 break;
-> + =C2=A0 =C2=A0 =C2=A0 case SND_SOC_BIAS_OFF:
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 /* everything off,=
- dac mute, inactive */
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 reg =3D adau1701_r=
-ead_register(codec, ADAU1701_AUXNPOW, 2);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 reg |=3D AUXNPOW_A=
-APD | AUXNPOW_D0PD | AUXNPOW_D1PD | =C2=A0AUXNPOW_D2PD |
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0AUXNPOW_D3PD | AUXNPOW_VBPD | AUXNPOW_VRPD;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 adau1701_write_reg=
-ister(codec, ADAU1701_AUXNPOW, 2, reg);
-
-error checking missing on the read_register() call
-
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 break;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 }
-
-drop the blank line before the brace
-
-> +struct snd_soc_dai_driver adau1701_dai =3D {
-> + =C2=A0 =C2=A0 =C2=A0 .name =3D "ADAU1701",
-
-i think the standard is to use all lower case
-
-> +static int adau1701_suspend(struct snd_soc_codec *codec, pm_message_=
-t state)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 adau1701_set_bias_level(codec, SND_SOC_BIAS_OF=
-=46);
-> + =C2=A0 =C2=A0 =C2=A0 return 0;
-> +}
-> +
-> +static int adau1701_resume(struct snd_soc_codec *codec)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 adau1701_set_bias_level(codec, SND_SOC_BIAS_ST=
-ANDBY);
-> + =C2=A0 =C2=A0 =C2=A0 return 0;
-> +}
-> ...
-> +static int adau1701_remove(struct snd_soc_codec *codec)
-> +{
-> +       adau1701_set_bias_level(codec, SND_SOC_BIAS_OFF);
-> +       return 0;
-> +}
-
-why not return set_bias_level ?
-
-> +static int adau1701_reg_init(struct snd_soc_codec *codec)
-> ...
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printk(KERN_ERR "L=
-oading program data failed\n");
-
-dev_err
-
-> +struct snd_soc_codec_driver soc_codec_dev_adau1701 =3D {
-
-static
-
-> +static __devinit int adau1701_i2c_probe(struct i2c_client *i2c,
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0 =C2=A0 const struct i2c_device_id *id)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 struct adau1701_priv *adau1701;
-> + =C2=A0 =C2=A0 =C2=A0 int ret =3D 0;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 adau1701 =3D kzalloc(sizeof(struct adau1701_pr=
-iv), GFP_KERNEL);
-
-sizeof(*adau1701)
-
-> +static int __init adau1701_modinit(void)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 int ret;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 ret =3D i2c_add_driver(&adau1701_i2c_driver);
-> + =C2=A0 =C2=A0 =C2=A0 if (ret !=3D 0) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printk(KERN_ERR "F=
-ailed to register adau1701 I2C driver: %d\n",
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0ret);
-> + =C2=A0 =C2=A0 =C2=A0 }
-
-uesless braces, and should be pr_err
-
-> +MODULE_DESCRIPTION("ASoC ADAU1701 SigmaDSP driver");
-> +MODULE_AUTHOR("Cliff Cai");
-> +MODULE_LICENSE("GPL");
-
-MODULE_ALIAS() ?
-
-> +++ b/sound/soc/codecs/adau1701.h
-> ...
-> +#define =C2=A0 =C2=A0 =C2=A0 =C2=A0AUXADCE_AAEN =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0(1 << 15)
-> +#define OSCIPOW_OPD =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0(0x04)
-> +#define =C2=A0 =C2=A0 =C2=A0 =C2=A0DACSET_DACEN =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0 =C2=A0(1)
-
-looks like you got "#define<tab>" junk in here
--mike
+But I'm sure code proposed by me should work just like previous variant
+for you. Could you try it with your configuration please?
