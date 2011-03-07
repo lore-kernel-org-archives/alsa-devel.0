@@ -1,17 +1,19 @@
-From: David Henningsson <david.henningsson@canonical.com>
-Subject: Re: [PATCH] Four patches to fixup surround internal
- speakers on Realtek 88x
-Date: Mon, 07 Mar 2011 11:46:29 +0100
-Message-ID: <4D74B785.1060000@canonical.com>
-References: <4D7495D2.80605@canonical.com> <s5hhbbfgtjm.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 1/2] ASoC: tlv320dac33: add
+	MODULE_DEVICE_TABLE
+Date: Mon, 07 Mar 2011 10:48:16 +0000
+Message-ID: <1299494896.3377.3.camel@odin>
+References: <1299223098.20907.1.camel@mola>  <4D70EDDC.7040206@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4BB3C103818
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 11:46:34 +0100 (CET)
-In-Reply-To: <s5hhbbfgtjm.wl%tiwai@suse.de>
+Received: from mail-ww0-f41.google.com (mail-ww0-f41.google.com [74.125.82.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 08347103818
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 11:48:21 +0100 (CET)
+Received: by wwb29 with SMTP id 29so2209119wwb.2
+	for <alsa-devel@alsa-project.org>; Mon, 07 Mar 2011 02:48:20 -0800 (PST)
+In-Reply-To: <4D70EDDC.7040206@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,41 +23,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, nusch88@gmail.com
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: ext Axel Lin <axel.lin@gmail.com>, Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Mark@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxMS0wMy0wNyAxMDozNywgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IE1vbiwgMDcgTWFy
-IDIwMTEgMDk6MjI6NDIgKzAxMDAsCj4gRGF2aWQgSGVubmluZ3Nzb24gd3JvdGU6Cj4+Cj4+IEkg
-c3BlbmQgbGFzdCBGcmlkYXkgdG9nZXRoZXIgd2l0aCBCYXJ0xYJvbWllaiDFu29nYcWCYSBmaXhp
-bmcgdXAgYSBsb25nCj4+IHN0YW5kaW5nIGlzc3VlIHdpdGggTGVub3ZvIFk1MzAsIHdoaWNoIGhh
-cyA0KzEgaW50ZXJuYWwgc3BlYWtlcnMgb24gYQo+PiBSZWFsdGVrIDg4OC4gQW5kIHdlIGFsbCB3
-YW50IHRoYXQgc3VwcG9ydGVkIGJ5IHRoZSBhdXRvIHBhcnNlciwgZG9uJ3QKPj4gd2U/Cj4KPiBX
-ZWxsLCBpdCdzIGEgYml0IGZsYWt5LiAgVGhlIGN1cnJlbnQgYmVoYXZpb3IgYXNzaWduaW5nIHNw
-ZWFrZXJzIG9ubHkKPiBhcyAiU3BlYWtlciIgaXMgaW50ZW50aW9uYWwuICBUaGlzIGlzIGEgc2lt
-cGxpZmljYXRpb24gdG8gYXZvaWQgdGhlCj4gY29uZmxpY3Qgd2l0aCB0aGUgY2FzZSB3aGVyZSBi
-b3RoIG11bHRpcGxlIGxpbmUtb3V0cyBhbmQgbXVsdGlwbGUKPiBzcGVha2VycyBhcmUgcHJlc2Vu
-dC4KCkluIHRoYXQgY2FzZSwgbm90aGluZyBjaGFuZ2VzIC0gdGhpcyBjb2RlIHBhdGggaXMgbm90
-IHRha2VuLCBzaW5jZSAKbGluZV9vdXRfdHlwZSB3b3VsZG4ndCBiZSBBVVRPX1BJTl9TUEVBS0VS
-X09VVC4KCj4gQW5kLCBpbiBnZW5lcmFsLCBJIGRvbid0IGxpa2UgdG8gZ2V0IHJpZCBvZiAiU3Bl
-YWtlciIgbm90YXRpb24uICBJZgo+IGFueSwgd2Ugc2hvdWxkIGtlZXAgIlNwZWFrZXIiIHdpdGgg
-YSBjaGFubmVsIHByZWZpeC4KClRoaXMgaXMgaW5kZWVkIHRyaWNreSwgYW5kIEkgdGhpbmsgd2Un
-dmUgc3RyYW5kZWQgb24gYSBzaW1pbGFyIGlzc3VlIApoZXJlIG9uY2UgYmVmb3JlLgoKQnR3LCBp
-biB0aGUgY2FzZSBvZiB0aGlzIHBhcnRpY3VsYXIgbWFjaGluZSwgdGhlICJGcm9udCIgY29udHJv
-bHMgdGhlIApoZWFkcGhvbmVzIGFzIHdlbGwsIHNvIHRoZSBuYW1lIGlzIGFjY2lkZW50YWxseSBj
-b3JyZWN0LgoKSSd2ZSBldmVuIHNlZW4gYSBtYWNoaW5lIHdoZXJlIGEgREFDIGNvbnRyb2xsZWQg
-dHdvIG91dCBvZiB0aHJlZSBmcm9udHMgCihlIGcgaGVhZHBob25lcyBhbmQgbGluZS1vdXQgYnV0
-IG5vdCBzcGVha2VyLCBvciBzb21ldGhpbmcgbGlrZSB0aGF0KSAtIApob3cgd291bGQgeW91IG5h
-bWUgdGhhdD8KClBlcmhhcHMgaXQgaXMgdGltZSB0byBzdGFydCB0byBjb21lIHVwIHdpdGggYSBt
-b3JlIHJlbGlhYmxlIG5hbWluZyAKc2NoZW1lIGZvciAyLjYuMzkgb3IgMi42LjQwLCB0aGF0IHdv
-dWxkIHRha2UgaW50byBhY2NvdW50IHRoZSBtb3JlIAp0cmlja2llciBjb21iaW5hdGlvbnMgYXMg
-d2VsbC4KCj4KPj4gU28gaGVyZSBjb21lcyB0aGUgcGF0Y2hlcy4gV291bGQgYmUgbmljZSB0byBo
-YXZlIGluIDIuNi4zOC4KPgo+IFNvcnJ5LCB0aGUgc3BlYWtlci1jaGFuZ2UgaXMgdG9vIGludHJ1
-c2l2ZSBmb3IgMi42LjM4Lgo+IFNpbmNlIEkgYWxyZWFkeSBzZW50IGEgcHVsbCByZXF1ZXN0IHll
-c3RlcmRheSwgd2hpY2ggaXMgc3VwcG9zZWQgdG8gYmUKPiB0aGUgZmluYWwgb25lIHVubGVzcyBt
-YWpvciBmaXhlcyBjb21lIHVwLCBJJ2xsIHF1ZXVlIHRoaXMgbGF0ZXIgd2l0aAo+IHN0YWJsZS1r
-ZXJuZWwgdGFnLgoKT2ssIHRoYXQgd29ya3Mgd2VsbCBmb3IgbWUuCgotLSAKRGF2aWQgSGVubmlu
-Z3Nzb24sIENhbm9uaWNhbCBMdGQuCmh0dHA6Ly9sYXVuY2hwYWQubmV0L35kaXdpYwpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Fri, 2011-03-04 at 15:49 +0200, Peter Ujfalusi wrote:
+> On 03/04/11 09:18, ext Axel Lin wrote:
+> > The device table is required to load modules based on modaliases.
+> > 
+> > Signed-off-by: Axel Lin <axel.lin@gmail.com>
+> 
+> Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+
+Acked-by: Liam Girdwood <lrg@ti.com>
