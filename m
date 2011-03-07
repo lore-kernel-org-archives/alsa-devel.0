@@ -1,62 +1,64 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3 ISP driver
-Date: Mon, 7 Mar 2011 14:38:24 +0100
-Message-ID: <201103071438.25685.laurent.pinchart@ideasonboard.com>
-References: <201102171606.58540.laurent.pinchart@ideasonboard.com> <201103052148.06603.laurent.pinchart@ideasonboard.com> <4D74C82A.9050406@redhat.com>
+From: r10kindsofpeople <r10kindsofpeople@gmail.com>
+Subject: MIDI, snd-serial-u16550 and dropped notes
+Date: Mon, 7 Mar 2011 08:45:37 -0500
+Message-ID: <AANLkTikB02m4i48EeFrAqjrdy6MgU45ymGtxBCUBAA+O@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <4D74C82A.9050406@redhat.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@redhat.com>
-Cc: "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>, Pawel Osciak <pawel@osciak.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
+	[209.85.216.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id A4A31103813
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 14:45:41 +0100 (CET)
+Received: by qyk7 with SMTP id 7so3818296qyk.17
+	for <alsa-devel@alsa-project.org>; Mon, 07 Mar 2011 05:45:38 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mauro,
+Sorry for cross-posting, I've been writing about this problem on
+alsa-user, but it seems to me that this probably belongs over here now
+(if it hasn't all along).
 
-On Monday 07 March 2011 12:57:30 Mauro Carvalho Chehab wrote:
-> Em 05-03-2011 17:48, Laurent Pinchart escreveu:
+A brief recap:
+Using the snd-serial-u16550 driver I have two MIDI streams coming in
+that are near duplicates of each other.   Every now and then (after
+5-45 minutes of playing) I get a dropped or corrupted message.  I've
+captured this multiple times using both a logic analyzer on the serial
+data and software logging of the ALSA ports.
 
-[snip]
+Sometimes whole events get dropped, sometimes the tail end of one
+message and the beginning of the next gets dropped to form a
+completely different event.  Aside from the fact that both ports are
+getting hit simultaneously, the ports are not being hit very
+hard...normal playing.
 
-> Added both patches and folded them as requested, and added the remaining
-> patches after my review. The new tree is at:
-> 
-> http://git.linuxtv.org/mchehab/experimental.git?a=shortlog;h=refs/heads/med
-> ia_controller
-> 
-> The pending issues for merging it to the main devel branch are:
-> 	- omap3isp private control description;
+This has occurred under:
+Ubuntu 10.04 netbook
+Ubuntu 10.10 netbook
+Ubuntu 10.10 with Natty lowlatency kernel
 
-Still working on that, I expect to send it this evening.
+It does not appear to occur under:
+Ubuntu 10.10 server
+Ubuntu 10.04 netbook with linux-rt kernel
 
-> 	- a chapter describing how *MBUS* and fourcc formats are related;
+I've not eliminated the possibility that it's being caused by my ALSA
+application - quite the opposite - but what could I be doing that
+corrupts the behavior of the driver?  I've tried several methods of
+reading the data to no effect.
 
-This still needs to be discussed, there's no agreement on that yet.
+With great respect to the authors of the driver, I don't think it has
+changed in many years and kernel has certainly changed underneath it.
+Is there any sense that it could be improved to eliminate the problem
+and the apparent requirement for the -rt kernel?  Or should I be
+looking at my ALSA application more closely?
 
-> 	- a description about how to lock between MBUS/fourcc get/set format;
-
->From Documentation/media-framework.txt:
-
-"If other operations need to be disallowed on streaming entities (such as
-changing entities configuration parameters) drivers can explictly check the
-media_entity stream_count field to find out if an entity is streaming. This
-operation must be done with the media_device graph_mutex held."
-
-So it's already there :-) And the media_entity_pipeline_start() function makes 
-it easy to implement in bridge driver.
-
-> 	- a renaming patch to make directory name and file names consistent.
-
-Done. I've pushed the modified patches to the media-2.6.39-0005-omap3isp 
-branch.
-
-The media-2.6.39-0004-v4l-misc branch has also been rebased to squash the 
-format documentation patches as you did in your tree. There's no need to pull 
-anything from it.
-
--- 
-Regards,
-
-Laurent Pinchart
+John
