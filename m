@@ -1,27 +1,18 @@
-From: "Reddy, MR Swami" <MR.Swami.Reddy@nsc.com>
-Subject: Re: Process of sumit the Audio driver code to ALSA
-Date: Mon, 7 Mar 2011 03:26:26 -0800
-Message-ID: <290463D19D2E064191F1F96ECA480A89432CB6D840@EXMAIL02.scwf.nsc.com>
-References: <1295359939-14673-1-git-send-email-adi@drcomp.erfurt.thur.de>
-	<1295359939-14673-2-git-send-email-adi@drcomp.erfurt.thur.de>
-	<s5hmxmygtre.wl%tiwai@suse.de>
-	<290463D19D2E064191F1F96ECA480A89432873706D@EXMAIL02.scwf.nsc.com>
-	<s5hwrm1l68q.wl%tiwai@suse.de>
-	<290463D19D2E064191F1F96ECA480A8943287370CB@EXMAIL02.scwf.nsc.com>
-	<s5htyh5l4zg.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] Add driver for Analog Devices ADAU1701
+	SigmaDSP
+Date: Mon, 7 Mar 2011 11:41:43 +0000
+Message-ID: <20110307114142.GB13471@opensource.wolfsonmicro.com>
+References: <1299460302-15392-1-git-send-email-cliff.cai@analog.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sc-mailgw03.nsc.com (mail6.nsc.com [12.24.21.242])
-	by alsa0.perex.cz (Postfix) with ESMTP id 00ED610380E
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 12:26:54 +0100 (CET)
-Received: from SCNTRDCSS6.nsc.com (scntrdcss6.nsc.com [10.188.130.177])
-	by sc-mailgw03.nsc.com (Tumbleweed MailGate 3.7.1) with ESMTP id
-	2E21D1C400B0
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 03:26:44 -0800 (PST)
-In-Reply-To: <s5htyh5l4zg.wl%tiwai@suse.de>
-Content-Language: en-US
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B2D6D10382F
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 12:41:45 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1299460302-15392-1-git-send-email-cliff.cai@analog.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,67 +22,216 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: cliff.cai@analog.com
+Cc: device-drivers-devel@blackfin.uclinux.org, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On Mon, Mar 07, 2011 at 09:11:42AM +0800, cliff.cai@analog.com wrote:
 
-OK. I will submit the patches for National's (NSC) LM49352 and LM49350 audio cards (with older version of ALSA and Linux 2.6.24 tested). And request for the forward porting guidelines.
+> From: Cliff Cai <cliff.cai@analog.com>
 
-Thanks
-Swami
+> ADAU1701 is an SigmaDSP processor,it supports I2S audio interface.
 
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de] 
-Sent: Wednesday, January 19, 2011 1:07 PM
-To: Reddy, MR Swami
-Cc: alsa-devel@alsa-project.org
-Subject: Re: Process of sumit the Audio driver code to ALSA
+As with previous submissions from you guys this won't compile with
+current ASoC versions.  All new driver code submitted for mainline
+should be submitted against the development versions of the trees you're
+submitting against, in general -next contains everything relevant.
 
-At Tue, 18 Jan 2011 23:20:15 -0800,
-Reddy, MR Swami wrote:
-> 
-> Thanks for quick response!
-> Yes, it  ASOC based and currently, the audio drivers supported for Samsung 6410 target.
+> It needs to include "linux/sigma.h" which is still in Andrew Morton's
+> tree. 
 
-OK, then just post your patches to alsa-devel ML, Cc'ed to ASoC maintainers (Liam Girdwood <lrg@slimlogic.co.uk> and  Mark Brown <broonie@opensource.wolfsonmicro.com>).
+Is this needed by other trees?  I can't apply this driver until it's
+merged into ASoC via some means.  I guess it'll go in during the merge
+window, though, and you do need to respin.
 
-But I guess there have been quite many changes in ASoC core (e.g. multi-core support) that are no longer compatible with 2.6.24-based code.  These have to be fixed, of course, before merging.
+>  	select SND_SOC_PCM3008
+>  	select SND_SOC_SPDIF
+>  	select SND_SOC_SSM2602 if I2C
+> +	select SND_SOC_ADAU1701 if I2C
+>  	select SND_SOC_STAC9766 if SND_SOC_AC97_BUS
+>  	select SND_SOC_TLV320AIC23 if I2C
 
-It's up to you -- you can first pot the original patch and ask some hints for forward-porting, or first start reading the latest ASoC API changes, do port your driver then post the revised patch.
+This presumably also needs to select the DSP API otherwise it's not
+going to build.
 
+As ever, keep the Kconfig and Makefile sorted.
 
-thanks,
+> +#define AUDIO_NAME "adau1701"
+> +#define ADAU1701_VERSION "0.10"
 
-Takashi
+These aren't referenced anywhere, remove them.
 
-> 
-> Thanks
-> Swami
-> 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Wednesday, January 19, 2011 12:39 PM
-> To: Reddy, MR Swami
-> Subject: Re: Process of sumit the Audio driver code to ALSA
-> 
-> At Tue, 18 Jan 2011 20:58:28 -0800,
-> Reddy, MR Swami wrote:
-> > 
-> > Hello,
-> > We (National Semi) have developed ALSA based audio drivers for our Audio subsystem. Could you please let me know the process to submit and include as part of ALSA project.
-> > 
-> > The ALSA audio driver version info as follows:
-> >   - Linux - 2.6.24 base
-> >   - Andorid- 2.1   base
-> 
-> Is this based on ASoC?  If not, I recommend you to port the code to ASoC, thus it's the standard for embedded devices.
-> If you have any questions, just post to alsa-devel ML.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
+> +/*
+> + * Write a ADAU1701 register,since the register length is from 1 to 5,
+> + * So, use our own read/write functions instead of snd_soc_read/write.
+> + */
+> +static int adau1701_write_register(struct snd_soc_codec *codec,
+> +	u16 reg_address, u8 length, u32 value)
+> +{
+
+It loooks like the register length is hard coded in every location that
+the register is referenced.  This doesn't seem ideal - it'd be much
+nicer to have the register I/O functions work this out without the
+callers needing to.
+
+> +static int adau1701_pcm_prepare(struct snd_pcm_substream *substream,
+> +				struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +	int reg = 0;
+> +
+> +	reg = SEROCTL_MASTER | SEROCTL_OBF16 | SEROCTL_OLF1024;
+> +	adau1701_write_register(codec, ADAU1701_SEROCTL, 2, reg);
+> +
+> +	return 0;
+> +}
+
+This looks like some of it is DAI format and word length configuration?
+
+> +static void adau1701_shutdown(struct snd_pcm_substream *substream,
+> +			      struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +
+> +	adau1701_write_register(codec, ADAU1701_SEROCTL, 2, 0);
+> +}
+
+I suspect this isn't going to work for simultaneous playback and capture
+- it's not clear what the code does but I'd guess it will stop things
+completely.
+
+> +static int adau1701_set_dai_fmt(struct snd_soc_dai *codec_dai,
+> +		unsigned int fmt)
+> +{
+> +	struct snd_soc_codec *codec = codec_dai->codec;
+> +	u32 reg = 0;
+> +
+> +	reg = adau1701_read_register(codec, ADAU1701_SERITL1, 1);
+> +	/* interface format */
+> +	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> +	case SND_SOC_DAIFMT_I2S:
+> +		break;
+> +	case SND_SOC_DAIFMT_LEFT_J:
+> +		reg |= SERITL1_LEFTJ;
+> +		break;
+> +	/* TODO: support TDM */
+
+I'd expect that the I2S case should be clearing a bitmask.
+
+> +	default:
+> +		return 0;
+> +	}
+
+Return an error if you don't support something.  The same issue applies
+elsewhere in the function.
+
+> +static int adau1701_set_bias_level(struct snd_soc_codec *codec,
+> +				 enum snd_soc_bias_level level)
+> +{
+> +	u16 reg;
+> +	switch (level) {
+> +	case SND_SOC_BIAS_ON:
+> +		reg = adau1701_read_register(codec, ADAU1701_AUXNPOW, 2);
+> +		reg &= ~(AUXNPOW_AAPD | AUXNPOW_D0PD | AUXNPOW_D1PD |  AUXNPOW_D2PD |
+> +			 AUXNPOW_D3PD | AUXNPOW_VBPD | AUXNPOW_VRPD);
+> +		adau1701_write_register(codec, ADAU1701_AUXNPOW, 2, reg);
+
+You were also updating some of the same register bits in the mute
+function.  This looks buggy.
+
+> +		break;
+> +	case SND_SOC_BIAS_PREPARE:
+> +		break;
+> +	case SND_SOC_BIAS_STANDBY:
+> +		break;
+> +	case SND_SOC_BIAS_OFF:
+> +		/* everything off, dac mute, inactive */
+> +		reg = adau1701_read_register(codec, ADAU1701_AUXNPOW, 2);
+> +		reg |= AUXNPOW_AAPD | AUXNPOW_D0PD | AUXNPOW_D1PD |  AUXNPOW_D2PD |
+> +			 AUXNPOW_D3PD | AUXNPOW_VBPD | AUXNPOW_VRPD;
+> +		adau1701_write_register(codec, ADAU1701_AUXNPOW, 2, reg);
+> +		break;
+
+It's very odd that the code only does anything in _OFF or _ON - what
+exactly are these updates doing?
+
+> +		.rates = ADAU1701_RATES,
+> +		.formats = ADAU1701_FORMATS,
+> +	},
+> +	.ops = &adau1701_dai_ops,
+> +};
+> +EXPORT_SYMBOL_GPL(adau1701_dai);
+
+This is not required.
+
+> +static ssize_t adau1371_dsp_load(struct device *dev,
+> +				  struct device_attribute *attr,
+> +				  const char *buf, size_t count)
+> +{
+> +	int ret = 0;
+> +	struct adau1701_priv *adau1701 = dev_get_drvdata(dev);
+> +	struct snd_soc_codec *codec = adau1701->codec;
+> +	ret = adau1701_setprogram(codec);
+> +	if (ret)
+> +		return ret;
+> +	else
+> +		return count;
+> +}
+> +static DEVICE_ATTR(dsp, 0644, NULL, adau1371_dsp_load);
+
+You're marking the file as supporting both read and write but only
+providing write functionality, and the write functionality totally
+ignores the written data.
+
+More generally this doesn't seem like a great interface - apparently the
+device requries that firmware be loaded but the whole firmware load
+process isn't at all joined up with the driver code meaning that the
+application layer has to figure out when firmware needs to be reloaded,
+there's no understanding on the part of the driver of what the firmware
+on the device is doing or how it's glued into the audio subsystem.
+
+> +	ret = adau1701_setprogram(codec);
+> +	if (ret < 0) {
+> +		printk(KERN_ERR "Loading program data failed\n");
+> +		goto error;
+> +	}
+> +	reg = DSPCTRL_DAM | DSPCTRL_ADM;
+> +	adau1701_write_register(codec, ADAU1701_DSPCTRL, 2, reg);
+> +	reg = 0x08;
+> +	adau1701_write_register(codec, ADAU1701_DSPRES, 1, reg);
+
+Should these DSP configuations things be part of downloading firmware?
+
+> +	adau1701_write_register(codec, ADAU1701_AUXNPOW, 2, 0);
+> +	reg = AUXADCE_AAEN;
+> +	adau1701_write_register(codec, ADAU1701_AUXADCE, 2, reg);
+> +	reg = DACSET_DACEN;
+> +	adau1701_write_register(codec, ADAU1701_DACSET, 2, reg);
+> +	reg = DSPCTRL_DAM | DSPCTRL_ADM | DSPCTRL_CR;
+> +	adau1701_write_register(codec, ADAU1701_DSPCTRL, 2, reg);
+> +	/* Power-up the oscillator */
+> +	adau1701_write_register(codec, ADAU1701_OSCIPOW, 2, 0);
+
+This looks like it's all power management which I'd expect to see
+handled in either the bias management functions or ideally DAPM.  It
+also appears that the oscillator is an optional feature so it should be
+used conditionally.
+
+> +	struct adau1701_priv *adau1701 = snd_soc_codec_get_drvdata(codec);
+> +
+> +	adau1701->codec = codec;
+
+You don't actually ever seem to reference the codec pointer you're
+storing, perhaps just loose it?
+
+> +/* Bit fields */
+> +#define DSPCTRL_CR		(1 << 2)
+> +#define DSPCTRL_DAM		(1 << 3)
+> +#define DSPCTRL_ADM		(1 << 4)
+> +#define DSPCTRL_IST		(1 << 5)
+> +#define DSPCTRL_IFCW		(1 << 6)
+> +#define DSPCTRL_GPCW		(1 << 7)
+> +#define DSPCTRL_AACW		(1 << 8)
+
+These and the other bitfield definitions in the header should all be
+namespaced.
