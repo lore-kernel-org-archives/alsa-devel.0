@@ -1,19 +1,16 @@
-From: Seungwhan Youn <claude.youn@gmail.com>
-Subject: Re: [PATCH] ASoC: Add MAX9850 codec driver
-Date: Tue, 8 Mar 2011 01:40:05 +0900
-Message-ID: <AANLkTikYd7+WXa1jcse=VG1YxyX52JM1Z6y-khCwZJ-R@mail.gmail.com>
-References: <1299501913-3772-1-git-send-email-christian.glindkamp@taskit.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: Use data base init for WM9081 DAPM
+Date: Mon,  7 Mar 2011 16:41:26 +0000
+Message-ID: <1299516086-23638-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+References: <1299516086-23638-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id A4613244CD
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 17:40:06 +0100 (CET)
-Received: by eyg5 with SMTP id 5so1385307eyg.38
-	for <alsa-devel@alsa-project.org>; Mon, 07 Mar 2011 08:40:06 -0800 (PST)
-In-Reply-To: <1299501913-3772-1-git-send-email-christian.glindkamp@taskit.de>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F37BA244CD
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 17:41:06 +0100 (CET)
+In-Reply-To: <1299516086-23638-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,45 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Christian Glindkamp <christian.glindkamp@taskit.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL21heDk4NTAuaCBiL3NvdW5kL3Nv
-Yy9jb2RlY3MvbWF4OTg1MC5oCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAw
-Li41MjY4NTc1Cj4gLS0tIC9kZXYvbnVsbAo+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3MvbWF4OTg1
-MC5oCj4gQEAgLTAsMCArMSw0MSBAQAo+ICsvKgo+ICsgKiBtYXg5ODUwLmggwqAtLSDCoGNvZGVj
-IGRyaXZlciBmb3IgbWF4OTg1MAo+ICsgKgo+ICsgKiBDb3B5cmlnaHQgKEMpIDIwMTEgdGFza2l0
-IEdtYkgKPiArICogQXV0aG9yOiBDaHJpc3RpYW4gR2xpbmRrYW1wIDxjaHJpc3RpYW4uZ2xpbmRr
-YW1wQHRhc2tpdC5kZT4KPiArICoKPiArICogVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7
-IHlvdSBjYW4gcmVkaXN0cmlidXRlIMKgaXQgYW5kL29yIG1vZGlmeSBpdAo+ICsgKiB1bmRlciDC
-oHRoZSB0ZXJtcyBvZiDCoHRoZSBHTlUgR2VuZXJhbCDCoFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxp
-c2hlZCBieSB0aGUKPiArICogRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyDCoGVpdGhlciB2ZXJz
-aW9uIDIgb2YgdGhlIMKgTGljZW5zZSwgb3IgKGF0IHlvdXIKPiArICogb3B0aW9uKSBhbnkgbGF0
-ZXIgdmVyc2lvbi4KPiArICoKPiArICovCj4gKwo+ICsjaWZuZGVmIF9NQVg5ODUwX0gKPiArI2Rl
-ZmluZSBfTUFYOTg1MF9ICj4gKwo+ICsjZGVmaW5lIE1BWDk4NTBfU1RBVFVTQSDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoDB4MDAKPiArI2RlZmluZSBNQVg5ODUwX1NUQVRVU0Ig
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAweDAxCj4gKyNkZWZpbmUgTUFYOTg1
-MF9WT0xVTUUgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgMHgwMgo+ICsjZGVmaW5lIE1BWDk4NTBf
-R0VORVJBTF9QVVJQT1NFIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgMHgwMwo+ICsjZGVmaW5lIE1B
-WDk4NTBfSU5URVJSVVBUIMKgIMKgIMKgIMKgIMKgIMKgIMKgMHgwNAo+ICsjZGVmaW5lIE1BWDk4
-NTBfRU5BQkxFIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDB4MDUKPiArI2RlZmluZSBNQVg5ODUw
-X0NMT0NLIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgMHgwNgo+ICsjZGVmaW5lIE1BWDk4NTBf
-Q0hBUkdFX1BVTVAgwqAgwqAgwqAgwqAgwqAgwqAweDA3Cj4gKyNkZWZpbmUgTUFYOTg1MF9MUkNM
-S19NU0IgwqAgwqAgwqAgwqAgwqAgwqAgwqAweDA4Cj4gKyNkZWZpbmUgTUFYOTg1MF9MUkNMS19M
-U0IgwqAgwqAgwqAgwqAgwqAgwqAgwqAweDA5Cj4gKyNkZWZpbmUgTUFYOTg1MF9ESUdJVEFMX0FV
-RElPIMKgIMKgIMKgIMKgIMKgMHgwYQo+ICsKPiArI2RlZmluZSBNQVg5ODUwX0NBQ0hFUkVHTlVN
-IDExCj4gKwo+ICsvKiBNQVg5ODUwX0VOQUJMRSAqLwo+ICsjZGVmaW5lIE1BWDk4NTBfU0hETiDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAoMTw8NykKPiArCj4gKy8qIE1BWDk4NTBfRElHSVRB
-TF9BVURJTyAqLwo+ICsjZGVmaW5lIE1BWDk4NTBfTUFTVEVSIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgICgxPDw3KQo+ICsjZGVmaW5lIE1BWDk4NTBfSU5WIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgKDE8PDYpCj4gKyNkZWZpbmUgTUFYOTg1MF9CQ0lOViDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCgxPDw1KQo+ICsjZGVmaW5lIE1BWDk4NTBfRExZIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgKDE8PDMpCj4gKyNkZWZpbmUgTUFYOTg1MF9SVEogwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAoMTw8MikKPiArCj4gKyNlbmRpZgoKSU1ITywgYmVjYXVzZSBvZiBNQVg5ODUw
-XyogbWFjcm9zIGFyZSBvbmx5IHVzaW5nIGluc2lkZSBtYXg5ODUwLmMsIEkKdGhpbmsgdGhhdCBt
-b3ZlIE1BWDk4NTBfKiBtYWNyb3MgaW50byBtYXg5ODUwLmMgYW5kIHJlbW92ZSBtYXg5ODUwLmgK
-aGVhZGVyIGZpbGUsIGlzIG1vcmUgbG9va3MgZ29vZCB0byBtZS4KX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
-YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm9081.c |   11 +++++------
+ 1 files changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
+index 7883f3e..8b1b2c9 100644
+--- a/sound/soc/codecs/wm9081.c
++++ b/sound/soc/codecs/wm9081.c
+@@ -762,7 +762,7 @@ SND_SOC_DAPM_SUPPLY("TOCLK", WM9081_CLOCK_CONTROL_3, 2, 0, NULL, 0),
+ };
+ 
+ 
+-static const struct snd_soc_dapm_route audio_paths[] = {
++static const struct snd_soc_dapm_route wm9081_audio_paths[] = {
+ 	{ "DAC", NULL, "CLK_SYS" },
+ 	{ "DAC", NULL, "CLK_DSP" },
+ 
+@@ -1232,7 +1232,6 @@ static struct snd_soc_dai_driver wm9081_dai = {
+ static int wm9081_probe(struct snd_soc_codec *codec)
+ {
+ 	struct wm9081_priv *wm9081 = snd_soc_codec_get_drvdata(codec);
+-	struct snd_soc_dapm_context *dapm = &codec->dapm;
+ 	int ret;
+ 	u16 reg;
+ 
+@@ -1282,10 +1281,6 @@ static int wm9081_probe(struct snd_soc_codec *codec)
+ 				     ARRAY_SIZE(wm9081_eq_controls));
+ 	}
+ 
+-	snd_soc_dapm_new_controls(dapm, wm9081_dapm_widgets,
+-				  ARRAY_SIZE(wm9081_dapm_widgets));
+-	snd_soc_dapm_add_routes(dapm, audio_paths, ARRAY_SIZE(audio_paths));
+-
+ 	return ret;
+ }
+ 
+@@ -1334,6 +1329,10 @@ static struct snd_soc_codec_driver soc_codec_dev_wm9081 = {
+ 	.reg_word_size = sizeof(u16),
+ 	.reg_cache_default = wm9081_reg_defaults,
+ 	.volatile_register = wm9081_volatile_register,
++	.dapm_widgets	  = wm9081_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(wm9081_dapm_widgets),
++	.dapm_routes     = wm9081_audio_paths,
++	.num_dapm_routes = ARRAY_SIZE(wm9081_audio_paths),
+ };
+ 
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+-- 
+1.7.2.3
