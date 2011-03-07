@@ -1,192 +1,68 @@
-From: Mauro Carvalho Chehab <maurochehab@gmail.com>
-Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3 ISP driver
-Date: Mon, 07 Mar 2011 10:04:54 -0300
-Message-ID: <4D74D7F6.1000508@gmail.com>
-References: <201102171606.58540.laurent.pinchart@ideasonboard.com> <201103061821.31705.laurent.pinchart@ideasonboard.com> <4D74C684.7090507@redhat.com> <201103071302.49323.hansverk@cisco.com> <4D74D6E4.8080501@redhat.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Add National Semiconductor LM49352
+ Audio Codec support
+Date: Mon, 7 Mar 2011 13:18:14 +0000
+Message-ID: <20110307131814.GJ13471@opensource.wolfsonmicro.com>
+References: <290463D19D2E064191F1F96ECA480A89432CB6D84E@EXMAIL02.scwf.nsc.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <4D74D6E4.8080501@redhat.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Hans Verkuil <hansverk@cisco.com>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Sylwester Nawrocki <snjw23@gmail.com>, David Cohen <dacohen@gmail.com>, Hans Verkuil <hverkuil@xs4all.nl>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>, Pawel Osciak <pawel@osciak.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 37F6E1038B9
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 14:18:17 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <290463D19D2E064191F1F96ECA480A89432CB6D84E@EXMAIL02.scwf.nsc.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "Reddy, MR Swami" <MR.Swami.Reddy@nsc.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Em 07-03-2011 10:00, Mauro Carvalho Chehab escreveu:
-> Em 07-03-2011 09:02, Hans Verkuil escreveu:
->> On Monday, March 07, 2011 12:50:28 Mauro Carvalho Chehab wrote:
->>
->>> Em 06-03-2011 14:21, Laurent Pinchart escreveu:
->>
->>>> Hi Mauro,
->>
->>>>
->>
->>>> On Sunday 06 March 2011 14:32:44 Mauro Carvalho Chehab wrote:
->>
->>>>> Em 06-03-2011 08:38, Laurent Pinchart escreveu:
->>
->>>>>> On Sunday 06 March 2011 11:56:04 Mauro Carvalho Chehab wrote:
->>
->>>>>>> Em 05-03-2011 20:23, Sylwester Nawrocki escreveu:
->>
->>>>>>>
->>
->>>>>>> A somewhat unrelated question that occurred to me today: what happens
->>
->>>>>>> when a format change happens while streaming?
->>
->>>>>>>
->>
->>>>>>> Considering that some formats need more bits than others, this could
->>
->>>>>>> lead into buffer overflows, either internally at the device or
->>
->>>>>>> externally, on bridges that just forward whatever it receives to the
->>
->>>>>>> DMA buffers (there are some that just does that). I didn't see anything
->>
->>>>>>> inside the mc code preventing such condition to happen, and probably
->>
->>>>>>> implementing it won't be an easy job. So, one alternative would be to
->>
->>>>>>> require some special CAPS if userspace tries to set the mbus format
->>
->>>>>>> directly, or to recommend userspace to create media controller nodes
->>
->>>>>>> with 0600 permission.
->>
->>>>>>
->>
->>>>>> That's not really a media controller issue. Whether formats can be
->>
->>>>>> changed during streaming is a driver decision. The OMAP3 ISP driver
->>
->>>>>> won't allow formats to be changed during streaming. If the hardware
->>
->>>>>> allows for such format changes, drivers can implement support for that
->>
->>>>>> and make sure that no buffer overflow will occur.
->>
->>>>>
->>
->>>>> Such issues is caused by having two API's that allow format changes, one
->>
->>>>> that does it device-based, and another one doing it subdev-based.
->>
->>>>>
->>
->>>>> Ok, drivers can implementing locks to prevent such troubles, but, without
->>
->>>>> the core providing a reliable mechanism, it is hard to implement a
->>
->>>>> correct lock.
->>
->>>>>
->>
->>>>> For example, let's suppose that some driver is using mt9m111 subdev (I just
->>
->>>>> picked one random sensor that supports lots of MBUS formats). There's
->>
->>>>> nothing there preventing a subdev call for it to change mbus format while
->>
->>>>> streaming. Worse than that, the sensor driver has no way to block it, as
->>
->>>>> it doesn't know that the bridge driver is streaming or not.
->>
->>>>>
->>
->>>>> The code at subdev_do_ioctl() is just:
->>
->>>>>
->>
->>>>> case VIDIOC_SUBDEV_S_FMT: {
->>
->>>>> struct v4l2_subdev_format *format = arg;
->>
->>>>>
->>
->>>>> if (format->which != V4L2_SUBDEV_FORMAT_TRY &&
->>
->>>>> format->which != V4L2_SUBDEV_FORMAT_ACTIVE)
->>
->>>>> return -EINVAL;
->>
->>>>>
->>
->>>>> if (format->pad >= sd->entity.num_pads)
->>
->>>>> return -EINVAL;
->>
->>>>>
->>
->>>>> return v4l2_subdev_call(sd, pad, set_fmt, subdev_fh, format);
->>
->>>>> }
->>
->>>>>
->>
->>>>> So, mc core won't be preventing it.
->>
->>>>>
->>
->>>>> So, I can't see how such subdev request would be implementing a logic to
->>
->>>>> return -EBUSY on those cases.
->>
->>>>
->>
->>>> Drivers can use the media_device graph_mutex to serialize format and stream
->>
->>>> management calls. A finer grain locking mechanism implemented in the core
->>
->>>> might be better, but we're not stuck without a solution at the moment.
->>
->> Am I missing something here? Isn't it as simple as remembering whether the
->>
->> subdev is in streaming mode (s_stream(1) was called) or not? When streaming
->>
->> any attempt to change the format should return an error (unless the hardware
->>
->> can handle it, of course).
->>
->> This is the same as for the 'regular' V4L2 API.
-> 
-> Not all subdevs implement s_stream, and I suspect that not all bridge drivers
-> calls it. The random example I've looked didn't implement (mt9m111.c), but even
-> some that implements it (like mt9m001.c) currently don't store the stream status
-> or use it to prevent a format change.
-> 
-> At the moment we open the possibility to directly access the subdev, 
-> developers might think that all they need to use the new API is to enable
-> the subdev to create subdev nodes (btw, the first mc patch series were enabling
-> it by default). However, opening subdev access without address such issues will
-> lead into a security breach, as buffer overflows will happen if hardware can't 
-> handle format changes in the middle of a streaming [1].
-> 
-> Also, a lock there will only work if properly implemented at the bridge driver,
-> as a bridge driver that implement the media controller should implement something
-> like the following sequence (at VIDIOC_REQBUFS):
-> 
-> 	lock_format_changes_at_subdev();			/* step 1 */
-> 	get_subdev_formats();					/* step 2 */
-> 	program_bridge_to follow_subdev_format_and_s_fmt();	/* step 3 */
-> 	reserve_memory();					/* step 4 */
-> 	start_streaming();					/* step 5 */
-> 
-> 
-> In the above, s_stream should be called at the step 1, and not at step 5, as,
-> otherwise, a race condition will happen, if a MBUS format change happens between
-> step 1 and 5.
+On Mon, Mar 07, 2011 at 04:03:55AM -0800, Reddy, MR Swami wrote:
 
-In time: assuming that s_stream would implement such lock. 
+Please fix your MUA to word wrap within paragraphs at less than 80
+columns.  I've reflowed your mail for legibility.  There are some
+suggestions in Documentation/email-clients.txt.
 
-Also: it this is a mandatory requirement, it should be part of API documentation.
-Otherwise, we'll have subdevs that will implement the lock using one way, and others
-using a different way, creating an mess at the subdevs in a way that some subdevs
-will work with bridge A, but not with bridge B, that has a different requirement
-for such lock.
+> Patch for adding National Semiconductor LM49352 Audio Codec (http://www.national.com/ds/LM/LM49352.pdf) support along with Samsung_6410 (i.e. SMDK6410) platform support for LM49352. 
 
-Cheers,
-Mauro.
+> [Tested this patch on SMDK6410 platform with Kernel- 2.6.24 and ALSA version is - 1.0.15].
+
+> Please review and let me know the comments/suggestion on this patch. 
+
+You need to follow the standard kernel patch submission process, which
+is documented in Documentation/SubmittingPatches.  In particular you
+should:
+
+ - Conform to the coding standards in CodingStandards (checkpatch.pl is 
+   helpful for detecting obvious issues).  A good high level check is if
+   your code should visually resemble the rest of the code base.
+ - Submit your code against the current development kernel version.  The
+   trees will be listed in MAINTAINERS, or -next is a good approximation.
+ - Send your patch in-line rather than as an attachment.
+ - Send your patch against the full Linux tree, not a subdirectory of
+   it.
+
+You should also split your code up into a series of independant patches
+- in general each individual driver should be a single patch so your
+machine and CODEC drivers should be split up.  If the machine driver is
+just for a flying wire system you should remove it, otherwise please
+also submit the arch/arm parts.
+
+I've not done a detailed review of the code due to the above high level
+issues.
+
+> And also let me know the forward-porting (to the latest ALSA version APIs) steps/process. Thanks in advance.
+
+You need to figure out a process that works for you.  In general
+inspecting the kernel history is usually very useful for stuff like
+this, or you could just start from scratch and copy over the active bits
+of code.
