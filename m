@@ -1,14 +1,14 @@
 From: Alexander Sverdlin <subaparts@yandex.ru>
-Subject: [PATCH 5/6] ASoC: Enable 192kHz sample rate for EP93xx.
-Date: Mon, 07 Mar 2011 20:30:12 +0300
-Message-ID: <1299519012.2255.71.camel@r60e>
+Subject: [PATCH 6/6] ASoC: Improve EP93xx I2S clocks management.
+Date: Mon, 07 Mar 2011 20:30:36 +0300
+Message-ID: <1299519036.2255.72.camel@r60e>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward4.mail.yandex.net (forward4.mail.yandex.net [77.88.46.9])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4012A10388A
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 18:30:41 +0100 (CET)
+Received: from forward2.mail.yandex.net (forward2.mail.yandex.net [77.88.46.7])
+	by alsa0.perex.cz (Postfix) with ESMTP id 85A3210388A
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 18:30:38 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,52 +19,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Chase Douglas <chasedouglas@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ryan Mallon <ryan@bluewatersys.com>, Liam@alsa-project.org, Girdwood <lrg@ti.com>, Lennert Buytenhek <buytenh@wantstofly.org>
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Ryan Mallon <ryan@bluewatersys.com>, Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>, Mark@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Alexander Sverdlin <subaparts@yandex.ru>
 
-Enable 192kHz sample rate for EP93xx.
+Improve EP93xx I2S clocks management.
+Some freqs values are set not exact as they requested for MCLK and
+original code was not able to find divisors for SCLK and LRCLK.
+This code just picks up nearest value from 3 possible variants.
+This patch makes 44100 and 192000 rates working and fixes
+capture function (by selecting SCLK/LRCLK=64 where possible).
+All other rates should work as before.
 
 Signed-off-by: Alexander Sverdlin <subaparts@yandex.ru>
 ---
- sound/soc/ep93xx/ep93xx-i2s.c |    4 ++--
- sound/soc/ep93xx/ep93xx-pcm.c |    4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/ep93xx/ep93xx-i2s.c |   19 +++++++++----------
+ 1 files changed, 9 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/ep93xx/ep93xx-i2s.c b/sound/soc/ep93xx/ep93xx-i2s.c
-index e1a58d3..87dc1ee 100644
+index 0458dd4..3d4c086 100644
 --- a/sound/soc/ep93xx/ep93xx-i2s.c
 +++ b/sound/soc/ep93xx/ep93xx-i2s.c
-@@ -351,13 +351,13 @@ static struct snd_soc_dai_driver ep93xx_i2s_dai = {
- 	.playback	= {
- 		.channels_min	= 2,
- 		.channels_max	= 2,
--		.rates		= SNDRV_PCM_RATE_8000_96000,
-+		.rates		= SNDRV_PCM_RATE_8000_192000,
- 		.formats	= EP93XX_I2S_FORMATS,
- 	},
- 	.capture	= {
- 		 .channels_min	= 2,
- 		 .channels_max	= 2,
--		 .rates		= SNDRV_PCM_RATE_8000_96000,
-+		 .rates		= SNDRV_PCM_RATE_8000_192000,
- 		 .formats	= EP93XX_I2S_FORMATS,
- 	},
- 	.ops		= &ep93xx_i2s_dai_ops,
-diff --git a/sound/soc/ep93xx/ep93xx-pcm.c b/sound/soc/ep93xx/ep93xx-pcm.c
-index 0667077..a456e49 100644
---- a/sound/soc/ep93xx/ep93xx-pcm.c
-+++ b/sound/soc/ep93xx/ep93xx-pcm.c
-@@ -35,9 +35,9 @@ static const struct snd_pcm_hardware ep93xx_pcm_hardware = {
- 				   SNDRV_PCM_INFO_INTERLEAVED	|
- 				   SNDRV_PCM_INFO_BLOCK_TRANSFER),
- 				   
--	.rates			= SNDRV_PCM_RATE_8000_96000,
-+	.rates			= SNDRV_PCM_RATE_8000_192000,
- 	.rate_min		= SNDRV_PCM_RATE_8000,
--	.rate_max		= SNDRV_PCM_RATE_96000,
-+	.rate_max		= SNDRV_PCM_RATE_192000,
- 	
- 	.formats		= (SNDRV_PCM_FMTBIT_S16_LE |
- 				   SNDRV_PCM_FMTBIT_S24_LE |
+@@ -242,7 +242,7 @@ static int ep93xx_i2s_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct ep93xx_i2s_info *info = snd_soc_dai_get_drvdata(dai);
+ 	unsigned word_len, div, sdiv, lrdiv;
+-	int found = 0, err;
++	int err;
+ 
+ 	switch (params_format(params)) {
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+@@ -275,15 +275,14 @@ static int ep93xx_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	 * the codec uses.
+ 	 */
+ 	div = clk_get_rate(info->mclk) / params_rate(params);
+-	for (sdiv = 2; sdiv <= 4; sdiv += 2)
+-		for (lrdiv = 64; lrdiv <= 128; lrdiv <<= 1)
+-			if (sdiv * lrdiv == div) {
+-				found = 1;
+-				goto out;
+-			}
+-out:
+-	if (!found)
+-		return -EINVAL;
++	sdiv = 4;
++	if (div > (256 + 512) / 2) {
++		lrdiv = 128;
++	} else {
++		lrdiv = 64;
++		if (div < (128 + 256) / 2)
++			sdiv = 2;
++	}
+ 
+ 	err = clk_set_rate(info->sclk, clk_get_rate(info->mclk) / sdiv);
+ 	if (err)
