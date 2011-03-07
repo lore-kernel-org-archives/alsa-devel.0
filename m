@@ -1,20 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: snd_pcm_hw_params_set_buffer_time_near: invalid
-	argument
-Date: Mon, 7 Mar 2011 20:24:28 +0800
-Message-ID: <AANLkTimfZwH+dqsPZaifekmmctrARdE0DoK5nHoW1Fu_@mail.gmail.com>
-References: <AANLkTik5sX_DWLsN3y_7ANpoF5rgeCNZY7gm=+rFhCsy@mail.gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [Device-drivers-devel] [PATCH] Add driver for
+ Analog Devices ADAU1701 SigmaDSP
+Date: Mon, 7 Mar 2011 07:29:12 -0500
+Message-ID: <AANLkTinKpvgBokSHpsVf1KVX+m6sD0Xp_dFe8Y+HzY-7@mail.gmail.com>
+References: <1299460302-15392-1-git-send-email-cliff.cai@analog.com>
+	<20110307114142.GB13471@opensource.wolfsonmicro.com>
+	<AANLkTikynw7vCsqqyNZW-LFuGUKKQEtG3s4YCZjpOvko@mail.gmail.com>
+	<20110307121502.GG13471@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id F04251038B1
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 13:25:50 +0100 (CET)
-Received: by fxm11 with SMTP id 11so4106049fxm.38
-	for <alsa-devel@alsa-project.org>; Mon, 07 Mar 2011 04:25:50 -0800 (PST)
-In-Reply-To: <AANLkTik5sX_DWLsN3y_7ANpoF5rgeCNZY7gm=+rFhCsy@mail.gmail.com>
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2ADCB103827
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 13:29:33 +0100 (CET)
+Received: by yxp4 with SMTP id 4so1893367yxp.38
+	for <alsa-devel@alsa-project.org>; Mon, 07 Mar 2011 04:29:32 -0800 (PST)
+In-Reply-To: <20110307121502.GG13471@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,59 +27,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: cliff.cai@analog.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, akpm@linux-foundation.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-2011/3/6 Jean-Yves Avenard <jyavenard@gmail.com>
-
-> Hi there.
->
-> I'm a bit puzzled as to what values are considered valids and which
-> one aren't when it comes to setting the buffer time with
-> snd_pcm_hw_params_set_buffer_time_near.
->
-> For example setting a value of 295ms : all ok. From 300ms to 450ms ->
-> "Invalid argument".
-> but 500ms for example is okay.
->
-> What's the logic behind it ?
-> It's obviously related to the sampling rate, the audio format and the
-> number of channels ; as the values giving me "Invalid argument" change
-> then.
->
-> Any comments would be greatly appreciated.
->
-> Thanks!
-> JY
->
-
-This seem to be bug in alsa-lib as I can reproduce using alsa-lib/test/pcm.c
-with buffer time 120000 and my hda codec support both 11025Hz and 22050Hz
-
-using buffer time 160000 is OK
-
-
-./pcm -Dhw:CARD=Intel,DEV=0 -b 120000  -r 22050 -c 2
-Playback device is hw:CARD=Intel,DEV=0
-Stream parameters are 22050Hz, S16_LE, 2 channels
-Sine wave rate is 440.0000Hz
-Using transfer method: write
-Unable to set buffer time 120000 for playback: Invalid argument
-Setting of hwparams failed: Invalid argument
-
-
- ./pcm -Dhw:CARD=Intel,DEV=0 -b 120000  -r 11025 -c 2
-Playback device is hw:CARD=Intel,DEV=0
-Stream parameters are 11025Hz, S16_LE, 2 channels
-Sine wave rate is 440.0000Hz
-Using transfer method: write
-Unable to set buffer time 120000 for playback: Invalid argument
-Setting of hwparams failed: Invalid argument
-
-
-
-./pcm -Dhw:CARD=Intel,DEV=0 -b 160000  -r 11025 -c 2
-Playback device is hw:CARD=Intel,DEV=0
-Stream parameters are 11025Hz, S16_LE, 2 channels
-Sine wave rate is 440.0000Hz
-Using transfer method: write
+T24gTW9uLCBNYXIgNywgMjAxMSBhdCAwNzoxNSwgTWFyayBCcm93biB3cm90ZToKPiBPbiBNb24s
+IE1hciAwNywgMjAxMSBhdCAwNjo1MDoxNUFNIC0wNTAwLCBNaWtlIEZyeXNpbmdlciB3cm90ZToK
+Pj4gT24gTW9uLCBNYXIgNywgMjAxMSBhdCAwNjo0MSwgTWFyayBCcm93biB3cm90ZToKPj4gPsKg
+SSBjYW4ndCBhcHBseSB0aGlzIGRyaXZlciB1bnRpbCBpdCdzIG1lcmdlZCBpbnRvIEFTb0Mgdmlh
+IHNvbWUgbWVhbnMKPj4KPj4gYW5kIGFuZHJldyBoYXMgYmVlbiBob2xkaW5nIG9mZiBvbiBtZXJn
+aW5nIHRoZSBmaXJtd2FyZSBkcml2ZXIgdW50aWwKPj4gc29tZXRoaW5nIGluIG1haW5saW5lIG5l
+ZWRzIGl0LiDCoG9uY2UgYSBkcml2ZXIgZ2V0cyB0byB0aGUgcG9pbnQgd2hlcmUKPj4geW91J3Jl
+IGZpbmUgd2l0aCBtZXJnaW5nIGl0LCB3ZSBjYW4gYnVnIGFrcG0gdG8gcHVzaCB0aGUgc2lnbWEK
+Pj4gZmlybXdhcmUgbG9hZGVyIHRvIGxpbnVzLgo+Cj4gSXQnZCBzZWVtIGVhc2llciB0byBqdXN0
+IG1lcmdlIHRoZSB0d28gcGF0Y2hlcyB0b2dldGhlciByYXRoZXIgdGhhbgo+IHRyeWluZyB0byBk
+ZWFsIHdpdGggY3Jvc3MtdHJlZSBpc3N1ZXMuCgp0aGF0IHNvdW5kcyBsaWtlIGEgdGVycmlibGUg
+aWRlYS4gIHRoZXkncmUgbG9naWNhbGx5IGRpZmZlcmVudApjaGFuZ2VzZXRzIGFuZCB3ZSBzaG91
+bGRudCBiZSBzcXVhc2hpbmcgdGhlbSB0b2dldGhlciBzaW1wbHkgdG8gd29yawphcm91bmQgcHJv
+YmxlbXMgd2l0aCBwcm9jZXNzIHdvcmtmbG93cy4KCj4+ID4gTW9yZSBnZW5lcmFsbHkgdGhpcyBk
+b2Vzbid0IHNlZW0gbGlrZSBhIGdyZWF0IGludGVyZmFjZSAtIGFwcGFyZW50bHkgdGhlCj4+ID4g
+ZGV2aWNlIHJlcXVyaWVzIHRoYXQgZmlybXdhcmUgYmUgbG9hZGVkIGJ1dCB0aGUgd2hvbGUgZmly
+bXdhcmUgbG9hZAo+PiA+IHByb2Nlc3MgaXNuJ3QgYXQgYWxsIGpvaW5lZCB1cCB3aXRoIHRoZSBk
+cml2ZXIgY29kZSBtZWFuaW5nIHRoYXQgdGhlCj4+ID4gYXBwbGljYXRpb24gbGF5ZXIgaGFzIHRv
+IGZpZ3VyZSBvdXQgd2hlbiBmaXJtd2FyZSBuZWVkcyB0byBiZSByZWxvYWRlZCwKPj4gPiB0aGVy
+ZSdzIG5vIHVuZGVyc3RhbmRpbmcgb24gdGhlIHBhcnQgb2YgdGhlIGRyaXZlciBvZiB3aGF0IHRo
+ZSBmaXJtd2FyZQo+PiA+IG9uIHRoZSBkZXZpY2UgaXMgZG9pbmcgb3IgaG93IGl0J3MgZ2x1ZWQg
+aW50byB0aGUgYXVkaW8gc3Vic3lzdGVtLgo+Cj4+IHRoZSBBUEkgc2hvdWxkIGFsbG93IGZvciB1
+c2Vyc3BhY2UgdG8gc3BlY2lmeSB0aGUgZmlybXdhcmUgbmFtZSwgYnV0Cj4+IHRoYXQncyBhYm91
+dCBpdC4gwqBpdCBpcyB1cCB0byB0aGUgdXNlcnNwYWNlIGFwcGxpY2F0aW9uIHRvIGFyYml0cmFy
+aWx5Cj4+IGxvYWQgZGlmZmVyZW50IGZpcm13YXJlIGZpbGVzIG9uIHRoZSBmbHkgaW50byB0aGUg
+Y29kZWMgd2l0aG91dCB0aGUKPj4gY29kZWMgY2FyaW5nIHdoYXQncyBnb2luZyBpbnRvIGl0LiDC
+oG9mdGVuIHRpbWVzIHRoZSBmaXJtd2FyZSBpcyBEU1AKPj4gY29kZSB0byBkbyBkaWZmZXJlbnQg
+cG9zdCBwcm9jZXNzaW5nIG9uIHRoZSBhdWRpbyBzdHJlYW0gKGNsZWFudXAgb3IKPj4gd2hhdGV2
+ZXIpLgo+Cj4gUmlnaHQsIGFuZCB0aGlzIGlzbid0IGEgcGFydGljdWxhcmx5IHVudXN1YWwgcmVx
+dWlyZW1lbnQgZXNwZWNpYWxseSBpZgo+IHRoZSBkcml2ZXIgaXNuJ3QgZ29pbmcgdG8gaGF2ZSBh
+bnkgYWJpbGl0eSB0byBpbnRlcmFjdCB3aXRoIHRoZSBEU1AgKGF0Cj4gd2hpY2ggcG9pbnQgaXQn
+cyBqdXN0IGNvZWZmaWNpZW50IGRhdGEsIHRoZSBmYWN0IHRoYXQgaXQncyBhIERTUCBwcm9ncmFt
+Cj4gaXMgdW5pbnRlcmVzdGluZykuIMKgVGhlIHByb2JsZW0gaXMgdGhhdCB0aGlzIGlzbid0IGEg
+Z3JlYXQgaW50ZXJmYWNlIGZvcgo+IGRvaW5nIHRoYXQuCgppIGRvbnQgc2VlIHN1Z2dlc3Rpb25z
+IG9mIGEgYmV0dGVyIGludGVyZmFjZSBhbnl3aGVyZSAuLi4KCj4gQXQgYSByZWFsbHkgYmFzaWMg
+bGV2ZWwgdGhlIGNvZGUgaXMgbm90IGF0IGFsbCBpbnRlZ3JhdGVkIHdpdGggZWl0aGVyCj4gcG93
+ZXIgbWFuYWdlbWVudCBvciBzdHJlYW0gaGFuZGxpbmcgaW4gQVNvQyBtZWFuaW5nIHRoYXQgdGhl
+IHVzZXIgY291bGQKPiB0cnkgdG8gZG93bmxvYWQgZmlybXdhcmUgaW4gdGhlIG1pZGRsZSBvZiBh
+biBhY3RpdmUgYXVkaW8gc3RyZWFtICh3aGljaAo+IGlzbid0IGdvaW5nIHRvIGJlIGlkZWFsKS4g
+wqBPYnZpb3VzbHkgdGhlIGRyaXZlciBkb2Vzbid0IHJlYWxseSBzdXBwb3J0Cj4gYW55IGtpbmQg
+b2YgcG93ZXIgbWFuYWdlbWVudCBhdCB0aGUgbWludXRlIGJ1dCBpZiBpdCB3ZXJlIGltcHJvdmVk
+IGluCj4gdGhpcyBhcmVhIHlvdSdkIGFsc28gaGF2ZSBpc3N1ZXMgd2l0aCB0cnlpbmcgdG8gZG93
+bmxvYWQgZmlybXdhcmUgd2hpbGUKPiB0aGUgZGV2aWNlIGlzIG9mZiB3aGljaCBwcm9iYWJseSBp
+c24ndCBnb2luZyB0byB3b3JrIGVpdGhlci4KCndydCBwbSwgdGhhdCdzIGEgdHJpdmlhbCBwcm9n
+cmFtbWluZyBpc3N1ZSB0aGF0IHdvdWxkIGJlIHJlc29sdmVkIGluCnRoZSBkcml2ZXIuICB1c2Vy
+c3BhY2UgbmVlZCBub3QgY2FyZS4KCndydCBzdHJlYW0gZmxvd3MsIGFsbCB0aGUgY3VzdG9tZXJz
+IHdlJ3ZlIHRhbGtlZCB0byBhcmUgZmluZSB3aXRoIHRoaXMKLS0gaGF2aW5nIHN0cmVhbSBjb250
+cm9sIGJlIGFuIGFwcGxpY2F0aW9uIGlzc3VlLiAgdGhlaXIgYXBwbGljYXRpb24KaXMgZHJpdmlu
+ZyB0aGUgY29kZWMgZGlyZWN0bHkgYW5kIGtub3dzIHdoZW4gaXQgbmVlZHMgdG8gY2hhbmdlIHRo
+ZQpmaXJtd2FyZSwgc28gaXQgcGF1c2VzIGl0cyBhbHNhIGZsb3csIGxvYWRzIHRoZSBuZXcgZmly
+bXdhcmUsIGFuZAptb3ZlcyBvbi4KCnRoYXQgc2FpZCwgaSBkb250IHNlZSBhbnl0aGluZyBpbiBh
+c29jIHRvZGF5IHRvIGFkZHJlc3MgdGhpcywgc28gaWYKd2UncmUgc2ltcGx5IG1pc3NpbmcgaXQs
+IHBsZWFzZSBoaWdobGlnaHQgaXQgZm9yIHVzLgoKPiBJdCdzIGFsc28gbm90IGFuIGludGVyZmFj
+ZSB3aGljaCBvZmZlcnMgYW55IGtpbmQgb2YgZGlzY292ZXJhYmlsaXR5IG9yCj4gZW51bWVyYWJp
+bGl0eSwgbWVhbmluZyB0aGF0IGl0J3Mgbm90IHN1aXRhYmxlIGZvciBpbnRlZ3JhdGlvbiBpbnRv
+Cj4gYXBwbGljYXRpb24gbGF5ZXIgY29kZSBzdWNoIGFzIHRoZSB1c2UgY2FzZSBtYW5hZ2VyLiDC
+oEFwcGxpY2F0aW9ucyBuZWVkCj4gdG8gYmUgaGFyZCBjb2RlZCB0byBrbm93IHRoYXQgYSBwYXJ0
+aWN1bGFyIG1hZ2ljIHN5c2ZzIGZpbGUgbmVlZHMgdG8gYmUKPiBwb2tlZC4gwqBUaGlzIHdvdWxk
+IGJlIGEgYmlnIHN0ZXAgYmFja3dhcmRzIGluIHRlcm1zIG9mIHRoZSBhYmlsaXR5IHRvCj4gcnVu
+IG9mZiB0aGUgc2hlbGYgYXBwbGljYXRpb24gc29mdHdhcmUuCgppIGRvbnQgc2VlIHRoZSBpc3N1
+ZSBoZXJlLiAgdGhlIGZpcm13YXJlIGlzICpvcHRpb25hbCogYW5kIGRvZXMgbm90CmltcGFpciBi
+YXNpYyBhdWRpbyBvdXRwdXQuICBmdXJ0aGVyLCB0aGUgZmlybXdhcmUgaXMgZnVsbHkKd3JpdHRl
+bi9jb21waWxlZC9tYWludGFpbmVkIGJ5IHRoZSBlbmQgY3VzdG9tZXIsIGp1c3QgbGlrZSB0aGUK
+YXBwbGljYXRpb24uICB3aGljaCBtZWFucyB0aGVyZSBpcyBubyAibWFnaWMiIGhlcmUgLS0gdGhl
+IGVuZCBjdXN0b21lcgppcyB0aGUgd2l6YXJkLgoKdGhlcmUgaXMgbm8gInN0b2NrIiBmaXJtd2Fy
+ZSB0aGF0IEFESSBvciBhbnlvbmUgcHJvdmlkZXMgZm9yIGFueSBvZgp0aGVzZSBTaWdtYURTUCBh
+dWRpbyBjb2RlY3MuCi1taWtlCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo=
