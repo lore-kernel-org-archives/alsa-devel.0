@@ -1,19 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Add MAX9850 codec driver
-Date: Mon, 7 Mar 2011 17:14:55 +0000
-Message-ID: <20110307171455.GI1829@sirena.org.uk>
-References: <1299501913-3772-1-git-send-email-christian.glindkamp@taskit.de>
-	<20110307134857.GA16691@opensource.wolfsonmicro.com>
-	<20110307170420.GC7619@taskit.de>
+From: Alexander Sverdlin <subaparts@yandex.ru>
+Subject: [PATCH 1/6] ASoC: Extend range of supported sample
+ rates for CS4271 CODEC.
+Date: Mon, 07 Mar 2011 20:29:36 +0300
+Message-ID: <1299518976.2255.65.camel@r60e>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7583A244D7
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 18:14:57 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20110307170420.GC7619@taskit.de>
+Received: from forward5.mail.yandex.net (forward5.mail.yandex.net
+	[77.88.46.21]) by alsa0.perex.cz (Postfix) with ESMTP id 52670244DE
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 18:29:43 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,34 +19,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Christian Glindkamp <christian.glindkamp@taskit.de>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 07, 2011 at 06:04:20PM +0100, Christian Glindkamp wrote:
+From: Alexander Sverdlin <subaparts@yandex.ru>
 
-> As all ready said, I can't really test these changes at the moment but
-> will at least compile test them. Additionally, alsa master currently
-> does not build here for the arm architecture. Further comments below.
+Extend range of supported sample rates for CS4271 CODEC.
 
-I'm not sure what tree you're building against but mainline ASoC builds
-fine on ARM.  ASoC changes should be against the latest for- branch of:
+Signed-off-by: Alexander Sverdlin <subaparts@yandex.ru>
+Acked-by: Liam Girdwood <lrg@ti.com>
+---
+ sound/soc/codecs/cs4271.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git
-
-(see MAINTAINERS).
-
-> > > +	/* enable zero-detect */
-> > > +	snd_soc_update_bits(codec, MAX9850_GENERAL_PURPOSE, 1, 1);
-> > > +	/* enable charge pump, disable everything else */
-> > > +	snd_soc_write(codec, MAX9850_ENABLE, 0x30);
-
-> > DAPM?
-
-> Charge pump could also be a supply for the Output Mixer. Have to find
-> out how to toggle two bits at once via dapm (preferably without
-> resorting to callbacks).
-
-If you implement two widgets of the same type DAPM will try to compress
-them down into a single register write when updating so the effect will
-be to do a single update to both bits.
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index 1791796..e5cc4da 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -33,6 +33,7 @@
+ #define CS4271_PCM_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
+ 			    SNDRV_PCM_FMTBIT_S24_LE | \
+ 			    SNDRV_PCM_FMTBIT_S32_LE)
++#define CS4271_PCM_RATES SNDRV_PCM_RATE_8000_192000
+ 
+ /*
+  * CS4271 registers
+@@ -392,14 +393,14 @@ static struct snd_soc_dai_driver cs4271_dai = {
+ 		.stream_name	= "Playback",
+ 		.channels_min	= 2,
+ 		.channels_max	= 2,
+-		.rates		= SNDRV_PCM_RATE_8000_96000,
++		.rates		= CS4271_PCM_RATES,
+ 		.formats	= CS4271_PCM_FORMATS,
+ 	},
+ 	.capture = {
+ 		.stream_name	= "Capture",
+ 		.channels_min	= 2,
+ 		.channels_max	= 2,
+-		.rates		= SNDRV_PCM_RATE_8000_96000,
++		.rates		= CS4271_PCM_RATES,
+ 		.formats	= CS4271_PCM_FORMATS,
+ 	},
+ 	.ops = &cs4271_dai_ops,
