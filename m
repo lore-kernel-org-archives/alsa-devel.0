@@ -1,88 +1,100 @@
-From: Mauro Carvalho Chehab <mchehab@redhat.com>
-Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3 ISP driver
-Date: Mon, 07 Mar 2011 08:50:28 -0300
-Message-ID: <4D74C684.7090507@redhat.com>
-References: <201102171606.58540.laurent.pinchart@ideasonboard.com> <201103061238.42784.laurent.pinchart@ideasonboard.com> <4D738CFC.40301@redhat.com> <201103061821.31705.laurent.pinchart@ideasonboard.com>
+From: Vaibhav Bedia <vaibhav.bedia@ti.com>
+Subject: [RFC][PATCH] ASoC: Move symmetric rate check for
+	substreams to hw_params
+Date: Mon,  7 Mar 2011 17:26:03 +0530
+Message-ID: <1299498963-1134-1-git-send-email-vaibhav.bedia@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <201103061821.31705.laurent.pinchart@ideasonboard.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Sylwester Nawrocki <snjw23@gmail.com>, David Cohen <dacohen@gmail.com>, Hans Verkuil <hverkuil@xs4all.nl>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org, Sakari Ailus <sakari.ailus@retiisi.org.uk>, Pawel Osciak <pawel@osciak.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2A42B10382B
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 12:56:11 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Afzal Mohammed <afzal@ti.com>, broonie@opensource.wolfsonmicro.com, Vaibhav Bedia <vaibhav.bedia@ti.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Em 06-03-2011 14:21, Laurent Pinchart escreveu:
-> Hi Mauro,
-> 
-> On Sunday 06 March 2011 14:32:44 Mauro Carvalho Chehab wrote:
->> Em 06-03-2011 08:38, Laurent Pinchart escreveu:
->>> On Sunday 06 March 2011 11:56:04 Mauro Carvalho Chehab wrote:
->>>> Em 05-03-2011 20:23, Sylwester Nawrocki escreveu:
->>>>
->>>> A somewhat unrelated question that occurred to me today: what happens
->>>> when a format change happens while streaming?
->>>>
->>>> Considering that some formats need more bits than others, this could
->>>> lead into buffer overflows, either internally at the device or
->>>> externally, on bridges that just forward whatever it receives to the
->>>> DMA buffers (there are some that just does that). I didn't see anything
->>>> inside the mc code preventing such condition to happen, and probably
->>>> implementing it won't be an easy job. So, one alternative would be to
->>>> require some special CAPS if userspace tries to set the mbus format
->>>> directly, or to recommend userspace to create media controller nodes
->>>> with 0600 permission.
->>>
->>> That's not really a media controller issue. Whether formats can be
->>> changed during streaming is a driver decision. The OMAP3 ISP driver
->>> won't allow formats to be changed during streaming. If the hardware
->>> allows for such format changes, drivers can implement support for that
->>> and make sure that no buffer overflow will occur.
->>
->> Such issues is caused by having two API's that allow format changes, one
->> that does it device-based, and another one doing it subdev-based.
->>
->> Ok, drivers can implementing locks to prevent such troubles, but, without
->> the core providing a reliable mechanism, it is hard to implement a
->> correct lock.
->>
->> For example, let's suppose that some driver is using mt9m111 subdev (I just
->> picked one random sensor that supports lots of MBUS formats). There's
->> nothing there preventing a subdev call for it to change mbus format while
->> streaming. Worse than that, the sensor driver has no way to block it, as
->> it doesn't know that the bridge driver is streaming or not.
->>
->> The code at subdev_do_ioctl() is just:
->>
->> case VIDIOC_SUBDEV_S_FMT: {
->>         struct v4l2_subdev_format *format = arg;
->>
->>         if (format->which != V4L2_SUBDEV_FORMAT_TRY &&
->>             format->which != V4L2_SUBDEV_FORMAT_ACTIVE)
->>                 return -EINVAL;
->>
->>         if (format->pad >= sd->entity.num_pads)
->>                 return -EINVAL;
->>
->>         return v4l2_subdev_call(sd, pad, set_fmt, subdev_fh, format);
->> }
->>
->> So, mc core won't be preventing it.
->>
->> So, I can't see how such subdev request would be implementing a logic to
->> return -EBUSY on those cases.
-> 
-> Drivers can use the media_device graph_mutex to serialize format and stream 
-> management calls. A finer grain locking mechanism implemented in the core 
-> might be better, but we're not stuck without a solution at the moment.
+Currently the symmetric rate check is present in the snd_pcm_open() call.
+However this causes snd_pcm_open() to fail for the 2nd substream is the
+2nd call to snd_pcm_open() is made before the 1st substream has set a non-zero
+rate by calling snd_pcm_hw_params().
 
-Ok, i see. This is not the best world, as I suspect that developers will
-just try to enable media controller for a few devices without taking enough
-care to avoid buffer overflows.
-While we don't have a better way for doing it, please add a note at the kernel 
-api doc saying about that, briefly describing how to properly lock it, because
-this is not obvious at all.
+Fix this by moving the call to snd_pcm_apply_symmetry() to soc_pcm_hw_params().
 
-Cheers,
-Mauro
+Signed-off-by: Afzal Mohammed <afzal@ti.com>
+Signed-off-by: Vaibhav Bedia <vaibhav.bedia@ti.com>
+---
+
+This patch is one way of fixing the issues reported here
+http://comments.gmane.org/gmane.linux.alsa.devel/75489 and
+http://thread.gmane.org/gmane.linux.alsa.devel/81055/focus=21653
+
+ sound/soc/soc-core.c |   25 +++++++++++++++++--------
+ 1 files changed, 17 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 64befac..edec9af 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -638,13 +638,6 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 		goto config_err;
+ 	}
+ 
+-	/* Symmetry only applies if we've already got an active stream. */
+-	if (cpu_dai->active || codec_dai->active) {
+-		ret = soc_pcm_apply_symmetry(substream);
+-		if (ret != 0)
+-			goto config_err;
+-	}
+-
+ 	pr_debug("asoc: %s <-> %s info:\n",
+ 			codec_dai->name, cpu_dai->name);
+ 	pr_debug("asoc: rate mask 0x%x\n", runtime->hw.rates);
+@@ -742,6 +735,9 @@ static int soc_codec_close(struct snd_pcm_substream *substream)
+ 	codec_dai->active--;
+ 	codec->active--;
+ 
++	if(!codec_dai->active && !cpu_dai->active)
++		rtd->rate = 0;
++
+ 	/* Muting the DAC suppresses artifacts caused during digital
+ 	 * shutdown, for example from stopping clocks.
+ 	 */
+@@ -898,12 +894,25 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		}
+ 	}
+ 
+-	rtd->rate = params_rate(params);
++	/* Symmetry only applies if we've already got an active stream,
++	   a non zero rtd->rate implies that stream was already active and
++	   rtd->rate has been set previously */
++	if (rtd->rate) {
++		ret = soc_pcm_apply_symmetry(substream);
++		if (ret < 0)
++			goto symmetry_err;
++	} else {
++		rtd->rate = params_rate(params);
++	}
+ 
+ out:
+ 	mutex_unlock(&pcm_mutex);
+ 	return ret;
+ 
++symmetry_err:
++	if(platform->driver->ops->hw_free)
++		platform->driver->ops->hw_free(substream);
++
+ platform_err:
+ 	if (cpu_dai->driver->ops->hw_free)
+ 		cpu_dai->driver->ops->hw_free(substream, cpu_dai);
+-- 
+1.6.2.4
