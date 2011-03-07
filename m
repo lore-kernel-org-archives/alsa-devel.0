@@ -1,7 +1,7 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH 3/7] ASoC: neo1973_gta02_wm8753: Remove lm4853_{set,get}_state
-Date: Mon,  7 Mar 2011 08:04:56 +0100
-Message-ID: <1299481500-5481-3-git-send-email-lars@metafoo.de>
+Subject: [PATCH 6/7] ASoC: Add driver for the dfbmcs320 bluetooth module
+Date: Mon,  7 Mar 2011 08:04:59 +0100
+Message-ID: <1299481500-5481-6-git-send-email-lars@metafoo.de>
 References: <1299481500-5481-1-git-send-email-lars@metafoo.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1299481500-5481-1-git-send-email-lars@metafoo.de>
@@ -10,104 +10,249 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlog
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-This patch drops the lm4853_{set,get}_state functions and the "Amp State Switch"
-control.
-Those were noops which existed to maintain alsa state file compatibility. Since
-the control names have changed due to internal changes in the ASoC core and
-state file compatibility was broken anyway it makes sense to drop them.
+This patch adds a codec driver for the dfbmcs320 bluetooth module, which is used
+on the neo1973 boards.
+
+The patch also modifies the neo1937_wm8753 sound board driver to use the new
+driver instead of registering the bluetooth DAI manually.
+Previously there was a name mismatch between the bluetooth DAI and the bluetooth
+DAI link and the sound card was not instantiated, with this patch the issue is
+no longer present and sound support works again.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- sound/soc/samsung/neo1973_gta02_wm8753.c |   55 ++++--------------------------
- 1 files changed, 7 insertions(+), 48 deletions(-)
+ sound/soc/codecs/Kconfig           |    5 ++-
+ sound/soc/codecs/Makefile          |    2 +
+ sound/soc/codecs/dfbmcs320.c       |   72 ++++++++++++++++++++++++++++++++++++
+ sound/soc/samsung/Kconfig          |    1 +
+ sound/soc/samsung/neo1973_wm8753.c |   35 +++--------------
+ 5 files changed, 86 insertions(+), 29 deletions(-)
+ create mode 100644 sound/soc/codecs/dfbmcs320.c
 
-diff --git a/sound/soc/samsung/neo1973_gta02_wm8753.c b/sound/soc/samsung/neo1973_gta02_wm8753.c
-index 95ebf81..b007dd79 100644
---- a/sound/soc/samsung/neo1973_gta02_wm8753.c
-+++ b/sound/soc/samsung/neo1973_gta02_wm8753.c
-@@ -194,47 +194,14 @@ static struct snd_soc_ops neo1973_gta02_voice_ops = {
- 	.hw_free = neo1973_gta02_voice_hw_free,
- };
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 37035e6..212859c 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -29,6 +29,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_CS4271 if SND_SOC_I2C_AND_SPI
+ 	select SND_SOC_CX20442
+ 	select SND_SOC_DA7210 if I2C
++	select SND_SOC_DFBMCS320
+ 	select SND_SOC_JZ4740_CODEC if SOC_JZ4740
+ 	select SND_SOC_MAX98088 if I2C
+ 	select SND_SOC_MAX9877 if I2C
+@@ -175,6 +176,9 @@ config SND_SOC_L3
+ config SND_SOC_DA7210
+         tristate
  
--#define LM4853_AMP 1
--#define LM4853_SPK 2
--
--static u8 lm4853_state;
--
--/* This has no effect, it exists only to maintain compatibility with
-- * existing ALSA state files.
-- */
--static int lm4853_set_state(struct snd_kcontrol *kcontrol,
--	struct snd_ctl_elem_value *ucontrol)
--{
--	int val = ucontrol->value.integer.value[0];
--
--	if (val)
--		lm4853_state |= LM4853_AMP;
--	else
--		lm4853_state &= ~LM4853_AMP;
--
--	return 0;
--}
--
--static int lm4853_get_state(struct snd_kcontrol *kcontrol,
--	struct snd_ctl_elem_value *ucontrol)
--{
--	ucontrol->value.integer.value[0] = lm4853_state & LM4853_AMP;
--
--	return 0;
--}
-+static int gta02_speaker_enabled;
- 
- static int lm4853_set_spk(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
- {
--	int val = ucontrol->value.integer.value[0];
--
--	if (val) {
--		lm4853_state |= LM4853_SPK;
--		gpio_set_value(GTA02_GPIO_HP_IN, 0);
--	} else {
--		lm4853_state &= ~LM4853_SPK;
--		gpio_set_value(GTA02_GPIO_HP_IN, 1);
--	}
-+	gta02_speaker_enabled = ucontrol->value.integer.value[0];
++config SND_SOC_DFBMCS320
++	tristate
 +
-+	gpio_set_value(GTA02_GPIO_HP_IN, !gta02_speaker_enabled);
+ config SND_SOC_DMIC
+ 	tristate
  
- 	return 0;
- }
-@@ -242,14 +209,12 @@ static int lm4853_set_spk(struct snd_kcontrol *kcontrol,
- static int lm4853_get_spk(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
- {
--	ucontrol->value.integer.value[0] = (lm4853_state & LM4853_SPK) >> 1;
+@@ -361,4 +365,3 @@ config SND_SOC_WM2000
+ 
+ config SND_SOC_WM9090
+ 	tristate
 -
-+	ucontrol->value.integer.value[0] = gta02_speaker_enabled;
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 0663d22..ebb059c 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -15,6 +15,7 @@ snd-soc-cs4270-objs := cs4270.o
+ snd-soc-cs4271-objs := cs4271.o
+ snd-soc-cx20442-objs := cx20442.o
+ snd-soc-da7210-objs := da7210.o
++snd-soc-dfbmcs320-objs := dfbmcs320.o
+ snd-soc-dmic-objs := dmic.o
+ snd-soc-l3-objs := l3.o
+ snd-soc-max98088-objs := max98088.o
+@@ -101,6 +102,7 @@ obj-$(CONFIG_SND_SOC_CS4270)	+= snd-soc-cs4270.o
+ obj-$(CONFIG_SND_SOC_CS4271)	+= snd-soc-cs4271.o
+ obj-$(CONFIG_SND_SOC_CX20442)	+= snd-soc-cx20442.o
+ obj-$(CONFIG_SND_SOC_DA7210)	+= snd-soc-da7210.o
++obj-$(CONFIG_SND_SOC_DFBMCS320)	+= snd-soc-dfbmcs320.o
+ obj-$(CONFIG_SND_SOC_DMIC)	+= snd-soc-dmic.o
+ obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
+ obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+= snd-soc-jz4740-codec.o
+diff --git a/sound/soc/codecs/dfbmcs320.c b/sound/soc/codecs/dfbmcs320.c
+new file mode 100644
+index 0000000..704bbde
+--- /dev/null
++++ b/sound/soc/codecs/dfbmcs320.c
+@@ -0,0 +1,72 @@
++/*
++ * Driver for the DFBM-CS320 bluetooth module
++ * Copyright 2011 Lars-Peter Clausen <lars@metafoo.de>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ */
++
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++
++#include <sound/soc.h>
++
++static struct snd_soc_dai_driver dfbmcs320_dai = {
++	.name = "dfbmcs320-pcm",
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 1,
++		.rates = SNDRV_PCM_RATE_8000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 1,
++		.rates = SNDRV_PCM_RATE_8000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++	},
++};
++
++static struct snd_soc_codec_driver soc_codec_dev_dfbmcs320;
++
++static int __devinit dfbmcs320_probe(struct platform_device *pdev)
++{
++	return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_dfbmcs320,
++			&dfbmcs320_dai, 1);
++}
++
++static int __devexit dfbmcs320_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_codec(&pdev->dev);
++
++	return 0;
++}
++
++static struct platform_driver dfmcs320_driver = {
++	.driver = {
++		.name = "dfbmcs320",
++		.owner = THIS_MODULE,
++	},
++	.probe = dfbmcs320_probe,
++	.remove = __devexit_p(dfbmcs320_remove),
++};
++
++static int __init dfbmcs320_init(void)
++{
++	return platform_driver_register(&dfmcs320_driver);
++}
++module_init(dfbmcs320_init);
++
++static void __exit dfbmcs320_exit(void)
++{
++	platform_driver_unregister(&dfmcs320_driver);
++}
++module_exit(dfbmcs320_exit);
++
++MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
++MODULE_DESCRIPTION("ASoC DFBM-CS320 bluethooth module driver");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/samsung/Kconfig b/sound/soc/samsung/Kconfig
+index c3014e8..a08237a 100644
+--- a/sound/soc/samsung/Kconfig
++++ b/sound/soc/samsung/Kconfig
+@@ -40,6 +40,7 @@ config SND_SOC_SAMSUNG_NEO1973_WM8753
+ 	select SND_S3C24XX_I2S
+ 	select SND_SOC_WM8753
+ 	select SND_SOC_LM4857 if MACH_NEO1973_GTA01
++	select SND_SOC_DFBMCS320
+ 	help
+ 	  Say Y here to enable audio support for the Openmoko Neo1973
+ 	  Smartphones.
+diff --git a/sound/soc/samsung/neo1973_wm8753.c b/sound/soc/samsung/neo1973_wm8753.c
+index 37cfbb8..78bfdb3 100644
+--- a/sound/soc/samsung/neo1973_wm8753.c
++++ b/sound/soc/samsung/neo1973_wm8753.c
+@@ -418,23 +418,6 @@ static int neo1973_lm4857_init(struct snd_soc_dapm_context *dapm)
+ static int neo1973_lm4857_init(struct snd_soc_dapm_context *dapm) { return 0; };
+ #endif
+ 
+-/*
+- * BT Codec DAI
+- */
+-static struct snd_soc_dai_driver bt_dai = {
+-	.name = "bluetooth-dai",
+-	.playback = {
+-		.channels_min = 1,
+-		.channels_max = 1,
+-		.rates = SNDRV_PCM_RATE_8000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
+-	.capture = {
+-		.channels_min = 1,
+-		.channels_max = 1,
+-		.rates = SNDRV_PCM_RATE_8000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
+-};
+-
+ static struct snd_soc_dai_link neo1973_dai[] = {
+ { /* Hifi Playback - for similatious use with voice below */
+ 	.name = "WM8753",
+@@ -450,7 +433,7 @@ static struct snd_soc_dai_link neo1973_dai[] = {
+ 	.name = "Bluetooth",
+ 	.stream_name = "Voice",
+ 	.platform_name = "samsung-audio",
+-	.cpu_dai_name = "bluetooth-dai",
++	.cpu_dai_name = "dfbmcs320-pcm",
+ 	.codec_dai_name = "wm8753-voice",
+ 	.codec_name = "wm8753-codec.0-001a",
+ 	.ops = &neo1973_voice_ops,
+@@ -459,6 +442,10 @@ static struct snd_soc_dai_link neo1973_dai[] = {
+ 
+ static struct snd_soc_aux_dev neo1973_aux_devs[] = {
+ 	{
++		.name = "dfbmcs320",
++		.codec_name = "dfbmcs320.0",
++	},
++	{
+ 		.name = "lm4857",
+ 		.codec_name = "lm4857.0-007c",
+ 		.init = neo1973_lm4857_init,
+@@ -502,7 +489,7 @@ static int __init neo1973_init(void)
+ 
+ 	if (machine_is_neo1973_gta02()) {
+ 		neo1973.name = "neo1973gta02";
+-		neo1973.num_aux_devs = 0;
++		neo1973.num_aux_devs = 1;
+ 
+ 		ret = gpio_request_array(neo1973_gta02_gpios,
+ 				ARRAY_SIZE(neo1973_gta02_gpios));
+@@ -516,21 +503,14 @@ static int __init neo1973_init(void)
+ 		goto err_gpio_free;
+ 	}
+ 
+-	/* register bluetooth DAI here */
+-	ret = snd_soc_register_dai(&neo1973_snd_device->dev, &bt_dai);
+-	if (ret)
+-		goto err_put_device;
+-
+ 	platform_set_drvdata(neo1973_snd_device, &neo1973);
+ 	ret = platform_device_add(neo1973_snd_device);
+ 
+ 	if (ret)
+-		goto err_unregister_dai;
++		goto err_put_device;
+ 
  	return 0;
- }
  
- static int lm4853_event(struct snd_soc_dapm_widget *w,
--			struct snd_kcontrol *k,
--			int event)
-+			struct snd_kcontrol *k, int event)
+-err_unregister_dai:
+-	snd_soc_unregister_dai(&neo1973_snd_device->dev);
+ err_put_device:
+ 	platform_device_put(neo1973_snd_device);
+ err_gpio_free:
+@@ -544,7 +524,6 @@ module_init(neo1973_init);
+ 
+ static void __exit neo1973_exit(void)
  {
- 	gpio_set_value(GTA02_GPIO_AMP_SHUT, SND_SOC_DAPM_EVENT_OFF(event));
+-	snd_soc_unregister_dai(&neo1973_snd_device->dev);
+ 	platform_device_unregister(neo1973_snd_device);
  
-@@ -304,13 +269,7 @@ static const struct snd_kcontrol_new wm8753_neo1973_gta02_controls[] = {
- 	SOC_DAPM_PIN_SWITCH("Handset Mic"),
- 	SOC_DAPM_PIN_SWITCH("Handset Spk"),
- 
--	/* This has no effect, it exists only to maintain compatibility with
--	 * existing ALSA state files.
--	 */
--	SOC_SINGLE_EXT("Amp State Switch", 6, 0, 1, 0,
--		lm4853_get_state,
--		lm4853_set_state),
--	SOC_SINGLE_EXT("Amp Spk Switch", 7, 0, 1, 0,
-+	SOC_SINGLE_BOOL_EXT("Amp Spk Switch", 0,
- 		lm4853_get_spk,
- 		lm4853_set_spk),
- };
+ 	if (machine_is_neo1973_gta02()) {
 -- 
 1.7.2.3
