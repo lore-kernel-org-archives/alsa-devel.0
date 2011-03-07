@@ -1,66 +1,40 @@
-From: Sakari Ailus <sakari.ailus@retiisi.org.uk>
-Subject: Re: [GIT PULL FOR 2.6.39] Media controller and OMAP3 ISP driver
-Date: Mon, 7 Mar 2011 14:08:12 +0200
-Message-ID: <20110307120812.GF26689@valkosipuli.localdomain>
-References: <201102171606.58540.laurent.pinchart@ideasonboard.com>
- <4D73472A.60702@retiisi.org.uk>
- <201103061117.42896.laurent.pinchart@ideasonboard.com>
- <4D74C7EF.6040004@redhat.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC][PATCH] ASoC: Move symmetric rate check
+	for	substreams to hw_params
+Date: Mon, 7 Mar 2011 12:09:24 +0000
+Message-ID: <20110307120924.GC1829@sirena.org.uk>
+References: <1299498963-1134-1-git-send-email-vaibhav.bedia@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-media-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7209C10382B
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 13:09:26 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <4D74C7EF.6040004@redhat.com>
-Sender: linux-media-owner@vger.kernel.org
-To: Mauro Carvalho Chehab <mchehab@redhat.com>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, alsa-devel@alsa-project.org
+In-Reply-To: <1299498963-1134-1-git-send-email-vaibhav.bedia@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Vaibhav Bedia <vaibhav.bedia@ti.com>
+Cc: alsa-devel@alsa-project.org, Afzal Mohammed <afzal@ti.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 07, 2011 at 08:56:31AM -0300, Mauro Carvalho Chehab wrote:
-> Em 06-03-2011 07:17, Laurent Pinchart escreveu:
-> > Hi Sakari,
-> > 
-> > On Sunday 06 March 2011 09:34:50 Sakari Ailus wrote:
-> >> Hi Laurent,
-> >>
-> >> Many thanks for the pull req!
-> >>
-> >> On Thu, Feb 17, 2011 at 04:06:58PM +0100, Laurent Pinchart wrote:
-> >> ...
-> >>
-> >>>  drivers/media/video/omap3-isp/ispresizer.c         | 1693 ++++++++++++++
-> >>>  drivers/media/video/omap3-isp/ispresizer.h         |  147 ++
-> >>>  drivers/media/video/omap3-isp/ispstat.c            | 1092 +++++++++
-> >>>  drivers/media/video/omap3-isp/ispstat.h            |  169 ++
-> >>>  drivers/media/video/omap3-isp/ispvideo.c           | 1264 ++++++++++
-> >>>  drivers/media/video/omap3-isp/ispvideo.h           |  202 ++
-> >>>  drivers/media/video/omap3-isp/luma_enhance_table.h |   42 +
-> >>>  drivers/media/video/omap3-isp/noise_filter_table.h |   30 +
-> >>
-> >> ...
-> >>
-> >>>  include/linux/Kbuild                               |    4 +
-> >>>  include/linux/media.h                              |  132 ++
-> >>>  include/linux/omap3isp.h                           |  646 +++++
-> >>
-> >> What about renaming the directory omap3isp for the sake of consistency?
-> >> The header file is called omap3isp.h and omap3isp is the prefix used in
-> >> the driver for exported symbols.
-> > 
-> > I'm fine with both. If Mauro prefers omap3-isp, I can update the patches.
+On Mon, Mar 07, 2011 at 05:26:03PM +0530, Vaibhav Bedia wrote:
+> Currently the symmetric rate check is present in the snd_pcm_open() call.
+> However this causes snd_pcm_open() to fail for the 2nd substream is the
+> 2nd call to snd_pcm_open() is made before the 1st substream has set a non-zero
+> rate by calling snd_pcm_hw_params().
 > 
-> Probably, omap3-isp would be better, but I'm fine if you prefere omap3isp.
+> Fix this by moving the call to snd_pcm_apply_symmetry() to soc_pcm_hw_params().
 
-Hi Mauro, Laurent,
-
-I'm also fine with omap3-isp. My point was that we should be consistent in
-naming. If the symbol prefix and the file / directory names are a little
-different that is certainly not an issue to me. So the change to the current
-state of the patchset would be that the header file was be called
-omap3-isp.h, right?
-
-Cheers,
-
--- 
-Sakari Ailus
-sakari dot ailus at retiisi dot org dot uk
+This means that applications won't be constrained by the current
+settings so can't automatically choose the required rate.  ALSA is just
+fundamentally racy here, if you want to reliably open bidirectional
+streams you need to serialise the startup of the two directions.
