@@ -1,19 +1,24 @@
-From: "Lu, Guanqun" <guanqun.lu@intel.com>
-Subject: Re: [PATCH] ASoC: sound:soc:soc-core fix one
-	small	indentation issue
-Date: Mon, 7 Mar 2011 23:18:06 +0800
-Message-ID: <5D8008F58939784290FAB48F5497519835EF1C5638@shsmsx502.ccr.corp.intel.com>
-References: <1299510885-3133-1-git-send-email-guanqun.lu@intel.com>
-	<20110307151622.GH1829@sirena.org.uk>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [Device-drivers-devel] [PATCH] Add driver for
+ Analog Devices ADAU1701 SigmaDSP
+Date: Mon, 7 Mar 2011 10:33:25 -0500
+Message-ID: <AANLkTi=e1xDz6fhBU7NL32DXL1J9Y1CDD2bHQVL6oASw@mail.gmail.com>
+References: <1299460302-15392-1-git-send-email-cliff.cai@analog.com>
+	<20110307114142.GB13471@opensource.wolfsonmicro.com>
+	<AANLkTikynw7vCsqqyNZW-LFuGUKKQEtG3s4YCZjpOvko@mail.gmail.com>
+	<20110307121502.GG13471@opensource.wolfsonmicro.com>
+	<AANLkTinKpvgBokSHpsVf1KVX+m6sD0Xp_dFe8Y+HzY-7@mail.gmail.com>
+	<20110307145931.GK13471@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9D07A2447F
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 16:19:38 +0100 (CET)
-In-Reply-To: <20110307151622.GH1829@sirena.org.uk>
-Content-Language: en-US
+Received: from mail-gw0-f49.google.com (mail-gw0-f49.google.com [74.125.83.49])
+	by alsa0.perex.cz (Postfix) with ESMTP id 187622449F
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 16:33:46 +0100 (CET)
+Received: by gwj15 with SMTP id 15so2308168gwj.8
+	for <alsa-devel@alsa-project.org>; Mon, 07 Mar 2011 07:33:45 -0800 (PST)
+In-Reply-To: <20110307145931.GK13471@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,54 +29,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Cc: cliff.cai@analog.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, akpm@linux-foundation.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
-> Sent: Monday, March 07, 2011 11:16 PM
-> To: Lu, Guanqun
-> Cc: alsa-devel@alsa-project.org; lrg@slimlogic.co.uk
-> Subject: Re: [alsa-devel] [PATCH] ASoC: sound:soc:soc-core fix one small
-> indentation issue
-> 
-> On Mon, Mar 07, 2011 at 11:14:45PM +0800, Lu Guanqun wrote:
-> > Signed-off-by: Lu Guanqun <guanqun.lu@intel.com>
-> 
-> Please remember to CC maintainers on patches - in general please follow
-> the approach in Documentation/SubmittingPatches.
-
-Sorry about that.
-Adding maintainers here.
-
---guanqun
-
-> 
-> > ---
-> >  sound/soc/soc-core.c |    2 +-
-> >  1 files changed, 1 insertions(+), 1 deletions(-)
-> >
-> > diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> > index 64befac..f6ba502 100644
-> > --- a/sound/soc/soc-core.c
-> > +++ b/sound/soc/soc-core.c
-> > @@ -3438,7 +3438,7 @@ int snd_soc_register_platform(struct device *dev,
-> >
-> >  	platform = kzalloc(sizeof(struct snd_soc_platform), GFP_KERNEL);
-> >  	if (platform == NULL)
-> > -			return -ENOMEM;
-> > +		return -ENOMEM;
-> >
-> >  	/* create platform component name */
-> >  	platform->name = fmt_single_name(dev, &platform->id);
-> > --
-> > 1.7.2.3
-> >
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
-> 
-> --
-> "You grabbed my hand and we fell into it, like a daydream - or a fever."
+T24gTW9uLCBNYXIgNywgMjAxMSBhdCAwOTo1OSwgTWFyayBCcm93biB3cm90ZToKPiBPbiBNb24s
+IE1hciAwNywgMjAxMSBhdCAwNzoyOToxMkFNIC0wNTAwLCBNaWtlIEZyeXNpbmdlciB3cm90ZToK
+Pj4gT24gTW9uLCBNYXIgNywgMjAxMSBhdCAwNzoxNSwgTWFyayBCcm93biB3cm90ZToKPj4gPiBJ
+dCdkIHNlZW0gZWFzaWVyIHRvIGp1c3QgbWVyZ2UgdGhlIHR3byBwYXRjaGVzIHRvZ2V0aGVyIHJh
+dGhlciB0aGFuCj4+ID4gdHJ5aW5nIHRvIGRlYWwgd2l0aCBjcm9zcy10cmVlIGlzc3Vlcy4KPj4K
+Pj4gdGhhdCBzb3VuZHMgbGlrZSBhIHRlcnJpYmxlIGlkZWEuIMKgdGhleSdyZSBsb2dpY2FsbHkg
+ZGlmZmVyZW50Cj4+IGNoYW5nZXNldHMgYW5kIHdlIHNob3VsZG50IGJlIHNxdWFzaGluZyB0aGVt
+IHRvZ2V0aGVyIHNpbXBseSB0byB3b3JrCj4+IGFyb3VuZCBwcm9ibGVtcyB3aXRoIHByb2Nlc3Mg
+d29ya2Zsb3dzLgo+Cj4gSSdtIG5vdCBzYXlpbmcgc3F1YXNoIHRoZSBjaGFuZ2VzLCBJJ20gc2F5
+aW5nIGFwcGx5IHRoZW0gYm90aCB2aWEgdGhlCj4gc2FtZSB0cmVlLgoKbWVyZ2luZyB0cmVlcyAh
+PSBtZXJnaW5nIHBhdGNoZXMgOykKCj4+ID4gUmlnaHQsIGFuZCB0aGlzIGlzbid0IGEgcGFydGlj
+dWxhcmx5IHVudXN1YWwgcmVxdWlyZW1lbnQgZXNwZWNpYWxseSBpZgo+PiA+IHRoZSBkcml2ZXIg
+aXNuJ3QgZ29pbmcgdG8gaGF2ZSBhbnkgYWJpbGl0eSB0byBpbnRlcmFjdCB3aXRoIHRoZSBEU1Ag
+KGF0Cj4+ID4gd2hpY2ggcG9pbnQgaXQncyBqdXN0IGNvZWZmaWNpZW50IGRhdGEsIHRoZSBmYWN0
+IHRoYXQgaXQncyBhIERTUCBwcm9ncmFtCj4+ID4gaXMgdW5pbnRlcmVzdGluZykuIMKgVGhlIHBy
+b2JsZW0gaXMgdGhhdCB0aGlzIGlzbid0IGEgZ3JlYXQgaW50ZXJmYWNlIGZvcgo+PiA+IGRvaW5n
+IHRoYXQuCj4KPj4gaSBkb250IHNlZSBzdWdnZXN0aW9ucyBvZiBhIGJldHRlciBpbnRlcmZhY2Ug
+YW55d2hlcmUgLi4uCj4KPiBJdCBjdXJyZW50bHkgaXNuJ3QgYW5kIEknZCBlbmNvdXJhZ2UgeW91
+IHRvIGNvbnRyaWJ1dGUgdG8gdGhlIGRpc2N1c3Npb24KPiB0aGF0J3MgYmVlbiBnb2luZyBvbiBv
+biB0aGlzLCBvciBldmVuIGJldHRlciBoZWxwIG91dCB3aXRoIGNvZGUuIMKgVGhlcmUKPiB3YXMg
+c29tZSBkaXNjdXNzaW9uIG9uIHRoZSBsaXN0IHJlY2VudGx5IChpbiB0aGUgcGFzdCBtb250aCBJ
+SVJDKS4KCmknZCBiZSBsb29raW5nIGF0IENsaWZmL01pY2hhZWwgZm9yIHRoaXMuICB0aGUgQURJ
+IGxpbnV4IHRlYW0gaGFzIGJlZW4KcmVzdHJ1Y3R1cmVkIGFuZCBhdWRpbyBwYXJ0cyBhcmUgaGFu
+ZGxlZCBieSBNaWNoYWVsJ3MgbmV3IGdyb3VwIG5vdy4KCj4+IHdydCBzdHJlYW0gZmxvd3MsIGFs
+bCB0aGUgY3VzdG9tZXJzIHdlJ3ZlIHRhbGtlZCB0byBhcmUgZmluZSB3aXRoIHRoaXMKPj4gLS0g
+aGF2aW5nIHN0cmVhbSBjb250cm9sIGJlIGFuIGFwcGxpY2F0aW9uIGlzc3VlLiDCoHRoZWlyIGFw
+cGxpY2F0aW9uCj4+IGlzIGRyaXZpbmcgdGhlIGNvZGVjIGRpcmVjdGx5IGFuZCBrbm93cyB3aGVu
+IGl0IG5lZWRzIHRvIGNoYW5nZSB0aGUKPj4gZmlybXdhcmUsIHNvIGl0IHBhdXNlcyBpdHMgYWxz
+YSBmbG93LCBsb2FkcyB0aGUgbmV3IGZpcm13YXJlLCBhbmQKPj4gbW92ZXMgb24uCj4KPiBJJ2Qg
+ZXhwZWN0IHRoYXQgdGhlIGRyaXZlciB3b3VsZCBhdCBsZWFzdCBlcnJvciBvdXQgaWYgdGhlIHVz
+ZXIgdHJpZWQgdG8KPiBkbyB0aGUgd3JvbmcgdGhpbmcgaGVyZSwgbGlrZSBJIHNheSBjdXJyZW50
+bHkgdGhlIGZpcm13YXJlIGNvZGUgaXMganVzdAo+IG5vdCBqb2luZWQgdXAgd2l0aCBhbnl0aGlu
+ZyBlbHNlIGF0IGFsbC4KCmkgZG9udCBzZWUgaG93IHRoZSBkcml2ZXIgY2FuIGRldGVjdCBhICJ3
+cm9uZyIgdGhpbmcuICB0aGUgZHJpdmVyIGhhcwpubyBpZGVhIHdoYXQgYXJiaXRyYXJ5IGNvZGUg
+dGhlIHVzZXIgaXMgZ29pbmcgdG8gbG9hZCBhbmQgd2hhdCB0aGF0CmNvZGUgaXMgZ29pbmcgdG8g
+ZG8sIG9yIHZhbGlkYXRlIHRoZSBjb2RlIGluIGFueSB3YXkuICB0aGlzIGlzIHdoeSB0aGUKZmly
+bXdhcmUgaGFzIGEgc21hbGwgY3JjIGhlYWRlciBvbiBpdCAtLSB3ZSBvbmx5IG1ha2Ugc3VyZSB0
+aGF0IHdoYXQKdGhlIHVzZXIgY29tcGlsZWQgYXQgYnVpbGQgdGltZSBtYXRjaGVzIHdoYXQgaXMg
+bG9hZGVkIGludG8gdGhlCmhhcmR3YXJlLgoKPj4gdGhhdCBzYWlkLCBpIGRvbnQgc2VlIGFueXRo
+aW5nIGluIGFzb2MgdG9kYXkgdG8gYWRkcmVzcyB0aGlzLCBzbyBpZgo+PiB3ZSdyZSBzaW1wbHkg
+bWlzc2luZyBpdCwgcGxlYXNlIGhpZ2hsaWdodCBpdCBmb3IgdXMuCj4KPiBUaGVyZSdzIGhhbmRs
+aW5nIG9mIHRoaXMgaW4gYSBidW5jaCBvZiBkcml2ZXJzIGZvciB0aGluZ3MgbGlrZSBFUQo+IGNv
+ZWZmaWNpZW50cyAtIHRoZSBtaXNzaW5nIGJpdCBpcyBhIHdheSBvZiB0ZWxsaW5nIHRoZSBkcml2
+ZXIgdGhhdCB0aGVyZQo+IGFyZSBuZXcgY29lZmZpY2llbnQgc2V0cyBhdmFpbGFibGUgYXQgcnVu
+dGltZSwgYXQgdGhlIG1pbnV0ZSBldmVyeXRoaW5nCj4gdGhhdCBzdXBwb3J0cyB0aGlzIGVudW1l
+cmF0ZXMgdGhlIGF2YWlsYWJsZSBjb2VmZmljaWVudCBzZXRzIGluIHBsYXRmb3JtCj4gZGF0YSBh
+bmQgcHJlc2VudHMgdGhlIHVzZXIgd2l0aCBhbiBlbnVtZXJhdGlvbi4KCmknbSBub3Qgc3VyZSB0
+aGF0IGV4YW1wbGUgaXMgYXBwbGljYWJsZSAuLi4gb3IgaWYgaXQgaXMsIGl0J3MgYSBwcmV0dHkK
+cm91Z2ggZml0IHRvIHRoZSBwb2ludCBvZiBub3QgYmVpbmcgd29ydGh3aGlsZQoKPj4gPiBJdCdz
+IGFsc28gbm90IGFuIGludGVyZmFjZSB3aGljaCBvZmZlcnMgYW55IGtpbmQgb2YgZGlzY292ZXJh
+YmlsaXR5IG9yCj4+ID4gZW51bWVyYWJpbGl0eSwgbWVhbmluZyB0aGF0IGl0J3Mgbm90IHN1aXRh
+YmxlIGZvciBpbnRlZ3JhdGlvbiBpbnRvCj4+ID4gYXBwbGljYXRpb24gbGF5ZXIgY29kZSBzdWNo
+IGFzIHRoZSB1c2UgY2FzZSBtYW5hZ2VyLiDCoEFwcGxpY2F0aW9ucyBuZWVkCj4+ID4gdG8gYmUg
+aGFyZCBjb2RlZCB0byBrbm93IHRoYXQgYSBwYXJ0aWN1bGFyIG1hZ2ljIHN5c2ZzIGZpbGUgbmVl
+ZHMgdG8gYmUKPj4gPiBwb2tlZC4gwqBUaGlzIHdvdWxkIGJlIGEgYmlnIHN0ZXAgYmFja3dhcmRz
+IGluIHRlcm1zIG9mIHRoZSBhYmlsaXR5IHRvCj4+ID4gcnVuIG9mZiB0aGUgc2hlbGYgYXBwbGlj
+YXRpb24gc29mdHdhcmUuCj4KPj4gaSBkb250IHNlZSB0aGUgaXNzdWUgaGVyZS4gwqB0aGUgZmly
+bXdhcmUgaXMgKm9wdGlvbmFsKiBhbmQgZG9lcyBub3QKPj4gaW1wYWlyIGJhc2ljIGF1ZGlvIG91
+dHB1dC4gwqBmdXJ0aGVyLCB0aGUgZmlybXdhcmUgaXMgZnVsbHkKPgo+IElmIHRoZSBmaXJtd2Fy
+ZSBpcyB0b3RhbGx5IG9wdGlvbmFsIHRoZSBkcml2ZXIgbmVlZHMgdXBkYXRpbmcgLQo+IGN1cnJl
+bnRseSBhdCBzdGFydHVwIGl0IGRvZXM6Cj4KPiB8ICsgwqAgwqAgwqAgLyogTG9hZCBkZWZhdWx0
+IHByb2dyYW0gKi8KPiB8ICsgwqAgwqAgwqAgcmV0ID0gYWRhdTE3MDFfc2V0cHJvZ3JhbShjb2Rl
+Yyk7Cj4gfCArIMKgIMKgIMKgIGlmIChyZXQgPCAwKSB7Cj4gfCArIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIHByaW50ayhLRVJOX0VSUiAiTG9hZGluZyBwcm9ncmFtIGRhdGEgZmFpbGVkXG4iKTsKPiB8
+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgZ290byBlcnJvcjsKPiB8ICsgwqAgwqAgwqAgfQo+Cj4g
+d2hpY2ggd2lsbCBtYWtlIHRoZSBmaXJtd2FyZSBtYW5kYXRvcnkuIMKgSW4gYW55IGNhc2UsIHRo
+ZSBpbnRlcmZhY2UKPiBpc3N1ZXMgYXJlIHRoZXJlIGlmIHRoZSBmaXJtd2FyZSBpcyBvcHRpb25h
+bCBvciBub3QuCgppIGJlbGlldmUgdGhhdCBpcyBhbiBlcnJvciBpbiB0aGUgZHJpdmVyLiAgQ2xp
+ZmYgY2FuIG9idmlvdXNseSBjb3JyZWN0Cm1lIGhlcmUgc2luY2UgaGUncyBhY3R1YWxseSB3b3Jr
+aW5nIG9uIHRoZSBjb2RlYy4KCj4+IHdyaXR0ZW4vY29tcGlsZWQvbWFpbnRhaW5lZCBieSB0aGUg
+ZW5kIGN1c3RvbWVyLCBqdXN0IGxpa2UgdGhlCj4+IGFwcGxpY2F0aW9uLiDCoHdoaWNoIG1lYW5z
+IHRoZXJlIGlzIG5vICJtYWdpYyIgaGVyZSAtLSB0aGUgZW5kIGN1c3RvbWVyCj4+IGlzIHRoZSB3
+aXphcmQuCj4+Cj4+IHRoZXJlIGlzIG5vICJzdG9jayIgZmlybXdhcmUgdGhhdCBBREkgb3IgYW55
+b25lIHByb3ZpZGVzIGZvciBhbnkgb2YKPj4gdGhlc2UgU2lnbWFEU1AgYXVkaW8gY29kZWNzLgo+
+Cj4gVGhlIHF1ZXN0aW9uIG9mIHdoZXJlIHRoZSBEU1AgZmlybXdhcmUgKG9yIGNvZWZmaWNpZW50
+IGRhdGEpIGNvbWVzIGZyb20KPiBpcyBvcnRob2dvbmFsIHRvIHRoZSBpc3N1ZSBvZiBydW50aW1l
+IG1hbmFnZW1lbnQgb2YgdGhlIGRhdGEuIMKgVGhlIGlzc3VlCj4gaXMgaG93IHRoZSBhcHBsaWNh
+dGlvbiBsYXllciBjYW4gdGVsbCBpZiB0aGVyZSBhcmUgbXVsdGlwbGUgY29lZmZpY2llbnQKPiBz
+ZXRzIGFuZCBjaGFuZ2UgYmV0d2VlbiB0aGVtLCBlaXRoZXIgZGlyZWN0bHkgb3IgdmlhIHNvbWV0
+aGluZyBsaWtlIFVDTS4KPiBFdmVuIGlmIHRoZSBzeXN0ZW0gaXMgdXNpbmcgYSBjdXN0b20gYXBw
+bGljYXRpb24gcmF0aGVyIHRoYW4gYW4gb2ZmIHRoZQo+IHNoZWxmIGRpc3RyaWJ1dGlvbiAod2hp
+Y2ggYXJlIGJlY29taW5nIG1vcmUgYW5kIG1vcmUgY29tbW9uIGluIGVtYmVkZGVkCj4gc3lzdGVt
+cykgdGhlcmUncyBubyByZWFzb24gdGhleSBzaG91bGRuJ3QgYmUgYWJsZSB0byByZWx5IG9uIHN0
+YW5kYXJkCj4gdG9vbHMgZm9yIG1hbmFnaW5nIHRoZWlyIGF1ZGlvIGNvbmZpZ3VyYXRpb25zLgoK
+aWYgdGhlIHN0YW5kYXJkIHRvb2xzIGV4aXN0ZWQgdG9kYXksIGknZCBvZiBjb3Vyc2UgYWdyZWUu
+ICBidXQgYXMgeW91CmluZGljYXRlZCB0aGVyZSdzIG5vdGhpbmcgcmlnaHQgbm93IGZvciB1cyB0
+byBidWcgb2ZmIG9mLiAgc28gaG93CnVzZXJzcGFjZSAicHJvYmVzIiBmb3IgZXhpc3RpbmcgZGF0
+YSB3b3VsZCBiZSBob3dldmVyIHRoZSBlbmQgdXNlcgpjaG9vc2VzIHRvIG1hbmFnZSB0aGluZ3Mu
+ICBpdCdzIG5vdCBsaWtlIHRoZSBzdGFuZGFyZCB0b29scyBjb3VsZApyZWFsbHkgcHJvdmlkZSBh
+bnl0aGluZyBvdGhlciB0aGFuIGEgc2ltcGxlIHN0cmluZyB0aGF0IGluZGljYXRlcwoic29tZSBi
+bG9iIGV4aXN0cyB3aXRoIG5hbWUgeHh4Ii4gIHRoZSBtZWFuaW5nL21ldGFkYXRhIHRoYXQgc3Vy
+cm91bmRzCnh4eCBpc250IHJlYWxseSByZWxldmFudCBmcm9tIHRoZSBrZXJuZWwncyBwb3YuCgo+
+IEF0IHByZXNlbnQgdXNlcnNwYWNlIGNhbiBlbnVtZXJhdGUgYW5kIGNoYW5nZSB0aGUgcnVudGlt
+ZSBjb25maWd1cmF0aW9uCj4gdGhlIHN5c3RlbSBvZmZlcnMgdmlhIHRoZSBBTFNBIEFQSXMgKGFu
+ZCB0aGlzIHdpbGwgZ2V0IGV2ZW4gYmV0dGVyIG9uY2UKPiB0aGUgbWVkaWEgY29udHJvbGxlciBB
+UEkgc3RhcnRzIGJlaW5nIHVzZWQpLiDCoFRoaXMgbWVhbnMgdGhhdCB5b3UgY2FuCj4gZmFpcmx5
+IGVhc2lseSB3cml0ZSBhIHVzZXJzcGFjZSB0aGF0J2xsIHJ1biBvbiBwcmV0dHkgbXVjaCBhbnkg
+TGludXgKPiBhdWRpbyBoYXJkd2FyZSwgYWRhcHRpbmcgd2l0aCBwdXJlIGNvbmZpZ3VyYXRpb24g
+Zm9yIHdoaWNoIHlvdSBjYW4KPiBwcm92aWRlIHBvaW50IGFuZCBjbGljayB0dW5pbmcgKHJlYWxp
+c3RpY2FsbHkgYnkgYWxsb3dpbmcgdGhlIHVzZXIgdG8KPiBjb25maWd1cmUgdmlhIHN0YW5kYXJk
+IEFMU0EgdG9vbHMgYW5kIG9mZmVyaW5nIGEgInNhdmUgYXMgdXNlIGNhc2UiIHR5cGUKPiBpbnRl
+cmZhY2UpLiDCoElmIHdlIHN0YXJ0IGFkZGluZyBiYWNrZG9vcnMgdG8gZHJpdmVycyB3ZSdyZSB0
+YWtpbmcgYSBzdGVwCj4gYmFjayBmcm9tIHdoZXJlIHdlIGFyZSBjdXJyZW50bHkgYnkgcmVxdWly
+aW5nIHRoYXQgdGhlIGFwcGxpY2F0aW9uIGxheWVyCj4ga25vdyBtYWdpYyBzdHVmZiBhYm91dCBp
+bmRpdmlkdWFsIHN5c3RlbXMgaW4gb3JkZXIgdG8gd29yayB3aXRoIHRoZW0uCgpmcm9tIGhvdyB3
+ZSd2ZSBzZWVuIHBlb3BsZSB1c2luZyB0aGVzZSBjb2RlY3MsIHRoaXMgc2NlbmFyaW8gZG9lc250
+Cm1ha2UgbXVjaCBzZW5zZS4gIHRoZSBkaWZmZXJlbnQgYWxnb3JpdGhtcyB3b3VsZCBiZSBsb2Fk
+ZWQgb24gdGhlIGZseQpieSB0aGUgYXBwbGljYXRpb24gYW5kIGl0cyBjdXJyZW50IG9wZXJhdGlu
+ZyBuZWVkcywgbm90IGEgc2luZ2xlCmFsZ29yaXRobSBzZWxlY3RlZCBieSB0aGUgZW5kZXIgdXNl
+ciB0aGF0IHdvdWxkbnQgY2hhbmdlIGZvciB0aGUgbGlmZQpvZiB0aGUgYXBwLiAgbm90IHNheWlu
+ZyB0aGUgc2NlbmFyaW8gd291bGQgbmV2ZXIgY29tZSB1cCwganVzdCB0aGF0IGl0CmlzbnQgdGhl
+IG9uZSB3ZSdkIGJlIGZvY3VzZWQgb24uCi1taWtlCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
