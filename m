@@ -1,19 +1,15 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/7] ASoC: neo1973_wm8753: Remove scenario
- management code.
-Date: Mon, 07 Mar 2011 11:04:38 +0000
-Message-ID: <1299495878.3377.17.camel@odin>
-References: <1299481500-5481-1-git-send-email-lars@metafoo.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ASoC: Fix outdated API usage in
+	tlv320aic32x4
+Date: Mon,  7 Mar 2011 11:11:04 +0000
+Message-ID: <1299496265-8090-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id E3433103854
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 12:04:42 +0100 (CET)
-Received: by wwf26 with SMTP id 26so4117029wwf.20
-	for <alsa-devel@alsa-project.org>; Mon, 07 Mar 2011 03:04:42 -0800 (PST)
-In-Reply-To: <1299481500-5481-1-git-send-email-lars@metafoo.de>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 90F0F10384E
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 12:11:12 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,25 +19,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-03-07 at 08:04 +0100, Lars-Peter Clausen wrote:
-> It has been proven to be inflexible to do scenario management in kernel space.
-> 
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/tlv320aic32x4.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
-We have UCM for this now too :)
-
-> Since actual neo1973 board support has not been merged in mainline and this
-> patch has been in the neo1973 tree for some time now it should be safe to remove
-> this functionality without breaking existing userspace.
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> ---
->  sound/soc/samsung/neo1973_wm8753.c |  148 +++---------------------------------
->  1 files changed, 11 insertions(+), 137 deletions(-)
-
-Just had a quick look. All 
-
-Acked-by: Liam Girdwood <lrg@ti.com>
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index ee82e38..e93b9d1 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -340,13 +340,13 @@ static inline int aic32x4_get_divs(int mclk, int rate)
+ 
+ static int aic32x4_add_widgets(struct snd_soc_codec *codec)
+ {
+-	snd_soc_dapm_new_controls(codec, aic32x4_dapm_widgets,
+-				ARRAY_SIZE(aic32x4_dapm_widgets));
++	snd_soc_dapm_new_controls(&codec->dapm, aic32x4_dapm_widgets,
++				  ARRAY_SIZE(aic32x4_dapm_widgets));
+ 
+-	snd_soc_dapm_add_routes(codec, aic32x4_dapm_routes,
++	snd_soc_dapm_add_routes(&codec->dapm, aic32x4_dapm_routes,
+ 				ARRAY_SIZE(aic32x4_dapm_routes));
+ 
+-	snd_soc_dapm_new_widgets(codec);
++	snd_soc_dapm_new_widgets(&codec->dapm);
+ 	return 0;
+ }
+ 
+@@ -602,7 +602,7 @@ static int aic32x4_set_bias_level(struct snd_soc_codec *codec,
+ 	case SND_SOC_BIAS_OFF:
+ 		break;
+ 	}
+-	codec->bias_level = level;
++	codec->dapm.bias_level = level;
+ 	return 0;
+ }
+ 
+-- 
+1.7.2.3
