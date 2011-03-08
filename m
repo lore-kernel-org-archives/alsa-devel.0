@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 1/2] ASoC: Refactor symmetric_rates check to
-	reduce indentation
-Date: Tue,  8 Mar 2011 13:56:19 +0000
-Message-ID: <1299592580-3759-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.39
+Date: Tue, 8 Mar 2011 14:04:09 +0000
+Message-ID: <20110308140408.GF20944@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 28BAF103820
-	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2011 14:56:01 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5B44C103820
+	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2011 15:04:11 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,53 +19,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiawi@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/soc-core.c |   28 ++++++++++++++--------------
- 1 files changed, 14 insertions(+), 14 deletions(-)
+The following changes since commit 4a5f7bda8fe9d0ed08ed4c5beb5dc3fa62f09d05:
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c2ec6cb..65ff612 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -500,20 +500,20 @@ static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream)
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	int ret;
- 
--	if (codec_dai->driver->symmetric_rates || cpu_dai->driver->symmetric_rates ||
--			rtd->dai_link->symmetric_rates) {
--		dev_dbg(&rtd->dev, "Symmetry forces %dHz rate\n",
--				rtd->rate);
--
--		ret = snd_pcm_hw_constraint_minmax(substream->runtime,
--						   SNDRV_PCM_HW_PARAM_RATE,
--						   rtd->rate,
--						   rtd->rate);
--		if (ret < 0) {
--			dev_err(&rtd->dev,
--				"Unable to apply rate symmetry constraint: %d\n", ret);
--			return ret;
--		}
-+	if (!codec_dai->driver->symmetric_rates &&
-+	    !cpu_dai->driver->symmetric_rates &&
-+	    !rtd->dai_link->symmetric_rates)
-+		return 0;
-+
-+	dev_dbg(&rtd->dev, "Symmetry forces %dHz rate\n", rtd->rate);
-+
-+	ret = snd_pcm_hw_constraint_minmax(substream->runtime,
-+					   SNDRV_PCM_HW_PARAM_RATE,
-+					   rtd->rate, rtd->rate);
-+	if (ret < 0) {
-+		dev_err(&rtd->dev,
-+			"Unable to apply rate symmetry constraint: %d\n", ret);
-+		return ret;
- 	}
- 
- 	return 0;
--- 
-1.7.2.3
+  ASoC: Add platform data for WM9081 IRQ pin configuration (2011-03-01 23:30:53 +0000)
+
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.39
+
+Alexander Sverdlin (2):
+      ASoC: Extend range of supported sample rates for CS4271 CODEC.
+      ASoC: Remove warnings in ep93xx-i2s.c
+
+Axel Lin (2):
+      ASoC: tlv320dac33: add MODULE_DEVICE_TABLE
+      ASoC: Constify i2c_device_id table
+
+Dimitris Papastamos (1):
+      ASoC: WM8994: Ensure MICBIAS is provided with a clock
+
+Javier Martin (2):
+      ASoC: Add TI tlv320aic32x4 codec support.
+      ASoC: Add machine driver for Visstrim_M10 board.
+
+Lars-Peter Clausen (6):
+      ASoC: neo1973_wm8753: Remove scenario management code.
+      ASoC: neo1973_wm8753: Move lm4857 specefic code to its own module
+      ASoC: neo1973_gta02_wm8753: Remove lm4853_{set,get}_state
+      ASoC: neo1973_gta02_wm8753: Use gpio_request_array to request gpios
+      ASoC: Samsung: Merge neo1937_wm8753 and neo1973_gta02_wm8753 sound board driver
+      ASoC: Add driver for the dfbmcs320 bluetooth module
+
+Mark Brown (11):
+      ASoC: Fix broken bitfield definitions in WM8978
+      Merge branch 'for-2.6.38' into for-2.6.39
+      ASoC: Add TLV information for WM8978 DAC limiter
+      ASoC: Get the card directly from the DAPM context
+      ASoC: Check for a CODEC before dereferencing in DAPM
+      ASoC: Add a per-card DAPM context
+      ASoC: Allow card DAPM widgets and routes to be set up at registration
+      ASoC: Add a late_probe() callback to cards
+      ASoC: Fix outdated API usage in tlv320aic32x4
+      ASoC: Add missing debugfs conditionals
+      ASoC: Add LM4857 to SND_SOC_ALL_CODECS
+
+ include/sound/soc.h                      |   12 +
+ include/sound/tlv320aic32x4.h            |   31 ++
+ sound/soc/codecs/Kconfig                 |   13 +-
+ sound/soc/codecs/Makefile                |    6 +
+ sound/soc/codecs/cs4270.c                |    2 +-
+ sound/soc/codecs/cs4271.c                |    7 +-
+ sound/soc/codecs/dfbmcs320.c             |   72 +++
+ sound/soc/codecs/lm4857.c                |  276 +++++++++++
+ sound/soc/codecs/tlv320aic32x4.c         |  794 ++++++++++++++++++++++++++++++
+ sound/soc/codecs/tlv320aic32x4.h         |  143 ++++++
+ sound/soc/codecs/tlv320dac33.c           |    1 +
+ sound/soc/codecs/wm8978.c                |   17 +-
+ sound/soc/ep93xx/ep93xx-i2s.c            |    8 +-
+ sound/soc/imx/Kconfig                    |   10 +
+ sound/soc/imx/Makefile                   |    2 +
+ sound/soc/imx/mx27vis-aic32x4.c          |  137 +++++
+ sound/soc/samsung/Kconfig                |   19 +-
+ sound/soc/samsung/Makefile               |    2 -
+ sound/soc/samsung/lm4857.h               |   32 --
+ sound/soc/samsung/neo1973_gta02_wm8753.c |  494 -------------------
+ sound/soc/samsung/neo1973_wm8753.c       |  634 +++++++++---------------
+ sound/soc/soc-core.c                     |   31 ++
+ sound/soc/soc-dapm.c                     |   14 +-
+ 23 files changed, 1795 insertions(+), 962 deletions(-)
+ create mode 100644 include/sound/tlv320aic32x4.h
+ create mode 100644 sound/soc/codecs/dfbmcs320.c
+ create mode 100644 sound/soc/codecs/lm4857.c
+ create mode 100644 sound/soc/codecs/tlv320aic32x4.c
+ create mode 100644 sound/soc/codecs/tlv320aic32x4.h
+ create mode 100644 sound/soc/imx/mx27vis-aic32x4.c
+ delete mode 100644 sound/soc/samsung/lm4857.h
+ delete mode 100644 sound/soc/samsung/neo1973_gta02_wm8753.c
