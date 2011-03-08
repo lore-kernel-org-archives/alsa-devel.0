@@ -1,21 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 2/2] ASoC: Use data base init for WM9081
- DAPM
-Date: Tue, 08 Mar 2011 17:57:53 +0000
-Message-ID: <1299607073.3374.9.camel@odin>
-References: <1299516086-23638-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1299516086-23638-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: Provide CODEC clocking
+ operations and API calls
+Date: Tue, 08 Mar 2011 17:59:09 +0000
+Message-ID: <1299607149.3374.10.camel@odin>
+References: <1299532039-10637-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 84438103966
-	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2011 18:57:57 +0100 (CET)
-Received: by wyj26 with SMTP id 26so212866wyj.38
-	for <alsa-devel@alsa-project.org>; Tue, 08 Mar 2011 09:57:57 -0800 (PST)
-In-Reply-To: <1299516086-23638-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C6FE103959
+	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2011 18:59:13 +0100 (CET)
+Received: by wwj40 with SMTP id 40so1126413wwj.20
+	for <alsa-devel@alsa-project.org>; Tue, 08 Mar 2011 09:59:12 -0800 (PST)
+In-Reply-To: <1299532039-10637-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,11 +27,20 @@ To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2011-03-07 at 16:41 +0000, Mark Brown wrote:
+On Mon, 2011-03-07 at 21:07 +0000, Mark Brown wrote:
+> When multi component systems use DAIless amplifiers which require clocking
+> configuration it is at best hard to use the current clocking API as this
+> requires a DAI even though the device may not even have one. Address this
+> by adding set_sysclk() and set_pll() operations and APIs for CODECs.
+> 
+> In order to avoid issues with devices which could be used either with or
+> without DAIs make the DAI variants call through to their CODEC counterparts
+> if there is no DAI specific operation. Converting over entirely would create
+> problems for multi-DAI devices which offer per-DAI clocking setup.
+> 
 > Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 > ---
->  sound/soc/codecs/wm9081.c |   11 +++++------
->  1 files changed, 5 insertions(+), 6 deletions(-)
-> 
+
+Both
 
 Acked-by: Liam Girdwood <lrg@ti.com>
