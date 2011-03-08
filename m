@@ -1,21 +1,15 @@
-From: Jean-Yves Avenard <jyavenard@gmail.com>
-Subject: Re: snd_pcm_hw_params_set_buffer_time_near: invalid
-	argument
-Date: Tue, 8 Mar 2011 09:32:22 +1100
-Message-ID: <AANLkTinNhknw6h81zkqhhXQwYyrKGs0mVjYpjYvZuNa=@mail.gmail.com>
-References: <AANLkTik5sX_DWLsN3y_7ANpoF5rgeCNZY7gm=+rFhCsy@mail.gmail.com>
-	<AANLkTimfZwH+dqsPZaifekmmctrARdE0DoK5nHoW1Fu_@mail.gmail.com>
+From: Tony Prisk <linux@prisktech.co.nz>
+Subject: WM9712/WM9715 - WM97XXPENDOWN issue
+Date: Tue, 8 Mar 2011 02:47:23 +0000
+Message-ID: <76F764B079F92A4E843589C893D0A02201285D@SERVER.prisktech.co.nz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yi0-f51.google.com (mail-yi0-f51.google.com
-	[209.85.218.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 28543103814
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 23:32:25 +0100 (CET)
-Received: by yib2 with SMTP id 2so2112868yib.38
-	for <alsa-devel@alsa-project.org>; Mon, 07 Mar 2011 14:32:22 -0800 (PST)
-In-Reply-To: <AANLkTimfZwH+dqsPZaifekmmctrARdE0DoK5nHoW1Fu_@mail.gmail.com>
+Received: from SERVER.prisktech.co.nz (ip-58-28-154-8.static-xdsl.xnet.co.nz
+	[58.28.154.8]) by alsa0.perex.cz (Postfix) with ESMTP id 740D32440D
+	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2011 03:49:41 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,25 +19,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 7 March 2011 23:24, Raymond Yau <superquad.vortex2@gmail.com> wrote:
+I have any issue with the WM9712 codec that I was hoping someone might be familiar with.
 
-> This seem to be bug in alsa-lib as I can reproduce using alsa-lib/test/pcm.c
-> with buffer time 120000 and my hda codec support both 11025Hz and 22050Hz
->
-> using buffer time 160000 is OK
 
-Yes.. It's hard to understand why 120ms wouldn't be okay, but 160ms would.
 
-Could you check is 400ms works for you ? I found this to be a value
-that generally do not work when using 44.1kHz 6 channels audio.
+I actually have a Wondermedia WM8505 based netbook with the WM9715 codec - although it seems to be compatible with the WM9711/WM9712.
 
-For the time being, I made my application use 500ms buffer; this is
-what many media players are using (including mplayer) , so I'm
-guessing it would be fine under most circumstances otherwise we would
-have heard about it before.
 
-Jean-Yves
+
+I have written the required ASoC support for this board/platform, and wm97xx battery support is working correctly except for one issue.
+
+
+
+Touchscreen support is required, but not available on this unit (not really an issue outright, but the cause of the problem).
+
+Without removing the following code, wm9712_poll_sample always fails when reading the battery ADC.
+
+
+
+static int wm9712_poll_sample(struct wm97xx *wm, int adcsel, int *sample) ...
+
+        /* check we have correct sample */
+
+        if ((*sample & WM97XX_ADCSEL_MASK) != adcsel) {
+
+                dev_dbg(wm->dev, "adc wrong sample, read %x got %x", adcsel,
+
+                *sample & WM97XX_ADCSEL_MASK);
+
+                return RC_PENUP;
+
+        }
+
+/* <--- PROBLEM CODE HERE --->
+
+        if (!(*sample & WM97XX_PEN_DOWN)) {
+
+                wm->pen_probably_down = 0;
+
+                return RC_PENUP;
+
+        }
+
+*/
+
+        return RC_VALID;
+
+}
+
+
+
+Is it possible that with no touchscreen attached, the codec is returning WM97XX_PEN_DOWN on all ADC reads?
+
+
+
+Any suggestions welcome.
+
+
+
+
+
+Tony Prisk
