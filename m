@@ -1,14 +1,22 @@
-From: Tony Prisk <linux@prisktech.co.nz>
-Subject: WM9712/WM9715 - WM97XXPENDOWN issue
-Date: Tue, 8 Mar 2011 02:47:23 +0000
-Message-ID: <76F764B079F92A4E843589C893D0A02201285D@SERVER.prisktech.co.nz>
+From: "Reddy, MR Swami" <MR.Swami.Reddy@nsc.com>
+Subject: Re: [PATCH] ASoC: Add National Semiconductor LM49352
+ Audio Codec support
+Date: Mon, 7 Mar 2011 20:31:24 -0800
+Message-ID: <290463D19D2E064191F1F96ECA480A89432CB6DE88@EXMAIL02.scwf.nsc.com>
+References: <290463D19D2E064191F1F96ECA480A89432CB6D84E@EXMAIL02.scwf.nsc.com>
+	<20110307131814.GJ13471@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from SERVER.prisktech.co.nz (ip-58-28-154-8.static-xdsl.xnet.co.nz
-	[58.28.154.8]) by alsa0.perex.cz (Postfix) with ESMTP id 740D32440D
-	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2011 03:49:41 +0100 (CET)
+Received: from sc-mailgw03.nsc.com (mail6.nsc.com [12.24.21.242])
+	by alsa0.perex.cz (Postfix) with ESMTP id 14932244C6
+	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2011 05:31:50 +0100 (CET)
+Received: from SCNTRDCSS8.nsc.com (scntrdcss8.nsc.com [10.188.130.179])
+	by sc-mailgw03.nsc.com (Tumbleweed MailGate 3.7.1) with ESMTP id
+	288BC13ABC2A
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2011 20:31:45 -0800 (PST)
+In-Reply-To: <20110307131814.GJ13471@opensource.wolfsonmicro.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -19,67 +27,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-I have any issue with the WM9712 codec that I was hoping someone might be familiar with.
+Thank you very much for your feedback. I will update the patch as per the comments and submit the update patch for review.
 
+Thanks
+Swami
 
+-----Original Message-----
+From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com] 
+Sent: Monday, March 07, 2011 6:48 PM
+To: Reddy, MR Swami
+Cc: alsa-devel@alsa-project.org; Liam Girdwood
+Subject: Re: [PATCH] ASoC: Add National Semiconductor LM49352 Audio Codec support
 
-I actually have a Wondermedia WM8505 based netbook with the WM9715 codec - although it seems to be compatible with the WM9711/WM9712.
+On Mon, Mar 07, 2011 at 04:03:55AM -0800, Reddy, MR Swami wrote:
 
+Please fix your MUA to word wrap within paragraphs at less than 80 columns.  I've reflowed your mail for legibility.  There are some suggestions in Documentation/email-clients.txt.
 
+> Patch for adding National Semiconductor LM49352 Audio Codec (http://www.national.com/ds/LM/LM49352.pdf) support along with Samsung_6410 (i.e. SMDK6410) platform support for LM49352. 
 
-I have written the required ASoC support for this board/platform, and wm97xx battery support is working correctly except for one issue.
+> [Tested this patch on SMDK6410 platform with Kernel- 2.6.24 and ALSA version is - 1.0.15].
 
+> Please review and let me know the comments/suggestion on this patch. 
 
+You need to follow the standard kernel patch submission process, which is documented in Documentation/SubmittingPatches.  In particular you
+should:
 
-Touchscreen support is required, but not available on this unit (not really an issue outright, but the cause of the problem).
+ - Conform to the coding standards in CodingStandards (checkpatch.pl is 
+   helpful for detecting obvious issues).  A good high level check is if
+   your code should visually resemble the rest of the code base.
+ - Submit your code against the current development kernel version.  The
+   trees will be listed in MAINTAINERS, or -next is a good approximation.
+ - Send your patch in-line rather than as an attachment.
+ - Send your patch against the full Linux tree, not a subdirectory of
+   it.
 
-Without removing the following code, wm9712_poll_sample always fails when reading the battery ADC.
+You should also split your code up into a series of independant patches
+- in general each individual driver should be a single patch so your machine and CODEC drivers should be split up.  If the machine driver is just for a flying wire system you should remove it, otherwise please also submit the arch/arm parts.
 
+I've not done a detailed review of the code due to the above high level issues.
 
+> And also let me know the forward-porting (to the latest ALSA version APIs) steps/process. Thanks in advance.
 
-static int wm9712_poll_sample(struct wm97xx *wm, int adcsel, int *sample) ...
-
-        /* check we have correct sample */
-
-        if ((*sample & WM97XX_ADCSEL_MASK) != adcsel) {
-
-                dev_dbg(wm->dev, "adc wrong sample, read %x got %x", adcsel,
-
-                *sample & WM97XX_ADCSEL_MASK);
-
-                return RC_PENUP;
-
-        }
-
-/* <--- PROBLEM CODE HERE --->
-
-        if (!(*sample & WM97XX_PEN_DOWN)) {
-
-                wm->pen_probably_down = 0;
-
-                return RC_PENUP;
-
-        }
-
-*/
-
-        return RC_VALID;
-
-}
-
-
-
-Is it possible that with no touchscreen attached, the codec is returning WM97XX_PEN_DOWN on all ADC reads?
-
-
-
-Any suggestions welcome.
-
-
-
-
-
-Tony Prisk
+You need to figure out a process that works for you.  In general inspecting the kernel history is usually very useful for stuff like this, or you could just start from scratch and copy over the active bits of code.
