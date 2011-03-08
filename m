@@ -1,76 +1,64 @@
-From: Christophe Aeschlimann <c.aeschlimann@acn-group.ch>
-Subject: Re: ALSA issue on DA850/OMAP-L138/AM18x
-Date: Tue, 08 Mar 2011 14:32:27 +0100
-Message-ID: <4D762FEB.3010003@acn-group.ch>
-References: <B85A65D85D7EB246BE421B3FB0FBB59302484734E0@dbde02.ent.ti.com>
-	<4D5BDA3D.5080905@acn-group.ch>
-	<B85A65D85D7EB246BE421B3FB0FBB593024B83B5E4@dbde02.ent.ti.com>
-	<4D749A09.8050101@acn-group.ch>
-	<B85A65D85D7EB246BE421B3FB0FBB593024C0E5EC7@dbde02.ent.ti.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: Channel swapping issue on TI OMAP3/TWL4030
+Date: Tue, 08 Mar 2011 15:36:07 +0200
+Message-ID: <4D7630C7.2080105@nokia.com>
+References: <8CD98E75F0E83E2-63C-14642@web-mmc-m05.sysops.aol.com>	<CF32F28EDF8D20468EEDCBE4975DA0274A46DB@008-AM1MPN1-027.mgdnok.nokia.com><8CD9A87EF4FB765-1218-647@web-mmc-m03.sysops.aol.com>	<4D5A2466.2060705@nokia.com><8CD9B43DFD8A17C-DE8-B3DD@web-mmc-d01.sysops.aol.com>	<4D5B7AB5.201@nokia.com><8CD9C6B934040FF-13C8-4BFB@web-mmc-d06.sysops.aol.com><4D5D0A0E.5030505@nokia.com>	<8CD9E665EC96F93-126C-1145E@web-mmc-d04.sysops.aol.com><8CD9EC9F73F6CCC-DDC-EA8F@web-mmc-d06.sysops.aol.com><4D636574.9050501@nokia.com>	<8CDA1851D39EA53-3E0-7A27@web-mmc-d01.sysops.aol.com>
+	<8CDA3184E0F0520-4AC-24D6@web-mmc-d01.sysops.aol.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB593024C0E5EC7@dbde02.ent.ti.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: "Rajashekhara, Sudhakar" <sudhakar.raj@ti.com>
-Cc: "khilman@deeprootsystems.com" <khilman@deeprootsystems.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-da01.nokia.com (smtp.nokia.com [147.243.128.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 86C43103820
+	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2011 14:36:11 +0100 (CET)
+In-Reply-To: <8CDA3184E0F0520-4AC-24D6@web-mmc-d01.sysops.aol.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "ext ylin@mail.com" <ylin@mail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08.03.2011 05:40, Rajashekhara, Sudhakar wrote:
-> Hi Christophe,
-> =
+Hi,
 
-> On Mon, Mar 07, 2011 at 14:10:41, Christophe Aeschlimann wrote:
->> Hi Sudhakar,
->>
->> On 17.02.2011 05:23, Rajashekhara, Sudhakar wrote:
->>>
->>> Reverting the commit 140176159597ea1f23dcccb47b5c38fdf7c7faa8
->>> (ASoC: Configure symmetric rates for tlv320aic3x) resolves the issue. =
+Sorry, I got lost of this mail thread...
 
->>> We are still working on the proper fix.
->>>
->>> Thanks,
->>> Sudhakar
->>>
->>
->> Did you find a proper solution to that issue ?
->>
-> =
+On 02/25/11 17:32, ext ylin@mail.com wrote:
+> Finally, after 4 days, we caught the problem again.  When channel is =
 
-> Did the workaround work for you?
+> swapped, the IRQ is trigger with receive underrun (IRQ_STATUS_REG =3D =
 
-I'm using the kernel at the following address :
+> 0x171e).  And, from the status register, the transmit is overflow as =
 
-http://arago-project.org/git/projects/?p=3Dlinux-omapl1.git
+> well.  However, I didn't fill zero to one of the transmit channel, and =
 
-And this kernel doesn't have the symmetric rate patch so it must come
-from somewhere else.
+> couldn't tell if the playback is swap as well.  Any idea why underun =
 
-Best regards,
+> happens, or any suggestion to fix it?
 
-Christophe
+Hrm, underflow on receive, and overflow on transmit at the same time?
+Do you had the transmit overflow irq enabled as well?
 
--- =
+Do you have access to the OMAP Errata documents? I have seen an Errata
+for McBSP2, which was about corruption on transmit operation. It might
+be, that the same thing causes nasty effects on the receive side as well.
 
-Christophe Aeschlimann
+Because of the nature of this happening in your case, I suspect that we
+are facing with some HW race/bug problem.
+Receive underflow happens, if DMA tries to read data from McBSP receive
+data register when it is empty.
+This should not happen, since the McBSP threshold and the DMA size is in
+sync, so we should read an amount of data, which is for sure was in the
+buffer, when McBSP signaled DMA.
 
-Embedded Software Engineer & IT Manager
+Do you have support contact with TI?
+I'll try to reach ours meanwhile, if they have any idea.
 
-ACN Advanced Communications Networks S.A.
-
-Rue du Puits-Godet 8a
-2000 Neuch=E2tel, Switzerland
-
-T=E9l. +41 32 724 74 31
-
-c.aeschlimann@acn-group.ch
+Regards,
+P=E9ter
