@@ -1,100 +1,40 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.39
-Date: Tue, 8 Mar 2011 14:04:09 +0000
-Message-ID: <20110308140408.GF20944@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5B44C103820
-	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2011 15:04:11 +0100 (CET)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiawi@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+From: Abhilash K V <abhilash.kv@ti.com>
+Subject: [PATCH] ASoC: AM3517: Update codec name after multi-component update
+Date: Tue,  8 Mar 2011 21:02:43 +0530
+Message-ID: <1299598363-32656-1-git-send-email-abhilash.kv@ti.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: jhnikula@gmail.com, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, perex@perex.cz, tiwai@suse.de, Abhilash K V <abhilash.kv@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 4a5f7bda8fe9d0ed08ed4c5beb5dc3fa62f09d05:
+The i2c client device name (".2-001a" in this case, including
+the separator period) for the AIC23 codec on the TI AM3517-EVM
+was appended to the codec_name member of am3517evm_dai to
+resolve the names mismatch happening in soc_bind_dai_link(),
+due to which the card was not getting registered.
 
-  ASoC: Add platform data for WM9081 IRQ pin configuration (2011-03-01 23:30:53 +0000)
+Signed-off-by: Abhilash K V <abhilash.kv@ti.com>
 
-are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.39
+Acked-by: Jarkko Nikula <jhnikula@gmail.com>
 
-Alexander Sverdlin (2):
-      ASoC: Extend range of supported sample rates for CS4271 CODEC.
-      ASoC: Remove warnings in ep93xx-i2s.c
+---
+ sound/soc/omap/am3517evm.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Axel Lin (2):
-      ASoC: tlv320dac33: add MODULE_DEVICE_TABLE
-      ASoC: Constify i2c_device_id table
+diff --git a/sound/soc/omap/am3517evm.c b/sound/soc/omap/am3517evm.c
+index 979dd50..ddbd2a1 100644
+--- a/sound/soc/omap/am3517evm.c
++++ b/sound/soc/omap/am3517evm.c
+@@ -139,7 +139,7 @@ static struct snd_soc_dai_link am3517evm_dai = {
+ 	.cpu_dai_name ="omap-mcbsp-dai.0",
+ 	.codec_dai_name = "tlv320aic23-hifi",
+ 	.platform_name = "omap-pcm-audio",
+-	.codec_name = "tlv320aic23-codec",
++	.codec_name = "tlv320aic23-codec.2-001a",
+ 	.init = am3517evm_aic23_init,
+ 	.ops = &am3517evm_ops,
+ };
+-- 
+1.6.2.4
 
-Dimitris Papastamos (1):
-      ASoC: WM8994: Ensure MICBIAS is provided with a clock
-
-Javier Martin (2):
-      ASoC: Add TI tlv320aic32x4 codec support.
-      ASoC: Add machine driver for Visstrim_M10 board.
-
-Lars-Peter Clausen (6):
-      ASoC: neo1973_wm8753: Remove scenario management code.
-      ASoC: neo1973_wm8753: Move lm4857 specefic code to its own module
-      ASoC: neo1973_gta02_wm8753: Remove lm4853_{set,get}_state
-      ASoC: neo1973_gta02_wm8753: Use gpio_request_array to request gpios
-      ASoC: Samsung: Merge neo1937_wm8753 and neo1973_gta02_wm8753 sound board driver
-      ASoC: Add driver for the dfbmcs320 bluetooth module
-
-Mark Brown (11):
-      ASoC: Fix broken bitfield definitions in WM8978
-      Merge branch 'for-2.6.38' into for-2.6.39
-      ASoC: Add TLV information for WM8978 DAC limiter
-      ASoC: Get the card directly from the DAPM context
-      ASoC: Check for a CODEC before dereferencing in DAPM
-      ASoC: Add a per-card DAPM context
-      ASoC: Allow card DAPM widgets and routes to be set up at registration
-      ASoC: Add a late_probe() callback to cards
-      ASoC: Fix outdated API usage in tlv320aic32x4
-      ASoC: Add missing debugfs conditionals
-      ASoC: Add LM4857 to SND_SOC_ALL_CODECS
-
- include/sound/soc.h                      |   12 +
- include/sound/tlv320aic32x4.h            |   31 ++
- sound/soc/codecs/Kconfig                 |   13 +-
- sound/soc/codecs/Makefile                |    6 +
- sound/soc/codecs/cs4270.c                |    2 +-
- sound/soc/codecs/cs4271.c                |    7 +-
- sound/soc/codecs/dfbmcs320.c             |   72 +++
- sound/soc/codecs/lm4857.c                |  276 +++++++++++
- sound/soc/codecs/tlv320aic32x4.c         |  794 ++++++++++++++++++++++++++++++
- sound/soc/codecs/tlv320aic32x4.h         |  143 ++++++
- sound/soc/codecs/tlv320dac33.c           |    1 +
- sound/soc/codecs/wm8978.c                |   17 +-
- sound/soc/ep93xx/ep93xx-i2s.c            |    8 +-
- sound/soc/imx/Kconfig                    |   10 +
- sound/soc/imx/Makefile                   |    2 +
- sound/soc/imx/mx27vis-aic32x4.c          |  137 +++++
- sound/soc/samsung/Kconfig                |   19 +-
- sound/soc/samsung/Makefile               |    2 -
- sound/soc/samsung/lm4857.h               |   32 --
- sound/soc/samsung/neo1973_gta02_wm8753.c |  494 -------------------
- sound/soc/samsung/neo1973_wm8753.c       |  634 +++++++++---------------
- sound/soc/soc-core.c                     |   31 ++
- sound/soc/soc-dapm.c                     |   14 +-
- 23 files changed, 1795 insertions(+), 962 deletions(-)
- create mode 100644 include/sound/tlv320aic32x4.h
- create mode 100644 sound/soc/codecs/dfbmcs320.c
- create mode 100644 sound/soc/codecs/lm4857.c
- create mode 100644 sound/soc/codecs/tlv320aic32x4.c
- create mode 100644 sound/soc/codecs/tlv320aic32x4.h
- create mode 100644 sound/soc/imx/mx27vis-aic32x4.c
- delete mode 100644 sound/soc/samsung/lm4857.h
- delete mode 100644 sound/soc/samsung/neo1973_gta02_wm8753.c
