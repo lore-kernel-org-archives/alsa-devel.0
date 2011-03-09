@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/6] ASoC: Manage mode and rate bits
- correctly for CS4271 CODEC.
-Date: Wed, 9 Mar 2011 13:09:12 +0000
-Message-ID: <20110309130912.GA30257@opensource.wolfsonmicro.com>
-References: <1299518985.2255.66.camel@r60e>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Query about Playback device name
+Date: Wed, 09 Mar 2011 15:22:16 +0100
+Message-ID: <4D778D18.8070603@ladisch.de>
+References: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB5681@EXGMBX01.sasken.com>,
+	<4D776867.9040905@ladisch.de>
+	<16F32A3F9AF4E441B752BCD79C151ACA69D0BB568D@EXGMBX01.sasken.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0DEE82437F
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2011 14:08:54 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1299518985.2255.66.camel@r60e>
+Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 7A27F243E6
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2011 15:20:53 +0100 (CET)
+In-Reply-To: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB568D@EXGMBX01.sasken.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +22,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alexander Sverdlin <subaparts@yandex.ru>
-Cc: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@ti.com>
+To: Irfan Shaikh <irfan.shaikh@sasken.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 07, 2011 at 08:29:45PM +0300, Alexander Sverdlin wrote:
-> From: Alexander Sverdlin <subaparts@yandex.ru>
-> 
-> Manage mode and rate bits correctly, according to datasheet in CS4271 CODEC.
-> This is done to make capture work properly.
-> 
-> Signed-off-by: Alexander Sverdlin <subaparts@yandex.ru>
+Irfan Shaikh wrote:
+> I get following error on console if i use  plug:mcasp3  instead  plughw:0,0
+> ALSA lib pcm.c:2211:(snd_pcm_open_noupdate) Unknown PCM mcasp3
 
-Applied the rest of these now, thanks.
+Do aplay and your program run on same computer as the same user?
+
+
+Regards,
+Clemens
