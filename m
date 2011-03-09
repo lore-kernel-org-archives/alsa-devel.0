@@ -1,21 +1,27 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: snd_pcm_hw_params_set_buffer_time_near: invalid
-	argument
-Date: Wed, 9 Mar 2011 11:52:34 +0800
-Message-ID: <AANLkTi=WkvaM+oLDAzyvcBzeg_kuB=33esFVXDZn1M48@mail.gmail.com>
-References: <AANLkTik5sX_DWLsN3y_7ANpoF5rgeCNZY7gm=+rFhCsy@mail.gmail.com>
-	<AANLkTimfZwH+dqsPZaifekmmctrARdE0DoK5nHoW1Fu_@mail.gmail.com>
-	<AANLkTinNhknw6h81zkqhhXQwYyrKGs0mVjYpjYvZuNa=@mail.gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [Device-drivers-devel] [PATCH] Add driver for
+ Analog Devices ADAU1701 SigmaDSP
+Date: Wed, 9 Mar 2011 01:08:03 -0500
+Message-ID: <AANLkTim6bQGKCuzAgxNS93LQkq2iqxjcCW49NBArafK1@mail.gmail.com>
+References: <1299460302-15392-1-git-send-email-cliff.cai@analog.com>
+	<20110307114142.GB13471@opensource.wolfsonmicro.com>
+	<AANLkTikynw7vCsqqyNZW-LFuGUKKQEtG3s4YCZjpOvko@mail.gmail.com>
+	<20110307121502.GG13471@opensource.wolfsonmicro.com>
+	<AANLkTinKpvgBokSHpsVf1KVX+m6sD0Xp_dFe8Y+HzY-7@mail.gmail.com>
+	<20110307145931.GK13471@opensource.wolfsonmicro.com>
+	<AANLkTi=e1xDz6fhBU7NL32DXL1J9Y1CDD2bHQVL6oASw@mail.gmail.com>
+	<20110307155508.GM13471@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id CADD624436
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2011 04:52:34 +0100 (CET)
-Received: by fxm11 with SMTP id 11so106164fxm.38
-	for <alsa-devel@alsa-project.org>; Tue, 08 Mar 2011 19:52:34 -0800 (PST)
-In-Reply-To: <AANLkTinNhknw6h81zkqhhXQwYyrKGs0mVjYpjYvZuNa=@mail.gmail.com>
+Received: from mail-iy0-f179.google.com (mail-iy0-f179.google.com
+	[209.85.210.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6892D244F4
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2011 07:08:26 +0100 (CET)
+Received: by iym7 with SMTP id 7so217812iym.38
+	for <alsa-devel@alsa-project.org>; Tue, 08 Mar 2011 22:08:23 -0800 (PST)
+In-Reply-To: <20110307155508.GM13471@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,40 +31,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: cliff.cai@analog.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, device-drivers-devel@blackfin.uclinux.org, akpm@linux-foundation.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-2011/3/8 Jean-Yves Avenard <jyavenard@gmail.com>
-
-> On 7 March 2011 23:24, Raymond Yau <superquad.vortex2@gmail.com> wrote:
->
-> > This seem to be bug in alsa-lib as I can reproduce using
-> alsa-lib/test/pcm.c
-> > with buffer time 120000 and my hda codec support both 11025Hz and 22050Hz
-> >
-> > using buffer time 160000 is OK
->
-> Yes.. It's hard to understand why 120ms wouldn't be okay, but 160ms would.
->
-> Could you check is 400ms works for you ? I found this to be a value
-> that generally do not work when using 44.1kHz 6 channels audio.
->
-> For the time being, I made my application use 500ms buffer; this is
-> what many media players are using (including mplayer) , so I'm
-> guessing it would be fine under most circumstances otherwise we would
-> have heard about it before.
->
-> Jean-Yves
->
-
-hda-intel.c only allocate 64Kbytes
-
-    /* buffer pre-allocation */
-    snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV_SG,
-                          snd_dma_pci_data(chip->pci),
-                          1024 * 64, 32 * 1024 * 1024);
-
-user or distribution need to change "prealloc" from 64 to a higher value for
-getting 500ms buffer
-
-echo 1024 > /proc/asound/Intel/pcm0p/sub0/prealloc
+T24gTW9uLCBNYXIgNywgMjAxMSBhdCAxMDo1NSwgTWFyayBCcm93biB3cm90ZToKPiBPbiBNb24s
+IE1hciAwNywgMjAxMSBhdCAxMDozMzoyNUFNIC0wNTAwLCBNaWtlIEZyeXNpbmdlciB3cm90ZToK
+Pj4gT24gTW9uLCBNYXIgNywgMjAxMSBhdCAwOTo1OSwgTWFyayBCcm93biB3cm90ZToKPj4gPiBJ
+J2QgZXhwZWN0IHRoYXQgdGhlIGRyaXZlciB3b3VsZCBhdCBsZWFzdCBlcnJvciBvdXQgaWYgdGhl
+IHVzZXIgdHJpZWQgdG8KPj4gPiBkbyB0aGUgd3JvbmcgdGhpbmcgaGVyZSwgbGlrZSBJIHNheSBj
+dXJyZW50bHkgdGhlIGZpcm13YXJlIGNvZGUgaXMganVzdAo+PiA+IG5vdCBqb2luZWQgdXAgd2l0
+aCBhbnl0aGluZyBlbHNlIGF0IGFsbC4KPgo+PiBpIGRvbnQgc2VlIGhvdyB0aGUgZHJpdmVyIGNh
+biBkZXRlY3QgYSAid3JvbmciIHRoaW5nLiDCoHRoZSBkcml2ZXIgaGFzCj4+IG5vIGlkZWEgd2hh
+dCBhcmJpdHJhcnkgY29kZSB0aGUgdXNlciBpcyBnb2luZyB0byBsb2FkIGFuZCB3aGF0IHRoYXQK
+Pj4gY29kZSBpcyBnb2luZyB0byBkbywgb3IgdmFsaWRhdGUgdGhlIGNvZGUgaW4gYW55IHdheS4g
+wqB0aGlzIGlzIHdoeSB0aGUKPj4gZmlybXdhcmUgaGFzIGEgc21hbGwgY3JjIGhlYWRlciBvbiBp
+dCAtLSB3ZSBvbmx5IG1ha2Ugc3VyZSB0aGF0IHdoYXQKPj4gdGhlIHVzZXIgY29tcGlsZWQgYXQg
+YnVpbGQgdGltZSBtYXRjaGVzIHdoYXQgaXMgbG9hZGVkIGludG8gdGhlCj4+IGhhcmR3YXJlLgo+
+Cj4gQXQgYSBiYXJlIG1pbmltdW0gc3VkZGVubHkgc3RvcHBpbmcgYW5kIHN0YXJ0aW5nIHRoZSBm
+aXJtd2FyZSB3aGlsZQo+IGF1ZGlvIGlzIGdvaW5nIHRocm91Z2ggaXQgaXMgdW5saWtlbHkgdG8g
+d29yayB3ZWxsICh5b3UnZCBtb3N0IGxpa2VseQo+IGdldCBhIGhhcmQgc3RvcCBvZiB0aGUgYXVk
+aW8gZm9sbG93ZWQgYnkgYSBzdWRkZW4gaGFyZCBzdGFydCB3aGljaCBzb3VuZAo+IHZlcnkgdW5w
+bGVhc2FudCB0byBsaXN0ZW5lcnMpIGFuZCBzbyBzaG91bGQgYmUgcHJldmVudGVkLiDCoFRoZXJl
+J3MgYQo+IGJ1bmNoIG9mIG9wdGlvbnMgZm9yIGRvaW5nIHRoaXMgKGluY2x1ZGluZyByZWZ1c2lu
+ZyB0byBjaGFuZ2UsIGVuc3VyaW5nCj4gdGhlIERTUCBvdXRwdXQgaXMgbXV0ZWQgZHVyaW5nIHRo
+ZSBjaGFuZ2Ugb3Igcm91dGluZyBhcm91bmQgdGhlIERTUAo+IHdoaWxlIGRvaW5nIHRoZSBjaGFu
+Z2UpLgoKeW91IHdvdWxkIHByb2JhYmx5IGdldCB0aGUgIm5vcm1hbCIgY2xpY2tzIGFuZCBwb3Bz
+LCBidXQgaSBndWVzcyB5b3VyCnZpZXcgb2YgIndyb25nIiBpcyBtdWNoIG1vcmUgc3RyaWN0IHRo
+YW4gbWluZSA7KS4gIGknbSBub3Qgc3VyZSBvdXIKcGFydHMgYWxsb3cgcm91dGluZyBhcm91bmQg
+dGhlIERTUCAoQ2xpZmYgd291bGQgaGF2ZSB0byBjb21tZW50KS4gIGFzCmZvciB0aGUgcmVzdCwg
+aSB0aGluayBpdCdkIGJlIGJlc3QgdG8gbGV0IHRoZSB1c2VyIHNwYWNlIGFwcCBkaWN0YXRlCmhv
+dyB0aGV5IHdhbnQgdG8gaGFuZGxlIHRoaW5ncy4gIHBlcmhhcHMgY2xpY2tzL3BvcHMgYXJlIGZp
+bmUgd2l0aAp0aGVtLiAgb3IgdGhleSBhcmVudCwgYW5kIHNvIHRoZSB1c2Vyc3BhY2UgYXBwIHdv
+dWxkIG1ha2Ugc3VyZSB0bwpwYXVzZS9tdXRlL3doYXRldmVyIHRoZSBzdHJlYW0uICBlaXRoZXIg
+d2F5LCB0aGlzIHNvdW5kcyBsaWtlIGEgcG9saWN5CnRoYXQgc2hvdWxkbnQgYmUgaGFyZCBjb2Rl
+ZCBpbiB0aGUgY29kZWMgZHJpdmVyLgoKPj4gPiBzeXN0ZW1zKSB0aGVyZSdzIG5vIHJlYXNvbiB0
+aGV5IHNob3VsZG4ndCBiZSBhYmxlIHRvIHJlbHkgb24gc3RhbmRhcmQKPj4gPiB0b29scyBmb3Ig
+bWFuYWdpbmcgdGhlaXIgYXVkaW8gY29uZmlndXJhdGlvbnMuCj4KPj4gaWYgdGhlIHN0YW5kYXJk
+IHRvb2xzIGV4aXN0ZWQgdG9kYXksIGknZCBvZiBjb3Vyc2UgYWdyZWUuIMKgYnV0IGFzIHlvdQo+
+PiBpbmRpY2F0ZWQgdGhlcmUncyBub3RoaW5nIHJpZ2h0IG5vdyBmb3IgdXMgdG8gYnVnIG9mZiBv
+Zi4gwqBzbyBob3cKPj4gdXNlcnNwYWNlICJwcm9iZXMiIGZvciBleGlzdGluZyBkYXRhIHdvdWxk
+IGJlIGhvd2V2ZXIgdGhlIGVuZCB1c2VyCj4+IGNob29zZXMgdG8gbWFuYWdlIHRoaW5ncy4gwqBp
+dCdzIG5vdCBsaWtlIHRoZSBzdGFuZGFyZCB0b29scyBjb3VsZAo+PiByZWFsbHkgcHJvdmlkZSBh
+bnl0aGluZyBvdGhlciB0aGFuIGEgc2ltcGxlIHN0cmluZyB0aGF0IGluZGljYXRlcwo+PiAic29t
+ZSBibG9iIGV4aXN0cyB3aXRoIG5hbWUgeHh4Ii4gwqB0aGUgbWVhbmluZy9tZXRhZGF0YSB0aGF0
+IHN1cnJvdW5kcwo+PiB4eHggaXNudCByZWFsbHkgcmVsZXZhbnQgZnJvbSB0aGUga2VybmVsJ3Mg
+cG92Lgo+Cj4gVGhlIHN0YW5kYXJkIHRvb2xzIHNob3VsZCBhbHNvIGJlIGFibGUgdG8gbWFuYWdl
+IHRoZSBtZWNoYW5pY3Mgb2YKPiBhY3R1YWxseSBnZXR0aW5nIHRoZSBuZXcgZGF0YSBpbnRvIHRo
+ZSBrZXJuZWwgYXQgYXBwcm9wcmlhdGUgbW9tZW50cy4KPiBUaGlzIGluY2x1ZGVzIGJvdGggb2Zm
+ZXJpbmcgY29udHJvbCB2aWEgVUlzIHN1Y2ggYXMgYWxzYW1peGVyIGFuZCBiZWluZwo+IGFibGUg
+dG8gaW5jbHVkZSBjb25maWd1cmF0aW9uIG9mIHRoZSBkYXRhIGluIFVDTSBjb25maWd1cmF0aW9u
+cy4KCmV4cG9zaW5nIHRoaXMgdmlhIGFsc2FtaXhlciBhbmQgZnJpZW5kcyB3b3VsZCBiZSBhIHVz
+ZWZ1bCBkZWJ1Z2dpbmcKdG9vbCBzbyBwZW9wbGUgY2FuIHRveSBhcm91bmQgd2l0aCBrbm93biB3
+b3JraW5nIGNvbmZpZ3VyYXRpb25zLiAgYW5kCmhhdmUgY29kZSBleGFtcGxlcyB0byBzZWUgaG93
+IHRvIGRvIGl0LgoKPj4gPiBBdCBwcmVzZW50IHVzZXJzcGFjZSBjYW4gZW51bWVyYXRlIGFuZCBj
+aGFuZ2UgdGhlIHJ1bnRpbWUgY29uZmlndXJhdGlvbgo+PiA+IHRoZSBzeXN0ZW0gb2ZmZXJzIHZp
+YSB0aGUgQUxTQSBBUElzIChhbmQgdGhpcyB3aWxsIGdldCBldmVuIGJldHRlciBvbmNlCj4+ID4g
+dGhlIG1lZGlhIGNvbnRyb2xsZXIgQVBJIHN0YXJ0cyBiZWluZyB1c2VkKS4gwqBUaGlzIG1lYW5z
+IHRoYXQgeW91IGNhbgo+PiA+IGZhaXJseSBlYXNpbHkgd3JpdGUgYSB1c2Vyc3BhY2UgdGhhdCds
+bCBydW4gb24gcHJldHR5IG11Y2ggYW55IExpbnV4Cj4+ID4gYXVkaW8gaGFyZHdhcmUsIGFkYXB0
+aW5nIHdpdGggcHVyZSBjb25maWd1cmF0aW9uIGZvciB3aGljaCB5b3UgY2FuCj4+ID4gcHJvdmlk
+ZSBwb2ludCBhbmQgY2xpY2sgdHVuaW5nIChyZWFsaXN0aWNhbGx5IGJ5IGFsbG93aW5nIHRoZSB1
+c2VyIHRvCj4+ID4gY29uZmlndXJlIHZpYSBzdGFuZGFyZCBBTFNBIHRvb2xzIGFuZCBvZmZlcmlu
+ZyBhICJzYXZlIGFzIHVzZSBjYXNlIiB0eXBlCj4+ID4gaW50ZXJmYWNlKS4gwqBJZiB3ZSBzdGFy
+dCBhZGRpbmcgYmFja2Rvb3JzIHRvIGRyaXZlcnMgd2UncmUgdGFraW5nIGEgc3RlcAo+PiA+IGJh
+Y2sgZnJvbSB3aGVyZSB3ZSBhcmUgY3VycmVudGx5IGJ5IHJlcXVpcmluZyB0aGF0IHRoZSBhcHBs
+aWNhdGlvbiBsYXllcgo+PiA+IGtub3cgbWFnaWMgc3R1ZmYgYWJvdXQgaW5kaXZpZHVhbCBzeXN0
+ZW1zIGluIG9yZGVyIHRvIHdvcmsgd2l0aCB0aGVtLgo+Cj4+IGZyb20gaG93IHdlJ3ZlIHNlZW4g
+cGVvcGxlIHVzaW5nIHRoZXNlIGNvZGVjcywgdGhpcyBzY2VuYXJpbyBkb2VzbnQKPj4gbWFrZSBt
+dWNoIHNlbnNlLiDCoHRoZSBkaWZmZXJlbnQgYWxnb3JpdGhtcyB3b3VsZCBiZSBsb2FkZWQgb24g
+dGhlIGZseQo+PiBieSB0aGUgYXBwbGljYXRpb24gYW5kIGl0cyBjdXJyZW50IG9wZXJhdGluZyBu
+ZWVkcywgbm90IGEgc2luZ2xlCj4+IGFsZ29yaXRobSBzZWxlY3RlZCBieSB0aGUgZW5kZXIgdXNl
+ciB0aGF0IHdvdWxkbnQgY2hhbmdlIGZvciB0aGUgbGlmZQo+PiBvZiB0aGUgYXBwLiDCoG5vdCBz
+YXlpbmcgdGhlIHNjZW5hcmlvIHdvdWxkIG5ldmVyIGNvbWUgdXAsIGp1c3QgdGhhdCBpdAo+PiBp
+c250IHRoZSBvbmUgd2UnZCBiZSBmb2N1c2VkIG9uLgo+Cj4gSSdtIG5vdCBzdXJlIHlvdSdyZSBm
+b2xsb3dpbmcgd2hhdCdzIGJlaW5nIHNhaWQgaGVyZS4gwqBUaGUgYWJvdmUgY29udHJvbAo+IGRp
+c2N1c3NlZCBhYm92ZSBmdWxsIHN5c3RlbSBjb25maWd1cmF0aW9uIG9mIGFsbCB0aGUgY29udHJv
+bCBvZmZlcmVkIGJ5Cj4gdGhlIHN5c3RlbSwgbm90IHR1bmluZyB0aGUgcGFyYW1ldGVycyBvZiBh
+biBpbmRpdmlkdWFsIGFsZ29yaXRobS4gwqBUaGlzCj4gaW5jbHVkZXMgdm9sdW1lIGNvbnRyb2xz
+LCByb3V0aW5nIGNvbnRyb2xzLCBhbGdvcml0aG1zLCBjb2VmZmljaWVudHMgYW5kCj4gYW55dGhp
+bmcgZWxzZSB0aGF0IGNhbiBiZSBjaGFuZ2VkLiDCoEEgc2NlbmFyaW8gd2hlcmUgeW91IHdhbnQg
+dG8gY2hhbmdlCj4gdGhlIHNldCBvZiBhbGdvcml0aG1zIHRoZSBoYXJkd2FyZSBjYW4gc3VwcG9y
+dCBpcyBjZXJ0YWlubHkgaW5jbHVkZWQgaW4KPiB0aGF0LgoKaSBqdXN0IG1lYW50IHRoYXQgdGhl
+IHVzZSBjYXNlcyB3ZSd2ZSBiZWVuIGRlYWxpbmcgd2l0aCBpbnZvbHZlIHRoZQpwZW9wbGUgZGV2
+ZWxvcGluZyB0aGUgYXBwbGljYXRpb24gdGFraW5nIGNhcmUgb2YgcGlja2luZyB3aGljaApmaXJt
+d2FyZXMgdG8gbG9hZCBhdCBhbnkgcGFydGljdWxhciB0aW1lLiAgaGF2aW5nIHRoZSBlbmQgdXNl
+ciAodGhlCmd1eSB3aG8gYnV5cyB0aGUgYWN0dWFsIGRldmljZSkgc2VsZWN0IGZpcm13YXJlcyBk
+b2VzbnQgbWFrZSBtdWNoCnNlbnNlLiAgYnV0IHRoaXMgcGFydGljdWxhciBxdWFsaWZpY2F0aW9u
+IHByb2JhYmx5IGlzIGlycmVsZXZhbnQgdG8KdGhlIGZyYW1ld29yayB5b3UncmUgcHJvcG9zaW5n
+IGluIHRoZSBlbmQuCi1taWtlCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo=
