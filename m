@@ -1,43 +1,49 @@
-From: Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [BUG] WARNING: at fs/sysfs/dir.c:455 sysfs_add_one+0x83/0x95
-Date: Wed, 09 Mar 2011 11:44:39 -0500
-Message-ID: <1299689079.15854.251.camel@gandalf.stny.rr.com>
-References: <1299685189.15854.182.camel@gandalf.stny.rr.com>
-	 <20110309155309.GA30598@suse.de>
-	 <1299687658.15854.227.camel@gandalf.stny.rr.com>
-	 <s5hfwqwnt9s.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: [GIT PULL] ASoC Fixes for 2.6.38
+Date: Wed, 09 Mar 2011 17:14:44 +0000
+Message-ID: <1299690884.3360.180.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hfwqwnt9s.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 906822446B
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2011 18:14:48 +0100 (CET)
+Received: by wyj26 with SMTP id 26so630832wyj.38
+	for <alsa-devel@alsa-project.org>; Wed, 09 Mar 2011 09:14:48 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Greg KH <gregkh@suse.de>, Jaroslav Kysela <perex@perex.cz>, LKML <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, alsa-devel@alsa-project.org
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2011-03-09 at 17:38 +0100, Takashi Iwai wrote:
-> At Wed, 09 Mar 2011 11:20:58 -0500,
-> Steven Rostedt wrote:
-> > 
-> > On Wed, 2011-03-09 at 07:53 -0800, Greg KH wrote:
-> > 
-> > > > This was for a 386 build. I could give a .config and full dmesg if
-> > > > needed.
-> > > 
-> > > I think the sound developers (now on CC: would probably like to see
-> > > that.)
-> > 
-> > http://rostedt.homelinux.com/private/mitest-boot-randconfig-fail-20110209042837/config
-> > 
-> > http://rostedt.homelinux.com/private/mitest-boot-randconfig-fail-20110209042837/dmesg
-> 
-> Could you try the patch below?  Totally untested.
-> 
+Takashi,
 
-Will do, but first I'll make sure that this is reproducible on every
-boot.
+If you are planning a final pull for 2.6.38 fixes please include this
+one. If not, I'll add this for 2.6.39.
 
-Thanks,
+Thanks
 
--- Steve
+Liam
+
+---
+
+The following changes since commit 04d286819ba499839d04cbf847f2ea28d5cf4296:
+
+  ASoC: WM8994: Ensure late enable events are processed for the ADCs (2011-03-01 23:27:07 +0000)
+
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.38
+
+Abhilash K V (1):
+      ASoC: AM3517: Update codec name after multi-component update
+
+ sound/soc/omap/am3517evm.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
