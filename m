@@ -1,43 +1,35 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: omap: rx51: Enable McBSP2 sidetone
-Date: Wed, 09 Mar 2011 11:55:43 +0000
-Message-ID: <1299671743.3360.89.camel@odin>
-References: <1299662700-25220-1-git-send-email-jhnikula@gmail.com>
-	<20110309101157.GA1225@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: AM3517: Update codec name after multi-component
+ update
+Date: Wed, 09 Mar 2011 11:55:45 +0000
+Message-ID: <1299671745.3360.90.camel@odin>
+References: <1299598363-32656-1-git-send-email-abhilash.kv@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id D71381039A1
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2011 12:55:46 +0100 (CET)
-Received: by wwj40 with SMTP id 40so380230wwj.20
-	for <alsa-devel@alsa-project.org>; Wed, 09 Mar 2011 03:55:46 -0800 (PST)
-In-Reply-To: <20110309101157.GA1225@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1299598363-32656-1-git-send-email-abhilash.kv@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Abhilash K V <abhilash.kv@ti.com>
+Cc: linux-omap@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, jhnikula@gmail.com, broonie@opensource.wolfsonmicro.com, perex@perex.cz, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2011-03-09 at 10:11 +0000, Mark Brown wrote:
-> On Wed, Mar 09, 2011 at 11:25:00AM +0200, Jarkko Nikula wrote:
-> > McBSP sidetone is needed in telephony applications. McBSP sidetone is a
-> > configurable FIR filter that forms a loopback from McBSP input to output.
-> > This patch enables the McBSP2 sidetone ALSA controls so that it can be used
-> > on Nokia RX-51/N900.
+On Tue, 2011-03-08 at 21:02 +0530, Abhilash K V wrote:
+> The i2c client device name (".2-001a" in this case, including
+> the separator period) for the AIC23 codec on the TI AM3517-EVM
+> was appended to the codec_name member of am3517evm_dai to
+> resolve the names mismatch happening in soc_bind_dai_link(),
+> due to which the card was not getting registered.
 > 
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Signed-off-by: Abhilash K V <abhilash.kv@ti.com>
+> 
+> Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+> 
+> ---
 
 Applied.
 
 Thanks
 
 Liam
+
