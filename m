@@ -1,18 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Query about Playback device name
-Date: Wed, 09 Mar 2011 15:22:16 +0100
-Message-ID: <4D778D18.8070603@ladisch.de>
-References: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB5681@EXGMBX01.sasken.com>,
-	<4D776867.9040905@ladisch.de>
-	<16F32A3F9AF4E441B752BCD79C151ACA69D0BB568D@EXGMBX01.sasken.com>
+From: Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ASoC: Add MAX9850 codec driver
+Date: Wed, 9 Mar 2011 14:31:15 +0000
+Message-ID: <20110309143115.GA8676@opensource.wolfsonmicro.com>
+References: <1299501913-3772-1-git-send-email-christian.glindkamp@taskit.de>
+	<1299666004-12792-1-git-send-email-christian.glindkamp@taskit.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id 7A27F243E6
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2011 15:20:53 +0100 (CET)
-In-Reply-To: <16F32A3F9AF4E441B752BCD79C151ACA69D0BB568D@EXGMBX01.sasken.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 84074243F1
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2011 15:31:18 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1299666004-12792-1-git-send-email-christian.glindkamp@taskit.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +22,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Irfan Shaikh <irfan.shaikh@sasken.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Christian Glindkamp <christian.glindkamp@taskit.de>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Irfan Shaikh wrote:
-> I get following error on console if i use  plug:mcasp3  instead  plughw:0,0
-> ALSA lib pcm.c:2211:(snd_pcm_open_noupdate) Unknown PCM mcasp3
+On Wed, Mar 09, 2011 at 11:20:04AM +0100, Christian Glindkamp wrote:
+> This patch adds ASoC support for the MAX9850 codec with headphone
+> amplifier.
+> 
+> Supported features:
+> - Playback
+> - 16, 20 and 24 bit audio
+> - 8k - 48k sample rates
+> - DAPM
+> 
+> Signed-off-by: Christian Glindkamp <christian.glindkamp@taskit.de>
 
-Do aplay and your program run on same computer as the same user?
+Looks good.
 
-
-Regards,
-Clemens
+Thanks,
+Dimitris
